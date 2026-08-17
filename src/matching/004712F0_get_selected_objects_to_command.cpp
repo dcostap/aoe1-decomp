@@ -10,10 +10,6 @@
 //   set without raw frame offsets.
 // - Moved counter initialization before the output stores and used the
 //   binary-proven zero-extended select-level/short comparison.
-// - Left in scratch: 256 positional bytes remain, principally prologue
-//   register coloring, the distinct stack list-count/cursor lifetime, and
-//   the target load-before-sub-esp scheduling. No opaque register forcing or
-//   fake volatility is retained.
 // - This pass tried output-store ordering, direct-this/alias and cursor
 //   declaration permutations, and separate list/list_count locals; none beat
 //   the aggregate 0x8-frame basin.
@@ -31,14 +27,15 @@
 // - Moved Selection_Locals into the local declaration block to test the small
 //   prologue color gap; emitted code was unchanged, so the natural placement
 //   stays.
-// - Left in scratch: the remaining 6B is only the prologue zero/register
-//   color gap; the select-level compare and function body are exact.
-// - Drove the initial zero stores from the natural j/count locals; emitted
-//   code was unchanged, so literal zero stores remain the clean source form.
+// - Tested initial zero stores driven by the natural j/count locals; those
+//   variants were unchanged, while the accepted count uses its exact
+//   declaration initializer below.
 // - Delaying count initialization matched the target prologue bytes but
 //   swapped j/count register roles through the exact filter body; restored.
 // - j-based zero-store, pointer-cursor, declaration-order, and equivalent
 //   out-list ABI probes were unchanged or less plausible; no exact lead.
+// - Declaration-initializing the accepted count (`short count = 0`) changed
+//   only the zero-register ownership. The result is an exact 313-byte match.
 
 class RGE_Player;
 
@@ -100,14 +97,13 @@ unsigned char RGE_Player::get_selected_objects_to_command(
     RGE_Player* player = this;
     long j;
     RGE_Static_Object** selected;
-    short count;
+    short count = 0;
     RGE_Static_Object* object;
     RGE_Master_Static_Object* master;
     Selection_Locals locals;
 
     j = 0;
     *out_list = 0;
-    count = 0;
     *out_count = 0;
     if (player->sel_count == 0) {
         return 0;
