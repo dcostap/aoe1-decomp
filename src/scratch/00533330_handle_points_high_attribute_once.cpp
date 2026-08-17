@@ -89,6 +89,25 @@
 //   ownership. A positive state block and implicit float-to-long initialization both emit the
 //   same 224-byte/29-byte group. The unresolved gap remains only entry=EBX versus original
 //   entry=EDI and player-array cursor=EDI versus original EBX.
+// - Object/CodeView audit: DIA finds compiland `victory.obj` with compiler string
+//   `Microsoft (R) 32-bit C/C++ Optimizing Compiler Version 11.00`. The target has exactly two
+//   function debug boundary records, then only `this`, `node`, and `amount`. `this` is ECX;
+//   `node` is RegRel VFRAME (+4), and `amount` is RegRel VFRAME (+8), both with zero live-range
+//   data. No `pp`, `i`, result, or other hidden local appears. The target has zero inline frames.
+// - CodeView type audit: `node` points to the complete 0x1C `RGE_Victory_Point_Entry`; its ten
+//   members are at 0,1,2,3,4,8,C,10,14,18. The PDB UDTs also prove `RGE_Player` size 0x220 with
+//   world +3C, id +4A, attributes +50; `RGE_Game_World` size 0x104 with player_num +3C and
+//   players +40; and `RGE_Victory_Conditions` size 0x20 with player +0C and total +1C.
+// - FPO/COFF audit: original and rebuilt target FPO records both report 224 bytes, 4 local
+//   dwords, 4 saved registers, zero prolog, BP=Y, SEH=N, fpo, and 4 parameter bytes. The rebuilt
+//   COFF has one 224-byte .text COMDAT, two __ftol REL32 relocations, and one associative
+//   .debug$F record; its 16-byte FPO payload matches the original after the function-start
+//   relocation. The original PE has no COFF symbols and records only NB10 CodeView plus FPO.
+//   These records support the pinned VC5 11.00.7022/5.00.7022 toolchain, not another source.
+// - Object-level conclusion: the PDB is incomplete for optimized local ranges, but it gives no
+//   hidden inline context or natural local that could select the inverse EBX/EDI colors. The
+//   clean typed source remains authoritative; no alias, volatility, raw offset, or ABI change
+//   is supported by this audit.
 
 class RGE_Game_World;
 class RGE_Victory_Entry;
