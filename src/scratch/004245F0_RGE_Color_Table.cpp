@@ -26,6 +26,26 @@
 // strict diff from 368 to 355 bytes and aligned the inner branch shape.
 // Typed source/destination cursors, reused loop counters, and declaration-order
 // changes were duplicate or worse. The indexed copy remains the source model.
+// Matching-worker pass 2026-08-16: claimed the target and revalidated the clean
+// baseline at 405/424 bytes, 355 differing bytes, exact frame 0x81C, saved
+// EBX/EBP/ESI/EDI, two aligned calls, and 45.59% exact-block coverage. Focused
+// probes covered explicit base-color channel loads, typed copy cursors, Windows
+// palette headers, a palette-buffer aggregate, 257-entry and asymmetric buffer
+// extents, and PDB-named long temp_color scope. They were duplicate, worse, or
+// changed only non-useful layout details. cvdump confirms palette at -0x800,
+// temp_palette at -0x400, color/temp_color reuse at -0x81C, and index1 at
+// -0x814. All probes were restored. Remaining gap is the original pointer and
+// register topology in the palette copy loop; preserve this natural baseline.
+// Revisit 2026-08-17: the typed explicit color-channel model emits the proven
+// red/blue/green/flags byte schedule and recovers two exact inner blocks.
+// It is 430 bytes with 361 differing bytes, 86.33% shape, and the exact 0x81C
+// frame. Aggregate color assignment and typed pointer-copy variants were worse
+// or duplicate. Keep this natural typed model; the remaining gap is the
+// original palette-copy pointer topology and local array placement.
+// Revisit 2: one-based typed copy and one natural distance expression were
+// tested and restored. The one-based copy lost CFG coverage; direct arithmetic
+// improved positional diff to 356 but lost the exact inner-loop island. Final
+// source remains the cleaner named-difference model.
 
 #include <string.h>
 
@@ -64,6 +84,7 @@ RGE_Color_Table::RGE_Color_Table(TDrawArea* area, long amount,
                                  tagPALETTEENTRY* base_color,
                                  tagPALETTEENTRY* palette_source)
 {
+    long temp_color;
     tagPALETTEENTRY palette[256];
     tagPALETTEENTRY temp_palette[256];
     tagPALETTEENTRY color;
@@ -82,11 +103,14 @@ RGE_Color_Table::RGE_Color_Table(TDrawArea* area, long amount,
 
     if (base_color == 0) {
         color.peRed = 0;
-        color.peGreen = 0;
         color.peBlue = 0;
+        color.peGreen = 0;
         color.peFlags = 0;
     } else {
-        color = *base_color;
+        color.peRed = base_color->peRed;
+        color.peBlue = base_color->peBlue;
+        color.peGreen = base_color->peGreen;
+        color.peFlags = base_color->peFlags;
     }
 
     this->resource_id = 0;
@@ -98,7 +122,7 @@ RGE_Color_Table::RGE_Color_Table(TDrawArea* area, long amount,
 
     index = 0;
     do {
-        int best_color = 0;
+        temp_color = 0;
         int i = 0;
         int best_distance = 20000;
         int red = temp_palette[index + 1].peRed;
@@ -114,11 +138,11 @@ RGE_Color_Table::RGE_Color_Table(TDrawArea* area, long amount,
                          + blue_difference * blue_difference;
             if (distance < best_distance) {
                 best_distance = distance;
-                best_color = i;
+                temp_color = i;
             }
         }
 
-        this->table[index] = (unsigned char)best_color;
+        this->table[index] = (unsigned char)temp_color;
         index++;
     } while (index <= 0xff);
 }
