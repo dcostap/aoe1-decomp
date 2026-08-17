@@ -59,6 +59,25 @@
 // 219B/37 codegen duplicate. Unsigned or byte compare-index types widened the
 // body (227B-238B); dead parameter-home update/order variants widened it to
 // 241B-247B. Restored the clean typed source; no new tail lead was found.
+// 2026-08-16 sa-967e1011-r1 fresh pass (11 meaningful probes): direct signed
+// casts at both predicates, player and compare register hints, function-scope
+// compare declaration, cached owner id, signed-byte and unsigned-owner-id
+// types, split loop comparisons, split index initialization, and related
+// declaration forms either widened the body or reproduced the 219B/37 basin.
+// The split-comparison form briefly selected ESI for the owner and EDX for the
+// tail compare, but lost the original EBX byte home and prologue. Restored the
+// readable typed source. Remaining drift is the ESI-owner versus EDX-compare
+// loop-tail register map and its dependent branch displacements.
+// 2026-08-17 sa-27522190-r1 reassessment: direct byte comparisons widened the
+// body; removing the object-id alias, direct owner rereads, split compare
+// initialization, and byte-cast tail tests either duplicated 219B/37 or lost
+// the original EBX byte home. Eight standard-header combinations also formed
+// one duplicate 219B/37 basin. Restored the clean typed source; no natural
+// source form moved the owner/compare register-map hunk.
+// 2026-08-17 sa-222d08b4-r1 revisit: the Ghidra-supported unsigned compare,
+// parameter-home index, loop-local compare, declaration-order, update-order,
+// const-owner, and split-initialization forms either widened the body or
+// reproduced the 219B/37 basin. The clean typed source remains authoritative.
 
 class RGE_Static_Object;
 class RGE_Sprite;
