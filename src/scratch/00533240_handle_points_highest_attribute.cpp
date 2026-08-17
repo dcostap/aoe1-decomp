@@ -92,6 +92,10 @@
 //   access, period typedefs, PDB `node` naming, and supported VC5 flag families were neutral or
 //   worse. Default `/O2 /Oy` remains the only supported flag basin. The original four-slot local
 //   window is not caused by recoverable TU context in this source model.
+// - Object audit: FPO confirms a real 0x10 local frame, not hidden ABI, SEH, inline code, or a
+//   boundary error. The extra word holds a spilled player id. The oracle also reuses the node
+//   parameter home for the converted value and result. PDB local records are incomplete, but
+//   no natural source form recovered those choices. The volatile frame diagnostic stays rejected.
 
 class RGE_Game_World;
 
