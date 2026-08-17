@@ -40,7 +40,21 @@
 // output worsened to 751B/696 and was restored.
 // try 23: inlined the proven clipped-literal source offset expression; VC5
 // emitted the same 764B/690 code. The simpler expression is retained.
-// left in scratch: major behavior surface is reconstructed but code is too compact and not diffable/exact; not accepted_drift-safe.
+// try 24: inverted the initial horizontal guard to `xpos > x`, matching the
+// original jge skip over the pre-band decoder; this reached 763B/686.
+// try 25: translated the Ghidra-proven partial literal loops to explicit
+// unsigned-byte guards and do/while decrements; this reached 763B/684.
+// try 26: fixed the middle literal branch for xpos >= clip_left to copy only
+// x-xpos bytes from the count-copy_count source offset. This improved raw
+// resynchronization and restores the binary-proven clipped behavior.
+// try 27: changed the top-row skip to a do/while loop after the behavior fix;
+// this reached 764B/669 and 71.02% instruction shape.
+// try 28: restored full donor-supported TDrawArea/TShape/Shape_Header surfaces;
+// codegen stayed at 764B/669, so typed ownership is retained.
+// Final bounded pass: 764B rebuilt versus 799B original, 669 strict bytes,
+// 71.02% shape, three ordered calls aligned, and a 0xC versus 0x8 frame.
+// The remaining gap is the original local-home/parameter allocation basin and
+// related state layout; this source is not exact or accepted_drift-safe.
 
 #include <string.h>
 #pragma function(memset)
@@ -48,13 +62,48 @@
 typedef unsigned char uchar;
 extern "C" void* __cdecl memset(void*, int, unsigned int);
 
-class TDrawArea { public: char pad0[8]; uchar* Bits; char padC[0x10]; long Height; char pad20[4]; long Orien; long AlignedWidth(); };
-class TShape { public: void* shape; int load_type; int load_size; uchar* shape_header; unsigned char shape_mirror_clipped(TDrawArea*,long,long,long,long,long,long); };
+struct Shape_Header {
+    long bounds;
+    long origin;
+    long xmin;
+    long ymin;
+    long xmax;
+    long ymax;
+};
+
+class TDrawArea {
+public:
+    char gap_00[8];
+    uchar* Bits;
+    void* BitmapInfo;
+    void* Bitmap;
+    void* OldBitmap;
+    int Width;
+    int Height;
+    int Pitch;
+    int Orien;
+    char ClipRect[0x10];
+    char tail_38[0xC8];
+    long AlignedWidth();
+};
+
+class TShape {
+public:
+    uchar* shape;
+    int load_type;
+    int load_size;
+    Shape_Header* shape_header;
+    void* head;
+    void* offsets;
+    void* FShape;
+    void* shape_info;
+    unsigned char shape_mirror_clipped(TDrawArea*,long,long,long,long,long,long);
+};
 
 unsigned char TShape::shape_mirror_clipped(TDrawArea* area,long clip_right,long clip_top,long clip_left,long y,long x,long clip_bottom)
 {
     long pitch = area->AlignedWidth() * area->Orien;
-    uchar* src = this->shape_header + 0x18;
+    uchar* src = (uchar*)(this->shape_header + 1);
     uchar* save_buffer;
     if (area->Orien < 1)
         save_buffer = area->Bits + (y - area->Height + 1) * pitch + x + 1;
@@ -65,7 +114,7 @@ unsigned char TShape::shape_mirror_clipped(TDrawArea* area,long clip_right,long 
     if (row < y) {
         long skip = y - row;
         row += skip;
-        while (skip--) {
+        do {
             uchar done = 0;
             while (!done) {
                 uchar code = *src++;
@@ -83,7 +132,7 @@ unsigned char TShape::shape_mirror_clipped(TDrawArea* area,long clip_right,long 
                         ++src;
                 }
             }
-        }
+        } while (--skip != 0);
     }
 
     if (row <= clip_bottom) {
@@ -92,9 +141,8 @@ unsigned char TShape::shape_mirror_clipped(TDrawArea* area,long clip_right,long 
             long xpos = clip_right;
             uchar state;
 
-            if (xpos <= x) {
-                state = 1;
-            } else {
+            state = 1;
+            if (xpos > x) {
                 state = 0;
                 while (state == 0) {
                     uchar code = *src++;
@@ -115,18 +163,27 @@ unsigned char TShape::shape_mirror_clipped(TDrawArea* area,long clip_right,long 
                             xpos -= count;
                             if (xpos <= x) {
                                 if (xpos < clip_left) {
-                                    long copy_count = x - clip_left + 1;
+                                    unsigned int copy_count = x - clip_left + 1;
                                     state = 2;
                                     src += xpos - x + count - 1;
-                                    while (copy_count--)
-                                        *--save_buffer = *src++;
+                                    if ((unsigned char)copy_count > 0) {
+                                        copy_count &= 0xff;
+                                        do {
+                                            *--save_buffer = *src++;
+                                        } while (--copy_count != 0);
+                                    }
                                     src += clip_left - xpos;
                                 } else {
-                                    long copy_count = x - xpos;
+                                    unsigned int copy_count = x;
+                                    copy_count -= xpos;
                                     state = 1;
                                     src += count - copy_count;
-                                    while (copy_count--)
-                                        *--save_buffer = *src++;
+                                    if ((unsigned char)copy_count > 0) {
+                                        copy_count &= 0xff;
+                                        do {
+                                            *--save_buffer = *src++;
+                                        } while (--copy_count != 0);
+                                    }
                                 }
                             } else {
                                 src += count;
@@ -173,16 +230,26 @@ unsigned char TShape::shape_mirror_clipped(TDrawArea* area,long clip_right,long 
                             } else {
                                 xpos -= count;
                                 if (xpos < clip_left) {
-                                    long visible = xpos - clip_left + count;
+                                    unsigned int visible = xpos;
+                                    visible -= clip_left;
+                                    visible += count;
                                     state = 1;
-                                    if (visible > 0) {
-                                        while (visible--)
+                                    if ((unsigned char)visible > 0) {
+                                        visible &= 0xff;
+                                        do {
                                             *--save_buffer = *src++;
+                                        } while (--visible != 0);
                                     }
                                     src += count - (xpos - clip_left + count);
                                 } else {
-                                    while (count--)
-                                        *--save_buffer = *src++;
+                                    unsigned int copy_count = x - xpos;
+                                    state = 1;
+                                    src += count - copy_count;
+                                    if ((unsigned char)copy_count > 0) {
+                                        do {
+                                            *--save_buffer = *src++;
+                                        } while (--copy_count != 0);
+                                    }
                                 }
                             }
                         } else {
