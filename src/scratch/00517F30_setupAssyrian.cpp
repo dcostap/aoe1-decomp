@@ -26,6 +26,18 @@
 //   the param_2 == 0/1 target and writes +0xF0 (param_1[0x3c]); the true
 //   default block at 00517F74 writes +0x58 (param_1[0x16]). Restored the
 //   candidate source unchanged. A fresh blind review is still required later.
+// - Fresh baseline reconfirmed 96 positional bytes off, 334 versus 337 bytes,
+//   exact prefix before +0xBE, and exact call/owner/frame parity.
+// - A 24-way group-order lab found no exact variant. All variants stayed at
+//   size 334; the natural order remained the best result.
+// - Moving either repeated 0x14 store after the map-type branch improved the
+//   raw diff to 70/71 bytes but added seven trailing bytes. Both were restored.
+// - Explicit branch return, full AIModule surface, and 64 ambient declarations
+//   emitted the baseline bytes. The remaining lead is VC5 scheduling context.
+// - Revisit pass: chained stores, named map/value locals, group permutations,
+//   branch-common duplication, supported headers, and reviewed inheritance
+//   context stayed at 334 bytes and 96 positional bytes off. Restored the
+//   natural direct source; the remaining hunk is the 0x28/0x64 load schedule.
 
 struct AIModule {
     void __cdecl logCommonHistory(char* msg);
