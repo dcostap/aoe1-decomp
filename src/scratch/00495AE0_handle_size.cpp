@@ -31,6 +31,29 @@
 //   row y at [esp+38] and the six-column counter in EBX, while VC5 keeps the
 //   y seed in EBX and homes the column count.  One branch-local call tail is
 //   also physically shared differently (original 00495F73 versus rebuilt).
+//
+// Fresh bounded pass (sa-946ebf0a):
+// - H1-H6 tested declaration order, loop form, local scope, register hints,
+//   and int/long widths.  They were duplicate or worse codegen.
+// - H7-H10 tested score-panel pointer cursors.  Two cursors added a 0x24 frame
+//   and 2113 differing bytes.  The counted-for form kept that basin.
+// - H11 used one panel cursor and worsened the result to 1952 bytes.
+// - H12 kept direct score-panel indexing and added only a saved-state cursor.
+//   This restored the original first save-loop register order and reduced the
+//   strict difference to 1941 bytes.  This is the retained clean source.
+// - H13-H17 tested an array-backed y local, branch-local cursors, declaration
+//   order, and counter width.  They were duplicate codegen.
+// - H18-H20 tested update order and final-frame declaration order.  They were
+//   duplicate or worse codegen.  H21 added the full adjacent TPanel surface;
+//   it was duplicate.  H22 replaced tagRECT with the period windows.h type;
+//   it was neutral.
+//
+// BINARY NOTE: the first save loop uses EDI for save_score_active and EBX for
+// score_panel.  The retained pointer shape reproduces this register order.
+// BINARY NOTE: each button grid uses a stack y home and an EBX column count in
+// the executable.  The clean source still emits the reverse assignment.
+// LIKELY INTENT: the large-arm button-16 call shares the medium-arm call tail.
+// The current natural nested arms do not reproduce that tail merge.
 
 struct tagRECT {
     long left;
@@ -310,12 +333,14 @@ long TRIBE_Screen_Game::handle_size(long width, long height) {
     this->message_panel[4]->set_active(1);
     this->message_panel[5]->set_active(1);
 
+    int* saved_score = save_score_active;
     for (int score_active_index = 0; score_active_index < 8; ++score_active_index) {
         TPanel* panel = this->score_panel[score_active_index];
         if (panel != 0) {
-            save_score_active[score_active_index] = panel->active;
+            *saved_score = panel->active;
             panel->set_active(1);
         }
+        ++saved_score;
     }
 
     short final_frame;
