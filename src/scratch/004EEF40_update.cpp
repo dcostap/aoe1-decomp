@@ -25,6 +25,18 @@
 //   and an information-subobject pointer were codegen duplicates or worse.
 //   A defend-array reference also worsened structure. Restored the clean
 //   typed source; no evidence-backed lead remains for this claim.
+// - Claim probes 1-22 tested short md/player/world/tick aliases, declaration
+//   scope, references, real MainDecision and world class surfaces, virtual
+//   update ownership, the canonical world_time spelling, diplomacy layout,
+//   and an inline world-time accessor. Aliases and declaration surfaces were
+//   duplicate codegen. A world local and a function-wide md local were worse.
+// - The Ghidra listing confirms a temporary md receiver in the first timing
+//   block, but the typed scoped alias is codegen-neutral under VC5. The first
+//   clean mismatch remains the lastScalingUpdate register permutation at
+//   +0x121, followed by the missing six-byte md reload before the farms reset.
+// - The clean baseline remains 1421 bytes, 0x8 frame, 22/22 ordered calls,
+//   98.19% shape, 969 positional diff bytes, and 107 edit bytes. No exact
+//   source was found. Restore this baseline before pause.
 
 class AIModule {
 public:
