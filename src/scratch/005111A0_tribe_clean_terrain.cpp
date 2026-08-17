@@ -22,6 +22,14 @@
 // BX-held upper-left flag, and several long exact islands; it grew to 1570 bytes
 // with a 0x40 frame and 1423 positional bytes, so the exact-size row-for source remains best.
 // luna-r2 negative: register x2/y2, row-offset aliases, tile scope, and orthogonal operand order were codegen duplicates.
+// managed sa-e986718e pass: 20 measured hypotheses, all restored to this clean source.
+// The nested current-row/current-column model followed the decompiler but grew the frame
+// and worsened shape. A guarded row do-loop kept exact size and improved positional diff
+// to 1207 bytes, but lost shape and the early exact prologue; it was not retained.
+// Independent bound aliases, declaration orders, scoped locals, ABI pointer spelling,
+// register storage, member spelling, row-offset locals, and address-expression order
+// were duplicates or worse. Calls, frame, CFG counts, and boundary remain aligned;
+// the open blocker is the EBX tile/end-bound allocation and related flag homes.
 
 typedef unsigned char uchar;
 
