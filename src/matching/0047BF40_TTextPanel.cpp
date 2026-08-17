@@ -34,6 +34,9 @@
 // - Mirrored donor 00436830 with inline empty TPanel/TTextPanel destructors
 //   and an out-of-line TPanel constructor after the derived body; codegen was
 //   unchanged, so the full virtual surface remains the evidence-backed lead.
+// - Winning probe: initialize every TTextPanel member in declaration order,
+//   including highlight_text_color1, and keep only inherited panel_state_80
+//   and panel_flag_EE in the body. This produces the exact 325-byte function.
 
 struct tagRECT;
 
@@ -174,53 +177,52 @@ public:
 };
 
 TTextPanel::TTextPanel()
+    : list(0),
+      num_lines(0),
+      draw_lines(0),
+      top_line(0),
+      bot_line(0),
+      cur_line(0),
+      cur_col(0),
+      font(0),
+      font_wid(0),
+      font_hgt(0),
+      vert_align(0),
+      horz_align(0),
+      word_wrap(0),
+      text_style(2),
+      text_color1(0xFFFFFF),
+      text_color2(0),
+      highlight_text_color1(0xFFFF),
+      highlight_text_color2(0),
+      scbar_panel(0),
+      auto_scbar(0),
+      fixed_len(0),
+      text_wid(0),
+      text_hgt(0),
+      back_pic(0),
+      back_pic_wid(0),
+      back_pic_hgt(0),
+      fill_back(0),
+      back_color(0xFF),
+      outline(0),
+      outline_color(0),
+      sorted(0),
+      second_column_pos(0),
+      full_width(0),
+      scbar_width(0),
+      scbar_active(0),
+      bevel_type(0),
+      bevel_color1(0),
+      bevel_color2(0),
+      bevel_color3(0),
+      bevel_color4(0),
+      bevel_color5(0),
+      bevel_color6(0),
+      clip_rgn2(0),
+      border_size(0),
+      spacer_size(0)
 {
-    this->back_color = 0xFF;
-    this->list = 0;
-    this->num_lines = 0;
-    this->draw_lines = 0;
-    this->top_line = 0;
-    this->bot_line = 0;
-    this->cur_line = 0;
-    this->cur_col = 0;
-    this->font = 0;
-    this->font_wid = 0;
-    this->font_hgt = 0;
-    this->vert_align = 0;
-    this->horz_align = 0;
-    this->word_wrap = 0;
-    this->text_style = 2;
-    this->text_color1 = 0xFFFFFF;
-    this->text_color2 = 0;
-    this->highlight_text_color2 = 0;
-    this->scbar_panel = 0;
-    this->auto_scbar = 0;
-    this->fixed_len = 0;
-    this->text_wid = 0;
-    this->text_hgt = 0;
-    this->back_pic = 0;
-    this->back_pic_wid = 0;
-    this->back_pic_hgt = 0;
-    this->fill_back = 0;
-    this->outline = 0;
-    this->outline_color = 0;
-    this->sorted = 0;
-    this->second_column_pos = 0;
-    this->full_width = 0;
-    this->scbar_width = 0;
-    this->scbar_active = 0;
-    this->bevel_type = 0;
-    this->bevel_color1 = 0;
-    this->bevel_color2 = 0;
-    this->bevel_color3 = 0;
-    this->bevel_color4 = 0;
-    this->bevel_color5 = 0;
-    this->bevel_color6 = 0;
-    this->clip_rgn2 = 0;
-    this->border_size = 0;
-    this->spacer_size = 0;
-
     this->panel_state_80 = 0;
-    this->highlight_text_color1 = 0xFFFF;
     this->panel_flag_EE = 1;
 }
