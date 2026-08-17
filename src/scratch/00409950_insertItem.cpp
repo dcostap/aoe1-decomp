@@ -19,7 +19,14 @@
 // try 18: kept the typed successor across the insertion stores to model one list-link lifetime and avoid rereading pos->next.
 // try 19: moved the successor declaration after item->prev so the source follows the original link-store order.
 // result: typed successor reduced code size from 566B to 563B and positional diff from 509B to 502B; source order improved shape, but EH/return CFG remains broad drift.
-// BLOCKER: current natural source is 566B versus 542B. Original starts push -1/handler then mov fs and uses EBX=this with a stack home. VC5 emits mov fs first and uses EBP=this. The remaining EH/return topology and register basin are broad.
+// retry 2026-08-17:
+// try 20: removed the successor local; direct pos->next links worsened the clean baseline, so restored the typed successor.
+// try 21: replaced the named master with repeated typed player->master_objects[objType] expressions. This recovered EBX=this, the original member reloads, and 56.29% exact-block coverage; size rose to 572B but positional diff improved to 487B.
+// try 22: shared the natural strncpy statement for itemType 6 and the null-master fallback, with a proven jump after the master arm. Positional diff improved to 471B and call order stayed exact; four checker direct-target warnings are offset alignment diagnostics, not new calls.
+// try 23: changed the string declarations to the period mutable-char form; VC5 output was unchanged.
+// try 24: routed failures through a typed result and common finish label; VC5 output was unchanged. Removed this metric-only scaffolding.
+// try 25: final simplified shared-name/direct-master source is 573B versus 542B, 471 positional diff bytes, 16/16 calls aligned, and 56.29% exact-block coverage.
+// BLOCKER: exactness remains unresolved. The original starts push -1/handler then mov fs, stores EBX=this, and has one late cleanup epilogue. VC5 emits the EH registration in another order, retains three returns, and places the name buffer four bytes higher. Do not use compiler steering to force these differences.
 
 #include <string.h>
 typedef unsigned int uint;
@@ -71,6 +78,7 @@ int BuildAIModule::insertItem(RGE_Player* player, int objType, int count, int it
     char name[64];
     float sx;
     float sy;
+    const char* text;
 
     if (index > this->buildListLengthValue) return 0;
     pos = this->buildList.next;
@@ -80,21 +88,24 @@ int BuildAIModule::insertItem(RGE_Player* player, int objType, int count, int it
         i++;
     }
     if (itemType == 6) {
-        strncpy(name + 4, s_SetGatherPercentage, 0x3f);
-        sx = 3.0f;
-        sy = 3.0f;
+        text = s_SetGatherPercentage;
     } else {
-        RGE_Master_Static_Object* master = player->master_objects[objType];
-        if (master != 0) {
-            strncpy(name + 4, master->name, 0x3f);
-            sx = master->radius_x + master->radius_x;
-            sy = master->radius_y + master->radius_y;
+        if (player->master_objects[objType] != 0) {
+            strncpy(name + 4, player->master_objects[objType]->name, 0x3f);
+            sx = player->master_objects[objType]->radius_x +
+                 player->master_objects[objType]->radius_x;
+            sy = player->master_objects[objType]->radius_y +
+                 player->master_objects[objType]->radius_y;
+            goto name_done;
         } else {
-            strncpy(name + 4, s_AddedBuildListItem, 0x3f);
-            sx = 3.0f;
-            sy = 3.0f;
+            text = s_AddedBuildListItem;
         }
     }
+    strncpy(name + 4, text, 0x3f);
+    sx = 3.0f;
+    sy = 3.0f;
+
+name_done:
     int seq = this->buildListLengthValue;
     for (j = 0; j < count; ++j) {
         BuildItem* item = new BuildItem(itemType, objType, seq, 1, 0, p5, name + 4, sx, sy, 1.0f, -1, -1, -1, 0);
