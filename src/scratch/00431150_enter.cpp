@@ -89,6 +89,15 @@
 // enter function must fit in 255 bytes, requiring the shared tail or ~65 fewer code bytes.
 // The VTableProxy approach works for thiscall calling convention but adds code size.
 // The function-ptr approach fails to generate thiscall for vtable[0x210] in this function.
+// Fresh bounded pass (sa-5f54088d-r1): complete dossier, ABI, donor, and
+// assembly review confirmed the 11-call set and the 274-byte / 65-diff natural
+// goto-fail baseline. Shared pointer and integer result carriers, label order,
+// alias reuse, late result scope, duplicate success returns, and a narrow ABI
+// correction were tested. Result carriers changed the register homes or CFG;
+// duplicate returns were codegen-identical. Declaring enter virtual matches the
+// PDB owner symbol and does not change emitted bytes. The remaining mismatch is
+// the VC5 EH tail: the oracle puts mov eax,1 before one shared cleanup tail,
+// while VC5 emits a separate success cleanup epilogue.
 
 #include <stddef.h>
 
@@ -98,6 +107,7 @@ typedef unsigned char uchar;
 
 class RGE_Action_Object;
 class RGE_Task;
+class RGE_Action;
 
 class RGE_Game_World {
 public:
@@ -138,7 +148,7 @@ public:
     void* list;
 
     uchar have_action();
-    void* get_action();
+    RGE_Action* get_action();
     void delete_list();
 };
 
@@ -163,7 +173,7 @@ public:
     virtual void slot_40();
     virtual void slot_44();
     virtual void slot_48();
-    virtual void* func4C();
+    virtual RGE_Static_Object* func4C();
 
     short action_type;
     uchar gap_06[2];
@@ -178,7 +188,7 @@ public:
     float target_y;
     float target_z;
     float timer;
-    void* task;
+    RGE_Task* task;
     void* sub_actions;
     void* sprite;
     uchar subActionValue;
@@ -325,11 +335,11 @@ public:
     virtual void d80();
     virtual void d81();
     // vtable[130] = offset 0x208
-    virtual void* add_action(void* action) = 0;
+    virtual void* add_action(RGE_Action* action) = 0;
     // vtable[131] = offset 0x20C (gap)
     virtual void d82();
     // vtable[132] = offset 0x210
-    virtual void* make_enter_task(void* obj, int x, int y, int z) = 0;
+    virtual RGE_Task* make_enter_task(RGE_Static_Object* obj, int x, int y, int z) = 0;
 };
 
 class RGE_Combat_Object : public RGE_Moving_Object {
@@ -342,13 +352,13 @@ public:
     uchar gap_40[0x144];
     RGE_Action_List* actions;
 
-    int enter(int param_1, int param_2);
+    virtual int enter(int param_1, int param_2);
 };
 
 int RGE_Combat_Object::enter(int param_1, int param_2)
 {
     RGE_Static_Object* obj;
-    void* task;
+    RGE_Task* task;
     RGE_Action_Enter* action_enter;
     int x;
     int y;
@@ -360,10 +370,10 @@ int RGE_Combat_Object::enter(int param_1, int param_2)
 
     if (param_2 == 0) {
         if (this->actions->have_action() == 1) {
-            RGE_Action* action = (RGE_Action*)this->actions->get_action();
-            void* target = action->func4C();
+            RGE_Action* action = this->actions->get_action();
+            RGE_Static_Object* target = action->func4C();
             if (target == obj) {
-                RGE_Action* action2 = (RGE_Action*)this->actions->get_action();
+                RGE_Action* action2 = this->actions->get_action();
                 short action_val = action2->func18();
                 if (action_val == 3)
                     goto success;
@@ -379,7 +389,7 @@ int RGE_Combat_Object::enter(int param_1, int param_2)
         goto fail;
 
     action_enter = new RGE_Action_Enter((RGE_Action_Object*)this,
-                                        (RGE_Task*)task,
+                                        task,
                                         (RGE_Action_Object*)obj);
     if (action_enter == 0)
         goto fail;
@@ -393,3 +403,13 @@ success:
 fail:
     return 0;
 }
+
+// Fresh bounded pass (sa-0a61587c): typed RGE_Task, RGE_Action, and
+// RGE_Static_Object ownership kept the natural goto-fail source and emitted
+// the same 274-byte / 65-diff result. The shared VC5 EH-tail mismatch remains.
+// Fresh bounded pass (sa-94b9da56): natural single-return pointer, integer,
+// void-pointer, parameter-home, object-reuse, and declaration-order carriers
+// were tested. Shared-tail forms changed the prologue or body basin; the best
+// result remains this 274-byte typed goto-fail source with 65 differing bytes,
+// 11 aligned calls, and the original shared EH tail unresolved. Restore this
+// source before validation.
