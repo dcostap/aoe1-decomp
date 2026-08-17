@@ -34,30 +34,50 @@
 // form for the binary's store/compare/store ordering; it was a 507-byte/446-diff
 // codegen duplicate, so restored the separate typed stores.
 // left in scratch: behavior/calls understood, but source shape for VC5 register allocation in clipping and scan loops is still wrong; not an accepted_drift candidate due broad positional diff from function start.
+// this-session: pre-guard y1=x recovers the original inner index/stride shape;
+// four typed clipping bounds improve the measured result to 392 positional
+// bytes while preserving the 507-byte body. Typed row indexing was rejected
+// because it added 20 bytes and a 0x14 frame. Keep the natural ownership model
+// below, but retain the binary-proven row/stride lowering in this body.
+// Main review removed the manual vptr and raw row/stride lowering. The living
+// source now uses a virtual base and typed row indexing.
 
 extern "C" int __cdecl debug_rand(char* file, int line);
 extern char s_rmm_obj_cpp[];
 
+class RGE_Map;
+class RGE_Random_Map_Module_List;
+class RGE_Tile;
+
 struct Map_Stack {
     long x;
     long y;
-    long cost;
+    float cost;
     float total_cost;
     Map_Stack* next;
     Map_Stack* prev;
 };
 
-class RGE_RMM_Object_Generator {
+class RGE_Random_Map_Module {
 public:
-    char gap_00[0x14];
+    virtual ~RGE_Random_Map_Module();
+    RGE_Random_Map_Module* parent;
+    RGE_Random_Map_Module_List* list;
+    RGE_Map* map;
+    RGE_Tile** map_row_offset;
     long width;
     long height;
-    char gap_1c[0x24 - 0x1c];
+    float schedule;
+    unsigned char* search_map;
     unsigned char** search_map_rows;
     Map_Stack* stack_array;
     Map_Stack** stack_offsets;
 
     void add_stack_node(Map_Stack* last, Map_Stack* node);
+};
+
+class RGE_RMM_Object_Generator : public RGE_Random_Map_Module {
+public:
     void make_placement_stack(Map_Stack& stack, long x, long y, long unused, long range);
 };
 
@@ -66,7 +86,6 @@ void RGE_RMM_Object_Generator::make_placement_stack(Map_Stack& stack, long x, lo
     long y1;
     long last;
     Map_Stack* local_c;
-    int local_8;
     int local_4;
 
     stack.next = 0;
@@ -78,13 +97,18 @@ void RGE_RMM_Object_Generator::make_placement_stack(Map_Stack& stack, long x, lo
         range = this->width - 1;
         last = this->height - 1;
     } else {
-        int iVar5 = x - range;
-        int iVar3 = y - range;
-        int iVar1 = x + range;
-        last = y + range;
-        x = iVar5;
-        y = iVar3;
-        range = iVar1;
+        long min_x = x;
+        long min_y = y;
+        long max_x = x;
+        long max_y = y;
+        min_x -= range;
+        min_y -= range;
+        max_x += range;
+        max_y += range;
+        x = min_x;
+        y = min_y;
+        last = max_y;
+        range = max_x;
         if (x < 0) x = 0;
         if (y < 0) y = 0;
         if (range >= this->width) range = this->width - 1;
@@ -93,23 +117,21 @@ void RGE_RMM_Object_Generator::make_placement_stack(Map_Stack& stack, long x, lo
 
     local_c = &stack;
     if (y <= last) {
-        local_8 = y * 4;
         local_4 = last + (1 - y);
+        long row = y;
         do {
+            y1 = x;
             if (x <= range) {
-                int off = x * 0x18;
-                y1 = x;
                 do {
-                    if (*(char*)(*(int*)((char*)this->search_map_rows + local_8) + y1) != 0) {
-                        Map_Stack* node = (Map_Stack*)(*(int*)((char*)this->stack_offsets + local_8) + off);
+                    if (this->search_map_rows[row][y1] != 0) {
+                        Map_Stack* node = &this->stack_offsets[row][y1];
                         this->add_stack_node(local_c, node);
                         local_c = node;
                     }
                     y1 = y1 + 1;
-                    off = off + 0x18;
                 } while (y1 <= range);
             }
-            local_8 = local_8 + 4;
+            row = row + 1;
             local_4 = local_4 - 1;
         } while (local_4 != 0);
     }
@@ -117,17 +139,16 @@ void RGE_RMM_Object_Generator::make_placement_stack(Map_Stack& stack, long x, lo
     int w = range - x - 1;
     int h = last - y - 1;
     if (w > 1 && h > 1) {
-        range = (h * w) / 4;
-        if (range > 0) {
+        int count = (h * w) / 4;
+        if (count > 0) {
             do {
                 int rx = (debug_rand(s_rmm_obj_cpp, 0xaf) * w) / 0x7fff + x;
                 int ry = (debug_rand(s_rmm_obj_cpp, 0xb0) * h) / 0x7fff + y;
-                int ry4 = ry * 4;
-                if (*(char*)(*(int*)((char*)this->search_map_rows + ry4) + rx) != 0) {
-                    this->add_stack_node(&stack, (Map_Stack*)(*(int*)((char*)this->stack_offsets + ry4) + rx * 0x18));
+                if (this->search_map_rows[ry][rx] != 0) {
+                    this->add_stack_node(&stack, &this->stack_offsets[ry][rx]);
                 }
-                range = range - 1;
-            } while (range != 0);
+                count = count - 1;
+            } while (count != 0);
         }
     }
 }
