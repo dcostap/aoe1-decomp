@@ -108,6 +108,17 @@
 // differences.  A 256-sample ambient declaration context lab found five
 // codegen groups but no exact result; it never changed the first zero-register
 // mismatch.  Restored the pinned natural source.
+// Matching-worker sa-69ff65e9-r1 deeper view-TU pass:
+// The original PDB lists RGE_View::tile_wid/tile_hgt/tile_half_wid/
+// tile_half_hgt as short fields at +0x108..+0x10E.  It lists TPanel::pnl_wid
+// and pnl_hgt as long fields, and visible as int.  The target procedure has
+// only the register symbol this.  The PDB has no named local for this body.
+// Twenty new hypotheses tested those field types, tile local scopes, panel
+// width/height lifetimes, zero lifetimes, inline accessors, return form, enum
+// metadata, and complete RGE_View size.  The clean source stayed at 217 bytes,
+// 61 differences, and 66.13% exact blocks.  The only farther variants were
+// restored.  The remaining gap is the EBP zero versus EDI divisor color and
+// the related clear-tail pop order.
 
 struct tagRECT {
     long left;
