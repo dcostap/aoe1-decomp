@@ -25,6 +25,16 @@
 //   The unresolved structural lead is VC5's zero-register choice: the rebuilt
 //   code uses EBX for zero and ESI for the button base, while the original
 //   uses EAX for zero and EBX for the button base. This saves ten bytes.
+// - Sustained probe pass: 28 recorded checks. Direct buffer base, period string
+//   symbols, RECT field offsets, and the adjusted panel-height accumulator
+//   moved the clean result to 1272 bytes with 60.88% exact-block coverage.
+//   The adjusted value is pnl_hgt - 0x3C; later y values add 0x12 and 0x24.
+//   The centering bound reads pnl_wid - rect.right - 5, as the bytes prove.
+// - Tested 20+ distinct declaration, alias, loop, type, string, memset, and
+//   coordinate forms. Duplicate codegen ruled out pointer aliases, casts,
+//   register hints, loop direction, and coordinate temporaries.
+// - Current clean source is pinned after the pass. Remaining mismatch is the
+//   prologue zero/button-base register basin plus one picture-setup schedule.
 // FLAGS: /GX (EH)
 
 #include <string.h>
@@ -121,6 +131,11 @@ public:
 };
 
 extern RGE_Base_Game* rge_base_game;
+extern char s_Main_Menu[];
+extern char s_scr1[];
+extern char s_empty[];
+extern char s_circlep2[];
+extern char s_space[];
 
 class TPicturePanel : public TPanel {
 public:
@@ -156,14 +171,13 @@ public:
 };
 
 TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu()
-    : TScreenPanel("Main Menu") {
+    : TScreenPanel(s_Main_Menu) {
     RECT rect;
     TPanel* tab_list[5];
     char temp_str[0x200];
     int diff;
     int i;
     TButtonPanel** const button_base = this->button;
-    TButtonPanel** clear_button = button_base;
 
     this->title1 = 0;
     this->title2 = 0;
@@ -173,21 +187,19 @@ TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu()
     this->ms_copy_text2 = 0;
     this->warning_text = 0;
 
-    for (i = 7; i != 0; --i) {
-        *clear_button++ = 0;
-    }
+    memset(this->button, 0, sizeof(this->button));
 
-    if (this->setup(rge_base_game->draw_area, "scr1", 0xC383, 1) == 0) {
+    if (this->setup(rge_base_game->draw_area, s_scr1, 0xC383, 1) == 0) {
         this->field_D8 = 1;
         return;
     }
 
     this->set_ideal_size(0x280, 0x1E0);
 
-    clear_button = button_base;
+    TButtonPanel** clear_button = button_base;
     for (long button_width = 0xB2; button_width < 0x1AC;
          button_width += 0x32, ++clear_button) {
-        if (this->create_button(this, clear_button, "", 0, 0xAA,
+        if (this->create_button(this, clear_button, s_empty, 0, 0xAA,
                                 button_width, 0x12C, 0x28, 0, 0, 0) == 0) {
             return;
         }
@@ -201,34 +213,34 @@ TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu()
 
     this->set_ideal_size(this->pnl_wid, this->pnl_hgt);
 
-    long panel_height = this->pnl_hgt;
+    long panel_height = this->pnl_hgt - 0x3C;
     this->create_text(this, &this->ms_title_text, 0x2419, 5,
-                      panel_height - 0x3C, this->pnl_wid - 0x0A,
+                      panel_height, this->pnl_wid - 0x0A,
                       0x12, 10, 1, 0, 0);
 
-    this->get_string(0x2424, temp_str + 4, 0x200);
-    if (temp_str[4] == 0) {
+    this->get_string(0x2424, temp_str, 0x200);
+    if (temp_str[0] == 0) {
         TTextPanel** copy1 = &this->ms_copy_text1;
         this->create_text(this, copy1, 0x241B, 5,
-                          panel_height - 0x2A, 0x32, 0x12,
+                          panel_height + 0x12, 0x32, 0x12,
                           10, 0, 0, 0);
 
         if ((*copy1)->get_text_rect(&rect) != 0) {
             this->circle_p_pic = new TPicturePanel;
             if (this->circle_p_pic != 0) {
                 this->circle_p_pic->setup(this->render_area, this,
-                               rect.bottom - this->pnl_x + 3,
-                               rect.right + 1, 0x0F, 0x0E,
-                               "circlep2", 0xC4E6, 0, 1);
+                               rect.right - this->pnl_x + 3,
+                               rect.top + 1, 0x0F, 0x0E,
+                               s_circlep2, 0xC4E6, 0, 1);
 
                 long x = this->circle_p_pic->xPosition() - this->pnl_x +
                          this->circle_p_pic->width();
                 TTextPanel** copy2 = &this->ms_copy_text2;
                 this->create_text(this, copy2, 0x241C, x,
-                                  rect.right, 0x1F4, 0x12, 10, 0, 0, 0);
+                                  rect.top, 0x1F4, 0x12, 10, 0, 0, 0);
 
                 if ((*copy2)->get_text_rect(&rect) != 0) {
-                    diff = (panel_height - rect.bottom - 5) / 2;
+                    diff = (this->pnl_wid - rect.right - 5) / 2;
                     if (diff > 0) {
                         (*copy1)->set_fixed_position(
                             (*copy1)->xPosition() + diff,
@@ -250,18 +262,18 @@ TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu()
             }
         }
     } else {
-        strcpy(temp_str + 4, this->get_string(0x241B));
-        strcat(temp_str + 4, this->get_string(0x2424));
-        strcat(temp_str + 4, " ");
-        strcat(temp_str + 4, this->get_string(0x241C));
+        strcpy(temp_str, this->get_string(0x241B));
+        strcat(temp_str, this->get_string(0x2424));
+        strcat(temp_str, s_space);
+        strcat(temp_str, this->get_string(0x241C));
 
-        this->create_text(this, &this->ms_copy_text1, temp_str + 4, 5,
-                          panel_height - 0x2A, this->pnl_wid - 0x0A,
+        this->create_text(this, &this->ms_copy_text1, temp_str, 5,
+                          panel_height + 0x12, this->pnl_wid - 0x0A,
                           0x12, 10, 1, 0, 0);
     }
 
     this->create_text(this, &this->warning_text, 0x2425, 5,
-                      panel_height - 0x18, this->pnl_wid - 0x0A,
+                      panel_height + 0x24, this->pnl_wid - 0x0A,
                       0x12, 10, 1, 0, 0);
 
     this->set_ideal_size(0x280, 0x1E0);
