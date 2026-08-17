@@ -13,8 +13,8 @@
 //   4. Core logic correct: GetVersionExA, WinNT/Win9x paths, LoadLibraryA, GetProcAddress,
 //      CoInitialize, CoCreateInstance, IsDPlay501a, COM QI, Release, SetCooperativeLevel,
 //      CreateSurface, all error paths with OutputDebugStringA
-// probe 6 (ABI/context): changed the Windows/OLE imports to period IAT function-pointer
-//   declarations and enabled the VC5 string intrinsic surface for the proven 0x6c clear.
+// probe 6 (ABI/context): changed the Windows/OLE imports to period declarations and
+//   enabled the VC5 string intrinsic surface for the proven 0x6c clear.
 // probe 7 (behavior/layout): restored the DirectX SDK-shaped local ownership and
 //   C-style COM __stdcall vtable ABI visible in the stack-self calls. Also restored
 //   the DX1/DX2/DX3 version stores, pDDraw ownership, and DDSURFACEDESC field offsets.
@@ -38,18 +38,10 @@
 //   VC5 also tail-merged the DInput-load failure cleanup and lost two target calls.
 // probe 22 (restore): retained the explicit surface-QI failure cleanup to preserve the
 //   target's duplicated DInput error-path calls; current source remains typed and natural.
-
-// OSVERSIONINFOA stub - VC5 SDK field order (confirmed from asm offsets)
-//   [esp+0x94]+0x08 = dwBuildNumber (compared with 0x549)
-//   [esp+0x94]+0x0C = dwPlatformId (compared with 2)
-struct OSVERSIONINFOA {
-    unsigned long dwOSVersionInfoSize;
-    unsigned long dwMajorVersion;
-    unsigned long dwMinorVersion;
-    unsigned long dwBuildNumber;
-    unsigned long dwPlatformId;
-    char szCSDVersion[128];
-};  // 144 bytes
+// BINARY NOTE: The header-shaped source reaches the 1053-byte boundary and all 47
+// calls, but its DirectInputCreate home adds 4 bytes to the 0x114 target frame.
+// LIKELY INTENT: Keep the period Windows/OLE and DirectX declarations until a proven
+// local-lifetime model removes that one extra home without a synthetic union.
 
 // The old DirectDraw record is 0x6c bytes. Only these fields are touched here,
 // but retain their real offsets rather than treating the middle as a guessed
@@ -65,18 +57,10 @@ struct DDSURFACEDESC {
     DDSCAPS ddsCaps;
 };  // 4 + 4 + 0x60 + 4 = 108
 
-// The original imports are indirect IAT calls, not direct external calls.  Keep
-// these as declaration-only function pointers so the linker preserves that ABI.
+// Period Windows and OLE headers provide the imported API declarations.
 #include <string.h>
-// Windows API via IAT extern pointers
-extern "C" int (__stdcall* const GetVersionExA)( void* );
-extern "C" void* (__stdcall* const LoadLibraryA)( const char* );
-extern "C" void* (__stdcall* const GetProcAddress)( void*, const char* );
-extern "C" void (__stdcall* const FreeLibrary)( void* );
-extern "C" void (__stdcall* const OutputDebugStringA)( const char* );
-extern "C" int (__stdcall* const CoInitialize)( void* );
-extern "C" int (__stdcall* const CoCreateInstance)( const void*, void*, unsigned int, const void*, void** );
-extern "C" void (__stdcall* const CoUninitialize)( void );
+#include <windows.h>
+#include <objbase.h>
 
 // The DirectX SDK's C++ interface methods are __stdcall.  VC5 therefore emits
 // the COM object as an explicit stack argument to each vtable call, matching
@@ -126,13 +110,6 @@ public:
     virtual unsigned long __stdcall Release() = 0;
 };
 
-struct GUID {
-    unsigned long Data1;
-    unsigned short Data2;
-    unsigned short Data3;
-    unsigned char Data4[8];
-};
-
 typedef int (__stdcall* DIRECTDRAWCREATE)( void*, IDirectDraw**, void* );
 
 extern const GUID CLSID_DirectPlay;
@@ -152,10 +129,10 @@ void GetDXVersion( unsigned long* param_1, unsigned long* param_2 ) {
     IDirectDrawSurface* pSurf;
     IDirectDraw2* pDDraw2 = 0;
     DIRECTDRAWCREATE DirectDrawCreate = 0;
-    void* DirectInputCreate;
     OSVERSIONINFOA osVer;
     IDirectDrawSurface3* pSurf3 = 0;
     DDSURFACEDESC desc;
+    void* DirectInputCreate;
     osVer.dwOSVersionInfoSize = 0x94;
 
     if (!GetVersionExA( &osVer )) {
@@ -187,7 +164,7 @@ void GetDXVersion( unsigned long* param_1, unsigned long* param_2 ) {
 
             *param_1 = 0x300;
             int coInitResult = CoInitialize( 0 );
-            hr = CoCreateInstance( &CLSID_DirectPlay, 0, 1, &IID_IDirectPlay3,
+            hr = CoCreateInstance( CLSID_DirectPlay, 0, 1, IID_IDirectPlay3,
                                    (void**)&dp3 );
             if (hr < 0) {
                 if (coInitResult != 0)
