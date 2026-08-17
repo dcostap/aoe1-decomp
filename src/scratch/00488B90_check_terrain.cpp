@@ -38,6 +38,17 @@
 // New claim: a named 24-byte RGE_Tile terrain_type byte preserves tile ownership
 // and low-five-bit behavior, but VC5 emits a broader 351-byte mismatch. The
 // remaining gap is local-home/register allocation and early block placement.
+// Fresh claim probes: x-bound declaration order (min_x, max_x, min_y, max_y)
+// reached 437 bytes and reduced positional drift to 295 bytes, but did not
+// recover the target's stack-home permutation. Other bound permutations were
+// worse or compiler duplicates. Explicit copy-then-adjust bounds, row-index
+// declaration moves, typed self/map-row aliases, split row assignments, math
+// header context, and split inner-count initialization also produced no lead.
+// The best natural source remains this typed reconstruction; no exact result.
+// Revisit pass: row-index scope and initializer forms, bound declaration and
+// assignment forms, typed row-pointer order/scope, radius-home reuse, typed
+// same-TU list context, and count initialization produced no lead. Restored
+// the canonical typed terrain/map source after each probe.
 
 typedef unsigned char uchar;
 
@@ -117,14 +128,14 @@ public:
 uchar RGE_RMM_Terrain_Generator::check_terrain(
     uchar terrain, long x, long y, long radius, uchar avoid_terrain)
 {
-    long row_index;
     long count = 1;
     long base_terrain = this->map->terrain_types[avoid_terrain].impassable_terrain;
+    long row_index;
 
     if (radius > 0) {
         long min_x = x - radius;
-        long min_y = y - radius;
         long max_x = x + radius;
+        long min_y = y - radius;
         long max_y = y + radius;
 
         if (min_x < 0) min_x = 0;
