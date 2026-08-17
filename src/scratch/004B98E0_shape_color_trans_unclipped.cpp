@@ -80,6 +80,44 @@
 //   spelling, and redundant area aliases gave duplicates or worse basins.
 // - Remaining drift is the original Shape.cpp prologue/register basin and
 //   table index/value coloring.  No behavior or call uncertainty remains.
+// sa-e6fe2895-r1 probes (2026-08-16):
+// - The exact same-TU sibling cursor topology, with p2 carrying the row base
+//   after setup, improved the clean natural candidate to 268B/137 diff and
+//   89.32% shape.  Setup through the first row guard is exact.
+// - A diagnostic reuse of the dead td home for the row pointer, plus explicit
+//   shared source-advance labels, reached 268B/132 diff, 97.09% shape, and
+//   94.06% exact blocks.  The binary supports the row home and shared tail,
+//   but the cast is compiler-steering, so it was rolled back.
+// - Literal bound spellings, typed palette views, scoped index/color locals,
+//   register qualification, and explicit pointer increment order were
+//   duplicates or worse.  Calls, size, frame, and behavior stayed aligned.
+// - The pinned p2 row-home source was later rejected by main review as
+//   compiler-steering.  The living source retains the ordinary row pointer.
+// sa-899d6337-r1 probes (2026-08-17):
+// - Restored the ordinary row-pointer source after the p2 pointer-carrier
+//   checkpoint.  It builds at 268B/8B with both calls aligned and 159 strict
+//   differing bytes; it is the retained natural source model.
+// - Natural row/count order, a separate counted-row local, shared source
+//   advance labels, literal post-increment, typed index/color locals, staged
+//   orientation order, and typed palette payload access were duplicates or
+//   worse.  Solid-arm statement order was also worse.  All were rolled back.
+// - Do not retain p2 pointer casts, raw cursor forms, or metric-only control
+//   flow.  Remaining drift is the VC5 prologue/local-home and register basin;
+//   ABI, ownership, calls, and RLE behavior remain resolved.
+// sa-eaa9dd7e-r1 probes (2026-08-17):
+// - Re-read the complete local lessons, matching workflow, dossier, original
+//   assembly, Ghidra listing, ABI evidence, and same-TU donors.  The original
+//   uses td's incoming home for the persistent row, p2's home for the byte
+//   count, and a separate 8-byte pitch/width frame.  Its two direct calls and
+//   byte-stream ownership are already resolved.
+// - A typed header increment, a typed payload-owner view, a natural area alias,
+//   and a typed palette payload were duplicates or metric-only basins.  They
+//   were rolled back.  Shared-tail and parameter-home steering remain rejected.
+// - Initializing Orien at declaration and using the typed expression
+//   `td->AlignedWidth() * Orien` is the best new natural basin: 268B/8B,
+//   2/2 ordered calls, 152 strict differing bytes, and 85.29% shape.  It is
+//   not exact.  The remaining mismatch starts in VC5 local-home/register
+//   allocation and the literal table-index register basin.
 // FLAGS: /nologo /c /O2 /Oy
 
 extern "C" void* __cdecl memset(void*, int, unsigned int);
@@ -132,10 +170,8 @@ uchar TShape::shape_color_trans_unclipped(TDrawArea* td, long p2, long p3, long 
     long width = (hdr->ymax - hdr->ymin) + 1;
     uchar* src = (uchar*)(hdr + 1);
 
-    long Orien;
-    Orien = td->Orien;
-    long alw = td->AlignedWidth();
-    long stride = alw * Orien;
+    long Orien = td->Orien;
+    long stride = td->AlignedWidth() * Orien;
     uchar count;
     uchar* row;
 
