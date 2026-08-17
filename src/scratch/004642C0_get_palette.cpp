@@ -31,6 +31,15 @@
 // structured source. Remaining drift is the early outer branch block only.
 // Combined a non-null-first filename arm with the current loop shape; it added
 // a second strupr call and widened the build to 456 bytes. Restored clean source.
+// Session sa-80d2dd80-r1: natural baseline is 443 bytes, 0x10C frame, and four
+// aligned calls with an 88-byte early null-branch CFG drift. Positive outer-arm
+// spellings consistently add one strupr call and 13 bytes. Explicit labels,
+// switch syntax, separate guards, and numeric or unary predicate spellings did
+// not improve it. The reviewed full TPanelSystem tail layout widened drift;
+// the compact touched-field surface remains authoritative.
+// Session sa-e0eb4345-r1 revisit: split complementary guards produced 339-byte
+// drift; positive outer/goto forms stayed in the 456-byte, 5-call basin; reversed
+// inner predicate produced 395-byte drift. Restored the pinned natural source.
 
 #include <string.h>
 #include <stdio.h>
