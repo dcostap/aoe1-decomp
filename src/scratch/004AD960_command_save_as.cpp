@@ -78,6 +78,17 @@
 // now replaces the former narrow facade types. The audit emits the same 313-byte
 // /GX body. The original popup target is TEasy_Panel::popupOKDialog(long, char*,
 // int, int), and the world field is the proven TRIBE_World surface.
+// sa-f048709a-r1 pass: twenty focused probes kept the canonical source and 10 calls.
+// Natural save-screen pointer locals, inner construction blocks, and destructor
+// visibility changes were codegen-neutral. Full screen member and base-constructor
+// declarations were also neutral. Delayed scenario_name declaration and inner
+// buffer lifetime were neutral. A 228-byte +4 buffer model widened the frame to
+// 0xE8 and lost exact blocks. Positive >0 or >=1 guards merged the two popup calls.
+// A can_save status reached 272 bytes but emitted only 9 calls. The original
+// negative <1 guards preserve both popup sites. A byte constructor parameter
+// reached 307 bytes but lost late exact blocks. Explicit byte extension was neutral.
+// Same-TU command_save declaration order was neutral. The clean 313-byte /GX
+// source remains authoritative. The shared normal cleanup tail remains unresolved.
 
 class TDrawArea;
 
