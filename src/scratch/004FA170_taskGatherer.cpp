@@ -28,6 +28,23 @@
 //    shared dropsite output local. Declaration and branch forms were codegen
 //    duplicates; the cursor and shared-output forms were worse. All rolled
 //    back to this clean typed source.
+//  - Added the inherited MainDecisionAIModule surface so object calls have their
+//    proven owning symbol. The emitted bytes were unchanged, but the declaration
+//    now matches the exact same-TU donor ABI and the +0xCEC/+0x1256C layout.
+//  - Tested local declaration order, loop form, scalar aliases, standard-header
+//    context, a named resource local, and the polymorphic tactical-module surface.
+//    These either duplicated the 1758-byte basin or made it worse.
+//  - A narrow volatile target-pointer probe moved the result to 1728 bytes and
+//    improved shape to 84.55%, but added a reload before the null test. The oracle
+//    tests the call result in EBX, then stores EBX to the later stack home, so fake
+//    volatility is not retained.
+//  - A VC5-small flag lab produced 12 variants in three groups. The default group
+//    stayed at 1758 bytes; /O1-style groups changed the frame or size. No variant
+//    passed the size, frame, and call-set gates.
+//  - BINARY NOTE: the initial target pointer is stored after its null-test value
+//    is produced, then reloaded after EBX becomes the resource-array cursor.
+//    This is the unresolved controlling allocation fact. No natural source form
+//    tested so far reproduces that spill without fake volatility.
 //  - Final matching status: unresolved. Named-surface rebuild is 1758B versus
 //    1712B original, with frame 0x30, 32/32 ordered calls, and first mismatch
 //    at +0x1D (the original homes gathererObj before the null branch). The
@@ -478,21 +495,29 @@ public:
     void insert(int a, int b, int c);
 };
 
-class TribeMainDecisionAIModule {
+class MainDecisionAIModule {
 public:
-    char gap_00[0x104];
+    virtual ~MainDecisionAIModule();
+    char gap_04[0xEC];
+    RGE_Player* player;
+    ManagedArrayInt objects;
+
+    RGE_Static_Object* object(int unit);
+};
+
+class TribeMainDecisionAIModule : public MainDecisionAIModule {
+public:
     BuildAIModule buildAI;
     char gap_108[0xCEC - 0x104 - sizeof(BuildAIModule)];
     TribeInformationAIModule informationAI;
     char gap_AI[0x1256C - 0xCEC - sizeof(TribeInformationAIModule)];
     TRIBE_Player* aiPlayer;
-
-    RGE_Static_Object* object(int unit);
 };
 
 class TribeTacticalAIModule {
 public:
-    char gap_000[0xF0];
+    virtual ~TribeTacticalAIModule();
+    char gap_004[0xEC];
     TribeMainDecisionAIModule* md;
     char gap_F4[0x104 - 0xF4];
     int* civilianExplorersValue;
