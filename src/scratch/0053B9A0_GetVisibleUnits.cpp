@@ -30,9 +30,22 @@
 //   parameter-home store but falls to 392 bytes and 308 mismatches.
 // - Direct member and pointer-bucket forms, loop-scoped count, typed globals,
 //   and direct bound initializers were tested. Several are codegen duplicates.
-// Left in scratch: the clamp-home store, PDP/count homes, bucket LEA, and
-// inner byte/register topology remain unresolved. The source keeps the typed
-// record copy, 0x100 output bound, five global output buckets, and two scans.
+// - A direct typed PDP[category] traversal and function-scope count are source
+//   cleaner but codegen duplicates. A continue-based skip adds a jump and is
+//   not retained. Main review made used unsigned because the original masks it
+//   to 16 bits. Typed access now preserves zero extension without an overlapping
+//   dword read.
+// - Revisit probes confirmed that direct distanceTable access, late found
+//   initialization, named owner-index locals, and PDP-before-table assignment
+//   do not recover the original frame or register topology.
+// - A signed short used field emits movsx and worsens the clean frontier.
+//   A promoted distance result reduces the mismatch but drops the frame to
+//   0x18. An explicit dword-overlap probe improves resynchronization only and
+//   remains outside this typed clean source.
+// Left in scratch: original zero-register order, PDP/count homes, bucket LEA,
+// and inner byte/register topology remain unresolved. The source keeps typed
+// record ownership, the explicit clamp, the 0x100 output bound, five global
+// output buckets, and two bounded scans.
 
 struct VisibleUnitRec {
     int object_id;
@@ -45,7 +58,7 @@ struct VisibleUnitRec {
 struct VisibleUnitPtr {
     VisibleUnitRec* unit_list;
     short list_size;
-    short used;
+    unsigned short used;
 };
 
 extern VisibleUnitRec* VisibleUnitList[5];
@@ -64,16 +77,18 @@ public:
 
 int Visible_Unit_Manager::GetVisibleUnits(int x, int y, int distance, int player, int* categories, int category_count, int* player_map) {
     int found = 0;
+    unsigned int count;
     unsigned char* distTable;
     VisibleUnitPtr* PDP;
-    VisibleUnitPtr* bucket;
     if (category_count <= 0) {
         return 0;
     }
     if (player >= this->Player_Count) {
         return 0;
     }
-    distance = distance > 0x0f ? 0x0f : distance;
+    if (distance > 0x0f) {
+        distance = 0x0f;
+    }
 
     distTable = this->distanceTable;
     PDP = this->PlayerDataPtrs[player];
@@ -90,9 +105,8 @@ int Visible_Unit_Manager::GetVisibleUnits(int x, int y, int distance, int player
 
     do {
         int category = *categories++;
-        bucket = PDP + category;
-        VisibleUnitRec* rec = bucket->unit_list;
-        unsigned int count = *(int*)&bucket->used & 0xffff;
+        VisibleUnitRec* rec = PDP[category].unit_list;
+        count = PDP[category].used;
         for (; count != 0; count--) {
             int dx;
             int dy;
