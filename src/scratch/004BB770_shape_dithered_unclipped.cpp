@@ -59,15 +59,65 @@
 //   from 32.88% to 42.47%, but size fell to 391B and strict diff worsened to
 //   349B. Restored the clean source. The next lead remains source/TU context
 //   for the early pitch/height and parameter-home schedule.
+// sa-d8797fda-r1 probes (2026-08-16):
+// - Restored the canonical full TShape/TDrawArea field surfaces and moved the
+//   payload cursor before the height expression. These are codegen-neutral.
+// - Diagnostic reuse of the x and p5 parameter homes produced 404B, the 0x8
+//   frame, the aligned AlignedWidth call, and 305 strict differing bytes.
+// - A 64-sample ambient VC5 declaration sweep was codegen-identical. Narrow
+//   pitch, orientation, and height types, declaration reordering, and a local
+//   row-counter copy were duplicate or worse. Reversed zero/nonzero branches
+//   worsened the block layout. The remaining gap is early register/home
+//   allocation and parity/destination spill placement.
+// sa-127fa25c-r1 probes (2026-08-17):
+// - Restored the pinned typed source and rebuilt it: 404B, 0x8 frame, one
+//   AlignedWidth call, and 305 strict differing bytes remain.
+// - Main review removed parameter-home reuse. The metric-closer 404-byte form
+//   was compiler steering. The living source keeps ordinary count locals.
+// sa-51969701-r1 probes (2026-08-17):
+// - Reordering the row-base declaration was codegen-identical.
+// - Scoping skip and nonzero-run count locals was natural but worsened the
+//   frame to 0xC and reached 381B/345 strict bytes; restored.
+// - Assigning the persistent row base directly in orientation arms reached
+//   391B/341 strict bytes and a slightly closer block basin, but remained a
+//   broad nonexact source family; restored.
+// - Materializing the working cursor once before parity setup returned to the
+//   389B/347-byte basin. No policy-valid exact source was found.
 
 typedef unsigned char uchar;
 struct Shape_Header { long bounds; long origin; long xmin; long ymin; long xmax; long ymax; };
-class TDrawArea { public: char gap_00[8]; uchar* Bits; char gap_0C[0x10]; long Height; char gap_20[4]; long Orien; long AlignedWidth(); };
-class TShape { public: uchar* shape; int load_type; int load_size; Shape_Header* shape_header; uchar shape_dithered_unclipped(TDrawArea* area, long x, long y, long param_5, long param_6); };
+class TDrawArea {
+public:
+    char gap_00[8];
+    uchar* Bits;
+    void* BitmapInfo;
+    void* Bitmap;
+    void* OldBitmap;
+    int Width;
+    int Height;
+    int Pitch;
+    int Orien;
+    char ClipRect[0x10];
+    char _tail_38[0xC8];
+    long AlignedWidth();
+};
+class TShape {
+public:
+    uchar* shape;
+    int load_type;
+    int load_size;
+    Shape_Header* shape_header;
+    void* head;
+    void* offsets;
+    void* FShape;
+    void* shape_info;
+    uchar shape_dithered_unclipped(TDrawArea* area, long x, long y, long param_5, long param_6);
+};
 
 uchar TShape::shape_dithered_unclipped(TDrawArea* area, long x, long y, long param_5, long param_6)
 {
     long pitch;
+    long orientation;
     Shape_Header* sh;
     long height;
     uchar* src;
@@ -81,12 +131,13 @@ uchar TShape::shape_dithered_unclipped(TDrawArea* area, long x, long y, long par
     uchar count;
     uchar* end;
 
-    pitch = area->AlignedWidth() * area->Orien;
+    orientation = area->Orien;
+    pitch = area->AlignedWidth() * orientation;
     sh = this->shape_header;
-    height = sh->ymax - sh->ymin + 1;
     src = (uchar*)(sh + 1);
+    height = sh->ymax - sh->ymin + 1;
 
-    if (area->Orien < 1) {
+    if (orientation < 1) {
         dst = area->Bits + x + (y - area->Height + 1) * pitch;
     } else {
         dst = area->Bits + x + y * pitch;
@@ -100,14 +151,12 @@ uchar TShape::shape_dithered_unclipped(TDrawArea* area, long x, long y, long par
     save_buffer = dst;
     if (height > 0) {
         do {
-            dst = save_buffer;
             next_parity = (parity != 1);
             done = 0;
             do {
                 cmd = *src++;
                 if ((cmd & 1) == 1) {
                     count = (uchar)(cmd >> 1);
-                    param_5 = count;
                     if (count == 0) {
                         count = *src;
                         dst += (unsigned int)count;
@@ -119,14 +168,13 @@ uchar TShape::shape_dithered_unclipped(TDrawArea* area, long x, long y, long par
                         if (parity != 0) {
                             count--;
                             dst++;
-                            param_5 = count;
                         }
                         run = (unsigned int)count;
                         end = dst + run;
                         run = ((unsigned int)count) & 1;
                         while (dst < end) { *dst = 0; dst += 2; }
                         if (run != 0) { dst--; }
-                        src += (unsigned int)param_5;
+                        src += (unsigned int)count;
                     }
                 } else {
                     count = (uchar)(cmd >> 1);
@@ -136,13 +184,10 @@ uchar TShape::shape_dithered_unclipped(TDrawArea* area, long x, long y, long par
                         if (parity != 0) {
                             count--;
                             dst++;
-                            param_5 = count;
-                        } else {
-                            param_5 = count;
                         }
-                        run = (unsigned int)param_5;
+                        run = (unsigned int)count;
                         end = dst + run;
-                        run = ((unsigned int)param_5) & 1;
+                        run = ((unsigned int)count) & 1;
                         while (dst < end) { *dst = 0; dst += 2; }
                         if (run != 0) { dst--; }
                         src++;
@@ -150,6 +195,7 @@ uchar TShape::shape_dithered_unclipped(TDrawArea* area, long x, long y, long par
                 }
             } while (!done);
             save_buffer += pitch;
+            dst = save_buffer;
             parity = next_parity;
         } while (--height);
     }
