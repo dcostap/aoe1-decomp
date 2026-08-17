@@ -20,6 +20,9 @@
 // remains the better reconstruction.
 // control-flow (rolled back): direct returns or an epilogue label after the
 // final flag store changed size/CFG; original direct jumps skip that store.
+// revisit: the original +0193/+01C2 jumps land after the common clear, while
+// fall-through cleanup stores the flag before EH restore; explicit labels,
+// natural returns, and common-clear variants moved the whole 582-byte basin.
 // abi/context (rolled back): removing the virtual destructor changed the new
 // size to 0x4AC; an equivalent virtual slot and explicit operator-new decl.
 // kept the 0x4B0 allocation but did not move the 12-byte EH tail gap.
