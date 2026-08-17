@@ -148,18 +148,26 @@
 // dX/dY PDB locals, x87 event order, and VC5 compiler. The 167-byte diagnostic
 // needs volatile and double radius temporaries that PDB and policy reject. No
 // hidden local or compiler mismatch supports that form.
+// sa-a65dc438-r1 object audit 2026-08-17: canonicalized the master/static declarations using
+// same-TU proven fields and virtual-dtor surfaces. The master vptr is accounted for while
+// preserving radius offsets; the static id field replaces an opaque word. Codegen was unchanged
+// at 151B/164 diff. No inheritance, generic virtual methods, parameter-home alias, duplicated-Y
+// form, raw cursor, or diagnostic volatility is supported by this target.
 
 class RGE_Master_Static_Object {
 public:
-    char gap_00[0x30];
-    float radius_x;
-    float radius_y;
+    virtual ~RGE_Master_Static_Object();
+    char gap_04[0x24];
+    float los; // +0x28
+    char gap_2C[4];
+    float radius_x; // +0x30
+    float radius_y; // +0x34
 };
 
 class RGE_Static_Object {
 public:
     virtual ~RGE_Static_Object();
-    char gap_04[4];
+    long id; // +0x04
     RGE_Master_Static_Object* master_obj; // +0x08
     char gap_0C[0x2C];
     float world_x; // +0x38
