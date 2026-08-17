@@ -25,6 +25,15 @@
 // secondary calls improved size and block coverage but worsened positional
 // drift; restored. The remaining source/codegen gap is the oracle's stack-load
 // plus ADD sequence versus VC5's equivalent LEA in the second and third calls.
+// fresh pass r3: offset-first expressions, branch-local accumulators, const
+// coordinate locals, and six structured secondary-call variants were all
+// emitted-code duplicates. An incomplete named period virtual surface worsened
+// one byte and lost early exact blocks; the corrected binary-supported named
+// surface is an emitted-code duplicate. Swapping tile conversion declarations
+// worsened the FPU basin by 20 bytes. A bool diagonal offset worsened size by 9 bytes.
+// Logical-negation guards improved block coverage but widened the body by 5
+// bytes. A natural for-loop was a codegen duplicate. Restored the pinned
+// typed source; no policy-valid exact source found.
 
 #include <math.h>
 
@@ -40,14 +49,14 @@ public:
 
 class RGE_Player {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Player();
     char gap_04[0x38];
     RGE_World* world;
 };
 
 class RGE_Static_Object {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Static_Object();
     int id;
     void* master_obj;
     RGE_Player* owner;
@@ -57,35 +66,154 @@ public:
     float world_z;
 };
 
-#define V10(p) \
-    virtual void vf_##p##0(); virtual void vf_##p##1(); \
-    virtual void vf_##p##2(); virtual void vf_##p##3(); \
-    virtual void vf_##p##4(); virtual void vf_##p##5(); \
-    virtual void vf_##p##6(); virtual void vf_##p##7(); \
-    virtual void vf_##p##8(); virtual void vf_##p##9();
-
-#define V6(p) \
-    virtual void vf_##p##0(); virtual void vf_##p##1(); \
-    virtual void vf_##p##2(); virtual void vf_##p##3(); \
-    virtual void vf_##p##4(); virtual void vf_##p##5();
-
 class RGE_Combat_Object {
 public:
-    V10(0)
-    V10(1)
-    V10(2)
-    V10(3)
-    V10(4)
-    V10(5)
-    V10(6)
-    V10(7)
-    V10(8)
-    V10(9)
-    V10(10)
-    V10(11)
-    V10(12)
-    V10(13)
-    V6(14)
+    virtual ~RGE_Combat_Object();
+    virtual void recycle_in_to_game(void*, RGE_Player*, float, float, float);
+    virtual void recycle_out_of_game();
+    virtual void draw(void*, short, short, void*);
+    virtual void shadow_draw(void*, short, short, unsigned char);
+    virtual void normal_draw(void*, short, short);
+    virtual void draw_front_frame(void*, short, short);
+    virtual void draw_back_frame(void*, short, short);
+    virtual void draw_frame(void*, short, short);
+    virtual unsigned char update();
+    virtual void check_damage_sprites();
+    virtual void rehook();
+    virtual void save(int);
+    virtual float teleport(float, float, float);
+    virtual void new_sprite(void*);
+    virtual void add_overlay_sprite(void*, unsigned char);
+    virtual void remove_overlay_sprite(void*);
+    virtual void change_ownership(RGE_Player*);
+    virtual void modify(float, unsigned char);
+    virtual void modify_delta(float, unsigned char);
+    virtual void modify_percent(float, unsigned char);
+    virtual void transform(void*);
+    virtual void copy_obj(void*);
+    virtual void set_object_state(unsigned char);
+    virtual void remove_visible_resource();
+    virtual void create_doppleganger_when_dying();
+    virtual void destroy_obj();
+    virtual void die_die_die();
+    virtual void damage(int, void*, float, RGE_Player*, RGE_Static_Object*);
+    virtual float calculateDamage(int, void*, float, RGE_Player*, RGE_Static_Object*);
+    virtual void rotate(long);
+    virtual unsigned char can_attack();
+    virtual void set_attribute(short, float);
+    virtual void set_attribute_amount(float, unsigned char, unsigned char);
+    virtual int heal(int, int);
+    virtual unsigned char heal(float);
+    virtual int canRepair();
+    virtual void notify_of_relation(long, unsigned char);
+    virtual void do_command(RGE_Static_Object*, float, float, float);
+    virtual void move_to(RGE_Static_Object*, float, float, float);
+    virtual void work(RGE_Static_Object*, float, float, float);
+    virtual void stop();
+    virtual void set_attack(RGE_Static_Object*);
+    virtual void play_command_sound();
+    virtual void play_move_sound();
+    virtual void new_angle(float);
+    virtual RGE_Static_Object* spawn_death_obj();
+    virtual void* get_command_master(RGE_Static_Object*, float, float, float);
+    virtual void set_being_worked_on(void*, short, unsigned char);
+    virtual void release_being_worked_on(RGE_Static_Object*);
+    virtual unsigned char is_moving();
+    virtual RGE_Static_Object* get_target_obj();
+    virtual void enter_obj(RGE_Static_Object*);
+    virtual void exit_obj();
+    virtual int explore_terrain(RGE_Player*, unsigned char, int);
+    virtual void unexplore_terrain(RGE_Player*, unsigned char, int);
+    virtual void* get_los_table();
+    virtual int inAttackRange(RGE_Static_Object*);
+    virtual unsigned char underAttack();
+    virtual void setUnderAttack(unsigned char);
+    virtual float calc_attack_modifier(RGE_Static_Object*);
+    virtual float getSpeed();
+    virtual float getAngle();
+    virtual float maximumSpeed();
+    virtual float rateOfFire();
+    virtual float damageCapability(RGE_Static_Object*);
+    virtual float damageCapability();
+    virtual float weaponRange();
+    virtual float minimumWeaponRange();
+    virtual int passableTile(float, float, int);
+    virtual unsigned char facetToNextWaypoint();
+    virtual int currentTargetID();
+    virtual float currentTargetX();
+    virtual float currentTargetY();
+    virtual float currentTargetZ();
+    virtual void setWaitingToMove(unsigned char);
+    virtual unsigned char waitingToMove();
+    virtual unsigned char actionState();
+    virtual unsigned char keepGatheringWhenObjectIs(int);
+    virtual unsigned char produceWhenKilledBy(int);
+    virtual unsigned char useSameZoneDropsite();
+    virtual void logDebug(const char*, ...);
+    virtual void notify(int, int, int, long, long, long);
+    virtual int attack(float, float, float, int);
+    virtual int attack(int, int);
+    virtual int moveTo(float, float, float, float, int);
+    virtual int moveTo(int, float, int);
+    virtual int moveTo(int, int);
+    virtual int moveAwayFrom(int, int);
+    virtual int hunt(int, int);
+    virtual int gather(int, int);
+    virtual int convert(int, int);
+    virtual int repair(int, int);
+    virtual int build(int, int);
+    virtual int trade(int, int);
+    virtual int explore(int, int, int);
+    virtual int enter(int, int);
+    virtual int unload(int, float, float, float);
+    virtual int transport(float, float, float, int);
+    virtual int stopAction();
+    virtual int pause();
+    virtual int canPath(int, float, float*, int, int, int);
+    virtual int canPath(void*, float, int, float*, int, int, int);
+    virtual int canBidirectionPath(int, int, float, float*, int, int, int);
+    virtual int canPathWithObstructions(int, float, float*, int, int, int, void*);
+    virtual int canPathWithAdditionalPassability(void*, float, int, float*, int, int, int, int, int);
+    virtual int findFirstTerrainAlongExcept(int, float*, float*);
+    virtual int canLinePath(int, int, int, int, float, int);
+    virtual int canLinePath(void*, void*, float, void*, int);
+    virtual int firstTileAlongLine(void*, void*, void*, int, int, int);
+    virtual void* userDefinedWaypoint(int);
+    virtual int addUserDefinedWaypoint(void*, int);
+    virtual int removeAllUserDefinedWaypoints();
+    virtual int removeUserDefinedWaypoint(int);
+    virtual int numberUserDefinedWaypoints();
+    virtual int findAvoidancePath();
+    virtual int get_action_checksum();
+    virtual int get_waypoint_checksum();
+    virtual void setup();
+    virtual void setup(int);
+    virtual void create_object_list();
+    virtual void create_sprite_list();
+    virtual void setup(float);
+    virtual void stop_moving();
+    virtual void turn_towards(float);
+    virtual void setup(int, int);
+    virtual void work2();
+    virtual void set_task(void*);
+    virtual void setTaskByTaskID(int);
+    virtual void set_action(void*);
+    virtual void set_only_action(void*);
+    virtual void set_end_action(void*);
+    virtual void* getTask();
+    virtual void setup(void*);
+    virtual void create_action_list();
+    virtual unsigned char area_attack(float, float, float, RGE_Combat_Object*, RGE_Static_Object*);
+    virtual unsigned char attack(RGE_Static_Object*, RGE_Combat_Object*);
+    virtual unsigned char attack(float, float, float, RGE_Combat_Object*);
+    virtual unsigned char do_attack(RGE_Static_Object*, RGE_Combat_Object*, float, float, float);
+    virtual void get_armor(short&, short&);
+    virtual void get_weapon(short&, short&);
+    virtual void get_weapon_range(float&, float&);
+    virtual void get_speed_of_attack(float&, float&);
+    virtual void setup(long);
+    virtual void cancel_object();
+    virtual void get_pierce_armor(short&, short&);
     virtual int higher_check_for_cliff(RGE_Static_Object* object,
                                        int col, int row,
                                        float x1, float y1,
@@ -107,6 +235,11 @@ public:
 class TRIBE_Combat_Object : public RGE_Combat_Object {
 public:
     virtual int higher_than_target(RGE_Static_Object* target);
+    virtual int initUnitAI();
+    virtual void setup(short);
+    virtual void take_building_attribute(short, short);
+    virtual void give_building_attribute(short, short);
+    virtual void setup(unsigned short);
 };
 
 int TRIBE_Combat_Object::higher_than_target(RGE_Static_Object* target)
@@ -216,6 +349,3 @@ int TRIBE_Combat_Object::higher_than_target(RGE_Static_Object* target)
     }
     return direction > 0;
 }
-
-#undef V6
-#undef V10
