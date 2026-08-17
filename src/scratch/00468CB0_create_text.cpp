@@ -28,6 +28,19 @@
 //   using one done label was also a 436-byte codegen duplicate. Rolled back.
 // - A /Os overlay reduced size but removed the required EH frame and changed
 //   early code broadly. Restored /O2 /Oy /GX; the shared-tail gap is structural.
+// - This pass rechecked an int result with explicit success/failure assignments;
+//   it was byte-identical to the natural 436-byte basin.
+// - An unsigned-char result forced the oracle-like one-return CFG, but added a
+//   stack byte store/mask and changed EBX/EBP coloring, worsening the diff to
+//   270 bytes. Scoping it after coordinate math was identical. Rolled back.
+// - A source-ordered negative allocation/field guard was byte-identical to the
+//   natural baseline. The only remaining mismatch is the /GX shared EH tail.
+// - Revisit: the local Panel_ez.cpp sibling factories at 00468E50, 00469000,
+//   and 004691C0 have the same original success-jump-over-failure-tail shape.
+//   Their durable logs record natural typed guards, common result/goto forms,
+//   labels, ABI/layout variants, and /GX checks; each keeps the cloned tail.
+//   The target's typed source already matches the first 156 bytes and all 9
+//   ordered calls. No policy-compliant source lead remains for this tail.
 
 class TPanel {};
 class TDrawArea {};
