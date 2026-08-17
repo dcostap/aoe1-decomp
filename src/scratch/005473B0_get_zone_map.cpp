@@ -73,6 +73,8 @@
 //   no source bank contains multiple `// VA:` owners. The exact neighboring
 //   create_zone_map source defines the 005469C0 destructor locally, but that
 //   is the same duplicate-owner pattern rejected here, not a valid precedent.
+//   TOOLING BLOCKER: build_function.py cannot expose that owned destructor body
+//   while compiling this VA without adding a duplicate destructor owner.
 // - Ten fresh context/ABI probes confirmed the boundary: inline destructor
 //   bodies, generic helper bodies, and declaration-only forms remain 266 B /
 //   37 bytes; an out-of-line empty/free/throw()/nothrow destructor before the
