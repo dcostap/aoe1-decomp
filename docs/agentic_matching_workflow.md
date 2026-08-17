@@ -161,7 +161,15 @@ The first exact result starts the finish process. Do not report immediately.
    State evidence separately from explanations that remain hypotheses.
    Mark each proved original defect as `ORIGINAL BUG:`. State the executable
    evidence, observable effect, and why a natural-looking correction is wrong.
-10. Pin the reduced exact source and release the lease with the exact result.
+10. Do a final source-comment pass. Add short comments only at key blocks where
+    they explain intent, non-obvious ownership, required ordering, or strange
+    shipped behavior. Use these labels when they help:
+    - `BINARY NOTE:` for an unusual fact proved by executable evidence;
+    - `ORIGINAL BUG:` for a proved shipped defect;
+    - `LIKELY INTENT:` for a useful interpretation that evidence does not prove.
+    Do not narrate obvious statements. Do not present a suspected copy mistake
+    or developer motive as fact.
+11. Pin the reduced exact source and release the lease with the exact result.
     Leave the status move and commit to the main agent.
 
 Report any reusable, non-obvious lesson candidate to the main agent. Do not add
@@ -179,6 +187,9 @@ this procedure as an early exit after a small number of probes.
 3. Run an unchanged final `validation` check.
 4. Pin that documented final source as clean.
 5. Pause the lease with a specific reason.
+
+For unresolved source, keep uncertain explanations in the attempt log. Add an
+inline code comment only when current evidence establishes a durable source fact.
 
 Do not keep an opaque nonexact variant only because it has better metrics. The
 source attempt log is the durable notebook. Session files under `build\` are

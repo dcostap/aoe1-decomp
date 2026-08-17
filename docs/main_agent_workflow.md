@@ -167,6 +167,13 @@ Require an `ORIGINAL BUG:` note for each proved shipped defect. The note must
 name the binary evidence, observable effect, and reason not to correct it. Do
 not label uncertain or merely unusual source as a bug.
 
+Before exact promotion, review comments as part of source recovery. Keep a few
+useful comments at key blocks. Prefer comments that explain intent, ownership,
+required ordering, or strange shipped behavior. Use `BINARY NOTE:`,
+`ORIGINAL BUG:`, and `LIKELY INTENT:` to separate evidence from interpretation.
+Remove stale probe explanations and comments that only repeat the code. Do not
+state a suspected copy mistake or developer motive as fact.
+
 Reject a shallow unresolved return. If the worker reports fewer than ten honest
 hypotheses, continue that same assignment. Do not count syntax repairs, unchanged
 reruns, cosmetic edits, or unsupported register guesses as honest hypotheses.
@@ -267,10 +274,11 @@ Before promotion:
 1. read the complete source and ledger;
 2. confirm every reachable behavior and important effect;
 3. confirm all unusual source has binary justification;
-4. run final validation;
-5. complete the ledger decision;
-6. move the source to `src\verified_logic`;
-7. version the source, ledger, and status change together.
+4. add bounded source comments for key intent and established unusual behavior;
+5. run final validation;
+6. complete the ledger decision;
+7. move the source to `src\verified_logic`;
+8. version the source, ledger, and status change together.
 
 `verified_logic` remains nonexact. Preserve its ledger and attempt log if later
 exact work resumes.
