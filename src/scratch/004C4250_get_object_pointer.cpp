@@ -99,6 +99,14 @@
 // owners now keep only proven fields and named polymorphic entries. World uses
 // its proven virtual destructor; object-list load is the proven slot-0 method.
 // This is a policy cleanup, not a compare-index or color-register probe.
+// 2026-08-17 sa-45b09fe7-r1 focused tail pass (18 meaningful probes): direct
+// byte player_id predicates, parameter-home index reuse, declaration and
+// initialization order, signed/unsigned compare widths, real-local register
+// hints, and Ghidra-shaped update order either widened the body or reproduced
+// the 219B/37 basin. The direct byte forms widened to 227B/190; the hoisted,
+// split, and typed real-local forms retained 219B/37. Restored the clean
+// canonical source. No policy-valid source form selected ESI for owner and
+// EDX for the 16-bit tail compare. The 37-byte hunk remains register coloring.
 
 class RGE_Static_Object;
 class RGE_Master_Static_Object;
