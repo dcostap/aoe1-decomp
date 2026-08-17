@@ -36,6 +36,12 @@
 // - A natural long final_width local scoped to the common tail was a codegen
 //   duplicate; restored the direct width assignment. The paired register
 //   colors remain unchanged.
+// - Fresh bounded pass: the clean typed source rebuilt at 496 bytes with 5/5
+//   ordered calls and a 14-byte strict diff. An explicit scrollbar override
+//   and derived destructor declaration were codegen duplicates. A branch-local
+//   active value worsened the geometry register map to 34 bytes and was
+//   restored. The residual remains the final virtual vtable scratch register
+//   and paired text_wid load; ownership and geometry stay proven.
 
 struct tagRECT {
     long left;
