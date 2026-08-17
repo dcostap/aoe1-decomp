@@ -37,9 +37,19 @@
 //   tail for default/target/action-11 paths and skipped setAction for unknown
 //   first-pass types.  This resolves the task/action/type/target-location call
 //   count gaps while keeping frame 0x60.  The best validated source remains in
-//   scratch: 2145 differing bytes, 88.28% shape, 96.45% ordered calls; only
-//   one setAction and one setInUse physical call remain absent, with the
-//   residual drift concentrated in second-pass CFG/register scheduling.
+//   scratch: 2070 differing bytes, 93.21% shape, 97.87% ordered calls, and
+//   frame 0x60.  The remaining aggregate gap is one setAction and one setInUse
+//   call.  The residual drift is concentrated in local homes and shared tails.
+// - probes 1-20: direct setAction arms, positive water-count layout, direct
+//   target-location expressions, and branch-local float scopes improved the
+//   natural source.  Literal task-tail rewrites, extra found-path gotos, and
+//   header context changes were rejected by the checker.
+// - BINARY NOTE: the executable has one physical setTargetLocation call site
+//   for the resource/trade target setup.  Keep those coordinates as direct
+//   arguments so VC5 can share the tail without extra float reloads.
+// - LIKELY INTENT: the action-8 found reset is a separate task path.  Its
+//   current natural source retains the direct task call while later checks can
+//   still run, but the executable uses a shared tail instead.
 
 struct XYZPoint {
     int x;
@@ -672,20 +682,18 @@ void TribeTacticalAIModule::taskBoats()
                     }
                 }
                 else {
-                    int newAction = group->type();
-                    if (newAction == 0x6B) {
-                        newAction = 10;
+                    if (group->type() == 0x6B) {
+                        group->setAction(10);
                     }
                     else if (group->type() == 0x6C) {
-                        newAction = 11;
+                        group->setAction(11);
                     }
                     else if (group->type() == 0x6A) {
-                        newAction = 1;
+                        group->setAction(1);
                     }
                     else {
                         goto first_pass_next;
                     }
-                    group->setAction(newAction);
                 }
             }
 
@@ -709,11 +717,9 @@ first_pass_next:
                 group->type() != 104 && group->type() != 105 &&
                 group->action() != 0 && group->action() != 1) {
                 if (group->inUse() == 0) {
-                    float outputX;
-                    float outputY;
-                    float pathDistance;
-
                     if (group->type() == 0x6B) {
+                        float outputX;
+                        float outputY;
                         int commanderID = group->commander();
                         RGE_Static_Object* commander = this->md->object(commanderID);
                         if (commander == 0) {
@@ -767,10 +773,12 @@ first_pass_next:
                             if (resourceID >= 0 && object != 0) {
                                 group->setTarget(resourceID);
                                 group->setTargetType((int)object->master_obj->id);
-                                outputX = object->world_x;
-                                outputY = object->world_y;
-                                pathDistance = object->world_z;
-                                goto target_location;
+                                group->setTargetLocation(object->world_x,
+                                                         object->world_y,
+                                                         object->world_z);
+                                group->setInUse(1);
+                                busyOK = 0;
+                                goto task_tail;
                             }
                             else {
                                 if (this->md->informationAI.fullyExploredZone(
@@ -789,6 +797,7 @@ first_pass_next:
                     else if (group->type() == 0x6C) {
                         int commanderID = group->commander();
                         RGE_Static_Object* commander = this->md->object(commanderID);
+                        float pathDistance;
                         if (commander == 0) {
                             group->setAction(1);
                         }
@@ -801,7 +810,7 @@ first_pass_next:
                                         group->commander()) == 1) {
                                     group->setAction(8);
                                     group->task(this, this->md,
-                                                group->action(), 1, 0);
+                                                group->action(), 1, (int)trade);
                                     group->setInUse(1);
                                 }
                                 else {
@@ -817,14 +826,15 @@ first_pass_next:
                                                        &pathDistance, 1, -1, -1) != 0) {
                                     group->setTarget(trade->id);
                                     group->setTargetType((int)trade->type);
-                                    outputX = (float)trade->x;
-                                    outputY = (float)trade->y;
-                                    pathDistance = (float)trade->z;
-                                    goto target_location;
+                                    group->setTargetLocation((float)trade->x,
+                                                             (float)trade->y,
+                                                             (float)trade->z);
+                                    group->setInUse(1);
+                                    busyOK = 0;
+                                    goto task_tail;
                                 }
                                 else {
                                     group->setAction(1);
-                                    goto next_group;
                                 }
                             }
                         }
@@ -835,11 +845,6 @@ first_pass_next:
                     }
                     goto next_group;
 
-target_location:
-                    group->setTargetLocation(outputX, outputY, pathDistance);
-                    group->setInUse(1);
-                    busyOK = 0;
-                    goto task_tail;
                 }
                 if (group->action() == 8) {
                     int found = 0;
@@ -852,18 +857,7 @@ target_location:
                     }
 
                     if (group->type() == 0x6B) {
-                        if (this->numberWaterExplorers() <= 1) {
-                            RGE_Static_Object* object =
-                                this->md->object(group->commander());
-                            if (object != 0 && object->unitAI() != 0 &&
-                                object->unitAI()->currentOrder() != 0x2C1) {
-                                group->setAction(8);
-                                group->task(this, this->md,
-                                            group->action(), 1, 0);
-                                group->setInUse(1);
-                            }
-                        }
-                        else {
+                        if (this->numberWaterExplorers() > 1) {
                             float pathDistance = 0.0f;
                             float outputX = 0.0f;
                             int outputY = -1;
@@ -874,6 +868,17 @@ target_location:
                                     outputY, 0, 0);
                             if (resourceID != -1) {
                                 found = 1;
+                            }
+                        }
+                        else {
+                            RGE_Static_Object* object =
+                                this->md->object(group->commander());
+                            if (object != 0 && object->unitAI() != 0 &&
+                                object->unitAI()->currentOrder() != 0x2C1) {
+                                group->setAction(8);
+                                group->task(this, this->md,
+                                            group->action(), 1, 0);
+                                group->setInUse(1);
                             }
                         }
                     }
