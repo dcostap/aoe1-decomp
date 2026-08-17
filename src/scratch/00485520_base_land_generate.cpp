@@ -66,6 +66,15 @@
 //   and phase-B land_size traversal.  This matches the original reused [esp+1c]
 //   home and improved positional diff 1647 -> 1645 and shape 80.2% -> 81.52%.
 //   Kept because the typed pointer reuse is source-plausible and binary-backed.
+// - current bounded pass (20 meaningful probes): the original pop_stack call
+//   writes its first output to the map-row index and its second output to the
+//   column index.  Passing &y, &x reproduces that shipped orientation and
+//   raises shape to 82.84% (posdiff 1647); this corrects the earlier ABI note.
+//   The original terrain-result gate is signed test/jle, so uVar6 is int and
+//   uses > 0.  set_terrain now uses its reviewed short/uchar/int ABI; this
+//   changes the decorated target without changing body bytes.
+// - volatile stack-head and land-size-cursor probes moved register colors but
+//   did not match and are not retained.  No exact result found after 20 probes.
 // Phase map (original asm offsets):
 //   A: +0000..+024A  init_stack / bounds / set_terrain / zone fill / 4 edge pushes
 //   B: +024A..+05DD  flood-fill do-while (done flag), chance/check_terrain_and_zone,
@@ -76,10 +85,14 @@
 
 int debug_rand(char* file, int line);
 
+class RGE_Player;
+class RGE_Game_World;
+
 class RGE_Map {
 public:
-    void set_terrain(long a1, long a2, long a3, long a4, long a5, long a6,
-                     unsigned char t1, unsigned char t2, unsigned char t3);
+    void set_terrain(RGE_Player* player, RGE_Game_World* world,
+                     short a3, short a4, short a5, short a6,
+                     unsigned char t1, unsigned char t2, int t3);
 };
 
 struct RGE_Tile {
@@ -257,17 +270,17 @@ unsigned char RGE_RMM_Land_Generator::base_land_generate() {
             do {
                 index2b = *index1;
                 if (index2b < plVar12[-7] &&
-                    this->pop_stack(local_b08, &x, &y, (float*)land_size) != 0) {
+                    this->pop_stack(local_b08, &y, &x, (float*)land_size) != 0) {
                     done = 0;
-                    bVar3 = this->chance(x, y, index3);
+                    bVar3 = this->chance(y, x, index3);
                     long iVar11 = debug_rand("C:\\msdev\\work\\age1_x1\\rmm_land.cpp", 299);
                     if (bVar3 <= (iVar11 * 100) / 0x7fff) {
                         iStack_af8 = (long)&this->map_row_offset[y][x];
                         // ABI: unused terrain byte, land id, column, row.
                         bVar4 = this->check_terrain_and_zone(
                             (unsigned char)plVar12[-6], (unsigned char)index3, x, y);
-                        unsigned int uVar6 = bVar4;
-                        if (this->search_map_rows[y][x] == this->info.land_num && uVar6 != 0) {
+                        int uVar6 = bVar4;
+                        if (this->search_map_rows[y][x] == this->info.land_num && uVar6 > 0) {
                             RGE_Tile* tile2 = (RGE_Tile*)iStack_af8;
                             tile2->data[5] = ((unsigned char)plVar12[-6] ^ tile2->data[5]) & 0x1f ^ tile2->data[5];
                             this->search_map_rows[y][x] = *(unsigned char*)(plVar12 - 1);
@@ -316,7 +329,7 @@ unsigned char RGE_RMM_Land_Generator::base_land_generate() {
             unsigned char uVar1 = *puVar14;
             unsigned char sVar = *(unsigned char*)(puVar14 - 0x14);
             Map_Stack* pMVar2 = pMVar5;
-            while (this->pop_stack(pMVar2, &x, &y, (float*)land_size) != 0) {
+            while (this->pop_stack(pMVar2, &y, &x, (float*)land_size) != 0) {
                 RGE_Tile* tile3 = &this->map_row_offset[y][x];
                 if (((x >= 1 && this->search_map_rows[y][x - 1] == uVar1 && x < in_zone &&
                       this->search_map_rows[y][x + 1] == uVar1)) ||
