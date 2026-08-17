@@ -65,6 +65,17 @@
 //   non-polymorphic player/world declarations, and function-scope owner declarations were
 //   duplicate codegen. A bottom-increment cursor reproduced the older diff-191 basin.
 //   The original parameter-home best, four-slot frame, and spilled id remain unresolved.
+// - Canonical-structure follow-up: direct this->player->world/id ownership was codegen-neutral;
+//   reversing the equivalent loop condition changed only branch bytes. Initializing the cursor
+//   as world->players + 1, and split base/cursor locals, regressed to 175/178-byte differences;
+//   a persistent dual cursor reproduced the prior 191-byte basin. Restored the clean scalar
+//   do/while source. Target pointer base/cursor colors and spilled id remain open.
+// - Revisit pass: natural while, preheader-plus-do/while, single-cursor, and dual-cursor
+//   update forms reproduced the known 191/178-byte basins. A short id widened the drift to
+//   181 bytes. A 32-variant natural declaration/order lab produced only the existing 221-byte
+//   groups; no variant had the target 0x10 frame or 230-byte size. Restored the clean scalar
+//   source. The unresolved evidence remains the target's separate player-array base/cursor
+//   registers and spilled player id.
 
 class RGE_Game_World;
 
