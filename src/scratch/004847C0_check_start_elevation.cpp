@@ -123,6 +123,32 @@
 // the named offset, and swapping the row-base/table local declarations, both
 // rebuilt to the same 224-byte/141-difference code. Both were rolled back.
 
+// Continuation (sa-0667dc43-r1):
+// - Direct row indexing, next-row expression updates, a volatile row pointer,
+//   and a volatile alias of the row-pointer home all moved away from the clean
+//   basin (190, 190, 147/+6 bytes, and 215 differing bytes respectively).
+// - Reversing the outer update order and combining the pointer increment with
+//   its dereference were codegen-identical to the 141-byte clean basin.
+// - Hoisting the column initializer before the inner guard worsened to 185
+//   bytes. A 24-variant lab over row-pointer type, bound order, predicate
+//   temporary, and update spelling found no exact result; the clean group
+//   remained best at 141 differing bytes.
+// Keep the pinned clean typed row-base source. The remaining evidence still
+// points to the original y1/range-home, row-pointer/y-home, x1/EBX, and
+// CL-vs-BL allocation rotation.
+// Fresh reassessment (sa-30715b7c-r1):
+// - A natural outer `for` with the reused x row counter worsened to 172 bytes.
+// - A per-row terrain copy was codegen-identical to the clean source.
+// - Direct typed row indexing was 191 bytes; a separate row local with the
+//   carried row pointer was 142 bytes in its while form and 172 bytes as a for.
+// - Splitting the row base from the offset was 168 bytes. Reordering the
+//   initial cursor declaration, joining upper-bound initializers, and copying
+//   y1 to an end_y local were all duplicate 141-byte codegen.
+// - Typing the row base as RGE_Tile* repeated the 168-byte basin.
+// Restore and retain the pinned natural source. The clean result remains
+// 224 bytes with 141 differing bytes and 85.42% shape; no natural source
+// recovered the y1/range-home and row-pointer/y-home rotation.
+
 struct RGE_Tile {
     short screen_xpos;
     short screen_ypos;
