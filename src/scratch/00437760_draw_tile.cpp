@@ -1,6 +1,6 @@
 // 00437760 RGE_Diamond_Map::draw_tile (diam_map.cpp:699-891)
 // Natural reconstruction from the validated diamond-map rendering donors.
-// Attempt log (bf16-diam-7760, bounded 10-probe pass):
+// Attempt log (bf16-diam-7760, 21 meaningful probes):
 // - Typed reconstruction established the map/tile/terrain/player ownership,
 //   ratio gate, terrain switch, object color scan, fog fill, and all 12 calls.
 // - Corrected RGE_Object_List to 0xC so RGE_Tile indexing uses the proven
@@ -27,6 +27,16 @@
 //   topology; size grew 71 bytes and diff worsened to 1161, so restored clean.
 // - Left in scratch after the 10-hypothesis budget; no inline asm or opaque
 //   codegen scaffolding is retained.
+// - BINARY NOTE: The clean source is 1145 bytes with a 0x1C frame and 12/12
+//   ordered calls. The first mismatch is the prologue's parameter-load order.
+// - Tested scan widths, tile-home timing, ratio branch forms, coordinate
+//   declarations, object-loop forms, and parameter/register lifetime aliases.
+//   None preserved the clean size, shape, and natural source model together.
+// - The best transient metric was not retained because its frame or CFG was
+//   worse. Final validation restored the pinned clean source: 1054 differing
+//   bytes, 76.98% shape, 35.22% exact-block coverage.
+// - Next lead: recover the original parameter, row, tile, and coordinate
+//   local ownership from VC5 register coloring before another broad sweep.
 
 extern "C" long __cdecl __ftol(void);
 #define DAT_0056f604 (*(float*)0x0056F604)
