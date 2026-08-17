@@ -27,8 +27,10 @@
 //     matched the original fallback receiver block, reducing the best diff to 112 bytes.
 // 18: mirrored same-TU loaders with a typed player-map pointer; emitted code was unchanged, so kept
 //     the clearer period-plausible map ownership.
-// Best retained reconstruction: 697 bytes, frame 0x60, all 24 calls and virtual slots aligned;
-// remaining drift is late register coloring and one scaled-address expression in AI setup.
+// 19: inlined the natural i - 1 expression at each AI-information helper call. This removed the
+//     compiler's shared scaled-index temporary and produced an exact 691-byte MATCH.
+// Final reconstruction: 691 bytes, frame 0x60, all 24 calls and virtual slots aligned; positional
+//     bytes, boundaries, and the owning symbol all match the original.
 
 extern "C" void __cdecl rge_read(int file, void* data, int size);
 extern "C" int __cdecl rge_close(int file);
@@ -284,12 +286,11 @@ void RGE_Game_World::load_scenario1(int file, RGE_Player_Info& info)
         do {
             if (i < scenario_player_num) {
                 if (this->players[i] != 0) {
-                    int player_index = i - 1;
                     this->players[player_id_hash[i]]->loadAIInformation(
-                        this->scenario->Get_BuildList(player_index, 1),
-                        this->scenario->Get_CityPlan(player_index, 1),
-                        this->scenario->Get_player_AI(player_index, 1),
-                        this->scenario->GetPlayerPosture(player_index), -1);
+                        this->scenario->Get_BuildList(i - 1, 1),
+                        this->scenario->Get_CityPlan(i - 1, 1),
+                        this->scenario->Get_player_AI(i - 1, 1),
+                        this->scenario->GetPlayerPosture(i - 1), -1);
                 }
             } else {
                 return;
