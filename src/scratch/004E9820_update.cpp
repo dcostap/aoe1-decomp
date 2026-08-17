@@ -35,6 +35,18 @@
 // luna-r2 probe: collapsed second-phase selected-rule aliases to one typed rule;
 // stack-slot evidence supported it, but positional diff worsened 1144 -> 1171,
 // so restored the clean source.
+// claim sa-e8231ea7-r1: baseline rebuilt 1458 bytes with 20 ordered calls and
+// 66.51% exact-block coverage. The final clean source below is 1402 bytes,
+// with 20 ordered calls, 84.88% exact-block coverage, and 11 bytes of overrun.
+// Probe facts: direct indexed shifts removed four compiler-generated address
+// instructions. Bounded while scans recovered the original insertion CFG and
+// reduced the overrun from 67 to 11 bytes. Alias field access recovered the
+// original ManagedArray load schedule. Selected-rule reuse removed a copy that
+// had no target instruction. These changes remain natural source forms.
+// BINARY NOTE: the shipped scans test both the active count and capacity, then
+// shift each found entry from the following slot before clamping the count.
+// Next lead: recover the entry zero-register schedule and the remaining
+// first idle-loop capacity load; current mismatch starts at the prologue.
 
 extern void* __cdecl operator new(unsigned int size);
 extern void __cdecl operator delete(void* pointer);
@@ -191,18 +203,14 @@ public:
 
 int TribeStrategyAIModule::update(int parameter)
 {
-    int i;
+    int i = 0;
     int result;
     int bestResult;
     int worstRuleResult;
     int ruleResult;
-    int rule;
-    int* newValue;
-    int j;
     RGE_Victory_Entry* victoryEntry;
     unsigned int victoryCondition;
 
-    i = 0;
     this->victoryConditionChangeTimeout++;
     if (this->victoryConditionChangeTimeout >= 0) {
         this->victoryConditionChangeTimeout = i;
@@ -235,7 +243,7 @@ int TribeStrategyAIModule::update(int parameter)
     result = -1;
     bestResult = 0;
     worstRuleResult = -1;
-    if (this->idleRules.numberValue > i) {
+    if (i < this->idleRules.numberValue) {
         ManagedArray<int>* idleRules = &this->idleRules;
         do {
             if (i > this->idleRules.maximumSizeValue - 1) {
@@ -257,25 +265,22 @@ int TribeStrategyAIModule::update(int parameter)
             this->md->aiPlayer,
             this->currentVictoryConditionValue,
             result) == 1) {
-        int executingCount = this->executingRules.numberValue;
         ManagedArray<int>* executingRules = &this->executingRules;
+        int executingCount = executingRules->numberValue;
         i = 0;
         if (executingCount > 0) {
-            do {
-                if (this->executingRules.maximumSizeValue <= i) {
-                    break;
-                }
+            while (i < executingCount && i < executingRules->maximumSizeValue) {
                 if (executingRules->value[i] == result) {
                     goto remove_idle_rule;
                 }
                 ++i;
-            } while (i < executingCount);
+            }
         }
-        if (this->executingRules.maximumSizeValue - 1 < executingCount) {
+        if (executingRules->maximumSizeValue - 1 < executingCount) {
             executingRules->resize(executingCount + 1);
         }
-        executingRules->value[this->executingRules.numberValue] = result;
-        this->executingRules.numberValue++;
+        executingRules->value[executingRules->numberValue] = result;
+        executingRules->numberValue++;
 
 remove_idle_rule:
         int idleCount = this->idleRules.maximumSizeValue;
@@ -293,10 +298,8 @@ remove_idle_rule:
         if (i < idleCount) {
             if (i < idleCount - 1) {
                 do {
-                    int* currentValue = this->idleRules.value;
-                    int nextIndex = i + 1;
-                    currentValue[i] = currentValue[nextIndex];
-                    i = nextIndex;
+                    this->idleRules.value[i] = this->idleRules.value[i + 1];
+                    ++i;
                 } while (i < this->idleRules.maximumSizeValue - 1);
             }
             this->idleRules.numberValue--;
@@ -307,7 +310,6 @@ remove_idle_rule:
     }
 
     i = 0;
-    int bestExecutingRule = -1;
     result = 0x65;
     worstRuleResult = -1;
     if (this->executingRules.numberValue > 0) {
@@ -320,11 +322,10 @@ remove_idle_rule:
                 if (this->executingRules.maximumSizeValue - 1 < i) {
                     executingRules->resize(i + 1);
                 }
-                bestExecutingRule = executingRules->value[i];
+                worstRuleResult = executingRules->value[i];
                 result = ruleResult;
             }
             ++i;
-            worstRuleResult = bestExecutingRule;
         } while (i < this->executingRules.numberValue);
     }
 
@@ -345,10 +346,8 @@ remove_idle_rule:
         if (i < executingSize) {
             if (i < executingSize - 1) {
                 do {
-                    int* currentValue = this->executingRules.value;
-                    int nextIndex = i + 1;
-                    currentValue[i] = currentValue[nextIndex];
-                    i = nextIndex;
+                    this->executingRules.value[i] = this->executingRules.value[i + 1];
+                    ++i;
                 } while (i < this->executingRules.maximumSizeValue - 1);
             }
             this->executingRules.numberValue--;
@@ -357,25 +356,22 @@ remove_idle_rule:
             }
         }
 
-        int idleCount = this->idleRules.numberValue;
         ManagedArray<int>* idleRules = &this->idleRules;
+        int idleCount = idleRules->numberValue;
         i = 0;
         if (idleCount > 0) {
-            do {
-                if (this->idleRules.maximumSizeValue <= i) {
-                    break;
-                }
+            while (i < idleCount && i < idleRules->maximumSizeValue) {
                 if (idleRules->value[i] == worstRuleResult) {
                     goto add_idle_rule;
                 }
                 ++i;
-            } while (i < idleCount);
+            }
         }
-        if (this->idleRules.maximumSizeValue - 1 < idleCount) {
+        if (idleRules->maximumSizeValue - 1 < idleCount) {
             idleRules->resize(idleCount + 1);
         }
-        idleRules->value[this->idleRules.numberValue] = worstRuleResult;
-        this->idleRules.numberValue++;
+        idleRules->value[idleRules->numberValue] = worstRuleResult;
+        idleRules->numberValue++;
 
 add_idle_rule:
         ;
