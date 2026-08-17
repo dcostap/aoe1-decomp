@@ -107,6 +107,13 @@
 // split, and typed real-local forms retained 219B/37. Restored the clean
 // canonical source. No policy-valid source form selected ESI for owner and
 // EDX for the 16-bit tail compare. The 37-byte hunk remains register coloring.
+// 2026-08-17 sa-ccc0c3a2-r1 independent frontier pass (20 meaningful probes):
+// PDB-local, canonical-owner, declaration/lifetime, byte-predicate, update,
+// and field-width forms either widened the body or reproduced 219B/37. Direct
+// owner expressions, split declarations, signed byte casts, operand order,
+// and const canonical pointers did not move the hunk. Restored and validated
+// the clean source. The original still uses ESI for owner and EDX for the
+// short tail compare; current natural source uses EDX and ESI respectively.
 
 class RGE_Static_Object;
 class RGE_Master_Static_Object;
