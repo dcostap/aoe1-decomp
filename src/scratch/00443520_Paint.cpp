@@ -56,6 +56,13 @@
 // Local-bound and paired-zero assignment variants did not remove that basin.
 // Leave this readable source in scratch; the next lead is compiler context or
 // a proven original declaration shape that prevents zero-register hoisting.
+// 2026-08-17 bounded pass: the original prologue is push EBX/EBP/ESI, then EDI;
+// the best clean rebuild remains 350 bytes with 227 differing bytes and four
+// aligned calls. An aggregate fullscreen dest = src form removes the EBP-zero
+// tests and recovers the XOR/test islands, but saves registers late and stays
+// 353 bytes with 311 differing bytes. It was rejected as a metric-only form.
+// Const IAT declarations, typed Blt null parameters, function-scope bounds,
+// and cached ClientToScreen forms did not produce an exact or better source.
 
 struct tagRECT {
     long left;
