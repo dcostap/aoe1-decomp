@@ -39,6 +39,15 @@
 //   coloring and the direct facet compare.
 // - shardC2-45C970: moved the existing typed sprite assignment immediately
 //   after base setup, before reset stores; emitted code stayed unchanged.
+// - Worker sa-3d6312ea: clean baseline rebuilt at 291B with five ordered calls
+//   aligned and 66 positional diff bytes. Direct member rereads, pre-call
+//   facings, function-scope facings, scalar sprite handles, volatile facet
+//   reloads, and expression/liveness variants were unchanged or worse.
+// - The unresolved lead remains original ECX sprite -> EDX preservation and
+//   EDI facings coloring versus rebuilt EDI sprite -> ECX facings, plus the
+//   rebuilt FXCH pair in the random-angle FPU expression. Restored clean source.
+// - Exact recovery: nested direct sprite guards, an inline debug_rand product,
+//   and a double denominator term without an outer float cast reproduce 291B.
 
 extern "C" int __cdecl debug_rand(char* file, int line);
 
@@ -99,9 +108,6 @@ public:
     char gap_75[3];
 };
 
-// Diagnostic alias: the original reloads facet_num after the guard rather
-// than reusing the compare value.  Keep the canonical RGE_Sprite access for
-// the value used by the calculation.
 class RGE_Player;
 
 class RGE_Static_Object {
@@ -137,9 +143,7 @@ public:
 
 int RGE_Moving_Object::setup(RGE_Master_Moving_Object* master_obj,
                              RGE_Player* player, float x, float y, float z) {
-    RGE_Sprite* sprite;
     this->RGE_Animated_Object::setup(master_obj, player, x, y, z);
-    sprite = this->sprite;
 
     this->type = 0x1E;
     this->velocity_x = 0.0f;
@@ -149,25 +153,27 @@ int RGE_Moving_Object::setup(RGE_Master_Moving_Object* master_obj,
     this->turn_towards_time = 0.0f;
     this->trail_remainder = 0.0f;
 
-    if (sprite != 0 && (sprite->flag & 2) != 0 &&
-        1 < sprite->facet_num) {
-            int random_value =
-                debug_rand("C:\\msdev\\work\\age1_x1\\move_obj.cpp", 0xDE);
-            int facings = sprite->facet_num;
-            float random_angle = (float)(DAT_00570b40 / (float)facings) *
-                (float)((random_value * facings) / 0x7FFF);
-            this->angle = random_angle;
+    if (this->sprite != 0) {
+        if ((this->sprite->flag & 2) != 0) {
+            if (1 < this->sprite->facet_num) {
+                float random_angle =
+                    DAT_00570b40 / (float)(int)this->sprite->facet_num *
+                    (float)((debug_rand("C:\\msdev\\work\\age1_x1\\move_obj.cpp", 0xDE) *
+                             (int)this->sprite->facet_num) / 0x7FFF);
+                this->angle = random_angle;
 
-            if (this->angle < DAT_00570b48) {
-                this->angle = random_angle - DAT_00570b4c;
-                this->set_angle();
-                return 1;
+                if (this->angle < DAT_00570b48) {
+                    this->angle = random_angle - DAT_00570b4c;
+                    this->set_angle();
+                    return 1;
+                }
+                if (this->angle > DAT_00570b50) {
+                    this->angle = random_angle - DAT_00570b50;
+                    this->set_angle();
+                    return 1;
+                }
             }
-            if (this->angle > DAT_00570b50) {
-                this->angle = random_angle - DAT_00570b50;
-                this->set_angle();
-                return 1;
-            }
+        }
     }
 
     this->set_angle();
