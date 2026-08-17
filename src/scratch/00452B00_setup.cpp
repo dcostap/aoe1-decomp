@@ -13,6 +13,10 @@
 // Attempt 14: named DAT_00570618 and period-likely fscanf literals moved the first hunk to 00452E24 and reduced drift to 199 bytes; kept.
 // Attempt 15: function-scope sprite result and explicit terrain width were codegen-duplicate; kept the period-plausible scope.
 // Attempt 16: a 24-case scalar store-order lab found edit diff 92 and positional diff 196, but every case kept the first mismatch and reversed PDB order; diagnostic only.
+// Worker pass: 20 additional probes covered statement order, result lifetimes, declaration order, headers, class surface,
+// register hints, flags, and damage-pointer ownership. None improved the pinned source; all are recorded in target history.
+// BINARY NOTE: the original stores undead_sprite at 00452E24 before the scalar-byte block. The natural source below preserves
+// that behavior, but VC5 schedules two later byte loads before the store. Do not add volatility or address tricks without proof.
 // left in scratch: 199-byte strict drift begins at 00452E24 in scalar-store scheduling after the final lookup; calls, size, frame, and CFG match.
 
 #include <stdio.h>
