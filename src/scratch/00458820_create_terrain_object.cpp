@@ -30,6 +30,18 @@
 // - bounded pause: calls are 10/10 aligned and size is exact, but the first
 //   mismatch remains the prologue/frame (rebuilt frame 0x14 vs 0x10), followed
 //   by broad local/register and shifted block drift. Not accepted-drift-safe.
+//
+// Revisit sa-8632da43-r1:
+// - The direct replacement-table scan keeps the 794-byte size but needs a
+//   0x14-byte frame.  A typed short* replacement_types alias removes that
+//   frame slot and gives a 0x10-byte frame with 241 instructions.
+// - The alias candidate has 10/10 ordered calls and 49.38% exact-block
+//   coverage.  Its best check is 686 differing bytes and 759 effective bytes.
+// - A natural short-circuit replacement scan improves loop shape but removes
+//   one required cleanup call.  It was rejected.
+// - Twenty-five source and context probes, plus a six-variant declaration and
+//   width lab, did not recover the initial register colors or coordinate FPU
+//   homes.  The remaining drift is structural and not accepted-drift-safe.
 
 extern "C" int __cdecl debug_rand(char*, int);
 
@@ -149,12 +161,8 @@ void RGE_Map::create_terrain_object(RGE_Player* player, RGE_Game_World* /*world*
     short terrain = (short)this->get_terrain(col, row);
     short num_obj_type = this->terrain_types[terrain].num_obj_type;
     RGE_Object_Node* node;
-    unsigned char mode;
     RGE_Static_Object* object;
     short object_id;
-    unsigned char* placement;
-    short* density;
-    int remaining;
 
     if (num_obj_type > 0) {
         node = this->map_row_offset[row][col].objects.list;
@@ -166,49 +174,51 @@ void RGE_Map::create_terrain_object(RGE_Player* player, RGE_Game_World* /*world*
             object_id = object->master_obj->id;
             if (object->owner == player &&
                 (object_id < min_id || object_id > max_id)) {
-                if (new_terrain < 0) {
-                    if (remove_now != 0) {
-                        if (object != 0)
-                            delete object;
+                    if (new_terrain < 0) {
+                        if (remove_now != 0) {
+                            if (object != 0)
+                                delete object;
+                        } else {
+                            object->destroy_obj();
+                        }
                     } else {
-                        object->destroy_obj();
-                    }
-                } else {
-                    short replacement_count =
-                        this->terrain_types[new_terrain].num_obj_type;
-                    if (replacement_count >= 0) {
-                        do {
-                            if (this->terrain_types[new_terrain].obj_types[replacement_count] ==
-                                object_id)
-                                break;
-                            --replacement_count;
-                        } while (replacement_count >= 0);
-
+                        short replacement_count =
+                            this->terrain_types[new_terrain].num_obj_type;
                         if (replacement_count >= 0) {
-                            if (remove_now != 0) {
-                                if (object != 0)
-                                    delete object;
-                            } else {
-                                object->destroy_obj();
+                            short* replacement_types =
+                                this->terrain_types[new_terrain].obj_types;
+                            do {
+                                if (replacement_types[replacement_count] == object_id)
+                                    break;
+                                --replacement_count;
+                            } while (replacement_count >= 0);
+
+                            if (replacement_count >= 0) {
+                                if (remove_now != 0) {
+                                    if (object != 0)
+                                        delete object;
+                                } else {
+                                    object->destroy_obj();
+                                }
                             }
                         }
                     }
-                }
             }
             } while (node != 0);
         }
 
         if (num_obj_type > 0) {
-            placement = this->terrain_types[terrain].obj_placement_flag;
-            density = this->terrain_types[terrain].obj_density;
-            remaining = (int)num_obj_type;
+            unsigned char* placement =
+                this->terrain_types[terrain].obj_placement_flag;
+            short* density = this->terrain_types[terrain].obj_density;
+            int remaining = (int)num_obj_type;
             do {
                 short object_type = density[-30];
                 if (object_type != -1) {
                     short chance = *density;
                     RGE_Master_Static_Object* master =
                         player->master_objects[object_type];
-                    mode = *placement;
+                    unsigned char mode = *placement;
 
                     if (master != 0 && chance > 0) {
                         int chance_left = (int)chance;
