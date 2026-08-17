@@ -12,12 +12,13 @@
 // 10: tested the natural pre-gate waiting-state reset from the ordered call map; it improved size but changed the later virtual call to an indirect register call, so it was restored.
 // 11: named a local start waypoint pointer to follow the original EBP-preserved address; first mismatch shifted earlier and diff worsened to 1120, so it was restored.
 // 12: donor-backed typed member-pointer null guard plus canonical ManagedArray ownership restored the missing vcall and matched 50/50 calls and CFG, but worsened positional diff to 1106; rolled back as opaque compiler steering.
+// 13: fresh pass tested 27 distinct source, ABI, layout, liveness, and control-flow hypotheses. The best clean guarded model reached 50/50 calls, 1207 bytes, and diff 931, but its null guard is not supported by the constant vcall-thunk condition and was not retained.
+// 14: natural float-to-int casts preserve the original ST0 __ftol ABI. Direct branch-local findTilePath calls preserve the original user-waypoint setup and tail-merge to one emitted call; the clean result remains unresolved at 49/50 calls because the unreachable compiler block is omitted.
 
 #include <math.h>
 #include <stdio.h>
 
 typedef unsigned char uchar;
-extern "C" int __cdecl _ftol(double);
 extern "C" int __cdecl fprintf(FILE*, const char*, ...);
 extern FILE* actionFile;
 extern int displayPathingFlags;
@@ -31,9 +32,28 @@ struct Waypoint {
     unsigned char pad[3];
 };
 
+struct ManagedArrayInt {
+    int* value;
+    int numberValue;
+    int desiredNumberValue;
+    int maximumSizeValue;
+};
+
+struct XYZBYTEPoint {
+    unsigned char x;
+    unsigned char y;
+    unsigned char z;
+};
+
 class Path {
 public:
-    char data[0x34];
+    unsigned long timeStampValue;
+    Waypoint startValue;
+    Waypoint goalValue;
+    Waypoint* pathValue;
+    int maxSizeValue;
+    int currentSizeValue;
+    int currentWaypointValue;
     void setTimeStamp(int);
     void killPath();
     int insertAtCurrent(Waypoint*);
@@ -54,16 +74,23 @@ public:
     int computerPlayer();
 };
 
+class RGE_Moving_Object;
+
 class PathingSystem {
 public:
     void incrementInitialPaths();
-    int findTilePath(int,int,int,int,void*,float,int,int,float*,int,int,int,int,int,int);
-    int passable(void*, float, float, int);
+    int findTilePath(int,int,int,int,RGE_Moving_Object*,float,int,int,float*,int,int,int,int,int,int);
+    int passable(RGE_Moving_Object*, float, float, int);
 };
 extern PathingSystem pathSystem;
 
 class RGE_Moving_Object {
 public:
+    enum PathResult {
+        PathFound = 0,
+        PathNoPath = 1,
+        WaitingOnPathingCap = 2
+    };
     virtual void vf0();
     virtual void vf1();
     virtual void vf2();
@@ -149,9 +176,9 @@ public:
     unsigned char selected;
     unsigned char selected_group;
     float x; float y; float z;
-    char gap44[0x14];
-    int field58;
-    char gap5c[0x48];
+    char gap44[0x10];
+    ManagedArrayInt pathingGroupMembers;
+    char gap64[0x40];
     Path path;                 // +A4
     Path exceptionPath;        // +D8
     Waypoint startValue;       // +10C
@@ -166,23 +193,30 @@ public:
     char gap148[0xE];          // through +156
     unsigned char numberWaitDelays; // +156
     char gap157[0x11];
-    unsigned char* userDefinedWaypoints; // +168
+    XYZBYTEPoint* userDefinedWaypoints; // +168
     int numberUserDefinedWaypointsValue; // +16C
     int maxUserDefinedWaypoints; // +170
     char gap174[4];
     float closestDistanceToWaypoint; // +178
-    int findPath();
+    PathResult findPath();
 };
 
 
-int RGE_Moving_Object::findPath()
+RGE_Moving_Object::PathResult RGE_Moving_Object::findPath()
 {
+    float x;
+    float y;
+    float z;
     if (*(float*)((char*)this->master + 0x38) <= 0.0f) {
         this->setWaitingToMove(0);
-        this->startValue.x = this->x;
-        this->startValue.y = this->y;
-        this->startValue.z = this->z;
-        this->field58 = 0;
+        x = this->x;
+        y = this->y;
+        z = this->z;
+        this->startValue.x = x;
+        this->startValue.y = y;
+        this->startValue.z = z;
+        // BINARY NOTE: this is the ManagedArray count at object offset +0x58.
+        this->pathingGroupMembers.numberValue = 0;
         this->path.setTimeStamp(*(int*)((char*)this->owner->time + 4));
         this->path.killPath();
         this->path.insertAtCurrent(&this->goalValue);
@@ -190,43 +224,48 @@ int RGE_Moving_Object::findPath()
         this->path.initToStart();
         this->path.moveToNextWaypoint();
         this->closestDistanceToWaypoint = 100000.0f;
-        return 0;
+        return PathFound;
     }
 
     if (!this->owner->availablePathingAttempts(this->numberWaitDelays)) {
         this->numberWaitDelays++;
-        return 2;
+        return WaitingOnPathingCap;
     }
     this->owner->incrementPathingAttempts();
     this->numberWaitDelays = 0;
     this->setWaitingToMove(0);
     if (!this->owner->computerPlayer()) this->continueCounter = this->numberUserDefinedWaypointsValue + 0x19;
     else this->continueCounter = this->numberUserDefinedWaypointsValue + 0x0f;
-    this->startValue.x = this->x;
-    this->startValue.y = this->y;
-    this->startValue.z = this->z;
+    x = this->x;
+    y = this->y;
+    z = this->z;
+    this->startValue.x = x;
+    this->startValue.y = y;
+    this->startValue.z = z;
     this->closestDistanceToWaypoint = 100000.0f;
     pathSystem.incrementInitialPaths();
 
-    int sx, sy;
+    int found;
+    // LIKELY INTENT: separate calls let VC5 keep branch-local argument setup.
     if (this->numberUserDefinedWaypointsValue > 0) {
-        sy = this->userDefinedWaypoints[1];
-        sx = this->userDefinedWaypoints[0];
+        found = pathSystem.findTilePath(
+            // BINARY NOTE: natural casts keep __ftol input on x87 ST0.
+            (int)this->startValue.x, (int)this->startValue.y,
+            this->userDefinedWaypoints->x, this->userDefinedWaypoints->y,
+            this, this->actionRange, this->targetIDValue,
+            1, 0, 1, 1, 1, 1, -1, -1);
     } else {
-        sy = _ftol(this->goalValue.y);
-        sx = _ftol(this->goalValue.x);
+        found = pathSystem.findTilePath(
+            (int)this->startValue.x, (int)this->startValue.y,
+            (int)this->goalValue.x, (int)this->goalValue.y,
+            this, this->actionRange, this->targetIDValue,
+            1, 0, 1, 1, 1, 1, -1, -1);
     }
-    int ey = _ftol(this->startValue.y);
-    int ex = _ftol(this->startValue.x);
-    int found = pathSystem.findTilePath(ex, ey, sx, sy, this,
-                                        this->actionRange,
-                                        this->targetIDValue,
-                                        1, 0, 1, 1, 1, 1, -1, -1);
 
     if (actionFile != 0) {
         fprintf(actionFile, (const char*)0x584C9C, *(int*)((char*)this->owner->time + 4), this->id, this->startValue.x, this->startValue.y, this->goalValue.x, this->goalValue.y);
         this->path.initToStart();
-        int i=0;
+        int i = 0;
         while (i < this->path.numberOfWaypoints()) {
             fprintf(actionFile, (const char*)0x584C84, i,
                     this->path.currentWaypoint()->x,
@@ -245,7 +284,7 @@ int RGE_Moving_Object::findPath()
                                 (float)(floor(this->y) + 0.5), 1)) {
             if ((this->x - floor(this->x)) != 0.5 || (this->y - floor(this->y)) != 0.5) {
                 this->move_to((float)(floor(this->x)+0.5), (float)(floor(this->y)+0.5));
-                return 2;
+                return WaitingOnPathingCap;
             }
         }
     }
@@ -253,7 +292,7 @@ int RGE_Moving_Object::findPath()
     this->path.setTimeStamp(*(int*)((char*)this->owner->time + 4));
     if (displayPathingFlags && this->selected) {
         this->path.initToStart();
-        int i=0;
+        int i = 0;
         while (i < this->path.numberOfWaypoints()) {
             void* obj = this->owner->objects[displayPathObjectID];
             ((void (*)(void*, RGE_Moving_Object*, float, float, float))(*(void***)obj)[6])(
@@ -267,5 +306,5 @@ int RGE_Moving_Object::findPath()
     }
     this->path.initToStart();
     this->path.moveToNextWaypoint();
-    return 0;
+    return PathFound;
 }
