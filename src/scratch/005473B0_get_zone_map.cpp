@@ -39,6 +39,29 @@
 //   do-while scan, and removal of the outer count guard were tested; the first
 //   and last emitted the same 266-byte family, while the captured/do-while
 //   forms widened or duplicated the check. Restored the guarded while source.
+// - This lease tested explicit result/goto forms, break/post-loop hit handling,
+//   for-loop spelling, assignment-in-return, and declaration-order changes;
+//   all natural direct-result forms stayed in the same 266-byte family.
+// - A common pointer-array return using zone_map_index reached 247 bytes and
+//   one return, but changed growth-path register scheduling and 73 strict bytes.
+//   A common return using the scan index reached 247 bytes but drifted 158
+//   bytes. Neither form is retained because the clean guarded-while source
+//   preserves the original first 217 bytes and growth path.
+// - Final lease probes restored the pinned clean source. The remaining 37-byte
+//   drift is limited to the original shared hit-path EH teardown versus VC5's
+//   duplicated direct-return cleanup. No exact natural source form was found.
+// - Canonical ownership review: inventory/types/dumps/RGE_Zone_Map_List.txt
+//   proves this class is 0xC bytes with RGE_Zone_Map** zone_maps at +0,
+//   long zone_map_num at +4, and RGE_Map* map at +8. The exact same-TU
+//   save/create/index functions confirm those types and ownership. The
+//   constructor-proven RGE_Zone_Map surface below is the 0x51C allocation
+//   owner. No declaration change is justified before further codegen work.
+// - This pass tested a common return with a pre-scan zone_maps alias and a
+//   common return through this->zone_maps[zone_map_index]. The alias form was
+//   253 B with 221 differing bytes. The indexed common-return form was 247 B
+//   with 74 differing bytes, but it changed the growth-path register schedule
+//   from the first mismatch at 005473ED. Restored the pinned guarded-while
+//   source; the 37-byte drift remains the best natural reconstruction.
 
 #include <stdlib.h>
 #include <string.h>
