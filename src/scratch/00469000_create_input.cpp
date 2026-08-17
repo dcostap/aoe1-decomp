@@ -17,6 +17,11 @@
 // session probes: a register result, a destructor declaration, and the packet-indicated virtual create_input ABI (with the proven gap adjustment) did not change that tail family; /O1 introduced an extra EH helper and broad structural drift.
 // final session source restores the natural typed factory form; remaining blocker is the VC5 /GX shared EH failure-tail placement (oracle success jump over failure block to one epilogue).
 // luna probe: a typed unsigned-byte status local formed the shared success/failure jump topology, as in the sibling factory, but changed late register coloring and worsened positional diff; restored.
+// worker pass 2026-08-16: separate null, constructor-state, and setup failure guards widened the body to 507 bytes / 332 diff; restored.
+// worker pass: one shared fail label reduced size to 445 bytes but worsened positional diff to 279; restored. A TTextPanel-derived input ABI with the proven 0x188 base was byte-identical to the natural basin.
+// revisit 2026-08-17: an explicit outer failure else with the same error write was codegen-identical at 457 bytes / 180 diff; restored.
+// revisit probe: defining an empty local TInputPanel destructor changed only the compiler-owned /GX context and produced an authoritative 0-byte MATCH. It is not retained: the real destructor owns VA 00476CF0 in src/matching, and a duplicate owner is not policy-valid.
+// final validation: natural source is 457 bytes / 180 positional diff, with all 7 calls ordered and the first 0x9C bytes exact; the only remaining mismatch is the /GX cloned return tail.
 
 class TPanel {};
 class TDrawArea {};
