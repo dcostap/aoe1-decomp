@@ -64,6 +64,12 @@
 // The remaining paired hunk is the transient list-base load into ECX before
 // the cursor add. Explicit list aliases changed the frame or duplicated code.
 // No new natural lead remains in this pass.
+// Fresh exact pass sa-65f823b2-r1: retaining a typed entry for facet and
+// offsets, but spelling the child load through the repeated proven
+// draw_list-plus-byte-offset expression, recovered the original list-base
+// load, 0xC frame, and complete loop bytes. Duplicating the two natural
+// fallback do_draw arms let VC5 merge the common call tail and recovered the
+// fallback bytes. The result is an exact 304-byte match with no assembly.
 
 #include <stdio.h>
 
@@ -145,11 +151,13 @@ unsigned char RGE_Sprite::draw(long facet, long param_2, long param_3,
 
     if ((this->draw_list_num <= 0) || (this->draw_list == 0)) {
         if (this->draw_level <= 0xa) {
-            param_3 = param_5;
-            param_4 = param_6;
+            this->do_draw(facet, param_2, param_5, param_6,
+                          color_table, draw_area, color_index);
         }
-        this->do_draw(facet, param_2, param_3, param_4,
-                      color_table, draw_area, color_index);
+        else {
+            this->do_draw(facet, param_2, param_3, param_4,
+                          color_table, draw_area, color_index);
+        }
         count = 1;
     }
     else {
@@ -163,7 +171,9 @@ unsigned char RGE_Sprite::draw(long facet, long param_2, long param_3,
                     (RGE_Picture_List*)((char*)this->draw_list + entry_offset);
                 short entry_facet = entry->facet;
                 if ((entry_facet < 0) || (entry_facet == facet)) {
-                    RGE_Sprite* sprite = entry->sprite;
+                    RGE_Sprite* sprite =
+                        *(RGE_Sprite**)((char*)this->draw_list +
+                                        entry_offset + 4);
                     int child_facet =
                         (sprite->facet_num * facet) /
                         (int)this->facet_num;
