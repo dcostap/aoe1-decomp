@@ -36,6 +36,13 @@
 //   0xB12 before currentLine; VC5 schedules currentLine first in this source.
 //   Direct fields, save-dir locals, references, scoped locals, and pointer
 //   address spellings were tested.  The ten-byte source is retained as best.
+// - independent semantic re-audit: the target's +00E9 add is before the
+//   second currentLine call.  The class dump proves save_dir is a direct
+//   inline array at +0xB12; it has no helper or nested directory subobject.
+//   Natural receiver types, base references, array references, explicit array
+//   casts, and scoped current-line locals either kept the 10-byte basin or
+//   changed the frame and whole-function layout.  No supported source form
+//   explains this local VC5 scheduling difference.  Keep this baseline.
 
 #include <io.h>
 #include <stdio.h>
