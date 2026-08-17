@@ -45,6 +45,19 @@
 //   worsened the result to 354 bytes; it was rolled back.
 // - Restored named sprite-parser format strings. The raw string addresses were
 //   diagnostic data plumbing.
+// - A natural positive-arm micro_man_sound guard improved the mismatch to 197
+//   bytes and recovered the original cold sound_list-zero tail; it is retained.
+// - Counted draw and sound initialization loops, guard polarity, named result
+//   pointers, direct record members, index widths, and pointer spellings were
+//   tested. Most were duplicates or worsened frame, size, or topology.
+// - A short-cast sound-record loop bound, `(short)local_4`, recovered the exact
+//   701-byte size and aligned the complete sound parser from its fscanf setup
+//   through both returns. The remaining 150-byte mismatch is localized to the
+//   draw-record address/register basin and sound allocation store order.
+// - An 8-variant natural source lab tested draw allocation placement, sound
+//   allocation result naming, and inner loop forms. It found no exact variant.
+// - Second focused pass completed 20 meaningful probes. No policy-valid exact
+//   source was found; retain the simplest typed source and validate before pause.
 
 #include <stdio.h>
 
@@ -221,7 +234,7 @@ RGE_Sprite::RGE_Sprite(FILE* infile, short sprite_id, RGE_Sound** sounds)
         short i = 0;
         if (*draw_count > 0) {
             do {
-                RGE_Picture_List* entry = &this->draw_list[i];
+                RGE_Picture_List* entry = this->draw_list + i;
                 fscanf(infile, s_picture_format,
                        &entry->picture_num,
                        &entry->offset_x,
@@ -234,26 +247,19 @@ RGE_Sprite::RGE_Sprite(FILE* infile, short sprite_id, RGE_Sound** sounds)
         this->draw_list = 0;
     }
 
-    if (this->micro_man_sound == 0) {
-        this->sound_list = 0;
-    } else {
+    if (this->micro_man_sound != 0) {
         this->sound_list = (RGE_Sound_List*)calloc(
             (unsigned int)this->facet_num, 0x14);
 
-        short i = 0;
-        if (*facet_count > 0) {
-            do {
-                for (int slot = 0; slot < 3; ++slot) {
-                    this->sound_list[i].frame[slot] = (short)-1;
-                }
-                ++i;
-            } while (i < *facet_count);
+        for (short i = 0; i < *facet_count; ++i) {
+            for (int slot = 0; slot < 3; ++slot) {
+                this->sound_list[i].frame[slot] = (short)-1;
+            }
         }
 
-        int sound_count;
         local_4 = 0;
-        if (temp_micro_man_sound > 0) {
-            sound_count = temp_micro_man_sound;
+        if ((short)temp_micro_man_sound > 0) {
+            int sound_count = temp_micro_man_sound;
             do {
                 short index1;
                 short local_e;
@@ -279,7 +285,9 @@ RGE_Sprite::RGE_Sprite(FILE* infile, short sprite_id, RGE_Sound** sounds)
                     }
                 }
                 ++local_4;
-            } while (local_4 < temp_micro_man_sound);
+            } while ((short)local_4 < temp_micro_man_sound);
         }
+    } else {
+        this->sound_list = 0;
     }
 }
