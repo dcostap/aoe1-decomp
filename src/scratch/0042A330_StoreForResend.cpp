@@ -26,79 +26,74 @@
 // initialization after the gates; emitted code was unchanged, so restored the clean source.
 // follow-up: typed 501-entry array induction, a typed free-slot entry reference, and
 // a register-qualified self alias were each codegen duplicates; restored the clean source.
+// revisit: restored the binary-local diagnostic strings for occupied entries, stored
+// payloads, and the full-buffer tail; canonical RESENDER field names are codegen-neutral.
+// policy normalization: the final unresolved source uses a typed RESENDER pointer
+// walk instead of a raw byte cursor. This is natural ownership, but it widens the
+// codegen gap and relocates the full-buffer log call.
+// bounded pass: 11 probes found no better natural basin. The final source is 497B
+// versus 523B with 7/7 ordered calls and frame 0x8; REP payload lowering and
+// EBX-self/EBP-slot coloring remain unresolved.
+// Main review replaced the explicit allocation call and handwritten copy loop
+// with ordinary new[] and memcpy ownership.
 // left in scratch: behavior and layout modeled, but logging argument order/register allocation and copy-loop lowering remain broad; not accepted-drift-safe.
 
 #include <string.h>
 class TDebuggingLog { public: void Log(char* fmt, ...); };
 extern TDebuggingLog* L;
-void* __cdecl operator new(unsigned int size);
 extern unsigned long __cdecl debug_timeGetTime(char* file, int line);
 
-struct ResendEntry {
-    unsigned long time;
-    unsigned int used;
-    char* data;
-    unsigned int size;
-    unsigned int vals[10];
+struct RESENDER {
+    unsigned long TimeSent;
+    unsigned int Serial;
+    char* ResendMsg;
+    unsigned int Length;
+    unsigned int DestMap[10];
 };
 
 class TCommunications_Handler {
 public:
     char gap_0000[0x10E4];
-    int active;
+    int Multiplayer;
     char gap_10E8[0x12D8-0x10E8];
-    unsigned short resendPlayerCount;
+    unsigned short MaxGamePlayers;
     char gap_12DA[0x1514-0x12DA];
-    unsigned char resendEnabled;
+    unsigned char RGE_Guaranteed_Delivery;
     char gap_1515[0x1520-0x1515];
-    ResendEntry* resendTable;
+    RESENDER* Resend;
 
     int StoreForResend(unsigned int param_1, char* param_2, unsigned int param_3, unsigned int* param_4);
 };
 
 int TCommunications_Handler::StoreForResend(unsigned int param_1, char* param_2, unsigned int param_3, unsigned int* param_4)
 {
-    if (this->active != 0) {
-        if (this->resendEnabled == 0) {
+    if (this->Multiplayer != 0) {
+        if (this->RGE_Guaranteed_Delivery == 0) {
             L->Log("+++!RGEGTD Store");
         } else {
 
     unsigned int slot = 0;
-    unsigned int off = 0;
-    while (off < 0x6D98) {
-        ResendEntry* e = (ResendEntry*)((char*)this->resendTable + off);
-        if (e->used == 0) {
-            unsigned int idxoff = slot;
-            idxoff <<= 3;
-            idxoff -= slot;
-            idxoff <<= 3;
-            e = (ResendEntry*)((char*)this->resendTable + idxoff);
-            e->size = param_3;
+    RESENDER* e = this->Resend;
+    do {
+        if (e->Serial == 0) {
+            e->Length = param_3;
             if (param_3 != 0) {
-                e->data = (char*)operator new(e->size);
-                if (e->data != 0) {
-                    unsigned int n = e->size;
-                    char* dst = e->data;
-                    for (unsigned int q = n >> 2; q != 0; q--) {
-                        *(unsigned int*)dst = *(unsigned int*)param_2;
-                        param_2 += 4;
-                        dst += 4;
-                    }
-                    for (n &= 3; n != 0; n--) {
-                        *dst++ = *param_2++;
-                    }
-                    e->size = param_3;
+                e->ResendMsg = new char[e->Length];
+                if (e->ResendMsg != 0) {
+                    memcpy(e->ResendMsg, param_2, e->Length);
+                    e->Length = param_3;
                 }
             }
-            e->used = param_1;
-            unsigned int bytes = (unsigned int)this->resendPlayerCount * 4 + 4;
-            memcpy(e->vals, param_4, bytes);
+            e->Serial = param_1;
+            unsigned int bytes = (unsigned int)this->MaxGamePlayers * 4 + 4;
+            memcpy(e->DestMap, param_4, bytes);
 
-            L->Log("+++RGEGTD Store: %u %u %u", param_3, slot, param_1, this->resendPlayerCount);
+            L->Log("Stored %db for resend (Slot= %d ) SERIAL=%d  (MaxPlayers=%d)",
+                   param_3, slot, param_1, this->MaxGamePlayers);
             unsigned int i = 1;
-            if (i <= this->resendPlayerCount) {
+            if (i <= this->MaxGamePlayers) {
                 unsigned int* p = param_4 + 1;
-                unsigned int* usedp = &e->vals[1];
+                unsigned int* usedp = &e->DestMap[1];
                 do {
                     if (*usedp != 0) {
                         L->Log("    %u %u", i, *p);
@@ -106,22 +101,22 @@ int TCommunications_Handler::StoreForResend(unsigned int param_1, char* param_2,
                     i++;
                     usedp++;
                     p++;
-                } while (i <= this->resendPlayerCount);
+                } while (i <= this->MaxGamePlayers);
             }
-            e->time = debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\Com_hand.cpp", 0xD12);
+            e->TimeSent = debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\Com_hand.cpp", 0xD12);
             return 1;
         }
 
-        int flag = e->used;
-        char first = e->data[0];
-        L->Log("RGEGTD Stored: %u %u %d %u %u %u %u %u %u %u %u %u %u",
-               e->used, slot, (int)first, (int)first, e->size,
-               e->vals[1], e->vals[2], e->vals[3], e->vals[4], e->vals[5],
-               e->vals[6], e->vals[7], e->vals[8]);
-        off += 0x38;
+        int flag = e->Serial;
+        char first = e->ResendMsg[0];
+        L->Log("QUEUE Has Ser #%d (Slot=%d) Cmd=%d '%c' Len=%d not ackd yet by %d,%d,%d,%d,%d,%d,%d,%d",
+               flag, slot, (int)first, (int)first, e->Length,
+               e->DestMap[1], e->DestMap[2], e->DestMap[3], e->DestMap[4], e->DestMap[5],
+               e->DestMap[6], e->DestMap[7], e->DestMap[8]);
+        e++;
         slot++;
-    }
-            L->Log("+++!RGEGTD Store no room %d", slot);
+    } while (slot < 502);
+            L->Log("RESEND buffer filled up, slots (i=%d).", slot);
         }
     }
     return 0;
