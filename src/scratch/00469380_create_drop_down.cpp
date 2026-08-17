@@ -65,6 +65,21 @@
 // return 0; the outer list allocation is intentionally leaked. VC5 grows the
 // function by 17 bytes and duplicates the EH return path, but the behavior is
 // correct and takes priority over the closer clean-source codegen.
+// 38: changed the second-calloc failure to goto the shared result epilogue;
+// this restores the oracle's 811-byte size, one return, and exact call set.
+// 39-41: comma, logical-not, and ternary result spellings are codegen
+// duplicates; each keeps the 21-byte final free/return scheduling mismatch.
+// 42: an explicit cdecl int free declaration is a codegen duplicate and is
+// not retained because the reviewed CRT surface returns void.
+// 43: a function-scope failure result local adds the 17-byte EH return basin;
+// a cleanup-scope result local and a pointer alias are codegen duplicates.
+// 44: matching the oracle's single cleanup PDB line with #line has no effect;
+// line state is not the cause of the final scheduling difference.
+// 45: a focused return-shape variant lab tested nine result forms with VC5
+// flags. Under /GX, all size/frame/call-set eligible forms stayed in the same
+// 21-byte basin; no exact form was found.
+// 46: moving the final outer-list free outside the cleanup scope is a codegen
+// duplicate. The pinned natural goto-finish source remains authoritative.
 // FLAGS: config\flags\00469380_create_drop_down.rsp
 
 #include <string.h>
@@ -148,8 +163,9 @@ int TEasy_Panel::create_drop_down(TPanel* parent, TDropDownPanel** out, long x, 
     char** list = (char**)calloc(1,4);
     if (list == 0) { this->failure = 1; goto finish; }
     list[0] = (char*)calloc(0x14,1);
-    // The original returns zero here and leaks the outer list allocation.
-    if (list[0] == 0) return 0;
+    // The original returns through the shared result epilogue here and leaks
+    // the outer list allocation.
+    if (list[0] == 0) goto finish;
     // string literal at 580460 is " "
     strcpy(list[0], (const char*)0x580460);
     if (this->failure == 0) {
