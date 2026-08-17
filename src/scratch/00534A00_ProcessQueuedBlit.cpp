@@ -117,6 +117,24 @@
 // probes. They were duplicate or worse (the headers reached diff=195 with
 // weaker shape). Restored the pinned 219-byte source; extra EBX save remains.
 
+// sa-cd1ad2b3-r1 strict-span audit: the 14 spans total 199 bytes. The first
+//   span is the extra EBX save. It shifts every later branch and stack home.
+//   The first paired body hunk then shows early &src materialization before
+//   push 16. This keeps the source-top value in EBX instead of EBP. It also
+//   changes RECT stores, the receiver color, and COM push order. The final
+//   hunk is separate: VC5 removes the dead BltFast result store, loads
+//   Current_Blit before Blit_Queue_Size, and swaps CMP operands. The epilogue
+//   has the matching EBX pop and two trailing NOPs.
+// sa-cd1ad2b3-r1 H1-H20: long result, area/surface pointer and reference
+//   aliases, named index and offset locals, period header contexts, combined
+//   status guard, delayed RECT pointer, int/unsigned RECT fields, nested
+//   failure guards, explicit casts, increment spellings, and a named final
+//   index were duplicate, worse, or invalid-context probes. No probe changed
+//   the 219-byte clean source basin.
+// sa-cd1ad2b3-r1 conclusion: extra EBX save, COM argument/source scheduling,
+//   and dead-result-store behavior remain isolated VC5/TU-context drift.
+//   Restore and retain the pinned natural typed source.
+
 struct tagRECT { long left; long top; long right; long bottom; };
 
 struct Blit_Queue_Entry {
