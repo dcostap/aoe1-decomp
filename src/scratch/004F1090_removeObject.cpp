@@ -41,6 +41,11 @@
 // - Tried a no-reinitialization scan-index form and a first-scan do-while
 //   form.  They improved some block counts, but moved strict diff to 710 and
 //   682 bytes; restored the 607-byte clean source.
+// - Renewed pass: 21 distinct source, liveness, control-flow, and context
+//   probes reproduced the 768-byte source-shaped basin or regressed it.  The
+//   best clean result remains 607 strict diff bytes with all ten ordered calls,
+//   the frameless boundary, and the correct owning symbol.  The unresolved
+//   blocker is the original saved-EBX zero/register basin and block layout.
 
 class TacticalAIModule {
 public:
