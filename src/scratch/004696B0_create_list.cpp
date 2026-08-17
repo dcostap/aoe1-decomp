@@ -34,7 +34,7 @@
 // 19: replaced the manual bevel vtable expression with the proven TTextPanel
 // slot-59 virtual surface.  This removes the explicit this push and aligns
 // the vslot +0xEC call; the full TPanel slot surface is local to this TU.
-// 20: restored the oracle's inline empty-string copy with VC5 intrinsic strcpy
+// 20: restored the oracle's inline single-space copy with VC5 intrinsic strcpy
 // and the proven literal at 0x580460.  The rep scas/movsd/movsb block now
 // matches structurally; the declaration was moved before the pragma to avoid
 // the intrinsic warning.
@@ -42,6 +42,10 @@
 // is not a plausible source surface. Keep ordinary scalar coordinates.
 // The scalar form loses the exact frame and worsens the byte metrics. It is
 // still retained because its local ownership is source-plausible.
+// Revisit pass: restore the reviewed RGE_Font pointer and setup ABI, use a
+// pointer-sized calloc element, and copy the repository-proven single-space
+// seed. The full typed TPanel/TListPanel surfaces remain codegen-identical;
+// the original sub-esp,8 frame and shared /GX return tail remain unresolved.
 
 typedef unsigned long ulong;
 typedef unsigned int uint;
@@ -52,21 +56,28 @@ extern "C" void* __cdecl calloc(uint count, uint size);
 extern "C" void __cdecl free(void* p);
 extern "C" void* __cdecl operator_new(uint size);
 
-class RGE_Font { public: int font; int font_wid; int font_hgt; };
+class RGE_Font { public: void* font; int font_wid; int font_hgt; };
 class RGE_Base_Game { public: RGE_Font* get_font(int id); };
 extern RGE_Base_Game* rge_base_game;
 
 class TDrawArea;
 
+struct tagRECT {
+    long left;
+    long top;
+    long right;
+    long bottom;
+};
+
 class TPanel {
 public:
     virtual ~TPanel();
     virtual long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char);
-    virtual void set_rect(void*);
+    virtual void set_rect(tagRECT);
     virtual void set_rect(long, long, long, long);
     virtual void set_color(unsigned char);
     virtual void set_active(int);
-    virtual void set_positioning(int, long, long, long, long, long, long, long,
+    virtual void set_positioning(int, long, long, long, long, long, long, long, long,
                                   TPanel*, TPanel*, TPanel*, TPanel*);
     virtual void set_fixed_position(long, long, long, long);
     virtual void set_redraw(int);
@@ -136,7 +147,7 @@ public:
     virtual void set_text(char**, short);
     virtual void set_bevel_info(int, int, int, int, int, int, int);
     char gap_F4[0x188 - 0xF4];
-    long setup(TDrawArea* draw, TPanel* parent, long x, long y, long w, long h, int font, int font_wid, int font_hgt, char* text, int a, unsigned char b, int c, int d, int e, char** lines, int f);
+    long setup(TDrawArea* draw, TPanel* parent, long x, long y, long w, long h, void* font, int font_wid, int font_hgt, char* text, int a, unsigned char b, int c, int d, int e, char** lines, int f);
     void set_text_color(ulong a, ulong b);
     void set_highlight_text_color(ulong a, ulong b);
 };
@@ -144,6 +155,7 @@ public:
 class TListPanel : public TTextPanel {
 public:
     char gap_188[0x1A0 - 0x188];
+    virtual ~TListPanel();
     TListPanel();
     void scroll_cur_line(unsigned char a, int b, unsigned char c);
 };
@@ -174,6 +186,7 @@ int TEasy_Panel::create_list(TPanel* parent, TListPanel** out, long x, long y, l
     long ideal_x = (x * this->width) / this->ideal_width;
     long ideal_y = (y * this->height) / this->ideal_height;
     char** list_items;
+    RGE_Font* font;
 
     w = (w * this->width) / this->ideal_width;
     h = (h * this->height) / this->ideal_height;
@@ -184,7 +197,7 @@ int TEasy_Panel::create_list(TPanel* parent, TListPanel** out, long x, long y, l
         rge_base_game->get_font(10);
     }
 
-    list_items = (char**)calloc(4, 1);
+    list_items = (char**)calloc(1, sizeof(char*));
     if (list_items == 0) {
         this->error = 1;
         return 0;
@@ -193,13 +206,13 @@ int TEasy_Panel::create_list(TPanel* parent, TListPanel** out, long x, long y, l
     if (list_items[0] == 0) {
         goto cleanup_fail;
     }
-    strcpy(list_items[0], "");
+    strcpy(list_items[0], " ");
 
     if (this->error == 0) {
         TListPanel* list = new TListPanel;
         *out = list;
         if (list != 0 && list->error == 0) {
-            RGE_Font* font = rge_base_game->get_font(font_id);
+            font = rge_base_game->get_font(font_id);
             if ((*out)->setup(this->draw_area, parent, ideal_x, ideal_y, w, h, font->font, font->font_wid, font->font_hgt, 0, 0, 0, 1, 0xFF, 0, list_items, 1) != 0) {
                 (*out)->scroll_cur_line(1, 0, 1);
                 goto cleanup_success;
