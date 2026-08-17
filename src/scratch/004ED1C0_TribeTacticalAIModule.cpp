@@ -38,6 +38,14 @@
 //   and build counts.  VC5 now emits the compact six-store loop and 782 bytes;
 //   keep this readable source.  The remaining structural gap is the early
 //   Group receiver LEA and delayed EH-state store near the first field zero.
+// - 2026-08-17: revisited the first hunk with 20 distinct probes.  Direct,
+//   scoped, reordered, reference, split, and late group-pointer forms did not
+//   change the 782-byte code.  Moving the group call earlier reduced the byte
+//   diff to 649, but changed the call and store order, so it is not valid.
+//   Explicit vptr layouts, a typed group-link prefix, standard headers, and
+//   base novtable context did not change the baseline.  Removing derived
+//   novtable emitted an early vptr store and was rejected.  The clean baseline
+//   remains 692 bytes different, with three ordered calls and exact size.
 
 extern "C" void* __cdecl operator_new(unsigned int size);
 extern "C" void __cdecl operator_delete(void* p);
