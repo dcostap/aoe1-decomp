@@ -7,7 +7,7 @@
 //   trailing ftol). Modeled on exact sibling handle_points_attribute_first (00533180):
 //   same RGE_Player/RGE_Game_World/RGE_Victory_Point_Entry/RGE_Victory_Conditions surface.
 // - Binary semantics: val = ftol(player->attributes[entry->attribute]); curr_amount =
-//   (float)val; best starts at entry->points; if val < entry->initial_amount then best = 0
+//   (float)val; best starts at entry->points; if val < entry->amount then best = 0
 //   else scan players[1..num-1]: if any other player's attribute > curr_amount -> best = 0
 //   (break), if == curr_amount -> best = entry->curr_points; finally if best != curr_points
 //   award delta to tot_victory_points and store best.
@@ -96,43 +96,242 @@
 //   boundary error. The extra word holds a spilled player id. The oracle also reuses the node
 //   parameter home for the converted value and result. PDB local records are incomplete, but
 //   no natural source form recovered those choices. The volatile frame diagnostic stays rejected.
+// - Source-gate audit: replaced narrow class gaps and incomplete world slots with the named
+//   donor-header fields and virtual methods. Restored `amount` and `next` on the point entry,
+//   and typed the victory-list pointers. The rebuilt bytes stayed at the clean 221-byte,
+//   139-byte-diff baseline, so this ownership cleanup does not explain the codegen gap.
 
 class RGE_Game_World;
+class RGE_Victory_Entry;
+class RGE_Victory_Conditions;
+class RGE_Static_Object;
+class RGE_Master_Static_Object;
+class RGE_Object_List;
+class RGE_Visible_Map;
+class RGE_Doppleganger_Creator;
+class RGE_Master_Player;
+class RGE_Sprite;
+class RGE_Sound;
+class RGE_Map;
+class RGE_Effects;
+class RGE_Command;
+class RGE_Scenario;
+class RGE_Player_Info;
+class TSound_Driver;
+class TCommunications_Handler;
+class RGE_Object_Node;
+class XYZBYTEPoint;
+struct _iobuf;
+typedef struct _iobuf FILE;
 
 class RGE_Player {
 public:
     virtual ~RGE_Player();
-    char gap_04[0x38];
+    virtual void set_game_status(unsigned char);
+    virtual void do_resign(int);
+    virtual void changeToHumanPlayer();
+    virtual void changeToComputerPlayer();
+    virtual char* aiStatus(int);
+    virtual int isEnemy(int);
+    virtual int isAlly(int);
+    virtual int isNeutral(int);
+    virtual int isAllNeutral();
+    virtual void setDiplomaticStance(int, int);
+    virtual void loadAIInformation(char*, char*, char*, int, int);
+    virtual void sendUnitAIOrder(int, int, int, int, int, float, float, float,
+                                 float, int, int, int);
+    virtual void processAIOrder(int, int, int, int, int, float, float, float,
+                                float, int, int, int);
+    virtual void kickAI(int);
+    virtual int strategicNumber(int);
+    virtual void sendGameOrder(RGE_Static_Object*, RGE_Static_Object*, float,
+                                float);
+    virtual void sendAddWaypointCommand(int, XYZBYTEPoint*, int);
+    virtual void processAddWaypointCommand(int, XYZBYTEPoint*, int);
+    virtual void sendPlayCommand(int, int*, int, int, int);
+    virtual void sendPlayCommand(int, int, int);
+    virtual int sendAICommand(int, int, int, int, int);
+    virtual int objectCostByType(int);
+    virtual void trackUnitGather(int, int, int);
+    virtual RGE_Static_Object* make_scenario_obj(float, float, float, short,
+                                                   unsigned char, float);
+    virtual void scenario_save(int);
+    virtual void scenario_load(int, long*, float);
+    virtual void scenario_postsave(int);
+    virtual void scenario_postload(int, long*, float);
+    virtual void load(int);
+    virtual void add_attribute_num(short, float, unsigned char);
+    virtual void update();
+    virtual void update_dopplegangers();
+    virtual void save(int);
+    virtual void save2(int);
+    virtual void save_info(int);
+    virtual void random_start();
+    virtual RGE_Static_Object* make_new_object(long, float, float, float, int);
+    virtual void analyize_selected_objects();
+    virtual int get_mouse_pointer_action_vars(int, int*, int*);
+    virtual unsigned char command_make_move(RGE_Static_Object*, float, float);
+    virtual unsigned char command_make_work(RGE_Static_Object*, float, float);
+    virtual unsigned char command_make_do(RGE_Static_Object*, float, float);
+    virtual unsigned char command_stop();
+    virtual unsigned char command_place_object(short, float, float, float);
+    virtual unsigned char command_add_attribute(int, float);
+    virtual unsigned char command_give_attribute(int, int, float);
+    virtual unsigned char command_formation(int);
+    virtual unsigned char command_stand_ground();
+    virtual unsigned char command_create_group(int, int*, int, float);
+    virtual unsigned char command_add_to_group(int, int, float);
+    virtual unsigned char command_remove_from_group(int, int);
+    virtual unsigned char command_destroy_group(int);
+    virtual unsigned char command_resign(int, int);
+    virtual unsigned char command_add_waypoint(float, float, float);
+    virtual RGE_Object_Node* addObject(RGE_Static_Object*, int, int);
+    virtual void removeObject(RGE_Static_Object*, int, int, RGE_Object_Node*);
+    virtual void logMessage(char*);
+    virtual void notify(int, int, int, long, long, long);
+    virtual void logStatus(FILE*, int);
+    virtual void load_victory(int, long*, unsigned char);
+    virtual void new_victory();
+
+    int computerPlayerValue;
+    int pathingAttemptCapValue;
+    int pathingDelayCapValue;
+    int currentUpdatePathingAttemptsValue;
+    long checksum;
+    long position_checksum;
+    long action_checksum;
+    unsigned char checksum_created_this_update;
+    unsigned char pad_21;
+    short master_object_num;
+    RGE_Master_Static_Object** master_objects;
+    RGE_Object_List* objects;
+    RGE_Object_List* sleeping_objects;
+    RGE_Object_List* doppleganger_objects;
+    RGE_Victory_Conditions* victory_conditions;
+    RGE_Visible_Map* visible;
     RGE_Game_World* world;
-    char gap_40[0x0A];
+    RGE_Doppleganger_Creator* doppleganger_creator;
+    char* name;
+    unsigned char type;
+    unsigned char pad_49;
     short id;
-    char gap_4C[4];
+    short attribute_num;
+    unsigned char pad_4E[2];
     float* attributes;
 };
 
 class RGE_Game_World {
 public:
+    virtual unsigned char data_load_world(FILE*);
+    virtual unsigned char data_load_terrain_tables(char*);
+    virtual unsigned char data_load_players(char*);
+    virtual unsigned char data_load_objects(char*);
+    virtual unsigned char data_load_sounds(char*);
+    virtual unsigned char data_load_color_tables(char*);
+    virtual unsigned char data_load_sprites(char*);
+    virtual void data_load_players_type(short, short, FILE*);
+    virtual void data_load_effects(char*);
+    virtual void data_load_map(char*, char*, char*, char*, short, short, short,
+                               RGE_Sound**, char*);
+    virtual void data_load_random_map(char*, char*, char*, char*);
+    virtual unsigned char init_player_type(int, short, unsigned char);
+    virtual unsigned char init_player(int);
+    virtual void load_player(int, unsigned char, short);
+    virtual void color_table_init(int);
+    virtual void terrain_tables_init(int);
+    virtual void init_sounds(int, TSound_Driver*);
+    virtual void init_sprites(int);
+    virtual void map_init(int, TSound_Driver*);
+    virtual void effects_init(int);
+    virtual void master_player_init(int);
+    virtual void command_init(int, TCommunications_Handler*);
+    virtual void world_init(int, TSound_Driver*, TCommunications_Handler*);
+    virtual void setup_gaia();
+    virtual void setup_players(RGE_Player_Info*);
+    virtual unsigned char new_random_game(RGE_Player_Info*);
+    virtual void save(int);
+    virtual void scenario_make_player(short, unsigned char, unsigned char,
+                                      unsigned char, char*);
+    virtual void scenario_make_map(int);
+    virtual unsigned char load_scenario(RGE_Player_Info*);
+    virtual unsigned char load_scenario(char*, RGE_Player_Info*);
+    virtual void load_scenario1(int, RGE_Player_Info*);
+    virtual void load_scenario2(int, RGE_Player_Info*);
+    virtual void load_scenario3(int, RGE_Player_Info*);
+    virtual void load_scenario4(int, RGE_Player_Info*);
+    virtual void load_scenario5(int, RGE_Player_Info*);
+    virtual void load_scenario6(int, RGE_Player_Info*);
+    virtual void load_scenario7(int, RGE_Player_Info*);
+    virtual void load_scenario8(int, RGE_Player_Info*);
+    virtual void logStatus(FILE*, int);
     virtual ~RGE_Game_World();
-    char gap_04[0x38];
+    virtual void setup_player_colors();
+    virtual void setup_player_colors(RGE_Player_Info*);
+    virtual unsigned char data_load(char*, char*);
+    virtual unsigned char init(char*, TSound_Driver*, TCommunications_Handler*);
+    virtual void turn_sound_off();
+    virtual void del_game_info();
+    virtual unsigned char update();
+    virtual unsigned char get_game_state();
+    virtual unsigned char check_game_state();
+    virtual unsigned char load_world(int);
+    virtual unsigned char load_game(char*);
+    virtual unsigned char new_game(RGE_Player_Info*, int);
+    virtual unsigned char new_scenario(RGE_Player_Info*, int);
+    virtual unsigned char save_game(char*);
+    virtual void base_save(char*);
+    virtual void base_save(int);
+    virtual unsigned char save_scenario(char*);
+    virtual RGE_Scenario* get_scenario_info(char*);
+    virtual void pause(unsigned char);
+    virtual void scenario_init(RGE_Game_World*);
+    virtual void scenario_init(int, RGE_Game_World*);
+    virtual int addObject(RGE_Static_Object*);
+    virtual int removeObject(int);
+
+    unsigned long world_time;
+    unsigned long old_world_time;
+    unsigned long world_time_delta;
+    float timer;
+    unsigned long old_time;
+    float game_speed;
+    unsigned char temp_pause;
+    unsigned char game_state;
+    unsigned char game_end_condition;
+    unsigned char pad_1F;
+    long sound_update_index;
+    long sprite_update_index;
+    RGE_Map* map;
+    short sound_num;
+    unsigned char pad_2E[2];
+    RGE_Sound** sounds;
+    short sprite_num;
+    unsigned char pad_36[2];
+    RGE_Sprite** sprites;
     short player_num;
-    char gap_3E[2];
+    unsigned char pad_3E[2];
     RGE_Player** players;
 };
 
 class RGE_Victory_Point_Entry {
 public:
     unsigned char command; unsigned char state; unsigned char id; unsigned char group;
-    long attribute; long initial_amount; long points; long curr_points;
+    long attribute; long amount; long points; long curr_points;
     float curr_attribute_amount;
+    RGE_Victory_Point_Entry* next;
 };
 class RGE_Victory_Conditions {
 public:
-    virtual void handle_point_condition(void* entry);
-    virtual void handle_condition(void* entry);
-    virtual char* condition_description(void* entry);
+    virtual void handle_point_condition(RGE_Victory_Point_Entry* entry);
+    virtual void handle_condition(RGE_Victory_Entry* entry);
+    virtual char* condition_description(RGE_Victory_Entry* entry);
     virtual void save(int handle);
-    void* victory_list; long list_num; RGE_Player* player;
-    unsigned char victory; char gap_11[3]; void* victory_point_list;
+    RGE_Victory_Entry* victory_list;
+    long list_num;
+    RGE_Player* player;
+    unsigned char victory;
+    unsigned char pad_11[3];
+    RGE_Victory_Point_Entry* victory_point_list;
     long point_list_num; long tot_victory_points;
     void handle_points_highest_attribute(RGE_Victory_Point_Entry* entry);
 };
@@ -148,7 +347,7 @@ void RGE_Victory_Conditions::handle_points_highest_attribute(RGE_Victory_Point_E
         RGE_Player* player = this->player;
         RGE_Game_World* world = player->world;
         RGE_Player** players = world->players;
-        if (val < entry->initial_amount) {
+        if (val < entry->amount) {
             best = 0;
         } else {
             num = world->player_num;
