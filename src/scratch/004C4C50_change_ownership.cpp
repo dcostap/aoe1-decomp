@@ -32,6 +32,24 @@
 // to 136B; retaining old_master with the direct index, a named master-table
 // alias, int index, declaration-order changes, and zero initialization all
 // emitted the same clean 301B/134 basin. Restored the clean source.
+// managed worker: moving old_master after the node store widened to 136B;
+// function-scope locals, split initialization, scoped sprite selection, a
+// reference alias, void* master table casts, windows.h context, positive
+// sprite guards, and a redundant master alias were duplicates or worse.
+// Declaring change_ownership virtual corrected the decorated ABI name but did
+// not change body bytes; placing it at vtable slot 0x44 also preserved bytes.
+// revisit worker: grouping the ownership-transfer statements and sprite guard
+// to match the PDB line bands was a codegen duplicate at 134B.
+// revisit worker: a direct typed player_object_node assignment matched a
+// sibling donor's style but widened the result to 136B; the local node remains.
+// revisit worker: separate old_sprite/new_sprite, early result initialization,
+// direct this->sprite comparisons, split initialization, and declaration-order
+// variants were duplicates or worse. The exact copy_obj donor supports the
+// old-sprite/result-local model, but it does not select this function's basin.
+// revisit worker: replaced generic virtual pads and invented slot names with
+// the reviewed RGE_Player/RGE_Static_Object method surfaces. Renamed the
+// proven add/remove, explore/unexplore, and notify calls. Body bytes remain
+// 301B/134; source is now policy-valid without fake virtual slots.
 
 class RGE_Sprite;
 class RGE_Active_Sprite_List;
@@ -63,24 +81,68 @@ public:
 
 class RGE_Player {
 public:
-#define PLAYER_PAD(n) virtual void player_pad##n();
     virtual ~RGE_Player();
-    PLAYER_PAD(1)  PLAYER_PAD(2)  PLAYER_PAD(3)
-    PLAYER_PAD(4)  PLAYER_PAD(5)  PLAYER_PAD(6)  PLAYER_PAD(7)
-    PLAYER_PAD(8)  PLAYER_PAD(9)  PLAYER_PAD(10) PLAYER_PAD(11)
-    PLAYER_PAD(12) PLAYER_PAD(13) PLAYER_PAD(14) PLAYER_PAD(15)
-    PLAYER_PAD(16) PLAYER_PAD(17) PLAYER_PAD(18) PLAYER_PAD(19)
-    PLAYER_PAD(20) PLAYER_PAD(21) PLAYER_PAD(22) PLAYER_PAD(23)
-    PLAYER_PAD(24) PLAYER_PAD(25) PLAYER_PAD(26) PLAYER_PAD(27)
-    PLAYER_PAD(28) PLAYER_PAD(29) PLAYER_PAD(30) PLAYER_PAD(31)
-    PLAYER_PAD(32) PLAYER_PAD(33) PLAYER_PAD(34) PLAYER_PAD(35)
-    PLAYER_PAD(36) PLAYER_PAD(37) PLAYER_PAD(38) PLAYER_PAD(39)
-    PLAYER_PAD(40) PLAYER_PAD(41) PLAYER_PAD(42) PLAYER_PAD(43)
-    PLAYER_PAD(44) PLAYER_PAD(45) PLAYER_PAD(46) PLAYER_PAD(47)
-    PLAYER_PAD(48) PLAYER_PAD(49) PLAYER_PAD(50) PLAYER_PAD(51)
-    PLAYER_PAD(52) PLAYER_PAD(53) PLAYER_PAD(54)
-    virtual RGE_Object_Node* add_object(RGE_Static_Object*, int, int);
-    virtual void remove_object(RGE_Static_Object*, int, int, RGE_Object_Node*);
+    virtual void set_game_status(unsigned char);
+    virtual void do_resign(int);
+    virtual void changeToHumanPlayer();
+    virtual void changeToComputerPlayer();
+    virtual char* aiStatus(int);
+    virtual int isEnemy(int);
+    virtual int isAlly(int);
+    virtual int isNeutral(int);
+    virtual int isAllNeutral();
+    virtual void setDiplomaticStance(int, int);
+    virtual void loadAIInformation(char*, char*, char*, int, int);
+    virtual void sendUnitAIOrder(int, int, int, int, int, float, float,
+                                 float, float, int, int, int);
+    virtual void processAIOrder(int, int, int, int, int, float, float,
+                                float, float, int, int, int);
+    virtual void kickAI(int);
+    virtual int strategicNumber(int);
+    virtual void sendGameOrder(RGE_Static_Object*, RGE_Static_Object*, float,
+                                float);
+    virtual void sendAddWaypointCommand(int, void*, int);
+    virtual void processAddWaypointCommand(int, void*, int);
+    virtual void sendPlayCommand(int, int*, int, int, int);
+    virtual void sendPlayCommand(int, int, int);
+    virtual int sendAICommand(int, int, int, int, int);
+    virtual int objectCostByType(int);
+    virtual void trackUnitGather(int, int, int);
+    virtual RGE_Static_Object* make_scenario_obj(float, float, float, short,
+                                                  unsigned char, float);
+    virtual void scenario_save(int);
+    virtual void scenario_load(int);
+    virtual void scenario_postsave(int);
+    virtual void scenario_postload(int);
+    virtual void load(int);
+    virtual void add_attribute_num(short, float, unsigned char);
+    virtual void update();
+    virtual void update_dopplegangers();
+    virtual void save(int);
+    virtual void save2(int);
+    virtual void save_info(int);
+    virtual void random_start();
+    virtual RGE_Static_Object* make_new_object(long, float, float, float,
+                                                int);
+    virtual void analyize_selected_objects();
+    virtual int get_mouse_pointer_action_vars(int, int*, int*);
+    virtual unsigned char command_make_move(RGE_Static_Object*, float, float);
+    virtual unsigned char command_make_work(RGE_Static_Object*, float, float);
+    virtual unsigned char command_make_do(RGE_Static_Object*, float, float);
+    virtual unsigned char command_stop();
+    virtual unsigned char command_place_object(short, float, float, float);
+    virtual unsigned char command_add_attribute(int, float);
+    virtual unsigned char command_give_attribute(int, int, float);
+    virtual unsigned char command_formation(int);
+    virtual unsigned char command_stand_ground();
+    virtual unsigned char command_create_group(int, int*, int, float);
+    virtual unsigned char command_add_to_group(int, int, float);
+    virtual unsigned char command_remove_from_group(int, int);
+    virtual unsigned char command_destroy_group(int);
+    virtual unsigned char command_resign(int, int);
+    virtual unsigned char command_add_waypoint(float, float, float);
+    virtual RGE_Object_Node* addObject(RGE_Static_Object*, int, int);
+    virtual void removeObject(RGE_Static_Object*, int, int, RGE_Object_Node*);
 
     int computerPlayerValue;
     int pathingAttemptCapValue;
@@ -110,34 +172,92 @@ public:
 
 class RGE_Static_Object {
 public:
-#define STATIC_PAD(n) virtual void static_pad##n();
     virtual ~RGE_Static_Object();
-    STATIC_PAD(1)  STATIC_PAD(2)  STATIC_PAD(3)
-    STATIC_PAD(4)  STATIC_PAD(5)  STATIC_PAD(6)  STATIC_PAD(7)
-    STATIC_PAD(8)  STATIC_PAD(9)  STATIC_PAD(10) STATIC_PAD(11)
-    STATIC_PAD(12) STATIC_PAD(13)
+    virtual void recycle_in_to_game(RGE_Master_Static_Object*, RGE_Player*,
+                                    float, float, float);
+    virtual void recycle_out_of_game();
+    virtual void draw(void*, short, short, void*);
+    virtual void shadow_draw(void*, short, short, unsigned char);
+    virtual void normal_draw(void*, short, short);
+    virtual void draw_front_frame(void*, short, short);
+    virtual void draw_back_frame(void*, short, short);
+    virtual void draw_frame(void*, short, short);
+    virtual unsigned char update();
+    virtual void check_damage_sprites();
+    virtual void rehook();
+    virtual void save(int);
+    virtual float teleport(float, float, float);
     virtual void new_sprite(RGE_Sprite*);
-    STATIC_PAD(15) STATIC_PAD(16) STATIC_PAD(17) STATIC_PAD(18)
-    STATIC_PAD(19) STATIC_PAD(20) STATIC_PAD(21) STATIC_PAD(22)
-    STATIC_PAD(23) STATIC_PAD(24) STATIC_PAD(25) STATIC_PAD(26)
-    STATIC_PAD(27) STATIC_PAD(28) STATIC_PAD(29) STATIC_PAD(30)
-    STATIC_PAD(31) STATIC_PAD(32) STATIC_PAD(33) STATIC_PAD(34)
-    STATIC_PAD(35) STATIC_PAD(36) STATIC_PAD(37) STATIC_PAD(38)
-    STATIC_PAD(39) STATIC_PAD(40) STATIC_PAD(41) STATIC_PAD(42)
-    STATIC_PAD(43) STATIC_PAD(44) STATIC_PAD(45) STATIC_PAD(46)
-    STATIC_PAD(47) STATIC_PAD(48) STATIC_PAD(49) STATIC_PAD(50)
-    STATIC_PAD(51) STATIC_PAD(52) STATIC_PAD(53)
-    virtual void add_terrain(RGE_Player*, int, int);
-    virtual void remove_terrain(RGE_Player*, int, int);
-    virtual void add_object(RGE_Player*, int, int);
-    STATIC_PAD(57) STATIC_PAD(58) STATIC_PAD(59) STATIC_PAD(60)
-    STATIC_PAD(61) STATIC_PAD(62) STATIC_PAD(63) STATIC_PAD(64)
-    STATIC_PAD(65) STATIC_PAD(66) STATIC_PAD(67) STATIC_PAD(68)
-    STATIC_PAD(69) STATIC_PAD(70) STATIC_PAD(71) STATIC_PAD(72)
-    STATIC_PAD(73) STATIC_PAD(74) STATIC_PAD(75) STATIC_PAD(76)
-    STATIC_PAD(77) STATIC_PAD(78) STATIC_PAD(79) STATIC_PAD(80)
-    STATIC_PAD(81)
-    virtual void dispatch_148(int, int, int, int, int, int);
+    virtual void add_overlay_sprite(RGE_Sprite*, unsigned char);
+    virtual void remove_overlay_sprite(RGE_Sprite*);
+    virtual void change_ownership(RGE_Player*);
+    virtual void modify(float, unsigned char);
+    virtual void modify_delta(float, unsigned char);
+    virtual void modify_percent(float, unsigned char);
+    virtual void transform(RGE_Master_Static_Object*);
+    virtual void copy_obj(RGE_Master_Static_Object*);
+    virtual void set_object_state(unsigned char);
+    virtual void remove_visible_resource();
+    virtual void create_doppleganger_when_dying();
+    virtual void destroy_obj();
+    virtual void die_die_die();
+    virtual void damage(int, void*, float, RGE_Player*, RGE_Static_Object*);
+    virtual float calculateDamage(int, void*, float, RGE_Player*,
+                                  RGE_Static_Object*);
+    virtual void rotate(long);
+    virtual unsigned char can_attack();
+    virtual void set_attribute(short, float);
+    virtual void set_attribute_amount(float, unsigned char, unsigned char);
+    virtual int heal(int, int);
+    virtual unsigned char heal(float);
+    virtual int canRepair();
+    virtual void notify_of_relation(long, unsigned char);
+    virtual void do_command(RGE_Static_Object*, float, float, float);
+    virtual void move_to(RGE_Static_Object*, float, float, float);
+    virtual void work(RGE_Static_Object*, float, float, float);
+    virtual void stop();
+    virtual void set_attack(RGE_Static_Object*);
+    virtual void play_command_sound();
+    virtual void play_move_sound();
+    virtual void new_angle(float);
+    virtual RGE_Static_Object* spawn_death_obj();
+    virtual RGE_Master_Static_Object* get_command_master(RGE_Static_Object*,
+                                                          float, float, float);
+    virtual void set_being_worked_on(void*, short, unsigned char);
+    virtual void release_being_worked_on(RGE_Static_Object*);
+    virtual unsigned char is_moving();
+    virtual RGE_Static_Object* get_target_obj();
+    virtual void enter_obj(RGE_Static_Object*);
+    virtual void exit_obj();
+    virtual int explore_terrain(RGE_Player*, unsigned char, int);
+    virtual void unexplore_terrain(RGE_Player*, unsigned char, int);
+    virtual void* get_los_table();
+    virtual int inAttackRange(RGE_Static_Object*);
+    virtual unsigned char underAttack();
+    virtual void setUnderAttack(unsigned char);
+    virtual float calc_attack_modifier(RGE_Static_Object*);
+    virtual float getSpeed();
+    virtual float getAngle();
+    virtual float maximumSpeed();
+    virtual float rateOfFire();
+    virtual float damageCapability(RGE_Static_Object*);
+    virtual float damageCapability();
+    virtual float weaponRange();
+    virtual float minimumWeaponRange();
+    virtual int passableTile(float, float, int);
+    virtual unsigned char facetToNextWaypoint();
+    virtual int currentTargetID();
+    virtual float currentTargetX();
+    virtual float currentTargetY();
+    virtual float currentTargetZ();
+    virtual void setWaitingToMove(unsigned char);
+    virtual unsigned char waitingToMove();
+    virtual unsigned char actionState();
+    virtual unsigned char keepGatheringWhenObjectIsOut(int);
+    virtual unsigned char produceWhenKilledBy(int);
+    virtual unsigned char useSameZoneDropsite();
+    virtual void logDebug(const char*, ...);
+    virtual void notify(int, int, int, long, long, long);
 
     long id;
     RGE_Master_Static_Object* master_obj;
@@ -172,7 +292,6 @@ public:
 
     void take_attribute_from_owner();
     void give_attribute_to_owner();
-    void change_ownership(RGE_Player* player);
 };
 
 void RGE_Static_Object::change_ownership(RGE_Player* player)
@@ -189,13 +308,13 @@ void RGE_Static_Object::change_ownership(RGE_Player* player)
     this->take_attribute_from_owner();
 
     if (this->object_state == 2) {
-        this->remove_terrain(this->owner, 0, -1);
+        this->unexplore_terrain(this->owner, 0, -1);
     }
 
-    this->owner->remove_object(this, this->sleep_flag, this->dopple_flag,
-                               this->player_object_node);
+    this->owner->removeObject(this, this->sleep_flag, this->dopple_flag,
+                              this->player_object_node);
     RGE_Object_Node* new_node =
-        player->add_object(this, this->sleep_flag, this->dopple_flag);
+        player->addObject(this, this->sleep_flag, this->dopple_flag);
 
     RGE_Master_Static_Object* old_master = this->master_obj;
     this->player_object_node = new_node;
@@ -223,9 +342,9 @@ void RGE_Static_Object::change_ownership(RGE_Player* player)
     this->hp = (float)(int)new_master->hp * hp_num;
 
     if (this->object_state == 2) {
-        this->add_terrain(player, 0, -1);
+        this->explore_terrain(player, 0, -1);
     }
 
     this->give_attribute_to_owner();
-    this->dispatch_148(this->id, this->id, 0x20B, (int)player->id, 0, 0);
+    this->notify(this->id, this->id, 0x20B, (int)player->id, 0, 0);
 }
