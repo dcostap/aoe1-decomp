@@ -53,6 +53,21 @@
 // - A four-case endpoint/input and x-home variant lab kept the 243-byte frame
 //   basin but did not recover EBP; the aliases with early x-home update remain
 //   the cleanest source. No exact policy-clean lead remains in this pass.
+// - Terrain donors 00484C80 and 00488F90 confirm the 0x18-byte Map_Stack
+//   stride, parameter-home reuse, and counted row scan. Testing their clipped
+//   right-bound and cursor forms did not improve the clean 243-byte basin.
+//   The remaining evidence gap is the target's EBP y-home color and its
+//   register-held clipped-right value.
+// - A fresh revisit tested y-home countdown reuse, endpoint declaration and
+//   initialization order, single-axis aliases, clipped-right locals, and
+//   ordinary for loops. These were duplicates or structurally worse; the
+//   for-loop form reached diff 171 but added one byte and an extra CFG edge.
+//   The pinned typed do-loop source remains the clean natural reconstruction.
+// - This revisit compared exact terrain-bound donor 00547080 and exact
+//   parameter-home donor 00484C80, then tested XYPoint bounds, mixed endpoint
+//   aliases, complete base method declarations, and split bound declarations.
+//   These emitted the existing 172-byte mismatch or a worse basin. The EBP
+//   y-home and EBX clipped-right value remain the evidence gap.
 
 struct Map_Stack {
     long x;
