@@ -27,8 +27,14 @@
 // Restored the clean source before the final ownership pass.
 // Final ownership pass: modeled the proven 0x10-byte command header with trailing
 // RGE_Obj_Info records and the player master_objects table; output stayed at 19 bytes.
-// Current pause: exact calls, frame, size, CFG, and 73.6% exact blocks remain aligned;
-// the only drift is the initial world/player register-color schedule.
+// Naming branch-local x2/y2 bytes recovered both split-arm compare load orders;
+// the natural source moved to 11 strict bytes and 90.2% exact blocks.
+// Tested typed player-table, cached world/player, split declaration, and full
+// same-TU player-vtable surfaces; these were codegen-duplicate. Current pause:
+// the remaining 11 bytes are the initial world/player register-color schedule.
+// Policy correction: replaced the fake virtual-slot padding and generic names
+// with canonical RGE_Command and RGE_Static_Object virtual surfaces from the
+// repository class dumps. The rebuild remains 500 B with an 11-byte mismatch.
 
 typedef unsigned char uchar;
 
@@ -37,6 +43,11 @@ typedef unsigned char uchar;
 class RGE_Static_Object;
 class RGE_Player;
 class RGE_Master_Static_Object;
+class RGE_Command_Give_Attribute;
+class TDrawArea;
+class RGE_Color_Table;
+class RGE_Sprite;
+class RGE_Armor_Weapon_Info;
 struct RGE_Obj_Info {
     int id;
 };
@@ -50,24 +61,64 @@ public:
 
 class RGE_Command {
 public:
-    virtual void vfunc0();
+    virtual void do_command_give_attribute(RGE_Command_Give_Attribute* command);
     virtual ~RGE_Command();
-    virtual void vfunc8();
-    virtual void vfuncC();
+    virtual void do_command(void* command);
+    virtual void command_give_attribute(int player_id, int object_id,
+                                        int attribute_id, float amount);
     RGE_Game_World* world;
     RGE_Static_Object* get_obj(RGE_Obj_Info id);
 };
 
 class RGE_Static_Object {
 public:
-#define OPAD(n) virtual void o##n();
     virtual ~RGE_Static_Object();
-    OPAD(1) OPAD(2) OPAD(3) OPAD(4) OPAD(5) OPAD(6) OPAD(7)
-    OPAD(8) OPAD(9) OPAD(10) OPAD(11) OPAD(12) OPAD(13) OPAD(14) OPAD(15)
-    OPAD(16) OPAD(17) OPAD(18) OPAD(19) OPAD(20) OPAD(21) OPAD(22) OPAD(23)
-    OPAD(24) OPAD(25) OPAD(26) OPAD(27) OPAD(28) OPAD(29) OPAD(30) OPAD(31)
-    OPAD(32) OPAD(33) OPAD(34) OPAD(35) OPAD(36) OPAD(37)
-#undef OPAD
+    virtual void recycle_in_to_game(RGE_Master_Static_Object* master,
+                                    RGE_Player* player, float x, float y,
+                                    float z);
+    virtual void recycle_out_of_game();
+    virtual void draw(TDrawArea* draw_area, short x, short y,
+                      RGE_Color_Table* color_table);
+    virtual void shadow_draw(TDrawArea* draw_area, short x, short y,
+                             uchar shadow);
+    virtual void normal_draw(TDrawArea* draw_area, short x, short y);
+    virtual void draw_front_frame(TDrawArea* draw_area, short x, short y);
+    virtual void draw_back_frame(TDrawArea* draw_area, short x, short y);
+    virtual void draw_frame(TDrawArea* draw_area, short x, short y);
+    virtual uchar update();
+    virtual void check_damage_sprites();
+    virtual void rehook();
+    virtual void save(int file);
+    virtual float teleport(float x, float y, float z);
+    virtual void new_sprite(RGE_Sprite* sprite);
+    virtual void add_overlay_sprite(RGE_Sprite* sprite, uchar flags);
+    virtual void remove_overlay_sprite(RGE_Sprite* sprite);
+    virtual void change_ownership(RGE_Player* player);
+    virtual void modify(float amount, uchar attribute);
+    virtual void modify_delta(float amount, uchar attribute);
+    virtual void modify_percent(float amount, uchar attribute);
+    virtual void transform(RGE_Master_Static_Object* master);
+    virtual void copy_obj(RGE_Master_Static_Object* master);
+    virtual void set_object_state(uchar state);
+    virtual void remove_visible_resource();
+    virtual void create_doppleganger_when_dying();
+    virtual void destroy_obj();
+    virtual void die_die_die();
+    virtual void damage(int amount, RGE_Armor_Weapon_Info* armor,
+                        float multiplier, RGE_Player* player,
+                        RGE_Static_Object* source);
+    virtual float calculateDamage(int amount, RGE_Armor_Weapon_Info* armor,
+                                  float multiplier, RGE_Player* player,
+                                  RGE_Static_Object* source);
+    virtual void rotate(long angle);
+    virtual uchar can_attack();
+    virtual void set_attribute(short attribute, float amount);
+    virtual void set_attribute_amount(float amount, uchar attribute,
+                                      uchar flag);
+    virtual int heal(int amount, int flag);
+    virtual uchar heal(float amount);
+    virtual int canRepair();
+    virtual void notify_of_relation(long player_id, uchar relation);
     virtual void do_command(RGE_Static_Object* foundation, float x, float y, float z);
     int id;
     char gap_08[0x30];
@@ -126,11 +177,12 @@ void TRIBE_Command::do_command_build_wall(TRIBE_Command_Build_Wall* cmd)
         this->place_line_of_walls(player, info, cmd->unique_id,
                                   cmd->x1, cmd->y1, cmd->x1, cmd->y2,
                                   &foundation);
-        if (cmd->x1 < cmd->x2) {
+        uchar x2 = cmd->x2;
+        if (cmd->x1 < x2) {
             this->place_line_of_walls(player, info, cmd->unique_id,
                                       (int)cmd->x1 + 1, cmd->y2,
                                       cmd->x2, cmd->y2, &foundation);
-        } else if (cmd->x1 > cmd->x2) {
+        } else if (cmd->x1 > x2) {
             this->place_line_of_walls(player, info, cmd->unique_id,
                                       (int)cmd->x1 - 1, cmd->y2,
                                       cmd->x2, cmd->y2, &foundation);
@@ -139,11 +191,12 @@ void TRIBE_Command::do_command_build_wall(TRIBE_Command_Build_Wall* cmd)
         this->place_line_of_walls(player, info, cmd->unique_id,
                                   cmd->x1, cmd->y1, cmd->x2, cmd->y1,
                                   &foundation);
-        if (cmd->y1 < cmd->y2) {
+        uchar y2 = cmd->y2;
+        if (cmd->y1 < y2) {
             this->place_line_of_walls(player, info, cmd->unique_id,
                                       cmd->x2, (int)cmd->y1 + 1,
                                       cmd->x2, cmd->y2, &foundation);
-        } else if (cmd->y1 > cmd->y2) {
+        } else if (cmd->y1 > y2) {
             this->place_line_of_walls(player, info, cmd->unique_id,
                                       cmd->x2, (int)cmd->y1 - 1,
                                       cmd->x2, cmd->y2, &foundation);
