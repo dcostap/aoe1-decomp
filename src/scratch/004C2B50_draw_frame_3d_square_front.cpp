@@ -26,6 +26,20 @@
 // Probe r1 final: compound base updates regressed to 64B; restored the 56B
 // integer-base form. Calls, frame, and CFG align; final drift is health-bar
 // register/opcode scheduling and two bytes of tail size.
+// Revisit r2: revalidated the clean source at 670B with 56 differing bytes.
+// The Ghidra x2/y2 health-local form regressed to 72B; direct health rectangle
+// forms regressed to 88B. Output-local swaps and equivalent arithmetic forms
+// duplicated the 56B basin. Restored the pinned typed source for final pause.
+// Revisit r3: completed 10 more evidence-led hypotheses before this pause.
+// Same-TU mutable short bounds caused a 0x20 frame and 142 differing bytes.
+// Unsigned-char FillRect, mutable int bases, long bases, stdlib.h, and the
+// combined donor context all duplicated the 670B / 56-byte basin.
+// A short denominator caused 674B / 99 bytes. Separate mutable rectangle
+// arguments kept 668B but caused 122 bytes and broad block drift.
+// The full RGE_Base_Game virtual surface also duplicated the 56-byte basin.
+// A 12-case lab found nine variants in the 670B basin and three at 674B.
+// No variant passed the size, frame, and call-set gates. The typed source is
+// restored and remains the best clean reconstruction.
 
 class TDrawArea {
 public:
