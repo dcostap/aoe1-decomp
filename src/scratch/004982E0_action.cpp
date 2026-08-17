@@ -24,8 +24,12 @@
 // - a close-only TRIBE_Game receiver on that named global produced exact
 //   instruction shape and a 1-byte branch-target drift; the dual global
 //   surface is diagnostic, not retained source.
-// - final clean validation retains the natural direct-global reconstruction;
-//   the remaining gap is the confirmed-close load schedule and one tail edge.
+// - original rdata proves CloseProgramDialog and QuitAndLoadDialog, not the
+//   earlier Save Game Dialog spelling.  Two split fallback labels reproduce
+//   the original shared action call and reduce the strict diff to 523 bytes.
+// - restoring natural string literals in that split source reduces the strict
+//   diff to 517 bytes with a 2-byte size excess.  Receiver-local cleanup
+//   variants measured 532 and 533 bytes; the remaining gap is cleanup order.
 // FLAGS: config/flags/004982E0_action.rsp (/GX required by original EH setup)
 
 #include <new.h>
@@ -155,7 +159,7 @@ long TRIBE_Screen_Game::action(TPanel* panel, long id,
     TEasy_Panel* tool_box;
 
     if (panel == 0) {
-        return TEasy_Panel::action(panel, id, p3, p4);
+        goto null_base_action;
     }
 
     tool_box = this->tool_box;
@@ -179,11 +183,9 @@ long TRIBE_Screen_Game::action(TPanel* panel, long id,
         }
 
     if (panel->panelName() == 0) {
-        return TEasy_Panel::action(panel, id, p3, p4);
+        goto named_base_action;
     }
 
-    int pause_after_close = 0;
-    int clear_confirmed_close = 0;
     if (strcmp(panel->panelName(), "RestartDialog") == 0) {
         panel_system.setCurrentPanel("Game Screen", 0);
         panel_system.destroyPanel("RestartDialog");
@@ -192,7 +194,7 @@ long TRIBE_Screen_Game::action(TPanel* panel, long id,
             game->restart_game();
             return 1;
         }
-        pause_after_close = 1;
+        goto pause_cleanup;
     } else if (strcmp(panel->panelName(), "QuitGameDialog") == 0) {
         panel_system.setCurrentPanel("Game Screen", 0);
         panel_system.destroyPanel("QuitGameDialog");
@@ -200,15 +202,15 @@ long TRIBE_Screen_Game::action(TPanel* panel, long id,
             ((TRIBE_Game*)rge_base_game)->do_game_over();
             return 1;
         }
-        clear_confirmed_close = 1;
-    } else if (strcmp(panel->panelName(), "QuitAndLoadDialog") == 0) {
+        goto clear_cleanup;
+    } else if (strcmp(panel->panelName(), "CloseProgramDialog") == 0) {
         panel_system.setCurrentPanel("Game Screen", 0);
-        panel_system.destroyPanel("QuitAndLoadDialog");
+        panel_system.destroyPanel("CloseProgramDialog");
         if (id == 0) {
             rge_base_game->close();
             return 1;
         }
-        clear_confirmed_close = 1;
+        goto clear_cleanup;
     } else if (strcmp(panel->panelName(), "ResignDialog") == 0) {
         panel_system.setCurrentPanel("Game Screen", 0);
         panel_system.destroyPanel("ResignDialog");
@@ -218,30 +220,42 @@ long TRIBE_Screen_Game::action(TPanel* panel, long id,
             player->resign(comm->WhoAmI(), id);
             return 1;
         }
-        pause_after_close = 1;
-    } else if (strcmp(panel->panelName(), "Save Game Dialog") == 0) {
+        goto pause_cleanup;
+    } else if (strcmp(panel->panelName(), "QuitAndLoadDialog") == 0) {
         panel_system.setCurrentPanel("Game Screen", 0);
-        panel_system.destroyPanel("Save Game Dialog");
+        panel_system.destroyPanel("QuitAndLoadDialog");
         if (id == 0) {
             new TribeLoadSavedGameScreen();
             panel_system.setCurrentPanel("Load Saved Game Screen", 0);
             return 1;
         }
-        pause_after_close = 1;
+        goto pause_cleanup;
     } else {
-        return TEasy_Panel::action(panel, id, p3, p4);
+        goto named_base_action;
     }
 
-    if (clear_confirmed_close) {
-        confirmed_close = 0;
-        if (rge_base_game->singlePlayerGame() == 1 &&
-            rge_base_game->save_paused == 0) {
-            rge_base_game->set_paused(0, 0);
-        }
-    } else if (pause_after_close && rge_base_game->singlePlayerGame() == 1 &&
-               rge_base_game->save_paused == 0) {
+clear_cleanup:
+    confirmed_close = 0;
+    if (rge_base_game->singlePlayerGame() == 1 &&
+        rge_base_game->save_paused == 0) {
+        rge_base_game->set_paused(0, 0);
+        return 1;
+    }
+    goto finish;
+
+pause_cleanup:
+    if (rge_base_game->singlePlayerGame() == 1 &&
+        rge_base_game->save_paused == 0) {
         rge_base_game->set_paused(0, 0);
     }
 
+finish:
+
     return 1;
+
+null_base_action:
+    return TEasy_Panel::action(panel, id, p3, p4);
+
+named_base_action:
+    return TEasy_Panel::action(panel, id, p3, p4);
 }
