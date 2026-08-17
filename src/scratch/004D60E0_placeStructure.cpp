@@ -48,6 +48,16 @@
 //   model the item-type comparison temp, or reorder the loop body so the allocator prefers edi for
 //   cur), or a TU/class-surface change that alters the /GX constant caching. Then the state store
 //   can sink after the cmp and the whole register cascade resolves.
+//
+// Follow-up sa-4010606e-r1: 22 meaningful checks. Tested cursor scope and register hints, pointer
+// and scalar declaration order, loop forms, sentinel inlining, type-operand order, named type
+// temporaries, cursor/best reuse, setup assignment order, self-link chaining, typed aliases, and
+// /GX ambient declaration samples. The clean source stayed at 73 bytes. Ambient samples reached
+// 72 bytes but did not change the register hunk. Final source is restored and validated.
+//
+// BINARY NOTE: The original loads constructionLots.next into EDI, compares the sentinel, then
+// stores EH state 1. The clean rebuild stores EH state 1 before loading the cursor into ESI.
+// This changes only the later register roles; calls, frame, size, and CFG are exact.
 
 // FLAGS: config/flags/004D60E0_placeStructure.rsp uses /GX for original EH frame.
 
