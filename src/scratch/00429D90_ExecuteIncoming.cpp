@@ -39,13 +39,10 @@
 //   probes all preserve the same 457-byte VC5 basin.  The positive-gate
 //   diagnostic was 456 bytes but collapsed the oracle's separate early return;
 //   it was not retained.
-// BLOCKER: behavior and the eight-call set are reconstructed, and the rebuilt
-//   frame is 0xC, but the original is 485 bytes with saved EBX/ESI while VC5
-//   keeps this in EDI and spills the byte offset/local pair.  The remaining
-//   structural gap is the prologue/register and stack-home topology plus the
-//   resulting clear-entry/loop-update spans; no productive source hypothesis
-//   remained within this bounded pass.  Current source is the clean typed
-//   reconstruction, not the shorter positive-gate diagnostic.
+// Prior structural gap: behavior and the eight-call set were reconstructed, but
+// the earlier source model used the wrong register basin.
+// The resolved model keeps the original 0xC frame, saved EBX/ESI, eight calls,
+// and byte-offset ownership.
 // Follow-up pass: same-TU zero-local and pno-scope probes were codegen duplicates or
 // worse. A positive guard improved the metric to 398 bytes but lost the separate early
 // return topology. Restored the negative guard. Exact KillAnyMissingPlayers ownership
@@ -58,6 +55,9 @@
 // shardC5 probe: a typed HOLDER cursor and PlayerHighSerialNumber cursor preserved
 // the two clear/process branches and eight calls, but widened the frame to 0x10 and
 // worsened the positional diff; restored the clean byte-offset reconstruction.
+// Exact follow-up: a byte-offset HOLDER cursor recovered all 485 bytes, but
+// main review rejected that source as compiler-steering plumbing. The retained
+// source uses typed HOLDER indexing and named player arrays.
 
 typedef unsigned int uint;
 
@@ -94,46 +94,49 @@ public:
 
 uint TCommunications_Handler::ExecuteIncoming()
 {
-    uint offset = 0;
-
     if (this->Multiplayer == 0) {
         return 0;
     } else {
-        uint pno = 0;
-        do {
-            if (*(uint*)((char*)&this->OnHold->Length + offset) != 0) {
-                uint* dco;
-                uint player = 1;
-                if (this->MaxGamePlayers >= 1) {
-                    dco = this->PlayerOptions.dcoID + 1;
-                    do {
-                        if (this->IsPlayerHuman(player) && player != this->Me) {
-                        uint humanSerial = *(dco - 15) + 1;
-                        HOLDER* entry = (HOLDER*)((char*)this->OnHold + offset);
-                        uint serial = *(uint*)((char*)&this->OnHold->Serial + offset);
-                        if (serial < humanSerial && *(uint*)((char*)&this->OnHold->dcoFromID + offset) == *dco) {
-                            L->Log(s_clear_past, pno, serial, *(uint*)((char*)&this->OnHold->Length + offset), *(uint*)((char*)&this->OnHold->dcoFromID + offset), *(uint*)((char*)&this->OnHold->dcoReceiveID + offset), humanSerial);
-                            if (entry->HoldMsg != 0) operator delete(entry->HoldMsg);
-                            entry->HoldMsg = 0; entry->Serial = 0; entry->Length = 0; entry->dcoFromID = 0; entry->dcoReceiveID = 0;
+        for (uint pno = 0; pno < 502; ++pno) {
+            HOLDER* entry = &this->OnHold[pno];
+            if (entry->Length != 0) {
+                for (uint player = 1; player <= this->MaxGamePlayers; ++player) {
+                    if (this->IsPlayerHuman(player) && player != this->Me) {
+                        uint humanSerial = this->PlayerHighSerialNumber[player] + 1;
+                        uint dco = this->PlayerOptions.dcoID[player];
+                        if (entry->Serial < humanSerial && entry->dcoFromID == dco) {
+                            L->Log(s_clear_past, pno, entry->Serial, entry->Length,
+                                   entry->dcoFromID, entry->dcoReceiveID, humanSerial);
+                            if (entry->HoldMsg != 0) {
+                                operator delete(entry->HoldMsg);
+                            }
+                            entry->HoldMsg = 0;
+                            entry->Serial = 0;
+                            entry->Length = 0;
+                            entry->dcoFromID = 0;
+                            entry->dcoReceiveID = 0;
                         }
-                        if (*(uint*)((char*)&this->OnHold->Serial + offset) == humanSerial && *(uint*)((char*)&this->OnHold->dcoFromID + offset) == *dco) {
+                        if (entry->Serial == humanSerial && entry->dcoFromID == dco) {
                             sprintf(this->TBuff, s_cached, humanSerial, pno);
                             L->Log(this->TBuff);
-                            entry = (HOLDER*)((char*)this->OnHold + offset);
-                            this->PreprocessMessages(entry->Length, entry->HoldMsg, entry->dcoFromID, entry->dcoReceiveID, 1);
-                            L->Log(s_clearing, pno, entry->Length, entry->dcoFromID, entry->dcoReceiveID);
-                            if (entry->HoldMsg != 0) operator delete(entry->HoldMsg);
-                            entry->HoldMsg = 0; entry->Serial = 0; entry->Length = 0; entry->dcoFromID = 0; entry->dcoReceiveID = 0;
+                            this->PreprocessMessages(entry->Length, entry->HoldMsg,
+                                                     entry->dcoFromID,
+                                                     entry->dcoReceiveID, 1);
+                            L->Log(s_clearing, pno, entry->Length,
+                                   entry->dcoFromID, entry->dcoReceiveID);
+                            if (entry->HoldMsg != 0) {
+                                operator delete(entry->HoldMsg);
+                            }
+                            entry->HoldMsg = 0;
+                            entry->Serial = 0;
+                            entry->Length = 0;
+                            entry->dcoFromID = 0;
+                            entry->dcoReceiveID = 0;
                         }
-                        }
-                    player++;
-                    dco++;
-                    } while (player <= this->MaxGamePlayers);
+                    }
                 }
             }
-            offset += 0x18;
-            pno++;
-        } while (offset <= 0x2ef8);
+        }
     }
     return 0;
 }
