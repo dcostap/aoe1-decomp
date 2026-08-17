@@ -27,6 +27,16 @@
 //   were either behaviorally inverted or returned to the same 36-call basin.
 //   Explicit else and scoped action aliases were also unchanged. Clean source
 //   restored; the remaining lead is the original call-site scheduling/context.
+// - sustained follow-up probes (20 meaningful hypotheses) confirmed the same
+//   basin. Lookup null-literal, compound-guard, cached-id, cached-world,
+//   cached-object, separate-result, typed-null, and explicit-else forms were
+//   codegen-identical. A switch-to-if rewrite restored 37/37 calls but added
+//   47 bytes and broke the proven switch CFG. A 32-sample ambient declaration
+//   sweep produced one code group. Distance-left polarity improved block
+//   coverage but traded the missing enter_obj for a missing set_state call;
+//   asymmetric polarity and call-local aliases did not solve both gaps.
+//   The pinned task-left source is therefore retained as the smallest clean
+//   natural reconstruction. No shared files were changed.
 
 class RGE_Sprite;
 class RGE_Task;
