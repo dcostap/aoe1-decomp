@@ -35,6 +35,13 @@
 //   positive-else) collapsed to the same six-byte branch gap. The final
 //   predeclared-counter for probe was a duplicate of the scoped-for basin;
 //   the clean do/while remains authoritative.
+// - this revisit restored the canonical TScreenPanel/TRIBE_Screen_Game
+//   ownership and the proven polymorphic RGE_Player/TRIBE_Player timing
+//   fields. Codegen stayed unchanged at 594 bytes with the same six-byte
+//   inner-loop branch gap.
+// - natural while scans were retested for both relation loops. They added
+//   eight bytes and broadened the diff, so the typed do/while reset remains
+//   authoritative.
 
 class TRIBE_Panel_Time {
 public:
@@ -43,22 +50,29 @@ public:
 
 class RGE_Player {
 public:
-    char gap_00[0x84];
+    virtual ~RGE_Player();
+    char gap_04[0x80];
     unsigned char* relations;
     char gap_88[0x7C];
     unsigned char allied_victory;
-    char gap_105[3];
-    char gap_108[0x738];
-    float field_840;
-    float field_844;
+    char gap_105[0x11B];
 
     unsigned char relation(long player_id);
+};
+
+class TRIBE_Player : public RGE_Player {
+public:
+    char gap_220[0x620];
+    float ruin_held_time;
+    float artifact_held_time;
 };
 
 class RGE_Game_World {
 public:
     void* vtable_ptr;
-    char gap_04[0x38];
+    char gap_04[0x24];
+    void* map;
+    char gap_2C[0x10];
     short player_num;
     char gap_3E[2];
     RGE_Player** players;
@@ -78,9 +92,15 @@ public:
 
 extern RGE_Base_Game* rge_base_game;
 
-class TRIBE_Screen_Game {
+class TScreenPanel {
 public:
-    char gap_00[0x518];
+    virtual ~TScreenPanel();
+    char gap_04[0x474];
+};
+
+class TRIBE_Screen_Game : public TScreenPanel {
+public:
+    char gap_478[0xA0];
     TRIBE_Panel_Time* countdown_clock[10];
     char gap_540[0x74];
     TRIBE_World* world;
@@ -116,7 +136,7 @@ void TRIBE_Screen_Game::reset_clocks() {
                 }
             }
 
-            if ((*(RGE_Player**)((char*)this->world->players + player_offset))->field_844 != -1.0f) {
+            if (((TRIBE_Player*)(*(RGE_Player**)((char*)this->world->players + player_offset)))->artifact_held_time != -1.0f) {
                 int countdown = 0;
                 if ((*(RGE_Player**)((char*)this->world->players + player_offset))->allied_victory != 0) {
                     int other_player = 1;
@@ -142,7 +162,7 @@ void TRIBE_Screen_Game::reset_clocks() {
                 }
             }
 
-            if ((*(RGE_Player**)((char*)this->world->players + player_offset))->field_840 != -1.0f) {
+            if (((TRIBE_Player*)(*(RGE_Player**)((char*)this->world->players + player_offset)))->ruin_held_time != -1.0f) {
                 int countdown = 0;
                 if ((*(RGE_Player**)((char*)this->world->players + player_offset))->allied_victory != 0) {
                     int other_player = 1;
