@@ -118,6 +118,16 @@
 //   could not compile because their common.h requires unavailable stdint.h.
 //   The target/z/index allocation basin is therefore not controlled by these
 //   proved action-TU declaration or lifetime contexts.
+// - 2026-08-17 (sa-2458e802-r1): replaced the remaining VPAD/vf placeholders
+//   with the reviewed RGE_Static_Object and RGE_Task_List methods, named
+//   master destructor/copy surfaces, and the RGE_Player destructor declaration.
+//   No constructor or destructor body, null guard, or codegen-only alias was
+//   added. The canonical source remains 221 bytes with 143 differing bytes,
+//   two aligned calls, and the same no-frame shape.
+// - Bounded recovery axis: completed the named destructor/copy overrides for
+//   the animated, moving, and action master surfaces plus create_task_list.
+//   The rebuilt output stayed byte-for-byte identical to the canonical check;
+//   the remaining mismatch is the existing target/z/index register basin.
 
 class RGE_Static_Object;
 class RGE_Action_Object;
@@ -128,21 +138,65 @@ class RGE_Task_List;
 class RGE_Player;
 class RGE_Sprite;
 class RGE_Sound;
-
-#define VPAD1(n) virtual void vf##n(void);
-#define VPAD2(n) VPAD1(n) VPAD1(n##_1)
-#define VPAD4(n) VPAD2(n) VPAD2(n##_2)
-#define VPAD8(n) VPAD4(n) VPAD4(n##_4)
-#define VPAD16(n) VPAD8(n) VPAD8(n##_8)
-#define VPAD32(n) VPAD16(n) VPAD16(n##_16)
+class RGE_Armor_Weapon_Info;
+class RGE_Game_World;
+class RGE_Master_Combat_Object;
+class RGE_Color_Table;
+class TDrawArea;
+class LOSTBL;
 
 class RGE_Static_Object {
 public:
-    VPAD32(0)
-    VPAD8(32)
-    VPAD4(40)
-    VPAD2(44)
-    VPAD1(46)
+    virtual ~RGE_Static_Object();
+    virtual void recycle_in_to_game(RGE_Master_Static_Object*, RGE_Player*,
+                                    float, float, float);
+    virtual void recycle_out_of_game();
+    virtual void draw(TDrawArea*, short, short, RGE_Color_Table*);
+    virtual void shadow_draw(TDrawArea*, short, short, unsigned char);
+    virtual void normal_draw(TDrawArea*, short, short);
+    virtual void draw_front_frame(TDrawArea*, short, short);
+    virtual void draw_back_frame(TDrawArea*, short, short);
+    virtual void draw_frame(TDrawArea*, short, short);
+    virtual unsigned char update();
+    virtual void check_damage_sprites();
+    virtual void rehook();
+    virtual void save(int);
+    virtual float teleport(float, float, float);
+    virtual void new_sprite(RGE_Sprite*);
+    virtual void add_overlay_sprite(RGE_Sprite*, unsigned char);
+    virtual void remove_overlay_sprite(RGE_Sprite*);
+    virtual void change_ownership(RGE_Player*);
+    virtual void modify(float, unsigned char);
+    virtual void modify_delta(float, unsigned char);
+    virtual void modify_percent(float, unsigned char);
+    virtual void transform(RGE_Master_Static_Object*);
+    virtual void copy_obj(RGE_Master_Static_Object*);
+    virtual void set_object_state(unsigned char);
+    virtual void remove_visible_resource();
+    virtual void create_doppleganger_when_dying();
+    virtual void destroy_obj();
+    virtual void die_die_die();
+    virtual void damage(int, RGE_Armor_Weapon_Info*, float, RGE_Player*,
+                        RGE_Static_Object*);
+    virtual float calculateDamage(int, RGE_Armor_Weapon_Info*, float,
+                                  RGE_Player*, RGE_Static_Object*);
+    virtual void rotate(long);
+    virtual unsigned char can_attack();
+    virtual void set_attribute(short, float);
+    virtual void set_attribute_amount(float, unsigned char, unsigned char);
+    virtual int heal(int, int);
+    virtual unsigned char heal(float);
+    virtual int canRepair();
+    virtual void notify_of_relation(long, unsigned char);
+    virtual void do_command(RGE_Static_Object*, float, float, float);
+    virtual void move_to(RGE_Static_Object*, float, float, float);
+    virtual void work(RGE_Static_Object*, float, float, float);
+    virtual void stop();
+    virtual void set_attack(RGE_Static_Object*);
+    virtual void play_command_sound();
+    virtual void play_move_sound();
+    virtual void new_angle(float);
+    virtual RGE_Static_Object* spawn_death_obj();
     virtual RGE_Master_Static_Object* get_command_master(RGE_Static_Object* target,
                                                           float x, float y, float z);
 
@@ -160,11 +214,33 @@ public:
     virtual RGE_Task* get_target_task(RGE_Action_Object* action,
                                       RGE_Static_Object* target,
                                       float x, float y, float z);
+    virtual int is_attack_task(RGE_Task* task);
+    virtual int check_task(RGE_Task* task, RGE_Action_Object* action,
+                           RGE_Static_Object* target);
+    virtual ~RGE_Task_List();
 };
 
 class RGE_Master_Static_Object {
 public:
-    virtual void vf00(void);
+    virtual ~RGE_Master_Static_Object();
+    virtual void copy_obj(RGE_Master_Static_Object* object);
+    virtual void modify(float, unsigned char);
+    virtual void modify_delta(float, unsigned char);
+    virtual void modify_percent(float, unsigned char);
+    virtual void save(int);
+    virtual RGE_Static_Object* make_new_obj(RGE_Player*, float, float, float);
+    virtual RGE_Master_Static_Object* make_new_master();
+    virtual unsigned char check_placement(RGE_Player*, float, float, int*,
+                                          unsigned char, unsigned char,
+                                          unsigned char, unsigned char,
+                                          unsigned char, unsigned char);
+    virtual unsigned char alignment(float*, float*, RGE_Game_World*,
+                                    unsigned char);
+    virtual long calc_base_damage_ability(RGE_Master_Combat_Object*);
+    virtual void play_command_sound();
+    virtual void play_move_sound();
+    virtual void draw(TDrawArea*, short, short, RGE_Color_Table*, long, long,
+                      int, unsigned char);
     unsigned char master_type;       // +0x04
     char gap_05[0x0F];               // +0x05..+0x13
     short object_group;              // +0x14
@@ -173,11 +249,15 @@ public:
 
 class RGE_Master_Animated_Object : public RGE_Master_Static_Object {
 public:
+    virtual ~RGE_Master_Animated_Object();
+    virtual void copy_obj(RGE_Master_Static_Object* object);
     float speed;                     // +0xB8
 };
 
 class RGE_Master_Moving_Object : public RGE_Master_Animated_Object {
 public:
+    virtual ~RGE_Master_Moving_Object();
+    virtual void copy_obj(RGE_Master_Static_Object* object);
     RGE_Sprite* move_sprite;         // +0xBC
     RGE_Sprite* run_sprite;          // +0xC0
     float turn_speed;                // +0xC4
@@ -193,6 +273,9 @@ public:
 
 class RGE_Master_Action_Object : public RGE_Master_Moving_Object {
 public:
+    virtual ~RGE_Master_Action_Object();
+    virtual void copy_obj(RGE_Master_Static_Object* object);
+    virtual RGE_Task_List* create_task_list();
     RGE_Task_List* tasks;            // +0xD8
     short default_task;              // +0xDC
     char gap_DE[2];                   // +0xDE..+0xDF
@@ -210,7 +293,7 @@ public:
 
 class RGE_Player {
 public:
-    virtual void vf00(void);
+    virtual ~RGE_Player();
     char gap_04[0x1E];                // +0x04..+0x21
     short master_object_num;         // +0x22
     RGE_Master_Static_Object** master_objects; // +0x24
