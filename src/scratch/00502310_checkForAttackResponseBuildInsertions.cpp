@@ -32,6 +32,10 @@
 //   inventory boundary is the manifest-listed parent-owned fragment cluster
 //   00502451-005025C9. Do not replace this source with raw-offset or codegen
 //   scaffolding merely to hide that structural boundary.
+// - Current claim: a split `unitsToInsert` initialization followed by compound
+//   subtraction was a codegen duplicate. The clean typed source remains pinned;
+//   exact completion needs parent-fragment-aware checking or fragment-aware
+//   code emission for the manifest-listed switch codelets.
 
 class ResourceItem {
 public:
