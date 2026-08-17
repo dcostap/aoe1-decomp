@@ -32,6 +32,14 @@
 // Follow-up probe: materializing the target master id through short/int locals
 // and an independent group-0x15 gate exposed one oracle block but worsened CFG;
 // restored. Remaining lead is TU/source lifetime context, not register forcing.
+// Pass 2 evidence:
+// BINARY NOTE: The shipped first target-id compare sign-extends the short field
+// to EAX and compares full-width ECX/EDI. Int alternate-id locals reproduced
+// that width and reduced output by 4 bytes, but worsened positional diff.
+// BINARY NOTE: Removing explicit positive list guards removed the 44-byte size
+// gap, but changed the register basin and worsened positional similarity.
+// Header additions, declaration order, local scope, and a register hint were
+// unchanged or worse. The baseline below remains the clean natural source.
 #include "..\..\include\game_globals.h"
 class TRIBE_Task_List;
 class RGE_Action_Object;
