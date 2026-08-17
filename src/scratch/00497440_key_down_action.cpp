@@ -16,22 +16,16 @@
 // - restored first-switch key 9 after the formation cases so the jump-table
 //   body topology follows the original; inverted the final param4 branch source
 //   order so developer blocks precede normal-mode blocks.
-// - reordered developer dispatch labels to the observed player-dispatch body
-//   region, and modeled the post-dispatch value as a result local. The latter
-//   was codegen-neutral; an explicit zero return for developer key 0x20 was
-//   also codegen-neutral and was rolled back.
-// - restored the developer 0x20 case's source-level break; VC5 merged the
-//   call with the later normal-mode case and emitted no change.
-// - inverted the final game-mode gate and made its work-key chain return
-//   explicitly. This restored the third command_view_selected call and exact
-//   target-count parity, but the switch body still precedes the work chain.
-// - a duplicated work-chain arm improved block alignment but added duplicate
-//   calls; rolled it back. The current single-chain spelling is retained.
-// - final bounded pause: current source is the best complete period-plausible
-//   reconstruction, not an opaque byte hack. Remaining drift is structural:
-//   early parameter/register scheduling, one compiler-merged
-//   command_view_selected site, and emitted jump-table placement beyond the
-//   original boundary. Exact promotion is not justified.
+// - reordered the second developer switch to its emitted case order and fixed
+//   key 0x41 to use view_debug_Objects.
+// - added TRIBE_Game::show_object_id at +0xC20 for the developer 0x49 case.
+// - BINARY NOTE: the work-key arms return, but a no-match path falls through
+//   to the later normal switch. This matches the original block edges.
+// - reordered the normal switch by its emitted body order. Independent host
+//   and group guards restored the original param4 reload and block layout.
+// - current check: exact size, frame, 101 calls, and 97.76% shape; 347 bytes
+//   differ. The first mismatch is the normal digit switch's LEA versus SUB.
+//   Remaining drift is local register allocation and switch-table relocation.
 
 #include <stdio.h>
 #include <string.h>
@@ -259,6 +253,7 @@ public:
     int sub_game_mode;
     char gap_1BC[0x818];
     int display_selected_ids;
+    char gap_9D8[0x4C];
 
     int gameDeveloperMode();
     int get_paused();
@@ -272,6 +267,9 @@ public:
 class TRIBE_Game : public RGE_Base_Game {
 public:
     virtual ~TRIBE_Game();
+    char gap_A24[0x1FC];
+    int show_object_id;                 // +0xC20
+
     void restart_game();
     void goto_notification_loc();
     void show_status_message(char* text, char* caption, long timeout);
@@ -450,18 +448,13 @@ long TRIBE_Screen_Game::key_down_action(long param_1, short param_2,
     }
 
     if (rge_base_game->gameDeveloperMode() != 0 && comm->IsHost() != 0) {
-        if (param_4 != 0) {
-            if (param_5 != 0 && param_1 >= 0x32 && param_1 <= 0x38) {
-                comm->Kick(param_1 - 0x30);
-                return 1;
-            }
-            if (param_1 >= 0x30 && param_1 <= 0x39) {
-                param_1 -= 0x30;
-                this->command_group_by_number((int)param_1);
-                return 1;
-            }
+        if (param_4 != 0 && param_5 != 0 &&
+            param_1 >= 0x32 && param_1 <= 0x38) {
+            comm->Kick(param_1 - 0x30);
+            return 1;
         }
-    } else if (param_4 != 0 && param_1 >= 0x30 && param_1 <= 0x39) {
+    }
+    if (param_4 != 0 && param_1 >= 0x30 && param_1 <= 0x39) {
         param_1 -= 0x30;
         this->command_group_by_number((int)param_1);
         return 1;
@@ -523,6 +516,7 @@ long TRIBE_Screen_Game::key_down_action(long param_1, short param_2,
         }
     }
 
+    // BINARY NOTE: Ctrl and Alt 0x49 use different game fields.
     if (param_3 != 0) {
         switch (param_1) {
         case 0x30:
@@ -539,26 +533,10 @@ long TRIBE_Screen_Game::key_down_action(long param_1, short param_2,
             this->command_select_group((int)param_1, 1);
             this->command_view_selected();
             return 1;
-        case 0x41:
-            if (rge_base_game->gameDeveloperMode() != 0) {
-                rge_base_game->display_selected_ids =
-                    (rge_base_game->display_selected_ids == 0);
-            }
-            return 1;
-        case 0x43:
-            if (rge_base_game->gameDeveloperMode() != 0) {
-                view_debug_redraw_all = 1;
-            }
-            return 1;
         case 0x49:
             if (rge_base_game->gameDeveloperMode() != 0) {
                 rge_base_game->display_selected_ids =
                     (rge_base_game->display_selected_ids == 0);
-            }
-            return 1;
-        case 0x4F:
-            if (rge_base_game->gameDeveloperMode() != 0) {
-                view_debug_ObstructionMap = (view_debug_ObstructionMap == 0);
             }
             return 1;
         case 0x50:
@@ -569,6 +547,21 @@ long TRIBE_Screen_Game::key_down_action(long param_1, short param_2,
         case 0x53:
             if (rge_base_game->gameDeveloperMode() != 0) {
                 view_debug_spans = (view_debug_spans == 0);
+            }
+            return 1;
+        case 0x43:
+            if (rge_base_game->gameDeveloperMode() != 0) {
+                view_debug_redraw_all = 1;
+            }
+            return 1;
+        case 0x4F:
+            if (rge_base_game->gameDeveloperMode() != 0) {
+                view_debug_ObstructionMap = (view_debug_ObstructionMap == 0);
+            }
+            return 1;
+        case 0x41:
+            if (rge_base_game->gameDeveloperMode() != 0) {
+                view_debug_Objects = (view_debug_Objects == 0);
             }
             return 1;
         case 0x58:
@@ -586,13 +579,12 @@ long TRIBE_Screen_Game::key_down_action(long param_1, short param_2,
         if (rge_base_game->get_paused() == 0 &&
             rge_base_game->game_mode == 6 &&
             rge_base_game->sub_game_mode == 1) {
-            int i = 0;
-            while (i < this->start_item) {
+            for (int i = 0; i < this->start_item; ++i) {
                 RGE_Player* player = rge_base_game->get_player();
-                RGE_Master_Static_Object* master =
-                    player->master_objects[this->bldg_list[i].master_object_id];
-                char* hotkey = this->get_string(master->hotkey_id);
-                if (param_1 == *hotkey) {
+                if (param_1 == *this->get_string(
+                                  player->master_objects[
+                                      this->bldg_list[i].master_object_id]
+                                          ->hotkey_id)) {
                     TDigital* sound = rge_base_game->get_sound(1);
                     if (sound != 0) {
                         sound->play();
@@ -600,7 +592,6 @@ long TRIBE_Screen_Game::key_down_action(long param_1, short param_2,
                     this->command_building(this->bldg_list[i].master_object_id);
                     return 1;
                 }
-                ++i;
             }
         }
     }
@@ -675,10 +666,10 @@ long TRIBE_Screen_Game::key_down_action(long param_1, short param_2,
             }
             break;
         case 0x49:
-            rge_base_game->display_selected_ids =
-                (rge_base_game->display_selected_ids == 0);
+            rge_base_game->show_object_id =
+                (rge_base_game->show_object_id == 0);
             this->object_panel->set_redraw(result);
-            break;
+            return 0;
         case 0x4A:
             comm->TXDebugPing();
             break;
@@ -696,11 +687,11 @@ long TRIBE_Screen_Game::key_down_action(long param_1, short param_2,
             }
             break;
         case 0x4F:
-            if (rge_base_game->outline_type == 3) {
-                rge_base_game->outline_type = 2;
-            } else {
+            if (rge_base_game->outline_type != 3) {
                 rge_base_game->outline_type = 3;
+                return result;
             }
+            rge_base_game->outline_type = 2;
             return result;
         case 0x51:
             if (allow_user_commands != 0) {
@@ -717,7 +708,7 @@ long TRIBE_Screen_Game::key_down_action(long param_1, short param_2,
                 View_Grid_Mode = 0;
             }
             this->main_view->set_redraw(2);
-            break;
+            return 0;
         case 0x53:
             if (allow_user_commands != 0) {
                 this->command_add_attribute(2);
@@ -761,47 +752,39 @@ long TRIBE_Screen_Game::key_down_action(long param_1, short param_2,
             break;
         }
     } else {
-        if (rge_base_game->game_mode != 6 ||
-            rge_base_game->sub_game_mode != 1) {
-            if (this->work_key != 0 && param_1 == this->work_key &&
-                game_over == 0) {
-                if (allow_user_commands != 0) {
-                    this->command_work();
-                }
-            } else if (this->move_key != 0 && param_1 == this->move_key &&
-                       game_over == 0) {
-                if (allow_user_commands != 0) {
-                    this->command_move();
-                }
-            } else if (this->attack_key != 0 && param_1 == this->attack_key &&
-                       game_over == 0) {
-                if (allow_user_commands != 0) {
-                    this->command_attack();
-                }
-            } else if (this->ungroup_key != 0 && param_1 == this->ungroup_key) {
-                this->command_ungroup();
+        if (rge_base_game->game_mode == 6) {
+            if (rge_base_game->sub_game_mode == 1) {
+                goto normal_mode_switch;
             }
+        }
+
+        // BINARY NOTE: a matched work key returns; a miss reaches the next switch.
+        if (this->work_key != 0 && param_1 == this->work_key &&
+            game_over == 0) {
+            if (allow_user_commands != 0) {
+                this->command_work();
+            }
+            return 0;
+        } else if (this->move_key != 0 && param_1 == this->move_key &&
+                   game_over == 0) {
+            if (allow_user_commands != 0) {
+                this->command_move();
+            }
+            return 0;
+        } else if (this->attack_key != 0 && param_1 == this->attack_key &&
+                   game_over == 0) {
+            if (allow_user_commands != 0) {
+                this->command_attack();
+            }
+            return 0;
+        } else if (this->ungroup_key != 0 && param_1 == this->ungroup_key) {
+            this->command_ungroup();
             return 0;
         }
 
+    // BINARY NOTE: this switch is after the work-key fall-through blocks.
+    normal_mode_switch:
         switch (param_1) {
-        case 9:
-            this->command_tab_selected(result);
-            return result;
-        case 0x0D:
-            this->command_quick_chat();
-            break;
-        case 0x20:
-            this->command_view_selected();
-            break;
-        case 0x24:
-            rge_base_game->goto_notification_loc();
-            break;
-        case 0x2E:
-            if (game_over == 0 && allow_user_commands != 0) {
-                this->command_cancel_building();
-            }
-            break;
         case 0x30:
         case 0x31:
         case 0x32:
@@ -812,9 +795,12 @@ long TRIBE_Screen_Game::key_down_action(long param_1, short param_2,
         case 0x37:
         case 0x38:
         case 0x39:
-            param_1 -= 0x30;
+            param_1 = param_1 + (-0x30);
             this->command_select_group((int)param_1, result);
             break;
+        case 9:
+            this->command_tab_selected(result);
+            return result;
         case 0x73:
             this->command_score(this->world->score_displayed == 0);
             break;
@@ -849,12 +835,27 @@ long TRIBE_Screen_Game::key_down_action(long param_1, short param_2,
                 this->time_panel->set_clock_type(0, 0);
                 this->pop_panel->set_active(0);
             }
-            this->reset_clocks();
-            this->main_view->set_redraw(result);
+                this->reset_clocks();
+                this->main_view->set_redraw(result);
+                return 0;
+        case 0x20:
+            this->command_view_selected();
+            break;
+        case 0x0D:
+            this->command_quick_chat();
+            break;
+        case 0x24:
+            rge_base_game->goto_notification_loc();
+            break;
+        case 0x2E:
+            if (game_over == 0 && allow_user_commands != 0) {
+                this->command_cancel_building();
+            }
             break;
         default:
             break;
         }
+
         return 0;
     }
 
