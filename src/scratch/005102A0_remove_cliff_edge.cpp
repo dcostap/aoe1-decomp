@@ -43,6 +43,26 @@
 // shardC5-5102A0 baseline: revalidated the typed donor-shaped source and its
 // 8-call ABI surface. A natural pre-switch cliff_info.info[0] = (long)this
 // lead, supported by add_cliff_edge, was codegen-neutral and was rolled back.
+// sa-0e999ebe-r1: revalidated the donor-shaped source and ran 20 meaningful
+// probes. PDB line order proves the switch source order is cases 0, 2, 3, 1;
+// this natural order improves the rebuilt source to 360 bytes, 85.37% shape,
+// 41.74% exact-block coverage, and 107-byte edit cost. A volatile saved-map
+// diagnostic reaches 339 bytes and 86.96% shape but emits a broad wrong
+// register/reload family, so it was rejected. The clean source keeps the
+// nonvolatile period-plausible model. Remaining blocker: the oracle stores
+// this at [esp+10] and uses EBP/ESI for outer/inner counters, while clean VC5
+// keeps this in EBP and spills the outer counter at [esp+10].
+// sa-4d7f59bf-r1 revisit: typed base and vptr surfaces, natural map aliases,
+// both int counters, declaration order, dead aggregate zeroing, an explicit
+// info pointer, a register outer index, and a long reverse result were tested.
+// They were neutral or worse and were rolled back. Final validation remains
+// 360 rebuilt bytes versus 339, with all eight calls aligned. The unresolved
+// blocker is the oracle's stack-owned this and EBP/ESI counter allocation.
+// sa-c79846f1-r1 revisit: a canonical RGE_Map base with a vptr and proven
+// offsets, a zero-initialized cliff pointer, a both-long counter pair, and a
+// const map receiver were each neutral. They were rolled back. The clean
+// typed source remains 360 rebuilt bytes versus 339, with all eight calls
+// aligned; the saved-this and counter-color blocker remains unresolved.
 
 struct TRIBE_Cliff_Info {
     int info[4];
@@ -93,15 +113,12 @@ public:
 
 void TRIBE_Map::remove_cliff_edge(long x, long y, long dir)
 {
+    TRIBE_Cliff_Info cliff_info;
+
     switch (dir) {
     case 0:
         ++x;
         if (x >= this->map_width)
-            return;
-        break;
-    case 1:
-        ++y;
-        if (y >= this->map_height)
             return;
         break;
     case 2:
@@ -114,9 +131,13 @@ void TRIBE_Map::remove_cliff_edge(long x, long y, long dir)
             return;
         --y;
         break;
+    case 1:
+        ++y;
+        if (y >= this->map_height)
+            return;
+        break;
     }
 
-    TRIBE_Cliff_Info cliff_info;
     RGE_Static_Object* cliff = this->find_cliff(x, y);
     cliff_info = this->get_cliff_info(cliff);
 
