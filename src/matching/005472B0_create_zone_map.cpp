@@ -60,6 +60,20 @@
 // - sa47e4-create-zone-map: clean source remains best; original CFG requires
 //   a shared EH epilogue, while all natural shared-return forms perturb the
 //   prologue or allocation body.
+// - sa-f59bec2e-r1: separate return, scoped-goto, shared-index, postincrement,
+//   and register-index probes did not improve the natural source. The exact-
+//   flag return-form sweep found no size-eligible match. Restored clean source.
+// - sa-8c6ed4de-r1: a single-return break plus allocation guard produced a
+//   228-byte drift. A one-iteration allocation scope was codegen-duplicate.
+//   A function-scope typed map pointer with direct new assignment preserved
+//   size but produced the known 203-byte prologue/register basin; declaration
+//   order did not change it. Restored the clean typed source.
+// - sa-83e45bf9-r1: defining the binary-proven nonvirtual zone-map destructor
+//   selected the original shared EH teardown and reduced the natural source
+//   to an 11-byte localized branch mismatch. Two natural returns in the hit
+//   arm (success return, then failure assignment and return) produced the
+//   exact 248-byte body. The destructor body follows 005469C0 and is required
+//   TU context for this exact result.
 
 #include <stdlib.h>
 #include <string.h>
@@ -84,6 +98,13 @@ public:
     unsigned char do_zone_map();
 };
 
+RGE_Zone_Map::~RGE_Zone_Map()
+{
+    free(this->zone_map);
+    free(this->zone_map_rows);
+    free(this->terrain_passability_rules);
+}
+
 class RGE_Zone_Map_List {
 public:
     RGE_Zone_Map** zone_maps;
@@ -99,16 +120,18 @@ long RGE_Zone_Map_List::create_zone_map(float* table, long count)
 
     for (i = 0; i < this->zone_map_num; i++) {
         if (this->zone_maps[i]->check_info(table, count) != 0) {
-            if (this->zone_maps[i]->do_zone_map() == 0)
-                i = -1;
+            if (this->zone_maps[i]->do_zone_map() != 0)
+                return i;
+            i = -1;
             return i;
         }
     }
 
     RGE_Zone_Map** new_zone_maps =
-        (RGE_Zone_Map**)calloc(this->zone_map_num + 1, 4);
+        (RGE_Zone_Map**)calloc(this->zone_map_num + 1, sizeof(RGE_Zone_Map*));
     if (this->zone_maps != 0) {
-        memcpy(new_zone_maps, this->zone_maps, this->zone_map_num * 4);
+        memcpy(new_zone_maps, this->zone_maps,
+               this->zone_map_num * sizeof(RGE_Zone_Map*));
         free(this->zone_maps);
     }
 
