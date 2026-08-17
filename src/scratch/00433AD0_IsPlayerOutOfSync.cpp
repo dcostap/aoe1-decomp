@@ -30,6 +30,17 @@
 //   and widened structural drift, so it was rolled back.
 // - Tried a typed checksum-record cursor for the first search. It changed the
 //   prologue, dropped one Log call, and widened drift; the WTurn cursor stays.
+// - Revisited the typed source with the existing checksum-record ownership.
+//   Moving the found flag assignment after the selected-record loads produced
+//   a closer natural basin: 483 differing bytes versus the 517-byte baseline.
+// - Kept the parameter-left player comparison in the second checksum scan and
+//   made the humanity scan use a separate signed index; this recovers the
+//   original signed JLE without changing the unsigned checksum-loop bound.
+// - Recovered the late layout with an early negative count guard and a
+//   positive player-count arm. This preserves the original diagnostic call
+//   order and reaches 44.86% exact-block coverage, but is not an exact match.
+// - A block-local typed record pointer, a bool found flag, and removal of the
+//   pre-search WTime zero were worse. They were removed or restored.
 
 class TDebuggingLog {
 public:
@@ -106,7 +117,6 @@ int RGE_Communications_Synchronize::IsPlayerOutOfSync(
     for (; firstIndex <= 0x36; ++firstIndex, puVar2 += 9) {
         if (this->Check[firstIndex].PlayerNo == playerNo &&
             this->Check[firstIndex].WTurn == commTurn) {
-            bVar1 = 1;
             mycs5 = this->Check[firstIndex].cs2;
             mycs2 = this->Check[firstIndex].cs3;
             uVar5 = this->Check[firstIndex].WTime;
@@ -114,6 +124,7 @@ int RGE_Communications_Synchronize::IsPlayerOutOfSync(
             NumSame = this->Check[firstIndex].cs5;
             lVar6 = this->Check[firstIndex].cs1;
             local_8 = this->Check[firstIndex].Random;
+            bVar1 = 1;
             break;
         }
     }
@@ -128,7 +139,7 @@ int RGE_Communications_Synchronize::IsPlayerOutOfSync(
 
     unsigned int i = 1;
     do {
-        if (puVar8[-2] != playerNo && puVar8[0] == commTurn) {
+        if (playerNo != puVar8[-2] && puVar8[0] == commTurn) {
             if (uVar5 == puVar8[-1] &&
                 lVar6 == puVar8[1] &&
                 mycs5 == puVar8[2] &&
@@ -151,26 +162,27 @@ int RGE_Communications_Synchronize::IsPlayerOutOfSync(
         puVar8 += 9;
     } while (i <= 0x36);
 
-    i = 1;
+    int player = 1;
     do {
-        if (this->Comm->GetPlayerHumanity(i) == 2) {
+        if (this->Comm->GetPlayerHumanity(player) == 2) {
             ++foundMine;
         }
-        ++i;
-    } while (i <= 9);
+        ++player;
+    } while (player <= 9);
 
     L->Log("OUTOFSYNC: numplayers=%d, diff=%d, same=%d",
            foundMine, NumPlayers, NumDiff);
 
-    if (NumDiff + NumPlayers >= foundMine - 1) {
-        if (NumPlayers <= NumDiff) {
-            L->Log("OUTOFSYNC: return not out 2");
-            return 0;
-        }
+    if (NumDiff + NumPlayers < foundMine - 1) {
+        L->Log("OUTOFSYNC: return not out");
+        return 0;
+    }
+
+    if (NumPlayers > NumDiff) {
         L->Log("OUTOFSYNC: return out");
         return 1;
     }
 
-    L->Log("OUTOFSYNC: return not out");
+    L->Log("OUTOFSYNC: return not out 2");
     return 0;
 }
