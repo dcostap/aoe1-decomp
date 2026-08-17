@@ -95,6 +95,21 @@
 // BINARY NOTE: The original bottom count test branches back to 004D45B0 and
 //     then jumps to the zero return. The clean natural while(1) source emits
 //     the equivalent reverse branch, despite matching every other body block.
+// 41: original-TU audit. Inventory order confirms taibldmd.cpp neighbors from
+//     the constructors through buildItem; exact donors are the list-walk and
+//     build-list methods at 004D4460, 004D4DB0, 004D4F80, 004D5090,
+//     004D5170, 004D5270, 004D57A0, 004D5BB0, and 004D5C20.
+// 42: period header and macro contexts were swept with the pinned /GX flags.
+//     VC5 kept one 2136-byte group for standard headers, repo headers, legacy
+//     aliases, Windows macros, and pack(4)/pack(8) contexts.
+// 43: exact neighboring declaration order and two natural preceding list-walk
+//     definitions were tested. Both kept the 9-byte bottom branch mismatch.
+// 44: canonical RGE_Player, MainDecision, AI submodule, TRIBE_Player, and
+//     TribeMainDecision trailing class surfaces were tested. All variants kept
+//     the 9-byte mismatch and the 0xF4 frame.
+// TU CONCLUSION: No repository-supported translation-unit declaration, header,
+//     macro, class-surface, or neighboring-function context selects the
+//     oracle's jle/jmp normalization. Preserve the clean natural baseline.
 
 extern "C" char* __cdecl strncpy(char* dst, const char* src, unsigned int count);
 
