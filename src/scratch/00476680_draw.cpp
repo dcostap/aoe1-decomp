@@ -52,6 +52,13 @@
 // 30 bytes in three spans. The canonical clean source is restored.
 // BLOCKER: the remaining difference is VC5 callee-save shrink wrapping in
 // this standalone TU. Prior flags and context probes did not recover it.
+// Bounded original-TU follow-up: exact RGE_Panel_Time::draw and
+// TInputPanel::draw donors both delay EDI/EBX until after real guards.
+// Restoring their draw_setup/draw_finish names, full TPanel virtual names,
+// draw_rect ownership, RedrawMode, local declaration points, and the exact
+// view include order did not change the 30-byte result. A positive outer
+// visible guard also did not change it. All probes were restored. The
+// standalone source has no evidence-backed prologue allocation change.
 
 #include <windows.h>
 
