@@ -49,6 +49,16 @@
 // - [probe12 abi] corrected SetPlayerTurnSpeed to exact same-TU uint/uchar/uchar;
 //   this keeps the decorated target identity, though current diff is 1390.
 // - [probe13 liveness] uint increment worsened size and CFG; probe14 restored uchar.
+// - [worker probes 8-18] an adjacent byte array, precomputed DONE turn, signed
+//   LastAnyPlayerMessage, positive drop selection, and a direct current_turn test
+//   recovered frame 0x8C, all 55 ordered calls, and 93.50% shape; strict diff 980.
+//   The clearest pinned source is the direct current_turn form with the byte array
+//   scoped to the turn-ack block. Separate packet locals and lifted byte scopes were worse
+//   or codegen duplicates.
+// - Final unresolved evidence: target speed-byte homes are [esp+30]/[esp+31], while
+//   the pinned source uses [esp+10]/[esp+11]. Target also has one extra instruction
+//   and a three-byte boundary overrun. Timeout and ack blocks otherwise have exact
+//   call sets, frame, and matching CFG condition counts.
 
 typedef unsigned int uint;
 typedef unsigned long ulong;
@@ -172,25 +182,27 @@ int TCommunications_Handler::DoCycle(ulong param_1)
     this->ReceiveGameMessages();
     this->LastPlayerCommunication[this->Me] = now;
 
-    unsigned char inc = this->CommandTurnIncrement;
+    uint doneTurn = (uint)this->CommandTurnIncrement + this->current_turn;
     uint turn = this->current_turn;
     if (this->Multiplayer != 0 && this->ProgramState != COMM_STATE_JOINNOW &&
         this->LastTurnAck[this->Me] != turn) {
         this->LastTurnAck[this->Me] = turn;
-        if (turn > 6) {
-            unsigned char centi = this->Speed->GetHighLatencyCenti();
-            uchar frame = (uchar)this->Speed->GetAvgFrameRate();
-            this->Speed->SetPlayerTurnSpeed(this->Me, frame, centi);
-        }
-        LAST_SENT_TIME = debug_timeGetTime(S(0x580BF4), 0xBF9);
         struct DoneMessage {
             char type;
             char gap_01[3];
             int turn;
             char gap_08[4];
         } doneMsg;
+        if (this->current_turn > 6) {
+            // BINARY NOTE: the executable keeps these two byte results in adjacent homes.
+            uchar speedParts[2];
+            speedParts[0] = this->Speed->GetHighLatencyCenti();
+            speedParts[1] = (uchar)this->Speed->GetAvgFrameRate();
+            this->Speed->SetPlayerTurnSpeed(this->Me, speedParts[1], speedParts[0]);
+        }
+        LAST_SENT_TIME = debug_timeGetTime(S(0x580BF4), 0xBF9);
         doneMsg.type = 'D';
-        doneMsg.turn = inc + turn;
+        doneMsg.turn = doneTurn;
         L->Log(S(0x580EA4), 0x0C);          // "  >TX DONE (%d)"
         this->CommOut(0, 'D', (char*)&doneMsg, 0x0C, 0);
     }
@@ -228,7 +240,7 @@ int TCommunications_Handler::DoCycle(ulong param_1)
 
         char msg_str[100];
         uint i = 1;
-        ulong lastAnyPlayerMessage = 0;
+        int lastAnyPlayerMessage = 0;
         int selfTimedOutCount = 0;
         if (this->MaxGamePlayers >= i) {
             ulong* lpc = this->LastPlayerCommunication + 1;
@@ -284,42 +296,37 @@ int TCommunications_Handler::DoCycle(ulong param_1)
             } while (i <= (uint)this->MaxGamePlayers);
         }
 
-        if (selfTimedOutCount + 1 == 3) {
-            if (lastAnyPlayerMessage < 2) {
-                goto checkTimeout;
+        if ((selfTimedOutCount + 1 == 3 && lastAnyPlayerMessage >= 2) ||
+            (selfTimedOutCount + 1 != 3 &&
+             lastAnyPlayerMessage >= (selfTimedOutCount + 1) / 2)) {
+            // BINARY NOTE: this positive drop arm leaves the timeout block cold and late.
+            // dropped myself
+            L->Log(S(0x580DA0));   // "I Dropped myself."
+            this->NotifyWindowParam(COMM_PLAYER_DROPPED, this->Me);
+            i = 1;
+            if (this->MaxGamePlayers >= i) {
+                int* wk = &this->WasKicked[1];
+                do {
+                    *wk = 1;
+                    i++;
+                    wk++;
+                } while (i <= (uint)this->MaxGamePlayers);
             }
-        }
-        if (lastAnyPlayerMessage < (selfTimedOutCount + 1) / 2) {
-            goto checkTimeout;
+            rge_base_game->world->send_zone_score_info();
+            L->Log(S(0x580C4C));   // "Initialize Player List"
+            i = 1;
+            if (this->MaxGamePlayers >= i) {
+                do {
+                    this->InitPlayerInformation(i, 0, S(0x580460), S(0x580460));
+                    i++;
+                } while ((int)i <= (int)(uint)this->MaxGamePlayers);
+            }
+            this->NeedsToBeSent = 0;
+            this->LastSentTime = 0;
+            this->UpdatePlayers();
+            return 0;
         }
 
-        // dropped myself
-        L->Log(S(0x580DA0));   // "I Dropped myself."
-        this->NotifyWindowParam(COMM_PLAYER_DROPPED, this->Me);
-        i = 1;
-        if (this->MaxGamePlayers >= i) {
-            int* wk = &this->WasKicked[1];
-            do {
-                *wk = 1;
-                i++;
-                wk++;
-            } while (i <= (uint)this->MaxGamePlayers);
-        }
-        rge_base_game->world->send_zone_score_info();
-        L->Log(S(0x580C4C));   // "Initialize Player List"
-        i = 1;
-        if (this->MaxGamePlayers >= i) {
-            do {
-                this->InitPlayerInformation(i, 0, S(0x580460), S(0x580460));
-                i++;
-            } while ((int)i <= (int)(uint)this->MaxGamePlayers);
-        }
-        this->NeedsToBeSent = 0;
-        this->LastSentTime = 0;
-        this->UpdatePlayers();
-        return 0;
-
-    checkTimeout:
         {
             ulong lastTimeout = this->LastTimeoutMessageTime;
             if (this->LastTimeoutMessageTime < G) {
