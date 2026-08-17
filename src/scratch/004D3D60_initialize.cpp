@@ -34,10 +34,10 @@
 //   original instruction count (532/532) and puts the bronzeAgeIndex=0 store
 //   near its original block; diff 1076, size -7, shape 90.0%%.
 // - tool-age double guard: the original keeps BOTH the `if (remaining > 0)`
-//   guard (191) and the while-loop guard (199); rebuilt VC5 merges them into
-//   one test. Tried sibling-step-calc forms, do-while forms, inline condition,
-//   register-qualified step: all add a step spill or break call parity. Left
-//   the natural nested form (single merged guard); 1 missing test+jle hunk.
+//   guard (191) and the loop guard (199). The natural nested while merges them
+//   into one test. A natural outer-guard/inner-do-while form restores the
+//   second-test basin: diff 953, size 1781/1780, shape 89.87%, calls 61/61.
+//   The do-while source remains the best clean candidate, but it is not exact.
 // - register allocation: original keeps `count` (0x66) in EBP through the first
 //   loop + transport fill; rebuilt keeps `warshipCount` (0x65) there instead.
 //   This flips the 11 counter frame-slot assignment (rebuilt slots: divisionSize
@@ -51,19 +51,17 @@
 //   back. The first paired hunk still shows the same local-slot permutation.
 // - Ghidra marks the three research-presence locals as bool; changing the int
 //   flags to bool moved the entry allocation and worsened diff to 1587. Restored.
-// - Ghidra shows the tool-age loop as an outer positive guard with an inner
-//   do-while. That form restored a second guard but worsened diff to 1104 and
-//   reduced exact-block coverage. Restored the clean while form.
+// - H24 tested `do { ... } while (--remaining != 0)`: VC5 chose a different
+//   register basin and worsened diff to 1104. Keep the H12 `remaining--` form.
 // - Ghidra also names a separate requiredPop local for strategic 0x9B + 4;
 //   separating it from the reused ironAge flag worsened diff to 1084. Restored.
 //
 // LEFT IN SCRATCH: semantically faithful natural reconstruction with correct
-// class surface (/GX EH frame, 0xB0 BuildItem), 100%% call parity (61/61), and
-// matching instruction count (532/532). Remaining ~60%% positional diff is
-// pervasive VC5 register/slot-allocation drift (count-vs-warshipCount EBP
-// choice, frame-slot permutation, A0-loop ironAgeIndex home) plus one missing
-// tool-age loop guard. Landing the exact allocation is not evidence-backed
-// within a bounded session. Strong verified-logic-tier candidate for
+// class surface (/GX EH frame, 0xB0 BuildItem), 61/61 ordered calls, and the
+// best observed diff (953; 53.51%). Remaining drift includes broad register
+// and frame-slot allocation differences, a one-instruction size overrun, and
+// the resource-scan loop topology. Landing exact allocation is not
+// evidence-backed in this pass. Strong verified-logic-tier candidate for
 // orchestrator semantic review.
 
 class ResourceItem;
@@ -235,11 +233,11 @@ void TribeBuildAIModule::initialize()
                 step = 10;
             }
             int val = step;
-            while (remaining > 0) {
+            do {
                 insert(0x0D, -1, val);
                 val += step;
                 remaining--;
-            }
+            } while (remaining > 0);
         }
     }
 
