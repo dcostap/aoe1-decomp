@@ -115,6 +115,17 @@
 // - Field cleanup replaced explicit alignment bytes and a byte-array tile view
 //   with named RGE_Tile_List members and natural alignment. The rebuilt object
 //   stayed byte-identical, so the named canonical form is retained.
+// - Frontier continuation: exact PDB parameter names, reviewed global
+//   declaration order, direct TRIBE_Game global typing, explicit __cdecl on
+//   the variadic history method, C-style receiver casts, period character
+//   conditions, explicit returns, and PDB-style late-line grouping all kept
+//   the 275-byte / 25-byte basin. The period outer non-deathmatch-first form
+//   remained 283 bytes with 237 bytes of drift.
+// - These probes preserve the two direct calls, all stores, branch order, and
+//   fault order. The PDB has no local symbols. No natural parameter, owner,
+//   declaration-order, condition, or period-source axis moved the EDX=64h
+//   preload or the late map_type reload toward the oracle's EDX=14h and early
+//   reload. Keep the canonical typed source below.
 
 typedef unsigned char uchar;
 
