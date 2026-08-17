@@ -104,16 +104,82 @@
 // also left codegen unchanged. Risky flags either stayed in the same basin
 // or changed the frame/prologue; default /O2 /Oy remains required. Preserve
 // the clean source. The TU context is not the cause of the two missing homes.
+// sa-45f7b14a-r1 source-gate audit:
+// - Replaced the narrow object overlay with the inventory-backed named
+//   RGE_Static_Object -> RGE_Animated_Object -> RGE_Moving_Object ->
+//   RGE_Action_Object ownership. The object_state offset remains +0x48.
+// - Kept the complete named RGE_Action surface. Its virtual deleting
+//   destructor, type(), and first_in_stack() slots are required by the calls.
+// - Removed the action_type spill local and the impossible outer curr-null
+//   wrapper. Kept the inner null tail because the original has that call site.
+// - Replaced the hand-written calloc declaration with the period CRT header.
+//   The original direct calloc call and the eight-byte node remain.
+// - Audit source is behavior-clean but not exact: 256 bytes, 9 ordered calls,
+//   4 returns, and 7 conditional branches. Direct type calls add an 0x8 frame.
+#include <stdlib.h>
+
 class RGE_Action_List;
+class RGE_Action_Object;
 class RGE_Static_Object;
 class RGE_Master_Action_Object;
 class RGE_Task;
+class RGE_Master_Static_Object;
+class RGE_Player;
+class RGE_Sprite;
+class RGE_Active_Sprite_List;
+class RGE_Tile;
+class RGE_Object_List;
 
-class RGE_Action_Object {
+class RGE_Static_Object {
+public:
+    virtual ~RGE_Static_Object();
+    long id;
+    RGE_Master_Static_Object* master_obj;
+    RGE_Player* owner;
+    RGE_Sprite* sprite;
+    RGE_Sprite* old_sprite;
+    RGE_Active_Sprite_List* sprite_list;
+    RGE_Tile* tile;
+    RGE_Static_Object* inside_obj;
+    RGE_Object_List* objects;
+    short screen_x_offset;
+    short screen_y_offset;
+    short shadow_x_offset;
+    short shadow_y_offset;
+    float hp;
+    unsigned char curr_damage_percent;
+    unsigned char facet;
+    unsigned char selected;
+    unsigned char selected_group;
+    float world_x;
+    float world_y;
+    float world_z;
+    float attribute_amount_held;
+    unsigned char object_state;
+    unsigned char sleep_flag;
+    unsigned char dopple_flag;
+    unsigned char goto_sleep_flag;
+    short attribute_type_held;
+    unsigned char type;
+    unsigned char worker_num;
+    char gap_50[0x38];
+};
+
+class RGE_Animated_Object : public RGE_Static_Object {
+public:
+    virtual ~RGE_Animated_Object();
+    float speed;
+};
+
+class RGE_Moving_Object : public RGE_Animated_Object {
+public:
+    virtual ~RGE_Moving_Object();
+    char gap_8C[0xF4];
+};
+
+class RGE_Action_Object : public RGE_Moving_Object {
 public:
     virtual ~RGE_Action_Object();
-    char gap_04[0x44];
-    unsigned char status;
 };
 
 class RGE_Action {
@@ -143,6 +209,25 @@ public:
     virtual void set_target_obj(RGE_Static_Object* object);
     virtual void set_target_obj2(RGE_Static_Object* object);
     virtual void set_state(unsigned char value);
+
+    short action_type;
+    char gap_06[2];
+    RGE_Action_Object* obj;
+    unsigned char state;
+    char gap_0D[3];
+    RGE_Static_Object* target_obj;
+    RGE_Static_Object* target_obj2;
+    int targetID;
+    int target2ID;
+    float target_x;
+    float target_y;
+    float target_z;
+    float timer;
+    RGE_Task* task;
+    RGE_Action_List* sub_actions;
+    RGE_Sprite* sprite;
+    unsigned char subActionValue;
+    char gap_3D[3];
 };
 
 class RGE_Action_Node {
@@ -170,52 +255,44 @@ public:
     void add_action_at_end_of_action_queue(RGE_Action* action);
 };
 
-extern "C" void* calloc(unsigned int count, unsigned int size);
-
 void RGE_Action_List::add_action_at_end_of_action_queue(RGE_Action* action) {
     RGE_Action_Node* curr;
-    short action_type;
 
-    if (obj->status > 2) {
+    if (obj->object_state > 2) {
         if (action != 0) {
             delete action;
         }
         return;
     }
 
-    RGE_Action_Node* node = (RGE_Action_Node*)calloc(1, 8);
+    RGE_Action_Node* node =
+        (RGE_Action_Node*)calloc(1, sizeof(RGE_Action_Node));
     node->action = action;
 
     if (list != 0) {
-        action_type = action->type();
-        if (list->action->type() == action_type) {
+        if (list->action->type() == action->type()) {
             curr = list;
-            if (curr != 0) {
-                while (1) {
-                    if (curr->next == 0) {
-                        break;
-                    }
-                    action_type = action->type();
-                    if (curr->next->action->type() != action_type) {
-                        break;
-                    }
-                    curr = curr->next;
-                    if (curr == 0) {
-                        action->first_in_stack(1);
-                        return;
-                    }
+            while (1) {
+                if (curr->next == 0) {
+                    break;
                 }
-                node->next = curr->next;
-                curr->next = node;
-                action->first_in_stack(1);
-                return;
+                if (curr->next->action->type() != action->type()) {
+                    break;
+                }
+                curr = curr->next;
+                if (curr == 0) {
+                    action->first_in_stack(1);
+                    return;
+                }
             }
-            goto notify;
+            node->next = curr->next;
+            curr->next = node;
+            action->first_in_stack(1);
+            return;
         }
     }
 
     node->next = list;
     list = node;
-notify:
     action->first_in_stack(1);
 }
