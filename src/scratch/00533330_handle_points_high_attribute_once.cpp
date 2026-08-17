@@ -77,8 +77,21 @@
 // - sa-ba695c8f-r1 moved the result declaration before val; output stayed unchanged.
 // - sa-ba695c8f-r1 scoped a player alias to the initial attribute conversion; output stayed
 //   unchanged. Clean typed source restored; no source-backed lead remains beyond EBX/EDI coloring.
+// - sa-563b4173-r1 baseline validation confirmed 224 bytes, exact calls/frame/CFG, and a 29-byte
+//   PARTIAL_REGISTER_RECOLOR gap: original entry=EDI/pp=EBX, rebuilt entry=EBX/pp=EDI.
+// - This pass tested a register-qualified entry parameter, a post-guard point-entry alias, a
+//   point-entry reference alias, and long val/result locals. Each was codegen-neutral.
+// - A 64-variant ambient file-scope declaration lab formed one 224-byte/29-byte codegen group.
+//   A Ghidra-shaped named attribute/player source widened the frame to 0x8 and diff to 208 bytes;
+//   both families were restored. No natural source or ABI lead changed the register-color gap.
+// - CodeView symbols identify the parameter as `node` and the reused conversion temporary as
+//   `long amount`; the PDB class records confirm the point-entry long fields and exact pointer
+//   ownership. A positive state block and implicit float-to-long initialization both emit the
+//   same 224-byte/29-byte group. The unresolved gap remains only entry=EBX versus original
+//   entry=EDI and player-array cursor=EDI versus original EBX.
 
 class RGE_Game_World;
+class RGE_Victory_Entry;
 
 class RGE_Player {
 public:
@@ -116,52 +129,52 @@ public:
 
 class RGE_Victory_Conditions {
 public:
-    virtual void handle_point_condition(void* entry);
-    virtual void handle_condition(void* entry);
-    virtual char* condition_description(void* entry);
+    virtual void handle_point_condition(RGE_Victory_Point_Entry* entry);
+    virtual void handle_condition(RGE_Victory_Entry* entry);
+    virtual char* condition_description(RGE_Victory_Entry* entry);
     virtual void save(int handle);
-    void* victory_list;       // +0x04
+    RGE_Victory_Entry* victory_list; // +0x04
     long list_num;            // +0x08
     RGE_Player* player;       // +0x0C
     unsigned char victory;    // +0x10
     char gap_11[3];
-    void* victory_point_list; // +0x14
+    RGE_Victory_Point_Entry* victory_point_list; // +0x14
     long point_list_num;      // +0x18
     long tot_victory_points;  // +0x1C
 
-    void handle_points_high_attribute_once(RGE_Victory_Point_Entry* entry);
+    void handle_points_high_attribute_once(RGE_Victory_Point_Entry* node);
 };
 
-void RGE_Victory_Conditions::handle_points_high_attribute_once(RGE_Victory_Point_Entry* entry) {
-    if (entry->state != 0) return;
+void RGE_Victory_Conditions::handle_points_high_attribute_once(RGE_Victory_Point_Entry* node) {
+    if (node->state == 0) {
+        long amount = this->player->attributes[node->attribute];
+        if (node->curr_attribute_amount < (float)amount) {
+            node->curr_attribute_amount = (float)amount;
+        }
 
-    int val = (long)this->player->attributes[entry->attribute];
-    if (entry->curr_attribute_amount < (float)val) {
-        entry->curr_attribute_amount = (float)val;
-    }
-
-    int i = 1;
-    RGE_Player** pp = this->player->world->players;
-    if (i < this->player->world->player_num) {
-        pp++;
-        do {
-            if (i != this->player->id && (float)entry->amount <= (*pp)->attributes[entry->attribute]) {
-                entry->amount = (long)(*pp)->attributes[entry->attribute];
-            }
-            i++;
+        int i = 1;
+        RGE_Player** pp = this->player->world->players;
+        if (i < this->player->world->player_num) {
             pp++;
-        } while (i < this->player->world->player_num);
-    }
+            do {
+                if (i != this->player->id && (float)node->amount <= (*pp)->attributes[node->attribute]) {
+                    node->amount = (long)(*pp)->attributes[node->attribute];
+                }
+                i++;
+                pp++;
+            } while (i < this->player->world->player_num);
+        }
 
-    int result;
-    if (entry->curr_attribute_amount >= (float)entry->amount) {
-        result = entry->points;
-    } else {
-        result = (val == entry->amount) ? entry->curr_points : 0;
-    }
+        int result;
+        if (node->curr_attribute_amount >= (float)node->amount) {
+            result = node->points;
+        } else {
+            result = (amount == node->amount) ? node->curr_points : 0;
+        }
 
-    if (result != entry->curr_points) {
-        this->tot_victory_points += result - entry->curr_points;
-        entry->curr_points = result;
+        if (result != node->curr_points) {
+            this->tot_victory_points += result - node->curr_points;
+            node->curr_points = result;
+        }
     }
 }
