@@ -44,6 +44,12 @@
 // - luna-r2 probe 12: inverted the header-read guard into a natural success
 //   block; error layout moved, but size grew 4 bytes, exact-block coverage
 //   fell 8.2%, and diff grew 5 bytes. Restored the clean negative guard.
+// - current revisit: replaced the generic ResFileNode/void* surface with the
+//   canonical ResFileHdr ownership (mapped_file, handle, header, next,
+//   res_name) shared by the adjacent resource-file reader. The emitted code
+//   and metrics were unchanged; the source now has the correct typed global
+//   identity. The first body range remains an island match, while the checker
+//   still crosses the excluded 0047F00C and 0047F076 parent fragments.
 
 #include <stdlib.h>
 #include <string.h>
@@ -68,12 +74,12 @@ extern "C" int __cdecl read(int fd, void* buf, unsigned size);
 
 struct resfile_header;
 
-struct ResFileNode {
-    void* data;
-    int fd;
-    resfile_header* directory;
-    ResFileNode* next;
-    char name[260];
+struct ResFileHdr {
+    unsigned char* mapped_file;
+    int handle;
+    resfile_header* header;
+    ResFileHdr* next;
+    char res_name[260];
 };
 
 struct resfile_header {
@@ -84,13 +90,13 @@ struct resfile_header {
     int directory_size;
 };
 
-extern ResFileNode* g_resFileList;
+extern ResFileHdr* g_resFileList;
 
 void __cdecl RESFILE_open_new_resource_file(char* name, char* cmpName, char* path, int isMapped) {
     char resFile[260];
     char error_msg[80];
     resfile_header rHdr;
-    void* mappedData = 0;
+    unsigned char* mappedData = 0;
     int fHandle = -1;
 
     sprintf(resFile, "%s%s", path, name);
@@ -114,7 +120,7 @@ void __cdecl RESFILE_open_new_resource_file(char* name, char* cmpName, char* pat
             return;
         }
 
-        mappedData = MapViewOfFile(hMapping, 4, 0, 0, 0);
+        mappedData = (unsigned char*)MapViewOfFile(hMapping, 4, 0, 0, 0);
 
         if (mappedData == 0) {
             MessageBoxA(0, "Error: Open_Mapped_ResFile, Could not map file.", "RESOURCE ERROR", 0x30);
@@ -132,33 +138,33 @@ void __cdecl RESFILE_open_new_resource_file(char* name, char* cmpName, char* pat
     }
 
     {
-        ResFileNode* node;
-        node = (ResFileNode*)malloc(0x114);
+        ResFileHdr* node;
+        node = (ResFileHdr*)malloc(0x114);
         if (node == 0) {
             MessageBoxA(0, "Error: Out of memory in Open_resfile.", "RESOURCE ERROR", 0x30);
             return;
         }
 
-        strcpy(node->name, name);
+        strcpy(node->res_name, name);
         node->next = 0;
 
         if (isMapped == 0) {
-            node->fd = -1;
-            node->data = mappedData;
-            node->directory = (resfile_header*)mappedData;
+            node->handle = -1;
+            node->mapped_file = mappedData;
+            node->header = (resfile_header*)mappedData;
         } else {
             int n;
-            node->fd = fHandle;
-            node->data = 0;
+            node->handle = fHandle;
+            node->mapped_file = 0;
             lseek(fHandle, 0, 1);
             n = read(fHandle, &rHdr, sizeof(rHdr));
             if (n != sizeof(rHdr)) {
                 MessageBoxA(0, "Error: Reading resfile header.", "RESOURCE ERROR", 0x30);
                 return;
             }
-            node->directory = (resfile_header*)malloc(rHdr.directory_size);
+            node->header = (resfile_header*)malloc(rHdr.directory_size);
             lseek(fHandle, 0, 0);
-            n = read(fHandle, node->directory, rHdr.directory_size);
+            n = read(fHandle, node->header, rHdr.directory_size);
             if (n != rHdr.directory_size) {
                 MessageBoxA(0, "Error: Reading resfile header data.", "RESOURCE ERROR", 0x30);
                 return;
@@ -166,28 +172,28 @@ void __cdecl RESFILE_open_new_resource_file(char* name, char* cmpName, char* pat
         }
 
         {
-            void* head;
+            ResFileHdr* head;
             head = g_resFileList;
             if (head == 0) {
                 g_resFileList = node;
             } else {
-                ResFileNode* cur;
-                cur = (ResFileNode*)head;
+                ResFileHdr* cur;
+                cur = head;
                 while (cur->next != 0) {
-                    cur = (ResFileNode*)cur->next;
+                    cur = cur->next;
                 }
                 cur->next = node;
             }
         }
 
         {
-            if (strcmp(node->directory->password, cmpName) != 0) {
+            if (strcmp(node->header->password, cmpName) != 0) {
                 MessageBoxA(0, "Error: Open_ResFile, Corruption detected in resourcefile.", "RESOURCE ERROR", 0x30);
                 return;
             }
         }
 
-        if (strncmp(node->directory->version, "1.00", 4) != 0) {
+        if (strncmp(node->header->version, "1.00", 4) != 0) {
             MessageBoxA(0, "Error: Open_ResFile, Resfile not correct version.", "RESOURCE ERROR", 0x30);
             return;
         }
