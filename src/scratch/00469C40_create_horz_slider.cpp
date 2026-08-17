@@ -28,6 +28,18 @@
 // a do-while join, and direct per-arm returns were all codegen duplicates (46-byte diff).
 // The remaining drift is a compiler-owned duplicated /GX cleanup tail; no source-shape lead
 // remains without changing the exact body prefix.
+// worker 2026-08-16 (sa-374696e2-r1): natural direct success/failure returns matched the
+// paired vertical-slider donor but remained a 46-byte duplicate. Separate early returns for
+// null, field_D8, and setup failure worsened the body to 251 bytes. Initializing the existing
+// result local to zero was also a 46-byte duplicate. Restored the clean natural result source.
+// worker 2026-08-17 (sa-2509371b-r1): a named done label, success-only goto, and explicit
+// allocation parentheses were 46-byte duplicates. A named typed slider pointer worsened the
+// body to 247 bytes. Restored the direct typed output ownership and natural creation flow.
+// worker 2026-08-17 (sa-17d3e1fb-r1): defining the proven empty
+// THorizontalSliderPanel destructor in this TU changed the compiler-owned EH tail and gave
+// an authoritative 0-byte MATCH. This is not retained: VA 0047BE30 already has the compiler-
+// facing owner src/matching/0047BE30_THorizontalSliderPanel.cpp. Keeping that definition here
+// would violate the one-owner rule. The declaration-only natural source remains at 46 bytes.
 
 struct tagRECT {
     long left;
