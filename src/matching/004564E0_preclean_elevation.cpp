@@ -1,3 +1,5 @@
+#include <windows.h>
+
 // 004564E0 RGE_Map::preclean_elevation
 // map.cpp
 // Attempt log:
@@ -28,10 +30,16 @@
 // of the byte-offset cursor; exact clean_terrain donor idiom reproduced the
 // row-entry spill and reduced diff 792->121. Keep this canonical candidate;
 // remaining drift starts in the late neighbor update operand order.
+// exact-finish: windows.h moved the natural pointer-first source from 7-byte
+// drift to MATCH; removing it restored the drift. stdlib.h, memory.h, the
+// next_elevation temporary, and index-first loop updates were incidental or
+// non-required. Retain only windows.h and pointer-first updates.
+// BINARY NOTE: windows.h changes VC5's ambient declarations and is required
+// for exact code generation even though this function calls no Windows API.
 
 struct RGE_Tile {
     char gap_00[5];
-    unsigned char screen_xpos;
+    unsigned char screen_xpos; // high 3 bits hold elevation; low 5 stay intact
     char gap_06[0x12];
 };
 
@@ -61,6 +69,8 @@ void RGE_Map::preclean_elevation(long x1, long y1, long x2, long y2,
     long index1;
     unsigned char change_flag;
 
+    // LIKELY INTENT: expand and smooth the region until no opposing higher
+    // neighbors form an elevation conflict around a tile.
     do {
         change_flag = 0;
         if (x1 > 0) {
@@ -75,7 +85,7 @@ void RGE_Map::preclean_elevation(long x1, long y1, long x2, long y2,
 
         for (index2 = y1; index2 <= y2; ++index2) {
             RGE_Tile* tile = this->map_row_offset[index2] + x1;
-            for (index1 = x1; index1 <= x2; ++index1, ++tile) {
+            for (index1 = x1; index1 <= x2; ++tile, ++index1) {
                 unsigned char tile_byte = tile->screen_xpos;
                 short northwest = 0;
                 short northeast = 0;
@@ -122,6 +132,8 @@ void RGE_Map::preclean_elevation(long x1, long y1, long x2, long y2,
                 if (east && west)
                     conflict = 1;
                 if (conflict) {
+                    // At the elevation limit, lower higher neighbors. Below
+                    // the limit, raise this tile and process the region again.
                     if (elevation >= max_elevation) {
                         if (northwest)
                             (tile + offset_northwest)->screen_xpos =
@@ -156,6 +168,8 @@ void RGE_Map::preclean_elevation(long x1, long y1, long x2, long y2,
                                 (unsigned char)(elevation << 5) |
                                 (tile[-1].screen_xpos & 0x1f);
                     } else {
+                        // BINARY NOTE: the packed bit ranges do not overlap,
+                        // so XOR has the same value as OR and matches the code.
                         tile->screen_xpos = (unsigned char)((elevation + 1) << 5) ^
                                                (tile->screen_xpos & 0x1f);
                     }
