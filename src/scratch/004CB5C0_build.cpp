@@ -27,6 +27,17 @@
 //   all null returns correct and reaches a 77-byte diagnostic diff.
 // - base versus derived action pointer and typed RGE_Task vf210 return were
 //   codegen duplicates; kept the period-plausible derived action surface.
+// - fresh pass: trade-shaped success/failure labels grew to 374 bytes;
+//   nested direct returns grew to 396 bytes; both were rolled back.
+// - separate target/status locals produced 421 bytes.  A separate target and
+//   result pointer reached 331 bytes and 49 differing bytes only by returning
+//   the target on a null task.  Removing the task-null assignment was rolled
+//   back because it changes the proven null result.  Integer status locals
+//   were codegen-neutral when the target/result reuse stayed intact.
+// - fresh pass: direct task-null return grew to 350 bytes/122 diff; direct
+//   action-null return grew to 359 bytes/160 diff. Initialized integer status,
+//   delayed status initialization, and zero-before-task forms stayed above
+//   288 bytes of diff. Direct typed task-to-result reuse was 331 bytes/255 diff.
 // - remaining drift is the paired VC5 result-register basin and isolated
 //   EH-handler address; no compiler-only aliases or volatility retained.
 // FLAGS: config/flags/004CB5C0_build.rsp (/GX)
