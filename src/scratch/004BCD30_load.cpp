@@ -3,13 +3,16 @@
 // Attempt log:
 // - Rebuilt the file and resource paths from the original call order and stack homes.
 // - Kept the five-field DSBUFFERDESC and named DirectSound vtable slots.
-// - Separate cleanup branches recovered all 42 original calls and the 0x15C frame.
-// - Matched the positive read gates and split resource Create/Lock failure cleanup.
-// - A late cleanup-label experiment lost frees and was rolled back.
-// - Descriptor-only aggregate initialization matches the original zero-store prologue.
-// - The signed -1 resource default gate aligns the original boundary and most blocks.
-// - Remaining drift is read cmp/test form, recursive-call relocation identity, and
-//   resource tail placement; the rebuilt body is 3 bytes shorter.
+// - Separate cleanup branches recover all 42 original calls and the 0x15C frame.
+// - An unsigned result local around both read calls reproduces cmp/ja lowering.
+// - The explicit <= -1 resource gate reproduces the original cmp/jle boundary.
+// - The resource Lock path tests size2. This matches its proven stack-local test.
+// - A function-scope sound_buffer slot alias reduces the strict diff from 874 to 845.
+// - Rejected direct positive read guards, signed read/result types, direct Create
+//   guards, branch-local aliases, delayed aliases, and explicit recursive return 0.
+// - Final validation: 1475-byte output, 42 calls, 0x15C frame, 845-byte strict diff.
+// - Remaining drift is resource descriptor register coloring and cleanup-tail
+//   layout, plus the recursive-call relocation identity.
 #include <string.h>
 #include <stdlib.h>
 
@@ -132,9 +135,10 @@ int TDigital::load(char* name, long param) {
     WAVHEADER wave_hdr;
     char file_with_path[260];
     int resDataSize;
-    int result;
+    unsigned int result;
     IDirectSound* direct_sound;
     IDirectSoundBuffer* buffer;
+    IDirectSoundBuffer** buffer_slot = &this->sound_buffer;
     uchar* resource_data;
     int fd;
 
@@ -173,7 +177,8 @@ int TDigital::load(char* name, long param) {
         sprintf(file_with_path, "%s%s", this->sound_system->path, this->sound_file);
         fd = __open(file_with_path, 0, 0);
         if (fd != -1) {
-            if (read(fd, &wave_hdr.szRIFF, 0x2C) <= 0) {
+            result = read(fd, &wave_hdr.szRIFF, 0x2C);
+            if (result <= 0) {
                 this->failed = 1;
                 close(fd);
                 goto fail_return;
@@ -194,7 +199,8 @@ int TDigital::load(char* name, long param) {
                 goto fail_return;
             }
 
-            if (read(fd, this->wave_data, this->data_size) <= 0) {
+            result = read(fd, this->wave_data, this->data_size);
+            if (result <= 0) {
                 this->failed = 1;
                 free(this->wave_data);
                 this->wave_data = 0;
@@ -227,7 +233,7 @@ int TDigital::load(char* name, long param) {
             direct_sound = this->sound_system->direct_sound;
             result = direct_sound->vtable->CreateSoundBuffer(
                 direct_sound, &buffer_desc,
-                (void**)&this->sound_buffer, 0);
+                (void**)buffer_slot, 0);
             if (result != 0) {
                 this->failed = 1;
                 this->sound_buffer = 0;
@@ -238,7 +244,7 @@ int TDigital::load(char* name, long param) {
                 goto fail_return;
             }
 
-            buffer = this->sound_buffer;
+            buffer = *buffer_slot;
             result = buffer->vtable->Lock(
                 buffer, 0, this->data_size, &mem1, &size1,
                 &mem2, &size2, 0);
@@ -257,7 +263,7 @@ int TDigital::load(char* name, long param) {
             }
             this->failed = 1;
             buffer->vtable->Release(buffer);
-            this->sound_buffer = 0;
+            *buffer_slot = 0;
             free(this->wave_info);
             this->wave_info = 0;
             free(this->wave_data);
@@ -266,7 +272,7 @@ int TDigital::load(char* name, long param) {
         }
     }
 
-    if (param < 0 || (resource_data = RESFILE_load(0x77617620, param,
+    if (param <= -1 || (resource_data = RESFILE_load(0x77617620, param,
             &load_type, &resDataSize)) == 0) {
         this->failed = 1;
     } else {
@@ -309,15 +315,15 @@ int TDigital::load(char* name, long param) {
                 direct_sound = this->sound_system->direct_sound;
                 result = direct_sound->vtable->CreateSoundBuffer(
                     direct_sound, &buffer_desc,
-                    (void**)&this->sound_buffer, 0);
+                    (void**)buffer_slot, 0);
                 if (result == 0) {
-                    buffer = this->sound_buffer;
+                    buffer = *buffer_slot;
                     result = buffer->vtable->Lock(
                         buffer, 0, this->data_size, &mem1, &size1,
                         &mem2, &size2, 0);
                     if (result == 0) {
                         memcpy(mem1, this->wave_data, size1);
-                        if (mem2 != 0) {
+                        if (size2 != 0) {
                             memcpy(mem2, this->wave_data + size1, size2);
                         }
                         buffer->vtable->Unlock(
@@ -331,7 +337,7 @@ int TDigital::load(char* name, long param) {
                 } else {
                     this->failed = 1;
                 }
-                this->sound_buffer = 0;
+                *buffer_slot = 0;
                 free(this->wave_info);
                 this->wave_info = 0;
             }
