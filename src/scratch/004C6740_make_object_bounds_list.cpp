@@ -28,6 +28,17 @@
 // left in scratch: all nine calls and frame/size match, but initial float/local
 // homes, coordinate register coloring, and the late x/y FPU schedule remain
 // broad positional drift (final validation records the restored metrics).
+// revisit 2026-08-17: declaration-order and short initialization variants were
+// codegen duplicates.  Delayed dy assignment changed the basin to 843 bytes,
+// 0x40 was lost, and the result was rejected.  A typed row-pointer cursor
+// changed the frame to 0x3C and worsened the result to 713 bytes.  Reversing
+// allocation/result assignment and promoted flag addition were duplicates.
+// A local radius_z, direct object-radius rereads, and explicit int-to-short
+// casts worsened or changed the frame.  Raw-y, direct-member, and extent
+// variants were tested in one 24-state lab; no invariant-eligible result.
+// Final clean validation: 859 bytes, 0x40 frame, nine aligned calls, 617-byte
+// mismatch.  Next evidence should target the original short-bound home colors
+// and the target's delayed x/y x87 expression schedule without fake steering.
 
 extern float DAT_00574720;
 extern double DAT_00574718;
