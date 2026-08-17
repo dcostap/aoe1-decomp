@@ -32,6 +32,18 @@
 // 645B output.  The no-outer for and while forms reproduced the prior 605B
 // diagnostic basin, but moved lea esi before the initial jle and lost blocks.
 // Restored the clean do-while reconstruction; no structural lead remains.
+// resumed claim: 22 distinct source, lifetime, control-flow, and context probes
+// passed the 20-probe checkpoint.  Direct tasked-array member expressions
+// reduced the diff from 645 to 637 bytes.  The period donor comparison spelling
+// recovered the target x87 compare block and reduced it to 636 bytes.
+// Structured first-pass continues reduced the best clean source to 618 bytes,
+// with 25/25 ordered calls, a 0x10 frame, and 96.68% exact-block coverage.
+// Separate second-pass index storage reached 616 bytes but lost exact blocks;
+// it was not retained.  Top-tested loops, split guards, extra headers, scoped
+// indices, and late labels were neutral or worse and were rolled back.
+// Final unresolved facts: the original first-pass tail uses a positive near JL
+// backedge and a late first-found epilogue.  VC5 keeps an inverted JGE/JMP tail
+// and an early found return for every clean source form tested.
 
 #include <stdlib.h>
 
@@ -145,7 +157,6 @@ int TribeTacticalAIModule::idleCivilian(int mode, XYPoint& position, int chooseM
     int i;
     RGE_Static_Object* firstObj;
     RGE_Static_Object* secondObj;
-    ManagedArray<int>& tasked = this->unitsTaskedThisUpdate;
 
     bestUnitID = -1;
     bestUnitDistance = 0;
@@ -155,8 +166,8 @@ int TribeTacticalAIModule::idleCivilian(int mode, XYPoint& position, int chooseM
         do {
             if (i > civilians->maximumSizeValue - 1)
                 civilians->resize(i + 1);
-            if (tasked.contains(civilians->value[i]) != 0)
-                goto first_next;
+            if (this->unitsTaskedThisUpdate.contains(this->civilians.value[i]) != 0)
+                continue;
 
             if (i > civilians->maximumSizeValue - 1)
                 civilians->resize(i + 1);
@@ -168,13 +179,12 @@ int TribeTacticalAIModule::idleCivilian(int mode, XYPoint& position, int chooseM
                     if (i > civilians->maximumSizeValue - 1)
                         civilians->resize(i + 1);
                     if (this->civilianExplorers.contains(civilians->value[i]) != 0)
-                        goto first_next;
+                        continue;
                     if (firstObj->unitAI()->currentAction() == -1 &&
                         firstObj->unitAI()->currentOrder() == -1)
-                        goto first_found;
+                        return firstObj->id;
                 }
             }
-first_next:
             ++i;
         } while (i < this->civilians.numberValue);
     }
@@ -185,7 +195,7 @@ first_next:
         do {
             if (i > civilians->maximumSizeValue - 1)
                 civilians->resize(i + 1);
-            if (tasked.contains(civilians->value[i]) != 0)
+            if (this->unitsTaskedThisUpdate.contains(this->civilians.value[i]) != 0)
                 goto second_next;
 
             secondObj = this->md->player->world->object((*civilians)[i]);
@@ -211,7 +221,7 @@ first_next:
                         bestUnitDistance = distance;
                         bestUnitID = secondObj->id;
                     }
-                    else if ((chooseMode == 1 && distance < bestUnitDistance) ||
+                    else if ((chooseMode == 1 && bestUnitDistance > distance) ||
                              (chooseMode == 0 && bestUnitDistance < distance)) {
                         bestUnitDistance = distance;
                         bestUnitID = secondObj->id;
@@ -223,6 +233,4 @@ second_next:
         } while (i < this->civilians.numberValue);
     }
     return bestUnitID;
-first_found:
-    return firstObj->id;
 }
