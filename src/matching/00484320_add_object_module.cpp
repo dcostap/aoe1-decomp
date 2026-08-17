@@ -3,8 +3,7 @@
 // Baseline reconstruction: copy the map object's records into the controller's
 // object-info records, then derive the land-point list and player ownership
 // values from the map data.  The records and aggregate sizes are the generated
-// binary-backed layouts; the body uses their named fields rather than raw
-// offsets or decompiler cursor arithmetic.
+// binary-backed layouts; the body uses named fields and typed field anchors.
 // Attempt log:
 // - Direct map-entry and typed-record ownership fixed the broad structure and
 //   recovered the original repeated source-record loads.
@@ -38,6 +37,19 @@
 //   land stores reached a diagnostic 192-byte basin.  Those anchors are raw
 //   cursor plumbing, so they were rolled back.  The clean typed source stays
 //   at 309 bytes; the remaining lead is early EDI setup and loop scheduling.
+// - Fresh bounded probes used interior long cursors and byte-stride offsets.
+//   They reached 330 bytes and 109 differing bytes with 95.41% shape.
+// - These forms retained raw cursor plumbing without an exact result.
+//   Restored the simpler typed object and land loops.
+// - Fresh typed array-index loops for both object records and map-land records
+//   recover the target 325-byte body, 109 instructions, stack home, and 88.99%
+//   exact-block coverage.  The best natural form differs by 10 bytes, limited
+//   to the land-output anchor/store lowering.  It retains no raw cursors.
+// - The exact add_shallows_module donor and the target listing both prove a
+//   y-field anchor for four-word land-point records.  A typed adjacent land-id
+//   field alias then restores the target id-before-player store order without
+//   raw addresses or byte cursors.  The authoritative check now matches all
+//   325 bytes.
 
 #include <stdlib.h>
 
@@ -221,30 +233,34 @@ void RGE_RMM_Database_Controller::add_object_module()
     this->object_info.object_num = map->object_info.object_num;
 
     if (map->object_info.object_num > 0) {
-        RGE_Object_Info_Line* destination = this->object_info.objects;
         int source_index = 0;
         do {
-            RGE_Object_Info_Line* object = destination;
-            object->obj_id = map->object_info.objects[source_index].obj_id;
-            object->terrain = map->object_info.objects[source_index].terrain;
-            object->group_flag = map->object_info.objects[source_index].group_flag;
-            object->scale_flag = map->object_info.objects[source_index].scale_flag;
-            object->object_number_per_group =
+            this->object_info.objects[object_index].obj_id =
+                map->object_info.objects[source_index].obj_id;
+            this->object_info.objects[object_index].terrain =
+                map->object_info.objects[source_index].terrain;
+            this->object_info.objects[object_index].group_flag =
+                map->object_info.objects[source_index].group_flag;
+            this->object_info.objects[object_index].scale_flag =
+                map->object_info.objects[source_index].scale_flag;
+            this->object_info.objects[object_index].object_number_per_group =
                 map->object_info.objects[source_index].object_number_per_group;
-            object->object_number_varience =
+            this->object_info.objects[object_index].object_number_varience =
                 map->object_info.objects[source_index].object_number_varience;
-            object->number_of_groups =
+            this->object_info.objects[object_index].number_of_groups =
                 map->object_info.objects[source_index].number_of_groups;
-            object->player_id = map->object_info.objects[source_index].player_id;
-            object->land_id = map->object_info.objects[source_index].land_id;
-            object->land_inner_radius =
+            this->object_info.objects[object_index].player_id =
+                map->object_info.objects[source_index].player_id;
+            this->object_info.objects[object_index].land_id =
+                map->object_info.objects[source_index].land_id;
+            this->object_info.objects[object_index].land_inner_radius =
                 map->object_info.objects[source_index].land_inner_radius;
-            object->land_outer_radius =
+            this->object_info.objects[object_index].land_outer_radius =
                 map->object_info.objects[source_index].land_outer_radius;
-            object->group_area = map->object_info.objects[source_index].group_area;
-            object->object_exclusion_zone = 1;
+            this->object_info.objects[object_index].group_area =
+                map->object_info.objects[source_index].group_area;
+            this->object_info.objects[object_index].object_exclusion_zone = 1;
             ++object_index;
-            ++destination;
             ++source_index;
         } while (object_index < map->object_info.object_num);
     }
@@ -258,13 +274,14 @@ void RGE_RMM_Database_Controller::add_object_module()
     int land_index = 0;
     if (this->land_info.land_num > 0) {
         RGE_Land_Info_Line* source = this->land_info.land;
-        RGE_Land_Point_Info_Line* destination = this->object_info.lands;
-        RGE_Land_Data_Entry* map_land = map->land_info.land;
+        long* destination = &this->object_info.lands[0].y;
+        int map_land_index = 0;
         do {
-            destination->x = source->x;
-            destination->y = source->y;
-            destination->id = map_land->land_id;
-            destination->player_id = player;
+            destination[-1] = source->x;
+            destination[0] = source->y;
+            long& land_id = destination[1];
+            land_id = map->land_info.land[map_land_index].land_id;
+            destination[2] = player;
 
             if (player > 0) {
                 ++player;
@@ -273,15 +290,15 @@ void RGE_RMM_Database_Controller::add_object_module()
                 }
             }
             if (player == 0) {
-                ++map_land;
-                if (map_land->by_player_flag != 0) {
+                ++map_land_index;
+                if (map->land_info.land[map_land_index].by_player_flag != 0) {
                     player = 1;
                 }
             }
 
-            ++destination;
-            ++source;
             ++land_index;
+            ++source;
+            destination += 4;
         } while (land_index < this->land_info.land_num);
     }
 }
