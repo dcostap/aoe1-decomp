@@ -45,6 +45,8 @@
 // left in scratch: natural four-arm source is 288 bytes because VC5 tail-merges the first two arms; original is 326 bytes with four duplicated call sites
 // independent guarded returns preserve the natural per-arm termination suggested by the original no-jump CFG; testing once in this claim
 // claim probe: explicit lower bounds on the second and third bands changed the CFG and lowered structural coverage; restored the clean typed else-if source
+// claim probes: pointer/reference ABI, direct-member tests, independent returns, natural conversion helpers, constant spelling, post-call aliases, and sprintf prototype variants all retained the 288-byte first-two-arm tail merge; clean typed else-if source restored
+// revisit 2026-08-17: a named format local widened the wrong register basin to 297 bytes; an ABI-equivalent long value cast was byte-identical to clean. Restored the pinned typed source.
 
 extern "C" int __cdecl sprintf(char* buf, const char* fmt, ...);
 extern "C" long __cdecl __ftol(void);
