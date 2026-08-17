@@ -112,6 +112,30 @@
 //   coordinate variants were worse or duplicates and were rolled back.
 // - Remaining drift starts at +0015 in the initial load schedule. No further
 //   evidence-backed source lead remains in this bounded pass.
+// Fresh bounded pass (sa-c0ac4b5b-r1):
+// - Rechecked the dossier, constructor ABI, original Act_atak.cpp decomp line
+//   order, and same-TU constructor donors. The clean source remains 21 bytes
+//   away with exact size, frame, CFG, and ordered call set.
+// - A named typed combat-master local in the p5 fallback worsened the result to
+//   32 bytes. It was restored. The remaining +0015 hunk and p5 register map
+//   have no new evidence-backed natural source lead.
+// Fresh bounded pass (sa-f0203f84-r1):
+// - Tested coordinate-first x/z/y and x/y/z assignment orders, plus a sequenced
+//   coordinate comma expression. They produced 22, 23, and duplicate 22-byte
+//   results, so they were restored.
+// - Removing the p5 object alias worsened the result to 32 bytes. Hoisting the
+//   p5 result, or both p5 locals, was codegen-identical to the clean source.
+//   The pinned x/range/z/min/y source remains the simplest natural candidate.
+// - Final validation retains 237-byte size, no frame, exact call set, and the
+//   original EH-free constructor shape. The +0015 initial scheduling hunk and
+//   p5 register map remain unresolved without compiler-steering artifacts.
+// Fresh bounded pass (sa-5f84b7ee-r1):
+// - A 32-case ambient declaration sweep kept the same 237-byte, 21-byte-diff
+//   output. It did not change the initial register schedule.
+// - Proven base-owner typing, inherited-field qualification, and natural p5
+//   parameter-home reuse were codegen duplicates or metric-neutral. The clean
+//   typed constructor remains the best source; no exact natural variant was
+//   found.
 
 // Key structural insights confirmed:
 // - 11 stack params + this(ecx): (RGE_Action_Object*,float,float,float,RGE_Sprite*,
