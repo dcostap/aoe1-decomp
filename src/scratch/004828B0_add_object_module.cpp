@@ -24,6 +24,13 @@
 // fresh probes: full object-record ownership plus the group-flag dword union closed the initialization instruction count; correcting land_num to the second parameter at +0x141c recovered the loop owner and 18.98% exact-block coverage.
 // final state: current typed source is 687 effective bytes vs 695 original, 137 instructions, 3 calls, exact frame allocation, and 589 strict differing bytes; the best emitted-code diagnostic was 584 bytes before restoring the full typed land anchors.
 // BLOCKER: remaining mismatch begins in the EH handler/stack-home and saved-this/register schedule (rebuilt uses __chkstk/local EH label and spills this before callee-save pushes; oracle uses __alloca_probe/55E63E and delayed [esp+0Ch] home). No productive hypotheses remain in this bounded session; left the canonical typed reconstruction in scratch.
+// revisit probes: the oracle initializes the loop index before CMP/JLE; moving
+// `i = 0` before the positive-count guard improved the natural source to 582
+// strict differing bytes, 65.69% shape, and 20.44% exact-block coverage.
+// Same-TU ABI, full base surface, record-field, header, receiver-alias,
+// constant-local, typed-loop, and allocation-result-home probes did not improve
+// that basin. Explicit operator-new plus placement construction removed the
+// EH frame and lost the target boundary, so it was rejected.
 
 class RGE_Map;
 class RGE_Game_World { public: char pad[0x141c]; int land_num; };
@@ -126,6 +133,8 @@ public:
 
 void RGE_RMM_Controller::add_object_module(RGE_Game_World* world, RGE_Land_Info* lands)
 {
+    int count;
+    int i;
     RGE_Object_Info object_info;
     object_info.lands[0].x = 6;
     object_info.objects[1].object_exclusion_zone = 4;
@@ -205,11 +214,11 @@ void RGE_RMM_Controller::add_object_module(RGE_Game_World* world, RGE_Land_Info*
     object_info.objects[5].land_inner_radius = 0;
     object_info.objects[5].land_outer_radius = 9;
     object_info.objects[5].object_exclusion_zone = 15;
-    int count = lands->land_num;
+    count = lands->land_num;
+    i = 0;
     if (count > 0) {
         long* dst = &object_info.lands[0].y;
         long* src = &lands->land[0].y;
-        int i = 0;
         do {
             ++i;
             dst[-1] = src[-1];
