@@ -144,6 +144,10 @@
 // Named float or double radius locals improved size and shape but remained
 // broad mismatches. Delayed-Y and pointer-hoist forms violate PDB/fault order.
 // No parameter-home, duplicated-Y, volatile, or metric-only form is retained.
+// Object audit confirms the 167-byte FPO body, one local word, float-return ABI,
+// dX/dY PDB locals, x87 event order, and VC5 compiler. The 167-byte diagnostic
+// needs volatile and double radius temporaries that PDB and policy reject. No
+// hidden local or compiler mismatch supports that form.
 
 class RGE_Master_Static_Object {
 public:
