@@ -53,10 +53,15 @@
 //   /G5, /Ob0, and /Ob1 duplicated /O2 /Oy /GX; /O1 and /Oa worsened the frame
 //   or body.  Repository evidence therefore supports the current /GX context,
 //   but no period TU context naturally selects the oracle's add-before-call.
-// - Object audit confirms the exact scr_load.obj range, VC5 target, hierarchy,
-//   and save_dir[261] at prog_info+0xB12. No inline or block record explains
-//   the schedule. PDB marks load_game virtual, but the oracle direct call proves
-//   this call site must stay direct. The remaining ten bytes are scheduling only.
+// - Frontier probes: PDB gives TTextPanel::numberLines() const, int
+//   delete_line(long), and char* currentLine(); the real TListPanel* owner and
+//   const singlePlayerGame() declarations are also codegen-neutral here. A
+//   direct second save_dir expression moved the whole hunk (60 bytes), while a
+//   second char* address local added 14 bytes and 898 differing bytes. Splitting
+//   that declaration, narrowing its scope, reusing the first address local, and
+//   reordering editor declarations all returned the same 10-byte basin. These
+//   probes support the clean RGE_Prog_Info* form but do not explain VC5's local
+//   add-after-currentLine schedule.
 
 #include <io.h>
 #include <stdio.h>
@@ -132,10 +137,10 @@ public:
 
 class TTextPanel : public TPanel {
 public:
+    int numberLines() const;
     char* currentLine();
-    int numberLines();
     long get_line();
-    long delete_line(long line);
+    int delete_line(long line);
 };
 
 class TListPanel : public TTextPanel {
@@ -175,7 +180,7 @@ extern TPanelSystem panel_system;
 class RGE_Prog_Info {
 public:
     char gap_00[0xB12];
-    char save_dir[1];
+    char save_dir[261];
 };
 
 class RGE_Base_Game {
@@ -186,7 +191,7 @@ public:
     char gap_10[0x9F0];
     int save_paused;
 
-    int singlePlayerGame();
+    int singlePlayerGame() const;
     void set_paused(int paused, int non_user_pause);
     void disable_input();
 };
