@@ -26,6 +26,26 @@
 //   worsened setup and loop topology; a named orientation local was codegen-identical.
 // - Current pause: restored the prior clean source. No new lead remains before the structural
 //   orientation and loop-shape gap is understood.
+// - Follow-up pass (sa-4ab9d209): baseline remained 216 differing bytes (310 vs 334),
+//   frame 0x10, three ordered calls, and 81.74% shape similarity. An interior line_len
+//   cursor, an explicit short-pointer cursor, promoted pitch, short coordinate fields with
+//   padding, short clipping intermediates, raw cursor plus short clipping, function-scope
+//   line declaration, and char pointer types were tested. The cursor and char-pointer forms
+//   were duplicate or worse; narrow-field and narrow-clipping forms added a 0x14 frame.
+// - Follow-up pause: restored the pinned typed-record/int-span source. The remaining gap is
+//   evidence-backed orientation register coloring plus the original narrow loop topology and
+//   near back-edge. No exact result was found without opaque compiler steering.
+// - Revisit pass (sa-85d5417c): natural declaration and owner-alias changes were duplicate or
+//   worse. Short span locals reproduced word clipping but added a frame and broad drift. Direct
+//   Lock guards, row declaration order, and orientation assignment order gave no improvement.
+// - Revisit pause: restored the typed image-line ownership and natural do-loop source. Three
+//   calls, the 0x10 frame, and behavior remain aligned; the 216-byte structural gap remains.
+// - Revisit pass (sa-61f31cf1-r1): a natural short line_len cursor with narrow clipping
+//   spans reproduced the word-width inner blocks, but changed the orientation register
+//   basin, added control-flow drift, and reached 272 differing bytes (346-byte body).
+//   A scoped cursor alias added a 0x14 frame and 283 differing bytes. Both were restored.
+// - Revisit pause: the pinned typed-record/int-span source remains the clean natural
+//   reconstruction. No policy-valid exact result was found.
 
 extern "C" void* __cdecl memset(void* dst, int value, unsigned int count);
 #pragma function(memset)
