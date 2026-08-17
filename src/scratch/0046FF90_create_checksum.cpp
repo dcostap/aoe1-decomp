@@ -83,17 +83,30 @@
 // - The combined waypoint form recovered the 0x18 frame but reordered the
 //   checksum conversion call and added 16 bytes. Other forms were neutral or
 //   worse. Restored the pinned 277B/0x14 source with 5/5 calls.
+// Fresh second pass (sa-849b4c05-r1):
+// - Audited player, master, object, list, virtual-slot, width, call, and
+//   fault-order ownership against the packet and same-TU donors.
+// - A full typed RGE_Static_Object surface, typed player fields, the reviewed
+//   Object_List ABI, and period standard headers all changed the basin and
+//   worsened the body. They are not retained.
+// - A reviewed master declaration changed the prefix load order, but its
+//   incomplete local surface did not justify keeping it. The minimal donor
+//   surface remains the cleanest supported declaration.
+// - The executable rereads list->node after the waypoint call for position and
+//   action. The direct rereads recover the call-block shape and improve the
+//   result to 268B effective, diff 182, shape 81.82%, with 5/5 calls.
+// - The original still has a 0x18 frame and a stack-carried object checksum.
+//   Natural narrow-width forms did not recover that home. No exact result.
 
 extern "C" long __cdecl __ftol(void);
 
+class RGE_Static_Object;
 class RGE_Master_Static_Object {
 public:
     virtual ~RGE_Master_Static_Object();
     char gap_04[0x0C];
     short id;
 };
-
-class RGE_Static_Object;
 
 class RGE_Object_Node {
 public:
@@ -210,10 +223,10 @@ long RGE_Player::create_checksum(void) {
             + object_checksum;
         object_checksum += object->get_waypoint_checksum();
         ++object_count;
-        position_checksum = object->world_x + position_checksum;
-        position_checksum += object->world_y;
-        position_checksum += object->world_z;
-        this->action_checksum += object->get_action_checksum();
+        position_checksum = list->node->world_x + position_checksum;
+        position_checksum += list->node->world_y;
+        position_checksum += list->node->world_z;
+        this->action_checksum += list->node->get_action_checksum();
     }
 
     result = (result * 0x100 + object_count) * 0x100 + object_checksum;
