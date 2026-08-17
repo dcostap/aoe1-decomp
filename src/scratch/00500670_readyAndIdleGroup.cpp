@@ -32,6 +32,19 @@
 //   filtering and ordered desired/number locals was codegen-duplicate. The
 //   dossier and same-TU donors add no new ownership or ABI fact, so the clean
 //   source remains authoritative.
+// - This pass tested direct and separate filter locals, declaration order,
+//   register-qualified parameters, point aliases, guard nesting, and class
+//   surface variants. These forms stayed in the 68-byte basin.
+// - A volatile best-distance diagnostic reached 52 bytes but remains an
+//   unsupported metric-only form. A 32-sample ambient declaration sweep found
+//   one codegen group. No natural exact source emerged.
+// - A simpler direct type predicate with one block-local desired value and a
+//   direct numberUnits call preserves the typed scan and lowers drift to 30
+//   bytes. The remaining mismatch is local-home rotation and one deferred type
+//   load; declaration, sentinel, and initializer variants duplicate this basin.
+// - Revisit probe: a natural sentinel local used for both list-end comparisons
+//   was codegen-neutral. The pinned direct-predicate source remains the clean
+//   reconstruction; no policy-valid exact source emerged.
 
 #include <math.h>
 
@@ -100,7 +113,6 @@ TacticalAIGroup* TribeTacticalAIModule::readyAndIdleGroup(
     int bestDistance;
     TacticalAIGroup* group;
     TacticalAIGroup* bestGroup;
-    int value;
 
     group = this->groups.next;
     bestGroup = 0;
@@ -112,11 +124,9 @@ TacticalAIGroup* TribeTacticalAIModule::readyAndIdleGroup(
                 return bestGroup;
             }
 
-            value = type;
-            if (value == -1 || group->type() == value) {
-                value = group->desiredNumberUnits();
-                int number = group->numberUnits();
-                if (value <= number &&
+            if (type == -1 || group->type() == type) {
+                int desired = group->desiredNumberUnits();
+                if (desired <= group->numberUnits() &&
                     group->isGathered(this, this->md) != 0 &&
                     group->allUnitsIdle(this->md, 1) != 0) {
                     int distanceSquared =
