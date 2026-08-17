@@ -25,7 +25,17 @@
 //   shared extern and explicit TRIBE_Game use. VC5 emitted identical code.
 // - A focused exact-donor search for the remaining 15-instruction constant-store
 //   block found no matching source example. Do not repeat blind store permutations.
-// Final validation: 309 rebuilt bytes, 30 strict diff bytes, 27-byte edit diff.
+// - Original PDB locals contain only `this`, `b`, `mapType`, `gameType`, and
+//   `mapSize`; no local result or settings alias is present. A full local donor
+//   search still found no source for the 15-instruction schedule.
+// - Chained and comma-grouped stores, a narrow early-store scope, and a linked
+//   early 30/10 expression all emitted the same 30-byte mismatch. They were
+//   discarded. Keep direct assignments and the clean source order below.
+// - Revisit probes: restoring natural 10/20/30/100 assignment order produced
+//   313 bytes and 122 strict diff bytes; a scoped `const twenty` was unchanged.
+//   Restore the pinned source after both probes.
+// Final validation: 309 rebuilt bytes, 30 strict diff bytes, 27-byte edit diff;
+// exact calls, size, frame, CFG, and verified setup behavior remain intact.
 
 #include "../../include/rge_base_game_global.h"
 
@@ -57,43 +67,43 @@ public:
 
 class TRIBE_Player : public RGE_Player {
 public:
-    void setupSumerian(int* p, int type, int unused1, int unused2);
+    void setupSumerian(int* b, int mapType, int gameType, int mapSize);
 };
 
-void TRIBE_Player::setupSumerian(int* p, int type, int unused1, int unused2) {
+void TRIBE_Player::setupSumerian(int* b, int mapType, int gameType, int mapSize) {
     this->playerAI->logCommonHistory("Setting up as Sumerians.");
 
     if (((TRIBE_Game*)rge_base_game)->deathMatch() == 1) {
-        if (type == 0 || type == 1) {
-            p[0x46] = 100;
-        } else if (type == 2 || type == 6) {
-            p[0x20] = 0x3C;
-            p[0x46] = 0x28;
-        } else if (type == 5 || type == 8) {
-            p[0x20] = 0x50;
-            p[0x46] = 0x14;
+        if (mapType == 0 || mapType == 1) {
+            b[0x46] = 100;
+        } else if (mapType == 2 || mapType == 6) {
+            b[0x20] = 0x3C;
+            b[0x46] = 0x28;
+        } else if (mapType == 5 || mapType == 8) {
+            b[0x20] = 0x50;
+            b[0x46] = 0x14;
         } else {
-            p[0x20] = 100;
+            b[0x20] = 100;
         }
     } else if (rge_base_game->difficulty() < 1) {
-        p[0x26] = 100;
+        b[0x26] = 100;
     } else {
-        p[0x10] = 0x1E;
-        p[3] = 10;
-        p[9] = 10;
-        p[10] = 10;
-        p[11] = 10;
-        p[4] = 0x14;
-        p[0x11] = 0x14;
-        p[0x39] = 100;
-        p[0x3A] = 100;
+        b[0x10] = 0x1E;
+        b[3] = 10;
+        b[9] = 10;
+        b[10] = 10;
+        b[11] = 10;
+        b[4] = 0x14;
+        b[0x11] = 0x14;
+        b[0x39] = 100;
+        b[0x3A] = 100;
 
-        if (type == 0 || type == 1) {
-            p[0x5E] = 200;
-            p[0x5F] = 200;
-        } else if (type == 2 || type == 6 || type == 8 || type == 5) {
-            p[0x5E] = 100;
-            p[0x5F] = 100;
+        if (mapType == 0 || mapType == 1) {
+            b[0x5E] = 200;
+            b[0x5F] = 200;
+        } else if (mapType == 2 || mapType == 6 || mapType == 8 || mapType == 5) {
+            b[0x5E] = 100;
+            b[0x5F] = 100;
         }
     }
 }
