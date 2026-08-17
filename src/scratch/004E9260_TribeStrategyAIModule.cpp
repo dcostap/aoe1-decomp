@@ -65,6 +65,10 @@
 // ambient-declaration, and flag probes found no exact source basin.
 // LIKELY INTENT: the shipped source reused parameter a as a wire temporary;
 // the clean local form remains the smallest period-plausible source here.
+// Object audit: original and current FPO, 0x10 frame, calls, EH metadata, ABI,
+// compiler, and boundaries match. PDB has no block, inline, or range records
+// beyond its named reused homes. No object evidence supports an alias for the
+// remaining four stack displacements.
 
 extern "C" void __cdecl rge_read(int file, void* dst, int size);
 extern "C" void* __cdecl operator_new(unsigned int size);
