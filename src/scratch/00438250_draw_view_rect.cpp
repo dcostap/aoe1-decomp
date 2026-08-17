@@ -19,6 +19,19 @@
 //   locals, function-scope map/tile locals, and explicit panel-x loads. These
 //   forms were codegen duplicates or worsened structure; no new source-backed
 //   lead displaced the clean direct-access reconstruction.
+// Second pass (sa-e73ff662, 21 recorded probes plus one lab family):
+// - The short view-y local, draw_tile-style tile-row index, full TPanel surface,
+//   direct bottom reads, positive image bounds, split initializations, and a
+//   tile-row reference were codegen duplicates.
+// - Narrow x/y locals changed the frame or worsened positional drift. Reversed
+//   coordinate declaration order also worsened the first load order.
+// - Ratio guard operand and arm variants changed CFG or worsened shape. The
+//   reviewed external DAT_0056f604 declaration recovered one-level fcomp, but
+//   it added a relocation/call-set mismatch, so the absolute target form stays.
+// - The reviewed global header could not compile because it redefined tagRECT.
+//   Member-left map bounds worsened shape without changing size or calls.
+// - A 64-sample ambient declaration lab produced two codegen groups, both with
+//   the same first mismatch and no exact result. Clean direct access remains.
 
 extern "C" long __cdecl __ftol(void);
 #define DAT_0056F604 (*(float*)0x0056F604)
