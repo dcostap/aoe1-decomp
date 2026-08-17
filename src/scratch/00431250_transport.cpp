@@ -84,6 +84,22 @@
 // 82-byte duplicated-cleanup basin, changed size/calls, or were codegen-neutral.
 // Restored this typed positive-guard source; remaining lead is VC5 EH-tail
 // block placement between the post-constructor test and shared epilogue.
+// Session sa-152e0879-r1: fresh dossier/donor review and 10 source-shape probes
+// confirmed the 230-byte/67-byte frontier. Predicate-return, explicit else,
+// result-arm, declaration-initialization, and goto forms lost the shared work
+// tail or expanded the EH exits. Final validation was unchanged; source paused.
+// Session sa-936f45ea-r1: fresh dossier, donor, ABI, and exact sibling review
+// confirmed the same frontier. Shared action/work-object locals expanded the
+// body to 231 bytes and 210 diff; null-result gotos and both-arm result forms
+// reproduced 249 bytes and 82 diff. Predicate return added a work call; a
+// conditional result added 3 bytes and 73 diff. The exact donor ctor's int
+// spelling and pointer-truth spelling were codegen-neutral. Restored the
+// pinned typed positive-guard source. Final rebuilt validation remains 230
+// bytes, 67 strict differing bytes, 93.90% shape, exact 9 calls and size.
+// Session sa-35a2562c-r1: fresh dossier review preserved the typed action and
+// object ownership. A null-result goto grew to 249 bytes/82 diff. Initializing
+// success first grew to 283 bytes/179 diff and added a work call. Both probes
+// were restored. The clean typed positive-guard source remains the frontier.
 // FLAGS: /nologo /c /O2 /Oy /GX
 
 #include <stddef.h>
