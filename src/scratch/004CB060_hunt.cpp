@@ -28,6 +28,11 @@
 //   failure tail reached a 331-byte/49-byte diagnostic, but returned the old
 //   target on task failure; explicit zeroing widened it to 333 bytes/77 diff.
 //   Neither status-pointer form is kept.
+// - Fresh typed target/result probes reproduced the 333-byte, 20-byte gap with
+//   99.1% shape and all 16 calls aligned. An int result and an explicit success
+//   label were codegen duplicates. Late result declaration changed EH setup.
+//   Direct zero returns expanded the body to 391 bytes. Restored the natural
+//   source after these tail-only probes.
 // FLAGS: config/flags/004CB060_hunt.rsp
 
 class RGE_Static_Object;
