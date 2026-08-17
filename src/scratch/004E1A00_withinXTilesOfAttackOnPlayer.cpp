@@ -98,6 +98,24 @@
 //   home or EDX cursor; declaration-order variants and split guards duplicated
 //   or worsened the clean 211-byte basin. Pointer-for and positive-gate forms
 //   also changed CFG or size. Restored the natural indexed scan.
+// - Revisit audit (current clean baseline, 220 strict bytes in 10 spans):
+//   +00..+27 crosses the prologue and first max load; the missing push-ecx
+//   local, parameter-home shift, and tiles/target register colors cause it.
+//   +29..+3E crosses max-load tail, coordinate-home stores, the zero counter,
+//   local max, and the initial JLE; the baseline has no pushed max local and
+//   uses different homes. +41..+4A is the memory-base load and owner test;
+//   the baseline reuses ESI for the cursor instead of retaining this in ESI
+//   with the cursor in EDX. +4C..+9F is the player test and four corner
+//   calculations; the source behavior and call set match, but the threshold,
+//   x/y homes, byte-load registers, and square accumulators use another
+//   allocator basin. +A2, +A4, +A6, and +A8 are isolated bytes inside the
+//   max-X accumulator and branch encodings; they are not independent source
+//   statements. +AA..+E8 covers the final corner, max reload, loop update,
+//   three epilogues, and the rebuilt short tail; the baseline lacks the
+//   original counter/max home pair and the push-ecx/pop-ecx epilogue shape.
+//   Calls, direct targets, field offsets, stride, and return CFG behavior
+//   remain aligned. No probe found a supported source lead for the allocator
+//   basin. All 20 fresh probes were restored to this clean source.
 
 class RGE_Static_Object {
 public:
