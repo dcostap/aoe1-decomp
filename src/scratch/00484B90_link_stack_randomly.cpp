@@ -176,6 +176,19 @@ struct RGE_Elevation_Info {
 // both emitted-code duplicates. Restore the pinned natural source. The exact
 // adjacent-field overlay remains diagnostic only; no supported natural source
 // form has changed the height-first product load.
+// Claim sa-d177c0ec-r1: read the full target history, the canonical ownership
+// evidence, the same-TU callers, and the sibling terrain donor. The original
+// line map places the terminal signed product at rmm_elev.cpp:247. The exact
+// same-TU generate_modifiers source uses a height accumulator and compound
+// width multiply, while count_map_tiles proves that direct field products can
+// use the other order. Ten focused source tests covered that accumulator,
+// named product and area intermediates, declaration lifetime, the terrain
+// do/while shape, signed int count, and constant spelling. They all retained
+// the 234-byte, two-byte mismatch. Keep the natural direct product and record
+// the final blocker: VC5 selects [this+14] as the initial EAX load and
+// [this+18] as the imul memory operand, while the oracle selects the opposite
+// register/operand order at 00484BE2 and 00484BE5. The exact adjacent-field
+// overlay is raw layout plumbing and is not an allowed source model.
 class RGE_RMM_Elevation_Generator : public RGE_Random_Map_Module {
 public:
     RGE_Elevation_Info info;
