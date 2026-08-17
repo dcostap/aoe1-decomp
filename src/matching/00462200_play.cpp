@@ -24,6 +24,18 @@
 // current positional drift is 24 bytes. The remaining bytes are the uniform
 // four-byte local stack-window offset for MCI/format buffers. Direct switch and
 // inlined error-result variants were codegen duplicates and are retained clean.
+// Exact-finish retrospective:
+// First exact checkpoint: probe 018, 0 bytes different, 952 bytes, 15 ordered calls.
+// Last clean nonexact source: probe 017, 2 bytes different.
+// Decisive change: type-1 seek setup now writes seek_info.dwCallback=0 and
+// seek_info.dwTo=start. Both stores are required for the original lowering.
+// Walkback: removing either store broke exactness. The grouped reversion was
+// probe 017 and also broke exactness. The two stores are an inseparable group.
+// Required changes: full MCI record pointers, real MCI output fields, direct
+// local buffer expressions, positive seek gates, and matching seek assignments.
+// Incidental changes: declaration scope and function-pointer scope changed
+// without emitted-code effect after the ABI corrections. No flags changed.
+// Evidence: exact bytes prove the MCI record ABI and field ownership.
 
 #include <stdio.h>
 #include <string.h>
@@ -84,11 +96,11 @@ public:
 
 int TMusic_System::play(int from, int to, char* name, int current, unsigned long start)
 {
-    MCI_SEEK_PARMS seek_info;
-    MCI_OPEN_PARMSA open_info;
+    MCI_SEND_COMMAND_PROC mci;
     char track_name[261];
     char error_message[256];
-    MCIERROR result;
+    MCI_SEEK_PARMS seek_info;
+    MCI_OPEN_PARMSA open_info;
 
     if (!this->device_open) {
         return 0;
@@ -118,15 +130,16 @@ int TMusic_System::play(int from, int to, char* name, int current, unsigned long
 
     switch (this->music_type) {
     case 1: {
-        MCI_SEND_COMMAND_PROC mci = mciSendCommandA;
+        MCIERROR result;
+        mci = mciSendCommandA;
         this->play_info.dwCallback = (unsigned long)this->window;
         unsigned int flags = 1;
 
         if (start > 0) {
-            open_info.dwCallback = start;
-            seek_info.dwTo = 0;
+            seek_info.dwCallback = 0;
+            seek_info.dwTo = start;
             mci(this->device_id, 0x807, 10,
-                (unsigned long)&seek_info.dwTo);
+                (unsigned long)&seek_info);
         } else {
             flags = 5;
             this->play_info.dwFrom = (unsigned char)this->current_track;
@@ -143,49 +156,50 @@ int TMusic_System::play(int from, int to, char* name, int current, unsigned long
             this->playing_track = 1;
             ++this->notify_waiting;
         } else {
-            if (!mciGetErrorStringA(result, error_message + 4, 0x100)) {
-                strcpy(error_message + 4, s_Unknow_Error);
+            if (!mciGetErrorStringA(result, error_message, 0x100)) {
+                strcpy(error_message, s_Unknow_Error);
             }
         }
         break;
     }
 
     case 2: {
+        MCIERROR result;
         if (!name || !*name) {
-            sprintf(track_name + 4, MUSIC_MID_FORMAT,
+            sprintf(track_name, MUSIC_MID_FORMAT,
                     this->path, this->current_track);
         } else {
-            sprintf(track_name + 4, MUSIC_NAME_FORMAT,
+            sprintf(track_name, MUSIC_NAME_FORMAT,
                     this->path, name);
-            if (strchr(track_name + 4, '.') == 0) {
-                strcat(track_name + 4, MUSIC_MID_SUFFIX);
+            if (strchr(track_name, '.') == 0) {
+                strcat(track_name, MUSIC_MID_SUFFIX);
             }
         }
 
-        int file_handle = open(track_name + 4, 0);
+        int file_handle = open(track_name, 0);
         if (file_handle != -1) {
             close(file_handle);
 
-            MCI_SEND_COMMAND_PROC mci = mciSendCommandA;
-            open_info.lpstrElementName = MAKEINTRESOURCEA(0x20B);
-            open_info.lpstrAlias = track_name + 4;
+            mci = mciSendCommandA;
+            open_info.lpstrDeviceType = MAKEINTRESOURCEA(0x20B);
+            open_info.lpstrElementName = track_name;
             result = mci(0, 0x803, 0x3200,
-                         (unsigned long)&open_info.wDeviceID);
+                         (unsigned long)&open_info);
             if (result) {
-                if (!mciGetErrorStringA(result, error_message + 4, 0x100)) {
-                    strcpy(error_message + 4, s_Unknow_Error);
+                if (!mciGetErrorStringA(result, error_message, 0x100)) {
+                    strcpy(error_message, s_Unknow_Error);
                 }
             }
             if (result) {
                 goto finish;
             }
 
-            this->device_id = (unsigned int)open_info.lpstrDeviceType;
-            if (start) {
-                open_info.dwCallback = start;
-                seek_info.dwTo = 0;
-                mci((unsigned int)open_info.lpstrDeviceType, 0x807, 8,
-                    (unsigned long)&seek_info.dwTo);
+            this->device_id = (unsigned int)open_info.wDeviceID;
+            if (start > 0) {
+                seek_info.dwCallback = 0;
+                seek_info.dwTo = start;
+                mci((unsigned int)open_info.wDeviceID, 0x807, 8,
+                    (unsigned long)&seek_info);
             }
 
             this->play_info.dwCallback = (unsigned long)this->window;
@@ -202,14 +216,14 @@ int TMusic_System::play(int from, int to, char* name, int current, unsigned long
     case 3:
         if (this->sound_system) {
             if (!name || !*name) {
-                sprintf(track_name + 4, MUSIC_WAV_FORMAT,
+                sprintf(track_name, MUSIC_WAV_FORMAT,
                         this->path, this->current_track);
             } else {
-                sprintf(track_name + 4, MUSIC_NAME_FORMAT,
+                sprintf(track_name, MUSIC_NAME_FORMAT,
                         this->path, name);
             }
 
-            if (!this->sound_system->stream_file(track_name + 4, 0,
+            if (!this->sound_system->stream_file(track_name, 0,
                                                  this->volume)) {
                 return 0;
             }
