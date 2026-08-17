@@ -33,6 +33,10 @@
 //   duplicate or worse. Removing the BMPFile zero also worsened the basin.
 //   Keep the clean source; the first paired hunk still needs the original
 //   EDI height copy, delayed EDX spill, and header-store schedule.
+// - Revisit probes: using bmHeight for the file-size product worsened the
+//   result to 496 differing bytes. A bounded while retry changed size and
+//   control flow; a do-while form was codegen-duplicate. Restored this clean
+//   natural snapshot flow and retained typed CurDisplayOffsets ownership.
 
 #include <windows.h>
 #include <stdio.h>
