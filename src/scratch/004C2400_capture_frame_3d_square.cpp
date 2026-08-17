@@ -26,6 +26,18 @@
 //   ordered-call alignment, 71.15% shape, and 1107 positional diff bytes.
 //   Remaining structural lead is original local-home/register allocation and
 //   map/yline lifetime; no call-target or CFG-count gap remains.
+// - Fresh worker pass: 23 meaningful probes. Extern globals, a virtual master
+//   surface, <stdlib.h>, register qualification, and scoped yline aliases did
+//   not change the clean 1344-byte basin. Direct master reads regressed to
+//   1309 bytes. Parameter mutation reduced the strict diff to 1057 bytes but
+//   broke the early register basin and was rolled back.
+// - Explicit corner locals widened the drift. Narrow yline and call casts
+//   moved the frame to 0x4C and worsened the diff. Reusing a float radius
+//   local for health added a second __ftol call. These forms are rejected.
+// - Decompiler-supported short output locals x3/y1 changed only the stack
+//   frame to 0x4C. Using both changed it to 0x50 and gave 1109 diff bytes.
+//   The clean source remains the best natural checkpoint: 1344 bytes, 0x48
+//   frame, 14 ordered calls, 71.15% shape, 1107 positional diff bytes.
 
 class TDrawArea;
 class RGE_Static_Object;
