@@ -132,6 +132,18 @@
 // forms keep md in EDI but sink imul after the count call (27 bytes); reusing
 // the proven count home restores the 222-byte six-byte md/product basin.
 // Restored the pinned natural source. No new exact natural lead remains.
+//
+// Translation-unit reconstruction pass (sa-10694da2-r1): 16 focused context
+// probes kept the body unchanged and preserved the 222-byte size, six calls,
+// and full CFG. Standard-header combinations, repository game headers, late
+// and early neutral declaration sweeps, inline and exception pragmas, and
+// supported flag variants all emitted the same six-byte basin. Exact same-TU
+// AI surfaces from 00502920, full tactical ManagedArray members, full player
+// virtual slots, the 00501B50 preceding function body, exact donor declaration
+// order, non-polymorphic 00501C70-style surfaces, and inherited information
+// surfaces also emitted the same six-byte basin. No context or function-order
+// lead changes md from ESI to EDI without changing the body or adding a fake
+// liveness use. The pinned natural source remains authoritative.
 
 #include <stdlib.h>
 
