@@ -33,8 +33,15 @@
 // r4: restored the binary-documented register parameter qualifiers while
 //     keeping direct param_3/event use; this tests parameter homes without an
 //     alias or a typed-data address replacement.
+// r5: completed 20 focused probes. The clean source remains the metric-best
+//     natural form: exact size/frame/saved registers, 47 calls, 1493-byte diff.
+// BINARY NOTE: the original null-panel edge targets base action at 0043C80D;
+//     explicit guard forms fixed behavior but added EBX or large structural drift.
+// Next: recover the original parameter homes and separate speed-return blocks
+//     without retaining metric-only control-flow or register-steering forms.
 
 #include "..\..\include\game_globals.h"
+#include "..\..\include\rge_base_game_global.h"
 #include <stdio.h>
 
 #define VPAD1(n) virtual void vpad##n();
