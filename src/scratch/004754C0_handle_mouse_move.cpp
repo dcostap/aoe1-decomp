@@ -67,6 +67,12 @@
 //   and event signatures now follow the reviewed ui_core and panel type dumps.
 //   The PDB names the last two parameters ctrl_key and shift_key. Keep that
 //   order in every forwarding call.
+// - fresh scheduling pass: twenty natural probes covered result-local reuse,
+//   edge temporaries and expression trees, declaration and initializer forms,
+//   function-scope local lifetimes, parameter const/register qualifiers, and
+//   compound edge updates. All retained the stable 253-byte group and the same
+//   15-byte +00C8 dispatch schedule mismatch. The reversed function-scope local
+//   order selects the oracle LEA SIB encoding but does not move the ctrl push.
 
 struct tagRECT {
     long left;
