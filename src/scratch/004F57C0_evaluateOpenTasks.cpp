@@ -72,6 +72,16 @@
 //   the proven canonical RGE_Player/RGE_Static_Object virtual names and modeled
 //   TacticalAIGroup as its real 0x330 object with a named +0x1D0 field. Calls,
 //   layout, and behavior remain unchanged; one relocation byte aligned better.
+//
+// Current pass (sa-5ae1e8d8): 27 meaningful probes tested local lifetimes,
+// bound order, loop forms, ABI surfaces, headers, flags, and compiler context.
+// The clean frontier is 2024 bytes with 62/62 ordered calls, 99.04% shape,
+// and a 48-byte strict diff. The original frame is 0x10; this source is 0x8.
+// BINARY NOTE: the original first task scan uses four entry-relative local
+// homes at -0x10, -0x0C, -0x08, and -0x04. The rebuilt source uses only the
+// index and byte-offset homes. The count and capacity spill remains unresolved.
+// LIKELY INTENT: `taskMaximum` before `n` in the scan condition reproduces the
+// original capacity-before-body layout and preserves all later exact blocks.
 
 void* operator_new(unsigned int size);
 void __cdecl operator_delete(void* ptr);
@@ -89,18 +99,19 @@ struct RGE_Armor_Weapon_Info;
 struct RGE_Action_Object;
 struct LOSTBL;
 
-struct ManagedArray_int {
-    int* value;              // +0x00
+template <class T>
+struct ManagedArray {
+    T* value;                // +0x00
     int numberValue;         // +0x04
     int desiredNumberValue;  // +0x08
     int maximumSizeValue;    // +0x0C
 
     int resize(int newSize);
 
-    int& operator[](int index) {
+    T& operator[](int index) {
         if (index > this->maximumSizeValue - 1) {
             int new_size = index + 1;
-            int* new_data = (int*)operator_new(new_size * 4);
+            T* new_data = (T*)operator_new(new_size * sizeof(T));
             if (new_data != 0) {
                 int i;
                 for (i = 0; i < this->maximumSizeValue && i < new_size; i++) {
@@ -280,18 +291,22 @@ struct TacticalAIGroup {
     void setWaitCode(int);
 };
 
-struct TribeTacticalAIModule {
-    char gap_00[0xF0];
+struct TacticalAIModule {
+    virtual ~TacticalAIModule();
+    char gap_04[0xEC];
+};
+
+struct TribeTacticalAIModule : TacticalAIModule {
     TribeMainDecisionAIModule* md;        // +0xF0
-    ManagedArray_int civilians;           // +0xF4
+    ManagedArray<int> civilians;           // +0xF4
     char gap_104[0x10];                   // +0x104 .. +0x113
-    ManagedArray_int soldiers;            // +0x114
+    ManagedArray<int> soldiers;            // +0x114
     char gap_124[0x10];                   // +0x124 .. +0x133
-    ManagedArray_int boats;               // +0x134
+    ManagedArray<int> boats;               // +0x134
     char gap_144[0x890];                  // +0x144 .. +0x9D3
     TacticalAIGroup groups;               // +0x9D4
     char gap_D04[0xD58 - 0xD04];          // +0xD04 .. +0xD57
-    ManagedArray_int unitsTaskedThisUpdate; // +0xD58
+    ManagedArray<int> unitsTaskedThisUpdate; // +0xD58
 
     void stopUnit(int objectID, int waitCode);
     void removeObject(int objectID);
@@ -309,7 +324,7 @@ void TribeTacticalAIModule::evaluateOpenTasks()
 
     i = 0;
     if (this->civilians.numberValue > 0) {
-        ManagedArray_int* civilians = &this->civilians;
+        ManagedArray<int>* civilians = &this->civilians;
         do {
             if (i > civilians->maximumSizeValue - 1) {
                 civilians->resize(i + 1);
@@ -328,8 +343,7 @@ void TribeTacticalAIModule::evaluateOpenTasks()
                     n = this->unitsTaskedThisUpdate.numberValue;
                     if (n > 0) {
                         taskMaximum = this->unitsTaskedThisUpdate.maximumSizeValue;
-                        while (k < n &&
-                               k < taskMaximum) {
+                        while (k < taskMaximum && k < n) {
                             if (this->unitsTaskedThisUpdate.value[k] ==
                                 civilians->value[i]) {
                                 goto next_civilian;
@@ -349,7 +363,7 @@ void TribeTacticalAIModule::evaluateOpenTasks()
                                                             dropsite->world_y);
 
                             int civilianID = (*civilians)[i];
-                            ManagedArray_int* unitsTasked = &this->unitsTaskedThisUpdate;
+                            ManagedArray<int>* unitsTasked = &this->unitsTaskedThisUpdate;
                             n = unitsTasked->numberValue;
                             k = 0;
                             if (n > 0) {
