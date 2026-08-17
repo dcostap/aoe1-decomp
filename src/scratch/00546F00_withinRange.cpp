@@ -61,6 +61,14 @@
 //   period-plausible RGE_Zone_Map declaration surface was also a duplicate.
 //   Restored the clean source; final validation remains a 247-byte mismatch
 //   with one localized max-register/SIB hunk at +0x1B.
+// - Revisit probes isolated the four strict spans: the original loads the
+//   y-coordinate into EBX, then keeps it for max.y; the clean source loads it
+//   into EDX and lets VC5 choose EBX for the y bound. The original computes
+//   max.x into EDX and stores both max fields after loading map. Tested max
+//   declaration order, one-coordinate aliases, field references, const radius,
+//   reversed add terms, a scoped map alias, and windows.h context. They were
+//   duplicates or 196-byte variants. Restored and validated the pinned source;
+//   the natural 247-byte frontier and 15 strict bytes remain.
 
 typedef unsigned char uchar;
 
