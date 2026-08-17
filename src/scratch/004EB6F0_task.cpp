@@ -187,6 +187,7 @@
 // - final unresolved pass: case11 uses a saved tactical receiver and a natural integer HP total. This is clearer than pointer arithmetic and keeps the original 207-call surface.
 // - final unresolved pass: case10 keeps an explicit non-firstTime return-one. It improves exact block coverage without changing size or call counts.
 // - final unresolved pass: 20 meaningful hypotheses tested. Current clean result is MISMATCH, 3067/5679 positional bytes, 5679-byte text, 0x1C frame, 99.52% call alignment, and 82.78% resync similarity. Remaining drift is block order, relocation-safe switch-table placement, and register/local topology.
+// - focused second pass: 20 additional natural tail-order and local-topology hypotheses tested against the PDB bands and same-TU donors. Tail inversions, case-tail routing, function-scope XYPoint homes, parameter-home reuse, declaration order, and donor return types did not produce an exact result. All emitted-code changes were rejected; the pinned baseline remains.
 
 struct UnitAIModule;
 struct RGE_Master_Static_Object { char pad_00[0x28]; float los; char pad_2c[0x1e]; short owner_id; };
