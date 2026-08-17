@@ -65,20 +65,96 @@
 // Replaced the raw this-relative GDI field cursors with named fields at the
 // executable-proven +0x12C, +0x134, and +0x144 offsets. The clean validation
 // remains 940 bytes with 30 differing bytes and all 27 calls aligned.
+// New claim follow-up: restored the reviewed TPanel, TDrawArea, TDrawSystem,
+// and TEditPanel field and method surfaces, including parent_panel, just_drawn,
+// clip_rect, color, the full virtual panel names, and the real edit helpers.
+// Revalidated after each ownership, layout, ABI, lifetime, control-flow, and
+// header change. All twelve natural probes remained a 30-byte mismatch.
+// The remaining spans stay limited to the VC5 delayed EBX/EDI saves and the
+// two corresponding pop orders. No natural source evidence changes them.
 
 #include <windows.h>
+#include <stdlib.h>
+#include <string.h>
 
 typedef unsigned char uchar;
+struct PanelNode;
+struct TDrawArea;
 
 struct TDrawSystem {
-    char gap_00[8];
-    void* Pal;
+    void* Inst;
+    void* Wnd;
+    HPALETTE Pal;
+    TDrawArea* DrawArea;
+    TDrawArea* PrimaryArea;
+    void* DrawAreaList;
+    void* DirDraw;
+    void* PrimarySurface;
+    void* Clipper;
+    void* DirDrawPal;
+    unsigned long Flags;
+    int ScreenWidth;
+    int ScreenHeight;
+    int ColorBits;
+    int ErrorCode;
+    int ChangedMode;
+    int IsBanked;
+    int CanSrcBlt;
+    int Restored;
+    int ModeAvail640;
+    int ModeAvail800;
+    int ModeAvail1024;
+    int ModeAvail1280;
+    int ModeAvail320_200;
+    int ModeAvail320_240;
+    int ModeAvail320_200_16;
+    int ModeAvail320_240_16;
+    int ModeAvail640_16;
+    int ModeAvail800_16;
+    int ModeAvail1024_16;
+    unsigned char palette[0x400];
+    uchar DrawType;
+    uchar ScreenMode;
+    uchar _pad_end[2];
 };
 
 struct TDrawArea {
     TDrawSystem* DrawSystem;
-    char gap_04[0x80];
-    int field_84;
+    void* Wnd;
+    uchar* Bits;
+    void* BitmapInfo;
+    void* Bitmap;
+    void* OldBitmap;
+    int Width;
+    int Height;
+    int Pitch;
+    int Orien;
+    RECT ClipRect;
+    void* DrawDc;
+    void* DrawSurface;
+    char SurfaceDesc[0x6C];
+    void* Node;
+    char* Name;
+    uchar* LastBits;
+    int LastPitch;
+    void** DisplayOffsets;
+    void** CurDisplayOffsets;
+    void** FloatOffsets;
+    void* shadow_color_table;
+    void* SpanList;
+    void* CurSpanList;
+    int Float_X_Delta;
+    int Float_Y_Delta;
+    int DisplayOffsetsSz;
+    int FloatOffsetsSz;
+    int SystemMemOnly;
+    int UsingVidMem;
+    int UseTrans;
+    int IsPrimarySurface;
+    int Restored;
+    int ExtendedLines;
+    uchar TransColor;
+    uchar _pad_end[3];
     void Clear(RECT* r, int color);
     uchar* Lock(char* name, int wait);
     void Unlock(char* name);
@@ -92,6 +168,9 @@ struct TDrawArea {
 
 class TPanel {
 public:
+    enum PositionMode { POSITION_MODE_DEFAULT = 0 };
+    enum RedrawMode { REDRAW_MODE_DEFAULT = 0 };
+
     virtual ~TPanel();
     virtual long setup(TDrawArea*, TPanel*, long, long, long, long, uchar);
     virtual void set_rect(RECT);
@@ -110,51 +189,149 @@ public:
     virtual void draw_offset(long, long, RECT*);
     virtual void draw_rect2(RECT*);
     virtual void draw_offset2(long, long, RECT*);
+    virtual void paint();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual long handle_idle();
+    virtual long handle_size(long, long);
+    virtual long handle_paint();
+    virtual long handle_key_down(long, short, int, int, int);
+    virtual long handle_char(long, short);
+    virtual long handle_command(unsigned int, long);
+    virtual long handle_user_command(unsigned int, long);
+    virtual long handle_timer_command(unsigned int, long);
+    virtual long handle_scroll(long, long);
+    virtual long handle_mouse_down(uchar, long, long, int, int);
+    virtual long handle_mouse_move(long, long, int, int);
+    virtual long handle_mouse_up(uchar, long, long, int, int);
+    virtual long handle_mouse_dbl_click(uchar, long, long, int, int);
+    virtual long mouse_move_action(long, long, int, int);
+    virtual long mouse_left_down_action(long, long, int, int);
+    virtual long mouse_left_hold_action(long, long, int, int);
+    virtual long mouse_left_move_action(long, long, int, int);
+    virtual long mouse_left_up_action(long, long, int, int);
+    virtual long mouse_left_dbl_click_action(long, long, int, int);
+    virtual long mouse_right_down_action(long, long, int, int);
+    virtual long mouse_right_hold_action(long, long, int, int);
+    virtual long mouse_right_move_action(long, long, int, int);
+    virtual long mouse_right_up_action(long, long, int, int);
+    virtual long mouse_right_dbl_click_action(long, long, int, int);
+    virtual long key_down_action(long, short, int, int, int);
+    virtual long char_action(long, short);
+    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    virtual void get_true_render_rect(RECT*);
+    virtual int is_inside(long, long);
+    virtual void set_focus(int);
+    virtual void set_tab_order(TPanel*, TPanel*);
+    virtual void set_tab_order(TPanel**, short);
+    virtual uchar get_help_info(char**, long*, long, long);
+    virtual void stop_sound_system();
+    virtual int restart_sound_system();
+    virtual void take_snapshot();
+    virtual void handle_reactivate();
 
-    char gap_04[8];
-    long x;
-    long y;
-    long width;
-    long height;
-    char gap_1C[4];
-    TDrawArea* draw_area;
-    RECT rect;
-    char gap_34[4];
-    long dirty;
-    char gap_3C[4];
-    TPanel* background;
-    char gap_44[0x28];
+    TPanel* previousPanelValue;
+    TPanel* previousModalPanelValue;
+    long pnl_x;
+    long pnl_y;
+    long pnl_wid;
+    long pnl_hgt;
+    char* panelNameValue;
+    TDrawArea* render_area;
+    RECT clip_rect;
+    PositionMode position_mode;
+    RedrawMode need_redraw;
+    TPanel* curr_child;
+    TPanel* parent_panel;
+    TPanel* left_panel;
+    TPanel* top_panel;
+    TPanel* right_panel;
+    TPanel* bottom_panel;
+    PanelNode* node;
+    PanelNode* first_child_node;
+    PanelNode* last_child_node;
+    TPanel* tab_prev_panel;
+    TPanel* tab_next_panel;
+    int mouse_captured;
     int active;
     int visible;
-    char gap_74[4];
+    int tab_stop;
     int have_focus;
-    char gap_7C[0x08];
-    int field_84;
+    int overlapping_children;
+    int handle_mouse_input;
+    int just_drawn;
     HRGN clip_rgn;
-    char gap_8C[0x63];
-    uchar back_index;
-    char gap_F0[4];
+    RECT render_rect;
+    long left_border;
+    long top_border;
+    long right_border;
+    long bottom_border;
+    long min_wid;
+    long max_wid;
+    long min_hgt;
+    long max_hgt;
+    long mouse_hold_interval;
+    long mouse_move_tolerance;
+    long mouse_down_x;
+    long mouse_down_y;
+    int mouse_down_ctrl;
+    int mouse_down_shift;
+    unsigned long mouse_down_time;
+    int error_code;
+    int z_order;
+    int display_changed_count;
+    long help_string_id;
+    long help_page_id;
+    uchar mouse_action;
+    uchar mouse_down_button;
+    uchar panel_type;
+    uchar color;
+    uchar fill_in_background;
+    uchar clip_to_parent;
+    uchar draw_rect2_flag;
+    uchar need_restore;
 };
 
 class TEditPanel : public TPanel {
 public:
-    HWND edit_wnd;
-    char gap_F8[4];
+    enum FormatType { FORMAT_TYPE_DEFAULT = 0 };
+    virtual ~TEditPanel();
+    char* currentLine();
+    char* get_input_buffer();
+    char* get_text();
+    char* get_trimmed_str(char*, int);
+    int is_blank();
+    void set_back_color(void*, unsigned long, uchar);
+    void set_bevel_info(int, uchar, uchar, uchar, uchar, uchar, uchar);
+    void set_highlight_text_color(unsigned long, unsigned long);
+    void set_ime_info(int, int);
+    void set_text(char*);
+    void set_text_color(unsigned long, unsigned long);
+    long setup(TDrawArea*, TPanel*, long, long, long, long,
+               void*, short, char*, FormatType, int);
+    long sub_wnd_proc(void*, unsigned int, unsigned int, long);
+    void update_text();
+    int verify_char(int);
+    void* edit_wnd;
+    short fixed_len;
+    uchar pad_FA[2];
     char* text;
-    char gap_100[4];
+    int text_len;
     int hidden;
-    int brush;
-    char gap_10C[8];
+    void* brush;
+    int stock_brush;
+    int (__stdcall *old_sub_wnd_proc)();
     COLORREF text_color1;
     COLORREF text_color2;
-    char gap_11C[8];
-    unsigned int back_color;
-    char gap_128[4];
+    COLORREF highlight_text_color1;
+    COLORREF highlight_text_color2;
+    unsigned long back_color;
+    FormatType format;
     HGDIOBJ font;
-    char gap_130[4];
+    int multi_line;
     RECT draw_rect;
     unsigned int draw_format;
-    char gap_148[8];
+    int auto_sel;
+    int sel_len;
     int bevel_type;
     uchar bevel_color1;
     uchar bevel_color2;
@@ -162,61 +339,66 @@ public:
     uchar bevel_color4;
     uchar bevel_color5;
     uchar bevel_color6;
+    uchar pad_15A[2];
+    int bevel_size;
+    unsigned long imc;
+    int enable_ime;
+    int turn_ime_on;
 
     virtual void draw();
 };
 
 void TEditPanel::draw()
 {
-    this->dirty = 0;
+    this->need_redraw = REDRAW_MODE_DEFAULT;
     if (this->visible == 0) return;
     RECT r;
     HGDIOBJ old_font;
     this->draw_setup(0);
 
     if (this->brush && this->active && this->have_focus) {
-        uchar c = (uchar)GetNearestPaletteIndex(this->draw_area->DrawSystem->Pal, this->back_color);
-        this->draw_area->Clear(&this->rect, c);
+        uchar c = (uchar)GetNearestPaletteIndex(this->render_area->DrawSystem->Pal, this->back_color);
+        this->render_area->Clear(&this->clip_rect, c);
     } else {
-        TPanel* bg = this->background;
+        TPanel* bg = this->parent_panel;
         if (bg) {
             if (this->bevel_type >= 2 && this->bevel_type <= 7) {
-                bg->draw_rect2(&this->rect);
-            } else if (bg->field_84 == 0) {
-                bg->draw_rect(&this->rect);
+                bg->draw_rect2(&this->clip_rect);
+            } else if (bg->just_drawn == 0) {
+                bg->draw_rect(&this->clip_rect);
             }
         } else {
-            this->draw_area->Clear(&this->rect, this->back_index);
+            this->render_area->Clear(&this->clip_rect, this->color);
         }
     }
 
     if (this->bevel_type != 0) {
-        if (this->draw_area->Lock("pnl_edit::draw", 1)) {
+        if (this->render_area->Lock("pnl_edit::draw", 1)) {
             switch (this->bevel_type) {
             case 1:
-                this->draw_area->DrawRect(this->x, this->y, this->x + this->width - 1, this->y + this->height - 1, this->bevel_color1);
+                this->render_area->DrawRect(this->pnl_x, this->pnl_y, this->pnl_x + this->pnl_wid - 1, this->pnl_y + this->pnl_hgt - 1, this->bevel_color1);
                 break;
             case 2:
-                this->draw_area->DrawBevel(this->x, this->y, this->x + this->width - 1, this->y + this->height - 1, this->bevel_color6, this->bevel_color1);
+                this->render_area->DrawBevel(this->pnl_x, this->pnl_y, this->pnl_x + this->pnl_wid - 1, this->pnl_y + this->pnl_hgt - 1, this->bevel_color6, this->bevel_color1);
                 break;
             case 3:
-                this->draw_area->DrawBevel2(this->x, this->y, this->x + this->width - 1, this->y + this->height - 1, this->bevel_color6, this->bevel_color5, this->bevel_color2, this->bevel_color1);
+                this->render_area->DrawBevel2(this->pnl_x, this->pnl_y, this->pnl_x + this->pnl_wid - 1, this->pnl_y + this->pnl_hgt - 1, this->bevel_color6, this->bevel_color5, this->bevel_color2, this->bevel_color1);
                 break;
             case 4:
-                this->draw_area->DrawBevel3(this->x, this->y, this->x + this->width - 1, this->y + this->height - 1, this->bevel_color6, this->bevel_color5, this->bevel_color4, this->bevel_color3, this->bevel_color2, this->bevel_color1);
+                this->render_area->DrawBevel3(this->pnl_x, this->pnl_y, this->pnl_x + this->pnl_wid - 1, this->pnl_y + this->pnl_hgt - 1, this->bevel_color6, this->bevel_color5, this->bevel_color4, this->bevel_color3, this->bevel_color2, this->bevel_color1);
                 break;
             case 5:
-                this->draw_area->DrawBevel(this->x, this->y, this->x + this->width - 1, this->y + this->height - 1, this->bevel_color1, this->bevel_color6);
+                this->render_area->DrawBevel(this->pnl_x, this->pnl_y, this->pnl_x + this->pnl_wid - 1, this->pnl_y + this->pnl_hgt - 1, this->bevel_color1, this->bevel_color6);
                 break;
             case 6:
-                this->draw_area->DrawBevel2(this->x, this->y, this->x + this->width - 1, this->y + this->height - 1, this->bevel_color1, this->bevel_color2, this->bevel_color5, this->bevel_color6);
+                this->render_area->DrawBevel2(this->pnl_x, this->pnl_y, this->pnl_x + this->pnl_wid - 1, this->pnl_y + this->pnl_hgt - 1, this->bevel_color1, this->bevel_color2, this->bevel_color5, this->bevel_color6);
                 break;
             case 7:
-                this->draw_area->DrawBevel3(this->x, this->y, this->x + this->width - 1, this->y + this->height - 1, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4, this->bevel_color5, this->bevel_color6);
+                this->render_area->DrawBevel3(this->pnl_x, this->pnl_y, this->pnl_x + this->pnl_wid - 1, this->pnl_y + this->pnl_hgt - 1, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4, this->bevel_color5, this->bevel_color6);
                 break;
             }
         }
-        this->draw_area->Unlock("pnl_edit::draw");
+        this->render_area->Unlock("pnl_edit::draw");
     }
 
     if (this->edit_wnd && this->active) {
@@ -233,7 +415,7 @@ void TEditPanel::draw()
                 ShowWindow(this->edit_wnd, 0);
                 this->hidden = 1;
             }
-            HDC dc = this->draw_area->GetDc("pnl_edit::draw");
+            HDC dc = this->render_area->GetDc("pnl_edit::draw");
             if (dc) {
                 SelectClipRgn(dc, this->clip_rgn);
                 old_font = SelectObject(dc, this->font);
@@ -248,7 +430,7 @@ void TEditPanel::draw()
                 DrawTextExA(dc, this->text, -1, &this->draw_rect, this->draw_format, 0);
                 SelectObject(dc, old_font);
                 SelectClipRgn(dc, 0);
-                this->draw_area->ReleaseDc("pnl_edit::draw");
+                this->render_area->ReleaseDc("pnl_edit::draw");
             }
         }
     }
