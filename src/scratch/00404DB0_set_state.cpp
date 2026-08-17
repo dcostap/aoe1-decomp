@@ -22,6 +22,15 @@
 //   restored the clean source.
 // - block-scoped target_distance to model the packet's guided stack reuse;
 //   emitted code was unchanged at diff 436, so restored the top-level local.
+// - revisit: 33 evidence-led probes covered declaration scope/order, guided
+//   expression grouping, typed master/target aliases, update order, and the
+//   ballistic tail.  The useful change makes target_distance hold only the
+//   guided square-root result, then uses speed - target_distance + master speed
+//   in both the guard and scale.  This reduces positional drift to 210 bytes
+//   while preserving the 0x28 frame, all 12 calls, and exact case islands.
+// - direct repeated-sqrt, split-assignment, reversed-term, branch-local, and
+//   threshold-local variants did not improve this result.  Keep the natural
+//   float source; do not retain metric-only operand reordering.
 
 #include <math.h>
 
@@ -222,10 +231,7 @@ void RGE_Action_Missile::set_state(uchar param_1)
     float dx;
     float dz;
     float speed;
-    float target_vx;
-    float target_vy;
     float target_vz;
-    float target_distance;
 
     this->state = param_1;
 
@@ -255,17 +261,19 @@ void RGE_Action_Missile::set_state(uchar param_1)
                 launch_speed = 1.0f;
             }
 
-            target_vx = (float)cos(this->target_obj->getAngle()) * launch_speed;
-            target_vy = (float)sin(this->target_obj->getAngle()) * launch_speed;
+            float target_vx = (float)cos(this->target_obj->getAngle()) * launch_speed;
+            float target_vy = (float)sin(this->target_obj->getAngle()) * launch_speed;
 
-            target_distance =
-                (speed - (float)sqrt((target_vy + dx) * (target_vy + dx) +
-                                     (target_vx + d) * (target_vx + d) + target_vz)) +
-                ((RGE_Master_Missile_Object*)this->obj->master_obj)->speed;
+            float target_distance =
+                (float)sqrt((target_vy + dx) * (target_vy + dx) +
+                            (target_vx + d) * (target_vx + d) + target_vz);
 
-            if (target_distance >
+            if (speed - target_distance +
+                    ((RGE_Master_Missile_Object*)this->obj->master_obj)->speed >
                 ((RGE_Master_Missile_Object*)this->obj->master_obj)->speed * 0.5f) {
-                float scale = speed / target_distance;
+                float scale = speed /
+                    (speed - target_distance +
+                     ((RGE_Master_Missile_Object*)this->obj->master_obj)->speed);
                 d = scale * target_vx + d;
                 dx = scale * target_vy + dx;
                 speed = (float)sqrt(dx * dx + d * d + target_vz);
@@ -299,10 +307,9 @@ void RGE_Action_Missile::set_state(uchar param_1)
 
         RGE_Master_Missile_Object* master =
             (RGE_Master_Missile_Object*)this->obj->master_obj;
-        float time;
-        float acceleration;
-
         if (master->ballistics_ratio > 0.0) {
+            float time;
+            float acceleration;
             if (master->speed > 0.0f)
                 time = speed / master->speed;
             else
