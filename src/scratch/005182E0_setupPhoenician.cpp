@@ -102,16 +102,38 @@
 //   four relocations, compiler directives, and exact-donor fingerprint. PDB
 //   has no hidden local. deathMatch is a required direct nonvirtual call.
 //   No object evidence supports aliases or store reordering.
-
-#include <stddef.h>
+// - Canonical ownership pass: AIModule, MainDecisionAIModule, and
+//   TribeMainDecisionAIModule now form the typed AI chain; RGE_Player owns its
+//   base fields and TRIBE_Player owns playerAI at +0x238. RGE_Base_Game owns
+//   rge_base_game, and the derived TRIBE_Game cast keeps deathMatch direct and
+//   nonvirtual. This source rebuilt in the same 275-byte, 25-byte basin.
+// - One bounded PDB-supported source-group axis put the three existing 20-valued
+//   stores on one source line versus separate statements. Both variants were
+//   275 bytes with 25 positional differences and kept the oracle's calls and
+//   store behavior. Retain separate direct statements; no preload change was
+//   found and no schedule-steering form is kept.
+// - Field cleanup replaced explicit alignment bytes and a byte-array tile view
+//   with named RGE_Tile_List members and natural alignment. The rebuilt object
+//   stayed byte-identical, so the named canonical form is retained.
 
 typedef unsigned char uchar;
 
-// Main-agent audit confirmed the shared canonical game/player/AI ownership;
-// direct civilization table stores remain authoritative.
+// These are the period class relationships used by tplayer.cpp.  Only the
+// methods used here are declared, but each method keeps its real owner.
 class AIModule {
 public:
+    virtual ~AIModule();
     void logCommonHistory(char* message, ...);
+};
+
+class MainDecisionAIModule : public AIModule {
+public:
+    virtual ~MainDecisionAIModule();
+};
+
+class TribeMainDecisionAIModule : public MainDecisionAIModule {
+public:
+    virtual ~TribeMainDecisionAIModule();
 };
 
 class RGE_Base_Game {
@@ -126,25 +148,124 @@ public:
     uchar deathMatch();
 };
 
+class RGE_Object_List;
+class RGE_Static_Object;
+class RGE_Victory_Conditions;
+class RGE_Visible_Map;
+class RGE_Doppleganger_Creator;
+class RGE_Color_Table;
+class Visible_Resource_Manager;
+class RGE_Master_Static_Object;
+class RGE_Object_Node;
+class RGE_Sprite;
+class RGE_Sound;
+class RGE_Game_World;
+
+class RGE_Tile_List {
+public:
+    int list_size;
+    int num_active;
+    int new_count;
+    int collapse_list;
+    void* list;
+};
+
 class RGE_Player {
 public:
     virtual ~RGE_Player();
-    char pad_04[0x234];
-    AIModule* playerAI;  // +0x238
+
+    int computerPlayerValue;
+    int pathingAttemptCapValue;
+    int pathingDelayCapValue;
+    int currentUpdatePathingAttemptsValue;
+    long checksum;
+    long position_checksum;
+    long action_checksum;
+    uchar checksum_created_this_update;
+    short master_object_num;
+    RGE_Master_Static_Object** master_objects;
+    RGE_Object_List* objects;
+    RGE_Object_List* sleeping_objects;
+    RGE_Object_List* doppleganger_objects;
+    RGE_Victory_Conditions* victory_conditions;
+    RGE_Visible_Map* visible;
+    RGE_Game_World* world;
+    RGE_Doppleganger_Creator* doppleganger_creator;
+    char* name;
+    uchar type;
+    short id;
+    short attribute_num;
+    float* attributes;
+    uchar culture;
+    RGE_Tile_List tile_list;
+    RGE_Tile_List diam_tile_list;
+    uchar game_status;
+    uchar resigned;
+    uchar* relations;
+    int unitDiplomacy[9];
+    int mutualAlly[9];
+    unsigned long mutualExploredMask;
+    unsigned long mutualVisibleMask;
+    unsigned long nonMutualVisibleMask;
+    unsigned long RemoveVisibleBits[9];
+    int allied_LOS_Enable;
+    uchar allied_victory;
+    uchar master_player_id;
+    RGE_Color_Table* color_table;
+    long tribe_effect;
+    Visible_Resource_Manager* VR_List;
+    float view_x;
+    float view_y;
+    short map_x;
+    short map_y;
+    short selected_start_col;
+    short selected_start_row;
+    short selected_end_col;
+    short selected_end_row;
+    short replacement_terrain;
+    short replacement_overlay;
+    short replacement_overlay_shape;
+    RGE_Static_Object* selected_obj;
+    RGE_Static_Object* sel_list[25];
+    unsigned long sel_object_properties;
+    short sel_count;
+    uchar groups_used[127];
 };
+
+class TRIBE_Player_Tech;
+class TRIBE_History_Info;
 
 class TRIBE_Player : public RGE_Player {
 public:
+    virtual ~TRIBE_Player();
+
+    TRIBE_Player_Tech* tech_tree;
+    long fog_update;
+    long update_count;
+    long update_history_count;
+    long updateCountNeedHelp;
+    float update_time;
+    TribeMainDecisionAIModule* playerAI;
+    char aiStatusInformationValue[256];
+    char aiStatusInformationValue2[256];
+    char aiStatusInformationValue3[256];
+    char aiStatusInformationValue4[256];
+    char aiStatusInformationValue5[256];
+    char aiStatusInformationValue6[256];
+    TRIBE_History_Info* history;
+    float ruin_held_time;
+    float artifact_held_time;
+
     void setupPhoenician(int* param_1, int param_2, int param_3, int param_4);
 };
 
-extern TRIBE_Game* rge_base_game;
+extern RGE_Base_Game* rge_base_game;
 
 void TRIBE_Player::setupPhoenician(int* param_1, int param_2, int param_3, int param_4)
 {
     this->playerAI->logCommonHistory("Setting up as Phoenicians.");
 
-    if (rge_base_game->deathMatch() == 1) {
+    if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 1) {
         if (param_2 == 0 || param_2 == 1) {
             param_1[0x44] = 100;
         } else if (param_2 == 2 || param_2 == 6) {
