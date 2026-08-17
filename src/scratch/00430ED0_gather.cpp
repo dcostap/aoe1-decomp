@@ -30,6 +30,16 @@
 // orch-430ED0-a: task-edge result assignment and combined task assignment were codegen duplicates (333/77).
 // orch-430ED0-a: nested task-nonnull control flow widened to 338/141; zero-before-task widened to 333/251.
 // orch-430ED0-a: task declaration initialization was a codegen duplicate; clean source restored.
+// Session sa-fb9c03a3: rechecked shared-failure, positive-task, integer-status,
+// task-result, and action-status forms. The natural baseline stayed best at
+// 333/77. Omitting the task-zero assignment reached 331/49 but returned target
+// on task failure, so it is not valid. Clean source restored for final pause.
+// Session sa-e16f44c1-r1: typed the Action_Object base, action target, and
+// constructor owner; all emitted code stayed at 333/77. Direct task-failure
+// returns expanded to 350/122, so the shared natural result flow remains.
+// Session sa-83b69d6e-r1: direct success/action/task returns worsened control
+// flow (350-378 bytes). Null-task assignment and int/pointer result forms were
+// codegen duplicates at 333/77; retain the behavior-valid pointer form.
 
 class RGE_Static_Object {
 public:
@@ -68,13 +78,13 @@ public:
     virtual void avf10();
     virtual void avf11();
     virtual void avf12();
-    virtual void set_target_pos(void* target, int x, int y, int z);
+    virtual void set_target_pos(RGE_Static_Object* target, int x, int y, int z);
     virtual void avf14();
     virtual void avf15();
     virtual void avf16();
     virtual void avf17();
     virtual void avf18();
-    virtual void* get_target();
+    virtual RGE_Static_Object* get_target();
 };
 
 class RGE_Action_List {
@@ -88,20 +98,45 @@ class RGE_Task {
 };
 
 class RGE_Combat_Object;
-
-class RGE_Action_Gather : public RGE_Action {
+class RGE_Action_Object {
 public:
-    char data[0x44 - 4];
-    RGE_Action_Gather(RGE_Combat_Object* object, RGE_Task* task, RGE_Static_Object* target);
-};
+    virtual ~RGE_Action_Object();
+    virtual void vf001();
+    virtual void vf002();
+    virtual void vf003();
+    virtual void vf004();
+    virtual void vf005();
+    virtual void vf006();
+    virtual void vf007();
+    virtual void vf008();
+    virtual void vf009();
+    virtual void vf010();
+    virtual void vf011();
+    virtual void vf012();
+    virtual void vf013();
+    virtual void vf014();
+    virtual void vf015();
+    virtual void vf016();
+    virtual void vf017();
+    virtual void vf018();
+    virtual void vf019();
+    virtual void vf020();
+    virtual void vf021();
 
-class RGE_Combat_Object {
-public:
     char gap_04[8];
     RGE_Player* player;
     char gap_10[0x174];
     RGE_Action_List* action_list;
+};
 
+class RGE_Action_Gather : public RGE_Action {
+public:
+    char data[0x44 - 4];
+    RGE_Action_Gather(RGE_Action_Object* object, RGE_Task* task, RGE_Static_Object* target);
+};
+
+class RGE_Combat_Object : public RGE_Action_Object {
+public:
     virtual ~RGE_Combat_Object();
     virtual void vf001();
     virtual void vf002();
