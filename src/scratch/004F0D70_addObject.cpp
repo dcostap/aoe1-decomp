@@ -31,6 +31,21 @@
 // - Restoring the binary-supported persistent object alias in the current
 //   virtual-base context was also a duplicate.  A register-ID diagnostic was
 //   unchanged, so the clean typed candidate remains authoritative.
+// - Revisit session: the clean 822-byte source rebuilt with 11/11 ordered
+//   calls, no frame, 570 strict diff bytes, and 60.66% exact-block coverage.
+// - Tested persistent object aliases, parameter-home mutation, the Ghidra
+//   local topology, a typed parameter-home reference, delayed initialization,
+//   register-qualified parameter/ID locals, a flat class prefix, local-order
+//   changes, and combined scan predicates.  These were duplicates or worse.
+// - Tested non-register object and receiver aliases, direct member scans,
+//   stdlib/string/windows headers, their combination, and a receiver reference.
+//   Each emitted the same 822-byte candidate.
+// - Branch-local subtype IDs changed the basin to 777 bytes and 747 strict
+//   diff bytes, but lost structural alignment and was restored.
+// - The remaining mismatch is register ownership: the original keeps the
+//   parameter in EBX, this in EBP, and the repeated ID in EDI.  The clean
+//   source keeps the same behavior and calls but assigns another register
+//   basin, spilling the ID after three resize calls.
 
 class RGE_Master_Static_Object {
 public:
