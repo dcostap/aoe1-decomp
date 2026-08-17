@@ -63,6 +63,28 @@
 // Final clean source retains the typed three-tail reconstruction at 224B/179;
 // the unresolved structural gap is the calloc/node spill and short-result
 // home, not calls or behavior-backed control-flow topology.
+// sa-9ae8878f-r1 pass: the clean baseline revalidated at 224B/179 with 9/9
+// ordered calls, the original prologue, and matching CFG signals. Direct type
+// comparisons recovered the receiver-preload and node-spill shape but added an
+// 8-byte frame and reached 260B/246; naming the first receiver reached 251B/243.
+// Register-qualified cursor, action, and receiver forms, a post-guard action
+// alias, explicit short casts, and narrow virtual surfaces were duplicates or
+// worse. Preloading curr before the first type call reached 240B/233 with a
+// frame and broad drift. Restore the clean typed source; the remaining gap is
+// VC5 local-home/register allocation, not a behavior or call-set mismatch.
+// sa-43054adb-r1 pass: revalidated the clean source and tested assignment-in-
+// comparison, branch-scoped curr, an early first-action guard, a direct first
+// comparison with a loop short local, a typed self alias, and fully qualified
+// owner accesses. The assignment, curr scope, self alias, and qualification
+// forms were codegen duplicates. First-action/direct-comparison forms added a
+// frame and broadened drift. The clean 224B/179 source remains authoritative;
+// its 9/9 ordered calls, four returns, typed owners, and natural three-tail
+// control flow match, while the node spill and short-result home remain open.
+// sa-49f2c4d6-r1 pass: seventeen focused natural probes found duplicate or
+// worse basins. Ghidra's first-action preload and loop-action locals added a
+// frame; separate type locals, node aliases, declaration orders, and register
+// qualifiers did not move codegen. Restored and validated the pinned source at
+// 224B/179 with 9/9 ordered calls; the VC5 spill/register basin remains open.
 class RGE_Action_List;
 class RGE_Static_Object;
 class RGE_Master_Action_Object;
