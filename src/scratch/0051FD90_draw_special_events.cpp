@@ -35,6 +35,15 @@
 //   function-scope short/uchar variables suggested by the decompiler.  These
 //   all changed the prologue or added 102-142 bytes.  Rolled back; the clean
 //   grouped switch remains the source-authoritative candidate.
+// - Revisit probes: period Windows/import and decorated string declarations
+//   changed the call basin without improving the target; explicit constant
+//   cases, a decompiler-shaped goto tail, and named lower-y locals added
+//   74-146 bytes or an ESP frame.  Reversing the lower y expression recovered
+//   the binary yPosition-before-height call order at unchanged whole metrics.
+//   Local declaration order, an explicit int switch cast, a separate first-loop
+//   pointer, and an explicit default edge were unchanged.  An 8-state variant
+//   lab confirmed only two code groups: the grouped source kept 674 bytes and
+//   the constant-case source grew to 756 bytes.  No exact lead was found.
 
 #include <string.h>
 
@@ -200,7 +209,7 @@ void Time_Line_Panel::draw_special_events()
                              x_offset - (strlen(event->text2) >> 1)
                                  * this->axis_font_wid
                                  + event->X_line_pos,
-                             this->yPosition() + this->height()
+                             this->height() + this->yPosition()
                                  - this->axis_font_hgt * 2 - 7,
                              event->text2, strlen(event->text2));
                     break;
