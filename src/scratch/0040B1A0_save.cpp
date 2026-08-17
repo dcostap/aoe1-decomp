@@ -38,6 +38,11 @@
 //     home, places the float tempBOOL home one slot higher, and keeps the state home separate. The current source
 //     has the same values, calls, order, exits, and fault order. Late declarations and a nested serializer scope
 //     emitted the same 58-byte basin. Reproducing the original overlap would require an unsupported alias or filler.
+// 16: local cvdump of the original PDB proves the period serializer ABI (void, C near, int/void*/int), a Pentium
+//     TU, char[257] tempString, and tempInt/tempBOOL/tempFloat stack symbols with duplicate loop scopes.
+//     Exact class surfaces, header orders, serializer declaration orders, BuildAIModule donor declarations,
+//     /Zi, /Z7, /G5, /G6, io.h, malloc.h, and WIN32/_WINDOWS context probes stayed in the same 58-byte basin.
+//     The supported TU context does not select the oracle overlap; preserve the natural baseline.
 
 #include <string.h>
 
