@@ -160,6 +160,22 @@ struct RGE_Elevation_Info {
 // exact 234-byte match. A natural local dimensions aggregate returned to the
 // same two-byte mismatch. Restored the direct map-field product: the overlay
 // remains diagnostic because it is not a plausible source model.
+// Claim sa-df973337-r1: fresh donor checks confirm 00488EA0 is an exact
+// related stack-link donor, including the height-first product load, while
+// this elevation source remains a clean natural reconstruction at 2 bytes.
+// Adding the terrain donor's list alias here was codegen-identical; it did not
+// recover the target product order. Keep the donor as evidence, not as an
+// unsupported elevation-list store or raw layout overlay.
+// Claim sa-a1570cfd-r1: staged count accumulation, reversed terminal product,
+// terrain donor float cost types, and const dimension locals were all emitted
+// duplicates. Restore the natural typed source. The only mismatch remains the
+// two operand-displacement bytes at the terminal count product; the exact
+// adjacent-field overlay is rejected as raw layout plumbing.
+// Claim sa-ce8773f9-r1: declaring only the countdown at function scope and
+// using local references to map_height/map_width in the terminal product were
+// both emitted-code duplicates. Restore the pinned natural source. The exact
+// adjacent-field overlay remains diagnostic only; no supported natural source
+// form has changed the height-first product load.
 class RGE_RMM_Elevation_Generator : public RGE_Random_Map_Module {
 public:
     RGE_Elevation_Info info;
