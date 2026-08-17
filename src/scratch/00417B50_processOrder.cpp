@@ -33,6 +33,22 @@
 //   eax,eax and improves the best positional diff from 832 to 830 bytes.
 // - Pointer-range, forced-tail-goto, and logged-branch-break variants were
 //   rolled back; they lost the call map or expanded the function.
+//
+// Current matching pass:
+// - Baseline check: 1269 bytes, 42/42 ordered calls, exact size and CFG counts,
+//   96.63% shape similarity, 80.43% exact-block coverage, and 830 differing
+//   bytes. The first mismatch is the switch-table relocation at +0x31.
+// - Tested 20 meaningful hypotheses. Direct range use merges the two +0x90
+//   calls. A local range keeps both calls but emits fld/fstp. Pointer, alias,
+//   bit-cast, receiver, and volatile forms did not improve this basin.
+// - Tested stop-tail gotos, duplicated stop calls, scoped log receivers,
+//   header context, overload order, queue induction forms, coordinate scopes,
+//   and truth-test spelling. None improved the clean checkpoint.
+// - A mutating param_2 loop made one queue block exact but worsened registers
+//   and total bytes. A preguarded do/while emitted the same bytes as the clean
+//   for loop. The variant lab found no exact candidate.
+// - Restored and pinned the clean natural source. Remaining leads are the
+//   original action-log tail source shape, compiler context, and relocations.
 
 #include <stdio.h>
 
@@ -280,6 +296,7 @@ int UnitAIModule::processOrder(OrderEvent* param_1, int param_2) {
         break;
     case 0x2C6:
         {
+            // BINARY NOTE: A local range keeps this distinct +0x90 call site.
             const float range = param_1->range;
             result = this->moveTo(param_1->targetX, param_1->targetY,
                                   param_1->targetZ, range, 1);
@@ -409,6 +426,7 @@ int UnitAIModule::processOrder(OrderEvent* param_1, int param_2) {
                     this->orderQueueValue[i + 1].targetX;
                 this->orderQueueValue[i].targetY =
                     this->orderQueueValue[i + 1].targetY;
+                // ORIGINAL BUG: The shipped shift omits the range dword at +0x20.
                 this->orderQueueValue[i].targetZ =
                     this->orderQueueValue[i + 1].targetZ;
             }
