@@ -21,6 +21,10 @@
 // delayed receiver order in the same VC5 family; no natural local/source axis
 // found here reproduces it. Clean source restored; leave the register-order
 // barrier for a later donor/context investigation.
+// probe pass: 20 additional natural ABI, type, declaration, lifetime, class-
+// surface, and expression-shape variants all retained the same 779-byte drift.
+// Narrow volatile forced a wrong frame and was discarded. The clean source is
+// pinned below as the best supported reconstruction.
 
 #include <stdio.h>
 
@@ -753,11 +757,14 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
                            0x0B))
         return;
 
+    // BINARY NOTE: The executable computes this position before it reloads
+    // scenarioList, then uses signed divide by ideal_width.
     long second_column_pos;
     second_column_pos = this->scenarioListWidth;
     second_column_pos -= 0x3C;
     second_column_pos *= this->pnl_wid;
     second_column_pos /= this->ideal_width;
+    // LIKELY INTENT: Scale the list's player column with the panel width.
     this->scenarioList->set_second_column_pos(second_column_pos);
 
     if (rge_base_game->multiplayerGame() != 0) {
