@@ -23,7 +23,15 @@
 // Fresh pass: moved dimension declarations and reordered early locals; emitted code unchanged, restored.
 // Fresh pass: moved the typed height load before x2, matching the original flics.cpp frame setup order; emitted code unchanged.
 // Fresh pass: moved the natural height load after x2 and y1 to test the paired coordinate register order; emitted code unchanged, restored.
+// Follow-up bounded pass: function-scope scalar declarations, pointer declaration
+// order, y and draw-area aliases, register-qualified dimensions, separate pitch
+// locals, and the decompiler's int* frame/chunk surface were codegen duplicates.
+// Coordinate statement permutations formed one worse 23-byte-diff basin and did
+// not recover the oracle register colors. Standard-header context variants were
+// also duplicate. The natural 461-byte source remains the clean reconstruction;
+// the remaining 36 differing bytes are localized to coordinate register coloring.
 // BLOCKER: behavior and layout appear correct; remaining 7.8091% diff is localized codegen/register scheduling in coordinate setup after frame load. Original uses EBX for width then reuses EBX for drawarea (`movsx ebx,[esi+10] ... mov ebx,ecx`), while VC5 keeps width in ECX and loads drawarea into EBX early. Later switch/tail and frees are structurally aligned.
+// Revisit validation: the clean source still builds to 461 bytes with 13 ordered calls, no frame, matching saved registers, and 36 differing bytes. Keep this natural source; further work needs new register-color evidence.
 
 extern "C" void* calloc(unsigned int count, unsigned int size);
 extern "C" void free(void* ptr);
