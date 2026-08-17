@@ -33,7 +33,20 @@
 //   offset spelling to all arms merges the same calls and loses three calls.
 // - Nested nonnegative dispatch and entry initialization reorder were codegen
 //   duplicates.  Remaining structural gap is target ebp/ebx allocation and
-//   an 83-byte tail; no evidence-backed lead remains in this claim.
+//   an 83-byte tail.
+// - Probe 18: reversed array-capacity tests to `index > maximum - 1` and
+//   `index >= maximum`.  This matches the original CMP operand order, raises
+//   shape similarity to 68.53%, and raises exact-block coverage to 31.41%.
+// - Probe 19: reversed priority tests to compare the returned value with the
+//   parameter.  This matches the original CMP operand order, raises shape to
+//   70.16%, and raises exact-block coverage to 37.17%.
+// - Probe 20: combined tasked-list count and capacity for loops improved
+//   shape and resynchronization, but lost two required calls and the 0x10
+//   frame.  Restore the pinned probe-19 source.
+// - Final unresolved checkpoint: 1383 bytes versus 1300, 0x10 frame, 47/47
+//   ordered calls, 70.16% shape, 37.17% exact-block coverage, 1295 strict
+//   differing bytes.  The remaining lead is the target EBP/EBX register and
+//   stack-home topology, then the 83-byte structural tail.
 
 struct RGE_Static_Object;
 struct UnitAIModule;
@@ -121,12 +134,12 @@ int TribeTacticalAIModule_4F7870::numberWarshipsWithPriority(int priority, int c
     if (this->warBoats.numberValue > 0) {
         warships = &this->warBoats;
         do {
-            if (warships->maximumSizeValue - 1 < local_c)
+            if (local_c > warships->maximumSizeValue - 1)
                 warships->resize(local_c + 1);
             local_8 = local_c * 4;
             object = this->md->aiPlayer->world->object(warships->value[local_c]);
             if (object != 0 && object->unitAI() != 0) {
-                if (warships->maximumSizeValue - 1 < local_c)
+                if (local_c > warships->maximumSizeValue - 1)
                     warships->resize(local_c + 1);
 
                 value = 0;
@@ -147,17 +160,17 @@ int TribeTacticalAIModule_4F7870::numberWarshipsWithPriority(int priority, int c
                     if (value != -1) {
                         ai = object->unitAI();
                         value = ai->currentOrderPriority();
-                        if (priority <= value)
+                        if (value >= priority)
                             goto next_warboat;
                     }
-                    if (warships->maximumSizeValue - 1 < local_c)
+                    if (local_c > warships->maximumSizeValue - 1)
                         warships->resize(local_c + 1);
                     result = &this->workingArea;
                     local_8 = *(int *)((char *)warships->value + local_8);
                     value = result->contains(local_8);
                     if (value != 1) {
                         value = result->numberValue;
-                        if (result->maximumSizeValue - 1 < value)
+                        if (value > result->maximumSizeValue - 1)
                             result->resize(value + 1);
                         value = result->numberValue;
                         values = result->value;
@@ -172,16 +185,16 @@ int TribeTacticalAIModule_4F7870::numberWarshipsWithPriority(int priority, int c
                     if (value != -1) {
                         ai = object->unitAI();
                         value = ai->currentOrderPriority();
-                        if (priority >= value)
+                        if (value <= priority)
                             goto next_warboat;
-                        if (warships->maximumSizeValue - 1 < local_c)
+                        if (local_c > warships->maximumSizeValue - 1)
                             warships->resize(local_c + 1);
                         result = &this->workingArea;
                         local_8 = warships->value[local_c];
                         value = result->contains(local_8);
                         if (value != 1) {
                             value = result->numberValue;
-                            if (result->maximumSizeValue - 1 < value)
+                            if (value > result->maximumSizeValue - 1)
                                 result->resize(value + 1);
                             result->value[result->numberValue] = local_8;
                             result->numberValue++;
@@ -196,14 +209,14 @@ int TribeTacticalAIModule_4F7870::numberWarshipsWithPriority(int priority, int c
                         value = ai->currentOrderPriority();
                         if (value != priority)
                             goto next_warboat;
-                        if (warships->maximumSizeValue - 1 < local_c)
+                        if (local_c > warships->maximumSizeValue - 1)
                             warships->resize(local_c + 1);
                         result = &this->workingArea;
                         local_8 = warships->value[local_c];
                         value = result->contains(local_8);
                         if (value != 1) {
                             value = result->numberValue;
-                            if (result->maximumSizeValue - 1 < value)
+                            if (value > result->maximumSizeValue - 1)
                                 result->resize(value + 1);
                             result->value[value] = local_8;
                             result->numberValue++;
@@ -223,11 +236,11 @@ next_warboat:
         warships = &this->soldiers;
         tactical2 = this;
         do {
-            if (warships->maximumSizeValue - 1 < local_c)
+            if (local_c > warships->maximumSizeValue - 1)
                 warships->resize(local_c + 1);
             object = tactical2->md->aiPlayer->world->object(warships->value[local_c]);
             if (object != 0 && object->unitAI() != 0) {
-                if (warships->maximumSizeValue - 1 < local_c)
+                if (local_c > warships->maximumSizeValue - 1)
                     warships->resize(local_c + 1);
 
                 value = tactical2->unitsTaskedThisUpdate.numberValue;
@@ -253,17 +266,17 @@ next_warboat:
                         if (value != -1) {
                             ai = object->unitAI();
                             value = ai->currentOrderPriority();
-                            if (priority <= value)
+                            if (value >= priority)
                                 goto next_soldier;
                         }
-                        if (warships->maximumSizeValue - 1 < local_c)
+                        if (local_c > warships->maximumSizeValue - 1)
                             warships->resize(local_c + 1);
                         value = tactical2->workingArea.numberValue;
                         scan = 0;
                         local_8 = warships->value[local_c];
                         if (value > 0) {
                             do {
-                                if (tactical2->workingArea.maximumSizeValue <= scan)
+                                if (scan >= tactical2->workingArea.maximumSizeValue)
                                     break;
                                 if (tactical2->workingArea.value[scan] == local_8)
                                     goto next_soldier;
@@ -278,15 +291,15 @@ next_warboat:
                         if (value != -1) {
                             ai = object->unitAI();
                             value = ai->currentOrderPriority();
-                            if (priority < value) {
-                                if (warships->maximumSizeValue - 1 < local_c)
+                            if (value > priority) {
+                        if (local_c > warships->maximumSizeValue - 1)
                                     warships->resize(local_c + 1);
                                 value = tactical2->workingArea.numberValue;
                                 scan = 0;
                                 local_8 = warships->value[local_c];
                                 if (value > 0) {
                                     do {
-                                        if (tactical2->workingArea.maximumSizeValue <= scan)
+                                        if (scan >= tactical2->workingArea.maximumSizeValue)
                                             break;
                                         if (tactical2->workingArea.value[scan] == local_8)
                                             goto next_soldier;
@@ -305,14 +318,14 @@ next_warboat:
                             if (value != priority)
                                 goto next_soldier;
 
-                            if (warships->maximumSizeValue - 1 < local_c)
+                        if (local_c > warships->maximumSizeValue - 1)
                                 warships->resize(local_c + 1);
                             result = &tactical2->workingArea;
                             local_8 = warships->value[local_c];
                             value = result->contains(local_8);
                             if (value != 1) {
                                 value = result->numberValue;
-                                if (result->maximumSizeValue - 1 < value)
+                            if (value > result->maximumSizeValue - 1)
                                     result->resize(value + 1);
                                 result->value[result->numberValue] = local_8;
                                 result->numberValue++;
@@ -325,7 +338,7 @@ next_warboat:
                 }
                 goto soldier_done;
 append_soldier:
-                if (tactical2->workingArea.maximumSizeValue - 1 < value)
+                if (value > tactical2->workingArea.maximumSizeValue - 1)
                     tactical2->workingArea.resize(value + 1);
                 tactical2->workingArea.value[tactical2->workingArea.numberValue] = local_8;
                 tactical2->workingArea.numberValue++;
