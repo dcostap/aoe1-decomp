@@ -27,6 +27,16 @@
 // but worsened shape and size; restored the simpler ownership form.
 // memory.h context and function-scope temporary-node declarations were
 // codegen duplicates; retained the period-plausible stdlib-only context.
+// fresh claim baseline: diff 729, size 924, shape 87.39%, calls 9/9.
+// entry tail-first declaration/use order improved diff to 612 but added 2 bytes.
+// A branch-local end+1 boundary and do/while left drain improved diff to 607;
+// an old-tail/previous-node split then improved diff to 593 and size +6.
+// Rewriting the left old-node split, count entry pointer, and middle old/next
+// split was worse or lost exact blocks; direct header and register probes did
+// not change the emitted basin. A 16-way lab found no exact variant; tail-first
+// plus do/while was the strongest group, with no size/frame/call-set invariant.
+// final clean source: typed natural reconstruction, diff 593, size 922,
+// shape 86.83%, exact blocks 55.74%, calls 9/9; first mismatch remains +0F.
 // retained: natural typed source; unresolved pointer scheduling and late block
 // placement leave a broad non-exact codegen gap, so this target stays scratch.
 
@@ -122,8 +132,8 @@ void TSpan_List_Manager::AddSpan(int start, int end, int line)
         return;
     }
 
-    temp = this->LeftMostPx[line];
     other = this->Line_Tail_Ptrs[line];
+    temp = this->LeftMostPx[line];
     if (start <= temp) {
         if (end < temp - 1) {
             other = this->VSList.GetNode();
@@ -153,15 +163,16 @@ void TSpan_List_Manager::AddSpan(int start, int end, int line)
         }
 
         this->LeftMostPx[line] = start;
-        temp = end + 1;
-        if (temp >= node->StartPx) {
-            while (1) {
+        int boundary = end;
+        boundary++;
+        if (boundary >= node->StartPx) {
+            do {
                 if (end <= node->EndPx) {
                     node->StartPx = start;
                     return;
                 }
                 other = node->Next;
-                if (temp < other->StartPx) {
+                if (boundary < other->StartPx) {
                     break;
                 }
                 this->Line_Head_Ptrs[line] = other;
@@ -169,10 +180,10 @@ void TSpan_List_Manager::AddSpan(int start, int end, int line)
                 this->VSList.FreeNode(node);
                 this->Span_Count[line] = this->Span_Count[line] - 1;
                 node = other;
-                if (temp < other->StartPx) {
+                if (boundary < other->StartPx) {
                     return;
                 }
-            }
+            } while (1);
             node->StartPx = start;
             node->EndPx = end;
         }
@@ -199,16 +210,17 @@ void TSpan_List_Manager::AddSpan(int start, int end, int line)
                         other->EndPx = end;
                         return;
                     }
-                    node = other->Prev;
-                    if (start - 1 > node->EndPx) {
+                    node = other;
+                    other = other->Prev;
+                    if (start - 1 > other->EndPx) {
                         break;
                     }
-                    this->Line_Tail_Ptrs[line] = node;
-                    node->Next = 0;
-                    this->VSList.FreeNode(other);
+                    this->Line_Tail_Ptrs[line] = other;
+                    other->Next = 0;
+                    this->VSList.FreeNode(node);
                     this->Span_Count[line] = this->Span_Count[line] - 1;
-                    other = node;
-                    if (node->EndPx < start - 1) {
+                    node = other;
+                    if (other->EndPx < start - 1) {
                         return;
                     }
                 }
