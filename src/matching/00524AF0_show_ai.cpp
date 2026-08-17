@@ -1,4 +1,4 @@
-// VA: 00524AF0 TribeGame::show_ai
+// VA: 00524AF0 TRIBE_Game::show_ai
 // Source: tribegam.cpp lines 2100-2137
 // Attempt log:
 // 1: natural reconstruction from packet: gather six player AI strings and pass them to UI display; after adding missing computerPlayer declaration compiled too small (608 vs 636).
@@ -31,16 +31,14 @@
 // 28: mutable char* name ABI matched the binary pointer surface but emitted no new code.
 // 29: Restored the real string literals. The former absolute addresses were
 //     diagnostic data plumbing, not valid source ownership.
+// 30: Recovered the original typed row-cursor flow: initialize i before the
+//     destination row pointer, keep output separate from the nullable name,
+//     and use a default empty source with a non-null replacement.
+// 31: The natural i <= 6 loop then matched all 636 bytes, calls, frame, and
+//     boundary. Removing the redundant game=this alias kept the exact match.
 
 #include <string.h>
 #include <stdio.h>
-
-static const char s_empty_ai[] = "";
-static const char s_player_ai_failed[] =
-    "Player #%d: AI is not functional.";
-static const char s_player_ai_name[] = "Player #%d: %s";
-static const char s_player_not_computer[] =
-    "Player #%d is not a computer player.";
 
 class RGE_Player {
 public:
@@ -53,14 +51,14 @@ public:
     virtual const char* name(int slot); // +14
 };
 
-class PlayerSlot {
+class RGE_Game_World {
 public:
-    int computerPlayer();
-    virtual void v00();
-    char gap_04[0x40 - 0x04];
-    RGE_Player** providers;
+    char gap_00[0x3C];
+    short player_num;
+    char gap_3E[2];
+    RGE_Player** players;
     char gap_44[0x7C - 0x44];
-    short current;
+    short curr_player;
 };
 
 class TRIBE_Screen_Game {
@@ -72,59 +70,64 @@ class RGE_Base_Game {
 public:
     virtual ~RGE_Base_Game();
     char gap_04[0x3F0];
-    PlayerSlot* playerSlot;
+    RGE_Game_World* world;
     char gap_3F8[0xA24 - 0x3F8];
 };
 
-class TribeGame : public RGE_Base_Game {
+class TRIBE_Game : public RGE_Base_Game {
 public:
     char gap_A24[0xC24 - 0xA24];
-    TRIBE_Screen_Game* panel;
+    TRIBE_Screen_Game* game_screen;
     virtual void show_ai();
 };
 
-void TribeGame::show_ai()
+void TRIBE_Game::show_ai()
 {
     int i;
     char s[6][256];
-    if (this->playerSlot->providers == 0) {
+    if (this->world->players == 0) {
         return;
     }
 
-    if (this->playerSlot->providers[this->playerSlot->current]->computerPlayer() == 1) {
-        const char* n = this->playerSlot->providers[this->playerSlot->current]->name(1);
+    if (this->world->players[this->world->curr_player]->computerPlayer() == 1) {
+        const char* n = this->world->players[this->world->curr_player]->name(1);
         if (n == 0) {
-            sprintf(s[0], s_player_ai_failed,
-                    (int)this->playerSlot->current);
+            sprintf(s[0], "Player #%d: AI is not functional.",
+                    (int)this->world->curr_player);
         } else {
-            sprintf(s[0], s_player_ai_name,
-                    (int)this->playerSlot->current, n);
+            sprintf(s[0], "Player #%d: %s",
+                    (int)this->world->curr_player, n);
         }
-        for (i = 2; i < 7; ++i) {
-            const char* p = this->playerSlot->providers[
-                this->playerSlot->current]->name(i);
-            if (p == 0) {
-                p = s_empty_ai;
+        i = 2;
+        char (*destination)[256] = &s[2];
+        for (; i <= 6; ++i) {
+            const char* p = this->world->players[
+                this->world->curr_player]->name(i);
+            char* output = destination[-1];
+            const char* source = "";
+            if (p != 0) {
+                source = p;
             }
-            strcpy(s[i - 1], p);
+            strcpy(output, source);
+            ++destination;
         }
     } else {
-        const char* p = this->playerSlot->providers[
-            this->playerSlot->current]->name(0);
+        const char* p = this->world->players[
+            this->world->curr_player]->name(0);
         strcpy(s[0], p);
-        sprintf(s[1], s_player_not_computer,
-                (int)this->playerSlot->current);
-        strcpy(s[2], s_empty_ai);
-        strcpy(s[3], s_empty_ai);
-        strcpy(s[4], s_empty_ai);
-        strcpy(s[5], s_empty_ai);
+        sprintf(s[1], "Player #%d is not a computer player.",
+                (int)this->world->curr_player);
+        strcpy(s[2], "");
+        strcpy(s[3], "");
+        strcpy(s[4], "");
+        strcpy(s[5], "");
     }
 
-    if (this->panel != 0) {
-        if (this->playerSlot->providers[this->playerSlot->current]->computerPlayer() == 1) {
-            this->panel->show_ai(s[5], s[4], s[3], s[2], s[1], s[0]);
+    if (this->game_screen != 0) {
+        if (this->world->players[this->world->curr_player]->computerPlayer() == 1) {
+            this->game_screen->show_ai(s[5], s[4], s[3], s[2], s[1], s[0]);
         } else {
-            this->panel->show_ai(s[0], s[1], s[2], s[3], s[4], s[5]);
+            this->game_screen->show_ai(s[0], s[1], s[2], s[3], s[4], s[5]);
         }
     }
 }
