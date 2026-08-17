@@ -15,8 +15,8 @@
 //   exact-block coverage, but was not retained: named SP_Victory_Info fields
 //   are the canonical living source.  The raw dynamic-stride variant was
 //   rejected because it regressed to 741 differing bytes.
-// - final typed candidate remains structurally close (frame 0x10, 37/37
-//   calls); residual drift is VC5 stack-home/order and tail/register coloring.
+// - final typed candidate was structurally close (frame 0x10, 37/37 calls);
+//   the only drift was two fallback stack-displacement bytes.
 // - a fresh natural typed row cursor (`&sp_victory[row][0]` plus increment)
 //   widened the frame to 0x14 and lost early blocks; it was rolled back.
 // - matching the donor's trailing SP_Victory_Info padding as integer gaps did
@@ -31,10 +31,11 @@
 //   pointer arithmetic, so the clean named-field source was restored.
 // - a hybrid cursor using typed AttribType values but named tail fields emitted
 //   the same 224-byte result as the prior cursor probe; it was restored.
-// - the current clean frontier keeps a typed AttribType anchor for integer
-//   dispatch and one explicit PlayerID/object-type fallback arm.  It emits the
-//   original size, frame, CFG, and all 37 ordered calls; only two stack-displacement
-//   bytes differ in the fallback rectangle call.
+// - exact-finish: period windows.h context changes only the two fallback stack
+//   displacements and produces MATCH.  Removing it restores the 2-byte mismatch.
+//   The smaller windef.h child header does not compile in this VC5 environment.
+
+#include <windows.h>
 
 class RGE_Static_Object;
 class RGE_Game_World;
