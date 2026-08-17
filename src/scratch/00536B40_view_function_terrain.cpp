@@ -181,6 +181,13 @@
 // Open lead: recover the original early local/register topology, especially
 // the EBX zero color and the setup stack homes. Do not add padding or register
 // hints without binary-supported source evidence.
+// Context pass 2026-08-17: same-TU draw_view, view_function, constructor, and
+// terrain donors confirm render_area +0x20, cur_render_area +0xF4, world +0xFC,
+// function_parm +0x141, the paint fields +0x154..+0x164, blit fields
+// +0x2C8..+0x2F0, and selection-list fields +0x354..+0x35C. A context-only
+// class reconstruction added these real fields. It worsened shape to 60.40%
+// and strict diff to 4939 bytes, so it was restored. The pinned class context
+// remains the smaller source that emits 4913 differing bytes.
 
 #include <windows.h>
 #include <string.h>
