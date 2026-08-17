@@ -135,6 +135,17 @@
 //   and dead-result-store behavior remain isolated VC5/TU-context drift.
 //   Restore and retain the pinned natural typed source.
 
+// sa-7575e400-r1 context follow-up: full adjacent TDrawArea declarations,
+// adjacent CreateBlitQueue and matching pick bodies, ambient draw.cpp
+// declarations, SDK aliases, HRESULT returns, and removed derived virtuals
+// did not change the 219-byte target basin. The full TDrawArea surface grew
+// the target to 223 bytes and 209 differing bytes. Native windows.h and the
+// allocator/string header contexts reached the known 195-byte group but kept
+// weaker shape and the extra EBX save. A size-minus-one final threshold kept
+// 199 differing bytes and improved edit resync only; it did not improve the
+// strict positional result. Long force, a RECT reference, and a const queue
+// entry were duplicates or invalid ABI choices. All experiments were restored.
+
 struct tagRECT { long left; long top; long right; long bottom; };
 
 struct Blit_Queue_Entry {
