@@ -98,6 +98,10 @@
 //   duplicated that basin. These are TU facts supported by local donors and
 //   probes; none selects the oracle EDX=14 preload or early param_2 reload.
 //   Baseline restored and validated. Preserve this source.
+// - Object audit confirms the PDB range, named parameters, FPO/COFF shape,
+//   four relocations, compiler directives, and exact-donor fingerprint. PDB
+//   has no hidden local. deathMatch is a required direct nonvirtual call.
+//   No object evidence supports aliases or store reordering.
 
 #include <stddef.h>
 
