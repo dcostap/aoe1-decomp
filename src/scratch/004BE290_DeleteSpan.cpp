@@ -31,6 +31,16 @@
 // luna-r5 source-surface probes: inherited calls and direct full-span tail expression were codegen-neutral and retained as canonical typed ownership.
 // luna-r5 structural lead: binary compares left against first->StartPx before trimming and advancing; corrected the old EndPx guard. This reduced drift to 301 bytes and 528 bytes.
 // luna-r5 count probes: explicit count assignment, count local, count-array alias, and line-index alias were neutral or smaller but not closer; restored direct typed decrement.
+// revisit-sa-63b96191: baseline rebuilt 528 bytes with the canonical typed
+// manager, three ordered calls, exact frame/saves, and 301 strict bytes.
+// revisit ownership: offset-zero VSList composition and qualified node-list
+// calls emitted the same bytes as the inherited surface; retained inheritance.
+// revisit liveness: comparing against the original head added an 0x8 frame and
+// widened drift; the mutable retained-head comparison is behavior-correct.
+// revisit neighbor links: direct typed rereads restored the original next-node
+// reload and 531-byte size, but widened strict drift; restored the clean basin.
+// revisit declaration and row-index aliases were codegen duplicates. No exact
+// source lead was found; retain the cleanest natural typed deletion source.
 
 #include <stdlib.h>
 
