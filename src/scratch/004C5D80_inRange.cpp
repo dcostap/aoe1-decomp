@@ -169,6 +169,23 @@
 //     The policy-clean source is 186B/198 diff. The first mismatch is the
 //     missing pushed parameter home at entry. The fused Y subtraction and its
 //     fault order remain unresolved.
+// sa-ba8c4b65-r1 fresh pass 2026-08-18:
+//   - Read the complete local evidence and exact geometry siblings. Twenty
+//     natural probes tested the proven master/static layouts, virtual surface,
+//     PDB declaration order, Y-before-X evaluation, float radius ownership,
+//     direct and staged subtraction, comparison polarity, zero-object context,
+//     period header context, and final return/liveness forms.
+//   - The complete Y-before-X and comma-sequenced forms reached 182B/197 diff
+//     with worse FPU shape. Naming all four float radius fields reached
+//     206B/200 diff; no form recovered push ecx or the [esp+8] home.
+//   - Master vptr, static virtual-slot spelling, const radius fields, explicit
+//     subtraction grouping, ternary guards, and return forms were codegen
+//     duplicates or unchanged broad mismatches. No natural form fused the
+//     other-Y subtraction into the pending X comparison status window.
+//   - The pinned direct-member source was restored after every probe. Final
+//     validation remains 186B/198 diff, 63.24% shape, five original stack
+//     homes versus the rebuilt parameter-coalesced homes. The remaining gap
+//     changes scratch and fault order, so no diagnostic scheduling form is kept.
 
 class RGE_Player;
 
