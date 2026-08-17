@@ -122,6 +122,21 @@
 // Source-gate audit: the living body uses named members and one carried width.
 // It has no generic slots, raw addresses, cursor aliases, fake zero local, or
 // no-effect scaffold.  The clear arm keeps the observed natural zero stores.
+// Continuation sa-d08f1c06-r1 (PDB-supported zero-lifetime pass):
+// probes 159-163 tested negative-guard, explicit invalid return, and nested
+// positive guards.  VC5 canonicalized all three to the clean 217/61 basin.
+// Probe 165 changed clear assignment order and was farther (same 61 bytes).
+// Probe 167 carried both panel dimensions as locals; it grew to 222/191.
+// Probes 169 and 185 joined width declaration/initialization (const and plain);
+// both were clean-basin duplicates.  Probe 171 captured tile shorts and was
+// farther at 71 bytes.  Probe 173 grouped the positive predicate and probe 177
+// qualified the inherited visible field; both were duplicates.  Probe 175
+// moved clear-offset stores first and was farther.  Probe 179 used a long
+// height local and was 222/191.  Probe 181 used explicit success return and
+// common clear block and was a duplicate.  No natural PDB-supported form moved
+// the guard zero from EDI to the original EBP or changed the clear-tail pop.
+// Restored the pinned clean source.  The remaining EBP zero and tail lifetime
+// are not supported by a source-local natural control or declaration change.
 
 struct tagRECT {
     long left;
