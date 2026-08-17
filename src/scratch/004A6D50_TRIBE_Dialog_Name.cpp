@@ -36,6 +36,17 @@
 // Left in scratch after the bounded pass: natural typed source is retained;
 // no compiler-only aliases, manual vtable store, raw pointer arithmetic, or
 // inline assembly remains.
+// Current worker pass findings:
+// - Revalidated the clean source at 480B/86-byte diff, 12 ordered calls,
+//   frame 0x10, and 87.76% exact-block coverage.
+// - A cancel-button local reproduces the first hotkey store pair but changes
+//   the tail to 477B; all direct, scoped, and split local forms were restored.
+// - Input output-slot aliases, title aliases, a named setup flag, base-pointer
+//   output types, and unused tab-slot stores were neutral or worse.
+// - A behavior-correct zero-based three-panel tab list reaches 485B/173-byte
+//   diff. The one-based natural form remains the best codegen basin.
+// - The remaining oracle-only hunk is the EBP/EBX title/input color swap and
+//   the three-byte tail store of the cancel pointer before set_tab_order.
 
 class TDrawArea;
 class TScreenPanel;
