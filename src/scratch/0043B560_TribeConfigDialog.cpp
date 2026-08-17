@@ -28,9 +28,15 @@
 //   absolute 0x62C574 global.  Named music/sound locals preserve loaded
 //   subsystem pointers across their null tests.
 // - final control-flow probe: display-width radio selection uses switch.
-//   Current validated reconstruction remains nonexact: frame 0x2C, size
-//   2861/2880, calls 65/65, shape 93.18%, first mismatch in speed-label
-//   switch scheduling; no opaque codegen-only scaffolding retained.
+// - control-flow: positive subsystem and rollover guards, explicit size cases,
+//   direct mouse/rollover row expressions, and the path-button cursor restored
+//   the shipped branch and register topology.
+// - context: the speed tests use the shipped 2.0f, 1.5f, and 1.0f literals.
+//   External symbols put VC5 in a different FPU lowering basin.
+// - current checkpoint: nonexact 412 bytes, frame 0x2C, size 2880, calls
+//   65/65, shape 99.34%, exact-block coverage 96.01%.  The only structural
+//   mismatch is the path-label loop's index/string-ID induction shape.
+//   No opaque codegen-only scaffolding retained.
 
 #include <string.h>
 
@@ -103,7 +109,7 @@ class TTextPanel : public TPanel {
 
 class TButtonPanel : public TPanel {
 public:
-    char gap_F4[0x204];
+    char gap_F4[0x1A4];
     int hotkey;                             // +0x298
     int hotkey_shift;                       // +0x29C
 
@@ -180,9 +186,9 @@ public:
 };
 
 #define rge_base_game (*(RGE_Base_Game**)0x62C574)
-extern float DAT_0056f740;
-extern float DAT_0056f744;
-extern float DAT_0056f748;
+extern const float DAT_0056f740;
+extern const float DAT_0056f744;
+extern const float DAT_0056f748;
 
 class TribeConfigDialog : public TDialogPanel {
 public:
@@ -294,13 +300,14 @@ TribeConfigDialog::TribeConfigDialog(Mode mode, TScreenPanel* parent)
             this->speedButton[i]->set_disabled(1);
     }
 
-    float speed = rge_base_game->world->game_speed;
-    this->gameSpeed = speed;
-    if (speed == DAT_0056f740) {
+    float speed;
+    this->gameSpeed = speed = rge_base_game->world->game_speed;
+    // BINARY NOTE: these values lower as the three fixed .rdata float literals.
+    if (speed == 2.0f) {
         this->speedButton[2]->set_radio_button();
-    } else if (speed == DAT_0056f744) {
+    } else if (speed == 1.5f) {
         this->speedButton[1]->set_radio_button();
-    } else if (speed == DAT_0056f748) {
+    } else if (speed == 1.0f) {
         this->speedButton[0]->set_radio_button();
     }
 
@@ -318,10 +325,10 @@ TribeConfigDialog::TribeConfigDialog(Mode mode, TScreenPanel* parent)
         return;
 
     TMusic_System* music_system = rge_base_game->music_system;
-    if (music_system == 0)
-        this->musicVolume = 99;
-    else
+    if (music_system != 0)
         this->musicVolume = music_system->volume / -100;
+    else
+        this->musicVolume = 99;
     this->musicSlider->set_tab_pos(this->musicVolume);
     this->newMusicVolume = this->musicVolume;
 
@@ -339,10 +346,10 @@ TribeConfigDialog::TribeConfigDialog(Mode mode, TScreenPanel* parent)
         return;
 
     TSound_Driver* sound_system = rge_base_game->sound_system;
-    if (sound_system == 0)
-        this->soundVolume = 99;
-    else
+    if (sound_system != 0)
         this->soundVolume = sound_system->get_volume() / -100;
+    else
+        this->soundVolume = 99;
     this->soundSlider->set_tab_pos(this->soundVolume);
     this->newSoundVolume = this->soundVolume;
 
@@ -367,14 +374,14 @@ TribeConfigDialog::TribeConfigDialog(Mode mode, TScreenPanel* parent)
         return;
     for (i = 0; i < 3; ++i) {
         switch (i) {
+        case 0:
+            string_id = 0x24E7;
+            break;
         case 1:
             string_id = 0x24E8;
             break;
         case 2:
             string_id = 0x24E9;
-            break;
-        default:
-            string_id = 0x24E7;
             break;
         }
         y = i * 0x23 + 0xE1;
@@ -413,20 +420,20 @@ TribeConfigDialog::TribeConfigDialog(Mode mode, TScreenPanel* parent)
         return;
     for (i = 0; i < 2; ++i) {
         if (i == 0) {
-            y = 0xE1;
             if (!this->create_text(this, &this->mouseTitle[i + 1],
-                                   0x24EB, 0xCD, y, 0x78, 0x1E,
+                                   0x24EB, 0xCD, 0xE1, 0x78, 0x1E,
                                    0x0B, 0, 1, 0))
                 return;
         } else {
-            y = i * 0x23 + 0xE1;
             if (!this->create_text(this, &this->mouseTitle[i + 1],
-                                   0x24EC, 0xCD, y, 0x78, 0x1E,
+                                   0x24EC, 0xCD, i * 0x23 + 0xE1,
+                                   0x78, 0x1E,
                                    0x0B, 0, 1, 0))
                 return;
         }
         if (!this->create_radio_button(this, &this->mouseButton[i],
-                                       0xAA, y, 0x1E, 0x1E, 0, 0))
+                                       0xAA, i * 0x23 + 0xE1,
+                                       0x1E, 0x1E, 0, 0))
             return;
     }
     for (i = 0; i < 2; ++i)
@@ -441,43 +448,47 @@ TribeConfigDialog::TribeConfigDialog(Mode mode, TScreenPanel* parent)
         return;
     for (i = 0; i < 2; ++i) {
         if (i == 0) {
-            y = 0xE1;
             if (!this->create_text(this, &this->rolloverTitle[i + 1],
-                                   0x24EE, 0x16D, y, 0x78, 0x1E,
+                                   0x24EE, 0x16D, 0xE1, 0x78, 0x1E,
                                    0x0B, 0, 1, 0))
                 return;
         } else {
-            y = i * 0x23 + 0xE1;
             if (!this->create_text(this, &this->rolloverTitle[i + 1],
-                                   0x24EF, 0x16D, y, 0x78, 0x1E,
+                                   0x24EF, 0x16D, i * 0x23 + 0xE1,
+                                   0x78, 0x1E,
                                    0x0B, 0, 1, 0))
                 return;
         }
         if (!this->create_radio_button(this, &this->rolloverButton[i],
-                                       0x14A, y, 0x1E, 0x1E, 0, 0))
+                                       0x14A, i * 0x23 + 0xE1,
+                                       0x1E, 0x1E, 0, 0))
             return;
     }
     for (i = 0; i < 2; ++i)
         this->rolloverButton[i]->set_radio_info((TPanel*)this->rolloverButton, 2);
-    if (rge_base_game->rollover == 0)
-        this->rolloverButton[1]->set_radio_button();
-    else
+    if (rge_base_game->rollover != 0)
         this->rolloverButton[0]->set_radio_button();
+    else
+        this->rolloverButton[1]->set_radio_button();
 
     if (!this->create_text(this, this->pathFindingTitle, 0x260D, 0x1CC,
                            0xBE, 0xD2, 0x1E, 0x0B, 0, 1, 0))
         return;
+    TButtonPanel** path_finding_button = this->pathFindingButton;
     y = 0xE1;
-    for (i = 0; i < 3; ++i) {
-        if (!this->create_text(this, &this->pathFindingTitle[i],
-                               i + 0x260E, 0x1EF, y, 0x78, 0x1E,
+    for (i = 0; y < 0x14A; ++i, ++path_finding_button) {
+        string_id = 0x260E + i;
+        // BINARY NOTE: the label array is three words before the button cursor.
+        if (!this->create_text(this,
+                               (TTextPanel**)(path_finding_button - 3),
+                               string_id, 0x1EF, y, 0x78, 0x1E,
                                0x0B, 0, 1, 0))
             return;
-        if (!this->create_radio_button(this, &this->pathFindingButton[i],
+        if (!this->create_radio_button(this, path_finding_button,
                                        0x1CC, y, 0x1E, 0x1E, 0, 0))
             return;
         if (rge_base_game->multiplayerGame())
-            this->pathFindingButton[i]->set_disabled(1);
+            (*path_finding_button)->set_disabled(1);
         y += 0x23;
     }
     for (i = 0; i < 3; ++i)
@@ -487,7 +498,7 @@ TribeConfigDialog::TribeConfigDialog(Mode mode, TScreenPanel* parent)
         path_finding = rge_base_game->mpPathFinding();
     else
         path_finding = rge_base_game->pathFinding();
-    if (path_finding < 3)
+    if (path_finding <= 2)
         this->pathFindingButton[path_finding]->set_radio_button();
 
     if (!this->create_button(this, &this->okButton, 0xFA1, 0, 0x78,
