@@ -11,8 +11,8 @@
 // - common-goto/result and nested/function-scope declaration variants add a
 //   local stack home and broadly perturb the otherwise exact body; reversed
 //   guards do not remove the EH-tail drift.
-// - RGE_Zone_Map uses its implicit nonvirtual destructor ABI here. Its body is
-//   owned only by VA 005469C0; this source defines no destructor facade.
+// - RGE_Zone_Map uses its nonvirtual destructor ABI here. Its body is owned
+//   only by VA 005469C0; this source defines no destructor facade.
 // - This TU-aware pass tested reusing the scan index through a shared done label
 //   and a post-loop hit/create if-else. Moving declarations for the goto changed
 //   the EH prologue; the if-else changed call/block layout. Restored the natural
@@ -72,6 +72,12 @@
 //   selected the original shared EH teardown and produced an exact body.
 //   This form is rejected because VA 005469C0 owns the destructor. The current
 //   single-function build has no policy-valid shared-TU mapping.
+// - follow-create-zone-map-r1: the sole-owner pass tested a declaration-only
+//   destructor, a non-throwing declaration, an empty diagnostic destructor,
+//   explicit try/rethrow, and natural return, loop, allocation, and lifetime
+//   forms. The declaration-only form remains the canonical source surface.
+//   All policy-valid forms retain the 55-byte drift at the shared EH tail.
+//   The exact body still requires the target-owned destructor definition.
 
 #include <stdlib.h>
 #include <string.h>
@@ -91,6 +97,7 @@ public:
     RGE_Map* map;
 
     RGE_Zone_Map(RGE_Map* map, float* table, long count);
+    ~RGE_Zone_Map();
     RGE_Zone_Map* check_info(float* table, long count);
     unsigned char do_zone_map();
 };
