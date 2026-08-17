@@ -32,6 +32,13 @@
 // reduced edit/resync drift by one byte.
 // Probe 16 (shardA6): typed the shared action as base RGE_Action for the
 // common add_action/setSubAction lifetime surface; emitted code was unchanged.
+// Probes 17-20: receiver aliases, explicit short temporaries, register
+// qualifiers, alternate common-tail guards, and allocation temporaries were
+// neutral or structurally worse; all were reverted. Probe 3's positive common
+// guard improved one raw byte but changed ordered call topology, so it was
+// also reverted.
+// Flag labs: VC5-small and VC5-risky presets produced no exact variant; the
+// original /O2 /Oy /GX basin remained the clean best source context.
 // Final residual: exact calls, size, frame, CFG counts, and ordered call map;
 // 73 edit/resync bytes remain from a jump-table/EH relocation surface and
 // localized EAX/EDX choices in states 6/7 and the target comparison.
