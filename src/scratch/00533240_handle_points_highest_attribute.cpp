@@ -76,6 +76,15 @@
 //   groups; no variant had the target 0x10 frame or 230-byte size. Restored the clean scalar
 //   source. The unresolved evidence remains the target's separate player-array base/cursor
 //   registers and spilled player id.
+// - Revisit pass 2: completed 20 additional natural probes across typed aliases, declaration
+//   scopes, pointer ownership, cursor initialization, and loop forms. Entry aliases, points
+//   field pointers, long widths, pointer TU surfaces, and positive guards were neutral or worse.
+//   A top-tested while loop improved diagnostic shape to 78.05% but kept the 139-byte diff.
+//   A preheader single-cursor form reached the target 0x10 frame but changed this to EBX and
+//   widened structural drift to 163 bytes. A typed diagnostic that reused entry as an integer
+//   accumulator widened drift to 189 bytes and is not retained. Restored the pinned natural
+//   scalar source; the target's parameter-home val reuse, spilled id, and base/cursor colors
+//   remain unresolved.
 
 class RGE_Game_World;
 
