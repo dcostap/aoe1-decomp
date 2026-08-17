@@ -18,15 +18,17 @@
 //   The remaining structural lead is the original near JL fallthrough to its
 //   own -1 epilogue, followed by the found-object epilogue; VC5 keeps an inverted
 //   short JGE plus JMP and merges the failure epilogues in this source basin.
-// - Follow-up tail probes kept the clean source: one shared object local, a
-//   common foundObject, and an in-scope positive loop with break-failure all
-//   emitted the same 782-byte code or caused broad drift.  The clean source is
-//   restored; the tail remains a localized 55-byte structural mismatch.
+// - Tail recovery used a labeled second-pass block with an explicit positive
+//   edge to second_loop.  Parent review rejected the constant-false do-while
+//   wrapper as control-flow steering.  The natural labeled block is retained.
+// - The direct unitsTaskedThisUpdate receiver in the second scan restores the
+//   original EBP/EDX allocation.  Natural new[] and delete[] preserve the same
+//   inline growth code.
+// - Natural labels, guards, do/while, for, while, break, and donor-style found
+//   returns did not recover the original tail.  The clean natural source is
+//   47 bytes different, with all 23 ordered calls aligned.
 
 #include <stdlib.h>
-
-void* operator_new(unsigned int size);
-void operator_delete(void* ptr);
 
 class UnitAIModule {
 public:
@@ -36,7 +38,7 @@ public:
 
 class RGE_Static_Object {
 public:
-    void* vtable;
+    virtual ~RGE_Static_Object();
     int id;
     UnitAIModule* unitAI();
 };
@@ -84,14 +86,14 @@ public:
     T& operator[](int index) {
         if (index > this->maximumSizeValue - 1) {
             int new_size = index + 1;
-            T* new_value = (T*)operator_new(new_size * sizeof(T));
+            T* new_value = new T[new_size];
             if (new_value != 0) {
                 for (int i = 0;
                      i < this->maximumSizeValue && i < new_size;
                      i++) {
                     new_value[i] = this->value[i];
                 }
-                operator_delete(this->value);
+                delete[] this->value;
                 this->value = new_value;
                 this->maximumSizeValue = new_size;
             }
@@ -155,10 +157,10 @@ first_next:
 
     {
         ManagedArray<int>* civilians = &this->civilians;
-        do {
+second_loop:
             if (i > civilians->maximumSizeValue - 1)
                 civilians->resize(i + 1);
-            if (tasked.contains(civilians->value[i]) != 0)
+            if (this->unitsTaskedThisUpdate.contains(civilians->value[i]) != 0)
                 goto second_next;
 
             if (i > civilians->maximumSizeValue - 1)
@@ -184,7 +186,8 @@ first_next:
             }
 second_next:
             i++;
-        } while (i < this->civilians.numberValue);
+            if (i < this->civilians.numberValue)
+                goto second_loop;
     }
     return -1;
 }
