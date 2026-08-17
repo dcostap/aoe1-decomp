@@ -25,6 +25,10 @@
 //   and an int ideal_x against the PDB/CFG and stack-home evidence; each was a codegen duplicate.
 //   Restored the natural typed source. The remaining lead is the unresolved pre-save x load and
 //   compiler-selected success/failure epilogue layout.
+// - Rechecked direct x use and moved ideal_x after the other locals; both stayed at 114 bytes.
+// - Tested typed result locals with a final return and an explicit done label. VC5 either
+//   canonicalized them to the same two-epilogue basin or widened the mismatch to 495/530 bytes;
+//   initialized result also changed the frame to 0xC. Restored the clean source.
 
 class TPanel {
 public:
