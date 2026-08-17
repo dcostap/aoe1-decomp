@@ -26,6 +26,20 @@
 // - behavior probe: removing radius bounds from the typed zone predicate while
 //   retaining the radius locals still eliminated ftol and reduced the frame to
 //   0x14; restored the clean candidate.
+// - fresh claim baseline: unchanged canonical source rebuilt at 417 B, frame
+//   0x20, one ftol call, 323 positional diff bytes, and 66.67% shape.
+// - fresh layout probes: declaration reordering, direct area/member reads,
+//   scoped inner cursors, direct rows reads, const area, and a typed land pointer
+//   were duplicate or farther.  One radius predicate bound reached frame 0x1C,
+//   but added a comparison and changed the x/y register color basin.
+// - fresh evidence: dead radius-derived assignments remove ftol; volatile dead
+//   assignments use frame 0x18.  The target's clamp and two dead-looking radius
+//   stores therefore remain unexplained without unsupported volatility or a new
+//   source-context lead.  All probes were restored to the canonical source.
+// - revisit: the checked ABI remains (unused byte, land-id byte, x long, y long);
+//   widened or reordered parameters only changed the ABI or moved away from the
+//   typed traversal.  Natural y1/y2 lifetime probes reached frame 0x1c only with
+//   a non-binary radius predicate, so the pinned typed source was restored.
 
 typedef unsigned char uchar;
 
