@@ -40,6 +40,17 @@
 // call, and 120 bytes, so it was rolled back.
 // Luna probe 6: named facet and the owner max-resource array pointer; both
 // retained the wrong register basin and were rolled back.
+// Sustained unresolved pass: ten-plus additional source, ABI, control-flow,
+// header, ambient-declaration, flag, and x87-order hypotheses were compiled.
+// Direct versus named target aliases and header variants did not change the
+// controlling code basin. A distinct state-6 work label improved one block but
+// added one byte of strict drift; it was not retained.
+// The ambient sweep produced four nonexact code groups and no exact variant.
+// The staged and reordered distance expressions were compiler-neutral.
+// BINARY NOTE: the original frame is 0x8 with ESI and EDI only. The current
+// natural source still saves EBX for the state-7 resource-index path.
+// Next lead: recover the original source form that colors the facet in EDX,
+// the resource-array cursor in EDI, and the state-7/state-6 block order.
 
 #define V_DUMMY(N) virtual void v##N()
 
