@@ -85,6 +85,16 @@
 // frame; separate type locals, node aliases, declaration orders, and register
 // qualifiers did not move codegen. Restored and validated the pinned source at
 // 224B/179 with 9/9 ordered calls; the VC5 spill/register basin remains open.
+// sa-5ca1a6a6-r1 pass: twenty new evidence-led probes tested allocator-result
+// typing, same-TU node lifetime, preloaded action receivers, split short homes,
+// loop receiver locals, guard forms, and sequenced comparisons. Typed calloc,
+// top-level node plus sizeof(*node), short references, and split results were
+// codegen duplicates. Named receivers and next-action locals added an 8-byte
+// frame or broader drift. The best new expression reached 223B/173, but its
+// VC5 order called the list type before the new action type and changed the
+// this register, so it is not a supported reconstruction. The final source is
+// restored to 224B/179. The oracle still proves an early node home store and
+// two-byte result home that the natural source does not recover.
 class RGE_Action_List;
 class RGE_Static_Object;
 class RGE_Master_Action_Object;
