@@ -144,6 +144,10 @@
 // surfaces also emitted the same six-byte basin. No context or function-order
 // lead changes md from ESI to EDI without changing the body or adding a fake
 // liveness use. The pinned natural source remains authoritative.
+// Object audit: FPO, PDB, COFF, owner, six relocations, field offsets, and ABI
+// all match. PDB has no omitted local or inline frame that can keep this live.
+// The remaining md/product swap is allocator coloring; a fake later this use
+// remains unsupported.
 
 #include <stdlib.h>
 
