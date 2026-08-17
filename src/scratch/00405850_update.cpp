@@ -28,6 +28,13 @@
 // - 2026-08-13 tu-actmove-405850 pass: case-1-as-post-switch-return worsened to 706 bytes and changed the
 //   dispatch range; an explicit late case-1 goto and equivalent switch(state - 1) spelling were codegen-identical
 //   to the clean 212-byte mismatch. Restored the natural state switch; the sparse case-1 tail remains unresolved.
+// - 2026-08-17 sa-f38c1d93 pass: twenty new probes kept the natural 890-byte/0x8-frame source as the clean
+//   reconstruction. Scoping move_result, caching state, declaration reordering, case-label reordering,
+//   return spellings, stdlib context, and inline/size pragmas did not improve it. A typed union overlay for
+//   the proven waypoint/first-distance ESP reuse improved 212 to 209 bytes and exact body coverage, but was
+//   discarded as compiler-steering rather than canonical source. External bound symbols were codegen-identical.
+//   Remaining evidence-led blockers are the unmasked local switch-table relocations, cold case-1 epilogue
+//   placement, and the original absolute x87 bound relocations.
 
 struct XYZBYTEPoint {
     unsigned char x;
