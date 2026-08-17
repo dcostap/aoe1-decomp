@@ -26,6 +26,10 @@
 // 23: Initialized an outer row cursor before the column cursor; size shrank and first-block structure worsened, so restored.
 // 24: Put promoted cursor assignments in the bounds predicate; diff improved to 994, but code size fell to 944 and the source became decompiler-shaped, so restored.
 // 25: Final claim state retains the canonical typed source. Calls and frame match; remaining gap is saved-this/row register and local-home allocation.
+// 26: This claim tested early x assignment, declaration order, bound operand order, cached table pointers, current-int materialization, signed bytes, and current-tile address forms. Most were duplicates or worse.
+// 27: Keeping the eighth neighbor as a separate unsigned-char local instead of reusing the x cursor reduced positional diff from 1014 to 673 bytes and kept all eight call sites at the original offsets. This is the current best source shape.
+// 28: Volatile all-same reads and a volatile border-table view produced extra frames or code, so they are rejected as metric-only steering.
+// 29: Cardinal border preload locals restored the full normal decision CFG but grew the function to 1324 bytes. The simpler direct typed chain remains the clean source.
 
 struct RGE_Tile {
     short screen_xpos;
@@ -180,6 +184,7 @@ void RGE_Map::get_border_type(short x, short y)
     int xMax;
     int xi;
     unsigned char ter_top;
+    unsigned char ter_final;
 
     if (x < 0 || x >= this->map_width || y < 0 || y >= this->map_height) {
         return;
@@ -199,7 +204,7 @@ void RGE_Map::get_border_type(short x, short y)
     if (y > 0 && x > 0) ter_bot_lft = rows[y - 1][xi - 1].terrain_type & 0x1f; else ter_bot_lft = ter_top_lft;
     if (y > 0 && xi < xMax) ter_top = rows[y - 1][xi + 1].terrain_type & 0x1f; else ter_top = ter_top_lft;
     if (y < yMax && x > 0) ter_bot_rgt = rows[y + 1][xi - 1].terrain_type & 0x1f; else ter_bot_rgt = ter_top_lft;
-    if (y < yMax && xi < xMax) xi = rows[y + 1][xi + 1].terrain_type & 0x1f; else xi = ter_top_lft;
+    if (y < yMax && xi < xMax) ter_final = rows[y + 1][xi + 1].terrain_type & 0x1f; else ter_final = ter_top_lft;
 
     check_for_border(ter_top_lft, &ter_lft);
     check_for_border(ter_top_lft, &tile);
@@ -208,10 +213,10 @@ void RGE_Map::get_border_type(short x, short y)
     check_for_border(ter_top_lft, &ter_bot_lft);
     check_for_border(ter_top_lft, &ter_top);
     check_for_border(ter_top_lft, &ter_bot_rgt);
-    check_for_border(ter_top_lft, (unsigned char*)&xi);
+    check_for_border(ter_top_lft, &ter_final);
 
     if (ter_lft == ter_top_lft && tile == ter_top_lft && ter_rgt == ter_top_lft && ter_bot == ter_top_lft &&
-        ter_bot_lft == ter_top_lft && ter_top == ter_top_lft && ter_bot_rgt == ter_top_lft && (unsigned char)xi == ter_top_lft) {
+        ter_bot_lft == ter_top_lft && ter_top == ter_top_lft && ter_bot_rgt == ter_top_lft && ter_final == ter_top_lft) {
         cur->border_type = 0;
         return;
     }
@@ -259,7 +264,7 @@ void RGE_Map::get_border_type(short x, short y)
         edge = 6;
     } else if (this->terrain_types[ter_top_lft].borders[(unsigned char)ter_bot_rgt] == border) {
         edge = 7;
-    } else if (this->terrain_types[ter_top_lft].borders[(unsigned char)xi] == border) {
+    } else if (this->terrain_types[ter_top_lft].borders[ter_final] == border) {
         edge = 8;
     } else {
         cur->border_type = 0;
