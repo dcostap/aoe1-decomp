@@ -36,6 +36,14 @@
 //   over-emitted one pair; the shared group-A tail remains the best source.
 // - Case-5/6 selected-id and shared formatted-tail probes removed observed
 //   sprintf/display calls; restored their natural separate source bodies.
+// - This pass tested twenty distinct source, scope, type, context, and
+//   register hypotheses.  A direct 0x7D/0x68 body improved shape to 91.10%,
+//   but emitted 3 vslot+0x28 calls instead of 2 and was rolled back.
+// - A case-4 screen pointer or reference alias restored its separate display
+//   call, but added one vslot+0x20 call and worsened the strict diff by 37.
+//   Header, selector-width, nested-guard, scope, and register probes were
+//   codegen duplicates.  The pinned natural source remains 90/92 calls and
+//   3279 differing bytes; the unresolved blocker is compiler tail merging.
 
 #include <stdio.h>
 
