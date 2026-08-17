@@ -30,6 +30,16 @@
 // inline block and improved shape, calls, and exact blocks, but removed three
 // type calls, shortened the function by 34 bytes, and worsened strict diff;
 // restored the clean source.
+//
+// Current pass probes 1-20: a top-level do-loop with invalid-group continue,
+// delayed isGathered initialization, the int currentZone() & 0xff form, the
+// inverted zone test, and the explicit fully-explored failure edge are all
+// supported by closer code. The best clean checkpoint is 1008 bytes, 0x10
+// frame, 51 calls, 90.97% shape, 274 differing bytes, and 81.35% bounded
+// similarity. The action tail remains unresolved: the executable has 19 type
+// calls and one shared setAction call, while the clean source emits 16 type
+// calls and four setAction calls. Fresh predicates, nested assignments,
+// scopes, initializers, and shared-label forms did not reach that call set.
 
 static const char s_taitacmd_cpp[] =
     "C:\\msdev\\work\\age1_x1\\taitacmd.cpp";
@@ -169,26 +179,24 @@ void TribeTacticalAIModule::taskIdleSoldiers(unsigned long startTime,
     int number;
     int actionToSet;
     do {
-        while (1) {
-            if (group == &this->groups || group == 0) {
-                this->nextIdleSoldierGroupToTaskValue = -1;
-                return;
-            }
+        if (group == &this->groups || group == 0) {
+            this->nextIdleSoldierGroupToTaskValue = -1;
+            return;
+        }
 
-            if (group->type() != 0x6B && group->type() != 0x6C &&
-                group->type() != 0x6A &&
-                (group->action() == 0 || group->action() == 1)) {
-                break;
-            }
-            else {
-                goto skip_invalid_group;
-            }
+        if (group->type() == 0x6B || group->type() == 0x6C ||
+            group->type() == 0x6A ||
+            (group->action() != 0 && group->action() != 1)) {
+            group = group->next;
+            continue;
         }
 
         readyToTask = 1;
-        isGathered = 1;
         if (group->consecutiveGatherAttemptsValue <= 10) {
             isGathered = group->isGathered(this, this->md);
+        }
+        else {
+            isGathered = 1;
         }
 
         desired = group->desiredNumberUnits();
@@ -203,14 +211,14 @@ void TribeTacticalAIModule::taskIdleSoldiers(unsigned long startTime,
                 readyToTask = 0;
             }
             else {
-                unsigned char zone = commanderObj->currentZone();
-                if (zone == commanderObj->lookupZone(
+                int zone = commanderObj->currentZone() & 0xff;
+                if (zone != commanderObj->lookupZone(
                                (int)targetObj->world_x,
                                (int)targetObj->world_y)) {
-                    readyToTask = 0;
+                    group->setDesiredNumberUnits(group->numberUnits());
                 }
                 else {
-                    group->setDesiredNumberUnits(group->numberUnits());
+                    readyToTask = 0;
                 }
             }
         }
@@ -225,6 +233,7 @@ void TribeTacticalAIModule::taskIdleSoldiers(unsigned long startTime,
                 if (this->md->informationAI.fullyExploredZone(
                         group->commander()) == 0) {
                     readyToTask = 0;
+                    goto ready_to_task_check;
                 }
             }
 
@@ -254,6 +263,7 @@ void TribeTacticalAIModule::taskIdleSoldiers(unsigned long startTime,
             }
         }
 
+ready_to_task_check:
         if (readyToTask != 0) {
             actionToSet = group->type();
             if (actionToSet == 0x66 ||
@@ -296,12 +306,6 @@ next_group:
             maxTime) {
             return;
         }
-        goto loop_compare;
-
-skip_invalid_group:
-        group = group->next;
-loop_compare:
-        ;
     } while (group != end);
 
     this->nextIdleSoldierGroupToTaskValue = -1;
