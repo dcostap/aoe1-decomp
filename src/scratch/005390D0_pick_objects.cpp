@@ -25,6 +25,8 @@
 // best retained check: 1048B rebuilt vs 1081B, 956 strict diff bytes, 65.98%
 // shape similarity, exact frame/call set; remaining drift is broad prologue,
 // register/liveness, and block-layout scheduling, not a call or layout blocker.
+// worker pass: parameter-left upper viewport checks improve strict diff to 952
+// bytes; coordinate aliases, scalar-home reuse, and ambient TU samples did not.
 
 struct Shape_Info;
 
@@ -122,8 +124,9 @@ int RGE_View::pick_objects(int x, int y, int min_level, int max_level,
     if (max_level < min_level) {
         return 0;
     }
-    if (x < this->x_min || this->x_max < x ||
-        y < this->y_min || this->y_max < y) {
+    // BINARY NOTE: The shipped code compares upper bounds with the parameter left.
+    if (x < this->x_min || x > this->x_max ||
+        y < this->y_min || y > this->y_max) {
         return 0;
     }
     if (0x28 < min_level || max_level < 0) {
