@@ -31,6 +31,25 @@
 //   93.05% resync similarity with all calls aligned. Moving the alias before
 //   make_action swaps target/task registers and worsens the result to 93 bytes.
 //   This was diagnostic only. The natural typed control flow remains authoritative.
+// - worker pass: the same-TU pointer-result shared-tail form reproduced the
+//   original body, all 16 calls, one-return CFG, and 333-byte size. It still
+//   emitted `mov esi,1; mov eax,esi` instead of the original success literal
+//   tail `mov eax,1`, with a 20-byte positional diff. Explicit success/failure
+//   labels produced 350 bytes and a 100-byte diff. A separate target pointer
+//   and scalar status produced 421 bytes and a 287-byte diff. Reordering the
+//   fail/end labels was a codegen duplicate. Restored the natural direct-return
+//   source; the final unchanged validation is 391 bytes with 329 differing
+//   bytes and all 16 calls aligned.
+// - revisit: a typed target/task/action set with one scalar result and one
+//   done label reproduced the 333-byte, 20-byte-diff basin. Moving the result
+//   declaration did not change codegen. A narrow result changed the frame
+//   basin and produced 347 bytes. Assigning task through the result expression
+//   produced 335 bytes and a 275-byte diff. Restored the pinned natural source.
+// - revisit: a typed pointer result with task-null falling through to the
+//   common return reached the target size but returned the old target pointer
+//   on that failure edge and produced a 48-byte diff. The scalar form needs a
+//   failure assignment and returns the same non-exact `mov esi,1; mov eax,esi`
+//   tail. These are compiler-steering forms, not canonical ownership.
 // FLAGS: config/flags/004CB300_heal.rsp (/GX)
 
 class RGE_Action_Object;
