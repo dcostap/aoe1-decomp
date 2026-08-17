@@ -24,6 +24,14 @@
 //   first structural hunk moved farther (726 vs. 716 bytes), so it was
 //   restored.  A top-scope int source-y matched the earlier 0x24-frame basin
 //   (829 bytes) and was also restored.
+// - Revisit pass: twenty distinct source hypotheses and two variant labs did
+//   not improve the clean basin.  Source-y branch, declaration, and
+//   uninitialized forms stayed at 851/853 bytes with the same six calls;
+//   32 ambient declaration samples also emitted only the same three groups.
+// - RECT aggregate copy, local declaration permutations, explicit unary
+//   negatives, truth tests, and branch-scope clip-delta locals all duplicated
+//   the clean 851-byte output.  Final validation remains 716 differing bytes,
+//   0x20 frame, six ordered calls, and 91.08% shape.
 
 #include <windows.h>
 
