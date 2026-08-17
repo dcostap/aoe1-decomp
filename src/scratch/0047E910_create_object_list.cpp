@@ -38,6 +38,20 @@
 //   declaration order, removed this-qualification, and moved the cursor;
 //   all returned the duplicate 358-byte basin. A guarded 9-case lab found
 //   no first-block improvement. Retain this clean source and pause.
+// - Replaced the second-pass object local with direct repeated master_objects
+//   indexing. This recovered 143 instructions, 98.60% exact blocks, and a
+//   localized 5-byte mismatch: the first-pass xor/movsx initialization order.
+// - A six-case initialization lab, block-local declaration variants, and
+//   register qualifiers all stayed in the same 5-byte basin. No natural exact
+//   source lead remains in this pass; retain this candidate and pause.
+// - Revisited the first scan with natural for/while forms, function-scope and
+//   explicit local initialization, and a typed first-pass object local. The
+//   structural forms worsened the loop; the remaining forms returned the same
+//   5-byte basin. The ordered comma initializer was diagnostic only and was
+//   discarded as compiler steering.
+// - Clean direct-indexing source remains authoritative. The only mismatch is
+//   the independent xor/movsx order at +0x3A; typed ownership and calls remain
+//   exact. No policy-compliant natural source lead remains.
 
 #include "..\..\include\game_globals.h"
 
@@ -101,7 +115,6 @@ int RGE_Dialog_List::create_object_list()
     short j;
     RGE_Player* player;
     short num_objects;
-    int cnt;
 
     if ((player = rge_base_game->get_player()) == 0)
         return 0;
@@ -110,6 +123,7 @@ int RGE_Dialog_List::create_object_list()
     num_objects = player->master_object_num;
 
     if (num_objects > 0) {
+        int cnt;
         int obj_idx = 0;
         cnt = num_objects;
         do {
@@ -136,13 +150,14 @@ int RGE_Dialog_List::create_object_list()
     if (num_objects > 0) {
         int obj_idx = 0;
         do {
-            RGE_Game_Object* obj = player->master_objects[obj_idx];
-            if (obj && obj->field_4E == 0) {
+            if (player->master_objects[obj_idx] &&
+                player->master_objects[obj_idx]->field_4E == 0) {
                 this->list_info[i].id = j;
-                if (obj->icon_id > 0) {
-                    rge_base_game->get_string(2, obj->icon_id, (char*)&this->list_info[i], 100);
+                if (player->master_objects[obj_idx]->icon_id > 0) {
+                    rge_base_game->get_string(2, player->master_objects[obj_idx]->icon_id,
+                                              (char*)&this->list_info[i], 100);
                 } else {
-                    strcpy(this->list_info[i].text, obj->name);
+                    strcpy(this->list_info[i].text, player->master_objects[obj_idx]->name);
                 }
                 i++;
             }
