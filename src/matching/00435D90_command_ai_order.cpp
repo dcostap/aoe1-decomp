@@ -8,8 +8,8 @@
 
 #include <stdlib.h>
 
-#define STR_SEND_CMD_AI_ORDER ((const char*)0x00583E24)
-#define STR_X                 ((const char*)0x00583B74)
+#define STR_SEND_CMD_AI_ORDER "      >SEND CMD AI ORD (PLR=%d, TYP=%d, ISS=%d, REC=%d-%s, TAR=%d-%s, TXY=%d,%d)"
+#define STR_X                 "X"
 
 class RGE_Master_Static_Object {
 public:

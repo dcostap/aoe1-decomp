@@ -11,8 +11,8 @@
 //   exact bytes and make the local ABI/layout surface period-plausible.
 #include <stdlib.h>
 
-#define STR_SEND_CMD_MOVE2 ((const char*)0x00583C8C)
-#define STR_X              ((const char*)0x00583B74)
+#define STR_SEND_CMD_MOVE2 "      >SEND CMD MOVE2 (CNT=%d,OWN=%d,UNIT=%s)"
+#define STR_X              "X"
 
 class RGE_Game_World;
 class RGE_Master_Static_Object { public: char pad_00[8]; const char* name; };

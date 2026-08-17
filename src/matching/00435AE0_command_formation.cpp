@@ -10,8 +10,8 @@
 
 #include <stdlib.h>
 
-#define STR_SEND_CMD_FORMATION ((const char*)0x00583D40)
-#define STR_X                  ((const char*)0x00583B74)
+#define STR_SEND_CMD_FORMATION "      >SEND CMD FORMATION (CNT=%d,OWN=%d,UNIT=%s)"
+#define STR_X                  "X"
 
 class RGE_Master_Static_Object {
 public:

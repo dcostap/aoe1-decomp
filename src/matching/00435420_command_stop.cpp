@@ -8,8 +8,8 @@
 // - Kept name and owner selection as sibling null-tested blocks; exact match.
 #include <stdlib.h>
 
-#define STR_SEND_CMD_STOP ((const char*)0x00583B78)
-#define STR_X             ((const char*)0x00583B74)
+#define STR_SEND_CMD_STOP "      >SEND CMD STOP (CNT=%d,OWN=%d,UNIT=%s)"
+#define STR_X             "X"
 
 class RGE_Master_Static_Object {
 public:

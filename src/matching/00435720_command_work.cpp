@@ -3,9 +3,8 @@
 // Packet-copy command builder, modeled from original asm and matched command_stop idioms.
 #include <stdlib.h>
 
-#define STR_SEND_CMD_WORK2 ((const char*)0x00583C24)
-#define STR_X              ((const char*)0x00583B74)
-#define PTR_L              ((void*)0x0062C4FC)
+#define STR_SEND_CMD_WORK2 "      >SEND CMD WORK2 (CNT=%d,OWN=%d,UNIT=%s,TAR=%s)"
+#define STR_X              "X"
 
 class RGE_Game_World;
 class RGE_Static_Object;
@@ -18,7 +17,8 @@ public:
 };
 class RGE_Game_World { public: RGE_Static_Object* object(int id); };
 class RGE_Static_Object { public: char pad_00[8]; void* master_obj; };
-void __cdecl RGE_Log(void* log, const char* fmt, int count, int player, const char* unit_name, const char* target_name);
+class TDebuggingLog { public: void Log(const char* fmt, ...); };
+extern TDebuggingLog* L;
 
 void RGE_Command::command_work(int player, int* arr, int count, int target, int unused, float x, float y)
 {
@@ -39,7 +39,7 @@ void RGE_Command::command_work(int player, int* arr, int count, int target, int 
             RGE_Static_Object* target_obj = this->world->object(target);
             const char* target_name; if (target_obj != 0) target_name = *(const char**)((char*)target_obj->master_obj + 8); else target_name = STR_X;
             const char* unit_name; if (unit_obj != 0) unit_name = *(const char**)((char*)unit_obj->master_obj + 8); else unit_name = STR_X;
-            RGE_Log(*(void**)PTR_L, STR_SEND_CMD_WORK2, count, player, unit_name, target_name);
+            L->Log(STR_SEND_CMD_WORK2, count, player, unit_name, target_name);
             this->submit(buf, size);
         }
     }

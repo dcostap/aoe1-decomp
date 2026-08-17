@@ -3,8 +3,8 @@
 
 #include <stdlib.h>
 
-class TDebuggingLog;
-extern void __cdecl TDebuggingLog_Log(TDebuggingLog* log, const char* msg, int plr, const char* name);
+class TDebuggingLog { public: void Log(const char* msg, ...); };
+extern TDebuggingLog* L;
 
 class RGE_Game_World {
 public:
@@ -50,10 +50,10 @@ void RGE_Command::command_add_to_group(int plr, int rec, int target, int angle) 
         MasterObject* mobj = (MasterObject*)sobj->master_obj;
         name = mobj->name;
     } else {
-        name = (const char*)0x583B74;
+        name = "X";
     }
 
-    TDebuggingLog_Log(*(TDebuggingLog**)0x62C4FC, (const char*)0x583DA8, plr, name);
+    L->Log("      >SEND CMD ADD GROUP (PLR=%d,UNIT=%s)", plr, name);
 
     this->submit(buf, 0x10);
 }

@@ -7,8 +7,8 @@
 
 #include <stdlib.h>
 
-#define STR_SEND_CMD_MOVE ((const char*)0x00583C5C)
-#define STR_X             ((const char*)0x00583B74)
+#define STR_SEND_CMD_MOVE "      >SEND CMD MOVE (CNT=%d,OWN=%d,UNIT=%s)"
+#define STR_X             "X"
 
 class RGE_Master_Static_Object {
 public:

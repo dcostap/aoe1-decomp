@@ -6,9 +6,8 @@
 // `[ecx+eax]` addressing form in the packed id copy loop.
 #include <stdlib.h>
 
-#define STR_SEND_CMD_STOP2 ((const char*)0x00583BA8)
-#define STR_X              ((const char*)0x00583B74)
-#define PTR_L              ((void*)0x0062C4FC)
+#define STR_SEND_CMD_STOP2 "      >SEND CMD STOP2 (CNT=%d,OWN=%d,UNIT=%s)"
+#define STR_X              "X"
 
 class RGE_Game_World;
 class RGE_Static_Object;
@@ -21,7 +20,8 @@ public:
 };
 class RGE_Game_World { public: RGE_Static_Object* object(int id); };
 class RGE_Static_Object { public: char pad_00[8]; void* master_obj; };
-void __cdecl RGE_Log(void* log, const char* fmt, int count, int player, const char* name);
+class TDebuggingLog { public: void Log(const char* fmt, ...); };
+extern TDebuggingLog* L;
 
 void RGE_Command::command_stop(int player, int* arr, int count)
 {
@@ -34,7 +34,7 @@ void RGE_Command::command_stop(int player, int* arr, int count)
             buf[0] = 1; buf[1] = (char)count;
             RGE_Static_Object* obj = this->world->object(arr[0]);
             const char* name; if (obj != 0) name = *(const char**)((char*)obj->master_obj + 8); else name = STR_X;
-            RGE_Log(*(void**)PTR_L, STR_SEND_CMD_STOP2, count, player, name);
+            L->Log(STR_SEND_CMD_STOP2, count, player, name);
             this->submit(buf, size);
         }
     }

@@ -22,8 +22,8 @@
 
 #include <stdlib.h>
 
-#define STR_SEND_CMD_WORK ((const char*)0x00583BF0)
-#define STR_X             ((const char*)0x00583B74)
+#define STR_SEND_CMD_WORK "      >SEND CMD WORK (CNT=%d,OWN=%d,UNIT=%s,TAR=%s)"
+#define STR_X             "X"
 
 class RGE_Master_Static_Object {
 public:
