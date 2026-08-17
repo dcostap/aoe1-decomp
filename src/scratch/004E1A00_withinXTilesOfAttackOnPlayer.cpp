@@ -116,6 +116,21 @@
 //   Calls, direct targets, field offsets, stride, and return CFG behavior
 //   remain aligned. No probe found a supported source lead for the allocator
 //   basin. All 20 fresh probes were restored to this clean source.
+// - Revisit pass: 20 new evidence-led probes tested source context, real
+//   headers, object and base surfaces, counter lifetime, geometry declaration
+//   order, and named square lifetimes. Most forms duplicated the 211-byte
+//   basin. The best valid source names `dySquared` and `dxSquared` and carries
+//   those values across the four corner checks. It emits 233 bytes, matches the
+//   original boundary, and restores the push-ecx local plus five exact blocks.
+// - BINARY NOTE: The improved source matches the original bytes through +2C.
+//   The remaining first mismatch swaps the `ty` and `i` parameter-home stores
+//   at +2D and +33. The original reloads `ty` before each needed subtraction.
+//   The improved source keeps `ty` in EAX and avoids those reloads. This is a
+//   register and home-allocation difference, not a proven behavior difference.
+// - Revisit result: 233-byte rebuild, 144 strict-byte difference, 16 spans,
+//   200 equal bytes, two ordered __ftol calls, and three returns. The semantic
+//   square-local source is pinned as the clean reconstruction. No raw cursor,
+//   home alias, volatility, helper, wrapper, or compiler steering is retained.
 
 class RGE_Static_Object {
 public:
@@ -174,16 +189,21 @@ int TribeInformationAIModule::withinXTilesOfAttackOnPlayer(
 
         int dy = (unsigned char)am->minY - ty;
         int dx = (unsigned char)am->minX - tx;
-        if (dy * dy + dx * dx <= tilesSq) return 1;
+        int dySquared = dy * dy;
+        int dxSquared = dx * dx;
+        if (dySquared + dxSquared <= tilesSq) return 1;
 
         dy = (unsigned char)am->maxY - ty;
-        if (dy * dy + dx * dx <= tilesSq) return 1;
+        dySquared = dy * dy;
+        if (dySquared + dxSquared <= tilesSq) return 1;
 
         dx = (unsigned char)am->maxX - tx;
-        if (dy * dy + dx * dx <= tilesSq) return 1;
+        dxSquared = dx * dx;
+        if (dySquared + dxSquared <= tilesSq) return 1;
 
         dy = (unsigned char)am->minY - ty;
-        if (dy * dy + dx * dx <= tilesSq) return 1;
+        dySquared = dy * dy;
+        if (dySquared + dxSquared <= tilesSq) return 1;
     }
 
     return 0;
