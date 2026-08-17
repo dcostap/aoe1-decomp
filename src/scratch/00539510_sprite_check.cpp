@@ -31,9 +31,25 @@
 // probe 11: an early named shape_base alias was a natural liveness test for
 // the oracle's ESI base/EDI info ownership; VC5 emitted identical code, so it
 // was rolled back.
+// continuation probes: a period-like TPanel base and protected/full virtual
+// RGE_View surface improved only SIB bytes (275/274 diff), not register colors.
+// A widened int opcode local reached a shorter 396-byte basin (260 diff), but
+// retained EAX as the opcode and was not a natural exact reconstruction.
+// A helper extraction did not inline and added a direct call. A const info
+// pointer changed the decorated owner symbol. A 128-sample ambient declaration
+// sweep produced no exact result; all variants kept the swapped pointer colors.
+// Final clean source remains the typed decoder below. Next useful evidence is
+// the original view.cpp class/TU context or a matching register-color donor.
 // left in scratch: canonical typed decoder and exact size/CFG family are
 // reconstructed, but VC5 still colors info/shape opposite the oracle and emits
 // a byte-opcode reload plus distinct return-tail drift. Not accepted_drift-safe.
+// revisit: direct canonical Shape_Info field widths, scoped opcode/stream
+// locals, and a branch-local shape-base alias all emitted the same 413-byte,
+// 277-byte-diff basin. The next useful evidence remains the original view.cpp
+// translation-unit context; retain this clean natural decoder.
+// revisit validation: protected access matches the original IAEH decorated
+// symbol but does not change body codegen. A decompiler-shaped while(start <= x)
+// rewrite worsened the result to 282 bytes; restore the typed 277-byte basin.
 
 #include <memory.h>
 
@@ -48,7 +64,7 @@ struct Shape_Info {
 };
 
 class RGE_View {
-public:
+protected:
     int sprite_check(uchar* shape, Shape_Info* info, int x, int y);
 };
 
