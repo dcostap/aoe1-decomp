@@ -13,8 +13,10 @@
 //   normal/mirror call families as ordinary C++.
 // - behavior: the executable's first get_facetindex arm is the mirror family
 //   (two shape_mirror sites, format `m`), while the late arm is one shared
-//   shape_draw site (format `u`); swapping the decompiler labels restored the
-//   ordered call families.
+//   shape_draw site (format `u`).  The ABI evidence also proves that the
+//   first do_draw argument is the facet and the second is the frame.  The
+//   source now passes those values to get_facetindex in that order, and uses
+//   the nonzero result for the mirror family.
 // - liveness/ABI: bind the draw-level comparison to SDI_Draw_Level, use the
 //   direct TShape new-expression, and use signed int promotion for the uchar
 //   draw-level parameter.  These moved the diff from 497 to 440 bytes.
@@ -35,6 +37,14 @@
 //   matches the original local-base LEAs and improves the structural basin to
 //   390 differing bytes / 88.60% shape similarity.  The prologue allocation
 //   remains the first structural mismatch.
+// - revisit: direct fixed-table shape calls in both mirror and draw arms
+//   recover the original 270-instruction CFG and raise shape similarity to
+//   93.70%; the best clean basin is 826 bytes and 375 differing bytes.
+//   A function-scope table pointer is retained because the binary has one
+//   repeated pointer lifetime across the dynamic color arms.  Twenty distinct
+//   source, ABI, context, layout, and lifetime probes did not recover the
+//   original EBX/EBP color or the remaining dynamic-table blocks.  No inline
+//   assembly or compiler-only source remains.
 
 #include <stdio.h>
 
@@ -129,22 +139,23 @@ public:
     uchar mirror_flag;
     char gap_75[3];
 
-    uchar get_facetindex(long frame, long facet, long& frame_out);
-    void do_draw(long frame, long facet, long x, long y,
+    uchar get_facetindex(long facet, long frame, long& frame_out);
+    void do_draw(long facet, long frame, long x, long y,
                  RGE_Color_Table* color_table, TDrawArea* draw_area,
                  uchar draw_level);
 };
 
-void RGE_Sprite::do_draw(long frame, long facet, long x, long y,
+void RGE_Sprite::do_draw(long facet, long frame, long x, long y,
                          RGE_Color_Table* color_table,
                          TDrawArea* draw_area, uchar draw_level)
 {
     char s[256];
     long facetindex;
+    uchar* table;
     char* fname = 0;
 
-    if (facet >= this->frame_num) {
-        facet = 0;
+    if (frame >= this->frame_num) {
+        frame = 0;
     }
 
     if (this->shape == 0) {
@@ -171,8 +182,8 @@ void RGE_Sprite::do_draw(long frame, long facet, long x, long y,
         SDI_List->Select_Box = &this->box_x1;
     }
 
-    uchar mirrored = this->get_facetindex(frame, facet, facetindex);
-    if (mirrored == 0) {
+    uchar mirrored = this->get_facetindex(facet, frame, facetindex);
+    if (mirrored != 0) {
         if (do_draw_log != 0) {
             sprintf(s, "<%s,%d,%d,%d,%d,m", this, x, y,
                     facetindex, this->color_flag);
@@ -185,20 +196,18 @@ void RGE_Sprite::do_draw(long frame, long facet, long x, long y,
         }
 
         if (this->color_table < 0) {
-            uchar* table;
             if (color_table != 0) {
                 _ASMSet_Color_Xform((color_table->id + 1) * 0x10);
-                table = color_table->table;
+                this->shape->shape_mirror(draw_area, x, y, facetindex,
+                                          this->color_flag, color_table->table);
             }
             else {
-                table = 0;
+                this->shape->shape_mirror(draw_area, x, y, facetindex,
+                                          this->color_flag, 0);
             }
-            this->shape->shape_mirror(draw_area, x, y, facetindex,
-                                      this->color_flag, table);
             goto draw_done;
         }
         else {
-            uchar* table;
             uchar color = this->color_flag;
             if (this->color_tables[this->color_table] != 0) {
                 _ASMSet_Color_Xform((this->color_table + 1) * 0x10);
@@ -224,19 +233,17 @@ void RGE_Sprite::do_draw(long frame, long facet, long x, long y,
         }
 
         if (this->color_table < 0) {
-            uchar* table;
             if (color_table != 0) {
                 _ASMSet_Color_Xform((color_table->id + 1) * 0x10);
-                table = color_table->table;
+                this->shape->shape_draw(draw_area, x, y, facetindex,
+                                        this->color_flag, color_table->table);
             }
             else {
-                table = 0;
+                this->shape->shape_draw(draw_area, x, y, facetindex,
+                                        this->color_flag, 0);
             }
-            this->shape->shape_draw(draw_area, x, y, facetindex,
-                                    this->color_flag, table);
         }
         else {
-            uchar* table;
             if (this->color_tables[this->color_table] != 0) {
                 _ASMSet_Color_Xform((this->color_table + 1) * 0x10);
                 table = this->color_tables[this->color_table]->table;
