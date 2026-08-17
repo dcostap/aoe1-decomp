@@ -29,9 +29,15 @@
 // were codegen duplicates. Unsigned fields widened the drift to 8 bytes;
 // references and address-taken pointers widened it to 12; parameter counts
 // widened it to 546. No natural probe changed the two product bytes.
-// The clean typed source is restored. A focused donor search for the allocator
-// block found no exact matching-bank source donor. Keep the volatile exact
-// result rejected as compiler steering, not source recovery.
+// The clean typed source was restored after that pass. A focused donor search
+// for the allocator block found no exact matching-bank source donor.
+// revisit sa-df3a1f53: swapping the two independent dimension stores so that
+// map_width is assigned before map_height changes only the two allocator
+// product operand bytes at 00455A1E/00455A25. The natural source is exact.
+// The first exact checkpoint is 20260817T140657.041956Z-aba6195756.
+// Walking back this one change restored the two-byte mismatch. Reapplying it
+// restored the exact 783-byte result. No volatile, no-effect expression,
+// wrapper, raw cursor, or other compiler-steering form is retained.
 
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 extern "C" void __cdecl free(void* block);
@@ -204,8 +210,8 @@ void RGE_Map::new_map(long width, long height)
         free(this->search_map_rows);
     }
 
-    this->map_height = height;
     this->map_width = width;
+    this->map_height = height;
     this->world_width = this->tile_width * width;
     this->world_height = this->tile_height * height;
     this->map = (RGE_Tile*)calloc(height * width, sizeof(RGE_Tile));
