@@ -29,6 +29,8 @@
 // continuation r5 probe: used a natural panel owner local before publishing the output; duplicate.
 // continuation r5 probe: corrected set_text's proven short id ABI; duplicate.
 // continuation r5 probe: used explicit new TTextPanel() syntax; duplicate.
+// current pass probe: unsigned-char result after coordinate locals recovered one syntactic return but moved the first mismatch to +0x66 and widened the difference to 262 bytes; restored.
+// current pass probe: center_v and register-int result reuse formed the same 448-byte /313-diff basin, with first mismatch +0x4E; restored.
 // r5 conclusion: same-TU factory donors and PDB bands support the remaining source order, but all natural lifetime/ABI variants preserve the +19-byte /GX cleanup-tail clone. No non-synthetic control-flow lead remains.
 // Remaining evidence: 9 ordered calls, first 156 bytes, and all body blocks stay exact; only /GX success/failure cleanup-tail placement differs. Same-TU create_input, create_edit, create_scrollbar, and slider factories show the same duplicated-tail basin after typed control-flow/result probes.
 // Left in scratch: best source has all functional code and first 156 bytes exact, but tail/failed-path placement is not exact; not accepted_drift because rebuilt failure target lies outside original configured function body.
