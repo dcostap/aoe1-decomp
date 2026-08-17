@@ -84,6 +84,10 @@
 // - Default config/flags/default.rsp (/O2 /Oy) remains the only supported
 //   flag context. /Oy-, /Ob0, /Ow, /O1, /Og-, and /Ot- changed codegen or
 //   lost the target frame. No TU-only exact lead is retained.
+// - Object audit: the original PDB has no inline expansion and confirms the
+//   ABI, class layout, x1/x2, and two bound locals. Original FPO reports 243
+//   bytes; the current object reports 242. A PDB-lifetime candidate improved
+//   the masked difference but retained the wrong y and right-bound registers.
 
 struct Map_Stack {
     long x;
