@@ -35,17 +35,36 @@
 // - Moving literal source advances after the clipped branch enlarged the
 //   frame to 0xC and 884 differing bytes; delaying source setup reached 853
 //   differing bytes but lost shape and was also rolled back.
+//
+// Revisit probes (sa-74f73810-r1):
+// - Re-read the PDB symbols and exact Shape.cpp siblings. The target has one
+//   width home, one save-buffer home, one command home, and one buffer home.
+//   Its remaining stream, state, row, and transform values are compiler
+//   coalescences, not proven source aggregates.
+// - Twenty-nine distinct natural probes covered call-result lifetime,
+//   declaration scope, count width, source-advance order, typed table view,
+//   and loop lowering. No probe matched the target.
+// - A shared unsigned transform count with a decrementing do-loop follows
+//   the exact 004BAAF0 loop donor. It reduced the candidate to 888 bytes and
+//   824 strict differing bytes, with 31.31% exact-block coverage.
+// - The remaining mismatch is the original parameter-home and register basin:
+//   target roles are EBP=table, EDI=source, ESI=x, EAX=state, EDX=count;
+//   the clean typed source keeps EBP=source and EDI=table. Parameter-home
+//   overlays and compiler steering are not retained.
 
 typedef unsigned char byte;
 
+struct Byte_Table {
+    byte value[256];
+};
+
 #define SHADOW_BACK(dst_, table_, count_) do { \
-    if ((count_) > 0) { \
-        unsigned int shadow_count_ = (unsigned int)(count_); \
+    transform_count_ = (unsigned int)(count_); \
+    if (transform_count_ > 0) { \
         do { \
             --(dst_); \
-            --shadow_count_; \
-            *(dst_) = (table_)[*(dst_)]; \
-        } while (shadow_count_ != 0); \
+            *(dst_) = ((Byte_Table*)(table_))->value[*(dst_)]; \
+        } while (--transform_count_); \
     } \
 } while (0)
 
@@ -115,12 +134,17 @@ byte TShape::shape_mirror_shadow_clipped(TDrawArea* draw_area,
                                          long clip_x1, long clip_y1,
                                          byte* table)
 {
+    Byte_Table* table_view = (Byte_Table*)table;
     long pitch = draw_area->AlignedWidth() * draw_area->Orien;
-    byte* src = (byte*)(this->shape_header + 1);
+    Shape_Header* header = this->shape_header;
+    byte* src = (byte*)(header + 1);
     byte* save_buffer;
     byte* dst;
-    byte count;
-    byte state;
+    char state;
+    byte command;
+    long xpos;
+    long rows;
+    unsigned int transform_count_;
 
     if (draw_area->Orien < 1)
         save_buffer = draw_area->Bits
@@ -129,18 +153,19 @@ byte TShape::shape_mirror_shadow_clipped(TDrawArea* draw_area,
         save_buffer = draw_area->Bits + clip_y0 * pitch + clip_x1 + 1;
 
     if (shape_y1 < clip_y0) {
+        byte skip_count;
         long skip = clip_y0 - shape_y1;
         shape_y1 += skip;
         do {
             byte done = 0;
             do {
-                byte command = *src++;
+                command = *src++;
                 if ((command & 1) == 1) {
-                    count = command >> 1;
-                    if (count == 0)
+                    skip_count = command >> 1;
+                    if (skip_count == 0)
                         ++src;
                     else
-                        src += count;
+                        src += skip_count;
                 } else {
                     if ((command & 0xfe) == 0)
                         done = 1;
@@ -155,13 +180,14 @@ byte TShape::shape_mirror_shadow_clipped(TDrawArea* draw_area,
         return 1;
 
     dst = save_buffer;
-    shape_y1 = clip_y1 - shape_y1 + 1;
+    rows = clip_y1 - shape_y1 + 1;
+    byte count;
     do {
-        long xpos = shape_x1;
+        xpos = shape_x1;
         if (clip_x1 < xpos) {
             state = 0;
             do {
-                byte command = *src++;
+                command = *src++;
                 if ((command & 1) == 1) {
                     count = command >> 1;
                     if (count == 0) {
@@ -182,12 +208,12 @@ byte TShape::shape_mirror_shadow_clipped(TDrawArea* draw_area,
                             if (xpos < clip_x0) {
                                 count = (byte)(clip_x1 - clip_x0 + 1);
                                 state = 2;
-                                SHADOW_BACK(dst, table,
+                                SHADOW_BACK(dst, table_view,
                                             (byte)(clip_x1 - clip_x0 + 1));
                             } else {
                                 count = (byte)(clip_x1 - xpos);
                                 state = 1;
-                                SHADOW_BACK(dst, table,
+                                SHADOW_BACK(dst, table_view,
                                             (byte)(clip_x1 - xpos));
                             }
                         }
@@ -206,7 +232,7 @@ byte TShape::shape_mirror_shadow_clipped(TDrawArea* draw_area,
                                 count = (byte)(clip_x1 - xpos);
                                 state = 1;
                             }
-                            SHADOW_BACK(dst, table, count);
+                                SHADOW_BACK(dst, table_view, count);
                         }
                         ++src;
                     }
@@ -218,7 +244,7 @@ byte TShape::shape_mirror_shadow_clipped(TDrawArea* draw_area,
 
         state--;
         while (state == 0) {
-            byte command = *src++;
+            command = *src++;
             if ((command & 1) == 1) {
                 count = command >> 1;
                 if (count == 0) {
@@ -233,9 +259,9 @@ byte TShape::shape_mirror_shadow_clipped(TDrawArea* draw_area,
                     if (xpos < clip_x0) {
                         count = (byte)(xpos - clip_x0 + count);
                         state = 1;
-                        SHADOW_BACK(dst, table, count);
+                            SHADOW_BACK(dst, table_view, count);
                     } else {
-                        SHADOW_BACK(dst, table, count);
+                        SHADOW_BACK(dst, table_view, count);
                     }
                 }
             } else {
@@ -248,7 +274,7 @@ byte TShape::shape_mirror_shadow_clipped(TDrawArea* draw_area,
                         count = (byte)(xpos - clip_x0 + count);
                         state = 1;
                     }
-                    SHADOW_BACK(dst, table, count);
+                    SHADOW_BACK(dst, table_view, count);
                     ++src;
                 }
             }
@@ -256,7 +282,7 @@ byte TShape::shape_mirror_shadow_clipped(TDrawArea* draw_area,
 
         state--;
         while (state == 0) {
-            byte command = *src++;
+            command = *src++;
             if ((command & 1) == 1) {
                 count = command >> 1;
                 if (count != 0)
@@ -273,7 +299,7 @@ byte TShape::shape_mirror_shadow_clipped(TDrawArea* draw_area,
 
         save_buffer += pitch;
         dst = save_buffer;
-    } while (--shape_y1 != 0);
+    } while (--rows != 0);
 
     return 1;
 }
