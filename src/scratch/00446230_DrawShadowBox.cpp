@@ -62,6 +62,17 @@
 //   counted-loop lab reached 271 bytes/45 differences, but added an initial
 //   zero-count branch and changed the source-supported do-loop topology; it
 //   was not retained. The natural pinned source remains authoritative.
+// - Deep UI-type pass: inventory evidence confirms Bits is unsigned char* at
+//   +0x08, shadow_color_table is RGE_Color_Table* at +0xC8, and table is an
+//   unsigned char[256] at +0x28. No layout or helper-type uncertainty remains.
+// - This pass tested 20 distinct loop, pointer-owner, declaration-scope,
+//   update-order, scalar-width, and table-owner hypotheses, plus two combined
+//   contexts. The scoped inner cursor forms moved to the 271-byte/74-difference
+//   basin. Table-owner and row-scope variants were duplicate or worse.
+// - Recomputing row_end, reversing row updates, and changing countdown tests
+//   widened the result or changed control flow. The target keeps row base in
+//   ECX, row end in ESI, and the inner pixel cursor in EDX. The clean source
+//   keeps a persistent pixel cursor and remains the best natural source.
 
 struct tagRECT {
     long left;
