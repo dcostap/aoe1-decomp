@@ -36,6 +36,14 @@
 // and pass `facet`; the current natural candidate reaches 90-byte diff,
 // 94.74% shape, and 93.29% exact-block coverage. Remaining drift is the
 // shared zero-return/tail layout; no call-set or frame mismatch remains.
+// Revisit pass (sa-bb41bd2f-r1): 20 focused probes covered result locals and
+// parameter reuse, positive and negative box/output guards, explicit labels,
+// for/while/do-while loops, and stdio context. All natural forms either
+// reproduced the 90-byte basin or moved farther. The original has a separate
+// success block (`mov eax,1`) before EH cleanup; the clean source still emits
+// that constant in the cleanup epilogue. No call, frame, width, or ownership
+// issue remains. Next lead: recover the original source CFG or TU context that
+// forces the success value before the shared EH tail.
 
 extern void __cdecl addstring(char** dst, char* base, char* ext);
 extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
