@@ -31,6 +31,14 @@
 // frame to 0x20 and lost structural islands. Direct indexed border fields gave
 // a diagnostic 824B diff, but kept the 0x20 frame and swapped the EBP/EDI
 // index/base roles. Restored the pinned 0x28-frame natural source.
+// probes 12-16: signed neighbor locals, a cached border index, int draw_border,
+// and split initialization were duplicates or lost structural islands.
+// probes 17-19: direct indexed fields in only the late border path improved
+// shape and exact blocks at the same frame; a Windows header and output-order
+// permutation were codegen duplicates. Ambient declaration samples made two
+// basins but changed the effective size and produced no exact candidate.
+// Current clean unresolved source: 1108B effective code, 0x28 frame, 3 returns,
+// 11 aligned calls, 1049 strict diff bytes, and 80.85% shape similarity.
 
 struct TShape;
 
@@ -217,14 +225,15 @@ int RGE_View::draw_tile(RGE_Tile* tile, unsigned char terrain_type,
     }
 
     if (overlay_available == 0) {
-        return result;
+        // BINARY NOTE: The zero-overlay path joins the final return epilogue.
+        goto done;
     }
 
     {
-        RGE_Border_Set* border = &this->map->border_types[border_type];
-        TShape* shape = border->shape;
+        // BINARY NOTE: The late path reloads the indexed border record.
+        TShape* shape = this->map->border_types[border_type].shape;
         if (shape != 0) {
-            if (border->border_style == 0) {
+            if (this->map->border_types[border_type].border_style == 0) {
                 short picture = this->get_border_picture(
                     border_type, tile->tile_type,
                     (unsigned char)(border_info >> 4), map_x, map_y);
@@ -275,5 +284,7 @@ mark_neighbors:
         RGE_Tile* below = this->map->map_row_offset[map_y + 1] + map_x;
         below->draw_attribute |= 0x40;
     }
+
+done:
     return result;
 }
