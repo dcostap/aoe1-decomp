@@ -31,6 +31,17 @@
 //   the source now preserves the complete serialized layout.
 // - A typed hot-spot pointer loop regressed structure and was rolled back.
 //   The indexed source remains the clearer behavior reconstruction.
+// - Direct indexed land members, positive by-player fall-through, and a
+//   map-source terrain-count guard recovered the target's 448-byte boundary,
+//   137 instructions, frame 0xC, CFG, call, and all but six bytes.
+// - The remaining six bytes are four stack-displacement fields: the target
+//   reuses [esp+10h] for the outer land count and [esp+14h] for player count;
+//   this natural source emits those homes in reverse. Scope, order, and width
+//   probes did not change the basin. Do not retain stack-only steering.
+// Revisit:
+// - Removing the separate land_index and using land_tile_num for both the
+//   terrain and land indexed loops recovered the target's natural counter
+//   lifetime. The typed source now emits an authoritative 448-byte MATCH.
 
 #include "../../include/game_globals.h"
 
@@ -201,67 +212,71 @@ public:
 
 void RGE_RMM_Database_Controller::add_terrain_module()
 {
-    RGE_Map_Data_Entry* map = this->map_info.maps + this->map_type;
-    long land_area = this->map_width * this->map_height;
-    land_area = land_area * map->land_info.grown_land_percent / 100;
-    int terrain_index = 0;
+    RGE_Map_Data_Entry* map;
+    map = this->map_info.maps + this->map_type;
+    long land_tile_num = 0;
+    long land_area = this->map_width * this->map_height *
+        this->map_info.maps[this->map_type].land_info.grown_land_percent / 100;
 
     this->terrain_info.terrain_num = map->terrain_info.terrain_num;
-    if (this->terrain_info.terrain_num > 0) {
-        RGE_Terrain_Info_Line* destination = this->terrain_info.terrain;
-        RGE_Terrain_Data_Entry* source = map->terrain_info.terrain;
+    if (map->terrain_info.terrain_num > 0) {
         do {
-            destination->terrain_size = (long)(
-                (float)(source->terrain_percent * land_area) * DAT_00571ec0);
-            destination->terrain_type = source->terrain_type;
-            destination->clumps = source->clumps;
-            destination->base_terrain_type = source->base_terrain_type;
-            destination->terrain_generated = 0;
-            destination->spacing = source->spacing;
-            destination->clumpiness_factor = source->clumpiness_factor;
-            destination->avoid_hot_spots = 1;
+            this->terrain_info.terrain[land_tile_num].terrain_size = (long)(
+                (float)(map->terrain_info.terrain[land_tile_num].terrain_percent * land_area) * DAT_00571ec0);
+            this->terrain_info.terrain[land_tile_num].terrain_type =
+                map->terrain_info.terrain[land_tile_num].terrain_type;
+            this->terrain_info.terrain[land_tile_num].clumps =
+                map->terrain_info.terrain[land_tile_num].clumps;
+            this->terrain_info.terrain[land_tile_num].base_terrain_type =
+                map->terrain_info.terrain[land_tile_num].base_terrain_type;
+            this->terrain_info.terrain[land_tile_num].terrain_generated = 0;
+            this->terrain_info.terrain[land_tile_num].spacing =
+                map->terrain_info.terrain[land_tile_num].spacing;
+            this->terrain_info.terrain[land_tile_num].clumpiness_factor =
+                map->terrain_info.terrain[land_tile_num].clumpiness_factor;
+            this->terrain_info.terrain[land_tile_num].avoid_hot_spots = 1;
 
-            ++terrain_index;
-            ++destination;
-            ++source;
-        } while (terrain_index < map->terrain_info.terrain_num);
+            ++land_tile_num;
+        } while (land_tile_num < map->terrain_info.terrain_num);
     }
 
     int hot_spot_index = 0;
-    int land_index = 0;
-    int land_count = 0;
-    if (map->land_info.land_num > 0) {
+    int player_index = 0;
+    land_tile_num = 0;
+    if (land_tile_num < map->land_info.land_num) {
         do {
-            RGE_Land_Data_Entry* land = &map->land_info.land[land_index];
-            if (land->radius >= 0) {
-                if (land->by_player_flag == 0) {
-                    this->terrain_info.hot_spots[hot_spot_index].x =
-                        this->land_info.land[hot_spot_index].x;
-                    this->terrain_info.hot_spots[hot_spot_index].y =
-                        this->land_info.land[hot_spot_index].y;
-                    this->terrain_info.hot_spots[hot_spot_index].radius = land->radius;
-                    this->terrain_info.hot_spots[hot_spot_index].fade = land->fade;
-                    ++hot_spot_index;
-                } else {
-                    int player_index = 0;
+            if (map->land_info.land[land_tile_num].radius >= 0) {
+                if (map->land_info.land[land_tile_num].by_player_flag != 0) {
+                    player_index = 0;
                     if (this->number_of_players > 0) {
                         do {
                             this->terrain_info.hot_spots[hot_spot_index].x =
                                 this->land_info.land[hot_spot_index].x;
                             this->terrain_info.hot_spots[hot_spot_index].y =
-                                this->land_info.land[hot_spot_index].y;
-                            this->terrain_info.hot_spots[hot_spot_index].radius = land->radius;
-                            this->terrain_info.hot_spots[hot_spot_index].fade = land->fade;
+                            this->land_info.land[hot_spot_index].y;
+                            this->terrain_info.hot_spots[hot_spot_index].radius =
+                                map->land_info.land[land_tile_num].radius;
+                            this->terrain_info.hot_spots[hot_spot_index].fade =
+                                map->land_info.land[land_tile_num].fade;
                             ++hot_spot_index;
                             ++player_index;
                         } while (player_index < this->number_of_players);
                     }
+                } else {
+                    this->terrain_info.hot_spots[hot_spot_index].x =
+                        this->land_info.land[hot_spot_index].x;
+                    this->terrain_info.hot_spots[hot_spot_index].y =
+                    this->land_info.land[hot_spot_index].y;
+                    this->terrain_info.hot_spots[hot_spot_index].radius =
+                        map->land_info.land[land_tile_num].radius;
+                    this->terrain_info.hot_spots[hot_spot_index].fade =
+                        map->land_info.land[land_tile_num].fade;
+                    ++hot_spot_index;
                 }
             }
 
-            ++land_count;
-            ++land_index;
-        } while (land_count < map->land_info.land_num);
+            ++land_tile_num;
+        } while (land_tile_num < map->land_info.land_num);
     }
 
     this->terrain_info.hot_spot_num = hot_spot_index;
