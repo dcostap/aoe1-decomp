@@ -67,6 +67,30 @@
 //   basin remains the prior four-byte channel-cursor form at 274 bytes/2
 //   differences, which is rejected as raw cursor plumbing. Keep this clean
 //   typed-entry reconstruction as the policy-valid frontier.
+// - ownership audit: the target writes two 0x400-byte regions rooted at
+//   DAT_0086b2b0 and DAT_0086b6b0. Each region repeats a four-byte record:
+//   red +0, green +1, blue +2, and flags +3. The zeroing loop proves the
+//   +4 stride and 256-entry extent. GetPalette consumes the first base, and
+//   the exact RGE_fade_palette_step consumer passes both bases as
+//   tagPALETTEENTRY pointers. Exact TDrawArea palette donors and the reviewed
+//   tagPALETTEENTRY layout prove this entry ownership.
+// - the 274-byte diagnostic is only another representation of those fields:
+//   its four cursors are base+0, base+1, base+2, and base+3, and its source
+//   offsets are 0, 1, 2, and 3 with one four-byte advance. No evidence names
+//   independent channel arrays, a shifted entry array, or a fade-state
+//   aggregate. The inventory lists only scalar root bytes for both globals,
+//   so the local typed array extent is behavior-proven, not shared ABI proof.
+// - exact 00439750 ReadPalette ownership is separate. Its System_color_Table
+//   is a reviewed PAL_TABLE array with size 0x8, index +0, colors +4..+6, and
+//   a linked eight-byte advance. That evidence proves the PAL_TABLE model for
+//   005841e0, not for the four-byte fade buffers. Do not transfer its anchor
+//   or cursor form to this target.
+// - this claim tested ten additional natural typed forms: indexed loops,
+//   typed pointer bounds, explicit count bounds, aggregate entry assignment,
+//   source-owned indexing, SDK PALETTEENTRY context, const source aliases,
+//   and explicit entry-zero bases. None improved the 117-byte clean basin;
+//   aggregate assignment and source-owned indexing were structural regressions.
+//   The policy-clean typed source is restored.
 
 struct tagPALETTEENTRY {
     unsigned char peRed;
