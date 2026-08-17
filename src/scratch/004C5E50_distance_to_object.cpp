@@ -128,6 +128,23 @@
 // control forms, radius and coordinate widths, and grouped radius arithmetic.
 // None recovered the original push/home plus pre-branch other-Y ordering.
 
+// sa-b81569dd-r1 fresh direct-scalar audit 2026-08-17: completed 20 natural
+// hypotheses and restored this pinned source. Binary behavior is supported as
+// direct float deltas: other-X minus this-X, then other-Y minus this-Y. Each
+// delta uses a less-than-zero absolute step. The radius terms are two
+// separate subtractions. The X term clamps before Y, and the final expression
+// squares X first, then Y, before sqrt. The executable has no calls.
+//
+// The original reads this/other master pointers after coordinate abs. It loads
+// other-X radius, this-X radius, this-Y radius, and other-Y radius. It stores X
+// in a local stack home, compares X, performs the fused Y subtraction, then
+// consumes the X status and tests/clamps Y. The natural direct-float rebuild
+// stays in the 151B/164-diff basin: it has no entry push/home, computes all
+// radius members before the X clamp, and reads other-Y after that branch.
+// Named float or double radius locals improved size and shape but remained
+// broad mismatches. Delayed-Y and pointer-hoist forms violate PDB/fault order.
+// No parameter-home, duplicated-Y, volatile, or metric-only form is retained.
+
 class RGE_Master_Static_Object {
 public:
     char gap_00[0x30];
