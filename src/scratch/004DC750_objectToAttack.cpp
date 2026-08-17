@@ -39,11 +39,24 @@
 //   dCRating [esp+54h] vs [esp+4Ch], unitZone [esp+1Bh] vs [esp+17h]). This is a register-
 //   allocation/liveness basin issue, not a structural or call-set one: calls 44/44 aligned,
 //   frame 0x88/0x88, CFG signals matched, first strict mismatch at +0014 (xor ebp vs xor ebx).
+//
+// Current pass (20 meaningful probes):
+// - Declaration scopes, bool width, loop forms, typed record aliases, zero locals, and
+//   header context did not recover the original EBX/EBP roles. Behavior and 44 calls stay aligned.
+// - The clean source binds proven rdata constants DAT_00575580 (0.0f) and DAT_00575584
+//   (100.0f). This keeps 1977 bytes but improves shape 78.42% -> 83.63%, exact-block
+//   coverage 39.24% -> 41.23%, and raw cost 817 -> 535.
+// - Candidate, unit, result, and flag declarations are function-scope and codegen-duplicate
+//   with the prior form. A typed current-record alias and <stdlib.h> context were rejected.
+// - Final validation: 1977 bytes, frame 0x88, 44/44 calls, diff 1423 (71.9777%), shape
+//   83.63%, exact-block coverage 41.23%. The remaining first mismatch is +0014.
 
 #include <math.h>
 
 extern "C" long __ftol();
 extern int debug_rand(char* file, int line);
+extern float const DAT_00575580;
+extern float const DAT_00575584;
 
 typedef unsigned char uchar;
 
@@ -152,19 +165,24 @@ public:
 
 ObjectMemory* TribeInformationAIModule::objectToAttack(int player, int siegeWeapons, int boats, int objnum, int* out)
 {
+    RGE_Static_Object* candidate;
+    RGE_Static_Object* unit;
+    ObjectMemory* best;
+    int specialRating3;
+    uchar unitZone;
+    int rangeRating;
     ObjectMemory* mem = this->wonderToAttack(-1);
     if (mem != 0) {
         *out = 1;
         return mem;
     }
 
-    RGE_Static_Object* unit = this->md->object(objnum);
+    unit = this->md->object(objnum);
     if (unit == 0 || unit->unitAI() == 0) {
         return 0;
     }
 
-    uchar unitZone = unit->currentZone();
-    int rangeRating;
+    unitZone = unit->currentZone();
     if (unit->master_obj->master_id == 0x23 ||
         unit->master_obj->master_id == 0x24 ||
         unit->master_obj->master_id == 0x0B) {
@@ -180,14 +198,13 @@ ObjectMemory* TribeInformationAIModule::objectToAttack(int player, int siegeWeap
     int id;
     ObjectMemory oLimits = findObjectMemoryLimits(player, objnum, &randomRating, &id);
 
-    ObjectMemory* best = 0;
-    int specialRating3 = -1;
+    best = 0;
+    specialRating3 = -1;
     int dCRating;
     int i;
     for (dCRating = 0, i = 0; dCRating < this->maxImportantObjectMemory; dCRating++, i += 0x24) {
             if (*(uchar*)((char*)this->importantObjectMemory + i + 0x0B) == player) {
-                RGE_Static_Object* candidate =
-                    this->md->object(*(int*)((char*)this->importantObjectMemory + i));
+                candidate = this->md->object(*(int*)((char*)this->importantObjectMemory + i));
                 if (candidate != 0 && candidate->object_state <= 2) {
                     float damage = this->damagePerSecond(objnum,
                                                          (int)candidate->world_x,
@@ -195,12 +212,12 @@ ObjectMemory* TribeInformationAIModule::objectToAttack(int player, int siegeWeap
                     float fVar3 = candidate->vf104(unit) / unit->vf100();
                     float boatWeapon;
                     float bestObject;
-                    if (damage > 0.0f) {
+                    if (damage > DAT_00575580) {
                         boatWeapon = unit->hp / damage;
                     } else {
                         boatWeapon = -1.0f;
                     }
-                    if (fVar3 > 0.0f) {
+                    if (fVar3 > DAT_00575580) {
                         bestObject =
                             (float)*(short*)((char*)this->importantObjectMemory + i + 0x0C) / fVar3;
                     } else {
@@ -264,27 +281,27 @@ ObjectMemory* TribeInformationAIModule::objectToAttack(int player, int siegeWeap
                         bestAttackValue = 100;
                     }
                     int hpRating;
-                    if (oLimits.damageCapability != 0.0f) {
+                    if (oLimits.damageCapability != DAT_00575580) {
                         hpRating =
                             (int)(*(float*)((char*)this->importantObjectMemory + i + 0x18)
-                                  * 100.0f / oLimits.damageCapability);
+                                  * DAT_00575584 / oLimits.damageCapability);
                     } else {
                         hpRating = 100;
                     }
                     int timeToKill;
                     int siegeWeapon;
-                    if (*(float*)((char*)this->importantObjectMemory + i + 0x18) > 0.0f) {
-                        if (oLimits.range != 0.0f) {
+                    if (*(float*)((char*)this->importantObjectMemory + i + 0x18) > DAT_00575580) {
+                        if (oLimits.range != DAT_00575580) {
                             timeToKill =
                                 (int)(*(float*)((char*)this->importantObjectMemory + i + 0x20)
-                                      * 100.0f / oLimits.range);
+                                      * DAT_00575584 / oLimits.range);
                         } else {
                             timeToKill = 100;
                         }
-                        if (oLimits.rateOfFire != 0.0f) {
+                        if (oLimits.rateOfFire != DAT_00575580) {
                             siegeWeapon =
                                 100 - (int)(*(float*)((char*)this->importantObjectMemory + i + 0x1C)
-                                           * 100.0f / oLimits.rateOfFire);
+                                           * DAT_00575584 / oLimits.rateOfFire);
                         } else {
                             siegeWeapon = 100;
                         }
@@ -326,7 +343,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttack(int player, int siegeWeap
                         boatSign = unitIsBoat ? -1 : 1;
                     }
                     int rating =
-                        this->md->tacticalAI.strategicNumber(0x59)
+                            this->md->tacticalAI.strategicNumber(0x59)
                             * *(int*)((char*)this->importantObjectMemory + i + 0x10)
                         + this->md->tacticalAI.strategicNumber(0x90) * boatSign
                         + this->md->tacticalAI.strategicNumber(0x7B) * rangeSign
