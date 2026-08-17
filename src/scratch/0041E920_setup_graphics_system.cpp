@@ -40,6 +40,17 @@
 //   register increments, but VC5 emitted dword stack stores and diff 552; explicit
 //   unsigned-char casts were identical.  Raw int flag caches with byte locals were
 //   a duplicate of the clean 678-byte source.  Restored clean typed source.
+// follow-up lease (2026-08-17): revalidated the 678-byte typed source and tested
+//   assignment-after-new (672 bytes but frame 8, diff 539), raw integer flag
+//   caches (676 bytes, diff 513 but wrong allocation block), int mode locals
+//   (676 bytes, diff 552), split/compound/reversed mode arithmetic, joined
+//   declarations, scoped allocation pointer, explicit new parentheses, and
+//   standard string/stdio headers.  The source-shape probes were duplicates or
+//   worse.  A structured 48-variant mode/VC5 flag lab found no exact result;
+//   /GX+/Ow reached size 672 but still diverged at +006D.  Assembly donor search
+//   found no matching byte-mode arithmetic donor.  Clean typed source remains
+//   the best policy-valid reconstruction; pause with the original full-register
+//   inc versus VC5 byte-inc/zeroing hunk unresolved.
 
 #include <new.h>
 #include <windows.h>
