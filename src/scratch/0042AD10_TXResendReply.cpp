@@ -28,6 +28,18 @@
 // both moved farther than the direct typed branches and were rolled back.
 // liveness/ABI: ordinary loop locals and unsigned counter types were tested;
 // both emitted identical code and are kept as the natural typed declarations.
+// liveness: a separate four-byte Send result local is required to recover the
+// original 0x18 frame, the send-result home, and the long exact middle islands;
+// direct assignment through nosuch leaves a 0x14 frame.
+// ownership: a narrow RESENDER* local in the retransmit-log block follows the
+// decompiler's pRVar1 evidence and reduces the body to 907B/91.10% shape, but
+// changes player/base register colors and is not positionally better than the
+// direct repeated-member form (907B, 820 differing bytes).
+// unresolved: the first durable mismatch is the early dcoID guard (the oracle
+// uses cmp [player slot],zero-reg; VC5 emits load/test). The shared invalid and
+// BAD-DCOID log tail also remains relocated, and the loop/send tail has register
+// and argument-scheduling drift. Twenty-one meaningful hypotheses were checked
+// in this pass; no exact result.
 // left in scratch: the corrected player argument is retained. The original 0x18
 // local layout, cold-tail placement, and late log/delete schedule remain nonexact.
 
@@ -134,29 +146,30 @@ public:
 
 int TCommunications_Handler::TXResendReply(uint serial, uint player)
 {
+    unsigned int offset;
     uint playerNumber;
     unsigned long now;
-    uint i;
     uint GoodTransmitCount;
+    uint i;
     long hr;
-    unsigned int offset;
     MSGFORMAT_RESEND nosuch;
+    RESENDER* resend;
 
     if (this->RGE_Guaranteed_Delivery == 0) {
         return 0;
     }
 
     offset = 0;
-    playerNumber = player;
-    if (this->PlayerOptions.dcoID[playerNumber] == 0) {
+    if (this->PlayerOptions.dcoID[player] == 0) {
         L->Log("Invalid player req.");
         return 0;
     }
 
+    playerNumber = player;
+
     if (DAT_0062cf04 == 0) {
         return 0;
     }
-
     now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Com_hand.cpp", 0xEE7);
     if (serial == this->LastSerialRepliedTX[player]) {
         unsigned long elapsed = now - this->LastRequestRepliedTX[player];
@@ -169,7 +182,6 @@ int TCommunications_Handler::TXResendReply(uint serial, uint player)
     this->LastSerialRepliedTX[player] = serial;
     this->LastRequestRepliedTX[player] = now;
 
-    playerNumber = player;
     hr = 0;
     i = 0;
     GoodTransmitCount = 0;
@@ -195,7 +207,7 @@ int TCommunications_Handler::TXResendReply(uint serial, uint player)
                 debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Com_hand.cpp", 0xF19);
             L->Log("  >TX RES REP #%d %d (%d)", playerNumber, serial,
                    *(unsigned int*)((char*)this->Resend + offset + 0xC));
-            nosuch.Serialno = DAT_0062c5ec->Send(
+            int send_result = DAT_0062c5ec->Send(
                 DAT_0062cf04,
                 this->PlayerOptions.dcoID[playerNumber], 0,
                 *(char**)((char*)this->Resend + offset + 8),
@@ -207,25 +219,26 @@ int TCommunications_Handler::TXResendReply(uint serial, uint player)
                 L->Log("!!!TXResendReply slow - %ld msec", send_elapsed);
             }
 
-            if (nosuch.Serialno == 0) {
+            if (send_result == 0) {
                 ++hr;
                 this->TXPacketLength +=
                     *(unsigned int*)((char*)this->Resend + offset + 0xC);
             } else {
-                this->Err->ShowReturn(nosuch.Serialno, "Resend TX");
+                this->Err->ShowReturn(send_result, "Resend TX");
                 ++i;
             }
 
+            resend = this->Resend;
             nosuch.Serialno = (uint)(signed char)*(
-                *(char**)((char*)this->Resend + offset + 8));
+                *(char**)((char*)resend + offset + 8));
             unsigned long log_time =
                 debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Com_hand.cpp", 0xF42);
             L->Log("COMM: >>>>> RETRANSMIT P#%d Ser#%d (Slot#%d) Cmd %d '%c' MsgLength=%d Retx left=%d timeGetTime=%d",
                    playerNumber,
-                   *(unsigned int*)((char*)this->Resend + offset + 4),
+                   *(unsigned int*)((char*)resend + offset + 4),
                    GoodTransmitCount, nosuch.Serialno, nosuch.Serialno,
-                   *(unsigned int*)((char*)this->Resend + offset + 0xC),
-                   *(unsigned int*)((char*)this->Resend + player),
+                   *(unsigned int*)((char*)resend + offset + 0xC),
+                   *(unsigned int*)((char*)resend + player),
                    log_time);
             operator delete((void*)nosuch.Serialno);
         }
