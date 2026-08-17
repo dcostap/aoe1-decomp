@@ -46,6 +46,13 @@
 // enum types, named count results, control-flow labels, period header contexts,
 // and symbol-backed panel strings were tested. Only the last source cleanup was
 // retained for policy; the shared /GX cleanup-tail blocker remains unchanged.
+// sa-e800da1c-r1 revisit: /O1, /G5, /Oy-, and /Ob0 flag probes either lost the
+// EH/frame basin or were codegen duplicates. Reviewed popup int/int parameter
+// types, canonical panel constructor ownership, scenario-mode and save-screen
+// enum surfaces, a for-loop validation form, and an explicit derived destructor;
+// none changed the 313-byte basin. A typed validation status reached 272 bytes
+// but merged one popup call and lost the original ordered call set. A 64-sample
+// ambient declaration context sweep was codegen-identical in all samples.
 
 class TPanelSystem {
 public:
