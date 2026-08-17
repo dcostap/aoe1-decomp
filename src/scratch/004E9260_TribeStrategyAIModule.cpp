@@ -77,6 +77,17 @@
 // compiler, and boundaries match. PDB has no block, inline, or range records
 // beyond its named reused homes. No object evidence supports an alias for the
 // remaining four stack displacements.
+// continuation: PDB confirms playerID, infile, tempIntNum, i, and tempInt.
+// It has no block records for these locals. The original has separate count,
+// index, value, and hidden-self homes, while clean source keeps named locals
+// and lets VC5 reuse dead homes naturally.
+// continuation probes: separate count locals restored the 0x10 frame but made
+// the name-length home local and worsened the result to 31 bytes. Scoped counts
+// improved shape but kept that 31-byte basin. Entry declarations, while and
+// guarded do-while scans, post-increment, local declaration orders, an int
+// add parameter, casts, and one receiver alias did not change the clean 28-byte
+// output. Scoped for-header indexes worsened it to 37 bytes. All probes were
+// rolled back. Final validation remains 28 bytes, exact size, and 28 calls.
 
 extern "C" void __cdecl rge_read(int file, void* dst, int size);
 extern "C" void* __cdecl operator_new(unsigned int size);
