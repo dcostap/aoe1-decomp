@@ -121,6 +121,18 @@
 // No exact or better policy-valid frontier was found. Restored the pinned clean
 // typed positive-guard source; the remaining difference starts at the constructor
 // null test and is still the EH reset/test block topology.
+// Session sa-a65e7484-r1: re-audited result ownership, constructor result use,
+// null-test order, and side effects with ten fresh source probes. The oracle
+// tests the constructor result first, resets EH state, then zeroes EAX only on
+// the null edge and jumps to one epilogue. Success deletes the old list, sets
+// the new action, calls work with this, and returns one. The existing-action
+// path calls work with a null object and also returns one. The current source
+// preserves these effects and fault order, but its result = 0 before the
+// positive guard is compiler-active: VC5 emits xor EAX before the null test.
+// Branch-local result forms either duplicate cleanup, add calls, or widen the
+// body. Base/derived constructor-result ownership and action local forms are
+// codegen-neutral or worse. No natural exact form was found; keep this clean
+// typed baseline. This is a source-model mismatch, not a proved shipped bug.
 // FLAGS: /nologo /c /O2 /Oy /GX
 
 #include <stddef.h>
