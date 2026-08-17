@@ -55,6 +55,18 @@
 // - natural typed-entry ownership remains 277 bytes with 117 differences. Its
 //   initialization, calls, loop behavior, and timestamp tail align; no policy-
 //   valid typed rewrite recovered the original per-channel setup.
+// - deeper scr_cred TU pass: the canonical TDrawArea/TDrawSystem palette
+//   surface, SDK PALETTEENTRY typedef, stdio/stdlib/new/io/fcntl header state,
+//   RGE_fade_palette_step declarations, and neighboring panel declarations
+//   were each tested. They were codegen-neutral, alone and in combination.
+// - a contiguous typed fade-state aggregate was farther (213 differences),
+//   while inventory scalar PALETTEENTRY roots with address-of array decay were
+//   the same 277-byte basin. The typed pointer bound without its signed cast
+//   lost the original loop block; the signed address-bound cast is required.
+// - the natural API array-parameter spelling was neutral. The only closer
+//   basin remains the prior four-byte channel-cursor form at 274 bytes/2
+//   differences, which is rejected as raw cursor plumbing. Keep this clean
+//   typed-entry reconstruction as the policy-valid frontier.
 
 struct tagPALETTEENTRY {
     unsigned char peRed;
