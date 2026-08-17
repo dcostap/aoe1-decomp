@@ -31,9 +31,12 @@
 //   an 18-variant sweep produced only two codegen groups, neither exact.
 // - Partial rNum/tempCount scopes and hoisting add's copy index j were duplicates.
 // - Restored this clean typed source; the remaining lead is TU or allocator context.
-
-void* operator new(unsigned int size);
-void operator delete(void* ptr);
+// - Revisit probes modeled the reviewed full TacticalAIModule and
+//   TacticalAIGroup surfaces, moved the workingArea reference, and reordered
+//   result/rNum/tempCount declarations. All emitted the same 10-byte home
+//   permutation; the pinned typed source remains the natural reconstruction.
+// - Main review replaced direct allocation calls with new[]/delete[] and the
+//   manual vptr field with a virtual destructor. Codegen stayed unchanged.
 
 template <class T>
 class ManagedArray {
@@ -55,7 +58,7 @@ public:
 
         if (this->numberValue > this->maximumSizeValue - 1) {
             int newSize = this->numberValue + 1;
-            T* newValue = (T*)operator new(newSize * sizeof(T));
+            T* newValue = new T[newSize];
             if (newValue != 0) {
                 int j;
                 for (j = 0; j < this->maximumSizeValue; j++) {
@@ -63,7 +66,7 @@ public:
                         break;
                     newValue[j] = this->value[j];
                 }
-                operator delete(this->value);
+                delete[] this->value;
                 this->value = newValue;
                 this->maximumSizeValue = newSize;
             }
@@ -77,7 +80,7 @@ public:
 
 class TacticalAIGroup {
 public:
-    void* vtable_ptr;
+    virtual ~TacticalAIGroup();
     TacticalAIGroup* next;
     TacticalAIGroup* prev;
     int idValue;
