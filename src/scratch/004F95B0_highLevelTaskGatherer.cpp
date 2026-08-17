@@ -30,8 +30,16 @@
 //   register-color differences; checker remains in STRUCTURAL RECONSTRUCTION.
 // - Replaced the raw debug-file address with the named source string. This does
 //   not change code generation.
+// - Continued probes: a positive object/UnitAI guard restored the late null
+//   return; desired[-4] < *desired restored the paired distribution cursor.
+// - Continued probes: direct task-result predicates removed false stack stores.
+//   A gatherer pointer re-anchor after the first task branch restored the
+//   original register colors and the strongest clean nonexact result: 962B,
+//   83.93% shape, 421 strict-diff bytes, and the 0x18 frame.
+// - Separate found-index, union-overlay, array-slot, and header-context probes
+//   did not improve this result and were rolled back.
 
-#include "..\..\include\game_globals.h"
+extern float DAT_005756f0;
 
 typedef unsigned char uchar;
 typedef unsigned long ulong;
@@ -122,23 +130,23 @@ struct TribeTacticalAIModule {
 
 int TribeTacticalAIModule::highLevelTaskGatherer(int id, ulong param)
 {
-    int i;
-    int task;
+    UnitData* gatherer;
+    unsigned long now;
+    RGE_Static_Object* gathererObj;
+    int triedTasking[4];
+    UnitAIModule* ai;
     int remaining;
+    int task;
     int* tried;
     int* desired;
-    UnitData* gatherer;
-    RGE_Static_Object* gathererObj;
-    UnitAIModule* ai;
-    unsigned long now;
-    int triedTasking[4];
+    int i;
     int taskResult;
 
     i = 0;
-    taskResult = 0;
     triedTasking[1] = 0;
     triedTasking[2] = 0;
     triedTasking[3] = 0;
+    taskResult = 0;
     gatherer = this->gatherers;
     for (i = 0; i < this->numberGatherersValue; ++i, ++gatherer) {
         if (gatherer->id == id)
@@ -153,20 +161,16 @@ int TribeTacticalAIModule::highLevelTaskGatherer(int id, ulong param)
     this->gatherers[i].lastTaskTime = now;
 
     gathererObj = this->md->player->world->object(id);
-    if (gathererObj == 0)
-        goto fail;
-    if (gathererObj->unitAI() == 0)
-        goto fail;
-
-    ai = gathererObj->unitAI();
+    if (gathererObj != 0 && gathererObj->unitAI() != 0) {
+        ai = gathererObj->unitAI();
     if (ai->currentAction() == 0x258)
         return 1;
     ai = gathererObj->unitAI();
     if (ai->currentAction() == 0x25A)
-        return 1;
+        goto success;
     ai = gathererObj->unitAI();
     if (ai->currentAction() == 0x26A)
-        return 1;
+        goto success;
 
     if (gathererObj->attribute_amount_held > DAT_005756f0)
         return 1;
@@ -182,44 +186,44 @@ int TribeTacticalAIModule::highLevelTaskGatherer(int id, ulong param)
     if (ai->currentOrder() == 0x2C6) {
         ai = gathererObj->unitAI();
         if (ai->currentOrderPriority() == 100)
-            return 1;
+            goto success;
     }
     ai = gathererObj->unitAI();
     if (ai->currentOrder() == 0x2BE)
         return 1;
 
-    if (this->gatherers[i].data3 < this->gatherers[i].data2) {
+    if (this->gatherers[i].data2 > this->gatherers[i].data3) {
         ai = gathererObj->unitAI();
         if (ai->currentAction() != -1)
             return 1;
         task = this->gatherers[i].data1;
         triedTasking[task + 1] = 1;
-        taskResult = this->taskGatherer(this->gatherers[i].id, task, 0, param, 0);
-        if (taskResult == 1)
+        if (this->taskGatherer(this->gatherers[i].id, task, 0, param, 0) == 1)
             return 1;
         this->gatherers[i].data1 = -1;
         this->gatherers[i].data2 = -1;
         this->gatherers[i].data3 = -1;
     }
 
+    // BINARY NOTE: The found record remains live through all later task calls.
+    gatherer = &this->gatherers[i];
     tried = triedTasking + 1;
     desired = this->desiredGathererDistribution;
     i = 0;
     task = 0;
     do {
-        if (*tried != 1 && this->actualGathererDistribution[task] < *desired) {
-            if (this->gatherers[i].data1 == task) {
+        if (*tried != 1 && desired[-4] < *desired) {
+            if (gatherer->data1 == task) {
                 ai = gathererObj->unitAI();
                 if (ai->currentAction() == 0x265)
-                    return 1;
+                    goto success;
                 ai = gathererObj->unitAI();
                 if (ai->currentAction() == 0x261)
-                    return 1;
+                    goto success;
             }
             *tried = 1;
-            taskResult = this->taskGatherer(this->gatherers[i].id, task, 0, param, 0);
-            if (taskResult == 1)
-                return 1;
+            if (this->taskGatherer(gatherer->id, task, 0, param, 0) == 1)
+                goto success;
         }
         ++task;
         ++tried;
@@ -235,22 +239,26 @@ int TribeTacticalAIModule::highLevelTaskGatherer(int id, ulong param)
         triedTasking[1] = 1;
     } else if (this->inAge(3) != 0 && this->age4Enabled == 1) {
         if (triedTasking[1] == 0) {
-            taskResult = this->taskGatherer(this->gatherers[i].id, 0, 1, param, 0);
+            taskResult = this->taskGatherer(gatherer->id, 0, 1, param, 0);
             triedTasking[1] = 1;
         }
         if (taskResult != 0)
-            return 1;
+            goto normal_success;
         task = 3;
     } else {
         task = 0;
         triedTasking[1] = 1;
     }
 
-    taskResult = this->taskGatherer(this->gatherers[i].id, task, 1, param, 0);
-    if (taskResult == 0)
-        this->taskGatherer(this->gatherers[i].id, -1, 1, param, triedTasking + 1);
+    if (this->taskGatherer(gatherer->id, task, 1, param, 0) == 0)
+        this->taskGatherer(gatherer->id, -1, 1, param, triedTasking + 1);
 
-    return 1;
+normal_success:
+        return 1;
+
+success:
+        return 1;
+    }
 
 fail:
     return 0;
