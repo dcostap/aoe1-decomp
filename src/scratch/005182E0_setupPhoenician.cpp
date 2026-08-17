@@ -62,6 +62,27 @@
 //   context remains canonical; a fresh baseline emitted the same 25-byte basin.
 //   The remaining EDX=14 versus EDX=64 coloring and late parameter reload have
 //   no evidence-backed source lead in this session.
+// - Revisit probes: moving the trailing 40/30/100 stores before the 20-valued
+//   group, using a function-scope map_type copy, and flattening the local
+//   player/game declarations all emitted the same 25-byte basin. Restored the
+//   canonical typed source.
+// - Specialist closeout: the period reconstruction in
+//   C:\Projects\my_decomps\aoe1\src\game\src\TRIBE_Player.cpp was tested with
+//   its non-deathmatch-first and explicit-return shape (283 bytes, 237-byte
+//   drift). Reversing the outer condition without returns duplicated that basin.
+//   Early mode captures, both at block entry and before the 20-valued stores,
+//   duplicated the clean 25-byte basin. Restored this direct-store source.
+// - Revisit sa-a32e6d95-r1 tested narrow period-style game/player declarations,
+//   removal of the unused stddef include, and explicit deathmatch-arm returns.
+//   Each emitted the same 275-byte basin and 25-byte positional drift. The
+//   current VC5 output still loads 64h before the non-deathmatch stores and
+//   reloads param_2 after the 14h stores; the oracle loads 14h first and
+//   reloads param_2 before those stores.
+// - Fresh local donor search found setupBabylonian as the closest exact
+//   same-TU constant-store example. Its natural source emits the oracle's
+//   14h register and early param_2 reload, but its store groups differ. This
+//   is codegen evidence, not proof that Phoenician needs a different source.
+//   No policy-valid source lead remains. Keep this clean typed reconstruction.
 
 #include <stddef.h>
 
