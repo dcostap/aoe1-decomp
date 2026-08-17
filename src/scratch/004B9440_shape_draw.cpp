@@ -25,6 +25,15 @@
 // session shardB6-B9440 probe 1: used a typed shared line-count local with
 // branch-local subtraction for the Shape.cpp span-list gate; this follows the
 // first non-prologue structural hunk and tests the donor-era branch topology.
+// BINARY NOTE: 0056C780 returns with plain ret and has no arguments. Keep its
+// call nested in AddDrawNode so the caller's two preceding pushes stay live.
+// BINARY NOTE: the clipped mode tail uses the same mask/decrement switch shape
+// as the unclipped tail; keep a switch instead of an if/else chain.
+// session sa-7adcaa0c-r1 probes 1-20: volatile return storage, parameter and
+// local scope/order, typed pointer surfaces, receiver aliases, aggregate-copy
+// spelling, return labels, and ambient declarations did not close the frame.
+// The reduced source keeps only the zero-argument helper ABI and switch changes.
+// Remaining mismatch is the original 0x1c frame/register/home basin.
 // No inline asm used; no accepted_drift proposal.
 
 typedef unsigned char byte;
@@ -149,7 +158,7 @@ extern int fog_next_shape;
 extern DClipInfo_List* SDI_List;
 extern int ASM_Fast_Count;
 
-extern "C" void* __cdecl ASMGet_Color_Xform(int, long);
+extern "C" int __cdecl ASMGet_Color_Xform();
 extern "C" void __cdecl ASMSet_Surface_Info(void*, void*, void*, int, int, int, int);
 extern "C" void __cdecl ASMSet_Xlate_Table(void*);
 extern "C" void __cdecl ASMDraw_Sprite(void*, long, long, long, long, long, long, int);
@@ -166,10 +175,10 @@ byte TShape::shape_draw(TDrawArea* td, long x, long y, long shape_num,
         if (SDI_Capture_Info != 0) {
             Shape_Info* info = (Shape_Info*)((char*)this->FShape +
                                              ((shape_num + 1) << 5));
-            int xform = (int)ASMGet_Color_Xform(SDI_Draw_Level, SDI_Object_ID);
             SDI_List->AddDrawNode(this->FShape, info, SDI_Draw_Line,
                                   x - info->Hotspot_X, y - info->Hotspot_Y,
-                                  fog_next_shape, table, xform,
+                                  fog_next_shape, table,
+                                  ASMGet_Color_Xform(),
                                   SDI_Draw_Level, SDI_Object_ID);
             return 1;
         }
@@ -264,16 +273,21 @@ byte TShape::shape_draw(TDrawArea* td, long x, long y, long shape_num,
                 }
             }
 
-            if (mode == 2) {
+            switch ((unsigned char)mode) {
+            case 2:
                 if (table != 0)
                     return this->shape_shadow_clipped(
                         td, original_x0, original_y0, x0, y0, x1, y1, table);
-            } else if (mode == 1) {
+                break;
+            case 1:
                 if (table != 0)
                     return this->shape_color_trans_clipped(
                         td, original_x0, original_y0, shape_num,
                         x0, y0, x1, y1, table);
-            } else if (mode != 0) {
+                break;
+            case 0:
+                break;
+            default:
                 return ret;
             }
             return this->shape_draw_clipped(td, original_x0, original_y0,
