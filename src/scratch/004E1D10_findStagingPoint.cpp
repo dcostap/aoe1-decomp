@@ -25,7 +25,19 @@
 // and improved shape to 75.53%, but shrank the body to 1178 bytes; rolled back.
 // orch-4E1D10-a: parameter-home reuse, explicit sqrt intrinsic context, and
 // removing the unused third point were codegen duplicates.
-// left in scratch: behavior skeleton likely has the right major call set and nested scan, but not exact/accepted_drift quality; needs precise original source expression for inner passability and scoring to recover the missing 19+ bytes under default /O2.
+// pass-2026-08-17: ran 25 meaningful source/codegen probes.  Separate LOS and
+// attack penalty locals recovered the original 1219-byte size, all 20 calls,
+// 0x6C frame, and 85.11% shape; the positional diff is 765 bytes.
+// The original distance conversion occurs before debug_rand and findDrop only
+// when the direct squared-distance form is used, but that form drops the frame
+// to 0x68 and loses the main body shape.  Incoming p.x cursor reuse and the
+// donor canPlace float ordering improved local islands but did not combine
+// with the exact-size penalty form.  Keep the exact-size penalty form here.
+// Remaining evidence: the first mismatch is the target spill home; late
+// scoring still uses ESI as the accumulator while the original uses EAX.
+// left in scratch: behavior skeleton has the right call set and nested scan,
+// but is not exact or accepted drift.  Recover target-home coalescing and the
+// late score accumulator without fake volatility or compiler steering.
 
 typedef unsigned char uchar;
 struct XYPoint { int x; int y; };
@@ -158,9 +170,18 @@ int TribeInformationAIModule::findStagingPoint(XYPoint p, XYPoint& out, int p3, 
             XYPoint a, b;
             a.x = y; a.y = x;
             int found = unit->findDrop(&a, &targetPoint, 1.0f, &b, 1);
-            int v = (found != 1 ? radius : 0) + rnd + dist;
-            if (maxLOSValue > 0) v -= losMap.lookupValue(y, x) * radius / maxLOSValue;
-            if (maxAttackValue > 0) v -= attackMap.lookupValue(y, x) * radius / maxAttackValue;
+            int losPenalty;
+            int attackPenalty;
+            losPenalty = 0;
+            if (maxLOSValue > 0)
+                losPenalty = -(losMap.lookupValue(y, x) * radius / maxLOSValue);
+            attackPenalty = 0;
+            if (maxAttackValue > 0)
+                attackPenalty = -(attackMap.lookupValue(y, x) * radius / maxAttackValue);
+            int v = attackPenalty + losPenalty;
+            v += found != 1 ? radius : 0;
+            v += dist;
+            v += rnd;
             if (bestValue == -1 || bestValue < v) { bestValue = v; out.x = y; out.y = x; }
         }
     }
