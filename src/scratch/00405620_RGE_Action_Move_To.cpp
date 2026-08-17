@@ -90,48 +90,26 @@ class RGE_Task;
 class RGE_Action_List;
 
 class RGE_Master_Static_Object;
+class RGE_Master_Animated_Object;
+class RGE_Master_Moving_Object;
 class RGE_Master_Action_Object;
-
-class RGE_Static_Object {
-public:
-    virtual ~RGE_Static_Object();
-    int id;
-    RGE_Master_Static_Object* master_obj;
-    void* owner;
-    RGE_Sprite* sprite;
-    RGE_Sprite* old_sprite;
-    void* sprite_list;
-    char gap_1C[0x1C];
-    float world_x;
-    float world_y;
-    float world_z;
-    char gap_44[0x44];
-};
-
-class RGE_Action_Object {
-public:
-    virtual ~RGE_Action_Object();
-    int id;
-    RGE_Master_Action_Object* master_obj;
-    char gap_0C[0x188];
-};
 
 class RGE_Master_Static_Object {
 public:
     virtual ~RGE_Master_Static_Object();
     char gap_04[0x14];
-    RGE_Sprite* sprite;
+    RGE_Sprite* sprite;             // +0x18
     char gap_1C[0x9C];
 };
 
 class RGE_Master_Animated_Object : public RGE_Master_Static_Object {
 public:
-    float speed;
+    float speed;                    // +0xB8
 };
 
 class RGE_Master_Moving_Object : public RGE_Master_Animated_Object {
 public:
-    RGE_Sprite* move_sprite;
+    RGE_Sprite* move_sprite;        // +0xBC
     char gap_C0[0x18];
 };
 
@@ -140,31 +118,68 @@ public:
     char gap_D8[0x24];
 };
 
+class RGE_Static_Object {
+public:
+    virtual ~RGE_Static_Object();
+    long id;                        // +0x04
+    RGE_Master_Static_Object* master_obj; // +0x08
+    void* owner;                    // +0x0C
+    RGE_Sprite* sprite;             // +0x10
+    RGE_Sprite* old_sprite;         // +0x14
+    void* sprite_list;              // +0x18
+    char gap_1C[0x1C];
+    float world_x;                  // +0x38
+    float world_y;                  // +0x3C
+    float world_z;                  // +0x40
+    char gap_44[0x44];
+};
+
+class RGE_Animated_Object : public RGE_Static_Object {
+public:
+    float speed;                    // +0x88
+};
+
+class RGE_Moving_Object : public RGE_Animated_Object {
+public:
+    char gap_8C[0xF4];
+};
+
+class RGE_Action_Object : public RGE_Moving_Object {
+public:
+    unsigned char waiting;         // +0x180
+    char gap_181[3];
+    RGE_Action_List* actions;      // +0x184
+    unsigned char command_flag;    // +0x188
+    char gap_189[3];
+    int last_action_value;         // +0x18C
+    int last_action_state_value;   // +0x190
+};
+
 class RGE_Action {
 public:
     virtual ~RGE_Action();
-    virtual int vf04(RGE_Action_Object*);
-    virtual int vf08(int, RGE_Action_Object*);
-    virtual void vf0C(void);
-    virtual void vf10(void);
-    virtual void vf14(int);
-    virtual short vf18(void);
-    virtual void vf1C(unsigned char);
-    virtual unsigned char vf20(void);
-    virtual unsigned char vf24(void);
-    virtual unsigned char vf28(void);
-    virtual int vf2C(void);
-    virtual int vf30(void*, float, float, float);
-    virtual int vf34(void*, float, float, float);
-    virtual unsigned char vf38(void*);
-    virtual unsigned char vf3C(long, unsigned char);
-    virtual void vf40(void*);
-    virtual void vf44(void*, void*, void*);
-    virtual void vf48(char*);
-    virtual void* vf4C(void);
-    virtual void* vf50(void);
-    virtual void set_target_obj(RGE_Static_Object* target);
-    virtual void vf58(void*);
+    virtual int setup(RGE_Action_Object*);
+    virtual int setup(int, RGE_Action_Object*);
+    virtual RGE_Action_List* create_action_list(RGE_Action_Object*);
+    virtual void rehook();
+    virtual void save(int);
+    virtual short type();
+    virtual void first_in_stack(unsigned char);
+    virtual unsigned char inside_obj_update();
+    virtual unsigned char idle_update();
+    virtual unsigned char update();
+    virtual int stop();
+    virtual int move_to(RGE_Static_Object*, float, float, float);
+    virtual int work(RGE_Static_Object*, float, float, float);
+    virtual unsigned char attack_response(RGE_Static_Object*);
+    virtual unsigned char relation_response(long, unsigned char);
+    virtual void copy_obj(RGE_Master_Action_Object*);
+    virtual void copy_obj_sprites(RGE_Master_Action_Object*, RGE_Task*, RGE_Task*);
+    virtual void get_state_name(char*);
+    virtual RGE_Static_Object* get_target_obj();
+    virtual RGE_Static_Object* get_target_obj2();
+    virtual void set_target_obj(RGE_Static_Object*);
+    virtual void set_target_obj2(RGE_Static_Object*);
     virtual void set_state(unsigned char);
 
     short action_type;
@@ -215,10 +230,12 @@ RGE_Action_Move_To::RGE_Action_Move_To(RGE_Action_Object* obj, RGE_Static_Object
         range = 0.4f;
 
     if (spr == 0) {
-        if (this->obj->master_obj->move_sprite == 0) {
-            sprite = this->obj->master_obj->sprite;
+        RGE_Master_Action_Object* master =
+            (RGE_Master_Action_Object*)this->obj->master_obj;
+        if (master->move_sprite == 0) {
+            sprite = master->sprite;
         } else {
-            sprite = this->obj->master_obj->move_sprite;
+            sprite = master->move_sprite;
         }
     }
 }
