@@ -42,6 +42,18 @@
 //   active value worsened the geometry register map to 34 bytes and was
 //   restored. The residual remains the final virtual vtable scratch register
 //   and paired text_wid load; ownership and geometry stay proven.
+// - Independent audit: twenty natural source probes covered guard shape,
+//   receiver ownership, canonical 4-byte geometry widths, arithmetic spelling,
+//   local initialization, and virtual declaration surfaces. Nineteen probes
+//   stayed at the same 14-byte group. Initializing visible_lines early broke
+//   the PDB-proven delayed draw_lines read and grew the function by 8 bytes;
+//   it was restored.
+// - BINARY NOTE: this function has no DrawArea or shape access. Its geometry
+//   belongs to TPanel, its line and scrollbar state belongs to TTextPanel, and
+//   set_list_len plus set_active belong to TScrollBarPanel. The only stack
+//   local proven by the dossier is the incoming int at entry +4; PDB bands
+//   show no named local stack records. The final active reread stays after
+//   TPanel::set_rect, and text_wid reload stays after every possible call.
 
 struct tagRECT {
     long left;
