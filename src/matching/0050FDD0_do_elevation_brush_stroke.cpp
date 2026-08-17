@@ -121,6 +121,10 @@
  * the pinned natural source; final validation remains the 7-byte reverse-arm drift.
  */
 
+// BINARY NOTE: The period tmap.cpp standard-library context selects the
+// original VC5 reverse-arm scheduling. The function body does not need it.
+#include <stdlib.h>
+
 class RGE_Map {
 public:
     virtual unsigned char do_elevation_brush_stroke(long x1, long y1, long x2, long y2, long r, unsigned char c);
