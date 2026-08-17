@@ -1,16 +1,15 @@
 // VA: 004495C0 RGE_Effects::do_effect
 // effects.cpp lines 186-274
 // 301 bytes
-// BLOCKER: typed dispatch and all seven call targets match, but VC5 emits
-// integer float pushes instead of the oracle's fld/reserved-stack/fstp form.
-// Remaining differences:
-// 1. Float arg passing: rebuilt uses mov edx,[mem];push edx while
-//    original uses fld dword [mem]; push ecx/temp; fstp [esp]
-// 2. CALL instructions are placeholder relocations (e800000000) in rebuilt
-// 3. Jump table address is placeholder (00000000) instead of 4496F0h
-// 4. Case 1 vtable call at offset 0x78: uses extern function ptr
+// STATUS: exact match with the natural typed dispatch and scoped float locals.
 //
 // Attempt log:
+// - fresh pass baseline kept the seven ordered calls and exact 301-byte size,
+//   but direct float member arguments produced integer pushes (208-byte diff)
+// - ordinary scoped float locals in cases 4, 5, and 0 restore the oracle's
+//   fld/reserved-stack/fstp argument staging without volatile or helper code
+// - the exact check accepts all seven direct/virtual call relocations and the
+//   jump-table relocation; no manual address or wrapper is required
 // - best version (no extra locals): first 14 bytes match, 53.8% overall
 // - with float f local: regressed to 68% (extra stack slot)
 // - real member functions through RGE_Player: placeholder CALL relocations
@@ -32,8 +31,7 @@
 // - naming the first short argument in cases 4, 5, and 0 was a codegen duplicate; restored clean source
 // FLAGS: none
 // NOTE: Natural source keeps the proven RGE_Effect layout, full polymorphic ABI,
-// switch order, signed guards, and all call targets. Remaining drift is local
-// float argument staging plus jump-table placement/relocation context.
+// switch order, signed guards, all call targets, and the original boundary.
 // Readiness audit restored executable field-read behavior: cases 0, 4, and 5
 // read the full change_num3 short before narrowing it for the byte parameter.
 // Case 1 reads both shorts and the float before it tests change_num1.
@@ -87,19 +85,25 @@ void RGE_Effects::do_effect(short effect_id, RGE_Player* player) {
                 switch (cmd->command) {
                 case 4: {
                     short operation = cmd->change_num3;
-                    player->modify_tobj_delta(cmd->change_num1, cmd->change_num2, cmd->change_amount,
+                    float amount = cmd->change_amount;
+                    player->modify_tobj_delta(cmd->change_num1, cmd->change_num2,
+                                              amount,
                                               (unsigned char)operation);
                     break;
                 }
                 case 5: {
                     short operation = cmd->change_num3;
-                    player->modify_tobj_percent(cmd->change_num1, cmd->change_num2, cmd->change_amount,
+                    float amount = cmd->change_amount;
+                    player->modify_tobj_percent(cmd->change_num1, cmd->change_num2,
+                                                amount,
                                                 (unsigned char)operation);
                     break;
                 }
                 case 0: {
                     short operation = cmd->change_num3;
-                    player->modify_tobj(cmd->change_num1, cmd->change_num2, cmd->change_amount,
+                    float amount = cmd->change_amount;
+                    player->modify_tobj(cmd->change_num1, cmd->change_num2,
+                                        amount,
                                         (unsigned char)operation);
                     break;
                 }
