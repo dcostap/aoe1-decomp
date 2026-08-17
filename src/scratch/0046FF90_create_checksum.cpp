@@ -54,6 +54,35 @@
 //   long-width checksum/count locals, and reversed accumulator order were
 //   neutral or worse. Restored the cached-object clean source; the blocker is
 //   still the original loop-carried object checksum spill and frame-0x18 home.
+// Fresh bounded pass (sa-7ad2b15f-r1):
+// - Revalidated the clean source at 277B/0x14, diff 185, with all five calls
+//   aligned. Sequential checksum updates and a local reference alias were
+//   codegen-neutral.
+// - Direct list->node rereads for position/action reproduced the stronger
+//   268B/0x14, diff 182 basin, but did not recover the original frame.
+// - A source model based on the external RGE_Player checksum reconstruction,
+//   named held/master temporaries, decompiler local order, long-width locals,
+//   and top-level declarations produced no new basin or exact result.
+// - A two-field checksum aggregate and top-level signed attribute count were
+//   worse. The aggregate stayed at frame 0x14; the count variant shortened the
+//   body. Restored the pinned cached-object source before final validation.
+// Revisit pass (sa-2f1d57b3-r1):
+// - Typed sleeping-list, master-pointer, full node/list-layout, combined-prefix,
+//   separate base/result, compound-update, and promoted-state forms were
+//   neutral. A distinct object_sum carried through waypoint worsened to 227B.
+// - Typed short prefix count locals worsened to 291B. A previous-checksum
+//   snapshot optimized to the clean 277B basin. No natural form recovered the
+//   original 0x18 frame or stack-carried object checksum.
+// - Restored the pinned cached-object source. The remaining blocker is the
+//   compiler's EBP temporary versus stack object-checksum allocation; exact
+//   calls, widths, ownership, and loop behavior remain stable.
+// Revisit pass (sa-da8d783f-r1):
+// - Rechecked the pinned source and tested seven natural forms: a top-level
+//   attribute count, a combined waypoint checksum, long and inner checksum
+//   temporaries, direct state access, and named prefix counts.
+// - The combined waypoint form recovered the 0x18 frame but reordered the
+//   checksum conversion call and added 16 bytes. Other forms were neutral or
+//   worse. Restored the pinned 277B/0x14 source with 5/5 calls.
 
 extern "C" long __cdecl __ftol(void);
 
