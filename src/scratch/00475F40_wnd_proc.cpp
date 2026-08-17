@@ -100,6 +100,15 @@
 // only its wnd_proc override. Base forwards return directly. The PDB-proven
 // message ABI remains void*, unsigned int, unsigned int, and long; Win32 calls
 // use the SDK declarations and typed window handles.
+// Frontier (sa-bbb2ad49-r1): 18 policy-clean probes covered natural parameter
+// spelling and SDK typedefs/constants, class and virtual declaration forms,
+// qualified base receivers, result declaration order/lifetime, explicit switch
+// defaults, and proven Boolean field types. Natural forms stayed at 242 bytes
+// with the same eight-byte forwarding recolor. A subtract-7 switch was 243
+// bytes and 169 bytes different. OPAQUE/NULL/TRUE changed one non-forward byte
+// but did not improve the forwarding sites. Restored this clean source; the
+// next useful evidence remains original TU/header provenance or a new compiler
+// context that can explain the two allocator-only register families.
 
 #include <windows.h>
 
