@@ -149,6 +149,17 @@
 // - Typed payload aliases, canonical Orien/width widths, a palette alias,
 //   direct header reads, and folded destination arithmetic were duplicates or
 //   worse. No parameter-home or row-home steering is retained.
+// sa-697357dc-r1:
+// - Completed a fresh 20-probe natural-source pass from the 268B/152-diff
+//   frontier. Every probe preserved 268B/8B, two ordered calls, and behavior.
+// - A one-byte Shape_Payload record models the proven packed stream without a
+//   raw cursor. It is codegen-identical to the byte form and remains canonical.
+// - Tested payload record ownership, decoder ABI spelling, row/count declaration
+//   order, scoped locals, solid/skip order, row-pointer forms, and loop guards.
+//   All natural variants were duplicates or worse.
+// - The oracle still assigns the row pointer to td's home and count to p2's
+//   home. Only rejected home casts or pointer carriers reach the 132-byte basin.
+//   The retained source uses no casts, aliases, volatility, or compiler steering.
 // FLAGS: /nologo /c /O2 /Oy
 
 extern "C" void* __cdecl memset(void*, int, unsigned int);
@@ -215,6 +226,11 @@ public:
     long Hotspot_Y;
 };
 
+struct Shape_Payload {
+    uchar value;
+};
+
+
 class TShape {
 public:
     uchar* shape;                   // +0x00
@@ -234,13 +250,12 @@ uchar TShape::shape_color_trans_unclipped(TDrawArea* td, long p2, long p3, long 
 {
     Shape_Header* hdr = this->shape_header;
     long width = (hdr->ymax - hdr->ymin) + 1;
-    uchar* src = (uchar*)(hdr + 1);
+    Shape_Payload* src = (Shape_Payload*)(hdr + 1);
 
     int Orien = td->Orien;
     long stride = td->AlignedWidth() * Orien;
     uchar count;
     uchar* row;
-
     long dest_off;
     if (Orien < 1) {
         dest_off = (p3 - td->Height + 1) * stride;
@@ -254,16 +269,16 @@ uchar TShape::shape_color_trans_unclipped(TDrawArea* td, long p2, long p3, long 
             uchar done = 0;
             uchar* dst = row;
             do {
-                uchar b = *src++;
+                uchar b = src++->value;
                 if ((b & 1) == 1) {
                     count = b >> 1;
                     if (count == 0) {
-                        dst += *src;
+                        dst += src->value;
                         src++;
                     } else {
                         uchar* end = dst + count;
                         while (dst < end) {
-                            *dst = pal[*src];
+                            *dst = pal[src->value];
                             src++;
                             dst++;
                         }
@@ -273,7 +288,7 @@ uchar TShape::shape_color_trans_unclipped(TDrawArea* td, long p2, long p3, long 
                     if (count == 0) {
                         done = 1;
                     } else {
-                        memset(dst, pal[*src], count);
+                        memset(dst, pal[src->value], count);
                         src++;
                         dst += count;
                     }
