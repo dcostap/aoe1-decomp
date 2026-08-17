@@ -13,6 +13,13 @@
 // padding, but made VC5 cache GDI imports and expanded the body; rolled back.
 // Probe: unsigned int text_flags matched the DrawText format ABI but emitted
 // duplicate 0x11c/931-byte code; restored the int local.
+// Managed reassessment: the clean source has 26/26 ordered calls and 8/8 CFG
+// signals, but emits 931 bytes, a 0x11c frame, EDI/EBX bounds, and EBP flags;
+// the oracle has 916 bytes, a 0x114 frame, EBP/EBX bounds, and EDI flags.
+// Managed reassessment: direct bounds removed the extra frame bytes (917 or
+// 923 bytes), but changed the quotient basin at +0xbc and raised the diff.
+// Twenty source, ABI, layout, lifetime, and context probes found no better
+// clean result. Keep the typed source and do not pad the frame.
 // BLOCKER: original frame is 0x114 with EBP/EBX bounds and EDI flags; current
 // typed source uses a 0x11c frame with a different local/register basin.
 
@@ -107,8 +114,8 @@ public:
     int clock_type;
     int old_clock_type;
     int clock_format;
+    int old_clock_format;
     int player_id;
-    int field_110;
     void* world;
     void* player;
     unsigned int start_real_time;
@@ -219,7 +226,7 @@ int TRIBE_Panel_Time::render_to_image_buffer() {
     this->used_screen_rect.bottom = this->render_rect.top + this->pnl_hgt - 1;
     this->old_display_time = this->display_time;
     this->old_clock_type = this->clock_type;
-    this->player_id = this->clock_format;
+    this->old_clock_format = this->clock_format;
     this->image_text_active = 1;
 
     return 1;
