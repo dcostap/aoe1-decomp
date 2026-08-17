@@ -29,6 +29,11 @@
 // layout: scoping all draw locals inside the text block was codegen-neutral; restored clean source.
 // layout: declaring x/y/wid/hgt at the PDB line-328 origin block was also codegen-neutral; no new ownership lead remains in this claim.
 // left in scratch: exact call order and size match, but frame is 0x44 vs 0x48 and register/local scheduling still differs.
+// claim sa-6cea954a: 21 evidence-led hypotheses and two variant labs found no exact lead.
+// claim result: restored and pinned this typed source; final check is 1147 bytes, 0x44 frame, 32 aligned calls, 633-byte diff.
+// claim evidence: canonical TPanel/TDrawArea/global type surfaces were codegen-neutral; +1 origins and live-width compare were worse.
+// claim evidence: source-shape lab found no size/frame/call-set eligible variant; 64 ambient declarations stayed one codegen basin.
+// next lead: recover the original Pnl_msg.cpp local lifetime or translation-unit declaration context before further tuning.
 #include <string.h>
 #include <windows.h>
 
@@ -38,8 +43,19 @@ extern GameBaseInner* rge_base_game;
 
 class TDrawArea {
 public:
-    char gap_00[0x38];
-    void* hdc;
+    void* DrawSystem;
+    void* Wnd;
+    unsigned char* Bits;
+    void* BitmapInfo;
+    void* Bitmap;
+    void* OldBitmap;
+    int Width;
+    int Height;
+    int Pitch;
+    int Orien;
+    tagRECT ClipRect;
+    HDC DrawDc;
+    void* DrawSurface;
 
     void SetTrans(int a, int b);
     void Copy(TDrawArea* dest, long x, long y, tagRECT* rect, int mode);
@@ -47,6 +63,8 @@ public:
     int HasDc(char* tag);
     void ReleaseDc(char* tag);
 };
+
+class PanelNode;
 
 class TPanel {
 public:
@@ -64,23 +82,65 @@ public:
     virtual void draw_finish();
     virtual void draw();
 
-    char gap_004[8];
+    TPanel* previousPanelValue;
+    TPanel* previousModalPanelValue;
     long pnl_x;
     long pnl_y;
     long pnl_wid;
     long pnl_hgt;
-    char gap_01C[4];
+    char* panelNameValue;
     TDrawArea* render_area;
-    char gap_024[0x14];
+    tagRECT clip_rect;
+    int position_mode;
     int need_redraw;
-    char gap_03C[0x30];
-    int field_6C;
-    int field_70;
-    char gap_074[0x14];
+    TPanel* curr_child;
+    TPanel* parent_panel;
+    TPanel* left_panel;
+    TPanel* top_panel;
+    TPanel* right_panel;
+    TPanel* bottom_panel;
+    PanelNode* node;
+    PanelNode* first_child_node;
+    PanelNode* last_child_node;
+    TPanel* tab_prev_panel;
+    TPanel* tab_next_panel;
+    int mouse_captured;
+    int active;
+    int visible;
+    int tab_stop;
+    int have_focus;
+    int overlapping_children;
+    int handle_mouse_input;
+    int just_drawn;
     void* clip_rgn;
-    long draw_left;
-    long draw_top;
-    char gap_094[0x5F];
+    tagRECT render_rect;
+    long left_border;
+    long top_border;
+    long right_border;
+    long bottom_border;
+    long min_wid;
+    long max_wid;
+    long min_hgt;
+    long max_hgt;
+    long mouse_hold_interval;
+    long mouse_move_tolerance;
+    long mouse_down_x;
+    long mouse_down_y;
+    int mouse_down_ctrl;
+    int mouse_down_shift;
+    unsigned long mouse_down_time;
+    int error_code;
+    int z_order;
+    int display_changed_count;
+    long help_string_id;
+    long help_page_id;
+    unsigned char mouse_action;
+    unsigned char mouse_down_button;
+    unsigned char panel_type;
+    unsigned char color;
+    unsigned char fill_in_background;
+    unsigned char clip_to_parent;
+    unsigned char draw_rect2_flag;
     unsigned char need_restore;
 };
 
@@ -117,7 +177,7 @@ public:
 };
 
 void TMessagePanel::draw() {
-    if (this->render_area == 0 || this->field_70 == 0 || this->field_6C == 0 || this->showing_message == 0) {
+    if (this->render_area == 0 || this->visible == 0 || this->active == 0 || this->showing_message == 0) {
         this->need_redraw = 0;
         return;
     }
@@ -126,9 +186,9 @@ void TMessagePanel::draw() {
     long x;
     long wid;
     long hgt;
-    unsigned long font_rgb;
-    void* old_font;
-    unsigned long back_rgb;
+    COLORREF font_rgb;
+    HGDIOBJ old_font;
+    COLORREF back_rgb;
     tagPALETTEENTRY p;
     tagSIZE ts;
     tagRECT rect;
@@ -153,8 +213,8 @@ void TMessagePanel::draw() {
     if (msg[0] != 0) {
         void* dc = this->render_area->GetDc("pnl_msg::draw");
         if (dc != 0) {
-            SelectClipRgn(this->render_area->hdc, this->clip_rgn);
-            old_font = SelectObject(this->render_area->hdc, this->font);
+            SelectClipRgn(this->render_area->DrawDc, this->clip_rgn);
+            old_font = SelectObject(this->render_area->DrawDc, this->font);
             if (this->index_color != 0) {
                 GetPaletteEntries(rge_base_game->draw_system->Pal, this->font_color, 1, &p);
                 font_rgb = ((unsigned long)p.peBlue << 16) | ((unsigned long)p.peGreen << 8) | p.peRed;
@@ -166,19 +226,19 @@ void TMessagePanel::draw() {
             }
 
             if (this->message_type == 2) {
-                SetBkColor(this->render_area->hdc, 0);
-                SetBkMode(this->render_area->hdc, 2);
+                SetBkColor(this->render_area->DrawDc, 0);
+                SetBkMode(this->render_area->DrawDc, 2);
             } else {
-                SetBkMode(this->render_area->hdc, 1);
+                SetBkMode(this->render_area->DrawDc, 1);
             }
 
-            x = this->draw_left;
-            y = this->draw_top;
+            x = this->render_rect.left;
+            y = this->render_rect.top;
             wid = this->pnl_wid - 2;
             hgt = this->pnl_hgt - 2;
 
             len = strlen(msg);
-            GetTextExtentPoint32A(this->render_area->hdc, msg, len, &ts);
+            GetTextExtentPoint32A(this->render_area->DrawDc, msg, len, &ts);
 
             unsigned int flags;
             if (this->message_type == 1) {
@@ -187,7 +247,7 @@ void TMessagePanel::draw() {
                 flags = 0x22;
             } else {
                 len = strlen(msg);
-                GetTextExtentPoint32A(this->render_area->hdc, msg, len, &ts);
+                GetTextExtentPoint32A(this->render_area->DrawDc, msg, len, &ts);
                 flags = (this->word_wrap == 0 || ts.cx <= this->pnl_wid - 2) ? 0x20 : 0x10;
                 if (this->horz_just == 4) flags |= 1;
                 else if (this->horz_just == 3) flags |= 2;
@@ -197,21 +257,21 @@ void TMessagePanel::draw() {
 
             wid = wid + x + 1;
             hgt = hgt + y + 1;
-            SetTextColor(this->render_area->hdc, back_rgb);
+            SetTextColor(this->render_area->DrawDc, back_rgb);
             SetRect(&rect, x, y, wid - 2, hgt - 2);
-            DrawTextA(this->render_area->hdc, msg, -1, &rect, flags);
+            DrawTextA(this->render_area->DrawDc, msg, -1, &rect, flags);
             SetRect(&rect, x, y + 2, wid - 2, hgt);
-            DrawTextA(this->render_area->hdc, msg, -1, &rect, flags);
+            DrawTextA(this->render_area->DrawDc, msg, -1, &rect, flags);
             SetRect(&rect, x + 2, y, wid, hgt - 2);
-            DrawTextA(this->render_area->hdc, msg, -1, &rect, flags);
+            DrawTextA(this->render_area->DrawDc, msg, -1, &rect, flags);
             SetRect(&rect, x + 2, y + 2, wid, hgt);
-            DrawTextA(this->render_area->hdc, msg, -1, &rect, flags);
-            SetTextColor(this->render_area->hdc, font_rgb);
+            DrawTextA(this->render_area->DrawDc, msg, -1, &rect, flags);
+            SetTextColor(this->render_area->DrawDc, font_rgb);
             SetRect(&rect, x + 1, y + 1, wid - 1, hgt - 1);
-            DrawTextA(this->render_area->hdc, msg, -1, &rect, flags);
+            DrawTextA(this->render_area->DrawDc, msg, -1, &rect, flags);
 
-            SelectObject(this->render_area->hdc, old_font);
-            SelectClipRgn(this->render_area->hdc, 0);
+            SelectObject(this->render_area->DrawDc, old_font);
+            SelectClipRgn(this->render_area->DrawDc, 0);
             this->render_area->ReleaseDc("pnl_msg::draw");
         }
     }
