@@ -103,6 +103,21 @@
 //   outer/offset scalars were worse or codegen duplicates. The target's
 //   persisted byte offset and +0x04 bucket receiver remain unrecoverable by a
 //   policy-valid natural Map_Stack array source; restored this clean source.
+// - sa-84ac3456-r1 H1-H2: Combining the random expression with its declaration
+//   improved the natural array source to diff 111. A live typed byte cursor
+//   reached exact size but kept the 0x964 frame and changed the pair CFG.
+// - sa-84ac3456-r1 H3-H11: Binary-backed y/prev field overlays reproduced the
+//   target pair CFG and reached diff 13. The overlay remained decompiler-shaped
+//   and used raw cursor casts, so it is not a valid source owner.
+// - sa-84ac3456-r1 H12-H15: A separate local State {offset, Map_Stack[100]}
+//   recovered the 0x968 frame. Direct element ownership reached the target
+//   exact size and CFG, but the State and cursor casts are not established.
+// - sa-84ac3456-r1 H16-H20: The best diagnostic source used direct Map_Stack
+//   elements in that State and reached 237 bytes, 0x968, 82 instructions,
+//   100% block shape, and diff 10. Every residual byte was the consistent
+//   EBX/EDI color swap. Receiver aliases, bucket aliases, header context, and
+//   cursor declaration scope were codegen duplicates. Restored this clean
+//   natural source; no policy-valid exact lead was found.
 
 extern int __cdecl debug_rand(char* file, int line);
 
