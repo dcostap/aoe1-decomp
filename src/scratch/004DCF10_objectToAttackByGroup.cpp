@@ -28,6 +28,18 @@
 // - probe 15: moved result-slot zeroing to the binary-observed pre-isBoat
 //   point; positional diff improved by one byte, but shape and resync drift
 //   worsened, so restored the clean source.
+// - probes 16-20: tested local declaration order, loop forms, shared versus
+//   block-local ManagedArray objects, POD lifetime, and standard headers.
+//   None produced a better clean codegen basin. The block-local arrays keep
+//   the original nine operator_delete call sites.
+// - probes 21-28: restored the md-player visibility receiver and the
+//   DAT_00575564 distance threshold from assembly. Reusing the scan index and
+//   moving targetDistance to function scope changed little; no exact result.
+
+// BINARY NOTE: visibility uses this module's md->player map, not the target
+// owner's map. The executable loads md->player before visible.
+// BINARY NOTE: the distance clamp reads DAT_00575564. Keep the symbol rather
+// than replacing it with an equal literal.
 
 #include "../../include/game_globals.h"
 #include <math.h>
@@ -670,16 +682,17 @@ public:
 
 extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
 extern "C" int __cdecl debug_rand(const char* file, int line);
+extern float DAT_00575564;
 
 ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
     int owner, TacticalAIGroup* group, AttackState* state, unsigned long currentTime)
 {
     ObjectMemory* wonder = 0;
-    int iteration;
-    int destroyIndex = 0;
     RGE_Static_Object* commanderObject = this->md->object(group->commander());
-    int commanderIsPriest = 0;
     int commanderIsBoat = 0;
+    float targetDistance;
+    int commanderIsPriest = 0;
+    int destroyIndex = 0;
     unsigned char commanderZone;
 
     if (commanderObject == 0 || commanderObject->unitAI() == 0) {
@@ -778,14 +791,14 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
         state->active = 1;
     }
 
-    iteration = state->iterationIndex;
-    for (; iteration < this->maxImportantObjectMemory; ++iteration) {
-        ObjectMemory* memory = this->importantObjectMemory + iteration;
+    destroyIndex = state->iterationIndex;
+    for (; destroyIndex < this->maxImportantObjectMemory; ++destroyIndex) {
+        ObjectMemory* memory = this->importantObjectMemory + destroyIndex;
 
-        if (iteration > state->iterationIndex) {
+        if (destroyIndex > state->iterationIndex) {
             if (debug_timeGetTime("C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 0xF5A) - currentTime >=
                 this->md->player->world->availableComputerPlayerUpdateTime) {
-                state->iterationIndex = iteration;
+                state->iterationIndex = destroyIndex;
                 goto done;
             }
         }
@@ -826,7 +839,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
             visibleDY = -visibleDY;
         }
         if ((visibleDX > 5 || visibleDY > 5) &&
-            target->owner->visible->get_visible(targetX, targetY) != 0x0F) {
+            this->md->player->visible->get_visible(targetX, targetY) != 0x0F) {
             continue;
         }
 
@@ -854,8 +867,8 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
         if (dy < 0) {
             dy = -dy;
         }
-        float targetDistance = (float)sqrt((double)(dx * dx + dy * dy));
-        if (targetDistance < 1.0f) {
+        targetDistance = (float)sqrt((double)(dx * dx + dy * dy));
+        if (targetDistance < DAT_00575564) {
             targetDistance = 1.0f;
         }
 
@@ -927,7 +940,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
 
         if (state->phase == 0 && target->maximumSpeed() == DAT_00575580) {
             state->bestNonWallTargetID = memory->id;
-            state->bestNonWallTargetMemoryIndex = iteration;
+            state->bestNonWallTargetMemoryIndex = destroyIndex;
             state->bestNonWallTargetValue = score;
         }
 
@@ -952,7 +965,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
         group->objectsToDestroyCommanderZoneValue = (int)commanderZone;
         group->objectsToDestroyOwnerValue = memory->owner;
         state->bestTargetID = memory->id;
-        state->bestTargetMemoryIndex = iteration;
+        state->bestTargetMemoryIndex = destroyIndex;
         state->bestTargetValue = score;
     }
 
