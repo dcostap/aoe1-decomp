@@ -91,6 +91,16 @@
 //   and improved one local alignment, but did not change the structural basin.
 // - Removing the decompiler tempUD self-assignment shortened the function but
 //   worsened the structural diff; restored the prior source.
+// - 2026-08-17 claim pass: ran 22 distinct source, ABI, liveness, control-flow,
+//   and flag probes. No probe reached exactness. The clean baseline remains
+//   5325 differing bytes (90.9945%), 84.93% shape, 0x24 frame, and 104/104
+//   ordered calls. The main blocker is the derived vptr store at +0x2F and the
+//   missing original EH-state store at [esp+0x3C].
+// - Evidence: __declspec(novtable), flattened placement construction, alternate
+//   loop forms, scalar/pointer volatility axes, unsuffixed/direct version gates,
+//   and /O1, /Oy- flag variants all remained nonexact. Restore the clean source
+//   before further work. Next lead: recover VC5's original constructor EH state
+//   and delayed derived-vptr scheduling without manual assembly.
 
 #include "..\..\include\game_globals.h"
 
