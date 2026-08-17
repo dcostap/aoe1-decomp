@@ -22,18 +22,26 @@
 // 19: Binary decompiler assignment order places owner->world->map between full x and y/z radius loads; the positive view guard and this order are codegen duplicates.
 // 20: Exact player/world virtual surfaces preserve proven offsets (+3C and +28); emitted code is unchanged.
 // 21: A short coordinate-local diagnostic reached 994 bytes but emitted 16-bit additions, unlike the original 32-bit parameter-home additions; rolled back.
-// GIVEUP: left in scratch; no accepted_drift because the natural source remains 4 bytes over the original boundary and the prologue/liveness drift is broad.
+// 22-25: Re-tested widened parameters, reversed declaration order, master class surface,
+//        and owner/map aliases. They did not improve the 994B / 105-byte-diff basin.
+// 26: An ambient declaration sweep (64 samples) kept size, frame, calls, and the
+//     same first mismatch. Translation-unit declaration count is not the blocker.
+// 27: Split map declaration and assignment was a codegen duplicate. The best source
+//     uses literal 0.25f/0.75f pools and mutates the short coordinate parameters.
+// GIVEUP: left in scratch after 27 meaningful hypotheses; no accepted_drift because
+// the clean natural source remains 994B with 105 strict-diff bytes.
 
 #include <stdlib.h>
 
 typedef void* HDC;
 typedef void* HGDIOBJ;
 typedef void* HRGN;
-extern "C" int (__stdcall* const SelectClipRgn)(HDC, HRGN);
-extern "C" HGDIOBJ (__stdcall* const GetStockObject)(int);
-extern "C" HGDIOBJ (__stdcall* const SelectObject)(HDC, HGDIOBJ);
-extern "C" int (__stdcall* const MoveToEx)(HDC, int, int, void*);
-extern "C" int (__stdcall* const LineTo)(HDC, int, int);
+extern "C" __declspec(dllimport) int __stdcall SelectClipRgn(HDC, HRGN);
+extern "C" __declspec(dllimport) HGDIOBJ __stdcall GetStockObject(int);
+extern "C" __declspec(dllimport) HGDIOBJ __stdcall SelectObject(HDC, HGDIOBJ);
+extern "C" __declspec(dllimport) int __stdcall MoveToEx(HDC, int, int, void*);
+extern "C" __declspec(dllimport) int __stdcall LineTo(HDC, int, int);
+
 
 #define startLoggingAI (*(int*)0x0062C50C)
 
@@ -49,23 +57,27 @@ public:
 
 class RGE_Map_004C2DF0 {
 public:
-    virtual ~RGE_Map_004C2DF0();
     void get_point(short* x, short* y, float rx, float ry, float rz, short sx, short sy);
 };
 
 class RGE_World_004C2DF0 {
 public:
-    virtual void vf00();
-    char gap[0x24];
+    char gap[0x28];
     RGE_Map_004C2DF0* map;
 };
 class RGE_Player_004C2DF0 {
 public:
-    virtual ~RGE_Player_004C2DF0();
-    char gap[0x38];
+    char gap[0x3C];
     RGE_World_004C2DF0* world;
 };
-struct MasterObj_004C2DF0 { char gap[0xAC]; float rx; float ry; float rz; };
+class MasterObj_004C2DF0 {
+public:
+    virtual ~MasterObj_004C2DF0();
+    char gap[0xA8];
+    float rx;
+    float ry;
+    float rz;
+};
 struct RGE_View_004C2DF0 { char gap[0x88]; HRGN clip_rgn; };
 class BaseGame_004C2DF0 { public: virtual void vf00(); virtual void vf04(); virtual void vf08(); virtual void vf0C(); virtual void vf10(); virtual void vf14(); virtual void vf18(); virtual void vf1C(); virtual void vf20(); virtual void vf24(); virtual void vf28(); virtual RGE_View_004C2DF0* get_view(); };
 #define rge_base_game (*(BaseGame_004C2DF0**)0x0062C574)
@@ -90,17 +102,15 @@ public:
 void RGE_Static_Object_004C2DF0::draw_frame_3d_cube_back(TDrawArea_004C2DF0* area, short sx, short sy)
 {
     short y2, x2, y1, x1;
-    int px, py;
     float negRy;
-    float rx2, ry1, ry2, rz2, rz3, rz4, rzFull;
     MasterObj_004C2DF0* m = this->master_obj;
-    RGE_Player_004C2DF0* owner = this->owner;
-    ry1 = m->rx * DAT_00574734;
-    rz2 = m->ry * DAT_00574734;
-    rz3 = m->rz * DAT_00574734;
-    rz4 = m->rz * DAT_00574738;
+    float ry1, rz2, rz3, rz4, rx2, ry2, rzFull;
+    ry1 = m->rx * 0.25f;
+    rz2 = m->ry * 0.25f;
+    rz3 = m->rz * 0.25f;
+    rz4 = m->rz * 0.75f;
     rx2 = m->rx;
-    RGE_Map_004C2DF0* map = owner->world->map;
+    RGE_Map_004C2DF0* map = this->owner->world->map;
     ry2 = m->ry;
     rzFull = m->rz;
     RGE_View_004C2DF0* view = rge_base_game->get_view();
@@ -115,27 +125,27 @@ void RGE_Static_Object_004C2DF0::draw_frame_3d_cube_back(TDrawArea_004C2DF0* are
         else
             SelectObject(area->DrawDc, GetStockObject(6));
 
-        px = sx + this->screen_x_offset;
-        py = sy + this->screen_y_offset;
+        sx += this->screen_x_offset;
+        sy += this->screen_y_offset;
         negRy = -ry2;
 
-        map->get_point(&x2, &y2, rx2, negRy, 0.0f, px, py);
-        map->get_point(&x1, &y1, rx2, negRy, rz3, px, py);
+        map->get_point(&x2, &y2, rx2, negRy, 0.0f, sx, sy);
+        map->get_point(&x1, &y1, rx2, negRy, rz3, sx, sy);
         MoveToEx(area->DrawDc, x2, y2, 0); LineTo(area->DrawDc, x1, y1);
-        map->get_point(&x2, &y2, rx2, negRy, rz4, px, py);
-        map->get_point(&x1, &y1, rx2, negRy, rzFull, px, py);
+        map->get_point(&x2, &y2, rx2, negRy, rz4, sx, sy);
+        map->get_point(&x1, &y1, rx2, negRy, rzFull, sx, sy);
         MoveToEx(area->DrawDc, x2, y2, 0); LineTo(area->DrawDc, x1, y1);
-        map->get_point(&x2, &y2, rx2, negRy, 0.0f, px, py);
-        map->get_point(&x1, &y1, ry1, negRy, 0.0f, px, py);
+        map->get_point(&x2, &y2, rx2, negRy, 0.0f, sx, sy);
+        map->get_point(&x1, &y1, ry1, negRy, 0.0f, sx, sy);
         MoveToEx(area->DrawDc, x2, y2, 0); LineTo(area->DrawDc, x1, y1);
-        map->get_point(&x2, &y2, -rx2, negRy, 0.0f, px, py);
-        map->get_point(&x1, &y1, -ry1, negRy, 0.0f, px, py);
+        map->get_point(&x2, &y2, -rx2, negRy, 0.0f, sx, sy);
+        map->get_point(&x1, &y1, -ry1, negRy, 0.0f, sx, sy);
         MoveToEx(area->DrawDc, x2, y2, 0); LineTo(area->DrawDc, x1, y1);
-        map->get_point(&x2, &y2, rx2, negRy, 0.0f, px, py);
-        map->get_point(&x1, &y1, rx2, -rz2, 0.0f, px, py);
+        map->get_point(&x2, &y2, rx2, negRy, 0.0f, sx, sy);
+        map->get_point(&x1, &y1, rx2, -rz2, 0.0f, sx, sy);
         MoveToEx(area->DrawDc, x2, y2, 0); LineTo(area->DrawDc, x1, y1);
-        map->get_point(&x2, &y2, rx2, ry2, 0.0f, px, py);
-        map->get_point(&x1, &y1, rx2, rz2, 0.0f, px, py);
+        map->get_point(&x2, &y2, rx2, ry2, 0.0f, sx, sy);
+        map->get_point(&x1, &y1, rx2, rz2, 0.0f, sx, sy);
         MoveToEx(area->DrawDc, x2, y2, 0); LineTo(area->DrawDc, x1, y1);
 
         SelectClipRgn(area->DrawDc, 0);
