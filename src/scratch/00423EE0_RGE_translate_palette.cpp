@@ -34,16 +34,27 @@
 // Scoping the sort counter, moving local4, and widening local4 were codegen duplicates. Restored
 // the clean typed channel-cursor source; remaining blocker is structural VC5 stack/register
 // allocation around the proven parameter-home reuse and local4/inner-counter overlap.
+// Matching-worker pass: modeling the four contiguous scratch slots as long intense[4] made the
+// body align with the original after a seven-byte prologue shift: 456 bytes, 93.38% shape,
+// 33.11% exact-block coverage, and 51 edit-diff bytes. The fourth array slot explains the
+// decompiler's local4 and frees ESI for the inner two-step sort counter. Reversed
+// (intense[2] + intense[3]) operands recover the original mid/max load order. The remaining
+// mismatch is the destination/source cursor prologue and the late diff-load scheduling.
+// Windows and shared game_globals header contexts, pointer/delta declaration orders, explicit
+// byte offsets, and int/long width variants did not change this codegen basin. Keep this
+// ordinary four-slot array reconstruction as the clean unresolved source.
+// Revisit: matching the Ghidra declaration order by initializing intense[0] before s was a
+// codegen duplicate. Final validation remains 437 differing bytes and a 456-byte rebuild.
 
 struct tagPALETTEENTRY { unsigned char peRed, peGreen, peBlue, peFlags; };
 
 void __cdecl RGE_translate_palette(tagPALETTEENTRY* src, tagPALETTEENTRY* dst, tagPALETTEENTRY color, long pct, int keep1, int keep2)
 {
-    long index1;
-    long intense[3];
     unsigned char* d;
-    int diff;
     unsigned char* s;
+    long diff;
+    long index1;
+    long intense[4];
     d = &dst->peFlags;
     diff = (int)dst - (int)src;
     s = &src->peGreen;
@@ -57,15 +68,14 @@ void __cdecl RGE_translate_palette(tagPALETTEENTRY* src, tagPALETTEENTRY* dst, t
             d[0] = s[2];
         } else {
             tagPALETTEENTRY t = *(tagPALETTEENTRY*)(s - 1);
-            int local4;
             intense[1] = t.peRed;
             intense[2] = *s;
-            local4 = s[1];
+            intense[3] = s[1];
 
             index1 = 2;
             do {
                 long* p = &intense[2];
-                for (int n = 2; n != 0; n--) {
+                for (long n = 2; n != 0; n--) {
                     long a = p[-1];
                     long b = p[0];
                     if (a < b) { p[-1] = b; p[0] = a; }
@@ -75,9 +85,7 @@ void __cdecl RGE_translate_palette(tagPALETTEENTRY* src, tagPALETTEENTRY* dst, t
             } while (index1 != 0);
 
             long minv = intense[1];
-            long midv = intense[2];
-            long maxv = local4;
-            long inten = (((maxv + midv) * (0xff - minv)) / 512) + minv;
+            long inten = (((intense[2] + intense[3]) * (0xff - minv)) / 512) + minv;
             long v;
             v = ((color.peRed * inten) / 255 - t.peRed) * pct;
             d[-3] = (unsigned char)(t.peRed + (v / 100));
