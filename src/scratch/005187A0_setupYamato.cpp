@@ -32,6 +32,22 @@
 //   delayed only the 100-valued store, and the compact setupEgyptian game
 //   declaration. All were worse or codegen duplicates; restore the canonical
 //   RGE_Base_Game/TRIBE_Game surface.
+// - Current worker probes confirmed the same basin: an inverted difficulty
+//   guard grew to 324 bytes and changed the CFG; a function-scope weights alias,
+//   an early map_type local, and moving the 40-valued store were exact codegen
+//   duplicates. Restore the pinned clean source before pause.
+// - Revisit probes kept the clean 320-byte basin for a plain difficulty
+//   early-return form, a map_type local after the 50 stores, *param_1 spelling,
+//   narrow typed class surfaces, and the reviewed base-game global type.
+// - Moving the 0x3B store after the map conditional grew code to 326 bytes.
+//   Moving that conditional before the remaining common stores changed CFG and
+//   produced 319 bytes. No natural source variant fixed the +0xAA hunk.
+// - Revisit probes tested the reviewed global extern with a TRIBE_Game cast,
+//   compact donor-style class declarations, and a map_type local between the
+//   ten-valued and fifty-valued stores. All emitted the same 320-byte code.
+// - Final validation remains 320/323 bytes, 132 strict-diff bytes, exact calls,
+//   and first mismatch at 0051884A. Further progress needs original source or
+//   new compiler-context evidence. No policy-valid exact source is retained.
 
 // Main-agent audit confirmed the shared canonical game/player/AI ownership;
 // direct civilization table stores remain authoritative.
