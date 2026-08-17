@@ -32,13 +32,12 @@
 // The generated add_attribute_num(short, float, unsigned char) player ABI moved
 // the first mismatch from +0x53 to +0x63 and reduced strict drift to 202 bytes.
 // The generated RGE_Command and RGE_Base_Game virtual declarations were neutral.
-// Reversing cost-plus-value and a comparison-only total were neutral or worse;
-// the direct `v + cost` source remained authoritative until the call lifetime
-// probe below.
-// This pass kept a natural post-cap `total = v + cost` lifetime across the
-// source-player virtual call, then reused total for the 0x35 transfer and -v
-// for the destination transfer. It removed the EBP float spill and restored
-// the original 389-byte size; strict drift fell from 202 to 80 bytes.
+// Reversing the sum alone was neutral until the original local declaration
+// order was restored: declaring cost before v recovered the +0x50 block.
+// The vslot+0xE8 call has a sixth trailing zero argument, which restores its
+// early stack push and the exact tail. Splitting the cap multiply and inlining
+// the two transfer sums then recovered the remaining x87 scheduling.
+// v11-v13: 25, then 21 strict bytes remained. v14: exact 389-byte output.
 //
 // Prologue: rebuilt uses `sub esp,0Ch` (3 bytes) + saves `this` to stack slot
 // at [esp+18h] (3 bytes). Original uses `push ecx` (1 byte, allocates 4B local
@@ -53,10 +52,7 @@
 // `mov ebp, [ecx+78h]; ...; call ebp` (5+ bytes, caches pointer). This extra
 // register usage forces world/this to stack instead of edi.
 //
-// Core challenge: cannot express inline vtable dispatch (`call [eax+78h]`) in
-// pure C++ without inline asm. Virtual member functions always read+save the
-// function pointer. This shifts register allocation enough to prevent matching
-// the original 389-byte layout.
+// The final declaration surface uses natural virtual calls and no inline asm.
 
 #include <windows.h>
 #include <cstdlib>
@@ -94,7 +90,7 @@ public:
     VPAD(39) VPAD(40) VPAD(41) VPAD(42) VPAD(43) VPAD(44) VPAD(45) VPAD(46)
     VPAD(47) VPAD(48) VPAD(49) VPAD(50) VPAD(51) VPAD(52) VPAD(53) VPAD(54)
     VPAD(55) VPAD(56) VPAD(57)
-    virtual void sendEvent(int a, int b, int c, int d, int e) = 0;
+    virtual void sendEvent(int a, int b, int c, int d, int e, int f) = 0;
 };
 
 class RGE_Base_Game {
@@ -136,8 +132,8 @@ public:
 
 void TRIBE_Command::do_command_give_attribute(TRIBE_Command_Give_Attribute* ca)
 {
-    float v;
     float cost;
+    float v;
     
     cost = 0.0f;
     if (ca->attr_amount >= 0.0f) {
@@ -154,15 +150,15 @@ void TRIBE_Command::do_command_give_attribute(TRIBE_Command_Give_Attribute* ca)
         float* attr_ptr = &this->world->players[ca->player_id]->attributes[ca->attr_id];
         
         if (v + cost > *attr_ptr) {
-            cost = *attr_ptr * ca->attr_cost;
+            cost = *attr_ptr;
+            cost *= ca->attr_cost;
             v = *attr_ptr - cost;
         }
     }
     
     this->world->players[ca->to_player_id]->add_attribute_num(ca->attr_id, v, 0);
-    float total = v + cost;
-    this->world->players[ca->player_id]->add_attribute_num(ca->attr_id, -total, 0);
-    this->world->players[ca->player_id]->add_attribute_num(0x35, total, 0);
+    this->world->players[ca->player_id]->add_attribute_num(ca->attr_id, -(v + cost), 0);
+    this->world->players[ca->player_id]->add_attribute_num(0x35, v + cost, 0);
     this->world->players[ca->to_player_id]->add_attribute_num(0x35, -v, 0);
     
     {
@@ -171,5 +167,6 @@ void TRIBE_Command::do_command_give_attribute(TRIBE_Command_Give_Attribute* ca)
     }
     
     this->world->players[ca->to_player_id]->sendEvent(
-        ca->player_id, ca->to_player_id, 0x20A, ca->attr_id, (long)ca->attr_amount);
+        ca->player_id, ca->to_player_id, 0x20A, ca->attr_id,
+        (long)ca->attr_amount, 0);
 }
