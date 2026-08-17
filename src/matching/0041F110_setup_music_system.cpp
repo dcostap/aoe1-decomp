@@ -11,9 +11,10 @@
 //   remaining localized gap is source-local music_path scheduling.
 // probes 6-8: direct-negation, unsigned-mask, and multiply spellings for the
 //   wave fallback were non-exact; the multiply variant was closer but not kept.
-// probe 9: a natural 3-or-1 ternary reproduces the oracle's neg/sbb/and/inc
-//   idiom at the correct full-function size; the explicit byte cast was a
-//   codegen duplicate and is omitted from the clean source.
+// probes 9-18: the natural 3-or-1 ternary, explicit byte casts, plain-char
+//   locals, mask arithmetic, and buffer-size/order variants did not match.
+//   The explicit if/else wave fallback is the source shape that reproduces
+//   the oracle's BL neg/sbb/and/inc lowering.
 // bounded pause: calls, ownership, offsets, EH frame, and behavior are aligned;
 //   remaining drift starts at the music_path local/address schedule.
 // - Function-scope music locals, constructor-result-before-path declaration,
@@ -23,6 +24,9 @@
 //   restored the clean declaration order after the local-address probe.
 // probe 18: plain char music type plus a scoped path buffer was a codegen
 //   duplicate; VC5 kept the EBX fallback width and separate path slot.
+// probe 19: explicit if/else wave fallback plus direct music_path use matches
+//   the original byte-for-byte. The decompiler's +4 labels are stack-variable
+//   naming artifacts, not source pointer bias.
 
 #include <stdio.h>
 
@@ -119,15 +123,19 @@ int RGE_Base_Game::setup_music_system()
                 music_type = 2;
             else if (this->prog_info->use_ima != 0)
                 music_type = 4;
-            else
-                music_type = this->prog_info->use_wave_music != 0 ? 3 : 1;
+            else {
+                if (this->prog_info->use_wave_music != 0)
+                    music_type = 3;
+                else
+                    music_type = 1;
+            }
 
-            sprintf(music_path + 4, "%s\\%s", this->work_dir,
+            sprintf(music_path, "%s\\%s", this->work_dir,
                     this->prog_info->sounds_dir);
 
             TMusic_System* music_system =
                 new TMusic_System(music_type, this->prog_info->instance, this->prog_window,
-                                  this->sound_system, music_path + 4);
+                                  this->sound_system, music_path);
             this->music_system = music_system;
 
             if (music_system != 0 && music_type == 1 &&
