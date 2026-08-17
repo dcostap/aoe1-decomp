@@ -154,6 +154,21 @@
 // at 151B/164 diff. No inheritance, generic virtual methods, parameter-home alias, duplicated-Y
 // form, raw cursor, or diagnostic volatility is supported by this target.
 
+// sa-e4c41053-r1 exact-candidate audit 2026-08-18: the 167-byte candidate with
+// four named float radius locals was reduced one local at a time. Removing
+// other-X, this-X, this-Y, or other-Y lost the exact result. The five-variant
+// lab matched only when all four cached locals remained. This proves that the
+// locals select the exact VC5 scheduler basin, not that the original source
+// declared them. The original PDB lists only obj, dY, and dX; it has no radius
+// local records. The Ghidra reconstruction and same-TU siblings also use direct
+// radius member expressions. Reject the cached-local source as codegen-only.
+//
+// The canonical direct-member source below is the pinned nonexact recovery. A
+// canonical class surface with named owner and radius_z fields retained the
+// exact cached-local bytes in a separate lab. The direct source emits 151 bytes
+// and differs broadly because VC5 does not reproduce the original push/home and
+// x87 schedule without the unsupported cached-local scaffolding.
+//
 // sa-70edc786-r1 fresh direct-float lifetime/order pass 2026-08-17: ran twelve
 // natural, PDB-supported probes after the canonical class audit. Tested dX/dY
 // reuse, split declarations, radius pointer and float temporary ownership,
@@ -174,20 +189,26 @@ public:
     char gap_2C[4];
     float radius_x; // +0x30
     float radius_y; // +0x34
+    float radius_z; // +0x38
 };
 
+class RGE_Player;
 class RGE_Static_Object {
 public:
     virtual ~RGE_Static_Object();
     long id; // +0x04
     RGE_Master_Static_Object* master_obj; // +0x08
-    char gap_0C[0x2C];
+    RGE_Player* owner; // +0x0C
+    char gap_10[0x28];
     float world_x; // +0x38
     float world_y; // +0x3C
     
     float distance_to_object(RGE_Static_Object* other);
 };
 
+// BINARY NOTE: The direct fields preserve the proven radius ownership and
+// left-associative float arithmetic. The exact cached-local basin is rejected
+// because the PDB does not support four source radius locals.
 float RGE_Static_Object::distance_to_object(RGE_Static_Object* other) {
     float dx = other->world_x - this->world_x;
     float dy = other->world_y - this->world_y;
@@ -195,8 +216,8 @@ float RGE_Static_Object::distance_to_object(RGE_Static_Object* other) {
     if (dx < 0.0f) dx = -dx;
     if (dy < 0.0f) dy = -dy;
 
-    float x = (dx - this->master_obj->radius_x) - other->master_obj->radius_x;
-    float y = (dy - this->master_obj->radius_y) - other->master_obj->radius_y;
+    float x = dx - this->master_obj->radius_x - other->master_obj->radius_x;
+    float y = dy - this->master_obj->radius_y - other->master_obj->radius_y;
 
     if (x < 0.0f) x = 0.0f;
     if (y < 0.0f) y = 0.0f;
