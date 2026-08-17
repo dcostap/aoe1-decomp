@@ -106,6 +106,19 @@
 //   273-byte basin. Persistent cursor, scoped sort locals, hoisted locals,
 //   declaration order, destructor context, and a common outer tail gave no
 //   new codegen. The clean typed list sort remains the plausible source.
+// - Managed continuation sa-3972888d-r1: a fresh baseline reproduced 273 bytes,
+//   a 0xC frame, nine ordered calls, and 243 strict differing bytes.
+// - This pass retested direct search->next, function-scope search, register
+//   qualifiers, declaration order, and an explicit shared-tail insertion label.
+//   The direct loop stayed at 289 bytes and 0xC. The label form reached 276
+//   bytes but added a branch and stayed at 0xC. The other probes were codegen
+//   neutral. All probes were rolled back to the clean typed list sort.
+// - The original still needs 0x8 with EBP as the outer successor and ESI as
+//   the insertion search. The clean source keeps one extra successor home and
+//   reverses those two register roles. No new natural source lead was found.
+// - Managed continuation sa-6f41adc8-r1: a natural outer current/next loop
+//   with `while (search != 0)` and insertion in its break arm reproduces the
+//   original successor/search lifetimes. Rebuild is an exact 269-byte match.
 
 #include <stddef.h>
 
@@ -152,52 +165,45 @@ protected:
 
 uchar RGE_Random_Map_Module::generate()
 {
+    RGE_Random_Map_Module_List* current = this->list;
     RGE_Random_Map_Module_List* sorted = 0;
-    RGE_Random_Map_Module_List* cursor;
 
-    cursor = this->list;
-    for (;;) {
-        RGE_Random_Map_Module_List* current = cursor;
-        if (current == 0)
-            break;
-
-        cursor = current->next;
-        if (sorted != 0) {
-            if (current->module->get_schedule() >= sorted->module->get_schedule()) {
-                RGE_Random_Map_Module_List* search = sorted;
-                {
-                    RGE_Random_Map_Module_List* search_next;
-                    while ((search_next = search->next) != 0) {
-                        if (current->module->get_schedule() < search_next->module->get_schedule())
-                            break;
-                        search = search_next;
-                    }
+    while (current != 0) {
+        RGE_Random_Map_Module_List* next = current->next;
+        if (sorted != 0 &&
+            current->module->get_schedule() >= sorted->module->get_schedule()) {
+            RGE_Random_Map_Module_List* search = sorted;
+            while (search != 0) {
+                if (search->next == 0 ||
+                    current->module->get_schedule() < search->next->module->get_schedule()) {
+                    current->next = search->next;
+                    search->next = current;
+                    break;
                 }
-                current->next = search->next;
-                search->next = current;
-                continue;
+                search = search->next;
             }
+        } else {
+            current->next = sorted;
+            sorted = current;
         }
-
-        current->next = sorted;
-        sorted = current;
+        current = next;
     }
 
     this->list = sorted;
     L->Log("RGE_RANDOM_MAP_MODULE::map start",
            debug_rand("C:\\msdev\\work\\age1_x1\\rmm_base.cpp", 0x8A));
 
-    cursor = this->list;
-    if (cursor == 0)
+    current = this->list;
+    if (current == 0)
         return 1;
 
-    while (cursor != 0) {
-        if (cursor->module->generate() == 0)
+    while (current != 0) {
+        if (current->module->generate() == 0)
             return 0;
 
         L->Log("RGE_RANDOM_MAP_MODULE::module completed with ret:",
                debug_rand("C:\\msdev\\work\\age1_x1\\rmm_base.cpp", 0x8F));
-        cursor = cursor->next;
+        current = current->next;
     }
 
     return 1;
