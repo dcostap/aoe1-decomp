@@ -18,6 +18,8 @@
 // Revisit pass: ten focused probes covered natural local declarations, typed widths, lexical grouping, member qualification,
 // and isolated sound/sprite result lifetimes. Natural locals changed the frame to 0xC0 and 982 bytes. The other forms were worse
 // or codegen-duplicate. The clean aggregate-backed source remains the smallest validated frontier.
+// TU pass: 20 new probes tested period headers, API declarations, same-file class surfaces, type aliases, local declaration order,
+// and decompiler-listed string locals. None changed the 199-byte frontier. Natural declarations still produced a C0 frame.
 // BINARY NOTE: the original stores undead_sprite at 00452E24 before the scalar-byte block. The natural source below preserves
 // that behavior, but VC5 schedules two later byte loads before the store. Do not add volatility or address tricks without proof.
 // left in scratch: 199-byte strict drift begins at 00452E24 in scalar-store scheduling after the final lookup; calls, size, frame, and CFG match.
