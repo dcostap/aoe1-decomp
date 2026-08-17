@@ -46,6 +46,17 @@
 // 21 control-flow: wrote the missing-DCO ProgramState test as a positive
 //    success arm with a failure else arm; all 86 call sites now align and the
 //    structural diff improved to 2943 bytes.  Keep this natural guard shape.
+// Current claim probes 22-30: separate command/serial locals, shared packet
+// objects, buffer scopes, serial-cursor scope, and raw packet bytes did not
+// improve the pinned result.  The best source is 3192B with the original
+// 0x180 frame, 86 aligned calls, 93.42% shape, and 56.35% exact-block coverage.
+// BINARY NOTE: the second player scan has a late found edge that writes its
+// result home at the function tail, then returns to the common log setup.
+// BINARY NOTE: ALL_DONE latency bytes share the proven packet home and must
+// remain fields of that record to preserve the original frame and code basin.
+// Open blocker: the ack record uses the same shipped local basin as later
+// packets in the executable, but VC5 does not select its original [esp+10]
+// home from the natural typed source.
 
 typedef unsigned long ulong;
 typedef unsigned int uint;
@@ -322,16 +333,14 @@ int TCommunications_Handler::PreprocessMessages(ulong param_1, char* message,
     int player;
 
     if (from != 0) {
-        int high = this->PlayerOptions.HighPlayerNumber;
         player = this->PlayerOptions.LowPlayerNumber;
+        int high = this->PlayerOptions.HighPlayerNumber;
         if (player <= high) {
-            do {
-                ulong* dco = this->PlayerOptions.dcoID + player;
-                if (*dco == from) {
+            for (; player <= high; ++player) {
+                if (this->PlayerOptions.dcoID[player] == from) {
                     goto player_lookup_found;
                 }
-                ++player;
-            } while (player <= high);
+            }
         }
     }
     player = 0;
@@ -362,23 +371,24 @@ player_lookup_found:
     this->LastPlayerCommunication[player] =
         debug_timeGetTime(S(0x580BF4), 0x543);
 
-    player = 0;
+    int log_player;
     if (from != 0) {
         int i = this->PlayerOptions.LowPlayerNumber;
         int high = this->PlayerOptions.HighPlayerNumber;
         if (i <= high) {
-            do {
+            for (; i <= high; ++i) {
                 if (this->PlayerOptions.dcoID[i] == from) {
-                    player = i;
-                    break;
+                    log_player = i;
+                    goto second_player_found;
                 }
-                ++i;
-            } while (i <= high);
+            }
         }
     }
+    log_player = 0;
 
+second_player_found:
     uint* serial = (uint*)(message + 8);
-    L->Log(S(0x58156C), (int)*message, player, from, *serial,
+    L->Log(S(0x58156C), (int)*message, log_player, from, *serial,
            debug_timeGetTime(S(0x580BF4), 0x54D));
 
     if (*message == 'K' && this->PlayerOptions.ProgramState == 3) {
@@ -400,13 +410,12 @@ player_lookup_found:
     if (*message == 'C') {
         char* chat = this->RGE_Guaranteed_Delivery != 0
             ? message + 0x0C : message + 0x08;
-        uchar pregame = (uchar)chat[0x10];
-        if (pregame != 0 && this->PlayerOptions.ProgramState != 3) {
-            L->Log(S(0x5814F0), (uint)pregame,
+        if (chat[0x10] != 0 && this->PlayerOptions.ProgramState != 3) {
+            L->Log(S(0x5814F0), (uint)(uchar)chat[0x10],
                    this->PlayerOptions.ProgramState, chat + 0x11);
             return 0;
         }
-        L->Log(S(0x5814C8), (uint)pregame,
+        L->Log(S(0x5814C8), (uint)(uchar)chat[0x10],
                this->PlayerOptions.ProgramState, chat + 0x11);
     }
 
@@ -466,9 +475,11 @@ player_lookup_found:
             this->LastTurnAck[this->Me] != turn) {
             this->LastTurnAck[this->Me] = turn;
             if (turn > 6) {
-                uchar high_latency = this->Speed->GetHighLatencyCenti();
-                uchar avg_frame = (uchar)this->Speed->GetAvgFrameRate();
-                this->Speed->SetPlayerTurnSpeed(this->Me, avg_frame, high_latency);
+                done.HighLatencyCenti = this->Speed->GetHighLatencyCenti();
+                done.FrameRateMsec = (uchar)this->Speed->GetAvgFrameRate();
+                this->Speed->SetPlayerTurnSpeed(this->Me,
+                                                done.FrameRateMsec,
+                                                done.HighLatencyCenti);
             }
             LAST_SENT_TIME = debug_timeGetTime(S(0x580BF4), 0xBF9);
             done.Command = 'D';
@@ -546,9 +557,11 @@ command_2:
             this->LastTurnAck[this->Me] != turn) {
             this->LastTurnAck[this->Me] = turn;
             if (turn > 6) {
-                uchar high_latency = this->Speed->GetHighLatencyCenti();
-                uchar avg_frame = (uchar)this->Speed->GetAvgFrameRate();
-                this->Speed->SetPlayerTurnSpeed(this->Me, avg_frame, high_latency);
+                done.HighLatencyCenti = this->Speed->GetHighLatencyCenti();
+                done.FrameRateMsec = (uchar)this->Speed->GetAvgFrameRate();
+                this->Speed->SetPlayerTurnSpeed(this->Me,
+                                                done.FrameRateMsec,
+                                                done.HighLatencyCenti);
             }
             LAST_SENT_TIME = debug_timeGetTime(S(0x580BF4), 0xBF9);
             done.Command = 'D';
