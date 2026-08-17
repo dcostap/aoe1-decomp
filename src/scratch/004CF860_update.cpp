@@ -12,7 +12,14 @@
 //   target_obj after gathering, and task sound/attribute fields; fixed these owners.
 // - Original jump tables prove the state-11/15 subaction arms and the state-8
 //   no-state-change path; restored those behaviors and moved state 1 late.
-// - Rebuilt code remains 1587B with 0xC frame; best current strict diff is 1237B.
+// - Reordered the outer and nested arms from PDB line order. This raised shape
+//   similarity to 88.73% and ordered-call alignment to 94.44%.
+// - Original assembly proves a positive self-held state-7 path sets state 8.
+//   The clean source keeps that behavior, but VC5 merges one state-3 call.
+// - Twenty-two distinct hypotheses were checked. A positive-first guard gave
+//   all 54 calls but added 149 bytes. It was rejected as non-natural and wide.
+// - Final clean result: 1587B, 0xC frame, 53/54 calls, 1056B strict diff.
+//   Remaining blocker is the merged state-12 state-3 call and block layout.
 
 #define rge_base_game (*(RGE_Base_Game**)0x62C574)
 
@@ -362,21 +369,53 @@ unsigned char TRIBE_Action_Hunt::update()
             }
         }
         break;
-    case 4:
+    case 11:
+    case 15:
         switch (this->sub_actions->get_value()) {
         case 1:
         case 2:
-            this->set_state(6); return 0;
+        case 5:
+            this->set_target_obj(0);
+            if (this->state == 11) { this->set_state(11); return 0; }
+            this->set_state(15); return 0;
+        case 4:
+            if (this->state == 11) { this->set_state(3); return 0; }
+            goto computer_fallback;
         case 3:
-        if (this->obj->owner->computerPlayer() == 1) {
-            this->set_state(13); return 0;
+            if (this->obj->owner->computerPlayer() == 1) { this->set_state(13); return 0; }
+            goto state_default;
         }
-        goto state_default;
+        break;
+state_default:
+        this->set_state(3); return 0;
+    case 4:
+        switch (this->sub_actions->get_value()) {
+        case 3:
+            if (this->obj->owner->computerPlayer() != 0) {
+                this->set_state(13); return 0;
+            }
+            goto state_default;
+        case 1:
+        case 2:
+            this->set_state(6); return 0;
         case 4:
         case 5:
             this->set_target_obj(0);
             this->set_state(11);
             return 0;
+        }
+        break;
+    case 12:
+        switch (this->sub_actions->get_value()) {
+        case 4:
+            this->set_target_obj(0);
+            this->set_state(11); return 0;
+        case 1:
+        case 2:
+        case 5:
+            if (this->target_obj != 0) { this->set_state(4); return 0; }
+        case 3:
+            this->set_state(3); return 0;
         }
         break;
     case 6:
@@ -387,14 +426,15 @@ unsigned char TRIBE_Action_Hunt::update()
             }
             this->set_state(7); return 0;
         }
-state_default:
-        this->set_state(3); return 0;
+        goto state_default;
     case 7: {
         RGE_Static_Object* holder = this->target_obj;
         if (holder == 0) {
             holder = (RGE_Static_Object*)this->obj;
             if (holder->attribute_amount_held <= DAT_00575150)
                 goto state_default;
+            this->set_state(8);
+            return 0;
         }
         if (rge_base_game->quick_build != 0)
             give_amount = holder->attribute_amount_held;
@@ -448,46 +488,6 @@ state_default:
             }
         }
         break;
-    case 11:
-    case 15:
-        switch (this->sub_actions->get_value()) {
-        case 1:
-        case 2:
-        case 5:
-            this->set_target_obj(0);
-            if (this->state == 11) { this->set_state(11); return 0; }
-            this->set_state(15); return 0;
-        case 3:
-            if (this->obj->owner->computerPlayer() == 1) { this->set_state(13); return 0; }
-            goto state_default;
-        case 4:
-            if (this->state == 11) { this->set_state(3); return 0; }
-            goto computer_fallback;
-        }
-        break;
-    case 12:
-        switch (this->sub_actions->get_value()) {
-        case 1:
-        case 2:
-        case 5:
-            if (this->target_obj != 0) { this->set_state(4); return 0; }
-        case 3:
-            this->set_state(3); return 0;
-        case 4:
-            this->set_target_obj(0);
-            this->set_state(11); return 0;
-        }
-        break;
-    case 13:
-        this->obj->notify(this->obj->id, this->obj->id, 0x1f9, 0x265, 0, 0);
-        return 3;
-
-    case 1:
-        if (this->obj->owner->computerPlayer() == 0)
-            this->set_state(2);
-        return 1;
-
-    }
 computer_fallback:
         if (this->obj->owner->computerPlayer() == 0) {
         this->set_state(2);
@@ -495,5 +495,14 @@ computer_fallback:
     }
     this->set_state(1);
 state_default2:
+    return 0;
+    case 1:
+        if (this->obj->owner->computerPlayer() == 0)
+            this->set_state(2);
+        return 1;
+    case 13:
+        this->obj->notify(this->obj->id, this->obj->id, 0x1f9, 0x265, 0, 0);
+        return 3;
+    }
     return 0;
 }
