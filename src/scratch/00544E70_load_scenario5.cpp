@@ -22,6 +22,17 @@
 // 17: a players-array alias changed the frame to 0x50; rolled back. The donor-backed make_scenario_obj pointer return emits unchanged code.
 // 18: the prior cleanup player local reached diff 341 but added two bytes and lost structural islands; restored the clean cleanup form.
 // 19: an integer slot-value cast was compiler-equivalent. Final clean source remains 814 bytes versus the 812-byte target.
+// 20: this claim tested 20 distinct source hypotheses across object-slot ownership,
+// guard topology, declaration order, typed stream locals, ABI declarations,
+// aggregate layout, and factor lifetime. The best natural variant precomputed
+// `this->players + pid`, reached 812 bytes and 84 differing bytes, but changed
+// the proven target object-guard lowering and lost exact blocks. It is not kept.
+// 21: pointer-slot forms, direct pointer arithmetic, comma assignment, early
+// continues, long versus int mapped ids, direct versus named factors, widened
+// stream locals, complete World/Player_Info declaration surfaces, and canonical
+// Player_Info extents either duplicated the baseline or moved farther.
+// Final clean validation for this claim remains the 814-byte typed reconstruction;
+// all 28 calls align, but the first structural mismatch is the object block at +0x11a.
 
 typedef unsigned char uchar;
 extern "C" void __cdecl rge_read_uncompressed(int file, void* dst, int size);
