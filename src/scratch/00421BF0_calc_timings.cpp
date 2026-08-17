@@ -23,6 +23,20 @@
 //   produced identical code; the typed pointer form remains the clean source.
 // - Probe 13: snapshot max_time after storing last_time to follow the
 //   original load/store order; emitted code was unchanged, so it was rolled back.
+// - Current pass: the clean typed source keeps exact size (934), frame (0x18),
+//   saved registers, CFG counts, and all six ordered calls.  Its only behavior
+//   gap is the first timing-record block: the original pushes 0x12B5 before
+//   the last/max stores and delays stack cleanup until after the include test.
+// - Current pass: raw int-pointer access, signed timing fields, declaration
+//   order, loop spelling, address aliases, filename forms, targeted volatile
+//   fields, and local optimizer pragmas did not improve the 44-byte gap.
+// - Current pass: a four-way timer statement-order lab kept size, frame, and
+//   calls but produced no exact group.  A 512-variant ambient declaration lab
+//   also produced no exact group; its best context was still nonexact.
+// BINARY NOTE: The executable reloads include_in_total after the first timer
+//   probe and performs the 8-byte cleanup after that reload.
+// LIKELY INTENT: The timer record is a typed 0x20-byte array.  The remaining
+//   difference is compiler scheduling or original translation-unit context.
 
 #include <stdio.h>
 #include <stdlib.h>
