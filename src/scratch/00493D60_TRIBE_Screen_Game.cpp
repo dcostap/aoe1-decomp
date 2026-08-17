@@ -68,6 +68,22 @@
 // The count-local form was much worse. No source-backed lead remains.
 // 2026-08-13 orch-493D60-a: proven string-address macros kept strict diff at
 // 3154 and improved resync only. Restored named globals and clean source.
+// 2026-08-17 sustained pass: twenty meaningful probes completed. The clean
+// baseline remains authoritative: size 5859, frame 0x210, 180 calls, and
+// strict diff 3154 bytes. The first mismatch is +0x37E. Edit cost is 577.
+// BINARY NOTE: offsets 0x69E-0x6B2 are seven packed three-byte palette entries.
+// A typed table improved one local metric to 3142, but lost seven code bytes.
+// It was not retained because its structural result was worse.
+// BINARY NOTE: the draw loop loads the game vtable through EDX in the original.
+// The clean source uses the raw global fallback and still loads it through EAX.
+// This remains the strongest codegen lead. Address and temporary variants failed.
+// Tested and rolled back: typed palette ownership, palette statement order,
+// draw-area locals, staged draw text values, standard headers, and ABI proxies.
+// Proven ABI forms tested without emitted changes include RGE_Base_Game,
+// TShape(char*,long), set_help_info(long,long), set_z_order(unsigned char,short),
+// TScreenPanel::setup(...,long,int), and TButtonPanel::set_text(short,long).
+// LIKELY INTENT: the remaining drift is a historical source or compiler-context
+// difference around draw-button argument scheduling and palette initialization.
 
 #include "../../include/game_types.h"
 #include "../../include/game_globals.h"
