@@ -2,151 +2,64 @@
 // Source: com_obj.cpp lines 1097-1139
 // FLAGS: /nologo /c /O2 /Oy /GX
 //
-// Attempt log:
-// - v1: initial __stdcall function pointers. vtable calls use 5 pushes (stdcall) instead of
-//   4 pushes+ecx (thiscall). Returns generate inline EH epilogues. Function too large (320+ bytes).
-// - v2: static helper wrappers (matching unload pattern). No improvement.
-// - v3: VTableProxy with 130+ dummy virtuals to align vtable offsets. Fixes thiscall for vtable 
-//   calls (4 pushes+ecx for vf210, 1 push+ecx for vf208). Still inline epilogues, 320 bytes.
-// - v4: single return variable pattern. Changed stack layout (push ecx for local). 
-// - v5: && combined conditions. Same as v1.
-// - v6: goto with label. Compile error (goto skips initialization).
-// - v7: variant_lab probing return_pattern (multiple_returns, single_result, goto_label, all_returns)
-//   x flag-preset vc5-small (12 flag variants). Best group: multiple_returns+gx, first_mismatch=47,
-//   text_size=341 (fails 255-byte target due to inline epilogues).
-// - v8: function-ptr approach (matching unload style) directly. Still 320 bytes, stdcall for vtable.
-//
-// Current bounded session:
-// - baseline rebuilt 314B with all 11 calls aligned, but explicit action vtable casts used stdcall.
-// - restored donor-style RGE_Action and moving-object virtual surfaces; calls
-//   use their original thiscall form without raw vtable plumbing.
-// - top-declared pointers/scalars plus one `goto fail` produced the best 274B reconstruction (65 positional
-//   diff, 90.32% shape, 87.21% exact-block coverage). The object lookup, action checks, task call, allocation,
-//   constructor, delete-list, and add-action bodies are byte-aligned through the constructor-failure test.
-// - nested-positive, direct-return, positive-success, hybrid guard, and exact RGE_Action_Enter ABI surface
-//   probes did not improve the tail; some were codegen duplicates or broadened the CFG.
-// - remaining blocker is structural EH-tail lowering: original routes object/task failures to the single
-//   FS-first epilogue at 0043123A and only emits `xor eax,eax; jmp` for constructor failure; VC5 keeps a
-//   duplicated zero-return epilogue before the success body (+19B). Calls, relocation targets, and field
-//   ownership are otherwise aligned. Keep this clean, typed reconstruction in scratch.
-// - Main-agent audit replaced the raw VTableProxy cast with a canonical narrow
-//   RGE_Moving_Object base and named virtual calls; emitted code is unchanged.
-// Fresh worker: typed shared-result pointer and integer-result forms were tested
-// against the gather/transport EH-tail pattern; they worsened prologue/layout
-// (101 and 243 differing bytes) and were rolled back. Keep the 274-byte natural
-// goto-fail reconstruction with calls/relocations aligned.
-// Fresh session probes: uninitialized integer status still expanded to 316B;
-// a Ghidra-shaped pointer status (including reuse of obj and a self alias) held
-// the shared tail at 257B/101 diff but swapped this/object registers and added
-// an early saved-register ordering change. These alias-shaped diagnostics were
-// rolled back; no opaque status cast survives in the canonical source.
-// Main-agent audit removed inline empty virtual definitions and restored
-// canonical destructor ownership; the shared-EH-tail blocker remains.
-// Fresh replacement orch-comobj-fresh-03: direct action-result/truth-return forms
-// expanded to 317B/261 diff and 298B/241 diff. A canonical typed object/result
-// pointer with one shared done label reached 257B/101 diff and the correct CFG,
-// but VC5 colored this=EDI and target/result=ESI, added a result move, and emitted
-// an extra task-null zero/jump. Declaration-order, lookup-assignment-order,
-// separate-target, and narrow register-hint variants were codegen duplicates.
-// Restored the pinned 274B natural typed goto-fail reconstruction; shared EH-tail
-// lowering remains the only structural blocker observed in this assignment.
-//
-// Fresh bounded pass (sa-4269ae07-r1): initialized int/pointer status and
-// positive-guard/direct-return variants all regressed the exact body basin
-// (187-261 differing bytes); pointer-result form shared the tail only after
-// swapping this/object register ownership (257B/101 diff) and was not kept.
-// Adding stdlib.h was codegen-neutral (274B/65 diff). A 4-case tail lab was
-// diagnostic only and used default flags without the target /GX response file;
-// no variant was promoted. Restored the natural typed goto-fail source.
-// Fresh cfg probe (orch2-431150-cfg): combined donor-style `goto success` with
-// the current object/task/constructor `goto fail` paths. This is codegen-identical
-// to the pinned 274B/65-diff source; VC5 still emits separate success/failure
-// epilogues, so the single original FS-first tail remains unresolved.
-// Fresh cfg probe (follow-431150-r1): split constructor allocation failure into
-// a direct return while retaining the shared object/task fail label, based on
-// the original constructor-only `xor eax,eax` block. This expanded to 299B/182
-// diff and lost the aligned task/body basin; rolled back to the donor-style
-// shared fail source.
-// Current bounded pass: ABI/dossier/donor review and a success/failure label
-// order probe were completed. Label reversal worsened to 157 differing bytes;
-// restore the natural typed goto-fail source and preserve the EH-tail lead.
-
-// Key remaining issues:
-// 1. No shared tail: VC5 generates inline EH epilogues at each return instead of one shared
-//    cleanup. Original has single cleanup at 0043123A shared by all paths. Shared tail saves
-//    ~60 bytes (3x20 - 20 = 40 bytes of cleanup, plus jumps).
-// 2. The narrow RGE_Moving_Object base declares the inherited virtual surface
-//    needed for the two late slots without manual function-pointer dispatch.
-// 3. SEH handler address (55CE7Bh) vs 0 placeholder - masked by relocation system.
-// 4. Register allocation differs from original (original: eax=world_z, ecx=world_y, edx=world_x;
-//    rebuilt varies by version).
-// 5. Stack layout: original reuses param_1 slot [esp+20h] as temp, my code allocates at
-//    different offsets.
-//
-// Best guess: the original source used 'new' expression (not operator_new) and had a specific
-// control-flow structure (nested ifs vs &&) that caused VC5 to merge epilogues into a shared
-// tail. The matching unload also has inline epilogues (which is fine at 254 bytes), but the
-// enter function must fit in 255 bytes, requiring the shared tail or ~65 fewer code bytes.
-// The VTableProxy approach works for thiscall calling convention but adds code size.
-// The function-ptr approach fails to generate thiscall for vtable[0x210] in this function.
-// Fresh bounded pass (sa-5f54088d-r1): complete dossier, ABI, donor, and
-// assembly review confirmed the 11-call set and the 274-byte / 65-diff natural
-// goto-fail baseline. Shared pointer and integer result carriers, label order,
-// alias reuse, late result scope, duplicate success returns, and a narrow ABI
-// correction were tested. Result carriers changed the register homes or CFG;
-// duplicate returns were codegen-identical. Declaring enter virtual matches the
-// PDB owner symbol and does not change emitted bytes. The remaining mismatch is
-// the VC5 EH tail: the oracle puts mov eax,1 before one shared cleanup tail,
-// while VC5 emits a separate success cleanup epilogue.
-
-#include <stddef.h>
-
-extern "C" void* __cdecl operator_new(size_t size);
+// Source-gate reconstruction:
+// - Use the reviewed RGE_Static_Object -> RGE_Animated_Object ->
+//   RGE_Moving_Object -> RGE_Action_Object ownership chain.
+// - Keep action target and type calls on their canonical RGE_Action methods.
+// - Keep getTask and set_only_action on RGE_Action_Object.
+// - ORIGINAL BUG: delete_list is called before set_only_action. The latter
+//   deletes the list again before it adds the new action.
+// - Structured returns preserve the call and fault order without EH-layout
+//   labels from the decompiler.
 
 typedef unsigned char uchar;
 
+class RGE_Static_Object;
 class RGE_Action_Object;
 class RGE_Task;
 class RGE_Action;
+class RGE_Sprite;
+class RGE_Master_Static_Object;
+class RGE_Master_Action_Object;
+class RGE_Master_Animated_Object;
+class RGE_Master_Moving_Object;
+class RGE_Player;
+class RGE_Game_World;
+class TDrawArea;
+class RGE_Color_Table;
+class RGE_Armor_Weapon_Info;
+class LOSTBL;
+class RGE_Object_List;
+class RGE_Active_Sprite_List;
+class Path;
+struct XYPoint;
+struct XYZPoint;
+struct XYZBYTEPoint;
+template<class T> class ManagedArray;
 
 class RGE_Game_World {
 public:
     virtual ~RGE_Game_World();
-    char gap_04[0x84];
-    void** objectsValue;
+    uchar gap_04[0x84];
+    RGE_Static_Object** objectsValue;
     int numberObjectsValue;
     int maxNumberObjectsValue;
-    void** negativeObjectsValue;
+    RGE_Static_Object** negativeObjectsValue;
     int numberNegativeObjectsValue;
     int maxNumberNegativeObjectsValue;
 
-    void* object(int index);
+    RGE_Static_Object* object(int index);
 };
 
 class RGE_Player {
 public:
     virtual ~RGE_Player();
-    char gap_04[0x38];
+    uchar gap_04[0x38];
     RGE_Game_World* world;
-};
-
-class RGE_Static_Object {
-public:
-    virtual ~RGE_Static_Object();
-    int id;
-    void* master_obj;
-    RGE_Player* owner;
-    char gap_10[0x28];
-    int world_x;
-    int world_y;
-    int world_z;
 };
 
 class RGE_Action_List {
 public:
-    char gap_00[8];
-    void* list;
-
     uchar have_action();
     RGE_Action* get_action();
     void delete_list();
@@ -155,33 +68,38 @@ public:
 class RGE_Action {
 public:
     virtual ~RGE_Action();
-    virtual void slot_04();
-    virtual void slot_08();
-    virtual void slot_0C();
-    virtual void slot_10();
-    virtual void slot_14();
-    virtual short func18();
-    virtual void slot_1C();
-    virtual void slot_20();
-    virtual void slot_24();
-    virtual void slot_28();
-    virtual void slot_2C();
-    virtual void slot_30();
-    virtual void slot_34();
-    virtual void slot_38();
-    virtual void slot_3C();
-    virtual void slot_40();
-    virtual void slot_44();
-    virtual void slot_48();
-    virtual RGE_Static_Object* func4C();
+    virtual int setup(RGE_Action_Object* object);
+    virtual int setup(int value, RGE_Action_Object* object);
+    virtual RGE_Action_List* create_action_list(RGE_Action_Object* object);
+    virtual void rehook();
+    virtual void save(int file);
+    virtual short type();
+    virtual void first_in_stack(uchar value);
+    virtual uchar inside_obj_update();
+    virtual uchar idle_update();
+    virtual uchar update();
+    virtual int stop();
+    virtual int move_to(RGE_Static_Object* object, float x, float y, float z);
+    virtual int work(RGE_Static_Object* object, float x, float y, float z);
+    virtual uchar attack_response(RGE_Static_Object* object);
+    virtual uchar relation_response(long value, uchar relation);
+    virtual void copy_obj(RGE_Master_Action_Object* object);
+    virtual void copy_obj_sprites(RGE_Master_Action_Object* object,
+                                  RGE_Task* source, RGE_Task* destination);
+    virtual void get_state_name(char* name);
+    virtual RGE_Static_Object* get_target_obj();
+    virtual RGE_Static_Object* get_target_obj2();
+    virtual void set_target_obj(RGE_Static_Object* object);
+    virtual void set_target_obj2(RGE_Static_Object* object);
+    virtual void set_state(uchar value);
 
     short action_type;
     uchar gap_06[2];
-    void* obj;
+    RGE_Action_Object* obj;
     uchar state;
     uchar gap_0D[3];
-    void* target_obj;
-    void* target_obj2;
+    RGE_Static_Object* target_obj;
+    RGE_Static_Object* target_obj2;
     int targetID;
     int target2ID;
     float target_x;
@@ -189,8 +107,8 @@ public:
     float target_z;
     float timer;
     RGE_Task* task;
-    void* sub_actions;
-    void* sprite;
+    RGE_Action_List* sub_actions;
+    RGE_Sprite* sprite;
     uchar subActionValue;
     uchar gap_3D[3];
 };
@@ -198,218 +116,211 @@ public:
 class RGE_Action_Enter : public RGE_Action {
 public:
     virtual ~RGE_Action_Enter();
-    RGE_Action_Enter(RGE_Action_Object* obj, RGE_Task* task, RGE_Action_Object* target);
+    RGE_Action_Enter(RGE_Action_Object* object, RGE_Task* task,
+                     RGE_Static_Object* target);
 };
 
-// Narrow inherited surface through the two binary-observed late virtual slots.
-class RGE_Moving_Object {
+class RGE_Static_Object {
 public:
-    virtual ~RGE_Moving_Object();
-    virtual void d01();
-    virtual void d02();
-    virtual void d03();
-    virtual void d04();
-    virtual void d05();
-    virtual void d06();
-    virtual void d07();
-    virtual void d08();
-    virtual void d09();
-    virtual void d0a();
-    virtual void d0b();
-    virtual void d0c();
-    virtual void d0d();
-    virtual void d0e();
-    virtual void d0f();
-    virtual void d10();
-    virtual void d11();
-    virtual void d12();
-    virtual void d13();
-    virtual void d14();
-    virtual void d15();
-    virtual void d16();
-    virtual void d17();
-    virtual void d18();
-    virtual void d19();
-    virtual void d1a();
-    virtual void d1b();
-    virtual void d1c();
-    virtual void d1d();
-    virtual void d1e();
-    virtual void d1f();
-    virtual void d20();
-    virtual void d21();
-    virtual void d22();
-    virtual void d23();
-    virtual void d24();
-    virtual void d25();
-    virtual void d26();
-    virtual void d27();
-    virtual void d28();
-    virtual void d29();
-    virtual void d2a();
-    virtual void d2b();
-    virtual void d2c();
-    virtual void d2d();
-    virtual void d2e();
-    virtual void d2f();
-    virtual void d30();
-    virtual void d31();
-    virtual void d32();
-    virtual void d33();
-    virtual void d34();
-    virtual void d35();
-    virtual void d36();
-    virtual void d37();
-    virtual void d38();
-    virtual void d39();
-    virtual void d3a();
-    virtual void d3b();
-    virtual void d3c();
-    virtual void d3d();
-    virtual void d3e();
-    virtual void d3f();
-    virtual void d40();
-    virtual void d41();
-    virtual void d42();
-    virtual void d43();
-    virtual void d44();
-    virtual void d45();
-    virtual void d46();
-    virtual void d47();
-    virtual void d48();
-    virtual void d49();
-    virtual void d4a();
-    virtual void d4b();
-    virtual void d4c();
-    virtual void d4d();
-    virtual void d4e();
-    virtual void d4f();
-    virtual void d50();
-    virtual void d51();
-    virtual void d52();
-    virtual void d53();
-    virtual void d54();
-    virtual void d55();
-    virtual void d56();
-    virtual void d57();
-    virtual void d58();
-    virtual void d59();
-    virtual void d5a();
-    virtual void d5b();
-    virtual void d5c();
-    virtual void d5d();
-    virtual void d5e();
-    virtual void d5f();
-    virtual void d60();
-    virtual void d61();
-    virtual void d62();
-    virtual void d63();
-    virtual void d64();
-    virtual void d65();
-    virtual void d66();
-    virtual void d67();
-    virtual void d68();
-    virtual void d69();
-    virtual void d6a();
-    virtual void d6b();
-    virtual void d6c();
-    virtual void d6d();
-    virtual void d6e();
-    virtual void d6f();
-    virtual void d70();
-    virtual void d71();
-    virtual void d72();
-    virtual void d73();
-    virtual void d74();
-    virtual void d75();
-    virtual void d76();
-    virtual void d77();
-    virtual void d78();
-    virtual void d79();
-    virtual void d7a();
-    virtual void d7b();
-    virtual void d7c();
-    virtual void d7d();
-    virtual void d7e();
-    virtual void d7f();
-    virtual void d80();
-    virtual void d81();
-    // vtable[130] = offset 0x208
-    virtual void* add_action(RGE_Action* action) = 0;
-    // vtable[131] = offset 0x20C (gap)
-    virtual void d82();
-    // vtable[132] = offset 0x210
-    virtual RGE_Task* make_enter_task(RGE_Static_Object* obj, int x, int y, int z) = 0;
-};
+    virtual ~RGE_Static_Object();
+    virtual void recycle_in_to_game(RGE_Master_Static_Object*, RGE_Player*, float, float, float);
+    virtual void recycle_out_of_game();
+    virtual void draw(TDrawArea*, short, short, RGE_Color_Table*);
+    virtual void shadow_draw(TDrawArea*, short, short, uchar);
+    virtual void normal_draw(TDrawArea*, short, short);
+    virtual void draw_front_frame(TDrawArea*, short, short);
+    virtual void draw_back_frame(TDrawArea*, short, short);
+    virtual void draw_frame(TDrawArea*, short, short);
+    virtual uchar update();
+    virtual void check_damage_sprites();
+    virtual void rehook();
+    virtual void save(int);
+    virtual float teleport(float, float, float);
+    virtual void new_sprite(RGE_Sprite*);
+    virtual void add_overlay_sprite(RGE_Sprite*, uchar);
+    virtual void remove_overlay_sprite(RGE_Sprite*);
+    virtual void change_ownership(RGE_Player*);
+    virtual void modify(float, uchar);
+    virtual void modify_delta(float, uchar);
+    virtual void modify_percent(float, uchar);
+    virtual void transform(RGE_Master_Static_Object*);
+    virtual void copy_obj(RGE_Master_Static_Object*);
+    virtual void set_object_state(uchar);
+    virtual void remove_visible_resource();
+    virtual void create_doppleganger_when_dying();
+    virtual void destroy_obj();
+    virtual void die_die_die();
+    virtual void damage(int, RGE_Armor_Weapon_Info*, float, RGE_Player*, RGE_Static_Object*);
+    virtual float calculateDamage(int, RGE_Armor_Weapon_Info*, float, RGE_Player*, RGE_Static_Object*);
+    virtual void rotate(long);
+    virtual uchar can_attack();
+    virtual void set_attribute(short, float);
+    virtual void set_attribute_amount(float, uchar, uchar);
+    virtual int heal(int, int);
+    virtual uchar heal(float);
+    virtual int canRepair();
+    virtual void notify_of_relation(long, uchar);
+    virtual void do_command(RGE_Static_Object*, float, float, float);
+    virtual void move_to(RGE_Static_Object*, float, float, float);
+    virtual void work(RGE_Static_Object*, float, float, float);
+    virtual void stop();
+    virtual void set_attack(RGE_Static_Object*);
+    virtual void play_command_sound();
+    virtual void play_move_sound();
+    virtual void new_angle(float);
+    virtual RGE_Static_Object* spawn_death_obj();
+    virtual RGE_Master_Static_Object* get_command_master(RGE_Static_Object*, float, float, float);
+    virtual void set_being_worked_on(RGE_Action_Object*, short, uchar);
+    virtual void release_being_worked_on(RGE_Static_Object*);
+    virtual uchar is_moving();
+    virtual RGE_Static_Object* get_target_obj();
+    virtual void enter_obj(RGE_Static_Object*);
+    virtual void exit_obj();
+    virtual int explore_terrain(RGE_Player*, uchar, int);
+    virtual void unexplore_terrain(RGE_Player*, uchar, int);
+    virtual LOSTBL* get_los_table();
+    virtual int inAttackRange(RGE_Static_Object*);
+    virtual uchar underAttack();
+    virtual void setUnderAttack(uchar);
+    virtual float calc_attack_modifier(RGE_Static_Object*);
+    virtual float getSpeed();
+    virtual float getAngle();
+    virtual float maximumSpeed();
+    virtual float rateOfFire();
+    virtual float damageCapability(RGE_Static_Object*);
+    virtual float damageCapability();
+    virtual float weaponRange();
+    virtual float minimumWeaponRange();
+    virtual int passableTile(float, float, int);
+    virtual uchar facetToNextWaypoint();
+    virtual int currentTargetID();
+    virtual float currentTargetX();
+    virtual float currentTargetY();
+    virtual float currentTargetZ();
+    virtual void setWaitingToMove(uchar);
+    virtual uchar waitingToMove();
+    virtual uchar actionState();
+    virtual uchar keepGatheringWhenObjectIsOut(int);
+    virtual uchar produceWhenKilledBy(int);
+    virtual uchar useSameZoneDropsite();
+    virtual void logDebug(const char*, ...);
+    virtual void notify(int, int, int, long, long, long);
+    virtual int attack(float, float, float, int);
+    virtual int attack(int, int);
+    virtual int moveTo(float, float, float, float, int);
+    virtual int moveTo(int, float, int);
+    virtual int moveTo(int, int);
+    virtual int moveAwayFrom(int, int);
+    virtual int hunt(int, int);
+    virtual int gather(int, int);
+    virtual int convert(int, int);
+    virtual int repair(int, int);
+    virtual int build(int, int);
+    virtual int trade(int, int);
+    virtual int explore(int, int, int);
+    virtual int enter(int, int);
+    virtual int unload(int, float, float, float);
+    virtual int transport(float, float, float, int);
+    virtual int stopAction();
+    virtual int pause();
+    virtual int canPath(int, float, float*, int, int, int);
+    virtual int canPath(XYZPoint, float, int, float*, int, int, int);
+    virtual int canBidirectionPath(int, int, float, float*, int, int, int);
+    virtual int canPathWithObstructions(int, float, float*, int, int, int, ManagedArray<int>*);
+    virtual int canPathWithAdditionalPassability(XYZPoint, float, int, float*, int, int, int, int, int);
+    virtual int findFirstTerrainAlongExceptionPath(int, float*, float*);
+    virtual int canLinePath(int, int, int, int, float, int);
+    virtual int canLinePath(XYPoint*, XYPoint*, float, XYPoint*, int);
+    virtual int firstTileAlongLine(XYPoint*, XYPoint*, XYPoint*, int, int, int);
+    virtual XYZBYTEPoint* userDefinedWaypoint(int);
+    virtual int addUserDefinedWaypoint(XYZBYTEPoint*, int);
+    virtual void removeAllUserDefinedWaypoints(int);
+    virtual void removeUserDefinedWaypoint(int);
+    virtual int numberUserDefinedWaypoints();
+    virtual Path* findAvoidancePath(XYZPoint*, float, int);
+    virtual long get_action_checksum();
+    virtual long get_waypoint_checksum();
+    virtual int setup(int, RGE_Game_World*);
+    virtual int setup(RGE_Master_Static_Object*, RGE_Player*, float, float, float);
+    virtual RGE_Object_List* create_object_list();
+    virtual RGE_Active_Sprite_List* create_sprite_list();
 
-class RGE_Combat_Object : public RGE_Moving_Object {
-public:
-    uchar gap_04[8];
+    int id;
+    RGE_Master_Static_Object* master_obj;
     RGE_Player* owner;
     uchar gap_10[0x28];
-    int world_x;
-    int world_y;
-    uchar gap_40[0x144];
-    RGE_Action_List* actions;
+    float world_x;
+    float world_y;
+    float world_z;
+    uchar gap_44[0x44];
+};
 
+class RGE_Animated_Object : public RGE_Static_Object {
+public:
+    virtual int setup(RGE_Master_Animated_Object*, RGE_Player*, float, float, float);
+    float speed;
+};
+
+class RGE_Moving_Object : public RGE_Animated_Object {
+public:
+    virtual void stop_moving();
+    virtual uchar turn_towards(RGE_Static_Object*, float, float);
+    virtual int setup(RGE_Master_Moving_Object*, RGE_Player*, float, float, float);
+    uchar gap_8C[0xF4];
+};
+
+class RGE_Action_Object : public RGE_Moving_Object {
+public:
+    virtual void work2(RGE_Static_Object*, float, float, float, uchar);
+    virtual void set_task(short);
+    virtual void setTaskByTaskID(int);
+    virtual void set_action(RGE_Action*);
+    virtual void set_only_action(RGE_Action*);
+    virtual void set_end_action(RGE_Action*);
+    virtual RGE_Task* getTask(RGE_Static_Object*, float, float, float);
+
+    uchar waiting;
+    uchar gap_181[3];
+    RGE_Action_List* actions;
+    uchar command_flag;
+    uchar gap_189[3];
+    int lastActionValue;
+    int lastActionStateValue;
+};
+
+class RGE_Combat_Object : public RGE_Action_Object {
+public:
+    uchar gap_194[0x30];
     virtual int enter(int param_1, int param_2);
 };
 
 int RGE_Combat_Object::enter(int param_1, int param_2)
 {
-    RGE_Static_Object* obj;
-    RGE_Task* task;
-    RGE_Action_Enter* action_enter;
-    int x;
-    int y;
-    int z;
+    RGE_Static_Object* obj = this->owner->world->object(param_1);
 
-    obj = (RGE_Static_Object*)this->owner->world->object(param_1);
     if (obj == 0)
-        goto fail;
+        return 0;
 
     if (param_2 == 0) {
         if (this->actions->have_action() == 1) {
             RGE_Action* action = this->actions->get_action();
-            RGE_Static_Object* target = action->func4C();
-            if (target == obj) {
-                RGE_Action* action2 = this->actions->get_action();
-                short action_val = action2->func18();
-                if (action_val == 3)
-                    goto success;
+            if (action->get_target_obj() == obj) {
+                action = this->actions->get_action();
+                if (action->type() == 3)
+                    return 1;
             }
         }
     }
 
-    z = obj->world_z;
-    y = obj->world_y;
-    x = obj->world_x;
-    task = this->make_enter_task(obj, x, y, z);
+    RGE_Task* task = this->getTask(obj, obj->world_x, obj->world_y, obj->world_z);
     if (task == 0)
-        goto fail;
+        return 0;
 
-    action_enter = new RGE_Action_Enter((RGE_Action_Object*)this,
-                                        task,
-                                        (RGE_Action_Object*)obj);
-    if (action_enter == 0)
-        goto fail;
+    RGE_Action_Enter* action = new RGE_Action_Enter(this, task, obj);
+    if (action == 0)
+        return 0;
 
     this->actions->delete_list();
-    this->add_action(action_enter);
-
-success:
+    this->set_only_action(action);
     return 1;
-
-fail:
-    return 0;
 }
-
-// Fresh bounded pass (sa-0a61587c): typed RGE_Task, RGE_Action, and
-// RGE_Static_Object ownership kept the natural goto-fail source and emitted
-// the same 274-byte / 65-diff result. The shared VC5 EH-tail mismatch remains.
-// Fresh bounded pass (sa-94b9da56): natural single-return pointer, integer,
-// void-pointer, parameter-home, object-reuse, and declaration-order carriers
-// were tested. Shared-tail forms changed the prologue or body basin; the best
-// result remains this 274-byte typed goto-fail source with 65 differing bytes,
-// 11 aligned calls, and the original shared EH tail unresolved. Restore this
-// source before validation.
