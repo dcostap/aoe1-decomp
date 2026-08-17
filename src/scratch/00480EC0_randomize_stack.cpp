@@ -142,6 +142,10 @@
 //   a local-layout explanation. PDB/Ghidra show only sub_stacks plus the
 //   compiler-generated outer state; no extra source local owns the frame word.
 //   Restored the pinned clean source. The 0x968 frame remains unresolved.
+// - Object audit: FPO and oracle assembly prove two scalar homes below the
+//   0x960-byte sub_stacks array. The pair-loop cursor actively uses one home.
+//   The extra word is not alignment, alloca, EH, inline residue, or a boundary
+//   error. PDB omits its source owner, so a synthetic local remains unjustified.
 
 extern int __cdecl debug_rand(char* file, int line);
 
