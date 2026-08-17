@@ -24,7 +24,13 @@
 // revisit probe: a typed trailing hot_spot_num plus radius/y member cursors and a standalone new expression reduced the diagnostic diff to 10 bytes, but required volatile reloads; rejected by policy.
 // revisit probe: nonvolatile natural aliases, unions, and references collapsed the two proven fallback loads and stayed at a larger mismatch; restored the clean donor-shaped source.
 // final revisit state: retain the no-volatility typed model with the proven trailing count and radius/y member cursors; validation is exact-size, exact-frame, and exact-call but nonexact in bytes.
-// Left in scratch: behavior, calls, frame, and size are close; remaining drift is the hot-spot local home/cursor allocation and automatic-new tail cleanup.
+// r2 probe: real <new.h>, <stdlib.h>, and <string.h> contexts did not change codegen; typed y/x anchors and donor-style record pointers did not recover the loop basin.
+// r2 probe: reversing the source/destination cursor updates recovered the original loop register assignment and reduced the edit diagnostic to 22 bytes.
+// r2 exact probe: two distinct uninitialized count locals coalesced to the proven [esp+0Ch] home, preserving the original duplicate loads without volatility or assembly.
+// r3 probe: removing both synthetic count locals and the synthetic final else, leaving only branch-initialized base_cliff_size and cliff_size_variance, still produced an exact match.
+// r3 probe: direct number_of_cliffs plus cliff_size_variance locals mismatched by 128 bytes because the jump-table selector changed register ownership.
+// Ownership: PDB lines 69-100 cover the bounded size arms and default stack reads; the dossier proves two reads from the unwritten entry-relative -0x4D0 home. Same-TU pointer donors support the natural cursor loop.
+// Current exact natural candidate: source, flags, owner symbol, ordered calls, frame, and positional bytes all match without synthetic temporaries, volatility, or assembly.
 // FLAGS: config/flags/00487710_init.rsp (/nologo /c /O2 /Oy /GX)
 
 class RGE_Map;
@@ -96,7 +102,6 @@ unsigned char TRIBE_RMM_Database_Controller::init(RGE_Map* p1, RGE_Game_World* p
     this->RGE_RMM_Database_Controller::init(p1, p2, p3, p4, p5);
 
     if (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_tdbc.cpp", 0x40) > 0x1fff) {
-        long number_of_cliffs;
         long base_cliff_size;
         long cliff_size_variance;
         long size = this->map_size;
@@ -106,7 +111,6 @@ unsigned char TRIBE_RMM_Database_Controller::init(RGE_Map* p1, RGE_Game_World* p
         else if (size <= 0x90) { base_cliff_size = 8; cliff_size_variance = 16; }
         else if (size <= 0xC8) { base_cliff_size = 18; cliff_size_variance = 20; }
         else if (size <= 0xFA) { base_cliff_size = 28; cliff_size_variance = 20; }
-        else { base_cliff_size = number_of_cliffs; cliff_size_variance = number_of_cliffs; }
 
         switch (this->map_type) {
         case 0: base_cliff_size = 0; cliff_size_variance = 0; break;
@@ -135,8 +139,8 @@ unsigned char TRIBE_RMM_Database_Controller::init(RGE_Map* p1, RGE_Game_World* p
                 dst[-1] = src[-1];
                 dst[0] = src[0];
                 dst[1] = src[1];
-                dst += 3;
                 src += 4;
+                dst += 3;
                 n--;
             } while (n != 0);
         }
