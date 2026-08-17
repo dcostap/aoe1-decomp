@@ -35,6 +35,21 @@
 // improved but not exact; no accepted_drift for this broad prologue/CFG drift.
 // shardB6 probe: binding val_num to p14 followed the first word-load reading
 // the earlier short parameter, but it caused 816-byte drift and was rolled back.
+// focused pass 2026-08-17: inventory owner evidence moved the char** list setup
+// overload back to TTextPanel, added the proven +2B8 drop_down_panel tail, and
+// made btn_panel a TButtonPanel owner. The original scrollbar call reads
+// this->render_area (+20), not the area parameter; correcting that cut drift.
+// The original shared EH tail requires one long result carrying each setup
+// status and the final 1. This is a typed period-plausible reconstruction.
+// The shared empty string is the exact-bank s_ symbol at 592A40.
+// Probes 1-20 covered child size, result/tail forms, assignment order, pointer
+// ownership, short/int casts, exact empty-string relocation, and header context.
+// Probes 21-28 combined corrected ownership with result and tested result type,
+// declaration scope, width aliases, and supported register hints. Best current
+// result is 865/865 bytes, 253/253 instructions, 20/20 ordered calls, one
+// return, 94.86% shape, and 162 positional mismatch bytes. Remaining drift is
+// a register map conflict in the prologue and the final scrollbar argument
+// setup. No policy-valid exact match was found.
 
 struct TDrawArea;
 class TPanel;
@@ -44,6 +59,8 @@ class TDropDownButtonPanel;
 class TListPanel;
 class TScrollBarPanel;
 class TDigital;
+
+extern char s_[];
 
 class TPanel {
 public:
@@ -66,6 +83,7 @@ public:
     int spacer_size;
     TTextPanel();
     long setup(TDrawArea*, TPanel*, long, long, long, long, void*, long, long, char*, int, unsigned char, int, unsigned char, short, char*);
+    long setup(TDrawArea*, TPanel*, long, long, long, long, void*, long, long, char*, int, unsigned char, int, unsigned char, short, char**, short);
     void set_alignment(int, int);
     void set_scrollbar(TScrollBarPanel*, int);
     void setCurrentLineNumber(int);
@@ -81,6 +99,7 @@ public:
 
 class TDropDownButtonPanel : public TButtonPanel {
 public:
+    TDropDownPanel* drop_down_panel; // proven by handle_mouse_move at +2B8
     TDropDownButtonPanel(TDropDownPanel* drop);
 };
 
@@ -89,7 +108,6 @@ public:
     char gap_188[0x18];
     TListPanel();
     void set_auto_track(int);
-    long setup(TDrawArea*, TPanel*, long, long, long, long, void*, long, long, char*, int, unsigned char, int, unsigned char, short, char**, short);
 };
 
 class TScrollBarPanel : public TPanel {
@@ -103,7 +121,7 @@ public:
 class TDropDownPanel : public TPanel {
 public:
     TTextPanel* val_panel;          // +F4
-    TDropDownButtonPanel* btn_panel;// +F8
+    TButtonPanel* btn_panel;         // +F8; base owner used by setup/action code
     TListPanel* list_panel;         // +FC
     TScrollBarPanel* scbar_panel;   // +100
     int mode;                       // +104
@@ -138,6 +156,8 @@ long TDropDownPanel::setup(TDrawArea* area, TPanel* parent, void* p3, long p4, l
               long list_hgt_param, char** vals, short p22, long scbar_wid_param, char* p24, char* p25,
               char* p26, char* p27, long scbar_arrow_hgt_param, long scbar_tab_hgt_param)
 {
+    long result;
+
     this->val_num = p15;
     this->btn_wid = btn_wid_param;
     this->val_wid = panel_width - btn_wid_param - 1;
@@ -154,40 +174,44 @@ long TDropDownPanel::setup(TDrawArea* area, TPanel* parent, void* p3, long p4, l
     TPanel::setup(area, parent, left, top, panel_width, panel_height, 0);
 
     this->val_panel = new TTextPanel;
-    if (this->val_panel != 0 &&
-        this->val_panel->setup(area, this, 0, 0, this->val_wid, this->val_hgt,
+    result = (long)this->val_panel;
+    if (result != 0 &&
+        (result = this->val_panel->setup(area, this, 0, 0, this->val_wid, this->val_hgt,
                                p3, p4, p5, (char*)0, p6, p7, p8, outline, p14,
-                               vals[(short)this->val_num]) != 0) {
+                               vals[(short)this->val_num])) != 0) {
         this->val_panel->set_alignment(0, 1);
 
         this->btn_panel = new TDropDownButtonPanel(this);
-        if (this->btn_panel != 0 &&
-            this->btn_panel->setup(area, this, 0, 0, this->btn_wid, this->btn_hgt,
+        result = (long)this->btn_panel;
+        if (result != 0 &&
+            (result = this->btn_panel->setup(area, this, 0, 0, this->btn_wid, this->btn_hgt,
                                    TButtonPanel::DrawBevelPicture, (TDigital*)0,
-                                   TButtonPanel::NotifyAction, 0) != 0) {
+                                   TButtonPanel::NotifyAction, 0)) != 0) {
             this->list_panel = new TListPanel;
-            if (this->list_panel != 0 &&
-                this->list_panel->setup(area, this, 0, 0, this->list_wid, this->list_hgt,
+            result = (long)this->list_panel;
+            if (result != 0 &&
+                (result = this->list_panel->setup(area, this, 0, 0, this->list_wid, this->list_hgt,
                                         p3, p4, p5, (char*)0, p6, p7, p8, outline, p14,
-                                        vals, p22) != 0) {
+                                        vals, p22)) != 0) {
                 this->list_panel->set_auto_track(1);
                 this->list_panel->set_active(0);
-                this->list_panel->setCurrentLineNumber((int)this->val_num);
+                ((TTextPanel*)this->list_panel)->setCurrentLineNumber(this->val_num);
 
                 this->scbar_panel = new TScrollBarPanel;
-                if (this->scbar_panel != 0 &&
-                    this->scbar_panel->setup(area, this, 0, 0, this->scbar_wid, this->list_hgt,
-                                             "", "", "", "",
+                result = (long)this->scbar_panel;
+                if (result != 0 &&
+                    (result = this->scbar_panel->setup(this->render_area, this, 0, 0, this->scbar_wid, this->list_hgt,
+                                             s_, s_, s_, s_,
                                              this->scbar_arrow_hgt, this->scbar_tab_hgt,
-                                             this->list_panel, (long)p22,
-                                             TScrollBarPanel::Vertical) != 0) {
+                                             this->list_panel, (int)p22,
+                                             TScrollBarPanel::Vertical)) != 0) {
                     this->list_panel->set_scrollbar(this->scbar_panel, 0);
                     this->scbar_panel->set_active(0);
                     this->set_mode(1);
-                    return 1;
+                    result = 1;
                 }
             }
         }
     }
-    return 0;
+    return result;
 }
