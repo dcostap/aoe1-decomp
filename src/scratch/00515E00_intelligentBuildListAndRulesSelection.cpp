@@ -25,6 +25,14 @@
 //   now match all 131 original calls; this is retained as natural source order.
 // - 2026-08-14: changed the three count gates from `< 1` to `<= 0`, matching the
 //   original zero compare and improving the early CFG. Current best remains nonexact.
+// - 2026-08-17: completed 20 distinct probes. The original reduction pass sets
+//   are now restored from the local Ghidra listing. This cuts the rebuild to the
+//   original 6631-byte boundary and raises shape similarity to 89.36%.
+//   Separate pointer loops reproduce the original sanitize and total passes.
+//   Extern counter globals and reviewed rge_base_game ownership improve the
+//   codegen basin. The result remains nonexact: the checker reports four missing
+//   setRule sites in the late victory branch and 5713 positional-diff bytes.
+//   The late branch is emitted after the effective function boundary.
 // Notes:
 // - The packet's decompiler folds the saved game difficulty into buildLists[0]; the
 //   real stack has `gameDifficulty` at +0x14 and `buildLists[125]` at +0x18.
@@ -36,21 +44,20 @@
 
 typedef unsigned char uchar;
 
-#define rge_base_game (*(RGE_Base_Game_00515E00**)0x0062C574)
-#define computerPlayerSetup (*(int*)0x00886C18)
-#define DAT_00886c1c (*(int*)0x00886C1C)
-#define DAT_00886c20 (*(int*)0x00886C20)
-#define DAT_00886c24 (*(int*)0x00886C24)
-#define DAT_00886c28 (*(int*)0x00886C28)
-#define DAT_00886c2c (*(int*)0x00886C2C)
-#define DAT_00886c30 (*(int*)0x00886C30)
-#define DAT_00886c34 (*(int*)0x00886C34)
-#define DAT_00886c38 (*(int*)0x00886C38)
-#define DAT_00886c3c (*(int*)0x00886C3C)
-#define DAT_00886c40 (*(int*)0x00886C40)
-#define DAT_00886c44 (*(int*)0x00886C44)
-#define DAT_00886c48 (*(int*)0x00886C48)
-#define allowAIToCheat (*(int*)0x0057F9F0)
+extern int computerPlayerSetup;
+extern int DAT_00886c1c;
+extern int DAT_00886c20;
+extern int DAT_00886c24;
+extern int DAT_00886c28;
+extern int DAT_00886c2c;
+extern int DAT_00886c30;
+extern int DAT_00886c34;
+extern int DAT_00886c38;
+extern int DAT_00886c3c;
+extern int DAT_00886c40;
+extern int DAT_00886c44;
+extern int DAT_00886c48;
+extern int allowAIToCheat;
 
 #define S_TPLAYER_CPP ((char*)0x0058AC44)
 #define S_RANDOM_GAME_SPECIALIZED ((char*)0x0058AF78)
@@ -79,6 +86,8 @@ public:
     int difficulty();
     uchar deathMatch();
 };
+
+extern RGE_Base_Game_00515E00* rge_base_game;
 
 class AIModule_00515E00 {
 public:
@@ -183,7 +192,7 @@ public:
 #define GET_RULE(rule_id) this->playerAI->strategyAI.rule((rule_id))
 #define BL(n) buildLists[(n) - 1]
 #define buildLists packet.weights
-#define DIV3_POS(x) do { if ((x) > 0) { (x) = (x) / 3; } } while (0)
+#define DIV3_POS(x) do { if (0 < (x)) { (x) = (x) / 3; } } while (0)
 #define SIGN_MASK_MOD(v, mask) ((((((v) ^ ((v) >> 31)) - ((v) >> 31)) & (mask)) ^ ((v) >> 31)) - ((v) >> 31))
 
 void TRIBE_Player::intelligentBuildListAndRulesSelection(char* buildListName, char* ruleSetName,
@@ -367,79 +376,66 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* buildListName, ch
             DIV3_POS(BL(5));
             DIV3_POS(BL(6));
             DIV3_POS(BL(10));
+            DIV3_POS(BL(0x0B));
+            DIV3_POS(BL(0x0C));
             DIV3_POS(BL(0x0D));
-            DIV3_POS(BL(0x66));
-            DIV3_POS(BL(0x62));
-            DIV3_POS(BL(0x63));
-            DIV3_POS(BL(0x5F));
-            DIV3_POS(BL(0x60));
-            DIV3_POS(BL(0x61));
-            DIV3_POS(BL(0x46));
-            DIV3_POS(BL(0x47));
-            DIV3_POS(BL(0x48));
-            DIV3_POS(BL(0x6B));
-            DIV3_POS(BL(0x6C));
+            DIV3_POS(BL(0x2B));
+            DIV3_POS(BL(0x2D));
+            DIV3_POS(BL(0x2E));
+            DIV3_POS(BL(0x30));
+            DIV3_POS(BL(0x31));
+            DIV3_POS(BL(0x39));
+            DIV3_POS(BL(0x4B));
+            DIV3_POS(BL(99));
+            DIV3_POS(BL(0x68));
+            DIV3_POS(BL(0x71));
+            DIV3_POS(BL(0x72));
+            break;
+        case 5:
+            DIV3_POS(BL(0x2A));
+            DIV3_POS(BL(1));
+            DIV3_POS(BL(2));
+            DIV3_POS(BL(3));
+            DIV3_POS(BL(0x2A));
+            DIV3_POS(BL(0x33));
+            DIV3_POS(BL(0x34));
+            DIV3_POS(BL(0x49));
+            DIV3_POS(BL(0x4A));
+            DIV3_POS(BL(0x33));
+            DIV3_POS(BL(0x34));
             DIV3_POS(BL(0x51));
             DIV3_POS(BL(0x52));
             DIV3_POS(BL(0x53));
-            DIV3_POS(BL(0x54));
-            DIV3_POS(BL(0x72));
-            DIV3_POS(BL(0x73));
-            DIV3_POS(BL(0x75));
-            break;
-        case 5:
-            DIV3_POS(BL(7));
-            DIV3_POS(BL(8));
-            DIV3_POS(BL(9));
-            DIV3_POS(BL(0x3C));
-            DIV3_POS(BL(0x3B));
-            DIV3_POS(BL(0x33));
-            DIV3_POS(BL(0x3A));
-            DIV3_POS(BL(0x5E));
-            DIV3_POS(BL(0x34));
-            DIV3_POS(BL(0x35));
-            DIV3_POS(BL(0x2E));
-            DIV3_POS(BL(0x3E));
-            DIV3_POS(BL(0x3F));
-            DIV3_POS(BL(0x40));
-            DIV3_POS(BL(0x3D));
-            DIV3_POS(BL(0x41));
-            DIV3_POS(BL(0x42));
-            DIV3_POS(BL(0x43));
-            DIV3_POS(BL(0x49));
-            DIV3_POS(BL(0x4A));
-            DIV3_POS(BL(0x4B));
-            DIV3_POS(BL(0x4C));
-            DIV3_POS(BL(0x4D));
-            DIV3_POS(BL(0x4E));
-            DIV3_POS(BL(0x55));
-            DIV3_POS(BL(0x56));
-            DIV3_POS(BL(0x57));
-            DIV3_POS(BL(0x74));
-            DIV3_POS(BL(0x76));
-            DIV3_POS(BL(0x77));
-            DIV3_POS(BL(0x78));
-            DIV3_POS(BL(0x7D));
+            DIV3_POS(BL(0x6C));
             break;
         case 6:
-            DIV3_POS(BL(0x11));
-            DIV3_POS(BL(0x32));
-            DIV3_POS(BL(0x6D));
-            DIV3_POS(BL(0x59));
-            DIV3_POS(BL(0x5A));
-            DIV3_POS(BL(0x5C));
+            DIV3_POS(BL(0x29));
+            DIV3_POS(BL(0x3A));
+            DIV3_POS(BL(0x73));
+            DIV3_POS(BL(0x55));
             break;
         }
         ++difficultyLevel;
     } while (difficultyLevel < 7);
 
     int total = 0;
-    for (difficultyLevel = 0; difficultyLevel < 125; ++difficultyLevel) {
-        if (buildLists[difficultyLevel] < 0) {
-            buildLists[difficultyLevel] = 0;
+    int* cursor = buildLists;
+    int count = 125;
+    do {
+        if (*cursor < 0) {
+            *cursor = 0;
         }
-        total += buildLists[difficultyLevel];
-    }
+        ++cursor;
+        --count;
+    } while (count != 0);
+    total = 0;
+    cursor = buildLists;
+    count = 125;
+    do {
+        total += *cursor;
+        ++cursor;
+        --count;
+    } while (count != 0);
 
     int randomValue = debug_rand(S_TPLAYER_CPP, 0xC41);
     int remainder = randomValue % total;
