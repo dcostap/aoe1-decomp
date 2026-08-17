@@ -117,6 +117,21 @@
 // basin. The reference and derived-player forms were rolled back because they
 // are not canonical source facts here. The current source is restored to the
 // pinned natural nested-layout reconstruction.
+// Fresh bounded pass (sa-37ed7ad3-r1): compared the 004E3E90 sibling's
+// InformationAIModule inheritance, full TribeBuild virtual surface, complete
+// tactical extent (0x100C), function-scope md lifetime, separate storage-limit
+// local, and minimal header context. All retained the 222-byte / six-byte
+// md-product register-swap basin. The clean nested-layout source is restored.
+// Fresh bounded pass (sa-92b4ab98-r1): scoped capacity/product/count locals
+// and direct natural remaining-value data flow both regressed to the known
+// 27-byte scheduling basin. Restored the clean typed reconstruction; the
+// remaining six bytes are still only md/product register encodings.
+// Revisit (sa-c6deaba1-r1): tested direct post-md strategic rereads, old
+// capacity-in-place and product/count local lifetimes, unsigned product,
+// expression-level subtraction, and top-scope count. The separate-count
+// forms keep md in EDI but sink imul after the count call (27 bytes); reusing
+// the proven count home restores the 222-byte six-byte md/product basin.
+// Restored the pinned natural source. No new exact natural lead remains.
 
 #include <stdlib.h>
 
