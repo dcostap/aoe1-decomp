@@ -11,22 +11,24 @@
 //   scan, inline ManagedArray::add, eight-way switch, and final insertion.
 // - The typed candidate reaches the original 0x34 frame, 9/9 ordered calls,
 //   33/33 conditional signals, and the original 1114-byte boundary.  The
-//   remaining 46 bytes are structural/codegen drift around the waypoint
-//   construction, initToStart path selection, and the first loop entry; no
-//   call target or ownership mismatch remains.  The final source is kept as
-//   the readable canonical reconstruction rather than a compiler-steering
-//   variant.
+//   final clean check is 14 positional bytes (1.2567%), with 99.07% shape
+//   similarity and 91.98% exact-block coverage.  The remaining bytes are
+//   map-index register-order drift in the first and repeated facet loads.
+//   No call target or ownership mismatch remains.
 // - Tested a natural typed facet-before-coordinate assignment order because
 //   the target loads the facet before its floating-point coordinate stores;
 //   it moved 25 positional bytes farther from the clean candidate and was
 //   rolled back.  The clean x/y/z/facet order remains the best reconstruction.
 // - Matched the neighbor-bound structure with incremented max and decremented
 //   min values; this reduced the rebuilt size to the original 1114 bytes.
-// - A declaration initializer for previousFacet preserves the original EBX
-//   sentinel liveness and reduced the best strict diff to 229 bytes.
-//   A currentObject local also matches the original pointer carry into the
-//   waypoint and initToStart code.  Row-pointer and foo-order variants emitted
-//   identical code and were rolled back to the direct natural expressions.
+// - The normal-first path tests and maxX/maxY comparison direction reproduce
+//   the original branch polarity.  Separate facetByte/currentFacet locals,
+//   plus a sentinel assignment before the facet load, reduce the strict diff
+//   to 14 bytes.  The reviewed objectGroupOnTile int& ABI is retained.
+// - Row-pointer, flat-cursor, foo-order, call-local, aggregate-temp, and
+//   declaration-scope variants did not improve the clean source.  Adding
+//   standard headers reduced one diagnostic result to 12 bytes, but had no
+//   donor-backed source evidence and was removed.  No exact result was found.
 
 #include <stddef.h>
 
@@ -190,7 +192,7 @@ public:
     char gap_00[0x40];
 
     int objectGroupOnTile(int playerId, int objectGroup, int tileX, int tileY,
-                          int* objectCountOnTile);
+                          int& objectCountOnTile);
 };
 
 class PathingSystem {
@@ -258,7 +260,7 @@ public:
 
 int PathingSystem::copyPath(int step)
 {
-    uchar previousFacet = 0xFF;
+    uchar previousFacet;
 
     {
         Path* path;
@@ -272,11 +274,13 @@ int PathingSystem::copyPath(int step)
     BYTEPoint currentPoint;
     currentPoint.x = this->MGP_openPaths[1].x;
     currentPoint.y = this->MGP_openPaths[1].y;
-    uchar currentFacet = this->facetValue[currentPoint.x][currentPoint.y];
     int fooX = currentPoint.x;
     int fooY = currentPoint.y;
-    if ((currentFacet & 0xF8) == this->CurrentFacetMask)
-        currentFacet &= 7;
+    previousFacet = 0xFF;
+    uchar facetByte = this->facetValue[currentPoint.x][currentPoint.y];
+    uchar currentFacet;
+    if ((facetByte & 0xF8) == this->CurrentFacetMask)
+        currentFacet = facetByte & 7;
     else
         currentFacet = 0xFF;
 
@@ -296,22 +300,22 @@ int PathingSystem::copyPath(int step)
 
     do {
         if (this->initialTile.x == fooX && this->initialTile.y == fooY) {
-            if (this->currentObject->storePathInExceptionPath != 0) {
-                if (this->currentObject->exceptionPathValue.insertAtCurrent(waypoint) == 0)
+            if (this->currentObject->storePathInExceptionPath == 0) {
+                if (this->currentObject->pathValue.insertAtCurrent(waypoint) == 0)
                     return 0;
             } else {
-                if (this->currentObject->pathValue.insertAtCurrent(waypoint) == 0)
+                if (this->currentObject->exceptionPathValue.insertAtCurrent(waypoint) == 0)
                     return 0;
             }
             return 1;
         }
 
         if (currentFacet != previousFacet) {
-            if (this->currentObject->storePathInExceptionPath != 0) {
-                if (this->currentObject->exceptionPathValue.insertAtCurrent(waypoint) == 0)
+            if (this->currentObject->storePathInExceptionPath == 0) {
+                if (this->currentObject->pathValue.insertAtCurrent(waypoint) == 0)
                     return 0;
             } else {
-                if (this->currentObject->pathValue.insertAtCurrent(waypoint) == 0)
+                if (this->currentObject->exceptionPathValue.insertAtCurrent(waypoint) == 0)
                     return 0;
             }
         }
@@ -322,7 +326,7 @@ int PathingSystem::copyPath(int step)
             if (minX < 0) {
                 minX = 0;
                 ++maxX;
-            } else if (this->xSizeValue <= maxX) {
+            } else if (maxX >= this->xSizeValue) {
                 --minX;
                 maxX = this->xSizeValue - 1;
             }
@@ -332,7 +336,7 @@ int PathingSystem::copyPath(int step)
             if (minY < 0) {
                 minY = 0;
                 ++maxY;
-            } else if (this->ySizeValue <= maxY) {
+            } else if (maxY >= this->ySizeValue) {
                 --minY;
                 maxY = this->ySizeValue - 1;
             }
@@ -343,7 +347,7 @@ int PathingSystem::copyPath(int step)
                     int id = this->worldValue->objectGroupOnTile(
                         this->currentUnobstructiblePlayerID,
                         this->currentUnobstructibleGroupID,
-                        tileX, tileY, &objectCountOnTile);
+                        tileX, tileY, objectCountOnTile);
                     if (id != -1)
                         this->currentUnobstructibles.add(id);
                 }
@@ -384,9 +388,9 @@ int PathingSystem::copyPath(int step)
         previousFacet = currentFacet;
         fooX = currentPoint.x;
         fooY = currentPoint.y;
-        currentFacet = this->facetValue[fooX][fooY];
-        if ((currentFacet & 0xF8) == this->CurrentFacetMask)
-            currentFacet &= 7;
+        facetByte = this->facetValue[fooX][fooY];
+        if ((facetByte & 0xF8) == this->CurrentFacetMask)
+            currentFacet = facetByte & 7;
         else
             currentFacet = 0xFF;
         waypoint.x = (float)fooX + this->currentXOffset;
