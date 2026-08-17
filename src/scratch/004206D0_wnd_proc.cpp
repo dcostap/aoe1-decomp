@@ -27,21 +27,18 @@
 //   the remaining cost is a 17-byte size increase and tail placement drift.
 // - Inlined the thread-id comparison and reversed its operands to match the
 //   original call-result homes and cmp operand order.
+// - Made the definition the __stdcall RGE_Base_Game member.  This restores the
+//   original decorated owner symbol and the stack-passed member ABI.
+// - Binary evidence at 00420D04 loads the mouse-down home before the handled
+//   log pair.  The early handled tail now uses that predicate; changing the
+//   other joined tails merges distinct shipped blocks and loses call order.
+// - Tested the exact-donor panel_system macro and the period Windows SDK
+//   surface.  They restore the absolute panel receiver, but do not remove the
+//   remaining tail-placement drift.
+// - Probes 1-25 tested owner ABI, return-tail predicates, stack aliases,
+//   global forms, SDK context, boolean width, and switch source order.
 
-extern "C" __declspec(dllimport) void* __stdcall SetCursor(void* cursor);
-extern "C" __declspec(dllimport) long __stdcall SetClassLongA(void* hwnd,
-                                                                  long index,
-                                                                  long value);
-extern "C" __declspec(dllimport) unsigned long __stdcall GetWindowThreadProcessId(
-    void* hwnd, unsigned long* process_id);
-extern "C" __declspec(dllimport) int __stdcall IsIconic(void* hwnd);
-extern "C" __declspec(dllimport) long __stdcall DefWindowProcA(void* hwnd,
-                                                                 unsigned int msg,
-                                                                 unsigned int wparam,
-                                                                 long lparam);
-extern "C" __declspec(dllimport) int __stdcall InvalidateRect(void* hwnd,
-                                                                void* rect,
-                                                                int erase);
+#include <windows.h>
 
 extern "C" unsigned long __cdecl debug_timeGetTime(char* file, int line);
 
@@ -52,7 +49,7 @@ extern void color_log(unsigned char a, unsigned char b, int c);
 static int* const system_ignore_size_messages_storage = (int*)0x0062E63C;
 static int* const MouseCursorInChildContol_storage = (int*)0x0062C558;
 static int* const mouse_cursor_in_child_control_storage = (int*)0x0062C4C4;
-static void** const save_active_wnd_storage = (void**)0x0062C570;
+static void*& save_active_wnd_storage = *(void**)0x0062C570;
 static int* const do_restore_palette_storage = (int*)0x0062C504;
 static unsigned long* const restore_palette_timer_storage =
     (unsigned long*)0x0062C508;
@@ -69,13 +66,6 @@ class TMusic_System {
 public:
     unsigned int handle_messages(void* hwnd, unsigned int msg,
                                  unsigned int wparam, long lparam);
-};
-
-struct tagPALETTEENTRY {
-    unsigned char peRed;
-    unsigned char peGreen;
-    unsigned char peBlue;
-    unsigned char peFlags;
 };
 
 class TDrawSystem {
@@ -99,7 +89,8 @@ class TPanelSystem {
 public:
     TPanel* currentPanel();
 };
-extern TPanelSystem panel_system;
+// BINARY NOTE: panel_system is the fixed object at 0062E870.
+#define panel_system (*(TPanelSystem*)0x0062E870)
 
 #define VPAD1(n) virtual void vpad##n();
 #define VPAD2(n) VPAD1(n) VPAD1(n##_1)
@@ -230,10 +221,10 @@ public:
     void mouse_on();
 };
 
-long __stdcall RGE_Base_Game_wnd_proc(RGE_Base_Game* self, void* hwnd,
-                                      unsigned int msg, unsigned int wparam,
-                                      long lparam)
+long __stdcall RGE_Base_Game::wnd_proc(void* hwnd, unsigned int msg,
+                                       unsigned int wparam, long lparam)
 {
+    RGE_Base_Game* self = this;
     color_log(0x24, 0x24, 3);
     int mouse_down = 0;
     if (msg >= 0x201 && msg <= 0x206) {
@@ -252,12 +243,12 @@ long __stdcall RGE_Base_Game_wnd_proc(RGE_Base_Game* self, void* hwnd,
 
     color_log(0x24, 0x4C, 3);
 
-    void* panel_result = 0;
+    long panel_result = 0;
     TPanel* panel = panel_system.currentPanel();
     if (panel != 0) {
         color_log(0x24, 0x32, 3);
         panel = panel_system.currentPanel();
-        panel_result = (void*)panel->wnd_proc(hwnd, msg, wparam, lparam);
+        panel_result = panel->wnd_proc(hwnd, msg, wparam, lparam);
         if (panel_result != 0 && msg != 0x200 && msg != 0x113)
             goto panel_return_after_exit_menu;
     }
@@ -291,11 +282,11 @@ long __stdcall RGE_Base_Game_wnd_proc(RGE_Base_Game* self, void* hwnd,
             if (active_state == 0) {
                 if (GetWindowThreadProcessId((void*)lparam, 0) ==
                     GetWindowThreadProcessId(self->prog_window, 0))
-                    *save_active_wnd_storage = (void*)lparam;
+                    save_active_wnd_storage = (void*)lparam;
             }
             if (hwnd == self->prog_window && active_state != 0 &&
-                minimized != 0 && *save_active_wnd_storage != 0) {
-                *save_active_wnd_storage = 0;
+                minimized != 0 && save_active_wnd_storage != 0) {
+                save_active_wnd_storage = 0;
             }
         }
         goto default_window_proc;
@@ -421,7 +412,7 @@ long __stdcall RGE_Base_Game_wnd_proc(RGE_Base_Game* self, void* hwnd,
         goto panel_return_after_exit_menu;
 
 panel_return_after_exit_menu:
-        if (panel_result != 0)
+        if (mouse_down != 0)
             color_log(0x4C, 0x5F, 4);
         color_log(0x24, 0x5F, 3);
         return (long)panel_result;
