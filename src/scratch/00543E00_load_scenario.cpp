@@ -34,6 +34,17 @@
 // - Restored the clean natural source after these duplicate structural probes.
 // - Remaining drift is structural block placement and the initial parameter
 //   register coloring; the historic best is 145 strict bytes.
+// - Follow-up baseline validation retained the clean typed source at 657 bytes
+//   versus the 642-byte oracle: 24 ordered calls, a 0x134 frame, and 147 strict
+//   differing bytes. The late close/load-110 block remains the only call-order
+//   drift; the early mismatch is parameter/this register coloring.
+// - Separate 1.09/1.11 guards, one combined 1.09/1.11/1.10 positive guard,
+//   a typed 304-byte header/path record, a 300-byte path array, a world receiver
+//   alias, a register hint, local declaration reorder, and donor-backed base
+//   polymorphism were tested. The guards and alias forms were codegen duplicates;
+//   the 300-byte array and polymorphic base were worse. The typed record removed
+//   raw header casts but was also a codegen duplicate, so the clean source keeps
+//   the proven stack-window form. A scenario-directory local caused broad drift.
 
 extern "C" int __cdecl sprintf(char*, const char*, ...);
 extern "C" int __cdecl rge_open(char*, int);
