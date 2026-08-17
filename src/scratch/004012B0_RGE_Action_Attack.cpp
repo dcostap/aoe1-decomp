@@ -149,6 +149,10 @@
 // - vtable=0x56E058, type=9, indirect_fire=2
 // Main-agent audit retained compiler-owned vptr setup and the natural 0.4f
 // fallback assignment.
+// Object audit confirms the exact 11-parameter ABI, 237-byte FPO body, no
+// locals or SEH, VC5 compiler, and no inline records. PDB class spellings are
+// byte-neutral but correct decorated types. No metadata explains the remaining
+// p4/p3/target and p5 fallback register maps.
 
 struct RGE_Sprite;
 struct RGE_Action_List;
