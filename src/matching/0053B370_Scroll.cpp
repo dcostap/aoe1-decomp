@@ -1,3 +1,5 @@
+#include <windows.h>
+
 // 0053B370 DClipInfo_List::Scroll
 // view.cpp:6829-6898, 261 bytes
 //
@@ -21,7 +23,7 @@
 // refill-r1: Exact view.cpp donors confirm the typed DClipInfo arrays and do/while idiom; the first-index guard `i + scroll_y >= 0` moved the negative block to 163 bytes, 94.00% shape, and 84.69% exact blocks.
 // refill-r1: Member first-index guards and declaration order were tested without adding source-index locals; the focused eight-variant guard lab found no exact result and kept the same 261-byte size.
 // refill-r1: A natural pretest while form reproduced the older 166-byte basin; restored the condition-only do/while reconstruction and retained the 163-byte first-index result.
-// BLOCKER: TU-context register allocation cascade (scroll_y in ebx vs edx)
+// RESOLVED: TU-context register allocation cascade (scroll_y in ebx vs edx)
 // Best retained source: typed same-TU DClipInfo layout with direct member arrays,
 // natural do/while copies, and switch fall-through; 166-byte diff, 92.16% shape,
 // exact original boundary. The positive-loop init now matches the early xor and
@@ -58,8 +60,21 @@
 // long types, subtraction trees, declaration order, direct indexing, gap-only
 // class context, and <stddef.h> context did not change the one-byte result.
 // Direct indexed reverse copy returned to the 166-byte mismatch basin.
-// The remaining blocker is VC5's equivalent SIB operand ordering in the source
-// index LEA. Final validation remains 260/261 bytes with one mismatch at +0x63.
+// revisit-r4: Exact under the period view.cpp Windows context. Adding
+// <windows.h> changes the clean source from the one-byte SIB mismatch to
+// MATCH; the canonical expression remains `YLine_Size - 1 + scroll_y`.
+// H1 parameter-first `scroll_y + (YLine_Size - 1)` without the header stayed
+// at one byte, and H4 with the header was an exact codegen duplicate. This
+// proves the header context controls the VC5 register basin, not arithmetic
+// operand order. Exact same-TU donor 0053A9C0_end_scroll_view.cpp includes
+// <windows.h>, and view.cpp uses period Windows types in adjacent code.
+// BINARY NOTE: With the header, VC5 naturally assigns EDX as the base and ESI
+// as the index for `lea esi,[edx+esi-1]`. Without it, it assigns the reverse
+// SIB roles while preserving all behavior and later bytes.
+// Reduction: removing <windows.h> restores the prior one-byte mismatch;
+// changing only the commutative expression under the header changes no byte.
+// Policy audit: default VC5 /O2 /Oy, natural typed arrays and loops, no inline
+// assembly, register hints, volatility, raw cursors, or metric-only aliases.
 
 struct DClipInfo_Node {
     DClipInfo_Node* Next;        // +0x00
