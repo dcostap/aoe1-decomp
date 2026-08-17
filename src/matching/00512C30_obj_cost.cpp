@@ -9,7 +9,9 @@
 // try 8: /O1 flag probe; too small 592B, rolled back.
 // try 9: reviewed final repair if/else structure; source matches original branch family, kept.
 // try 10: reviewed parameter order and initialization; early init now matches prologue exactly through offset 180.
-// BLOCKER: exact 642B with correct prologue/initialization, but cost blocks remain in a different narrow-vs-int codegen basin: original keeps __ftol result in BP then sign-extends BP for fild; rebuilt sign-extends AX into EBP directly and schedules fild/lea differently. Broad downstream positional drift remains, not accepted_drift-safe.
+// try 11: use direct short output stores and function-scope short availability/total
+// locals, matching the Ghidra-supported sVar3/sVar4/sVar6 shape. Exact 642B.
+// The prior narrow-vs-int blocker is resolved without compiler steering.
 //
 // Bounded retry sa274ecf51_objcost (2026-08-11, 10 hypotheses):
 // - Integrated baseline: typed object table/resources and natural three-cost source, 642B,
@@ -32,8 +34,8 @@
 // - Changed check_obj_cost's second parameter from int to the exact short-pointer donor ABI; code was unchanged.
 // - Function-scope short cost/availability temporaries with an int total rebuilt at 642 bytes but worsened
 //   to 304 diff bytes. Rolled back.
-// - Final source keeps the binary-supported 642-byte candidate. The remaining first hunk is the oracle's
-//   mov bp,ax partial-register path; no natural typed source lead remains in this bounded retry.
+// - The final direct-output short form is the simplest binary-supported typed model.
+//   Fresh authoritative validation is an exact MATCH: 642/642 bytes, 0.0000%.
 
 typedef unsigned char uchar;
 class TRIBE_Player;
@@ -55,8 +57,9 @@ extern "C" long __cdecl _ftol(void);
 
 void TRIBE_Player::obj_cost(short obj, char** nameOut, short* t1, short* a1, short* t2, short* a2, short* t3, short* a3, float factor)
 {
+    short avail;
     short* amount_output;
-    int total = 0;
+    short total = 0;
     *t1 = -1; *a1 = total; *t2 = -1; *a2 = total; *t3 = -1; *a3 = total;
     uchar can = this->check_obj_cost(obj, 0, 1.0f, 0);
     ObjectInfo* info = this->objects[obj];
@@ -66,11 +69,10 @@ void TRIBE_Player::obj_cost(short obj, char** nameOut, short* t1, short* a1, sho
     if (info->cost1_used) {
         *t1 = info->cost1_type;
         if (*t1 >= 0) {
-            int cost = (short)(info->cost1_amount * factor);
-            *a1 = cost;
-            if ((float)cost > this->resources[*t1] && can) {
-                short avail = (short)(long)this->resources[*t1];
-                total = cost - avail;
+            *a1 = (short)(info->cost1_amount * factor);
+            if ((float)(int)*a1 > this->resources[*t1] && can) {
+                avail = (short)(long)this->resources[*t1];
+                total = (short)(*a1 - avail);
                 *a1 = avail;
             }
         }
@@ -78,11 +80,10 @@ void TRIBE_Player::obj_cost(short obj, char** nameOut, short* t1, short* a1, sho
     if (info->cost2_used) {
         *t2 = info->cost2_type;
         if (*t2 >= 0) {
-            int cost = (short)(info->cost2_amount * factor);
-            *a2 = cost;
-            if ((float)cost > this->resources[*t2] && can) {
-                short avail = (short)(long)this->resources[*t2];
-                total += cost - avail;
+            *a2 = (short)(info->cost2_amount * factor);
+            if ((float)(int)*a2 > this->resources[*t2] && can) {
+                avail = (short)(long)this->resources[*t2];
+                total += (short)(*a2 - avail);
                 *a2 = avail;
             }
         }
@@ -90,11 +91,10 @@ void TRIBE_Player::obj_cost(short obj, char** nameOut, short* t1, short* a1, sho
     if (info->cost3_used) {
         *t3 = info->cost3_type;
         if (*t3 >= 0) {
-            int cost = (short)(info->cost3_amount * factor);
-            *a3 = cost;
-            if ((float)cost > this->resources[*t3] && can) {
-                short avail = (short)(long)this->resources[*t3];
-                total += cost - avail;
+            *a3 = (short)(info->cost3_amount * factor);
+            if ((float)(int)*a3 > this->resources[*t3] && can) {
+                avail = (short)(long)this->resources[*t3];
+                total += (short)(*a3 - avail);
                 *a3 = avail;
             }
         }
