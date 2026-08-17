@@ -22,6 +22,11 @@
 // 8: remaining 58 bytes are localized stack displacements: tempString and length/type homes are four
 //    bytes high while the float home is four bytes low. Explicit self overlay worsens size by 4; source
 //    local declaration order is codegen-neutral. Best readable reconstruction remains in scratch.
+// 10: ten local, ABI, header, and control-flow probes stayed in the same 58-byte codegen basin.
+// 11: split or scoped length locals, a bit union, and a typed scratch aggregate worsened the frame or body;
+//     the natural separate int/float homes remain the supported source model.
+// 12: a 64-sample ambient declaration sweep and 768 source/flag variants (/GX, /Ow, /Oi, /Og, /Ot, /Ob0)
+//     all emitted one 1263-byte basin. No exact variant was found.
 
 #include <string.h>
 
