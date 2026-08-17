@@ -43,6 +43,16 @@
 //   casts, and scoped current-line locals either kept the 10-byte basin or
 //   changed the frame and whole-function layout.  No supported source form
 //   explains this local VC5 scheduling difference.  Keep this baseline.
+// - TU reconstruction pass: the PDB order is constructor, destructor, fillList,
+//   handle_idle, then action in scr_load.cpp.  Exact same-TU donor declarations,
+//   a reconstructed constructor/destructor/fillList prefix, and all donor
+//   method-surface combinations kept one 1005B/0x438/36-call codegen group.
+//   CRT header additions and permutations covered stdlib.h, memory.h, new.h,
+//   malloc.h, math.h, windows.h, windowsx.h, and assert.h.  Their combinations,
+//   Windows macros, and the reviewed global header were also unchanged.
+//   /G5, /Ob0, and /Ob1 duplicated /O2 /Oy /GX; /O1 and /Oa worsened the frame
+//   or body.  Repository evidence therefore supports the current /GX context,
+//   but no period TU context naturally selects the oracle's add-before-call.
 
 #include <io.h>
 #include <stdio.h>
