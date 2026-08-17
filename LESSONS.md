@@ -29,6 +29,8 @@ Reusable empirical findings about Microsoft Visual C++ 5 code generation.
 - Join declaration and initialization when the original materializes a value early.
 - Put address-taken outputs at function scope when nested declarations let loads hoist.
 - Declare a value inside a successful guard when the original saves it only there.
+- VC5 can delay callee-saved pushes until after an early guard.
+- Matching FPO register counts do not prove matching save placement.
 - A late zero local can keep a zero register live and add a saved register.
 - An early `= 0` can let VC5 rematerialize zero and reduce pressure.
 - Named locals preload fields, enable CSE, and extend liveness.
