@@ -20,9 +20,15 @@
 // latter three were codegen duplicates or broad negative results and were restored.
 // ABI-width cast and a nine-variant state-4/timer lab produced no EDX vtable match;
 // the direct typed form remains the clean source reconstruction.
-// remaining localized drift: jump-table relocation bytes, state-4 vtable-register
-// coloring, repair-rate FPU operand/push scheduling, and timer store/compare order.
-// left in scratch after the 10-hypothesis budget; no inline asm or custom flags.
+// revisit pass: replacing the state-9 DAT_00575278 reference with the proven zero
+// literal recovered the original fcom/fstp order and reduced the masked diff 35->27.
+// Owner-first world_delta and master_rate locals recovered 12 of the 14 repair-rate
+// drift bytes and reduced the diff 27->16. More than 30 distinct follow-up probes
+// covered timer scope/predicate forms, state-4 dispatch forms, ABI spellings, and
+// rate-local layouts; no further source form changed the best emitted code.
+// remaining localized drift: state-4 vtable-register coloring (two bytes) and
+// repair-rate FPU operand/push scheduling (14 bytes); all 19 relocations are masked.
+// left in scratch after the sustained revisit; no inline asm or custom flags.
 
 extern float DAT_0057526c;
 extern double DAT_00575270;
@@ -300,10 +306,10 @@ uchar TRIBE_Action_Repair::update()
             return 0;
         }
 
+        float world_delta = this->obj->owner->world->world_time_delta_seconds;
+        float master_rate = this->obj->master_obj->work_rate;
         uchar result = this->target_obj->heal(
-                this->task->work_rate *
-                this->obj->owner->world->world_time_delta_seconds *
-                this->obj->master_obj->work_rate);
+                this->task->work_rate * world_delta * master_rate);
         if (result == 1) {
             this->set_state(1);
             return 0;
@@ -324,7 +330,7 @@ uchar TRIBE_Action_Repair::update()
             break;
         }
         this->timer -= this->obj->owner->world->world_time_delta_seconds;
-        if (this->timer <= DAT_00575278) {
+        if (this->timer <= 0.0f) {
             DAT_0086bc08 = this->obj->distance_to_object(this->target_obj) - DAT_0057526c;
             if (DAT_0086bc08 <= DAT_00575270) {
                 this->set_state(6);
