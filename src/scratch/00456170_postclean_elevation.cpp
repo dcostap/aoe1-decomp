@@ -16,6 +16,12 @@
 // tile-byte parameter-home reuse, but diff rose to 828 bytes; rolled back.
 // moving row initialization and signed elevation predicates changed no useful
 // structure; restored the 719-byte natural typed candidate.
+// managed probes: signed next-elevation, byte-level predicates, collapsed flags,
+// direct map-bound expressions, scoped loop locals, declaration initializers,
+// same-TU <stdlib.h>, and row/y0 parameter-home reuse were tested. Most were
+// codegen duplicates or worse. The row plus byte-home form reached 828 bytes;
+// the increment-list form reached 715 bytes but lost exact blocks and was not
+// retained as the clean source.
 // Final blocker: VC5 register coloring and local-home reuse differ in the typed
 // candidate. Original reuses the y parameter home for old tile bytes and spills
 // the changed byte at an unaligned local slot; no natural typed variant matched.
