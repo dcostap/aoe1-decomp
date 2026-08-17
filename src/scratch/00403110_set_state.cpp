@@ -36,6 +36,13 @@
 //   still factored the two proven find/set-target calls, with no emitted change.
 // - Inverted that branch's polarity as a control-flow probe; it changed seven
 //   neutral bytes and lowered shape, so the clean polarity was restored.
+// - Current pass: 20 checked hypotheses restored this clean source.  Natural
+//   if/else, switch, cached predicate, result locals, receiver aliases, and
+//   guard layouts did not add the two lookup/setter sites.
+// - A carried object plus master alias duplicated both lookup calls, proving
+//   alias ownership controls this basin, but it saved EBX and added 77 bytes.
+//   The two setter calls still merged.  Keep that variant as the next lead,
+//   not as the source model.
 
 #include <stdlib.h>
 
