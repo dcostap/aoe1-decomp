@@ -38,36 +38,142 @@
 
 extern void* rge_base_game;
 
+class TDrawArea;
+class TShape;
+class RGE_Color_Table;
+struct tagRECT {
+    long left;
+    long top;
+    long right;
+    long bottom;
+};
+
 class TPanel {
 public:
-    virtual void d00(); virtual void d04();
-    virtual void d08(); virtual void d0C(); virtual void d10();
-    virtual void addRef(int val);
-    virtual void d1C(); virtual void d20(); virtual void d24();
-    virtual void d28(); virtual void d2C(); virtual void d30();
-    virtual void d34(); virtual void d38(); virtual void d3C();
-    virtual void d40(); virtual void d44(); virtual void d48();
-    virtual void d4C();
+    virtual ~TPanel();
+    virtual long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char);
+    virtual void set_rect(tagRECT);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_color(unsigned char);
+    virtual void set_active(int);
+    virtual void set_positioning(int, long, long, long, long, long, long, long, long,
+                                 TPanel*, TPanel*, TPanel*, TPanel*);
+    virtual void set_fixed_position(long, long, long, long);
+    virtual void set_redraw(int);
+    virtual void set_overlapped_redraw(TPanel*, TPanel*, int);
+    virtual void draw_setup(int);
+    virtual void draw_finish();
+    virtual void draw();
+    virtual void draw_rect(tagRECT*);
+    virtual void draw_offset(long, long, tagRECT*);
+    virtual void draw_rect2(tagRECT*);
+    virtual void draw_offset2(long, long, tagRECT*);
+    virtual void paint();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual long handle_idle();
+    virtual long handle_size(long, long);
+    virtual long handle_paint();
+    virtual long handle_key_down(long, short, int, int, int);
+    virtual long handle_char(long, short);
+    virtual long handle_command(unsigned int, long);
+    virtual long handle_user_command(unsigned int, long);
+    virtual long handle_timer_command(unsigned int, long);
+    virtual long handle_scroll(long, long);
+    virtual long handle_mouse_down(unsigned char, long, long, int, int);
+    virtual long handle_mouse_move(long, long, int, int);
+    virtual long handle_mouse_up(unsigned char, long, long, int, int);
+    virtual long handle_mouse_dbl_click(unsigned char, long, long, int, int);
+    virtual long mouse_move_action(long, long, int, int);
+    virtual long mouse_left_down_action(long, long, int, int);
+    virtual long mouse_left_hold_action(long, long, int, int);
+    virtual long mouse_left_move_action(long, long, int, int);
+    virtual long mouse_left_up_action(long, long, int, int);
+    virtual long mouse_left_dbl_click_action(long, long, int, int);
+    virtual long mouse_right_down_action(long, long, int, int);
+    virtual long mouse_right_hold_action(long, long, int, int);
+    virtual long mouse_right_move_action(long, long, int, int);
+    virtual long mouse_right_up_action(long, long, int, int);
+    virtual long mouse_right_dbl_click_action(long, long, int, int);
+    virtual long key_down_action(long, short, int, int, int);
+    virtual long char_action(long, short);
+    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    virtual void get_true_render_rect(tagRECT*);
+    virtual int is_inside(long, long);
+    virtual void set_focus(int);
+    virtual void set_tab_order(TPanel*, TPanel*);
+    virtual void set_tab_order(TPanel**, short);
+    virtual unsigned char get_help_info(char**, long*, long, long);
+    virtual void stop_sound_system();
+    virtual int restart_sound_system();
+    virtual void take_snapshot();
+    virtual void handle_reactivate();
+
+    char gap_04[0xD4];
+    int setup_error;
+    char gap_DC[0x18];
     void set_curr_child(TPanel* child);
-    void set_tab_order(TPanel** tab_list, int count);
-    char pad_TPanel[0x40];
 };
+
+class TTextPanel;
+class TButtonPanel;
 
 class TEasy_Panel : public TPanel {
 public:
-    void set_ideal_size(int width, int height);
-    long create_text(TPanel* panel, TPanel** text_field, unsigned short lang_id,
-                     int x, int y, int width, int height,
-                     int a8, int a9, int a10, int a11);
-    long create_button(TPanel* panel, TPanel** btn_field, unsigned short lang_id,
-                       int x, int y, int width, int height,
-                       int a8, int a9, int a10, int a11);
-    long create_list(TPanel* panel, class TListPanel** list_field, int x, int y, int width, int height, int a7);
-    long create_auto_scrollbar(class TScrollBarPanel** scroll_field, class TTextPanel* list, int a4);
+    long ideal_width;
+    long ideal_height;
+    char info_file_name[260];
+    long info_id;
+    TShape* background_pic;
+    TShape* background_pic2;
+    void* palette;
+    char cursor_file[260];
+    long cursor_id;
+    int background_pos;
+    int use_bevels;
+    unsigned char bevel_color1;
+    unsigned char bevel_color2;
+    unsigned char bevel_color3;
+    unsigned char bevel_color4;
+    unsigned char bevel_color5;
+    unsigned char bevel_color6;
+    unsigned char pad_326[2];
+    unsigned long text_color1;
+    unsigned long text_color2;
+    unsigned long focus_color1;
+    unsigned long focus_color2;
+    unsigned long state_color1;
+    unsigned long state_color2;
+    char popup_info_file_name[260];
+    long popup_info_id;
+    TShape* button_pics;
+    RGE_Color_Table* shadow_color_table;
+    long shadow_amount;
+    unsigned char background_color1;
+    unsigned char background_color2;
+    unsigned char pad_456[2];
+    int enable_ime;
+    unsigned char help_mode;
+    unsigned char pad_45D[3];
+    int stock_brush;
+    void* brush;
+    unsigned long brush_color;
+    TDrawArea* shadow_area;
+    int allow_shadow_area;
+    int saved_mouse_mode;
+    void set_ideal_size(long width, long height);
+    long create_text(TPanel* panel, TTextPanel** text_field, long lang_id,
+                     long x, long y, long width, long height,
+                     long a8, long a9, long a10, long a11);
+    long create_button(TPanel* panel, TButtonPanel** btn_field, long lang_id,
+                       long x, long y, long width, long height,
+                       long a8, long a9, long a10, long a11);
+    long create_list(TPanel* panel, class TListPanel** list_field,
+                     long x, long y, long width, long height, long a7);
+    long create_auto_scrollbar(class TScrollBarPanel** scroll_field,
+                               class TTextPanel* list, long a4);
     void setup_shadow_area(int val);
     char* get_info_file();
     long get_info_id();
-    char pad_TEasy[0x434];
 };
 
 class TScreenPanel : public TEasy_Panel {
@@ -79,15 +185,59 @@ public:
 
 class TPanelSystem {
 public:
-    TPanel* currentPanel();
+    TEasy_Panel* currentPanel();
 };
 
 extern TPanelSystem panel_system;
 
 class TButtonPanel : public TPanel {
 public:
+    long id[9];
+    long id2[9];
+    int buttonTypeValue;
+    int drawTypeValue;
+    int notifyTypeValue;
+    void* sound;
+    void* pic[9];
+    short pic_index[9];
+    unsigned char pad_182[2];
+    int auto_pic_pos;
+    long pic_x;
+    long pic_y;
+    int all_hot;
+    int draw_reverse;
+    char* text1[9];
+    char* text2[9];
+    long text_x;
+    long text_y;
+    void* font;
+    long font_wid;
+    long font_hgt;
+    short num_states;
+    short cur_state;
+    int is_down;
+    TButtonPanel** radio_buttons;
+    short num_radio_buttons;
+    unsigned char pad_202[2];
+    unsigned long button_down_time;
+    unsigned long text_color1[9];
+    unsigned long text_color2[9];
+    unsigned long highlight_text_color1[9];
+    unsigned long highlight_text_color2[9];
+    long hotkey;
+    long hotkey_shift;
+    int bevel_type;
+    unsigned char bevel_color1;
+    unsigned char bevel_color2;
+    unsigned char bevel_color3;
+    unsigned char bevel_color4;
+    unsigned char bevel_color5;
+    unsigned char bevel_color6;
+    unsigned char pad_2AA[2];
+    long key_down;
+    int disabled;
+    int sound_number;
     void set_disabled(int val);
-    char pad_TButton[0x48];
 };
 
 class TTextPanel : public TPanel {
@@ -109,25 +259,23 @@ public:
 
 class TRIBE_Screen_Sed_Open : public TScreenPanel {
 public:
-    TPanel* title;          // +0x478
-    TListPanel* list;        // +0x47C
+    TTextPanel* title;          // +0x478
+    TListPanel* list;           // +0x47C
     TScrollBarPanel* scrollbar; // +0x480
-    TButtonPanel* okButton; // +0x484
+    TButtonPanel* okButton;     // +0x484
     TButtonPanel* cancelButton; // +0x488
     TButtonPanel* deleteButton; // +0x48C
 
     TRIBE_Screen_Sed_Open();
+    virtual ~TRIBE_Screen_Sed_Open();
     void fillList();
 };
 
 TRIBE_Screen_Sed_Open::TRIBE_Screen_Sed_Open()
     : TScreenPanel("Scenario Editor Open")
 {
-    TListPanel** listPtr = &list;
     TPanel* tabList[5];
     char info_file[260];
-
-    *(unsigned long*)this = 0x573C28;
 
     title = 0;
     list = 0;
@@ -136,61 +284,59 @@ TRIBE_Screen_Sed_Open::TRIBE_Screen_Sed_Open()
     cancelButton = 0;
     deleteButton = 0;
 
-    {
-        tabList[0] = panel_system.currentPanel();
+    tabList[0] = panel_system.currentPanel();
         strcpy(info_file, ((TEasy_Panel*)tabList[0])->get_info_file());
 
         void* draw_area = ((RGE_Base_Game*)rge_base_game)->draw_area;
 
-        if (!setup(draw_area, info_file + 4,
+    if (!setup(draw_area, info_file + 4,
                    ((TEasy_Panel*)tabList[0])->get_info_id(), 1)) {
-            *(int*)((char*)this + 0xD8) = 1;
-            return;
-        }
-
-        setup_shadow_area(0);
-        set_ideal_size(0x280, 0x1E0);
-
-        if (!create_text(this, &title, 0x24CD, 0x14, 0x14, 600, 0x1E, 1, 1, 0, 0))
-            return;
-
-        if (!create_list(this, listPtr, 0x14, 0x46, 600, 0x154, 0x0B))
-            return;
-
-        if (!create_auto_scrollbar(&scrollbar, *listPtr, 0x14))
-            return;
-
-        if (!create_button(this, (TPanel**)&okButton, 0xFA1, 0, 0x1E, 0x1B8, 0xB4, 0x1E, 0, 0, 0))
-            return;
-
-        TButtonPanel** deletePtr = &deleteButton;
-        if (!create_button(this, (TPanel**)deletePtr, 0x24C9, 0, 0xE6, 0x1B8, 0xB4, 0x1E, 0, 0, 0))
-            return;
-
-        if (!create_button(this, (TPanel**)&cancelButton, 0xFA2, 0, 0x1AE, 0x1B8, 0xB4, 0x1E, 0, 0, 0))
-            return;
-
-        // Set cancel button hotkey = ESC (0x1B)
-        *(int*)((char*)cancelButton + 0x298) = 0x1B;
-        *(int*)((char*)cancelButton + 0x29C) = 0;
-
-        // Set delete button hotkey = '.' (0x2E)
-        *(int*)((char*)*deletePtr + 0x29C) = 0;
-        *(int*)((char*)*deletePtr + 0x298) = 0x2E;
-
-        fillList();
-
-        if (((TTextPanel*)*listPtr)->currentLine()[0] == 0) {
-            okButton->set_disabled(1);
-            (*deletePtr)->set_disabled(1);
-        }
-
-        set_curr_child(*listPtr);
-
-        tabList[1] = *listPtr;
-        tabList[2] = okButton;
-        tabList[3] = *deletePtr;
-        tabList[4] = cancelButton;
-        set_tab_order(tabList + 1, 4);
+        setup_error = 1;
+        return;
     }
+
+    setup_shadow_area(0);
+    set_ideal_size(0x280, 0x1E0);
+
+    if (!create_text(this, &title, 0x24CD, 0x14, 0x14, 600, 0x1E, 1, 1, 0, 0))
+        return;
+
+    if (!create_list(this, &list, 0x14, 0x46, 600, 0x154, 0x0B))
+        return;
+
+    if (!create_auto_scrollbar(&scrollbar, list, 0x14))
+        return;
+
+    TButtonPanel** okPtr = &okButton;
+    if (!create_button(this, okPtr, 0xFA1, 0, 0x1E, 0x1B8, 0xB4, 0x1E, 0, 0, 0))
+        return;
+
+    if (!create_button(this, &deleteButton, 0x24C9, 0, 0xE6, 0x1B8, 0xB4, 0x1E, 0, 0, 0))
+        return;
+
+    if (!create_button(this, &cancelButton, 0xFA2, 0, 0x1AE, 0x1B8, 0xB4, 0x1E, 0, 0, 0))
+        return;
+
+    // Set cancel button hotkey = ESC (0x1B)
+    cancelButton->hotkey = 0x1B;
+    cancelButton->hotkey_shift = 0;
+
+    // Set delete button hotkey = '.' (0x2E)
+    deleteButton->hotkey_shift = 0;
+    deleteButton->hotkey = 0x2E;
+
+    fillList();
+
+    if (list->currentLine()[0] == 0) {
+        okButton->set_disabled(1);
+        deleteButton->set_disabled(1);
+    }
+
+    set_curr_child(list);
+
+    tabList[1] = list;
+    tabList[2] = okButton;
+    tabList[3] = deleteButton;
+    tabList[4] = cancelButton;
+    set_tab_order(tabList + 1, 4);
 }
