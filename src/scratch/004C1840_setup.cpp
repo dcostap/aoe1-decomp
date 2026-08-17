@@ -18,8 +18,22 @@
 //   and improved the strict diff to 883 bytes.
 // - A do-while scan rewrite expanded the CFG and lost exact loop islands; it
 //   was rolled back to the bounded for-loop form.
-// - Direct branch add_node calls improved the tail placement but moved the
-//   whole-function diff to 904 bytes; the selected-list form remains best.
+// - Donor-backed count-first scans and the inverted direct add_node tail
+//   restore the original CFG islands, but register colors and local homes
+//   still differ from the executable.
+// - The original writes short indices into the incoming file/world homes;
+//   keep the saved handle separate and preserve those parameter-home writes.
+// - The reviewed DAT_00574724 and DAT_00574728 symbols recover the two rdata
+//   comparison operands.  No source or context probe fixed the prologue basin.
+// - Twenty-one hypotheses covered handle aliases, parameter-home reuse,
+//   scalar scopes and order, array layout, loop forms, branch polarity, direct
+//   calls, rdata symbols, and a local aggregate.  The current source is the
+//   clearest donor-backed form.  Next lead: recover the original TU local
+//   declaration context or register basin before further body rewrites.
+// - Earlier direct-call tail work was superseded.  The current inverted branch
+//   form restores the original tail block islands with the donor-backed scans.
+
+#include "../../include/game_globals.h"
 
 class RGE_Static_Object;
 class RGE_Master_Static_Object;
@@ -34,7 +48,7 @@ extern void rge_read(int file, void* buffer, int size);
 extern void* operator new(unsigned int size);
 extern void operator delete(void* ptr);
 
-#define save_game_version (*(float*)0x58EBCC)
+extern float save_game_version;
 
 class ManagedArrayInt {
 public:
@@ -195,7 +209,7 @@ public:
 
 int RGE_Static_Object::setup(int file, RGE_Game_World* world) {
     int save_file = file;
-    long long_val;
+    int long_val;
     int byte_val;
     int numberUnits;
     int tempInt;
@@ -206,6 +220,7 @@ int RGE_Static_Object::setup(int file, RGE_Game_World* world) {
     rge_read(save_file, &long_val, 1);
     this->owner = world->players[long_val & 0xff];
 
+    // BINARY NOTE: The shipped loader reuses the incoming file home for this index.
     rge_read(save_file, &file, 2);
     this->master_obj = this->owner->master_objects[(short)file];
 
@@ -227,7 +242,7 @@ int RGE_Static_Object::setup(int file, RGE_Game_World* world) {
     rge_read(save_file, &this->hp, 4);
     rge_read(save_file, &this->object_state, 1);
     rge_read(save_file, &this->sleep_flag, 1);
-    if (save_game_version >= 7.09f) {
+    if (save_game_version >= DAT_00574724) {
         rge_read(save_file, &this->dopple_flag, 1);
     }
     rge_read(save_file, &this->goto_sleep_flag, 1);
@@ -250,7 +265,7 @@ int RGE_Static_Object::setup(int file, RGE_Game_World* world) {
     rge_read(save_file, &this->groupCommanderValue, 4);
     rge_read(save_file, &this->groupRangeValue, 4);
 
-    if (save_game_version == 6.991f) {
+    if (save_game_version == DAT_00574728) {
         rge_read(save_file, &numberUnits, 4);
         rge_read(save_file, &numberUnits, 4);
         rge_read(save_file, &numberUnits, 4);
@@ -264,29 +279,28 @@ int RGE_Static_Object::setup(int file, RGE_Game_World* world) {
     if (0 < byte_val) {
         do {
             rge_read(save_file, &tempInt_fffffff8, 4);
+            // BINARY NOTE: The duplicate scan checks count before capacity.
             int number = this->groupMembers.numberValue;
             int index = 0;
             local_4 = tempInt_fffffff8;
-            if (0 < number) {
-                for (; index < this->groupMembers.maximumSizeValue && index < number;
-                     index = index + 1) {
-                    if (this->groupMembers.value[index] == tempInt_fffffff8) {
-                        goto group_member_found;
-                    }
+            for (; index < number && index < this->groupMembers.maximumSizeValue;
+                 index = index + 1) {
+                if (this->groupMembers.value[index] == tempInt_fffffff8) {
+                    goto group_member_found;
                 }
             }
-            if (this->groupMembers.maximumSizeValue - 1 < number) {
-                number = number + 1;
-                int* values = (int*)operator new(number * 4);
+            if (number > this->groupMembers.maximumSizeValue - 1) {
+                int newNumber = number + 1;
+                int* values = (int*)operator new(newNumber * 4);
                 if (values != 0) {
                     index = 0;
-                    for (; index < this->groupMembers.maximumSizeValue && index < number;
+                    for (; index < this->groupMembers.maximumSizeValue && index < newNumber;
                          index = index + 1) {
                         values[index] = this->groupMembers.value[index];
                     }
                     operator delete(this->groupMembers.value);
                     this->groupMembers.value = values;
-                    this->groupMembers.maximumSizeValue = number;
+                    this->groupMembers.maximumSizeValue = newNumber;
                 }
             }
             this->groupMembers.value[this->groupMembers.numberValue] = local_4;
@@ -304,26 +318,24 @@ int RGE_Static_Object::setup(int file, RGE_Game_World* world) {
             int number = this->pathingGroupMembers.numberValue;
             int index = 0;
             tempInt_fffffff8 = local_4;
-            if (0 < number) {
-                for (; index < this->pathingGroupMembers.maximumSizeValue && index < number;
-                     index = index + 1) {
-                    if (this->pathingGroupMembers.value[index] == local_4) {
-                        goto pathing_member_found;
-                    }
+            for (; index < number && index < this->pathingGroupMembers.maximumSizeValue;
+                 index = index + 1) {
+                if (this->pathingGroupMembers.value[index] == local_4) {
+                    goto pathing_member_found;
                 }
             }
-            if (this->pathingGroupMembers.maximumSizeValue - 1 < number) {
-                number = number + 1;
-                int* values = (int*)operator new(number * 4);
+            if (number > this->pathingGroupMembers.maximumSizeValue - 1) {
+                int newNumber = number + 1;
+                int* values = (int*)operator new(newNumber * 4);
                 if (values != 0) {
                     index = 0;
-                    for (; index < this->pathingGroupMembers.maximumSizeValue && index < number;
+                    for (; index < this->pathingGroupMembers.maximumSizeValue && index < newNumber;
                          index = index + 1) {
                         values[index] = this->pathingGroupMembers.value[index];
                     }
                     operator delete(this->pathingGroupMembers.value);
                     this->pathingGroupMembers.value = values;
-                    this->pathingGroupMembers.maximumSizeValue = number;
+                    this->pathingGroupMembers.maximumSizeValue = newNumber;
                 }
             }
             this->pathingGroupMembers.value[this->pathingGroupMembers.numberValue] = tempInt_fffffff8;
@@ -337,17 +349,13 @@ int RGE_Static_Object::setup(int file, RGE_Game_World* world) {
     this->sprite_list->load(save_file, world->sprites);
     this->owner->world->add_object(this);
 
-    RGE_Object_List* list;
-    if (this->sleep_flag == 0) {
-        if (this->dopple_flag == 0) {
-            list = this->owner->objects;
-        } else {
-            list = this->owner->doppleganger_objects;
-        }
+    if (this->sleep_flag != 0) {
+        this->owner->sleeping_objects->add_node(this);
+    } else if (this->dopple_flag != 0) {
+        this->owner->doppleganger_objects->add_node(this);
     } else {
-        list = this->owner->sleeping_objects;
+        this->owner->objects->add_node(this);
     }
-    list->add_node(this);
 
     this->objects = this->create_object_list();
     this->selected = 0;
