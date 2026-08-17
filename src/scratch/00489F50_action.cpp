@@ -22,6 +22,15 @@
 // - Focused follow-up: a pointer alias, named strcmp result, ABI-equivalent int
 //   parameter, and const long reference all emitted the same 311-byte diff;
 //   the late parameter-home reload remains unresolved.
+// - BINARY NOTE: the original reloads [esp+20] into EAX before both late code
+//   comparisons, then compares code 2 from EAX after the terrain branch.
+// - Managed follow-up: reversed comparisons, enum/long constants, unsigned or
+//   short code, const/register parameters, declaration scopes, pointer equality,
+//   inline helpers, arithmetic spelling, and late address aliases were duplicate
+//   or worse. Windows.h and /Ob0-/Ob1 were also duplicate.
+// - Managed follow-up: a 512-sample ambient-declaration sweep formed one wrong
+//   759-byte EH-less basin. A late bool added 8 bytes and changed CFG. Restored
+//   the clean typed source and default /GX flags.
 
 #include <string.h>
 
