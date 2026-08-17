@@ -57,6 +57,14 @@
 // The remaining fact is one uncolored frame word: natural parameter reuse has
 // the correct physical hidden-self home but a 0xC frame, while an 8-byte value
 // aggregate restores 0x10 and moves that hidden home to the loop-index slot.
+// final unresolved pass: 20 meaningful probes retained this clean source at
+// 4 differing displacement bytes, with 28 calls, size, and 0x10 frame exact.
+// BINARY NOTE: the original reads the name length and each rule value through
+// the entry +4 constructor-parameter home. Direct parameter reuse loses one
+// frame word and gives a 20-byte mismatch. Local-name, type, scope, header,
+// ambient-declaration, and flag probes found no exact source basin.
+// LIKELY INTENT: the shipped source reused parameter a as a wire temporary;
+// the clean local form remains the smallest period-plausible source here.
 
 extern "C" void __cdecl rge_read(int file, void* dst, int size);
 extern "C" void* __cdecl operator_new(unsigned int size);
