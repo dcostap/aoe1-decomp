@@ -28,9 +28,19 @@
 // 23: matched the canonical same-TU ManagedArray destructor body, including
 // post-delete field clearing; emitted code was unchanged, so the missing final
 // EH-state transition is not caused by the local destructor body.
-
-extern "C" void* __cdecl operator_new(unsigned long sz);
-extern "C" void __cdecl operator_delete(void* p);
+// 24: normal C++ global operator new/delete declarations restored the original
+// EH completion-state store and reduced the diagnostic diff to 54 bytes.
+// C-linkage allocation declarations remained in the older 75-byte basin.
+// 25: direct ResourceInfo[index] field access emitted the same code as the
+// byte-offset spelling.  The source now keeps typed resource ownership.
+// 26: removing the source-dead byte cursor also emitted the same code; VC5
+// derives and retains the proven 0x14-byte record induction naturally.
+// 27: the remaining mismatch is the final two-return destructor block: the
+// original jumps from the positive cleanup to the common epilogue, while VC5
+// places that epilogue before the negative cleanup.  Calls, frame, and all
+// preceding bytes match; no policy-valid source form has changed that basin.
+// Main review replaced direct global allocation calls with ordinary
+// new[]/delete[]. The emitted code is unchanged.
 
 class RGE_Static_Object;
 
@@ -60,7 +70,11 @@ public:
 
     ~ManagedArray_int() {
         if (this->value != 0)
-            operator_delete(this->value);
+            delete[] this->value;
+        this->value = 0;
+        this->numberValue = 0;
+        this->desiredNumberValue = 0;
+        this->maximumSizeValue = 0;
     }
 
     int contains(const int& wanted) const {
@@ -91,7 +105,7 @@ public:
 
         if (this->numberValue > this->maximumSizeValue - 1) {
             int newSize = this->numberValue + 1;
-            int* newValue = (int*)operator_new(newSize * 4);
+            int* newValue = new int[newSize];
             if (newValue != 0) {
                 int j;
                 for (j = 0; j < this->maximumSizeValue; j++) {
@@ -99,7 +113,7 @@ public:
                         break;
                     newValue[j] = this->value[j];
                 }
-                operator_delete(this->value);
+                delete[] this->value;
                 this->value = newValue;
                 this->maximumSizeValue = newSize;
             }
@@ -129,7 +143,6 @@ int TribeInformationAIModule::dropsitesWithinRequiredDistance(
 {
     int totalApplicable;
     int index;
-    int byteOffset;
 
     numApplicableResources = 0;
     totalApplicable = 0;
@@ -137,19 +150,14 @@ int TribeInformationAIModule::dropsitesWithinRequiredDistance(
     index = 0;
 
     if (this->numResources[resourceType] > 0) {
-        byteOffset = 0;
         do {
-            if (*(unsigned char*)((char*)this->resources[resourceType] + byteOffset + 0x0D) != 1) {
-                if (this->md->object(
-                        *(int*)((char*)this->resources[resourceType] + byteOffset)) != 0) {
+            if (this->resources[resourceType][index].gone != 1) {
+                if (this->md->object(this->resources[resourceType][index].id) != 0) {
                     ++totalApplicable;
-                    if ((int)(unsigned int)*(unsigned char*)((char*)this->resources[resourceType] + byteOffset + 0x0E)
-                            <= requiredDistance) {
-                        if (dropsites.contains(
-                                *(int*)((char*)this->resources[resourceType] + byteOffset + 0x10)) == 0) {
+                    if ((int)this->resources[resourceType][index].dropDistance <= requiredDistance) {
+                        if (dropsites.contains(this->resources[resourceType][index].dropsiteID) == 0) {
                             ++numApplicableResources;
-                            int dropsiteID =
-                                *(int*)((char*)this->resources[resourceType] + byteOffset + 0x10);
+                            int dropsiteID = this->resources[resourceType][index].dropsiteID;
                             dropsites.add(dropsiteID);
                         }
                     }
@@ -157,11 +165,12 @@ int TribeInformationAIModule::dropsitesWithinRequiredDistance(
             }
 
             ++index;
-            byteOffset += 0x14;
         } while (index < this->numResources[resourceType]);
     }
 
-    if (totalApplicable > 0)
+    if (totalApplicable > 0) {
         return 1;
-    return 0;
+    } else {
+        return 0;
+    }
 }
