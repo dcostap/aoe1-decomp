@@ -40,6 +40,10 @@
 //   0x130 and worsened the diff; the separate output home remains.
 // - A dock-count value home increased the frame and broke the block shape;
 //   it was rolled back.  The remaining lead is early register/liveness order.
+// - Focused probes 2-22 tested the cache index, count predicate, declaration
+//   order, type width, class surface, headers, and local initialization.
+//   The best clean source is 104 differing bytes at the original size and
+//   frame.  Calls and boundaries remain exact; the prologue is not exact.
 
 void* operator new(unsigned int size);
 extern "C" int __cdecl debug_rand(char* file, int line);
@@ -211,19 +215,20 @@ public:
 ConstructionItem* TribeInformationAIModule::placeDock(
     BuildItem* item, float x, float targetY, int terrain_type, int tile_type)
 {
+    // BINARY NOTE: The zone-map output and cache array use separate homes.
     int zoneMapIndex;
     unsigned char zoneCounter[256];
     int i;
-    RGE_Player* aiPlayer = this->md->aiPlayer;
-    RGE_Player* player = this->md->player;
-    RGE_Map* map = aiPlayer->world->map;
-    RGE_Visible_Map* visible = aiPlayer->visible;
-    RGE_Zone_Map* zoneMap;
     int bestX;
     int bestY;
     float bestScore;
     int randomOffset;
     int y;
+    RGE_Player* aiPlayer = this->md->aiPlayer;
+    RGE_Player* player = this->md->player;
+    RGE_Map* map = aiPlayer->world->map;
+    RGE_Visible_Map* visible = aiPlayer->visible;
+    RGE_Zone_Map* zoneMap;
 
     bestX = -1;
     bestY = -1;
@@ -272,14 +277,16 @@ ConstructionItem* TribeInformationAIModule::placeDock(
                                         float distanceY = (float)y - targetY;
                                         float score = distanceX * distanceX +
                                                       distanceY * distanceY;
-                                        if (zoneCounter[(unsigned char)zone + 4] == 0xFF) {
-                                            zoneCounter[(unsigned char)zone + 4] = (unsigned char)
+                                        if (zoneCounter[zone] == 0xFF) {
+                                            zoneCounter[zone] = (unsigned char)
                                                 this->numberDocksInZone(
                                                     (int)zone, zoneMap);
                                         }
-                                        if (zoneCounter[(unsigned char)zone + 4] != 0) {
+                                        // BINARY NOTE: A positive count selects the
+                                        // penalty block and emits TEST/JBE.
+                                        if (zoneCounter[zone] > 0) {
                                             int zonePenalty =
-                                                (int)zoneCounter[(unsigned char)zone + 4] * 1000;
+                                                (int)zoneCounter[zone] * 1000;
                                             score += (float)zonePenalty;
                                         }
 
