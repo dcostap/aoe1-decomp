@@ -157,6 +157,11 @@ public:
     char gap_04[0xEC];
 };
 
+class InformationAIModule : public AIModule {
+public:
+    virtual ~InformationAIModule();
+};
+
 class BuildAIModule : public AIModule {
 public:
     int numberUnbuiltItemsOfType(int type, int unk);  // 00409D40h, ret 8
@@ -174,11 +179,25 @@ public:
     int resource(int type);                          // 004E6C70h, ret 4
 };
 
-class TribeInformationAIModule {
+class ManagedArray_int {
 public:
-    virtual ~TribeInformationAIModule();
-    char gap_04[0x540 - 0x04];
-    char gap_540[0x10090 - 0x540];
+    int* value;
+    int numberValue;
+    int desiredNumberValue;
+    int maximumSizeValue;
+};
+
+class TribeMainDecisionAIModule;
+
+class TribeInformationAIModule : public InformationAIModule {
+public:
+    ManagedArray_int farmsTaskedThisUpdate; // +0xF0
+    TribeMainDecisionAIModule* md;          // +0x100
+    char gap_104_to_500[0x500 - 0x104];
+    int dropsitesByAge[4][4];               // +0x500
+    int closestDropsiteValue[4];            // +0x540
+    int closestDropsiteResourceID[4];       // +0x550
+    char gap_560_to_10090[0x10090 - 0x560];
     int numberAvailableStoragePits(int type);        // 004E3E90h, ret 4
 };
 
