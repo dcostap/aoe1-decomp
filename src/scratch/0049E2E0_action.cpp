@@ -53,6 +53,10 @@
 //   /G5, /Ob0, and /Ob1 duplicated /O2 /Oy /GX; /O1 and /Oa worsened the frame
 //   or body.  Repository evidence therefore supports the current /GX context,
 //   but no period TU context naturally selects the oracle's add-before-call.
+// - Object audit confirms the exact scr_load.obj range, VC5 target, hierarchy,
+//   and save_dir[261] at prog_info+0xB12. No inline or block record explains
+//   the schedule. PDB marks load_game virtual, but the oracle direct call proves
+//   this call site must stay direct. The remaining ten bytes are scheduling only.
 
 #include <io.h>
 #include <stdio.h>
