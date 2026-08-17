@@ -133,6 +133,12 @@
 // body. Base/derived constructor-result ownership and action local forms are
 // codegen-neutral or worse. No natural exact form was found; keep this clean
 // typed baseline. This is a source-model mismatch, not a proved shipped bug.
+// Source-gate pass: restored the reviewed RGE_Static_Object -> RGE_Animated_Object
+// -> RGE_Moving_Object -> RGE_Action_Object chain. Coordinates now come from
+// inherited static-object fields, actions belongs to RGE_Action_Object, and
+// set_action is the canonical +208 virtual. RGE_Action now uses canonical
+// type(), work(), and typed object surfaces. The body remains 230 bytes with
+// nine ordered calls and the same 67-byte EH-tail mismatch.
 // FLAGS: /nologo /c /O2 /Oy /GX
 
 #include <stddef.h>
@@ -143,6 +149,24 @@ class RGE_Static_Object;
 class RGE_Action_Object;
 class RGE_Task;
 class RGE_Action;
+class RGE_Sprite;
+class RGE_Master_Static_Object;
+class RGE_Master_Action_Object;
+class RGE_Master_Animated_Object;
+class RGE_Master_Moving_Object;
+class RGE_Player;
+class RGE_Game_World;
+class TDrawArea;
+class RGE_Color_Table;
+class RGE_Armor_Weapon_Info;
+class LOSTBL;
+class RGE_Object_List;
+class RGE_Active_Sprite_List;
+class Path;
+struct XYPoint;
+struct XYZPoint;
+struct XYZBYTEPoint;
+template<class T> class ManagedArray;
 
 // RGE_Action_List (direct calls)
 class RGE_Action_List {
@@ -152,17 +176,43 @@ public:
     void delete_list();
 };
 
-// RGE_Action with virtual functions for correct vtable dispatch
+// RGE_Action's names and types are part of the shared action ABI.  In
+// particular, type() is slot +18 and work() is slot +34.
 class RGE_Action {
 public:
-    // vtable pointer at +0x00 from compiler
+    virtual ~RGE_Action();
+    virtual int setup(RGE_Action_Object* object);
+    virtual int setup(int value, RGE_Action_Object* object);
+    virtual RGE_Action_List* create_action_list(RGE_Action_Object* object);
+    virtual void rehook();
+    virtual void save(int file);
+    virtual short type();
+    virtual void first_in_stack(uchar value);
+    virtual uchar inside_obj_update();
+    virtual uchar idle_update();
+    virtual uchar update();
+    virtual int stop();
+    virtual int move_to(RGE_Static_Object* object, float x, float y, float z);
+    virtual int work(RGE_Static_Object* object, float x, float y, float z);
+    virtual uchar attack_response(RGE_Static_Object* object);
+    virtual uchar relation_response(long value, uchar relation);
+    virtual void copy_obj(RGE_Master_Action_Object* object);
+    virtual void copy_obj_sprites(RGE_Master_Action_Object* object,
+                                  RGE_Task* source, RGE_Task* destination);
+    virtual void get_state_name(char* name);
+    virtual RGE_Static_Object* get_target_obj();
+    virtual RGE_Static_Object* get_target_obj2();
+    virtual void set_target_obj(RGE_Static_Object* object);
+    virtual void set_target_obj2(RGE_Static_Object* object);
+    virtual void set_state(uchar value);
+
     short action_type;     // +0x04
     uchar gap_06[2];       // +0x06
     RGE_Action_Object* obj; // +0x08
     uchar state;           // +0x0C
     uchar gap_0D[3];       // +0x0D
-    void* target_obj;      // +0x10
-    void* target_obj2;     // +0x14
+    RGE_Static_Object* target_obj;      // +0x10
+    RGE_Static_Object* target_obj2;     // +0x14
     int targetID;          // +0x18
     int target2ID;         // +0x1C
     float target_x;        // +0x20
@@ -170,25 +220,10 @@ public:
     float target_z;        // +0x28
     float timer;           // +0x2C
     RGE_Task* task;        // +0x30
-    void* sub_actions;     // +0x34
-    void* sprite;          // +0x38
+    RGE_Action_List* sub_actions;     // +0x34
+    RGE_Sprite* sprite;               // +0x38
     uchar subActionValue;  // +0x3C
     uchar gap_3D[3];       // +0x3D
-
-    virtual ~RGE_Action();
-    virtual void slot_04();
-    virtual void slot_08();
-    virtual void slot_0C();
-    virtual void slot_10();
-    virtual void slot_14();
-    virtual short func18();
-    virtual void slot_1C();
-    virtual void slot_20();
-    virtual void slot_24();
-    virtual void slot_28();
-    virtual void slot_2C();
-    virtual void slot_30();
-    virtual int work(RGE_Static_Object*, float, float, float);
 };
 
 class RGE_Action_Transport : public RGE_Action {
@@ -197,146 +232,175 @@ public:
                          float x, float y, float z);
 };
 
-// Narrow canonical inherited virtual surface through slot 0x208. Keeping it as
-// a real base avoids raw/manual vtable dispatch while preserving the proven ABI.
-struct RGE_Combat_Object_Virtual_Base {
-    virtual ~RGE_Combat_Object_Virtual_Base();
-    virtual void s04();
-    virtual void s08();
-    virtual void s0C();
-    virtual void s10();
-    virtual void s14();
-    virtual void s18();
-    virtual void s1C();
-    virtual void s20();
-    virtual void s24();
-    virtual void s28();
-    virtual void s2C();
-    virtual void s30();
-    virtual void s34();
-    virtual void s38();
-    virtual void s3C();
-    virtual void s40();
-    virtual void s44();
-    virtual void s48();
-    virtual void s4C();
-    virtual void s50();
-    virtual void s54();
-    virtual void s58();
-    virtual void s5C();
-    virtual void s60();
-    virtual void s64();
-    virtual void s68();
-    virtual void s6C();
-    virtual void s70();
-    virtual void s74();
-    virtual void s78();
-    virtual void s7C();
-    virtual void s80();
-    virtual void s84();
-    virtual void s88();
-    virtual void s8C();
-    virtual void s90();
-    virtual void s94();
-    virtual void s98();
-    virtual void s9C();
-    virtual void sA0();
-    virtual void sA4();
-    virtual void sA8();
-    virtual void sAC();
-    virtual void sB0();
-    virtual void sB4();
-    virtual void sB8();
-    virtual void sBC();
-    virtual void sC0();
-    virtual void sC4();
-    virtual void sC8();
-    virtual void sCC();
-    virtual void sD0();
-    virtual void sD4();
-    virtual void sD8();
-    virtual void sDC();
-    virtual void sE0();
-    virtual void sE4();
-    virtual void sE8();
-    virtual void sEC();
-    virtual void sF0();
-    virtual void sF4();
-    virtual void sF8();
-    virtual void sFC();
-    virtual void s100();
-    virtual void s104();
-    virtual void s108();
-    virtual void s10C();
-    virtual void s110();
-    virtual void s114();
-    virtual void s118();
-    virtual void s11C();
-    virtual void s120();
-    virtual void s124();
-    virtual void s128();
-    virtual void s12C();
-    virtual void s130();
-    virtual void s134();
-    virtual void s138();
-    virtual void s13C();
-    virtual void s140();
-    virtual void s144();
-    virtual void s148();
-    virtual void s14C();
-    virtual void s150();
-    virtual void s154();
-    virtual void s158();
-    virtual void s15C();
-    virtual void s160();
-    virtual void s164();
-    virtual void s168();
-    virtual void s16C();
-    virtual void s170();
-    virtual void s174();
-    virtual void s178();
-    virtual void s17C();
-    virtual void s180();
-    virtual void s184();
-    virtual void s188();
-    virtual void s18C();
-    virtual void s190();
-    virtual void s194();
-    virtual void s198();
-    virtual void s19C();
-    virtual void s1A0();
-    virtual void s1A4();
-    virtual void s1A8();
-    virtual void s1AC();
-    virtual void s1B0();
-    virtual void s1B4();
-    virtual void s1B8();
-    virtual void s1BC();
-    virtual void s1C0();
-    virtual void s1C4();
-    virtual void s1C8();
-    virtual void s1CC();
-    virtual void s1D0();
-    virtual void s1D4();
-    virtual void s1D8();
-    virtual void s1DC();
-    virtual void s1E0();
-    virtual void s1E4();
-    virtual void s1E8();
-    virtual void s1EC();
-    virtual void s1F0();
-    virtual void s1F4();
-    virtual void s1F8();
-    virtual void s1FC();
-    virtual void s200();
-    virtual void s204();
-    virtual void set_action(RGE_Action* action);  // slot 0x82 (130), offset 0x208
+// These are the reviewed object classes.  The target only uses inherited
+// coordinates, the action-list member, and the +208 set_action slot.  Keep the
+// real inheritance chain instead of introducing a synthetic combat base.
+class RGE_Static_Object {
+public:
+    virtual ~RGE_Static_Object();
+    virtual void recycle_in_to_game(RGE_Master_Static_Object*, RGE_Player*, float, float, float);
+    virtual void recycle_out_of_game();
+    virtual void draw(TDrawArea*, short, short, RGE_Color_Table*);
+    virtual void shadow_draw(TDrawArea*, short, short, uchar);
+    virtual void normal_draw(TDrawArea*, short, short);
+    virtual void draw_front_frame(TDrawArea*, short, short);
+    virtual void draw_back_frame(TDrawArea*, short, short);
+    virtual void draw_frame(TDrawArea*, short, short);
+    virtual uchar update();
+    virtual void check_damage_sprites();
+    virtual void rehook();
+    virtual void save(int);
+    virtual float teleport(float, float, float);
+    virtual void new_sprite(RGE_Sprite*);
+    virtual void add_overlay_sprite(RGE_Sprite*, uchar);
+    virtual void remove_overlay_sprite(RGE_Sprite*);
+    virtual void change_ownership(RGE_Player*);
+    virtual void modify(float, uchar);
+    virtual void modify_delta(float, uchar);
+    virtual void modify_percent(float, uchar);
+    virtual void transform(RGE_Master_Static_Object*);
+    virtual void copy_obj(RGE_Master_Static_Object*);
+    virtual void set_object_state(uchar);
+    virtual void remove_visible_resource();
+    virtual void create_doppleganger_when_dying();
+    virtual void destroy_obj();
+    virtual void die_die_die();
+    virtual void damage(int, RGE_Armor_Weapon_Info*, float, RGE_Player*, RGE_Static_Object*);
+    virtual float calculateDamage(int, RGE_Armor_Weapon_Info*, float, RGE_Player*, RGE_Static_Object*);
+    virtual void rotate(long);
+    virtual uchar can_attack();
+    virtual void set_attribute(short, float);
+    virtual void set_attribute_amount(float, uchar, uchar);
+    virtual int heal(int, int);
+    virtual uchar heal(float);
+    virtual int canRepair();
+    virtual void notify_of_relation(long, uchar);
+    virtual void do_command(RGE_Static_Object*, float, float, float);
+    virtual void move_to(RGE_Static_Object*, float, float, float);
+    virtual void work(RGE_Static_Object*, float, float, float);
+    virtual void stop();
+    virtual void set_attack(RGE_Static_Object*);
+    virtual void play_command_sound();
+    virtual void play_move_sound();
+    virtual void new_angle(float);
+    virtual RGE_Static_Object* spawn_death_obj();
+    virtual RGE_Master_Static_Object* get_command_master(RGE_Static_Object*, float, float, float);
+    virtual void set_being_worked_on(RGE_Action_Object*, short, uchar);
+    virtual void release_being_worked_on(RGE_Static_Object*);
+    virtual uchar is_moving();
+    virtual RGE_Static_Object* get_target_obj();
+    virtual void enter_obj(RGE_Static_Object*);
+    virtual void exit_obj();
+    virtual int explore_terrain(RGE_Player*, uchar, int);
+    virtual void unexplore_terrain(RGE_Player*, uchar, int);
+    virtual LOSTBL* get_los_table();
+    virtual int inAttackRange(RGE_Static_Object*);
+    virtual uchar underAttack();
+    virtual void setUnderAttack(uchar);
+    virtual float calc_attack_modifier(RGE_Static_Object*);
+    virtual float getSpeed();
+    virtual float getAngle();
+    virtual float maximumSpeed();
+    virtual float rateOfFire();
+    virtual float damageCapability(RGE_Static_Object*);
+    virtual float damageCapability();
+    virtual float weaponRange();
+    virtual float minimumWeaponRange();
+    virtual int passableTile(float, float, int);
+    virtual uchar facetToNextWaypoint();
+    virtual int currentTargetID();
+    virtual float currentTargetX();
+    virtual float currentTargetY();
+    virtual float currentTargetZ();
+    virtual void setWaitingToMove(uchar);
+    virtual uchar waitingToMove();
+    virtual uchar actionState();
+    virtual uchar keepGatheringWhenObjectIsOut(int);
+    virtual uchar produceWhenKilledBy(int);
+    virtual uchar useSameZoneDropsite();
+    virtual void logDebug(const char*, ...);
+    virtual void notify(int, int, int, long, long, long);
+    virtual int attack(float, float, float, int);
+    virtual int attack(int, int);
+    virtual int moveTo(float, float, float, float, int);
+    virtual int moveTo(int, float, int);
+    virtual int moveTo(int, int);
+    virtual int moveAwayFrom(int, int);
+    virtual int hunt(int, int);
+    virtual int gather(int, int);
+    virtual int convert(int, int);
+    virtual int repair(int, int);
+    virtual int build(int, int);
+    virtual int trade(int, int);
+    virtual int explore(int, int, int);
+    virtual int enter(int, int);
+    virtual int unload(int, float, float, float);
+    virtual int transport(float, float, float, int);
+    virtual int stopAction();
+    virtual int pause();
+    virtual int canPath(int, float, float*, int, int, int);
+    virtual int canPath(XYZPoint, float, int, float*, int, int, int);
+    virtual int canBidirectionPath(int, int, float, float*, int, int, int);
+    virtual int canPathWithObstructions(int, float, float*, int, int, int, ManagedArray<int>*);
+    virtual int canPathWithAdditionalPassability(XYZPoint, float, int, float*, int, int, int, int, int);
+    virtual int findFirstTerrainAlongExceptionPath(int, float*, float*);
+    virtual int canLinePath(int, int, int, int, float, int);
+    virtual int canLinePath(XYPoint*, XYPoint*, float, XYPoint*, int);
+    virtual int firstTileAlongLine(XYPoint*, XYPoint*, XYPoint*, int, int, int);
+    virtual XYZBYTEPoint* userDefinedWaypoint(int);
+    virtual int addUserDefinedWaypoint(XYZBYTEPoint*, int);
+    virtual void removeAllUserDefinedWaypoints(int);
+    virtual void removeUserDefinedWaypoint(int);
+    virtual int numberUserDefinedWaypoints();
+    virtual Path* findAvoidancePath(XYZPoint*, float, int);
+    virtual long get_action_checksum();
+    virtual long get_waypoint_checksum();
+    virtual int setup(int, RGE_Game_World*);
+    virtual int setup(RGE_Master_Static_Object*, RGE_Player*, float, float, float);
+    virtual RGE_Object_List* create_object_list();
+    virtual RGE_Active_Sprite_List* create_sprite_list();
+
+    int id;                              // +0x04
+    RGE_Master_Static_Object* master_obj; // +0x08
+    RGE_Player* owner;                   // +0x0C
+    uchar gap_10[0x28];                  // +0x10..+0x37
+    float world_x;                       // +0x38
+    float world_y;                       // +0x3C
+    float world_z;                       // +0x40
+    uchar gap_44[0x44];                  // +0x44..+0x87
 };
 
-class RGE_Static_Object : public RGE_Combat_Object_Virtual_Base {
+class RGE_Animated_Object : public RGE_Static_Object {
+public:
+    virtual int setup(RGE_Master_Animated_Object*, RGE_Player*, float, float, float);
+    float speed;                         // +0x88
 };
 
-class RGE_Action_Object : public RGE_Static_Object {
+class RGE_Moving_Object : public RGE_Animated_Object {
+public:
+    virtual void stop_moving();
+    virtual uchar turn_towards(RGE_Static_Object*, float, float);
+    virtual int setup(RGE_Master_Moving_Object*, RGE_Player*, float, float, float);
+    uchar gap_8C[0xF4];                  // +0x8C..+0x17F
+};
+
+class RGE_Action_Object : public RGE_Moving_Object {
+public:
+    virtual void work2(RGE_Static_Object*, float, float, float, uchar);
+    virtual void set_task(short);
+    virtual void setTaskByTaskID(int);
+    virtual RGE_Task* getTask(RGE_Static_Object*, float, float, float);
+    virtual void set_action(RGE_Action* action);       // slot +208
+    virtual void set_only_action(RGE_Action* action);
+    virtual void set_end_action(RGE_Action* action);
+
+    uchar waiting;                       // +0x180
+    uchar gap_181[3];                    // +0x181..+0x183
+    RGE_Action_List* actions;            // +0x184
+    uchar command_flag;                  // +0x188
+    uchar gap_189[3];                    // +0x189..+0x18B
+    int lastActionValue;                 // +0x18C
+    int lastActionStateValue;            // +0x190
 };
 
 class RGE_Task {
@@ -344,12 +408,7 @@ class RGE_Task {
 
 class RGE_Combat_Object : public RGE_Action_Object {
 public:
-    uchar gap_04[0x34];
-    float world_x;
-    float world_y;
-    float world_z;
-    uchar gap_44[0x140];
-    RGE_Action_List* actions;
+    uchar gap_194[0x30];                 // +0x194..+0x1C3
 
     int transport(float x, float y, float z, int w);
 };
@@ -360,7 +419,7 @@ int RGE_Combat_Object::transport(float x, float y, float z, int w)
 
     if (actions->have_action() == 1) {
         RGE_Action* action = (RGE_Action*)actions->get_action();
-        if (action->func18() == 0x0C) {
+        if (action->type() == 0x0C) {
             // Call get_action() AGAIN (original does this)
             RGE_Action* action2 = (RGE_Action*)actions->get_action();
             action2->work(0, x, y, z);
