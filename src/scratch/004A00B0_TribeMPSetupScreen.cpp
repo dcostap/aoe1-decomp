@@ -27,6 +27,18 @@
 //   follows IsHost in source order, with the nonhost arm as the fallback.  This
 //   restored all 127 ordered calls, exact function size, and the original host
 //   and nonhost block placement; the row setup still differs locally.
+// - unresolved pass: twenty source hypotheses were compiled and checked.  The
+//   clean baseline remains 3240 bytes, 0x10C frame, and 127 ordered calls.
+// - BINARY NOTE: the shipped row setup stores y at entry-relative [esp+10],
+//   then loads playerCivDrop and carries the row cursor through the calls.
+//   The clean source still emits a three-instruction local-order drift there.
+// - BINARY NOTE: the final row virtual call dereferences the player-CD output
+//   slot before calling vslot +0x14.  Direct typed and base-pointer forms add
+//   nine bytes, so the clean baseline remains pinned until a better source
+//   model explains that register reuse.
+// - LIKELY INTENT: the row cursor is one contiguous panel family centered on
+//   playerCivDrop.  This explains the proven negative pointer offsets, but it
+//   does not prove the original local declarations.
 
 extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
 
