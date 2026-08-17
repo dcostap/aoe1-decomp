@@ -22,10 +22,27 @@
 //   was rolled back; a shared ready label was structurally invalid (895 bytes).
 // - Removed the no-target in-range direct return; it now assigns range_status
 //   and falls through to the single shared can_attack tail.
+// Managed pass (sa-3e42c6e0-r1):
+// - Tested 20 meaningful source, control-flow, liveness, ABI, and TU-context
+//   hypotheses. Goto and switch status-tail forms changed topology or calls and
+//   were rolled back. The clean natural status chain remains authoritative.
+// - The notify guard is the inherited subActionValue at +3C. This matches the
+//   original byte load and the canonical RGE_Action layout; need_to_attack is +58.
+// - Direct this->target_obj world-field reads, direct distance-to-object input,
+//   and a fresh fog check reproduce the original target reloads. The best clean
+//   frontier is 613 positional bytes, 80.90% shape, and 40.57% exact blocks.
+// - The reviewed DAT_0056e0cc global names the proven -0.3 threshold. It does
+//   not change the local metric because target relocations remain unresolved.
+// Remaining lead: the original close handler starts at D71 before the target
+// max-range compare at DEE. The natural shared status chain emits that handler
+// after the complete target branch. A direct label version moved calls or locals
+// and was rejected.
 // Remaining work should preserve these named period-plausible owners rather than
 // returning to raw cursor arithmetic.
 
 #include <math.h>
+
+extern float DAT_0056e0cc;
 
 class RGE_Sprite;
 class RGE_Task;
@@ -318,7 +335,7 @@ int RGE_Action_Attack::ready_to_attack(int& range_status)
         } else {
             RGE_Master_Static_Object* master = this->obj->master_obj;
             float radius = sqrt(master->radius_x * master->radius_x + master->radius_y * master->radius_y);
-            float max_distance = radius + this->range - 0.3f;
+            float max_distance = radius + this->range - DAT_0056e0cc;
             if (distance <= max_distance) {
                 range_status = 1;
             } else {
@@ -334,34 +351,36 @@ int RGE_Action_Attack::ready_to_attack(int& range_status)
                     this->set_state(13);
                     return 0;
                 }
-                if (visibility == 0x80 && target->master_obj->fog_flag == 0) {
+                if (visibility == 0x80 && this->target_obj->master_obj->fog_flag == 0) {
                     this->set_state(13);
                     return 0;
                 }
             }
         }
 
-        if (target->world_x == this->target_x && target->world_y == this->target_y && target->world_z == this->target_z) {
+        if (this->target_obj->world_x == this->target_x &&
+            this->target_obj->world_y == this->target_y &&
+            this->target_obj->world_z == this->target_z) {
             range_status = 1;
         } else {
-            float x_change = target->world_x - this->target_x;
-            float z_change = target->world_z - this->target_z;
-            float y_change = target->world_y - this->target_y;
+            float x_change = this->target_obj->world_x - this->target_x;
+            float z_change = this->target_obj->world_z - this->target_z;
+            float y_change = this->target_obj->world_y - this->target_y;
             if ((x_change > -0.5f && x_change < 0.5f) &&
                 (y_change > -0.5f && y_change < 0.5f) &&
                 (z_change > -0.5f && z_change < 0.5f)) {
                 range_status = 1;
             } else {
-                float distance = this->obj->distance_to_object(target);
+                float distance = this->obj->distance_to_object(this->target_obj);
                 RGE_Master_Static_Object* master = this->obj->master_obj;
                 float radius = sqrt(master->radius_x * master->radius_x + master->radius_y * master->radius_y);
-                float max_distance = radius + this->range - 0.3f;
+                float max_distance = radius + this->range - DAT_0056e0cc;
                 if (distance < this->min_range) {
                     range_status = 0;
                 } else if (distance <= max_distance) {
-                    this->target_x = target->world_x;
-                    this->target_y = target->world_y;
-                    this->target_z = target->world_z;
+                    this->target_x = this->target_obj->world_x;
+                    this->target_y = this->target_obj->world_y;
+                    this->target_z = this->target_obj->world_z;
                     range_status = 1;
                 } else {
                     range_status = 2;
@@ -371,7 +390,7 @@ int RGE_Action_Attack::ready_to_attack(int& range_status)
     }
 
     if (range_status == 0) {
-        if (this->need_to_attack == 0)
+        if (this->subActionValue == 0)
             this->obj->notify(this->obj->id, this->obj->id, 0x1FE, 0, 0, 0);
         if (this->obj->maximumSpeed() != 0.0) {
             UnitAIModule* ai = this->obj->unitAI();
@@ -386,7 +405,7 @@ int RGE_Action_Attack::ready_to_attack(int& range_status)
     }
 
     if (range_status == 2) {
-        if (this->need_to_attack == 0)
+        if (this->subActionValue == 0)
             this->obj->notify(this->obj->id, this->obj->id, 0x1FD, 0, 0, 0);
         if (this->obj->maximumSpeed() != 0.0) {
             UnitAIModule* ai = this->obj->unitAI();
