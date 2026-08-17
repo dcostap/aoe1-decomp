@@ -48,6 +48,10 @@
 //   promotion were neutral. Direct selectedUnits[selectedCount] storage worsened to 16 bytes.
 // - Clean source remains the natural typed reconstruction. The only drift is the proven EBP vtable /
 //   EBX 25-count register swap at seven bytes.
+// Exact completion (sa-4705782d-r1):
+// - Keeping the playbook call result directly in the null predicate, instead
+//   of naming its unused result, restores the original EBP vtable and EBX loop
+//   counter colors. The natural typed source now matches all 237 bytes.
 // - Completed the binary-proven RGE_Player virtual surface through slot 0xF4 before the function,
 //   including donor-proven pointer types; emitted code was unchanged, so it remains the clean candidate.
 // - Allocator-inference probe: giving the loop countdown a function-scope source role was byte-identical.
@@ -188,8 +192,7 @@ void RGE_Player::sendPlayCommand(int param_1, int param_2, int param_3)
     RGE_Static_Object** source;
 
     this->command_destroy_group(param_1);
-    AIPlay* play = this->world->playbook->play(param_3);
-    if (play == 0) {
+    if (this->world->playbook->play(param_3) == 0) {
         this->sendUnitAIOrder((int)this->id, param_1, 0x2d7, -1, -1,
                               -1.0f, -1.0f, -1.0f, -1.0f, 1, 0, 100);
         return;
