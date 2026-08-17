@@ -20,15 +20,29 @@
 // - v13: removed the self alias; emitted code stayed unchanged.
 // - v14: initialized the fallback assigned-resource pointer at slot 1; this
 //   changed prologue register coloring and was restored.
-// - v15: tested an indexed resourceDifferenceValue store for the first scan;
-//   it moved the first mismatch into the prologue, worsened shape, and was
-//   restored. The direct pointer form remains the better reconstruction.
-// BLOCKER: the natural typed reconstruction has the exact frame, eight ordered
-// calls, correct field offsets, and 484 rebuilt bytes versus 478 original.
-// The first mismatch is local initialization at +0x2B: original keeps -1 in
-// EDX and EAX and zero in ECX, while VC5 keeps only -1 in EAX and zero in ESI.
-// The source shape still has a 6-byte suffix shift. No evidence remains for a
-// period-plausible register-only change; leave this source in scratch.
+// - v15: separated the local arrays as a control; it preserved the frame but
+//   changed the prologue and was restored.
+// - v16: rewrote the final copy as an indexed four-entry loop. VC5 reduced the
+//   size to 478 bytes and kept the natural member ownership; this is the
+//   current clean reconstruction.
+// - v17: tested an early best-resource sentinel; VC5 emitted the same code.
+// - v18: changed the final indexed loop to a counted for form; VC5 emitted the
+//   same code.
+// Revisit v19: restored three direct four-entry arrays and a separate scalar;
+// VC5 reduced the frame to 0x30 and worsened the result to diff 425.
+// Revisit v20: moved the difference-pointer declaration after scalar locals;
+// VC5 emitted duplicate code at diff 403.
+// Revisit v21: removed the invented aggregate and used direct typed arrays;
+// VC5 kept the frame but worsened the result to diff 414.
+// Revisit v22: used typed parallel pointers for the final copy; VC5 emitted
+// 482 bytes and worsened the result to diff 419.
+// BLOCKER: the current typed reconstruction has the exact frame and 478-byte
+// size, eight ordered calls, and correct field offsets. It remains non-exact:
+// the first mismatch is local initialization at +0x2B. The original keeps -1
+// in EDX and EAX and zero in ECX. VC5 keeps only -1 in EAX and zero in ESI.
+// The remaining suffix has a different register and pointer lowering basin.
+// No period-plausible source change has recovered those registers. Leave this
+// source in scratch.
 
 class ResourceItem {
 public:
@@ -106,7 +120,8 @@ void TribeTacticalAIModule::updateNeededResources()
 #define assignedResource (locals.assignedResource)
 #define tempNeededResource (locals.tempNeededResource)
 #define tempResourceDifference (locals.tempResourceDifference)
-    register int i;
+    int i;
+    int* diffPtr;
     int bestResource;
     int bestDifference;
     int offset;
@@ -123,11 +138,11 @@ void TribeTacticalAIModule::updateNeededResources()
     tempResourceDifference[2] = -1;
     tempNeededResource[2] = -1;
     assignedResource[3] = 0;
+    diffPtr = this->resourceDifferenceValue;
     tempResourceDifference[3] = -1;
     tempNeededResource[3] = -1;
     assignedResource[4] = 0;
 
-    int* diffPtr = this->resourceDifferenceValue;
     do {
         int resource = this->md->resourceAI.resource(i);
         int needed = this->neededResources.value(i);
@@ -187,25 +202,22 @@ next_resource:
             } while (i < 4);
         }
 
-        assignedResource[bestResource + 1] = 1;
         offset = assignedResource[0];
-        *(int*)((char*)tempNeededResource + offset + 4) = bestResource;
-        *(int*)((char*)tempResourceDifference + offset + 4) = bestDifference;
+        assignedResource[bestResource + 1] = 1;
+        *(int*)((char*)tempNeededResource + offset) = bestResource;
+        *(int*)((char*)tempResourceDifference + offset) = bestDifference;
         offset += 4;
         assignedResource[0] = offset;
     } while (offset < 0x10);
 
-    int* neededOut = this->neededResourceValue;
-    offset = 0;
-    do {
-        int resource = *(int*)((char*)tempNeededResource + offset + 4);
-        int difference = *(int*)((char*)tempResourceDifference + offset + 4);
-        *neededOut = resource;
-        offset += 4;
-        neededOut++;
+    i = 0;
+    for (; i < 4; i++) {
+        int resource = tempNeededResource[i];
+        int difference = tempResourceDifference[i];
+        this->neededResourceValue[i] = resource;
         this->resourceDifferenceValue[resource] = difference;
-    } while (offset < 0x10);
-#undef tempResourceDifference
+    }
 #undef tempNeededResource
+#undef tempResourceDifference
 #undef assignedResource
 }
