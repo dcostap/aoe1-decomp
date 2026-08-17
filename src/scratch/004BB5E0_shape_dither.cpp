@@ -16,8 +16,24 @@
 // Swapped pointer-add operands and explicit x/y base locals were duplicates.
 // Reordered bound declarations widened register and parameter-home drift.
 // Split coordinate declarations from their assignments; this was a codegen duplicate and was rolled back.
+// sa-bc555cb0-r1 fresh pass: baseline revalidated at 380B, 241 strict bytes,
+// 0x14 frame, and all three direct calls aligned. Explicit clipped locals,
+// declaration and assignment reorders, header aliases, full sibling class
+// declarations, split RECT initialization, register/const hints, and reversed
+// add operands were duplicate or worse basins. A volatile clipped-x test was
+// also worse at 368B/271 bytes and is rejected as compiler steering. Adding
+// <windows.h> failed because the local tagRECT then redefined the SDK type.
+// No natural source axis moved the first +0040 coordinate-add hunk.
 // BLOCKER: remaining drift is the coordinate-add and local-home schedule after
 // the exact prologue. All three direct calls and the stack frame are aligned.
+// sa-a35cfb68-r1 fresh pass: the pinned reconstruction reused incoming x, y,
+// and shape_num homes as clipped coordinates. That form is not retained under
+// the source policy. Typed clip locals with a positive visible-area guard keep
+// the natural ownership model, but rebuild at 380B/246 bytes. The old 241-byte
+// basin is therefore metric-only evidence, not the clean source model.
+// sa-e1e7aa19-r1 revisit: replacing the unresolved string symbol with the
+// period literal "RGL_shape_draw" was codegen-identical at 380B/246 bytes.
+// The pinned typed-local source was restored; the remaining gap is unchanged.
 
 typedef unsigned char uchar;
 
@@ -70,26 +86,28 @@ uchar TShape::shape_dither(TDrawArea* area, long x, long y, long shape_num, long
     long sx2 = x + this->shape_header->xmax;
     long sy2_orig = y + this->shape_header->ymax;
 
-    x = sx1;
-    shape_num = sy1;
-    y = sx2;
-    long sy2 = sy2_orig;
-    if (x < rect.left) x = rect.left;
-    if (shape_num < rect.top) shape_num = rect.top;
-    if (y > rect.right) y = rect.right;
-    if (sy2 > rect.bottom) sy2 = rect.bottom;
-    if (x < 0) x = 0;
-    if (shape_num < 0) shape_num = 0;
-    if (y >= area->Width) y = area->Width - 1;
-    if (sy2 >= area->Height) sy2 = area->Height - 1;
+    long clip_x1 = sx1;
+    long clip_y1 = sy1;
+    long clip_x2 = sx2;
+    long clip_y2 = sy2_orig;
+    if (clip_x1 < rect.left) clip_x1 = rect.left;
+    if (clip_y1 < rect.top) clip_y1 = rect.top;
+    if (clip_x2 > rect.right) clip_x2 = rect.right;
+    if (clip_y2 > rect.bottom) clip_y2 = rect.bottom;
+    if (clip_x1 < 0) clip_x1 = 0;
+    if (clip_y1 < 0) clip_y1 = 0;
+    if (clip_x2 >= area->Width) clip_x2 = area->Width - 1;
+    if (clip_y2 >= area->Height) clip_y2 = area->Height - 1;
 
-    if (x > y || shape_num > sy2) {
-        return 0;
+    if (clip_x1 <= clip_x2 && clip_y1 <= clip_y2) {
+        if (clip_x1 == sx1 && clip_y1 == sy1 &&
+            clip_x2 == sx2 && clip_y2 == sy2_orig) {
+            return shape_dithered_unclipped(area, sx1, sy1, param_5, param_6);
+        }
+
+        return shape_dithered_clipped(area, sx1, sy1, clip_x1, clip_y1,
+                                      clip_x2, clip_y2, param_5, param_6);
     }
 
-    if (x == sx1 && shape_num == sy1 && y == sx2 && sy2 == sy2_orig) {
-        return shape_dithered_unclipped(area, sx1, sy1, param_5, param_6);
-    }
-
-    return shape_dithered_clipped(area, sx1, sy1, x, shape_num, y, sy2, param_5, param_6);
+    return 0;
 }
