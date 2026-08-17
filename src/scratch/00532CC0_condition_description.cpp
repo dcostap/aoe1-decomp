@@ -30,6 +30,10 @@
 // - Legacy sprintf format constness and return type were unchanged codegen.
 // - &temp[0], an inlined two-argument helper, and a shared format pointer were
 //   unchanged codegen. The clean typed direct switch remains the best source model.
+// - Fresh worker evidence confirms case 6 pushes count before number; the source
+//   now uses that binary-supported argument order. A stdio.h context was worse.
+//   The remaining gap is the extra direct sprintf call for the two-argument
+//   case-1/case-9 tail; no natural source form recovered that tail.
 
 extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
 extern "C" void __cdecl getstring(char** destination, char* source);
@@ -129,8 +133,8 @@ char* RGE_Victory_Conditions::condition_description(RGE_Victory_Entry* entry) {
             entry->target_obj->master_obj->name);
         break;
     case 6:
-        sprintf(temp, "aqquire %d of attribute %d", entry->number,
-            entry->count);
+        sprintf(temp, "aqquire %d of attribute %d", entry->count,
+            entry->number);
         break;
     case 7:
         sprintf(temp, "explore %d percent of the map", entry->count);
