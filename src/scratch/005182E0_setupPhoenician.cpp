@@ -82,6 +82,11 @@
 //   same-TU constant-store example. Its natural source emits the oracle's
 //   14h register and early param_2 reload, but its store groups differ. This
 //   is codegen evidence, not proof that Phoenician needs a different source.
+// - Revisit sa-6e3c0b54-r1 tested all-constant aliases, full and partial comma
+//   groups, PDB-line grouping, a const map type, a Phoenician enum constant,
+//   explicit ordinary returns, and the three 20 stores as a producer group.
+//   Every build duplicated the 275-byte / 25-byte-drift basin. These tests did
+//   not identify a natural missing assignment or field-ownership change.
 //   No policy-valid source lead remains. Keep this clean typed reconstruction.
 
 #include <stddef.h>
