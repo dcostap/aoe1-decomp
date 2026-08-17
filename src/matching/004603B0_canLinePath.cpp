@@ -33,6 +33,11 @@
 // 17: reversed the natural distance-stop predicate to maxDistance >= distance;
 //     VC5 added 12 bytes and worsened the loop tail, so the original distance <=
 //     maxDistance form is retained.
+// 18: moved duplicate-tile state updates before passableTile, matching the
+//     adjacent integer overload; this recovered the target size, frame, and
+//     all but four bytes.
+// 19: declared current x/y after xStep/yStep, matching the exact same-TU scan
+//     donor; this recovered the x87 operand order and an exact 442-byte match.
 
 #include <math.h>
 
@@ -122,14 +127,17 @@ public:
 int RGE_Moving_Object::canLinePath(const XYPoint& a, const XYPoint& b,
                                    float maxDistance, XYPoint& result,
                                    int terrain) {
-    int startX = a.x;
-    int startY = a.y;
     int lastX;
     int lastY;
-    float x;
-    float y;
-    float xDistance = (float)(b.x - startX);
-    float yDistance = (float)(b.y - startY);
+    float xDistance;
+    float yDistance;
+    int startX = a.x;
+    int endX = b.x;
+    int startY = a.y;
+    int endY = b.y;
+
+    xDistance = (float)(endX - startX);
+    yDistance = (float)(endY - startY);
 
     if ((xDistance == DAT_00570b48) &&
         (yDistance == DAT_00570b48)) {
@@ -140,6 +148,8 @@ int RGE_Moving_Object::canLinePath(const XYPoint& a, const XYPoint& b,
     int i;
     float xStep;
     float yStep;
+    float x;
+    float y;
 
     if (fabs(yDistance) > fabs(xDistance)) {
         numSteps = abs((int)yDistance) * 2;
@@ -147,15 +157,14 @@ int RGE_Moving_Object::canLinePath(const XYPoint& a, const XYPoint& b,
         numSteps = abs((int)xDistance) * 2;
     }
 
+    lastX = -999;
+    lastY = -999;
     i = 0;
     xStep = 0.0f;
     xStep = xDistance / (float)numSteps;
     yStep = yDistance / (float)numSteps;
-
     x = (float)startX;
     y = (float)startY;
-    lastX = -999;
-    lastY = -999;
 
     for (; i < numSteps; ++i) {
             x += xStep;
@@ -164,14 +173,14 @@ int RGE_Moving_Object::canLinePath(const XYPoint& a, const XYPoint& b,
             int tileY = (int)y;
 
             if (tileX != lastX || tileY != lastY) {
+                lastX = tileX;
+                lastY = tileY;
                 if (this->passableTile(x, y, terrain) == 0) {
                     result.x = tileX;
                     result.y = tileY;
                     return 0;
                 }
 
-                lastX = tileX;
-                lastY = tileY;
                 if ((float)sqrt(((float)b.x - x) * ((float)b.x - x) +
                                 ((float)b.y - y) * ((float)b.y - y)) <=
                     maxDistance) {
