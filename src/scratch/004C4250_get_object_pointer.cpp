@@ -94,13 +94,16 @@
 // the byte index and treats Ghidra's ushort uVar4 as a promotion temporary.
 // Natural one-byte player_id reconstructions widened to 227 bytes or changed
 // result allocation. The clean two-local form remains the only 219B/37 basin.
+// 2026-08-17 source-gate audit: removed unused, incomplete virtual surfaces and
+// the unrelated master-object aggregate. The object, player, world, and list
+// owners now keep only proven fields and named polymorphic entries. World uses
+// its proven virtual destructor; object-list load is the proven slot-0 method.
+// This is a policy cleanup, not a compare-index or color-register probe.
 
 class RGE_Static_Object;
-class RGE_Sprite;
 class RGE_Master_Static_Object;
 class RGE_Player;
 class RGE_Game_World;
-class RGE_Object_Node;
 
 class RGE_Object_List {
 public:
@@ -110,88 +113,9 @@ public:
     RGE_Static_Object* find_by_id(long id);
 };
 
-class RGE_Master_Static_Object {
-public:
-    virtual ~RGE_Master_Static_Object();
-    unsigned char master_type; // +0x04
-    unsigned char gap_05[3];
-    char* name; // +0x08
-    short string_id; // +0x0C
-    short string_id2; // +0x0E
-    short id; // +0x10
-    short copy_id; // +0x12
-    short object_group; // +0x14
-    unsigned char gap_16[2];
-    void* sprite; // +0x18
-    void* death_sprite; // +0x1C
-    void* undead_sprite; // +0x20
-    unsigned char undead_flag; // +0x24
-    unsigned char gap_25;
-    short hp; // +0x26
-    float los; // +0x28
-    unsigned char obj_max; // +0x2C
-    unsigned char gap_2D[3];
-    float radius_x; // +0x30
-    float radius_y; // +0x34
-    float radius_z; // +0x38
-    void* selected_sound; // +0x3C
-    void* created_sound; // +0x40
-    void* death_sound; // +0x44
-    short death_spawn_obj_id; // +0x48
-    unsigned char sort_number; // +0x4A
-    unsigned char can_be_built_on; // +0x4B
-    short button_pict; // +0x4C
-    unsigned char hide_in_scenario_editor; // +0x4E
-    unsigned char gap_4F;
-    short portrait_pict; // +0x50
-    unsigned char available; // +0x52
-    unsigned char gap_53;
-    short tile_req1; // +0x54
-    short tile_req2; // +0x56
-    short center_tile_req1; // +0x58
-    short center_tile_req2; // +0x5A
-    float construction_radius_x; // +0x5C
-    float construction_radius_y; // +0x60
-    unsigned char elevation_flag; // +0x64
-    unsigned char fog_flag; // +0x65
-    short terrain; // +0x66
-    unsigned char movement_type; // +0x68
-    unsigned char gap_69;
-    short attribute_type_held[3]; // +0x6A
-    float attribute_amount_held[3]; // +0x70
-    short attribute_max_amount; // +0x7C
-    unsigned char gap_7E[2];
-    float attribute_rot; // +0x80
-    float multiple_attribute_mod; // +0x84
-    unsigned char attribute_flag[3]; // +0x88
-    unsigned char area_effect_object_level; // +0x8B
-    unsigned char combat_level; // +0x8C
-    unsigned char select_level; // +0x8D
-    unsigned char map_draw_level; // +0x8E
-    unsigned char unit_level; // +0x8F
-    unsigned char map_color; // +0x90
-    unsigned char attack_reaction; // +0x91
-    unsigned char convert_terrain_flag; // +0x92
-    unsigned char damage_sprite_num; // +0x93
-    void* damage_sprites; // +0x94
-    long help_string_id; // +0x98
-    long help_page_id; // +0x9C
-    long hotkey_id; // +0xA0
-    unsigned char recyclable; // +0xA4
-    unsigned char track_as_resource; // +0xA5
-    unsigned char create_doppleganger_on_death; // +0xA6
-    unsigned char resource_group; // +0xA7
-    unsigned char draw_flag; // +0xA8
-    unsigned char draw_color; // +0xA9
-    unsigned char gap_AA[2];
-    float outline_radius_x; // +0xAC
-    float outline_radius_y; // +0xB0
-    float outline_radius_z; // +0xB4
-};
-
 class RGE_Game_World {
 public:
-    virtual void data_load_world();
+    virtual ~RGE_Game_World();
     char gap_04[0x38];
     short player_num;
     char gap_3E[0x02];
@@ -214,108 +138,10 @@ public:
 class RGE_Static_Object {
 public:
     virtual ~RGE_Static_Object();
-    virtual void recycle_in_to_game(RGE_Master_Static_Object* master,
-                                    RGE_Player* player, float x, float y,
-                                    float z);
-    virtual void recycle_out_of_game();
-    virtual void draw();
-    virtual void shadow_draw();
-    virtual void normal_draw();
-    virtual void draw_front_frame();
-    virtual void draw_back_frame();
-    virtual void draw_frame();
-    virtual unsigned char update();
-    virtual void check_damage_sprites();
-    virtual void rehook();
-    virtual void save(int file);
-    virtual float teleport(float x, float y, float z);
-    virtual void new_sprite(RGE_Sprite* sprite);
-    virtual void add_overlay_sprite();
-    virtual void remove_overlay_sprite();
-    virtual void change_ownership(RGE_Player* player);
-    virtual void modify();
-    virtual void modify_delta();
-    virtual void modify_percent();
-    virtual void transform();
-    virtual void copy_obj();
-    virtual void set_object_state(unsigned char state);
-    virtual void remove_visible_resource();
-    virtual void create_doppleganger_when_dying();
-    virtual void destroy_obj();
-    virtual void die_die_die();
-    virtual void damage();
-    virtual float calculateDamage();
-    virtual void rotate(long angle);
-    virtual unsigned char can_attack();
-    virtual void set_attribute();
-    virtual void set_attribute_amount();
-    virtual int heal(int amount, int max_amount);
-    virtual unsigned char heal(float amount);
-    virtual int canRepair();
-    virtual void notify_of_relation();
-    virtual void do_command();
-    virtual void move_to();
-    virtual void work();
-    virtual void stop();
-    virtual void set_attack();
-    virtual void play_command_sound();
-    virtual void play_move_sound();
-    virtual void new_angle(float angle);
-    virtual RGE_Static_Object* spawn_death_obj();
-    virtual void* get_command_master();
-    virtual void set_being_worked_on();
-    virtual void release_being_worked_on();
-    virtual unsigned char is_moving();
-    virtual RGE_Static_Object* get_target_obj();
-    virtual void enter_obj();
-    virtual void exit_obj();
-    virtual int explore_terrain();
-    virtual void unexplore_terrain();
-    virtual void* get_los_table();
-    virtual int inAttackRange(RGE_Static_Object* object);
-    virtual unsigned char underAttack();
-    virtual void setUnderAttack(unsigned char value);
 
     long id; // +0x04
-    RGE_Master_Static_Object* master_obj; // +0x08
+    RGE_Master_Static_Object* master_obj; // +0x08; target does not dereference this field
     RGE_Player* owner; // +0x0C
-    void* sprite; // +0x10
-    void* old_sprite; // +0x14
-    void* sprite_list; // +0x18
-    void* tile; // +0x1C
-    RGE_Static_Object* inside_obj; // +0x20
-    void* objects; // +0x24
-    short screen_x_offset; // +0x28
-    short screen_y_offset; // +0x2A
-    short shadow_x_offset; // +0x2C
-    short shadow_y_offset; // +0x2E
-    float hp; // +0x30
-    unsigned char curr_damage_percent; // +0x34
-    unsigned char facet; // +0x35
-    unsigned char selected; // +0x36
-    unsigned char selected_group; // +0x37
-    float world_x; // +0x38
-    float world_y; // +0x3C
-    float world_z; // +0x40
-    float attribute_amount_held; // +0x44
-    unsigned char object_state; // +0x48
-    unsigned char sleep_flag; // +0x49
-    unsigned char dopple_flag; // +0x4A
-    unsigned char goto_sleep_flag; // +0x4B
-    short attribute_type_held; // +0x4C
-    unsigned char type; // +0x4E
-    unsigned char worker_num; // +0x4F
-    void* player_object_node; // +0x50
-    unsigned char pathing_group_members[0x10]; // +0x54
-    unsigned char group_members[0x10]; // +0x64
-    void* unit_ai_value; // +0x74
-    int group_commander_value; // +0x78
-    int zone_map_index; // +0x7C
-    float group_range_value; // +0x80
-    unsigned char in_obstruction_map_value; // +0x84
-    unsigned char last_in_obstruction_map_value; // +0x85
-    unsigned char under_attack_value; // +0x86
-    unsigned char gap_87;
 
     RGE_Static_Object* get_object_pointer(long id);
 };
