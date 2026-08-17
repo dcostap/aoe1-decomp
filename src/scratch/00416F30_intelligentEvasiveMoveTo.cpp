@@ -15,20 +15,22 @@
 //   surface plus explicit slots 0x154/0x198; an explicit slot-0x194
 //   placeholder was needed so the XYZPoint overload calls the observed 0x198
 //   slot. Ordered calls then matched all 10 sites.
-// - A natural do/while with canPath as its condition recovered the original
-//   top switch dispatch and 220-instruction shape. Initializing facet before
-//   baseDistance preserved the source ordering clue. Aggregate XYZPoint
-//   initialization was tried and rolled back (diff 644).
-// - Probe 13 replaced the scoped object alias with direct this->objectValue
-//   ownership for point setup and initial canPath, as used by the same-TU
-//   evasiveMoveTo donor. VC5 emitted the same 414-byte diff and 0x10 frame.
-// - Best validated reconstruction: 666 bytes, 0x10 frame, 220 instructions,
-//   all 10 ordered calls/relocations aligned, 414 positional differing bytes
-//   (62.1622%), 74.09% shape. Remaining drift begins in the prologue's frame
-//   size/this-register coloring and propagates through local displacements.
-//   Left in scratch after the 10-hypothesis budget; no inline asm or shared
-//   files changed.
+// - The original prune branch increments facet and jumps to the switch top.
+//   It does not call canPath. An explicit while/break models this CFG; a
+//   do/while canPath condition does not.
+// - Reusing the dead forceFlag home for point.z is supported by the original
+//   write and final reload. It is codegen-equivalent to a pointZ local here.
+// - A pointZ local restored the original 0x14 frame and 220 instructions.
+//   Aggregate initialization, pointX/pointY locals, a field reference, and a
+//   persistent object alias regressed the frame, calls, or source shape.
+// - Reviewed rdata globals changed no emitted bytes. A while(1) loop was
+//   better than for(;;); the two-variant lab found no exact result.
+// - Final validated reconstruction: 666 bytes, 0x14 frame, 220 instructions,
+//   10 ordered calls, 16 conditional branches, 11 jumps, 445 differing bytes
+//   (66.8168%), and 95.45% shape. It remains in scratch because it is not an
+//   exact match. No inline assembly or shared files changed.
 
+#include "../../include/game_globals.h"
 #include "../../include/unit_ai_module.h"
 
 struct XYZPoint {
@@ -198,32 +200,33 @@ int UnitAIModule::intelligentEvasiveMoveTo(float x, float y, float z,
         return 0;
     }
 
-    if (x < 0.0f) {
+    if (x < DAT_0056ebc8) {
         x = 0.0f;
     } else {
         if (x >= (float)this->objectValue->owner->world->map->map_width) {
-            x = (float)this->objectValue->owner->world->map->map_width - 0.5f;
+            x = (float)this->objectValue->owner->world->map->map_width - DAT_0056ebd0;
         }
     }
 
-    if (y < 0.0f) {
+    if (y < DAT_0056ebc8) {
         y = 0.0f;
     } else {
         if (y >= (float)this->objectValue->owner->world->map->map_height) {
-            y = (float)this->objectValue->owner->world->map->map_height - 0.5f;
+            y = (float)this->objectValue->owner->world->map->map_height - DAT_0056ebd0;
         }
     }
 
     point.x = (int)x;
     point.y = (int)y;
-    point.z = (int)this->objectValue->world_z;
+    forceFlag = (int)this->objectValue->world_z;
+    point.z = forceFlag;
 
     if (this->objectValue->canPath(point, 1.0f, -1, 0, 0, -1, -1) == 0) {
         facet = -1;
         baseDistance = this->objectValue->distance_to_position(
             x, y, this->objectValue->world_z);
 
-        do {
+        while (1) {
             ++facet;
 
             switch (facet) {
@@ -270,20 +273,23 @@ int UnitAIModule::intelligentEvasiveMoveTo(float x, float y, float z,
 
             if (targetId == 0 &&
                 this->objectValue->distance_to_position(
-                    (float)point.x - 0.5f,
-                    (float)point.y - 0.5f,
+                    (float)point.x - DAT_0056ebe4,
+                    (float)point.y - DAT_0056ebe4,
                     this->objectValue->world_z) < baseDistance) {
                 ++facet;
                 continue;
             }
 
-        } while (this->objectValue->canPath(point, 1.0f, -1, 0, 0, -1, -1) != 1);
+            if (this->objectValue->canPath(point, 1.0f, -1, 0, 0, -1, -1) == 1) {
+                break;
+            }
+        }
     }
 
     if (this->objectValue->moveTo(
-            (float)point.x - 0.5f,
-            (float)point.y - 0.5f,
-            z, 0.5f, point.z) == 1) {
+            (float)point.x - DAT_0056ebe4,
+            (float)point.y - DAT_0056ebe4,
+            z, 0.5f, forceFlag) == 1) {
         this->setCurrentAction(0x262);
         this->setCurrentTarget(-1, x, y, z);
         return 1;
