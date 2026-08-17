@@ -27,6 +27,15 @@
 // 12: changed the edge predicate and bit locals to bool from the decompiler's
 //     bool labels; VC5 expanded the frame to 0x24 and 930 bytes, so restored int
 //     locals. The binary's dword homes are not source-level bool evidence here.
+// 13-19: typed root indexing, scalar aliases, declaration order, address-add
+//     spelling, width, comparison, and nested-guard variants did not improve
+//     the typed root basin.
+// 20: scoping the eight bit locals inside each edge pass recovered the original
+//     dword homes and most late blocks. Best result is 800 bytes and 338 strict
+//     changed bytes. The remaining structural hunk is the black-root relocation
+//     loop, where the original uses a byte-offset lowering.
+// 21-22: separate declaration statements and explicit do-while forms were
+//     codegen duplicates. No policy-valid exact source was found in this pass.
 
 extern "C" int __cdecl _open(const char*, int);
 extern "C" int __cdecl _lseek(int, int, int);
@@ -70,7 +79,6 @@ void RGE_View::Init_Tile_Edge_Tables()
     int base;
     int count;
     int ok;
-    int b0,b1,b2,b3,b4,b5,b6,b7;
     Tile_BlackEdge_Table** black_roots;
 
     fd = _open(s_tile_file, 0x8000);
@@ -107,7 +115,9 @@ void RGE_View::Init_Tile_Edge_Tables()
     uchar* edge = this->EdgeNumber;
     for (i=0;i<0x100;i++) edge[i] = 0xff;
     count = 0;
-    for (i=0;i<0x100;i++) {
+    i = 0;
+    do {
+        int b0,b1,b2,b3,b4,b5,b6,b7;
         ok = 1;
         b0 = (i & 1) == 1;
         b1 = (i & 2) == 2;
@@ -122,9 +132,12 @@ void RGE_View::Init_Tile_Edge_Tables()
         if (b5 && (b1 || b2)) ok = 0;
         if (b4 && (b0 || b1)) ok = 0;
         if (ok) edge[i] = (uchar)count++;
-    }
-    for (i=0;i<0x100;i++) {
+        i++;
+    } while (i < 0x100);
+    i = 0;
+    do {
         if (edge[i] == 0xff) {
+            int b0,b1,b2,b3,b4,b5,b6,b7;
             b0 = i & 1; b1 = i & 2; b2 = i & 4; b3 = i & 8; b4 = i & 0x10; b5 = i & 0x20; b6 = i & 0x40; b7 = i & 0x80;
             if (b7) { b3 = 0; b0 = 0; }
             if (b6) { b3 = 0; b2 = 0; }
@@ -132,5 +145,6 @@ void RGE_View::Init_Tile_Edge_Tables()
             if (b4) { b1 = 0; b0 = 0; }
             edge[i] = edge[b7 | b6 | b5 | b4 | b3 | b2 | b1 | b0];
         }
-    }
+        i++;
+    } while (i < 0x100);
 }
