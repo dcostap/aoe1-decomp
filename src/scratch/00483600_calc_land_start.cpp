@@ -29,6 +29,16 @@
 // remaining drift is block shape and register/local-home placement.
 // Named rmm_dbct.cpp and debug-log literals retained the typed source and
 // improved positional drift to 570 bytes.
+// Current worker pass (probes 1-30): canonical long/RGE data ownership and the
+// same-TU controller virtual surface were codegen duplicates. Float suffixes on
+// the two branch scale constants improved drift from 570 to 568 bytes. The
+// executable proves one shared retry-store block: an accepted box candidate and
+// an accepted distance candidate both reach it, while scan exhaustion skips it.
+// Explicit labels for that block improved drift to 544 bytes with exact frame,
+// size, call count, and CFG counts. Typed explicit scan cursors, parameter
+// mutation, declaration scopes, and register hints did not improve it. The
+// current clean source remains unresolved at the saved-register/local-home
+// boundary, with target this=EDI/two=EBP versus rebuilt this=EBP/two=EDI.
 
 #include <math.h>
 
@@ -38,6 +48,8 @@
 extern "C" int __cdecl debug_rand(const char*, int);
 extern "C" void __cdecl Log(void*, const char*, ...);
 extern void* L;
+
+class RGE_Map;
 
 static const char s_rmm_dbct_path[] = "C:\\msdev\\work\\age1_x1\\rmm_dbct.cpp";
 static const char s_calc_land_start[] =
@@ -71,10 +83,15 @@ struct LandInfoLine {
     unsigned char pad_31[3];
 };
 
-struct LandInfo {
-    char gap0[0x11];
+struct RGE_Land_Data_Entry {
+    long land_id;
+    unsigned char terrain_type;
+    unsigned char pad_05[3];
+    long land_avoidance_tiles;
+    long base_square_radius;
+    unsigned char zone;
     unsigned char placement;
-    char gap12[2];
+    unsigned char pad_12[2];
     int x;
     int y;
 };
@@ -95,16 +112,16 @@ struct LandInfoTable {
 class RGE_Random_Map_Module {
 public:
     virtual ~RGE_Random_Map_Module();
-    void* parent;
+    RGE_Random_Map_Module* parent;
     void* list;
-    void* map;
+    RGE_Map* map;
     void* map_row_offset;
-    int map_width;
-    int map_height;
+    long map_width;
+    long map_height;
     float schedule;
-    void* search_map;
-    void* search_map_rows;
+    unsigned char* search_map;
     void* stack_array;
+    unsigned char** search_map_rows;
     void* stack_offsets;
 };
 
@@ -114,32 +131,42 @@ public:
     int map_type;
     int number_of_players;
     LandInfoTable land_info;
-    void calc_land_start(int start, int radius, int count, LandInfo* land);
+    virtual unsigned char generate();
+    virtual void add_land_module(unsigned char);
+    virtual void add_terrain_module();
+    virtual void add_object_module();
+    virtual void add_elevation_module();
+    virtual unsigned char init(RGE_Map*, void*, unsigned char, long, unsigned char);
+    virtual unsigned char de_init();
+protected:
+    void calc_land_start(long start, long radius, long count,
+                         RGE_Land_Data_Entry* land);
 };
 
-void RGE_RMM_Database_Controller::calc_land_start(int start, int radius, int count, LandInfo* land) {
-    int i;
-    int j;
-    int x;
-    int y;
+void RGE_RMM_Database_Controller::calc_land_start(long start, long radius, long count,
+                                                  RGE_Land_Data_Entry* land) {
+    long i;
+    long j;
+    long x;
+    long y;
     bool retry;
-    int two;
     float bound;
-    float bound_square;
-    int minx;
-    int miny;
-    int maxx;
-    int maxy;
+    long minx;
+    long miny;
+    long maxx;
+    long maxy;
 
     Log(L, s_calc_land_start, debug_rand(s_rmm_dbct_path, 0x1c3));
-    two = radius + radius;
+    long two = radius + radius;
     bound = (float)(this->map_width - two) / sqrt((float)count);
     if (count > 3 && count < 7)
-        bound *= 0.9;
+        bound *= 0.9F;
     else if (count >= 7)
-        bound *= 0.8;
+        bound *= 0.8F;
 
-    bound_square = bound * bound;
+    // BINARY NOTE: The scale factors here are 4-byte float constants.
+    // The coordinate factors below are 8-byte constants in the executable.
+    float bound_square = bound * bound;
     minx = (int)((this->map_width / 2) - (bound * 0.9));
     miny = (int)((this->map_height / 2) - (bound * 0.9));
     maxx = (int)((this->map_width / 2) - (bound * -0.9));
@@ -171,24 +198,26 @@ void RGE_RMM_Database_Controller::calc_land_start(int start, int radius, int cou
             do {
                 x = (debug_rand(s_rmm_dbct_path, 0x1fc) * (this->map_width - two)) / 0x7fff + radius;
                 y = (debug_rand(s_rmm_dbct_path, 0x1fd) * (this->map_height - two)) / 0x7fff + radius;
-                if (x > minx && x < maxx && y > miny && y < maxy) {
-                    retry = 1;
-                }
-                else {
-                    for (j=start; j<i; ++j) {
-                        int dx=x-land_info.land[j].x; if (dx<0) dx=-dx;
-                        int dy=y-land_info.land[j].y; if (dy<0) dy=-dy;
-                        if ((float)(dx*dx + dy*dy) <= bound_square) {
-                            if (j == i - 1) {
-                                land_info.land[i].x = x;
-                                land_info.land[i].y = y;
-                                Log(L, s_calc_land_xy, i, x, y);
-                            }
-                            retry = 1;
-                            break;
+                if (x > minx && x < maxx && y > miny && y < maxy)
+                    goto retry_found;
+                for (j=start; j<i; ++j) {
+                    int dx=x-land_info.land[j].x; if (dx<0) dx=-dx;
+                    int dy=y-land_info.land[j].y; if (dy<0) dy=-dy;
+                    if ((float)(dx*dx + dy*dy) <= bound_square) {
+                        if (j == i - 1) {
+                            land_info.land[i].x = x;
+                            land_info.land[i].y = y;
+                            Log(L, s_calc_land_xy, i, x, y);
                         }
+                        goto retry_found;
                     }
                 }
+                goto retry_done;
+retry_found:
+                // BINARY NOTE: Both accepted candidates use this retry store.
+                retry = 1;
+retry_done:
+                ;
             } while (retry);
             land_info.land[i].x=x; land_info.land[i].y=y;
             Log(L, s_calc_land_xy, i, x, y);
