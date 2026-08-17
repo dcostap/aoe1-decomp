@@ -18,9 +18,23 @@
 // remaining structural gap: this stays in ESI rather than the oracle's EBP;
 // the player guard and local stack homes still differ.
 // prior pause state: meaningful code was 1413/1568B with a 0x84/0x8C frame.
+// try 10: tested score-loop declaration and do-while forms; the for-loop basin
+// is stable and closer to the oracle.
+// try 11: tested compound and split player/object guards; none recovered the
+// oracle's three null-test blocks without harming call or CFG parity.
+// try 12: tested local declaration order and object aliases; register and stack
+// homes stayed in the same basin or lost the 0x8C frame.
+// try 13: replaced both hand-written name scans with intrinsic strcmp. This
+// recovers the oracle's two-byte compare loop and sbb result, raising shape to
+// 82.95%; the remaining frame is 0x90 and strict diff is 1350B.
+// try 14: restored the 100-byte name buffer from the oracle's +38h stack span;
+// retained despite the four-byte frame increase over the 96-byte probe.
+// Final unresolved source is natural and typed, with 25/25 ordered calls.
 // Structural reconstruction remains incomplete.
 
 extern unsigned long __cdecl debug_timeGetTime(char* file, int line);
+extern "C" int __cdecl strcmp(const char* left, const char* right);
+#pragma intrinsic(strcmp)
 
 class TPanel {
 public:
@@ -311,7 +325,7 @@ long TRIBE_Panel_Object::handle_idle()
 
     int changed = 0;
     int do_buttons = 0;
-    int saved_changed = 0;
+    char name[100];
     short cur_val;
     short work_target;
     short orig_val;
@@ -321,7 +335,6 @@ long TRIBE_Panel_Object::handle_idle()
     TRIBE_Building_Object* bldg;
     short progress_value;
     float orig_fval;
-    char name[100];
 
     {
     if (this->game_obj == 0) goto finish;
@@ -349,7 +362,7 @@ long TRIBE_Panel_Object::handle_idle()
 
     if (!changed) {
         unsigned char type = ((RGE_Action_Object*)this->game_obj)->master_obj->master_type;
-        if (type > 0x45 && type != 0x5A) {
+        if (type >= 0x46 && type != 0x5A) {
             if (((RGE_Action_Object*)this->game_obj)->have_action() != this->save_have_action) {
                 changed = 1; do_buttons = 1;
             }
@@ -398,22 +411,14 @@ long TRIBE_Panel_Object::handle_idle()
         if (work_type == this->save_work_type &&
             work_target == this->save_work_target &&
             progress_value == this->save_progress) {
-            saved_changed = changed;
-            int i = 0;
-            while (name[i] == this->save_name[i] && name[i] != 0) ++i;
-            if (name[i] == this->save_name[i]) {
-                changed = saved_changed;
+            if (strcmp(name, this->save_name) == 0) {
                 goto name_same;
             }
         }
         changed = 1;
         if (work_type == this->save_work_type &&
             work_target == this->save_work_target) {
-            saved_changed = changed;
-            int i = 0;
-            while (name[i] == this->save_name[i] && name[i] != 0) ++i;
-            if (name[i] == this->save_name[i]) {
-                changed = saved_changed;
+            if (strcmp(name, this->save_name) == 0) {
                 goto name_same;
             }
         }
