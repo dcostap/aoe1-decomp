@@ -69,19 +69,53 @@
 //   and nested options, so those tags preserve the original U-tag ABI.
 // - Source-gate repair also restores typed RGE_Player, TRIBE_Player,
 //   RGE_Command, TRIBE_History_Info, TRIBE_Game, and communications fields.
-//   The typed player-info cursor remains the only packet-record cursor.
-//   Grouped checks 097-102 kept 877 B, frame 0x270, 15 ordered calls, and
-//   151 differing bytes.  No raw cursor, direct-index packet anchor, or
-//   invented aggregate is retained.
+//   The typed 0x28 player record remains the only packet-record ownership
+//   surface.  Grouped checks 097-102 kept the old 151-byte frontier.
+// - Exact transition: direct indexing of the typed 0x28 player records selects
+//   the original score-field address anchor.  A local int preserves the proven
+//   dword WasKicked load and the world-base load before the team store.
+// - Exact transition also follows the PDB handler order for game-end case 2
+//   and the PDB map-option statement order.  These changes preserve all field
+//   mappings, fault order, and the 15 direct calls.
+// - Exact walkback kept the local event declaration, loop form, and int
+//   temporary reductions.  It rejected the pointer record alias, numeric case
+//   order, direct WasKicked byte read, and struct-order map stores.
+//   The final source is 877 B, frame 0x270, and MATCH with 0.0000% difference.
+// - Full-file source gate: replaced decompiler gap fields with natural VC5
+//   padding, restored named PDB fields for the player, world, game, command,
+//   history, scenario, victory, and communications records, and restored
+//   RGE_Base_Game/TRIBE_Game and RGE_Game_World/TRIBE_World ownership.  The
+//   canonical nested options and communications records retain their proven
+//   sizes.  FILE, HWND, and other Windows types replace generic file/window
+//   pointers.  The only remaining void* is the PDB-backed generic RGE_Command
+//   virtual parameter.  Grouped source-gate checks remain exact.
 
 #include <string.h>
+#include <stdio.h>
+#include <windows.h>
+
+class RGE_Player;
+class RGE_Victory_Entry;
+class RGE_Victory_Point_Entry;
 
 class RGE_Victory_Conditions {
 public:
+    virtual ~RGE_Victory_Conditions();
+    RGE_Victory_Entry* victory_list;
+    long list_num;
+    RGE_Player* player;
+    unsigned char victory;
+    RGE_Victory_Point_Entry* victory_point_list;
+    long point_list_num;
+    long tot_victory_points;
     long get_victory_points();
 };
 
 class RGE_Game_World;
+class RGE_Timeline;
+class RGE_Command_Give_Attribute;
+class TRIBE_Screen_Game;
+class TCommunications_Handler;
 class MouseClickInfo;
 class RGE_Master_Static_Object;
 class RGE_Object_List;
@@ -91,6 +125,7 @@ class RGE_Tile_List_Node;
 class Visible_Resource_Manager;
 class RGE_Color_Table;
 class RGE_Static_Object;
+class TPicture;
 class TRIBE_Player_Tech;
 class TribeMainDecisionAIModule;
 
@@ -114,7 +149,6 @@ public:
     long position_checksum; // +0x18
     long action_checksum; // +0x1c
     unsigned char checksum_created_this_update; // +0x20
-    unsigned char gap_21; // +0x21
     short master_object_num; // +0x22
     RGE_Master_Static_Object** master_objects; // +0x24
     RGE_Object_List* objects; // +0x28
@@ -126,18 +160,14 @@ public:
     RGE_Doppleganger_Creator* doppleganger_creator; // +0x40
     char* name; // +0x44
     unsigned char type; // +0x48
-    unsigned char gap_49; // +0x49
     short id; // +0x4a
     short attribute_num; // +0x4c
-    unsigned char gap_4e[2]; // +0x4e
     float* attributes; // +0x50
     unsigned char culture; // +0x54
-    unsigned char gap_55[3]; // +0x55
     RGE_Tile_List tile_list; // +0x58
     RGE_Tile_List diam_tile_list; // +0x6c
     unsigned char game_status; // +0x80
     unsigned char resigned; // +0x81
-    unsigned char gap_82[2]; // +0x82
     unsigned char* relations; // +0x84
     int unitDiplomacy[9]; // +0x88
     int mutualAlly[9]; // +0xac
@@ -148,7 +178,6 @@ public:
     int allied_LOS_Enable; // +0x100
     unsigned char allied_victory; // +0x104
     unsigned char master_player_id; // +0x105
-    unsigned char gap_106[2]; // +0x106
     RGE_Color_Table* color_table; // +0x108
     long tribe_effect; // +0x10c
     Visible_Resource_Manager* VR_List; // +0x110
@@ -163,13 +192,11 @@ public:
     short replacement_terrain; // +0x128
     short replacement_overlay; // +0x12a
     short replacement_overlay_shape; // +0x12c
-    unsigned char gap_12e[2]; // +0x12e
     RGE_Static_Object* selected_obj; // +0x130
     RGE_Static_Object* sel_list[25]; // +0x134
     unsigned long sel_object_properties; // +0x198
     short sel_count; // +0x19c
     unsigned char groups_used[127]; // +0x19e
-    unsigned char gap_21d[3]; // +0x21d
 
     int computerPlayer();
 };
@@ -177,7 +204,6 @@ public:
 class TRIBE_History_Events {
 public:
     unsigned char event;
-    char gap_01[3];
     long time;
     long world_time;
     TRIBE_History_Events* next;
@@ -222,7 +248,6 @@ struct TRIBE_Zone_High_Score_Info {
     unsigned char civ;
     char player_name[16];
     unsigned char num_allies;
-    unsigned char gap_16[2];
 };
 
 class TRIBE_Zone_Player_Info {
@@ -235,7 +260,6 @@ public:
     unsigned char player_no;
     unsigned char team_no;
     unsigned char game_outcome;
-    unsigned char gap_1A[2];
     long tool_time;
     long bronze_time;
     long iron_time;
@@ -253,7 +277,6 @@ public:
     unsigned char Fixed_Pos;
     unsigned char Reveal_Map;
     unsigned char Death_Match;
-    unsigned char gap_0B;
 };
 
 class TRIBE_Zone_Info {
@@ -261,7 +284,6 @@ public:
     unsigned char number_of_players;
     unsigned char number_of_computer_players;
     char scenario_name[32];
-    unsigned char gap_22[2];
     unsigned long game_time;
     TRIBE_Zone_High_Score_Info total_score;
     TRIBE_Zone_High_Score_Info religion_score;
@@ -272,15 +294,162 @@ public:
     TRIBE_Zone_Map_Info map_info;
     unsigned char cheats_enabled;
     unsigned char game_end_condition_code;
-    unsigned char gap_1EE[2];
     unsigned long database_checksum;
     unsigned long code_checksum;
     unsigned long program_version;
 };
 
+class RGE_Game_Info;
+class RGE_Scenario_File_Info;
+class RGE_Prog_Info;
+class TDrawSystem;
+class TDrawArea;
+class TShape;
+class TSound_Driver;
+class TMusic_System;
+class TDigital;
+class TDebuggingLog;
+class TRegistry;
+class TMousePointer;
+class RGE_Font;
+
+class RGE_Timing_Info {
+public:
+    unsigned long accum_time;
+    unsigned long last_time;
+    unsigned long start_time;
+    int include_in_total;
+    int is_summary;
+    unsigned long last_single_time;
+    unsigned long max_time;
+    unsigned long last_max_time;
+};
+
 class RGE_Base_Game {
 public:
-    char gap_00[0xa24];
+    class RGE_Game_Options {
+    public:
+        float versionValue;
+        unsigned char scenarioGameValue;
+        char scenarioNameValue[128];
+        unsigned char singlePlayerGameValue;
+        unsigned char multiplayerGameValue;
+        unsigned char mapXSizeValue;
+        unsigned char mapYSizeValue;
+        unsigned char mapZSizeValue;
+        unsigned char allowCheatCodesValue;
+        unsigned char mpPathFindingValue;
+        unsigned char cheatNotificationValue;
+        unsigned char fullVisibilityValue;
+        unsigned char fogOfWarValue;
+        unsigned char coloredChatValue;
+        unsigned char numberPlayersValue;
+        unsigned char gameDeveloperModeValue;
+        unsigned char playerCDAndVersionValue[9];
+        unsigned char difficultyValue;
+        unsigned char playerTeamValue[9];
+    };
+
+    virtual ~RGE_Base_Game();
+
+    RGE_Game_Info* player_game_info;
+    RGE_Scenario_File_Info* scenario_info;
+    RGE_Prog_Info* prog_info;
+    HWND prog_window;
+    int prog_ready;
+    int prog_active;
+    HPALETTE prog_palette;
+    HANDLE prog_mutex;
+    long window_style;
+    int random_game_seed;
+    int random_map_seed;
+    int save_random_game_seed;
+    int save_random_map_seed;
+    int screen_saver_enabled;
+    int low_power_enabled;
+    int error_code;
+    int is_timer;
+    TDrawSystem* draw_system;
+    TDrawArea* draw_area;
+    unsigned char outline_type;
+    int custom_mouse;
+    short shape_num;
+    TShape** shapes;
+    TSound_Driver* sound_system;
+    TMusic_System* music_system;
+    short sound_num;
+    TDigital** sounds;
+    unsigned char save_music_type;
+    int save_music_track_from;
+    int save_music_track_to;
+    int save_music_cur_track;
+    char save_music_file[260];
+    int save_music_loop;
+    unsigned long save_music_pos;
+    TCommunications_Handler* comm_handler;
+    int comm_syncstop;
+    int comm_droppackets;
+    int comm_syncmsg;
+    int comm_stepmode;
+    int comm_speed;
+    TDebuggingLog* debugLog;
+    int log_comm;
+    TRegistry* registry;
+    int prog_mode;
+    int game_mode;
+    int sub_game_mode;
+    int paused;
+    TMousePointer* mouse_pointer;
+    int erase_mouse;
+    int mouse_blit_sync;
+    int is_mouse_on;
+    int windows_mouse;
+    HCURSOR mouse_cursor;
+    int input_enabled;
+    HWND input_disabled_window;
+    short font_num;
+    RGE_Font* fonts;
+    char work_dir[261];
+    char string_dll_name[261];
+    RGE_Game_World* world;
+    int render_all;
+    short master_obj_id;
+    short terrain_id;
+    short elevation_height;
+    short brush_size;
+    char timing_text[256];
+    unsigned long frame_count;
+    unsigned long world_update_count;
+    unsigned long view_update_count;
+    unsigned long last_frame_count;
+    unsigned long last_world_update_count;
+    unsigned long last_view_update_count;
+    unsigned long fps;
+    unsigned long world_update_fps;
+    unsigned long view_update_fps;
+    RGE_Timing_Info timings[30];
+    int do_show_timings;
+    int do_show_comm;
+    int do_show_ai;
+    unsigned long last_view_time;
+    RGE_Game_Options rge_game_options;
+    int campaignGameValue;
+    int savedGameValue;
+    int quick_build;
+    int save_check_for_cd;
+    int playerIDValue[9];
+    int display_selected_ids;
+    long countdown_timer[9];
+    int auto_paused;
+    int save_paused;
+    int non_user_pause;
+    int rollover;
+    float game_speed;
+    int single_player_difficulty;
+    unsigned char pathFindingValue;
+    unsigned char resigned[9];
+    TDrawArea* map_save_area;
+
     int allowCheatCodes();
     int fullVisibility();
     int playerTeam(int player);
@@ -313,7 +482,6 @@ public:
         VictoryType victoryTypeValue;
         int victoryAmountValue;
         unsigned char civilizationValue[9];
-        unsigned char gap_21[3];
         int scenarioPlayerValue[9];
         unsigned char playerColorValue[9];
         unsigned char computerNameValue[9];
@@ -321,13 +489,11 @@ public:
         unsigned char longCombatValue;
         unsigned char randomizePositionsValue;
         unsigned char fullTechTreeValue;
-        unsigned char gap_5E[2];
         ResourceLevel resourceLevelValue;
         Age startingAgeValue;
         unsigned char startingUnitsValue;
         unsigned char deathMatchValue;
         unsigned char popLimitValue;
-        unsigned char gap_6B;
     };
 
     MouseClickInfo* MouseRightClickTable; // +0xa24
@@ -337,22 +503,238 @@ public:
     long queue_is_waiting_on_pop_counter[9]; // +0xa34
     int random_civ[9];
     TRIBE_Game_Options tribe_game_options; // +0xa7c
+    char testing_scenario[260];
+    HWND video_window;
+    int cur_video;
+    WNDPROC old_video_wnd_proc;
+    int video_paused;
+    unsigned long last_video_time;
+    int video_setup;
+    int video_double_size;
+    int video_changed_res;
+    int video_hi_color;
+    long video_save_res_wid;
+    long video_save_res_hgt;
+    HPALETTE video_save_palette;
+    int started_menu_music;
+    int show_object_id;
+    TRIBE_Screen_Game* game_screen;
+    long notification_loc_x[5];
+    long notification_loc_y[5];
+    long current_notification_loc;
+    long current_notification_recalled;
+    char startup_scenario[260];
+    char startup_game[260];
+    unsigned long auto_exit_time;
+    char save_game_name[260];
+    char load_game_name[260];
+    char timing_text2[256];
+    int save_humanity[9];
+    unsigned char quick_start_game;
+    int random_start_value;
+    unsigned char computerNameUsed[18][10];
+    HANDLE handleIdleLock;
+    int inHandleIdle;
 
     int civilization(int player);
     int playerColor(int player);
     void get_tribe_options(struct TRIBE_Game_Options* options);
 };
 
+class PlayerName {
+public:
+    char Name[256];
+};
+
 class RGE_Scenario {
 public:
-    char gap_00[0x1010];
+    virtual RGE_Static_Object* get_object_pointer(int object_id);
+    virtual ~RGE_Scenario();
+    virtual void rehook();
+    virtual void save(int file);
+
+    RGE_Timeline* time_line;
+    RGE_Game_World* world;
+    unsigned char victory_conquest;
+    PlayerName player_name[16];
+    char* scenario_name;
+    char* description;
+    char* hints;
+    char* win_message;
+    char* loss_message;
+    char* historicle_notes;
+    char TempText1[224];
+    char TempText2[224];
+    char TempText3[224];
+    char* BuildList[16];
+    char* CityPlan[16];
+    char* AiRules[16];
+    unsigned char* BuildListFile[16];
+    unsigned char* CityPlanFile[16];
+    unsigned char* AiRulesFile[16];
+    int BuildListFileSize[16];
+    int CityPlanFileSize[16];
+    int AiRulesFileSize[16];
+    char Cine_PreGame[224];
+    char Cine_Victory[224];
+    char Cine_Loss[224];
+    char Mission_Bmp[224];
+    float Version;
+    int PlayerPosture[16];
+    int PlType[16];
+    int PlCivilization[16];
+    int PlActive[16];
+    TPicture* mission_picture;
+
     char* Get_scenario_name();
+};
+
+class TChat;
+class NAME;
+class RGE_Communications_Queue;
+class RGE_Lobby;
+class RGE_TimeSinceLastCall;
+class RGE_Communications_Speed;
+class RGE_Communications_Synchronize;
+class RGE_Communications_Addresses;
+class RGE_Comm_Error;
+class RESENDER;
+class HOLDER;
+
+typedef int COMMSTATUS;
+typedef int COMMSTATES;
+typedef int PLAYERHUMANITY;
+
+class COMMPLAYEROPTIONS {
+public:
+    unsigned char NeedsToBeSent;
+    unsigned long LastSentTime;
+    COMMSTATES ProgramState;
+    unsigned long CurrentTurn;
+    unsigned char TurnSpeedMsec;
+    unsigned long dcoID[10];
+    unsigned long AcknowledgeAfterMsec;
+    unsigned char CommandTurnIncrement;
+    int PlayerReady[10];
+    unsigned long User1[10];
+    unsigned long User2[10];
+    unsigned long User3[10];
+    unsigned long User4[10];
+    unsigned long User5[10];
+    unsigned long User6[10];
+    unsigned long User7[10];
+    PLAYERHUMANITY Humanity[10];
+    unsigned char InvalidPlayer[10];
+    unsigned long Initialized;
+    unsigned long RandomSeed;
+    unsigned short HighPlayerNumber;
+    unsigned short LowPlayerNumber;
+    unsigned int HostPlayerNumber;
+    int GameHasStarted;
+    unsigned long DataSizeToFollow;
 };
 
 class TCommunications_Handler {
 public:
-    char gap_00[0x1748];
-    int HoldCount; // +0x1748
+    int OptionsChanged;
+    char* OptionsData;
+    int Steps;
+    unsigned long TickStart;
+    unsigned long TickCount;
+    unsigned long TimeSinceLastCall;
+    TChat* Chat;
+    int MeHost;
+    int HaveHostInit;
+    char InCommBuff[4001];
+    char TBuff[257];
+    unsigned long current_turn;
+    unsigned long next_command_turn;
+    unsigned int sequence;
+    long WaitOnPlayer;
+    unsigned long TurnSpeedMsec;
+    unsigned long AcknowledgeAfterMsec;
+    unsigned int Me;
+    int Multiplayer;
+    int OutOfSyncFlag;
+    unsigned long dwStopTime;
+    float lastRXDataRate;
+    float lastTXDataRate;
+    char MyFriendlyName[129];
+    char MyFormalName[129];
+    char MyGameTitle[129];
+    unsigned long CurrentPlayers;
+    int previous_last_world_random;
+    int last_world_random;
+    int StepMode;
+    unsigned long turnstart;
+    unsigned long lastcalltick;
+    unsigned long mselapsed;
+    int AvgTurnTime;
+    int SkipFrames;
+    int PauseChangePending;
+    unsigned long CommunicationsVersionCode;
+    int ShuttingDown;
+    unsigned long ReturnElapsed;
+    unsigned long ReturnRXPacketSize;
+    unsigned long ReturnTXPacketSize;
+    unsigned long RXPacketLength;
+    unsigned long RXPacketLengthHigh;
+    unsigned long TXPacketLength;
+    unsigned long TXPacketLengthHigh;
+    NAME* FriendlyName;
+    NAME* FormalName;
+    unsigned long LastTimeoutMessageTime;
+    COMMSTATUS CommunicationsStatus;
+    unsigned short MaxGamePlayers;
+    _GUID ServiceGUID;
+    _GUID ApplicationGUID;
+    _GUID SessionGUID;
+    HWND HostHWND;
+    int LobbyLaunched;
+    unsigned long MaxReceiveLatency;
+    _GUID NullGUID;
+    unsigned long ResendAcknowledgements;
+    unsigned long ResentToOther;
+    unsigned long DroppedPacketCount;
+    unsigned long RXPackets;
+    unsigned long TXPackets;
+    int IAmLagging;
+    unsigned long ServiceTimeout;
+    unsigned long LastPlayerCommunication[10];
+    unsigned long LastPlayerWarning[10];
+    unsigned long LastTXPing[10];
+    unsigned long PlayerStopTurn[10];
+    unsigned int LastSerialRequestedTX[10];
+    unsigned long LastRequestHonoredTX[10];
+    unsigned int LastSerialRepliedTX[10];
+    unsigned long LastRequestRepliedTX[10];
+    unsigned long dwFlags;
+    unsigned long dwMaxBufferSize;
+    unsigned long dwMaxQueueSize;
+    unsigned long dwMaxPlayers;
+    unsigned long dwHundredBaud;
+    unsigned long dwLatency;
+    int Kicked[10];
+    RGE_Communications_Queue* InQ;
+    RGE_Communications_Queue* OutQ;
+    RGE_Lobby* Lobby;
+    RGE_TimeSinceLastCall* tslc;
+    RGE_Communications_Speed* Speed;
+    RGE_Communications_Synchronize* Sync;
+    RGE_Communications_Addresses* Addresses;
+    RGE_Comm_Error* Err;
+    unsigned int GTDSerialNo;
+    unsigned int HighResendStore;
+    unsigned int DestMap[10];
+    unsigned char RGE_Guaranteed_Delivery;
+    int IntentionallyDropPackets;
+    unsigned int WaitingForAck;
+    RESENDER* Resend;
+    HOLDER* OnHold;
+    unsigned int PlayerHighSerialNumber[10];
+    COMMPLAYEROPTIONS PlayerOptions;
+    unsigned long LastTurnAck[10];
+    unsigned int HoldCount;
     int WasKicked[10];
 
     int SendZoneMessage(char* message, unsigned long length);
@@ -360,7 +742,12 @@ public:
 
 class RGE_Command {
 public:
-    void* vtable_ptr; // +0x00
+    virtual void do_command_give_attribute(RGE_Command_Give_Attribute* command);
+    virtual ~RGE_Command();
+    virtual void do_command(void* command);
+    virtual void command_give_attribute(int player, int attribute,
+        int amount, float value);
+
     RGE_Game_World* world; // +0x04
     unsigned char* last_order; // +0x08
     long last_order_size; // +0x0c
@@ -382,7 +769,7 @@ class TRIBE_Tech;
 
 class RGE_Game_World {
 public:
-    virtual unsigned char data_load_world(void* file);
+    virtual unsigned char data_load_world(FILE* file);
     virtual unsigned char data_load_terrain_tables(char* file);
     virtual unsigned char data_load_players(char* file);
     virtual unsigned char data_load_objects(char* file);
@@ -390,7 +777,7 @@ public:
     virtual unsigned char data_load_color_tables(char* file);
     virtual unsigned char data_load_sprites(char* file);
     virtual void data_load_players_type(short player_type, short player_count,
-        void* file);
+        FILE* file);
     virtual void data_load_effects(char* file);
     virtual void data_load_map(char* map, char* terrain, char* zones,
         char* objects, short width, short height, short tile_size,
@@ -428,7 +815,7 @@ public:
     virtual void load_scenario6(int handle, RGE_Player_Info* player_info);
     virtual void load_scenario7(int handle, RGE_Player_Info* player_info);
     virtual void load_scenario8(int handle, RGE_Player_Info* player_info);
-    virtual void logStatus(void* stream, int verbose);
+    virtual void logStatus(FILE* stream, int verbose);
     virtual ~RGE_Game_World();
     virtual void setup_player_colors();
     virtual void setup_player_colors(RGE_Player_Info* player_info);
@@ -464,21 +851,16 @@ public:
     unsigned char temp_pause; // +0x1c
     unsigned char game_state; // +0x1d
     unsigned char game_end_condition; // +0x1e
-    unsigned char gap_1f; // +0x1f
     long sound_update_index; // +0x20
     long sprite_update_index; // +0x24
     RGE_Map* map; // +0x28
     short sound_num; // +0x2c
-    unsigned char gap_2e[2]; // +0x2e
     RGE_Sound** sounds; // +0x30
     short sprite_num; // +0x34
-    unsigned char gap_36[2]; // +0x36
     RGE_Sprite** sprites; // +0x38
     short player_num; // +0x3c
-    unsigned char gap_3e[2]; // +0x3e
     RGE_Player** players; // +0x40
     short master_player_num; // +0x44
-    unsigned char gap_46[2]; // +0x46
     RGE_Master_Player** master_players; // +0x48
     RGE_Effects* effects; // +0x4c
     short terrain_num; // +0x50
@@ -487,16 +869,13 @@ public:
     RGE_Command* commands; // +0x58
     RGE_Scenario* scenario; // +0x5c
     short color_table_num; // +0x60
-    unsigned char gap_62[2]; // +0x62
     RGE_Color_Table** color_tables; // +0x64
     long next_object_id; // +0x68
     long next_reusable_object_id; // +0x6c
     long scenario_object_id; // +0x70
     unsigned char scenario_object_flag; // +0x74
-    unsigned char gap_75[3]; // +0x75
     unsigned int random_seed; // +0x78
     short curr_player; // +0x7c
-    unsigned char gap_7e[2]; // +0x7e
     TSound_Driver* sound_driver; // +0x80
     float world_time_delta_seconds; // +0x84
     RGE_Static_Object** objectsValue; // +0x88
@@ -526,17 +905,15 @@ public:
 
 class TRIBE_World : public RGE_Game_World {
 public:
-    virtual unsigned char data_load_world(void* file);
+    virtual unsigned char data_load_world(FILE* file);
     TRIBE_Tech* tech; // +0x104
     int victory_type; // +0x108
     int artifact_count; // +0x10c
     int ruin_count; // +0x110
     unsigned char countdown_victory; // +0x114
-    unsigned char gap_115[3]; // +0x115
     float countdown_clock; // +0x118
     unsigned char score_displayed; // +0x11c
     unsigned char controllingComputerPlayer; // +0x11d
-    unsigned char gap_11e[2]; // +0x11e
     int sent_zone_score; // +0x120
 
     void fill_in_score(struct TRIBE_Zone_High_Score_Info& info, long group);
@@ -580,45 +957,44 @@ void TRIBE_World::send_zone_score_info()
 
         player = 1;
         if (player < this->player_num) {
-            TRIBE_Zone_Player_Info* player_info = info.player_info;
             do {
-                strcpy(player_info->name, this->players[player]->name);
-                player_info->score =
+                strcpy(info.player_info[player - 1].name,
+                    this->players[player]->name);
+                info.player_info[player - 1].score =
                     this->players[player]->victory_conditions->get_victory_points();
-                player_info->winner = (this->players[player]->game_status == 1);
-                player_info->civ_played =
+                info.player_info[player - 1].winner =
+                    (this->players[player]->game_status == 1);
+                info.player_info[player - 1].civ_played =
                     (unsigned char)rge_base_game->civilization(player - 1);
-                player_info->civ_random =
+                info.player_info[player - 1].civ_random =
                     (unsigned char)rge_base_game->random_civ[player - 1];
-                player_info->player_no =
+                info.player_info[player - 1].player_no =
                     (unsigned char)rge_base_game->playerColor(player - 1);
-                player_info->team_no =
+                info.player_info[player - 1].team_no =
                     (unsigned char)rge_base_game->playerTeam(player - 1);
-                player_info->game_outcome =
-                    (unsigned char)comm->WasKicked[player - 1];
-                player_info->tool_time = -1;
-                player_info->bronze_time = -1;
-                player_info->iron_time = -1;
+                int game_outcome = comm->WasKicked[player - 1];
+                info.player_info[player - 1].game_outcome = (unsigned char)game_outcome;
+                info.player_info[player - 1].tool_time = -1;
+                info.player_info[player - 1].bronze_time = -1;
+                info.player_info[player - 1].iron_time = -1;
 
                 TRIBE_History_Events* event =
                     ((TRIBE_Player*)this->players[player])->history->events;
                 while (event != 0) {
                     switch (event->event) {
                     case 0:
-                        player_info->tool_time = event->world_time;
+                        info.player_info[player - 1].tool_time = event->world_time;
                         break;
                     case 1:
-                        player_info->bronze_time = event->world_time;
+                        info.player_info[player - 1].bronze_time = event->world_time;
                         break;
                     case 2:
-                        player_info->iron_time = event->world_time;
+                        info.player_info[player - 1].iron_time = event->world_time;
                         break;
                     }
                     event = event->next;
                 }
-
                 player++;
-                player_info++;
             } while (player < this->player_num);
         }
 
@@ -629,9 +1005,6 @@ void TRIBE_World::send_zone_score_info()
             break;
         case 1:
             info.game_end_condition_code = 1;
-            break;
-        case 2:
-            info.game_end_condition_code = 6;
             break;
         case 100:
             info.game_end_condition_code = 2;
@@ -645,6 +1018,9 @@ void TRIBE_World::send_zone_score_info()
         case 103:
             info.game_end_condition_code = 5;
             break;
+        case 2:
+            info.game_end_condition_code = 6;
+            break;
         case 104:
             info.game_end_condition_code = 7;
             break;
@@ -656,7 +1032,6 @@ void TRIBE_World::send_zone_score_info()
         rge_base_game->get_tribe_options(&options);
         info.map_info.Map_Size = (unsigned char)options.mapSizeValue;
         info.map_info.Map_Type = (unsigned char)options.mapTypeValue;
-        info.map_info.Pop_Limit = (short)options.popLimitValue;
         info.map_info.Victory_Condition = (unsigned char)options.victoryTypeValue;
         info.map_info.Start_Age = (unsigned char)options.startingAgeValue;
         info.map_info.Resources = (unsigned char)options.resourceLevelValue;
@@ -664,6 +1039,7 @@ void TRIBE_World::send_zone_score_info()
         info.map_info.Fixed_Pos = options.randomizePositionsValue;
         info.map_info.Reveal_Map = (unsigned char)rge_base_game->fullVisibility();
         info.map_info.Death_Match = options.deathMatchValue;
+        info.map_info.Pop_Limit = (short)options.popLimitValue;
 
         info.database_checksum = 0;
         info.code_checksum = 0;
