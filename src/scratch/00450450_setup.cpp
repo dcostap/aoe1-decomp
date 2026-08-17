@@ -48,6 +48,14 @@
 //   named-local source rotates the first three homes. A count-before-field
 //   statement probe worsened 150 to 175 bytes and was restored. Do not encode
 //   the original parameter-home reuse in source.
+// - Fresh audit probes confirmed that direct count/file/sounds parser-home
+//   destinations improve block alignment but violate the current source policy;
+//   the best file+sounds variant was 147 bytes and was not retained. A packed
+//   named break/fire local improved block shape but worsened positional drift.
+//   Typed entry cursors, a negative sprite guard, and direct base-call file use
+//   were also rejected. The first clean mismatch remains the area-level parser
+//   destination at +0032 (VA 00450482); calls, ownership, CFG, and size remain
+//   aligned.
 
 #include <stdio.h>
 #include <stdlib.h>
