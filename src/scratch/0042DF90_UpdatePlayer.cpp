@@ -38,6 +38,23 @@
 // left in scratch: canonical typed behavior/call surface is reconstructed, but
 // the VC5 frame/parameter-home reuse, switch handler placement, and four
 // distinct free call sites remain structurally unresolved.
+//
+// current claim (sa-0a2444f7-r1): probes 1-21 tested local ownership, packet
+// size-home use, guard polarity, HRESULT topology, case tails, copy locals,
+// declaration order, and dcoID signedness.  The best clean source is the
+// current typed form: size is a distinct local, the nonzero dcoID body is the
+// positive arm, and fatal/unknown results use shared labels.
+// BINARY NOTE: the original first GetPlayerName size pointer is the incoming
+// player home ([entry ESP+4]); EBP still carries the player index.  Direct
+// parameter-home reuse variants grew or changed the frame and were discarded.
+// BINARY NOTE: the original no-dcoID test jumps forward to a cold log block;
+// the positive guarded body recovers that branch polarity and keeps the tail
+// close, but the VC5 local frame and HRESULT block order remain unresolved.
+// Best final check: 968-byte rebuilt span, frame 0x10 versus 0xC, 713 strict
+// differing bytes, 66.44% shape, 95.45% ordered-call alignment.
+// Next leads: recover the parameter-home/index color without an extra local;
+// then recover delayed cdecl cleanup and unknown/success/invalid/fatal block
+// order.  Do not keep the parameter-alias experiments without a clean frame.
 
 extern "C" char* __cdecl strcpy(char*, const char*);
 extern "C" void* __cdecl calloc(unsigned int, unsigned int);
@@ -74,7 +91,7 @@ struct DPNAME {
 struct MSGFORMAT_MISSING_PLAYER {
     unsigned char Command;
     unsigned char gap_01[3];
-    unsigned long PlayerID;
+    unsigned int PlayerID;
 };
 
 enum PLAYERHUMANITY {
@@ -141,10 +158,10 @@ public:
 
 void TCommunications_Handler::UpdatePlayer(unsigned int player, int do_update)
 {
-    int dcoID = this->PlayerOptions.dcoID[player];
+    unsigned int dcoID = this->PlayerOptions.dcoID[player];
+    unsigned int size;
     void* lpData;
     MSGFORMAT_MISSING_PLAYER m;
-    unsigned int size;
 
     switch (this->PlayerOptions.Humanity[player]) {
     case ME_ABSENT:
@@ -188,18 +205,13 @@ void TCommunications_Handler::UpdatePlayer(unsigned int player, int do_update)
     }
 
 get_name_log:
-    if (dcoID == 0) {
-        TDebuggingLog::Log(L, (char*)0x582BBC, player);
-        return;
-    }
-
-    {
+    if (dcoID != 0) {
         IDirectPlay* dp;
         IDirectPlayVtbl* dp_vtbl;
 
-        size = 0;
         dp = g_pDirectPlay;
         dp_vtbl = dp->vtbl;
+        size = 0;
         dp_vtbl->GetPlayerName(dp, dcoID, 0, &size);
         lpData = calloc(size, 1);
 
@@ -212,50 +224,53 @@ get_name_log:
         if (result <= (long)0x8877001E) {
             if (result != (long)0x8877001E &&
                 result != (long)0x80070057) {
-                TDebuggingLog::Log(L, (char*)0x582C48);
-                this->PlayerOptions.Humanity[player] = ME_ABSENT;
-                this->PlayerOptions.dcoID[player] = 0;
-                free(lpData);
-                goto update;
+                goto unknown_result;
             }
-        } else {
-            if (result != (long)0x88770082) {
-                if (result == (long)0x88770096) {
-                    TDebuggingLog::Log(L, (char*)0x582C28, dcoID);
+            goto fatal_result;
+        } else if (result == (long)0x88770082) {
+            goto fatal_result;
+        } else if (result == (long)0x88770096) {
+            TDebuggingLog::Log(L, (char*)0x582C28, dcoID);
             if (this->PlayerOptions.ProgramState == 3) {
                 this->PlayerOptions.Humanity[player] = ME_HUMAN;
-                        if (this->IsPlayerHuman(player)) {
-                            TDebuggingLog::Log(L, (char*)0x582C18);
-                            TDebuggingLog::Log(L, (char*)0x582130, dcoID);
-                            m.Command = '?';
-                            m.PlayerID = dcoID;
-                            TDebuggingLog::Log(L, (char*)0x582C04, dcoID, 8);
-                            this->FastSend(0, &m, 8, 0, 0);
-                            goto release_data;
-                        }
-                    }
+                if (this->IsPlayerHuman(player)) {
+                    TDebuggingLog::Log(L, (char*)0x582C18);
+                    TDebuggingLog::Log(L, (char*)0x582130, dcoID);
+                    m.Command = '?';
+                    m.PlayerID = dcoID;
+                    TDebuggingLog::Log(L, (char*)0x582C04, dcoID, 8);
+                    this->FastSend(0, &m, 8, 0, 0);
                     goto release_data;
                 }
-                if (result == 0) {
-                    strcpy(this->FriendlyName[player].Text,
-                           ((DPNAME*)lpData)->lpszShortName);
-                    strcpy(this->FormalName[player].Text,
-                           ((DPNAME*)lpData)->lpszLongName);
-                    this->PlayerOptions.Humanity[player] = ME_HUMAN;
-                    goto release_data;
-                }
-                TDebuggingLog::Log(L, (char*)0x582C48);
-                this->PlayerOptions.Humanity[player] = ME_ABSENT;
-                this->PlayerOptions.dcoID[player] = 0;
-                goto release_data;
             }
+            goto release_data;
+        } else if (result == 0) {
+            strcpy(this->FriendlyName[player].Text,
+                   ((DPNAME*)lpData)->lpszShortName);
+            strcpy(this->FormalName[player].Text,
+                   ((DPNAME*)lpData)->lpszLongName);
+            this->PlayerOptions.Humanity[player] = ME_HUMAN;
+            goto release_data;
+        } else {
+            goto unknown_result;
         }
 
+unknown_result:
+        TDebuggingLog::Log(L, (char*)0x582C48);
+        this->PlayerOptions.Humanity[player] = ME_ABSENT;
+        this->PlayerOptions.dcoID[player] = 0;
+        goto release_data;
+
+fatal_result:
         TDebuggingLog::Log(L, (char*)0x582BE8, result);
         strcpy(this->FriendlyName[player].Text, (char*)0x582BE0);
         this->PlayerOptions.Humanity[player] = ME_ABSENT;
         goto release_data;
+
     }
+no_dcoid:
+    TDebuggingLog::Log(L, (char*)0x582BBC, player);
+    return;
 
 release_data:
     free(lpData);
