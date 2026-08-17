@@ -31,6 +31,18 @@
 //   layout, ordered calls, and all later blocks remain aligned.
 // - Best canonical source retained: positive state guard, direct p2 use, typed
 //   object/member ownership, real virtual calls, and standard FILE/fprintf ABI.
+// - Managed pass probes: split p2 into branch-local orderType copies, move the
+//   nonzero-path copy after the p10 call, and add windows.h context. All were
+//   codegen duplicates. Restored the canonical source; delayed EDI remains
+//   unresolved and requires a compiler/TU-context lead, not a semantic change.
+// - Revisit probes added stdlib.h, then string.h with stdio.h, and split the
+//   late orderType declaration from its assignment. All stayed at 306 bytes,
+//   eight ordered calls, and the same 277-byte mismatch. The natural typed
+//   dispatch remains the clean source.
+// - Final revisit validation: the restored source still has the exact 306-byte
+//   boundary and eight ordered calls. The only structural gap is VC5's entry
+//   push edi versus the original branch-local push edi; no policy-valid source
+//   lead was found.
 
 #include <stdio.h>
 
