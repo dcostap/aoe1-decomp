@@ -28,6 +28,11 @@
 //   cap tail. This restored 514-byte size and 144 instructions, but VC5 hoisted the sn[3] load
 //   before the explorer store and left 75 differing bytes; rolled back.
 // - Left in scratch: current source is the best natural typed reconstruction. No inline asm or custom flags.
+// - Rechecked this target from the original 514-byte body. Natural low-count field-store variants either
+//   duplicated the two final calls or moved the outer tail; the min-style cap and declaration-order probes
+//   were codegen duplicates or worse. Restored the pinned source: 509 bytes, 13 ordered calls, 90.97% exact
+//   block coverage, and 73 differing bytes. The first structural drift remains at rebuilt +0x178 (004F1568),
+//   where VC5 keeps the low-count cap in a different register/lifetime shape. No policy-invalid steering kept.
 
 extern "C" double __cdecl ceil(double);
 
@@ -36,9 +41,10 @@ public:
     float percentExplored();
 };
 
-class ManagedArray_int {
+template <class T>
+class ManagedArray {
 public:
-    int* value;
+    T* value;
     int numberValue;
     int desiredNumberValue;
     int maximumSizeValue;
@@ -69,16 +75,16 @@ class TribeTacticalAIModule {
 public:
     char gap_000[0xF0];
     TribeMainDecisionAIModule* md;
-    ManagedArray_int civilians;
-    ManagedArray_int civilianExplorers;
-    ManagedArray_int soldiers;
-    ManagedArray_int ungroupedSoldiers;
-    ManagedArray_int boats;
-    ManagedArray_int warBoats;
-    ManagedArray_int fishingBoats;
-    ManagedArray_int tradeBoats;
-    ManagedArray_int transportBoats;
-    ManagedArray_int artifacts;
+    ManagedArray<int> civilians;
+    ManagedArray<int> civilianExplorers;
+    ManagedArray<int> soldiers;
+    ManagedArray<int> ungroupedSoldiers;
+    ManagedArray<int> boats;
+    ManagedArray<int> warBoats;
+    ManagedArray<int> fishingBoats;
+    ManagedArray<int> tradeBoats;
+    ManagedArray<int> transportBoats;
+    ManagedArray<int> artifacts;
     int sn[226];
     char gap_51C[0x9CC - 0x51C];
     int numberGatherersValue;
@@ -93,10 +99,10 @@ public:
     unsigned long lastScalingUpdateValue;
     int numberBuildUpdatesSkipped;
     int randomizedAttackSeparationTime;
-    ManagedArray_int playersToAttack;
-    ManagedArray_int playersToDefend;
-    ManagedArray_int workingArea;
-    ManagedArray_int unitsTaskedThisUpdate;
+    ManagedArray<int> playersToAttack;
+    ManagedArray<int> playersToDefend;
+    ManagedArray<int> workingArea;
+    ManagedArray<int> unitsTaskedThisUpdate;
     int actualGathererDistribution[4];
     int desiredGathererDistribution[4];
     int neededResourceValue[4];
@@ -135,7 +141,7 @@ void TribeTacticalAIModule::evaluateCivilianDistribution()
     int desired;
     int gatherers;
     int maxGatherers;
-    ManagedArray_int* list;
+    ManagedArray<int>* list;
     int zero;
 
     percentExplored = (int)(this->md->player->visibleMap->percentExplored() * 100.0f);
