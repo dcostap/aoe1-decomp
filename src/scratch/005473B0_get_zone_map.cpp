@@ -62,6 +62,12 @@
 //   with 74 differing bytes, but it changed the growth-path register schedule
 //   from the first mismatch at 005473ED. Restored the pinned guarded-while
 //   source; the 37-byte drift remains the best natural reconstruction.
+// - Ownership gate rejected the exact local destructor definition because VA
+//   005469C0 already owns that body in src/matching. It is not retained.
+// - Declaration-only context probes using throw(), inline, implicit, and
+//   __declspec(nothrow) destructor forms all stayed at the 37-byte family.
+//   The exact shared EH cleanup needs the owned body to be visible in this TU.
+//   BLOCKER: no valid single-owner exact form was found.
 
 #include <stdlib.h>
 #include <string.h>
