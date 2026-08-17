@@ -26,11 +26,16 @@
 //   reaches the exact 0x438 frame.  The larger typed window is kept as the
 //   best period-plausible model, with `_finddata_t` used only at the API cast.
 // - ABI/context, delayed receiver/event aliases, and nested delete guards
-//   were codegen duplicates and were rolled back.  Current best remains
-//   nonexact: 1019B, 0x438 frame, 36/36 ordered calls, 74.54% exact-block
-//   coverage, 900 positional diff bytes.  The first gap is the VC5 prologue:
-//   target EBX=event/EDI=panel/EBP=this, while rebuilt code keeps this in EBX
-//   and panel in EBP.  The fallback then reloads event from its stack home.
+//   were codegen duplicates and were rolled back.  The prior 1019B baseline
+//   had 900 positional diff bytes and a prologue register-color mismatch.
+// - focused local-shape probes: a first delete-path `char* save_dir` local
+//   restores the target prologue and most of the function.  A second
+//   `RGE_Prog_Info* prog_info2` local restores the global reload and reaches
+//   1005B, 10 strict positional bytes, 99.63% shape, and 48/49 masked relocs.
+//   The remaining ten bytes are the second GMX delete format: target adds
+//   0xB12 before currentLine; VC5 schedules currentLine first in this source.
+//   Direct fields, save-dir locals, references, scoped locals, and pointer
+//   address spellings were tested.  The ten-byte source is retained as best.
 
 #include <io.h>
 #include <stdio.h>
@@ -203,27 +208,29 @@ long TribeLoadSavedGameScreen::action(TPanel* panel, long msg,
     // window rather than a standalone 0x118-byte _finddata_t.  The compiler's
     // 4-byte new-expression home occupies the remaining dword of the frame.
     char fileInfo[0x22C];
-
     if (panel != 0) {
         if (panel->panelName() != 0 &&
             strcmp(panel->panelName(), (char*)0x5860E4) == 0) {
             panel_system.destroyPanel((char*)0x5860E4);
 
             if (msg == 0) {
-                RGE_Prog_Info* prog_info = rge_base_game->prog_info;
-                char* line = this->list->currentLine();
-                sprintf(fileName, (char*)0x586684, prog_info->save_dir, line);
+                char* save_dir = rge_base_game->prog_info->save_dir;
+                sprintf(fileName, (char*)0x586684,
+                        save_dir,
+                        this->list->currentLine());
                 _unlink(fileName);
 
-                prog_info = rge_base_game->prog_info;
-                line = this->list->currentLine();
-                sprintf(fileName, (char*)0x586678, prog_info->save_dir, line);
+                // BINARY NOTE: the shipped code reloads the global save-info
+                // pointer before the second currentLine call.
+                RGE_Prog_Info* prog_info2 = rge_base_game->prog_info;
+                sprintf(fileName, (char*)0x586678,
+                        prog_info2->save_dir,
+                        this->list->currentLine());
                 _unlink(fileName);
 
                 long current_line = this->list->get_line();
                 this->list->delete_line(current_line);
-                line = this->list->currentLine();
-                if (*line == 0) {
+                if (*this->list->currentLine() == 0) {
                     this->okButton->set_disabled(1);
                     this->deleteButton->set_disabled(1);
                     return 1;
