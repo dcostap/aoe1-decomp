@@ -113,6 +113,14 @@
 // differing bytes. The blocker is still VC5 EH-tail block placement: rebuilt
 // zeroes EAX before the EH reset/test, while the oracle zeroes it after the test
 // and jumps to the shared epilogue.
+// Session sa-83f2ea7a-r1: same-file cleanup follow-up tested 20 new hypotheses.
+// Explicit null/success arms, null-only gotos, result predicates and ternaries,
+// shared typed action/work locals, donor void/void* spellings, nested allocation
+// scope, existing-action shared return, and Ghidra local declaration order all
+// reproduced the 230-byte/67-diff basin or regressed to duplicated EH tails.
+// No exact or better policy-valid frontier was found. Restored the pinned clean
+// typed positive-guard source; the remaining difference starts at the constructor
+// null test and is still the EH reset/test block topology.
 // FLAGS: /nologo /c /O2 /Oy /GX
 
 #include <stddef.h>
