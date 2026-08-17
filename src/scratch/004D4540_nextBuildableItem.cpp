@@ -83,6 +83,18 @@
 //     (backedge to 45BE) - the rotation is MSVC's loop normalization of the
 //     first-statement exit test, not a return-vs-goto artifact. Restored the
 //     while(1) form (best: 2172, 94.56% shape, 84.72% exact-block, 115/115).
+// 29-32: direct negative success guards around canPlace/object, then an integer
+//     cast of the object pointer status, recovered EBX=-1 argument reuse and
+//     reduced the body to 2156 bytes (97.12% shape, 95.61% exact blocks).
+// 33: positive availability guards with a cost_block label recovered the
+//     original 2136-byte boundary and 99.02% shape.
+// 34-40: split the first research/resource guard and tested loop spellings,
+//     return placement, and comparison order. The best source is 9 bytes from
+//     exact: only the bottom count branch is reversed (jg/jmp versus jle/jmp).
+//     It has 115/115 calls, exact size and 98.37% exact-block coverage.
+// BINARY NOTE: The original bottom count test branches back to 004D45B0 and
+//     then jumps to the zero return. The clean natural while(1) source emits
+//     the equivalent reverse branch, despite matching every other body block.
 
 extern "C" char* __cdecl strncpy(char* dst, const char* src, unsigned int count);
 
@@ -361,8 +373,9 @@ BuildItem* TribeBuildAIModule::nextBuildableItem(int category)
                                 this->md->aiPlayer->researchCost(
                                     item->typeID(), -1, &itemCost, 1);
                                 if (this->md->aiPlayer->researchAvailable(item->typeID()) == 0 ||
-                                    this->md->resourceAI.resourcesAvailable(&itemCost) == 0 ||
-                                    category != 1) {
+                                    this->md->resourceAI.resourcesAvailable(&itemCost) == 0)
+                                    return 0;
+                                if (category != 1) {
                                     return 0;
                                 }
                             }
@@ -438,14 +451,18 @@ BuildItem* TribeBuildAIModule::nextBuildableItem(int category)
                                     return item;
                                 }
 
+                                // BINARY NOTE: Success branches enter the cost
+                                // block; failure branches use the shared advance.
                                 if (category == 1) {
-                                    if (this->md->aiPlayer->researchAvailable(item->typeID()) == 0)
-                                        goto next_item;
+                                    if (this->md->aiPlayer->researchAvailable(item->typeID()) != 0)
+                                        goto cost_block;
                                 }
-                                else if (this->md->aiPlayer->objectAvailable(item->typeID()) == 0) {
-                                    goto next_item;
+                                else if (this->md->aiPlayer->objectAvailable(item->typeID()) != 0) {
+                                    goto cost_block;
                                 }
+                                goto next_item;
 
+cost_block:
                                 {
                                     ResourceItem itemCost2(4);
                                     if (category == 1) {
@@ -460,9 +477,12 @@ BuildItem* TribeBuildAIModule::nextBuildableItem(int category)
                                     if (this->md->resourceAI.resourcesAvailable(&itemCost2)) {
                                         int found;
                                         if (category == 2 || category == 1) {
-                                            found = this->md->object(
+                                            // BINARY NOTE: Keep the pointer
+                                            // result as an integer status. VC5
+                                            // then tests EAX directly.
+                                            found = (int)this->md->object(
                                                 -1, item->buildFrom(), -1, -1, -1,
-                                                -1, -1, -1, 2, -1) != 0;
+                                                -1, -1, -1, 2, -1);
                                         }
                                         else {
                                             found = this->md->constructionAI.canPlace(item);
@@ -476,6 +496,8 @@ BuildItem* TribeBuildAIModule::nextBuildableItem(int category)
                                             this->numberItemsIntoBuildListValue = item->uniqueID();
                                             return item;
                                         }
+                                        item = item->next;
+                                        goto loop_check;
                                     }
                                     item = item->next;
                                     goto loop_check;
