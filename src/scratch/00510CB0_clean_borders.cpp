@@ -33,6 +33,14 @@
 // but the first set_terrain call remained tail-merged; rolled back as non-canonical source.
 // orch-510CB0-a: widening both border accumulators improved the diff to 585 but exceeded the function boundary;
 // the call-count gap remained, so rolled back.
+// Revisit sa-d9deee7e (2026-08-17): ran 20 distinct checked hypotheses.
+// Qualification, loop-form simplifications, continue removal, and one shared
+// byte flag were duplicates or worse. Widening only the first flag gave 601
+// differing bytes. Widening both gave 543 differing bytes at exact size, but
+// still merged the first set_terrain call (18/19 calls). An explicit inner
+// while loop restored 19/19 calls but gave 691 differing bytes and a 2-byte
+// boundary overrun. Explicit flag comparisons and short flags did not close
+// the call gap. Restored the simplest checked source.
 //
 // The map rows are arrays of 0x18-byte RGE_Tile records. The byte used by
 // clean_borders is terrain at +5, distinct from the passability byte at +4.
