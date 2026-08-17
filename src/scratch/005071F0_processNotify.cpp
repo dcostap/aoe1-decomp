@@ -25,26 +25,30 @@
 // 22: Swapped the switch arm order; emitted code was identical to the clean 855-byte candidate; reverted.
 // 23: Replaced rejected switch breaks with direct base returns; added ten processNotify calls and worsened the diff to 1225; reverted.
 // 24: Explicit 0x200-to-0x20F labels kept the fallback late but changed the dispatch/body basin to 1062 bytes and 6/+6 call gaps; reverted.
-// Best emitted checkpoint: typed switch candidate, 1084 bytes, 77.92% shape, 19/19 calls, 855 strict diff bytes; remaining frame is 0xC vs original 0x8 and fallback is a relocated cold block.
-// GIVEUP: left in scratch. Main blockers are the remaining true TU/local declaration shape and late FPU/list-growth topology; preserve this typed candidate for the next worker.
+// 40 meaningful probes: direct +0x60 pointer, +0x64 count, and +0x6C capacity fields with
+// duplicated natural growth scans recover the shipped list-loop basin. The best
+// result is 1078 bytes, 0x8 frame, 93.75% shape, and 639 strict-diff bytes.
+// Parenthesized random-coordinate arithmetic and the inverted >10 branch recover
+// both x87 jitter blocks. The remaining drift is the late shared base-fallback
+// block: the rebuilt guards use short branches to an early call site.
+// Compiler-neutral goto and local-order reductions were removed from the pinned source.
+// GIVEUP: leave this direct-field candidate in scratch for the next worker.
 
 #include <math.h>
 
 typedef unsigned char uchar;
 typedef unsigned long ulong;
 
-extern "C" {
-    void* operator_new(unsigned int size);
-    void operator_delete(void* ptr);
-}
+extern void* operator new(unsigned int size);
+extern void operator delete(void* ptr);
 
-extern int debug_rand(char*, int);
-extern int taskedThisUpdate;
-extern float FLOAT_5758BC;
-extern float FLOAT_5758C0;
-extern float FLOAT_5758DC;
-extern float FLOAT_5758E0;
-extern float FLOAT_5758E4;
+extern "C" int debug_rand(char*, int);
+#define taskedThisUpdate (*(int*)0x592A48)
+extern const float DAT_005758bc;
+extern const float DAT_005758c0;
+extern const float DAT_005758dc;
+extern const float DAT_005758e0;
+extern const float DAT_005758e4;
 
 struct NotifyEvent {
     int caller;
@@ -172,37 +176,6 @@ public:
     float distance_to_object(RGE_Static_Object* object);
 };
 
-template <class T>
-class ManagedArray {
-public:
-    T* value;
-    int numberValue;
-    int desiredNumberValue;
-    int maximumSizeValue;
-
-    T& operator[](int index)
-    {
-        if (index > this->maximumSizeValue - 1) {
-            int new_size = index + 1;
-            T* new_value = (T*)operator_new(new_size * sizeof(T));
-            if (new_value != 0) {
-                int i = 0;
-                if (0 < this->maximumSizeValue) {
-                    do {
-                        if (new_size <= i) break;
-                        new_value[i] = this->value[i];
-                        i = i + 1;
-                    } while (i < this->maximumSizeValue);
-                }
-                operator_delete(this->value);
-                this->value = new_value;
-                this->maximumSizeValue = new_size;
-            }
-        }
-        return this->value[index];
-    }
-};
-
 class UnitAIModule {
 public:
     virtual ~UnitAIModule();
@@ -277,7 +250,11 @@ public:
     float desiredTargetDistanceValue;           // +0x48
     int defendTargetValue;                      // +0x4C
     char gap_50[0x10];                          // +0x50 .. +0x5F
-    ManagedArray<int> attackingUnitsValue;      // +0x60
+    // BINARY NOTE: the executable treats these as direct fields, not an aggregate.
+    int* attackingUnitsValue;                    // +0x60
+    int attackingUnitsCount;                     // +0x64
+    char gap_68[4];                              // +0x68
+    int attackingUnitsCapacity;                 // +0x6C
     char gap_70[0xC4];                          // +0x70 .. +0x133
 };
 
@@ -290,67 +267,15 @@ int TribeSoldierUnitAIModule::processNotify(NotifyEvent* param_1, ulong param_2)
 {
     NotifyEvent* event = param_1;
     float evasiveMoveDistance;
-    float evasiveX;
+    float fStack_8;
+    RGE_Static_Object* target;
+    float distanceLeft;
+    float xDiff;
+    float yDiff;
+    float distance;
+    int i;
 
     switch (event->mType) {
-    case 0x200: {
-        if (this->objectValue->owner->computerPlayer() == 0)
-            break;
-        if (this->objectValue->weaponRange() < FLOAT_5758BC)
-            break;
-        if (this->objectValue->master_obj->object_group == 0x1A)
-            break;
-        if (this->currentActionValue != 600)
-            return 2;
-
-        RGE_Static_Object* target =
-            this->objectValue->owner->world->object(this->currentTargetValue);
-        if (target == 0)
-            break;
-
-        float distanceLeft = this->objectValue->weaponRange() -
-            this->objectValue->distance_to_object(target);
-        if (distanceLeft < FLOAT_5758BC)
-            break;
-
-        float xDiff = target->world_x - this->objectValue->world_x;
-        float yDiff = target->world_y - this->objectValue->world_y;
-
-        this->order(
-            this->objectValue->id, 700, this->currentTargetValue, -1,
-            this->currentTargetXValue, this->currentTargetYValue,
-            this->currentTargetZValue, this->desiredTargetDistanceValue,
-            0, 1, this->currentOrderPriorityValue);
-
-        if (this->attackingUnitsValue.numberValue > 0) {
-            int i = 0;
-            if (this->attackingUnitsValue.numberValue > 0) {
-                do {
-                    if (this->attackingUnitsValue[i] != this->currentTargetValue) {
-                        RGE_Static_Object* object =
-                            this->objectValue->owner->world->object(
-                                this->attackingUnitsValue[i]);
-                        if (object != 0) {
-                            xDiff += object->world_x - this->objectValue->world_x;
-                            yDiff += object->world_y - this->objectValue->world_y;
-                        }
-                    }
-                    ++i;
-                } while (i < this->attackingUnitsValue.numberValue);
-            }
-        }
-
-        float distance = (float)sqrt(xDiff * xDiff + yDiff * yDiff);
-        if (this->intelligentEvasiveMoveTo(
-                            (float)(-((xDiff / distance) * distanceLeft)) +
-                    this->objectValue->world_x,
-                            (float)(-((yDiff / distance) * distanceLeft)) +
-                    this->objectValue->world_y,
-                this->objectValue->world_z, 0, 1) == 1)
-            return 3;
-        return 2;
-    }
-
     case 0x20F: {
         if (this->objectValue->owner->computerPlayer() == 0)
             break;
@@ -376,30 +301,128 @@ int TribeSoldierUnitAIModule::processNotify(NotifyEvent* param_1, ulong param_2)
 
         evasiveMoveDistance =
             (float)(debug_rand("C:\\msdev\\work\\age1_x1\\taiuaimd.cpp", 0x97c) % 8) +
-            this->objectValue->world_x - FLOAT_5758DC;
+            (this->objectValue->world_x - DAT_005758dc);
         if (evasiveMoveDistance == this->objectValue->world_x) {
-            if (evasiveMoveDistance <= FLOAT_5758E0)
-                evasiveMoveDistance -= FLOAT_5758E4;
+            if (evasiveMoveDistance > DAT_005758e0)
+                evasiveMoveDistance -= DAT_005758c0;
             else
-                evasiveMoveDistance -= FLOAT_5758C0;
+                evasiveMoveDistance -= DAT_005758e4;
         }
 
-        evasiveX =
+        fStack_8 =
             (float)(debug_rand("C:\\msdev\\work\\age1_x1\\taiuaimd.cpp", 0x983) % 8) +
-            this->objectValue->world_y - FLOAT_5758DC;
-        if (evasiveX == this->objectValue->world_y) {
-            if (evasiveX <= FLOAT_5758E0)
-                evasiveX -= FLOAT_5758E4;
+            (this->objectValue->world_y - DAT_005758dc);
+        if (fStack_8 == this->objectValue->world_y) {
+            if (fStack_8 > DAT_005758e0)
+                fStack_8 -= DAT_005758c0;
             else
-                evasiveX -= FLOAT_5758C0;
+                fStack_8 -= DAT_005758e4;
         }
 
         if (this->intelligentEvasiveMoveTo(
-                evasiveMoveDistance, evasiveX,
+                evasiveMoveDistance, fStack_8,
                 this->objectValue->world_z, 1, 1) != 1)
             break;
         taskedThisUpdate = 1;
         return 3;
+    }
+
+    case 0x200: {
+        if (this->objectValue->owner->computerPlayer() == 0)
+            break;
+        if (this->objectValue->weaponRange() < DAT_005758bc)
+            break;
+        if (this->objectValue->master_obj->object_group == 0x1A)
+            break;
+        if (this->currentActionValue != 600)
+            goto return_two;
+
+        target =
+            this->objectValue->owner->world->object(this->currentTargetValue);
+        if (target == 0)
+            break;
+
+        distanceLeft = this->objectValue->weaponRange() -
+            this->objectValue->distance_to_object(target);
+        if (distanceLeft < DAT_005758bc)
+            break;
+
+        xDiff = target->world_x - this->objectValue->world_x;
+        yDiff = target->world_y - this->objectValue->world_y;
+
+        this->order(
+            this->objectValue->id, 700, this->currentTargetValue, -1,
+            this->currentTargetXValue, this->currentTargetYValue,
+            this->currentTargetZValue, this->desiredTargetDistanceValue,
+            0, 1, this->currentOrderPriorityValue);
+
+        if (this->attackingUnitsCount > 0) {
+            i = 0;
+            while (i < this->attackingUnitsCount) {
+                if (i > this->attackingUnitsCapacity - 1) {
+                    int newCount = i + 1;
+                    int* newValues = new int[newCount];
+                    if (newValues != 0) {
+                        int j = 0;
+                        if (this->attackingUnitsCapacity > 0) {
+                            do {
+                                if (j < newCount) {
+                                    ++j;
+                                    newValues[j - 1] = this->attackingUnitsValue[j - 1];
+                                } else {
+                                    break;
+                                }
+                            } while (j < this->attackingUnitsCapacity);
+                        }
+                        delete[] this->attackingUnitsValue;
+                        this->attackingUnitsValue = newValues;
+                        this->attackingUnitsCapacity = newCount;
+                    }
+                }
+                if (this->attackingUnitsValue[i] != this->currentTargetValue) {
+                    if (i > this->attackingUnitsCapacity - 1) {
+                        int newCount = i + 1;
+                        int* newValues = new int[newCount];
+                        if (newValues != 0) {
+                            int j = 0;
+                            if (this->attackingUnitsCapacity > 0) {
+                                do {
+                                    if (j < newCount) {
+                                        ++j;
+                                        newValues[j - 1] = this->attackingUnitsValue[j - 1];
+                                    } else {
+                                        break;
+                                    }
+                                } while (j < this->attackingUnitsCapacity);
+                            }
+                            delete[] this->attackingUnitsValue;
+                            this->attackingUnitsValue = newValues;
+                            this->attackingUnitsCapacity = newCount;
+                        }
+                    }
+                    RGE_Static_Object* object =
+                        this->objectValue->owner->world->object(
+                            this->attackingUnitsValue[i]);
+                    if (object != 0) {
+                        xDiff += object->world_x - this->objectValue->world_x;
+                        yDiff += object->world_y - this->objectValue->world_y;
+                    }
+                }
+                ++i;
+            }
+        }
+
+        distance = (float)sqrt(xDiff * xDiff + yDiff * yDiff);
+        if (this->intelligentEvasiveMoveTo(
+                            (float)(-((xDiff / distance) * distanceLeft)) +
+                    this->objectValue->world_x,
+                            (float)(-((yDiff / distance) * distanceLeft)) +
+                this->objectValue->world_y,
+                this->objectValue->world_z, 0, 1) != 1)
+            goto return_two;
+        return 3;
+return_two:
+        return 2;
     }
 
     default:
