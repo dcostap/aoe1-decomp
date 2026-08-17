@@ -18,6 +18,15 @@
 //   larger than the exact-size codegen basin. No further blind codegen probes remain.
 // - notification_y pointer-cursor probe followed the original LEA/store shape,
 //   but grew the function by 16 bytes and worsened the first-hunk metrics; restored.
+// - fresh source-model probes restored the signed debug_rand remainder used by
+//   the executable; removing abs() reduced the size gap from 67 to 54 bytes.
+// - explicit shared labels for the campaign/scenario get_scenario_info call
+//   removed the mode sentinel compare and improved the structural frontier.
+// - MapType spelling, one selector local, pointer-cursor palette initialization,
+//   and the ground-truth map prefix were tested. They were duplicate or worse.
+// - final clean frontier: 2566 rebuilt bytes, 2352 strict differing bytes,
+//   79.32% shape, 42.80% exact-block coverage, and 100/100 ordered calls.
+//   No exact result. Restore this source before any new claim.
 
 #include <io.h>
 #include <stdio.h>
@@ -327,43 +336,43 @@ int TRIBE_Game::create_game(int param_1)
     NO_OTHER_HUMANS_COUNT = 0;
 
     if (this->quickStartGame()) {
-        int map_type;
+        MapType map_type;
         if (QUICK_START_GAME_MODE == 1) {
             this->setMapSize(MAP_SIZE_MEDIUM);
-            map_type = 4;
+            map_type = (MapType)4;
         }
         else {
             this->setMapSize(MAP_SIZE_LARGE);
             int random_map_type = debug_rand(TRIBE_GAME_SOURCE, 0xCDD) % 10;
             if (random_map_type < 2) {
-                map_type = 4;
+                map_type = (MapType)4;
             }
             else if (random_map_type == 2) {
-                map_type = 3;
+                map_type = (MapType)3;
             }
             else if (random_map_type == 3) {
-                map_type = 2;
+                map_type = (MapType)2;
             }
             else if (random_map_type == 4) {
-                map_type = 1;
+                map_type = (MapType)1;
             }
             else if (random_map_type == 5) {
-                map_type = random_map_type;
+                map_type = (MapType)random_map_type;
             }
             else if (random_map_type == 6) {
-                map_type = random_map_type;
+                map_type = (MapType)random_map_type;
             }
             else if (random_map_type == 7) {
-                map_type = random_map_type;
+                map_type = (MapType)random_map_type;
             }
             else {
-                map_type = (random_map_type == 8) ? 8 : 0;
+                map_type = (MapType)((random_map_type == 8) ? 8 : 0);
             }
         }
-        this->setMapType((MapType)map_type);
+        this->setMapType(map_type);
         this->resetRandomComputerName();
         for (i = 0; i < this->numberPlayers(); ++i) {
-            int civ = abs(debug_rand(TRIBE_GAME_SOURCE, 0xCF8)) % 16 + 1;
+            int civ = debug_rand(TRIBE_GAME_SOURCE, 0xCF8) % 16 + 1;
             this->setCivilization(i, civ);
             this->setComputerName(i, this->randomComputerName(civ));
         }
@@ -442,20 +451,26 @@ int TRIBE_Game::create_game(int param_1)
     char* scenario_name = 0;
     if (this->campaignGame()) {
         scenario_mode = 1;
+        scenario_name = 0;
+        goto load_scenario_info;
     }
-    else if (this->scenarioGame()) {
+    if (this->scenarioGame()) {
         scenario_mode = 0;
         scenario_name = player_info.scenario;
+        goto load_scenario_info;
     }
-    if (scenario_mode != -1) {
+    player_index = 0;
+    goto scenario_info_done;
+
+load_scenario_info:
+    {
         player_index = (int)this->get_scenario_info(scenario_name, scenario_mode);
         if (player_index == 0) {
             return 0;
         }
     }
-    else {
-        player_index = 0;
-    }
+
+scenario_info_done:
 
     for (i = 0; i < 9; ++i) {
         position_used[i] = -1;
