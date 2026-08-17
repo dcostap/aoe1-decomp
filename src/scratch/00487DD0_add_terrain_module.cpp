@@ -36,28 +36,63 @@
 // - Final clean source uses named terrain-line ownership throughout. The raw
 //   adjustment cursors were diagnostic only. Remaining mismatch is store
 //   scheduling in the type-0d arm, multiply order, and variadic cleanup.
+// - Fresh worker pass: the clean source rebuilt to 461 bytes with 219 strict
+//   differing bytes and 82.39% shape. Reviewed absolute constants and strings
+//   improved relocation context but did not improve positional bytes.
+// - A typed member-address cursor for clumps and avoid_hot_spots reached the
+//   closest natural codegen basin: 462 bytes, 158/158 instructions, 99.37%
+//   shape, 438 equal bytes, and 43 strict differing bytes. It kept exact call
+//   order and saved-register sets. This probe used derived member pointers and
+//   was restored because the clean source must not retain raw cursor plumbing.
+// - The remaining basin differs at the type-6 EAX/EDX result color, the
+//   fallback cursor/type register roles, and the final variadic receiver load.
+//   Static-member, local-receiver, declaration-order, and typed-alias probes
+//   did not improve the basin. The source is restored to the clean model.
+// - Revisit: replaced the terrain and map stubs with the proven 0x1298
+//   RGE_Terrain_Info and 0x48-byte RGE_Map_Data_Entry layouts. The named
+//   aggregate source kept the 461-byte boundary and all ordered calls.
+// - Revisit: typed field-address cursors and separate scan counters preserve
+//   the original loop blocks without byte cursors or raw addresses.
+// - Revisit: `terrain_size += terrain_size` emits the original EDX load and
+//   shift. Shift and named-temporary forms kept EAX and were not retained.
+// - Final revisit validation: 461/461 bytes, 158/158 instructions, 100%
+//   exact blocks, and 5/5 ordered calls. Ten bytes remain in the fallback
+//   loop's consistent register recolor: original EAX cursor/ECX type versus
+//   rebuilt ECX cursor/EAX type. No exact policy-valid source was found.
 
 typedef unsigned char uchar;
 
 extern "C" int __cdecl debug_rand(char* file, int line);
 
-class TDebuggingLog {
-public:
-    void Log(char* fmt, ...);
+class TDebuggingLog {};
+extern TDebuggingLog* L;
+extern void __cdecl Log(TDebuggingLog* log, char* fmt, ...);
+
+struct RGE_Land_Data {
+    int map_edge_buffer[4];
+    int map_edge_fade;
+    int land_placement_edge;
+    int base_terrain;
+    int grown_land_percent;
+    int id;
+    int land_num;
+    void* land;
 };
-#define L (*(TDebuggingLog**)0x62C4FC)
 
-static char s_file[] = "C:\\msdev\\work\\age1_x1\\rmm_tdbc.cpp";
-static char s_log[] = "Random Map terrain initilization, rand: %d";
-
-class MapInfoTable {
-public:
-    char gap_00[0x20];
-    int vals[1];
+struct RGE_Map_Data_Entry {
+    int map_id;
+    RGE_Land_Data land_info;
+    char terrain_info[8];
+    char object_info[8];
+    char elevation_info[8];
 };
 
-class RGE_Terrain_Info_Line {
-public:
+struct RGE_Map_Data {
+    int map_num;
+    RGE_Map_Data_Entry* maps;
+};
+
+struct RGE_Terrain_Info_Line {
     int terrain_size;
     int terrain_generated;
     int terrain_type;
@@ -66,6 +101,20 @@ public:
     int base_terrain_type;
     int clumpiness_factor;
     int avoid_hot_spots;
+};
+
+struct RGE_Terrain_Hot_Spots {
+    int x;
+    int y;
+    int radius;
+    int fade;
+};
+
+struct RGE_Terrain_Info {
+    RGE_Terrain_Info_Line terrain[99];
+    int terrain_num;
+    RGE_Terrain_Hot_Spots hot_spots[99];
+    int hot_spot_num;
 };
 
 class RGE_RMM_Database_Controller {
@@ -82,82 +131,85 @@ public:
     int map_height;         // +0x18 (RGE_Random_Map_Module::map_height)
     char gap_1c[0x18];
     int map_type;           // +0x34
-    char gap_38[0x20d4 - 0x38];
-    int mod_count;          // +0x20d4
-    char gap_after2[0x4f58 - 0x20d8];
-    MapInfoTable* map_infos; // +0x4f58
+    char gap_38[0x1474 - 0x38];
+    RGE_Terrain_Info terrain_info; // +0x1474
+    char gap_after2[0x4f54 - 0x270c];
+    RGE_Map_Data map_info; // +0x4f54
 
-    void add_terrain_module();
+    virtual void add_terrain_module();
 };
 
 void TRIBE_RMM_Database_Controller::add_terrain_module()
 {
-    int land_tile_num =
-        this->map_infos->vals[this->map_type * 18] * this->map_width *
+    long land_tile_num =
+        this->map_info.maps[this->map_type].land_info.grown_land_percent * this->map_width *
         this->map_height / 100;
 
     RGE_RMM_Database_Controller::add_terrain_module();
 
     float scale = (float)land_tile_num * 0.00005f;
-    int i = 0;
-    if (this->mod_count > 0) {
-        RGE_Terrain_Info_Line* line =
-            (RGE_Terrain_Info_Line*)((char*)this + 0x1474);
+    int scale_index = 0;
+    if (this->terrain_info.terrain_num > 0) {
+        RGE_Terrain_Info_Line* line = this->terrain_info.terrain;
         do {
             if (line->terrain_type != 6 && scale > 1.0) {
                 line->clumps = (long)((float)line->clumps * scale);
             }
-            i++;
+            scale_index++;
             ++line;
-        } while (i < this->mod_count);
+        } while (scale_index < this->terrain_info.terrain_num);
     }
 
-    if (debug_rand(s_file, 0x154) < 0x1fff) {
-        i = 0;
-        if (this->mod_count > 0) {
-            RGE_Terrain_Info_Line* line =
-                (RGE_Terrain_Info_Line*)((char*)this + 0x1474);
+    if (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_tdbc.cpp", 0x154) < 0x1fff) {
+        int adjust_index = 0;
+        if (this->terrain_info.terrain_num > 0) {
+            int* clumps = &this->terrain_info.terrain[0].clumps;
             do {
-                int type = line->terrain_type;
+                int type = clumps[-1];
+                int* terrain_size = clumps - 3;
+                int* clump_count = clumps;
+                int* avoid = clumps + 4;
                 if (type == 0x0d) {
-                    line->terrain_size = line->terrain_size * 3;
-                    line->clumps = line->clumps * 3;
-                    line->avoid_hot_spots = 2;
+                    *terrain_size *= 3;
+                    *clump_count *= 3;
+                    *avoid = 2;
                 } else if (type == 0x14) {
-                    line->terrain_size = line->terrain_size / 2;
-                    line->clumps = line->clumps / 2;
+                    *terrain_size /= 2;
+                    *clump_count /= 2;
                 } else if (type == 0x13) {
-                    line->terrain_size = line->terrain_size / 2;
-                    line->clumps = line->clumps / 2;
+                    *terrain_size /= 2;
+                    *clump_count /= 2;
                 } else if (type == 0x0a) {
-                    line->terrain_size = line->terrain_size / 2;
-                    line->clumps = line->clumps / 2;
-                    line->avoid_hot_spots = 2;
+                    *terrain_size /= 2;
+                    *clump_count /= 2;
+                    *avoid = 2;
                 } else if (type == 6) {
-                    line->terrain_size = line->terrain_size << 1;
-                    line->avoid_hot_spots = 0;
+                    *terrain_size = *terrain_size + *terrain_size;
+                    *avoid = 0;
                 }
-                i++;
-                ++line;
-            } while (i < this->mod_count);
+                adjust_index++;
+                clumps += 8;
+            } while (adjust_index < this->terrain_info.terrain_num);
         }
     } else {
-        i = 0;
-        if (this->mod_count > 0) {
-            RGE_Terrain_Info_Line* line =
-                (RGE_Terrain_Info_Line*)((char*)this + 0x1474);
+        int fallback_index = 0;
+        if (this->terrain_info.terrain_num > 0) {
+            RGE_Terrain_Info_Line* line = this->terrain_info.terrain;
+            int* avoid_hot_spots =
+                &line->avoid_hot_spots;
             do {
-                int type = line->terrain_type;
+                int type = avoid_hot_spots[-5];
                 if (type == 6) {
-                    line->avoid_hot_spots = 0;
+                    avoid_hot_spots[0] = 0;
                 } else if (type == 0x0a || type == 0x0d) {
-                    line->avoid_hot_spots = 2;
+                    avoid_hot_spots[0] = 2;
                 }
-                i++;
-                ++line;
-            } while (i < this->mod_count);
+                fallback_index++;
+                avoid_hot_spots += 8;
+            } while (fallback_index < this->terrain_info.terrain_num);
         }
     }
 
-    L->Log(s_log, debug_rand(s_file, 0x180));
+    int final_rand = debug_rand("C:\\msdev\\work\\age1_x1\\rmm_tdbc.cpp", 0x180);
+    Log(L, "Random Map terrain initilization, rand: %d", final_rand);
 }
