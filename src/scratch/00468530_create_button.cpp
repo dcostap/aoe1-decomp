@@ -21,6 +21,12 @@
 // probe 39: modeled the proven TPanel base and TButtonPanel inheritance; this moved the first mismatch to the post-setup font guard and cut positional diff to 256 bytes.
 // probe 42: expressed font selection as two typed get_font branches; VC5 tail-merged the call and cut positional diff to 53 bytes.
 // probe 43-44: common-result goto and nested positive guards were codegen duplicates; the remaining structural gap is the shared success/failure epilogue.
+// Revisit pass: explicit fail/done labels, a result initializer, direct success/failure returns,
+// the typed constructor result in the initial guard, direct output assignment from new, a declared
+// TPanel constructor, and the period novtable annotation were all codegen duplicates. The clean
+// typed source remains the 567-byte / 53-byte-diff basin: all 13 calls and the first 0x1CE bytes
+// align, while VC5 still clones the success/failure /GX cleanup tail instead of the oracle's
+// two-byte jump to one shared epilogue. Restore the natural source after each probe.
 // Left in scratch: current best is 567 B with /GX, 53 positional diff bytes / 36 edit cost, 100% ordered calls, and 85.64% exact-block coverage. The remaining gap is the shared success/failure epilogue; not accepted_drift-safe.
 
 typedef unsigned char uchar;
