@@ -48,6 +48,20 @@
 //   273 bytes/47 differing bytes. The unresolved binary lead is specifically
 //   VC5 pointer register coloring (original row base ECX, pixel EDX) plus the
 //   two-byte tail shift; no behavior, call, layout, or ABI uncertainty remains.
+// - Fresh worker pass tested a loop-local pixel cursor; it moved to a 271-byte
+//   but 74-difference basin and was restored. The neighboring exact Flic draw
+//   expression Bits + x1 + row_offset was also codegen-identical to the clean
+//   source. The natural 273-byte/47-difference source remains authoritative.
+// - Fresh structural probes tried direct typed row-start construction in each
+//   orientation arm. This fixed the original row-start/pixel register roles
+//   and reduced the resync cost, but remained a 271-byte/56-difference basin.
+//   Loop-top pixel initialization, table-object ownership, and pointer-term
+//   rewrites were worse or duplicate. The pinned natural source is restored.
+// - Fresh claim validation confirmed the pinned 273-byte/47-difference basin.
+//   A loop-top pixel reset remained 271 bytes/74 differences. A focused
+//   counted-loop lab reached 271 bytes/45 differences, but added an initial
+//   zero-count branch and changed the source-supported do-loop topology; it
+//   was not retained. The natural pinned source remains authoritative.
 
 struct tagRECT {
     long left;
