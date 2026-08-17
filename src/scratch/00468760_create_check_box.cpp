@@ -51,6 +51,13 @@
 // the same bytes. Retained as the decompiler-supported ownership form.
 // - Normalized the living source to direct success and failure returns. The
 //   shared-result goto was a codegen diagnostic and is not retained.
+// revisit pass: restored the proven TPanel base and TButtonPanel inheritance,
+// including the natural virtual destructor surface and typed error field. A
+// direct typed TButtonPanel declaration at the new site is codegen-identical.
+// Corrected helper ABI declarations from exact Pnl_btn.cpp donors: TShape and
+// short picture arguments, int sound number, long text-info widths, and typed
+// font/color values. A coordinate-initializer declaration order removed the EH
+// frame and widened drift, so it was restored.
 // left in scratch: original is 604 bytes vs rebuilt 623; calls, frame, and most
 // body blocks align, but the pre-save x-load/arithmetic schedule and the shared
 // success/failure EH tail block remain structurally unresolved.
@@ -58,36 +65,47 @@
 class TPanel;
 class TDrawArea;
 class TDigital;
-struct FontInfo { int a,b,c; };
+class TShape;
+struct FontInfo { void* font; long font_wid; long font_hgt; };
 class RGE_Base_Game { public: TDigital* get_sound(int); FontInfo* get_font(int); };
 extern RGE_Base_Game* rge_base_game;
-class TPanel {};
-class TButtonPanel { public:
-    char gap[0xd8]; int init_error; char tail[0x2b8-0xdc];
+class TPanel {
+public:
+    virtual ~TPanel();
+    char gap_04[0x10];
+    int width;
+    int height;
+    char gap_1c[4];
+    TDrawArea* draw_area;
+    char gap_24[0xd8 - 0x24];
+    int error_flag;
+    char gap_dc[0xf4 - 0xdc];
+};
+class TButtonPanel : public TPanel { public:
+    char tail[0x2b8-0xf4];
     TButtonPanel();
-    long setup(TDrawArea*, TPanel*, long,long,long,long, int, TDigital*, int, long);
-    void set_sound_number(long);
+    virtual ~TButtonPanel();
+    long setup(TDrawArea*, TPanel*, long,long,long,long, long, TDigital*, long, long);
+    void set_sound_number(int);
     void set_state_info(short);
     void setDrawType(int);
-    void set_picture(short, void*, int);
-    void set_text_info(char*, int,int,int,int,int);
+    void set_picture(short, TShape*, short);
+    void set_text_info(char*, void*, long,long,long,long);
     void set_text(short, char*);
     void set_bevel_info(int,int,int,int,int,int,int);
-    void set_text_color(int,int,int);
-    void set_highlight_text_color(int,int,int);
+    void set_text_color(int, unsigned long, unsigned long);
+    void set_highlight_text_color(int, unsigned long, unsigned long);
 };
-class TEasy_Panel { public:
-    char gap0[0x10];
-    int screen_w; int screen_h; char gap1[4]; TDrawArea* draw_area;
-    char gap2[0xd8-0x24]; int error_flag; char gap3[0xf4-0xdc]; int base_w; int base_h;
+class TEasy_Panel : public TPanel { public:
+    int base_w; int base_h;
     char gap4[0x31c-0xfc]; int use_bevel; unsigned char bevel[6]; char gap5[2];
-    int text0; int text1; int hi0; int hi1; int text2; int text3; char gap6[0x448-0x340]; void* picture;
+    int text0; int text1; int hi0; int hi1; int text2; int text3; char gap6[0x448-0x340]; TShape* picture;
+    virtual ~TEasy_Panel();
     virtual int create_check_box(TPanel*, TButtonPanel**, long,long,long,long,long,long);
 };
 
 int TEasy_Panel::create_check_box(TPanel* panel, TButtonPanel** out, long x, long y, long w, long h, long sound, long id)
 {
-    TButtonPanel* b;
     TDigital* snd;
     long sx;
     long sy;
@@ -95,13 +113,13 @@ int TEasy_Panel::create_check_box(TPanel* panel, TButtonPanel** out, long x, lon
     long sh;
 
     snd = 0;
-    sx = x * this->screen_w / this->base_w;
-    sy = y * this->screen_h / this->base_h;
-    sw = w * this->screen_w / this->base_w;
-    sh = h * this->screen_h / this->base_h;
-    b = new TButtonPanel;
+    sx = x * this->width / this->base_w;
+    sy = y * this->height / this->base_h;
+    sw = w * this->width / this->base_w;
+    sh = h * this->height / this->base_h;
+    TButtonPanel* b = new TButtonPanel;
     *out = b;
-    if (b != 0 && b->init_error == 0) {
+    if (b != 0 && b->error_flag == 0) {
         if (sound >= 0) snd = rge_base_game->get_sound(sound);
         if ((*out)->setup(this->draw_area, panel, sx, sy, sw, sh, 6, snd, 1, id)) {
             (*out)->set_sound_number(sound);
@@ -112,7 +130,7 @@ int TEasy_Panel::create_check_box(TPanel* panel, TButtonPanel** out, long x, lon
                 (*out)->set_picture(1, this->picture, 2);
             } else {
                 FontInfo* f = rge_base_game->get_font(0);
-                (*out)->set_text_info((char*)0x00580460, f->a, f->b, f->c, -1, -1);
+                (*out)->set_text_info((char*)0x00580460, f->font, f->font_wid, f->font_hgt, -1, -1);
                 (*out)->set_text(1, (char*)0x00583B74);
                 (*out)->setDrawType(3);
             }
