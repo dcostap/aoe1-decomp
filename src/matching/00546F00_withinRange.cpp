@@ -7,8 +7,10 @@
 //   map_width and map_height at +0x8 and +0xC.
 // - BINARY NOTE: RGE_Zone_Map owns zone_map_rows at +0x408 and map at +0x518.
 // - The natural bounded scan preserves the proven call, bounds, and fault order.
-// - The clean source remains a 247-byte mismatch. No source-only change has
-//   recovered the remaining emitted-byte difference.
+// - BINARY NOTE: max.x is formed before max.y in the target.
+// - Repeated direct casts let VC5 share one __ftol result. A named radius used
+//   for all bounds selects a different register map.
+// - The reduced source matches the 247-byte target exactly.
 
 typedef unsigned char uchar;
 
@@ -43,9 +45,8 @@ public:
 
 int RGE_Zone_Map::withinRange(uchar zone, XYPoint from, float range)
 {
-    int radius = (int)range;
-    int min_x = from.x - radius;
-    int min_y = from.y - radius;
+    int min_x = from.x - (int)range;
+    int min_y = from.y - (int)range;
 
     if (min_x < 0)
         min_x = 0;
@@ -53,8 +54,8 @@ int RGE_Zone_Map::withinRange(uchar zone, XYPoint from, float range)
         min_y = 0;
 
     XYPoint max;
-    max.y = from.y + radius;
-    max.x = from.x + radius;
+    max.x = from.x + (int)range;
+    max.y = from.y + (int)range;
 
     if (max.x > this->map->map_width - 1)
         max.x = this->map->map_width - 1;
