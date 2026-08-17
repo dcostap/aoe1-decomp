@@ -38,6 +38,17 @@
 //   shared ally/inside-target notification tails; do not restore raw scaffolding.
 // Main-agent audit restored canonical world/action destructor ownership;
 // typed state-machine ownership remains authoritative.
+// Revisit pass (sa-e130c4a9):
+// - Tested 22 distinct source hypotheses against the original dispatch, PDB
+//   line order, handler blocks, call map, and exact checker.
+// - The binary places nested result handlers in the order 3, 4, 1/2. It also
+//   uses one state-13 handler for outer state 13 and nested result 3.
+// - The current source keeps those proven shared labels and the proven common
+//   target-notify and zero-return tails. It reaches all 31 original calls in
+//   order, with 100.00% call alignment and 73.98% exact-block coverage.
+// - It remains non-exact: 585 positional bytes differ, and the compiler emits
+//   62 bytes of switch-table/body overflow after the original boundary.
+//   Keep this typed source as the latest binary-supported reconstruction.
 
 typedef unsigned char uchar;
 
@@ -256,42 +267,24 @@ uchar RGE_Action_Attack::update()
         this->obj->owner->isAlly(this->target_obj->owner->id) != 0) {
         this->set_state(1);
         if (this->subActionValue != 0) {
-            return 4;
+            goto target_done;
         }
-        this->obj->notify(this->obj->id, this->obj->id, 0x1FB, 0x258, this->targetID, 0);
-        return 4;
+        goto target_notify;
     }
 
     if (this->target_obj != 0 && this->target_obj->inside_obj != 0) {
         this->set_state(1);
-        if (this->subActionValue == 0) {
-            this->obj->notify(this->obj->id, this->obj->id, 0x1FB, 0x258, this->targetID, 0);
-        }
-        return 4;
+        goto target_notify;
     }
 
     switch (this->state) {
-    case 1:
-        return 1;
-
-    case 2:
-        if (this->obj->sprite_list->looped(this->obj->sprite) == 1) {
-            this->set_target_obj(0);
-            if (this->subActionValue == 0) {
-                this->obj->notify(this->obj->id, this->obj->id, 0x1FA, 0x258, 0, 0);
-            }
-            this->set_state(1);
-            return this->subActionValue == 1 ? (uchar)5 : (uchar)2;
-        }
-        return 0;
+    case 13:
+        goto state13_common;
 
     case 4:
         switch (this->sub_actions->update()) {
-        case 1:
-        case 2:
-            this->set_state(6);
-            return 0;
         case 3:
+state13_common:
             this->set_state(13);
             if (this->subActionValue != 0) {
                 return 3;
@@ -300,21 +293,37 @@ uchar RGE_Action_Attack::update()
             return 3;
         case 4:
             this->set_state(14);
-            if (this->subActionValue == 0) {
-                this->obj->notify(this->obj->id, this->obj->id, 0x1FB, 0x258, this->targetID, 0);
-            }
-            return 4;
-        default:
+            goto target_notify;
+        case 1:
+        case 2:
+            this->set_state(6);
             return 0;
+        default:
+            goto return_zero;
         }
+
+    default:
+        goto return_zero;
+
+target_notify:
+        if (this->subActionValue == 0) {
+            this->obj->notify(this->obj->id, this->obj->id, 0x1FB, 0x258, this->targetID, 0);
+        }
+
+target_done:
+        return 4;
+
+return_zero:
+        return 0;
 
     case 6: {
         int rangeStatus = -1;
         if (this->ready_to_attack(rangeStatus) != 0) {
             ((RGE_Combat_Object*)this->obj)->reset_attack_timer();
             this->set_state(7);
+            return 0;
         }
-        return 0;
+        goto return_zero;
     }
 
     case 7: {
@@ -334,7 +343,7 @@ uchar RGE_Action_Attack::update()
             if (this->need_to_attack == 0) {
                 if (this->obj->sprite_list->looped(this->obj->sprite) != 1 &&
                     (this->obj->sprite->flags & 1) != 0) {
-                    return 0;
+                    goto return_zero;
                 }
                 if (this->target_obj == 0 && this->indirect_fire_flag == 0) {
                     this->set_state(2);
@@ -355,13 +364,22 @@ uchar RGE_Action_Attack::update()
         return 0;
     }
 
-    case 13:
-        this->obj->notify(this->obj->id, this->obj->id, 0x1F9, 0x258, 0, 0);
-        return 3;
+    case 2:
+        if (this->obj->sprite_list->looped(this->obj->sprite) == 1) {
+            this->set_target_obj(0);
+            if (this->subActionValue == 0) {
+                this->obj->notify(this->obj->id, this->obj->id, 0x1FA, 0x258, 0, 0);
+            }
+            this->set_state(1);
+            return this->subActionValue == 1 ? (uchar)5 : (uchar)2;
+        }
+        goto return_zero;
 
-    default:
-        return 0;
+    case 1:
+        return 1;
+
     }
+
 }
 
 #undef VPAD16
