@@ -47,6 +47,22 @@
 //   formed the same VC5 basin; /Oy- and /Oi- broke the frame or prologue.
 //   No supported TU context recovered the score anchor, so this baseline stays
 //   authoritative.  No context-only variant is retained.
+// - Compiler-object audit: the original tworld.obj CodeView record identifies
+//   VC5 compiler version 11.00, target Pentium, hardware FPU, and near code/data.
+//   Its S_GPROC32 and executable FPO record both give Cb/procedure size 0x3fd,
+//   locals 0x270, four saved-register slots, no SEH, and zero parameters.
+//   The line table ends at +0x365, while the remaining object bytes are the
+//   sparse-switch data.  This is a complete function/object boundary, not a
+//   missing PDB range or an inline expansion.
+// - CodeView locals are only `index` and `count` (both long at entry -0x270),
+//   `info` (TRIBE_Zone_Info at -0x1fc), and nested
+//   `TRIBE_Game::TRIBE_Game_Options` (108 bytes at -0x268).  No named block,
+//   inline, or player-record temporary appears in CodeView.  This does not
+//   rule out an optimized-away temporary.  The exact CodeView record forms and
+//   implicit-padding layout were tested; both were byte-neutral.  The pinned
+//   VC5 object remains 877 B/frame 0x270 with 15 calls and 151 bytes different.
+//   The unresolved EBP score-versus-winner anchor is therefore not explained
+//   by the tested ABI, type-size, or PDB-range axes.
 
 #include <string.h>
 
