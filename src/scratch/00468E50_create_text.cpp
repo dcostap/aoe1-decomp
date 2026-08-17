@@ -34,32 +34,104 @@
 // r5 conclusion: same-TU factory donors and PDB bands support the remaining source order, but all natural lifetime/ABI variants preserve the +19-byte /GX cleanup-tail clone. No non-synthetic control-flow lead remains.
 // Remaining evidence: 9 ordered calls, first 156 bytes, and all body blocks stay exact; only /GX success/failure cleanup-tail placement differs. Same-TU create_input, create_edit, create_scrollbar, and slider factories show the same duplicated-tail basin after typed control-flow/result probes.
 // Left in scratch: best source has all functional code and first 156 bytes exact, but tail/failed-path placement is not exact; not accepted_drift because rebuilt failure target lies outside original configured function body.
+// Fresh pass 2026-08-17:
+// - PDB and TPanel records prove pnl_wid +14, pnl_hgt +18, render_area +20,
+//   and error_code +D8. TTextPanel allocation is 0x188.
+// - The canonical setup overload uses int, unsigned char, short, and long
+//   widths in its trailing arguments. Constant zero arguments hide no ABI issue.
+// - Full named panel fields, reduced named fields, and the sized text-panel
+//   gap emit the same 53-byte mismatch. The canonical reduced declarations stay.
+// - The Pnl_txt full TTextPanel surface moves set_text to +E8. This target's
+//   call is provably +E0, so that unrelated surface is not imported here.
+// - An empty TTextPanel destructor before this method produces a 423-byte
+//   MATCH. It is not valid: VA 0047C0B0 owns the real destructor. Declaration-
+//   only throw()/nothrow forms do not match.
+// - Moving that empty definition after this method restores the 53-byte
+//   mismatch. VC5 needs the destructor body visible before this method.
+// - Reusing panel instead of reloading *out widens drift to 304 bytes. The
+//   repeated output-pointer reloads are source-relevant.
+// - Nested positive guards remain exact with the diagnostic destructor. The
+//   combined guard stays as the simpler source form.
+// - Final ownership-compliant validation: 442 rebuilt bytes, 53 positional
+//   bytes, nine ordered calls, and a 156-byte exact prefix.
 
 class TDrawArea;
+struct tagRECT { long value[4]; };
+struct PanelNode;
+
 class TPanel {
 public:
     virtual ~TPanel();
-    virtual void vf01(); virtual void vf02(); virtual void vf03();
-    virtual void vf04(); virtual void vf05(); virtual void vf06(); virtual void vf07();
-    virtual void vf08(); virtual void vf09(); virtual void vf10(); virtual void vf11();
-    virtual void vf12(); virtual void vf13(); virtual void vf14(); virtual void vf15();
-    virtual void vf16(); virtual void vf17(); virtual void vf18(); virtual void vf19();
-    virtual void vf20(); virtual void vf21(); virtual void vf22(); virtual void vf23();
-    virtual void vf24(); virtual void vf25(); virtual void vf26(); virtual void vf27();
-    virtual void vf28(); virtual void vf29(); virtual void vf30(); virtual void vf31();
-    virtual void vf32(); virtual void vf33(); virtual void vf34(); virtual void vf35();
-    virtual void vf36(); virtual void vf37(); virtual void vf38(); virtual void vf39();
-    virtual void vf40(); virtual void vf41(); virtual void vf42(); virtual void vf43();
-    virtual void vf44(); virtual void vf45(); virtual void vf46(); virtual void vf47();
-    virtual void vf48(); virtual void vf49(); virtual void vf50(); virtual void vf51();
-    virtual void vf52(); virtual void vf53(); virtual void vf54(); virtual void vf55();
-    char gap_004[0x10];
-    long base_width;
-    long base_height;
-    char gap_01C[4];
-    TDrawArea* draw_area;
+    virtual long setup(void*, TPanel*, long, long, long, long, unsigned char);
+    void add_panel_node(PanelNode*);
+    void remove_panel_node(PanelNode*);
+    virtual void set_rect(tagRECT);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_color(unsigned char);
+    virtual void set_active(int);
+    virtual void set_positioning(int, long, long, long, long, long, long, long, long,
+                                 TPanel*, TPanel*, TPanel*, TPanel*);
+    virtual void set_fixed_position(long, long, long, long);
+    virtual void set_redraw(int);
+    void set_redraw_only(int);
+    virtual void set_overlapped_redraw(TPanel*, TPanel*, int);
+    void set_any_overlapping_redraw(int);
+    virtual void draw_setup(int);
+    virtual void draw_finish();
+    virtual void draw();
+    virtual void draw_rect(tagRECT*);
+    virtual void draw_offset(long, long, tagRECT*);
+    virtual void draw_rect2(tagRECT*);
+    virtual void draw_offset2(long, long, tagRECT*);
+    virtual void paint();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual long handle_idle();
+    virtual long handle_size(long, long);
+    virtual long handle_paint();
+    virtual long handle_key_down(long, short, int, int, int);
+    virtual long handle_char(long, short);
+    virtual long handle_command(unsigned int, long);
+    virtual long handle_user_command(unsigned int, long);
+    virtual long handle_timer_command(unsigned int, long);
+    virtual long handle_scroll(long, long);
+    virtual long handle_mouse_down(unsigned char, long, long, int, int);
+    virtual long handle_mouse_move(long, long, int, int);
+    virtual long handle_mouse_up(unsigned char, long, long, int, int);
+    virtual long handle_mouse_dbl_click(unsigned char, long, long, int, int);
+    virtual long mouse_move_action(long, long, int, int);
+    virtual long mouse_left_down_action(long, long, int, int);
+    virtual long mouse_left_hold_action(long, long, int, int);
+    virtual long mouse_left_move_action(long, long, int, int);
+    virtual long mouse_left_up_action(long, long, int, int);
+    virtual long mouse_left_dbl_click_action(long, long, int, int);
+    virtual long mouse_right_down_action(long, long, int, int);
+    virtual long mouse_right_hold_action(long, long, int, int);
+    virtual long mouse_right_move_action(long, long, int, int);
+    virtual long mouse_right_up_action(long, long, int, int);
+    virtual long mouse_right_dbl_click_action(long, long, int, int);
+    virtual long key_down_action(long, short, int, int, int);
+    virtual long char_action(long, short);
+    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    virtual void get_true_render_rect(tagRECT*);
+    virtual int is_inside(long, long);
+    virtual void set_focus(int);
+    virtual void set_tab_order(TPanel*, TPanel*);
+    virtual void set_tab_order(TPanel**, short);
+    virtual unsigned char get_help_info(char**, long*, long, long);
+    virtual void stop_sound_system();
+    virtual int restart_sound_system();
+    virtual void take_snapshot();
+    virtual void handle_reactivate();
+
+    char gap_004[8];
+    long pnl_x;
+    long pnl_y;
+    long pnl_wid;
+    long pnl_hgt;
+    char* panelNameValue;
+    TDrawArea* render_area;
     char gap_024[0xB4];
-    long error_flag;
+    int error_code;
     char gap_0DC[0x18];
 };
 class TDrawArea {};
@@ -73,7 +145,8 @@ public:
     virtual void set_text(char** text, short id); // vt +0xE0
     char gap_F4[0x188 - 0xF4];
     TTextPanel();
-    long setup(TDrawArea*, TPanel*, long, long, long, long, void*, long, long, char*, long, char, long, char, long, char*);
+    long setup(TDrawArea*, TPanel*, long, long, long, long, void*, long, long, char*,
+               int, unsigned char, int, unsigned char, short, long);
     void scroll(int a, int b, int c);
     void set_alignment(int v, int h);
     void set_text_color(unsigned long c1, unsigned long c2);
@@ -99,21 +172,21 @@ int TEasy_Panel::create_text(TPanel* parent, TTextPanel** out, char** text, long
                              long x, long y, long w, long h, long font_id,
                              int center_h, int center_v)
 {
-    long ideal_x = (x * this->base_width) / this->ideal_width;
-    long ideal_y = (y * this->base_height) / this->ideal_height;
-    long ideal_w = (w * this->base_width) / this->ideal_width;
-    long ideal_h = (h * this->base_height) / this->ideal_height;
+    long ideal_x = (x * this->pnl_wid) / this->ideal_width;
+    long ideal_y = (y * this->pnl_hgt) / this->ideal_height;
+    long ideal_w = (w * this->pnl_wid) / this->ideal_width;
+    long ideal_h = (h * this->pnl_hgt) / this->ideal_height;
 
-    TTextPanel* panel = new TTextPanel();
+    TTextPanel* panel = new TTextPanel;
     *out = panel;
-    if (panel != 0 && panel->error_flag == 0) {
+    if (panel != 0 && panel->error_code == 0) {
         RGE_Font* font;
         if (font_id >= 0) {
             font = rge_base_game->get_font(font_id);
         } else {
             font = rge_base_game->get_font(10);
         }
-        if ((*out)->setup(this->draw_area, parent, ideal_x, ideal_y, ideal_w, ideal_h,
+        if ((*out)->setup(this->render_area, parent, ideal_x, ideal_y, ideal_w, ideal_h,
                           font->font, font->font_wid, font->font_hgt,
                           0, 0, 0, 0, 0, 0, 0) != 0) {
             (*out)->set_text(text, text_id);
@@ -132,6 +205,6 @@ int TEasy_Panel::create_text(TPanel* parent, TTextPanel** out, char** text, long
             return 1;
         }
     }
-    this->error_flag = 1;
+    this->error_code = 1;
     return 0;
 }
