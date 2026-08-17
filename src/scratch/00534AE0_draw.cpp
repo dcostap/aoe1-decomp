@@ -60,6 +60,17 @@
 //     swapped vs orig; Render_Rect1 copy stays inline (orig out-of-line at 005351D1)
 //     -> PtrClear2->Poll region +46B vs orig. These are one coherent allocator basin;
 //     the remaining blocker is flipping zero-register choice, not more local shapes.
+//   - BINARY NOTE: The original tests Float_X_Delta < 0 before the draw2 lock.
+//     It skips that lock when the displacement is nonnegative but below Width.
+//   - Session sa-7c437db9-r1: 21 meaningful probes reached the same allocator
+//     basin. The best metric-only source is 1441 strict bytes but omits that
+//     binary-proven guard. The retained source has 1471 strict bytes, 1792B,
+//     frame 0x54, 26/26 calls, and 78.76% shape similarity.
+//   - Tested and rejected: absolute global overlays, direct redraw tests, zero
+//     locals, cold-copy gotos, snapshot permutations, narrow dx/dy types,
+//     displacement aliases, lock flags, branch order, and sign spellings.
+//   - Next lead: recover the original zero-register and rectangle-home colors
+//     through full period view.cpp context. Do not add register-steering forms.
 // FLAGS: none (default /O2 /Oy). Inline asm forbidden.
 
 struct tagRECT { long left; long top; long right; long bottom; };
@@ -318,7 +329,7 @@ void RGE_View::draw()
                 this->save_area1->Unlock("view::draw");
             }
         } else {
-            if (this->save_area1->Lock("view::draw2", 1) != 0) {
+            if (fxd < 0 && this->save_area1->Lock("view::draw2", 1) != 0) {
                 this->Float_X_Delta += this->save_area1->Width;
                 this->Float_Y_Delta -= 1;
                 if (this->Float_Y_Delta < 0) this->Float_Y_Delta = this->save_area1->Height - 1;
