@@ -68,6 +68,21 @@
 //   polymorphic object layout, base-typed md, scoped/reused md locals, and
 //   combined minimal class surfaces all reproduced the same 238-byte/15-byte
 //   basin. Restored the canonical typed source; no new ABI or liveness lead.
+// - Fresh worker pass: the authoritative check reconfirmed 238/238 bytes,
+//   all eight calls, CFG, and the 15-byte register-coloring drift. Comparison
+//   with sibling 00501B90 shows only shared VC5 md/this coloring evidence;
+//   it does not justify a new natural source form for this target.
+// - Revisit pass: split age_idx declaration/assignment and donor RGE method
+//   declaration order both duplicated the 238-byte/15-byte register basin.
+//   Restored the canonical typed source.
+// - Fresh bounded pass: a full md alias regressed to 184 bytes; the narrow
+//   Ghidra-shaped md alias duplicated the 238-byte/15-byte basin.
+// - Fresh bounded pass: positive outer dropsites guards, the combined
+//   Ghidra obj1/obj2 predicate, and top-declared locals regressed to a
+//   172-byte structural basin. The plain non-polymorphic information surface
+//   and a named storage-pit scalar both duplicated the stable basin.
+// - Restored the pinned natural typed source. No exact or structural lead was
+//   found; the remaining drift is the known 15-byte this/md/object2 coloring.
 
 class RGE_Static_Object;
 
