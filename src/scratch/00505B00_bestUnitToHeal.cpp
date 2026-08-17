@@ -26,6 +26,16 @@
 // 16: Hoisting the record-slot pointer emitted identical code; rolled back.
 // 17: Typed views over scalar global declarations shortened the body; rolled back.
 // 18: Parallel count/list slot pointers kept the same register topology; rolled back.
+// 19-28: Scalar-global overlays, parallel pointers, a typed aggregate, category
+//     loop forms, direct table expressions, and wider object-pointer scope did
+//     not recover the oracle's hidden table-base slot or register colors. The
+//     scalar overlay shortened the body; the other forms were codegen duplicates
+//     or farther from the oracle. Restored the natural typed table source.
+// 29: A reviewed-header byte-offset cursor moved the positional diff to 345,
+//     but kept the 0x18 frame and violated the no-byte-cursor source policy;
+//     restored the pinned source.
+// 30: A cached typed record pointer shortened the body to 390 bytes and moved
+//     the frame to 0x14; restored the pinned source.
 // BLOCKER: the natural typed source now matches the prologue, calls, CFG, size, and
 // most inner blocks, but VC5 keeps the table offset in EDI and object in ESI.
 // The oracle keeps the table slot in ESI, object in EDI, and one extra frame slot.
