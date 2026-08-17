@@ -62,6 +62,20 @@
 //   EBX allocator basin plus documented role-register swaps, not a call/layout gap.
 // - Fresh claim: same-TU prologue donor search confirms the remaining gap is
 //   the allocator basin, not a missing call, layout, or declaration identity.
+//
+// Follow-up sa-f81e3ed5-r1 (21 meaningful probes, 2026-08-17):
+// - bool send_options changed the frame shape and size. A split declaration did not.
+// - A saved-this alias, top-scope role declarations, register hints, and scalar-first
+//   declaration order kept the 67-byte result. The same held for TEasy inheritance.
+// - Reviewed base/derived game ownership and extern global forms kept the same bytes.
+//   They changed relocation counts only. Keep the current local macro for this target.
+// - Explicit version and color loop forms moved control flow or grew the diff.
+//   Compound civ/team decrements, zero-fill loops, and standard-header additions did not.
+// - A 64-sample ambient declaration lab made one codegen group. A five-flag lab made
+//   four default groups and one wrong-frame /O1-style group. No exact result appeared.
+// - BINARY NOTE: the clean source remains 1847 bytes, frame 0x568, 83/83 ordered calls,
+//   and 67 differing bytes. The first mismatch is the original EBP receiver versus
+//   rebuilt EBX receiver at +0009. The remaining drift is register allocation only.
 
 #include <string.h>
 #include <windows.h>
