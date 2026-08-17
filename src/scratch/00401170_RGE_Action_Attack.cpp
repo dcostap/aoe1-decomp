@@ -41,6 +41,17 @@
 //   simpler typed source. The register-coloring hunk remains unresolved.
 // Main-agent audit restored canonical action-object inheritance and removed the
 // residual downcasts from ordinary master/owner access.
+// Fresh bounded pass (sa-c6aa7086-r1):
+// - Rebuilt the original decompiler/PDB assignment order and tested all 24
+//   permutations of the independent wait/fight/range/min stores with /GX.
+//   No variant improved the 45-byte frontier; all retained size, EH, and calls.
+// - Tested the period base-pointer ownership surface with explicit combat casts,
+//   raw offset stores, the original zero global, and a qualified base call.
+//   These were duplicates or worse. The clean typed source remains authoritative.
+// Fresh bounded pass (sa-76a90815-r1):
+// - A natural initial-wait local and a period register hint on the read-only wait
+//   parameter were both codegen duplicates at 45 bytes. Restored the clean source;
+//   the remaining drift is still post-set_target register coloring.
 
 class RGE_Sprite;
 class RGE_Action_Object;
