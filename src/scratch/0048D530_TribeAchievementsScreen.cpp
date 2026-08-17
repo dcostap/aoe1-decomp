@@ -11,6 +11,8 @@
 // - Tested an uninitialized temptxt declaration from the decompiler; VC5
 //   elided the unused local, changing the frame to 0x1A4 and worsening diff.
 //   Rolled back to the validated natural source.
+// - The original tail uses an explicit branch for mode selection, not a
+//   branchless ternary. The row loop also retains the shipped dec/cmp tail.
 
 #include <stdio.h>
 #include <string.h>
@@ -265,7 +267,7 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* title_text, int end_game_
     unsigned long color;
     int local_1dc;
     TPanel* tabList[8];
-    char temptxt[50] = {0};
+    char temptxt[50];
     char str[100];
     char info_file[260];
 
@@ -286,13 +288,30 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* title_text, int end_game_
     this->instruction_bar = 0;
     this->win_loss_text_bar = 0;
     this->summary_text_bar = 0;
+    str[1] = 0;
     this->end_game_flag = end_game_flag;
 
-    memset(this->achievement_choice, 0, sizeof(this->achievement_choice));
+    this->achievement_choice[0] = 0;
+    this->achievement_choice[1] = 0;
+    this->achievement_choice[2] = 0;
+    this->achievement_choice[3] = 0;
+    this->achievement_choice[4] = 0;
+
     memset(this->title_bar, 0, sizeof(this->title_bar));
-    memset(this->player_names, 0, sizeof(this->player_names));
-    memset(this->statistics, 0, sizeof(this->statistics));
-    str[1] = 0;
+    TTextPanel** statistics = this->statistics[0];
+    TTextPanel** player_names = this->player_names;
+    int player_count = 8;
+    do {
+        *player_names = 0;
+        int statistic_count = 7;
+        do {
+            *statistics = 0;
+            ++statistics;
+            --statistic_count;
+        } while (statistic_count != 0);
+        ++player_names;
+        --player_count;
+    } while (player_count != 0);
 
     long info_id;
     if (this->end_game_flag == 0) {
@@ -385,10 +404,11 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* title_text, int end_game_
     create_text(this, this->achievement_choice + 4, 0, 0x184, 0x6F, 0x79, 0x121, 0x0B, 0, 0, 0);
 
     TTextPanel** player_name = this->player_names;
-    TTextPanel** row = this->statistics[0] + 2;
     int player_offset = 4;
     int y = 0xAB;
+    TTextPanel** row = this->statistics[0] + 2;
     int player_index = 1;
+    // BINARY NOTE: The shipped loop compares the decremented index with 8.
     do {
         char* name;
         if (player_index < rge_base_game->world->player_num) {
@@ -435,23 +455,17 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* title_text, int end_game_
         ++player_name;
         row += 7;
         ++player_index;
-    } while (player_index <= 8);
+    } while (player_index - 1 < 8);
 
     long ok_x;
     long ok_width;
+    // BINARY NOTE: The shipped layout tests the non-null message arm first.
     if (this->end_game_flag == 0 || rge_base_game->singlePlayerGame() == 0) {
         create_button(this, &this->timelineButton, 0x26D8, 0, 100, 0x1B9,
                       200, 0x1E, 0, 0, 0);
         ok_width = 200;
         ok_x = 0x154;
-    } else if (this->win_loss_text == 0) {
-        create_button(this, &this->timelineButton, 0x26D8, 0, 0x14, 0x1B9,
-                      0xB4, 0x1E, 0, 0, 0);
-        create_button(this, &this->restartButton, 0x269F, 0, 0xE6, 0x1B9,
-                      0xB4, 0x1E, 0, 0, 0);
-        ok_width = 0xB4;
-        ok_x = 0x1B8;
-    } else {
+    } else if (this->win_loss_text != 0) {
         create_button(this, &this->aftermathButton, 0x26B2, 0, 5, 0x1B9,
                       0x96, 0x1E, 0, 0, 0);
         create_button(this, &this->timelineButton, 0x26D8, 0, 0xA5, 0x1B9,
@@ -460,6 +474,13 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* title_text, int end_game_
                       0x96, 0x1E, 0, 0, 0);
         ok_width = 0x96;
         ok_x = 0x1E5;
+    } else {
+        create_button(this, &this->timelineButton, 0x26D8, 0, 0x14, 0x1B9,
+                      0xB4, 0x1E, 0, 0, 0);
+        create_button(this, &this->restartButton, 0x269F, 0, 0xE6, 0x1B9,
+                      0xB4, 0x1E, 0, 0, 0);
+        ok_width = 0xB4;
+        ok_x = 0x1B8;
     }
 
     create_button(this, &this->okButton, 0x269C, 0, ok_x, 0x1B9,
@@ -501,5 +522,9 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* title_text, int end_game_
     this->backButton->vf_0C4(0, 0);
     this->backButton2->vf_0C4(0, 0);
 
-    set_mode(this->win_loss_text == 0 ? 0 : 5);
+    if (this->win_loss_text != 0) {
+        set_mode(5);
+    } else {
+        set_mode(0);
+    }
 }
