@@ -42,6 +42,13 @@
 // shape 84.35%, exact blocks 42.03%, with 23 bytes of residual size drift.
 // diagnostic probes for local declaration order and a 902 amount copy gave no
 // gain or gave worse shape; restored distinct count and direct member source.
+// fresh pass: twenty additional source-shape probes were tested and restored.
+// BINARY NOTE: the shipped attribute result uses [esp+1Ch]; this source emits
+// [esp+10h].  The clean source retains the natural local model.
+// BINARY NOTE: an outer ManagedArray and one shared temp2 moved its fields to
+// the observed +20 local and reached 2690 strict diff, but changed CFG shape.
+// That form is not retained because its constructor scope is not supported.
+// next lead: recover the original local coloring without fake pointer arithmetic.
 
 #include <stdlib.h>
 
