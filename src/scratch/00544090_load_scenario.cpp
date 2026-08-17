@@ -34,6 +34,21 @@
 // - Reordered the final natural version OR chain to the same-TU donor's
 //   1.09, 1.11, 1.10 order; emitted code was unchanged, so the cold-tail
 //   placement remains the structural blocker.
+// - Follow-up claim sa-063fefea-r1: the fresh baseline stayed at 443 bytes,
+//   with 17 calls, a 0x8 frame, and 197 differing bytes. Natural nested,
+//   grouped, inverted, duplicated-call, and label-order forms were worse or
+//   codegen duplicates. The target rdata labels confirm 1.11 at 0x57FB50 and
+//   1.10 at 0x57FB58. Absolute rdata forms improved resynchronization but did
+//   not fix the cold-tail placement. C-linkage API declarations and stdlib
+//   context were duplicates. Restore this natural candidate for the pause.
+// - Follow-up claim sa-6f6dd963-r1: natural late negative guards, the exact
+//   related World.cpp donor's version8 label shape, literal version strings,
+//   nested success-label placement, and full if/else dispatch were tested.
+//   The first, second, and fourth forms were codegen duplicates; the full
+//   if/else form added a load_scenario2 call and was discarded. The clean
+//   typed source remains a 443-byte reconstruction against the 440-byte
+//   target. The only unresolved drift is the cold close block order and its
+//   final branch polarity.
 
 extern int world_update_counter;
 
