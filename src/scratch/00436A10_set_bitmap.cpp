@@ -23,6 +23,10 @@
 //   original 541-byte size, 95.12% shape, and diff 379; the cleanup block is
 //   six bytes early, so the checker pairs its operator delete with the oracle's
 //   destructor call.  Retain this source as the best natural reconstruction.
+// - Rechecked top-scope and success-scope picture/size declarations, result
+//   assignment after construction, and natural null/Dib else-if and shared-
+//   label forms.  They were duplicate or worse basins; restored this clean
+//   typed form.  The unresolved register and cleanup topology is unchanged.
 // FLAGS: config/flags/00436A10_set_bitmap.rsp (/nologo /c /O2 /Oy /GX)
 
 #include <stdlib.h>
