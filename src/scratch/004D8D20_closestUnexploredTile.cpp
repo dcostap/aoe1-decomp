@@ -16,6 +16,11 @@
 //   produced no further code movement. All 16 ordered calls remain aligned.
 // - The best diagnostic source used a signed char and reached diff 876, but
 //   its 0xff comparison was not semantically safe. It is not retained.
+// - This pass tested 20 source, type, layout, liveness, and control-flow
+//   hypotheses. The quadrant choice if-chain improved the shape to 85.71%
+//   and reduced the diff to 901 bytes. It preserves all 16 ordered calls.
+// - Fixed-gap class ownership, split early assignments, score order, and the
+//   early local declaration order produced no code movement.
 // - Left in scratch: no exact match. The remaining drift starts in the
 //   prologue register allocation and continues through stack-home placement.
 
@@ -147,9 +152,9 @@ struct ManagedArray_int {
     int maximumSizeValue;
 };
 
-class TribeInformationAIModule : public InformationAIModule {
+class TribeInformationAIModule {
 public:
-    ManagedArray_int farmsTaskedThisUpdate;
+    char gap_00[0x100];
     TribeMainDecisionAIModule* md;
     int mapXSizeValue;
     int mapYSizeValue;
@@ -167,8 +172,11 @@ int TribeInformationAIModule::closestUnexploredTile(
     int objectId, float x, float y, float* outX, float* outY)
 {
     XYPoint cPoint;
-    RGE_Visible_Map* visible = this->md->player->visible;
-    RGE_Static_Object* obj = this->md->player->world->object(objectId);
+    RGE_Static_Object* obj;
+    RGE_Visible_Map* visible;
+
+    visible = this->md->player->visible;
+    obj = this->md->player->world->object(objectId);
 
     if (obj == 0)
         return 0;
@@ -272,23 +280,18 @@ int TribeInformationAIModule::closestUnexploredTile(
                                 int choice = debug_rand(
                                     (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp",
                                     0x430) % 4;
-                                switch (choice) {
-                                case 0:
+                                if (choice == 0) {
                                     cPoint.x = bestX;
                                     cPoint.y = bestY;
-                                    break;
-                                case 1:
+                                } else if (choice == 1) {
                                     cPoint.x = bestX;
                                     cPoint.y = maxY;
-                                    break;
-                                case 2:
+                                } else if (choice == 2) {
                                     cPoint.x = maxX;
                                     cPoint.y = maxY;
-                                    break;
-                                default:
+                                } else {
                                     cPoint.x = maxX;
                                     cPoint.y = bestY;
-                                    break;
                                 }
                             } else {
                                 this->pathMap.setValue(cPoint.x, cPoint.y, 0);
