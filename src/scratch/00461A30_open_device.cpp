@@ -1,53 +1,23 @@
 // VA: 00461A30 TMusic_System::open_device (551B)
 // PDB source: music.cpp lines 71-216
 // Attempt log:
-// Baseline: canonical same-TU TMusic_System/mixer layout, typed MCI parameter
-// records, period stdio/multimedia surfaces, and natural switch/scan reconstruction.
-// Probe 2: late shared failure tail and do-loop scans improved CFG but loop peeling
-// retained four static sprintf/fopen sites.
-// Probes 3-5: FILE scope, explicit scan labels, and comma-condition loops were
-// codegen duplicates; all retained the peeled call duplication.
-// Probe 6: a do-loop with an explicit file-dependent bottom condition recovered the
-// original 11-call static set and 0x138 frame; remaining drift is stack-local offsets,
-// branch polarity, and return-tail placement.
-// Probes 7-9: a dead stack gap and typed OpenDeviceWork gap model were nonproductive;
-// the latter either grew the frame or changed local placement.
-// Probe 10: removing the buffer +4 diagnostic moved only fopen behavior and did not
-// improve the 489-byte best; restored this binary-supported +4 source shape.
-// Final bounded result: natural typed source retained in scratch. Best current metrics
-// are 489 differing bytes, exact 11-call set, 0x138 frame, and the full WinMM/stdio
-// behavior/layout reconstructed. Next lead is a focused local-stack declaration/order
-// pass to move status/set/open/file homes by four bytes and reproduce late failure tails.
-// Main-agent audit replaced raw string addresses with named SDK/global surfaces
-// and retained the natural typed WinMM/file-device flow.
-// Fresh worker pass: for(;;), do/while(true), and scoped-label FILE scans all
-// triggered VC5 loop peeling and four static sprintf/fopen sites; the natural
-// bottom-test scan remains the only clean 11-call source shape.
-// Fresh worker pass: placing sprintf in the do-condition via a comma/&& chain
-// recovered a single-site scan and improved the diagnostic diff to 454 bytes,
-// but changed the frame-size/CFG basin and used opaque scheduling source; it was
-// rolled back. Declaration reordering and pointer-truth tests were duplicates.
-// Current worker H1: defined named period format strings in this TU; unresolved extern
-// placeholders were codegen-neutral and the named literals are retained for behavior.
-// Current worker H2: corrected the standard MCI_STATUS_PARMS query field from dwTrack to
-// dwItem. The change improved shape and confirms the record offset +8 query ownership.
-// Current worker H3: an if-chain/common-return rewrite was structurally worse and was rolled back.
-// Current worker H4: passed the full MCI_STATUS_PARMS record instead of reusing dwReturn as
-// the status pointer. This aligns the original status base and improves the typed source.
-// Current worker H5: a 260-byte scan buffer was codegen-neutral; the binary-supported 261-byte
-// buffer remains. Full MCI_OPEN_PARMSA and MCI_SET_PARMS records also align their call pointers.
-// Current worker H6: the original stack writes and PDB field labels prove the WinMM calls use
-// &open_info.wDeviceID, &set_info.dwTimeFormat, and &status_info.dwReturn. The original status
-// query writes dwTrack=3 and reads dwItem. The full-record/dwItem variant was codegen-neutral
-// but not behavior-equivalent, so the named field pointers are restored.
-// Current worker H7 audit: the MCI calls use the imported __imp__mciSendCommandA@16 surface,
-// while the three original string targets are the WAV, MID, and "r" literals at 584CF4h,
-// 584CE4h, and 57F320h. Named local literals preserve this source surface without raw addresses.
-// Shard D2 H1: shared one FILE* local across both scans, with fopen-tested-before-fclose
-// do-loop bodies and the original unconditional back-edge; VC5 emitted the prior code unchanged.
-// Final current reconstruction: typed WinMM field calls, named format strings, natural
-// bottom-test scans, and device/mixer ownership are retained. Remaining blocker is local-home
-// placement and late failure-tail layout; no safe source lead remains in the audited call surface.
+// Baseline: same-TU TMusic_System/mixer layout, typed MCI records, period
+// multimedia and stdio surfaces, and a natural switch/scan reconstruction.
+// The original call set is 11 calls with a 0x138 frame.
+// Earlier loop forms (for, while-true, comma conditions, and scoped labels)
+// caused VC5 loop peeling and four sprintf/fopen sites. A bottom-tested do-loop
+// kept the call set but emitted a duplicate test.
+// A do-loop with an explicit fopen success arm and failure break removed that
+// duplicate test. It gives 467 differing bytes, exact calls, exact frame, and
+// matching conditional and jump counts.
+// A positive MCI-open arm with a shared post-switch failure return recovers the
+// original late failure-tail layout. A negative goto form was two bytes worse.
+// Named period string definitions and case-local MCI/FILE scopes are codegen
+// neutral. The 261-byte filename buffer and typed MCI field pointers are kept.
+// Local declaration order, pointer-truth spelling, and gap models did not move
+// codegen. The original local homes are four bytes below the rebuilt homes.
+// The remaining drift is this local shift, the zero-register initialization form,
+// and three extra instructions. No policy-safe source lead remains.
 
 #include <stdio.h>
 #include <windows.h>
@@ -106,47 +76,46 @@ public:
 
 int TMusic_System::open_device()
 {
-    MCI_STATUS_PARMS status_info;
-    MCI_SET_PARMS set_info;
-    MCI_OPEN_PARMSA open_info;
     char file_name[261];
-    FILE* scan_file;
 
     switch (this->music_type) {
     case 1: {
+        MCI_STATUS_PARMS status_info;
+        MCI_SET_PARMS set_info;
+        MCI_OPEN_PARMSA open_info;
         MCI_SEND_COMMAND_PROC mci = mciSendCommandA;
         open_info.lpstrElementName = MAKEINTRESOURCEA(0x204);
         if (mci(0, 0x803, 0x3102,
-                (DWORD)&open_info.wDeviceID) != 0) {
-            goto failure;
-        }
+                (DWORD)&open_info.wDeviceID) == 0) {
+            this->device_open = 1;
+            this->device_id = open_info.lpstrDeviceType != 0
+                                ? (unsigned int)open_info.lpstrDeviceType : 0;
+            set_info.dwAudio = 10;
+            mci(this->device_id, 0x80D, 0x402,
+                (DWORD)&set_info.dwTimeFormat);
 
-        this->device_open = 1;
-        this->device_id = open_info.lpstrDeviceType != 0
-                            ? (unsigned int)open_info.lpstrDeviceType : 0;
-        set_info.dwAudio = 10;
-        mci(this->device_id, 0x80D, 0x402,
-            (DWORD)&set_info.dwTimeFormat);
+            status_info.dwTrack = 3;
+            if (mci(this->device_id, 0x814, 0x102,
+                    (DWORD)&status_info.dwReturn) == 0) {
+                this->track_count = status_info.dwItem;
+            }
 
-        status_info.dwTrack = 3;
-        if (mci(this->device_id, 0x814, 0x102,
-                (DWORD)&status_info.dwReturn) == 0) {
-            this->track_count = status_info.dwItem;
+            if (this->open_mixer() != 0) {
+                int new_volume =
+                    (this->mixer_volume_value.dwValue * 10000) /
+                    (unsigned int)(this->mixer_volume_control.Bounds.lMaximum -
+                                   this->mixer_volume_control.Bounds.lMinimum) -
+                    10000;
+                this->start_volume = new_volume;
+                this->volume = new_volume;
+            }
+            return 1;
         }
-
-        if (this->open_mixer() != 0) {
-            int new_volume =
-                (this->mixer_volume_value.dwValue * 10000) /
-                (unsigned int)(this->mixer_volume_control.Bounds.lMaximum -
-                               this->mixer_volume_control.Bounds.lMinimum) -
-                10000;
-            this->start_volume = new_volume;
-            this->volume = new_volume;
-        }
-        return 1;
+        break;
     }
 
-    case 2:
+    case 2: {
+        FILE* scan_file;
         if (this->open_mixer() != 0) {
             int new_volume =
                 (this->mixer_volume_value.dwValue * 10000) /
@@ -162,30 +131,35 @@ int TMusic_System::open_device()
             sprintf(file_name + 4, MUSIC_MID_FORMAT, this->path,
                     this->track_count + 1);
             scan_file = fopen(file_name + 4, READ_MODE);
-            if (scan_file != 0) {
+            if (scan_file) {
                 fclose(scan_file);
                 ++this->track_count;
+            } else {
+                break;
             }
-        } while (scan_file != 0);
+        } while (1);
         this->device_open = 1;
         return 1;
+    }
 
-    case 3:
+    case 3: {
+        FILE* scan_file;
         this->track_count = 0;
         do {
             sprintf(file_name + 4, MUSIC_WAV_FORMAT, this->path,
                     this->track_count + 1);
             scan_file = fopen(file_name + 4, READ_MODE);
-            if (scan_file != 0) {
+            if (scan_file) {
                 fclose(scan_file);
                 ++this->track_count;
+            } else {
+                break;
             }
-        } while (scan_file != 0);
+        } while (1);
         this->volume = 0;
         this->device_open = 1;
         return 1;
     }
-
-failure:
+    }
     return 0;
 }
