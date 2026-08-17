@@ -3,19 +3,18 @@
 // PDB: spnl_obj.cpp:78-325
 //
 // Attempt log:
-// - replaced the old vtable-cast scaffold with the period panel, scenario-object,
-//   master-object, sprite, draw-area, and base-game surfaces below
-// - baseline: canonical typed reconstruction reached exact size/frame but had
-//   one merged shape_draw site and mismatched ordered calls
-// - reversed the button-picture guard, put the color-transform arm first, and
-//   used direct master/player member rereads; ordered calls became 41/41 and
-//   the best current result is 826 differing bytes (52.38%)
-// - exhausted 10 meaningful hypotheses; remaining drift is first draw_setup
-//   local-home scheduling, GDI/text stack-slot placement, and the later stat
-//   dispatch block. No inline asm or compiler-steering source retained.
-// - typed font and old_font as HGDIOBJ and removed SelectObject casts from the
-//   exact draw_item donor; emitted code moved one byte farther, so restored.
+// - Typed reconstruction has exact size/frame parity and 41/41 ordered calls.
+// - BINARY NOTE: building_facet is at master-object +0x16E after a +0x148 base.
+// - BINARY NOTE: level-2 range reads +0x114; the final level-4/6 conversion reads
+//   +0x140. These are not the nearby cached fields with similar names.
+// - BINARY NOTE: the attribute scan loads each float before comparing DAT_00574524.
+// - 21 meaningful probes tested layout, ABI, lifetime, control flow, and context.
+// - Current clean result: 1577 bytes, 41 calls, 827 differing bytes (52.44%).
+// - Remaining drift starts at the saved vtable spill after draw_setup. The later
+//   stat dispatch also uses different pointer and index registers than the oracle.
+// - No inline assembly, fake vtable, or compiler-only source remains.
 
+#include "../../include/game_globals.h"
 #include <windows.h>
 #include <stdio.h>
 #include <string.h>
@@ -347,7 +346,8 @@ public:
 
 class TRIBE_Master_Building_Object : public RGE_Master_Combat_Object {
 public:
-    uchar gap_13C[0x32];
+    // The base ends at +0x148; the building facet is at +0x16E.
+    uchar gap_148[0x26];
     short building_facet;                // +0x16E
 };
 
@@ -426,10 +426,10 @@ public:
 };
 
 extern RGE_Base_Game* rge_base_game;
-extern char default_player_name[];
-extern char replacement_player_name[];
-extern char format_string[];
-extern char format_ratio[];
+#define DEFAULT_PLAYER_NAME ((char*)0x0057F074)
+#define REPLACEMENT_PLAYER_NAME ((char*)0x005870B4)
+#define FORMAT_STRING ((char*)0x0057F324)
+#define FORMAT_RATIO ((char*)0x005870AC)
 
 class TRIBE_Panel_Object : public TPanel {
 public:
@@ -464,7 +464,6 @@ public:
 void TRIBE_Scenario_Editor_Panel_Object::draw()
 {
     int text_flag;
-    void* old_font;
     long min_x;
     long min_y;
     long max_y;
@@ -547,12 +546,13 @@ void TRIBE_Scenario_Editor_Panel_Object::draw()
         SetBkMode(this->render_area->DrawDc, 1);
         SetTextColor(this->render_area->DrawDc, 0xFFFFFF);
         SelectClipRgn(this->render_area->DrawDc, this->clip_rgn);
-        old_font = SelectObject(this->render_area->DrawDc, (HGDIOBJ)this->font);
+        void* old_font =
+            SelectObject(this->render_area->DrawDc, (HGDIOBJ)this->font);
 
         if (this->player != 0) {
             rge_base_game->get_string(0x69, this->player->id, 0, name, 100);
-            if (strcmp(name, default_player_name) == 0) {
-                strcpy(name, replacement_player_name);
+            if (strcmp(name, DEFAULT_PLAYER_NAME) == 0) {
+                strcpy(name, REPLACEMENT_PLAYER_NAME);
             }
             TextOutA(this->render_area->DrawDc,
                      this->pnl_x + 2, this->pnl_y + 0x0F,
@@ -568,13 +568,13 @@ void TRIBE_Scenario_Editor_Panel_Object::draw()
         if (str[0] == 0) {
             strcpy(str, this->master_game_obj->name);
         }
-        sprintf(name, format_string, str);
+        sprintf(name, FORMAT_STRING, str);
         TextOutA(this->render_area->DrawDc,
                  this->pnl_x + 2, this->pnl_y + 0x0F,
                  name, strlen(name));
 
         if (text_flag != 0) {
-            sprintf(str, format_ratio,
+            sprintf(str, FORMAT_RATIO,
                     (int)this->master_game_obj->hp,
                     (int)this->master_game_obj->hp);
             TextOutA(this->render_area->DrawDc,
@@ -606,12 +606,14 @@ void TRIBE_Scenario_Editor_Panel_Object::draw()
                 if (unit_level == 1) {
                     short attr_type = -1;
                     int attr_index = 0;
+                    float* attr_amount = master->attribute_amount_held;
                     do {
-                        if (0.0f < master->attribute_amount_held[attr_index]) {
+                        if (*attr_amount > DAT_00574524) {
                             attr_type = master->attribute_type_held[attr_index];
                             break;
                         }
                         ++attr_index;
+                        ++attr_amount;
                     } while (attr_index < 3);
 
                     int value_type;
@@ -649,8 +651,8 @@ void TRIBE_Scenario_Editor_Panel_Object::draw()
                     this->draw_item(1, 8, 1, combat->orig_armor,
                                     combat->orig_armor);
                     this->draw_item(2, 6, 1,
-                                    (int)combat->orig_weapon_range,
-                                    (int)combat->orig_weapon_range);
+                                    (int)combat->weapon_range,
+                                    (int)combat->weapon_range);
                     this->draw_finish();
                     return;
                 }
@@ -684,7 +686,7 @@ void TRIBE_Scenario_Editor_Panel_Object::draw()
         if (master->unit_level == 4 || master->unit_level == 6) {
             RGE_Master_Combat_Object* combat =
                 (RGE_Master_Combat_Object*)master;
-            short speed_value = (short)combat->orig_speed_of_attack;
+            short speed_value = (short)combat->orig_weapon_range;
             this->draw_item(item_index, 6, 1,
                             speed_value, pierce_value);
         }
