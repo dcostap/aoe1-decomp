@@ -29,6 +29,17 @@
 // try 21: volatile packet-turn load forced the original arithmetic registers and reduced the diagnostic diff to 44 bytes; not retained as source without behavioral evidence.
 // try 22: signed scan index/high bound improved the diagnostic diff to 42 bytes.
 // try 23: delayed scan-index zero arm improved the diagnostic diff to 31 bytes; the remaining gap is DCO register coloring and switch-table relocation.
+// Continuation pass (sa-163f5bba-r1, 2026-08-17):
+// - Baseline pinned at 972 bytes, 24 ordered calls, 747 strict diff bytes, and 97.05% shape similarity.
+// - Tested kill-scan goto forms, two-local candidate/result forms, declaration order, and failure-only labels.
+//   The two-local form improved resynchronization but added a branch and 8 diff bytes; all were rolled back.
+// - Tested received-turn temporaries, compound assignment, increment aliases, signed result width, and volatile load.
+//   The ordinary forms were duplicate codegen; volatile added 101 bytes and was rejected as unsupported steering.
+// - Tested opcode local materialization, direct kill-packet loads, signed stop-turn fields, register data pointer,
+//   Windows/string/stdlib headers, and a VC5 risky flag sweep. They were neutral or worse. The flag sweep found
+//   no invariant-eligible exact variant; default flags remained the only 972-byte basin.
+// - Final clean validation: calls 24/24 aligned, no frame, saved EBX/ESI/EDI, 972/972 bytes, 747 strict diff.
+// Next evidence: recover original Com_hand.cpp declaration/TU context or the natural kill-scan source layout.
 
 struct TDebuggingLog { void Log(char*, ...); };
 extern TDebuggingLog* L;
