@@ -2,47 +2,21 @@
 // PDB source: ACT_make.cpp lines 61-98
 // RGE_Action_Make::update() (277 bytes)
 //
-// Remaining gap after ~40min targeted investigation:
-// Standalone VC5 compilation produces correct control flow, vtable calls,
-// field offsets, and FP math, but VC5's register allocator assigns:
-//   edi=this, esi=target, ebx=inner1, eax=game_vtable
-// instead of original:
-//   esi=this, edi=target, ebx=inner1, ebp=game_vtable
+// The natural source now uses direct typed member expressions in the fatal
+// guard. This matches the body blocks and reduces the positional diff to 41.
+// The rebuilt function is 280 bytes, with the original size at 277 bytes.
 //
-// Attempts tried (all at 277 bytes, all mismatch at byte 5):
-// 1) switch for state check -> correct dec/je/sub/jne pattern
-// 2) virtual methods on target -> correct call [vtable+offset] (all 4 calls)
-// 3) typed RGE_Base_Game::notification call -> correct vtable double-deref
-// 4) delayed target/inner1 locals after FP gates -> no register change
-// 5) scoped blocks to isolate target/inner1 -> same reg alloc
-// 6) inverted condition logic (goto-free) -> same reg alloc
-// 7) flag variables vs direct paths -> same reg alloc
-// All fail at byte 5: original pushes esi only, rebuilt pushes ebx,esi,edi
-// This is a TU-context boundary case (compiled as part of full ACT_make.cpp).
-// Current reconstruction: RGE_Action_Object/RGE_Static_Object ownership and
-// owner/task virtual ABIs are canonical; probe 9's scoped guard aliases preserve
-// the best 277-byte codegen basin. Direct guard expressions (probe 10) worsened
-// size and scheduling, so they were rolled back.
-// Main-agent audit restored canonical destructor slots and a symbol-backed game
-// global; the validated prologue/register-allocation blocker remains.
-// Follow-up follow-404A90-r1: split notification coordinate casts into natural
-// locals to test call evaluation order; codegen stayed unchanged at 277/182,
-// so the probe was rolled back.
+// Original entry saves ESI, reads state, then saves EDI, EBP, and EBX only on
+// the non-state-1 path. VC5 saves EBX, EBP, ESI, and EDI at entry in isolation.
+// The remaining mismatch is this path-split callee-save sequence and its tails.
+// The direct source still gives ESI=this, EDI=target, EBX=inner1, and
+// EBP=game-vtable. Its body blocks at +001E..+0104 are exact.
 //
-// Session sa-ce4cd6c0-r1 (10 meaningful probes, 2026-08-11):
-// - absolute and volatile game-global forms did not reproduce a reload or
-//   change the prologue; restored the ordinary symbol-backed declaration;
-// - restored period field ownership (work_rate, world_time_delta_seconds,
-//   work_val1/work_flag, attribute_amount_held) and full proven object sizes;
-//   output remained unchanged, but this is the cleaner living reconstruction;
-// - register-qualified self, header removal, natural if/guard state flow, and
-//   a named state snapshot all failed to move the EDI=this / eager-save basin;
-// - current source is restored to the switch/direct-state 277-byte basin:
-//   exact size/frame/call set, 182 positional bytes differ from the oracle;
-//   remaining blocker is staged callee-save/register coloring at byte +5.
-// Session sat-404A90-order restored master-first work_rate * world_delta;
-// output stayed at 277 bytes / 182-byte diff. A temporary ACT_make.cpp TU
-// context from exact donors 00404A10, 00404A40, and 00404A70 was codegen-neutral.
+// Tested in this pass: split work-product initialization, positive fatal guard,
+// switch case order, explicit default, narrow base surface, flattened object
+// inheritance, case scope, game_globals.h context, and debug-context flags.
+// None changed the 41-byte result. A 128-sample ambient declaration sweep also
+// kept the old 182-byte alias result. Keep the direct-member source as clean.
 
 class RGE_Master_Action_Object {
 public:
@@ -227,14 +201,12 @@ unsigned char RGE_Action_Make::update() {
     switch (this->state) {
     case 6:
         if (this->timer <= 0.0) {
-            RGE_Action_Object* obj = this->obj;
-            RGE_Player* owner = obj->owner;
-            if (owner->attributes[0x24] > 0.0) {
-                if (obj->attribute_amount_held <= 0.0) {
+            if (this->obj->owner->attributes[0x24] > 0.0) {
+                if (this->obj->attribute_amount_held <= 0.0) {
                     rge_base_game->notification(
-                        0x7E, owner->id, obj->id,
-                        (int)obj->world_x, (int)obj->world_y);
-                    obj->die_die_die();
+                        0x7E, this->obj->owner->id, this->obj->id,
+                        (int)this->obj->world_x, (int)this->obj->world_y);
+                    this->obj->die_die_die();
                 }
                 return 0;
             }
