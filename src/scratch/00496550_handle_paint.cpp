@@ -31,8 +31,28 @@
 // - reused one function-scope panel/node pair with while loops; output was a
 //   duplicate, so the ordinary scoped for loops remain authoritative.
 // - tested the natural loop-continue spelling for the per-child paint gate;
-//   this follows the binary's skip-paint branch before the timing calls and
-//   reduced the mismatch from 158 to 133 bytes.  Retained as the best source.
+//   it reduced the mismatch from 158 to 133 bytes, but it skips the oracle's
+//   child-end timing call and is not behavior-preserving.  It remains only a
+//   diagnostic codegen result, not the authoritative source model.
+//
+// Fresh bounded pass (sa-4bac357f):
+// - revalidated the original call set, virtual slots, frame, and boundary.
+// - tested cursor and timestamp declaration scope/order, positive versus
+//   nested paint guards, a proven skip label, and register-qualified locals.
+//   These variants were duplicate or worse codegen.
+// - restored the positive paint guard.  It preserves the oracle's unconditional
+//   child-end timing call when a child is not painted.  It remains nonexact at
+//   430 bytes with 158 differing bytes; no source variant reached MATCH.
+//
+// Fresh bounded pass (sa-cfede6b5-r1):
+// - binding child_end - child_start to a typed elapsed local before the
+//   main/map exclusion restored the original 425-byte size and instruction
+//   order.  The behavior-preserving result is 34 differing bytes with all
+//   calls, frame, and CFG signals exact; the remaining difference is register
+//   coloring of this and the child cursors.
+// - typed the proven TRIBE_Screen_Game fields and tested receiver aliases,
+//   loop forms, declaration scope, and period helper declarations.  They were
+//   unchanged or worse.  Keep the elapsed form as the clean natural source.
 
 #include <windows.h>
 #include <stdio.h>
@@ -79,9 +99,13 @@ public:
     virtual long handle_size(long, long);
     virtual long handle_paint();
 
-    char gap_004[0x1C];
+    char gap_004[0x14 - 4];
+    long width;                         // +0x14
+    long height;                        // +0x18
+    char gap_01C[4];
     TDrawArea* render_area;             // +0x20
-    char gap_024[0x14];
+    RECT rect;                            // +0x24
+    char gap_034[4];
     int panel_mode;                     // +0x38
     TPanel* curr_child;                 // +0x3C
     TPanel* panel_40;                   // +0x40
@@ -199,15 +223,15 @@ long TRIBE_Screen_Game::handle_paint() {
             debug_timeGetTime(s_scr_game_cpp, 0x5C9);
         TPanel* panel = node->panel;
 
-        if (!draw_all_children && panel != this->curr_child) {
-            continue;
+        if (draw_all_children || panel == this->curr_child) {
+            panel->handle_paint();
         }
-        panel->handle_paint();
 
         unsigned long child_end =
             debug_timeGetTime(s_scr_game_cpp, 0x5D0);
+        unsigned long elapsed = child_end - child_start;
         if (panel != this->main_view && panel != this->map_view) {
-            other_time += child_end - child_start;
+            other_time += elapsed;
         }
     }
 
