@@ -32,6 +32,17 @@
 //   newArtifact=ebx, product=edi CSE across the ceil call via the artifactUnits
 //   local).  Current best: 2245/2241 bytes (+4), frame 0x2C/0x2C, 69/69 calls,
 //   exact CFG, 760 positional diff bytes (was 1998), edit diff 230.
+// BINARY NOTE: the original balance block keeps numAGroups at [esp+18h],
+// newArtifact at [esp+10h], and the zero value in EBP across all three ceil
+// paths.  The clean source below reaches the same frame and call surface, but
+// VC5 selects the opposite two homes and rematerializes zero after __ftol.
+// BINARY NOTE: the original carries numAGroups into the workingArea index;
+// there is no reset before that loop.  Keep this shipped behavior.
+// LIKELY INTENT: the balance block is a direct group-count calculation with
+// short-lived remainder values.  Named product and max-bound locals preserve
+// the closest clean VC5 basin, even though direct expressions are simpler.
+// Probe summary: 20 evidence-led local, predicate, loop, declaration, and
+// expression variants were equal or worse.  The home swap remains unresolved.
 // Remaining leads (allocator coloring, not structure):
 // 1. numAGroups/newArtifact stack-home swap: rebuilt homes numAGroups at
 //    [esp+10h] and newArtifact at [esp+18h]; original has them swapped.
