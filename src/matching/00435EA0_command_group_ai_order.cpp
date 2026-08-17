@@ -40,11 +40,25 @@
 //   restored.  A 24-variant priority/count/owner/player permutation lab kept
 //   size, frame, and calls exact but found no exact code; its best was 55 bytes.
 //   The clean typed PDB-plausible source remains the best living reconstruction.
+// - Follow-up probes in this claim tested player-first and player-plus-early-
+//   count packet orders (58 and 55 bytes), a named log-player local, register
+//   hints, signed packet-byte fields, and historical local-string context.
+//   The local, register, and signed-field forms were compiler duplicates; the
+//   string form changed only relocation encoding.  All were restored.
+// - Final unchanged validation remains 315 bytes, frame 0x8, four ordered
+//   direct calls, and 38 differing bytes from 00435F13.  The unresolved basin
+//   is still packet-store scheduling; next evidence should be original source
+//   or a new supported VC5 context donor, not opaque steering.
+// - New claim found the natural declaration-order packet stores: command,
+//   player, issuer, count, order type, priority, target, owner, coordinates,
+//   range, and flags.  This typed source matches all 315 bytes with the
+//   existing object lookup and logging dispatch; no steering artifacts remain.
 
 #include <stdlib.h>
 
-#define STR_SEND_CMD_GROUP_AI_ORDER ((const char*)0x00583E78)
-#define STR_X                       ((const char*)0x00583B74)
+#define STR_SEND_CMD_GROUP_AI_ORDER \
+    "      >SEND CMD GRP AI ORD (PLR=%d, TYP=%d, ISS=%d, CNT=%d, REC=%s, TAR=%s)"
+#define STR_X "X"
 
 class RGE_Master_Static_Object {
 public:
@@ -128,20 +142,20 @@ void RGE_Command::command_group_ai_order(
 
             RGE_Command_Group_AI_Order* packet =
                 (RGE_Command_Group_AI_Order*)buf;
+            packet->command = 0x11;
+            packet->player_id = (unsigned char)player;
             packet->issuer = (unsigned char)issuer;
+            packet->recipient_count = (unsigned char)list_num;
+            packet->orderType = (short)order_type;
             packet->orderPriority = order_priority;
+            packet->target = target;
             packet->targetOwner = (unsigned char)target_owner;
             packet->targetX = target_x;
             packet->targetY = target_y;
-            packet->target = target;
             packet->targetZ = target_z;
             packet->range = range;
-            packet->command = 0x11;
-            packet->player_id = (unsigned char)player;
-            packet->orderType = (short)order_type;
             packet->immediate = immediate;
             packet->inFront = in_front;
-            packet->recipient_count = (unsigned char)list_num;
 
             RGE_Static_Object* target_obj = this->world->object(target);
             const char* target_name;
