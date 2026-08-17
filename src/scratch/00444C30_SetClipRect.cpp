@@ -56,6 +56,21 @@
 // alias entered a 218-byte structural basin. Splitting old/new manager aliases
 // and direct member reads were 21-byte duplicates. Typed int constructor locals
 // regressed to 215 bytes. The clean alias/tagRECT source is restored.
+// Fresh claim probes: a custom-flag source-shape lab covered Width/Height type,
+// constructor spelling, SetSpanRegions receiver, and manager field variants.
+// All 24 invariant-valid variants stayed in the 21-byte alias basin or the
+// known 28-byte direct-call basin. A second 96-variant lab found no change from
+// register hints, int/long Num_Lines, or inherited versus inline VSList.
+// A 256-sample ambient declaration sweep produced one unchanged 21-byte group.
+// Real Windows RECT plus windows.h, string.h, and stdlib.h context also stayed
+// in the same groups. Fresh receiver aliases, full Drawarea method declarations,
+// and a direct-call reassignment found no closer natural source. The compare
+// operand reversal remains 23 bytes. The clean 21-byte source is restored.
+// Fresh claim probes: a local Height inside the non-null manager guard matched
+// the original compare load colors, but total drift stayed 21 bytes. Local
+// Width/Height constructor forms, long field types, fresh RECT/manager aliases,
+// and equal-width ABI parameter reordering were duplicate or worse. Direct
+// SetSpanRegions remained 28 bytes. The clean typed-RECT source is restored.
 
 class VSpan_Node;
 
