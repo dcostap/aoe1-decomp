@@ -78,15 +78,30 @@
 // parameter-home index, loop-local compare, declaration-order, update-order,
 // const-owner, and split-initialization forms either widened the body or
 // reproduced the 219B/37 basin. The clean typed source remains authoritative.
+// 2026-08-17 deep stat_obj/scenario context pass: replaced the anonymous local
+// vtable pads with the donor-backed RGE_Static_Object prefix, the minimal
+// stat_obj RGE_Player destructor/field surface, the one-slot polymorphic
+// RGE_Game_World surface, and the real RGE_Object_List load header. These
+// canonical context changes were codegen-neutral and retained the 219B/37
+// basin. A full named player prefix and full world virtual ordering were also
+// neutral. An owner reference or const pointer widened to 147 bytes. The
+// explicit parameter-home index update, both alone and with a const saved id,
+// widened to 227/190 bytes. Split owner/world initialization and const saved
+// object-id forms were neutral. No policy-valid owner/index lifetime form moved
+// the ESI-owner versus EDX-compare tail basin; the canonical context is kept.
 
 class RGE_Static_Object;
 class RGE_Sprite;
 class RGE_Master_Static_Object;
 class RGE_Player;
 class RGE_Game_World;
+class RGE_Object_Node;
 
 class RGE_Object_List {
 public:
+    virtual void load(unsigned char flag, int file, RGE_Game_World* world);
+    void* list;
+    short number_of_objects;
     RGE_Static_Object* find_by_id(long id);
 };
 
@@ -171,7 +186,8 @@ public:
 
 class RGE_Game_World {
 public:
-    char gap_00[0x3C];
+    virtual void data_load_world();
+    char gap_04[0x38];
     short player_num;
     char gap_3E[0x02];
     RGE_Player** players;
@@ -179,7 +195,8 @@ public:
 
 class RGE_Player {
 public:
-    char gap_00[0x28];
+    virtual ~RGE_Player();
+    char gap_04[0x24];
     RGE_Object_List* objects;
     RGE_Object_List* sleeping_objects;
     RGE_Object_List* doppleganger_objects;
@@ -191,60 +208,68 @@ public:
 
 class RGE_Static_Object {
 public:
-    virtual void vf00();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
-    virtual void vf20();
-    virtual void vf24();
+    virtual ~RGE_Static_Object();
+    virtual void recycle_in_to_game(RGE_Master_Static_Object* master,
+                                    RGE_Player* player, float x, float y,
+                                    float z);
+    virtual void recycle_out_of_game();
+    virtual void draw();
+    virtual void shadow_draw();
+    virtual void normal_draw();
+    virtual void draw_front_frame();
+    virtual void draw_back_frame();
+    virtual void draw_frame();
+    virtual unsigned char update();
     virtual void check_damage_sprites();
-    virtual void vf2C();
-    virtual void vf30();
-    virtual void vf34();
+    virtual void rehook();
+    virtual void save(int file);
+    virtual float teleport(float x, float y, float z);
     virtual void new_sprite(RGE_Sprite* sprite);
-    virtual void vf3C();
-    virtual void vf40();
-    virtual void vf44();
-    virtual void vf48();
-    virtual void vf4C();
-    virtual void vf50();
-    virtual void vf54();
-    virtual void vf58();
-    virtual void vf5C();
-    virtual void vf60();
-    virtual void vf64();
-    virtual void vf68();
-    virtual void vf6C();
-    virtual void vf70();
-    virtual void vf74();
-    virtual void vf78();
-    virtual void vf7C();
-    virtual void vf80();
-    virtual void vf84();
-    virtual void vf88();
-    virtual void vf8C();
-    virtual void vf90();
-    virtual void vf94();
-    virtual void vf98();
-    virtual void vf9C();
-    virtual void vfA0();
-    virtual void vfA4();
-    virtual void vfA8();
-    virtual void vfAC();
-    virtual void vfB0();
-    virtual void vfB4();
-    virtual void vfB8();
-    virtual void vfBC();
-    virtual void vfC0();
-    virtual void vfC4();
-    virtual void vfC8();
-    virtual void vfCC();
-    virtual int explore_terrain(RGE_Player* player, unsigned char mode, int value);
-    virtual void unexplore_terrain(RGE_Player* player, unsigned char mode, int value);
+    virtual void add_overlay_sprite();
+    virtual void remove_overlay_sprite();
+    virtual void change_ownership(RGE_Player* player);
+    virtual void modify();
+    virtual void modify_delta();
+    virtual void modify_percent();
+    virtual void transform();
+    virtual void copy_obj();
+    virtual void set_object_state(unsigned char state);
+    virtual void remove_visible_resource();
+    virtual void create_doppleganger_when_dying();
+    virtual void destroy_obj();
+    virtual void die_die_die();
+    virtual void damage();
+    virtual float calculateDamage();
+    virtual void rotate(long angle);
+    virtual unsigned char can_attack();
+    virtual void set_attribute();
+    virtual void set_attribute_amount();
+    virtual int heal(int amount, int max_amount);
+    virtual unsigned char heal(float amount);
+    virtual int canRepair();
+    virtual void notify_of_relation();
+    virtual void do_command();
+    virtual void move_to();
+    virtual void work();
+    virtual void stop();
+    virtual void set_attack();
+    virtual void play_command_sound();
+    virtual void play_move_sound();
+    virtual void new_angle(float angle);
+    virtual RGE_Static_Object* spawn_death_obj();
+    virtual void* get_command_master();
+    virtual void set_being_worked_on();
+    virtual void release_being_worked_on();
+    virtual unsigned char is_moving();
+    virtual RGE_Static_Object* get_target_obj();
+    virtual void enter_obj();
+    virtual void exit_obj();
+    virtual int explore_terrain();
+    virtual void unexplore_terrain();
+    virtual void* get_los_table();
+    virtual int inAttackRange(RGE_Static_Object* object);
+    virtual unsigned char underAttack();
+    virtual void setUnderAttack(unsigned char value);
 
     long id; // +0x04
     RGE_Master_Static_Object* master_obj; // +0x08
