@@ -46,6 +46,23 @@
 // - separate target/result locals with a shared status tail reproduced the
 //   prior 350-byte frontier; rolled back. The clean pointer-result source is
 //   still the best plausible candidate.
+// - fresh worker probes: direct success returns (245 bytes), separate target
+//   and status locals (287-329 bytes), register-qualified status (287 bytes),
+//   labeled literal-success tails (156 bytes), and dead-parameter status reuse
+//   (329 bytes) all worsened CFG or the exact body prefix; each was rolled back.
+// - revisit probes: nested guards and direct-return variants widened the CFG
+//   (181-329 bytes), while the pointer truth return reached 27 bytes; each was
+//   rolled back. Marking convert virtual restored the original U-decorated ABI
+//   symbol with unchanged code. The typed RGE_Combat_Object base also leaves
+//   the 20-byte frontier unchanged and is retained for object ownership.
+// - independent revisit: routing make_action null to the shared end reached
+//   331 bytes but widened the diff to 49. An explicit final truth guard reached
+//   27, a late scalar status reached 231, keeping the target on success reached
+//   34, and a direct constructor-failure return reached 160. All probes moved
+//   the natural body or worsened the tail; restore the pinned 333-byte source.
+// - final clean validation retains the 333-byte natural pointer-result build:
+//   all 16 calls and the first 226 bytes align, but the success/failure tail
+//   still emits `mov esi,1; mov eax,esi` instead of the oracle's `mov eax,1`.
 // FLAGS: config/flags/004CB1B0_convert.rsp
 
 class RGE_Static_Object;
@@ -100,7 +117,7 @@ public:
     void delete_list();
 };
 
-class TRIBE_Combat_Object {
+class RGE_Combat_Object {
 public:
     virtual void vf000();
     char pad_004[0x0C - 0x04];
@@ -145,7 +162,11 @@ public:
     virtual void pad20C();
     virtual RGE_Task* make_action(RGE_Static_Object*, float, float, int);
 
-    int convert(int object_id, int force);
+};
+
+class TRIBE_Combat_Object : public RGE_Combat_Object {
+public:
+    virtual int convert(int object_id, int force);
 };
 
 struct OwnerData {
