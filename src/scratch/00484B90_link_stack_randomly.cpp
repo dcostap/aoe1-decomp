@@ -210,6 +210,13 @@ struct RGE_Elevation_Info {
 // current clean direct-field source. No repository-supported TU declaration,
 // header, macro, donor-order, type-surface, or flag context selected the
 // oracle's height-first commutative load order. Keep the baseline unchanged.
+// Claim sa-a51b79c7-r1: 14 focused probes rechecked the two-byte frontier.
+// Natural products, map_size temporaries, PDB-like local names, int locals,
+// inline base getters, and count lifetimes kept the 234-byte width-first basin.
+// Swapped dimension declarations fixed the terminal order but broke the earlier
+// PDB-proven height-first load. The terrain donor's do/while changed the whole
+// function. The exact adjacent-field overlay remains rejected raw plumbing.
+// Restore the canonical float Map_Stack and direct PDB-named base fields.
 class RGE_RMM_Elevation_Generator : public RGE_Random_Map_Module {
 public:
     RGE_Elevation_Info info;
