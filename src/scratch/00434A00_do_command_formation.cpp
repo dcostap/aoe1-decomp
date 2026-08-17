@@ -10,27 +10,26 @@
 //   making the zero-alternate arm the inline arm recovered the original shared
 //   FPU tail and exact 775-byte size.
 // - Explicit packet/self aliases, packet-plus-one cursors, and removal of the
-//   persistent units base were codegen-neutral or worse.  Binding the proven
-//   -1/-1.5/-2 constants to DAT_0056f4f4/f8/fc is retained as canonical global
-//   ownership, though it did not move the current metric.
-// - Current source is a natural typed reconstruction with exact frame, CFG
-//   signals, and six-call multiset; 709 strict bytes remain, beginning in the
-//   prologue/register basin at 00434A03 and extending through shifted blocks.
+//   persistent units base were codegen-neutral or worse.  Ghidra's recovered
+//   literal negative constants support -1/-1.5/-2 rather than mutable globals.
+// - The natural reconstruction has exact frame, size, CFG signals, protected
+//   ABI decoration, and six-call multiset; 347 strict bytes remain.
 // - Reused one typed unit cursor across both scans to mirror the original
 //   EDI cursor and saved-base lifetime; codegen was unchanged, so the clean
 //   separate-cursor source remains the best reconstruction.
-// - Reordered the first switch's natural 2/3 and 1/4/5 case groups to follow
-//   the original jump-table block placement; strict bytes stayed at 709 and
-//   the edit/resync diagnostic improved only, so restored the clean order.
-// - Moved unit_num and units into the unit-count guard to mirror the original
-//   post-compare home stores; this worsened strict diff to 718 and was restored.
+// - Reordered the first switch's 2/3 and 1/4/5 groups to match the original
+//   literal blocks; this improved strict bytes from 363 to 355.
+// - Moved only the second units assignment into its positive-count guard.  It
+//   restored the original post-jle home store and improved strict bytes to 347.
 // - Reused the named units cursor itself across both scans and reset it from
 //   command->units; this moved the outer cursor into the original EDI/base-save
 //   topology and reduced strict diff from 709 to 363 bytes.
+// - Twenty focused probes tested switch scopes, update spellings, local order,
+//   bool width, ABI access, flags, and standard-header context.  None removed
+//   the six-instruction common-tail difference in the second switch.
 
 #include <math.h>
 #pragma intrinsic(sqrt)
-#include "../../include/game_globals.h"
 
 struct RGE_Obj_Info {
     int id;
@@ -85,6 +84,7 @@ public:
     virtual ~RGE_Command();
     char gap_04[4];
     void* world;
+protected:
     RGE_Static_Object* get_obj(RGE_Obj_Info info);
     void do_command_formation(RGE_Command_Formation* command);
 };
@@ -123,22 +123,22 @@ void RGE_Command::do_command_formation(RGE_Command_Formation* command)
             adjusted_y = 1.0f;
             temp_x = 1.0f;
             break;
+        case 2:
+        case 3:
+            adjusted_y = 2.0f;
+            temp_x = 2.0f;
+            break;
         case 1:
         case 4:
         case 5:
             adjusted_y = 1.5f;
             temp_x = 1.5f;
             break;
-        case 2:
-        case 3:
-            adjusted_y = 2.0f;
-            temp_x = 2.0f;
-            break;
         }
 
         int index = 0;
-        units = command->units;
         if (index < unit_num) {
+            units = command->units;
             do {
                 RGE_Static_Object* object = this->get_obj(*units);
                 if (object != 0) {
@@ -161,23 +161,23 @@ void RGE_Command::do_command_formation(RGE_Command_Formation* command)
                         switch (command->formationID) {
                         case 0:
                             temp_count += adjusted_y;
-                            adjusted_y -= DAT_0056f4f4;
-                            adjusted_x += temp_x;
-                            temp_x -= DAT_0056f4f4;
+                            adjusted_y = adjusted_y - -1.0f;
+                            adjusted_x = adjusted_x + temp_x;
+                            temp_x = temp_x - -1.0f;
                             break;
                         case 1:
-                            temp_count += adjusted_y;
-                            adjusted_y -= DAT_0056f4f8;
-                            adjusted_x -= temp_x;
-                            temp_x -= DAT_0056f4f8;
+                            temp_count = temp_count + adjusted_y;
+                            adjusted_y = adjusted_y - -1.5f;
+                            adjusted_x = adjusted_x - temp_x;
+                            temp_x = temp_x - -1.5f;
                             break;
                         case 2:
                             temp_count += adjusted_y;
-                            adjusted_y -= DAT_0056f4fc;
+                            adjusted_y = adjusted_y - -2.0f;
                             break;
                         case 3:
                             adjusted_x += temp_x;
-                            temp_x -= DAT_0056f4fc;
+                            temp_x = temp_x - -2.0f;
                             break;
                         case 5:
                             temp_count -= adjusted_y;
@@ -186,8 +186,8 @@ void RGE_Command::do_command_formation(RGE_Command_Formation* command)
                                 alternate = 1;
                             } else {
                                 adjusted_x += temp_x;
-                                temp_x -= DAT_0056f4f8;
-                                adjusted_y -= DAT_0056f4f8;
+                                temp_x = temp_x - -1.5f;
+                                adjusted_y = adjusted_y - -1.5f;
                                 alternate = 0;
                             }
                             break;
@@ -198,8 +198,8 @@ void RGE_Command::do_command_formation(RGE_Command_Formation* command)
                                 alternate = 1;
                             } else {
                                 adjusted_x += temp_x;
-                                temp_x -= DAT_0056f4f8;
-                                adjusted_y -= DAT_0056f4f8;
+                                temp_x = temp_x - -1.5f;
+                                adjusted_y = adjusted_y - -1.5f;
                                 alternate = 0;
                             }
                             break;
