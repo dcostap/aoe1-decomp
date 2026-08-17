@@ -132,6 +132,16 @@
 //   improved the field-owned source to diff 15 / 93.90% shape. Explicit calls
 //   were duplicate. The reduced source below keeps canonical Map_Stack field
 //   ownership and no invented aggregate; residual drift is frame and color.
+// - sa-12f952f6-r1 H1-H20: no supported declaration or lifetime model moved the
+//   clean field-owned source out of the 0x964 frame basin. Reordering, sharing,
+//   nesting, and widening the real counters, pointer aliases, typed x aliases,
+//   pair-cursor scopes, and protected access were neutral. A scalar offset
+//   stayed register-based and changed the pair CFG; it did not explain the
+//   target dword at -0x964. The y-field call spelling improved diff 15 to 13
+//   but did not move the frame, and remains a shipped offset fact rather than
+//   a local-layout explanation. PDB/Ghidra show only sub_stacks plus the
+//   compiler-generated outer state; no extra source local owns the frame word.
+//   Restored the pinned clean source. The 0x968 frame remains unresolved.
 
 extern int __cdecl debug_rand(char* file, int line);
 
