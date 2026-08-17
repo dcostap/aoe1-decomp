@@ -24,10 +24,12 @@
 //   recovered the original pre-compare zero/store topology and reduced drift.
 // - Tested a natural successful-palette scope, absolute global spelling, nested
 //   draw guard, declaration order, and a result alias; only the reset changed code.
-// left in scratch: remaining drift is literal relocation, branch displacement,
-// allocation-block scheduling, and gamma-table register coloring; not accepted-drift.
-// The gamma-table record has a binary-proven packed link at byte three and an
-// eight-byte stride. Keep this odd layout named rather than using raw casts.
+// - Twenty distinct probes were run. A natural counted loop, typed result local,
+//   and padded eight-byte gamma record reduced the mismatch to four bytes.
+// - A 16-variant local lab found no exact variant. Its best invariant result had
+//   no exact match after relocation-aware review, so it was not promoted.
+// - The remaining four bytes are gamma-table interior-pointer displacements.
+//   Keep the typed record and do not replace it with raw cursor arithmetic.
 
 #include <string.h>
 
@@ -53,11 +55,11 @@ struct GammaEntry {
     unsigned char red;
     unsigned char green;
     unsigned char blue;
+    unsigned char pad_03;
     int next_index;
-    unsigned char pad_07;
 };
 #pragma pack(pop)
-extern GammaEntry gamma_table[];
+extern const GammaEntry gamma_table[];
 struct DrawSystem {
     char gap_000[0x478];
     unsigned char DrawType;
@@ -74,14 +76,14 @@ void* ReadPalette(char* filename, long res_id, int do_gamma)
     unsigned char* data;
     void* own_mem = 0;
     void* hpal = (void*)-1;
-    struct PaletteSizes { int resSize; int local_4; } sizes;
+    void* result = 0;
+    int local_4;
     char* tok = 0;
     int n = 0;
     struct LOGPAL { unsigned short ver; unsigned short cnt; unsigned char e[1]; };
     LOGPAL* lp = 0;
     int i = 0;
     unsigned char* out = 0;
-    sizes.resSize = 0;
     if (filename && *filename && shape_file_first) {
         int fd = _open(filename, 0x8000);
         if (fd != -1) {
@@ -97,10 +99,10 @@ void* ReadPalette(char* filename, long res_id, int do_gamma)
         }
     }
     if (!own_mem && res_id != -1) {
-        data = RESFILE_load(0x62696e61, res_id, &hpal, &sizes.local_4);
+        data = RESFILE_load(0x62696e61, res_id, &hpal, &local_4);
         if (!hpal) {
-            own_mem = malloc(sizes.local_4);
-            memcpy(own_mem, data, sizes.local_4);
+            own_mem = malloc(local_4);
+            memcpy(own_mem, data, local_4);
             hpal = (void*)1;
         } else {
             own_mem = data;
@@ -121,37 +123,43 @@ void* ReadPalette(char* filename, long res_id, int do_gamma)
         i = 0;
         lp->cnt = (unsigned short)n;
         lp->ver = 0x300;
+        if (n <= 0) goto palette_entries_done;
         out = lp->e + 1;
-        for (; i<n; ++i) {
-            tok = strtok(0, seps); if (!tok) break; out[-1] = (unsigned char)atoi(tok);
-            tok = strtok(0, seps); if (!tok) break; out[0] = (unsigned char)atoi(tok);
-            tok = strtok(0, seps); if (!tok) break; out[1] = (unsigned char)atoi(tok);
+        while (1) {
+            tok = strtok(0, seps); if (!tok) goto palette_entries_done; out[-1] = (unsigned char)atoi(tok);
+            tok = strtok(0, seps); if (!tok) goto palette_entries_done; out[0] = (unsigned char)atoi(tok);
+            tok = strtok(0, seps); if (!tok) goto palette_entries_done; out[1] = (unsigned char)atoi(tok);
             out[2] = 0;
             if (i == n-1) res_id = 1;
+            ++i;
             out += 4;
+            if (i >= n) goto palette_entries_done;
         }
+palette_entries_done:
+        ;
         if (res_id && n == 0x100 && global_gamma_index >= 0) {
             int idx = global_gamma_index;
-            GammaEntry* g = gamma_table;
+            const GammaEntry* g = gamma_table;
             while (idx >= 0) {
-                ((unsigned char*)lp)[idx*4+4] = g->red;
-                ((unsigned char*)lp)[idx*4+5] = g->green;
-                ((unsigned char*)lp)[idx*4+6] = g->blue;
-                ((unsigned char*)lp)[idx*4+7] = 0;
+                lp->e[idx*4] = g->red;
+                lp->e[idx*4+1] = g->green;
+                lp->e[idx*4+2] = g->blue;
+                lp->e[idx*4+3] = 0;
                 idx = g->next_index;
                 ++g;
             }
         }
         if (res_id) {
-            sizes.resSize = (int)CreatePalette(lp);
-            if (do_gamma &&
-                (rge_base_game->draw_system->DrawType == 1 ||
-                 rge_base_game->draw_system->ScreenMode == 1))
-                CreateIdentityPalette((void*)sizes.resSize);
+            result = CreatePalette(lp);
+            if (do_gamma) {
+                if (rge_base_game->draw_system->DrawType == 1 ||
+                    rge_base_game->draw_system->ScreenMode == 1)
+                    CreateIdentityPalette(result);
+            }
         }
         free(lp);
     }
 cleanup:
     if (hpal == (void*)1) free(own_mem);
-    return (void*)sizes.resSize;
+    return result;
 }
