@@ -27,6 +27,19 @@
 //   79.84% shape; the sparse game-end switch then reaches 877 B and 86.75%.
 //   Score-relative byte-pointer overlays changed no useful anchor and were
 //   rolled back.  The remaining drift is the player-field EBP anchor.
+// - Sender audit: direct indexed access to the canonical player record makes
+//   VC5 anchor EBP at `score` (`lea [esp+134h]`) instead of `winner`.
+//   It reduces the strict diff to 135 bytes, but moves the world-player load
+//   and time initialization after the team/outcome stores.  That conflicts
+//   with the original fault and store order, so the typed record-pointer
+//   baseline remains authoritative.
+// - A PDB-supported sparse-switch case order reduces that direct-indexed test
+//   to 130 bytes.  It does not recover the sender loop and was not retained.
+// - Natural pointer scope, declaration order, assignment order, guarded
+//   while/for forms, and history-loop forms did not recover the exact sender.
+//   The supported lifetime conclusion is that score must stay live as the
+//   loop's address anchor, but the exact source ownership that also preserves
+//   later sender scheduling is unresolved.
 
 #include <string.h>
 
