@@ -5,7 +5,7 @@
 // attempt 3: use compound yline += member spelling; no codegen change.
 // attempt 4: delaying hotspot calculations worsened prologue/register allocation; rolled back.
 // attempt 5: force yline parameter stack-slot store through cast assignment; no change.
-// attempt 6: volatile yline sum forced original yline add/store schedule; kept.
+// attempt 6: a volatile yline sum forced the original store schedule; diagnostic only.
 // attempt 7: combine clipping predicates made no codegen change.
 // attempt 8: split width/height temps before hotspot expressions; no codegen change.
 // attempt 9: /Ob0 made no codegen change; /O1 produced a too-small 358-byte .text and was discarded.
@@ -30,10 +30,16 @@
 // current claim probes: short hotspot/coordinate locals, mixed short/full locals, a focused
 // arithmetic-order lab, parenthesized/split bound subtraction, long locals, direct shape
 // reads, and entry-scope declarations all either duplicated the clean code or moved farther.
-// left in scratch: canonical typed source is validated at 379 bytes with exact
-// call set/boundary. Null-link stores before scalar fields and direct Select_Box
-// rereads reproduce the long tail; remaining drift is the localized width/height
-// versus hotspot load order at +0037..+0057. The lab's best order did not improve it.
+// worker pass: direct while(cur->Next) traversal improved the current 379-byte source
+// by one positional byte and restored the original current-pointer reload.
+// worker pass: complete DClipInfo_List fields, all local declaration and assignment
+// orders, standard-header and ambient-context sweeps, and width/height locals did not
+// change the bound/hotspot basin. Volatile member reads improved the metric to 26 bytes,
+// but are not retained because they are compiler-steering barriers without behavior evidence.
+// revisit: a distinct adjusted-yline local, used for both clipping and list indexing,
+// recovers the original early parameter-home store and all bound/hotspot scheduling.
+// Exact validation: 379/379 bytes, 100% shape, one aligned GetNode call, and the
+// original owning symbol and boundary. No volatile access or compiler steering remains.
 
 struct Shape_Info {
     unsigned long Shape_Data_Offsets; // +0x00
@@ -71,16 +77,31 @@ struct DClipInfo_Node {
 
 class DClipInfo_List {
 public:
-    char gap_00[0x3C];
+    DClipInfo_Node** Zone_Ptrs;   // +0x00
+    int* Zone_Size_Ptrs;          // +0x04
+    int Used_Zones;               // +0x08
+    int Max_Zones;                // +0x0C
+    DClipInfo_Node* Free_Head;    // +0x10
+    int Free_Pool_Zone;           // +0x14
+    int Free_Pool_Index;          // +0x18
+    int Total_Blocks;             // +0x1C
+    int Free_Blocks;              // +0x20
+    int Default_Grow_Size;        // +0x24
+    int Element_Size;             // +0x28
+    int Alloc_Count;              // +0x2C
+    int Dealloc_Count;            // +0x30
+    int NewZone_Count;            // +0x34
+    int Reset_Count;              // +0x38
     int SD_XMin;                 // +0x3C
     int SD_XMax;                 // +0x40
     int SD_YMin;                 // +0x44
     int SD_YMax;                 // +0x48
-    char gap_4C[0x50 - 0x4C];
+    int Max_Draw_Levels;         // +0x4C
     int Accept_Min_Level;        // +0x50
     int Accept_Max_Level;        // +0x54
     DClipInfo_Node** Draw_Clip_Nodes; // +0x58
-    char gap_5C[0x64 - 0x5C];
+    DClipInfo_Node** Draw_Level_Head; // +0x5C
+    DClipInfo_Node** Draw_Level_Tail; // +0x60
     int YLine_Offset;            // +0x64
     int YLine_Size;              // +0x68
     short* Select_Box;           // +0x6C
@@ -95,8 +116,7 @@ void DClipInfo_List::AddDrawNode(void* shape_base, Shape_Info* shape, int yline,
                                  int draw_flag, unsigned char* color_table, int xform_mask,
                                  int draw_level, int object_id)
 {
-    volatile int yline_tmp = this->YLine_Offset + yline;
-    yline = yline_tmp;
+    int yline_tmp = this->YLine_Offset + yline;
 
     if (draw_level > this->Accept_Max_Level)
         return;
@@ -115,22 +135,17 @@ void DClipInfo_List::AddDrawNode(void* shape_base, Shape_Info* shape, int yline,
 
     if (!(draw_x <= this->SD_XMax && right >= this->SD_XMin &&
           draw_y <= this->SD_YMax && bottom >= this->SD_YMin &&
-          yline >= 0 && yline < this->YLine_Size))
+          yline_tmp >= 0 && yline_tmp < this->YLine_Size))
         return;
 
     DClipInfo_Node* node = this->GetNode();
-    DClipInfo_Node** list = this->Draw_Clip_Nodes + yline;
+    DClipInfo_Node** list = this->Draw_Clip_Nodes + yline_tmp;
     DClipInfo_Node* cur = *list;
     if (cur == 0) {
         *list = node;
     } else {
-        DClipInfo_Node* next = cur->Next;
-        if (next != 0) {
-            do {
-                cur = next;
-                next = cur->Next;
-            } while (next != 0);
-        }
+        while (cur->Next != 0)
+            cur = cur->Next;
         cur->Next = node;
     }
 
