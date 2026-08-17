@@ -36,6 +36,17 @@
 // 14: inlined the typed format expression as the CreateWindowExA style
 //     argument; VC5 emitted the same 447-byte group, so the clean source is
 //     restored.
+// 15-18: restored the period ABI surfaces: virtual TPanel::setup with an
+//     unsigned-char flag, nested FormatType, Windows handle fields, and an
+//     unsigned draw_format.  These emitted the same 447-byte/92-byte group;
+//     the base-call target now has the original UAE/unsigned-char identity.
+// 19: the natural final ternary mask produced 106 bytes and was rolled back.
+// Current clean result: 447 bytes, 92 strict differing bytes, all nine calls
+// aligned.  The unresolved codegen lead is CreateWindowExA scheduling.
+// Final revalidation (claim sa-90eb1b0d-r1): unchanged source remains a
+// 447-byte mismatch with 92 differing bytes, 9/9 ordered calls aligned, and
+// first mismatch at +0x6B (CreateWindowExA setup). No policy-valid exact lead
+// was found; keep this natural typed reconstruction as the pinned source.
 
 #include <windows.h>
 #include <stdlib.h>
@@ -44,17 +55,13 @@ long pnl_sub_wnd_proc(void*, unsigned int, unsigned int, long);
 
 class TDrawSystem {
 public:
-    void* Inst;        // +0x00
+    HINSTANCE Inst;    // +0x00
 };
 
 class TDrawArea {
 public:
     TDrawSystem* DrawSystem; // +0x00
-    void* Wnd;               // +0x04
-};
-
-enum FormatType {
-    FormatMultiLine = 7
+    HWND Wnd;                // +0x04
 };
 
 class TPanel {
@@ -82,11 +89,15 @@ public:
     virtual void vf50();
     char gap_04[0x1C];
     TDrawArea* render_area; // +0x20
-    long setup(TDrawArea* p1, TPanel* p2, long p3, long p4, long p5, long p6, long p7);
+    virtual long setup(TDrawArea* p1, TPanel* p2, long p3, long p4, long p5, long p6, unsigned char p7);
 };
 
 class TEditPanel : public TPanel {
 public:
+    enum FormatType {
+        FormatMultiLine = 7
+    };
+
     char gap_24[0xF4 - 0x24];
     void* edit_wnd;             // +0xF4
     short fixed_len;            // +0xF8
@@ -105,7 +116,7 @@ public:
     FormatType format;          // +0x128
     void* font;                 // +0x12C
     char gap_130[0x144 - 0x130];
-    int draw_format;            // +0x144
+    unsigned int draw_format;   // +0x144
     int auto_sel;               // +0x148
 
     long setup(TDrawArea* p1, TPanel* p2, long p3, long p4, long p5, long p6, void* p7, short p8, char* p9, FormatType p10, int p11);
