@@ -42,6 +42,25 @@
 // - Final bounded pause: size/frame/saved-registers and all five ordered calls
 //   remain exact; the first unresolved hunk is coordinate register/liveness at
 //   004C230E, followed by health-bar scheduling.
+// - Fresh worker pass: cvdump confirms one named int local y0 at the incoming
+//   y home (+0x0c); x1, y1, and x2 are optimizer-only locals, as in draw_frame.
+//   The clean source already has the matching natural local model.
+// - Fresh probes tested y0 scope and initialization, direct and split x2
+//   arithmetic, direct coordinate expressions, declaration order, PDB parameter
+//   names, x2 reuse for the health bound, and health-local order.  Scope and
+//   arithmetic variants were codegen duplicates or worse.  x2 reuse improved
+//   shape but increased strict drift to 162 bytes; the clean 158-byte frontier
+//   remains the best natural result.
+// - Fresh pass final: all source variants were restored.  The unresolved hunk
+//   remains the post-get_frame register/liveness basin at 004C230E and the
+//   AddGDINode argument scheduler.  New compiler/TU evidence is needed.
+// - Revisit: restoring the full typed RGE_Static_Object surface from exact
+//   draw_frame was codegen-neutral.  Direct x2 evaluation still added a frame
+//   slot.  Splitting x1/y1 declarations and swapping their order were also
+//   duplicates.  A named x-coordinate alias worsened the strict diff to 199.
+//   The clean natural source remains the 158-byte frontier.
+// - Revisit probe: hoisting x1, y1, and x2 to function scope while retaining
+//   the named y0 local was codegen-neutral.  The clean source was restored.
 
 #include <stdlib.h>
 
