@@ -22,6 +22,14 @@
 // - Shared labels for observed radius paths reduced ftol calls and worsened structure;
 //   the diagnostic was rolled back because the source was not natural.
 // - Long casts for radius-2.5 coordinates emitted the same bytes as int casts.
+// - The original Ghidra/PDB symbol uses XYPoint reference parameters.  The body
+//   is unchanged with that ABI, and the rebuilt symbol now matches the target.
+// - Nineteen meaningful probes tested coordinate forms, declaration scope and
+//   order, loop forms, ABI, layout aliases, and TU header context.  None restored
+//   the six missing building-coordinate ftol sites or the 0x70 frame.
+// - Final clean source: 3551 rebuilt bytes, 0x6c frame, 91 calls, 3195 differing
+//   bytes.  Keep this natural typed reconstruction; do not retain metric-only
+//   aliases, labels, or volatility.
 
 #include <stdlib.h>
 
@@ -260,8 +268,8 @@ public:
     int resourceTypeToPlaceDropsiteBy(int type);
     int placementCode(int type);
 
-    void setupInfluenceMap(int mode, int objectType, XYPoint* unused,
-                           XYPoint* from, XYPoint* to);
+    void setupInfluenceMap(int mode, int objectType, XYPoint& unused,
+                           XYPoint& from, XYPoint& to);
 };
 
 extern "C" void __cdecl logCommonHistory(void* self, const char* format, ...);
@@ -275,9 +283,9 @@ extern float DAT_005755b0;
 extern float DAT_005755b4;
 
 void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
-                                                   XYPoint* unused,
-                                                   XYPoint* from,
-                                                   XYPoint* to)
+                                                   XYPoint& unused,
+                                                   XYPoint& from,
+                                                   XYPoint& to)
 {
     iMap->initialize(0x14);
     iMap->setUnchangeableLimit(0xff);
@@ -580,8 +588,8 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
 
     if (mode == 3 || mode == 4 || mode == 0) {
         RGE_Map* map = this->md->player->world->map;
-        for (int x = from->x; x <= to->x; x++) {
-            for (int y = from->y; y <= to->y; y++) {
+        for (int x = from.x; x <= to.x; x++) {
+            for (int y = from.y; y <= to.y; y++) {
                 unsigned char terrain = map->get_terrain((short)x, (short)y);
                 if (terrain == 1) {
                     XYPoint minTerrain;
