@@ -25,8 +25,18 @@
 // - best current reconstruction: 4331 rebuilt bytes vs 4235, 77.66% shape,
 //   29.67% exact-block coverage, 97.48% ordered-call similarity, frame 0x20
 //   vs 0x30.  One __ftol site and three call-site gaps remain; no exact match.
-// - direct uses of incoming param_1 are codegen-neutral to the callerID local;
-//   keep the direct parameter form as the simpler source.
+// - managed-array growth loops written as bounded for loops moved the clean
+//   source to 4281 bytes, 83.13% shape, and 43.85% exact-block coverage.
+// - 22 evidence-led probes covered call-arm structure, array ownership,
+//   parameter homes, block placement, and header context. Most were neutral.
+// - BINARY NOTE: the original has one extra far-victim coordinate __ftol call
+//   before the common coop-attack call. A volatile diagnostic reproduced the
+//   119-call surface, but it also changed cleanup and is not retained.
+// - remaining structural facts: the original frame is 0x30, its civilian
+//   explorer/difficulty blocks are cold at the tail, and the clean source is
+//   46 bytes longer with one missing __ftol call.
+// - the named callerID alias is part of the best codegen basin; direct
+//   parameter spelling tested separately but produced a weaker frontier.
 // - duplicated near/far coop-coordinate call blocks were tested from the
 //   original line bands.  A full duplicate added three ftol calls; a direct
 //   near victory call was folded back to the same missing-ftol result.  The
@@ -94,14 +104,9 @@ public:
             int new_size = index + 1;
             T* new_value = (T*)operator_new(new_size * sizeof(T));
             if (new_value != 0) {
-                int i = 0;
-                if (0 < this->maximumSizeValue) {
-                    do {
-                        if (new_size <= i) break;
-                        new_value[i] = this->value[i];
-                        i = i + 1;
-                    } while (i < this->maximumSizeValue);
-                }
+                for (int i = 0;
+                     i < this->maximumSizeValue && i < new_size; i++)
+                    new_value[i] = this->value[i];
                 operator_delete(this->value);
                 this->value = new_value;
                 this->maximumSizeValue = new_size;
@@ -115,14 +120,9 @@ public:
             int new_size = index + 1;
             T* new_value = (T*)operator_new(new_size * sizeof(T));
             if (new_value != 0) {
-                int i = 0;
-                if (0 < this->maximumSizeValue) {
-                    do {
-                        if (new_size <= i) break;
-                        new_value[i] = this->value[i];
-                        i = i + 1;
-                    } while (i < this->maximumSizeValue);
-                }
+                for (int i = 0;
+                     i < this->maximumSizeValue && i < new_size; i++)
+                    new_value[i] = this->value[i];
                 operator_delete(this->value);
                 this->value = new_value;
                 this->maximumSizeValue = new_size;
@@ -622,6 +622,7 @@ public:
 void TribeTacticalAIModule::notify(int param_1, int param_2, int param_3,
                                    long param_4, long param_5, long param_6)
 {
+    int callerID = param_1;
     int numberToRespond;
     RGE_Static_Object* targetObj;
     ulong entryTime;
@@ -629,7 +630,7 @@ void TribeTacticalAIModule::notify(int param_1, int param_2, int param_3,
     XYPoint attackPoint;
     XYZPoint point;
     XYZPoint point_fffffff0;
-    attackPoint.x = (int)this->md->aiPlayer->world->object(param_1);
+    attackPoint.x = (int)this->md->aiPlayer->world->object(callerID);
     if (param_3 != 0x72 && param_3 != 0x74 && attackPoint.x == 0) {
         return;
     }
@@ -695,7 +696,7 @@ void TribeTacticalAIModule::notify(int param_1, int param_2, int param_3,
         if (0 < this->civilians.numberValue) {
             do {
                 if (this->civilians.maximumSizeValue <= i) break;
-                if (this->civilians.value[i] == param_1) {
+                if (this->civilians.value[i] == callerID) {
                     explorerCount = this->civilianExplorers.numberValue;
                     i = 0;
                     if (explorerCount < 1) goto notify_difficulty;
@@ -705,14 +706,6 @@ void TribeTacticalAIModule::notify(int param_1, int param_2, int param_3,
             } while (i < this->civilians.numberValue);
         }
         goto notify_generic_unit;
-
-notify_explorer_scan:
-        do {
-            if (this->civilianExplorers.maximumSizeValue <= i) break;
-            if (this->civilianExplorers.value[i] == param_1) goto notify_generic_unit;
-            i = i + 1;
-        } while (i < explorerCount);
-        goto notify_difficulty;
 
 notify_generic_unit:
         if (callerObject->unitAI() != 0 && callerObject->unitAI()->currentOrder() != 0x2C1) {
@@ -727,6 +720,15 @@ notify_generic_unit:
             }
         }
         goto notify_after_owner;
+
+notify_explorer_scan:
+        do {
+            if (this->civilianExplorers.maximumSizeValue <= i) break;
+            if (this->civilianExplorers.value[i] == callerID)
+                goto notify_generic_unit;
+            i = i + 1;
+        } while (i < explorerCount);
+        goto notify_difficulty;
 
 notify_difficulty:
         difficulty = this->md->player->world->difficultyLevel();
@@ -826,6 +828,8 @@ notify_after_owner:
     RGE_Static_Object* victoryObject = this->md->object(
         -1, 0x6D, -1, -1, -1, -1, -1, -1, -1, -1);
     int responseDistance = 1000;
+    int coopX;
+    int coopY;
     if (victoryObject != 0) {
         float dx = victoryObject->world_x - targetObj->world_x;
         float dy = victoryObject->world_y - targetObj->world_y;
@@ -864,6 +868,8 @@ notify_after_owner:
             }
             numberToRespond = this->civilians.numberValue;
         }
+        coopY = (int)victoryObject->world_y;
+        coopX = (int)victoryObject->world_x;
     }
     else {
         int available;
@@ -875,18 +881,16 @@ notify_after_owner:
             available += this->numberSoldiersWithPriority(this->sn[0x14], -1, 0);
         }
         numberToRespond = (this->sn[0x13] * available) / 100;
+        if (victoryObject != 0) {
+            coopY = (int)victoryObject->world_y;
+            coopX = (int)victoryObject->world_x;
+        }
+        else {
+            coopY = (int)targetObj->world_y;
+            coopX = (int)targetObj->world_x;
+        }
     }
-
-    if (victoryObject != 0) {
-        this->checkForCoopAttack(targetObj->owner->id,
-                                 (int)victoryObject->world_x,
-                                 (int)victoryObject->world_y);
-    }
-    else {
-        this->checkForCoopAttack(targetObj->owner->id,
-                                 (int)targetObj->world_x,
-                                 (int)targetObj->world_y);
-    }
+    this->checkForCoopAttack(targetObj->owner->id, coopX, coopY);
 
     param_2 = 0;
     param_3 = 0;
@@ -920,7 +924,7 @@ notify_after_owner:
                     goto notify_try_attack;
                 }
 notify_try_attack:
-                if (this->workingArea[param_3] == param_1) {
+                if (this->workingArea[param_3] == callerID) {
                     if (unitObject->unitAI()->currentOrderPriority() != 100) {
                         point_fffffff0.x = (int)targetObj->world_x;
                         point_fffffff0.y = (int)targetObj->world_y;
