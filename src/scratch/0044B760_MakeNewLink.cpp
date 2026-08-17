@@ -31,6 +31,10 @@
 //   the natural ownership and reduced the diff to 44 bytes with 156 emitted
 //   instructions.  The remaining drift is the early EBX/EDI direction swap;
 //   the late store block is otherwise aligned except for that register role.
+// - Fresh matching pass: reusable parity locals, declaration and initialization
+//   order, update and store order, full PointMaker field types, and direct sum
+//   expressions were duplicate or worse basins.  The protected declaration
+//   restores the original IAEHXZ symbol without changing code bytes.
 
 extern int __cdecl debug_rand(char* param_1, int param_2);
 
@@ -73,6 +77,7 @@ public:
     int MaxNumberOfBranchLevels;
     int CurrentNumberOfBranchLevels;
 
+protected:
     int MakeNewLink();
 };
 
