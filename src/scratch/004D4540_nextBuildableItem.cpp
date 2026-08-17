@@ -110,6 +110,10 @@
 // TU CONCLUSION: No repository-supported translation-unit declaration, header,
 //     macro, class-surface, or neighboring-function context selects the
 //     oracle's jle/jmp normalization. Preserve the clean natural baseline.
+// OBJECT CONCLUSION: PDB confirms the named homes, both itemCost objects, line
+//     485 ownership for both strategic-number calls, and no block or inline
+//     record. FPO and current metadata match. No object evidence selects the
+//     oracle branch normalization.
 
 extern "C" char* __cdecl strncpy(char* dst, const char* src, unsigned int count);
 
