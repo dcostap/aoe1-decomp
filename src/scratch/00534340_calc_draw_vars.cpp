@@ -119,6 +119,9 @@
 // 61 differences, and 66.13% exact blocks.  The only farther variants were
 // restored.  The remaining gap is the EBP zero versus EDI divisor color and
 // the related clear-tail pop order.
+// Source-gate audit: the living body uses named members and one carried width.
+// It has no generic slots, raw addresses, cursor aliases, fake zero local, or
+// no-effect scaffold.  The clear arm keeps the observed natural zero stores.
 
 struct tagRECT {
     long left;
