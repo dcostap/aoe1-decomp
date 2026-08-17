@@ -114,6 +114,23 @@
 //     202B/198 diff. The blocker is the original pushed parameter-home and
 //     pending-x87 schedule. No natural, policy-valid exact lead remains.
 
+// sa-52a7dbef-r1 revisit 2026-08-17:
+//   - Re-audited the target and exact stat_obj range siblings 004C5E50 and
+//     004C5F00. The binary proves signed world-coordinate deltas, x abs before
+//     y abs, separate master radius subtraction, zero clamps, and
+//     x*x + y*y < range*range. It loads this->master_obj before other->master_obj.
+//     Radius reads are other X, this X, this Y, then other Y.
+//   - The target keeps the X fcomp status live while it computes
+//     `fsubr [esp+8]` for Y minus this Y and `fsub [ecx+34h]` for other Y.
+//     The X zero store follows that status transfer. PDB lines 3659-3660 place
+//     the complete Y expression before the X clamp. The current clean source
+//     retains Y-after-X-clamp order only because no natural form matched.
+//   - Ten new source checks covered decompiler local reuse, declaration order,
+//     Y-before-X evaluation, comparison and square order, grouped radii,
+//     the reviewed zero symbol, ternary/fabs abs forms, float radius sums,
+//     direct float radii, and master-pointer order. No exact or policy-valid
+//     push/home and fused-Y schedule appeared. All experiments were restored.
+
 // sa-39d1e9fa-r1 revisit 2026-08-17:
 //   - Read the complete local lessons, workflow, target history, negative
 //     evidence, target assembly, and exact neighboring stat_obj methods.
