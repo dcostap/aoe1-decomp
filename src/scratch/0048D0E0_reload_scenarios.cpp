@@ -10,6 +10,12 @@
 //   new_scenario_header(int) is the named virtual method for slot 0x38.
 // - binary note: `fd > -1` preserves the observed cmp -1/jle open-success form.
 // - binary note: the two initial scans use guarded do/while searches.
+// - BINARY NOTE: file_info begins 0x104 bytes after file_name.  The 260-byte
+//   file_name object is required; a 256-byte buffer rebuilds a 0x22C frame.
+// - frontier audit: the natural local, scope, declaration-order, _finddata_t,
+//   handle-width, and canonical virtual-surface probes retained 22 ordered
+//   calls and the 0x230 frame.  The remaining 10 bytes are only the swapped
+//   count and transient old-entry dword-home displacements.
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -96,7 +102,7 @@ public:
 
 void RGE_Scenario_File_Info::reload_scenarios()
 {
-    char file_name[256];
+    char file_name[260];
     struct _finddata_t file_info;
     long handle;
     long count;
