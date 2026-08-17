@@ -31,6 +31,11 @@
 //   form worsened the drift to 50 bytes; the other forms reproduced the same
 //   18-byte hunk.  The localized gap remains compiler scheduling, not ABI or
 //   ownership uncertainty.
+// - Follow-up claim probes: 20 distinct source, liveness, context, and flag
+//   hypotheses were compiled and checked.  Scoped pathing aliases, named
+//   globals, header changes, inline-depth and optimization pragmas, literal
+//   types, initializer-side dependencies, and scalar body stores did not beat
+//   the clean source.  All experiments were restored before final validation.
 
 #include <stdlib.h>
 #include <string.h>
