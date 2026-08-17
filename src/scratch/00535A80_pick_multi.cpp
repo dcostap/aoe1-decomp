@@ -24,6 +24,13 @@
 // codegen duplicates or regressed size. The retained source below is the
 // simplest typed reconstruction: the PDB-proven picked_obj local is function
 // scoped, while the score/count remain ordinary locals.
+// Current pass: the 495-byte baseline rebuilt with 9 aligned calls and no
+// frame/EH; strict diff is 213 bytes (43.0303%), first mismatch +0x0e.
+// Direct y1/x2 parameter-home reuse, a split 56-slot TPanel surface, coordinate
+// aliases, and register-qualified locals were codegen duplicates. A bool flag,
+// declaration-site pointer initialization, and explicit radius arms regressed.
+// The dx>=dy spelling alone reached 212 bytes but was not retained as a metric
+// variant. Final source is restored to the clean natural baseline.
 // Left in scratch: rebuilt size/calls/frame match, with exact first-pass and
 // later loop islands, but broad register/block-layout drift starts at the
 // initial y-coordinate load (original keeps y1 in EBX; rebuilt keeps y2).
