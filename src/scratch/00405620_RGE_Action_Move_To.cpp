@@ -79,6 +79,9 @@
 // 205B/53B. Restored the canonical zero-first if/else; no new source lead remains.
 // 2026-08-14 sa224b14d6-actmove: typed the action object's master as its moving-master base; VC5 emitted the
 // same 205B/47B tail. Restored the canonical action-master type; the shared EH epilogue remains unresolved.
+// 2026-08-16 sa-31364047-r1: fresh baseline reconfirmed 205B/47B. An explicit inner fallback goto worsened to
+// 205B/53B; exact numeric #line context was codegen-identical. Restored the clean typed if/else source; no new
+// period-plausible source lead found. Next evidence needed is a matching VC5 EH-tail context or original source.
 
 class RGE_Action_Object;
 class RGE_Sprite;
@@ -219,3 +222,8 @@ RGE_Action_Move_To::RGE_Action_Move_To(RGE_Action_Object* obj, RGE_Static_Object
         }
     }
 }
+
+// 2026-08-17 sa-84432c6c-r1: natural tail probes kept the clean 205B/47B basin.
+// Explicit return and label forms were codegen-identical. Master and move-sprite locals were also identical.
+// A member-RMW form reached 187B/37B and one shared epilogue, but it stored move_sprite before its null test.
+// That changed the proven branch-local stores, so it is diagnostic only. Restored this typed nested if/else.
