@@ -89,6 +89,11 @@
 // widened to 227/190 bytes. Split owner/world initialization and const saved
 // object-id forms were neutral. No policy-valid owner/index lifetime form moved
 // the ESI-owner versus EDX-compare tail basin; the canonical context is kept.
+// 2026-08-17 PDB-local audit: DIA names only obj_id and one player_id local;
+// player_id has one-byte type metadata at virtual-frame offset +8. This supports
+// the byte index and treats Ghidra's ushort uVar4 as a promotion temporary.
+// Natural one-byte player_id reconstructions widened to 227 bytes or changed
+// result allocation. The clean two-local form remains the only 219B/37 basin.
 
 class RGE_Static_Object;
 class RGE_Sprite;
