@@ -50,6 +50,11 @@
 //   load slot and list at +4.  A local canonical test worsened the body to
 //   46 bytes by reversing two late logger loads, so the narrow +8 field stub
 //   remains.  This target proves only number_of_objects at +8.
+// - Current pass: a natural indexed timing scan with a per-iteration indexed
+//   member access reproduces the timer block and reduces the gap from 30 to 6.
+// - Current pass: incrementing the player-list pointer before decrementing its
+//   remaining count reproduces the observed setup order and reduces the gap to
+//   2 bytes.  The remaining two bytes are the quotient sum load order.
 // BINARY NOTE: The executable reloads include_in_total after the first timer
 //   probe and performs the 8-byte cleanup after that reload.
 // LIKELY INTENT: The timer record is a typed 0x20-byte array.  The remaining
@@ -218,24 +223,19 @@ protected:
 void RGE_Base_Game::calc_timings()
 {
     unsigned long total_time = 0;
-    RGE_Timing_Info* timing = this->timings;
-    int count = 30;
-
-    do {
-        if (timing->is_summary == 0) {
-            timing->last_time = timing->accum_time;
-            timing->last_max_time = timing->max_time;
-            timing->accum_time = 0;
-            timing->max_time = 0;
-            timing->start_time = debug_timeGetTime(
+    for (int i = 0; i < 30; ++i) {
+        if (this->timings[i].is_summary == 0) {
+            this->timings[i].last_time = this->timings[i].accum_time;
+            this->timings[i].last_max_time = this->timings[i].max_time;
+            this->timings[i].accum_time = 0;
+            this->timings[i].max_time = 0;
+            this->timings[i].start_time = debug_timeGetTime(
                 (char*)0x57FB08, 0x12B5);
 
-            if (timing->include_in_total != 0)
-                total_time += timing->last_time;
+            if (this->timings[i].include_in_total != 0)
+                total_time += this->timings[i].last_time;
         }
-
-        ++timing;
-    } while (--count != 0);
+    }
 
     if (this->timings[0].start_time > 0) {
         this->timings[0].last_time = debug_timeGetTime(
@@ -294,8 +294,8 @@ void RGE_Base_Game::calc_timings()
 
         if (player_count > 1) {
             RGE_Player** players = this->world->players;
-            --player_count;
             ++players;
+            --player_count;
             do {
                 RGE_Player* player = *players;
                 ++players;
