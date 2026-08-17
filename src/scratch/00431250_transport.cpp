@@ -139,6 +139,16 @@
 // set_action is the canonical +208 virtual. RGE_Action now uses canonical
 // type(), work(), and typed object surfaces. The body remains 230 bytes with
 // nine ordered calls and the same 67-byte EH-tail mismatch.
+// Session sa-15c047af-r1: fresh canonical-ownership pass completed 16 probes.
+// Natural null/positive fallback arms and success-first arms lost the shared
+// work tail or grew to 249-283 bytes. Shared typed work locals changed the
+// early CFG. Scoped transport lifetime changed the call count. Result and
+// action declaration-order, pointer lifetime, named-zero, nested success-scope,
+// and base-result ABI forms were codegen-neutral at the 230/67 frontier.
+// Predicate result initialization reached 233/73. Early or pre-allocation zero
+// stores reached 283-284 bytes. Explicit boolean return reached 264/164 and
+// added a work call. The canonical derived constructor, typed arguments,
+// inherited action methods, and /GX cleanup source remain unchanged.
 // FLAGS: /nologo /c /O2 /Oy /GX
 
 #include <stddef.h>
