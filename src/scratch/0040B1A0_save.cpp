@@ -115,8 +115,8 @@ int ConstructionAIModule::save(int fd)
 {
     char tempString[257];
     int tempInt;
-    float tempFloat;
     int tempBOOL;
+    float tempFloat;
     ConstructionItem* item;
 
     rge_write(fd, (void*)&this->numberConstructionLotsValue, 4);
