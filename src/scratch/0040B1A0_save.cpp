@@ -30,6 +30,9 @@
 // 13: PDB symbols prove target locals named tempInt, tempBOOL, and tempFloat; exact-name/order,
 //     loop scopes, explicit serializer expansion, direct sentinel tests, C++ rge_write linkage,
 //     union overlap, and array-subscript spellings all remained in the 58-byte basin.
+// 14: original-TU context probes restored the complete PDB class surfaces, same-file constructor
+//     context, stdio/string/windows headers, CRT and _unlink declarations, and byte aliases; all
+//     emitted the same basin. The committed natural source remains the supported frontier.
 
 #include <string.h>
 
