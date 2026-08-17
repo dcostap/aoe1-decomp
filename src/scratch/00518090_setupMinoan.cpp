@@ -35,6 +35,17 @@
 // - TU-group closeout: the common civilization-table and TRIBE_Game declaration
 //   context remains canonical; a fresh baseline emitted the same 303-byte basin.
 //   The p-load-before-jge schedule remains the only source-shape blocker.
+// - This claim tested a function-scope alias, a self-assignment, an early-return
+//   outer form, a named difficulty value, and an array parameter. All retained
+//   the same 303-byte basin; the array form also changed the decorated owner.
+// - Reviewed RGE_Base_Game global typing and a long difficulty return changed no
+//   bytes. Ambient declarations (512 variants) and standard-header context
+//   (4096 variants) each formed one 303-byte group with the same first mismatch.
+// - Revisit probes tested a pointer alias local to the non-deathmatch path, a
+//   nested difficulty guard with explicit returns, a difficulty-result plus
+//   pointer alias, a positive guard, and a separate low-path return. None
+//   reproduced the original mov p before jge. A reference alias moved three
+//   bytes but changed the natural block shape and is not retained.
 
 // Main-agent audit confirmed the shared canonical game/player/AI ownership;
 // direct civilization table stores remain authoritative.
