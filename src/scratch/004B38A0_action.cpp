@@ -31,8 +31,14 @@
 //   period +4 buffer form and emits the same bytes as the inferred 257 size.
 // - Reusing function-scope prog_info/line and curr_line follows the decomp
 //   pointer lifetimes.  A first-block scenario_dir alias fixes that paired
-//   hunk.  Best is now 393 differing bytes, 95.52% shape, exact frame and
-//   calls.  The next mismatch is the second cancel-path add/call schedule.
+//   hunk.  Best is now 338 differing bytes, 95.57% shape, exact frame and
+//   calls.  The second cancel-path alias and the first-open alias restore
+//   exact blocks through the first OpenFile path.
+// - A 20-probe pass tested source order, receiver lifetimes, imported-pointer
+//   caching, branch layout, and common-tail forms.  The clean natural source
+//   is pinned at 338 differing bytes with exact size, frame, calls, and CFG.
+//   Remaining drift is the fallback expression order, the pre-test receiver
+//   load, and the original EBX versus rebuilt EDI import-pointer color.
 
 #include <new.h>
 #include <string.h>
@@ -158,6 +164,7 @@ long TRIBE_Screen_Sed_Open::action(TPanel* param_1, long param_2,
     char* line;
     RGE_Prog_Info* prog_info;
     long curr_line;
+    int (__stdcall *open_file)(const char*, void*, unsigned int);
 
     if (param_1 != 0) {
         if (param_1->panelName() != 0 &&
@@ -166,16 +173,15 @@ long TRIBE_Screen_Sed_Open::action(TPanel* param_1, long param_2,
             if (param_2 == 0) {
                 prog_info = rge_base_game->prog_info;
                 char* scenario_dir = prog_info->scenario_dir;
-                line = ((TTextPanel*)list)->currentLine();
-
                 sprintf(of.Reserved1, "%s%s.scn",
-                        scenario_dir, line);
+                        scenario_dir, ((TTextPanel*)list)->currentLine());
                 __unlink(of.Reserved1);
 
                 prog_info = rge_base_game->prog_info;
+                char* scenario_dir_scx = prog_info->scenario_dir;
                 line = ((TTextPanel*)list)->currentLine();
                 sprintf(of.Reserved1, "%s%s.scx",
-                        prog_info->scenario_dir, line);
+                        scenario_dir_scx, line);
                 __unlink(of.Reserved1);
 
                 curr_line = ((TTextPanel*)list)->get_line();
@@ -211,20 +217,22 @@ long TRIBE_Screen_Sed_Open::action(TPanel* param_1, long param_2,
             if (param_2 == 1) {
                 if (((TTextPanel*)list)->numberLines() > 0) {
                     prog_info = rge_base_game->prog_info;
+                    char* scenario_dir_open = prog_info->scenario_dir;
                     line = ((TTextPanel*)list)->currentLine();
                     sprintf(fileName + 4, "%s%s.scn",
-                            prog_info->scenario_dir, line);
+                            scenario_dir_open, line);
 
-                    if (OpenFile(fileName + 4, &of.Reserved1, 0x4000) != -1) {
-                        line = ((TTextPanel*)list)->currentLine();
-                        sprintf(fileName + 4, "%s.scn", line);
+                    open_file = OpenFile;
+                    if (open_file(fileName + 4, &of.Reserved1, 0x4000) != -1) {
+                        sprintf(fileName + 4, "%s.scn",
+                                ((TTextPanel*)list)->currentLine());
                     }
                     else {
                         line = ((TTextPanel*)list)->currentLine();
                         prog_info = rge_base_game->prog_info;
                         sprintf(fileName + 4, "%s%s.scx",
                                 prog_info->scenario_dir, line);
-                        if (OpenFile(fileName + 4, &of.Reserved1, 0x4000) != -1) {
+                        if (open_file(fileName + 4, &of.Reserved1, 0x4000) != -1) {
                             line = ((TTextPanel*)list)->currentLine();
                             sprintf(fileName + 4, "%s.scx", line);
                         }
