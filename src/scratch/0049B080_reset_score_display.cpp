@@ -9,17 +9,18 @@
 //   then sorted and rendered through the eight named score panels.
 // - replacing the fake get_active/player_status/progress/score_value helpers
 //   with the proven base-game, communications, font, latency, and message
-//   surfaces aligned all 24 call sites and exact size; best diff is 1063 bytes.
+//   surfaces aligned all 24 call sites and exact size; current diff is 1066
+//   bytes.
 // - indexed PLAYER_SCORE references regressed size/shape; restored the natural
 //   cursor form.  Stdio context and function-scope icon locals were codegen
 //   neutral.  Remaining drift is broad local register/home and cursor layout,
 //   beginning with the saved-this stack slot; left in scratch for a later pass.
 // - initialized back_color to mirror the target's zeroed color register; this
-//   kept size and calls but worsened the diff from 1063 to 1078 bytes and did
+//   kept size and calls but worsened the prior diff from 1063 to 1078 bytes and did
 //   not move the saved-this home, so restored the clean source.
 // - structural pass tried declaration/local order, explicit player-count
 //   guards, indexed records, and for-loop cursor spelling.  These either
-//   emitted the same 1063-byte result or broke size; the target's EDI byte
+//   emitted the same clean basin or broke size; the target's EDI byte
 //   stride and saved-this home remain unresolved.
 // - binary low-fps scan checks player_id, not team_id; corrected that guard.
 //   A separate low-fps loop counter was codegen-neutral and remains natural.
@@ -29,6 +30,23 @@
 // - ABI audit: declared scr_game_score_compare with its C++ function ABI.
 //   The qsort relocation names the exact comparator instead of using an
 //   address cast.  These audit changes are byte-neutral in the clean basin.
+// - sustained pass sa-8efe6dbe-r1: 23 meaningful probes, plus ambient and
+//   flag labs.  The clean source is restored below.  It has 1206 bytes, a
+//   0x2D4 frame, four saved registers, and all 24 ordered calls.
+// - BINARY NOTE: the oracle saves this in [esp+14] and keeps this in EBP.
+//   The clean source keeps this in EBX and saves it in [esp+1C].
+// - BINARY NOTE: the oracle uses an EDI byte stride for PLAYER_SCORE.  The
+//   clean typed cursor uses ESI.  Direct indexed and raw byte-cursor forms
+//   grew or weakened the function, so they are not retained.
+// - BINARY NOTE: the font choice has two explicit push blocks at lines 4450
+//   and 4452.  An explicit source if/else restored the conditional count and
+//   many exact blocks, but increased the strict diff to 1074 bytes.
+// - LIKELY INTENT: the shipped source initializes the background color and
+//   uses an explicit font branch.  That form reached 345 instructions and a
+//   1070-byte diff, but its register map remains wrong.
+// - Ambient declarations produced one codegen group across 128 samples.
+//   Risky flag variants did not improve the default flag result.  No exact
+//   source or compiler-context basin was found.
 
 #include <stdio.h>
 #include "../../include/rge_base_game_global.h"
