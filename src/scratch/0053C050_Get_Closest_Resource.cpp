@@ -30,9 +30,24 @@
 //   the function by 12 bytes and were also rolled back.
 // - Taking explicit addresses of the used/list elements emitted a duplicate
 //   327-byte result and was rolled back.
+// - Follow-up probes for a named type offset, direct or delayed member access,
+//   pointer-entry locals, reversed array-base declarations, and a function-scope
+//   record cursor were unchanged or six bytes worse; all were rolled back.
+// - Void-list casts, top-level self aliases, result rebinding after the clamp,
+//   and swapped best/bestDistance declarations were duplicate or less natural;
+//   none moved the early receiver-save basin.
+// - This pass tested a typed-array byte offset in both direct and split local
+//   forms; the direct form was 327 bytes different and the split form was a
+//   codegen duplicate, so both were restored.
+// - Replaced the unused owner void pointer with the canonical RGE_Player*
+//   field type. This is codegen-identical and preserves the reviewed ownership.
+// - Hoisting best initialization to the count-guard scope improves the current
+//   result to 317 differing bytes, 90.24% shape, and 80.51% exact blocks.
+//   Other natural alias and offset forms were worse or codegen duplicates.
 // Left in scratch: remaining drift is the early receiver-save/index LEA basin
 //   and associated register coloring; behavior, size/frame, calls, and inner
-//   reject-loop CFG are established.
+//   reject-loop CFG are established. The current clean source is the hoisted
+//   best-pointer form.
 
 #include <stdlib.h>
 #include <string.h>
@@ -48,12 +63,14 @@ struct VisibleResourceRec {
 extern double DAT_005776D0;
 extern double DAT_005776D8;
 
+class RGE_Player;
+
 class Visible_Resource_Manager {
 public:
     VisibleResourceRec** VR_List;
     int* VR_ListSize;
     int* VR_ListUsed;
-    void* owner;
+    RGE_Player* owner;
     int num_visible_resource_lists;
 
     VisibleResourceRec* Get_Closest_Resource(int x, int y, int param3, int type, int* reject_list, int reject_count);
@@ -64,10 +81,10 @@ VisibleResourceRec* Visible_Resource_Manager::Get_Closest_Resource(int x, int y,
         int* usedLists = this->VR_ListUsed;
         VisibleResourceRec** resourceLists = this->VR_List;
         int count = usedLists[type];
+        VisibleResourceRec* best = 0;
         if (count != 0) {
             VisibleResourceRec* rec = resourceLists[type];
             int bestDistance = 9999;
-            VisibleResourceRec* best = 0;
             if (count > 0) {
                 do {
                     int dx;
