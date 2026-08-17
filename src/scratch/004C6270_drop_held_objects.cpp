@@ -33,6 +33,28 @@
 //   diff to 331 bytes with the 0xB4 frame; keep this typed layout candidate.
 // - reordering radius_x before world_y and the failure-copy radius stores
 //   preserved that best 331-byte result; register and CFG drift remain.
+// - current assigned pass: baseline rebuilt 365 bytes versus 387 original,
+//   strict diff 331 bytes, 71.09% shape, 0xB4 frame, and four aligned calls;
+//   the original saves EBX/ESI while this source saves EBP/EDI. Explicit
+//   outer do/while structure, register index hints, canonical full fields,
+//   and an explicit continuation were codegen duplicates. Declaring count
+//   before i worsened the diff to 338 bytes. A distinct retry index reduced
+//   the strict diff to 323 bytes but produced a 390-byte, 69.53% shape
+//   variant with LEA instead of the original DEC, so it was rejected.
+//   Reordering success radius stores kept the 331-byte strict diff but made
+//   the diagnostic resynchronization worse; the baseline remains authoritative.
+// - revisit: canonical typed list/node member names were codegen-neutral. A
+//   natural outer traversal that captures next once before the retry loop
+//   followed the original 004C62C4/004C62E0 split and reduced strict diff to
+//   326 bytes, but made size and resynchronization worse; the pinned baseline
+//   remains authoritative. Block-local next shifted the proven array homes.
+//   Typed running radius pointers raised the frame to 0xB8 and were rejected.
+// - revisit: an outer next capture with an inner while and radius-before-
+//   coordinate success updates reduced the strict diff to 326 bytes and raised
+//   shape to 71.32%, but shortened the body to 355 bytes and worsened resync;
+//   rolled back. A separate next local reduced the diff to 322 bytes but fell
+//   to 60.16% shape. Moving next before the arrays kept 322 bytes but only
+//   66.41% shape. Both natural layout probes were rolled back.
 
 class RGE_Master_Static_Object { public: char gap_00[0x30]; float radius_x; float radius_y; };
 class RGE_Static_Object;
