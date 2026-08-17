@@ -87,6 +87,13 @@
 // result local changed the body or duplicated the clean basin. Empty guards and
 // dead pointer clearing were codegen duplicates. The unresolved tail is the
 // VC5 cleanup scheduler: the oracle loads error before final stack cleanup.
+// Claim pass: 20 focused probes tested the Ghidra pcVar8 allocation carrier,
+// declaration order, local scope, null guards, parameter-home reuse, direct
+// item ownership, and the same-TU post-free guard pattern. Assigning a natural
+// int or char* result inside cleanup moved the error load before stack cleanup,
+// but changed register homes, spills, or early block layout. The function-scope
+// cursor/count form and redundant in-scope guards were exact 21-byte duplicates.
+// Restore the pinned clean source; no experiment improved the source model.
 // FLAGS: config\flags\00469380_create_drop_down.rsp
 
 #include <string.h>
