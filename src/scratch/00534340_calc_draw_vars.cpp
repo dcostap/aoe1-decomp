@@ -89,36 +89,118 @@
 // final continuation: validated clean source remains 217 bytes with 61 strict
 //   mismatches (66.13% exact blocks).  The first mismatch is the stable VC5
 //   EBP/EDI zero-versus-divisor coloring and failure-tail pop order.
+// Matching-worker fresh pass sa-6b1246ff: baseline reproduced 217 bytes,
+//   61 strict mismatches, and 66.13% exact-block coverage.  Explicit int and
+//   register-qualified zero locals were worse; a short zero local was a
+//   codegen duplicate.  Complete same-TU TPanel and RGE_View data surfaces
+//   were also duplicates.  Restored the clean natural source.  The remaining
+//   gap is the known VC5 EBP/EDI allocator basin; broader view.cpp context is
+//   still the useful next evidence.
+// Matching-worker sa-90ba5ca0-r1 canonical-layout probes:
+// probes 13-14: replaced the touched TPanel gaps with the inventory-proven
+//   complete TPanel field surface, then replaced the RGE_View prefix gaps with
+//   typed world/map and size fields.  Both rebuilt to the same 217-byte,
+//   61-difference result.  Retain the stronger local layout declarations;
+//   remaining drift stays in register coloring and the failure-tail lifetime.
+// Fresh continuation sa-9bdbe17c-r1: direct typed pnl_wid reads, a mutable
+// short zero local, and checked tile-width/height locals all reproduced the
+// clean 217-byte/61-difference basin.  A long zero local worsened to 198
+// differences.  A 256-sample ambient declaration context lab found five
+// codegen groups but no exact result; it never changed the first zero-register
+// mismatch.  Restored the pinned natural source.
 
-class tagRECT {
-public:
+struct tagRECT {
     long left;
     long top;
     long right;
     long bottom;
 };
 
+class TDrawArea;
+class PanelNode;
+class RGE_Game_World;
+class RGE_Player;
+class RGE_Map;
+
 class TPanel {
 public:
     virtual ~TPanel();
-    char gap_04[0x10];
+    TPanel* previousPanelValue;            // +0x04
+    TPanel* previousModalPanelValue;       // +0x08
+    long pnl_x;                            // +0x0C
+    long pnl_y;                            // +0x10
     long pnl_wid;                          // +0x14; same-TU TPanel donor type
     long pnl_hgt;                          // +0x18; same-TU TPanel donor type
-    char gap_1C[0x54];                     // +0x1C to +0x6F
+    char* panelNameValue;                  // +0x1C
+    TDrawArea* render_area;                // +0x20
+    tagRECT clip_rect;                     // +0x24
+    int position_mode;                     // +0x34
+    int need_redraw;                       // +0x38
+    TPanel* curr_child;                    // +0x3C
+    TPanel* parent_panel;                  // +0x40
+    TPanel* left_panel;                    // +0x44
+    TPanel* top_panel;                     // +0x48
+    TPanel* right_panel;                   // +0x4C
+    TPanel* bottom_panel;                  // +0x50
+    PanelNode* node;                       // +0x54
+    PanelNode* first_child_node;           // +0x58
+    PanelNode* last_child_node;            // +0x5C
+    TPanel* tab_prev_panel;                // +0x60
+    TPanel* tab_next_panel;                // +0x64
+    int mouse_captured;                    // +0x68
+    int active;                            // +0x6C
     int visible;                           // +0x70
-    char gap_74[0x18];                     // +0x74 to +0x8B
+    int tab_stop;                          // +0x74
+    int have_focus;                        // +0x78
+    int overlapping_children;              // +0x7C
+    int handle_mouse_input;                // +0x80
+    int just_drawn;                        // +0x84
+    void* clip_rgn;                        // +0x88
     tagRECT render_rect;                   // +0x8C
-    char gap_9C[0x58];                     // +0x9C to +0xF3
+    long left_border;                      // +0x9C
+    long top_border;                       // +0xA0
+    long right_border;                     // +0xA4
+    long bottom_border;                    // +0xA8
+    long min_wid;                          // +0xAC
+    long max_wid;                          // +0xB0
+    long min_hgt;                          // +0xB4
+    long max_hgt;                          // +0xB8
+    long mouse_hold_interval;              // +0xBC
+    long mouse_move_tolerance;             // +0xC0
+    long mouse_down_x;                     // +0xC4
+    long mouse_down_y;                     // +0xC8
+    int mouse_down_ctrl;                   // +0xCC
+    int mouse_down_shift;                  // +0xD0
+    unsigned long mouse_down_time;         // +0xD4
+    int error_code;                        // +0xD8
+    int z_order;                            // +0xDC
+    int display_changed_count;              // +0xE0
+    long help_string_id;                   // +0xE4
+    long help_page_id;                     // +0xE8
+    unsigned char mouse_action;            // +0xEC
+    unsigned char mouse_down_button;       // +0xED
+    unsigned char panel_type;              // +0xEE
+    unsigned char color;                   // +0xEF
+    unsigned char fill_in_background;      // +0xF0
+    unsigned char clip_to_parent;          // +0xF1
+    unsigned char draw_rect2_flag;         // +0xF2
+    unsigned char need_restore;            // +0xF3
 };
 
 class RGE_View : public TPanel {
 public:
-    char gap_F4[0x14];                     // +0xF4 to +0x107
+    TDrawArea* cur_render_area;            // +0xF4
+    int calc_draw_count;                   // +0xF8
+    RGE_Game_World* world;                  // +0xFC
+    RGE_Player* player;                     // +0x100
+    RGE_Map* map;                           // +0x104
     short tile_wid;                        // +0x108
     short tile_hgt;                        // +0x10A
     short tile_half_wid;                   // +0x10C
     short tile_half_hgt;                   // +0x10E
-    char gap_110[0x6];                     // +0x110 to +0x115
+    short elev_hgt;                         // +0x110
+    short render_rect_wid;                  // +0x112
+    short render_rect_hgt;                  // +0x114
     short max_col_num;                     // +0x116
     short max_row_num;                     // +0x118
     short center_scr_col;                  // +0x11A
@@ -128,6 +210,7 @@ public:
     short center_map_col;                  // +0x122
     short center_map_row;                  // +0x124
 
+protected:
     void calc_draw_vars();
 };
 
