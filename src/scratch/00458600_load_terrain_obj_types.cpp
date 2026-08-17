@@ -1,53 +1,43 @@
 // VA: 00458600 RGE_Map::load_terrain_obj_types
 // map.cpp:1916-1942
 //
-// Binary-supported reconstruction: read the terrain-object table from the
-// text stream, retain only loaded terrain sets with fewer than 30 entries,
-// then store object type, density, placement flag, and increment the count.
-// The first header value is read into a dead four-byte local; VC5 can reuse
-// that home for the live object-count value later in the loop.
+// Binary facts: map.cpp PDB symbols prove short locals named num, density,
+// flag, obj_id, and id. The header scan writes num at entry offset -4.
 //
-// Attempt log:
-// - Initial scaffold only opened a file and stored its descriptor; it was not
-//   behaviorally complete and did not represent the fscanf/table loop.
-// - Baseline natural fopen/fscanf reconstruction aligned all five calls and
-//   the frame but cached a terrain record and emitted only 250 bytes.
-// - Repeated direct terrain_types indexing recovered the target's recomputed
-//   record-address family (354 bytes, 206 differing bytes).
-// - Reusing the dead header long as a count diagnostic reached exact size and
-//   134 differing bytes, but is not a canonical source model; rolled back.
-// - Final clean source keeps named loaded/object-type/density/placement/count
-//   ownership; remaining gap is count spill/register and body block layout.
-// - Fresh pass: a body-scoped long count after the bound, block-scoped short
-//   count, function-scope long count, declaration-order variants, and an int
-//   count all moved to the 322-325 byte basin (209 differing bytes); restored.
-// - Restored the exact donor's named RGE_Tile_Set prefix, full map virtual
-//   prefix, and stdlib header context.  These are canonical source context but
-//   emitted the clean 354-byte direct-member basin unchanged.
-// - A seven-case count-shape lab found the version-as-count spelling at exact
-//   size with 122 differing bytes, but it reuses the header version for a
-//   terrain count and remains diagnostic rather than the living source.
-// - Final clean candidate is the typed direct-member loop; calls/frame align,
-//   while the remaining structural gap is the target's cached count spill and
-//   associated body block layout.  No exact variant was found in this pass.
-// - Fresh packet/dossier pass confirms the four narrow record fields and the
-//   unconditional fclose. The version-as-count spill remains diagnostic only;
-//   the clean typed direct-member source is retained for semantic clarity.
-// - Fresh worker probes: reusing the header long as a count reduced the gap to
-//   134 bytes at exact size, but changed the count compare and is not natural.
-//   A body-scoped short count and mixed short/long count forms worsened block
-//   layout. Restored the clean direct-member source.
-// - orch-458600-a probe: a short header destination reused as the count gave
-//   341 bytes and 121 differing bytes, with the target spill and first two
-//   stores aligned. It still reuses the file version as a terrain count.
-// - orch-458600-a probes: placement pointer, signed-byte field, raw offset,
-//   and byte temporary forms were duplicates or did not improve the 121-byte
-//   basin. A four-case placement-store lab also found one emitted group.
-// - Restored the canonical long-version typed direct-member source after the
-//   bounded pass. The remaining structural gap is placement-block scheduling.
+// The loop keeps only loaded terrain sets with fewer than 30 entries. It then
+// stores the object id, density, and placement flag, and increments the field.
+//
+// Current reconstruction: the typed terrain ownership and guard order now
+// produce the original 341-byte size and 100 instructions. All five calls,
+// frame, and call targets align. The checker reports 121 differing bytes.
+//
+// The remaining mismatch is one placement-byte address lowering. The target
+// adds this plus num before the terrain stride. VC5 emits the equivalent tile
+// base plus num form from the natural typed member expression.
+//
+// Tested and rejected: direct pointer syntax, reversed subscripts, implicit
+// this, declaration order, cast changes, and a typed terrain-set gap. These
+// forms either duplicate the 121-byte result or lack binary support.
+// Revisit probes added typed pointer-add, pointer-local, record-reference,
+// signed-char, index-cast, and array-pointer forms. A 17-case variant lab
+// produced one codegen group. Every case stayed at 341 bytes and 121 bytes
+// differed under the authoritative checker.
+//
+// Canonical full RGE_Map layout, virtual slots, and typed pointer members also
+// emitted the same group. A cached typed record across the loop shrank the
+// function to 264 bytes and was rejected. No policy-valid exact source was
+// found. The typed direct-member source remains the clean reconstruction.
+// Keep the typed direct-member source authoritative until new source evidence
+// explains this final expression schedule.
 
 #include <stdio.h>
 #include <stdlib.h>
+
+struct RGE_TOB_Picts {
+    short count;
+    short animations;
+    short shape_index;
+};
 
 class RGE_Tile_Set {
 public:
@@ -75,10 +65,14 @@ public:
     float animate_last;
     unsigned char frame_changed;
     unsigned char drawn;
-    char gap_46[0xB8];
+    RGE_TOB_Picts tiles[19];
+    short terrain_to_draw;
+    short rows;
+    short cols;
+    short borders[32];
     short obj_types[30];
     short obj_density[30];
-    unsigned char obj_placement_flags[30];
+    unsigned char obj_placement_flag[30];
     short num_obj_type;
     char gap_196[2];
 };
@@ -116,26 +110,22 @@ void RGE_Map::load_terrain_obj_types(char* filename)
     FILE* file = fopen(filename, "r");
 
     if (file != 0) {
-        long version;
-        short placement_flag;
+        short num;
         short density;
-        short object_type;
-        short terrain_id;
+        short flag;
+        short obj_id;
+        short id;
 
-        fscanf(file, "%hd", &version);
+        fscanf(file, "%hd", &num);
         while (fscanf(file, "%hd %hd %hd %hd",
-                      &terrain_id, &object_type, &density,
-                      &placement_flag) != EOF) {
-            if (this->terrain_types[terrain_id].loaded != 0) {
-                if (this->terrain_types[terrain_id].num_obj_type < 30) {
-                    this->terrain_types[terrain_id].obj_types[
-                        this->terrain_types[terrain_id].num_obj_type] = object_type;
-                    this->terrain_types[terrain_id].obj_density[
-                        this->terrain_types[terrain_id].num_obj_type] = density;
-                    this->terrain_types[terrain_id].obj_placement_flags[
-                        this->terrain_types[terrain_id].num_obj_type] =
-                        (unsigned char)placement_flag;
-                    ++this->terrain_types[terrain_id].num_obj_type;
+                      &id, &obj_id, &density, &flag) != EOF) {
+            if (this->terrain_types[id].loaded != 0) {
+                if (this->terrain_types[id].num_obj_type < 30) {
+                    num = this->terrain_types[id].num_obj_type;
+                    this->terrain_types[id].obj_types[num] = obj_id;
+                    this->terrain_types[id].obj_density[num] = density;
+                    this->terrain_types[id].obj_placement_flag[num] = flag;
+                    ++this->terrain_types[id].num_obj_type;
                 }
             }
         }
