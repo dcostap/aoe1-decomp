@@ -20,6 +20,18 @@
 //   natural array and generic checkButtons tail remain authoritative.
 // - A nonvolatile standalone radioButton[3] expression was optimized away;
 //   it did not restore the binary's late load or sixth checkButtons call.
+// - Policy rerun removed volatile, the no-effect read, and all generic virtual
+//   placeholders. Named TPanel, RGE_Base_Game, and RGE_Player donors are now
+//   used. They emit the same clean 174-byte mismatch.
+// - A natural duplicate checkButtons call for the radioButton[2] fallback was
+//   tested. VC5 merges the two calls and keeps 41 of the original 42 calls.
+// - Twenty policy-valid source and context hypotheses were tested in this
+//   pass. Header context, guard polarity, parameter homes, and call layout did
+//   not recover the late load.
+// BINARY NOTE: the executable reads radioButton[3] before one checkButtons
+//   call, but has no compare, call, store, or later use for that value.
+// LIKELY INTENT: the radioButton[2] fallback and the default path were separate
+//   source paths. The reason for the shipped field read is not proved.
 
 #include <string.h>
 
@@ -35,65 +47,75 @@ class TVerticalSliderPanel;
 class THorizontalSliderPanel;
 class TPanel;
 
+struct tagRECT {
+    long left;
+    long top;
+    long right;
+    long bottom;
+};
+
+typedef int PositionMode;
+typedef int RedrawMode;
+
 class TPanel {
 public:
     virtual ~TPanel();
-    virtual void v04();
-    virtual void v08();
-    virtual void v0C();
-    virtual void v10();
-    virtual void v14();
-    virtual void v18();
-    virtual void v1C();
-    virtual void v20();
-    virtual void v24();
-    virtual void v28();
-    virtual void v2C();
-    virtual void v30();
-    virtual void v34();
-    virtual void v38();
-    virtual void v3C();
-    virtual void v40();
-    virtual void v44();
-    virtual void v48();
-    virtual void v4C();
-    virtual void v50();
-    virtual void v54();
-    virtual void v58();
-    virtual void v5C();
-    virtual void v60();
-    virtual void v64();
-    virtual void v68();
-    virtual void v6C();
-    virtual void v70();
-    virtual void v74();
-    virtual void v78();
-    virtual void v7C();
-    virtual void v80();
-    virtual void v84();
-    virtual void v88();
-    virtual void v8C();
-    virtual void v90();
-    virtual void v94();
-    virtual void v98();
-    virtual void v9C();
-    virtual void vA0();
-    virtual void vA4();
-    virtual void vA8();
-    virtual void vAC();
-    virtual void vB0();
-    virtual long action(TPanel* panel, long code, unsigned long a,
-                        unsigned long b);
-    virtual void vB8();
-    virtual void vBC();
-    virtual void vC0();
-    virtual void vC4();
-    virtual void vC8();
-    virtual void vCC();
-    virtual void vD0();
-    virtual void vD4();
-    virtual void vD8();
-    virtual void vDC();
+    virtual long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char);
+    virtual void set_rect(tagRECT);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_color(unsigned char);
+    virtual void set_active(int);
+    virtual void set_positioning(PositionMode, long, long, long, long, long, long,
+                                  long, long, TPanel*, TPanel*, TPanel*, TPanel*);
+    virtual void set_fixed_position(long, long, long, long);
+    virtual void set_redraw(RedrawMode);
+    virtual void set_overlapped_redraw(TPanel*, TPanel*, RedrawMode);
+    virtual void draw_setup(int);
+    virtual void draw_finish();
+    virtual void draw();
+    virtual void draw_rect(tagRECT*);
+    virtual void draw_offset(long, long, tagRECT*);
+    virtual void draw_rect2(tagRECT*);
+    virtual void draw_offset2(long, long, tagRECT*);
+    virtual void paint();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual long handle_idle();
+    virtual long handle_size(long, long);
+    virtual long handle_paint();
+    virtual long handle_key_down(long, short, int, int, int);
+    virtual long handle_char(long, short);
+    virtual long handle_command(unsigned int, long);
+    virtual long handle_user_command(unsigned int, long);
+    virtual long handle_timer_command(unsigned int, long);
+    virtual long handle_scroll(long, long);
+    virtual long handle_mouse_down(unsigned char, long, long, int, int);
+    virtual long handle_mouse_move(long, long, int, int);
+    virtual long handle_mouse_up(unsigned char, long, long, int, int);
+    virtual long handle_mouse_dbl_click(unsigned char, long, long, int, int);
+    virtual long mouse_move_action(long, long, int, int);
+    virtual long mouse_left_down_action(long, long, int, int);
+    virtual long mouse_left_hold_action(long, long, int, int);
+    virtual long mouse_left_move_action(long, long, int, int);
+    virtual long mouse_left_up_action(long, long, int, int);
+    virtual long mouse_left_dbl_click_action(long, long, int, int);
+    virtual long mouse_right_down_action(long, long, int, int);
+    virtual long mouse_right_hold_action(long, long, int, int);
+    virtual long mouse_right_move_action(long, long, int, int);
+    virtual long mouse_right_up_action(long, long, int, int);
+    virtual long mouse_right_dbl_click_action(long, long, int, int);
+    virtual long key_down_action(long, short, int, int, int);
+    virtual long char_action(long, short);
+    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    virtual void get_true_render_rect(tagRECT*);
+    virtual int is_inside(long, long);
+    virtual void set_focus(int);
+    virtual void set_tab_order(TPanel*, TPanel*);
+    virtual void set_tab_order(TPanel**, short);
+    virtual unsigned char get_help_info(char**, long*, long, long);
+    virtual void stop_sound_system();
+    virtual int restart_sound_system();
+    virtual void take_snapshot();
+    virtual void handle_reactivate();
     virtual void draw_background(int enabled);
 
     char gap_04[0x3C];
@@ -135,10 +157,10 @@ public:
 class RGE_Player {
 public:
     virtual ~RGE_Player();
-    virtual void v04();
-    virtual void v08();
-    virtual void v0C();
-    virtual void v10();
+    virtual void set_game_status(unsigned char);
+    virtual void do_resign(int);
+    virtual void changeToHumanPlayer();
+    virtual void changeToComputerPlayer();
     virtual char* aiStatus(int mode);
     virtual int isEnemy(int player);
     virtual int isAlly(int player);
@@ -160,26 +182,26 @@ public:
 class RGE_Base_Game {
 public:
     virtual ~RGE_Base_Game();
-    virtual void v04();
-    virtual void v08();
-    virtual void v0C();
-    virtual void v10();
-    virtual void v14();
-    virtual void v18();
-    virtual void v1C();
-    virtual void v20();
-    virtual void v24();
-    virtual void v28();
-    virtual void v2C();
-    virtual void v30();
-    virtual void v34();
-    virtual void v38();
-    virtual void v3C();
-    virtual void v40();
-    virtual void v44();
-    virtual void v48();
-    virtual void v4C();
-    virtual void v50();
+    virtual int run();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual void set_prog_mode(int);
+    virtual void set_game_mode(int, int);
+    virtual void set_player(short);
+    virtual int get_error_code();
+    virtual char* get_string(int, long, char*, int);
+    virtual char* get_string(long, char*, int);
+    virtual char* get_string(long);
+    virtual char* get_string2(int, long, long, char*, int);
+    virtual void* get_view_panel();
+    virtual void* get_map_panel();
+    virtual void* new_scenario_header(void*);
+    virtual void* new_scenario_header(int);
+    virtual void* new_scenario_info(int);
+    virtual void notification(int, long, long, long, long);
+    virtual int reset_comm();
+    virtual void send_game_options();
+    virtual void receive_game_options();
+    virtual char* gameSummary();
     virtual int processCheatCode(int player, char* text);
 
     char gap_04[0x1AC];
@@ -381,7 +403,8 @@ long TribeSendMessageDialog::action(TPanel* panel, long code,
             this->checkButtons();
             return 1;
         }
-        goto check_buttons_return;
+        this->checkButtons();
+        return 1;
     }
 
     this->checkButtons();
