@@ -79,6 +79,25 @@
 //   long loop copy inside the positive-count guard worsened to 204 bytes and
 //   changed the loop CFG; it was restored.  No new lead remains within this
 //   bounded pass.
+// - Fresh bounded probes tested register-qualified tiles, a cached max local,
+//   function-scoped dy/dx and AttackMemory declarations, explicit this-qualified
+//   indexing, a flat class surface, a top-tested carried-pointer while loop,
+//   const/long coordinate locals, and a hoisted pointer assignment. All natural
+//   forms duplicated the 211-byte basin except the while form, which worsened
+//   structural alignment. The clean indexed scan remains authoritative.
+// - Revisit probes: a positive-count indexed do/while reached 204 bytes and
+//   changed the loop CFG; an AttackMemory reference, named max copy, and y-before-x
+//   declaration were duplicate 211-byte codegen. A function-scope memory alias
+//   reached 214 bytes and hoisted the base load before the count guard.
+// - Revisit probe: a carried-pointer positive do/while reached 204 bytes and
+//   changed the record-gate CFG. Original PDB symbols show i/objY home aliases,
+//   while the Ghidra lead uses a pointer walk and parameter-home counter. Those
+//   forms are not retained because policy forbids raw cursor and home reuse.
+// - Fresh revisit: an early initialized i local reached 221 bytes and 85.1%
+//   shape with a local counter, but it did not recover the original parameter
+//   home or EDX cursor; declaration-order variants and split guards duplicated
+//   or worsened the clean 211-byte basin. Pointer-for and positive-gate forms
+//   also changed CFG or size. Restored the natural indexed scan.
 
 class RGE_Static_Object {
 public:
