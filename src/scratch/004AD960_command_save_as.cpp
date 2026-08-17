@@ -74,9 +74,48 @@
 // emits two cleanup-and-return tails and adds 41 bytes after the original boundary.
 // The original EH handler is the constructor-allocation cleanup at 0055F50E; it
 // does not prove a source branch or object-lifetime difference in the popup arms.
+// sa-abc15279-r1 audit: named panel, dialog, scenario, and game-world ownership
+// now replaces the former narrow facade types. The audit emits the same 313-byte
+// /GX body. The original popup target is TEasy_Panel::popupOKDialog(long, char*,
+// int, int), and the world field is the proven TRIBE_World surface.
+
+class TDrawArea;
+
+class TPanel {
+public:
+    virtual ~TPanel();
+    virtual long setup(TDrawArea* render_area, TPanel* parent, long x, long y,
+                       long width, long height, unsigned char flags);
+    char gap_04[0x1C];
+    TDrawArea* render_area;
+    char gap_24[0xB4];
+    int setup_error;
+    char gap_DC[0x18];
+};
+
+class PanelNode;
 
 class TPanelSystem {
 public:
+    TPanel* mouseOwnerValue;
+    TPanel* keyboardOwnerValue;
+    TPanel* modalPanelValue;
+    TPanel* currentPanelValue;
+    PanelNode* panelListValue;
+    int numberActivePanelsValue;
+    TPanel* prevCurrentChildValue;
+    void* palette[10];
+    char palette_file[10][260];
+    int palette_use_count[10];
+    long palette_id[10];
+    unsigned long Imc;
+    int ImeEnabled;
+    int ImeOn;
+    int InputEnabled;
+    int saved_colors;
+    unsigned long save_back_color;
+    unsigned long save_text_color;
+
     int setCurrentPanel(char* name, int mode);
     int destroyPanel(char* name);
 };
@@ -85,32 +124,57 @@ extern TPanelSystem panel_system;
 extern char s_Save_Game_Screen[];
 extern char s_Scenario_Menu_Dialog[];
 
-class T_Scenario {
-public:
-    void Save_victory_conditions_into_players(int flag);
-};
+class RGE_Static_Object;
+struct _iobuf;
+typedef struct _iobuf FILE;
 
-class RGE_Scenario : public T_Scenario {
+class RGE_Scenario {
 public:
+    virtual RGE_Static_Object* get_object_pointer(int id);
+    virtual ~RGE_Scenario();
+    virtual void rehook();
+    virtual void save(int handle);
+
     int active_player_count();
     int any_player_count();
 };
 
-class RGE_Game_World {
+class T_Scenario : public RGE_Scenario {
 public:
-    virtual ~RGE_Game_World();
-    char gap_04[0x58];
-    T_Scenario* scenario;
+    virtual RGE_Static_Object* get_object_pointer(int id);
+    virtual ~T_Scenario();
+    virtual void rehook();
+    virtual void save(int handle);
+
+    void Save_victory_conditions_into_players(int flag);
 };
 
-class TEasy_Panel {
+class RGE_Game_World {
+public:
+    virtual unsigned char data_load_world(FILE* file);
+    virtual unsigned char data_load_terrain_tables(char* file);
+    virtual unsigned char data_load_players(char* file);
+    virtual unsigned char data_load_objects(char* file);
+    char gap_04[0x58];
+    T_Scenario* scenario;
+    char gap_60[0xA4];
+};
+
+class TRIBE_World : public RGE_Game_World {
+public:
+    char gap_104[0x20];
+};
+
+class TEasy_Panel : public TPanel {
 public:
     virtual ~TEasy_Panel();
-    char gap_04[0x474];
-    void popupOKDialog(long text_id, char* panel_name, long param_4, long param_5);
+    char gap_F4[0x384];
+    void popupOKDialog(long text_id, char* panel_name, int param_4, int param_5);
 };
 
 class TScreenPanel : public TEasy_Panel {
+public:
+    virtual ~TScreenPanel();
 };
 
 class TribeSaveGameScreen : public TScreenPanel {
@@ -121,8 +185,9 @@ public:
 
 class TRIBE_Screen_Sed : public TScreenPanel {
 public:
+    virtual ~TRIBE_Screen_Sed();
     char gap_0478[0x4B0];
-    RGE_Game_World* world;
+    TRIBE_World* world;
 
     void set_scenario_mode(int mode);
     void command_save_as(unsigned char post_action);
@@ -134,9 +199,9 @@ void TRIBE_Screen_Sed::command_save_as(unsigned char post_action)
 
     this->set_scenario_mode(11);
     this->world->scenario->Save_victory_conditions_into_players(1);
-    if (((RGE_Scenario*)this->world->scenario)->active_player_count() < 1) {
+    if (this->world->scenario->active_player_count() < 1) {
         this->popupOKDialog(0x2742, (char*)0, 0x1C2, 100);
-    } else if (((RGE_Scenario*)this->world->scenario)->any_player_count() < 1) {
+    } else if (this->world->scenario->any_player_count() < 1) {
         this->popupOKDialog(0x2743, (char*)0, 0x1C2, 100);
     } else {
         scenario_name[0] = 0;
