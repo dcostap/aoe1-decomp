@@ -107,8 +107,6 @@ artifacts into tracked source directories.
 
 Do not change existing line endings without a functional reason.
 
-Do not commit unless the user or your assigned role authorizes commits.
-
 Pi runs shell commands through Bash. Use forward slashes in Bash command paths.
 Unquoted Windows backslashes can become escapes.
 
