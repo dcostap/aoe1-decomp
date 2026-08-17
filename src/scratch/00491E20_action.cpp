@@ -7,32 +7,32 @@
 // the original EH state around those constructors is therefore compiler-owned.
 //
 // Attempt log:
-// - baseline: natural typed panel ownership, real new expressions, and the two
-//   local formatting arrays; exact size/frame, 577 differing bytes.
-// - flags: tested the donor-supported /GX response file for the observed EH
-//   registration; emitted code was unchanged and the flag is retained.
-// - control-flow: a positive outer panel guard and explicit late fallback were
-//   tested because the oracle shares its null/unknown-panel base path; shape
-//   improved, but the natural early fallback remains the clean source pin.
-// - abi: removing redundant derived destructor declarations was unchanged.
-// - liveness: register-qualified/top-level command copies were unchanged.
-// - diagnostic only: a shared result/done-label form reached 572 differing
-//   bytes but shortened the function by 40 bytes; explicit fallback labels
-//   likewise shortened it.  Both were rolled back as codegen scaffolding.
-// - control-flow: moved the no-games popup after the join attempt and used
-//   one shared result/fallback shape; ordered calls aligned and the diff fell
-//   to 16 bytes.  The remaining differences are parameter-home setup, two
-//   stack-relative local addresses, and one exception-handler offset.
-// - liveness: moving the formatting arrays to function scope was neutral;
-//   VC5 kept the same first hunk and local addresses, so it was rolled back.
-// - liveness: moving the arrays before the result declaration was also neutral.
-// - control-flow: flattening the list guard and direct-returning fallback both
-//   broke the matched block topology; both were restored.
-// - context/ABI: <new.h>, named new-expression results, and removing derived
-//   destructors were neutral; initializing result was neutral as well.
-// - left in scratch: exact frame/size, saved-register set, CFG, and all 22
-//   ordered calls now match; 16 bytes remain in parameter-home/EH setup and
-//   two stack-relative local addresses.
+// - binary ownership: PDB lines 289-368, 22 ordered calls, +0x488..+0x4AC
+//   fields, a 0x204 frame, and one saved ESI establish this typed screen model.
+// - source recovery: natural panel guards, shared result/done flow, real
+//   constructor new expressions, and the two 256-byte local arrays restore
+//   the complete 671-byte body and all calls.
+// - expression: passing temp and string at their array bases, not at +4,
+//   changes the frontier from 16 to 12 bytes and makes the full body through
+//   the fallback call byte-identical.  PDB LEAs at +8 and +108 support this.
+// - declaration/lifetime: function-scope arrays, reversed array order, named
+//   new results, result width/initialization, command copies, aliases, and
+//   explicit constructor parentheses were neutral and were rejected.
+// - control-flow: early fallback and reordered first-arm predicates either
+//   stayed neutral or widened the diff.  The positive outer guard and nested
+//   checks remain the binary-backed form.
+// - ABI/context: <new.h>, plain allocation-site class shells, destructor
+//   definitions, and global operator-delete declarations were neutral.  An
+//   int command changed the virtual call from slot B4 to B8.  Long is required.
+// - diagnostic only: volatile command caused a 474-byte mismatch with forced
+//   rereads and extra saved registers.  It is not a source recovery method.
+// - exact frontier: original prolog loads command before pushing the saved FS
+//   value, then loads panel.  Rebuilt code pushes FS first, then loads panel
+//   and command.  Original epilogue restores FS before pop ESI; rebuilt pops
+//   ESI first.  The handler relocation is original 55EA3C versus rebuilt 0.
+// - left in scratch: exact size/frame, saved-register set, CFG, all 22 calls,
+//   and 145 instructions across 28 blocks match.  The remaining 12 bytes are
+//   confined to the EH/prolog and EH epilogue frontier.
 // FLAGS: /nologo /c /O2 /Oy /GX (retained for the binary EH registration).
 
 #include <stdio.h>
@@ -230,9 +230,9 @@ long TribeJoinScreen::action(TPanel* panel, long command,
                     if (join_result == 0) {
                         char temp[256];
                         char string[256];
-                        this->get_string(0x25A3, temp + 4, 0x100);
-                        sprintf(string + 4, temp + 4, this->list->currentLine());
-                        TEasy_Panel::popupOKDialog(string + 4, 0, 0x1C2, 100);
+                        this->get_string(0x25A3, temp, 0x100);
+                        sprintf(string, temp, this->list->currentLine());
+                        TEasy_Panel::popupOKDialog(string, 0, 0x1C2, 100);
                         result = 1;
                         goto done;
                     }
