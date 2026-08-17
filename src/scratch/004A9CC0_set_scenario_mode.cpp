@@ -31,6 +31,11 @@
 // confirmed that loading AlliedVictory before player_text makes the frame 0x10; declaring p
 // before the text access is emitted-identical to the clean text-first form. A focused call
 // lab (direct, paired locals, reference alias) also left the +036A register difference.
+// Current pass: baseline remains 122 bytes / 4.6959% nonexact with exact size, frame,
+// and 157-call parity. H2-H25 tested field types, cursor scopes, declaration order,
+// comparison and increment spellings, branch shape, pointer casts, and register hints;
+// all emitted the same 122-byte basin or worsened structure. An ambient 128-variant
+// declaration sweep also produced one unchanged group. Keep the clean baseline pinned.
 
 typedef unsigned char uchar;
 
