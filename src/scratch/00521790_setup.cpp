@@ -99,6 +99,17 @@
 //     truthiness because the original repeats test eax,eax at startup exits.
 //     VC5 emitted an exact codegen duplicate (diff 1635, 80% ordered calls).
 //     Restored the canonical explicit comparisons; no first-hunk movement.
+//
+// Worker sa-b781fbc9 (2026-08-17):
+//   Ran 20 new evidence-led probes.  The clean source stayed at 1635 strict
+//   differing bytes, 74.51% shape, 56/70 ordered calls, and a 0x90C frame.
+//   Declaration scope, guard polarity, split allocation checks, lobby and MP
+//   block forms, CRT linkage, header context, local types, and one unused
+//   external declaration did not improve the clean result.  Some branch forms
+//   reduced size or improved shape while worsening call order; they were
+//   restored.  No exact result.  Next lead remains VC5 front-end block
+//   formation for the lobby done/close/normal-start order and zero-register
+//   allocation, not another local type or raw-offset change.
 
 #include <string.h>
 
