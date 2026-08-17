@@ -1,3 +1,6 @@
+#include <math.h>
+#include <string.h>
+
 // 00489030 RGE_RMM_Terrain_Generator::base_terrain_generate
 // Baseline: period-plausible reconstruction from rmm_terr.cpp evidence.
 // The local Map_Stack/terrain records use the proven 0x18/0x20 layouts; the
@@ -60,6 +63,22 @@
 //   mismatch. A function-scope stack cursor is also codegen-neutral.
 // - Fresh H8: one natural uchar terrain value, matching the decompiler's byte
 //   temporary, was codegen-neutral; restored the clean source.
+//
+// Pass sa-4e245cbc-r1:
+// - BINARY NOTE: <math.h> plus <string.h> changes VC5's basin. It reduces the
+//   clean mismatch from 1761 bytes to 143 bytes and the size gap to 2 bytes.
+// - BINARY NOTE: An outer positive clump guard keeps the stack LEA after the
+//   count test. This matches the +00DF block and removes one extra pop site.
+// - BINARY NOTE: Write the random threshold as map_byte <= scaled_random. This
+//   matches the target cmp/jg pair and reduces the mismatch by two bytes.
+// - BINARY NOTE: Write cleanup as x > max_x. This matches the target cmp/jle
+//   pair and removes one control-flow difference.
+// - Negative evidence: unions, pointer aliases, float count casts, typed raw
+//   terrain pointers, and local declaration order did not improve the clean
+//   143-byte result. Restore them before promotion.
+// - Final unresolved source: 143-byte mismatch, 95.11% shape, 70.49% exact
+//   blocks, 35/35 ordered calls, frame 0xA54, and rebuilt size +2 bytes.
+//   The remaining main gap is score/index1 lifetime coloring.
 
 typedef unsigned char uchar;
 
@@ -163,13 +182,11 @@ uchar RGE_RMM_Terrain_Generator::base_terrain_generate(RGE_Terrain_Info_Line lin
     long x;
     long y;
     long chance;
-    long fair_count;
     float fStack_a4c;
     uchar done;
     long local_a44;
-    long index1;
     long clump_size;
-    long in_zone;
+    long in_zone = 0;
     float cost;
     long max_x;
     int hot_i;
@@ -187,9 +204,10 @@ uchar RGE_RMM_Terrain_Generator::base_terrain_generate(RGE_Terrain_Info_Line lin
     // The original keeps the horizontal bound in a separate long (loc_stack_x)
     // and the list-head sentinel in loc_stack; max_x is the row bound.
     loc_stack_x = this->map_width - 1;
-    in_zone = 0;
     max_x = this->map_height - 1;
-    fair_count = 0;
+    fStack_a4c = 0.0f;
+    {
+    int fair_count = 0;
 
     if (line.avoid_hot_spots == 2 && this->info.hot_spot_num > 0) {
         hot_i = 0;
@@ -217,8 +235,9 @@ uchar RGE_RMM_Terrain_Generator::base_terrain_generate(RGE_Terrain_Info_Line lin
     }
 
     clump_size = 0;
-    stack_ptr = stack;
-    while (clump_size < line.clumps) {
+    if (clump_size < line.clumps) {
+        stack_ptr = stack;
+        while (clump_size < line.clumps) {
             if (this->pop_stack(&loc_stack, &chance, &x, &cost) == 0) {
                 break;
             }
@@ -264,6 +283,7 @@ uchar RGE_RMM_Terrain_Generator::base_terrain_generate(RGE_Terrain_Info_Line lin
                 }
             }
         }
+    }
 
     if (line.avoid_hot_spots == 2 && fair_count < this->info.hot_spot_num) {
         stack_ptr = &stack[clump_size];
@@ -316,6 +336,9 @@ uchar RGE_RMM_Terrain_Generator::base_terrain_generate(RGE_Terrain_Info_Line lin
         }
     }
 
+    }
+
+    long index1;
     do {
         done = 1;
         if (clump_size > 0) {
@@ -327,8 +350,8 @@ uchar RGE_RMM_Terrain_Generator::base_terrain_generate(RGE_Terrain_Info_Line lin
                     done = 0;
 
                     if (line.avoid_hot_spots == 0 ||
-                        (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_terr.cpp", 0x1c6) * 100) / 0x7fff >=
-                            this->search_map_rows[x][chance]) {
+                        this->search_map_rows[x][chance] <=
+                            (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_terr.cpp", 0x1c6) * 100) / 0x7fff) {
                         RGE_Tile* tile = &this->map_row_offset[x][chance];
                         long ok = this->check_terrain((uchar)line.terrain_type, chance, x,
                             line.spacing, (uchar)line.base_terrain_type);
@@ -389,7 +412,7 @@ uchar RGE_RMM_Terrain_Generator::base_terrain_generate(RGE_Terrain_Info_Line lin
                     (tile[1].terrain_type & 0x1f) == (uchar)line.terrain_type) ||
                     (x > 0 &&
                     (tile[-this->map_width].terrain_type & 0x1f) == (uchar)line.terrain_type &&
-                    max_x < x &&
+                    x > max_x &&
                     (tile[this->map_width].terrain_type & 0x1f) == (uchar)line.terrain_type)) {
                     tile->terrain_type = (uchar)line.terrain_type;
                 }
