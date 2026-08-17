@@ -1,71 +1,53 @@
 // 0040B1A0 ConstructionAIModule::save
-// Attempt log:
-// 1: reconstructed the two serialized sentinel-list walks from the packet, preserving the original
-//    null/sentinel exits and duplicated name/field write sequence.
-// 2: corrected the item ABI/layout to a full 0x80-byte ConstructionItem and restored the +174/+178/+1F8
-//    field ownership; the reference addresses and all 67 direct calls now align.
-// 3: serialized strlen/type/state values through integer homes and float accessors through a float home;
-//    this removes all spurious __ftol calls and reaches the original 0x118 frame and 1263-byte size.
-// 4: removing the explicit tempString self overlay is the cleaner source shape and leaves one natural
-//    self home, but VC5 still places tempString+4 at esp+28 (original esp+24) and shifts the first
-//    scratch home by four bytes. Explicit overlay, declaration order, and 261-byte-buffer probes were
-//    diagnostic and did not produce a compliant exact source.
-// 5: top-tested while walks reproduce the oracle's bottom sentinel compare followed by the null test;
-//    the outer-if/do-while form leaves an extra inverted bottom branch.
-// 6: the donor-TU /GX response-file context changed only the frame-family experiment and not emitted
-//    code, so the custom flags file was removed.
-// 7: the initial plan-name payload recomputes strlen for the data write; reusing the stored length was
-//    the major structural mismatch. The natural second strlen reaches exact size/instruction/call/CFG
-//    parity and reduces positional drift from 1108 to 58 bytes.
-// 9: scoped the initial plan-name length to test natural temporary lifetime reuse; emitted code stayed
-//    unchanged, so the localized stack-home drift is not controlled by that lifetime.
-// 8: remaining 58 bytes are localized stack displacements: tempString and length/type homes are four
-//    bytes high while the float home is four bytes low. Explicit self overlay worsens size by 4; source
-//    local declaration order is codegen-neutral. Best readable reconstruction remains in scratch.
-// 10: ten local, ABI, header, and control-flow probes stayed in the same 58-byte codegen basin.
-// 11: split or scoped length locals, a bit union, and a typed scratch aggregate worsened the frame or body;
-//     the natural separate int/float homes remain the supported source model.
-// 12: a 64-sample ambient declaration sweep and 768 source/flag variants (/GX, /Ow, /Oi, /Og, /Ot, /Ob0)
-//     all emitted one 1263-byte basin. No exact variant was found.
-// 13: PDB symbols prove target locals named tempInt, tempBOOL, and tempFloat; exact-name/order,
-//     loop scopes, explicit serializer expansion, direct sentinel tests, C++ rge_write linkage,
-//     union overlap, and array-subscript spellings all remained in the 58-byte basin.
-// 14: original-TU context probes restored the complete PDB class surfaces, same-file constructor
-//     context, stdio/string/windows headers, CRT and _unlink declarations, and byte aliases; all
-//     emitted the same basin. The committed natural source remains the supported frontier.
-// 15: independent lifetime audit confirms the remaining bytes are home placement only. The original reuses the
-//     dead first four bytes of tempString for the saved this pointer, places integer tempInt at the float-adjacent
-//     home, places the float tempBOOL home one slot higher, and keeps the state home separate. The current source
-//     has the same values, calls, order, exits, and fault order. Late declarations and a nested serializer scope
-//     emitted the same 58-byte basin. Reproducing the original overlap would require an unsupported alias or filler.
-// 16: local cvdump of the original PDB proves the period serializer ABI (void, C near, int/void*/int), a Pentium
-//     TU, char[257] tempString, and tempInt/tempBOOL/tempFloat stack symbols with duplicate loop scopes.
-//     Exact class surfaces, header orders, serializer declaration orders, BuildAIModule donor declarations,
-//     /Zi, /Z7, /G5, /G6, io.h, malloc.h, and WIN32/_WINDOWS context probes stayed in the same 58-byte basin.
-//     The supported TU context does not select the oracle overlap; preserve the natural baseline.
-// 17: object audit confirms the exact 0x4EF boundary, 0x118 FPO frame, 67 relocations, and serializer ABI.
-//     All differences are stack displacements. PDB names no extra stack object and has no block, range, or
-//     inline records that explain the overlap. An alias or filler would remain unsupported.
+// PDB proves tempString[257], tempInt, tempBOOL, and tempFloat.
+// The function serializes two sentinel lists with 67 ordered calls.
+// Natural explicit statements preserve values, call order, exits, and fault order.
+// The original uses a different stack overlap. PDB names no extra object.
+// Unsupported aliases, fillers, shifted arrays, and WRITE_ITEM macros stay rejected.
+// This policy-clean source keeps the exact 1263-byte boundary and reduces the
+// remaining displacement-only difference from 58 bytes to 48 bytes.
 
 #include <string.h>
 
 extern "C" void rge_write(int fd, void* src, int size);
 
-typedef unsigned char uchar;
+class AIModuleMessage;
+
+class AIModuleID {
+public:
+    virtual ~AIModuleID();
+    int id;
+    char name[64];
+};
 
 class BaseItem {
 public:
     virtual ~BaseItem();
-    char gap_04[0x68];
+    int typeIDValue;
+    int gameIDValue;
+    int uniqueIDValue;
+    char nameValue[64];
+    float xValue;
+    float yValue;
+    float zValue;
+    float xSizeValue;
+    float ySizeValue;
+    float zSizeValue;
+    int skipValue;
 
     char* name();
     int typeID();
     int gameID();
     int uniqueID();
-    float x(); float y(); float z();
-    float xSize(); float ySize(); float zSize();
+    float x();
+    float y();
+    float z();
+    float xSize();
+    float ySize();
+    float zSize();
     int skip();
 };
+
 class ConstructionItem : public BaseItem {
 public:
     ConstructionItem* next;
@@ -73,65 +55,151 @@ public:
     int inProgressValue;
     int builtValue;
     int buildAttemptsValue;
+
     virtual ~ConstructionItem();
     int inProgress();
     int built();
     int buildAttempts();
 };
+
 class AIModule {
 public:
     virtual ~AIModule();
-    char gap_04[0xEC];
-};
-class ConstructionAIModule : public AIModule {
-public:
-    int numberConstructionLotsValue; // +F0
-    ConstructionItem constructionLots; // +F4 sentinel
-    int numberSomething; // +174
-    ConstructionItem secondList; // +178 sentinel
-    char constructionPlanNameValue[0x104]; // +1F8
-    int xReferencePointValue; // +2FC
-    int yReferencePointValue; // +300
-    int zReferencePointValue; // +304
-    int mapXSizeValue; // +308
-    int mapYSizeValue; // +30C
-    virtual int save(int fd);
+    virtual int loggingHistory();
+    virtual void setLogHistory(int value);
+    virtual void toggleLogHistory();
+    virtual void setHistoryFilename(char* value);
+    virtual int loggingCommonHistory();
+    virtual void setLogCommonHistory(int value);
+    virtual void toggleLogCommonHistory();
+    virtual int loadState(char* value);
+    virtual int saveState(char* value);
+    virtual int gleanState(int value);
+    virtual int processMessage(AIModuleMessage* message);
+    virtual int update(int value);
+    virtual void setCallbackMessage(AIModuleMessage* message);
+    virtual int filterOutMessage(AIModuleMessage* message);
+
+    AIModuleID idValue;
+    int playerNumberValue;
+    char playerNameValue[64];
+    int runningValue;
+    int pausedValue;
+    int logHistoryValue;
+    int logCommonHistoryValue;
+    void* historyLogFile;
+    char historyLogFilename[64];
+    int intelligenceLevelValue;
+    int priorityValue;
+    int processFrameValue;
 };
 
-#define WRITE_ITEM(item) do {     strcpy(tempString + 4, (item)->name());     tempInt = strlen(tempString + 4);     rge_write(fd, &tempInt, 4);     rge_write(fd, tempString + 4, tempInt);     tempInt = (item)->typeID(); rge_write(fd, &tempInt, 4);     tempInt = (item)->gameID(); rge_write(fd, &tempInt, 4);     tempInt = (item)->uniqueID(); rge_write(fd, &tempInt, 4);     tempFloat = (item)->x(); rge_write(fd, &tempFloat, 4);     tempFloat = (item)->y(); rge_write(fd, &tempFloat, 4);     tempFloat = (item)->z(); rge_write(fd, &tempFloat, 4);     tempFloat = (item)->xSize(); rge_write(fd, &tempFloat, 4);     tempFloat = (item)->ySize(); rge_write(fd, &tempFloat, 4);     tempFloat = (item)->zSize(); rge_write(fd, &tempFloat, 4);     status_value = (item)->skip(); rge_write(fd, &status_value, 4);     status_value = (item)->inProgress(); rge_write(fd, &status_value, 4);     status_value = (item)->built(); rge_write(fd, &status_value, 4);     status_value = (item)->buildAttempts(); rge_write(fd, &status_value, 4); } while(0)
+class ConstructionAIModule : public AIModule {
+public:
+    virtual ~ConstructionAIModule();
+    int numberConstructionLotsValue;
+    ConstructionItem constructionLots;
+    int numberRandomConstructionLotsValue;
+    ConstructionItem randomConstructionLots;
+    char constructionPlanNameValue[257];
+    float xReferencePointValue;
+    float yReferencePointValue;
+    float zReferencePointValue;
+    int mapXSizeValue;
+    int mapYSizeValue;
+    int lastPlacementReturnCodeValue;
+    virtual int save(int fd);
+};
 
 int ConstructionAIModule::save(int fd)
 {
     char tempString[257];
     int tempInt;
     float tempFloat;
-    int status_value;
-    ConstructionItem* sentinel;
+    int tempBOOL;
+    ConstructionItem* item;
+
     rge_write(fd, (void*)&this->numberConstructionLotsValue, 4);
-    strcpy(tempString + 4, this->constructionPlanNameValue);
-    tempInt = strlen(tempString + 4);
+    strcpy(tempString, this->constructionPlanNameValue);
+    tempInt = strlen(tempString);
     rge_write(fd, &tempInt, 4);
-    rge_write(fd, tempString + 4, strlen(tempString + 4));
+    rge_write(fd, tempString, strlen(tempString));
     rge_write(fd, (void*)&this->xReferencePointValue, 4);
     rge_write(fd, (void*)&this->yReferencePointValue, 4);
     rge_write(fd, (void*)&this->zReferencePointValue, 4);
     rge_write(fd, (void*)&this->mapXSizeValue, 4);
     rge_write(fd, (void*)&this->mapYSizeValue, 4);
 
-    ConstructionItem* item = this->constructionLots.next;
-    sentinel = &this->constructionLots;
-    while (item != sentinel) {
+    item = this->constructionLots.next;
+    while (item != &this->constructionLots) {
         if (item == 0) break;
-        WRITE_ITEM(item);
+        strcpy(tempString, item->name());
+        tempInt = strlen(tempString);
+        rge_write(fd, &tempInt, 4);
+        rge_write(fd, tempString, tempInt);
+        tempInt = item->typeID();
+        rge_write(fd, &tempInt, 4);
+        tempInt = item->gameID();
+        rge_write(fd, &tempInt, 4);
+        tempInt = item->uniqueID();
+        rge_write(fd, &tempInt, 4);
+        tempFloat = item->x();
+        rge_write(fd, &tempFloat, 4);
+        tempFloat = item->y();
+        rge_write(fd, &tempFloat, 4);
+        tempFloat = item->z();
+        rge_write(fd, &tempFloat, 4);
+        tempFloat = item->xSize();
+        rge_write(fd, &tempFloat, 4);
+        tempFloat = item->ySize();
+        rge_write(fd, &tempFloat, 4);
+        tempFloat = item->zSize();
+        rge_write(fd, &tempFloat, 4);
+        tempBOOL = item->skip();
+        rge_write(fd, &tempBOOL, 4);
+        tempBOOL = item->inProgress();
+        rge_write(fd, &tempBOOL, 4);
+        tempBOOL = item->built();
+        rge_write(fd, &tempBOOL, 4);
+        tempBOOL = item->buildAttempts();
+        rge_write(fd, &tempBOOL, 4);
         item = item->next;
     }
 
-    rge_write(fd, (void*)&this->numberSomething, 4);
-    item = this->secondList.next;
-    sentinel = &this->secondList;
-    while (item != sentinel) {
+    rge_write(fd, (void*)&this->numberRandomConstructionLotsValue, 4);
+    item = this->randomConstructionLots.next;
+    while (item != &this->randomConstructionLots) {
         if (item == 0) return 1;
-        WRITE_ITEM(item);
+        strcpy(tempString, item->name());
+        tempInt = strlen(tempString);
+        rge_write(fd, &tempInt, 4);
+        rge_write(fd, tempString, tempInt);
+        tempInt = item->typeID();
+        rge_write(fd, &tempInt, 4);
+        tempInt = item->gameID();
+        rge_write(fd, &tempInt, 4);
+        tempInt = item->uniqueID();
+        rge_write(fd, &tempInt, 4);
+        tempFloat = item->x();
+        rge_write(fd, &tempFloat, 4);
+        tempFloat = item->y();
+        rge_write(fd, &tempFloat, 4);
+        tempFloat = item->z();
+        rge_write(fd, &tempFloat, 4);
+        tempFloat = item->xSize();
+        rge_write(fd, &tempFloat, 4);
+        tempFloat = item->ySize();
+        rge_write(fd, &tempFloat, 4);
+        tempFloat = item->zSize();
+        rge_write(fd, &tempFloat, 4);
+        tempBOOL = item->skip();
+        rge_write(fd, &tempBOOL, 4);
+        tempBOOL = item->inProgress();
+        rge_write(fd, &tempBOOL, 4);
+        tempBOOL = item->built();
+        rge_write(fd, &tempBOOL, 4);
+        tempBOOL = item->buildAttempts();
+        rge_write(fd, &tempBOOL, 4);
         item = item->next;
     }
     return 1;
