@@ -57,6 +57,10 @@
 //   the same 15-byte shifted param3 push; combining that form with a named
 //   right-edge temporary is also a duplicate. Restored the simpler pinned
 //   natural source.
+// - Object audit confirms the PDB parameter ABI, 253-byte FPO body, four saved
+//   registers, no locals or SEH, panel layouts, and direct call relocations.
+//   Repeated builds are stable. No metadata explains the oracle LEA-before-push
+//   schedule, so aliases or argument-order steering remain unjustified.
 
 class TPanel {
 public:
