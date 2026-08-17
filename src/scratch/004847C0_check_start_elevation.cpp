@@ -163,6 +163,10 @@
 //   the plain typed member remained best. Ten new variant families exhausted
 //   local-declaration and row-ownership leads without recovering the original
 //   y1/range-home, row-pointer/y-home, x1/EBX, or CL/BL rotation.
+// - Object audit confirms the five-parameter ABI, one local FPO word, no SEH,
+//   no inline records, the 24-byte tile, and terrain bits at byte 5. PDB names
+//   only index1 and y1, so its optimized local records are incomplete. Assembly
+//   proves the remaining homes; extra aliases or raw cursors stay unjustified.
 
 struct RGE_Tile {
     short screen_xpos;
