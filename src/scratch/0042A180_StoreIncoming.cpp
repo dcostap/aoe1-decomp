@@ -36,6 +36,16 @@
 // Natural `new char[]` and the declared HOLDER class are codegen-identical and
 // remain the simplest period-plausible source. The remaining mismatch is local
 // register and SIB-base coloring around allocation and final record stores.
+// Revisit pass sa-b719bbdc-r1, 2026-08-17: restoring a typed cursor with `h += i`
+// broke the prologue and CFG. Using `h[i].Length` with typed pointer addition,
+// swapping declaration order, and reversing the valid pointer-add operands all
+// stayed in the clean basin or worsened it. Keep the pinned typed packet source.
+// Revisit pass sa-bce60210-r1, 2026-08-17: PDB type records confirm HOLDER's
+// fromPlayer field and Store/Clear member surface; restoring them and using the
+// PDB parameter names was codegen-neutral. Natural slot-pointer, reference,
+// direct-length, declaration, and base-alias forms did not recover the two-byte
+// allocation hunk. A five-variant typed slot family also found no exact result;
+// separate slot locals entered a worse prologue basin. Keep this natural source.
 
 #include <string.h>
 
@@ -52,9 +62,11 @@ public:
     uint Length;
     ulong dcoFromID;
     ulong dcoReceiveID;
-    int unused;
+    uint fromPlayer;
     HOLDER();
     ~HOLDER();
+    void Store(char*, uint);
+    void Clear();
 };
 
 class TCommunications_Handler {
@@ -62,38 +74,38 @@ public:
     char gap_00[0x1524];
     HOLDER* OnHold;
 
-    int StoreIncoming(uint serial, char* msg, uint len, ulong from, ulong recv);
+    int StoreIncoming(uint SerialNumber, char* InBuff, uint Length, ulong dcoFromID, ulong dcoReceiveID);
 };
 
-int TCommunications_Handler::StoreIncoming(uint serial, char* msg, uint len, ulong from, ulong recv)
+int TCommunications_Handler::StoreIncoming(uint SerialNumber, char* InBuff, uint Length, ulong dcoFromID, ulong dcoReceiveID)
 {
     HOLDER* h;
     unsigned int i;
 
-    if (len == 0) {
+    if (Length == 0) {
         L->Log("+++StoreIncoming called for zero-length message");
     }
 
     h = this->OnHold;
     for (i = 0; i <= 0x1F5; i++) {
-        if (h[i].Serial == serial && h[i].dcoFromID == from) {
-            L->Log("Future Ser#%d previously stored (Slot#%d)", serial, i);
+        if (h[i].Serial == SerialNumber && h[i].dcoFromID == dcoFromID) {
+            L->Log("Future Ser#%d previously stored (Slot#%d)", SerialNumber, i);
             return 1;
         }
     }
 
     for (i = 0; i < 0x1F5; i++) {
-        if (h[i].Length == 0 && len != 0) {
-            this->OnHold[i].Length = len;
+        if (h[i].Length == 0 && Length != 0) {
+            this->OnHold[i].Length = Length;
             h = &this->OnHold[i];
             h->HoldMsg = new char[h->Length];
             if (h->HoldMsg != 0) {
-                memcpy(h->HoldMsg, msg, h->Length);
-                h->Length = len;
+                memcpy(h->HoldMsg, InBuff, h->Length);
+                h->Length = Length;
             }
-            this->OnHold[i].Serial = serial;
-            this->OnHold[i].dcoFromID = from;
-            this->OnHold[i].dcoReceiveID = recv;
+            this->OnHold[i].Serial = SerialNumber;
+            this->OnHold[i].dcoFromID = dcoFromID;
+            this->OnHold[i].dcoReceiveID = dcoReceiveID;
             return 1;
         }
     }
