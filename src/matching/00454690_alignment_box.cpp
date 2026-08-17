@@ -26,6 +26,16 @@
 //   was 334 bytes, so the clean reconstruction was restored.
 // - Binary x87 reuse supports mutating the x/y offsets between corner pairs;
 //   the next probe tests that natural sequential source shape.
+// - Resumed pass: the natural source builds 341 bytes versus the original
+//   337, with exact frame, saved registers, and ordered __ftol calls. The
+//   first mismatch is the final x-radius update at +0x117.
+// - Tested repeated-add, operand-order, explicit/direct-expression, helper,
+//   cached-local, and prior-mutation spellings. They either duplicate the
+//   341-byte basin or worsen frame and x87 scheduling. A negative-product
+//   spelling reached 340 bytes but had worse shape and was diagnostic only.
+// - The final positive x-radius update with a parenthesized member sum
+//   (`radius_x + radius_x`) recovers the target fld/fadd sequence. The full
+//   source now emits the original 337 bytes exactly.
 
 class RGE_Map {
 public:
@@ -76,7 +86,7 @@ unsigned char RGE_Master_Static_Object::alignment_box(
     y_offset -= 2.0f * this->radius_y;
     x3 = (short)((x_offset + y_offset) * tile_half_width);
     y3 = (short)((y_offset + 1.0 - x_offset) * tile_half_height);
-    x_offset += 2.0f * this->radius_x;
+    x_offset += (this->radius_x + this->radius_x);
     x4 = (short)((x_offset + y_offset) * tile_half_width);
     y4 = (short)((y_offset + 1.0 - x_offset) * tile_half_height);
     return 1;
