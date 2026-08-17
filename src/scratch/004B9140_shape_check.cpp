@@ -1,43 +1,30 @@
 // VA: 004B9140 TShape::shape_check
 // Attempt log:
-// 1: direct reconstruction from packet/listing with local byte-stream decoder.
-// 2: fixed TShape field layout after dump showed +14/+18/+1c were shifted by 4.
-// 3: added explicit case 15 because original switch accepts 0..15 then case 15 returns false; now same-size 701B but broad mismatch.
-// 4: dump shows exact prologue/early field layout through row table, but first real topology divergence is around row-byte pointer setup: original keeps EAX as stream pointer and ESI as row offset/index; rebuilt flips stream into ESI and uses EAX for opcode value, shifting the entire switch decoder and no-data decoder.
-// 5: retain the established raw TShape offsets but type the per-frame record;
-//    the original's x parameter home is reused as the stream opcode below.
-// 6: a full typed TShape/SLhape_File_Header surface moved frame into ESI before
-//    the prologue and shortened the function; rolled back to the proven offset
-//    surface while keeping the typed per-frame ownership.
-// 7: typed per-frame ownership plus x-home opcode reuse improved the positional
-//    diff to 505 bytes, but the compiler still chose the wrong stream register.
-// 8: an explicit data-offset row pointer was codegen-equivalent; no new lead.
-// 9: donor-era <memory.h> changed the prologue basin and worsened the diff;
-//    rolled back.
-// 10: opcode variant lab: a scoped local copied through x retained 701 bytes
-//     and reached 441 positional diff bytes, but is compiler-steering scaffolding;
-//     the living source stays the natural typed/x-home form (684-byte output).
-// 11: canonical full TShape/SLhape ownership with FShape->Version and typed
-//     offsets worsened the prologue and structural coverage; restored.
-// 12: direct nested Shape_Data_Offsets row lookup was codegen-equivalent to the
-//     named row pointer; restored the named typed decoder.
-// 13: explicit py*4 row offset reused for both outline and data tables improved
-//     the positional diff from 505 to 503 bytes; retained.
-// 14: split data_offset and a named data-table cursor were codegen duplicates.
-// 15: typed the +1c frame table as Shape_Info[]; emitted code was unchanged.
-// 16: canonical SLhape_File_Header Version ownership worsened the prologue and
-//     structural coverage; restored.
-// 17: removing redundant case 15 worsened size and shape; default remains with
-//     the explicit case for the current best source.
-// 18: one shared byte cursor across both format branches was a codegen duplicate.
-// 19: unsigned-char data and frame cursor surfaces were codegen duplicates.
-// left in scratch: canonical per-frame Shape_Info decoder and legacy walk are
-// reconstructed; remaining drift is the stream pointer/register basin, switch
-// case reload/coloring, and legacy tail layout. Not accepted_drift-safe.
+// 1: The initial typed overlay matched calls and frame shape, but differed by 503 bytes.
+// 2: The string literal removed a raw address. Relocations changed; code bytes did not.
+// 3: Typed row arrays worsened the overlay by two bytes.
+// 4: Nested guards matched the original size and CFG better than early returns.
+// 5: The canonical TShape surface worsened the prologue, but removed invented fields.
+// 6: Shape_Info pointer declaration forms were duplicates under that surface.
+// 7: A four-variant ownership lab found one 688-byte basin and no exact result.
+// 8: The nearby sprite decoder supported typed row arrays. They improved canonical output.
+// 9: An ordinary opcode local reached 701 bytes, but moved the stream register basin.
+// 10: The decompiler-supported default-only switch worsened size and block coverage.
+// 11: A named legacy Shape_Header improved the mismatch to 527 bytes.
+// 12: bool flags and unsigned count locals emitted duplicate code.
+// 13: <memory.h> context moved the mismatch to 501 bytes and restored exact blocks.
+// 14: Direct row-offset access under that context reached the best 499-byte mismatch.
+// 15: Direct FShape base ownership was codegen-equivalent to the typed owner.
+// Current clean model: canonical TShape and records, natural guards, typed row ownership,
+// a real packed-payload stream pointer, and no raw address or explicit home reuse.
+// Remaining drift is the stream pointer basin, switch register coloring, and legacy tail.
+// Result remains unresolved. It is not accepted_drift-safe.
+
+#include <memory.h>
 
 struct Shape_Info {
-    unsigned long Shape_Data_Offsets;
-    unsigned long Shape_Outline_Offset;
+    long Shape_Data_Offsets;
+    long Shape_Outline_Offset;
     long Reserved1;
     long Reserved2;
     long Width;
@@ -46,15 +33,41 @@ struct Shape_Info {
     long Hotspot_Y;
 };
 
+struct Shape_Header {
+    long bounds;
+    long origin;
+    long xmin;
+    long ymin;
+    long xmax;
+    long ymax;
+};
+
+struct Shape_File_Header {
+    long version;
+    long shape_num;
+};
+
+struct Shape_Offsets {
+    long shape;
+    long palette;
+};
+
+struct SLhape_File_Header {
+    char Version[4];
+    long Num_Shapes;
+    char Comment[24];
+};
+
 class TShape {
 public:
-    char* base0;          // +00
-    char gap04[8];
-    char* current;        // +0c
-    char gap10[4];
-    void* table14;        // +14
-    unsigned char* shapeData; // +18
-    char* frames;         // +1c
+    unsigned char* shape;             // +00
+    int load_type;                    // +04
+    int load_size;                    // +08
+    Shape_Header* shape_header;       // +0c
+    Shape_File_Header* head;          // +10
+    Shape_Offsets* offsets;           // +14
+    SLhape_File_Header* FShape;       // +18
+    Shape_Info* shape_info;           // +1c
     unsigned char Check_shape(long, char*);
     unsigned char shape_check(long x, long y, long frame);
 };
@@ -62,17 +75,21 @@ public:
 unsigned char TShape::shape_check(long x, long y, long frame)
 {
     unsigned char* p;
+    unsigned char code;
 
     if (frame < 0) return 0;
-    if (Check_shape(frame, (char*)0x00587058)) return 0;
+    if (Check_shape(frame, "RGL_shape_draw")) return 0;
 
-    unsigned char* base = this->shapeData;
+    unsigned char* base = (unsigned char*)this->FShape;
     if (base != 0) {
-        char* fr = this->frames + (frame << 5);
-        Shape_Info* info = (Shape_Info*)fr;
-        int px = info->Hotspot_X + x;
-        int py = info->Hotspot_Y + y;
-        int width = info->Width;
+        Shape_Info* info;
+        int px;
+        int py;
+        int width;
+        info = &this->shape_info[frame];
+        px = info->Hotspot_X + x;
+        py = info->Hotspot_Y + y;
+        width = info->Width;
         if (px < 0 || py < 0 || px >= width || py >= info->Height) return 0;
         int row_offset = py * 4;
         unsigned char* rowtab = base + info->Shape_Outline_Offset;
@@ -81,37 +98,37 @@ unsigned char TShape::shape_check(long x, long y, long frame)
         if (minx < 0 || px < minx || px > width - span) return 0;
         unsigned char* data = base + info->Shape_Data_Offsets;
         int data_offset = *(int*)(data + row_offset);
-        p = (unsigned char*)(base + data_offset);
+        p = base + data_offset;
         while (minx < width) {
             if (px < minx) return 0;
-            x = *p++;
-            switch (x & 0xf) {
+            code = *p++;
+            switch (code & 0xf) {
             case 0: case 4: case 8: case 12: {
-                int n = ((unsigned int)x) >> 2;
+                unsigned int n = ((unsigned int)code) >> 2;
                 minx += n;
                 if (px < minx) return 1;
                 p += n;
                 break;
             }
             case 2: {
-                int n = (((unsigned int)x) << 4) | *p++;
+                unsigned int n = (((unsigned int)code) << 4) | *p++;
                 minx += n;
                 if (px < minx) return 1;
                 p += n;
                 break;
             }
             case 1: case 5: case 9: case 13: {
-                int n = ((unsigned int)x) >> 2;
+                unsigned int n = ((unsigned int)code) >> 2;
                 minx += n;
                 break;
             }
             case 3: {
-                int n = (((unsigned int)x) << 4) | *p++;
+                unsigned int n = (((unsigned int)code) << 4) | *p++;
                 minx += n;
                 break;
             }
             case 6: {
-                int n = ((unsigned int)x) >> 4;
+                unsigned int n = ((unsigned int)code) >> 4;
                 if (n == 0) n = *p++;
                 minx += n;
                 if (px < minx) return 1;
@@ -119,7 +136,7 @@ unsigned char TShape::shape_check(long x, long y, long frame)
                 break;
             }
             case 7: case 10: {
-                int n = ((unsigned int)x) >> 4;
+                unsigned int n = ((unsigned int)code) >> 4;
                 if (n == 0) n = *p++;
                 minx += n;
                 if (px < minx) return 1;
@@ -127,7 +144,7 @@ unsigned char TShape::shape_check(long x, long y, long frame)
                 break;
             }
             case 11: case 14: {
-                int n = ((unsigned int)x) >> 4;
+                unsigned int n = ((unsigned int)code) >> 4;
                 if (n == 0) n = *p++;
                 minx += n;
                 if (px < minx) return 1;
@@ -139,58 +156,58 @@ unsigned char TShape::shape_check(long x, long y, long frame)
                 return 0;
             }
         }
-        return 0;
-    }
-
-    char* rec = this->base0 + *(int*)((char*)this->table14 + frame * 8);
-    this->current = rec;
-    int minY = *(int*)(rec + 0x0c);
-    int minX2 = *(int*)(rec + 8);
-    int maxX2 = *(int*)(rec + 0x10);
-    p = (unsigned char*)(rec + 0x18);
-    int maxY2 = *(int*)(rec + 0x14);
-    if (y < minY || y > maxY2 || x < minX2 || x > maxX2) return 0;
-    if (minY < y) {
-        int rows = y - minY;
-        do {
-            unsigned char done = 0;
-            do {
-                unsigned char c = *p++;
-                if ((c & 1) == 1) {
-                    c >>= 1;
-                    if (c == 0) done = 1; else p += c;
-                } else {
-                    if ((c & 0xfe) == 0) done = 1; else ++p;
+                return 0;
+            } else {
+                Shape_Header* header = (Shape_Header*)(this->shape + this->offsets[frame].shape);
+                this->shape_header = header;
+                int minY = header->ymin;
+                int minX2 = header->xmin;
+                int maxX2 = header->xmax;
+                p = (unsigned char*)(header + 1);
+                int maxY2 = header->ymax;
+                if (y < minY || y > maxY2 || x < minX2 || x > maxX2) return 0;
+                if (minY < y) {
+                    int rows = y - minY;
+                    do {
+                        bool done = false;
+                        do {
+                            unsigned char c = *p++;
+                            if ((c & 1) == 1) {
+                                c >>= 1;
+                                if (c == 0) done = 1; else p += c;
+                            } else {
+                                if ((c & 0xfe) == 0) done = 1; else ++p;
+                            }
+                        } while (!done);
+                        --rows;
+                    } while (rows != 0);
                 }
-            } while (!done);
-            --rows;
-        } while (rows != 0);
-    }
-    int curx = minX2;
-    unsigned char done = 0;
-    do {
-        unsigned char c = *p++;
-        if ((c & 1) == 1) {
-            c >>= 1;
-            if (c == 0) {
-                int n = *p;
-                curx += n;
-                if (curx > x) return 0;
-            } else {
-                curx += c;
-                if (curx > x) return 1;
-                p += c;
+                int curx = minX2;
+                bool done = false;
+                do {
+                    unsigned char c = *p++;
+                    if ((c & 1) == 1) {
+                        c >>= 1;
+                        if (c == 0) {
+                            int n = *p;
+                            curx += n;
+                            if (curx > x) return 0;
+                        } else {
+                            curx += c;
+                            if (curx > x) return 1;
+                            p += c;
+                        }
+                    } else {
+                        c >>= 1;
+                        if (c == 0) {
+                            done = 1;
+                        } else {
+                            curx += c;
+                            if (curx > x) return 1;
+                        }
+                        ++p;
+                    }
+                } while (!done);
             }
-        } else {
-            c >>= 1;
-            if (c == 0) {
-                done = 1;
-            } else {
-                curx += c;
-                if (curx > x) return 1;
-            }
-            ++p;
-        }
-    } while (!done);
     return 0;
 }
