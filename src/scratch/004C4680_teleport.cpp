@@ -19,6 +19,12 @@
 //   natural default path while the entry block and FPU switch still drift.
 // - Inverted-guard, declaration-order, global-constant, and constant-left
 //   predicate variants did not improve the 1199-byte structural best.
+// - A direct zero return restores the original nearby return block. Coordinate-left
+//   upper clamps restore the original x87 compare and improve the body by 397 bytes.
+// - Direct map width/height expressions preserve the original map-bound load basin;
+//   temporary width/height locals produce the wrong fsubr form.
+// - The cleanest current source is 800-byte strict diff, 72.04% shape, and 46.72%
+//   exact-block coverage. Calls remain 12/12 and frame remains 0x10.
 
 class RGE_Static_Object;
 class RGE_Master_Static_Object;
@@ -170,7 +176,7 @@ float RGE_Static_Object::teleport(float param_1, float param_2, float param_3) {
     result = ZERO_F;
     map = this->owner->world->map;
     if (this->inside_obj != 0) {
-        return result;
+        return 0.0f;
     }
 
     if (0.0 < this->master_obj->radius_z) {
@@ -180,16 +186,15 @@ float RGE_Static_Object::teleport(float param_1, float param_2, float param_3) {
     if (param_1 < 0.0f) {
         param_1 = 0.0f;
     }
-    tx = map->map_width;
-    if ((float)tx <= param_1) {
-        param_1 = (float)tx - TILE_EPSILON;
+    // BINARY NOTE: The upper-bound loads come directly from map width and height.
+    if (param_1 >= (float)map->map_width) {
+        param_1 = (float)map->map_width - TILE_EPSILON;
     }
     if (param_2 < 0.0f) {
         param_2 = 0.0f;
     }
-    ty = map->map_height;
-    if ((float)ty <= param_2) {
-        param_2 = (float)ty - TILE_EPSILON;
+    if (param_2 >= (float)map->map_height) {
+        param_2 = (float)map->map_height - TILE_EPSILON;
     }
 
     tx = (int)param_1;
@@ -242,21 +247,21 @@ float RGE_Static_Object::teleport(float param_1, float param_2, float param_3) {
         if (rx + rz < ONE_F) {
             result = rz;
         } else {
-            result = 1.0f - rx;
+            result = ONE_F - rx;
         }
         break;
     case 2:
         if (rx + rz < ONE_F) {
             result = rx;
         } else {
-            result = 1.0f - rz;
+            result = ONE_F - rz;
         }
         break;
     case 3:
         if (rx <= rz) {
-            result = 1.0f - rz;
+            result = ONE_F - rz;
         } else {
-            result = 1.0f - rx;
+            result = ONE_F - rx;
         }
         break;
     case 4:
@@ -267,10 +272,10 @@ float RGE_Static_Object::teleport(float param_1, float param_2, float param_3) {
         }
         break;
     case 5:
-        result = 1.0f - rx;
+        result = ONE_F - rx;
         break;
     case 6:
-        result = 1.0f - rz;
+        result = ONE_F - rz;
         break;
     case 7:
         result = rz;
@@ -293,14 +298,14 @@ float RGE_Static_Object::teleport(float param_1, float param_2, float param_3) {
         break;
     case 11:
         if (rx + rz < 1.0f) {
-            result = 1.0f - (rx + rz);
+            result = ONE_F - (rx + rz);
         } else {
             result = 0.0f;
         }
         break;
     case 12:
         if (1.0f < rx + rz) {
-            result = (rx + rz) - 1.0f;
+            result = (rx + rz) - ONE_F;
         } else {
             result = 0.0f;
         }
@@ -312,14 +317,14 @@ float RGE_Static_Object::teleport(float param_1, float param_2, float param_3) {
         if (1.0f <= rx + rz) {
             result = rz;
         } else {
-            result = 1.0f - rx;
+            result = ONE_F - rx;
         }
         break;
     case 14:
         if (1.0f <= rx + rz) {
             result = rx;
         } else {
-            result = 1.0f - rz;
+            result = ONE_F - rz;
         }
         break;
     case 15:
@@ -331,9 +336,9 @@ float RGE_Static_Object::teleport(float param_1, float param_2, float param_3) {
         break;
     case 16:
         if (rx <= rz) {
-            result = 1.0f - rx;
+            result = ONE_F - rx;
         } else {
-            result = 1.0f - rz;
+            result = ONE_F - rz;
         }
         break;
     default:
