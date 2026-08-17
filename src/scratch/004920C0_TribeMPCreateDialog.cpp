@@ -15,6 +15,12 @@
 // 10: child panel data surfaces need no speculative virtual destructors.
 // 11: restored the same-TU TPanel virtual surface; it compiled identically,
 //     so the first constructor hunk is not controlled by that lifetime ABI.
+// 12: restored the binary-declared TPanel* parent ABI. Explicit casts to the
+//     proven TEasy_Panel popup surface preserve all bytes and the 14-call set.
+// 13-16: initializer-list member zeroing, setup flag/result locals, and later
+//     output-slot alias declarations were tested and rolled back. They either
+//     broadened the mismatch or emitted the same 31-byte initial scheduling
+//     drift. Keep the body-style zeroing and typed output-slot alias.
 //
 // Recovered constructor facts:
 // - TPanel is 0xF4, TEasy_Panel is 0x478, and TDialogPanel is 0x490.
@@ -81,10 +87,10 @@ public:
     TButtonPanel* okButton;
     TButtonPanel* cancelButton;
     virtual ~TribeMPCreateDialog();
-    TribeMPCreateDialog(TEasy_Panel* parent);
+    TribeMPCreateDialog(TPanel* parent);
 };
 
-TribeMPCreateDialog::TribeMPCreateDialog(TEasy_Panel* parent)
+TribeMPCreateDialog::TribeMPCreateDialog(TPanel* parent)
     : TDialogPanel((char*)0x586208)
 {
     TEditPanel** inputGamename = &this->inputGamename;
@@ -95,8 +101,8 @@ TribeMPCreateDialog::TribeMPCreateDialog(TEasy_Panel* parent)
     this->cancelButton = 0;
 
     if (this->setup(parent->renderArea(), parent, 500, 230,
-                    parent->get_popup_info_file(),
-                    parent->get_popup_info_id(), 1)) {
+                    ((TEasy_Panel*)parent)->get_popup_info_file(),
+                    ((TEasy_Panel*)parent)->get_popup_info_id(), 1)) {
         if (this->create_text(this, &this->title, 0x25a6,
                               20, 20, 0x1cc, 0x1e, 1, 1, 1, 0)) {
             if (this->create_text(this, &this->input_title, 0x25aa,
