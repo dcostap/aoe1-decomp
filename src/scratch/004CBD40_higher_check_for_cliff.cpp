@@ -30,6 +30,16 @@
 // fresh pass r4: split the typed terrain height and width bounds into separate natural guards;
 // VC5 reversed the height/width compares and worsened the first hunk by 4 bytes.
 // Restored the combined clean guard; no source change retained.
+// fresh pass r5: natural while-loop, pointer output ABI, math-header context, direct angle
+// assignment, angle alias, split cliff guards, endpoint-y2 local, and named angle globals
+// did not improve the 421-byte basin.  Virtual static/master surfaces preserve the same bytes
+// and restore the oracle's virtual decorated member identity; retain those natural declarations.
+// fresh pass r6: spelling the facet cutoff as facet >= 0x19 recovers the oracle's cmp 19/jge,
+// one exact late block, and better block/resync metrics without changing positional diff.
+// Reordering offset/facet declarations is emitted-code duplicate.  A typed eight-float cliff
+// table removes raw address expressions but worsens size and positional drift.
+// Main review retained that typed table because raw absolute addresses are not
+// valid living source. Numeric pool values are ordinary source constants.
 // Left in scratch: behavior and call set look right, but broad register-allocation/FPU compare drift remains; not an accepted_drift candidate.
 
 extern "C" double __cdecl atan2(double, double);
@@ -38,13 +48,14 @@ typedef unsigned char uchar;
 
 class RGE_Master_Static_Object {
 public:
-    char gap_00[0x14];
+    virtual ~RGE_Master_Static_Object();
+    char gap_04[0x10];
     short object_group;
 };
 
 class RGE_Static_Object {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Static_Object();
     long id;
     RGE_Master_Static_Object* master_obj;
     char gap_0C[0x29];
@@ -95,15 +106,25 @@ public:
 
 extern "C" int __cdecl lines_intersect(float, float, float, float, float, float, float, float);
 
-#define F32(addr) (*(float*)(addr))
-#define CLIFF_TABLE ((float*)0x00587258)
+struct Cliff_Check_Entry {
+    float angle_min_1;
+    float angle_max_1;
+    float angle_min_2;
+    float angle_max_2;
+    float x1;
+    float y1;
+    float x2;
+    float y2;
+};
+
+extern Cliff_Check_Entry TRIBE_Cliff_Higher_Check_Table[];
 
 class TRIBE_Combat_Object : public RGE_Static_Object {
 public:
-    int higher_check_for_cliff(RGE_Static_Object* obj, int col, int row,
-                               float x1, float y1, float x2, float y2,
-                               RGE_Map* map, RGE_Static_Object* old_obj,
-                               float& angle, int& dir);
+    virtual int higher_check_for_cliff(RGE_Static_Object* obj, int col, int row,
+                                       float x1, float y1, float x2, float y2,
+                                       RGE_Map* map, RGE_Static_Object* old_obj,
+                                       float& angle, int& dir);
 };
 
 int TRIBE_Combat_Object::higher_check_for_cliff(RGE_Static_Object* obj, int col, int row,
@@ -126,20 +147,20 @@ int TRIBE_Combat_Object::higher_check_for_cliff(RGE_Static_Object* obj, int col,
             if (angle == -1.0f) {
                 double a = atan2((double)(obj->world_y - this->world_y), (double)(obj->world_x - this->world_x));
                 angle = (float)a;
-                if (a < F32(0x00574C98)) {
-                    angle = (float)(a - F32(0x00574CA4));
+                if (a < 0.0f) {
+                    angle = (float)(a + 6.28318548f);
                 }
             }
 
             int facet = cliff->facet;
-            int off = facet << 5;
+            Cliff_Check_Entry& check = TRIBE_Cliff_Higher_Check_Table[facet];
             if (lines_intersect(x1, y1, x2, y2,
-                                F32(0x00587268 + off) + x1,
-                                F32(0x0058726C + off) + y1,
-                                F32(0x00587270 + off) + x2,
-                                F32(0x00587274 + off) + y2)) {
-                if (((0x18 < facet) || (angle < F32(0x00587258 + off)) || (F32(0x0058725C + off) < angle)) &&
-                    ((angle < F32(0x00587260 + off)) || (F32(0x00587264 + off) < angle))) {
+                                check.x1 + x1,
+                                check.y1 + y1,
+                                check.x2 + x2,
+                                check.y2 + y2)) {
+                if ((facet >= 0x19 || angle < check.angle_min_1 || check.angle_max_1 < angle) &&
+                    (angle < check.angle_min_2 || check.angle_max_2 < angle)) {
                     --dir;
                     return 1;
                 }
