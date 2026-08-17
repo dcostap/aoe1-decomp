@@ -54,6 +54,11 @@
 //     at the 31-byte best.
 // 29: restored the high-confidence base ownership with the 31-byte source; the
 //     result stayed unchanged. Remaining drift is setup register scheduling.
+// 30: direct this->world access with count-first setup was a 31-byte duplicate;
+//     the simpler direct member form is now canonical.
+// 31: long count, a named player index, the integer decompiler mask, and a
+//     declaration-local count were all codegen duplicates or worse. The typed
+//     while/pop loop and 31-byte clean result remain authoritative.
 
 extern "C" void* __cdecl memset(void*, int, unsigned int);
 
@@ -156,10 +161,9 @@ void RGE_RMM_Object_Generator::place_objects(RGE_Object_Info_Line& info)
     this->init_stack(&obj_stack);
     this->make_placement_stack(&obj_stack, -1, -1, -1, -1);
 
-    RGE_World* world = this->world;
     count = info.number_of_groups;
     RGE_Player* player;
-    player = world->players[
+    player = this->world->players[
         info.player_id & (info.player_id <= -1 ? 0 : -1)];
 
     while (pop_stack(&obj_stack, &col, &x, &cost) && count > 0) {
