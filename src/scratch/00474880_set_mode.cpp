@@ -32,9 +32,14 @@
 // 10 named pos_w/above again post-fix: regressed (1612); restored calc_wid state.
 //
 // Current session probes:
-// - inverted the outer mode guard and hoisted calc_wid's declaration: emitted-code duplicates.
-// - hoisted value_wid and value_hgt before the list_is_above branch: improved to 1395 bytes
-//   (63.84%), shape 87.17%, and exact-block coverage 41.18%; retained as the clean candidate.
+// - hoisted value_wid and value_hgt before the list_is_above branch: improved the prior
+//   candidate to 1395 bytes (63.84%), shape 87.17%, and exact-block coverage 41.18%.
+// - caching spacer_size before each line-count branch and border_size inside each arm
+//   improved the candidate to 865 bytes (39.53%), shape 93.51%, and 52.19% exact blocks.
+//   The final candidate is 2188 bytes versus 2185 original bytes, with all source calls
+//   present but one vslot+1C versus indirect call encoding replacement.
+// - Swapping parent_x before parent_y in this basin reduced the diff by two bytes; this is
+//   retained as a codegen observation, not a proven declaration order.
 // - pointer-to-member dispatch for this->set_fixed_position: regressed to 1944 bytes and
 //   introduced direct compiler-generated PMF thunks; removed.
 // - volatile calc_wid: regressed to 1959 bytes; removed.
@@ -46,7 +51,7 @@
 //   so the L536 indirect/vslot+1C replacement remains an encoding-local call-cache difference.
 //
 // Left in scratch, remaining drift (all localized codegen):
-// - current best is 1395 bytes (63.84%), shape 87.17%, size 2142 vs 2185, frame 0xC vs 0x10;
+// - current best is 865 bytes (39.53%), shape 93.51%, size 2188 vs 2185, frame 0xC vs 0x10;
 // - frame 0xC vs 0x10: original keeps a 4th slot [E0-4] caching list_wid for the above path;
 //   rebuilt keeps calc_wid in ebp (register) and spills only the fn ptr to old_mode's home.
 // - 480/484: original hoists arg3/arg4 (val_wid+btn_wid+1, val_hgt) and pushes them BEFORE the
@@ -57,12 +62,14 @@
 //   from [esp+24h].
 // - prologue: rebuilt pushes all 4 callee-saves eagerly before the early-return compare; original
 //   pushes only esi and defers edi/ebp/ebx past the branch.
-// - L536 fn ptr: original caches vtable[0x1C] into [E0-8] and list_wid into [E0-4]; rebuilt keeps
-//   the fn ptr in ebx for the below path and loads calc_wid into ebp (overwriting parent_x's
-//   register, demoting parent_x to its home).
-// current pass: packet and mangled-name evidence confirm DropdownMode as the natural parameter
-// ABI; changing the int alias to the enum is codegen-neutral. Donor review found no new
-// source-plausible lead for the shrink-wrapped prologue or the two vtable-call encodings.
+// - L536 fn ptr: original caches vtable[0x1C] into [E0-8] and list_wid into [E0-4]; rebuilt
+//   keeps the fn ptr in ebp and spills it to old_mode's home, so the checker reports one
+//   vslot+1C versus indirect call replacement.
+// - Prologue: rebuilt pushes all four callee-saves before the early compare; original pushes
+//   only esi and defers edi/ebp/ebx. The source probes did not recover this shrink-wrap basin.
+// Current pass: packet and mangled-name evidence confirm DropdownMode as the natural parameter
+// ABI, while exact Pnl_drop.cpp donors use int. The int ABI is retained because it emits the
+// original decorated owner symbol; enum member stores use explicit casts.
 
 class TDrawArea {
 public:
@@ -219,20 +226,19 @@ public:
     int draw_style;                      // +0x13C
     int draw_val_rect;                   // +0x140
 
-    void set_mode(DropdownMode mode);
+    void set_mode(int mode);
 };
 
-void TDropDownPanel::set_mode(DropdownMode mode) {
+void TDropDownPanel::set_mode(int mode) {
     if (mode == this->mode) {
         return;
     }
 
-    long parent_y = 0;
     long parent_x = 0;
+    long parent_y = 0;
     long parent_w = 0;
     long parent_h = 0;
-    DropdownMode old_mode;
-
+    int old_mode;
     if (this->parent_panel) {
         parent_x = this->parent_panel->xPosition();
         parent_y = this->parent_panel->yPosition();
@@ -293,18 +299,22 @@ void TDropDownPanel::set_mode(DropdownMode mode) {
             }
             if (this->parent_panel) {
                 this->parent_panel->notify_action(this, 2, 0, 0);
-                this->mode = mode;
+                this->mode = (DropdownMode)mode;
                 return;
             }
         }
     } else if (mode == ModeList) {
         this->list_panel->set_active(1);
-        if (this->list_panel->spacer_size == 0) {
+        // BINARY NOTE: the shipped code reads spacer and border sizes before each count call.
+        int spacer_size = this->list_panel->spacer_size;
+        if (spacer_size == 0) {
+            int border_size = this->list_panel->border_size;
             this->list_hgt = this->list_panel->numberLines() * (this->font_hgt + 2) +
-                             this->list_panel->border_size * 2;
+                             border_size * 2;
         } else {
+            int border_size = this->list_panel->border_size;
             this->list_hgt = this->list_panel->numberLines() * (this->font_hgt + 1 +
-                             this->list_panel->spacer_size * 2) + this->list_panel->border_size * 2;
+                             spacer_size * 2) + border_size * 2;
         }
         this->list_panel->set_fixed_position(0, 0, this->list_wid, this->list_hgt);
         if (this->list_panel->numberLines() > this->list_panel->numberDrawLines()) {
@@ -329,6 +339,7 @@ void TDropDownPanel::set_mode(DropdownMode mode) {
                                           this->val_panel, this->scbar_panel, 0);
         this->clip_to_parent = 0;
         long calc_wid = this->list_wid;
+        calc_wid = this->list_wid;
         this->set_fixed_position(this->pnl_x - parent_x, this->pnl_y - parent_y,
                                  calc_wid, this->list_hgt + this->val_hgt + 1);
         if (this->list_panel->yPosition() + this->list_panel->height() >
@@ -340,13 +351,16 @@ void TDropDownPanel::set_mode(DropdownMode mode) {
                 if (above > 0) {
                     this->list_hgt -= above;
                     this->list_panel->set_fixed_position(0, 0, this->list_wid, this->list_hgt);
-                    if (this->list_panel->spacer_size == 0) {
+                    int spacer_size = this->list_panel->spacer_size;
+                    if (spacer_size == 0) {
+                        int border_size = this->list_panel->border_size;
                         this->list_hgt = this->list_panel->numberDrawLines() * (this->font_hgt + 2) +
-                                         this->list_panel->border_size * 2;
+                                         border_size * 2;
                     } else {
+                        int border_size = this->list_panel->border_size;
                         this->list_hgt = this->list_panel->numberDrawLines() *
-                                         (this->font_hgt + 1 + this->list_panel->spacer_size * 2) +
-                                         this->list_panel->border_size * 2;
+                                         (this->font_hgt + 1 + spacer_size * 2) +
+                                         border_size * 2;
                     }
                     if (this->scbar_panel->active == 0) {
                         this->list_panel->set_fixed_position(0, 0, this->list_wid, this->list_hgt);
@@ -377,13 +391,16 @@ void TDropDownPanel::set_mode(DropdownMode mode) {
             } else {
                 this->list_hgt -= overflow;
                 this->list_panel->set_fixed_position(0, 0, this->list_wid, this->list_hgt);
-                if (this->list_panel->spacer_size == 0) {
+                int spacer_size = this->list_panel->spacer_size;
+                if (spacer_size == 0) {
+                    int border_size = this->list_panel->border_size;
                     this->list_hgt = this->list_panel->numberDrawLines() * (this->font_hgt + 2) +
-                                     this->list_panel->border_size * 2;
+                                     border_size * 2;
                 } else {
+                    int border_size = this->list_panel->border_size;
                     this->list_hgt = this->list_panel->numberDrawLines() *
-                                     (this->font_hgt + 1 + this->list_panel->spacer_size * 2) +
-                                     this->list_panel->border_size * 2;
+                                     (this->font_hgt + 1 + spacer_size * 2) +
+                                     border_size * 2;
                 }
                 if (this->scbar_panel->active == 0) {
                     this->list_panel->set_fixed_position(0, 0, this->list_wid, this->list_hgt);
@@ -406,5 +423,5 @@ void TDropDownPanel::set_mode(DropdownMode mode) {
         }
     }
 
-    this->mode = mode;
+    this->mode = (DropdownMode)mode;
 }
