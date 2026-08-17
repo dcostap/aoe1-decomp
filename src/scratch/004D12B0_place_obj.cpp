@@ -31,6 +31,14 @@
 // left in scratch: correct expansion and create argument order; remaining drift is local radius-slot coloring, literal pool context, and block liveness.
 // - Replaced the raw debug-file address with the period source-file string and
 //   named the random scale. Raw addresses were not valid source ownership.
+// Revisited from the Ghidra-supported donor spelling:
+// `value = value + (radius + radius)` and `double_value = double_value +
+// (radius * 4.0f)` reproduce the original 643-byte body and 204 instructions.
+// This is the best natural source: 25 positional bytes differ. The remaining
+// bytes are four paired local-home swaps and the success epilogue store order.
+// A 72-variant source lab and 128 ambient TU declaration samples found no exact
+// result. All size/frame/call-set eligible variants stayed in the same 25-byte
+// basin. The local donor 004C6DA0 matched 647/647 with typed x87 expressions.
 
 #include "../../include/game_globals.h"
 
@@ -97,12 +105,16 @@ unsigned char TRIBE_Action_Make_Obj::place_obj(RGE_Static_Object** out)
     short expand = 0;
     RGE_Master_Static_Object* proto =
         this->obj->owner->master_objects[this->obj_id];
-    float rx = this->obj->master_obj->radius_x + proto->radius_x - DAT_00575190;
-    float r2x = rx + rx;
-    float ry = this->obj->master_obj->radius_y + proto->radius_y - DAT_00575190;
-    float r2y = ry + ry;
+    float rx;
+    float r2x;
+    float ry;
+    float r2y;
+    rx = this->obj->master_obj->radius_x + proto->radius_x - DAT_00575190;
+    r2x = rx + rx;
+    ry = this->obj->master_obj->radius_y + proto->radius_y - DAT_00575190;
+    r2y = ry + ry;
     short tries;
-    for (;;) {
+    do {
         tries = 0;
         do {
             short dir;
@@ -142,12 +154,11 @@ unsigned char TRIBE_Action_Make_Obj::place_obj(RGE_Static_Object** out)
                 return 1;
             }
         } while (tries < 60);
-        rx += proto->radius_x + proto->radius_x;
-        ry += proto->radius_y + proto->radius_y;
-        r2x += proto->radius_x * DAT_0057519c;
-        r2y += proto->radius_y * DAT_0057519c;
+        rx = rx + (proto->radius_x + proto->radius_x);
+        ry = ry + (proto->radius_y + proto->radius_y);
+        r2x = r2x + (proto->radius_x * 4.0f);
+        r2y = r2y + (proto->radius_y * 4.0f);
         ++expand;
-        if (expand >= 3) break;
-    }
+    } while (expand < 3);
     return 0;
 }
