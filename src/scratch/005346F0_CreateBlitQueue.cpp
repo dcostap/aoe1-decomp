@@ -29,6 +29,17 @@
 // probe 23: a distinct outside marker was codegen-duplicate; retained for readable ownership.
 // paused: calls, CFG counts, queue fields, clipping behavior, and output size align; frame and
 // local/register topology remain structurally different. Next lead is expanded original locals.
+// Reassessment pass sa-460299c2: 20 additional source hypotheses were compiled and checked.
+// Decompiler-shaped locals and an explicit dword outside marker moved the frame to 0x2c but
+// worsened size and shape. Aggregate RECT initialization, dead outside-arm assignments,
+// scalar coordinate locals, typed queue cursors, explicit queue stores, queue ownership
+// aliases, and declaration-order changes were duplicate or worse. Reversing the first two
+// overlap predicates to source-left greater-than form improved shape only (62.29%). Writing
+// vBlits greater-than allocated improved the best clean basin to 668 differing bytes and
+// 62.71% shape, but the frame stayed 0x24. The pinned natural source remains the clean
+// reconstruction. Calls are 2/2 aligned, size is 780, CFG counts are 23/23 conditions,
+// 5/5 jumps, and 1/1 return; unresolved evidence is the original 0x34 local frame and
+// register/stack topology. No policy-valid exact source was found.
 
 extern "C" void* __cdecl calloc(unsigned int, unsigned int);
 extern "C" void __cdecl free(void*);
