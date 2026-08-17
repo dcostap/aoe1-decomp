@@ -22,6 +22,11 @@
 //   unsupported notifyCommander call from the 0x2d4 stop arm. This improved
 //   shape from 51.29% to 60.94%, reduced the positional diff by 14 bytes, and
 //   resolved three extra callback sites.
+// - BINARY NOTE: RGE_Player::id is read at +0x4A; visibleMap remains at +0x38.
+//   The reviewed FILE* and literal logging surface preserves the same codegen.
+// - The clean source remains unresolved. A donor-shaped two-stage 699 removal
+//   arm improved shape and late exact blocks, but moved the positional diff
+//   from 4563 to 4566 bytes. It was not retained in the clean source.
 // Left in scratch: structural call-site and frame drift remain broad.
 
 #if 0
@@ -170,6 +175,7 @@ public:
     char gap_04[0x34];
     void* visibleMap;
     void* world;
+    char gap_40[0x0A];
     short id;
 };
 #undef PLAYER_PAD
@@ -268,10 +274,9 @@ public:
 #undef UNIT_PAD
 
 extern "C" {
-    extern void* actionFile;
-    extern const char str_fmt_stopObject[];
-    extern const char str_aiuaimod_path[];
-    int fprintf(void*, const char*, ...);
+    typedef struct _iobuf FILE;
+    extern FILE* actionFile;
+    int fprintf(FILE*, const char*, ...);
     void* __cdecl operator_new(unsigned int size);
     void __cdecl operator_delete(void* block);
 }
@@ -280,7 +285,8 @@ extern "C" {
     if (actionFile != 0) { \
         int stopObjectId = -1; \
         if (this->objectValue != 0) stopObjectId = this->objectValue->id; \
-        fprintf(actionFile, str_fmt_stopObject, stopObjectId, str_aiuaimod_path, (line)); \
+        fprintf(actionFile, "#%d call stopObject %s %d\n", stopObjectId, \
+                "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", (line)); \
     } \
 } while (0)
 
