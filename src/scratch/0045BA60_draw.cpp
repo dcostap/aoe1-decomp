@@ -25,7 +25,13 @@
 // 23: Shape_Info reference and entry-pointer forms both grew to 713 bytes; restored named base/index ownership.
 // 24: donor-era <memory.h> context did not change the localized register schedule.
 // 25: const-qualified Shape_Info metadata did not change the localized register schedule.
-// left in scratch: 53-byte nonexact drift begins at 0045BC43 in shape_draw register/argument scheduling; calls, frame, size, CFG, and all 13 call sites match.
+// 26: declaration-order, facet-width, split-init, direct-member, and TShape-owner probes stayed in the 53-byte basin; indexed Shape_Info and direct alias forms were farther.
+// 27: reversed coordinate operands and Poll's int custom_draw class surface stayed in the same basin.
+// 28: a 36-variant shape/facet/coordinate lab and a 256-sample ambient-declaration lab found one 53-byte emitted basin each.
+// 29: exact Poll-style pre-indexed Shape_Info source caused a 713-byte structural mismatch; restored.
+// 30: unsigned facet, Poll gap_10 class context, last_facet temp, shared err, and cursor receiver locals did not move the basin.
+// 31: reusing one cursor local for SetTrans and BltFast caused a 752-byte body and 262-byte mismatch; restored.
+// final: after 20 meaningful hypotheses, the clean source remains scratch and paused at a 53-byte REGISTER_MAP_CONFLICT beginning at 0045BC43. Calls, frame, size, CFG, and all 13 call sites match.
 
 #include <windows.h>
 
