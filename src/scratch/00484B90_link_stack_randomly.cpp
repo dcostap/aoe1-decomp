@@ -44,17 +44,21 @@
 // Object audit: PDB names no dimension or product local. FPO, COFF, compiler,
 // calls, float field types, and ABI all match. No inline or macro record explains
 // the two commutative load bytes, so load-order steering remains unsupported.
+// Canonical audit: Map_Stack cost fields use the PDB-proven float types. The
+// debug_rand import uses C linkage. The base generate method is concrete, and
+// the known helper methods use their protected surfaces. No generic virtual
+// slot, raw cursor, volatility, or no-effect expression is present.
 
 struct Map_Stack {
     long x;                 // +0x00
     long y;                 // +0x04
-    long cost;              // +0x08
-    long tot_cost;          // +0x0C
+    float cost;             // +0x08
+    float tot_cost;         // +0x0C
     Map_Stack* next;        // +0x10
     Map_Stack* prev;        // +0x14
 };
 
-int __cdecl debug_rand(char* file, int line);
+extern "C" int __cdecl debug_rand(char* file, int line);
 
 class RGE_Map;
 class RGE_Random_Map_Module_List;
@@ -62,7 +66,7 @@ struct RGE_Tile;
 
 class RGE_Random_Map_Module {
 public:
-    virtual unsigned char generate() = 0;
+    virtual unsigned char generate();
     RGE_Random_Map_Module* parent;  // +0x04
     RGE_Random_Map_Module_List* list; // +0x08
     RGE_Map* map;                   // +0x0C
@@ -75,6 +79,7 @@ public:
     Map_Stack* stack_array;         // +0x28
     Map_Stack** stack_offsets;      // +0x2C
 
+protected:
     void add_stack_node(Map_Stack* target, Map_Stack* node);
 };
 
@@ -209,6 +214,8 @@ class RGE_RMM_Elevation_Generator : public RGE_Random_Map_Module {
 public:
     RGE_Elevation_Info info;
     virtual unsigned char generate();
+
+protected:
     void link_stack_randomly(Map_Stack* param_1);
 };
 
