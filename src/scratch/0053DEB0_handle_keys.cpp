@@ -22,6 +22,17 @@
 // 19: A named key-state pointer at keys+4 aligns all four keyboard tests and the API home; with a diagnostic 260-byte buffer it reaches diff 437 and 71.64% exact-block coverage.
 // 20: The 260-byte buffer is allocation scaffolding, not canonical source; the normalized 256-byte alias source remains diff 438 with frame 0x114.
 // 21: The remaining structural lead is a four-byte local-home shift: current shorts are at esp+14/+18 while the original uses esp+10/+14; all calls and key accesses align.
+// 22: The original decompiler lists DAT_00577900/04/08.  Threshold externs
+//     DAT_00577904/08 reduced the natural source to 964 bytes and diff 127,
+//     with all 13 ordered calls and exact size.  Adding DAT_00577900 was neutral.
+// 23: Canonical RGE class and TDrawArea ownership, typed selected-object fields,
+//     direct key-array indexing, declaration-order changes, and ABI width changes
+//     were codegen-neutral or worse.  Keep the canonical typed ownership.
+// 24: A diagnostic 260-byte key array restored frame 0x118 and improved diff 124
+//     with 71.64% exact-block coverage, but contradicts the proven 256-byte array.
+//     It was rolled back.  The remaining blocker is the natural local-home shift.
+// 25: Inline truncation, double/register accumulator, widened directions, direct
+//     quotient forms, and local scope variants did not beat the threshold source.
 // GIVEUP: left in scratch for future source-shape/stack-local topology work.
 
 typedef unsigned char uchar;
@@ -30,7 +41,7 @@ extern "C" __declspec(dllimport) HWND __stdcall GetForegroundWindow(void);
 extern "C" __declspec(dllimport) int __stdcall GetKeyboardState(uchar* keys);
 extern "C" unsigned long __cdecl debug_timeGetTime(char* file, int line);
 
-class RGE_Base_Game_0053DEB0 {
+class RGE_Base_Game {
 public:
     char gap_00[0x0C];
     void* prog_info;
@@ -39,16 +50,21 @@ public:
     int game_mode;
     int get_paused();
 };
-extern RGE_Base_Game_0053DEB0* rge_base_game;
+extern RGE_Base_Game* rge_base_game;
+extern const float DAT_00577900;
+extern const float DAT_00577904;
+extern const float DAT_00577908;
 
-struct ProgInfo_0053DEB0 {
+struct RGE_Prog_Info {
     char gap_00[0x8D0];
     unsigned long key_scroll_time_divisor;
     float key_scroll_max_dist;
     float key_scroll_object_move;
 };
 
-class RGE_Player_0053DEB0 {
+class RGE_Static_Object;
+
+class RGE_Player {
 public:
     virtual void vf00(); virtual void vf04(); virtual void vf08(); virtual void vf0C();
     virtual void vf10(); virtual void vf14(); virtual void vf18(); virtual void vf1C();
@@ -57,11 +73,11 @@ public:
     float view_x;
     float view_y;
     char gap_11C[0x14];
-    RGE_Player_0053DEB0* selected_obj;
+    RGE_Static_Object* selected_obj;
     void set_view_loc(float x, float y);
 };
 
-class Obj_0053DEB0 {
+class RGE_Static_Object {
 public:
     virtual void vf00(); virtual void vf04(); virtual void vf08(); virtual void vf0C();
     virtual void vf10(); virtual void vf14(); virtual void vf18(); virtual void vf1C();
@@ -73,21 +89,25 @@ public:
     float y;
 };
 
-struct RGE_WindowHost_0053DEB0 { char gap[4]; HWND wnd; };
+class TDrawArea {
+public:
+    char gap[4];
+    HWND Wnd;
+};
 
-class RGE_Main_View_0053DEB0 {
+class RGE_Main_View {
 public:
     virtual void vf00(); virtual void vf04(); virtual void vf08(); virtual void vf0C();
     virtual void vf10(); virtual void vf14(); virtual void vf18(); virtual void vf1C();
     virtual void repaint(int);
     char gap_04[0x1C];
-    RGE_WindowHost_0053DEB0* host;
+    TDrawArea* render_area;
     char gap_24[0x54];
     int active;
     char gap_7C[0x84];
-    RGE_Player_0053DEB0* player;
+    RGE_Player* player;
     char gap_104[0x25C];
-    RGE_Main_View_0053DEB0* map_view;
+    RGE_Main_View* map_view;
     char gap_364[0x10];
     unsigned long last_key_scroll_time;
     int key_scrolling;
@@ -95,82 +115,81 @@ public:
     int handle_keys();
 };
 
-int RGE_Main_View_0053DEB0::handle_keys()
+int RGE_Main_View::handle_keys()
 {
     uchar keys[256];
     short horz_scroll;
     short vert_scroll;
     float scroll_dist2;
     int changed;
-    ProgInfo_0053DEB0* info;
+    RGE_Prog_Info* info;
     unsigned long now;
     unsigned long elapsed;
-    uchar* key_state = keys + 4;
 
     if (rge_base_game->get_paused() == 0 &&
         (rge_base_game->prog_mode == 4 || rge_base_game->prog_mode == 6 ||
          rge_base_game->prog_mode == 7 || rge_base_game->prog_mode == 5) &&
-        GetForegroundWindow() == this->host->wnd && this->active != 0) {
+        GetForegroundWindow() == this->render_area->Wnd && this->active != 0) {
         changed = 0;
-        GetKeyboardState(key_state);
+        GetKeyboardState(keys + 4);
         horz_scroll = 0;
         vert_scroll = 0;
 
-        info = (ProgInfo_0053DEB0*)rge_base_game->prog_info;
+        info = (RGE_Prog_Info*)rge_base_game->prog_info;
 
     if (rge_base_game->game_mode == 0x12 && this->player != 0 && this->player->selected_obj != 0) {
-        Obj_0053DEB0* obj = (Obj_0053DEB0*)this->player->selected_obj;
-        if (key_state[0x26] > 1) {
+        RGE_Static_Object* obj = this->player->selected_obj;
+        if (keys[0x2A] > 1) {
             obj->move_to(obj->x + info->key_scroll_object_move, obj->y - info->key_scroll_object_move, 0);
             changed = 1;
         }
-        if (key_state[0x28] > 1) {
-            Obj_0053DEB0* obj2 = (Obj_0053DEB0*)this->player->selected_obj;
+        if (keys[0x2C] > 1) {
+            RGE_Static_Object* obj2 = this->player->selected_obj;
             obj2->move_to(obj->x - info->key_scroll_object_move, obj->y + info->key_scroll_object_move, 0);
             changed = 1;
         }
-        if (key_state[0x25] > 1) {
-            Obj_0053DEB0* obj2 = (Obj_0053DEB0*)this->player->selected_obj;
+        if (keys[0x29] > 1) {
+            RGE_Static_Object* obj2 = this->player->selected_obj;
             obj2->move_to(obj->x - info->key_scroll_object_move, obj->y - info->key_scroll_object_move, 0);
             changed = 1;
         }
-        if (key_state[0x27] > 1) {
-            Obj_0053DEB0* obj2 = (Obj_0053DEB0*)this->player->selected_obj;
+        if (keys[0x2B] > 1) {
+            RGE_Static_Object* obj2 = this->player->selected_obj;
             obj2->move_to(obj->x + info->key_scroll_object_move, obj->y + info->key_scroll_object_move, 0);
             changed = 1;
         }
     } else if (this->player != 0) {
-        if (key_state[0x25] > 1)
+        if (keys[0x29] > 1)
             horz_scroll = -1;
-        else if (key_state[0x27] > 1)
+        else if (keys[0x2B] > 1)
             horz_scroll = 1;
 
-        if (key_state[0x26] > 1)
+        if (keys[0x2A] > 1)
             vert_scroll = -1;
-        else if (key_state[0x28] > 1)
+        else if (keys[0x2C] > 1)
             vert_scroll = 1;
 
         if (horz_scroll != 0 || vert_scroll != 0) {
             now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\vw_main.cpp", 0x153);
             if (this->key_scrolling == 0) {
-                scroll_dist2 = 1.0f;
+                scroll_dist2 = DAT_00577900;
                 this->key_scrolling = 1;
             } else {
                 elapsed = now - this->last_key_scroll_time;
                 scroll_dist2 = (float)elapsed / info->key_scroll_time_divisor;
                 long whole = (long)scroll_dist2;
                 scroll_dist2 -= whole;
-                if (scroll_dist2 < 0.5f) {
+                if (scroll_dist2 < DAT_00577904) {
                     scroll_dist2 = 0.0f;
                     scroll_dist2 += (float)whole;
                 } else {
-                    scroll_dist2 = 0.5f;
+                    scroll_dist2 = DAT_00577904;
                     scroll_dist2 += (float)whole;
                 }
             }
             if (scroll_dist2 > info->key_scroll_max_dist)
                 scroll_dist2 = info->key_scroll_max_dist;
-            if (scroll_dist2 > 0.0f) {
+            if (scroll_dist2 > DAT_00577908) {
                 float scroll_dist = scroll_dist2 + scroll_dist2;
                 if (horz_scroll == -1) {
                     this->player->set_view_loc(this->player->view_x - scroll_dist2, this->player->view_y - scroll_dist2);
