@@ -26,10 +26,21 @@
 // 24: term-wise x87 products reached size 620 and strict diff 489, but the half-height remained inside __ftol; diagnostic only.
 // 25: term-wise products with the post-__ftol half-height matched size 619, strict diff 507, and preserved the observed truncation behavior.
 // 26: positive term-wise projection temporaries with explicit subtract-half source form are the current clean candidate: 607 bytes, strict diff 494, 0x18 frame.
+// 27: the reviewed DAT_005776b4 value is 0.5f; replacing the unsupported 48.0f
+//     scale preserved the natural typed projection but changed the candidate to
+//     595 bytes / 507 strict bytes / 0x18 frame.
+// 28: grouping the half-row and column deltas matched the isometric behavior but
+//     moved to a 567-byte codegen basin. The term-wise source better preserves the
+//     original x87 stack shape and remains the clean candidate.
+// 29: int projection temporaries preserve the original full-width __ftol results;
+//     this is a codegen duplicate of the term-wise candidate.
+// 30: a literal 0.5f is a closer metric basin but loses the reviewed data symbol;
+//     restored DAT_005776b4 and the typed source.
 
 struct RGE_Player { unsigned char pad_000[0x114]; float view_x; float view_y; };
 struct RGE_Tile { short screen_xpos; short screen_ypos; unsigned char field_4; unsigned char flags; unsigned char pad[0x12]; };
 struct RGE_Map { unsigned char pad_000[0x8d8c]; RGE_Tile** map_row_offset; };
+extern float DAT_005776b4;
 struct tagRECT { long left; long top; long right; long bottom; };
 class TPanel {
 public:
@@ -66,28 +77,28 @@ void RGE_View::update()
         this->center_map_col = (short)(int)p->view_x;
         this->center_map_row = (short)(int)p->view_y;
         short sVar6 = this->center_map_col;
-        short sVar7;
         this->last_view_x = p->view_x;
         this->last_view_y = p->view_y;
         short sVar9 = (short)(this->render_rect.left + this->pnl_wid / 2) - this->tile_half_wid;
         short sVar10 = (short)(this->render_rect.top + this->pnl_hgt / 2) - this->tile_half_hgt;
-        sVar7 = (short)(int)(((p->view_y - (float)this->center_map_row) *
-                              (float)this->tile_wid * 48.0f) +
+        int x_offset = (int)(((p->view_x - (float)sVar6) *
+                              (float)this->tile_wid) +
+                             ((p->view_y - (float)this->center_map_row) *
+                              DAT_005776b4 * (float)this->tile_wid));
+        int y_offset = (int)(((p->view_y - (float)this->center_map_row) *
+                              DAT_005776b4 * (float)this->tile_hgt) -
                              ((p->view_x - (float)sVar6) *
-                              (float)this->tile_wid * 48.0f));
-        short sVar8 = (short)(int)(((p->view_y - (float)this->center_map_row) *
-                                    (float)this->tile_hgt * 48.0f) -
-                                   ((p->view_x - (float)sVar6) *
-                                    (float)this->tile_hgt * 48.0f));
-        sVar9 -= sVar7;
-        sVar10 -= sVar8 + this->tile_half_hgt;
+                              (float)this->tile_hgt));
+        sVar9 -= (short)x_offset;
+        sVar10 -= (short)(y_offset + this->tile_half_hgt);
         this->center_scr_col = sVar9;
         this->center_scr_row = sVar10;
         RGE_Tile* tile = this->map->map_row_offset[this->center_map_row] + sVar6;
         this->map_scr_x_offset = (int)tile->screen_xpos - (int)sVar9;
         this->map_scr_y_offset = ((int)this->elev_hgt * ((unsigned int)tile->flags >> 5) + (int)tile->screen_ypos) - (int)sVar10;
-        this->center_scr_col_offset = (short)((sVar6 + this->center_map_row) * this->tile_half_wid - sVar7);
-        this->center_scr_row_offset = (short)((this->center_map_row - sVar6) * this->tile_half_hgt - sVar8 - this->tile_half_hgt);
+        this->center_scr_col_offset = (short)((sVar6 + this->center_map_row) * this->tile_half_wid - x_offset);
+        this->center_scr_row_offset = (short)((this->center_map_row - sVar6) * this->tile_half_hgt - y_offset - this->tile_half_hgt);
+        short sVar7;
         sVar7 = this->max_col_num / 2 + 2;
         this->start_map_row = this->center_map_row;
         this->start_map_row -= sVar7;
