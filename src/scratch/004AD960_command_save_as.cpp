@@ -53,6 +53,17 @@
 // none changed the 313-byte basin. A typed validation status reached 272 bytes
 // but merged one popup call and lost the original ordered call set. A 64-sample
 // ambient declaration context sweep was codegen-identical in all samples.
+// sa-e800da1c-r2 focused TU pass: exact same-file command-save context reached a
+// 272-byte exact result even with an empty command_save body. Reduction showed
+// that the result needs the narrow full-slot T_Scenario and WorldHolder facades;
+// removing those surfaces or inheriting RGE_Scenario restored the 313-byte basin.
+// The facades conflict with reviewed RGE_Scenario/T_Scenario/RGE_Game_World
+// ownership, so the exact result failed policy audit and was not retained.
+// Canonical panel ownership, destructor-owned screen members, and world dtor
+// declarations did not change that result. Real throw() specifications on the
+// screen constructor/destructors and popup call were neutral or removed EH.
+// A period stdio.h context was neutral. Final source is restored to the pinned
+// natural typed reconstruction; shared /GX cleanup-tail drift remains.
 
 class TPanelSystem {
 public:
