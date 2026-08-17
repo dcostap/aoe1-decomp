@@ -24,6 +24,15 @@
 //   proven byte-field source. Old-format-first source worsened it to 428 bytes.
 // - Restored the clean typed source. The first structural gap remains the
 //   compiler's h/y stack-home assignment at the modern loop entry.
+// - The donor-supported <stdlib.h> map.cpp context reduced the drift while
+//   keeping the typed map and tile owners unchanged.
+// - Format-arm-local height counters recovered the target h/y stack homes.
+//   Reversing the natural tile and column updates preserved the target order.
+// - Placing draw-state zero stores before the typed object-list reset recovered
+//   the target's delayed cleanup and immediate stores. The rebuilt function is
+//   now an exact 643-byte MATCH with the default target flags.
+
+#include <stdlib.h>
 
 extern "C" void __cdecl rge_read(int, void*, int);
 extern float save_game_version;
@@ -93,8 +102,6 @@ void RGE_Map::load_map(int file)
 {
     long local_10;
     long width;
-    long h;
-    int y;
     unsigned char value;
 
     rge_read(file, &local_10, 4);
@@ -113,11 +120,11 @@ void RGE_Map::load_map(int file)
     rge_read(file, &this->fog_flag, 1);
 
     if (!(save_game_version < old_map_cutoff)) {
-        h = 0;
+        long h = 0;
         if (this->map_height > 0) {
             do {
                 RGE_Tile* tile = this->map_row_offset[h];
-                y = 0;
+                int y = 0;
                 if (this->map_width > 0) {
                     do {
                         rge_read(file, tile, 2);
@@ -137,19 +144,19 @@ void RGE_Map::load_map(int file)
                             (((value ^ tile->border_type) & 0x0f) ^
                              tile->border_type);
                         rge_read(file, &value, 1);
-                        tile->last_drawn_as = 0;
-                        tile->last_drawn_shape = 0xff;
                         tile->border_type = (unsigned char)
                             ((value << 4) | (tile->border_type & 0x0f));
+                        tile->last_drawn_as = 0;
+                        tile->last_drawn_shape = 0xff;
 
-                        tile->objects.list = 0;
-                        tile->objects.number_of_objects = 0;
                         tile->draw_as = 0;
                         tile->draw_attribute = 0;
+                        tile->objects.list = 0;
+                        tile->objects.number_of_objects = 0;
                         tile->last_drawn_shape2 = 0xff;
 
-                        ++y;
                         ++tile;
+                        ++y;
                     } while (y < this->map_width);
                 }
                 ++h;
@@ -158,10 +165,10 @@ void RGE_Map::load_map(int file)
     } else {
         rge_read(file, this->map,
                  this->map_width * this->map_height * 0x18);
-        h = 0;
+        long h = 0;
         if (this->map_height > 0) {
             do {
-                y = 0;
+                int y = 0;
                 if (this->map_width > 0) {
                     do {
                         this->map_row_offset[h][y].objects.list = 0;
