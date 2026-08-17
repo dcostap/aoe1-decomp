@@ -46,6 +46,25 @@
 // probe 46: removed the id local and reread the indexed field; same regression.
 // Final pause: the clean typed pointer form remains the best source-shaped
 // reconstruction. The first block still differs only in base/id/entry coloring.
+//
+// Fresh session sa-a648bae0-r1: the baseline rebuilt at 364 bytes with the
+// correct frame, 10 ordered calls, and 89.57% shape similarity. Reversing the
+// zone comparison operands recovered the original memory/AL compare form.
+// Reversing the priority comparison operands recovered the original memory/EAX
+// compare form. Together they preserved size and reduced the diagnostic drift
+// to 252 bytes with 92.17% shape similarity and 69.03% exact-block coverage.
+//
+// Direct indexed id-before-entry forms, scoped entry forms, direct fields,
+// raw byte-offset cursors, and typed-reference aliases either added 8 bytes,
+// changed the frame to 0x14, or produced duplicate codegen. The final
+// validation keeps the natural typed pointer hybrid and the two operand-order
+// corrections. The remaining mismatch starts at +0x5D: VC5 chooses ECX/EDX
+// for entry/id while the original chooses EDI/ECX. Paused unresolved.
+//
+// Fresh session sa-6aae3ded-r1: typed direct-id plus entry forms, scoped and
+// function-scope entry lifetimes, direct indexed fields, a typed base pointer,
+// a hoisted count, and a typed reference either added 8 bytes or duplicated
+// the clean 252-byte result. The clean typed pointer form remains authoritative.
 
 #include <math.h>
 
@@ -160,7 +179,7 @@ ObjectMemory* TribeInformationAIModule::higherPriorityObjectToDefend(int objId, 
                             if (entry->attackAttempts <= 0) {
                                 RGE_Static_Object* target = this->md->object(id);
                                 if (target != 0) {
-                                    if (target->currentZone() != *(unsigned char*)&objId) {
+                                    if (*(unsigned char*)&objId != target->currentZone()) {
                                         XYPoint pt;
                                         pt.x = (int)target->world_x;
                                         pt.y = (int)target->world_y;
@@ -170,7 +189,7 @@ ObjectMemory* TribeInformationAIModule::higherPriorityObjectToDefend(int objId, 
                                     int pri = this->defendPriority(
                                         this->importantObjectMemory[i].type,
                                         this->importantObjectMemory[i].group);
-                                    if (pri < group) {
+                                    if (group > pri) {
                                         group = pri;
                                         best = &this->importantObjectMemory[i];
                                     }
