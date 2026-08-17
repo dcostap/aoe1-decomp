@@ -38,9 +38,17 @@
 // `(command & 1) == 1` matched the original masked compare branches and
 // improved block coverage (49.40% to 60.48%) and size (866B to 900B), but
 // worsened strict diff (800B to 813B); restored the pinned natural source.
+// sa-fca62799-r1: 22 evidence-led hypotheses tested. Save-buffer lifetime and
+// order, parameter-home reuse, each parity phase, full donor type surfaces,
+// narrow counters, header context, loop rotation, and a sibling shared-count
+// topology did not reach exactness. Memory.h plus explicit final-drain parity
+// is the retained 799-byte strict basin. Calls, frame, ABI, and RLE behavior
+// align; the first structural gap remains the saved row-base allocation at
+// +005E. No inline asm or compiler-steering form was retained.
 
 typedef unsigned char byte;
 #include <string.h>
+#include <memory.h>
 #pragma function(memset)
 extern "C" void* __cdecl memset(void*, int, unsigned int);
 
@@ -205,7 +213,7 @@ byte TShape::shape_color_trans_clipped(TDrawArea* draw_area, long shape_x1, long
         if (state == 0) {
             do {
                 byte command = *src++;
-                if (command & 1) {
+                if ((command & 1) == 1) {
                     command >>= 1;
                     if (command) src += command;
                     else ++src;
