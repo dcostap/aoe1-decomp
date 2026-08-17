@@ -23,6 +23,14 @@
 // orch-42FF50-a probe: naming a master local added EBP and widened drift to 386B; restored the named-radius source.
 // orch-42FF50-a pause: source now keeps canonical fields, direct owner/member calls, and exact init_missile argument values. Remaining structural blocker is entry EBX save versus original late EBX save; all seven calls align.
 // paused after bounded matching: no artificial volatility, aliases, raw offsets, or register-forcing scaffolding retained.
+// worker sa-d0d31327: clean baseline rebuilt 392 effective bytes vs original 407, 366 strict diff, all 7 calls aligned.
+// worker probes: inline range, negative/goto fallback, self alias, split range assignment, local declaration scopes, and direct radius members did not improve the natural basin; negative/goto also broke call order.
+// worker conclusion: current exact blocker remains VC5 x87 expression scheduling plus late EBX save and entry push-ecx home; no artificial source steering retained.
+// worker sa-86c22b60: rechecked typed range, radius, coordinate, factory, global, and declaration-order forms. Named radius and coordinate locals improved shape but worsened or preserved strict drift; sibling-style angle/owner aliases reached 407B but worsened drift. All seven calls stayed aligned.
+// worker sa-86c22b60 conclusion: restored the pinned 392B natural source. The unresolved evidence remains the original late EBX save, entry push-ecx home, and x87 reload order.
+// worker sa-7d40fde9 revisit: inverted missile-id control flow worsened to 390B/368B and broke call order; restored.
+// worker sa-7d40fde9 revisit: passing this in the fallback improved shape but worsened to 390B; separate positive return was a codegen duplicate.
+// worker sa-7d40fde9 revisit: virtualizing the target overload moved the fallback to vslot +0x22C; block-local c/s/range was a duplicate; radius_y-first terms worsened shape; inline range worsened to 378B/385B. Restored the pinned source.
 
 class RGE_Static_Object;
 class RGE_Combat_Object;
