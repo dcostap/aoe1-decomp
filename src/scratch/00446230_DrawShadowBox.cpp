@@ -87,6 +87,15 @@
 //   from +0x38 through +0xC8, and RGE_Color_Table is a class with its named
 //   vptr-backed fields. The byte cursors are replaced by a typed indexed row
 //   loop. This is the clean semantic source even if its metric regresses.
+// - Follow-up pass: direct Bits[row_offset + x] indexing removed the row
+//   pointer and improved the typed source to a same-size 278-byte basin.
+//   Direct table ownership reached same-size 271 bytes but lost the proven
+//   saved-register prologue, so the typed table local remains the better
+//   source shape.
+// - A counted outer row loop matches the executable's row-count decrement and
+//   reaches 271 bytes with 199 differing bytes. It keeps the table local and
+//   direct Bits indexing. No row_start, row_end, pixel cursor, raw view, or
+//   steering form is retained.
 
 struct tagRECT {
     long left;
@@ -97,7 +106,7 @@ struct tagRECT {
 
 class RGE_Color_Table {
 public:
-    virtual ~RGE_Color_Table();
+    virtual ~RGE_Color_Table() {}
     char color_table_name[30];
     short resource_id;
     unsigned char type;
@@ -193,7 +202,7 @@ void TDrawArea::DrawShadowBox(long x1, long y1, long x2, long y2)
 
         {
             long orientation = this->Orien;
-            long row_pitch = this->AlignedWidth() * orientation;
+            long row_pitch = orientation * this->AlignedWidth();
             unsigned char* table;
             long row_offset;
 
@@ -206,14 +215,12 @@ void TDrawArea::DrawShadowBox(long x1, long y1, long x2, long y2)
 
             table = this->shadow_color_table->table;
 
-            if (y1 <= y2) {
-                for (long y = y1; y <= y2; y++) {
-                    unsigned char* row = this->Bits + row_offset;
-                    for (long x = x1; x <= x2; x++) {
-                        row[x] = table[row[x]];
-                    }
-                    row_offset += row_pitch;
+            for (long rows = y2 - y1 + 1; rows > 0; rows--) {
+                for (long x = x1; x <= x2; x++) {
+                    this->Bits[row_offset + x] =
+                        table[this->Bits[row_offset + x]];
                 }
+                row_offset += row_pitch;
             }
         }
     }
