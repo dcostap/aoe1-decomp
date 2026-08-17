@@ -34,6 +34,13 @@
 //   guarded do-loops, receiver aliases, full virtual prefix, stdlib headers,
 //   natural index casts, and direct terrain indexing. No tested variant was
 //   exact; duplicate codegen was restored to this typed formal-bound source.
+// - Revisit probes: a byte-pointer/decompiler-local scan fell to 622 bytes
+//   with a 0x0C frame; separate min-row/min-column locals reached 548 bytes
+//   with a 5-byte size overrun. Both were rejected as structural drift.
+// - A reduced virtual declaration was a codegen duplicate. An unsigned-short
+//   terrain identity local reached a 504-byte diagnostic diff but added 3
+//   bytes and changed the compare form. Removing the named old-terrain local
+//   was also a codegen duplicate. The pinned clean source is restored.
 
 class RGE_Player;
 class RGE_Game_World;
