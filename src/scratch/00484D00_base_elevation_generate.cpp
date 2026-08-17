@@ -15,10 +15,15 @@
 // clumps/base-elevation locals, stack declaration order, and nested neighbor
 // guards were codegen duplicates. Final gap: +14 bytes / 0x984 frame, with
 // calls and target order aligned; no raw/asm scaffolding retained.
-// Current claim probes: restoring the persistent height bound matched the
-// frame but worsened positional bytes; pointer-countdown init and source
-// ordering improved size and shape but left the same structural register and
-// local-window gap. All experiments were rolled back to this clean source.
+// Current claim probes: 34+ evidence-led probes retained a smaller natural
+// basin at 796 differing bytes, 1273 rebuilt bytes, and 0x980 frame. The
+// direct seed tile RMW matches its original LEA/address shape. The fairness
+// expansion arm is written as positive expansion with mark reset in else;
+// this matches the original cmp/jg layout better than the equivalent inverse.
+// Full integer check results improve the test shape, but do not recover the
+// original local frame. Saved max-y bounds, cached clump counts, countdown
+// init, and score-local reuse were worse or duplicate. The retained source is
+// the clearest natural nonexact basin; no asm or metric-only padding remains.
 
 #include <math.h>
 
@@ -127,10 +132,13 @@ unsigned char RGE_RMM_Elevation_Generator::base_elevation_generate(
     long clump_size;
     float stack_cost;
     float local_chance = 0.0f;
-    long base_elevation = line.base_elevation;
+    unsigned char ok;
     unsigned char done;
     Map_Stack local_stack;
     Map_Stack stack[99];
+    Map_Stack* stack_ptr;
+
+    local_stack.x = this->map_width - 1;
 
     if (line.clumps > 0) {
         for (long i = 0; i < line.clumps; ++i) {
@@ -138,7 +146,6 @@ unsigned char RGE_RMM_Elevation_Generator::base_elevation_generate(
         }
     }
 
-    local_stack.x = this->map_width - 1;
     local_stack.prev = 0;
     stack[0].x = 0;
     this->link_stack_randomly(&local_stack);
@@ -165,10 +172,10 @@ unsigned char RGE_RMM_Elevation_Generator::base_elevation_generate(
                     (unsigned char)line.spacing) != 0) {
                 this->remove_area_from_lists(y, x, clump_size);
 
-                unsigned char* tile = (unsigned char*)this->map_row_offset[x]
-                    + y * 0x18;
-                tile[5] = (unsigned char)(line.elevation << 5)
-                    | (tile[5] & 0x1F);
+                *((unsigned char*)this->map_row_offset[x] + y * 0x18 + 5) =
+                    (unsigned char)(line.elevation << 5)
+                    | (*((unsigned char*)this->map_row_offset[x]
+                        + y * 0x18 + 5) & 0x1F);
 
                 if (y > 0) {
                     this->push_stack(&stack[i], y - 1, x, 0.0f, 0.0f);
@@ -192,7 +199,7 @@ unsigned char RGE_RMM_Elevation_Generator::base_elevation_generate(
     do {
         done = 1;
         if (line.clumps > 0) {
-            Map_Stack* stack_ptr = stack;
+            stack_ptr = stack;
             long phase_count = line.clumps;
             do {
                 if (chance < line.elevation_size) {
@@ -204,26 +211,27 @@ unsigned char RGE_RMM_Elevation_Generator::base_elevation_generate(
                         long random_value = (debug_rand(
                             s_C__msdev_work_age1_x1_rmm_elev_c, 0x171) * 100)
                             / 0x7FFF;
-                        if (random_value < *mark) {
-                            *mark = 0x65;
-                        } else {
+                        if (*mark <= random_value) {
                             unsigned char* tile =
                                 (unsigned char*)this->map_row_offset[x]
                                 + y * 0x18;
-                            unsigned char ok = this->check_elevation(
+                            long raw_ok = this->check_elevation(
                                 (unsigned char)line.elevation, y, x,
                                 line.spacing,
                                 (unsigned char)line.base_terrain_type,
                                 (unsigned char)line.base_elevation);
+                            ok = (unsigned char)raw_ok;
 
-                            if (((tile[5] >> 5) == base_elevation)
-                                && ok != 0) {
+                            if (((tile[5] >> 5)
+                                == (unsigned char)line.base_elevation)
+                                && raw_ok > 0) {
                                 local_chance = this->fig_chance(ok, y, x);
                                 tile[5] = (unsigned char)(line.elevation << 5)
                                     | (tile[5] & 0x1F);
 
                                 if (y > 0) {
-                                    if ((tile[-0x13] >> 5) == base_elevation) {
+                                    if ((tile[-0x13] >> 5)
+                                        == (unsigned char)line.base_elevation) {
                                         long random_value = (debug_rand(
                                             s_C__msdev_work_age1_x1_rmm_elev_c,
                                             0x17D) * 100) / 0x7FFF;
@@ -233,7 +241,8 @@ unsigned char RGE_RMM_Elevation_Generator::base_elevation_generate(
                                     }
                                 }
                                 if (y < this->map_width - 1) {
-                                    if ((tile[0x1D] >> 5) == base_elevation) {
+                                    if ((tile[0x1D] >> 5)
+                                        == (unsigned char)line.base_elevation) {
                                         long random_value = (debug_rand(
                                             s_C__msdev_work_age1_x1_rmm_elev_c,
                                             0x17F) * 100) / 0x7FFF;
@@ -244,7 +253,7 @@ unsigned char RGE_RMM_Elevation_Generator::base_elevation_generate(
                                 }
                                 if (x > 0) {
                                     if ((tile[-this->map_width * 0x18 + 5] >> 5)
-                                        == base_elevation) {
+                                        == (unsigned char)line.base_elevation) {
                                         long random_value = (debug_rand(
                                             s_C__msdev_work_age1_x1_rmm_elev_c,
                                             0x181) * 100) / 0x7FFF;
@@ -255,7 +264,7 @@ unsigned char RGE_RMM_Elevation_Generator::base_elevation_generate(
                                 }
                                 if (x < this->map_height - 1) {
                                     if ((tile[this->map_width * 0x18 + 5] >> 5)
-                                        == base_elevation) {
+                                        == (unsigned char)line.base_elevation) {
                                         long random_value = (debug_rand(
                                             s_C__msdev_work_age1_x1_rmm_elev_c,
                                             0x183) * 100) / 0x7FFF;
@@ -267,6 +276,8 @@ unsigned char RGE_RMM_Elevation_Generator::base_elevation_generate(
 
                                 ++chance;
                             }
+                        } else {
+                            *mark = 0x65;
                         }
                     }
                 }
