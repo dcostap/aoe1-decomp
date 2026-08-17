@@ -27,6 +27,9 @@
 //     the natural separate int/float homes remain the supported source model.
 // 12: a 64-sample ambient declaration sweep and 768 source/flag variants (/GX, /Ow, /Oi, /Og, /Ot, /Ob0)
 //     all emitted one 1263-byte basin. No exact variant was found.
+// 13: PDB symbols prove target locals named tempInt, tempBOOL, and tempFloat; exact-name/order,
+//     loop scopes, explicit serializer expansion, direct sentinel tests, C++ rge_write linkage,
+//     union overlap, and array-subscript spellings all remained in the 58-byte basin.
 
 #include <string.h>
 
