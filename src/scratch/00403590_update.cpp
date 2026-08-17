@@ -21,6 +21,14 @@
 // load before distance_to_object; capacity naming had no emitted-code effect.
 // remaining: original state-8 stop-result call is a separate vslot+0x1ec
 // site, while VC5 merges it with the distance-stop path in this reconstruction.
+// managed pass: 20 meaningful probes. Binary-supported fixes retained below:
+// full RGE_Task ownership, target-object state-6 turn/check, static master
+// ownership, task sound and attribute fields, TU threshold globals, and the
+// static-object distance-call owner. The natural result is 1620B, frame 8,
+// 52/53 calls, 1144 strict-diff bytes, and 79.94% shape. A volatile modifier
+// probe reached frame 0xc and 1125 diff bytes, but policy rejects fake volatile.
+// Rejected probes tested case order, switch exits, aliases, class call surfaces,
+// arithmetic order, local scope, conditional assignment, and timer constants.
 
 class RGE_Action_Object;
 class RGE_Static_Object;
@@ -109,7 +117,7 @@ public:
     virtual void s70(); virtual void s74(); virtual void s78(); virtual void s7C();
     virtual void s80();
     int id;
-    RGE_Object_Info* object_data;
+    RGE_Master_Static_Object* master_obj;
     RGE_Player* owner;
     char gap_10[0x34];
     float attribute_amount_held;
@@ -244,7 +252,7 @@ public:
     virtual void v79();
     virtual void v7A();
     virtual void stop_moving();
-    virtual unsigned char turn_towards(RGE_Action_Object*, int, int);
+    virtual unsigned char turn_towards(RGE_Static_Object*, int, int);
     virtual unsigned char a4E();
     int id;
     RGE_Object_Info* object_data;
@@ -257,10 +265,38 @@ public:
 
 class RGE_Task {
 public:
-    char gap_00[0x14];
+    short task_type;
+    short id;
+    unsigned char is_default;
+    unsigned char gap_05;
+    short action_type;
+    short object_group;
+    short object_id;
+    unsigned char combat_level;
+    unsigned char combat_level_flag;
+    short terrain_id;
+    unsigned char owner_type;
+    unsigned char holding_attr;
+    unsigned char state_building;
+    unsigned char gap_13;
     short attribute_type;
-    char gap_16[6];
+    short attribute_type2;
+    short attribute_type3;
+    short attribute_type4;
     float gather_amount;
+    float work_val2;
+    float work_range;
+    unsigned char search_flag;
+    char gap_29[3];
+    float search_wait_time;
+    short work_flag;
+    short work_flag2;
+    void* move_sprite;
+    void* work_sprite;
+    void* work_sprite2;
+    void* carry_sprite;
+    RGE_Sound* work_sound;
+    RGE_Sound* work_sound2;
 };
 
 class RGE_Player {
@@ -307,15 +343,13 @@ public:
     unsigned char update();
 };
 
-extern float DAT_0056E278;
-extern double DAT_0056E280;
-extern double DAT_0056E290;
+extern float DAT_0056e278;
+extern double DAT_0056e280;
+extern double DAT_0056e290;
 
 unsigned char RGE_Action_Gather::update()
 {
     float give_amount;
-    float modifier;
-    float max_hold;
     RGE_Player* check_player;
 
     if (this->targetID != -1 && this->obj->owner->world->object(this->targetID) == 0)
@@ -338,9 +372,9 @@ unsigned char RGE_Action_Gather::update()
 
     switch ((int)this->state) {
     case 3:
-        if (this->timer < 0.0f) {
+        if (this->timer < DAT_0056e280) {
             this->timer += this->obj->owner->world->world_time_delta_seconds;
-            if (this->timer > 0.0f) {
+            if (this->timer > DAT_0056e280) {
                 this->timer = -10.0f;
                 this->obj->notify(this->obj->id, this->obj->id, 0x202, 0x261, this->targetType, 0);
                 return 0;
@@ -383,10 +417,10 @@ unsigned char RGE_Action_Gather::update()
     }
 
     case 6:
-        if (this->obj == 0) { this->set_state(3); return 0; }
-        if (this->obj->turn_towards(this->obj, 0, 0)) {
-            if (this->obj->attribute_amount_held <= 0.0f &&
-                this->obj->check_attribute((short)this->obj->object_data->attribute_type) == 0) {
+        if (this->target_obj == 0) { this->set_state(3); return 0; }
+        if (this->obj->turn_towards(this->target_obj, 0, 0)) {
+            if (this->target_obj->attribute_amount_held <= DAT_0056e278 &&
+                this->obj->check_attribute((short)this->target_obj->master_obj->id) == 0) {
                 this->set_target_obj(0); this->set_state(3); return 0;
             }
             this->set_state(7); return 0;
@@ -394,31 +428,32 @@ unsigned char RGE_Action_Gather::update()
         break;
 
     case 7: {
+        float modifier;
+        float max_hold;
         if (this->target_obj == 0) {
-            if (this->obj->attribute_amount_held > 0.0f) {
+            if (this->obj->attribute_amount_held > DAT_0056e278) {
                 this->set_state(8);
                 return 0;
             }
             this->set_state(3);
             return 0;
         }
-        RGE_Static_Object* holder = this->target_obj;
         if (rge_base_game->quick_build != 0)
-            give_amount = holder->attribute_amount_held;
+            give_amount = this->target_obj->attribute_amount_held;
         else
             give_amount = this->task->gather_amount * this->obj->object_data->gather_multiplier * this->obj->owner->world->world_time_delta_seconds;
-        if (holder->attribute_amount_held < give_amount) give_amount = holder->attribute_amount_held;
-        short attr = this->task->attribute_type;
+        if (give_amount > this->target_obj->attribute_amount_held)
+            give_amount = this->target_obj->attribute_amount_held;
+        short attr = this->task->attribute_type2;
         if (attr == -1) modifier = 1.0f;
         else modifier = this->obj->owner->attribute_table[attr];
-        int capacity = (int)this->obj->object_data->attribute_type;
-        max_hold = (float)capacity * modifier - this->obj->attribute_amount_held;
+        max_hold = modifier * (float)this->obj->object_data->attribute_type - this->obj->attribute_amount_held;
         if (max_hold < modifier * give_amount)
             give_amount = give_amount - (modifier * give_amount - max_hold) / modifier;
-        holder->set_attribute_amount(-give_amount, 1, 1);
+        this->target_obj->set_attribute_amount(-give_amount, 1, 1);
         this->obj->set_attribute_amount(give_amount, 1, 0);
         if (this->obj->attribute_amount_held < give_amount) {
-            if (this->obj->attribute_amount_held > 0.0f)
+            if (this->obj->attribute_amount_held > DAT_0056e278)
                 return 0;
             if (this->obj->check_attribute((short)this->obj->object_data->attribute_type) != 0)
                 return 0;
@@ -428,9 +463,9 @@ unsigned char RGE_Action_Gather::update()
     }
 
     case 8:
-        if (this->timer < 0.0f) {
+        if (this->timer < DAT_0056e280) {
             this->timer += this->obj->owner->world->world_time_delta_seconds;
-            if (this->timer > 0.0f) {
+            if (this->timer > DAT_0056e280) {
                 this->timer = 0.0f; this->set_state(8); return 0;
             }
         } else {
@@ -438,17 +473,17 @@ unsigned char RGE_Action_Gather::update()
             case 3:
             case 4:
             case 5:
-                this->timer = -1.5f;
+                this->timer = -2.0f;
                 this->obj->stop_moving();
                 return 0;
             case 1:
             case 2:
                 if (this->target_obj2 == 0) { this->set_state(8); return 0; }
-                if (this->obj->distance_to_object(this->target_obj2) > 1.0f) {
-                    this->timer = -1.5f; this->obj->stop_moving(); return 0;
+                if (((RGE_Static_Object*)this->obj)->distance_to_object(this->target_obj2) > DAT_0056e290) {
+                    this->timer = -2.0f; this->obj->stop_moving(); return 0;
                 }
-                if (this->target_obj->state_sound.sound != 0) ((RGE_Sound*)this->target_obj->state_sound.sound)->play(1);
-                { short attr = this->target_obj->id; if (attr == -1) attr = this->obj->owner->fallback_attribute;
+                if (this->task->work_sound2 != 0) this->task->work_sound2->play(1);
+                { short attr = this->task->attribute_type3; if (attr == -1) attr = this->obj->owner->fallback_attribute;
                   this->obj->owner->add_attribute_num(attr, this->obj->attribute_amount_held, 0); }
                 this->obj->owner->trackUnitGather(this->obj->id, this->obj->id, (int)this->obj->attribute_amount_held);
                 this->obj->set_attribute(-1, 0.0f);
