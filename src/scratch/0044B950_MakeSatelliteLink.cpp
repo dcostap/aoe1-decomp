@@ -39,6 +39,20 @@
 //   second horizontal guard and final assignment are cleaner, but VC5 dropped
 //   the saved EBP role and regressed the byte diff from 149 to 319.  The
 //   x + dx spelling was a codegen duplicate; retained the cleaner source.
+// - Fresh sa-32ff943f-r1 pass: restored the binary-supported old_x snapshot
+//   and rechecked candidate_x split/direct forms, second-guard x rereads,
+//   register/const qualifiers, top-scoped candidates, and point-store aliases.
+//   They were duplicates or regressed; final validation remains 149 differing
+//   bytes.  The remaining mismatch is the target mov/add candidate-x schedule
+//   versus VC5's natural LEA lowering, with all calls, size, CFG, frame, and
+//   saved-register sets aligned.
+// - Fresh sa-ad558ed4-r1 pass: protected method access restores the original
+//   IA EH symbol. Direct-x forms, old_y-only liveness, full 0x1058 class tail,
+//   snapshot placement, and candidate copy/add forms were duplicates or
+//   regressed. Retain the typed x/y reconstruction and 149-byte result.
+// - Fresh delegated revisit: first-guard `nx = dx + old_x`, compound `nx`, and
+//   condition-local candidate forms all emitted the same 336-byte/149-diff
+//   basin. Restored the pinned clean source; no natural exact basin was found.
 
 extern int __cdecl debug_rand(char* param_1, int param_2);
 
@@ -83,6 +97,7 @@ public:
     int MaxNumberOfBranchLevels;
     int CurrentNumberOfBranchLevels;
 
+protected:
     int MakeSatelliteLink();
 };
 
@@ -97,15 +112,16 @@ int PointMaker::MakeSatelliteLink() {
     r = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x166);
     if (r % 2) dy = -dy;
 
+    int old_x = x;
     dx += DirX;
     dy += DirY;
 
-    if (dx + x < 3) {
+    if (dx + old_x < 3) {
         dx = -dx;
         DirX = -DirX;
     }
 
-    if (dx + x >= Width - 3) {
+    if (dx + old_x >= Width - 3) {
         dx = -dx;
         DirX = -DirX;
     }
@@ -120,7 +136,7 @@ int PointMaker::MakeSatelliteLink() {
         DirY = -DirY;
     }
 
-    x = x + dx;
+    x = dx + old_x;
     y = dy + y;
     Point[NumNodes].x = x;
     Point[NumNodes].y = y;
