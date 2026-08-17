@@ -71,8 +71,8 @@
 //   basin. Table-owner and row-scope variants were duplicate or worse.
 // - Recomputing row_end, reversing row updates, and changing countdown tests
 //   widened the result or changed control flow. The target keeps row base in
-//   ECX, row end in ESI, and the inner pixel cursor in EDX. The clean source
-//   keeps a persistent pixel cursor and remains the best natural source.
+//   ECX, row end in ESI, and the inner pixel cursor in EDX. The prior cursor
+//   source kept that schedule and was the best metric source before cleanup.
 // - Translation-unit audit: scalar clip fields, the full TDrawArea field
 //   surface, uchar pixel types, an unused DDSys global, memset pragma/prototype,
 //   RGE_Color_Table class spelling, and nearby declarations were duplicate.
@@ -83,6 +83,10 @@
 // - Object audit confirms the VC5 target, 271-byte FPO body, no locals or SEH,
 //   four long parameters, layouts, and AlignedWidth call. No inline record or
 //   metadata supports another source owner for the row/pixel register swap.
+// - Source-gate cleanup: the PDB-backed TDrawArea fields now own every member
+//   from +0x38 through +0xC8, and RGE_Color_Table is a class with its named
+//   vptr-backed fields. The byte cursors are replaced by a typed indexed row
+//   loop. This is the clean semantic source even if its metric regresses.
 
 struct tagRECT {
     long left;
@@ -91,7 +95,8 @@ struct tagRECT {
     long bottom;
 };
 
-struct RGE_Color_Table {
+class RGE_Color_Table {
+public:
     virtual ~RGE_Color_Table();
     char color_table_name[30];
     short resource_id;
@@ -101,21 +106,54 @@ struct RGE_Color_Table {
     unsigned char table[256];
 };
 
+class TDrawSystem;
+class BITMAPINFO256;
+class IDirectDrawSurface;
+class DrawAreaNode;
+class TSpan_List_Manager;
+
+struct _DDSURFACEDESC {
+    unsigned char bytes[0x6C];
+};
+
 class TDrawArea {
 public:
-    void* DrawSystem;
+    TDrawSystem* DrawSystem;
     void* Wnd;
     unsigned char* Bits;
-    void* BitmapInfo;
+    BITMAPINFO256* BitmapInfo;
     void* Bitmap;
     void* OldBitmap;
-    long Width;
-    long Height;
-    long Pitch;
-    long Orien;
+    int Width;
+    int Height;
+    int Pitch;
+    int Orien;
     tagRECT ClipRect;
-    char gap_38[0x90];
+    void* DrawDc;
+    IDirectDrawSurface* DrawSurface;
+    _DDSURFACEDESC SurfaceDesc;
+    DrawAreaNode* Node;
+    char* Name;
+    unsigned char* LastBits;
+    int LastPitch;
+    void** DisplayOffsets;
+    void** CurDisplayOffsets;
+    void** FloatOffsets;
     RGE_Color_Table* shadow_color_table;
+    TSpan_List_Manager* SpanList;
+    TSpan_List_Manager* CurSpanList;
+    int Float_X_Delta;
+    int Float_Y_Delta;
+    int DisplayOffsetsSz;
+    int FloatOffsetsSz;
+    int SystemMemOnly;
+    int UsingVidMem;
+    int UseTrans;
+    int IsPrimarySurface;
+    int Restored;
+    int ExtendedLines;
+    unsigned char TransColor;
+    unsigned char _pad_end[3];
 
     long AlignedWidth();
     void DrawShadowBox(long x1, long y1, long x2, long y2);
@@ -156,10 +194,6 @@ void TDrawArea::DrawShadowBox(long x1, long y1, long x2, long y2)
         {
             long orientation = this->Orien;
             long row_pitch = this->AlignedWidth() * orientation;
-
-            unsigned char* row_start;
-            unsigned char* row_end;
-            unsigned char* pixel;
             unsigned char* table;
             long row_offset;
 
@@ -170,22 +204,16 @@ void TDrawArea::DrawShadowBox(long x1, long y1, long x2, long y2)
                 row_offset = row_pitch * y1;
             }
 
-            row_start = this->Bits + row_offset + x1;
-            row_end = row_start + (x2 - x1);
             table = this->shadow_color_table->table;
 
             if (y1 <= y2) {
-                int row_count = (y2 - y1) + 1;
-                pixel = row_start;
-                do {
-                    for (; pixel <= row_end; pixel++) {
-                        *pixel = table[*pixel];
+                for (long y = y1; y <= y2; y++) {
+                    unsigned char* row = this->Bits + row_offset;
+                    for (long x = x1; x <= x2; x++) {
+                        row[x] = table[row[x]];
                     }
-                    row_start += row_pitch;
-                    row_end += row_pitch;
-                    row_count--;
-                    pixel = row_start;
-                } while (row_count != 0);
+                    row_offset += row_pitch;
+                }
             }
         }
     }
