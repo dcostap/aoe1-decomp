@@ -79,6 +79,30 @@
 // EDX/EDI allocation swap at the inner list scan; no plausible source lead
 // remains in this claim.
 
+// Session sa-2bc693f1-r1: the clean baseline was rechecked at 314 bytes with
+// 97/97 instruction shapes, four ordered direct calls, and a six-byte
+// EDX/EDI register recolor.  A 512-sample ambient file-scope declaration
+// sweep and a 16-variant standard-header/full AIModule-surface context lab
+// produced one unchanged codegen group.  The Ghidra-shaped max-size inner
+// while with a bottom numberValue break changed the frame to 0x14 and grew
+// the body to 352 bytes, so it was rolled back.  Final validation restores
+// this natural indexed scan; unresolved work needs new source or TU evidence
+// for the EDX object-id versus EDI itemsToDefend-count coloring.
+
+// Session sa-1e618458-r1: direct id/count rereads, local declaration and scope
+// changes, a counted for-loop, and a const id local all duplicated the clean
+// six-byte recolor.  A pre-guarded do-while grew to 352 bytes and a scoped
+// ObjectMemory entry changed the frame to 0x14, so both were rolled back.
+// The natural typed indexed scan remains authoritative; the open gap is still
+// the EDX object-id versus EDI itemsToDefend-count allocation.
+
+// Session sa-fa84b2d1-r1: reviewed the target dossier, same-TU exact donors,
+// ABI evidence, original listing, and the localized checker range.  They
+// confirm the typed ownership, four ordered calls, and 0x10 frame, but give no
+// new source evidence for the six-byte EDX/EDI recolor.  Final validation is
+// retained as an unresolved mismatch; a future pass needs new TU or source
+// evidence rather than another equivalent register probe.
+
 #include <stddef.h>
 
 class AIModule {
