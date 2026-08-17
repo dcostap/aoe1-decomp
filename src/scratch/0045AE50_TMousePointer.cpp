@@ -36,34 +36,44 @@
 // follows the target's long-lived save_rect base and Ghidra's ptVar1 alias;
 // diff improved 354 -> 340 bytes, size 425 -> 416, and shape 52.29 -> 53.21.
 // Kept as the best typed reconstruction; first mismatch remains save_rect init.
+// Fresh claim probes: direct top/right/bottom stores, full scalar Ghidra copies,
+// SDK header context, canonical long widths, and mixed aggregate aliases did
+// not beat the typed source. A target-PDB tail order moved diff 340 -> 338 and
+// shape 53.21 -> 63.30 with the same 416-byte body; retained as current basis.
+// Cursor-only and restore-only scalar interleaves increased size or diff.
+// Revisit probe: the complete typed scalar RECT interleave reconstructed from
+// the Ghidra statements grew the body to 471 bytes and worsened the diff to
+// 419 bytes. Restored the natural aggregate-copy source.
+// Revisit probes: replaced the forbidden absolute source-string address with
+// the proven Mouseptr.cpp literal; strict diff stayed 338. Added the typed
+// game_window RECT and long coordinate fields from the local type dump; bytes
+// stayed unchanged. Direct aggregate copies from this->save_rect worsened to
+// 354 bytes, while moving mouse_rect after the first pointer stores gave 339;
+// both were rolled back. A const RECT alias and SDK RECT context were neutral.
+// The direct per-field Ghidra interleave grew to 483 bytes and was rolled back.
 // Left in scratch: behavior is straightforward but codegen is broad mismatch; not an accepted_drift candidate.
 
-typedef unsigned long ulong;
+#include <windows.h>
 
-struct RECT4 {
-    long left;
-    long top;
-    long right;
-    long bottom;
-};
+typedef unsigned long ulong;
+typedef RECT RECT4;
 
 class TDrawArea;
 class TShape;
 class IDirectDrawSurface;
 
 extern "C" ulong __cdecl debug_timeGetTime(char* file, int line);
-#define STR_MOUSEPTR ((char*)0x00584BD0)
 
 class TMousePointer {
 public:
     int custom_draw; TDrawArea* render_area; TDrawArea* save_area; TDrawArea* primary_area;
     int Num_Cursors; int Max_Cursors; TDrawArea* cursors[16];
     TShape* Cursor_Shape; int Mouse_Mode; int Max_CX; int Max_CY;
-    int cWidth; int cHeight; int gWidth; int gHeight; int mouse_x; int mouse_y; int save_x; int save_y;
+    int cWidth; int cHeight; int gWidth; int gHeight; long mouse_x; long mouse_y; long save_x; long save_y;
     int facet; int game_facet; int next_facet; int last_facet; int d_top; int d_left; int d_bottom; int d_right;
     int g_top; int g_left; int g_bottom; int g_right; int save_area_valid;
     RECT4 save_rect; RECT4 mouse_rect; RECT4 cursor_rect; RECT4 new_save_rect; RECT4 restore_rect;
-    char gap_10C[0x10]; IDirectDrawSurface* restoreSurface; IDirectDrawSurface* renderSurface;
+    RECT4 game_window; IDirectDrawSurface* restoreSurface; IDirectDrawSurface* renderSurface;
     IDirectDrawSurface* PrimarySurface; int active; int drawn; int Shutdown; int Setup; int GameMode; int GameEnabled;
     int MouseOnScreen; ulong LastDrawTime; long LastddError; char cursor_file[0x104]; int cursor_file_id;
     TMousePointer(int mode);
@@ -106,18 +116,18 @@ TMousePointer::TMousePointer(int mode)
     g_left = 0;
     g_bottom = 0;
     g_right = 0;
+    active = 0;
+    drawn = 0;
     restore_rect = *save_rect_ptr;
     Shutdown = 0;
     Setup = 0;
-    GameMode = 0;
-    GameEnabled = 0;
     save_x = -32767;
     save_y = -32767;
     Mouse_Mode = mode;
-    active = 0;
-    drawn = 0;
     restoreSurface = 0;
     renderSurface = 0;
+    GameMode = 0;
+    GameEnabled = 0;
     MouseOnScreen = 0;
     Num_Cursors = 0;
     Max_Cursors = 0;
@@ -128,7 +138,7 @@ TMousePointer::TMousePointer(int mode)
         cursors[i] = 0;
     }
 
-    LastDrawTime = debug_timeGetTime(STR_MOUSEPTR, 100);
+    LastDrawTime = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Mouseptr.cpp", 100);
     LastDrawTime -= 36;
     save_area_valid = 0;
     LastddError = 0;
