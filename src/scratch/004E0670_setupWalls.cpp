@@ -23,10 +23,14 @@
 //   identical code, so the natural local counter remains retained.
 // - tested using the mapped mode-2 realMinDC.x for the perimeter start; size
 //   moved 4 bytes closer but positional diff worsened, so rolled it back.
-// Current normalized pause: 2217/2253 bytes, natural 0x30 frame, 62/62 ordered
-// calls. The original 0x34 frame must come from a real lifetime/ownership fact,
-// not a synthetic aggregate. Remaining work is broad gate/perimeter structure
-// plus the prologue allocation (original param_1 in EBX, param_4 in EDI).
+// - flattened all repeated mode-2 guards and used max.x as each inner count;
+//   this reached the exact 2253-byte size and a 1737-byte strict diff.
+// - a canonical x,y WallPoints aggregate plus local_4 recovered the 0x34
+//   frame, exact mapBound pointer windows, and 78.9% shape, but strict diff
+//   worsened to 2065; it was rejected as compiler-steering scaffolding.
+// Current normalized pause: exact 2253-byte size, natural 0x30 frame, and
+// 62/62 ordered calls. Remaining drift is prologue allocation and local colors;
+// the original keeps param_1 in EBX and param_4 in EDI.
 
 struct XYPoint {
     int y;
@@ -52,14 +56,14 @@ extern int debug_rand(char* file, int line);
 void TribeInformationAIModule::setupWalls(int param_1, int param_2, int param_3, int param_4,
                                            int param_5, int param_6, int param_7, int param_8)
 {
+    XYPoint realMaxF4;
+    XYPoint realMax;
+    XYPoint realMin;
+    XYPoint realMinDC;
+    XYPoint min;
+    XYPoint max;
     int count;
     int iVar10;
-    XYPoint max;
-    XYPoint min;
-    XYPoint realMinDC;
-    XYPoint realMin;
-    XYPoint realMax;
-    XYPoint realMaxF4;
 
     if (param_8 == 1 && param_6 > 0) {
         this->numberGatesValue = param_6;
@@ -203,104 +207,104 @@ void TribeInformationAIModule::setupWalls(int param_1, int param_2, int param_3,
                     } while (iVar10 != 0);
                 }
                 if (param_3 > 0) {
-                    iVar10 = param_3;
+                    max.x = param_3;
                     do {
                         if (this->insideGate(param_6, x, y) == 0)
                             this->storeLot(0x48, x, y, 0);
                         ++y;
-                        --iVar10;
-                    } while (iVar10 != 0);
+                        --max.x;
+                    } while (max.x != 0);
                 }
                 if (param_3 > 0) {
-                    iVar10 = i;
+                    max.x = i;
                     do {
                         if (this->insideGate(param_6, x, y) == 0)
                             this->storeLot(0x48, x, y, 0);
                         ++x;
-                        --iVar10;
-                    } while (iVar10 != 0);
-                    if (param_3 > 0) {
-                        iVar10 = i;
-                        do {
-                            if (this->insideGate(param_6, x, y) == 0)
-                                this->storeLot(0x48, x, y, 0);
-                            ++y;
-                            --iVar10;
-                        } while (iVar10 != 0);
-                        if (param_3 > 0) {
-                            iVar10 = param_3;
-                            do {
-                                if (this->insideGate(param_6, x, y) == 0)
-                                    this->storeLot(0x48, x, y, 0);
-                                ++x;
-                                --iVar10;
-                            } while (iVar10 != 0);
-                            iVar10 = param_8;
-                            if (param_3 > 0) {
-                                do {
-                                    if (this->insideGate(param_6, x, y) == 0)
-                                        this->storeLot(0x48, x, y, 0);
-                                    --y;
-                                    --iVar10;
-                                } while (iVar10 != 0);
-                            }
-                        }
-                    }
+                        --max.x;
+                    } while (max.x != 0);
+                }
+                if (param_3 > 0) {
+                    max.x = i;
+                    do {
+                        if (this->insideGate(param_6, x, y) == 0)
+                            this->storeLot(0x48, x, y, 0);
+                        ++y;
+                        --max.x;
+                    } while (max.x != 0);
+                }
+                if (param_3 > 0) {
+                    max.x = param_3;
+                    do {
+                        if (this->insideGate(param_6, x, y) == 0)
+                            this->storeLot(0x48, x, y, 0);
+                        ++x;
+                        --max.x;
+                    } while (max.x != 0);
+                }
+                if (param_3 > 0) {
+                    max.x = param_8;
+                    do {
+                        if (this->insideGate(param_6, x, y) == 0)
+                            this->storeLot(0x48, x, y, 0);
+                        --y;
+                        --max.x;
+                    } while (max.x != 0);
                 }
 
-                iVar10 = max.y;
+                max.x = max.y;
                 if (param_3 >= 0) {
                     do {
                         if (this->insideGate(param_6, x, y) == 0)
                             this->storeLot(0x48, x, y, 0);
                         ++x;
-                        --iVar10;
-                    } while (iVar10 != 0);
-                    iVar10 = param_3;
-                    if (param_3 > 0) {
-                        do {
-                            if (this->insideGate(param_6, x, y) == 0)
-                                this->storeLot(0x48, x, y, 0);
-                            --y;
-                            --iVar10;
-                        } while (iVar10 != 0);
-                    }
-                    iVar10 = max.y;
-                    if (param_3 >= 0) {
-                        do {
-                            if (this->insideGate(param_6, x, y) == 0)
-                                this->storeLot(0x48, x, y, 0);
-                            --x;
-                            --iVar10;
-                        } while (iVar10 != 0);
-                        iVar10 = param_8;
-                        if (param_3 > 0) {
-                            do {
-                                if (this->insideGate(param_6, x, y) == 0)
-                                    this->storeLot(0x48, x, y, 0);
-                                --y;
-                                --iVar10;
-                            } while (iVar10 != 0);
-                            iVar10 = param_3;
-                            if (param_3 > 0) {
-                                do {
-                                    if (this->insideGate(param_6, x, y) == 0)
-                                        this->storeLot(0x48, x, y, 0);
-                                    ++x;
-                                    --iVar10;
-                                } while (iVar10 != 0);
-                                iVar10 = param_8;
-                                if (param_3 > 0) {
-                                    do {
-                                        if (this->insideGate(param_6, x, y) == 0)
-                                            this->storeLot(0x48, x, y, 0);
-                                        ++y;
-                                        --iVar10;
-                                    } while (iVar10 != 0);
-                                }
-                            }
-                        }
-                    }
+                        --max.x;
+                    } while (max.x != 0);
+                }
+                max.x = param_3;
+                if (param_3 > 0) {
+                    do {
+                        if (this->insideGate(param_6, x, y) == 0)
+                            this->storeLot(0x48, x, y, 0);
+                        --y;
+                        --max.x;
+                    } while (max.x != 0);
+                }
+                max.x = max.y;
+                if (param_3 >= 0) {
+                    do {
+                        if (this->insideGate(param_6, x, y) == 0)
+                            this->storeLot(0x48, x, y, 0);
+                        --x;
+                        --max.x;
+                    } while (max.x != 0);
+                }
+                max.x = param_8;
+                if (param_3 > 0) {
+                    do {
+                        if (this->insideGate(param_6, x, y) == 0)
+                            this->storeLot(0x48, x, y, 0);
+                        --y;
+                        --max.x;
+                    } while (max.x != 0);
+                }
+                max.x = param_3;
+                if (param_3 > 0) {
+                    do {
+                        if (this->insideGate(param_6, x, y) == 0)
+                            this->storeLot(0x48, x, y, 0);
+                        ++x;
+                        --max.x;
+                    } while (max.x != 0);
+                }
+                max.x = param_8;
+                if (param_3 > 0) {
+                    do {
+                        if (this->insideGate(param_6, x, y) == 0)
+                            this->storeLot(0x48, x, y, 0);
+                        ++y;
+                        --max.x;
+                    } while (max.x != 0);
                 }
 
                 param_8 += 2;
