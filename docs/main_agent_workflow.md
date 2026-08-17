@@ -163,6 +163,10 @@ scope, alias, control form, allocation choice, and ambient-context change. Recor
 required, incidental, and inseparable changes in the source notes. Promote only
 after the reduced source still reports `MATCH` and `0.0000%`.
 
+Require an `ORIGINAL BUG:` note for each proved shipped defect. The note must
+name the binary evidence, observable effect, and reason not to correct it. Do
+not label uncertain or merely unusual source as a bug.
+
 Reject a shallow unresolved return. If the worker reports fewer than ten honest
 hypotheses, continue that same assignment. Do not count syntax repairs, unchanged
 reruns, cosmetic edits, or unsupported register guesses as honest hypotheses.

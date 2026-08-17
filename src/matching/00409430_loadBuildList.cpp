@@ -22,6 +22,10 @@
 //   order preserve the two local-home pairs.
 // - The no-build arm tests the pointer before the NULL copy. A first-byte
 //   test changes the boundary and the complete control flow.
+// - ORIGINAL BUG: buildListNameValue is an in-object array, but the source
+//   tests its decayed pointer against NULL. The test cannot succeed for a valid
+//   object and follows earlier uses of the same array. Exact code proves that
+//   the shipped function retains this dead test, so the reconstruction keeps it.
 // - Exact-finish reversions: declaration order and the local alias were
 //   incidental. Radius-axis order, doubling order, chained initialization,
 //   constructor arguments, and pointer testing are required.
@@ -224,6 +228,7 @@ int BuildAIModule::loadBuildList(char* filename, RGE_Player* player)
     return 1;
 
 no_build_list:
+    // ORIGINAL BUG: this fixed member array cannot be NULL for a valid object.
     if (this->buildListNameValue == 0) {
         strcpy(this->buildListNameValue, "NULL");
     }

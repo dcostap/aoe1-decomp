@@ -159,6 +159,8 @@ The first exact result starts the finish process. Do not report immediately.
 9. Update the source recovery notes. Record the decisive change, tested
    reversions, required changes, incidental changes, and inseparable groups.
    State evidence separately from explanations that remain hypotheses.
+   Mark each proved original defect as `ORIGINAL BUG:`. State the executable
+   evidence, observable effect, and why a natural-looking correction is wrong.
 10. Pin the reduced exact source and release the lease with the exact result.
     Leave the status move and commit to the main agent.
 
