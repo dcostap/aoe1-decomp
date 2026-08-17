@@ -118,6 +118,21 @@
 //   2/2 ordered calls, 152 strict differing bytes, and 85.29% shape.  It is
 //   not exact.  The remaining mismatch starts in VC5 local-home/register
 //   allocation and the literal table-index register basin.
+// sa-08179dd2-r1 TU audit (2026-08-17):
+// - Tested same-TU CRT header order, Windows/RECT context, <io.h>/<fcntl.h>,
+//   a Windows-style min macro, the ground-truth class declaration kinds, the
+//   full neighboring member declaration bank, and the exact preceding
+//   shape_draw_unclipped donor body.  These contexts either reproduced the
+//   clean 268B/152-diff output or moved to the harmful 271B/257-diff basin.
+// - The exact preceding donor definition did not change the target output.
+//   Function order is therefore not the controlling source context here.
+// - The public TDrawArea/private TShape class spelling reproduced the PDB
+//   AAEEPAV decorated ABI surface with unchanged bytes.  It did not recover
+//   the oracle prologue or local homes, so it is ABI evidence only.
+// - The clean source and default /O2 /Oy flags are restored.  No tested
+//   translation-unit context naturally selects the oracle parameter-home
+//   basin.  Remaining drift is source liveness/home allocation, not a proven
+//   missing header, macro, declaration, function order, or flag.
 // FLAGS: /nologo /c /O2 /Oy
 
 extern "C" void* __cdecl memset(void*, int, unsigned int);
