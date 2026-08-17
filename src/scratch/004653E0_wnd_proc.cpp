@@ -27,11 +27,21 @@
 // removed the function-pointer cache retained solely for codegen metrics. Final
 // audited check: exact 870-byte size/0xC frame, 30/30 calls with 83.33% ordered
 // alignment, 798-byte diff.
+// Revisit probes 12-20: natural nested handlers changed the same 870-byte basin;
+// inverted and nested range guards reached 811-920 bytes or changed call order.
+// Local lifetime, declaration order, target initialization, and comparison
+// direction did not improve the structural split. A local GetKeyState alias and
+// mutable import declaration did not beat the audited basin. Restoring the
+// period Windows SDK context with windows.h and native POINT changed the result
+// to 870 bytes, 339 instructions, and 796 differing bytes. Extra C runtime
+// headers and POINT lifetime spelling were codegen duplicates. The original
+// child and command blocks still precede mouse and keyboard blocks, while VC5
+// keeps those blocks out of order in this source basin. Final validation remains
+// MISMATCH; pinned as clean for the next worker.
 
-extern "C" short (__stdcall* const GetKeyState)(int);
+#include <windows.h>
 
 class TPanel;
-struct tagPOINT { long x; long y; };
 struct PanelNode { TPanel* panel; PanelNode* prev_node; PanelNode* next_node; };
 struct TDrawArea { virtual ~TDrawArea(); void* Wnd; };
 
@@ -71,13 +81,13 @@ public:
     char gap60[0x0c];
     int active; // +6c
 
-    void get_mouse_info(unsigned int keys, long packed_pos, tagPOINT& point,
+    void get_mouse_info(unsigned int keys, long packed_pos, POINT& point,
                         int& focus_flag, int& capture_flag);
 };
 
 long TPanel::wnd_proc(void* hwnd, unsigned int msg, unsigned int wParam, long lParam)
 {
-    tagPOINT point;
+    POINT point;
     TPanel* target;
     PanelNode* node;
     long result;
