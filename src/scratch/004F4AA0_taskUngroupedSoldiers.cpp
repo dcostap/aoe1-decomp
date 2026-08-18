@@ -38,8 +38,23 @@
 // - The unresolved blocker is callee-save and local-home topology. The oracle
 //   uses EBX for the outer index, delays EDI save until the positive arm, and
 //   reads the fixed -4 home. No honest source probe recovered that basin.
-// BLOCKER: source/layout/callee-save topology remains unresolved; leave this
-// clean typed reconstruction in scratch rather than retain codegen scaffolds.
+//
+// Main-agent pass, 2026-08-18:
+// - Translation-unit tests with zero through twelve dummy predecessors and
+//   exact idle/play/active predecessors emitted identical target bytes.
+// - Replacing only the first ungrouped membership do-loop with the exact-donor
+//   for-loop recovered the original EBX outer index and delayed EDI save. It
+//   reduced the strict diff from 493 to 230 bytes.
+// - Index-left capacity predicates recovered five original cmp/branch forms.
+//   The best natural source is now 747/740 bytes, 15/15 ordered calls, exact
+//   0x1C frame, 93.49% shape, 77.91% exact blocks, and 222 differing bytes.
+// - The remaining seven-byte region is the second membership scan. VC5 turns
+//   its natural cached-count do-loop into a pointer induction with one extra
+//   conditional block. For/while, explicit-break, scope, pointer, and source
+//   order variants either duplicate this basin or damage the frame and early
+//   register allocation. Point/local declaration permutations are duplicates.
+// BLOCKER: second-scan induction and point/local home ownership remain
+// unresolved. Keep this clean typed reconstruction in scratch.
 
 #include <stdlib.h>
 
@@ -201,41 +216,37 @@ void TribeTacticalAIModule::taskUngroupedSoldiers()
             if (0 < this->soldiers.numberValue) {
                 ManagedArray<int>& soldiers = this->soldiers;
                 do {
-                    if (soldiers.maximumSizeValue - 1 < i) {
+                    if (i > soldiers.maximumSizeValue - 1) {
                         soldiers.resize(i + 1);
                     }
 
                     TacticalAIGroup* group =
                         this->groupUnitIsIn(soldiers.value[i]);
                     if (group != 0) {
-                        if (soldiers.maximumSizeValue - 1 < i) {
+                        if (i > soldiers.maximumSizeValue - 1) {
                             soldiers.resize(i + 1);
                         }
                         this->ungroupedSoldiers.remove(
                             soldiers.value[i]);
                     }
                     else {
-                        if (soldiers.maximumSizeValue - 1 < i) {
+                        if (i > soldiers.maximumSizeValue - 1) {
                             soldiers.resize(i + 1);
                         }
                         RGE_Static_Object* soldierObj =
                             this->md->object(soldiers.value[i]);
                         if (soldierObj != 0) {
-                            if (soldiers.maximumSizeValue - 1 < i) {
+                            if (i > soldiers.maximumSizeValue - 1) {
                                 soldiers.resize(i + 1);
                             }
 
                             ManagedArray<int>* ungrouped =
                                 &this->ungroupedSoldiers;
-                            j = 0;
-                            if (0 < ungrouped->numberValue) {
-                                do {
-                                    if (ungrouped->maximumSizeValue <= j)
-                                        break;
-                                    if (ungrouped->value[j] == soldiers.value[i])
-                                        goto next_soldier;
-                                    j++;
-                                } while (j < ungrouped->numberValue);
+                            for (j = 0; j < ungrouped->numberValue; j++) {
+                                if (j >= ungrouped->maximumSizeValue)
+                                    break;
+                                if (ungrouped->value[j] == soldiers.value[i])
+                                    goto next_soldier;
                             }
 
                             {
@@ -244,7 +255,7 @@ void TribeTacticalAIModule::taskUngroupedSoldiers()
                                 if (0 < ungroupedCount) {
                                     j = 0;
                                     do {
-                                        if (ungrouped->maximumSizeValue <= j)
+                                        if (j >= ungrouped->maximumSizeValue)
                                             break;
                                         if (ungrouped->value[j] == soldier)
                                             goto find_position;
@@ -252,8 +263,8 @@ void TribeTacticalAIModule::taskUngroupedSoldiers()
                                     } while (j < ungroupedCount);
                                 }
 
-                                if (ungrouped->maximumSizeValue - 1 <
-                                    ungroupedCount) {
+                                if (ungroupedCount >
+                                    ungrouped->maximumSizeValue - 1) {
                                     ungrouped->resize(ungroupedCount + 1);
                                 }
                                 ungrouped->value[ungrouped->numberValue] = soldier;
@@ -268,8 +279,7 @@ void TribeTacticalAIModule::taskUngroupedSoldiers()
                                         this->sn[0x16], this->sn[0x48],
                                         soldierObj, gatherPoint);
                                 if (result == 1) {
-                                    if (soldiers.maximumSizeValue - 1 <
-                                        i) {
+                                    if (i > soldiers.maximumSizeValue - 1) {
                                         soldiers.resize(i + 1);
                                     }
                                     this->moveUnit(

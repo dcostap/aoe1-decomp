@@ -82,6 +82,17 @@
 // index and byte-offset homes. The count and capacity spill remains unresolved.
 // LIKELY INTENT: `taskMaximum` before `n` in the scan condition reproduces the
 // original capacity-before-body layout and preserves all later exact blocks.
+//
+// Main-agent context pass, 2026-08-18: zero through twelve preceding dummy
+// functions emitted identical target code. Exact taskIdleSoldiers before this
+// function changed five scheduling bytes but kept the 0x8 frame. Active-before
+// and idle-plus-active returned to baseline. Translation-unit scheduling does
+// not recover the two bound homes.
+// Isolated current-template probes tested a do-loop, donor-style for-loop,
+// separate first-scan variables, block scopes, a two-int bounds array, a named
+// tasked ID, and a cached value pointer. Natural forms were duplicates or lost
+// the exact downstream basin. Diagnostic volatility was rejected. Keep the
+// 48-byte clean frontier until new stack-allocation evidence exists.
 
 void* operator_new(unsigned int size);
 void __cdecl operator_delete(void* ptr);
