@@ -40,6 +40,14 @@
 // calls and one shared setAction call, while the clean source emits 16 type
 // calls and four setAction calls. Fresh predicates, nested assignments,
 // scopes, initializers, and shared-label forms did not reach that call set.
+//
+// probe 22: restored the PDB-order inactive arm and wrote the action choices
+// as direct setAction calls. VC5 merged their common call tail, recovered all
+// 19 type calls, and proved that setType(0x69) continues to action 8. This
+// reached 35 differing bytes with exact frame, calls, and call order.
+// probe 23: replaced the repeated do-loop sentinel guard with the natural
+// pretest while loop shown by 004F1E71 and 004F21CD. This removed the final
+// redundant branch and reached an exact 989-byte match at 0.0000%.
 
 static const char s_taitacmd_cpp[] =
     "C:\\msdev\\work\\age1_x1\\taitacmd.cpp";
@@ -177,9 +185,8 @@ void TribeTacticalAIModule::taskIdleSoldiers(unsigned long startTime,
     int isGathered;
     int desired;
     int number;
-    int actionToSet;
-    do {
-        if (group == &this->groups || group == 0) {
+    while (group != end) {
+        if (group == 0) {
             this->nextIdleSoldierGroupToTaskValue = -1;
             return;
         }
@@ -264,40 +271,34 @@ void TribeTacticalAIModule::taskIdleSoldiers(unsigned long startTime,
         }
 
 ready_to_task_check:
-        if (readyToTask != 0) {
-            actionToSet = group->type();
-            if (actionToSet == 0x66 ||
-                (actionToSet = group->type(), actionToSet == 0x69)) {
-                actionToSet = 8;
+        if (readyToTask == 0) {
+            if (isGathered == 0) {
+                group->task(this, this->md, 9, 1, 0);
             }
-            else if (actionToSet == 0x64 ||
-                     (actionToSet = group->type(), actionToSet == 0x67)) {
+        }
+        else {
+            if (group->type() == 0x66 || group->type() == 0x69) {
+                group->setAction(8);
+            }
+            else if (group->type() == 0x64 || group->type() == 0x67) {
                 if (this->numberItemsToAttack() == 0 &&
                     group->type() == 0x67) {
                     group->setType(0x69);
+                    group->setAction(8);
                 }
-                actionToSet = 2;
-            }
-            else if (actionToSet == 0x65 ||
-                     (actionToSet = group->type(), actionToSet == 0x68)) {
-                actionToSet = 4;
-            }
-            else {
-                if (actionToSet != 0x6D) {
-                    goto next_group;
+                else {
+                    group->setAction(2);
                 }
-                actionToSet = 0x13;
             }
-            goto set_action;
-        }
-        else if (isGathered == 0) {
-            group->task(this, this->md, 9, 1, 0);
+            else if (group->type() == 0x65 || group->type() == 0x68) {
+                group->setAction(4);
+            }
+            else if (group->type() == 0x6D) {
+                group->setAction(0x13);
+            }
         }
 
         goto next_group;
-
-set_action:
-        group->setAction(actionToSet);
 
 next_group:
         group = group->next;
@@ -306,7 +307,7 @@ next_group:
             maxTime) {
             return;
         }
-    } while (group != end);
+    }
 
     this->nextIdleSoldierGroupToTaskValue = -1;
 }
