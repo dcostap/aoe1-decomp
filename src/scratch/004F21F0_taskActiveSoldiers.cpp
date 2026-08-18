@@ -73,7 +73,7 @@
 // - inlined the action-0x10 taskAttacker target/location arguments to recover the original right-to-left call order, extending the ordered prefix to 255. This removes two artificial float homes and exposes an 8-byte frame deficit that still needs a real local-layout fix.
 // - restored the binary-observed lastAttackResponseTime update and changed the action-0x10 success to task the group's post-setAction action value with args (1,0). The natural direct suffix merges with the loss-check suffix as in the original and extends the ordered call prefix to 323.
 // - isolated the action-7 timeout with its natural direct task call, preventing VC5 from merging its setAction with a distant identical tail. Aggregate calls return to exact and the ordered prefix reaches 358. A direct-task spelling for the sn[0x31]==2 reset added an action call and collapsed the early prefix, so it was rolled back.
-// - the non-default action-2 idle-timeout reset must exit immediately; letting it fall into the play-status recovery was behaviorally wrong and encouraged setter-tail merging. Restoring the direct task_done edge keeps its target-type/location calls distinct, raises shape to 77.86% and call alignment to 92.95%, and extends the ordered prefix to 360.
+// - the non-default action-2 idle-timeout reset must exit immediately; letting it fall into the play-status recovery was behaviorally wrong and encouraged setter-tail merging. Restoring the direct ContinueLoop edge keeps its target-type/location calls distinct, raises shape to 77.86% and call alignment to 92.95%, and extends the ordered prefix to 360.
 // - enlarging the action-7 auxiliary output window from 4 to 12 bytes restored the 0xD0 frame and improved block coverage, but it is not justified by the float* callee surface and changed the sentinel register, so it was rolled back. The current 0xC8 frame is an exposed real-local modeling deficit, not a padding invitation.
 // - an explicit goto split for subtype==-1 moved that cold handler too early, reduced call alignment to 88.86%, and was rolled back; keep the positive non-default subtype body for now.
 // - modeled the defend-distance selection as a real float and restored two shared gather-coordinate homes from the Ghidra fVar topology; frame is now exact at 0xD0 and the original +0407/+040F FILD blocks are exact. Reversed several equivalent threshold predicates to preserve binary-observed compare operand order, raising exact-block coverage from 33.04% to 37.08% and the longest aligned run from 96 to 106 while keeping all 440 call counts exact. Current size is +42, shape 78.24%, call prefix 360; first mismatch is +0x57 at the sentinel/zero-register choice.
@@ -88,6 +88,12 @@
 // - restored PDB source order for action-2 target handling and the original enemy-arm polarity. Ordered call alignment rose to 93.41%.
 // - changed the byte state test to `object_state > 2`. This recovered original CMP 2 / JA and made block +0x1C92 exact.
 // - remaining structural blocker: the subtype -1 handler stays inline near rebuilt +0x1EAD. Original VC5 places its only incoming block after both epilogues at +0x2400.
+// - original PDB symbols show one source label only: ContinueLoop at original +0x2362. Other labels here are temporary compiler-tail models.
+// - original PDB locals include attackAsAttack, defendDistance, tAreaMin, tAreaMax, point, pathDistance, gatherX, and gatherY.
+// - tAreaMin and tAreaMax are 16-byte Waypoint values. Modeling both makes the original 63-instruction action-2 block exact, but exposes conflicting synthetic homes.
+// - direct location expressions recover exact local blocks. Defer them until common-tail structure preserves the call surface and exact 0xD0 frame.
+// - the direct relic path passes relic->type, not constant 0x6d. This aligns the next defender block at original +0x3ac and improves strict diff by 51 bytes.
+// - relic canPath failure handling ends at PDB line 4219 and exits through ContinueLoop. Keeping that behavior currently makes VC5 merge one unrelated setter tail.
 
 #if 0
 Source: taitacmd.cpp.decomp
@@ -1508,7 +1514,7 @@ void __cdecl logCommonHistory(TribeTacticalAIModule*, const char*, ...);
 #define VPAD32(n) VPAD16(n) VPAD16(n##_16)
 #define VPAD64(n) VPAD32(n) VPAD32(n##_32)
 
-class VMainDecisionIsEnemy {
+class VPlayerIsEnemy {
 public:
     VPAD4(0) VPAD2(4) VPAD1(6)
     virtual int isEnemy(int player_id); // +0x1c
@@ -1811,21 +1817,21 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
 
             if (!cur->inUse()) {
                 RGE_Static_Object* commanderObj;
-                int allOutsideTransport;
+                int attackAsAttack;
 
                 mem = 0;
                 commanderObj = 0;
-                allOutsideTransport = 1;
+                attackAsAttack = 1;
                 t = cur->type();
                 if (t != 100 && cur->type() != 0x67) {
                     t = cur->type();
                     if (t == 0x65 || cur->type() == 0x68) {
                         int commander;
-                        float distance;
+                        XYZPoint point;
+                        float defendDistance;
+                        float pathDistance;
                         float gatherX;
-                        float gatherAux;
-                        float commanderPoint;
-                        XYZPoint pathPoint;
+                        float gatherY;
 
                         commander = cur->commander();
                         mem = this->md->informationAI.objectToDefend(commander);
@@ -1840,21 +1846,21 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                                 goto clear_attack_state;
                             } else {
                                 if (mem->type == 0x6d) {
-                                    distance = (float)this->sn[0x16];
+                                    defendDistance = (float)this->sn[0x16];
                                 } else {
-                                    distance = (float)this->sn[0x39];
+                                    defendDistance = (float)this->sn[0x39];
                                 }
-                                pathPoint.x = mem->x;
-                                pathPoint.y = mem->y;
-                                pathPoint.z = mem->z;
-                                if (!((VObjCanMove*)commanderObj)->canPath(pathPoint,
+                                point.z = mem->z;
+                                point.x = mem->x;
+                                point.y = mem->y;
+                                if (!((VObjCanMove*)commanderObj)->canPath(point,
                                         ((VObjWeaponRange*)commanderObj)->weaponRange(),
-                                        mem->id, &commanderPoint, 1, -1, -1)) {
+                                        mem->id, &pathDistance, 1, -1, -1)) {
                                     if (((VObjCanPath*)commanderObj)->canPathWithAdditionalPassability(
-                                            pathPoint, distance, mem->id, &commanderPoint,
+                                            point, defendDistance, mem->id, &pathDistance,
                                             1, 0x16, 1, -1, -1) &&
                                         ((VObjPathPoint*)commanderObj)->findFirstTerrainAlongExceptionPath(
-                                            2, &gatherX, &gatherAux) == 1) {
+                                            2, &gatherX, &gatherY) == 1) {
                                         mem->attackAttempts = 1;
                                         cur->task(this, this->md, 0x0e, 1, 0);
                                         cur->setAction(0x0d);
@@ -1904,23 +1910,23 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                                         cur->setAction(1);
                                         goto clear_attack_state;
                                     } else {
-                                        float pathDistance_6d;
-                                        float gatherX_6d;
-                                        float gatherAux_6d;
-                                        XYZPoint relicPoint;
-                                        relicPoint.x = (int)relic->world_x;
-                                        relicPoint.y = (int)relic->world_y;
-                                        relicPoint.z = (int)relic->world_z;
-                                        if (!((VObjCanMove*)commanderObj)->canPath(relicPoint,
+                                        XYZPoint point;
+                                        float pathDistance;
+                                        float gatherX;
+                                        float gatherY;
+                                        point.x = (int)relic->world_x;
+                                        point.y = (int)relic->world_y;
+                                        point.z = (int)relic->world_z;
+                                        if (!((VObjCanMove*)commanderObj)->canPath(point,
                                                 (float)this->sn[0x17], relic->id,
-                                                &pathDistance_6d, 1, -1, -1)) {
+                                                &pathDistance, 1, -1, -1)) {
                                             if (!((VObjCanPath*)commanderObj)->canPathWithAdditionalPassability(
-                                                    relicPoint, (float)this->sn[0x17], relic->id,
-                                                    &pathDistance_6d, 1, 0x16, 1, -1, -1)) {
+                                                    point, (float)this->sn[0x17], relic->id,
+                                                    &pathDistance, 1, 0x16, 1, -1, -1)) {
                                                 cur->setConsecutiveIdleUnitCount(this->md->player->world->world_time);
                                                 cur->setAction(1);
                                             } else if (((VObjPathPoint*)commanderObj)->findFirstTerrainAlongExceptionPath(
-                                                           2, &gatherX_6d, &gatherAux_6d) == 1) {
+                                                           2, &gatherX, &gatherY) == 1) {
                                                 cur->task(this, this->md, 0x0e, 1, 0);
                                                 cur->setAction(0x0d);
                                                 cur->setTarget(relic->id);
@@ -1931,9 +1937,11 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                                             } else {
                                                 goto relic_path_failure;
                                             }
+                                            this->attackStateValue.active = 0;
+                                            goto ContinueLoop;
                                         } else {
                                             cur->setTarget(relic->id);
-                                            cur->setTargetType(0x6d);
+                                            cur->setTargetType((int)relic->type);
                                             cur->setTargetLocation(relic->world_x, relic->world_y, relic->world_z);
                                             *(float*)&pendingTaskArg2 = relic->world_x;
                                             directGatherY = relic->world_y;
@@ -2019,7 +2027,7 @@ inactive_object_to_attack:
                             players = this->playersToAttack.value;
                             mem = this->md->informationAI.objectToAttack(*players, 1, 1,
                                                                          cur->commander(),
-                                                                         &allOutsideTransport);
+                                                                         &attackAsAttack);
 inactive_target_selected:
                             goto active_target_selected_common;
                             if (mem == 0) {
@@ -2147,7 +2155,7 @@ active_object_to_attack:
                             players = this->playersToAttack.value;
                             mem = this->md->informationAI.objectToAttack(*players, 1, 1,
                                                                          cur->commander(),
-                                                                         &allOutsideTransport);
+                                                                         &attackAsAttack);
 active_target_selected_common:
                             if (mem == 0) {
                                 cur->setAction(1);
@@ -2183,7 +2191,7 @@ active_no_commander:
                                             cur->setAction(1);
                                             cur->playNumberValue = -1;
                                             this->attackStateValue.active = 0;
-                                            goto task_done;
+                                            goto ContinueLoop;
                                         }
                                         if (((VObjPathPoint*)commanderObj)->findFirstTerrainAlongExceptionPath(
                                                 2, &gatherX2, &aux2) == 1) {
@@ -2240,7 +2248,7 @@ inactive_post_setup:
                         this->stuffAvoidancePath(cur, avoidancePath);
                     }
                 }
-                if (allOutsideTransport != 0 || cur->action() != 2) {
+                if (attackAsAttack != 0 || cur->action() != 2) {
                     TASK_GROUP(cur->action(), 1, 0);
                 }
                 TASK_GROUP(0x15, 1, 0);
@@ -2698,7 +2706,7 @@ action7_done:
                             replacementCommander = this->md->object(cur->commander());
                             if (replacementCommander == 0) {
                                 this->attackStateValue.active = 0;
-                                goto task_done;
+                                goto ContinueLoop;
                             }
                             if (this->playersToAttack.maximumSizeValue - 1 < 0) {
                                 int* newPlayers;
@@ -2798,10 +2806,10 @@ action7_done:
                             cur->setTargetLocation(-1.0f, -1.0f, -1.0f);
                             cur->numberObjectsToDestroyValue = 0;
                             this->attackStateValue.active = 0;
-                            goto task_done;
+                            goto ContinueLoop;
                         }
                     } else {
-                        if (((VMainDecisionIsEnemy*)this->md)->isEnemy(
+                        if (((VPlayerIsEnemy*)this->md->player)->isEnemy(
                                 targetObj2->owner->id) != 0) {
                             RGE_Static_Object* commanderObj8;
                             cur->setInUse(0);
@@ -2825,6 +2833,7 @@ action7_done:
                                 commanderObj4 = this->md->object(cur->commander());
                                 if (commanderObj4 == 0) {
                                     this->attackStateValue.active = 0;
+                                    goto ContinueLoop;
                                 } else if (((VObjCanAttack*)commanderObj4)->canAttack(
                                                cur->target(),
                                                ((VObjWeaponRange*)commanderObj4)->weaponRange()) == 1) {
@@ -3098,17 +3107,17 @@ active_dispatch_done:
                 }
             }
 
-            goto task_done;
+            goto ContinueLoop;
 relic_path_failure:
             cur->setAction(1);
             goto clear_attack_state;
 clear_attack_state:
             this->attackStateValue.active = 0;
-            goto task_done;
+            goto ContinueLoop;
 task_group:
             cur->task(this, this->md, pendingTaskCode, pendingTaskArg1, pendingTaskArg2);
             this->attackStateValue.active = 0;
-task_done:
+ContinueLoop:
             if (this->attackStateValue.active != 0) {
                 return;
             }
