@@ -101,8 +101,8 @@ Use `wait_mode: "all"` only when the selected agents are the only remaining work
 and no unrelated result can require integration. A cancelled wait leaves agents
 running; do not launch replacements.
 
-A practical four-slot split is at most two workers and two read-only analysts.
-Reserve two read-only slots when a blind-review cohort is due.
+When no blind cohort is due, keep the normal live set small. A blind cohort uses
+four read-only slots. Reserve all four slots before launch.
 
 ## Obstacle notes
 
@@ -280,8 +280,8 @@ Use the live status tool's logic-review view to find active reviews.
 
 ## Blind review cohorts
 
-Launch at least two fresh reviewers concurrently. Do not launch a partial cohort.
-Use complementary scopes and include one broad adversarial review.
+Launch exactly four fresh reviewers concurrently. Do not launch a partial
+cohort. Use complementary scopes and include one broad adversarial review.
 
 Ask each reviewer to compare the candidate directly with the executable. Require
 findings about paths, predicates, bounds, calls, arguments, and memory effects.
