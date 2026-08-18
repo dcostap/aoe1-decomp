@@ -94,6 +94,8 @@
 // - direct location expressions recover exact local blocks. Defer them until common-tail structure preserves the call surface and exact 0xD0 frame.
 // - the direct relic path passes relic->type, not constant 0x6d. This aligns the next defender block at original +0x3ac and improves strict diff by 51 bytes.
 // - relic canPath failure handling ends at PDB line 4219 and exits through ContinueLoop. Keeping that behavior currently makes VC5 merge one unrelated setter tail.
+// - placing the relic exit in each completed branch preserves behavior and recovers exact blocks at original +0x1e3c and +0x1ef8.
+// - original relic pathPoint failure shares the later active setAction block. A direct source edge proves that ownership but moves large cold regions; the temporary relic_path_failure label currently emits the same edge with stronger global layout.
 
 #if 0
 Source: taitacmd.cpp.decomp
@@ -1925,6 +1927,7 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                                                     &pathDistance, 1, 0x16, 1, -1, -1)) {
                                                 cur->setConsecutiveIdleUnitCount(this->md->player->world->world_time);
                                                 cur->setAction(1);
+                                                goto clear_attack_state;
                                             } else if (((VObjPathPoint*)commanderObj)->findFirstTerrainAlongExceptionPath(
                                                            2, &gatherX, &gatherY) == 1) {
                                                 cur->task(this, this->md, 0x0e, 1, 0);
@@ -1934,11 +1937,10 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                                                 cur->setTargetLocation(relic->world_x, relic->world_y, relic->world_z);
                                                 cur->setInUse(1);
                                                 cur->setWaitCode(200);
+                                                goto clear_attack_state;
                                             } else {
                                                 goto relic_path_failure;
                                             }
-                                            this->attackStateValue.active = 0;
-                                            goto ContinueLoop;
                                         } else {
                                             cur->setTarget(relic->id);
                                             cur->setTargetType((int)relic->type);
