@@ -55,17 +55,18 @@
 // CodeView and ManagedArray pass, 2026-08-18:
 // - Restoring normal centerPoint and gatherPoint ownership made every block
 //   outside the second membership scan exact in the 747-byte basin.
-// - The second scan and append are an inlined ManagedArray::add operation.
-//   Exact donor 004D7070 has the same indexed scan. The found path returns
-//   zero from add, skips append, and continues to findGatherPosition.
-// - Combining the original prechecked first scan with inlined add produces
-//   exact size, frame, saved registers, and calls. It differs in 343 bytes.
-//   The first scan then becomes the only structural source-shape blocker.
-// - A prechecked-do implementation of ManagedArray::contains emits the same
-//   343-byte frontier. Canonical for/while forms recover the indexed scan but
-//   change the function-wide frame and register assignment.
-// BLOCKER: preserve the PDB-proven point homes and inlined add model. Recover
-// the first scan without changing the function-wide register basin.
+// - Exact donor 004DE980 proves the second indexed scan as an inlined
+//   ManagedArray::contains operation. The source then calls resize and appends
+//   explicitly. Exact add donor 004DE9D0 allocates directly, so add is not the
+//   source owner of this block.
+// - The exact contains body and explicit append emit the same 343-byte
+//   frontier as the earlier add model. Size, frame, saved registers, and calls
+//   are exact.
+// - Using the exact contains body for the first scan recovers that local CFG,
+//   but changes the frame to 0x20 and the function-wide register assignment.
+//   Dummy and real predecessor context emits identical target code.
+// BLOCKER: preserve the PDB-proven point homes and second contains/append
+// model. Recover the first scan without changing the register allocation.
 
 #include <stdlib.h>
 
@@ -100,32 +101,17 @@ public:
         return this->value[index];
     }
 
-    int add(T item) {
+    int contains(const T& item) const {
         int i;
+        T wanted;
+        T current;
         for (i = 0; i < this->numberValue; i++) {
             if (i >= this->maximumSizeValue)
-                break;
-            if (this->value[i] == item)
                 return 0;
-        }
-
-        if (this->numberValue > this->maximumSizeValue - 1)
-            this->resize(this->numberValue + 1);
-        this->value[this->numberValue] = item;
-        this->numberValue++;
-        return 1;
-    }
-
-    int contains(const T& item) const {
-        int i = 0;
-        if (0 < this->numberValue) {
-            do {
-                if (i >= this->maximumSizeValue)
-                    return 0;
-                if (this->value[i] == item)
-                    return 1;
-                i++;
-            } while (i < this->numberValue);
+            current = this->value[i];
+            wanted = item;
+            if (current == wanted)
+                return 1;
         }
         return 0;
     }
@@ -281,11 +267,29 @@ void TribeTacticalAIModule::taskUngroupedSoldiers()
 
                             ManagedArray<int>* ungrouped =
                                 &this->ungroupedSoldiers;
-                            if (ungrouped->contains(soldiers.value[i]) != 0)
-                                goto next_soldier;
+                            int j = 0;
+                            if (0 < ungrouped->numberValue) {
+                                do {
+                                    if (j >= ungrouped->maximumSizeValue)
+                                        break;
+                                    if (ungrouped->value[j] == soldiers.value[i])
+                                        goto next_soldier;
+                                    j++;
+                                } while (j < ungrouped->numberValue);
+                            }
 
                             {
-                                ungrouped->add(soldiers[i]);
+                                int soldier = soldiers[i];
+                                if (ungrouped->contains(soldier) == 0) {
+                                    int count = ungrouped->numberValue;
+                                    if (count >
+                                        ungrouped->maximumSizeValue - 1) {
+                                        ungrouped->resize(count + 1);
+                                    }
+                                    ungrouped->value[ungrouped->numberValue] =
+                                        soldier;
+                                    ungrouped->numberValue++;
+                                }
 
                             {
                                 int result =
