@@ -97,6 +97,8 @@
 // - placing the relic exit in each completed branch preserves behavior and recovers exact blocks at original +0x1e3c and +0x1ef8.
 // - original relic and defender path failures share the later active setAction block. Spelling all three failure tails directly lets VC5 recover that join without source labels and improves strict diff by 15 bytes.
 // - removed an unreachable duplicate inactive target block and its trampoline. They never emitted code; inactive selection now targets the live common region directly.
+// - Ghidra shows an explicit clear-tail edge after defender exception completion. Relic completion instead falls through to the end of its type arm. Moving the relic clear edge to that boundary is codegen-neutral and matches this source evidence.
+// - an outer-loop continue restores the missing relic setter sites, but skips group advancement and the time-limit check. Do not use that diagnostic shape as behavior evidence.
 
 #if 0
 Source: taitacmd.cpp.decomp
@@ -1939,7 +1941,6 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                                                 cur->setTargetLocation(relic->world_x, relic->world_y, relic->world_z);
                                                 cur->setInUse(1);
                                                 cur->setWaitCode(200);
-                                                goto clear_attack_state;
                                             } else {
                                                 cur->setAction(1);
                                                 goto clear_attack_state;
@@ -1956,6 +1957,7 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                                     }
                                 }
                             }
+                            goto clear_attack_state;
                         } else {
                             goto inactive_post_setup;
 active_target_selection:
