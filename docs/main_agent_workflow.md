@@ -137,6 +137,49 @@ Workers can try new source forms, tools, compiler context, structured sweeps, an
 speculative investigative methods. Repeating an old experiment is valid when new
 context or a controlled comparison gives it a different purpose.
 
+## Assess cumulative matching evidence
+
+Use informed judgment to decide when more exact work has low value. Do not use
+one metric or a fixed threshold.
+
+Review all available evidence:
+
+- the durable attempt log in the source header;
+- the number and quality of distinct hypotheses;
+- results from independent matching assignments;
+- current byte parity and exact-block coverage;
+- ordered calls, CFG, frame, ABI, cleanup, and memory effects;
+- generated claim, probe, checkpoint, and last-gain history, when available;
+- existing review ledgers and relevant Git history;
+- known behavior questions and useful approaches that remain untested.
+
+Treat source comments as the durable record. Generated work history can support
+the decision, but cleanup can remove it.
+
+Count evidence-led hypotheses, not cosmetic edits or repeated checks. A high
+probe count alone does not show exhaustion.
+
+Interpret byte parity with structural evidence. Large block movement can cause
+a poor positional score while logic remains close. A high score can also hide a
+wrong call, predicate, or memory effect.
+
+Ask these questions:
+
+1. Did recent assignments improve behavior or important structure?
+2. Does a strong unused matching approach remain?
+3. Are remaining differences semantic, structural, or compiler-driven?
+4. Is the complete reachable behavior ready for direct review?
+5. Can new executable evidence change the current conclusion?
+
+Continue exact work when useful evidence-led approaches remain. Enter semantic
+review when progress has leveled off and the behavior is reviewable.
+
+Use `accepted_drift` only for a small, localized, proved equivalent difference.
+Broad drift belongs in semantic review, even when aggregate parity is high.
+
+Record the decision, reviewed evidence, remaining differences, and reopening
+condition in the source or assigned ledger.
+
 ## Review returned matching work
 
 For every return:
@@ -186,6 +229,9 @@ Use `accepted_drift` only for a localized, proved behavior-equivalent codegen
 difference. Never use it for changed calls, predicates, cleanup, memory effects,
 ABI, or broad unexplained drift.
 
+Common-sense judgment can select an accepted-drift candidate. It cannot replace
+the required proof of equivalence.
+
 ## Shared ABI evidence
 
 The main agent owns `config\shared_abi_evidence.json`. Add an entry only after
@@ -205,6 +251,10 @@ workers may consume this evidence but must not edit the registry.
 Only the main agent may suspend exact matching. Enter semantic review only after
 repeated independent matching assignments, a deliberate main-agent decision to
 suspend exact work, and confirmation that the candidate's behavior is reviewable.
+
+Use the cumulative-evidence assessment above. The workflow sets no fixed claim,
+probe, byte-parity, or assignment threshold. Explain why more exact work has low
+expected value for this function.
 
 Before review:
 
