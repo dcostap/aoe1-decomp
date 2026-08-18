@@ -83,6 +83,11 @@
 // - BINARY NOTE: original action-2 reset paths place the target-location store before the numberObjectsToDestroy store in their cold reset tail.
 // - reordered action-2 handling to the binary-supported positive valid-target branch first, with invalid-target replacement/reset as the else arm; emitted code stayed effectively duplicate (six changed bytes, one fewer diff byte) with no CFG or call movement, but the source now follows the decompiler-supported fallthrough.
 // - rolled back positive `isEnemy` arm order: it improved size/call-site count slightly but reduced block/edit alignment and did not move the misplaced virtual-dispatch block into the original +0x2400 family.
+// - second worker pass: 20 evidence-led checks. The best source is 9609 bytes versus 9580, with 440/440 calls and an exact 0xD0 frame.
+// - corrected stuffAvoidancePath to the proven two-argument member ABI. This made original block +0x0C33 exact and removed two bytes.
+// - restored PDB source order for action-2 target handling and the original enemy-arm polarity. Ordered call alignment rose to 93.41%.
+// - changed the byte state test to `object_state > 2`. This recovered original CMP 2 / JA and made block +0x1C92 exact.
+// - remaining structural blocker: the subtype -1 handler stays inline near rebuilt +0x1EAD. Original VC5 places its only incoming block after both epilogues at +0x2400.
 
 #if 0
 Source: taitacmd.cpp.decomp
@@ -1493,7 +1498,6 @@ class RGE_Action_List;
 class AIPlayStatus;
 
 class Path;
-void stuffAvoidancePath(TribeTacticalAIModule*, TacticalAIGroup*, Path*);
 void __cdecl logCommonHistory(TribeTacticalAIModule*, const char*, ...);
 
 #define VPAD1(n) virtual void vpad##n();
@@ -1699,12 +1703,12 @@ public:
     void setWaitCode(int);
     void setAssistGroupID(int);
     void setAssistGroupType(int);
-    void task(TribeTacticalAIModule*, TribeMainDecisionAIModule*, int, int, int);
+    int task(TribeTacticalAIModule*, TribeMainDecisionAIModule*, int, int, int);
     void setConsecutiveIdleUnitCount(ulong);
     void removeUnboardedUnits(TribeTacticalAIModule*, TribeMainDecisionAIModule*);
-    void removeUnit(int unit_id, TribeMainDecisionAIModule*);
+    int removeUnit(int unit_id, TribeMainDecisionAIModule*);
     void removeUnits(TribeMainDecisionAIModule*);
-    void addUnit(int unit_id, TribeMainDecisionAIModule*);
+    int addUnit(int unit_id, TribeMainDecisionAIModule*);
 };
 
 class TribeTacticalAIModule {
@@ -1733,16 +1737,17 @@ public:
     ulong attackLimiterTime(int sn_id);
     int itemToCapture();
     int itemToBringToArea();
-    void checkForCoopAttack(unsigned int owner, unsigned int x, unsigned int y);
+    void checkForCoopAttack(int owner, int x, int y);
     TacticalAIGroup* bestGroup(int type, int in_use, int subtype, XYPoint* near_point, int action);
     TacticalAIGroup* group(int id, int type, int subtype, int action);
-    void taskToEnter(int unit_id, int transport_id);
-    void taskTransporter(int transport_id, float x, float y);
-    void taskDefender(int unit_id, int target_id, float distance, int code);
-    void taskAttacker(int unit_id, float x, float y, int target, int subtype, Waypoint* waypoint, int a, int b, int c);
-    void moveUnit(int unit_id, float x, float y, int code);
-    void stopUnit(int unit_id, int code);
+    int taskToEnter(int unit_id, int transport_id);
+    int taskTransporter(int transport_id, float x, float y);
+    int taskDefender(int unit_id, int target_id, float distance, int code);
+    int taskAttacker(int unit_id, float x, float y, int target, int subtype, Waypoint* waypoint, int a, int b, int c);
+    int moveUnit(int unit_id, float x, float y, int code);
+    int stopUnit(int unit_id, int code);
     int numberGroups(int type, int action);
+    void stuffAvoidancePath(TacticalAIGroup* group, Path* path);
     void taskActiveSoldiers(ulong param_1, ulong param_2);
 };
 
@@ -1767,7 +1772,6 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
     int pendingTaskArg1;
     int pendingTaskArg2;
     ObjectMemory* mem;
-    int enemy;
     int t;
     float directGatherY;
     float directGatherZ;
@@ -2233,7 +2237,7 @@ inactive_post_setup:
                     avoidancePath = ((VObjFindAvoidancePath*)commanderObj)->findAvoidancePath(
                         &targetTile, ((VObjWeaponRange*)commanderObj)->weaponRange(), 1);
                     if (avoidancePath != 0) {
-                        stuffAvoidancePath(this, cur, avoidancePath);
+                        this->stuffAvoidancePath(cur, avoidancePath);
                     }
                 }
                 if (allOutsideTransport != 0 || cur->action() != 2) {
@@ -2679,85 +2683,7 @@ action7_done:
                     }
 
                     targetObj2 = this->md->object(cur->target());
-                    if (targetObj2 != 0 && targetObj2->object_state < 3) {
-                        if (cur->subType() != -1) {
-                            unsigned long idle;
-                            if (cur->subType() != 0 && cur->subType() == 4 &&
-                                targetObj2->owner->id == this->md->player->id &&
-                                this->md->isMoveable(targetObj2->id)) {
-                                Waypoint* p1;
-                                Waypoint* p2;
-                                float mx;
-                                float my;
-                                float mz;
-                                cur->addUnit(targetObj2->id, this->md);
-                                p1 = this->md->strategyAI.targetPoint1();
-                                p2 = this->md->strategyAI.targetPoint2();
-                                mx = (p1->x + p2->x) * 0.5f;
-                                my = (p1->y + p2->y) * 0.5f;
-                                mz = (p1->z + p2->z) * 0.5f;
-                                cur->setInUse(0);
-                                cur->setAction(1);
-                                cur->setTarget(-1);
-                                cur->numberObjectsToDestroyValue = 0;
-                                cur->setTargetType(-1);
-                                cur->setTargetLocation(-1.0f, -1.0f, -1.0f);
-                                cur->setGatherLocation(mx, my, mz);
-                            }
-                            idle = cur->consecutiveIdleUnitCount();
-                            if ((this->md->player->world->world_time - idle) / 1000 >
-                                (unsigned int)this->sn[0x4c]) {
-                                cur->setInUse(0);
-                                cur->setAction(1);
-                                cur->setTarget(-1);
-                                cur->setTargetType(-1);
-                                cur->setTargetLocation(-1.0f, -1.0f, -1.0f);
-                                cur->numberObjectsToDestroyValue = 0;
-                                this->attackStateValue.active = 0;
-                                goto task_done;
-                            }
-                        } else {
-                            enemy = ((VMainDecisionIsEnemy*)this->md)->isEnemy(targetObj2->owner->id);
-                            if (enemy == 0) {
-                                if (cur->allUnitsIdle(this->md, 0) != 1) {
-                                    TASK_GROUP(0x14, 0, 1);
-                                } else {
-                                    RGE_Static_Object* commanderObj4;
-                                    commanderObj4 = this->md->object(cur->commander());
-                                    if (commanderObj4 == 0) {
-                                        this->attackStateValue.active = 0;
-                                    } else {
-                                        if (((VObjCanAttack*)commanderObj4)->canAttack(
-                                                cur->target(), ((VObjWeaponRange*)commanderObj4)->weaponRange()) == 1) {
-                                            TASK_GROUP(0x14, 0, 1);
-                                        } else {
-                                            cur->setGatherLocation(commanderObj4->world_x, commanderObj4->world_y, commanderObj4->world_z);
-                                            cur->setInUse(0);
-                                            cur->setAction(1);
-                                            cur->setTarget(-1);
-                                            cur->setTargetType(-1);
-                                            cur->numberObjectsToDestroyValue = 0;
-                                            cur->setTargetLocation(-1.0f, -1.0f, -1.0f);
-                                            goto clear_attack_state;
-                                        }
-                                    }
-                                }
-                            } else {
-                                RGE_Static_Object* commanderObj8;
-                                cur->setInUse(0);
-                                cur->setAction(1);
-                                cur->setTarget(-1);
-                                cur->setTargetType(-1);
-                                cur->setTargetLocation(-1.0f, -1.0f, -1.0f);
-                                cur->numberObjectsToDestroyValue = 0;
-                                commanderObj8 = this->md->object(cur->commander());
-                                if (commanderObj8 != 0) {
-                                    cur->setGatherLocation(commanderObj8->world_x, commanderObj8->world_y, commanderObj8->world_z);
-                                }
-                                goto clear_attack_state;
-                            }
-                        }
-                        } else {
+                    if (targetObj2 == 0 || targetObj2->object_state > 2) {
                         ObjectMemory* replacement;
                         RGE_Static_Object* replacementCommander;
                         int* players2;
@@ -2769,33 +2695,34 @@ action7_done:
                             cur->setTargetLocation(-1.0f, -1.0f, -1.0f);
                             TASK_GROUP(cur->action(), 1, 0);
                         } else {
-                        replacementCommander = this->md->object(cur->commander());
-                        if (replacementCommander == 0) {
-                            this->attackStateValue.active = 0;
-                            goto task_done;
-                        }
-                        if (this->playersToAttack.maximumSizeValue - 1 < 0) {
-                            int* newPlayers;
-                            newPlayers = (int*)operator_new(4);
-                            if (newPlayers != 0) {
-                                int k;
-                                k = 0;
-                                while (k < this->playersToAttack.maximumSizeValue && k < 1) {
-                                    newPlayers[k] = this->playersToAttack.value[k];
-                                    k++;
-                                }
-                                operator_delete(this->playersToAttack.value);
-                                this->playersToAttack.value = newPlayers;
-                                this->playersToAttack.maximumSizeValue = 1;
+                            replacementCommander = this->md->object(cur->commander());
+                            if (replacementCommander == 0) {
+                                this->attackStateValue.active = 0;
+                                goto task_done;
                             }
-                        }
-                        players2 = this->playersToAttack.value;
-                        replacement = this->md->informationAI.objectToAttackByGroup(*players2, cur, &this->attackStateValue, param_1);
-                        if (this->attackStateValue.active == 1) {
-                            this->nextActiveSoldierGroupToTaskValue = cur->id();
-                            return;
-                        }
-                        if (replacement != 0) {
+                            if (this->playersToAttack.maximumSizeValue - 1 < 0) {
+                                int* newPlayers;
+                                newPlayers = (int*)operator_new(4);
+                                if (newPlayers != 0) {
+                                    int k;
+                                    k = 0;
+                                    while (k < this->playersToAttack.maximumSizeValue && k < 1) {
+                                        newPlayers[k] = this->playersToAttack.value[k];
+                                        k++;
+                                    }
+                                    operator_delete(this->playersToAttack.value);
+                                    this->playersToAttack.value = newPlayers;
+                                    this->playersToAttack.maximumSizeValue = 1;
+                                }
+                            }
+                            players2 = this->playersToAttack.value;
+                            replacement = this->md->informationAI.objectToAttackByGroup(
+                                *players2, cur, &this->attackStateValue, param_1);
+                            if (this->attackStateValue.active == 1) {
+                                this->nextActiveSoldierGroupToTaskValue = cur->id();
+                                return;
+                            }
+                            if (replacement != 0) {
                                 float path2;
                                 XYZPoint replacementPoint;
                                 replacementPoint.x = replacement->x;
@@ -2810,19 +2737,20 @@ action7_done:
                                     cur->setInUse(1);
                                     TASK_GROUP(2, 0, 0);
                                 }
-                        }
-                        targetType = cur->targetType();
-                        cur->setInUse(0);
-                        cur->setAction(1);
-                        cur->setTarget(-1);
-                        cur->setTargetType(-1);
-                        cur->setTargetLocation(-1.0f, -1.0f, -1.0f);
-                        if (this->sn[0x31] == 0) {
-                            cur->setGatherLocation(replacementCommander->world_x,
-                                                   replacementCommander->world_y,
-                                                   replacementCommander->world_z);
-                        } else if (this->sn[0x31] == 3 && targetType != 0x7e && targetType != 0x59) {
-                            if (this->sn[0x87] == 1) {
+                            }
+                            targetType = cur->targetType();
+                            cur->setInUse(0);
+                            cur->setAction(1);
+                            cur->setTarget(-1);
+                            cur->setTargetType(-1);
+                            cur->setTargetLocation(-1.0f, -1.0f, -1.0f);
+                            if (this->sn[0x31] == 0) {
+                                cur->setGatherLocation(replacementCommander->world_x,
+                                                       replacementCommander->world_y,
+                                                       replacementCommander->world_z);
+                            } else if (this->sn[0x31] == 3 &&
+                                       targetType != 0x7e && targetType != 0x59) {
+                                if (this->sn[0x87] == 1) {
                                     int cx;
                                     int cy;
                                     int radius;
@@ -2830,11 +2758,90 @@ action7_done:
                                     cy = (int)replacementCommander->world_y;
                                     radius = this->sn[0x88];
                                     this->md->informationAI.blotExploredMap(cx - radius, cy - radius, cx + radius, cy + radius);
+                                }
+                                cur->setInUse(1);
+                                cur->setAction(7);
+                                TASK_GROUP(7, 0, 1);
                             }
-                            cur->setInUse(1);
-                            cur->setAction(7);
-                            TASK_GROUP(7, 0, 1);
                         }
+                    } else if (cur->subType() != -1) {
+                        unsigned long idle;
+                        if (cur->subType() != 0 && cur->subType() == 4 &&
+                            targetObj2->owner->id == this->md->player->id &&
+                            this->md->isMoveable(targetObj2->id)) {
+                            Waypoint* p1;
+                            Waypoint* p2;
+                            float mx;
+                            float my;
+                            float mz;
+                            cur->addUnit(targetObj2->id, this->md);
+                            p1 = this->md->strategyAI.targetPoint1();
+                            p2 = this->md->strategyAI.targetPoint2();
+                            mx = (p1->x + p2->x) * 0.5f;
+                            my = (p1->y + p2->y) * 0.5f;
+                            mz = (p1->z + p2->z) * 0.5f;
+                            cur->setInUse(0);
+                            cur->setAction(1);
+                            cur->setTarget(-1);
+                            cur->numberObjectsToDestroyValue = 0;
+                            cur->setTargetType(-1);
+                            cur->setTargetLocation(-1.0f, -1.0f, -1.0f);
+                            cur->setGatherLocation(mx, my, mz);
+                        }
+                        idle = cur->consecutiveIdleUnitCount();
+                        if ((this->md->player->world->world_time - idle) / 1000 >
+                            (unsigned int)this->sn[0x4c]) {
+                            cur->setInUse(0);
+                            cur->setAction(1);
+                            cur->setTarget(-1);
+                            cur->setTargetType(-1);
+                            cur->setTargetLocation(-1.0f, -1.0f, -1.0f);
+                            cur->numberObjectsToDestroyValue = 0;
+                            this->attackStateValue.active = 0;
+                            goto task_done;
+                        }
+                    } else {
+                        if (((VMainDecisionIsEnemy*)this->md)->isEnemy(
+                                targetObj2->owner->id) != 0) {
+                            RGE_Static_Object* commanderObj8;
+                            cur->setInUse(0);
+                            cur->setAction(1);
+                            cur->setTarget(-1);
+                            cur->setTargetType(-1);
+                            cur->setTargetLocation(-1.0f, -1.0f, -1.0f);
+                            cur->numberObjectsToDestroyValue = 0;
+                            commanderObj8 = this->md->object(cur->commander());
+                            if (commanderObj8 != 0) {
+                                cur->setGatherLocation(commanderObj8->world_x,
+                                                       commanderObj8->world_y,
+                                                       commanderObj8->world_z);
+                            }
+                            goto clear_attack_state;
+                        } else {
+                            if (cur->allUnitsIdle(this->md, 0) != 1) {
+                                TASK_GROUP(0x14, 0, 1);
+                            } else {
+                                RGE_Static_Object* commanderObj4;
+                                commanderObj4 = this->md->object(cur->commander());
+                                if (commanderObj4 == 0) {
+                                    this->attackStateValue.active = 0;
+                                } else if (((VObjCanAttack*)commanderObj4)->canAttack(
+                                               cur->target(),
+                                               ((VObjWeaponRange*)commanderObj4)->weaponRange()) == 1) {
+                                    TASK_GROUP(0x14, 0, 1);
+                                } else {
+                                    cur->setGatherLocation(commanderObj4->world_x,
+                                                           commanderObj4->world_y,
+                                                           commanderObj4->world_z);
+                                    cur->setInUse(0);
+                                    cur->setAction(1);
+                                    cur->setTarget(-1);
+                                    cur->setTargetType(-1);
+                                    cur->numberObjectsToDestroyValue = 0;
+                                    cur->setTargetLocation(-1.0f, -1.0f, -1.0f);
+                                    goto clear_attack_state;
+                                }
+                            }
                         }
                     }
                     }
