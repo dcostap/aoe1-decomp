@@ -99,6 +99,8 @@
 // - removed an unreachable duplicate inactive target block and its trampoline. They never emitted code; inactive selection now targets the live common region directly.
 // - Ghidra shows an explicit clear-tail edge after defender exception completion. Relic completion instead falls through to the end of its type arm. Moving the relic clear edge to that boundary is codegen-neutral and matches this source evidence.
 // - an outer-loop continue restores the missing relic setter sites, but skips group advancement and the time-limit check. Do not use that diagnostic shape as behavior evidence.
+// - translation-unit context lab: preceding dummy functions, the reconstructed taskIdleSoldiers body, and the exact playTaskSoldiers declarations change only 0/4/6 bytes in one FPU coordinate-sum block. The pattern repeats every four preceding functions.
+// - placing exact playTaskSoldiers after this function, as in taitacmd.cpp, adds no further change. Tested context keeps size, frame, CFG, and 437-call surface unchanged, so it does not explain the merged relic setter suffix.
 
 #if 0
 Source: taitacmd.cpp.decomp
