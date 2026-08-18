@@ -79,7 +79,7 @@
 // - modeled the defend-distance selection as a real float and restored two shared gather-coordinate homes from the Ghidra fVar topology; frame is now exact at 0xD0 and the original +0407/+040F FILD blocks are exact. Reversed several equivalent threshold predicates to preserve binary-observed compare operand order, raising exact-block coverage from 33.04% to 37.08% and the longest aligned run from 96 to 106 while keeping all 440 call counts exact. Current size is +42, shape 78.24%, call prefix 360; first mismatch is +0x57 at the sentinel/zero-register choice.
 // - rolled back focused sentinel probes (direct member comparison, register local, and a scoped zero/null alias): they either compiled identically or changed only four unrelated later bytes; none recovered the original `lea ebx` / `xor ebp; cmp esi, ebp` opening.
 // - worker pass: 20 evidence-led checks. Best current source is 9618 bytes versus 9580, with 440/440 calls and 37.43% exact-block coverage.
-// - BINARY NOTE: original defend null exits and action-7 exception completion jump to the common tail at 004F4548 after their state stores. Keep those edges explicit through clear_attack_state.
+// - BINARY NOTE: original defend null exits and action-7 exception completion jump to the common tail at 004F4548 after their state stores. The temporary clear_attack_state tail preserves the single original store; direct copies make VC5 emit four stores.
 // - BINARY NOTE: original action-2 reset paths place the target-location store before the numberObjectsToDestroy store in their cold reset tail.
 // - reordered action-2 handling to the binary-supported positive valid-target branch first, with invalid-target replacement/reset as the else arm; emitted code stayed effectively duplicate (six changed bytes, one fewer diff byte) with no CFG or call movement, but the source now follows the decompiler-supported fallthrough.
 // - rolled back positive `isEnemy` arm order: it improved size/call-site count slightly but reduced block/edit alignment and did not move the misplaced virtual-dispatch block into the original +0x2400 family.
@@ -95,7 +95,8 @@
 // - the direct relic path passes relic->type, not constant 0x6d. This aligns the next defender block at original +0x3ac and improves strict diff by 51 bytes.
 // - relic canPath failure handling ends at PDB line 4219 and exits through ContinueLoop. Keeping that behavior currently makes VC5 merge one unrelated setter tail.
 // - placing the relic exit in each completed branch preserves behavior and recovers exact blocks at original +0x1e3c and +0x1ef8.
-// - original relic pathPoint failure shares the later active setAction block. A direct source edge proves that ownership but moves large cold regions; the temporary relic_path_failure label currently emits the same edge with stronger global layout.
+// - original relic and defender path failures share the later active setAction block. Spelling all three failure tails directly lets VC5 recover that join without source labels and improves strict diff by 15 bytes.
+// - removed an unreachable duplicate inactive target block and its trampoline. They never emitted code; inactive selection now targets the live common region directly.
 
 #if 0
 Source: taitacmd.cpp.decomp
@@ -1873,7 +1874,8 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                                         cur->setWaitCode(200);
                                         goto clear_attack_state;
                                     } else {
-                                        goto active_no_commander;
+                                        cur->setAction(1);
+                                        goto clear_attack_state;
                                     }
                                 } else {
                                     mem->attackAttempts = 1;
@@ -1939,7 +1941,8 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                                                 cur->setWaitCode(200);
                                                 goto clear_attack_state;
                                             } else {
-                                                goto relic_path_failure;
+                                                cur->setAction(1);
+                                                goto clear_attack_state;
                                             }
                                         } else {
                                             cur->setTarget(relic->id);
@@ -2018,9 +2021,9 @@ active_target_selection:
                                     this->nextActiveSoldierGroupToTaskValue = cur->id();
                                     return;
                                 }
-                                goto inactive_target_selected;
+                                goto active_target_selected_common;
                             }
-                            goto inactive_target_selected;
+                            goto active_target_selected_common;
 inactive_resize_commit:
                             operator_delete(this->playersToAttack.value);
                             this->playersToAttack.value = newPlayers;
@@ -2030,37 +2033,7 @@ inactive_object_to_attack:
                             mem = this->md->informationAI.objectToAttack(*players, 1, 1,
                                                                          cur->commander(),
                                                                          &attackAsAttack);
-inactive_target_selected:
                             goto active_target_selected_common;
-                            if (mem == 0) {
-                                cur->setAction(1);
-                                this->attackStateValue.active = 0;
-                            } else {
-                                mem->attackAttempts = mem->attackAttempts + 1;
-                                commanderObj = this->md->object(cur->commander());
-                                if (commanderObj == 0) {
-                                    cur->setAction(1);
-                                    this->attackStateValue.active = 0;
-                                } else {
-                                    float pathOut;
-                                    XYZPoint targetPoint;
-                                    targetPoint.x = mem->x;
-                                    targetPoint.y = mem->y;
-                                    targetPoint.z = mem->z;
-                                    if (((VObjCanMove*)commanderObj)->canPath(targetPoint,
-                                            ((VObjWeaponRange*)commanderObj)->weaponRange(), mem->id,
-                                            &pathOut, 1, mem->owner, 0x1b)) {
-                                        this->lastGroupAttackTime = this->md->player->world->world_time;
-                                        cur->setTarget(mem->id);
-                                        cur->setTargetType((int)mem->type);
-                                        cur->setTargetLocation((float)mem->x, (float)mem->y, (float)mem->z);
-                                        cur->setInUse(1);
-                                    } else {
-                                        cur->setAction(1);
-                                        this->attackStateValue.active = 0;
-                                    }
-                                }
-                            }
                         }
                     }
                 } else {
@@ -2167,7 +2140,6 @@ active_target_selected_common:
 attack_target_ready:
                                 commanderObj = this->md->object(cur->commander());
                                 if (commanderObj == 0) {
-active_no_commander:
                                     cur->setAction(1);
                                     goto clear_attack_state;
                                 } else {
@@ -3110,9 +3082,6 @@ active_dispatch_done:
             }
 
             goto ContinueLoop;
-relic_path_failure:
-            cur->setAction(1);
-            goto clear_attack_state;
 clear_attack_state:
             this->attackStateValue.active = 0;
             goto ContinueLoop;
