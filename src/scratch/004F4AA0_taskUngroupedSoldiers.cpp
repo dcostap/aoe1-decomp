@@ -4,10 +4,10 @@
 // The current reconstruction restores the same-TU typed ManagedArray surface,
 // soldiers at +0x114, ungroupedSoldiers at +0x124, and informationAI at +0xCEC.
 //
-// Binary-backed oddity retained for this target:
-// - the final moveUnit call consumes an uninitialized int local. The oracle has
-//   an fild from the fixed -4 stack home with no preceding store. The typed
-//   source keeps that original behavior without an address cast.
+// Original CodeView symbols prove these stack locals: i at -0x1C, soldierObj
+// at -0x14, centerPoint at -0x10, and gatherPoint at -0x08. The two final
+// integer loads are gatherPoint.x and gatherPoint.y. They are not an
+// uninitialized local.
 //
 // Claim sa-209e8cdc (21 meaningful hypotheses):
 // - Probe 1 established a 760B raw-cast baseline with all 15 calls.
@@ -33,11 +33,8 @@
 //   explicit capacity touches in this source.
 // - Probes 19-20 tested XYPoint declaration order and soldier declaration
 //   order. They were duplicates or returned to the 751B basin.
-// - Probe 21 restored the binary-supported uninitialized local_4 move. It
-//   changed only two neutral bytes and remains the clean typed source.
-// - The unresolved blocker is callee-save and local-home topology. The oracle
-//   uses EBX for the outer index, delays EDI save until the positive arm, and
-//   reads the fixed -4 home. No honest source probe recovered that basin.
+// - Probe 21 used the then-assumed uninitialized local. Later CodeView evidence
+//   disproved that interpretation.
 //
 // Main-agent pass, 2026-08-18:
 // - Translation-unit tests with zero through twelve dummy predecessors and
@@ -48,13 +45,27 @@
 // - Index-left capacity predicates recovered five original cmp/branch forms.
 //   The best natural source is now 747/740 bytes, 15/15 ordered calls, exact
 //   0x1C frame, 93.49% shape, 77.91% exact blocks, and 222 differing bytes.
-// - The remaining seven-byte region is the second membership scan. VC5 turns
+// - At that point, the remaining seven-byte region was the second membership
+//   scan. VC5 turned
 //   its natural cached-count do-loop into a pointer induction with one extra
 //   conditional block. For/while, explicit-break, scope, pointer, and source
 //   order variants either duplicate this basin or damage the frame and early
 //   register allocation. Point/local declaration permutations are duplicates.
-// BLOCKER: second-scan induction and point/local home ownership remain
-// unresolved. Keep this clean typed reconstruction in scratch.
+//
+// CodeView and ManagedArray pass, 2026-08-18:
+// - Restoring normal centerPoint and gatherPoint ownership made every block
+//   outside the second membership scan exact in the 747-byte basin.
+// - The second scan and append are an inlined ManagedArray::add operation.
+//   Exact donor 004D7070 has the same indexed scan. The found path returns
+//   zero from add, skips append, and continues to findGatherPosition.
+// - Combining the original prechecked first scan with inlined add produces
+//   exact size, frame, saved registers, and calls. It differs in 343 bytes.
+//   The first scan then becomes the only structural source-shape blocker.
+// - A prechecked-do implementation of ManagedArray::contains emits the same
+//   343-byte frontier. Canonical for/while forms recover the indexed scan but
+//   change the function-wide frame and register assignment.
+// BLOCKER: preserve the PDB-proven point homes and inlined add model. Recover
+// the first scan without changing the function-wide register basin.
 
 #include <stdlib.h>
 
@@ -87,6 +98,36 @@ public:
             }
         }
         return this->value[index];
+    }
+
+    int add(T item) {
+        int i;
+        for (i = 0; i < this->numberValue; i++) {
+            if (i >= this->maximumSizeValue)
+                break;
+            if (this->value[i] == item)
+                return 0;
+        }
+
+        if (this->numberValue > this->maximumSizeValue - 1)
+            this->resize(this->numberValue + 1);
+        this->value[this->numberValue] = item;
+        this->numberValue++;
+        return 1;
+    }
+
+    int contains(const T& item) const {
+        int i = 0;
+        if (0 < this->numberValue) {
+            do {
+                if (i >= this->maximumSizeValue)
+                    return 0;
+                if (this->value[i] == item)
+                    return 1;
+                i++;
+            } while (i < this->numberValue);
+        }
+        return 0;
     }
 
     int remove(T valueToRemove) {
@@ -199,10 +240,9 @@ public:
 void TribeTacticalAIModule::taskUngroupedSoldiers()
 {
     int i;
-    int j;
     XYPoint centerPoint;
+    RGE_Static_Object* soldierObj;
     XYPoint gatherPoint;
-    int local_4;
 
     unsigned long currentTime = this->md->player->world->world_time;
     if ((currentTime - this->lastUngroupedSoldierTaskTime) / 1000 >= 60) {
@@ -210,8 +250,8 @@ void TribeTacticalAIModule::taskUngroupedSoldiers()
         RGE_Static_Object* object = this->md->object(
             -1, 0x6D, -1, -1, -1, -1, -1, -1, -1, -1);
         if (object != 0) {
-            centerPoint.y = (int)object->world_x;
-            gatherPoint.x = (int)object->world_y;
+            centerPoint.x = (int)object->world_x;
+            centerPoint.y = (int)object->world_y;
             i = 0;
             if (0 < this->soldiers.numberValue) {
                 ManagedArray<int>& soldiers = this->soldiers;
@@ -233,8 +273,7 @@ void TribeTacticalAIModule::taskUngroupedSoldiers()
                         if (i > soldiers.maximumSizeValue - 1) {
                             soldiers.resize(i + 1);
                         }
-                        RGE_Static_Object* soldierObj =
-                            this->md->object(soldiers.value[i]);
+                        soldierObj = this->md->object(soldiers.value[i]);
                         if (soldierObj != 0) {
                             if (i > soldiers.maximumSizeValue - 1) {
                                 soldiers.resize(i + 1);
@@ -242,36 +281,12 @@ void TribeTacticalAIModule::taskUngroupedSoldiers()
 
                             ManagedArray<int>* ungrouped =
                                 &this->ungroupedSoldiers;
-                            for (j = 0; j < ungrouped->numberValue; j++) {
-                                if (j >= ungrouped->maximumSizeValue)
-                                    break;
-                                if (ungrouped->value[j] == soldiers.value[i])
-                                    goto next_soldier;
-                            }
+                            if (ungrouped->contains(soldiers.value[i]) != 0)
+                                goto next_soldier;
 
                             {
-                                int soldier = soldiers[i];
-                                int ungroupedCount = ungrouped->numberValue;
-                                if (0 < ungroupedCount) {
-                                    j = 0;
-                                    do {
-                                        if (j >= ungrouped->maximumSizeValue)
-                                            break;
-                                        if (ungrouped->value[j] == soldier)
-                                            goto find_position;
-                                        j++;
-                                    } while (j < ungroupedCount);
-                                }
+                                ungrouped->add(soldiers[i]);
 
-                                if (ungroupedCount >
-                                    ungrouped->maximumSizeValue - 1) {
-                                    ungrouped->resize(ungroupedCount + 1);
-                                }
-                                ungrouped->value[ungrouped->numberValue] = soldier;
-                                ungrouped->numberValue =
-                                    ungrouped->numberValue + 1;
-
-                            find_position:
                             {
                                 int result =
                                     this->md->informationAI.findGatherPosition(
@@ -284,8 +299,8 @@ void TribeTacticalAIModule::taskUngroupedSoldiers()
                                     }
                                     this->moveUnit(
                                         soldiers.value[i],
-                                        (float)gatherPoint.y,
-                                        (float)local_4, 0x32);
+                                        (float)gatherPoint.x,
+                                        (float)gatherPoint.y, 0x32);
                                 }
                             }
                             }
