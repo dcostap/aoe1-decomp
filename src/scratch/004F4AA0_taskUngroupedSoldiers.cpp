@@ -65,6 +65,10 @@
 // - Using the exact contains body for the first scan recovers that local CFG,
 //   but changes the frame to 0x20 and the function-wide register assignment.
 //   Dummy and real predecessor context emits identical target code.
+// - Out-of-class template definitions, exact donor temporaries, timestamp and
+//   object lifetimes, outer for/continue forms, and positive guard nesting do
+//   not resolve that allocation tradeoff. They are duplicates or regressions.
+//   A same-template contains predecessor also leaves target code unchanged.
 // BLOCKER: preserve the PDB-proven point homes and second contains/append
 // model. Recover the first scan without changing the register allocation.
 
@@ -233,11 +237,11 @@ void TribeTacticalAIModule::taskUngroupedSoldiers()
     unsigned long currentTime = this->md->player->world->world_time;
     if ((currentTime - this->lastUngroupedSoldierTaskTime) / 1000 >= 60) {
         this->lastUngroupedSoldierTaskTime = currentTime;
-        RGE_Static_Object* object = this->md->object(
+        soldierObj = this->md->object(
             -1, 0x6D, -1, -1, -1, -1, -1, -1, -1, -1);
-        if (object != 0) {
-            centerPoint.x = (int)object->world_x;
-            centerPoint.y = (int)object->world_y;
+        if (soldierObj != 0) {
+            centerPoint.x = (int)soldierObj->world_x;
+            centerPoint.y = (int)soldierObj->world_y;
             i = 0;
             if (0 < this->soldiers.numberValue) {
                 ManagedArray<int>& soldiers = this->soldiers;
