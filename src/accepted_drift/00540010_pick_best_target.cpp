@@ -19,9 +19,18 @@
 //   is_attack_task arity and slots. The +6 action field is typed as action_type.
 // - Replaced generic virtual slots with the reviewed TPanel/RGE_View surface and
 //   used natural polymorphic class layouts. This is policy-valid but non-exact.
-// - Current unresolved gap: dynamic zero-fill lowering and local block layout.
-//   Current check: 844B versus 823B, 664 mismatch bytes, 95.82% shape, frame
-//   0x224, nine aligned calls, and 93.31% exact-block coverage.
+// - Removing the redundant positive object-count wrapper recovered the target
+//   fallback-loop compare. The clean body is now 841B with 96.56% shape and
+//   95.28% exact-block coverage.
+// - Accepted-drift review: the remaining 18 bytes are two nine-byte dynamic
+//   zero-fill tails. The byte count is `master_obj * 4`, so its low two bits
+//   are zero for every 32-bit value. Both added REP STOSB instructions run with
+//   ECX equal to zero and cannot read or write memory.
+// - The two REP STOSD fills have the same counts, destinations, and store order.
+//   Later instructions are exact after the 18-byte shift. The frame, saved
+//   registers, 32 conditions, three jumps, three returns, and nine calls match.
+//   The function has no exception handler. Values, flags, calls, cleanup,
+//   memory effects, and fault order match the executable.
 
 extern "C" void __cdecl free(void*);
 extern "C" void* __cdecl memset(void*, int, unsigned int);
@@ -246,28 +255,26 @@ RGE_Static_Object* RGE_Main_View::pick_best_target(long x, long y, int* attackin
                             }
                             if (cur_target->flag_ec != 0) {
                                 int k = 0;
-                                if (this->player->object_count > 0) {
-                                    while (k < this->player->object_count) {
-                                        RGE_Static_Object* obj2 = this->player->object_list[k];
-                                        if (obj2 != 0 && obj2->object_type == cur_target->object_type &&
-                                            obj2->kind == cur_target->kind && obj2->flag_ec == cur_target->flag_ec) {
-                                            RGE_Task* action2 = obj2->tasks->get_target_task(
-                                                (RGE_Action_Object*)selected_objects[j], obj, 0, 0, 0);
+                                while (k < this->player->object_count) {
+                                    RGE_Static_Object* obj2 = this->player->object_list[k];
+                                    if (obj2 != 0 && obj2->object_type == cur_target->object_type &&
+                                        obj2->kind == cur_target->kind && obj2->flag_ec == cur_target->flag_ec) {
+                                        RGE_Task* action2 = obj2->tasks->get_target_task(
+                                            (RGE_Action_Object*)selected_objects[j], obj, 0, 0, 0);
+                                        if (action2 != 0) {
+                                            if (action_filter != -1 && action2->action_type != action_filter) {
+                                                action2 = 0;
+                                            }
                                             if (action2 != 0) {
-                                                if (action_filter != -1 && action2->action_type != action_filter) {
-                                                    action2 = 0;
+                                                valid_target_count[target_count] += this->pick_weight(obj, info->confidence);
+                                                if (obj2->tasks->is_attack_task(action2)) {
+                                                    attacking[target_count] = 1;
                                                 }
-                                                if (action2 != 0) {
-                                                    valid_target_count[target_count] += this->pick_weight(obj, info->confidence);
-                                                    if (obj2->tasks->is_attack_task(action2)) {
-                                                        attacking[target_count] = 1;
-                                                    }
-                                                    goto next_target;
-                                                }
+                                                goto next_target;
                                             }
                                         }
-                                        k++;
                                     }
+                                    k++;
                                 }
                             }
                         }
