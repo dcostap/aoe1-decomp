@@ -54,6 +54,11 @@
 //   local proven by the dossier is the incoming int at entry +4; PDB bands
 //   show no named local stack records. The final active reread stays after
 //   TPanel::set_rect, and text_wid reload stays after every possible call.
+// ACCEPTED DRIFT: The 14 changed bytes recolor temporary registers in the two
+// final geometry paths. Both builds load fields in the same order and push the
+// same set_rect arguments. The virtual-call vtable scratch and final text_wid
+// scratch are dead after use. Values, flags, memory effects, calls, branches,
+// cleanup, and fault order are identical.
 
 struct tagRECT {
     long left;

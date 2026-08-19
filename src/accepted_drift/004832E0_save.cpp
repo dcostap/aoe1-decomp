@@ -57,6 +57,11 @@
 //   bytes and one pre-loop zero-store/branch schedule hunk.
 // - A natural for-loop widened the function by 8 bytes.  The natural typed
 //   do-while remains authoritative; a forced zero store would violate policy.
+// ACCEPTED DRIFT: The one 10-byte hunk moves the private map-index zero store
+// after the map-count branch. The local does not escape. The taken exit never
+// reads it. On the loop path, both builds store zero before its first read and
+// before any later call. Values, flags, serialized writes, cleanup, and faults
+// are identical.
 
 extern "C" {
     void rge_write(int file, void* data, int size);

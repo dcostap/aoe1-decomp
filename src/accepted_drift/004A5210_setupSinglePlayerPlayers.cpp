@@ -41,6 +41,10 @@
 // - Current clean candidate: 556 bytes with 15 differing bytes.  All calls,
 //   blocks, size, frame, and CFG signals match.  Remaining drift is only the
 //   EBX/EBP assignment for this and the active-player count.
+// ACCEPTED DRIFT: All 15 changed bytes form one complete EBX/EBP permutation.
+// The original keeps `this` in EBX and the active-player count in EBP. The
+// rebuild exchanges those registers. Instruction order, operands, flags,
+// memory accesses, 27 calls, branches, cleanup, and fault order are identical.
 
 class RGE_Scenario {
 public:

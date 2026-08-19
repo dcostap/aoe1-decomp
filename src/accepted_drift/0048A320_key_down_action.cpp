@@ -45,6 +45,10 @@
 //   original self=ESI/object=EDI; rebuilt self=EDI/object=ESI.
 // - Main review replaced generic virtual-slot declarations with real TPanel
 //   inheritance and the canonical RGE_Static_Object method surface.
+// ACCEPTED DRIFT: The 14 changed bytes exchange ESI and EDI for `this` and the
+// selected object. One register-only move also shifts across the unchanged EDI
+// save. Every memory operand, argument, result, flag, call, branch, stack save,
+// restore, cleanup, and possible fault stays in the same order.
 
 typedef unsigned char uchar;
 
