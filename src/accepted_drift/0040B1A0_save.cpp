@@ -6,6 +6,13 @@
 // Unsupported aliases, fillers, shifted arrays, and WRITE_ITEM macros stay rejected.
 // This policy-clean source keeps the exact 1263-byte boundary and reduces the
 // remaining displacement-only difference from 58 bytes to 48 bytes.
+// ACCEPTED DRIFT: The 48 changed bytes are one-byte displacements for the
+// PDB-proven tempInt, tempBOOL, and tempFloat homes. Each rge_write receives
+// the same value and width at the same ordered call. The fixed string buffer,
+// list cursors, field reads, branches, null exits, and return value match.
+// Size, 0x118 frame, all 67 calls, memory effects, fault order, and cleanup
+// match. This function has no SEH. Seventy prior probes found no natural stack
+// allocation form that removes the displacement drift.
 
 #include <string.h>
 
