@@ -47,6 +47,16 @@
 //   diff. The one-based natural form remains the best codegen basin.
 // - The remaining oracle-only hunk is the EBP/EBX title/input color swap and
 //   the three-byte tail store of the cancel pointer before set_tab_order.
+// BEHAVIOR FIX: set_tab_order now receives the executable's complete sequence:
+// name_input, ok_button, and cancel_button. The earlier one-based source read a
+// third pointer past the declared array and did not store cancel_button there.
+// ACCEPTED DRIFT: the corrected rebuild exchanges EBX and EDI ownership for
+// name_input and cancel_button. Every factory receives the same output member.
+// The final stack array contains the same three pointers in the same order.
+// The rebuild reloads cancel_button between its two hotkey stores, but performs
+// the same writes before the same calls. The 0x10 frame, all 12 calls, EH state,
+// early exits, member initialization, cleanup, return, and fault order match.
+// A fresh corrected-tab-list probe and 24 earlier probes found no exact basin.
 
 class TDrawArea;
 class TScreenPanel;
@@ -133,8 +143,9 @@ TRIBE_Dialog_Name::TRIBE_Dialog_Name(TScreenPanel* screen)
 
     this->cancel_button->hotkey = 0x1b;
     this->cancel_button->hotkey_shift = 0;
-    tab_list[1] = this->name_input;
-    tab_list[2] = this->ok_button;
-    this->set_tab_order(&tab_list[1], 3);
+    tab_list[0] = this->name_input;
+    tab_list[1] = this->ok_button;
+    tab_list[2] = this->cancel_button;
+    this->set_tab_order(tab_list, 3);
     this->set_curr_child(this->name_input);
 }
