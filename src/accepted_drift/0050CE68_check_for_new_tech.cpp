@@ -30,6 +30,10 @@
 // helper declarations, and pointer-index spelling did not improve the 20-byte
 // mismatch. Restored this clean source; required homes remain tech=-1Ch,
 // changed=-4, prereq_done=-10h, prereq_count=-0Ch, j=-14h.
+// ACCEPTED DRIFT: All 20 changed bytes are EBP displacement bytes for five
+// private locals. Every opcode, value, conversion, flag use, branch, call,
+// memory access, and return matches. No local address escapes. The natural
+// scalar source remains preferable to a layout-forcing aggregate.
 
 struct Tech_Player_Tree {
     float research_done;

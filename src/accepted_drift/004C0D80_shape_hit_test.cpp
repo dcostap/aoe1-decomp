@@ -33,6 +33,14 @@
 //   ordered eleven-call set match the original.  shape_minmax uses the
 //   canonical min-x, min-y, max-x, max-y output order.  The mirror arm checks
 //   x against -max-x and -min-x; the normal arm checks min-x and max-x.
+// - Fresh final probes tested compound per-arm ranges, duplicated upper-bound
+//   checks after the facet-arm recovery, and a separate upper-bound local.
+//   None improved the 33-byte result. The scoped canonical source remains.
+// ACCEPTED DRIFT: The x-range hunk computes the same lower and upper bounds.
+// The original duplicates the upper compare and shares its `jg`; the rebuild
+// shares the compare and branch. The later differences only recolor registers
+// while pushing identical shape_check arguments. Values, flags at each used
+// branch, calls, memory effects, SEH state, cleanup, and fault order match.
 
 extern void __cdecl addstring(char** dst, char* base, char* ext);
 extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);

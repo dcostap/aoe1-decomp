@@ -25,6 +25,11 @@
 // Main review rejected the exact Check_Tech_Temps aggregate. It only grouped
 // unrelated locals to force stack homes, and no PDB or behavior evidence owns
 // that source object. Keep the separate typed locals in scratch.
+// ACCEPTED DRIFT: All 16 changed bytes are EBP displacement bytes for the
+// private tech, index, and cost locals. Every opcode, value, floating-point
+// operation, flag use, branch, memory access, and return matches. No local
+// address escapes. Keep the natural separate locals instead of the rejected
+// exact aggregate.
 
 struct Tech_Player_Tree {
     float research_done;

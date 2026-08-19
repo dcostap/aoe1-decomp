@@ -29,6 +29,14 @@
 // stores each decremented bound at entry-home +8 before fsubr, while rebuilt reuses entry-home +4 after
 // fsubr. The observed slot-0 cleanup declaration is kept; natural virtual-destructor/delete lowering
 // added a 4-byte null/cleanup block and moved farther.
+// Fresh final pass: named integer limits changed the register basin, and
+// reversed upper-bound comparisons widened both blocks. Neither was closer.
+// ACCEPTED DRIFT: Each changed upper-bound block executes the same x()/xSize()
+// or y()/ySize() calls, multiply, reverse subtract, integer-to-float load, and
+// comparison in that order. VC5 only moves the non-faulting valid-object bound
+// load across the multiply and reuses a private stack home. All compared values,
+// floating-point operations, flags, branches, list edits, calls, and cleanup
+// match. No private temporary escapes.
 
 typedef unsigned int uint;
 
