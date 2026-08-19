@@ -76,9 +76,20 @@
 // - Negative evidence: unions, pointer aliases, float count casts, typed raw
 //   terrain pointers, and local declaration order did not improve the clean
 //   143-byte result. Restore them before promotion.
-// - Final unresolved source: 143-byte mismatch, 95.11% shape, 70.49% exact
-//   blocks, 35/35 ordered calls, frame 0xA54, and rebuilt size +2 bytes.
-//   The remaining main gap is score/index1 lifetime coloring.
+// - Accepted-drift review: 47 evidence-led probes did not find a natural exact
+//   form. Fresh score-scope and tile-store-cast probes emitted unchanged code.
+// - The 143 changed bytes have two causes. VC5 rotates private homes for the
+//   bounds, clump count, in-zone count, score, and integer score input. Each
+//   value reaches the same compare, x87 operation, call argument, and update.
+// - The cleanup bit-field store uses one extra `mov dl, al`. Both forms compute
+//   `((old ^ terrain) & 0x1f) ^ old` and store it to the same tile byte. The
+//   following `pop_stack` setup only recolors its three local-address registers.
+// - The two reported CFG differences are changed private-memory operands. Their
+//   successor blocks are identical. The function has no exception handler.
+// - Final result: exact 0xA54 frame, saved registers, 68 conditions, three
+//   jumps, one return, and all 35 ordered calls. The rebuilt body is two bytes
+//   longer. Calls, external reads, stores, x87 order, cleanup, and fault order
+//   match the executable.
 
 typedef unsigned char uchar;
 
