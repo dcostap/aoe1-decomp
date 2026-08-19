@@ -39,6 +39,11 @@
 //   old-style top declaration order, were neutral or worse.  The clean typed
 //   source remains at 44 differing bytes; the EBX/EDI direction map is still
 //   unresolved without compiler steering.
+// ACCEPTED DRIFT: The residual exchanges EBX and EDI for the final x and y
+// roles and recolors equivalent clamp temporaries. The tail stores identical
+// coordinates and node fields; one saved-register pop moves between valid
+// object stores. All eight calls, arithmetic values, used flags, branches,
+// memory effects, return value, and fault behavior match.
 
 extern int __cdecl debug_rand(char* param_1, int param_2);
 

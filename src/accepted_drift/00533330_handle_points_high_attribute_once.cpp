@@ -115,6 +115,9 @@
 //   widened it to 32 bytes, and a const parameter changed the decorated ABI. All variants were
 //   restored. The canonical source remains the clean typed reconstruction; the only gap is the
 //   unsupported entry=EBX versus original entry=EDI and pp=EDI versus original pp=EBX colors.
+// ACCEPTED DRIFT: All 29 changed bytes exchange EBX and EDI for the point entry
+// and player-array cursor. Every field access, conversion, comparison, call,
+// branch, point update, total update, return, and fault order remains unchanged.
 
 class RGE_Game_World;
 class RGE_Victory_Entry;

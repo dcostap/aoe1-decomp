@@ -24,6 +24,12 @@
 // cursor updates were tested. They were duplicate or worse; clean source is
 // restored. Current validation keeps exact size/frame/calls with 59 differing
 // bytes, first at +0xA8, in the repeated parser-loop rotation.
+// ACCEPTED DRIFT: Each changed parser loop advances its private cursor before
+// the NUL test and reads `[cursor]` instead of reading `[cursor+1]` before the
+// increment. Continuing iterations read and write identical bytes. On NUL, the
+// extra cursor increment is unobserved. The 25 clamp uses `jge` versus a
+// redundant equal-value assignment, and one zero test has equivalent flags.
+// All 14 calls, outputs, memory effects, returns, and fault behavior match.
 
 #include <string.h>
 
