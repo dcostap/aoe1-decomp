@@ -79,14 +79,19 @@ public:
 
     int add(T item)
     {
-        if (this->contains(item) == 0) {
-            if (this->numberValue > this->maximumSizeValue - 1)
-                this->resize(this->numberValue + 1);
-            this->value[this->numberValue] = item;
-            this->numberValue++;
-            return 1;
+        int i;
+        for (i = 0; i < this->numberValue; i++) {
+            if (i >= this->maximumSizeValue)
+                break;
+            if (this->value[i] == item)
+                return 0;
         }
-        return 0;
+
+        if (this->numberValue > this->maximumSizeValue - 1)
+            this->resize(this->numberValue + 1);
+        this->value[this->numberValue] = item;
+        this->numberValue++;
+        return 1;
     }
 
     int remove(T item)

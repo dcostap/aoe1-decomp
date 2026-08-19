@@ -73,26 +73,34 @@
 //   TacticalAIGroup as its real 0x330 object with a named +0x1D0 field. Calls,
 //   layout, and behavior remain unchanged; one relocation byte aligned better.
 //
-// Current pass (sa-5ae1e8d8): 27 meaningful probes tested local lifetimes,
-// bound order, loop forms, ABI surfaces, headers, flags, and compiler context.
-// The clean frontier is 2024 bytes with 62/62 ordered calls, 99.04% shape,
-// and a 48-byte strict diff. The original frame is 0x10; this source is 0x8.
-// BINARY NOTE: the original first task scan uses four entry-relative local
-// homes at -0x10, -0x0C, -0x08, and -0x04. The rebuilt source uses only the
-// index and byte-offset homes. The count and capacity spill remains unresolved.
-// LIKELY INTENT: `taskMaximum` before `n` in the scan condition reproduces the
-// original capacity-before-body layout and preserves all later exact blocks.
+// ManagedArray recovery pass, 2026-08-19:
+// - Exact contains ownership recovers the original 0x10 frame and all four
+//   first-scan homes. CodeView lists only i, so the bound homes are compiler
+//   state from the inlined method. Exact add also replaces the second manual
+//   scan without changing emitted code.
+// - The reduced isolated frontier has exact size, 624 instructions, 62 calls,
+//   CFG, and block coverage. Six bytes differ in one first-scan comparison.
+//   Only the transient EBX and EDX assignments are reversed.
+// - Zero through twelve dummy predecessors do not change this result. The
+//   exact same-TU playTaskSoldiers predecessor produces positional equality in
+//   the context lab. Its declarations alone also produce equality.
+// - Do not retain unused context declarations or a namespaced duplicate
+//   predecessor. The next supported step needs genuine combined taitacmd.cpp
+//   compile context or a natural source form that selects the same registers.
 //
-// Main-agent context pass, 2026-08-18: zero through twelve preceding dummy
-// functions emitted identical target code. Exact taskIdleSoldiers before this
-// function changed five scheduling bytes but kept the 0x8 frame. Active-before
-// and idle-plus-active returned to baseline. Translation-unit scheduling does
-// not recover the two bound homes.
-// Isolated current-template probes tested a do-loop, donor-style for-loop,
-// separate first-scan variables, block scopes, a two-int bounds array, a named
-// tasked ID, and a cached value pointer. Natural forms were duplicates or lost
-// the exact downstream basin. Diagnostic volatility was rejected. Keep the
-// 48-byte clean frontier until new stack-allocation evidence exists.
+// Accepted-drift review, 2026-08-19:
+// - All six changed bytes are in the five instructions at +0xB3 through
+//   +0xC0. The original uses EBX for the task-array value and EDX for the
+//   civilian-array base. The rebuild exchanges these two registers.
+// - Both versions load the same pointers, select the same indexed task value,
+//   and compare it with the same civilian value. They set identical flags for
+//   the branch at +0xC1. Calls, memory writes, predicates, and fault order do
+//   not change.
+// - On fallthrough, +0xC7 replaces EDX and +0xD0 replaces EBX. On the taken
+//   path, the loop tail at +0x2C0 uses neither register. The next iteration
+//   replaces EBX at +0x25 and EDX at +0x3C before use.
+// - Exact playTaskSoldiers same-TU context emits the original register choice.
+//   The isolated source keeps this localized, proved-equivalent VC5 drift.
 
 void* operator_new(unsigned int size);
 void __cdecl operator_delete(void* ptr);
@@ -135,7 +143,42 @@ struct ManagedArray {
         }
         return this->value[index];
     }
+
+    int contains(const T& item) const;
+    int add(T item);
 };
+
+template <class T>
+int ManagedArray<T>::contains(const T& item) const {
+    int index;
+    T wanted;
+    T current;
+    for (index = 0; index < this->numberValue; index++) {
+        if (index >= this->maximumSizeValue)
+            return 0;
+        current = this->value[index];
+        wanted = item;
+        if (current == wanted)
+            return 1;
+    }
+    return 0;
+}
+
+template <class T>
+int ManagedArray<T>::add(T item) {
+    int index;
+    for (index = 0; index < this->numberValue; index++) {
+        if (index >= this->maximumSizeValue)
+            break;
+        if (this->value[index] == item)
+            return 0;
+    }
+    if (this->numberValue > this->maximumSizeValue - 1)
+        this->resize(this->numberValue + 1);
+    this->value[this->numberValue] = item;
+    this->numberValue++;
+    return 1;
+}
 
 struct RGE_Game_World {
     RGE_Static_Object* object(int objectID);
@@ -329,9 +372,6 @@ struct TribeTacticalAIModule : TacticalAIModule {
 void TribeTacticalAIModule::evaluateOpenTasks()
 {
     int i;
-    int k;
-    int n;
-    int taskMaximum;
 
     i = 0;
     if (this->civilians.numberValue > 0) {
@@ -346,22 +386,12 @@ void TribeTacticalAIModule::evaluateOpenTasks()
             if (object != 0) {
                 UnitAIModule* unitAI = object->unitAI();
                 if (unitAI != 0) {
-                    if (i > civilians->maximumSizeValue - 1) {
+                    if (i > civilians->maximumSizeValue - 1)
                         civilians->resize(i + 1);
-                    }
-
-                    k = 0;
-                    n = this->unitsTaskedThisUpdate.numberValue;
-                    if (n > 0) {
-                        taskMaximum = this->unitsTaskedThisUpdate.maximumSizeValue;
-                        while (k < taskMaximum && k < n) {
-                            if (this->unitsTaskedThisUpdate.value[k] ==
-                                civilians->value[i]) {
-                                goto next_civilian;
-                            }
-                            k++;
-                        }
-                    }
+                    ManagedArray<int>* unitsTasked =
+                        &this->unitsTaskedThisUpdate;
+                    if (unitsTasked->contains(civilians->value[i]))
+                        goto next_civilian;
 
                     if (object->getSpeed() == 0.0 &&
                         object->attribute_amount_held > 0.0f &&
@@ -375,26 +405,7 @@ void TribeTacticalAIModule::evaluateOpenTasks()
 
                             int civilianID = (*civilians)[i];
                             ManagedArray<int>* unitsTasked = &this->unitsTaskedThisUpdate;
-                            n = unitsTasked->numberValue;
-                            k = 0;
-                            if (n > 0) {
-                                while (k < n &&
-                                       k < unitsTasked->maximumSizeValue) {
-                                    if (unitsTasked->value[k] ==
-                                        civilianID) {
-                                        goto next_civilian;
-                                    }
-                                    k++;
-                                }
-                            }
-
-                            if (n > unitsTasked->maximumSizeValue - 1) {
-                                unitsTasked->resize(n + 1);
-                            }
-                            unitsTasked->value[
-                                unitsTasked->numberValue] = civilianID;
-                            unitsTasked->numberValue =
-                                unitsTasked->numberValue + 1;
+                            unitsTasked->add(civilianID);
                         } else {
                             this->stopUnit((*civilians)[i], 100);
                         }

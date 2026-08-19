@@ -58,6 +58,7 @@ Reusable empirical findings about Microsoft Visual C++ 5 code generation.
 - A second `new_*` local can add a spill and change its saved register.
 - A function result used only as a predicate should usually remain in the predicate.
 - Remove result temporaries when they add artificial call-crossing liveness.
+- A named later predicate result can recolor earlier inlined template code.
 - Keep a named result when assembly carries it into later work.
 - A local reference can preserve a real load/store pair or field alias.
 - Retain such an alias only when the surrounding bytes prove its need.
@@ -412,6 +413,7 @@ Reusable empirical findings about Microsoft Visual C++ 5 code generation.
 ## Dynamic arrays and fixed-stride collections
 
 - Mirror exact ManagedArray scan, grow, copy, delete, and index forms.
+- `contains(v)` followed by `add(v)` can emit two scans because `add` checks again.
 - Restore the real inline `operator[]` when assembly includes its growth path.
 - An out-of-line helper changes loop tests and call count.
 - Use a reference plus bounded indexed `for` scan before cached count/capacity locals.
