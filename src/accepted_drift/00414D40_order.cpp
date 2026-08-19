@@ -43,6 +43,15 @@
 //   boundary and eight ordered calls. The only structural gap is VC5's entry
 //   push edi versus the original branch-local push edi; no policy-valid source
 //   lead was found.
+// ACCEPTED DRIFT: the original saves EDI only on the nonzero-p9 path. The
+// rebuild saves it at entry. This shifts parameter displacements but each of
+// the three addToOrderQueue calls receives the same typed arguments. The only
+// other instruction difference replaces a dead p10 register load with a direct
+// stack compare. All eight calls, predicates, queue effects, logging, virtual
+// dispatches, return values, register restoration, and fault order match.
+// Size and CFG match. Each path balances its own saved registers and arguments.
+// This function has no SEH.
+// A fresh early-invalid-state return probe reproduced the same allocation.
 
 #include <stdio.h>
 
