@@ -57,6 +57,12 @@
 // 359-byte natural int-result source; the constructor EH-tail polarity remains
 // unresolved (oracle tests edi before the EH-state reset, while clean VC5 emits
 // xor eax before that test).
+// ACCEPTED DRIFT: The changed tail tests the constructor result and zeros the
+// failure return on opposite sides of the same EH-state reset. XOR, TEST, and
+// the EH-state store cannot throw; both builds establish state -1 before the
+// next memory access or call. Null returns zero. Success performs the same list
+// deletion, action insertion, cleanup, and one return. All 16 calls, values,
+// memory effects, EH coverage, and fault behavior match.
 
 #include <stddef.h>
 

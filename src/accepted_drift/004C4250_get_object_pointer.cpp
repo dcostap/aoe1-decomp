@@ -114,6 +114,11 @@
 // and const canonical pointers did not move the hunk. Restored and validated
 // the clean source. The original still uses ESI for owner and EDX for the
 // short tail compare; current natural source uses EDX and ESI respectively.
+// ACCEPTED DRIFT: The 37 changed bytes exchange the owner and promoted player
+// index between ESI and EDX. The tail uses equivalent zero-extension forms and
+// schedules one private byte-home store around the same world load. All six
+// calls, pointer-read order, comparisons, branches, return, and fault behavior
+// match.
 
 class RGE_Static_Object;
 class RGE_Master_Static_Object;
