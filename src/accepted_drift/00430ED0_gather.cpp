@@ -40,6 +40,13 @@
 // Session sa-83b69d6e-r1: direct success/action/task returns worsened control
 // flow (350-378 bytes). Null-task assignment and int/pointer result forms were
 // codegen duplicates at 333/77; retain the behavior-valid pointer form.
+// Accepted-drift review: the remaining bytes form one return-register basin.
+// The original preserves each null task result in EAX. The rebuild copies zero
+// through ESI and then returns it in EAX. Both success paths return one.
+// New and constructor calls receive identical arguments. EH state is zero for
+// construction and minus one afterward. Cleanup and FS-chain restoration match.
+// All 16 calls, predicates, external accesses, stores, and fault order match.
+// The only net growth is the two-byte `mov eax, esi` in the shared epilogue.
 
 class RGE_Static_Object {
 public:

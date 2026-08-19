@@ -38,8 +38,15 @@
 //   action-null return grew to 359 bytes/160 diff. Initialized integer status,
 //   delayed status initialization, and zero-before-task forms stayed above
 //   288 bytes of diff. Direct typed task-to-result reuse was 331 bytes/255 diff.
-// - remaining drift is the paired VC5 result-register basin and isolated
-//   EH-handler address; no compiler-only aliases or volatility retained.
+// - Accepted-drift review: the remaining bytes form one return-register basin.
+//   The original preserves each null task result in EAX. The rebuild copies
+//   zero through ESI and then returns it in EAX. Both success paths return one.
+// - New and constructor calls receive identical arguments. EH state is zero
+//   for construction and minus one afterward. Cleanup and FS-chain restoration
+//   are identical. All 16 calls, predicates, external accesses, and stores match.
+// - The rebuilt body adds one two-byte `mov eax, esi` in the shared epilogue.
+//   Changed branches only route the same zero or one to that epilogue. Fault
+//   order and the return value at every restore point match the executable.
 // FLAGS: config/flags/004CB5C0_build.rsp (/GX)
 
 class RGE_Action;
