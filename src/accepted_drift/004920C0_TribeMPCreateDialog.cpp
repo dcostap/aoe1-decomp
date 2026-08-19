@@ -21,6 +21,15 @@
 //     output-slot alias declarations were tested and rolled back. They either
 //     broadened the mismatch or emitted the same 31-byte initial scheduling
 //     drift. Keep the body-style zeroing and typed output-slot alias.
+// Fresh bounded pass: chained stores, comma sequencing, and a reference output
+// alias reproduced the same 31 bytes. Full and partial member initializer lists
+// widened the mismatch to 160 and 163 bytes. The clean body stores remain best.
+// ACCEPTED DRIFT: The 31-byte hunk moves setup argument preparation and the EH
+// state-zero store across the derived vptr and five null member stores. Both
+// builds perform those six object stores in the same order. No call, branch, or
+// potentially throwing operation occurs inside the hunk. The same EH state is
+// active before the first following call. Values, memory results, calls,
+// cleanup, and fault behavior match.
 //
 // Recovered constructor facts:
 // - TPanel is 0xF4, TEasy_Panel is 0x478, and TDialogPanel is 0x490.

@@ -59,6 +59,10 @@
 // 31: long count, a named player index, the integer decompiler mask, and a
 //     declaration-local count were all codegen duplicates or worse. The typed
 //     while/pop loop and 31-byte clean result remain authoritative.
+// Fresh bounded pass: explicit mask lifetimes with count-after-player widened
+// the mismatch to 43 bytes. Players-slot, players-reference, and function-scope
+// player locals reproduced the 31-byte basin. The remaining schedule changes
+// world, info-field, player-table, and count read order. Keep this in scratch.
 
 extern "C" void* __cdecl memset(void*, int, unsigned int);
 
