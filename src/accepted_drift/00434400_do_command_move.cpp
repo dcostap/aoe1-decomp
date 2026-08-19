@@ -35,6 +35,13 @@
 //   the post-scan outer index; this source stores target at [esp+1c] and
 //   reuses [esp+2c] for totalY. Calls, frame, size, and CFG signals align.
 //   No tested source change recovered the original stack-home allocation.
+// ACCEPTED DRIFT: All 60 bytes belong to one private stack-home permutation
+// for target, bounds, totals, averages, and loop indices. The mapped x87
+// operations keep the same operands and order. One zero-index store moves
+// across a division whose count is proved greater than one. Every object read,
+// branch result, call, argument, pathing effect, move, AI update, return, and
+// fault order matches. Size, 0x28 frame, all 26 calls, CFG, and cleanup match.
+// This function has no SEH.
 
 #include "../../include/game_globals.h"
 

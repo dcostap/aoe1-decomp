@@ -40,6 +40,13 @@
 // A 12-case lab found nine variants in the 670B basin and three at 674B.
 // No variant passed the size, frame, and call-set gates. The typed source is
 // restored and remains the best clean reconstruction.
+// ACCEPTED DRIFT: Code through the guarded health tail matches. The first
+// rectangle only uses ADD -12 instead of SUB 12. The second rectangle schedules
+// private x/y loads and argument pushes around a proved nonfaulting signed
+// divide. The positive denominator excludes zero and signed overflow. Both
+// calls receive identical bounds, colors, and receivers. Frame, all 22 calls,
+// FPU work, memory effects, branches, fault order, and cleanup match. No SEH
+// applies. The two extra bytes only change branch displacements and tail size.
 
 class TDrawArea {
 public:

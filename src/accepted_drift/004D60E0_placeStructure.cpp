@@ -58,6 +58,12 @@
 // BINARY NOTE: The original loads constructionLots.next into EDI, compares the sentinel, then
 // stores EH state 1. The clean rebuild stores EH state 1 before loading the cursor into ESI.
 // This changes only the later register roles; calls, frame, size, and CFG are exact.
+// ACCEPTED DRIFT: The EH-state store moves only across one valid object-field load and a
+// nonthrowing pointer comparison. Both builds set state 1 before the first throwing operation,
+// so automatic tempLots destruction and all unwind paths match. The remaining bytes form one
+// complete private register-role exchange through the scan. Every address, value, branch,
+// call, memory effect, return, cleanup action, and fault order matches. Size, 0xAC frame,
+// all 62 calls, CFG, and the owning symbol also match.
 
 // FLAGS: config/flags/004D60E0_placeStructure.rsp uses /GX for original EH frame.
 
