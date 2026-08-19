@@ -66,6 +66,10 @@
 // - Main-agent audit removed an impossible `tasked != -1` check nested directly
 //   under `tasked == -1`; it was non-emitting experiment residue. Codegen and
 //   all metrics remained unchanged.
+// - ManagedArray recovery pass, 2026-08-19: the exact add body replaces the
+//   caller-side explorer scan and append. Duplicate failure still exits through
+//   skip_append. This is codegen-identical to the 2083-byte frontier and gives
+//   the scan to its canonical method owner; resize remains declaration-only.
 
 #include <stdlib.h>
 
@@ -129,6 +133,21 @@ public:
         int n = this->numberValue - 1;
         this->numberValue = n;
         if (n < 0) this->numberValue = 0;
+        return 1;
+    }
+
+    int add(T item) {
+        int i;
+        for (i = 0; i < this->numberValue; i++) {
+            if (i >= this->maximumSizeValue)
+                break;
+            if (this->value[i] == item)
+                return 0;
+        }
+        if (this->numberValue > this->maximumSizeValue - 1)
+            this->resize(this->numberValue + 1);
+        this->value[this->numberValue] = item;
+        this->numberValue++;
         return 1;
     }
 
@@ -236,19 +255,8 @@ next_resource:
                 }
                 if (tasked == -1) goto skip_append;
 append_explorer:
-                // Append the tasked civilian to the explorer list (if not already there).
-                {
-                    ManagedArray<int>& explorers = this->civilianExplorers;
-                    for (i = 0; i < explorers.numberValue &&
-                                 i < explorers.maximumSizeValue; i++) {
-                        if (explorers.value[i] == tasked) goto skip_append;
-                    }
-                    if (explorers.numberValue > explorers.maximumSizeValue - 1) {
-                        explorers.resize(explorers.numberValue + 1);
-                    }
-                    explorers.value[explorers.numberValue] = tasked;
-                    explorers.numberValue = explorers.numberValue + 1;
-                }
+                if (this->civilianExplorers.add(tasked) == 0)
+                    goto skip_append;
             } while (this->civilianExplorers.numberValue <
                      this->civilianExplorers.desiredNumberValue);
         }

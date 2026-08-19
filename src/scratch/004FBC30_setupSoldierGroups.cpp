@@ -58,6 +58,14 @@
 // 3. first-path i clamp stores early (default-then-override) in BOTH versions;
 //    else path stores i after the sub (min form) - already matched.
 // No fake volatility, manual vtables, opaque scaffolding or inline asm retained.
+// ManagedArray recovery pass, 2026-08-19:
+// - Replacing the complete local surface with include/utmarray.h made resize
+//   inline twice. It added two allocator pairs and 214 bytes. The original
+//   calls resize at both add sites, so the shared-header form is not valid in
+//   this isolated translation unit.
+// - The exact add body with declaration-only resize emits the same 2245-byte
+//   frontier as the former manual scans. It matches the PDB line ownership and
+//   removes unsupported caller-side field access. Keep this source model.
 
 void* operator_new(unsigned int size);
 void __cdecl operator_delete(void* ptr);
@@ -109,6 +117,21 @@ public:
             }
         }
         return this->value[index];
+    }
+
+    int add(int item) {
+        int i;
+        for (i = 0; i < this->numberValue; i++) {
+            if (i >= this->maximumSizeValue)
+                break;
+            if (this->value[i] == item)
+                return 0;
+        }
+        if (this->numberValue > this->maximumSizeValue - 1)
+            this->resize(this->numberValue + 1);
+        this->value[this->numberValue] = item;
+        this->numberValue++;
+        return 1;
     }
 
     int remove(int value_to_remove) {
@@ -261,22 +284,8 @@ void TribeTacticalAIModule::setupSoldierGroups()
     sentinel = &this->groups;
     while (group != sentinel && group != 0) {
         if (group->numberUnits() == 0) {
-            int id = group->id();
-            int found = 0;
-            while (found < groupsToRemove.numberValue &&
-                   found < groupsToRemove.maximumSizeValue) {
-                if (groupsToRemove.value[found] == id) {
-                    goto next_group;
-                }
-                ++found;
-            }
-            if (groupsToRemove.numberValue > groupsToRemove.maximumSizeValue - 1) {
-                groupsToRemove.resize(groupsToRemove.numberValue + 1);
-            }
-            groupsToRemove.value[groupsToRemove.numberValue] = id;
-            ++groupsToRemove.numberValue;
+            groupsToRemove.add(group->id());
         }
-next_group:
         group = group->next;
     }
 
@@ -289,22 +298,8 @@ next_group:
         group = this->groups.next;
         while (group != sentinel && group != 0) {
             if (group->type() == 100) {
-                int id = group->id();
-                int found = 0;
-                while (found < groupsToRemove.numberValue &&
-                       found < groupsToRemove.maximumSizeValue) {
-                    if (groupsToRemove.value[found] == id) {
-                        goto next_rebalance_group;
-                    }
-                    ++found;
-                }
-                if (groupsToRemove.numberValue > groupsToRemove.maximumSizeValue - 1) {
-                    groupsToRemove.resize(groupsToRemove.numberValue + 1);
-                }
-                groupsToRemove.value[groupsToRemove.numberValue] = id;
-                ++groupsToRemove.numberValue;
+                groupsToRemove.add(group->id());
             }
-next_rebalance_group:
             group = group->next;
         }
     }

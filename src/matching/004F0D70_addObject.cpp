@@ -46,6 +46,15 @@
 //   parameter in EBX, this in EBP, and the repeated ID in EDI.  The clean
 //   source keeps the same behavior and calls but assigns another register
 //   basin, spilling the ID after three resize calls.
+// - ManagedArray recovery replaced the four caller-side scan/append copies
+//   with direct calls to the exact add body. This recovered the original
+//   parameter, receiver, and ID registers and all inline blocks.
+// - The artifact add at line 3165 remains out of line in the executable, while
+//   all four later add sites inline. A narrow inline-depth limit preserves this
+//   proved same-TU split. Without it, VC5 inlines the artifact add and emits an
+//   extra resize call. Restoring the depth immediately gives an exact match.
+// - Exact-finish reduction removed four redundant returns and flattened the
+//   soldier else-if. Both reductions remained exact.
 
 class RGE_Master_Static_Object {
 public:
@@ -91,7 +100,20 @@ public:
 
     int resize(int new_size);
     int contains(const T& wanted) const;
-    int add(T value);
+    int add(T item) {
+        int i;
+        for (i = 0; i < this->numberValue; i++) {
+            if (i >= this->maximumSizeValue)
+                break;
+            if (this->value[i] == item)
+                return 0;
+        }
+        if (this->numberValue > this->maximumSizeValue - 1)
+            this->resize(this->numberValue + 1);
+        this->value[this->numberValue] = item;
+        this->numberValue++;
+        return 1;
+    }
 };
 
 class TacticalAIModule {
@@ -126,120 +148,64 @@ void TribeTacticalAIModule::addObject(RGE_Static_Object* obj)
     ManagedArray<int>* list;
 
     if (group == 4) {
-        number = this->civilians.numberValue;
-        id = obj->id;
-        list = &this->civilians;
-        for (i = 0; i < number; i++) {
-            if (i >= list->maximumSizeValue)
-                break;
-            if (list->value[i] == id)
+        this->civilians.add(obj->id);
+    } else if (group == 0 || group == 0x18 || group == 6 || group == 0x19 ||
+               group == 0x1a || group == 0x0c || group == 0x23 ||
+               group == 0x17 || group == 0x24 || group == 0x1c ||
+               group == 0x12 || group == 0x0d || group == 0x27) {
+        this->soldiers.add(obj->id);
+    } else {
+        if (group != 2 && group != 0x14 && group != 0x16 && group != 0x15) {
+            if (obj->master_obj->id != 0x9f)
                 return;
-        }
-        if (number <= list->maximumSizeValue - 1)
-            goto append;
-    }
-    else {
-        if (group == 0 || group == 0x18 || group == 6 || group == 0x19 ||
-            group == 0x1a || group == 0x0c || group == 0x23 ||
-            group == 0x17 || group == 0x24 || group == 0x1c ||
-            group == 0x12 || group == 0x0d || group == 0x27) {
-            number = this->soldiers.numberValue;
-            id = obj->id;
-            list = &this->soldiers;
-            for (i = 0; i < number; i++) {
-                if (i >= list->maximumSizeValue)
-                    break;
-                if (list->value[i] == id)
-                    return;
-            }
-            if (number <= list->maximumSizeValue - 1)
-                goto append;
-        }
-        else {
-            if (group != 2 && group != 0x14 && group != 0x16 && group != 0x15) {
-                if (obj->master_obj->id != 0x9f)
-                    return;
-                if (this->md->player->world->difficultyLevel() >= 4)
-                    return;
-                this->artifacts.add(obj->id);
+            if (this->md->player->world->difficultyLevel() >= 4)
                 return;
-            }
+            // BINARY NOTE: This call stays out of line. Later add calls inline.
+#pragma inline_depth(0)
+            this->artifacts.add(obj->id);
+#pragma inline_depth(255)
+            return;
+        }
 
-            number = this->boats.numberValue;
+        this->boats.add(obj->id);
+        if (obj->master_obj->object_group == 2) {
+            this->tradeBoats.add(obj->id);
+        }
+
+        if (obj->master_obj->object_group == 0x14) {
             id = obj->id;
-            list = &this->boats;
-            for (i = 0; i < number; i++) {
-                if (i >= list->maximumSizeValue)
-                    break;
-                if (list->value[i] == id)
-                    goto boat_done;
-            }
-            if (number > list->maximumSizeValue - 1)
-                list->resize(number + 1);
-            list->value[list->numberValue] = id;
-            list->numberValue++;
-
-boat_done:
-            if (obj->master_obj->object_group == 2) {
-                number = this->tradeBoats.numberValue;
-                id = obj->id;
-                list = &this->tradeBoats;
-                for (i = 0; i < number; i++) {
-                    if (i >= list->maximumSizeValue)
-                        break;
-                    if (list->value[i] == id)
-                        goto trade_done;
-                }
-                if (number > list->maximumSizeValue - 1)
-                    list->resize(number + 1);
-                list->value[list->numberValue] = id;
-                list->numberValue++;
-            }
-
-trade_done:
-            if (obj->master_obj->object_group == 0x14) {
-                id = obj->id;
-                list = &this->transportBoats;
-                if (list->contains(id) != 1) {
-                    number = list->numberValue;
-                    if (number > list->maximumSizeValue - 1)
-                        list->resize(number + 1);
-                    list->value[list->numberValue] = id;
-                    list->numberValue++;
-                }
-            }
-
-            if (obj->master_obj->object_group == 0x16) {
-                id = obj->id;
-                list = &this->warBoats;
-                if (list->contains(id) != 1) {
-                    number = list->numberValue;
-                    if (number > list->maximumSizeValue - 1)
-                        list->resize(number + 1);
-                    list->value[list->numberValue] = id;
-                    list->numberValue++;
-                }
-            }
-
-            if (obj->master_obj->object_group == 0x15) {
-                id = obj->id;
-                list = &this->fishingBoats;
-                if (list->contains(id) == 1)
-                    return;
+            list = &this->transportBoats;
+            if (list->contains(id) != 1) {
                 number = list->numberValue;
                 if (number > list->maximumSizeValue - 1)
                     list->resize(number + 1);
                 list->value[list->numberValue] = id;
                 list->numberValue++;
-                return;
             }
-            return;
+        }
+
+        if (obj->master_obj->object_group == 0x16) {
+            id = obj->id;
+            list = &this->warBoats;
+            if (list->contains(id) != 1) {
+                number = list->numberValue;
+                if (number > list->maximumSizeValue - 1)
+                    list->resize(number + 1);
+                list->value[list->numberValue] = id;
+                list->numberValue++;
+            }
+        }
+
+        if (obj->master_obj->object_group == 0x15) {
+            id = obj->id;
+            list = &this->fishingBoats;
+            if (list->contains(id) == 1)
+                return;
+            number = list->numberValue;
+            if (number > list->maximumSizeValue - 1)
+                list->resize(number + 1);
+            list->value[list->numberValue] = id;
+            list->numberValue++;
         }
     }
-
-    list->resize(number + 1);
-
-append:
-    list->value[list->numberValue] = id;
-    list->numberValue++;
 }

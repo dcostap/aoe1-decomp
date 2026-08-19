@@ -33,6 +33,16 @@
 //   were codegen duplicates or worse. Restored the pinned source: 509 bytes, 13 ordered calls, 90.97% exact
 //   block coverage, and 73 differing bytes. The first structural drift remains at rebuilt +0x178 (004F1568),
 //   where VC5 keeps the low-count cap in a different register/lifetime shape. No policy-invalid steering kept.
+// - ManagedArray recovery pass, 2026-08-19: both manual element-zero grow/read
+//   sequences now use the exact operator[] body. The emitted bytes are equal,
+//   but method ownership is canonical and resize remains out of line.
+// - Restored the binary-supported low-count local reuse from the decompiler:
+//   one result holds 1, sn[5], then sn[3], and the computed explorer demand is
+//   stored before its cap. This gives exact 514-byte size, 144 instructions,
+//   13 calls, and CFG. The remaining 75 bytes are one localized register map.
+// - Exact addObject and removeObject predecessor contexts did not change this
+//   target. Register hints, branch-local result scopes, references, and store
+//   sequencing were duplicates or worse. No compiler-context shim is retained.
 
 extern "C" double __cdecl ceil(double);
 
@@ -49,6 +59,12 @@ public:
     int desiredNumberValue;
     int maximumSizeValue;
     int resize(int size);
+
+    T& operator[](int index) {
+        if (index > this->maximumSizeValue - 1)
+            this->resize(index + 1);
+        return this->value[index];
+    }
 };
 
 class TribeInformationAIModule {
@@ -140,24 +156,17 @@ void TribeTacticalAIModule::evaluateCivilianDistribution()
     int numberItems;
     int desired;
     int gatherers;
-    int maxGatherers;
     ManagedArray<int>* list;
     int zero;
 
     percentExplored = (int)(this->md->player->visibleMap->percentExplored() * 100.0f);
 
     list = &this->playersToAttack;
-    if (list->maximumSizeValue - 1 < 0) {
-        list->resize(1);
-    }
-    numberItems = this->md->informationAI.numberGameIDsOwnedBy(-1, *list->value);
+    numberItems = this->md->informationAI.numberGameIDsOwnedBy(-1, (*list)[0]);
 
     if (this->civilians.numberValue >= 3) {
     list = &this->civilians;
-    if (list->maximumSizeValue - 1 < 0) {
-        list->resize(1);
-    }
-    if (this->md->informationAI.fullyExploredZone(*list->value) == 1) {
+    if (this->md->informationAI.fullyExploredZone((*list)[0]) == 1) {
         zero = 0;
         this->civilianExplorers.desiredNumberValue = (int)ceil((float)((double)this->sn[0] * this->civilians.numberValue) * 0.01f);
         desired = this->numberSoldierExplorers();
@@ -203,18 +212,21 @@ void TribeTacticalAIModule::evaluateCivilianDistribution()
             this->desiredNumberGatherers = 0;
         }
         else {
-            this->desiredNumberGatherers = desired;
-            maxGatherers = this->sn[5];
-            if (maxGatherers != -1 && desired > maxGatherers) {
-                this->desiredNumberGatherers = maxGatherers;
+            desired = this->sn[5];
+            this->desiredNumberGatherers = 1;
+            if (desired != -1 && desired < 1) {
+                this->desiredNumberGatherers = desired;
             }
-            gatherers = this->desiredNumberGatherers;
-            desired = this->civilians.numberValue - gatherers;
-            if (this->sn[3] != -1 && desired > this->sn[3]) {
-                desired = this->sn[3];
-            }
+            gatherers = this->civilians.numberValue -
+                        this->desiredNumberGatherers;
+            this->civilianExplorers.desiredNumberValue = gatherers;
+            desired = this->sn[3];
+            if (desired == -1 || gatherers <= desired)
+                goto low_count_done;
         }
         this->civilianExplorers.desiredNumberValue = desired;
+low_count_done:
+        ;
     }
 
     this->displayCivilianDistribution();

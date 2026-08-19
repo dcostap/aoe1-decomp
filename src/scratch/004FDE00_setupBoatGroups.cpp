@@ -42,6 +42,10 @@
 //   71.29% exact blocks, 93/93 ordered calls, and frame 0x28 versus 0x2C.
 //   Remaining lead is the real local-lifetime/register basin around the target
 //   stack homes (especially the saved numPotentialEGroups/numAGroups values).
+// - ManagedArray recovery pass, 2026-08-19: the exact add body replaces the
+//   manual caller-side scan and emits the same 2887-byte frontier. The complete
+//   shared header inlines resize at this site, adds one allocator pair and 82
+//   bytes, and changes the call surface. Keep resize declaration-only here.
 
 void* operator new(unsigned int size);
 void __cdecl operator_delete(void* ptr);
@@ -90,6 +94,21 @@ public:
             }
         }
         return this->value[index];
+    }
+
+    int add(int item) {
+        int i;
+        for (i = 0; i < this->numberValue; i++) {
+            if (i >= this->maximumSizeValue)
+                break;
+            if (this->value[i] == item)
+                return 0;
+        }
+        if (this->numberValue > this->maximumSizeValue - 1)
+            this->resize(this->numberValue + 1);
+        this->value[this->numberValue] = item;
+        this->numberValue++;
+        return 1;
     }
 
     int remove(int value_to_remove) {
@@ -230,23 +249,8 @@ void TribeTacticalAIModule::setupBoatGroups()
             continue;
         }
         if (group->numberUnits() == 0) {
-            int id = group->id();
-            int found = 0;
-            while (found < groupsToRemove.numberValue &&
-                   found < groupsToRemove.maximumSizeValue) {
-                if (groupsToRemove.value[found] == id) {
-                    goto next_group;
-                }
-                ++found;
-            }
-            if (groupsToRemove.numberValue >
-                groupsToRemove.maximumSizeValue - 1) {
-                groupsToRemove.resize(groupsToRemove.numberValue + 1);
-            }
-            groupsToRemove.value[groupsToRemove.numberValue] = id;
-            ++groupsToRemove.numberValue;
+            groupsToRemove.add(group->id());
         }
-next_group:
         group = group->next;
     }
 

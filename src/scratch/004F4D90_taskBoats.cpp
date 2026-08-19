@@ -50,6 +50,10 @@
 // - LIKELY INTENT: the action-8 found reset is a separate task path.  Its
 //   current natural source retains the direct task call while later checks can
 //   still run, but the executable uses a shared tail instead.
+// - ManagedArray recovery audit, 2026-08-19: this function does not access a
+//   tactical ManagedArray field or call one of its methods. The array members
+//   only establish later class offsets, which the current 16-byte layout
+//   already models. No shared-header migration applies to this target.
 
 struct XYZPoint {
     int x;

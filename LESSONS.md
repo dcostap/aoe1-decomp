@@ -227,6 +227,8 @@ Reusable empirical findings about Microsoft Visual C++ 5 code generation.
 - Treat these as old-MSVC context hypotheses until local VC5 evidence confirms them.
 - VC5 can exhaust its inline budget partway through one large function.
 - Early helper sites can inline while later sites call the same out-of-line body.
+- One method can stay out of line at an early site and inline at later sites.
+- Preserve the proved site split. Do not assume that inline choices are monotonic.
 - When that split is proved, test helper visibility, `/Ob`, or function-scoped
   `#pragma inline_depth(0)`; the pragma can help one function and harm another.
 - `<windows.h>`, real `RECT`, and API declarations can select another basin.
@@ -414,6 +416,8 @@ Reusable empirical findings about Microsoft Visual C++ 5 code generation.
 
 - Mirror exact ManagedArray scan, grow, copy, delete, and index forms.
 - `contains(v)` followed by `add(v)` can emit two scans because `add` checks again.
+- An inlined method gives its parameters and scan index method-local lifetimes.
+- Caller-side expansion with shared locals can change whole-function registers.
 - Restore the real inline `operator[]` when assembly includes its growth path.
 - An out-of-line helper changes loop tests and call count.
 - Use a reference plus bounded indexed `for` scan before cached count/capacity locals.
