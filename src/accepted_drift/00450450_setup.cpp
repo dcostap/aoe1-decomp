@@ -56,6 +56,16 @@
 //   were also rejected. The first clean mismatch remains the area-level parser
 //   destination at +0032 (VA 00450482); calls, ownership, CFG, and size remain
 //   aligned.
+// BEHAVIOR FIX: the executable zero-extends the low byte of the parsed fire
+// frame before storing the short field. The explicit unsigned-char conversion
+// preserves that narrow behavior. It reduces strict drift from 150 to 7 bytes.
+// ACCEPTED DRIFT: the seven remaining bytes are stack displacements for four
+// named short parser outputs. The original reuses dead file, sounds, and count
+// parameter homes. The rebuild uses ordinary local homes. fscanf receives the
+// same format, widths, and destination values, and every result reaches the
+// same field in the same order. Size, all six calls, allocation loops, max
+// scans, stores, cleanup, return, and fault order match. This function has no
+// SEH. Direct parameter-home source forms remain rejected as compiler steering.
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -225,7 +235,7 @@ int RGE_Master_Combat_Object::setup(FILE* file, RGE_Sprite** sprites,
     area_effect_level = (unsigned char)temp_area_effect_level;
     fight_sprite = selected_sprite;
     base_armor = (unsigned char)temp_base_armor;
-    fire_missile_at_frame = temp_fire_missile_at_frame;
+    fire_missile_at_frame = (unsigned char)temp_fire_missile_at_frame;
     orig_armor = (unsigned char)base_armor;
     value_count = (int)armor_num;
     if (value_count > 0) {

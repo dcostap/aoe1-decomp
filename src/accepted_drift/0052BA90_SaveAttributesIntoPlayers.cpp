@@ -49,6 +49,14 @@
 //   They were duplicates or worse. A 64-sample ambient declaration lab found
 //   one compiler-context basin with exact size and the target relation SIB, but
 //   it retained the reversed prologue store order and is diagnostic only.
+// ACCEPTED DRIFT: the first setup hunk only swaps independent initialization
+// of EBP and the private alliedVictory stack home. The relation hunk encodes
+// the same EBP+EDI address with a one-byte-longer SIB. All later differences
+// are branch displacements caused by that byte. The frame, all ten calls,
+// player and relation indices, x87 conversions, field reads, stores, loop
+// order, cleanup, return, and fault order match. This function has no SEH.
+// Thirty focused probes and an ambient declaration lab found no natural exact
+// schedule and address encoding together.
 
 struct Player_Start_Info {
     int Gold;

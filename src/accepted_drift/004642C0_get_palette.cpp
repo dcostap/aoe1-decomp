@@ -40,6 +40,14 @@
 // Session sa-e0eb4345-r1 revisit: split complementary guards produced 339-byte
 // drift; positive outer/goto forms stayed in the 456-byte, 5-call basin; reversed
 // inner predicate produced 395-byte drift. Restored the pinned natural source.
+// ACCEPTED DRIFT: only the physical placement of the null filename arm differs.
+// The original branches to the zero-byte store after the non-null construction
+// block. The rebuild places that store first and branches around the non-null
+// block. Each runtime path performs the same store or the same filename calls
+// before joining at the exact cache loop. Size, 0x10C frame, all four calls,
+// cache reads, reference counts, allocation effects, returns, cleanup, and
+// fault order match. This function has no SEH. Nineteen focused probes found
+// no natural source form that selects the original block placement.
 
 #include <string.h>
 #include <stdio.h>
