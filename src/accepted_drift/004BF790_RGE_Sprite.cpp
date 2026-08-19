@@ -34,6 +34,14 @@
 //   or register basin and were restored.
 // - Final clean source keeps typed facet ownership. The blocker is the VC5
 //   allocation and branch topology after the serialized header.
+// ACCEPTED DRIFT: Size, frame, all 28 calls, and each serialized destination
+// match. The header uses a complete ESI/EDI role exchange. Both facet loops
+// visit the same entries and read each frame before its sound ID. A nonnegative
+// ID reads the same sound slot before the same list store. The rebuild retains
+// the list pointer written by calloc, while the original reloads that member.
+// rge_read never receives the member address, so it cannot change this value.
+// Null branches, return values, allocation effects, fault order, and cleanup
+// match. This constructor has no SEH.
 
 extern "C" void __cdecl rge_read(int handle, void* buffer, int count);
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);

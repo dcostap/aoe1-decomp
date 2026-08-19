@@ -28,6 +28,11 @@
 // left in scratch: restored the natural typed action tree; remaining blocker is
 //   the compiler's close-button-to-dialog-close tail merge (one missing direct
 //   close call), with no ABI/call-set or broad CFG uncertainty.
+// ACCEPTED DRIFT: VC5 merges two mutually exclusive close calls into one tail.
+// The close-button path reaches it before any panel-name work. The rejected
+// negative dialog path reaches it after destroyPanel and only when id is zero. Each path
+// still calls close once and returns one. The stack, registers, memory effects,
+// fallback calls, and fault order match. There is no SEH or cleanup difference.
 
 #include <string.h>
 

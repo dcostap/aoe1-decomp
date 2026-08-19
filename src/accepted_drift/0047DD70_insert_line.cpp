@@ -44,6 +44,12 @@
 // - A period windows.h CompareStringA declaration, sorted-local previous
 //   lifetime, declaration-order swap, and node-init order were codegen
 //   duplicates or worse. Restored the clean typed source.
+// ACCEPTED DRIFT: The first 321 bytes, size, frame, and all 10 calls match.
+// The remaining code uses different private registers and equivalent list
+// loop forms. Each path reads the same links in the same order and writes the
+// same node, head, previous-link, count, redraw, and return values. The rebuild
+// removes one redundant initial null test whose value is proved nonnull by the
+// outer branch. No call, allocation, free, memory access, or fault moves.
 
 #include <stdlib.h>
 #include <string.h>
