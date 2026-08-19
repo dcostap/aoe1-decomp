@@ -36,6 +36,15 @@
 // comparison and increment spellings, branch shape, pointer casts, and register hints;
 // all emitted the same 122-byte basin or worsened structure. An ambient 128-variant
 // declaration sweep also produced one unchanged group. Keep the clean baseline pinned.
+// ACCEPTED DRIFT: the three-byte set_curr_child hunk only exchanges EAX and
+// ECX while passing the same child to the same parent. The remaining drift is
+// one diplomacy loop. The original keeps its panel cursor in EBX and homes i;
+// the rebuild keeps i in EBX and homes the cursor. Both forms read the same
+// entries, execute the same predicates, and call set_active on the same panel
+// sequence. Pointer and index increments remain paired after each iteration.
+// Size, 0xC frame, all 157 calls, branches, field effects, return, cleanup, and
+// fault order match. This function has no SEH. Twenty-six focused hypotheses
+// and a 128-variant declaration sweep found no natural exact allocation form.
 
 typedef unsigned char uchar;
 

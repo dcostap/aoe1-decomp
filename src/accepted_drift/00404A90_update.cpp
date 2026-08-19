@@ -21,6 +21,14 @@
 // inheritance, case scope, game_globals.h context, and debug-context flags.
 // None changed the 41-byte result. A 128-sample ambient declaration sweep also
 // kept the old 182-byte alias result. Keep the direct-member source as clean.
+// ACCEPTED DRIFT: all 41 changed bytes and the three extra bytes come from
+// callee-save shrink wrapping. The original saves EDI, EBP, and EBX only after
+// the state-1 return. The rebuild saves them at entry. Both non-state-1 bodies
+// are byte-exact. Each tail restores the same registers and stack before the
+// same return value. The 0x8 frame, all six calls, predicates, x87 operations,
+// object effects, virtual dispatches, cleanup, and fault order match. This
+// function has no SEH. Eighty-two focused probes and an ambient declaration
+// sweep found no natural source form that restores the split save schedule.
 
 class RGE_Master_Moving_Object {
 public:

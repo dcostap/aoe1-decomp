@@ -51,8 +51,14 @@
 // declarations, receiver and local lifetimes, control flow, local types,
 // same-TU method declarations, and header context. The best result stayed
 // 30 bytes in three spans. The canonical clean source is restored.
-// BLOCKER: the remaining difference is VC5 callee-save shrink wrapping in
-// this standalone TU. Prior flags and context probes did not recover it.
+// ACCEPTED DRIFT: all 30 changed bytes are VC5 callee-save shrink wrapping.
+// The original saves EDI and EBX only after the visible test. The rebuild
+// saves them at entry. The visible path restores the same four registers in
+// a different order. The hidden path performs only the extra private save and
+// restore pair. The 0x18 frame, all 27 calls, both returns, field stores, GDI
+// effects, virtual calls, cleanup, and fault order match. This function has no
+// SEH. The complete body between the prologue and two epilogues is exact.
+// Prior flags and context probes did not recover the original save schedule.
 // Bounded original-TU follow-up: exact RGE_Panel_Time::draw and
 // TInputPanel::draw donors both delay EDI/EBX until after real guards.
 // Restoring their draw_setup/draw_finish names, full TPanel virtual names,
