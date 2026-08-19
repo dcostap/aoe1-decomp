@@ -59,6 +59,11 @@
 //   exact blocks, and 5/5 ordered calls. Ten bytes remain in the fallback
 //   loop's consistent register recolor: original EAX cursor/ECX type versus
 //   rebuilt ECX cursor/EAX type. No exact policy-valid source was found.
+// ACCEPTED DRIFT: All ten changed bytes form that one consistent EAX/ECX
+// exchange. Instruction order, memory addresses, branches, flags, and calls
+// remain equal under the map. Both values have the same live ranges, and the
+// registers are caller-saved. Every instruction shape and basic block matches;
+// no write, cleanup action, or fault order changes.
 
 typedef unsigned char uchar;
 

@@ -35,6 +35,12 @@
 // Policy correction: replaced the fake virtual-slot padding and generic names
 // with canonical RGE_Command and RGE_Static_Object virtual surfaces from the
 // repository class dumps. The rebuild remains 500 B with an 11-byte mismatch.
+// ACCEPTED DRIFT: The 11 changed bytes only schedule the first player-id stack
+// store around the independent world load and exchange EAX/EDX roles for the
+// world pointer and zero-extended player index. Both builds read the same table
+// entry. Their residual EAX/EDX values are dead and overwritten before use. The
+// remaining 182 instructions, all calls, writes, predicates, cleanup, and faults
+// match.
 
 typedef unsigned char uchar;
 

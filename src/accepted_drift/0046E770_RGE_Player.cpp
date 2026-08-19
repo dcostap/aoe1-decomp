@@ -42,6 +42,11 @@
 //   Every valid probe remained an 18-byte mismatch with the same two spans.
 //   These results support a compiler scheduling or historical-TU-context
 //   blocker, not an unresolved field or helper ABI.
+// ACCEPTED DRIFT: The 18-byte edit moves the independent `[this+8] = 5` store
+// across one tile-list argument push, LEA, and caller stack spill. No call or
+// branch occurs inside the hunk, and the store completes before the same first
+// tile-list constructor call in both builds. Constructor state, arguments,
+// exception coverage, writes, cleanup, and all later bytes match.
 
 #include <stdlib.h>
 #include <string.h>

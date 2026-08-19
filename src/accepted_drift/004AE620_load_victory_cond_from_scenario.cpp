@@ -34,6 +34,12 @@
 // the destination result; the aggregate copy stores it before that push.
 // Reversions restored the natural source. Open lead: recover that spill timing
 // through a period-plausible local ownership model, not a duplicate alias.
+// ACCEPTED DRIFT: All 14 changed bytes are stack displacements. One is a dead
+// amount spill after the same value is pushed for itoa. Four consistently shift
+// the converted rectangle locals by one dword. The remaining homes hold obj and
+// destobj during nonoverlapping live ranges; the rebuild safely reuses one home.
+// Every call receives the same values and addresses. Writes, predicates,
+// cleanup, and fault order match, and all opcode and relocation bytes match.
 
 extern "C" char* __cdecl itoa(int, char*, int);
 

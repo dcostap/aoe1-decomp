@@ -26,6 +26,11 @@
 // abi/context (rolled back): removing the virtual destructor changed the new
 // size to 0x4AC; an equivalent virtual slot and explicit operator-new decl.
 // kept the 0x4B0 allocation but did not move the 12-byte EH tail gap.
+// ACCEPTED DRIFT: Two changed bytes are branch displacements to the same
+// reviewed cleanup destinations. The remaining edit exchanges the final
+// testing-scenario byte store with the independent saved-SEH-chain stack load.
+// The FS restore still occurs later at the same address. No call, branch, or
+// faulting memory dependency intervenes. Values, writes, cleanup, and calls match.
 
 extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
 extern "C" long __cdecl _findfirst(const char* filespec, void* fileinfo);

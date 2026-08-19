@@ -38,6 +38,11 @@
 //   period-plausible and reduced the positional mismatch from 38 to 15 bytes.
 //   Typed area-expression and accumulator-order probes left the same 15-byte
 //   basin, so the simple field expression and natural indexed insertion stay.
+// ACCEPTED DRIFT: The one 15-byte hunk schedules two signed IMUL memory operands
+// before, rather than after, independent EAX and EBP initialization. The two
+// factors are exchanged, but their truncated 32-bit product is equal. The final
+// one-operand IMUL receives identical EAX and EDX inputs. Intermediate flags are
+// dead. Both ordinary fields are read once, with no intervening write or call.
 
 struct RGE_Map;
 struct RGE_Random_Map_Module_List;
