@@ -30,6 +30,10 @@
 //   not recover the late load.
 // BINARY NOTE: the executable reads radioButton[3] before one checkButtons
 //   call, but has no compare, call, store, or later use for that value.
+// BLOCKER: VC5 merges the default and radioButton[2] failure paths in the clean
+//   source. Each runtime path still calls checkButtons once. However, the merge
+//   removes the radioButton[3] member read and changes invalid-object fault
+//   behavior. This difference is not eligible for accepted drift.
 // LIKELY INTENT: the radioButton[2] fallback and the default path were separate
 //   source paths. The reason for the shipped field read is not proved.
 
