@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import csv
+import hashlib
 import io
 import re
 import subprocess
@@ -27,14 +28,17 @@ CHILD_FIELDS = (
     "editInsertBytes", "editDeleteBytes", "editReplaceBytes", "editEqualBytes",
     "likelyShiftedAlignment", "firstMismatchOffset", "usesCustomFlags", "customFlagsPath",
     "isRemaining", "remainingSizeRank", "remainingAsmRank", "hasBlocker", "groupName", "groupPath",
-    "diffResult",
+    "diffResult", "sourceFingerprint", "diffMeasuredCommit",
 )
 DIFF_CHILD_FIELDS = (
     "diffPercent", "diffBytes", "diffSpans", "positionalDiffPercent",
     "positionalDiffBytes", "positionalDiffSpans", "editDiffPercent",
     "editDiffBytes", "editInsertBytes", "editDeleteBytes", "editReplaceBytes",
     "editEqualBytes", "likelyShiftedAlignment", "firstMismatchOffset", "diffResult",
+    "diffMeasuredCommit",
 )
+COMPACT_METRICS_PATH = "project_status_metrics.csv"
+BACKFILL_METRICS_PATH = "project_status_metrics_history.csv"
 
 
 def _default_notes() -> dict[str, str]:
@@ -163,6 +167,7 @@ def _csv_diff_values(row: dict[str, str]) -> dict[str, object]:
         "likelyShiftedAlignment": row.get("likely_shifted_alignment", "") == "yes",
         "firstMismatchOffset": row.get("first_mismatch_offset", ""),
         "diffResult": result,
+        "diffMeasuredCommit": "",
     }
 
 
@@ -171,7 +176,26 @@ def _unknown_diff_values(bucket: str) -> dict[str, object]:
     values["likelyShiftedAlignment"] = False
     values["firstMismatchOffset"] = ""
     values["diffResult"] = "MATCH" if bucket == "matching" else ""
+    values["diffMeasuredCommit"] = ""
     return values
+
+
+def _fingerprint_context_paths(paths: list[str] | tuple[str, ...] | set[str]) -> list[str]:
+    return sorted(
+        path for path in paths
+        if path.startswith("include/")
+        or path in {"src/game_globals.cpp", "config/toolchain.json", "config/flags/default.rsp"}
+    )
+
+
+def _content_fingerprint(parts: list[tuple[str, bytes]]) -> str:
+    digest = hashlib.sha256()
+    for name, data in parts:
+        digest.update(name.encode("utf-8", errors="surrogateescape"))
+        digest.update(b"\0")
+        digest.update(data)
+        digest.update(b"\0")
+    return digest.hexdigest()
 
 
 @dataclass
@@ -245,6 +269,21 @@ class GitSnapshot:
                 result[Path(path).stem.lower()] = path
         return result
 
+    def build_context_fingerprint(self) -> str:
+        parts = [
+            (path, self.read_bytes(path) or b"missing")
+            for path in _fingerprint_context_paths(set(self.tree))
+        ]
+        return _content_fingerprint(parts)
+
+    def source_fingerprint(self, source_path: str, custom_flags_path: str, context: str) -> str:
+        parts = [("context", context.encode("ascii"))]
+        for path in (source_path, custom_flags_path):
+            normalized = path.replace("\\", "/")
+            if normalized:
+                parts.append((normalized, self.read_bytes(normalized) or b"missing"))
+        return _content_fingerprint(parts)
+
 
 def build_historical_rows(snapshot: GitSnapshot) -> list[dict[str, str]]:
     inventory = snapshot.read_text("inventory/all_functions.csv")
@@ -269,6 +308,7 @@ def build_historical_rows(snapshot: GitSnapshot) -> list[dict[str, str]]:
     } if status_csv_text else {}
     rows: list[dict[str, str]] = []
     remaining: list[dict[str, str]] = []
+    build_context = snapshot.build_context_fingerprint()
 
     for record in records:
         slug = record["slug"]
@@ -305,6 +345,11 @@ def build_historical_rows(snapshot: GitSnapshot) -> list[dict[str, str]]:
             notes["BLOCKER"] = f"{notes['BLOCKER']} | {missing}" if notes["BLOCKER"] else missing
         custom_flags_path = f"config/flags/{slug}.rsp"
         has_flags = snapshot.read_bytes(custom_flags_path) is not None
+        source_fingerprint = snapshot.source_fingerprint(
+            source_path,
+            custom_flags_path if has_flags else "",
+            build_context,
+        )
         parent = fragments.get(int(record["va"], 16))
         status_csv_row = status_csv_rows.get(record["va"].upper())
         if status_csv_row and status_csv_row.get("source_bucket") == source_bucket:
@@ -365,6 +410,8 @@ def build_historical_rows(snapshot: GitSnapshot) -> list[dict[str, str]]:
             "edit_equal_bytes": str(diff.get("edit_equal_bytes", "")),
             "likely_shifted_alignment": "yes" if diff.get("likely_shifted_alignment") else ("no" if diff else ""),
             "first_mismatch_offset": str(diff.get("first_mismatch_offset", "")),
+            "source_fingerprint": source_fingerprint,
+            "diff_measured_commit": snapshot.commit if diff else "",
         })
 
     size_ranks = {row["va"]: index + 1 for index, row in enumerate(sorted(remaining, key=lambda row: (-int(row["size_bytes"]), row["va"]))) }
@@ -412,6 +459,7 @@ RELEVANT_PATHS = (
     "config/parent_owned_fragments.txt",
     "config/padding_only_functions.txt",
     "project_full_status.csv",
+    COMPACT_METRICS_PATH,
 )
 
 
@@ -489,8 +537,10 @@ def _relevant_change(changed_files: list[dict[str, str]]) -> bool:
     return any(
         item["path"] in RELEVANT_PATHS
         or item["path"].startswith(("src/matching/", "src/accepted_drift/", "src/verified_logic/", "src/scratch/"))
+        or item["path"].startswith("include/")
         or item["path"].startswith("logic_reviews/")
         or item["path"].startswith("config/flags/")
+        or item["path"] in {"src/game_globals.cpp", "config/toolchain.json"}
         for item in changed_files
     )
 
@@ -657,6 +707,8 @@ def upgrade_history_diff_metrics(
     field_indexes = {field: schema.index(field) for field in DIFF_CHILD_FIELDS}
     bucket_index = schema.index("bucket")
     source_path_index = schema.index("sourcePath")
+    preview_index = schema.index("sourcePreviewId")
+    fingerprint_index = schema.index("sourceFingerprint")
     diff_indexes = set(field_indexes.values())
 
     # Remove metrics written by an older upgrade pass before replaying the
@@ -724,10 +776,10 @@ def upgrade_history_diff_metrics(
     if csv_loader is None:
         batch_reader = BatchBlobReader()
 
-        def csv_loader(commit: str) -> str:
+        def load_metrics(commit: str, path: str) -> str:
             try:
                 oid = subprocess.check_output(
-                    ["git", "rev-parse", f"{commit}:project_full_status.csv"],
+                    ["git", "rev-parse", f"{commit}:{path}"],
                     cwd=REPO_ROOT,
                     stderr=subprocess.DEVNULL,
                     text=True,
@@ -746,19 +798,33 @@ def upgrade_history_diff_metrics(
                     return ""
             return "" if data is None else data.decode("utf-8", errors="replace")
 
+        csv_loader_internal = load_metrics
+    else:
+        csv_loader_internal = lambda commit, _path: csv_loader(commit)
+
     commits = history.get("commits", [])
     deltas = history.get("deltas", [])
+    backfill_rows: dict[str, list[dict[str, str]]] = {}
+    backfill_path = REPO_ROOT / BACKFILL_METRICS_PATH
+    if backfill_path.is_file():
+        with backfill_path.open("r", encoding="utf-8", newline="") as handle:
+            for record in csv.DictReader(handle):
+                backfill_rows.setdefault(record.get("commit", ""), []).append(record)
     try:
         for commit_index, commit in enumerate(commits):
             delta = deltas[commit_index]
             if commit_index:
                 prior_buckets: dict[str, object] = {}
                 prior_source_paths: dict[str, object] = {}
+                prior_previews: dict[str, object] = {}
+                prior_fingerprints: dict[str, object] = {}
                 for change in list(delta.get("changes", [])):
                     va = str(change.get("va", ""))
                     old_row = rows.get(va)
                     prior_buckets[va] = old_row[bucket_index] if old_row else None
                     prior_source_paths[va] = old_row[source_path_index] if old_row else None
+                    prior_previews[va] = old_row[preview_index] if old_row else None
+                    prior_fingerprints[va] = old_row[fingerprint_index] if old_row else None
                     if "patch" in change:
                         if old_row is None:
                             continue
@@ -782,26 +848,51 @@ def upgrade_history_diff_metrics(
                     if row is None:
                         continue
                     source_path = str(row[source_path_index] or "")
-                    source_changed = source_path != str(prior_source_paths.get(va) or "")
+                    fingerprint = str(row[fingerprint_index] or "")
+                    prior_fingerprint = str(prior_fingerprints.get(va) or "")
+                    if fingerprint and prior_fingerprint:
+                        source_changed = fingerprint != prior_fingerprint
+                    else:
+                        source_changed = (
+                            source_path != str(prior_source_paths.get(va) or "")
+                            or row[preview_index] != prior_previews.get(va)
+                        )
                     became_matching = row[bucket_index] == "matching" and row[bucket_index] != prior_bucket
                     if source_changed or became_matching:
                         set_values(va, _unknown_diff_values(str(row[bucket_index] or "")), delta)
 
-                # A workflow rename or ordinary source edit does not erase the
-                # last recorded metric. A later CSV snapshot replaces it.
+                # A source or compiler-context change invalidates the old metric.
+                # A metric snapshot or backfill entry can replace it below.
 
             changed_files = commit.get("changedFiles", [])
-            if not any(item.get("path") == "project_full_status.csv" for item in changed_files):
-                continue
-            text = csv_loader(str(commit.get("hash", "")))
-            if not text:
-                continue
-            for csv_row in csv.DictReader(io.StringIO(text)):
-                va = csv_row.get("va", "").upper()
+            changed_paths = {str(item.get("path", "")) for item in changed_files}
+            metrics_path = (
+                COMPACT_METRICS_PATH if COMPACT_METRICS_PATH in changed_paths
+                else ("project_full_status.csv" if "project_full_status.csv" in changed_paths else "")
+            )
+            commit_hash = str(commit.get("hash", ""))
+            if metrics_path:
+                text = csv_loader_internal(commit_hash, metrics_path)
+                for csv_row in csv.DictReader(io.StringIO(text)) if text else []:
+                    va = csv_row.get("va", "").upper()
+                    row = rows.get(va)
+                    if row is None or csv_row.get("source_bucket") != row[bucket_index]:
+                        continue
+                    recorded_fingerprint = csv_row.get("source_fingerprint", "")
+                    if recorded_fingerprint and recorded_fingerprint != str(row[fingerprint_index] or ""):
+                        continue
+                    values = _csv_diff_values(csv_row)
+                    values["diffMeasuredCommit"] = commit_hash
+                    set_values(va, values, None if commit_index == 0 else delta)
+
+            for recorded in backfill_rows.get(commit_hash, []):
+                va = recorded.get("va", "").upper()
                 row = rows.get(va)
-                if row is None or csv_row.get("source_bucket") != row[bucket_index]:
+                if row is None or recorded.get("source_bucket") != row[bucket_index]:
                     continue
-                set_values(va, _csv_diff_values(csv_row), None if commit_index == 0 else delta)
+                values = _csv_diff_values(recorded)
+                values["diffMeasuredCommit"] = commit_hash
+                set_values(va, values, None if commit_index == 0 else delta)
     finally:
         if batch_reader is not None:
             batch_reader.close()

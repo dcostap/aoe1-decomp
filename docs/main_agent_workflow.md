@@ -194,6 +194,9 @@ For every return:
 8. perform any status move;
 9. stage only reviewed paths.
 
+Before each project commit, refresh `project_status_metrics.csv`. Stage it with
+the source changes. This compact file gives each commit durable diff metrics.
+
 For an exact return, require the worker's exact-finish retrospective. Inspect the
 first exact checkpoint, the last clean nonexact checkpoint, and all reported
 walkback tests. Do not treat `MATCH` as the end of source recovery. If the worker

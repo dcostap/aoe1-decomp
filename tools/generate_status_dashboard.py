@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import json
 import re
 import subprocess
@@ -10,7 +11,12 @@ from pathlib import Path
 
 from common import REPO_ROOT
 from status_core import build_status_rows, count_comment_lines, status_counts, write_status_csv
-from status_history import append_live_snapshot, build_history, upgrade_history_diff_metrics
+from status_history import (
+    COMPACT_METRICS_PATH,
+    append_live_snapshot,
+    build_history,
+    upgrade_history_diff_metrics,
+)
 
 
 HEADER_NOTE_RE = re.compile(r"^//\s*([A-Z_]+):\s*(.*)$")
@@ -28,7 +34,7 @@ BUCKET_COLORS = {
 
 
 HTML_TEMPLATE_PATH = REPO_ROOT / "tools" / "status_dashboard_template.html"
-HISTORY_CACHE_VERSION = 11
+HISTORY_CACHE_VERSION = 12
 DATA_MARKER = "__DASHBOARD_DATA__"
 DASHBOARD_DIR = REPO_ROOT / "build" / "status"
 
@@ -108,6 +114,68 @@ def to_int(value: str | int | None) -> int:
     return int(value)
 
 
+def _live_build_context_fingerprint() -> str:
+    paths = [path for path in (REPO_ROOT / "include").rglob("*") if path.is_file()]
+    paths.extend(
+        path for path in (
+            REPO_ROOT / "src" / "game_globals.cpp",
+            REPO_ROOT / "config" / "toolchain.json",
+            REPO_ROOT / "config" / "flags" / "default.rsp",
+        )
+        if path.is_file()
+    )
+    digest = hashlib.sha256()
+    for path in sorted(paths, key=lambda item: item.as_posix().lower()):
+        relative = path.relative_to(REPO_ROOT).as_posix()
+        digest.update(relative.encode("utf-8"))
+        digest.update(b"\0")
+        digest.update(path.read_bytes())
+        digest.update(b"\0")
+    return digest.hexdigest()
+
+
+def add_live_source_fingerprints(rows: list[dict[str, str]]) -> None:
+    context = _live_build_context_fingerprint()
+    for row in rows:
+        digest = hashlib.sha256()
+        digest.update(b"context\0")
+        digest.update(context.encode("ascii"))
+        digest.update(b"\0")
+        for raw_path in (row.get("source_path", ""), row.get("custom_flags_path", "")):
+            for path_text in raw_path.split(" | "):
+                if not path_text:
+                    continue
+                normalized = path_text.replace("\\", "/")
+                path = REPO_ROOT / normalized
+                digest.update(normalized.encode("utf-8"))
+                digest.update(b"\0")
+                digest.update(path.read_bytes() if path.is_file() else b"missing")
+                digest.update(b"\0")
+        row["source_fingerprint"] = digest.hexdigest()
+        row["diff_measured_commit"] = "WORKTREE" if row.get("diff_result") else ""
+
+
+def write_compact_metrics(rows: list[dict[str, str]]) -> Path:
+    fields = [
+        "va", "source_bucket", "source_fingerprint", "diff_result", "diff_percent",
+        "diff_bytes", "diff_spans", "positional_diff_percent", "positional_diff_bytes",
+        "positional_diff_spans", "edit_diff_percent", "edit_diff_bytes",
+        "edit_insert_bytes", "edit_delete_bytes", "edit_replace_bytes",
+        "edit_equal_bytes", "likely_shifted_alignment", "first_mismatch_offset",
+    ]
+    output = REPO_ROOT / COMPACT_METRICS_PATH
+    temporary = output.with_suffix(".csv.tmp")
+    with temporary.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fields, lineterminator="\n")
+        writer.writeheader()
+        for row in rows:
+            if row.get("corpus_bucket") != "normal" or row.get("source_bucket") == "matching":
+                continue
+            writer.writerow({field: row.get(field, "") for field in fields})
+    temporary.replace(output)
+    return output
+
+
 def packet_path_for_row(row: dict[str, str]) -> str:
     return str(Path("inventory") / "functions" / row["va"][:4] / f"{row['slug']}.txt")
 
@@ -176,6 +244,8 @@ def build_group_list(normal_rows: list[dict[str, str]]) -> list[dict[str, object
             "likelyShiftedAlignment": row.get("likely_shifted_alignment", "") == "yes",
             "firstMismatchOffset": row.get("first_mismatch_offset", ""),
             "diffResult": row.get("diff_result", ""),
+            "sourceFingerprint": row.get("source_fingerprint", ""),
+            "diffMeasuredCommit": row.get("diff_measured_commit", ""),
             "usesCustomFlags": row["uses_custom_flags"] == "yes",
             "customFlagsPath": row["custom_flags_path"],
             "isRemaining": row["is_remaining"] == "yes",
@@ -306,7 +376,7 @@ def write_html_dashboard(
                         and len(cached_commits) <= len(commits)
                         and commits[: len(cached_commits)] == cached_commits
                     )
-                    if cached_key.get("version") in {6, 7, 10} and cache_is_prefix:
+                    if cached_key.get("version") in {6, 7, 10, 11} and cache_is_prefix:
                         candidate_history = cached.get("history")
                         candidate = cached.get("resume")
                         if (
@@ -314,8 +384,6 @@ def write_html_dashboard(
                             and isinstance(candidate, dict)
                             and candidate.get("processed") == len(cached_commits)
                         ):
-                            upgrade_history_diff_metrics(candidate_history, candidate)
-                            migrated_cache = True
                             if len(cached_commits) == len(commits):
                                 history = candidate_history
                                 resume = candidate
@@ -346,6 +414,8 @@ def write_html_dashboard(
                 prefix_history=prefix_history,
             )
             migrated_cache = True
+        upgrade_history_diff_metrics(history, resume)
+        migrated_cache = True
         if migrated_cache:
             history_cache_path.parent.mkdir(parents=True, exist_ok=True)
             cache_text = json.dumps(
@@ -394,10 +464,13 @@ def main() -> None:
     csv_tmp_path = output_path.with_suffix(".csv.tmp")
     write_status_csv(rows, csv_tmp_path)
     csv_tmp_path.replace(output_path)
+    add_live_source_fingerprints(rows)
+    metrics_output = write_compact_metrics(rows)
     html_output_path = write_html_dashboard(rows, history_ref=args.history_ref, include_history=not args.no_history)
     counts = status_counts(rows)
 
     print(f"Wrote {output_path}")
+    print(f"Wrote {metrics_output}")
     print(f"Wrote {html_output_path}")
     print(
         "Counts: "

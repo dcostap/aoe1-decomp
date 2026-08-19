@@ -2093,8 +2093,16 @@
           <div class="tooltip-sub">${formatNumber(item.functionCount)} fn · ${formatPercent(item.progressBytes, 1)} completed bytes · ${formatBytes(item.remainingBytes)} remaining</div>
           <div class="tooltip-note">${escapeHtml(item.path || "(no PDB path)")}</div>`;
       }
+      const activeCommit = HISTORY?.commits?.[timelineIndex];
+      const measuredCommit = item.diffMeasuredCommit || "";
+      const measuredHere = measuredCommit && (
+        measuredCommit === "WORKTREE" ? activeCommit?.workingTree : activeCommit?.hash === measuredCommit
+      );
+      const provenance = measuredHere
+        ? "measured here"
+        : (measuredCommit ? `carried from ${measuredCommit.slice(0, 8)}` : "exact source status");
       const diffText = item.diffResult
-        ? `edit ${formatPercent(item.editDiffPercent ?? item.diffPercent ?? 0, 4)} · positional ${formatPercent(item.positionalDiffPercent ?? item.diffPercent ?? 0, 4)}`
+        ? `edit ${formatPercent(item.editDiffPercent ?? item.diffPercent ?? 0, 4)} · positional ${formatPercent(item.positionalDiffPercent ?? item.diffPercent ?? 0, 4)} · ${provenance}`
         : "historical diff not recorded";
       return `
         <div class="tooltip-title"><span class="mono">${escapeHtml(item.va)}</span> ${escapeHtml(item.name)}</div>
@@ -2304,7 +2312,7 @@
         actions.push(`<button class="button active" data-focus-function="${escapeHtml(fn.va)}">zoom to file</button>`);
       }
       const editDiffValue = fn.diffResult
-        ? `${formatPercent(fn.editDiffPercent ?? fn.diffPercent ?? 0, 4)} · ${formatNumber(fn.editDiffBytes ?? fn.diffBytes ?? 0)} bytes`
+        ? `${formatPercent(fn.editDiffPercent ?? fn.diffPercent ?? 0, 4)} · ${formatNumber(fn.editDiffBytes ?? fn.diffBytes ?? 0)} bytes${fn.diffMeasuredCommit ? ` · measured ${fn.diffMeasuredCommit === "WORKTREE" ? "in working tree" : `at ${fn.diffMeasuredCommit.slice(0, 8)}`}` : ""}`
         : "not recorded for this snapshot";
       const positionalDiffValue = fn.diffResult
         ? `${formatPercent(fn.positionalDiffPercent ?? fn.diffPercent ?? 0, 4)} · ${formatNumber(fn.positionalDiffBytes ?? fn.diffBytes ?? 0)} / ${formatNumber(fn.positionalDiffSpans ?? fn.diffSpans ?? 0)} spans`

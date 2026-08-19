@@ -45,7 +45,8 @@ class StatusHistoryLiveSnapshotTests(unittest.TestCase):
             "2026-08-13T19:00:00",
         )
 
-        self.assertEqual(result["schema"][-1], "diffResult")
+        self.assertIn("diffResult", result["schema"])
+        self.assertIn("diffMeasuredCommit", result["schema"])
         self.assertTrue(result["commits"][-1]["workingTree"])
         self.assertEqual(result["commits"][-1]["summary"]["remainingFunctions"], 1)
         self.assertEqual(result["sourcePreviews"], ["int demo();"])
@@ -94,6 +95,54 @@ class StatusHistoryLiveSnapshotTests(unittest.TestCase):
         self.assertEqual(latest["positionalDiffPercent"], 50.0)
         self.assertEqual(latest["diffResult"], "MISMATCH")
         self.assertEqual(resume["previous_children"]["00400000"]["editDiffPercent"], 30.0)
+
+    def test_cache_upgrade_carries_metrics_until_that_source_changes(self) -> None:
+        schema = list(CHILD_FIELDS)
+
+        def encoded(va: str, preview: int) -> list[object]:
+            child = {field: None for field in schema}
+            child.update({
+                "va": va,
+                "bucket": "scratch",
+                "sourcePath": f"src/scratch/{va}.cpp",
+                "sourcePreviewId": preview,
+            })
+            return [child[field] for field in schema]
+
+        history = {
+            "schema": schema,
+            "base": {"groups": [{"children": [encoded("00400000", 1), encoded("00400010", 2)]}]},
+            "commits": [
+                {"hash": "one", "changedFiles": [{"path": "project_full_status.csv"}]},
+                {"hash": "two", "changedFiles": [{"path": "src/scratch/00400000.cpp"}]},
+            ],
+            "deltas": [
+                {"changes": []},
+                {"changes": [{"va": "00400000", "patch": [[schema.index("sourcePreviewId"), 3]]}]},
+            ],
+        }
+        csv_text = (
+            "va,source_bucket,diff_result,edit_diff_percent,positional_diff_percent\n"
+            "00400000,scratch,MISMATCH,20,40\n"
+            "00400010,scratch,MISMATCH,30,50\n"
+        )
+
+        upgrade_history_diff_metrics(history, csv_loader=lambda commit: csv_text if commit == "one" else "")
+
+        rows = {
+            row[0]: list(row)
+            for group in history["base"]["groups"]
+            for row in group["children"]
+        }
+        for change in history["deltas"][1]["changes"]:
+            row = rows[change["va"]]
+            for index, value in change.get("patch", []):
+                row[index] = value
+        first = dict(zip(schema, rows["00400000"]))
+        second = dict(zip(schema, rows["00400010"]))
+        self.assertEqual(first["diffResult"], "")
+        self.assertEqual(second["editDiffPercent"], 30.0)
+        self.assertEqual(second["diffMeasuredCommit"], "one")
 
 
 if __name__ == "__main__":
