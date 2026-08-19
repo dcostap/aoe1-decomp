@@ -49,6 +49,12 @@
 //   source remains the 479-byte basin with 47 strict differing bytes. The next
 //   useful evidence is compiler/TU context or a source form that shrink-wraps
 //   ESI without artificial register control; no such source form is retained.
+// ACCEPTED DRIFT: The rebuild saves ESI for all paths. The original saves it
+// only after fopen succeeds. Both restore the incoming value before return.
+// The parse body, frame, all 10 calls, destinations, stores, and failure paths
+// match. The inner backedge only exchanges signed CMP operands and JL/JG.
+// It tests the same short values and produces the same flags decision. This
+// constructor has no SEH, and no call or memory effect changes order.
 
 #include <stdio.h>
 #include <stdlib.h>
