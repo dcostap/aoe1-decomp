@@ -139,10 +139,28 @@ def main() -> None:
     parser.add_argument("--start", default="eafbdf58", help="last commit with a complete metric snapshot")
     parser.add_argument("--ref", default="HEAD", help="last commit to inspect")
     parser.add_argument("--output", default=BACKFILL_METRICS_PATH, help="tracked history ledger path")
+    parser.add_argument("--incremental", action="store_true", help="inspect only commits after the last automatic run")
     args = parser.parse_args()
 
+    state_path = REPO_ROOT / "build" / "status" / "status_metrics_backfill_state.json"
+    start = args.start
+    if args.incremental and state_path.is_file():
+        try:
+            state = json.loads(state_path.read_text(encoding="utf-8"))
+            candidate = str(state.get("processedCommit", ""))
+            ancestry = subprocess.run(
+                ["git", "merge-base", "--is-ancestor", candidate, args.ref],
+                cwd=REPO_ROOT,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            ) if candidate else None
+            if ancestry is not None and ancestry.returncode == 0:
+                start = candidate
+        except (OSError, json.JSONDecodeError):
+            pass
+
     commits = subprocess.check_output(
-        ["git", "rev-list", "--reverse", "--first-parent", f"{args.start}..{args.ref}"],
+        ["git", "rev-list", "--reverse", "--first-parent", f"{start}..{args.ref}"],
         cwd=REPO_ROOT,
         text=True,
     ).splitlines()
@@ -219,6 +237,17 @@ def main() -> None:
         writer = csv.DictWriter(handle, fieldnames=fieldnames, lineterminator="\n")
         writer.writeheader()
         writer.writerows(missing)
+
+    processed_commit = subprocess.check_output(
+        ["git", "rev-parse", args.ref], cwd=REPO_ROOT, text=True
+    ).strip()
+    state_path.parent.mkdir(parents=True, exist_ok=True)
+    state_tmp = state_path.with_suffix(".json.tmp")
+    state_tmp.write_text(
+        json.dumps({"processedCommit": processed_commit}, separators=(",", ":")) + "\n",
+        encoding="utf-8",
+    )
+    state_tmp.replace(state_path)
 
     print(f"Wrote {output} with {len(recovered)} recovered measurements")
     print(f"Wrote {missing_path} with {len(missing)} missing measurements")

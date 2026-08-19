@@ -810,6 +810,14 @@ def upgrade_history_diff_metrics(
         with backfill_path.open("r", encoding="utf-8", newline="") as handle:
             for record in csv.DictReader(handle):
                 backfill_rows.setdefault(record.get("commit", ""), []).append(record)
+    current_rows: dict[str, dict[str, str]] = {}
+    current_path = REPO_ROOT / COMPACT_METRICS_PATH
+    if current_path.is_file():
+        with current_path.open("r", encoding="utf-8", newline="") as handle:
+            current_rows = {
+                record.get("va", "").upper(): record
+                for record in csv.DictReader(handle)
+            }
     try:
         for commit_index, commit in enumerate(commits):
             delta = deltas[commit_index]
@@ -892,6 +900,22 @@ def upgrade_history_diff_metrics(
                     continue
                 values = _csv_diff_values(recorded)
                 values["diffMeasuredCommit"] = commit_hash
+                set_values(va, values, None if commit_index == 0 else delta)
+
+            # A current measurement is valid for an older commit when every
+            # fingerprinted compiler input is identical.
+            for va, recorded in current_rows.items():
+                row = rows.get(va)
+                if (
+                    row is None
+                    or row[field_indexes["diffResult"]]
+                    or recorded.get("source_bucket") != row[bucket_index]
+                    or not recorded.get("source_fingerprint")
+                    or recorded.get("source_fingerprint") != str(row[fingerprint_index] or "")
+                ):
+                    continue
+                values = _csv_diff_values(recorded)
+                values["diffMeasuredCommit"] = "CURRENT"
                 set_values(va, values, None if commit_index == 0 else delta)
     finally:
         if batch_reader is not None:

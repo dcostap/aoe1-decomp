@@ -6,6 +6,7 @@ import hashlib
 import json
 import re
 import subprocess
+import sys
 from datetime import datetime
 from pathlib import Path
 
@@ -466,6 +467,18 @@ def main() -> None:
     csv_tmp_path.replace(output_path)
     add_live_source_fingerprints(rows)
     metrics_output = write_compact_metrics(rows)
+    if not args.no_history:
+        subprocess.run(
+            [
+                sys.executable,
+                str(REPO_ROOT / "tools" / "backfill_status_metrics.py"),
+                "--incremental",
+                "--ref",
+                args.history_ref,
+            ],
+            cwd=REPO_ROOT,
+            check=True,
+        )
     html_output_path = write_html_dashboard(rows, history_ref=args.history_ref, include_history=not args.no_history)
     counts = status_counts(rows)
 
