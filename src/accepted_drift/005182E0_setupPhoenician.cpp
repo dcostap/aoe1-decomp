@@ -126,6 +126,11 @@
 //   declaration-order, condition, or period-source axis moved the EDX=64h
 //   preload or the late map_type reload toward the oracle's EDX=14h and early
 //   reload. Keep the canonical typed source below.
+// ACCEPTED DRIFT: The non-deathmatch hunk colors constants 20 and 100 in
+// different registers and schedules the map-type parameter reload around three
+// independent 20-valued stores. Both builds write identical values to every
+// table slot. Calls, branches, used flags, memory effects, returns, and fault
+// behavior match.
 
 typedef unsigned char uchar;
 

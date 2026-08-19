@@ -36,6 +36,10 @@
 //   Restore the pinned source after both probes.
 // Final validation: 309 rebuilt bytes, 30 strict diff bytes, 27-byte edit diff;
 // exact calls, size, frame, CFG, and verified setup behavior remain intact.
+// ACCEPTED DRIFT: The non-deathmatch hunk colors constants 20 and 100 in
+// different registers and schedules independent table stores and the map-type
+// reload differently. Both builds write identical values to every slot. All
+// three calls, branches, used flags, returns, and fault behavior match.
 
 #include "../../include/rge_base_game_global.h"
 

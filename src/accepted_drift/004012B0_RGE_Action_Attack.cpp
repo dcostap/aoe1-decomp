@@ -173,6 +173,11 @@
 //   the original register map.
 // - Final validation: 237 bytes, 71 instructions, exact call set, no frame,
 //   and 21 positional bytes of register-only drift beginning at +0015.
+// ACCEPTED DRIFT: The initial hunk schedules stack-parameter loads and
+// independent coordinate, range, sprite, and frame stores through different
+// registers. The fallback hunk only recolors the same master-object sprite
+// chain. Values, the base-constructor call, used flags, member effects, return,
+// and fault order match.
 
 class RGE_Sprite;
 class RGE_Action_List;

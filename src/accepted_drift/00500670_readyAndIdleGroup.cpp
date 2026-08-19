@@ -45,6 +45,15 @@
 // - Revisit probe: a natural sentinel local used for both list-end comparisons
 //   was codegen-neutral. The pinned direct-predicate source remains the clean
 //   reconstruction; no policy-valid exact source emerged.
+// - Fresh pass recovered the original best-distance branch association:
+//   `(underLimit && unset) || better`. It is equivalent because every stored
+//   best distance is under the limit. This reduced the residual from 30 to 17
+//   bytes and made the complete distance-update tail exact. Declaration and
+//   initialization reorders were duplicate or worse.
+// ACCEPTED DRIFT: The 17 remaining bytes swap the private self and best-group
+// stack homes and move the stack-parameter type load across the null-group
+// check. Values, calls, used flags, branches, memory effects, FPU operations,
+// returns, and fault behavior match. No local address escapes.
 
 #include <math.h>
 
@@ -136,8 +145,8 @@ TacticalAIGroup* TribeTacticalAIModule::readyAndIdleGroup(
                         (point.x - (int)group->gatherLocation()->x);
                     int distance = (int)sqrt((double)distanceSquared);
 
-                    if (distance < maxDistance &&
-                        (bestDistance == -1 || distance < bestDistance)) {
+                    if ((distance < maxDistance && bestDistance == -1) ||
+                        distance < bestDistance) {
                         bestGroup = group;
                         bestDistance = distance;
                     }
