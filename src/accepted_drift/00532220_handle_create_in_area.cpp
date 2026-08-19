@@ -59,6 +59,13 @@
 //   the same relation byte; the original encoding is one byte longer. No
 //   policy-valid source lead remains. Keep this source and pause for compiler
 //   context or original-source evidence.
+// ACCEPTED DRIFT: the SIB operands are commutative and compute the same byte
+// address. That one-byte encoding length changes seven later branch or address
+// displacements. The rebuild adds one trailing NOP, so both boundaries remain
+// 388 bytes. All 35 original blocks, 25 predicates, object reads, count updates,
+// result stores, returns, memory order, and fault order match. There are no
+// calls, x87 operations, or SEH. Nineteen focused probes found no natural
+// source spelling that selects the original base/index encoding.
 
 struct RGE_Master_Object {
     virtual ~RGE_Master_Object();
