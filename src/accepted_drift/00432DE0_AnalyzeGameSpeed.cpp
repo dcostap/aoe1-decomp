@@ -39,6 +39,14 @@
 //   minimum-throughput product, and final output/call setup. No metric-only
 //   source form was retained.
 // Left in scratch after the bounded 10-hypothesis assignment.
+// ACCEPTED DRIFT: the residual hunks apply complete temporary-register changes
+// to total_turns, the human-player loop receiver, and two unsigned products.
+// Multiplication operand order gives the same 32-bit value and flags. The final
+// output setup reads and stores the same two pointers before the same optional
+// calls. Size differs by one byte because CMP ECX,imm32 is longer than the EAX
+// form. Frame, all four calls, thresholds, output values, field updates,
+// returns, cleanup, and fault order match. This function has no SEH. Thirty-one
+// focused probes found no natural source form that restores the register basin.
 
 #include <stdlib.h>
 
