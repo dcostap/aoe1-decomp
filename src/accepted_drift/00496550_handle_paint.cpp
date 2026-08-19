@@ -53,6 +53,12 @@
 // - typed the proven TRIBE_Screen_Game fields and tested receiver aliases,
 //   loop forms, declaration scope, and period helper declarations.  They were
 //   unchanged or worse.  Keep the elapsed form as the clean natural source.
+// Fresh final pass: function-scope node and shared node/panel lifetime probes
+// both reproduced the same 34-byte output. The scoped source remains simplest.
+// ACCEPTED DRIFT: All 34 changed bytes exchange ESI and EDI for `this` and the
+// active child pointer. One register move shifts across the unchanged EDI save.
+// Every field access, argument, flag use, call, branch, timing update, stack
+// save, restore, cleanup, and possible fault stays in the same order.
 
 #include <windows.h>
 #include <stdio.h>

@@ -32,6 +32,13 @@
 // the remaining 36 differing bytes are localized to coordinate register coloring.
 // BLOCKER: behavior and layout appear correct; remaining 7.8091% diff is localized codegen/register scheduling in coordinate setup after frame load. Original uses EBX for width then reuses EBX for drawarea (`movsx ebx,[esi+10] ... mov ebx,ecx`), while VC5 keeps width in ECX and loads drawarea into EBX early. Later switch/tail and frees are structurally aligned.
 // Revisit validation: the clean source still builds to 461 bytes with 13 ordered calls, no frame, matching saved registers, and 36 differing bytes. Keep this natural source; further work needs new register-color evidence.
+// Fresh final pass: const precomputed bounds and member-based bound arithmetic
+// both reproduced the same 36-byte coordinate setup. The clean source remains.
+// ACCEPTED DRIFT: The one changed region only schedules width, height, x, y,
+// and draw-area temporaries differently. Both builds compute and store identical
+// x1, x2, y1, y2, drawarea, pitch, and window-buffer values. No call or branch
+// occurs until those stores finish. Intermediate flags are dead. Calls, cleanup,
+// and fault behavior match.
 
 extern "C" void* calloc(unsigned int count, unsigned int size);
 extern "C" void free(void* ptr);
