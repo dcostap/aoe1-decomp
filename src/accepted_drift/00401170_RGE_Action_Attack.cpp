@@ -52,6 +52,11 @@
 // - A natural initial-wait local and a period register hint on the read-only wait
 //   parameter were both codegen duplicates at 45 bytes. Restored the clean source;
 //   the remaining drift is still post-set_target register coloring.
+// ACCEPTED DRIFT: The 45 changed bytes schedule stack-parameter loads and
+// independent wait, range, minimum-range, missile, move, and fight stores
+// through different registers after set_target_obj. The fallback chains only
+// recolor identical master-object reads. Both calls, EH state, values, used
+// flags, member effects, cleanup, return, and fault order match.
 
 class RGE_Sprite;
 class RGE_Action_Object;
