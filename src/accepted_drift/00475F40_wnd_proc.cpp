@@ -78,6 +78,12 @@
 // changed bytes. Final validation retained this source and found no exact
 // lead; the next useful evidence is original TU/header or compiler-context
 // provenance for the two forwarding register-color families.
+// Fresh final pass: a shared argument copy and branch-local typed base receivers
+// both reproduced the same eight bytes. The pinned natural source remains best.
+// ACCEPTED DRIFT: All eight changed bytes recolor EAX, ECX, and EDX in two
+// base forwarding calls. Both builds read the same stack arguments in the same
+// order and push identical values. Instructions, flags, memory effects, six
+// calls, branches, cleanup, and fault order are otherwise identical.
 // Fresh pass (sa-a1bdd006-r1): the original decompiler's if-chain reconstruction
 // changed the function to 224 bytes and broke call/block alignment. Returning
 // only the default forward directly, omitting the redundant derived virtual

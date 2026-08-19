@@ -83,6 +83,13 @@
 // Current pass: exact Panel_ez sibling cleanup declaration order, explicit CRT
 // free/strcpy declarations, pointer-size allocation spelling, and cdecl argument
 // order all retained the 21-byte basin. A direct cleanup return grew 33 bytes.
+// Fresh final pass: a finish-scoped result and a finish-scoped owner alias both
+// reproduced the same 21-byte cleanup schedule. The natural source remains best.
+// ACCEPTED DRIFT: Two changed branch bytes target the same shared finish path.
+// The cleanup hunk moves cdecl stack adjustment around one field load and moves
+// SETE across only MOV and POP instructions. Those instructions preserve flags.
+// The SEH chain remains active through the same stack reads and restores at the
+// same point. Values, calls, frees, branches, cleanup, and fault behavior match.
 // A named post-cleanup error local grew the diff by 4 bytes. A carried calloc
 // result local changed the body or duplicated the clean basin. Empty guards and
 // dead pointer clearing were codegen duplicates. The unresolved tail is the

@@ -73,6 +73,13 @@
 //   compound edge updates. All retained the stable 253-byte group and the same
 //   15-byte +00C8 dispatch schedule mismatch. The reversed function-scope local
 //   order selects the oracle LEA SIB encoding but does not move the ctrl push.
+// Fresh final pass: a post-coordinate receiver plus named edge and a split
+// compound edge calculation both reproduced the same 15-byte output.
+// ACCEPTED DRIFT: The 15 changed bytes move one nonfaulting LEA around a stack
+// argument save and child-pointer load. The same right edge and call arguments
+// result. The final base forward only recolors two temporary registers. Values,
+// flags, observable memory effects, nine calls, branches, cleanup, and fault
+// order are equivalent.
 
 struct tagRECT {
     long left;
