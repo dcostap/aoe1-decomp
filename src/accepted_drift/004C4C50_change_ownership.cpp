@@ -50,6 +50,15 @@
 // the reviewed RGE_Player/RGE_Static_Object method surfaces. Renamed the
 // proven add/remove, explore/unexplore, and notify calls. Body bytes remain
 // 301B/134; source is now policy-valid without fake virtual slots.
+// ACCEPTED DRIFT: the first 151 bytes are exact except for one later branch
+// displacement. The sprite-selection hunk applies a complete EAX/ECX/EDX
+// recolor to old_master, its ID, the new owner's master table, and the current
+// sprite. It reads each field in the same order and selects the same default,
+// death, or undead sprite. The extra original move only transfers the same
+// old_master value between private registers. The remainder resynchronizes
+// exactly. Size, all nine calls, predicates, x87 HP calculation, ownership
+// stores, notifications, cleanup, and fault order match. This function has no
+// SEH. Twenty-eight focused probes found no natural exact register allocation.
 
 class RGE_Sprite;
 class RGE_Active_Sprite_List;
