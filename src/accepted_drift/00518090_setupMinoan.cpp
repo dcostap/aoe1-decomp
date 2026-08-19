@@ -49,6 +49,11 @@
 
 // Main-agent audit confirmed the shared canonical game/player/AI ownership;
 // direct civilization table stores remain authoritative.
+// ACCEPTED DRIFT: The only edit-distance hunk moves the private p-parameter
+// load across the difficulty branch and reloads it in the high-difficulty
+// arm. Both arms use p before any later call or store. CMP, MOV, and JGE cannot
+// fault except for the same private stack read. Values, flags at each branch,
+// field stores, all three calls, returns, and fault behavior match.
 class AIModule {
 public:
     void logCommonHistory(char* message, ...);

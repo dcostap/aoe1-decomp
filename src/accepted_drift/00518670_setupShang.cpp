@@ -57,6 +57,11 @@
 // v20 (sa-63b9d937-r1): refreshed the dossier and searched exact local donors
 // for the +0x97 store block. No same-TU donor gives this EDX/ECX pattern.
 // The typed direct-store source remains the cleanest supported reconstruction.
+// ACCEPTED DRIFT: The non-deathmatch hunk keeps the same table-store order but
+// colors constants through ECX instead of EDX and moves the private mapType
+// load and TEST after unconditional MOV stores. MOV preserves the oracle's
+// flags until its branch. Both builds write each value to the same slot in the
+// same order. Both calls, all branches, returns, and fault behavior match.
 
 typedef unsigned char uchar;
 

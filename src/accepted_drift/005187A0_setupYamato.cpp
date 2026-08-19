@@ -51,6 +51,12 @@
 
 // Main-agent audit confirmed the shared canonical game/player/AI ownership;
 // direct civilization table stores remain authoritative.
+// ACCEPTED DRIFT: The first hunk moves the private table-pointer load across
+// the difficulty branch; each arm loads it before use. The high-difficulty
+// hunk recolors constants and schedules independent stores to the valid setup
+// table around the private map-type load and TEST. All unconditional stores
+// complete before the same map branch. Values, calls, branches, returns, and
+// fault behavior match.
 class AIModule {
 public:
     void logCommonHistory(char* message, ...);
