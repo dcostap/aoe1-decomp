@@ -37,6 +37,10 @@
 //   permutation; the pinned typed source remains the natural reconstruction.
 // - Main review replaced direct allocation calls with new[]/delete[] and the
 //   manual vptr field with a virtual destructor. Codegen stayed unchanged.
+// ACCEPTED DRIFT: The ten differing bytes consistently permute three nonescaping
+// dword stack homes: result, rNum, and tempCount. Every read follows its matching
+// write, including the push-adjusted rNum update. No home's address escapes.
+// Register use, calls, values, writes, predicates, cleanup, and faults match.
 
 template <class T>
 class ManagedArray {

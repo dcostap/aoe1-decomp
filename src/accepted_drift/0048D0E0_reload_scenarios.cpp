@@ -16,6 +16,11 @@
 //   handle-width, and canonical virtual-surface probes retained 22 ordered
 //   calls and the 0x230 frame.  The remaining 10 bytes are only the swapped
 //   count and transient old-entry dword-home displacements.
+// ACCEPTED DRIFT: All ten differing bytes consistently exchange the two dword
+// stack homes at ESP+0x14 and ESP+0x18. Neither home's address escapes. Every
+// read follows the matching write in both builds, and register use after each
+// load is identical. Calls, values, writes, predicates, cleanup, and faults are
+// therefore equal. All non-displacement bytes match.
 
 #include <stdio.h>
 #include <stdlib.h>

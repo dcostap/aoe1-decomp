@@ -29,11 +29,15 @@
 // - revisit probe 20: replaced the manual vptr field with a natural virtual
 //   destructor surface. The emitted code was unchanged, so this typed layout
 //   is retained as the cleaner ownership model.
-// BLOCKER: current typed source has 473 bytes, all 16 direct calls aligned,
+// Prior blocker: current typed source has 473 bytes, all 16 direct calls aligned,
 // and a 10-byte positional diff. The remaining drift is three local homes and
 // their transient uses: original result/rNum/tempCount use
 // [esp+18]/[esp+14]/[esp+10], while current uses [esp+10]/[esp+18]/[esp+14].
 // The source keeps canonical ownership.
+// ACCEPTED DRIFT: The ten differing bytes consistently permute those three
+// nonescaping dword homes. Every read follows its matching write, including
+// the push-adjusted rNum update. Register use, calls, values, writes,
+// predicates, cleanup, and faults match the reviewed war-boat twin.
 
 extern "C" {
     void* operator_new(unsigned int size);

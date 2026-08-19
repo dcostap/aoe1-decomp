@@ -62,6 +62,11 @@
 //   reordering editor declarations all returned the same 10-byte basin. These
 //   probes support the clean RGE_Prog_Info* form but do not explain VC5's local
 //   add-after-currentLine schedule.
+// ACCEPTED DRIFT: The ten-byte edit only exchanges `ADD ESI,0xB12` with the
+// adjacent currentLine call. ESI holds prog_info->save_dir and is callee-saved;
+// the call receiver and arguments do not use it. The ADD has no memory access,
+// and the call result is consumed only after both instructions. Thus, call
+// behavior, pointer value, flags at first use, writes, cleanup, and faults match.
 
 #include <io.h>
 #include <stdio.h>

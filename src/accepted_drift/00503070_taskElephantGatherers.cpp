@@ -39,9 +39,12 @@
 //   maximumSizeValue before numberValue, while the original reverses them.
 //   Expanded updates were duplicate codegen; pointer-first updates and a
 //   cached count were worse and were restored.
-// - Left in scratch after the revisit. No unsupported raw vtable or
-//   inline-assembly form is retained. Next lead: resolve the two natural
-//   ManagedArray reload order without compiler steering.
+// ACCEPTED DRIFT: The four changed bytes move two adjacent stack reloads past
+//   each other. The original loads numberValue into ECX, then maximumSizeValue
+//   into ESI. The rebuild reverses these loads. No instruction occurs between
+//   them, and both registers have the same values before the next instruction.
+//   Calls, writes, predicates, fault order, cleanup, and all later bytes match.
+// - No unsupported raw vtable or inline-assembly form is retained.
 
 void* operator new(unsigned int size);
 void operator delete(void* ptr);

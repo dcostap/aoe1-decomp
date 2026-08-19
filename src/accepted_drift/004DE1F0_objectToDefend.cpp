@@ -102,6 +102,11 @@
 // new source evidence for the six-byte EDX/EDI recolor.  Final validation is
 // retained as an unresolved mismatch; a future pass needs new TU or source
 // evidence rather than another equivalent register probe.
+// ACCEPTED DRIFT: All six changed bytes form one consistent EDX/EDI exchange.
+// Instruction order, operands, memory addresses, calls, branches, and flags
+// remain the same under that mapping. Both registers are caller-saved, and the
+// mapped values have identical live ranges. Every basic block and instruction
+// shape matches; no memory effect, cleanup action, or fault order changes.
 
 #include <stddef.h>
 

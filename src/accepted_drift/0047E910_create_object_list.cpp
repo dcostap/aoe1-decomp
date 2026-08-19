@@ -52,6 +52,10 @@
 // - Clean direct-indexing source remains authoritative. The only mismatch is
 //   the independent xor/movsx order at +0x3A; typed ownership and calls remain
 //   exact. No policy-compliant natural source lead remains.
+// ACCEPTED DRIFT: The five-byte span only exchanges adjacent XOR EDX,EDX and
+// MOVSX ESI,BP instructions. They write separate registers. MOVSX preserves
+// the flags produced by XOR, so registers and flags are equal afterward. No
+// call, memory access, or branch occurs between them. All other bytes match.
 
 #include "..\..\include\game_globals.h"
 

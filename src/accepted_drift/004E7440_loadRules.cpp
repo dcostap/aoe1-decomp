@@ -56,6 +56,11 @@
 // Those forms reversed emitted byte tests relative to the original.
 // Reversing both returned to the four-byte basin. No exact or policy-valid source was found.
 // Restored the pinned scalar parser for final validation.
+// ACCEPTED DRIFT: The four differing displacement bytes exchange the two
+// adjacent one-byte stack homes used for sscanf's first and second `%c`
+// outputs. Each later predicate follows its corresponding parsed byte, so the
+// parsed values, tests, calls, writes, cleanup, and faults are equal. The two
+// one-byte outputs cannot overlap, and all remaining bytes match.
 
 extern "C" int __cdecl strcmp(const char* left, const char* right);
 extern "C" unsigned int __cdecl strlen(const char* text);

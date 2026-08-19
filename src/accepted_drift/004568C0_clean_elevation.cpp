@@ -43,6 +43,11 @@
 // positional diff. The remaining drift is the current-tile increment block:
 // original increments AL before masking BL; VC5 emits the reverse order and
 // stores through BL. Keep the natural typed source and the two improvements.
+// ACCEPTED DRIFT: The original and rebuild independently increment AL and mask
+// BL, then shift AL by five. They use opposite XOR destinations but store the
+// same commutative XOR result to [ESI+5]. No memory access or branch occurs
+// inside the changed span. EAX and EBX are reloaded before their next uses, and
+// ADD overwrites the flags before the next branch. All other bytes match.
 
 #include <stdlib.h>
 

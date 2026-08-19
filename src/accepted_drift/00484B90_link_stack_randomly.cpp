@@ -48,6 +48,10 @@
 // debug_rand import uses C linkage. The base generate method is concrete, and
 // the known helper methods use their protected surfaces. No generic virtual
 // slot, raw cursor, volatility, or no-effect expression is present.
+// ACCEPTED DRIFT: The only two differing bytes exchange map_width and
+// map_height between one MOV and its adjacent signed IMUL. Multiplication is
+// commutative. Both ordinary field loads complete before any later operation,
+// and the product and IMUL flags are equal. All remaining bytes match.
 
 struct Map_Stack {
     long x;                 // +0x00

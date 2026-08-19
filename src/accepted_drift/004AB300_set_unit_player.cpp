@@ -64,7 +64,12 @@
 // - BINARY NOTE: the original emits xor ecx,ecx then movsx edx,di at +0xE8;
 //   every policy-valid direct-array form emits the reverse order. The exact
 //   byte-offset cursor donor is not retained because it is not canonical typed
-//   array source. Keep this clean five-byte frontier.
+//   array source.
+// ACCEPTED DRIFT: The five-byte span only exchanges these two adjacent,
+//   independent instructions. MOVSX reads DI and writes EDX. XOR writes ECX
+//   and flags. MOVSX does not change flags. Thus, registers and flags are equal
+//   before the next instruction. No call, memory access, or branch intervenes.
+//   All remaining bytes, calls, writes, predicates, cleanup, and faults match.
 // FLAGS: default config/flags/default.rsp (/nologo /c /O2 /Oy).
 
 #include <string.h>

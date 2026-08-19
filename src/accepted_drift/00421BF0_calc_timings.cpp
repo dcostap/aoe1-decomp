@@ -63,6 +63,13 @@
 //   timing[12] at +0x227.  Natural direct and reversed `+` expressions both
 //   load timing[12] first under this VC5 context.  The exact calc_timing_text
 //   donor confirms that the surrounding use changes this commutative schedule.
+// ACCEPTED DRIFT: The only two differing bytes swap the source displacements
+//   of two adjacent MOV instructions. The original loads timings[10] into EAX
+//   and timings[12] into EDX. The rebuild reverses those two loads. Both loads
+//   precede the same unsigned ADD. EDX is then cleared before DIV. No call,
+//   write, branch, or observable operation occurs between the loads and ADD.
+//   Thus, the sum, divisor, quotient, calls, writes, predicates, and faults are
+//   equal for the valid nonvolatile RGE_Base_Game object required by the ABI.
 // BINARY NOTE: The executable reloads include_in_total after the first timer
 //   probe and performs the 8-byte cleanup after that reload.
 // LIKELY INTENT: The timer record is a typed 0x20-byte array.  The remaining

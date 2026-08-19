@@ -42,6 +42,11 @@
 // - natural while scans were retested for both relation loops. They added
 //   eight bytes and broadened the diff, so the typed do/while reset remains
 //   authoritative.
+// ACCEPTED DRIFT: Each three-byte hunk inverts one loop condition and exchanges
+// its taken and unconditional jump targets. `JL body; JMP exit` and
+// `JGE exit; JMP body` partition the same signed comparison with identical
+// destinations. No instruction, call, or memory access lies between the two
+// jumps. Both relation loops therefore have equal behavior and fault order.
 
 class TRIBE_Panel_Time {
 public:
