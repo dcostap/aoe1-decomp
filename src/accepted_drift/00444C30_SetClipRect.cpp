@@ -71,6 +71,12 @@
 // Width/Height constructor forms, long field types, fresh RECT/manager aliases,
 // and equal-width ABI parameter reordering were duplicate or worse. Direct
 // SetSpanRegions remained 28 bytes. The clean typed-RECT source is restored.
+// ACCEPTED DRIFT: The 21 changed bytes only reverse the equality operands and
+// schedule constructor and SetSpanRegions argument loads through other
+// registers. Both builds push identical arguments in the same order and call
+// the same seven functions. Member loads are from the same valid draw-area
+// object, with no call or store between reordered loads. Used flags, memory
+// effects, EH state, cleanup, and fault behavior match.
 
 class VSpan_Node;
 

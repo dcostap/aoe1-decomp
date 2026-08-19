@@ -64,6 +64,11 @@
 //   all 16 calls and the first 226 bytes align, but the success/failure tail
 //   still emits `mov esi,1; mov eax,esi` instead of the oracle's `mov eax,1`.
 // FLAGS: config/flags/004CB1B0_convert.rsp
+// ACCEPTED DRIFT: The two-byte size increase only funnels the null, allocation
+// failure, and success results through ESI before EAX. The original leaves the
+// same zero from make_action, writes zero directly on constructor failure, and
+// writes one directly on success. All calls, branches, memory effects, EH
+// states, cleanup, return values, and fault behavior match.
 
 class RGE_Static_Object;
 class RGE_Game_World;

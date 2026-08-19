@@ -39,6 +39,10 @@
 // A 72-variant source lab and 128 ambient TU declaration samples found no exact
 // result. All size/frame/call-set eligible variants stayed in the same 25-byte
 // basin. The local donor 004C6DA0 matched 647/647 with typed x87 expressions.
+// Fresh pass: a named created-object local and an output-reference alias both
+// reproduced the same 25 bytes. Keep this target in scratch. The rebuilt output
+// store moves after register pops, so an invalid output pointer faults with a
+// different exception context. That prevents an accepted-drift proof.
 
 #include "../../include/game_globals.h"
 

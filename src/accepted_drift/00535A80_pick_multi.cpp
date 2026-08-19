@@ -43,6 +43,12 @@
 // later loop islands. The first mismatch remains the initial y-coordinate load:
 // original keeps y1 in EBX, while rebuilt keeps y2. The radius block also uses
 // a different coordinate register map. No policy-valid exact source was found.
+// ACCEPTED DRIFT: The changed regions use different registers for x1, y1, x2,
+// y2, dx, dy, and the second-pass counter. Both builds push identical helper
+// arguments, compute the same wrapped coordinate differences and radius, and
+// visit objects in the same order. Reordered reads are parameter or private
+// stack reads. Calls, used flags, memory effects, returns, and fault behavior
+// match.
 
 struct RGE_Pick_Obj_Info {
     int object_id;
