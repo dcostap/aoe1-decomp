@@ -38,6 +38,9 @@
 //   branch-common duplication, supported headers, and reviewed inheritance
 //   context stayed at 334 bytes and 96 positional bytes off. Restored the
 //   natural direct source; the remaining hunk is the 0x28/0x64 load schedule.
+// BLOCKER: the residual schedule moves the +0xA0 store before the +0x18 and
+// +0x4C stores. These writes use the caller's output array. A short or invalid
+// array can therefore expose a different partial result and fault point.
 
 struct AIModule {
     void __cdecl logCommonHistory(char* msg);

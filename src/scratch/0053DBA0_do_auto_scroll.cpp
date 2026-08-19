@@ -42,6 +42,9 @@
 //   blocks. Ambient declaration sweeps and stdlib/math header probes were
 //   codegen-neutral or worse. The best result remains 775 bytes (+2), 15/15
 //   ordered calls, 0x2C frame, and 99.55% exact-block coverage.
+// BLOCKER: the rebuild inserts FXCH before FADDP and therefore reverses the
+// x87 operands. Ordinary finite sums match, but NaN payload choice and signed
+// zero can differ. Do not accept this as commutative integer-style drift.
 
 typedef void* HWND;
 
