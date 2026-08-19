@@ -30,9 +30,32 @@
 //   original 6631-byte boundary and raises shape similarity to 89.36%.
 //   Separate pointer loops reproduce the original sanitize and total passes.
 //   Extern counter globals and reviewed rge_base_game ownership improve the
-//   codegen basin. The result remains nonexact: the checker reports four missing
-//   setRule sites in the late victory branch and 5713 positional-diff bytes.
-//   The late branch is emitted after the effective function boundary.
+//   codegen basin.
+// - 2026-08-19: completed another 20 distinct probes. Natural power-of-two
+//   remainder expressions, branch-specific merged calls, the original selected-
+//   counter tails, and explicit final Boolean branches raise shape similarity
+//   from 89.36% to 96.60% and exact-block coverage from 59.66% to 80.30%.
+//   Ordered call parity rises from 127/131 to 130/131. The remaining missing
+//   site is the final victory-branch setRule(0x37), whose cold block starts past
+//   the 6631-byte boundary. The retained source has the exact frame, size,
+//   prologue, instruction count within two, and all 27 debug_rand call sites.
+// - 2026-08-19: a third 20-probe pass restored PDB-ordered selected-switch
+//   handlers, positive-first early map branches, and a distinct selection index.
+//   Strict positional difference falls from 5714 to 3074 bytes. Shape rises to
+//   98.13% and exact-block coverage rises to 83.81%. The instruction count is
+//   one above the original. The final cold-tail setRule remains outside the
+//   boundary because the selected switch uses an 8-byte-larger compressed
+//   dispatch and map adjustment adds another 7 bytes. A direct index-only scan
+//   proves all 131 calls can fit, but it loses the binary-observed zero fallback
+//   and changes broad register allocation, so it is not retained.
+// - 2026-08-19: a fourth 20-probe pass expanded each selected-build-list case
+//   body, as supported by the original 425-line switch span. This restores the
+//   direct jump table. Reusing randomValue for adjusted map size restores the
+//   original common load and in-place adjustment. An explicit rule 0xBC branch
+//   restores the missing CFG blocks. The result has exact size, frame, saved
+//   registers, instruction count, all 131 calls, 124 conditionals, and 71 jumps.
+//   Shape is 98.68%, exact-block coverage is 88.04%, and strict difference is
+//   1518 bytes. Remaining differences are mainly register and shared-tail maps.
 // Notes:
 // - The packet's decompiler folds the saved game difficulty into buildLists[0]; the
 //   real stack has `gameDifficulty` at +0x14 and `buildLists[125]` at +0x18.
@@ -193,7 +216,18 @@ public:
 #define BL(n) buildLists[(n) - 1]
 #define buildLists packet.weights
 #define DIV3_POS(x) do { if (0 < (x)) { (x) = (x) / 3; } } while (0)
-#define SIGN_MASK_MOD(v, mask) ((((((v) ^ ((v) >> 31)) - ((v) >> 31)) & (mask)) ^ ((v) >> 31)) - ((v) >> 31))
+#define SELECT_SPECIAL(v) case v: SET_RULE(0x3B, 4); SET_RULE(0x3C, 10); ++DAT_00886c34; ++DAT_00886c48; goto selectedCountersDone
+#define SELECT_COMPUTER(v) case v: ++computerPlayerSetup; break
+#define SELECT_NONE(v) case v: break
+#define SELECT_C48(v) case v: ++DAT_00886c48; goto selectedCountersDone
+#define SELECT_C44_C2C(v) case v: ++DAT_00886c44; ++DAT_00886c2c; goto selectedCountersDone
+#define SELECT_C44_C28(v) case v: ++DAT_00886c44; ++DAT_00886c28; goto selectedCountersDone
+#define SELECT_C1C(v) case v: ++DAT_00886c1c; break
+#define SELECT_C2C(v) case v: ++DAT_00886c2c; break
+#define SELECT_C20(v) case v: ++DAT_00886c20; break
+#define SELECT_C24(v) case v: ++DAT_00886c24; break
+#define SELECT_C30(v) case v: ++DAT_00886c30; break
+#define SELECT_C28(v) case v: ++DAT_00886c28; break
 
 void TRIBE_Player::intelligentBuildListAndRulesSelection(char* buildListName, char* ruleSetName,
                                                          int mapType, int victoryType, int mapSize)
@@ -234,39 +268,45 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* buildListName, ch
         if (civ == 3 || civ == 0 || civ == 1 || civ == 4 || civ == 8 ||
             civ == 6 || civ == 7 || civ == 10) {
             if (mapType == 0) {
-                if (DAT_00886c44 <= 0) {
+                if (DAT_00886c44 > 0) {
+                    if (DAT_00886c48 == 0) {
+                        BL(0x0E) += 300;
+                        BL(0x0F) += 300;
+                    } else {
+                        BL(0x0E) += 100;
+                        BL(0x0F) += 100;
+                    }
+                } else {
                     BL(0x0E) = 0;
                     BL(0x0F) = 0;
-                } else if (DAT_00886c48 == 0) {
-                    BL(0x0E) += 300;
-                    BL(0x0F) += 300;
-                } else {
-                    BL(0x0E) += 100;
-                    BL(0x0F) += 100;
                 }
             }
             if (mapType == 1) {
-                if (DAT_00886c44 <= 0) {
+                if (DAT_00886c44 > 0) {
+                    if (DAT_00886c48 == 0) {
+                        BL(0x0E) += 250;
+                        BL(0x0F) += 250;
+                    } else {
+                        BL(0x0E) += 75;
+                        BL(0x0F) += 75;
+                    }
+                } else {
                     BL(0x0E) = 0;
                     BL(0x0F) = 0;
-                } else if (DAT_00886c48 == 0) {
-                    BL(0x0E) += 250;
-                    BL(0x0F) += 250;
-                } else {
-                    BL(0x0E) += 75;
-                    BL(0x0F) += 75;
                 }
             }
             if (mapType == 2 || mapType == 6 || mapType == 8) {
-                if (DAT_00886c44 <= 0) {
+                if (DAT_00886c44 > 0) {
+                    if (DAT_00886c48 == 0) {
+                        BL(0x0E) += 200;
+                        BL(0x0F) += 200;
+                    } else {
+                        BL(0x0E) += 50;
+                        BL(0x0F) += 50;
+                    }
+                } else {
                     BL(0x0E) = 0;
                     BL(0x0F) = 0;
-                } else if (DAT_00886c48 == 0) {
-                    BL(0x0E) += 200;
-                    BL(0x0F) += 200;
-                } else {
-                    BL(0x0E) += 50;
-                    BL(0x0F) += 50;
                 }
             }
         }
@@ -441,164 +481,150 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* buildListName, ch
     int remainder = randomValue % total;
     int selectedBuildList = 0;
     int cumulative = 0;
-    for (difficultyLevel = 0; difficultyLevel < 125; ++difficultyLevel) {
-        cumulative += buildLists[difficultyLevel];
+    int selectionIndex = 0;
+    for (; selectionIndex < 125; ++selectionIndex) {
+        cumulative += buildLists[selectionIndex];
         if (cumulative > remainder) {
-            selectedBuildList = difficultyLevel;
+            selectedBuildList = selectionIndex;
             break;
         }
     }
 
     rge_base_game->get_string(selectedBuildList + 0x26930, buildListName, 0x100);
 
-    int countSelectedAsCommon = 1;
     switch (selectedBuildList) {
-    case 0:
-    case 1:
-    case 2:
-    case 0x29:
-    case 0x32:
-    case 0x33:
-    case 0x50:
-    case 0x51:
-    case 0x52:
-    case 0x6B:
-        ++DAT_00886c2c;
-        break;
-    case 6:
-    case 7:
-    case 8:
-    case 0x2B:
-    case 0x36:
-    case 0x37:
-    case 0x3A:
-    case 0x3B:
-    case 0x68:
-        ++DAT_00886c1c;
-        break;
-    case 0x0D:
-    case 0x0E:
-    case 0x0F:
-        SET_RULE(0x3B, 4);
-        SET_RULE(0x3C, 10);
-        ++DAT_00886c34;
-        ++DAT_00886c48;
-        countSelectedAsCommon = 0;
-        break;
-    case 0x10:
-    case 0x31:
-    case 0x6C:
-        ++DAT_00886c20;
-        break;
-    case 0x11:
-    case 0x12:
-    case 0x2E:
-    case 0x34:
-    case 0x35:
-    case 99:
-    case 0x66:
-    case 0x6D:
-        ++DAT_00886c24;
-        break;
-    case 0x13:
-    case 0x14:
-    case 0x15:
-        ++computerPlayerSetup;
-        break;
-    case 0x16:
-    case 0x17:
-    case 0x18:
-    case 0x19:
-    case 0x1A:
-    case 0x1B:
-    case 0x1C:
-    case 0x1D:
-    case 0x1E:
-    case 0x1F:
-    case 0x20:
-    case 0x21:
-    case 0x22:
-    case 0x23:
-    case 0x24:
-    case 0x25:
-    case 0x26:
-    case 0x27:
-    case 0x75:
-    case 0x76:
-    case 0x77:
-    case 0x78:
-        break;
-    case 0x28:
-    case 0x39:
-    case 0x54:
-    case 0x72:
-        ++DAT_00886c30;
-        break;
-    case 0x3C:
-    case 0x3D:
-    case 0x3E:
-    case 0x3F:
-    case 0x40:
-    case 0x41:
-    case 0x42:
-    case 0x43:
-    case 0x44:
-    case 0x45:
-    case 0x46:
-    case 0x47:
-    case 0x4B:
-    case 0x4C:
-    case 0x4D:
-    case 0x4E:
-    case 0x4F:
-    case 0x53:
-    case 0x55:
-    case 0x56:
-    case 0x57:
-    case 0x58:
-    case 0x59:
-    case 0x5A:
-    case 0x5B:
-    case 0x5C:
-    case 0x5D:
-    case 0x5E:
-    case 0x5F:
-    case 0x60:
-    case 0x61:
-    case 100:
-    case 0x65:
-    case 0x69:
-    case 0x6A:
-    case 0x6E:
-    case 0x6F:
-    case 0x73:
-    case 0x74:
-    case 0x79:
-    case 0x7A:
-    case 0x7B:
-    case 0x7C:
-        ++DAT_00886c48;
-        countSelectedAsCommon = 0;
-        break;
-    case 0x48:
-    case 0x49:
-        ++DAT_00886c44;
-        ++DAT_00886c2c;
-        countSelectedAsCommon = 0;
-        break;
-    case 0x4A:
-        ++DAT_00886c44;
-        ++DAT_00886c28;
-        countSelectedAsCommon = 0;
-        break;
+    SELECT_SPECIAL(0x0D);
+    SELECT_SPECIAL(0x0E);
+    SELECT_SPECIAL(0x0F);
+    SELECT_COMPUTER(0x13);
+    SELECT_COMPUTER(0x14);
+    SELECT_COMPUTER(0x15);
+    SELECT_NONE(0x16);
+    SELECT_NONE(0x17);
+    SELECT_NONE(0x18);
+    SELECT_NONE(0x19);
+    SELECT_NONE(0x1A);
+    SELECT_NONE(0x1B);
+    SELECT_NONE(0x1C);
+    SELECT_NONE(0x1D);
+    SELECT_NONE(0x1E);
+    SELECT_NONE(0x1F);
+    SELECT_NONE(0x20);
+    SELECT_NONE(0x21);
+    SELECT_NONE(0x22);
+    SELECT_NONE(0x23);
+    SELECT_NONE(0x24);
+    SELECT_NONE(0x25);
+    SELECT_NONE(0x26);
+    SELECT_NONE(0x27);
+    SELECT_NONE(0x75);
+    SELECT_NONE(0x76);
+    SELECT_NONE(0x77);
+    SELECT_NONE(0x78);
+    SELECT_C48(0x3C);
+    SELECT_C48(0x3D);
+    SELECT_C48(0x3E);
+    SELECT_C48(0x3F);
+    SELECT_C48(0x40);
+    SELECT_C48(0x41);
+    SELECT_C48(0x42);
+    SELECT_C48(0x43);
+    SELECT_C48(0x44);
+    SELECT_C48(0x45);
+    SELECT_C48(0x46);
+    SELECT_C48(0x47);
+    SELECT_C48(0x4B);
+    SELECT_C48(0x4C);
+    SELECT_C48(0x4D);
+    SELECT_C48(0x4E);
+    SELECT_C48(0x4F);
+    SELECT_C48(0x53);
+    SELECT_C48(0x55);
+    SELECT_C48(0x56);
+    SELECT_C48(0x57);
+    SELECT_C48(0x58);
+    SELECT_C48(0x59);
+    SELECT_C48(0x5A);
+    SELECT_C48(0x5B);
+    SELECT_C48(0x5C);
+    SELECT_C48(0x5D);
+    SELECT_C48(0x5E);
+    SELECT_C48(0x5F);
+    SELECT_C48(0x60);
+    SELECT_C48(0x61);
+    SELECT_C48(100);
+    SELECT_C48(0x65);
+    SELECT_C48(0x69);
+    SELECT_C48(0x6A);
+    SELECT_C48(0x6E);
+    SELECT_C48(0x6F);
+    SELECT_C48(0x73);
+    SELECT_C48(0x74);
+    SELECT_C48(0x79);
+    SELECT_C48(0x7A);
+    SELECT_C48(0x7B);
+    SELECT_C48(0x7C);
+    SELECT_C44_C2C(0x48);
+    SELECT_C44_C2C(0x49);
+    SELECT_C44_C28(0x4A);
+    SELECT_C1C(6);
+    SELECT_C1C(7);
+    SELECT_C1C(8);
+    SELECT_C1C(0x2B);
+    SELECT_C1C(0x36);
+    SELECT_C1C(0x37);
+    SELECT_C1C(0x3A);
+    SELECT_C1C(0x3B);
+    SELECT_C1C(0x68);
+    SELECT_C2C(0);
+    SELECT_C2C(1);
+    SELECT_C2C(2);
+    SELECT_C2C(0x29);
+    SELECT_C2C(0x32);
+    SELECT_C2C(0x33);
+    SELECT_C2C(0x50);
+    SELECT_C2C(0x51);
+    SELECT_C2C(0x52);
+    SELECT_C2C(0x6B);
+    SELECT_C20(0x10);
+    SELECT_C20(0x31);
+    SELECT_C20(0x6C);
+    SELECT_C24(0x11);
+    SELECT_C24(0x12);
+    SELECT_C24(0x2E);
+    SELECT_C24(0x34);
+    SELECT_C24(0x35);
+    SELECT_C24(99);
+    SELECT_C24(0x66);
+    SELECT_C24(0x6D);
+    SELECT_C30(0x28);
+    SELECT_C30(0x39);
+    SELECT_C30(0x54);
+    SELECT_C30(0x72);
+    SELECT_C28(3);
+    SELECT_C28(4);
+    SELECT_C28(5);
+    SELECT_C28(9);
+    SELECT_C28(10);
+    SELECT_C28(0x0B);
+    SELECT_C28(0x0C);
+    SELECT_C28(0x2A);
+    SELECT_C28(0x2C);
+    SELECT_C28(0x2D);
+    SELECT_C28(0x2F);
+    SELECT_C28(0x30);
+    SELECT_C28(0x38);
+    SELECT_C28(0x62);
+    SELECT_C28(0x67);
+    SELECT_C28(0x70);
+    SELECT_C28(0x71);
     default:
         ++DAT_00886c28;
         break;
     }
-    if (countSelectedAsCommon != 0) {
-        ++DAT_00886c44;
-    }
+    ++DAT_00886c44;
 
+selectedCountersDone:
     rge_base_game->get_string((int)this->civ_id + 0x27F6, tempString, 0x100);
     this->playerAI->logCommonHistory(S_I_AM_THE_CIV, tempString, (int)this->civ_id - 1);
     this->playerAI->logCommonHistory(S_SELECTED_BEST_BUILD_LIST, buildListName);
@@ -617,15 +643,14 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* buildListName, ch
     case 4:
     case 5:
         workingMapType = GET_RULE(1);
-        if (workingMapType < 1) {
-            SET_RULE(0, 0x32);
-            workingMapType = 0x32;
-        } else {
+        if (workingMapType > 0) {
             SET_RULE(0, 0x32);
             SET_RULE(1, 0x19);
-            workingMapType = 0x19;
+            SET_RULE(2, 0x19);
+        } else {
+            SET_RULE(0, 0x32);
+            SET_RULE(2, 0x32);
         }
-        SET_RULE(2, workingMapType);
         if (mapType > 1) {
             SET_RULE(3, 5);
         }
@@ -683,12 +708,6 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* buildListName, ch
         ++DAT_00886c3c;
         attackTime = (debug_rand(S_TPLAYER_CPP, 0xE58) % 6 + 0x14) * 60;
         break;
-    case 9:
-    case 0x38:
-        randomValue = debug_rand(S_TPLAYER_CPP, 0xE69);
-        attackTime = (SIGN_MASK_MOD(randomValue, 1) + 5) * 60;
-        ++DAT_00886c38;
-        break;
     case 10:
     case 0x29:
     case 0x2B:
@@ -698,8 +717,12 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* buildListName, ch
     case 0x3A:
     case 0x71:
         ++DAT_00886c38;
-        randomValue = debug_rand(S_TPLAYER_CPP, 0xE64);
-        attackTime = (SIGN_MASK_MOD(randomValue, 3) + 0x0B) * 60;
+        attackTime = (debug_rand(S_TPLAYER_CPP, 0xE64) % 4 + 0x0B) * 60;
+        break;
+    case 9:
+    case 0x38:
+        attackTime = (debug_rand(S_TPLAYER_CPP, 0xE69) % 2 + 5) * 60;
+        ++DAT_00886c38;
         break;
     default:
         ++DAT_00886c40;
@@ -716,69 +739,74 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* buildListName, ch
     SET_RULE(0x5D, 1);
     SET_RULE(99, 4);
 
-    SET_RULE(0xBC, (debug_rand(S_TPLAYER_CPP, 0xE80) % 3 != 0));
+    if (debug_rand(S_TPLAYER_CPP, 0xE80) % 3 == 0) {
+        SET_RULE(0xBC, 0);
+    } else {
+        SET_RULE(0xBC, 1);
+    }
     SET_RULE(0xC3, debug_rand(S_TPLAYER_CPP, 0xE86) % 0x28 + 10);
     SET_RULE(0xBD, debug_rand(S_TPLAYER_CPP, 0xE8A) % 0x46 + 0x1E);
     SET_RULE(0xC6, (debug_rand(S_TPLAYER_CPP, 0xE8E) % 5 + 5) * gameDifficulty);
     SET_RULE(0xC7, (debug_rand(S_TPLAYER_CPP, 0xE92) % 10 + 10) * gameDifficulty);
     SET_RULE(0xA1, 4);
 
-    int adjustedMapSize = mapSize;
+    randomValue = mapSize;
     if (workingMapType == 0) {
-        adjustedMapSize -= 2;
+        randomValue -= 2;
     } else if (workingMapType == 1) {
-        adjustedMapSize -= 1;
+        randomValue -= 1;
     }
 
-    int nextGoal = 0;
-    switch (adjustedMapSize) {
+    int nextGoal;
+    switch (randomValue) {
     case -2:
-    case -1:
-        randomValue = debug_rand(S_TPLAYER_CPP, 0xEA2);
-        SET_RULE(0x49, SIGN_MASK_MOD(randomValue, 1) + 0x0E);
-        nextGoal = GET_RULE(0x49);
+    case -1: {
+        SET_RULE(0x49, debug_rand(S_TPLAYER_CPP, 0xEA2) % 2 + 0x0E);
+        int firstGoal = GET_RULE(0x49);
         randomValue = debug_rand(S_TPLAYER_CPP, 0xEA4);
-        nextGoal += 1 + SIGN_MASK_MOD(randomValue, 3);
+        nextGoal = firstGoal + randomValue % 4 + 1;
+        SET_RULE(0x4A, nextGoal);
         break;
-    case 0:
-        randomValue = debug_rand(S_TPLAYER_CPP, 0xEA7);
-        SET_RULE(0x49, SIGN_MASK_MOD(randomValue, 1) + 0x0F);
+    }
+    case 0: {
+        SET_RULE(0x49, debug_rand(S_TPLAYER_CPP, 0xEA7) % 2 + 0x0F);
         nextGoal = GET_RULE(0x49);
         randomValue = debug_rand(S_TPLAYER_CPP, 0xEA9);
-        nextGoal += 1 + SIGN_MASK_MOD(randomValue, 3);
+        nextGoal += 1 + randomValue % 4;
+        SET_RULE(0x4A, nextGoal);
         break;
+    }
     case 1:
         SET_RULE(0x49, debug_rand(S_TPLAYER_CPP, 0xEAC) % 3 + 0x10);
         nextGoal = GET_RULE(0x49);
         nextGoal += 1 + debug_rand(S_TPLAYER_CPP, 0xEAE) % 5;
+        SET_RULE(0x4A, nextGoal);
         break;
     case 2:
-        randomValue = debug_rand(S_TPLAYER_CPP, 0xEB1);
-        SET_RULE(0x49, SIGN_MASK_MOD(randomValue, 1) + 0x11);
+        SET_RULE(0x49, debug_rand(S_TPLAYER_CPP, 0xEB1) % 2 + 0x11);
         nextGoal = GET_RULE(0x49);
         nextGoal += 1 + debug_rand(S_TPLAYER_CPP, 0xEB3) % 6;
+        SET_RULE(0x4A, nextGoal);
         break;
     case 3:
-        randomValue = debug_rand(S_TPLAYER_CPP, 0xEB6);
-        SET_RULE(0x49, SIGN_MASK_MOD(randomValue, 1) + 0x12);
+        SET_RULE(0x49, debug_rand(S_TPLAYER_CPP, 0xEB6) % 2 + 0x12);
         nextGoal = GET_RULE(0x49);
         nextGoal += 1 + debug_rand(S_TPLAYER_CPP, 0xEB8) % 7;
+        SET_RULE(0x4A, nextGoal);
         break;
     case 4:
-        randomValue = debug_rand(S_TPLAYER_CPP, 0xEBB);
-        SET_RULE(0x49, SIGN_MASK_MOD(randomValue, 3) + 0x12);
+        SET_RULE(0x49, debug_rand(S_TPLAYER_CPP, 0xEBB) % 4 + 0x12);
         nextGoal = GET_RULE(0x49);
-        randomValue = debug_rand(S_TPLAYER_CPP, 0xEBD);
-        nextGoal += 1 + SIGN_MASK_MOD(randomValue, 7);
+        nextGoal += 1 + debug_rand(S_TPLAYER_CPP, 0xEBD) % 8;
+        SET_RULE(0x4A, nextGoal);
         break;
     default:
-        randomValue = debug_rand(S_TPLAYER_CPP, 0xEC1);
-        SET_RULE(0x49, SIGN_MASK_MOD(randomValue, 1) + 0x12);
+        SET_RULE(0x49, debug_rand(S_TPLAYER_CPP, 0xEC1) % 2 + 0x12);
         nextGoal = GET_RULE(0x49);
         nextGoal += 1 + debug_rand(S_TPLAYER_CPP, 0xEC3) % 9;
+        SET_RULE(0x4A, nextGoal);
         break;
     }
-    SET_RULE(0x4A, nextGoal);
     SET_RULE(0xD0, 1);
     SET_RULE(0xD1, 1);
     SET_RULE(0xD2, 1);
@@ -828,31 +856,34 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* buildListName, ch
     SET_RULE(0xA2, 0);
     if (gameDifficulty < 3) {
         SET_RULE(0xC2, 1);
-        workingMapType = 2;
+        SET_RULE(0x2F, 2);
     } else {
         SET_RULE(0xC2, 0);
-        workingMapType = 1;
+        SET_RULE(0x2F, 1);
     }
-    SET_RULE(0x2F, workingMapType);
 
-    int difficultyRuleValue;
     if (gameDifficulty == 0) {
         SET_RULE(0xBA, 0xB4);
-        difficultyRuleValue = 200;
+        SET_RULE(0xBA, 200);
     } else if (gameDifficulty == 1) {
         SET_RULE(0xBA, 0xB4);
-        difficultyRuleValue = 0x96;
+        SET_RULE(0xBA, 0x96);
     } else if (gameDifficulty == 2) {
         SET_RULE(0xBA, 0xB4);
-        difficultyRuleValue = 100;
+        SET_RULE(0xBA, 100);
     } else if (gameDifficulty == 3) {
         SET_RULE(0xBA, 0xB4);
-        difficultyRuleValue = 0x32;
-    }
-    if (gameDifficulty >= 0 && gameDifficulty <= 3) {
-        SET_RULE(0xBA, difficultyRuleValue);
+        SET_RULE(0xBA, 0x32);
     }
 
-    SET_RULE(0xB5, (debug_rand(S_TPLAYER_CPP, 0xF50) % 6 < 5));
-    SET_RULE(0xB6, (debug_rand(S_TPLAYER_CPP, 0xF56) % 3 < 1));
+    if (debug_rand(S_TPLAYER_CPP, 0xF50) % 6 < 5) {
+        SET_RULE(0xB5, 1);
+    } else {
+        SET_RULE(0xB5, 0);
+    }
+    if (debug_rand(S_TPLAYER_CPP, 0xF56) % 3 < 1) {
+        SET_RULE(0xB6, 1);
+    } else {
+        SET_RULE(0xB6, 0);
+    }
 }
