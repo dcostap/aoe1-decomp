@@ -33,6 +33,11 @@
 //   the first pop_stack setup. The bottom pop_stack call and all later blocks
 //   are positionally exact. World/player aliases, count scope, stack pointer
 //   aliases, and reference-form stack ABI were codegen duplicates or worse.
+// ACCEPTED DRIFT: The initial clear multiplies the same width and height in the
+// opposite load order. The next hunk recolors the player index and schedules
+// valid world/player loads and private output addresses around the first
+// pop_stack call. Both builds pass identical addresses and values. All 13 calls,
+// used flags, memory effects, FPU operations, returns, and fault order match.
 
 extern "C" void* __cdecl memset(void*, int, unsigned int);
 

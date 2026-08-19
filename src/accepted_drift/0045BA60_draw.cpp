@@ -32,6 +32,12 @@
 // 30: unsigned facet, Poll gap_10 class context, last_facet temp, shared err, and cursor receiver locals did not move the basin.
 // 31: reusing one cursor local for SetTrans and BltFast caused a 752-byte body and 262-byte mismatch; restored.
 // final: after 20 meaningful hypotheses, the clean source remains scratch and paused at a 53-byte REGISTER_MAP_CONFLICT beginning at 0045BC43. Calls, frame, size, CFG, and all 13 call sites match.
+// ACCEPTED DRIFT: The changed drawing blocks recolor facet, shape-info,
+// coordinate, cursor-surface, and COM-receiver temporaries. Both builds push
+// identical shape_draw, SetTrans, and BltFast arguments. Reordered reads use
+// the same valid mouse-pointer members, with no call or store between them.
+// The last-facet store moves across an unrelated mode read. All calls, used
+// flags, memory effects, returns, cleanup, and fault behavior match.
 
 #include <windows.h>
 

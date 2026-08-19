@@ -76,6 +76,11 @@
 // - BINARY NOTE: the clean source remains 1847 bytes, frame 0x568, 83/83 ordered calls,
 //   and 67 differing bytes. The first mismatch is the original EBP receiver versus
 //   rebuilt EBX receiver at +0009. The remaining drift is register allocation only.
+// ACCEPTED DRIFT: The residual exchanges the receiver, loop indexes, and counters
+// between saved registers. One loop schedules a copy around its compare, and the
+// civ/team reset uses `sub 0x32` versus `add -0x32`; its flags are dead. All 83
+// calls, pushed values, branches, fills, memory effects, returns, and fault order
+// match. The frame, saved registers, EH state, and function boundary also match.
 
 #include <string.h>
 #include <windows.h>
