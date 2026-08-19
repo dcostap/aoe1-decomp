@@ -54,6 +54,11 @@
 //   combined guard stays as the simpler source form.
 // - Final ownership-compliant validation: 442 rebuilt bytes, 53 positional
 //   bytes, nine ordered calls, and a 156-byte exact prefix.
+// ACCEPTED DRIFT: All factory work and nine calls match. The declaration-only
+// build clones equivalent success and failure EH epilogues. The failure store
+// to error_code stays before cleanup. Both paths restore the same SEH link,
+// registers, stack, and return value. No call or external memory effect moves.
+// The proven empty destructor makes this source exact in authentic TU context.
 
 class TDrawArea;
 struct tagRECT { long value[4]; };

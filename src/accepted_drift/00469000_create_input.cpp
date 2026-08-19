@@ -22,6 +22,11 @@
 // revisit 2026-08-17: an explicit outer failure else with the same error write was codegen-identical at 457 bytes / 180 diff; restored.
 // revisit probe: defining an empty local TInputPanel destructor changed only the compiler-owned /GX context and produced an authoritative 0-byte MATCH. It is not retained: the real destructor owns VA 00476CF0 in src/matching, and a duplicate owner is not policy-valid.
 // final validation: natural source is 457 bytes / 180 positional diff, with all 7 calls ordered and the first 0x9C bytes exact; the only remaining mismatch is the /GX cloned return tail.
+// ACCEPTED DRIFT: All factory work and seven calls match. The declaration-only
+// build uses longer failure branches and clones equivalent success and failure
+// EH epilogues. The failure store stays before cleanup. Both paths restore the
+// same SEH link, registers, stack, and return value. No call or external memory
+// effect moves. The proven empty destructor makes this exact in TU context.
 
 class TPanel {};
 class TDrawArea {};

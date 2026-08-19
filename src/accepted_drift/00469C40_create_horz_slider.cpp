@@ -40,6 +40,12 @@
 // an authoritative 0-byte MATCH. This is not retained: VA 0047BE30 already has the compiler-
 // facing owner src/matching/0047BE30_THorizontalSliderPanel.cpp. Keeping that definition here
 // would violate the one-owner rule. The declaration-only natural source remains at 46 bytes.
+// ACCEPTED DRIFT: The complete factory body and all five calls match. The
+// declaration-only build clones the success and failure EH epilogues. The
+// oracle shares them. Both paths restore the same SEH link, registers, stack,
+// and return value. Only MOV, XOR, and POP instructions move around the SEH
+// restore. No call or external memory effect moves. The proven empty destructor
+// definition makes this source exact in the authentic same-TU context.
 
 struct tagRECT {
     long left;
