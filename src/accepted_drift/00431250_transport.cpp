@@ -149,6 +149,11 @@
 // stores reached 283-284 bytes. Explicit boolean return reached 264/164 and
 // added a work call. The canonical derived constructor, typed arguments,
 // inherited action methods, and /GX cleanup source remain unchanged.
+// ACCEPTED DRIFT: The residual moves XOR and TEST around the same EH-state
+// reset. These instructions cannot throw, and both builds set state -1 before
+// the next memory access or call. Null returns zero. Success performs the same
+// list deletion, action install, work call, and one return. Size, all nine
+// calls, values, memory effects, cleanup, and fault behavior match.
 // FLAGS: /nologo /c /O2 /Oy /GX
 
 #include <stddef.h>

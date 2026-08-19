@@ -253,3 +253,8 @@ RGE_Action_Move_To::RGE_Action_Move_To(RGE_Action_Object* obj, RGE_Static_Object
 // The oracle has one outer null test, one move-sprite null test, two branch-local stores, and one shared FS cleanup.
 // No tested source form kept all four facts and selected one local VC5 cleanup tail. The 187-byte member-RMW form is
 // rejected: it stores move_sprite before its null test. Preserve this canonical nested if/else source.
+// ACCEPTED DRIFT: The base setup, target fields, range logic, sprite reads, two
+// branch-local sprite stores, and both calls match. The rebuild clones the two
+// fallback EH epilogues. Each branch restores the same SEH link, registers,
+// stack, this return, and fault order. No call or memory effect moves across
+// cleanup. Merged-store forms are rejected despite their smaller byte drift.

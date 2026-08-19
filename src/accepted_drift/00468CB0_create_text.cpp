@@ -41,6 +41,11 @@
 //   labels, ABI/layout variants, and /GX checks; each keeps the cloned tail.
 //   The target's typed source already matches the first 156 bytes and all 9
 //   ordered calls. No policy-compliant source lead remains for this tail.
+// ACCEPTED DRIFT: All factory work, named field accesses, and nine calls match.
+// The rebuild lengthens failure branches and clones equivalent success and
+// failure EH epilogues. The failure error_code store stays before cleanup.
+// Each path restores the same SEH link, registers, stack, and return value. No
+// call or external memory effect moves across the differing cleanup sequence.
 
 class TPanel {};
 class TDrawArea {};
@@ -83,7 +88,9 @@ public:
     long base_height;
     char gap_01C[4];
     TDrawArea* draw_area;
-    char gap_024[0xD0];
+    char gap_024[0xD8 - 0x24];
+    long error_code;
+    char gap_0DC[0xF4 - 0xDC];
     long ideal_width;
     long ideal_height;
     char gap_0FC[0x22C];
@@ -127,6 +134,6 @@ int TEasy_Panel::create_text(TPanel* parent, TTextPanel** out, char* text, long 
             return 1;
         }
     }
-    *(long*)(this->gap_000 + 0xD8) = 1;
+    this->error_code = 1;
     return 0;
 }
