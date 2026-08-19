@@ -1,56 +1,58 @@
-// VA: 0052D970 mouse_right_up_action (844B)
+// VA: 0052D600 mouse_left_up_action (844B)
 // PDB: tvw_main.cpp, TRIBE_Main_View
 //
+// Initial reconstruction follows the executable's mode switch, typed pick
+// info, player commands, overlay updates, and shared sound/game-mode tail.
 // Attempt log:
-// - baseline: reconstructed the period typed TRIBE_Main_View mode switch,
-//   pick-info calls, command helpers, overlay updates, and shared tails from
-//   the original call/CFG evidence; current source is intentionally ordinary
-//   C++ with local layout stubs.
-// - split the two binary-proven play_sound/set_game_mode tails; this fixed the
-//   call count but left the handlers in the wrong layout (692-byte diff).
-// - interleaved the tail labels between the switch arms, then used positive
-//   command-success tests with fall-through failure tails.  This recovered
-//   the original 844-byte boundary, 32-call structure except for one final
-//   set_redraw call (173-byte positional diff, 96.15% shape similarity).
-// - reordered/default and nested case-105 guard variants were unchanged or
-//   nonproductive; the remaining drift is localized to the mode-102 argument
-//   register coloring.
-// - Moving invalid_action onto the shared done_a return removed the duplicate
-//   case-105 epilogue and recovered all 32 calls, exact size, and 89.05% block
-//   coverage. The remaining drift is 14 register-colored bytes in mode 102.
-// - The exact tvw_main ABI uses short for command_make_do's fourth parameter;
-//   the donor-supported declaration and stdlib context do not change bytes.
-// - query_abi/inventory also identifies pick_best_target's action_filter as a
-//   short; corrected the local declaration, with no emitted-code change.
-// - A natural mode-102 inline failure-action spelling moved the diff from 14
-//   to 98 bytes and lost shared block islands; restored the labeled-tail form.
-// - Branch-local parameter aliases, function-scope target declarations, and
-//   decompiler local declaration order all compiled to the same 14-byte diff.
-// - Focused mode-102 and mode-104 variant labs found no new emitted-code basin;
-//   the remaining bytes are localized register coloring in those two paths.
-// - Declaring the known TRIBE_Main_View command_make_do override and testing
-//   qualified and unqualified calls did not change the remaining 14 bytes.
-//
-// Current matching pass (sa-cbe724ac-r1):
-// - The clean baseline remains 844 bytes, 0x14 frame, 32 ordered calls, and
-//   14 strict differing bytes.  The first mismatch is mode 102 at +0125.
-// - Naming mode-104 object_id, caching its player, naming mode-102's result,
-//   reversing local declaration order, splitting mode initialization, adding
-//   exact-donor class declarations, and adding string.h were tested.
-// - A positive mode-102 action guard, a same-TU unused list declaration, local
-//   mode-102 coordinate copies, an explicit short cast, and consistent result
-//   locals across modes 101-103 were tested.
-// - Nested mode-104 guards, function-scope target storage, shared-label moves,
-//   inverted mode-102 success flow, and PDB-ordered default placement were
-//   tested.  These either emitted the same basin or lost structural parity.
-// - A six-variant mode-102/mode-104 lab and a 256-sample ambient declaration
-//   lab produced one 844-byte basin and no exact result.
-// - The named mode-102 result local was the only useful local change: it fixed
-//   the mode-104 register hunk, but the mode-102 register hunk remained.
-// - Final validation after restoring the pinned clean source is still a
-//   14-byte mismatch.  The source stays in scratch; no promotion was made.
-
-#include <stdlib.h>
+// - Baseline matched the 0x14 frame and 844-byte boundary, but inlined the
+//   paused/default forwarding block before the game-mode jump table.
+// - Shared error/success labels restored all 32 ordered call targets and
+//   matched the repeated invalid-action and sound/game-mode tails more closely.
+// - Case-order and natural-default variants were rolled back; current source
+//   keeps the readable typed reconstruction with evidence-backed tail labels.
+// - Correcting mode-101/102 tail ownership alone worsened the diff to 656 bytes
+//   and was rolled back.
+// - Combining the line-backed mode-102-before-mode-101 order with the proven
+//   tail ownership retained a 569-byte diff, improved exact-block coverage to
+//   43.82%, and reduced the size gap to 40 bytes. The ordered tail gap remains.
+// - A natural switch-tail fallthrough duplicated an earlier 744-byte basin and
+//   dropped the packet's unload and redraw calls; it was rolled back.
+// - An inline default arm kept the call multiset but moved the first switch
+//   block and worsened the diff to 753 bytes; it was rolled back.
+// - Inlining only mode-102's packet-backed play_sound/set_game_mode tail
+//   reduced the diff to 192 bytes and restored the original 844-byte size;
+//   the remaining call gap is the final mode-105 redraw past the boundary.
+// - Moving the shared done label before error_a preserved the original
+//   +014D/+015C tail and reduced the diff to 176 bytes; mode-105's invalid
+//   guard still receives a local return block 10 bytes larger than the
+//   original shared branch, so its final redraw call is truncated.
+// - The exact same-TU donor's short command_make_do ABI was applied; VC5
+//   emitted identical bytes. Invalid-label placement and a positive mode-105
+//   guard were also duplicates and were rolled back.
+// - Routing invalid_action through the shared return_one label tail-merged
+//   the +015C return and recovered the final mode-105 redraw; diff fell to
+//   17 bytes with all 32 calls, size, frame, and CFG exact.
+// - Reversing mode-103's success guard to match its jne/jmp block reduced the
+//   remaining diff to 14 bytes. The target-local declaration, short
+//   pick_best_target ABI, case-104 scope removal, and positive mode-102 guard
+//   emitted duplicates.
+// - Paused in EXACT CODEGEN: remaining 14 bytes are localized register
+//   coloring at mode-102 (+0124) and repair mode-104 (+0240/+0273); no new
+//   source-backed lead remains within this claim.
+// - Fresh claim probes: top-level int/long coordinate temps, register
+//   parameters, positive and split guards, local declaration order, coordinate
+//   casts, inherited receiver casts, shared call-result locals, repair-result
+//   locals, object-id temps, and delayed receiver/game-mode aliases were either
+//   codegen duplicates or moved into a worse basin. Donor-supported stdlib,
+//   string, Windows, and combined header contexts were duplicates.
+// - A 9-variant lab combined direct/base/narrow call spellings for mode-102 and
+//   mode-104. All variants formed one 844-byte, 14-byte-diff group. The clean
+//   typed source remains authoritative; no policy-valid exact lead was found.
+// ACCEPTED DRIFT: The 14 bytes only recolor caller-saved registers in mode 102
+// and mode 104. Each stack value reaches the same argument position, each
+// indirect call uses the same vtable slot, and the selected object's same +4
+// field reaches the same display argument. Calls then kill the temporary maps.
+// Instruction order, memory access, predicates, writes, cleanup, and faults match.
 
 class TShape;
 class RGE_Tile;
@@ -214,19 +216,19 @@ public:
     void reset_display_object_selection(int);
     RGE_Static_Object* pick_best_target(long, long, int*, short);
 
-    virtual long mouse_right_up_action(long, long, int, int);
+    virtual long mouse_left_up_action(long, long, int, int);
 };
 
 class TRIBE_Main_View : public RGE_Main_View {
 public:
-    virtual int command_make_do(long, long, int, short);
-    virtual long mouse_right_up_action(long, long, int, int);
+    virtual long mouse_left_up_action(long, long, int, int);
 };
 
-long TRIBE_Main_View::mouse_right_up_action(long param_1, long param_2,
-                                            int param_3, int param_4) {
+long TRIBE_Main_View::mouse_left_up_action(long param_1, long param_2,
+                                           int param_3, int param_4) {
     int mode = rge_base_game->prog_mode;
     RGE_Pick_Info pick_info;
+    RGE_Static_Object* object;
 
     if (mode != 4 && mode != 6 && mode != 7 && mode != 5) {
         return 0;
@@ -261,27 +263,29 @@ long TRIBE_Main_View::mouse_right_up_action(long param_1, long param_2,
             goto invalid_action;
         if (this->command_make_do(param_1, param_2, 0, 0x69) != 0)
             goto done_a;
-        goto error_a;
+        rge_base_game->play_sound(3);
+        goto done_a;
+
+done_a:
+        rge_base_game->set_game_mode(0, 0);
+return_one:
+        return 1;
 
 error_a:
         rge_base_game->play_sound(3);
-done_a:
-    rge_base_game->set_game_mode(0, 0);
-invalid_action:
-    return 1;
+        goto done_a;
 
-    default:
 default_action:
-        return RGE_Main_View::mouse_right_up_action(
+        return RGE_Main_View::mouse_left_up_action(
             param_1, param_2, param_3, param_4);
 
     case 101:
         this->release_mouse();
         if (this->mouse_action != 1 && this->mouse_action != 2)
             goto invalid_action;
-        if (this->command_make_do(param_1, param_2, 0, 0x68) != 0)
-            goto done_b;
-        goto error_b;
+        if (this->command_make_do(param_1, param_2, 0, 0x68) == 0)
+            goto error_b;
+        goto done_b;
 
 error_b:
         rge_base_game->play_sound(3);
@@ -301,24 +305,19 @@ done_b:
         this->release_mouse();
         if (this->mouse_action != 1 && this->mouse_action != 2)
             goto invalid_action;
-        {
-            RGE_Static_Object* object = this->pick_best_target(
-                param_1, param_2, 0, -1);
-            if (object != 0 && this->player->command_make_repair(object) != 0) {
-                this->display_object_selection(object->id, 0x5DC, 2, 2);
-                this->reset_overlay_sprites();
-                this->set_redraw(1);
-                goto done_a;
-            }
+        object = this->pick_best_target(param_1, param_2, 0, -1);
+        if (object != 0 && this->player->command_make_repair(object) != 0) {
+            this->display_object_selection(object->id, 0x5DC, 2, 2);
+            this->reset_overlay_sprites();
+            this->set_redraw(1);
+            goto done_a;
         }
         goto error_a;
 
     case 105:
         this->release_mouse();
-        if (this->mouse_action != 1) {
-            if (this->mouse_action != 2)
-                goto invalid_action;
-        }
+        if (this->mouse_action != 1 && this->mouse_action != 2)
+            goto invalid_action;
         if (this->pick1(0x28, 0, param_1, param_2, &pick_info, 0, 1) == 0x33) {
             this->fixup_pick_info(&pick_info);
             if (this->player->command_make_unload(pick_info.x, pick_info.y) != 0) {
@@ -334,5 +333,10 @@ done_b:
         }
         goto error_a;
 
+    default:
+        goto default_action;
     }
+
+invalid_action:
+    goto return_one;
 }

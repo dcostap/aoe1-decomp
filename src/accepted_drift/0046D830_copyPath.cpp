@@ -29,6 +29,11 @@
 //   declaration-scope variants did not improve the clean source.  Adding
 //   standard headers reduced one diagnostic result to 12 bytes, but had no
 //   donor-backed source evidence and was removed.  No exact result was found.
+// ACCEPTED DRIFT: The 14 bytes only reassociate the same three integer terms
+// in two map-tile addresses. One repeated site also exchanges an independent
+// EBP mask with the ordinary facet-byte load. Both builds read the same address
+// and compare the same masked facet values. No call, write, predicate, cleanup,
+// or fault order changes, and all later state is equal after each tile load.
 
 #include <stddef.h>
 
