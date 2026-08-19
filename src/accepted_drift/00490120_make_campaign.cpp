@@ -32,6 +32,14 @@
 //    per-entry cleanup order, and inverted validity guard. The natural typed
 //    baseline remains best at 61 differing bytes; all weaker variants were
 //    restored. Direct new/delete campaign ownership remains authoritative.
+// 15: executable-path audit proved that an invalid empty or space-prefixed name
+//    returns after the popup and does not clear need_to_save. Restoring that
+//    source return reduced the mismatch from 61 bytes to seven.
+// ACCEPTED DRIFT: The seven bytes only exchange the +0x10 and +0x14 private
+// homes for the two array pointers. Both calloc results keep the same source
+// ownership. Every getstring, constructor argument, element free, and array
+// free receives the same pointer in the same order. Size, frame, all 25 calls,
+// EH state, cleanup, memory effects, return paths, and fault order match.
 
 typedef unsigned int uint;
 
@@ -117,6 +125,7 @@ void TRIBE_Campaign_Editor_Screen::make_campaign()
     if (name != 0) {
         if (*name == 0 || *name == ' ') {
             this->popupOKDialog(0x2BCC, 0, 0x1C2, 100);
+            return;
         } else {
 
             addstring(&text, name, (char*)".cpx");
