@@ -137,6 +137,10 @@
 // the guard zero from EDI to the original EBP or changed the clear-tail pop.
 // Restored the pinned clean source.  The remaining EBP zero and tail lifetime
 // are not supported by a source-local natural control or declaration change.
+// BLOCKER: the original restores EDI before the eight clear-tail stores. The
+// rebuild keeps zero in EDI until after those stores. An invalid this pointer
+// therefore faults with different EDI state. Register-color equivalence does
+// not cover that exception-context difference.
 
 struct tagRECT {
     long left;

@@ -30,6 +30,10 @@
 //     uses literal 0.25f/0.75f pools and mutates the short coordinate parameters.
 // GIVEUP: left in scratch after 27 meaningful hypotheses; no accepted_drift because
 // the clean natural source remains 994B with 105 strict-diff bytes.
+// BLOCKER: the first block moves the rge_base_game vptr read after the master
+// float and owner/world reads. Invalid object graphs can therefore fault in a
+// different order. The 315 instructions after this setup block are exact, but
+// that does not prove the reordered memory accesses equivalent.
 
 #include <stdlib.h>
 
