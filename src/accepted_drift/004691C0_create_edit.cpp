@@ -24,6 +24,11 @@
 //   compiler/codegen blocker rather than an unresolved call or layout issue.
 // Left in scratch: typed source is behaviorally aligned with all 9 calls and
 //   proven field accesses; only the compiler's duplicated return tail remains.
+// ACCEPTED DRIFT: All factory work, field accesses, and nine calls match. The
+// rebuild clones equivalent success and failure EH epilogues. The failure
+// error store remains before cleanup. Each path restores the same SEH link,
+// registers, stack, and return value. No call or external memory effect moves
+// across the differing cleanup instructions.
 
 // Canonical layouts recovered from the Panel_ez/pnl_edit surfaces.  The base
 // panel owns the width/height/draw-area/error fields; TEasy_Panel owns the

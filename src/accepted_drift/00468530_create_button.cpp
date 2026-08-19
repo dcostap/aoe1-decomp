@@ -27,7 +27,12 @@
 // typed source remains the 567-byte / 53-byte-diff basin: all 13 calls and the first 0x1CE bytes
 // align, while VC5 still clones the success/failure /GX cleanup tail instead of the oracle's
 // two-byte jump to one shared epilogue. Restore the natural source after each probe.
-// Left in scratch: current best is 567 B with /GX, 53 positional diff bytes / 36 edit cost, 100% ordered calls, and 85.64% exact-block coverage. The remaining gap is the shared success/failure epilogue; not accepted_drift-safe.
+// Prior hold point: current best is 567 B with /GX, 53 positional diff bytes / 36 edit cost, 100% ordered calls, and 85.64% exact-block coverage. The remaining gap is the shared success/failure epilogue.
+// ACCEPTED DRIFT: All factory work, field accesses, and 13 calls match. The
+// rebuild clones equivalent success and failure EH epilogues. The failure
+// store remains before cleanup. Each path restores the same SEH link,
+// registers, stack, and return value. No call or external memory effect moves
+// across the differing cleanup instructions.
 
 typedef unsigned char uchar;
 

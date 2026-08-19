@@ -78,6 +78,11 @@
 //   forms. The declaration-only form remains the canonical source surface.
 //   All policy-valid forms retain the 55-byte drift at the shared EH tail.
 //   The exact body still requires the target-owned destructor definition.
+// ACCEPTED DRIFT: The lookup and growth body and all six calls match. The
+// declaration-only build clones the two lookup-return EH epilogues and restores
+// the SEH link before register pops on the growth return. Each path preserves
+// its result. No call or external memory effect moves across cleanup. The
+// proven destructor body makes this source exact in authentic TU context.
 
 #include <stdlib.h>
 #include <string.h>
