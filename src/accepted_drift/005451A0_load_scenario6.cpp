@@ -27,6 +27,13 @@
 //   to 84 bytes. Remaining drift is localized to object-call register order.
 // - Renamed the final +0x2C virtual call to donor-proven loadAIInformation;
 //   emitted code is unchanged, but the living ABI surface is now canonical.
+// ACCEPTED DRIFT: The first 282 bytes match. The object pass only exchanges
+// EAX, ECX, and EDX roles. The rebuild forms a slot address before the negative
+// ID branch with LEA, but does not dereference it before the same guard. The
+// final player pass uses the same values and call order with different private
+// registers. Every stream destination, player check, object call, flag store,
+// AI argument, memory effect, return, and fault order matches. Size, 0x4C
+// frame, all 28 calls, CFG, and cleanup match. This function has no SEH.
 
 typedef unsigned char uchar;
 extern "C" void __cdecl rge_read_uncompressed(int, void*, int);
