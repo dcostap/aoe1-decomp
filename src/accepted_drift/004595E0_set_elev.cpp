@@ -34,6 +34,11 @@
 //   the only size/frame/call-set basin at 801 bytes; no exact variant exists.
 //   The clean source is restored and remains 536 positional bytes from the
 //   792-byte original.
+// Accepted-drift review: the relative loop lowers the terrain byte and 16-bit
+// elevation through different registers. The executable rereads the low bits;
+// the rebuild keeps the original byte across a no-call block. Clamp and stored
+// byte values match. Both post-write guards are inert because a byte shifted
+// right by five cannot exceed eight. All five calls and tile effects match.
 
 class RGE_Tile;
 class RGE_Static_Object;
