@@ -46,6 +46,11 @@
 //   base novtable context did not change the baseline.  Removing derived
 //   novtable emitted an early vptr store and was rejected.  The clean baseline
 //   remains 692 bytes different, with three ordered calls and exact size.
+// BLOCKER: The executable sets EH state zero immediately after the base call
+// and state 0x0A before the group constructor. The rebuild delays the zero
+// state until that call. It also pushes the ResourceItem argument before five
+// member stores that the executable performs first. Cleanup and fault context
+// therefore differ despite exact size and three aligned calls.
 
 extern "C" void* __cdecl operator_new(unsigned int size);
 extern "C" void __cdecl operator_delete(void* p);
