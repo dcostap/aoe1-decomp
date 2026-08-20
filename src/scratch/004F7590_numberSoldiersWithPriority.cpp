@@ -63,6 +63,13 @@
 // - Direct working-area expressions, a branch pointer alias, an inline add
 //   helper, alternate loop forms, ABI declaration changes, and local-order
 //   variants were tested.  They were worse or codegen duplicates.
+// MANAGEDARRAY AUDIT: resize guards, inline growth, copies, publication,
+// contains bounds, append count, and field offsets match the executable. No
+// shared template change is required.
+// BLOCKER: After a soldier resize, the executable reads the soldier value
+// pointer before the working-area count. The rebuild reads the count first.
+// Soldier element and working-array reads therefore have different mutation
+// and fault order.
 
 extern "C" {
     void* __cdecl operator_new(unsigned int size);
