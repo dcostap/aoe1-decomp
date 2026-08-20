@@ -30,6 +30,10 @@
 // - restoring natural string literals in that split source reduces the strict
 //   diff to 517 bytes with a 2-byte size excess.  Receiver-local cleanup
 //   variants measured 532 and 533 bytes; the remaining gap is cleanup order.
+// BLOCKER: Before singlePlayerGame, the executable reads rge_base_game and then
+// clears confirmed_close. The rebuild clears confirmed_close first and then
+// reads rge_base_game. Global publication and concurrent pointer capture occur
+// in a different order.
 // FLAGS: config/flags/004982E0_action.rsp (/GX required by original EH setup)
 
 #include <new.h>
