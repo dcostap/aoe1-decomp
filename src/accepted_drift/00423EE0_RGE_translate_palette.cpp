@@ -45,6 +45,11 @@
 // ordinary four-slot array reconstruction as the clean unresolved source.
 // Revisit: matching the Ghidra declaration order by initializing intense[0] before s was a
 // codegen duplicate. Final validation remains 437 differing bytes and a 456-byte rebuild.
+// Accepted-drift review: the prologue computes identical source cursor,
+// destination cursor, and destination-minus-source delta values with different
+// registers. Body arithmetic and source reads match. Each iteration stores red,
+// green, blue, then flags in the same order. The late delta reload moves only a
+// private stack read, and the function makes no calls.
 
 struct tagPALETTEENTRY { unsigned char peRed, peGreen, peBlue, peFlags; };
 
