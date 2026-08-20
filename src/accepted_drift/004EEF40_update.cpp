@@ -37,6 +37,11 @@
 // - The clean baseline remains 1421 bytes, 0x8 frame, 22/22 ordered calls,
 //   98.19% shape, 969 positional diff bytes, and 107 edit bytes. No exact
 //   source was found. Restore this baseline before pause.
+// Accepted-drift review: the rebuild keeps an already-loaded md pointer for
+// the farms reset; the executable reloads md. No call occurs between capture
+// and use. Later, the rebuild reads md before clearing playersToDefend, while
+// the executable clears first; both dereference md after the clear. No call
+// crosses this scheduling change. All 22 calls and ManagedArray effects match.
 
 class AIModule {
 public:
