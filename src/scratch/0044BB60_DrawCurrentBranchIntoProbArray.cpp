@@ -63,6 +63,10 @@
 //   and 89.43% exact-block coverage, but its load/register order remained
 //   nonexact.  Direct indexed stores were codegen-neutral.  Restored this
 //   pinned natural source; no metric-only tail variant is retained.
+// BLOCKER: the executable reads ProbabilityAdd before both probability-index
+// bounds. The rebuild reads it only after both checks, and after SizeArrays and
+// ProbArray. An out-of-range index therefore omits an executable member read.
+// The in-range member-read and failing-access order also differ. Keep scratch.
 
 class PrimaryPt {
 public:
