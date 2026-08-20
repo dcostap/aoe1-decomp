@@ -27,6 +27,10 @@
 // - Natural labels, guards, do/while, for, while, break, and donor-style found
 //   returns did not recover the original tail.  The clean natural source is
 //   47 bytes different, with all 23 ordered calls aligned.
+// Accepted-drift review: the first 736 bytes and all 23 calls match. The
+// executable gives second-pass exhaustion its own -1 epilogue. The rebuild
+// jumps to the existing shared -1 epilogue. Found-object returns keep the same
+// ID. No ManagedArray, object, call, cleanup, or return effect moves.
 
 #include <stdlib.h>
 
