@@ -48,6 +48,10 @@
 //   and associated register coloring; behavior, size/frame, calls, and inner
 //   reject-loop CFG are established. The current clean source is the hoisted
 //   best-pointer form.
+// BLOCKER: the executable reads VR_ListUsed[type] and rejects a zero count
+// before it reads VR_List. The rebuild reads VR_List first. An empty list thus
+// adds a member read, and the nonempty path changes member-read and fault order.
+// Keep the typed resource scan in scratch.
 
 #include <stdlib.h>
 #include <string.h>
