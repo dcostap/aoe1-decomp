@@ -49,6 +49,10 @@
 // The PDB confirms RGE_Border_Set size 0x5A0, RGE_TOB_Picts size 6, and all
 // member offsets used here. The remaining binary-backed gap is local-home and
 // register placement, not ownership, size, calls, or cleanup.
+// Accepted-drift blocker: the giant fscanf writes unbounded strings at name+4
+// and pict_name+4, then convert_us/strcpy consume each buffer from its base.
+// Different stack homes can change the four-byte prefixes and malformed-input
+// overflow fault addresses. Keep this parser in scratch.
 //
 // The border record layout is shared with the exact map.cpp constructors and
 // update routine.  The map file's signed color/index locals intentionally retain
