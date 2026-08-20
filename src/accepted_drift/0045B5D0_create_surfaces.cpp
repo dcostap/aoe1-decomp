@@ -40,6 +40,11 @@
 // Pointer-backed, nested, explicit-label, early-return, and comma-increment
 // variants were duplicate or worse. This direct do/while is now the pinned
 // clean source until a new structural clue appears.
+// Accepted-drift review: the rebuilt loop inverts the final `i < Max_Cursors`
+// branch and adds an unconditional jump back to the body. The comparison,
+// cursor update, seven calls, arguments, member accesses, and stores match.
+// Constructor or Init failure still returns zero. Every other path returns one.
+// EH state and chain restoration match on each exit.
 
 extern "C" int sprintf(char* buffer, const char* format, ...);
 
