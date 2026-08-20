@@ -39,6 +39,10 @@
 // basin and three-byte late clipping shift, not calls, frame, layout, or headers.
 // left in scratch: remaining work, if any, should be localized source/declaration or
 // TU-context probes after validating the member-function baseline.
+// BLOCKER: in the negative-top clipping arm, the executable clears
+// mouse_rect.top before it writes cursor_rect.top and new_save_rect.bottom.
+// The rebuild performs those two writes first and clears mouse_rect.top last.
+// Final values match, but member publication and failing-store order differ.
 
 typedef unsigned char uchar;
 struct POINT { long x; long y; };
