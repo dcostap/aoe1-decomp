@@ -36,6 +36,13 @@
 //   whether source-only lifetimes recover the original output-home rotation.
 // - Swapped the natural inner-loop index and table-pointer declarations to
 //   test the original index/table register pair in the scaled row body.
+// - Accepted-drift review: ClipDibBlt receives the exact formal homes and can
+//   mutate the same coordinates. The exact GetDibDim donor only writes its
+//   three outputs, so its different private output homes are not observable.
+//   Dimension reads, signed division faults, orientation, SrcXTbl writes,
+//   scaled source and destination fault addresses, memcpy arguments and order,
+//   loop limits, and returns match. Residual drift is private home, register,
+//   multiplication-hoist, and equivalent loop lowering.
 
 #include <windows.h>
 #include <windowsx.h>
