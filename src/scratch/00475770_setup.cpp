@@ -47,6 +47,11 @@
 // 447-byte mismatch with 92 differing bytes, 9/9 ordered calls aligned, and
 // first mismatch at +0x6B (CreateWindowExA setup). No policy-valid exact lead
 // was found; keep this natural typed reconstruction as the pinned source.
+// BLOCKER: CreateWindowExA setup changes member-read order. The executable
+// reads render_area, format, draw system, instance, then parent window. The
+// rebuild reads render_area, draw system, instance, parent window, then format.
+// It also pushes lpParam before these potentially failing reads. Fault order
+// and ESP context differ. Keep this function in scratch.
 
 #include <windows.h>
 #include <stdlib.h>
