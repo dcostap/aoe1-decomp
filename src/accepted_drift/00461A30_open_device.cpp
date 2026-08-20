@@ -18,6 +18,11 @@
 // codegen. The original local homes are four bytes below the rebuilt homes.
 // The remaining drift is this local shift, the zero-register initialization form,
 // and three extra instructions. No policy-safe source lead remains.
+// Accepted-drift review: all 11 MCI, mixer, sprintf, fopen, and fclose calls
+// preserve arguments and order. Track scans, device publication, MCI fields,
+// mixer numerator/divisor and division fault point, volume stores, failure
+// tails, and returns match. Residual drift is a +4 private stack-buffer shift,
+// zero-register reuse, and add-negative versus subtract lowering.
 
 #include <stdio.h>
 #include <windows.h>
