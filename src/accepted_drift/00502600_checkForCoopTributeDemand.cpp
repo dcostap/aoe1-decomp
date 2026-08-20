@@ -25,6 +25,11 @@
 //   duplicates; restored the named clean reconstruction.
 // - Remaining lead: recover the natural VC5 spill that stores coopTributeAmount
 //   to [esp+10] before its first test; calls, frame, and loop body are aligned.
+// Accepted-drift review: the rebuild keeps coopTributeAmount in EBX and tests
+// it before initializing private loop homes. The executable stores and reloads
+// the same value first. After tribute calls, the executable reloads the resource
+// cursor; the rebuild relies on its callee-saved register. Loop exits use an
+// inverted branch form. All 12 calls, amounts, players, and effects match.
 
 typedef unsigned char uchar;
 
