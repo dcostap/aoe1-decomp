@@ -49,6 +49,11 @@
 //   typed source remains a 443-byte reconstruction against the 440-byte
 //   target. The only unresolved drift is the cold close block order and its
 //   final branch polarity.
+// Accepted drift: all version reads and guards, 17 calls, virtual slots,
+// arguments, allocation/free behavior, failure closes, campaign-field
+// addresses, and returns match. VC5 moves the cold close block before the
+// final version handler and reverses the branch around it. Runtime paths are
+// equivalent.
 
 extern int world_update_counter;
 
