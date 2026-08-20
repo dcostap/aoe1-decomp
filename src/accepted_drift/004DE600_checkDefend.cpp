@@ -45,6 +45,13 @@
 // - Final validation: 747-byte boundary, 226/234 instructions, 10/13 calls,
 //   263 positional diff (35.2075%), first mismatch +0x4B.  Retain the typed
 //   sparse-switch/common-failure reconstruction for the next evidence pass.
+// MANAGEDARRAY AUDIT: contains, resize, add, append publication, count updates,
+// bounds, and field offsets match each executable path. No template change is
+// required.
+// Accepted-drift review: VC5 merges the group-8 and group-32 tails. They push
+// strategic IDs 0x33 and 0x32, respectively, then share strategicNumber,
+// contains, and optional resize sites. The executable duplicates those sites.
+// Each runtime path keeps the same calls, arguments, array effects, and result.
 
 typedef unsigned char uchar;
 
