@@ -32,6 +32,11 @@
 // register schedule and improved strict diff 1279->808; use a derived cast only for direct TRIBE_Game
 // map getters.  An absolute image macro is retained for debug-random state because no reviewed symbol
 // owns those addresses and named extern probes left unresolved external relocations.
+// Accepted-drift review: the executable saves the debug value to a private
+// stack home before saved_debug2; the rebuild reverses those two no-call stores.
+// The construction-rule custom/default arms also use opposite block layout,
+// but preserve predicates, logs, map reads, load arguments, and effects. All
+// 42 calls and the final debug-state restoration match.
 
 typedef unsigned char uchar;
 
