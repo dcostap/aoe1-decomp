@@ -49,6 +49,10 @@
 //   for loop. The variant lab found no exact candidate.
 // - Restored and pinned the clean natural source. Remaining leads are the
 //   original action-log tail source shape, compiler context, and relocations.
+// BLOCKER: order 0x2C6 passes range by a raw dword copy in the executable. The
+// rebuild loads and stores range through x87 before the virtual call. A
+// signaling NaN can raise, become quiet, or change payload bits. FP exception,
+// argument-bit, and fault timing can differ. Keep this dispatcher in scratch.
 
 #include <stdio.h>
 
