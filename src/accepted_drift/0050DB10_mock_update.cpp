@@ -55,6 +55,11 @@
 // 524B/460 but added less natural guard blocks. Restored the clean source;
 // first blocker remains the redundant rewind post-next null compare and its
 // shifted predecessor blocks.
+// Accepted-drift review: the rebuild fuses the next rewind iteration's
+// successor load into the current tail; the assigned entry is already proved
+// nonnull. It also removes two repeated object-null tests after a stable
+// nonnull guard with no intervening call. All four calls, pointer writes,
+// destructor conditions, x87 predicates, and the final time store match.
 
 struct RGE_Static_Object { virtual ~RGE_Static_Object(); };
 struct RGE_Master_Static_Object { virtual ~RGE_Master_Static_Object(); virtual void v4(); virtual void v8(); virtual void vc(); virtual void v10(); virtual void v14(); virtual RGE_Static_Object* create(void* player, int x, int y, int z); };
