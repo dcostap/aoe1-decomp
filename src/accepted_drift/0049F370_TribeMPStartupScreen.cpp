@@ -25,6 +25,17 @@
 // the original hotkey stores before the help-button factory call.
 // BINARY NOTE: tab-order setup loads cancelButton (+48C), not close_button
 // (+494). The close-button factory uses its direct member address.
+// BINARY NOTE: the fifth tab-order entry is help_button. A five-element local
+// array made set_tab_order read the adjacent registry disposition value.
+// BINARY NOTE: registry command parsing skips the opening quote. It copies
+// from Data+5 for strlen(Data+4) bytes before it finds the closing quote.
+// BINARY NOTE: the Zone value uses Data+4 as its intermediate buffer. Using
+// temp_str+4 changes overflow effects for an overlong registry value.
+// Accepted-drift review: after these behavior fixes, all 33 calls, arguments,
+// member publications, registry effects, panel setup, and cleanup state match.
+// The residual is a four-byte shift of the private LocalStrings window, the
+// equivalent constructor-this EH home, and register selection in inline copy
+// loops and the final five-pointer tab-list fill.
 // Tested and rejected: absolute string/global forms, separate buffer locals,
 // tab-order aliases, pointer declaration orders, and nested tab-list scope.
 // Left in scratch: frame, size, CFG, and call set match. Remaining drift is
@@ -221,7 +232,6 @@ TribeMPStartupScreen::TribeMPStartupScreen()
     HKEY ghUserKey;
     unsigned long dwSize;
     unsigned long dwType;
-    TPanel* tabList[5];
     unsigned long gdwDisp;
     struct LocalStrings {
         char Data[255];
@@ -310,8 +320,8 @@ TribeMPStartupScreen::TribeMPStartupScreen()
 
                                 if (result == 0) {
                                     strncpy(strings.temp_str + 4,
-                                            strings.Data + 4,
-                                            strlen(strings.Data + 4) - 1);
+                                            strings.Data + 5,
+                                            strlen(strings.Data + 4));
                                     char* quote = strchr(strings.temp_str + 4,
                                                          0x22);
                                     if (quote != 0) {
@@ -325,19 +335,21 @@ TribeMPStartupScreen::TribeMPStartupScreen()
 
                                     char* zone = Regs->RegGetAscii(0, "Zone");
                                     if (zone != 0) {
-                                        strcpy(strings.temp_str + 4, zone);
+                                        strcpy(strings.Data + 4, zone);
                                         strcpy(this->zone_exec,
-                                               strings.temp_str + 4);
+                                               strings.Data + 4);
                                     }
                                 }
 
                                 this->fillList();
                                 this->set_curr_child(this->input);
-                                tabList[3] = this->okButton;
-                                tabList[1] = this->input;
-                                tabList[2] = this->list;
-                                tabList[4] = this->cancelButton;
-                                this->set_tab_order(tabList + 1, 5);
+                                TPanel* tabList[5];
+                                tabList[0] = this->input;
+                                tabList[1] = this->list;
+                                tabList[2] = this->okButton;
+                                tabList[3] = this->cancelButton;
+                                tabList[4] = this->help_button;
+                                this->set_tab_order(tabList, 5);
                             }
                         }
                     }
