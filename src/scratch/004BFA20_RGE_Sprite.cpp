@@ -58,6 +58,11 @@
 //   allocation result naming, and inner loop forms. It found no exact variant.
 // - Second focused pass completed 20 meaningful probes. No policy-valid exact
 //   source was found; retain the simplest typed source and validate before pause.
+// BLOCKER: after each calloc, the executable rereads the positive count before
+// it stores draw_list or sound_list. The rebuild publishes each member pointer
+// before that reread. Named allocation-result forms did not restore the order.
+// This difference changes memory-visible publication and invalid-object fault
+// order, so it is not eligible for accepted drift.
 
 #include <stdio.h>
 
