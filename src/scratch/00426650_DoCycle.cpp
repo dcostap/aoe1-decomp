@@ -59,6 +59,10 @@
 //   the pinned source uses [esp+10]/[esp+11]. Target also has one extra instruction
 //   and a three-byte boundary overrun. Timeout and ack blocks otherwise have exact
 //   call sets, frame, and matching CFG condition counts.
+// BLOCKER: The speed-byte homes are private, but DONE packet initialization is
+// not fault-context equivalent. The executable loads the global log pointer
+// before it writes packet type and turn. The rebuild writes both packet fields
+// first. If the global load faults, the stack packet contents differ.
 
 typedef unsigned int uint;
 typedef unsigned long ulong;
