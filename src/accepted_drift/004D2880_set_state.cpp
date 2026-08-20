@@ -42,6 +42,10 @@
 // Final residual: exact calls, size, frame, CFG counts, and ordered call map;
 // 73 edit/resync bytes remain from a jump-table/EH relocation surface and
 // localized EAX/EDX choices in states 6/7 and the target comparison.
+// Accepted-drift review: the residual is switch-table relocation, two
+// constructor-result EAX/EDI handoff placements, and local register choices.
+// EH states, constructor null paths, all 36 calls and arguments, object reads,
+// x87 comparison order, stores, notifications, and returns match.
 // FLAGS: config\\flags\\004D2880_set_state.rsp (/nologo /c /O2 /Oy /GX)
 
 #include "..\\..\\include\\game_globals.h"
