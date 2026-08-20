@@ -65,6 +65,11 @@
 //   short-lived Play-result, and explicit buffer-failure label forms were
 //   tested. They either merged one Release call, changed the call/CFG shape,
 //   or duplicated the clean result. The member-reload source remains pinned.
+// BLOCKER: the saved `sound` alias reads direct_sound before GetCaps and both
+// cooperative-level calls. The executable rereads the member on the first
+// failure cleanup. A member change during either external call can therefore
+// select a different Release target. Forms that restore the reread merge one
+// binary-observed Release call site.
 #include <string.h>
 #include <dsound.h>
 
