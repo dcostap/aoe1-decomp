@@ -13,6 +13,12 @@
 // - Remaining drift starts at the saved vtable spill after draw_setup. The later
 //   stat dispatch also uses different pointer and index registers than the oracle.
 // - No inline assembly, fake vtable, or compiler-only source remains.
+// - Behavior correction: the first TextOutA call draws the player name at
+//   pnl_y. The prior source incorrectly added 0x0F to that call.
+// - Accepted-drift blocker: Lock failure leaves text_flag uninitialized in the
+//   binary and this reconstruction. The binary later reads entry ESP+0x10;
+//   VC5 assigns the rebuilt local to entry ESP+0x14. Different stale values can
+//   change font/clip restoration and the item-drawing tail. Keep in scratch.
 
 #include "../../include/game_globals.h"
 #include <windows.h>
@@ -555,7 +561,7 @@ void TRIBE_Scenario_Editor_Panel_Object::draw()
                 strcpy(name, REPLACEMENT_PLAYER_NAME);
             }
             TextOutA(this->render_area->DrawDc,
-                     this->pnl_x + 2, this->pnl_y + 0x0F,
+                     this->pnl_x + 2, this->pnl_y,
                      name, strlen(name));
         }
 
