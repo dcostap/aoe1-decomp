@@ -47,6 +47,12 @@
 // shift each found entry from the following slot before clamping the count.
 // Next lead: recover the entry zero-register schedule and the remaining
 // first idle-loop capacity load; current mismatch starts at the prologue.
+// MANAGEDARRAY AUDIT: field offsets, resize calls, growth copies, active-count
+// checks, capacity checks, shifts, and negative-count clamps match the binary
+// paths. No shared template change is required.
+// BLOCKER: The executable pushes EDI before it reads and updates
+// victoryConditionChangeTimeout. The rebuild reads that member first. An
+// invalid this pointer therefore faults with ESP differing by four bytes.
 
 extern void* __cdecl operator new(unsigned int size);
 extern void __cdecl operator delete(void* pointer);
