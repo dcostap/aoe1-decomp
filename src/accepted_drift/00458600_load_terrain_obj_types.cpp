@@ -29,6 +29,11 @@
 // found. The typed direct-member source remains the clean reconstruction.
 // Keep the typed direct-member source authoritative until new source evidence
 // explains this final expression schedule.
+// Accepted-drift review: the residual placement-byte basin changes only LEA,
+// ADD, and register selection. Both versions read id, num, and flag in the same
+// order, write the same placement byte, and then increment the same count. The
+// final fscanf setup computes the same local addresses in the same argument
+// order. LEA does not access memory. All five calls and return effects match.
 
 #include <stdio.h>
 #include <stdlib.h>
