@@ -41,6 +41,12 @@
 //   Width-carrier lab produced only 505- and 511-byte groups.
 // - Direct signed while, truth-test, explicit do-while, named Width, local
 //   counter, and proven x/y-home reuse probes did not improve the clean basin.
+// - Accepted-drift review: the changed vertical-edge setup removes a temporary
+//   Width register and a decrement-and-restore sequence for the positive row
+//   count. It also uses the other byte register for two commutative additions
+//   and keeps the countdown in a different parameter home. All ProbArray and
+//   PointMaker reads and stores keep the same order, addresses, and values.
+//   The function has no calls, and all branch predicates remain equivalent.
 
 #include <stdlib.h>
 #include <string.h>
