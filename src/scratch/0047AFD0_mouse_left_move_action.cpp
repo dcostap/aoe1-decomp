@@ -43,6 +43,11 @@
 // reversed spelling; using that source form in both orientation arms improves the clean result from 320 to 318
 // changed bytes, 93.08% shape, and 83.57% exact-block coverage. A partial reversion returned 320 bytes.
 // Unresolved: the remaining drift is the horizontal/vertical edge reload topology and the resulting branch spans.
+// Accepted-drift blocker: in each positive thumb-delta guard, the executable
+// reads the minimum edge before the current position and then rereads the
+// minimum. The rebuild reads the current position first and reads the minimum
+// once. A damaged or concurrently changed panel can fault or branch
+// differently. Keep this function in scratch.
 
 extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
 
