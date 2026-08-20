@@ -56,6 +56,12 @@
 // remaining shared success/failure epilogue. No policy-valid exact source was
 // found in this bounded pass.
 // FLAGS: /nologo /c /O2 /Oy /GX
+// Accepted-drift review: all 17 calls and arguments, existing-action tests,
+// retarget coordinates, owner notification, task creation, new-expression EH
+// state, constructor inputs, list deletion, action publication, and 0/1 results
+// match. VC5 clones two success epilogues instead of jumping to the executable's
+// shared success tail. Each clone performs the same FS unlink and register/stack
+// cleanup, with no additional observable access.
 
 class RGE_Action;
 class RGE_Action_List;
