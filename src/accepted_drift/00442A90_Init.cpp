@@ -32,6 +32,13 @@
 // - The best clean reconstruction is 802 bytes, 15/15 ordered calls, 0x60C
 //   frame, 446 differing bytes, and 91.29% shape similarity.  The first
 //   mismatch remains the natural entry parameter-load/store schedule.
+// - Behavior review restored Wnd, Pal, Inst, ScreenMode publication order by
+//   placing ScreenMode before Inst in source. VC5 schedules that pair in the
+//   executable order while preserving all later code and the exact size.
+// Accepted-drift review: all initial member stores, 15 calls and arguments,
+// DirectDraw failure codes, mode changes, palette bytes, surface setup, caps,
+// return values, and faulting member accesses match. Residual drift is stack
+// parameter preload and equivalent receiver/vtable register scheduling.
 
 #include <string.h>
 #include <windows.h>
@@ -284,10 +291,10 @@ int TDrawSystem::Init(void* inst, void* wnd, void* pal,
     IDirectDraw** direct_draw;
     IDirectDraw* dd;
 
-    this->Inst = inst;
-    this->Pal = pal;
     this->Wnd = wnd;
+    this->Pal = pal;
     this->ScreenMode = screen_mode;
+    this->Inst = inst;
     this->ScreenWidth = width;
     this->DrawType = draw_type;
     this->ScreenHeight = height;
