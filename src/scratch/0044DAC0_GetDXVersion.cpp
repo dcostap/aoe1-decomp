@@ -42,6 +42,10 @@
 // calls, but its DirectInputCreate home adds 4 bytes to the 0x114 target frame.
 // LIKELY INTENT: Keep the period Windows/OLE and DirectX declarations until a proven
 // local-lifetime model removes that one extra home without a synthetic union.
+// BLOCKER: The period SDK donor confirms the typed DirectInputCreate declaration
+// and late DDSURFACEDESC scope. Those forms still produce a 0x118 frame. The
+// executable uses 0x114. All 47 calls align, but the extra four bytes change ESP
+// at each external call and on every return path, so this is not accepted drift.
 
 // The old DirectDraw record is 0x6c bytes. Only these fields are touched here,
 // but retain their real offsets rather than treating the middle as a guessed
@@ -111,6 +115,7 @@ public:
 };
 
 typedef int (__stdcall* DIRECTDRAWCREATE)( void*, IDirectDraw**, void* );
+typedef int (__stdcall* DIRECTINPUTCREATE)( void*, unsigned long, void**, void* );
 
 extern const GUID CLSID_DirectPlay;
 extern const GUID IID_IDirectPlay3;
@@ -125,14 +130,13 @@ void GetDXVersion( unsigned long* param_1, unsigned long* param_2 ) {
     void* DDHinst = 0;
     void* DIHinst = 0;
     IDirectDraw* pDDraw = 0;
+    DIRECTINPUTCREATE DirectInputCreate;
     IDirectPlay3* dp3 = 0;
     IDirectDrawSurface* pSurf;
     IDirectDraw2* pDDraw2 = 0;
     DIRECTDRAWCREATE DirectDrawCreate = 0;
     OSVERSIONINFOA osVer;
     IDirectDrawSurface3* pSurf3 = 0;
-    DDSURFACEDESC desc;
-    void* DirectInputCreate;
     osVer.dwOSVersionInfoSize = 0x94;
 
     if (!GetVersionExA( &osVer )) {
@@ -155,7 +159,7 @@ void GetDXVersion( unsigned long* param_1, unsigned long* param_2 ) {
                 return;
             }
 
-            DirectInputCreate = GetProcAddress( DIHinst, "DirectInputCreateA" );
+            DirectInputCreate = (DIRECTINPUTCREATE)GetProcAddress( DIHinst, "DirectInputCreateA" );
             FreeLibrary( DIHinst );
             if (DirectInputCreate == 0) {
                 OutputDebugStringA( "Couldn't GetProcAddress DInputCreate\r\n" );
@@ -235,7 +239,7 @@ void GetDXVersion( unsigned long* param_1, unsigned long* param_2 ) {
         return;
     }
 
-    DirectInputCreate = GetProcAddress( DIHinst, "DirectInputCreateA" );
+    DirectInputCreate = (DIRECTINPUTCREATE)GetProcAddress( DIHinst, "DirectInputCreateA" );
     FreeLibrary( DIHinst );
     if (DirectInputCreate == 0) {
         FreeLibrary( DDHinst );
@@ -244,6 +248,7 @@ void GetDXVersion( unsigned long* param_1, unsigned long* param_2 ) {
         return;
     }
 
+    DDSURFACEDESC desc;
     memset( &desc, 0, sizeof(desc) );
     desc.dwSize = sizeof(desc);
     desc.dwFlags = 1;
