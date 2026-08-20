@@ -39,6 +39,12 @@
 //   is pinned at 338 differing bytes with exact size, frame, calls, and CFG.
 //   Remaining drift is the fallback expression order, the pre-test receiver
 //   load, and the original EBX versus rebuilt EDI import-pointer color.
+// - Behavior review moved the .scx prog_info read before currentLine. This also
+//   removes the failed-.scn path's early list read before the OpenFile result.
+// Accepted-drift review: all 38 calls and arguments, file-name construction,
+// list updates, dialogs, panel transitions, constructor cleanup, and returns
+// now match. Residual drift is OpenFile register choice and local destination
+// address preparation around equivalent sprintf tails.
 
 #include <new.h>
 #include <string.h>
@@ -228,8 +234,8 @@ long TRIBE_Screen_Sed_Open::action(TPanel* param_1, long param_2,
                                 ((TTextPanel*)list)->currentLine());
                     }
                     else {
-                        line = ((TTextPanel*)list)->currentLine();
                         prog_info = rge_base_game->prog_info;
+                        line = ((TTextPanel*)list)->currentLine();
                         sprintf(fileName + 4, "%s%s.scx",
                                 prog_info->scenario_dir, line);
                         if (open_file(fileName + 4, &of.Reserved1, 0x4000) != -1) {
