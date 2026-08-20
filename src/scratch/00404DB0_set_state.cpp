@@ -31,6 +31,11 @@
 // - direct repeated-sqrt, split-assignment, reversed-term, branch-local, and
 //   threshold-local variants did not improve this result.  Keep the natural
 //   float source; do not retain metric-only operand reordering.
+// Review blocker: the original keeps the intercept square root in x87 extended
+// precision for the lead-correction guard. The rebuild spills and reloads it
+// as float first, which can change a threshold result. The ballistic tail has
+// the reverse problem: the original rounds acceleration through a float stack
+// home before both outputs, while the rebuild uses its extended value.
 
 #include <math.h>
 
