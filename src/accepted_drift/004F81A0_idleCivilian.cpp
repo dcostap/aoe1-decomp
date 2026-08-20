@@ -44,6 +44,13 @@
 // Final unresolved facts: the original first-pass tail uses a positive near JL
 // backedge and a late first-found epilogue.  VC5 keeps an inverted JGE/JMP tail
 // and an early found return for every clean source form tested.
+// MANAGEDARRAY AUDIT: resize guards, contains bounds, inline growth, copies,
+// publication, and value reads match the executable. No template change is
+// required.
+// Accepted-drift review: the first-found return is early in the rebuild and
+// late in the executable. Both read the same object ID after currentOrder. The
+// first loop uses equivalent positive versus inverted tails and one count read.
+// All 25 calls, x87 comparisons, array effects, and return values match.
 
 #include <stdlib.h>
 
