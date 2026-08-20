@@ -28,6 +28,12 @@
 // 25: added the complete period RGE_Scenario suffix from exact scenario.cpp donors; codegen stayed at the 95-byte mismatch.
 // 26: inverted the fd success guard; this changed the call layout and worsened the result to a 290-byte mismatch, so restored the clean arm shape.
 // 27: retained the reviewed extern rge_base_game declaration for policy-correct relocation ownership; codegen stayed at 95 bytes.
+// Accepted-drift review: all nine calls match. Before the two late sprintf
+// paths, only three branch displacements differ. In both paths, the rebuild
+// computes &TempText3 early and preserves it in ESI. The executable computes
+// the same address after the call. LEA does not access memory. All external
+// reads, arguments, writes, and return values keep their order. The rebuilt
+// return is eight bytes earlier; unreachable NOP bytes fill the owning symbol.
 
 extern "C" int __cdecl sprintf(char*, const char*, ...);
 extern "C" int __cdecl strcmp(const char*, const char*);
