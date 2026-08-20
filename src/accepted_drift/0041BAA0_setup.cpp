@@ -44,6 +44,13 @@
 //   field.  The oracle passes the game-speed home as the first output, then
 //   reads that same home.  This removes the four-byte frame gap and aligns the
 //   EH record home; the remaining drift is not a frame-ownership mismatch.
+// - Corrected LoadLibraryA to use this+0x2ED. The prior fixed string argument
+//   caused broad register drift and did not match the executable's path owner.
+// Accepted-drift review: size, frame, 67 calls, CFG counts, EH states, setup
+// gates, error codes, global/member publication, constructor cleanup, logs,
+// timers, and returns match. The remaining 22 bytes are +4 private stack-home
+// offsets for valid DirectX, memory-status, file, path, and OFSTRUCT buffers.
+// Each external call receives the same buffer content and object extent.
 
 #include <windows.h>
 #include <stdio.h>
@@ -232,9 +239,8 @@ public:
 
 int RGE_Base_Game::setup()
 {
-    MEMORYSTATUS ms;
     unsigned long DXVersion;
-    unsigned long DXPlatform;
+    MEMORYSTATUS ms;
     char filename[260];
     char s[256];
     OFSTRUCT of;
@@ -304,7 +310,7 @@ int RGE_Base_Game::setup()
             this->error_code = 2;
         }
         else {
-            StringTable = LoadLibraryA((char*)0x57FA10);
+            StringTable = LoadLibraryA((char*)this + 0x2ED);
             if (StringTable == 0) {
                 this->error_code = 1;
             }
