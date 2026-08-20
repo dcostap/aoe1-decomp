@@ -37,6 +37,11 @@
 //   65/65, shape 99.34%, exact-block coverage 96.01%.  The only structural
 //   mismatch is the path-label loop's index/string-ID induction shape.
 //   No opaque codegen-only scaffolding retained.
+// Accepted-drift review: the path loop carries index 0..2 in the executable
+// and string IDs 0x260E..0x2610 in the rebuild. Label and button addresses, y
+// values, calls, arguments, and exits match. The final drift only reloads
+// cancelButton between two field stores and changes private tab-list store
+// scheduling. No external call crosses those changes. All 65 calls match.
 
 #include <string.h>
 
