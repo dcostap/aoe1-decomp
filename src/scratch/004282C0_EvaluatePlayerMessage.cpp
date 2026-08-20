@@ -40,6 +40,11 @@
 //   no invariant-eligible exact variant; default flags remained the only 972-byte basin.
 // - Final clean validation: calls 24/24 aligned, no frame, saved EBX/ESI/EDI, 972/972 bytes, 747 strict diff.
 // Next evidence: recover original Com_hand.cpp declaration/TU context or the natural kill-scan source layout.
+// Review blocker: the original 0x44 arm reads data+4 before it reads
+// PlayerOptions.CommandTurnIncrement. The rebuild reads the member first.
+// This changes the first failing read for an invalid packet or invalid object.
+// The later kill-scan register choice and duplicate bound test are mechanical,
+// but they do not remove this pointer-read-order blocker.
 
 struct TDebuggingLog { void Log(char*, ...); };
 extern TDebuggingLog* L;
