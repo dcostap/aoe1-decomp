@@ -46,6 +46,11 @@
 // - Fresh revisit tested the decompiler's coordinate copies, signed y local,
 //   post-sprite receiver alias, and exact same-TU class declaration surface;
 //   each emitted the same 331-byte basin. The clean typed source is restored.
+// - Behavior correction: the binary resolves rge_base_game->world before it
+//   reads this object's outline radii. Keep that fault order in the source.
+// - Accepted-drift blocker: VC5 still hoists the outline_radius_x load between
+//   the global base load and its world dereference. The executable dereferences
+//   the world first. Invalid owners can therefore fault in a different context.
 
 class TDrawArea;
 class RGE_Color_Table;
@@ -291,9 +296,9 @@ void RGE_Master_Static_Object::draw(TDrawArea* draw_area, short x, short y,
                            color_table, draw_area, 10);
 
         if (param_7 != 0) {
+            RGE_Map* map = rge_base_game->world->map;
             float rx1 = this->outline_radius_x;
             float ry1 = this->outline_radius_y;
-            RGE_Map* map = rge_base_game->world->map;
             short x1;
             short y1;
             short x2;
