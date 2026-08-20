@@ -19,6 +19,10 @@
 // 16: tested alignment output ownership and donor draw-wall center algebra; output-home swaps reached 238 bytes but lost exact islands or changed later scheduling, so rolled back.
 // 17: tested a named center-offset temporary; size reached 665 but block shape worsened to 78.14%, so rolled back.
 // 18: tested local declaration removal and a variant spelling; compile repair restored the clean typed source. Remaining blocker is VC5 local-home scheduling after alignment.
+// Behavior correction: the executable returns directly when
+// get_tile_screen_coords fails. It does not clear fog_next_shape on that path.
+// Accepted-drift review also remains blocked by the later draw_flag/global
+// pointer-read order, which changes invalid-owner fault context.
 
 struct tagPOINT {
     long x;
@@ -198,8 +202,10 @@ void RGE_View::draw_object_outline() {
 
     master->alignment(&pick_info.x, &pick_info.y, this->world, 0);
     if (this->get_tile_screen_coords(
-            (short)pick_info.x, (short)pick_info.y, &x3, &scr_y, 1) != 0) {
-        master->alignment_box(this->world, pick_info.x, pick_info.y,
+            (short)pick_info.x, (short)pick_info.y, &x3, &scr_y, 1) == 0)
+        return;
+
+    master->alignment_box(this->world, pick_info.x, pick_info.y,
                               x4, y2, scr_x, y3, y4, y1, x2,
                               alignment_tail);
 
@@ -243,7 +249,6 @@ void RGE_View::draw_object_outline() {
                              0, 0, master->draw_flag & 1, frame_color);
             }
         }
-    }
 
     fog_next_shape = 0;
 }
