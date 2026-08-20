@@ -18,6 +18,10 @@
 // revisit: replaced the direct operator_delete helper with natural typed delete; emitted bytes were unchanged.
 // revisit: typed both Shape_Info walks and canonicalized Shape_Info ownership/long fields; emitted bytes were unchanged.
 // revisit: a top-tested while scan improved the diagnostic diff to 72 but moved shape_info setup before the proven count guard; restored the guarded do-loop for fault order.
+// BLOCKER: the validation loop reads width, height, then Max_CY in the
+// executable. The rebuild reads width, Max_CY, then height. Its validation
+// failures also use an earlier epilogue instead of the executable's shared
+// tail. Malformed Shape_Info fault context and cleanup topology differ.
 
 extern "C" int sprintf(char*, const char*, ...);
 
