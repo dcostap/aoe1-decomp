@@ -26,6 +26,10 @@
 // - current check: exact size, frame, 101 calls, and 97.76% shape; 347 bytes
 //   differ. The first mismatch is the normal digit switch's LEA versus SUB.
 //   Remaining drift is local register allocation and switch-table relocation.
+// BLOCKER: After each debug sprintf, the executable reads rge_base_game before
+// removing 12 cdecl argument bytes. The rebuild removes those bytes first and
+// then reads the global. A faulting global load therefore observes ESP values
+// that differ by 12 bytes.
 
 #include <stdio.h>
 #include <string.h>
