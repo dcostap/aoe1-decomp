@@ -45,9 +45,11 @@
 //     register coloring remains the first unresolved structural hunk.
 // Main-agent audit replaced fixed string addresses and cross-member pointer
 // arithmetic with literals and direct playerName/playerCivilization/checkButton/
-// commPlayers row ownership. The canonical source validates at 1605 bytes with
-// all 50 calls retained; exact constructor scheduling remains unresolved.
-// Blocker: constructor initialization/register basin and early EH/base-ctor relocation remain broad; left in scratch, not accepted_drift-safe.
+// commPlayers row ownership. The canonical source retains all 50 calls.
+// Accepted-drift review: current code is exact through +0x3FC. The executable
+// changes EBP from zero to the radio-array base. The rebuild keeps EBP zero and
+// uses EBX for that base. Residual changes are zero pushes, equivalent LEAs,
+// and one zero store. EH state, all calls, publications, links, and returns match.
 
 class TDrawArea;
 class TPanel;
