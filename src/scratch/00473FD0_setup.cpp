@@ -50,6 +50,11 @@
 // return, 94.86% shape, and 162 positional mismatch bytes. Remaining drift is
 // a register map conflict in the prologue and the final scrollbar argument
 // setup. No policy-valid exact match was found.
+// Accepted-drift audit: all child calls, arguments, publications, failure
+// branches, EH states, cleanup, and returns align. Promotion remains blocked
+// because VC5 reorders the pre-call list_wid/list_hgt and
+// scbar_wid/scbar_arrow_hgt member stores. A partial object or failing write can
+// expose different state before TPanel::setup.
 
 struct TDrawArea;
 class TPanel;
