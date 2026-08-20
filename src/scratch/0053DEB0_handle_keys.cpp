@@ -34,6 +34,9 @@
 // 25: Inline truncation, double/register accumulator, widened directions, direct
 //     quotient forms, and local scope variants did not beat the threshold source.
 // GIVEUP: left in scratch for future source-shape/stack-local topology work.
+// BLOCKER: The executable frame is 0x118, while the natural 256-byte keyboard
+// state array produces 0x114. A 260-byte array reaches the target frame but
+// contradicts the proved GetKeyboardState buffer ownership. Do not pad it.
 
 typedef unsigned char uchar;
 typedef void* HWND;
