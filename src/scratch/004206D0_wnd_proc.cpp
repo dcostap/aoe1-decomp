@@ -40,6 +40,11 @@
 // - Direct external declarations for the fixed storage slots recover the
 //   original absolute load/store form without pointer aliases.  The remaining
 //   drift is the compiler's shared WM_SIZE logging tail and shifted blocks.
+// - Behavior review corrected message 0x400's first color-log argument,
+//   restored WM_COMMAND's unconditional DefWindowProcA path, and made the
+//   music-done exit log depend only on mouse_down before returning panel_result.
+// - The corrected local music tail makes VC5 share two color-log call sites.
+//   Runtime path effects require a new tail ledger before acceptance.
 
 #include <windows.h>
 
@@ -368,9 +373,8 @@ long __stdcall RGE_Base_Game::wnd_proc(void* hwnd, unsigned int msg,
 
     case 0x111:
         color_log(0x32, 0x16, 3);
-        if (self->handle_command(hwnd, 0x111, wparam, lparam) != 0)
-            goto default_window_proc;
-        goto panel_return;
+        self->handle_command(hwnd, 0x111, wparam, lparam);
+        goto default_window_proc;
 
     case 0x112:
         if (wparam == 0xF100 && self->prog_info->field_894 != 0 &&
@@ -443,7 +447,7 @@ panel_return_after_exit_menu:
         goto music_done_message;
 
     case 0x400:
-        color_log(0x24, 0x24, 3);
+        color_log(0x32, 0x24, 3);
         {
             int old_time = debug_timeGetTime_on_storage;
             debug_timeGetTime_on_storage = 0;
@@ -476,9 +480,8 @@ music_done_message:
     color_log(0x32, 0x4C, 3);
     if (self->handle_music_done(hwnd, msg, wparam, lparam) != 0)
         goto default_window_proc;
-    if (panel_result == 0)
-        goto panel_return_alt;
-    color_log(0x4C, 0x5F, 4);
+    if (mouse_down != 0)
+        color_log(0x4C, 0x5F, 4);
     color_log(0x24, 0x5F, 3);
     return (long)panel_result;
 
