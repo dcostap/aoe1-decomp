@@ -37,6 +37,14 @@
 //   differing bytes with all nine ordered calls and the original size/frame.
 // - Typed pointer spellings and local declaration variants do not change the
 //   remaining pointer-register difference. Keep canonical ProbArray ownership.
+// - Behavior correction: the line-499 random value uses signed `% 2` in the
+//   binary. The prior `abs(random)` reconstruction could select distant cells.
+// - Accepted-drift review after that correction: size, frame, CFG, nine calls,
+//   both x87 index expressions, signed remainders, bounds, array fault
+//   addresses, byte saturation, ProbabilityTiles updates, angle progress, and
+//   return match. The first index keeps the same extended curx value through
+//   multiplication and __ftol. Residual drift swaps private float homes and
+//   the register that owns each probability-cell address.
 
 #include <stdlib.h>
 #include <string.h>
@@ -135,7 +143,7 @@ void PointMaker::AddingCircle(int param_1, int param_2, int param_3) {
             lasty = lastx;
             if (random % 2) {
                 x = trig.sin360(angle) * (float)param_3;
-                step = abs(debug_rand((char*)"C:\\msdev\\work\\age1_x1\\fractal.cpp", 499)) + x - 1.0f;
+                step = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\fractal.cpp", 499) % 2 + x - 1.0f;
                 float y = trig.cos360(angle) * (float)param_3;
                 int random_2 = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\fractal.cpp", 500) % 2;
                 loc = (int)(width * ((float)random_2 + y - 1.0f) + step);
