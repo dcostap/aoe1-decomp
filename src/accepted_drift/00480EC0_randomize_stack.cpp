@@ -167,6 +167,11 @@
 //   All probes restored the odd-end direct-array source. Exact find_path and
 //   link_stack_randomly siblings support ordinary Map_Stack ownership and
 //   period C89 declarations, but do not explain the second target home.
+// - Accepted drift: despite the 0x964/0x968 frame difference, sub_stacks has
+//   the same entry-relative address in both builds. All five calls receive the
+//   same list, node, and bucket addresses. Random scaling, pair order,
+//   post-mutation next rereads, loop counts, and returns match. The extra
+//   original word stores only private pair-loop state.
 
 extern int __cdecl debug_rand(char* file, int line);
 
