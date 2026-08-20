@@ -36,6 +36,11 @@
 //   aggregate source as the best period-plausible reconstruction.
 // - Corrected the shadow TextOut coordinates to x - 1 and y + 1 from the
 //   original instruction order.
+// - Accepted-drift review: the rebuilt second-column block loads the saved
+//   panel into EAX and then copies it to EBX. The original loads it directly
+//   into EBX. Panel, clip_rgn2, clip_rgn, and text_style reads keep the same
+//   order. All 23 calls, arguments, predicates, stores, and returns match.
+//   The extra two-byte register copy changes only later branch distances.
 
 #include <windows.h>
 
