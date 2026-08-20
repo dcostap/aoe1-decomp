@@ -30,6 +30,12 @@
 // reached frame 0x5C and diff 324, but it merged two distinct input fields and
 // is not a valid source reconstruction. It was discarded. The clean source is
 // restored. The remaining blocker is the natural local-home overlay.
+// Accepted-drift blocker: the giant fscanf rejects only EOF. Partial
+// conversions therefore leave later stack fields uninitialized, but the
+// function still consumes them as indexes, border writes, colors, sizes, and
+// division inputs. Different local homes can change these effects and faults.
+// The unbounded name and pict_name conversions also have different overflow
+// fault addresses. Keep this parser in scratch.
 
 #include <stdio.h>
 
