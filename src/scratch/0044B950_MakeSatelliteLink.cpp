@@ -53,6 +53,10 @@
 // - Fresh delegated revisit: first-guard `nx = dx + old_x`, compound `nx`, and
 //   condition-local candidate forms all emitted the same 336-byte/149-diff
 //   basin. Restored the pinned clean source; no natural exact basin was found.
+// BLOCKER: the executable rereads x at the final update and publishes x before
+// y. The rebuild keeps old_x and publishes y before x. It also loads NumNodes
+// between those stores. Final values match, but member publication and failing
+// access order do not. Keep this function in scratch.
 
 extern int __cdecl debug_rand(char* param_1, int param_2);
 
