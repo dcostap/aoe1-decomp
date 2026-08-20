@@ -46,6 +46,11 @@
 // direct-length, declaration, and base-alias forms did not recover the two-byte
 // allocation hunk. A five-variant typed slot family also found no exact result;
 // separate slot locals entered a worse prologue basin. Keep this natural source.
+// Accepted-drift review: the rebuild loads OnHold directly into EBP and adds
+// the slot offset. The executable loads OnHold into EAX, copies the offset into
+// EBP, and then adds EAX. Both form the same HOLDER address. All packet reads,
+// allocation and REP-copy effects, member stores, callback-time OnHold reloads,
+// six calls, arguments, and return values keep the same order.
 
 #include <string.h>
 
