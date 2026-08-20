@@ -21,6 +21,12 @@
 //
 // Current status: structural reconstruction remains incomplete. Keep this
 // readable common-tail source as the best behavior-backed candidate.
+// MANAGEDARRAY AUDIT: group-member capacity checks, resize calls, value reads,
+// and field offsets follow the expected template behavior. No shared template
+// change is required.
+// BLOCKER: The rebuild is 50 bytes short, with a 0x38 frame versus 0x44 and 29
+// fewer instructions. Broad CFG and local-lifetime recovery remains incomplete
+// despite all 25 calls aligning.
 
 void __cdecl operator delete(void* block);
 
