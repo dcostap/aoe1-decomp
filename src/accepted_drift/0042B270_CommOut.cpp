@@ -21,9 +21,10 @@
 // - split the guaranteed-delivery accounting and StoreForResend tests.  This
 //   reproduces the original second TEST EBX, exact size, and 84.24% block
 //   coverage, but the function remains non-exact.
-// - BINARY NOTE: the original no-send path zeros EBX at 0042B728.  Several
-//   explicit hr-zero source forms reproduced that block but changed the wider
-//   register basin.  The no-send source model remains unresolved.
+// - BINARY NOTE: the original no-send path zeros EBX at 0042B728. The prior
+//   uninitialized hr model reused the data argument there, which changed the
+//   return and called ShowReturn for a non-null data pointer. Keep hr initialized
+//   even though this changes the wider register basin.
 // - BINARY NOTE: exact donor 00426530 uses int,int,int,int,uchar,int for
 //   AddCommand.  This local declaration emits the same bytes.
 // - restored the typed packet-header owner for the four binary-proven fields;
@@ -34,6 +35,12 @@
 // - left in scratch: current best is a broad local-home/CFG mismatch.  The
 //   rebuilt OutCommBuff home remains [esp+1c] versus original [esp+18], while
 //   the original outgoing count home is [esp+20] versus rebuilt [esp+14].
+// Accepted-drift review: branch-local hr initialization now reproduces the
+// executable's zero result when no recipient exists. All early errors, header
+// fields, destination-map writes, 31 calls and arguments, send flags, serial
+// rollback, traffic counters, resend storage, logging values, AddCommand,
+// deletes, and returns match. The private header allocation has no external
+// alias. Residual drift is local-home and equivalent argument scheduling.
 
 #include <string.h>
 
@@ -299,6 +306,7 @@ long TCommunications_Handler::CommOut(ulong to, uchar type, void* data,
             }
             goto sent;
         }
+        hr = 0;
     } else if (outgoing_count != 0) {
         if (DCO_SELF == 0) {
             L->Log("+++BAD DCOID=0 NO TX");
@@ -333,6 +341,8 @@ long TCommunications_Handler::CommOut(ulong to, uchar type, void* data,
         if (hr == 0) {
             this->TXPacketLength += recipient_count * full_length;
         }
+    } else {
+        hr = 0;
     }
 
 sent:
