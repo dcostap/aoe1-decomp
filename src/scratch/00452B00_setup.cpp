@@ -23,6 +23,11 @@
 // BINARY NOTE: the original stores undead_sprite at 00452E24 before the scalar-byte block. The natural source below preserves
 // that behavior, but VC5 schedules two later byte loads before the store. Do not add volatility or address tricks without proof.
 // left in scratch: 199-byte strict drift begins at 00452E24 in scalar-store scheduling after the final lookup; calls, size, frame, and CFG match.
+// BLOCKER: the scalar block changes member publication order. The executable
+// stores movement_type before fog_flag, while the rebuild stores fog_flag first;
+// other byte fields also swap. The executable performs the first outline-radius
+// x87 comparison before many of these stores, but the rebuild performs it after
+// them. Member visibility, fault order, and FP-exception timing differ.
 
 #include <stdio.h>
 #include <stdlib.h>
