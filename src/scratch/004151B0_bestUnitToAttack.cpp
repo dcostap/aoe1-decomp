@@ -17,6 +17,11 @@
 //   0x38, but strict drift remains 1748 bytes (81.8352%).
 // - Main remaining leads are table-symbol ownership, local-home coloring,
 //   and the final x87 score-compare form.
+// - Acceptance blocker: during score division by target hit points, the
+//   executable keeps the numerator in x87 extended precision across the
+//   hit-point test and uses FXCH/FDIV. The rebuild spills the numerator to a
+//   32-bit float home before division. Boundary scores can select a different
+//   target. Three condition blocks also remain structurally absent.
 
 struct VisibleUnitEntry {
     int object_id;
