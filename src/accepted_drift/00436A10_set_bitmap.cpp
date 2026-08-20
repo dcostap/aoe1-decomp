@@ -27,6 +27,11 @@
 //   assignment after construction, and natural null/Dib else-if and shared-
 //   label forms.  They were duplicate or worse basins; restored this clean
 //   typed form.  The unresolved register and cleanup topology is unchanged.
+// Accepted-drift review: the checker's destructor/delete warning is positional;
+// both ordered call maps contain ~TPicture then operator delete at each cleanup.
+// All 13 calls, arguments, allocation and Dib-null cases, row scans, map-image
+// stores, destruction, result values, and conditional set_world effect match.
+// Residual drift is picture/width register choice and shared cleanup placement.
 // FLAGS: config/flags/00436A10_set_bitmap.rsp (/nologo /c /O2 /Oy /GX)
 
 #include <stdlib.h>
