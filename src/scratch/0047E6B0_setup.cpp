@@ -57,6 +57,11 @@
 //   indexed address forms, list_type offset reuse, and a combined allocation
 //   guard all reproduced 380 bytes and 223 differing bytes. The pinned typed
 //   source is restored; direct EDI scan-base allocation remains unresolved.
+// BLOCKER: the rebuild pushes calloc's constant second argument before the
+// first REPNE string scan. The executable pushes it after the scan. An invalid
+// list_info text pointer therefore reaches an exception handler with a
+// different ESP value. Do not accept this copy-lowering drift without a source
+// form that restores the original fault context.
 
 #include <stdlib.h>
 #include <string.h>
