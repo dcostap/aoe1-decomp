@@ -31,6 +31,12 @@
 // Declaration, loop-form, spacing, and separate-zero probes were unchanged or
 // worse. Best current result: exact size and ordered call parity; diff 525,
 // shape 80.85%, with the first mismatch at +0005 in register scheduling.
+// Accepted-drift review: button members clear before the first call; base setup
+// arguments and failure publication match; msg_type publishes before text
+// creation; text and button geometry, member output addresses, labels, hotkey,
+// tab order, current-child publication, call faults, and returns match.
+// Residual drift is parameter preload order, private loop homes, division
+// lowering, vtable-pointer scheduling, and equivalent switch tails.
 
 #define VPAD1(n) virtual void vpad##n();
 #define VPAD2(n) VPAD1(n) VPAD1(n##_1)
