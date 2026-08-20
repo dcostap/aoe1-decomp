@@ -33,6 +33,11 @@
 // block: the rebuilt guards use short branches to an early call site.
 // Compiler-neutral goto and local-order reductions were removed from the pinned source.
 // GIVEUP: leave this direct-field candidate in scratch for the next worker.
+// Accepted-drift review: the call-map gap is the same base processNotify call
+// moved from the cold tail to the guard join. All integer and unordered x87
+// guards reach the same fallback with the same arguments and ESP. The main
+// path, 18 other calls, list growth, coordinate arithmetic, order issue, move,
+// and return values match; the final 3/2 return blocks only invert branch form.
 
 #include <math.h>
 
