@@ -39,6 +39,12 @@
 //   variants either duplicated output or worsened the result.
 // - Open blocker: the first mismatch is still the early zero-register and
 //   target-recovery layout. The remaining drift is broad structural codegen.
+// MANAGEDARRAY AUDIT: group-member growth guards, copies, publication, resize,
+// value reads, and field offsets follow the expected template behavior. No
+// shared template change is required.
+// BLOCKER: The executable frame is 0xFC and the natural source frame is 0xF4.
+// A 52-entry group list fixes only the frame and adds unsupported local storage.
+// Broad CFG drift also remains despite all 42 calls aligning.
 
 void* __cdecl operator new(unsigned int size);
 void __cdecl operator delete(void* block);
