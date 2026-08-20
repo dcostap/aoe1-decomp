@@ -33,6 +33,11 @@
 // Player_Info extents either duplicated the baseline or moved farther.
 // Final clean validation for this claim remains the 814-byte typed reconstruction;
 // all 28 calls align, but the first structural mismatch is the object block at +0x11a.
+// BLOCKER: in the final AI-information pass, the executable reads the selected
+// player vtable before it reads scenario. The rebuild reads scenario first.
+// The vtable read also occurs after two argument pushes in the executable but
+// after only one push in the rebuild. Malformed-player fault order and ESP
+// context differ. Keep this scenario loader in scratch.
 
 typedef unsigned char uchar;
 extern "C" void __cdecl rge_read_uncompressed(int file, void* dst, int size);
