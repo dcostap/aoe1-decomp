@@ -43,6 +43,12 @@
 //   common post-branch call is restored.
 // - reusing param_2 as the caller-object home was codegen-neutral and was
 //   rejected as opaque source; retain the named callerObject ownership.
+// MANAGEDARRAY AUDIT: restored playersToAttack[0] for the index-zero capacity
+// check and removed the fake resize(index) method. This emits identical code.
+// Growth guards, copies, publication, and field offsets now follow the shared
+// template contract.
+// BLOCKER: The rebuild frame is 0x1C versus 0x30, is 46 bytes long, and misses
+// one far-victim _ftol site. Ordered call gaps and broad CFG drift also remain.
 
 #include <math.h>
 
@@ -115,20 +121,6 @@ public:
         return this->value[index];
     }
 
-    void resize(int index) {
-        if (index > this->maximumSizeValue - 1) {
-            int new_size = index + 1;
-            T* new_value = (T*)operator_new(new_size * sizeof(T));
-            if (new_value != 0) {
-                for (int i = 0;
-                     i < this->maximumSizeValue && i < new_size; i++)
-                    new_value[i] = this->value[i];
-                operator_delete(this->value);
-                this->value = new_value;
-                this->maximumSizeValue = new_size;
-            }
-        }
-    }
 };
 
 struct UnitData {
@@ -912,7 +904,7 @@ notify_after_owner:
                                 this->md->aiPlayer->world->object(currentTarget);
                             if (oldTarget != 0) {
                                 if (this->playersToAttack.maximumSizeValue < 1) {
-                                    this->playersToAttack.resize(0);
+                                    this->playersToAttack[0];
                                 }
                                 if (oldTarget->owner->id == this->playersToAttack.value[0]) {
                                     param_2++;
