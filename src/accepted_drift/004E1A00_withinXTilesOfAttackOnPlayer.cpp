@@ -144,6 +144,12 @@
 //   retain the 233-byte boundary, and reduce strict drift from 144 to 128 bytes.
 //   The reduced source has 79.79% exact-block coverage and the same two calls.
 //   Remaining drift is square arithmetic lowering and branch displacement.
+// Accepted-drift review: both versions convert target x and y in the same
+// order. Each record reads minY, minX, maxY, and maxX in the same order. The
+// rebuild reads the private ty home earlier and keeps the first minY square for
+// the fourth corner. The executable keeps the difference and squares it there.
+// All integer results, overflow truncation, predicates, two calls, and returns
+// match. The shorter arithmetic basin only moves later branch displacements.
 
 class RGE_Static_Object {
 public:
