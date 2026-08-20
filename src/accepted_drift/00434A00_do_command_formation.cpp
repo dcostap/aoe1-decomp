@@ -27,6 +27,11 @@
 // - Twenty focused probes tested switch scopes, update spellings, local order,
 //   bool width, ABI access, flags, and standard-header context.  None removed
 //   the six-instruction common-tail difference in the second switch.
+// Accepted-drift review: the executable duplicates a six-instruction x87 store
+// tail for formation cases zero and one. The rebuild shares it. Each predecessor
+// reaches the tail with the same x87 order, and the stores keep the same order
+// and values. Remaining drift is switch relocation and local register choice.
+// All six calls and formation effects match.
 
 #include <math.h>
 #pragma intrinsic(sqrt)
