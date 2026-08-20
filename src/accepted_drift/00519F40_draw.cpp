@@ -33,6 +33,11 @@
 // - Remaining drift is concentrated in register allocation, stack-slot reuse,
 //   and four CFG edge shapes. No exact result reached in this pass.
 // - Left in scratch: ordered calls and memory effects match; VC5 frame and text CFG remain nonexact.
+// Accepted-drift review: the residual is border-frame boolean register choice,
+// rotated private text-coordinate and length homes, and swapped EBX/EDI roles
+// that preserve shape_draw argument positions. A later global zero store only
+// shifts with the basin. All 42 calls, arguments, reads, panel stores, GDI
+// state, unlocks, and returns match.
 
 #include "..\..\include\game_globals.h"
 #include <windows.h>
