@@ -75,6 +75,12 @@
 // Best current source keeps the natural typed ownership and the binary-proven
 // count reread. Remaining gap is structural outer-entry sharing plus vtable
 // relocation context; no unresolved field layout or call ABI issue remains.
+// Accepted-drift review: all ten read/allocation calls preserve order, sizes,
+// file descriptors, and member or heap destinations. The first effect still
+// owns every name read. Count rereads, null-list publication, partial-load
+// faults, loop progress, zero-count cleanup, vptr publication, and returns
+// match. Residual drift is one outer-entry jump and equivalent private
+// loop-state reload scheduling.
 
 void __cdecl rge_read(int fd, void* buf, int size);
 void* __cdecl calloc(int count, int size);
