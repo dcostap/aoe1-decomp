@@ -82,6 +82,11 @@
 // a codegen duplicate. All experiments were restored. Final validation remains
 // the clean typed source: 384/385 bytes, 153 positional diff bytes, exact calls,
 // 0x8 frame, and first mismatch at +0x8E.
+// Accepted drift: the type-1 path is exact. Type-2/3 and type-4 use the same
+// signed node reads, normalized bounds, nine calls, arguments, loop limits,
+// post-call node-type reread, and returns. Values used after AddSpan are private
+// copies in both builds. Remaining differences are register and stack-home
+// assignment.
 
 struct DClipInfo_Node {
     char gap_00[0x2C];
