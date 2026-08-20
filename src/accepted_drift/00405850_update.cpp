@@ -35,6 +35,11 @@
 //   discarded as compiler-steering rather than canonical source. External bound symbols were codegen-identical.
 //   Remaining evidence-led blockers are the unmasked local switch-table relocations, cold case-1 epilogue
 //   placement, and the original absolute x87 bound relocations.
+// Accepted-drift review: the residual is local switch-table relocation, cold
+// case-one return placement, equivalent x/y-difference stack homes, and return
+// epilogue scheduling. Both versions recompute target differences after doMove.
+// x87 compare order, all 31 calls and arguments, notifications, state changes,
+// recursive updates, and return values match.
 
 struct XYZBYTEPoint {
     unsigned char x;
