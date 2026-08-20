@@ -41,6 +41,12 @@
 //   terrain identity local reached a 504-byte diagnostic diff but added 3
 //   bytes and changed the compare form. Removing the named old-terrain local
 //   was also a codegen duplicate. The pinned clean source is restored.
+// - Accepted-drift review: terrain eligibility, coordinate normalization and
+//   clamp order, tile count gates, low-five replacement, preserved old terrain,
+//   create_terrain_object arguments, tile-pointer progress across that call,
+//   expanded border bounds, border call order, redraw arguments, fault
+//   addresses, and return match. Residual drift is private bounds homes,
+//   register ownership, and equivalent nested-loop lowering.
 
 class RGE_Player;
 class RGE_Game_World;
