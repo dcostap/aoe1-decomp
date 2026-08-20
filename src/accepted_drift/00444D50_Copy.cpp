@@ -32,6 +32,11 @@
 //   negatives, truth tests, and branch-scope clip-delta locals all duplicated
 //   the clean 851-byte output.  Final validation remains 716 differing bytes,
 //   0x20 frame, six ordered calls, and 91.08% shape.
+// Accepted-drift review: both low-memory and DirectDraw arms preserve pointer
+// checks, all six calls and arguments, inclusive RECT conversion, clipping
+// updates, transparent flags, 0062E64C/0062E650 store order, error mapping,
+// and returns. Residual drift is the zero register and equivalent integer
+// address/subtract lowering for private RECT and extent locals.
 
 #include <windows.h>
 
