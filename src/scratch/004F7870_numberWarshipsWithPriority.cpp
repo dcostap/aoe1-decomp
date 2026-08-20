@@ -47,6 +47,11 @@
 //   ordered calls, 70.16% shape, 37.17% exact-block coverage, 1295 strict
 //   differing bytes.  The remaining lead is the target EBP/EBX register and
 //   stack-home topology, then the 83-byte structural tail.
+// MANAGEDARRAY AUDIT: resize, contains, capacity guards, duplicate scans,
+// append publication, count increments, and field offsets use the expected
+// ABI on both warboat and soldier paths. No shared template change is needed.
+// BLOCKER: The rebuild remains 83 bytes too large, with four extra conditionals
+// and two missing jumps. This is broad branch topology, not localized drift.
 
 struct RGE_Static_Object;
 struct UnitAIModule;
