@@ -84,6 +84,9 @@
 // TScreenPanel::setup(...,long,int), and TButtonPanel::set_text(short,long).
 // LIKELY INTENT: the remaining drift is a historical source or compiler-context
 // difference around draw-button argument scheduling and palette initialization.
+// BLOCKER: For the inventory-panel constructor, the executable reads the screen
+// draw area before font->font. The rebuild reads font->font first. Constructor
+// arguments and all 180 calls match, but invalid-pointer fault order differs.
 
 #include "../../include/game_types.h"
 #include "../../include/game_globals.h"
