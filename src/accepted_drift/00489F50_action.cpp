@@ -31,6 +31,11 @@
 // - Managed follow-up: a 512-sample ambient-declaration sweep formed one wrong
 //   759-byte EH-less basin. A late bool added 8 bytes and changed CFG. Restored
 //   the clean typed source and default /GX flags.
+// Accepted-drift review: the executable loads the late code argument into EAX
+// for each code-one test and reuses it for the common code-two test. The rebuild
+// compares the unchanged stack argument directly. No call occurs between each
+// load and common test. All 25 calls, dialog effects, mode writes, and returns
+// match.
 
 #include <string.h>
 
