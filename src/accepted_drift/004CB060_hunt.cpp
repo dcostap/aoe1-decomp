@@ -33,6 +33,11 @@
 //   label were codegen duplicates. Late result declaration changed EH setup.
 //   Direct zero returns expanded the body to 391 bytes. Restored the natural
 //   source after these tail-only probes.
+// - Accepted-drift review: the first 281 bytes and all 16 calls match. The
+//   rebuild duplicates the zero-return EH epilogue and sets one inside the
+//   success epilogue. The executable sets one before its shared epilogue.
+//   Target, task, allocation, construction, action-list effects, EH state, and
+//   return values match. No call or object access occurs in the changed tails.
 // FLAGS: config/flags/004CB060_hunt.rsp
 
 class RGE_Static_Object;
