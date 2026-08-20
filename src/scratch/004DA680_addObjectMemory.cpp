@@ -40,6 +40,10 @@
 // sa-53b45eb0 pass: restored and pinned the clean typed while-scan. Next lead is
 // original source scope or translation-unit context, not metric-only steering.
 // luna-4DA680-r5: the remaining source-backed discrepancy is saved-register coloring at the scan prologue; no fresh natural axis remains after the eligible declaration lab.
+// BLOCKER: The rebuild hoists importantObjectMemory before the maximum-count
+// test. The executable reads that member only when the scan can run. For a
+// zero or negative count, the rebuild performs an extra pointer read. Fault
+// order and concurrent-mutation behavior therefore differ.
 
 typedef unsigned char uchar;
 
