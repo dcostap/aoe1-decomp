@@ -14,6 +14,12 @@
 //   ordered calls. Its 117 differing bytes start at the coordinate conversion.
 // - Split coordinate statements and candidate assignment forms emit the same
 //   117-byte result. No raw cursor or compiler-steering form is retained.
+// Accepted-drift review: both versions capture importantObjectMemory before
+// the first _ftol call, then convert unit x and y in the same order. The rebuild
+// computes the candidate address earlier with ADD and reads candidate x before
+// reloading the unit pointer from its private stack home. The executable does
+// the stack reload first. This changes no object access, call, x87 operand,
+// selected candidate, distance, or return value. All four calls match.
 
 extern float DAT_00575580;
 
