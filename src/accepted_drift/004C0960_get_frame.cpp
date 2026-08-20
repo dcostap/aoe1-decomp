@@ -44,6 +44,11 @@
 // that constant in the cleanup epilogue. No call, frame, width, or ownership
 // issue remains. Next lead: recover the original source CFG or TU context that
 // forces the success value before the shared EH tail.
+// Accepted-drift review: the first 444 bytes and all nine calls match. The
+// rebuild duplicates the zero-return epilogue and sets the success value inside
+// its other epilogue. Both paths restore the same EH chain and return the same
+// value. The success path writes the same four outputs in the same order. No
+// call, object access, or output access occurs in the changed epilogue code.
 
 extern void __cdecl addstring(char** dst, char* base, char* ext);
 extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
