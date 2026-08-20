@@ -38,6 +38,11 @@
 // final unresolved pass: 20 meaningful hypotheses tested. The remaining mismatch
 // is the second player scan's rare found arm: the oracle branches to +32EC, moves
 // EBP, then jumps to the log block; natural VC5 source keeps that move inline.
+// Accepted-drift review: the found arm and no-match arm produce the same player
+// number before logging. All 21 DirectPlay, timer, log, error, preprocess, and
+// system-message calls preserve arguments and order. Peek/receive sizes, IDs,
+// overflow handling, counters, terminator store, loop state, and returns match.
+// Residual drift is rare-arm placement and equivalent register scheduling.
 
 typedef unsigned long ulong;
 extern ulong __cdecl debug_timeGetTime(const char* file, int line);
