@@ -44,6 +44,10 @@
 //   group with the same 395-byte positional diff and frame 0x50.
 // Current clean candidate remains scratch: diff 406 (54.4966%), shape 76.45%,
 // frame 0x50 versus 0x54, 11/11 ordered calls, and no policy-valid exact match.
+// Review blocker: the four-byte frame gap moves address-taken XYPoint locals
+// passed to mapBound, setupInfluenceMap, and line/path calls. This changes
+// external pointer values and the ESP context of all 11 calls, so the gap is
+// not eligible as private local-home drift.
 
 typedef unsigned char uchar;
 struct XYPoint { int x; int y; };
