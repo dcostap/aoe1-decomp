@@ -39,6 +39,9 @@
 // probe 36: named second-extension directory locals; emitted code unchanged, rolled back
 // probe 37: direct modeValue/prog_info expressions followed the original decomp but duplicated probe 14 at diff 1703; rolled back
 // probe 38: branch-local second-extension list aliases matched the clean 747-byte codegen; no new emitted-code lead, rolled back
+// BLOCKER: After the first _unlink, the executable reads the screen member at
+// +0x69C before rge_base_game. The rebuild reads rge_base_game first. Fault and
+// concurrent-mutation order differ before the same later calls.
 
 #include <stdio.h>
 #include <string.h>
