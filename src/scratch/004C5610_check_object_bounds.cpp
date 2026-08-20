@@ -31,6 +31,11 @@
 // 98 bytes, but added an FPU exchange and was rejected as metric-only steering.
 // 19: final clean source restores nonvolatile dx, direct overlap arithmetic,
 // and the early y-range failure. Validation remains a 524-byte mismatch.
+// BLOCKER: the executable's final x-overlap test loads dx above the radius sum,
+// uses FCOMPP, and accepts C0-or-C3. It therefore accepts an unordered NaN
+// comparison. The rebuild compares the sum with dx and accepts only clear C0,
+// which rejects unordered input. Finite comparisons agree, but NaN behavior
+// does not. Do not accept this x87 operand-order drift.
 
 typedef unsigned char uchar;
 
