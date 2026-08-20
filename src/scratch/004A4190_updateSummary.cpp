@@ -32,11 +32,12 @@
 // - the shared-index variant reproduced the original `xor ebx; cmp ecx,ebx`
 //   null guard and later zero reuse, but shifted every address-taken buffer by
 //   four bytes. Reversion is required because stack homes are binary evidence.
-// - BINARY NOTE: the executable reads a separate scenario-name panel at +624;
-//   the reviewed field is declared below. Direct use of that field changes the
-//   VC5 basin by 98 bytes, so this pass keeps the metric-preserving array form.
-// - next lead: recover the +624 panel use while preserving the baseline stack,
-//   register basin, and 3522-byte boundary.
+// - BINARY NOTE: the executable reads a separate scenario-name panel at +624.
+//   Keep that canonical owner even though it changes the wider VC5 basin.
+// - Correcting that owner keeps all 150 calls and the 0x534 frame, but grows
+//   the body by 98 bytes and changes the broad register basin. Do not accept
+//   this function until global rereads, panel arguments, scenario mutations,
+//   and address-taken buffer reads are audited across all external calls.
 
 #include <io.h>
 #include <stdio.h>
@@ -243,6 +244,7 @@ void TribeMPSetupScreen::updateSummary()
     char* scenario_dir;
     char* scenario_name;
 
+    int setting = 0;
     if (rge_base_game->scenarioGame()) {
         if (this->saveRandomGame == 0) {
             if (strcmp(rge_base_game->scenarioName(), this->saveScenarioName) != 0) {
@@ -382,11 +384,10 @@ void TribeMPSetupScreen::updateSummary()
         this->settingText[i]->set_active(0);
     }
 
-    int setting = 0;
     if (rge_base_game->scenarioGame()) {
         sprintf(str2 + 4, this->get_string(0x25ED),
                 rge_base_game->scenarioName());
-        this->settingText[setting]->set_text(str2 + 4);
+        this->scenarioName->set_text(str2 + 4);
         setting = 3;
     } else {
         if (rge_base_game->deathMatch()) {
