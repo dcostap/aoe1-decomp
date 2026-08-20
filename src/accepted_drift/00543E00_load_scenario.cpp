@@ -45,6 +45,11 @@
 //   the 300-byte array and polymorphic base were worse. The typed record removed
 //   raw header casts but was also a codegen duplicate, so the clean source keeps
 //   the proven stack-window form. A scenario-directory local caused broad drift.
+// Accepted drift: all version reads and comparisons, 24 calls, virtual slots,
+// arguments, allocation and free behavior, file-close paths, world state, and
+// return values match. VC5 places the invalid-version close block before the
+// shared load_110 block and duplicates the zero-result epilogue. Runtime paths
+// are equivalent. The other differences are this/file register allocation.
 
 extern "C" int __cdecl sprintf(char*, const char*, ...);
 extern "C" int __cdecl rge_open(char*, int);
