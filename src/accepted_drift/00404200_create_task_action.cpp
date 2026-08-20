@@ -9,6 +9,14 @@
 //   allocation sizes, task and master offsets, and the original branch labels.
 // - The best natural build is still nonexact. VC5 retains an extra shared
 //   result test and emits the switch table outside the original boundary.
+// - Behavior correction: RGE_Static_Object world_x/world_y/world_z are at
+//   +0x38/+0x3C/+0x40. The prior +0x3C/+0x40/+0x44 layout passed the wrong
+//   target coordinates to UnitAIModule::setCurrentTarget.
+// - Accepted drift: all 19 calls, constructor arguments, UnitAI effects,
+//   allocation failures, EH states, faulting reads, and action results match.
+//   VC5 adds redundant tests of constructor results and a duplicate SEH return
+//   tail. Each constructor returns its allocated this pointer. Switch-table
+//   placement also differs outside the owning function boundary.
 // NEXT: Revisit only with evidence for the original common return-tail source
 //   form or a linker-bound switch-table ownership context.
 
@@ -123,7 +131,7 @@ public:
 
     long id;
     RGE_Master_Combat_Object* master_obj;
-    char gap_0C[0x30];
+    char gap_0C[0x2C];
     float world_x;
     float world_y;
     float world_z;
@@ -270,4 +278,4 @@ done:
     return action;
 }
 
-// BLOCKER: none. This source replaces the former inline-assembly attempt.
+// This source replaces the former inline-assembly attempt.
