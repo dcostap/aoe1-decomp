@@ -34,6 +34,10 @@
 // - Signed world-time delta variants emit the original signed magic divide in
 //   case 0x15 but add auxiliary section bytes and worsen the complete result.
 //   Keep the unsigned field model and natural expression.
+// BLOCKER: The executable lowers the build-list age delta with signed imul,
+// arithmetic shift, sign correction, and a signed <= 5 test. The rebuild uses
+// unsigned mul, logical shift, and an unsigned test. A wrapped or negative
+// world-time delta changes the predicate and later call path.
 
 static const char s_build_file_format[] = "%s.bld";
 
