@@ -36,6 +36,11 @@
 //     loop, where the original uses a byte-offset lowering.
 // 21-22: separate declaration statements and explicit do-while forms were
 //     codegen duplicates. No policy-valid exact source was found in this pass.
+// Accepted-drift review: the executable reloads Black_Edge_Tables and uses a
+// byte offset for each of 17 roots. The rebuild carries a typed root pointer
+// and count. No call occurs in this loop; both read, relocate, and write the
+// same entries in order. The later drift only changes bit-test registers and
+// equivalent base/index encodings. All 14 calls and table effects match.
 
 extern "C" int __cdecl _open(const char*, int);
 extern "C" int __cdecl _lseek(int, int, int);
