@@ -33,6 +33,11 @@
 // Session shardA5-4B33D0-r2 (2026-08-13):
 // - Declared the proven list output pointer before tabList and info_file to
 //   mirror the original local order; emitted code was unchanged.
+// Accepted-drift review: all six panel-member zero publications, 19 calls and
+// arguments, hotkey stores, disabled-state updates, current child, four tab
+// entries, constructor EH state, and returns match. Residual drift is which
+// member address occupies EBX/ESI/EDI and a four-byte shift of the private
+// info-file buffer passed to setup.
 
 #include <string.h>
 
