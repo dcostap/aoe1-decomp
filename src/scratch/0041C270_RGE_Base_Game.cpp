@@ -32,6 +32,13 @@
 // - Original evidence still requires one cached DeleteObject IAT load in EBX,
 //   test EAX, and a post-call font_num reload. The clean source emits a direct
 //   IAT call and cmp EAX,EBX. No policy-compliant source cause is proven.
+// - Behavior audit fixed two source defects. SystemParametersInfoA uses the
+//   executable's uiParam value 1 for actions 0x11 and 0x55. get_string uses
+//   the binary-proven (string_id, buffer, size) parameter order.
+// BLOCKER: the executable caches the DeleteObject import target once before
+// the font loop. The rebuild reads the writable import slot for each call. A
+// prior external call can therefore change a later call target only in the
+// rebuild. Keep the corrected natural destructor in scratch.
 
 #include <stdio.h>
 #include <windows.h>
@@ -285,7 +292,7 @@ public:
     unsigned char pathFinding();
     unsigned char mpPathFinding();
     void stop_sound_system();
-    void get_string(char* buffer, int string_id, int buffer_size);
+    void get_string(int string_id, char* buffer, int buffer_size);
 };
 
 RGE_Base_Game::~RGE_Base_Game()
@@ -412,9 +419,9 @@ RGE_Base_Game::~RGE_Base_Game()
     }
 
     if (this->screen_saver_enabled != 0)
-        SystemParametersInfoA(0x11, 0, 0, 2);
+        SystemParametersInfoA(0x11, 1, 0, 2);
     if (this->low_power_enabled != 0)
-        SystemParametersInfoA(0x55, 0, 0, 2);
+        SystemParametersInfoA(0x55, 1, 0, 2);
 
     if (this->prog_palette != 0) {
         panel_system.release_palette(this->prog_palette);
@@ -438,7 +445,7 @@ RGE_Base_Game::~RGE_Base_Game()
     if (this->prog_window != 0)
         DestroyWindow(this->prog_window);
 
-    this->get_string(str, 0x3EB, 0x100);
+    this->get_string(0x3EB, str, 0x100);
     if (str[0] != 0) {
         void* help_window = FindWindowA("MS_WINHELP", str);
         if (help_window != 0)
