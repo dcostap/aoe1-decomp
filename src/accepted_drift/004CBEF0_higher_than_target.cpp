@@ -34,6 +34,11 @@
 // Logical-negation guards improved block coverage but widened the body by 5
 // bytes. A natural for-loop was a codegen duplicate. Restored the pinned
 // typed source; no policy-valid exact source found.
+// Accepted-drift review: the residual only forms the two neighboring tile
+// pairs with stack-load plus ADD versus equivalent LEA instructions. The final
+// call mutates coordinate registers that the next loop iteration overwrites.
+// All six calls receive the same target, tile coordinates, float values, map,
+// references, and flags. x87 order, helper predicates, and loop effects match.
 
 #include <math.h>
 
