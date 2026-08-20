@@ -51,6 +51,10 @@
 //   found no matching byte-mode arithmetic donor.  Clean typed source remains
 //   the best policy-valid reconstruction; pause with the original full-register
 //   inc versus VC5 byte-inc/zeroing hunk unresolved.
+// Accepted-drift review: the executable applies setne to CL and DL, then
+// increments the full register. Only each low byte is stored. The rebuild
+// clears each register and increments the low byte, producing the same 1 or 2.
+// All 16 calls, EH state, mode probes, fallbacks, stores, and returns match.
 
 #include <new.h>
 #include <windows.h>
