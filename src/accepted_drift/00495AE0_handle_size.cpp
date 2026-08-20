@@ -54,6 +54,11 @@
 // the executable.  The clean source still emits the reverse assignment.
 // LIKELY INTENT: the large-arm button-16 call shares the medium-arm call tail.
 // The current natural nested arms do not reproduce that tail merge.
+// Accepted-drift review: the apparent call-map gap is one relocated shared
+// button-panel[16] tail, not an added or omitted runtime call. All 82 calls,
+// arguments, three size thresholds, draw-type stores, frame stores, active
+// save/restore effects, and player_changed arguments match. Remaining drift is
+// private row/counter homes and the equivalent button-tail placement.
 
 struct tagRECT {
     long left;
