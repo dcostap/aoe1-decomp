@@ -41,6 +41,11 @@
 // preceding bytes match; no policy-valid source form has changed that basin.
 // Main review replaced direct global allocation calls with ordinary
 // new[]/delete[]. The emitted code is unchanged.
+// Accepted-drift review: the first 452 bytes and all five calls match. Both
+// return paths set EH state to minus one, delete the same non-null array, and
+// return the same Boolean value. The rebuild duplicates the register-pop and
+// FS-chain epilogue around the negative cleanup. No call, external access, or
+// object access occurs in the changed tail after delete[].
 
 class RGE_Static_Object;
 
