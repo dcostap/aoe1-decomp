@@ -33,6 +33,12 @@
 // stdlib context were neutral or worse. The remaining blocker is register
 // coloring: VC5 keeps this/master/density in ESI/EDI/SI instead of the
 // oracle's EDI/ESI/DI, plus the repeated mode-one null-test topology.
+// Accepted-drift review: the executable repeats a register-only master-object
+// null test before mode one and reloads single_placement from its stack home.
+// The rebuild keeps the already-tested pointer and cached mode. No call occurs
+// between these tests. All terrain reads, random draws, x87 operands, virtual
+// arguments, placement effects, loop updates, and returns match. The remaining
+// broad positional drift is register coloring and the shorter mode-one gate.
 
 extern "C" int __cdecl debug_rand(char* file, int line);
 
