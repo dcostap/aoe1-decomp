@@ -49,6 +49,11 @@
 //   197 bytes. The first hunk remains the prologue and register/save topology;
 //   no policy-valid natural edit improved it. Keep this clean source paused
 //   until period source or new translation-unit evidence becomes available.
+// - Accepted drift: GetDibDim receives the same three writable stack
+//   addresses. Allocation size, row orientation, scan limits, transparency
+//   detection, LINEINFO store order, cleanup, faults, and returns match. No
+//   call occurs inside a scan loop. Remaining drift is private register and
+//   cursor placement.
 
 #include <windows.h>
 #include <stdlib.h>
