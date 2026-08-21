@@ -90,6 +90,10 @@
 // - The final policy-compliant source uses typed RGE_Tile rows and cells,
 //   the reviewed terrain byte at offset +5, and no byte cursor. It rebuilt to
 //   399 bytes and 374 differing bytes. No exact source lead was found.
+// - Accepted drift: both scans use the same clipped inclusive bounds, initial
+//   row read, next-row read before loop exit, and terrain/elevation predicates.
+//   The second scan has the same byte-count wrap and return. This function has
+//   no calls or writes. Remaining drift is private count, row, and pointer homes.
 
 typedef unsigned char uchar;
 
