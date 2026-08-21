@@ -50,6 +50,9 @@
 // 37: variant lab tested four case-3/case-10 combinations; no exact result.
 // Final: restored and pinned the natural source. Validation remains a 356-byte MISMATCH.
 // left in scratch: exact source expression/FPU stack shaping remains under test.
+// Accepted-drift blocker: later switch arms use different x87 stack schedules
+// and comparison forms. These can change unordered predicates and
+// extended-precision rounding before the two output stores. Keep in scratch.
 
 struct RGE_Tile { int pad0; unsigned char tile_type; };
 
