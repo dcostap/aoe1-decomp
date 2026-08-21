@@ -49,6 +49,10 @@
 // assignment forms, typed row-pointer order/scope, radius-home reuse, typed
 // same-TU list context, and count initialization produced no lead. Restored
 // the canonical typed terrain/map source after each probe.
+// Accepted drift: both scans use the same clipped inclusive bounds, terrain
+// predicate order, initial-row read, and next-row read before loop exit. The
+// second scan has the same byte-count wrap and return. This function has no
+// calls or writes. Remaining drift is private local-home and register choice.
 
 typedef unsigned char uchar;
 
