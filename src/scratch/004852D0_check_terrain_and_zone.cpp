@@ -40,6 +40,10 @@
 //   widened or reordered parameters only changed the ABI or moved away from the
 //   typed traversal.  Natural y1/y2 lifetime probes reached frame 0x1c only with
 //   a non-binary radius predicate, so the pinned typed source was restored.
+// - Accepted-drift audit: do not promote this candidate. The original uses a
+//   0x1C frame at the ftol helper, while the rebuild uses 0x20. Thus the helper
+//   receives a different stack and exception context. The radius result also
+//   feeds later scan bounds in the current reconstruction.
 
 typedef unsigned char uchar;
 
