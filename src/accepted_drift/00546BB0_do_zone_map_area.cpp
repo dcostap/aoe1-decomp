@@ -40,6 +40,11 @@
 // A 108-variant lab found only the 663-byte baseline group and a worse 690-byte
 // boolean group. A 64-sample ambient declaration lab produced one 663-byte
 // group, so file-scope context is not the controlling basin here.
+// Accepted drift: neighbor order is left, up, right, down. Each arm has the
+// same row/cell reads, x87 predicate and NaN behavior, zone store, and queue
+// push. zone_push and zone_pop receive identical queue-local and x/y addresses.
+// Queue mutation, loop continuation, faults, and return match. Remaining drift
+// is register allocation and address arithmetic.
 
 struct RGE_Tile {
     short sx;
