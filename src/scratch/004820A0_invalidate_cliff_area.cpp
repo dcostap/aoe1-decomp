@@ -102,6 +102,10 @@
 //   forms. These were duplicates or worse. Direct repeated typed row indexing
 //   and the do-counted loops remain the clearest natural structure. No
 //   parameter-home aliases were restored.
+// - Accepted-drift audit: do not promote this candidate. The original has an
+//   0x08 local frame, while the natural rebuild has none. Thus remove_stack_node
+//   receives a different stack and exception context. The clipped traversal
+//   and original x2-versus-height bug otherwise remain preserved.
 
 struct Map_Stack {
     long x;
