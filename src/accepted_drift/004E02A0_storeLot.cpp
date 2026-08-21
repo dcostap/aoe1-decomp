@@ -44,6 +44,11 @@
 // - Final validation: 448 bytes versus 450, calls and frame match, 381 strict
 //   differing bytes. The unresolved drift is the two-byte loop reversal and
 //   the late matched-lot block placement.
+// - Accepted drift: scan order, free-slot choice, allocation size, field-wise
+//   copy order, new-slot initialization, deletion, pointer publication, record
+//   stores, capacity update, and returns match. Both allocation calls have the
+//   same arguments and stack context. The late matched-lot handler and loop
+//   branch direction are control-flow placement only.
 
 #include <stddef.h>
 
