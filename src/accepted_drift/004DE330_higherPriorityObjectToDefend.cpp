@@ -65,6 +65,11 @@
 // function-scope entry lifetimes, direct indexed fields, a typed base pointer,
 // a hoisted count, and a typed reference either added 8 bytes or duplicated
 // the clean 252-byte result. The clean typed pointer form remains authoritative.
+// Accepted drift: the two ftol results use the same XYPoint stack addresses.
+// Object, zone, speed, range, and priority calls have the same arguments and
+// stack context. Scan order, break paths, priority predicates, selected entry,
+// and return match. Remaining drift is entry-pointer register choice and
+// private result-store scheduling.
 
 #include <math.h>
 
