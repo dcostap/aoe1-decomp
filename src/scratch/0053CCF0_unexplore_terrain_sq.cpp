@@ -42,6 +42,10 @@
 // Left in scratch: default code is 25 bytes short with broad prologue/register
 // drift; canonical behavior and field ownership are stable, but source/ABI context
 // still needs a donor-level explanation for the original EBP/local topology.
+// Accepted-drift audit: do not promote this candidate. The original has an
+// 0x08 local frame at log_map_call, while the rebuild has none. The logger
+// therefore receives a different stack and exception context before any map
+// checksum or visibility update.
 
 #include <stdlib.h>
 #pragma intrinsic(_rotl)

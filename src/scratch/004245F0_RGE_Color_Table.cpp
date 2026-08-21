@@ -46,6 +46,10 @@
 // tested and restored. The one-based copy lost CFG coverage; direct arithmetic
 // improved positional diff to 356 but lost the exact inner-loop island. Final
 // source remains the cleaner named-difference model.
+// Accepted-drift audit: do not promote this candidate. The original passes
+// entry ESP - 0x800 to GetPalette, while the rebuild passes entry ESP - 0x7FC.
+// Thus an external writer receives a different address and local overlap.
+// Matching frame size and call count do not make that mutation equivalent.
 
 #include <string.h>
 
