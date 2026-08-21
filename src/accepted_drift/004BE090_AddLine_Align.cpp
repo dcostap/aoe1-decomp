@@ -46,6 +46,11 @@
 //   class layout, and <memory.h>; all were duplicate or worse. Clean restored.
 // - A branch-local equal-x line cursor plus dy>=dx operand order reduced the
 //   positional diff to 184 bytes with 91.61% shape; retained as the frontier.
+// - Accepted drift: all five call sites align. Runtime AddSpan sequences,
+//   arguments, endpoint swaps, signed comparisons, error updates, and loop
+//   limits match. The function does not read manager fields before these
+//   calls. Remaining drift is private register ownership and manager reload
+//   placement.
 // FLAGS: /nologo /c /O2 /Oy /GX
 
 // Main-agent audit confirmed canonical span-manager ownership and retained the
