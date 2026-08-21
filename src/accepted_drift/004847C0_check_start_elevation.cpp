@@ -201,6 +201,11 @@
 //   original y1/range home, row_ptr/y home, x1 in EBX, and terrain mask in CL.
 //   Recreating that rotation needs the rejected parameter aliases or raw byte
 //   cursor. Keep the natural typed source instead.
+// - Accepted drift: all four clipped bounds, inclusive row and column limits,
+//   terrain/elevation predicates, and return paths match. Both builds read the
+//   first row before the empty-row test and read the next row before the loop-
+//   end test. The function makes no calls. Remaining drift is private incoming-
+//   parameter-home reuse and register allocation.
 
 class RGE_Map;
 class RGE_Object_Node;
