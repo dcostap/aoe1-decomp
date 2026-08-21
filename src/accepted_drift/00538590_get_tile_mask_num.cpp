@@ -53,6 +53,11 @@
 // matching pass sa-3bf37621-r1: named col/row, bounds, and mask-number locals
 // preserve the caller's (col,row,width,height,mask) ownership. This source
 // compiles to the same clean basin as the pinned candidate.
+// Accepted drift: interior neighbor reads remain N,E,S,W,NE,SE,SW,NW. Edge
+// reads remain W,E,N,S,NW,SW,NE,SE with the same guards. The original has two
+// redundant edge tests and one shared return; the rebuild removes those tests
+// and duplicates the return. No reachable read, mask bit, fault order, or
+// result changes. The function has no calls or writes.
 
 extern unsigned long* unified_map_offsets[];
 
