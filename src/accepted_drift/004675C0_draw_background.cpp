@@ -38,6 +38,11 @@
 // sa-dbc4a910 validation: unchanged clean source checked at 762 differing bytes;
 // paused because the remaining lead is VC5 register allocation in the centered Copy
 // block, not behavior, call order, layout, frame, or control-flow reconstruction.
+// Accepted drift: centered shadow Copy uses the same signed-short x/y values
+// and argument order. shape_minmax receives the same four writable stack
+// addresses. All 20 calls, lock/unlock paths, shadow and bevel state, tile
+// order, cleanup, faults, and return match. Remaining drift is private center
+// coordinate scheduling.
 
 // Panel_ez.cpp used the period Windows SDK surface.  Keep that TU context
 // visible while retaining the local class declarations below.
