@@ -61,6 +61,11 @@
 //   The clean natural source remains the 158-byte frontier.
 // - Revisit probe: hoisting x1, y1, and x2 to function scope while retaining
 //   the named y0 local was codegen-neutral.  The clean source was restored.
+// - Accepted drift: all five calls align. Both AddGDINode calls receive the
+//   same coordinates, colors, object ID, and health bounds. Frame-output homes,
+//   member ownership order, health conversion, signed division, clamp, state
+//   guard, and returns match. Remaining drift is private coordinate liveness
+//   and argument scheduling before side-effect boundaries.
 
 #include <stdlib.h>
 
