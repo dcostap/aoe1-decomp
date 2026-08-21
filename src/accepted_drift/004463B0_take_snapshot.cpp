@@ -37,6 +37,10 @@
 //   result to 496 differing bytes. A bounded while retry changed size and
 //   control flow; a do-while form was codegen-duplicate. Restored this clean
 //   natural snapshot flow and retained typed CurDisplayOffsets ownership.
+// - Accepted drift: GetPalette and all three header writes use identical stack
+//   addresses. File calls, retry and number updates, allocation, lock handling,
+//   bottom-up rows, uninitialized padding bytes, cleanup, faults, and returns
+//   match. Remaining drift is header setup scheduling and retry-tail placement.
 
 #include <windows.h>
 #include <stdio.h>
