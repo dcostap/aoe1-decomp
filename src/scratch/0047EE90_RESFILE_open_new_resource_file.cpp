@@ -50,6 +50,10 @@
 //   and metrics were unchanged; the source now has the correct typed global
 //   identity. The first body range remains an island match, while the checker
 //   still crosses the excluded 0047F00C and 0047F076 parent fragments.
+// - Accepted-drift blocker: when the first 0x40-byte header read is short, the
+//   executable runs INT3 at 0047F00B before the error dialog. The natural
+//   rebuild goes directly to MessageBoxA. Inline assembly is forbidden, and a
+//   DebugBreak call would change stack and exception context. Keep in scratch.
 
 #include <stdlib.h>
 #include <string.h>
