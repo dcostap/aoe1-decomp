@@ -29,6 +29,10 @@
 //   10 ordered calls, 16 conditional branches, 11 jumps, 445 differing bytes
 //   (66.8168%), and 95.45% shape. It remains in scratch because it is not an
 //   exact match. No inline assembly or shared files changed.
+// - Accepted-drift audit: do not promote this candidate. The changed x87 clamp,
+//   conversion, and distance schedule can alter candidate points and path-call
+//   arguments. Those values select the final move target and published action
+//   state, so matching call count and frame do not prove equivalent behavior.
 
 #include "../../include/game_globals.h"
 #include "../../include/unit_ai_module.h"
