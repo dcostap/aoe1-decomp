@@ -21,12 +21,10 @@
 //   direct TShape new-expression, and use signed int promotion for the uchar
 //   draw-level parameter.  These moved the diff from 497 to 440 bytes.
 // - control-flow: positive non-null color-table arms reproduce the oracle's
-//   `je` null blocks.  A branch-local color byte in the fixed-table mirror arm
-//   preserves the binary-proven second mirror call site; this is ordinary
-//   typed source, not a register/asm workaround.  Best validated basin is
-//   821 emitted bytes / 393 differing bytes, with all 23 ordered calls and
-//   the 0x10C frame matching.  Remaining drift begins in saved-register/zero
-//   coloring, local buffer placement, and block spans.  No inline asm.
+//   `je` null blocks.  A prior branch-local color byte preserved the second
+//   mirror call site, but it read color_flag before _ASMSet_Color_Xform.  The
+//   executable reads color_flag after that call.  The cache was removed to
+//   preserve call-mutation and member-fault behavior.
 // - follow-up: delaying the typed filename initialization until the lazy-load
 //   arm changed the EH prologue and widened the result to 765 bytes; restored.
 // - follow-up: a direct get_facetindex predicate and swapped natural local
@@ -45,6 +43,10 @@
 //   source, ABI, context, layout, and lifetime probes did not recover the
 //   original EBX/EBP color or the remaining dynamic-table blocks.  No inline
 //   assembly or compiler-only source remains.
+// - Accepted-drift blocker: with the required direct color_flag read, VC5
+//   merges mirror call sites.  Keeping separate sites requires the early cache
+//   that changes behavior across _ASMSet_Color_Xform.  Keep the natural direct
+//   member source in scratch.
 
 #include <stdio.h>
 
@@ -208,7 +210,6 @@ void RGE_Sprite::do_draw(long facet, long frame, long x, long y,
             goto draw_done;
         }
         else {
-            uchar color = this->color_flag;
             if (this->color_tables[this->color_table] != 0) {
                 _ASMSet_Color_Xform((this->color_table + 1) * 0x10);
                 table = this->color_tables[this->color_table]->table;
@@ -217,7 +218,7 @@ void RGE_Sprite::do_draw(long facet, long frame, long x, long y,
                 table = 0;
             }
             this->shape->shape_mirror(draw_area, x, y, facetindex,
-                                      color, table);
+                                      this->color_flag, table);
         }
     }
     else {
