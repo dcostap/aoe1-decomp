@@ -64,6 +64,11 @@
 // - This claim: removed the unused packet member from the typed chunk header
 //   and used its typed successor as payload. Output stayed identical; retain
 //   the simpler header surface.
+// - Accepted-drift audit: do not promote this candidate. In a type-0x0B color
+//   run, the rebuild advances the input cursor and decrements the color count
+//   before the third palette store. The original does both after that store.
+//   A fault on the third store therefore has a different register and loop
+//   context, although successful output and cleanup match.
 
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 extern "C" void __cdecl free(void* block);
