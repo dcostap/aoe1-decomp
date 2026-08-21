@@ -61,6 +61,10 @@
 //   shape similarity. The shared six-local form reached 293 bytes; it was discarded.
 // - Restored the pinned clean source. Final blocker remains register assignment and post-base-call scheduling;
 //   behavior, ABI, layout, boundary, and call-set evidence remain established.
+// - Accepted-drift audit: do not promote this candidate. The final geometry
+//   values and three calls match, but both orientation branches publish the
+//   rectangle and tab members in a different order before calc_item_rects.
+//   Partial-object faults or observers can see a different intermediate state.
 
 struct tagRECT {
     long left;
