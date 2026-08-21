@@ -160,6 +160,11 @@
 // - The oracle still assigns the row pointer to td's home and count to p2's
 //   home. Only rejected home casts or pointer carriers reach the 132-byte basin.
 //   The retained source uses no casts, aliases, volatility, or compiler steering.
+// - Accepted-drift audit: do not promote this candidate. RLE cursor effects,
+//   palette reads, memset arguments, row movement, and returns align. However,
+//   the rebuild reads td->Orien before a shape-header field that the original
+//   reads first. Invalid header or draw-area pointers therefore fault in a
+//   different order.
 // FLAGS: /nologo /c /O2 /Oy
 
 extern "C" void* __cdecl memset(void*, int, unsigned int);

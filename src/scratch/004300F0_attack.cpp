@@ -53,6 +53,10 @@
 //   Same-TU 0042FF50 proves a sibling x87 basin with function-scope c/s/range,
 //   but that shape forces this target to a 0xC frame and 259 bytes. The clean
 //   target source remains the typed 0x8-frame, 305-byte form at 178-byte diff.
+// - Accepted-drift audit: do not promote this candidate. The changed x87
+//   radius, sqrt, sin, and cos schedule can change extended-precision rounding.
+//   Those values become missile coordinates and range arguments. Matching call
+//   targets and body size do not prove equivalent published projectile state.
 
 class RGE_Combat_Object;
 class RGE_Missile_Object;
