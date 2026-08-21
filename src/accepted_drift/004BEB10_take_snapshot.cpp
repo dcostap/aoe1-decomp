@@ -41,6 +41,11 @@
 //   retry-loop forms, and CRT C linkage. No exact result; several were
 //   duplicate codegen. The current source keeps the typed period model and
 //   extern-C CRT declarations.
+// - Accepted drift: all 14 calls and all writable header, palette, filename,
+//   and scanline addresses match. Header values, retry limit, file-number
+//   updates, row order, decode overlays, writes, cleanup, failures, and returns
+//   match. Remaining drift is private header-store scheduling and equivalent
+//   retry-tail placement.
 
 #include <stdio.h>
 #include <string.h>
