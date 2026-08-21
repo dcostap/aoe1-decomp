@@ -128,6 +128,11 @@
 //   the animated, moving, and action master surfaces plus create_task_list.
 //   The rebuilt output stayed byte-for-byte identical to the canonical check;
 //   the remaining mismatch is the existing target/z/index register basin.
+// - Accepted-drift audit: do not promote this candidate. Both virtual calls
+//   receive the same this, target, x, y, and z values. However, the rebuild
+//   dereferences the task list and its vtable between different incoming
+//   argument reads. This changes pointer-fault order and the call preparation
+//   context. Register coloring alone does not explain that observable drift.
 
 class RGE_Static_Object;
 class RGE_Action_Object;

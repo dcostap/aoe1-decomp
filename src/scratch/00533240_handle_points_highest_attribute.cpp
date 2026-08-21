@@ -118,6 +118,11 @@
 //   loop-local pointer ownership, and current-member storage. All forms were neutral or worse.
 //   Restored the pinned scalar source. Final clean metrics remain 221 bytes, 139-byte diff,
 //   0xC frame versus the original 230 bytes and 0x10 frame.
+// - Accepted-drift audit: do not promote this candidate. The original has a
+//   0x10 frame, while the rebuild has a 0x0C frame at the ftol call. Thus the
+//   helper receives a different stack and exception context. The x87 compare
+//   predicates and point effects otherwise align, but that observable call
+//   context keeps this function in scratch.
 
 class RGE_Game_World;
 class RGE_Victory_Entry;
