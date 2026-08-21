@@ -79,6 +79,10 @@
 //   registers, ABI, field layouts, and 12 relocations. PDB names only this,
 //   info, random_seed_in, and retval. Exact names are byte-neutral. No record
 //   supports a local_count alias for the remaining seed/count scheduling.
+// - Accepted-drift audit: do not promote this candidate. Before new_map, the
+//   original reads this->map before info.map_height and info.map_width. The
+//   rebuild reads both dimensions before this->map. Invalid world-map or info
+//   pointers therefore fault in a different order.
 
 #include <stdio.h>
 #include <stdlib.h>

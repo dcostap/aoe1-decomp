@@ -30,6 +30,10 @@
 // CFG but stayed in the 457-byte basin; an early curVisPlayer initializer
 // regressed to 531 bytes. A default-zero ally guard reached 468 bytes and was
 // also restored. The canonical typed source remains the clean owner.
+// Accepted-drift audit: do not promote this candidate. Before the ally lookup,
+// the original reloads this->player after publishing input_csum. The rebuild
+// reuses the player pointer read during checksum calculation. Concurrent player
+// pointer mutation can therefore change the ally test and later tile-list call.
 
 #include <stdlib.h>
 #pragma intrinsic(_rotl)
