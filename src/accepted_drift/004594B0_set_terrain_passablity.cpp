@@ -49,6 +49,11 @@
 //   to 79.82% shape and 266 differing bytes, but added five bytes and changed
 //   the target's tile/count register basin. Int-count and asymmetric-bound
 //   variants were worse. Restored the clean ordinary-loop source.
+// - Accepted drift: short-bound swaps and clipping match. Both builds traverse
+//   rows and columns in ascending order, reread the row table for each tile,
+//   select the same passable or impassable byte, preserve the upper tile bits,
+//   and write each tile once. There are no calls. Remaining drift is private
+//   scalar homes and counted-loop versus indexed-loop lowering.
 
 class RGE_Tile {
 public:
