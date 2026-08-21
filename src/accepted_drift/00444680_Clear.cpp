@@ -35,11 +35,17 @@
 //   or worsened frame, size, and register coloring.  No variant was retained.
 // - The remaining DirectDraw homes need a source-supported explanation for
 //   the contiguous stack overlay at [esp+10h..24h]; do not use a metric-only
-//   union or a narrow opaque record as a replacement.
+//   union or shifted interior structure pointers as a replacement.
 // - Revisit probes: a negated nonpositive clip guard repeated the 469-byte,
 //   0x7C-frame basin; reversing the temporary declaration order duplicated
 //   the clean 439-byte result; a proven three-field destination record reduced
 //   the frame to 0x74 and worsened the diff to 225 bytes.  All were rejected.
+// - Accepted drift: canonical branch-local RECT and DDBLTFX objects recover
+//   the executable's exact writable stack addresses. All five calls receive
+//   equivalent arguments. Clip reads, bounds, orientation, row count, pointer
+//   steps, fill state, and returns match. The executable's late y1 <= y2 test
+//   is redundant after its earlier y1 < y2 guard. Remaining drift is private
+//   register and block lowering.
 
 #include <string.h>
 
@@ -147,9 +153,6 @@ public:
 
 void TDrawArea::Clear(tagRECT* rect, int color)
 {
-    tagRECT dest;
-    _DDBLTFX ddbltfx;
-
     if (DDSys_CanColorFill == 0) {
         this->PtrClear(rect, color);
         return;
@@ -225,22 +228,24 @@ void TDrawArea::Clear(tagRECT* rect, int color)
         }
     }
     else {
+        tagRECT dest;
+        _DDBLTFX ddbltfx;
         IDirectDrawSurface* surface = this->DrawSurface;
 
         if (surface != 0) {
-            ddbltfx.dwDDFX = 100;
-            ddbltfx.ddckDestColorkey.dwColorSpaceLowValue = color;
+            ddbltfx.dwSize = sizeof(ddbltfx);
+            ddbltfx.dwFillColor = color;
 
             if (rect == 0) {
-                surface->Blt(0, 0, 0, 0x1000400, &ddbltfx.dwDDFX);
+                surface->Blt(0, 0, 0, 0x1000400, &ddbltfx);
                 return;
             }
 
-            dest.top = rect->left;
-            dest.right = rect->top;
-            dest.bottom = rect->right + 1;
-            ddbltfx.dwSize = rect->bottom + 1;
-            surface->Blt(&dest.top, 0, 0, 0x1000400, &ddbltfx.dwDDFX);
+            dest.left = rect->left;
+            dest.top = rect->top;
+            dest.right = rect->right + 1;
+            dest.bottom = rect->bottom + 1;
+            surface->Blt(&dest, 0, 0, 0x1000400, &ddbltfx);
         }
     }
 }
