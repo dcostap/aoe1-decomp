@@ -77,6 +77,20 @@
 //   before the log load. Target also loads Now before the two counter homes at
 //   the drop decision. The remaining 25-byte mismatch is localized to these
 //   two scheduling shapes.
+// - [subagent probes 38-56] The same-TU donor-supported `extern "C"` log pointer
+//   declaration recovers the target log load before DONE packet publication and
+//   reduces the strict difference from 25 bytes to 4 bytes. It keeps the 0x8C
+//   frame, all 55 ordered calls, and exact size. The remaining four bytes are
+//   only the late reload order: target loads Now before lastAnyPlayerMessage,
+//   while the rebuild loads those homes in the opposite order. Split timestamp
+//   scopes, timeout aliases, counter declaration swaps, explicit if/else,
+//   packet arrays, packet address locals, direct log receivers, and packet
+//   argument comma forms did not change or improve this final hunk. The static
+//   Log ABI changed unrelated early calls and was rejected.
+// ACCEPTED DRIFT AUDIT: the final four changed bytes only swap the reads of
+// initialized private stack homes for now and lastAnyPlayerMessage. No call,
+// write, branch, stack change, external access, or fault point separates them.
+// All 55 calls, predicates, writes, returns, relocations, and values match.
 
 typedef unsigned int uint;
 typedef unsigned long ulong;
@@ -87,7 +101,7 @@ extern "C" ulong debug_timeGetTime(char* file, int line);
 extern "C" int sprintf(char* dest, const char* fmt, ...);
 
 #define S(x) ((char*)(x))
-#define L (*(TDebuggingLog**)0x0062C4FC)
+extern "C" TDebuggingLog* L;
 #define LAST_COMM_DUMP (*(ulong*)0x0062CF10)
 #define LAST_SENT_TIME (*(ulong*)0x008884D4)
 
