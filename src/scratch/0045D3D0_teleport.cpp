@@ -32,6 +32,15 @@
 //   174-byte-diff basin with 62.66% exact blocks, but retained register-map
 //   conflicts and a three-byte size overrun.  Four count-shape lab variants
 //   found no exact result; the natural baseline remains authoritative.
+// - This pass used the decompiler-supported `0 < count` inner gate and direct
+//   short-count casts.  Reordering the local declarations to dz, tx, ty, tz,
+//   distance, dx, dy produced 494B/150-byte-diff code with 158 instructions,
+//   62.66% exact-block coverage, and all six calls aligned.  The +3-byte
+//   boundary overrun and register-map conflict remain, so this is unresolved.
+// - Coordinate assignment/update order, delayed countdown declaration, a
+//   redundant countdown reset, typed tile ownership, signed option type, and
+//   extra CRT header context were tested.  They were unchanged, worse, or
+//   duplicate.  The current source keeps the smallest natural 150-byte basin.
 
 #include <math.h>
 
@@ -198,13 +207,17 @@ float RGE_Moving_Object::teleport(float x, float y, float z) {
             }
 
             case 2: {
+                float dz;
                 float tx;
                 float ty;
                 float tz;
-                float dx = x - this->world_x;
-                float dy = y - this->world_y;
-                float dz = z - this->world_z;
-                float distance =
+                float distance;
+                float dx;
+                float dy;
+                dx = x - this->world_x;
+                dy = y - this->world_y;
+                dz = z - this->world_z;
+                distance =
                     (float)sqrt(dx * dx + dy * dy + dz * dz) +
                     this->trail_remainder;
                 short count =
@@ -212,16 +225,15 @@ float RGE_Moving_Object::teleport(float x, float y, float z) {
                             ((RGE_Master_Moving_Object*)this->master_obj)->obj_trail_spacing);
 
                 if (count > 0) {
-                    int loop_count = count;
-                    float count_float = (float)loop_count;
-                    dx /= count_float;
-                    dy /= count_float;
-                    dz /= count_float;
+                    dx /= (float)count;
+                    dy /= (float)count;
+                    dz /= (float)count;
                     tx = this->world_x;
                     ty = this->world_y;
                     tz = this->world_z;
+                    int loop_count = count;
 
-                    if (count >= 1) {
+                    if (0 < count) {
                         do {
                             RGE_Static_Object* trail =
                                 trail_master->make_new_obj(
@@ -239,7 +251,7 @@ float RGE_Moving_Object::teleport(float x, float y, float z) {
                     this->trail_remainder =
                         distance -
                         ((RGE_Master_Moving_Object*)this->master_obj)->obj_trail_spacing *
-                            count_float;
+                            (float)count;
                 } else {
                     this->trail_remainder = distance + this->trail_remainder;
                 }
