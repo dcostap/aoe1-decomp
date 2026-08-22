@@ -26,6 +26,10 @@
 //   executable adds each +0x20 ratio in the loop, then divides that sum by the
 //   image height. This correction reaches exact size, 91.20% shape, and 690
 //   differing bytes. It replaces the worker's unsupported final ratio algebra.
+// - Accepted-drift audit: do not promote. The executable keeps the row-ratio
+//   intermediate in the x87 stack across later divisions. The rebuild stores
+//   it as a 32-bit float and reloads it. This earlier rounding can change row
+//   geometry, branch outcomes, and the published map-table values.
 
 #include <stdlib.h>
 
