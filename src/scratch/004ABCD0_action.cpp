@@ -33,8 +33,14 @@
 // world-player master lookup, the distinct object-panel redraw flags, and
 // natural repeated panelName/strcmp lowering. Independent help predicates
 // restore call count but add an unsupported 190-byte control-flow expansion.
-// Keep the natural switch until a source donor explains the original calls.
+// The PDB-order switch restores the original call order without helper scaffolding.
 // Remaining structural gap: VC5 merges the five TPanel::set_help_info arms.
+// [24-47] PDB line order shows the scenario-mode source order as Messages,
+// Victory, Map, Terrain, Players, Units, VictoryMulti, Diplomacy, Options.
+// This order gives 200/200 ordered calls, 88.73% shape, and 70.07% exact blocks.
+// It adds 146 bytes of code or padding, so exact size and tail layout remain open.
+// [48-50] The x/y declaration order is codegen-neutral.  Original pushes prove
+// redraw(0x10,0) in both victory object-selection arms; this gives 70.07% blocks.
 // FLAGS: /nologo /c /O2 /Oy /GX
 
 #include <stdlib.h>
@@ -427,7 +433,7 @@ struct TRIBE_Screen_Sed : public TPanel {
     unsigned long save_text_color;
     unsigned long save_window_color;
 
-    long action(TPanel* param_1, long param_2, unsigned long param_3, unsigned long param_4);
+    virtual long action(TPanel* param_1, long param_2, unsigned long param_3, unsigned long param_4);
     void set_scenario_mode(int mode);
     void command_menu();
     void set_map_type(int type, int redraw);
@@ -460,11 +466,11 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
     int map_size;
     int center;
     long line;
-    char random_val[28];
     long x2;
     long x1;
     long y1;
     long y2;
+    char random_val[28];
     float f1;
     float f2;
     RGE_Player* player;
@@ -548,6 +554,89 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
     }
 
     switch (this->scenario_mode) {
+    case ScenarioModeMessages:
+        if (this->valid_save_spot_flag != 0) this->need_to_save_flag = 1;
+        if (param_2 == 1) {
+            line = this->current_message;
+            this->world->scenario->Set_message(this->message_input->get_input_buffer(), line);
+            for (i = 0; i < 5; i++) if (param_1 == this->message_button[i]) { this->current_message = i; break; }
+            this->message_input->set_text(this->world->scenario->Get_message(this->current_message));
+            switch (this->current_message) {
+            case 0: ((TPanel*)this->message_input)->set_help_info(0x7770, -1); break;
+            case 1: ((TPanel*)this->message_input)->set_help_info(0x7771, -1); break;
+            case 2: ((TPanel*)this->message_input)->set_help_info(0x7772, -1); break;
+            case 3: ((TPanel*)this->message_input)->set_help_info(0x7773, -1); break;
+            case 4: ((TPanel*)this->message_input)->set_help_info(0x7774, -1); break;
+            }
+        }
+        break;
+
+    case ScenarioModeVictory:
+        if (this->valid_save_spot_flag != 0) this->need_to_save_flag = 1;
+        if ((param_2 == 0 || param_2 == 1) && param_1 == this->victory_player_list) {
+            this->save_victory_cond_in_scenario(this->CurrentVictory);
+            this->activate_victory_panel(0);
+            this->activate_victory_proper_fields(0, 0);
+            line = this->victory_player_list->get_line();
+            this->player_num = (short)line + 1;
+            this->world->scenario->SetSPWhich(this->player_num - 1);
+            this->CurrentVictory = 0;
+            this->load_victory_cond_from_scenario(0);
+            this->activate_victory_panel(1);
+            line = this->victory_drop_down->get_line();
+            this->activate_victory_proper_fields(line, 1);
+        }
+        if (param_2 == 0 && param_1 == this->victory_amount_input) this->bottom_panel->set_curr_child(0);
+        if (param_2 == 2 && param_1 == this->victory_drop_down) { line = this->victory_drop_down->get_line(); this->activate_victory_proper_fields(line, 1); }
+        if (param_2 == 1) {
+            if (param_1 != this->victory_amount_input) {
+                line = this->victory_drop_down->get_line();
+                if (param_1 == this->victory_drop_down) { GAME_REDRAW0(); this->DestinationObject = 0; this->SelectedObject = 0; GAME_PLAYER()->unselect_object(); }
+                if (line == 2) { this->DestinationObject = 0; GAME_PLAYER()->unselect_object(); }
+                // BINARY NOTE: both object-selection arms use redraw mode 0x10.
+                if (param_1 == this->victory_button_set_object) { this->SelectRegionFlag = SELECT_OBJECT; ((RGE_Base_Game_Dispatch*)rge_base_game)->redraw(0x10, 0); GAME_PLAYER()->unselect_object(); SELECT_IF_PRESENT(this->DestinationObject); }
+                else if (param_1 == this->victory_button_set_destination && line != 1) { this->SelectRegionFlag = SELECT_AREA; GAME_PLAYER()->unselect_object(); SELECT_IF_PRESENT(this->SelectedObject); GAME_REDRAW0(); return 1; }
+                else if (param_1 == this->victory_button_set_destination) { this->SelectRegionFlag = SELECT_DEST_OBJECT; ((RGE_Base_Game_Dispatch*)rge_base_game)->redraw(0x10, 0); GAME_PLAYER()->unselect_object(); SELECT_IF_PRESENT(this->SelectedObject); }
+                else if (param_1 == this->victory_button_go_to_dest && line != 1) {
+                    this->main_view->get_selection_area(&y1, &y2, &x1, (long*)random_val, 1);
+                    f1 = (float)x1;
+                    f2 = (float)*(long*)random_val;
+                    this->px1 = (float)y1;
+                    this->py1 = (float)y2;
+                    this->SelectRegionFlag = SELECT_OFF;
+                    this->px2 = f1;
+                    this->py2 = f2;
+                    if (f1 != -1.0f) {
+                        f1 = f1 - (f1 - (float)y1) * 0.5f;
+                        f2 = f2 - (f2 - (float)y2) * 0.5f;
+                        player = GAME_PLAYER();
+                        player->set_view_loc(f1, f2);
+                        GAME_PLAYER()->set_map_loc((short)f1, (short)f2);
+                    }
+                } else {
+                    if (param_1 == this->victory_drop_down) { line = this->victory_drop_down->get_line(); this->activate_victory_proper_fields(line, 0); }
+                    for (i = 0; i < 12; i++) {
+                        if (param_1 == this->victory_button[i] && this->CurrentVictory != i) {
+                            line = this->victory_drop_down->get_line();
+                            this->activate_victory_proper_fields(line, 0);
+                            this->save_victory_cond_in_scenario(this->CurrentVictory);
+                            this->activate_victory_panel(0);
+                            GAME_PLAYER()->unselect_object();
+                            this->CurrentVictory = i;
+                            this->load_victory_cond_from_scenario(i);
+                            this->activate_victory_panel(1);
+                            line = this->victory_drop_down->get_line();
+                            this->activate_victory_proper_fields(line, 1);
+                            SELECT_IF_PRESENT(this->SelectedObject);
+                            SELECT_IF_PRESENT(this->DestinationObject);
+                        }
+                    }
+                }
+            }
+            return 1;
+        }
+        break;
+
     case ScenarioModeMap:
         if (this->valid_save_spot_flag != 0) this->need_to_save_flag = 1;
         if (param_2 == 1) {
@@ -746,6 +835,19 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
         }
         break;
 
+    case ScenarioModeVictoryMulti:
+        if (this->valid_save_spot_flag != 0) this->need_to_save_flag = 1;
+        if (param_2 == 1) {
+            for (i = 0; i < 5; i++) {
+                if (param_1 == this->victory_cond_type[i]) {
+                    this->set_mp_victory_type(i + VictoryTypeStandard, 1);
+                    if (i != 4) { this->world->scenario->Set_Multi_Conquest(1); this->victory_cond_on[0]->vfE0(1); }
+                    return 1;
+                }
+            }
+        }
+        break;
+
     case ScenarioModeDiplomacy:
         if (this->valid_save_spot_flag != 0) this->need_to_save_flag = 1;
         if (param_2 == 0 || param_2 == 1) {
@@ -767,85 +869,6 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
         }
         break;
 
-    case ScenarioModeVictory:
-        if (this->valid_save_spot_flag != 0) this->need_to_save_flag = 1;
-        if ((param_2 == 0 || param_2 == 1) && param_1 == this->victory_player_list) {
-            this->save_victory_cond_in_scenario(this->CurrentVictory);
-            this->activate_victory_panel(0);
-            this->activate_victory_proper_fields(0, 0);
-            line = this->victory_player_list->get_line();
-            this->player_num = (short)line + 1;
-            this->world->scenario->SetSPWhich(this->player_num - 1);
-            this->CurrentVictory = 0;
-            this->load_victory_cond_from_scenario(0);
-            this->activate_victory_panel(1);
-            line = this->victory_drop_down->get_line();
-            this->activate_victory_proper_fields(line, 1);
-        }
-        if (param_2 == 0 && param_1 == this->victory_amount_input) this->bottom_panel->set_curr_child(0);
-        if (param_2 == 2 && param_1 == this->victory_drop_down) { line = this->victory_drop_down->get_line(); this->activate_victory_proper_fields(line, 1); }
-        if (param_2 == 1) {
-            if (param_1 != this->victory_amount_input) {
-                line = this->victory_drop_down->get_line();
-                if (param_1 == this->victory_drop_down) { GAME_REDRAW0(); this->DestinationObject = 0; this->SelectedObject = 0; GAME_PLAYER()->unselect_object(); }
-                if (line == 2) { this->DestinationObject = 0; GAME_PLAYER()->unselect_object(); }
-                if (param_1 == this->victory_button_set_object) { this->SelectRegionFlag = SELECT_OBJECT; GAME_REDRAW0(); GAME_PLAYER()->unselect_object(); SELECT_IF_PRESENT(this->DestinationObject); }
-                else if (param_1 == this->victory_button_set_destination && line != 1) { this->SelectRegionFlag = SELECT_AREA; GAME_PLAYER()->unselect_object(); SELECT_IF_PRESENT(this->SelectedObject); GAME_REDRAW0(); return 1; }
-                else if (param_1 == this->victory_button_set_destination) { this->SelectRegionFlag = SELECT_DEST_OBJECT; GAME_REDRAW0(); GAME_PLAYER()->unselect_object(); SELECT_IF_PRESENT(this->SelectedObject); }
-                else if (param_1 == this->victory_button_go_to_dest && line != 1) {
-                    this->main_view->get_selection_area(&y1, &y2, &x1, (long*)random_val, 1);
-                    f1 = (float)x1;
-                    f2 = (float)*(long*)random_val;
-                    this->px1 = (float)y1;
-                    this->py1 = (float)y2;
-                    this->SelectRegionFlag = SELECT_OFF;
-                    this->px2 = f1;
-                    this->py2 = f2;
-                    if (f1 != -1.0f) {
-                        f1 = f1 - (f1 - (float)y1) * 0.5f;
-                        f2 = f2 - (f2 - (float)y2) * 0.5f;
-                        player = GAME_PLAYER();
-                        player->set_view_loc(f1, f2);
-                        player = GAME_PLAYER();
-                        player->set_map_loc((short)f1, (short)f2);
-                    }
-                } else {
-                    if (param_1 == this->victory_drop_down) { line = this->victory_drop_down->get_line(); this->activate_victory_proper_fields(line, 0); }
-                    for (i = 0; i < 12; i++) {
-                        if (param_1 == this->victory_button[i] && this->CurrentVictory != i) {
-                            line = this->victory_drop_down->get_line();
-                            this->activate_victory_proper_fields(line, 0);
-                            this->save_victory_cond_in_scenario(this->CurrentVictory);
-                            this->activate_victory_panel(0);
-                            GAME_PLAYER()->unselect_object();
-                            this->CurrentVictory = i;
-                            this->load_victory_cond_from_scenario(i);
-                            this->activate_victory_panel(1);
-                            line = this->victory_drop_down->get_line();
-                            this->activate_victory_proper_fields(line, 1);
-                            SELECT_IF_PRESENT(this->SelectedObject);
-                            SELECT_IF_PRESENT(this->DestinationObject);
-                        }
-                    }
-                }
-            }
-            return 1;
-        }
-        break;
-
-    case ScenarioModeVictoryMulti:
-        if (this->valid_save_spot_flag != 0) this->need_to_save_flag = 1;
-        if (param_2 == 1) {
-            for (i = 0; i < 5; i++) {
-                if (param_1 == this->victory_cond_type[i]) {
-                    this->set_mp_victory_type(i + VictoryTypeStandard, 1);
-                    if (i != 4) { this->world->scenario->Set_Multi_Conquest(1); this->victory_cond_on[0]->vfE0(1); }
-                    return 1;
-                }
-            }
-        }
-        break;
-
     case ScenarioModeOptions:
         if (this->valid_save_spot_flag != 0) this->need_to_save_flag = 1;
         if (param_2 == 1) {
@@ -858,22 +881,6 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
         }
         break;
 
-    case ScenarioModeMessages:
-        if (this->valid_save_spot_flag != 0) this->need_to_save_flag = 1;
-        if (param_2 == 1) {
-            line = this->current_message;
-            this->world->scenario->Set_message(this->message_input->get_input_buffer(), line);
-            for (i = 0; i < 5; i++) if (param_1 == this->message_button[i]) { this->current_message = i; break; }
-            this->message_input->set_text(this->world->scenario->Get_message(this->current_message));
-            switch (this->current_message) {
-            case 0: ((TPanel*)this->message_input)->set_help_info(0x7770, -1); break;
-            case 1: ((TPanel*)this->message_input)->set_help_info(0x7771, -1); break;
-            case 2: ((TPanel*)this->message_input)->set_help_info(0x7772, -1); break;
-            case 3: ((TPanel*)this->message_input)->set_help_info(0x7773, -1); break;
-            case 4: ((TPanel*)this->message_input)->set_help_info(0x7774, -1); break;
-            }
-        }
-        break;
     }
 
     if (param_1->panelName() != 0 && strcmp(param_1->panelName(), s_QuitSaveDialog) == 0) {
