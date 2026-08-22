@@ -49,6 +49,25 @@
 //   and first mismatch at +0002. The remaining gap starts in prologue and
 //   local-home allocation. No ABI, call, or ownership issue remains.
 
+// sa-9e5deac5-r1 fresh claim (2026-08-22):
+// - Baseline revalidated the pinned 1337B / 1252-diff source.
+// - A byte cast on each decoded shift was worse: 1369B / 1257 diff.
+// - An explicit left-clip if/else improved size and shape, but was a small
+//   strict regression alone. It recovered one exact block.
+// - A uchar command local across all packet phases was worse: 1383B / 1307
+//   diff, despite a 0x10 frame. It was removed.
+// - A uchar phase local reduced the body to 1290B / 1272 diff. It was not
+//   retained because the original size and local ownership were lost.
+// - Separating row declaration from assignment was codegen-neutral.
+// - Staging width as `width = AlignedWidth(); width *= orientation;` improved
+//   the natural candidate to 1333B / 1208 diff. This is retained.
+// - Direct orientation, a named run count, a cached right bound, and local
+//   declaration reorders were worse or codegen-neutral.
+// - Reversing the outer bound operands to `row > clip_bottom` retained the
+//   1208-diff basin and improved the first bound instruction shape.
+// - The current source has one ordered AlignedWidth call and no ABI or
+//   ownership uncertainty. The remaining gap is the prologue and local homes.
+
 typedef unsigned char uchar;
 struct Shape_Header { long bounds; long origin; long xmin; long ymin; long xmax; long ymax; };
 class TDrawArea { public: char gap_00[8]; uchar* Bits; char gap_0C[0x10]; long Height; char gap_20[4]; long Orien; long AlignedWidth(); };
@@ -72,16 +91,18 @@ public:
 uchar TShape::shape_dithered_clipped(TDrawArea* area, long x, long y, long clip_left, long clip_top, long clip_right, long clip_bottom, long p8, long p9)
 {
     long orientation = area->Orien;
-    long width = area->AlignedWidth() * orientation;
+    long width = area->AlignedWidth();
+    width *= orientation;
     Shape_Header* header = this->shape_header;
     uchar* src = (uchar*)(header + 1);
     long skip_rows;
+    long row;
     long row_offset;
     uchar* save_buffer;
     if (orientation < 1)
         row_offset = (clip_top - area->Height + 1) * width;
     else
-        row_offset = clip_top * width;
+        row_offset = width * clip_top;
     save_buffer = area->Bits + clip_left + row_offset;
     uchar dither;
     uchar b;
@@ -90,7 +111,7 @@ uchar TShape::shape_dithered_clipped(TDrawArea* area, long x, long y, long clip_
     if (((p9 + clip_top) & 1U) != 0)
         dither = (uchar)(dither != 1);
 
-    long row = y;
+    row = y;
     if (y < clip_top) {
         skip_rows = clip_top - y;
         row = y + skip_rows;
@@ -117,7 +138,7 @@ uchar TShape::shape_dithered_clipped(TDrawArea* area, long x, long y, long clip_
     }
 
     do {
-        if (clip_bottom < row)
+        if (row > clip_bottom)
             return 1;
 
         bool row_dither = (dither != 1);
@@ -234,10 +255,9 @@ uchar TShape::shape_dithered_clipped(TDrawArea* area, long x, long y, long clip_
                 if (clip_top != 0)
                     break;
             } while (true);
-        }
-
-        if (x >= clip_left)
+        } else {
             clip_top = 1;
+        }
         clip_top = (uchar)clip_top - 1;
         while (clip_top == 0) {
             y = (long)*src++;
