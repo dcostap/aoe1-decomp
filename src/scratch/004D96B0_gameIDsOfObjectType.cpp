@@ -45,6 +45,10 @@
 // ambient TU declarations with four natural local/store axes produced one
 // 691-byte group.  An eight-variant standard-header context lab also produced
 // one 691-byte group.  No exact candidate or new source lead resulted.
+// fresh pass: explicit relation owner locals, direct and aliased final stores,
+// predicate conjunctions, PDB line directives, narrow relation ABI forms, and
+// signed argument casts all duplicated the 691-byte/24-byte basin.  A sixteen-
+// variant register-declaration lab also produced one unchanged code group.
 // left in scratch: 24 localized register/address bytes remain in the -5/-6
 // player filters and final ID store.  Size, frame, calls, CFG, and 89.52% of
 // blocks are exact; the remaining drift is not accepted_drift-safe.
