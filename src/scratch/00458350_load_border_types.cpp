@@ -49,6 +49,12 @@
 // The PDB confirms RGE_Border_Set size 0x5A0, RGE_TOB_Picts size 6, and all
 // member offsets used here. The remaining binary-backed gap is local-home and
 // register placement, not ownership, size, calls, or cleanup.
+// Fresh pass: per-record parser scope duplicated the clean 679-byte result.
+// Nested do/while cursors reduced the raw diff to 408 bytes, but removed the
+// target frame and two-pointer loop shape (656 bytes versus 679); restore it.
+// Persistent outer-cursor and explicit animation-pointer variants stayed in
+// that same 656-byte basin. The decompiler's separate FILE/float local names
+// also duplicated the clean 679-byte result. Keep the typed for-loop source.
 // Accepted-drift blocker: the giant fscanf writes unbounded strings at name+4
 // and pict_name+4, then convert_us/strcpy consume each buffer from its base.
 // Different stack homes can change the four-byte prefixes and malformed-input
