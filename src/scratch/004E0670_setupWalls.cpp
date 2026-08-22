@@ -3,7 +3,7 @@
 //
 // Baseline reconstruction: the function lays out the four possible gate
 // rectangles, then traces one of three wall perimeters.  XYPoint follows the
-// taiinfmd.cpp local/source convention (y at offset 0, x at offset 4).
+// taiinfmd.cpp local/source convention (x at offset 0, y at offset 4).
 // Attempt log:
 // - baseline: typed gate arrays and natural perimeter loops; frame was 0x30,
 //   and the mode-2 source was two call sites short.
@@ -28,13 +28,20 @@
 // - a canonical x,y WallPoints aggregate plus local_4 recovered the 0x34
 //   frame, exact mapBound pointer windows, and 78.9% shape, but strict diff
 //   worsened to 2065; it was rejected as compiler-steering scaffolding.
-// Current normalized pause: exact 2253-byte size, natural 0x30 frame, and
-// 62/62 ordered calls. Remaining drift is prologue allocation and local colors;
-// the original keeps param_1 in EBX and param_4 in EDI.
+// - canonical XYPoint x,y plus the binary gate values and param_8 gate count
+//   improved shape to 64.54% and exact blocks to 37.65%; strict diff was 2159
+//   with a 23-byte size gap. This is the current natural source frontier.
+// - nested mode-2 guards improved shape only to 61.52% and increased the size
+//   gap; function-scope cursors and register-qualified parameters were no-op
+//   codegen probes. Parameter-home mode counters were slightly worse.
+// Current normalized pause: canonical x,y source, 62/62 ordered calls, frame
+// 0x30, size 2230, strict diff 2159. The strict-size frontier remains the
+// earlier 2253-byte y,x source; the original keeps param_1 in EBX and
+// param_4 in EDI.
 
 struct XYPoint {
-    int y;
     int x;
+    int y;
 };
 
 class TribeInformationAIModule {
@@ -71,38 +78,38 @@ void TribeInformationAIModule::setupWalls(int param_1, int param_2, int param_3,
         int slot = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 0x1731) % 4;
         int half = param_7 / 2;
 
-        this->minGatePosition[slot].y = param_1 - half;
-        this->minGatePosition[slot].x = param_2 - param_4 * 2;
-        this->maxGatePosition[slot].y = param_1 + half;
-        this->maxGatePosition[slot].x = param_2;
+        this->minGatePosition[slot].x = param_1 - half;
+        this->minGatePosition[slot].y = param_2 - param_4 * 2;
+        this->maxGatePosition[slot].x = param_1 + half;
+        this->maxGatePosition[slot].y = param_2;
 
         slot = (slot + 1) % 4;
-        this->minGatePosition[slot].y = param_1 + half;
-        this->minGatePosition[slot].x = param_2;
-        this->maxGatePosition[slot].y = param_4;
-        this->maxGatePosition[slot].x = param_2 + param_4 * 2;
+        this->minGatePosition[slot].x = param_1 - half;
+        this->minGatePosition[slot].y = param_2;
+        this->maxGatePosition[slot].x = param_1 + half;
+        this->maxGatePosition[slot].y = param_2 + param_4 * 2;
 
         slot = (slot + 1) % 4;
-        this->minGatePosition[slot].y = param_1;
-        this->minGatePosition[slot].x = param_2 - half;
-        this->maxGatePosition[slot].y = param_1 + param_4 * 2;
-        this->maxGatePosition[slot].x = param_2 + half;
+        this->minGatePosition[slot].x = param_1;
+        this->minGatePosition[slot].y = param_2 - half;
+        this->maxGatePosition[slot].x = param_1 + param_4 * 2;
+        this->maxGatePosition[slot].y = param_2 + half;
 
         slot = (slot + 1) % 4;
-        this->minGatePosition[slot].y = param_1 - param_4 * 2;
-        this->minGatePosition[slot].x = param_2 - half;
-        this->maxGatePosition[slot].y = param_1;
-        this->maxGatePosition[slot].x = param_2 + half;
+        this->minGatePosition[slot].x = param_1 - param_4 * 2;
+        this->minGatePosition[slot].y = param_2 - half;
+        this->maxGatePosition[slot].x = param_1;
+        this->maxGatePosition[slot].y = param_2 + half;
 
         if (param_6 > 0) {
             XYPoint* gate = this->maxGatePosition;
-            count = param_6;
+            param_8 = param_6;
             do {
                 this->mapBound(gate - 4);
                 this->mapBound(gate);
                 ++gate;
-                --count;
-            } while (count != 0);
+                --param_8;
+            } while (param_8 != 0);
         }
     }
 
