@@ -34,6 +34,13 @@
 // claim evidence: canonical TPanel/TDrawArea/global type surfaces were codegen-neutral; +1 origins and live-width compare were worse.
 // claim evidence: source-shape lab found no size/frame/call-set eligible variant; 64 ambient declarations stayed one codegen basin.
 // next lead: recover the original Pnl_msg.cpp local lifetime or translation-unit declaration context before further tuning.
+// follow-up claim sa-665823dc-r1: tested 15 distinct source-shape hypotheses against the clean checkpoint.
+// follow-up evidence: call order stayed exact, but no probe improved the 633-byte clean difference.
+// follow-up evidence: donor-style left/top/height/width geometry reached frame 0x48 and 85.64% shape.
+// follow-up evidence: that geometry grew the body by 23 bytes and changed the virtual carrier from EDI to EBX.
+// follow-up evidence: coordinate increments, color order, RGB macro, length spelling, and dimension spelling were worse or duplicate.
+// follow-up result: restored the pinned natural source; no exact or small localized equivalent drift lead remains.
+// follow-up next lead: recover the original local lifetime that keeps palette back color in EBX and coordinate homes on the stack.
 #include <string.h>
 #include <windows.h>
 
