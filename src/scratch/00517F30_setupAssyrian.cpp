@@ -38,6 +38,13 @@
 //   branch-common duplication, supported headers, and reviewed inheritance
 //   context stayed at 334 bytes and 96 positional bytes off. Restored the
 //   natural direct source; the remaining hunk is the 0x28/0x64 load schedule.
+// - New pass: free logging ABI spelling, value locals, pointer aliases, comma
+//   sequencing, inverted guards, register hints, supported header combinations,
+//   and base-game inheritance all stayed in the 334-byte/96-byte basin.
+// - The prior late-0x14 source topology still gives 344 bytes and 70 bytes off,
+//   but it moves +0x4C after the map-type branch and violates the blocker.
+// - A 27-source-shape lab and a 12-flag lab found no exact or size-correct
+//   natural variant. The direct source is restored as the clean owner.
 // BLOCKER: the residual schedule moves the +0xA0 store before the +0x18 and
 // +0x4C stores. These writes use the caller's output array. A short or invalid
 // array can therefore expose a different partial result and fault point.
