@@ -36,6 +36,21 @@
 // - VC5 still merges four conquest setter tails. Separate if arms restore all
 //   four calls but add 168 bytes, so the switch remains the clean source.
 // - The stack helper still emits __chkstk instead of the oracle's __alloca_probe.
+// Follow-up pass:
+// - The PDB/Ghidra player scans use a saved count, a moving player cursor, a
+//   positive guard, and a bottom decrement.  The two reusable scans now use
+//   that natural form.  This reduced the positional diff from 4403 to 4369.
+// - The original PDB ABI uses RGE_Player_Info&.  The reference surface is
+//   retained.  It is codegen-neutral in this function.
+// - The post-save enum values are VictoryTime=7 and VictoryScore=8.  The
+//   source now uses those proven values.
+// - Grouped and reordered victory switch cases recovered the missing setter
+//   calls only with a 184-byte boundary overrun.  The natural ascending switch
+//   remains the clean source.
+// - Separate result, register, zero-local, and object-id forms were neutral or
+//   worse.  They are not retained.
+// - Remaining blockers are the base-result BL schedule, three merged conquest
+//   setter calls, and the compiler's __chkstk symbol choice.
 
 #include <stdio.h>
 #include <string.h>
@@ -171,7 +186,7 @@ public:
     T_Scenario* scenario;
     char gap_60[0xA4];
 
-    uchar new_game(RGE_Player_Info* param_1, int param_2);
+    uchar new_game(RGE_Player_Info& param_1, int param_2);
 };
 
 class TRIBE_Tech;
@@ -189,7 +204,7 @@ public:
     uchar pad_11E[2];
     int sent_zone_score;
 
-    uchar new_game(RGE_Player_Info* param_1, int param_2);
+    uchar new_game(RGE_Player_Info& param_1, int param_2);
 };
 
 class T_Scenario {
@@ -228,24 +243,31 @@ public:
 
 static __inline int count_objects(TRIBE_World* world, short id) {
     int count = 0;
-    int i;
-    for (i = 0; i < world->player_num; ++i) {
-        RGE_Object_List_Node* node = world->players[i]->objects->head;
+    int player_count = world->player_num;
+    if (player_count > 0) {
+        TRIBE_Player** player = world->players;
+        do {
+        RGE_Object_List_Node* node = (*player)->objects->head;
         while (node != 0) {
             if (node->object->type->id == id) {
                 ++count;
             }
             node = node->next;
         }
+        ++player;
+        --player_count;
+        } while (player_count != 0);
     }
     return count;
 }
 
 static __inline int count_ruins(TRIBE_World* world) {
     int count = 0;
-    int i;
-    for (i = 0; i < world->player_num; ++i) {
-        RGE_Object_List_Node* node = world->players[i]->objects->head;
+    int player_count = world->player_num;
+    if (player_count > 0) {
+        TRIBE_Player** player = world->players;
+        do {
+        RGE_Object_List_Node* node = (*player)->objects->head;
         while (node != 0) {
             short id = node->object->type->id;
             if (id == 0x9e || id == 0xa3) {
@@ -253,6 +275,9 @@ static __inline int count_ruins(TRIBE_World* world) {
             }
             node = node->next;
         }
+        ++player;
+        --player_count;
+        } while (player_count != 0);
     }
     return count;
 }
@@ -262,10 +287,9 @@ static __inline void append_line(char* description, char* temp, const char* fmt,
     sprintf(description, S_NEWLINE_JOIN, description, temp);
 }
 
-uchar TRIBE_World::new_game(RGE_Player_Info* param_1, int param_2) {
-    int postVictoryType;
-    RGE_RMM_Object_Generator* generator;
+uchar TRIBE_World::new_game(RGE_Player_Info& param_1, int param_2) {
     int victoryAmount;
+    RGE_RMM_Object_Generator* generator;
     uchar ret_num;
     char str1[256];
     char str2[256];
@@ -276,6 +300,7 @@ uchar TRIBE_World::new_game(RGE_Player_Info* param_1, int param_2) {
     int res;
     int want;
     int missing;
+    int postVictoryType;
 
     this->score_displayed = 0;
     this->controllingComputerPlayer = 0xff;
@@ -448,10 +473,10 @@ uchar TRIBE_World::new_game(RGE_Player_Info* param_1, int param_2) {
             this->scenario->Save_victory_conditions_into_players(0);
             // BINARY NOTE: the executable makes one post-save victoryType call.
             postVictoryType = rge_base_game->victoryType();
-            if (postVictoryType == 8) {
+            if (postVictoryType == 7) {
                 this->countdown_victory = 1;
                 this->countdown_clock = (float)victoryAmount;
-            } else if (postVictoryType == 9) {
+            } else if (postVictoryType == 8) {
                 for (i = 1; i < this->player_num; ++i) {
                     this->players[i]->victory->add_victory_points(0, victoryAmount, 1);
                 }
