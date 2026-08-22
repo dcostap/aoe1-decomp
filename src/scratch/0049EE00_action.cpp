@@ -36,6 +36,10 @@
 //   It produced 12 code groups, 40 invariant-eligible variants, and no match.
 //   The closest /GX group kept 715 bytes and one return but still missed the
 //   original early branch spans and the per-arm EAX moves.
+// - Fresh H12-H17 probes tested a register-qualified result, direct confirm
+//   success, explicit success/fallback labels, event-valued returns, and
+//   negative event guards. They reproduced the duplicated EH basin or grew
+//   the body. Restored the pinned one-return source.
 // - Remaining blocker: natural source preserves all calls, offsets, frame,
 //   boundary, and CFG counts, but VC5 places the success value in ESI and
 //   reloads it at the common tail. The original moves ESI to EAX on each
