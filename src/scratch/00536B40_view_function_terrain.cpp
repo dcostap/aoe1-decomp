@@ -188,6 +188,12 @@
 // class reconstruction added these real fields. It worsened shape to 60.40%
 // and strict diff to 4939 bytes, so it was restored. The pinned class context
 // remains the smaller source that emits 4913 differing bytes.
+// BINARY NOTE: The original loads render_area (+0x20) for Draw_GDI_Object,
+// DrawLine, FillRect, Unlock, and the final CurrentMask restore. It uses
+// save_area1 (+0x324) as the PtrSpanCopy source and sprite surface owner.
+// The late render-area correction is retained. It gives 22.24% exact blocks,
+// 68.31% shape similarity, and 4920 differing bytes. The source still needs
+// early local and register topology recovery.
 
 #include <windows.h>
 #include <string.h>
@@ -439,7 +445,7 @@ public:
     long Get_Cursor_Position(POINT* pt, long xoff, long yoff);
     long pick_touched_object(void* list, long x, long y, long a, long b, long* out_id);
     void get_string(long id, char* out, long lang_id);
-    void Draw_GDI_Object(DClipInfo_Node* node, void* draw_area);
+    void Draw_GDI_Object(DClipInfo_Node* node, TDrawArea_Prefix* draw_area);
     void Update_Render_Pointers();
     long view_function_terrain(unsigned char mode, tagRECT rect);
 };
@@ -1322,7 +1328,7 @@ TileOffScreen:
                         _ASMSet_Shadowing(0xFF00FF, 0, 0xFF00FF00, 0);
                     }
                 } else {
-                    this->Draw_GDI_Object(node, this->save_area1);
+                    this->Draw_GDI_Object(node, this->render_area);
                 }
             }
         }
@@ -1331,11 +1337,11 @@ TileOffScreen:
     if (view_debug_spans != 0 && this->render_terrain_mode != 0) {
         unsigned char color = (unsigned char)(frame_count % 0xDC + 0x10);
         long y = 0;
-        if (this->save_area1->Height > 0) {
+        if (this->render_area->Height > 0) {
             do {
-                this->save_area1->DrawLine(0, y, this->save_area1->Width - 1, y, color);
+                this->render_area->DrawLine(0, y, this->render_area->Width - 1, y, color);
                 ++y;
-            } while (y < this->save_area1->Height);
+            } while (y < this->render_area->Height);
         }
     }
 
@@ -1343,21 +1349,21 @@ TileOffScreen:
         unsigned char row_base = 0;
         long y = 0x20;
         do {
-            unsigned char c = 0;
+            unsigned char palette_color = 0;
             long x = 0;
             do {
-                this->save_area1->FillRect(x, y, x + 0x1F, y + 0x0F,
-                                           (unsigned char)(c + row_base * 0x10));
+                this->render_area->FillRect(x, y, x + 0x1F, y + 0x0F,
+                                           (unsigned char)(palette_color + row_base * 0x10));
                 x += 0x20;
-                ++c;
+                ++palette_color;
             } while (x < 0x200);
             y += 0x10;
             ++row_base;
         } while (y < 0x120);
     }
 
-    this->save_area1->Unlock(s_view__view_function_terrain);
-    this->save_area1->CurrentMask = this->save_area1->SavedMask;
+    this->render_area->Unlock(s_view__view_function_terrain);
+    this->render_area->CurrentMask = this->render_area->SavedMask;
     {
         void* tmp = this->futur_objs;
         this->futur_objs = this->prior_objs;
