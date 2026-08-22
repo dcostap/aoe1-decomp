@@ -34,6 +34,19 @@
 //   now uses that binary-supported argument order. A stdio.h context was worse.
 //   The remaining gap is the extra direct sprintf call for the two-argument
 //   case-1/case-9 tail; no natural source form recovered that tail.
+// - This claim re-established canonical ownership from the target dossier and
+//   exact victory.cpp donors: the virtual member, entry offsets, player master
+//   array, object master, and short player id agree with the surrounding exact
+//   functions. No ABI or layout conflict was found.
+// - A real union shared tail for cases 1 and 9 recovered exact size/frame and
+//   all eight call sites (394 bytes; reversed case-1 assignments 392 bytes).
+//   Reversing case-9 assignments reached 389 bytes and 96.05% shape, but the
+//   generic union/format locals changed the proven argument setup. An argument
+//   array, declaration-order change, int/long change, non-const format, and
+//   direct all-long casts were duplicate or worse. These are diagnostic only.
+// - Restored the natural direct switch. Final validation remains a 433-byte
+//   mismatch with one extra direct sprintf; the best 389-byte shared-tail
+//   probe is not retained as canonical source.
 
 extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
 extern "C" void __cdecl getstring(char** destination, char* source);
