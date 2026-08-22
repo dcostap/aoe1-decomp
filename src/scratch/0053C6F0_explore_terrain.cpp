@@ -34,6 +34,11 @@
 // the original reloads this->player after publishing input_csum. The rebuild
 // reuses the player pointer read during checksum calculation. Concurrent player
 // pointer mutation can therefore change the ally test and later tile-list call.
+// Current claim probes: zero-valued guard locals, fresh player aliases, checksum
+// declaration scope/order, and a complete world map member all rebuilt the same
+// 527-byte basin. Moving radius initialization before the log moved to 533 bytes
+// but worsened CFG and shape. Restore the pinned typed source; no new owner fact
+// was established.
 
 #include <stdlib.h>
 #pragma intrinsic(_rotl)
