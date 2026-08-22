@@ -49,6 +49,17 @@
 //   and a sequenced counter expression were either codegen duplicates or worse.
 // - Final natural source remains 635 bytes with 18 aligned calls; checker diff is
 //   381 bytes. The first mismatch is the original EBX-held color-log constant.
+// sa-c00eb8d9 revisit (2026-08-22):
+// - Assignment-form and block-scoped `loaded = 1` locals reused for both file
+//   stores and both color logs were codegen duplicates. Member assignment in the
+//   first log was worse and added nine bytes.
+// - Nested filename copy, array-subscript extension offsets, comma sequencing,
+//   and expanded Shape_Loads increment forms did not improve the clean source.
+// - Shape_Loads as a TU-local static and complete TShape overload declarations
+//   were codegen duplicates. Restored the pinned natural source.
+// - Original assembly still proves `mov ebx,1; push ebx` before the first log,
+//   then EBX-backed load_type stores in both file-success arms and the second log.
+//   The simplest source that causes this register liveness remains unresolved.
 
 #include <string.h>
 
