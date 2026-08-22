@@ -30,6 +30,21 @@
 // and was removed from the retained natural source.
 // left in scratch: behavior and call surface are plausible, but the VC5 frame
 // and register topology still need validation against the 8-byte oracle.
+//
+// sa-e83dab42 claim pass (2026-08-22):
+// - Reversed only the inner horizontal bound comparisons to match the
+//   original `cmp xpos,left` and `cmp xpos,right` directions. This kept the
+//   813-byte body, 0x8 frame, and 5/6 ordered calls, while improving shape
+//   from 64.77% to 68.12% and exact-block coverage from 17.45% to 27.85%.
+// - Explicit odd-packet comparisons improved shape to 73.83% and exact
+//   blocks to 38.59%, but added 28 bytes and reduced strict alignment. The
+//   natural truth tests remain retained.
+// - Direct save_buffer cursor ownership aligned all six calls but removed
+//   the original frame and worsened strict bytes. The separate row cursor
+//   remains retained.
+// - Header aliases, area aliases, register qualifiers, declaration order,
+//   split width arithmetic, same-line call records, and in-place command
+//   mutation were duplicate or worse codegen basins.
 // shardE-4B9AF0 pass: moving the shared right-band cursor increments after
 // both memcpy arms worsened to 787 bytes and duplicated the prior basin.
 // A separate row source cursor was codegen-identical and was rolled back.
@@ -185,8 +200,8 @@ uchar TShape::shape_draw_clipped(TDrawArea* area, long shape_x, long shape_y,
                         count = code >> 1;
                         if (count == 0) {
                             xpos += *src++;
-                            if (clip_left <= xpos) {
-                                if (clip_right < xpos)
+                            if (xpos >= clip_left) {
+                                if (xpos > clip_right)
                                     clip_top = 2;
                                 else {
                                     clip_top = 1;
@@ -195,10 +210,10 @@ uchar TShape::shape_draw_clipped(TDrawArea* area, long shape_x, long shape_y,
                             }
                         } else {
                             xpos += count;
-                            if (clip_left <= xpos) {
+                            if (xpos >= clip_left) {
                                 long copy_count;
                                 uchar* copy_source;
-                                if (clip_right < xpos) {
+                                if (xpos > clip_right) {
                                     clip_top = 2;
                                     copy_count = clip_right - clip_left + 1;
                                     copy_source = src + count + clip_left - xpos;
@@ -218,9 +233,9 @@ uchar TShape::shape_draw_clipped(TDrawArea* area, long shape_x, long shape_y,
                             clip_top = 3;
                         } else {
                             xpos += count;
-                            if (clip_left <= xpos) {
+                            if (xpos >= clip_left) {
                                 long fill_count;
-                                if (clip_right < xpos) {
+                                if (xpos > clip_right) {
                                     clip_top = 2;
                                     fill_count = clip_right - clip_left + 1;
                                 } else {
@@ -247,11 +262,11 @@ uchar TShape::shape_draw_clipped(TDrawArea* area, long shape_x, long shape_y,
                         count = *src++;
                         xpos += count;
                         dst += count;
-                        if (clip_right < xpos)
+                        if (xpos > clip_right)
                             clip_top = 1;
                     } else {
                         xpos += count;
-                        if (clip_right < xpos) {
+                        if (xpos > clip_right) {
                             clip_top = 1;
                             memcpy(dst, src, clip_right - xpos + 1 + count);
                             dst += count;
@@ -269,7 +284,7 @@ uchar TShape::shape_draw_clipped(TDrawArea* area, long shape_x, long shape_y,
                     } else {
                         long fill_count = count;
                         xpos += count;
-                        if (clip_right < xpos) {
+                        if (xpos > clip_right) {
                             fill_count = count + clip_right - xpos + 1;
                             clip_top = 1;
                         }
