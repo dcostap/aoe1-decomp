@@ -27,14 +27,33 @@
 // try 24: routed failures through a typed result and common finish label; VC5 output was unchanged. Removed this metric-only scaffolding.
 // try 25: final simplified shared-name/direct-master source is 573B versus 542B, 471 positional diff bytes, 16/16 calls aligned, and 56.29% exact-block coverage.
 // BLOCKER: exactness remains unresolved. The original starts push -1/handler then mov fs, stores EBX=this, and has one late cleanup epilogue. VC5 emits the EH registration in another order, retains three returns, and places the name buffer four bytes higher. Do not use compiler steering to force these differences.
+// retry 2026-08-22:
+// try 26: established canonical ownership from exact BuildItem/BuildAIModule donors: RGE_Player and master fields, BaseItem scalar fields, and BuildItem link/scalar fields. The real hidden-vptr class surface emitted the same 573B, 471-diff result.
+// try 27: explicit-vtable and nonvirtual fallback variants either shifted BuildItem/list offsets or widened the frame; restored the real polymorphic BaseItem/BuildItem ownership.
+// try 28: positive outer guards with a natural result local produced one return but added a 4-byte frame and reduced structural coverage; restored direct failure returns.
+// try 29: local declaration order, mutable-period string types, period stdlib allocation declarations, and the string-header declaration all emitted duplicate 573B code.
+// CURRENT EVIDENCE: canonical item/list ownership is stable. The remaining blocker is source CFG/EH topology: original has one late cleanup epilogue, while natural VC5 source keeps three returns and the name buffer four bytes higher.
 
 #include <string.h>
-typedef unsigned int uint;
-extern "C" char* __cdecl strncpy(char*, const char*, unsigned int);
-void* operator new(uint size);
+#include <stdlib.h>
 
-class RGE_Master_Static_Object { public: char gap_00[8]; char* name; char gap_0c[0x24]; float radius_x; float radius_y; };
-class RGE_Player { public: char gap_00[0x24]; RGE_Master_Static_Object** master_objects; };
+class RGE_Master_Static_Object {
+public:
+    virtual ~RGE_Master_Static_Object();
+    char gap_04[4];
+    char* name;                         // +0x08
+    char gap_0c[0x24];
+    float radius_x;                     // +0x30
+    float radius_y;                     // +0x34
+};
+
+class RGE_Player {
+public:
+    virtual ~RGE_Player();
+    char gap_04[0x1e];
+    short master_object_num;            // +0x22
+    RGE_Master_Static_Object** master_objects; // +0x24
+};
 
 class AIModule {
 public:
@@ -44,7 +63,17 @@ public:
 
 class BaseItem {
 public:
-    char gap_00[0x68];
+    int typeIDValue;
+    int gameIDValue;
+    int uniqueIDValue;
+    char nameValue[64];
+    float xValue;
+    float yValue;
+    float zValue;
+    float xSizeValue;
+    float ySizeValue;
+    float zSizeValue;
+    int skipValue;
     virtual ~BaseItem();
     void setSkip(int); void setGameID(int); void setX(float); void setY(float); void setZ(float);
 };
@@ -53,7 +82,20 @@ class BuildItem : public BaseItem {
 public:
     BuildItem* next;
     BuildItem* prev;
-    char gap_74[0x3c];
+    int buildCategoryValue;
+    int numberValue;
+    int priorityValue;
+    int progressValue;
+    int builtValue;
+    int buildAttemptsValue;
+    int buildFromValue;
+    int terrainSetValue;
+    int terrainAdjacencyValue[2];
+    int placeOnElevationValue;
+    int numberBuildsValue;
+    int buildCapValue;
+    int skipCyclesValue;
+    unsigned char permanentSkipValue;
     virtual ~BuildItem();
     BuildItem(int type,int obj,int seq,int a,int b,int p5,char* name,float sx,float sy,float f,int x,int y,int z,int w);
     void setBuilt(int); void setInProgress(int); void setBuildAttempts(int);
