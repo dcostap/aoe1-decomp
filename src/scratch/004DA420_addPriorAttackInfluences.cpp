@@ -34,6 +34,10 @@
 // pinned typed source is restored. The remaining first hunk reverses the
 // md/player and attackingOwner load order; the next hunk uses a different
 // record-address lowering. No policy-valid exact source was found.
+// Revisit sa-3d0c436c-r1: y,x point spelling, XYPoint declaration swaps,
+// reversed player-id comparison, moving AttackMemory pointers, typed 0x18
+// byte offsets, and field-pointer max reads all reproduced the 281-byte
+// basin or made the frame and CFG worse. The clean typed source is restored.
 
 struct XYPoint {
     int x;
