@@ -52,6 +52,15 @@
 // both were rolled back. A const RECT alias and SDK RECT context were neutral.
 // The direct per-field Ghidra interleave grew to 483 bytes and was rolled back.
 // Left in scratch: behavior is straightforward but codegen is broad mismatch; not an accepted_drift candidate.
+// Current-claim probes: direct top/right/bottom stores with a pointer-only left
+// store improved shape but worsened strict diff to 343-359 bytes; changing the
+// pointer declaration point did not recover the target hunk. Full member
+// declarations and period string/stdio headers were codegen-neutral. A scalar
+// mouse_rect copy worsened shape and strict diff. Moving the aggregate copy
+// after the four initial area stores kept strict diff at 338 and improved only
+// resync diagnostics; a cWidth reorder worsened strict diff to 339. Restored
+// the pinned pointer-based aggregate source; the first mismatch remains at
+// save_rect initialization (+0D).
 
 #include <windows.h>
 
