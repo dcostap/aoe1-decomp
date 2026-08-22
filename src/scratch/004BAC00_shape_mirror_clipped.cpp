@@ -55,6 +55,21 @@
 // 71.02% shape, three ordered calls aligned, and a 0xC versus 0x8 frame.
 // The remaining gap is the original local-home/parameter allocation basin and
 // related state layout; this source is not exact or accepted_drift-safe.
+//
+// sa-70d977cd-r1 claim probes (2026-08-22):
+// - Directly mutating the top-row parameter worsened the basin to 698 bytes.
+// - The Ghidra-shaped sequential state decrements improved strict bytes to
+//   665, but reduced shape and increased the size gap; it was not retained.
+// - Explicit `((code & 1) == 1)` parity tests in all four RLE phases reached
+//   the original 799-byte size and 76.34% shape, but 693 strict bytes.
+// - Combining those explicit tests with the guarded visible-row do/while
+//   reached 799 bytes, 74.69% shape, and 669 strict bytes. This is retained
+//   because it follows the original parity and loop topology.
+// - A separate row-start pointer, function-scope count, and state signedness
+//   probes did not improve strict output. The row pointer worsened frame and
+//   shape; the function-scope count removed the frame but reached 764 bytes.
+// - The retained source still has a 0xC versus 0x8 frame. All three calls are
+//   ordered and aligned. No accepted-drift claim is supported.
 
 #include <string.h>
 #pragma function(memset)
@@ -118,7 +133,7 @@ unsigned char TShape::shape_mirror_clipped(TDrawArea* area,long clip_right,long 
             uchar done = 0;
             while (!done) {
                 uchar code = *src++;
-                if (code & 1) {
+                if ((code & 1) == 1) {
                     uchar count = code >> 1;
                     if (count)
                         src += count;
@@ -137,7 +152,7 @@ unsigned char TShape::shape_mirror_clipped(TDrawArea* area,long clip_right,long 
 
     if (row <= clip_bottom) {
         long rows = clip_bottom - row + 1;
-        while (rows--) {
+        do {
             long xpos = clip_right;
             uchar state;
 
@@ -146,7 +161,7 @@ unsigned char TShape::shape_mirror_clipped(TDrawArea* area,long clip_right,long 
                 state = 0;
                 while (state == 0) {
                     uchar code = *src++;
-                    if (code & 1) {
+                    if ((code & 1) == 1) {
                         uchar count = code >> 1;
                         if (count == 0) {
                             count = *src++;
@@ -219,7 +234,7 @@ unsigned char TShape::shape_mirror_clipped(TDrawArea* area,long clip_right,long 
                 if (state == 0) {
                     while (state == 0) {
                         uchar code = *src++;
-                        if (code & 1) {
+                        if ((code & 1) == 1) {
                             uchar count = code >> 1;
                             if (count == 0) {
                                 count = *src++;
@@ -276,7 +291,7 @@ unsigned char TShape::shape_mirror_clipped(TDrawArea* area,long clip_right,long 
                     if (state == 0) {
                         while (state == 0) {
                             uchar code = *src++;
-                            if (code & 1) {
+                            if ((code & 1) == 1) {
                                 uchar count = code >> 1;
                                 if (count)
                                     src += count;
@@ -295,7 +310,7 @@ unsigned char TShape::shape_mirror_clipped(TDrawArea* area,long clip_right,long 
             }
 
             save_buffer += pitch;
-        }
+        } while (--rows);
     }
     return 1;
 }
