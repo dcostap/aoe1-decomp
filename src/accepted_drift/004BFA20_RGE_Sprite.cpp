@@ -64,11 +64,20 @@
 //   so it changed the proven publication and fault order; it was rolled back.
 // - A 128-variant ambient declaration sweep changed no codegen basin and found
 //   no exact result. The clean 150-byte source remains authoritative.
-// BLOCKER: after each calloc, the executable rereads the positive count before
-// it stores draw_list or sound_list. The rebuild publishes each member pointer
-// before that reread. Named allocation-result forms did not restore the order.
-// This difference changes memory-visible publication and invalid-object fault
-// order, so it is not eligible for accepted drift.
+// - Exact donor 004C8490 supports a named calloc result with a zero-index
+//   reread and member publication in both positive and zero arms. Applying
+//   that source form to both lists emits the original cmp/store/branch order
+//   after each calloc and improves the mismatch to 142 bytes. Direct indexed
+//   draw fields restore the draw LEA basin but change the later sound-count
+//   width lowering and add one byte, so the typed entry form remains cleaner.
+// BINARY NOTE: after each calloc, the executable rereads the positive count
+// before it stores draw_list or sound_list. The named-result guards below
+// preserve that publication and fault order. Remaining drift is in the draw
+// record address basin; it does not change the six calls or parser order.
+// ACCEPTED DRIFT AUDIT: the remaining draw-loop hunk computes the same
+// draw_list[i] address with different private registers and ADD/LEA lowering.
+// The four fscanf destinations, argument order, reads, writes, loop predicate,
+// calls, publication order, fault order, and all later blocks match.
 
 #include <stdio.h>
 
@@ -169,9 +178,9 @@ RGE_Sprite::RGE_Sprite(FILE* infile, short sprite_id, RGE_Sound** sounds)
     short temp_loop_once;
     short sound_id;
     short sound_frame;
-    short temp_micro_man_sound;
-    short sound_facet = (short)-1;
-    int local_4;
+        short temp_micro_man_sound;
+        short sound_facet = (short)-1;
+        int local_4;
 
     int result = fscanf(infile,
         s_sprite_format,
@@ -240,12 +249,13 @@ RGE_Sprite::RGE_Sprite(FILE* infile, short sprite_id, RGE_Sound** sounds)
     }
 
     if (*draw_count > 0) {
-        this->draw_list = (RGE_Picture_List*)calloc(
+        RGE_Picture_List* allocated_draw_list = (RGE_Picture_List*)calloc(
             (unsigned int)*draw_count, 0x10);
         short i = 0;
-        if (*draw_count > 0) {
+        if (i < *draw_count) {
+            this->draw_list = allocated_draw_list;
             do {
-                RGE_Picture_List* entry = this->draw_list + i;
+                RGE_Picture_List* entry = &this->draw_list[i];
                 fscanf(infile, s_picture_format,
                        &entry->picture_num,
                        &entry->offset_x,
@@ -253,19 +263,28 @@ RGE_Sprite::RGE_Sprite(FILE* infile, short sprite_id, RGE_Sound** sounds)
                        &entry->facet);
                 ++i;
             } while (i < *draw_count);
+        } else {
+            this->draw_list = allocated_draw_list;
         }
     } else {
         this->draw_list = 0;
     }
 
     if (this->micro_man_sound != 0) {
-        this->sound_list = (RGE_Sound_List*)calloc(
+        RGE_Sound_List* allocated_sound_list = (RGE_Sound_List*)calloc(
             (unsigned int)this->facet_num, 0x14);
 
-        for (short i = 0; i < *facet_count; ++i) {
-            for (int slot = 0; slot < 3; ++slot) {
-                this->sound_list[i].frame[slot] = (short)-1;
-            }
+        short i = 0;
+        if (i < *facet_count) {
+            this->sound_list = allocated_sound_list;
+            do {
+                for (int slot = 0; slot < 3; ++slot) {
+                    this->sound_list[i].frame[slot] = (short)-1;
+                }
+                ++i;
+            } while (i < *facet_count);
+        } else {
+            this->sound_list = allocated_sound_list;
         }
 
         local_4 = 0;
