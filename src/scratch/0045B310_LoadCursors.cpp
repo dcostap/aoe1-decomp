@@ -22,6 +22,12 @@
 // executable. The rebuild reads width, Max_CY, then height. Its validation
 // failures also use an earlier epilogue instead of the executable's shared
 // tail. Malformed Shape_Info fault context and cleanup topology differ.
+// current worker: combining early guards, explicit shared labels, positive
+// guards, and a result-owned return did not change emitted bytes (294 diff).
+// A full nested goto form reduced diff to 279 but produced an invalid early
+// success path. A guarded top-tested validation loop reduced diff to 233 and
+// moved Shape_Info setup before the count test. It changes malformed-input
+// fault order. Restored the guarded do-loop. No accepted drift is safe.
 
 extern "C" int sprintf(char*, const char*, ...);
 
