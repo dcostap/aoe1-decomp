@@ -61,6 +61,12 @@
 // left in scratch: original is 604 bytes vs rebuilt 623; calls, frame, and most
 // body blocks align, but the pre-save x-load/arithmetic schedule and the shared
 // success/failure EH tail block remain structurally unresolved.
+// worker pass 2026-08-22: restored the clean source and tested explicit ideal_x,
+// split sx arithmetic, register-qualified x, local declaration reordering, and
+// donor typedef context. These were unchanged or worse. A shared result/if-else
+// tail and declaration-only destructor removals were also unchanged. The clean
+// 623-byte rebuild remains the best natural source; all 18 calls and the 0x8
+// frame match, but the first mismatch remains the pre-save x/zero-store order.
 
 class TPanel;
 class TDrawArea;
