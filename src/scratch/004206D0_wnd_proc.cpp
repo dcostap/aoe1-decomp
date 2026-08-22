@@ -8,9 +8,9 @@
 //   surface, sound/music forwarding, and all observed message handlers.
 // - Corrected the WM_CLOSE fallthrough and shared the 0x10/0x30F and
 //   0x3B9/0x500 handler tails.  The child-cursor state is at 0062C4C4.
-// - Packet tests at 0042084D, 00420D04, and 00420DF4 show that handled-return
-//   logging tests panel_result, not mouse_down.  This recovers the close and
-//   music-return regions; the remaining gap is the merged 00420D16/24 pair.
+// - Raw return blocks at 00420D04, 00420E5E, and 00420E74 reload the wparam
+//   home at [esp+24].  Ordinary handled tails return wparam; only WM_USER
+//   0x400 returns the panel result after restoring debug_timeGetTime_on.
 // - An explicit mouse_down pair in the destroy, exit-menu, and music paths was
 //   rolled back after VC5 proved it away or merged it without adding calls.
 // - Inlining the panel-result tails for exit-menu and music-done raised the
@@ -42,9 +42,11 @@
 //   drift is the compiler's shared WM_SIZE logging tail and shifted blocks.
 // - Behavior review corrected message 0x400's first color-log argument,
 //   restored WM_COMMAND's unconditional DefWindowProcA path, and made the
-//   music-done exit log depend only on mouse_down before returning panel_result.
-// - The corrected local music tail makes VC5 share two color-log call sites.
-//   Runtime path effects require a new tail ledger before acceptance.
+//   music-done exit log depend only on mouse_down before returning wparam.
+// - The corrected ordinary tails improve the current check to 1,609 bytes,
+//   94.88 percent shape, and 78/80 ordered calls.  VC5 still merges the
+//   WM_SIZE two-log block into the music block.  Raw code proves a separate
+//   block at 00420859; source-order and lifetime probes did not split it.
 
 #include <windows.h>
 
@@ -270,17 +272,19 @@ long __stdcall RGE_Base_Game::wnd_proc(void* hwnd, unsigned int msg,
         goto panel_return_alt;
 
     case 5:
+        {
         if (system_ignore_size_messages_storage != 0)
             goto default_window_proc;
         color_log(0x32, 0xBA, 3);
-        if (self->handle_size(hwnd, 5, wparam, lparam) != 0)
+        int size_handled = self->handle_size(hwnd, 5, wparam, lparam);
+        if (size_handled != 0)
             goto default_window_proc;
-        if (mouse_down != 0) {
-            color_log(0x4C, 0x5F, 4);
-            color_log(0x24, 0x5F, 3);
-            return (long)wparam;
+        if (mouse_down == 0)
+            goto wparam_return;
+        color_log(0x4C, 0x5F, 4);
+        color_log(0x24, 0x5F, 3);
+        return (long)wparam;
         }
-        goto wparam_return;
 
     case 6:
         if (self->prog_ready != 0) {
@@ -421,7 +425,7 @@ panel_return_after_exit_menu:
         if (mouse_down != 0)
             color_log(0x4C, 0x5F, 4);
         color_log(0x24, 0x5F, 3);
-        return (long)panel_result;
+        return (long)wparam;
 
     case 0x218:
         if (wparam == 0)
@@ -477,13 +481,16 @@ close_message:
     goto panel_return_alt;
 
 music_done_message:
+    {
     color_log(0x32, 0x4C, 3);
-    if (self->handle_music_done(hwnd, msg, wparam, lparam) != 0)
+    int music_handled = self->handle_music_done(hwnd, msg, wparam, lparam);
+    if (music_handled != 0)
         goto default_window_proc;
     if (mouse_down != 0)
         color_log(0x4C, 0x5F, 4);
     color_log(0x24, 0x5F, 3);
-    return (long)panel_result;
+    return (long)wparam;
+    }
 
     default:
         goto default_window_proc;
@@ -494,17 +501,17 @@ music_done_message:
     return (long)wparam;
 
 panel_return:
-    if (panel_result == 0)
+    if (mouse_down == 0)
         goto panel_return_alt;
     color_log(0x4C, 0x5F, 4);
     color_log(0x24, 0x5F, 3);
-    return (long)panel_result;
+    return (long)wparam;
 
 panel_return_alt:
-    if (panel_result != 0)
+    if (mouse_down != 0)
         color_log(0x4C, 0x5F, 4);
     color_log(0x24, 0x5F, 3);
-    return (long)panel_result;
+    return (long)wparam;
 
 default_window_proc:
     {
