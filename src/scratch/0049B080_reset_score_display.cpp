@@ -47,6 +47,14 @@
 // - Ambient declarations produced one codegen group across 128 samples.
 //   Risky flag variants did not improve the default flag result.  No exact
 //   source or compiler-context basin was found.
+// - Fresh claim sa-a8885e99-r1: positive outer guards, scoped do/while cursors,
+//   direct one-based record indexing, receiver aliases, array declaration order,
+//   and top-scope cursor declarations were neutral or worse.  The proven raw
+//   byte-cursor form reproduced the prior 1065-byte diagnostic result but not
+//   the target register basin, so the natural typed cursor remains authoritative.
+// - Fresh claim validation: restored clean source is 1206 bytes, frame 0x2D4,
+//   four saved registers, 24 ordered calls, and 1066 differing bytes.  The first
+//   mismatch remains the saved receiver at +9; no accepted-drift residue is safe.
 
 #include <stdio.h>
 #include "../../include/rge_base_game_global.h"
