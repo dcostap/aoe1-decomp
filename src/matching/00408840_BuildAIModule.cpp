@@ -16,13 +16,14 @@
 // 13: tested original initial-store order; emitted bytes did not move and edit/resync worsened, so restored the prior natural order.
 // 14: moved the loop counter initialization before the numberItems read to match Ghidra's iVar9 placement; emitted code was unchanged, so restored the clean source.
 // 15: moved the proven scalar defaults into the member-initializer sequence, following the same-TU constructor donor; diff improved 287 -> 272 and delayed the fd load, but the first mismatch remains in constructor scheduling at +0064.
-// 16-28: continued source, lifetime, stack-layout, ABI-global, header-context, and raw-allocation probes. The decisive ABI-context change is using the declared version_2_2 global; it moves the second compare/store sequence into positional parity and reduces the clean diff to 3 bytes. The remaining three bytes are only the name buffer's stack displacement: original name+4 is [esp+78]/name terminator [esp+84], while rebuilt uses [esp+7C]/[esp+88]. Union, scoped-buffer, register, declaration-order, pointer-alias, direct-link, placement-new, and standard-header variants did not reduce this hunk. Current source is the smallest natural 1240-byte reconstruction with 51/51 calls, exact frame, and 3 differing bytes; do not retain raw overlap steering.
+// 16-28: continued source, lifetime, stack-layout, ABI-global, header-context, and raw-allocation probes. The declared version_2_2 global moved the second compare/store sequence into positional parity and reduced the diff to 3 bytes. Do not retain raw overlap steering.
 // Main review removed the old manual derived-vptr store and kept compiler-owned
 // constructor setup. ManagedArray now uses its natural array-delete form.
-// Accepted-drift audit: do not promote the three-byte mismatch. The executable
-// passes name+4 at [esp+78] to rge_read and writes its terminator at [esp+84].
-// The rebuild uses [esp+7C] and [esp+88]. These are external writable addresses,
-// so malformed lengths and write-fault context differ despite 51 aligned calls.
+// 29: validation pinned the smallest natural source with 51/51 calls and a 3-byte local-address mismatch.
+// 30-32: loop-local, larger-buffer, and scoped pointer probes did not improve emitted code. The clean source stayed authoritative.
+// 33: removed the decompiler-only +4 bias from the item name read, terminator, and BuildItem constructor argument. This changed the three stack displacements to the original values and produced MATCH.
+// 34-36: exact-finish reversion checks restored each of those three source biases separately. Each check produced one mismatch at its own address. All three natural base expressions are required.
+// BINARY NOTE: the item name read, terminator, and constructor argument use the same local base. The prior +4 form was a decompiler stack-overlay artifact.
 
 #include <string.h>
 #include <stdlib.h>
@@ -144,8 +145,8 @@ BuildAIModule::BuildAIModule(int p1, int fd)
     if (this->buildListLengthValue > 0) {
         do {
             rge_read(fd, &buildCap, 4);
-            rge_read(fd, name + 4, buildCap);
-            name[buildCap + 4] = 0;
+            rge_read(fd, name, buildCap);
+            name[buildCap] = 0;
             rge_read(fd, &permanentSkip, 4);
             rge_read(fd, &xSize, 4);
             rge_read(fd, &y, 4);
@@ -172,7 +173,7 @@ BuildAIModule::BuildAIModule(int p1, int fd)
             }
             rge_read(fd, &typeID, 4);
             rge_read(fd, &terrainSet, 1);
-            BuildItem* item = new BuildItem((int)z, (uchar)permanentSkip, (int)y, 1, 0, local_11c, name + 4, x, (float)numberSkipCycles, (float)gameID, placeOnElevation, skipValue, numberBuilds, buildFrom);
+            BuildItem* item = new BuildItem((int)z, (uchar)permanentSkip, (int)y, 1, 0, local_11c, name, x, (float)numberSkipCycles, (float)gameID, placeOnElevation, skipValue, numberBuilds, buildFrom);
             item->setBuilt(inProgressValue);
             item->setInProgress(buildAttemptsValue);
             item->setBuildAttempts(terrainAdjOne);
