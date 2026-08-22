@@ -24,16 +24,25 @@
 // - Long casts for radius-2.5 coordinates emitted the same bytes as int casts.
 // - The original Ghidra/PDB symbol uses XYPoint reference parameters.  The body
 //   is unchanged with that ABI, and the rebuilt symbol now matches the target.
-// - Nineteen meaningful probes tested coordinate forms, declaration scope and
-//   order, loop forms, ABI, layout aliases, and TU header context.  None restored
-//   the six missing building-coordinate ftol sites or the 0x70 frame.
-// - Final clean source: 3551 rebuilt bytes, 0x6c frame, 91 calls, 3195 differing
-//   bytes.  Keep this natural typed reconstruction; do not retain metric-only
-//   aliases, labels, or volatility.
+// - Prior probes tested coordinate forms, declaration scope and order, loop
+//   forms, ABI, layout aliases, and TU header context.  They did not restore the
+//   six missing building-coordinate ftol sites or the 0x70 frame.
+// - BINARY NOTE: direct operator_new/operator_delete calls are required by the
+//   playerBuildings growth block.  Standard C++ new/delete select wrong targets.
+// - BINARY NOTE: mode 0/3, mode 1/2, and mode 5 use distinct LOS scaling and
+//   object-type rules.  The source keeps those shipped rules.
+// - BINARY NOTE: the playerBuildings phase is a guarded do-while with one
+//   shared next-item tail.  The source mirrors that proven control flow.
+// - Current candidate: 3611 rebuilt bytes, 0x6c frame, 91 calls, and 3156
+//   differing bytes.  The six missing calls are repeated building-coordinate
+//   ftol sites.  Do not add metric-only aliases or volatility.
 
 #include <stdlib.h>
 
 typedef unsigned char uchar;
+
+extern "C" void* __cdecl operator_new(unsigned int size);
+extern "C" void __cdecl operator_delete(void* ptr);
 
 struct XYPoint {
     int x;
@@ -51,12 +60,12 @@ public:
     T& operator[](int index) {
         if (index > this->maximumSizeValue - 1) {
             int new_size = index + 1;
-            T* new_value = (T*)operator new(new_size * sizeof(T));
+            T* new_value = (T*)operator_new(new_size * sizeof(T));
             if (new_value != 0) {
                 for (int i = 0; i < this->maximumSizeValue && i < new_size; i++) {
                     new_value[i] = this->value[i];
                 }
-                operator delete(this->value);
+                operator_delete(this->value);
                 this->value = new_value;
                 this->maximumSizeValue = new_size;
             }
@@ -276,6 +285,8 @@ extern "C" void __cdecl logCommonHistory(void* self, const char* format, ...);
 extern float DAT_00575564;
 extern float DAT_0057556c;
 extern float DAT_00575578;
+extern float DAT_005755B0;
+extern float DAT_005755B4;
 extern double DAT_00575598;
 extern double DAT_005755a0;
 extern double DAT_005755a8;
@@ -328,11 +339,11 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
                         XYPoint bMinLOS;
                         float radiusY = object->master_obj->radius_y;
 
-                        bMin.x = (int)(object->world_x - object->master_obj->radius_x - 1.0f);
-                        bMin.y = (int)(object->world_y - radiusY - 1.0f);
+                        bMin.x = (int)(object->world_x - object->master_obj->radius_x - DAT_00575564);
+                        bMin.y = (int)(object->world_y - radiusY - DAT_00575564);
                         this->mapBound(&bMin);
-                        bMax.x = (int)(object->world_x + radiusY + 1.0f);
-                        bMax.y = (int)(object->world_y + radiusY + 1.0f);
+                        bMax.x = (int)(object->world_x + radiusY - DAT_0057556c);
+                        bMax.y = (int)(object->world_y + radiusY - DAT_0057556c);
                         this->mapBound(&bMax);
                         bMinLOS.x = (int)object->master_obj->radius_x;
                         bMinLOS.y = (int)object->master_obj->radius_y;
@@ -409,10 +420,11 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
         }
     }
 
-    if ((mode == 1 || mode == 2 || mode == 3 || mode == 4 || mode == 0 ||
-         mode == 5 || mode == 6 || mode == 8) &&
-        this->playerBuildings.numberValue > 0) {
-        for (int i = 0; i < this->playerBuildings.numberValue; i++) {
+    if (mode == 1 || mode == 2 || mode == 3 || mode == 4 || mode == 0 ||
+        mode == 5 || mode == 6 || mode == 8) {
+        int i = 0;
+        if (this->playerBuildings.numberValue > 0) {
+        do {
             RGE_Static_Object* object = this->md->object(this->playerBuildings[i]);
             if (object != 0) {
                 int placement = this->placementCode(object->master_obj->id);
@@ -421,7 +433,7 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
                 XYPoint bMin;
                 XYPoint bMax;
 
-                if (radiusX == 2.5) {
+                if (radiusX == DAT_00575598) {
                     bMin.x = (int)object->world_x;
                     bMin.x -= 3;
                     bMin.y = (int)object->world_y;
@@ -430,7 +442,7 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
                     bMax.x += 3;
                     bMax.y = (int)object->world_y;
                     bMax.y += 3;
-                } else if (radiusX == 1.5) {
+                } else if (radiusX == DAT_005755a0) {
                     if (placement == 6) {
                         bMin.x = (int)object->world_x;
                         bMin.x -= 1;
@@ -457,7 +469,7 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
                         bMax.y = (int)object->world_y;
                         bMax.y += 2;
                     }
-                } else if (radiusX == 1.0) {
+                } else if (radiusX == DAT_00575564) {
                     if (placement == 6 || placement == 3) {
                         bMin.x = (int)object->world_x;
                         bMin.x -= 1;
@@ -475,7 +487,7 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
                         bMax.y = (int)object->world_y;
                         bMax.y += 1;
                     }
-                } else if (radiusX == 0.5) {
+                } else if (radiusX == DAT_005755a8) {
                     if (placement == 6 || placement == 4) {
                         bMin.x = (int)object->world_x;
                         bMin.y = (int)object->world_y;
@@ -495,7 +507,7 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
                     logCommonHistory(this, "    Unsupported building size (%d x %d).",
                                      (double)(radiusX + radiusX),
                                      (double)((float)radiusY + (float)radiusY));
-                    continue;
+                    goto building_next;
                 }
 
                 if (placement == 0x6d) {
@@ -509,7 +521,14 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
                 iMap->setValue(bMin.x, bMin.y, bMax.x, bMax.y, 0xff);
 
                 if (mode == 3 || mode == 0) {
-                    int radius = (int)object->master_obj->los;
+                    float radiusValue = object->master_obj->los;
+                    if (mode == 0) {
+                        radiusValue *= DAT_005755B4;
+                    }
+                    if (placement == 0x6d) {
+                        radiusValue *= DAT_005755B4;
+                    }
+                    int radius = (int)radiusValue;
                     XYPoint minLOS;
                     XYPoint maxLOS;
                     minLOS.x = bMin.x - radius;
@@ -526,7 +545,14 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
                                               maxLOS.x, maxLOS.y, 10);
                     }
                 } else if (mode == 1 || mode == 2) {
-                    int radius = (int)object->master_obj->los;
+                    float radiusValue = object->master_obj->los;
+                    if (placement == 0x6d) {
+                        radiusValue *= DAT_005755B4;
+                    }
+                    if (objectType == 0x44 || objectType == 0x67) {
+                        radiusValue = DAT_00575578;
+                    }
+                    int radius = (int)radiusValue;
                     XYPoint aMax;
                     XYPoint aMin;
                     aMax.x = bMax.x - radius;
@@ -538,7 +564,11 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
                     iMap->decrementValue(aMax.x, aMax.y,
                                           aMin.x, aMin.y, 10);
                 } else if (mode == 5) {
-                    int radius = (int)object->master_obj->los;
+                    float radiusValue = object->master_obj->los;
+                    if (placement == 0x6d) {
+                        radiusValue *= DAT_005755B0;
+                    }
+                    int radius = (int)radiusValue;
                     XYPoint minDC;
                     XYPoint maxDC;
                     minDC.x = bMin.x - radius * 2;
@@ -583,6 +613,9 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
                                           maxLOS.x, maxLOS.y, 20);
                 }
             }
+        building_next:
+            i++;
+        } while (i < this->playerBuildings.numberValue);
         }
     }
 
