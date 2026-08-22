@@ -38,6 +38,15 @@
 //   mismatch. A direct from.y <= to.y guard moved the y load and worsened the
 //   result to 355 bytes, so it was restored. Direct this member expressions
 //   changed one setup hunk but kept the 346-byte result; the alias is retained.
+// - ownership review confirms InfluenceMap offsets +0x04, +0x08, +0x0C,
+//   +0x10, +0x18, and +0x20, plus the XYPoint reference ABI, from exact donors
+//   and the target assembly. No shared declarations were changed.
+// - this pass tested direct y-reference reads, persistent row and coordinate
+//   locals, outer do/while form, and declaration order. Most stayed at 346.
+//   Caching to.y changed the frame to 0x28 and worsened the result to 367.
+// - direct rowValue reads reached 345 bytes but lost exact blocks. A source
+//   switch label matching the cold arms reached 353 bytes and improved shape.
+//   Both forms were restored because they are not smaller exact sources.
 // Accepted-drift audit: do not promote. The executable reads rowValue before
 // xReferencePointValue, then reads yReferencePointValue after it computes the
 // row offset. The rebuild reads both reference fields in a different order.
