@@ -31,6 +31,18 @@
 // 98 bytes, but added an FPU exchange and was rejected as metric-only steering.
 // 19: final clean source restores nonvolatile dx, direct overlap arithmetic,
 // and the early y-range failure. Validation remains a 524-byte mismatch.
+// 20: positive y-range guard was codegen-equivalent to the early failure form.
+// 21: grouped declarations and declaration-time bound initialization were
+// codegen-equivalent; x2/y2 homes remained swapped.
+// 22: x-overlap operand reversal, !(dx > limit), and explicit failure-OR
+// forms were codegen-equivalent; none recovered the original fcompp.
+// 23: declaring dx before dy while keeping dy-then-dx evaluation was a
+// codegen duplicate. Reversing the second y2/x2 initialization pair worsened
+// size and call scheduling, so the original order was restored.
+// 24: positive guard plus infinite outer loop, explicit post-increment return,
+// and inverted continue forms were all codegen-equivalent to the clean loop.
+// 25: a minimal polymorphic RGE_Static_Object declaration was a codegen
+// duplicate; the explicit vptr field remains the smaller local surface.
 // BLOCKER: the executable's final x-overlap test loads dx above the radius sum,
 // uses FCOMPP, and accepts C0-or-C3. It therefore accepts an unordered NaN
 // comparison. The rebuild compares the sum with dx and accepts only clear C0,
