@@ -55,87 +55,189 @@
 //   rolled back. A separate next local reduced the diff to 322 bytes but fell
 //   to 60.16% shape. Moving next before the arrays kept 322 bytes but only
 //   66.41% shape. Both natural layout probes were rolled back.
+// - fresh pass: canonical stat_obj master/object declarations and the proven
+//   exit_obj +0xD4 slot were restored. Separate scalar locals for temp, y,
+//   next, and the four arrays reached a 304-byte diff, 67.97% shape, and an
+//   exact 0xB4 frame. Reusing the proven drop_y[0] stack home for the next
+//   node restored EBX/ESI, 82.03% shape, 81.65% resync similarity, and a
+//   277-byte diff; the frame is 0xB0 and the source uses a narrow pointer
+//   overlay. Natural next-node locals reached 285 bytes, 77.34% shape, and
+//   0xB4, but kept EBP for this. Running cursors, nested do loops, and retry
+//   index variants were rejected for frame, call, or shape drift. Final
+//   validation: 384 rebuilt bytes versus 387, four ordered calls, mismatch.
+// - Main review rejected the pointer overlays as compiler-facing steering.
+//   The living source keeps distinct x, y, and next values with their real
+//   types. The binary can still reuse their homes after their lifetimes end.
 
-class RGE_Master_Static_Object { public: char gap_00[0x30]; float radius_x; float radius_y; };
 class RGE_Static_Object;
+class RGE_Master_Static_Object {
+public:
+    virtual ~RGE_Master_Static_Object();
+    virtual void copy_obj(RGE_Master_Static_Object*);
+    virtual void modify(float, unsigned char);
+    virtual void modify_delta(float, unsigned char);
+    virtual void modify_percent(float, unsigned char);
+    virtual void save(int);
+    virtual RGE_Static_Object* make_new_obj(void*, float, float, float);
+    virtual RGE_Master_Static_Object* make_new_master();
+    virtual unsigned char check_placement(void*, float, float, int*,
+                                          unsigned char, unsigned char,
+                                          unsigned char, unsigned char,
+                                          unsigned char, unsigned char);
+    char gap_04[0x2c];
+    float radius_x;
+    float radius_y;
+};
 class RGE_Object_Node { public: RGE_Static_Object* object; RGE_Object_Node* next; };
 class RGE_Object_List { public: virtual ~RGE_Object_List(); RGE_Object_Node* first; };
 
 class RGE_Static_Object {
 public:
-    virtual ~RGE_Static_Object(); virtual void vf04(void); virtual void vf08(void); virtual void vf0C(void);
-    virtual void vf10(void); virtual void vf14(void); virtual void vf18(void); virtual void vf1C(void);
-    virtual void vf20(void); virtual void vf24(void); virtual void vf28(void); virtual void vf2C(void);
-    virtual void vf30(void); virtual float teleport(float x, float y, float z); virtual void vf38(void); virtual void vf3C(void);
-    virtual void vf40(void); virtual void vf44(void); virtual void vf48(void); virtual void vf4C(void);
-    virtual void vf50(void); virtual void vf54(void); virtual void vf58(void); virtual void vf5C(void);
-    virtual void vf60(void); virtual void vf64(void); virtual void vf68(void); virtual void vf6C(void);
-    virtual void vf70(void); virtual void vf74(void); virtual void vf78(void); virtual void vf7C(void);
-    virtual void vf80(void); virtual void vf84(void); virtual void vf88(void); virtual void vf8C(void);
-    virtual void vf90(void); virtual void vf94(void); virtual void vf98(void); virtual void vf9C(void);
-    virtual void vfA0(void); virtual void vfA4(void); virtual void vfA8(void); virtual void vfAC(void);
-    virtual void vfB0(void); virtual void vfB4(void); virtual void vfB8(void); virtual void vfBC(void);
-    virtual void vfC0(void); virtual void vfC4(void); virtual void vfC8(void); virtual void vfCC(void);
-    virtual void vfD0(void); virtual void release_from_holder(void);
-    char gap_04[4]; RGE_Master_Static_Object* master_obj; char gap_0C[0x24 - 0x0C]; RGE_Object_List* objects; char gap_28[0x38 - 0x28];
-    float world_x; float world_y; float world_z;
+    virtual ~RGE_Static_Object();
+    virtual void recycle_in_to_game(RGE_Master_Static_Object*, void*, float, float, float);
+    virtual void recycle_out_of_game();
+    virtual void draw(void*, short, short, void*);
+    virtual void shadow_draw(void*, short, short, unsigned char);
+    virtual void normal_draw(void*, short, short);
+    virtual void draw_front_frame(void*, short, short);
+    virtual void draw_back_frame(void*, short, short);
+    virtual void draw_frame(void*, short, short);
+    virtual unsigned char update();
+    virtual void check_damage_sprites();
+    virtual void rehook();
+    virtual void save(int);
+    virtual float teleport(float, float, float);
+    virtual void new_sprite(void*);
+    virtual void add_overlay_sprite(void*, unsigned char);
+    virtual void remove_overlay_sprite(void*);
+    virtual void change_ownership(void*);
+    virtual void modify(float, unsigned char);
+    virtual void modify_delta(float, unsigned char);
+    virtual void modify_percent(float, unsigned char);
+    virtual void transform(RGE_Master_Static_Object*);
+    virtual void copy_obj(RGE_Master_Static_Object*);
+    virtual void set_object_state(unsigned char);
+    virtual void remove_visible_resource();
+    virtual void create_doppleganger_when_dying();
+    virtual void destroy_obj();
+    virtual void die_die_die();
+    virtual void damage(int, void*, float, void*, RGE_Static_Object*);
+    virtual float calculateDamage(int, void*, float, void*, RGE_Static_Object*);
+    virtual void rotate(long);
+    virtual unsigned char can_attack();
+    virtual void set_attribute(short, float);
+    virtual void set_attribute_amount(float, unsigned char, unsigned char);
+    virtual int heal(int, int);
+    virtual unsigned char heal(float);
+    virtual int canRepair();
+    virtual void notify_of_relation(long, unsigned char);
+    virtual void do_command(RGE_Static_Object*, float, float, float);
+    virtual void move_to(RGE_Static_Object*, float, float, float);
+    virtual void work(RGE_Static_Object*, float, float, float);
+    virtual void stop();
+    virtual void set_attack(RGE_Static_Object*);
+    virtual void play_command_sound();
+    virtual void play_move_sound();
+    virtual void new_angle(float);
+    virtual RGE_Static_Object* spawn_death_obj();
+    virtual RGE_Master_Static_Object* get_command_master(RGE_Static_Object*, float, float, float);
+    virtual void set_being_worked_on(void*, short, unsigned char);
+    virtual void release_being_worked_on(RGE_Static_Object*);
+    virtual unsigned char is_moving();
+    virtual RGE_Static_Object* get_target_obj();
+    virtual void enter_obj(RGE_Static_Object*);
+    virtual void exit_obj();
+    virtual int explore_terrain(void*, unsigned char, int);
+    virtual void unexplore_terrain(void*, unsigned char, int);
+    virtual void* get_los_table();
+    virtual int inAttackRange(RGE_Static_Object*);
+    virtual unsigned char underAttack();
+    virtual void setUnderAttack(unsigned char);
+    virtual float calc_attack_modifier(RGE_Static_Object*);
+    virtual float getSpeed();
+    virtual float getAngle();
+    virtual float maximumSpeed();
+    virtual float rateOfFire();
+    virtual float damageCapability(RGE_Static_Object*);
+    virtual float damageCapability();
+    virtual float weaponRange();
+    virtual float minimumWeaponRange();
+    virtual int passableTile(float, float, int);
+
+    long id;
+    RGE_Master_Static_Object* master_obj;
+    void* owner;
+    void* sprite;
+    void* old_sprite;
+    void* sprite_list;
+    void* tile;
+    RGE_Static_Object* inside_obj;
+    RGE_Object_List* objects;
+    short screen_x_offset;
+    short screen_y_offset;
+    short shadow_x_offset;
+    short shadow_y_offset;
+    float hp;
+    unsigned char curr_damage_percent;
+    unsigned char facet;
+    unsigned char selected;
+    unsigned char selected_group;
+    float world_x;
+    float world_y;
+    float world_z;
     void set_location(float x, float y, float z);
     unsigned char find_drop_location(int mode, float* x, float* y, RGE_Master_Static_Object* master, RGE_Static_Object* obj, float drop_x, float drop_y, float radius_x, float radius_y);
     unsigned char drop_held_objects(int mode);
 };
 
-struct DropLocals {
+unsigned char RGE_Static_Object::drop_held_objects(int mode)
+{
+    int i = 1;
+    unsigned char count = 0;
     RGE_Object_Node* temp;
+    RGE_Object_Node* next;
     float x;
     float y;
     float drop_y[10];
     float radius_x[10];
     float drop_x[10];
     float radius_y[10];
-    RGE_Object_Node* next;
-};
+    drop_x[1] = this->world_x;
+    radius_x[1] = this->master_obj->radius_x + this->master_obj->radius_x;
+    drop_y[1] = this->world_y;
+    radius_y[1] = this->master_obj->radius_y + this->master_obj->radius_y;
+    temp = this->objects->first;
 
-unsigned char RGE_Static_Object::drop_held_objects(int mode)
-{
-    int i = 1;
-    DropLocals l;
-    unsigned char count = 0;
-    l.drop_x[1] = this->world_x;
-    l.radius_x[1] = this->master_obj->radius_x + this->master_obj->radius_x;
-    l.drop_y[1] = this->world_y;
-    l.radius_y[1] = this->master_obj->radius_y + this->master_obj->radius_y;
-    l.temp = this->objects->first;
-
-    while (l.temp != 0) {
+    while (temp != 0) {
+        next = temp->next;
         do {
-                l.next = l.temp->next;
                 if (i <= 0) {
                     break;
                 }
-                    if (this->find_drop_location(mode, &l.x, &l.y, l.temp->object->master_obj, l.temp->object, l.drop_x[1], l.drop_y[1], l.radius_x[1], l.radius_y[1])) {
-                        RGE_Static_Object* held = l.temp->object;
+                    if (this->find_drop_location(mode, &x, &y, temp->object->master_obj, temp->object, drop_x[1], drop_y[1], radius_x[1], radius_y[1])) {
+                        RGE_Static_Object* held = temp->object;
                         held->set_location(this->world_x, this->world_y, this->world_z);
-                        held->release_from_holder();
-                        held->teleport(l.x, l.y, this->world_z);
+                        held->exit_obj();
+                        held->teleport(x, y, this->world_z);
                         ++count;
                         if (i < 9) {
                             RGE_Master_Static_Object* master = held->master_obj;
                             int index = i++;
-                            l.drop_x[index + 1] = l.x;
-                            l.drop_y[index + 1] = l.y;
-                            l.radius_x[index + 1] = master->radius_x + master->radius_x;
-                            l.radius_y[index + 1] = master->radius_y + master->radius_y;
+                            drop_x[index + 1] = x;
+                            drop_y[index + 1] = y;
+                            radius_x[index + 1] = master->radius_x + master->radius_x;
+                            radius_y[index + 1] = master->radius_y + master->radius_y;
                         }
                         break;
                     }
                     --i;
                     if (i <= 0) break;
-                    l.drop_x[i] = l.drop_x[i + 1];
-                    l.drop_y[i] = l.drop_y[i + 1];
-                    l.radius_y[i] = l.radius_y[i + 1];
-                    l.radius_x[i] = l.radius_x[i + 1];
+                    drop_x[i] = drop_x[i + 1];
+                    drop_y[i] = drop_y[i + 1];
+                    radius_y[i] = radius_y[i + 1];
+                    radius_x[i] = radius_x[i + 1];
         } while (i > 0);
-        l.temp = l.next;
+        temp = next;
     }
     return count;
 }
