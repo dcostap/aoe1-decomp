@@ -37,6 +37,9 @@
 //   0x0055EA3C, while the rebuild's handler identity is unresolved. It also
 //   restores FS before ESI instead of after ESI. Exception and unwind context
 //   therefore remains unproved despite the exact ordinary-path body.
+// - Follow-up claim probes: function-scope declaration sets, register panel,
+//   panel aliases, period allocation headers, and function-scope arrays all
+//   reproduced the clean 12-byte frontier. Restore the clean source after each.
 // FLAGS: /nologo /c /O2 /Oy /GX (retained for the binary EH registration).
 
 #include <stdio.h>
