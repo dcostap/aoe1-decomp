@@ -4,19 +4,21 @@
 // Attempt log:
 // - Recovered the typed panel arrays, helper ABIs, 0x220 EH frame, and 105 direct calls.
 // - BINARY NOTE: The fallback is shared by null input, nonzero param_2, and exhausted loops.
-//   Keep the TEasy_Panel call as one tail. A natural fall-through changes this behavior.
+//   Keep the TEasy_Panel call as one emitted tail. The source keeps a natural base-action
+//   return in the non-null arm and a second null-path return; VC5 merges the call itself.
 // - BINARY NOTE: All four scenario filename LEAs are four bytes before file_name+4.
 //   Direct file_name access restores the three scenario blocks without changing calls.
 // - BINARY NOTE: The final player loop has one initial numberPlayers call and one bottom call.
-//   A while(1) loop with a bottom break recovers the original condition count and CFG count.
-// - Tested 20 source hypotheses across fallback structure, loop form, cursor ownership,
-//   local order, filename base, CD evaluation, guards, and register hints.
-//   Most were neutral or reduced structural parity. The clean source keeps the natural,
-//   behavior-correct bottom-break loop and direct filename base.
+//   A do-while loop recovers the signed bottom-test shape better than an explicit break.
+// - Tested 15 additional hypotheses across fallback structure, loop form, cursor ownership,
+//   local order, filename base, CD evaluation, and liveness. The natural fallback form reduced
+//   the strict diff from 2159 to 1641 bytes and raised exact-block coverage to 91.60%.
+//   A cursor variant reached 1607 bytes but lost exact blocks and produced call-target drift;
+//   it was discarded. The current source keeps the behavior-correct do-while and direct base.
 //
-// Current unresolved result: 2159 strict differing bytes, 98.13% shape similarity,
-// 89.11% exact-block coverage, and 105/105 ordered calls. The main gaps are the shared
-// fallback prologue schedule and final-loop register coloring. No behavior gap is known.
+// Current unresolved result: 1641 strict differing bytes, 96.93% shape similarity,
+// 91.60% exact-block coverage, and 105/105 ordered calls. The main gaps are the shared
+// fallback tail size, the file_info stack home, and final-loop register coloring.
 
 #include <string.h>
 #include <io.h>
@@ -422,7 +424,7 @@ long TribeMPSetupScreen::action(TPanel* param_1, long param_2, unsigned long par
 
         if (param_2 == 0 && rge_base_game->numberPlayers() > 0) {
             int i = 0;
-            while (1) {
+            do {
                 if (param_1 == this->playerNameDrop[i]) {
                     if (rge_base_game->multiplayerGame() &&
                         this->playerNameDrop[i]->get_line() > 0 &&
@@ -466,10 +468,9 @@ long TribeMPSetupScreen::action(TPanel* param_1, long param_2, unsigned long par
                     goto L_1F6B;
                 }
                 i++;
-                if (i >= rge_base_game->numberPlayers()) break;
-            }
+            } while (i < rge_base_game->numberPlayers());
         }
-        goto L_1F72;
+        return this->TEasy_Panel::action(param_1, param_2, param_3, param_4);
 L_1F6B:
         return 1;
     }
