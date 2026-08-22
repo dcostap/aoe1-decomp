@@ -46,6 +46,13 @@
 // misses both stores while preserving the proven behavior and ABI.
 // LIKELY INTENT: the source uses one centered icon bound and separate text
 // placement paths for event modes 0, 1, 2, 6, and 8.
+// claim probes 29-44: source operand and field-order variants did not change
+// the first centered-bound register basin.  Repeating the mode-6/8 bound
+// expression recovered the oracle's dead parameter-2 home store and two
+// exact truncation blocks.  Reversing the vertical clip predicate recovered
+// its cmp/jcc polarity.  Reversing the vertical temporary declarations
+// improved block shape without changing the strict diff.  The final source
+// keeps those natural, binary-supported forms.  It remains unresolved.
 
 #include <string.h>
 
@@ -249,14 +256,15 @@ int Time_Line_Panel::calculate_icon_location(
 
     case 6:
     {
-        int max_x = this->X_start_line_pos + this->X_line_max_width;
-        int body_height;
-        int max_length;
         int top;
+        int max_length;
+        int body_height;
         if ((int)(strlen(event->text1) * this->body_font_wid +
-                  event->X_line_pos) > max_x) {
+                  event->X_line_pos) >
+            this->X_start_line_pos + this->X_line_max_width) {
             event->text_length1 =
-                (max_x - event->X_line_pos) / this->body_font_wid;
+                (this->X_start_line_pos + this->X_line_max_width -
+                 event->X_line_pos) / this->body_font_wid;
         } else {
             event->text_length1 = strlen(event->text1);
         }
@@ -267,7 +275,7 @@ int Time_Line_Panel::calculate_icon_location(
         body_height = this->body_font_hgt;
         max_length = this->Y_line_max_length;
         top = this->Y_start_line_pos;
-        if (max_length + top < start_x + body_height + 1 + bounds_result) {
+        if (start_x + body_height + 1 + bounds_result > max_length + top) {
             start_x = (max_length - body_height) - bounds_result - 1 + top;
         }
         start_y = local_4;
@@ -277,14 +285,15 @@ int Time_Line_Panel::calculate_icon_location(
 
     case 8:
     {
-        int max_x = this->X_start_line_pos + this->X_line_max_width;
-        int body_height;
-        int max_length;
         int top;
+        int max_length;
+        int body_height;
         if ((int)(strlen(event->text1) * this->body_font_wid +
-                  event->X_line_pos) > max_x) {
+                  event->X_line_pos) >
+            this->X_start_line_pos + this->X_line_max_width) {
             event->text_length1 =
-                (max_x - event->X_line_pos) / this->body_font_wid;
+                (this->X_start_line_pos + this->X_line_max_width -
+                 event->X_line_pos) / this->body_font_wid;
         } else {
             event->text_length1 = strlen(event->text1);
         }
@@ -295,7 +304,7 @@ int Time_Line_Panel::calculate_icon_location(
         body_height = this->body_font_hgt;
         max_length = this->Y_line_max_length;
         top = this->Y_start_line_pos;
-        if (max_length + top < start_x + body_height + 1 + bounds_result) {
+        if (start_x + body_height + 1 + bounds_result > max_length + top) {
             start_x = (max_length - body_height) - bounds_result - 1 + top;
         }
         start_y = local_4;
