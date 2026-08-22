@@ -38,6 +38,11 @@
 //   mismatch. A direct from.y <= to.y guard moved the y load and worsened the
 //   result to 355 bytes, so it was restored. Direct this member expressions
 //   changed one setup hunk but kept the 346-byte result; the alias is retained.
+// Accepted-drift audit: do not promote. The executable reads rowValue before
+// xReferencePointValue, then reads yReferencePointValue after it computes the
+// row offset. The rebuild reads both reference fields in a different order.
+// Concurrent field updates can therefore select a different row and cell.
+// Invalid object storage can also fault on a different field read.
 
 typedef unsigned char uchar;
 
