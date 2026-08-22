@@ -49,6 +49,10 @@
 //   and comma sequencing all emitted the same 514-byte, 75-byte-diff basin.
 //   Restore the pinned source. The first unproved register divergence remains
 //   the sn[5] load and later civilian-count reload at +0x178.
+// - Accepted-drift audit: do not promote. In the low-count path, the executable
+//   reloads civilians.numberValue after it updates desiredNumberGatherers. The
+//   rebuild reuses the earlier count read. Concurrent count changes can produce
+//   a different civilianExplorers result and different later stores.
 
 extern "C" double __cdecl ceil(double);
 

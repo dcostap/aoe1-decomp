@@ -69,6 +69,10 @@
 // loop-local count, an info alias, and reference helpers with count-after-player
 // were 43-byte results. string.h changed the clear order and memory.h was the
 // 31-byte basin. Restore the 31-byte direct-pointer clean source.
+// Accepted-drift audit: do not promote. The executable reads this->world before
+// info.number_of_groups. The rebuild reads number_of_groups first. It also
+// moves the count store before the world and players-table reads. Concurrent
+// record changes and invalid pointer storage can change results and fault order.
 
 extern "C" void* __cdecl memset(void*, int, unsigned int);
 

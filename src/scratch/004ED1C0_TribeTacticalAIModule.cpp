@@ -68,6 +68,10 @@
 // - Main review rejected the exact variant because it used __declspec(novtable)
 //   plus a raw vptr store. The natural virtual class emits the same 782-byte
 //   body with 33 scheduling bytes different. Keep normal compiler ownership.
+// - Accepted-drift audit: do not promote the natural virtual-class result. The
+//   executable writes the derived vptr after the scalar stores through +0x1008.
+//   The rebuild writes it after ResourceItem construction and before those
+//   stores. This changes vptr publication and member-store fault order.
 
 void __cdecl operator delete(void* p);
 class TacticalAIModule { public: virtual ~TacticalAIModule(); char base[0xEC]; TacticalAIModule(void* owner, int player); };
