@@ -187,6 +187,38 @@
 //     homes versus the rebuilt parameter-coalesced homes. The remaining gap
 //     changes scratch and fault order, so no diagnostic scheduling form is kept.
 
+// sa-00b57887-r1 fresh pass 2026-08-22:
+//   - Followed the first structural hunk. The oracle has `push ecx`, stores Y
+//     into the shifted incoming `other` home at [esp+8], keeps X at [esp],
+//     and reads range at [esp+0Ch]. The clean source instead coalesces X with
+//     [esp+4] and keeps range at [esp+8]. There are no calls to reconcile.
+//   - H1/H2 parameter-home aliases (float alias, one reused delta) stayed in
+//     the no-push family. H2 was 191B/192 differing bytes and had worse shape.
+//   - H3 took a pointer to the incoming parameter home. It recovered `push
+//     ecx` and reached 202B/192 differing bytes, but added pointer moves and
+//     broad FPU/control drift. H4 used a reference to that home and returned
+//     to the 191B/192-diff family.
+//   - H5 made only Y volatile and stayed no-push at 182B/194 diff. H6 made
+//     both deltas volatile and recovered push ecx at 207B/182 diff, but VC5
+//     reversed the target X/Y FPU load order and added extra homes. H7 changed
+//     declaration order and reached 203B/181 diff; H8 split declarations and
+//     assignments but duplicated H6. H9 made only X volatile and stayed
+//     no-push at 184B/192 diff.
+//   - H10 used the sibling high-parity shape with volatile Y, ordered master
+//     aliases, and double radius temporaries. It improved to 218B/148 diff,
+//     but merged X clamp work into Y and changed the CFG. H11 restored separate
+//     clamps and reached 184B/196 diff. Both forms are compiler-steering and
+//     are not retained.
+//   - H12 combined the parameter-home reference with a volatile X local. It
+//     stayed no-push at 190B/193 diff. H13 used the binary-proven external
+//     DAT_00574720 zero object and reached 187B/185 diff, but did not change
+//     the structural basin or recover the target homes.
+//   - All probes were restored. No natural source recovered the target push,
+//     shifted parameter home, or pending-X-status Y subtraction. The current
+//     186B/198-diff direct-member source remains authoritative. The residue is
+//     broad structural/FPU stack and scratch/fault-order drift, not a proved
+//     localized equivalent hunk. No accepted-drift recommendation.
+
 class RGE_Player;
 
 class RGE_Master_Static_Object {

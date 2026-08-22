@@ -137,10 +137,23 @@
 // the guard zero from EDI to the original EBP or changed the clear-tail pop.
 // Restored the pinned clean source.  The remaining EBP zero and tail lifetime
 // are not supported by a source-local natural control or declaration change.
-// BLOCKER: the original restores EDI before the eight clear-tail stores. The
-// rebuild keeps zero in EDI until after those stores. An invalid this pointer
-// therefore faults with different EDI state. Register-color equivalence does
-// not cover that exception-context difference.
+// Matching-worker continuation sa-daa10f76-r1 (ten-hypothesis blocker pass):
+// probe 1: a separately declared short zero with an assignment before the
+// guard was a codegen duplicate at 217/61.  Probe 2: #line 916 restored the
+// original line band but was also a 217/61 duplicate.  Probe 3: a
+// register-qualified long panel-height local grew to 222/191.  Probe 4: a
+// register-qualified short tile-width local was a 217/61 duplicate.  Probe
+// 5: the four-byte visible field typed as long was a 217/61 duplicate.  Probe
+// 6: explicit optimize("g", on) was a 217/61 duplicate.  Probe 7:
+// optimize("y", off) produced a 217/127 body with a different frame, proving
+// the pinned /Oy context is required.  Probe 8: optimize("t", on) was a
+// 217/61 duplicate.  Probe 9: inline_depth(0) was a 217/61 duplicate.  Probe
+// 10: a separately assigned int zero grew to 217/198 and lost all exact
+// blocks.  Restored the pinned clean source after each probe and revalidated
+// 217 bytes, 61 strict differences, and 66.13% exact-block coverage.
+// The original still restores EDI before the eight clear-tail stores, while
+// the clean rebuild keeps zero in EDI until after those stores.  This changes
+// EDI at a faulting invalid-this store, so strict accepted drift is not proved.
 
 struct tagRECT {
     long left;

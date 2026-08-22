@@ -36,6 +36,35 @@
 //   subtraction was a codegen duplicate. The clean typed source remains pinned;
 //   exact completion needs parent-fragment-aware checking or fragment-aware
 //   code emission for the manifest-listed switch codelets.
+// - Session claim probes 1-4: `register`, split result/count locals, volatile
+//   numberValue, and a reference alias all kept the extra load-before-subtract
+//   basin. These did not change the call surface or frame.
+// - Session claim probes 5-6: unsigned and long units-to-insert variants proved
+//   the observed signed int loop and did not recover the direct memory subtract.
+// - Session claim probe 7: a pointer to soldiers.numberValue was codegen-neutral.
+// - Session claim probe 8: signed short units-to-insert emitted a narrow `sub`
+//   and changed behavior-relevant width; it was rejected.
+// - Session claim probes 9-11: zero-plus-result arithmetic, a compound guard,
+//   and the original split assignment were duplicate codegen.
+// - Session claim probe 12: unsigned numberValue changed one late branch and
+//   worsened structural coverage; the proven field is signed int.
+// - Session claim probe 13: moving all locals to function scope was a duplicate.
+// - Session claim probe 14: an equivalent empty-increment `for` loop was a
+//   duplicate of the natural `while` loop.
+// - Session claim probe 15: a plain second subtraction statement was duplicate
+//   codegen. The natural one-expression form remains authoritative.
+// - Binary conclusion: the typed source reproduces the complete natural parent
+//   behavior and EH surface, but VC5 emits the nine manifest-listed switch
+//   codelets and shared body after this target's 321-byte boundary. The checker
+//   therefore reports seven added ordered calls. This is a corpus boundary,
+//   not behavior-equivalent drift; calls and ABI still differ at the target.
+// - Variant lab #21 tested six units/loop source combinations without /GX and
+//   correctly showed the non-EH 688-byte basin. Lab #22 repeated those axes
+//   with /GX: all six EH variants were one 748-byte group; only the natural
+//   source was retained.
+// - Variant lab #23 added stdlib/string header axes under /GX. All 24 EH
+//   variants stayed in the same 748-byte group. Header context did not recover
+//   the direct subtract or remove the parent-fragment call additions.
 
 class ResourceItem {
 public:

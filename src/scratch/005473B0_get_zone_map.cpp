@@ -83,6 +83,25 @@
 //   MATCH, but still emits `??1RGE_Zone_Map@@QAE@XZ` in the target TU.
 //   No policy-valid one-owner shared-TU route exists without build-tool and
 //   source-bank restructuring. Restored the ownership-compliant baseline.
+// - Current lease evidence: function-local optimize("g", off), optimize("y", off),
+//   inline_depth(0), stdio.h, memory.h, windows.h, constructor throw(), constructor
+//   __declspec(nothrow), target __declspec(nothrow), and optimize("t", off) were
+//   distinct tests. The flag/context probes either changed the frame/CFG or left
+//   the same 266-byte / 37-byte family. Constructor and target exception contracts
+//   did not select the original shared epilogue.
+// - Diagnostic exact route: an out-of-line empty RGE_Zone_Map constructor body
+//   before this method under inline_depth(0) produced MATCH / 0.0000%. A no-body
+//   check_info declaration does not. An out-of-line check_info body before this
+//   method also produced MATCH / 0.0000%. Both routes expose a preceding
+//   RGE_Zone_Map member definition in the original zone_map.cpp translation unit.
+// - The exact constructor route duplicates the existing 005468C0 owner. The exact
+//   check_info route duplicates the existing 00546E50 owner. Neither is retained.
+//   An inline constructor body removed the constructor call and produced 171 B.
+//   Therefore the exact context is proved, but no single-owner source route exists
+//   under the current build_function.py one-source compilation model.
+// - Restored the declaration-only class and validated the clean source: 266 B,
+//   37 differing bytes, five ordered calls, first mismatch at +0xD9. Drift remains
+//   forbidden while this owner/context boundary is unresolved.
 
 #include <stdlib.h>
 #include <string.h>
