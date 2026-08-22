@@ -21,7 +21,11 @@
 //   executable keeps the numerator in x87 extended precision across the
 //   hit-point test and uses FXCH/FDIV. The rebuild spills the numerator to a
 //   32-bit float home before division. Boundary scores can select a different
-//   target. Three condition blocks also remain structurally absent.
+//   target. The rebuild still differs in the related x87 spill and branch
+//   topology.
+// - BINARY NOTE: the current-target distance score is divided only when the
+//   float distance is positive. This restores the +15665 guard and its two
+//   denominator paths; the second scan uses distance only for range filtering.
 
 struct VisibleUnitEntry {
     int object_id;
@@ -185,7 +189,6 @@ int UnitAIModule::bestUnitToAttack(int param_1, int param_2, float* param_3)
     float numberMovingTargets;
     int numberDamagingUnits;
     int currentTargetIsBuilding;
-    int numberObjectsInRange;
     int largestThreatIsBuilding;
     int i;
     int j;
@@ -195,6 +198,7 @@ int UnitAIModule::bestUnitToAttack(int param_1, int param_2, float* param_3)
     int modifier;
     int numberNonCurrentTargets;
     int currentTargetIsWall;
+    int numberObjectsInRange;
     int closestEnemyDistance;
     float enemyDistance;
     float distance;
@@ -333,11 +337,13 @@ int UnitAIModule::bestUnitToAttack(int param_1, int param_2, float* param_3)
                     numberMovingTargets /= target->hitPoints;
                 }
                 distance = target->distance_to_object(this->objectValue);
-                if (numberDamagingUnits < 2) {
-                    numberMovingTargets /= distance;
-                } else {
-                    numberMovingTargets /=
-                        (float)numberDamagingUnits * distance * DAT_0056ebdc;
+                if (distance > DAT_0056ebc8) {
+                    if (numberDamagingUnits < 2) {
+                        numberMovingTargets /= distance;
+                    } else {
+                        numberMovingTargets /=
+                            (float)numberDamagingUnits * distance * DAT_0056ebdc;
+                    }
                 }
                 if (target->master_obj->object_group != 3) {
                     ++numberDamagingUnits;
