@@ -19,6 +19,16 @@
 // a real packed-payload stream pointer, and no raw address or explicit home reuse.
 // Remaining drift is the stream pointer basin, switch register coloring, and legacy tail.
 // Result remains unresolved. It is not accepted_drift-safe.
+//
+// sa-513701e4-r1 (2026-08-22):
+// - Direct nested data-offset addressing, declaration-order changes, branch-local
+//   stream cursors, and the decompiler's two-cursor SLP walk were codegen duplicates.
+// - Char and int opcode locals moved to shorter or different basins and worsened
+//   strict drift or size. Unsigned offset fields were also codegen-equivalent.
+// - Direct legacy ymax access improved strict drift by one byte, but lost shape and
+//   exact blocks. Function-scope curx and one shared done flag were duplicates.
+// - The Ghidra packet confirms the original EAX stream cursor, x-home opcode, and
+//   separate legacy cursor/flag topology. Natural source variants did not recover it.
 
 #include <memory.h>
 
