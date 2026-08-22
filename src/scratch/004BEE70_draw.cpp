@@ -8,17 +8,16 @@
 // - BINARY NOTE: level-2 range reads +0x114; the final level-4/6 conversion reads
 //   +0x140. These are not the nearby cached fields with similar names.
 // - BINARY NOTE: the attribute scan loads each float before comparing DAT_00574524.
-// - 21 meaningful probes tested layout, ABI, lifetime, control flow, and context.
-// - Current clean result: 1577 bytes, 41 calls, 827 differing bytes (52.44%).
-// - Remaining drift starts at the saved vtable spill after draw_setup. The later
-//   stat dispatch also uses different pointer and index registers than the oracle.
+// - Current clean result: 1577 bytes, 41 calls, 304 differing bytes (19.28%).
+// - Natural shape progress: while scan, positive string guard, direct master
+//   rereads after calls, and pre-guard armor load recover exact blocks.
+// - Remaining drift starts at the attribute switch register basin. The source
+//   still has nonexact cursor and value-register choices in that dispatch.
 // - No inline assembly, fake vtable, or compiler-only source remains.
 // - Behavior correction: the first TextOutA call draws the player name at
 //   pnl_y. The prior source incorrectly added 0x0F to that call.
-// - Accepted-drift blocker: Lock failure leaves text_flag uninitialized in the
-//   binary and this reconstruction. The binary later reads entry ESP+0x10;
-//   VC5 assigns the rebuilt local to entry ESP+0x14. Different stale values can
-//   change font/clip restoration and the item-drawing tail. Keep in scratch.
+// - 16 meaningful probes ran in this claim. Rejected probes restored the pinned
+//   source. See target-session history for each hypothesis and check result.
 
 #include "../../include/game_globals.h"
 #include <windows.h>
@@ -547,8 +546,7 @@ void TRIBE_Scenario_Editor_Panel_Object::draw()
         this->render_area->Unlock(0);
     }
 
-    void* dc = this->render_area->GetDc(0);
-    if (dc != 0) {
+    if (this->render_area->GetDc(0)) {
         SetBkMode(this->render_area->DrawDc, 1);
         SetTextColor(this->render_area->DrawDc, 0xFFFFFF);
         SelectClipRgn(this->render_area->DrawDc, this->clip_rgn);
@@ -566,10 +564,10 @@ void TRIBE_Scenario_Editor_Panel_Object::draw()
         }
 
         short string_id = this->master_game_obj->string_id;
-        if (string_id < 1) {
-            str[0] = 0;
-        } else {
+        if (string_id > 0) {
             rge_base_game->get_string((long)string_id, str, 100);
+        } else {
+            str[0] = 0;
         }
         if (str[0] == 0) {
             strcpy(str, this->master_game_obj->name);
@@ -613,14 +611,14 @@ void TRIBE_Scenario_Editor_Panel_Object::draw()
                     short attr_type = -1;
                     int attr_index = 0;
                     float* attr_amount = master->attribute_amount_held;
-                    do {
+                    while (attr_index < 3) {
                         if (*attr_amount > DAT_00574524) {
                             attr_type = master->attribute_type_held[attr_index];
                             break;
                         }
                         ++attr_index;
                         ++attr_amount;
-                    } while (attr_index < 3);
+                    }
 
                     int value_type;
                     switch (attr_type) {
@@ -673,25 +671,29 @@ void TRIBE_Scenario_Editor_Panel_Object::draw()
             }
         }
 
-        if (master->unit_level == 4 || master->unit_level == 6) {
-            RGE_Master_Combat_Object* combat =
-                (RGE_Master_Combat_Object*)master;
+        RGE_Master_Combat_Object* combat =
+            (RGE_Master_Combat_Object*)this->master_game_obj;
+        short armor_value = combat->orig_armor;
+        if (this->master_game_obj->unit_level == 4 ||
+            this->master_game_obj->unit_level == 6) {
             this->draw_item(item_index, 8, 1,
-                            combat->orig_armor, combat->orig_armor);
+                            armor_value, armor_value);
             ++item_index;
         }
 
         long pierce_armor = this->get_pierce_armor();
         short pierce_value = (short)pierce_armor;
-        if (master->unit_level == 4 || master->unit_level == 6) {
+        if (this->master_game_obj->unit_level == 4 ||
+            this->master_game_obj->unit_level == 6) {
             this->draw_item(item_index, 10, 1,
                             pierce_value, pierce_value);
             ++item_index;
         }
 
-        if (master->unit_level == 4 || master->unit_level == 6) {
+        if (this->master_game_obj->unit_level == 4 ||
+            this->master_game_obj->unit_level == 6) {
             RGE_Master_Combat_Object* combat =
-                (RGE_Master_Combat_Object*)master;
+                (RGE_Master_Combat_Object*)this->master_game_obj;
             short speed_value = (short)combat->orig_weapon_range;
             this->draw_item(item_index, 6, 1,
                             speed_value, pierce_value);
