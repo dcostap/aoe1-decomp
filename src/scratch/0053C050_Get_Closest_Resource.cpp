@@ -44,10 +44,17 @@
 // - Hoisting best initialization to the count-guard scope improves the current
 //   result to 317 differing bytes, 90.24% shape, and 80.51% exact blocks.
 //   Other natural alias and offset forms were worse or codegen duplicates.
+// - Replaced the guarded do/while resource scan with one top-tested
+//   `while (count > 0)` loop. Delaying best initialization until after the
+//   record load preserves the natural store order and improves the result to
+//   308 differing bytes, 96.64% shape, 82.20% exact blocks, and 32 edit bytes.
+//   Direct count-before-list variants preserve the blocker fault order but are
+//   323-326 bytes different; they do not improve the current codegen basin.
+//   Receiver aliases and reversed array declarations are codegen duplicates.
 // Left in scratch: remaining drift is the early receiver-save/index LEA basin
 //   and associated register coloring; behavior, size/frame, calls, and inner
-//   reject-loop CFG are established. The current clean source is the hoisted
-//   best-pointer form.
+//   reject-loop CFG are established. The current source uses the stronger
+//   top-tested scan shape but retains the member-read-order blocker below.
 // BLOCKER: the executable reads VR_ListUsed[type] and rejects a zero count
 // before it reads VR_List. The rebuild reads VR_List first. An empty list thus
 // adds a member read, and the nonempty path changes member-read and fault order.
@@ -82,55 +89,54 @@ public:
 
 VisibleResourceRec* Visible_Resource_Manager::Get_Closest_Resource(int x, int y, int param3, int type, int* reject_list, int reject_count) {
     if (type >= 0 && this->num_visible_resource_lists != 0 && type < this->num_visible_resource_lists) {
-        int* usedLists = this->VR_ListUsed;
         VisibleResourceRec** resourceLists = this->VR_List;
+        int* usedLists = this->VR_ListUsed;
         int count = usedLists[type];
-        VisibleResourceRec* best = 0;
+        VisibleResourceRec* best;
         if (count != 0) {
             VisibleResourceRec* rec = resourceLists[type];
             int bestDistance = 9999;
-            if (count > 0) {
-                do {
-                    int dx;
-                    int dy;
-                    int rejected = 0;
-                    int rx = rec->pos_x;
-                    int ry = rec->pos_y;
-                    if (rx > x) {
-                        dx = rx - x;
-                    } else {
-                        dx = x - rx;
-                    }
-                    if (ry > y) {
-                        dy = ry - y;
-                    } else {
-                        dy = y - ry;
-                    }
-                    int dist;
-                    if (dx > dy) {
-                        dist = (dx - (int)(DAT_005776D8 - dy * DAT_005776D0)) - dy;
-                    } else {
-                        dist = (dy - (int)(DAT_005776D8 - dx * DAT_005776D0)) - dx;
-                    }
-                    if (dist < bestDistance) {
-                        if (reject_count && reject_list) {
-                            int i = 0;
-                            while (i < reject_count) {
-                                if (rec->object_id == reject_list[i]) {
-                                    rejected = 1;
-                                    break;
-                                }
-                                i++;
+            best = 0;
+            while (count > 0) {
+                int dx;
+                int dy;
+                int rejected = 0;
+                int rx = rec->pos_x;
+                int ry = rec->pos_y;
+                if (rx > x) {
+                    dx = rx - x;
+                } else {
+                    dx = x - rx;
+                }
+                if (ry > y) {
+                    dy = ry - y;
+                } else {
+                    dy = y - ry;
+                }
+                int dist;
+                if (dx > dy) {
+                    dist = (dx - (int)(DAT_005776D8 - dy * DAT_005776D0)) - dy;
+                } else {
+                    dist = (dy - (int)(DAT_005776D8 - dx * DAT_005776D0)) - dx;
+                }
+                if (dist < bestDistance) {
+                    if (reject_count && reject_list) {
+                        int i = 0;
+                        while (i < reject_count) {
+                            if (rec->object_id == reject_list[i]) {
+                                rejected = 1;
+                                break;
                             }
-                        }
-                        if (!rejected) {
-                            best = rec;
-                            bestDistance = dist;
+                            i++;
                         }
                     }
-                    rec++;
-                    count--;
-                } while (count != 0);
+                    if (!rejected) {
+                        best = rec;
+                        bestDistance = dist;
+                    }
+                }
+                rec++;
+                count--;
             }
             if (bestDistance > 0xff) {
                 bestDistance = 0xff;
