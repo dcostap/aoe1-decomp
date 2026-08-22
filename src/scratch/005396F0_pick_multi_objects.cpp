@@ -31,6 +31,9 @@
 // 72.09% shape, 34.30% exact-block coverage. Remaining drift is broad VC5
 // register/block topology and global-address relocation, not safe localized drift.
 // Main review replaced manual vptr fields with typed virtual ownership.
+// A same-TU draw_view donor proves the four +0x8C fields form render_rect.
+// Main review rejected a confidence-field cursor and pointer-relative object-id
+// store. Keep typed RGE_Pick_Obj_Info ownership despite its three-byte penalty.
 
 class RGE_Pick_Obj_Info {
 public:
@@ -87,10 +90,12 @@ class RGE_View {
 public:
     virtual void v0();
     char gap_04[0x8c-4];
-    int min_x; // +8c
-    int min_y; // +90
-    int max_x; // +94
-    int max_y; // +98
+    struct tagRECT {
+        long left;
+        long top;
+        long right;
+        long bottom;
+    } render_rect; // +8c
     char gap_9c[0xfc-0x9c];
     RGE_Game_World* world; // +fc
     char gap_100[0x334-0x100];
@@ -104,18 +109,18 @@ int RGE_View::pick_multi_objects(int x1, int y1, int x2, int y2, int min_level, 
 {
     int num_picked = 0;
     int z;
-    if (x2 < this->min_x || x1 > this->max_x ||
-        y2 < this->min_y || y1 > this->max_y)
+    if (x2 < this->render_rect.left || x1 > this->render_rect.right ||
+        y2 < this->render_rect.top || y1 > this->render_rect.bottom)
         return 0;
     if (min_level > 40 || max_level < 0)
         return 0;
     if (min_level < 0) min_level = 0;
     if (max_level > 40) max_level = 40;
 
-    x1 -= this->min_x;
-    x2 -= this->min_x;
-    y1 -= this->min_y;
-    y2 -= this->min_y;
+    x1 -= this->render_rect.left;
+    x2 -= this->render_rect.left;
+    y1 -= this->render_rect.top;
+    y2 -= this->render_rect.top;
 
     z = max_level;
     if (z >= min_level) {
