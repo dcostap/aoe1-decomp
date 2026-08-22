@@ -48,6 +48,13 @@
 // - New claim: do/break, explicit-label, and call-in-condition steep loops all
 //   duplicated the helper call (6 sites) and enlarged the body. The natural
 //   do/while source remains the smallest five-call form.
+// - BINARY NOTE: The shipped steep loop draws the final y2 row before it
+//   exits. Keep the call-first break even though this isolated source context
+//   makes VC5 duplicate the helper site. The former five-site loop skipped
+//   that final row and did not preserve shipped behavior.
+// - Accepted-drift audit: do not promote. The rebuild has an extra static
+//   _ASMDraw_HLine site and broad prologue, epilogue, and block-layout drift.
+//   This is not a small localized difference with proved equivalent effects.
 
 extern "C" void __cdecl _ASMDraw_HLine(int x0, int x1, int y, unsigned int color);
 
@@ -110,15 +117,18 @@ void TDrawArea::DrawLine(int x1, int y1, int x2, int y2, unsigned char color) {
             _ASMDraw_HLine(line_start, x1, y1, (unsigned int)color);
         } else {
             int error = 0;
-            do {
+            for (;;) {
                 _ASMDraw_HLine(x1, x1, y1, (unsigned int)color);
+                if (y1 == y2) {
+                    break;
+                }
                 error += dx;
                 if (error >= dy) {
                     ++x1;
                     error -= dy;
                 }
                 y1 += step;
-            } while (y1 != y2);
+            }
         }
     }
 }
