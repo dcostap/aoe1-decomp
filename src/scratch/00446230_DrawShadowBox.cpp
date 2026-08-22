@@ -110,8 +110,12 @@
 // - Redundant late y guards and do-loop forms improved shape but moved strict
 //   bytes or added guards. Mutating parameter homes for the row count widened
 //   the function. The retained source is the smallest natural typed-index
-//   form, with one AlignedWidth call, typed table ownership, and preserved
-//   table-before-Bits fault order.
+//   form, with one AlignedWidth call and typed table ownership.
+// Accepted-drift audit: do not promote. After AlignedWidth, the executable
+// reads Bits once before shadow_color_table and keeps that pointer through both
+// loops. The rebuild reads shadow_color_table first and reloads Bits inside the
+// pixel loop. Concurrent member changes can alter pixels and write addresses.
+// Invalid member storage can also fault in a different order.
 
 struct tagRECT {
     long left;
