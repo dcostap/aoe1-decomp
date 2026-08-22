@@ -53,6 +53,10 @@
 //   reloads civilians.numberValue after it updates desiredNumberGatherers. The
 //   rebuild reuses the earlier count read. Concurrent count changes can produce
 //   a different civilianExplorers result and different later stores.
+// - Fresh contextual pass restored the exact same-TU TacticalAIModule virtual
+//   inheritance. The emitted body is unchanged. The decompiler-shaped local
+//   reuse, stored-field cap comparison, and inline numberCivilians accessor are
+//   also codegen duplicates. The observable count-reread blocker remains.
 
 extern "C" double __cdecl ceil(double);
 
@@ -97,9 +101,14 @@ public:
     TribeInformationAIModule informationAI;
 };
 
-class TribeTacticalAIModule {
+class TacticalAIModule {
 public:
-    char gap_000[0xF0];
+    virtual ~TacticalAIModule();
+    char gap_004[0xEC];
+};
+
+class TribeTacticalAIModule : public TacticalAIModule {
+public:
     TribeMainDecisionAIModule* md;
     ManagedArray<int> civilians;
     ManagedArray<int> civilianExplorers;

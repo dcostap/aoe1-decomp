@@ -96,6 +96,10 @@
 // difference is the EH cleanup and return CFG, which policy excludes even
 // though calls, predicates, fields, and fault order otherwise align. Restore
 // and retain the natural typed goto-fail source below.
+// Fresh ABI pass: the PDB owner type is UAEHHH, so enter is a virtual method.
+// Restoring that declaration is codegen-neutral. A defined pointer-result
+// shared-tail probe reached one return but changed the early object-failure
+// branch and register basin. The EH-tail blocker remains.
 
 // Key remaining issues:
 // 1. No shared tail: VC5 generates inline EH epilogues at each return instead of one shared
@@ -368,7 +372,7 @@ public:
     uchar gap_40[0x144];
     RGE_Action_List* actions;
 
-    int enter(int param_1, int param_2);
+    virtual int enter(int param_1, int param_2);
 };
 
 int RGE_Combat_Object::enter(int param_1, int param_2)
