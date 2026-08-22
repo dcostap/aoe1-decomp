@@ -43,6 +43,11 @@
 // mouse_rect.top before it writes cursor_rect.top and new_save_rect.bottom.
 // The rebuild performs those two writes first and clears mouse_rect.top last.
 // Final values match, but member publication and failing-store order differ.
+// Fresh worker probes: preserving the top value and pre-reading new_save_rect.bottom
+// reproduced the prior 197-byte basin; adding decompiler-style function-scope
+// clipping temporaries grew the frame to 0xC and reached 276 bytes. A register
+// selector and the retained top/bottom local forms were duplicate basins.
+// The clean 758-byte source remains the smallest natural reconstruction.
 
 typedef unsigned char uchar;
 struct POINT { long x; long y; };
