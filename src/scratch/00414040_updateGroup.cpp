@@ -37,12 +37,22 @@
 // - Positive guard forms, integer target-ID typing, local declaration scopes,
 //   loop-form changes, address aliases, a volatile diagnostic, and threshold
 //   variants either duplicated output or worsened the result.
-// - Open blocker: the first mismatch is still the early zero-register and
-//   target-recovery layout. The remaining drift is broad structural codegen.
+// - Restored the PDB-listed gatherDistance as the distance result local. The
+//   reversed distance > threshold form recovers the original fcompp/test 41h
+//   x87 predicate shape and reduced the clean diff to 1600 bytes.
+// - Restored the PDB-listed newTarget, groupCount, and a locals. A dedicated i
+//   counter for the three-trigger phase loop moved the frame to 0xF8 and the
+//   diff to 1598 bytes. A typed int* group-list cursor raises shape similarity
+//   to 75.25% with 27.38% exact-block coverage.
+// - The executable writes groupList[0] = 0. Retain this memory effect even
+//   though it moves the rebuild to a wider code-generation basin.
+// - Open blocker: the executable frame is 0xFC and this natural source frame
+//   is 0xF8. The first mismatch remains the prologue; broad structural drift
+//   remains despite exact ordered calls.
 // MANAGEDARRAY AUDIT: group-member growth guards, copies, publication, resize,
 // value reads, and field offsets follow the expected template behavior. No
 // shared template change is required.
-// BLOCKER: The executable frame is 0xFC and the natural source frame is 0xF4.
+// BLOCKER: The executable frame is 0xFC and the natural source frame is 0xF8.
 // A 52-entry group list fixes only the frame and adds unsupported local storage.
 // Broad CFG drift also remains despite all 42 calls aligning.
 
@@ -240,27 +250,31 @@ public:
 
 void UnitAIModule::updateGroup(unsigned long param_1)
 {
-    int triggerSatisfied;
-    int deadCount;
-    AIPlayPhaseTrigger* trigger;
+    RGE_Static_Object* target;
+    int newTarget;
     AIPlay* play;
     AIPlayPhase* phase;
-    RGE_Static_Object* target;
     int i;
     int totalHitPoints[5];
     int groupList[50];
+    int triggerSatisfied;
+    AIPlayPhaseTrigger* trigger;
+    float gatherDistance;
+    int deadCount;
+    int a;
+    int groupCount;
 
     if (this->playStatus != 0 &&
         (play = this->objectValue->owner->world->playbook->play(
              this->playStatus->playNumberValue)) != 0) {
-    target = this->lookupObject(this->playStatus->targetValue);
+        target = this->lookupObject(this->playStatus->targetValue);
         if (target == 0) {
-            i = this->find_unit(1, 0, 0);
+            newTarget = this->find_unit(1, 0, 0);
             RGE_Static_Object* object = this->objectValue;
             int memberIndex = 0;
             if (object->groupMembers.numberValue > 0) {
                 do {
-                    if (i != -1) {
+                    if (newTarget != -1) {
                         goto foundTrigger;
                     }
 
@@ -273,7 +287,7 @@ void UnitAIModule::updateGroup(unsigned long param_1)
                             object->groupMembers.value[memberIndex]);
                         if (object != 0 && object->unitAI() != 0) {
                             UnitAIModule* memberAI = object->unitAI();
-                            i = memberAI->find_unit(1, 0, 0);
+                            newTarget = memberAI->find_unit(1, 0, 0);
                         }
                     }
 
@@ -282,17 +296,17 @@ void UnitAIModule::updateGroup(unsigned long param_1)
                 } while (memberIndex < object->groupMembers.numberValue);
             }
 
-            if (i == -1) {
+            if (newTarget == -1) {
                 operator delete(this->playStatus);
                 this->playStatus = 0;
                 return;
             }
 
 foundTrigger:
-            this->playStatus->targetValue = i;
+            this->playStatus->targetValue = newTarget;
             this->selectNewPlayPhase(
                 (unsigned int)this->playStatus->currentPhaseValue, 0);
-            target = this->lookupObject(i);
+            target = this->lookupObject(newTarget);
         }
 
         if (this->playStatus->currentPhaseValue == 0xFD) {
@@ -300,17 +314,18 @@ foundTrigger:
             totalHitPoints[2] = 0;
             totalHitPoints[3] = 0;
             totalHitPoints[4] = 0;
-            int memberCount = 0;
+            groupList[0] = 0;
+            groupCount = 0;
             deadCount = 0;
             if (this->objectValue->groupMembers.numberValue > 0) {
-                trigger = (AIPlayPhaseTrigger*)(groupList + 1);
+                int* groupListCursor = groupList + 1;
                 do {
                     RGE_Static_Object* member = this->lookupObject(
                         this->objectValue->groupMembers[deadCount]);
                     if (member != 0) {
-                        *(int*)trigger = member->id;
-                        ++memberCount;
-                        trigger = (AIPlayPhaseTrigger*)((char*)trigger + 4);
+                        *groupListCursor = member->id;
+                        ++groupCount;
+                        ++groupListCursor;
                         int commandIndex = 0;
                         int commandCount = this->objectValue->groupUnitCount();
                         if (commandCount > 0) {
@@ -330,11 +345,11 @@ foundTrigger:
 
             this->playStatus->lastPhaseChangeTimeValue =
                 this->objectValue->owner->world->world_time;
-            play->fillGroups(this->playStatus, groupList + 1, memberCount,
+            play->fillGroups(this->playStatus, groupList + 1, groupCount,
                              this->objectValue->owner->world);
-            if (memberCount > 0) {
-                int* group = groupList + 1;
-                int remaining = memberCount;
+            if (groupCount > 0) {
+                int* group = groupList;
+                int remaining = groupCount;
                 do {
                     ++group;
                     RGE_Static_Object* member = this->lookupObject(*group);
@@ -358,21 +373,20 @@ foundTrigger:
 
         phase = play->phase((unsigned int)this->playStatus->currentPhaseValue);
         if (phase != 0) {
-            totalHitPoints[0] = 0;
+            i = 0;
             do {
-                trigger = phase->trigger(totalHitPoints[0]);
-                i = 0;
+                trigger = phase->trigger(i);
                 if (trigger != 0 && trigger->typeValue != 0) {
                     switch (trigger->typeValue) {
                     case 1: {
                         triggerSatisfied = 1;
-                        int group = 0;
+                        a = 0;
                         do {
                             if (triggerSatisfied == 0) {
                                 break;
                             }
                             int command = play->groupGivenCommandOnPhase(
-                                group, 1, this->playStatus->currentPhaseValue);
+                                a, 1, this->playStatus->currentPhaseValue);
                             if (command != -1) {
                                 AIPlayPhaseCommand* phaseCommand =
                                     phase->command(command);
@@ -384,11 +398,11 @@ foundTrigger:
                                     AIPlayGrouping* grouping =
                                         (AIPlayGrouping*)((char*)this->playStatus +
                                                           groupingOffset);
-                                    if (grouping->groupValue == group) {
+                                    if (grouping->groupValue == a) {
                                         RGE_Static_Object* member =
                                             this->lookupObject(grouping->id);
                                         if (member != 0) {
-                                            float distance =
+                                            gatherDistance =
                                                 member->distance_to_position(
                                                     (float)phaseCommand->value1Value +
                                                         target->world_x,
@@ -396,7 +410,8 @@ foundTrigger:
                                                         target->world_y,
                                                     (float)phaseCommand->value2Value +
                                                         target->world_z);
-                                            if ((float)trigger->value1Value < distance) {
+                                            if (gatherDistance >
+                                                (float)trigger->value1Value) {
                                                 triggerSatisfied = 0;
                                             }
                                         }
@@ -404,13 +419,13 @@ foundTrigger:
                                     groupingOffset += 8;
                                 } while (groupingOffset < 400);
                             }
-                            ++group;
-                        } while (group < 5);
+                            ++a;
+                        } while (a < 5);
                         break;
                     }
                     case 2: {
-                        int matchingGroups = 0;
                         int deadGroups = 0;
+                        int matchingGroups = 0;
                         int groupingOffset = 0;
                         do {
                             AIPlayGrouping* grouping =
@@ -527,8 +542,8 @@ foundTrigger:
                         return;
                     }
                 }
-                ++totalHitPoints[0];
-            } while (totalHitPoints[0] < 3);
+                ++i;
+            } while (i < 3);
             this->selectNewPlayPhase(
                 this->playStatus->currentPhaseValue, 1);
         }
