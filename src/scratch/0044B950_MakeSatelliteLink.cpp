@@ -53,12 +53,31 @@
 // - Fresh delegated revisit: first-guard `nx = dx + old_x`, compound `nx`, and
 //   condition-local candidate forms all emitted the same 336-byte/149-diff
 //   basin. Restored the pinned clean source; no natural exact basin was found.
-// BLOCKER: the executable rereads x at the final update and publishes x before
-// y. The rebuild keeps old_x and publishes y before x. It also loads NumNodes
-// between those stores. Final values match, but member publication and failing
-// access order do not. Keep this function in scratch.
+// - Fresh blocker-focused pass: direct final `x = x + dx`, x-before-y
+//   publication, top-scoped old_x, donor stdlib/string context, and a nine-
+//   variant final-update/publication lab were tested. The best natural source
+//   has 336 bytes, 90.74% shape, 84.47% exact-block coverage, and 25 edit
+//   bytes. It still differs at the first candidate-x hunk; no exact basin was
+//   found. The final publication tail now has the target x reread, x-before-y
+//   stores, and NumNodes reload between point stores. Register hints, const
+//   snapshots, accumulator spellings, named indices, split stores, and
+//   final_x aliases were duplicates or regressed. Keep this function in scratch.
+// - Probe record: H1/H2/H3 direct-x forms reached 175 bytes; H4/H5 early or
+//   mid-block result locals reached 157/178 bytes; H6/H7 header variants reached
+//   153/175 bytes; H8/H9/H10 candidate, compound-x, and dy-accumulator forms
+//   reached 175 bytes. H11/H12/H13/H14 top old_x, candidate, and register forms
+//   reached 184 bytes with 29 edit bytes. H15/H16 const and final_x forms
+//   reached 175 bytes. H17/H18/H19 top old_x plus context reached 184 bytes
+//   with 25 edit bytes. H20 reversed y operands was a codegen duplicate.
+// BLOCKER: the executable's final tail rereads x, publishes x before y, and
+// reloads NumNodes between point stores. The current natural rebuild now keeps
+// that order. The remaining first candidate-x hunk is not exact, so this
+// function remains scratch.
 
 extern int __cdecl debug_rand(char* param_1, int param_2);
+
+#include <stdlib.h>
+#include <string.h>
 
 class PrimaryPt {
 public:
@@ -106,6 +125,7 @@ protected:
 };
 
 int PointMaker::MakeSatelliteLink() {
+    int old_x;
     int dx = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x165);
     dx = dx % SatelliteDistance + 1;
     int r = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x165);
@@ -116,7 +136,7 @@ int PointMaker::MakeSatelliteLink() {
     r = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x166);
     if (r % 2) dy = -dy;
 
-    int old_x = x;
+    old_x = x;
     dx += DirX;
     dy += DirY;
 
@@ -140,7 +160,7 @@ int PointMaker::MakeSatelliteLink() {
         DirY = -DirY;
     }
 
-    x = dx + old_x;
+    x = x + dx;
     y = dy + y;
     Point[NumNodes].x = x;
     Point[NumNodes].y = y;
