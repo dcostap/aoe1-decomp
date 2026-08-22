@@ -41,6 +41,18 @@
 //   order and reaches 44.86% exact-block coverage, but is not an exact match.
 // - A block-local typed record pointer, a bool found flag, and removal of the
 //   pre-search WTime zero were worse. They were removed or restored.
+// - Fresh claim baseline validates the pinned natural source at 588 emitted
+//   bytes versus 610 original, 0x28 frame, 8/8 ordered calls, and 44.86%
+//   exact-block coverage.
+// - Removing the WTime zero reduced the frame to 0x24 and worsened the diff
+//   to 535 bytes. Moving the found assignment before selected loads worsened
+//   the diff to 516 bytes. Both forms were restored.
+// - Selected-record loads through the proven WTurn cursor worsened the diff
+//   to 552 bytes. Typed Check[index] field access remains the natural basin.
+// - Record-left comparison, declaration-order changes, a cs5 temporary, and
+//   reordered selected assignments did not improve the 480-byte diff.
+// - Moving cs1 before WTime removed one diagnostic Log call. The final
+//   validation restored the clean source and records the 480-byte mismatch.
 
 class TDebuggingLog {
 public:
