@@ -44,6 +44,22 @@
 //   0x1C frame at the ftol helper, while the rebuild uses 0x20. Thus the helper
 //   receives a different stack and exception context. The radius result also
 //   feeds later scan bounds in the current reconstruction.
+// - fresh claim: the original stack map and call site confirm that the unused
+//   first byte formal is omitted by VC5; the source land_id, x, and y formals
+//   map to the first three pushed values. The target then uses the land_id as
+//   the indexed land record and preserves the caller's coordinate order.
+// - probes 55-57: reusing x1/y1 as loop cursors removed the ftol call and
+//   entered a 0x0C frame basin. A single radius local did not retain it.
+// - probe 59: moving the radius declaration before +/-2 bounds worsened the
+//   result to 400 bytes. Probe 61 reused y1/y2 for the outer cursor and gave
+//   372 bytes with better shape, but it was still a 0x20-frame basin.
+// - probes 62-65: an explicit row-pointer cursor is binary-supported by the
+//   original piVar3 traversal and improved shape, but its 0x20-frame result
+//   was farther. A diagnostic lower-radius-only predicate reached 0x1C and
+//   296 bytes, but the target proves both vertical comparisons are +/-2.
+// - final claim reset: restored this pinned natural source. The unresolved
+//   blocker is the target's 0x1C local-home basin and its two radius-derived
+//   stores into the reused this home. Do not promote the diagnostic predicate.
 
 typedef unsigned char uchar;
 
