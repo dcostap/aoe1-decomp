@@ -21,6 +21,7 @@
 // load before distance_to_object; capacity naming had no emitted-code effect.
 // remaining: original state-8 stop-result call is a separate vslot+0x1ec
 // site, while VC5 merges it with the distance-stop path in this reconstruction.
+// BINARY NOTE: both state-8 stop paths store 0xC0400000, which is -3.0f.
 // managed pass: 20 meaningful probes. Binary-supported fixes retained below:
 // full RGE_Task ownership, target-object state-6 turn/check, static master
 // ownership, task sound and attribute fields, TU threshold globals, and the
@@ -473,14 +474,14 @@ unsigned char RGE_Action_Gather::update()
             case 3:
             case 4:
             case 5:
-                this->timer = -2.0f;
+                this->timer = -3.0f;
                 this->obj->stop_moving();
                 return 0;
             case 1:
             case 2:
                 if (this->target_obj2 == 0) { this->set_state(8); return 0; }
                 if (((RGE_Static_Object*)this->obj)->distance_to_object(this->target_obj2) > DAT_0056e290) {
-                    this->timer = -2.0f; this->obj->stop_moving(); return 0;
+                    this->timer = -3.0f; this->obj->stop_moving(); return 0;
                 }
                 if (this->task->work_sound2 != 0) this->task->work_sound2->play(1);
                 { short attr = this->task->attribute_type3; if (attr == -1) attr = this->obj->owner->fallback_attribute;
