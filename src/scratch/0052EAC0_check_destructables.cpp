@@ -3,7 +3,7 @@
 // Packet-grounded: inspect nearby master objects and notify/destruct objects
 // whose bounding radii overlap the requested map coordinate.
 // Attempt log:
-// - Recovered typed ownership: world->players[short] -> master_objects,
+// - Recovered typed ownership: players[short] -> master_objects,
 //   RGE_Map rows of 0x18-byte RGE_Tile records, inline tile object lists, and
 //   RGE_Static_Object/master radius fields.  All six oracle calls are aligned.
 // - Short coordinate locals reproduce the word clamps and four __ftol calls.
@@ -12,21 +12,23 @@
 //   cached row pointer. Raw byte cursors and parameter-home mutation are not
 //   retained because policy forbids them.
 // - Naming both real object radius fields before coordinate math, then using a
-//   combined overlap predicate, reaches 560 B/frame 0x20 and 81.42% shape.
+//   combined overlap predicate, reaches 560 B/frame 0x20 and 84.15% shape.
 //   It also raises exact-block coverage to 43.43% with all six calls aligned.
-// - The pre-audit clean candidate was still a mismatch: 309 strict bytes
-//   differed, with 183 rebuilt instructions versus 175 original instructions.
-//   Its first mismatch was the natural world-pointer local at the prologue.
 // - World/map aliases and alternate radius operand directions were tested and
 //   discarded when they worsened or did not change the natural code shape.
 // - Canonical class-dump audit: replaced the world/object/list vfXX surfaces
 //   with their reviewed names and signatures, retained TRIBE_World inheritance,
 //   and used the canonical RGE_Tile/RGE_Object_Node fields.
-// - The row walk now uses map_row_offset[row_index] + x_min.  It does not use
-//   a raw byte cursor.  The notification call uses destroy_obj at vslot +0x68.
-// - This pass remains non-exact: 530 strict bytes differ and the rebuilt body
-//   is 543 bytes.  The canonical audit changed the compiler basin, but all six
-//   calls and the typed traversal remain aligned.
+// - Structural probes moved the row/tile calculation before the horizontal
+//   gate and moved the column count into that gate.  This reduced the mismatch
+//   from 530 to 306 bytes and reached the original 560-byte body size.
+// - Direct master_id use, a typed stride local, a moving row cursor, widened
+//   x-index locals, an explicit next pointer, and unqualified members were
+//   tested.  The stride and cursor forms regressed.  The other forms were
+//   neutral or are retained only when they simplify the source.
+// - Current validation: 306 strict bytes differ; rebuilt instructions are
+//   183 versus 175 original.  The first mismatch is the implicit-this home
+//   at +0008.  All six calls remain aligned and the frame is 0x20.
 
 class RGE_Map;
 class RGE_Game_World;
@@ -265,9 +267,8 @@ public:
 void TRIBE_World::check_destructables(short player_id, short master_id,
                                       float x, float y, unsigned char flag)
 {
-    short target_master_id = master_id;
     RGE_Master_Static_Object* master =
-        this->players[player_id]->master_objects[master_id];
+        players[player_id]->master_objects[master_id];
 
     if (master != 0) {
         float radius_x = master->radius_x;
@@ -279,22 +280,21 @@ void TRIBE_World::check_destructables(short player_id, short master_id,
             short y_max = (short)(y + 0.5f);
             if (x_min < 0)
                 x_min = 0;
-            if (x_max >= this->map->map_width)
-                x_max = (short)(this->map->map_width - 1);
+            if (x_max >= map->map_width)
+                x_max = (short)(map->map_width - 1);
             if (y_min < 0)
                 y_min = 0;
-            if (y_max >= this->map->map_height)
-                y_max = this->map->map_height - 1;
+            if (y_max >= map->map_height)
+                y_max = map->map_height - 1;
 
             if (y_min <= y_max) {
                 int row_index = y_min;
                 int row_count = (int)y_max - (int)y_min + 1;
-                int column_count = (int)x_max - (int)x_min + 1;
                 do {
+                    RGE_Tile* tile =
+                        map->map_row_offset[row_index] + x_min;
                     if (x_min <= x_max) {
-                        RGE_Tile* tile =
-                            this->map->map_row_offset[row_index] + x_min;
-                        int columns = column_count;
+                        int columns = (int)x_max - (int)x_min + 1;
                         do {
                             RGE_Object_Node* node = tile->objects.list;
                             while (node != 0) {
@@ -302,7 +302,7 @@ void TRIBE_World::check_destructables(short player_id, short master_id,
                                 node = node->next;
                                 RGE_Master_Static_Object* object_master = object->master_obj;
 
-                                if (object_master->id != target_master_id &&
+                                if (object_master->id != master_id &&
                                     object_master->can_be_built_on != 0) {
                                     float object_radius_x = object_master->radius_x;
                                     float object_radius_y = object_master->radius_y;
