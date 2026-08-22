@@ -24,13 +24,21 @@
 // original local frame. Saved max-y bounds, cached clump counts, countdown
 // init, and score-local reuse were worse or duplicate. The retained source is
 // the clearest natural nonexact basin; no asm or metric-only padding remains.
+// Fresh shard probes (sa-3119f01e-r1): the original local head writes next and
+// prev, leaves pop output homes uninitialized, and uses a 0x988 frame with the
+// stack array at the proven boundary. Corrected head fields, declaration order,
+// pointer walks, phase cursor order, mark-row aliases, and direct long
+// comparisons were worse, duplicate, or moved to the known 0x984/0x988 basin.
+// The clean 796-byte basin remains the best natural source. The reviewed
+// Map_Stack ABI also confirms that cost is float, even though this function
+// only passes stack addresses to the helpers.
 
 #include <math.h>
 
 struct Map_Stack {
     long x;
     long y;
-    long cost;
+    float cost;
     float tot_cost;
     Map_Stack* next;
     Map_Stack* prev;
