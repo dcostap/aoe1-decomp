@@ -151,6 +151,22 @@
 // Validation: the canonical interface keeps the two ordered calls at
 // vslot+0x34 and vslot+0x1C. The source-gate build remains 219 bytes with a
 // 195-byte mismatch; the old extra EBX save and scheduling drift remain.
+//
+// sa-0cd276c8-r1 continuation: H1-H25 retested address-taken RECT forms,
+// full TDrawArea fields, direct queue indexing, array-word records, local
+// declaration order, surface aliases, predicate spellings, nested bounds,
+// named index and queue-size lifetimes, LONG member types, result-home forms,
+// destination locals, and receiver-only aliases. All retained-size variants
+// kept the 219-byte / 195-difference basin and 2/2 ordered virtual calls.
+// A volatile result local was diagnostic only: it reached 183 differences and
+// 76.00% shape but added unsupported memory effects, so it was removed.
+// A focused five-variant manual-DirectDraw context lab produced two groups;
+// the best remained 199 differences. The canonical source is restored.
+// Evidence conclusion: the extra EBX save starts at +0003 and shifts all
+// later homes and branches. The remaining differences alter instruction
+// topology, register ownership, and call argument scheduling. They are broad,
+// not a localized behavior-equivalent residue. No accepted-drift case is
+// supported.
 
 #include <windows.h>
 #include <ddraw.h>
