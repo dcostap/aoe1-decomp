@@ -27,6 +27,12 @@
 // revisit probes: the oracle initializes the loop index before CMP/JLE; moving
 // `i = 0` before the positive-count guard improved the natural source to 582
 // strict differing bytes, 65.69% shape, and 20.44% exact-block coverage.
+// revisit probe: the oracle keeps object[2].object_number_varience at the
+// earlier value 6. Removing the later source overwrite to 3 reduced the
+// strict difference to 488 bytes.
+// revisit probe: writing object[3]/object[4] exclusion before outer radius
+// recovers the oracle's 15-then-9 constant setup and reduced the difference
+// to 486 bytes.
 // Same-TU ABI, full base surface, record-field, header, receiver-alias,
 // constant-local, typed-loop, and allocation-result-home probes did not improve
 // that basin. Explicit operator-new plus placement construction removed the
@@ -170,7 +176,7 @@ void RGE_RMM_Controller::add_object_module(RGE_Game_World* world, RGE_Land_Info*
     object_info.objects[2].initial_flags.group_flags = 0;
     object_info.objects[2].object_number_per_group._0_1_ = 1;
     object_info.objects[2].object_number_per_group._1_1_ = 1;
-    object_info.objects[2].object_number_varience = 3;
+    // ORIGINAL BUG: The shipped code keeps the earlier variance value 6.
     object_info.objects[2].number_of_groups = 3;
     object_info.objects[2].group_area = 10;
     object_info.objects[2].player_id = 3;
@@ -187,8 +193,8 @@ void RGE_RMM_Controller::add_object_module(RGE_Game_World* world, RGE_Land_Info*
     object_info.objects[3].group_area = 1;
     object_info.objects[3].land_id = 0;
     object_info.objects[3].land_inner_radius = 0;
-    object_info.objects[3].land_outer_radius = 9;
     object_info.objects[3].object_exclusion_zone = 15;
+    object_info.objects[3].land_outer_radius = 9;
 
     object_info.objects[4].terrain = 0x42;
     object_info.objects[4].initial_flags.group_flags = 0xffffffff;
@@ -199,8 +205,8 @@ void RGE_RMM_Controller::add_object_module(RGE_Game_World* world, RGE_Land_Info*
     object_info.objects[4].player_id = 4;
     object_info.objects[4].land_id = 0;
     object_info.objects[4].land_inner_radius = 0;
-    object_info.objects[4].land_outer_radius = 9;
     object_info.objects[4].object_exclusion_zone = 15;
+    object_info.objects[4].land_outer_radius = 9;
 
     object_info.objects[5].terrain = 0x3b;
     object_info.objects[5].initial_flags.group_flags = 0xffffffff;
