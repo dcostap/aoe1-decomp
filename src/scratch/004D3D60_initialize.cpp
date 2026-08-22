@@ -55,6 +55,16 @@
 //   register basin and worsened diff to 1104. Keep the H12 `remaining--` form.
 // - Ghidra also names a separate requiredPop local for strategic 0x9B + 4;
 //   separating it from the reused ironAge flag worsened diff to 1084. Restored.
+// - PDB CodeView confirms the original scalar homes: bronze +0x10, count +0x14,
+//   division +0x18, iron +0x1C, total +0x20, dock +0x24, transport +0x28,
+//   fishing +0x2C, tool +0x30, warship +0x34, and resourceCount +0x38.
+//   It also records aliases triremeUpgrade/count, warshipUpgrade/divisionSize,
+//   transportUpgrade/totalPercentage, and houseCount/requiredPop.
+// - H25/H28 tested a positive nested null guard and a matching cleanup goto for
+//   the resource scan. Both reached 1780 bytes and an exact late loop block but
+//   worsened strict diff to 964; the clean do-while source remains 953.
+// - H26/H27 tested complete declaration orders from Ghidra and raw CodeView.
+//   Both worsened the entry allocation (962/968); restored H12.
 //
 // LEFT IN SCRATCH: semantically faithful natural reconstruction with correct
 // class surface (/GX EH frame, 0xB0 BuildItem), 61/61 ordered calls, and the
