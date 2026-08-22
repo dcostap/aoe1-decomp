@@ -60,6 +60,10 @@
 // handlers to the opposite source cases, so it was not retained. Restored the
 // clean typed source, retained H19's natural state-4 handler order, and left
 // the unresolved source in scratch. No accepted-drift residue is proved.
+// Accepted-drift audit: do not promote. The executable has a distinct virtual
+// set_state(3) call site for the state-0B handler. VC5 merges it with the state-6
+// null-target call. The runtime target can match, but the callee-visible return
+// address and caller stack identify a different owning call site.
 
 extern float DAT_005750e0;
 extern double DAT_005750e8;
