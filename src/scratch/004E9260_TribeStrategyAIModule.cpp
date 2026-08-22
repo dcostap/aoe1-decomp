@@ -92,6 +92,14 @@
 // this rebuild has 0x0C. rge_read receives addresses of tempIntNum and tempInt.
 // The frame mismatch changes those external writable addresses and malformed-
 // input fault context, despite the aligned call sequence and equal code size.
+// continuation: Ghidra's local roles support reusing playerID for the name and
+// list-value reads, with one count, one index, and one tempInt local. That
+// source shape rebuilt with a 0x0C frame and a 20-byte mismatch. A four-local
+// value/length/count/index variant reached the prior 4-byte basin, but moved
+// the hidden-self and name homes and is not retained as the clean source.
+// continuation: declaration order, declaration scope, for/while/do-while
+// forms, entry declarations, and scoped count locals did not improve the
+// parameter-home basin. Restore the typed clean source after each diagnostic.
 
 extern "C" void __cdecl rge_read(int file, void* dst, int size);
 extern "C" void* __cdecl operator_new(unsigned int size);
