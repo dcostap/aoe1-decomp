@@ -39,6 +39,15 @@
 //   stayed nonexact; the pinned five-call endpoint-local form remains cleaner.
 // - Revisit: the call-first steep loop preserved the original update order but
 //   emitted a sixth helper call; no natural exact source was found.
+// - New claim: direct vertical parameter mutation plus the binary-proven
+//   redundant post-swap guard increased size and worsened positional diff.
+//   A decompiler-style comma guard folded back to the clean output.
+// - New claim: explicit ordered flags and register hints for x2/y2 produced
+//   setcc or duplicate codegen, with no metric gain. Declaration-order change
+//   for dx also duplicated the clean output.
+// - New claim: do/break, explicit-label, and call-in-condition steep loops all
+//   duplicated the helper call (6 sites) and enlarged the body. The natural
+//   do/while source remains the smallest five-call form.
 
 extern "C" void __cdecl _ASMDraw_HLine(int x0, int x1, int y, unsigned int color);
 
