@@ -36,6 +36,10 @@
 //     this is a codegen duplicate of the term-wise candidate.
 // 30: a literal 0.5f is a closer metric basin but loses the reviewed data symbol;
 //     restored DAT_005776b4 and the typed source.
+// 31-34: short offset locals and decompiler-style assignment staging reduced
+//     positional differences but changed the frame from 0x0C to 0x18. Main
+//     review rejected the narrow offsets because they can change arithmetic
+//     overflow behavior. Keep the clear int projection offsets.
 
 struct RGE_Player { unsigned char pad_000[0x114]; float view_x; float view_y; };
 struct RGE_Tile { short screen_xpos; short screen_ypos; unsigned char field_4; unsigned char flags; unsigned char pad[0x12]; };
