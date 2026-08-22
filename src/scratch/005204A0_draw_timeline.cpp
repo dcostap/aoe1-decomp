@@ -31,6 +31,10 @@
 // - Unresolved: initial local-home permutation, early page/history CFG layout, and x87 sample conversion
 //   scheduling still differ. The separate bar_length local is retained because its source form is closer
 //   than the binary-overlapped reuse variant; no unsupported register steering or inline assembly was used.
+// - Follow-up claim probes 21-33 tested outer-loop forms, local scope and width, operand order, accumulator
+//   forms, x87 interpolation ownership, and address-taken sample storage. No probe improved the clean bytes.
+// - Final clean result: 1620 emitted bytes versus 1565, 0x54 frame, 19 ordered calls, 70.04% shape,
+//   and 1310 strict-drift bytes. Keep the simplest two-counter source until new binary evidence appears.
 
 extern "C" unsigned char (__stdcall* const GetNearestPaletteIndex)(void*, unsigned long);
 
