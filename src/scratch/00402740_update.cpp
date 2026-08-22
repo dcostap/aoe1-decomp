@@ -37,6 +37,12 @@
 //   asymmetric polarity and call-local aliases did not solve both gaps.
 //   The pinned task-left source is therefore retained as the smallest clean
 //   natural reconstruction. No shared files were changed.
+// - fresh follow-up probes tested explicit early distance failures, operand
+//   reversal, full outer target-validation nesting, comma-condition lookup,
+//   base casts, derived virtual declarations, and state-2 receiver aliases.
+//   These either worsened the CFG or emitted the same 36-call group. The
+//   clean source remains pinned; the unresolved facts are the second lookup's
+//   push-first schedule and one merged vslot+D0 enter_obj call.
 
 class RGE_Sprite;
 class RGE_Task;
