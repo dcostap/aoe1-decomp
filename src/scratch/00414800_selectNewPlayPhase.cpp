@@ -10,23 +10,26 @@
 //   coordinate load order, vtable context, and case-5 result lifetime.
 // - The case-5 scan uses groupValue at grouping offset +4. The original loads
 //   this byte before lookup. It reuses param_1 for the found object id.
-// - The case-5 scan uses a body-first do-while. The original increments its
-//   8-byte cursor after the body and compares it with 0x190.
-// - The best natural source is 1248 rebuilt bytes versus 1298 original bytes.
-//   It has a 0x38 frame versus 0x44 and 1188 strict differing bytes.
-// - The earlier clean common-tail source had 1186 differing bytes, but kept
-//   an extra found-id local and a for loop. Those forms conflict with assembly.
-// - Twenty recorded probes did not reach an exact result. The main remaining
-//   gap is the original local frame and register schedule.
+// - The case-5 scan increments its 8-byte cursor after the body and compares
+//   it with 0x190.
+// - The member filter uses a nested guard and reuses param_1 for the group
+//   byte. The original writes that value before group() and compares it after.
+// - The case-1 phase byte is a narrow local. The case-3 value is loaded before
+//   unitAI(), and case 4 loads the point fields before unitAI().
+// - The case-5 scan uses a while loop. This emits the original jl backedge.
+// - The current natural source is 1164 rebuilt bytes versus 1298 original
+//   bytes, with a 0x34 frame and 952 strict differing bytes.
+// - Direct order calls improved shape but added one virtual call. They were
+//   not retained because the original has 25 ordered calls.
 //
 // Current status: structural reconstruction remains incomplete. Keep this
 // readable common-tail source as the best behavior-backed candidate.
 // MANAGEDARRAY AUDIT: group-member capacity checks, resize calls, value reads,
 // and field offsets follow the expected template behavior. No shared template
 // change is required.
-// BLOCKER: The rebuild is 50 bytes short, with a 0x38 frame versus 0x44 and 29
-// fewer instructions. Broad CFG and local-lifetime recovery remains incomplete
-// despite all 25 calls aligning.
+// BLOCKER: The rebuild is 134 bytes short, with a 0x34 frame versus 0x44 and 42
+// fewer instructions. Broad register and local-lifetime recovery remains
+// incomplete despite all 25 calls aligning.
 
 void __cdecl operator delete(void* block);
 
@@ -222,18 +225,22 @@ int UnitAIModule::selectNewPlayPhase(int param_1, int param_2)
                         }
 
                         member = this->lookupObject(member->groupMembers.value[i]);
-                        if (member != 0 && member->unitAI() != 0 &&
-                            this->playStatus->group(member->id) ==
-                                command->groupValue &&
-                            (param_2 != 1 ||
-                             member->unitAI()->currentAction() == -1)) {
-                            int sendOrder = 0;
-                            int orderAction = 0;
-                            int orderTargetOwner = -1;
-                            float orderX = -1.0f;
-                            float orderY = -1.0f;
-                            float orderZ = -1.0f;
-                            UnitAIModule* memberAI = 0;
+                        if (member != 0 && member->unitAI() != 0) {
+                            param_1 = command->groupValue;
+                            if (this->playStatus->group(member->id) !=
+                                (unsigned char)param_1) {
+                                goto next_member;
+                            }
+                            if (param_2 == 1 &&
+                                member->unitAI()->currentAction() != -1) {
+                                goto next_member;
+                            }
+                            int orderAction;
+                            int orderTargetOwner;
+                            float orderX;
+                            float orderY;
+                            float orderZ;
+                            UnitAIModule* memberAI;
 
                             switch (command->typeValue) {
                             case 1: {
@@ -241,45 +248,56 @@ int UnitAIModule::selectNewPlayPhase(int param_1, int param_2)
                                     (float)command->value1Value + target->world_x,
                                     (float)command->value2Value + target->world_y,
                                     (float)command->value3Value + target->world_z);
+                                unsigned char currentPhase =
+                                    this->playStatus->currentPhaseValue;
                                 if (distance > play->gatherTolerance(
                                         command->groupValue,
-                                        this->playStatus->currentPhaseValue)) {
+                                        currentPhase)) {
                                     memberAI = member->unitAI();
-                                    sendOrder = 1;
                                     orderAction = 0x2C6;
                                     param_1 = -1;
+                                    orderTargetOwner = -1;
                                     orderX = (float)command->value1Value + target->world_x;
                                     orderY = (float)command->value2Value + target->world_y;
                                     orderZ = (float)command->value3Value + target->world_z;
+                                    break;
                                 }
+                                goto next_member;
+                            }
+                            case 2: {
+                                memberAI = member->unitAI();
+                                int targetOwnerId = target->owner->id;
+                                int targetId = target->id;
+                                orderAction = 0x2BC;
+                                orderTargetOwner = targetOwnerId;
+                                param_1 = targetId;
+                                orderX = -1.0f;
+                                orderY = -1.0f;
+                                orderZ = -1.0f;
                                 break;
                             }
-                            case 2:
-                                memberAI = member->unitAI();
-                                sendOrder = 1;
-                                orderAction = 0x2BC;
-                                param_1 = target->id;
-                                orderTargetOwner = target->owner->id;
-                                break;
                             case 3:
-                                memberAI = member->unitAI();
-                                sendOrder = 1;
-                                orderAction = 0x2BC;
                                 param_1 = this->playStatus->savedAttackerValue;
+                                memberAI = member->unitAI();
+                                orderAction = 0x2BC;
+                                orderTargetOwner = -1;
+                                orderX = -1.0f;
+                                orderY = -1.0f;
+                                orderZ = -1.0f;
                                 break;
                             case 4:
-                                memberAI = member->unitAI();
-                                sendOrder = 1;
                                 orderAction = 0x2C6;
                                 param_1 = -1;
+                                orderTargetOwner = -1;
                                 orderX = (float)this->playStatus->originalPointX;
                                 orderY = (float)this->playStatus->originalPointY;
                                 orderZ = (float)this->playStatus->originalPointZ;
+                                memberAI = member->unitAI();
                                 break;
                             case 5: {
                                 param_1 = -1;
                                 int groupingOffset = 0;
-                                do {
+                                while (groupingOffset < 0x190) {
                                     AIPlayGrouping* grouping =
                                         (AIPlayGrouping*)((char*)this->playStatus + groupingOffset);
                                     if (grouping->groupValue == command->value1Value) {
@@ -293,37 +311,40 @@ int UnitAIModule::selectNewPlayPhase(int param_1, int param_2)
                                         }
                                     }
                                     groupingOffset += 8;
-                                } while (groupingOffset < 0x190);
-                                if (param_1 != -1) {
-                                    memberAI = member->unitAI();
-                                    sendOrder = 1;
-                                    orderAction = 0x2BF;
                                 }
+                                if (param_1 == -1) {
+                                    goto next_member;
+                                }
+                                memberAI = member->unitAI();
+                                orderAction = 0x2BF;
+                                orderTargetOwner = -1;
+                                orderX = -1.0f;
+                                orderY = -1.0f;
+                                orderZ = -1.0f;
                                 break;
                             }
                             case 8:
                                 memberAI = member->unitAI();
-                                sendOrder = 1;
                                 orderAction = 0x2D8;
                                 param_1 = -1;
+                                orderTargetOwner = -1;
                                 orderX = (float)command->value1Value + target->world_x;
                                 orderY = (float)command->value2Value + target->world_y;
                                 orderZ = (float)command->value3Value + target->world_z;
                                 break;
                             default:
-                                break;
+                                goto next_member;
                             }
 
-                            if (sendOrder) {
-                                memberAI->order(
-                                    this->objectValue->id, orderAction, param_1,
-                                    orderTargetOwner, orderX, orderY, orderZ,
-                                    1.0f, 1, 0, 100);
-                            }
+                            memberAI->order(
+                                this->objectValue->id, orderAction, param_1,
+                                orderTargetOwner, orderX, orderY, orderZ,
+                                1.0f, 1, 0, 100);
                         }
 
-                        member = this->objectValue;
+                    next_member:
                         ++i;
+                        member = this->objectValue;
                     } while (i < this->objectValue->groupMembers.numberValue);
                 }
             }
