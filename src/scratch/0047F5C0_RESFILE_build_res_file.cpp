@@ -68,6 +68,13 @@
 //     - Evidence: the executable proves the +4 stack addresses and next-before-
 //       delete order. Explanation: the original local declarations or VC5
 //       register basin that caused the remaining header spills is unresolved.
+//   latest claim follow-up:
+//     - The proven 0x62C4FC log global alone kept the 686-byte strict diff but
+//       improved resync similarity. Absolute string-pool spellings changed
+//       register scheduling and were worse; all such experiments were restored.
+//     - Reordering rId and previous, changing rId to int, moving rId earlier,
+//       and swapping dirSize/pos declarations were codegen duplicates.
+//     - The living source is restored to the clean natural checkpoint.
 //   next leads: test a donor-supported Res_file.cpp declaration context or a
 //     focused header-copy source form. Do not retain raw address steering only
 //     for metrics without stronger source evidence.
