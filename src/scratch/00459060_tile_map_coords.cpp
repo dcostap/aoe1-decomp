@@ -48,6 +48,18 @@
 // 35: added donor-supported <stdlib.h>; emitted bytes stayed unchanged.
 // 36: used game_globals.h; bytes stayed unchanged but owner decoration changed.
 // 37: variant lab tested four case-3/case-10 combinations; no exact result.
+// worker pass, 2026-08-22:
+// 38: hoisted a scoped double case-3 diagonal; size grew by 74 bytes and diff rose to 539.
+// 39: changed all coordinate locals to float; frame became 0x08 and diff rose to 762.
+// 40: hoisted the case-3 diagonal through a float local; size stayed 754 but diff rose to 383.
+// 41: reused the existing double z slot for that diagonal; emitted the same 383-byte result.
+// 42: spelled case-10 as fy > one; size stayed 754 but diff rose to 473.
+// 43: copied raw_y into a case-16 local; emitted the pinned 356-byte duplicate.
+// 44: repeated case-3 diagonal expressions; diff rose to 469 despite slightly better shape.
+// 45: narrowed only fx to float; size grew by 74 bytes and diff rose to 743.
+// 46: removed result's register qualifier; emitted the pinned 356-byte duplicate.
+// 47: qualified raw_y as register double; emitted the pinned 356-byte duplicate.
+// 48: restored the pinned natural source and ran unchanged validation.
 // Final: restored and pinned the natural source. Validation remains a 356-byte MISMATCH.
 // left in scratch: exact source expression/FPU stack shaping remains under test.
 // Accepted-drift blocker: later switch arms use different x87 stack schedules
