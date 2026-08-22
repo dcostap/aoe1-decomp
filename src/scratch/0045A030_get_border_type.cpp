@@ -30,6 +30,10 @@
 // 27: Keeping the eighth neighbor as a separate unsigned-char local instead of reusing the x cursor reduced positional diff from 1014 to 673 bytes and kept all eight call sites at the original offsets. This is the current best source shape.
 // 28: Volatile all-same reads and a volatile border-table view produced extra frames or code, so they are rejected as metric-only steering.
 // 29: Cardinal border preload locals restored the full normal decision CFG but grew the function to 1324 bytes. The simpler direct typed chain remains the clean source.
+// 30: Ghidra-shaped short border_lft/border_tile locals with explicit edge labels produced a 1389-byte duplicated-tail basin (diff 961), so restore the clean chain.
+// 31: windows.h changed the basin slightly to 964 bytes (diff 674), but did not recover the target CFG; restore the no-header source context.
+// 32: Two named short border lookup values in the natural else-if tree produced 1006 bytes (diff 679) and lost exact early blocks; restore the direct chain.
+// 33: A char edge selector was a codegen duplicate of the clean unsigned-byte source (960 bytes, diff 673); retain the simpler typed form.
 
 struct RGE_Tile {
     short screen_xpos;
