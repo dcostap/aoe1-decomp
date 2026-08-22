@@ -44,6 +44,12 @@
 //   Header, selector-width, nested-guard, scope, and register probes were
 //   codegen duplicates.  The pinned natural source remains 90/92 calls and
 //   3279 differing bytes; the unresolved blocker is compiler tail merging.
+// - This claim tested four distinct forms.  Grouping 0x7D/0x68 raised the
+//   call count to 92 but moved the body before case 0x64 and worsened the
+//   strict diff; a type-selected common tail kept two get_string2 sites but
+//   changed the prologue and still worsened the diff.  An explicit long zero
+//   was a codegen duplicate.  A scoped group-B buffer forced a 0x300 frame.
+//   All probes were rolled back to the pinned natural source.
 
 #include <stdio.h>
 
