@@ -13,6 +13,12 @@
 //   Rolled back to the validated natural source.
 // - The original tail uses an explicit branch for mode selection, not a
 //   branchless ternary. The row loop also retains the shipped dec/cmp tail.
+// - BINARY NOTE: The original writes a zero tail at the unaligned temptxt
+//   stack home. A partial memset preserves this shipped local effect.
+// - The row declaration order and <= 8 loop test recover the original setup
+//   stores and reduce the measured difference to 2458 bytes.
+// - A 256-byte info_file gives the exact frame, but the packet indicates 260
+//   bytes and matching period sources use 260-byte file buffers. Keep 260.
 
 #include <stdio.h>
 #include <string.h>
@@ -271,6 +277,7 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* title_text, int end_game_
     char str[100];
     char info_file[260];
 
+    memset(temptxt + 35, 0, 15);
     this->title = 0;
     this->time = 0;
     this->summary_text = 0;
@@ -404,9 +411,9 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* title_text, int end_game_
     create_text(this, this->achievement_choice + 4, 0, 0x184, 0x6F, 0x79, 0x121, 0x0B, 0, 0, 0);
 
     TTextPanel** player_name = this->player_names;
+    TTextPanel** row = this->statistics[0] + 2;
     int player_offset = 4;
     int y = 0xAB;
-    TTextPanel** row = this->statistics[0] + 2;
     int player_index = 1;
     // BINARY NOTE: The shipped loop compares the decremented index with 8.
     do {
@@ -455,7 +462,7 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* title_text, int end_game_
         ++player_name;
         row += 7;
         ++player_index;
-    } while (player_index - 1 < 8);
+    } while (player_index <= 8);
 
     long ok_x;
     long ok_width;
