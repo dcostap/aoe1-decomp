@@ -44,6 +44,16 @@
 // The shared empty string is the exact-bank s_ symbol at 592A40.
 // Probes 1-20 covered child size, result/tail forms, assignment order, pointer
 // ownership, short/int casts, exact empty-string relocation, and header context.
+// Follow-up claim 2026-08-22: eight measured probes kept the clean 162-byte
+// mismatch as the best result. Deriving val_wid from the stored member, using
+// a chained assignment, naming a button-width local, and isolating val_num in
+// a block were codegen duplicates. Moving val_wid to the decompiler's late
+// assignment order moved to 203 bytes and was rolled back. A canonical
+// TPanel virtual declaration surface was also codegen-neutral. Naming the
+// final scrollbar list and line arguments caused a 511-byte structural drift.
+// The source is restored to the clean typed model. The original first hunk
+// still loads btn_wid before panel_width, while this model loads them reversed;
+// the final scrollbar setup also swaps the p22/list-panel register colors.
 // Probes 21-28 combined corrected ownership with result and tested result type,
 // declaration scope, width aliases, and supported register hints. Best current
 // result is 865/865 bytes, 253/253 instructions, 20/20 ordered calls, one
