@@ -13,20 +13,14 @@ repository-wide rules. This file owns the matching procedure.
 - Do not search the web or use web search tools.
 - Keep one compiler-facing source owner.
 
-A claim is one bounded pass, not the lifetime of the function. Use about 20
-meaningful hypotheses as an initial planning checkpoint. It does not select the
-worker's methods or indicate exhaustion. Improvise, change hypothesis classes,
-and continue when additional experiments can teach you something.
+A claim is one pass, not the lifetime of the function. It does not select the
+worker's methods or indicate exhaustion.
 
 ## Required effort
 
-Do honest, sustained work on the assigned function. Do not stop after a few
-failed probes or after you identify a likely compiler-codegen blocker.
-
-Before an unresolved pause, try at least ten meaningful, evidence-led
-hypotheses. Ten is a minimum, not a stop target. Continue while useful leads
-remain. A normal pass should still use about 20 meaningful hypotheses as its
-first planning checkpoint.
+Do honest work on the assigned function. Stop whenever you give up making
+progress. Do not use a pre-established effort limit, hypothesis count,
+checkpoint, budget, or stop condition.
 
 Each hypothesis must test a distinct idea about source structure, types, layout,
 control flow, lifetimes, translation-unit context, or another supported cause.
@@ -36,18 +30,8 @@ unsupported register guesses.
 
 Use the available evidence. Search exact donors and nearby functions. Inspect the
 relevant assembly ranges. Run a structured variant lab when controlled source
-axes can test the blocker. Try a different hypothesis class when one class keeps
-producing the same codegen basin.
-
-You can stop before ten hypotheses only for one of these reasons:
-
-- the function matches exactly;
-- a real external constraint prevents more work; or
-- the user or main agent directly tells you to stop.
-
-Low confidence, slow progress, a likely register-coloring issue, or a likely
-compiler-context issue is not an external constraint. Documented failure is a
-valid result only after this effort standard is met.
+axes can test the blocker. Try a different hypothesis class when it can teach
+you something.
 
 An exact result ends open-ended hypothesis search. It does not end the
 assignment. Complete the exact-finish retrospective before you report.
@@ -66,9 +50,7 @@ assignment. Complete the exact-finish retrospective before you report.
    flag hypotheses. Bounded exploratory tests are valid when their result will
    teach you something.
 10. Keep the clean source model authoritative. Discard opaque metric-only forms.
-11. Do not stop because early approaches fail or progress looks unlikely. End the
-    pass only at exact completion, a real external constraint, or after the
-    required effort and useful evidence-led approaches are exhausted.
+11. Stop whenever you give up making progress.
 12. Finish the target using the exact or unresolved procedure below.
 
 ## Status and leases
@@ -105,7 +87,7 @@ only when the assignment authorizes it and reusable binary evidence justifies it
 Use the integrated target-session check for the baseline and each meaningful
 hypothesis. Record the hypothesis and what the emitted result means. A syntax
 repair or unchanged rerun is not a new hypothesis. Restore and validation checks
-do not consume the planning budget.
+are support actions, not hypotheses.
 
 The baseline check pins the clean source. Move that pin only after evidence
 improves the natural reconstruction.

@@ -35,17 +35,13 @@ target. Authorize any shared-file change separately.
 Every assignment must request honest, sustained matching work. Include these
 requirements in the worker prompt:
 
-- Do not stop after a few failed probes.
-- Try at least ten meaningful, evidence-led hypotheses before an unresolved
-  pause.
+- Stop whenever you give up making progress.
+- Do not set a pre-established effort limit, hypothesis count, checkpoint,
+  budget, or stop condition.
 - Test distinct source, type, layout, control-flow, lifetime, or compiler-context
-  ideas. Do not inflate the count with cosmetic edits or repeated checks.
+  ideas. Do not report cosmetic edits or repeated checks as new ideas.
 - Use exact donors, nearby functions, assembly evidence, and a structured
   variant lab when they apply.
-- Ten attempts are a minimum, not a stop target. Continue while useful leads
-  remain.
-- Stop before ten only for an exact match, a real external constraint, or a
-  direct user instruction.
 - Report each attempt, its result, and the evidence learned from it.
 - Treat the first exact result as the start of the exact-finish retrospective.
 - Compare it with the last clean nonexact source. Walk back independent changes,
@@ -220,10 +216,9 @@ required ordering, or strange shipped behavior. Use `BINARY NOTE:`,
 Remove stale probe explanations and comments that only repeat the code. Do not
 state a suspected copy mistake or developer motive as fact.
 
-Reject a shallow unresolved return. If the worker reports fewer than ten honest
-hypotheses, continue that same assignment. Do not count syntax repairs, unchanged
-reruns, cosmetic edits, or unsupported register guesses as honest hypotheses.
-Also reject a ten-item list that leaves useful evidence-led approaches untested.
+Do not accept or reject an unresolved return based on a probe or hypothesis
+count. Review the evidence, source quality, open questions, and possible next
+approaches.
 
 Do not trust folder placement or a reported match. Exact promotion requires a
 fresh local `MATCH` after the move.
