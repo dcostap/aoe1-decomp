@@ -30,18 +30,34 @@
 // - Independent size-3 dispatch plus parameter-home reuse improved structural
 //   shape to 80.1% and exact-block coverage to 43.4%, but worsened diff to 512.
 //   Restore the clean typed source until register-color evidence improves.
+// - Exact fractal.cpp donors prove the complete PointMaker field ownership.
+//   Main review rejected a later decompiler-local rewrite that mutated all
+//   three parameter homes. Keep named mask dimensions, rows, and cursors.
+
+class PrimaryPt { public: int x; int y; };
+class PtToPt { public: int x; int y; };
 
 class PointMaker {
 public:
-    char gap_000[0xFA8];
+    PrimaryPt Prime;
+    PtToPt Point[500];
     char* Mask_2x2;
     char* Mask_3x3;
     char* Mask_4x4;
     char* Mask_5x5;
-    char gap_FB8[0x1C];
+    int x;
+    int y;
+    int NumSplitsPerBranch;
+    int NumberOfSatellites;
+    int ChanceOfNextNode;
+    int MaxNumberOfBranches;
+    int MaxBranchFlag;
     int Width;
     int Height;
-    char gap_FDC[0x10];
+    int MinimumNumTiles;
+    int NumNodes;
+    int NumTilesActuallyChosen;
+    int CurrentPoint;
     int ProbabilityTiles;
     int TargetProbabilityCount;
     int ProbabilityAdd;
@@ -49,9 +65,29 @@ public:
     int SatelliteRadius;
     int PrimaryRadius;
     int SizeArrays;
-    char gap_1008[0x1C];
+    int SatelliteDistance;
+    int BranchDistance;
+    int DirX;
+    int DirY;
+    int MaxNumberOfBranchLevels;
+    int CurrentNumberOfBranchLevels;
+    char* ExternalArray;
     char* ProbArray;
+    char* PlacementArray;
+    char* WritableExternalArray;
+    int DoNotDrawOnFlag;
+    int DrawOnOnlyFlag;
+    int DrawOnlyInExternalArrayFlag;
+    int DrawToOneArrayFlag;
+    int BorderDepthPercentage;
+    int LeftLimit;
+    int RightLimit;
+    int TopLimit;
+    int BottomLimit;
+    char SpecialLandType;
+    char pad_end[3];
 
+protected:
     void DrawMask(int param_1, int param_2, int param_3);
 };
 
