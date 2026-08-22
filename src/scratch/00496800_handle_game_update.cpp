@@ -36,6 +36,12 @@
 //   hints, stdio context, and named-zero forms all stayed in the same basin.
 //   Direct close and game-over returns reached exact size but added a return
 //   and worsened the strict diff, so the shared exits were restored.
+// - resumed matching tested the Ghidra-indicated calc/update type reversal,
+//   named -1 sentinel, inline cold exits, and zero-test spellings. These were
+//   neutral or worse. A top-tested while loop is a useful structural lead: it
+//   gives 100% ordered-call alignment, 10/10 jump parity, and 89.81% shape,
+//   but loses the original accumulator carry and is 17 bytes short; it was
+//   restored because strict diff is 1882 versus 1880 for the clean do-loop.
 //
 // unresolved structural lead: original materializes an early EBX zero and
 // later uses EBP=-1 before the loop, while this basin keeps EBP=0 and the
