@@ -27,6 +27,13 @@
 //     restored after emitting no improvement. The duplicated interface arms
 //     are required for the 72-call sequence; a common redraw tail loses calls.
 //
+//   worker pass (sa-6b56b58a): reusing the mode local, moving pick_info scope,
+//   typed null aliases, and a pick-output alias were codegen duplicates.
+//   Duplicating the conditional pick call changed the call sequence and was
+//   restored. Initializing the exclude pointer to null changed metrics only;
+//   it reduced the raw diff by 4 bytes but worsened shape and block coverage.
+//   The pinned source was restored and revalidated unchanged.
+//
 // Current state: canonical source, size 2252/2252, frame 0x14/0x14, calls
 //   72/72 ordered and target-aligned, shape 92.85%, strict diff 1974 bytes.
 // Remaining evidence-backed drift is the early EBX zero/register-zero basin,
