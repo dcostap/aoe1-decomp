@@ -83,6 +83,19 @@
 //   broad nonexact source family; restored.
 // - Materializing the working cursor once before parity setup returned to the
 //   389B/347-byte basin. No policy-valid exact source was found.
+// sa-54e2dadc-r1 probes (2026-08-22):
+// - A separate row counter inside the positive-height guard removed the 0x8
+//   frame and reached 382B/389 strict bytes; restored.
+// - Binary-supported x and p5 count-home reuse reproduced the prior 404B/305B
+//   diagnostic basin. It was a duplicate compiler-steering form; restored.
+// - Explicit terminator continues, shared packet-tail labels, mutable command
+//   bytes, and a split payload cursor were duplicate or worse basins.
+// - Direct sibling-style setup and row-tail declaration orders were duplicate
+//   or worse. Moving row-base initialization before parity kept 347B but added
+//   one exact block only; the clean source remains the smallest natural form.
+// - Final clean validation: 389B/347 strict bytes, 0x8 frame, one ordered
+//   AlignedWidth call, and 32.88% exact-block coverage. The blocker remains
+//   early VC5 register/home allocation and parity/destination spill placement.
 
 typedef unsigned char uchar;
 struct Shape_Header { long bounds; long origin; long xmin; long ymin; long xmax; long ymax; };
