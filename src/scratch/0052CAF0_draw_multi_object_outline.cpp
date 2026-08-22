@@ -47,6 +47,14 @@
 // - BINARY NOTE: The original distance block uses branchless signed-absolute
 //   arithmetic in ESI/EAX.  Natural abs expressions entered a worse basin and
 //   added 14 bytes, so the clean manual form remains pinned.
+// - Claim probe: the real Windows SDK tagPOINT/tagRECT context changed the
+//   result to 1100 bytes and 44.25% shape.  The local API clones remain closer.
+// - Claim probe: the reviewed RGE_View/RGE_Main_View virtual surface was a
+//   codegen duplicate.  It changed no emitted byte.
+// - Claim probe: source fall-through for the row-dominant arm raised shape to
+//   56.53% and exact blocks to 32.49%, but strict drift rose to 1134 bytes.
+//   The clean source remains pinned.  This is a useful CFG lead, not a final
+//   source model.
 // - Next lead: recover the original local-home and register basin from the
 //   period tvw_main.cpp declaration and translation-unit context.  Do not add
 //   aliases or fake volatility without new binary evidence.
