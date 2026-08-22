@@ -33,19 +33,22 @@
 // - A direct typed PDP[category] traversal and function-scope count are source
 //   cleaner but codegen duplicates. A continue-based skip adds a jump and is
 //   not retained. Main review made used unsigned because the original masks it
-//   to 16 bits. Typed access now preserves zero extension without an overlapping
-//   dword read.
+//   to 16 bits. The retained expression keeps the typed bucket owner but uses
+//   the executable-proven overlapping dword read and mask for codegen shape.
 // - Revisit probes confirmed that direct distanceTable access, late found
 //   initialization, named owner-index locals, and PDP-before-table assignment
 //   do not recover the original frame or register topology.
 // - A signed short used field emits movsx and worsens the clean frontier.
 //   A promoted distance result reduces the mismatch but drops the frame to
-//   0x18. An explicit dword-overlap probe improves resynchronization only and
-//   remains outside this typed clean source.
-// Left in scratch: original zero-register order, PDP/count homes, bucket LEA,
-// and inner byte/register topology remain unresolved. The source keeps typed
-// record ownership, the explicit clamp, the 0x100 output bound, five global
-// output buckets, and two bounded scans.
+//   0x18. The current probe restores the earlier natural bucket-reference
+//   shape while keeping typed visible-unit ownership and the observed
+//   16-bit count extraction.
+// - This claim tested pointer-owner splitting, declaration scope, direct
+//   decrement loop forms, bucket address spellings, and an opaque output
+//   bucket declaration. The only useful basin is the typed source with an
+//   integer-promoted table result, dword-overlap count extraction, and the
+//   pre-decrement category loop; it emits 381 bytes with 279 mismatches.
+//   The original remains 387 bytes with a distinct inner-save topology.
 
 struct VisibleUnitRec {
     int object_id;
@@ -77,18 +80,16 @@ public:
 
 int Visible_Unit_Manager::GetVisibleUnits(int x, int y, int distance, int player, int* categories, int category_count, int* player_map) {
     int found = 0;
-    unsigned int count;
     unsigned char* distTable;
     VisibleUnitPtr* PDP;
+    VisibleUnitRec* rec;
     if (category_count <= 0) {
         return 0;
     }
     if (player >= this->Player_Count) {
         return 0;
     }
-    if (distance > 0x0f) {
-        distance = 0x0f;
-    }
+    distance = distance > 0x0f ? 0x0f : distance;
 
     distTable = this->distanceTable;
     PDP = this->PlayerDataPtrs[player];
@@ -104,10 +105,12 @@ int Visible_Unit_Manager::GetVisibleUnits(int x, int y, int distance, int player
     int y2 = y + distance;
 
     do {
-        int category = *categories++;
-        VisibleUnitRec* rec = PDP[category].unit_list;
-        count = PDP[category].used;
-        for (; count != 0; count--) {
+        int category = *categories;
+        categories++;
+        VisibleUnitPtr* bucket = &PDP[category];
+        rec = bucket->unit_list;
+        unsigned int count = *(unsigned int*)&bucket->used & 0xffff;
+        while (count != 0) {
             int dx;
             int dy;
             if (rec->pos_x <= x2) {
@@ -124,7 +127,7 @@ int Visible_Unit_Manager::GetVisibleUnits(int x, int y, int distance, int player
                     } else {
                         dy = rec->pos_y - y;
                     }
-                    unsigned char d = distTable[(dx & 0x0f) + ((dy & 0x0f) << 4)];
+                    int d = distTable[(dx & 0x0f) + ((dy & 0x0f) << 4)];
                     if (d <= distance) {
                         int mapped = player_map[rec->player];
                         int size = VisibleUnitList_Size[mapped];
@@ -140,9 +143,9 @@ int Visible_Unit_Manager::GetVisibleUnits(int x, int y, int distance, int player
             }
 next_entry:
             rec++;
+            count--;
         }
-        category_count--;
-    } while (category_count != 0);
+    } while (--category_count != 0);
 
     return found;
 }
