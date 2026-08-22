@@ -1,7 +1,7 @@
 // 00466A90 TEasy_Panel::setup (Panel_ez.cpp lines 52-215)
 // attempt 1: full natural reconstruction from decoded stack layout.
 // Key facts decoded from original asm:
-//  - locals: own_mem flag at E-0xCC8 (init -1, set 1 on file read, tested ==1 at end)
+//  - locals: f2g at E-0xCC8 (init -1), own_mem at E-0xCCC (set 1 on file read, tested ==1 at end)
 //  - 37 sscanf int outputs + back_pic_id_b1(RESFILE out) + resDataSize dummy at E-0xC2C
 //  - temp_label[256] at E-0xC28; sprintf/open use temp_label+0xFC
 //  - 10 name buffers, strings live at buf+0x100 (sscanf targets AND setters both use +0x100)
@@ -10,8 +10,9 @@
 //  - set_text/focus/state colors pack 3 bytes: (uchar)a<<16 | (uchar)b<<8 | (uchar)c
 //
 // STATUS: frame 0xCC8 exact, 33/33 calls aligned, field offsets +0xFC/+0x200/+0x470 fixed (TPanel size 0xFC).
-// Remaining drift: rebuilt own_mem lands at E-0xCC4 instead of E-0xCC8 (4-byte bottom pad),
-// size -30, shape 60%. Next leads: (a) one of the 4-byte bottom locals is being eliminated or
+// Remaining drift: rebuilt f2g lands at [esp+24h] instead of original [esp+18h],
+// and own_mem at [esp+14h] instead of original [esp+10h]. Size is -20 bytes.
+// Next leads: (a) one of the 4-byte bottom locals is being eliminated or
 // the int region is 4 bytes short of the original's 40-dword CC8..C2C span; probe declaring the
 // dummy resDataSize as char[4] or adding a 4-byte used local below own_mem; (b) check whether the
 // two vslot calls need an explicit cached vtable local (orig keeps [esi] in ebx across both calls).
@@ -37,6 +38,8 @@
 // declaration order, casts, and reference ABI forms did not produce an exact group.
 // BINARY NOTE: The unresolved drift begins at the f2g home and continues through sscanf locals.
 // LIKELY INTENT: Recover the original Panel_ez.cpp declaration or translation-unit context next.
+// BINARY NOTE: TPanel::setup is virtual at vslot 0x04 and takes an unsigned-char final argument.
+// BINARY NOTE: RESFILE_load uses two int reference outputs; packed color helpers take unsigned long.
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -57,7 +60,8 @@ class TPanel;
 class TPanel {
 public:
     virtual ~TPanel();                       // 0x00
-    virtual void vf04(void);                 // 0x04
+    virtual long setup(TDrawArea* area, TPanel* parent, long left, long top,
+                       long width, long height, unsigned char value); // 0x04
     virtual void vf08(void);                 // 0x08
     virtual void vf0C(void);                 // 0x0C
     virtual void vf10(void);                 // 0x10
@@ -83,7 +87,6 @@ public:
     TDrawArea* render_area;                  // +0x20
     char gap_24[0xFC - 0x24];                // TPanel total size 0xFC (vptr incl.)
 
-    int setup(TDrawArea* area, TPanel* parent, long left, long top, long width, long height, int value);
 };
 
 class TEasy_Panel : public TPanel {
@@ -141,9 +144,9 @@ public:
     void set_background_pos(int v);
     void set_background_colors(unsigned char c1, unsigned char c2);
     void set_bevel_colors(unsigned char a, unsigned char b, unsigned char c, unsigned char d, unsigned char e, unsigned char f);
-    void set_text_colors(int a, int b);
-    void set_focus_colors(int a, int b);
-    void set_state_colors(int a, int b);
+    void set_text_colors(unsigned long a, unsigned long b);
+    void set_focus_colors(unsigned long a, unsigned long b);
+    void set_state_colors(unsigned long a, unsigned long b);
     void set_button_pics(char* filename, long id);
     void set_popup_info_file(char* filename, long id);
 
@@ -151,7 +154,10 @@ public:
                long x, long y, long w, long h, int allow_shadow);
 };
 
-extern "C" unsigned char* __cdecl RESFILE_load(unsigned long type, unsigned long id, int* size, int* param_4);
+extern "C" unsigned char* __cdecl RESFILE_load(unsigned long type,
+                                                unsigned long id,
+                                                int& size,
+                                                int& param_4);
 
 long TEasy_Panel::setup(TDrawArea* area, TPanel* parent, char* info_file, long info_id, int use_area_size,
                         long x, long y, long w, long h, int allow_shadow)
@@ -259,7 +265,7 @@ long TEasy_Panel::setup(TDrawArea* area, TPanel* parent, char* info_file, long i
     }
     if (data == 0) {
         if (this->info_id != -1) {
-            data = RESFILE_load(0x62696E61, this->info_id, &own_mem, &back_pic_id_b1);
+            data = RESFILE_load(0x62696E61, this->info_id, own_mem, back_pic_id_b1);
         }
         if (data == 0) {
             return 1;
