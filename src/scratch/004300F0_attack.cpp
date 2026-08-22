@@ -57,6 +57,30 @@
 //   radius, sqrt, sin, and cos schedule can change extended-precision rounding.
 //   Those values become missile coordinates and range arguments. Matching call
 //   targets and body size do not prove equivalent published projectile state.
+// - Session sa-9268378f follow-up: ten fresh hypotheses left the clean source
+//   unchanged. Inline range fell to 289 bytes and 276 diff bytes. A radius_y-only
+//   local gave 179 diff bytes; radius_x-only gave 180. Fully direct radius and
+//   angle expressions fell to 232 bytes. A double range gave 310 bytes and a
+//   0xC frame. Volatile radius_y gave 181 diff bytes and was rejected as steering.
+//   Function-scope radius locals, a typed missile factory return, and double angle
+//   locals were codegen duplicates at 178 diff bytes. DAT_0056f4ac restored the
+//   original constant relocation but fell to 303 bytes and 260 diff bytes.
+//   The original still keeps a distinct x87 stack order from +0x19 through the
+//   first call. The three call sites, guard, tail, size, and frame remain aligned.
+// - Continuation audit: same-TU sibling-shaped function/block c/s/range forms
+//   stayed at 259 bytes with a 0xC frame and 272-274 diff bytes. A late direct
+//   radius range expression reached 176 diff bytes and first mismatch +0x1A,
+//   but shape fell to 75.00% and the x87 topology remained different. Radius_y
+//   late and function-scope c/s inline-range forms were worse. Keep the clean
+//   178-diff source, not the metric-only 176-diff form.
+// - Structured context labs found no exact lead. Ambient declarations tested
+//   64 states. Standard header combinations tested 16 states. VC5 risky and
+//   small flag labs tested 768 states each. The best invariant group was 305
+//   bytes, frame 0x8, three aligned calls, and 174 diagnostic diff bytes from
+//   the lab template. It did not reduce the x87 mismatch and used diagnostic
+//   context, so it was not retained. Donor-supported hp and computerPlayer
+//   declarations were codegen duplicates or worse. Numeric #line mapping had
+//   no effect; alternate #line source filenames failed under VC5.
 
 class RGE_Combat_Object;
 class RGE_Missile_Object;
