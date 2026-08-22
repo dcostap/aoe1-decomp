@@ -111,6 +111,21 @@
 //   formation for the lobby done/close/normal-start order and zero-register
 //   allocation, not another local type or raw-offset change.
 
+// Worker sa-340126dc-r1 (2026-08-22):
+//   Read the full source, lessons, dossier, original assembly, and prior
+//   history.  The clean source remains 1635 differing bytes, 74.51% shape,
+//   56/70 ordered calls, and a 0x90C frame.
+//   Tested an entry error local, positive and explicit-else entry guards,
+//   function-scope SYSTEMTIME, split screen guards, field-value locals, a
+//   lobby switch, natural command truth tests, and Ghidra-shaped inline
+//   normal/lobby CFG variants.  The clean source was restored after each.
+//   The entry-local, SYSTEMTIME, explicit-else, and truth-test forms were
+//   codegen duplicates.  Split guards, field locals, switch, and inline CFG
+//   forms were worse or changed call order.  No exact result or accepted drift
+//   residue was proved.  The first structural mismatch remains the VC5
+//   zero-register entry compare; the main gap remains done/close/normal-start
+//   block formation and ordered call placement.
+
 #include <string.h>
 
 typedef void* HWND;
