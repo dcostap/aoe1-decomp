@@ -40,11 +40,16 @@
 // revisit probes: a scoped game pointer worsened the result to 544 bytes;
 // receiver pointer/reference aliases, declaration moves, canonical screen
 // fields, and the RGE_Base_Game base surface were neutral or codegen-duplicate.
+// probe: split world->player_num at +0x3C from world->player_count at +0x44;
+// the loop reads +0x44 while the post-new-scenario limit reads +0x3C. This
+// improved structural shape from 85.53% to 86.16% without changing size.
 // final lead: keep the typed TRIBE_Game/RGE_Game_World scenario-editor flow;
 // the remaining gap is the original register/home coloring and one-byte size.
 // FLAGS: default config/flags/default.rsp (/nologo /c /O2 /Oy).
 
 struct RGE_Scenario { int Get_player_Active(int index); };
+struct RGE_Player;
+struct RGE_Player_Info;
 struct TDropDownPanel { void set_line(long line); };
 struct Sound_Driver { char gap_00[1]; char mute; };
 
@@ -63,10 +68,13 @@ struct RGE_Game_World {
     virtual void vB0(); virtual void vB4(); virtual void del_game_info();
     virtual void vBC(); virtual void vC0(); virtual void vC4(); virtual void vC8();
     virtual void vCC(); virtual void vD0();
-    virtual unsigned char new_scenario(void* player_info, int param);
+    virtual unsigned char new_scenario(RGE_Player_Info* player_info, int param);
     char gap_04[0x3C - 4];
+    short player_num;
+    char gap_3E[2];
+    RGE_Player** players;
     short player_count;
-    char gap_3E[0x5C - 0x3E];
+    char gap_46[0x5C - 0x46];
     RGE_Scenario* scenario;
 };
 
@@ -211,8 +219,8 @@ int TRIBE_Screen_Sed::command_new_map(char* scenario_name, int param_2, int para
     if (rge_base_game->sound_system != 0) {
         rge_base_game->sound_system->mute = 1;
     }
-    result = this->world->new_scenario((void*)player_info.name, param_3) & 0xff;
-    if (result != 0 && this->world->player_count < 8) {
+    result = this->world->new_scenario(&player_info, param_3) & 0xff;
+    if (result != 0 && this->world->player_num < 8) {
         result = 0;
         this->world->del_game_info();
     }
