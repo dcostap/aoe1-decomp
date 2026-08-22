@@ -41,6 +41,17 @@
 // while loop restored 19/19 calls but gave 691 differing bytes and a 2-byte
 // boundary overrun. Explicit flag comparisons and short flags did not close
 // the call gap. Restored the simplest checked source.
+// sa-e941c99f-r1 pass: the executable's short-circuit OR groups are required
+// for all vertical and diagonal neighbor tests. The prior independent vertical
+// tests changed behavior and prevented separate set_terrain call sites. Explicit
+// `border == 1` terminal tests recover the original `cmp byte,1` branches, the
+// 840-byte boundary, all 19 calls, and all 276 instruction blocks. One SIB byte
+// remains: the oracle encodes `[edi+edx+5]`, while VC5 emits equivalent
+// `[edx+edi+5]`. Natural typed pointer, array, and proven byte-offset spellings
+// all stayed in that same one-byte recolor basin.
+// ACCEPTED DRIFT: the sole changed SIB byte exchanges the base and index in
+// one byte load. Both encodings calculate the identical EDX+EDI+5 address.
+// Instruction order, calls, predicates, memory effects, and fault order match.
 //
 // The map rows are arrays of 0x18-byte RGE_Tile records. The byte used by
 // clean_borders is terrain at +5, distinct from the passability byte at +4.
@@ -96,53 +107,42 @@ void TRIBE_Map::clean_borders(long x1, long y1, long x2, long y2, unsigned char 
             for (; x <= x2; ++x) {
                 if (TERRAIN_AT(this->map_row_offset[y1] + x) == 2) {
                     bool border = false;
-                    if (y1 > 0 && this->water(TERRAIN_AT(this->map_row_offset[y1 - 1] + x)))
-                        border = true;
-                    if (y1 < max_y && this->water(TERRAIN_AT(this->map_row_offset[y1 + 1] + x)))
+                    if ((y1 > 0 && this->water(TERRAIN_AT(this->map_row_offset[y1 - 1] + x))) ||
+                        (y1 < max_y && this->water(TERRAIN_AT(this->map_row_offset[y1 + 1] + x))))
                         border = true;
                     if (x > 0) {
-                        if (this->water(TERRAIN_AT(this->map_row_offset[y1] + x - 1)))
-                            border = true;
-                        else if (y1 > 0 && this->water(TERRAIN_AT(this->map_row_offset[y1 - 1] + x - 1)))
-                            border = true;
-                        else if (y1 < max_y && this->water(TERRAIN_AT(this->map_row_offset[y1 + 1] + x - 1)))
+                        if (this->water(TERRAIN_AT(this->map_row_offset[y1] + x - 1)) ||
+                            (y1 > 0 && this->water(TERRAIN_AT(this->map_row_offset[y1 - 1] + x - 1))) ||
+                            (y1 < max_y && this->water(TERRAIN_AT(this->map_row_offset[y1 + 1] + x - 1))))
                             border = true;
                     }
                     if (x < max_x) {
-                        if (this->water(TERRAIN_AT(this->map_row_offset[y1] + x + 1)))
-                            border = true;
-                        else if (y1 > 0 && this->water(TERRAIN_AT(this->map_row_offset[y1 - 1] + x + 1)))
-                            border = 1;
-                        else if (y1 < max_y && this->water(TERRAIN_AT(this->map_row_offset[y1 + 1] + x + 1)))
+                        if (this->water(TERRAIN_AT(this->map_row_offset[y1] + x + 1)) ||
+                            (y1 > 0 && this->water(TERRAIN_AT(this->map_row_offset[y1 - 1] + x + 1))) ||
+                            (y1 < max_y && this->water(TERRAIN_AT(this->map_row_offset[y1 + 1] + x + 1))))
                             border = 1;
                     }
-                    if (!border) {
-                        RGE_Map::set_terrain(this->game_world, (short)x, (short)y1, terrain, 0, 0);
+                    if (border == 1)
                         continue;
-                    }
+                    RGE_Map::set_terrain(this->game_world, (short)x, (short)y1, terrain, 0, 0);
                 } else if (!this->water(TERRAIN_AT(this->map_row_offset[y1] + x))) {
                     bool border = false;
-                    if (y1 > 0 && this->water(TERRAIN_AT(this->map_row_offset[y1 - 1] + x)))
-                        border = true;
-                    if (y1 < max_y && this->water(TERRAIN_AT(this->map_row_offset[y1 + 1] + x)))
+                    if ((y1 > 0 && this->water(TERRAIN_AT(this->map_row_offset[y1 - 1] + x))) ||
+                        (y1 < max_y && this->water(TERRAIN_AT(this->map_row_offset[y1 + 1] + x))))
                         border = true;
                     if (x > 0) {
-                        if (this->water(TERRAIN_AT(this->map_row_offset[y1] + x - 1)))
-                            border = true;
-                        else if (y1 > 0 && this->water(TERRAIN_AT(this->map_row_offset[y1 - 1] + x - 1)))
-                            border = true;
-                        else if (y1 < max_y && this->water(TERRAIN_AT(this->map_row_offset[y1 + 1] + x - 1)))
+                        if (this->water(TERRAIN_AT(this->map_row_offset[y1] + x - 1)) ||
+                            (y1 > 0 && this->water(TERRAIN_AT(this->map_row_offset[y1 - 1] + x - 1))) ||
+                            (y1 < max_y && this->water(TERRAIN_AT(this->map_row_offset[y1 + 1] + x - 1))))
                             border = true;
                     }
                     if (x < max_x) {
-                        if (this->water(TERRAIN_AT(this->map_row_offset[y1] + x + 1)))
-                            border = true;
-                        else if (y1 > 0 && this->water(TERRAIN_AT(this->map_row_offset[y1 - 1] + x + 1)))
-                            border = 1;
-                        else if (y1 < max_y && this->water(TERRAIN_AT(this->map_row_offset[y1 + 1] + x + 1)))
+                        if (this->water(TERRAIN_AT(this->map_row_offset[y1] + x + 1)) ||
+                            (y1 > 0 && this->water(TERRAIN_AT(this->map_row_offset[y1 - 1] + x + 1))) ||
+                            (y1 < max_y && this->water(TERRAIN_AT(this->map_row_offset[y1 + 1] + x + 1))))
                             border = 1;
                     }
-                    if (border)
+                    if (border == 1)
                         this->set_terrain(this->game_world, (short)x, (short)y1, 2, 0, 0);
                 }
             }
