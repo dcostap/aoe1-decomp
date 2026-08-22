@@ -41,6 +41,11 @@
 // Main review retained that typed table because raw absolute addresses are not
 // valid living source. Numeric pool values are ordinary source constants.
 // Left in scratch: behavior and call set look right, but broad register-allocation/FPU compare drift remains; not an accepted_drift candidate.
+// Fresh pass r7: raw symbol-relative reads with the proven 0x20-byte stride
+// reached 421 bytes and 257 differing bytes. They remain diagnostic only.
+// Main review restored the typed table owner and ordinary numeric constants.
+// Seven follow-up probes covered angle aliases, endpoint lifetimes, loop forms,
+// narrow facet width, and comparison direction. They did not improve the source.
 
 extern "C" double __cdecl atan2(double, double);
 
