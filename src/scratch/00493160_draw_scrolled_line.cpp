@@ -44,6 +44,14 @@
 //   quality or call alignment. The binary switch lowering remains canonical.
 // - Twelve meaningful checks found no policy-valid exact source. Clean source
 //   remains 685 bytes versus 692, with 23 ordered calls and diff 614.
+// - A same-TU draw_line donor proves a receiver-plus-RECT local as a natural
+//   source shape. Applying that aggregate here reproduced the binary receiver
+//   store and late receiver lifetime, but the donor-like form worsened the
+//   strict diff to 645 and lost exact blocks. A clean-order aggregate reached
+//   683 bytes and diff 611, but its CFG shape was worse; it was reverted.
+// - A short or long copied line index, a branch-local receiver alias, direct
+//   receiver access, and extra length initialization did not improve the
+//   reduced natural source. The clean RECT form remains pinned for audit.
 
 #include <windows.h>
 #include <string.h>
