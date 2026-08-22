@@ -12,6 +12,12 @@
 // it changed the frame and was restored.
 // layout probe: original RECT/old_font/str declaration order was a codegen duplicate;
 // restored the clean source.
+// layout probe: using str instead of the decompiler's str+4 moved the first hunk
+// four bytes earlier and improved shape. The simpler base form is retained.
+// ABI probe: a normal imported SetRect reproduces the original repeated EBX call
+// surface and reduced the positional diff from 419 to 234 bytes.
+// layout probe: str[252] restored the 0x114 frame and reduced the diff to 230,
+// but the smaller buffer is not supported by the local evidence; restored str[256].
 // BLOCKER: exact 668B remains blocked at the sprintf destination and downstream
 // rectangle scheduling. Calls, ABI, pixel layout, cleanup, and frame are understood.
 
@@ -21,8 +27,8 @@ class TDrawArea { public: char pad[0x38]; void* DrawDc; void PtrClear(RECT*, int
 class TPanel {
 public:
     char gap_00[0x14];
-    int width;
-    int height;
+    long width;
+    long height;
     char gap_1c[0x70];
     int screen_left;
     int screen_top;
@@ -38,7 +44,7 @@ extern "C" int (__stdcall* const SelectClipRgn)(void*, void*);
 extern "C" void* (__stdcall* const SelectObject)(void*, void*);
 extern "C" int (__stdcall* const SetBkMode)(void*, int);
 extern "C" unsigned long (__stdcall* const SetTextColor)(void*, unsigned long);
-extern "C" int (__stdcall* const SetRect)(RECT*, int, int, int, int);
+extern "C" __declspec(dllimport) int __stdcall SetRect(RECT*, int, int, int, int);
 extern "C" int (__stdcall* const DrawTextA)(void*, char*, int, RECT*, unsigned int);
 static char tag[] = "tpnl_tim::render_to_image_buffer";
 
@@ -54,17 +60,17 @@ int TRIBE_Panel_Pop::render_to_image_buffer()
     SelectClipRgn(this->ImageBuffer->DrawDc, this->image_clip_region);
     old_font = SelectObject(this->ImageBuffer->DrawDc, this->font);
     SetBkMode(this->ImageBuffer->DrawDc, 1);
-    sprintf(str + 4, "%s%ld/%ld", this->TPanel::get_string(0x2b2a), this->pop, this->max_pop);
+    sprintf(str, "%s%ld/%ld", this->TPanel::get_string(0x2b2a), this->pop, this->max_pop);
     SetTextColor(this->ImageBuffer->DrawDc, this->color2);
-    int w = this->width;
-    int h = this->height;
-    SetRect(&rect, 0, 0, w - 3, h - 3); DrawTextA(this->ImageBuffer->DrawDc, str + 4, -1, &rect, 0x21);
-    SetRect(&rect, 0, 2, w - 3, h - 1); DrawTextA(this->ImageBuffer->DrawDc, str + 4, -1, &rect, 0x21);
-    SetRect(&rect, 2, 0, w - 1, h - 3); DrawTextA(this->ImageBuffer->DrawDc, str + 4, -1, &rect, 0x21);
-    SetRect(&rect, 2, 2, w - 1, h - 1); DrawTextA(this->ImageBuffer->DrawDc, str + 4, -1, &rect, 0x21);
+    long w = this->width;
+    long h = this->height;
+    SetRect(&rect, 0, 0, w - 3, h - 3); DrawTextA(this->ImageBuffer->DrawDc, str, -1, &rect, 0x21);
+    SetRect(&rect, 0, 2, w - 3, h - 1); DrawTextA(this->ImageBuffer->DrawDc, str, -1, &rect, 0x21);
+    SetRect(&rect, 2, 0, w - 1, h - 3); DrawTextA(this->ImageBuffer->DrawDc, str, -1, &rect, 0x21);
+    SetRect(&rect, 2, 2, w - 1, h - 1); DrawTextA(this->ImageBuffer->DrawDc, str, -1, &rect, 0x21);
     SetTextColor(this->ImageBuffer->DrawDc, this->mode == 1 ? this->color3 : this->color1);
     --h; --w;
-    SetRect(&rect, 1, 1, w, h); DrawTextA(this->ImageBuffer->DrawDc, str + 4, -1, &rect, 0x21);
+    SetRect(&rect, 1, 1, w, h); DrawTextA(this->ImageBuffer->DrawDc, str, -1, &rect, 0x21);
     SelectObject(this->ImageBuffer->DrawDc, old_font);
     SelectClipRgn(this->ImageBuffer->DrawDc, 0);
     this->ImageBuffer->ReleaseDc(tag);
