@@ -39,6 +39,12 @@
 // probe 36: named second-extension directory locals; emitted code unchanged, rolled back
 // probe 37: direct modeValue/prog_info expressions followed the original decomp but duplicated probe 14 at diff 1703; rolled back
 // probe 38: branch-local second-extension list aliases matched the clean 747-byte codegen; no new emitted-code lead, rolled back
+// probe 41/H21 and probe 61/H31: direct modeValue with a direct prog_info local worsened to diff 924; rolled back.
+// probes 43/H22, 49/H25, 51/H26, and 57/H29: branch-local line or base/self aliases
+// preserved the clean 747-byte basin but did not move the first structural hunk; rolled back.
+// probes 45/H23, 53/H27, and 59/H30: game/prog_info alias variants worsened to
+// diff 1221 or 919; rolled back. Probe 47/H24 conditional directory selection
+// worsened to diff 1699. These tests do not prove a canonical alias shape.
 // BLOCKER: After the first _unlink, the executable reads the screen member at
 // +0x69C before rge_base_game. The rebuild reads rge_base_game first. Fault and
 // concurrent-mutation order differ before the same later calls.
