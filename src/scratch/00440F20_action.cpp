@@ -28,6 +28,11 @@
 // - Twenty policy-valid source and context hypotheses were tested in this
 //   pass. Header context, guard polarity, parameter homes, and call layout did
 //   not recover the late load.
+// - A field-local volatile radioButton[3] model restored the late load and
+//   produced MATCH (0 bytes), but it remains a policy-invalid volatility
+//   surrogate. Identical natural fallback branches, an empty guard, and an
+//   inline no-op receiver did not preserve the load. The clean source is
+//   restored.
 // BINARY NOTE: the executable reads radioButton[3] before one checkButtons
 //   call, but has no compare, call, store, or later use for that value.
 // BLOCKER: VC5 merges the default and radioButton[2] failure paths in the clean
