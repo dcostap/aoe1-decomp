@@ -37,6 +37,13 @@
 // donor-supported type surfaces also emitted the same bytes. The remaining
 // blocker is structural prologue/register scheduling and the first-loop scan
 // CFG, not call identity or field ownership.
+// Follow-up worker validation: the pinned source still builds at 1369 bytes,
+// with a 0x0C frame, 15 ordered calls, 83.93% shape, and 1237 differing bytes.
+// Tested Ghidra-shaped task-scan labels, local_4 reuse for the negative count,
+// initial-clear order, final remainder spellings, canonical sn-array layout,
+// nested MainDecision ownership, and top-level object lifetime. The best new
+// natural codegen was 1232 differing bytes but lost structural coverage; it
+// was restored. The tested scan and prologue variants were worse or duplicate.
 
 typedef unsigned char uchar;
 
