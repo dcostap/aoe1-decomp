@@ -46,6 +46,30 @@
 //   A scoped cursor alias added a 0x14 frame and 283 differing bytes. Both were restored.
 // - Revisit pause: the pinned typed-record/int-span source remains the clean natural
 //   reconstruction. No policy-valid exact result was found.
+// - Current claim (sa-7d176878): H1 interior short line_len cursor with +=3 worsened to
+//   222 bytes; H2 raw short-array member reads were a 216-byte duplicate; H3 short
+//   pnl_x/pnl_y fields with padding improved to 211 bytes but conflict with canonical
+//   TPanel long fields; H4 both short span locals added a 0x14 frame and 285 bytes.
+// - H5 short s2 alone reached exact size but broad drift (250 bytes); H6 short ex alone
+//   added a 0x14 frame and 275 bytes; H7 casted short s2 with int lifetime reached 207;
+//   H8 also casted ex reached 204 bytes, 319 bytes, 0x10 frame, and 87.39% shape.
+// - H9 direct natural short clipping added a 0x14 frame and 283 bytes; H10 explicit
+//   predecrement/nonzero loop control was an H8 duplicate; H11 char packed cursor was
+//   an H8 duplicate; H12 declaration reorder was an H8 duplicate.
+// - H13 retained canonical long TPanel fields and cast pnl_x/ex at expression boundaries:
+//   212 bytes, 318 bytes, 0x10 frame, 83.78% shape. H14 canonical short s2 worsened to
+//   262 bytes; H15 a short origin alias without the ex cast was a 211-byte H3 duplicate.
+// - H16 canonical short s2/ex with direct clipping added a 0x14 frame and 283 bytes;
+//   H17 distinct decompiler clipping locals added a 0x14 frame and 285 bytes; H18 branch
+//   clip casts reached exact size but worsened to 218 bytes and 78.15% shape.
+// - H20 a record owner plus interior cursor alias worsened to 241 bytes; H22 combined
+//   canonical short origin and ex casts reproduced H13; H23 declaration reorder was
+//   identical. An arithmetic/update variant lab produced no exact result; the best
+//   invariant group used short-start arithmetic at 334 bytes but remained 253 bytes
+//   different. A vc5-debug-context flag lab produced one 310-byte group for all flags.
+// - Current retained natural candidate: canonical long TPanel fields with H13/H22
+//   narrow expression casts. Ordered calls remain exact, frame is 0x10, and the latest
+//   check is 212 differing bytes with 109 instructions versus 111 original.
 
 extern "C" void* __cdecl memset(void* dst, int value, unsigned int count);
 #pragma function(memset)
@@ -145,10 +169,10 @@ public:
 
 void RGE_Diamond_Map::clear_image()
 {
-    unsigned char* p;
     TDrawArea* save_area;
     short start_y;
     short pi;
+    unsigned char* p;
     p = this->save_area->Lock("diam_map::clear_image", 1);
     if (p == 0)
         return;
@@ -175,8 +199,9 @@ void RGE_Diamond_Map::clear_image()
         do {
             if (yv >= this->clip_rect.top && yv <= this->clip_rect.bottom) {
                 short sx = line->start_x;
-                int s2 = (int)this->pnl_x + (int)sx;
-                int ex = s2 + (int)line->line_len - 1;
+                short origin_x = (short)this->pnl_x;
+                int s2 = (int)origin_x + (int)sx;
+                int ex = (short)(s2 + line->line_len - 1);
 
                 if (s2 < this->clip_rect.left) {
                     int adj = this->clip_rect.left - s2;
