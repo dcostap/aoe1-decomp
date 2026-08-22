@@ -11,10 +11,13 @@
 //   frame. Explicit cached waypoint-count loops match the action-log CFG.
 // - Binary control flow also requires the moveToNextWaypoint result, the fixed
 //   second retry-path return of 1, and asymmetric one-waypoint branches.
-// - The best clean reconstruction has diff 3076, 69.16% shape, 3333 rebuilt
-//   bytes, and 104/105 calls. The only call-count gap is one merged +0x1C0
-//   range-success call. The remaining gap is register, stack-home, and x87
-//   scheduling. No padding, manual vtable, or opaque codegen form is retained.
+// - Direct success arms, rather than one explicit shared label, preserve both
+//   original +0x1C0 virtual call sites. The count tests use the binary's <= 1
+//   and > 1 forms. The radius sum uses x*x + y*y for the observed x87 order.
+// - The best clean reconstruction has diff 2992, 75.20% shape, 3395 rebuilt
+//   bytes, and 105/105 ordered calls. The remaining gap is register, stack-home,
+//   loop CFG, and x87 scheduling. No padding, manual vtable, or opaque codegen
+//   form is retained.
 
 struct Waypoint {
     float x;
@@ -331,13 +334,13 @@ extern float DAT_00570ba0;
 extern float DAT_00570ba8;
 
 int RGE_Moving_Object::doMove() {
-    float distance;
-    float dY;
-    float newDY;
-    float distanceToGoal;
     Path* path;
     Waypoint* waypoint;
     int path_result;
+    float distance;
+    float distanceToGoal;
+    float dY;
+    float newDY;
     float object_radius_x;
     float object_radius_y;
     float retry_dx;
@@ -366,7 +369,10 @@ int RGE_Moving_Object::doMove() {
     distance = (float)sqrt(distance * distance + dY * dY);
     if (this->actionRange > DAT_00570b98 && distance <= this->actionRange) {
         this->speed = 0.0f;
-        goto range_success;
+        this->rangeStatusValue = 1;
+        this->removeAllUserDefinedWaypoints(0);
+        this->pathingGroupMembers.numberValue = 0;
+        return 2;
     }
 
     if (distance < DAT_00570b90) {
@@ -386,20 +392,27 @@ int RGE_Moving_Object::doMove() {
 
         int result = this->doTrivialMove(this->goalValue.x, this->goalValue.y);
         if (result == 5) {
-            goto range_success;
+            this->rangeStatusValue = 1;
+            this->removeAllUserDefinedWaypoints(0);
+            this->pathingGroupMembers.numberValue = 0;
+            return 2;
         }
-        if (result == 0) {
+        if (result != 0) {
+            if (result == 1 || result == 6) {
+                this->speed = 0.0f;
+                this->rangeStatusValue = 2;
+                return 1;
+            }
+            if (result == 2 || result == 3 || result == 4) {
+                this->speed = 0.0f;
+                this->rangeStatusValue = 1;
+                this->removeAllUserDefinedWaypoints(0);
+                this->pathingGroupMembers.numberValue = 0;
+                return 2;
+            }
+        } else {
             this->rangeStatusValue = 2;
             return 1;
-        }
-        if (result == 1 || result == 6) {
-            this->speed = 0.0f;
-            this->rangeStatusValue = 2;
-            return 1;
-        }
-        if (result == 2 || result == 3 || result == 4) {
-            this->speed = 0.0f;
-            goto range_success;
         }
     }
 
@@ -407,7 +420,7 @@ int RGE_Moving_Object::doMove() {
     path_result = 1;
     object_radius_x = this->master_obj->radius_x;
     object_radius_y = this->master_obj->radius_y;
-    newDY = (float)sqrt(object_radius_y * object_radius_y + object_radius_x * object_radius_x);
+    newDY = (float)sqrt(object_radius_x * object_radius_x + object_radius_y * object_radius_y);
     waypoint = path->currentWaypoint();
     if (waypoint == 0) {
         path_result = 0;
@@ -450,7 +463,6 @@ int RGE_Moving_Object::doMove() {
             this->pathingGroupMembers.numberValue = 0;
             return 2;
         }
-
         int retry_success = 0;
         while (retry_success == 0) {
             this->removeUserDefinedWaypoint(0);
@@ -471,11 +483,11 @@ int RGE_Moving_Object::doMove() {
         if (next_continue < 1) {
             this->speed = 0.0f;
             this->rangeStatusValue = 2;
-            if (this->numberUserDefinedWaypointsValue < 2) {
-                return 0;
+            if (this->numberUserDefinedWaypointsValue > 1) {
+                this->continueCounter = old_continue + 4;
+                return 1;
             }
-            this->continueCounter = old_continue + 4;
-            return 1;
+            return 0;
         }
 
         if (this->owner->availablePathingAttempts(this->numberWaitDelays) == 0) {
@@ -541,11 +553,11 @@ int RGE_Moving_Object::doMove() {
                  this->world_y - (float)floor((double)this->world_y) == DAT_00570b90)) {
                 this->speed = 0.0f;
                 this->rangeStatusValue = 2;
-                if (this->numberUserDefinedWaypointsValue < 2) {
-                    return 0;
+                if (this->numberUserDefinedWaypointsValue > 1) {
+                    this->continueCounter += 5;
+                    return 1;
                 }
-                this->continueCounter += 5;
-                return found;
+                return 0;
             } else {
                 this->teleport(
                     (float)(floor((double)this->world_x) - DAT_00570b80),
@@ -576,11 +588,11 @@ int RGE_Moving_Object::doMove() {
         if (path_result == 0) {
             this->speed = 0.0f;
             this->rangeStatusValue = 2;
-            if (this->numberUserDefinedWaypointsValue < 2) {
-                return 0;
+            if (this->numberUserDefinedWaypointsValue > 1) {
+                this->continueCounter += 5;
+                return 1;
             }
-            this->continueCounter += 5;
-            return 1;
+            return 0;
         }
         this->closestDistanceToWaypoint = 100000.0f;
     }
@@ -590,7 +602,10 @@ int RGE_Moving_Object::doMove() {
         int result = this->doTrivialMove(path->currentWaypoint()->x,
                                          path->currentWaypoint()->y);
         if (result == 5) {
-            goto range_success;
+            this->rangeStatusValue = 1;
+            this->removeAllUserDefinedWaypoints(0);
+            this->pathingGroupMembers.numberValue = 0;
+            return 2;
         }
         if (result == 0) {
             this->rangeStatusValue = 2;
@@ -684,11 +699,11 @@ int RGE_Moving_Object::doMove() {
                         this->world_y - (float)floor((double)this->world_y) == DAT_00570b90) {
                         this->speed = 0.0f;
                         this->rangeStatusValue = 2;
-                        if (this->numberUserDefinedWaypointsValue < 2) {
-                            return 0;
+                        if (this->numberUserDefinedWaypointsValue > 1) {
+                            this->continueCounter += 5;
+                            return 1;
                         }
-                        this->continueCounter += 5;
-                        return 1;
+                        return 0;
                     }
                     this->teleport(
                         (float)(floor((double)this->world_x) - DAT_00570b80),
@@ -719,11 +734,11 @@ int RGE_Moving_Object::doMove() {
             if (path_result == 0) {
                 this->speed = 0.0f;
                 this->rangeStatusValue = 2;
-                if (this->numberUserDefinedWaypointsValue < 2) {
-                    return 0;
+                if (this->numberUserDefinedWaypointsValue > 1) {
+                    this->continueCounter += 5;
+                    return 1;
                 }
-                this->continueCounter += 5;
-                return 1;
+                return 0;
             }
             this->closestDistanceToWaypoint = 100000.0f;
         }
@@ -731,10 +746,4 @@ int RGE_Moving_Object::doMove() {
 
     this->rangeStatusValue = 2;
     return 1;
-
-range_success:
-    this->rangeStatusValue = 1;
-    this->removeAllUserDefinedWaypoints(0);
-    this->pathingGroupMembers.numberValue = 0;
-    return 2;
 }
