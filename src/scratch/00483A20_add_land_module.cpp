@@ -54,6 +54,21 @@
 //     found.  The final clean source keeps typed records, one proven raw
 //     packed-array cursor family, the direct relation call, and no aliases,
 //     absolute address macros, or compiler-steering volatility.
+// 11 (sa-81f3178f-r1): fresh dossier and donor review confirmed the same
+//     three calls, 0x190 frame, and target saved-this home at [esp+10h].
+//     A pointer-typed local_180, narrow int scalar types, and declaration-order
+//     aliases were neutral in the clean basin.
+// 12 (sa-81f3178f-r1): matching Ghidra's one-based ty/player_teams[8] extents
+//     moved the frame to 0x188/0x18C and worsened structure; it was rolled back.
+// 13 (sa-81f3178f-r1): binary-proven packed-line/countdown cursors for the
+//     distance scan reached the best fresh strict diff, 1528 bytes, but reduced
+//     shape to 74.70% and grew the body to 1869 bytes.  The clean source stays
+//     authoritative because it preserves the stronger structural basin.
+// 14 (sa-81f3178f-r1): hoisting those cursors, using bool for the sort flag,
+//     adding a current-team alias, separating group_index, and isolating the
+//     inner cursor scan were neutral or worse.  All variants were restored.
+//     Final clean validation remains 1554 differing bytes, 80.00% shape,
+//     exact frame, and exact ordered call set.
 // Left in scratch: phase A is byte-close (only this-home [esp+18h] vs
 // [esp+10h] and a few slot permutations); phase B is correct and close but
 // not exact. Probe 4's miscompile is documented negative evidence.
