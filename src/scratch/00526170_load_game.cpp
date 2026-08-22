@@ -35,8 +35,15 @@
 //   loop rereads world->player_num on each backedge.
 // - BINARY NOTE: DEBUGLOAD packs num3, num2, action_checksum, and num1 into
 //   one checksum before it updates the two totals.
-// - Unresolved: exact codegen still differs by 2852 bytes. The first mismatch
-//   is the old-panel and this-pointer home assignment at +0x1B.
+// - BINARY NOTE: the Gaia player pointer is at world +0x28. Read it again for
+//   each visibility flag instead of indexing the player array.
+// - BINARY NOTE: master object id is at +0x10. The +0x0C field is padding.
+// - BINARY NOTE: object scans reload list->object after checksum calls. Keep
+//   direct list->object expressions instead of one long-lived object alias.
+// - BINARY NOTE: separate position additions recover the original x87 order.
+// - BINARY NOTE: path logs pass continue_counter before number_wait_delays.
+// - Unresolved: exact codegen still differs. The first mismatch is the
+//   old-panel and this-pointer home assignment at +0x1B.
 
 #include <stdio.h>
 #include <string.h>
@@ -144,6 +151,7 @@ public:
     unsigned char object_type;
     char gap_05[3];
     char* name;
+    char gap_0C[4];
     short id;
     short copy_id;
 };
@@ -346,7 +354,9 @@ public:
     int old_world_time; // +8
     char gap_0C[0x0C];
     float game_speed; // +18
-    char gap_1C[0x20];
+    char gap_1C[0x0C];
+    RGE_Player* player_zero; // +28
+    char gap_2C[0x10];
     short player_num; // +3C
     char gap_3E[2];
     RGE_Player** players; // +40
@@ -477,22 +487,26 @@ load_game_failed:
 
 load_game_success:
     {
-        RGE_Player* gaia = this->world->players[0];
         this->setFullVisibility(
-            gaia->full_visibility);
+            this->world->player_zero->full_visibility);
         this->setFogOfWar(
-            gaia->fog_of_war);
+            this->world->player_zero->fog_of_war);
         this->setAllowCheatCodes(1);
         this->setSavedGame(1);
         this->setNumberPlayers(this->world->player_num - 1);
 
         loaded = this->pathFinding();
-        if (loaded == 1)
+        switch (loaded) {
+        case 1:
             numberPathingIterations = 5000;
-        else if (loaded == 2)
+            break;
+        case 2:
             numberPathingIterations = 0x1D4C;
-        else
+            break;
+        default:
             numberPathingIterations = 0x9C4;
+            break;
+        }
 
         for (i = 0; i < 9; ++i) {
             if (i < this->world->player_num) {
@@ -500,8 +514,10 @@ load_game_success:
                 if (i > 0) {
                     this->comm_handler->SetPlayerName(
                         i, this->world->players[i]->name);
-                    this->comm_handler->SetPlayerHumanity(
-                        i, i == 1 ? 2 : 4);
+                    if (i == 1)
+                        this->comm_handler->SetPlayerHumanity(i, 2);
+                    else
+                        this->comm_handler->SetPlayerHumanity(i, 4);
                 } else {
                     this->comm_handler->SetPlayerHumanity(i, 0);
                 }
@@ -565,18 +581,18 @@ load_game_success:
                     num2 = 0;
                     list = player->objects->list;
                     while (list != 0) {
-                        RGE_Static_Object* object = list->object;
                             int attribute_value =
-                                (int)object->attribute_amount_held;
-                            num1 += object->object_state + attribute_value;
+                                (int)list->object->attribute_amount_held;
+                            num1 += list->object->object_state + attribute_value;
                             ++num2;
-                            num3 += object->master_obj->id + num2 +
-                                object->object_state + attribute_value;
-                            temp_position_checksum += object->world_x +
-                                object->world_y + object->world_z;
-                            action_checksum += object->get_action_checksum();
+                            num3 += list->object->master_obj->id + num2 +
+                                list->object->object_state + attribute_value;
+                            temp_position_checksum += list->object->world_x;
+                            temp_position_checksum += list->object->world_y;
+                            temp_position_checksum += list->object->world_z;
+                            action_checksum += list->object->get_action_checksum();
                             RGE_Static_Object* target =
-                                object->get_target_obj();
+                                list->object->get_target_obj();
                             if (target != 0) {
                                 target_name_1[0] = 0;
                                 strcpy(target_name_1, target->master_obj->name);
@@ -587,19 +603,19 @@ load_game_success:
                             }
                             fprintf(debug_file,
                                     "  p#%d ob=%d (%s), st=%d, at=%8.4f, pos=%6.2f,%6.2f,%6.2f, tar=%d (%s)\n",
-                                    player->id, object->id,
-                                    object->master_obj->name,
-                                    object->object_state,
-                                    (double)object->attribute_amount_held,
-                                    (double)object->world_x,
-                                    (double)object->world_y,
-                                    (double)object->world_z,
+                                    player->id, list->object->id,
+                                    list->object->master_obj->name,
+                                    list->object->object_state,
+                                    (double)list->object->attribute_amount_held,
+                                    (double)list->object->world_x,
+                                    (double)list->object->world_y,
+                                    (double)list->object->world_z,
                                     num4, target_name_1);
 
                             RGE_Action_Object* moving_object =
-                                (RGE_Action_Object*)object;
-                            if (object->master_obj->object_type >= 0x1E &&
-                                object->master_obj->object_type != 0x5A) {
+                                (RGE_Action_Object*)list->object;
+                            if (list->object->master_obj->object_type >= 0x1E &&
+                                list->object->master_obj->object_type != 0x5A) {
                                 Path* path = &moving_object->path;
                                 if (path->numberOfWaypoints() > 0) {
                                     path->initToStart();
@@ -611,8 +627,8 @@ load_game_success:
                                             (double)moving_object->goal.x,
                                             (double)moving_object->goal.y,
                                             (double)moving_object->goal.z,
-                                            moving_object->number_wait_delays,
-                                            moving_object->continue_counter);
+                                            moving_object->continue_counter,
+                                            moving_object->number_wait_delays);
                                     int waypoint_index = 0;
                                     int waypoint_count =
                                         path->numberOfWaypoints();
@@ -636,8 +652,8 @@ load_game_success:
                                 }
                             }
 
-                            if (object->master_obj->object_type >= 0x28 &&
-                                object->master_obj->object_type != 0x5A) {
+                            if (list->object->master_obj->object_type >= 0x28 &&
+                                list->object->master_obj->object_type != 0x5A) {
                                 act_node = moving_object->action_list->list;
                                 while (act_node != 0) {
                                     RGE_Action* action = act_node->action;
@@ -662,20 +678,20 @@ load_game_success:
 
                     list = player->sleeping_objects->list;
                     while (list != 0) {
-                        RGE_Static_Object* object = list->object;
                             int attribute_value =
-                                (int)object->attribute_amount_held;
-                            num1 += object->object_state + attribute_value;
+                                (int)list->object->attribute_amount_held;
+                            num1 += list->object->object_state + attribute_value;
                             ++num2;
-                            num3 += object->master_obj->id + num2 +
-                                object->object_state + attribute_value;
-                            temp_position_checksum += object->world_x +
-                                object->world_y + object->world_z;
-                            action_checksum += object->get_action_checksum();
+                            num3 += list->object->master_obj->id + num2 +
+                                list->object->object_state + attribute_value;
+                            temp_position_checksum += list->object->world_x;
+                            temp_position_checksum += list->object->world_y;
+                            temp_position_checksum += list->object->world_z;
+                            action_checksum += list->object->get_action_checksum();
                             RGE_Doppleganger_Object* dopple =
-                                (RGE_Doppleganger_Object*)object;
+                                (RGE_Doppleganger_Object*)list->object;
                             RGE_Static_Object* target =
-                                object->get_target_obj();
+                                list->object->get_target_obj();
                             if (target != 0) {
                                 target_name_2[0] = 0;
                                 strcpy(target_name_2, target->master_obj->name);
@@ -686,13 +702,13 @@ load_game_success:
                             }
                             fprintf(debug_file,
                                     "  p#%d ob=%d (%s), st=%d, at=%8.4f, pos=%6.2f,%6.2f,%6.2f, tar=%d (%s)\n",
-                                    player->id, object->id,
-                                    object->master_obj->name,
-                                    object->object_state,
-                                    (double)object->attribute_amount_held,
-                                    (double)object->world_x,
-                                    (double)object->world_y,
-                                    (double)object->world_z,
+                                    player->id, list->object->id,
+                                    list->object->master_obj->name,
+                                    list->object->object_state,
+                                    (double)list->object->attribute_amount_held,
+                                    (double)list->object->world_x,
+                                    (double)list->object->world_y,
+                                    (double)list->object->world_z,
                                     num4, target_name_2);
                             if (dopple->doppled_master_obj != 0)
                                 fprintf(debug_file,
@@ -703,8 +719,8 @@ load_game_success:
                                 fprintf(debug_file,
                                         "    NULL doppled master obj.\n");
 
-                            if (object->master_obj->object_type >= 0x1E &&
-                                object->master_obj->object_type != 0x5A) {
+                            if (list->object->master_obj->object_type >= 0x1E &&
+                                list->object->master_obj->object_type != 0x5A) {
                                 Path* path = &dopple->path;
                                 if (path->numberOfWaypoints() > 0) {
                                     path->initToStart();
@@ -716,8 +732,8 @@ load_game_success:
                                             (double)dopple->goal.x,
                                             (double)dopple->goal.y,
                                             (double)dopple->goal.z,
-                                            dopple->number_wait_delays,
-                                            dopple->continue_counter);
+                                            dopple->continue_counter,
+                                            dopple->number_wait_delays);
                                     int waypoint_index = 0;
                                     int waypoint_count =
                                         path->numberOfWaypoints();
@@ -741,8 +757,8 @@ load_game_success:
                                 }
                             }
 
-                            if (object->master_obj->object_type >= 0x28 &&
-                                object->master_obj->object_type != 0x5A) {
+                            if (list->object->master_obj->object_type >= 0x28 &&
+                                list->object->master_obj->object_type != 0x5A) {
                                 act_node = dopple->action_list->list;
                                 while (act_node != 0) {
                                     RGE_Action* action = act_node->action;
@@ -767,8 +783,8 @@ load_game_success:
 
                     list = player->doppleganger_objects->list;
                     while (list != 0) {
-                        RGE_Static_Object* object = list->object;
-                            RGE_Static_Object* target = object->get_target_obj();
+                            RGE_Static_Object* target =
+                                list->object->get_target_obj();
                             if (target != 0) {
                                 target_name[0] = 0;
                                 strcpy(target_name, target->master_obj->name);
@@ -779,13 +795,13 @@ load_game_success:
                             }
                             fprintf(debug_file,
                                     "  p#%d ob=%d (%s), st=%d, at=%8.4f, pos=%6.2f,%6.2f,%6.2f, tar=%d (%s)\n",
-                                    player->id, object->id,
-                                    object->master_obj->name,
-                                    object->object_state,
-                                    (double)object->attribute_amount_held,
-                                    (double)object->world_x,
-                                    (double)object->world_y,
-                                    (double)object->world_z,
+                                    player->id, list->object->id,
+                                    list->object->master_obj->name,
+                                    list->object->object_state,
+                                    (double)list->object->attribute_amount_held,
+                                    (double)list->object->world_x,
+                                    (double)list->object->world_y,
+                                    (double)list->object->world_z,
                                     num4, target_name);
                         list = list->next;
                     }
