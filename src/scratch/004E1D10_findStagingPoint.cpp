@@ -38,6 +38,10 @@
 // left in scratch: behavior skeleton has the right call set and nested scan,
 // but is not exact or accepted drift.  Recover target-home coalescing and the
 // late score accumulator without fake volatility or compiler steering.
+// pass-2026-08-22: the natural map-before-visible alias order reduced the
+// positional diff from 765 to 758 bytes without changing size, frame, calls,
+// or CFG counts.  Reversing the canPlace float source arguments kept 758 bytes
+// and improved shape from 85.11% to 85.64%; retain both forms for the next pass.
 
 typedef unsigned char uchar;
 struct XYPoint { int x; int y; };
@@ -129,9 +133,10 @@ int TribeInformationAIModule::findStagingPoint(XYPoint p, XYPoint& out, int p3, 
 
     RGE_PlayerLike* aiPlayer = this->md->aiPlayer;
     TribePlayerLike* player = this->md->player;
-    RGE_Visible_Map* vis = aiPlayer->visible;
+    int bestValue;
     RGE_MapLike* map = player->world->map;
-    int bestValue = -1;
+    RGE_Visible_Map* vis = aiPlayer->visible;
+    bestValue = -1;
 
     for (int y = min.x; y <= max.x; ++y) {
         int rowoff = y * 0x18;
@@ -156,7 +161,7 @@ int TribeInformationAIModule::findStagingPoint(XYPoint p, XYPoint& out, int p3, 
                         int off = yy * 0x18;
                         for (int xx = passMin.y; xx <= passMax.y && good; ++xx) {
                         unsigned char t = (unsigned char)(*((unsigned char*)map->rows[xx] + off + 5) & 0x1f);
-                            if (t != 1 && t != 0x16 && unit->canPlace((float)xx, (float)yy, 1) == 0) good = 0;
+                            if (t != 1 && t != 0x16 && unit->canPlace((float)yy, (float)xx, 1) == 0) good = 0;
                         }
                     }
                 }
