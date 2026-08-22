@@ -58,6 +58,12 @@
 //   allocation result naming, and inner loop forms. It found no exact variant.
 // - Second focused pass completed 20 meaningful probes. No policy-valid exact
 //   source was found; retain the simplest typed source and validate before pause.
+// - This claim tested guard-scoped draw publication, named allocation results,
+//   do-while facet initialization, declaration lifetimes, and indexed pointer
+//   spellings. The best 146-byte variant placed the draw store after the guard,
+//   so it changed the proven publication and fault order; it was rolled back.
+// - A 128-variant ambient declaration sweep changed no codegen basin and found
+//   no exact result. The clean 150-byte source remains authoritative.
 // BLOCKER: after each calloc, the executable rereads the positive count before
 // it stores draw_list or sound_list. The rebuild publishes each member pointer
 // before that reread. Named allocation-result forms did not restore the order.
