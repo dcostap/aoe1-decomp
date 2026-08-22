@@ -47,6 +47,9 @@
 // natural new/delete, and a real object-list destructor declaration.  Final
 // validation is 787B versus 802B, 0x34 versus 0x3C frame, 547 positional bytes,
 // and nine aligned calls.  No policy-valid exact source was found.
+// 35: Binary evidence loads the typed tile address before the inner range
+// guard. Keep that fault order. Main review rejected a raw row-byte cursor,
+// literalized constants, and a manual vptr field from the closer probe.
 // FLAGS: config/flags/0045AB20_make_object_collision_list.rsp (/nologo /c /O2 /Oy /GX)
 
 extern float DAT_00570934;
@@ -179,8 +182,8 @@ RGE_Check_List* RGE_Missile_Object::make_object_collision_list(float extra) {
     if (sVar9 <= sVar10) {
         int row_count = (int)sVar10 - (int)sVar9 + 1;
         do {
+            RGE_Tile* tile = &map->map_row_offset[sVar9][x1];
             if (x1 <= local_40) {
-                RGE_Tile* tile = &map->map_row_offset[sVar9][x1];
                 int column_count = (int)local_40 - (int)x1 + 1;
                 do {
                     RGE_Object_Node* node = tile->objects.list;
