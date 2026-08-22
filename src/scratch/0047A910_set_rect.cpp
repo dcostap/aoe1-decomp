@@ -106,76 +106,62 @@ struct TScrollBarPanel : public TPanel {
 };
 
 void TScrollBarPanel::set_rect(long param_1, long param_2, long param_3, long param_4) {
+    long range;
+
     TPanel::set_rect(param_1, param_2, param_3, param_4);
 
     if (this->orientation == 1) {
-        // Horizontal scrollbar layout
-        int track = this->track_size;
-        int button = this->button_size;
-        int top = track + 2;
-        int bottom = button + track - 5;
-        int margin = this->margin;
+        const long base_top = this->track_size + 2;
+        const long track_bottom = this->track_size + this->button_size - 5;
+        range = this->perp_size + this->margin - this->button_size;
+        const long down_left = range + 2;
 
-        int range = this->perp_size + margin - button;
-        int up_left = margin + 2;
-        int down_left = range + 2;
-        int down_right = down_left + button - 5;
-        int tab_min = down_right + 1;
+        this->up_rect.left = this->margin + 2;
+        this->up_rect.top = base_top;
+        this->up_rect.right = (this->margin + 2) + this->button_size - 5;
+        this->up_rect.bottom = track_bottom;
 
-        this->up_rect.top = top;
-        this->down_rect.top = top;
-        this->tab_rect.top = top;
-        this->top_rect.top = top;
-        this->bottom_rect.top = top;
-        this->up_rect.left = up_left;
         this->down_rect.left = down_left;
-        this->up_rect.bottom = bottom;
-        this->up_rect.right = up_left + button - 5;
-        this->down_rect.bottom = bottom;
-        this->down_rect.right = down_right;
-        this->tab_min_x = tab_min;
-        this->tab_x = tab_min;
-        this->tab_max_x = down_left - button + 4;
-        this->tab_rect.bottom = bottom;
-        this->top_rect.bottom = bottom;
-        this->bottom_rect.bottom = bottom;
+        this->down_rect.top = base_top;
+        this->down_rect.right = down_left + this->button_size - 5;
+        this->down_rect.bottom = track_bottom;
+
+        this->tab_rect.top = base_top;
+        this->tab_rect.bottom = track_bottom;
+        this->top_rect.top = base_top;
+        this->top_rect.bottom = track_bottom;
+        this->bottom_rect.top = base_top;
+        this->bottom_rect.bottom = track_bottom;
+
+        this->tab_min_x = this->up_rect.right + 1;
+        this->tab_max_x = (down_left - this->button_size) + 4;
+        this->tab_x = this->tab_min_x;
     } else {
-        // Vertical scrollbar layout
-        int range = this->button_size;
-        range += this->track_size;
-        range -= this->perp_size;
-        int top = this->track_size + 2;
-        int left = this->margin + 2;
+        const long base_left = this->margin + 2;
+        const long track_right = this->margin + this->perp_size - 5;
+        range = this->track_size + this->button_size - this->perp_size;
 
-        this->up_rect.top = top;
+        this->up_rect.left = base_left;
+        this->up_rect.top = this->track_size + 2;
+        this->up_rect.right = track_right;
+        this->up_rect.bottom = (this->track_size + 2) + this->perp_size - 5;
 
-        int down_top = range + 2;
+        const long down_top = range + 2;
+        this->down_rect.left = base_left;
         this->down_rect.top = down_top;
+        this->down_rect.right = track_right;
+        this->down_rect.bottom = down_top + this->perp_size - 5;
 
-        int right = this->perp_size + top - 5;
-        this->up_rect.left = left;
-        this->tab_rect.left = left;
-        this->top_rect.left = left;
-        this->bottom_rect.left = left;
-        this->down_rect.left = left;
+        this->tab_rect.left = base_left;
+        this->top_rect.left = base_left;
+        this->bottom_rect.left = base_left;
+        this->tab_rect.right = track_right;
+        this->top_rect.right = track_right;
+        this->bottom_rect.right = track_right;
 
-        int down_right = this->perp_size + left - 5;
-        this->up_rect.right = down_right;
-        this->up_rect.bottom = right;
-
-        int down_bottom = down_top + this->perp_size - 5;
-        this->down_rect.right = down_right;
-        this->down_rect.bottom = down_bottom;
-        this->tab_rect.right = down_right;
-        this->top_rect.right = down_right;
-        this->bottom_rect.right = down_right;
-
-        int tab_max = range - this->perp_size + 6;
-        this->tab_max_y = tab_max;
-
-        int tab_min = right + 1;
-        this->tab_min_y = tab_min;
-        this->tab_y = tab_min;
+        this->tab_max_y = (range - this->perp_size) + 6;
+        this->tab_min_y = this->up_rect.bottom + 1;
+        this->tab_y = this->tab_min_y;
     }
 
     this->calc_item_rects();

@@ -86,28 +86,28 @@ uchar TShape::shape_dither(TDrawArea* area, long x, long y, long shape_num, long
     long sx2 = x + this->shape_header->xmax;
     long sy2_orig = y + this->shape_header->ymax;
 
-    long clip_x1 = sx1;
-    long clip_y1 = sy1;
-    long clip_x2 = sx2;
-    long clip_y2 = sy2_orig;
-    if (clip_x1 < rect.left) clip_x1 = rect.left;
-    if (clip_y1 < rect.top) clip_y1 = rect.top;
-    if (clip_x2 > rect.right) clip_x2 = rect.right;
-    if (clip_y2 > rect.bottom) clip_y2 = rect.bottom;
-    if (clip_x1 < 0) clip_x1 = 0;
-    if (clip_y1 < 0) clip_y1 = 0;
-    if (clip_x2 >= area->Width) clip_x2 = area->Width - 1;
-    if (clip_y2 >= area->Height) clip_y2 = area->Height - 1;
+    x = sx1;
+    shape_num = sy1;
+    y = sx2;
+    long sy2 = sy2_orig;
+    if (x < rect.left) x = rect.left;
+    if (shape_num < rect.top) shape_num = rect.top;
+    if (y > rect.right) y = rect.right;
+    if (sy2 > rect.bottom) sy2 = rect.bottom;
+    if (x < 0) x = 0;
+    if (shape_num < 0) shape_num = 0;
+    if (y >= area->Width) y = area->Width - 1;
+    if (sy2 >= area->Height) sy2 = area->Height - 1;
 
-    if (clip_x1 <= clip_x2 && clip_y1 <= clip_y2) {
-        if (clip_x1 == sx1 && clip_y1 == sy1 &&
-            clip_x2 == sx2 && clip_y2 == sy2_orig) {
-            return shape_dithered_unclipped(area, sx1, sy1, param_5, param_6);
-        }
-
-        return shape_dithered_clipped(area, sx1, sy1, clip_x1, clip_y1,
-                                      clip_x2, clip_y2, param_5, param_6);
+    if (x > y || shape_num > sy2) {
+        return 0;
     }
 
-    return 0;
+    if (x == sx1 && shape_num == sy1 &&
+        y == sx2 && sy2 == sy2_orig) {
+        return shape_dithered_unclipped(area, sx1, sy1, param_5, param_6);
+    }
+
+    return shape_dithered_clipped(area, sx1, sy1, x, shape_num,
+                                  y, sy2, param_5, param_6);
 }

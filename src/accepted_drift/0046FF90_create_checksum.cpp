@@ -97,14 +97,76 @@
 //   result to 268B effective, diff 182, shape 81.82%, with 5/5 calls.
 // - The original still has a 0x18 frame and a stack-carried object checksum.
 //   Natural narrow-width forms did not recover that home. No exact result.
+// Current structural audit (sa-6bc64642-r1):
+// - Rechecked the pinned 268B/0x14 source and all five ordered calls.
+// - Moving object_checksum before result, binding the waypoint result, using
+//   sequential object updates, and adding a partial accumulator were neutral.
+// - A six-field typed aggregate recovered frame 0x18 but produced 281B and a
+//   worse body. An unused decompiler-reported num3 was optimized away.
+// - Widening or removing the state local, parenthesizing the master add, and
+//   changing the object loop to while were neutral.
+// - Combined checksum expressions recovered frame 0x18, but reordered the
+//   waypoint and held-value conversion calls or added extra instructions.
+// - Separate held and waypoint temporaries preserved call order and frame
+//   0x18, but produced 287B and diff 188; no exact structural basin resulted.
+// - Naming sleeping and doppelganger counts changed to a 281B frame-0x18
+//   basin, but worsened the body and register saves.
+// - A 40-variant checksum-expression lab and an 80-variant ambient/scope lab
+//   found no size/frame/call-set eligible result. Two neutral ambient forward
+//   declarations reproduced neither ambient basin nor a source improvement.
+// - The pinned natural source is restored. The remaining difference is the
+//   final-pack register order, not a changed call surface, predicate,
+//   ownership, memory effect, or control-flow behavior.
+// Shape frontier (sa-6bc64642-r1):
+// - The same-TU 14-slot master surface is donor-supported and moved the
+//   natural source to frame 0x18, exact size, 98 instructions, and 221-byte
+//   diff with 88.89% shape similarity.
+// - A dword attribute_num_value guard plus delayed countdown assignment fixed
+//   the target width and removed the extra pre-guard store: diff 18, 95.92%.
+// - Ordering zeroed locals as attribute, object, count, position, then result
+//   fixed the prologue stores and all loop blocks: diff 11, 98.98% shape,
+//   80.61% exact-block coverage, and exact size/frame/call set.
+// - Final-pack expression, width, alias, increment, and shift variants were
+//   codegen-neutral or worse. The remaining 11 bytes are three final-pack
+//   register-order spans. No call, predicate, memory-effect, or CFG drift is
+//   present, so the residue is behavior-equivalent but not exact.
+// ACCEPTED DRIFT: the only difference is instruction scheduling in the final
+// checksum pack at 00470075-00470090. Both bodies use the same four saved
+// values and perform the same three left shifts and additions in the same
+// arithmetic order. The rebuild loads attribute_checksum after the first
+// shift instead of before it. These are valid stack-local reads. Both bodies
+// load position_checksum at the same arithmetic boundary, call __ftol once,
+// and then perform the same stores and return. Calls, predicates, memory
+// effects, ABI, cleanup, integer overflow behavior, and fault order agree.
 
 extern "C" long __cdecl __ftol(void);
 
 class RGE_Static_Object;
+class RGE_Player;
+class RGE_Game_World;
 class RGE_Master_Static_Object {
 public:
     virtual ~RGE_Master_Static_Object();
-    char gap_04[0x0C];
+    virtual void copy_obj(RGE_Master_Static_Object*);
+    virtual void modify(float, unsigned char);
+    virtual void modify_delta(float, unsigned char);
+    virtual void modify_percent(float, unsigned char);
+    virtual void save(int);
+    virtual RGE_Static_Object* make_new_obj(RGE_Player*, float, float, float);
+    virtual RGE_Master_Static_Object* make_new_master();
+    virtual unsigned char check_placement(RGE_Player*, float, float, int*,
+        unsigned char, unsigned char, unsigned char, unsigned char,
+        unsigned char, unsigned char, unsigned char, unsigned char);
+    virtual unsigned char alignment(float*, float*, RGE_Game_World*, unsigned char);
+    virtual long calc_base_damage_ability(RGE_Master_Static_Object*);
+    virtual void play_command_sound();
+    virtual void play_move_sound();
+    virtual void draw(void*, short, short, void*, long, long, int, unsigned char);
+    unsigned char master_type;
+    char gap_05[3];
+    void* name;
+    short string_id;
+    short string_id2;
     short id;
 };
 
@@ -191,19 +253,21 @@ public:
 };
 
 long RGE_Player::create_checksum(void) {
+    int attribute_checksum = 0;
+    int object_checksum = 0;
+    int object_count = 0;
+    float position_checksum = 0.0f;
     long result = (long)this->id;
     this->checksum_created_this_update = 1;
     this->action_checksum = 0;
 
     result += this->sleeping_objects->number_of_objects;
-    int object_checksum = 0;
     result += this->doppleganger_objects->number_of_objects;
-    int attribute_checksum = 0;
-    float position_checksum = 0.0f;
-    int object_count = 0;
+    long attribute_count;
+    long attribute_num_value = (long)this->attribute_num;
 
-    if ((int)this->attribute_num > 0) {
-        int attribute_count = (int)this->attribute_num;
+    if (attribute_num_value > 0) {
+        attribute_count = attribute_num_value;
         float* attribute = this->attributes;
         do {
             attribute_checksum += (int)*attribute;
@@ -217,10 +281,9 @@ long RGE_Player::create_checksum(void) {
          list = list->next) {
         RGE_Static_Object* object = list->node;
         unsigned char state = object->object_state;
-        object_checksum = (int)state
-            + (int)object->attribute_amount_held
-            + (int)object->master_obj->id
-            + object_checksum;
+        object_checksum += (int)state;
+        object_checksum += (int)object->attribute_amount_held;
+        object_checksum += (int)object->master_obj->id;
         object_checksum += object->get_waypoint_checksum();
         ++object_count;
         position_checksum = list->node->world_x + position_checksum;

@@ -39,6 +39,12 @@
 // nested if/do scan was restored.  Final current candidate is 356 bytes with
 // all seven call targets aligned; the 35-byte prologue/register and scan gap
 // remains a structural blocker for this assignment.
+// sa-e790ae6f-r1 probe 22: restore the period class declaration context that
+// the local source lacked: RGE_Static_Object virtuals after destroy_obj and
+// the complete RGE_Map virtual/nonvirtual prefix.  A 128-variant lab found
+// this supported surface changes the target basin from 356 to 349 bytes,
+// while preserving all seven call targets.  The added methods do not change
+// any proven field offset.
 //
 // sa-0ba55ae7 pass: baseline check confirmed 356 bytes, 7/7 ordered calls,
 // no frame, and 332 differing bytes.  Direct object/master expressions,
@@ -114,6 +120,20 @@ public:
     virtual void vf60();
     virtual void vf64();
     virtual void destroy_obj();
+    virtual void die_die_die();
+    virtual void damage(int amount, void* armor, float value, RGE_Player* player,
+                        RGE_Static_Object* object);
+    virtual float calculateDamage(int amount, void* armor, float value,
+                                  RGE_Player* player, RGE_Static_Object* object);
+    virtual void rotate(long angle);
+    virtual unsigned char can_attack();
+    virtual void set_attribute(short type, float value);
+    virtual void set_attribute_amount(float value, unsigned char a,
+                                      unsigned char b);
+    virtual int heal(int amount, int type);
+    virtual unsigned char heal_float(float amount);
+    virtual int canRepair();
+    virtual void notify_of_relation(long relation, unsigned char flag);
 
     long id;
     RGE_Master_Static_Object* master_obj;
@@ -155,10 +175,75 @@ public:
 class RGE_Map {
 public:
     virtual ~RGE_Map();
+    virtual void data_load_random_map(int file);
+    virtual void load_random_map(char* a, char* b, char* c, char* d);
+    virtual unsigned char do_terrain_brush(long x, long y, long radius,
+                                           unsigned char terrain);
+    virtual unsigned char do_terrain_brush_stroke(long x0, long y0, long x1,
+                                                  long y1, long radius,
+                                                  unsigned char terrain);
+    virtual unsigned char do_elevation_brush(long x, long y, long radius,
+                                              unsigned char elevation);
+    virtual unsigned char do_elevation_brush_stroke(long x0, long y0, long x1,
+                                                    long y1, long radius,
+                                                    unsigned char elevation);
+    virtual unsigned char do_cliff_brush(long x, long y, unsigned char a,
+                                         unsigned char b);
+    virtual unsigned char do_cliff_brush_stroke(long x0, long y0, long x1,
+                                                long y1, unsigned char a,
+                                                unsigned char b);
+    virtual void map_generate(RGE_Player* player, RGE_Game_World* world,
+                              void* info, unsigned char* data);
+    virtual void map_generate2(RGE_Game_World* world, long a, long b,
+                               unsigned char c, long d);
+    virtual void save(int file);
     char gap_04[0x88];
     RGE_Tile_Set terrain_types[32];
     char gap_338C[0x5A00];
     RGE_Tile** map_row_offset;
+
+    void load_map(int file);
+    void init_tile_sizes();
+    void set_tile_size(unsigned char index, short width, short height,
+                       short delta);
+    void load_terrain_types(void* sounds);
+    void load_border_types(void* sounds);
+    void new_map(long width, long height);
+    RGE_Tile* get_tile(int col, int row);
+    long get_map_width();
+    long get_map_height();
+    RGE_Tile** give_up_map_offsets();
+    void get_point(short* a, short* b, float c, float d, float e,
+                   short f, short g);
+    void tile_map_coords(short a, short b, RGE_Tile* tile, float* c, float* d);
+    unsigned char check_map_coords(short col, short row);
+    void set_map_screen_pos(int a, int b, int c, int d);
+    void clear_map(void* player, RGE_Game_World* world,
+                   unsigned char terrain, long width, long height);
+    void scenario_save(int file);
+    void scenario_load(int file, unsigned char* data);
+    void save_map(int file);
+    void set_terrain(void* player, RGE_Game_World* world, short col,
+                     short row, unsigned char terrain, unsigned char a,
+                     unsigned char b);
+    void set_terrain_absolute(RGE_Game_World* world, short col, short row,
+                              unsigned char terrain, int a, int b);
+    void place_terrain_object(void* player, RGE_Game_World* world, short row,
+                              short col, int object_id, int single);
+    void create_terrain_objects(void* player, RGE_Game_World* world);
+    unsigned char get_tile_type(short col, short row);
+    void rebuild_tile_types(short a, short b, short c, short d);
+    void rebuild_border_types(short a, short b, short c, short d);
+    unsigned char get_border_type(short col, short row);
+    void clean_borders(long a, long b, long c, long d);
+    void delete_objects_on_tile(void* player, RGE_Game_World* world,
+                                int a, int b, int c, int d);
+    void delete_all_objects_on_tile(int a, int b);
+    void update(unsigned long time);
+    void load_terrain_obj_types(char* file);
+    void create_terrain_object(void* player, RGE_Game_World* world,
+                               short row, short col, short terrain,
+                               int remove_now, int min_id, int max_id);
 
     unsigned char get_terrain(short row, short col);
     int clear_terrain_object(RGE_Game_World* world, short col, short row,
