@@ -10,7 +10,7 @@
 //   declaration-scope and typed Resend/DestMap variants were tested; late child-pointer
 //     declarations were codegen-identical, while natural pointer/DestMap forms regressed
 //     to a 370-byte basin. Restored the best direct-this source.
-// Left in scratch: the remaining 42 bytes are a localized VC5 callee-save/address family:
+// Historical result: the remaining 42 bytes were a localized VC5 callee-save/address family:
 //   rebuilt keeps this in ESI and loop offset/child temporaries in EDI, while original keeps
 //   this in EDI and offset/delete pointers in ESI, including its explicit entry LEA. The
 //   narrow volatile Resend reread is retained because the oracle visibly reloads +0x1520 at
@@ -37,9 +37,21 @@
 // reduces the strict gap to 38 bytes. The remaining gap is only ESI/EDI coloring.
 // Pointer-scope, destructor-surface, vector-pointer, ambient-context, header, alias,
 // field-type, loop-type, and declaration-order probes did not change that basin.
+// Current pass: a 48-variant natural delete[] flag/header lab found that /GX restores
+// the 364-byte, 21-call helper basin, but still recolors EDI/ESI. Default flags keep the
+// 392-byte inline-destructor basin. Explicit offset/index, counter-width, unwind-macro,
+// and destructor exception-spec probes did not improve either basin. The /GX result is
+// useful flag evidence. Main-agent review assigned /GX because the executable's two
+// eh_vector_destructor_iterator calls directly prove exception-enabled vector cleanup.
 // Ownership review: FriendlyName/FormalName are NAME* and HOLDER is the canonical
 // six-field 0x18-byte record. Main review keeps source-level delete expressions;
 // compiler cleanup helpers and allocation cookies are not original source forms.
+// ACCEPTED DRIFT: with the binary-supported /GX context, size, frame, all 125
+// instruction shapes, all 21 calls, all CFG blocks, and cleanup agree. Every one
+// of the 38 changed bytes is the same consistent ESI/EDI register exchange. EDI
+// holds this in the executable while ESI holds it in the rebuild. The inverse
+// register owns the same loop and delete values. Calls, predicates, reads, writes,
+// destructor order, exception cleanup, fault order, ABI, and results are unchanged.
 
 class RESENDER;
 class HOLDER;
