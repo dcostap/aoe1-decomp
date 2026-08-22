@@ -47,7 +47,14 @@
 // - A mutating param_2 loop made one queue block exact but worsened registers
 //   and total bytes. A preguarded do/while emitted the same bytes as the clean
 //   for loop. The variant lab found no exact candidate.
-// - Restored and pinned the clean natural source. Remaining leads are the
+// - Current pass: the queue index is declared before its pre-loop bound and
+//   shifted in a guarded do/while. This matches the original mov edx,param_2
+//   before the first bound compare, improving shape to 96.88% and exact-block
+//   coverage to 81.88% at the same 830 differing bytes. This is now pinned.
+// - Current pass tested short-lived play-status aliases, canonical point
+//   aggregates, donor string externs, priority locals, range pointers, and
+//   explicit stop-tail forms. They either duplicated an existing basin or
+//   worsened size, control flow, or call count. Remaining leads are the
 //   original action-log tail source shape, compiler context, and relocations.
 // BLOCKER: order 0x2C6 passes range by a raw dword copy in the executable. The
 // rebuild loads and stores range through x87 before the virtual call. A
@@ -414,8 +421,9 @@ int UnitAIModule::processOrder(OrderEvent* param_1, int param_2) {
 
     if (param_2 >= 0 && param_2 < this->orderQueueSizeValue &&
         this->orderQueueValue != 0) {
-        if (param_2 < this->orderQueueSizeValue - 1) {
-            for (int i = param_2; i < this->orderQueueSizeValue - 1; ++i) {
+        int i = param_2;
+        if (i < this->orderQueueSizeValue - 1) {
+            do {
                 this->orderQueueValue[i].issuer =
                     this->orderQueueValue[i + 1].issuer;
                 this->orderQueueValue[i].orderType =
@@ -433,7 +441,8 @@ int UnitAIModule::processOrder(OrderEvent* param_1, int param_2) {
                 // ORIGINAL BUG: The shipped shift omits the range dword at +0x20.
                 this->orderQueueValue[i].targetZ =
                     this->orderQueueValue[i + 1].targetZ;
-            }
+                ++i;
+            } while (i < this->orderQueueSizeValue - 1);
         }
         --this->orderQueueSizeValue;
     }
