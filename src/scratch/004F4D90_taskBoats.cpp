@@ -54,6 +54,13 @@
 //   tactical ManagedArray field or call one of its methods. The array members
 //   only establish later class offsets, which the current 16-byte layout
 //   already models. No shared-header migration applies to this target.
+// - claim probes, 2026-08-22: routing the action-8 found reset to the shared
+//   task tail worsened the result to 2122 bytes; explicit fallback exits were
+//   codegen-neutral; bool ready and positive-ready CFG variants worsened to
+//   2278 and 2203 bytes. Restored the clean 2070-byte source.
+// - final validation, 2026-08-22: 2598 rebuilt bytes, 0x60 frame, 93.21%
+//   shape, 97.87% ordered calls, 2070 differing bytes. Result remains
+//   MISMATCH. Missing physical calls are one setAction and one setInUse.
 
 struct XYZPoint {
     int x;
