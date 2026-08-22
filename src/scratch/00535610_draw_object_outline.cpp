@@ -19,6 +19,17 @@
 // 16: tested alignment output ownership and donor draw-wall center algebra; output-home swaps reached 238 bytes but lost exact islands or changed later scheduling, so rolled back.
 // 17: tested a named center-offset temporary; size reached 665 but block shape worsened to 78.14%, so rolled back.
 // 18: tested local declaration removal and a variant spelling; compile repair restored the clean typed source. Remaining blocker is VC5 local-home scheduling after alignment.
+// 19: widened world_time to unsigned long; this recovered the original SHR and reduced the strict diff from 239 to 238 bytes.
+// 20: widened the derived shape selector to unsigned; this recovered the original JAE and reduced the diff to 237 bytes.
+// 21: reused frame_color as a short alignment output; frame fell to 0x38 and drift grew to 247 bytes, so rolled back.
+// 22: used the exact draw_wall_outline x-center algebra (x3 + (x4-y4)/2 + y4); strict diff improved to 233 bytes.
+// 23: reordered center/frame declarations; emitted code was unchanged and the source order was restored.
+// 24: changed get_tile output ownership to x1/scr_y; frame stayed 0x3C but drift grew to 249 bytes, so rolled back.
+// 25: moved center updates before the sprite guard; size matched but drift grew to 274 bytes and exact blocks fell, so rolled back.
+// 26: swapped get_tile output pointers; drift reached 232 bytes, but both emitted output LEAs aliased one home unlike the target, so rolled back.
+// 27: used Ghidra-indicated x1/x2 tile outputs; this added a call and grew the frame to 0x40, so rolled back.
+// 28: made frame_color branch-local; emitted code was unchanged and the function-scope declaration was restored.
+// 29: final validation remains 666/665 bytes, 0x3C/0x3C frame, 12/12 ordered calls, and 233 strict diff bytes. Pinned as current clean.
 // Behavior correction: the executable returns directly when
 // get_tile_screen_coords fails. It does not clear fog_next_shape on that path.
 // Accepted-drift review also remains blocked by the later draw_flag/global
@@ -31,7 +42,7 @@ struct tagPOINT {
 
 struct RGE_Game_World {
     void* vtable_ptr;
-    long world_time;
+    unsigned long world_time;
 };
 
 struct RGE_Color_Table;
@@ -216,7 +227,7 @@ void RGE_View::draw_object_outline() {
         if (placement == 0) {
             fog_next_shape = 5;
         } else {
-            int shape = (this->world->world_time >> 7) & 7;
+            unsigned int shape = (this->world->world_time >> 7) & 7;
             if (shape < 4)
                 shape += 0x24;
             else
@@ -225,7 +236,7 @@ void RGE_View::draw_object_outline() {
         }
 
         if (master->sprite != 0) {
-            x3 = (short)((int)y4 + ((int)x4 - (int)x3) / 2 + x3);
+            x3 = (short)((int)x3 + ((int)x4 - (int)y4) / 2 + y4);
             scr_y = (short)((int)scr_y + ((int)y3 - (int)alignment_tail) / 2 +
                          alignment_tail);
             SDI_Draw_Line = (int)scr_y;
