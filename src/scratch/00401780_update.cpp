@@ -49,6 +49,19 @@
 // - It remains non-exact: 585 positional bytes differ, and the compiler emits
 //   62 bytes of switch-table/body overflow after the original boundary.
 //   Keep this typed source as the latest binary-supported reconstruction.
+// Current bounded pass (sa-27ae350e-r1):
+// - Added an explicit zero-return state-3 arm. This is behavior-supported by
+//   the original sparse table. VC5 changed the table to a direct table, but
+//   removed the 62-byte overflow and improved drift to 435 bytes.
+// - Split the target tail into its subActionValue guard and notify body. The
+//   ally path now jumps directly to the binary notify body. This improved the
+//   retained reconstruction to 434 bytes with all 31 calls aligned.
+// - A positive state-13 notify guard improved block coverage but moved the
+//   result-4 tail. It was tested and rolled back.
+// - An early state-3 guard, a state-FF arm, direct zero returns, nested breaks,
+//   and case-label reorderings were tested. They were worse or unchanged.
+// - Retain the typed H36 source. It is non-exact, but it is the best measured
+//   source in this pass. The direct switch table remains unresolved.
 
 typedef unsigned char uchar;
 
@@ -269,7 +282,7 @@ uchar RGE_Action_Attack::update()
         if (this->subActionValue != 0) {
             goto target_done;
         }
-        goto target_notify;
+        goto target_notify_body;
     }
 
     if (this->target_obj != 0 && this->target_obj->inside_obj != 0) {
@@ -302,13 +315,19 @@ state13_common:
             goto return_zero;
         }
 
+    case 3:
+        goto return_zero;
+
     default:
         goto return_zero;
 
 target_notify:
-        if (this->subActionValue == 0) {
-            this->obj->notify(this->obj->id, this->obj->id, 0x1FB, 0x258, this->targetID, 0);
+        if (this->subActionValue != 0) {
+            goto target_done;
         }
+
+target_notify_body:
+            this->obj->notify(this->obj->id, this->obj->id, 0x1FB, 0x258, this->targetID, 0);
 
 target_done:
         return 4;
