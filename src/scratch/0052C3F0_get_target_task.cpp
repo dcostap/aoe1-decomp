@@ -40,6 +40,15 @@
 // gap, but changed the register basin and worsened positional similarity.
 // Header additions, declaration order, local scope, and a register hint were
 // unchanged or worse. The baseline below remains the clean natural source.
+// Pass 3 evidence:
+// BINARY NOTE: The original repeats target-null tests before later target
+// policy blocks. Separate source blocks improved CFG coverage, but added 16
+// bytes and worsened strict difference. The clean source remains restored.
+// BINARY NOTE: A first-scan do/while reached the original 1201-byte size, but
+// changed induction colors and worsened strict difference. VC5 canonicalized
+// direct-index and typed-cursor forms to the same basin.
+// Open: recover the source or translation-unit context that keeps param_2 in
+// ESI and sVar7 in EDI before tuning the remaining list-scan topology.
 #include "..\..\include\game_globals.h"
 class TRIBE_Task_List;
 class RGE_Action_Object;
