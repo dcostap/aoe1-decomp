@@ -36,13 +36,25 @@
 // VC5 kept the frame but worsened the result to diff 414.
 // Revisit v22: used typed parallel pointers for the final copy; VC5 emitted
 // 482 bytes and worsened the result to diff 419.
+// Revisit v23: restored the PDB-proven four-entry assignedResource array and
+// kept the byte offset as its own scalar, rather than folding the offset into
+// a fifth array slot. This tests the original local ownership and indexing.
+// Revisit v24: replaced the fallback pointer walk with direct indexed array
+// reads. VC5 now emits the original independent pointer setup and loop bytes;
+// the remaining mismatch is the earlier initialization register basin.
+// Revisit v25: a four-entry local aggregate plus a separate offset retained
+// the 403-byte metric but changed the final copy to a countdown basin. It was
+// rejected because the PDB names three separate arrays.
+// Revisit v26: register hints for the difference cursor and first result were
+// codegen duplicates. The natural unqualified declarations remain authoritative.
 // BLOCKER: the current typed reconstruction has the exact frame and 478-byte
 // size, eight ordered calls, and correct field offsets. It remains non-exact:
 // the first mismatch is local initialization at +0x2B. The original keeps -1
 // in EDX and EAX and zero in ECX. VC5 keeps only -1 in EAX and zero in ESI.
-// The remaining suffix has a different register and pointer lowering basin.
-// No period-plausible source change has recovered those registers. Leave this
-// source in scratch.
+// The first difference scan also swaps the original EBP result and EBX cursor.
+// The indexed fallback and final copy preserve the original pointer topology,
+// but no period-plausible source change has recovered the early colors. Leave
+// this source in scratch.
 
 class ResourceItem {
 public:
@@ -116,10 +128,9 @@ public:
 
 void TribeTacticalAIModule::updateNeededResources()
 {
-    struct LocalArrays { int assignedResource[5]; int tempNeededResource[4]; int tempResourceDifference[4]; } locals;
-#define assignedResource (locals.assignedResource)
-#define tempNeededResource (locals.tempNeededResource)
-#define tempResourceDifference (locals.tempResourceDifference)
+    int assignedResource[4];
+    int tempNeededResource[4];
+    int tempResourceDifference[4];
     int i;
     int* diffPtr;
     int bestResource;
@@ -131,17 +142,17 @@ void TribeTacticalAIModule::updateNeededResources()
     i = 0;
     tempResourceDifference[0] = -1;
     tempNeededResource[0] = -1;
-    assignedResource[1] = 0;
+    assignedResource[0] = 0;
     tempResourceDifference[1] = -1;
     tempNeededResource[1] = -1;
-    assignedResource[2] = 0;
+    assignedResource[1] = 0;
     tempResourceDifference[2] = -1;
     tempNeededResource[2] = -1;
-    assignedResource[3] = 0;
+    assignedResource[2] = 0;
     diffPtr = this->resourceDifferenceValue;
     tempResourceDifference[3] = -1;
     tempNeededResource[3] = -1;
-    assignedResource[4] = 0;
+    assignedResource[3] = 0;
 
     do {
         int resource = this->md->resourceAI.resource(i);
@@ -151,7 +162,7 @@ void TribeTacticalAIModule::updateNeededResources()
         diffPtr++;
     } while (i < 4);
 
-    assignedResource[0] = 0;
+    offset = 0;
     do {
         bestResource = -1;
         bestDifference = 0x7fffffff;
@@ -178,7 +189,7 @@ void TribeTacticalAIModule::updateNeededResources()
                 }
             }
             if (this->neededResources.value(i) > 0) {
-                if ((bestResource == -1 || this->resourceDifferenceValue[i] < bestDifference) && assignedResource[i + 1] == 0) {
+                if ((bestResource == -1 || this->resourceDifferenceValue[i] < bestDifference) && assignedResource[i] == 0) {
                     bestDifference = this->resourceDifferenceValue[i];
                     bestResource = i;
                 }
@@ -189,25 +200,19 @@ next_resource:
 
         if (bestResource == -1) {
             i = 0;
-            int* assignedPtr = assignedResource;
-            diffPtr = this->resourceDifferenceValue;
             do {
-                assignedPtr++;
-                if ((bestResource == -1 || *diffPtr < bestDifference) && *assignedPtr == 0) {
-                    bestDifference = *diffPtr;
+                if ((bestResource == -1 || this->resourceDifferenceValue[i] < bestDifference) && assignedResource[i] == 0) {
+                    bestDifference = this->resourceDifferenceValue[i];
                     bestResource = i;
                 }
                 i++;
-                diffPtr++;
             } while (i < 4);
         }
 
-        offset = assignedResource[0];
-        assignedResource[bestResource + 1] = 1;
+        assignedResource[bestResource] = 1;
         *(int*)((char*)tempNeededResource + offset) = bestResource;
         *(int*)((char*)tempResourceDifference + offset) = bestDifference;
         offset += 4;
-        assignedResource[0] = offset;
     } while (offset < 0x10);
 
     i = 0;
@@ -217,7 +222,4 @@ next_resource:
         this->neededResourceValue[i] = resource;
         this->resourceDifferenceValue[resource] = difference;
     }
-#undef tempNeededResource
-#undef tempResourceDifference
-#undef assignedResource
 }
