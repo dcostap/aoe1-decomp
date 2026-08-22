@@ -43,6 +43,10 @@
 // the closest clean VC5 basin, even though direct expressions are simpler.
 // Probe summary: 20 evidence-led local, predicate, loop, declaration, and
 // expression variants were equal or worse.  The home swap remains unresolved.
+// - Worker pass (2026-08-22): declaration order, a reference alias for the
+//   zero compare, a for-loop removal form, CRT headers, and a register hint
+//   were codegen duplicates.  A 512-sample ambient declaration sweep also
+//   kept one 2245-byte /GX group.  The target home swap remains unresolved.
 // Remaining leads (allocator coloring, not structure):
 // 1. numAGroups/newArtifact stack-home swap: rebuilt homes numAGroups at
 //    [esp+10h] and newArtifact at [esp+18h]; original has them swapped.
