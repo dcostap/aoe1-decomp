@@ -67,6 +67,13 @@
 //   declaration-order changes, and unsigned level widths did not recover the separate call.
 // - Final validation remains 397 bytes, 336 differing bytes, 3/4 calls, and MISMATCH.
 //   The unresolved gap is the original case-2 call topology and this/player register homes.
+// Follow-up sa-326d096d:
+// - Removing the unused world member, direct map-member reloads, an object alias, joined
+//   coordinate initializers, and level-before-player declaration order were codegen-duplicate.
+//   Restore the pinned natural body after each test.
+// - The target listing marks this method protected. Retain protected access so the rebuilt
+//   decorated symbol uses MAE, matching the target's Ghidra symbol; body bytes are unchanged.
+// - A register hint for the local player is rejected by VC5 (C2071). No compiler steering remains.
 
 extern unsigned long* unified_map_offsets[256];
 
@@ -235,9 +242,13 @@ class RGE_Diamond_Map : public TPanel {
 public:
     virtual void draw_selected_area();
     virtual void draw_objects();
+
+protected:
     virtual void draw_visible_object(RGE_Static_Object* object,
                                      unsigned char color1,
                                      unsigned char color2);
+
+public:
     virtual void draw_object(short x, short y, unsigned char color,
                              short mode, RGE_Static_Object* object);
     virtual void draw_view_rect();
