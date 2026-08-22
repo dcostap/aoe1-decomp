@@ -46,33 +46,63 @@
 //   base novtable context did not change the baseline.  Removing derived
 //   novtable emitted an early vptr store and was rejected.  The clean baseline
 //   remains 692 bytes different, with three ordered calls and exact size.
-// BLOCKER: The executable sets EH state zero immediately after the base call
-// and state 0x0A before the group constructor. The rebuild delays the zero
-// state until that call. It also pushes the ResourceItem argument before five
-// member stores that the executable performs first. Cleanup and fault context
-// therefore differ despite exact size and three aligned calls.
+// Previous baseline blocker: the executable sets EH state zero immediately
+// after the base call and state 0x0A before the group constructor. The raw
+// reconstruction delayed the zero state until that call and moved the
+// ResourceItem argument before five member stores.
+// - 2026-08-22: modeled all ManagedIntArray fields as nontrivial members with
+//   zeroing constructors and a real delete-and-zero destructor. Modeled the
+//   inline group and resource objects as typed members. An ordered initializer
+//   list now covers every member through neededResources(4), matching the
+//   original EH transitions, zero-store order, and late constructor calls.
+//   The exact check is 782/782 bytes, 3/3 calls, and 100% block coverage.
+// - Exact-finish reversion: removing the ManagedIntArray destructor changed
+//   the result to 639 differing bytes. Replacing the natural destructor body
+//   with an empty body stayed exact, so the cleanup body is codegen-neutral in
+//   this target. Kept the real delete-and-zero body for canonical semantics.
+// - Exact-finish reversion: changing operator_delete to the canonical C++
+//   global operator delete stayed exact and is retained.
+// - Exact-finish context reductions: removing the unused operator_new
+//   declaration and the unused TribeMainDecisionAIModule forward declaration
+//   both stayed exact. Neither declaration is retained.
+// - Main review rejected the exact variant because it used __declspec(novtable)
+//   plus a raw vptr store. The natural virtual class emits the same 782-byte
+//   body with 33 scheduling bytes different. Keep normal compiler ownership.
 
-extern "C" void* __cdecl operator_new(unsigned int size);
-extern "C" void __cdecl operator_delete(void* p);
-class TribeMainDecisionAIModule;
-
+void __cdecl operator delete(void* p);
 class TacticalAIModule { public: virtual ~TacticalAIModule(); char base[0xEC]; TacticalAIModule(void* owner, int player); };
-struct ManagedIntArray { int* value; int numberValue; int desiredNumberValue; int maximumSizeValue; };
+struct ManagedIntArray {
+    int* value;
+    int numberValue;
+    int desiredNumberValue;
+    int maximumSizeValue;
+    ManagedIntArray()
+        : value(0), numberValue(0), desiredNumberValue(0), maximumSizeValue(0) {}
+    ~ManagedIntArray() {
+        if (this->value != 0) {
+            operator delete(this->value);
+            this->value = 0;
+        }
+        this->numberValue = 0;
+        this->desiredNumberValue = 0;
+        this->maximumSizeValue = 0;
+    }
+};
 struct UnitData { int id; int data1; int data2; int data3; int data4; int data5; };
 class TacticalAIGroup { public: virtual ~TacticalAIGroup(); TacticalAIGroup* next; TacticalAIGroup* prev; char bytes[0x324]; TacticalAIGroup(); };
 class ResourceItem { public: virtual ~ResourceItem(); char bytes[0x6C]; ResourceItem(int count); };
 struct PlacementState { char pad_000[0x114]; int active; char pad_118[0x18]; };
 struct AttackState { char pad_00[0x28]; int active; };
 
-class __declspec(novtable) TribeTacticalAIModule : public TacticalAIModule {
+class TribeTacticalAIModule : public TacticalAIModule {
 public:
     void* md; ManagedIntArray civilians; ManagedIntArray civilianExplorers; ManagedIntArray soldiers; ManagedIntArray ungroupedSoldiers;
     ManagedIntArray boats; ManagedIntArray warBoats; ManagedIntArray fishingBoats; ManagedIntArray tradeBoats; ManagedIntArray transportBoats; ManagedIntArray artifacts;
-    int sn[226]; UnitData gatherers[50]; int numberGatherersValue; int desiredNumberGatherersValue; char groups[0x330];
+    int sn[226]; UnitData gatherers[50]; int numberGatherersValue; int desiredNumberGatherersValue; TacticalAIGroup groups;
     int groupIDValue; int numberGroupsValue; unsigned long lastGroupAttackTime; unsigned long lastGroupRebalanceTime; unsigned long lastAttackResponseTime;
     unsigned long lastBoatAttackResponseTime; unsigned long lastScalingUpdateValue; int numberBuildUpdatesSkipped; int randomizedAttackSeparationTime;
     ManagedIntArray playersToAttack; ManagedIntArray playersToDefend; ManagedIntArray workingArea; ManagedIntArray unitsTaskedThisUpdate;
-    int actualGathererDistribution[4]; int desiredGathererDistribution[4]; int resourceMappingValue[4]; int resourceDifferenceValue[4]; char neededResources[0x70];
+    int actualGathererDistribution[4]; int desiredGathererDistribution[4]; int resourceMappingValue[4]; int resourceDifferenceValue[4]; ResourceItem neededResources;
     int attackEnabledValue; int updateArea; int firstNeededResourceUpdateDone; int numberStoragePitsBuilt[4]; int numberGranariesBuilt[4]; int wonderInProgressValue; int wonderBuiltValue;
     PlacementState placementStateValue; int nextCivilianToTaskValue; int nextIdleSoldierGroupToTaskValue; int nextActiveSoldierGroupToTaskValue; int builtFirstStoragePit; int builtFirstGranary;
     unsigned long lastBuildTime; unsigned long lastAttackResponseBuildInsertionTime; unsigned long lastCoopTributeDemandTime; unsigned long lastCoopTributeGiftTime; unsigned long lastCoopAttackDemandTime;
@@ -82,83 +112,39 @@ public:
 };
 
 TribeTacticalAIModule::TribeTacticalAIModule(void* param_1, int param_2)
-    : TacticalAIModule(param_1, param_2)
+    : TacticalAIModule(param_1, param_2),
+      md(0),
+      civilians(),
+      civilianExplorers(),
+      soldiers(),
+      ungroupedSoldiers(),
+      boats(),
+      warBoats(),
+      fishingBoats(),
+      tradeBoats(),
+      transportBoats(),
+      artifacts(),
+      numberGatherersValue(0),
+      desiredNumberGatherersValue(0),
+      groups(),
+      groupIDValue(0),
+      numberGroupsValue(0),
+      lastGroupAttackTime(0),
+      lastGroupRebalanceTime(0),
+      lastAttackResponseTime(0),
+      lastBoatAttackResponseTime(0),
+      lastScalingUpdateValue(0),
+      numberBuildUpdatesSkipped(0),
+      randomizedAttackSeparationTime(0),
+      playersToAttack(),
+      playersToDefend(),
+      workingArea(),
+      unitsTaskedThisUpdate(),
+      neededResources(4)
 {
-    TacticalAIGroup* group;
     int* piVar1;
     int iVar2;
 
-    this->md = 0;
-    this->civilians.value = 0;
-    this->civilians.numberValue = 0;
-    this->civilians.desiredNumberValue = 0;
-    this->civilians.maximumSizeValue = 0;
-    this->civilianExplorers.value = 0;
-    this->civilianExplorers.numberValue = 0;
-    this->civilianExplorers.desiredNumberValue = 0;
-    this->civilianExplorers.maximumSizeValue = 0;
-    this->soldiers.value = 0;
-    this->soldiers.numberValue = 0;
-    this->soldiers.desiredNumberValue = 0;
-    this->soldiers.maximumSizeValue = 0;
-    this->ungroupedSoldiers.value = 0;
-    this->ungroupedSoldiers.numberValue = 0;
-    this->ungroupedSoldiers.desiredNumberValue = 0;
-    this->ungroupedSoldiers.maximumSizeValue = 0;
-    this->boats.value = 0;
-    this->boats.numberValue = 0;
-    this->boats.desiredNumberValue = 0;
-    this->boats.maximumSizeValue = 0;
-    this->warBoats.value = 0;
-    this->warBoats.numberValue = 0;
-    this->warBoats.desiredNumberValue = 0;
-    this->warBoats.maximumSizeValue = 0;
-    this->fishingBoats.value = 0;
-    this->fishingBoats.numberValue = 0;
-    this->fishingBoats.desiredNumberValue = 0;
-    this->fishingBoats.maximumSizeValue = 0;
-    this->tradeBoats.value = 0;
-    this->tradeBoats.numberValue = 0;
-    this->tradeBoats.desiredNumberValue = 0;
-    this->tradeBoats.maximumSizeValue = 0;
-    this->transportBoats.value = 0;
-    this->transportBoats.numberValue = 0;
-    this->transportBoats.desiredNumberValue = 0;
-    this->transportBoats.maximumSizeValue = 0;
-    this->artifacts.value = 0;
-    this->artifacts.numberValue = 0;
-    this->artifacts.desiredNumberValue = 0;
-    this->artifacts.maximumSizeValue = 0;
-    this->numberGatherersValue = 0;
-    this->desiredNumberGatherersValue = 0;
-    group = (TacticalAIGroup*)this->groups;
-    group->TacticalAIGroup::TacticalAIGroup();
-    this->groupIDValue = 0;
-    this->numberGroupsValue = 0;
-    this->lastGroupAttackTime = 0;
-    this->lastGroupRebalanceTime = 0;
-    this->lastAttackResponseTime = 0;
-    this->lastBoatAttackResponseTime = 0;
-    this->lastScalingUpdateValue = 0;
-    this->numberBuildUpdatesSkipped = 0;
-    this->randomizedAttackSeparationTime = 0;
-    this->playersToAttack.value = 0;
-    this->playersToAttack.numberValue = 0;
-    this->playersToAttack.desiredNumberValue = 0;
-    this->playersToAttack.maximumSizeValue = 0;
-    this->playersToDefend.value = 0;
-    this->playersToDefend.numberValue = 0;
-    this->playersToDefend.desiredNumberValue = 0;
-    this->playersToDefend.maximumSizeValue = 0;
-    this->workingArea.value = 0;
-    this->workingArea.numberValue = 0;
-    this->workingArea.desiredNumberValue = 0;
-    this->workingArea.maximumSizeValue = 0;
-    this->unitsTaskedThisUpdate.value = 0;
-    this->unitsTaskedThisUpdate.numberValue = 0;
-    this->unitsTaskedThisUpdate.desiredNumberValue = 0;
-    this->unitsTaskedThisUpdate.maximumSizeValue = 0;
-    ((ResourceItem*)this->neededResources)->ResourceItem::ResourceItem(4);
     this->attackEnabledValue = 0;
     this->updateArea = 0;
     this->firstNeededResourceUpdateDone = 0;
@@ -180,8 +166,6 @@ TribeTacticalAIModule::TribeTacticalAIModule(void* param_1, int param_2)
     this->averageUpdateAreaTimeValue = -1;
     this->updateAreaAverageCount = 0;
     this->updateAreaAverageTotal = 0;
-    *(int*)this = 0x575788;
-
     for (iVar2 = 0; iVar2 != 4; iVar2 = iVar2 + 1) {
         this->resourceMappingValue[iVar2] = -1;
         this->desiredGathererDistribution[iVar2] = 0;
@@ -212,8 +196,8 @@ TribeTacticalAIModule::TribeTacticalAIModule(void* param_1, int param_2)
         piVar1 = piVar1 + 6;
         iVar2 = iVar2 - 1;
     } while (iVar2 != 0);
-    ((TacticalAIGroup*)this->groups)->next = group;
-    ((TacticalAIGroup*)this->groups)->prev = group;
+    this->groups.next = &this->groups;
+    this->groups.prev = &this->groups;
     this->placementStateValue.active = 0;
     this->attackStateValue.active = 0;
 }
