@@ -65,13 +65,15 @@
 // - Exact-finish context reductions: removing the unused operator_new
 //   declaration and the unused TribeMainDecisionAIModule forward declaration
 //   both stayed exact. Neither declaration is retained.
-// - Main review rejected the exact variant because it used __declspec(novtable)
-//   plus a raw vptr store. The natural virtual class emits the same 782-byte
-//   body with 33 scheduling bytes different. Keep normal compiler ownership.
-// - Accepted-drift audit: do not promote the natural virtual-class result. The
-//   executable writes the derived vptr after the scalar stores through +0x1008.
-//   The rebuild writes it after ResourceItem construction and before those
-//   stores. This changes vptr publication and member-store fault order.
+// - Main review rejected the first exact variant because it used novtable and
+//   a raw vptr store. The normal virtual class moved the vptr 33 bytes.
+// - Final exact recovery: move all scalar initialization after neededResources
+//   into the member initializer list. VC5 now completes those initializers and
+//   writes the derived vptr at the executable's original point. This keeps
+//   compiler ownership and needs no raw vptr access or novtable attribute.
+// - Exact-finish reduction: moving attackEnabledValue, nextCivilianToTaskValue,
+//   or updateAreaAverageTotal back into the body produced 33, 26, and 7 byte
+//   mismatches. The ordered post-ResourceItem initializer group is required.
 
 void __cdecl operator delete(void* p);
 class TacticalAIModule { public: virtual ~TacticalAIModule(); char base[0xEC]; TacticalAIModule(void* owner, int player); };
@@ -144,32 +146,32 @@ TribeTacticalAIModule::TribeTacticalAIModule(void* param_1, int param_2)
       playersToDefend(),
       workingArea(),
       unitsTaskedThisUpdate(),
-      neededResources(4)
+      neededResources(4),
+      attackEnabledValue(0),
+      updateArea(0),
+      firstNeededResourceUpdateDone(0),
+      wonderInProgressValue(0),
+      wonderBuiltValue(0),
+      nextCivilianToTaskValue(-1),
+      nextIdleSoldierGroupToTaskValue(-1),
+      nextActiveSoldierGroupToTaskValue(-1),
+      builtFirstStoragePit(0),
+      builtFirstGranary(0),
+      lastBuildTime(0),
+      lastAttackResponseBuildInsertionTime(0),
+      lastCoopTributeDemandTime(0),
+      lastCoopTributeGiftTime(0),
+      lastCoopAttackDemandTime(0),
+      zoomingToNextAge(0),
+      lastUngroupedSoldierTaskTime(0),
+      lastUpdateAreaTimeValue(-1),
+      averageUpdateAreaTimeValue(-1),
+      updateAreaAverageCount(0),
+      updateAreaAverageTotal(0)
 {
     int* piVar1;
     int iVar2;
 
-    this->attackEnabledValue = 0;
-    this->updateArea = 0;
-    this->firstNeededResourceUpdateDone = 0;
-    this->wonderInProgressValue = 0;
-    this->wonderBuiltValue = 0;
-    this->nextCivilianToTaskValue = -1;
-    this->nextIdleSoldierGroupToTaskValue = -1;
-    this->nextActiveSoldierGroupToTaskValue = -1;
-    this->builtFirstStoragePit = 0;
-    this->builtFirstGranary = 0;
-    this->lastBuildTime = 0;
-    this->lastAttackResponseBuildInsertionTime = 0;
-    this->lastCoopTributeDemandTime = 0;
-    this->lastCoopTributeGiftTime = 0;
-    this->lastCoopAttackDemandTime = 0;
-    this->zoomingToNextAge = 0;
-    this->lastUngroupedSoldierTaskTime = 0;
-    this->lastUpdateAreaTimeValue = -1;
-    this->averageUpdateAreaTimeValue = -1;
-    this->updateAreaAverageCount = 0;
-    this->updateAreaAverageTotal = 0;
     for (iVar2 = 0; iVar2 != 4; iVar2 = iVar2 + 1) {
         this->resourceMappingValue[iVar2] = -1;
         this->desiredGathererDistribution[iVar2] = 0;
