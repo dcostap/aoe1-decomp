@@ -37,11 +37,19 @@
 // direct repeated-member form (907B, 820 differing bytes).
 // unresolved: the first durable mismatch is the early dcoID guard (the oracle
 // uses cmp [player slot],zero-reg; VC5 emits load/test). The shared invalid and
-// BAD-DCOID log tail also remains relocated, and the loop/send tail has register
-// and argument-scheduling drift. Twenty-one meaningful hypotheses were checked
-// in this pass; no exact result.
-// left in scratch: the corrected player argument is retained. The original 0x18
-// local layout, cold-tail placement, and late log/delete schedule remain nonexact.
+// BAD-DCOID tail is now source-modeled with one binary-proven errorText label,
+// but VC5 still lowers its two string selections through a moved value. The
+// loop/send tail has register and argument-scheduling drift.
+// follow-up H23: moving playerNumber before the guard added a call and a 0x1C
+// frame; restored the post-guard copy. H24/H25: the shared error tail reached
+// 901B/797-diff with separate Send result; reversed equality was codegen duplicate.
+// H27/H36/H38: persistent, branch-local, and late RESENDER aliases worsened the
+// frame or shape. H29/H31: reusing nosuch.Serialno reached 723 diff but lost the
+// 0x18 frame. H32: separate Send result with the shared tail and direct record
+// accesses reaches 906B/0x18, 84.70% shape, 22/22 calls, and 717 differing
+// bytes. H34 reordering the transformed player worsened 826 diff; H39's reviewed
+// char* ShowReturn ABI and H40's named packet-length temporary were duplicates.
+// Current source is unresolved and retains no accepted-drift residue.
 
 typedef unsigned int uint;
 
@@ -52,7 +60,7 @@ public:
 
 class RGE_Comm_Error {
 public:
-    void ShowReturn(long result, const char* text);
+    void ShowReturn(long result, char* text);
 };
 
 class IDirectPlay3 {
@@ -153,7 +161,7 @@ int TCommunications_Handler::TXResendReply(uint serial, uint player)
     uint i;
     long hr;
     MSGFORMAT_RESEND nosuch;
-    RESENDER* resend;
+    char* errorText;
 
     if (this->RGE_Guaranteed_Delivery == 0) {
         return 0;
@@ -161,8 +169,8 @@ int TCommunications_Handler::TXResendReply(uint serial, uint player)
 
     offset = 0;
     if (this->PlayerOptions.dcoID[player] == 0) {
-        L->Log("Invalid player req.");
-        return 0;
+        errorText = "Invalid player req.";
+        goto resend_failure;
     }
 
     playerNumber = player;
@@ -199,8 +207,8 @@ int TCommunications_Handler::TXResendReply(uint serial, uint player)
             (*(unsigned int*)((char*)this->Resend + player))--;
 
             if (DAT_0062cf04 == 0) {
-                L->Log("+++BAD DCOID=0 NO TX");
-                return 0;
+                errorText = "+++BAD DCOID=0 NO TX";
+                goto resend_failure;
             }
 
             unsigned long send_start =
@@ -228,17 +236,16 @@ int TCommunications_Handler::TXResendReply(uint serial, uint player)
                 ++i;
             }
 
-            resend = this->Resend;
             nosuch.Serialno = (uint)(signed char)*(
-                *(char**)((char*)resend + offset + 8));
+                *(char**)((char*)this->Resend + offset + 8));
             unsigned long log_time =
                 debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Com_hand.cpp", 0xF42);
             L->Log("COMM: >>>>> RETRANSMIT P#%d Ser#%d (Slot#%d) Cmd %d '%c' MsgLength=%d Retx left=%d timeGetTime=%d",
                    playerNumber,
-                   *(unsigned int*)((char*)resend + offset + 4),
+                   *(unsigned int*)((char*)this->Resend + offset + 4),
                    GoodTransmitCount, nosuch.Serialno, nosuch.Serialno,
-                   *(unsigned int*)((char*)resend + offset + 0xC),
-                   *(unsigned int*)((char*)resend + player),
+                   *(unsigned int*)((char*)this->Resend + offset + 0xC),
+                   *(unsigned int*)((char*)this->Resend + player),
                    log_time);
             operator delete((void*)nosuch.Serialno);
         }
@@ -268,4 +275,8 @@ int TCommunications_Handler::TXResendReply(uint serial, uint player)
 
     this->PurgeAcknowledgedStoredMessages();
     return 1;
+
+resend_failure:
+    L->Log(errorText);
+    return 0;
 }
