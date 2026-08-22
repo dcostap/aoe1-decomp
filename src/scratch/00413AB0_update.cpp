@@ -41,9 +41,18 @@
 //   growth block to a cold suffix. It was rolled back because the oracle keeps
 //   that block before the lookup path. Volatility, register hints, explicit
 //   labels, and alternate remove forms were also tested and discarded.
-// - The unresolved register basin is the oracle's EBP-held -1 sentinel and
-//   attacking-unit index. The current natural source uses immediate -1 forms
-//   and EBX for that scan. No ordered call gap remains.
+// - Direct currentOrder reloads removed an artificial live temporary and
+//   reduced the strict diff to 1038 bytes. Binary evidence then fixed
+//   weaponRange(1), the 100.0f data symbol, and a named distance float.
+// - Two direct action-log calls tail-merge to the oracle's immediate 0x335 and
+//   0x356 pushes. The invalid-attacker remove path breaks to the timer tail;
+//   it does not retest the attacking-unit loop.
+// - Current reduced check: 1372 bytes, 37 calls, 463 versus 461 instructions,
+//   97.62% shape, 88.29% exact-block coverage, and 256 strict diff bytes.
+//   BINARY NOTE: the first remaining block is +03A2. The oracle adds the
+//   secondary and look-around timers, tests notify size, then stores all three
+//   timers. The current source stores idle first and clears the offset register
+//   before that test. Do not retain a metric-only scheduling workaround.
 
 #include <stdio.h>
 
@@ -193,7 +202,7 @@ public:
     virtual float rateOfFire();
     virtual float damageCapability(RGE_Static_Object*);
     virtual float damageCapability();
-    virtual float weaponRange();
+    virtual float weaponRange(int);
     virtual float minimumWeaponRange();
     virtual int passableTile(float, float, int);
     virtual unsigned char facetToNextWaypoint();
@@ -349,11 +358,14 @@ public:
 #define numberVisibleObjects (*(int*)0x592A50)
 #define numberDifferentPlayerObjectsVisible (*(int*)0x592A54)
 extern FILE* actionFile;
+extern const float DAT_0056ebc0;
 #define actionFormat ((const char*)0x57F964)
 #define actionSource ((const char*)0x57F980)
 
 int UnitAIModule::update(unsigned long param_1)
 {
+    RGE_Static_Object* target;
+    int i;
     int haveGameAction;
 
     if (2 < this->objectValue->object_state) {
@@ -370,12 +382,11 @@ int UnitAIModule::update(unsigned long param_1)
         this->objectValue->setWaitingToMove(0);
     }
 
-    int invalidValue = -1;
-    if (this->currentTargetValue != invalidValue) {
-        RGE_Static_Object* target =
-            this->lookupObject(this->currentTargetValue);
+    i = -1;
+    if (this->currentTargetValue != i) {
+        target = this->lookupObject(this->currentTargetValue);
         if (target == 0) {
-            this->currentTargetValue = invalidValue;
+            this->currentTargetValue = i;
             if (this->currentActionValue == 600) {
                 this->removeCurrentTarget();
                 if (actionFile != 0) {
@@ -383,7 +394,7 @@ int UnitAIModule::update(unsigned long param_1)
                     if (this->objectValue != 0) {
                         objectID = this->objectValue->id;
                     } else {
-                        objectID = invalidValue;
+                        objectID = i;
                     }
                     fprintf(actionFile, actionFormat, objectID,
                             actionSource, 0x306);
@@ -393,41 +404,40 @@ int UnitAIModule::update(unsigned long param_1)
             }
         } else {
             long targetLogObjectID;
-            int targetLogCode;
             if (this->objectValue->object_state == 2 && target->object_state > 2) {
                 if (this->actionRequiresLiveTarget(this->currentActionValue) == 1) {
                     this->stopAfterTargetKilledValue = 0;
                     if (this->currentActionValue == 600) {
                         int idleResult = this->processIdle(0);
-                        int currentOrder = this->currentOrderValue;
                         if (idleResult == 5) {
-                            if (currentOrder != 0x2D5) {
+                            if (this->currentOrderValue != 0x2D5) {
                                 if (this->moveTo(
                                         this->currentTargetXValue,
                                         this->currentTargetYValue,
                                         this->currentTargetZValue,
-                                        this->objectValue->weaponRange()) == 0) {
+                                        this->objectValue->weaponRange(1)) == 0) {
                                     this->removeCurrentTarget();
                                     if (actionFile != 0) {
                                         if (this->objectValue != 0) {
                                             targetLogObjectID = this->objectValue->id;
                                         } else {
-                                            targetLogObjectID = invalidValue;
+                                            targetLogObjectID = i;
                                         }
-                                        targetLogCode = 0x335;
-                                        goto write_target_log;
+                                        fprintf(actionFile, actionFormat,
+                                                targetLogObjectID,
+                                                actionSource, 0x335);
                                     }
                                     this->stopObject(1);
                                 } else {
-                                    this->currentOrderValue = -1;
-                                    this->lastOrderValue = currentOrder;
-                                    this->currentOrderPriorityValue = -1;
+                                    this->lastOrderValue = this->currentOrderValue;
+                                    this->currentOrderValue = i;
+                                    this->currentOrderPriorityValue = i;
                                 }
                             }
-                        } else if (currentOrder != 0x2D5) {
-                            this->lastOrderValue = currentOrder;
-                            this->currentOrderValue = -1;
-                            this->currentOrderPriorityValue = -1;
+                        } else if (this->currentOrderValue != 0x2D5) {
+                            this->lastOrderValue = this->currentOrderValue;
+                            this->currentOrderValue = i;
+                            this->currentOrderPriorityValue = i;
                         }
                     } else {
                         this->removeCurrentTarget();
@@ -435,29 +445,21 @@ int UnitAIModule::update(unsigned long param_1)
                             if (this->objectValue != 0) {
                                 targetLogObjectID = this->objectValue->id;
                             } else {
-                                targetLogObjectID = invalidValue;
+                                targetLogObjectID = i;
                             }
-                            targetLogCode = 0x356;
-                            goto write_target_log;
+                            fprintf(actionFile, actionFormat, targetLogObjectID,
+                                    actionSource, 0x356);
                         }
                         this->stopObject(1);
                     }
                 }
             }
-            goto write_target_log_done;
-
-write_target_log:
-            fprintf(actionFile, actionFormat, targetLogObjectID,
-                    actionSource, targetLogCode);
-            this->stopObject(1);
-
-write_target_log_done:
-
             if (this->objectValue->owner->computerPlayer() == 1 &&
-                this->currentOrderPriorityValue != -1 &&
+                this->currentOrderPriorityValue != i &&
                 this->currentOrderPriorityValue < 100) {
-                int distance = (int)(100.0f /
-                    this->objectValue->distance_to_object(target));
+                float distanceValue =
+                    this->objectValue->distance_to_object(target);
+                int distance = (int)(DAT_0056ebc0 / distanceValue);
                 if (distance > 99) {
                     distance = 99;
                 }
@@ -470,7 +472,7 @@ write_target_log_done:
         this->objectValue->underAttack() != 0) {
         this->objectValue->setUnderAttack(0);
     } else {
-        int i = 0;
+        i = 0;
         if (this->attackingUnitsValue.numberValue > 0) {
             do {
                 RGE_Static_Object* attacker =
@@ -484,6 +486,7 @@ write_target_log_done:
 
                 this->attackingUnitsValue.remove(
                     this->attackingUnitsValue[i]);
+                break;
             } while (i < this->attackingUnitsValue.numberValue);
         }
     }
