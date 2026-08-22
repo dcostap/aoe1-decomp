@@ -40,6 +40,10 @@
 // precomputed pointer guards and a named terrain byte worsened the basin.
 // Restored the pinned direct-loop source. Final validation remains 255 differing
 // bytes, 423/434 bytes, 0x14 frame, 3 calls, and unresolved self-call identity.
+// sa-987bfe3a-r1 probes 46-54: qualifying both coordinate formals, swapping
+// their formal order while preserving behavior, adding <stdlib.h>, and adding
+// declaration-only polymorphic/full tmap map surfaces were all codegen
+// duplicates at 255 differing bytes. Restored the pinned direct-loop source.
 // left in scratch: behavior and field ownership are reconstructed; remaining
 // drift is prologue/register scheduling plus recursive-call relocation. The
 // best validated source is the flag-order variant at 255 differing bytes.
