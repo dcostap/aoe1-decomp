@@ -20,11 +20,14 @@
 //   binary's stack.y helper surface. The clean bounded result is 1224 bytes,
 //   frame 0xE0, shape 74.20%, and 991 differing bytes. The older 1144-byte
 //   result had a known wrong outer-loop bound and is not the final behavior model.
+// - A byte-offset row-table cursor reduced the result to 1172 bytes and 905
+//   differing bytes. Main review rejected that metric-only cursor and kept
+//   typed row ownership. The frame remains four bytes short without padding.
 
 struct Map_Stack {
     int x;
     int y;
-    int cost;
+    float cost;
     float total_cost;
     Map_Stack* next;
     Map_Stack* prev;
@@ -33,7 +36,17 @@ struct Map_Stack {
 class RGE_Map;
 
 struct RGE_Tile {
-    char data[0x18];
+    short screen_xpos;
+    short screen_ypos;
+    unsigned char tile_type;
+    unsigned char terrain_type;
+    unsigned char border_type;
+    unsigned char last_drawn_as;
+    unsigned char last_drawn_shape;
+    unsigned char draw_as;
+    unsigned char draw_attribute;
+    unsigned char last_drawn_shape2;
+    char objects[12];
 };
 
 class RGE_Random_Map_Module {
@@ -70,15 +83,14 @@ public:
 extern "C" int __cdecl debug_rand(char*, int);
 
 void RGE_RMM_Shallows_Generator::make_tribe_connections(long param_1, long param_2) {
-    long tx2;
-    long x, y, ty2, end_x, tx1, end_y, ty, done;
-    long iVar2;
+    int iVar2;
     long lVar6;
     long lVar8;
-    long iVar9;
+    int iVar9;
+    long ty2, y, end_x, tx1, end_y, ty, done, tx2;
+    long in_zone;
     Map_Stack stack;
     float terrain[40];
-    long in_zone;
     float* pfVar7;
     long iVar4;
     terrain[1] = 0.0f;
@@ -115,7 +127,7 @@ void RGE_RMM_Shallows_Generator::make_tribe_connections(long param_1, long param
     // Keep the first step coordinates live before the bounds guard. The
     // original loop carries these values across its back edge.
     ty2 = ty;
-    x = tx1;
+    y = tx1;
 
     if (tx1 < 0 || tx1 >= this->map_width) return;
     if (ty < 0 || ty >= this->map_height) return;
@@ -137,36 +149,36 @@ void RGE_RMM_Shallows_Generator::make_tribe_connections(long param_1, long param
         case 8: // tile type 8
             ++ty2;
         case 4: // tile type 4
-            ++x;
+            ++y;
             break;
         case 9: // tile type 9
             --ty2;
-            ++x;
+            ++y;
             break;
         case 10: // tile type 10
             ++ty2;
         case 5: // tile type 5
-            --x;
+            --y;
             break;
         case 11: // tile type 11
             --ty2;
-            --x;
+            --y;
             break;
         default:
             tx2 = 1;
             break;
         }
 
-        if (x < 0 || x >= this->map_width || ty2 < 0 || ty2 >= this->map_height) {
+        if (y < 0 || y >= this->map_width || ty2 < 0 || ty2 >= this->map_height) {
             tx2 = 1;
         }
 
         if (tx2 != 0) {
             // Pop from stack and modify terrain tiles
             // BINARY NOTE: pop_stack receives stack.y, but its cost output aliases stack.
-            while (this->pop_stack((Map_Stack*)&stack.y, &x, &ty2, (float*)&stack) != 0) {
+            while (this->pop_stack((Map_Stack*)&stack.y, &y, &ty2, (float*)&stack) != 0) {
                 unsigned char** rows2 = (unsigned char**)this->search_map_rows;
-                unsigned char* tile_ptr = &rows2[ty2][x * 24 + 5];
+                unsigned char* tile_ptr = &rows2[ty2][y * 24 + 5];
                 *tile_ptr = (*tile_ptr & 0xE4) | 4;
             }
             this->deinit_stack((Map_Stack*)&stack.y);
@@ -175,12 +187,12 @@ void RGE_RMM_Shallows_Generator::make_tribe_connections(long param_1, long param
 
         // Check current tile terrain
         RGE_Tile** rows3 = this->map_row_offset;
-        unsigned char terrain_type = rows3[ty2][x].data[5] & 0x1F;
+        unsigned char terrain_type = rows3[ty2][y].terrain_type & 0x1F;
 
         if (terrain_type == 1 || terrain_type == 0x16) {
             // Water tile - generate random area around it
             iVar2 = debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 0xC6);
-            end_y = (x - (iVar2 * 2) / 0x7FFF) - 1;
+            end_y = (y - (iVar2 * 2) / 0x7FFF) - 1;
             if (end_y < 0) end_y = 0;
             lVar6 = end_y;
 
@@ -189,7 +201,7 @@ void RGE_RMM_Shallows_Generator::make_tribe_connections(long param_1, long param
             if (lVar8 < 0) lVar8 = 0;
 
             iVar2 = debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 0xCE);
-            in_zone = (iVar2 * 2) / 0x7FFF + 1 + x;
+            in_zone = (iVar2 * 2) / 0x7FFF + 1 + y;
             if (in_zone >= this->map_width) in_zone = this->map_width - 1;
 
             iVar2 = debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 0xD2);
@@ -199,57 +211,57 @@ void RGE_RMM_Shallows_Generator::make_tribe_connections(long param_1, long param
 
             done = lVar8;
             if (lVar8 <= end_x) {
-                iVar2 = lVar8 * 4;
+                iVar2 = lVar8;
                 do {
                     if (end_y <= in_zone) {
-                        iVar9 = end_y * 24;
+                        iVar9 = end_y;
                         done = lVar8;
                         do {
-                            RGE_Tile** rows4 = this->map_row_offset;
-                            unsigned char* row4 = (unsigned char*)rows4[iVar2 / 4];
-                            unsigned char tile_check = row4[5 + iVar9] & 0x1F;
+                            RGE_Tile* row4 = this->map_row_offset[iVar2];
+                            unsigned char tile_check =
+                                row4[iVar9].terrain_type & 0x1F;
                             if (tile_check == 1 || tile_check == 0x16) {
                                 this->push_stack((Map_Stack*)&stack.y, lVar6, lVar8, 0.0f, 0.0f);
                                 lVar8 = done;
                             }
                             lVar6++;
-                            iVar9 += 24;
+                            ++iVar9;
                         } while (lVar6 <= in_zone);
                     }
                     lVar8++;
-                    iVar2 += 4;
+                    ++iVar2;
                     lVar6 = end_y;
                     done = lVar8;
                 } while (lVar8 <= end_x);
             }
         } else {
             // Land tile - push adjacent water tiles to stack
-            if (x > 0) {
+            if (y > 0) {
                 RGE_Tile** rows5 = this->map_row_offset;
-                unsigned char adj = rows5[ty2][x - 1].data[5] & 0x1F;
+                unsigned char adj = rows5[ty2][y - 1].terrain_type & 0x1F;
                 if (adj == 1 || adj == 0x16) {
-                    this->push_stack((Map_Stack*)&stack.y, x - 1, ty2, 0.0f, 0.0f);
+                    this->push_stack((Map_Stack*)&stack.y, y - 1, ty2, 0.0f, 0.0f);
                 }
             }
-            if (x < this->map_width - 1) {
+            if (y < this->map_width - 1) {
                 RGE_Tile** rows5 = this->map_row_offset;
-                unsigned char adj = rows5[ty2][x + 1].data[5] & 0x1F;
+                unsigned char adj = rows5[ty2][y + 1].terrain_type & 0x1F;
                 if (adj == 1 || adj == 0x16) {
-                    this->push_stack((Map_Stack*)&stack.y, x + 1, ty2, 0.0f, 0.0f);
+                    this->push_stack((Map_Stack*)&stack.y, y + 1, ty2, 0.0f, 0.0f);
                 }
             }
             if (ty2 > 0) {
                 RGE_Tile** rows5 = this->map_row_offset;
-                unsigned char adj = rows5[ty2 - 1][x].data[5] & 0x1F;
+                unsigned char adj = rows5[ty2 - 1][y].terrain_type & 0x1F;
                 if (adj == 1 || adj == 0x16) {
-                    this->push_stack((Map_Stack*)&stack.y, x, ty2 - 1, 0.0f, 0.0f);
+                    this->push_stack((Map_Stack*)&stack.y, y, ty2 - 1, 0.0f, 0.0f);
                 }
             }
             if (ty2 < this->map_height - 1) {
                 RGE_Tile** rows5 = this->map_row_offset;
-                unsigned char adj = rows5[ty2 + 1][x].data[5] & 0x1F;
+                unsigned char adj = rows5[ty2 + 1][y].terrain_type & 0x1F;
                 if (adj == 1 || adj == 0x16) {
-                    this->push_stack((Map_Stack*)&stack.y, x, ty2 + 1, 0.0f, 0.0f);
+                    this->push_stack((Map_Stack*)&stack.y, y, ty2 + 1, 0.0f, 0.0f);
                 }
             }
         }
@@ -258,7 +270,7 @@ void RGE_RMM_Shallows_Generator::make_tribe_connections(long param_1, long param
         unsigned char** block_rows = (unsigned char**)this->search_map_rows;
         block_rows[ty][tx1] = 0xFF;
 
-        tx1 = x;
+        tx1 = y;
         ty = ty2;
     }
 }
