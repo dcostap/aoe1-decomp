@@ -53,6 +53,22 @@
 // BLOCKER: The executable pushes EDI before it reads and updates
 // victoryConditionChangeTimeout. The rebuild reads that member first. An
 // invalid this pointer therefore faults with ESP differing by four bytes.
+// continuation sa-65c9da2a: Recovered the two removal scans as top-tested
+// while loops. Removed their redundant positive-count wrappers. This matches
+// the target's 430-instruction CFG and removes the duplicate loop predicates.
+// Reversed the three capacity-guard operand spellings to keep count or index
+// on the CMP left, as the target does. This is behavior-preserving.
+// Reused the idleRules alias for the first capacity read. The target then uses
+// the three-byte [array+0C] load instead of a direct six-byte this-relative
+// load. These changes reduce the emitted body to the exact 1391-byte size.
+// Rejected source probes: branch-local score, split or delayed iterator zero,
+// declaration reordering, for-loop updates, short-circuit scans, and explicit
+// found labels. They changed no code or moved farther from the target.
+// Final validation: 20 ordered calls, 430 instructions, exact frame and size,
+// 88.60% exact-block coverage, 762 differing bytes. First mismatch remains
+// +0008: target push EDI/mov EBP,0; rebuild zeroes EBX/EBP then pushes EDI.
+// BINARY NOTE: the final mismatch is a prologue and early scan scheduling
+// issue. No changed call, ABI, layout, cleanup, or memory effect is retained.
 
 extern void* __cdecl operator new(unsigned int size);
 extern void __cdecl operator delete(void* pointer);
@@ -252,7 +268,7 @@ int TribeStrategyAIModule::update(int parameter)
     if (i < this->idleRules.numberValue) {
         ManagedArray<int>* idleRules = &this->idleRules;
         do {
-            if (i > this->idleRules.maximumSizeValue - 1) {
+            if (i > idleRules->maximumSizeValue - 1) {
                 idleRules->resize(i + 1);
             }
             ruleResult = this->vcRules.evaluateAsNonInProgress(
@@ -282,7 +298,7 @@ int TribeStrategyAIModule::update(int parameter)
                 ++i;
             }
         }
-        if (executingRules->maximumSizeValue - 1 < executingCount) {
+        if (executingCount > executingRules->maximumSizeValue - 1) {
             executingRules->resize(executingCount + 1);
         }
         executingRules->value[executingRules->numberValue] = result;
@@ -291,15 +307,13 @@ int TribeStrategyAIModule::update(int parameter)
 remove_idle_rule:
         int idleCount = this->idleRules.maximumSizeValue;
         i = 0;
-        if (idleCount > 0) {
-            int* idleValue = this->idleRules.value;
-            do {
-                if (*idleValue == result) {
-                    break;
-                }
-                ++i;
-                ++idleValue;
-            } while (i < idleCount);
+        int* idleValue = this->idleRules.value;
+        while (i < idleCount) {
+            if (*idleValue == result) {
+                break;
+            }
+            ++i;
+            ++idleValue;
         }
         if (i < idleCount) {
             if (i < idleCount - 1) {
@@ -325,7 +339,7 @@ remove_idle_rule:
                 this->md->aiPlayer,
                 (*executingRules)[i]);
             if (ruleResult < result) {
-                if (this->executingRules.maximumSizeValue - 1 < i) {
+                if (i > this->executingRules.maximumSizeValue - 1) {
                     executingRules->resize(i + 1);
                 }
                 worstRuleResult = executingRules->value[i];
@@ -339,15 +353,13 @@ remove_idle_rule:
         this->vcRules.stopExecution(this->md->aiPlayer, worstRuleResult) == 1) {
         int executingSize = this->executingRules.maximumSizeValue;
         i = 0;
-        if (executingSize > 0) {
-            int* executingValue = this->executingRules.value;
-            do {
-                if (*executingValue == worstRuleResult) {
-                    break;
-                }
-                ++i;
-                ++executingValue;
-            } while (i < executingSize);
+        int* executingValue = this->executingRules.value;
+        while (i < executingSize) {
+            if (*executingValue == worstRuleResult) {
+                break;
+            }
+            ++i;
+            ++executingValue;
         }
         if (i < executingSize) {
             if (i < executingSize - 1) {
@@ -373,7 +385,7 @@ remove_idle_rule:
                 ++i;
             }
         }
-        if (idleRules->maximumSizeValue - 1 < idleCount) {
+        if (idleCount > idleRules->maximumSizeValue - 1) {
             idleRules->resize(idleCount + 1);
         }
         idleRules->value[idleRules->numberValue] = worstRuleResult;
