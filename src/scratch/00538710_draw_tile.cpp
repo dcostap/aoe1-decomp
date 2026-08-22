@@ -37,6 +37,21 @@
 // shape and exact blocks at the same frame; a Windows header and output-order
 // permutation were codegen duplicates. Ambient declaration samples made two
 // basins but changed the effective size and produced no exact candidate.
+// continuation probes (sa-349a0cd7-r1): restoring the earlier natural
+// three-return/pointer-alias source gave exact size but a 0x24 frame, 969
+// differing bytes, and 67.79% shape; it was restored because its CFG basin
+// was worse. Splitting draw_border initialization was a codegen duplicate.
+// Direct tile border reloads recovered the EBX tile register but reduced the
+// frame to 0x20 and shape to 63.20%; a late-only reload reduced shape to
+// 64.27%, and a separate top-index copy was a duplicate. Delaying result
+// initialization was also a duplicate. Narrow border_type gave 982 bytes,
+// 0x24 frame, and 71.77% shape. A byte border_type plus an int top_index gave
+// exact size and frame but only 71.65% shape. Direct initial border fields gave
+// 1039 bytes, 0x24 frame, and 68.53% shape. All variants were restored.
+// Current clean unresolved source remains 1108B effective code, 0x28 frame,
+// 3 returns, 11 aligned direct calls, 1049 strict diff bytes, and 80.85%
+// shape. Open lead: recover the original EBX tile plus delayed EDI save while
+// retaining the current natural frame and late-path CFG.
 // Current clean unresolved source: 1108B effective code, 0x28 frame, 3 returns,
 // 11 aligned calls, 1049 strict diff bytes, and 80.85% shape similarity.
 
