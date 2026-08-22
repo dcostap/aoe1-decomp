@@ -14,6 +14,16 @@
 // 12: donor-backed typed member-pointer null guard plus canonical ManagedArray ownership restored the missing vcall and matched 50/50 calls and CFG, but worsened positional diff to 1106; rolled back as opaque compiler steering.
 // 13: fresh pass tested 27 distinct source, ABI, layout, liveness, and control-flow hypotheses. The best clean guarded model reached 50/50 calls, 1207 bytes, and diff 931, but its null guard is not supported by the constant vcall-thunk condition and was not retained.
 // 14: natural float-to-int casts preserve the original ST0 __ftol ABI. Direct branch-local findTilePath calls preserve the original user-waypoint setup and tail-merge to one emitted call; the clean result remains unresolved at 49/50 calls because the unreachable compiler block is omitted.
+// 15: caching displayPathObjectID before the display guard recovered the 0x10 frame and the original stack-home shape.
+// 16: a typed master-object call at vslot +0x18 recovered the donor-backed path-display ownership and improved block coverage.
+// 17: a loop-local owner alias plus a direct typed master-object call removed the raw call surface and improved block coverage.
+// 18: DAT_00570B80 and explicit double floor operands recovered the shipped float subtraction form.
+// 19: the +0x34 virtual move_to call takes three floats; passing z recovered the full move-to block and reduced diff to 914 bytes in the guarded diagnostic.
+// 20: a typed master pointer at +0x38 produced the same bytes as the proven raw access and is retained as the simpler ownership model.
+// 21: the pointer-to-member guard reached 50 calls, 1232 bytes, and 914-byte diff, but it used metric-only scaffolding and was removed.
+// 22: same-TU and PDB evidence replace the master vf placeholders with the canonical destructor, copy, modify, save, and make_new_obj names.
+// 23: staging waypoint coordinates before the master lookup changed the frame to 0x18 and worsened the result; direct expressions were restored.
+// 24: the owner cache keeps the owner in EBX, but VC5 emits the master-table reload before currentWaypoint in this source form. The original reload is after both waypoint calls.
 
 #include <math.h>
 #include <stdio.h>
@@ -23,6 +33,7 @@ extern "C" int __cdecl fprintf(FILE*, const char*, ...);
 extern FILE* actionFile;
 extern int displayPathingFlags;
 extern int displayPathObjectID;
+extern float DAT_00570B80;
 
 struct Waypoint {
     float x;
@@ -63,10 +74,19 @@ public:
     Waypoint* currentWaypoint();
 };
 
+class RGE_Static_Object;
+class RGE_Master_Static_Object;
+class RGE_Master_Moving_Object {
+public:
+    char gap00[0x38];
+    float pathingValue;
+};
+
 class RGE_Player {
 public:
     char gap00[0x24];
-    void** objects;
+    // BINARY NOTE: the +0x24 table uses the master-object make_new_obj slot.
+    RGE_Master_Static_Object** master_objects;
     char gap28[0x14];
     void* time;
     int availablePathingAttempts(unsigned char n);
@@ -75,6 +95,17 @@ public:
 };
 
 class RGE_Moving_Object;
+
+class RGE_Master_Static_Object {
+public:
+    virtual ~RGE_Master_Static_Object();
+    virtual void copy_obj(RGE_Master_Static_Object*);
+    virtual void modify(float, unsigned char);
+    virtual void modify_delta(float, unsigned char);
+    virtual void modify_percent(float, unsigned char);
+    virtual void save(int);
+    virtual RGE_Static_Object* make_new_obj(RGE_Player*, float, float, float);
+};
 
 class PathingSystem {
 public:
@@ -104,7 +135,8 @@ public:
     virtual void vf10();
     virtual void vf11();
     virtual void vf12();
-    virtual float move_to(float, float);
+    // BINARY NOTE: the +0x34 call pushes three float arguments.
+    virtual float move_to(float, float, float);
     virtual void vf14();
     virtual void vf15();
     virtual void vf16();
@@ -168,7 +200,7 @@ public:
     virtual void vf74();
     virtual void setWaitingToMove(unsigned char);
     int id;
-    void* master;
+    RGE_Master_Moving_Object* master_obj;
     RGE_Player* owner;
     char gap10[0x24];
     unsigned char curr_damage_percent;
@@ -207,7 +239,7 @@ RGE_Moving_Object::PathResult RGE_Moving_Object::findPath()
     float x;
     float y;
     float z;
-    if (*(float*)((char*)this->master + 0x38) <= 0.0f) {
+    if (this->master_obj->pathingValue <= 0.0f) {
         this->setWaitingToMove(0);
         x = this->x;
         y = this->y;
@@ -280,23 +312,29 @@ RGE_Moving_Object::PathResult RGE_Moving_Object::findPath()
 
     if (!found && this->path.numberOfWaypoints() == 1) {
         if (pathSystem.passable(this,
-                                (float)(floor(this->x) + 0.5),
-                                (float)(floor(this->y) + 0.5), 1)) {
-            if ((this->x - floor(this->x)) != 0.5 || (this->y - floor(this->y)) != 0.5) {
-                this->move_to((float)(floor(this->x)+0.5), (float)(floor(this->y)+0.5));
+                                (float)(floor((double)this->x) - DAT_00570B80),
+                                (float)(floor((double)this->y) - DAT_00570B80), 1)) {
+            if ((this->x - floor((double)this->x)) != 0.5 ||
+                (this->y - floor((double)this->y)) != 0.5) {
+                this->move_to(
+                    (float)(floor((double)this->x) - DAT_00570B80),
+                    (float)(floor((double)this->y) - DAT_00570B80), this->z);
                 return WaitingOnPathingCap;
             }
         }
     }
 
     this->path.setTimeStamp(*(int*)((char*)this->owner->time + 4));
+    // BINARY NOTE: the original caches this global before the display guard.
+    int objectID = displayPathObjectID;
     if (displayPathingFlags && this->selected) {
         this->path.initToStart();
         int i = 0;
         while (i < this->path.numberOfWaypoints()) {
-            void* obj = this->owner->objects[displayPathObjectID];
-            ((void (*)(void*, RGE_Moving_Object*, float, float, float))(*(void***)obj)[6])(
-                obj, this, this->path.currentWaypoint()->x,
+            // BINARY NOTE: owner stays cached, but VC5 orders the table lookup before waypoint reads here.
+            RGE_Player* owner = this->owner;
+            owner->master_objects[objectID]->make_new_obj(
+                owner, this->path.currentWaypoint()->x,
                 this->path.currentWaypoint()->y, 1.0f);
             i++;
             this->path.moveToNextWaypoint();
