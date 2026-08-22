@@ -18,6 +18,11 @@
 //   pnl_y. The prior source incorrectly added 0x0F to that call.
 // - 16 meaningful probes ran in this claim. Rejected probes restored the pinned
 //   source. See target-session history for each hypothesis and check result.
+// - Accepted-drift audit: do not promote. In the unit-level-2 path, the
+//   executable rereads master_game_obj after draw_item calls. The rebuild keeps
+//   the earlier pointer across those calls. In the final speed path, the rebuild
+//   pushes the pierce value before ftol; the executable calls ftol first. This
+//   changes external-call mutation behavior and helper-visible stack context.
 
 #include "../../include/game_globals.h"
 #include <windows.h>
