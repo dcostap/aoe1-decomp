@@ -33,6 +33,10 @@
 // r7 layout: target icon blocks read TShape::shape_info at +0x1C. The gap before shape_info is retained from this binary evidence.
 // r7 layout checkpoint: the +0x1C TShape correction makes two late icon blocks exact and raises exact-block coverage to 49.16%; full diff remains 1431.
 // r7 unresolved: target keeps ImageRect in EBX and text in EDI before the empty-text gate; current natural source keeps ImageRect in EDI.
+// r8 liveness: direct ImageRect.top plus a pointer-increment text walk restored the target EBX/EDI early carriers; H29 reached diff 1294, shape 82.40%, and exact blocks 50.66%, with a 6-byte overflow.
+// r8 ABI: the period GetPaletteEntries dllimport form kept the 0x40 frame and reduced H47 to diff 1303 with exact size and 31/31 ordered calls.
+// r8 rejected: naming the palette handle reached diff 1122 and exact size, but the target reloads the global palette at both calls while that alias loads it once; do not retain this metric-only form.
+// r8 final: direct global palette calls, direct ImageRect.top, and the pointer-increment text walk are the reduced natural source. First divergence is the GetPaletteEntries setup at +00EC; target LEA p precedes its cached IAT load.
 #include <string.h>
 #include "..\..\include\rge_base_game_global.h"
 
@@ -42,7 +46,7 @@ struct tagPALETTEENTRY { unsigned char peRed, peGreen, peBlue, peFlags; };
 
 extern int (__stdcall *SelectClipRgn)(void*, void*);
 extern void* (__stdcall *SelectObject)(void*, void*);
-extern "C" unsigned int (__stdcall *GetPaletteEntries)(void*, unsigned int, unsigned int, tagPALETTEENTRY*);
+extern "C" __declspec(dllimport) unsigned int __stdcall GetPaletteEntries(void*, unsigned int, unsigned int, tagPALETTEENTRY*);
 extern unsigned int (__stdcall *SetBkColor)(void*, unsigned int);
 extern int (__stdcall *SetBkMode)(void*, int);
 extern "C" __declspec(dllimport) int __stdcall GetTextExtentPoint32A(void*, const char*, int, tagSIZE*);
@@ -149,8 +153,8 @@ int TMessagePanel::render_to_image_buffer() {
     void* dc;
     void* old_font;
     tagPALETTEENTRY p;
-    unsigned long back_rgb;
     unsigned long font_rgb;
+    unsigned long back_rgb;
     long x;
     long display_hgt;
     long y;
@@ -208,12 +212,12 @@ int TMessagePanel::render_to_image_buffer() {
     wid = this->pnl_wid - 2;
     x = image_rect->left;
     hgt = this->pnl_hgt - 2;
-    y = image_rect->top;
+    y = this->ImageRect.top;
 
-    len = 0;
-    while (text[len] != 0) {
-        ++len;
+    while (*text != 0) {
+        ++text;
     }
+    len = (int)(text - this->text);
     int ok = GetTextExtentPoint32A(this->ImageBuffer->hdc, this->text, len, &ts);
 
     if (ok == 0) {
