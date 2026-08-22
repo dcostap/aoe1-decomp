@@ -34,8 +34,9 @@
 // Revisited from the Ghidra-supported donor spelling:
 // `value = value + (radius + radius)` and `double_value = double_value +
 // (radius * 4.0f)` reproduce the original 643-byte body and 204 instructions.
-// This is the best natural source: 25 positional bytes differ. The remaining
-// bytes are four paired local-home swaps and the success epilogue store order.
+// The first natural source was 25 bytes short of the target byte stream. The
+// remaining differences were four paired local-home swaps and the success
+// epilogue store order.
 // A 72-variant source lab and 128 ambient TU declaration samples found no exact
 // result. All size/frame/call-set eligible variants stayed in the same 25-byte
 // basin. The local donor 004C6DA0 matched 647/647 with typed x87 expressions.
@@ -43,6 +44,10 @@
 // reproduced the same 25 bytes. Keep this target in scratch. The rebuilt output
 // store moves after register pops, so an invalid output pointer faults with a
 // different exception context. That prevents an accepted-drift proof.
+// BINARY NOTE: ESP-normalized original accesses prove the shipped formulas:
+// case 0/3 use rand * r2x - rx, and case 1/2 use rand * r2y - ry.
+// The natural source now reproduces 636 of 643 bytes (7 differing bytes).
+// A focused five-form epilogue lab kept the same 7-byte store-order mismatch.
 
 #include "../../include/game_globals.h"
 
@@ -110,8 +115,8 @@ unsigned char TRIBE_Action_Make_Obj::place_obj(RGE_Static_Object** out)
     RGE_Master_Static_Object* proto =
         this->obj->owner->master_objects[this->obj_id];
     float rx;
-    float r2x;
     float ry;
+    float r2x;
     float r2y;
     rx = this->obj->master_obj->radius_x + proto->radius_x - DAT_00575190;
     r2x = rx + rx;
@@ -129,22 +134,22 @@ unsigned char TRIBE_Action_Make_Obj::place_obj(RGE_Static_Object** out)
             }
             switch (dir) {
             case 0:
-                this->place_y = this->obj->world_y + r2y;
+                this->place_y = this->obj->world_y + ry;
                 this->place_x = this->obj->world_x +
                     ((float)debug_rand(s_tact_mob_cpp, 0xc7) * r2x * DAT_00575198 - rx);
                 break;
             case 1:
-                this->place_x = this->obj->world_x - r2x;
+                this->place_x = this->obj->world_x - rx;
                 this->place_y = this->obj->world_y +
                     ((float)debug_rand(s_tact_mob_cpp, 0xcb) * r2y * DAT_00575198 - ry);
                 break;
             case 2:
-                this->place_x = this->obj->world_x + r2x;
+                this->place_x = this->obj->world_x + rx;
                 this->place_y = this->obj->world_y +
                     ((float)debug_rand(s_tact_mob_cpp, 0xcf) * r2y * DAT_00575198 - ry);
                 break;
             case 3:
-                this->place_y = this->obj->world_y - r2y;
+                this->place_y = this->obj->world_y - ry;
                 this->place_x = this->obj->world_x +
                     ((float)debug_rand(s_tact_mob_cpp, 0xd3) * r2x * DAT_00575198 - rx);
                 break;
