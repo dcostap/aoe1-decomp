@@ -116,6 +116,24 @@
 //   The original direct calloc call and the eight-byte node remain.
 // - Audit source is behavior-clean but not exact: 256 bytes, 9 ordered calls,
 //   4 returns, and 7 conditional branches. Direct type calls add an 0x8 frame.
+// sa-f6a17cfa-r1 continuation: restored the full named hierarchy with the
+// cached short type and inner curr-null guard. H12-H18 tested full-hierarchy
+// control, declaration, two-short, address-taken, guard-scoped, and cursor
+// scopes. They all emitted the same natural 224B/179 result, with no frame,
+// 9/9 ordered calls, 8 conditional branches, and 42.72% exact blocks.
+// H19/H22 used node->action for all three notification tails. They reached
+// 234B/156, 49.51% exact blocks, and no frame, but added node memory reads to
+// every call tail. The oracle loads the action vtable from EBX, so this is not
+// a supported source or drift candidate. H20 used a slot-compatible second
+// notification class and returned to 224B/179. H21 used node ownership only
+// for the unreachable tail and reached 230B/178. H23 named first_action and
+// reached 255B/244 with a frame. H24 restored action-owned tails. H25's
+// explicit node zero was a duplicate. H26 added the proven trailing action
+// object fields and was a duplicate. H27 combined the list guard and type
+// test and was a duplicate. Two structured labs tested allocation, type
+// order, loop form, and all eight notification-tail combinations across 243
+// variants. No exact result occurred. The tail lab's best 232B/156 group
+// used node tails and remains rejected for the proven memory-order difference.
 #include <stdlib.h>
 
 class RGE_Action_List;
@@ -180,6 +198,13 @@ public:
 class RGE_Action_Object : public RGE_Moving_Object {
 public:
     virtual ~RGE_Action_Object();
+    unsigned char waiting;
+    unsigned char gap_181[3];
+    RGE_Action_List* actions;
+    unsigned char command_flag;
+    unsigned char gap_189[3];
+    int lastActionValue;
+    int lastActionStateValue;
 };
 
 class RGE_Action {
@@ -256,7 +281,7 @@ public:
 };
 
 void RGE_Action_List::add_action_at_end_of_action_queue(RGE_Action* action) {
-    RGE_Action_Node* curr;
+    RGE_Action_Node* node;
 
     if (obj->object_state > 2) {
         if (action != 0) {
@@ -265,34 +290,40 @@ void RGE_Action_List::add_action_at_end_of_action_queue(RGE_Action* action) {
         return;
     }
 
-    RGE_Action_Node* node =
-        (RGE_Action_Node*)calloc(1, sizeof(RGE_Action_Node));
+    node = (RGE_Action_Node*)calloc(1, sizeof(RGE_Action_Node));
     node->action = action;
 
     if (list != 0) {
-        if (list->action->type() == action->type()) {
-            curr = list;
-            while (1) {
-                if (curr->next == 0) {
-                    break;
+        short action_type;
+        action_type = action->type();
+        if (list->action->type() == action_type) {
+            RGE_Action_Node* curr = list;
+            if (curr != 0) {
+                while (1) {
+                    if (curr->next == 0) {
+                        break;
+                    }
+                    action_type = action->type();
+                    if (curr->next->action->type() != action_type) {
+                        break;
+                    }
+                    curr = curr->next;
+                    if (curr == 0) {
+                        action->first_in_stack(1);
+                        return;
+                    }
                 }
-                if (curr->next->action->type() != action->type()) {
-                    break;
-                }
-                curr = curr->next;
-                if (curr == 0) {
-                    action->first_in_stack(1);
-                    return;
-                }
+                node->next = curr->next;
+                curr->next = node;
+                action->first_in_stack(1);
+                return;
             }
-            node->next = curr->next;
-            curr->next = node;
-            action->first_in_stack(1);
-            return;
+            goto notify;
         }
     }
 
     node->next = list;
     list = node;
+notify:
     action->first_in_stack(1);
 }
