@@ -39,6 +39,18 @@
 // and was rejected.
 // Remaining work should preserve these named period-plausible owners rather than
 // returning to raw cursor arithmetic.
+// Managed pass (sa-591f096d-r1):
+// - The Ghidra CFG confirms direct can_attack branches for no-target success,
+//   exact coordinates, tolerance success, and target max-range success. A
+//   natural direct-return variant reduced the diagnostic diff to 473 bytes and
+//   recovered 51.89% exact blocks, but emitted one extra can_attack call.
+//   Restore the 613-byte clean status-chain source rather than keep a metric-only
+//   variant with a call-count defect.
+// - Explicit close/far/ready labels reproduced the broad Ghidra routes but
+//   merged the two visibility state calls and produced 848 bytes of diff.
+//   Duplicating the close source arm tail-merged back to the clean basin.
+// - Reversed threshold predicates were codegen-duplicate. The clean source is
+//   restored and remains the current natural checkpoint.
 
 #include <math.h>
 
