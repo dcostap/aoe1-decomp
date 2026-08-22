@@ -51,6 +51,22 @@
 // natural source still saves EBX for the state-7 resource-index path.
 // Next lead: recover the original source form that colors the facet in EDX,
 // the resource-array cursor in EDI, and the state-7/state-6 block order.
+//
+// Follow-up matching pass:
+// - BINARY NOTE: case-7 resource amount and trade_action use target_obj->owner.
+//   Original reloads this+0x10 at 004D2FAD and keeps that owner through vslot+78.
+//   This change reduced the clean-source diff from 1311 to 1139 bytes.
+// - BINARY NOTE: state-8 result 1/2 tests target_obj2 and uses its coordinates.
+//   The original loads this+0x14 at 004D30D3 and 004D3129. This fixed source
+//   ownership without changing the 725-byte codegen frontier.
+// - Control-flow probes moved state 1 after the shared state-8 tail and before
+//   state 13. This reduced the frontier to 722 bytes and improved shape to
+//   89.36%; the shared tail label itself was codegen-neutral.
+// - Global DAT_00575350 replaced the local zero constant. VC5 emitted no byte
+//   change, but the source now names the observed pooled double.
+// - Tested and rejected: a function-scope target alias, a named facet local,
+//   a state-6 pickup transition, positive-arm state-8 restructuring, and
+//   object-state casts/volatile. These either worsened codegen or were neutral.
 
 #define V_DUMMY(N) virtual void v##N()
 
@@ -224,10 +240,9 @@ extern float DAT_00575348;
 extern float DAT_00575358;
 extern float DAT_0057535c;
 extern float DAT_00575360;
+extern double DAT_00575350;
 extern double DAT_00575368;
 extern float DAT_00575370;
-
-static const double trade_update_zero = 0.0;
 
 class RGE_Task {
 public:
@@ -264,8 +279,8 @@ unsigned char TRIBE_Action_Trade::update()
         }
     }
 
-    if (this->target_obj != 0 &&
-        this->target_obj->owner->player_id == this->obj->owner->player_id) {
+    if (this->target_obj != 0) {
+        if (this->obj->owner->player_id == this->target_obj->owner->player_id) {
         this->set_target_obj(0);
         this->set_target_obj2(0);
         this->set_state(1);
@@ -274,16 +289,14 @@ unsigned char TRIBE_Action_Trade::update()
                               0x1FB, 0x267, this->targetID, 0);
         }
         return 4;
+        }
     }
 
     switch (this->state) {
-    case 1:
-        return 1;
-
     case 11:
-        if (this->timer < trade_update_zero) {
+        if (this->timer < DAT_00575350) {
             this->timer += this->obj->owner->world->world_time_delta_seconds;
-            if (this->timer > trade_update_zero) {
+            if (this->timer > DAT_00575350) {
                 this->timer = 0.0f;
                 if (this->target_obj != 0) {
                     this->set_state(4);
@@ -308,9 +321,9 @@ unsigned char TRIBE_Action_Trade::update()
         return 0;
 
     case 4:
-        if (this->timer < trade_update_zero) {
+        if (this->timer < DAT_00575350) {
             this->timer += this->obj->owner->world->world_time_delta_seconds;
-            if (this->timer > trade_update_zero) {
+            if (this->timer > DAT_00575350) {
                 this->timer = 0.0f;
                 if (this->target_obj != 0) {
                     this->set_state(4);
@@ -354,7 +367,7 @@ unsigned char TRIBE_Action_Trade::update()
 
     case 7:
         if (this->target_obj == 0) {
-            if (this->pick_up_y > trade_update_zero) {
+            if (this->pick_up_y > DAT_00575350) {
                 this->set_state(8);
                 return 0;
             }
@@ -370,16 +383,16 @@ unsigned char TRIBE_Action_Trade::update()
             if (this->obj->owner->resource_store->max_resource[this->obj->facet] < max_hold) {
                 max_hold = this->obj->owner->resource_store->max_resource[this->obj->facet];
             }
-            if (this->obj->resource_store->amount < max_hold) {
-                max_hold = this->obj->resource_store->amount;
+            if (this->target_obj->owner->resource_store->amount < max_hold) {
+                max_hold = this->target_obj->owner->resource_store->amount;
             }
-            this->obj->owner->trade_action(this->obj->facet, -max_hold, 1);
-            this->obj->resource_store->amount -= max_hold;
+            this->target_obj->owner->trade_action(this->obj->facet, -max_hold, 1);
+            this->target_obj->owner->resource_store->amount -= max_hold;
             this->obj->amount += max_hold;
             if (this->obj->amount >= capacity) {
                 goto update_state_8;
             }
-            if (this->obj->resource_store->amount <= DAT_00575348 &&
+            if (this->target_obj->owner->resource_store->amount <= DAT_00575348 &&
                 this->obj->can_trade(this->target_obj->master_obj->id) == 0) {
                 this->set_state(8);
                 return 0;
@@ -388,9 +401,9 @@ unsigned char TRIBE_Action_Trade::update()
         return 0;
 
     case 8:
-        if (this->timer < trade_update_zero) {
+        if (this->timer < DAT_00575350) {
             this->timer += this->obj->owner->world->world_time_delta_seconds;
-            if (this->timer > trade_update_zero) {
+            if (this->timer > DAT_00575350) {
                 this->timer = 0.0f;
                 this->set_state(8);
                 return 0;
@@ -400,19 +413,19 @@ unsigned char TRIBE_Action_Trade::update()
         switch (this->sub_actions->update()) {
         case 1:
         case 2:
-            if (this->target_obj == 0) {
+            if (this->target_obj2 == 0) {
                 goto update_state_8;
             }
-            if (this->pick_up_y > trade_update_zero) {
+            if (this->pick_up_y > DAT_00575350) {
                 RGE_Task* trade_task = (RGE_Task*)this->task;
                 if (trade_task->sound != 0) {
                     trade_task->sound->play(1);
                 }
-                if (this->pick_up_x < trade_update_zero || this->pick_up_y < trade_update_zero) {
+                if (this->pick_up_x < DAT_00575350 || this->pick_up_y < DAT_00575350) {
                     take_amount = DAT_00575360;
                 } else {
-                    float dx = this->pick_up_x - this->target_obj->world_x;
-                    float dy = this->pick_up_y - this->target_obj->world_y;
+                    float dx = this->pick_up_x - this->target_obj2->world_x;
+                    float dy = this->pick_up_y - this->target_obj2->world_y;
                     take_amount = (dy * dy + dx * dx) * DAT_00575358 * DAT_0057535c;
                 }
                 if (this->obj->owner->civilization == 0x0F) {
@@ -445,6 +458,9 @@ unsigned char TRIBE_Action_Trade::update()
     update_state_8:
         this->set_state(8);
         return 0;
+
+    case 1:
+        return 1;
 
     case 13:
         this->obj->notify(this->obj->player_id, this->obj->player_id,
