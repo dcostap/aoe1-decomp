@@ -47,6 +47,18 @@
 //   merges mirror call sites.  Keeping separate sites requires the early cache
 //   that changes behavior across _ASMSet_Color_Xform.  Keep the natural direct
 //   member source in scratch.
+// - worker pass (sa-73e7a070-r1): restoring branch-local table declarations and
+//   the early mirror color byte recovered the prior codegen frontier: 826 bytes,
+//   270 instructions, all 23 ordered calls, and 375 differing bytes.  The
+//   original reads color_flag after _ASMSet_Color_Xform, so this cache is not
+//   retained in the policy-safe source.
+// - worker probes: a frame local copy widened the mismatch to 763 bytes;
+//   `register frame`, declaration-order changes, a shape alias, an explicit
+//   uchar cast, and stdlib header context were duplicates or worse.  Moving the
+//   color assignment after ASMSet restored direct behavior but merged one call.
+// - final worker state: restored the direct-member, function-scope-table source
+//   at 788 bytes and 415 differing bytes.  The remaining first mismatch is the
+//   EBX/EBP frame-zero register basin; no natural source lead recovered it.
 
 #include <stdio.h>
 
