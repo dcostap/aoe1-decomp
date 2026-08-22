@@ -45,6 +45,10 @@
 // 93.66% shape similarity. Retained the conditional form as the best natural
 // structural reconstruction. Direct/raw tile forms, coordinate aliases,
 // register hints, and loop-scope changes were duplicates or worse.
+// Accepted-drift audit: do not promote. The executable reads the incoming
+// terrain byte from its stack home before reading tile->terrain. The rebuild
+// reads the external tile byte first. A bad tile pointer therefore faults with
+// different register state and read history.
 
 class RGE_Tile_List {
 public:
