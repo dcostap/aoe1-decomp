@@ -20,6 +20,19 @@
 //   0x158 frame, and 92 rebuilt calls. The source remains nonexact.
 // - tested 20 distinct hypotheses across control flow, value width, local
 //   lifetime, aliases, and call-site structure. No exact result was found.
+// - corrected the RGE_Player prefix from the exact player constructor: world
+//   +0x3c, id +0x4a, attributes +0x50, master_player_id +0x105, and
+//   color_table +0x108. This reduced the clean positional diff by 2 bytes.
+// - explicit colored and uncolored shape-draw arms recovered the original
+//   +0xf8..+0x171 block topology and reduced the diff to 2851 bytes.
+// - reversed object-name formatting order and bound the three original rdata
+//   format strings. These restored the observed 0x3b8, 0x3c8, and 0x3ee blocks.
+// - routed generic resource display exits through the common finish tail.
+//   The best clean result is now 2832 differing bytes, 70.76% shape similarity,
+//   0x158 frame, and 90 rebuilt calls. The source remains nonexact.
+// - tested explicit resource-arm locals, compact TPanel slot declarations,
+//   and a scoped building alias. The first two were codegen-neutral or worse;
+//   the alias crossed a frame-pressure threshold and was discarded.
 
 #include "../../include/game_globals.h"
 #include <stdio.h>
@@ -30,9 +43,13 @@ extern float DAT_00576d84;
 extern const char s_tpnl_obj_draw[];
 extern "C" void __cdecl _ASMSet_Color_Xform(int value);
 
+// These shared format strings are the original rdata objects used by this TU.
+#define S_FMT_ID_NAME ((const char*)0x0058B690)
+#define S_FMT_NAME ((const char*)0x0057F324)
+#define S_FMT_HP ((const char*)0x005870AC)
+
 // TPanel's real vtable places draw_setup/draw_finish/draw at 0x28/0x2c/0x30
-// and draw_rect at 0x34.  The complete named prefix is retained here rather
-// than replacing it with a raw vtable or a slot-padding shim.
+// and draw_rect at 0x34.
 class TPanel {
 public:
     virtual ~TPanel();
@@ -506,9 +523,11 @@ public:
 class RGE_Player {
 public:
     virtual ~RGE_Player();
-    char gap_04[0x20];
+    // The draw path uses the binary-proven player offsets +3C, +4A, +50,
+    // +105, and +108.
+    char gap_04[0x1e];
     short master_object_num;
-    RGE_Master_Static_Object** master_objects;
+    void* master_objects;
     RGE_Object_List* objects;
     char gap_2c[0x10];
     RGE_Game_World* world;
@@ -520,6 +539,8 @@ public:
     short attribute_num;
     char gap_4e[2];
     float* attributes;
+    // The executable places master_player_id at +0x105 and color_table at
+    // +0x108.  The gap ends at +0x105 after the attributes pointer.
     char gap_54[0xb1];
     unsigned char master_player_id;
     char gap_106[2];
@@ -634,17 +655,23 @@ void TRIBE_Panel_Object::draw()
             if (this->game_obj->owner->color_table != 0) {
                 _ASMSet_Color_Xform(
                     (this->game_obj->owner->color_table->id + 1) * 0x10);
-            }
 
-            picture->shape_draw(
-                this->render_area,
-                this->pnl_x + 3,
-                this->pnl_y + 0x1e,
-                shape,
-                this->game_obj->owner->color_table != 0,
-                this->game_obj->owner->color_table != 0
-                    ? this->game_obj->owner->color_table->table
-                    : 0);
+                picture->shape_draw(
+                    this->render_area,
+                    this->pnl_x + 3,
+                    this->pnl_y + 0x1e,
+                    shape,
+                    1,
+                    this->game_obj->owner->color_table->table);
+            } else {
+                picture->shape_draw(
+                    this->render_area,
+                    this->pnl_x + 3,
+                    this->pnl_y + 0x1e,
+                    shape,
+                    0,
+                    0);
+            }
         }
 
         if (this->game_obj->hp > DAT_00576d80 && this->health_pic != 0) {
@@ -708,16 +735,16 @@ void TRIBE_Panel_Object::draw()
         if (str[0] == 0)
             strcpy(str, this->game_obj->master_obj->name);
 
-        if (rge_base_game->object_name_mode == 0)
-            sprintf(name, "%s", str);
+        if (rge_base_game->object_name_mode != 0)
+            sprintf(name, S_FMT_ID_NAME, this->game_obj->id, str);
         else
-            sprintf(name, "%d-%s", this->game_obj->id, str);
+            sprintf(name, S_FMT_NAME, str);
 
         TextOutA(dc, this->pnl_x + 3, this->pnl_y + 0x0d,
                  name, (int)strlen(name));
 
         if (this->game_obj->hp > DAT_00576d80) {
-            sprintf(str, "%d/%d",
+            sprintf(str, S_FMT_HP,
                     (int)this->game_obj->hp,
                     (int)this->game_obj->master_obj->hp);
             TextOutA(dc, this->pnl_x + 3, this->pnl_y + 0x5c,
@@ -831,8 +858,7 @@ void TRIBE_Panel_Object::draw()
         }
 
         if ((int)this->game_obj->attribute_amount_held < 1) {
-            this->draw_finish();
-            return;
+            goto finish;
         }
 
         int item_type;
@@ -862,8 +888,7 @@ void TRIBE_Panel_Object::draw()
         this->draw_item(row, item_type, 0,
                         (int)(this->game_obj->attribute_amount_held -
                               DAT_00576d84), 0);
-        this->draw_finish();
-        return;
+        goto finish;
     }
 
     if (level == 1) {
@@ -927,9 +952,9 @@ void TRIBE_Panel_Object::draw()
             }
 
             if (this->game_obj->owner == this->player) {
-                // BINARY NOTE: construction and work progress share one draw call.
-                if (this->game_obj->object_state == 0)
+                if (this->game_obj->object_state == 0) {
                     progress = this->game_obj->get_construction_progress();
+                }
 
                 if (this->game_obj->object_state == 0 ||
                     work_type == 0x67 || work_type == 0x66) {
@@ -1015,13 +1040,12 @@ void TRIBE_Panel_Object::draw()
                         row, item_type, 0,
                         (int)(this->game_obj->owner->attributes[9] -
                               DAT_00576d84), 0);
-                    goto resource_row_done;
+                } else {
+                    this->draw_item(
+                        row, item_type, 0,
+                        (int)(this->game_obj->attribute_amount_held -
+                              DAT_00576d84), 0);
                 }
-                this->draw_item(
-                    row, item_type, 0,
-                    (int)(this->game_obj->attribute_amount_held -
-                          DAT_00576d84), 0);
-resource_row_done:
                 ++row;
             }
         }
