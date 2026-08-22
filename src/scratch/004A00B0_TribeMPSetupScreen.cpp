@@ -39,6 +39,17 @@
 // - LIKELY INTENT: the row cursor is one contiguous panel family centered on
 //   playerCivDrop.  This explains the proven negative pointer offsets, but it
 //   does not prove the original local declarations.
+// - indexed-row recovery: direct indexed member arrays with one for-loop body,
+//   a separate next_button_id, and the stack buffer base reduced the checked
+//   difference from 2452 to 1478 bytes.  The frame, size, and 127 ordered calls
+//   remain exact in this source model.
+// - BINARY NOTE: the indexed source now reproduces the row setup through the
+//   team-text block at +0x5A4, and reproduces the final CD-text virtual block.
+//   The first remaining row mismatch is the y+2 register/arithmetic lowering.
+// - BINARY NOTE: the shipped coordinates are y, y+2, and y+3.  The current
+//   source uses text_y = y + 2 and text_y + 1 for the last two panels.
+// - unresolved pass: direct indexed arrays are a strong shape lead, but the
+//   remaining add ebx,2 versus lea ebx,[ebp+2] basin is not exact.
 
 extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
 
@@ -320,6 +331,7 @@ public:
 TribeMPSetupScreen::TribeMPSetupScreen()
     : TScreenPanel("MP Setup Screen")
 {
+    int row;
     char str[256];
     int y;
     int button_id;
@@ -384,80 +396,74 @@ TribeMPSetupScreen::TribeMPSetupScreen()
     this->teamTitle->set_alignment(0, 2);
 
     y = 0x55;
-    TDropDownPanel** civ_drop = this->playerCivDrop;
-    for (; y < 0x115; ++civ_drop, y += 0x18) {
-        TDropDownPanel** name_drop = civ_drop - 8;
-        if (this->create_drop_down(this, name_drop,
+    row = 0;
+    for (; y < 0x115; ++row, y += 0x18) {
+        if (this->create_drop_down(this, &this->playerNameDrop[row],
                                    0x9E, 100, 7, y - 1,
                                    0x9E, 0x18, 0x0B) == 0) {
             return;
         }
-        (*name_drop)->set_draw_style(1);
-        (*name_drop)->set_draw_val_rect(0);
-        (*name_drop)->set_help_info(0x75F9, -1);
-        (*name_drop)->empty_list();
+        this->playerNameDrop[row]->set_draw_style(1);
+        this->playerNameDrop[row]->set_draw_val_rect(0);
+        this->playerNameDrop[row]->set_help_info(0x75F9, -1);
+        this->playerNameDrop[row]->empty_list();
         if (rge_base_game->multiplayerGame()) {
-            (*name_drop)->append_line(0x25D3, 4);
-            (*name_drop)->append_line(0x25D4, 1);
-            (*name_drop)->append_line(0x25D5, 0);
+            this->playerNameDrop[row]->append_line(0x25D3, 4);
+            this->playerNameDrop[row]->append_line(0x25D4, 1);
+            this->playerNameDrop[row]->append_line(0x25D5, 0);
         } else {
-            (*name_drop)->append_line(0x25D3, 4);
-            (*name_drop)->append_line(0x25D6, 0);
+            this->playerNameDrop[row]->append_line(0x25D3, 4);
+            this->playerNameDrop[row]->append_line(0x25D6, 0);
         }
 
-        if (this->create_drop_down(this, civ_drop,
+        if (this->create_drop_down(this, &this->playerCivDrop[row],
                                    0x80, 100, 0xAA, y - 1,
                                    0x80, 0x18, 0x0B) == 0) {
             return;
         }
-        (*civ_drop)->set_draw_style(1);
-        (*civ_drop)->set_draw_val_rect(0);
-        (*civ_drop)->set_help_info(0x75FA, 0x25F09);
-        (*civ_drop)->empty_list();
-        (*civ_drop)->append_line(0x27F7, 1);
-        (*civ_drop)->append_line(0x27F8, 2);
-        (*civ_drop)->append_line(0x27F9, 3);
-        (*civ_drop)->append_line(0x27FA, 4);
-        (*civ_drop)->append_line(0x27FB, 5);
-        (*civ_drop)->append_line(0x27FC, 6);
-        (*civ_drop)->append_line(0x27FD, 7);
-        (*civ_drop)->append_line(0x27FE, 8);
-        (*civ_drop)->append_line(0x27FF, 9);
-        (*civ_drop)->append_line(0x2800, 10);
-        (*civ_drop)->append_line(0x2801, 0x0B);
-        (*civ_drop)->append_line(0x2802, 0x0C);
-        (*civ_drop)->append_line(0x2806, 0x0D);
-        (*civ_drop)->append_line(0x2807, 0x0E);
-        (*civ_drop)->append_line(0x2809, 0x0F);
-        (*civ_drop)->append_line(0x2808, 0x10);
-        (*civ_drop)->append_line(0x280A, 0x11);
+        this->playerCivDrop[row]->set_draw_style(1);
+        this->playerCivDrop[row]->set_draw_val_rect(0);
+        this->playerCivDrop[row]->set_help_info(0x75FA, 0x25F09);
+        this->playerCivDrop[row]->empty_list();
+        this->playerCivDrop[row]->append_line(0x27F7, 1);
+        this->playerCivDrop[row]->append_line(0x27F8, 2);
+        this->playerCivDrop[row]->append_line(0x27F9, 3);
+        this->playerCivDrop[row]->append_line(0x27FA, 4);
+        this->playerCivDrop[row]->append_line(0x27FB, 5);
+        this->playerCivDrop[row]->append_line(0x27FC, 6);
+        this->playerCivDrop[row]->append_line(0x27FD, 7);
+        this->playerCivDrop[row]->append_line(0x27FE, 8);
+        this->playerCivDrop[row]->append_line(0x27FF, 9);
+        this->playerCivDrop[row]->append_line(0x2800, 10);
+        this->playerCivDrop[row]->append_line(0x2801, 0x0B);
+        this->playerCivDrop[row]->append_line(0x2802, 0x0C);
+        this->playerCivDrop[row]->append_line(0x2806, 0x0D);
+        this->playerCivDrop[row]->append_line(0x2807, 0x0E);
+        this->playerCivDrop[row]->append_line(0x2809, 0x0F);
+        this->playerCivDrop[row]->append_line(0x2808, 0x10);
+        this->playerCivDrop[row]->append_line(0x280A, 0x11);
 
-        if (this->create_drop_down(this, civ_drop + 8,
+        if (this->create_drop_down(this, &this->scenarioPlayerDrop[row],
                                    0x28, 100, 0x144, y - 1,
                                    0x28, 0x18, 0x0B) == 0) {
             return;
         }
-        (*(civ_drop + 8))->set_draw_style(1);
-        (*(civ_drop + 8))->set_draw_val_rect(0);
-        (*(civ_drop + 8))->set_help_info(0x75FB, -1);
+        this->scenarioPlayerDrop[row]->set_draw_style(1);
+        this->scenarioPlayerDrop[row]->set_draw_val_rect(0);
+        this->scenarioPlayerDrop[row]->set_help_info(0x75FB, -1);
 
-        // The row is laid out as one contiguous family around playerCivDrop;
-        // these proven neighboring panel arrays are the original row cursor
-        // surface (color -0x60, color text -0xA0, team -0x40).
-        TButtonPanel** color = (TButtonPanel**)(civ_drop - 24);
-        if (this->create_button(this, color, "", 0,
+        if (this->create_button(this, &this->playerColor[row], "", 0,
                                 0x136, y, 0x1E, 0x14, 0x0B, 0, 1) == 0) {
             return;
         }
-        (*color)->set_help_info(0x7604, -1);
+        this->playerColor[row]->set_help_info(0x7604, -1);
 
-        TTextPanel** color_text = (TTextPanel**)(civ_drop - 40);
-        if (this->create_text(this, color_text, "",
+        if (this->create_text(this, &this->playerColorText[row], "",
                               0x131, y, 0x28, 0x16, 0x0B, 1, 1, 0) == 0) {
             return;
         }
 
-        TButtonPanel** team = (TButtonPanel**)(civ_drop - 16);
+        TButtonPanel** team = &this->playerTeam[row];
         if (this->create_button(this, team, 0x25B0,
                                 0, 0x17C, y, 0x1E, 0x14, 0x0B, 0, 1) == 0) {
             return;
@@ -467,38 +473,41 @@ TribeMPSetupScreen::TribeMPSetupScreen()
 
         button_id = 1;
         do {
-            sprintf(str + 4, "%d", button_id);
-            (*team)->set_text((short)button_id, str + 4);
-            button_id++;
-            (*team)->set_id((short)(button_id - 1), button_id, 0);
+            sprintf(str, "%d", button_id);
+            (*team)->set_text((short)button_id, str);
+            int next_button_id = button_id + 1;
+            (*team)->set_id((short)button_id, next_button_id, 0);
+            button_id = next_button_id;
         } while (button_id < 5);
 
-        if (this->create_text(this, (TTextPanel**)(civ_drop - 32), "",
+        int text_y = y + 2;
+        if (this->create_text(this, &this->playerTeamText[row], "",
                               0x177, y, 0x28, 0x16, 0x0B, 1, 1, 0) == 0) {
             return;
         }
-        if (this->create_text(this, (TTextPanel**)(civ_drop - 80), "",
-                              0x1C, y + 2, 0x8B, 0x16, 0x0B, 0, 0, 0) == 0) {
+        if (this->create_text(this, &this->playerNameText[row], "",
+                              0x1C, text_y, 0x8B, 0x16, 0x0B, 0, 0, 0) == 0) {
             return;
         }
-        if (this->create_text(this, (TTextPanel**)(civ_drop - 72), "",
-                              0xBF, y + 2, 0x6D, 0x16, 0x0B, 0, 0, 0) == 0) {
+        if (this->create_text(this, &this->playerCivText[row], "",
+                              0xBF, text_y, 0x6D, 0x16, 0x0B, 0, 0, 0) == 0) {
             return;
         }
-        if (this->create_text(this, (TTextPanel**)(civ_drop - 64), "",
-                              0x159, y + 2, 0x28, 0x16, 0x0B, 0, 0, 0) == 0) {
+        if (this->create_text(this, &this->scenarioPlayerText[row], "",
+                              0x159, text_y, 0x28, 0x16, 0x0B, 0, 0, 0) == 0) {
             return;
         }
-        if (this->create_text(this, (TTextPanel**)(civ_drop - 56), 0x25DF,
-                              0x151, y + 3, 0x14, 0x16, 6, 0, 0, 0) == 0) {
+        TTextPanel** player_cd = &this->playerCDText[row];
+        if (this->create_text(this, player_cd, 0x25DF,
+                              0x151, text_y + 1, 0x14, 0x16, 6, 0, 0, 0) == 0) {
             return;
         }
-        if (this->create_text(this, (TTextPanel**)(civ_drop - 48), "",
-                              0x161, y + 3, 0x1D, 0x16, 6, 0, 0, 0) == 0) {
+        if (this->create_text(this, &this->playerVersionText[row], "",
+                              0x161, text_y + 1, 0x1D, 0x16, 6, 0, 0, 0) == 0) {
             return;
         }
 
-        (*team)->set_active(0);
+        (*player_cd)->set_active(0);
     }
 
     if (rge_base_game->singlePlayerGame() || comm->IsHost()) {
