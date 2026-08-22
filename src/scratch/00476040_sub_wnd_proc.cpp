@@ -23,8 +23,20 @@
 //   frame and 84% shape; test one canonical lParam copy with that local order.
 // - restoring the original erase-before-paint source order improved the
 //   positional diff to 867 bytes with exact frame and call-count parity.
-// - unresolved: initial parameter register coloring, dispatch block placement,
-//   and one missing/shifted call site; stop after final validation.
+// - mutating the long lParam formal with the proven unsigned high-word shift
+//   recovered the original 994-byte boundary and reduced the diff to 771.
+//   The executable keeps lParam in EBX through the forwarding calls and tail.
+// - using msg <= WM_ERASEBKGND with the inverted erase predicate, msg <=
+//   WM_MOUSEMOVE, and a post-currentPanel coordinate mask improved the clean
+//   reconstruction to 745 bytes with 88.34% shape and 63.75% exact blocks.
+// - BINARY NOTE: the original jump-table index is EAX at +0xD4; the current
+//   natural sparse-switch source uses ECX there. The original also has a
+//   separate late table block and is two bytes longer.
+// - failed: a separate lParam copy, parameter-home selection reuse, and an
+//   explicit WM_MOUSEMOVE arm did not improve the retained source. The last
+//   one broke call and block order, so it was restored.
+// - unresolved: jump-index register, selection-local placement, and remaining
+//   forwarding/final-tail scheduling.
 
 #include <windows.h>
 
@@ -122,23 +134,26 @@ long TEditPanel::sub_wnd_proc(void* hwnd, unsigned int msg,
     DWORD sel_end_after;
     int track_selection;
 
-    if (this->edit_wnd != 0 && this->active != 0 &&
-        this->visible != 0 && this->hidden == 0) {
-        if (msg < 0x15) {
-            if (msg == WM_ERASEBKGND) {
-                if (this->brush != 0) {
-                    RECT rect;
-                    HDC hdc = (HDC)wparam;
-                    SelectObject(hdc, (HGDIOBJ)this->brush);
-                    GetClientRect((HWND)hwnd, &rect);
-                    FillRect(hdc, &rect, (HBRUSH)this->brush);
-                    return 1;
+    if (this->edit_wnd == 0) goto default_processing;
+    if (this->active == 0) goto default_processing;
+    if (this->visible == 0) goto default_processing;
+    if (this->hidden != 0) goto default_processing;
+    {
+        if (msg <= WM_ERASEBKGND) {
+            if (msg != WM_ERASEBKGND) {
+                if (msg == WM_PAINT) {
+                    InvalidateRect((HWND)hwnd, 0, TRUE);
                 }
-            } else if (msg == WM_PAINT) {
-                InvalidateRect((HWND)hwnd, 0, TRUE);
+            } else if (this->brush != 0) {
+                RECT rect;
+                HDC hdc = (HDC)wparam;
+                SelectObject(hdc, (HGDIOBJ)this->brush);
+                GetClientRect((HWND)hwnd, &rect);
+                FillRect(hdc, &rect, (HBRUSH)this->brush);
+                return 1;
             }
         } else {
-            if (msg < 0x201) {
+            if (msg <= WM_MOUSEMOVE) {
                 switch (msg) {
                 case WM_MOUSEMOVE:
                     if (rge_base_game->windows_mouse == 0) {
@@ -248,16 +263,14 @@ default_processing:
 
     if (msg == WM_LBUTTONDOWN || msg == WM_LBUTTONUP ||
         msg == WM_RBUTTONDOWN || msg == WM_RBUTTONUP) {
-        const unsigned int x = (unsigned int)lparam & 0xFFFF;
-        const unsigned int y = ((unsigned int)lparam >> 16) & 0xFFFF;
-        const unsigned int nx =
-            (unsigned int)(this->pnl_x + (long)x) & 0xFFFF;
-        const unsigned int ny =
-            (unsigned int)(this->pnl_y + (long)y) & 0xFFFF;
-        const long new_lparam = (long)((ny << 16) | nx);
+        long adjusted_x = this->pnl_x +
+                          (long)((unsigned int)lparam & 0xFFFF);
+        lparam = (long)((unsigned long)lparam >> 16) + this->pnl_y;
         TPanel* cp = panel_system.currentPanel();
+        lparam = (long)((((unsigned long)lparam & 0xFFFF) << 16) |
+                        ((unsigned long)adjusted_x & 0xFFFF));
         ret = cp->wnd_proc((void*)this->render_area->Wnd,
-                           msg, wparam, new_lparam);
+                           msg, wparam, lparam);
     }
 
     return ret;
