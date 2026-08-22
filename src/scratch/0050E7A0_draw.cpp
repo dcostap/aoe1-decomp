@@ -35,6 +35,17 @@
 //   virtual declaration surface, direct members, interleaved output scopes,
 //   local declaration context, an outline-only receiver alias, and a named
 //   negative-radius temporary all emitted the same 394B code.
+// - A decompiler-supported packed-output probe mapped the four get_point
+//   result pairs onto rx1 and dead parameter homes.  This follows the target's
+//   short output addresses and improved diagnostic shape to 74%, but it needs
+//   raw parameter-home casts.  It is not retained as canonical source.
+// - The packed probe also used whole-word x/y parameter reads.  The target
+//   pushes those words without MOVSX in each map call, but the clean typed
+//   source does not force that compiler detail.
+// - Passing the first radius pair as direct member expressions reached a
+//   420B/161-instruction diagnostic basin and reduced strict diff to 353B.
+//   Its FPU and register topology did not match the target, so it was rolled
+//   back.  The packed-output probe remains the next lead for a natural donor.
 // - Original stack evidence still shows dead parameter homes reused for later
 //   map outputs. Forcing that shape would violate the clean-source policy;
 //   retain the typed natural rendering flow instead.
