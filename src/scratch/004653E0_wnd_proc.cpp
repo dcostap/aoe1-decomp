@@ -38,6 +38,13 @@
 // child and command blocks still precede mouse and keyboard blocks, while VC5
 // keeps those blocks out of order in this source basin. Final validation remains
 // MISMATCH; pinned as clean for the next worker.
+// probes 30-39: external-source nesting, classifier polarity, positive child
+// branches, and the full later virtual surface did not improve the clean basin.
+// Probes 41-42: one grouped message switch preserved size and calls, and raised
+// shape from 19.47% to 25.37% while keeping the same 796-byte diff. This also
+// emits command, timer, scroll, user in the original physical order.
+// Probes 43-47: sparse or arithmetic keyboard classifiers raised the shape
+// metric, but added a 0x10 frame and moved farther from the clean source.
 
 #include <windows.h>
 
@@ -116,17 +123,16 @@ long TPanel::wnd_proc(void* hwnd, unsigned int msg, unsigned int wParam, long lP
     }
 
     if (msg <= 0x400) {
-        if (msg == 0x400) {
-            return this->handle_user_command(wParam, lParam);
-        }
-        switch (msg - 0x111) {
-        case 0:
+        switch (msg) {
+        case 0x111:
             return this->handle_command(wParam, lParam);
-        case 2:
+        case 0x113:
             return this->handle_timer_command(wParam, lParam);
-        case 3:
-        case 4:
+        case 0x114:
+        case 0x115:
             return this->handle_scroll(wParam, lParam);
+        case 0x400:
+            return this->handle_user_command(wParam, lParam);
         }
     }
 
