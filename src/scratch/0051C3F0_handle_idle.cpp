@@ -29,6 +29,16 @@
 // 82.95%; the remaining frame is 0x90 and strict diff is 1350B.
 // try 14: restored the 100-byte name buffer from the oracle's +38h stack span;
 // retained despite the four-byte frame increase over the 96-byte probe.
+// try 15: rewrote the player refresh as one compound guard with one shared
+// action arm. Positive p-first lowering improved the probe to 1294B diff,
+// 83.13% shape, and exact code size while keeping 25/25 ordered calls.
+// try 16: corrected the snapshot flags: attribute and nonzero-count changes
+// set changed only; zero-count changes set do_buttons. A negative guard chain
+// then reached 90.53% shape and 61.89% exact-block coverage at 1331B diff.
+// try 17: used direct ordered population casts instead of named temporaries.
+// This recovered the proven 0x8C frame and 1568B code size; the current probe
+// is 1332B diff, 85.42% shape, 66.74% exact blocks, and 25/25 calls.
+// The direct population form emits pop then max in the original __ftol order.
 // Final unresolved source is natural and typed, with 25/25 ordered calls.
 // Structural reconstruction remains incomplete.
 
@@ -43,7 +53,7 @@ public:
     virtual void set_redraw(int value);
     virtual void vf09(); virtual void vf0A(); virtual void vf0B(); virtual void vf0C();
     virtual void vf0D(); virtual void vf0E(); virtual void vf0F(); virtual void vf10();
-    virtual void vf11(); virtual void vf12(); long handle_idle();
+    virtual void vf11(); virtual void vf12();
     virtual void vf13(); virtual void vf14(); virtual void vf15(); virtual void vf16();
     virtual void vf17(); virtual void vf18(); virtual void vf19(); virtual void vf1A();
     virtual void vf1B(); virtual void vf1C(); virtual void vf1D(); virtual void vf1E();
@@ -52,13 +62,74 @@ public:
     virtual void vf27(); virtual void vf28(); virtual void vf29(); virtual void vf2A();
     virtual void vf2B(); virtual void vf2C();
     virtual void notify(void*, int, int, int);
-    char gap_04[0x34];
+    TPanel* previous_panel;
+    TPanel* previous_modal_panel;
+    long pnl_x;
+    long pnl_y;
+    long pnl_wid;
+    long pnl_hgt;
+    char* panel_name;
+    void* render_area;
+    long clip_left;
+    long clip_top;
+    long clip_right;
+    long clip_bottom;
+    long position_mode;
     int need_redraw; // +38
-    char gap_3C[4];
+    long field_3C;
     TPanel* child; // +40
-    char gap_44[0x28];
+    TPanel* left_panel;
+    TPanel* top_panel;
+    TPanel* right_panel;
+    TPanel* bottom_panel;
+    void* node;
+    void* first_child_node;
+    void* last_child_node;
+    TPanel* curr_child;
+    long field_64;
+    long field_68;
     int active; // +6C
-    char gap_70[0x84];
+    long field_70;
+    long have_focus;
+    long field_78;
+    long field_7C;
+    long field_80;
+    long gap_84;
+    void* clip_rgn;
+    long field_8C;
+    long field_90;
+    long field_94;
+    long field_98;
+    long left_border;
+    long top_border;
+    long right_border;
+    long bottom_border;
+    long min_wid;
+    long max_wid;
+    long min_hgt;
+    long max_hgt;
+    long field_BC;
+    long field_C0;
+    long field_C4;
+    long field_C8;
+    long field_CC;
+    long field_D0;
+    long field_D4;
+    long error_code;
+    long field_DC;
+    long field_E0;
+    long field_E4;
+    long field_E8;
+    unsigned char field_EC;
+    unsigned char field_ED;
+    unsigned char field_EE;
+    unsigned char field_EF;
+    unsigned char field_F0;
+    unsigned char gap_F1;
+    unsigned char field_F2;
+    unsigned char field_F3;
+
+    long handle_idle();
 };
 
 class RGE_Object_Node { public: char gap_00[0x10]; };
@@ -313,52 +384,58 @@ long TRIBE_Panel_Object::handle_idle()
     }
 
     TRIBE_Player* p = this->player;
-    if (p != 0) {
-        if (p->object_130 != this->game_obj) {
+    if ((p == 0 && this->game_obj != 0) ||
+        (p != 0 && p->object_130 != this->game_obj)) {
+        if (p != 0) {
             this->set_object(p->object_130);
-            return 0;
+        } else {
+            this->set_object(0);
         }
-    } else if (this->game_obj != 0) {
-        this->set_object(0);
         return 0;
     }
 
     int changed = 0;
     int do_buttons = 0;
-    char name[100];
+    TRIBE_Building_Object* bldg;
     short cur_val;
     short work_target;
     short orig_val;
     float cur_fval;
     short temp;
     short work_type;
-    TRIBE_Building_Object* bldg;
     short progress_value;
     float orig_fval;
+    char name[100];
 
     {
-    if (this->game_obj == 0) goto finish;
+    RGE_Action_Object* object = (RGE_Action_Object*)this->game_obj;
+    if (object == 0) goto finish;
 
-    if (((RGE_Action_Object*)this->game_obj)->owner == this->save_owner) {
-        if (((RGE_Action_Object*)this->game_obj)->selected_group == this->save_selected_group) {
-            if (((RGE_Action_Object*)this->game_obj)->master_obj == this->save_obj_type) {
-                short n = ((RGE_Action_Object*)this->game_obj)->objects->number_of_objects;
-                if (n == this->save_number_of_objects) {
-                    if (((RGE_Action_Object*)this->game_obj)->attribute_type_held != this->save_attr_type ||
-                        ((RGE_Action_Object*)this->game_obj)->attribute_amount_held != this->save_attr_amount ||
-                        ((RGE_Action_Object*)this->game_obj)->hp != this->save_hp ||
-                        ((RGE_Action_Object*)this->game_obj)->objects->list != this->save_list ||
-                        ((RGE_Action_Object*)this->game_obj)->master_obj->los != this->save_los ||
-                        ((RGE_Action_Object*)this->game_obj)->master_obj->id == 0x2d) {
-                        changed = 1; do_buttons = 1;
-                    }
-                } else {
-                    changed = 1; do_buttons = 1;
-                    if (n == 0 || this->save_number_of_objects == 0) do_buttons = 1;
-                }
-            } else { changed = 1; do_buttons = 1; }
-        } else { changed = 1; do_buttons = 1; }
-    } else { changed = 1; do_buttons = 1; }
+    if (object->owner != this->save_owner) {
+        changed = 1;
+        do_buttons = 1;
+    } else if (object->selected_group != this->save_selected_group) {
+        changed = 1;
+        do_buttons = 1;
+    } else if (object->master_obj != this->save_obj_type) {
+        changed = 1;
+        do_buttons = 1;
+    } else {
+        short n = object->objects->number_of_objects;
+        if (n == this->save_number_of_objects) {
+            if (object->attribute_type_held != this->save_attr_type ||
+                object->attribute_amount_held != this->save_attr_amount ||
+                object->hp != this->save_hp ||
+                object->objects->list != this->save_list ||
+                object->master_obj->los != this->save_los ||
+                object->master_obj->id == 0x2d) {
+                changed = 1;
+            }
+        } else {
+            changed = 1;
+            if (n == 0 || this->save_number_of_objects == 0) do_buttons = 1;
+        }
+    }
 
     if (!changed) {
         unsigned char type = ((RGE_Action_Object*)this->game_obj)->master_obj->master_type;
@@ -396,7 +473,7 @@ long TRIBE_Panel_Object::handle_idle()
         changed = 1; do_buttons = 1;
     }
     if (!changed || !do_buttons) {
-        int progress = bldg->get_construction_progress();
+        short progress = bldg->get_construction_progress();
         if ((float)progress != this->save_build_pts) {
             changed = 1;
             if ((float)progress > 99.0f) do_buttons = 1;
@@ -429,9 +506,10 @@ name_same:
     }
 finish:
     if ((!changed || !do_buttons) && this->game_obj->master_obj->id == 0x46) {
-        int pop = (int)this->player->attributes[11];
-        int max_pop = (int)this->player->attributes[4];
-        if (pop != this->save_pop || max_pop != this->save_max_pop) changed = 1;
+        if ((int)this->player->attributes[11] != this->save_pop ||
+            (int)this->player->attributes[4] != this->save_max_pop) {
+            changed = 1;
+        }
     }
     if ((!changed || !do_buttons) &&
         bldg->owner == this->player && bldg->master_obj->id == 0x32) {
