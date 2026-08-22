@@ -50,6 +50,24 @@
 //   with the prior form. A typed current-record alias and <stdlib.h> context were rejected.
 // - Final validation: 1977 bytes, frame 0x88, 44/44 calls, diff 1423 (71.9777%), shape
 //   83.63%, exact-block coverage 41.23%. The remaining first mismatch is +0014.
+//
+// Follow-up pass sa-a5d67d64-r1:
+// - Hypothesis 1 put offset initialization inside a positive max-count guard. It added 14
+//   bytes and a duplicate loop test: diff 1686, size 1991. Restored.
+// - Hypotheses 2, 3, 7, and 8 tested register declarations, declaration order, candidate
+//   scope, and loop-index register status. They were codegen duplicates or regressed by 7
+//   bytes. Restored.
+// - Hypothesis 4 used the binary-backed shared increment tail with a labeled do/while. It
+//   reached diff 1416 and shape 83.99%, but resynchronization and exact-block coverage were
+//   worse than the clean for-loop. Hypothesis 6 kept the offset local at function scope and
+//   produced the same code. The clean for-loop remains authoritative.
+// - Hypothesis 5 named the early unitAI result. It added 14 bytes and was restored.
+// - Hypothesis 9 used the reviewed reference ABI for findObjectMemoryLimits. It was a
+//   codegen duplicate and was restored to the pointer spelling.
+// - Hypothesis 10 added the reviewed polymorphic TribeInformationAIModule surface while
+//   preserving md at +0x100. It did not improve positional diff and was restored.
+// - Final follow-up source is restored to the pinned clean reconstruction: 1977 bytes,
+//   frame 0x88, 44/44 calls, diff 1423, shape 83.63%, first mismatch +0014.
 
 #include <math.h>
 
