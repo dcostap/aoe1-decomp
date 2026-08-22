@@ -35,6 +35,13 @@
 // The reduced source keeps only the zero-argument helper ABI and switch changes.
 // Remaining mismatch is the original 0x1c frame/register/home basin.
 // No inline asm used; no accepted_drift proposal.
+// session sa-fd1bceaa-r1 probes 1-8: sequential versus combined guards,
+// Ghidra-style clipped-bound mutation and dispatch, self aliases, function-
+// scope raw-bound locals, FShape fall-through, nested guards, and Windows RECT
+// context were duplicate or worse. The pinned natural source is restored.
+// These tests confirm 14/14 ordered calls and 0x14 rebuilt frame versus the
+// original 0x1c frame; the next lead remains original local-home/register
+// allocation, not ABI or behavior.
 
 typedef unsigned char byte;
 
