@@ -47,6 +47,13 @@
 // left in scratch: the remaining broad drift begins at VC5 prologue/register
 // coloring (parameter in EBX vs original ESI, this in ESI vs original EDI),
 // plus local slot/block placement; calls, frame, and size now match.
+// claim sa-42122c60: test source declaration order for the two persistent
+// narrow counters that occupy EBP and EBX in the original.
+// claim sa-42122c60 follow-up: 19 focused probes tested counter initialization,
+// loop order, flag and buffer types, declaration order, self aliases, and
+// register qualifiers.  The loop-entry chars-zero form reduced the byte diff
+// to 927 but lost size and block shape; all probes were restored.  The clean
+// source remains 1064 bytes with a 0x170 frame and 29 ordered calls.
 
 #include <windows.h>
 #include <string.h>
