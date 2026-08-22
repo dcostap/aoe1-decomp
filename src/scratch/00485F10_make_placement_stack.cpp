@@ -41,6 +41,11 @@
 // below, but retain the binary-proven row/stride lowering in this body.
 // Main review removed the manual vptr and raw row/stride lowering. The living
 // source now uses a virtual base and typed row indexing.
+// this-claim probes: direct max-bound arithmetic worsened to 442/439 bytes;
+// same-TU set_search_area arithmetic was a 392-byte duplicate. Explicit base
+// vtable, receiver alias, register x, range-home count, zero local, and local
+// declaration-order forms were codegen duplicates. A typed row alias or row
+// table cursor worsened frame/shape (454 or 500 bytes); restored clean source.
 
 extern "C" int __cdecl debug_rand(char* file, int line);
 extern char s_rmm_obj_cpp[];
