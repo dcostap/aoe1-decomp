@@ -102,10 +102,6 @@
 //   forms. These were duplicates or worse. Direct repeated typed row indexing
 //   and the do-counted loops remain the clearest natural structure. No
 //   parameter-home aliases were restored.
-// - Accepted-drift audit: do not promote this candidate. The original has an
-//   0x08 local frame, while the natural rebuild has none. Thus remove_stack_node
-//   receives a different stack and exception context. The clipped traversal
-//   and original x2-versus-height bug otherwise remain preserved.
 
 struct Map_Stack {
     long x;
@@ -168,40 +164,62 @@ public:
 void RGE_RMM_Cliffs_Generator::invalidate_cliff_area(long x, long y, long spacing) {
     long cliff_width2 = this->map_width / 3 - 1;
     long cliff_height2 = this->map_height / 3 - 1;
-    long x1 = x - spacing;
-    long y1 = y - spacing;
-    long x2 = spacing + x;
-    long y2 = spacing + y;
+    long cliff_x = x - spacing;
+    long cliff_x2 = spacing + x;
+    long cliff_y = y - spacing;
+    long cliff_y2 = spacing + y;
 
-    if (x1 < 0) {
-        x1 = 0;
+    spacing = cliff_x;
+    x = cliff_x2;
+    if (cliff_x < 0) {
+        spacing = 0;
     }
-    if (y1 < 0) {
-        y1 = 0;
+    if (cliff_y < 0) {
+        cliff_y = 0;
     }
-    if (x2 > cliff_width2) {
-        x2 = cliff_width2;
+    if (cliff_x2 > cliff_width2) {
+        x = cliff_width2;
     }
-    if (x2 > cliff_height2) {
-        y2 = cliff_height2;
+    if (cliff_x2 > cliff_height2) {
+        cliff_y2 = cliff_height2;
     }
 
-    if (y1 <= y2) {
-        long row = y1;
-        long row_count = y2 - y1 + 1;
+    if (cliff_y <= cliff_y2) {
+        long row = cliff_y;
+        long row_count = cliff_y2 - cliff_y + 1;
         do {
-            if (x1 <= x2) {
-                long column = x1;
+            if (spacing <= x) {
+                long column = spacing;
                 do {
                     if (this->search_map_rows[row][column] != 0) {
                         this->search_map_rows[row][column] = 0;
                         this->remove_stack_node(this->stack_offsets[row] + column);
                     }
                     column++;
-                } while (column <= x2);
+                } while (column <= x);
             }
             row++;
             row_count--;
         } while (row_count != 0);
     }
 }
+
+// - Accepted-drift audit: the retained source now matches the original 0x08
+//   frame, direct call, call order, and clipped traversal. Do not promote it
+//   yet. The 168-byte residue is broad early register and instruction-topology
+//   drift, not a small localized equivalent block. The x2-versus-height bug
+//   remains preserved.
+
+// - Follow-up structural work restored the minimal same-TU void* map context,
+//   direct combined endpoint locals, parameter-home x/spacing reuse, and the
+//   counted do-loops. This remains a 243-byte frame basin with 168 differing
+//   bytes, 89-versus-88 instructions, one direct call, and the same CFG edges.
+//   The best source uses parameter-only upper clamps and direct row indexing.
+// - Tested endpoint aliases, declaration and initialization order, bound
+//   order, y-countdown reuse, loop update order, pointer row locals, full and
+//   minimal class surfaces, numeric PDB line bands, reversed predicates,
+//   register hints, and ambient declaration context. No test recovered EBP
+//   for the incoming y value or the target EBX clipped-right color.
+// - A 288-variant structured lab found no exact result. Its best invariant
+//   group matched this 243-byte, 168-diff basin. An 8-sample ambient lab also
+//   found no new emitted-code group. Keep the clean natural source here.
