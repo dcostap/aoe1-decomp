@@ -63,6 +63,20 @@
 // not fault-context equivalent. The executable loads the global log pointer
 // before it writes packet type and turn. The rebuild writes both packet fields
 // first. If the global load faults, the stack packet contents differ.
+// - [probes 19-53] Merged the two speed bytes into the DONE packet tail. This
+//   recovered the target homes at [esp+30] and [esp+31]. Spelling the first
+//   timeout guard as `current_turn <= 7`, reversing the G comparison, splitting
+//   counter zero stores, caching rge_base_game for language, and incrementing
+//   current_turn in place recovered exact size/frame, all 55 calls, and 95.22%
+//   exact-block coverage. Final diff is 25 bytes and shape is 99.43%.
+// - The direct source forms for DONE packet stores, counter loads, and the late
+//   timeout label were tested. The best source keeps the positive drop arm.
+//   Negative goto form changes call order and is rejected.
+// OPEN: Target loads the log pointer, writes packet type, prepares log arguments,
+//   then writes packet turn. The best natural source writes both packet fields
+//   before the log load. Target also loads Now before the two counter homes at
+//   the drop decision. The remaining 25-byte mismatch is localized to these
+//   two scheduling shapes.
 
 typedef unsigned int uint;
 typedef unsigned long ulong;
@@ -192,20 +206,19 @@ int TCommunications_Handler::DoCycle(ulong param_1)
         this->LastTurnAck[this->Me] != turn) {
         this->LastTurnAck[this->Me] = turn;
         struct DoneMessage {
-            char type;
-            char gap_01[3];
+            char packet[4];
             int turn;
-            char gap_08[4];
+            uchar speedParts[2];
+            char gap_0A[2];
         } doneMsg;
         if (this->current_turn > 6) {
             // BINARY NOTE: the executable keeps these two byte results in adjacent homes.
-            uchar speedParts[2];
-            speedParts[0] = this->Speed->GetHighLatencyCenti();
-            speedParts[1] = (uchar)this->Speed->GetAvgFrameRate();
-            this->Speed->SetPlayerTurnSpeed(this->Me, speedParts[1], speedParts[0]);
+            doneMsg.speedParts[0] = this->Speed->GetHighLatencyCenti();
+            doneMsg.speedParts[1] = (uchar)this->Speed->GetAvgFrameRate();
+            this->Speed->SetPlayerTurnSpeed(this->Me, doneMsg.speedParts[1], doneMsg.speedParts[0]);
         }
         LAST_SENT_TIME = debug_timeGetTime(S(0x580BF4), 0xBF9);
-        doneMsg.type = 'D';
+        doneMsg.packet[0] = 'D';
         doneMsg.turn = doneTurn;
         L->Log(S(0x580EA4), 0x0C);          // "  >TX DONE (%d)"
         this->CommOut(0, 'D', (char*)&doneMsg, 0x0C, 0);
@@ -244,8 +257,10 @@ int TCommunications_Handler::DoCycle(ulong param_1)
 
         char msg_str[100];
         uint i = 1;
-        int lastAnyPlayerMessage = 0;
-        int selfTimedOutCount = 0;
+        int selfTimedOutCount;
+        int lastAnyPlayerMessage;
+        lastAnyPlayerMessage = 0;
+        selfTimedOutCount = 0;
         if (this->MaxGamePlayers >= i) {
             ulong* lpc = this->LastPlayerCommunication + 1;
             do {
@@ -265,7 +280,7 @@ int TCommunications_Handler::DoCycle(ulong param_1)
                         this->NotifyWindowParam(COMM_PLAYER_NOT_RESPONDING, i);
                     }
                     int timedOut = 0;
-                    if (this->current_turn < 8 && elapsed > 98000) {
+                    if (this->current_turn <= 7 && elapsed > 98000) {
                         L->Log(S(0x580E74), this->current_turn, elapsed);
                         timedOut = 1;
                     }
@@ -282,7 +297,8 @@ int TCommunications_Handler::DoCycle(ulong param_1)
                         L->Log(S(0x580DD8), i);
                         if (this->MeHost != 0) {
                             L->Log(S(0x580DB4), i, this->current_turn, elapsed);
-                            rge_base_game->language(0x4BA, msg_str, 0x64);
+                            RGE_Base_Game* base_game = rge_base_game;
+                            base_game->language(0x4BA, msg_str, 0x64);
                             sprintf(this->TBuff, msg_str, this->GetPlayerName(i), i);
                             if (this->current_turn > 6) {
                                 this->SendChatMsgAll(this->TBuff);
@@ -300,9 +316,10 @@ int TCommunications_Handler::DoCycle(ulong param_1)
             } while (i <= (uint)this->MaxGamePlayers);
         }
 
-        if ((selfTimedOutCount + 1 == 3 && lastAnyPlayerMessage >= 2) ||
-            (selfTimedOutCount + 1 != 3 &&
-             lastAnyPlayerMessage >= (selfTimedOutCount + 1) / 2)) {
+        ++selfTimedOutCount;
+        if ((selfTimedOutCount == 3 && lastAnyPlayerMessage >= 2) ||
+            (selfTimedOutCount != 3 &&
+             lastAnyPlayerMessage >= selfTimedOutCount / 2)) {
             // BINARY NOTE: this positive drop arm leaves the timeout block cold and late.
             // dropped myself
             L->Log(S(0x580DA0));   // "I Dropped myself."
@@ -333,7 +350,7 @@ int TCommunications_Handler::DoCycle(ulong param_1)
 
         {
             ulong lastTimeout = this->LastTimeoutMessageTime;
-            if (this->LastTimeoutMessageTime < G) {
+            if (G > this->LastTimeoutMessageTime) {
                 lastTimeout = G;
             }
             if (now - lastTimeout > 25000) {
@@ -355,9 +372,8 @@ int TCommunications_Handler::DoCycle(ulong param_1)
     if (this->MeHost != 0) {
         this->Speed->AnalyzeGameSpeed(&WT, &Fr, 1);
     }
-    uint newTurn = this->current_turn + 1;
-    this->current_turn = newTurn;
-    L->Log(S(0x580D74), newTurn, param_1, WT, Fr);   // "....Starting Turn#%d, WT=%d, Fr=%d, Gr=%d"
+    this->current_turn++;
+    L->Log(S(0x580D74), this->current_turn, param_1, WT, Fr);   // "....Starting Turn#%d, WT=%d, Fr=%d, Gr=%d"
     this->CheckPlayerStopTurn(this->current_turn);
     return this->Speed->GetBufferGranularityAdjusted();
 }
