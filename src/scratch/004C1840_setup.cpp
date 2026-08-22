@@ -32,6 +32,14 @@
 //   declaration context or register basin before further body rewrites.
 // - Earlier direct-call tail work was superseded.  The current inverted branch
 //   form restores the original tail block islands with the donor-backed scans.
+// - A six-word local aggregate in binary stack order recovered the original
+//   homes, but main review rejected it as local-home steering. A natural short
+//   serialization index remains because it models the two-byte reads.
+// - Tested register qualifiers, declaration order, aliases, narrow byte type,
+//   header context, named zero, and nested scans; none changed the best basin.
+// - Final unresolved residue is the callee-saved register permutation: the
+//   build uses EBP for the file and EBX for zero, while the executable uses
+//   EDI for file, EBX for world, and EBP for zero.
 
 #include "../../include/game_globals.h"
 
@@ -215,20 +223,21 @@ int RGE_Static_Object::setup(int file, RGE_Game_World* world) {
     int tempInt;
     int tempInt_fffffff8;
     int local_4;
+    short index;
 
     this->type = 10;
     rge_read(save_file, &long_val, 1);
     this->owner = world->players[long_val & 0xff];
 
     // BINARY NOTE: The shipped loader reuses the incoming file home for this index.
-    rge_read(save_file, &file, 2);
-    this->master_obj = this->owner->master_objects[(short)file];
+    rge_read(save_file, &index, 2);
+    this->master_obj = this->owner->master_objects[index];
 
-    rge_read(save_file, &file, 2);
-    if ((short)file < 0) {
-        this->sprite = 0;
+    rge_read(save_file, &index, 2);
+    if (index >= 0) {
+        this->sprite = world->sprites[index];
     } else {
-        this->sprite = world->sprites[(short)file];
+        this->sprite = 0;
     }
 
     this->old_sprite = 0;
