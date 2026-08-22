@@ -42,6 +42,10 @@
 //   basin aliases phaseState with value1 and is not behavior-safe.
 // - final validation: 72/72 ordered calls, frame 0x3A8, size +95, diff 4280;
 //   the remaining blocker is VC5 EH/local-home topology.
+// - fresh late-loop evidence: the parser `i` home is not the five-element
+//   target-copy index.  A branch-local targetIndex and separate groupIndex /
+//   triggerIndex recover the oracle's EDI loop topology.  The natural source
+//   now measures size +43, shape 81.78%, and diff 4236 with all 72 calls.
 // - reusing the quote end counter and adding the unmapped temp3 local did not
 //   change emitted code; the narrow char comment locals remain preferred.
 
@@ -444,14 +448,14 @@ int AIPlayBook::loadPlays(char* filename) {
                     this->plays[oldPhase + temp8].intelligenceValue =
                         this->plays[oldPhase].intelligenceValue;
 
-                    i = 0;
+                    int targetIndex = 0;
                     do {
                         this->plays[oldPhase + temp8].addTargetType(
-                            this->plays[oldPhase].targetType(i));
+                            this->plays[oldPhase].targetType(targetIndex));
                         this->plays[oldPhase + temp8].addTargetCharacteristic(
-                            this->plays[oldPhase].targetCharacteristic(i));
-                        ++i;
-                    } while (i < 5);
+                            this->plays[oldPhase].targetCharacteristic(targetIndex));
+                        ++targetIndex;
+                    } while (targetIndex < 5);
 
                     this->plays[oldPhase + temp8].numberGroupsValue =
                         this->plays[oldPhase].numberGroupsValue;
@@ -460,12 +464,14 @@ int AIPlayBook::loadPlays(char* filename) {
                         AIPlayGroup* source = this->plays[oldPhase].group(groupPhase);
                         AIPlayGroup* destination =
                             this->plays[oldPhase + temp8].group(groupPhase);
-                        i = 0;
+                        int groupIndex = 0;
                         do {
-                            destination->setMinimum(i, source->minimum(i));
-                            destination->setMaximum(i, source->maximum(i));
-                            ++i;
-                        } while (i < 6);
+                            destination->setMinimum(
+                                groupIndex, source->minimum(groupIndex));
+                            destination->setMaximum(
+                                groupIndex, source->maximum(groupIndex));
+                            ++groupIndex;
+                        } while (groupIndex < 6);
                         ++groupPhase;
                     } while (groupPhase < 5);
 
@@ -497,11 +503,12 @@ int AIPlayBook::loadPlays(char* filename) {
                             ++currentPlay;
                         } while (currentPlay < 5);
 
-                        i = 0;
+                        int triggerIndex = 0;
                         do {
-                            destinationPhase->addTrigger(sourcePhase->trigger(i));
-                            ++i;
-                        } while (i < 3);
+                            destinationPhase->addTrigger(
+                                sourcePhase->trigger(triggerIndex));
+                            ++triggerIndex;
+                        } while (triggerIndex < 3);
                         ++groupPhase;
                     } while (groupPhase < 10);
 
