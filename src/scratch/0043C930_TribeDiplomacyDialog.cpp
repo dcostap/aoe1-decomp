@@ -41,6 +41,13 @@
 // - durable next lead: recover the original 0x124 frame and the 0x55D047 EH
 //   handler value.  The body now has exact islands, but the constructor still
 //   enters a different compiler frame basin.
+// - claim sa-d1e42032: removing the row-player alias recovered the 0x124 frame
+//   and improved the diff to 2711 bytes, but merged two radio call sites. The
+//   alias is required for the current 112-call source shape.
+// - claim sa-d1e42032: separate humanity storage, radio-row aliases, predicate
+//   splits, register hints, and loop-index scopes did not improve the clean
+//   source. A delayed player alias kept the frame but changed direct targets.
+//   All such variants were restored to the pinned H21 source.
 
 #include <stdio.h>
 
