@@ -45,8 +45,20 @@
 // This changes the first failing read for an invalid packet or invalid object.
 // The later kill-scan register choice and duplicate bound test are mechanical,
 // but they do not remove this pointer-read-order blocker.
+// Continuation pass (sa-25429116-r1, 2026-08-22):
+// - Restored the original protected access for EvaluatePlayerMessage and its protected helper calls.
+//   Restored COMMMESSAGES, long, and unsigned-char helper parameter types from the original decorations.
+// - Replaced the opaque PlayerOptions gap with the donor-supported complete 0x1D0-byte record.
+//   LastTurnAck remains at the proven +0x1720 offset.
+// - Typed packet and scan-cursor variants, function-scope locals, and explicit cursor/goto loops were tested.
+//   The natural indexed loop remains the best 972-byte emitted basin at 747 strict diff bytes.
+// - The original speed arm still reads data+4 before CommandTurnIncrement. The natural rebuild reverses those reads.
+//   The original kill scan still uses a separate register topology and a late found block.
 
-struct TDebuggingLog { void Log(char*, ...); };
+class TDebuggingLog {
+public:
+    void Log(char*, ...);
+};
 extern TDebuggingLog* L;
 
 #define S(address) ((char*)(address))
@@ -65,7 +77,12 @@ public:
                       long, long, long, long, long, unsigned long);
 };
 
-class TChat { public: int AddChatMsg(char*, char*, int); };
+enum COMMMESSAGES {
+    COMM_PLAYER_KICKED = 0x17AA,
+    COMM_OTHER_PLAYER_DROPPED = 0x17B3
+};
+
+class TChat { public: int AddChatMsg(char*, char*, unsigned char); };
 
 struct MSGFORMAT_KILL_PLAYER {
     unsigned long player;
@@ -73,15 +90,35 @@ struct MSGFORMAT_KILL_PLAYER {
 };
 
 struct COMMPLAYEROPTIONS {
-    char gap_00[8];
+    unsigned char NeedsToBeSent;
+    unsigned char gap_01[3];
+    unsigned long LastSentTime;
     int ProgramState;
-    char gap_0C[0x14 - 0x0C];
+    unsigned long CurrentTurn;
+    unsigned char TurnSpeedMsec;
+    unsigned char gap_11[3];
     unsigned long dcoID[10];
-    char gap_3C[0x40 - 0x3C];
+    unsigned long AcknowledgeAfterMsec;
     unsigned char CommandTurnIncrement;
-    char gap_41[0x1C0 - 0x41];
+    unsigned char gap_41[3];
+    int PlayerReady[10];
+    unsigned long User1[10];
+    unsigned long User2[10];
+    unsigned long User3[10];
+    unsigned long User4[10];
+    unsigned long User5[10];
+    unsigned long User6[10];
+    unsigned long User7[10];
+    int Humanity[10];
+    unsigned char InvalidPlayer[10];
+    unsigned char gap_1AE[2];
+    unsigned long Initialized;
+    unsigned long RandomSeed;
     unsigned short HighPlayerNumber;
     unsigned short LowPlayerNumber;
+    unsigned long HostPlayerNumber;
+    int GameHasStarted;
+    unsigned long DataSizeToFollow;
 };
 
 class TCommunications_Handler {
@@ -103,9 +140,9 @@ public:
     RGE_Communications_Synchronize* Sync;
     char gap_14DC[0x1550 - 0x14DC];
     COMMPLAYEROPTIONS PlayerOptions;
-    char gap_1714[0x1720 - 0x1714];
     unsigned long LastTurnAck[16];
 
+protected:
     int EvaluatePlayerMessage(unsigned long a1, unsigned int player,
                               unsigned long a3, unsigned char opcode,
                               unsigned char p5, char* data, unsigned int p7,
@@ -115,9 +152,10 @@ public:
     void LocalPauseGame(unsigned int player);
     void LocalResumeGame(unsigned int player);
     void SendPauseGame(int pause);
+public:
     void DropDeadPlayer(unsigned int player, unsigned long dco_id);
-    void NotifyWindow(int message);
-    void NotifyWindowParam(int message, int player);
+    void NotifyWindow(COMMMESSAGES message);
+    void NotifyWindowParam(COMMMESSAGES message, long player);
 };
 
 int TCommunications_Handler::EvaluatePlayerMessage(unsigned long a1, unsigned int player,
@@ -211,11 +249,11 @@ int TCommunications_Handler::EvaluatePlayerMessage(unsigned long a1, unsigned in
             if (this->PlayerStopTurn[i] == 0)
                 this->DropDeadPlayer(i, dco_id);
             if (i == this->Me) {
-                this->NotifyWindow(0x17AA);
+                this->NotifyWindow(COMM_PLAYER_KICKED);
                 return 1;
             }
             if (this->PlayerStopTurn[i] == 0) {
-                this->NotifyWindowParam(0x17B3, i);
+                this->NotifyWindowParam(COMM_OTHER_PLAYER_DROPPED, i);
                 return 1;
             }
         }
