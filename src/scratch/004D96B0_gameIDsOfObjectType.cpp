@@ -48,6 +48,10 @@
 // left in scratch: 24 localized register/address bytes remain in the -5/-6
 // player filters and final ID store.  Size, frame, calls, CFG, and 89.52% of
 // blocks are exact; the remaining drift is not accepted_drift-safe.
+// Accepted-drift audit: the -6 filter reads aiPlayer before obj->owner in the
+// rebuild, while the executable reads obj->owner first. The final store also
+// dereferences *ids before it reads importantObjects[i], reversing the original
+// order. These changes affect pointer faults and concurrent table replacement.
 
 // The information arrays use the inline ManagedArray<int> surface from the
 // same translation unit.  Its desired-size member is real, even though this

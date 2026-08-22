@@ -33,6 +33,10 @@
 // - left in scratch: exact size/frame, saved-register set, CFG, all 22 calls,
 //   and 145 instructions across 28 blocks match.  The remaining 12 bytes are
 //   confined to the EH/prolog and EH epilogue frontier.
+// - Accepted-drift audit: do not promote. The executable registers handler
+//   0x0055EA3C, while the rebuild's handler identity is unresolved. It also
+//   restores FS before ESI instead of after ESI. Exception and unwind context
+//   therefore remains unproved despite the exact ordinary-path body.
 // FLAGS: /nologo /c /O2 /Oy /GX (retained for the binary EH registration).
 
 #include <stdio.h>

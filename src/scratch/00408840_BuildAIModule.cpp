@@ -19,6 +19,10 @@
 // 16-28: continued source, lifetime, stack-layout, ABI-global, header-context, and raw-allocation probes. The decisive ABI-context change is using the declared version_2_2 global; it moves the second compare/store sequence into positional parity and reduces the clean diff to 3 bytes. The remaining three bytes are only the name buffer's stack displacement: original name+4 is [esp+78]/name terminator [esp+84], while rebuilt uses [esp+7C]/[esp+88]. Union, scoped-buffer, register, declaration-order, pointer-alias, direct-link, placement-new, and standard-header variants did not reduce this hunk. Current source is the smallest natural 1240-byte reconstruction with 51/51 calls, exact frame, and 3 differing bytes; do not retain raw overlap steering.
 // Main review removed the old manual derived-vptr store and kept compiler-owned
 // constructor setup. ManagedArray now uses its natural array-delete form.
+// Accepted-drift audit: do not promote the three-byte mismatch. The executable
+// passes name+4 at [esp+78] to rge_read and writes its terminator at [esp+84].
+// The rebuild uses [esp+7C] and [esp+88]. These are external writable addresses,
+// so malformed lengths and write-fault context differ despite 51 aligned calls.
 
 #include <string.h>
 #include <stdlib.h>

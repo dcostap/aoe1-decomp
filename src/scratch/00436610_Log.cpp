@@ -42,6 +42,10 @@
 //   ltime at -132. Function-scope ltime reproduces the 0x8C frame but shifts
 //   prefix storage and expands the body to 503 bytes; keep the natural clean
 //   block-local candidate.
+// - Accepted-drift audit: do not promote. The 0x8C versus 0x88 frame changes
+//   the ltime address passed to time and ctime. Date and sequence formatting
+//   also writes different prefix-buffer homes. These external writable-address
+//   and fault-context differences remain observable despite 12 aligned calls.
 
 #include <stdio.h>
 #include <stdarg.h>

@@ -53,6 +53,10 @@
 //   Typed master-table aliasing and guarded master assignment widened the code.
 //   Retain the natural function-scope output model; the initial DX-before-ESI
 //   scheduling basin remains unresolved.
+// - Accepted-drift audit: do not promote. The executable reads
+//   tech_tree->tech_player_tree_num before it dereferences master_techs. The
+//   rebuild dereferences master_techs first. This changes pointer-fault order
+//   and behavior under concurrent table replacement before any output writes.
 
 #include <stdlib.h>
 

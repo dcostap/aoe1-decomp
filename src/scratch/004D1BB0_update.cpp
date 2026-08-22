@@ -29,6 +29,11 @@
 // remaining localized drift: state-4 vtable-register coloring (two bytes) and
 // repair-rate FPU operand/push scheduling (14 bytes); all 19 relocations are masked.
 // left in scratch after the sustained revisit; no inline asm or custom flags.
+// Accepted-drift audit: do not promote the repair-rate hunk. The executable
+// reads task->work_rate before owner->world and its time delta. The rebuild
+// dereferences owner->world first and reverses the first x87 multiply operands.
+// This changes pointer-fault order, concurrent rereads, and NaN payload behavior
+// before the value is passed to the virtual heal call.
 
 extern float DAT_0057526c;
 extern double DAT_00575270;

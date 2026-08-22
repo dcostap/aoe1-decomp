@@ -44,6 +44,10 @@
 //   either duplicated the 16-byte basin or worsened it. An ambient declaration
 //   sweep of 16 variants produced one 703-byte group with no exact result.
 //   The clean typed source remains the best policy-valid reconstruction.
+// - Accepted-drift audit: do not promote. The initial serialized name length
+//   is read into [esp+4] in the executable and [esp+2] in the rebuild. The
+//   allied-victory byte also uses [esp+13] versus [esp+17]. These rge_read
+//   output-address differences change write-fault and malformed-input context.
 
 #include <stdlib.h>
 
