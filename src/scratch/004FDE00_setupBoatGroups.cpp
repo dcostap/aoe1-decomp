@@ -46,6 +46,19 @@
 //   manual caller-side scan and emits the same 2887-byte frontier. The complete
 //   shared header inlines resize at this site, adds one allocator pair and 82
 //   bytes, and changes the call surface. Keep resize declaration-only here.
+// - fresh pass: a natural min ternary for the else-arm potential-group clamp
+//   restores the 0x2C frame and the main balance CFG. Named maximum and count
+//   locals preserve the sn-first load order. A function-scope remainder local
+//   is codegen-identical in this basin.
+// - current best is 643 positional diff bytes, 98.84% shape, 91.10% exact
+//   blocks, and 93/93 ordered calls. The rebuilt size is 2889 versus 2887.
+// - compound products, declaration-local call results, a typed balance pair,
+//   and a function-scope product were codegen duplicates or worse. Restored
+//   the smallest natural product and scalar forms.
+// BINARY NOTE: the min clamp loads sn[0x3a] before warBoats.numberValue and
+//   uses cmp eax,ecx. The ternary source reproduces that local instruction order.
+// Remaining mismatch: the original first balance block loads numAGroups from
+//   [esp+20h]. The best rebuild loads the same source value from [esp+24h].
 
 void* operator new(unsigned int size);
 void __cdecl operator_delete(void* ptr);
@@ -235,6 +248,7 @@ void TribeTacticalAIModule::setupBoatGroups()
     int numPotentialEGroups;
     int numPotentialAGroups;
     int numDGroups;
+    int remaining;
     int numAGroups;
     TacticalAIGroup* sentinel;
     TacticalAIGroup* group;
@@ -349,7 +363,7 @@ void TribeTacticalAIModule::setupBoatGroups()
             (double)this->warBoats.numberValue / (double)this->sn[0x3b]);
         if (numPotentialEGroups > this->sn[0x3a]) numPotentialEGroups = this->sn[0x3a];
         int product = numPotentialEGroups * this->sn[0x3b];
-        int remaining = this->warBoats.numberValue - product;
+        remaining = this->warBoats.numberValue - product;
         if (remaining > 0) {
             numEGroups = (int)ceil((double)remaining / (double)this->sn[0x44]);
             if (numEGroups > this->sn[0x43]) numEGroups = this->sn[0x43];
@@ -362,11 +376,13 @@ void TribeTacticalAIModule::setupBoatGroups()
         }
     }
     else {
-        numPotentialEGroups = this->warBoats.numberValue;
-        if (numPotentialEGroups >= this->sn[0x3a]) {
-            numPotentialEGroups = this->sn[0x3a];
-        }
-        int remaining = this->warBoats.numberValue - numPotentialEGroups;
+        int maxPotentialEGroups = this->sn[0x3a];
+        int warBoatCount = this->warBoats.numberValue;
+        numPotentialEGroups =
+            warBoatCount < maxPotentialEGroups
+                ? warBoatCount
+                : maxPotentialEGroups;
+        remaining = this->warBoats.numberValue - numPotentialEGroups;
         if (remaining > 0) {
             numEGroups = remaining < this->sn[0x43] ? remaining : this->sn[0x43];
             remaining -= numEGroups;
