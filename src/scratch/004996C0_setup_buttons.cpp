@@ -22,6 +22,16 @@
 //   tail, a master_type == 'P' building guard, a level-three action temporary,
 //   and declaration/pointer-walk ordering; each was rolled back or codegen-
 //   neutral. The clean source remains the best structural reconstruction.
+// - restored the level-seven objects dereference without a null guard; the
+//   original reads object->objects directly and this reduced the diff by 16.
+// - changed the level-four movable flag to int, modeled the production queue
+//   scan as a do-while, and changed the technology loop index to int. Together
+//   with the direct level-seven dereference, these reduced the diff to 4188B,
+//   added seven exact blocks, and raised resync similarity to 51.40%.
+// - tested level-four and level-seven loop rotations, raw uchar have_action,
+//   int found, an explicit final-tail goto, and a live one local. They were
+//   neutral or worse and are not retained. Two set_button sites and one
+//   any_selected_have_action site still tail-merge versus the executable.
 
 extern "C" void __cdecl free(void*);
 extern "C" void* __cdecl calloc(unsigned int, unsigned int);
@@ -567,8 +577,8 @@ void TRIBE_Screen_Game::setup_buttons()
                 }
             } else if (level == 4) {
                 short selected = 0;
+                int movable = 1;
                 short i = 0;
-                bool movable = true;
 
                 while ((selected < player->sel_count) && (i < 25)) {
                     RGE_Static_Object* object = player->sel_list[i];
@@ -577,7 +587,7 @@ void TRIBE_Screen_Game::setup_buttons()
                             (RGE_Master_Combat_Object*)object->master_obj;
                         if ((master->missile_id == -1) ||
                             (master->area_effect_range == 0.0f)) {
-                            movable = false;
+                            movable = 0;
                             break;
                         }
                         ++selected;
@@ -617,15 +627,14 @@ void TRIBE_Screen_Game::setup_buttons()
                 }
             } else if (level == 7) {
                 short selected = 0;
-                short found = 0;
+                int found = 0;
                 short i = 0;
 
                 while ((selected < player->sel_count) && (i < 25)) {
                     RGE_Static_Object* object = player->sel_list[i];
                     if (object != 0) {
                         ++selected;
-                        if ((object->objects != 0) &&
-                            (object->objects->number_of_objects > 0)) {
+                        if (object->objects->number_of_objects > 0) {
                             set_command_button(this, 0, 5, 7, 0x1D4E9);
                             found = 1;
                             break;
@@ -718,18 +727,17 @@ void TRIBE_Screen_Game::setup_buttons()
                             (TRIBE_Master_Combat_Object*)base_master;
                         int queued = 0;
 
-                        if (show_queue &&
-                            (building->production_queue_count > 0)) {
+                        if (show_queue) {
                             Production_Queue_Record* queue =
                                 building->production_queue;
                             short queue_count = building->production_queue_count;
-                            while (queue_count != 0) {
+                            do {
                                 if (queue->master_id == master->id) {
                                     queued += queue->unit_count;
                                 }
                                 ++queue;
                                 --queue_count;
-                            }
+                            } while (queue_count != 0);
                         }
 
                         if ((!show_queue) || (queued > 0)) {
@@ -805,7 +813,7 @@ void TRIBE_Screen_Game::setup_buttons()
                         }
                     }
 
-                    for (short i4 = 0; i4 < tech_count_local; ++i4) {
+                    for (int i4 = 0; i4 < tech_count_local; ++i4) {
                         Item_Avail* item = &this->tech_list[i4];
                         short string_id =
                             player->tech_tree->get_string_id(item->id);
