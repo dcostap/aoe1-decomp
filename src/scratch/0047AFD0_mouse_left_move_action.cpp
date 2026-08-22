@@ -48,6 +48,14 @@
 // minimum. The rebuild reads the current position first and reads the minimum
 // once. A damaged or concurrently changed panel can fault or branch
 // differently. Keep this function in scratch.
+// Follow-up worker: the local Pnl_scbr.cpp reconstruction confirms the same
+// scrollbar fields and action values, but it is reference evidence only. Its
+// full negative-arm and compound-OR form produced 1020 bytes, 21 calls, and
+// 886 changed bytes here. Restore the clean positive-arm source.
+// Follow-up probes: lower-edge equality reversal, branch-local delta casts,
+// scoped minimum/current aliases, combined lower guards, and reversed edge
+// addition were duplicate codegen or worse. The first paired blocker remains
+// minimum-read order and the EDX/EDI liveness through the clamp.
 
 extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
 
