@@ -39,6 +39,11 @@
 // BINARY NOTE: the original preserves suffix in EBX, places temp.type at the
 // observed entry-relative stack window, and keeps the file handle in EBP.
 // These properties remain unresolved in the natural source below.
+// claim sa-f093e5cf-r1 probes 1-20: nested direct filename expressions and the
+// reviewed global improved the source from 1153 to 870 differing bytes. The
+// id-first ObjectMemory layout plus a diagnostic type-punning assignment
+// reduced the difference to 96 bytes. Main review rejected that assignment.
+// It copied the type/group dword into id without a supported source model.
 
 #include <stdio.h>
 
@@ -61,7 +66,7 @@ public:
     RGE_Game_Info* info;
 };
 
-#define rge_base_game (*(RGE_Base_Game**)0x0062C574)
+extern RGE_Base_Game* rge_base_game;
 
 class RGE_Player {
 public:
@@ -185,15 +190,15 @@ void TribeInformationAIModule::loadLearnInfo(char* suffix)
     int tempInt;
     int local_2c;
     ObjectMemory temp;
-    float local_4;
     char* learnFileName = this->learnFileName;
-    int civ = (int)this->md->player->id;
 
     if (suffix == 0) {
-        sprintf(learnFileName, (char*)0x5879A4, civ);
+        sprintf(learnFileName, (char*)0x5879A4,
+                (int)this->md->player->id);
     } else {
-        char* playerName = rge_base_game->info->get_current_player_name();
-        sprintf(learnFileName, (char*)0x587994, suffix, playerName, civ);
+        sprintf(learnFileName, (char*)0x587994, suffix,
+                rge_base_game->info->get_current_player_name(),
+                (int)this->md->player->id);
     }
 
     int file = rge_open(learnFileName, 0x8000);
@@ -226,6 +231,7 @@ void TribeInformationAIModule::loadLearnInfo(char* suffix)
         suffix = 0;
         if (numToLoad > 0) {
             do {
+                float local_4;
                 rge_read(file, &temp.type, 0x24);
                 this->addObjectMemory(
                     temp.id,
