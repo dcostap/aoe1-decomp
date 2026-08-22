@@ -258,3 +258,7 @@ RGE_Action_Move_To::RGE_Action_Move_To(RGE_Action_Object* obj, RGE_Static_Object
 // fallback EH epilogues. Each branch restores the same SEH link, registers,
 // stack, this return, and fault order. No call or memory effect moves across
 // cleanup. Merged-store forms are rejected despite their smaller byte drift.
+// Translation-unit sweep: one prior out-of-line diagnostic function selects an
+// exact 186-byte body. Neither available real earlier act_move.cpp owner can be
+// combined directly because their local class declarations conflict. No
+// synthetic context is retained. A future pass needs one shared action surface.

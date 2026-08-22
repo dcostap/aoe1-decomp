@@ -69,7 +69,14 @@
 //   A 512-variant ambient declaration sweep formed the same two groups, so
 //   file-scope declaration context did not change this basin.
 // FLAGS: config/flags/004CB300_heal.rsp (/GX)
+// Exact translation-unit finish: compiling after the real t_c_obj.cpp owner
+// at 004CB040 selects the original shared EH tail. The shared class surface
+// keeps both owners canonical in one object. The natural direct-return body
+// then matches all 331 bytes and 16 calls without a result carrier or label.
+// Target-only compilation returns to the broad duplicated-cleanup basin.
 
+#ifndef T_C_OBJ_HEAL_CONTEXT_H
+#define T_C_OBJ_HEAL_CONTEXT_H
 class RGE_Action_Object;
 class RGE_Task;
 class RGE_Static_Object { public: char gap_00[0x38]; float x; float y; float z; };
@@ -125,6 +132,9 @@ public:
     char gap_004[8]; GameShell* game; char gap_010[0x174]; RGE_Action_List* action_list;
     int heal(int id, int flag);
 };
+#endif
+
+#include "../../include/t_c_obj_heal_context.h"
 
 int TRIBE_Combat_Object::heal(int id, int flag) {
     RGE_Static_Object* target = this->game->world->object(id);

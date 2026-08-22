@@ -49,6 +49,10 @@
 // its other epilogue. Both paths restore the same EH chain and return the same
 // value. The success path writes the same four outputs in the same order. No
 // call, object access, or output access occurs in the changed epilogue code.
+// Exact translation-unit finish: the real earlier sprite.cpp owner at 004BFFE0
+// selects the original shared EH tail. The unchanged natural body then matches
+// all 514 bytes and nine calls. Target-only compilation emits the reviewed
+// duplicated-return drift.
 
 extern void __cdecl addstring(char** dst, char* base, char* ext);
 extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);

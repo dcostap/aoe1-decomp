@@ -46,6 +46,10 @@
 // return the same Boolean value. The rebuild duplicates the register-pop and
 // FS-chain epilogue around the negative cleanup. No call, external access, or
 // object access occurs in the changed tail after delete[].
+// Exact translation-unit finish: the real earlier taiinfmd.cpp helper at
+// 004DAFF0 selects the original destructor-return layout. The unchanged typed
+// ManagedArray source then matches all 509 bytes and five calls. Target-only
+// compilation emits the reviewed duplicated-tail drift.
 
 class RGE_Static_Object;
 

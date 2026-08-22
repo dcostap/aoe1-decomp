@@ -14,6 +14,7 @@ from common import (
     function_record_by_va,
     function_slug,
     repo_path,
+    translation_unit_for_va,
 )
 
 
@@ -141,16 +142,52 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def symbol_matches_record(symbol_name: str, record_name: str) -> bool:
-    """Prefer the decorated constructor/destructor identity in grouped objects."""
-    lowered_symbol = symbol_name.lower()
+def select_record_function_symbol(obj, record_name: str):
+    """Select one defined owner without mistaking an uppercase method for a constructor."""
+    candidates = [
+        symbol for symbol in obj.symbols
+        if symbol.section_number > 0 and symbol.is_function
+    ]
     lowered_record = record_name.lower()
+    matches = []
     if lowered_record.startswith("~"):
         class_name = lowered_record[1:]
-        return lowered_symbol.startswith(f"??1{class_name}@@")
-    if "::" not in record_name and record_name and record_name[0].isupper():
-        return lowered_symbol.startswith(f"??0{lowered_record}@@")
-    return lowered_record in lowered_symbol
+        matches = [
+            symbol for symbol in candidates
+            if symbol.name.lower().startswith(f"??1{class_name}@@")
+        ]
+    elif "::" not in record_name and record_name and record_name[0].isupper():
+        matches = [
+            symbol for symbol in candidates
+            if symbol.name.lower().startswith(f"??0{lowered_record}@@")
+        ]
+
+    if not matches:
+        matches = [
+            symbol for symbol in candidates
+            if lowered_record in symbol.name.lower()
+        ]
+    if len(matches) != 1:
+        raise KeyError(
+            f"Expected one defined function for {record_name!r}; "
+            f"found {[symbol.name for symbol in matches]}"
+        )
+    return matches[0]
+
+
+def select_exact_function_symbol(obj, symbol_name: str):
+    matches = [
+        symbol for symbol in obj.symbols
+        if symbol.section_number > 0
+        and symbol.is_function
+        and symbol.name == symbol_name
+    ]
+    if len(matches) != 1:
+        raise KeyError(
+            f"Expected one defined function named {symbol_name!r}; "
+            f"found {[symbol.name for symbol in matches]}"
+        )
+    return matches[0]
 
 
 def main() -> None:
@@ -177,14 +214,14 @@ def main() -> None:
     obj = load_coff_object(obj_path)
     if record is None:
         symbol = find_function_symbol(obj, lambda candidate: True)
-    elif obj_slug != function_slug(record):
-        symbol = find_function_symbol(
-            obj,
-            lambda candidate: symbol_matches_record(candidate.name, record["name"]),
-        )
     else:
-        wanted_name = record["name"].lower()
-        symbol = find_function_symbol(obj, lambda candidate: wanted_name in candidate.name.lower())
+        group = translation_unit_for_va(va)
+        symbols = group.get("symbols", {}) if group is not None else {}
+        exact_symbol = symbols.get(f"{va:08X}") if isinstance(symbols, dict) else None
+        if exact_symbol:
+            symbol = select_exact_function_symbol(obj, str(exact_symbol))
+        else:
+            symbol = select_record_function_symbol(obj, record["name"])
     section = function_symbol_section(obj, symbol)
 
     expected_size = None if record is None else int(record["size_bytes"], 10)

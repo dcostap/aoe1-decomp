@@ -1,5 +1,6 @@
 #include <string.h>
 
+#ifndef FRACTAL_ARRAYS_CONTEXT_H
 class PointMaker {
 public:
     char gap_00[0x1004];
@@ -12,6 +13,7 @@ public:
 
     void ClearArrays();
 };
+#endif
 
 void PointMaker::ClearArrays() {
     if (DrawToOneArrayFlag == 0 && PlacementArray != 0) {

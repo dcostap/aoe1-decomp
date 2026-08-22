@@ -1,3 +1,4 @@
+#ifndef FRACTAL_ARRAYS_CONTEXT_H
 class PointMaker {
 public:
     char gap_00[0x1024];
@@ -6,6 +7,7 @@ public:
 
     void DeleteArrays(void);
 };
+#endif
 
 void DeleteArrays(PointMaker* this_); // not used
 

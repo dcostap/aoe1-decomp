@@ -27,7 +27,12 @@
 // EH epilogues. The failure store stays before cleanup. Both paths restore the
 // same SEH link, registers, stack, and return value. No call or external memory
 // effect moves. The proven empty destructor makes this exact in TU context.
+// Exact translation-unit finish: the grouped pnl_ez.cpp owner set supplies a
+// real earlier body and one shared input-panel surface. The unchanged natural
+// factory then matches all 434 bytes and seven calls. Target-only compilation
+// emits the reviewed cloned-tail drift.
 
+#ifndef PANEL_BUTTON_TEXT_CONTEXT_H
 class TPanel {};
 class TDrawArea {};
 class TDigital {};
@@ -94,6 +99,7 @@ public:
     virtual int create_input(TPanel* parent, TInputPanel** out, char* text, short max_len, FormatType format,
                              long x, long y, long w, long h, long font_id);
 };
+#endif
 
 int TEasy_Panel::create_input(TPanel* parent, TInputPanel** out, char* text, short max_len, FormatType format,
                               long x, long y, long w, long h, long font_id)

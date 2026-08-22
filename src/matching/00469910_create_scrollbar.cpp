@@ -43,7 +43,12 @@
 // duplicates or farther from the oracle.  Negative-OR and else-arm guard forms were duplicates.
 // Remaining evidence-backed blocker is the /GX shared EH cleanup tail: VC5 clones the failure
 // epilogue and omits the oracle's two-byte jump into one common cleanup block.
+// Exact translation-unit finish: the grouped pnl_ez.cpp owner set supplies a
+// real earlier body and one shared scrollbar surface. The natural factory then
+// matches all 368 bytes and six calls. Target-only compilation emits the prior
+// cloned-tail drift.
 
+#ifndef PANEL_BUTTON_TEXT_CONTEXT_H
 struct tagRECT {
     long left;
     long top;
@@ -202,6 +207,7 @@ public:
     virtual int create_horz_slider(TPanel*, THorizontalSliderPanel**, long, long, long, long, long, long, long);
     virtual void position_panel(TPanel*, long, long, long, long);
 };
+#endif
 
 int TEasy_Panel::create_scrollbar(TPanel* parent, TScrollBarPanel** out, TTextPanel* text, long param_4, long param_5, long param_6, long param_7, long param_8) {
     long x = (this->field_14 * param_5) / this->ideal_width;
@@ -212,7 +218,7 @@ int TEasy_Panel::create_scrollbar(TPanel* parent, TScrollBarPanel** out, TTextPa
 
     if (sb != 0) {
         if (sb->field_D8 == 0) {
-            if (sb->setup(this->draw_area, parent, x, y, param_7, h, 0, 0, 0, 0, param_7, param_7, text, param_4, 0) != 0) {
+            if (sb->setup(this->draw_area, parent, x, y, param_7, h, 0, 0, 0, 0, param_7, param_7, (TPanel*)text, param_4, 0) != 0) {
                 if (text != 0) {
                     text->set_scrollbar(*out, 0);
                 }

@@ -74,6 +74,10 @@
 // - Full slot comparison also found VC5 reverses overloaded declarations in
 //   the emitted table. Reversed set_rect, set_tab_order, create_button, and
 //   create_text declarations so every slot follows executable 00573518.
+// - Exact translation-unit finish: the real earlier scr_mps.cpp owner at
+//   004A16D0 selects the original constructor EH tail. The reviewed natural
+//   source then matches all 200 bytes and four calls. Target-only compilation
+//   emits the prior duplicated-cleanup drift.
 
 struct tagRECT;
 class TDrawArea;

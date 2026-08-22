@@ -29,10 +29,15 @@
 // error store remains before cleanup. Each path restores the same SEH link,
 // registers, stack, and return value. No call or external memory effect moves
 // across the differing cleanup instructions.
+// Exact translation-unit finish: the grouped pnl_ez.cpp owner set supplies a
+// real earlier body and one shared edit-panel surface. The unchanged natural
+// factory then matches all 442 bytes and nine calls. Target-only compilation
+// emits the reviewed cloned-tail drift.
 
 // Canonical layouts recovered from the Panel_ez/pnl_edit surfaces.  The base
 // panel owns the width/height/draw-area/error fields; TEasy_Panel owns the
 // ideal dimensions and edit styling fields.
+#ifndef PANEL_BUTTON_TEXT_CONTEXT_H
 class TPanel;
 class TEditPanel;
 class TDrawArea;
@@ -110,6 +115,7 @@ struct RGE_Base_Game {
     void* vtable;
     RGE_Font* get_font(int font_id);
 };
+#endif
 
 int TEasy_Panel::create_edit(TPanel* p1, TEditPanel** p2, char* p3, short p4, int p5,
                               long p6, long p7, long p8, long p9, long p10,

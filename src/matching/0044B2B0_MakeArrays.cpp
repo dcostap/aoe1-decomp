@@ -10,6 +10,10 @@
 // Behaviorally identical: Height * Width == Width * Height.
 // All other code identical: prologue, loop structure, loop counter, allocation,
 // member storage, epilogue.
+// Exact translation-unit finish: the real earlier ClearArrays and DeleteArrays
+// owners select the original multiplication load order. The shared PointMaker
+// surface then matches all 112 bytes and both allocation calls. One prior body
+// alone retains the reviewed two-byte commutative-order drift.
 //
 // Key matching insight: "while (count-- != 0)" generates the exact peeled loop
 // structure without null checks on operator_new. "do-while (count-- != 0)" with
@@ -18,6 +22,7 @@
 
 void* __cdecl operator new(unsigned int size);
 
+#ifndef FRACTAL_ARRAYS_CONTEXT_H
 class PointMaker {
 public:
     char gap_000[0xFD4];
@@ -31,6 +36,7 @@ public:
 
     void MakeArrays();
 };
+#endif
 
 void PointMaker::MakeArrays()
 {

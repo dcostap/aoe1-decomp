@@ -47,7 +47,14 @@
 // - Restored the natural direct switch. Final validation remains a 433-byte
 //   mismatch with one extra direct sprintf; the best 389-byte shared-tail
 //   probe is not retained as canonical source.
+// - Exact translation-unit finish: the real earlier victory.cpp owner at
+//   00532C50 selects the original switch-tail layout. The shared entry and
+//   condition declarations keep both owners in one object. The unchanged
+//   direct switch then matches all 479 bytes and eight calls. Target-only
+//   compilation emits the prior extra-sprintf basin.
 
+#ifndef VICTORY_DESCRIPTION_CONTEXT_H
+#define VICTORY_DESCRIPTION_CONTEXT_H
 extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
 extern "C" void __cdecl getstring(char** destination, char* source);
 
@@ -101,6 +108,9 @@ public:
     RGE_Victory_Entry* victory_list; // +0x04
     long list_num; // +0x08
 };
+#endif
+
+#include "../../include/victory_description_context.h"
 
 char* RGE_Victory_Conditions::condition_description(RGE_Victory_Entry* entry) {
     char* description = 0;

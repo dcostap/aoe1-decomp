@@ -1,6 +1,15 @@
 {
   "translation_units": [
     {
+      "name": "com_obj_enter",
+      "source": "src/com_obj_enter_tu.cpp",
+      "flags": "config/flags/00431150_enter.rsp",
+      "owners": {
+        "004304A0": "src/matching/004304A0_reset_attack_timer.cpp",
+        "00431150": "src/matching/00431150_enter.cpp"
+      }
+    },
+    {
       "name": "zone_map",
       "source": "src/rge_zone_map_tu.cpp",
       "flags": "config/flags/005473B0_get_zone_map.rsp",
@@ -8,7 +17,102 @@
         "005468C0": "src/matching/005468C0_RGE_Zone_Map.cpp",
         "005469C0": "src/matching/005469C0_RGE_Zone_Map.cpp",
         "00546E50": "src/matching/00546E50_check_info.cpp",
+        "005472B0": "src/matching/005472B0_create_zone_map.cpp",
         "005473B0": "src/matching/005473B0_get_zone_map.cpp"
+      }
+    },
+    {
+      "name": "scr_sed_save_as",
+      "source": "src/scr_sed_save_as_tu.cpp",
+      "flags": "config/flags/004AD960_command_save_as.rsp",
+      "owners": {
+        "004AD680": "src/matching/004AD680_command_player.cpp",
+        "004AD960": "src/matching/004AD960_command_save_as.cpp"
+      }
+    },
+    {
+      "name": "t_c_obj_heal",
+      "source": "src/t_c_obj_heal_tu.cpp",
+      "flags": "config/flags/004CB300_heal.rsp",
+      "owners": {
+        "004CB040": "src/matching/004CB040_can_debark.cpp",
+        "004CB300": "src/matching/004CB300_heal.cpp"
+      }
+    },
+    {
+      "name": "victory_description",
+      "source": "src/victory_description_tu.cpp",
+      "flags": "config/flags/default.rsp",
+      "owners": {
+        "00532C50": "src/matching/00532C50_destroy_all.cpp",
+        "00532CC0": "src/matching/00532CC0_condition_description.cpp"
+      }
+    },
+    {
+      "name": "sprite_get_frame",
+      "source": "src/sprite_get_frame_tu.cpp",
+      "flags": "config/flags/004C0960_get_frame.rsp",
+      "owners": {
+        "004BFFE0": "src/matching/004BFFE0_load_facets.cpp",
+        "004C0960": "src/matching/004C0960_get_frame.cpp"
+      }
+    },
+    {
+      "name": "information_dropsites",
+      "source": "src/information_dropsites_tu.cpp",
+      "flags": "config/flags/004E3C90_dropsitesWithinRequiredDistance.rsp",
+      "owners": {
+        "004DAFF0": "src/matching/004DAFF0_importantUnit.cpp",
+        "004E3C90": "src/matching/004E3C90_dropsitesWithinRequiredDistance.cpp"
+      }
+    },
+    {
+      "name": "screen_disconnect",
+      "source": "src/screen_disconnect_tu.cpp",
+      "flags": "config/flags/004A61A0_TRIBE_Screen_Disconnect.rsp",
+      "owners": {
+        "004A16D0": "src/matching/004A16D0_key_down_action.cpp",
+        "004A61A0": "src/matching/004A61A0_TRIBE_Screen_Disconnect.cpp"
+      }
+    },
+    {
+      "name": "command_context",
+      "source": "src/command_context_tu.cpp",
+      "flags": "config/flags/default.rsp",
+      "owners": {
+        "004348F0": "src/matching/004348F0_do_command_add_attribute.cpp",
+        "00434A00": "src/matching/00434A00_do_command_formation.cpp",
+        "004351B0": "src/matching/004351B0_duplicate_check_command_stop.cpp"
+      }
+    },
+    {
+      "name": "panel_create_button",
+      "source": "src/panel_create_button_tu.cpp",
+      "flags": "config/flags/00468530_create_button.rsp",
+      "owners": {
+        "00467A50": "src/matching/00467A50_set_ideal_size.cpp",
+        "00468530": "src/matching/00468530_create_button.cpp",
+        "00468CB0": "src/matching/00468CB0_create_text.cpp",
+        "00468E50": "src/matching/00468E50_create_text.cpp",
+        "00469000": "src/matching/00469000_create_input.cpp",
+        "004691C0": "src/matching/004691C0_create_edit.cpp",
+        "00469910": "src/matching/00469910_create_scrollbar.cpp",
+        "00469AD0": "src/matching/00469AD0_create_vert_slider.cpp",
+        "00469C40": "src/matching/00469C40_create_horz_slider.cpp"
+      },
+      "symbols": {
+        "00468CB0": "?create_text@TEasy_Panel@@UAEHPAVTPanel@@PAPAVTTextPanel@@PADJJJJJHHH@Z",
+        "00468E50": "?create_text@TEasy_Panel@@UAEHPAVTPanel@@PAPAVTTextPanel@@PAPADJJJJJJHH@Z"
+      }
+    },
+    {
+      "name": "fractal_arrays",
+      "source": "src/fractal_arrays_tu.cpp",
+      "flags": "config/flags/default.rsp",
+      "owners": {
+        "0044B210": "src/matching/0044B210_ClearArrays.cpp",
+        "0044B270": "src/matching/0044B270_DeleteArrays.cpp",
+        "0044B2B0": "src/matching/0044B2B0_MakeArrays.cpp"
       }
     }
   ]

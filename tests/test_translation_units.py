@@ -38,6 +38,23 @@ class TranslationUnitTests(unittest.TestCase):
         self.assertEqual(paths, {REPO_ROOT / "src" / "rge_zone_map_tu.cpp"})
         self.assertEqual(slugs, {"tu_zone_map"})
 
+    def test_com_obj_owners_use_one_grouped_object(self) -> None:
+        expected_vas = (0x004304A0, 0x00431150)
+        paths = set()
+        slugs = set()
+
+        for va in expected_vas:
+            record = function_record_by_va(va)
+            group = translation_unit_for_va(va)
+            self.assertIsNotNone(group)
+            assert group is not None
+            validate_translation_unit(group)
+            paths.add(compiler_source_path(record))
+            slugs.add(compiler_artifact_slug(record))
+
+        self.assertEqual(paths, {REPO_ROOT / "src" / "com_obj_enter_tu.cpp"})
+        self.assertEqual(slugs, {"tu_com_obj_enter"})
+
     def test_each_group_has_unique_owner_vas(self) -> None:
         seen: set[str] = set()
         for group in load_translation_units():

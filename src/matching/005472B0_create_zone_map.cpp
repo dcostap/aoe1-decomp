@@ -78,43 +78,14 @@
 //   forms. The declaration-only form remains the canonical source surface.
 //   All policy-valid forms retain the 55-byte drift at the shared EH tail.
 //   The exact body still requires the target-owned destructor definition.
-// ACCEPTED DRIFT: The lookup and growth body and all six calls match. The
-// declaration-only build clones the two lookup-return EH epilogues and restores
-// the SEH link before register pops on the growth return. Each path preserves
-// its result. No call or external memory effect moves across cleanup. The
-// proven destructor body makes this source exact in authentic TU context.
+// Exact translation-unit finish: the grouped zone_map.cpp build provides the
+// proven destructor owner at 005469C0 before this method. VC5 then emits the
+// original shared EH teardown. Target-only compilation duplicates lookup-return
+// cleanup, but the real grouped owner set matches all 248 bytes and six calls.
 
 #include <stdlib.h>
 #include <string.h>
-
-class RGE_Map;
-typedef unsigned char uchar;
-
-class RGE_Zone_Map {
-public:
-    int numberTilesInZoneValue[257];
-    uchar* zone_map;
-    uchar** zone_map_rows;
-    uchar zone_info[257];
-    char gap_50D[3];
-    float* terrain_passability_rules;
-    long terrain_passability_rules_num;
-    RGE_Map* map;
-
-    RGE_Zone_Map(RGE_Map* map, float* table, long count);
-    ~RGE_Zone_Map();
-    RGE_Zone_Map* check_info(float* table, long count);
-    unsigned char do_zone_map();
-};
-
-class RGE_Zone_Map_List {
-public:
-    RGE_Zone_Map** zone_maps;
-    long zone_map_num;
-    RGE_Map* map;
-
-    long create_zone_map(float* table, long count);
-};
+#include "../../include/rge_zone_map_context.h"
 
 long RGE_Zone_Map_List::create_zone_map(float* table, long count)
 {

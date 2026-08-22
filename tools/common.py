@@ -324,6 +324,20 @@ def load_translation_units() -> list[dict[str, object]]:
                 raise ValueError(f"config/translation_units.json: empty owner path for {va}")
             seen_vas.add(va)
             owner_map[va] = owner_path
+        raw_symbols = group.get("symbols", {})
+        if not isinstance(raw_symbols, dict):
+            raise ValueError(f"config/translation_units.json: symbols for {name} must be an object")
+        symbol_map: dict[str, str] = {}
+        for raw_va, raw_symbol in raw_symbols.items():
+            va = str(raw_va).upper()
+            if va not in owner_map:
+                raise ValueError(
+                    f"config/translation_units.json: symbol VA {va} is not an owner of {name}"
+                )
+            symbol = str(raw_symbol).strip()
+            if not symbol:
+                raise ValueError(f"config/translation_units.json: empty symbol for {va}")
+            symbol_map[va] = symbol
         flags = str(group.get("flags") or "").replace("\\", "/").strip()
         normalized.append(
             {
@@ -331,6 +345,7 @@ def load_translation_units() -> list[dict[str, object]]:
                 "source": source.replace("\\", "/"),
                 "flags": flags,
                 "owners": owner_map,
+                "symbols": symbol_map,
             }
         )
     return normalized

@@ -246,17 +246,12 @@ void TRIBE_Screen_Sed::command_save_as(unsigned char post_action)
     return;
 }
 
-// sa-65e6d3f3-r1: An out-of-line empty member definition before this function
-// restores the original shared EH cleanup tail and yields MATCH. The minimum
-// tested form is an unrelated zero-argument member on TPanelSystem or a local
-// target-class overload. A declaration, static free function, inline body, or
-// no preceding definition leaves the 313-byte duplicated-cleanup basin.
-// This is compiler-context evidence, not a supported source fact. The exact
-// context form is not retained because it invents an ownerless method and the
-// real command_save owner already lives in src/matching/004AD700_command_save.cpp.
-// BINARY NOTE: the clean natural source keeps all ten calls, frame 0xE4, both
-// validation predicates, and cleanup fault order. Its only residue is the
-// duplicated normal /GX epilogue after each popup call (41 bytes past boundary).
+// Exact translation-unit finish: the real earlier scr_sed.cpp owner at 004AD680
+// selects VC5's original shared EH cleanup tail. The grouped build keeps both
+// owners once and matches all 272 bytes and ten calls. Target-only compilation
+// emits the old 313-byte duplicated-cleanup basin. Dummy and empty definitions
+// proved that one prior out-of-line body controls this compiler state; the
+// retained group uses the real prior source instead of synthetic context.
 // DRIFT REVIEW: localized control-flow-only tail duplication is behavior-
 // equivalent under the observed calls, predicates, frame, cleanup, and stores.
 // Main-agent drift adjudication 2026-08-22: rejected. The two rebuilt popup

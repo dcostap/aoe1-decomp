@@ -31,7 +31,12 @@
 // abi-fix-469AD0: corrected TVerticalSliderPanel::setup's first parameter from void* to
 // TDrawArea*, matching the executable's setup ABI. VC5 emitted identical bytes and kept all
 // five direct call targets aligned; retain the natural typed declaration.
+// Exact translation-unit finish: the grouped pnl_ez.cpp owner set supplies a
+// real earlier body and one shared slider surface. The natural factory then
+// matches all 363 bytes and five calls. Target-only compilation emits the prior
+// cloned-tail drift.
 
+#ifndef PANEL_BUTTON_TEXT_CONTEXT_H
 struct tagRECT {
     long left;
     long top;
@@ -187,6 +192,7 @@ public:
     virtual int create_horz_slider(TPanel*, THorizontalSliderPanel**, long, long, long, long, long, long, long);
     virtual void position_panel(TPanel*, long, long, long, long);
 };
+#endif
 
 int TEasy_Panel::create_vert_slider(TPanel* parent, TVerticalSliderPanel** out, long p3, long p4, long p5, long p6, long p7, long p8, long p9) {
     long ideal_x = (p6 * this->base_width) / this->ideal_width;

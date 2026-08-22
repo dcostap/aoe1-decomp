@@ -7,7 +7,12 @@
 // - 2026-05-10 SpruceGlow Boss-assigned pass: tried 20 variants: last-first, direct struct, do/for delta scans, index/raw scans, unsigned/char n, param-local, nested-if, memcmp-like, no-local direct last_order, countdown, fail/success labels, int*/long* item pointers, while-true break, no explicit n>0 guard, and result local. No exact.
 // - Best kept source is the `long*` item-pointer form below: exact size, same control-flow/tails, edit diff 16, first mismatch offset 8. It preserves behavior and removes the prior duplicate loop guard, but VC5 still schedules `xor edx`/unit_num load before `push esi` and swaps the two loop loads (`mov esi,[eax]` / `mov ebx,[edi+eax]`) relative to original (`mov esi,[edi+eax]` / `mov ebx,[eax]`).
 // ACCEPTED_DRIFT: reviewed by Boss. Same size, same control flow, same returns, same stack cleanup, and same memory effects for valid command buffers. Remaining drift is localized to scheduling/register choice: zero/unit_num load is moved before saved-register pushes, pointer setup is interleaved differently, and the loop compares the two dword loads in the opposite commutative order. No predicate/call/copy-size change.
+// Exact translation-unit finish: the real earlier Command.cpp owner at
+// 004348F0 selects the original register schedule. The shared command surface
+// then matches all 89 bytes. Target-only compilation emits the reviewed load
+// and register-order drift.
 
+#ifndef COMMAND_CONTEXT_H
 class RGE_Command_Stop {
 public:
     char pad_00[1];
@@ -22,6 +27,7 @@ public:
 
     unsigned char duplicate_check_command_stop(RGE_Command_Stop* param1);
 };
+#endif
 
 unsigned char RGE_Command::duplicate_check_command_stop(RGE_Command_Stop* param1) {
     int n = *(unsigned char*)((char*)param1 + 1);

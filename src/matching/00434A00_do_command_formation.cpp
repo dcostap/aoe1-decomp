@@ -32,10 +32,15 @@
 // reaches the tail with the same x87 order, and the stores keep the same order
 // and values. Remaining drift is switch relocation and local register choice.
 // All six calls and formation effects match.
+// Exact translation-unit finish: the real earlier Command.cpp owner at
+// 004348F0 selects the original second-switch tail. The shared command surface
+// then matches all 775 bytes and six calls. Target-only compilation emits the
+// reviewed shared-x87-tail drift.
 
 #include <math.h>
 #pragma intrinsic(sqrt)
 
+#ifndef COMMAND_CONTEXT_H
 struct RGE_Obj_Info {
     int id;
 };
@@ -93,6 +98,7 @@ protected:
     RGE_Static_Object* get_obj(RGE_Obj_Info info);
     void do_command_formation(RGE_Command_Formation* command);
 };
+#endif
 
 void RGE_Command::do_command_formation(RGE_Command_Formation* command)
 {

@@ -25,4 +25,15 @@ public:
     RGE_Zone_Map* check_info(float* terrain_info, long terrain_info_num);
 };
 
+class RGE_Zone_Map_List {
+public:
+    RGE_Zone_Map** zone_maps;
+    long zone_map_num;
+    RGE_Map* map;
+
+    long create_zone_map(float* terrain_info, long terrain_info_num);
+    RGE_Zone_Map* get_zone_map(float* terrain_info, long terrain_info_num,
+                               int& zone_map_index);
+};
+
 #endif

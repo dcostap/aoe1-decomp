@@ -46,7 +46,12 @@
 // failure EH epilogues. The failure error_code store stays before cleanup.
 // Each path restores the same SEH link, registers, stack, and return value. No
 // call or external memory effect moves across the differing cleanup sequence.
+// Exact translation-unit finish: the real earlier pnl_ez.cpp owners select the
+// original factory EH tail. The shared button/text surface keeps one owner for
+// each method. The unchanged typed source then matches all 413 bytes and nine
+// calls. Target-only compilation emits the reviewed cloned-tail drift.
 
+#ifndef PANEL_BUTTON_TEXT_CONTEXT_H
 class TPanel {};
 class TDrawArea {};
 class RGE_Font { public: void* font; long font_wid; long font_hgt; };
@@ -102,6 +107,7 @@ public:
     void* button_pics;
     int create_text(TPanel* parent, TTextPanel** out, char* text, long p4, long p5, long p6, long p7, long font_id, int center_h, int center_v, int word_wrap);
 };
+#endif
 
 int TEasy_Panel::create_text(TPanel* parent, TTextPanel** out, char* text, long p4, long p5, long p6, long p7, long font_id, int center_h, int center_v, int word_wrap) {
     long ideal_x = (p4 * this->base_width) / this->ideal_width;

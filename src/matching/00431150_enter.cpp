@@ -120,6 +120,17 @@
 // no uninitialized or stale result is proved on the original failure paths.
 // The 263-byte carrier instead reads [esp+20h] on object failure and returns
 // EBX, so it changes the observable failure value. Restore the natural source.
+// Translation-unit recovery: VC5 emits the original shared EH tail when this
+// method follows another function in com_obj.cpp. The real earlier owner at
+// 004304A0 is sufficient. With natural direct failure returns, the result is
+// 255/255 bytes and exact. Target-only compilation keeps the old 274-byte
+// duplicated-cleanup basin.
+// Exact-finish walkback: a prior function plus the old shared fail label leaves
+// two branch-target bytes. Making only the object or task failure direct leaves
+// one byte. Making all three failure returns direct removes both differences.
+// Removing the now-unused fail label stays exact. Dummy counts 1 through 40
+// reproduce the same context basin, so no specific dummy or ambient declaration
+// is required; the retained context is one real earlier com_obj.cpp owner.
 
 // Key remaining issues:
 // 1. No shared tail: VC5 generates inline EH epilogues at each return instead of one shared
@@ -420,7 +431,7 @@ int RGE_Combat_Object::enter(int param_1, int param_2)
 
     obj = this->owner->world->object(param_1);
     if (obj == 0)
-        goto fail;
+        return 0;
 
     if (param_2 == 0) {
         if (this->actions->have_action() == 1) {
@@ -440,20 +451,17 @@ int RGE_Combat_Object::enter(int param_1, int param_2)
     x = obj->world_x;
     task = this->make_enter_task(obj, x, y, z);
     if (task == 0)
-        goto fail;
+        return 0;
 
     action_enter = new RGE_Action_Enter(this,
                                         task,
                                         obj);
     if (action_enter == 0)
-        goto fail;
+        return 0;
 
     this->actions->delete_list();
     this->add_action(action_enter);
 
 success:
     return 1;
-
-fail:
-    return 0;
 }

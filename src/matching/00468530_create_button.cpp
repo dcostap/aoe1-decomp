@@ -33,7 +33,12 @@
 // store remains before cleanup. Each path restores the same SEH link,
 // registers, stack, and return value. No call or external memory effect moves
 // across the differing cleanup instructions.
+// Exact translation-unit finish: the real earlier pnl_ez.cpp owner at 00467A50
+// selects the original factory EH tail. The unchanged typed source then matches
+// all 548 bytes and 13 calls. Target-only compilation emits the reviewed
+// duplicated-cleanup drift.
 
+#ifndef PANEL_BUTTON_TEXT_CONTEXT_H
 typedef unsigned char uchar;
 
 class TDrawArea;
@@ -91,6 +96,7 @@ public:
 
     virtual int create_button(TPanel* panel, TButtonPanel** out, char* text, char* label, long x, long y, long w, long h, long font_id, long sound_id, long user);
 };
+#endif
 
 int TEasy_Panel::create_button(TPanel* panel, TButtonPanel** out, char* text, char* label, long x, long y, long w, long h, long font_id, long sound_id, long user)
 {

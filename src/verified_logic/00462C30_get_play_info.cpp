@@ -54,6 +54,10 @@
 // dwReturn read are canonical. Remaining gap is VC5 shared-tail placement and one extra return.
 // Previous bounded result: the typed WinMM surface and explicit success jump formed
 // the prior best structural basin; the remaining gap was the shared MCI tail.
+// Translation-unit sweep: one prior out-of-line diagnostic function selects an
+// exact 309-byte body. None of the 23 available real earlier music.cpp owners
+// forms a valid direct group with this local declaration. No synthetic context
+// is retained. A future pass needs the shared TMusic_System source surface.
 
 #include <string.h>
 

@@ -119,16 +119,6 @@
 #include <string.h>
 #include "../../include/rge_zone_map_context.h"
 
-class RGE_Zone_Map_List {
-public:
-    RGE_Zone_Map** zone_maps;  // +0x00
-    long zone_map_num;         // +0x04
-    RGE_Map* map;              // +0x08
-
-    RGE_Zone_Map* get_zone_map(float* terrain_info, long terrain_info_num,
-                               int& zone_map_index);
-};
-
 RGE_Zone_Map* RGE_Zone_Map_List::get_zone_map(
     float* terrain_info, long terrain_info_num, int& zone_map_index)
 {

@@ -12,6 +12,10 @@
 // ACCEPTED_DRIFT: reviewed localized equivalent SEH tail/block-layout drift. Setup args/calls, field_D8 failure stores,
 // init_timeline success side effect, return values, stack/EH offsets, and object sizes match; rebuilt duplicates/clones
 // success/failure epilogues where original routes through a shared xor/mov return tail.
+// Translation-unit sweep: one prior out-of-line diagnostic function selects an
+// exact 377-byte body. The two real earlier tpnl_tml.cpp owners conflict with
+// this local panel declaration and do not form a valid direct group. No
+// synthetic context is retained. A future pass needs one shared timeline type.
 
 class TDrawArea;
 class TPanel;

@@ -59,7 +59,12 @@
 // to error_code stays before cleanup. Both paths restore the same SEH link,
 // registers, stack, and return value. No call or external memory effect moves.
 // The proven empty destructor makes this source exact in authentic TU context.
+// Exact translation-unit finish: the grouped pnl_ez.cpp owner set supplies a
+// real earlier body and the executable's +0xE0 text-list slot. The unchanged
+// factory then matches all 423 bytes and nine calls. Target-only compilation
+// emits the reviewed cloned-tail drift.
 
+#ifndef PANEL_BUTTON_TEXT_CONTEXT_H
 class TDrawArea;
 struct tagRECT { long value[4]; };
 struct PanelNode;
@@ -147,7 +152,7 @@ extern RGE_Base_Game* rge_base_game;
 class TTextPanel : public TPanel {
 public:
     virtual ~TTextPanel();
-    virtual void set_text(char** text, short id); // vt +0xE0
+    virtual void set_text_list(char** text, short id); // executable slot +0xE0
     char gap_F4[0x188 - 0xF4];
     TTextPanel();
     long setup(TDrawArea*, TPanel*, long, long, long, long, void*, long, long, char*,
@@ -172,6 +177,7 @@ public:
                     long x, long y, long w, long h, long font_id,
                     int center_h, int center_v);
 };
+#endif
 
 int TEasy_Panel::create_text(TPanel* parent, TTextPanel** out, char** text, long text_id,
                              long x, long y, long w, long h, long font_id,
@@ -194,7 +200,7 @@ int TEasy_Panel::create_text(TPanel* parent, TTextPanel** out, char** text, long
         if ((*out)->setup(this->render_area, parent, ideal_x, ideal_y, ideal_w, ideal_h,
                           font->font, font->font_wid, font->font_hgt,
                           0, 0, 0, 0, 0, 0, 0) != 0) {
-            (*out)->set_text(text, text_id);
+            (*out)->set_text_list(text, text_id);
             (*out)->scroll(6, 0, 1);
             if (center_h != 0 && center_v != 0) {
                 (*out)->set_alignment(0, 0);
