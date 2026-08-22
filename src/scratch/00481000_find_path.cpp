@@ -114,6 +114,17 @@
 // - Rejected direct absolute zero/heuristic constants, named target-y and long-typed
 //   ty aliases, separate flag locals, extra terrain locals, header additions, and
 //   neutral ambient declarations. They either worsened the basin or changed nothing.
+// 2026-08-22 sa-1fbd32c7-r1 follow-up:
+// - Restored the protected method and reference-output ABI from the PDB symbol
+//   and Ghidra declarations. The emitted body did not change.
+// - Restored protected stack-helper declarations. Reference outputs for pop_stack
+//   also compiled identically and preserve the proven helper ABI.
+// - Tested separate uchar flags, bool flags, three-byte arrays, and declaration
+//   permutations. They reached 2008 bytes but lost structural shape.
+// - Tested cost declaration order, full class method context, state order, split
+//   distance statements, and scoped tcost locals. They were neutral or worse.
+// - The four-byte flag array remains the best structural basin at 72.08% shape.
+//   Its unused first byte is still a source-recovery question.
 // BINARY NOTE: The target has ten direct calls in fixed order, a 0x24 frame, and
 // four saved registers. The remaining mismatch starts at the post-gate distance
 // block: VC5 colors the x/y working registers opposite the executable and places
@@ -169,15 +180,16 @@ public:
     Map_Stack* stack_array;
     Map_Stack** stack_offsets;
 
+protected:
     void clear_stack();
     void push_stack(Map_Stack& path_stack, long x, long y, float cost, float total_cost);
-    Map_Stack* pop_stack(Map_Stack& path_stack, long* x, long* y, float* cost);
+    Map_Stack* pop_stack(Map_Stack& path_stack, long& x, long& y, float& cost);
     unsigned char find_path(Map_Stack& path_stack, long x, long y,
-                            long* target_x, long* target_y, float* terrain_cost);
+                            long& target_x, long& target_y, float* terrain_cost);
 };
 
 unsigned char RGE_Random_Map_Module::find_path(Map_Stack& path_stack, long x, long y,
-                                                long* target_x, long* target_y,
+                                                long& target_x, long& target_y,
                                                 float* terrain_cost) {
     unsigned char calc_cost[4];  // [1]=up, [2]=right, [3]=down
     float tcost;
@@ -199,18 +211,18 @@ unsigned char RGE_Random_Map_Module::find_path(Map_Stack& path_stack, long x, lo
     memset(this->search_map, 0, this->map_height * this->map_width);
 
     this->search_map_rows[y][x] = 3;
-    tile_type = this->map_row_offset[*target_y][*target_x].terrain_type & 0x1F;
-    this->search_map_rows[*target_y][*target_x] = 2;
+    tile_type = this->map_row_offset[target_y][target_x].terrain_type & 0x1F;
+    this->search_map_rows[target_y][target_x] = 2;
 
     if (terrain_cost[tile_type] > 0.0f) {
-        map_h = (x - *target_x) * (x - *target_x)
-            + (y - *target_y) * (y - *target_y);
+        map_h = (x - target_x) * (x - target_x)
+            + (y - target_y) * (y - target_y);
         cost = (float)sqrt((double)map_h);
 
         while (cost != 0.0) {
             if (y < map_w) {
                 float hcost;
-                if (*target_y <= y) {
+                if (target_y <= y) {
                     hcost = cost - -1.0f;
                 } else {
                     hcost = cost - 1.0f;
@@ -232,8 +244,8 @@ unsigned char RGE_Random_Map_Module::find_path(Map_Stack& path_stack, long x, lo
                     }
                 } else if (state == 2) {
                     *cell = 7;
-                    *target_x = x;
-                    *target_y = y + 1;
+                    target_x = x;
+                    target_y = y + 1;
                     return 1;
                 } else {
                     if (state == 1) calc_cost[2] = 0;
@@ -245,7 +257,7 @@ unsigned char RGE_Random_Map_Module::find_path(Map_Stack& path_stack, long x, lo
     
             if (y > 0) {
                 float hcost;
-                if (*target_y < y) {
+                if (target_y < y) {
                     hcost = cost - 1.0f;
                 } else {
                     hcost = cost - -1.0f;
@@ -267,8 +279,8 @@ unsigned char RGE_Random_Map_Module::find_path(Map_Stack& path_stack, long x, lo
                     }
                 } else if (state == 2) {
                     *cell = 6;
-                    *target_x = x;
-                    *target_y = y - 1;
+                    target_x = x;
+                    target_y = y - 1;
                     return 1;
                 } else {
                     if (state == 1) calc_cost[1] = 0;
@@ -280,7 +292,7 @@ unsigned char RGE_Random_Map_Module::find_path(Map_Stack& path_stack, long x, lo
     
             if (x > 0) {
                 float hcost;
-                if (*target_x < x) {
+                if (target_x < x) {
                     hcost = cost - 1.0f;
                 } else {
                     hcost = cost - -1.0f;
@@ -302,8 +314,8 @@ unsigned char RGE_Random_Map_Module::find_path(Map_Stack& path_stack, long x, lo
                     }
                 } else if (state == 2) {
                     *cell = 4;
-                    *target_x = x - 1;
-                    *target_y = y;
+                    target_x = x - 1;
+                    target_y = y;
                     return 1;
                 } else {
                     if (state == 1) calc_cost[3] = 0;
@@ -320,7 +332,7 @@ unsigned char RGE_Random_Map_Module::find_path(Map_Stack& path_stack, long x, lo
                             if (calc_cost[1] && calc_cost[3]) {
                                 tcost = ty - terrain_cost[tile_type] * DAT_00571e50;
                                 *cell = 8;
-                                if (*target_y < y) {
+                                if (target_y < y) {
                                     hcost = hcost - 0.41f;
                                 } else {
                                     hcost = hcost - -0.41f;
@@ -333,8 +345,8 @@ unsigned char RGE_Random_Map_Module::find_path(Map_Stack& path_stack, long x, lo
                         }
                     } else if (state == 2) {
                         *cell = 8;
-                        *target_x = x - 1;
-                        *target_y = y - 1;
+                        target_x = x - 1;
+                        target_y = y - 1;
                         return 1;
                     }
                 }
@@ -349,7 +361,7 @@ unsigned char RGE_Random_Map_Module::find_path(Map_Stack& path_stack, long x, lo
                             if (calc_cost[2] && calc_cost[3]) {
                                 tcost = ty - terrain_cost[tile_type] * DAT_00571e50;
                                 *cell = 9;
-                                if (*target_y < y) {
+                                if (target_y < y) {
                                     hcost = hcost - 0.41f;
                                 } else {
                                     hcost = hcost - -0.41f;
@@ -362,8 +374,8 @@ unsigned char RGE_Random_Map_Module::find_path(Map_Stack& path_stack, long x, lo
                         }
                     } else if (state == 2) {
                         *cell = 9;
-                        *target_x = x - 1;
-                        *target_y = y + 1;
+                        target_x = x - 1;
+                        target_y = y + 1;
                         return 1;
                     }
                 }
@@ -371,7 +383,7 @@ unsigned char RGE_Random_Map_Module::find_path(Map_Stack& path_stack, long x, lo
     
             if (x < local_4) {
                 float hcost;
-                if (*target_x <= x) {
+                if (target_x <= x) {
                     hcost = cost - -1.0f;
                 } else {
                     hcost = cost - 1.0f;
@@ -393,8 +405,8 @@ unsigned char RGE_Random_Map_Module::find_path(Map_Stack& path_stack, long x, lo
                     }
                 } else if (state == 2) {
                     *cell = 5;
-                    *target_x = x + 1;
-                    *target_y = y;
+                    target_x = x + 1;
+                    target_y = y;
                     return 1;
                 } else {
                     if (state == 1) calc_cost[3] = 0;
@@ -411,7 +423,7 @@ unsigned char RGE_Random_Map_Module::find_path(Map_Stack& path_stack, long x, lo
                             if (calc_cost[1] && calc_cost[3]) {
                                 tcost = ty - terrain_cost[tile_type] * DAT_00571e50;
                                 *cell = 10;
-                                if (*target_y <= y) {
+                                if (target_y <= y) {
                                     hcost = hcost - -0.41f;
                                 } else {
                                     hcost = hcost - 0.41f;
@@ -424,8 +436,8 @@ unsigned char RGE_Random_Map_Module::find_path(Map_Stack& path_stack, long x, lo
                         }
                     } else if (state == 2) {
                         *cell = 10;
-                        *target_x = x + 1;
-                        *target_y = y - 1;
+                        target_x = x + 1;
+                        target_y = y - 1;
                         return 1;
                     }
                 }
@@ -440,7 +452,7 @@ unsigned char RGE_Random_Map_Module::find_path(Map_Stack& path_stack, long x, lo
                             if (calc_cost[2] && calc_cost[3]) {
                                 tcost = ty - terrain_cost[tile_type] * DAT_00571e50;
                                 *cell = 11;
-                                if (*target_y <= y) {
+                                if (target_y <= y) {
                                     hcost = hcost - -0.41f;
                                 } else {
                                     hcost = hcost - 0.41f;
@@ -453,19 +465,19 @@ unsigned char RGE_Random_Map_Module::find_path(Map_Stack& path_stack, long x, lo
                         }
                     } else if (state == 2) {
                         *cell = 11;
-                        *target_x = x + 1;
-                        *target_y = y + 1;
+                        target_x = x + 1;
+                        target_y = y + 1;
                         return 1;
                     }
                 }
             }
     
-            if (this->pop_stack(path_stack, &x, &y, &ty) == 0) {
+            if (this->pop_stack(path_stack, x, y, ty) == 0) {
                 return 0;
             }
     
-            map_h = (x - *target_x) * (x - *target_x)
-                + (y - *target_y) * (y - *target_y);
+            map_h = (x - target_x) * (x - target_x)
+                + (y - target_y) * (y - target_y);
             cost = (float)sqrt((double)map_h);
         }
 
