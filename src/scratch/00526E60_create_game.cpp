@@ -24,9 +24,17 @@
 //   removed the mode sentinel compare and improved the structural frontier.
 // - MapType spelling, one selector local, pointer-cursor palette initialization,
 //   and the ground-truth map prefix were tested. They were duplicate or worse.
+// - direct debug_srand branches recovered the oracle's immediate line pushes and
+//   shared call tail; duplicate setMapType arms recovered the mode-1 push shape.
+// - BINARY NOTE: after assigning a free computer color, the shipped code breaks
+//   to the outer player loop. It does not scan later colors for that player.
+// - the natural typed scenario pointer and expanded scenario_player update were
+//   codegen-neutral; retained to remove integer pointer casts and match ownership.
 // - final clean frontier: 2566 rebuilt bytes, 2352 strict differing bytes,
 //   79.32% shape, 42.80% exact-block coverage, and 100/100 ordered calls.
-//   No exact result. Restore this source before any new claim.
+// - current behavior frontier: 2557 rebuilt bytes, 2371 strict differing bytes,
+//   80.58% shape, 45.08% exact-block coverage, and 100/100 ordered calls.
+//   No exact result.
 
 #include <io.h>
 #include <stdio.h>
@@ -296,10 +304,13 @@ typedef RGE_Scenario T_Scenario;
 int TRIBE_Game::create_game(int param_1)
 {
     int i;
-    int player_index;
     int scenario_player;
+    RGE_Scenario* scenario_info;
+    unsigned char pathfinding;
     int humanity;
     int position_used[8];
+    long* player_hash;
+    short* player_color;
     RGE_Player_Info player_info;
     char scenario_file[260];
     _finddata_t file_info;
@@ -336,12 +347,12 @@ int TRIBE_Game::create_game(int param_1)
     NO_OTHER_HUMANS_COUNT = 0;
 
     if (this->quickStartGame()) {
-        MapType map_type;
         if (QUICK_START_GAME_MODE == 1) {
             this->setMapSize(MAP_SIZE_MEDIUM);
-            map_type = (MapType)4;
+            this->setMapType((MapType)4);
         }
         else {
+            MapType map_type;
             this->setMapSize(MAP_SIZE_LARGE);
             int random_map_type = debug_rand(TRIBE_GAME_SOURCE, 0xCDD) % 10;
             if (random_map_type < 2) {
@@ -368,8 +379,8 @@ int TRIBE_Game::create_game(int param_1)
             else {
                 map_type = (MapType)((random_map_type == 8) ? 8 : 0);
             }
+            this->setMapType(map_type);
         }
-        this->setMapType(map_type);
         this->resetRandomComputerName();
         for (i = 0; i < this->numberPlayers(); ++i) {
             int civ = debug_rand(TRIBE_GAME_SOURCE, 0xCF8) % 16 + 1;
@@ -405,25 +416,20 @@ int TRIBE_Game::create_game(int param_1)
         player_info.map_height = (short)this->mapYSize();
     }
 
-    int seed_line;
-    int seed;
     if (this->multiplayerGame()) {
-        seed = COMM->GetRandomSeed();
-        seed_line = 0xD24;
+        debug_srand(TRIBE_GAME_SOURCE, 0xD24, COMM->GetRandomSeed());
     }
     else if (this->random_game_seed == -1) {
-        seed = debug_rand(TRIBE_GAME_SOURCE, 0xD2A);
-        seed_line = 0xD2A;
+        debug_srand(TRIBE_GAME_SOURCE, 0xD2A,
+                    debug_rand(TRIBE_GAME_SOURCE, 0xD2A));
     }
     else {
-        seed = this->random_game_seed;
-        seed_line = 0xD28;
+        debug_srand(TRIBE_GAME_SOURCE, 0xD28, this->random_game_seed);
     }
-    debug_srand(TRIBE_GAME_SOURCE, seed_line, seed);
 
     player_info.player_num = 0;
-    short* player_colors = player_info.color;
     long* player_hashes = player_info.player_id_hash;
+    short* player_colors = player_info.color;
     for (i = 0; i < 9; ++i) {
         player_info.type[i] = -1;
         player_info.name[i][0] = 0;
@@ -459,13 +465,13 @@ int TRIBE_Game::create_game(int param_1)
         scenario_name = player_info.scenario;
         goto load_scenario_info;
     }
-    player_index = 0;
+    scenario_info = 0;
     goto scenario_info_done;
 
 load_scenario_info:
     {
-        player_index = (int)this->get_scenario_info(scenario_name, scenario_mode);
-        if (player_index == 0) {
+        scenario_info = this->get_scenario_info(scenario_name, scenario_mode);
+        if (scenario_info == 0) {
             return 0;
         }
     }
@@ -504,8 +510,10 @@ scenario_info_done:
                 }
                 if (found == 0) {
                     this->setPlayerColor(i - 1, color + 1);
-                    *position = scenario_player++;
+                    *position = scenario_player;
+                    ++scenario_player;
                     this->setPlayerID(i, *position + 1);
+                    break;
                 }
             }
         }
@@ -513,8 +521,8 @@ scenario_info_done:
     }
 
     this->resetRandomComputerName();
-    long* player_hash = player_info.player_id_hash + 1;
-    short* player_color = player_info.color;
+    player_color = player_info.color;
+    player_hash = player_info.player_id_hash + 1;
     i = 0;
     do {
         int player = i + 1;
@@ -541,7 +549,7 @@ scenario_info_done:
         }
 
         if (this->campaignGame()) {
-            player_info.tribe[i] = ((RGE_Scenario*)player_index)->Get_player_Civ(color);
+            player_info.tribe[i] = scenario_info->Get_player_Civ(color);
         }
         else {
             player_info.tribe[i] = (char)this->civilization(scenario_player - 1);
@@ -559,7 +567,7 @@ scenario_info_done:
                 this->get_string(0x286D, player_info.name[i], 0x41);
             }
             else if (this->campaignGame() != 0 || this->scenarioGame() != 0) {
-                source_name = ((RGE_Scenario*)player_index)->GetPlayerName(color);
+                source_name = scenario_info->GetPlayerName(color);
             }
             if (source_name != 0) {
                 strcpy(player_info.name[i], source_name);
@@ -589,8 +597,8 @@ scenario_info_done:
         ++i;
     } while (i < 8);
 
-    if (player_index != 0) {
-        ((RGE_Scenario*)player_index)->release(1);
+    if (scenario_info != 0) {
+        scenario_info->release(1);
     }
     if (player_info.player_num == 0) {
         return 0;
@@ -633,7 +641,6 @@ scenario_info_done:
     }
     this->set_map_fog(this->fogOfWar());
 
-    unsigned char pathfinding;
     if (this->multiplayerGame()) {
         pathfinding = this->mpPathFinding();
     }
