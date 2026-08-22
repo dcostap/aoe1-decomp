@@ -27,6 +27,18 @@
 // - The clean source remains unresolved. A donor-shaped two-stage 699 removal
 //   arm improved shape and late exact blocks, but moved the positional diff
 //   from 4563 to 4566 bytes. It was not retained in the clean source.
+// - BINARY NOTE: the attack response has two capability/range/path/attack
+//   ladders in the non-special target path. The simpler one-ladder source was
+//   replaced with the observed zero-capability and ratio tests.
+// - BINARY NOTE: RGE_Static_Object::hp is a float at +0x30. world_x remains
+//   at +0x38. The local layout now models both proven fields.
+// - BINARY NOTE: damageCapability() and damageCapability(object) use the
+//   +0x108 and +0x104 slots. Their local declaration order is codegen-active.
+// - Hypotheses tested in this pass: found-flag removal, two goto-shaped scans,
+//   capability call recovery, virtual declaration order, event aliasing,
+//   branch-local FPU stores, global-zero/literal provenance, and no-target
+//   path recovery. The binary-supported capability paths remain even though
+//   the broad structural difference is 4599 bytes.
 // Left in scratch: structural call-site and frame drift remain broad.
 
 #if 0
@@ -123,8 +135,8 @@ public:
     virtual void setUnderAttack(uchar value);
     OBJECT_PAD(60) OBJECT_PAD(61) OBJECT_PAD(62) OBJECT_PAD(63)
     OBJECT_PAD(64)
-    virtual float damageCapability(RGE_Static_Object* object);
     virtual float damageCapability();
+    virtual float damageCapability(RGE_Static_Object* object);
     // This call has four integer arguments at the observed +0x10C slot.
     virtual float weaponRange(int, int, int, int);
     OBJECT_PAD(68) OBJECT_PAD(69) OBJECT_PAD(70) OBJECT_PAD(71)
@@ -142,7 +154,9 @@ public:
     int id;
     RGE_Master_Static_Object* master_obj;
     RGE_Player* owner;
-    char gap_10[0x28];
+    char gap_10[0x20];
+    float hp;
+    char gap_34[4];
     float world_x;
     float world_y;
     float world_z;
@@ -280,6 +294,8 @@ extern "C" {
     void* __cdecl operator_new(unsigned int size);
     void __cdecl operator_delete(void* block);
 }
+
+extern float DAT_0056ebc8;
 
 #define LOG_STOP(line) do { \
     if (actionFile != 0) { \
@@ -503,18 +519,47 @@ int UnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
                     if (this->objectValue->owner->computerPlayer() == 0) return 2;
                     if (target->master_obj->id == 0x114) return 2;
 
-                    float targetHealth = target->damageCapability(this->objectValue);
-                    float healthRatio = 0x46C35000;
-                    if (targetHealth > 0.0f) {
-                        healthRatio = target->damageCapability() / targetHealth;
+                    float targetDamage = target->damageCapability();
+                    float firstCapability;
+                    if (targetDamage == DAT_0056ebc8) {
+                        firstCapability = this->objectValue->damageCapability(target);
+                    } else {
+                        firstCapability = 0.0f;
                     }
-                    if (this->objectValue->damageCapability(target) != 1.0f) {
+                    if (this->canAttackUnit(attacker) == 1 &&
+                        firstCapability != DAT_0056ebc8) {
+                        if (this->objectValue->inAttackRange(attacker) != 1) {
+                            float pathDistance = this->objectValue->weaponRange(0, 0, -1, -1);
+                            if (this->objectValue->canPath((int)attacker, pathDistance,
+                                                           0, -1, -1, -1) != 1) {
+                                goto capabilityCheck;
+                            }
+                        }
+                        this->attackObject(attacker->id, 1);
+                    }
+
+                capabilityCheck:
+                    float targetCapability = target->damageCapability(this->objectValue);
+                    float targetRatio;
+                    if (targetCapability > DAT_0056ebc8) {
+                        targetRatio = target->hp / targetCapability;
+                    } else {
+                        targetRatio = 25000.0f;
+                    }
+                    float attackerCapability = attacker->damageCapability(this->objectValue);
+                    float attackerRatio;
+                    if (attackerCapability > DAT_0056ebc8) {
+                        attackerRatio = attacker->hp / attackerCapability;
+                    } else {
+                        attackerRatio = 25000.0f;
+                    }
+                    if (this->canAttackUnit(attacker) != 1 ||
+                        attackerRatio >= targetRatio) {
                         return 2;
                     }
-                    if (event->p2 <= healthRatio) return 2;
-                    if (this->objectValue->inAttackRange(target) != 1) {
+                    if (this->objectValue->inAttackRange(attacker) != 1) {
                         float pathDistance = this->objectValue->weaponRange(0, 0, -1, -1);
-                        if (this->objectValue->canPath((int)target, pathDistance,
+                        if (this->objectValue->canPath((int)attacker, pathDistance,
                                                        0, -1, -1, -1) != 1) {
                             return 2;
                         }
