@@ -23,9 +23,13 @@
 // blocker, not a proven ownership or control-flow difference.
 // Current pass: typed unified_map_offsets[256], named width/height bounds, and
 // the pretested inner while form preserve the terrain-array ownership and 550-byte
-// basin.  Advancing the typed tile cursor before the visible-byte store follows
-// the oracle's late p6 load and improves block alignment.  The checksum spill and
-// Revealed and pointer home rotation remain unresolved VC5 liveness differences.
+// basin.  Claim follow-up moved the x declaration before tile setup, then moved
+// unconditional tile advancement after the visible, unified, and x updates.
+// These binary-supported lifetime and update-order changes recover 69.00% exact
+// blocks and 89.00% shape at the staged-hash basin. Main review rejected a
+// nested hash expression that only reduced positional byte differences. Keep
+// the clear checksum stages. The remaining blocker is pre-hash local and
+// parameter-home scheduling. No call or ownership discrepancy remains.
 
 #include <stdlib.h>
 #pragma intrinsic(_rotl)
@@ -187,11 +191,11 @@ int RGE_Visible_Map::explore_terrain_sq(int x1, int y1, int x2, int y2,
     for (; y1 <= y2; ++y1) {
         p = this->map_offsets[y1] + x1;
         unified = unified_map_offsets[y1] + x1;
+        int x = x1;
         if (update_tiles != 0) {
             tile = this->map->map_row_offset[y1] + x1;
         }
 
-        int x = x1;
         while (x <= x2) {
             unsigned char value = *p;
             ++value;
@@ -214,11 +218,11 @@ int RGE_Visible_Map::explore_terrain_sq(int x1, int y1, int x2, int y2,
             if (value == 0xFA) {
                 value = 0xF9;
             }
-            ++tile;
             *p = value;
             ++p;
             ++unified;
             ++x;
+            ++tile;
         }
     }
     return Revealed;
