@@ -37,6 +37,17 @@
 // BLOCKER: The executable frame is 0x118, while the natural 256-byte keyboard
 // state array produces 0x114. A 260-byte array reaches the target frame but
 // contradicts the proved GetKeyboardState buffer ownership. Do not pad it.
+// 26: Fresh probes moved the unsigned elapsed delta before the key_scrolling
+//     test and modeled GetKeyboardState(keys) with indices 0x25-0x28. This
+//     reached frame 0x118 and exact keyboard-buffer offsets. It reached 99.63%
+//     exact-block coverage, but added one x87 exchange and shifted the tail.
+// 27: Using DAT_00577908 in the low-fraction arm restored the original two
+//     threshold loads and shared faddp shape. Natural operand, common-tail,
+//     literal, local, comparison, and extern-qualification variants did not
+//     remove the one x87 exchange.
+// 28: The improved probe was restored. The clean source remains authoritative.
+// GIVEUP: The remaining blocker is the natural VC5 x87 basin for the shared
+//         threshold addition. No accepted_drift proposal is supported.
 
 typedef unsigned char uchar;
 typedef void* HWND;
