@@ -88,8 +88,8 @@
 // add parameter, casts, and one receiver alias did not change the clean 28-byte
 // output. Scoped for-header indexes worsened it to 37 bytes. All probes were
 // rolled back. Final validation remains 28 bytes, exact size, and 28 calls.
-// Accepted-drift audit: do not promote. The executable has a 0x0C frame, while
-// this rebuild has 0x10. rge_read receives addresses of tempIntNum and tempInt.
+// Accepted-drift audit: do not promote. The executable has a 0x10 frame, while
+// this rebuild has 0x0C. rge_read receives addresses of tempIntNum and tempInt.
 // The frame mismatch changes those external writable addresses and malformed-
 // input fault context, despite the aligned call sequence and equal code size.
 
