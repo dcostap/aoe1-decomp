@@ -36,6 +36,17 @@
 //     restored the pinned source.
 // 30: A cached typed record pointer shortened the body to 390 bytes and moved
 //     the frame to 0x14; restored the pinned source.
+// 31-39: Re-tested scalar globals, typed and raw offset cursors, declaration
+//     order, do/while and for-header forms, and function-scope pointer aliases.
+//     They stayed in the same 345-349-byte basin or shortened the body.
+// 40: Replayed the prior 344-byte checkpoint. It had a 0x14 frame and only
+//     126 instructions, so its smaller diff was not a natural improvement.
+// 42-50: Hoisted list/object pointers and tested register hints and an offset
+//     address alias. They emitted the clean 347-byte basin or a duplicate.
+// 52: Volatile offset storage recovered the 0x1c frame but added six bytes and
+//     32 changed spans. Restored the natural typed source.
+// 54: Final unchanged validation confirms the pinned 445-byte source and 347
+//     differing bytes.
 // BLOCKER: the natural typed source now matches the prologue, calls, CFG, size, and
 // most inner blocks, but VC5 keeps the table offset in EDI and object in ESI.
 // The oracle keeps the table slot in ESI, object in EDI, and one extra frame slot.
