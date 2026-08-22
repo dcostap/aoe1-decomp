@@ -47,6 +47,39 @@
 // claim probe: explicit lower bounds on the second and third bands changed the CFG and lowered structural coverage; restored the clean typed else-if source
 // claim probes: pointer/reference ABI, direct-member tests, independent returns, natural conversion helpers, constant spelling, post-call aliases, and sprintf prototype variants all retained the 288-byte first-two-arm tail merge; clean typed else-if source restored
 // revisit 2026-08-17: a named format local widened the wrong register basin to 297 bytes; an ABI-equivalent long value cast was byte-identical to clean. Restored the pinned typed source.
+// claim 2026-08-22: resumed with the pinned source and fresh binary review. A
+// band-selector switch, receiver alias, arm-local format/value forms, predicate
+// rewrites, direct member reads, lvalue aliases, and attribute aliases did not
+// restore the missing static get_string/sprintf sites. Most returned to 288.
+// claim 2026-08-22: explicit locals in all four arms preserve all 13 ordered
+// calls, but VC5 saves each converted value in edi across get_string. The result
+// is 334 bytes, eight bytes longer than the original. Two structured arms give
+// 330 bytes; no local mix reaches the original 326-byte call-complete shape.
+// claim 2026-08-22: a donor-backed selector plus scoped switch cases reaches
+// 326 bytes, but still emits only 3 get_string and 3 sprintf calls. A 16-variant
+// arm-local structured lab confirmed that every direct/structured combination
+// is nonexact; the best call-complete group is 330 bytes with two structured
+// arms. Nested value assignments and ABI-equivalent long/cast forms return to
+// the 288-byte merged basin.
+// claim 2026-08-22: no accepted-drift recommendation. The clean source keeps
+// the correct runtime call order and resource values, but the unresolved static
+// call-site deficit is not a proved localized equivalent under project policy.
+// shape-first 2026-08-22: repinned the best natural call-complete source. It
+// uses value and format locals in the first two arms and nested calls in the
+// last two. It emits 330 bytes, all 13 ordered calls, six returns, no jumps,
+// 94.78% shape, 64.60% exact-block coverage, and 51 edit-diff bytes. The four
+// extra bytes are two `mov edi,eax` plus two `push edi` pairs. The original
+// instead pushes EAX before each get_string call.
+// shape-first probes: const/register-qualified locals, value-only locals,
+// nested format assignment, nested value comma assignment, dead x/y parameter
+// homes, post-call page aliases, base references, inline player value helpers,
+// split and reversed declarations, and function-scope locals all preserved
+// the same 330-byte topology or returned to the 288-byte merged basin.
+// shape-first context lab: default, /O1, /Og-, /Ob0, and 32 ambient declaration
+// states produced no better call-complete group. Only default context retained
+// the 330-byte natural source. /O1 and /Og- changed the frame and size basin.
+// shape-first conclusion: keep the 330-byte natural source. No tested source
+// form removes the EDI pairs while retaining 13 calls and original order.
 
 extern "C" int __cdecl sprintf(char* buf, const char* fmt, ...);
 extern "C" long __cdecl __ftol(void);
@@ -232,10 +265,14 @@ unsigned char TRIBE_Panel_Inven::get_help_info(char*& out_str, long& out_val, lo
     long pnl_x = this->pnl_x;
 
     if (x < pnl_x + 0x37) {
-        sprintf(out_str, TPanel::get_string(0x1D4EE), (int)this->player->attributes[1]);
+        int value = (int)this->player->attributes[1];
+        char* fmt = TPanel::get_string(0x1D4EE);
+        sprintf(out_str, fmt, value);
         out_val = -1;
     } else if (x < pnl_x + 0x6E) {
-        sprintf(out_str, TPanel::get_string(0x1D4ED), (int)this->player->attributes[0]);
+        int value = (int)this->player->attributes[0];
+        char* fmt = TPanel::get_string(0x1D4ED);
+        sprintf(out_str, fmt, value);
         out_val = -1;
     } else if (x < pnl_x + 0xA5) {
         sprintf(out_str, TPanel::get_string(0x1D4EF), (int)this->player->attributes[3]);
