@@ -121,7 +121,6 @@ void TSpan_List_Manager::DeleteSpan(int left, int right, int line)
 
                 VSpan_Node* last = this->Line_Tail_Ptrs[line];
                 VSpan_Node* first = head;
-                VSpan_Node* savedHead = head;
 
                 if (first->EndPx < left) {
                     do {
@@ -148,6 +147,7 @@ void TSpan_List_Manager::DeleteSpan(int left, int right, int line)
                     first = first->Next;
                 }
 
+                VSpan_Node* savedHead = head;
                 VSpan_Node* next;
                 if (first != 0) do {
                     if (left <= first->StartPx && right >= first->EndPx) {
@@ -155,8 +155,8 @@ void TSpan_List_Manager::DeleteSpan(int left, int right, int line)
                         if (first == last) last = first->Prev;
                         VSpan_Node* prev = first->Prev;
                         if (prev != 0) prev->Next = first->Next;
+                        if (first->Next != 0) first->Next->Prev = first->Prev;
                         next = first->Next;
-                        if (next != 0) next->Prev = first->Prev;
                         this->FreeNode(first);
                         this->Span_Count[line]--;
                         first = next;
