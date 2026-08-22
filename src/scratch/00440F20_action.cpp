@@ -35,12 +35,18 @@
 //   restored.
 // BINARY NOTE: the executable reads radioButton[3] before one checkButtons
 //   call, but has no compare, call, store, or later use for that value.
+// BINARY NOTE: DIA confirms a nonvolatile TButtonPanel* radioButton[4] at
+//   +0x504. The PDB also gives TButtonPanel its full 0x2B8 state type. A
+//   volatile member is not supported by the original type record.
+// BINARY NOTE: the constructor clears only three radioButton slots, then
+//   creates and uses the fourth slot. This is a separate shipped array bug.
 // BLOCKER: VC5 merges the default and radioButton[2] failure paths in the clean
 //   source. Each runtime path still calls checkButtons once. However, the merge
 //   removes the radioButton[3] member read and changes invalid-object fault
 //   behavior. This difference is not eligible for accepted drift.
 // LIKELY INTENT: the radioButton[2] fallback and the default path were separate
-//   source paths. The reason for the shipped field read is not proved.
+//   source paths, with the default path first. The source statement behind the
+//   line-428 dead read is not proved.
 
 #include <string.h>
 

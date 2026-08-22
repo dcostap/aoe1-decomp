@@ -67,6 +67,10 @@
 //   Exact donor 00472440 uses the same natural call but VC5 emits push 1 before
 //   its scan. The remaining order is TU or expression-context sensitive; no
 //   tested period-plausible form restores the target fault context.
+// - Claim audit tested narrow and unsigned size types, custom int strlen
+//   declarations, same-TU method declarations, Windows and ambient declaration
+//   context, and reversible text-pointer forms. All kept the same basin or
+//   worsened structure; none restored scan-before-push ordering.
 // BLOCKER: the rebuild pushes calloc's constant second argument before the
 // first REPNE string scan. The executable pushes it after the scan. An invalid
 // list_info text pointer therefore reaches an exception handler with a

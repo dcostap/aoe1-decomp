@@ -57,6 +57,11 @@
 //   before publishing the updated idle timer. The rebuild publishes idle first.
 //   The executable also writes currentOrderPriority to a stack home before later
 //   helper calls; the rebuild omits that helper-visible stack publication.
+// - Specialist audit: moving offset initialization into the positive notify
+//   guard changed the CFG and grew the body to 1417 bytes. Expanded timer
+//   assignments, an idle-timer local, split order-loop declarations, and an
+//   unused current-order local either duplicated the clean output or were
+//   optimized away. Retain the clean natural source while this blocker remains.
 
 #include <stdio.h>
 

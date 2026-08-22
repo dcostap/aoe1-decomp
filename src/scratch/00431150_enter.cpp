@@ -100,13 +100,33 @@
 // Restoring that declaration is codegen-neutral. A defined pointer-result
 // shared-tail probe reached one return but changed the early object-failure
 // branch and register basin. The EH-tail blocker remains.
+// Final bounded pass: restored the reviewed Static -> Animated -> Moving ->
+// Action -> Combat ownership chain and placed the Combat enter override at the
+// inventory-proven +0x180 virtual slot. Correct object(), get_action(),
+// add_action(), make_enter_task(), and RGE_Action_Enter target declarations
+// are codegen-neutral and retained. The closest one-return typed result form
+// is 263 bytes/33 differing bytes, but it returns an uninitialized result when
+// object lookup fails; it is diagnostic only. Initializing that carrier from
+// the lookup result regresses to 259 bytes/213 differing bytes. The natural
+// behavior-defined goto-fail source remains 274 bytes/65 differing bytes.
+// The final ABI cleanup changed task, action, target, and object pointer
+// declarations to their reviewed types without changing emitted bytes.
+// Reopened the 263-byte one-return carrier. The original object-failure edge
+// at 0043117F branches directly after TEST EDI. EAX still holds the zero
+// returned by object(); the common tail does not read the allocation home at
+// [esp+20h]. The task-failure edge at 004311E5 branches directly after TEST
+// EBX. EAX still holds the task call's zero result. Constructor failure is
+// different: 0043121D explicitly XORs EAX before the common tail. Therefore
+// no uninitialized or stale result is proved on the original failure paths.
+// The 263-byte carrier instead reads [esp+20h] on object failure and returns
+// EBX, so it changes the observable failure value. Restore the natural source.
 
 // Key remaining issues:
 // 1. No shared tail: VC5 generates inline EH epilogues at each return instead of one shared
 //    cleanup. Original has single cleanup at 0043123A shared by all paths. Shared tail saves
 //    ~60 bytes (3x20 - 20 = 40 bytes of cleanup, plus jumps).
-// 2. The narrow RGE_Moving_Object base declares the inherited virtual surface
-//    needed for the two late slots without manual function-pointer dispatch.
+// 2. The reviewed Static -> Animated -> Moving -> Action -> Combat chain
+//    declares the inherited virtual surface needed for the late slots.
 // 3. SEH handler address (55CE7Bh) vs 0 placeholder - masked by relocation system.
 // 4. Register allocation differs from original (original: eax=world_z, ecx=world_y, edx=world_x;
 //    rebuilt varies by version).
@@ -122,12 +142,12 @@
 
 #include <stddef.h>
 
-extern "C" void* __cdecl operator_new(size_t size);
-
 typedef unsigned char uchar;
 
 class RGE_Action_Object;
 class RGE_Task;
+class RGE_Static_Object;
+class RGE_Action;
 
 class RGE_Game_World {
 public:
@@ -140,7 +160,7 @@ public:
     int numberNegativeObjectsValue;
     int maxNumberNegativeObjectsValue;
 
-    void* object(int index);
+    RGE_Static_Object* object(int index);
 };
 
 class RGE_Player {
@@ -160,6 +180,7 @@ public:
     int world_x;
     int world_y;
     int world_z;
+    uchar gap_44[0x44];
 };
 
 class RGE_Action_List {
@@ -168,7 +189,7 @@ public:
     void* list;
 
     uchar have_action();
-    void* get_action();
+    RGE_Action* get_action();
     void delete_list();
 };
 
@@ -193,7 +214,7 @@ public:
     virtual void slot_40();
     virtual void slot_44();
     virtual void slot_48();
-    virtual void* func4C();
+    virtual RGE_Static_Object* func4C();
 
     short action_type;
     uchar gap_06[2];
@@ -218,11 +239,16 @@ public:
 class RGE_Action_Enter : public RGE_Action {
 public:
     virtual ~RGE_Action_Enter();
-    RGE_Action_Enter(RGE_Action_Object* obj, RGE_Task* task, RGE_Action_Object* target);
+    RGE_Action_Enter(RGE_Action_Object* obj, RGE_Task* task, RGE_Static_Object* target);
 };
 
-// Narrow inherited surface through the two binary-observed late virtual slots.
-class RGE_Moving_Object {
+class RGE_Animated_Object : public RGE_Static_Object {
+public:
+    float speed;
+};
+
+// Inherited surface through the two binary-observed late virtual slots.
+class RGE_Moving_Object : public RGE_Animated_Object {
 public:
     virtual ~RGE_Moving_Object();
     virtual void d01();
@@ -320,7 +346,8 @@ public:
     virtual void d5d();
     virtual void d5e();
     virtual void d5f();
-    virtual void d60();
+    // RGE_Combat_Object overrides this inherited slot at vtable +0x180.
+    virtual int enter(int param_1, int param_2);
     virtual void d61();
     virtual void d62();
     virtual void d63();
@@ -355,45 +382,52 @@ public:
     virtual void d80();
     virtual void d81();
     // vtable[130] = offset 0x208
-    virtual void* add_action(void* action) = 0;
+    virtual void add_action(RGE_Action* action) = 0;
     // vtable[131] = offset 0x20C (gap)
     virtual void d82();
     // vtable[132] = offset 0x210
-    virtual void* make_enter_task(void* obj, int x, int y, int z) = 0;
+    virtual RGE_Task* make_enter_task(RGE_Static_Object* obj, int x, int y, int z) = 0;
+
+    uchar gap_8C[0xF4];
 };
 
-class RGE_Combat_Object : public RGE_Moving_Object {
+class RGE_Action_Object : public RGE_Moving_Object {
 public:
-    uchar gap_04[8];
-    RGE_Player* owner;
-    uchar gap_10[0x28];
-    int world_x;
-    int world_y;
-    uchar gap_40[0x144];
+    virtual ~RGE_Action_Object();
+    uchar waiting;
+    uchar gap_181[3];
     RGE_Action_List* actions;
+    uchar command_flag;
+    uchar gap_189[3];
+    int lastActionValue;
+    int lastActionStateValue;
+};
 
+class RGE_Combat_Object : public RGE_Action_Object {
+public:
+    uchar gap_194[0x30];
     virtual int enter(int param_1, int param_2);
 };
 
 int RGE_Combat_Object::enter(int param_1, int param_2)
 {
     RGE_Static_Object* obj;
-    void* task;
+    RGE_Task* task;
     RGE_Action_Enter* action_enter;
     int x;
     int y;
     int z;
 
-    obj = (RGE_Static_Object*)this->owner->world->object(param_1);
+    obj = this->owner->world->object(param_1);
     if (obj == 0)
         goto fail;
 
     if (param_2 == 0) {
         if (this->actions->have_action() == 1) {
-            RGE_Action* action = (RGE_Action*)this->actions->get_action();
-            void* target = action->func4C();
+            RGE_Action* action = this->actions->get_action();
+            RGE_Static_Object* target = action->func4C();
             if (target == obj) {
-                RGE_Action* action2 = (RGE_Action*)this->actions->get_action();
+                RGE_Action* action2 = this->actions->get_action();
                 short action_val = action2->func18();
                 if (action_val == 3)
                     goto success;
@@ -408,9 +442,9 @@ int RGE_Combat_Object::enter(int param_1, int param_2)
     if (task == 0)
         goto fail;
 
-    action_enter = new RGE_Action_Enter((RGE_Action_Object*)this,
-                                        (RGE_Task*)task,
-                                        (RGE_Action_Object*)obj);
+    action_enter = new RGE_Action_Enter(this,
+                                        task,
+                                        obj);
     if (action_enter == 0)
         goto fail;
 

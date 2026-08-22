@@ -40,6 +40,17 @@
 // - Follow-up claim probes: function-scope declaration sets, register panel,
 //   panel aliases, period allocation headers, and function-scope arrays all
 //   reproduced the clean 12-byte frontier. Restore the clean source after each.
+// - Current EH audit: register/action aliases, exact PDB parameter names,
+//   string.h context, redundant derived-destructor declarations, a combined
+//   first guard, /Gy variants, and 320 ambient declaration/flag variants
+//   did not move the frontier. The natural class and local-lifetime model is
+//   therefore stable.
+// - Handler provenance: the rebuilt object emits the compiler-owned $L950
+//   handler in associative .text$x with its .xdata$x record. The executable's
+//   0055EA3C handler is a linked 10-byte stub for the same state table at
+//   0057B388. Isolated object extraction cannot recover that final linked
+//   identity. The original also restores FS before POP ESI; VC5 emits POP ESI
+//   before the FS restore here. No natural source/context probe changed it.
 // FLAGS: /nologo /c /O2 /Oy /GX (retained for the binary EH registration).
 
 #include <stdio.h>

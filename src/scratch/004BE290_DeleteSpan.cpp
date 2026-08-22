@@ -45,6 +45,11 @@
 // value at [esp+10h] before the GetNode call. The rebuild delays the same stack
 // store until after GetNode. This changes helper-visible caller stack state.
 // The remaining 12-byte resynchronized difference is therefore observable.
+// helper-publication probes: moving savedHead before the seek, with natural
+// declaration-order variants, changed the full-delete register colors and gave
+// 319 strict bytes. Making head mutable gave 206 bytes but published it before
+// the null guard. Keeping the 124-byte clean source is the smallest supported
+// model; the pre-GetNode home remains unresolved.
 
 #include <stdlib.h>
 
