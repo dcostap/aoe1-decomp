@@ -13,6 +13,14 @@
 // - Final validation: 1475-byte output, 42 calls, 0x15C frame, 845-byte strict diff.
 // - Remaining drift is resource descriptor register coloring and cleanup-tail
 //   layout, plus the recursive-call relocation identity.
+// Claim sa-0f3d8299 probes (2026-08-22):
+// - Removing the branch-local failure log did not change codegen.
+// - Assigning the slot alias at each Create site worsened the diff to 872 bytes.
+// - PDB local declaration order, windows.h context, and alias declaration order
+//   were neutral. The full dsound.h surface worsened frame and shape.
+// - Passing load_type as the branch-local log value improved strict diff to 838,
+//   but added five bytes and worsened resynchronization; the natural clean source
+//   remains the 1475-byte, 845-byte-diff form.
 #include <string.h>
 #include <stdlib.h>
 
