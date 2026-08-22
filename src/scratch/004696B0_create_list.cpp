@@ -46,6 +46,10 @@
 // pointer-sized calloc element, and copy the repository-proven single-space
 // seed. The full typed TPanel/TListPanel surfaces remain codegen-identical;
 // the original sub-esp,8 frame and shared /GX return tail remain unresolved.
+// A diagnostic local TListPanel destructor made the target exact. Reject it:
+// the real destructor has a separate source owner at VA 00478330. A later
+// probe reused the dead y parameter for scaled height to match a stack home.
+// Reject that compiler-facing form too. Keep distinct ideal and size values.
 
 typedef unsigned long ulong;
 typedef unsigned int uint;
