@@ -20,6 +20,10 @@
 //   and that the single-player branch tests and reads in_help_page_id. Correcting
 //   those two argument owners made the frame exact and improved the strict diff
 //   from 564 to 556 bytes. The remaining mismatch is geometry register scheduling.
+// - Restoring the explicit parent argument on create_button and duplicating its
+//   two OK-call arms recovers the oracle's shared call tail. Main review rejected
+//   a direct width-plus-xPosition expression because VC5 reversed those calls.
+//   Keep the explicit width call followed by xPosition.
 // - Twenty distinct checks and one four-way geometry lab found no exact source.
 //   The best natural source emits 833 bytes versus 849, with 84.14% shape and
 //   283 edit-diff bytes. The first unresolved basin stores width/x and panel
@@ -103,7 +107,7 @@ public:
     virtual void set_child_list(TPanel** list, long count); // +0xc8
     virtual void pad0cc(); virtual void pad0d0(); virtual void pad0d4(); virtual void pad0d8(); virtual void pad0dc(); virtual void pad0e0();
     virtual void set_something2(long a, long b); // +0xe4
-    virtual TPanel* create_button(TPanel** out, long id, long zero, long x, long y, long w, long h, long a, long b, long c); // +0xe8
+    virtual TPanel* create_button(THelpDialog* parent, TPanel** out, long id, long zero, long x, long y, long w, long h, long a, long b, long c); // +0xe8
     virtual void pad0ec(); virtual void pad0f0(); virtual void pad0f4(); virtual void pad0f8(); virtual void pad0fc();
     virtual int create_list(THelpDialog* parent, TPanel** out, char* text, long x, long y, long w, long h, long line_h, long flags, long a, long b); // +0x100
     virtual void pad104(); virtual void pad108(); virtual void pad10c(); virtual void pad110(); virtual void pad114(); virtual void pad118(); virtual void pad11c(); virtual void pad120(); virtual void pad124(); virtual void pad128();
@@ -116,8 +120,6 @@ void THelpDialog::setup_help(TEasy_Panel* parent, char* text, char* more_text, l
 {
     RGE_Font* rge_text_font;
     TPanel* tabList[2];
-    long dialog_x;
-    long panel_height;
     this->ok_button = 0;
     this->encyclopedia_button = 0;
     this->title = 0;
@@ -129,6 +131,8 @@ void THelpDialog::setup_help(TEasy_Panel* parent, char* text, char* more_text, l
     if (this->setup(parent->renderArea(), parent, 0x154, 0x190, parent->get_popup_info_file(), parent->get_popup_info_id(), 1)) {
         this->create_list(this, &this->list, more_text, 10, 10, 0x14a, 0x186, 11, 0, 0, 1);
         long line_count = *(short*)((char*)this->list + 0xfe) + 2;
+        long dialog_x;
+        long panel_height;
         panel_height = line_count * rge_text_font->font_hgt + 0x37;
 
         dialog_x = parent->width();
@@ -163,21 +167,21 @@ void THelpDialog::setup_help(TEasy_Panel* parent, char* text, char* more_text, l
         if (((RGE_Base_Game*)rge_base_game)->singlePlayerGame() && page_id >= 0) {
             char* s = this->get_string((int)page_id);
             if (s != 0 && *s != 0) {
-                this->create_button(&this->encyclopedia_button, 0x243d, 0, 0, 25,
+                this->create_button(this, &this->encyclopedia_button, 0x243d, 0, 0, 25,
                                     line_count * rge_text_font->font_hgt + 20,
                                     0x78, 25, 11, 0);
             }
         }
 
-        long button_x;
         if (this->encyclopedia_button == 0) {
-            button_x = 0x6e;
+            this->create_button(this, &this->ok_button, 0xfa1, 0, 0x6e,
+                                line_count * rge_text_font->font_hgt + 20,
+                                0x78, 25, 11, 0, 0);
         } else {
-            button_x = 0xc3;
+            this->create_button(this, &this->ok_button, 0xfa1, 0, 0xc3,
+                                line_count * rge_text_font->font_hgt + 20,
+                                0x78, 25, 11, 0, 0);
         }
-        this->create_button(&this->ok_button, 0xfa1, 0, button_x,
-                            line_count * rge_text_font->font_hgt + 20,
-                            0x78, 25, 11, 0, 0);
         this->ok_button->hotkey = 0x1b;
         this->ok_button->hotkey_shift = 0;
         this->set_curr_child(this->ok_button);
