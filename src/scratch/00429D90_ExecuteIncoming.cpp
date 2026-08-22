@@ -55,6 +55,10 @@
 // shardC5 probe: a typed HOLDER cursor and PlayerHighSerialNumber cursor preserved
 // the two clear/process branches and eight calls, but widened the frame to 0x10 and
 // worsened the positional diff; restored the clean byte-offset reconstruction.
+// Exact diagnostic: a byte-offset HOLDER cursor plus a pointer that crosses
+// from dcoID into PlayerHighSerialNumber matched all 485 bytes. Main review
+// rejected both raw cross-owner cursor forms. Keep indexed HOLDER, serial,
+// and dcoID ownership in the living source. The exact result is not promotable.
 // Exact follow-up: a byte-offset HOLDER cursor recovered all 485 bytes, but
 // main review rejected that source as compiler-steering plumbing. The retained
 // source uses typed HOLDER indexing and named player arrays.
