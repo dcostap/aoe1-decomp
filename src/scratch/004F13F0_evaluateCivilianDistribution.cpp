@@ -43,6 +43,12 @@
 // - Exact addObject and removeObject predecessor contexts did not change this
 //   target. Register hints, branch-local result scopes, references, and store
 //   sequencing were duplicates or worse. No compiler-context shim is retained.
+// - Worker audit, 2026-08-22: Ghidra confirms a low-count civilian-count local
+//   and one reused result local. Pre-branch count reuse, result-local reuse,
+//   branch-local cap declarations, direct member rereads, assignment order,
+//   and comma sequencing all emitted the same 514-byte, 75-byte-diff basin.
+//   Restore the pinned source. The first unproved register divergence remains
+//   the sn[5] load and later civilian-count reload at +0x178.
 
 extern "C" double __cdecl ceil(double);
 
