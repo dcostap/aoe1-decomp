@@ -21,6 +21,15 @@
 //   and reduced the diff to 901 bytes. It preserves all 16 ordered calls.
 // - Fixed-gap class ownership, split early assignments, score order, and the
 //   early local declaration order produced no code movement.
+// - The binary has a shared line-981 skip block after the visible/building
+//   predicate. Nested tests with one `skipTile` label reproduce that CFG,
+//   restore the original instruction count, and reduce the diff to 878 bytes
+//   with 86.56% shape and all 16 ordered calls aligned.
+// - Main review kept an explicit skip for other isBuilding values. VC5 emits
+//   the same control flow, and the source remains equivalent to the old guard.
+// - Sequential score additions improve arithmetic-load order but recolor the
+//   prologue and worsen the whole function. The direct score expression stays
+//   as the smaller natural source form.
 // - Left in scratch: no exact match. The remaining drift starts in the
 //   prologue register allocation and continues through stack-home placement.
 
@@ -237,10 +246,18 @@ int TribeInformationAIModule::closestUnexploredTile(
                     uchar explored = (uchar)this->pathMap.lookupValue(
                         cPoint.x, cPoint.y);
                     uchar visibleValue = visible->get_visible(cPoint.x, cPoint.y);
-                    if (visibleValue != 0x0f &&
-                        ((isBuilding == 1 && explored == 0xff) ||
-                         (isBuilding == 0 &&
-                          (explored == 0xff || explored == 2)))) {
+                    if (visibleValue == 0x0f)
+                        goto skipTile;
+                    if (isBuilding == 1) {
+                        if (explored != 0xff)
+                            goto skipTile;
+                    } else if (isBuilding == 0) {
+                        if (explored != 0xff && explored != 2)
+                            goto skipTile;
+                    } else {
+                        goto skipTile;
+                    }
+                    {
                         if (obj->passableTile((float)cPoint.x,
                                               (float)cPoint.y, 1) != 0 &&
                             obj->lookupZone(cPoint.x, cPoint.y) == initialZone) {
@@ -301,6 +318,8 @@ int TribeInformationAIModule::closestUnexploredTile(
                             return 1;
                         }
                     }
+skipTile:
+                    ;
                 }
                     ++i;
                 } while (i < pathDistance);
