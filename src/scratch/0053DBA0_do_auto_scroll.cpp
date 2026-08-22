@@ -42,9 +42,14 @@
 //   blocks. Ambient declaration sweeps and stdlib/math header probes were
 //   codegen-neutral or worse. The best result remains 775 bytes (+2), 15/15
 //   ordered calls, 0x2C frame, and 99.55% exact-block coverage.
+// - Follow-up probes tested direct whole-plus-constant expressions, side-effect
+//   assignments, threshold locals, int width, register qualification, ternary
+//   selection, quantized accumulators, and a common explicit assignment. They
+//   were duplicates or widened the function; the clean branch-local form stays
+//   authoritative.
 // BLOCKER: the rebuild inserts FXCH before FADDP and therefore reverses the
-// x87 operands. Ordinary finite sums match, but NaN payload choice and signed
-// zero can differ. Do not accept this as commutative integer-style drift.
+//   x87 operands. Ordinary finite sums match, but NaN payload choice and signed
+//   zero can differ. Do not accept this as commutative integer-style drift.
 
 typedef void* HWND;
 
