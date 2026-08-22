@@ -39,6 +39,14 @@
 // mutation, declaration scopes, and register hints did not improve it. The
 // current clean source remains unresolved at the saved-register/local-home
 // boundary, with target this=EDI/two=EBP versus rebuilt this=EBP/two=EDI.
+// Current claim pass (probes 1-17): direct radius expressions, saved-radius
+// copies, register hints, canonical long field declarations, base virtual order,
+// function-scope and case-local temporaries, explicit member ownership, and a
+// named distance accumulator were neutral or worse. The clean source is
+// restored. Final validation remains a 544-byte mismatch with exact size/frame,
+// all 16 ordered calls, and the same CFG counts. The open lead is the natural
+// declaration or register basin that preserves the target's EBX radius and
+// EBP doubled-radius roles while spilling inner deltas to the observed homes.
 
 #include <math.h>
 
