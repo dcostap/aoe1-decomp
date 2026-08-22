@@ -38,6 +38,13 @@
 // map access and tested swapped parameter naming and coordinate expressions;
 // both emitted the same or worse nonexact structural basin. Restored the
 // pinned natural map_row_offset[y] + x reconstruction for final validation.
+// sa-961a69cd-r1: tested the original bound-store topology. The clean
+// col_end=x; if (x != width-1) ++col_end form emitted two pre/post stores and
+// a 439-byte body. Conditional bound assignments emitted the original
+// common post-branch stores, exact 427-byte size, 142 instructions, and
+// 93.66% shape similarity. Retained the conditional form as the best natural
+// structural reconstruction. Direct/raw tile forms, coordinate aliases,
+// register hints, and loop-scope changes were duplicates or worse.
 
 class RGE_Tile_List {
 public:
@@ -114,20 +121,15 @@ void TRIBE_Map::change_terrain(short x, short y, unsigned char terrain,
     if (x == 0)
         col_start = 0;
     else
-        col_start = x - 1;
+        col_start = (short)((int)x - 1);
 
     if (y == 0)
         row_start = 0;
     else
-        row_start = y - 1;
+        row_start = (short)((int)y - 1);
 
-    col_end = x;
-    if (x != this->map_width - 1)
-        ++col_end;
-
-    row_end = y;
-    if (y != this->map_height - 1)
-        ++row_end;
+    col_end = (x == this->map_width - 1) ? x : x + 1;
+    row_end = (y == this->map_height - 1) ? y : y + 1;
 
     y = row_start;
     for (; y <= row_end; ++y) {
