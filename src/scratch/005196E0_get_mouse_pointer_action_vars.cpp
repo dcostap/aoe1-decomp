@@ -28,11 +28,14 @@
 // probe 29: caching current_action_flags produced the original 0x1c frame and EDI receiver, but local homes and broad CFG drift worsened; do not retain the cache.
 // probe 26: a scoped rge_base_game receiver improved exact-block coverage but worsened strict bytes and did not recover the original ECX count color.
 // context sweep: 32 ambient declaration samples all emitted one unchanged nonexact basin; neutral front-end declarations are not the blocker.
-// Current clean checkpoint: 891 strict bytes (91.1043%), 74.35% shape, 26.87% exact blocks, 978-byte size, four ordered calls, 0x18 frame versus original 0x1c.
-// Remaining evidence-led lead: recover original saved-this home [esp+2c], object/local homes, and EDI/ECX/ESI ownership without synthetic volatility or padding.
-// Final candidate: typed object/master/player ownership, master-group table key, exact field widths/offsets, natural retry-table loop, and 978-byte default-flag build. Remaining drift is broad VC5 local/block topology, not an unresolved call set.
-// GIVEUP blockers: original saved-this home at the top local slot, 0x1c versus 0x18 frame/local coloring, and action-switch handler placement remain unresolved. No inline asm or accepted_drift proposal.
-// Final validation: unchanged source check remains MISMATCH at 891 strict bytes; no inline asm.
+// probe 33: corrected action dispatch to mouse_actions[object_type]. The original reloads the bounded owner/special value at [esp+14], not RtClickTable at [esp+20]. Frame became exact and shape improved.
+// probe 34: changed object-state < 3 to <= 2. The original emits cmp byte,2 plus JBE.
+// probe 35: moved current=50 before action-code rewrites for cases 8 and 9. This matches the original fallthrough instruction order.
+// probe 36: scoped TRIBE_Game* receivers around both global table arms. This removes two compiler-generated receiver copies and improved the result to 882 strict bytes and 80.22% shape.
+// probes 37-39: no-reset entry state, receiver aliases, declaration order, and register qualifiers did not improve the scoped-receiver basin. The no-reset source produced 914-930 strict bytes and was rolled back.
+// Current clean checkpoint: 882 strict bytes (90.1840%), 80.22% shape, 41.42% exact blocks, 978-byte size, 268 instructions, four ordered calls, and 0x1c frame.
+// Remaining blockers: original saved-this home [esp+2c], object/local homes, EDI/ECX/ESI ownership, and broad handler placement remain unresolved. No inline asm or accepted_drift proposal.
+// Final validation: authoritative check remains MISMATCH at 882 strict bytes; no inline asm.
 
 extern int DAT_0086bc88;
 extern int DAT_0086bc8c;
@@ -185,13 +188,15 @@ int TRIBE_Player::get_mouse_pointer_action_vars(int id, int& action, int& var)
 retry_table:
     entry = 0;
     if (this->current_target == 0 || this->current_action_flags == 0) {
+        TRIBE_Game* game = rge_base_game;
         use_selection = 0;
-        table = (RightClickEntry*)rge_base_game->normal_table;
-        table_count = rge_base_game->normal_count;
+        table = (RightClickEntry*)game->normal_table;
+        table_count = game->normal_count;
     } else {
+        TRIBE_Game* game = rge_base_game;
         use_selection = 1;
-        table = (RightClickEntry*)rge_base_game->selected_table;
-        table_count = rge_base_game->selected_count;
+        table = (RightClickEntry*)game->selected_table;
+        table_count = game->selected_count;
     }
 
     if (object_player >= 0 && object_player < table_count) {
@@ -218,7 +223,7 @@ retry_table:
         return 0;
     }
 
-    switch (this->mouse_actions[right_click_table]) {
+    switch (this->mouse_actions[object_type]) {
     case 0:
         action_code = entry->action_0;
         action_var = entry->var_0;
@@ -257,7 +262,7 @@ redo_mouseFunc:
             goto finish;
         case 1:
         case 8:
-            if ((this->current_action_flags & 1) != 0 && object->object_state < 3) {
+            if ((this->current_action_flags & 1) != 0 && object->object_state <= 2) {
                 action = 4;
                 var = current + action_var;
                 goto finish;
@@ -265,8 +270,9 @@ redo_mouseFunc:
             if (action_code != 8) {
                 goto finish;
             }
+            current = 50;
             action_code = 7;
-            break;
+            continue;
         case 2:
             if ((this->current_action_flags & 2) == 0) {
                 goto finish;
@@ -319,8 +325,9 @@ redo_mouseFunc:
             if (action_code != 9) {
                 goto finish;
             }
+            current = 50;
             action_code = 1;
-            break;
+            continue;
         case 7:
             if ((this->current_action_flags & 0x80) == 0) {
                 goto finish;
@@ -343,7 +350,6 @@ redo_mouseFunc:
             var = 0;
             goto finish;
         }
-        current = 50;
     } while (1);
 
 set_action_5:
