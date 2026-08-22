@@ -48,6 +48,10 @@
 // case 0/3 use rand * r2x - rx, and case 1/2 use rand * r2y - ry.
 // The natural source now reproduces 636 of 643 bytes (7 differing bytes).
 // A focused five-form epilogue lab kept the same 7-byte store-order mismatch.
+// Fresh pass: restored the exact same-TU update donor's complete virtual class
+// surface. It is codegen-neutral and replaces the raw vtable field. Minimal
+// global declarations, a register output parameter, out[0], and one function-
+// wide result also reproduced the same seven-byte epilogue basin.
 
 #include "../../include/game_globals.h"
 
@@ -98,7 +102,16 @@ public:
 
 class TRIBE_Action_Make_Obj {
 public:
-    void* vtable;
+    virtual ~TRIBE_Action_Make_Obj();
+    virtual void v04(); virtual void v08(); virtual void v0C(); virtual void v10();
+    virtual void v14(); virtual void v18(); virtual void v1C(); virtual void v20();
+    virtual unsigned char idle_update();
+    virtual unsigned char update();
+    virtual int stop();
+    virtual void v30(); virtual void v34(); virtual void v38(); virtual void v3C();
+    virtual void v40(); virtual void v44(); virtual void v48(); virtual void v4C();
+    virtual void v50(); virtual void v54(); virtual void v58();
+    virtual void set_state(unsigned char);
     char gap_04[4];
     RGE_Action_Object* obj;
     char gap_0C[0x14];
