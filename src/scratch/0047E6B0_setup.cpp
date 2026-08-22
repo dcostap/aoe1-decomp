@@ -218,7 +218,7 @@ int RGE_Dialog_List::setup(TScreenPanel* screen, char* popup_file,
     if (i < this->list_size) {
         offset = 0;
         while (i < this->list_size) {
-            this->list_text[i] = (char*)calloc((int)strlen(this->list_info->text + offset) + 1, 1);
+            this->list_text[i] = (char*)calloc(strlen(this->list_info->text + offset) + 1, 1);
             if (this->list_text[i] == 0) {
                 return 0;
             }

@@ -120,8 +120,9 @@ public:
 
 void TDrawSystem::Paint(tagRECT* param_1)
 {
-    tagRECT src;
     tagRECT dest;
+    tagRECT src;
+    long dest_top;
 
     if (this->DrawType != 1) {
     if (this->PrimarySurface &&
@@ -136,14 +137,16 @@ void TDrawSystem::Paint(tagRECT* param_1)
         ClientToScreen(this->Wnd, &dest.left);
         ClientToScreen(this->Wnd, &dest.right);
         } else {
+            int w = this->ScreenWidth;
+            int h = this->ScreenHeight;
             src.left = 0;
             src.top = 0;
-            src.right = this->ScreenWidth;
-            src.bottom = this->ScreenHeight;
+            src.right = w;
+            src.bottom = h;
             dest.left = 0;
             dest.top = 0;
-            dest.right = this->ScreenWidth;
-            dest.bottom = this->ScreenHeight;
+            dest.right = w;
+            dest.bottom = h;
         }
 
         if (param_1) {
@@ -160,9 +163,11 @@ void TDrawSystem::Paint(tagRECT* param_1)
             src.bottom = this->ScreenHeight - 1;
 
         dest.left = dest.left + src.left;
-        dest.top = dest.top + src.top;
+        dest_top = dest.top;
+        dest_top = dest_top + src.top;
+        dest.top = dest_top;
         dest.right = dest.left + src.right - src.left + 1;
-        dest.bottom = dest.top + src.bottom - src.top + 1;
+        dest.bottom = dest_top + src.bottom - src.top + 1;
 
         src.right += 1;
         src.bottom += 1;

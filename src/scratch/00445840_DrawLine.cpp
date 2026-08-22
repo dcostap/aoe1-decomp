@@ -63,7 +63,6 @@ void TDrawArea::DrawLine(int x1, int y1, int x2, int y2, unsigned char color) {
     } else if (y1 == y2) {
         _ASMDraw_HLine(x1, x2, y1, (unsigned int)color);
     } else {
-        int dx;
         int step;
         int dy;
 
@@ -76,6 +75,7 @@ void TDrawArea::DrawLine(int x1, int y1, int x2, int y2, unsigned char color) {
             y1 = t;
         }
 
+        int dx;
         dx = x2 - x1 + 1;
         if (y1 < y2) {
             dy = y2 - y1;

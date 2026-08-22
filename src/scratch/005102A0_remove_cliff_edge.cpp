@@ -63,17 +63,6 @@
 // const map receiver were each neutral. They were rolled back. The clean
 // typed source remains 360 rebuilt bytes versus 339, with all eight calls
 // aligned; the saved-this and counter-color blocker remains unresolved.
-// sa-f72eb932-r1 revisit: 27 meaningful probes tested natural base/player
-// ownership, pointer and integer receiver aliases, declaration scopes and
-// orders, aggregate state layouts, counter widths, and tail receiver forms.
-// These were neutral or worse and were rolled back. One diagnostic basin is
-// useful: a volatile saved-map pointer plus an inner-loop world local reaches
-// 339 bytes, 97.39% shape, 71.30% exact-block coverage, and 56 differing
-// bytes. A nonvolatile tail map local then reaches 339 bytes, 115 instructions,
-// 98.26% shape, and 4 differing bytes. The only residue is tail scheduling:
-// the oracle loads dir, then reloads map into ESI; VC5 loads map, then dir.
-// Volatility is compiler-steering scaffolding, so all diagnostic forms were
-// rolled back. Clean source remains the natural 360-byte reconstruction.
 
 struct TRIBE_Cliff_Info {
     int info[4];

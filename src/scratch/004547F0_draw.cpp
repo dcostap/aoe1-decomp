@@ -51,14 +51,6 @@
 // - Accepted-drift blocker: VC5 still hoists the outline_radius_x load between
 //   the global base load and its world dereference. The executable dereferences
 //   the world first. Invalid owners can therefore fault in a different context.
-// - This claim tested a function-scope self alias, an intermediate world local,
-//   an in-guard self alias, virtual declaration placement, and decompiler
-//   coordinate-copy forms. These emitted the clean 0x0C-frame basin unchanged.
-// - A named int x copy reduced positional diff from 338 to 336 bytes but made
-//   an early sign-extension and worsened resynchronization; it is not retained.
-// - A named int y copy worsened positional diff by one byte. The clean source
-//   is restored; no natural source form fixed the saved-this frame or register
-//   ownership during this claim.
 
 class TDrawArea;
 class RGE_Color_Table;

@@ -145,7 +145,6 @@ void PointMaker::DrawCurrentBranchIntoProbArray(int which) {
     int min_y;
     int max_y;
     int ring;
-    int prob_add;
 
     radius = BranchRadius;
     point_y = Point[which].y;
@@ -174,21 +173,20 @@ void PointMaker::DrawCurrentBranchIntoProbArray(int which) {
         }
 
         int prob_idx = Width * Point[which].y + Point[which].x;
-        prob_add = ProbabilityAdd;
         if (prob_idx >= 1 && prob_idx < SizeArrays - 1) {
-            prob_idx = (int)ProbArray + prob_idx;
-            char* p = (char*)prob_idx;
-            if (*p == 0) {
-                *p = (char)prob_add;
+            char* p = ProbArray + prob_idx;
+            char old = *p;
+            char add = (char)ProbabilityAdd;
+            if (old == 0) {
+                *p = add;
                 ProbabilityTiles++;
-            } else {
-                int total = prob_add + (int)*p;
-                if (total < 0xFF) {
-                    *p = (char)total;
-                } else {
-                    *p = (char)-1;
-                }
+                return;
             }
+            if (ProbabilityAdd + (int)old < 0xFF) {
+                *p = add + old;
+                return;
+            }
+            *p = (char)-1;
         }
     }
 }

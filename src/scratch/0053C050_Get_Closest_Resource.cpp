@@ -90,7 +90,7 @@ VisibleResourceRec* Visible_Resource_Manager::Get_Closest_Resource(int x, int y,
             VisibleResourceRec* rec = resourceLists[type];
             int bestDistance = 9999;
             if (count > 0) {
-                while (count > 0) {
+                do {
                     int dx;
                     int dy;
                     int rejected = 0;
@@ -130,7 +130,7 @@ VisibleResourceRec* Visible_Resource_Manager::Get_Closest_Resource(int x, int y,
                     }
                     rec++;
                     count--;
-                }
+                } while (count != 0);
             }
             if (bestDistance > 0xff) {
                 bestDistance = 0xff;
