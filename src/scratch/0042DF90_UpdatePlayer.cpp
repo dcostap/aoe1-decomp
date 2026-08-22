@@ -55,6 +55,13 @@
 // Next leads: recover the parameter-home/index color without an extra local;
 // then recover delayed cdecl cleanup and unknown/success/invalid/fatal block
 // order.  Do not keep the parameter-alias experiments without a clean frame.
+//
+// current claim (sa-739dc223-r1): tested nine additional source hypotheses.
+// Parameter-home reuse with explicit index locals made 0x14 frames and large
+// structural regressions.  A block-scoped size local stayed in the same basin.
+// A register format tail for COMPUTER/CLOSED also regressed the shape.  Four
+// explicit result frees improved the raw diff to 710, but changed the CFG and
+// was not retained.  The clean source below remains the best natural model.
 
 extern "C" char* __cdecl strcpy(char*, const char*);
 extern "C" void* __cdecl calloc(unsigned int, unsigned int);
