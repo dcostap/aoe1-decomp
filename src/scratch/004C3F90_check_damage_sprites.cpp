@@ -31,6 +31,14 @@
 //   A natural grouped old-flag switch recovered the observed <=1/==2 compare
 //   sequence and a 544-byte rebuild with all 10 ordered calls; it remains
 //   nonexact at 415 positional bytes, so the source stays in scratch.
+// - Follow-up scan probes tested pointer/count do-while forms, byte cursors,
+//   counter widths, local order, named count lifetimes, and the decompiler's
+//   float index. They were larger or changed the call surface. The byte cursor
+//   recovered the EAX pointer and EDI index, but not the original EBP copy.
+// - Replaced the grouped old-flag switch with the natural flag==2 / flag<2
+//   if/else. This reduced the rebuild to 541 bytes and the strict diff to 414.
+//   External rdata declarations were tested and restored because they widened
+//   the strict diff to 415 and changed the proven x87 schedule.
 
 extern "C" int __cdecl debug_rand(char* file, int line);
 static char s_stat_obj_cpp[] = "C:\\msdev\\work\\age1_x1\\stat_obj.cpp";
@@ -145,16 +153,12 @@ void RGE_Static_Object::check_damage_sprites()
 
         if (old_damage_loc > -1) {
             DamageSpriteInfo* oldInfo = &this->master_obj->damage_sprites[old_damage_loc];
-            switch (oldInfo->flag) {
-            case 0:
-            case 1:
-                this->sprite_list->remove_sprite(oldInfo->sprite);
-                break;
-            case 2:
+            if (oldInfo->flag == 2) {
                 if (new_damage_loc < 0 || this->master_obj->damage_sprites[new_damage_loc].flag != 2) {
                     this->new_sprite(this->master_obj->sprite);
                 }
-                break;
+            } else if (oldInfo->flag < 2) {
+                this->sprite_list->remove_sprite(oldInfo->sprite);
             }
         }
     }
