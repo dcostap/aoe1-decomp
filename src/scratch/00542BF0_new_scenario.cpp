@@ -83,6 +83,38 @@
 //   original reads this->map before info.map_height and info.map_width. The
 //   rebuild reads both dimensions before this->map. Invalid world-map or info
 //   pointers therefore fault in a different order.
+// - Worker pass sa-66a72373-r1: completed 20 distinct probes and restored this
+//   clean source. H1 map pointer local for new_map: duplicate. H2 map reference
+//   local: duplicate. H3 signed random_seed: duplicate. H4 signed
+//   GetRandomSeed: duplicate. H5 unsigned seed parameter: duplicate. H6
+//   volatile random_seed: duplicate. H7 explicit seed casts: duplicate. H8
+//   named map dimensions: duplicate. H9 one map pointer across both calls:
+//   210-byte output, +3 size, worse shape; rejected. H10 clear_map pointer
+//   local: duplicate. H11 guarded do/while scan: duplicate. H12 native short
+//   loop bound: duplicate. H13 short player-count local: duplicate. H14 long
+//   random_seed: duplicate. H15 windows.h context: duplicate. H16 string.h
+//   context: duplicate. H17 unused polymorphic declaration: duplicate. H18
+//   absolute world_update_counter macro: same strict diff, relocation mask only;
+//   rejected. H19 explicit long new_map casts: duplicate. H20 combined signed
+//   ABI surfaces: duplicate. All probes kept the 12 direct/virtual call sites
+//   and target identities. Final validation remains 275 bytes, 221-byte diff,
+//   93.41% shape, and 50% exact-block coverage. The original reads this->map
+//   before the info dimensions at new_map; the rebuild reads dimensions first.
+//   This changes null-pointer fault order, so accepted drift is not allowed.
+// - Worker pass sa-66a72373-r2 continued after the prior pause. H21 register
+//   seed parameter: duplicate. H22 inline_depth(0): duplicate. H23 register
+//   info reference: duplicate. H24 volatile random_seed reference: duplicate.
+//   H25 assignment-expression seed argument: duplicate. H26 block-scoped seed
+//   copy: duplicate. H27 chained seed result local: duplicate. H28 final-loop
+//   player pointer local: duplicate. H29 combined result/count guard: 281 bytes,
+//   91.30% shape, 46.67% exact blocks, and one extra CFG condition; rejected.
+//   H30 branch-local scan_count: 220-byte diff but 91.21% shape and 38.89%
+//   exact blocks; rejected as metric-only scaffolding. A six-variant flag lab
+//   (#116) and ten-variant optimization/frame flag lab (#132) kept the default
+//   275-byte group; nondefault groups broke size or frame. A full-source
+//   256-sample ambient declaration lab (#137) produced one identical group.
+//   A same-TU preceding dummy-body lab (#139) also produced one group. These
+//   context axes provide no lead. The clean typed source remains authoritative.
 
 #include <stdio.h>
 #include <stdlib.h>
