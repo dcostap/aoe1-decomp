@@ -26,6 +26,10 @@
 // - Reused the human-team variable for relation player IDs with a saved flag,
 //   matching more block islands and 95.24% shape, but strict drift worsened to
 //   467 bytes and the source was less plausible. Rolled it back.
+// - Tested the first-read alias, function-scope guarded handle, short player
+//   count overlay, comma-guard/do-while forms, split relation flags, and the
+//   file-handle attribute read. They were unchanged, worsened, or broadened
+//   register drift. Restored this clean source after each check.
 // - Final lead: the remaining 386-byte drift starts at the delayed EBP save;
 //   calls, frame, size, and canonical field ownership are already aligned.
 
