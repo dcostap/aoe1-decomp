@@ -43,6 +43,15 @@
 // self alias all remained in the 376-byte default basin. The original /Oy- probe
 // remained 394 bytes with an 8-byte frame and a 320-byte diff. These are diagnostic
 // basins only. No policy-valid exact source was found in this pass.
+// Current claim: function-local /Oy- remained the best shape diagnostic at 394
+// bytes, a 0x08 frame, and a 320-byte diff. Reordered plNum/tile declarations,
+// player-id initialization, and a separate checksum accumulator were duplicates.
+// A volatile player-id spill reached 398 bytes and a 315-byte diff, but it did
+// not create the oracle 0x0C frame, so it is not retained. Reusing clipped x2 as
+// the inner countdown worsened the structure to 384 bytes and 342 bytes. The
+// unsigned-count form duplicated the /Oy- basin. The pinned default typed source
+// is restored; final validation is 376 bytes, 385-byte strict diff, and no
+// policy-valid exact source.
 
 #include <stdlib.h>
 #pragma intrinsic(_rotl)
