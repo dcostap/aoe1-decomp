@@ -123,6 +123,26 @@
 //   helper receives a different stack and exception context. The x87 compare
 //   predicates and point effects otherwise align, but that observable call
 //   context keeps this function in scratch.
+// - sa-5b56772e-r1 extended pass: a 96-variant structural lab covered declaration
+//   order, store timing, count scope, id scope, and natural/indexed/preincrement
+//   scans. It produced four groups: the clean 221-byte/139-diff group, 208-byte
+//   loop regressions at 178/191 diff, and no size/frame/call-set eligible variant.
+//   A 144-variant id-home lab added normal, volatile, and address-alias ids. It
+//   produced no eligible variant; volatile id gave 231 bytes, 90.12% shape, 63%
+//   exact blocks, and 130-byte diff when current was initialized before best.
+//   This remains diagnostic scaffolding and is rejected by source policy.
+// - Further donor-led probes mirrored exact victory.cpp current-player cursor
+//   ownership, direct players+1 initialization, const base/cursor types, long
+//   amount/result locals, member-current rereads, and function-scope id storage.
+//   These stayed neutral or returned the 178-byte loop basin. The original
+//   protected IA decorated member access was restored from the target symbol;
+//   it does not change body bytes but makes owner identity exact. The natural
+//   clean body remains 221 bytes, 139-byte diff, 0xC versus 0x10 frame.
+// - Final donor sweep tested the handle_explore explicit walker with while,
+//   direct players+1 with do/while, register-qualified players, and a const
+//   id reference. The walker and direct cursor forms returned the 178-byte
+//   basin; register and reference forms duplicated the 139-byte group. No
+//   natural form improved the frame, first divergence, or exact-block result.
 
 class RGE_Game_World;
 class RGE_Victory_Entry;
@@ -356,6 +376,7 @@ public:
     unsigned char pad_11[3];
     RGE_Victory_Point_Entry* victory_point_list;
     long point_list_num; long tot_victory_points;
+protected:
     void handle_points_highest_attribute(RGE_Victory_Point_Entry* entry);
 };
 
