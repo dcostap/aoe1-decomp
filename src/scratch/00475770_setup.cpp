@@ -52,6 +52,13 @@
 // rebuild reads render_area, draw system, instance, parent window, then format.
 // It also pushes lpParam before these potentially failing reads. Fault order
 // and ESP context differ. Keep this function in scratch.
+// Canonical ownership: TPanel::render_area is +0x20. TDrawArea owns
+// DrawSystem at +0 and Wnd at +4. TDrawSystem owns Inst at +0. The target
+// calls the virtual TPanel::setup surface with an unsigned-char final flag.
+// New probes 26-32 found no better source basin. Reordered assignments,
+// direct style expressions, a 16-way typed local lab, a compound final mask,
+// register qualification, and an imported API pointer all kept the 92-byte
+// group or made the code worse. The helper added a non-original call.
 
 #include <windows.h>
 #include <stdlib.h>
