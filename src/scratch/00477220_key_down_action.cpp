@@ -16,6 +16,8 @@
 // - a direct down-arrow tail produces the full call count but grows 154 bytes and splits the home/end tail; the shared page tail is the best clean basin.
 // - twenty meaningful probes completed. Best clean result is 1082 positional bytes, 84.91% shape, exact size, 32/36 ordered calls.
 // - unresolved compiler basin: VC5 tail-merges the up calc/redraw pair into a later tail and omits the down-specific get_text/mbslen pair; direct-tail variants restore calls but lose size and shape.
+// - takeover probes: an up local argument did not restore a call site; direct down tails restored 36 calls but added 154-158 bytes. Shared clamp labels did not reduce that basin.
+// - takeover probes: direct-member, explicit-short-cast, and base-pointer receiver forms stayed in the 32-call basin. Block-local and function-wide line forms stayed in the oversized 36-call basin.
 // - left in scratch: remaining drift is switch-table relocation masking, one calc_input_pos/redraw tail pair, and the shared page clamp.
 
 #include <stddef.h>
