@@ -63,6 +63,14 @@
 //   form, produced the 399-byte / 373-diff basin and was rejected.
 // - Restored the pinned natural two-cursor decoder.  The unresolved blocker is
 //   still the original EBP stream-cursor allocation and prologue basin.
+// Matching-worker pass (sa-8a69d026-r1):
+// - Re-read the complete target packet and stack evidence plus the sibling
+//   exact delta_fli source.  The pinned source remains 397 bytes / 367 diff.
+// - A decompiler-shaped one-cursor decoder with a switch classifier reached
+//   412 bytes / 365 diff, but its 0x10-0x14 frame and lower shape were worse.
+// - The switch did reproduce the original subtract/dec classifier chain.
+//   Raw int* cursors, address-taken cur_y, register hints, and dead-cur_y
+//   removal did not improve that basin.  Restored the pinned clean source.
 
 #include <string.h>
 
