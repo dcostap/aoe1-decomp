@@ -57,6 +57,16 @@
 // Open blocker: the ack record uses the same shipped local basin as later
 // packets in the executable, but VC5 does not select its original [esp+10]
 // home from the natural typed source.
+// Current claim probes 31-48: naming DCO_SELF and a local DirectPlay receiver
+// recovered the original COM setup.  Moving the DCO read between the serial
+// and command stores recovered the complete initial block through +149.
+// BINARY NOTE: the K/state guard has an outer else.  Its C/A/R/1/3/? dispatch
+// is skipped for handled K packets.  The ? and Y paths also use nested else
+// arms before command-2 and generic delivery.
+// The final natural source has the original frame and size, 86 aligned calls,
+// 94.44% shape, and 1755-byte strict difference.  Function-scope packet
+// objects, extra named guard values, and narrow increment aliases were either
+// worse or codegen duplicates.  H44 retains the early DONE turn expression.
 
 typedef unsigned long ulong;
 typedef unsigned int uint;
@@ -358,12 +368,14 @@ player_lookup_found:
         MSGFORMAT_ACKNOWLEDGE_GUARANTEED bad_ack;
         L->Log(S(0x5815A4), from);
         bad_ack.Serialno = *(uint*)(message + 8);
+        ulong dco_self = DCO_SELF;
         bad_ack.Command = 'A';
-        if (DCO_SELF == 0) {
+        if (dco_self == 0) {
             L->Log(S(0x5810B0));
             return 0;
         }
-        DIRECT_PLAY->Send(DCO_SELF, from, 0, &bad_ack, 8);
+        IDirectPlay2* direct_play = DIRECT_PLAY;
+        direct_play->Send(dco_self, from, 0, &bad_ack, 8);
         this->TXPacketLength += 8;
         return 0;
     }
@@ -405,7 +417,7 @@ second_player_found:
             this->NotifyWindow(COMM_PLAYER_KICKED);
             return 1;
         }
-    }
+    } else {
 
     if (*message == 'C') {
         char* chat = this->RGE_Guaranteed_Delivery != 0
@@ -471,6 +483,7 @@ second_player_found:
         MSGFORMAT_ALL_DONE done;
         MSGFORMAT_LATENCY pong;
         ulong turn = this->current_turn;
+        done.ExecuteOnTurn = this->PlayerOptions.CommandTurnIncrement + turn;
         if (this->Multiplayer != 0 && this->PlayerOptions.ProgramState != 3 &&
             this->LastTurnAck[this->Me] != turn) {
             this->LastTurnAck[this->Me] = turn;
@@ -483,7 +496,6 @@ second_player_found:
             }
             LAST_SENT_TIME = debug_timeGetTime(S(0x580BF4), 0xBF9);
             done.Command = 'D';
-            done.ExecuteOnTurn = this->PlayerOptions.CommandTurnIncrement + turn;
             L->Log(S(0x580EA4), 0x0C);
             this->CommOut(0, 0x44, &done, 0x0C, 0);
         }
@@ -547,7 +559,7 @@ second_player_found:
         return 1;
     }
 
-command_2:
+    else {
     if (*message == '2') {
         MSGFORMAT_ALL_DONE done;
         ulong turn = this->current_turn;
@@ -583,15 +595,16 @@ command_2:
         return 1;
     }
 
-    if (*message == 'Y' && this->PlayerOptions.ProgramState == 3) {
-        uint value = *(uint*)(message + 4);
-        this->PlayerHighSerialNumber[player] = value;
-        this->ClearRXForPlayer(player);
-        L->Log(S(0x581218), player,
-               this->PlayerHighSerialNumber[player], value);
-        return 1;
-    }
-
+    if (*message == 'Y') {
+        if (this->PlayerOptions.ProgramState == 3) {
+            uint value = *(uint*)(message + 4);
+            this->PlayerHighSerialNumber[player] = value;
+            this->ClearRXForPlayer(player);
+            L->Log(S(0x581218), player,
+                   this->PlayerHighSerialNumber[player], value);
+            return 1;
+        }
+    } else {
     if (this->RGE_Guaranteed_Delivery != 0) {
         if (this->IntentionallyDropPackets != 0 && this->current_turn > 6) {
             ++DROP_COUNT;
@@ -655,6 +668,9 @@ command_2:
                                     (uchar)message[0], (uchar)message[1],
                                     (char*)RX_MESSAGE_PTR, (uint)RX_MESSAGE_BASE,
                                     from, to);
+    }
+    }
+    }
     }
     return 1;
 }
