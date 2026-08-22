@@ -40,6 +40,17 @@
 // sa-53b45eb0 pass: restored and pinned the clean typed while-scan. Next lead is
 // original source scope or translation-unit context, not metric-only steering.
 // luna-4DA680-r5: the remaining source-backed discrepancy is saved-register coloring at the scan prologue; no fresh natural axis remains after the eligible declaration lab.
+// sa-5e8e8a1a-r1: positive guarded do-scan and direct-member guarded scan both
+// rebuilt 1337 bytes and broke the late duplicate-tail CFG; explicit scan labels
+// rebuilt 1337/1289 and did not help.
+// sa-5e8e8a1a-r1: reversed declarations, nested scan scope, same-TU polymorphic
+// RGE surfaces, and function-scope player/cursor locals stayed in the clean
+// 431-byte basin. A packed short-anchor cursor reconstruction rebuilt 1343/1300.
+// sa-5e8e8a1a-r1: a six-way scan-shape lab and 64-sample ambient TU-context lab
+// produced only the existing 431-byte clean basin or the 1337-byte guarded basin.
+// The original still loads max into EBP, initializes empty in EDI, tests max,
+// then reads importantObjectMemory. The clean source loads max into EDI, reads
+// importantObjectMemory early, and initializes empty in EBP.
 // BLOCKER: The rebuild hoists importantObjectMemory before the maximum-count
 // test. The executable reads that member only when the scan can run. For a
 // zero or negative count, the rebuild performs an extra pointer read. Fault
