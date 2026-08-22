@@ -39,6 +39,12 @@
 // shape 86.83%, exact blocks 55.74%, calls 9/9; first mismatch remains +0F.
 // retained: natural typed source; unresolved pointer scheduling and late block
 // placement leave a broad non-exact codegen gap, so this target stays scratch.
+// revisit direct member reads: removing the left and right boundary scalar
+// aliases reduced the strict diff to 589 with the same size, CFG, and calls.
+// A function-scope boundary, direct end+1 spelling, and direct RightMostPx
+// rereads were codegen duplicates; the branch-local boundary is simpler.
+// Current best: diff 589, size 922, shape 86.83%, exact blocks 55.74%, calls
+// 9/9; first mismatch remains +0F and the central drain CFG remains non-exact.
 
 #include <stdlib.h>
 
@@ -133,9 +139,8 @@ void TSpan_List_Manager::AddSpan(int start, int end, int line)
     }
 
     other = this->Line_Tail_Ptrs[line];
-    temp = this->LeftMostPx[line];
-    if (start <= temp) {
-        if (end < temp - 1) {
+    if (start <= this->LeftMostPx[line]) {
+        if (end < this->LeftMostPx[line] - 1) {
             other = this->VSList.GetNode();
             other->Prev = 0;
             other->Next = node;
@@ -188,9 +193,8 @@ void TSpan_List_Manager::AddSpan(int start, int end, int line)
             node->EndPx = end;
         }
     } else {
-        temp = this->RightMostPx[line];
-        if (end >= temp) {
-            if (start > temp + 1) {
+        if (end >= this->RightMostPx[line]) {
+            if (start > this->RightMostPx[line] + 1) {
                 node = this->VSList.GetNode();
                 node->Prev = other;
                 node->Next = 0;
