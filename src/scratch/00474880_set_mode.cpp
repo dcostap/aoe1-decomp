@@ -47,17 +47,25 @@
 //   ordinary local declarations and direct self calls for source plausibility.
 // - reversed the initial equality operands: one byte farther with no structural change; restored
 //   `mode == this->mode`.
-// - typed `mode` and `old_mode` as the PDB-proven DropdownMode; emitted code was unchanged,
-//   so the L536 indirect/vslot+1C replacement remains an encoding-local call-cache difference.
+// - nested `TDropDownPanel::DropdownMode` for the parameter and old_mode restored the PDB ABI;
+//   the decorated owner now matches `?set_mode@TDropDownPanel@@QAEXW4DropdownMode@1@@Z`.
+//   Emitted body shape stayed unchanged, so the L536 indirect/vslot+1C replacement remains
+//   an encoding-local call-cache difference.
+// - a positive outer mode guard, one duplicate calc_wid assignment, and a second width alias
+//   were codegen duplicates. They are not retained.
+// - a period TPanel virtual destructor declaration preserved the slot shape and emitted bytes.
+//   Derived-panel destructor declarations changed numberLines/numberDrawLines call order and
+//   were removed.
+// - the reviewed long-returning notify_action declaration is also codegen-neutral when its
+//   result is ignored.
 //
 // Left in scratch, remaining drift (all localized codegen):
 // - current best is 865 bytes (39.53%), shape 93.51%, size 2188 vs 2185, frame 0xC vs 0x10;
 // - frame 0xC vs 0x10: original keeps a 4th slot [E0-4] caching list_wid for the above path;
 //   rebuilt keeps calc_wid in ebp (register) and spills only the fn ptr to old_mode's home.
 // - 480/484: original hoists arg3/arg4 (val_wid+btn_wid+1, val_hgt) and pushes them BEFORE the
-//   list_is_above branch (L476 loads val_wid/btn_wid, L478 loads the flag); rebuilt evaluates
-//   them inside each arm. Named locals regressed; a no-stack-slot spelling (comma expr / register
-//   temp / direct member reuse) may recover the hoist.
+//   list_is_above branch (L476 loads val_wid/btn_wid, L478 loads the flag). The retained named
+//   value_wid/value_hgt locals recover this source shape.
 // - epilogue A folds `this->mode = mode` to `mov dword [esi+104h],1`; original reloads param
 //   from [esp+24h].
 // - prologue: rebuilt pushes all 4 callee-saves eagerly before the early-return compare; original
@@ -67,9 +75,8 @@
 //   vslot+1C versus indirect call replacement.
 // - Prologue: rebuilt pushes all four callee-saves before the early compare; original pushes
 //   only esi and defers edi/ebp/ebx. The source probes did not recover this shrink-wrap basin.
-// Current pass: packet and mangled-name evidence confirm DropdownMode as the natural parameter
-// ABI, while exact Pnl_drop.cpp donors use int. The int ABI is retained because it emits the
-// original decorated owner symbol; enum member stores use explicit casts.
+// Current pass: packet and mangled-name evidence confirm the nested DropdownMode parameter ABI.
+// Exact Pnl_drop.cpp donors use int declarations, but this target now uses the PDB-proven enum.
 
 class TDrawArea {
 public:
@@ -80,7 +87,7 @@ public:
 
 class TPanel {
 public:
-    virtual void vf00();
+    virtual ~TPanel();
     virtual void vf04();
     virtual void vf08();
     virtual void vf0C();
@@ -100,7 +107,7 @@ public:
     virtual void vf84(); virtual void vf88(); virtual void vf8C(); virtual void vf90();
     virtual void vf94(); virtual void vf98(); virtual void vf9C(); virtual void vfA0();
     virtual void vfA4(); virtual void vfA8(); virtual void vfAC(); virtual void vfB0();
-    virtual void notify_action(TPanel* panel, long action, unsigned long param3,
+    virtual long notify_action(TPanel* panel, long action, unsigned long param3,
                                unsigned long param4);                             // 0xB4
 
     TPanel* previousPanelValue;          // +0x04
@@ -195,14 +202,14 @@ public:
 
 extern TPanelSystem panel_system;
 
-enum DropdownMode {
-    ModeNone = 0,
-    ModeValue = 1,
-    ModeList = 2
-};
-
 class TDropDownPanel : public TPanel {
 public:
+    enum DropdownMode {
+        ModeNone = 0,
+        ModeValue = 1,
+        ModeList = 2
+    };
+
     TTextPanel* val_panel;               // +0xF4
     TPanel* btn_panel;                   // +0xF8
     TTextPanel* list_panel;              // +0xFC
@@ -226,10 +233,10 @@ public:
     int draw_style;                      // +0x13C
     int draw_val_rect;                   // +0x140
 
-    void set_mode(int mode);
+    void set_mode(DropdownMode mode);
 };
 
-void TDropDownPanel::set_mode(int mode) {
+void TDropDownPanel::set_mode(DropdownMode mode) {
     if (mode == this->mode) {
         return;
     }
@@ -238,7 +245,7 @@ void TDropDownPanel::set_mode(int mode) {
     long parent_y = 0;
     long parent_w = 0;
     long parent_h = 0;
-    int old_mode;
+    DropdownMode old_mode;
     if (this->parent_panel) {
         parent_x = this->parent_panel->xPosition();
         parent_y = this->parent_panel->yPosition();
@@ -299,7 +306,7 @@ void TDropDownPanel::set_mode(int mode) {
             }
             if (this->parent_panel) {
                 this->parent_panel->notify_action(this, 2, 0, 0);
-                this->mode = (DropdownMode)mode;
+                this->mode = mode;
                 return;
             }
         }
@@ -339,7 +346,6 @@ void TDropDownPanel::set_mode(int mode) {
                                           this->val_panel, this->scbar_panel, 0);
         this->clip_to_parent = 0;
         long calc_wid = this->list_wid;
-        calc_wid = this->list_wid;
         this->set_fixed_position(this->pnl_x - parent_x, this->pnl_y - parent_y,
                                  calc_wid, this->list_hgt + this->val_hgt + 1);
         if (this->list_panel->yPosition() + this->list_panel->height() >
@@ -423,5 +429,5 @@ void TDropDownPanel::set_mode(int mode) {
         }
     }
 
-    this->mode = (DropdownMode)mode;
+    this->mode = mode;
 }
