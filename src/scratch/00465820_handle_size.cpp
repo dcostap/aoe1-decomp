@@ -33,6 +33,10 @@
 // lifetimes were codegen duplicates. A binary-supported shared bottom tail
 // improved block shape but reached 471/576 bytes, worse than the clean 437/585
 // basin, so the natural source remains pinned.
+// this claim: PDB symbols name win_wid, win_hgt, i, and calc_hgt. i and
+// calc_hgt share the -4 home. Function-scope i and direct member forms were
+// codegen duplicates. The full PDB virtual surface improved shape but gave
+// 592/585 bytes. The minimal slot surface remains the smaller source model.
 
 struct tagRECT { long left; long top; long right; long bottom; };
 enum PositionMode {
