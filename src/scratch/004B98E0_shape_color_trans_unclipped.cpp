@@ -165,6 +165,46 @@
 //   the rebuild reads td->Orien before a shape-header field that the original
 //   reads first. Invalid header or draw-area pointers therefore fault in a
 //   different order.
+// sa-575307d7-r1 fresh pass (2026-08-22):
+// - Baseline rebuilt at 268B/8B with both ordered calls and 152 strict diff.
+// - Tested a shared source-increment goto tail, int count, integer row address,
+//   outer while form, direct Orien reads, short-lived width scope, literal index
+//   local, scoped count, const header/payload, orientation-first declarations,
+//   int command, and a raw uchar payload cursor. These were worse or emitted
+//   duplicates. Memory reads, RLE writes, row movement, calls, and cleanup were
+//   kept unchanged in each test.
+// - Moving the payload cursor declaration after stride is a natural declaration
+//   order variant. It improved the clean candidate to 268B/8B and 150 strict
+//   differing bytes. It is retained; no exact result was found.
+// - Reusing td as a byte-address row cursor recovered the oracle td home and
+//   92.16% shape/56.44% exact blocks, but is compiler-steering type punning. An
+//   explicit shared-tail variant reached 73.27% exact blocks but 255 diff.
+//   Both were rolled back. The oracle row/count homes are now proven, but the
+//   natural source does not select them.
+// - Strict accepted-drift review remains negative: the residue is broad setup,
+//   register, and cursor-tail drift, not a small localized equivalent. The
+//   natural rebuild also reads td->Orien before header fields, unlike the
+//   executable. This changes invalid-input fault order, so do not promote.
+// sa-575307d7-r1 continued shape pass (2026-08-22):
+// - The 576-case structured source lab found no exact variant. Its natural
+//   baseline family kept size, frame, calls, and 85.29% shape. Table, cursor,
+//   loop, declaration, and update axes did not improve the pinned source.
+//   Reported lower positional values in lab output masked object relocations;
+//   they did not survive authoritative checking as a source gain.
+// - A narrow-member/direct-byte/long-orientation/separate-row group reached
+//   86.41% shape but 251 diff and 270 bytes. A private-ABI replay of the old
+//   compiler-steering basin reached 94.12% shape and 75.25% exact blocks but
+//   246 diff. Both were rolled back because strict drift grew and the source
+//   needed td pointer casts or shared labels.
+// - Single destination cursor, p3 parameter reuse, reversed solid updates,
+//   orientation-first declarations, long Orien, register td, unqualified
+//   shape_header, area alias, and typed palette were duplicates or worse.
+//   The solid update probe reached 86.27% shape and 40.59% exact blocks but
+//   246 diff; it was not retained as metric-only scaffolding.
+// - A 12-case VC5-small flag lab emitted one group with no flag movement. A
+//   32-case ambient declaration lab produced 11 eligible 268-byte variants,
+//   all at the same first divergence; other variants were 271 bytes. Neither
+//   context axis is a useful lead.
 // FLAGS: /nologo /c /O2 /Oy
 
 extern "C" void* __cdecl memset(void*, int, unsigned int);
@@ -255,10 +295,10 @@ uchar TShape::shape_color_trans_unclipped(TDrawArea* td, long p2, long p3, long 
 {
     Shape_Header* hdr = this->shape_header;
     long width = (hdr->ymax - hdr->ymin) + 1;
-    Shape_Payload* src = (Shape_Payload*)(hdr + 1);
 
     int Orien = td->Orien;
     long stride = td->AlignedWidth() * Orien;
+    Shape_Payload* src = (Shape_Payload*)(hdr + 1);
     uchar count;
     uchar* row;
     long dest_off;
