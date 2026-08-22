@@ -9,12 +9,16 @@
 //   is required for the best natural source shape.
 // - BINARY NOTE: The original writes the target-player ID through the incoming handle home.
 //   ESI still carries the file handle for every later read.
-// - BINARY NOTE: A dword loop counter reuses the incoming version-flag home. A raw typed alias
-//   recovered this stack shape, but it was not retained in the clean source.
-// - Twenty tracked meaningful probes were tested. The best retained clean source has exact
-//   size, frame, owner symbol, 33 ordered calls, and 506 differing bytes.
-// - Remaining drift is register color, redundant guard layout, and branch scheduling. The
-//   H11 diagnostic reached 500 bytes but used a non-canonical raw parameter alias.
+// - BINARY NOTE: A dword loop counter reuses the incoming version-flag home. One natural
+//   counter now serves both serialized loops. The serialized target-object ID has function
+//   scope. This recovers the original local basin without a raw parameter-home alias.
+// - Positive-first version predicates recover the late negative-version blocks. A double
+//   1.0 threshold recovers the original qword FPU compare. A point record uses group at +2
+//   and id at +3, as shown by the exact add_point donor.
+// - Probe 46: the best natural source has exact size, frame, owner symbol, and 33 ordered
+//   calls. It has 493 differing bytes, 97.03% shape, and 87.46% exact-block coverage.
+// - Remaining drift is the early player-store order, player-scan register color, point-read
+//   register color, and vtable relocation context.
 
 extern "C" void rge_read(int handle, void* data, int size);
 extern "C" void* calloc(unsigned int count, unsigned int size);
@@ -79,8 +83,8 @@ class RGE_Victory_Point_Entry {
 public:
     unsigned char command; // +0x00
     unsigned char state; // +0x01
-    unsigned char id; // +0x02
-    unsigned char group; // +0x03
+    unsigned char group; // +0x02
+    unsigned char id; // +0x03
     long attribute; // +0x04
     long amount; // +0x08
     long points; // +0x0C
@@ -119,6 +123,7 @@ RGE_Victory_Conditions::RGE_Victory_Conditions(
     long* list_num_ptr;
     RGE_Victory_Entry** tail;
     int file_handle = handle;
+    long target_object_id;
 
     if (version_flag == 1) {
         rge_read(file_handle, &save_version, 4);
@@ -149,7 +154,6 @@ RGE_Victory_Conditions::RGE_Victory_Conditions(
         rge_read(file_handle, &entry->number, 4);
         rge_read(file_handle, &entry->count, 4);
         rge_read(file_handle, &handle, 4);
-        long target_object_id;
         rge_read(file_handle, &target_object_id, 4);
         rge_read(file_handle, &entry->victory_group, 1);
         rge_read(file_handle, &entry->ally_flag, 1);
@@ -182,15 +186,11 @@ RGE_Victory_Conditions::RGE_Victory_Conditions(
             entry->target_obj = this->player->objects->find_by_id(target_object_id);
         }
 
-        if (version < 0) {
-            entry->target_player = 0;
-        } else {
+        if (version >= 0) {
             if (version_map != 0) {
                 version = version_map[version];
             }
-            if (version < 0) {
-                entry->state = 3;
-            } else {
+            if (version >= 0) {
                 RGE_Player* reference_player =
                     this->player->world->players[version];
                 entry->target_player = reference_player;
@@ -199,7 +199,11 @@ RGE_Victory_Conditions::RGE_Victory_Conditions(
                     entry->target_obj =
                         reference_player->objects->find_by_id(target_object_id);
                 }
+            } else {
+                entry->state = 3;
             }
+        } else {
+            entry->target_player = 0;
         }
 
         if (target_object_id >= 0 && entry->target_obj == 0) {
@@ -212,15 +216,13 @@ RGE_Victory_Conditions::RGE_Victory_Conditions(
     this->victory_point_list = 0;
     this->point_list_num = 0;
 
-    if (save_version < 1.0f) {
-        this->tot_victory_points = 0;
-    } else {
+    if (save_version >= 1.0) {
         long* total_points = &this->tot_victory_points;
         rge_read(file_handle, total_points, 4);
         rge_read(file_handle, &point_count, 4);
 
-        int point_index = 0;
-        while (point_index < point_count) {
+        index = 0;
+        while (index < point_count) {
             RGE_Victory_Point_Entry* point = this->add_point(0, 0);
             rge_read(file_handle, point, 1);
             rge_read(file_handle, &point->state, 1);
@@ -228,18 +230,20 @@ RGE_Victory_Conditions::RGE_Victory_Conditions(
             rge_read(file_handle, &point->amount, 4);
             rge_read(file_handle, &point->points, 4);
             rge_read(file_handle, &point->curr_points, 4);
-            rge_read(file_handle, &point->id, 1);
             rge_read(file_handle, &point->group, 1);
+            rge_read(file_handle, &point->id, 1);
             rge_read(file_handle, &point->curr_attribute_amount, 4);
 
             if (*total_points < 0) {
                 point->points = 0;
             }
-            point_index++;
+            index++;
         }
 
         if (*total_points < 0) {
             *total_points = 0;
         }
+    } else {
+        this->tot_victory_points = 0;
     }
 }
