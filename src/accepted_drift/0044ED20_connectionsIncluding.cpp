@@ -44,6 +44,12 @@
 // - a 32-variant local lab covering switch form and parity spellings found no
 //   exact result. The best diagnostic group still had 306B positional drift;
 //   no lab source replaced this clean typed reconstruction.
+// - Accepted drift: validation covered both inclusive rectangle loops, bounds
+//   guards, repeated cell reads, all eight direction updates, edge predicates,
+//   result decrements/increments, overflow behavior, and returns. Direction is
+//   always 0..7, so the different parity lowering is equivalent. The function
+//   has no calls, writes, or floating-point operations. Remaining drift is
+//   switch-block placement and private register/local scheduling.
 
 #include <stdlib.h>
 
