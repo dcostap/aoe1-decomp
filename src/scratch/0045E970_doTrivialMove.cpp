@@ -40,6 +40,15 @@
 //   eight bytes in the reduced double-local source.
 // - unresolved: current result is 2814 differing bytes, 72.35% shape, and
 //   exact call-site order; the remaining drift starts at the local frame.
+// - original PDB local symbols (orig/age1_x1.pdb, move_obj.obj) prove the
+//   names newY, dX, newX, newAngle, tempZ, alreadyMoving, angleDelta,
+//   facetDelta, numberFacets, curDistance, distanceToCover, speedOffset,
+//   result, targetDX, targetDY, and dY, with optimized stack-slot aliases.
+// - this pass tested five further hypotheses: numberFacets declaration order
+//   and distanceToCover reuse were codegen duplicates; folding the first
+//   passable guard worsened the result; a PDB-local lifetime rewrite reduced
+//   call alignment; and reusing found for passable was another duplicate.
+//   All experiments were restored to this clean source.
 
 #include <math.h>
 #include <stdio.h>
