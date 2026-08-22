@@ -30,14 +30,22 @@
 // - restoring natural string literals in that split source reduces the strict
 //   diff to 517 bytes with a 2-byte size excess.  Receiver-local cleanup
 //   variants measured 532 and 533 bytes; the remaining gap is cleanup order.
-// BLOCKER: Before singlePlayerGame, the executable reads rge_base_game and then
-// clears confirmed_close. The rebuild clears confirmed_close first and then
-// reads rge_base_game. Global publication and concurrent pointer capture occur
-// in a different order.
+// - Reviewed extern declarations for rge_base_game and confirmed_close restore
+//   the original clear-cleanup load/store order and exact size.  The reviewed
+//   rge_base_game_at_storage helper is used only for the restart receiver
+//   because it restores the proven 62C574 relocation and branch shape.
+// - The current natural cleanup split has 382 instructions, 1211 bytes, all 33
+//   ordered calls, and a 1-byte strict diff.  A function-scope receiver and a
+//   direct restart receiver were worse or changed the relocation basin.
+// BLOCKER: At +9841E, the executable branches to +98701 after loading the
+//   restart receiver in ECX.  The rebuild branches to +986FB and reloads the
+//   receiver before singlePlayerGame.  This is one branch-target byte, but it
+//   changes the pointer-capture order.  Do not call it equivalent drift.
 // FLAGS: config/flags/004982E0_action.rsp (/GX required by original EH setup)
 
 #include <new.h>
 #include <string.h>
+#include "../../include/rge_base_game_global.h"
 
 class TPanel {
 public:
@@ -152,9 +160,9 @@ public:
     long action(TPanel*, long, unsigned long, unsigned long);
 };
 
-#define rge_base_game (*(RGE_Base_Game**)0x0062C574)
+#define rge_base_game_absolute (rge_base_game_at_storage())
 #define panel_system (*(TPanelSystem*)0x0062E870)
-#define confirmed_close (*(int*)0x0086BACC)
+extern int confirmed_close;
 #define comm (*(TCommunications_Handler**)0x0062C4C0)
 
 long TRIBE_Screen_Game::action(TPanel* panel, long id,
@@ -193,12 +201,12 @@ long TRIBE_Screen_Game::action(TPanel* panel, long id,
     if (strcmp(panel->panelName(), "RestartDialog") == 0) {
         panel_system.setCurrentPanel("Game Screen", 0);
         panel_system.destroyPanel("RestartDialog");
-        TRIBE_Game* game = (TRIBE_Game*)rge_base_game;
-        if (id == 0) {
-            game->restart_game();
-            return 1;
+        TRIBE_Game* game = (TRIBE_Game*)rge_base_game_absolute;
+        if (id != 0) {
+            goto pause_cleanup;
         }
-        goto pause_cleanup;
+        game->restart_game();
+        return 1;
     } else if (strcmp(panel->panelName(), "QuitGameDialog") == 0) {
         panel_system.setCurrentPanel("Game Screen", 0);
         panel_system.destroyPanel("QuitGameDialog");
@@ -238,19 +246,19 @@ long TRIBE_Screen_Game::action(TPanel* panel, long id,
         goto named_base_action;
     }
 
+pause_cleanup:
+    if (rge_base_game->singlePlayerGame() == 1 &&
+        rge_base_game->save_paused == 0) {
+        rge_base_game->set_paused(0, 0);
+    }
+    goto finish;
+
 clear_cleanup:
     confirmed_close = 0;
     if (rge_base_game->singlePlayerGame() == 1 &&
         rge_base_game->save_paused == 0) {
         rge_base_game->set_paused(0, 0);
         return 1;
-    }
-    goto finish;
-
-pause_cleanup:
-    if (rge_base_game->singlePlayerGame() == 1 &&
-        rge_base_game->save_paused == 0) {
-        rge_base_game->set_paused(0, 0);
     }
 
 finish:
