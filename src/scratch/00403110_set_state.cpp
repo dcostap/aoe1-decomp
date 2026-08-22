@@ -43,6 +43,16 @@
 //   alias ownership controls this basin, but it saved EBX and added 77 bytes.
 //   The two setter calls still merged.  Keep that variant as the next lead,
 //   not as the source model.
+// - New pass: branch-local receiver, object, master, result, and object-list
+//   aliases all compiled to the clean 618-diff basin.  Function-scope aliases
+//   assigned after has_drop_site also compiled unchanged.
+// - The carried Action_Object/master aliases again duplicated the two lookup
+//   calls, but added EBX and 77 bytes.  A carried receiver alias, const master,
+//   branch result locals, and mixed receiver spelling did not split setters.
+// - An explicit convergence goto after both lookup arms was optimized away.
+//   The original jumps therefore remain a block-layout clue, not a source fix.
+// - Final clean validation for this pass remains 1087 bytes, 618 differing
+//   bytes, 88.25% shape, and 37 rebuilt calls versus 39 original calls.
 
 #include <stdlib.h>
 
