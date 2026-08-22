@@ -14,12 +14,20 @@
 //    0x50*kills. The order follows the original strategic-number call sites.
 // 9: Reused dx/dy across both coordinate blocks. The compiler output is
 //    unchanged, which supports the ordinary shared-local model.
-// 10: Best current check is 1200 bytes, 332 instructions, and 597 differing
-//     bytes. Calls align 31/31 and the frame is 0x40, but the result is not exact.
+// 10: Best prior check was 1200 bytes, 332 instructions, and 597 differing
+//     bytes. Calls aligned 31/31 and the frame was 0x40, but the result was not exact.
 // 11: Restored canonical md->tacticalAI ownership and typed indexed memory
 //     access. Emitted code stayed unchanged.
 // 12: A typed per-iteration memory pointer was natural but lost 65 code bytes.
 //     Restored the indexed form.
+// 13: The original inner count scan tests count before loading ids or storing
+//     remaining. Declaring both inside `if (count > 0)` recovers the test/store
+//     block and improves the retained result to 579 differing bytes.
+// 14: Tested the oracle random-branch polarity, early float kills conversion,
+//     one score expression, and function-scope float locals. They were worse or
+//     codegen duplicates and were restored.
+// 15: Best current check is 1200 bytes, 332 instructions, and 579 differing
+//     bytes. Calls align 31/31, frame is 0x40, and exact-block coverage is 28.53%.
 // Remaining drift is mainly VC5 register and local-home allocation around the
 // initial zero, coordinate scratch, and score locals.
 // Main-agent audit: replaced the generated VPAD padding with the named
@@ -291,9 +299,9 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup2(int group, int* i
                                                 int strategicB9 = this->md->tacticalAI.strategicNumber(0xb9);
                                                 if (strategicB9 > 0) {
                                                     int currentTargetCount = 0;
-                                                    int remaining = count;
-                                                    int* currentID = ids;
-                                                    if (remaining > 0) {
+                                                    if (count > 0) {
+                                                        int* currentID = ids;
+                                                        int remaining = count;
                                                         do {
                                                             RGE_Static_Object* currentObject = this->md->object(*currentID);
                                                             if (currentObject != 0 && currentObject->unitAI() != 0 &&
