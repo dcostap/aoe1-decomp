@@ -37,6 +37,8 @@
 //     natural form: exact size/frame/saved registers, 47 calls, 1493-byte diff.
 // BINARY NOTE: the original null-panel edge targets base action at 0043C80D;
 //     explicit guard forms fixed behavior but added EBX or large structural drift.
+// BINARY NOTE: null music/sound slider objects target the shared destroy tail at
+//     0043C91A, not a direct return; retain those fault and cleanup edges.
 // Next: recover the original parameter homes and separate speed-return blocks
 //     without retaining metric-only control-flow or register-steering forms.
 
@@ -355,12 +357,12 @@ long TribeConfigDialog::action(TPanel* panel, register long event,
                 this->newMusicVolume = param_3;
                 TMusic_System* music = rge_base_game->music_system;
                 if (music == 0) {
-                    return 1;
+                    goto destroy;
                 }
                 music->set_volume(param_3 * -100, 1);
                 TSound_Driver* sound = rge_base_game->sound_system;
                 if (sound == 0) {
-                    return 1;
+                    goto destroy;
                 }
                 slider_sound = sound;
                 param_3 = this->newSoundVolume;
@@ -370,7 +372,7 @@ long TribeConfigDialog::action(TPanel* panel, register long event,
                 this->newSoundVolume = param_3;
                 slider_sound = rge_base_game->sound_system;
                 if (slider_sound == 0) {
-                    return 1;
+                    goto destroy;
                 }
                 goto slider_sound_call;
             }
