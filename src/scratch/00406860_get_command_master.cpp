@@ -133,6 +133,18 @@
 //   dereferences the task list and its vtable between different incoming
 //   argument reads. This changes pointer-fault order and the call preparation
 //   context. Register coloring alone does not explain that observable drift.
+// - 2026-08-22 follow-up: a 48-variant lab covering guard, first-call, loop, and
+//   two ambient declaration states produced four basins and no exact result.
+//   The canonical 221/143 basin remained invariant across all 36 size-valid
+//   variants. A group-byte alias reached 120 positional bytes, but changed the
+//   first call's setup and was rolled back. The natural owner alias reached
+//   106 bytes and 52.94% exact blocks, but reused [esp+14] for the owner pointer;
+//   the binary proves that home belongs to i, so it is diagnostic only.
+// - A volatile i plus owner alias produced the original target=EBX and z=EBP
+//   allocation and 81.18% exact blocks, but added 23 bytes of volatile memory
+//   traffic. Reference, aggregate, address-taken, early-init, and isolated
+//   volatile-index forms did not reduce that traffic. Clean direct member
+//   source remains authoritative; no accepted-drift promotion is supported.
 
 class RGE_Static_Object;
 class RGE_Action_Object;
