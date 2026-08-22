@@ -69,6 +69,17 @@
 //   before the third palette store. The original does both after that store.
 //   A fault on the third store therefore has a different register and loop
 //   context, although successful output and cleanup match.
+// - New claim: restored the binary-supported int* packed-chunk owner and the
+//   ordinary chunk counter. Natural packet update order
+//   now preserves the original type-0x0B store/fault order.  Strict diff fell
+//   from 261 to 212 bytes; size, frame, and all seven calls remain exact.
+// - New claim: signed-byte packet reads and two explicit header increments
+//   recovered more original blocks (60.39% versus 47.40%), but strict diff
+//   rose to 254 bytes.  Restore the typed two-byte packet header because it
+//   is the smaller supported source basin.
+// - New claim: raw frame-address, long-index, unused FrameHead, and split
+//   temp-counter declarations were codegen duplicates.  The unresolved
+//   first gap remains the original frame-header reload and ECX/ESI coloring.
 
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 extern "C" void __cdecl free(void* block);
@@ -118,12 +129,6 @@ struct PalettePacket {
     signed char count;
 };
 
-struct PaletteChunk {
-    long size;
-    short type;
-    short packets;
-};
-
 class RGE_Flic_Player {
 public:
     unsigned char* flic_buffer;
@@ -150,8 +155,8 @@ public:
 void RGE_Flic_Player::palette(tagRGBQUAD* palette)
 {
     FrameHead* framehead;
-    PaletteChunk* chunk;
-    PaletteChunk* frame_buffer = 0;
+    int* chunk;
+    int* frame_buffer = 0;
     int packets;
     int color_index;
 
@@ -159,32 +164,31 @@ void RGE_Flic_Player::palette(tagRGBQUAD* palette)
         framehead = (FrameHead*)calloc(1, 0x10);
         lseek(this->flic_handle, (int)this->flichead.oframe2, 0);
         read(this->flic_handle, framehead, 0x10);
-        chunk = (PaletteChunk*)calloc(framehead->size, 1);
+        chunk = (int*)calloc(framehead->size, 1);
         frame_buffer = chunk;
         read(this->flic_handle, chunk, framehead->size);
     } else {
         framehead = (FrameHead*)this->flichead.oframe2;
-        chunk = (PaletteChunk*)((char*)framehead + 0x10);
+        chunk = (int*)((char*)framehead + 0x10);
     }
 
     int chunk_index = 0;
     if (0 < framehead->chunks) {
         do {
-            if (chunk->type == 4) {
-                packets = chunk->packets;
+            if ((short)chunk[1] == 4) {
+                packets = *(short*)((char*)chunk + 6);
                 color_index = 0;
-                unsigned char* packet = (unsigned char*)(chunk + 1);
+                unsigned char* packet = (unsigned char*)chunk + 6;
                 if (0 < packets) {
                     int packet_count = packets;
                     do {
                         PalettePacket* packet_header = (PalettePacket*)packet;
                         int count = packet_header->count;
                         color_index += packet_header->skip;
-                        packet++;
+                        packet = (unsigned char*)(packet_header + 1);
                         if (count == 0) {
                             count = 0x100;
                         }
-                        packet++;
                         if (0 < count) {
                             unsigned char* green = &palette[color_index].rgbGreen;
                             color_index += count;
@@ -196,8 +200,9 @@ void RGE_Flic_Player::palette(tagRGBQUAD* palette)
                                 green[0] = input[1];
                                 ((tagRGBQUAD*)(green - 1))->rgbBlue = input[2];
                                 green += 4;
+                                color_count--;
                                 input = next;
-                            } while (--color_count != 0);
+                            } while (color_count != 0);
                             packet = input;
                         }
                         packet_count--;
@@ -205,42 +210,41 @@ void RGE_Flic_Player::palette(tagRGBQUAD* palette)
                 }
             }
 
-            if (chunk->type == 0x0B) {
-                packets = chunk->packets;
+            if ((short)chunk[1] == 0x0B) {
+                packets = *(short*)((char*)chunk + 6);
                 color_index = 0;
-                unsigned char* packet = (unsigned char*)(chunk + 1);
+                unsigned char* packet = (unsigned char*)chunk + 6;
                 if (0 < packets) {
                     int packet_count = packets;
                     do {
                         PalettePacket* packet_header = (PalettePacket*)packet;
                         int count = packet_header->count;
                         color_index += packet_header->skip;
-                        packet++;
+                        packet = (unsigned char*)(packet_header + 1);
                         if (count == 0) {
                             count = 0x100;
                         }
-                        packet++;
                         if (0 < count) {
                             tagRGBQUAD* color = palette + color_index;
                             color_index += count;
                             int color_count = count;
                             unsigned char* green = &color->rgbGreen;
-                            unsigned char* input = packet;
                             do {
+                                green[1] = (unsigned char)(packet[0] << 2);
+                                green[0] = (unsigned char)(packet[1] << 2);
+                                ((tagRGBQUAD*)(green - 1))->rgbBlue =
+                                    (unsigned char)(packet[2] << 2);
+                                packet += 3;
+                                color_count--;
                                 green += 4;
-                                green[-3] = (unsigned char)(input[0] << 2);
-                                green[-4] = (unsigned char)(input[1] << 2);
-                                green[-5] = (unsigned char)(input[2] << 2);
-                                input += 3;
-                            } while (--color_count != 0);
-                            packet = input;
+                            } while (color_count != 0);
                         }
                         packet_count--;
                     } while (packet_count != 0);
                 }
             }
 
-            chunk = (PaletteChunk*)((char*)chunk + chunk->size);
+            chunk = (int*)((char*)chunk + *chunk);
             chunk_index++;
         } while (chunk_index < (int)framehead->chunks);
     }
