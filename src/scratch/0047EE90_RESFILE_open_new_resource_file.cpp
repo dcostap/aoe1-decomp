@@ -54,6 +54,11 @@
 //   executable runs INT3 at 0047F00B before the error dialog. The natural
 //   rebuild goes directly to MessageBoxA. Inline assembly is forbidden, and a
 //   DebugBreak call would change stack and exception context. Keep in scratch.
+// - fresh audit: inventory body ranges are 0047EE90-0047F00B, 0047F027-0047F075,
+//   and 0047F122-0047F173. The rebuilt matches each range's instruction shape;
+//   the checker still compares them as one contiguous stream. Its four extra
+//   calls are the header-error, list-validation, and version blocks owned by
+//   0047F00C/0047F076, not a missing API or cleanup operation in this source.
 
 #include <stdlib.h>
 #include <string.h>
