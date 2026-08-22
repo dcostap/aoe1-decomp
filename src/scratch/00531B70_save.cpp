@@ -27,6 +27,11 @@
 //   static object types while keeping their observed offsets; this corrected the member ABI
 //   spelling to UAEX without changing the 432-byte codegen basin. A post-ID typed alias was
 //   also neutral, so the direct member expression remains the simplest source model.
+// - This pass tested a period-plausible RGE_Object base for static-object id, a target local
+//   before the id read, an opaque target_obj field, two split target_obj guards, an opaque
+//   owner field, and opposite target-local use. The first, second, third, fifth, and sixth
+//   probes duplicated the 432-byte basin. Split guards grew the body to 572 bytes. All were
+//   restored. The oracle's extra target_obj reload still needs the rejected volatile probe.
 
 struct RGE_Player {
     virtual ~RGE_Player();
