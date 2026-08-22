@@ -29,6 +29,8 @@
 // - Tested typed result locals with a final return and an explicit done label. VC5 either
 //   canonicalized them to the same two-epilogue basin or widened the mismatch to 495/530 bytes;
 //   initialized result also changed the frame to 0xC. Restored the clean source.
+// - Tried a register-qualified ideal_x to explain the original pre-save x load; VC5 emitted
+//   the same 614-byte basin, so the clean natural source remains authoritative.
 
 class TPanel {
 public:
