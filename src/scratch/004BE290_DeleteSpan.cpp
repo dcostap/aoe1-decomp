@@ -41,6 +41,10 @@
 // reload and 531-byte size, but widened strict drift; restored the clean basin.
 // revisit declaration and row-index aliases were codegen duplicates. No exact
 // source lead was found; retain the cleanest natural typed deletion source.
+// Accepted-drift audit: do not promote. The original stores the retained-head
+// value at [esp+10h] before the GetNode call. The rebuild delays the same stack
+// store until after GetNode. This changes helper-visible caller stack state.
+// The remaining 12-byte resynchronized difference is therefore observable.
 
 #include <stdlib.h>
 
