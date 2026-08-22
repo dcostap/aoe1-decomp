@@ -57,6 +57,16 @@
 //   indexed address forms, list_type offset reuse, and a combined allocation
 //   guard all reproduced 380 bytes and 223 differing bytes. The pinned typed
 //   source is restored; direct EDI scan-base allocation remains unresolved.
+// - Claim probes confirmed the blocker source shape. Reversing the calloc
+//   arguments produced the wrong push order and 222 differing bytes. Reversed
+//   addition, named and split length locals, sizeof(char), explicit width
+//   casts, a unit local, and equivalent arithmetic all reproduced the 380-byte
+//   basin. The natural calloc(strlen(text) + 1, 1) source is restored.
+// - Binary evidence: the target pushes 1 then the scanned length after the
+//   first REPNE scan, so its C argument order is calloc(strlen(text) + 1, 1).
+//   Exact donor 00472440 uses the same natural call but VC5 emits push 1 before
+//   its scan. The remaining order is TU or expression-context sensitive; no
+//   tested period-plausible form restores the target fault context.
 // BLOCKER: the rebuild pushes calloc's constant second argument before the
 // first REPNE string scan. The executable pushes it after the scan. An invalid
 // list_info text pointer therefore reaches an exception handler with a
