@@ -42,6 +42,19 @@
 // - Twenty-five source and context probes, plus a six-variant declaration and
 //   width lab, did not recover the initial register colors or coordinate FPU
 //   homes.  The remaining drift is structural and not accepted-drift-safe.
+//
+// Revisit sa-0ec82117-r1:
+// - The clean pointer-alias candidate remains the smallest checked source with
+//   the exact frame and all 10 ordered calls: 759 effective bytes, 686 diff.
+// - Rechecked declaration order, function-scope mode and coordinate locals,
+//   staged coordinate arithmetic, max-id operand order, a tile alias, and a
+//   top-tested node loop. These were duplicates or worse and were discarded.
+// - The short-circuit replacement scan gives 742 bytes and 50.62% block
+//   coverage, but it removes a target cleanup CFG block. It is not retained.
+// - The first structural divergence is +0x3B: the executable carries the
+//   initial count in DX and the terrain base in ECX. The clean source emits BP
+//   and EDX. The next useful lead is the original map.cpp local lifetime or TU
+//   context, not metric-only register steering.
 
 extern "C" int __cdecl debug_rand(char*, int);
 
