@@ -33,6 +33,9 @@
 //   conversion, and distance schedule can alter candidate points and path-call
 //   arguments. Those values select the final move target and published action
 //   state, so matching call count and frame do not prove equivalent behavior.
+// - A local 39-slot placeholder vtable recovered the original UAE symbol.
+//   Main review rejected this manual virtual surface. The canonical shared
+//   UnitAIModule declaration needs a separate reviewed vtable correction.
 
 #include "../../include/game_globals.h"
 #include "../../include/unit_ai_module.h"
