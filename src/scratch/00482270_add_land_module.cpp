@@ -32,6 +32,13 @@
 //   as fake source volatility, and the clean 937-byte source is restored.
 //   Volatile height, named width, direct indexing, and explicit parameter-byte
 //   aliases were worse or nonproductive. Calls and ownership remain aligned.
+// - Follow-up probes used a literal rmm_cntr.cpp path, a base destructor
+//   declaration, function-scope info/cursor/zero/inner/x/y locals, and a typed
+//   land-line cursor. The literal and destructor were codegen-neutral. The
+//   local variants were neutral; the typed cursor was worse.
+// - PDB line order supports an inner switch order of cases 2/3/4, 1, and 0.
+//   That order raised shape to 86.03% and exact blocks to 37.29%, but increased
+//   strict diff from 937 to 945 bytes. It is not retained over the clean source.
 // GIVEUP: unresolved VC5 register coloring keeps this in EBP/ESI/EDI shapes
 // where the oracle uses EBX/EDI/ESI/EBP. The clean source remains pinned.
 
