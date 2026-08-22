@@ -38,6 +38,14 @@
 //   of original blocks and 304 differing bytes, but emitted 444 bytes. While,
 //   goto, and point-alias variants kept that size excess, so the exact-size
 //   430-byte natural source remains the clean reconstruction.
+// - Claim pass: moving the sentinel before the outer guard worsened drift to
+//   350 bytes; moving it into the do-loop was codegen-duplicate. Explicit
+//   groupID sequencing aligned all 16 calls but worsened drift to 363 bytes
+//   through register and point-home changes. Bool, register, pointer, and
+//   reference variants did not improve that basin.
+// - Claim pass: a sentinel volatile qualifier was codegen-duplicate. A
+//   sentinel-tested while loop reached 393 bytes. Reordering declarations was
+//   duplicate. The direct assist guard remained 304 bytes but exceeded size.
 
 #include <math.h>
 
