@@ -80,6 +80,9 @@
 //   diff, 72.82% shape, 0x44 frame, 11/11 calls, and 82/82 conditional CFG signals.
 //   A four-way edge-order variant lab found no exact result; the original lbrt order remained
 //   the smallest source and size basin. No exact result was reached.
+// - Follow-up: a cursor from one tile's objects.list member to the next improved
+//   the strict diff to 1706 bytes. It required pointer arithmetic across member
+//   subobjects, so it was rejected. Keep typed row and tile indexing.
 //
 // LEFT IN SCRATCH: semantically faithful, period-plausible reconstruction reproducing the
 //   original placement box. Best recorded state: 1718B strict diff, 67.21% resync similarity,
