@@ -35,6 +35,18 @@
 // - probes 21-28: restored the md-player visibility receiver and the
 //   DAT_00575564 distance threshold from assembly. Reusing the scan index and
 //   moving targetDistance to function scope changed little; no exact result.
+// - probe 31: one function-scope wallObjects object removed two required
+//   operator_delete sites and worsened the frame. Block-local arrays remain.
+// - probe 33: a direct invalid-commander return added cleanup exits and made
+//   the function 148 bytes larger. The shared zero-return tail remains.
+// - probe 35: a named kills factor added a stack slot and worsened the frame.
+// - probe 37: sequential score accumulation in 0x50, 0x4D, 0xB8 order reduced
+//   the positional diff by one byte and improved shape and resynchronization.
+// - probes 38-39: commanderZone reorder was codegen-neutral; function-scope
+//   score factors were one byte worse. Both use the smaller natural form.
+// - probe 41: one timeKillRatio local preserves hp/damage-before-time order
+//   and improved shape without changing size or calls. Probe 42 was a codegen
+//   duplicate after promoting that local to function scope.
 
 // BINARY NOTE: visibility uses this module's md->player map, not the target
 // owner's map. The executable loads md->player before visible.
@@ -688,12 +700,12 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
     int owner, TacticalAIGroup* group, AttackState* state, unsigned long currentTime)
 {
     ObjectMemory* wonder = 0;
+    unsigned char commanderZone;
     RGE_Static_Object* commanderObject = this->md->object(group->commander());
     int commanderIsBoat = 0;
     float targetDistance;
     int commanderIsPriest = 0;
     int destroyIndex = 0;
-    unsigned char commanderZone;
 
     if (commanderObject == 0 || commanderObject->unitAI() == 0) {
         state->active = 0;
@@ -849,7 +861,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
         }
 
         float damage = this->damageInflictedPerSecond(group, target);
-        float healthOverDamage = target->hp / damage;
+        float killTimeRatio = target->hp / damage;
         float killTime = this->timeToBeKilled(group, target);
         if (damage == DAT_00575580) {
             continue;
@@ -857,7 +869,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
         if (killTime == DAT_00575580) {
             continue;
         }
-        float killTimeRatio = killTime / healthOverDamage;
+        killTimeRatio = killTime / killTimeRatio;
 
         int dx = (int)memory->x - (int)target->world_x;
         if (dx < 0) {
@@ -928,10 +940,12 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
         }
 
         float score =
-            (float)this->md->tacticalAI.strategicNumber(0xB8) * killTimeRatio +
-            (float)this->md->tacticalAI.strategicNumber(0x4D) / targetDistance +
-            (float)this->md->tacticalAI.strategicNumber(0x50) * memory->kills +
-            nonWallFactor + currentTargetFactor + attackAttemptFactor +
+            (float)this->md->tacticalAI.strategicNumber(0x50) * memory->kills;
+        score +=
+            (float)this->md->tacticalAI.strategicNumber(0x4D) / targetDistance;
+        score +=
+            (float)this->md->tacticalAI.strategicNumber(0xB8) * killTimeRatio;
+        score += nonWallFactor + currentTargetFactor + attackAttemptFactor +
             sameZoneFactor + randomFactor;
 
         if (state->bestTargetID != -1 && score <= state->bestTargetValue) {
