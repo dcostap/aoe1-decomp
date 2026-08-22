@@ -13,19 +13,21 @@
 //   statistics arrays with the same one-based ownership.
 // - Next lead: the original switch emits mode 6 before mode 5; keep that
 //   compiler handler order rather than numeric source order.
-// - Removed the loop-local victory pointer: the oracle carries each player
-//   pointer and rereads player->victory_conditions at every helper call.
+// - Keep each player pointer inside its row loop. The code rereads
+//   player->victory_conditions at every helper call.
 // - Policy cleanup: replaced the fake panel slot surface with named same-TU
 //   TPanel/TTextPanel inheritance and recovered the panel field ownership.
 // - Policy cleanup: replaced raw player byte offsets with players[index].
 // - BINARY NOTE: the entry block zeroes only the final 19 bytes of temptxt.
-//   The natural aggregate initialization below emits a full zero fill instead.
-//   The exact tail stores still need a natural source explanation.
+//   The partial memset emits those stores with the canonical panel surface.
+// - BINARY NOTE: a while loop with a separate remaining count preserves the
+//   original count test and row update order.
 // - BINARY NOTE: mode 0 disables backButton; mode 6 enables time_line.
 //   These values are opposite to the first clean reconstruction.
-// - Exact baseline: the prior raw-cursor source matched 3205 bytes. This
-//   policy cleanup changes 2928 bytes because VC5 emits a different init and
-//   typed-index setup. Do not restore the rejected raw forms.
+// - Natural checkpoint: long mode, partial memset, loop-local players, and
+//   while loops reduce the strict difference to 43 bytes.
+// - The remaining five hunks move each initial index store after its row LEA.
+//   Do not restore the rejected raw cursor or fake virtual surface.
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -327,14 +329,14 @@ public:
     TShape* win_decal;                            // +0x5F0
     Time_Line_Panel* time_line;                   // +0x5F4
 
-    void set_mode(int mode);
+    void set_mode(long mode);
 };
 
-void TribeAchievementsScreen::set_mode(int mode)
+void TribeAchievementsScreen::set_mode(long mode)
 {
-    RGE_Player* player;
     int player_num = (int)rge_base_game->world->player_num - 1;
-    char temptxt[50] = {0};
+    char temptxt[50];
+    memset(&temptxt[31], 0, sizeof(temptxt) - 31);
 
     rge_base_game->disable_input();
 
@@ -401,7 +403,8 @@ void TribeAchievementsScreen::set_mode(int mode)
             int player_index = 1;
             TTextPanel** row = this->statistics[0] + 1;
             int remaining = player_num;
-            do {
+            while (remaining != 0) {
+            RGE_Player* player;
             player = rge_base_game->world->players[player_index];
 
             itoa(player->victory_conditions->get_victory_points_group(0), temptxt, 10);
@@ -429,7 +432,7 @@ void TribeAchievementsScreen::set_mode(int mode)
             ++player_index;
             row += 7;
             --remaining;
-            } while (remaining != 0);
+            }
         }
         break;
     }
@@ -448,7 +451,8 @@ void TribeAchievementsScreen::set_mode(int mode)
             int player_index = 1;
             TTextPanel** row = this->statistics[0] + 1;
             int remaining = player_num;
-            do {
+            while (remaining != 0) {
+            RGE_Player* player;
             player = rge_base_game->world->players[player_index];
 
             itoa(player->victory_conditions->get_attribute_id(0), temptxt, 10);
@@ -472,7 +476,7 @@ void TribeAchievementsScreen::set_mode(int mode)
             ++player_index;
             row += 7;
             --remaining;
-            } while (remaining != 0);
+            }
         }
         break;
     }
@@ -492,7 +496,8 @@ void TribeAchievementsScreen::set_mode(int mode)
             int player_index = 1;
             TTextPanel** row = this->statistics[0] + 2;
             int remaining = player_num;
-            do {
+            while (remaining != 0) {
+            RGE_Player* player;
             player = rge_base_game->world->players[player_index];
 
             itoa(player->victory_conditions->get_attribute_id(4), temptxt, 10);
@@ -522,7 +527,7 @@ void TribeAchievementsScreen::set_mode(int mode)
             ++player_index;
             row += 7;
             --remaining;
-            } while (remaining != 0);
+            }
         }
         break;
     }
@@ -542,7 +547,8 @@ void TribeAchievementsScreen::set_mode(int mode)
             int player_index = 1;
             TTextPanel** row = this->statistics[0] + 1;
             int remaining = player_num;
-            do {
+            while (remaining != 0) {
+            RGE_Player* player;
             player = rge_base_game->world->players[player_index];
 
             this->time_line->set_active(0);
@@ -570,7 +576,7 @@ void TribeAchievementsScreen::set_mode(int mode)
             ++player_index;
             row += 7;
             --remaining;
-            } while (remaining != 0);
+            }
         }
         break;
     }
@@ -588,7 +594,8 @@ void TribeAchievementsScreen::set_mode(int mode)
             int player_index = 1;
             TTextPanel** row = this->statistics[0] + 1;
             int remaining = player_num;
-            do {
+            while (remaining != 0) {
+            RGE_Player* player;
             player = rge_base_game->world->players[player_index];
 
             itoa(player->victory_conditions->get_attribute_id(17), temptxt, 10);
@@ -613,7 +620,7 @@ void TribeAchievementsScreen::set_mode(int mode)
             ++player_index;
             row += 7;
             --remaining;
-            } while (remaining != 0);
+            }
         }
         break;
     }
