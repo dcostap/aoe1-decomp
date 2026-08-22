@@ -29,6 +29,8 @@
 // Managed pass: explicit returns, positive guards, declaration scopes/order, long widths, reused dropdown temporaries, and stdlib.h context were duplicate or worse.
 // Managed pass: typed branch-local aliases in both selected-object cases raised the call count to 54/55 and separated the two object tails, but worsened the diff to 821 bytes and merged one SetSPAmount site. Keep the baseline.
 // Managed pass: the baseline is exact-size/frame (1375/0x14) with 53/55 static calls; the unresolved blocker is VC5's merged case-6/case-9 SetSPVictoryType/SetSPObject tail and the amount/player/object home permutation.
+// Follow-up: the full decompiler local model and explicit else/return forms stayed at 53/55 calls and did not change the 771-byte diff.
+// BINARY NOTE: the original decorated owner is protected (IAEX); retain protected access even though it does not change body bytes.
 
 extern "C" int __cdecl atoi(const char*);
 
@@ -72,6 +74,7 @@ public:
     TDropDownPanel* victory_tech_list;
     char gap750[0x76C-0x750]; TEditPanel* victory_amount_input;
     char gap770[0x928-0x770]; World* world;
+protected:
     void save_victory_cond_in_scenario(int index);
 };
 #define SCEN (this->world->scenario)
