@@ -44,6 +44,15 @@
 //   pointer, and an explicit default edge were unchanged.  An 8-state variant
 //   lab confirmed only two code groups: the grouped source kept 674 bytes and
 //   the constant-case source grew to 756 bytes.  No exact lead was found.
+// - This claim's focused probes established that first-switch source case order
+//   0, 1, 2, 4, 5, 6, 7, 8, 3 reproduces the target's immediate pushes and
+//   shared -1 tail from +0055 through +00A6.  It reached 419 strict-diff bytes
+//   and 91.46% exact-block coverage, but VC5 emitted 74 bytes of switch-table
+//   data after the function boundary.  Separate second-scan pointers and
+//   declaration-order variants did not change that output.  Repeated ternary
+//   expressions moved the second event pointer to EBX but lost the target's
+//   evaluation order and broad block parity.  The clean grouped source remains
+//   authoritative; the late first-switch case order is the next lead.
 
 #include <string.h>
 
