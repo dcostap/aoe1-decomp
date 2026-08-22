@@ -37,6 +37,13 @@
 // worse. The remaining lead is the compiler's second-pass register and block
 // allocation: original uses EBP for the sentinel and EDI for the boat group,
 // while the clean source uses EBX for the sentinel and EBP for that group.
+// Worker pass: the exact ManagedIntArray donor loop, global allocation
+// spelling, <stddef.h> context, and mutable sentinel all emit this same
+// 2935-byte baseline. An ambient declaration lab with 128 samples found one
+// codegen group and no context lead. The unresolved first nearest-fill loop
+// still has the proven executable backedge at 004FEDCA.
+
+#include <stddef.h>
 
 extern void* operator new(unsigned int);
 extern void operator delete(void*);
@@ -50,14 +57,13 @@ struct ManagedArrayInt {
     int& operator[](int index) {
         if (index > this->maximumSizeValue - 1) {
             int newSize = index + 1;
-            int* newValue = (int*)operator new(newSize * 4);
+            int* newValue = (int*)::operator new(newSize * 4);
             if (newValue != 0) {
-                int j = 0;
-                while (j < this->maximumSizeValue && j < newSize) {
+                int j;
+                for (j = 0; j < this->maximumSizeValue && j < newSize; j++) {
                     newValue[j] = this->value[j];
-                    ++j;
                 }
-                operator delete(this->value);
+                ::operator delete(this->value);
                 this->value = newValue;
                 this->maximumSizeValue = newSize;
             }
@@ -178,7 +184,7 @@ void TribeTacticalAIModule::fillBoatGroups() {
     this->numberUngroupedWarBoats();
     this->numberExtraGroupedWarBoats();
 
-    TacticalAIGroup* const sentinel = &this->groups;
+    TacticalAIGroup* sentinel = &this->groups;
     TacticalAIGroup* group = this->groups.next;
     while (group != sentinel) {
         if (group == 0) {
