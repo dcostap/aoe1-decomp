@@ -43,6 +43,16 @@
 //   common post-branch call is restored.
 // - reusing param_2 as the caller-object home was codegen-neutral and was
 //   rejected as opaque source; retain the named callerObject ownership.
+// - 2026-08-22: moved the relic handler behind a switch dispatch and one
+//   shared late label.  This reproduces the original sub/sub dispatch and
+//   improves ordered calls to 118/119, shape to 85.74%, and exact-block
+//   coverage to 46.21%.  The source-level late label is supported by the
+//   original cold relic and explorer blocks.
+// - 2026-08-22: a ternary coordinate expression removed three __ftol calls
+//   and was rejected.  Keep the branch-local integer coordinate assignments.
+// - 2026-08-22: split the coop call across the near, far-victory, and
+//   far-target arms.  VC5 still emitted 118 calls and no extra __ftol; restore
+//   the shared call form because its shape and call order were weaker.
 // MANAGEDARRAY AUDIT: restored playersToAttack[0] for the index-zero capacity
 // check and removed the fake resize(index) method. This emits identical code.
 // Growth guards, copies, publication, and field offsets now follow the shared
@@ -622,6 +632,13 @@ void TribeTacticalAIModule::notify(int param_1, int param_2, int param_3,
     XYPoint attackPoint;
     XYZPoint point;
     XYZPoint point_fffffff0;
+    ObjectMemory* memory;
+    int relicIndex;
+    int relicCount;
+    RGE_Static_Object* victoryObject;
+    int responseDistance;
+    int coopX;
+    int coopY;
     attackPoint.x = (int)this->md->aiPlayer->world->object(callerID);
     if (param_3 != 0x72 && param_3 != 0x74 && attackPoint.x == 0) {
         return;
@@ -629,42 +646,14 @@ void TribeTacticalAIModule::notify(int param_1, int param_2, int param_3,
 
     entryTime = debug_timeGetTime((char*)0x5880C0, 0x1904);
 
-    if (param_3 != 0x72 && param_3 != 0x74) {
-        if (param_3 != 0x201) return;
-    }
-    else {
-        ObjectMemory* memory;
-        int i;
-        int count;
-
-        if (param_3 == 0x72) {
-            memory = this->md->informationAI.artifactToCapture(-1);
-        }
-        else {
-            memory = this->md->informationAI.ruinToCapture(-1);
-        }
-        if (memory == 0) {
-            return;
-        }
-
-        numberToRespond = this->numberSoldiersWithPriority(100, -1, 1);
-        if (numberToRespond > 3) numberToRespond = 3;
-        count = 0;
-        i = 0;
-        if (this->workingArea.numberValue < 1) return;
-        do {
-            if (numberToRespond <= count) return;
-            RGE_Static_Object* object = this->md->aiPlayer->world->object(this->workingArea[i]);
-            if (object != 0 && object->unitAI() != 0 &&
-                object->canPath(memory->id, 2.0f, 0, 1, -1, -1) != 0) {
-                if (this->taskDefender(this->workingArea[i], memory->id, 2.0f, 100) == 1) {
-                    this->removeFromGroup(this->workingArea[i]);
-                    count = count + 1;
-                }
-            }
-            i = i + 1;
-            if (this->workingArea.numberValue <= i) return;
-        } while (1);
+    switch (param_3) {
+    case 0x72:
+    case 0x74:
+        goto notify_relic;
+    case 0x201:
+        break;
+    default:
+        return;
     }
 
     targetObj = this->md->aiPlayer->world->object(param_4);
@@ -817,11 +806,9 @@ notify_after_owner:
         }
     }
 
-    RGE_Static_Object* victoryObject = this->md->object(
+    victoryObject = this->md->object(
         -1, 0x6D, -1, -1, -1, -1, -1, -1, -1, -1);
-    int responseDistance = 1000;
-    int coopX;
-    int coopY;
+    responseDistance = 1000;
     if (victoryObject != 0) {
         float dx = victoryObject->world_x - targetObj->world_x;
         float dy = victoryObject->world_y - targetObj->world_y;
@@ -964,4 +951,36 @@ notify_next_unit:
             param_3++;
         }
     }
+
+    return;
+
+notify_relic:
+    if (param_3 == 0x72) {
+        memory = this->md->informationAI.artifactToCapture(-1);
+    }
+    else {
+        memory = this->md->informationAI.ruinToCapture(-1);
+    }
+    if (memory == 0) return;
+
+    numberToRespond = this->numberSoldiersWithPriority(100, -1, 1);
+    if (numberToRespond > 3) numberToRespond = 3;
+    relicCount = 0;
+    relicIndex = 0;
+    if (this->workingArea.numberValue < 1) return;
+    do {
+        if (numberToRespond <= relicCount) return;
+        RGE_Static_Object* object =
+            this->md->aiPlayer->world->object(this->workingArea[relicIndex]);
+        if (object != 0 && object->unitAI() != 0 &&
+            object->canPath(memory->id, 2.0f, 0, 1, -1, -1) != 0) {
+            if (this->taskDefender(this->workingArea[relicIndex], memory->id,
+                                   2.0f, 100) == 1) {
+                this->removeFromGroup(this->workingArea[relicIndex]);
+                relicCount = relicCount + 1;
+            }
+        }
+        relicIndex = relicIndex + 1;
+        if (this->workingArea.numberValue <= relicIndex) return;
+    } while (1);
 }
