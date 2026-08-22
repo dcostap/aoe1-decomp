@@ -53,6 +53,10 @@
 //   secondary and look-around timers, tests notify size, then stores all three
 //   timers. The current source stores idle first and clears the offset register
 //   before that test. Do not retain a metric-only scheduling workaround.
+// - Accepted-drift audit: do not promote. The executable reads notifyQueueSize
+//   before publishing the updated idle timer. The rebuild publishes idle first.
+//   The executable also writes currentOrderPriority to a stack home before later
+//   helper calls; the rebuild omits that helper-visible stack publication.
 
 #include <stdio.h>
 
