@@ -51,6 +51,16 @@
 // registers, and two ordered calls. Exactness still needs the target's switch
 // body layout and y-field anchor; raw shifted cursors and compiler steering
 // are not allowed. Rebuild-validated, pinned, and paused unresolved.
+// Current worker probes: area*3*10/100 was codegen-neutral; PDB/decompiler
+// case order 0/1/2 then 3/4 worsened shape and diff. A binary-supported
+// default goto past terrain[1] defaults adds an exact default CFG island and
+// preserves the target's uninitialized invalid-type path; it keeps diff 262.
+// The exact same-TU y-field cursor improved shape to 83.72% but remains raw
+// cursor plumbing, so the typed hot-spot loop is retained. The reviewed base
+// destructor declaration was codegen-neutral and is retained for ABI context.
+// Final current basin: diff 262, size 414, shape 80.62%, exact blocks 35.77%,
+// no frame, four saved registers, and two ordered calls. First structural
+// divergence remains the switch tail-merged second-size arithmetic.
 
 #include <new.h>
 
@@ -59,6 +69,7 @@ class RGE_Map;
 class RGE_Random_Map_Module {
 public:
     virtual unsigned char generate();
+    virtual ~RGE_Random_Map_Module();
 
     void* parent;
     void* list;
@@ -190,12 +201,16 @@ void RGE_RMM_Controller::add_terrain_module(RGE_Terrain_Info& terrain_info,
         terrain_info.terrain[1].clumps = 7;
         terrain_info.terrain[1].terrain_size = area * 30 / 100;
         break;
+
+    default:
+        goto after_terrain_defaults;
     }
 
     terrain_info.terrain[1].base_terrain_type = 0;
     terrain_info.terrain[1].terrain_generated = 0;
     terrain_info.terrain[1].spacing = 0;
 
+after_terrain_defaults:
     int i = 0;
     terrain_info.hot_spot_num = land_info.land_num;
     if (terrain_info.hot_spot_num > 0) {
