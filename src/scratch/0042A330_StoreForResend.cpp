@@ -36,6 +36,9 @@
 // EBX-self/EBP-slot coloring remain unresolved.
 // Main review replaced the explicit allocation call and handwritten copy loop
 // with ordinary new[] and memcpy ownership.
+// Fresh diagnostics used a byte-offset table scan, explicit operator new,
+// and handwritten payload-copy loops. Main review rejected these forms as
+// compiler-facing plumbing. Keep typed RESENDER iteration, new[], and memcpy.
 // left in scratch: behavior and layout modeled, but logging argument order/register allocation and copy-loop lowering remain broad; not accepted-drift-safe.
 
 #include <string.h>
