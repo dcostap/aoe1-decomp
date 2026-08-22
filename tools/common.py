@@ -12,6 +12,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 CONFIG_DIR = REPO_ROOT / "config"
+TRANSLATION_UNITS_PATH = CONFIG_DIR / "translation_units.json"
 INVENTORY_DIR = REPO_ROOT / "inventory"
 BUILD_DIR = REPO_ROOT / "build"
 PDB_INVENTORY_DIR = INVENTORY_DIR / "pdb"
@@ -291,6 +292,123 @@ def function_slug(record: dict[str, str]) -> str:
     return f"{record['va'].upper()}_{slugify_name(record['name'])}"
 
 
+@lru_cache(maxsize=1)
+def load_translation_units() -> list[dict[str, object]]:
+    if not TRANSLATION_UNITS_PATH.exists():
+        return []
+    payload = load_json(TRANSLATION_UNITS_PATH)
+    groups = payload.get("translation_units")
+    if not isinstance(groups, list):
+        raise ValueError("config/translation_units.json: translation_units must be a list")
+    normalized: list[dict[str, object]] = []
+    seen_vas: set[str] = set()
+    for group in groups:
+        if not isinstance(group, dict):
+            raise ValueError("config/translation_units.json: each translation unit must be an object")
+        name = str(group.get("name") or "").strip()
+        source = str(group.get("source") or "").strip()
+        owners = group.get("owners")
+        if not name or not source or not isinstance(owners, dict) or not owners:
+            raise ValueError(
+                "config/translation_units.json: each unit needs name, source, and owners"
+            )
+        owner_map: dict[str, str] = {}
+        for raw_va, owner in owners.items():
+            va = str(raw_va).upper()
+            if len(va) != 8 or any(character not in "0123456789ABCDEF" for character in va):
+                raise ValueError(f"config/translation_units.json: invalid owner VA {raw_va!r}")
+            if va in seen_vas:
+                raise ValueError(f"config/translation_units.json: VA {va} appears in multiple units")
+            owner_path = str(owner).replace("\\", "/").strip()
+            if not owner_path:
+                raise ValueError(f"config/translation_units.json: empty owner path for {va}")
+            seen_vas.add(va)
+            owner_map[va] = owner_path
+        flags = str(group.get("flags") or "").replace("\\", "/").strip()
+        normalized.append(
+            {
+                "name": name,
+                "source": source.replace("\\", "/"),
+                "flags": flags,
+                "owners": owner_map,
+            }
+        )
+    return normalized
+
+
+def translation_unit_for_va(va: int) -> dict[str, object] | None:
+    target = f"{va:08X}"
+    for group in load_translation_units():
+        owners = group["owners"]
+        if isinstance(owners, dict) and target in owners:
+            validate_translation_unit(group)
+            return group
+    return None
+
+
+def translation_unit_for_source(source_path: Path) -> dict[str, object] | None:
+    try:
+        relative = source_path.resolve().relative_to(REPO_ROOT.resolve())
+    except ValueError:
+        return None
+    normalized = str(relative).replace("\\", "/")
+    for group in load_translation_units():
+        if str(group["source"]) == normalized:
+            validate_translation_unit(group)
+            return group
+    return None
+
+
+def validate_translation_unit(group: dict[str, object]) -> None:
+    """Verify that one wrapper includes each configured owner exactly once."""
+    source = repo_path(str(group["source"]))
+    owners = group.get("owners")
+    if not source.is_file() or not isinstance(owners, dict):
+        raise ValueError(f"translation unit is incomplete: {source}")
+    try:
+        source_parent = source.resolve().parent
+        source_text = source.read_text(encoding="utf-8")
+    except OSError as error:
+        raise ValueError(f"cannot read translation unit {source}: {error}") from error
+    for va, owner in owners.items():
+        owner_path = repo_path(str(owner))
+        if not owner_path.is_file():
+            raise ValueError(f"translation unit owner {va} is missing: {owner_path}")
+        canonical_owner = preferred_source_path(function_record_by_va(int(str(va), 16))).resolve()
+        if owner_path.resolve() != canonical_owner:
+            raise ValueError(
+                f"translation unit owner {va} is not its canonical source: "
+                f"{owner_path} != {canonical_owner}"
+            )
+        try:
+            include_name = str(owner_path.resolve().relative_to(source_parent)).replace("\\", "/")
+        except ValueError as error:
+            raise ValueError(f"owner {owner_path} is outside wrapper directory {source_parent}") from error
+        count = sum(
+            1
+            for line in source_text.splitlines()
+            if line.strip() == f'#include "{include_name}"'
+        )
+        if count != 1:
+            raise ValueError(
+                f"translation unit {source} must include owner {owner} exactly once; found {count}"
+            )
+
+
+def compiler_source_path(record: dict[str, str]) -> Path:
+    group = translation_unit_for_va(int(record["va"], 16))
+    if group is not None:
+        return repo_path(str(group["source"]))
+    return preferred_source_path(record)
+
+
+def compiler_artifact_slug(record: dict[str, str]) -> str:
+    group = translation_unit_for_va(int(record["va"], 16))
+    if group is not None:
+        return f"tu_{slugify_name(str(group['name']))}"
+    return function_slug(record)
+
+
 def preferred_source_path(record: dict[str, str]) -> Path:
     slug = function_slug(record)
     candidates = [
@@ -418,6 +536,9 @@ def byte_diff_metrics(left: bytes, right: bytes) -> dict[str, int | float | str 
 
 
 def preferred_flags_rsp_path(record: dict[str, str], toolchain: dict) -> Path:
+    group = translation_unit_for_va(int(record["va"], 16))
+    if group is not None and str(group.get("flags") or ""):
+        return repo_path(str(group["flags"]))
     slug = function_slug(record)
     candidate = CONFIG_DIR / "flags" / f"{slug}.rsp"
     if candidate.exists():

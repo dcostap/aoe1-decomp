@@ -1,5 +1,6 @@
 extern const double g_zero_double;
-class RGE_Zone_Map { public: char pad_00[0x510]; float* terrain_passability_rules; int terrain_passability_rules_num; RGE_Zone_Map* check_info(float* input, long count); };
+#include "../../include/rge_zone_map_context.h"
+
 RGE_Zone_Map* RGE_Zone_Map::check_info(float* input, long count) {
     int n = this->terrain_passability_rules_num;
     if (count == n) {

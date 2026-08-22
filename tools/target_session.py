@@ -15,6 +15,8 @@ from pathlib import Path
 from build_cache import build_input_manifest, build_manifest_matches
 from common import (
     REPO_ROOT,
+    compiler_artifact_slug,
+    compiler_source_path,
     function_record_by_va,
     function_slug,
     load_toolchain,
@@ -314,7 +316,8 @@ def _metrics_path(record: dict[str, str]) -> Path:
 
 def _artifact_freshness(record: dict[str, str]) -> tuple[bool, str]:
     slug = function_slug(record)
-    source = preferred_source_path(record)
+    build_slug = compiler_artifact_slug(record)
+    source = compiler_source_path(record)
     if not source.exists():
         return False, "living source is missing"
     try:
@@ -323,8 +326,8 @@ def _artifact_freshness(record: dict[str, str]) -> tuple[bool, str]:
         fingerprint = str(build_input_manifest(source, flags, toolchain)["fingerprint"])
     except (FileNotFoundError, KeyError, OSError) as error:
         return False, f"cannot fingerprint current inputs: {error}"
-    obj = REPO_ROOT / "build" / "obj" / f"{slug}.obj"
-    manifest = REPO_ROOT / "build" / "manifests" / f"build_{slug}.json"
+    obj = REPO_ROOT / "build" / "obj" / f"{build_slug}.obj"
+    manifest = REPO_ROOT / "build" / "manifests" / f"build_{build_slug}.json"
     rebuilt = REPO_ROOT / "build" / "asm" / f"rebuilt_{slug}.bin"
     metrics = _metrics_path(record)
     if not build_manifest_matches(manifest, fingerprint, obj):
@@ -560,7 +563,7 @@ def _sha256(path: Path) -> str:
 
 
 def current_input_snapshot(record: dict[str, str]) -> dict[str, object]:
-    source = preferred_source_path(record)
+    source = compiler_source_path(record)
     try:
         toolchain = load_toolchain()
         flags = preferred_flags_rsp_path(record, toolchain)

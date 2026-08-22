@@ -67,22 +67,20 @@
 // - Declaration-only context probes using throw(), inline, implicit, and
 //   __declspec(nothrow) destructor forms all stayed at the 37-byte family.
 //   The exact shared EH cleanup needs the owned body to be visible in this TU.
-//   BLOCKER: no valid single-owner exact form was found.
-// - Ownership architecture audit: build_function.py compiles one source path
-//   selected by VA; no repository tool maps several VAs to one shared TU, and
-//   no source bank contains multiple `// VA:` owners. The exact neighboring
-//   create_zone_map source defines the 005469C0 destructor locally, but that
-//   is the same duplicate-owner pattern rejected here, not a valid precedent.
-//   TOOLING BLOCKER: build_function.py cannot expose that owned destructor body
-//   while compiling this VA without adding a duplicate destructor owner.
+//   NOTE: The historical single-owner context blocker is resolved by the
+//   canonical zone_map translation-unit wrapper below.
+// - Historical ownership audit: build_function.py compiled one source path
+//   selected by VA; no repository tool mapped several VAs to one shared TU.
+//   The exact neighboring create_zone_map source defined the 005469C0 destructor
+//   locally, but that duplicate-owner pattern was rejected. The shared wrapper
+//   below now compiles each VA-named owner once in one real translation unit.
 // - Ten fresh context/ABI probes confirmed the boundary: inline destructor
 //   bodies, generic helper bodies, and declaration-only forms remain 266 B /
 //   37 bytes; an out-of-line empty/free/throw()/nothrow destructor before the
-//   target method reaches MATCH. Moving that definition after the method
-//   returns to 266 B. A generated include before the method also reaches
-//   MATCH, but still emits `??1RGE_Zone_Map@@QAE@XZ` in the target TU.
-//   No policy-valid one-owner shared-TU route exists without build-tool and
-//   source-bank restructuring. Restored the ownership-compliant baseline.
+//   target method reached MATCH. Moving that definition after the method
+//   returned to 266 B. A direct generated include also reached MATCH, but it
+//   emitted a neighboring member symbol in the target TU without owner control.
+//   The old one-source model was restored before the minimal wrapper was added.
 // - Current lease evidence: function-local optimize("g", off), optimize("y", off),
 //   inline_depth(0), stdio.h, memory.h, windows.h, constructor throw(), constructor
 //   __declspec(nothrow), target __declspec(nothrow), and optimize("t", off) were
@@ -94,35 +92,32 @@
 //   check_info declaration does not. An out-of-line check_info body before this
 //   method also produced MATCH / 0.0000%. Both routes expose a preceding
 //   RGE_Zone_Map member definition in the original zone_map.cpp translation unit.
-// - The exact constructor route duplicates the existing 005468C0 owner. The exact
-//   check_info route duplicates the existing 00546E50 owner. Neither is retained.
-//   An inline constructor body removed the constructor call and produced 171 B.
-//   Therefore the exact context is proved, but no single-owner source route exists
-//   under the current build_function.py one-source compilation model.
-// - Restored the declaration-only class and validated the clean source: 266 B,
-//   37 differing bytes, five ordered calls, first mismatch at +0xD9. Drift remains
-//   forbidden while this owner/context boundary is unresolved.
+// - Those direct constructor and check_info routes duplicated existing owners and
+//   were not retained. An inline constructor body removed the constructor call
+//   and produced 171 B. The old one-source model then restored the declaration-
+//   only class: 266 B, 37 differing bytes, first mismatch at +0xD9.
+// - Resolved the owner/context boundary with one canonical translation-unit
+//   wrapper: `src/rge_zone_map_tu.cpp`. The manifest maps 005468C0, 005469C0,
+//   00546E50, and this VA to that wrapper. The wrapper includes each existing
+//   VA-named owner exactly once. `include/rge_zone_map_context.h` supplies the
+//   shared class declarations. The build uses one `tu_zone_map.obj` for the
+//   complete group, then extracts the requested symbol.
+// - BINARY NOTE: a preceding real member body selects the original shared EH
+//   epilogue. The prior constructor-only, destructor-only, and check_info-only
+//   probes each reached MATCH, while the no-body control returned to 266 B / 37
+//   bytes. The retained design uses the full proven zone_map.cpp owner group.
+// - Ownership proof: the shared COFF object has one function symbol each for
+//   the constructor, destructor, check_info, and get_zone_map. The four separate
+//   VA object paths are not emitted by the grouped build. Final validation is
+//   MATCH / 0.0000%, with five ordered calls and 247 bytes.
+// - Follow-up audit rejected the earlier target-only wrapper: both its target
+//   object and the 00546E50 object defined `check_info`. The grouped build now
+//   emits only `build/obj/tu_zone_map.obj`; its COFF table contains one
+//   `check_info` symbol and one `get_zone_map` symbol.
 
 #include <stdlib.h>
 #include <string.h>
-
-class RGE_Map;
-
-class RGE_Zone_Map {
-public:
-    int numberTilesInZoneValue[257];
-    unsigned char* zone_map;
-    unsigned char** zone_map_rows;
-    unsigned char zone_info[257];
-    char gap_50D[3];
-    float* terrain_passability_rules;
-    long terrain_passability_rules_num;
-    RGE_Map* map;
-
-    RGE_Zone_Map(RGE_Map* map, float* terrain_info, long terrain_info_num);
-    ~RGE_Zone_Map();
-    RGE_Zone_Map* check_info(float* terrain_info, long terrain_info_num);
-};
+#include "../../include/rge_zone_map_context.h"
 
 class RGE_Zone_Map_List {
 public:

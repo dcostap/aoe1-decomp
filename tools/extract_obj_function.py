@@ -7,7 +7,14 @@ from pathlib import Path
 from iced_x86 import Decoder, DecoderOptions, FlowControl, Formatter, FormatterSyntax
 
 from coff import find_function_symbol, function_symbol_section, load_coff_object
-from common import ensure_build_subdir, format_hex, function_record_by_va, function_slug, repo_path
+from common import (
+    compiler_artifact_slug,
+    ensure_build_subdir,
+    format_hex,
+    function_record_by_va,
+    function_slug,
+    repo_path,
+)
 
 
 PADDING_BYTES = {0x90, 0xCC}
@@ -134,6 +141,18 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def symbol_matches_record(symbol_name: str, record_name: str) -> bool:
+    """Prefer the decorated constructor/destructor identity in grouped objects."""
+    lowered_symbol = symbol_name.lower()
+    lowered_record = record_name.lower()
+    if lowered_record.startswith("~"):
+        class_name = lowered_record[1:]
+        return lowered_symbol.startswith(f"??1{class_name}@@")
+    if "::" not in record_name and record_name and record_name[0].isupper():
+        return lowered_symbol.startswith(f"??0{lowered_record}@@")
+    return lowered_record in lowered_symbol
+
+
 def main() -> None:
     args = parse_args()
     if not args.va and not args.obj:
@@ -148,14 +167,24 @@ def main() -> None:
     if args.obj:
         obj_path = repo_path(args.obj)
         slug = obj_path.stem
+        obj_slug = slug
     else:
         assert record is not None
         slug = function_slug(record)
-        obj_path = repo_path(Path("build") / "obj" / f"{slug}.obj")
+        obj_slug = compiler_artifact_slug(record)
+        obj_path = repo_path(Path("build") / "obj" / f"{obj_slug}.obj")
 
     obj = load_coff_object(obj_path)
-    wanted_name = "" if record is None else record["name"].lower()
-    symbol = find_function_symbol(obj, lambda candidate: wanted_name in candidate.name.lower())
+    if record is None:
+        symbol = find_function_symbol(obj, lambda candidate: True)
+    elif obj_slug != function_slug(record):
+        symbol = find_function_symbol(
+            obj,
+            lambda candidate: symbol_matches_record(candidate.name, record["name"]),
+        )
+    else:
+        wanted_name = record["name"].lower()
+        symbol = find_function_symbol(obj, lambda candidate: wanted_name in candidate.name.lower())
     section = function_symbol_section(obj, symbol)
 
     expected_size = None if record is None else int(record["size_bytes"], 10)

@@ -5,7 +5,14 @@ import json
 import re
 from pathlib import Path
 
-from common import byte_diff_metrics, ensure_build_subdir, function_record_by_va, function_slug, repo_path
+from common import (
+    byte_diff_metrics,
+    compiler_artifact_slug,
+    ensure_build_subdir,
+    function_record_by_va,
+    function_slug,
+    repo_path,
+)
 from function_diagnostics import (
     basic_blocks,
     block_alignment,
@@ -923,7 +930,7 @@ def main() -> None:
     orig_json = asm_dir / f"orig_{slug}.json"
     rebuilt_bin = asm_dir / f"rebuilt_{slug}.bin"
     rebuilt_json = asm_dir / f"rebuilt_{slug}.json"
-    rebuilt_lines_json = asm_dir / f"rebuilt_{slug}.lines.json"
+    rebuilt_lines_json = asm_dir / f"rebuilt_{compiler_artifact_slug(record)}.lines.json"
     report_path = diff_dir / f"{slug}.txt"
 
     if not orig_bin.exists():

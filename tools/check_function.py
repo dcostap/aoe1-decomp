@@ -9,11 +9,12 @@ from pathlib import Path
 from build_cache import build_input_manifest, build_manifest_matches
 from common import (
     REPO_ROOT,
+    compiler_artifact_slug,
+    compiler_source_path,
     function_record_by_va,
     function_slug,
     load_toolchain,
     preferred_flags_rsp_path,
-    preferred_source_path,
 )
 from function_history import (
     format_checkpoint_comparison,
@@ -209,13 +210,14 @@ def original_artifacts_exist(slug: str) -> bool:
 
 def rebuilt_cache_state(record: dict[str, str], slug: str) -> tuple[bool, bool, str]:
     toolchain = load_toolchain()
-    source_path = preferred_source_path(record)
+    source_path = compiler_source_path(record)
     rsp_path = preferred_flags_rsp_path(record, toolchain)
     fingerprint = str(build_input_manifest(source_path, rsp_path, toolchain)["fingerprint"])
-    obj_path = REPO_ROOT / "build" / "obj" / f"{slug}.obj"
-    manifest_path = REPO_ROOT / "build" / "manifests" / f"build_{slug}.json"
+    build_slug = compiler_artifact_slug(record)
+    obj_path = REPO_ROOT / "build" / "obj" / f"{build_slug}.obj"
+    manifest_path = REPO_ROOT / "build" / "manifests" / f"build_{build_slug}.json"
     asm_dir = REPO_ROOT / "build" / "asm"
-    source_map_path = asm_dir / f"rebuilt_{slug}.lines.json"
+    source_map_path = asm_dir / f"rebuilt_{build_slug}.lines.json"
     build_current = build_manifest_matches(manifest_path, fingerprint, obj_path) and source_map_path.is_file()
     extracted_paths = [
         asm_dir / f"rebuilt_{slug}.bin",

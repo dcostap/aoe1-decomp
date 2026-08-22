@@ -8,29 +8,9 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include "../../include/rge_zone_map_context.h"
 
 typedef unsigned char uchar;
-
-struct RGE_Map {
-    char gap_00[8];
-    long map_width;
-    long map_height;
-};
-
-class RGE_Zone_Map {
-public:
-    int numberTilesInZoneValue[257];
-    uchar* zone_map;
-    uchar** zone_map_rows;
-    uchar zone_info[257];
-    char gap_50D[3];
-    float* terrain_passability_rules;
-    long terrain_passability_rules_num;
-    RGE_Map* map;
-
-    RGE_Zone_Map(RGE_Map* map, float* rules, long rule_count);
-    uchar do_zone_map();
-};
 
 RGE_Zone_Map::RGE_Zone_Map(RGE_Map* map, float* rules, long rule_count)
 {

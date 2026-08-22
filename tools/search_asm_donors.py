@@ -16,6 +16,8 @@ from common import (
     BUILD_DIR,
     INVENTORY_DIR,
     REPO_ROOT,
+    compiler_artifact_slug,
+    compiler_source_path,
     function_record_by_va,
     function_slug,
     load_functions,
@@ -521,11 +523,20 @@ def current_validation(
 ) -> dict[str, object]:
     """Return authoritative current-check evidence for one matching-bank source."""
     slug = str(row["slug"])
-    source = REPO_ROOT / str(row["source_path"])
-    manifest_path = BUILD_DIR / "manifests" / f"build_{slug}.json"
     diff_path = BUILD_DIR / "diff" / f"{slug}.json"
-    if not manifest_path.exists() or not diff_path.exists():
+    if not diff_path.exists():
         return {"status": "unchecked", "reason": "no current build/diff artifact"}
+    try:
+        record = records_by_va[str(row["va"]).upper()]
+    except (KeyError, ValueError) as error:
+        return {"status": "stale", "reason": f"could not resolve source owner: {error}"}
+    try:
+        build_slug = compiler_artifact_slug(record)
+    except KeyError:
+        build_slug = slug
+    manifest_path = BUILD_DIR / "manifests" / f"build_{build_slug}.json"
+    if not manifest_path.exists():
+        return {"status": "unchecked", "reason": "no current build artifact"}
     try:
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
         diff = json.loads(diff_path.read_text(encoding="utf-8"))
@@ -534,7 +545,10 @@ def current_validation(
     if manifest.get("returncode") != 0:
         return {"status": "stale", "reason": "last build failed"}
     try:
-        record = records_by_va[str(row["va"]).upper()]
+        try:
+            source = compiler_source_path(record)
+        except KeyError:
+            source = REPO_ROOT / str(row["source_path"])
         rsp_path = preferred_flags_rsp_path(record, toolchain)
         current = build_input_manifest(source, rsp_path, toolchain)
     except (OSError, KeyError, ValueError) as error:

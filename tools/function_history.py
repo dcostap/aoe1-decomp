@@ -14,7 +14,14 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Iterable
 
-from common import REPO_ROOT, function_slug, preferred_source_path
+from common import (
+    REPO_ROOT,
+    compiler_artifact_slug,
+    function_slug,
+    load_toolchain,
+    preferred_flags_rsp_path,
+    preferred_source_path,
+)
 
 
 _HISTORY_VERSION = 1
@@ -173,23 +180,29 @@ def _refresh_frontier(index: dict) -> None:
         )
 
 
-def _artifact_candidates(slug: str, source_path: Path, custom_flags: Path) -> Iterable[tuple[Path, Path]]:
+def _artifact_candidates(
+    slug: str,
+    source_path: Path,
+    custom_flags: Path,
+    compiler_slug: str | None = None,
+) -> Iterable[tuple[Path, Path]]:
     yield source_path, Path("source") / source_path.name
     effective_flags = custom_flags if custom_flags.exists() else REPO_ROOT / "config" / "flags" / "default.rsp"
     if effective_flags.exists():
         yield effective_flags, Path("flags") / "effective.rsp"
     if custom_flags.exists():
         yield custom_flags, Path("flags") / custom_flags.name
+    build_slug = compiler_slug or slug
     candidates = [
-        REPO_ROOT / "build" / "obj" / f"{slug}.obj",
+        REPO_ROOT / "build" / "obj" / f"{build_slug}.obj",
         REPO_ROOT / "build" / "asm" / f"rebuilt_{slug}.bin",
         REPO_ROOT / "build" / "asm" / f"rebuilt_{slug}.full.bin",
         REPO_ROOT / "build" / "asm" / f"rebuilt_{slug}.json",
         REPO_ROOT / "build" / "asm" / f"rebuilt_{slug}.txt",
-        REPO_ROOT / "build" / "asm" / f"rebuilt_{slug}.lines.json",
+        REPO_ROOT / "build" / "asm" / f"rebuilt_{build_slug}.lines.json",
         REPO_ROOT / "build" / "diff" / f"{slug}.json",
         REPO_ROOT / "build" / "diff" / f"{slug}.txt",
-        REPO_ROOT / "build" / "manifests" / f"build_{slug}.json",
+        REPO_ROOT / "build" / "manifests" / f"build_{build_slug}.json",
     ]
     for path in candidates:
         if path.exists():
@@ -216,6 +229,7 @@ def _record_checkpoint_unlocked(record: dict[str, str], label: str | None = None
     moved to an existing run without creating another artifact copy.
     """
     slug = function_slug(record)
+    compiler_slug = compiler_artifact_slug(record)
     source_path = preferred_source_path(record)
     if not source_path.exists():
         raise FileNotFoundError(f"Missing source for history checkpoint: {source_path}")
@@ -225,7 +239,7 @@ def _record_checkpoint_unlocked(record: dict[str, str], label: str | None = None
         raise FileNotFoundError("A completed check_function run is required before recording history")
 
     metrics = json.loads(metrics_path.read_text(encoding="utf-8"))
-    custom_flags = REPO_ROOT / "config" / "flags" / f"{slug}.rsp"
+    custom_flags = preferred_flags_rsp_path(record, load_toolchain())
     effective_flags = custom_flags if custom_flags.exists() else REPO_ROOT / "config" / "flags" / "default.rsp"
     source_sha = _sha256(source_path)
     flags_sha = _sha256(effective_flags)
@@ -237,7 +251,7 @@ def _record_checkpoint_unlocked(record: dict[str, str], label: str | None = None
         existing["summary"] = _metric_summary(metrics)
         existing["objectives"] = _metric_objectives(metrics)
         existing_run_dir = REPO_ROOT / str(existing["artifact_path"])
-        for source, relative in _artifact_candidates(slug, source_path, custom_flags):
+        for source, relative in _artifact_candidates(slug, source_path, custom_flags, compiler_slug):
             _copy_checkpoint_artifact(source, existing_run_dir, relative)
         if label:
             checked_label = _validate_label(label)
@@ -256,7 +270,7 @@ def _record_checkpoint_unlocked(record: dict[str, str], label: str | None = None
     timestamp = now.strftime("%Y-%m-%dT%H:%M:%SZ")
     run_id = now.strftime("%Y%m%dT%H%M%S.%fZ") + "-" + source_sha[:10]
     run_dir = _history_root(slug) / "runs" / run_id
-    for source, relative in _artifact_candidates(slug, source_path, custom_flags):
+    for source, relative in _artifact_candidates(slug, source_path, custom_flags, compiler_slug):
         _copy_checkpoint_artifact(source, run_dir, relative)
 
     run = {

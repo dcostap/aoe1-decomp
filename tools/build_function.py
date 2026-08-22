@@ -8,11 +8,11 @@ import sys
 from build_cache import build_input_manifest, build_manifest_matches
 from common import (
     ensure_build_subdir,
+    compiler_artifact_slug,
+    compiler_source_path,
     function_record_by_va,
-    function_slug,
     load_toolchain,
     preferred_flags_rsp_path,
-    preferred_source_path,
     repo_path,
     tool_env,
 )
@@ -20,7 +20,9 @@ from source_listing import parse_listing_file
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Compile one source file into a COFF object with the pinned toolchain.")
+    parser = argparse.ArgumentParser(
+        description="Compile one source file or mapped translation unit into a COFF object with the pinned toolchain."
+    )
     parser.add_argument("--va", required=True, help="Function VA in hex, for example 00449750.")
     parser.add_argument("--force", action="store_true", help="Compile even when the input fingerprint is cached.")
     return parser.parse_args()
@@ -30,8 +32,8 @@ def main() -> None:
     args = parse_args()
     va = int(args.va, 16)
     record = function_record_by_va(va)
-    slug = function_slug(record)
-    source_path = preferred_source_path(record)
+    slug = compiler_artifact_slug(record)
+    source_path = compiler_source_path(record)
     if not source_path.exists():
         raise SystemExit(f"Missing source file: {source_path}")
 

@@ -5,7 +5,7 @@ import json
 import re
 from pathlib import Path
 
-from common import CONFIG_DIR, REPO_ROOT, repo_path
+from common import CONFIG_DIR, REPO_ROOT, repo_path, translation_unit_for_source
 
 
 CACHE_SCHEMA = 2
@@ -75,6 +75,11 @@ def build_input_manifest(source_path: Path, rsp_path: Path, toolchain: dict) -> 
         resolved = extra.resolve()
         if resolved not in input_paths:
             input_paths.append(resolved)
+    translation_unit = translation_unit_for_source(source_path)
+    if translation_unit is not None:
+        manifest_path = CONFIG_DIR / "translation_units.json"
+        if manifest_path.is_file() and manifest_path.resolve() not in input_paths:
+            input_paths.append(manifest_path.resolve())
     input_paths.sort(key=_display_path)
     inputs = [
         {
