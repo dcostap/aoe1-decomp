@@ -36,6 +36,20 @@
 //   local for health added a second __ftol call. These forms are rejected.
 // - Decompiler-supported short output locals x3/y1 changed only the stack
 //   frame to 0x4C. Using both changed it to 0x50 and gave 1109 diff bytes.
+// - Replaced manual vptr fields with real polymorphic period surfaces for the
+//   static object, master object, player, map, world, and base-game types.
+//   All observed offsets and emitted bytes stayed unchanged; the source now
+//   follows the exact same-TU ownership model without handwritten vptrs.
+// - Tested the health projection with neg_x3 as its z input because the
+//   original overwrites the radius-z home before that call. VC5 removed the
+//   dead radius load and moved to a 0x44 frame with 1291 differing bytes;
+//   restored the natural radius_z expression, whose home naturally reuses
+//   the negated radius value in emitted code.
+// - Tested the reviewed extern rge_base_game declaration. It changed the
+//   relocation schedule and worsened the result by two bytes, so the target's
+//   absolute global form remains the current local source evidence.
+// - Evaluated radius negation before screen offsets to follow the FPU-first
+//   original block. It worsened shape and strict drift; restored source order.
 //   The clean source remains the best natural checkpoint: 1344 bytes, 0x48
 //   frame, 14 ordered calls, 71.15% shape, 1107 positional diff bytes.
 
@@ -51,7 +65,8 @@ class DClipInfo_List;
 
 class RGE_Map {
 public:
-    char gap_00[0x8D9A];
+    virtual ~RGE_Map();
+    char gap_04[0x8D96];
     short tile_half_height;
     short tile_half_width;
     void get_point(short* out_x, short* out_y, float x, float y, float z,
@@ -60,7 +75,8 @@ public:
 
 class RGE_Game_World {
 public:
-    char gap_00[0x28];
+    virtual ~RGE_Game_World();
+    char gap_04[0x24];
     RGE_Map* map;
     char gap_2C[0x50];
     short curr_player;
@@ -68,7 +84,8 @@ public:
 
 class RGE_Player {
 public:
-    char gap_00[0x3C];
+    virtual ~RGE_Player();
+    char gap_04[0x38];
     RGE_Game_World* world;
     char gap_40[0x0A];
     short id;
@@ -76,7 +93,8 @@ public:
 
 class RGE_Master_Static_Object {
 public:
-    char gap_00[0x26];
+    virtual ~RGE_Master_Static_Object();
+    char gap_04[0x22];
     short hp;
     char gap_28[8];
     float radius_x;
@@ -120,7 +138,8 @@ public:
 
 class RGE_Base_Game {
 public:
-    char gap_00[0x50];
+    virtual ~RGE_Base_Game();
+    char gap_04[0x4C];
     unsigned char outline_type;
     char gap_51[0x15F];
     int prog_mode;                         // +0x1B0
@@ -136,8 +155,8 @@ public:
 
 class RGE_Static_Object {
 public:
-    void* vtable;
-    long id;
+    virtual ~RGE_Static_Object();
+    int id;
     RGE_Master_Static_Object* master_obj;
     RGE_Player* owner;
     void* sprite;
