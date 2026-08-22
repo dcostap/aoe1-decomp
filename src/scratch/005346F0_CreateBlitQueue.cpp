@@ -41,6 +41,25 @@
 // 5/5 jumps, and 1/1 return; unresolved evidence is the original 0x34 local frame and
 // register/stack topology. No policy-valid exact source was found.
 
+// Follow-up sa-476ae437-r1: the original PDB locals show One_Blit as the
+// outside marker, nBlits as the final count, and yd/nBlits sharing a home.
+// Renaming roles alone was duplicate. Reusing nBlits for the absolute-y
+// denominator before its count assignment reduced the mismatch to 664 bytes
+// and raised shape to 68.94%; this is retained as the smallest supported
+// lifetime model. Matching blt_deltaX/Y names and a PDB yd alias were
+// duplicates. Reversing the first two overlap comparisons to source-bound
+// greater-than form raised shape to 69.79% without changing the 664-byte
+// mismatch. A local bounds RECT and SDK windows/tagRECT context were
+// duplicates or worse. The capacity guard written as nBlits greater than
+// allocated raised shape to 70.64%, exact-block coverage to 12.77%, and gave
+// a 665-byte mismatch; this source form is retained because its cmp/jle
+// direction matches the executable. Reversing allocation stores and adding a
+// typed calloc result local were worse or codegen-duplicate. Final current
+// result: 780 bytes, 0x24 frame versus original 0x34, 2/2 ordered calls,
+// 23/23 conditions, 5/5 jumps, 1/1 return, 665 differing bytes. The blocker
+// remains the original four boundary spill slots and prologue register/home
+// topology. No accepted-drift residue is supported.
+
 extern "C" void* __cdecl calloc(unsigned int, unsigned int);
 extern "C" void __cdecl free(void*);
 
@@ -86,74 +105,73 @@ public:
 
 void RGE_View::CreateBlitQueue(tagRECT& param_1, tagRECT& param_2, int param_3, int param_4)
 {
-    int vBlits;
-    int One_Blit;
-    int blt_deltaX;
-    int local_24;
+    int nBlits;
+    int yd;
     tagRECT blt_src;
     int local_4;
-    int outside;
+    int One_Blit = 0;
+    int vBlits;
+    int blt_deltaX;
+    int blt_deltaY;
     int iVar1;
     int iVar2;
     int iVar3;
     int iVar6;
-    int yd_abs;
-    int xd_abs;
+    int xd;
     int off;
     int count;
-    int yd = param_4;
-    outside = 0;
+    yd = param_4;
     if ((param_3 != 0) || (yd != 0)) {
-        if ((param_2.bottom < (iVar6 = param_1.top)) ||
-            (((iVar1 = param_1.left, param_2.right < iVar1 ||
+        if (((iVar6 = param_1.top) > param_2.bottom) ||
+            (((iVar1 = param_1.left, iVar1 > param_2.right ||
               (iVar2 = param_1.bottom, iVar2 < param_2.top)) ||
              (iVar3 = param_1.right, iVar3 < param_2.left)))) {
-            outside = 1;
-            vBlits = 1;
+            One_Blit = 1;
+            nBlits = 1;
             blt_src.left = iVar1;
             blt_src.top = iVar6;
             blt_src.right = iVar3;
             local_4 = iVar2;
         } else {
-            yd_abs = yd;
-            if (yd_abs < 0) yd_abs = -yd_abs;
-            xd_abs = param_3;
-            if (xd_abs < 0) xd_abs = -xd_abs;
-            One_Blit = 9999;
+            nBlits = param_4;
+            if (nBlits < 0) nBlits = -nBlits;
+            xd = param_3;
+            if (xd < 0) xd = -xd;
             vBlits = 9999;
-            if (yd != 0) One_Blit = (yd_abs + (iVar2 - iVar6)) / yd_abs;
-            if (param_3 != 0) vBlits = (xd_abs + (iVar3 - iVar1)) / xd_abs;
+            if (param_4 != 0) vBlits = (nBlits + (iVar2 - iVar6)) / nBlits;
+            nBlits = 9999;
+            if (param_3 != 0) nBlits = (xd + (iVar3 - iVar1)) / xd;
             blt_src.left = param_1.left;
             blt_src.top = param_1.top;
             blt_src.right = param_1.right;
             local_4 = param_1.bottom;
-            local_24 = 0;
             blt_deltaX = 0;
-            if (One_Blit < vBlits) {
-                vBlits = One_Blit;
-                blt_deltaX = param_4;
+            blt_deltaY = 0;
+            if (vBlits < nBlits) {
+                nBlits = vBlits;
+                blt_deltaY = param_4;
                 if (param_4 < 0) blt_src.top = param_4 + iVar2 + 1;
                 else local_4 = param_4 + iVar6 - 1;
             } else {
-                local_24 = param_3;
+                blt_deltaX = param_3;
                 if (param_3 < 0) blt_src.left = param_3 + iVar3 + 1;
                 else blt_src.right = param_3 + iVar1 - 1;
             }
         }
 
-        if (this->Blt_Queue_Allocated < vBlits) {
+        if (nBlits > this->Blt_Queue_Allocated) {
             if (this->Blit_Queue != 0) free(this->Blit_Queue);
             this->Blit_Queue = 0;
         }
         if (this->Blit_Queue == 0) {
-            this->Blit_Queue = (Blit_Queue_Entry*)calloc(vBlits, 0x20);
-            this->Blt_Queue_Allocated = vBlits;
+            this->Blit_Queue = (Blit_Queue_Entry*)calloc(nBlits, 0x20);
+            this->Blt_Queue_Allocated = nBlits;
         }
-        if (outside) {
+        if (One_Blit) {
             this->Blit_Queue[0].src = param_1;
             this->Blit_Queue[0].dest = param_2;
-        } else if (vBlits > 0) {
-            count = vBlits;
+        } else if (nBlits > 0) {
+            count = nBlits;
             off = 0;
             do {
                 long* plVar7 = (long*)((char*)this->Blit_Queue + off);
@@ -165,10 +183,10 @@ void RGE_View::CreateBlitQueue(tagRECT& param_1, tagRECT& param_2, int param_3, 
                 *(int*)((char*)this->Blit_Queue + off + 0x10) = blt_src.left - param_3;
                 *(int*)((char*)this->Blit_Queue + off + 0x1c) = local_4 - param_4;
                 *(int*)((char*)this->Blit_Queue + off + 0x18) = blt_src.right - param_3;
-                blt_src.top += blt_deltaX;
-                local_4 += blt_deltaX;
-                blt_src.left += local_24;
-                blt_src.right += local_24;
+                blt_src.top += blt_deltaY;
+                local_4 += blt_deltaY;
+                blt_src.left += blt_deltaX;
+                blt_src.right += blt_deltaX;
                 if (blt_src.top < param_1.top) blt_src.top = param_1.top;
                 if (blt_src.left < param_1.left) blt_src.left = param_1.left;
                 if (blt_src.right > param_1.right) blt_src.right = param_1.right;
@@ -178,7 +196,7 @@ void RGE_View::CreateBlitQueue(tagRECT& param_1, tagRECT& param_2, int param_3, 
             } while (count != 0);
         }
         this->Queued_Blits = 1;
-        this->Blit_Queue_Size = vBlits;
+        this->Blit_Queue_Size = nBlits;
         this->Current_Blit = -1;
         this->Blit_Offset_X = this->render_rect.left;
         this->Blit_Offset_Y = this->render_rect.top;
