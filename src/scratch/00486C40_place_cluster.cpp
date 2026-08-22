@@ -34,6 +34,14 @@
 // - Explicit next/prev stores, aggregate zero initialization, named zero
 //   locals, float zone, byte equality-to-one, and player aliases were worse or
 //   codegen duplicates. No exact result was found.
+// - New lease evidence: cvdump confirms source locals tile_y/tile_x as floats,
+//   long x/y bounds, and float zone, but adopting that surface added two
+//   __ftol calls and 29 bytes. It was not retained.
+// - Reordering the four bound assignments improved structural shape to 95.47%
+//   but increased positional drift to 900 bytes. It was not retained.
+// - The reviewed RGE_Random_Map_Module base and inherited stack-helper surface
+//   were codegen duplicates. Explicit or narrow-volatile link stores stayed at
+//   911 differing bytes and 981 bytes. The clean source is restored.
 
 extern "C" int __cdecl debug_rand(char* file, int line);
 extern "C" long __cdecl ftol(float);
