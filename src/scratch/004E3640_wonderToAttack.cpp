@@ -29,6 +29,13 @@
 // by four bytes. Main-agent review rejected that metric-only form because the
 // typed ObjectMemory array owns the same proven fields. The typed indexed form
 // remains the clean source. The saved-register basin is still unresolved.
+// r3 worker probes: register player_id, MainDecisionAIModule field typing, and
+// removal of the unsupported TribeInformationAIModule vptr were codegen-neutral.
+// A typed memory alias changed the basin but fell to 439B and 481 differing
+// bytes. An independent late timer test added a 0x1C frame and 514B. A goto
+// form kept 505B and reached 393 differing bytes, but lost CFG shape and was
+// rolled back. Reversed timer operands reached 399 differing bytes and was
+// rolled back. Final validation restores the pinned 505B clean source.
 
 #include <stdlib.h>
 #include <string.h>
