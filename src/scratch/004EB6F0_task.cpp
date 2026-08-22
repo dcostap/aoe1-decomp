@@ -188,6 +188,9 @@
 // - final unresolved pass: case10 keeps an explicit non-firstTime return-one. It improves exact block coverage without changing size or call counts.
 // - final unresolved pass: 20 meaningful hypotheses tested. Current clean result is MISMATCH, 3067/5679 positional bytes, 5679-byte text, 0x1C frame, 99.52% call alignment, and 82.78% resync similarity. Remaining drift is block order, relocation-safe switch-table placement, and register/local topology.
 // - focused second pass: 20 additional natural tail-order and local-topology hypotheses tested against the PDB bands and same-TU donors. Tail inversions, case-tail routing, function-scope XYPoint homes, parameter-home reuse, declaration order, and donor return types did not produce an exact result. All emitted-code changes were rejected; the pinned baseline remains.
+// - third pass: binary assembly showed the case20 Getting-ready log pushes unit and subtype; adding the subtype fixed a real vararg behavior and reduced positional diff to 2569/5679.
+// - third pass: positive non-null target and positive play-number guards match the original fallthrough polarity. The play guard reduced the result to 2549/5679, with 100% ordered call alignment and 61.12% exact-block coverage.
+// - third pass: negative target guard, local declaration order, direct case4 distance assignment, and a corrected do/while scan were tested. The first three were duplicate or neutral; the do/while variant was rejected for size and call drift. Current source is the pinned 2549-byte result.
 
 struct UnitAIModule;
 struct RGE_Master_Static_Object { char pad_00[0x28]; float los; char pad_2c[0x1e]; short owner_id; };
@@ -582,23 +585,22 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical, TribeMainDecisionAIMo
                     if (busyOK == 0 && obj->unitAI()->currentAction() != -1) {
                         TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_63, *unitp);
                 } else {
-                    TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_64, *unitp);
+                    TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_64, *unitp, subTypeValue);
                     if (subTypeValue == 0 || subTypeValue == 4) {
                             TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_65, *unitp, targetValue);
                             tactical->taskDefender(*unitp, targetValue, 2.0f, 100);
                         } else {
                             RGE_Static_Object* targ20 = md->object(targetValue);
-                            // BINARY NOTE: the shipped null-target log has no unit or target arguments.
-                            if (targ20 == 0)
-                                goto case20_target_null;
-                            TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_67, *unitp, targetValue);
-                            tactical->taskAttacker(*unitp, targetLocationValue.x, targetLocationValue.y, targetValue, (int)targ20->owner->id, attackWaypoints, numberAttackWaypointsValue, commanderValue, 1);
+                            if (targ20 != 0) {
+                                TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_67, *unitp, targetValue);
+                                tactical->taskAttacker(*unitp, targetLocationValue.x, targetLocationValue.y, targetValue, (int)targ20->owner->id, attackWaypoints, numberAttackWaypointsValue, commanderValue, 1);
+                            } else {
+                                // BINARY NOTE: the shipped null-target log has no unit or target arguments.
+                                TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_66);
+                            }
                         }
                     }
                 }
-                goto case20_next;
-case20_target_null:
-                TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_66);
             }
 case20_next:
             ++unitp;
@@ -617,10 +619,10 @@ case20_next:
     case 21: {
         TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_04, targetValue);
         TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_05, targetLocationValue.x, targetLocationValue.y);
-        if (playNumberValue == -1)
-            TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_06);
-        else
+        if (playNumberValue != -1)
             TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_07, playNumberValue);
+        else
+            TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_06);
         lastAttackRoundupTime = md->player->world->world_time;
         int stored = 0;
         int madeMemory = 1;
