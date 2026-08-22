@@ -67,6 +67,10 @@
 // tail and declaration-only destructor removals were also unchanged. The clean
 // 623-byte rebuild remains the best natural source; all 18 calls and the 0x8
 // frame match, but the first mismatch remains the pre-save x/zero-store order.
+// Accepted-drift audit: do not promote. The executable writes error_flag before
+// it loads the EH chain for one shared return tail. The rebuild loads the EH
+// chain first and emits a separate failure epilogue. A fault on the object store
+// therefore has different register and unwind context.
 
 class TPanel;
 class TDrawArea;

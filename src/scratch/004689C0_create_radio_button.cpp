@@ -31,6 +31,10 @@
 //   initialized result also changed the frame to 0xC. Restored the clean source.
 // - Tried a register-qualified ideal_x to explain the original pre-save x load; VC5 emitted
 //   the same 614-byte basin, so the clean natural source remains authoritative.
+// - Accepted-drift audit: do not promote. As in create_check_box, the executable
+//   writes the panel error field before loading the EH chain for one shared tail.
+//   The rebuild loads EH state first and emits a second failure epilogue. A fault
+//   on the error-field store has different register and unwind context.
 
 class TPanel {
 public:
