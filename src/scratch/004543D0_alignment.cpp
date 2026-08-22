@@ -62,6 +62,19 @@
 // - variant: a 9-case upper/lower guard sweep found four codegen groups and
 //   no exact result. It confirmed the first mismatch is independent of those
 //   guards. Twenty meaningful hypotheses are complete for this pass.
+//
+// REVISIT (sa-19ef3b8b-r1):
+// - baseline: pinned source rebuilt to 656B, 458 strict diff, 73.88% shape,
+//   4/4 __ftol calls, and 0x8 frame.
+// - liveness: joined initializers, named map limits, local x/y aliases, and a
+//   block-scoped correction temporary were codegen-neutral.
+// - behavior: upper-edge local updates changed the basin or frame and were
+//   rolled back. A combined corrected-edge model reached 462 diff but was not
+//   retained because the smallest clean source was closer.
+// - control-flow: the original upper-bound `fcomp` uses `test ah,1`, not the
+//   unordered-safe `test ah,41` emitted by `>` guards. Negated strict-less
+//   guards reproduce the C0-only form. Both guards reached 457 strict diff,
+//   74.69% shape, and 19.59% exact-block coverage. Retain this source form.
 
 class RGE_Game_World;
 class RGE_Map;
@@ -121,9 +134,9 @@ unsigned char RGE_Master_Static_Object::alignment(float& param_1, float& param_2
         param_2 = param_2 + fVar2;
         fVar2 = 0.0f;
     }
-    if (fVar3 > fVar5)
+    if (!(fVar3 < fVar5))
         param_1 = param_1 + (fVar5 - fVar3);
-    if (fVar4 > fVar6)
+    if (!(fVar4 < fVar6))
         param_2 = param_2 + (fVar6 - fVar4);
 
     if (param_4 == 0)
