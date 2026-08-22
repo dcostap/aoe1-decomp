@@ -19,6 +19,11 @@
 //   receivers match the original branch order and improve call alignment.
 // - Tested and rejected: direct master expressions, coordinate receiver
 //   branches, state aliases, declaration scopes, label order, and ABI aliases.
+// - This claim retested the item-arm polarity against the original +0099 JE;
+//   `item != 0` fall-through improved the result from 3480 to 3478 bytes.
+// - Rejected: duplicated branch-local strncpy calls, direct age predicates,
+//   lookupZone result assignment, inline unsupported-size cleanup, and result
+//   lifetime changes. They changed shape without a better natural result.
 // - Open drift: the frame is 0x188 versus 0x190.  The early register colors,
 //   first cold log block, and many stack homes still differ.
 
@@ -360,13 +365,13 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
         x = state.buildingTypeID;
         buildingSize = state.buildingSize;
         objectName = state.buildingName;
-    } else if (item == 0) {
-        x = objectType;
-        buildingSize = objectSize;
-    } else {
+    } else if (item != 0) {
         x = item->typeID();
         buildingSize = item->xSize();
         objectName = item->name();
+    } else {
+        x = objectType;
+        buildingSize = objectSize;
     }
 
     strncpy(buildingName + 4, objectName, 0xff);
