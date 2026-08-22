@@ -51,6 +51,12 @@
 // constructor before the play loop and was rejected. No ABI, call, or layout
 // issue was found. The remaining drift is register rotation, early epilogues,
 // and loop-tail shape; paused unresolved after validation below.
+// sa-4e418261 pass: changed the three output parameters to PDB-proven
+// references. This changes the decorated owner symbol but not body bytes.
+// Inverting the final play-number test recovered the original early-return
+// blocks. Staging the score expression before debug_rand reduced the strict
+// diff to 418 bytes. Remaining drift is register coloring, spilled byte state,
+// and nested-loop block shape. No call-set or frame issue was found.
 
 extern int debug_rand(char* file, int line);
 
@@ -209,23 +215,19 @@ public:
     int calculatePlayVariation(int playNumber);
 
     ObjectMemory* objectToAttackWithPlay(
-        int group, int* unitIds, int count, int* playNumber,
-        int* outputUnits, int* outputCount, int* outputUnit);
+        int group, int* unitIds, int count, int& playNumber,
+        int* outputUnits, int& outputCount, int& outputUnit);
 };
 
 ObjectMemory* TribeInformationAIModule::objectToAttackWithPlay(
-    int group, int* unitIds, int count, int* playNumber,
-    int* outputUnits, int* outputCount, int* outputUnit)
+    int group, int* unitIds, int count, int& playNumber,
+    int* outputUnits, int& outputCount, int& outputUnit)
 {
     int targetNumber;
     ObjectMemory* target;
     int worldNumber;
     RGE_Game_World* world;
     AIPlayBook* playbook;
-    int variation;
-    int randomValue;
-    int strategicValue;
-    int score;
 
     if (count == 0) {
         return (ObjectMemory*)count;
@@ -239,7 +241,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttackWithPlay(
     targetNumber = 0;
             world = this->md->player->world;
     playbook = world->playbook;
-    *playNumber = -1;
+    playNumber = -1;
 
     for (; targetNumber < playbook->numberPlaysValue; ++targetNumber) {
             AIPlay* play = playbook->play(targetNumber);
@@ -288,7 +290,12 @@ ObjectMemory* TribeInformationAIModule::objectToAttackWithPlay(
             } while (worldNumber < 10);
 
             if (invalid == 0) {
+                int variation;
+                int randomValue;
+                int strategicValue;
+                int score;
                 variation = this->calculatePlayVariation(targetNumber);
+                score = 100 - (int)play->deathPercentageValue + variation;
                 randomValue =
                     debug_rand((char*)0x5878dc, 0xd49) % 0x32;
                 strategicValue = 0;
@@ -308,22 +315,20 @@ ObjectMemory* TribeInformationAIModule::objectToAttackWithPlay(
                     break;
                 }
 
-                score =
-                    (100 - (int)play->deathPercentageValue + variation) * 2 +
-                    strategicValue + randomValue;
-                if (*playNumber == -1 || score > 0) {
-                    *playNumber = targetNumber;
-                    playStatus.copyUnits(outputUnits, *outputCount);
+                score = score * 2 + strategicValue + randomValue;
+                if (playNumber == -1 || score > 0) {
+                    playNumber = targetNumber;
+                    playStatus.copyUnits(outputUnits, outputCount);
                     randomValue =
                         debug_rand((char*)0x5878dc, 0xd6a);
-                    *outputUnit = outputUnits[randomValue % *outputCount];
+                    outputUnit = outputUnits[randomValue % outputCount];
                 }
             }
     }
 
-    if (*playNumber != -1) {
-        ++this->playHistory[*playNumber];
-        return target;
+    if (playNumber == -1) {
+        return 0;
     }
-    return 0;
+    ++this->playHistory[playNumber];
+    return target;
 }
