@@ -28,6 +28,13 @@
 //   restored the named y local and the proven 0x94 clean-source topology.
 // - left in scratch: calls/behavior are understood, but VC5 local coloring and
 //   the GDI/string scheduling remain broadly nonexact.
+// - Claim sa-941e59a9: a short y_offset reduced the diff to 452 but changed the
+//   proven 0x94 frame to 0x90; the clean int source remains required.
+// - Claim sa-941e59a9: a volatile short y plus a 104-byte buffer restored the
+//   0x94 frame and EBP row shape (diff 463), but width, homes, and buffer extent
+//   were unsupported. Regular pointer aliases and full TPanel context did not
+//   improve the clean source. Joined y initialization reached diff 619 but
+//   hoisted the load. All probes were restored to the clean source.
 
 #include <stdio.h>
 #include <string.h>
