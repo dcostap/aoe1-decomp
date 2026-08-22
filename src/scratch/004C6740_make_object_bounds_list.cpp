@@ -39,6 +39,13 @@
 // Final clean validation: 859 bytes, 0x40 frame, nine aligned calls, 617-byte
 // mismatch.  Next evidence should target the original short-bound home colors
 // and the target's delayed x/y x87 expression schedule without fake steering.
+// revisit claim sa-fc1480bd-r1: grouped and reordered bound declarations,
+// scoped the bounds after the radius guard, and moved inner temporaries to
+// function scope.  These forms were emitted-code duplicates.  Swapping bound
+// identities and using raw coordinate loads with compound subtraction were
+// also duplicates.  Direct object-radius rereads reached 612 differing bytes,
+// but changed the frame to 0x38 and lost the target size, so the named radius
+// locals remain authoritative.  No new natural source basin was found.
 
 extern float DAT_00574720;
 extern double DAT_00574718;
