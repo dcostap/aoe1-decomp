@@ -63,6 +63,12 @@
 // the mismatch to 43 bytes. Players-slot, players-reference, and function-scope
 // player locals reproduced the 31-byte basin. The remaining schedule changes
 // world, info-field, player-table, and count read order. Keep this in scratch.
+// Fresh claim pass: count-after-player with the direct mask widened to 43 bytes;
+// top-scope player, world/table aliases, direct initialization, and reference
+// Map_Stack helpers were 31-byte duplicates. A reference players alias, a
+// loop-local count, an info alias, and reference helpers with count-after-player
+// were 43-byte results. string.h changed the clear order and memory.h was the
+// 31-byte basin. Restore the 31-byte direct-pointer clean source.
 
 extern "C" void* __cdecl memset(void*, int, unsigned int);
 
