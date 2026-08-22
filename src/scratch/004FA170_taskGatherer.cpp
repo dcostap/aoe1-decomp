@@ -45,11 +45,18 @@
 //    is produced, then reloaded after EBX becomes the resource-array cursor.
 //    This is the unresolved controlling allocation fact. No natural source form
 //    tested so far reproduces that spill without fake volatility.
-//  - Final matching status: unresolved. Named-surface rebuild is 1758B versus
-//    1712B original, with frame 0x30, 32/32 ordered calls, and first mismatch
-//    at +0x1D (the original homes gathererObj before the null branch). The
-//    remaining gap is compiler local-allocation/control-flow reconstruction;
-//    leave this canonical source in scratch for a later worker.
+//  - Follow-up probes: a parameter reference alias, positive object guard,
+//    split and top-level declarations, math-header context, pointer-to-pointer
+//    alias, moving resource cursor, conditional resource initialization, and
+//    five exclusions. They were duplicates or worse. The moving cursor added
+//    one byte; five exclusions changed the frame to 0x2C.
+//  - The natural named resourceType copy is now the clean source. It preserves
+//    the mutable resource lifetime and improves the source to 1751B versus
+//    1712B, 32/32 ordered calls, frame 0x30, and 1581 strict-diff bytes.
+//  - Final matching status: unresolved. The first mismatch remains +0x1D,
+//    where the oracle homes gathererObj before its null branch. The remaining
+//    gap is compiler local-allocation and control-flow reconstruction; leave
+//    this canonical source in scratch for a later worker.
 
 #include <stdlib.h>
 
@@ -552,8 +559,9 @@ int TribeTacticalAIModule::taskGatherer(int p1, int p2, int p3, ulong p4, int* p
     if (gathererObj == 0) return 0;
 
     UnitData* g = this->gatherer(p1);
+    int resourceType = p2;
     if (g != 0 && g->data2 > g->data3) {
-        p2 = g->target;
+        resourceType = g->target;
     }
 
     int i = -1;
@@ -564,13 +572,13 @@ int TribeTacticalAIModule::taskGatherer(int p1, int p2, int p3, ulong p4, int* p
     int maximumResourceDistance;
     int exclusions[6];
 
-    if (p2 == -1) {
+    if (resourceType == -1) {
         for (index = 0; index < 4; index++) {
-            p2 = this->neededResourceValue[index];
-            if (p5 == 0 || p5[p2] != 1) {
+            resourceType = this->neededResourceValue[index];
+            if (p5 == 0 || p5[resourceType] != 1) {
                 numStorage = -1;
                 i = this->md->informationAI.gameIDOfResourceObject(
-                        p2, p1, &drop1, &drop2, &numStorage, exclusions + 1, 0);
+                        resourceType, p1, &drop1, &drop2, &numStorage, exclusions + 1, 0);
                 if (i != -1) {
                     if (numStorage == -1)
                         gathererObj->canPath(i, 1.0f, 0, 1, -1, -1);
@@ -588,16 +596,16 @@ int TribeTacticalAIModule::taskGatherer(int p1, int p2, int p3, ulong p4, int* p
         for (; maximumResourceDistance < 3; ++maximumResourceDistance) {
             numStorage = -1;
             i = this->md->informationAI.gameIDOfResourceObject(
-                    p2, p1, &drop1, &drop2, &numStorage, exclusions + 1, index);
+                    resourceType, p1, &drop1, &drop2, &numStorage, exclusions + 1, index);
             if (i == -1) return 0;
             int result = (numStorage == -1)
                 ? gathererObj->canPath(i, 1.0f, 0, 1, -1, -1)
                 : gathererObj->canBidirectionPath(i, numStorage, 1.0f, 0, 1, -1, -1);
             if (result != 0) break;
-            if (p2 == 0)
-                this->md->informationAI.setResourceObjectValid(p2, i, 2);
+            if (resourceType == 0)
+                this->md->informationAI.setResourceObjectValid(resourceType, i, 2);
             else
-                this->md->informationAI.setResourceObjectValid(p2, i, 0xF);
+                this->md->informationAI.setResourceObjectValid(resourceType, i, 0xF);
             *p5 = i;
             ++p5;
             ++index;
@@ -611,7 +619,7 @@ int TribeTacticalAIModule::taskGatherer(int p1, int p2, int p3, ulong p4, int* p
 
     if (this->sn[0xCD] != 1) goto tail;
 
-    if (p2 == 0) {
+    if (resourceType == 0) {
         if (this->builtFirstGranary == 1) {
             if (this->builtFirstStoragePit != 1) goto tail;
             if (obj->master_obj->id == 0x3B) {
@@ -651,7 +659,7 @@ int TribeTacticalAIModule::taskGatherer(int p1, int p2, int p3, ulong p4, int* p
         int d;
         maximumResourceDistance = 0;
         g2 = 0;
-        np = this->numberAvailableStoragePits(&g2, &maximumResourceDistance, p2);
+        np = this->numberAvailableStoragePits(&g2, &maximumResourceDistance, resourceType);
         if (maximumResourceDistance != 0 || np < 1) goto tail;
         exclusions[0] = this->sn[obj->attribute_type_held + 0xA3];
         d = (int)gathererObj->distance_to_object(obj);
@@ -684,7 +692,7 @@ tail:
     UnitData* ag = this->addGatherer(p1);
     if (ag == 0) return 0;
 
-    this->actualGathererDistribution[p2] = this->actualGathererDistribution[p2] + 1;
+    this->actualGathererDistribution[resourceType] = this->actualGathererDistribution[resourceType] + 1;
 
     {
         int j;
@@ -697,18 +705,18 @@ tail:
     }
 
 units_tasked:
-    ag->target = p2;
-    int amount = this->requiredGatherAmount(p2);
+    ag->target = resourceType;
+    int amount = this->requiredGatherAmount(resourceType);
     if (p3 == 1) {
         amount = 10;
     } else if (this->sn[0xCB] == 1) {
         if (obj->master_obj->id == 0x3B) {
             amount = (int)obj->attribute_amount_held;
-        } else if (p2 == 1) {
+        } else if (resourceType == 1) {
             amount = 0x4B;
-        } else if (p2 == 3) {
+        } else if (resourceType == 3) {
             amount = 0x32;
-        } else if (p2 == 2) {
+        } else if (resourceType == 2) {
             amount = 0x32;
         }
     } else {
