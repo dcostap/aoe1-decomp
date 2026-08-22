@@ -34,6 +34,14 @@
 // sa-e1e7aa19-r1 revisit: replacing the unresolved string symbol with the
 // period literal "RGL_shape_draw" was codegen-identical at 380B/246 bytes.
 // The pinned typed-local source was restored; the remaining gap is unchanged.
+// sa-8ce9d19d-r1 revisit: the binary-supported parameter-home form from the
+// Ghidra reconstruction rebuilt 380B/241 bytes, with 89.80% shape similarity,
+// 67.83% exact-block coverage, and all three calls aligned. Decompiler-order
+// coordinate declarations, base-coordinate aliases, register-qualified inputs,
+// and nested guards were worse or codegen duplicates. Reversed add operands,
+// original-bound predicates, const bounds, long zero literals, and a named
+// header alias were codegen duplicates. The remaining mismatch starts at the
+// coordinate-add schedule; this source keeps the best natural binary basin.
 
 typedef unsigned char uchar;
 
@@ -86,27 +94,27 @@ uchar TShape::shape_dither(TDrawArea* area, long x, long y, long shape_num, long
     long sx2 = x + this->shape_header->xmax;
     long sy2_orig = y + this->shape_header->ymax;
 
-    long clip_x1 = sx1;
-    long clip_y1 = sy1;
-    long clip_x2 = sx2;
-    long clip_y2 = sy2_orig;
-    if (clip_x1 < rect.left) clip_x1 = rect.left;
-    if (clip_y1 < rect.top) clip_y1 = rect.top;
-    if (clip_x2 > rect.right) clip_x2 = rect.right;
-    if (clip_y2 > rect.bottom) clip_y2 = rect.bottom;
-    if (clip_x1 < 0) clip_x1 = 0;
-    if (clip_y1 < 0) clip_y1 = 0;
-    if (clip_x2 >= area->Width) clip_x2 = area->Width - 1;
-    if (clip_y2 >= area->Height) clip_y2 = area->Height - 1;
+    x = sx1;
+    shape_num = sy1;
+    y = sx2;
+    long sy2 = sy2_orig;
+    if (sx1 < rect.left) x = rect.left;
+    if (sy1 < rect.top) shape_num = rect.top;
+    if (sx2 > rect.right) y = rect.right;
+    if (sy2_orig > rect.bottom) sy2 = rect.bottom;
+    if (x < 0) x = 0;
+    if (shape_num < 0) shape_num = 0;
+    if (y >= area->Width) y = area->Width - 1;
+    if (sy2 >= area->Height) sy2 = area->Height - 1;
 
-    if (clip_x1 <= clip_x2 && clip_y1 <= clip_y2) {
-        if (clip_x1 == sx1 && clip_y1 == sy1 &&
-            clip_x2 == sx2 && clip_y2 == sy2_orig) {
+    if (x <= y && shape_num <= sy2) {
+        if (x == sx1 && shape_num == sy1 &&
+            y == sx2 && sy2 == sy2_orig) {
             return shape_dithered_unclipped(area, sx1, sy1, param_5, param_6);
         }
 
-        return shape_dithered_clipped(area, sx1, sy1, clip_x1, clip_y1,
-                                      clip_x2, clip_y2, param_5, param_6);
+        return shape_dithered_clipped(area, sx1, sy1, x, shape_num,
+                                      y, sy2, param_5, param_6);
     }
 
     return 0;
