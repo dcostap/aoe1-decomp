@@ -63,10 +63,17 @@
 //   and 89.43% exact-block coverage, but its load/register order remained
 //   nonexact.  Direct indexed stores were codegen-neutral.  Restored this
 //   pinned natural source; no metric-only tail variant is retained.
+// - Follow-up worker probes: a natural satellite-style common tail reached
+//   diff 62 with exact size but lost tail blocks.  A repeated direct member
+//   read, function-scope prob_add, and explicit validated-index pointer were
+//   codegen duplicates.  Staged point-x/ProbabilityAdd/index declarations
+//   regressed to diff 118.  Restored the donor-style full-width prob_add and
+//   byte add locals before the bounds with the original early returns; this
+//   reaches diff 61, exact size, 97.58% shape, and 89.43% exact blocks.
 // BLOCKER: the executable reads ProbabilityAdd before both probability-index
-// bounds. The rebuild reads it only after both checks, and after SizeArrays and
-// ProbArray. An out-of-range index therefore omits an executable member read.
-// The in-range member-read and failing-access order also differ. Keep scratch.
+// bounds. The current source now preserves that member-read requirement with
+// a natural full-width local, but VC5 still emits x/add/index before the field
+// load instead of the executable's x/field-load/index order. Keep scratch.
 
 class PrimaryPt {
 public:
@@ -173,16 +180,17 @@ void PointMaker::DrawCurrentBranchIntoProbArray(int which) {
         }
 
         int prob_idx = Width * Point[which].y + Point[which].x;
+        int prob_add = ProbabilityAdd;
+        char add = (char)prob_add;
         if (prob_idx >= 1 && prob_idx < SizeArrays - 1) {
             char* p = ProbArray + prob_idx;
             char old = *p;
-            char add = (char)ProbabilityAdd;
             if (old == 0) {
                 *p = add;
                 ProbabilityTiles++;
                 return;
             }
-            if (ProbabilityAdd + (int)old < 0xFF) {
+            if (prob_add + (int)old < 0xFF) {
                 *p = add + old;
                 return;
             }
