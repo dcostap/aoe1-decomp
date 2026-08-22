@@ -33,6 +33,15 @@
 // - Tested 20+ distinct declaration, alias, loop, type, string, memset, and
 //   coordinate forms. Duplicate codegen ruled out pointer aliases, casts,
 //   register hints, loop direction, and coordinate temporaries.
+// - Follow-up claim probes H1-H15 tested explicit direct-call qualification,
+//   tab-list initialization, equivalent x/y expression trees, early local
+//   initialization, virtual/header context, pointer constness, setup guard
+//   spelling, and function-scope button width. These forms did not change
+//   emitted code. An ascending pointer clear loop reached 1116 differing
+//   bytes and 1273 bytes, but it introduced three wrong direct getter targets;
+//   resetting its cursor returned to the clean 1140-byte result. It was not
+//   retained. The remaining evidence is the original EBX button-base/EAX zero
+//   basin and the one picture-setup scheduling hunk.
 // - Current clean source is pinned after the pass. Remaining mismatch is the
 //   prologue zero/button-base register basin plus one picture-setup schedule.
 // FLAGS: /GX (EH)
