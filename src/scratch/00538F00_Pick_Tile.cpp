@@ -48,14 +48,39 @@
 //   aggregate reached 301B/frame 8B/189 strict-drift bytes, but its early
 //   divisor and register topology still differed. Policy-compliant exactness
 //   was not found; the pinned named-dimension source is restored below.
+// - worker pass: canonical tagRECT ownership for the +0x8C/+0x90 geometry,
+//   full RGE_Map layout, nested positive bounds, explicit for-loop updates,
+//   map-height/map-width output reuse, parameter-home aliases, canonical long
+//   widths, and a map pointer local were tested. Geometry and map surfaces
+//   were neutral; nested bounds reached size parity but lost block shape.
+// - a dead map-width first helper output with split dimension declarations
+//   reached 301B/frame 8B/155 strict drift and 56.14% exact blocks. Inline
+//   dimension initialization gave the same result. An explicit <= branch
+//   reached 153 drift bytes but reversed the observed branch shape, so it is
+//   diagnostic only. Full parameter aliases were not better.
+// - structured labs tested declaration order, helper output owner, and 512
+//   ambient TU contexts. Eight codegen groups resulted; no exact result or
+//   early view-top register recovery occurred. Ambient declarations changed
+//   only later bytes and are not source evidence. Natural source is restored.
+// - shape-priority continuation retained the binary-supported dead map_w first
+//   output and the canonical long map dimensions. The natural while CFG is
+//   301B with the original 8B frame, 90.68% shape, 56.14% exact blocks, and
+//   155 strict drift bytes. The first mismatch is now the early view-top
+//   register color at +0015, not the frame or function boundary.
+// - explicit second-loop break and do-loop forms reached 151 strict drift and
+//   92.24% shape with 116 instructions, but changed CFG from 9/4 to 10/3 and
+//   reduced exact blocks to 53.51%. They are rejected as shape-only forms.
+// - coordinate declaration/order, register qualification, long parameter
+//   casts, canonical geometry ownership, and four local-order lab variants
+//   did not recover the early colors. The natural while form remains current.
 // FLAGS: /nologo /c /O2 /Oy
 
 class RGE_Map {
 public:
     virtual ~RGE_Map();
     void* map_data;
-    int map_width;    // +0x08
-    int map_height;   // +0x0C
+    long map_width;    // +0x08
+    long map_height;   // +0x0C
 };
 
 class TPanel {
@@ -88,14 +113,14 @@ public:
 };
 
 int RGE_View::Pick_Tile(long px, long py, int* col_out, int* row_out) {
-    int map_w;
     int map_h;
-    int bx1;
+    int map_w;
     int by1;
-    map_w = map->map_width;
+    int bx1;
     map_h = map->map_height;
-    bx1 = (map_scr_x_offset - view_left) + (int)px;
-    by1 = (map_scr_y_offset - view_top) + (int)py;
+    map_w = map->map_width;
+    bx1 = (map_scr_x_offset - view_left) + px;
+    by1 = (map_scr_y_offset - view_top) + py;
 
     if (bx1 < 0) {
         *col_out = -1;
@@ -126,11 +151,10 @@ int RGE_View::Pick_Tile(long px, long py, int* col_out, int* row_out) {
 
     int found = 1;
     do {
-        int bound_first;
         int bound_row;
         int bound_top;
         int bound_left;
-        get_tile_bounding_coords(tcol, diff, bound_first,
+        get_tile_bounding_coords(tcol, diff, map_w,
                                  bound_row, bound_top, bound_left);
         if (by1 < bound_row) {
             tcol++;
