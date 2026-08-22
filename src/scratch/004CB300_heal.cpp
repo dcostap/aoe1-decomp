@@ -50,6 +50,24 @@
 //   on that failure edge and produced a 48-byte diff. The scalar form needs a
 //   failure assignment and returns the same non-exact `mov esi,1; mov eax,esi`
 //   tail. These are compiler-steering forms, not canonical ownership.
+// - continued worker pass: the exact com_obj moveTo mixed success-label donor
+//   shape compiled back to the natural 391-byte/329-diff basin. A split target
+//   and result pointer based on the Ghidra data flow kept one return and exact
+//   size, but reached 331 bytes/255 diff with an extra result alias before the
+//   object guard. Delaying that alias reached 331 bytes/245 diff and 95.45%
+//   shape; the first new divergence was the target alias in EBP.
+// - late-alias continuation: preserving result as the target through the
+//   existing-action paths, then introducing target only before make_action,
+//   reached 331 bytes/93 diff, 97.27% shape, 76.36% exact blocks, and all 16
+//   calls. Adding a typed task local and reversing declarations were codegen
+//   duplicates. The remaining body divergence is target/task register order
+//   at vf210; this split form is diagnostic, not canonical ownership.
+// - structured EH lab: 32 source-tail variants with size/frame/call-set gates
+//   formed two groups. The best group had 333 bytes, 18 positional differences,
+//   7 edit differences, 92.73% exact blocks, and all calls aligned. It still
+//   branched task-null to a local zero tail instead of the original +436 edge.
+//   A 512-variant ambient declaration sweep formed the same two groups, so
+//   file-scope declaration context did not change this basin.
 // FLAGS: config/flags/004CB300_heal.rsp (/GX)
 
 class RGE_Action_Object;
