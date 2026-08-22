@@ -20,19 +20,24 @@
 //   all 54 calls but added 149 bytes. It was rejected as non-natural and wide.
 // - Final clean result: 1587B, 0xC frame, 53/54 calls, 1056B strict diff.
 //   Remaining blocker is the merged state-12 state-3 call and block layout.
+// - Follow-up probes tested shared-tail placement, state-8 case order, and
+//   typed state-12 returns. They were unchanged or worse; the clean body is restored.
+// - Replaced generic action and action-list placeholders with the exact donor
+//   base surfaces. Emitted code is unchanged, but the source now names proven ABI.
 
 #define rge_base_game (*(RGE_Base_Game**)0x62C574)
 
 class RGE_Static_Object;
 class RGE_Action_Object;
+class RGE_Action;
+class RGE_Task;
 class RGE_Action_List {
 public:
-    virtual void l00();
-    virtual void l04();
-    virtual void l08();
-    virtual unsigned char get_value();
+    virtual RGE_Action* create_action(int, short);
+    virtual RGE_Action* create_task_action(RGE_Task*, RGE_Static_Object*, float, float, float);
+    virtual unsigned char inside_obj_update();
+    virtual unsigned char update();
 };
-class RGE_Task;
 class RGE_Sound;
 class RGE_Sprite;
 
@@ -307,18 +312,29 @@ public:
     int quick_build; // +9a8
 };
 
-class TRIBE_Action_Hunt {
+class RGE_Action {
 public:
-    virtual void h00(); virtual void h04(); virtual void h08(); virtual void h0c();
-    virtual void h10(); virtual void h14(); virtual short type();
-    virtual void h1c(unsigned char); virtual void h20(); virtual void h24();
+    virtual ~RGE_Action();
+    virtual int setup(RGE_Action_Object*);
+    virtual int setup(int, RGE_Action_Object*);
+    virtual RGE_Action_List* create_action_list(RGE_Action_Object*);
+    virtual void rehook();
+    virtual void save(int);
+    virtual short type();
+    virtual void first_in_stack(unsigned char);
+    virtual unsigned char inside_obj_update();
+    virtual unsigned char idle_update();
     virtual unsigned char update();
     virtual int stop();
     virtual int move_to(RGE_Static_Object*, float, float, float);
     virtual int work(RGE_Static_Object*, float, float, float);
-    virtual unsigned char h38(RGE_Static_Object*); virtual unsigned char h3c(long, unsigned char);
-    virtual void h40(void*); virtual void h44(void*, void*); virtual void h48(char*);
-    virtual RGE_Static_Object* h4c(); virtual RGE_Static_Object* h50();
+    virtual unsigned char attack_response(RGE_Static_Object*);
+    virtual unsigned char relation_response(long, unsigned char);
+    virtual void copy_obj(void*);
+    virtual void copy_obj_sprites(void*, RGE_Task*, RGE_Task*);
+    virtual void get_state_name(char*);
+    virtual RGE_Static_Object* get_target_obj();
+    virtual RGE_Static_Object* get_target_obj2();
     virtual void set_target_obj(RGE_Static_Object*);
     virtual void set_target_obj2(RGE_Static_Object*);
     virtual void set_state(unsigned char);
@@ -334,6 +350,12 @@ public:
     RGE_Action_List* sub_actions;
     void* sprite;
     unsigned char subActionValue; char gap_3d[3];
+};
+
+class TRIBE_Action_Hunt : public RGE_Action {
+public:
+    virtual unsigned char update();
+    virtual void set_state(unsigned char);
     int targetType;
 };
 
@@ -371,7 +393,7 @@ unsigned char TRIBE_Action_Hunt::update()
         break;
     case 11:
     case 15:
-        switch (this->sub_actions->get_value()) {
+        switch (this->sub_actions->update()) {
         case 1:
         case 2:
         case 5:
@@ -389,7 +411,7 @@ unsigned char TRIBE_Action_Hunt::update()
 state_default:
         this->set_state(3); return 0;
     case 4:
-        switch (this->sub_actions->get_value()) {
+        switch (this->sub_actions->update()) {
         case 3:
             if (this->obj->owner->computerPlayer() != 0) {
                 this->set_state(13); return 0;
@@ -406,7 +428,7 @@ state_default:
         }
         break;
     case 12:
-        switch (this->sub_actions->get_value()) {
+        switch (this->sub_actions->update()) {
         case 4:
             this->set_target_obj(0);
             this->set_state(11); return 0;
@@ -464,7 +486,7 @@ state_default:
                 return 0;
             }
         } else {
-            switch (this->sub_actions->get_value()) {
+            switch (this->sub_actions->update()) {
             case 1:
             case 2:
                 if (this->target_obj2 == 0) { this->set_state(8); return 0; }
