@@ -38,6 +38,12 @@
 //   the body by 98 bytes and changes the broad register basin. Do not accept
 //   this function until global rereads, panel arguments, scenario mutations,
 //   and address-taken buffer reads are audited across all external calls.
+// - tested a block-scoped active-player index initialized before scenarioInfo
+//   cleanup.  It recovered the original EBX zero/null guard and four exact
+//   early blocks, but moved every address-taken buffer by four bytes; rolled
+//   back because stack homes are binary evidence.
+// - register-qualifying that index produced duplicate codegen.  The clean
+//   behavior-correct source remains the current checkpoint.
 
 #include <io.h>
 #include <stdio.h>
