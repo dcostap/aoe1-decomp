@@ -6,9 +6,15 @@
 // The same-TU virtual surfaces and FILE/fprintf declarations preserve the proven calls.
 // Probe: reversing the owner branch recovered the original 2478-byte boundary and
 //   raised shape from 76.74% to 87.18%; ordering the resource arm raised it to 87.83%.
-// Probe: the remaining drift is VC5 tail merging of the 0x3aa/0x3b9 log-stop-notify
-//   blocks and the 0x261 argument setup. Direct log calls remain separate in the binary.
-// unresolved: final clean source is pinned after 20 meaningful hypotheses; no exact match.
+// Probe H26: one late return label for the four proven guard jumps raised shape to
+//   88.57%, matched the 16-return CFG, and reduced positional diff to 2067 bytes.
+// Probe H27: actionFile-gated local stop/notify returns restored both 0x3aa/0x3b9
+//   log blocks. Calls then matched 78/78, shape reached 88.96%, and diff reached 1820.
+// Probe H30: direct ternary closestObject arguments reduced diff to 1594, but added
+//   one fprintf and one stopObject call. Reject it for the hard call-count mismatch.
+// BINARY NOTE: H27 still emits 74 bytes past the target boundary. Its ordered calls
+//   remain -3/+3, with the 0x261 argument setup and one relocated cold tail unresolved.
+// unresolved: final clean source is pinned after H27 validation; no exact match.
 
 #include <stdio.h>
 typedef unsigned char uchar;
@@ -463,18 +469,18 @@ already_attacking:
         int state = this->objectValue->actionState();
 
         if (this->currentOrderValue == 0x2c6 && speed > 0.0f) {
-            return 2;
+            goto return_two;
         }
         if (this->currentOrderValue == 0x2bc) {
-            return 2;
+            goto return_two;
         }
         if (this->currentOrderValue == 0x2c9 && state == 0x0c &&
             targetObject != 0 && targetObject->master_obj->object_group == 10 &&
             ((RGE_Static_Object*)event->p1)->owner->id == 0) {
-            return 2;
+            goto return_two;
         }
         if (this->currentOrderValue == 0x2ce) {
-            return 2;
+            goto return_two;
         }
 
         if (((RGE_Static_Object*)event->p1)->owner->id == 0) {
@@ -529,12 +535,13 @@ already_attacking:
                     id = this->objectValue->id;
                 } else {
                     id = -1;
+                }
+                fprintf(actionFile, "#%d call stopObject %s %d\n", id,
+                        "C:\\msdev\\work\\age1_x1\\taiuaimd.cpp", 0x3aa);
+                this->stopObject(1);
+                this->notifyCommander(event);
+                return 2;
             }
-            fprintf(actionFile, "#%d call stopObject %s %d\n", id,
-                    "C:\\msdev\\work\\age1_x1\\taiuaimd.cpp", 0x3aa);
-            }
-            this->stopObject(1);
-            this->notifyCommander(event);
         }
         break;
 
@@ -547,12 +554,13 @@ already_attacking:
                     id = this->objectValue->id;
                 } else {
                     id = -1;
+                }
+                fprintf(actionFile, "#%d call stopObject %s %d\n", id,
+                        "C:\\msdev\\work\\age1_x1\\taiuaimd.cpp", 0x3b9);
+                this->stopObject(1);
+                this->notifyCommander(event);
+                return 2;
             }
-            fprintf(actionFile, "#%d call stopObject %s %d\n", id,
-                    "C:\\msdev\\work\\age1_x1\\taiuaimd.cpp", 0x3b9);
-            }
-            this->stopObject(1);
-            this->notifyCommander(event);
         }
         break;
 
@@ -780,5 +788,6 @@ already_attacking:
         return UnitAIModule::processNotify(event, param_2);
     }
 
+return_two:
     return 2;
 }
