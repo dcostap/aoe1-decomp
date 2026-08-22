@@ -56,6 +56,18 @@
 //   registers, instruction count, all 131 calls, 124 conditionals, and 71 jumps.
 //   Shape is 98.68%, exact-block coverage is 88.04%, and strict difference is
 //   1518 bytes. Remaining differences are mainly register and shared-tail maps.
+// - 2026-08-22: restored canonical period class names and the TRIBE_Game
+//   deathMatch surface. This changes no emitted bytes, but it restores the
+//   proven direct-call symbol identities.
+// - 2026-08-22: cached the early DAT_00886c48 and DAT_00886c44 values in that
+//   declaration order. This recovers the original +0x1D9 load order and lowers
+//   strict difference from 1518 to 1508 bytes without changing the frame.
+// - 2026-08-22: reversed the independent case-2 and case-3 updates where the
+//   original loads the lower build-list slots first. The current result is 1481
+//   strict-difference bytes, 98.96% shape, and 88.80% exact-block coverage.
+// - 2026-08-22: tested the natural int buildLists[126] owner and a common
+//   post-switch setRule(0x4A) tail. Both moved the function farther and were
+//   restored. Keep the packet layout and branch-local call form.
 // Notes:
 // - The packet's decompiler folds the saved game difficulty into buildLists[0]; the
 //   real stack has `gameDifficulty` at +0x14 and `buildLists[125]` at +0x18.
@@ -95,7 +107,7 @@ struct BuildListPacket_00515E00 {
     int mostBuiltUnit;
 };
 
-class RGE_Base_Game_00515E00 {
+class RGE_Base_Game {
 public:
     virtual void vf00();
     virtual void vf04();
@@ -110,85 +122,90 @@ public:
     uchar deathMatch();
 };
 
-extern RGE_Base_Game_00515E00* rge_base_game;
-
-class AIModule_00515E00 {
+class TRIBE_Game : public RGE_Base_Game {
 public:
-    virtual ~AIModule_00515E00();
+    uchar deathMatch();
+};
+
+extern TRIBE_Game* rge_base_game;
+
+class AIModule {
+public:
+    virtual ~AIModule();
     char gap_04[0xEC];
     void logCommonHistory(char* fmt, ...);
 };
 
-class TribeInformationAIModule_00515E00 {
+class TribeInformationAIModule {
 public:
-    virtual ~TribeInformationAIModule_00515E00();
+    virtual ~TribeInformationAIModule();
     char gap_04[0x1008C];
     void loadUnitHistory();
     void unitsThatAreMostBuilt(int* difficultyLevel, int* mostBuiltUnit);
 };
 
-class TribeBuildAIModule_00515E00 {
+class TribeBuildAIModule {
 public:
-    virtual ~TribeBuildAIModule_00515E00();
+    virtual ~TribeBuildAIModule();
     char gap_04[0x5BC];
 };
 
-class TribeConstructionAIModule_00515E00 {
+class TribeConstructionAIModule {
 public:
-    virtual ~TribeConstructionAIModule_00515E00();
+    virtual ~TribeConstructionAIModule();
     char gap_04[0x314];
 };
 
-class DiplomacyAIModule_00515E00 {
+class DiplomacyAIModule {
 public:
-    virtual ~DiplomacyAIModule_00515E00();
+    virtual ~DiplomacyAIModule();
     char gap_04[0x14C];
 };
 
-class EmotionalAIModule_00515E00 {
+class EmotionalAIModule {
 public:
-    virtual ~EmotionalAIModule_00515E00();
+    virtual ~EmotionalAIModule();
     char gap_04[0x1BC];
 };
 
-class TribeResourceAIModule_00515E00 {
+class TribeResourceAIModule {
 public:
-    virtual ~TribeResourceAIModule_00515E00();
+    virtual ~TribeResourceAIModule();
     char gap_04[0xF4];
 };
 
-class TribeStrategyAIModule_00515E00 {
+class TribeStrategyAIModule {
 public:
-    virtual ~TribeStrategyAIModule_00515E00();
+    virtual ~TribeStrategyAIModule();
     char gap_04[0x5F4];
     int rule(int id);
     void setRule(int id, int value);
 };
 
-class TribeMainDecisionAIModule_00515E00 : public AIModule_00515E00 {
+class TribeMainDecisionAIModule : public AIModule {
 public:
     char gap_base[0x14];
-    TribeBuildAIModule_00515E00 buildAI;
-    TribeConstructionAIModule_00515E00 constructionAI;
-    DiplomacyAIModule_00515E00 diplomacyAI;
-    EmotionalAIModule_00515E00 emotionalAI;
-    TribeInformationAIModule_00515E00 informationAI;
-    TribeResourceAIModule_00515E00 resourceAI;
-    TribeStrategyAIModule_00515E00 strategyAI;
+    TribeBuildAIModule buildAI;
+    TribeConstructionAIModule constructionAI;
+    DiplomacyAIModule diplomacyAI;
+    EmotionalAIModule emotionalAI;
+    TribeInformationAIModule informationAI;
+    TribeResourceAIModule resourceAI;
+    TribeStrategyAIModule strategyAI;
 };
 
-class RGE_Player_00515E00 {
+class RGE_Player {
 public:
-    virtual ~RGE_Player_00515E00();
+    virtual ~RGE_Player();
     char gap_04[0x101];
     uchar civ_id; // +0x105
     char gap_106[0x11A];
 };
 
-class TRIBE_Player : public RGE_Player_00515E00 {
+class TRIBE_Player : public RGE_Player {
 public:
     char gap_220[0x18];
-    TribeMainDecisionAIModule_00515E00* playerAI; // +0x238
+    TribeMainDecisionAIModule* playerAI; // +0x238
 
     void setupEgyptian(int* weights, int mapType, int victoryType, int mapSize);
     void setupGreek(int* weights, int mapType, int victoryType, int mapSize);
@@ -267,9 +284,11 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* buildListName, ch
         int civ = this->civ_id - 1;
         if (civ == 3 || civ == 0 || civ == 1 || civ == 4 || civ == 8 ||
             civ == 6 || civ == 7 || civ == 10) {
+            int c48 = DAT_00886c48;
+            int c44 = DAT_00886c44;
             if (mapType == 0) {
-                if (DAT_00886c44 > 0) {
-                    if (DAT_00886c48 == 0) {
+                if (c44 > 0) {
+                    if (c48 == 0) {
                         BL(0x0E) += 300;
                         BL(0x0F) += 300;
                     } else {
@@ -282,8 +301,8 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* buildListName, ch
                 }
             }
             if (mapType == 1) {
-                if (DAT_00886c44 > 0) {
-                    if (DAT_00886c48 == 0) {
+                if (c44 > 0) {
+                    if (c48 == 0) {
                         BL(0x0E) += 250;
                         BL(0x0F) += 250;
                     } else {
@@ -296,8 +315,8 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* buildListName, ch
                 }
             }
             if (mapType == 2 || mapType == 6 || mapType == 8) {
-                if (DAT_00886c44 > 0) {
-                    if (DAT_00886c48 == 0) {
+                if (c44 > 0) {
+                    if (c48 == 0) {
                         BL(0x0E) += 200;
                         BL(0x0F) += 200;
                     } else {
@@ -329,14 +348,14 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* buildListName, ch
             BL(8) += 30;
             break;
         case 2:
-            BL(0x13) += 20;
             BL(0x12) += 20;
+            BL(0x13) += 20;
             BL(4) += 40;
             BL(5) += 40;
             break;
         case 3:
-            BL(1) += 40;
             BL(0x12) -= 60;
+            BL(1) += 40;
             BL(0x13) -= 60;
             BL(2) += 20;
             BL(0x14) += 20;
