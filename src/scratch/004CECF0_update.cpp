@@ -49,6 +49,17 @@
 // Final clean validation remains 739 bytes, 469 positional diff bytes, and
 // 26/27 calls. The missing call is the state-0x0B state-3 +0x5C tail, which
 // VC5 merges with the state-6 null-target tail under every tested source form.
+// Current pass (sa-f5708c34-r1): H18 reversed the state-4 result 3/4/5 source
+// order and moved the target-reset block before the state-done block, improving
+// the checkpoint to 448 bytes. H19 then placed state-4 results 4/5, 3, 1/2 in
+// the binary handler order, reaching 460 bytes with 96.30% call alignment but
+// retaining the missing duplicate +5C call. H20-H32 tested labels, case scopes,
+// narrow arguments, receiver typing, declaration scope, and local aliases;
+// these either duplicated H19 or worsened the source shape. An outer case-4
+// first variant reached 431 bytes, but assigned the proven state-4 and state-0B
+// handlers to the opposite source cases, so it was not retained. Restored the
+// clean typed source, retained H19's natural state-4 handler order, and left
+// the unresolved source in scratch. No accepted-drift residue is proved.
 
 extern float DAT_005750e0;
 extern double DAT_005750e8;
@@ -297,15 +308,15 @@ uchar TRIBE_Action_Heal::update()
 
     case 4:
         switch (this->sub_actions->update()) {
+        case 4:
+        case 5:
+            goto state_target;
+        case 3:
+            goto state_done;
         case 1:
         case 2:
             this->set_state(6);
             return 0;
-        case 3:
-            goto state_done;
-        case 4:
-        case 5:
-            goto state_target;
         }
         break;
 
