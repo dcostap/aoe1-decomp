@@ -51,6 +51,15 @@
 // Revisit probes 38-40: a split GUID declaration and a memcpy spelling were
 // codegen-identical to aggregate assignment. The clean source remains the
 // 865B typed reconstruction; the EH tail and shared-return shape stay open.
+// Current claim probes 1-10: the binary-backed TScreenPanel and full
+// TribeMPSetupScreen destructor surface was codegen-identical. Direct success
+// labels, reordered labels, one common create-result assignment, a switch,
+// and a register result were also identical. /Os, /Og-off, and /Ot-off changed
+// the frame or call shape and were rejected. The restored clean source remains
+// 865B, 0x10 frame, 32 ordered calls, and five duplicated cleanup returns.
+// BINARY NOTE: the original has one shared cleanup tail at +0x301. The clean
+// rebuild first diverges at +0x2A and has five returns. No tested natural
+// source topology changed this EH-tail basin.
 
 #include <string.h>
 
