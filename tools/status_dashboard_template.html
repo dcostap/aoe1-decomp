@@ -742,6 +742,8 @@
       });
     }
 
+    const PREVIEW_FIELD_INDEX = HISTORY ? HISTORY.schema.indexOf("sourcePreviewId") : -1;
+
     let groups = rebuildGroups(DATA.groups || []);
     let GROUP_BY_NAME = new Map(groups.map((group) => [group.name, group]));
     let FUNCTIONS = groups.flatMap((group) => group.children);
@@ -766,7 +768,6 @@
     const TIMELINE_SCALE_MAX = 1000000;
     let timelineIndex = HISTORY ? HISTORY.commits.length - 1 : -1;
     let timelineRows = new Map();
-    const PREVIEW_FIELD_INDEX = HISTORY ? HISTORY.schema.indexOf("sourcePreviewId") : -1;
     const COMMIT_TIMES = (HISTORY?.commits || []).map((commit, index) => {
       const parsed = Date.parse(commit?.commitDate || commit?.authorDate || "");
       return Number.isFinite(parsed) ? parsed : index;
