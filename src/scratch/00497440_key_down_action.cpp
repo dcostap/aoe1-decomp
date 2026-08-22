@@ -8,9 +8,8 @@
 //   frame 0x204, but no /GX registration and broad structural drift.
 // - /GX donor-context probe: matched the original EH frame and improved the
 //   structural basin substantially; retained in config/flags.
-// - removed an invented first-switch Tab case, made the ctrl-default fall
-//   through, and guarded the building-list scan by param4; this restored the
-//   original common-path behavior.
+// - removed an invented first-switch Tab case and guarded the building-list
+//   scan by param4; this restored the original common-path behavior.
 // - changed the building scan to a pre-tested indexed while with per-iteration
 //   get_player(), matching the observed one-site loop and 0x28 entry stride.
 // - restored first-switch key 9 after the formation cases so the jump-table
@@ -21,10 +20,14 @@
 // - added TRIBE_Game::show_object_id at +0xC20 for the developer 0x49 case.
 // - BINARY NOTE: the work-key arms return, but a no-match path falls through
 //   to the later normal switch. This matches the original block edges.
+// - BINARY NOTE: an unknown ctrl key returns through the shared zero epilogue;
+//   it does not enter the building-key scan.
 // - reordered the normal switch by its emitted body order. Independent host
 //   and group guards restored the original param4 reload and block layout.
-// - current check: exact size, frame, 101 calls, and 97.76% shape; 347 bytes
-//   differ. The first mismatch is the normal digit switch's LEA versus SUB.
+// - changed the global receiver to the reviewed RGE_Base_Game* surface and
+//   downcast only for proven TRIBE_Game members. This was codegen-neutral.
+// - current check: exact size, frame, 101 calls, and 97.88% shape; 338 bytes
+//   differ. The first mismatch is the building-key scan's register map.
 //   Remaining drift is local register allocation and switch-table relocation.
 // BLOCKER: After each debug sprintf, the executable reads rge_base_game before
 // removing 12 cdecl argument bytes. The rebuild removes those bytes first and
@@ -382,7 +385,7 @@ public:
     void reset_clocks();
 };
 
-extern TRIBE_Game* rge_base_game;
+extern RGE_Base_Game* rge_base_game;
 extern TPanelSystem panel_system;
 extern TCommunications_Handler* comm;
 extern TDebuggingLog* L;
@@ -574,7 +577,7 @@ long TRIBE_Screen_Game::key_down_action(long param_1, short param_2,
             }
             return 1;
         default:
-            break;
+            return 0;
         }
     }
 
@@ -670,8 +673,8 @@ long TRIBE_Screen_Game::key_down_action(long param_1, short param_2,
             }
             break;
         case 0x49:
-            rge_base_game->show_object_id =
-                (rge_base_game->show_object_id == 0);
+            ((TRIBE_Game*)rge_base_game)->show_object_id =
+                (((TRIBE_Game*)rge_base_game)->show_object_id == 0);
             this->object_panel->set_redraw(result);
             return 0;
         case 0x4A:
@@ -680,14 +683,14 @@ long TRIBE_Screen_Game::key_down_action(long param_1, short param_2,
         case 0x4D:
             ++DAT_0086bac8;
             sprintf(str, s_Writing_out_memory_info, DAT_0086bac8);
-            rge_base_game->show_status_message(str, 0, -1);
+            ((TRIBE_Game*)rge_base_game)->show_status_message(str, 0, -1);
             sprintf(str, s_memory_filename, DAT_0086bac8);
             rge_base_game->dump_memory_usage(str);
-            rge_base_game->close_status_message();
+            ((TRIBE_Game*)rge_base_game)->close_status_message();
             break;
         case 0x4E:
             if (rge_base_game->multiplayerGame() == 0) {
-                rge_base_game->restart_game();
+                ((TRIBE_Game*)rge_base_game)->restart_game();
             }
             break;
         case 0x4F:
@@ -849,7 +852,7 @@ long TRIBE_Screen_Game::key_down_action(long param_1, short param_2,
             this->command_quick_chat();
             break;
         case 0x24:
-            rge_base_game->goto_notification_loc();
+            ((TRIBE_Game*)rge_base_game)->goto_notification_loc();
             break;
         case 0x2E:
             if (game_over == 0 && allow_user_commands != 0) {
