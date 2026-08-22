@@ -34,8 +34,17 @@
 // BINARY NOTE: master object_group is at +0x14; the +0x12 pad is required.
 // BINARY NOTE: town-center gather attempts use signed division by 150.
 // BINARY NOTE: the amount bonus uses a strict greater-than threshold.
-// UNRESOLVED: original keeps this in ESI, the candidate object in EDI, and
-// score in EBP; this source keeps this in EBP and the candidate in ESI.
+// BINARY NOTE: the current source recovers the original ESI this and EDI
+// candidate roles. Score and resource type still use opposite registers.
+// 30: Recovered the original moving byte cursor with direct typed record
+//   accesses. This restored ESI/EDI roles, the +008B cursor setup, and most
+//   loop blocks. An exclusion pointer and bool flag improved the structural
+//   basin. A named farm object ID restored the farm scan memory compare.
+//   Best check: 1131/1130 bytes, 97.90% shape, 85.84% exact blocks, diff 606.
+//   All 16 direct calls remain aligned. The remaining broad residue swaps
+//   EBX score with EBP resource type and starts in the exclusion scan.
+// UNRESOLVED: current source is natural but does not match the original
+//   dword exclusion flag or the original EBX/EBP register roles.
 
 #include <math.h>
 #include <stdlib.h>
@@ -165,17 +174,19 @@ int TribeInformationAIModule::gameIDOfResourceObject(int resType, int gathererId
     int gx;
     int gy;
     int boat;
-    ResourceMemory* bestObject;
+    int score;
+    int bestObject;
     ResourceMemory* bestValue;
     int fishingBoat;
     int needUpdateDropsite;
     int i;
-    int excluded;
+    bool excluded;
     int j;
+    int* excludePtr;
+    int objectId;
     RGE_Static_Object* obj;
     int dx;
     int dy;
-    int score;
     short cls3;
     short cls;
     short cls2;
@@ -191,30 +202,30 @@ int TribeInformationAIModule::gameIDOfResourceObject(int resType, int gathererId
     gy = (int)gatherer->y;
     boat = this->isBoat(gatherer);
 
-    bestObject = 0;
-    bestValue = 0;
     fishingBoat = -1;
+    bestValue = 0;
     needUpdateDropsite = 0;
 
     i = 0;
     if (this->numResources[resType] > 0) {
+        bestObject = 0;
         do {
-            bestObject = (ResourceMemory*)((char*)this->resources[resType] + (int)bestObject);
-            if (bestObject->gone == 1) goto next;
-            if (bestObject->valid != 0) {
-                if (bestObject->gone != 0) goto next;
-                --bestObject->valid;
+            if (((ResourceMemory*)((char*)this->resources[resType] + bestObject))->gone == 1) goto next;
+            if (((ResourceMemory*)((char*)this->resources[resType] + bestObject))->valid != 0) {
+                if (((ResourceMemory*)((char*)this->resources[resType] + bestObject))->gone != 0) goto next;
+                --((ResourceMemory*)((char*)this->resources[resType] + bestObject))->valid;
                 goto next;
             }
             excluded = 0;
-            for (j = 0; j < excludeCount; ++j) {
-                if (exclude[j] == bestObject->id) { excluded = 1; break; }
+            excludePtr = exclude;
+            for (j = 0; j < excludeCount; ++j, ++excludePtr) {
+                if (*excludePtr == ((ResourceMemory*)((char*)this->resources[resType] + bestObject))->id) { excluded = 1; break; }
             }
             if (excluded == 1) goto next;
-            obj = this->md->object(bestObject->id);
+            obj = this->md->object(((ResourceMemory*)((char*)this->resources[resType] + bestObject))->id);
             if (!obj) {
-                bestObject->gone = 1;
-                if (this->dropsiteIds[resType] == bestObject->id) needUpdateDropsite = 1;
+                ((ResourceMemory*)((char*)this->resources[resType] + bestObject))->gone = 1;
+                if (this->dropsiteIds[resType] == ((ResourceMemory*)((char*)this->resources[resType] + bestObject))->id) needUpdateDropsite = 1;
                 goto next;
             }
             if (boat == 1) {
@@ -225,15 +236,15 @@ int TribeInformationAIModule::gameIDOfResourceObject(int resType, int gathererId
                 cls2 = obj->master_obj->object_group;
                 if (cls2 == 5 || cls2 == 0x1f || cls2 == 0x21) goto next;
             }
-            dx = gx - bestObject->x;
-            dy = gy - bestObject->y;
-            score = dx * dx + dy * dy + bestObject->gatherValue * 10;
+            dx = gx - ((ResourceMemory*)((char*)this->resources[resType] + bestObject))->x;
+            dy = gy - ((ResourceMemory*)((char*)this->resources[resType] + bestObject))->y;
+            score = dx * dx + dy * dy + ((ResourceMemory*)((char*)this->resources[resType] + bestObject))->gatherValue * 10;
             if (obj->master_obj->id == 0x3b) {
-                if (bestObject->dropDistance > 0x14) goto next;
-                score += ((int)bestObject->gatherAttempts) / 150;
+                if (((ResourceMemory*)((char*)this->resources[resType] + bestObject))->dropDistance > 0x14) goto next;
+                score += ((int)((ResourceMemory*)((char*)this->resources[resType] + bestObject))->gatherAttempts) / 150;
                 if (this->md->tacticalAI.numberGatherersWithTarget(obj->id) > 2) score += 200;
             } else {
-                score += ((int)bestObject->gatherAttempts) / 50;
+                score += ((int)((ResourceMemory*)((char*)this->resources[resType] + bestObject))->gatherAttempts) / 50;
             }
             if (bestValue && score >= fishingBoat) goto next;
             cls3 = obj->master_obj->object_group;
@@ -244,10 +255,11 @@ int TribeInformationAIModule::gameIDOfResourceObject(int resType, int gathererId
                 if (obj->player->civ_id != this->md->player->civ_id) goto next;
                 if (obj->state != 2) goto next;
                 if (this->md->tacticalAI.numberGatherersWithTarget(obj->id) > 0) goto next;
+                objectId = obj->id;
                 k = 0;
                 while (k < this->farmsTaskedThisUpdate.numberValue) {
                     if (k >= this->farmsTaskedThisUpdate.maximumSizeValue) break;
-                    if (this->farmsTaskedThisUpdate[k] == obj->id) goto next;
+                    if (this->farmsTaskedThisUpdate[k] == objectId) goto next;
                     ++k;
                 }
             }
@@ -257,15 +269,16 @@ int TribeInformationAIModule::gameIDOfResourceObject(int resType, int gathererId
                 int want = this->md->tacticalAI.strategicNumber(0xcc);
                 if (this->md->tacticalAI.actualGathererCountByRealResourceID(0) < want) goto next;
             }
-            if (gatherer->lookupZone(bestObject->x, bestObject->y) != zone) goto next;
+            if (gatherer->lookupZone(((ResourceMemory*)((char*)this->resources[resType] + bestObject))->x,
+                                     ((ResourceMemory*)((char*)this->resources[resType] + bestObject))->y) != zone) goto next;
             if (bestValue && score >= fishingBoat) goto next;
-            bestValue = bestObject;
+            bestValue = (ResourceMemory*)((char*)this->resources[resType] + bestObject);
             fishingBoat = score;
             outX = obj->x;
             outY = obj->y;
 next:
             ++i;
-            bestObject = (ResourceMemory*)((char*)bestObject + 20);
+            bestObject += 20;
         } while (i < this->numResources[resType]);
     }
 
