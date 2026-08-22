@@ -32,18 +32,22 @@
 //   were duplicate compiler basins or worse.  The retained basin uses a byte
 //   terrain local, a signed packed index, a table-threshold-first terrain guard,
 //   and the natural typed row/tile and split mask loops.
-// - Best current clean reconstruction: 1198 rebuilt bytes, frame 0x20,
-//   74.34% shape similarity, 782 positional diff bytes, 21.26% exact-block
-//   coverage, and all 11 direct calls aligned.  The byte terrain local moved
-//   the frame to the target 0x20 and recovered the terrain-scan stack shape.
-//   The table-threshold-first guard reduced positional diff from 829 to 782.
-//   Reverting that guard, changing terrain to int, changing the map tile
-//   pointer form, or using a named obstruction-row pointer worsened output.
+// - Best current clean reconstruction: 1200 rebuilt bytes, frame 0x20,
+//   76.04% shape similarity, 699 positional diff bytes, 22.46% exact-block
+//   coverage, and all 11 direct calls aligned.  Reversing the first two fast
+//   overlap predicates to match the target compare polarity improved shape.
+// - A distinct source improvement is `maskIndex *= 2` before the two mask
+//   loads.  It recovers the target's explicit shift and scale-4 address form.
+//   It reduced positional diff from 782 to 699 and closed the size gap to 7.
+//   Function-scope byte temporaries and one obstruction cursor were natural,
+//   target-supported tests.  They duplicate the same emitted code.
+// - Tested bound declaration order, unsigned terrain scope, typed row indexing,
+//   radius order, fast cursor declaration order, tile-bound order, and a
+//   carried general-scan row cursor.  These were worse or duplicate basins.
 // - The unresolved gap is source-level VC5 register/home allocation in the
 //   footprint prelude and packed obstruction scan.  The original reloads
-//   yMax and xMin through dead parameter homes, and its general scan keeps
-//   separate row-base and sub-byte terms.  Current typed source preserves the
-//   proven behavior and call set without volatile or inline-assembly steering.
+//   xMin, yMin, and xMax through dead parameter homes.  Current typed source
+//   preserves the proven behavior and call set without volatile or assembly.
 
 #include <math.h>
 
@@ -231,6 +235,9 @@ int PathingSystem::passable(RGE_Moving_Object* object, float x, float y,
                             int checkObjects)
 {
     int local_14 = 0;
+    uchar terrain;
+    uchar mapByte;
+    uchar shift;
 
     this->currentObject = object;
     this->currentTerrainTable =
@@ -300,7 +307,6 @@ int PathingSystem::passable(RGE_Moving_Object* object, float x, float y,
                         local_14 = col;
                         if (this->initialTile.x != local_14 ||
                             this->initialTile.y != row) {
-                            uchar terrain;
                             terrain = tile->terrain_type & 0x1F;
                             if (this->currentTerrainTable[terrain] <=
                                 DAT_00570e80) {
@@ -326,20 +332,21 @@ int PathingSystem::passable(RGE_Moving_Object* object, float x, float y,
 
     int removed = object->removeFromObstructionMap(this->aiPS);
     bool foundBlockingGroup = false;
+    uchar* obstruction;
     int height = yMax - yMin - 1;
 
     if (height >= 0) {
         if (height < 0x18 &&
-            (this->maxTarget.x < xMin || this->maxTarget.y < yMin ||
+            (xMin > this->maxTarget.x || yMin > this->maxTarget.y ||
              xMax < this->minTarget.x || yMax < this->minTarget.y)) {
             int maskIndex = (yMin & 3) + height * 4;
+            maskIndex *= 2;
 
-            uint maskB = ObstructionMasks[maskIndex * 2 + 1];
-            uint maskA = ObstructionMasks[maskIndex * 2];
+            uint maskB = ObstructionMasks[maskIndex + 1];
+            uint maskA = ObstructionMasks[maskIndex];
             if (maskB == 0) {
                 if (xMin < xMax) {
-                    uchar* obstruction =
-                        this->obstructionValue[xMin] + (yMin >> 2);
+                    obstruction = this->obstructionValue[xMin] + (yMin >> 2);
                     int row = xMin;
                     do {
                         if ((*(uint*)obstruction & maskA) != 0)
@@ -349,8 +356,7 @@ int PathingSystem::passable(RGE_Moving_Object* object, float x, float y,
                     } while (row < xMax);
                 }
             } else if (xMin < xMax) {
-                    uchar* obstruction =
-                        this->obstructionValue[xMin] + (yMin >> 2);
+                    obstruction = this->obstructionValue[xMin] + (yMin >> 2);
                     int row = xMin;
                     do {
                         if ((*(uint*)obstruction & maskA) != 0 ||
@@ -367,9 +373,10 @@ int PathingSystem::passable(RGE_Moving_Object* object, float x, float y,
                 int col = yMin;
                 while (col < yMax) {
                     local_14 = col;
-                    if (((this->obstructionValue[0]
-                          [row * 0xFF + (local_14 >> 2)] >>
-                          (ObstructionValueShift[local_14 & 3] & 0x1F)) & 3) != 0) {
+                    mapByte = this->obstructionValue[0]
+                        [row * 0xFF + (local_14 >> 2)];
+                    shift = ObstructionValueShift[local_14 & 3];
+                    if (((mapByte >> (shift & 0x1F)) & 3) != 0) {
                         if (this->currentTargetID == -1 ||
                             row < this->minTarget.x ||
                             this->maxTarget.x < row ||
