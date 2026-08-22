@@ -25,6 +25,21 @@
 // calls aligned, 1300 strict differing bytes, 87.03% shape similarity.
 // BINARY NOTE: The original reloads player_num at the team-loop backedge.
 // Keep those bounds as direct this->player_num expressions.
+// 22: the CodeView-declared float held_time type added an unwanted __ftol call;
+//     the int count form is the supported codegen basin.
+// 23-24: bulk memset and intrinsic variants added byte-tail code and were
+//        discarded; the existing integer fill lowering is closer in size.
+// 25-27: do-loop and block-scope victory-index variants were codegen-neutral.
+// 28-30, 33: typed row/size cursors improved CFG shape but moved pointer homes
+//            and increased strict drift; the direct indexed form remains.
+// 31: member-left winner comparison restores the original CMP/JLE block.
+// 32, 34-35: the canonical RGE_Player attributes pointer improves exact
+//             attribute blocks; lifted p/held variants do not improve codegen.
+// BINARY NOTE: Artifact totals and reset-zero effects use attributes[7] and
+// attributes[55]. Ruin uses attributes[14] and attributes[54]. Held timers
+// still use the direct derived fields at +840 and +844.
+// Current semantic checkpoint: 1662 bytes, exact frame, all 16 calls aligned,
+// 1437 strict differing bytes, and 63.37% exact-block coverage.
 // Unresolved: the victory guard hoists i=1 and team-array cursor homes differ.
 
 class RGE_Victory_Conditions {
@@ -44,7 +59,9 @@ public:
     RGE_Victory_Conditions* victory; // +34
     char gap_38[0x12];
     short player_id;                 // +4a
-    char gap_4c[0x34];
+    char gap_4c[4];
+    float* attributes;               // +50; binary-proven attribute storage
+    char gap_54[0x2c];
     unsigned char game_status;      // +80
     char gap_81[0x83];
     unsigned char allied_victory;   // +104
@@ -155,7 +172,7 @@ unsigned char TRIBE_World::check_game_state()
                 TRIBE_Player* winner = 0;
                 int best = -1;
                 for (i = 1; i < this->player_num; ++i) {
-                    if (best < team_size[i]) {
+                    if (team_size[i] > best) {
                         winner = this->players[i];
                         best = team_size[i];
                     }
@@ -207,13 +224,13 @@ unsigned char TRIBE_World::check_game_state()
                     int count = team_size[i];
                     int total = 0;
                     for (int j = 0; j < count; ++j)
-                        total += (int)team_player[i][j]->artifact_held_time;
+                        total += (int)team_player[i][j]->attributes[7];
                     if (total == this->artifact_count) {
                         TRIBE_Player* p = team_player[i][0];
                         float held = p->artifact_held_time;
                         if (held == DAT_00577580) {
                             for (int j = 0; j < count; ++j)
-                                team_player[i][j]->artifact_held_time = 1.0f;
+                                team_player[i][j]->attributes[55] = 1.0f;
                             if (this->victory_type == 0) {
                                 for (int j = 0; j < count; ++j)
                                     team_player[i][j]->artifact_held_time = 2000.0f;
@@ -235,7 +252,7 @@ unsigned char TRIBE_World::check_game_state()
                         TRIBE_Player* p = team_player[i][0];
                         if (p->artifact_held_time != -1.0f) {
                             for (int j = 0; j < count; ++j)
-                                team_player[i][j]->artifact_held_time = 0.0f;
+                                team_player[i][j]->attributes[55] = 0.0f;
                             if (this->victory_type == 0) {
                                 for (int j = 0; j < count; ++j)
                                     team_player[i][j]->artifact_held_time = -1.0f;
@@ -252,13 +269,13 @@ unsigned char TRIBE_World::check_game_state()
                     int count = team_size[i];
                     int total = 0;
                     for (int j = 0; j < count; ++j)
-                        total += (int)team_player[i][j]->ruin_held_time;
+                        total += (int)team_player[i][j]->attributes[14];
                     if (total == this->ruin_count) {
                         TRIBE_Player* p = team_player[i][0];
                         float held = p->ruin_held_time;
                         if (held == DAT_00577580) {
                             for (int j = 0; j < count; ++j)
-                                team_player[i][j]->ruin_held_time = 1.0f;
+                                team_player[i][j]->attributes[54] = 1.0f;
                             if (this->victory_type == 0) {
                                 for (int j = 0; j < count; ++j)
                                     team_player[i][j]->ruin_held_time = 2000.0f;
@@ -280,7 +297,7 @@ unsigned char TRIBE_World::check_game_state()
                         TRIBE_Player* p = team_player[i][0];
                         if (p->ruin_held_time != -1.0f) {
                             for (int j = 0; j < count; ++j)
-                                team_player[i][j]->ruin_held_time = 0.0f;
+                                team_player[i][j]->attributes[54] = 0.0f;
                             if (this->victory_type == 0) {
                                 for (int j = 0; j < count; ++j)
                                     team_player[i][j]->ruin_held_time = -1.0f;
