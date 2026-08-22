@@ -29,6 +29,10 @@
 // remaining localized drift: state-4 vtable-register coloring (two bytes) and
 // repair-rate FPU operand/push scheduling (14 bytes); all 19 relocations are masked.
 // left in scratch after the sustained revisit; no inline asm or custom flags.
+// Type/layout revisit: the ground-truth master-action hierarchy is polymorphic;
+// restoring a local vptr surface at unchanged work_rate offset +E4 emitted the
+// same 16-byte result. Reversed local declaration order and handler order were
+// also tested; the former duplicated codegen and the latter worsened call order.
 // Accepted-drift audit: do not promote the repair-rate hunk. The executable
 // reads task->work_rate before owner->world and its time delta. The rebuild
 // dereferences owner->world first and reverses the first x87 multiply operands.
@@ -79,7 +83,8 @@ public:
 
 class RGE_Master_Action_Object {
 public:
-    char gap_00[0xE4];
+    virtual ~RGE_Master_Action_Object();
+    char gap_04[0xE0];
     float work_rate; // +E4
 };
 
