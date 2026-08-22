@@ -38,6 +38,12 @@
 //   83.93% shape, 421 strict-diff bytes, and the 0x18 frame.
 // - Separate found-index, union-overlay, array-slot, and header-context probes
 //   did not improve this result and were rolled back.
+// - Current worker probes: taskResult-first flag initialization reduced the
+//   strict diff to 418B and raised shape to 84.23% without changing the 0x18
+//   frame or 32-call order. Cursor rewrites, direct indexing, object-window
+//   overlays, and tail-label variants were worse or codegen duplicates.
+// - The remaining structural gap is the target's late success/failure block
+//   order and its one extra instruction; no supported exact source was found.
 
 extern float DAT_005756f0;
 
@@ -143,10 +149,10 @@ int TribeTacticalAIModule::highLevelTaskGatherer(int id, ulong param)
     int taskResult;
 
     i = 0;
+    taskResult = 0;
     triedTasking[1] = 0;
     triedTasking[2] = 0;
     triedTasking[3] = 0;
-    taskResult = 0;
     gatherer = this->gatherers;
     for (i = 0; i < this->numberGatherersValue; ++i, ++gatherer) {
         if (gatherer->id == id)
