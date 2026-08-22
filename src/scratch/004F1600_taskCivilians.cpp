@@ -179,7 +179,7 @@ public:
     int nextCivilianToTaskValue;           // +0xF7C
 
     int idleCivilian(int mode);
-    int idleCivilian(int mode, XYPoint* pos, int flag);
+    int idleCivilian(int mode, XYPoint& pos, int flag);
     void removeGatherer(int id);
     UnitData* addGatherer(int id);
     int highLevelTaskGatherer(int id, unsigned long arg);
@@ -217,7 +217,7 @@ int TribeTacticalAIModule::taskCivilians(unsigned long param_1, unsigned long pa
                 if (obj != 0) {
                     tcPosition.x = (int)obj->world_x;
                     tcPosition.y = (int)obj->world_y;
-                    tasked = this->idleCivilian(-1, &tcPosition, 0);
+                    tasked = this->idleCivilian(-1, tcPosition, 0);
                 } else {
                     tasked = this->idleCivilian(-1);
                 }
@@ -263,14 +263,18 @@ append_explorer:
 skip_append:
         // Remove excess explorers (the oldest first).
         if (this->civilianExplorers.numberValue > this->civilianExplorers.desiredNumberValue) {
-            do {
-                if (this->civilianExplorers.numberValue <= 0) break;
-                int id = this->civilianExplorers[0];
-                this->civilianExplorers.remove(id);
-                this->stopUnit(id, 100);
-            } while (this->civilianExplorers.numberValue >
-                     this->civilianExplorers.desiredNumberValue);
+            int id;
+            if (this->civilianExplorers.numberValue <= 0)
+                goto excess_explorers_done;
+remove_excess_explorer:
+            id = this->civilianExplorers[0];
+            this->civilianExplorers.remove(id);
+            this->stopUnit(id, 100);
+            if (this->civilianExplorers.numberValue >
+                this->civilianExplorers.desiredNumberValue)
+                goto remove_excess_explorer;
         }
+excess_explorers_done:
         // Create gatherers up to the desired number.
         if (this->numberGatherersValue < this->desiredNumberGatherersValue) {
             do {
@@ -278,7 +282,7 @@ skip_append:
                 if (obj != 0) {
                     tcPosition.x = (int)obj->world_x;
                     tcPosition.y = (int)obj->world_y;
-                    tasked = this->idleCivilian(-1, &tcPosition, 0);
+                    tasked = this->idleCivilian(-1, tcPosition, 0);
                 } else {
                     tasked = this->idleCivilian(-1);
                 }
