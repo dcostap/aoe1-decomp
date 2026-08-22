@@ -43,11 +43,18 @@
 // facing, narrow facing, narrow counters, int candidate locals, scoped aliases,
 // split aggregate assignment, int found, tile temporaries, and a full RGE_Map
 // base. These tests were neutral, worse, or reached a broad different basin.
-// Open lead: recover the original tmap.cpp translation-unit context or source
-// control-flow form that selects the original saved-local color and cold layout.
+// Follow-up pass: inverting the save_direction arm to put removal on the
+// fall-through path recovered the original cold-block order and reduced the
+// mismatch to 890 bytes with 92.79% shape similarity, 1308 bytes, and 23/23
+// ordered calls. Reordering the sentinel and candidate stores recovered the
+// observed local-store order. The original zero-return edge, add_node register
+// order, and no-existing found/pointer color remain unresolved.
+// Tested and rolled back in this pass: shared-return goto, widened found,
+// function-scope found, split found initialization, receiver/player aliases,
+// candidate pointers, explicit initial guard inversion, and chained assignment.
 
 struct TRIBE_Cliff_Info {
-    int info[4];
+    long info[4];
 };
 
 class RGE_Static_Object {
@@ -66,13 +73,15 @@ public:
 
 class RGE_Player {
 public:
-    char gap_00[0x6C];
+    virtual ~RGE_Player();
+    char gap_04[0x68];
     RGE_Tile_List tile_list;
 };
 
 class RGE_Game_World {
 public:
-    char gap_00[0x40];
+    virtual ~RGE_Game_World();
+    char gap_04[0x3C];
     RGE_Player** players;
     char gap_44[0x38];
     short curr_player;
@@ -96,14 +105,14 @@ long TRIBE_Map::add_cliff_edge(long x, long y, long facing, long existing, long 
     RGE_Static_Object* cliff = this->find_cliff(x, y);
     TRIBE_Cliff_Info cliff_info = this->get_cliff_info(cliff);
 
-    long possible_facing1;
-    long possible_direction1;
     long possible_facing2;
+    long possible_direction1;
+    long possible_facing1;
     long possible_direction2;
     possible_direction1 = 0;
+    possible_facing2 = -1;
     possible_facing1 = -1;
     possible_direction2 = 0;
-    possible_facing2 = -1;
 
     if (cliff_info.info[facing] != 0) {
         if (existing == 0)
@@ -132,7 +141,16 @@ long TRIBE_Map::add_cliff_edge(long x, long y, long facing, long existing, long 
     if (other_facing == facing)
         other_facing = -1;
 
-    if (other_facing < 0) {
+    if (other_facing >= 0) {
+        long i = 0;
+        do {
+            if (i != other_facing) {
+                this->remove_cliff_edge(x, y, i);
+                cliff_info.info[i] = 0;
+            }
+            ++i;
+        } while (i < 4);
+    } else {
         long count = 0;
         long i = 0;
         do {
@@ -145,45 +163,36 @@ long TRIBE_Map::add_cliff_edge(long x, long y, long facing, long existing, long 
             i = 0;
             do {
                 if (cliff_info.info[i] != 0 && i != facing) {
-                    if (possible_facing1 < 0) {
-                        possible_direction1 = cliff_info.info[i];
-                        possible_facing1 = i;
-                    } else {
-                        possible_direction2 = cliff_info.info[i];
+                    if (possible_facing2 < 0) {
                         possible_facing2 = i;
+                        possible_direction1 = cliff_info.info[i];
+                    } else {
+                        possible_facing1 = i;
+                        possible_direction2 = cliff_info.info[i];
                     }
                     cliff_info.info[i] = 0;
                 }
                 ++i;
             } while (i < 4);
         }
-    } else {
-        long i = 0;
-        do {
-            if (i != other_facing) {
-                this->remove_cliff_edge(x, y, i);
-                cliff_info.info[i] = 0;
-            }
-            ++i;
-        } while (i < 4);
     }
 
     if (existing) {
         cliff_info.info[facing] = existing;
 
-        if (possible_facing1 > -1) {
-            cliff_info.info[possible_facing1] = possible_direction1;
-            if (!this->check_cliff_valid(cliff_info)) {
-                cliff_info.info[possible_facing1] = 0;
-                this->remove_cliff_edge(x, y, possible_facing1);
-            }
-        }
-
         if (possible_facing2 > -1) {
-            cliff_info.info[possible_facing2] = possible_direction2;
+            cliff_info.info[possible_facing2] = possible_direction1;
             if (!this->check_cliff_valid(cliff_info)) {
                 cliff_info.info[possible_facing2] = 0;
                 this->remove_cliff_edge(x, y, possible_facing2);
+            }
+        }
+
+        if (possible_facing1 > -1) {
+            cliff_info.info[possible_facing1] = possible_direction2;
+            if (!this->check_cliff_valid(cliff_info)) {
+                cliff_info.info[possible_facing1] = 0;
+                this->remove_cliff_edge(x, y, possible_facing1);
             }
         }
 
@@ -202,20 +211,20 @@ long TRIBE_Map::add_cliff_edge(long x, long y, long facing, long existing, long 
         existing = 1;
         cliff_info.info[facing] = 1;
 
-        if (possible_facing1 > -1) {
-            cliff_info.info[possible_facing1] = possible_direction1;
+        if (possible_facing2 > -1) {
+            cliff_info.info[possible_facing2] = possible_direction1;
             if (!this->check_cliff_valid(cliff_info))
-                cliff_info.info[possible_facing1] = 0;
+                cliff_info.info[possible_facing2] = 0;
             else {
                 found = true;
                 possible_direction1 = 0;
             }
         }
 
-        if (!found && possible_facing2 > -1) {
-            cliff_info.info[possible_facing2] = possible_direction2;
+        if (!found && possible_facing1 > -1) {
+            cliff_info.info[possible_facing1] = possible_direction2;
             if (!this->check_cliff_valid(cliff_info))
-                cliff_info.info[possible_facing2] = 0;
+                cliff_info.info[possible_facing1] = 0;
             else {
                 found = true;
                 possible_direction2 = 0;
@@ -227,20 +236,20 @@ long TRIBE_Map::add_cliff_edge(long x, long y, long facing, long existing, long 
             existing = -1;
             found = false;
 
-            if (possible_facing1 > -1) {
-                cliff_info.info[possible_facing1] = possible_direction1;
+            if (possible_facing2 > -1) {
+                cliff_info.info[possible_facing2] = possible_direction1;
                 if (!this->check_cliff_valid(cliff_info))
-                    cliff_info.info[possible_facing1] = 0;
+                    cliff_info.info[possible_facing2] = 0;
                 else {
                     found = true;
                     possible_direction1 = 0;
                 }
             }
 
-            if (!found && possible_facing2 > -1) {
-                cliff_info.info[possible_facing2] = possible_direction2;
+            if (!found && possible_facing1 > -1) {
+                cliff_info.info[possible_facing1] = possible_direction2;
                 if (!this->check_cliff_valid(cliff_info))
-                    cliff_info.info[possible_facing2] = 0;
+                    cliff_info.info[possible_facing1] = 0;
                 else {
                     found = true;
                     possible_direction2 = 0;
@@ -261,9 +270,9 @@ long TRIBE_Map::add_cliff_edge(long x, long y, long facing, long existing, long 
     }
 
     if (possible_direction1 != 0)
-        this->remove_cliff_edge(x, y, possible_facing1);
-    if (possible_direction2 != 0)
         this->remove_cliff_edge(x, y, possible_facing2);
+    if (possible_direction2 != 0)
+        this->remove_cliff_edge(x, y, possible_facing1);
 
     this->make_new_cliff(x, y, cliff_info);
     return existing;
