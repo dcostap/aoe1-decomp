@@ -48,6 +48,14 @@
 // 30: Outer DrawSystem/render-area aliases, a reference alias, direct shadow-area rereads,
 // split old_flags declaration, output-local permutations, and an Init-only DrawSystem alias
 // all reproduced the 356-byte basin. The natural clean source remains unresolved.
+// 31: A full period TDrawSystem declaration with Flags at +0x28 was codegen-neutral.
+// 32: Volatile Flags forced the binary-proven reread and improved the diagnostic to 341
+//     bytes, but still used the wrong pointer register and was not retained as an ABI fact.
+// 33: Explicit current_flags, const/register DrawSystem aliases, and a short-lived
+//     render-area alias reproduced the 356-byte basin.
+// 34: A volatile local for the reread added three bytes and spilled the value.
+// 35: A union for the area_name/base-dword overlap reduced the frame to 0x10C.
+// 36: Expanded direct Flags assignment also reproduced the 356-byte basin.
 // FLAGS: config/flags/00467380_setup_shadow_area.rsp uses /GX; needed for EH prologue around TDrawArea allocation/constructor.
 
 #include <windows.h>
