@@ -70,10 +70,17 @@
 //   regressed to diff 118.  Restored the donor-style full-width prob_add and
 //   byte add locals before the bounds with the original early returns; this
 //   reaches diff 61, exact size, 97.58% shape, and 89.43% exact blocks.
-// BLOCKER: the executable reads ProbabilityAdd before both probability-index
-// bounds. The current source now preserves that member-read requirement with
-// a natural full-width local, but VC5 still emits x/add/index before the field
-// load instead of the executable's x/field-load/index order. Keep scratch.
+// ACCEPTED DRIFT AUDIT:
+// - The only live instruction-shape difference starts after the draw loop.
+// - Both versions read which, Width, Point[which].y, Point[which].x,
+//   ProbabilityAdd, SizeArrays, ProbArray, and the probability byte in the
+//   same order.
+// - VC5 moves the private wrapping index addition across the ProbabilityAdd
+//   load. The addition cannot fault and has no external effect.
+// - Both versions use the same index bounds, byte saturation predicate,
+//   probability write, ProbabilityTiles update, and return paths.
+// - Register allocation and branch distances account for the remaining
+//   bytes. No call, writable address, publication, or fault order differs.
 
 class PrimaryPt {
 public:
