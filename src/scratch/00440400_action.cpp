@@ -42,6 +42,15 @@
 //   This is compiler steering, not a natural source model, so it was not kept.
 // - BINARY NOTE: button 6 has its own destroyPanel call at 004405C3. The clean
 //   source lets VC5 merge it with the button-5 null-path call, leaving 39 calls.
+// - Follow-up probes tested the proven absolute panel_system object, canonical
+//   panel inheritance, <new.h>, button-5 negative guards, late success labels,
+//   direct button returns, and narrow-result declaration order. The first two
+//   context changes were unchanged or worse; control-flow variants were worse
+//   or duplicate codegen. The clean typed source remains the smallest model.
+// - The best discarded compiler basin used an int result before button 6's
+//   destroyPanel call: 921 bytes, 40 calls, and 31 differing bytes. It kept
+//   the result in ESI across the call instead of the executable's EAX=1, so it
+//   is not retained as source.
 
 #include <string.h>
 
