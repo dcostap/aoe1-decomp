@@ -43,6 +43,18 @@
 // - No ORIGINAL BUG is proved. No accepted_drift source is justified.
 // PAUSE: preserve this clean, typed reconstruction until new period source or
 // translation-unit evidence resolves the GetDibDim home rotation.
+// Current pass, 2026-08-22, owner sa-a5e817c5-r1:
+// - Nine focused probes tested loop widths, donor-shaped fallback loops,
+//   declaration order, repeated LINEINFO reads, and row-base pointer forms.
+// - Direct repeated LINEINFO member reads improved shape to 87.39% and exact
+//   blocks to 51.91%, but positional drift grew to 605 bytes. Do not retain it
+//   over the 603-byte clean source without a matching home fix.
+// - Scoped row-base pointers reached 54.55% exact blocks but grew the size gap
+//   to 25 bytes and the positional drift to 605 bytes. Restore the clean form.
+// - The unchanged clean source remains 603 bytes different, 958/977 bytes,
+//   0x10 frame, 5/5 ordered calls, and 86.51% shape.
+// - The first mismatch remains the GetDibDim output-home rotation at +D5.
+//   No exact result or accepted-drift residue is proved.
 
 #include <windows.h>
 #include <windowsx.h>
