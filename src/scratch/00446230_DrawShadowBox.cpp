@@ -111,6 +111,35 @@
 //   bytes or added guards. Mutating parameter homes for the row count widened
 //   the function. The retained source is the smallest natural typed-index
 //   form, with one AlignedWidth call and typed table ownership.
+// - Fresh accepted-drift review (20 probes): pointer row_start/row_end/pixel
+//   loops were tested against the indexed clean source. H1 no-guard pointers
+//   reached 110 bytes; H2 donor gap layout reached 95; H3 donor pointer guard
+//   reached 61; H4 combined AlignedWidth()*Orien reached 46; H5 declaration
+//   reorder and H6/H7 cursor assignments were duplicate. H8 mutated offset
+//   setup was duplicate. H9 declaration-only RGE_Color_Table reached the prior
+//   45-byte frontier, but still had the wrong row cursor register map and an
+//   extra zero-count branch, so it was not retained.
+// - H10 top-tested while reached 224 bytes; H11 no guard with int count reached
+//   82; H12 explicit row_end arithmetic, H13 scoped pixel_count, H14 int
+//   row_offset, H15 long row_count, and H16 declaration reorder were duplicate
+//   45-byte outputs. H17 direct table ownership reached 285 bytes; H18 const
+//   table was duplicate; H19 signed pixel pointers reached 73; H20 signed table
+//   pointer was duplicate. All variants were restored to the pinned source.
+//   The 45-byte pointer frontier has broad register and control-flow residue.
+//   It is not accepted drift. The clean source remains authoritative.
+// - Follow-up shape pass used Ghidra's recovered pointer topology as a new
+//   lead: row-index, table-object, mutable-pixel, saved-row, and row-end forms
+//   reached 224, 109, 222, 219, 233, and 222 bytes. Natural for/while,
+//   countdown, do/while, positive-guard, and parameter-loop forms stayed at
+//   74-87 or 82 bytes. Direct row-start construction reached 49 bytes/97.09%
+//   shape but added two bytes; role rotation returned the 45-byte basin.
+// - Context isolation removed unused forward declarations and DDSURFACEDESC
+//   from the historical pointer TU and recovered the 45-byte frontier. A
+//   144-variant lab swept pointer declaration order, row setup arithmetic, and
+//   six loop shapes. It produced four code groups, no exact, and no new shape
+//   basin. The best group stayed 271 bytes, 45 differing bytes, 96.08% shape,
+//   84.31% exact-block coverage, with one redundant zero-count branch and the
+//   ECX/ESI/EDX pointer-role rotation still unresolved.
 // Accepted-drift audit: do not promote. After AlignedWidth, the executable
 // reads Bits once before shadow_color_table and keeps that pointer through both
 // loops. The rebuild reads shadow_color_table first and reloads Bits inside the
