@@ -48,7 +48,13 @@
 // BINARY NOTE: an outer ManagedArray and one shared temp2 moved its fields to
 // the observed +20 local and reached 2690 strict diff, but changed CFG shape.
 // That form is not retained because its constructor scope is not supported.
-// next lead: recover the original local coloring without fake pointer arithmetic.
+// fresh pass: four independent attribute-result scopes moved the first mismatch
+// from +0126 to +01FE and kept the frame and boundary shape natural.
+// BINARY NOTE: the first swayable scan jumps to the outer increment tail when
+// it finds a duplicate.  The source keeps that proven shared skip target.
+// tested world aliases, outer array scope, and two more scan-label forms; they
+// changed reload order, constructor CFG, or size without a strict gain.
+// final pass: 16 fresh structural probes; current clean validation is pending.
 
 #include <stdlib.h>
 
@@ -435,7 +441,6 @@ int TribeMainDecisionAIModule::update(int param_1)
     TRIBE_World* world;
     int numberNeutralCPs;
     int numberHumanPlayers;
-    int amount;
     int neutralList[9];
     char tempString[256];
 
@@ -467,21 +472,29 @@ int TribeMainDecisionAIModule::update(int param_1)
         this->tributeAmount = 0;
     }
 
-    amount = tactical->strategicNumber(0x8A);
-    if (amount != 0) {
-        this->player->command_add_attribute(0, (float)amount);
+    {
+        int amount = tactical->strategicNumber(0x8A);
+        if (amount != 0) {
+            this->player->command_add_attribute(0, (float)amount);
+        }
     }
-    amount = tactical->strategicNumber(0x8B);
-    if (amount != 0) {
-        this->player->command_add_attribute(3, (float)amount);
+    {
+        int amount = tactical->strategicNumber(0x8B);
+        if (amount != 0) {
+            this->player->command_add_attribute(3, (float)amount);
+        }
     }
-    amount = tactical->strategicNumber(0x8C);
-    if (amount != 0) {
-        this->player->command_add_attribute(2, (float)amount);
+    {
+        int amount = tactical->strategicNumber(0x8C);
+        if (amount != 0) {
+            this->player->command_add_attribute(2, (float)amount);
+        }
     }
-    amount = tactical->strategicNumber(0x8D);
-    if (amount != 0) {
-        this->player->command_add_attribute(1, (float)amount);
+    {
+        int amount = tactical->strategicNumber(0x8D);
+        if (amount != 0) {
+            this->player->command_add_attribute(1, (float)amount);
+        }
     }
 
     }
@@ -617,7 +630,9 @@ tribute_chat_done:
         numberNeutralCPs = 0;
         numberHumanPlayers = 0;
 
-        for (int playerIndex = 1; playerIndex < world->player_num; playerIndex++) {
+        int playerIndex = 1;
+        if (playerIndex < world->player_num) {
+        do {
             RGE_Player* player = world->players[playerIndex];
             if (player->computerPlayer() == 0) {
                 numberHumanPlayers++;
@@ -630,6 +645,8 @@ tribute_chat_done:
                     neutralList[playerIndex] = 0;
                 }
             }
+            playerIndex++;
+        } while (playerIndex < world->player_num);
         }
 
         if (world->controllingComputerPlayer == 0xFF) {
@@ -637,7 +654,8 @@ tribute_chat_done:
                 world->controllingComputerPlayer = (uchar)this->player->id;
             } else {
                 int selected = debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp", 0x236) % newEnemy + 1;
-                for (int playerIndex = 1; playerIndex < world->player_num; playerIndex++) {
+                int playerIndex = 1;
+                if (playerIndex < world->player_num) do {
                     RGE_Player* player = world->players[playerIndex];
                     if (player->computerPlayer() == 1) {
                         selected--;
@@ -645,7 +663,8 @@ tribute_chat_done:
                             world->controllingComputerPlayer = (uchar)player->id;
                         }
                     }
-                }
+                    playerIndex++;
+                } while (playerIndex < world->player_num);
             }
         }
 
@@ -667,21 +686,21 @@ tribute_chat_done:
                 while (numberNeutralCPs < world->player_num) {
                     RGE_Player* player = world->players[numberNeutralCPs];
                     if (player->computerPlayer() != 0 && neutralList[numberNeutralCPs] != 0) {
-                        int found = 0;
                         for (int i = 0; i < swayableCPs.numberValue; i++) {
                             if (swayableCPs.maximumSizeValue <= i) {
                                 break;
                             }
                             if (swayableCPs.value[i] == numberNeutralCPs) {
-                                found = 1;
-                                break;
+                                goto swayable_next_player;
                             }
                         }
-                        if (!found && swayableCPs.numberValue < newEnemy) {
+                        if (swayableCPs.numberValue < newEnemy) {
                             swayableCPs[swayableCPs.numberValue] = numberNeutralCPs;
                             swayableCPs.numberValue++;
                         }
                     }
+
+                swayable_next_player:
                     numberNeutralCPs++;
                 }
 
