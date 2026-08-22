@@ -28,6 +28,12 @@
 //   while loops reduce the strict difference to 43 bytes.
 // - The remaining five hunks move each initial index store after its row LEA.
 //   Do not restore the rejected raw cursor or fake virtual surface.
+// - Accepted-drift audit: all 167 calls, 41 conditional branches, 16 jumps,
+//   panel/player/world reads, text updates, active-state stores, loop bounds,
+//   and the return align. The five code hunks only swap each private loop-index
+//   initialization with its nonfaulting statistics-row LEA. No call or external
+//   memory access lies between them. One index uses the same established stack
+//   slot in both bodies. The other strict bytes are jump-table relocations.
 
 #include <stdio.h>
 #include <stdlib.h>
