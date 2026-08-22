@@ -37,6 +37,14 @@
 //   bytes, 76.98% shape, 35.22% exact-block coverage.
 // - Next lead: recover the original parameter, row, tile, and coordinate
 //   local ownership from VC5 register coloring before another broad sweep.
+// - Follow-up probes tested coordinate aliases, row-address spelling, loop
+//   forms, local declaration order, and donor class surfaces. Coordinate
+//   aliases increased the frame or lost CFG shape, so they were rejected.
+// - BINARY NOTE: Spelling the signed scan bounds against -1 recovers the
+//   original cmp/jle blocks. The retained source is 1145 bytes, 0x1C frame,
+//   12/12 ordered calls, 79.58% shape, and 36.29% exact-block coverage.
+// - The top-tested scan loop and direct color use are natural equivalent forms;
+//   VC5 emits the same main code basin. No metric-only scaffolding is retained.
 
 extern "C" long __cdecl __ftol(void);
 #define DAT_0056f604 (*(float*)0x0056F604)
@@ -50,16 +58,8 @@ public:
 class TPanel {
 public:
     virtual ~TPanel();
-    virtual long setup();
-    virtual void set_rect();
-    virtual void set_rect(long, long, long, long, long);
-    virtual void set_color();
-    virtual void set_active();
-    virtual void set_positioning();
-    virtual void set_fixed_position();
-    virtual void update_view(int mode);
-
-    char gap_04[8];
+    TPanel* previous_panel;
+    TPanel* previous_modal_panel;
     long pnl_x;
     long pnl_y;
     long pnl_wid;
@@ -90,7 +90,7 @@ public:
 
 class RGE_Object_List {
 public:
-    char gap_00[4];
+    virtual ~RGE_Object_List();
     RGE_Object_Node* list;
     short number_of_objects;
     unsigned char gap_0A[2];
@@ -272,52 +272,11 @@ void RGE_Diamond_Map::draw_tile(short param_1, short param_2,
 
     short scan_row = param_2 - 1;
     param_2 += 2;
-    do {
-        if (param_2 <= scan_row) {
-            short width = row->draw_wid;
-            unsigned char draw_color = color;
-            if (this->map_tile_draw_hgt == 1) {
-                if (width == 1) {
-                    this->save_area->SetPixel(x, y, draw_color);
-                    return;
-                }
-                if (width == 2) {
-                    this->save_area->SetPixel(x, y, draw_color);
-                    this->save_area->SetPixel(x + 1, y, draw_color);
-                    return;
-                }
-                if (width > 0) {
-                    int count = width;
-                    do {
-                        this->save_area->SetPixel(x, y, draw_color);
-                        ++x;
-                        --count;
-                    } while (count != 0);
-                }
-            } else {
-                short dy = 0;
-                if (this->map_tile_draw_hgt > 0) {
-                    do {
-                        if (width > 0) {
-                            int count = width;
-                            int px = x;
-                            do {
-                                this->save_area->SetPixel(px, y + dy, draw_color);
-                                ++px;
-                                --count;
-                            } while (count != 0);
-                        }
-                        ++dy;
-                    } while (dy < this->map_tile_draw_hgt);
-                }
-            }
-            return;
-        }
-
-        if (scan_row >= 0 && scan_row < this->map_hgt) {
+    while (scan_row < param_2) {
+        if (scan_row > -1 && scan_row < this->map_hgt) {
             short scan_col = param_1 - 1;
             while (scan_col < param_1 + 2) {
-                if (scan_col < 0 || scan_col >= this->map_wid) {
+                if (scan_col <= -1 || scan_col >= this->map_wid) {
                     ++scan_col;
                 } else {
                     RGE_Object_Node* node = tile_rows[scan_row][scan_col].objects.list;
@@ -337,7 +296,45 @@ void RGE_Diamond_Map::draw_tile(short param_1, short param_2,
             }
         }
         ++scan_row;
-    } while (true);
+    }
+
+    short width = row->draw_wid;
+    if (this->map_tile_draw_hgt == 1) {
+        if (width == 1) {
+            this->save_area->SetPixel(x, y, color);
+            return;
+        }
+        if (width == 2) {
+            this->save_area->SetPixel(x, y, color);
+            this->save_area->SetPixel(x + 1, y, color);
+            return;
+        }
+        if (width > 0) {
+            int count = width;
+            do {
+                this->save_area->SetPixel(x, y, color);
+                ++x;
+                --count;
+            } while (count != 0);
+        }
+    } else {
+        short dy = 0;
+        if (this->map_tile_draw_hgt > 0) {
+            do {
+                if (width > 0) {
+                    int count = width;
+                    int px = x;
+                    do {
+                        this->save_area->SetPixel(px, y + dy, color);
+                        ++px;
+                        --count;
+                    } while (count != 0);
+                }
+                ++dy;
+            } while (dy < this->map_tile_draw_hgt);
+        }
+    }
+    return;
     } else {
         x += this->pnl_x;
         y += this->pnl_y;
