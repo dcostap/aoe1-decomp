@@ -52,6 +52,25 @@
 // ABI on both warboat and soldier paths. No shared template change is needed.
 // BLOCKER: The rebuild remains 83 bytes too large, with four extra conditionals
 // and two missing jumps. This is broad branch topology, not localized drift.
+//
+// Current worker probes (sa-c48f2f74-r1):
+// - Canonical polymorphic AI/object/master declarations, template
+//   ManagedArray<int>, the target-class vptr, and the RGE object id field did
+//   not improve the clean 1383-byte basin. The template and object-id forms
+//   were codegen duplicates; the combined polymorphic form was worse.
+// - Top-tested while scans for both tasked-list loops removed the four extra
+//   invariant capacity tests and reached 61/61 conditionals, but VC5 merged
+//   two required contains/resize call sites and produced 45 calls. Inline
+//   contains and branch-local result pointers did not prevent that merge.
+// - Separate array scopes, register-qualified local_c, soldiers/warBoats
+//   references, and donor file-string context were duplicates or worse.
+// - A workingArea reference moved this to EBX and a 0x14 frame. A count-based
+//   greater-arm append restored 47 calls but grew the body to 1463 bytes.
+//   Restore the pinned probe-19 source after each test.
+// - Final claim validation: pinned source remains 1383/1300 bytes, 0x10
+//   frame, 47/47 ordered calls, 70.16% shape, 37.17% exact-block coverage,
+//   and 1295 strict differing bytes. No tested source/context axis recovered
+//   the target EBP/EBX topology or broad tail CFG.
 
 struct RGE_Static_Object;
 struct UnitAIModule;
