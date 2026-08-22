@@ -70,6 +70,23 @@
 //     41.72% exact-block coverage, frame 0x78, and all 15 calls aligned.
 //     No hypothesis changed the corpus overflow. Restore the clean source before
 //     pause; the remaining lead is the proven local-home/register basin, not ABI.
+//   latest pass (sa-ac59df96):
+//     H1 moved fog_flag beside visible; codegen duplicate.
+//     H2 moved the mode-0B tile test inside the in-bounds arm; strict diff 2434,
+//     shape 65.85%, then restored because natural strict bytes worsened.
+//     H3 swapped tile and tile_ptr declarations; codegen duplicate.
+//     H4 used one explicit visible_zero label; same 2434-byte result as H2,
+//     restored because it was not the clean natural basin.
+//     H5 widened last_picked_obj to int; strict diff 2436, shape 63.90%, restored.
+//     H6 restored cur_col_num-before-direction assignment order; codegen duplicate.
+//     H7 used a short list_size with a separate shift; strict diff 2432, restored.
+//     H8 reordered inner coordinate declarations; codegen duplicate.
+//     H9 marked view_function protected. Bytes stayed unchanged and the owner
+//     symbol changed from QAE to the target's protected IAE decoration; retained.
+//     H10 used the target's negative visibility guard; codegen duplicate.
+//     Final clean: 2423 strict diff, 65.02% shape, 41.72% exact blocks, 15 calls,
+//     frame 0x78. The target's 2354-byte corpus boundary still truncates the
+//     natural function tail and prevents exact boundary validation.
 
 #include <windows.h>
 
@@ -220,8 +237,11 @@ public:
     void* Terrain_Clip_Mask;      // +0x178
     void* Terrain_Fog_Clip_Mask;  // +0x17C
 
+protected:
     long view_function(register unsigned char a1, register unsigned char a2, tagPOINT* p1, tagPOINT* p2,
                        void** out_obj, float* out_x, float* out_y, short* out_col, short* out_row);
+
+public:
     int get_selection_area(long* col1, long* row1, long* col2, long* row2, int normalize);
     RGE_Static_Object* hit_object(RGE_Tile* tile, short x, short y, short a, short b,
                                   tagPOINT* p1, tagPOINT* p2, short* out_x, short* out_y,
