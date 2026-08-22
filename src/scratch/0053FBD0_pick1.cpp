@@ -55,6 +55,14 @@
 // BINARY NOTE: the oracle reuses dead coordinate parameter homes for the
 // post-pick count and no-exclude score after pick_objects returns.
 // Open: the oracle has an 8-byte local frame; this source remains at 0xC.
+// Worker pass 2026-08-22: tested a y-mutating no-exclude countdown, an explicit
+// target_count local, indexed and loop-local PickedInfo cursors, screen
+// assignment order, bool and register-qualified flags/shorts, outer-guard
+// inversion, nested visibility checks, shared cursor scope, and declaration
+// order. The best unchanged natural source remains 547 strict differing bytes
+// at exact size with 74.36% shape similarity. These variants did not recover
+// the original 8-byte frame or its BP/BX exclude-screen register pair.
+// Open: source-level cause of the remaining local-home rotation is unknown.
 
 typedef unsigned char byte;
 
