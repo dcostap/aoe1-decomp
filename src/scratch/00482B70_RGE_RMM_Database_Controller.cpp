@@ -34,6 +34,11 @@
 //   is VC5 register coloring: the original starts the zero/index path in ESI
 //   and the clean source starts it in EBX, then the original has an 8-byte
 //   shorter fallback/record-tail layout. The pinned clean source is restored.
+// - Fresh probes tested nonpositive allocation guards, a counter-fed zero
+//   store, a separate map stream, a proven byte-stride land cursor, and the
+//   neighboring controller class surface. The guard form reached the target
+//   size but inverted two branch tails. Other forms were neutral or worse.
+//   The clean typed source is restored; no source drift is accepted.
 
 struct _iobuf;
 extern "C" _iobuf* __cdecl fopen(const char*, const char*);
