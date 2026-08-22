@@ -36,6 +36,14 @@
 //   and 3056 positional-diff bytes. Remaining drift starts at +0xC2 in the
 //   second group-loop register/CFG basin. Direct member spelling, base context,
 //   register storage, and sentinel address variants were codegen duplicates.
+// - follow-up probes 23-51 tested an early type-mismatch advance, shared and
+//   natural sentinel loop forms, split final guards, final cursor ownership,
+//   final-pass local scope, and a function-scope group cursor. The probes did
+//   not improve the clean source. Several forms changed size or call order;
+//   all were restored.
+// - final clean validation remains 3523/3554 bytes, exact 0x20 frame,
+//   122/122 calls, 90.16% call alignment, 72.73% shape, and 3056 positional
+//   diff bytes. No accepted drift is supported by the measured residue.
 
 extern void* operator new(unsigned int);
 extern void operator delete(void*);
