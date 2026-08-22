@@ -101,6 +101,12 @@
 //   and /O1, /Oy- flag variants all remained nonexact. Restore the clean source
 //   before further work. Next lead: recover VC5's original constructor EH state
 //   and delayed derived-vptr scheduling without manual assembly.
+// - 2026-08-22 claim pass: modeled ManagedIntArray as a natural zeroing,
+//   delete-and-zero member; modeled groups and neededResources as their proven
+//   inline objects. Declaration-order construction improved the clean diff from
+//   5325 to 5186 bytes and moved the first mismatch from the prologue to the
+//   late inline-object/vptr transition. The retained fields are nonvolatile;
+//   volatile probes were metric-only and were removed.
 
 #include "..\..\include\game_globals.h"
 
@@ -111,7 +117,25 @@ extern float save_game_version;
 class TribeMainDecisionAIModule;
 
 class TacticalAIModule { public: virtual ~TacticalAIModule(); char base[0xEC]; TacticalAIModule(void* owner, int player); };
-struct ManagedIntArray { int* volatile value; volatile int numberValue; volatile int desiredNumberValue; int maximumSizeValue; };
+struct ManagedIntArray {
+    int* value;
+    int numberValue;
+    int desiredNumberValue;
+    int maximumSizeValue;
+
+    ManagedIntArray()
+        : value(0), numberValue(0), desiredNumberValue(0), maximumSizeValue(0) {}
+
+    ~ManagedIntArray() {
+        if (this->value != 0) {
+            operator_delete(this->value);
+            this->value = 0;
+        }
+        this->numberValue = 0;
+        this->desiredNumberValue = 0;
+        this->maximumSizeValue = 0;
+    }
+};
 struct UnitData { int id; int data1; int data2; int data3; int data4; int data5; };
 struct OldUnitData { int data1; int data2; int data3; int data4; int data5; };
 class TacticalAIGroup { public: virtual ~TacticalAIGroup(); TacticalAIGroup* next; TacticalAIGroup* prev; char bytes[0x324]; TacticalAIGroup(); static void load(TacticalAIGroup* self, int file); };
@@ -124,11 +148,11 @@ class TribeTacticalAIModule : public TacticalAIModule {
 public:
     void* md; ManagedIntArray civilians; ManagedIntArray civilianExplorers; ManagedIntArray soldiers; ManagedIntArray ungroupedSoldiers;
     ManagedIntArray boats; ManagedIntArray warBoats; ManagedIntArray fishingBoats; ManagedIntArray tradeBoats; ManagedIntArray transportBoats; ManagedIntArray artifacts;
-    int sn[226]; UnitData gatherers[50]; int numberGatherersValue; int desiredNumberGatherersValue; char groups[0x330];
+    int sn[226]; UnitData gatherers[50]; int numberGatherersValue; int desiredNumberGatherersValue; TacticalAIGroup groups;
     int groupIDValue; int numberGroupsValue; unsigned long lastGroupAttackTime; unsigned long lastGroupRebalanceTime; unsigned long lastAttackResponseTime;
     unsigned long lastBoatAttackResponseTime; unsigned long lastScalingUpdateValue; int numberBuildUpdatesSkipped; int randomizedAttackSeparationTime;
     ManagedIntArray playersToAttack; ManagedIntArray playersToDefend; ManagedIntArray workingArea; ManagedIntArray unitsTaskedThisUpdate;
-    int actualGathererDistribution[4]; int desiredGathererDistribution[4]; int neededResourceValue[4]; int resourceDifferenceValue[4]; char neededResources[0x70];
+    int actualGathererDistribution[4]; int desiredGathererDistribution[4]; int neededResourceValue[4]; int resourceDifferenceValue[4]; ResourceItem neededResources;
     int attackEnabledValue; int updateArea; int firstNeededResourceUpdateDone; int numberStoragePitsBuilt[4]; int numberGranariesBuilt[4]; int wonderInProgressValue; int wonderBuiltValue;
     PlacementState placementStateValue; int nextCivilianToTaskValue; int nextIdleSoldierGroupToTaskValue; int nextActiveSoldierGroupToTaskValue; int builtFirstStoragePit; int builtFirstGranary;
     unsigned long lastBuildTime; unsigned long lastAttackResponseBuildInsertionTime; unsigned long lastCoopTributeDemandTime; unsigned long lastCoopTributeGiftTime; unsigned long lastCoopAttackDemandTime;
@@ -138,87 +162,42 @@ public:
 };
 
 TribeTacticalAIModule::TribeTacticalAIModule(int param_1, int param_2)
-    : TacticalAIModule(0, param_1)
+    : TacticalAIModule(0, param_1),
+      md(0),
+      civilians(),
+      civilianExplorers(),
+      soldiers(),
+      ungroupedSoldiers(),
+      boats(),
+      warBoats(),
+      fishingBoats(),
+      tradeBoats(),
+      transportBoats(),
+      artifacts(),
+      lastGroupRebalanceTime(0),
+      playersToAttack(),
+      playersToDefend(),
+      workingArea(),
+      unitsTaskedThisUpdate(),
+      neededResources(4)
 {
   int iVar1;
   int *piVar2;
   int iVar3;
   int iVar4;
   TacticalAIGroup *pTVar5;
+  int iVar6;
   int i;
   int tempInt;
   int file;
   int local_2c;
   int local_28;
-  int iVar6;
   OldUnitData tempUD;
-  
+
   tempUD.data1 = (int)this;
-  this->md = (TribeMainDecisionAIModule *)0x0;
-  (this->civilians).value = (int *)0x0;
-  (this->civilians).numberValue = 0;
-  (this->civilians).desiredNumberValue = 0;
-  (this->civilians).maximumSizeValue = 0;
-  (this->civilianExplorers).value = (int *)0x0;
-  (this->civilianExplorers).numberValue = 0;
-  (this->civilianExplorers).desiredNumberValue = 0;
-  (this->civilianExplorers).maximumSizeValue = 0;
-  (this->soldiers).value = (int *)0x0;
-  (this->soldiers).numberValue = 0;
-  (this->soldiers).desiredNumberValue = 0;
-  (this->soldiers).maximumSizeValue = 0;
-  (this->ungroupedSoldiers).value = (int *)0x0;
-  (this->ungroupedSoldiers).numberValue = 0;
-  (this->ungroupedSoldiers).desiredNumberValue = 0;
-  (this->ungroupedSoldiers).maximumSizeValue = 0;
-  (this->boats).value = (int *)0x0;
-  (this->boats).numberValue = 0;
-  (this->boats).desiredNumberValue = 0;
-  (this->boats).maximumSizeValue = 0;
-  (this->warBoats).value = (int *)0x0;
-  (this->warBoats).numberValue = 0;
-  (this->warBoats).desiredNumberValue = 0;
-  (this->warBoats).maximumSizeValue = 0;
-  (this->fishingBoats).value = (int *)0x0;
-  (this->fishingBoats).numberValue = 0;
-  (this->fishingBoats).desiredNumberValue = 0;
-  (this->fishingBoats).maximumSizeValue = 0;
-  (this->tradeBoats).value = (int *)0x0;
-  (this->tradeBoats).numberValue = 0;
-  (this->tradeBoats).desiredNumberValue = 0;
-  (this->tradeBoats).maximumSizeValue = 0;
-  (this->transportBoats).value = (int *)0x0;
-  (this->transportBoats).numberValue = 0;
-  (this->transportBoats).desiredNumberValue = 0;
-  (this->transportBoats).maximumSizeValue = 0;
-  (this->artifacts).value = (int *)0x0;
-  (this->artifacts).numberValue = 0;
-  (this->artifacts).desiredNumberValue = 0;
-  (this->artifacts).maximumSizeValue = 0;
-  this->lastGroupRebalanceTime = 0;
-  TacticalAIGroup *group = (TacticalAIGroup *)this->groups;
-  group->TacticalAIGroup::TacticalAIGroup();
-  (this->playersToAttack).value = (int *)0x0;
-  (this->playersToAttack).numberValue = 0;
-  (this->playersToAttack).desiredNumberValue = 0;
-  (this->playersToAttack).maximumSizeValue = 0;
-  (this->playersToDefend).value = (int *)0x0;
-  (this->playersToDefend).numberValue = 0;
-  (this->playersToDefend).desiredNumberValue = 0;
-  (this->playersToDefend).maximumSizeValue = 0;
-  (this->workingArea).value = (int *)0x0;
-  (this->workingArea).numberValue = 0;
-  (this->workingArea).desiredNumberValue = 0;
-  (this->workingArea).maximumSizeValue = 0;
-  (this->unitsTaskedThisUpdate).value = (int *)0x0;
-  (this->unitsTaskedThisUpdate).numberValue = 0;
-  (this->unitsTaskedThisUpdate).desiredNumberValue = 0;
-  (this->unitsTaskedThisUpdate).maximumSizeValue = 0;
-  iVar6 = param_2;
-  iVar1 = 4;
-  ((ResourceItem *)this->neededResources)->ResourceItem::ResourceItem(iVar1);
-  ((TacticalAIGroup *)this->groups)->next = group;
-  ((TacticalAIGroup *)this->groups)->prev = group;
+  TacticalAIGroup *group = &this->groups;
+  this->groups.next = group;
+  this->groups.prev = group;
   this->attackEnabledValue = 0;
   this->updateArea = 0;
   this->firstNeededResourceUpdateDone = 0;
@@ -886,7 +865,7 @@ LAB_004ee6c3:
   iVar1 = 0;
   do {
     rge_read(file,&local_2c,4);
-    ResourceItem::setValue((ResourceItem *)this->neededResources,iVar1,local_2c);
+    ResourceItem::setValue(&this->neededResources,iVar1,local_2c);
     iVar1 = iVar1 + 1;
   } while (iVar1 < 4);
   rge_read(file,&this->groupIDValue,4);
