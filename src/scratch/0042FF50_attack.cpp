@@ -31,6 +31,8 @@
 // worker sa-7d40fde9 revisit: inverted missile-id control flow worsened to 390B/368B and broke call order; restored.
 // worker sa-7d40fde9 revisit: passing this in the fallback improved shape but worsened to 390B; separate positive return was a codegen duplicate.
 // worker sa-7d40fde9 revisit: virtualizing the target overload moved the fallback to vslot +0x22C; block-local c/s/range was a duplicate; radius_y-first terms worsened shape; inline range worsened to 378B/385B. Restored the pinned source.
+// worker sa-c26e0e77: hoisting radius locals and swapping c/s declarations were codegen duplicates. Parenthesizing the y offset sum alone reached 396B/355 strict diff and 77.33% shape; the x-only form reached 400B/370, while both sums reached 396B/366. This is a useful x87 lead but remains unpinned because the asymmetric source grouping is not established by a donor.
+// worker sa-c26e0e77: direct sine expressions and inline range were worse (398B/374 and 378B/385); radius_y-first with the y grouping reproduced the earlier 392B/366 basin. All probes kept seven ordered calls aligned. Clean source restored.
 
 class RGE_Static_Object;
 class RGE_Combat_Object;
