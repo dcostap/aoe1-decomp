@@ -39,6 +39,13 @@
 // the font loop. The rebuild reads the writable import slot for each call. A
 // prior external call can therefore change a later call target only in the
 // rebuild. Keep the corrected natural destructor in scratch.
+// - Managed pass 2026-08-22: a separate count and byte-offset do-while matched
+//   the original pre-loop guard and raised exact-block coverage to 95.34%.
+//   It still emitted cmp EAX,EBX and a direct IAT call, added three
+//   instructions, and caused call-map drift after the loop. Local mutable,
+//   register, const, and file-scope DeleteObject aliases did not change it;
+//   the file-scope alias also changed the extracted owner. Restored the
+//   smallest typed for-loop source as the clean reconstruction.
 
 #include <stdio.h>
 #include <windows.h>
