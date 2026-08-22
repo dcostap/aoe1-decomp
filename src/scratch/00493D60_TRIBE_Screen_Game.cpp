@@ -87,6 +87,11 @@
 // BLOCKER: For the inventory-panel constructor, the executable reads the screen
 // draw area before font->font. The rebuild reads font->font first. Constructor
 // arguments and all 180 calls match, but invalid-pointer fault order differs.
+// 2026-08-22 claim sa-db4c643e: tested player and draw-area locals, canonical
+// void* font ABI surfaces, comma sequencing, loop predicates, local scopes,
+// base-pointer ownership, and a function-scope string buffer. The player and
+// draw-area locals worsened structure or call order. Other probes emitted the
+// clean 5859-byte baseline with diff 3154. Restored the clean source.
 
 #include "../../include/game_types.h"
 #include "../../include/game_globals.h"
