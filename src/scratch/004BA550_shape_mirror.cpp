@@ -39,6 +39,10 @@
 // and aggregate-entry variants were duplicate or worse. Remaining blocker is VC5 local-home and
 // register coloring around the normal-shape bounds and late dispatch; all calls and behavior stay
 // aligned. No inline assembly or unsupported source scaffold is retained.
+// sa-214f6df6 fresh pass: tested the PDB-supported function-scope draw-area alias in initializer
+// and split-assignment forms; both changed the allocator basin and worsened shape. A nested-if
+// rewrite changed ordered calls, so the reverse switch remains required. A base_y copy and a
+// nonvolatile result-byte pointer alias were codegen duplicates. Restored the pinned clean source.
 
 typedef unsigned char byte;
 class TDrawArea;
