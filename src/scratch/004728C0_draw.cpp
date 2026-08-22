@@ -66,6 +66,10 @@
 //   raised exact-block coverage, but caused broad register drift; the named
 //   alias remains the cleaner current source model. Coordinate operand-order
 //   probes did not change the emitted code after the first schedule change.
+// - Current pass: focus text arms are written first in both text passes. This
+//   matches the original fall-through blocks and improves shape by 3.30 points
+//   and exact-block coverage by 0.86 points. The one indirect TextOut gap stays.
+//   Scoped zero locals and local TextOut pointer forms were codegen duplicates.
 
 #include <string.h>
 
@@ -310,15 +314,15 @@ void TButtonPanel::draw()
                     x = x + 1;
                     y = y - 1;
                 }
-                if (this->have_focus == 0) {
-                    SetTextColor(dc, this->text_color2[this->cur_state]);
-                    TextOutA(dc, x - 1, y + 1, text, text_len);
-                    SetTextColor(dc, this->text_color1[this->cur_state]);
-                    TextOutA(dc, x, y, text, text_len);
-                } else {
+                if (this->have_focus != 0) {
                     SetTextColor(dc, this->highlight_text_color2[this->cur_state]);
                     TextOutA(dc, x - 1, y + 1, text, text_len);
                     SetTextColor(dc, this->highlight_text_color1[this->cur_state]);
+                    TextOutA(dc, x, y, text, text_len);
+                } else {
+                    SetTextColor(dc, this->text_color2[this->cur_state]);
+                    TextOutA(dc, x - 1, y + 1, text, text_len);
+                    SetTextColor(dc, this->text_color1[this->cur_state]);
                     TextOutA(dc, x, y, text, text_len);
                 }
 
@@ -340,15 +344,15 @@ void TButtonPanel::draw()
                         x = x + 1;
                         y = y - 1;
                     }
-                    if (this->have_focus == 0) {
-                        SetTextColor(dc, this->text_color2[this->cur_state]);
-                        TextOutA(dc, x - 1, y + 1, text, text_len);
-                        SetTextColor(dc, this->text_color1[this->cur_state]);
-                        TextOutA(dc, x, y, text, text_len);
-                    } else {
+                    if (this->have_focus != 0) {
                         SetTextColor(dc, this->highlight_text_color2[this->cur_state]);
                         TextOutA(dc, x - 1, y + 1, text, text_len);
                         SetTextColor(dc, this->highlight_text_color1[this->cur_state]);
+                        TextOutA(dc, x, y, text, text_len);
+                    } else {
+                        SetTextColor(dc, this->text_color2[this->cur_state]);
+                        TextOutA(dc, x - 1, y + 1, text, text_len);
+                        SetTextColor(dc, this->text_color1[this->cur_state]);
                         TextOutA(dc, x, y, text, text_len);
                     }
                 }
