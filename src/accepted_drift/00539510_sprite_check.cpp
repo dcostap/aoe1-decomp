@@ -50,6 +50,11 @@
 // revisit validation: protected access matches the original IAEH decorated
 // symbol but does not change body codegen. A decompiler-shaped while(start <= x)
 // rewrite worsened the result to 282 bytes; restore the typed 277-byte basin.
+// Accepted-drift audit: all coordinate and outline guards, row-table reads,
+// opcode groups, extended-count reads, stream advances, width tests, and
+// returns match. The function has no calls or non-stack writes. Malformed
+// streams cause the same ordered reads. Remaining drift is private register
+// coloring, return-tail placement, and internal switch-table placement.
 
 #include <memory.h>
 
