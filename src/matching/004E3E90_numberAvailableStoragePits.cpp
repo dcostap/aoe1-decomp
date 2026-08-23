@@ -1,4 +1,6 @@
 // 004E3E90 TribeInformationAIModule::numberAvailableStoragePits (taiinfmd.cpp:8079-8129)
+// BINARY NOTE: The PDB-qualified owner is TribeInformationAIModule. The body
+// runs from 004E3E90 through 004E3F7D; 004E3F80 starts numberAvailableGranaries.
 // Attempt log:
 // - baseline decompiler-shaped reconstruction: 109 differing bytes; calls/CFG
 //   were complete but the zone methods were incorrectly modeled as int.

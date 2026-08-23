@@ -1,11 +1,11 @@
 // VA: 0043E5C0 TribeDiplomacyDialog::check_wood
 // PDB: dlg_dip.cpp lines 777-805 (136 bytes, 51 asm lines)
 // Default flags. No inline asm/hacks.
-// MATCHED 2026-05-19: use pointer-walking do loop and declare `i` before the
-// button pointer so VC5 emits xor edi before lea esi. Reload *pp after
-// set_disabled so the later vcall uses the original `mov ecx,[esi]` shape.
-
-extern void* rge_base_game;
+// BINARY NOTE: PDB names this protected __thiscall method and bounds it to
+// 0043E5C0-0043E647. Its symbol is ?check_wood@TribeDiplomacyDialog@@IAEHXZ.
+// BINARY NOTE: Check prog_mode before get_player. Reload each button after
+// set_disabled before the virtual call. Keep this fault order and receiver.
+// BINARY NOTE: Keep result live through the button loop for final publication.
 
 class RGE_Base_Game {
 public:
@@ -15,9 +15,12 @@ public:
     class RGE_Player* get_player();
 };
 
+extern RGE_Base_Game* rge_base_game;
+
 class RGE_Player {
 public:
     char gap_00[0x50];
+    float* attributes;
 };
 
 class TButtonPanel {
@@ -41,7 +44,7 @@ public:
 };
 
 class TribeDiplomacyDialog {
-public:
+protected:
     char gap_00[0x534];
     TButtonPanel* woodTributeButtons[8];
     char gap_554[0x614 - 0x554];
@@ -62,7 +65,7 @@ int TribeDiplomacyDialog::check_wood()
         result = 1;
     } else {
         RGE_Player* player = game->get_player();
-        float diff = *(float*)(*(int*)((char*)player + 0x50) + 4) - this->woodTotal;
+        float diff = player->attributes[1] - this->woodTotal;
         if (diff > 0.0f) {
             result = 0;
         } else {
