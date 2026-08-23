@@ -44,7 +44,10 @@
 // overflow handling, counters, terminator store, loop state, and returns match.
 // Residual drift is rare-arm placement and equivalent register scheduling.
 
+#include "../../include/com_hand_context.h"
+
 typedef unsigned long ulong;
+#if 0
 extern ulong __cdecl debug_timeGetTime(const char* file, int line);
 class TDebuggingLog { public: void Log(char* fmt, ...); };
 class RGE_Comm_Error { public: void ShowReturn(long result, char* msg); };
@@ -84,6 +87,7 @@ public:
     void EvaluateSystemMessage(ulong size, char* msg, int a, ulong to);
     int PreprocessMessages(ulong size, char* msg, ulong from, ulong to, int cached);
 };
+#endif
 
 void TCommunications_Handler::GetDPLAYMessages() {
     ulong dcoFromID;
@@ -126,10 +130,10 @@ void TCommunications_Handler::GetDPLAYMessages() {
         if (hr != 0) { this->Err->ShowReturn(hr, (char*)"Rcv MSG"); return; }
         int pno;
         if (dcoFromID != 0) {
-            int i = this->LowPlayerNumber;
-            int hi = this->HighPlayerNumber;
+            int i = this->PlayerOptions.LowPlayerNumber;
+            int hi = this->PlayerOptions.HighPlayerNumber;
             if (i <= hi) {
-                ulong* p = this->dcoID + i;
+                ulong* p = this->PlayerOptions.dcoID + i;
                 for (; i <= hi; i++, p++) {
                     if (*p == dcoFromID)
                         goto found_first_player;
@@ -141,10 +145,10 @@ found_first_player:
         } else pno = 0;
         L->Log((char*)"  >RX #%d %c-%d (%u)", pno, (int)*buf, (int)*buf, dwSize);
         if (dcoFromID != 0) {
-            int i = this->LowPlayerNumber;
-            int hi = this->HighPlayerNumber;
+            int i = this->PlayerOptions.LowPlayerNumber;
+            int hi = this->PlayerOptions.HighPlayerNumber;
             if (i <= hi) {
-                ulong* p = this->dcoID + i;
+                ulong* p = this->PlayerOptions.dcoID + i;
                 for (; i <= hi; i++, p++) {
                     if (*p == dcoFromID)
                         goto found_second_player;

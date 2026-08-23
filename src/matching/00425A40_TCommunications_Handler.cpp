@@ -73,6 +73,10 @@
 // - Reduced validation: reduced-exact, Result: MATCH, 0.0000%.
 
 #include <string.h>
+#include "../../include/com_hand_context.h"
+
+#if 0
+#include <string.h>
 
 class TChat;
 class TDebuggingLog;
@@ -385,6 +389,8 @@ public:
     void ResetLastCommunicationTimes();
 };
 #pragma pack(pop)
+
+#endif
 
 TCommunications_Handler::TCommunications_Handler(void* hwnd, unsigned char maxPlayers, TChat* chat, GUID appGUID)
 {

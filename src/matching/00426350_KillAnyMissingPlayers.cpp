@@ -13,15 +13,19 @@
 //   size variable.  VC5 then emits the original vtable load, argument pushes,
 //   and delayed zero store.  The source remains a plausible COM call surface.
 
+#include "../../include/com_hand_context.h"
+
 extern "C" void* __cdecl operator_new(unsigned int size);
 extern "C" void __cdecl operator_delete(void* ptr);
 
+#if 0
 class TDebuggingLog {
 public:
     static void __cdecl Log(TDebuggingLog* log, const char* format, ...);
 };
 
 extern TDebuggingLog* L;
+#endif
 
 struct MSGFORMAT_KILL_PLAYER {
     int PlayerNo;
@@ -46,6 +50,7 @@ struct IDirectPlay {
 
 #define g_pDirectPlay (*(IDirectPlay**)0x0062C5EC)
 
+#if 0
 struct COMMPLAYEROPTIONS {
     char gap_00[0x14];
     unsigned long dcoID[10];
@@ -68,6 +73,7 @@ public:
 
     void KillAnyMissingPlayers();
 };
+#endif
 
 void TCommunications_Handler::KillAnyMissingPlayers()
 {

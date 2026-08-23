@@ -53,6 +53,9 @@
 // register owns the same loop and delete values. Calls, predicates, reads, writes,
 // destructor order, exception cleanup, fault order, ABI, and results are unchanged.
 
+#include "../../include/com_hand_context.h"
+
+#if 0
 class RESENDER;
 class HOLDER;
 class NAME;
@@ -119,6 +122,7 @@ public:
     void FreeOptions();
     ~TCommunications_Handler();
 };
+#endif
 
 TCommunications_Handler::~TCommunications_Handler() {
     this->DestroyMultiplayerGame();

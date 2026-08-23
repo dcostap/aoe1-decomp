@@ -1,6 +1,9 @@
 // VA: 00426530 TCommunications_Handler::NewCommand
 // Com_hand.cpp:467-493
 
+#include "../../include/com_hand_context.h"
+
+#if 0
 void Log(void* log, const char* format, ...);
 
 class RGE_Communications_Queue {
@@ -31,6 +34,7 @@ public:
     int AddCommand(int a, int b, int c, int d, unsigned char e, int f);
     int NewCommand(void* command, int size, int ordered);
 };
+#endif
 
 int TCommunications_Handler::NewCommand(void* command, int size, int ordered) {
     if (this->Multiplayer != 0) {
@@ -38,7 +42,7 @@ int TCommunications_Handler::NewCommand(void* command, int size, int ordered) {
         long _r = this->CommOut(0, 0x3E, command, size, 0);
         this->Err->ShowReturn(_r, "NewCmnd");
     } else {
-        int _t = this->current_turn + this->commandTurnIncrement;
+        int _t = this->current_turn + this->PlayerOptions.CommandTurnIncrement;
         this->AddCommand(_t, (int)command, size, this->Me, this->InQ->GetNextSequence(this->current_turn), ordered);
     }
     return 1;

@@ -599,6 +599,19 @@
         "00443070": "?ClearRestored@TDrawSystem@@QAEXXZ",
         "00443090": "?DeleteSurfaces@TDrawSystem@@QAEXXZ"
       }
+    },
+    {
+      "name": "com_hand_prefix",
+      "source": "src/com_hand_tu.cpp",
+      "flags": "config/flags/00425A40_TCommunications_Handler.rsp",
+      "owners": {
+        "00425A40": "src/matching/00425A40_TCommunications_Handler.cpp",
+        "004261E0": "src/accepted_drift/004261E0_TCommunications_Handler.cpp",
+        "00426350": "src/matching/00426350_KillAnyMissingPlayers.cpp",
+        "00426530": "src/matching/00426530_NewCommand.cpp",
+        "00426650": "src/accepted_drift/00426650_DoCycle.cpp",
+        "00426FC0": "src/accepted_drift/00426FC0_GetDPLAYMessages.cpp"
+      }
     }
   ]
 }

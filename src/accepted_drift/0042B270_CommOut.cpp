@@ -152,6 +152,7 @@ public:
     int AddCommand(int turn, int data, int length, int player,
                    uchar sequence, int flags);
 
+protected:
     long CommOut(ulong to, uchar type, void* data, int length, uchar flags);
 };
 

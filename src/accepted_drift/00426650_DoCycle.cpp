@@ -92,12 +92,16 @@
 // write, branch, stack change, external access, or fault point separates them.
 // All 55 calls, predicates, writes, returns, relocations, and values match.
 
+#include "../../include/com_hand_context.h"
+
 typedef unsigned int uint;
 typedef unsigned long ulong;
 typedef unsigned char uchar;
 
+#if 0
 struct TDebuggingLog { void Log(char*, ...); };
 extern "C" ulong debug_timeGetTime(char* file, int line);
+#endif
 extern "C" int sprintf(char* dest, const char* fmt, ...);
 
 #define S(x) ((char*)(x))
@@ -108,10 +112,11 @@ extern "C" TDebuggingLog* L;
 #define COMM_STATE_PAUSE 4
 #define COMM_STATE_JOINNOW 3
 #define COMM_STATE_RUNNING 5
-#define COMM_SYNC_ERROR 0x17B0
-#define COMM_PLAYER_NOT_RESPONDING 0x17BD
-#define COMM_PLAYER_DROPPED 0x17B2
+#define COMM_SYNC_ERROR COMMMESSAGE_SYNC_ERROR
+#define COMM_PLAYER_NOT_RESPONDING COMMMESSAGE_PLAYER_NOT_RESPONDING
+#define COMM_PLAYER_DROPPED COMMMESSAGE_PLAYER_DROPPED
 
+#if 0
 struct TRIBE_World { void send_zone_score_info(); };
 
 struct RGE_Base_Game {
@@ -136,7 +141,9 @@ struct RGE_Communications_Speed {
 };
 
 struct RGE_Communications_Synchronize { ulong DoChecksum(uint turn); };
+#endif
 
+#if 0
 class TCommunications_Handler {
 public:
     char gap1[0x8];
@@ -190,11 +197,14 @@ public:
 
     int DoCycle(ulong param_1);
 };
+#endif
+
+#define rge_base_game (*(RGE_Base_Game**)0x0062C574)
 
 int TCommunications_Handler::DoCycle(ulong param_1)
 {
     if (this->Multiplayer == 0) {
-        return (this->ProgramState == COMM_STATE_PAUSE) ? 0 : -1;
+        return (this->PlayerOptions.ProgramState == COMM_STATE_PAUSE) ? 0 : -1;
     }
     if (this->Me > (uint)this->MaxGamePlayers) {
         return 0;
@@ -214,9 +224,9 @@ int TCommunications_Handler::DoCycle(ulong param_1)
     this->ReceiveGameMessages();
     this->LastPlayerCommunication[this->Me] = now;
 
-    uint doneTurn = (uint)this->CommandTurnIncrement + this->current_turn;
+    uint doneTurn = (uint)this->PlayerOptions.CommandTurnIncrement + this->current_turn;
     uint turn = this->current_turn;
-    if (this->Multiplayer != 0 && this->ProgramState != COMM_STATE_JOINNOW &&
+    if (this->Multiplayer != 0 && this->PlayerOptions.ProgramState != COMM_STATE_JOINNOW &&
         this->LastTurnAck[this->Me] != turn) {
         this->LastTurnAck[this->Me] = turn;
         struct DoneMessage {
@@ -262,7 +272,7 @@ int TCommunications_Handler::DoCycle(ulong param_1)
     int ack = this->AllPlayersAcknowledged();
 
     if (ack == 0) {
-        if ((int)this->ProgramState < 5) {
+        if ((int)this->PlayerOptions.ProgramState < 5) {
             return 0;
         }
 
@@ -356,8 +366,8 @@ int TCommunications_Handler::DoCycle(ulong param_1)
                     i++;
                 } while ((int)i <= (int)(uint)this->MaxGamePlayers);
             }
-            this->NeedsToBeSent = 0;
-            this->LastSentTime = 0;
+            this->PlayerOptions.NeedsToBeSent = 0;
+            this->PlayerOptions.LastSentTime = 0;
             this->UpdatePlayers();
             return 0;
         }
@@ -377,7 +387,7 @@ int TCommunications_Handler::DoCycle(ulong param_1)
     }
 
     // ack != 0
-    if (this->ProgramState != COMM_STATE_RUNNING) {
+    if (this->PlayerOptions.ProgramState != COMM_STATE_RUNNING) {
         return 0;
     }
     this->Speed->ReloadBufferFrames();
