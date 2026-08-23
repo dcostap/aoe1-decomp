@@ -1,6 +1,21 @@
 // VA: 00419BC0 UnitAIModule::processRetryableOrder
-// Source: aiuaimod.cpp:5694-5746
+// PDB owner/access: protected virtual UnitAIModule::processRetryableOrder
+// (?processRetryableOrder@UnitAIModule@@MAEHXZ), aiuaimod.cpp:5694-5746.
+// Body boundary: 00419BC0-00419C26; 00419C30 is the next sibling.
 // EXACT MATCH: switch generates subtract-chain matching original
+//
+// Exact-finish notes:
+// - REQUIRED: the protected virtual declaration restores the PDB-qualified ABI
+//   without changing the exact body bytes.
+// - WALKBACK: public nonvirtual spelling also emitted exact bytes, but its
+//   decorated owner was QAEH rather than the PDB's MAEH protected virtual.
+// - BINARY NOTE: lastOrderValue is read before call28 and reread after call40.
+//   Do not cache it across either virtual call.
+// - BINARY NOTE: the four virtual calls use slots +0x28, +0x40, +0x64, +0x68,
+//   with no stores, publication, or cleanup side effects in this body.
+// - BINARY NOTE: the fallback return is reached after failed calls or unknown
+//   orders; the two recognized orders return 8 only when the final call returns
+//   1, and return 7 otherwise.
 
 class UnitAIModule {
 public:
@@ -39,7 +54,8 @@ public:
     virtual int call64(int value, int zero);
     virtual int call68(int value, int zero);
 
-    int processRetryableOrder();
+protected:
+    virtual int processRetryableOrder();
 };
 
 int UnitAIModule::processRetryableOrder() {

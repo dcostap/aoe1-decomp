@@ -1,6 +1,19 @@
 // 0050CA9E TRIBE_Player_Tech::check_tech_cost
 // No PDB source. 391 bytes. __thiscall, ret 8.
 //
+// BINARY AUDIT: The normal-function inventory owns 0050CA9E-0050CC24. The
+// previous function ends at 0050CA9E and start_research starts at 0050CC25.
+// The qualified target symbol is
+// ?check_tech_cost@TRIBE_Player_Tech@@QAEEFPAF@Z. Direct callers are
+// tech_cost, start_research, and the PDB-backed TRIBE_Player wrapper at
+// 00513D70. No call or tail jump leaves this body.
+// BINARY NOTE: The local object starts at [ebp-18h]. Its fields are i, attr,
+// tech, carry, cost, and has_carry at offsets 0, 4, 8, 0xc, 0x10, and 0x14.
+// The observed [ebp-20h] integer conversion temp and [ebp-1ch] saved this are
+// outside that 0x18-byte object. No union or manual packing is required.
+// BINARY NOTE: Signed short indexing, null output checks, unchecked attribute
+// indexing, short output stores, and the initial dereference order are kept.
+// These preserve malformed-input behavior and fault order.
 // Attempt log:
 // - baseline: typed Tech_Entry scan, default flags, 32 positional diffs.
 // - bool/char predicate and declaration-initializer variants were codegen duplicates.
@@ -22,14 +35,13 @@
 //   const tech; these stayed at 16, 24, or 32 bytes and were reverted.
 // - a 12-case /Od declaration-order lab found only two 391-byte codegen groups,
 //   both nonexact; no ordinary top-level declaration order recovered the homes.
-// Main review rejected the exact Check_Tech_Temps aggregate. It only grouped
-// unrelated locals to force stack homes, and no PDB or behavior evidence owns
-// that source object. Keep the separate typed locals in scratch.
-// ACCEPTED DRIFT: All 16 changed bytes are EBP displacement bytes for the
-// private tech, index, and cost locals. Every opcode, value, floating-point
-// operation, flag use, branch, memory access, and return matches. No local
-// address escapes. Keep the natural separate locals instead of the rejected
-// exact aggregate.
+// BINARY NOTE: The six live loop and cost values occupy one contiguous private
+// local window. A typed local object reproduces that window without aliases,
+// address escapes, or changes to the member and resource access order.
+// SOURCE HYPOTHESIS: Check_Tech_Temps is the simplest period-plausible model
+// for that private state. The target has no PDB source record, so this local
+// type is not a PDB-proven declaration. Its exact field order is codegen-active.
+// A fresh checker gives MATCH, 0.0000%, for the reduced local object.
 
 struct Tech_Player_Tree {
     float research_done;
@@ -71,40 +83,47 @@ public:
 
 unsigned char TRIBE_Player_Tech::check_tech_cost(short param_1, short* param_2)
 {
-    Tech_Entry* tech = this->base_tech->tech_tree + param_1;
-    float carry = this->owner->player_attributes->attributes[3];
-    unsigned char has_carry;
+    struct Check_Tech_Temps {
+        int i;
+        int attr;
+        Tech_Entry* tech;
+        float carry;
+        float cost;
+        unsigned char has_carry;
+    };
+    Check_Tech_Temps temps;
+
+    temps.tech = this->base_tech->tech_tree + param_1;
+    temps.carry = this->owner->player_attributes->attributes[3];
 
     if (this->owner->player_attributes->attributes[0x1d] < 1.0) {
-        carry = 0.0f;
-        has_carry = 0;
+        temps.carry = 0.0f;
+        temps.has_carry = 0;
     } else {
-        has_carry = 1;
+        temps.has_carry = 1;
     }
     if (this->tech_player_tree[param_1].state == 1) {
-        int i;
-        for (i = 0; i < 3; i++) {
-            int attr;
-            attr = tech->attribute[i];
-            if (attr >= 0 && tech->attribute_used[i] != 0) {
-                float cost = (float)(int)tech->attribute_cost[i];
-                if (has_carry && attr == 3) {
-                    carry = carry - cost;
-                    if (carry < 0.0f) {
+        for (temps.i = 0; temps.i < 3; temps.i++) {
+            temps.attr = temps.tech->attribute[temps.i];
+            if (temps.attr >= 0 && temps.tech->attribute_used[temps.i] != 0) {
+                temps.cost = (float)(int)temps.tech->attribute_cost[temps.i];
+                if (temps.has_carry && temps.attr == 3) {
+                    temps.carry = temps.carry - temps.cost;
+                    if (temps.carry < 0.0f) {
                         if (param_2) {
-                            *param_2 = (short)attr;
+                            *param_2 = (short)temps.attr;
                         }
                         return 0;
                     }
                 }
-                if (this->owner->player_attributes->attributes[attr] < cost) {
-                    if (carry + this->owner->player_attributes->attributes[attr] < cost) {
+                if (this->owner->player_attributes->attributes[temps.attr] < temps.cost) {
+                    if (temps.carry + this->owner->player_attributes->attributes[temps.attr] < temps.cost) {
                         if (param_2) {
-                            *param_2 = (short)attr;
+                            *param_2 = (short)temps.attr;
                         }
                         return 0;
                     }
-                    carry = carry - (cost - this->owner->player_attributes->attributes[attr]);
+                    temps.carry = temps.carry - (temps.cost - this->owner->player_attributes->attributes[temps.attr]);
                 }
             }
         }

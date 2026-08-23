@@ -1,16 +1,11 @@
-class RGE_Sound {
-public:
-    void stop(void);
-};
+// VA: 00540D30 RGE_Game_World::pause (45 B)
+// PDB-qualified owner/name: public: virtual void __thiscall RGE_Game_World::pause(unsigned char)
+// PDB source: World.cpp lines 366-375
+// Original body boundary: 00540D30-00540D5C; next symbol: 00540D60.
+// BINARY NOTE: The paused guard precedes the signed sound-count test. The loop
+// rereads sound_num after each RGE_Sound::stop call, preserving call and fault order.
 
-class RGE_Game_World {
-public:
-    char gap_00[0x28];
-    short sound_num;
-    RGE_Sound** sounds;
-
-    virtual void pause(unsigned char paused);
-};
+#include "../../include/world_scenario_context.h"
 
 void RGE_Game_World::pause(unsigned char paused) {
     int i;
