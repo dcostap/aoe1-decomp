@@ -1591,6 +1591,23 @@
       "owners": {
         "004C6B80": "src/matching/004C6B80_addToObstructionMap.cpp"
       }
+    },
+    {
+      "name": "taiuaimd_soldier_segment",
+      "source": "src/taiuaimd_soldier_segment_tu.cpp",
+      "flags": "config/flags/00506FE0_TribeSoldierUnitAIModule.rsp",
+      "owners": {
+        "00506FE0": "src/matching/00506FE0_TribeSoldierUnitAIModule.cpp",
+        "005071A0": "src/matching/005071A0_canAttackUnit.cpp",
+        "005071C0": "src/matching/005071C0_canAttackUnitAtNeutrality.cpp",
+        "005071F0": "src/matching/005071F0_processNotify.cpp"
+      },
+      "symbols": {
+        "00506FE0": "??0TribeSoldierUnitAIModule@@QAE@PAVRGE_Static_Object@@H@Z",
+        "005071A0": "?canAttackUnit@TribeSoldierUnitAIModule@@UAEHPAVRGE_Static_Object@@@Z",
+        "005071C0": "?canAttackUnitAtNeutrality@TribeSoldierUnitAIModule@@UAEHH@Z",
+        "005071F0": "?processNotify@TribeSoldierUnitAIModule@@MAEHPAUNotifyEvent@@K@Z"
+      }
     }
   ]
 }
