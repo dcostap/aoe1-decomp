@@ -1,8 +1,11 @@
 from __future__ import annotations
 
+import json
 import sys
+import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -13,9 +16,41 @@ from status_history import (  # noqa: E402
     append_live_snapshot,
     upgrade_history_diff_metrics,
 )
+from generate_status_dashboard import write_html_dashboard  # noqa: E402
 
 
 class StatusHistoryLiveSnapshotTests(unittest.TestCase):
+    def test_quick_dashboard_refresh_preserves_the_existing_timeline(self) -> None:
+        history = {
+            "schema": list(CHILD_FIELDS),
+            "base": {"groups": [], "summary": {}},
+            "commits": [{"hash": "one", "workingTree": False}],
+            "deltas": [{"changes": []}],
+            "sourcePreviews": [],
+        }
+
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            dashboard_path = root / "project_full_status.html"
+            dashboard_path.write_text(
+                "const DATA = " + json.dumps({"history": history}) + ";\n",
+                encoding="utf-8",
+            )
+            template_path = root / "template.html"
+            template_path.write_text("const DATA = __DASHBOARD_DATA__;\n", encoding="utf-8")
+
+            with patch("generate_status_dashboard.DASHBOARD_DIR", root), patch(
+                "generate_status_dashboard.HTML_TEMPLATE_PATH", template_path
+            ):
+                write_html_dashboard([], include_history=False)
+                write_html_dashboard([], include_history=False)
+
+            output = dashboard_path.read_text(encoding="utf-8")
+            start = output.index("const DATA = ") + len("const DATA = ")
+            payload, _ = json.JSONDecoder().raw_decode(output[start:])
+            self.assertEqual(len(payload["history"]["commits"]), 2)
+            self.assertTrue(payload["history"]["commits"][-1]["workingTree"])
+
     def test_live_snapshot_adds_current_diff_metrics_to_an_old_cache_schema(self) -> None:
         old_schema = list(CHILD_FIELDS[:-1])
         old_child = {field: None for field in old_schema}

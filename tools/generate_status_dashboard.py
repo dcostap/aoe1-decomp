@@ -340,6 +340,46 @@ def dashboard_payload(rows: list[dict[str, str]], generated_at: str | None = Non
     }
 
 
+def _load_embedded_history(html_path: Path) -> dict[str, object] | None:
+    """Read the previous timeline without rebuilding Git history.
+
+    ``--no-history`` is used for quick refreshes. It must not erase a timeline
+    that a previous full refresh already wrote to the dashboard.
+    """
+    try:
+        html_text = html_path.read_text(encoding="utf-8")
+    except (OSError, MemoryError):
+        return None
+
+    marker = "const DATA = "
+    marker_start = html_text.find(marker)
+    if marker_start < 0:
+        return None
+
+    try:
+        data, _ = json.JSONDecoder().raw_decode(html_text[marker_start + len(marker):])
+    except (json.JSONDecodeError, MemoryError, TypeError):
+        return None
+    if not isinstance(data, dict):
+        return None
+    history = data.get("history")
+    return history if isinstance(history, dict) else None
+
+
+def _remove_live_snapshots(history: dict[str, object]) -> None:
+    """Remove working-tree snapshots before replacing the current one."""
+    commits = history.get("commits")
+    deltas = history.get("deltas")
+    if not isinstance(commits, list) or not isinstance(deltas, list):
+        raise ValueError("dashboard history has no valid commit/delta arrays")
+    if len(commits) != len(deltas):
+        raise ValueError("dashboard history commit/delta lengths do not match")
+
+    while commits and isinstance(commits[-1], dict) and commits[-1].get("workingTree"):
+        commits.pop()
+        deltas.pop()
+
+
 def write_html_dashboard(
     rows: list[dict[str, str]],
     *,
@@ -436,6 +476,25 @@ def write_html_dashboard(
         # The history owns the full snapshots. Keeping another copy of the current
         # treemap here would defeat the point of storing only changes between commits.
         payload.pop("groups", None)
+    else:
+        # A quick refresh still writes the main dashboard. Reuse its last timeline
+        # instead of replacing it with a historyless payload. The next full refresh
+        # will recover any commits added since this quick refresh from the cache.
+        previous_history = _load_embedded_history(html_path)
+        if previous_history is not None:
+            try:
+                _remove_live_snapshots(previous_history)
+                payload["history"] = append_live_snapshot(
+                    previous_history,
+                    build_group_list([row for row in rows if row["corpus_bucket"] == "normal"]),
+                    payload["summary"],
+                    str(payload["generatedAt"]),
+                )
+                payload.pop("groups", None)
+            except (KeyError, MemoryError, TypeError, ValueError):
+                # Keep the current-only dashboard if an old or damaged dashboard
+                # cannot supply a reusable history payload.
+                pass
 
     html_template = HTML_TEMPLATE_PATH.read_text(encoding="utf-8")
     marker_count = html_template.count(DATA_MARKER)
@@ -455,7 +514,11 @@ def write_html_dashboard(
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Generate the current status dashboard and its commit timeline.")
-    parser.add_argument("--no-history", action="store_true", help="only write the current dashboard (useful for quick local checks)")
+    parser.add_argument(
+        "--no-history",
+        action="store_true",
+        help="write a quick refresh without rebuilding history; preserve an existing timeline",
+    )
     parser.add_argument("--history-ref", default="HEAD", help="commit/ref whose first-parent history becomes the timeline (default: HEAD)")
     args = parser.parse_args()
 
