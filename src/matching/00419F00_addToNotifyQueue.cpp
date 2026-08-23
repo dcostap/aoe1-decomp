@@ -1,5 +1,9 @@
 // VA: 00419F00 addToNotifyQueue (279B)
 // aiuaimod.cpp
+// PDB owner/access: protected nonvirtual UnitAIModule::addToNotifyQueue(int, int,
+// int, long, long, long), aiuaimod.cpp:5840-5868.
+// Symbol: ?addToNotifyQueue@UnitAIModule@@IAEHHHHJJJ@Z.
+// Body boundary: 00419F00-0041A016; 00419ED0 is the preceding sibling.
 // Attempt log:
 // - Replaced the stale placeholder with the proven notify-queue ownership:
 //   size at +0x1c, capacity at +0x20, and NotifyEvent array at +0x24.
@@ -9,6 +13,8 @@
 //   multiplication by two reproduces the original VC5 register/block layout.
 // - Main-agent audit confirmed canonical UnitAIModule/NotifyEvent ownership;
 //   emitted code remains exact.
+// - A fresh public-ABI check also matched bytes, but emitted QAE rather than
+//   the PDB-qualified protected IAE owner. Keep the protected declaration.
 
 struct NotifyEvent {
     int caller;
@@ -37,6 +43,7 @@ public:
     int notifyQueueMaxSizeValue;
     NotifyEvent* notifyQueueValue;
 
+protected:
     int addToNotifyQueue(int caller, int recipient, int mType,
                          long p1, long p2, long p3);
 };
