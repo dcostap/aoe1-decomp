@@ -13,56 +13,7 @@
 #include <math.h>
 #include <string.h>
 
-struct RGE_Map;
-struct RGE_Random_Map_Module_List;
-struct Map_Stack;
-struct RGE_Tile;
-
-struct RGE_Elevation_Hot_Spots {
-    long x;
-    long y;
-    long radius;
-    long fade;
-};
-
-struct RGE_Elevation_Info_Line {
-    long elevation_size;
-    long elevation;
-    long clumps;
-    long spacing;
-    long base_elevation;
-    long base_terrain_type;
-};
-
-struct RGE_Elevation_Info {
-    RGE_Elevation_Info_Line elevation[99];
-    long elevation_num;
-    RGE_Elevation_Hot_Spots hot_spots[99];
-    long hot_spot_num;
-};
-
-class RGE_Random_Map_Module {
-public:
-    virtual unsigned char generate() = 0;
-    RGE_Random_Map_Module* parent;
-    RGE_Random_Map_Module_List* list;
-    RGE_Map* map;
-    RGE_Tile** map_row_offset;
-    long map_width;
-    long map_height;
-    float schedule;
-    unsigned char* search_map;
-    unsigned char** search_map_rows;
-    Map_Stack* stack_array;
-    Map_Stack** stack_offsets;
-};
-
-class RGE_RMM_Elevation_Generator : public RGE_Random_Map_Module {
-public:
-    RGE_Elevation_Info info;
-
-    void generate_modifiers();
-};
+#include "..\..\include\rmm_elev_context.h"
 
 void RGE_RMM_Elevation_Generator::generate_modifiers()
 {

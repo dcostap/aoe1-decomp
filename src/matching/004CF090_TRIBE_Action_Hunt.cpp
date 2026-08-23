@@ -5,6 +5,7 @@
 // In a /GX constructor after a nontrivial base ctor, the C++ call surface is treated as potentially throwing and VC5
 // emits the base-unwind state without adding fake cleanup locals/calls.
 
+#ifndef TACT_HNT_SHARED_CONTEXT
 class RGE_Action_Object;
 
 class RGE_Action {
@@ -23,6 +24,7 @@ public:
 
     TRIBE_Action_Hunt(int param_1, RGE_Action_Object* param_2);
 };
+#endif
 
 TRIBE_Action_Hunt::TRIBE_Action_Hunt(int param_1, RGE_Action_Object* param_2)
     : RGE_Action(param_1, param_2, 1) {

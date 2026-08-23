@@ -1,3 +1,4 @@
+#ifndef TACT_HNT_SHARED_CONTEXT
 class RGE_Player {
 public:
     int computerPlayer(void);
@@ -40,12 +41,22 @@ struct HuntObjectPlayerHolder {
     char gap_00[0x0C];
     RGE_Player* player;
 };
+#endif
 
 int TRIBE_Action_Hunt::stop(void) {
+#ifdef TACT_HNT_SHARED_CONTEXT
+    if (this->obj->owner->computerPlayer() == 0) {
+        this->set_state(2);
+        return 1;
+    }
+    this->set_state(1);
+    return 1;
+#else
     if (((HuntObjectPlayerHolder*)this->object)->player->computerPlayer() == 0) {
         this->set_state(2);
         return 1;
     }
     this->set_state(1);
     return 1;
+#endif
 }

@@ -9,6 +9,7 @@
 
 #include "..\..\include\game_globals.h"
 
+#ifndef TACT_TRD_SHARED_CONTEXT
 class RGE_Action_Object;
 class RGE_Task;
 
@@ -49,15 +50,29 @@ public:
     virtual ~TRIBE_Action_Trade();
     TRIBE_Action_Trade(RGE_Action_Object* obj, RGE_Task* task, RGE_Static_Object* target);
 };
+#endif
 
 TRIBE_Action_Trade::TRIBE_Action_Trade(RGE_Action_Object* obj, RGE_Task* task, RGE_Static_Object* target)
+#ifdef TACT_TRD_SHARED_CONTEXT
+    : RGE_Action(obj, 1)
+#else
     : RGE_Action(obj, 1), task(task)
+#endif
 {
+#ifdef TACT_TRD_SHARED_CONTEXT
+    this->task = task;
+#endif
     this->action_type = 0x6F;
     this->set_target_obj(target);
+#ifdef TACT_TRD_SHARED_CONTEXT
+    this->target_x = target->world_x;
+    this->target_y = target->world_y;
+    this->target_z = target->world_z;
+#else
     this->world_x = target->world_x;
     this->world_y = target->world_y;
     this->world_z = target->world_z;
+#endif
     this->pick_up_x = -1.0f;
     this->pick_up_y = -1.0f;
 }

@@ -1,3 +1,4 @@
+#ifndef RMM_BASE_SHARED_CONTEXT
 struct Map_Stack {
     int x;
     int y;
@@ -12,6 +13,7 @@ public:
     void remove_stack_node(Map_Stack* node);
     void add_stack_node(Map_Stack* target, Map_Stack* node);
 };
+#endif
 
 void RGE_Random_Map_Module::add_stack_node(Map_Stack* target, Map_Stack* node) {
     if ((node->next != 0) || (node->prev != 0)) {

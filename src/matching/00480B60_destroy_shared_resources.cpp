@@ -1,5 +1,6 @@
 #include <stdlib.h>
 
+#ifndef RMM_BASE_SHARED_CONTEXT
 class RGE_Random_Map_Module {
 public:
     char gap_00[0x20];
@@ -10,6 +11,7 @@ public:
 
     void destroy_shared_resources();
 };
+#endif
 
 void RGE_Random_Map_Module::destroy_shared_resources() {
     if (search_map != 0) {

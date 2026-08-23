@@ -9,45 +9,7 @@
 // Key: nested if-guard instead of early return produces correct shared epilogue
 // and prevents compiler from popping edi early in path2.
 
-struct Shape_Header {
-    long bounds;
-    long origin;
-    long xmin;
-    long ymin;
-    long xmax;
-    long ymax;
-};
-
-struct Shape_Offsets {
-    long shape;
-    long palette;
-};
-
-struct Shape_Info {
-    long _gap_00[4];
-    long Width;       // +0x10
-    long Height;      // +0x14
-    long Hotspot_X;   // +0x18
-    long Hotspot_Y;   // +0x1C
-};
-
-struct SLhape_File_Header;
-
-struct TShape {
-    unsigned char* shape;
-    int load_type;
-    int load_size;
-    Shape_Header* shape_header;
-    char _gap_10[0x04];
-    Shape_Offsets* offsets;
-    SLhape_File_Header* FShape;
-    Shape_Info* shape_info;
-
-    unsigned char Check_shape(long facet, const char* name);
-    unsigned char shape_minmax(long* out_minx, long* out_miny,
-                               long* out_maxx, long* out_maxy,
-                               long facet);
-};
+#include "../../include/shape_context.h"
 
 unsigned char TShape::shape_minmax(long* out_minx, long* out_miny,
                                     long* out_maxx, long* out_maxy,

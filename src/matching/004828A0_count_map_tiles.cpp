@@ -1,11 +1,9 @@
-class RGE_Map {
-public:
-    char gap_0[0x14];
-    int width;
-    int height;
-    int count_map_tiles(int unused);
-};
+// 004828A0 RGE_RMM_Controller::count_map_tiles
+// Exact anchor: mov eax,[ecx+14h]; imul eax,[ecx+18h]; ret 4.
+// The byte parameter is intentionally unused, as in the shipped helper.
+#include "../../include/rmm_cntr_context.h"
 
-int RGE_Map::count_map_tiles(int unused) {
-    return this->width * this->height;
+long RGE_RMM_Controller::count_map_tiles(uchar ignored)
+{
+    return this->map_width * this->map_height;
 }

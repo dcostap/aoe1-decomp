@@ -13,6 +13,8 @@
 //   VC5 branch shape; only map-size/type setup is scenario-game guarded.
 // - exact: 1403/1403 bytes, 62/62 calls, all relocations and CFG signals.
 
+#ifndef SCR_MPS_TU_CONTEXT
+
 #include <string.h>
 
 class TPanel;
@@ -163,12 +165,14 @@ public:
     TPanel* netInfoButton;          // +0x858
     int i_am_ready;                 // +0x85C
     unsigned char defaultColor[8];  // +0x860
-    int unknown_868[8];             // +0x868
-    int unknown_888;                // +0x888
-    int unknown_88C;                // +0x88C
+    long scenarioCheckSum[8];       // +0x868
+    int last_send_shared;           // +0x888
+    int resend_game_options;        // +0x88C
 
     void init_vars();
 };
+
+#endif
 
 void TribeMPSetupScreen::init_vars() {
     int i;
@@ -238,7 +242,7 @@ void TribeMPSetupScreen::init_vars() {
     this->myScenarioChecksum = 0;
     this->saveScenarioName[0] = 0;
     this->saveRandomGame = rge_base_game->randomGame();
-    int* zero_block = this->unknown_868;
+    long* zero_block = this->scenarioCheckSum;
     this->saveScenarioChecksum = 0;
     this->scenarioInfo = 0;
     this->numberAnyPlayers = 8;
@@ -250,8 +254,8 @@ void TribeMPSetupScreen::init_vars() {
     for (i = 0; i < 8; ++i) {
         zero_block[i] = 0;
     }
-    this->unknown_888 = 0;
-    this->unknown_88C = 0;
+    this->last_send_shared = 0;
+    this->resend_game_options = 0;
 
     if (rge_base_game->multiplayerGame() != 0) {
         rge_base_game->setCampaignGame(0);
@@ -301,7 +305,7 @@ void TribeMPSetupScreen::init_vars() {
         if (((TCommunications_Handler*)comm)->IsHost() != 0) {
             ((TRIBE_Game*)rge_base_game)->setPlayerVersion(0, 1);
             rge_base_game->beginStart();
-            this->unknown_88C = 0;
+            this->resend_game_options = 0;
             return;
         }
     } else {

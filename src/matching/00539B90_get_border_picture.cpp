@@ -1,12 +1,17 @@
 // 00539B90 RGE_View::get_border_picture
-// view.cpp:5617-5671, 239 bytes, __thiscall
+// PDB: view.cpp:5617-5671, ?get_border_picture@RGE_View@@IAEFEEEFF@Z.
+// Body: 00539B90-00539C7E. Padding: 00539C7F. Next: 00539C80.
+// BINARY NOTE: The protected access is part of the PDB-qualified member ABI.
+// Exact-finish note: public access kept bytes exact but emitted the QAE symbol;
+// the protected declaration is retained for the original IAE symbol.
+// 239 bytes, __thiscall
 // short get_border_picture(uchar terrain_type, uchar row_idx, uchar col_idx, short param_4, short param_5)
 
 struct RGE_TOB_Picts { short count; short animations; short shape_index; };
 struct RGE_Border_Type { unsigned char gap_00[0x20]; void* shape; unsigned char gap_24[0x42 - 0x24]; RGE_TOB_Picts borders[19][12]; unsigned char gap_59A[4]; short border_style; };
 struct RGE_Map { unsigned char gap_00[0x8C]; unsigned char terrain_types[32][0x198]; RGE_Border_Type border_types[32]; };
 class TPanel { public: unsigned char gap_00[0xF4]; };
-class RGE_View : public TPanel { public: unsigned char gap_F4[0x10]; RGE_Map* map; short get_border_picture(unsigned char param_1, unsigned char param_2, unsigned char param_3, short param_4, short param_5); };
+class RGE_View : public TPanel { public: unsigned char gap_F4[0x10]; RGE_Map* map; protected: short get_border_picture(unsigned char param_1, unsigned char param_2, unsigned char param_3, short param_4, short param_5); };
 
 short RGE_View::get_border_picture(unsigned char param_1, unsigned char param_2, unsigned char param_3, short param_4, short param_5) {
     RGE_Border_Type* bt = &this->map->border_types[param_1];

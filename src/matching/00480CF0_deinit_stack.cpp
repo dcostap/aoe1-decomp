@@ -1,12 +1,20 @@
-struct InnerObj { char pad[0x14]; int field_14; };
-struct MapStack { char pad[0x10]; InnerObj* field_10; };
-class SomeClass {
-public:
-    void deinit_stack(MapStack* stack);
+#ifndef RMM_BASE_SHARED_CONTEXT
+struct Map_Stack {
+    long x;
+    long y;
+    float cost;
+    float tot_cost;
+    Map_Stack* next;
+    Map_Stack* prev;
 };
-void SomeClass::deinit_stack(MapStack* stack) {
-    if (stack->field_10) {
-        stack->field_10->field_14 = 0;
-        stack->field_10 = 0;
+class RGE_Random_Map_Module {
+public:
+    void deinit_stack(Map_Stack& stack);
+};
+#endif
+void RGE_Random_Map_Module::deinit_stack(Map_Stack& stack) {
+    if (stack.next) {
+        stack.next->prev = 0;
+        stack.next = 0;
     }
 }

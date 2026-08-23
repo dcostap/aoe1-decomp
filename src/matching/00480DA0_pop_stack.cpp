@@ -1,3 +1,4 @@
+#ifndef RMM_BASE_SHARED_CONTEXT
 struct Map_Stack {
     long x;
     long y;
@@ -10,17 +11,18 @@ struct Map_Stack {
 class RGE_Random_Map_Module {
 public:
     void remove_stack_node(Map_Stack* node);
-    Map_Stack* pop_stack(Map_Stack* head, long* x, long* y, float* cost);
+    Map_Stack* pop_stack(Map_Stack& head, long& x, long& y, float& cost);
 };
+#endif
 
-Map_Stack* RGE_Random_Map_Module::pop_stack(Map_Stack* head, long* x, long* y, float* cost) {
-    Map_Stack* node = head->next;
+Map_Stack* RGE_Random_Map_Module::pop_stack(Map_Stack& head, long& x, long& y, float& cost) {
+    Map_Stack* node = head.next;
     if (node == 0) {
         return 0;
     }
-    *x = node->x;
-    *y = node->y;
-    *cost = node->cost;
+    x = node->x;
+    y = node->y;
+    cost = node->cost;
     this->remove_stack_node(node);
     return node;
 }

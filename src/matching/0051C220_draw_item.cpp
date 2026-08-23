@@ -72,6 +72,7 @@ public:
     TShape* unit_pics;
     TShape** bldg_pics;
 
+protected:
     virtual void draw_item(int, int, ValueType, int, int);
 };
 

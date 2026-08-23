@@ -25,82 +25,14 @@
 //   restored all 18 call relocations. Negative guards improved the prologue but
 //   inverted the original branch blocks. The first gate's cold zero label keeps
 //   the observed read-before-zero order and late EBX lifetime; this is exact.
+// Prefix TU pass: moved world, field, base-load, and read ownership into the
+//   shared canonical context. The isolated owner remains exact.
 
-// Same-TU load donors use the ordinary C++ rge_read declaration.
+#include "../../include/tworld_prefix_context.h"
+
 void rge_read(int handle, void* buf, int size);
 
 extern float save_game_version;
-
-class RGE_Game_World {
-public:
-    virtual ~RGE_Game_World();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
-    virtual void vf20();
-    virtual void vf24();
-    virtual void vf28();
-    virtual void vf2C();
-    virtual void vf30();
-    virtual void vf34();
-    virtual void vf38();
-    virtual void vf3C();
-    virtual void vf40();
-    virtual void vf44();
-    virtual void vf48();
-    virtual void vf4C();
-    virtual void vf50();
-    virtual void vf54();
-    virtual void vf58();
-    virtual void vf5C();
-    virtual void vf60();
-    virtual void vf64();
-    virtual void vf68();
-    virtual void vf6C();
-    virtual void vf70();
-    virtual void vf74();
-    virtual void vf78();
-    virtual void vf7C();
-    virtual void vf80();
-    virtual void vf84();
-    virtual void vf88();
-    virtual void vf8C();
-    virtual void vf90();
-    virtual void vf94();
-    virtual void vf98();
-    virtual void vf9C();
-    virtual void vfA0();
-    virtual void vfA4();
-    virtual void vfA8();
-    virtual void vfAC();
-    virtual void vfB0();
-    virtual void vfB4();
-    virtual void vfB8();
-    virtual void vfBC();
-    virtual void vfC0();
-    virtual void vfC4();
-    virtual unsigned char load_world(int handle);
-};
-
-class TRIBE_World : public RGE_Game_World {
-public:
-    char gap_004[0x100];
-    void* tech;
-    int victory_type;          // +0x108
-    int artifact_count;        // +0x10C
-    int ruin_count;            // +0x110
-    unsigned char countdown_victory; // +0x114
-    char gap_115[3];
-    float countdown_clock;     // +0x118
-    unsigned char score_displayed; // +0x11C
-    unsigned char controllingComputerPlayer; // +0x11D
-
-    virtual unsigned char load_world(int handle);
-};
 
 unsigned char TRIBE_World::load_world(int handle)
 {

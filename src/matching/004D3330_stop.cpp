@@ -1,3 +1,4 @@
+#ifndef TACT_TRD_SHARED_CONTEXT
 class TRIBE_Action_Trade {
 public:
     virtual ~TRIBE_Action_Trade();
@@ -26,6 +27,7 @@ public:
     virtual int vf5C(int);
     int stop();
 };
+#endif
 
 int TRIBE_Action_Trade::stop() {
     this->vf5C(2);

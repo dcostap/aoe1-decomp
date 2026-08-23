@@ -1,7 +1,9 @@
+#ifndef SOUND_CANONICAL_TU
 class RGE_Sound {
 public:
-    short field_0;
+    short play_at_update_count;
     void play_at_update();
 };
+#endif
 
-void RGE_Sound::play_at_update() { this->field_0++; }
+void RGE_Sound::play_at_update() { this->play_at_update_count++; }

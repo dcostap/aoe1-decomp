@@ -1,3 +1,6 @@
+class RGE_Static_Object;
+
+#ifndef TACT_BLD_CONTEXT_H
 class TRIBE_Action_Build {
 public:
     virtual void vf00(void);
@@ -21,23 +24,24 @@ public:
     virtual void vf48(void);
     virtual void vf4C(void);
     virtual void vf50(void);
-    virtual void reset_target(int value);
+    virtual void set_target_obj(void* value);
     virtual void vf58(void);
     virtual int set_state(int value);
 
     char gap_04[0x1C];
-    float move_x;
-    float move_y;
-    float move_z;
+    float target_x;
+    float target_y;
+    float target_z;
 
-    int move_to(void* obj, float x, float y, float z);
+    int move_to(RGE_Static_Object* obj, float x, float y, float z);
 };
+#endif
 
-int TRIBE_Action_Build::move_to(void* obj, float x, float y, float z) {
-    this->move_x = x;
-    this->move_y = y;
-    this->move_z = z;
-    this->reset_target(0);
+int TRIBE_Action_Build::move_to(RGE_Static_Object* obj, float x, float y, float z) {
+    this->target_x = x;
+    this->target_y = y;
+    this->target_z = z;
+    this->set_target_obj(0);
     this->set_state(0x0B);
     return 1;
 }

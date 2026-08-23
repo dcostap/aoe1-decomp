@@ -21,6 +21,9 @@
 // - orch-4B5E00-a: removed decompiler-only +4 biases from all three buffers;
 //   the natural buffer bases produce an exact 864-byte match.
 
+#define SCR_SET_CONTEXT_GROUP 1
+#include "../../include/scr_set_context.h"
+#ifndef SCR_SET_CONTEXT_GROUP
 extern "C" char* strncpy(char* dst, const char* src, unsigned int count);
 extern "C" char* strcpy(char* dst, const char* src);
 extern "C" unsigned int strlen(const char* src);
@@ -110,6 +113,8 @@ public:
 
     void fillScenarios();
 };
+
+#endif
 
 void TribeGameSettingsScreen::fillScenarios()
 {

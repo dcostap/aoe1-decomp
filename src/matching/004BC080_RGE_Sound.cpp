@@ -6,12 +6,15 @@
 // [6] Match original register usage: esi=this, ebx=counter i, edi=byte offset, ebp=digital.
 //     Sound_Entry stride = 0x24. Explicit byte-zero at first byte of each entry.
 
+#ifndef SOUND_CANONICAL_TU
 class TDigital {
 public:
     ~TDigital();
 };
 
+#ifndef SOUND_CANONICAL_TU
 extern void __cdecl free(void*);
+#endif
 extern void __cdecl operator_delete(void*);
 
 class RGE_Sound {
@@ -22,6 +25,7 @@ public:
 
     ~RGE_Sound();
 };
+#endif
 
 RGE_Sound::~RGE_Sound() {
     this->play_at_update_count = 0;

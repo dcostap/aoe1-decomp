@@ -1,3 +1,4 @@
+#ifndef RMM_BASE_SHARED_CONTEXT
 struct Map_Stack;
 
 class RGE_Random_Map_Module {
@@ -10,6 +11,7 @@ public:
 
     void share_resources(unsigned char** a, unsigned char*** b, Map_Stack** c, Map_Stack*** d);
 };
+#endif
 
 void RGE_Random_Map_Module::share_resources(unsigned char** a, unsigned char*** b, Map_Stack** c, Map_Stack*** d) {
     if (a != 0) {

@@ -1,3 +1,4 @@
+#ifndef SOUND_CANONICAL_TU
 class TDigital;
 
 class RGE_Sound_Info {
@@ -29,6 +30,7 @@ public:
     int is_playing();
     void stop();
 };
+#endif
 
 void RGE_Sound::stop() {
     int i;

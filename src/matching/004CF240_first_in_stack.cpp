@@ -1,6 +1,7 @@
 // 004CF240 TRIBE_Action_Hunt::first_in_stack(unsigned char) — tact_hnt.cpp:139-171
 // PDB source: C:\msdev\work\age1_x1\tact_hnt.cpp
 
+#ifndef TACT_HNT_SHARED_CONTEXT
 class RGE_Task {
 public:
     char gap_00[0x14];
@@ -65,11 +66,13 @@ public:
     char gap_48[0x04];
     short attribute_type_held;     // +0x4C
 };
+#endif
 
 // A global float = 0.0 used for fcomp comparison
 // Non-const so VC5 generates an actual memory reference
 float _zero_val = 0.0f;
 
+#ifndef TACT_HNT_SHARED_CONTEXT
 class TRIBE_Action_Hunt {
 public:
     virtual void vf00();
@@ -117,6 +120,11 @@ public:
     unsigned char _pad_3D[3];
     int targetType;                // +0x40
 };
+#else
+typedef RGE_Master_Static_Object MasterStub;
+typedef RGE_Master_Action_Object MasterActionStub;
+typedef RGE_Static_Object UnitStub;
+#endif
 
 void TRIBE_Action_Hunt::first_in_stack(unsigned char param_1)
 {

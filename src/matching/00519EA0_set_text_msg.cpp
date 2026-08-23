@@ -1,5 +1,6 @@
 char* strncpy(char* dest, const char* src, unsigned int count);
 
+#ifndef TPNL_BTN_SHARED_CONTEXT
 class TRIBE_Panel_Button {
 public:
     char gap_00[0x2D0];
@@ -7,6 +8,9 @@ public:
 
     void set_text_msg(char* text);
 };
+#else
+#include "../../include/tpnl_btn_context.h"
+#endif
 
 void TRIBE_Panel_Button::set_text_msg(char* text) {
     if (text == 0) {

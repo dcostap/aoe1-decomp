@@ -1,4 +1,8 @@
-class TRIBE_Dialog_Unit {
+// TRIBE_Panel_Button::set_garrison_number
+// PDB: tpnl_btn.cpp:326-329
+
+#ifndef TPNL_BTN_SHARED_CONTEXT
+class TRIBE_Panel_Button {
 public:
     virtual void vf00();
     virtual void vf04();
@@ -8,14 +12,21 @@ public:
     virtual void vf14();
     virtual void vf18();
     virtual void vf1C();
-    virtual void notify(int param);
-    char gap_4[0x2B6];
-    int field_2BC;
+    virtual void vf20(int);
+    char gap_04[0x2B8];
+    int garrsion_number;
 
-    void set_garrison_number(int value);
+    void set_garrison_number(int);
 };
+#else
+#include "../../include/tpnl_btn_context.h"
+#endif
 
-void TRIBE_Dialog_Unit::set_garrison_number(int value) {
-    this->field_2BC = value;
-    this->notify(1);
+void TRIBE_Panel_Button::set_garrison_number(int value) {
+    this->garrsion_number = value;
+#ifdef TPNL_BTN_SHARED_CONTEXT
+    this->set_redraw(1);
+#else
+    vf20(1);
+#endif
 }

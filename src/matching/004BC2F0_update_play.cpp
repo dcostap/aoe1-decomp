@@ -1,13 +1,15 @@
-class UpdatePlayHost {
+#ifndef SOUND_CANONICAL_TU
+class RGE_Sound {
 public:
-    void helper(int v);
+    void play(int v);
     void update_play(void);
-    short field_00;
+    short play_at_update_count;
 };
+#endif
 
-void UpdatePlayHost::update_play(void) {
-    if (this->field_00 > 0) {
-        this->helper(1);
-        this->field_00 = 0;
+void RGE_Sound::update_play(void) {
+    if (this->play_at_update_count > 0) {
+        this->play(1);
+        this->play_at_update_count = 0;
     }
 }

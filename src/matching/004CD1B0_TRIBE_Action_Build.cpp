@@ -1,5 +1,6 @@
 class RGE_Action_Object;
 
+#ifndef TACT_BLD_CONTEXT_H
 class RGE_Action {
 public:
     virtual ~RGE_Action();
@@ -12,6 +13,7 @@ public:
 
     TRIBE_Action_Build(int id, RGE_Action_Object* object);
 };
+#endif
 
 TRIBE_Action_Build::TRIBE_Action_Build(int id, RGE_Action_Object* object)
     : RGE_Action(id, object, 1) {

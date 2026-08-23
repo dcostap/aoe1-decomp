@@ -1,3 +1,5 @@
+#ifndef RMM_BASE_SHARED_CONTEXT
+class RGE_Map;
 class RGE_Random_Map_Module;
 
 class RGE_Random_Map_Module_List {
@@ -11,11 +13,12 @@ public:
     void* gap_00;
     void* gap_04;
     RGE_Random_Map_Module_List* list;
-    void* map;
+    RGE_Map* map;
 
-    void update_map_info(void* map);
+    void update_map_info(RGE_Map* map);
     void update_child_map_info();
 };
+#endif
 
 void RGE_Random_Map_Module::update_child_map_info() {
     RGE_Random_Map_Module_List* node;

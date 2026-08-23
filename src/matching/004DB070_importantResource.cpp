@@ -1,3 +1,5 @@
+// BINARY NOTE: PDB owner is TribeInformationAIModule in taiinfmd.cpp, lines 2308-2321.
+// The owned body is the exact 004DB070-004DB0A8 boundary.
 class TribeInformationAIModule {
 public:
     int importantResource(int param_1);

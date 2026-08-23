@@ -1,10 +1,13 @@
 // VA: 004C6C90 RGE_Static_Object::removeFromObstructionMap
 // PDB source: stat_obj.cpp, lines 4298-4361
+// BINARY NOTE: PDB-qualified owner is RGE_Static_Object::removeFromObstructionMap(int).
+// BINARY NOTE: The owned body is [004C6C90, 004C6D9A); 004C6DA0 starts changeInfluenceMap.
 // Attempt log:
 // baseline: natural typed reconstruction mirrored from the exact same-TU
 // obstruction-map update, with named master/object fields and pathing systems.
 // Main-agent audit replaced raw vptr storage with canonical destructors;
-// emitted code remains exact.
+// emitted code remains exact. A negated byte guard is codegen-equivalent to
+// the explicit zero comparison and is the retained reduced source form.
 
 extern float DAT_00574720;
 extern float DAT_00574768;
@@ -48,7 +51,7 @@ int RGE_Static_Object::removeFromObstructionMap(int mode)
     if (this->master_obj->radius_z <= DAT_00574720) {
         return 0;
     }
-    if (this->inObstructionMapValue == 0) {
+    if (!this->inObstructionMapValue) {
         return 0;
     }
 

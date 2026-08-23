@@ -1,3 +1,4 @@
+#ifndef RMM_BASE_SHARED_CONTEXT
 class RGE_Random_Map_Module {
 public:
     virtual ~RGE_Random_Map_Module();
@@ -5,5 +6,12 @@ public:
     float field_1C;
     float get_schedule();
 };
+#endif
 
-float RGE_Random_Map_Module::get_schedule() { return this->field_1C; }
+float RGE_Random_Map_Module::get_schedule() {
+#ifdef RMM_BASE_SHARED_CONTEXT
+    return this->schedule;
+#else
+    return this->field_1C;
+#endif
+}

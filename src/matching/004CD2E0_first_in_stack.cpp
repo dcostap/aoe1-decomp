@@ -1,3 +1,5 @@
+#ifndef TACT_BLD_CONTEXT_H
+class RGE_Static_Object;
 class TRIBE_Action_Build {
 public:
     virtual int vf00(void);
@@ -25,14 +27,15 @@ public:
     virtual int vf58(void);
     virtual void set_state(int state);
     char gap_04[0x0C];
-    int field_10;
+    RGE_Static_Object* target_obj;
 
     virtual void first_in_stack(unsigned char value);
 };
+#endif
 
 void TRIBE_Action_Build::first_in_stack(unsigned char value) {
     if (value != 0) {
-        if (this->field_10 != 0) {
+        if (this->target_obj != 0) {
             this->set_state(4);
             return;
         }

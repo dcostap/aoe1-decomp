@@ -17,6 +17,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#ifndef SOUND_CANONICAL_TU
 class RGE_Sound_Info;
 
 class RGE_Sound {
@@ -42,6 +43,7 @@ public:
     char _gap_1D[3];
     long time_field;             // +0x20
 };
+#endif
 
 extern void* __cdecl calloc(int num, int size);
 

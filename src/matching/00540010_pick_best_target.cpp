@@ -9,35 +9,30 @@
 //   TEST AL and raised exact-block coverage to 90.55%.
 // - Inventory evidence supports int pick_objects return and RGE_View::pick_weight
 //   at vslot +E4. The return-width spelling is codegen-neutral here.
-// - The original zero-fill block is two REP STOSD loops. Natural memset emits
-//   an extra byte-tail path under VC5 when the count is dynamic. Count shifts,
-//   signedness, standard headers, loop cursors, and loop stores did not remove it.
+// - The original zero-fill block is two REP STOSD loops. Dynamic memset emits
+//   two unnecessary byte-tail paths under VC5.
 // - The original first action call reads selected_object +8 before +D8. A typed
 //   RGE_Master_Static_Object model restores that owner and raises exact-block
 //   coverage to 93.31%, with 95.82% shape and 844B output.
 // - The +4/+8 calls match reviewed RGE_Task_List::get_target_task and
 //   is_attack_task arity and slots. The +6 action field is typed as action_type.
 // - Replaced generic virtual slots with the reviewed TPanel/RGE_View surface and
-//   used natural polymorphic class layouts. This is policy-valid but non-exact.
+//   used natural polymorphic class layouts.
 // - Removing the redundant positive object-count wrapper recovered the target
 //   fallback-loop compare. The clean body is now 841B with 96.56% shape and
 //   95.28% exact-block coverage.
-// - Accepted-drift review: the remaining 18 bytes are two nine-byte dynamic
-//   zero-fill tails. The byte count is `master_obj * 4`, so its low two bits
-//   are zero for every 32-bit value. Both added REP STOSB instructions run with
-//   ECX equal to zero and cannot read or write memory.
-// - The two REP STOSD fills have the same counts, destinations, and store order.
-//   Later instructions are exact after the 18-byte shift. The frame, saved
-//   registers, 32 conditions, three jumps, three returns, and nine calls match.
-//   The function has no exception handler. Values, flags, calls, cleanup,
-//   memory effects, and fault order match the executable.
+// - Authentic game ownership identifies player +24 as the master-object array.
+//   Selected entries retain the static-object layout and +8 master pointer.
+// - Exact finish: two indexed zero loops with `target_count != master_obj`
+//   lower to the original REP STOSD-only block. A focused 11-form lab also
+//   found an exact pointer/count loop, but the indexed form is simpler.
+// - Walkback: removing the unused memset declaration and using post-increment
+//   remain exact. Changing either loop bound to `< master_obj` is non-exact.
 
 extern "C" void __cdecl free(void*);
-extern "C" void* __cdecl memset(void*, int, unsigned int);
 
 struct RGE_Static_Object;
 struct RGE_Master_Static_Object;
-struct RGE_Master_Action_Object;
 struct RGE_Action_Object;
 struct RGE_Task;
 class RGE_Game_World;
@@ -57,9 +52,10 @@ public:
     virtual ~RGE_Player();
     char gap_004[0x1E];
     short object_count; // +22
-    RGE_Static_Object** object_list; // +24
+    RGE_Master_Static_Object** master_objects; // +24
     char gap_028[0xB0];
-    unsigned char get_selected_objects_to_command(RGE_Static_Object*** out, short* count, int a, int b, int c, int d);
+    unsigned char get_selected_objects_to_command(RGE_Static_Object*** out, short* count,
+                                                   short a, short b, short c, short d);
 };
 
 class RGE_Game_World {
@@ -170,18 +166,13 @@ struct RGE_Task {
 
 struct RGE_Static_Object {
     virtual ~RGE_Static_Object();
-    unsigned char kind; // +4
-    char gap_005[1];
-    short action_id; // +6 for returned action object
+    long id; // +4
     RGE_Master_Static_Object* master_obj; // +8
-    char gap_00C[8];
-    short object_type; // +14
-    char gap_016[0x32];
+    void* owner; // +C
+    void* sprite; // +10
+    void* old_sprite; // +14
+    char gap_018[0x30];
     unsigned char owner_type; // +48
-    char gap_049[0x8F];
-    RGE_Task_List* tasks; // +D8
-    char gap_0DC[0x10];
-    unsigned char flag_ec; // +EC
 };
 
 struct RGE_Master_Static_Object {
@@ -223,8 +214,12 @@ RGE_Static_Object* RGE_Main_View::pick_best_target(long x, long y, int* attackin
     }
 
     if (master_obj > 0) {
-        memset(attacking, 0, master_obj * sizeof(int));
-        memset(valid_target_count, 0, master_obj * sizeof(int));
+        for (target_count = 0; target_count != master_obj; target_count++) {
+            attacking[target_count] = 0;
+        }
+        for (target_count = 0; target_count != master_obj; target_count++) {
+            valid_target_count[target_count] = 0;
+        }
     }
 
     j = 0;
@@ -256,7 +251,7 @@ RGE_Static_Object* RGE_Main_View::pick_best_target(long x, long y, int* attackin
                             if (cur_target->flag_ec != 0) {
                                 int k = 0;
                                 while (k < this->player->object_count) {
-                                    RGE_Static_Object* obj2 = this->player->object_list[k];
+                                    RGE_Master_Static_Object* obj2 = this->player->master_objects[k];
                                     if (obj2 != 0 && obj2->object_type == cur_target->object_type &&
                                         obj2->kind == cur_target->kind && obj2->flag_ec == cur_target->flag_ec) {
                                         RGE_Task* action2 = obj2->tasks->get_target_task(

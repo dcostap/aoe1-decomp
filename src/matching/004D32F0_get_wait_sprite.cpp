@@ -1,3 +1,4 @@
+#ifndef TACT_TRD_SHARED_CONTEXT
 struct RGE_Sprite;
 struct SomeObj {
     char pad[0x08]; int* field_08;
@@ -14,6 +15,7 @@ public:
     char pad_00[0x08]; SomeObj* field_08;
     char pad_0C[0x24]; SubObj* field_30;
 };
+#endif
 RGE_Sprite* TRIBE_Action_Trade::get_wait_sprite(void) {
     SubObj* obj = this->field_30;
     short val = obj->field_14;

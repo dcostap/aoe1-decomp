@@ -8,6 +8,7 @@
 
 void operator_delete(void* ptr);
 
+#ifndef RMM_BASE_SHARED_CONTEXT
 class RGE_Random_Map_Module;
 class RGE_Map;
 class RGE_Tile;
@@ -38,9 +39,12 @@ public:
     void destroy_shared_resources();
     void remove_module(RGE_Random_Map_Module* child);
 };
+#endif
 
 RGE_Random_Map_Module::~RGE_Random_Map_Module() {
+#ifndef RMM_BASE_SHARED_CONTEXT
     this->vtable_ptr = (void*)0x571E30;
+#endif
 
     while (this->list != 0) {
         RGE_Random_Map_Module* module = this->list->module;

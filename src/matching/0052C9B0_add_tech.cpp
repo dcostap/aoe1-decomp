@@ -1,19 +1,4 @@
-class RGE_Victory_Entry {
-public:
-    unsigned char command;
-    char gap_01[0x1F];
-    long count;
-};
-
-class RGE_Victory_Conditions {
-public:
-    RGE_Victory_Entry* add(unsigned char id, unsigned char unused);
-};
-
-class TRIBE_Victory_Conditions : public RGE_Victory_Conditions {
-public:
-    unsigned char add_tech(unsigned char id, long count);
-};
+#include "../../include/tvictory_context.h"
 
 unsigned char TRIBE_Victory_Conditions::add_tech(unsigned char id, long count) {
     RGE_Victory_Entry* entry;

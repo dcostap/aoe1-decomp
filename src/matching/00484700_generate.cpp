@@ -28,72 +28,7 @@
 //   into the read-first basin: EXACT (0.0000%). `& 31` and `& 0x1F` both exact;
 //   operand order irrelevant.
 
-struct RGE_Map;
-struct RGE_Random_Map_Module_List;
-struct Map_Stack;
-
-struct RGE_Tile {
-    short screen_xpos;
-    short screen_ypos;
-    unsigned char tile_type;
-    unsigned char terrain_type : 5;
-    unsigned char elevation : 3;
-    unsigned char border_type : 4;
-    unsigned char border_shape : 4;
-    char objects[12];
-};
-
-struct RGE_Elevation_Hot_Spot {
-    char bytes[0x10];
-};
-
-struct RGE_Elevation_Info_Line {
-    long elevation_size;
-    long elevation;
-    long clumps;
-    long spacing;
-    long base_elevation;
-    long base_terrain_type;
-};
-
-struct RGE_Elevation_Info {
-    RGE_Elevation_Info_Line elevation[99];
-    long elevation_num;
-    RGE_Elevation_Hot_Spot hot_spots[99];
-    long hot_spot_num;
-};
-
-class RGE_Random_Map_Module {
-public:
-    virtual unsigned char generate() = 0;
-    RGE_Random_Map_Module* parent;
-    RGE_Random_Map_Module_List* list;
-    RGE_Map* map;
-    RGE_Tile** map_row_offset;
-    long map_width;
-    long map_height;
-    float schedule;
-    unsigned char* search_map;
-    unsigned char** search_map_rows;
-    Map_Stack* stack_array;
-    Map_Stack** stack_offsets;
-
-    void clear_stack();
-};
-
-class RGE_Map {
-public:
-    void clean_elevation(long x, long y, long width, long height, unsigned char elevation);
-};
-
-class RGE_RMM_Elevation_Generator : public RGE_Random_Map_Module {
-public:
-    virtual unsigned char generate();
-    RGE_Elevation_Info info;
-
-    void generate_modifiers();
-    unsigned char base_elevation_generate(RGE_Elevation_Info_Line line);
-};
+#include "..\..\include\rmm_elev_context.h"
 
 unsigned char RGE_RMM_Elevation_Generator::generate() {
     this->clear_stack();

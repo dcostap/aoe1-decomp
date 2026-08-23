@@ -1,3 +1,6 @@
+#include "../../include/scr_cj_context.h"
+
+#if 0
 struct tagRECT;
 
 class TPanel {
@@ -55,6 +58,7 @@ public:
 
     long handle_idle();
 };
+#endif
 
 long TribeJoinScreen::handle_idle() {
     if (this->waitingToStart == 0) {

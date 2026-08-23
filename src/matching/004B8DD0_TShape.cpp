@@ -5,23 +5,14 @@
 // attempt 4: 3.7%, swapped second block args
 // attempt 5: 3.7%, confirmed, tried swapping back (25.2% worse)
 // variant lab: second-decommit argument plus vc5_store_order4 over zero stores found exact match
-// winning shape uses shape_header for the second decommit and zeroes shape/head/offsets/load_size before FShape
+// Canonical TShape ownership places load_size at +08 and shape_header at +0C.
+// The mapped-memory calls use load_size. The destructor clears shape_header,
+// head, and offsets after cleanup, as shown by the original stores.
+#include "../../include/shape_context.h"
+
 typedef unsigned char uchar;
-extern void __cdecl free(void*);
-extern int __cdecl RESFILE_Decommit_Mapped_Memory(uchar*, uchar*);
-
-class TShape {
-public:
-    uchar* shape;       // +0x00
-    int load_type;      // +0x04
-    uchar* shape_header; // +0x08
-    void* head;         // +0x0C
-    void* offsets;      // +0x10
-    uchar* load_size;   // +0x14
-    uchar* FShape;      // +0x18
-
-    ~TShape();
-};
+extern "C" void __cdecl free(void*);
+extern int __cdecl RESFILE_Decommit_Mapped_Memory(uchar*, int);
 
 TShape::~TShape() {
     if (FShape != 0) {
@@ -29,7 +20,7 @@ TShape::~TShape() {
             free(FShape);
         }
         if (load_type == 0) {
-            RESFILE_Decommit_Mapped_Memory(FShape, shape_header);
+            RESFILE_Decommit_Mapped_Memory((uchar*)FShape, load_size);
         }
     }
     if (shape != 0) {
@@ -37,12 +28,12 @@ TShape::~TShape() {
             free(shape);
         }
         if (load_type == 0) {
-            RESFILE_Decommit_Mapped_Memory(shape, shape_header);
+            RESFILE_Decommit_Mapped_Memory(shape, load_size);
         }
     }
     shape = 0;
+    shape_header = 0;
     head = 0;
     offsets = 0;
-    load_size = 0;
     FShape = 0;
 }

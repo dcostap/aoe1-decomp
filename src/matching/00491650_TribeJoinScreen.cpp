@@ -18,6 +18,9 @@
 // FLAGS: config/flags/00491650_TribeJoinScreen.rsp (/GX), required for the
 // original constructor EH registration frame.
 
+#include "../../include/scr_cj_context.h"
+
+#if 0
 struct tagRECT;
 class TDrawArea;
 class TTextPanel;
@@ -176,6 +179,7 @@ public:
     virtual ~TribeJoinScreen();
     TribeJoinScreen();
 };
+#endif
 
 TribeJoinScreen::TribeJoinScreen()
     : TScreenPanel((char*)0x0058617C)
@@ -211,7 +215,7 @@ TribeJoinScreen::TribeJoinScreen()
             if (this->create_auto_scrollbar(&this->scrollbar,
                                             this->list, 0x14)) {
                 this->listFilled = 1;
-                this->list->set_string_id(0x25AB);
+                this->list->set_string(0x25AB);
                 if (this->create_button(this, &this->refreshButton,
                                         0x25A1, 0, 0xD2, 0x172,
                                         0xDC, 0x1E, 0, 0, 0)) {

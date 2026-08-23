@@ -36,6 +36,7 @@
 
 #include "..\..\include\game_globals.h"
 
+#ifndef SOUND_CANONICAL_TU
 class RGE_Sound_Info;
 
 class TSound_Driver;
@@ -73,6 +74,7 @@ public:
     char _gap_1D[3];
     unsigned long time;          // +0x20
 };
+#endif
 
 void RGE_Sound::restart_sound(TSound_Driver* driver)
 {

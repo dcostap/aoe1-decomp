@@ -1,5 +1,8 @@
 // attempt 1: destructor with Sess global cleanup, 9 delete_panel calls, base destructor
 
+#include "../../include/scr_cj_context.h"
+
+#if 0
 struct tagRECT;
 
 class TPanel {
@@ -49,6 +52,7 @@ public:
 
     virtual ~TribeJoinScreen();
 };
+#endif
 
 TribeJoinScreen::~TribeJoinScreen() {
     TCommunications_Sessions* p = Sess;
@@ -56,13 +60,13 @@ TribeJoinScreen::~TribeJoinScreen() {
         p->~TCommunications_Sessions();
         operator_delete(p);
     }
-    this->delete_panel(&this->title);
-    this->delete_panel(&this->listTitle);
-    this->delete_panel(&this->list);
-    this->delete_panel(&this->scrollbar);
-    this->delete_panel(&this->refreshButton);
-    this->delete_panel(&this->joinButton);
-    this->delete_panel(&this->createButton);
-    this->delete_panel(&this->cancelButton);
-    this->delete_panel(&this->close_button);
+    this->delete_panel((TPanel**)&this->title);
+    this->delete_panel((TPanel**)&this->listTitle);
+    this->delete_panel((TPanel**)&this->list);
+    this->delete_panel((TPanel**)&this->scrollbar);
+    this->delete_panel((TPanel**)&this->refreshButton);
+    this->delete_panel((TPanel**)&this->joinButton);
+    this->delete_panel((TPanel**)&this->createButton);
+    this->delete_panel((TPanel**)&this->cancelButton);
+    this->delete_panel((TPanel**)&this->close_button);
 }

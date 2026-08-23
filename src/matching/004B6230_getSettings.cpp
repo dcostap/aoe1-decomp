@@ -1,6 +1,9 @@
 // TribeGameSettingsScreen::getSettings
 // VA: 004B6230, scr_set.cpp:841-897
 
+#define SCR_SET_CONTEXT_GROUP 1
+#include "../../include/scr_set_context.h"
+#ifndef SCR_SET_CONTEXT_GROUP
 struct RGE_Base_Game {
     int scenarioGame();
     char* scenarioName();
@@ -90,6 +93,8 @@ struct TribeGameSettingsScreen {
 };
 
 #define rge_base_game (*(TRIBE_Game**)0x62C574)
+
+#endif
 
 void TribeGameSettingsScreen::getSettings() {
     if (rge_base_game->scenarioGame() != 0) {

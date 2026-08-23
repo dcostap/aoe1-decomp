@@ -3,6 +3,7 @@
 // FLAGS: default
 
 #include <stddef.h>
+#include "../../include/shape_context.h"
 
 typedef unsigned char uchar;
 
@@ -11,27 +12,6 @@ extern "C" void __cdecl free(void* ptr);
 
 // "1.10" DWORD value for version comparison
 extern int shape_version_110;  // at 57FB58h
-
-struct Shape_File_Header {
-    int version;     // +0x00
-    int shape_num;   // +0x04
-};
-
-struct SLhape_File_Header {
-    char pad_00[4];
-    int Num_Shapes;  // +0x04
-};
-
-class TShape {
-public:
-    uchar* shape;                // +0x00
-    char pad_04[0x0C];
-    Shape_File_Header* head;     // +0x10
-    char pad_14[0x04];
-    SLhape_File_Header* FShape;  // +0x18
-
-    uchar Check_shape(long param_1, char* param_2);
-};
 
 uchar TShape::Check_shape(long param_1, char* param_2)
 {

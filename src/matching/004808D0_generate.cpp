@@ -122,9 +122,10 @@
 
 #include <stddef.h>
 
-typedef unsigned char uchar;
-
 extern "C" int __cdecl debug_rand(char* file, int line);
+
+#ifndef RMM_BASE_SHARED_CONTEXT
+typedef unsigned char uchar;
 
 class TDebuggingLog {
 public:
@@ -162,6 +163,7 @@ public:
 protected:
     float get_schedule();
 };
+#endif
 
 uchar RGE_Random_Map_Module::generate()
 {

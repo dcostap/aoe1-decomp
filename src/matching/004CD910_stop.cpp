@@ -1,3 +1,4 @@
+#ifndef TACT_BLD_CONTEXT_H
 class TRIBE_Action_Build {
 public:
     virtual ~TRIBE_Action_Build();
@@ -23,11 +24,12 @@ public:
     virtual void vf50();
     virtual void vf54();
     virtual void vf58();
-    virtual int vf5C(int);
+    virtual int set_state(int);
     int stop();
 };
+#endif
 
 int TRIBE_Action_Build::stop() {
-    this->vf5C(2);
+    this->set_state(2);
     return 1;
 }

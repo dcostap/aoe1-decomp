@@ -1,3 +1,4 @@
+#ifndef RMM_BASE_SHARED_CONTEXT
 struct Map_Stack {
     int x;
     int y;
@@ -9,14 +10,15 @@ struct Map_Stack {
 
 class RGE_Random_Map_Module {
 public:
-    void init_stack(Map_Stack* stack);
+    void init_stack(Map_Stack& stack);
 };
+#endif
 
-void RGE_Random_Map_Module::init_stack(Map_Stack* stack) {
-    stack->x = -1;
-    stack->y = -1;
-    stack->next = 0;
-    stack->prev = 0;
-    stack->cost = 0;
-    stack->tot_cost = 0;
+void RGE_Random_Map_Module::init_stack(Map_Stack& stack) {
+    stack.x = -1;
+    stack.y = -1;
+    stack.next = 0;
+    stack.prev = 0;
+    stack.cost = 0;
+    stack.tot_cost = 0;
 }

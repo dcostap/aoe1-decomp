@@ -1,6 +1,7 @@
 // From basegame.cpp
 // matched via variant lab: for-loop with raw pointer stride 0x24
 
+#ifndef SOUND_CANONICAL_TU
 class TDigital {
 public:
     int is_playing();
@@ -22,6 +23,7 @@ public:
 
     int is_playing();
 };
+#endif
 
 int RGE_Sound::is_playing() {
     if (sound_num > 0) {

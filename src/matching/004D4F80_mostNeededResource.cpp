@@ -11,9 +11,12 @@
 // 2: folded the increment into the comparison; VC5 emitted the same bytes.
 // 3: changed the max-count return to a natural loop break, restoring the
 //    original shared final `return count` reload and exact bytes.
+// 4: shared context declares buildCap before numberBuilds. This restores the
+//    original direct-call order and exact bytes in the authentic prefix.
 // Main-agent audit restored polymorphic player/main-AI ownership; emitted
 // code remains exact.
 
+#ifndef TAIBLDMD_SHARED_CONTEXT
 class ResourceItem {
 public:
     virtual ~ResourceItem();
@@ -82,6 +85,7 @@ public:
 
     int mostNeededResource(ResourceItem& item, int maxCount);
 };
+#endif
 
 int TribeBuildAIModule::mostNeededResource(ResourceItem& item, int maxCount)
 {

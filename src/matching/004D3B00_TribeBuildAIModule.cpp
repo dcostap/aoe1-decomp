@@ -1,12 +1,14 @@
-class Base_TribeBuildAIModule {
+#ifndef TAIBLDMD_SHARED_CONTEXT
+class BuildAIModule {
 public:
-    virtual ~Base_TribeBuildAIModule();
+    virtual ~BuildAIModule();
 };
 
-class TribeBuildAIModule : public Base_TribeBuildAIModule {
+class TribeBuildAIModule : public BuildAIModule {
 public:
     virtual ~TribeBuildAIModule();
 };
+#endif
 
 TribeBuildAIModule::~TribeBuildAIModule() {
 }

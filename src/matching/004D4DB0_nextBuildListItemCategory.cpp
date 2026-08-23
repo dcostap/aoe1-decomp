@@ -1,6 +1,7 @@
 // attempt 1: sentinel/null build-list walk that returns the first acceptable build category
 // exact match landed once the BuildItem next pointer was modeled at +0x6C and the reject-check order matched the asm
 
+#ifndef TAIBLDMD_SHARED_CONTEXT
 class BuildItem {
 public:
     char gap_00[0x6C];
@@ -20,6 +21,7 @@ public:
 
     int nextBuildListItemCategory();
 };
+#endif
 
 int TribeBuildAIModule::nextBuildListItemCategory() {
     BuildItem* item = this->buildList.next;

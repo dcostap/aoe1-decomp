@@ -1,3 +1,5 @@
+// BINARY NOTE: PDB-qualified owner/name is TribeInformationAIModule::importantMisc(int)
+// in taiinfmd.cpp, lines 2326-2331. The original body boundary is 004DB0B0-004DB0CA.
 class TribeInformationAIModule {
 public:
     int importantMisc(int value);

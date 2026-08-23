@@ -5,6 +5,7 @@
 // fourth pass: use an outer object at +0x40 with the nested pointer at +0x4BC to match the branch length
 // keep the base call first, then reject state 2/3 with the nested +0x4BC virtual +0xBC hit
 
+#ifndef TPNL_BTN_SHARED_CONTEXT
 class TPanel {
 public:
     int is_inside(long x, long y);
@@ -77,6 +78,9 @@ public:
 
     int is_inside(long x, long y);
 };
+#else
+#include "../../include/tpnl_btn_context.h"
+#endif
 
 int TRIBE_Panel_Button::is_inside(long x, long y) {
     if (!((TPanel*)this)->TPanel::is_inside(x, y)) {

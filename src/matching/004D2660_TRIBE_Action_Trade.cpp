@@ -9,6 +9,7 @@
 
 #include "..\..\include\game_globals.h"
 
+#ifndef TACT_TRD_SHARED_CONTEXT
 class RGE_Action_Object;
 class RGE_Task;
 
@@ -38,6 +39,7 @@ public:
     virtual ~TRIBE_Action_Trade();
     TRIBE_Action_Trade(int file, RGE_Action_Object* obj);
 };
+#endif
 
 extern void __cdecl rge_read(int file, void* buf, int size);
 

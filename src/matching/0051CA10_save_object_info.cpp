@@ -364,6 +364,7 @@ public:
     int save_score[9];
     int save_farm_amt;
 
+protected:
     void save_object_info();
 };
 

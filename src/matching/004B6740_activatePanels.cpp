@@ -1,8 +1,13 @@
 // 004B6740 TribeGameSettingsScreen::activatePanels (scr_set.cpp:970-1020, 296B)
 // Controls visibility of scenario/mission panels based on state and multiplayer.
 // FLAGS: /nologo /c /O2 /Oy
+// BINARY NOTE: The grouped owner uses canonical screen fields and the
+// inherited +0xC8 tab-list slot. The owner remains an exact 296-byte anchor.
 
 // Panel with setVisible at vtable slot 5 (+0x14)
+#define SCR_SET_CONTEXT_GROUP 1
+#include "../../include/scr_set_context.h"
+#ifndef SCR_SET_CONTEXT_GROUP
 struct PanelDispatch3 {
     virtual void d0() = 0;
     virtual void d1() = 0;
@@ -119,6 +124,8 @@ struct TribeGameSettingsScreen : PanelBase50 {
     void activatePanels();
 };
 
+#endif
+
 void TribeGameSettingsScreen::activatePanels() {
     void* tabList[3];
     int isScenario;
@@ -133,10 +140,17 @@ void TribeGameSettingsScreen::activatePanels() {
         missionText->setVisible(0);
     }
 
+#ifdef SCR_SET_CONTEXT_GROUP
+    mapSizeDrop->setVisible(isScenario == 0);
+    mapTypeDrop->setVisible(isScenario == 0);
+    mapSizeLabel->setVisible(isScenario == 0);
+    mapTypeLabel->setVisible(isScenario == 0);
+#else
     mapTypeDrop->setVisible(isScenario == 0);
     mapTypeLabel->setVisible(isScenario == 0);
     mapSizeDrop->setVisible(isScenario == 0);
     mapSizeLabel->setVisible(isScenario == 0);
+#endif
 
     if (scenarioList->get_id() == -1) {
         resourcesDrop->setVisible(0);
@@ -156,9 +170,17 @@ void TribeGameSettingsScreen::activatePanels() {
     count++;
     tabList[count] = cancelButton;
     count++;
+#ifdef SCR_SET_CONTEXT_GROUP
+    this->setTabList((TPanel**)tabList, (short)count);
+#else
     setTabList(tabList, count);
+#endif
 
+#ifdef SCR_SET_CONTEXT_GROUP
+    if (this->curr_child == 0 || this->curr_child->active == 0) {
+#else
     if (field_3C == 0 || *(int*)((char*)field_3C + 0x6C) == 0) {
+#endif
         set_curr_child(okButton);
     }
 }

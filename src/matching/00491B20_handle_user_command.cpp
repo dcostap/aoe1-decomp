@@ -21,6 +21,9 @@
 // - Main-agent audit restored canonical base-game destructor ownership;
 //   emitted code remains exact.
 
+#include "../../include/scr_cj_context.h"
+
+#if 0
 struct tagRECT;
 
 class TTextPanel;
@@ -94,6 +97,7 @@ public:
 
     virtual long handle_user_command(unsigned int cmd, long param);
 };
+#endif
 
 long TribeJoinScreen::handle_user_command(unsigned int cmd, long param) {
     switch (cmd) {

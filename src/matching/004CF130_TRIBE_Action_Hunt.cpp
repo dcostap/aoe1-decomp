@@ -1,6 +1,7 @@
 // 004CF130 TRIBE_Action_Hunt (constructor, 140 bytes) — MATCHED
 // PDB: tact_hnt.cpp (TRIBE_Action_Hunt::TRIBE_Action_Hunt)
 
+#ifndef TACT_HNT_SHARED_CONTEXT
 class RGE_Action_Object;
 class RGE_Task;
 
@@ -44,10 +45,23 @@ class TRIBE_Action_Hunt : public RGE_Action {
 public:
     TRIBE_Action_Hunt(RGE_Action_Object* obj, RGE_Task* tsk, RGE_Static_Object* target);
 };
+#endif
 
 TRIBE_Action_Hunt::TRIBE_Action_Hunt(RGE_Action_Object* obj, RGE_Task* tsk, RGE_Static_Object* target)
     : RGE_Action(obj, 1)
 {
+#ifdef TACT_HNT_SHARED_CONTEXT
+    this->task = tsk;
+    *(int*)this = 0x5750F0;
+    *(short*)&((char*)this)[4] = 0x6E;
+    this->set_target_obj(target);
+    if (target && target->object_state < 7) {
+        this->target_x = (float)target->world_x;
+        this->target_y = (float)target->world_y;
+        this->target_z = (float)target->world_z;
+        this->targetType = target->master_obj->id;
+    }
+#else
     this->task = (int)tsk;
     *(int*)this = 0x5750F0;
     *(short*)&((char*)this)[4] = 0x6E;
@@ -58,4 +72,5 @@ TRIBE_Action_Hunt::TRIBE_Action_Hunt(RGE_Action_Object* obj, RGE_Task* tsk, RGE_
         this->world_z = target->world_z;
         this->targetType = target->master_obj->id;
     }
+#endif
 }

@@ -1,35 +1,18 @@
 // VA: 004C3B30 RGE_Static_Object::draw_frame
 // PDB source: stat_obj.cpp lines 1624-1676
-// Baseline reconstruction: frame bounds and health-bar drawing follow the
-// neighboring capture_square_frame source and the proven object/master layout.
-// Attempt log:
-// - typed baseline recovered the original 313-byte size, 0x8 frame, saved
-//   registers, CFG, and all seven ordered calls;
-// - corrected hp to +0x30 and used the proven get_facetindex/get_frame and
-//   DrawRect/FillRect surfaces; this restored the complete structural call set;
-// - coordinate declaration/order, receiver-local, and top-level-local probes
-//   were codegen duplicates or worse and were rolled back;
-// - remaining drift is a broad VC5 arithmetic/register and stack-home basin
-//   beginning at the lower-left coordinate calculation (219 positional bytes,
-//   66.96% instruction-shape similarity). Left in scratch after the bounded
-//   ten-hypothesis pass.
-// - exact stat_obj draw donors showed that the CRT header and full virtual
-//   method surface are codegen-active context; they reduced the gap to 105
-//   bytes and raised shape similarity to 77.27% while preserving all calls;
-//   the remaining drift is the health-home and callee-saved register basin.
-// - swapped coordinate declaration/assignment and health-local declaration
-//   orders were codegen duplicates or worse under the donor context.
-// - tested exact same-TU box_hit_test-style guard clauses for sprite/frame
-//   dispatch and object-state/max-health exits; emitted code was unchanged,
-//   so restored the combined natural source form.
-// - hoisted outer rectangle coordinates and modeled health-bar bounds as
-//   mutable x1/y1/x2/y2 locals; this reproduced the original 313-byte shape.
-// - the first mutable update form left an 11-byte hunk before the second
-//   FillRect; restoring explicit updates confirmed the hunk was evaluation
-//   order, not layout.
-// - using pre-increment and compound-assignment arguments in the first health
-//   FillRect reproduced the original right-to-left VC5 argument schedule.
-//   Current source is an exact 313-byte match with default flags.
+// Qualified owner: RGE_Static_Object, symbol ?draw_frame@RGE_Static_Object@@UAEXPAVTDrawArea@@FF@Z.
+// Qualified boundary: 004C3B30 through 004C3C6C; next symbol 004C3C70 is update.
+// Exact finish (2026-08-24):
+// - Fresh baseline and restore checks are MATCH at 313 bytes, 0.0000%, with
+//   the 0x8 frame, four saved registers, six conditional branches, and one return.
+// - All seven ordered calls align: facet dispatch, get_frame, DrawRect, __ftol,
+//   DrawRect, and the two FillRect calls. The owner symbol and boundary match.
+// - Walkback of separate health-bar updates changed 11 bytes at 004C3C27;
+//   restoring pre-increment and compound-assignment arguments restored MATCH.
+// BINARY NOTE: Keep the sprite and sprite-list guards, facet dispatch, frame
+// query, health checks, GDI call order, and signed __ftol conversion in this order.
+// No publication or global write occurs in this target. No inline assembly or
+// fake volatility is needed. The default VC5 flags are sufficient.
 
 #include <stdlib.h>
 

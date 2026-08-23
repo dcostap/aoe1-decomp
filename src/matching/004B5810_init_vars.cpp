@@ -1,6 +1,9 @@
 // 004B5810 TribeGameSettingsScreen::init_vars
 // Size: 271 bytes (0x10F)
 
+#define SCR_SET_CONTEXT_GROUP 1
+#include "../../include/scr_set_context.h"
+#ifndef SCR_SET_CONTEXT_GROUP
 class TTextPanel;
 class TDropDownPanel;
 class TListPanel;
@@ -80,6 +83,7 @@ public:
 
     void init_vars(void);
 };
+#endif
 
 void TribeGameSettingsScreen::init_vars(void) {
     this->title = 0;

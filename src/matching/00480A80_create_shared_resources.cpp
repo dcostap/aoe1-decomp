@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 
+#ifndef RMM_BASE_SHARED_CONTEXT
 struct Map_Stack {
     long x;                // +0x00
     long y;                // +0x04
@@ -28,19 +29,27 @@ public:
 
     void create_shared_resources();
 };
+#endif
 
 void RGE_Random_Map_Module::create_shared_resources() {
     int i;
     int y;
+    int count;
 
-    search_map = (unsigned char*)calloc(map_width * map_height, 1);
+    count = map_height;
+    count *= map_width;
+    // BINARY NOTE: Store each allocation before row-pointer publication.
+    // The shipped code does not test allocation results.
+    search_map = (unsigned char*)calloc(count, 1);
     search_map_rows = (unsigned char**)calloc(map_height, 4);
 
     for (i = 0; i < map_height; i++) {
         search_map_rows[i] = search_map + i * map_width;
     }
 
-    stack_array = (Map_Stack*)calloc(map_width * map_height, 0x18);
+    count = map_height;
+    count *= map_width;
+    stack_array = (Map_Stack*)calloc(count, 0x18);
     stack_offsets = (Map_Stack**)calloc(map_height, 4);
 
     for (i = 0; i < map_height; i++) {

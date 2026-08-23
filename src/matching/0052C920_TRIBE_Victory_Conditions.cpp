@@ -1,14 +1,5 @@
-class BaseClass {
-public:
-    virtual ~BaseClass();
-    BaseClass(int param);
-};
+#include "../../include/tvictory_context.h"
 
-class TRIBE_Victory_Conditions : public BaseClass {
-public:
-    virtual ~TRIBE_Victory_Conditions();
-    TRIBE_Victory_Conditions(int param);
-};
-
-TRIBE_Victory_Conditions::TRIBE_Victory_Conditions(int param) : BaseClass(param) {
+TRIBE_Victory_Conditions::TRIBE_Victory_Conditions(RGE_Player* player)
+    : RGE_Victory_Conditions(player) {
 }

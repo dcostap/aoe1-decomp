@@ -2,20 +2,19 @@
 // rge_fio.cpp lines 222-306
 // 523 bytes, __cdecl
 //
-// Attempt log:
-// baseline: named rbuf cursor and manual dword/byte copies; 574 bytes, 277 diff.
-// ABI: C linkage for Inf32 helpers aligned all seven call targets; retained.
-// control-flow: separate BufSize result from calloc; matched the first helper call order.
-// variant: intrinsic memcpy produced the original REP MOVSD/MOVSB copies and exact size.
-// layout: function-scope fsize before loc matched decode stack homes; best is 528 bytes, 127 diff.
-// rejected: mutating fd or using buf as the cursor broke the original prologue and stack shape.
-// remaining: register and post-decode scheduling drift after the second Inf32Decode call.
-// probe: let the local zero own DAT_0086b268 after the second decode; output fell to 3 bytes.
-// probe: use the binary-supported >= 0x10000 chunk boundary; output fell to 1 byte.
-// probe: materialized total as a loop local; emitted code was unchanged at 1 byte.
-// left in scratch: one LEA SIB operand-order byte at the initial chunk boundary.
-// ACCEPTED_DRIFT: the sole differing byte selects [eax+ebx] instead of
-// [ebx+eax] for the same LEA. All behavior, calls, branches, and other bytes match.
+// Exact-finish notes:
+// - The clean source had one SIB-byte mismatch at the chunk-boundary LEA.
+// - Direct DAT_0086b268 ownership in total, copy, and reset reached MATCH.
+// - Reverting total to size + cur restored the one-byte mismatch.
+// - Reintroducing cur only as an unused declaration was codegen-neutral.
+// - Using cur for copy caused a 526-byte build and a 123-byte mismatch.
+// - Publishing through cur = 0; DAT_0086b268 = cur was codegen-neutral.
+// - The final source removes that unused local and keeps direct global stores.
+//
+// BINARY NOTE: read return values are ignored. A short or failed read still
+// reaches the decode and copy operations in the observed order.
+// BINARY NOTE: calloc results publish to the globals before read and decode.
+// No null guard is added because it would change the shipped fault order.
 
 extern int __cdecl read(int fd, void* buf, unsigned int size);
 extern void* __cdecl calloc(int count, int size);
@@ -62,11 +61,10 @@ void __cdecl rge_read(int fd, void* buf, int size) {
         }
         {
             int remaining = size;
-            int cur = DAT_0086b268;
-            int total = size + cur;
+            int total = size + DAT_0086b268;
             int* ptr = (int*)DAT_0086b278;
             while (total >= 0x10000) {
-                int copy = 0x10000 - cur;
+                int copy = 0x10000 - DAT_0086b268;
                 memcpy(rbuf, ptr, copy);
                 
                 {
@@ -77,8 +75,7 @@ void __cdecl rge_read(int fd, void* buf, int size) {
                 }
                 
                 remaining -= copy;
-                cur = 0;
-                DAT_0086b268 = cur;
+                DAT_0086b268 = 0;
                 rbuf = (char*)rbuf + copy;
                 DAT_0086b278 = DAT_0086b270;
                 ptr = (int*)DAT_0086b270;

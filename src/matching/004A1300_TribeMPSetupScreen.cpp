@@ -4,6 +4,8 @@
 // initial natural destructor surface: delete scenarioInfo, destroy five named panels,
 // delete panel pointer fields in binary-observed order; uses /GX for EH-framed dtor.
 
+#ifndef SCR_MPS_TU_CONTEXT
+
 #include <windows.h>
 
 class TPanel {
@@ -111,6 +113,8 @@ public:
     virtual ~TribeMPSetupScreen();
 };
 
+#endif
+
 TribeMPSetupScreen::~TribeMPSetupScreen()
 {
     if (this->scenarioInfo != 0) {
@@ -124,58 +128,58 @@ TribeMPSetupScreen::~TribeMPSetupScreen()
     panel_system.destroyPanel("OKDialog");
     panel_system.destroyPanel("YesNoDialog");
 
-    this->delete_panel(&this->title);
-    this->delete_panel(&this->playerTitle);
-    this->delete_panel(&this->civTitle);
-    this->delete_panel(&this->settingsTitle);
-    this->delete_panel(&this->colorTitle);
-    this->delete_panel(&this->teamTitle);
+    this->delete_panel((TPanel**)&this->title);
+    this->delete_panel((TPanel**)&this->playerTitle);
+    this->delete_panel((TPanel**)&this->civTitle);
+    this->delete_panel((TPanel**)&this->settingsTitle);
+    this->delete_panel((TPanel**)&this->colorTitle);
+    this->delete_panel((TPanel**)&this->teamTitle);
 
     for (int i = 0; i < 8; i++) {
-        this->delete_panel(&this->playerNameDrop[i]);
-        this->delete_panel(&this->playerCivDrop[i]);
-        this->delete_panel(&this->scenarioPlayerDrop[i]);
-        this->delete_panel(&this->playerColor[i]);
-        this->delete_panel(&this->playerTeam[i]);
-        this->delete_panel(&this->playerNameText[i]);
-        this->delete_panel(&this->playerCivText[i]);
-        this->delete_panel(&this->scenarioPlayerText[i]);
-        this->delete_panel(&this->playerCDText[i]);
-        this->delete_panel(&this->playerVersionText[i]);
-        this->delete_panel(&this->playerColorText[i]);
-        this->delete_panel(&this->playerTeamText[i]);
+        this->delete_panel((TPanel**)&this->playerNameDrop[i]);
+        this->delete_panel((TPanel**)&this->playerCivDrop[i]);
+        this->delete_panel((TPanel**)&this->scenarioPlayerDrop[i]);
+        this->delete_panel((TPanel**)&this->playerColor[i]);
+        this->delete_panel((TPanel**)&this->playerTeam[i]);
+        this->delete_panel((TPanel**)&this->playerNameText[i]);
+        this->delete_panel((TPanel**)&this->playerCivText[i]);
+        this->delete_panel((TPanel**)&this->scenarioPlayerText[i]);
+        this->delete_panel((TPanel**)&this->playerCDText[i]);
+        this->delete_panel((TPanel**)&this->playerVersionText[i]);
+        this->delete_panel((TPanel**)&this->playerColorText[i]);
+        this->delete_panel((TPanel**)&this->playerTeamText[i]);
     }
 
-    this->delete_panel(&this->chatInput);
-    this->delete_panel(&this->chatTitle);
-    this->delete_panel(&this->chatBox);
-    this->delete_panel(&this->gameSettingsButton);
-    this->delete_panel(&this->scenarioName);
-    this->delete_panel(&this->victoryFixedText);
+    this->delete_panel((TPanel**)&this->chatInput);
+    this->delete_panel((TPanel**)&this->chatTitle);
+    this->delete_panel((TPanel**)&this->chatBox);
+    this->delete_panel((TPanel**)&this->gameSettingsButton);
+    this->delete_panel((TPanel**)&this->scenarioName);
+    this->delete_panel((TPanel**)&this->victoryFixedText);
 
     for (int j = 0; j < 20; j++) {
-        this->delete_panel(&this->settingText[j]);
-        this->delete_panel(&this->settingValue[j]);
+        this->delete_panel((TPanel**)&this->settingText[j]);
+        this->delete_panel((TPanel**)&this->settingValue[j]);
     }
 
-    this->delete_panel(&this->mapSizeLabel);
-    this->delete_panel(&this->mapSizeDrop);
-    this->delete_panel(&this->mapTypeLabel);
-    this->delete_panel(&this->mapTypeDrop);
-    this->delete_panel(&this->numberPlayersTitle);
-    this->delete_panel(&this->numberPlayersDrop);
-    this->delete_panel(&this->numberPlayersText);
-    this->delete_panel(&this->hiddenMapButton);
-    this->delete_panel(&this->hiddenMapText);
-    this->delete_panel(&this->victoryTypeLabel);
-    this->delete_panel(&this->victoryTypeDrop);
-    this->delete_panel(&this->victoryAmountLabel);
-    this->delete_panel(&this->victoryAmountInput);
-    this->delete_panel(&this->startButton);
-    this->delete_panel(&this->cancelButton);
-    this->delete_panel(&this->close_button);
-    this->delete_panel(&this->ready_button);
-    this->delete_panel(&this->ready_button_label);
-    this->delete_panel(&this->netInfoButton);
-    this->delete_panel(&this->help_button);
+    this->delete_panel((TPanel**)&this->mapSizeLabel);
+    this->delete_panel((TPanel**)&this->mapSizeDrop);
+    this->delete_panel((TPanel**)&this->mapTypeLabel);
+    this->delete_panel((TPanel**)&this->mapTypeDrop);
+    this->delete_panel((TPanel**)&this->numberPlayersTitle);
+    this->delete_panel((TPanel**)&this->numberPlayersDrop);
+    this->delete_panel((TPanel**)&this->numberPlayersText);
+    this->delete_panel((TPanel**)&this->hiddenMapButton);
+    this->delete_panel((TPanel**)&this->hiddenMapText);
+    this->delete_panel((TPanel**)&this->victoryTypeLabel);
+    this->delete_panel((TPanel**)&this->victoryTypeDrop);
+    this->delete_panel((TPanel**)&this->victoryAmountLabel);
+    this->delete_panel((TPanel**)&this->victoryAmountInput);
+    this->delete_panel((TPanel**)&this->startButton);
+    this->delete_panel((TPanel**)&this->cancelButton);
+    this->delete_panel((TPanel**)&this->close_button);
+    this->delete_panel((TPanel**)&this->ready_button);
+    this->delete_panel((TPanel**)&this->ready_button_label);
+    this->delete_panel((TPanel**)&this->netInfoButton);
+    this->delete_panel((TPanel**)&this->help_button);
 }

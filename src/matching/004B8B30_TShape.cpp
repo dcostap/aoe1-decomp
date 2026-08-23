@@ -1,16 +1,4 @@
-class TShape {
-public:
-    void* shape;
-    int load_type;
-    int load_size;
-    void* shape_header;
-    void* head;
-    void* offsets;
-    void* FShape;
-    void* shape_info;
-
-    TShape();
-};
+#include "../../include/shape_context.h"
 
 TShape::TShape() {
     shape = 0;

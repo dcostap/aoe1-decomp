@@ -4,16 +4,7 @@
 // original stack parameter homes: x slot stores the right/bottom bound and radius slot stores
 // the outer-loop row. Keeping separate start_y/end locals stores too early and shifts the loop.
 
-class RGE_RMM_Elevation_Generator {
-public:
-    char gap_00[0x14];
-    int size;
-    char gap_18[0x2C - 0x18];
-    char** stacks;
-
-    void remove_stack_node(void* node);
-    void remove_area_from_lists(long x, long y, long radius);
-};
+#include "..\..\include\rmm_elev_context.h"
 
 void RGE_RMM_Elevation_Generator::remove_area_from_lists(long x, long y, long radius) {
     long start_x = x - radius;
@@ -37,7 +28,7 @@ void RGE_RMM_Elevation_Generator::remove_area_from_lists(long x, long y, long ra
             long offset = start_x * 0x18;
             long count = x - start_x + 1;
             do {
-                this->remove_stack_node(this->stacks[radius] + offset);
+                this->remove_stack_node((Map_Stack*)((char*)this->stack_offsets[radius] + offset));
                 offset += 0x18;
                 count--;
             } while (count != 0);

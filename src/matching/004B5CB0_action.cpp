@@ -16,6 +16,9 @@
 //   is exact under the default VC5 flags.
 // - Probe 020: MATCH, 329 bytes, 105 instructions, 13 calls, 0 differing bytes.
 
+#define SCR_SET_CONTEXT_GROUP 1
+#include "../../include/scr_set_context.h"
+#ifndef SCR_SET_CONTEXT_GROUP
 class TPanel {
 public:
     virtual ~TPanel();
@@ -110,6 +113,7 @@ public:
     void getSettings();
     void fillMissionText();
 };
+#endif
 
 long TribeGameSettingsScreen::action(TPanel* param_1, long param_2, unsigned long param_3, unsigned long param_4)
 {

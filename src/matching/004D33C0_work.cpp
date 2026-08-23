@@ -7,6 +7,7 @@
 
 #include "..\..\include\game_globals.h"
 
+#ifndef TACT_TRD_SHARED_CONTEXT
 class RGE_Static_Object;
 class RGE_Player;
 
@@ -80,6 +81,7 @@ public:
     virtual ~TRIBE_Action_Trade();
     int work(RGE_Static_Object* obj, float x, float y, float z);
 };
+#endif
 
 int TRIBE_Action_Trade::work(RGE_Static_Object* obj, float x, float y, float z)
 {

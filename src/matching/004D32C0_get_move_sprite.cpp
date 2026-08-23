@@ -1,3 +1,4 @@
+#ifndef TACT_TRD_SHARED_CONTEXT
 class RGE_Sprite;
 
 struct TradeUnit {
@@ -26,6 +27,7 @@ public:
 
     RGE_Sprite* get_move_sprite(void);
 };
+#endif
 
 RGE_Sprite* TRIBE_Action_Trade::get_move_sprite(void) {
     RGE_Task* task = this->task;

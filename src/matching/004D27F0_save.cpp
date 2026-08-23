@@ -1,3 +1,4 @@
+#ifndef TACT_TRD_SHARED_CONTEXT
 void rge_write(int file, void* data, int size);
 
 class RGE_Action {
@@ -14,6 +15,7 @@ public:
 
     void save(int file);
 };
+#endif
 
 void TRIBE_Action_Trade::save(int file) {
     RGE_Action::save(file);

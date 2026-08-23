@@ -1,8 +1,10 @@
+#include "../../include/scr_cj_context.h"
+
 // attempt 1: natural fillList shape; matched field offsets but used direct nonvirtual label calls and named sprintf temps
 // attempt 2: model panel vtable slot e4 manually, real-size TCommunications_Sessions new, and inline sprintf argument calls to avoid EBX/EBP liveness
 
+#if 0
 #include <stdio.h>
-
 class TPanel {
 public:
     char pad[0xF4];
@@ -130,6 +132,7 @@ public:
 
     void fillList();
 };
+#endif
 
 void TribeJoinScreen::fillList() {
     char szTemp[126];
@@ -137,13 +140,13 @@ void TribeJoinScreen::fillList() {
     rge_base_game->disable_input();
     this->listFilled = 0;
     this->game_count = 0;
-    this->list->set_string_id(0x25A9);
+    this->list->set_string(0x25A9);
     rge_base_game->draw_window();
 
     if (this->startedSession == 0) {
         Sess = new TCommunications_Sessions(comm);
         if (Sess == 0) {
-            this->list->set_string_id(0x25AB);
+            this->list->set_string(0x25AB);
             return;
         }
         this->startedSession = 1;
@@ -168,7 +171,7 @@ void TribeJoinScreen::fillList() {
         }
         this->set_curr_child(this->list);
     } else {
-        this->list->set_string_id(0x25AB);
+        this->list->set_string(0x25AB);
     }
 
     this->listFilled = 1;

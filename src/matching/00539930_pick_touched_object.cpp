@@ -2,6 +2,18 @@
 // Source: view.cpp lines 5477-5550
 // Attempt log:
 // initial natural nested bounds/level scan from packet.
+//
+// BINARY NOTE: PDB names this owner RGE_View::pick_touched_object.
+// BINARY NOTE: The body is 00539930-00539A94. Padding follows to 00539AA0.
+// BINARY NOTE: PDB order puts this normal sibling after 005396F0.
+// BINARY NOTE: 005396B0 has no PDB function entry. Treat it as data.
+// BINARY NOTE: Both direct calls target the protected RGE_View::sprite_check.
+// BINARY NOTE: The out-of-line 00539510 definition remains the canonical owner.
+//
+// Exact-finish note:
+// The natural source matches 357 bytes and 109 instructions.
+// Removing the x2 local changed 202 bytes and reduced the body to 353 bytes.
+// The x2 local is required for the original load and register schedule.
 
 struct Shape_Info;
 

@@ -1,5 +1,6 @@
 // VA: 00540420 command_make_work (412B)
-// PDB source: vw_main.cpp, lines 1852-1909
+// PDB-qualified owner: RGE_Main_View::command_make_work (vw_main.cpp:1852-1909)
+// Original body boundary: 00540420-005405BB; next symbol 005405C0.
 //
 // Baseline reconstruction: the command path first asks the player for the
 // selected units, tries the best object target, and then falls back to the

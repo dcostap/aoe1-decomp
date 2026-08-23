@@ -1,3 +1,4 @@
+#ifndef TACT_TRD_SHARED_CONTEXT
 class TRIBE_Action_Trade {
 public:
     char gap_00[4];
@@ -38,6 +39,7 @@ public:
     char gap_00[0x4C];
     short field_4C;
 };
+#endif
 
 void TRIBE_Action_Trade::first_in_stack(unsigned char param_1) {
     if (this->child->field_4C != 0 && this->child->field_4C != 2 && this->child->field_4C != 1) {

@@ -26,6 +26,7 @@
 
 #include "..\..\include\game_globals.h"
 
+#ifndef SOUND_CANONICAL_TU
 class RGE_Sound_Info;
 
 class RGE_Sound {
@@ -49,6 +50,7 @@ public:
     char _gap_1D[3];
     int time_field;              // +0x20
 };
+#endif
 
 extern int __cdecl rge_write(int handle, void* buf, int size);
 

@@ -1,4 +1,7 @@
 // VA: 004C3C70 RGE_Static_Object::update()
+// PDB: C:\msdev\work\age1_x1\stat_obj.cpp, lines 1684-1861.
+// Qualified symbol: ?update@RGE_Static_Object@@UAEEXZ.
+// Boundary: [004C3C70,004C3F64), 757 bytes; the 004C3F68 table is outside it.
 // Canonical reconstruction uses the reviewed RGE_Player and RGE_Static_Object
 // virtual surfaces. The used slots are addObject, removeObject,
 // check_damage_sprites, new_sprite, set_object_state, and spawn_death_obj.

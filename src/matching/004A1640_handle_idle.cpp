@@ -2,6 +2,8 @@
 // Working pass: use real member-call surfaces and real object layout. last_send_shared is +0x888,
 // debug file must be an array symbol (push immediate address), not `const char*` (load then push).
 
+#ifndef SCR_MPS_TU_CONTEXT
+
 class RGE_Base_Game {
 public:
     char gap_00[0x1D8];
@@ -34,6 +36,8 @@ public:
 
     long handle_idle();
 };
+
+#endif
 
 long TribeMPSetupScreen::handle_idle() {
     if (rge_base_game->input_enabled == 0) {

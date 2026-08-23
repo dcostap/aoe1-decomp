@@ -1,9 +1,14 @@
+#ifndef SOUND_CANONICAL_TU
+class RGE_Sound_Info;
 class RGE_Sound {
 public:
-    virtual ~RGE_Sound();
-    char gap_0[0x4];
-    int field_8;
-    void set_cache_time(int v);
+    short play_at_update_count;
+    short sound_num;
+    RGE_Sound_Info* sounds;
+    unsigned long cache_time;
+    short id;
+    void set_cache_time(unsigned long v);
 };
+#endif
 
-void RGE_Sound::set_cache_time(int v) { this->field_8 = v; }
+void RGE_Sound::set_cache_time(unsigned long v) { this->cache_time = v; }

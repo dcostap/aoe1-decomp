@@ -6,6 +6,7 @@
 // Probe 3: use the same combined sentinel/null loop form as the exact sibling
 // nextBuildListItemCategory; its bottom compare should target the loop test.
 
+#ifndef TAIBLDMD_SHARED_CONTEXT
 class BaseItem {
 public:
     virtual ~BaseItem();
@@ -76,6 +77,7 @@ public:
 
     void skipNextBuildListItem();
 };
+#endif
 
 void TribeBuildAIModule::skipNextBuildListItem()
 {

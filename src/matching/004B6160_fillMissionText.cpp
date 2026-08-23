@@ -1,6 +1,9 @@
 // 004B6160 TribeGameSettingsScreen::fillMissionText
 // Size: 197 bytes (0xC5)
 
+#define SCR_SET_CONTEXT_GROUP 1
+#include "../../include/scr_set_context.h"
+#ifndef SCR_SET_CONTEXT_GROUP
 class TTextPanel {
 public:
     virtual void vf00(void);
@@ -147,20 +150,27 @@ public:
     void fillMissionText(void);
 };
 
+#endif
+
 void TribeGameSettingsScreen::fillMissionText(void) {
     long line;
     int id;
+#ifdef SCR_SET_CONTEXT_GROUP
+#define SCR_SET_MISSION_TEXT ((MissionTextPanel*)this->missionText)
+#else
+#define SCR_SET_MISSION_TEXT this->missionText
+#endif
 
-    this->missionText->setText("");
+    SCR_SET_MISSION_TEXT->setText("");
     line = this->scenarioList->get_line();
     id = this->scenarioList->get_id();
 
     if (id == -2) {
-        this->missionText->setStringID(0x25DC);
+        SCR_SET_MISSION_TEXT->setStringID(0x25DC);
     } else if (id == -1) {
-        this->missionText->setStringID(0x2618);
+        SCR_SET_MISSION_TEXT->setStringID(0x2618);
     } else {
-        this->missionText->setText(this->scenarioMission[this->scenario_line_offset + line]);
+        SCR_SET_MISSION_TEXT->setText(this->scenarioMission[this->scenario_line_offset + line]);
     }
 
     if (line != this->last_scenario_line) {
@@ -176,3 +186,5 @@ void TribeGameSettingsScreen::fillMissionText(void) {
     this->last_scenario_line = line;
     this->state = 0;
 }
+
+#undef SCR_SET_MISSION_TEXT

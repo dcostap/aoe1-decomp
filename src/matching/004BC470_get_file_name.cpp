@@ -14,6 +14,7 @@
 // +0x08: cache_time (int)
 // +0x0C: id (short)
 
+#ifndef SOUND_CANONICAL_TU
 class RGE_Sound_Info;
 
 class RGE_Sound {
@@ -44,8 +45,11 @@ public:
     char _gap_1C[4];
     int time_field;              // +0x20
 };
+#endif
 
+#ifndef SOUND_CANONICAL_TU
 extern int __cdecl debug_rand(const char* file, int line);
+#endif
 
 char* RGE_Sound::get_file_name()
 {

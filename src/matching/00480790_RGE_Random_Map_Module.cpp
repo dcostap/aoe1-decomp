@@ -1,6 +1,7 @@
 // VA: 00480790 RGE_Random_Map_Module::RGE_Random_Map_Module (constructor)
 // rmm_base.cpp:23-59
 
+#ifndef RMM_BASE_SHARED_CONTEXT
 class RGE_Map {
 public:
     virtual ~RGE_Map();
@@ -24,8 +25,8 @@ public:
     int map_height;     // +0x18
     char gap_1C[4];     // +0x1C (unused)
     unsigned char* search_map;  // +0x20
-    Map_Stack* stack_array;     // +0x24
-    unsigned char** search_map_rows; // +0x28
+    unsigned char** search_map_rows; // +0x24
+    Map_Stack* stack_array;     // +0x28
     Map_Stack** stack_offsets;  // +0x2C
 
     RGE_Random_Map_Module(RGE_Map* map, RGE_Random_Map_Module* parent, unsigned char createShared);
@@ -33,9 +34,12 @@ public:
     void create_shared_resources();
     void share_resources(void* a, void* b, void* c, void* d);
 };
+#endif
 
 RGE_Random_Map_Module::RGE_Random_Map_Module(RGE_Map* map, RGE_Random_Map_Module* parent, unsigned char createShared) {
+#ifndef RMM_BASE_SHARED_CONTEXT
     this->vtable = 0x571E30;
+#endif
     this->parent = parent;
     this->map = map;
 
@@ -49,10 +53,11 @@ RGE_Random_Map_Module::RGE_Random_Map_Module(RGE_Map* map, RGE_Random_Map_Module
         this->map_height = 0;
     }
 
+    // BINARY NOTE: Publish empty state before a parent receives this object.
     this->list = 0;
     this->search_map = 0;
-    this->stack_array = 0;
     this->search_map_rows = 0;
+    this->stack_array = 0;
     this->stack_offsets = 0;
 
     if (this->parent == 0) {
@@ -61,6 +66,7 @@ RGE_Random_Map_Module::RGE_Random_Map_Module(RGE_Map* map, RGE_Random_Map_Module
         }
     } else {
         this->parent->add_module(this);
-        this->parent->share_resources((void*)&this->search_map, (void*)&this->stack_array, (void*)&this->search_map_rows, (void*)&this->stack_offsets);
+        this->parent->share_resources(&this->search_map, &this->search_map_rows,
+                                      &this->stack_array, &this->stack_offsets);
     }
 }

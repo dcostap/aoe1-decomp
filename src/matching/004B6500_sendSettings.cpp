@@ -18,6 +18,9 @@
 // SA60574_send: replaced the raw empty-string address with the natural ""
 // literal; it remains an exact 567-byte match under default.rsp.
 
+#define SCR_SET_CONTEXT_GROUP 1
+#include "../../include/scr_set_context.h"
+#ifndef SCR_SET_CONTEXT_GROUP
 class TTextPanel { public: long get_id(); char* get_text(); };
 class TDropDownPanel { public: long get_id(); };
 class TButtonPanel { public: int get_state(); };
@@ -82,6 +85,8 @@ public:
 
     void sendSettings();
 };
+
+#endif
 
 void TribeGameSettingsScreen::sendSettings()
 {

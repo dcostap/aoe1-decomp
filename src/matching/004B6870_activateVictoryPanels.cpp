@@ -2,6 +2,9 @@
 // Manages victory condition UI panel visibility based on game scenario state.
 // FLAGS: /nologo /c /O2 /Oy
 
+#define SCR_SET_CONTEXT_GROUP 1
+#include "../../include/scr_set_context.h"
+#ifndef SCR_SET_CONTEXT_GROUP
 struct TTextPanel {
     unsigned char gap_00[0xF8];
     short num_lines;
@@ -53,6 +56,8 @@ struct TribeGameSettingsScreen {
 
     void activateVictoryPanels();
 };
+
+#endif
 
 void TribeGameSettingsScreen::activateVictoryPanels() {
     timeLabel->setVisible(0);

@@ -13,6 +13,11 @@
 class TDrawArea;
 class TShape;
 class TRIBE_Player;
+class RGE_Player;
+class RGE_Static_Object;
+class RGE_Master_Static_Object;
+class RGE_Sprite;
+class RGE_Object_Node;
 
 struct PanelNode;
 struct HRGN__;
@@ -114,20 +119,20 @@ public:
     TShape* unit_pics;
     TShape** bldg_pics;
     TRIBE_Player* player;
-    void* game_obj;
+    RGE_Static_Object* game_obj;
     unsigned long idle_time;
     unsigned long idle_interval;
     unsigned char mode;
     unsigned char gap_121[3];
-    void* save_obj_type;
-    void* save_sprite;
+    RGE_Master_Static_Object* save_obj_type;
+    RGE_Sprite* save_sprite;
     short save_attr_type;
     unsigned char gap_12E[2];
     float save_attr_amount;
     unsigned char save_object_state;
     unsigned char gap_135[3];
     float save_build_pts;
-    void* save_list;
+    RGE_Object_Node* save_list;
     short save_number_of_objects;
     unsigned char save_can_debark;
     unsigned char gap_143[1];
@@ -152,7 +157,7 @@ public:
     int save_max_pop;
     unsigned char save_selected_group;
     unsigned char gap_1DD[3];
-    void* save_owner;
+    RGE_Player* save_owner;
     int save_age;
     unsigned char save_have_action;
     unsigned char gap_1E9[3];

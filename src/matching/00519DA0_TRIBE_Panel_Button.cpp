@@ -12,6 +12,7 @@
 
 #include "..\..\include\game_globals.h"
 
+#ifndef TPNL_BTN_SHARED_CONTEXT
 class TDrawArea {};
 class TDigital {};
 class TShape {
@@ -55,6 +56,9 @@ public:
     TRIBE_Panel_Button(TDrawArea* param1, TPanel* param2, TDigital* param3,
                        void* param4, long param5, long param6, TShape* param7);
 };
+#else
+#include "../../include/tpnl_btn_context.h"
+#endif
 
 TRIBE_Panel_Button::TRIBE_Panel_Button(
     TDrawArea* param1, TPanel* param2, TDigital* param3,

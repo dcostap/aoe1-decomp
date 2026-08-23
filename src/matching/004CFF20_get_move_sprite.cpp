@@ -1,3 +1,4 @@
+#ifndef TACT_HNT_SHARED_CONTEXT
 class RGE_Sprite;
 
 struct HuntUnit {
@@ -26,8 +27,18 @@ public:
 
     RGE_Sprite* get_move_sprite(void);
 };
+#endif
 
 RGE_Sprite* TRIBE_Action_Hunt::get_move_sprite(void) {
+#ifdef TACT_HNT_SHARED_CONTEXT
+    RGE_Task* task = this->task;
+    short task_facet = task->attribute_type;
+    if (task_facet != -1 && task_facet == this->obj->attribute_type_held &&
+        (int)this->obj->attribute_amount_held > 0 && task->carry_sprite != 0) {
+        return task->carry_sprite;
+    }
+    return task->move_sprite;
+#else
     RGE_Task* task = this->task;
     short task_facet = task->field_14;
 
@@ -41,4 +52,5 @@ RGE_Sprite* TRIBE_Action_Hunt::get_move_sprite(void) {
         }
     }
     return task->field_34;
+#endif
 }

@@ -1,13 +1,16 @@
+#ifndef SOUND_CANONICAL_TU
+class RGE_Sound_Info;
 class RGE_Sound {
 public:
-    short field_0;
-    short field_2;
-    int field_4;
+    short play_at_update_count;
+    short sound_num;
+    RGE_Sound_Info* sounds;
     RGE_Sound();
 };
+#endif
 
 RGE_Sound::RGE_Sound() {
-    this->field_0 = 0;
-    this->field_2 = 0;
-    this->field_4 = 0;
+    this->play_at_update_count = 0;
+    this->sound_num = 0;
+    this->sounds = 0;
 }

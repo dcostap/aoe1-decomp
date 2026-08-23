@@ -18,9 +18,9 @@
 //   equivalent local name/flag expressions were codegen-neutral.
 // probe 13: six natural local/master/flag spellings grouped into 219B, or
 //   265-268B with extra saved-register liveness; none restored the call site.
-// probe 15: reference/dereference/index expression variants likewise stayed
+// probe 14: reference/dereference/index expression variants likewise stayed
 //   in the 219B basin; pointer references reached 268B with EBX/EBP saves.
-// probe 16: corrected the inherited array ownership to RGE_Player**; emitted
+// probe 15: corrected the inherited array ownership to RGE_Player**; emitted
 //   bytes were unchanged and the canonical declaration is retained.
 // probe 17: explicit placement-new/operator-new diagnostics destroyed the
 //   EH/body basin (143-167B), so they are not source candidates.
@@ -30,42 +30,10 @@
 // probe 21: assigning the player slot directly in each natural branch inhibits
 //   VC5's constructor-call tail factoring while its optimized common store
 //   still reproduces the original 255B/5-call output exactly.
+// Prefix TU pass: moved world, player, and constructor ownership into the
+//   shared canonical context. The isolated owner remains exact.
 
-class RGE_Master_Player;
-class RGE_Player;
-class TRIBE_World;
-class TRIBE_Player;
-
-class RGE_Game_World {
-public:
-    virtual unsigned char data_load_world(void* file);
-    char gap_04[0x3C];
-    RGE_Player** players;          // +0x40
-    char gap_44[4];
-    RGE_Master_Player** master_players; // +0x48
-};
-
-class RGE_Player {
-public:
-    virtual ~RGE_Player();
-    char gap_04[0x21C];
-};
-
-class TRIBE_Player : public RGE_Player {
-public:
-    char gap_220[0x628];
-    virtual ~TRIBE_Player();
-    TRIBE_Player(TRIBE_World* world, RGE_Master_Player* master,
-        unsigned char player_id, char* name, unsigned char civ,
-        unsigned char is_computer, unsigned char is_active,
-        char* ai1, char* ai2, char* ai3);
-};
-
-class TRIBE_World : public RGE_Game_World {
-public:
-    virtual void scenario_make_player(short player_id, unsigned char master_id,
-        unsigned char type, unsigned char civ, char* player_info);
-};
+#include "../../include/tworld_prefix_context.h"
 
 void TRIBE_World::scenario_make_player(short player_id, unsigned char master_id,
     unsigned char type, unsigned char civ, char* player_info)

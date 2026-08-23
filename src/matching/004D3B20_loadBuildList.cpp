@@ -11,6 +11,7 @@
 // Exact validation: 565/565 bytes, 100% shape/CFG/call parity, 0 differing
 // bytes.  The source remains ordinary typed period-plausible C++ with no asm.
 
+#ifndef TAIBLDMD_SHARED_CONTEXT
 typedef unsigned int uint;
 void* operator new(uint size);
 void operator delete(void* ptr);
@@ -61,6 +62,7 @@ class TribeBuildAIModule : public BuildAIModule {
 public:
     virtual int loadBuildList(char* filename, RGE_Player* player);
 };
+#endif
 
 int TribeBuildAIModule::loadBuildList(char* filename, RGE_Player* player)
 {

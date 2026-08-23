@@ -42,6 +42,7 @@
 // - Policy cleanup: restored the reviewed DAT_00575150 extern and canonical
 //   master hierarchy. Derived master casts remain only at proven combat fields.
 
+#ifndef TACT_HNT_SHARED_CONTEXT
 class RGE_Sprite;
 class TDrawArea;
 class RGE_Color_Table;
@@ -53,7 +54,14 @@ class RGE_Master_Static_Object;
 class RGE_Master_Animated_Object;
 class RGE_Master_Moving_Object;
 class RGE_Master_Combat_Object;
-class RGE_Game_World;
+class RGE_Static_Object;
+class RGE_Game_World {
+public:
+    virtual ~RGE_Game_World();
+    char gap_04[0x80];
+    float world_time_delta_seconds;
+    RGE_Static_Object* object(int);
+};
 class RGE_Armor_Weapon_Info;
 class RGE_Damage_Sprite_Info;
 class RGE_Active_Sprite_List;
@@ -238,6 +246,37 @@ public:
 class RGE_Player {
 public:
     virtual ~RGE_Player();
+    virtual void _v04();
+    virtual void _v08();
+    virtual void _v0C();
+    virtual void _v10();
+    virtual void _v14();
+    virtual void _v18();
+    virtual void _v1C();
+    virtual void _v20();
+    virtual void _v24();
+    virtual void _v28();
+    virtual void _v2C();
+    virtual void _v30();
+    virtual void _v34();
+    virtual void _v38();
+    virtual void _v3C();
+    virtual void _v40();
+    virtual void _v44();
+    virtual void _v48();
+    virtual void _v4C();
+    virtual void _v50();
+    virtual void _v54();
+    virtual void _v58();
+    virtual void trackUnitGather(int, int, int);
+    virtual void _v60();
+    virtual void _v64();
+    virtual void _v68();
+    virtual void _v6C();
+    virtual void _v70();
+    virtual void _v74();
+    virtual void add_attribute_num(short, float, unsigned char);
+    virtual void update();
     int computerPlayerValue;
     int pathingAttemptCapValue;
     int pathingDelayCapValue;
@@ -260,9 +299,9 @@ public:
     unsigned char type;
     unsigned char _pad_49;
     short id;
-    short attribute_num;
+    short fallback_attribute;
     unsigned char _pad_4E[2];
-    float* attributes;
+    float* attribute_table;
     unsigned char culture;
     unsigned char _pad_55[3];
     RGE_Tile_List tile_list;
@@ -518,6 +557,8 @@ public:
     unsigned char lastInObstructionMapValue;
     unsigned char underAttackValue;
     unsigned char _pad_87;
+
+    float distance_to_object(RGE_Static_Object*);
 };
 
 class RGE_Animated_Object : public RGE_Static_Object {
@@ -743,6 +784,9 @@ public:
 class RGE_Action {
 public:
     virtual ~RGE_Action();
+    RGE_Action(int, int);
+    RGE_Action(int, RGE_Action_Object*, int);
+    RGE_Action(RGE_Action_Object*, int);
     virtual int setup(RGE_Action_Object*);
     virtual int setup(int, RGE_Action_Object*);
     virtual RGE_Action_List* create_action_list(RGE_Action_Object*);
@@ -847,6 +891,15 @@ public:
 
 class TRIBE_Action_Hunt : public RGE_Action {
 public:
+    TRIBE_Action_Hunt(int, RGE_Action_Object*);
+    TRIBE_Action_Hunt(RGE_Action_Object*, RGE_Task*, RGE_Static_Object*);
+    TRIBE_Action_Hunt(int, RGE_Task*, float, float, float);
+    virtual void save(int);
+    virtual void first_in_stack(unsigned char);
+    virtual unsigned char update(void);
+    virtual int stop(void);
+    virtual int move_to(RGE_Static_Object*, float, float, float);
+    virtual int work(RGE_Static_Object*, float, float, float);
     virtual void set_state(unsigned char);
     int targetType;
 
@@ -857,6 +910,9 @@ public:
 // Reviewed global: inventory/globals/dumps/00575150_DAT_00575150.txt.
 extern float DAT_00575150;
 
+#endif
+
+#ifndef TACT_HNT_CONTEXT_ONLY
 void TRIBE_Action_Hunt::set_state(unsigned char param_1)
 {
     this->sub_actions->delete_list();
@@ -1012,3 +1068,4 @@ void TRIBE_Action_Hunt::set_state(unsigned char param_1)
         return;
     }
 }
+#endif

@@ -1,5 +1,6 @@
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 
+#ifndef RMM_BASE_SHARED_CONTEXT
 class RGE_Random_Map_Module;
 
 struct RGE_Random_Map_Module_List {
@@ -14,6 +15,7 @@ public:
 
     unsigned char add_module(RGE_Random_Map_Module* module);
 };
+#endif
 
 unsigned char RGE_Random_Map_Module::add_module(RGE_Random_Map_Module* module) {
     RGE_Random_Map_Module_List* item;
@@ -21,6 +23,8 @@ unsigned char RGE_Random_Map_Module::add_module(RGE_Random_Map_Module* module) {
     if (module == 0) {
         return 0;
     }
+    // BINARY NOTE: The shipped code dereferences allocation failure.
+    // Publish the complete node only after both fields have values.
     item = (RGE_Random_Map_Module_List*)calloc(1, 8);
     item->next = this->list;
     item->module = module;

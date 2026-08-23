@@ -11,6 +11,7 @@
 // FLAGS: config/flags/004CD310_set_state.rsp uses /GX because the original has
 // EH registration/unwind-state stores around new/action construction.
 
+#ifndef TACT_BLD_CONTEXT_H
 class RGE_Sprite;
 class RGE_Sound;
 class RGE_Task;
@@ -213,6 +214,7 @@ class TRIBE_Action_Build : public RGE_Action {
 public:
     virtual void set_state(unsigned char);
 };
+#endif
 
 void TRIBE_Action_Build::set_state(unsigned char param_1)
 {

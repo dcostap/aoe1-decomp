@@ -1,3 +1,4 @@
+#ifndef RMM_BASE_SHARED_CONTEXT
 struct Map_Stack {
     char gap_00[0x10];
     Map_Stack* next;
@@ -8,6 +9,7 @@ class RGE_Random_Map_Module {
 public:
     void remove_stack_node(Map_Stack* node);
 };
+#endif
 
 void RGE_Random_Map_Module::remove_stack_node(Map_Stack* node) {
     if (node->prev != 0) {

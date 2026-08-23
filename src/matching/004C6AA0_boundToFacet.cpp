@@ -1,5 +1,8 @@
 // VA: 004C6AA0 boundToFacet (162B)
 // stat_obj.cpp
+// BINARY NOTE: PDB owner is RGE_Static_Object::boundToFacet.
+// BINARY NOTE: The owned body is [004C6AA0, 004C6B41); later bytes are padding.
+// BINARY NOTE: Keep the narrow sprite facet-count read at sprite + 0x60.
 
 extern "C" double __cdecl atan2(double, double);
 
