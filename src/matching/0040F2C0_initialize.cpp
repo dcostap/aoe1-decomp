@@ -1,3 +1,4 @@
+#ifndef AIPBOOK_CANONICAL_TU
 class AIPlayGroup {
 public:
     unsigned char minValue[6];
@@ -5,6 +6,7 @@ public:
 
     void initialize(void);
 };
+#endif
 
 void AIPlayGroup::initialize(void) {
     for (int i = 0; i < 6; ++i) {

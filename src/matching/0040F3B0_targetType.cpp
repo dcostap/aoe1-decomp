@@ -1,6 +1,7 @@
 // targetType (0040F3B0, 25 bytes, aipbook.cpp)
 // bounds-check array access, return 0 if out of range
 
+#ifndef AIPBOOK_CANONICAL_TU
 class AIPlay {
 public:
     unsigned char _pad[0x44];
@@ -8,6 +9,7 @@ public:
     unsigned char targetCharacteristicValue[5]; // +0x49
     unsigned char targetType(int index) const;
 };
+#endif
 
 unsigned char AIPlay::targetType(int index) const {
     if (index >= 0 && index < 5)

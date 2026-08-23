@@ -15,10 +15,12 @@ extern char s_HealOfGroup[];
 extern char s_Immediate[];
 extern char s_Time[];
 
+#ifndef AIPBOOK_CANONICAL_TU
 class AIPlayPhaseTrigger {
 public:
     unsigned char convertToIntType(char *name) const;
 };
+#endif
 
 unsigned char AIPlayPhaseTrigger::convertToIntType(char *name) const {
     int r;

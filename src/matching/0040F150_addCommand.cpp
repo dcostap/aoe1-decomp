@@ -1,3 +1,4 @@
+#ifndef AIPBOOK_CANONICAL_TU
 class AIPlayPhaseCommand {
 public:
     unsigned char groupValue;
@@ -13,6 +14,7 @@ public:
     AIPlayPhaseCommand commands[5];
     int addCommand(AIPlayPhaseCommand* command);
 };
+#endif
 
 int AIPlayPhase::addCommand(AIPlayPhaseCommand* command) {
     int i = 0;

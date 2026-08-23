@@ -9,6 +9,7 @@
 //   it into the original five stores and places `mov eax, esi` at the required point.
 // Result: MATCH locally with `python tools/check_function.py --va 0040FC30`.
 
+#ifndef AIPBOOK_CANONICAL_TU
 class XYZ {
 public:
     char data[0x0C];
@@ -37,6 +38,7 @@ public:
     char pad_end[3];
     AIPlayStatus();
 };
+#endif
 
 AIPlayStatus::AIPlayStatus()
     : playNumberValue(-1),

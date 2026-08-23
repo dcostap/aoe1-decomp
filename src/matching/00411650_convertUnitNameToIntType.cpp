@@ -1,7 +1,9 @@
+#ifndef AIPBOOK_CANONICAL_TU
 class AIPlayBook {
 public:
     virtual ~AIPlayBook();
-    int convertUnitNameToIntType(int p0);
+    virtual int convertUnitNameToIntType(char* name) const;
 };
+#endif
 
-int AIPlayBook::convertUnitNameToIntType(int p0) { return -1; }
+int AIPlayBook::convertUnitNameToIntType(char* name) const { return -1; }

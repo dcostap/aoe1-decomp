@@ -1,3 +1,4 @@
+#ifndef AIPBOOK_CANONICAL_TU
 class AIPlayPhaseCommand {
 public:
     unsigned char field_0;
@@ -7,6 +8,7 @@ public:
     int field_C;
     AIPlayPhaseCommand();
 };
+#endif
 
 AIPlayPhaseCommand::AIPlayPhaseCommand() {
     this->field_0 = 0;

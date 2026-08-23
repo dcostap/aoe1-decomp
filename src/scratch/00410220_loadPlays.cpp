@@ -1,4 +1,6 @@
-// 00410220 AIPlayBook::loadPlays
+// 00410220 AIPlayBook::loadPlays(char*)
+// PDB owner: AIPlayBook::loadPlays(char*)
+// Decorated owner: ?loadPlays@AIPlayBook@@QAEHPAD@Z
 //
 // Clean reconstruction baseline: AIPlayBook owns a counted array of 0x608-byte
 // AIPlay records.  The file is read once to count Play records and again to
@@ -48,9 +50,21 @@
 //   now measures size +43, shape 81.78%, and diff 4236 with all 72 calls.
 // - reusing the quote end counter and adding the unmapped temp3 local did not
 //   change emitted code; the narrow char comment locals remain preferred.
+// - canonical-context finish: this owner now uses the reviewed aipbook.cpp
+//   declarations and aggregate layouts.  Fresh direct checking improved the
+//   diff to 4211, kept the PDB owner and all 72 ordered calls, but did not
+//   reach exact bytes.  The canonical wrapper also compiles with /GX.
+// - restored after controlled tests: persistent EndPlay cursors, natural
+//   comment locals, a branch-local quote counter, and a named new[] result.
+//   These forms changed registers or behavior without an exact result.
 
+#define AIPBOOK_CANONICAL_TU 1
+#include "../../include/aipbook_context.h"
+
+#ifndef AIPBOOK_CANONICAL_TU
 #include <stdio.h>
 #include <string.h>
+#endif
 
 extern char s_NULL[];
 extern char s_NONE[];
@@ -86,6 +100,7 @@ extern char s_format_play_variant[];
 
 void __cdecl operator_delete(void* block);
 
+#ifndef AIPBOOK_CANONICAL_TU
 class AIPlayGroup {
 public:
     unsigned char minimumValue[6];
@@ -200,6 +215,7 @@ public:
     void rotateXYByFacet(const XYZ& facet, XYZ& output,
                          unsigned char facetIndex);
 };
+#endif
 
 int AIPlayBook::loadPlays(char* filename) {
     int temp4;

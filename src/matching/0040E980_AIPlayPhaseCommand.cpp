@@ -1,3 +1,4 @@
+#ifndef AIPBOOK_CANONICAL_TU
 class AIPlayPhaseCommand {
 public:
     unsigned char groupValue;
@@ -10,6 +11,7 @@ public:
     unsigned char convertToIntType(char* text);
     AIPlayPhaseCommand(unsigned char group, char* text, int value1, int value2, int value3);
 };
+#endif
 
 AIPlayPhaseCommand::AIPlayPhaseCommand(unsigned char group, char* text, int value1, int value2, int value3) {
     this->groupValue = group;

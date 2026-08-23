@@ -1,10 +1,12 @@
+#ifndef AIPBOOK_CANONICAL_TU
 class AIPlay {
 public:
-    char tag_[2];
-    int humanPlay();
+    char nameValue[2];
+    int humanPlay() const;
 };
+#endif
 
-int AIPlay::humanPlay() {
-    if (this->tag_[0] == 0x48 && this->tag_[1] == 0x50) return 1;
+int AIPlay::humanPlay() const {
+    if (this->nameValue[0] == 0x48 && this->nameValue[1] == 0x50) return 1;
     return 0;
 }

@@ -1,10 +1,15 @@
 // VA: 0040FF70 AIPlayStatus::save (214B)
 // PDB source: aipbook.cpp lines 868-882
-// Saves AI player status to file
+// BINARY NOTE: This is the inverse of load. It writes all 400 grouping bytes
+// after the phase byte, then writes savedAttacker and lastPhaseChangeTime.
+// The shipped code reuses the incoming file home for each point coordinate.
+#ifndef AIPBOOK_CANONICAL_TU
 #include "..\..\include\game_globals.h"
+#endif
 
 void rge_write(int file, void* data, int size);
 
+#ifndef AIPBOOK_CANONICAL_TU
 struct PointValue {
     int xValue;
     int yValue;
@@ -24,6 +29,7 @@ struct AIPlayStatus {
     
     void save(int file);
 };
+#endif
 
 void AIPlayStatus::save(int file) {
     int iVar1 = file;

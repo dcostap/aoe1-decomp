@@ -8,10 +8,12 @@ extern char s_ResetAliveCount[];
 extern char s_Wait[];
 extern char s_Invalid[];
 
+#ifndef AIPBOOK_CANONICAL_TU
 class AIPlayPhaseCommand {
 public:
     char *convertToNameType(unsigned char value) const;
 };
+#endif
 
 char *AIPlayPhaseCommand::convertToNameType(unsigned char value) const {
     switch (value) {

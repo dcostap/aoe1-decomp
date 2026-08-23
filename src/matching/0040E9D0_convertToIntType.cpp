@@ -12,10 +12,12 @@ extern char s_ResetHitPoints[];
 extern char s_ResetAliveCount[];
 extern char s_Wait[];
 
+#ifndef AIPBOOK_CANONICAL_TU
 class AIPlayPhaseCommand {
 public:
     unsigned char convertToIntType(char *name) const;
 };
+#endif
 
 unsigned char AIPlayPhaseCommand::convertToIntType(char *name) const {
     int r;

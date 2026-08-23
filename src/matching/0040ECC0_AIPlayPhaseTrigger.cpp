@@ -1,3 +1,4 @@
+#ifndef AIPBOOK_CANONICAL_TU
 class AIPlayPhaseTrigger {
 public:
     unsigned char typeValue;
@@ -12,6 +13,7 @@ public:
     unsigned char convertToIntType(char* text);
     AIPlayPhaseTrigger(char* type, int value1, int value2, unsigned char phase, unsigned char nextPhase, int randomness);
 };
+#endif
 
 AIPlayPhaseTrigger::AIPlayPhaseTrigger(char* type, int value1, int value2, unsigned char phase, unsigned char nextPhase, int randomness) {
     typeValue = convertToIntType(type);

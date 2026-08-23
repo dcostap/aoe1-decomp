@@ -11,10 +11,12 @@ extern char s_Immediate[];
 extern char s_Time[];
 extern char s_Invalid[];
 
+#ifndef AIPBOOK_CANONICAL_TU
 class AIPlayPhaseTrigger {
 public:
     char *convertToNameType(unsigned char value) const;
 };
+#endif
 
 char *AIPlayPhaseTrigger::convertToNameType(unsigned char value) const {
     switch (value) {

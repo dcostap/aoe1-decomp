@@ -8,6 +8,7 @@
 // Tried count placement, source/dest/diff declaration order, struct-loop form, alias/pointer-loop form,
 // register hints, int-vs-pointer diff, volatile base, and lastPhase temp variants; this is the tightest basin.
 
+#ifndef AIPBOOK_CANONICAL_TU
 struct GroupingStruct {
     int id;
     unsigned char field1;
@@ -34,6 +35,7 @@ struct AIPlayStatus {
 
     void copy(AIPlayStatus* other);
 };
+#endif
 
 void AIPlayStatus::copy(AIPlayStatus* other)
 {

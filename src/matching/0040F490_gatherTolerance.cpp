@@ -1,3 +1,4 @@
+#ifndef AIPBOOK_CANONICAL_TU
 class AIPlayPhaseTrigger {
 public:
     unsigned char typeValue;
@@ -20,6 +21,7 @@ public:
     AIPlayPhase* phase(int index);
     int gatherTolerance(int, int param_2);
 };
+#endif
 
 int AIPlay::gatherTolerance(int, int param_2) {
     AIPlayPhase* phase_0 = phase(param_2);

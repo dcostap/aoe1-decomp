@@ -10,6 +10,7 @@
 
 extern "C" int __cdecl strcmp(const char*, const char*);
 
+#ifndef AIPBOOK_CANONICAL_TU
 struct AIPlay {
     char nameValue[0x608];
 };
@@ -23,6 +24,7 @@ public:
 
     int playNumber(char* name);
 };
+#endif
 
 int AIPlayBook::playNumber(char* name) {
     if (this->plays == 0) {

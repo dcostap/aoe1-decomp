@@ -1,3 +1,4 @@
+#ifndef AIPBOOK_CANONICAL_TU
 class AIPlayPhaseTrigger {
 public:
     char typeValue;
@@ -9,6 +10,7 @@ public:
 
     AIPlayPhaseTrigger();
 };
+#endif
 
 AIPlayPhaseTrigger::AIPlayPhaseTrigger() {
     typeValue = 0;

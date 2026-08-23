@@ -1,18 +1,19 @@
-struct AIPlayPhase {
+#ifndef AIPBOOK_CANONICAL_TU
+class AIPlayPhase {
+public:
     char data[0x8C];
 };
 
-class AIPlayBook {
+class AIPlay {
 public:
-    int vfptr;
-    int numberPlays;
-    char gap_08[0x88];
+    char gap_00[0x90];
     AIPlayPhase phases[10];
 
     AIPlayPhase* phase(int index);
 };
+#endif
 
-AIPlayPhase* AIPlayBook::phase(int index) {
+AIPlayPhase* AIPlay::phase(int index) {
     if (index >= 0 && index < 10)
         return this->phases + index;
     return 0;

@@ -1,3 +1,4 @@
+#ifndef AIPBOOK_CANONICAL_TU
 class AIPlayPhaseTrigger {
 public:
     int field_00[5];
@@ -10,6 +11,7 @@ public:
 
     AIPlayPhaseTrigger* trigger(int index);
 };
+#endif
 
 AIPlayPhaseTrigger* AIPlayPhase::trigger(int index) {
     if ((index >= 0) && (index < 3)) {

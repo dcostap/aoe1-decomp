@@ -1,3 +1,4 @@
+#ifndef AIPBOOK_CANONICAL_TU
 class RGE_Static_Object {
 public:
     char gap_00[0x48];
@@ -22,6 +23,7 @@ public:
     GroupingStruct groupings[50];
     void removeDeadUnits(int, RGE_Game_World* world);
 };
+#endif
 
 void AIPlayStatus::removeDeadUnits(int, RGE_Game_World* world) {
     GroupingStruct* g = &this->groupings[0];

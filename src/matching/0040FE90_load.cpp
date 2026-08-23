@@ -1,10 +1,15 @@
 // VA: 0040FE90 AIPlayStatus::load (214B)
 // PDB source: aipbook.cpp lines 848-863
-// Loads AI player status from file
+// BINARY NOTE: The stream stores scalar state, hit points, one phase byte,
+// all 400 grouping bytes, and the two final integers in this exact order.
+// The shipped code reuses the incoming file home for each point coordinate.
+#ifndef AIPBOOK_CANONICAL_TU
 #include "..\..\include\game_globals.h"
+#endif
 
 void rge_read(int file, void* data, int size);
 
+#ifndef AIPBOOK_CANONICAL_TU
 struct PointValue {
     int xValue;
     int yValue;
@@ -24,6 +29,7 @@ struct AIPlayStatus {
     
     void load(int file);
 };
+#endif
 
 void AIPlayStatus::load(int file) {
     int iVar1 = file;

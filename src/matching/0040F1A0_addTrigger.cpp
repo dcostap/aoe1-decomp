@@ -1,3 +1,4 @@
+#ifndef AIPBOOK_CANONICAL_TU
 class AIPlayPhaseTrigger {
 public:
     unsigned char typeValue;
@@ -16,6 +17,7 @@ public:
     AIPlayPhaseTrigger triggers[3];
     int addTrigger(AIPlayPhaseTrigger* trigger);
 };
+#endif
 
 int AIPlayPhase::addTrigger(AIPlayPhaseTrigger* trigger) {
     int i = 0;

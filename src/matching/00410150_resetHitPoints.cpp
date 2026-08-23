@@ -1,3 +1,4 @@
+#ifndef AIPBOOK_CANONICAL_TU
 class RGE_Static_Object {
 public:
     char gap_00[0x30];
@@ -23,6 +24,7 @@ public:
     void setOriginalHitPoints(int param_1, int param_2);
     void resetHitPoints(int param_1, RGE_Game_World* world);
 };
+#endif
 
 void AIPlayStatus::resetHitPoints(int param_1, RGE_Game_World* world) {
     int total = 0;
