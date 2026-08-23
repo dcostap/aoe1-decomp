@@ -39,7 +39,7 @@ struct TMainDM {
     RGE_Player_VT* player;
 };
 
-struct TInfoAI {
+struct TribeInformationAIModule {
     unsigned char g0[0x100];
     TMainDM* md;
     unsigned char g1[0x0C];
@@ -49,7 +49,7 @@ struct TInfoAI {
     int withinXTilesOfEnemyTowncenter(RGE_Obj* obj, int tiles);
 };
 
-int TInfoAI::withinXTilesOfEnemyTowncenter(RGE_Obj* obj, int tiles)
+int TribeInformationAIModule::withinXTilesOfEnemyTowncenter(RGE_Obj* obj, int tiles)
 {
     int dsq = tiles * tiles;
     int ox = (int)obj->x_pos;

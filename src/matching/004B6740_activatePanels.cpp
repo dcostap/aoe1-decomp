@@ -91,7 +91,7 @@ extern "C" {
     extern RGE_BaseGame2* rge_base_game;
 }
 
-struct TribeGameSettingsScreen2 : PanelBase50 {
+struct TribeGameSettingsScreen : PanelBase50 {
     char _pad_04[0x3C - 4];
     void* field_3C;                      // +0x3C
     char _pad_40[0x47C - 0x40];
@@ -119,7 +119,7 @@ struct TribeGameSettingsScreen2 : PanelBase50 {
     void activatePanels();
 };
 
-void TribeGameSettingsScreen2::activatePanels() {
+void TribeGameSettingsScreen::activatePanels() {
     void* tabList[3];
     int isScenario;
     int count;

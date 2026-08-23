@@ -20,7 +20,7 @@ public:
     int RestartSoundSystem(void* driver);
 };
 
-class RGE_Base_Game_RS {
+class RGE_Base_Game {
 public:
     virtual void vf00(void);
     virtual void vf04(void);
@@ -76,7 +76,7 @@ public:
     int restart_sound_system();
 };
 
-int RGE_Base_Game_RS::restart_sound_system()
+int RGE_Base_Game::restart_sound_system()
 {
     if (this->sound_system != 0)
         goto done;

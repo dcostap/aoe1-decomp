@@ -104,7 +104,7 @@ public:
     int resize(int new_size);
 };
 
-struct TribeTacticalCommand {
+struct TribeTacticalAIModule {
     char gap_00[0xF0];
     TribeMainDecisionAIModule* md;
     ManagedArrayInt civilians;
@@ -116,7 +116,7 @@ struct TribeTacticalCommand {
     int unit(int player, int currentAction, int currentTargetType);
 };
 
-int TribeTacticalCommand::unit(int player, int currentAction, int currentTargetType)
+int TribeTacticalAIModule::unit(int player, int currentAction, int currentTargetType)
 {
     int i = 0;
     ManagedArrayInt* resultArray;
