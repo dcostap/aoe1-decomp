@@ -1,4 +1,7 @@
 // ACCEPTED_DRIFT: small volatile-register/compare-order drift; only ZF feeds jne, so the same equality predicate controls the same remove call.
+// Exact translation-unit finish: the ordered Command.cpp subset beginning at
+// 004348F0 selects DX for player_id and ECX for owner. All 50 bytes match.
+#ifndef COMMAND_CONTEXT_H
 struct RGE_Command_Remove_From_Group {
     char gap_00[1];
     unsigned char player_id;
@@ -35,10 +38,11 @@ public:
 
     void do_command_remove_from_group(RGE_Command_Remove_From_Group* command);
 };
+#endif
 
 void RGE_Command::do_command_remove_from_group(RGE_Command_Remove_From_Group* command) {
     RGE_Static_Object* object = this->world->object(command->groupCommander);
-    if ((object != 0) && ((unsigned short)command->player_id == object->owner->id)) {
+    if ((object != 0) && (object->owner->id == (unsigned short)command->player_id)) {
         object->commanderRemoveFromGroup(command->unit);
     }
 }

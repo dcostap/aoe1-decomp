@@ -3,8 +3,11 @@
 
 // Shared owner surface for the ordered Command.cpp methods.
 struct RGE_Obj_Info;
+struct RGE_Command_Order;
 struct RGE_Command_Formation;
-class RGE_Command_Stop;
+struct RGE_Command_Add_To_Group;
+struct RGE_Command_Remove_From_Group;
+struct RGE_Command_Stop;
 class RGE_Static_Object;
 
 struct RGE_Command_Add_Attribute {
@@ -28,12 +31,17 @@ public:
     virtual void v60(); virtual void v64(); virtual void v68();
     virtual void v6C(); virtual void v70(); virtual void v74();
     virtual void add_attribute_num(unsigned short attr_id, int attr_amount, int zero);
+
+    char gap_04[0x46];
+    unsigned short id;
 };
 
 class RGE_Game_World {
 public:
     char gap_00[0x40];
     RGE_Player** players;
+
+    RGE_Static_Object* object(int id);
 };
 
 class RGE_Command {
@@ -46,9 +54,11 @@ protected:
     RGE_Static_Object* get_obj(RGE_Obj_Info info);
     void do_command_add_attribute(RGE_Command_Add_Attribute* command);
     void do_command_formation(RGE_Command_Formation* command);
-
-public:
+    void do_command_add_to_group(RGE_Command_Add_To_Group* command);
+    void do_command_remove_from_group(RGE_Command_Remove_From_Group* command);
+    unsigned char duplicate_check_command_order(RGE_Command_Order* command);
     unsigned char duplicate_check_command_stop(RGE_Command_Stop* command);
+    unsigned char close_check_for_duplicate_orders(unsigned char* command);
 };
 
 #endif
@@ -69,8 +79,34 @@ struct RGE_Command_Formation {
     RGE_Obj_Info units[1];
 };
 
-class RGE_Command_Stop {
-public:
+struct RGE_Command_Add_To_Group {
+    unsigned char command;
+    unsigned char player_id;
+    unsigned char gap_02[2];
+    int groupCommander;
+    int groupRange;
+    int newUnit;
+};
+
+struct RGE_Command_Remove_From_Group {
+    unsigned char command;
+    unsigned char player_id;
+    unsigned char gap_02[2];
+    int groupCommander;
+    int unit;
+};
+
+struct RGE_Command_Order {
+    long unknown_00;
+    long target_id;
+    unsigned char unit_num;
+    char gap_09[3];
+    float pos_x;
+    float pos_y;
+    long units[1];
+};
+
+struct RGE_Command_Stop {
     char pad_00[1];
     unsigned char unit_num;
     int items[1];
@@ -102,7 +138,7 @@ public:
 
     long id;
     void* master_obj;
-    void* owner;
+    RGE_Player* owner;
     char gap_10[0x28];
     float world_x;
     float world_y;
@@ -110,6 +146,8 @@ public:
 
     void removeAllFromPathingGroup(void);
     void addToPathingGroup(int group_index);
+    int commanderAddToGroup(int newUnit, int groupRange);
+    int commanderRemoveFromGroup(int unit);
 };
 
 #endif

@@ -1,4 +1,7 @@
 // ACCEPTED_DRIFT: small volatile-register allocation drift in the player/type compare; same equality predicate, calls, argument pushes, and stack cleanup.
+// Exact translation-unit finish: the ordered Command.cpp subset beginning at
+// 004348F0 selects DX for player_id and ECX for owner. All 54 bytes match.
+#ifndef COMMAND_CONTEXT_H
 struct RGE_Command_Add_To_Group {
     char gap_00[1];
     unsigned char player_id;
@@ -34,6 +37,7 @@ public:
 
     void do_command_add_to_group(RGE_Command_Add_To_Group* command);
 };
+#endif
 
 void RGE_Command::do_command_add_to_group(RGE_Command_Add_To_Group* command) {
     RGE_Static_Object* object = this->world->object(command->groupCommander);

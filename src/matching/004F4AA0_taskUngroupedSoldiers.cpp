@@ -13,6 +13,11 @@
 //
 // BINARY NOTE: contains checks membership before add. Inlined add performs its
 // own duplicate scan. Both scans are present in the original executable.
+//
+// SHARED-CONTEXT NOTE: the tactical header's nested operator[] growth changes
+// this body from 740 to 852 bytes. The canonical utmarray.h surface keeps the
+// resize calls out of line and preserves the exact body. Using that surface in
+// the shared wrapper regresses earlier exact anchors, so this owner stays out.
 
 #include "../../include/utmarray.h"
 

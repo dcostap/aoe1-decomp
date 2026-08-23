@@ -13,8 +13,7 @@
 // and register-order drift.
 
 #ifndef COMMAND_CONTEXT_H
-class RGE_Command_Stop {
-public:
+struct RGE_Command_Stop {
     char pad_00[1];
     unsigned char unit_num;
     int items[1];
