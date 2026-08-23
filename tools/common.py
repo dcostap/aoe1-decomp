@@ -703,3 +703,67 @@ def function_by_start(layout: dict, start_va: int) -> dict:
         if entry.get("start", "").upper() == target:
             return entry
     raise KeyError(f"No layout function starting at {target}")
+
+
+def owned_function_ranges(
+    layout: dict,
+    owner_va: int,
+    parent_owned_fragments: dict[int, tuple[int, str, str]] | None = None,
+) -> tuple[list[tuple[int, int]], list[int]]:
+    """Resolve one owner's body without dropping reviewed internal fragments.
+
+    Ghidra can promote an internal block to a separate FUN_ entry.  The
+    parent-fragment manifest restores that block to its source owner.  Do not
+    concatenate any remaining unowned gap: it could contain unrelated bytes.
+    """
+    def layout_ranges(layout_function: dict) -> list[tuple[int, int]]:
+        ranges: list[tuple[int, int]] = []
+        for body_range in layout_function.get("body_ranges", []):
+            start = parse_hex(body_range.get("start"))
+            end = parse_hex(body_range.get("end"))
+            if start is None or end is None:
+                continue
+            if end < start:
+                raise ValueError(
+                    f"Original function {format_hex(owner_va)} has a reversed body range "
+                    f"{format_hex(start)}-{format_hex(end)}"
+                )
+            ranges.append((start, end))
+        return ranges
+
+    ranges = layout_ranges(function_by_start(layout, owner_va))
+    fragments = parent_owned_fragments
+    if fragments is None:
+        fragments = load_parent_owned_fragments()
+
+    included_fragments: list[int] = []
+    for fragment_va, (parent_va, _parent_name, _reason) in fragments.items():
+        if parent_va != owner_va:
+            continue
+        fragment_ranges = layout_ranges(function_by_start(layout, fragment_va))
+        if not fragment_ranges:
+            raise ValueError(
+                f"Parent-owned fragment {format_hex(fragment_va)} has no body range"
+            )
+        ranges.extend(fragment_ranges)
+        included_fragments.append(fragment_va)
+
+    if not ranges:
+        raise ValueError(f"Original function {format_hex(owner_va)} has no body range")
+
+    ranges.sort()
+    merged: list[tuple[int, int]] = []
+    for start, end in ranges:
+        if not merged:
+            merged.append((start, end))
+            continue
+        previous_start, previous_end = merged[-1]
+        if start > previous_end + 1:
+            raise ValueError(
+                f"Original function {format_hex(owner_va)} has an unowned gap "
+                f"{format_hex(previous_end + 1)}-{format_hex(start - 1)}; "
+                "refusing to concatenate disjoint ranges"
+            )
+        merged[-1] = (previous_start, max(previous_end, end))
+
+    return merged, sorted(included_fragments)

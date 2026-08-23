@@ -11,6 +11,7 @@ sys.path.insert(0, str(REPO_ROOT / "tools"))
 
 from extract_obj_function import (  # noqa: E402
     decode_bytes,
+    extraction_extent,
     select_exact_function_symbol,
     select_record_function_symbol,
 )
@@ -66,6 +67,13 @@ class ExtractObjFunctionTests(unittest.TestCase):
         )
         symbol = select_exact_function_symbol(obj, "?create@Thing@@QAEHPAPAD@Z")
         self.assertEqual(symbol.name, "?create@Thing@@QAEHPAPAD@Z")
+
+    def test_short_rebuild_does_not_fill_boundary_with_section_padding(self) -> None:
+        extent = extraction_extent(b"\x90" * 3 + b"\xc3" + b"\x90" * 8, 5)
+
+        self.assertEqual(extent["meaningful_size"], 4)
+        self.assertEqual(extent["effective_size"], 4)
+        self.assertEqual(extent["comparison_size"], 4)
 
 
 if __name__ == "__main__":

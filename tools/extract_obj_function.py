@@ -14,6 +14,9 @@ from common import (
     format_hex,
     function_record_by_va,
     function_slug,
+    load_binaries,
+    load_layout,
+    owned_function_ranges,
     repo_path,
     translation_unit_for_va,
 )
@@ -114,12 +117,16 @@ def extraction_extent(
         )
         boundary_escapes = sorted(set(boundary_escapes))
     has_code_overflow = bool(boundary_escapes)
-    if expected_size is not None and not has_code_overflow and len(data) >= expected_size:
+    if expected_size is not None and not has_code_overflow and meaningful_size >= expected_size:
         # Extra bytes may be jump tables, EH data, or section alignment. They are
         # not part of the function unless entry-reachable control flow crosses the
         # inventory boundary.
         effective_size = expected_size
-    comparison_size = meaningful_size if expected_size is None or has_code_overflow else expected_size
+    comparison_size = (
+        meaningful_size
+        if expected_size is None or has_code_overflow or meaningful_size < expected_size
+        else expected_size
+    )
     comparison_size = min(comparison_size, len(data))
     overflow_offsets: list[int] = []
     if expected_size is not None and len(data) > expected_size:
@@ -236,6 +243,24 @@ def main() -> None:
     section = function_symbol_section(obj, symbol)
 
     expected_size = None if record is None else int(record["size_bytes"], 10)
+    expected_boundary_fragments: list[int] = []
+    if record is not None:
+        try:
+            layout = load_layout(repo_path(load_binaries()["ghidra_layout"]))
+        except FileNotFoundError:
+            # Unit callers and explicit temporary object extraction may not
+            # carry the repository layout. Keep their inventory-size fallback.
+            owned_ranges = []
+        else:
+            has_layout_owner = any(
+                str(entry.get("start") or "").upper() == format_hex(va)
+                for entry in layout.get("functions", [])
+            )
+            owned_ranges, expected_boundary_fragments = (
+                owned_function_ranges(layout, va) if has_layout_owner else ([], [])
+            )
+        if owned_ranges:
+            expected_size = sum(end - start + 1 for start, end in owned_ranges)
     symbol_by_index = {candidate.index: candidate for candidate in obj.symbols}
     indirect_targets: list[int] = []
     for relocation in section.relocations:
@@ -262,6 +287,7 @@ def main() -> None:
     asm_path = out_dir / f"rebuilt_{slug}.txt"
 
     metadata = {
+        "schema_version": 2,
         "object": str(obj_path),
         "build_input_fingerprint": build_input_fingerprint,
         "symbol": {
@@ -273,6 +299,8 @@ def main() -> None:
         "section_index": section.index,
         "section_size_bytes": len(section.data),
         "expected_size_bytes": expected_size,
+        "inventory_size_bytes": None if record is None else int(record["size_bytes"], 10),
+        "parent_owned_fragments": [format_hex(fragment_va) for fragment_va in expected_boundary_fragments],
         "meaningful_size_bytes": meaningful_size,
         "effective_size_bytes": effective_size,
         "comparison_size_bytes": len(extracted_bytes),
@@ -280,7 +308,13 @@ def main() -> None:
         "trailing_auxiliary_nonpadding_bytes": 0 if boundary_escape_offsets else len(overflow_nonpadding_offsets),
         "overflow_first_offset": None if not overflow_nonpadding_offsets else overflow_nonpadding_offsets[0],
         "boundary_escape_offsets": boundary_escape_offsets,
-        "size_status": "code-overflow" if boundary_escape_offsets else "within-expected-span",
+        "size_status": (
+            "code-overflow"
+            if boundary_escape_offsets
+            else "short-of-expected"
+            if expected_size is not None and meaningful_size < expected_size
+            else "within-expected-span"
+        ),
         "size_bytes": len(extracted_bytes),
         "relocations": [
             {

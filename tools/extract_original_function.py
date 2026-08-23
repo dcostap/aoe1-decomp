@@ -15,7 +15,7 @@ from common import (
     load_binaries,
     load_layout,
     load_pe_image,
-    parse_hex,
+    owned_function_ranges,
     repo_path,
 )
 
@@ -55,17 +55,14 @@ def main() -> None:
     record = function_record_by_va(va)
 
     ranges: list[tuple[int, int]] = []
+    included_fragments: list[int] = []
     layout_function: dict | None = None
     try:
         layout_function = function_by_start(layout, va)
-        for body_range in layout_function.get("body_ranges", []):
-            start = parse_hex(body_range["start"])
-            end = parse_hex(body_range["end"])
-            if start is None or end is None:
-                continue
-            ranges.append((start, end))
     except KeyError:
         layout_function = None
+    else:
+        ranges, included_fragments = owned_function_ranges(layout, va)
 
     if not ranges:
         size = args.size or int(record["size_bytes"])
@@ -98,12 +95,16 @@ def main() -> None:
         all_lines.append("")
 
     metadata = {
+        "schema_version": 2,
         "va": format_hex(va),
         "name": record["name"],
         "record_size_bytes": int(record["size_bytes"]),
         "ranges": range_records,
         "binary": str(repo_path(binaries["original_exe"])),
         "layout_name": None if layout_function is None else layout_function.get("name"),
+        "boundary_start": format_hex(ranges[0][0]) if ranges else None,
+        "boundary_end": format_hex(ranges[-1][1]) if ranges else None,
+        "parent_owned_fragments": [format_hex(fragment_va) for fragment_va in included_fragments],
         "combined_size_bytes": len(all_bytes),
     }
 
