@@ -101,6 +101,7 @@ public:
     SLhape_File_Header* FShape;
     Shape_Info* shape_info;
 
+    TShape();
     TShape(char* filename, long resource_id);
     ~TShape();
 

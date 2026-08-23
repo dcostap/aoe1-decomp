@@ -21,6 +21,9 @@ struct tagRECT {
 struct TDrawArea {
     void* DrawSystem; // +0x00
     void* Wnd;        // +0x04
+    char gap_08[0x10];
+    long Width;        // +0x18
+    long Height;       // +0x1C
 };
 
 enum PositionMode {
@@ -30,7 +33,8 @@ enum PositionMode {
     PositionTop = 4,
     PositionLeftTop = 7,
     PositionLeftBottom = 8,
-    PositionRightTop = 9
+    PositionRightTop = 9,
+    PositionRightBottom = 10
 };
 
 class TPanel;
@@ -41,6 +45,8 @@ public:
     TPanel* keyboardOwner();
     TPanel* modalPanel();
     int GetInputEnabled();
+    void setModalPanel(TPanel* panel);
+    int restorePreviousModalPanel();
 };
 
 extern TPanelSystem panel_system;
@@ -113,6 +119,13 @@ public:
     virtual int restart_sound_system();
     virtual void take_snapshot();
     virtual void handle_reactivate();
+
+    long xPosition();
+    long yPosition();
+    long width();
+    long height();
+    void set_curr_child(TPanel* panel);
+    void set_z_order(unsigned char mode, short order);
 
     TPanel* previous_panel;       // +0x04
     TPanel* previous_modal_panel; // +0x08
