@@ -331,6 +331,28 @@
         "004369C0": "src/matching/004369C0_setup.cpp",
         "00436A10": "src/accepted_drift/00436A10_set_bitmap.cpp"
       }
+    },
+    {
+      "name": "scr_cred_prefix",
+      "source": "src/scr_cred_tu.cpp",
+      "flags": "config/flags/004926E0_TRIBE_Credits_Screen.rsp",
+      "owners": {
+        "004926E0": "src/matching/004926E0_TRIBE_Credits_Screen.cpp",
+        "00492970": "src/matching/00492970_TRIBE_Credits_Screen.cpp",
+        "00492A40": "src/matching/00492A40_handle_mouse_down.cpp",
+        "00492A50": "src/matching/00492A50_handle_idle.cpp",
+        "00492CC0": "src/matching/00492CC0_draw.cpp",
+        "00492D50": "src/matching/00492D50_key_down_action.cpp",
+        "00492D70": "src/matching/00492D70_action.cpp",
+        "00492DB0": "src/matching/00492DB0_close_screen.cpp",
+        "00492E70": "src/matching/00492E70_TScrollTextPanel.cpp",
+        "00492F70": "src/matching/00492F70_TScrollTextPanel.cpp",
+        "00492F80": "src/matching/00492F80_set_text.cpp"
+      },
+      "symbols": {
+        "00492CC0": "?draw@TRIBE_Credits_Screen@@UAEXXZ",
+        "00492D70": "?action@TRIBE_Credits_Screen@@UAEJPAVTPanel@@JKK@Z"
+      }
     }
   ]
 }

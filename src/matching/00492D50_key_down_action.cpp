@@ -1,13 +1,12 @@
-class TRIBE_Credits_Screen {
-public:
-    virtual void vf00();
-    void close();
-    int key_down_action(int, int, int, int, int);
-};
+// VA: 00492D50 TRIBE_Credits_Screen::key_down_action
+// PDB donor: scr_cred.cpp lines 367-377
 
-int TRIBE_Credits_Screen::key_down_action(int key, int b, int c, int d, int e) {
+#include "../../include/scr_cred_context.h"
+
+long TRIBE_Credits_Screen::key_down_action(long key, short, int, int, int)
+{
     if (key == 0xD || key == 0x1B) {
-        this->close();
+        this->close_screen();
         return 1;
     }
     return 0;

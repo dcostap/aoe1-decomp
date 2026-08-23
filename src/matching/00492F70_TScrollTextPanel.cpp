@@ -1,12 +1,8 @@
-class Base_TScrollTextPanel {
-public:
-    virtual ~Base_TScrollTextPanel();
-};
+// VA: 00492F70 TScrollTextPanel::~TScrollTextPanel
+// PDB donor: scr_cred.cpp line 460
 
-class TScrollTextPanel : public Base_TScrollTextPanel {
-public:
-    virtual ~TScrollTextPanel();
-};
+#include "../../include/scr_cred_context.h"
 
-TScrollTextPanel::~TScrollTextPanel() {
+TScrollTextPanel::~TScrollTextPanel()
+{
 }

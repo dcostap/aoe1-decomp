@@ -7,37 +7,10 @@
 // with gap_04[0x1C] (28 bytes) placing field_20 at offset +0x20.
 // The Clear call uses (TDrawArea*)(this->field_20) as ECX (this) and
 // &this->field_24 as the rect parameter on the stack.
-// The field at field_20->DrawSystem has ScreenMode at +0x479 and DrawType
-// at +0x478 (checked as byte comparisons).
+
+#include "../../include/scr_cred_context.h"
 
 typedef unsigned char uchar;
-
-class TDrawArea {
-public:
-    char gap_00[4];
-    void Clear(void* rect, long flags);
-};
-
-class TScreenPanel {
-public:
-    virtual void draw();
-};
-
-class TRIBE_Credits_Screen : public TScreenPanel {
-public:
-    char gap_04[0x1C];          // +0x04 (after vtable at +0x00)
-    int field_20;               // +0x20 (TDrawArea*)
-    int field_24;               // +0x24
-    char gap_28[0x204 - 0x28];
-    int field_204;              // +0x204
-    char gap_208[0x48C - 0x208];
-    int mode;                   // +0x48C
-    char gap_490[0x894 - 0x490];
-    int back_pics[7];           // +0x894
-    int first_draw;             // +0x8B0
-
-    void draw();
-};
 
 void TRIBE_Credits_Screen::draw() {
     if (this->mode == 4) {

@@ -1,10 +1,10 @@
-class Pnl_ScenarioCreate {
-public:
-    void mouseDownHelper();
-    int handle_mouse_down(int a, int b, int c, int d, int e);
-};
+// VA: 00492A40 TRIBE_Credits_Screen::handle_mouse_down
+// PDB donor: scr_cred.cpp lines 210-213
 
-int Pnl_ScenarioCreate::handle_mouse_down(int a, int b, int c, int d, int e) {
-    this->mouseDownHelper();
+#include "../../include/scr_cred_context.h"
+
+long TRIBE_Credits_Screen::handle_mouse_down(uchar, long, long, int, int)
+{
+    this->close_screen();
     return 1;
 }
