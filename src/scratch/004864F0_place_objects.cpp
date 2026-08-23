@@ -84,7 +84,16 @@
 // The complete-world audit also tested both orders of the inherited width and
 // height aliases. VC5 emits the same height-first clear in each case. A named
 // map-size local was also a duplicate. Keep the direct PDB field expression.
+// Session exact-finish: the qualified owner is RGE_RMM_Object_Generator and the
+// PDB boundary is 004864F0-00486700, with direct anchors at init_stack,
+// make_placement_stack, both pop_stack calls, placement virtuals, and cleanup.
+// Reference-world, comma, players-table, and qualified pop_stack forms all
+// duplicated the 31-byte count-first basin. An inline selector worsened the
+// clear and gave 33 bytes. The 31-byte basin reads count before world, so it is
+// not safe under the executable's world-first fault order. Restore the direct
+// player-before-count source as the clean unresolved reconstruction.
 
+#include <memory.h>
 #include "..\..\include\rmm_obj_context.h"
 
 void RGE_RMM_Object_Generator::place_objects(RGE_Object_Info_Line& info)

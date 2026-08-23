@@ -69,7 +69,7 @@ void RGE_RMM_Object_Generator::place_avoid_objects(RGE_Object_Info_Line& info, l
     this->make_placement_stack(obj_stack, -1, -1, -1, -1);
 
     RGE_Player* player = this->world->players[
-        info.player_id & (info.player_id <= -1 ? 0 : -1)];
+        info.player_id & ((info.player_id <= -1) - 1)];
     count = info.number_of_groups;
 
     while (this->pop_stack(&obj_stack, &x, &y, &zone) && count > 0) {
