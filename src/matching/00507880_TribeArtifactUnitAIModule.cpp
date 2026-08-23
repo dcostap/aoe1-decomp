@@ -3,23 +3,9 @@
 // FLAGS: config/flags/00507880_TribeArtifactUnitAIModule.rsp
 
 #include <stddef.h>
+#include "../../include/taiuaimd_context.h"
 
 void* operator new(size_t size);
-struct RGE_Static_Object;
-
-class UnitAIModule {
-public:
-    virtual ~UnitAIModule();
-    char pad_04[0xFC - 4];
-    unsigned int adjustedIdleTimeoutValue;
-    unsigned int idleTimeoutValue;
-    char pad_104[0x124 - 0x104];
-    int* importantObjects;
-    int numberImportantObjects;
-
-    UnitAIModule(RGE_Static_Object* obj, int param);
-    void setAdjustedIdleTimeout(void);
-};
 
 class TribeArtifactUnitAIModule : public UnitAIModule {
 public:

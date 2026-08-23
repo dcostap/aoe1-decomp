@@ -1,5 +1,9 @@
 // VA: 0045FED0 RGE_Moving_Object::canPathWithObstructions (534B)
+// PDB-qualified owner/name: RGE_Moving_Object::canPathWithObstructions
 // PDB donor: move_obj.cpp:2439-2501
+// Binary boundary: [0045FED0,004600E6); the next PDB function begins at
+// 004600F0 after the ten-byte gap. The exact preceding anchor is
+// RGE_Moving_Object::canBidirectionPath [0045FBC0,0045FECB).
 // Attempt log:
 // - Replaced the placeholder with the period-typed object/world/zone-map
 //   reconstruction.  The body follows the adjacent exact findAvoidancePath
@@ -36,6 +40,10 @@
 //   common epilogue. This swaps zone_map to EBP and the first zone result to
 //   EBX without changing behavior or call order. The target now matches all
 //   534 bytes.
+// - Exact-finish walkback: the prior checkpoint with one function-scope result
+//   and one shared cleanup returned to the 17-byte mismatch. Keep the
+//   branch-local results and duplicated cleanup because the recorded bytes
+//   prove this source shape is required.
 
 struct XYPoint {
     int x;
