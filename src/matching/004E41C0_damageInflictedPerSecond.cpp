@@ -1,8 +1,9 @@
 // VA: 004E41C0 TribeInformationAIModule::damageInflictedPerSecond()
 // Source: taiinfmd.cpp lines 8228-8257
 // Size: 121 bytes, __thiscall, returns float
-// Match note: keeping only the numerator temp and inlining getMaxHitPoints() in the division
-// makes VC5 emit the original fstp/call/fdivr/fadd x87 sequence.
+// BINARY NOTE: The body ends at 004E4238 and has six calls, including two numberUnits rereads.
+// BINARY NOTE: Direct target and object member expressions preserve the virtual-call and fault order.
+// Match note: the direct damageCapability/rateOfFire expression emits the original x87 sequence.
 
 #include "../../include/information_dropsites_context.h"
 
@@ -17,8 +18,7 @@ float TribeInformationAIModule::damageInflictedPerSecond(TacticalAIGroup* group,
             RGE_Static_Object* obj = this->md->object(unitID);
 
             if (obj != 0) {
-                float temp = target->damageCapability(obj);
-                rVal = temp / obj->rateOfFire() + rVal;
+                rVal = target->damageCapability(obj) / obj->rateOfFire() + rVal;
             }
 
             i++;

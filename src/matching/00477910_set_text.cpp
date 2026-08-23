@@ -2,9 +2,16 @@
 // Source: Pnl_inp.cpp lines 532-554. 125 bytes. __thiscall, ret 4.
 //
 // MATCHED. Exact 125-byte match confirmed via local check_function.py.
-// Straightforward one-pass match. Key: correct member offsets from
-// type dump (cur_line at +0x100, cur_col at +0x102, input_buffer at
-// +0x1A0, format_type at +0x19C, input_len at +0x1AC, input_pos at +0x1B4).
+// PDB order makes this the first unleased normal sibling after 004777C0
+// TInputPanel::draw. The 00477729 padding entry is not a sibling, and 00477730
+// is an entry in key_down_action's switch table, not a function owner.
+// BINARY NOTE: PDB/Ghidra qualify this owner as TInputPanel::set_text and
+// bound the body to 00477910-0047798C. The 0047798D-0047798F bytes are padding.
+// The narrow class view keeps the proven input-panel offsets without a vptr.
+// An exact-finish test with a virtual declaration added a vptr and shifted
+// every field by four bytes; it produced a 9-byte mismatch and was reverted.
+// Key offsets: cur_line +0x100, cur_col +0x102, input_buffer +0x1A0,
+// format_type +0x19C, input_len +0x1AC, and input_pos +0x1B4.
 
 extern "C" char* __mbscpy(char* dst, const char* src);
 extern "C" short __mbslen(const char* str);

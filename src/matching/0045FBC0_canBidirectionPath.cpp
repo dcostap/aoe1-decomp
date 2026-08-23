@@ -1,4 +1,7 @@
 // VA: 0045FBC0 RGE_Moving_Object::canBidirectionPath
+// PDB owner: move_obj.cpp:2319-2432; binary span: 0045FBC0-0045FECB.
+// PDB sibling order: exact RGE_Moving_Object::canPath at 0045F9D0, then this
+// function, then canPathWithObstructions at 0045FED0.
 // Attempt log:
 // - Prior scaffold used placeholder ownership and one shared path-system pointer.
 // - Fresh reconstruction follows exact canPath donors: named owner/world/map and
@@ -6,6 +9,10 @@
 //   AI/normal path phases for the source and goal objects.
 // - Keeping each first-phase result and assigning it to the flag on failure
 //   reproduces the original failure tail and the complete 779-byte function.
+// - The public virtual declaration preserves the PDB ABI and emits the original
+//   UAE decorated symbol without changing the exact body.
+// - ABI walkback: the nonvirtual spelling also matched body bytes but emitted
+//   QAE; it is not retained because the PDB symbol is virtual (UAE).
 
 struct XYPoint {
     int x;
@@ -113,9 +120,9 @@ public:
     char gap_10C[0x48];
     unsigned char storePathInExceptionPath;
 
-    int canBidirectionPath(int sourceID, int goalID, float tolerance,
-                           float* costOut, int useAI, int unobPlayerID,
-                           int unobGroupID);
+    virtual int canBidirectionPath(int sourceID, int goalID, float tolerance,
+                                   float* costOut, int useAI, int unobPlayerID,
+                                   int unobGroupID);
 };
 
 class PathingSystem {
