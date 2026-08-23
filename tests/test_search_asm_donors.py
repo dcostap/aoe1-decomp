@@ -112,6 +112,7 @@ class SearchAsmDonorsTests(unittest.TestCase):
             with (
                 patch("search_asm_donors.REPO_ROOT", root),
                 patch("search_asm_donors.BUILD_DIR", build),
+                patch("search_asm_donors.compiler_artifact_slug", return_value="00401000_demo"),
                 patch("search_asm_donors.preferred_flags_rsp_path", return_value=root / "flags.rsp"),
                 patch("search_asm_donors.build_input_manifest", return_value={"fingerprint": "fresh"}),
             ):

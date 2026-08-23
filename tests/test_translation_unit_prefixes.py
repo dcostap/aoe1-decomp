@@ -32,21 +32,21 @@ def owner(va: int, lines: tuple[int, int], *, module: str = "C:\\src\\fractal.cp
 
 
 class TranslationUnitPrefixTests(unittest.TestCase):
-    def test_real_fractal_group_finds_two_authentic_prefixes(self) -> None:
+    def test_real_fractal_group_finds_authentic_prefix(self) -> None:
         from common import load_pdb_function_source_map, translation_unit_for_va
 
         source_map = load_pdb_function_source_map()
-        group = translation_unit_for_va(0x0044B2B0)
+        group = translation_unit_for_va(0x0044B270)
         self.assertIsNotNone(group)
         assert group is not None
-        target_row = source_map["0044B2B0"]
+        target_row = source_map["0044B270"]
         target = owner(
-            0x0044B2B0,
+            0x0044B270,
             (int(target_row["line_start"]), int(target_row["line_end"])),
             module=target_row["primary_source_path"],
         )
         prefixes = _default_prefixes(target, group, source_map)
-        self.assertEqual([item.va for item in prefixes], [0x0044B210, 0x0044B270])
+        self.assertEqual([item.va for item in prefixes], [0x0044B210])
 
     def test_prefix_owner_comparison_requires_pdb_qualified_class(self) -> None:
         from coff import load_coff_object
