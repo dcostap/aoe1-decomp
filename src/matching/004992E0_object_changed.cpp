@@ -1,5 +1,9 @@
 // VA: 004992E0 object_changed (199B)
 // scr_game.cpp
+// PDB owner: protected TRIBE_Screen_Game::object_changed, scr_game.cpp:3261-3298.
+// Body: 004992E0-004993A6. 00498950 is data, not a function.
+// Exact finish: natural player-state publication, mode guards, and reset cleanup
+// produce 60 instructions, 7 ordered calls, and the protected IAEXXZ symbol.
 
 class TRIBE_Main_View {
 public:
@@ -104,6 +108,8 @@ public:
     short sel_count;
 
     void reset_buttons(void);
+
+protected:
     void object_changed(void);
 };
 
