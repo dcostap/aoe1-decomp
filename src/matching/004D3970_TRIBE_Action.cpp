@@ -1,9 +1,12 @@
-class TRIBE_Action {
+class RGE_Action {
 public:
-    void parent_destroy();
-    void destroy();
+    virtual ~RGE_Action();
 };
 
-void TRIBE_Action::destroy() {
-    this->parent_destroy();
-}
+// BINARY NOTE: The shipped body is a direct thunk to RGE_Action::~RGE_Action.
+class __declspec(novtable) TRIBE_Action : public RGE_Action {
+public:
+    virtual ~TRIBE_Action();
+};
+
+TRIBE_Action::~TRIBE_Action() {}

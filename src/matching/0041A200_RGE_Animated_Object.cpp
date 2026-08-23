@@ -1,9 +1,12 @@
-class RGE_Animated_Object {
+class RGE_Static_Object {
 public:
-    void parent_destroy();
-    void destroy();
+    virtual ~RGE_Static_Object();
 };
 
-void RGE_Animated_Object::destroy() {
-    this->parent_destroy();
-}
+// BINARY NOTE: The shipped body is a direct thunk to RGE_Static_Object::~RGE_Static_Object.
+class __declspec(novtable) RGE_Animated_Object : public RGE_Static_Object {
+public:
+    virtual ~RGE_Animated_Object();
+};
+
+RGE_Animated_Object::~RGE_Animated_Object() {}
