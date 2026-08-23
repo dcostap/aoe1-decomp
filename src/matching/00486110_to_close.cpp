@@ -13,34 +13,14 @@
 
 #include <stddef.h>
 
-struct RGE_Land_Point_Info_Line {
-    long x;
-    long y;
-    long pad[2];  // total 16 bytes per entry
-};
-
-struct RGE_Object_Info_Line {
-    char gap_00[0x24];
-    long land_inner_radius;
-};
-
-class RGE_RMM_Object_Generator {
-public:
-    char gap_00[0x34];
-    char info_objects[0x1294];
-    RGE_Land_Point_Info_Line lands[99];
-    long land_num;
-    char gap_18C8[0x30];
-
-    unsigned char to_close(RGE_Object_Info_Line* info_line, long x, long y);
-};
+#include "..\..\include\rmm_obj_context.h"
 
 unsigned char RGE_RMM_Object_Generator::to_close(RGE_Object_Info_Line* info_line, long x, long y)
 {
-    long count = this->land_num;
+    long count = this->info.land_num;
     long i;
     for (i = 0; i < count; i++) {
-        long* p = (long*)((char*)&this->lands[0].y + i * 0x10);
+        long* p = (long*)((char*)&this->info.lands[0].y + i * 0x10);
         long dx = x - *(p - 1);
         if (dx < 0) dx = -dx;
 

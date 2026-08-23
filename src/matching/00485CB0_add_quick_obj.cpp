@@ -14,47 +14,7 @@
 // - Main-agent audit restored the inherited random-map-module virtual surface;
 //   emitted code remains exact.
 
-struct RGE_Object_Info_Line {
-    long obj_id;
-    long terrain;
-    unsigned char group_flag;
-    unsigned char scale_flag;
-    unsigned char gap_0a[2];
-    long object_number_per_group;
-    long object_number_varience;
-    long number_of_groups;
-    long group_area;
-    long player_id;
-    long land_id;
-    long land_inner_radius;
-    long land_outer_radius;
-    long object_exclusion_zone;
-};
-
-struct RGE_Land_Point_Info_Line {
-    long x;
-    long y;
-    long id;
-    long player_id;
-};
-
-struct RGE_Object_Info {
-    RGE_Object_Info_Line objects[99];
-    long object_num;
-    RGE_Land_Point_Info_Line lands[99];
-    long land_num;
-};
-
-class RGE_RMM_Object_Generator {
-public:
-    virtual unsigned char generate();
-    unsigned char gap_04[0x2C];
-    void* world;
-    RGE_Object_Info info;
-
-    void add_quick_obj(long obj_id, long number_of_groups,
-        long object_exclusion_zone);
-};
+#include "..\..\include\rmm_obj_context.h"
 
 void RGE_RMM_Object_Generator::add_quick_obj(long obj_id,
     long number_of_groups, long object_exclusion_zone)

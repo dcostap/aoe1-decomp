@@ -1,21 +1,7 @@
 // 00486210 RGE_RMM_Object_Generator::remove_area_from_lists
 // Source: rmm_obj.cpp lines 230-251. 154 bytes. __thiscall, ret 0Ch.
 
-class RGE_RMM_Object_Generator {
-public:
-    char gap_00[0x14];
-    long width;                 // +0x14 — max x dimension
-    long height;                // +0x18 — max y dimension
-    char gap_1C[0x2C - 0x1C];
-    void** map_rows;            // +0x2C — array of pointers (one per row)
-
-    void remove_area_from_lists(long left, long right, long y);
-    void remove_stack_node(void* node);
-};
-
-struct Map_Stack {
-    char data[0x18];  // 24-byte struct
-};
+#include "..\..\include\rmm_obj_context.h"
 
 void RGE_RMM_Object_Generator::remove_area_from_lists(long left, long right, long y) {
     long x_start = left - y;

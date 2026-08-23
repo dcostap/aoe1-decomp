@@ -4,7 +4,7 @@
 // 2: use memset plus explicit self local to try original rep stosd clear and ebp=this register: first 74 bytes match; count kept in esi and player load scheduled later.
 // 3: make count volatile to force stack local and memory test/dec: edit diff improved to 16.7%, but world/player load still scheduled after mask and stack arg LEAs shifted.
 // 4: split world load to a separate local before player-id mask: no codegen change.
-// 5: use <= -1 spelling for player-id mask to match cmp -1/setle: improved to 13.4%; remaining early mismatch is world load scheduled after mask and pop_stack arg order.
+// 5: use <= -1 spelling for player-id mask to match cmp -1/setle: improved to 13.4%; remaining early mismatch is world load scheduled after mask and pop-argument order.
 // 6: split players pointer load before mask: no codegen change.
 // 7: store player id in a temp before indexing to probe load scheduling: no codegen change.
 // 8: volatile world local to force load before mask: worsened to 27% edit diff with extra stack store; rolled back.
@@ -58,7 +58,7 @@
 //     the simpler direct member form is now canonical.
 // 31: long count, a named player index, the integer decompiler mask, and a
 //     declaration-local count were all codegen duplicates or worse. The typed
-//     while/pop loop and 31-byte clean result remain authoritative.
+//     while/pop loop and 31-byte clean source remain authoritative.
 // Fresh bounded pass: explicit mask lifetimes with count-after-player widened
 // the mismatch to 43 bytes. Players-slot, players-reference, and function-scope
 // player locals reproduced the 31-byte basin. The remaining schedule changes
@@ -73,90 +73,18 @@
 // info.number_of_groups. The rebuild reads number_of_groups first. It also
 // moves the count store before the world and players-table reads. Concurrent
 // record changes and invalid pointer storage can change results and fault order.
+//
+// Context audit: include/rmm_obj_context.h now supplies the period RGE_Random_Map_Module,
+// object-info, player, master-object, and derived helper ownership. The real PDB prefix
+// through this owner compiles in rmm_obj_full_prefix.cpp. Exact anchor results in that
+// object are 00485C50 MATCH, 00485CB0 MATCH, 00485DC0 MATCH, 00486110 MATCH,
+// 00486180 MATCH, and 00486210 MATCH. The nonexact owners remain behavior-valid
+// context owners: 00485E50 is 8 bytes off, 00485F10 is 392 bytes off, and 004862B0
+// is 42 bytes off. The target remains 515 bytes with a 31-byte positional diff.
+// Full authentic prefix context did not move the first mismatch at +004A.
 
 extern "C" void* __cdecl memset(void*, int, unsigned int);
-
-struct Map_Stack {
-    long x;
-    long y;
-    float cost;
-    float tot_cost;
-    Map_Stack* next;
-    Map_Stack* prev;
-};
-struct RGE_Tile { char gap[5]; unsigned char terrain; char rest[18]; };
-struct RGE_Object_Info_Line {
-    int obj_id;                    // +00
-    int terrain;                   // +04
-    unsigned char group_flag;      // +08
-    char pad09[0x14 - 0x09];
-    int number_of_groups;          // +14
-    char pad18[0x1c - 0x18];
-    int player_id;                 // +1c
-    char pad20[0x2c - 0x20];
-    int object_exclusion_zone;     // +2c
-};
-
-class RGE_Player;
-class RGE_Master_Static_Object {
-public:
-    virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
-    virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
-    virtual unsigned char can_place(RGE_Player*, float, float, int, int, int, int, int, int, int);
-    char pad04[0x30-4];
-    float radius_x;
-    float radius_y;
-};
-
-class RGE_Player {
-public:
-    virtual void p00(); virtual void p01(); virtual void p02(); virtual void p03();
-    virtual void p04(); virtual void p05(); virtual void p06(); virtual void p07();
-    virtual void p08(); virtual void p09(); virtual void p10(); virtual void p11();
-    virtual void p12(); virtual void p13(); virtual void p14(); virtual void p15();
-    virtual void p16(); virtual void p17(); virtual void p18(); virtual void p19();
-    virtual void p20(); virtual void p21(); virtual void p22(); virtual void p23();
-    virtual void p24(); virtual void p25(); virtual void p26(); virtual void p27();
-    virtual void p28(); virtual void p29(); virtual void p30(); virtual void p31();
-    virtual void p32(); virtual void p33(); virtual void p34(); virtual void p35();
-    virtual void p36();
-    virtual void place_object(int obj_id, float x, float y, int, int);
-    char pad04[0x24-4];
-    RGE_Master_Static_Object** master_objects;
-};
-
-struct RGE_World { char pad00[0x40]; RGE_Player** players; };
-
-class RGE_Random_Map_Module {
-public:
-    void* vtable_ptr;
-    RGE_Random_Map_Module* parent;
-    void* list;
-    void* base_map;
-    RGE_Tile** map;                // +10
-    int width;                     // +14
-    int height;                    // +18
-    float schedule;                // +1c
-    unsigned char* byte_map;       // +20
-    void* search_map_rows;         // +24
-    void* stack_array;             // +28
-    void* stack_offsets;           // +2c
-
-    void init_stack(Map_Stack* s);
-    void deinit_stack(Map_Stack* s);
-    void make_placement_stack(Map_Stack* s, long x, long y, int unk, int area);
-    Map_Stack* pop_stack(Map_Stack* s, long* out_col, long* out_x, float* out_cost);
-};
-
-class RGE_RMM_Object_Generator : public RGE_Random_Map_Module {
-public:
-    RGE_World* world;              // +30
-
-    void remove_area_from_lists(long left, long right, long y);
-    void place_group(RGE_Object_Info_Line& info, long x, long y, RGE_Player* player);
-    void place_cluster(RGE_Object_Info_Line& info, long x, long y, RGE_Player* player);
-    void place_objects(RGE_Object_Info_Line& info);
-};
+#include "..\..\include\rmm_obj_context.h"
 
 void RGE_RMM_Object_Generator::place_objects(RGE_Object_Info_Line& info)
 {
@@ -172,16 +100,16 @@ void RGE_RMM_Object_Generator::place_objects(RGE_Object_Info_Line& info)
     // clear occupancy byte map to 1
     memset(this->byte_map, 1, this->width * this->height);
 
-    this->init_stack(&obj_stack);
-    this->make_placement_stack(&obj_stack, -1, -1, -1, -1);
+    this->init_stack(obj_stack);
+    this->make_placement_stack(obj_stack, -1, -1, -1, -1);
 
     count = info.number_of_groups;
     RGE_Player* player;
     player = this->world->players[
         info.player_id & (info.player_id <= -1 ? 0 : -1)];
 
-    while (pop_stack(&obj_stack, &col, &x, &cost) && count > 0) {
-            if (info.terrain < 0 || ((this->map[x][col].terrain & 0x1f) == (unsigned int)info.terrain)) {
+    while (pop_stack(obj_stack, col, x, cost) && count > 0) {
+            if (info.terrain < 0 || ((this->map_row_offset[x][col].terrain & 0x1f) == (unsigned int)info.terrain)) {
                 fx = (float)col;
                 fy = (float)x;
                 RGE_Master_Static_Object* master = player->master_objects[info.obj_id];
@@ -210,5 +138,5 @@ void RGE_RMM_Object_Generator::place_objects(RGE_Object_Info_Line& info)
                 }
             }
         }
-    this->deinit_stack(&obj_stack);
+    this->deinit_stack(obj_stack);
 }

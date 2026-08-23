@@ -235,6 +235,26 @@
       "symbols": {
         "0049D6C0": "?action@TRIBE_Screen_Info@@UAEJPAVTPanel@@JKK@Z"
       }
+    },
+    {
+      "name": "rmm_obj_prefix",
+      "source": "src/rmm_obj_tu.cpp",
+      "flags": "config/flags/default.rsp",
+      "owners": {
+        "00485C50": "src/matching/00485C50_RGE_RMM_Object_Generator.cpp",
+        "00485CB0": "src/matching/00485CB0_add_quick_obj.cpp",
+        "00485DC0": "src/matching/00485DC0_generate.cpp",
+        "00485E50": "src/accepted_drift/00485E50_generate_objects.cpp",
+        "00485F10": "src/scratch/00485F10_make_placement_stack.cpp",
+        "00486110": "src/matching/00486110_to_close.cpp",
+        "00486180": "src/matching/00486180_set_search_area.cpp",
+        "00486210": "src/matching/00486210_remove_area_from_lists.cpp",
+        "004862B0": "src/accepted_drift/004862B0_place_avoid_objects.cpp",
+        "004864F0": "src/scratch/004864F0_place_objects.cpp"
+      },
+      "symbols": {
+        "00485DC0": "?generate@RGE_RMM_Object_Generator@@UAEEXZ"
+      }
     }
   ]
 }

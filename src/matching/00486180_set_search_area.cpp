@@ -7,16 +7,7 @@
 // 3: Declared inner-loop `cx = sx` before the `if (cx <= end_x)` guard instead of inside the if body. This let VC5 schedule `mov eax,edi` between cmp and jg and snapped the whole shifted layout to exact.
 // MATCH: python tools/check_function.py --va 00486180 => Result: MATCH / 0.0000%.
 
-class RGE_RMM_Object_Generator {
-public:
-    char gap_00[0x14];
-    long width;
-    long height;
-    char gap_1C[0x08];
-    unsigned char** rows;
-
-    void set_search_area(long x, long y, long radius, unsigned char fill);
-};
+#include "..\..\include\rmm_obj_context.h"
 
 void RGE_RMM_Object_Generator::set_search_area(long x, long y, long radius, unsigned char fill)
 {
