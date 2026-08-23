@@ -1,7 +1,14 @@
 // RGE_Main_View::fixup_pick_info
 // VA: 00540680
-// vw_main.cpp:1946-1956
+// PDB-qualified owner/name: protected: void __thiscall RGE_Main_View::fixup_pick_info(RGE_Pick_Info*)
+// PDB source: vw_main.cpp:1946-1956
+// Original body boundary: 00540680-005406F6; next symbol: 00540700.
 // MATCH: 0.0000% diff, 4 relocations masked
+//
+// BINARY NOTE: The executable rereads mapInfo for the y limit after the x
+// path. Keep both member expressions direct to preserve fault order.
+// Exact-finish: the typed MapInfo field and natural signed float comparisons
+// reproduce the complete 119-byte body. No calls, frame, or cleanup differ.
 
 #include "../../include/game_globals.h"
 
@@ -21,6 +28,7 @@ public:
     char gap_00[0x104];
     MapInfo* mapInfo;  // +0x104
 
+protected:
     void fixup_pick_info(RGE_Pick_Info* info);
 };
 

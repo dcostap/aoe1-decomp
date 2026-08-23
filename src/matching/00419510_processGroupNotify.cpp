@@ -1,5 +1,8 @@
 // VA: 00419510 UnitAIModule::processGroupNotify
 // aiuaimod.cpp lines 5191-5250
+// PDB owner and access: protected UnitAIModule::processGroupNotify.
+// Body boundary: 00419510-004195E0; padding starts at 004195E1.
+// This is the first normal aiuaimod.cpp sibling after processNotify, which ends at 004193F3.
 // Attempt log:
 // - Reconstructed the play-status/playbook/phase/trigger ownership from the original
 //   offsets and direct-call set; replacing the stale unrelated placeholder.
@@ -79,8 +82,11 @@ public:
 class UnitAIModule {
 public:
     virtual ~UnitAIModule();
+
+protected:
     virtual void processGroupNotify(NotifyEvent* param_1);
 
+public:
     RGE_Static_Object* objectValue;    // +0x04
     int moodValue;                      // +0x08
     int objectCategoryValue;            // +0x0C
