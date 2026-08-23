@@ -1,6 +1,7 @@
 // VA: 004362F0 TDebuggingLog::LogOutput (54 B)
 // PDB source: Debuglog.cpp lines 82-90
 
+#ifndef DEBUGLOG_CANONICAL_TU
 class TDebuggingLog {
 public:
     int Timestamp;
@@ -17,11 +18,13 @@ public:
     char osbuf[1000];
     char Filename[128];
 
+protected:
     char* YesOrNo(int value);
+public:
+    void __cdecl Log(char* format, ...);
     void LogOutput(int value);
 };
-
-void __cdecl Log(TDebuggingLog* log, const char* format, const char* value);
+#endif
 
 void TDebuggingLog::LogOutput(int value) {
     if (value != 0) {
@@ -29,5 +32,5 @@ void TDebuggingLog::LogOutput(int value) {
     } else {
         this->LogToOutput = 0;
     }
-    Log(this, "Logging to OUTPUT %s", this->YesOrNo(value));
+    this->Log("Logging to OUTPUT %s", this->YesOrNo(value));
 }

@@ -2,6 +2,7 @@
 
 extern FILE* logstream;
 
+#ifndef DEBUGLOG_CANONICAL_TU
 class TDebuggingLog {
 public:
     int Timestamp;
@@ -23,6 +24,7 @@ public:
 
     void CloseLog(void);
 };
+#endif
 
 // compact debug-log closer first
 // expected basin: one LogToFile guard, optional filename-message log, Time(), close-message log, fclose(logstream), then LogIsOpen = 0

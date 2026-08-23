@@ -1,13 +1,12 @@
 // VA: 00436220 TDebuggingLog::TDebuggingLog
 // Debuglog.cpp lines 45-62
 
-// attempt 1: natural constructor
-// 123/123 bytes exact size match, 47 diff bytes
-// Remaining: strcpy inline instruction alignment differs slightly
-// Store order + struct layout corrected. Left in scratch.
+// The constructor is an exact owner. Its Log call uses the qualified
+// variadic member surface from the canonical Debuglog.cpp context.
 
 #include <string.h>
 
+#ifndef DEBUGLOG_CANONICAL_TU
 class TDebuggingLog {
 public:
     char gap_00[8];             // +0x00..+0x07 (vtable? + unknown)
@@ -26,12 +25,11 @@ public:
     void FlushToDisk(int param);
     void OpenLog();
     void Time();
+    void __cdecl Log(char* format, ...);
 
     TDebuggingLog();
 };
-
-extern int logstream;
-extern void __cdecl Log(TDebuggingLog* self, const char* text);
+#endif
 
 TDebuggingLog::TDebuggingLog() {
     LogToFile = 0;
@@ -43,7 +41,7 @@ TDebuggingLog::TDebuggingLog() {
     LogDateTimestamp(0);
     FlushToDisk(0);
     OpenLog();
-    Log(this, "===Logging===");
+    this->Log("===Logging===");
     Time();
     strcpy(Filename, "C:\\APPLOGERR.TXT");
 }

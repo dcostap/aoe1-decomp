@@ -3,7 +3,8 @@
 // The owners follow PDB line order and share one reviewed World surface.
 // Each included file remains the sole source owner of its VA body. The span
 // starts at the World.cpp destructor and continues through scenario loading.
-// Generated companions remain outside. The grouped check uses default.rsp.
+// Generated companions remain outside. The grouped check uses the authentic
+// World-module /O2 /Oy /GX response file.
 #include "matching/00540A40_RGE_Game_World.cpp"
 
 // BINARY NOTE: 00540750 is exact as a standalone owner, but its source has a
@@ -20,6 +21,10 @@
 #include "accepted_drift/00540FD0_data_load_color_tables.cpp"
 #include "matching/005410E0_data_load_sprites.cpp"
 #include "matching/00541240_data_load_players_type.cpp"
+
+// BINARY NOTE: These World.cpp bodies remain included to preserve the
+// authentic source context, but are not grouped owners. Fresh /GX checks for
+// 00542BF0, 00543E00, and 00544090 remain non-exact.
 #include "accepted_drift/005412B0_data_load_players.cpp"
 #include "matching/00541380_data_load_objects.cpp"
 #include "accepted_drift/005414A0_data_load_effects.cpp"

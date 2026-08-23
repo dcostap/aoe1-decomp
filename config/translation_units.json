@@ -481,18 +481,14 @@
     {
       "name": "world_scenario_sparse",
       "source": "src/world_scenario_tu.cpp",
-      "flags": "config/flags/default.rsp",
+      "flags": "config/flags/world_scenario_sparse.rsp",
       "owners": {
         "00540A40": "src/matching/00540A40_RGE_Game_World.cpp",
-        "00542BF0": "src/scratch/00542BF0_new_scenario.cpp",
-        "00543E00": "src/accepted_drift/00543E00_load_scenario.cpp",
-        "00544090": "src/accepted_drift/00544090_load_scenario.cpp",
+        "00540FD0": "src/accepted_drift/00540FD0_data_load_color_tables.cpp",
+        "005410E0": "src/matching/005410E0_data_load_sprites.cpp",
+        "00541240": "src/matching/00541240_data_load_players_type.cpp",
         "00544E70": "src/matching/00544E70_load_scenario5.cpp",
         "005451A0": "src/matching/005451A0_load_scenario6.cpp"
-      },
-      "symbols": {
-        "00543E00": "?load_scenario@RGE_Game_World@@UAEEPADPAURGE_Player_Info@@@Z",
-        "00544090": "?load_scenario@RGE_Game_World@@MAEEAAURGE_Player_Info@@@Z"
       }
     },
     {
@@ -1449,7 +1445,7 @@
       }
     },
     {
-      "name": "debuglog_prefix",
+      "name": "debuglog",
       "source": "src/debuglog_tu.cpp",
       "flags": "config/flags/default.rsp",
       "owners": {
@@ -1469,9 +1465,20 @@
         "00436810": "src/matching/00436810_YesOrNo.cpp"
       },
       "symbols": {
+        "00436220": "??0TDebuggingLog@@QAE@XZ",
         "004362A0": "??1TDebuggingLog@@QAE@XZ",
+        "004362B0": "?LogFile@TDebuggingLog@@QAEXH@Z",
+        "004362F0": "?LogOutput@TDebuggingLog@@QAEXH@Z",
+        "00436330": "?LogTimestamp@TDebuggingLog@@QAEXH@Z",
+        "00436360": "?LogDateTimestamp@TDebuggingLog@@QAEXH@Z",
         "004363A0": "?Time@TDebuggingLog@@QAEXXZ",
-        "00436610": "?Log@TDebuggingLog@@QAAXPADZZ"
+        "00436430": "?FlushToDisk@TDebuggingLog@@QAEXH@Z",
+        "00436470": "?LogSequence@TDebuggingLog@@QAEXH@Z",
+        "004364B0": "?OpenLog@TDebuggingLog@@QAEXXZ",
+        "004365A0": "?FlushLog@TDebuggingLog@@QAEXXZ",
+        "004365C0": "?CloseLog@TDebuggingLog@@QAEXXZ",
+        "00436610": "?Log@TDebuggingLog@@QAAXPADZZ",
+        "00436810": "?YesOrNo@TDebuggingLog@@IAEPADH@Z"
       }
     },
     {

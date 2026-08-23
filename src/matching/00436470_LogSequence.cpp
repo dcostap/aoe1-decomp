@@ -1,3 +1,4 @@
+#ifndef DEBUGLOG_CANONICAL_TU
 class TDebuggingLog {
 public:
     char gap_00[0x10];
@@ -5,13 +6,15 @@ public:
     char gap_14[0x10];
     int SeqNo;
 
+protected:
     char* YesOrNo(int value);
+public:
+    void __cdecl Log(char* format, ...);
     void LogSequence(int param_1);
 };
+#endif
 
 extern char s_Sequence_numbering[];
-extern void __cdecl Log(TDebuggingLog* this_, char* format, char* value);
-
 void TDebuggingLog::LogSequence(int param_1) {
     if (param_1 != 0) {
         this->Sequence = 1;
@@ -20,5 +23,5 @@ void TDebuggingLog::LogSequence(int param_1) {
         this->Sequence = 0;
     }
 
-    Log(this, s_Sequence_numbering, this->YesOrNo(this->Sequence));
+    this->Log(s_Sequence_numbering, this->YesOrNo(this->Sequence));
 }

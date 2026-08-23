@@ -8,6 +8,7 @@
 
 #include <time.h>
 
+#ifndef DEBUGLOG_CANONICAL_TU
 class TDebuggingLog {
 public:
     char gap_00[8];
@@ -20,9 +21,10 @@ public:
     char gap_24[0x70C];
     char Filename[256];
 
-    void Log(const char* format, ...);
+    void __cdecl Log(char* format, ...);
     void Time();
 };
+#endif
 
 unsigned long debug_timeGetTime(const char* file, int line);
 

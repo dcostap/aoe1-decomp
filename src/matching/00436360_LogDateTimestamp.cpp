@@ -1,13 +1,16 @@
+#ifndef DEBUGLOG_CANONICAL_TU
 class TDebuggingLog {
 public:
     int Timestamp;
     int DateTimestamp;
 
+protected:
     char* YesOrNo(int value);
+public:
+    void __cdecl Log(char* format, ...);
     void LogDateTimestamp(int value);
 };
-
-extern void Log(TDebuggingLog* log, const char* format, const char* value);
+#endif
 
 void TDebuggingLog::LogDateTimestamp(int value) {
     if (value != 0) {
@@ -15,5 +18,5 @@ void TDebuggingLog::LogDateTimestamp(int value) {
     } else {
         this->DateTimestamp = 0;
     }
-    Log(this, "Date & Time stamp%s", this->YesOrNo(this->Timestamp));
+    this->Log("Date & Time stamp%s", this->YesOrNo(this->Timestamp));
 }

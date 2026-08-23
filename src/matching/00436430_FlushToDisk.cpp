@@ -1,15 +1,19 @@
 class TDebuggingLog;
 extern TDebuggingLog* L;
-extern void Log(TDebuggingLog* log, const char* format, const char* value);
 
+#ifndef DEBUGLOG_CANONICAL_TU
 class TDebuggingLog {
 public:
     char gap_00[0x14];
     int Flush;
 
-    const char* YesOrNo(int value);
+protected:
+    char* YesOrNo(int value);
+public:
+    void __cdecl Log(char* format, ...);
     void FlushToDisk(int value);
 };
+#endif
 
 void TDebuggingLog::FlushToDisk(int value) {
     if (value != 0) {
@@ -17,5 +21,5 @@ void TDebuggingLog::FlushToDisk(int value) {
     } else {
         this->Flush = 0;
     }
-    Log(this, "Flush queue each message %s", this->YesOrNo(this->Flush));
+    this->Log("Flush queue each message %s", this->YesOrNo(this->Flush));
 }

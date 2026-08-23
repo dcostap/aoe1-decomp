@@ -1,6 +1,7 @@
 // VA: 004362B0 TDebuggingLog::LogFile (54 B)
 // PDB source: Debuglog.cpp lines 71-79
 
+#ifndef DEBUGLOG_CANONICAL_TU
 class TDebuggingLog {
 public:
     int Timestamp;
@@ -17,11 +18,13 @@ public:
     char osbuf[1000];
     char Filename[128];
 
+protected:
     char* YesOrNo(int value);
+public:
+    void __cdecl Log(char* format, ...);
     void LogFile(int value);
 };
-
-void __cdecl Log(TDebuggingLog* log, const char* format, const char* value);
+#endif
 
 void TDebuggingLog::LogFile(int value) {
     if (value != 0) {
@@ -29,5 +32,5 @@ void TDebuggingLog::LogFile(int value) {
     } else {
         this->LogToFile = 0;
     }
-    Log(this, "Logging to File %s", this->YesOrNo(value));
+    this->Log("Logging to File %s", this->YesOrNo(value));
 }

@@ -1,6 +1,7 @@
 // LogTimestamp (00436330) - TDebuggingLog::LogTimestamp
 // Debuglog.cpp:93-100
 
+#ifndef DEBUGLOG_CANONICAL_TU
 class TDebuggingLog {
 public:
     int Timestamp;
@@ -17,7 +18,9 @@ public:
     char osbuf[1000];
     char Filename[128];
 
+protected:
     char* YesOrNo(int value);
+public:
     void CloseLog();
     void FlushLog();
     void FlushToDisk(int value);
@@ -26,13 +29,13 @@ public:
     void LogOutput(int value);
     void LogSequence(int value);
     void LogTimestamp(int value);
+    void __cdecl Log(char* format, ...);
     void OpenLog();
     void Time();
     TDebuggingLog();
     ~TDebuggingLog();
 };
-
-extern void Log(TDebuggingLog* log, const char* format, const char* value);
+#endif
 
 void TDebuggingLog::LogTimestamp(int value) {
     if (value != 0) {
@@ -40,5 +43,5 @@ void TDebuggingLog::LogTimestamp(int value) {
     } else {
         this->Timestamp = 0;
     }
-    Log(this, "Timestamp milliseconds %s", this->YesOrNo(this->Timestamp));
+    this->Log("Timestamp milliseconds %s", this->YesOrNo(this->Timestamp));
 }

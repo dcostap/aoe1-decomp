@@ -19,6 +19,7 @@ extern FILE* logstream;
 extern "C" unsigned long (__stdcall* const GetTickCount)(void);
 extern "C" void (__stdcall* const OutputDebugStringA)(const char*);
 
+#ifndef DEBUGLOG_CANONICAL_TU
 class TDebuggingLog {
 public:
     int Timestamp;                         // +0x00
@@ -38,6 +39,7 @@ public:
     void OpenLog();
     void __cdecl Log(char* format, ...);
 };
+#endif
 
 void __cdecl TDebuggingLog::Log(char* format, ...)
 {
