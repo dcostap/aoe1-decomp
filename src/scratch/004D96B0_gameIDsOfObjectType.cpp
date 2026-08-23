@@ -56,70 +56,30 @@
 // rebuild, while the executable reads obj->owner first. The final store also
 // dereferences *ids before it reads importantObjects[i], reversing the original
 // order. These changes affect pointer faults and concurrent table replacement.
+// Canonical taiinfmd group pass: paired post-increment output stores recovered
+// the complete final-store block. Strict drift fell from 24 to 14 bytes, and
+// exact-block coverage rose from 89.52% to 95.71%. The output pointer and
+// importantObjects element now use the executable's fault order.
+// Branch-local owner, player, owner-ID, register, partial-md, pointer-slot, and
+// reference forms did not improve the two special player filters. Pointer-slot
+// forms also added three bytes. The remaining -6 block still loads aiPlayer
+// before obj->owner. This fault-order difference blocks accepted drift.
+// Exact-finish continuation: retesting partial-md and shared-owner lifetimes
+// after the final-store recovery produced broad 52-byte and 463-byte drift.
+// An explicit short argument cast and the local player vslot-0 spelling were
+// codegen-neutral. No natural form forced the required owner-before-aiPlayer
+// read without adding code or changing other exact blocks. The 14-byte result
+// remains the safe source.
+// Exact-finish continuation: fresh checks of owner locals, receiver locals,
+// comma sequencing, combined guards, period headers, donor virtual surfaces,
+// direct member declarations, and long relation ABI all duplicated 691/14.
+// The clean nested predicates and shared information-AI context are restored.
 
 // The information arrays use the inline ManagedArray<int> surface from the
 // same translation unit.  Its desired-size member is real, even though this
 // function does not read it; maximumSizeValue is therefore at +0x0C.
 #include <stddef.h>
-
-void* operator new(size_t size);
-void operator delete(void* ptr);
-
-class RGE_Game_World;
-
-class RGE_Player {
-public:
-    virtual void vf00(); virtual void vf04(); virtual void vf08();
-    virtual void vf0c(); virtual void vf10(); virtual void vf14();
-    virtual int relation(int);
-    char gap_04[0x38];
-    RGE_Game_World* world;
-    char gap_40[0x0A];
-    short id;
-};
-class RGE_Static_Object { public: char gap_00[8]; void* master; RGE_Player* owner; };
-class RGE_Master_Object { public: char gap_00[0x10]; short id; };
-class RGE_Game_World { public: RGE_Static_Object* object(int id); };
-class TribeMainDecisionAIModule {
-public:
-    char gap_00[0x1256C];
-    RGE_Player* aiPlayer;
-};
-
-template <class T>
-class ManagedArray {
-public:
-    T* value;
-    int numberValue;
-    int desiredNumberValue;
-    int maximumSizeValue;
-
-    T& operator[](int index)
-    {
-        if (index > this->maximumSizeValue - 1) {
-            int new_size = index + 1;
-            T* new_value = (T*)::operator new(new_size * sizeof(T));
-            if (new_value != 0) {
-                for (int i = 0; i < this->maximumSizeValue && i < new_size; i++) {
-                    new_value[i] = this->value[i];
-                }
-                ::operator delete(this->value);
-                this->value = new_value;
-                this->maximumSizeValue = new_size;
-            }
-        }
-        return this->value[index];
-    }
-};
-
-class TribeInformationAIModule {
-public:
-    char gap_000[0x100];
-    TribeMainDecisionAIModule* md;
-    char gap_104[0x14];
-    ManagedArray<int> importantObjects;
-    int gameIDsOfObjectType(int objectType, int** ids, int** owners, int playerFilter);
-};
+#include "../../include/information_dropsites_context.h"
 
 int TribeInformationAIModule::gameIDsOfObjectType(int objectType, int** ids, int** owners, int playerFilter)
 {
@@ -156,10 +116,8 @@ int TribeInformationAIModule::gameIDsOfObjectType(int objectType, int** ids, int
                     *ids = newIds;
                     *owners = newOwners;
                 }
-                int objectID = this->importantObjects[i];
-                (*ids)[count] = objectID;
-                count++;
-                (*owners)[count - 1] = obj->owner->id;
+                (*ids)[count] = this->importantObjects[i];
+                (*owners)[count++] = obj->owner->id;
             }
 next:
             i++;

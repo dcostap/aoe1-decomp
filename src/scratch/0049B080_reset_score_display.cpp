@@ -55,6 +55,22 @@
 // - Fresh claim validation: restored clean source is 1206 bytes, frame 0x2D4,
 //   four saved registers, 24 ordered calls, and 1066 differing bytes.  The first
 //   mismatch remains the saved receiver at +9; no accepted-drift residue is safe.
+// - Fresh claim sa-d51a4bbf-r1 context gate: PDB source is scr_game.cpp,
+//   lines 4310-4486, and the qualified owner is
+//   TRIBE_Screen_Game::reset_score_display.  The executable boundary is
+//   0049B080-0049B535.  The next normal unleased sibling after setup_buttons
+//   in this PDB order is this target at 0049B080.
+// - BINARY NOTE: the target-local six-slot panel surface is required.  It puts
+//   set_visible at virtual slot +0x14 and preserves the +0x58C panel array and
+//   +0x5B4 world field.  The pinned VC5 direct build then aligns all 24 calls.
+// - Fresh claim probes tested receiver aliases, indexed records, declaration
+//   order, score-index and packed field-pointer forms.  They did not reach
+//   exact output.  The packed forms reached 1065 differing bytes but retained
+//   an unsupported opaque cursor shape, so the typed cursor remains clean.
+// - Fresh claim validation first hit an unrelated in-flight
+//   config/translation_units.json owner conflict at 00543E00.  After that
+//   conflict cleared, the authoritative checker confirmed the direct pinned
+//   VC5 result: 1206 bytes, 24 ordered calls, and 1066 differing bytes.
 
 #include <stdio.h>
 #include "../../include/rge_base_game_global.h"

@@ -34,6 +34,17 @@
 // the positional diff, but merged the flag-result beep with the file tail.
 // Direct or labeled result tails restored the call count only at larger size.
 // Typed natural baseline restored; remaining issue is switch-tail placement.
+//
+// Context audit: PDB module pnl_edit.cpp, lines 760-853, owns TEditPanel.
+// The source-order prefix is the nine exact owners in pnl_edit_context_tu.cpp;
+// the target follows them at its PDB line band. No wrapper body is duplicated.
+// Exact finish: direct result polarity, positive file guards, and a direct
+// format==1 guard restore the two beep sites, branch spans, and 525-byte body.
+// Walkback: result polarity gave 576B/diff 284; combined file guards gave
+// 576B/diff 145 with 13 calls; result assignment gave 568B/diff 291.
+// Removing the unreachable break and using a direct "10" literal stayed exact.
+
+#include "../../include/pnl_edit_context.h"
 
 extern "C" int (__stdcall* const MessageBeep)(unsigned int);
 extern "C" int (__stdcall* const IsDBCSLeadByte)(unsigned int);
@@ -43,23 +54,6 @@ extern "C" unsigned char* __cdecl _mbschr(const unsigned char*, unsigned int);
 // Shared input-state flag; the generated global name is the proven relocation
 // identity used by the other exact pnl_edit.cpp functions.
 extern unsigned int DAT_0086b244;
-static const unsigned char s_10[] = "10";
-
-class TEditPanel {
-public:
-    char gap_000[0xF8];
-    short fixed_len;
-    char gap_0FA[2];
-    char* text;
-    int text_len;
-    char gap_104[0x24];
-    int format;
-    char gap_12C[0x20];
-    int sel_len;
-
-    void update_text();
-    int verify_char(int ch);
-};
 
 int TEditPanel::verify_char(int ch)
 {
@@ -98,7 +92,8 @@ int TEditPanel::verify_char(int ch)
         // Keep the CRT comparison's raw zero/nonzero result for the common
         // post-switch test; the executable carries its TEST flags into that
         // tail rather than materializing a bool.
-        validation_result = _mbscmp(s_10, (const unsigned char*)this->text);
+        validation_result = _mbscmp((const unsigned char*)"10",
+                                    (const unsigned char*)this->text);
         break;
     case 1:
     case 2:
@@ -107,8 +102,11 @@ int TEditPanel::verify_char(int ch)
         if (ch >= '0' && ch <= '9') goto valid;
         if (ch == '-' && this->text[0] == 0 && this->format != 3) goto valid;
         if (ch != '.' || _mbschr((const unsigned char*)this->text, '.') == 0) goto invalid;
-        validation_result = this->format != 1;
-        break;
+        // BINARY NOTE: compare format directly; the shipped code has no setcc
+        // before the line-823 beep.
+        if (this->format == 1) goto valid;
+        MessageBeep(0xffffffff);
+        return 0;
     case 4:
     case 5:
         this->update_text();
@@ -116,8 +114,11 @@ int TEditPanel::verify_char(int ch)
             _mbschr((const unsigned char*)this->text, '.') == 0) {
             goto valid;
         }
-        if (ch != '.' && ch != '\\' && ch != ':') goto valid_chars;
-        goto invalid;
+        // BINARY NOTE: separate positive guards keep one shared line-846 beep.
+        if (ch == '.') goto invalid;
+        if (ch == '\\') goto invalid;
+        if (ch == ':') goto invalid;
+        goto valid_chars;
     case 6:
         this->update_text();
         if (ch == ':' && this->text_len != 1) goto invalid;
@@ -126,8 +127,11 @@ int TEditPanel::verify_char(int ch)
         goto valid;
     }
 
-    if (validation_result != 0) goto invalid;
-    goto valid;
+    // BINARY NOTE: zero keeps the late valid tail; nonzero falls to the
+    // separate line-823 beep before the file and path handlers.
+    if (validation_result == 0) goto valid;
+    MessageBeep(0xffffffff);
+    return 0;
 
 valid_chars:
     if (ch != '/' && ch != '"' && ch != '*' && ch != '?' &&

@@ -113,66 +113,23 @@
 //   conversion width and spelling, const-qualified array slots, players[0] addressing, and
 //   parameter constness. Fifteen emitted the pinned 224-byte/29-byte group; reversed updates
 //   widened it to 32 bytes, and a const parameter changed the decorated ABI. All variants were
-//   restored. The canonical source remains the clean typed reconstruction; the only gap is the
-//   unsupported entry=EBX versus original entry=EDI and pp=EDI versus original pp=EBX colors.
-// ACCEPTED DRIFT: All 29 changed bytes exchange EBX and EDI for the point entry
-// and player-array cursor. Every field access, conversion, comparison, call,
-// branch, point update, total update, return, and fault order remains unchanged.
+//   restored.
+// - sa-a6ba108b-r1 context probe: replaced the local class declarations with the reviewed
+//   victory_context.h used by the canonical 00533240 reconstruction. The output stayed at
+//   224 bytes with the prior 29-byte register-color gap, while the source owner became the
+//   shared period-shaped victory.cpp type surface.
+// - sa-a6ba108b-r1 declaration-order probe: declaring the player-array base before the index
+//   was codegen-neutral and was restored.
+// - sa-a6ba108b-r1 exact recovery: using the canonical indexed `players[i]` traversal instead
+//   of a moving `pp` cursor produced the original 224-byte body exactly. It preserves the
+//   indexed player scan, both x87 conversions and __ftol calls, point publication, one-time
+//   state guard, original call order, and fault order.
+// - Exact-finish walkback: reverting the indexed form restored the prior 29-byte EBX/EDI
+//   recolor. The indexed form is the smallest tested source change that remains exact.
+// BINARY NOTE: Fresh validation reports Result: MATCH, 0.0000%, the original 224-byte
+// boundary, two direct __ftol calls, and the PDB-qualified RGE_Victory_Conditions owner.
 
-class RGE_Game_World;
-class RGE_Victory_Entry;
-
-class RGE_Player {
-public:
-    virtual ~RGE_Player();
-    char gap_04[0x38];
-    RGE_Game_World* world;    // +0x3C
-    char gap_40[0x0A];
-    short id;                 // +0x4A
-    char gap_4C[4];
-    float* attributes;        // +0x50
-};
-
-class RGE_Game_World {
-public:
-    virtual unsigned char data_load_world(void* file);
-    char gap_04[0x38];
-    short player_num;         // +0x3C
-    char gap_3E[2];
-    RGE_Player** players;     // +0x40
-};
-
-class RGE_Victory_Point_Entry {
-public:
-    unsigned char command;    // +0x00
-    unsigned char state;      // +0x01
-    unsigned char id;         // +0x02
-    unsigned char group;      // +0x03
-    long attribute;           // +0x04
-    long amount;              // +0x08
-    long points;              // +0x0C
-    long curr_points;         // +0x10
-    float curr_attribute_amount; // +0x14
-    RGE_Victory_Point_Entry* next; // +0x18
-};
-
-class RGE_Victory_Conditions {
-public:
-    virtual void handle_point_condition(RGE_Victory_Point_Entry* entry);
-    virtual void handle_condition(RGE_Victory_Entry* entry);
-    virtual char* condition_description(RGE_Victory_Entry* entry);
-    virtual void save(int handle);
-    RGE_Victory_Entry* victory_list; // +0x04
-    long list_num;            // +0x08
-    RGE_Player* player;       // +0x0C
-    unsigned char victory;    // +0x10
-    char gap_11[3];
-    RGE_Victory_Point_Entry* victory_point_list; // +0x14
-    long point_list_num;      // +0x18
-    long tot_victory_points;  // +0x1C
-
-    void handle_points_high_attribute_once(RGE_Victory_Point_Entry* node);
-};
+#include "../../include/victory_context.h"
 
 void RGE_Victory_Conditions::handle_points_high_attribute_once(RGE_Victory_Point_Entry* node) {
     if (node->state == 0) {
@@ -182,15 +139,13 @@ void RGE_Victory_Conditions::handle_points_high_attribute_once(RGE_Victory_Point
         }
 
         int i = 1;
-        RGE_Player** pp = this->player->world->players;
+        RGE_Player** players = this->player->world->players;
         if (i < this->player->world->player_num) {
-            pp++;
             do {
-                if (i != this->player->id && (float)node->amount <= (*pp)->attributes[node->attribute]) {
-                    node->amount = (long)(*pp)->attributes[node->attribute];
+                if (i != this->player->id && (float)node->amount <= players[i]->attributes[node->attribute]) {
+                    node->amount = (long)players[i]->attributes[node->attribute];
                 }
                 i++;
-                pp++;
             } while (i < this->player->world->player_num);
         }
 

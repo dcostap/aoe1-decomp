@@ -67,6 +67,9 @@ typedef unsigned char uchar;
 
 // Main-agent audit confirmed the shared canonical game/player/AI ownership;
 // direct civilization table stores remain authoritative.
+#include "../../include/tplayer_context.h"
+
+#if 0
 class AIModule {
 public:
     void logCommonHistory(char* fmt, ...);
@@ -96,7 +99,7 @@ public:
     void setupShang(int* b, int mapType, int gameType, int mapSize);
 };
 
-extern TRIBE_Game* rge_base_game;  // 0x0062C574
+#endif
 
 void TRIBE_Player::setupShang(int* b, int mapType, int gameType, int mapSize)
 {

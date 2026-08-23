@@ -32,9 +32,208 @@
 //   int found, an explicit final-tail goto, and a live one local. They were
 //   neutral or worse and are not retained. Two set_button sites and one
 //   any_selected_have_action site still tail-merge versus the executable.
+// - restored target-local scr_game layouts: the base player selection array,
+//   static-object and building queue offsets, master button fields, color
+//   table, compact button in_use, and direct TRIBE_Player helper symbols. The
+//   checker still reports the same strict diff because the first prologue hunk
+//   shifts all later bytes; resynchronized structural similarity improved.
 
 extern "C" void __cdecl free(void*);
 extern "C" void* __cdecl calloc(unsigned int, unsigned int);
+
+#define RGE_Player RGE_Player_Wide
+#define TRIBE_Player TRIBE_Player_Wide
+#define TRIBE_Panel_Button TRIBE_Panel_Button_Wide
+#define RGE_Static_Object RGE_Static_Object_Wide
+#define RGE_Action_Object RGE_Action_Object_Wide
+#define TRIBE_Building_Object TRIBE_Building_Object_Wide
+#define RGE_Master_Combat_Object RGE_Master_Combat_Object_Wide
+#define TRIBE_Master_Combat_Object TRIBE_Master_Combat_Object_Wide
+#define TRIBE_Master_Building_Object TRIBE_Master_Building_Object_Wide
+#define RGE_Color_Table RGE_Color_Table_Wide
+#define TRIBE_Screen_Game TRIBE_Screen_Game_Wide
+#include "../../include/scr_game_context.h"
+#undef RGE_Player
+#undef TRIBE_Player
+#undef TRIBE_Panel_Button
+#undef RGE_Static_Object
+#undef RGE_Action_Object
+#undef TRIBE_Building_Object
+#undef RGE_Master_Combat_Object
+#undef TRIBE_Master_Combat_Object
+#undef TRIBE_Master_Building_Object
+#undef RGE_Color_Table
+#undef TRIBE_Screen_Game
+
+// The original player surface keeps the selected-object array in the base
+// object at +134.  The shared header models that array in the derived object,
+// which moves it to +1A4 for this owner.  Keep the target-local ABI here.
+class RGE_Color_Table;
+class RGE_Static_Object;
+
+class RGE_Player {
+public:
+    virtual ~RGE_Player();
+    char gap_04[0x20];
+    RGE_Master_Static_Object** master_objects;
+    void* objects;
+    char gap_2C[8];
+    RGE_Victory_Conditions* victory_conditions;
+    char gap_38[0x18];
+    float* attributes;
+    uchar culture;
+    char gap_55[0x2B];
+    uchar game_status;
+    uchar resigned;
+    char gap_82[2];
+    uchar* relations;
+    char gap_88[0x7C];
+    uchar allied_victory;
+    uchar master_player_id;
+    char gap_106[2];
+    RGE_Color_Table* color_table;
+    char gap_10C[0x24];
+    RGE_Static_Object* selected_obj;
+    RGE_Static_Object* sel_list[25];
+    char gap_198[4];
+    short sel_count;
+    char gap_19E[0x82];
+
+    uchar unit_level_selected();
+    int is_group_selected(short);
+};
+
+class TRIBE_Player : public RGE_Player {
+public:
+    TRIBE_Player_Tech* tech_tree;
+
+    void interface_item_avail(Item_Avail**, short*, short);
+    void interface_tech_avail(Item_Avail**, short*, short);
+};
+
+class RGE_Color_Table {
+public:
+    virtual ~RGE_Color_Table();
+    char gap_04[0x24];
+    uchar table[0x100];
+};
+
+class RGE_Static_Object {
+public:
+    virtual ~RGE_Static_Object();
+    long id;
+    RGE_Master_Static_Object* master_obj;
+    RGE_Player* owner;
+    char gap_10[0x14];
+    RGE_Object_List* objects;
+    char gap_28[0x0f];
+    uchar selected_group;
+    char gap_38[0x10];
+    uchar object_state;
+    char gap_49[0x3f];
+};
+
+class RGE_Action_Object : public RGE_Static_Object {
+public:
+    uchar have_action();
+};
+
+class TRIBE_Building_Object : public RGE_Static_Object {
+public:
+    char gap_88[0x140];
+    Production_Queue_Record* production_queue;
+    short production_queue_size;
+    short production_queue_count;
+    uchar production_queue_enabled;
+    uchar production_queue_change_flag;
+    uchar production_queue_auto_paused;
+    uchar production_queue_need_attr;
+    long build_pts;
+    long unique_build_id;
+    uchar culture;
+    uchar built;
+    char gap_1e6[0x0e];
+    int work_status(short&, short&, short&, char*, short);
+};
+
+class RGE_Master_Combat_Object : public RGE_Master_Static_Object {
+public:
+    char gap_B8[0x60];
+    float area_effect_range;
+    char gap_11c[8];
+    short missile_id;
+    char gap_126[0x22];
+};
+
+class TRIBE_Master_Combat_Object : public RGE_Master_Combat_Object {
+public:
+    char gap_148[0x16];
+    uchar button_location;
+    char gap_15f[5];
+};
+
+class TRIBE_Master_Building_Object : public TRIBE_Master_Combat_Object {
+public:
+    char gap_164[0x0a];
+    short building_facet;
+};
+
+class TRIBE_Screen_Game {
+public:
+    char gap_00[0x48c];
+    TShape* button_cmd_pic;
+    TShape* button_tech_pic;
+    TShape* button_unit_pic;
+    TShape* button_bldg_pics[5];
+    TShape* more_cancel_pic;
+    short more_frame;
+    short cancel_frame;
+    short unselect_frame;
+    char gap_4b6[2];
+    char gap_4b8[0x10];
+    TRIBE_Panel_Button_Wide* button_panel[17];
+    char gap_50c[0xa8];
+    TRIBE_World* world;
+    unsigned long update_interval;
+    unsigned long last_update_time;
+    unsigned long map_redraw_interval;
+    unsigned long last_map_redraw_time;
+    RGE_Static_Object* game_obj;
+    short sel_count;
+    char gap_5ce[2];
+    Item_Avail* tech_list;
+    Item_Avail* make_list;
+    Item_Avail* bldg_list;
+    Trade_Avail* trade_list;
+    short item_cnt;
+    short start_item;
+    short last_item;
+    char gap_5e6[0x122];
+    long mouse_last_x;
+    long mouse_last_y;
+
+    void setup_buttons();
+    char* calc_text_msg(char*, Item_Avail*, long, long);
+    short calc_button_loc(uchar);
+    void set_button(TShape*, short, short, long, long, long, long, long,
+                    uchar*, char*, char*, int);
+    int any_selected_have_action();
+    void disable_unused_buttons();
+};
+
+// The shipped setup_buttons owner uses the older, compact button layout.  Keep
+// the shared screen declaration, but use the proven member surface for these
+// two direct calls and the in_use store.
+class TRIBE_Panel_Button {
+public:
+    char gap_00[0x3d0];
+    int in_use;
+
+    void set_display_garrison(int);
+    void set_garrison_number(int);
+};
+
+#if 0
 
 typedef unsigned char uchar;
 
@@ -452,20 +651,23 @@ extern uchar production_queues_is_use;
                          (type), 0, (string_id), -1, 0, (uchar*)0, \
                          (char*)0, (char*)0, 0)
 
+#endif
+
 void TRIBE_Screen_Game::setup_buttons()
 {
-    TRIBE_Player* player;
     char name[512];
     char msg_str[512];
     int culture;
     TShape* final_pic;
     short final_frame;
     long final_type;
+    TRIBE_Player* player;
 
     this->item_cnt = 0;
     this->last_item = -1;
 
-    TRIBE_Panel_Button** button = this->button_panel;
+    TRIBE_Panel_Button** button =
+        (TRIBE_Panel_Button**)this->button_panel;
     for (int i0 = 0; i0 < 12; ++i0) {
         (*button)->in_use = 0;
         ++button;
@@ -643,9 +845,8 @@ void TRIBE_Screen_Game::setup_buttons()
                     ++i;
                 }
 
-                short command_index = found;
                 if (this->any_selected_have_action()) {
-                    set_command_button(this, command_index, 3, 5,
+                    set_command_button(this, found, 3, 5,
                                        0x1D4DD);
                 }
                 if (player->sel_count > 1) {
@@ -755,12 +956,12 @@ void TRIBE_Screen_Game::setup_buttons()
                                              player->color_table->table,
                                              name + 4, msg_str + 4, 0);
                             if ((!show_queue) || (queued < 1)) {
-                                this->button_panel[index]
+                                ((TRIBE_Panel_Button**)this->button_panel)[index]
                                     ->set_display_garrison(0);
                             } else {
-                                this->button_panel[index]
+                                ((TRIBE_Panel_Button**)this->button_panel)[index]
                                     ->set_display_garrison(1);
-                                this->button_panel[index]
+                                ((TRIBE_Panel_Button**)this->button_panel)[index]
                                     ->set_garrison_number(queued);
                             }
                         }

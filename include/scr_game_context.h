@@ -380,8 +380,6 @@ public:
     virtual long action(TPanel*, long, unsigned long, unsigned long);
 
     void setup_popup_help();
-    char* get_string(int);
-    int get_string(int, char*, int);
     void popupYesNoDialog(char*, void*, int, int);
     void popupYesNoCancelDialog(char*, char*, int, int);
 };
@@ -762,7 +760,7 @@ public:
     int sub_game_mode;
     char gap_1bc[0x23c];
     RGE_Game_World* world;
-    char gap_3fc[0x5dc];
+    char gap_3fc[0x5d8];
     int display_selected_ids;
     char gap_9dc[0x24];
     int save_paused;
@@ -797,7 +795,7 @@ public:
 
 class TRIBE_Game : public RGE_Base_Game {
 public:
-    char gap_A24[0x1fc];
+    char gap_A24[0x200];
     int show_object_id;
     unsigned long auto_exit_time;
     void restart_game();
@@ -975,15 +973,17 @@ public:
 class RGE_Master_Static_Object {
 public:
     virtual ~RGE_Master_Static_Object();
-    char gap_04[0x4a];
+    char gap_04[4];
+    char* name;
     short string_id;
     short string_id2;
     short id;
-    char gap_52[0x3e];
+    char gap_12[0x7d];
     unsigned char unit_level;
-    char gap_91[0x0f];
+    char gap_90[0x0c];
     long help_page_id;
     long hotkey_id;
+    char gap_a4[0x14];
 };
 
 class TRIBE_Master_Combat_Object : public RGE_Master_Static_Object {

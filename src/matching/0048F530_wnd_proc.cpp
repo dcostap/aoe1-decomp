@@ -2,47 +2,13 @@
 // PDB source: scr_ach.cpp
 // Attempt log:
 // try 1: replaced free-function shim with natural member/class surface and dllimport IsIconic.
+// Exact finish: PDB-qualified owner is TribeAchievementsScreen::wnd_proc in
+// scr_ach.cpp, lines 922-936, with the body ending at 0048F5C1.
+// Exact finish: fresh VC5 rebuild matched 146/146 bytes, all four ordered
+// calls, both returns, and the owning symbol. Removing the dead local shim did
+// not change codegen.
 
 #include "../../include/scr_ach_context.h"
-
-#if 0
-extern int confirmed_close;
-
-class RGE_Base_Game {
-public:
-    char gap_000[0x1B0];
-    int prog_mode;
-};
-extern RGE_Base_Game* rge_base_game;
-
-extern "C" __declspec(dllimport) int __stdcall IsIconic(void* hWnd);
-
-class TPanel {
-public:
-    virtual long wnd_proc(void* h1, unsigned int msg, unsigned int w, long l);
-    char* get_string(int id);
-};
-
-class TEasy_Panel : public TPanel {
-public:
-    void popupYesNoDialog(char* msg, void* unk, int a, int b);
-};
-
-class DrawSurface {
-public:
-    void* vtbl;
-    void* hwnd;
-};
-
-class TribeAchievementsScreen : public TEasy_Panel {
-public:
-    char gap_004[0x20 - 0x04];
-    DrawSurface* draw_surface;
-
-    virtual long wnd_proc(void* h1, unsigned int msg, unsigned int w, long l);
-};
-
-#endif
 
 long TribeAchievementsScreen::wnd_proc(void* h1, unsigned int msg, unsigned int w, long l)
 {

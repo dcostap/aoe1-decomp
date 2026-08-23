@@ -14,6 +14,7 @@ extern "C" void* calloc(unsigned int count, unsigned int size);
 
 class RGE_Game_World;
 class RGE_Player;
+class RGE_Master_Static_Object;
 class RGE_Static_Object;
 class RGE_Object_List;
 class RGE_Victory_Entry;
@@ -21,7 +22,15 @@ class RGE_Victory_Point_Entry;
 
 class RGE_Object_List {
 public:
+    virtual ~RGE_Object_List();
+    class RGE_Object_Node* list; // +0x04
     RGE_Static_Object* find_by_id(long id);
+};
+
+class RGE_Object_Node {
+public:
+    RGE_Static_Object* node; // +0x00
+    RGE_Object_Node* next; // +0x04
 };
 
 class RGE_Game_World {
@@ -44,14 +53,30 @@ public:
     short id; // +0x4A
     char gap_4C[4];
     float* attributes; // +0x50
+    char gap_54[0x30];
+    unsigned char* relations; // +0x84
+    char gap_88[0x7C];
+    unsigned char allied_victory; // +0x104
+};
+
+class RGE_Master_Static_Object {
+public:
+    virtual ~RGE_Master_Static_Object();
+    char gap_04[0x0E];
+    short copy_id; // +0x12
 };
 
 class RGE_Static_Object {
 public:
     virtual ~RGE_Static_Object();
     long id; // +0x04
-    void* master_obj; // +0x08
+    RGE_Master_Static_Object* master_obj; // +0x08
     RGE_Player* owner; // +0x0C
+    char gap_10[0x28];
+    float world_x; // +0x38
+    float world_y; // +0x3C
+    char gap_40[8];
+    unsigned char object_state; // +0x48
 };
 
 class RGE_Victory_Entry {
@@ -162,7 +187,6 @@ public:
     void handle_points_attribute_first(RGE_Victory_Point_Entry* entry);
     void handle_points_high_attribute_amount(RGE_Victory_Point_Entry* entry);
     void handle_points_high_attribute_once(RGE_Victory_Point_Entry* entry);
-    void handle_points_highest_attribute(RGE_Victory_Point_Entry* entry);
     void handle_victory_points(RGE_Victory_Entry* entry);
     unsigned char remove_condition(long index);
     void sub(RGE_Victory_Entry* entry);
@@ -171,6 +195,10 @@ public:
     void update_for_object(RGE_Static_Object* object);
     unsigned char victory_achieved();
 
+protected:
+    void handle_points_highest_attribute(RGE_Victory_Point_Entry* entry);
+
+public:
     RGE_Victory_Entry* victory_list; // +0x04
     long list_num; // +0x08
     RGE_Player* player; // +0x0C

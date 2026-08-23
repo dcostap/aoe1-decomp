@@ -60,6 +60,7 @@ extern "C" void* __cdecl calloc(uint count, uint size);
 extern "C" void __cdecl free(void* p);
 extern "C" void* __cdecl operator_new(uint size);
 
+#ifndef AOE1_PANEL_EZ_CONTEXT_H
 class RGE_Font { public: void* font; int font_wid; int font_hgt; };
 class RGE_Base_Game { public: RGE_Font* get_font(int id); };
 extern RGE_Base_Game* rge_base_game;
@@ -184,6 +185,7 @@ public:
 
     virtual int create_list(TPanel* parent, TListPanel** out, long x, long y, long w, long h, long font_id);
 };
+#endif
 
 int TEasy_Panel::create_list(TPanel* parent, TListPanel** out, long x, long y, long w, long h, long font_id)
 {

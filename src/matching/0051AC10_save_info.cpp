@@ -4,8 +4,11 @@
 extern "C" void __cdecl free(void* block);
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 
+#ifndef TPNL_INV_SHARED_CONTEXT
 extern int TRIBE_Panel_Inven_vftable;
+#endif
 
+#ifndef TPNL_INV_SHARED_CONTEXT
 class TRIBE_Player {
 public:
     char gap_00[0x4C];
@@ -34,6 +37,9 @@ public:
 
     void save_info();
 };
+#else
+#include "../../include/tpnl_inv_context.h"
+#endif
 
 void TRIBE_Panel_Inven::save_info() {
     int iVar3 = 0;

@@ -45,6 +45,13 @@
 // with 12/12 ordered calls, but grows to 673/665 bytes. The remaining blocker
 // is a three-way scr_x/scr_y/frame-color stack-home cycle and later argument
 // scheduling. The result is not exact; preserve these binary-backed order fixes.
+// Exact-finish audit: the shared view.cpp baseline is 673/665 bytes with 188
+// strict differences, a 0x3C frame, and 12/12 ordered calls. Removing the
+// named draw_flag worsens the result to 274 bytes. Ghidra/donor x1/x2 output
+// ownership, pick-info screen fields, typed overlap, declaration-order, and
+// swapped-output probes were worse or codegen duplicates. All probes are
+// restored. The remaining first hunk is the screen-output LEA/home cycle at
+// 005356D6; no exact claim is made.
 
 #ifndef RGE_VIEW_SHARED_CONTEXT
 struct tagPOINT {

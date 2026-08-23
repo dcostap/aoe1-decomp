@@ -1,37 +1,69 @@
 #ifndef PNL_EDIT_CONTEXT_H
 #define PNL_EDIT_CONTEXT_H
 
-struct PanelNode;
-struct TDrawArea {
-    void* DrawSystem;              // +0x00
-    void* Wnd;                     // +0x04
-    char gap_08[0x100 - 0x08];
-};
-typedef int PositionMode;
-typedef int RedrawMode;
-
 #ifndef _WINDOWS_
 struct HWND__ { int unused; };
 typedef struct HWND__ *HWND;
 struct HBRUSH__ { int unused; };
 typedef struct HBRUSH__ *HBRUSH;
+struct HPALETTE__ { int unused; };
+typedef struct HPALETTE__ *HPALETTE;
+struct HDC__ { int unused; };
+typedef struct HDC__ *HDC;
+struct HGDIOBJ__ { int unused; };
+typedef struct HGDIOBJ__ *HGDIOBJ;
+struct HRGN__ { int unused; };
+typedef struct HRGN__ *HRGN;
+typedef unsigned long COLORREF;
 struct tagRECT {
     long left;
     long top;
     long right;
     long bottom;
 };
+typedef struct tagRECT RECT;
 #endif
 
 #ifndef _WINUSER_
 typedef long (__stdcall *WNDPROC)(HWND, unsigned int, unsigned int, long);
 #endif
 
+struct PanelNode;
+struct TDrawSystem {
+    void* Inst;                    // +0x00
+    void* Wnd;                     // +0x04
+    HPALETTE Pal;                  // +0x08
+};
+
+// Proven TDrawArea surface used by pnl_edit owners. Keep the data layout at
+// 0x100 bytes. The methods are non-virtual and add no object state.
+struct TDrawArea {
+    TDrawSystem* DrawSystem;       // +0x00
+    void* Wnd;                     // +0x04
+    char gap_08[0x100 - 0x08];
+
+    void Clear(tagRECT*, int);
+    unsigned char* Lock(char*, int);
+    void Unlock(char*);
+    HDC GetDc(char*);
+    void ReleaseDc(char*);
+    void DrawRect(long, long, long, long, unsigned char);
+    void DrawBevel(long, long, long, long, unsigned char, unsigned char);
+    void DrawBevel2(long, long, long, long, unsigned char, unsigned char,
+                    unsigned char, unsigned char);
+    void DrawBevel3(long, long, long, long, unsigned char, unsigned char,
+                    unsigned char, unsigned char, unsigned char, unsigned char);
+};
+
+typedef int PositionMode;
+typedef int RedrawMode;
+
 // PDB-supported pnl_edit.cpp panel surface. Keep this declaration shared by
 // the real pnl_edit.cpp owners. It preserves TPanel size 0xF4 and TEditPanel
 // size 0x16C without adding helper state.
-// Safe prefix order is 00475930, 00475690, 00475970, 00475A30, 00475AF0,
-// 00475B00, 00475B10, 00475B20, and 00475B60. This order follows PDB lines.
+// Context owner order is 00475930, 00475690, 00475970, 00475A30, 00475AF0,
+// 00475B00, 00475B10, 00475B20, 00475B60, 00476440, 00476680, 00476A50,
+// 00476A60, 00476AB0, 00476BB0, and 00476BE0. This order follows PDB lines.
 class TPanel {
 public:
     virtual ~TPanel();
@@ -123,7 +155,7 @@ public:
     int overlapping_children;     // +0x7C
     int handle_mouse_input;       // +0x80
     int just_drawn;               // +0x84
-    void* clip_rgn;               // +0x88
+    HRGN clip_rgn;                // +0x88
     tagRECT render_rect;           // +0x8C
     long left_border;              // +0x9C
     long top_border;               // +0xA0
@@ -175,7 +207,7 @@ public:
     unsigned long highlight_text_color2;   // +0x120
     unsigned long back_color;              // +0x124
     int format;                             // +0x128
-    void* font;                             // +0x12C
+    HGDIOBJ font;                         // +0x12C
     int multi_line;                         // +0x130
     tagRECT draw_rect;                      // +0x134
     unsigned int draw_format;              // +0x144
@@ -209,7 +241,7 @@ public:
     virtual void draw();
     virtual void paint();
     int is_blank();
-    void get_trimmed_str(char*, int);
+    char* get_trimmed_str(char*, int);
     virtual void handle_reactivate();
     virtual long handle_mouse_down(unsigned char, long, long, int, int);
     virtual void set_rect(tagRECT);

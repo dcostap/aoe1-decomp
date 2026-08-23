@@ -45,128 +45,30 @@
 //   EBX score with EBP resource type and starts in the exclusion scan.
 // UNRESOLVED: current source is natural but does not match the original
 //   dword exclusion flag or the original EBX/EBP register roles.
+// 31: Fresh exact-finish validation restored the pinned source at 1131/1130
+// bytes, diff 606, with all 16 ordered calls aligned. A positive nested
+// exclusion body reached diff 542 and exact size, but changed block shape and
+// did not match the original CMP flag form. Guarded exclusion, dword flags,
+// ID aliases, register hints, and resource-index copies regressed or emitted
+// duplicate code. Keep the pinned source authoritative.
+// UNRESOLVED: the exclusion scan still selects BL for its flag and EBP for the
+// resource type, while the executable uses EBP and EBX. The first hunk is
+// taiinfmd.cpp:1245-1251 and preserves the direct object reread after it.
+// 32: Fresh natural probes of positive score/exclusion guards, scoped and
+// reordered score locals, early resource-index aliases, register hints, and
+// exclusion ID locals did not improve the pinned basin. Positive exclusion
+// nesting reached diff 542 at exact size, but it changed the original block
+// topology. The clean source is restored. The executable still proves the
+// EBP exclusion flag, EBX resource index, direct object reread, and ordered
+// special-filter calls.
 
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
+#include "../../include/information_dropsites_context.h"
 
 extern double __cdecl floor(double);
 extern float DAT_00575568;
-
-class RGE_Master_Static_Object {
-public:
-    virtual ~RGE_Master_Static_Object();
-    char gap04[0x0C];
-    short id;         // +10
-    short gap12;      // +12
-    short object_group; // +14
-};
-struct Player {
-    virtual ~Player();
-    char gap04[0x46];
-    short civ_id;     // +4A
-};
-class RGE_Static_Object {
-public:
-    virtual ~RGE_Static_Object();
-    int id;           // +4
-    RGE_Master_Static_Object* master_obj; // +8
-    Player* player;   // +C
-    char gap10[0x38-0x10];
-    float x;          // +38
-    float y;          // +3C
-    float z;          // +40
-    float amount;     // +44
-    unsigned char state; // +48
-    unsigned char currentZone();
-    unsigned char lookupZone(int x, int y);
-};
-struct ResourceMemory {
-    int id;          // +00
-    unsigned char x; // +04
-    unsigned char y; // +05
-    unsigned char gatherAttempts; // +06
-    char gap07;
-    int gatherValue;  // +08
-    unsigned char valid; // +0C
-    unsigned char gone;  // +0D
-    unsigned char dropDistance; // +0E
-    unsigned char resourceType; // +0F
-    int dropsiteID; // +10
-};
-template <class T>
-struct ManagedArray {
-    T* value;
-    int numberValue;
-    int desiredNumberValue;
-    int maximumSizeValue;
-
-    T& operator[](int index) { return this->value[index]; }
-};
-typedef ManagedArray<int> ManagedArray_int;
-struct MainDecisionAIModule {
-    virtual ~MainDecisionAIModule();
-    char gap0[0xEC];
-    Player* player; // +F0
-    ManagedArray_int objects; // +F4
-    RGE_Static_Object* object(int id);
-};
-struct TribeTacticalAIModule {
-    int numberGatherersWithTarget(int id);
-    int strategicNumber(int id);
-    int actualGathererCountByRealResourceID(int id);
-};
-struct TribeMainDecisionAIModule : MainDecisionAIModule {
-    char gap104[0x1146C-0x104];
-    TribeTacticalAIModule tacticalAI; // +1146C
-};
-
-class AIModuleID {
-public:
-    virtual ~AIModuleID();
-    int id;
-    char name[64];
-};
-
-class AIModule {
-public:
-    virtual ~AIModule();
-    AIModuleID idValue;
-    int playerNumberValue;
-    char playerNameValue[64];
-    int runningValue;
-    int pausedValue;
-    int logHistoryValue;
-    int logCommonHistoryValue;
-    void* historyLogFile;
-    char historyLogFilename[64];
-    int intelligenceLevelValue;
-    int priorityValue;
-    int processFrameValue;
-};
-
-class InformationAIModule : public AIModule {
-public:
-    virtual ~InformationAIModule();
-};
-
-class TribeInformationAIModule : public InformationAIModule {
-public:
-    virtual ~TribeInformationAIModule();
-    ManagedArray_int farmsTaskedThisUpdate; // +F0
-    TribeMainDecisionAIModule* md; // +100
-    char gap104[0x4D0-0x104];
-    ResourceMemory* resources[4]; // +4D0
-    int numResources[4]; // +4E0
-    char gap4F0[0x550-0x4F0];
-    int dropsiteIds[4]; // +550
-
-    int gameIDOfResourceObject(int resType, int gathererId, float& outX, float& outY, int& outResourceId, int* exclude, int excludeCount);
-    int isBoat(RGE_Static_Object*);
-    int withinXTilesOfEnemyTowncenter(RGE_Static_Object*, int);
-    int withinXTilesOfAttackOnPlayer(RGE_Static_Object*, int, int);
-    void updateResourceDropsites(int);
-};
 
 int TribeInformationAIModule::gameIDOfResourceObject(int resType, int gathererId, float& outX, float& outY, int& outResourceId, int* exclude, int excludeCount)
 {

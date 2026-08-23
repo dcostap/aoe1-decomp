@@ -49,6 +49,7 @@
 
 extern unsigned char shape_file_first;   // 0x86BBFC
 
+#ifndef AOE1_PANEL_EZ_CONTEXT_H
 struct TDrawArea {
     char gap_00[0x18];
     long width;
@@ -153,6 +154,7 @@ public:
     long setup(TDrawArea* area, TPanel* parent, char* info_file, long info_id, int use_area_size,
                long x, long y, long w, long h, int allow_shadow);
 };
+#endif
 
 extern "C" unsigned char* __cdecl RESFILE_load(unsigned long type,
                                                 unsigned long id,
@@ -216,7 +218,7 @@ long TEasy_Panel::setup(TDrawArea* area, TPanel* parent, char* info_file, long i
     char popup_info_file_name_in[260];
 
     f2g = -1;
-    this->allow_shadow_area = allow_shadow;
+    *(long*)((char*)this + 0x470) = allow_shadow;
     set_info_file(info_file, info_id);
     if (use_area_size != 0) {
         x = 0;
@@ -244,11 +246,11 @@ long TEasy_Panel::setup(TDrawArea* area, TPanel* parent, char* info_file, long i
         this->set_positioning(1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
     unsigned char* data = 0;
-    if (shape_file_first != 0 && this->info_file_name != 0 && this->info_file_name[0] != 0) {
-        if (strchr(this->info_file_name, '.') == 0) {
-            sprintf(temp_label + 0xFC, "%s.sin", this->info_file_name);
+    if (shape_file_first != 0 && (char*)this + 0xFC != 0 && *((char*)this + 0xFC) != 0) {
+        if (strchr((char*)this + 0xFC, '.') == 0) {
+            sprintf(temp_label + 0xFC, "%s.sin", (char*)this + 0xFC);
         } else {
-            sprintf(temp_label + 0xFC, "%s", this->info_file_name);
+            sprintf(temp_label + 0xFC, "%s", (char*)this + 0xFC);
         }
         int fd = _open(temp_label + 0xFC, _O_BINARY);
         if (fd != -1) {
@@ -264,8 +266,8 @@ long TEasy_Panel::setup(TDrawArea* area, TPanel* parent, char* info_file, long i
         }
     }
     if (data == 0) {
-        if (this->info_id != -1) {
-            data = RESFILE_load(0x62696E61, this->info_id, own_mem, back_pic_id_b1);
+        if (*(long*)((char*)this + 0x200) != -1) {
+            data = RESFILE_load(0x62696E61, *(long*)((char*)this + 0x200), own_mem, back_pic_id_b1);
         }
         if (data == 0) {
             return 1;

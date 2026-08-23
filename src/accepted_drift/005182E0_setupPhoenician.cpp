@@ -126,12 +126,22 @@
 //   declaration-order, condition, or period-source axis moved the EDX=64h
 //   preload or the late map_type reload toward the oracle's EDX=14h and early
 //   reload. Keep the canonical typed source below.
+// - Exact-finish continuation: top-level const and register-qualified forms
+//   for the table pointer and map_type were rebuilt. Each kept the 275-byte /
+//   25-byte basin. Both forms were removed.
+// - Fresh grouped context validation rebuilt tplayer_tu.cpp. Registered exact
+//   anchors at 00513000, 00517B90, 00517E10, 005181C0, 005188F0, 00518DD0,
+//   00518F00, 005192F0, and 00519320 stayed exact. This target stays in its
+//   accepted-drift owner because the remaining hunk is compiler-basin drift.
 // ACCEPTED DRIFT: The non-deathmatch hunk colors constants 20 and 100 in
 // different registers and schedules the map-type parameter reload around three
 // independent 20-valued stores. Both builds write identical values to every
 // table slot. Calls, branches, used flags, memory effects, returns, and fault
 // behavior match.
 
+#include "../../include/tplayer_context.h"
+
+#if 0
 typedef unsigned char uchar;
 
 // These are the period class relationships used by tplayer.cpp.  Only the
@@ -276,6 +286,8 @@ public:
 };
 
 extern RGE_Base_Game* rge_base_game;
+
+#endif
 
 void TRIBE_Player::setupPhoenician(int* param_1, int param_2, int param_3, int param_4)
 {

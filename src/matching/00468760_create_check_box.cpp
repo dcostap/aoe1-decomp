@@ -71,7 +71,22 @@
 // it loads the EH chain for one shared return tail. The rebuild loads the EH
 // chain first and emits a separate failure epilogue. A fault on the object store
 // therefore has different register and unwind context.
+// Expanded Panel_ez.cpp result: the canonical protected virtual surface and
+// TU context emit 604 bytes exactly with the MAE owner symbol. The standalone
+// fallback surface remains the 623-byte diagnostic basin above.
+// BINARY NOTE: Fresh grouped checks in panel_create_button_tu.cpp match the
+// 604-byte target boundary. They match 193 instructions, 18 ordered calls,
+// the 0x8 EH frame, 17 blocks, and the protected TEasy_Panel owner symbol.
+// The object section has four trailing NOP bytes outside the target boundary.
+// BINARY NOTE: The target PDB owner is TEasy_Panel in Panel_ez.cpp, lines
+// 1099-1152. The protected virtual surface supplies the MAE owner decoration.
+// Finish reduction: publishing through *out before the validity guard is
+// required. The direct *out receiver spelling is also required for all UI
+// calls. A local-b receiver variant kept the call count but lost exact bytes.
+// Direct publication and *out-guard variants were exact duplicates. They were
+// not retained because b is the smaller natural local and guard expression.
 
+#ifndef AOE1_PANEL_EZ_CONTEXT_H
 class TPanel;
 class TDrawArea;
 class TDigital;
@@ -107,12 +122,17 @@ class TButtonPanel : public TPanel { public:
     void set_highlight_text_color(int, unsigned long, unsigned long);
 };
 class TEasy_Panel : public TPanel { public:
-    int base_w; int base_h;
-    char gap4[0x31c-0xfc]; int use_bevel; unsigned char bevel[6]; char gap5[2];
-    int text0; int text1; int hi0; int hi1; int text2; int text3; char gap6[0x448-0x340]; TShape* picture;
+    int ideal_width; int ideal_height;
+    char gap4[0x31c-0xfc]; int use_bevels;
+    unsigned char bevel_color1, bevel_color2, bevel_color3, bevel_color4, bevel_color5, bevel_color6;
+    char gap5[2];
+    int text_color1; int text_color2; int focus_color1; int focus_color2;
+    int state_color1; int state_color2;
+    char gap6[0x448-0x340]; TShape* button_pics;
     virtual ~TEasy_Panel();
     virtual int create_check_box(TPanel*, TButtonPanel**, long,long,long,long,long,long);
 };
+#endif
 
 int TEasy_Panel::create_check_box(TPanel* panel, TButtonPanel** out, long x, long y, long w, long h, long sound, long id)
 {
@@ -123,10 +143,10 @@ int TEasy_Panel::create_check_box(TPanel* panel, TButtonPanel** out, long x, lon
     long sh;
 
     snd = 0;
-    sx = x * this->width / this->base_w;
-    sy = y * this->height / this->base_h;
-    sw = w * this->width / this->base_w;
-    sh = h * this->height / this->base_h;
+    sx = x * this->width / this->ideal_width;
+    sy = y * this->height / this->ideal_height;
+    sw = w * this->width / this->ideal_width;
+    sh = h * this->height / this->ideal_height;
     TButtonPanel* b = new TButtonPanel;
     *out = b;
     if (b != 0 && b->error_flag == 0) {
@@ -134,23 +154,23 @@ int TEasy_Panel::create_check_box(TPanel* panel, TButtonPanel** out, long x, lon
         if ((*out)->setup(this->draw_area, panel, sx, sy, sw, sh, 6, snd, 1, id)) {
             (*out)->set_sound_number(sound);
             (*out)->set_state_info(2);
-            if (this->picture) {
+            if (this->button_pics) {
                 (*out)->setDrawType(6);
-                (*out)->set_picture(0, this->picture, 0);
-                (*out)->set_picture(1, this->picture, 2);
+                (*out)->set_picture(0, this->button_pics, 0);
+                (*out)->set_picture(1, this->button_pics, 2);
             } else {
                 FontInfo* f = rge_base_game->get_font(0);
                 (*out)->set_text_info((char*)0x00580460, f->font, f->font_wid, f->font_hgt, -1, -1);
                 (*out)->set_text(1, (char*)0x00583B74);
                 (*out)->setDrawType(3);
             }
-            if (this->use_bevel) {
-                (*out)->set_bevel_info(4, this->bevel[0], this->bevel[1], this->bevel[2], this->bevel[3], this->bevel[4], this->bevel[5]);
+            if (this->use_bevels) {
+                (*out)->set_bevel_info(4, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4, this->bevel_color5, this->bevel_color6);
             }
-            (*out)->set_text_color(0, this->text0, this->text1);
-            (*out)->set_highlight_text_color(0, this->hi0, this->hi1);
-            (*out)->set_text_color(1, this->text2, this->text3);
-            (*out)->set_highlight_text_color(1, this->hi0, this->hi1);
+            (*out)->set_text_color(0, this->text_color1, this->text_color2);
+            (*out)->set_highlight_text_color(0, this->focus_color1, this->focus_color2);
+            (*out)->set_text_color(1, this->state_color1, this->state_color2);
+            (*out)->set_highlight_text_color(1, this->focus_color1, this->focus_color2);
             return 1;
         }
     }

@@ -17,8 +17,10 @@
 // compiler. The register allocation is determined by VC5's internal
 // heuristic for pre-loading values it sees ahead in the basic block.
 
+#include "../../include/tplayer_context.h"
 #include <stddef.h>
 
+#if 0
 typedef unsigned char uchar;
 
 extern "C" void __cdecl logCommonHistory(void* target, const char* msg);
@@ -37,11 +39,13 @@ public:
 
 extern void* rge_base_game;  // 0x0062C574
 
+#endif
+
 void TRIBE_Player::setupRoman(int* param_1, int param_2, int param_3, int param_4)
 {
     logCommonHistory(this->playerAI, "Setting up as Roman.");
 
-    if (deathMatch_fn(rge_base_game) == 1) {
+    if (rge_base_game->deathMatch() == 1) {
         // Deathmatch path
         if (param_2 == 0 || param_2 == 1) {
             param_1[0x7C] = 0x64;

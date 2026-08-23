@@ -15,7 +15,7 @@
 #include "matching/00535F70_get_tile_sizes.cpp"
 #include "matching/00535FC0_get_max_size.cpp"
 #include "matching/005381C0_Update_Render_Pointers.cpp"
-#include "accepted_drift/00538280_Add_GDI_Clip_Mask.cpp"
+#include "matching/00538280_Add_GDI_Clip_Mask.cpp"
 #include "matching/00538410_draw_multi_object_outline.cpp"
 #include "matching/00538420_Draw_GDI_Object.cpp"
 #include "matching/00538590_get_tile_mask_num.cpp"

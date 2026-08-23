@@ -5,6 +5,7 @@
 extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
 extern "C" void __cdecl color_log(unsigned char a, unsigned char b, unsigned char c);
 
+#ifndef TPNL_INV_SHARED_CONTEXT
 class TPanel {
 public:
     long handle_idle();
@@ -18,7 +19,9 @@ public:
 
 extern RGE_Base_Game* rge_base_game;
 
+#ifndef TPNL_INV_SHARED_CONTEXT
 extern int TRIBE_Panel_Inven_vftable;
+#endif
 
 class TRIBE_Player {
 public:
@@ -58,9 +61,16 @@ public:
     void save_info();
     long handle_idle();
 };
+#else
+#include "../../include/tpnl_inv_context.h"
+#endif
 
 long TRIBE_Panel_Inven::handle_idle() {
+#ifdef TPNL_INV_SHARED_CONTEXT
+    this->TPanel::handle_idle();
+#else
     ((TPanel*)this)->handle_idle();
+#endif
 
     int mode = rge_base_game->prog_mode;
     if (mode == 4 || mode == 6 || mode == 7 || mode == 5) {
@@ -88,7 +98,11 @@ long TRIBE_Panel_Inven::handle_idle() {
             if (changed) {
                 color_log(0xBA, 0x16, 5);
                 save_info();
+#ifdef TPNL_INV_SHARED_CONTEXT
+                this->set_redraw(1);
+#else
                 vf20(1);
+#endif
             }
 
             this->idle_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\tpnl_inv.cpp", 0xC2);

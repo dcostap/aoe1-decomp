@@ -1,4 +1,8 @@
-class TRIBE_Dialog_Unit {
+// TRIBE_Panel_Inven::set_text_color
+// PDB: tpnl_inv.cpp:67-71
+
+#ifndef TPNL_INV_SHARED_CONTEXT
+class TRIBE_Panel_Inven {
 public:
     virtual void vf00();
     virtual void vf04();
@@ -8,16 +12,24 @@ public:
     virtual void vf14();
     virtual void vf18();
     virtual void vf1C();
-    virtual void notify(int param);
-    char gap_4[0x10A];
-    int field_110;
-    int field_114;
+    virtual void vf20(int mode);
+    char gap_04[0x10A];
+    unsigned long font_color;
+    unsigned long back_color;
 
-    void set_text_color(int a, int b);
+    void set_text_color(unsigned long color1, unsigned long color2);
 };
+#else
+#include "../../include/tpnl_inv_context.h"
+#endif
 
-void TRIBE_Dialog_Unit::set_text_color(int a, int b) {
-    this->field_110 = a;
-    this->field_114 = b;
-    this->notify(1);
+void TRIBE_Panel_Inven::set_text_color(unsigned long color1,
+                                       unsigned long color2) {
+    this->font_color = color1;
+    this->back_color = color2;
+#ifdef TPNL_INV_SHARED_CONTEXT
+    this->set_redraw(1);
+#else
+    vf20(1);
+#endif
 }

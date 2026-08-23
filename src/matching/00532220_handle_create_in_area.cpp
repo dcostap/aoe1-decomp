@@ -59,88 +59,18 @@
 //   the same relation byte; the original encoding is one byte longer. No
 //   policy-valid source lead remains. Keep this source and pause for compiler
 //   context or original-source evidence.
-// ACCEPTED DRIFT: the SIB operands are commutative and compute the same byte
-// address. That one-byte encoding length changes seven later branch or address
-// displacements. The rebuild adds one trailing NOP, so both boundaries remain
-// 388 bytes. All 35 original blocks, 25 predicates, object reads, count updates,
-// result stores, returns, memory order, and fault order match. There are no
-// calls, x87 operations, or SEH. Nineteen focused probes found no natural
-// source spelling that selects the original base/index encoding.
+// - Exact-finish: use the canonical victory_context.h declarations and move
+//   the proven object-list, master-object, static-object, relation, and
+//   allied-victory fields into that shared victory.cpp type surface. This
+//   selects the original relation SIB encoding and preserves the PDB owner.
+//   Reverting only the local source declarations restores the 189-byte drift.
+// BINARY NOTE: Fresh validation reports Result: MATCH, 0.0000%, with the
+//   original 388-byte boundary, 35 blocks, 25 predicates, all object/player/
+//   area reads, state publication, and original fault order. The function has
+//   no direct calls, x87 operations, or SEH. The 00533330 exact anchor remains
+//   Result: MATCH, 0.0000% after the shared type update.
 
-struct RGE_Master_Object {
-    virtual ~RGE_Master_Object();
-    char gap_04[0x0E];
-    short copy_id;           // +0x12
-};
-
-struct RGE_Static_Object {
-    virtual ~RGE_Static_Object();
-    char gap_04[4];
-    RGE_Master_Object* master_obj; // +0x08
-    char gap_0C[0x2C];
-    float world_x;           // +0x38
-    float world_y;           // +0x3C
-    char gap_40[0x08];
-    unsigned char object_state; // +0x48
-};
-
-struct RGE_Object_Node {
-    RGE_Static_Object* node; // +0x00
-    RGE_Object_Node* next;   // +0x04
-};
-
-struct RGE_Object_List {
-    char gap_00[4];
-    RGE_Object_Node* list;   // +0x04
-};
-
-struct RGE_Player;
-
-struct RGE_Game_World {
-    virtual ~RGE_Game_World();
-    char gap_04[0x38];
-    short player_num;         // +0x3C
-    RGE_Player** players;     // +0x40
-};
-
-struct RGE_Player {
-    virtual ~RGE_Player();
-    char gap_04[0x24];
-    RGE_Object_List* objects; // +0x28
-    char gap_2C[0x10];
-    RGE_Game_World* world;    // +0x3C
-    char gap_40[0x0A];
-    short id;                 // +0x4A
-    char gap_4C[0x38];
-    unsigned char* relations; // +0x84
-    char gap_88[0x7C];
-    unsigned char allied_victory; // +0x104
-};
-
-struct RGE_Victory_Entry {
-    unsigned char command;    // +0x00
-    char gap_01[3];
-    long obj_type;            // +0x04
-    char gap_08[4];
-    float x0;                 // +0x0C
-    float y0;                 // +0x10
-    float x1;                 // +0x14
-    float y1;                 // +0x18
-    long number;              // +0x1C
-    char gap_20[0x0D];
-    unsigned char ally_flag;  // +0x2D
-    unsigned char state;      // +0x2E (actually at 0x2E based on save asm)
-};
-
-class RGE_Victory_Conditions {
-public:
-    virtual ~RGE_Victory_Conditions();
-    void* list_or_thing;      // +0x04
-    char gap_08[4];
-    RGE_Player* player;       // +0x0C
-
-    void handle_create_in_area(RGE_Victory_Entry* entry);
-};
+#include "../../include/victory_context.h"
 
 void RGE_Victory_Conditions::handle_create_in_area(RGE_Victory_Entry* entry) {
     int count = 0;

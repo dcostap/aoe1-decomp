@@ -80,180 +80,26 @@
 // the 330-byte natural source. /O1 and /Og- changed the frame and size basin.
 // shape-first conclusion: keep the 330-byte natural source. No tested source
 // form removes the EDI pairs while retaining 13 calls and original order.
+// wrapper-context 2026-08-23: the canonical tpnl_inv_tu.cpp wrapper compiles
+// this nested-call source at 326 bytes with all 13 ordered calls.  A direct
+// object comparison against orig_0051ACA0_get_help_info.bin is relocation-
+// masked exact.  The standalone owner remains a 288-byte tail-merged basin;
+// do not claim standalone exactness until the wrapper is registered.
+// exact-finish 2026-08-23: direct this->pnl_x expressions replace the unused
+// pnl_x local without changing the grouped exact bytes.  The unused three-
+// argument TPanel::get_string declaration was also removed.  The retained
+// source keeps nested value evaluation, the four static get_string calls, the
+// four sprintf calls, and the PDB arm order.  The full owner group is exact
+// under /nologo /c /O2 /Oy /GX.
+// exact-finish audit: a fresh tpnl_inv_tu.cpp build is 326/326 with 13/13
+// ordered calls, the qualified PDB owner symbol, and the original boundary.
+// Walking back the pnl_x local and the unused get_string overload keeps the
+// same relocation-masked exact bytes.  Both changes are incidental.
 
 extern "C" int __cdecl sprintf(char* buf, const char* fmt, ...);
 extern "C" long __cdecl __ftol(void);
 
-extern int TRIBE_Panel_Inven_vftable;
-
-struct PanelNode;
-
-class TPanel {
-public:
-    TPanel* previousPanelValue;
-    TPanel* previousModalPanelValue;
-    long pnl_x;
-    long pnl_y;
-    long pnl_wid;
-    long pnl_hgt;
-    char* panelNameValue;
-    void* render_area;
-    long clip_rect[4];
-    int position_mode;
-    int need_redraw;
-    TPanel* curr_child;
-    TPanel* parent_panel;
-    TPanel* left_panel;
-    TPanel* top_panel;
-    TPanel* right_panel;
-    TPanel* bottom_panel;
-    PanelNode* node;
-    PanelNode* first_child_node;
-    PanelNode* last_child_node;
-    TPanel* tab_prev_panel;
-    TPanel* tab_next_panel;
-    int mouse_captured;
-    int active;
-    int visible;
-    int tab_stop;
-    int have_focus;
-    int overlapping_children;
-    int handle_mouse_input;
-    int just_drawn;
-    void* clip_rgn;
-    long render_rect[4];
-    long left_border;
-    long top_border;
-    long right_border;
-    long bottom_border;
-    long min_wid;
-    long max_wid;
-    long min_hgt;
-    long max_hgt;
-    long mouse_hold_interval;
-    long mouse_move_tolerance;
-    long mouse_down_x;
-    long mouse_down_y;
-    int mouse_down_ctrl;
-    int mouse_down_shift;
-    unsigned long mouse_down_time;
-    int error_code;
-    int z_order;
-    int display_changed_count;
-    long help_string_id;
-    long help_page_id;
-    unsigned char mouse_action;
-    unsigned char mouse_down_button;
-    unsigned char panel_type;
-    unsigned char color;
-    unsigned char fill_in_background;
-    unsigned char clip_to_parent;
-    unsigned char draw_rect2_flag;
-    unsigned char need_restore;
-
-    virtual void vf00(void);
-    virtual void vf04(void);
-    virtual void vf08(void);
-    virtual void vf0C(void);
-    virtual void vf10(void);
-    virtual void vf14(void);
-    virtual void vf18(void);
-    virtual void vf1C(void);
-    virtual void vf20(int mode);
-    virtual void vf24(void);
-    virtual void vf28(int mode);
-    virtual void vf2C(void);
-    virtual void vf30(void);
-    virtual void vf34(void* rect);
-    virtual void vf38(void);
-    virtual void vf3C(void);
-    virtual void vf40(void);
-    virtual void vf44(void);
-    virtual void vf48(void);
-    virtual void vf4C(void);
-    virtual void vf50(long w, long h);
-    virtual void vf54(void);
-    virtual void vf58(void);
-    virtual void vf5C(void);
-    virtual void vf60(void);
-    virtual void vf64(void);
-    virtual void vf68(void);
-    virtual void vf6C(void);
-    virtual void vf70(void);
-    virtual void vf74(void);
-    virtual void vf78(void);
-    virtual void vf7C(void);
-    virtual void vf80(void);
-    virtual void vf84(void);
-    virtual void vf88(void);
-    virtual void vf8C(void);
-    virtual void vf90(void);
-    virtual void vf94(void);
-    virtual void vf98(void);
-    virtual void vf9C(void);
-    virtual void vfA0(void);
-    virtual void vfA4(void);
-    virtual void vfA8(void);
-    virtual void vfAC(void);
-    virtual void vfB0(void);
-    virtual void vfB4(void);
-    virtual void vfB8(void);
-    virtual int is_inside(long x, long y);
-    virtual void vfC0(void);
-    virtual void vfC4(void);
-    virtual void vfC8(void);
-    virtual unsigned char get_help_info(char*& out_str, long& out_val, long x, long y);
-    virtual void vfD0(void);
-    virtual void vfD4(void);
-    virtual void vfD8(void);
-    virtual void vfDC(void);
-    virtual void vfE0(void);
-    virtual void vfE4(void);
-    virtual void vfE8(void);
-    virtual void vfEC(void);
-    virtual void vfF0(void);
-    virtual void vfF4(void);
-    virtual void vfF8(void);
-
-    int get_string(int string_id, char* buffer, int length);
-    char* get_string(int string_id);
-};
-
-class RGE_Player {
-public:
-    virtual ~RGE_Player(void);
-    char gap_04[0x1E];
-    short master_object_num;
-    void* master_objects;
-    void* objects;
-    void* sleeping_objects;
-    void* doppleganger_objects;
-    void* victory_conditions;
-    void* visible;
-    void* world;
-    void* doppleganger_creator;
-    char* name;
-    unsigned char type;
-    unsigned char gap_49;
-    short id;
-    short attribute_num;
-    unsigned char gap_4E[0x02];
-    float* attributes;
-};
-
-class TRIBE_Player : public RGE_Player {
-};
-
-class TRIBE_Panel_Inven : public TPanel {
-public:
-    void* pics;
-    TRIBE_Player* player;
-    short save_attr_num;
-    short gap_FE;
-    short* save_attr;
-
-    virtual unsigned char get_help_info(char*& out_str, long& out_val, long x, long y);
-};
+#include "../../include/tpnl_inv_context.h"
 
 unsigned char TRIBE_Panel_Inven::get_help_info(char*& out_str, long& out_val, long x, long y) {
     if (this->active == 0)
@@ -262,19 +108,15 @@ unsigned char TRIBE_Panel_Inven::get_help_info(char*& out_str, long& out_val, lo
     if (!this->is_inside(x, y))
         return 0;
 
-    long pnl_x = this->pnl_x;
-
-    if (x < pnl_x + 0x37) {
-        int value = (int)this->player->attributes[1];
-        char* fmt = TPanel::get_string(0x1D4EE);
-        sprintf(out_str, fmt, value);
+    if (x < this->pnl_x + 0x37) {
+        sprintf(out_str, TPanel::get_string(0x1D4EE),
+                (int)this->player->attributes[1]);
         out_val = -1;
-    } else if (x < pnl_x + 0x6E) {
-        int value = (int)this->player->attributes[0];
-        char* fmt = TPanel::get_string(0x1D4ED);
-        sprintf(out_str, fmt, value);
+    } else if (x < this->pnl_x + 0x6E) {
+        sprintf(out_str, TPanel::get_string(0x1D4ED),
+                (int)this->player->attributes[0]);
         out_val = -1;
-    } else if (x < pnl_x + 0xA5) {
+    } else if (x < this->pnl_x + 0xA5) {
         sprintf(out_str, TPanel::get_string(0x1D4EF), (int)this->player->attributes[3]);
         out_val = -1;
     } else {

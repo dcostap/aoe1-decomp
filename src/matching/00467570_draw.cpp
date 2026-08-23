@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_EZ_CONTEXT_H
 class TDrawArea;
 
 class TEasy_Panel {
@@ -71,15 +72,16 @@ public:
     void setup_shadow_area(unsigned char param_1);
     void draw();
 };
+#endif
 
 void TEasy_Panel::draw() {
-    if (this->need_restore != 0) {
-        if (this->shadow_area != 0) {
+    if (*(unsigned char*)((char*)this + 0xF3) != 0) {
+        if (*(TDrawArea**)((char*)this + 0x46c) != 0) {
             this->setup_shadow_area(1);
         }
-        this->need_restore = 0;
+        *(unsigned char*)((char*)this + 0xF3) = 0;
     }
-    if (this->draw_rect2_flag != 0) {
+    if (*(unsigned char*)((char*)this + 0xF2) != 0) {
         this->draw_rect2(1);
     } else {
         this->draw_rect2(0);

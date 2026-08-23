@@ -1,162 +1,25 @@
 // 004DE330 TribeInformationAIModule::higherPriorityObjectToDefend
 // Source: taiinfmd.cpp lines 4527-4574
-// Attempt log:
-// 1: initial natural source: 18-byte frame, this in EDI, broad drift.
-// 2: parameter-slot reuse attempt: mutate objId to unitZone, type to loop index, group to bestPriority; keep offset local for EBP. Frame 14, edit 51%.
-// 3: remove count local: no change.
-// 4: delay best initialization until after null check/currentZone: slightly better edit 50.5%, still frame 14.
-// 5: store currentZone into low byte of objId parameter: removed and, edit 41.8%, but EBP became entry pointer.
-// 6: raw importantObjectMemory+offset expressions made this register flip to EDI and regressed (edit 50.3%); rolled back to entry local despite EBP-as-pointer issue.
-// 7: canonical indexed importantObjectMemory[i] outer scan improved positional diff
-//    from 323 to 271 bytes, but retained a 0x14 frame and the wrong base/index
-//    register split; the best source-shaped basin uses a local outer index and
-//    the original numberValue/max-size inner-loop order.
-// 8: moving the outer-index declaration before the initial lookup, explicit
-//    max-size/count inner-loop variants, and a register-qualified offset either
-//    regressed or produced duplicate codegen; restored the indexed form.
-// 9: replaced the manual vtable/cast speed surface with the typed +0x10C virtual
-//    declaration; emitted bytes were unchanged and the source is more canonical.
-// Final pause: ordered calls and size match, but the remaining structural gap is
-//    the 4-byte local frame plus EBP/base versus EDI/entry coloring (271 differing
-//    bytes, 65.55% shape). No inline asm or custom flags retained.
-// 10: direct typed indexed fields improved shape but added 8 bytes; rolled back.
-// 11: retain a typed entry only through id/attack checks and recompute late fields
-//     from the array; frame and size became exact, diff 252, shape 89.57%.
-// 12: declaration reorder, hoisted entry, cached count, and typed reference were
-//     duplicate or regressed; restored the pointer-based hybrid above.
-// probes 22, 24, 28, 30: direct id-before-entry order, a persistent array base,
-// hoisted entry lifetime, and entry scoping after the sentinel all increased
-// the frame or worsened block shape; restored the best pointer hybrid.
-// probe 26: canonical ManagedIntArray ownership preserved the emitted code.
-// probe 27: pointer-addition spelling was a codegen duplicate.
-// probe 32: canonical ObjectMemory and ManagedIntArray surfaces preserved the
-// emitted code and are retained for source ownership.
-// Current pause: calls, CFG counts, frame, size, and late blocks are aligned.
-// Remaining first hunk is base/entry/id register allocation at +0x5D; no new
-// evidence-backed source lead remains in this claim.
-// probe 34: scoped the canonical array base inside each outer iteration to
-// test the original reload feeding both id and entry address; duplicate codegen.
-// probe 36: read the indexed id before declaring entry; this added 8 bytes and
-// a 0x14 frame, so it was restored.
-// probes 38, 42: hoisted entry declaration and changed assignment timing;
-// both retained the clean emitted code or the same 8-byte regression.
-// probe 40: used a typed entry reference after the id sentinel; same regression.
-// probe 44: cached itemsToDefend.numberValue; duplicate codegen.
-// probe 45: restored the exact same-TU polymorphic parent surface; duplicate.
-// probe 46: removed the id local and reread the indexed field; same regression.
-// Final pause: the clean typed pointer form remains the best source-shaped
-// reconstruction. The first block still differs only in base/id/entry coloring.
 //
-// Fresh session sa-a648bae0-r1: the baseline rebuilt at 364 bytes with the
-// correct frame, 10 ordered calls, and 89.57% shape similarity. Reversing the
-// zone comparison operands recovered the original memory/AL compare form.
-// Reversing the priority comparison operands recovered the original memory/EAX
-// compare form. Together they preserved size and reduced the diagnostic drift
-// to 252 bytes with 92.17% shape similarity and 69.03% exact-block coverage.
+// BINARY NOTE: The original walks ObjectMemory entries at 0x24-byte stride.
+// It rereads the world object, zone, speed, and range in this order.
+// It uses four calls in the neighbor path and publishes the selected entry.
+// The two priority predicates use the original strict comparison order.
 //
-// Direct indexed id-before-entry forms, scoped entry forms, direct fields,
-// raw byte-offset cursors, and typed-reference aliases either added 8 bytes,
-// changed the frame to 0x14, or produced duplicate codegen. The final
-// validation keeps the natural typed pointer hybrid and the two operand-order
-// corrections. The remaining mismatch starts at +0x5D: VC5 chooses ECX/EDX
-// for entry/id while the original chooses EDI/ECX. Paused unresolved.
+// Current source recovery uses the registered information_dropsites TU and the
+// reviewed declarations shared with 004DE1F0. Do not replace these with raw
+// offsets, cached world reads, fake volatility, or hand-built vtables.
 //
-// Fresh session sa-6aae3ded-r1: typed direct-id plus entry forms, scoped and
-// function-scope entry lifetimes, direct indexed fields, a typed base pointer,
-// a hoisted count, and a typed reference either added 8 bytes or duplicated
-// the clean 252-byte result. The clean typed pointer form remains authoritative.
-// Accepted drift: the two ftol results use the same XYPoint stack addresses.
-// Object, zone, speed, range, and priority calls have the same arguments and
-// stack context. Scan order, break paths, priority predicates, selected entry,
-// and return match. Remaining drift is entry-pointer register choice and
-// private result-store scheduling.
+// Fresh registered-context audit: the natural pointer form emits 362 bytes
+// against the 364-byte original. It keeps the 0x10 frame, 113 instructions,
+// all ten ordered calls, and the original call targets. The first mismatch is
+// the entry/id hunk at +0x5D: VC5 emits base-plus-offset into ECX and id into
+// EDX, while the executable keeps the base in EAX, entry in EDI, and id in
+// ECX. Typed direct-id forms add 8 bytes and a 0x14 frame. Typed base aliases,
+// pointer addition, entry references, declaration-order changes, register
+// qualifiers, and const entry ownership are duplicate codegen in this TU.
 
-#include <math.h>
-
-typedef unsigned char uchar;
-
-struct ObjectMemory {
-    int id;
-    short type;
-    short group;
-    unsigned char x;
-    unsigned char y;
-    unsigned char z;
-    unsigned char owner;
-    short hitPoints;
-    unsigned char pad_0E[2];
-    int attackAttempts;
-    unsigned char kills;
-    unsigned char pad_15[3];
-    float damageCapability;
-    float rateOfFire;
-    float range;
-};
-
-struct XYPoint { int x; int y; };
-
-struct ManagedIntArray {
-    int* value;
-    int numberValue;
-    int desiredNumberValue;
-    int maximumSizeValue;
-};
-
-class RGE_Static_Object {
-public:
-    virtual void d000(); virtual void d004(); virtual void d008(); virtual void d00C();
-    virtual void d010(); virtual void d014(); virtual void d018(); virtual void d01C();
-    virtual void d020(); virtual void d024(); virtual void d028(); virtual void d02C();
-    virtual void d030(); virtual void d034(); virtual void d038(); virtual void d03C();
-    virtual void d040(); virtual void d044(); virtual void d048(); virtual void d04C();
-    virtual void d050(); virtual void d054(); virtual void d058(); virtual void d05C();
-    virtual void d060(); virtual void d064(); virtual void d068(); virtual void d06C();
-    virtual void d070(); virtual void d074(); virtual void d078(); virtual void d07C();
-    virtual void d080(); virtual void d084(); virtual void d088(); virtual void d08C();
-    virtual void d090(); virtual void d094(); virtual void d098(); virtual void d09C();
-    virtual void d0A0(); virtual void d0A4(); virtual void d0A8(); virtual void d0AC();
-    virtual void d0B0(); virtual void d0B4(); virtual void d0B8(); virtual void d0BC();
-    virtual void d0C0(); virtual void d0C4(); virtual void d0C8(); virtual void d0CC();
-    virtual void d0D0(); virtual void d0D4(); virtual void d0D8(); virtual void d0DC();
-    virtual void d0E0(); virtual void d0E4(); virtual void d0E8(); virtual void d0EC();
-    virtual void d0F0(); virtual void d0F4(); virtual void d0F8(); virtual void d0FC();
-    virtual void d100(); virtual void d104(); virtual void d108();
-    virtual float speed();
-    int id;
-    char gap_08[0x30];
-    float world_x;
-    float world_y;
-    unsigned char currentZone();
-    int withinRangeOfZoneAtPoint(unsigned char zone, float range, void* pt);
-};
-
-class MainDecisionAIModule {
-public:
-    char gap_00[0x04];
-    RGE_Static_Object* object(int id);
-};
-
-struct AIModule {
-    virtual void dummy();
-};
-
-struct InformationAIModule : public AIModule {
-    char gap_EC[0xEC];
-};
-
-class TribeInformationAIModule : public InformationAIModule {
-public:
-    char farmsPad[0x10];
-    MainDecisionAIModule* md;
-    char gap_104[0x0C];
-    int maxImportantObjectMemory;
-    ObjectMemory* importantObjectMemory;
-    char gap_118[0x30];
-    ManagedIntArray itemsToDefend;
-
-    ObjectMemory* higherPriorityObjectToDefend(int objId, int type, int group);
-    int defendPriority(int type, int group);
-};
+#include "../../include/information_dropsites_context.h"
 
 ObjectMemory* TribeInformationAIModule::higherPriorityObjectToDefend(int objId, int type, int group)
 {

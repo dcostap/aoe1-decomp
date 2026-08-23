@@ -48,7 +48,36 @@
 // BLOCKER: the residual schedule moves the +0xA0 store before the +0x18 and
 // +0x4C stores. These writes use the caller's output array. A short or invalid
 // array can therefore expose a different partial result and fault point.
+// Final continuation audit: no natural source variant established the target
+// publication order without changing this partial-output behavior. The block
+// therefore continues with the exact 00518F00 tplayer owner.
+// - Fresh registered-group validation kept all selected exact tplayer anchors
+//   exact. This target still has the correct PDB owner, boundary, three calls,
+//   and parameter homes, but remains 334 versus 337 bytes with 96 byte diff.
+// - Target-local natural aliases, typed overlays, constant locals, equivalent
+//   guards, and literal forms did not move the +0xBE 0x28/0x64 schedule hunk.
+//   All experiments were restored before final validation.
+// - A start-of-block map_type capture, source-line grouping for the line-4132
+//   stores, and chained repeated-value assignments were also tested fresh.
+//   They emitted the same 334-byte baseline or a worse 302-byte resync.
+//   The natural direct assignments remain the clean source.
+// - Fresh checks of the nine registered exact anchors (00517B90, 00517E10,
+//   005181C0, 005188F0, 00518B50, 00518DD0, 00518F00, 005192F0, and 00519320)
+//   all returned MATCH after this continuation.
+// - Fresh claim audit selected this first unleased normal tplayer.cpp sibling
+//   after exact 00517E10.  The PDB owner is TRIBE_Player::setupAssyrian and
+//   the original body boundary is 00517F30-00518081.
+// - Fresh target-local tests covered repeated-store chains, a switch form, and
+//   a narrow logging-member view.  None reached exact output.  All were
+//   restored because they did not prove the shipped source form.
+// - Final validation remains 334 versus 337 bytes with 96 positional bytes
+//   off.  The three direct calls, owner symbol, parameter homes, stores, and
+//   return paths remain aligned.  The first mismatch is the 0x28 versus 0x64
+//   constant schedule at +0xBE.
 
+#include "../../include/tplayer_context.h"
+
+#if 0
 struct AIModule {
     void __cdecl logCommonHistory(char* msg);
 };
@@ -64,6 +93,8 @@ struct TRIBE_Player {
     AIModule* playerAI;
     void setupAssyrian(int* param_1, int param_2, int param_3, int param_4);
 };
+
+#endif
 
 void TRIBE_Player::setupAssyrian(int* param_1, int param_2, int param_3, int param_4)
 {

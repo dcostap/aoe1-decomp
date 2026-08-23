@@ -35,7 +35,22 @@
 //   writes the panel error field before loading the EH chain for one shared tail.
 //   The rebuild loads EH state first and emits a second failure epilogue. A fault
 //   on the error-field store has different register and unwind context.
+// Expanded Panel_ez.cpp result: the canonical protected virtual surface and
+// TU context emit 595 bytes exactly with the MAE owner symbol. The standalone
+// fallback surface remains the 614-byte diagnostic basin above.
+// Exact-finish validation in the registered panel_create_button TU:
+// - The grouped object emits 595/595 positional bytes, 190/190 instructions,
+//   17/17 ordered calls, the 0x8 EH frame, and one return CFG.
+// - The extracted body stays inside the 595-byte target boundary. Its owner is
+//   ?create_radio_button@TEasy_Panel@@MAEHPAVTPanel@@PAPAVTButtonPanel@@JJJJJJ@Z,
+//   matching the protected PDB owner in Panel_ez.cpp lines 1158-1209.
+// - The grouped exact 00468760 create_check_box and all 12 existing Panel_ez
+//   anchors were freshly checked after the group compile; each returned MATCH
+//   with 0.0000% positional difference and matching owner, frame, calls, and CFG.
+// - No source-shape or policy workaround survived reduction. The natural
+//   publication, ownership, UI calls, cleanup, EH, and fault order remain.
 
+#ifndef AOE1_PANEL_EZ_CONTEXT_H
 class TPanel {
 public:
     char gap_004[0xD4];
@@ -77,15 +92,15 @@ public:
 class TEasy_Panel {
 public:
     char gap_000[0x10];
-    int ideal_width;
-    int ideal_height;
+    int width;
+    int height;
     char gap_01C[0x20 - 0x1C];
     TDrawArea* draw_area;
     char gap_024[0xD8 - 0x24];
     int error;
     char gap_0DC[0xF4 - 0xDC];
-    int screen_width;
-    int screen_height;
+    int ideal_width;
+    int ideal_height;
     char gap_0FC[0x31C - 0x0FC];
     int use_bevels;
     unsigned char bevel_color1, bevel_color2, bevel_color3, bevel_color4, bevel_color5, bevel_color6;
@@ -102,6 +117,7 @@ public:
     virtual ~TEasy_Panel();
     virtual int create_radio_button(TPanel* parent, TButtonPanel** out, long x, long y, long w, long h, long sound, long param8);
 };
+#endif
 
 int TEasy_Panel::create_radio_button(TPanel* parent, TButtonPanel** out, long x, long y, long w, long h, long sound_id, long param8)
 {
@@ -114,10 +130,10 @@ int TEasy_Panel::create_radio_button(TPanel* parent, TButtonPanel** out, long x,
     long sh;
 
     sound = 0;
-    sx = (ideal_x * this->ideal_width) / this->screen_width;
-    sy = (y * this->ideal_height) / this->screen_height;
-    sw = (w * this->ideal_width) / this->screen_width;
-    sh = (h * this->ideal_height) / this->screen_height;
+    sx = (ideal_x * this->width) / this->ideal_width;
+    sy = (y * this->height) / this->ideal_height;
+    sw = (w * this->width) / this->ideal_width;
+    sh = (h * this->height) / this->ideal_height;
 
     button = new TButtonPanel;
     *out = button;

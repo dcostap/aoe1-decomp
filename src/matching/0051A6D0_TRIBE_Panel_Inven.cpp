@@ -4,6 +4,7 @@
 extern "C" void __cdecl free(void* block);
 extern int TRIBE_Panel_Inven_vftable[];
 
+#ifndef TPNL_INV_SHARED_CONTEXT
 class TPanel {
 public:
     virtual ~TPanel();
@@ -25,6 +26,9 @@ public:
 
     virtual ~TRIBE_Panel_Inven();
 };
+#else
+#include "../../include/tpnl_inv_context.h"
+#endif
 
 TRIBE_Panel_Inven::~TRIBE_Panel_Inven() {
     if (this->save_attr != 0) {

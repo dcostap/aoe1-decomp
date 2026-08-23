@@ -25,6 +25,7 @@ __declspec(dllimport) BOOL __stdcall TextOutA(HDC hdc, int x, int y,
                                                 LPCSTR text, int len);
 }
 
+#ifndef TPNL_INV_SHARED_CONTEXT
 class TDrawArea {
 public:
     char gap_00[0x38];
@@ -94,6 +95,9 @@ public:
     unsigned long font_color;
     unsigned long back_color;
 };
+#else
+#include "../../include/tpnl_inv_context.h"
+#endif
 
 void TRIBE_Panel_Inven::draw() {
     char str[20];

@@ -23,6 +23,10 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "../../include/scr_ach_context.h"
+
+#if 0
+
 class TDrawArea;
 class TPanel;
 class TTextPanel;
@@ -266,6 +270,7 @@ public:
     virtual ~TribeAchievementsScreen();
     void set_mode(int mode);
 };
+#endif
 
 TribeAchievementsScreen::TribeAchievementsScreen(char* title_text, int end_game_flag)
     : TScreenPanel("Achievements Screen")

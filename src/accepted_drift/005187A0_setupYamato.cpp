@@ -57,6 +57,9 @@
 // table around the private map-type load and TEST. All unconditional stores
 // complete before the same map branch. Values, calls, branches, returns, and
 // fault behavior match.
+#include "../../include/tplayer_context.h"
+
+#if 0
 class AIModule {
 public:
     void logCommonHistory(char* message, ...);
@@ -87,6 +90,8 @@ class TRIBE_Player : public RGE_Player {
 public:
     void setupYamato(int* param_1, int param_2, int param_3, int param_4);
 };
+
+#endif
 
 void TRIBE_Player::setupYamato(int* param_1, int param_2, int param_3, int param_4)
 {

@@ -52,63 +52,12 @@
 //   condition declarations keep both owners in one object. The unchanged
 //   direct switch then matches all 479 bytes and eight calls. Target-only
 //   compilation emits the prior extra-sprintf basin.
-
-#ifndef VICTORY_DESCRIPTION_CONTEXT_H
-#define VICTORY_DESCRIPTION_CONTEXT_H
-extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
-extern "C" void __cdecl getstring(char** destination, char* source);
-
-class RGE_Master_Static_Object {
-public:
-    virtual ~RGE_Master_Static_Object();
-    char gap_04[4];
-    char* name; // +0x08
-};
-
-class RGE_Player {
-public:
-    virtual ~RGE_Player();
-    char gap_04[0x20];
-    RGE_Master_Static_Object** master_objects; // +0x24
-    char gap_28[0x22];
-    short id; // +0x4A
-};
-
-class RGE_Static_Object {
-public:
-    virtual ~RGE_Static_Object();
-    char gap_04[4];
-    RGE_Master_Static_Object* master_obj; // +0x08
-};
-
-class RGE_Victory_Entry {
-public:
-    unsigned char command; // +0x00
-    char gap_01[3];
-    long obj_type; // +0x04
-    RGE_Player* target_player; // +0x08
-    float x0; // +0x0C
-    float y0; // +0x10
-    float x1; // +0x14
-    float y1; // +0x18
-    long number; // +0x1C
-    long count; // +0x20
-    RGE_Static_Object* this_obj; // +0x24
-    RGE_Static_Object* target_obj; // +0x28
-};
-
-class RGE_Victory_Conditions {
-public:
-    virtual ~RGE_Victory_Conditions();
-    virtual void handle_point_condition(void* entry);
-    virtual void handle_condition(RGE_Victory_Entry* entry);
-    virtual char* condition_description(RGE_Victory_Entry* entry);
-    virtual void save(int handle);
-
-    RGE_Victory_Entry* victory_list; // +0x04
-    long list_num; // +0x08
-};
-#endif
+// - Exact-finish walkback: removing the earlier 00532C50 owner is not a valid
+//   TU because the owner manifest requires that source exactly once. The
+//   owner is therefore required context, not target-only scaffolding.
+// - Exact-finish reduction: removing these duplicate local declarations and
+//   using the reviewed shared victory header kept 479 bytes, the 0xCC frame,
+//   and all eight ordered calls. This is the retained source form.
 
 #include "../../include/victory_description_context.h"
 

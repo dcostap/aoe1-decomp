@@ -1,5 +1,6 @@
 class TRIBE_Player;
 
+#ifndef TPNL_INV_SHARED_CONTEXT
 class TRIBE_Panel_Inven {
 public:
     virtual void vf00(void);
@@ -17,9 +18,16 @@ public:
     void save_info();
     void set_player(TRIBE_Player* player);
 };
+#else
+#include "../../include/tpnl_inv_context.h"
+#endif
 
 void TRIBE_Panel_Inven::set_player(TRIBE_Player* player) {
     this->player = player;
     save_info();
+#ifdef TPNL_INV_SHARED_CONTEXT
+    this->set_redraw(1);
+#else
     vf20(1);
+#endif
 }

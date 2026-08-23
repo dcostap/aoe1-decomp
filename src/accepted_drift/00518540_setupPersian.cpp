@@ -29,8 +29,10 @@
 // - p[0x5A]/p[0x5B] assignments for each branch
 // - All ret 10h instructions match
 
+#include "../../include/tplayer_context.h"
 #include <stddef.h>
 
+#if 0
 typedef unsigned char uchar;
 
 void logCommonHistory(void* ai, char* msg);
@@ -48,6 +50,8 @@ public:
 
     void setupPersian(int* p, int type, int unused1, int unused2);
 };
+
+#endif
 
 void TRIBE_Player::setupPersian(int* p, int type, int unused1, int unused2)
 {

@@ -57,6 +57,10 @@ extern "C" long __cdecl __ftol(void);
 void* __cdecl operator new(unsigned int size);
 void __cdecl operator delete(void* ptr);
 
+#include "../../include/scr_game_context.h"
+
+#if 0
+
 class RGE_Static_Object;
 class RGE_Game_World;
 class RGE_Scenario;
@@ -595,6 +599,8 @@ public:
     void reset_score_display();
     void command_cancel();
 };
+
+#endif
 
 void TRIBE_Screen_Game::handle_game_update(void)
 {

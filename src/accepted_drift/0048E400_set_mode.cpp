@@ -34,10 +34,24 @@
 //   initialization with its nonfaulting statistics-row LEA. No call or external
 //   memory access lies between them. One index uses the same established stack
 //   slot in both bodies. The other strict bytes are jump-table relocations.
+// - Complete-TU exact pass: a four-byte raw player cursor restores all five
+//   setup blocks, but leaves two reversed victory-ID immediates. The prior exact
+//   checkpoint also depends on a rejected fake panel ABI and is not promotable.
+// - Typed row dependencies, declaration scopes, register hints, do-while form,
+//   explicit sum sequencing, casts, and qualified calls did not produce a
+//   natural exact result. Keep the canonical typed-index source.
+// - BINARY NOTE: mode 3 calls get_victory_points_id(16) before id 15 at
+//   0048ED20 and 0048ED2A. The raw-cursor 2-byte basin emits the reverse order,
+//   so it changes fault order and is rejected. Explicit sequencing preserves
+//   the order but changes the frame/register basin and reaches diff 61.
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "../../include/scr_ach_context.h"
+
+#if 0
 
 class TDrawArea;
 class TShape;
@@ -337,6 +351,7 @@ public:
 
     void set_mode(long mode);
 };
+#endif
 
 void TribeAchievementsScreen::set_mode(long mode)
 {

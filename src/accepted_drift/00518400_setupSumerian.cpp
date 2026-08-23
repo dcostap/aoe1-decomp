@@ -34,6 +34,12 @@
 // - Revisit probes: restoring natural 10/20/30/100 assignment order produced
 //   313 bytes and 122 strict diff bytes; a scoped `const twenty` was unchanged.
 //   Restore the pinned source after both probes.
+// - Exact-finish continuation tested target-local natural aliases for the first
+//   20-valued slot, a delayed 30-slot pointer, and named mutable 20/100 values.
+//   The alias forms were worse or codegen duplicates; restore the pinned source.
+// - A fresh full tplayer_tu.cpp compile kept all configured anchors exact after
+//   relocation masking. setupSumerian stayed 309 bytes with the same 30-byte
+//   constant-store drift. No wrapper or shared-header change is justified.
 // Final validation: 309 rebuilt bytes, 30 strict diff bytes, 27-byte edit diff;
 // exact calls, size, frame, CFG, and verified setup behavior remain intact.
 // ACCEPTED DRIFT: The non-deathmatch hunk colors constants 20 and 100 in
@@ -41,8 +47,9 @@
 // reload differently. Both builds write identical values to every slot. All
 // three calls, branches, used flags, returns, and fault behavior match.
 
-#include "../../include/rge_base_game_global.h"
+#include "../../include/tplayer_context.h"
 
+#if 0
 // Main-agent audit confirmed the shared canonical game/player/AI ownership;
 // direct civilization table stores remain authoritative.
 class AIModule {
@@ -73,6 +80,8 @@ class TRIBE_Player : public RGE_Player {
 public:
     void setupSumerian(int* b, int mapType, int gameType, int mapSize);
 };
+
+#endif
 
 void TRIBE_Player::setupSumerian(int* b, int mapType, int gameType, int mapSize) {
     this->playerAI->logCommonHistory("Setting up as Sumerians.");

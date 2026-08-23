@@ -2,6 +2,7 @@
 // Inventory: 004679F0_set_info_file
 // Status: pass 1 – using strcpy, building to compare
 
+#ifndef AOE1_PANEL_EZ_CONTEXT_H
 class TEasy_Panel {
 public:
     char pad[0xFC];                    // base class area / alignment to +0xFC
@@ -10,14 +11,15 @@ public:
     
     void set_info_file(char* fname, long id);
 };
+#endif
 
 extern "C" char* __cdecl strcpy(char* dst, const char* src);
 
 void TEasy_Panel::set_info_file(char* fname, long id) {
     if (fname) {
-        strcpy(this->info_file_name, fname);
+        strcpy((char*)this + 0xFC, fname);
     } else {
-        this->info_file_name[0] = '\0';
+        *((char*)this + 0xFC) = '\0';
     }
-    this->info_id = id;
+    *(long*)((char*)this + 0x200) = id;
 }

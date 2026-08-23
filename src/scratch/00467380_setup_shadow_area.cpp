@@ -62,6 +62,7 @@
 #include <new.h>
 #include <stdio.h>
 
+#ifndef AOE1_PANEL_EZ_CONTEXT_H
 class TDrawSystem {
 public:
     char gap_00[0x28];
@@ -118,28 +119,31 @@ public:
 
     void setup_shadow_area(int force);
 };
+#endif
 
 void TEasy_Panel::setup_shadow_area(int force)
 {
     char area_name[260];
 
-    TDrawArea* area = this->shadow_area;
+    TDrawArea*& shadow_area = *(TDrawArea**)((char*)this + 0x46c);
+    TShape*& background_pic = *(TShape**)((char*)this + 0x204);
+    TDrawArea* area = shadow_area;
     if ((area == 0 || force != 0) &&
-        this->background_pic != 0 && this->shadow_color_table != 0) {
+        background_pic != 0 && this->shadow_color_table != 0) {
         int old_flags = this->render_area->DrawSystem->Flags;
 
         if (area == 0) {
             this->render_area->DrawSystem->Flags &= 1;
             sprintf(area_name + 4, "%s Shadow Panel", this->panelNameValue);
-            this->shadow_area = new TDrawArea(area_name + 4, 0);
+            shadow_area = new TDrawArea(area_name + 4, 0);
         }
 
-        if (this->shadow_area != 0) {
+        if (shadow_area != 0) {
             long y_max;
             long x_min;
             long x_max;
 
-            this->background_pic->shape_minmax(
+            background_pic->shape_minmax(
                 x_max, y_max, *(long*)area_name, x_min, 0);
 
             int width = *(long*)area_name - x_max + 1;
@@ -149,15 +153,15 @@ void TEasy_Panel::setup_shadow_area(int force)
             if (height > this->pnl_hgt)
                 height = this->pnl_hgt;
 
-            if (this->shadow_area->Init(this->render_area->DrawSystem,
+            if (shadow_area->Init(this->render_area->DrawSystem,
                                         width, height, 0, 0)) {
-                this->shadow_area->Clear(0, this->background_color1);
-                if (this->shadow_area->Lock("panel_ez::setup_shadow_area", 1)) {
-                    this->background_pic->shape_draw(this->shadow_area,
+                shadow_area->Clear(0, this->background_color1);
+                if (shadow_area->Lock("panel_ez::setup_shadow_area", 1)) {
+                    background_pic->shape_draw(shadow_area,
                                                      0, 0, 0, 0, 0);
-                    this->shadow_area->SetShadowTable(this->shadow_color_table);
-                    this->shadow_area->DrawShadowBox(0, 0, width - 1, height - 1);
-                    this->shadow_area->Unlock("panel_ez::setup_shadow_area");
+                    shadow_area->SetShadowTable(this->shadow_color_table);
+                    shadow_area->DrawShadowBox(0, 0, width - 1, height - 1);
+                    shadow_area->Unlock("panel_ez::setup_shadow_area");
                 }
             }
         }

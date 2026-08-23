@@ -7,10 +7,25 @@
 // Non-deathmatch path has VC5 constant CSE-hoisting: loads edx=100
 // (for [0xC0],[0x150] stores) at the top alongside ecx=30, instead of
 // after the 10-stores. Same root cause as setupRoman/setupPalmyran.
-// Total positional diff: 130/318 = 40.88%. All in non-deathmatch path.
+// Fresh validation: 131/318 positional bytes differ (41.0658%).
+// All drift is in the non-deathmatch path.
+//
+// Exact-finish continuation:
+// - The canonical tplayer.cpp context keeps the 3 ordered calls, 14
+//   conditional branches, 7 returns, no frame, and the owner symbol exact.
+// - The first mismatch stays at +0xA1. VC5 emits `jge` before the private
+//   param_1 load. It also hoists edx=100 before the 30/10/50 store groups.
+// - Direct member access, pointer aliases, guard forms, declaration order,
+//   PDB-indicated store order, and local register hints did not change this
+//   codegen basin. Restore this source after each experiment.
+// - Fresh grouped checks kept these tplayer anchors exact: 00513000,
+//   00517B90, 00517E10, 005181C0, 005188F0, 00518DD0, 00518F00,
+//   005192F0, and 00519320.
 
+#include "../../include/tplayer_context.h"
 #include <stddef.h>
 
+#if 0
 typedef unsigned char uchar;
 
 extern "C" void __cdecl logCommonHistory(void* target, const char* msg);
@@ -26,11 +41,13 @@ public:
     void setupGreek(int* param_1, int param_2, int param_3, int param_4);
 };
 
+#endif
+
 void TRIBE_Player::setupGreek(int* param_1, int param_2, int param_3, int param_4)
 {
     logCommonHistory(this->playerAI, "Setting up as Greeks.");
     
-    if (deathMatch_fn(rge_base_game) == 1) {
+    if (rge_base_game->deathMatch() == 1) {
         // Deathmatch path
         if (param_2 == 0 || param_2 == 1) {
             param_1[0x40] = 100;  // [0x100]
@@ -46,7 +63,7 @@ void TRIBE_Player::setupGreek(int* param_1, int param_2, int param_3, int param_
     } else {
         // Non-deathmatch path
         int* p1 = param_1;
-        int diff = difficulty_fn(rge_base_game);
+        int diff = rge_base_game->difficulty();
         if (diff < 1) {
             p1[0x24] = 100;  // [0x90]
             return;

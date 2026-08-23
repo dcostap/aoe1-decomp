@@ -46,6 +46,14 @@
 //   pointer alias, a positive guard, and a separate low-path return. None
 //   reproduced the original mov p before jge. A reference alias moved three
 //   bytes but changed the natural block shape and is not retained.
+// - Exact-finish revisit in the canonical tplayer context tested separate
+//   declaration/assignment, mixed arm aliases, comma assignment, named
+//   difficulty, receiver caching, register and const parameters, and a
+//   negated threshold. All retained the 303-byte basin and the same first
+//   mismatch at +A1. The registered wrapper build reproduced that basin.
+// - Fresh grouped anchor checks kept 00513000, 00517B90, 00517E10, 005181C0,
+//   005188F0, 00518DD0, 00518F00, 005192F0, and 00519320 exact. 005153D0
+//   retained its prior accepted drift and call parity.
 
 // Main-agent audit confirmed the shared canonical game/player/AI ownership;
 // direct civilization table stores remain authoritative.
@@ -54,6 +62,9 @@
 // arm. Both arms use p before any later call or store. CMP, MOV, and JGE cannot
 // fault except for the same private stack read. Values, flags at each branch,
 // field stores, all three calls, returns, and fault behavior match.
+#include "../../include/tplayer_context.h"
+
+#if 0
 class AIModule {
 public:
     void logCommonHistory(char* message, ...);
@@ -84,6 +95,8 @@ class TRIBE_Player : public RGE_Player {
 public:
     void setupMinoan(int* p, int type, int unused1, int unused2);
 };
+
+#endif
 
 void TRIBE_Player::setupMinoan(int* p, int type, int unused1, int unused2) {
     this->playerAI->logCommonHistory("Setting up as Minoans.");

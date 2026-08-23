@@ -67,142 +67,35 @@
 // - v31: moving n before the master assignment, even with canonical types,
 //   reached the original local load order but widened the result to 31 bytes;
 //   restored master-first source order and the 16-byte clean reconstruction.
-// - Accepted-drift audit: do not promote. The executable reads
+// - Prior accepted-drift audit: the executable reads
 //   tech_tree->tech_player_tree_num before it dereferences world->tech->tech_tree.
 //   The rebuild dereferences world->tech->tech_tree first. This changes pointer-fault order
 //   and behavior under concurrent table replacement before any output writes.
+//   The exact indexed loop below resolves this fault-order difference.
+// - Exact finish: restored the PDB line-941 short indexed for-loop over both typed arrays.
+//   VC5 snapshots the short bound and converts both indexes to moving cursors.
+//   This loop preserves the original load order and all 446 bytes.
+// - Walkback: a named bound also stayed exact, but the direct member bound is smaller.
+//   Removing the dead first-scan n assignment stayed exact.
+//   Narrowing n and out_index to the second scan also stayed exact.
+//   Pointer loops and an int loop did not match.
+// - Canonical type review restored Tech_Tree, icon at +0x24, and build_obj_id at +0x28.
+//   The PDB type dump proves this 0x3C record.
 
+#include "../../include/tplayer_context.h"
 #include <stdlib.h>
-
-struct Item_Avail {
-    char* name;            // +00
-    short id;              // +04
-    short pict;            // +06
-    short inv1;            // +08
-    short pad0a;           // +0a
-    float cost1;           // +0c
-    short inv2;            // +10
-    short pad12;           // +12
-    float cost2;           // +14
-    short inv3;            // +18
-    short pad1a;           // +1a
-    float cost3;           // +1c
-    long help_msg;         // +20
-    long help_page;        // +24
-};
-
-struct Tech_Player_Tree {
-    float research_done;
-    short state;
-    char gap_06[2];
-};
-
-struct Tech_Entry {
-    char* name;
-    short pre_reqs[4];
-    short pre_reqs_required;
-    short attribute[3];
-    short attribute_cost[3];
-    unsigned char attribute_used[3];
-    char gap_1d;
-    short research;
-    short effect;
-    short civilization;
-    short full_tech_mode;
-    unsigned char button_location;
-    char gap_27;
-    short button_id;
-    short string_id;
-    short string_id2;
-    char gap_2e[2];
-    long help_string_id;
-    long help_page_id;
-    long hotkey_id;
-};
-
-struct RGE_Game_World {
-    void* vtable_ptr;
-    char gap_04[0x100];
-};
-
-struct TRIBE_World;
-
-struct TRIBE_Tech {
-    Tech_Entry* tech_tree;
-    short tech_tree_num;
-    char gap_06[2];
-    TRIBE_World* world;
-};
-
-struct TRIBE_World : RGE_Game_World {
-    TRIBE_Tech* tech;
-};
-
-class RGE_Player;
-
-class TRIBE_Player_Tech {
-public:
-    Tech_Player_Tree* tech_player_tree; // +0
-    short tech_player_tree_num;        // +4
-    char gap_06[2];
-    TRIBE_Tech* base_tech;
-    RGE_Player* owner;
-
-    void tech_cost(short tech_id, short* inv_1, short* amt_1, short* inv_2, short* amt_2, short* inv_3, short* amt_3);
-    long get_help_message(short tech_id);
-    long get_help_page(short tech_id);
-};
-
-class RGE_Player {
-public:
-    virtual ~RGE_Player();
-    int computerPlayerValue;
-    int pathingAttemptCapValue;
-    int pathingDelayCapValue;
-    int currentUpdatePathingAttemptsValue;
-    int checksum;
-    int position_checksum;
-    int action_checksum;
-    unsigned char checksum_created_this_update;
-    unsigned char gap_21;
-    short master_object_num;
-    void* master_objects;
-    void* objects;
-    void* sleeping_objects;
-    void* doppleganger_objects;
-    void* victory_conditions;
-    void* visible;
-    RGE_Game_World* world;
-};
-
-class TRIBE_Player : public RGE_Player {
-public:
-    char gap_40[0x1e0];
-    TRIBE_Player_Tech* tech_tree;  // +220
-
-    void interface_tech_avail(Item_Avail** out_items, short* out_count, short button_location);
-};
 
 void TRIBE_Player::interface_tech_avail(Item_Avail** out_items, short* out_count, short button_location)
 {
     short count = 0;
     short inv1, amt1, inv2, amt2, inv3, amt3;
-    short out_index;
-    short n;
-    Tech_Entry* master = ((TRIBE_World*)this->world)->tech->tech_tree;
-    n = this->tech_tree->tech_player_tree_num;
-    if (n > 0) {
-        Tech_Player_Tree* t = this->tech_tree->tech_player_tree;
-        Tech_Entry* m = master;
-        int i = (int)n;
-        do {
-            if (t->state == 1 && m->button_id == button_location) {
-                count++;
-            }
-            t++;
-            m++;
-            i--;
-        } while (i != 0);
+    Tech_Tree* master = ((TRIBE_World*)this->world)->tech->tech_tree;
+
+    for (short i = 0; i < this->tech_tree->tech_player_tree_num; i++) {
+        if (this->tech_tree->tech_player_tree[i].state == 1 &&
+            master[i].build_obj_id == button_location) {
+            count++;
+        }
     }
 
     if (*out_items != 0) {
@@ -217,8 +110,8 @@ void TRIBE_Player::interface_tech_avail(Item_Avail** out_items, short* out_count
 
     *out_items = (Item_Avail*)calloc((int)count, 0x28);
 
-    n = 0;
-    out_index = 0;
+    short n = 0;
+    short out_index = 0;
     if (this->tech_tree->tech_player_tree_num <= 0) {
         return;
     }
@@ -226,12 +119,12 @@ void TRIBE_Player::interface_tech_avail(Item_Avail** out_items, short* out_count
     do {
         int idx = (int)n;
         if (this->tech_tree->tech_player_tree[idx].state == 1) {
-            Tech_Entry* entry = &master[idx];
-            if (entry->button_id == button_location) {
+            Tech_Tree* entry = &master[idx];
+            if (entry->build_obj_id == button_location) {
                 int avail_index = (int)out_index;
                 Item_Avail* item = *out_items;
                 item[avail_index].id = n;
-                (*out_items)[avail_index].pict = entry->full_tech_mode;
+                (*out_items)[avail_index].pict = entry->icon;
                 (*out_items)[avail_index].name = entry->name;
 
                 this->tech_tree->tech_cost(n, &inv1, &amt1, &inv2, &amt2, &inv3, &amt3);

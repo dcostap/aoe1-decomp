@@ -82,7 +82,7 @@
 // a codegen duplicate. All experiments were restored. Final validation remains
 // the clean typed source: 384/385 bytes, 153 positional diff bytes, exact calls,
 // 0x8 frame, and first mismatch at +0x8E.
-// Accepted drift: the type-1 path is exact. Type-2/3 and type-4 use the same
+// Earlier accepted-drift review: the type-1 path was exact. Type-2/3 and type-4 used the same
 // signed node reads, normalized bounds, nine calls, arguments, loop limits,
 // post-call node-type reread, and returns. Values used after AddSpan are private
 // copies in both builds. Remaining differences are register and stack-home
@@ -90,6 +90,14 @@
 // Recovered view.cpp TU pass: exact 005381C0 precedes this owner on the shared
 // RGE_View surface. The /GX grouped result remains 384/385 bytes with 153
 // differences and all nine calls ordered.
+// Exact finish: compute type-2 bounds directly from the node fields. Compute
+// all four type-4 bounds before the vertical bounds.
+// One `edge` scratch local spans both non-line arms. Type 2 stores its right
+// bound there. Type 4 stores its left inner edge there.
+// BINARY NOTE: removing that shared lifetime swaps three compiler stack homes.
+// The result then differs by nine bytes. Sharing only xl and y1 is incidental.
+// Narrowing `edge` past the type-1 return and initializing xl at first use both
+// stay exact. The final source matches all 385 bytes and all nine direct calls.
 
 #ifndef RGE_VIEW_SHARED_CONTEXT
 struct DClipInfo_Node {
@@ -126,42 +134,33 @@ void RGE_View::Add_GDI_Clip_Mask(DClipInfo_Node* node, TSpan_List_Manager* span_
         span_mgr->AddLine_Align(node->x4, node->y4, node->x1, node->y1);
         return;
     }
+    int edge;
     if (node->Node_Type == 2 || node->Node_Type == 3) {
-        int xl;
-        int xr;
         int y1v;
         int y2v;
-        int x1v;
-        int x2v;
         int tmp;
         int y;
 
-        x1v = node->x1;
-        x2v = node->x2;
+        int xl = node->x1 & ~3;
+        edge = node->x2 | 3;
         y1v = node->y1;
         y2v = node->y2;
-        xl = x1v & ~3;
-        xr = x2v | 3;
         if (y1v > y2v) {
             tmp = y1v; y1v = y2v; y2v = tmp;
         }
         if (y1v <= y2v) {
             y = y1v;
             do {
-                span_mgr->AddSpan(xl, xr, y);
+                span_mgr->AddSpan(xl, edge, y);
                 y++;
             } while (y <= y2v);
         }
     }
     if (node->Node_Type == 4) {
-        int xl;
-        int xr;
         int y1v;
         int y2v;
         int x1v;
         int x2v;
-        int left_edge;
-        int right_edge;
         int tmp;
         int y;
 
@@ -170,20 +169,20 @@ void RGE_View::Add_GDI_Clip_Mask(DClipInfo_Node* node, TSpan_List_Manager* span_
         if (x1v > x2v) {
             tmp = x1v; x1v = x2v; x2v = tmp;
         }
-        left_edge = x1v | 3;
-        right_edge = x2v & ~3;
+        int xl = x1v & ~3;
+        edge = x1v | 3;
+        int right_edge = x2v & ~3;
+        int xr = x2v | 3;
         y1v = node->y1;
         y2v = node->y2;
         if (y1v > y2v) {
             tmp = y1v; y1v = y2v; y2v = tmp;
         }
-        xl = x1v & ~3;
-        xr = x2v | 3;
         span_mgr->AddSpan(xl, xr, y1v);
         span_mgr->AddSpan(xl, xr, y2v);
         y = y1v + 1;
         for (; y < y2v; y++) {
-            span_mgr->AddSpan(xl, left_edge, y);
+            span_mgr->AddSpan(xl, edge, y);
             span_mgr->AddSpan(right_edge, xr, y);
         }
     }

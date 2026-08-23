@@ -49,29 +49,18 @@
 //   stores, capacity update, and returns match. Both allocation calls have the
 //   same arguments and stack context. The late matched-lot handler and loop
 //   branch direction are control-flow placement only.
+// - Fresh finish pass: restored the reviewed full information-AI/object header
+//   surface. The natural body stayed in the 448-byte / 381-diff basin.
+// - Fresh probes: memory-left coordinate compares worsened to 391 bytes;
+//   while, max-local, pointer-lifetime, split-initializer, negative-disjunction,
+//   and explicit positive-backedge forms did not improve the clean basin.
+//   Default flags without the target /Gs addition produced the same listing.
+// - Exact-finish result: no exact source was found. The remaining binary facts
+//   are the late status handler at +01AE and direct scan jl at +0051. Natural
+//   VC5 lowering keeps the status handler before allocation and emits jge+jmp.
 
 #include <stddef.h>
-
-void* operator new(size_t size);
-void operator delete(void* ptr);
-
-struct BuildingLot {
-    int typeID;                 // +0x00
-    unsigned char status;       // +0x04
-    unsigned char x;             // +0x05
-    unsigned char y;             // +0x06
-    unsigned char pad_end;       // +0x07
-};
-
-class TribeInformationAIModule {
-public:
-    char gap_000[0x1F4];
-    int maxBuildingLots;         // +0x1F4
-    BuildingLot* buildingLots;   // +0x1F8
-
-    void storeLot(int typeID, unsigned char x, unsigned char y,
-                 unsigned char built);
-};
+#include "../../include/information_dropsites_context.h"
 
 void TribeInformationAIModule::storeLot(int typeID, unsigned char x,
                                         unsigned char y, unsigned char built)

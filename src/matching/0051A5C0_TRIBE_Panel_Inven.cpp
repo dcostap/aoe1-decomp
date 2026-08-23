@@ -7,6 +7,7 @@ extern "C" void __cdecl free(void* block);
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 extern "C" long __cdecl __ftol(void);
 
+#ifndef TPNL_INV_SHARED_CONTEXT
 struct TDrawArea;
 class TPanel;
 class TRIBE_Player;
@@ -48,6 +49,9 @@ public:
     void set_player(TRIBE_Player* player_);
     TRIBE_Panel_Inven(TDrawArea* area, TPanel* parent, void* font_, TRIBE_Player* player_);
 };
+#else
+#include "../../include/tpnl_inv_context.h"
+#endif
 
 TRIBE_Panel_Inven::TRIBE_Panel_Inven(TDrawArea* area, TPanel* parent, void* font_, TRIBE_Player* player_)
     : TPanel()
@@ -64,7 +68,7 @@ TRIBE_Panel_Inven::TRIBE_Panel_Inven(TDrawArea* area, TPanel* parent, void* font
     *(int**)this = TRIBE_Panel_Inven_vftable;
     this->idle_interval = 500;
     this->font_color = 0xFFFFFF;
-    if (((TPanel*)this)->setup(area, parent_arg, 0, 0, 0, 0, 0) == 0) {
+    if (this->TPanel::setup(area, parent_arg, 0, 0, 0, 0, 0) == 0) {
         *(int*)((char*)this + 0xD8) = 1;
     } else {
         set_player(player_);
