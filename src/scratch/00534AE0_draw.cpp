@@ -34,6 +34,15 @@
 //   - Bounded pause: remaining structural drift is broad around VC5 register/local
 //     liveness and clipping block layout; next lead is a focused natural-source
 //     variant lab or full view.cpp TU context, not more false member writes.
+//   - Continuation audit: authentic PDB order confirms draw (00534AE0) is the
+//     first unleased normal view.cpp sibling after ProcessQueuedBlit. Snapshot
+//     declaration and split-assignment permutations did not improve the clean
+//     basin. Signed 16-bit displacement locals, with and without direct cast
+//     call arguments, changed the frame to 0x50 and worsened structure (1695
+//     strict bytes). Ghidra-shaped rounding through new_rect.left/top was a
+//     codegen duplicate. Windows SDK RECT context changed the result to 1475
+//     bytes (1794B) and was rejected. Clip-arm inversion preserved 1471 bytes
+//     but did not recover the late fallback block. The clean source is restored.
 //   - Session sa-3ce3c739-r1 (2026-08-06, 10+ probes): improved 1501 -> 1441 strict
 //     (78.0% shape, -49B, frame 0x54, 26/26 calls; codegen-best diagnostic now 1441).
 //     Retained changes (all natural, PDB/binary-supported):

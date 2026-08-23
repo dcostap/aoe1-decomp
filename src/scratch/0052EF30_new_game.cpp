@@ -51,9 +51,20 @@
 //   worse.  They are not retained.
 // - Remaining blockers are the base-result BL schedule, three merged conquest
 //   setter calls, and the compiler's __chkstk symbol choice.
+// BINARY NOTE: score_displayed and controllingComputerPlayer publish before
+//   the base new_game call. Keep that order and the direct RGE_Player_Info& ABI.
+// BINARY NOTE: player objects, victory state, resources, and civilization use
+//   the reviewed RGE_Player offsets. TRIBE_Player casts only select derived calls.
+// BINARY NOTE: the post-save victory query is one call, generator publication
+//   follows the scenario updates, and player effects follow generator cleanup.
+// Shared-context audit: world/player ownership is canonical. The 5028-byte
+//   candidate retains 168/171 calls and 4369 strict drift; the missing calls are
+//   repeated equal-value conquest setter tails, not missing source branches.
 
 #include <stdio.h>
 #include <string.h>
+
+#include "../../include/tworld_prefix_context.h"
 
 typedef unsigned char uchar;
 #define S_EMPTY ((const char*)0x592A40)
@@ -63,7 +74,6 @@ extern void* __cdecl operator_new(unsigned int size);
 extern void __cdecl operator_delete(void* ptr);
 inline void* __cdecl operator new(unsigned int, void* place) { return place; }
 
-class RGE_Player_Info;
 class RGE_Map;
 class RGE_Game_World;
 class RGE_Random_Map_Module;
@@ -128,6 +138,7 @@ public:
     void add_points_high_attribute_amount(int a, int b, int attrib, int value, int flag);
 };
 
+#if 0
 struct RGE_Object_Type_Info {
     char pad_00[0x10];
     short id;
@@ -147,7 +158,9 @@ struct RGE_Object_List_Head {
     char pad_00[0x04];
     RGE_Object_List_Node* head;
 };
+#endif
 
+#if 0
 class TRIBE_Player {
 public:
     char pad_00[0x28];
@@ -163,6 +176,7 @@ public:
     void new_attribute_num(short attrib, float value);
     void add_population_entry();
 };
+#endif
 
 class RGE_Effects {
 public:
@@ -171,6 +185,7 @@ public:
     virtual void do_effect(short effect, TRIBE_Player* player);
 };
 
+#if 0
 class RGE_Game_World {
 public:
     void* vtable_ptr;
@@ -206,10 +221,15 @@ public:
 
     uchar new_game(RGE_Player_Info& param_1, int param_2);
 };
+#endif
 
-class T_Scenario {
+class RGE_Scenario {
 public:
     void Set_scenario_name(const char* name);
+};
+
+class T_Scenario : public RGE_Scenario {
+public:
     void add_description(char* text);
     void Set_victory_all_flag(int value);
     void Set_Multi_Conquest(int value);
@@ -245,7 +265,7 @@ static __inline int count_objects(TRIBE_World* world, short id) {
     int count = 0;
     int player_count = world->player_num;
     if (player_count > 0) {
-        TRIBE_Player** player = world->players;
+        TRIBE_Player** player = (TRIBE_Player**)world->players;
         do {
         RGE_Object_List_Node* node = (*player)->objects->head;
         while (node != 0) {
@@ -265,7 +285,7 @@ static __inline int count_ruins(TRIBE_World* world) {
     int count = 0;
     int player_count = world->player_num;
     if (player_count > 0) {
-        TRIBE_Player** player = world->players;
+        TRIBE_Player** player = (TRIBE_Player**)world->players;
         do {
         RGE_Object_List_Node* node = (*player)->objects->head;
         while (node != 0) {
@@ -547,22 +567,22 @@ uchar TRIBE_World::new_game(RGE_Player_Info& param_1, int param_2) {
 
     if (!rge_base_game->allowTrading()) {
         for (i = 1; i < this->player_num; ++i) {
-            this->effects->do_effect(0x69, this->players[i]);
+            this->effects->do_effect(0x69, (TRIBE_Player*)this->players[i]);
         }
     }
     if (rge_base_game->longCombat() == 1) {
         for (i = 1; i < this->player_num; ++i) {
-            this->effects->do_effect(0x64, this->players[i]);
+            this->effects->do_effect(0x64, (TRIBE_Player*)this->players[i]);
         }
     }
 
     if (!rge_base_game->fullTechTree() && !this->scenario->GetScenarioOption(2)) {
         for (i = 1; i < this->player_num; ++i) {
-            this->effects->do_effect(this->players[i]->civilization, this->players[i]);
+            this->effects->do_effect(this->players[i]->civilization, (TRIBE_Player*)this->players[i]);
         }
     } else {
         for (i = 1; i < this->player_num; ++i) {
-            this->effects->do_effect(0xd2, this->players[i]);
+            this->effects->do_effect(0xd2, (TRIBE_Player*)this->players[i]);
         }
     }
 
@@ -604,34 +624,34 @@ uchar TRIBE_World::new_game(RGE_Player_Info& param_1, int param_2) {
 
     switch (rge_base_game->startingAge()) {
     case 3:
-        for (i = 1; i < this->player_num; ++i) this->players[i]->rev_tech(0x19);
+        for (i = 1; i < this->player_num; ++i) ((TRIBE_Player*)this->players[i])->rev_tech(0x19);
         break;
     case 4:
-        for (i = 1; i < this->player_num; ++i) this->players[i]->rev_tech(0x17);
+        for (i = 1; i < this->player_num; ++i) ((TRIBE_Player*)this->players[i])->rev_tech(0x17);
         break;
     case 5:
-        for (i = 1; i < this->player_num; ++i) this->players[i]->rev_tech(0x18);
+        for (i = 1; i < this->player_num; ++i) ((TRIBE_Player*)this->players[i])->rev_tech(0x18);
         break;
     }
 
     if (rge_base_game->check_prog_argument((const char*)0x58c5f4)) {
         for (i = 1; i < this->player_num; ++i) {
-            this->players[i]->new_attribute_num(0x20, 50.0f);
-            this->players[i]->new_attribute_num(0x21, 0.0f);
-            this->players[i]->new_attribute_num(0x1e, 500.0f);
-            this->players[i]->new_attribute_num(0x1f, 5000.0f);
+            ((TRIBE_Player*)this->players[i])->new_attribute_num(0x20, 50.0f);
+            ((TRIBE_Player*)this->players[i])->new_attribute_num(0x21, 0.0f);
+            ((TRIBE_Player*)this->players[i])->new_attribute_num(0x1e, 500.0f);
+            ((TRIBE_Player*)this->players[i])->new_attribute_num(0x1f, 5000.0f);
         }
     } else if (rge_base_game->check_prog_argument((const char*)0x58c5ec)) {
         for (i = 1; i < this->player_num; ++i) {
-            this->players[i]->new_attribute_num(0x20, 50.0f);
-            this->players[i]->new_attribute_num(0x21, 0.0f);
+            ((TRIBE_Player*)this->players[i])->new_attribute_num(0x20, 50.0f);
+            ((TRIBE_Player*)this->players[i])->new_attribute_num(0x21, 0.0f);
         }
     } else {
         for (i = 1; i < this->player_num; ++i) {
-            this->players[i]->new_attribute_num(0x20, (float)rge_base_game->popLimit());
-            this->players[i]->new_attribute_num(0x21, 0.0f);
-            this->players[i]->new_attribute_num(0x1e, 500.0f);
-            this->players[i]->new_attribute_num(0x2d, 1.0f);
+            ((TRIBE_Player*)this->players[i])->new_attribute_num(0x20, (float)rge_base_game->popLimit());
+            ((TRIBE_Player*)this->players[i])->new_attribute_num(0x21, 0.0f);
+            ((TRIBE_Player*)this->players[i])->new_attribute_num(0x1e, 500.0f);
+            ((TRIBE_Player*)this->players[i])->new_attribute_num(0x2d, 1.0f);
             this->players[i]->victory->add_points_attribute_amount(0, 0, 0x14, 2, 1);
             this->players[i]->victory->add_points_attribute_amount(0, 1, 0x2b, 1, 1);
             this->players[i]->victory->add_points_attribute_amount(0, 2, 0x2c, 1, 1);
@@ -657,7 +677,7 @@ uchar TRIBE_World::new_game(RGE_Player_Info& param_1, int param_2) {
             this->players[i]->victory->add_points_attribute_first(3, 20, 6, 4, 0x19);
             this->players[i]->victory->add_points_attribute_amount(4, 22, 0x2d, 1, 100);
             this->players[i]->victory->add_points_attribute_amount(4, 23, 0x2a, 1, 100);
-            this->players[i]->add_population_entry();
+            ((TRIBE_Player*)this->players[i])->add_population_entry();
         }    }
 
     return ret_num;

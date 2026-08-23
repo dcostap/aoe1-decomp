@@ -73,6 +73,13 @@
 // - coordinate declaration/order, register qualification, long parameter
 //   casts, canonical geometry ownership, and four local-order lab variants
 //   did not recover the early colors. The natural while form remains current.
+// - fresh exact-finish probes tested the decompiler-proven helper aliases:
+//   map_height and the incoming long parameter homes receive the four bounding
+//   outputs, while the found flag reuses col_out. Direct natural C++ casts
+//   preserved the call target but emitted 283-287 bytes without the target's
+//   8-byte frame. They were restored. The current source keeps the simpler
+//   equivalent output locals until authentic source context supplies a better
+//   allocation model.
 // FLAGS: /nologo /c /O2 /Oy
 
 class RGE_Map {
@@ -171,3 +178,14 @@ int RGE_View::Pick_Tile(long px, long py, int* col_out, int* row_out) {
     tile_half_wid = 0;
     return 0;
 }
+
+// Worker pass sa-36bdddaa (2026-08-23):
+// - The pinned natural source was restored after each probe.
+// - Full TPanel/render_rect context, decompiler output aliases, map-local
+//   declaration permutations, transform order, and period header context did
+//   not recover the first ESI/ECX color mismatch.
+// - Fresh validation remains a mismatch: 155 positional bytes, one direct
+//   helper call, matching frame, and preserved loop and output behavior.
+// - Anchor rechecks were blocked after another worker moved Add_GDI_Clip_Mask
+//   from accepted_drift to matching while the TU resolver still names the old
+//   path. No anchor source was changed here.

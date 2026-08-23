@@ -51,6 +51,14 @@
 //   Direct count-before-list variants preserve the blocker fault order but are
 //   323-326 bytes different; they do not improve the current codegen basin.
 //   Receiver aliases and reversed array declarations are codegen duplicates.
+// - Specialist follow-up restored the pinned source after direct member-order,
+//   manager-alias, address-taken slot, and function-scope cursor probes. These
+//   forms stayed in the same 326-byte basin or duplicated the 308-byte clean
+//   result; none recovered the original ESI receiver save.
+// - The reviewed player context cannot be included in this isolated owner: it
+//   defines Visible_Resource_Manager and causes a type redefinition. No context
+//   edit was retained. Fresh grouped view anchors, including 0053DBA0, remain
+//   exact and were not changed by this pass.
 // Left in scratch: remaining drift is the early receiver-save/index LEA basin
 //   and associated register coloring; behavior, size/frame, calls, and inner
 //   reject-loop CFG are established. The current source uses the stronger

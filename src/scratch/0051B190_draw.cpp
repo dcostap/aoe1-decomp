@@ -31,8 +31,24 @@
 //   The best clean result is now 2832 differing bytes, 70.76% shape similarity,
 //   0x158 frame, and 90 rebuilt calls. The source remains nonexact.
 // - tested explicit resource-arm locals, compact TPanel slot declarations,
-//   and a scoped building alias. The first two were codegen-neutral or worse;
-//   the alias crossed a frame-pressure threshold and was discarded.
+//   and a function-scope building alias. The first two were codegen-neutral or
+//   worse; the broad alias crossed a frame-pressure threshold and was discarded.
+// - claim audit: restored the four-byte moving-object base gap, the reviewed
+//   int work_status ABI, raw held-amount resource gating, the PDB local order,
+//   and a production-path bldg_obj alias. The best fresh result was 2820 bytes
+//   different with the correct 3387-byte boundary and 0x158 frame, but it still
+//   has one finish-call and one __ftol call-site difference.
+// - claim audit: a canonical RGE_Static_Object game_obj field, bool resource
+//   visibility, and short item-type locals moved farther from the oracle.
+//   These probes were restored to the best typed building-object source.
+// - exact-finish context audit: the qualified owner is
+//   TRIBE_Panel_Object::draw in tpnl_obj.cpp lines 193-735, with the original
+//   boundary 0051B190-0051BECA.  The exact neighboring help and mouse-action
+//   owners are 0051ACA0, 0051CC80, and 0051CC90; their bytes remain protected.
+// - exact-finish probes: a progress-label form and a nested progress-arm form
+//   moved calls closer but changed call topology or fault order and were
+//   restored.  Keep the natural source below; do not trade publication or
+//   cleanup order for a closer metric.
 
 #include "../../include/game_globals.h"
 #include <stdio.h>
@@ -49,20 +65,19 @@ extern "C" void __cdecl _ASMSet_Color_Xform(int value);
 #define S_FMT_HP ((const char*)0x005870AC)
 
 // TPanel's real vtable places draw_setup/draw_finish/draw at 0x28/0x2c/0x30
-// and draw_rect at 0x34.
+// and draw_rect at 0x34.  The unneeded prefix is declaration-only here.
 class TPanel {
 public:
     virtual ~TPanel();
-    virtual long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char);
-    virtual void set_rect(tagRECT);
-    virtual void set_rect(long, long, long, long);
-    virtual void set_color(unsigned char);
-    virtual void set_active(int);
-    virtual void set_positioning(int, long, long, long, long, long, long, long, long,
-                                 TPanel*, TPanel*, TPanel*, TPanel*);
-    virtual void set_fixed_position(long, long, long, long);
+    virtual void vf04();
+    virtual void vf08();
+    virtual void vf0C();
+    virtual void vf10();
+    virtual void vf14();
+    virtual void vf18();
+    virtual void vf1C();
     virtual void set_redraw(int);
-    virtual void set_overlapped_redraw(TPanel*, TPanel*, int);
+    virtual void vf24();
     virtual void draw_setup(int);
     virtual void draw_finish();
     virtual void draw();
@@ -420,6 +435,9 @@ public:
     virtual RGE_Task* getTask(RGE_Static_Object*, float, float, float);
     virtual int setup_action(RGE_Master_Action_Object*, class RGE_Player*, float, float, float);
 
+    // RGE_Moving_Object is the omitted four-byte base between the static
+    // object fields and this action-object suffix.
+    char gap_84[4];
     char gap_88[0xf8];
     unsigned char waiting;
     unsigned char gap_181[3];
@@ -486,7 +504,7 @@ public:
     long PriorTurn3;
 
     short get_construction_progress();
-    void work_status(short&, short&, short&, char*, short);
+    int work_status(short&, short&, short&, char*, short);
     int production_queue_status(short&, short&);
 };
 
@@ -610,12 +628,14 @@ void TRIBE_Panel_Object::draw()
 {
     short cur_val;
     short orig_val;
+    float dx;
     short work_type;
-    short work_target;
-    short progress;
-    short temp;
+    TRIBE_Building_Object* bldg_obj;
     float cur_fval;
+    short progress;
+    short work_target;
     float orig_fval;
+    short temp;
     char name[100];
     char str[100];
     char work_name[100];
@@ -842,8 +862,7 @@ void TRIBE_Panel_Object::draw()
                 item_type = 5;
                 break;
             default:
-                this->draw_finish();
-                return;
+                goto invalid_item;
             }
 
             if ((int)(this->game_obj->attribute_amount_held - DAT_00576d84) > 0) {
@@ -882,8 +901,7 @@ void TRIBE_Panel_Object::draw()
             item_type = 5;
             break;
         default:
-            this->draw_finish();
-            return;
+            goto invalid_item;
         }
         this->draw_item(row, item_type, 0,
                         (int)(this->game_obj->attribute_amount_held -
@@ -913,8 +931,7 @@ void TRIBE_Panel_Object::draw()
             item_type = 5;
             break;
         default:
-            this->draw_finish();
-            return;
+            goto invalid_item;
         }
         this->draw_item(
             0, item_type, 0,
@@ -925,12 +942,13 @@ void TRIBE_Panel_Object::draw()
     }
 
     if (level == 2 || level == 8) {
+        bldg_obj = this->game_obj;
         if (this->game_obj->master_obj->master_type == 'P') {
-            this->game_obj->work_status(
+            bldg_obj->work_status(
                 work_type, work_target, progress, work_name, 100);
 
             if (work_type != 0x67 && work_type != 0x66 &&
-                this->game_obj->production_queue_status(work_target, temp) != 0) {
+                bldg_obj->production_queue_status(work_target, temp) != 0) {
                 work_type = 0x66;
                 progress = temp;
             }
@@ -938,12 +956,12 @@ void TRIBE_Panel_Object::draw()
             if (this->game_obj->object_state != 0 &&
                 (this->game_obj->owner != this->player ||
                  (work_type != 0x67 && work_type != 0x66))) {
-                this->game_obj->get_weapon(cur_val, orig_val);
+                bldg_obj->get_weapon(cur_val, orig_val);
                 if (cur_val > 0) {
                     this->draw_item(0, 7, 1, orig_val, cur_val);
                     row = 1;
                 }
-                this->game_obj->get_weapon_range(cur_fval, orig_fval);
+                bldg_obj->get_weapon_range(cur_fval, orig_fval);
                 if ((int)cur_fval > 0) {
                     this->draw_item(row, 6, 1,
                                     (int)orig_fval, (int)cur_fval);
@@ -953,7 +971,7 @@ void TRIBE_Panel_Object::draw()
 
             if (this->game_obj->owner == this->player) {
                 if (this->game_obj->object_state == 0) {
-                    progress = this->game_obj->get_construction_progress();
+                    progress = bldg_obj->get_construction_progress();
                 }
 
                 if (this->game_obj->object_state == 0 ||
@@ -973,7 +991,7 @@ void TRIBE_Panel_Object::draw()
                     }
 
                     if (this->game_obj->master_obj->id == 0x32) {
-                        RGE_Action* action = this->game_obj->actions->get_action();
+                        RGE_Action* action = bldg_obj->actions->get_action();
                         if (action != 0)
                             this->draw_item(
                                 row, 2, 0,
@@ -995,8 +1013,7 @@ void TRIBE_Panel_Object::draw()
                         show_resource = 1;
                     } else if (this->game_obj->master_obj->id != 0x32 &&
                                this->game_obj->attribute_type_held != -1 &&
-                               (int)(this->game_obj->attribute_amount_held -
-                                     DAT_00576d84) > 0) {
+                               (int)this->game_obj->attribute_amount_held > 0) {
                         show_resource = 1;
                     }
                 }
@@ -1063,7 +1080,7 @@ resource_done:
                 this->game_obj);
 
             if (nearby != 0) {
-                float dx = nearby->world_x - this->game_obj->world_x;
+                dx = nearby->world_x - this->game_obj->world_x;
                 float dy = nearby->world_y - this->game_obj->world_y;
                 float distance = dx * dx + dy * dy;
                 distance *= DAT_00576d88;
@@ -1080,6 +1097,9 @@ resource_done:
             }
         }
     }
+invalid_item:
+    this->draw_finish();
+    return;
 
 finish:
     this->draw_finish();

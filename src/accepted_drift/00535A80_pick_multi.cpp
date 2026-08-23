@@ -43,6 +43,51 @@
 // later loop islands. The first mismatch remains the initial y-coordinate load:
 // original keeps y1 in EBX, while rebuilt keeps y2. The radius block also uses
 // a different coordinate register map. No policy-valid exact source was found.
+// Current claim probes:
+// 24: Replaced unnamed virtual slots and flat overlays with the period
+//     RGE_View/TPanel, player, object, master, and world surfaces. Renamed the
+//     virtual calls to pick_through_fog and pick_weight. The 495-byte,
+//     39-byte-diff output was unchanged.
+// 25: Made the Picked_Objects cursor function scoped. Codegen was unchanged.
+// 26: Initialized that cursor at function entry to follow its earlier PDB
+//     declaration. This moved the load before the helper call and regressed
+//     to a 382-byte diff; it was restored.
+// 27: Reordered the first-pass declarations. Codegen was unchanged.
+// 28: Reused dead rectangle parameters for the second-pass count and selected
+//     object. This reached 51 bytes and was restored.
+// 29: Reversed the natural selected-object and score zero stores. This reached
+//     the current 37-byte frontier and remains in the source.
+// 30: Reused y1 only for the second-pass count. This reached 52 bytes and was
+//     restored.
+// 31: Added one natural y1 copy for the helper and delta. Codegen was a
+//     duplicate of the 37-byte frontier.
+// 32: Joined dx/dy declarations with their assignments. Codegen was unchanged.
+// 33: Removed the repeated radius assignment. This made 493 bytes and 312
+//     differing bytes, so it was restored.
+// 34: Made the inner radius choice an explicit if/else. This made 497 bytes
+//     and 309 differing bytes, so it was restored.
+// 35: Moved the remaining-count declaration to function scope. Codegen was a
+//     duplicate of the 37-byte frontier, so it was restored.
+// 36: Added the full reviewed RGE_View size surface. Codegen was unchanged,
+//     so the local class surface was restored.
+// 37: Reused y1 as the second-pass result. This made 495 bytes and 211
+//     differing bytes, so it was restored.
+// 38: Mutated x2 and y2 into the coordinate deltas. This made 495 bytes and
+//     56 differing bytes, so it was restored.
+// 39: Staged the coordinate delta assignments. The live translation-unit
+//     config changed during the check, so the source was restored before a
+//     result was recorded.
+// 40: Made the coordinate delta and radius locals long. Codegen was a
+//     duplicate of the 37-byte frontier; the widths match the PDB/decompiler
+//     long coordinate evidence.
+// BINARY NOTE: The original stores the second-pass count in the y1 home and
+// the selected object in the x2 home. The natural local form stores the count
+// in the y2 home while preserving the selected-object home.
+// BINARY NOTE: Fresh checks keep exact calls, x87 conversion order, object and
+// player rereads, the 495-byte boundary, and the RGE_View owner symbol.
+// BLOCKED: The target is not an owner in config/translation_units.json. A
+// shared view.cpp wrapper would need a config owner and shared-header changes.
+// Both changes are outside this task. The exact view anchors remain untouched.
 // ACCEPTED DRIFT: The changed regions use different registers for x1, y1, x2,
 // y2, dx, dy, and the second-pass counter. Both builds push identical helper
 // arguments, compute the same wrapped coordinate differences and radius, and
@@ -60,46 +105,125 @@ struct RGE_Pick_Obj_Info {
 
 extern RGE_Pick_Obj_Info Picked_Objects[];
 
-class RGE_Static_Object_Master { public: char pad[0x8d]; unsigned char select_level; };
-class RGE_Player;
-class RGE_Static_Object {
-public:
-    void* vtbl;
-    char pad04[4];
-    RGE_Static_Object_Master* master_obj; // +8
-    RGE_Player* owner; // +c
-    char pad10[0x38-0x10];
-    float x; // +38
-    float y; // +3c
-    char pad40[0x48-0x40];
-    unsigned char object_state; // +48
+struct RGE_Master_Static_Object {
+    virtual ~RGE_Master_Static_Object();
+    char gap_04[0x89];
+    unsigned char select_level; // +0x8d
 };
-class RGE_World { public: char pad[0x88]; RGE_Static_Object** objectsValue; };
-class RGE_Visible_Map { public: unsigned char get_visible(int x, int y); };
-class RGE_Player { public: char pad[0x38]; RGE_Visible_Map* visible; char pad2[0x4a-0x3c]; short id; int select_one_object(RGE_Static_Object*, int); };
-class RGE_Map { public: char pad[0x8db8]; unsigned char map_visible_flag; };
+
+class RGE_Visible_Map {
+public:
+    unsigned char get_visible(int x, int y);
+};
+
+struct RGE_Static_Object;
+
+struct RGE_Player {
+    virtual ~RGE_Player();
+    char gap_04[0x34];
+    RGE_Visible_Map* visible; // +0x38
+    char gap_3c[0x0e];
+    short id; // +0x4a
+    int select_one_object(RGE_Static_Object*, int);
+};
+
+struct RGE_Static_Object {
+    virtual ~RGE_Static_Object();
+    long id;
+    RGE_Master_Static_Object* master_obj; // +0x08
+    RGE_Player* owner; // +0x0c
+    char gap_10[0x28];
+    float x; // +0x38
+    float y; // +0x3c
+    char gap_40[8];
+    unsigned char object_state; // +0x48
+};
+
+struct RGE_World {
+    virtual ~RGE_World();
+    char gap_04[0x84];
+    RGE_Static_Object** objectsValue; // +0x88
+};
+
+class RGE_Map {
+public:
+    char gap_00[0x8db8];
+    unsigned char map_visible_flag; // +0x8db8
+};
 
 class TPanel {
 public:
-    virtual void v0();
-    virtual void v01(); virtual void v02(); virtual void v03(); virtual void v04(); virtual void v05(); virtual void v06(); virtual void v07();
-    virtual void v08(); virtual void v09(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
-    virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19(); virtual void v20(); virtual void v21(); virtual void v22(); virtual void v23();
-    virtual void v24(); virtual void v25(); virtual void v26(); virtual void v27(); virtual void v28(); virtual void v29(); virtual void v30(); virtual void v31();
-    virtual void v32(); virtual void v33(); virtual void v34(); virtual void v35(); virtual void v36(); virtual void v37(); virtual void v38(); virtual void v39();
-    virtual void v40(); virtual void v41(); virtual void v42(); virtual void v43(); virtual void v44(); virtual void v45(); virtual void v46(); virtual void v47();
-    virtual void v48(); virtual void v49(); virtual void v50(); virtual void v51(); virtual void v52(); virtual void v53(); virtual void v54(); virtual void v55();
-    char pad004[0xfc-4];
+    virtual ~TPanel();
+    virtual long setup(void*, TPanel*, long, long, long, long, unsigned char);
+    virtual void set_rect(void*);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_color(unsigned char);
+    virtual void set_active(int);
+    virtual void set_positioning(int, long, long, long, long, long, long,
+                                 long, long, TPanel*, TPanel*, TPanel*, TPanel*);
+    virtual void set_fixed_position(long, long, long, long);
+    virtual void set_redraw(int);
+    virtual void set_overlapped_redraw(TPanel*, TPanel*, int);
+    virtual void draw_setup(int);
+    virtual void draw_finish();
+    virtual void draw();
+    virtual void draw_rect(void*);
+    virtual void draw_offset(long, long, void*);
+    virtual void draw_rect2(void*);
+    virtual void draw_offset2(long, long, void*);
+    virtual void paint();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual long handle_idle();
+    virtual long handle_size(long, long);
+    virtual long handle_paint();
+    virtual long handle_key_down(long, short, int, int, int);
+    virtual long handle_char(long, short);
+    virtual long handle_command(unsigned int, long);
+    virtual long handle_user_command(unsigned int, long);
+    virtual long handle_timer_command(unsigned int, long);
+    virtual long handle_scroll(long, long);
+    virtual long handle_mouse_down(unsigned char, long, long, int, int);
+    virtual long handle_mouse_move(long, long, int, int);
+    virtual long handle_mouse_up(unsigned char, long, long, int, int);
+    virtual long handle_mouse_dbl_click(unsigned char, long, long, int, int);
+    virtual long mouse_move_action(long, long, int, int);
+    virtual long mouse_left_down_action(long, long, int, int);
+    virtual long mouse_left_hold_action(long, long, int, int);
+    virtual long mouse_left_move_action(long, long, int, int);
+    virtual long mouse_left_up_action(long, long, int, int);
+    virtual long mouse_left_dbl_click_action(long, long, int, int);
+    virtual long mouse_right_down_action(long, long, int, int);
+    virtual long mouse_right_hold_action(long, long, int, int);
+    virtual long mouse_right_move_action(long, long, int, int);
+    virtual long mouse_right_up_action(long, long, int, int);
+    virtual long mouse_right_dbl_click_action(long, long, int, int);
+    virtual long key_down_action(long, short, int, int, int);
+    virtual long char_action(long, short);
+    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    virtual void get_true_render_rect(void*);
+    virtual int is_inside(long, long);
+    char gap_04[0xf0];
 };
 
 class RGE_View : public TPanel {
 public:
-    virtual int can_pick(RGE_Static_Object*);
-    virtual int pick_score(RGE_Static_Object*, int picked_index);
+    void* cur_render_area; // +0xf4
+    int calc_draw_count; // +0xf8
+    RGE_World* world; // +0xfc
+    RGE_Player* player; // +0x100
+    RGE_Map* map; // +0x104
+    char gap_108[0x5c];
 
-    RGE_World* world; // +fc
-    RGE_Player* player; // +100
-    RGE_Map* map; // +104
+    virtual void set_focus(int);
+    virtual void set_tab_order(TPanel*, TPanel*);
+    virtual void set_tab_order(TPanel**, short);
+    virtual unsigned char get_help_info(char**, long*, long, long);
+    virtual void stop_sound_system();
+    virtual int restart_sound_system();
+    virtual void take_snapshot();
+    virtual void handle_reactivate();
+    virtual int pick_through_fog(RGE_Static_Object*);
+    virtual int pick_weight(RGE_Static_Object*, int picked_index);
 
     unsigned char pick_multi(unsigned char p1, long x1, long y1, long x2, long y2);
 protected:
@@ -110,13 +234,14 @@ protected:
 
 unsigned char RGE_View::pick_multi(unsigned char p1, long x1, long y1, long x2, long y2)
 {
-    int count;
+    RGE_Pick_Obj_Info* pp;
     int i = 0;
     int picked_any = 0;
+    int count;
     RGE_Static_Object* picked_obj;
     count = this->pick_multi_objects(x1, y1, x2, y2, 10, 20, this->player->id, p1, 1);
     if (count > 0) {
-        RGE_Pick_Obj_Info* pp = Picked_Objects;
+        pp = Picked_Objects;
         do {
             int idx = pp->object_id;
             if (idx != -1) {
@@ -132,11 +257,9 @@ unsigned char RGE_View::pick_multi(unsigned char p1, long x1, long y1, long x2, 
     }
     if (picked_any) return 1;
 
-    int dx;
-    int dy;
-    dx = x2 - x1;
-    dy = y2 - y1;
-    int r = dx;
+    long dx = x2 - x1;
+    long dy = y2 - y1;
+    long r = dx;
     if (dx >= dy) r = dy;
     if (r < 50) {
         r = dy;
@@ -145,23 +268,23 @@ unsigned char RGE_View::pick_multi(unsigned char p1, long x1, long y1, long x2, 
 
     count = this->pick_objects(x1 + dx/2, y1 + dy/2, 10, 20, r, 4, 1);
     if (count) {
-        int bestScore = 0;
         picked_obj = 0;
+        int bestScore = 0;
         int remaining;
         if (count > 0) {
-            RGE_Pick_Obj_Info* pp = Picked_Objects;
+            pp = Picked_Objects;
             remaining = count;
             do {
                 int idx = pp->object_id;
                 if (idx >= 0) {
                     RGE_Static_Object* obj = this->world->objectsValue[idx];
                     if (obj && obj->object_state < 7 && obj->master_obj->select_level >= 2) {
-                        if (!this->map->map_visible_flag && !this->can_pick(obj)) {
+                        if (!this->map->map_visible_flag && !this->pick_through_fog(obj)) {
                             int vy = (int)obj->y;
                             int vx = (int)obj->x;
                             if (this->player->visible->get_visible(vx, vy) != 0x0f) goto next;
                         }
-                        int score = this->pick_score(obj, pp->confidence);
+                        int score = this->pick_weight(obj, pp->confidence);
                         if (obj->owner == this->player) score += 5;
                         if (score > bestScore) { picked_obj = obj; bestScore = score; }
                     }

@@ -31,9 +31,17 @@
 // 72.09% shape, 34.30% exact-block coverage. Remaining drift is broad VC5
 // register/block topology and global-address relocation, not safe localized drift.
 // Main review replaced manual vptr fields with typed virtual ownership.
-// A same-TU draw_view donor proves the four +0x8C fields form render_rect.
-// Main review rejected a confidence-field cursor and pointer-relative object-id
-// store. Keep typed RGE_Pick_Obj_Info ownership despite its three-byte penalty.
+// matching-worker pass: same-TU draw_view proves the four +8c fields are one
+// render_rect aggregate; this changed source ownership but was codegen-neutral.
+// The target LEA/store pattern anchors the output cursor at confidence (+4),
+// so the retained cursor is short* with a six-short stride and the object id
+// store four bytes before it. This reduced strict diff to 417B at exact size.
+// Tested node-id reuse through max_level: 566B/412B but a 0x10 frame and broad
+// CFG loss; restored. Named bounds locals, absolute global, typed cursor alias,
+// and declaration-order variants were worse or duplicates and were restored.
+// Final claim validation: 566B, 0xC frame, 72.09% shape, 34.30% exact blocks,
+// 417 strict diff; no accepted-drift proposal. Remaining register/block drift
+// is broad and not policy-safe to call localized equivalent behavior.
 
 class RGE_Pick_Obj_Info {
 public:
@@ -127,7 +135,8 @@ int RGE_View::pick_multi_objects(int x1, int y1, int x2, int y2, int min_level, 
         do {
             DClipInfo_Node* node = this->prior_objs->Draw_Level_Head[z];
             if (node != 0) {
-                RGE_Pick_Obj_Info* out = &Picked_Objects[num_picked];
+                // BINARY NOTE: the cursor names the confidence word at +4.
+                short* out = &Picked_Objects[num_picked].confidence;
                 do {
                     int ok = 0;
                     if (node->Node_Type == 0) {
@@ -146,7 +155,7 @@ int RGE_View::pick_multi_objects(int x1, int y1, int x2, int y2, int min_level, 
                     }
                     if (ok != 0) {
                         int add = 1;
-                        if (out > Picked_Objects) {
+                        if (out > &Picked_Objects[0].confidence) {
                             int i = 0;
                             RGE_Pick_Obj_Info* p = Picked_Objects;
                             do {
@@ -162,15 +171,16 @@ int RGE_View::pick_multi_objects(int x1, int y1, int x2, int y2, int min_level, 
                             } while (i < num_picked);
                         }
                         if (add) {
-                            out->object_id = node->Object_ID;
-                            out->confidence = (short)ok;
-                            out->draw_level = (short)ok;
-                            out->draw_x = node->Draw_X;
-                            out->draw_y = node->Draw_Y;
+                            // BINARY NOTE: object_id is the dword before confidence.
+                            *((int*)(out - 2)) = node->Object_ID;
+                            out[0] = (short)ok;
+                            out[1] = (short)ok;
+                            out[2] = node->Draw_X;
+                            out[3] = node->Draw_Y;
                             num_picked++;
-                            ++out;
+                            out += 6;
                         }
-                        if (out >= Picked_Objects + 64) return 0x40;
+                        if (out >= &Picked_Objects[64].confidence) return 0x40;
                     }
                     node = node->NextOnLevel;
                 } while (node != 0);

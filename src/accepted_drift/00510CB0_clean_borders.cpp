@@ -45,13 +45,16 @@
 // for all vertical and diagonal neighbor tests. The prior independent vertical
 // tests changed behavior and prevented separate set_terrain call sites. Explicit
 // `border == 1` terminal tests recover the original `cmp byte,1` branches, the
-// 840-byte boundary, all 19 calls, and all 276 instruction blocks. One SIB byte
-// remains: the oracle encodes `[edi+edx+5]`, while VC5 emits equivalent
-// `[edx+edi+5]`. Natural typed pointer, array, and proven byte-offset spellings
-// all stayed in that same one-byte recolor basin.
-// ACCEPTED DRIFT: the sole changed SIB byte exchanges the base and index in
-// one byte load. Both encodings calculate the identical EDX+EDI+5 address.
-// Instruction order, calls, predicates, memory effects, and fault order match.
+// 840-byte boundary, all 19 calls, and all 276 instruction blocks.
+//
+// Exact-finish: changing the terrain member from a plain byte with an explicit
+// mask to the proven five-bit terrain_type bitfield recovers the sole SIB byte.
+// The exact transition changes no tile size, row stride, calls, or control flow.
+// A reduction test removed the other canonical tile fields and stayed exact.
+// Reverting only the bitfield, while retaining the mask, restored the one-byte
+// mismatch at the current-tile load. The final source is therefore the smallest
+// natural tmap.cpp reconstruction supported by the exact check.
+// BINARY NOTE: terrain_type occupies the low five bits at tile offset +5.
 //
 // The map rows are arrays of 0x18-byte RGE_Tile records. The byte used by
 // clean_borders is terrain at +5, distinct from the passability byte at +4.
@@ -60,7 +63,7 @@ struct RGE_Tile {
     short screen_xpos;
     short screen_ypos;
     unsigned char tile_type;
-    unsigned char terrain;
+    unsigned char terrain_type : 5;
     char gap_06[0x18 - 0x06];
 };
 
@@ -86,7 +89,7 @@ public:
     void clean_borders(long x1, long y1, long x2, long y2, unsigned char terrain);
 };
 
-#define TERRAIN_AT(tile) ((tile)->terrain & 0x1f)
+#define TERRAIN_AT(tile) ((tile)->terrain_type)
 
 void TRIBE_Map::clean_borders(long x1, long y1, long x2, long y2, unsigned char terrain) {
     long max_y = this->map_height - 1;

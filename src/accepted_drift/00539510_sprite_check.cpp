@@ -1,5 +1,10 @@
 // VA: 00539510 RGE_View::sprite_check
 // view.cpp lines 5238-5347
+// CANONICAL OWNER: this accepted-drift body is the only compiler-facing
+// definition for VA 00539510. The historical src/scratch path was renamed
+// here in commit 9a8c9ac3. Caller-only declarations in matching and scratch
+// pick-object sources do not own this symbol. This target is not included by
+// src/view_tu.cpp, so it has no wrapper owner.
 // Attempt log:
 // prior worker: natural switch source produced inline early returns and wrong info
 // register (ESI not EDI), 86.9% positional diff.
@@ -40,7 +45,7 @@
 // sweep produced no exact result; all variants kept the swapped pointer colors.
 // Final clean source remains the typed decoder below. Next useful evidence is
 // the original view.cpp class/TU context or a matching register-color donor.
-// left in scratch: canonical typed decoder and exact size/CFG family are
+// historical scratch state: canonical typed decoder and exact size/CFG family are
 // reconstructed, but VC5 still colors info/shape opposite the oracle and emits
 // a byte-opcode reload plus distinct return-tail drift. Not accepted_drift-safe.
 // revisit: direct canonical Shape_Info field widths, scoped opcode/stream

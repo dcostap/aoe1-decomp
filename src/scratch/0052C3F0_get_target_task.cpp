@@ -49,97 +49,13 @@
 // direct-index and typed-cursor forms to the same basin.
 // Open: recover the source or translation-unit context that keeps param_2 in
 // ESI and sVar7 in EDI before tuning the remaining list-scan topology.
-#include "..\..\include\game_globals.h"
-class TRIBE_Task_List;
-class RGE_Action_Object;
-class RGE_Static_Object;
-class RGE_Task;
-class RGE_Player;
-class RGE_Master_Static_Object;
-
-class RGE_Task {
-public:
-    char gap_00[0x06];
-    short action_type;               // +0x06
-    short object_group;              // +0x08
-    short object_id;                 // +0x0A
-    unsigned char combat_level;      // +0x0C
-    unsigned char combat_level_flag; // +0x0D
-    short terrain_id;                // +0x0E
-    unsigned char owner_type;        // +0x10
-    unsigned char holding_attr;      // +0x11
-    unsigned char state_building;    // +0x12
-    unsigned char gap_13;
-    short attribute_type;            // +0x14
-};
-
-class RGE_Task_List {
-public:
-    virtual RGE_Task* create_task(short, short);
-    virtual RGE_Task* get_target_task(RGE_Action_Object*, RGE_Static_Object*, float, float, float);
-    virtual int is_attack_task(RGE_Task*);
-    virtual int check_task(RGE_Task*, RGE_Action_Object*, RGE_Static_Object*);
-    virtual ~RGE_Task_List();
-
-    RGE_Task** list;                 // +0x04
-    short list_num;                  // +0x08
-};
-
-// RGE_Static_Object base provides field offsets at original EXE positions
-class RGE_Static_Object {
-public:
-    virtual ~RGE_Static_Object();
-
-    int id;                                 // +0x04
-    RGE_Master_Static_Object* master_obj;   // +0x08
-    RGE_Player* owner;                      // +0x0C
-    char gap_10[0x20];                      // +0x10..+0x2F
-    float hp;                               // +0x30
-    char gap_34[0x10];                      // +0x34..+0x43
-    float attribute_amount_held;            // +0x44
-    unsigned char object_state;             // +0x48
-    char gap_49[3];                         // +0x49..+0x4B
-    short attribute_type_held;              // +0x4C
-};
-
-class RGE_Action_Object : public RGE_Static_Object {
-};
-
-class RGE_Master_Static_Object {
-public:
-    virtual ~RGE_Master_Static_Object();
-
-    unsigned char master_type;             // +0x04
-    char gap_05[0x0B];                      // +0x05..+0x0F
-    short id;                               // +0x10
-    short copy_id;                          // +0x12
-    short object_group;                     // +0x14
-    char gap_16[0x10];                      // +0x16..+0x25
-    short hp;                               // +0x26
-    char gap_28[0x67];                      // +0x28..+0x8E
-    unsigned char unit_level;              // +0x8F
-};
-
-class RGE_Player {
-public:
-    virtual ~RGE_Player();
-    virtual void set_game_status(unsigned char);
-    virtual void do_resign(int);
-    virtual void changeToHumanPlayer();
-    virtual void changeToComputerPlayer();
-    virtual char* aiStatus(int);
-    virtual int isEnemy(long);
-    virtual int isAlly(long);              // vtbl slot at +0x1C
-
-    char gap_04[0x46];
-    short id;                               // +0x4A
-};
-
-class TRIBE_Task_List : public RGE_Task_List {
-public:
-    RGE_Task* get_target_task(RGE_Action_Object*, RGE_Static_Object*, float, float, float);
-};
-
+// Pass 4 context:
+// BINARY NOTE: The PDB source module is ttsk_lst.cpp.  The reviewed context
+// header keeps the canonical task-list list/list_num alias and the player
+// virtual slot used by all seven relation calls.  The target output stayed
+// unchanged after this context move.  The unregistered module wrapper lists
+// the PDB owner order and the 0052C8D0 exact anchor.
+#include "..\..\include\ttsk_lst_context.h"
 RGE_Task* TRIBE_Task_List::get_target_task(RGE_Action_Object* param_1, RGE_Static_Object* param_2, float param_3, float param_4, float param_5) {
     short sVar2, sVar7, sVar5;
     int iVar8;

@@ -13,6 +13,14 @@
 // padding, but made VC5 cache GDI imports and expanded the body; rolled back.
 // Probe: unsigned int text_flags matched the DrawText format ABI but emitted
 // duplicate 0x11c/931-byte code; restored the int local.
+// Canonical-context probe: the full TPanel virtual/member surface, the derived
+// draw slot, and protected IA ownership changed no emitted bytes; retain them.
+// Exact-finish probes: TextStorage aggregates and an old-font/text union did
+// not repair the frame or stack homes. A 248-byte buffer reached 0x114/436,
+// but the binary local evidence requires char[256] and it is not retained.
+// Exact-finish probes: binary-ordered Used-rectangle aliases improved the
+// final scheduling basin to 434 bytes, but still required the unsupported
+// 248-byte buffer. The PDB-order char[256] source is restored below.
 // Managed reassessment: the clean source has 26/26 ordered calls and 8/8 CFG
 // signals, but emits 931 bytes, a 0x11c frame, EDI/EBX bounds, and EBP flags;
 // the oracle has 916 bytes, a 0x114 frame, EBP/EBX bounds, and EDI flags.
@@ -20,6 +28,19 @@
 // 923 bytes), but changed the quotient basin at +0xbc and raised the diff.
 // Twenty source, ABI, layout, lifetime, and context probes found no better
 // clean result. Keep the typed source and do not pad the frame.
+// Fresh exact pass: windows.h GDI types, GetDc guard lifetime, exact-donor
+// declaration order, bound scopes, register spelling, and value reuse were
+// codegen duplicates. The centered-bound model grew to 955 bytes and 0x120.
+// Fresh exact pass: char[256] with binary-ordered tail locals emitted 923
+// bytes and a 0x11c frame. It improved tail shape but did not swap EBP/EDI.
+// The two extra bound-argument spills occupy the eight bytes below old_font.
+// PDB OWNER NOTE: cvdump and the original symbol table prove
+// ?render_to_image_buffer@TRIBE_Panel_Time@@IAEHXZ at 0051E2B0. A Pop-owner
+// compile kept the same bytes but failed the owner-symbol check. Do not rename
+// this owner to TRIBE_Panel_Pop.
+// Specialist finish: declaration order, register locals, canonical RGE world
+// types, long bounds, direct member bounds, and the Pop-owner audit were tested.
+// The canonical RGE type surface is retained when it emits duplicate bytes.
 // BLOCKER: original frame is 0x114 with EBP/EBX bounds and EDI flags; current
 // typed source uses a 0x11c frame with a different local/register basin.
 
@@ -40,14 +61,16 @@ struct tagRECT {
 
 struct HRGN__;
 
-struct WorldLike {
+struct RGE_Game_World {
     char gap_00[0x18];
     float game_speed;
 };
 
-struct TDrawSystem {
+struct TDrawSystem;
+
+struct RGE_Base_Game {
     char gap_00[0x3F4];
-    void* world_ptr;
+    RGE_Game_World* world;
 };
 
 class TDrawArea {
@@ -66,43 +89,137 @@ public:
     void ReleaseDc(char* unused);
 };
 
+typedef int PositionMode;
+typedef int RedrawMode;
+struct PanelNode;
+
 class TPanel {
 public:
     virtual ~TPanel();
-    virtual void vf04(void);
-    virtual void vf08(void);
-    virtual void vf0C(void);
-    virtual void vf10(void);
-    virtual void vf14(void);
-    virtual void vf18(void);
-    virtual void vf1C(void);
-    virtual long set_redraw(int);
+    virtual long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char);
+    virtual void set_rect(tagRECT);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_color(unsigned char);
+    virtual void set_active(int);
+    virtual void set_positioning(PositionMode, long, long, long, long, long, long,
+                                 long, long, TPanel*, TPanel*, TPanel*, TPanel*);
+    virtual void set_fixed_position(long, long, long, long);
+    virtual void set_redraw(RedrawMode);
+    virtual void set_overlapped_redraw(TPanel*, TPanel*, RedrawMode);
+    virtual void draw_setup(int);
+    virtual void draw_finish();
+    virtual void draw();
+    virtual void draw_rect(tagRECT*);
+    virtual void draw_offset(long, long, tagRECT*);
+    virtual void draw_rect2(tagRECT*);
+    virtual void draw_offset2(long, long, tagRECT*);
+    virtual void paint();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
     virtual long handle_idle();
-    virtual void vf28(int value);
-    virtual void finish_up(void);
+    virtual long handle_size(long, long);
+    virtual long handle_paint();
+    virtual long handle_key_down(long, short, int, int, int);
+    virtual long handle_char(long, short);
+    virtual long handle_command(unsigned int, long);
+    virtual long handle_user_command(unsigned int, long);
+    virtual long handle_timer_command(unsigned int, long);
+    virtual long handle_scroll(long, long);
+    virtual long handle_mouse_down(unsigned char, long, long, int, int);
+    virtual long handle_mouse_move(long, long, int, int);
+    virtual long handle_mouse_up(unsigned char, long, long, int, int);
+    virtual long handle_mouse_dbl_click(unsigned char, long, long, int, int);
+    virtual long mouse_move_action(long, long, int, int);
+    virtual long mouse_left_down_action(long, long, int, int);
+    virtual long mouse_left_hold_action(long, long, int, int);
+    virtual long mouse_left_move_action(long, long, int, int);
+    virtual long mouse_left_up_action(long, long, int, int);
+    virtual long mouse_left_dbl_click_action(long, long, int, int);
+    virtual long mouse_right_down_action(long, long, int, int);
+    virtual long mouse_right_hold_action(long, long, int, int);
+    virtual long mouse_right_move_action(long, long, int, int);
+    virtual long mouse_right_up_action(long, long, int, int);
+    virtual long key_down_action(long, short, int, int, int);
+    virtual long char_action(long, short);
+    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    virtual void get_true_render_rect(tagRECT*);
+    virtual int is_inside(long, long);
+    virtual void set_focus(int);
+    virtual void set_tab_order(TPanel*, TPanel*);
+    virtual void set_tab_order(TPanel**, short);
+    virtual unsigned char get_help_info(char**, long*, long, long);
+    virtual void stop_sound_system();
+    virtual int restart_sound_system();
+    virtual void take_snapshot();
+    virtual void handle_reactivate();
 
-    char gap_00[0x08];
+    TPanel* previousPanelValue;
+    TPanel* previousModalPanelValue;
     long pnl_x;
     long pnl_y;
     long pnl_wid;
     long pnl_hgt;
-    char gap_1C[0x04];
+    char* panelNameValue;
     TDrawArea* render_area;
-    char gap_24[0x48];
-    int field_6C;
-    int field_70;
-    char gap_74[0x14];
-    void* clip_rgn;
+    int clip_left;
+    int clip_top;
+    int clip_right;
+    int clip_bottom;
+    PositionMode position_mode;
+    RedrawMode need_redraw;
+    TPanel* curr_child;
+    TPanel* parent_panel;
+    TPanel* left_panel;
+    TPanel* top_panel;
+    TPanel* right_panel;
+    TPanel* bottom_panel;
+    PanelNode* node;
+    PanelNode* first_child_node;
+    PanelNode* last_child_node;
+    TPanel* tab_prev_panel;
+    TPanel* tab_next_panel;
+    int mouse_captured;
+    int active;
+    int visible;
+    int tab_stop;
+    int have_focus;
+    int overlapping_children;
+    int handle_mouse_input;
+    int just_drawn;
+    HRGN__* clip_rgn;
     tagRECT render_rect;
-    char gap_9C[0x44];
-    long draw_depth;
-    char gap_E4[0x0F];
-    unsigned char field_F3;
+    long left_border;
+    long top_border;
+    long right_border;
+    long bottom_border;
+    long min_wid;
+    long max_wid;
+    long min_hgt;
+    long max_hgt;
+    long mouse_hold_interval;
+    long mouse_move_tolerance;
+    long mouse_down_x;
+    long mouse_down_y;
+    long mouse_down_ctrl;
+    long mouse_down_shift;
+    unsigned long mouse_down_time;
+    long error_code;
+    long z_order;
+    long display_changed_count;
+    long help_string_id;
+    long help_page_id;
+    unsigned char mouse_action;
+    unsigned char mouse_down_button;
+    unsigned char panel_type;
+    unsigned char color;
+    unsigned char fill_in_background;
+    unsigned char clip_to_parent;
+    unsigned char draw_rect2_flag;
+    unsigned char need_restore;
 
     char* get_string(int string_id);
 };
 
-extern TDrawSystem* rge_base_game;
+extern RGE_Base_Game* rge_base_game;
 extern const char s_tpnl_tim_render_to_image_buffer[];
 extern const char s_clock_hms_fmt[];
 
@@ -132,15 +249,18 @@ public:
     long last_ib_width;
     long last_ib_height;
 
+    virtual void draw();
+
+protected:
     int render_to_image_buffer();
 };
 
 int TRIBE_Panel_Time::render_to_image_buffer() {
-    char str[256];
     void* old_font;
+    char str[256];
     tagRECT rect;
-    int width;
-    int height;
+    long width;
+    long height;
     int text_flags;
 
 
@@ -171,7 +291,7 @@ int TRIBE_Panel_Time::render_to_image_buffer() {
                 minutes = minutes - hours * 0x3C;
             }
         }
-        sprintf(str, s_clock_hms_fmt, hours, minutes, seconds, ((WorldLike*)rge_base_game->world_ptr)->game_speed);
+        sprintf(str, s_clock_hms_fmt, hours, minutes, seconds, rge_base_game->world->game_speed);
         text_flags = 0x20;
     } else {
         int rounded_time = ((this->current_display_value + 4) / 5) * 5;

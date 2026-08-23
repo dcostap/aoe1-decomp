@@ -168,6 +168,27 @@
 // not a localized behavior-equivalent residue. No accepted-drift case is
 // supported.
 
+// sa-d3e4876f-r1 continuation: assigning the BltFast result to force was
+// eliminated by VC5. The period drawarea header did not compile with the
+// proven method arity. A minimal typed DirectDraw interface was a codegen
+// duplicate. A full proven TPanel field surface was also a duplicate. Each
+// was restored.
+// Authentic-context audit: a temporary view.cpp wrapper included the real
+// view prefix and defined the exact RGE_View member. It retained the extra
+// EBX save and the same COM argument schedule. No config or anchor changed.
+// Fresh validation remains MISMATCH: 215 rebuilt bytes versus 219 original,
+// 195 differing bytes, 2/2 ordered calls, and first mismatch at +0003.
+
+// sa-dfd48413-r1 exact-finish audit: translation_unit_prefixes.py rejects this
+// target because view.cpp has no configured target owner. A generated wrapper
+// using the current view prefix and native VC5 view flags compiled the target,
+// but it is not an authentic context: the prefix omits PDB owners between
+// calc_draw_vars and ProcessQueuedBlit, and its grouped anchors are not exact.
+// Its target stayed in the 215-byte extra-EBX basin (191 common-byte changes,
+// plus the four-byte boundary gap). Do not claim this wrapper as exact context.
+// Missing evidence: the complete period view.cpp source prefix and a reviewed
+// grouped-owner manifest that can validate exact anchors without config edits.
+
 #include <windows.h>
 #include <ddraw.h>
 

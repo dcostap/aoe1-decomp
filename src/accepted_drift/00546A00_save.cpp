@@ -2,27 +2,7 @@
 // PDB source: zone_map.cpp
 
 extern int rge_write(void* file, void* data, int size);
-
-// Layout derived from save function:
-// +0x000: main_data[0x3FC] (1020 bytes, bulk write)
-// +0x3FC: gap[8] (two ints or zone geometry data)
-// +0x404: zone_data_ptr
-// +0x408: gap[4]
-// +0x40C: name[0xFF]
-// +0x50B: gap[5]
-// +0x510: array_ptr
-// +0x514: item_count
-// +0x518: zone_header_ptr
-
-struct RGE_Zone_Map {
-    // Main data block (0 to 0x3FB)
-    char bulk_data[0x3FC];
-    
-    // +0x3FC: gap area containing zone geometry data
-    
-    // Save function:
-    void save(void* file);
-};
+#include "../../include/rge_zone_map_context.h"
 
 // Helper to access fields at specific offsets
 #define AT(type, base, offset) (*(type*)((char*)(base) + (offset)))

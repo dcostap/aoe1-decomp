@@ -36,10 +36,32 @@
 //     this is a codegen duplicate of the term-wise candidate.
 // 30: a literal 0.5f is a closer metric basin but loses the reviewed data symbol;
 //     restored DAT_005776b4 and the typed source.
-// 31-34: short offset locals and decompiler-style assignment staging reduced
-//     positional differences but changed the frame from 0x0C to 0x18. Main
-//     review rejected the narrow offsets because they can change arithmetic
-//     overflow behavior. Keep the clear int projection offsets.
+// 31: explicit half-scaled terms on both coordinate axes, with the PDB/decompiler
+//     center-map assignment order, reached 600 bytes / 494 strict bytes / 46.11%
+//     shape.  The original 0x0c frame and three reused dword homes remain absent.
+// 32: grouped half-scaled row/column expressions reached 579 bytes / 497 strict
+//     bytes; the separate term-wise products are closer to the original x87 shape.
+// 33: full-width projection locals reached 607 bytes / 523 strict bytes; rolled back.
+// 34: row and coordinate float locals, polymorphic player/map surfaces, full TPanel
+//     virtual context, split map-row fetch, and function-scope declaration variants
+//     were duplicate or farther.  Restored the minimal typed surface.
+// 35: fresh validation of the pinned clean source stayed at 600 bytes / 494
+//     strict bytes / 0x18 frame, with four direct __ftol calls and exact owner.
+// 36: a six-variant source lab covered term-wise, asymmetric, grouped, and
+//     early-publication forms.  No exact variant appeared; the pinned clean
+//     algebra remained the closest positional basin.
+// 37-43: canonical RGE_View tail, polymorphic RGE_Player/RGE_Map, an explicit
+//     center-column adjustment, and decompiler declaration order did not recover
+//     the 0x0C frame.  The canonical polymorphic pair reached 606 bytes / 530
+//     strict bytes and was restored.
+// 44: the original reads DAT_005776B4 twice, once per projection.  It leaves the
+//     column delta unscaled.  A natural asymmetric source reached 594 bytes /
+//     536 strict bytes, so the clean metric candidate was not behavior-safe.
+// 45: row-first term order was a codegen duplicate of the asymmetric form.
+// 46: the current source keeps the binary-proven asymmetric projection and the
+//     two early center-screen publications before the second conversion.
+//     This preserves partial update state and fault order; exactness remains
+//     blocked by the frame/register/FPU basin.
 
 struct RGE_Player { unsigned char pad_000[0x114]; float view_x; float view_y; };
 struct RGE_Tile { short screen_xpos; short screen_ypos; unsigned char field_4; unsigned char flags; unsigned char pad[0x12]; };
@@ -76,33 +98,45 @@ public:
 
 void RGE_View::update()
 {
-    RGE_Player* p = this->player;
+    RGE_Player* p;
+    short sVar6;
+    short sVar7;
+    short sVar8;
+    short sVar9;
+    short sVar10;
+    RGE_Tile* tile;
+    p = this->player;
     if (p && (p->view_x != this->last_view_x || p->view_y != this->last_view_y)) {
-        this->center_map_col = (short)(int)p->view_x;
-        this->center_map_row = (short)(int)p->view_y;
-        short sVar6 = this->center_map_col;
+        sVar6 = (short)(int)p->view_x;
+        this->center_map_col = sVar6;
+        sVar7 = (short)(int)p->view_y;
+        sVar6 = this->center_map_col;
+        this->center_map_row = sVar7;
+        sVar9 = (short)(this->render_rect.left + this->pnl_wid / 2) - this->tile_half_wid;
+        sVar10 = (short)(this->render_rect.top + this->pnl_hgt / 2) - this->tile_half_hgt;
         this->last_view_x = p->view_x;
         this->last_view_y = p->view_y;
-        short sVar9 = (short)(this->render_rect.left + this->pnl_wid / 2) - this->tile_half_wid;
-        short sVar10 = (short)(this->render_rect.top + this->pnl_hgt / 2) - this->tile_half_hgt;
-        int x_offset = (int)(((p->view_x - (float)sVar6) *
-                              (float)this->tile_wid) +
-                             ((p->view_y - (float)this->center_map_row) *
-                              DAT_005776b4 * (float)this->tile_wid));
-        int y_offset = (int)(((p->view_y - (float)this->center_map_row) *
-                              DAT_005776b4 * (float)this->tile_hgt) -
-                             ((p->view_x - (float)sVar6) *
-                              (float)this->tile_hgt));
-        sVar9 -= (short)x_offset;
-        sVar10 -= (short)(y_offset + this->tile_half_hgt);
+        // BINARY NOTE: the executable publishes these base coordinates before
+        // the second conversion.  Keep the partial state on a conversion fault.
         this->center_scr_col = sVar9;
         this->center_scr_row = sVar10;
-        RGE_Tile* tile = this->map->map_row_offset[this->center_map_row] + sVar6;
+        sVar7 = (short)(int)(((p->view_y - (float)this->center_map_row) * DAT_005776b4 *
+                              (float)this->tile_wid) +
+                             ((p->view_x - (float)sVar6) *
+                              (float)this->tile_wid));
+        sVar8 = (short)(int)(((p->view_y - (float)this->center_map_row) * DAT_005776b4 *
+                              (float)this->tile_hgt) -
+                             ((p->view_x - (float)sVar6) *
+                              (float)this->tile_hgt));
+        sVar9 -= sVar7;
+        sVar10 -= sVar8 + this->tile_half_hgt;
+        this->center_scr_col = sVar9;
+        this->center_scr_row = sVar10;
+        tile = this->map->map_row_offset[this->center_map_row] + sVar6;
         this->map_scr_x_offset = (int)tile->screen_xpos - (int)sVar9;
         this->map_scr_y_offset = ((int)this->elev_hgt * ((unsigned int)tile->flags >> 5) + (int)tile->screen_ypos) - (int)sVar10;
-        this->center_scr_col_offset = (short)((sVar6 + this->center_map_row) * this->tile_half_wid - x_offset);
-        this->center_scr_row_offset = (short)((this->center_map_row - sVar6) * this->tile_half_hgt - y_offset - this->tile_half_hgt);
-        short sVar7;
+        this->center_scr_col_offset = (short)((sVar6 + this->center_map_row) * this->tile_half_wid - sVar7);
+        this->center_scr_row_offset = (short)((this->center_map_row - sVar6) * this->tile_half_hgt - sVar8 - this->tile_half_hgt);
         sVar7 = this->max_col_num / 2 + 2;
         this->start_map_row = this->center_map_row;
         this->start_map_row -= sVar7;

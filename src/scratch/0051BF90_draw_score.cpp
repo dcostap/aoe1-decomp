@@ -35,6 +35,11 @@
 //   were unsupported. Regular pointer aliases and full TPanel context did not
 //   improve the clean source. Joined y initialization reached diff 619 but
 //   hoisted the load. All probes were restored to the clean source.
+// - Claim sa-b64ba1f9: delaying y_offset until coordinate setup, naming the
+//   repeated row coordinate, and using a 104-byte buffer reached diff 224 with
+//   exact size and frame. The direct-expression form stayed at diff 626. The
+//   winning form still missed the target stack homes and used an unsupported
+//   buffer width, so it was discarded and this clean source was restored.
 
 #include <stdio.h>
 #include <string.h>
@@ -142,6 +147,8 @@ extern TCommunications_Handler* comm;
 class TRIBE_Panel_Object : public TPanel {
 public:
     void* font;
+
+protected:
     void draw_score();
 };
 

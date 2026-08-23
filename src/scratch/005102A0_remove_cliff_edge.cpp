@@ -74,6 +74,15 @@
 // the oracle loads dir, then reloads map into ESI; VC5 loads map, then dir.
 // Volatility is compiler-steering scaffolding, so all diagnostic forms were
 // rolled back. Clean source remains the natural 360-byte reconstruction.
+// sa-284594e5-r1 exact-finish: 11 natural probes tested function-scope cliff
+// and outer declarations, pointer and reference map aliases, split map setup,
+// register hints, a per-iteration world local, and aggregate info[0] setup.
+// Every form stayed in the 360-byte family. The final clean check confirms the
+// 339-byte boundary, PDB owner, frame, eight ordered calls, and malformed-size
+// guards. No policy-valid exact source was found. The clean source is restored.
+// Context gate: no tmap translation unit is configured, so
+// translation_unit_prefixes.py rejects this VA. No wrapper or config edit was
+// made during this pass.
 
 struct TRIBE_Cliff_Info {
     int info[4];

@@ -36,6 +36,18 @@
 //     loop, where the original uses a byte-offset lowering.
 // 21-22: separate declaration statements and explicit do-while forms were
 //     codegen duplicates. No policy-valid exact source was found in this pass.
+// 23: a fresh finish pass tested raw base, raw field, pointer-alias, named
+//     cursor, and int** root forms. None was exact. The typed 0x11-root walk
+//     remains the smallest clean source at 338 changed bytes.
+// 24: compiling the owner with the reviewed view.cpp header context did not
+//     change its body. The PDB owner is protected; keep the IAEX access form.
+// 25: exact-finish probes tested dword root loops, scoped lvalues, byte-buffer
+//     fields, pointer widths, root-cursor scope, and receiver aliases. The
+//     raw-root forms were 796-806 bytes with 450-455 changed bytes. A typed
+//     alias basin reached 98.96% exact block coverage but changed the base
+//     register and removed the proven black-field reload. Restore the pinned
+//     800-byte typed-root source after each probe.
+// BINARY NOTE: the target has integer arithmetic only. It has no x87 path.
 // Accepted-drift review: the executable reloads Black_Edge_Tables and uses a
 // byte offset for each of 17 roots. The rebuild carries a typed root pointer
 // and count. No call occurs in this loop; both read, relocate, and write the
@@ -73,6 +85,7 @@ public:
     char gap_18C[0x14];
     uchar EdgeNumber[0x100];
 
+protected:
     void Init_Tile_Edge_Tables();
 };
 void RGE_View::Init_Tile_Edge_Tables()

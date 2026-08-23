@@ -33,9 +33,26 @@
 // probe 35: moved current=50 before action-code rewrites for cases 8 and 9. This matches the original fallthrough instruction order.
 // probe 36: scoped TRIBE_Game* receivers around both global table arms. This removes two compiler-generated receiver copies and improved the result to 882 strict bytes and 80.22% shape.
 // probes 37-39: no-reset entry state, receiver aliases, declaration order, and register qualifiers did not improve the scoped-receiver basin. The no-reset source produced 914-930 strict bytes and was rolled back.
-// Current clean checkpoint: 882 strict bytes (90.1840%), 80.22% shape, 41.42% exact blocks, 978-byte size, 268 instructions, four ordered calls, and 0x1c frame.
-// Remaining blockers: original saved-this home [esp+2c], object/local homes, EDI/ECX/ESI ownership, and broad handler placement remain unresolved. No inline asm or accepted_drift proposal.
-// Final validation: authoritative check remains MISMATCH at 882 strict bytes; no inline asm.
+// Probe 40: retained the executable's function-scope entry lifetime and cleared
+// entry only on the retry path. This recovered the saved-this home and local
+// homes. The strict difference fell to 341 bytes.
+// Probe 41: removed the redundant positive-count guard from the fallback scan.
+// The source now keeps the binary's null and fault order. The scan assignment
+// remains two bytes early because VC5 hoists its local pointer initialization.
+// Probe 42: restored the reviewed extern rge_base_game ABI and the global zero
+// float DAT_00576828. Relocation identity now matches the game ABI evidence.
+// The virtual call is named analyize_selected_objects at slot 0x98.
+// Current validation: 341 strict bytes, 86.30% shape, 91.42% exact blocks,
+// 978-byte size, 270 instructions, four ordered calls, and a 0x1c frame.
+// Remaining blocker: VC5 places scan = table before the count test. The target
+// places it after the test and rereads object_player before the null test.
+// No inline asm, fake volatility, broad header edits, or accepted_drift proposal.
+// Claim audit: explicit count guards, do-loops, and label forms did not match.
+// A natural table + index scan reduced the strict difference to 335 bytes and
+// matched the target through the first action dispatch, but changed source
+// ownership from the observed moving cursor. It was restored to this baseline.
+// Moving the shared action-5 label into the switch improved block coverage but
+// did not remove the case-2 duplicate. It was also restored.
 
 extern int DAT_0086bc88;
 extern int DAT_0086bc8c;
@@ -44,6 +61,7 @@ extern float DAT_00576828;
 class RGE_Static_Object;
 class RGE_Master_Static_Object;
 class RGE_Player;
+class RGE_Base_Game;
 
 class RGE_Game_World {
 public:
@@ -112,7 +130,7 @@ public:
     int normal_count;
 };
 
-#define rge_base_game (*(TRIBE_Game**)0x0062C574)
+extern RGE_Base_Game* rge_base_game;
 
 struct RightClickEntry {
     int key;
@@ -130,7 +148,7 @@ struct RightClickEntry {
 
 class TRIBE_Player : public RGE_Player {
 public:
-    virtual void redo_mouse_update();
+    virtual void analyize_selected_objects();
     virtual int get_mouse_pointer_action_vars(int id, int& action, int& var);
 
     char gap_4c[4];
@@ -150,7 +168,7 @@ int TRIBE_Player::get_mouse_pointer_action_vars(int id, int& action, int& var)
     int max_hp;
     int right_click_table;
     RGE_Master_Static_Object* master;
-    RightClickEntry* entry = 0;
+    RightClickEntry* entry;
     int use_selection;
     RightClickEntry* table;
     int table_count;
@@ -158,9 +176,10 @@ int TRIBE_Player::get_mouse_pointer_action_vars(int id, int& action, int& var)
     int action_var;
     int current;
     object = this->world->object(id);
-    current = 0;
+    entry = 0;
     action = 0;
     var = 0;
+    current = 0;
     if (object != 0) {
     if (object->type == 0x19) {
         master = object->special_master;
@@ -180,20 +199,19 @@ int TRIBE_Player::get_mouse_pointer_action_vars(int id, int& action, int& var)
         return 0;
     }
 
-    this->redo_mouse_update();
+    this->analyize_selected_objects();
     if (right_click_table == 0x9e || right_click_table == 0xa3) {
         current = 50;
     }
 
 retry_table:
-    entry = 0;
     if (this->current_target == 0 || this->current_action_flags == 0) {
-        TRIBE_Game* game = rge_base_game;
+        TRIBE_Game* game = (TRIBE_Game*)rge_base_game;
         use_selection = 0;
         table = (RightClickEntry*)game->normal_table;
         table_count = game->normal_count;
     } else {
-        TRIBE_Game* game = rge_base_game;
+        TRIBE_Game* game = (TRIBE_Game*)rge_base_game;
         use_selection = 1;
         table = (RightClickEntry*)game->selected_table;
         table_count = game->selected_count;
@@ -207,16 +225,14 @@ retry_table:
     }
     if (entry == 0) {
         int i = 0;
-        if (table_count > 0) {
-            RightClickEntry* scan = table;
-            while (i < table_count) {
-                if (scan->key == object_player) {
-                    entry = table + i;
-                    break;
-                }
-                ++i;
-                ++scan;
+        RightClickEntry* scan = table;
+        while (i < table_count) {
+            if (scan->key == object_player) {
+                entry = table + i;
+                break;
             }
+            ++i;
+            ++scan;
         }
     }
     if (entry == 0) {
@@ -294,11 +310,11 @@ redo_mouseFunc:
             }
             {
                 int hp = (int)object->range;
-                if (hp <= 0 || hp >= max_hp) {
-                    goto finish;
+                if (hp > 0 && hp < max_hp) {
+                    goto set_action_5;
                 }
             }
-            goto set_action_5;
+            goto finish;
         case 5:
             if ((this->current_action_flags & 0x20) == 0) {
                 goto finish;
@@ -332,10 +348,10 @@ redo_mouseFunc:
             if ((this->current_action_flags & 0x80) == 0) {
                 goto finish;
             }
-            if (object_player == 0x12 && this->progress_info->field_6c == 0.0f) {
+            if (object_player == 0x12 && this->progress_info->field_6c == DAT_00576828) {
                 goto finish;
             }
-            if (object_player == 3 && this->progress_info->field_70 == 0.0f) {
+            if (object_player == 3 && this->progress_info->field_70 == DAT_00576828) {
                 goto finish;
             }
             if (object_player == 3 &&
@@ -360,6 +376,7 @@ set_action_5:
 finish:
     if (use_selection == 1 && action == 0 && var == 0) {
         this->current_action_flags = 0;
+        entry = 0;
         goto retry_table;
     }
     return 1;

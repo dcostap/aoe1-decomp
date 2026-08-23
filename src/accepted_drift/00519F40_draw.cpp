@@ -38,6 +38,26 @@
 // that preserve shape_draw argument positions. A later global zero store only
 // shifts with the basin. All 42 calls, arguments, reads, panel stores, GDI
 // state, unlocks, and returns match.
+// Context pass 2026-08-23: canonical TPanel, TButtonPanel, TRIBE_Panel_Button,
+// TDrawArea, TShape, and game color-table surfaces now compile through the
+// PDB-ordered tpnl_btn_tu.cpp wrapper. The /GX grouped build preserves the
+// 1573-byte frame and all 42 calls and reduces the relocation-masked body
+// difference to 494 bytes. The standalone owner remains the 575-byte clean
+// accepted-drift basin until the wrapper is registered.
+// Exact-finish pass 2026-08-23: tested the canonical object-panel header,
+// border-frame expression order, local declaration order and scope, picture
+// coordinate types and aliases, and picture branch forms.
+// A delayed pnl_y load reduced the standalone difference to 114 bytes and
+// restored exact size, but moved the field read after SetClipRect. This fails
+// the original fault order, so it was restored.
+// PDB local symbols list one text pointer, not a text2 pointer. Reusing text
+// for the second line restores the original text and x stack homes and reduces
+// the standalone difference to 560 bytes. The PDB local declaration order was
+// also tested and emits the same bytes.
+// Reversing picture-coordinate updates restores size but moves the type-1 x
+// field read after the type compare. This fails the original fault order.
+// No tested natural form fixed the border EAX/EBX map or picture EDI/EBX map.
+// Final source retains the PDB-supported text-local reduction at 560 bytes.
 
 #include "..\..\include\game_globals.h"
 #include <windows.h>
@@ -48,6 +68,7 @@ extern const char s_tpnl_btn_draw[];
 extern const char s_tpnl_btn_draw2[];
 extern const char s_tpnl_btn_draw3[];
 
+#ifndef TPNL_BTN_SHARED_CONTEXT
 class TDrawArea {
 public:
     char gap_00[0x38];
@@ -175,6 +196,9 @@ class RGE_Base_Game {
 public:
     RGE_Player* get_player();
 };
+#else
+#include "../../include/tpnl_btn_context.h"
+#endif
 
 extern RGE_Base_Game* rge_base_game;
 extern int fog_next_shape;
@@ -183,14 +207,14 @@ extern "C" void __cdecl _ASMSet_Color_Xform(int);
 
 void TRIBE_Panel_Button::draw()
 {
-    long y;
-    char* text;
-    long x;
-    short frame;
     HGDIOBJ old_f;
-    int iStack_1c;
-    short tlen;
+    long calc_y;
+    long y;
+    short frame;
+    long x;
+    char* text;
     SIZE text_size;
+    short tlen;
 
     if (this->tribe_button_type == 3) {
         this->TButtonPanel::draw();
@@ -201,7 +225,11 @@ void TRIBE_Panel_Button::draw()
         return;
     }
 
+#ifdef TPNL_BTN_SHARED_CONTEXT
+    this->draw_setup(0);
+#else
     this->vf28(0);
+#endif
     this->parent_panel->get_clip_rect(&this->clip_rect);
 
     int is_drawn = 1;
@@ -231,7 +259,7 @@ void TRIBE_Panel_Button::draw()
             SetBkMode(dc, 1);
 
             int center_x = this->pnl_cx / 2;
-            iStack_1c = this->pnl_cy / 2;
+            calc_y = this->pnl_cy / 2;
 
             if (this->text1[this->cur_state]) {
                 text = this->text1[this->cur_state];
@@ -248,9 +276,9 @@ void TRIBE_Panel_Button::draw()
 
                 y = 0;
                 if (this->text2[this->cur_state]) {
-                    y = iStack_1c - this->font_hgt + this->pnl_y;
+                    y = calc_y - this->font_hgt + this->pnl_y;
                 } else {
-                    y = iStack_1c - this->font_hgt / 2 + this->pnl_y;
+                    y = calc_y - this->font_hgt / 2 + this->pnl_y;
                 }
 
                 if ((this->draw_reverse == 0 && this->is_down != 0) ||
@@ -264,19 +292,18 @@ void TRIBE_Panel_Button::draw()
                 SetTextColor(dc, this->text_color1[this->cur_state]);
                 TextOutA(dc, x, y, text, tlen);
 
-                char* text2;
                 if (this->text2[this->cur_state]) {
-                    text2 = this->text2[this->cur_state];
+                    text = this->text2[this->cur_state];
                 } else {
-                    text2 = this->text2[0];
+                    text = this->text2[0];
                 }
-                if (text2) {
-                    short t2len = strlen(text2);
-                    
-                    GetTextExtentPoint32A(dc, text2, t2len, &text_size);
+                if (text) {
+                    short t2len = strlen(text);
+
+                    GetTextExtentPoint32A(dc, text, t2len, &text_size);
 
                     x = center_x - text_size.cx / 2 + this->pnl_x;
-                    y = iStack_1c + this->pnl_y;
+                    y = calc_y + this->pnl_y;
 
                     if ((this->draw_reverse == 0 && this->is_down != 0) ||
                         (this->draw_reverse != 0 && this->is_down == 0)) {
@@ -285,9 +312,9 @@ void TRIBE_Panel_Button::draw()
                     }
 
                     SetTextColor(dc, this->text_color2[this->cur_state]);
-                    TextOutA(dc, x - 1, y + 1, text2, t2len);
+                    TextOutA(dc, x - 1, y + 1, text, t2len);
                     SetTextColor(dc, this->text_color1[this->cur_state]);
-                    TextOutA(dc, x, y, text2, t2len);
+                    TextOutA(dc, x, y, text, t2len);
                 }
             }
 
@@ -375,5 +402,9 @@ void TRIBE_Panel_Button::draw()
         }
     }
 
+#ifdef TPNL_BTN_SHARED_CONTEXT
+    this->draw_finish();
+#else
     this->vf2c();
+#endif
 }

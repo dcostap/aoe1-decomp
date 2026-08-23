@@ -54,6 +54,23 @@
 // indirect call uses the same vtable slot, and the selected object's same +4
 // field reaches the same display argument. Calls then kill the temporary maps.
 // Instruction order, memory access, predicates, writes, cleanup, and faults match.
+//
+// Exact-finish pass (sa-3f9fce53-r1):
+// - The target has no registered grouped translation unit.  Its authentic
+//   compiler context is this standalone tvw_main.cpp reconstruction; no
+//   unregistered wrapper was needed or used.
+// - Fresh dossier and checker evidence preserve the PDB owner
+//   TRIBE_Main_View::mouse_right_up_action, the 0052D970-0052DCBB boundary,
+//   the 0x14 frame, and all 32 ordered direct/virtual calls.
+// - The protected anchors remain rge_base_game at 0062C574, mouse_action at
+//   +0xEC, player at +0x100, map offsets at +0x130/+0x134, and object id at
+//   +0x4.  Registered tvw_main.cpp game/view donors were not changed.
+// - Fresh mode ranges show the only strict differences are caller-saved
+//   register colors: mode 102 loads param_2/param_1 into ECX/EDX instead of
+//   EAX/ECX, and mode 104 has the corresponding argument/object colors.
+//   No source-backed, policy-valid reduction remained after the prior
+//   declaration, ABI, control-flow, lifetime, header, and ambient-context
+//   tests.  Restored and revalidated this pinned accepted-drift source.
 
 #include <stdlib.h>
 

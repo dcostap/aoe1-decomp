@@ -48,6 +48,16 @@
 // - A 9-variant lab combined direct/base/narrow call spellings for mode-102 and
 //   mode-104. All variants formed one 844-byte, 14-byte-diff group. The clean
 //   typed source remains authoritative; no policy-valid exact lead was found.
+// Exact-finish pass (sa-3c1303be-r1):
+// - The clean source still preserves the PDB owner, 0052D600-0052D94B
+//   boundary, 0x14 frame, 32 ordered calls, mouse_action read, selection and
+//   command publication, object/player rereads, malformed state, and fault order.
+// - A 36-variant argument-spelling lab and a 256-sample ambient declaration
+//   lab kept one 844-byte, 14-byte-diff group. Both tests kept the same
+//   +0125 and +0240 register-color spans.
+// - PDB and status evidence show no registered tvw_main.cpp grouped owner.
+//   No wrapper or context-only source was retained. The canonical source
+//   remains this standalone tribe-view/input owner.
 // ACCEPTED DRIFT: The 14 bytes only recolor caller-saved registers in mode 102
 // and mode 104. Each stack value reaches the same argument position, each
 // indirect call uses the same vtable slot, and the selected object's same +4
