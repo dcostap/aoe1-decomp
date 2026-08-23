@@ -86,72 +86,21 @@
 // - Period-typed TShape member declarations were checked; they preserve exact
 //   bytes for the final x-home form. Natural save_buffer declaration reordering
 //   alone remained the 157-byte basin.
+// full-Shape-context audit (2026-08-23):
+// - PDB ownership is private TShape source ownership, and TDrawArea is a class.
+//   Those PDB-qualified declarations keep the standalone body exact.
+// - The canonical class surface with no earlier definitions is exact. The
+//   authentic prefix through 004B9070 is also exact.
+// - Adding unresolved 004B9140 changes only two table-lookup SIB bytes. Adding
+//   unresolved 004B9440 then selects a one-byte-shorter endpoint calculation.
+//   Later authentic definitions do not repair that state.
+// - Twelve endpoint-width/order forms and three raw table-access forms collapsed
+//   to the same full-prefix output. Do not steer this exact body around codegen
+//   state created by non-exact predecessor reconstructions.
+// - The safe exact group boundary is 004B8B50-004B9070. Keep this owner
+//   standalone until 004B9140 and 004B9440 recover their original source state.
 
-typedef unsigned char byte;
-
-struct Shape_Header {
-    long bounds;
-    long origin;
-    long xmin;
-    long ymin;
-    long xmax;
-    long ymax;
-};
-
-struct TDrawArea {
-    char gap_00[8];
-    byte* Bits;
-    void* BitmapInfo;
-    void* Bitmap;
-    void* OldBitmap;
-    int Width;
-    int Height;
-    int Pitch;
-    int Orien;
-    char ClipRect[0x10];
-    char _tail_38[0xC8];
-    long AlignedWidth();
-};
-
-struct Shape_Offsets {
-    long shape;
-    long palette;
-};
-
-struct Shape_File_Header;
-struct SLhape_File_Header;
-
-struct Shape_Info {
-    unsigned long Shape_Data_Offsets;
-    unsigned long Shape_Outline_Offset;
-    long Reserved1;
-    long Reserved2;
-    long Width;
-    long Height;
-    long Hotspot_X;
-    long Hotspot_Y;
-};
-
-// Main-agent audit confirmed canonical non-polymorphic shape/draw-area ownership
-// and retained the natural typed RLE decoder.
-struct TShape {
-    byte* shape;
-    int load_type;
-    int load_size;
-    Shape_Header* shape_header;
-    Shape_File_Header* head;
-    Shape_Offsets* offsets;
-    SLhape_File_Header* FShape;
-    Shape_Info* shape_info;
-
-    byte Check_shape(long, char*);
-    byte shape_draw_unclipped(TDrawArea*, long, long, long);
-    byte shape_color_trans_unclipped(TDrawArea*, long, long, long, byte*);
-    byte shape_shadow_unclipped(TDrawArea* da, long x, long y, byte* table);
-    byte shape_draw_clipped(TDrawArea*, long, long, long, long, long, long);
-    byte shape_color_trans_clipped(TDrawArea*, long, long, long, long, long, long, byte*);
-    byte shape_shadow_clipped(TDrawArea*, long, long, long, long, long, long, byte*);
-};
+#include "../../include/shape_context.h"
 
 byte TShape::shape_shadow_unclipped(TDrawArea* da, long x, long y, byte* table)
 {
