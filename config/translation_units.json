@@ -368,7 +368,7 @@
         "00490380": "src/matching/00490380_add_scenario.cpp",
         "00490400": "src/matching/00490400_remove_scenario.cpp",
         "00490480": "src/matching/00490480_move_scenario_up.cpp",
-        "00490520": "src/accepted_drift/00490520_move_scenario_down.cpp",
+        "00490520": "src/matching/00490520_move_scenario_down.cpp",
         "004905D0": "src/matching/004905D0_action.cpp"
       }
     },
@@ -611,6 +611,59 @@
         "00426530": "src/matching/00426530_NewCommand.cpp",
         "00426650": "src/accepted_drift/00426650_DoCycle.cpp",
         "00426FC0": "src/accepted_drift/00426FC0_GetDPLAYMessages.cpp"
+      }
+    },
+    {
+      "name": "m_s_obj",
+      "source": "src/m_s_obj_tu.cpp",
+      "flags": "config/flags/00452FE0_make_new_obj.rsp",
+      "owners": {
+        "0044FE20": "src/matching/0044FE20_play_command_sound.cpp",
+        "0044FE30": "src/matching/0044FE30_play_move_sound.cpp",
+        "00452120": "src/matching/00452120_RGE_Master_Static_Object.cpp",
+        "00452170": "src/matching/00452170_RGE_Master_Static_Object.cpp",
+        "004521A0": "src/matching/004521A0_RGE_Master_Static_Object.cpp",
+        "004521E0": "src/matching/004521E0_setup.cpp",
+        "004524E0": "src/matching/004524E0_setup.cpp",
+        "00452B00": "src/scratch/00452B00_setup.cpp",
+        "00452FA0": "src/matching/00452FA0_RGE_Master_Static_Object.cpp",
+        "00452FE0": "src/matching/00452FE0_make_new_obj.cpp",
+        "004530B0": "src/matching/004530B0_make_new_master.cpp",
+        "00453120": "src/matching/00453120_copy_obj.cpp",
+        "004534A0": "src/matching/004534A0_modify.cpp",
+        "00453540": "src/matching/00453540_modify_delta.cpp",
+        "004535F0": "src/matching/004535F0_modify_percent.cpp",
+        "004536D0": "src/matching/004536D0_save.cpp",
+        "00453C40": "src/scratch/00453C40_check_placement.cpp",
+        "004543C0": "src/matching/004543C0_make_available.cpp",
+        "004543D0": "src/scratch/004543D0_alignment.cpp",
+        "00454690": "src/matching/00454690_alignment_box.cpp",
+        "004547F0": "src/scratch/004547F0_draw.cpp",
+        "00454950": "src/matching/00454950_get_help_message.cpp",
+        "00454960": "src/matching/00454960_get_help_page.cpp",
+        "00454970": "src/matching/00454970_get_hotkey.cpp",
+        "00454980": "src/matching/00454980_calc_base_damage_ability.cpp"
+      },
+      "symbols": {
+        "00452120": "??0RGE_Master_Static_Object@@QAE@PAV0@H@Z",
+        "00452170": "??0RGE_Master_Static_Object@@QAE@HPAPAVRGE_Sprite@@PAPAVRGE_Sound@@H@Z",
+        "004521A0": "??0RGE_Master_Static_Object@@QAE@PAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@FH@Z",
+        "004521E0": "?setup@RGE_Master_Static_Object@@QAEHPAV1@@Z",
+        "004524E0": "?setup@RGE_Master_Static_Object@@QAEHHPAPAVRGE_Sprite@@PAPAVRGE_Sound@@@Z",
+        "00452B00": "?setup@RGE_Master_Static_Object@@QAEHPAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@F@Z",
+        "004534A0": "?modify@RGE_Master_Static_Object@@UAEXME@Z",
+        "004543D0": "?alignment@RGE_Master_Static_Object@@UAEEAAM0PAVRGE_Game_World@@E@Z"
+      }
+    },
+    {
+      "name": "scr_sedo",
+      "source": "src/scr_sedo_tu.cpp",
+      "flags": "config/flags/scr_sedo.rsp",
+      "owners": {
+        "004B33D0": "src/accepted_drift/004B33D0_TRIBE_Screen_Sed_Open.cpp",
+        "004B36A0": "src/matching/004B36A0_TRIBE_Screen_Sed_Open.cpp",
+        "004B3740": "src/matching/004B3740_fillList.cpp",
+        "004B38A0": "src/accepted_drift/004B38A0_action.cpp"
       }
     }
   ]
