@@ -1,13 +1,8 @@
-class TEditPanel {
-public:
-    char gap_0[0xFC];
-    int field_FC;
+#include "../../include/pnl_edit_context.h"
 
-    void target_method();
-    int get_text();
-};
+// BINARY NOTE: The first direct call is TEditPanel::update_text.
 
-int TEditPanel::get_text() {
-    this->target_method();
-    return this->field_FC;
+char* TEditPanel::get_text() {
+    this->update_text();
+    return this->text;
 }

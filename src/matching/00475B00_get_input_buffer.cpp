@@ -1,13 +1,6 @@
-class TEditPanel {
-public:
-    char gap_0[0xFC];
-    int field_FC;
+#include "../../include/pnl_edit_context.h"
 
-    void target_method();
-    int get_input_buffer();
-};
-
-int TEditPanel::get_input_buffer() {
-    this->target_method();
-    return this->field_FC;
+char* TEditPanel::get_input_buffer() {
+    this->update_text();
+    return this->text;
 }

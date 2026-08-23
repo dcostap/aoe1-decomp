@@ -10,6 +10,7 @@
 // 3: kept the ordinary end/start locals but assigned start before end; exact.
 
 #include <string.h>
+#include "../../include/pnl_edit_context.h"
 
 extern "C" __declspec(dllimport) int __stdcall GetWindowTextA(
     void* hwnd, char* text, int max_count);
@@ -17,26 +18,7 @@ extern "C" __declspec(dllimport) int __stdcall SetWindowTextA(
     void* hwnd, const char* text);
 extern "C" int (__stdcall* const MessageBeep)(unsigned int);
 extern "C" __declspec(dllimport) long __stdcall SendMessageA(
-    void* hwnd, unsigned int message, unsigned int wparam, long lparam);
-
-class TPanel {
-public:
-    virtual ~TPanel();
-    char gap_04[0xF0];
-};
-
-class TEditPanel : public TPanel {
-public:
-    void* edit_wnd;                 // +0xF4
-    short fixed_len;                // +0xF8
-    char pad_FA[2];
-    char* text;                     // +0xFC
-    int text_len;                   // +0x100
-    char gap_104[0x48];
-    int sel_len;                    // +0x14C
-
-    void update_text();
-};
+    HWND hwnd, unsigned int message, unsigned int wparam, long lparam);
 
 void TEditPanel::update_text()
 {

@@ -49,10 +49,23 @@ struct RGE_Visible_Map;
 class RGE_Master_Static_Object {
 public:
     virtual ~RGE_Master_Static_Object();
-    char gap_04[0x0C];
+    unsigned char master_type;
+    unsigned char pad_05[3];
+    char* name;
+    short string_id;
+    short string_id2;
     short id;
-    char gap_12[2];
+    short copy_id;
     short object_group;
+    unsigned char pad_16[2];
+    RGE_Sprite* sprite;
+    RGE_Sprite* death_sprite;
+    RGE_Sprite* undead_sprite;
+    unsigned char undead_flag;
+    unsigned char pad_25;
+    short hp;
+    float los;
+    unsigned char gap_2C[0x8C];
 };
 
 class RGE_Player {
@@ -195,8 +208,8 @@ public:
     virtual RGE_Player* owner() const;
     virtual int order(int, int, int, int, float, float, float, float, int, int, int);
     virtual int notify(int, int, int, long, long, long);
-    virtual int notifyCommander(int, int, int, long, long, long);
     virtual int notifyCommander(void*);
+    virtual int notifyCommander(int, int, int, long, long, long);
     virtual void search();
     virtual int importantWhenDead(int);
     virtual int retryableOrder(int);
@@ -296,6 +309,7 @@ public:
     UnitAIModule(RGE_Static_Object* object, int parameter);
     void setAdjustedIdleTimeout();
     void purgeNotifyQueue(unsigned long time);
+    void removeCurrentTarget();
 };
 
 class TribeHuntedAnimalUnitAIModule : public UnitAIModule {
@@ -319,13 +333,27 @@ protected:
     virtual int processNotify(NotifyEvent* event, unsigned long time);
 };
 
+class TribePreditorUnitAIModule : public UnitAIModule {
+public:
+    TribePreditorUnitAIModule(RGE_Static_Object* object, int parameter);
+    virtual ~TribePreditorUnitAIModule();
+    virtual int canAttackUnitAtNeutrality(int group);
+
+protected:
+    virtual int processNotify(NotifyEvent* event, unsigned long time);
+};
+
 typedef char verify_UnitAIModule_size[
     sizeof(UnitAIModule) == 0x134 ? 1 : -1];
 typedef char verify_RGE_Static_Object_size[
     sizeof(RGE_Static_Object) == 0x88 ? 1 : -1];
+typedef char verify_RGE_Master_Static_Object_size[
+    sizeof(RGE_Master_Static_Object) == 0xB8 ? 1 : -1];
 typedef char verify_TribeHuntedAnimalUnitAIModule_size[
     sizeof(TribeHuntedAnimalUnitAIModule) == 0x134 ? 1 : -1];
 typedef char verify_TribeSoldierUnitAIModule_size[
     sizeof(TribeSoldierUnitAIModule) == 0x134 ? 1 : -1];
+typedef char verify_TribePreditorUnitAIModule_size[
+    sizeof(TribePreditorUnitAIModule) == 0x134 ? 1 : -1];
 
 #endif

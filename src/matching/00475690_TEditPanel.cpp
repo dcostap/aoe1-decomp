@@ -6,36 +6,13 @@
 // FLAGS: /GX is retained because the original has EH registration and base-dtor cleanup.
 
 #include <stdlib.h>
-
-typedef void* HWND;
-typedef void* HIMC;
+#include "../../include/pnl_edit_context.h"
 
 extern "C" __declspec(dllimport) int __stdcall ShowWindow(HWND hwnd, int command);
 extern "C" __declspec(dllimport) int __stdcall DestroyWindow(HWND hwnd);
-extern "C" int __stdcall ImmNotifyIME(HIMC context, unsigned int action,
+extern "C" int __stdcall ImmNotifyIME(unsigned long context, unsigned int action,
                                       unsigned int index, unsigned int value);
-extern "C" int __stdcall ImmReleaseContext(HWND hwnd, HIMC context);
-
-class TPanel {
-public:
-    virtual ~TPanel();
-    char gap_04[0xF0];
-};
-
-class TEditPanel : public TPanel {
-public:
-    HWND edit_wnd;                 // +0xF4
-    char gap_F8[4];
-    char* text;                    // +0xFC
-    int text_len;                  // +0x100
-    int hidden;                    // +0x104
-    char gap_108[0x58];
-    HIMC imc;                      // +0x160
-    int enable_ime;                // +0x164
-    int turn_ime_on;               // +0x168
-
-    virtual ~TEditPanel();
-};
+extern "C" int __stdcall ImmReleaseContext(HWND hwnd, unsigned long context);
 
 TEditPanel::~TEditPanel() {
     if ((this->edit_wnd != 0) && (this->hidden == 0)) {

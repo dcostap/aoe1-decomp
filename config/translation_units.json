@@ -316,13 +316,24 @@
       }
     },
     {
-      "name": "taiuaimd_hunted_prefix",
-      "source": "src/taiuaimd_hunted_prefix_tu.cpp",
+      "name": "taiuaimd_preditor_prefix",
+      "source": "src/taiuaimd_preditor_prefix_tu.cpp",
       "flags": "config/flags/00503BB0_TribeHuntedAnimalUnitAIModule.rsp",
       "owners": {
         "00503BB0": "src/matching/00503BB0_TribeHuntedAnimalUnitAIModule.cpp",
         "00503D30": "src/matching/00503D30_processNotify.cpp",
-        "00503E30": "src/matching/00503E30_processIdle.cpp"
+        "00503E30": "src/matching/00503E30_processIdle.cpp",
+        "00503F20": "src/matching/00503F20_TribePreditorUnitAIModule.cpp",
+        "005040A0": "src/matching/005040A0_canAttackUnitAtNeutrality.cpp",
+        "005040B0": "src/matching/005040B0_processNotify.cpp"
+      },
+      "symbols": {
+        "00503BB0": "??0TribeHuntedAnimalUnitAIModule@@QAE@PAVRGE_Static_Object@@H@Z",
+        "00503D30": "?processNotify@TribeHuntedAnimalUnitAIModule@@MAEHPAUNotifyEvent@@K@Z",
+        "00503E30": "?processIdle@TribeHuntedAnimalUnitAIModule@@MAEHH@Z",
+        "00503F20": "??0TribePreditorUnitAIModule@@QAE@PAVRGE_Static_Object@@H@Z",
+        "005040A0": "?canAttackUnitAtNeutrality@TribePreditorUnitAIModule@@UAEHH@Z",
+        "005040B0": "?processNotify@TribePreditorUnitAIModule@@MAEHPAUNotifyEvent@@K@Z"
       }
     },
     {
@@ -392,6 +403,56 @@
       "symbols": {
         "00492CC0": "?draw@TRIBE_Credits_Screen@@UAEXXZ",
         "00492D70": "?action@TRIBE_Credits_Screen@@UAEJPAVTPanel@@JKK@Z"
+      }
+    },
+    {
+      "name": "pnl_edit_prefix",
+      "source": "src/pnl_edit_context_tu.cpp",
+      "flags": "config/flags/00475690_TEditPanel.rsp",
+      "owners": {
+        "00475930": "src/matching/00475930_pnl_sub_wnd_proc.cpp",
+        "00475690": "src/matching/00475690_TEditPanel.cpp",
+        "00475970": "src/matching/00475970_set_text.cpp",
+        "00475A30": "src/matching/00475A30_update_text.cpp",
+        "00475AF0": "src/matching/00475AF0_get_text.cpp",
+        "00475B00": "src/matching/00475B00_get_input_buffer.cpp",
+        "00475B10": "src/matching/00475B10_currentLine.cpp",
+        "00475B20": "src/matching/00475B20_set_active.cpp",
+        "00475B60": "src/matching/00475B60_set_focus.cpp"
+      },
+      "symbols": {
+        "00475930": "?pnl_sub_wnd_proc@@YGJPAXIIJ@Z",
+        "00475690": "??1TEditPanel@@UAE@XZ",
+        "00475970": "?set_text@TEditPanel@@QAEXPAD@Z",
+        "00475A30": "?update_text@TEditPanel@@QAEXXZ",
+        "00475AF0": "?get_text@TEditPanel@@QAEPADXZ",
+        "00475B00": "?get_input_buffer@TEditPanel@@QAEPADXZ",
+        "00475B10": "?currentLine@TEditPanel@@QAEPADXZ",
+        "00475B20": "?set_active@TEditPanel@@UAEXH@Z",
+        "00475B60": "?set_focus@TEditPanel@@UAEXH@Z"
+      }
+    },
+    {
+      "name": "visible_prefix",
+      "source": "src/visible_tu.cpp",
+      "flags": "config/flags/default.rsp",
+      "owners": {
+        "0053C400": "src/matching/0053C400_save.cpp",
+        "0053C490": "src/matching/0053C490_get_visible.cpp",
+        "0053C4D0": "src/matching/0053C4D0_set_all.cpp",
+        "0053C6F0": "src/scratch/0053C6F0_explore_terrain.cpp",
+        "0053C920": "src/scratch/0053C920_unexplore_terrain.cpp",
+        "0053CAC0": "src/scratch/0053CAC0_explore_terrain_sq.cpp",
+        "0053CCF0": "src/scratch/0053CCF0_unexplore_terrain_sq.cpp"
+      },
+      "symbols": {
+        "0053C400": "?save@RGE_Visible_Map@@QAEXH@Z",
+        "0053C490": "?get_visible@RGE_Visible_Map@@QAEEHH@Z",
+        "0053C4D0": "?set_all@RGE_Visible_Map@@QAEXE@Z",
+        "0053C6F0": "?explore_terrain@RGE_Visible_Map@@QAEHHHHHHH@Z",
+        "0053C920": "?unexplore_terrain@RGE_Visible_Map@@QAEXHHHHHH@Z",
+        "0053CAC0": "?explore_terrain_sq@RGE_Visible_Map@@QAEHHHHHHH@Z",
+        "0053CCF0": "?unexplore_terrain_sq@RGE_Visible_Map@@QAEXHHHHHH@Z"
       }
     }
   ]

@@ -1,0 +1,6 @@
+#include "matching/00503BB0_TribeHuntedAnimalUnitAIModule.cpp"
+#include "matching/00503D30_processNotify.cpp"
+#include "matching/00503E30_processIdle.cpp"
+#include "matching/00503F20_TribePreditorUnitAIModule.cpp"
+#include "matching/005040A0_canAttackUnitAtNeutrality.cpp"
+#include "matching/005040B0_processNotify.cpp"

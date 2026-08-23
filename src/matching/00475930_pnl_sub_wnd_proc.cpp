@@ -1,9 +1,6 @@
-extern "C" __declspec(dllimport) long __stdcall GetWindowLongA(void* wnd, int index);
+#include "../../include/pnl_edit_context.h"
 
-class TEditPanel {
-public:
-    long sub_wnd_proc(void* wnd, unsigned int msg, unsigned int wParam, long lParam);
-};
+extern "C" __declspec(dllimport) long __stdcall GetWindowLongA(void* wnd, int index);
 
 long __stdcall pnl_sub_wnd_proc(void* wnd, unsigned int msg, unsigned int wParam, long lParam) {
     TEditPanel* panel = (TEditPanel*)GetWindowLongA(wnd, -21);

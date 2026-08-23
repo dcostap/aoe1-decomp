@@ -49,63 +49,7 @@
 // therefore receives a different stack and exception context before any map
 // checksum or visibility update.
 
-#include <stdlib.h>
-#pragma intrinsic(_rotl)
-
-extern int Map_Update_Suppresion;
-extern unsigned long* unified_map_offsets[];
-extern "C" void __cdecl log_map_call(int world_time, int player_id, int type,
-                                     int p6, int x1, int y1, int x2, int y2,
-                                     int suppression);
-
-class RGE_Game_World {
-public:
-    virtual ~RGE_Game_World();
-    unsigned long world_time;
-};
-
-class RGE_Player {
-public:
-    virtual ~RGE_Player();
-    char gap_04[0x46];
-    short id;
-};
-
-struct RGE_Tile {
-    char gap_00[9];
-    unsigned char flags_09;
-    char gap_0A[0x18 - 0x0A];
-};
-
-class RGE_Map {
-public:
-    virtual ~RGE_Map();
-    char gap_0004[0x8D88];
-    RGE_Tile** map_row_offset;
-};
-
-// Main-agent audit replaced raw absolute globals and retained canonical visible
-// map/world/player/map ownership with natural square traversal.
-class RGE_Visible_Map {
-public:
-    unsigned char** map_offsets;
-    RGE_Game_World* world;
-    RGE_Player* player;
-    RGE_Map* map;
-    unsigned char* visible_map;
-    int widthValue;
-    int heightValue;
-    int numberTilesExploredValue;
-    int numberTotalTilesValue;
-    unsigned long PlayerVisibleMaskValue;
-    unsigned long PlayerVisibleMaskInvertValue;
-    unsigned long PlayerExploredMaskValue;
-    unsigned long PlayerExploredMaskInvertValue;
-    unsigned long input_csum;
-
-    void unexplore_terrain_sq(int x1, int y1, int x2, int y2,
-                              int update_tiles, int p6);
-};
+#include "../../include/visible_context.h"
 
 void RGE_Visible_Map::unexplore_terrain_sq(int x1, int y1, int x2, int y2,
                                            int update_tiles, int p6)

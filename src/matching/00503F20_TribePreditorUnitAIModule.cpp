@@ -7,27 +7,12 @@
 // - Virtual ~UnitAIModule() needed to trigger constructor EH frame
 // - importantObjects[0] uses cached pointer; this->importantObjects[i] for i>=1
 //   forces per-index reload from [esi+124h] with edx/eax/ecx register cycling
+// - The canonical 0x134 base preserves exact /GX code and the PAV constructor symbol.
 
 #include <stddef.h>
+#include "../../include/taiuaimd_context.h"
 
 void* operator new(size_t size);
-
-struct RGE_Static_Object;
-
-class UnitAIModule {
-public:
-    virtual ~UnitAIModule();
-    char pad[0x124 - 4];
-    int* importantObjects;      // +0x124
-    int numberImportantObjects;  // +0x128
-
-    UnitAIModule(RGE_Static_Object* obj, int param);
-};
-
-class TribePreditorUnitAIModule : public UnitAIModule {
-public:
-    TribePreditorUnitAIModule(RGE_Static_Object* obj, int param);
-};
 
 TribePreditorUnitAIModule::TribePreditorUnitAIModule(
     RGE_Static_Object* obj, int param)

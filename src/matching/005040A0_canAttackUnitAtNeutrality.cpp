@@ -1,7 +1,5 @@
-class TribePreditorUnitAIModule {
-public:
-    virtual ~TribePreditorUnitAIModule();
-    int canAttackUnitAtNeutrality(int p0);
-};
+#include "../../include/taiuaimd_context.h"
+
+// PDB ownership gives a public virtual TribePreditorUnitAIModule method.
 
 int TribePreditorUnitAIModule::canAttackUnitAtNeutrality(int p0) { return 1; }
