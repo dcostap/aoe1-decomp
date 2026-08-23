@@ -2,6 +2,8 @@ class RGE_Master_Static_Object;
 class RGE_Master_Animated_Object;
 class RGE_Player;
 
+// PDB owner: RGE_Animated_Object::setup in ani_obj.cpp, lines 55-63.
+// Body boundary: 0041A2C0-0041A302. The next sibling starts at 0041A310.
 class RGE_Static_Object {
 public:
     virtual void vf00(void);
@@ -16,7 +18,8 @@ public:
     char gap_4F[0x39];
     int speed;
 
-    int setup(RGE_Master_Animated_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5);
+protected:
+    virtual int setup(RGE_Master_Animated_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5);
 };
 
 int RGE_Animated_Object::setup(RGE_Master_Animated_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5) {

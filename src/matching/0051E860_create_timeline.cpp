@@ -17,6 +17,14 @@
 // then create_timeline. That group emits this owner as an exact 377-byte body.
 // The constructor owner still has a proven 125-byte mismatch, so the group is
 // not a complete exact owner set yet.
+// Exact-finish: a fresh build remained an exact 377-byte owner with 11 ordered
+// calls, no frame, four saved registers, the original boundary, and the PDB
+// Time_Line_Panel symbol.
+// Exact-finish walkback: removing the result local and using direct returns
+// kept the exact bytes. Removing the outer and setup else scopes also kept them.
+// Retain those reductions. The shared tpnl_tml header, /GX EH context, extern
+// rge_base_game, natural new, publication before validation, and call order
+// remain required by the current exact build.
 
 #include "../../include/tpnl_tml_context.h"
 
@@ -29,37 +37,33 @@ long Time_Line_Panel::create_timeline(TPanel* parent, Time_Line_Panel** out, lon
 
     Time_Line_Panel* panel = new Time_Line_Panel();
     *out = panel;
-    long result;
-
     if (panel == 0 || panel->error_code != 0) {
         this->error_code = 1;
-        result = 0;
-    } else {
-        RGE_Font* axis_font;
-        if (axis_font_id >= 0) {
-            axis_font = rge_base_game->get_font(axis_font_id);
-        } else {
-            axis_font = rge_base_game->get_font(0x0B);
-        }
-
-        RGE_Font* body_font;
-        if (body_font_id >= 0) {
-            body_font = rge_base_game->get_font(body_font_id);
-        } else {
-            body_font = rge_base_game->get_font(0x0B);
-        }
-
-        if ((*out)->setup(parent->renderArea(), parent, left, top, right, bottom,
-                          axis_font->font, axis_font->font_wid, axis_font->font_hgt,
-                          body_font->font, body_font->font_wid, body_font->font_hgt,
-                          0, 0, 0, 0, 0, 0) == 0) {
-            this->error_code = 1;
-            result = 0;
-        } else {
-            (*out)->init_timeline();
-            result = 1;
-        }
+        return 0;
     }
 
-    return result;
+    RGE_Font* axis_font;
+    if (axis_font_id >= 0) {
+        axis_font = rge_base_game->get_font(axis_font_id);
+    } else {
+        axis_font = rge_base_game->get_font(0x0B);
+    }
+
+    RGE_Font* body_font;
+    if (body_font_id >= 0) {
+        body_font = rge_base_game->get_font(body_font_id);
+    } else {
+        body_font = rge_base_game->get_font(0x0B);
+    }
+
+    if ((*out)->setup(parent->renderArea(), parent, left, top, right, bottom,
+                      axis_font->font, axis_font->font_wid, axis_font->font_hgt,
+                      body_font->font, body_font->font_wid, body_font->font_hgt,
+                      0, 0, 0, 0, 0, 0) == 0) {
+        this->error_code = 1;
+        return 0;
+    }
+
+    (*out)->init_timeline();
+    return 1;
 }

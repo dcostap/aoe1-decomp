@@ -6,6 +6,10 @@
 //   and duplicated AI/normal path-system calls follow the binary evidence.
 // - Baseline matched structure and all calls but passed mode 1 to findTilePath.
 //   Changed both calls to the binary-proven mode 0; the function now matches.
+// - Exact-finish walkback: changing either the AI-arm or normal-arm mode back
+//   to 1 produced a one-byte mismatch at that arm's mode push. Restored 0 in
+//   both arms. PDB order places this public RGE_Moving_Object::canPath at
+//   0045F9D0-0045FBB6 after 0045F820's 0045F9C2 ret and before 0045FBC0.
 // Source audit: named world, map, zone-map, object, and path-system ownership;
 // no inline assembly or codegen-only scaffolding.
 
