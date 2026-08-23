@@ -7,7 +7,8 @@
 //   numberGatherersValue +0x9CC; local ManagedArray<int> fields are value,
 //   numberValue, desiredNumberValue, and maximumSizeValue.
 // - The original initializes one local ManagedArray slot with resize(1), then
-//   appends first through numberValue. The desiredNumberValue field is not used.
+//   appends mainHunterID through numberValue. The desiredNumberValue field is
+//   not used by this body.
 // - Baseline: typed source reached 620 bytes with the correct 0x20 frame and
 //   nine-call set; first mismatch was the outer scan setup, not a call boundary.
 // - Correcting UnitData to 0x18 bytes restored the proven +0x9CC gatherer count
@@ -45,6 +46,30 @@
 //   them, and both registers have the same values before the next instruction.
 //   Calls, writes, predicates, fault order, cleanup, and all later bytes match.
 // - No unsupported raw vtable or inline-assembly form is retained.
+// - Exact-finish probes tested PDB local declaration order, bounded scan forms,
+//   ManagedArray accessors and constructor/destructor surfaces, assignment and
+//   update forms, narrow local aliases, standard-header context, ambient
+//   declaration context, and pinned-flag variants. Natural forms either kept
+//   the same four-byte basin or lost the target size and CFG. All metric-only
+//   forms were removed. PDB names mainHunterID, numberToTask, targetID, and
+//   count are retained because the symbol record proves those roles.
+// - This claim also tested first-scan index scope and reuse, cached count
+//   locals, an explicit while scan, a wider object scope, and the donor-proven
+//   tactical-module destructor surface. All emitted code stayed unchanged.
+// - A 32-case first-scan source and header-context lab kept size, frame, call
+//   set, CFG, and all 4 differing bytes unchanged. It found no exact variant.
+// - Final validation remains a four-byte MISMATCH at +012E: the rebuilt code
+//   loads maximumSizeValue before numberValue. The original loads numberValue
+//   into ECX, then maximumSizeValue into ESI. No call, write, x87 predicate,
+//   cleanup, fault boundary, or direct-control identity differs.
+// - Specialist exact-finish work tested the PDB-proven full UnitData fields,
+//   the full taitacmd.cpp class context, and the exact utmarray.h API shapes.
+//   It also tested indexed and cursor scans, continue/goto forms, loop and
+//   bound order, field aliases, register hints, and authentic source lines.
+// - CPU and debug-context classification did not recover the reload order.
+//   Every invariant-preserving natural form kept the same four-byte basin.
+//   Forms that changed the basin also changed the frame, CFG, or call set.
+//   The clean typed source remains authoritative; no steering form is kept.
 
 void* operator new(unsigned int size);
 void operator delete(void* ptr);
@@ -58,8 +83,9 @@ public:
     int desiredNumberValue;
     int maximumSizeValue;
 
-    ManagedArray()
-        : value(0), numberValue(0), desiredNumberValue(0), maximumSizeValue(0) {}
+    ManagedArray(int desiredNumber = 0)
+        : value(0), numberValue(0), desiredNumberValue(desiredNumber),
+          maximumSizeValue(0) {}
 
     int resize(int newSize);
 
@@ -72,7 +98,10 @@ public:
 struct UnitData {
     int id;
     int data1;
-    char gap_08[0x10];
+    int data2;
+    int data3;
+    int target;
+    unsigned long lastTaskTime;
 };
 
 class RGE_Player;
@@ -190,22 +219,23 @@ public:
     UnitData gatherers[50];
     int numberGatherersValue;
 
-    void taskElephantGatherers(int first, int count, int target);
+    void taskElephantGatherers(int mainHunterID, int numberToTask, int targetID);
 };
 
-void TribeTacticalAIModule::taskElephantGatherers(int first, int count, int target)
+void TribeTacticalAIModule::taskElephantGatherers(
+    int mainHunterID, int numberToTask, int targetID)
 {
-    RGE_Static_Object* targetObject = this->md->object(target);
+    RGE_Static_Object* targetObject = this->md->object(targetID);
     if (targetObject != 0) {
-        ManagedArray<int> alreadyTasked;
-        int loop;
+        int count;
+        ManagedArray<int> alreadyTasked(0);
 
         alreadyTasked.resize(1);
-        alreadyTasked.value[alreadyTasked.numberValue] = first;
+        alreadyTasked.value[alreadyTasked.numberValue] = mainHunterID;
         alreadyTasked.numberValue++;
-        loop = 0;
+        count = 0;
 
-        while (loop < count) {
+        while (count < numberToTask) {
                 float bestDistance;
                 int bestValueID;
                 int i;
@@ -245,7 +275,7 @@ nextGatherer:
                     return;
 
                 this->md->aiPlayer->taskResourceGatherer(
-                    bestValueID, target, 0,
+                    bestValueID, targetID, 0,
                     targetObject->world_x, targetObject->world_y);
 
                 for (int j = 0; j < alreadyTasked.numberValue; j++) {
@@ -275,7 +305,7 @@ nextGatherer:
                 alreadyTasked.numberValue++;
 
 afterAdd:
-                loop++;
+                count++;
         }
     }
 }

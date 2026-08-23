@@ -32,6 +32,13 @@
 // gap-only RGE_Game_World and RGE_Map declarations kept the 199-byte diff,
 // 1183-byte body, and C4 frame. Shared world/map vptr context is not the
 // publication-order cause. The diagnostic variant was not retained.
+// PDB-home audit: CodeView proves 33 short parser locals from -C2 through -82.
+// It also proves temp_damage_sprite_num at -7C and char temp_name[120] at -78.
+// The aggregate below preserves those addresses. Its shifted names are not
+// canonical ownership claims.
+// Follow-up: natural PDB-named locals kept the C4 frame but produced 1186 bytes.
+// They moved the first mismatch to +38 and were not retained.
+// Literal-zero, scalar-order, byte-local, CPU, and cursor labs found no exact result.
 
 #include <stdio.h>
 #include <stdlib.h>

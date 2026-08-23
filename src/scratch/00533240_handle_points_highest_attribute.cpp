@@ -143,7 +143,54 @@
 //   id reference. The walker and direct cursor forms returned the 178-byte
 //   basin; register and reference forms duplicated the 139-byte group. No
 //   natural form improved the frame, first divergence, or exact-block result.
+// - BINARY NOTE: PDB assigns this body to victory.cpp lines 1415-1449. The exact
+//   preceding point-handler owner 00533180 spans lines 1383-1411. Its shared
+//   record and player/world declarations validate the canonical field offsets;
+//   the remaining target blocker is the separate four-slot local window.
+// - New structural recovery: naming the indexed score address produced the
+//   original 0x10 frame, saved-register map, parameter-home reuse, pointer
+//   induction, 230-byte boundary, 81 instructions, calls, and complete CFG.
+//   Moving the float conversion before the points initializer and using the
+//   natural indexed for-loop were also required. The reduced direct-id loop is
+//   codegen-identical to the guarded local-id form and preserves the binary's
+//   count check before the id read. Fresh validation differs in 21 register
+//   bytes only: VC5 selects ECX and EDX in the inverse order after __ftol.
+// - The PDB-qualified target is protected. Moving only this declaration to the
+//   protected section restores the original IA decorated owner. It does not
+//   change the body bytes.
+// - Exact-finish follow-up: a fresh grouped check remains 230 bytes with the
+//   original 0x10 frame, one direct __ftol call, complete CFG, and 21 register
+//   bytes differing after the conversion. The indexed score-pointer source is
+//   still the smallest supported body.
+// - Context test: temporarily placing the exact 00532C50 destroy_all owner
+//   before this body in the victory point wrapper, with the reviewed shared
+//   header, did not change the target bytes. The exact 00533330 anchor stayed
+//   exact. The owner mapping and source context were restored.
+// - Authentic-condition test: a temporary shared-header wrapper containing
+//   00532C50, 00532CC0, and this body also kept the 21-byte register recolor.
+//   Appending this owner changed the protected condition-description result,
+//   so that context was rejected and restored.
+// - Natural declaration-scope and entry-alias probes after the structural
+//   recovery were codegen duplicates. No supported source form selected the
+//   oracle ECX/EDX allocation without changing the body basin.
+// - Sol PDB audit: the authentic compiland is Release/victory.obj and reports
+//   Microsoft C/C++ 11.00 with Pentium platform code. DIA orders `points` before
+//   `amount`. Both locals are signed long values at VFRAME +8. The body now uses
+//   those proven names, types, and declaration order. This change is codegen-neutral.
+// - Loop-width audit: the index and cached count require signed 32-bit values.
+//   A short index emitted 16-bit induction and reduced the frame. A short count
+//   emitted an extra sign extension and changed the boundary. Int and long forms
+//   produce the pinned body and preserve negative-count behavior.
+// - Publication audit: `current` must materialize before its member publication.
+//   Repeating the amount conversion emitted `fst` plus `fstp` and shortened the
+//   body. Reading the published member changed the amount home. The retained form
+//   preserves the oracle's stack value, member store, x87 state, and fault order.
+// - Final exact-finish audit tested operand direction, direct count reads, while,
+//   continue, early return, immediate source-order context, debug flags, and CPU
+//   flags. Supported forms stayed at 21 register bytes or changed real structure.
+//   The remaining difference is the unsupported ECX/EDX scratch-register phase.
 
+#if 0 // Historical local surface retained below for the attempt log.
 class RGE_Game_World;
 class RGE_Victory_Entry;
 class RGE_Victory_Conditions;
@@ -379,43 +426,43 @@ public:
 protected:
     void handle_points_highest_attribute(RGE_Victory_Point_Entry* entry);
 };
+#endif
 
-void RGE_Victory_Conditions::handle_points_highest_attribute(RGE_Victory_Point_Entry* entry) {
+#include "../../include/victory_context.h"
+
+void RGE_Victory_Conditions::handle_points_highest_attribute(RGE_Victory_Point_Entry* node) {
+    long points;
+    long amount;
     int num;
     float current;
-    if (entry->state == 0) {
-        int val = (int)this->player->attributes[entry->attribute];
-        int best = entry->points;
-        current = (float)val;
-        entry->curr_attribute_amount = current;
+    if (node->state == 0) {
+        amount = (long)this->player->attributes[node->attribute];
+        current = (float)amount;
+        points = node->points;
+        node->curr_attribute_amount = current;
         RGE_Player* player = this->player;
         RGE_Game_World* world = player->world;
         RGE_Player** players = world->players;
-        if (val < entry->amount) {
-            best = 0;
+        if (amount < node->amount) {
+            points = 0;
         } else {
             num = world->player_num;
-            int i = 1;
-            if (1 < num) {
-                int my_id = player->id;
-                do {
-                    ++players;
-                    if (i != my_id) {
-                        if ((*players)->attributes[entry->attribute] > current) {
-                            best = 0;
-                            break;
-                        }
-                        if ((*players)->attributes[entry->attribute] == current) {
-                            best = entry->curr_points;
-                        }
+            for (int i = 1; i < num; ++i) {
+                if (i != player->id) {
+                    float* score = &players[i]->attributes[node->attribute];
+                    if (*score > current) {
+                        points = 0;
+                        break;
                     }
-                    ++i;
-                } while (i < num);
+                    if (*score == current) {
+                        points = node->curr_points;
+                    }
+                }
             }
         }
-        if (best != entry->curr_points) {
-            this->tot_victory_points += best - entry->curr_points;
-            entry->curr_points = best;
+        if (points != node->curr_points) {
+            this->tot_victory_points += points - node->curr_points;
+            node->curr_points = points;
         }
     }
 }
