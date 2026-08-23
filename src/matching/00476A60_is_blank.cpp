@@ -1,29 +1,25 @@
 // VA: 00476A60 TEditPanel::is_blank (71B)
 // PDB source: pnl_edit.cpp lines 987-1011
-// retry using the matched TInputPanel::is_blank source family exactly: volatile pre-check + while(1) scan
+// Use the matched TInputPanel::is_blank source family: explicit pre-check and
+// a while(1) scan. The canonical text field owns the +0xFC pointer.
+// BINARY NOTE: Keep the separate pre-check and loop test. The executable reads
+// text[0] twice before the first __ismbcspace call.
+
+#include "../../include/pnl_edit_context.h"
 
 typedef unsigned char uchar;
-extern "C" int __cdecl __ismbcspace(unsigned int ch);
+extern "C" int __cdecl __ismbcspace(int ch);
 extern "C" uchar* __cdecl __mbsinc(const uchar* str);
-
-class TEditPanel {
-public:
-    char gap_00[0xFC];
-    char* currentLine;
-
-    void update_text(void);
-    int is_blank(void);
-};
 
 int TEditPanel::is_blank(void) {
     char* pcVar1;
 
     this->update_text();
-    pcVar1 = this->currentLine;
+    pcVar1 = this->text;
     if (pcVar1 == 0) {
         goto blank;
     }
-    if (*(volatile unsigned char*)pcVar1 == 0) {
+    if (*(unsigned char*)pcVar1 == 0) {
         goto blank;
     }
     while (1) {
