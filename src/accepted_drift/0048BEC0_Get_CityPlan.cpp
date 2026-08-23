@@ -13,13 +13,20 @@ typedef unsigned long DWORD;
 class RGE_Base_Game;
 
 extern "C" int __cdecl sprintf(char*, const char*, ...);
-extern "C" int __cdecl _open(const char*, int, int);
+extern "C" int __cdecl _open(const char*, int, ...);
 extern "C" int __cdecl _write(int, const void*, unsigned int);
 extern "C" int __cdecl _close(int);
 extern "C" int __cdecl strcmp(const char*, const char*);
 extern "C" char* __cdecl strcpy(char*, const char*);
 extern "C" DWORD (__stdcall* const GetTempPathA)(DWORD, char*);
 extern RGE_Base_Game* rge_base_game;
+
+#ifndef SCENARIO_TU
+class RGE_Prog_Info {
+public:
+    char gap_000[0x102B];
+    char ai_dir[0x100];
+};
 
 class RGE_Base_Game {
 public:
@@ -28,20 +35,21 @@ public:
 #undef GPAD
     virtual void get_string(int id, char* out, int len);
     char gap_04[8];
-    char* prog_info;
+    RGE_Prog_Info* prog_info;
 };
 
 class RGE_Scenario {
 public:
     char gap_0000[0x1108];
     volatile char TempText2[0x1c0];
-    char* CityPlanName[0x10];       // +12c8
+    char* BuildList[0x10];          // +12c8
     char* CityPlan[0x30];           // +1308
     char* CityPlanFile[0x30];       // +13c8
     int CityPlanFileSize[0x30];     // +1488
 
     char* Get_CityPlan(int player, int use_file);
 };
+#endif
 
 char* RGE_Scenario::Get_CityPlan(int player, int use_file)
 {
@@ -70,10 +78,10 @@ char* RGE_Scenario::Get_CityPlan(int player, int use_file)
     }
 
     if (use_file == 1) {
-        char* name = this->CityPlanName[player];
+        char* name = this->BuildList[player];
         if (strcmp(name, none_str) != 0) {
             if (strcmp(name, random_str) != 0) {
-                sprintf((char*)this + 0x1108, (char*)0x00586000, rge_base_game->prog_info + 0x102b, this->CityPlan[player]);
+                sprintf((char*)this + 0x1108, (char*)0x00586000, rge_base_game->prog_info->ai_dir, this->CityPlan[player]);
                 return (char*)this + 0x1108;
             }
         }

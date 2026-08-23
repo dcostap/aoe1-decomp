@@ -1,5 +1,6 @@
 extern "C" char* strcpy(char* dst, const char* src);
 
+#ifndef SCENARIO_TU
 class RGE_Scenario {
 public:
     char gap_0[0x1508];
@@ -7,6 +8,7 @@ public:
 
     void Set_Cine_PreGame(char* text);
 };
+#endif
 
 void RGE_Scenario::Set_Cine_PreGame(char* text) {
     if (text != 0) {

@@ -5,9 +5,10 @@
 
 void rge_write_uncompressed(int fd, void* data, int size);
 
+#ifndef SCENARIO_TU
 class RGE_Scenario_Header {
 public:
-    virtual int get_header_size();
+    virtual long get_size();
 
     char pad_04[4];
     int version;                 // +0x08
@@ -16,12 +17,13 @@ public:
 
     void save(int fd);
 };
+#endif
 
 void RGE_Scenario_Header::save(int fd) {
     int header_size;
     int desc_len;
 
-    header_size = this->get_header_size();
+    header_size = this->get_size();
     rge_write_uncompressed(fd, &header_size, 4);
     rge_write_uncompressed(fd, &this->version, 4);
     if (this->version >= 2) {

@@ -1,3 +1,4 @@
+#ifndef SCENARIO_TU
 class RGE_Scenario {
 public:
     char gap_0000[0x1014];
@@ -9,6 +10,7 @@ public:
 
     char* Get_message(long which);
 };
+#endif
 
 char* RGE_Scenario::Get_message(long which) {
     switch (which) {

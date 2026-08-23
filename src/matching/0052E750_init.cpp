@@ -3,22 +3,7 @@
 // three-argument surface.  The prior placeholder target_method changed only
 // relocation identity.  The canonical base declaration now reports MATCH.
 
-typedef unsigned char uchar;
-
-class TSound_Driver;
-class TCommunications_Handler;
-
-class RGE_Game_World {
-public:
-    virtual uchar init(char* file, TSound_Driver* sound,
-                       TCommunications_Handler* communications);
-};
-
-class TRIBE_World : public RGE_Game_World {
-public:
-    virtual uchar init(char* file, TSound_Driver* sound,
-                       TCommunications_Handler* communications);
-};
+#include "../../include/tworld_prefix_context.h"
 
 uchar TRIBE_World::init(char* file, TSound_Driver* sound,
                         TCommunications_Handler* communications)

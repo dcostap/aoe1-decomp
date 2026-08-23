@@ -21,6 +21,7 @@
 extern "C" unsigned int __cdecl strlen(const char*);
 extern "C" char* __cdecl strcpy(char*, const char*);
 
+#ifndef SCENARIO_TU
 class RGE_Scenario {
 public:
     char gap_000[0x12C8];
@@ -28,6 +29,7 @@ public:
 
     void Set_BuildList(int param_1, char* param_2, int param_3);
 };
+#endif
 
 void RGE_Scenario::Set_BuildList(int param_1, char* param_2, int param_3) {
     char** slot;

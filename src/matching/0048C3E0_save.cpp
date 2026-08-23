@@ -53,7 +53,7 @@
 void rge_write(int file, void* buf, int size);
 
 extern "C" int __cdecl sprintf(char* dst, const char* fmt, ...);
-extern "C" int __cdecl _open(const char* path, int mode);
+extern "C" int __cdecl _open(const char* path, int mode, ...);
 extern "C" int __cdecl lseek(int fd, int off, int whence);
 extern "C" long __cdecl _tell(int fd);
 extern "C" void __cdecl free(void* p);
@@ -64,6 +64,7 @@ extern "C" int __cdecl close(int fd);
 void* operator new(unsigned int sz);
 void operator delete(void* p);
 
+#ifndef SCENARIO_TU
 class RGE_Prog_Info {
 public:
     char gap_00[0x102B];
@@ -137,6 +138,7 @@ public:
     int PlActive[16];                  // +0x194C
     TPicture* mission_picture;         // +0x198C
 };
+#endif
 
 void RGE_Scenario::save(int file)
 {

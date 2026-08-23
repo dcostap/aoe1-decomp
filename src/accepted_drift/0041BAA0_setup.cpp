@@ -52,6 +52,7 @@
 // offsets for valid DirectX, memory-status, file, path, and OFSTRUCT buffers.
 // Each external call receives the same buffer content and object extent.
 
+#ifndef BASEGAME_GROUPED_TU
 #include <windows.h>
 #include <stdio.h>
 #include <new.h>
@@ -119,7 +120,7 @@ extern void* StringTable;
 extern int debugActions;
 extern FILE* actionFile;
 extern int do_draw_log;
-extern char draw_log_name;
+extern char draw_log_name[260];
 extern FILE* draw_log;
 extern int do_fps_log;
 extern FILE* fps_log;
@@ -236,6 +237,7 @@ public:
     int check_for_cd(int value);
     void mouse_on();
 };
+#endif
 
 int RGE_Base_Game::setup()
 {
@@ -302,7 +304,8 @@ int RGE_Base_Game::setup()
         *(int*)((char*)this->prog_info + 0x8D0) = scroll_speed;
     }
 
-    if (_findfirst((char*)0x57FA8C, &file_info.time_create) == -1) {
+    if (_findfirst((char*)0x57FA8C,
+                   (struct _finddata_t*)&file_info.time_create) == -1) {
         this->error_code = 0x17;
     }
     else {
@@ -408,8 +411,9 @@ int RGE_Base_Game::setup()
                                 int i;
                                 for (i = 0; i < 9999; ++i) {
                                     sprintf(filename + 4, (char*)0x57FA4C, i);
-                                    if (_findfirst(filename + 4,
-                                                   &file_info.time_create) == -1) {
+                                    if (_findfirst(
+                                            filename + 4,
+                                            (struct _finddata_t*)&file_info.time_create) == -1) {
                                         this->registry->RegSetInt(
                                             0, (char*)0x57FA58, i);
                                         this->player_game_info =
@@ -424,7 +428,7 @@ int RGE_Base_Game::setup()
                                 filename + 4);
 
                             if (do_draw_log != 0) {
-                                if (draw_log_name == 0) {
+                                if (draw_log_name[0] == 0) {
                                     int i;
                                     for (i = 0; i < 1000; ++i) {
                                         sprintf(s + 4, (char*)0x57FA2C, i);
@@ -433,13 +437,13 @@ int RGE_Base_Game::setup()
                                                      0x4000) == -1) {
                                             draw_log = fopen(s + 4,
                                                              (char*)0x57FA88);
-                                            strcpy(&draw_log_name, s + 4);
+                                            strcpy(draw_log_name, s + 4);
                                             break;
                                         }
                                     }
                                 }
                                 else {
-                                    draw_log = fopen(&draw_log_name,
+                                    draw_log = fopen(draw_log_name,
                                                      (char*)0x57FA88);
                                 }
                             }

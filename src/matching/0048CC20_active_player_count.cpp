@@ -1,8 +1,10 @@
+#ifndef SCENARIO_TU
 class RGE_Scenario {
 public:
     int Get_player_Active(int player);
     int active_player_count();
 };
+#endif
 
 int RGE_Scenario::active_player_count() {
     int count;

@@ -1,3 +1,4 @@
+#ifndef SCENARIO_TU
 class RGE_Scenario {
 public:
     char gap_00[0x188C];
@@ -5,6 +6,7 @@ public:
 
     int GetPlayerPosture(int player);
 };
+#endif
 
 int RGE_Scenario::GetPlayerPosture(int player) {
     if (player < 0) {

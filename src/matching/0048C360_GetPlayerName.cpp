@@ -1,10 +1,12 @@
-class TComm_System {
+#ifndef SCENARIO_TU
+class RGE_Scenario {
 public:
     char gap_0[0x0D];
-    char playerNames[1][256];
+    char player_name[1][256];
     char *GetPlayerName(int index);
 };
+#endif
 
-char *TComm_System::GetPlayerName(int index) {
-    return &this->playerNames[index][0];
+char *RGE_Scenario::GetPlayerName(int index) {
+    return &this->player_name[index][0];
 }

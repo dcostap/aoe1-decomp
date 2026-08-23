@@ -3,6 +3,7 @@
 
 #include <string.h>
 
+#ifndef SCENARIO_TU
 class RGE_Scenario {
 public:
     char gap_000[0x17A8];
@@ -10,6 +11,7 @@ public:
 
     void Set_Mission_Bmp(char* param_1);
 };
+#endif
 
 void RGE_Scenario::Set_Mission_Bmp(char* param_1) {
     if (param_1 != 0) {

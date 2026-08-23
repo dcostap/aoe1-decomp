@@ -11,6 +11,7 @@
 
 #pragma intrinsic(strcpy, strlen)
 
+#ifndef SCENARIO_TU
 class RGE_Scenario {
 public:
     char _gap_00[0x1308];
@@ -18,6 +19,7 @@ public:
 
     void Set_CityPlan(int index, char* str, int flag);
 };
+#endif
 
 void RGE_Scenario::Set_CityPlan(int index, char* str, int flag) {
     if (str != 0) {

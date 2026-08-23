@@ -64,6 +64,7 @@ void* __cdecl calloc(int count, int size);
 class RGE_Game_World;
 class RGE_Static_Object;
 
+#ifndef SCENARIO_TU
 class RGE_Timeline {
 public:
     virtual ~RGE_Timeline();
@@ -132,6 +133,7 @@ public:
     void InitializeTextValues();
     RGE_Scenario(int file, RGE_Game_World* world);
 };
+#endif
 
 RGE_Scenario::RGE_Scenario(int file, RGE_Game_World* world)
 {

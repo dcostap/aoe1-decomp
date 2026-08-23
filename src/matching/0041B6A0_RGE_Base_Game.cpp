@@ -19,24 +19,110 @@
 
 #include <string.h>
 
-class RGE_Game_Info;
-class RGE_Scenario_File_Info;
+class RGE_Game_Info {
+public:
+    char gap_00[0x118];
+    RGE_Game_Info(char* filename);
+    ~RGE_Game_Info();
+    void save(char* filename);
+};
+class RGE_Scenario_File_Info {
+public:
+    char gap_00[0x10C];
+    RGE_Scenario_File_Info(char* filename);
+    ~RGE_Scenario_File_Info();
+};
 class RGE_Prog_Info {
 public:
     char gap_00[0x410];
     void* instance;
+    char gap_414[0x87C - 0x414];
+    int check_expiration;
+    char gap_880[0x88C - 0x880];
+    int check_multi_copies;
+    char gap_890[0x8C8 - 0x890];
+    int scroll_speed;
+    char gap_8CC[0x8DC - 0x8CC];
+    short interface_style;
+    unsigned char gap_8DE[2];
+    int main_wid;
+    int main_hgt;
+    char gap_8E8[0xC17 - 0x8E8];
+    char scenario_dir[1];
 };
-class TDrawSystem;
-class TDrawArea;
-class TShape;
+class TDrawSystem {
+public:
+    char gap_00[0x2C];
+    int screen_size;
+    ~TDrawSystem();
+};
+class TDrawArea {
+public:
+    ~TDrawArea();
+};
+class TShape {
+public:
+    ~TShape();
+};
 class TSound_Driver;
 class TMusic_System;
 class TDigital;
-class TCommunications_Handler;
-class TDebuggingLog;
-class TRegistry;
-class TMousePointer;
-class RGE_Font;
+class TCommunications_Handler {
+public:
+    ~TCommunications_Handler();
+};
+class TDebuggingLog {
+public:
+    ~TDebuggingLog();
+};
+class TRegistry {
+public:
+    int RegGetInt(int use_user, const char* name);
+    int RegSetInt(int use_user, const char* name, int value);
+    ~TRegistry();
+};
+class TMousePointer {
+public:
+    ~TMousePointer();
+};
+class RGE_Font {
+public:
+    void* font;
+    int font_wid;
+    int font_hgt;
+};
+class RGE_Game_World {
+public:
+    virtual void vf00(); virtual void vf04(); virtual void vf08();
+    virtual void vf0C(); virtual void vf10(); virtual void vf14();
+    virtual void vf18(); virtual void vf1C(); virtual void vf20();
+    virtual void vf24(); virtual void vf28(); virtual void vf2C();
+    virtual void vf30(); virtual void vf34(); virtual void vf38();
+    virtual void vf3C(); virtual void vf40(); virtual void vf44();
+    virtual void vf48(); virtual void vf4C(); virtual void vf50();
+    virtual void vf54(); virtual void vf58(); virtual void vf5C();
+    virtual void vf60(); virtual void vf64(); virtual void vf68();
+    virtual void vf6C(); virtual void vf70(); virtual void vf74();
+    virtual void vf78(); virtual void vf7C(); virtual void vf80();
+    virtual void vf84(); virtual void vf88(); virtual void vf8C();
+    virtual void vf90(); virtual void vf94(); virtual void vf98();
+    virtual void vf9C(); virtual void vfA0(int value);
+};
+class TChat {
+public:
+    ~TChat();
+};
+class DriveInformation {
+public:
+    char gap_04[0x270];
+    DriveInformation();
+    virtual ~DriveInformation();
+};
+class TPanelSystem {
+public:
+    void destroyPanel(char* name);
+    void release_palette(void* palette);
+};
 struct _iobuf;
 
 class RGE_Timing_Info {
@@ -61,6 +147,28 @@ extern int safe_draw_log;
 extern char draw_log_name[260];
 extern _iobuf* draw_log;
 extern RGE_Base_Game* rge_base_game;
+extern void* StringTable;
+extern int debugActions;
+extern _iobuf* actionFile;
+extern int do_fps_log;
+extern _iobuf* fps_log;
+extern DriveInformation* driveInfo;
+extern TChat* chat;
+extern TPanelSystem panel_system;
+extern int do_debug_random;
+extern int wrote_debug_random_log;
+extern float DAT_0056f014;
+extern float DAT_0056f018;
+extern "C" unsigned long __cdecl debug_timeGetTime(char* file, int line);
+extern "C" void __cdecl debug_srand(char* file, int line,
+                                      unsigned int seed);
+#ifndef BASEGAME_GROUPED_TU
+extern "C" long __cdecl _findfirst(const char* filespec, void* fileinfo);
+#endif
+extern "C" void __cdecl GetDXVersion(unsigned long* version,
+                                      unsigned long* platform);
+extern void __cdecl debug_random_write(void);
+extern void __cdecl dump_vismap_log(void);
 extern int g_592A58; // AppInst
 extern int g_62C4A0; // StringTable
 extern int g_62C4A8; // Regs
@@ -73,7 +181,9 @@ extern int g_5B2160; // AppWnd
 extern int g_5B236C; // comm/global window state
 extern int g_62C574; // rge_base_game storage
 
+#ifndef IDC_ARROW
 #define IDC_ARROW ((const char*)32512)
+#endif
 
 class RGE_Base_Game {
 public:
@@ -224,7 +334,7 @@ public:
     char work_dir[261];
     char string_dll_name[261];
     unsigned char pad_3F2[2];
-    void* world;
+    RGE_Game_World* world;
     int render_all;
     short master_obj_id;
     short terrain_id;
@@ -288,6 +398,14 @@ public:
     void setMpPathFinding(unsigned char v);
     void setNumberPlayers(unsigned char v);
     void setScenarioName(const char* name);
+    int check_expiration();
+    int check_multi_copies();
+    unsigned char check_prog_argument(const char* argument);
+    int check_for_cd(int value);
+    void mouse_on();
+    unsigned char pathFinding();
+    unsigned char mpPathFinding();
+    void get_string(int string_id, char* buffer, int buffer_size);
 };
 
 RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* info, int do_setup)

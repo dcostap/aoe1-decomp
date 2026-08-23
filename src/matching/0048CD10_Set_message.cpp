@@ -7,6 +7,7 @@
 void* __cdecl calloc(unsigned int n, unsigned int size);
 void __cdecl free(void*);
 
+#ifndef SCENARIO_TU
 struct RGE_Scenario {
     char gap_00[0x1014];
     /* +0x1014 */ char* description;
@@ -17,6 +18,7 @@ struct RGE_Scenario {
 
     void Set_message(char* text, long field_index);
 };
+#endif
 
 void RGE_Scenario::Set_message(char* text, long field_index) {
     long len;

@@ -10,6 +10,7 @@
 
 struct RGE_Game_World;
 
+#ifndef SCENARIO_TU
 struct RGE_Timeline {
     int _gap[5]; // size 0x14
     RGE_Timeline(RGE_Game_World*);
@@ -28,6 +29,7 @@ public:
     virtual ~RGE_Scenario();
     void InitializeTextValues();
 };
+#endif
 
 RGE_Scenario::RGE_Scenario(RGE_Game_World* game_world) {
     this->world = game_world;

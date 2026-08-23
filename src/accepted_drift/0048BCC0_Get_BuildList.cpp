@@ -18,7 +18,7 @@ typedef unsigned long DWORD;
 class RGE_Base_Game;
 
 extern "C" int __cdecl sprintf(char*, const char*, ...);
-extern "C" int __cdecl _open(const char*, int, int);
+extern "C" int __cdecl _open(const char*, int, ...);
 extern "C" int __cdecl _write(int, const void*, unsigned int);
 extern "C" int __cdecl _close(int);
 extern "C" int __cdecl strcmp(const char*, const char*);
@@ -27,6 +27,13 @@ extern "C" DWORD (__stdcall* const GetTempPathA)(DWORD, char*);
 
 extern RGE_Base_Game* rge_base_game;
 
+#ifndef SCENARIO_TU
+class RGE_Prog_Info {
+public:
+    char gap_000[0x102B];
+    char ai_dir[0x100];
+};
+
 class RGE_Base_Game {
 public:
 #define GPAD(n) virtual void g##n();
@@ -34,7 +41,7 @@ public:
 #undef GPAD
     virtual void get_string(int id, char* out, int len);
     char gap_04[8];
-    char* prog_info;
+    RGE_Prog_Info* prog_info;
 };
 
 class RGE_Scenario {
@@ -47,6 +54,7 @@ public:
 
     char* Get_BuildList(int player, int use_file);
 };
+#endif
 
 char* RGE_Scenario::Get_BuildList(int player, int use_file)
 {
@@ -78,7 +86,7 @@ char* RGE_Scenario::Get_BuildList(int player, int use_file)
         char* name = this->BuildList[player];
         if (strcmp(name, none_str) != 0) {
             if (strcmp(name, random_str) != 0) {
-                sprintf((char*)this + 0x1028, (char*)0x00585FE0, rge_base_game->prog_info + 0x102b, name);
+                sprintf((char*)this + 0x1028, (char*)0x00585FE0, rge_base_game->prog_info->ai_dir, name);
                 return (char*)this + 0x1028;
             }
         }

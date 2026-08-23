@@ -1,9 +1,11 @@
+#ifndef SCENARIO_TU
 class RGE_Scenario {
 public:
     int Get_player_Active(int index);
     int Get_player_Type(int index);
     int computer_player_count(void);
 };
+#endif
 
 int RGE_Scenario::computer_player_count(void) {
     int count = 0;

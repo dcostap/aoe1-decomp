@@ -12,6 +12,7 @@
 #include <string.h>
 #include <time.h>
 
+#ifndef SCENARIO_TU
 struct RGE_Scenario {
     char* Get_description();
 };
@@ -25,9 +26,12 @@ struct RGE_Scenario_Header {
 
     RGE_Scenario_Header(RGE_Scenario* scenario);
 };
+#endif
 
 RGE_Scenario_Header::RGE_Scenario_Header(RGE_Scenario* scenario) {
+#ifndef SCENARIO_TU
     this->vftable = (int*)0x572120;
+#endif
     this->error_code = 0;
     this->version = 2;
     this->checksum = time(0);

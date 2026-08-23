@@ -38,13 +38,14 @@
 extern "C" int __cdecl sprintf(char*, const char*, ...);
 extern "C" int __cdecl strcmp(const char*, const char*);
 extern "C" char* __cdecl strcpy(char*, const char*);
-extern "C" int __cdecl _open(const char*, int, int);
+extern "C" int __cdecl _open(const char*, int, ...);
 extern "C" int __cdecl _write(int, const void*, unsigned int);
 extern "C" int __cdecl _close(int);
 extern "C" unsigned long (__stdcall* const GetTempPathA)(unsigned long, char*);
 
 #pragma intrinsic(strcmp, strcpy)
 
+#ifndef SCENARIO_TU
 class RGE_Prog_Info {
 public:
     char gap_0000[0x102B];
@@ -95,6 +96,7 @@ public:
     int AiRulesFileSize[16];
     char* Get_player_AI(int player, int use_temp_file);
 };
+#endif
 
 char* RGE_Scenario::Get_player_AI(int player, int use_temp_file)
 {

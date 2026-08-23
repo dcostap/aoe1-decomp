@@ -468,6 +468,106 @@
         "004395A0": "src/accepted_drift/004395A0_DibCheckTrans.cpp",
         "00439700": "src/matching/00439700_GetPaletteFromDib.cpp"
       }
+    },
+    {
+      "name": "tworld_prefix",
+      "source": "src/tworld_prefix_tu.cpp",
+      "flags": "config/flags/0052E6B0_world_init.rsp",
+      "owners": {
+        "0052E6B0": "src/matching/0052E6B0_world_init.cpp",
+        "0052E750": "src/matching/0052E750_init.cpp",
+        "0052E770": "src/matching/0052E770_base_save.cpp",
+        "0052E790": "src/matching/0052E790_save.cpp",
+        "0052E830": "src/matching/0052E830_load_player.cpp"
+      },
+      "symbols": {
+        "0052E6B0": "?world_init@TRIBE_World@@UAEXHPAVTSound_Driver@@PAVTCommunications_Handler@@@Z",
+        "0052E750": "?init@TRIBE_World@@UAEEPADPAVTSound_Driver@@PAVTCommunications_Handler@@@Z",
+        "0052E770": "?base_save@TRIBE_World@@UAEXH@Z",
+        "0052E790": "?save@TRIBE_World@@UAEXH@Z",
+        "0052E830": "?load_player@TRIBE_World@@UAEXHEF@Z"
+      }
+    },
+    {
+      "name": "scenario",
+      "source": "src/scenario_tu.cpp",
+      "flags": "config/flags/0048AD60_RGE_Scenario.rsp",
+      "owners": {
+        "0048AB10": "src/matching/0048AB10_RGE_Scenario_Header.cpp",
+        "0048ABB0": "src/matching/0048ABB0_RGE_Scenario_Header.cpp",
+        "0048AC70": "src/matching/0048AC70_RGE_Scenario_Header.cpp",
+        "0048ACA0": "src/matching/0048ACA0_get_size.cpp",
+        "0048ACC0": "src/matching/0048ACC0_save.cpp",
+        "0048AD60": "src/accepted_drift/0048AD60_RGE_Scenario.cpp",
+        "0048AE10": "src/accepted_drift/0048AE10_RGE_Scenario.cpp",
+        "0048B5A0": "src/matching/0048B5A0_RGE_Scenario.cpp",
+        "0048B6C0": "src/matching/0048B6C0_InitializeTextValues.cpp",
+        "0048B910": "src/matching/0048B910_Set_scenario_name.cpp",
+        "0048B950": "src/matching/0048B950_Set_description.cpp",
+        "0048B960": "src/matching/0048B960_Set_Cine_PreGame.cpp",
+        "0048B9A0": "src/matching/0048B9A0_Set_Cine_Victory.cpp",
+        "0048B9E0": "src/matching/0048B9E0_Set_Cine_Loss.cpp",
+        "0048BA20": "src/matching/0048BA20_Set_Mission_Bmp.cpp",
+        "0048BA60": "src/matching/0048BA60_Set_BuildList.cpp",
+        "0048BAD0": "src/matching/0048BAD0_Set_CityPlan.cpp",
+        "0048BB40": "src/matching/0048BB40_Set_player_AI.cpp",
+        "0048BBB0": "src/matching/0048BBB0_Set_Version.cpp",
+        "0048BBC0": "src/matching/0048BBC0_Set_player_Type.cpp",
+        "0048BBE0": "src/matching/0048BBE0_Set_player_Civ.cpp",
+        "0048BC00": "src/matching/0048BC00_Set_player_Active.cpp",
+        "0048BC20": "src/matching/0048BC20_SetPlayerName.cpp",
+        "0048BC60": "src/matching/0048BC60_Get_scenario_name.cpp",
+        "0048BC70": "src/matching/0048BC70_Get_description.cpp",
+        "0048BC80": "src/matching/0048BC80_Get_Cine_PreGame.cpp",
+        "0048BC90": "src/matching/0048BC90_Get_Cine_Victory.cpp",
+        "0048BCA0": "src/matching/0048BCA0_Get_Cine_Loss.cpp",
+        "0048BCB0": "src/matching/0048BCB0_Get_Mission_Bmp.cpp",
+        "0048BCC0": "src/accepted_drift/0048BCC0_Get_BuildList.cpp",
+        "0048BEC0": "src/accepted_drift/0048BEC0_Get_CityPlan.cpp",
+        "0048C0D0": "src/matching/0048C0D0_Get_Version.cpp",
+        "0048C0E0": "src/accepted_drift/0048C0E0_Get_player_AI.cpp",
+        "0048C2F0": "src/matching/0048C2F0_GetPlayerPosture.cpp",
+        "0048C360": "src/matching/0048C360_GetPlayerName.cpp",
+        "0048C370": "src/matching/0048C370_Get_player_Type.cpp",
+        "0048C390": "src/matching/0048C390_Get_player_Civ.cpp",
+        "0048C3B0": "src/matching/0048C3B0_Get_player_Active.cpp",
+        "0048C3D0": "src/matching/0048C3D0_update.cpp",
+        "0048C3E0": "src/matching/0048C3E0_save.cpp",
+        "0048CC20": "src/matching/0048CC20_active_player_count.cpp",
+        "0048CC50": "src/matching/0048CC50_any_player_count.cpp",
+        "0048CC80": "src/matching/0048CC80_computer_player_count.cpp",
+        "0048CCB0": "src/matching/0048CCB0_Set_conquest_victory.cpp",
+        "0048CCC0": "src/matching/0048CCC0_Get_conquest_victory.cpp",
+        "0048CCD0": "src/matching/0048CCD0_add_description.cpp",
+        "0048CD10": "src/matching/0048CD10_Set_message.cpp",
+        "0048CE40": "src/matching/0048CE40_Get_message.cpp"
+      },
+      "symbols": {
+        "0048AB10": "??0RGE_Scenario_Header@@QAE@PAVRGE_Scenario@@@Z",
+        "0048ABB0": "??0RGE_Scenario_Header@@QAE@H@Z",
+        "0048ACC0": "?save@RGE_Scenario_Header@@UAEXH@Z",
+        "0048AD60": "??0RGE_Scenario@@QAE@PAVRGE_Game_World@@@Z",
+        "0048AE10": "??0RGE_Scenario@@QAE@HPAVRGE_Game_World@@@Z",
+        "0048C3E0": "?save@RGE_Scenario@@UAEXH@Z"
+      }
+    },
+    {
+      "name": "basegame_prefix",
+      "source": "src/basegame_prefix_tu.cpp",
+      "flags": "config/flags/0041BAA0_setup.rsp",
+      "owners": {
+        "0041B620": "src/matching/0041B620_write_draw_log.cpp",
+        "0041B650": "src/matching/0041B650_write_draw_log2.cpp",
+        "0041B6A0": "src/matching/0041B6A0_RGE_Base_Game.cpp",
+        "0041BAA0": "src/accepted_drift/0041BAA0_setup.cpp",
+        "0041C270": "src/scratch/0041C270_RGE_Base_Game.cpp"
+      },
+      "symbols": {
+        "0041B620": "?write_draw_log@@YAXPAD@Z",
+        "0041B650": "?write_draw_log2@@YAXPAD@Z",
+        "0041B6A0": "??0RGE_Base_Game@@QAE@PAVRGE_Prog_Info@@H@Z",
+        "0041C270": "??1RGE_Base_Game@@UAE@XZ"
+      }
     }
   ]
 }

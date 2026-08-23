@@ -9,6 +9,7 @@ typedef unsigned char uchar;
 extern "C" void free(void* ptr);
 void operator delete(void* ptr);
 
+#ifndef SCENARIO_TU
 struct RGE_Timeline {
     void* vtable;
     virtual ~RGE_Timeline();
@@ -34,10 +35,13 @@ struct RGE_Scenario {
 
     ~RGE_Scenario();
 };
+#endif
 
 RGE_Scenario::~RGE_Scenario()
 {
+#ifndef SCENARIO_TU
     this->vtable = (void*)0x572128;
+#endif
 
     if (this->time_line != 0) {
         delete this->time_line;

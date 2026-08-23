@@ -1,10 +1,12 @@
 extern float g_version;
 
-class TComm_System {
+#ifndef SCENARIO_TU
+class RGE_Scenario {
 public:
     float Get_Version();
 };
+#endif
 
-float TComm_System::Get_Version() {
+float RGE_Scenario::Get_Version() {
     return g_version;
 }

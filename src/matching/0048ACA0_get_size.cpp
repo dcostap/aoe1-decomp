@@ -1,5 +1,6 @@
 #include <string.h>
 
+#ifndef SCENARIO_TU
 class RGE_Scenario_Header {
 public:
     char gap_00[0x10];
@@ -7,6 +8,7 @@ public:
 
     long get_size();
 };
+#endif
 
 long RGE_Scenario_Header::get_size() {
     unsigned int len;

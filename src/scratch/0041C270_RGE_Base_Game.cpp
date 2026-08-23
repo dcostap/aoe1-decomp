@@ -47,6 +47,7 @@
 //   the file-scope alias also changed the extracted owner. Restored the
 //   smallest typed for-loop source as the clean reconstruction.
 
+#ifndef BASEGAME_GROUPED_TU
 #include <stdio.h>
 #include <windows.h>
 
@@ -301,6 +302,7 @@ public:
     void stop_sound_system();
     void get_string(int string_id, char* buffer, int buffer_size);
 };
+#endif
 
 RGE_Base_Game::~RGE_Base_Game()
 {

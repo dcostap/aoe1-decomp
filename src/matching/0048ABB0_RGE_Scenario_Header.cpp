@@ -1,6 +1,7 @@
 void __cdecl rge_read_uncompressed(int fd, void* buf, int count);
 void* __cdecl malloc(int size);
 
+#ifndef SCENARIO_TU
 class RGE_Scenario_Header {
 public:
     void* vtable_ptr;        // +0x00
@@ -11,17 +12,19 @@ public:
 
     RGE_Scenario_Header(int fd);
 };
+#endif
 
 RGE_Scenario_Header::RGE_Scenario_Header(int fd) {
     int header_size;
     int desc_size;
 
+#ifndef SCENARIO_TU
+    vtable_ptr = (void*)0x572120;
+#endif
     error_code = 0;
     version = 0;
     checksum = 0;
     description = 0;
-    vtable_ptr = (void*)0x572120;
-
     rge_read_uncompressed(fd, &header_size, 4);
     rge_read_uncompressed(fd, &version, 4);
 

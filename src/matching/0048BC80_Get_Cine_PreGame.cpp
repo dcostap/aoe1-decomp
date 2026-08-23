@@ -1,9 +1,11 @@
+#ifndef SCENARIO_TU
 class RGE_Scenario {
 public:
     virtual ~RGE_Scenario();
     char gap_0[0x1504];
-    char field_1508[1];
+    char Cine_PreGame[1];
     char* Get_Cine_PreGame();
 };
+#endif
 
-char* RGE_Scenario::Get_Cine_PreGame() { return this->field_1508; }
+char* RGE_Scenario::Get_Cine_PreGame() { return this->Cine_PreGame; }

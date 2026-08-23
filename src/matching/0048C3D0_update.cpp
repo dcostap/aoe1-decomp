@@ -1,15 +1,18 @@
-struct Inner_C3D0 {
+#ifndef SCENARIO_TU
+class RGE_Timeline {
+public:
     void update();
 };
 
-class TComm_System {
+class RGE_Scenario {
 public:
     char gap_0[4];
-    Inner_C3D0 *ptr;
+    RGE_Timeline *time_line;
     void update();
 };
+#endif
 
-void TComm_System::update() {
-    if (this->ptr)
-        this->ptr->update();
+void RGE_Scenario::update() {
+    if (this->time_line)
+        this->time_line->update();
 }

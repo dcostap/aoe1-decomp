@@ -8,6 +8,7 @@ class RGE_Base_Game;
 extern RGE_Base_Game* rge_base_game;
 void* __cdecl operator new(unsigned int size);
 
+#ifndef SCENARIO_TU
 class RGE_Base_Game {
 public:
 #define GPAD(n) virtual void g##n();
@@ -26,7 +27,7 @@ public:
     char* hints;
     char* win_message;
     char* loss_message;
-    char* historical_notes;
+    char* historicle_notes;
     char TempText1[0xE0];
     char TempText2[0xE0];
     char TempText3[0xE0];
@@ -51,6 +52,7 @@ public:
 
     void InitializeTextValues();
 };
+#endif
 
 void RGE_Scenario::InitializeTextValues()
 {
@@ -66,7 +68,7 @@ void RGE_Scenario::InitializeTextValues()
     this->hints = 0;
     this->win_message = 0;
     this->loss_message = 0;
-    this->historical_notes = 0;
+    this->historicle_notes = 0;
 
     this->scenario_name = (char*)operator new(0xE0);
     memset(this->scenario_name, 0, 0xE0);
