@@ -53,7 +53,7 @@ def parse_args() -> argparse.Namespace:
     )
     corpus = parser.add_mutually_exclusive_group()
     corpus.add_argument("--normal", action="store_true", help="Only normal corpus functions")
-    corpus.add_argument("--corpus-bucket", choices=["normal", "padding_only", "parent_owned_fragment", "toolchain_supplied", "asm_special", "asm_region"], help="Only this corpus bucket")
+    corpus.add_argument("--corpus-bucket", choices=["normal", "padding_only", "compiler_generated", "parent_owned_fragment", "toolchain_supplied", "asm_special", "asm_region"], help="Only this corpus bucket")
 
     source = parser.add_mutually_exclusive_group()
     source.add_argument("--unclaimed", action="store_true", help="Only unclaimed functions")

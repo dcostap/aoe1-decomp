@@ -64,6 +64,7 @@ The corpus buckets are:
 
 - `normal`: ordinary game functions;
 - `padding_only`: non-behavioral byte-preservation entries;
+- `compiler_generated`: compiler-emitted functions without standalone source bodies;
 - `parent_owned_fragment`: blocks owned by a larger game function;
 - `toolchain_supplied`: imports, CRT code, and compiler helpers;
 - `asm_special`: named handwritten assembly;

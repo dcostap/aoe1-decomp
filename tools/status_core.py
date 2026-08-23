@@ -12,6 +12,7 @@ from common import (
     classify_corpus_bucket,
     load_asm_special_function_names,
     load_asm_special_regions,
+    load_compiler_generated_functions,
     load_functions,
     load_padding_only_functions,
     load_parent_owned_fragments,
@@ -25,7 +26,7 @@ COMMENT_TOKEN_RE = re.compile(
     re.DOTALL,
 )
 SOURCE_BUCKETS = ["matching", "accepted_drift", "verified_logic", "scratch", "unclaimed", "conflict"]
-CORPUS_BUCKETS = ["normal", "padding_only", "parent_owned_fragment", "toolchain_supplied", "asm_special", "asm_region"]
+CORPUS_BUCKETS = ["normal", "padding_only", "compiler_generated", "parent_owned_fragment", "toolchain_supplied", "asm_special", "asm_region"]
 STATUS_FIELDNAMES = [
     "va",
     "name",
@@ -43,6 +44,8 @@ STATUS_FIELDNAMES = [
     "corpus_reason",
     "padding_only",
     "padding_only_reason",
+    "compiler_generated",
+    "compiler_generated_reason",
     "toolchain_supplied",
     "toolchain_supplied_reason",
     "parent_owned_fragment",
@@ -410,6 +413,7 @@ def build_status_rows(
     asm_special_regions = load_asm_special_regions()
     parent_owned_fragments = load_parent_owned_fragments()
     padding_only_functions = load_padding_only_functions()
+    compiler_generated_functions = load_compiler_generated_functions()
     remaining_records: list[dict[str, str]] = []
     rows: list[dict[str, str]] = []
     va_norm = va.upper() if va else None
@@ -438,6 +442,7 @@ def build_status_rows(
             asm_special_regions=asm_special_regions,
             parent_owned_fragments=parent_owned_fragments,
             padding_only_functions=padding_only_functions,
+            compiler_generated_functions=compiler_generated_functions,
         )
 
         if len(present_paths) > 1:
@@ -504,6 +509,8 @@ def build_status_rows(
             "corpus_reason": corpus_reason,
             "padding_only": "yes" if corpus_bucket == "padding_only" else "no",
             "padding_only_reason": corpus_reason if corpus_bucket == "padding_only" else "",
+            "compiler_generated": "yes" if corpus_bucket == "compiler_generated" else "no",
+            "compiler_generated_reason": corpus_reason if corpus_bucket == "compiler_generated" else "",
             "toolchain_supplied": "yes" if corpus_bucket == "toolchain_supplied" else "no",
             "toolchain_supplied_reason": corpus_reason if corpus_bucket == "toolchain_supplied" else "",
             "parent_owned_fragment": "yes" if corpus_bucket == "parent_owned_fragment" else "no",
