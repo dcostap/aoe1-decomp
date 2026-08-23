@@ -8,8 +8,7 @@
 // - Probe 1: reconstructed the complete typed parent with the period EH /
 //   ResourceItem surface, the natural switch shared body, and same-TU AI
 //   module ownership. FLAGS: /GX. Full source emits the correct 0x78 EH
-//   frame and first six call family, but the checker sees 748 bytes because
-//   the parent-owned switch codelets are emitted in the same rebuilt symbol.
+//   frame and all ordered calls.
 // - Probe 3: named the saved timestamp; initial codegen stayed in the same
 //   register basin.
 // - Probe 4: changed the timestamp arithmetic to signed period `long`; this
@@ -26,16 +25,17 @@
 //   to seek the original `sub eax,[ebx+118h]`; VC5 emitted identical code.
 // - Session probe 19: split the count call from a compound soldiers subtraction
 //   to seek the original direct memory subtract; VC5 emitted identical code.
-// - Best current reconstruction: typed full parent, 0x78 frame, matching
-//   initial six ordered calls and natural ResourceItem/switch ownership; local
-//   checker remains nonexact because entry-reachable code past the 321-byte
-//   inventory boundary is the manifest-listed parent-owned fragment cluster
-//   00502451-005025C9. Do not replace this source with raw-offset or codegen
-//   scaffolding merely to hide that structural boundary.
-// - Current claim: a split `unitsToInsert` initialization followed by compound
-//   subtraction was a codegen duplicate. The clean typed source remains pinned;
-//   exact completion needs parent-fragment-aware checking or fragment-aware
-//   code emission for the manifest-listed switch codelets.
+// - Best current reconstruction: typed full parent, 0x78 frame, all 13
+//   ordered calls, and natural ResourceItem/switch ownership. After refreshing
+//   the parent-fragment extraction, the owned comparison span is 00502310-
+//   005025C9 (698 bytes). The remaining mismatch starts at the count
+//   subtraction: VC5 emits `mov ecx,[ebx+118h]; mov ebp,eax; sub ebp,ecx`
+//   instead of the shipped `sub eax,[ebx+118h]; mov ebp,eax`.
+//   Do not replace this source with raw-offset or codegen scaffolding.
+// - Current claim: the split `unitsToInsert` initialization followed by
+//   compound subtraction is a codegen duplicate. The clean typed source
+//   remains pinned. Exact completion needs a supported source or context cause
+//   for the direct EAX subtraction.
 // - Session claim probes 1-4: `register`, split result/count locals, volatile
 //   numberValue, and a reference alias all kept the extra load-before-subtract
 //   basin. These did not change the call surface or frame.
@@ -54,10 +54,9 @@
 // - Session claim probe 15: a plain second subtraction statement was duplicate
 //   codegen. The natural one-expression form remains authoritative.
 // - Binary conclusion: the typed source reproduces the complete natural parent
-//   behavior and EH surface, but VC5 emits the nine manifest-listed switch
-//   codelets and shared body after this target's 321-byte boundary. The checker
-//   therefore reports seven added ordered calls. This is a corpus boundary,
-//   not behavior-equivalent drift; calls and ABI still differ at the target.
+//   behavior, EH surface, cleanup, and ordered call set. The refreshed checker
+//   includes the nine manifest-listed switch fragments. The unresolved drift
+//   is one post-call subtraction lowering and its resulting two-byte shift.
 // - Variant lab #21 tested six units/loop source combinations without /GX and
 //   correctly showed the non-EH 688-byte basin. Lab #22 repeated those axes
 //   with /GX: all six EH variants were one 748-byte group; only the natural
@@ -65,6 +64,9 @@
 // - Variant lab #23 added stdlib/string header axes under /GX. All 24 EH
 //   variants stayed in the same 748-byte group. Header context did not recover
 //   the direct subtract or remove the parent-fragment call additions.
+// - Exact-finish pass: 16 additional source, type, layout, control-flow, and
+//   context probes stayed in the same 748-byte basin. The pinned clean source
+//   was restored and passed unchanged final validation.
 
 class ResourceItem {
 public:

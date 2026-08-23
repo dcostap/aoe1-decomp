@@ -1,5 +1,8 @@
 // VA: 0050E7A0 TRIBE_Master_Building_Object::draw (420B)
 // PDB source: tm_b_obj.cpp lines 228-260
+// PDB qualified symbol: ?draw@TRIBE_Master_Building_Object@@UAEXPAVTDrawArea@@FFPAVRGE_Color_Table@@JJHE@Z
+// PDB module: C:\msdev\work\age1_x1\tm_b_obj.cpp
+// The target is outside the 0050CA9E/0050CE68 player-tech address order.
 //
 // Baseline reconstruction: use the inherited master sprite/radii, select the
 // connected-building facet, and optionally add the four projected radius
@@ -52,6 +55,13 @@
 // - Current clean reconstruction remains the best plausible source. The
 //   unresolved structural lead is VC5 self-home/register scheduling before
 //   the first field load; calls and behavior remain aligned.
+// - Fresh audit confirmed the normal boundary 0050E7A0-0050E943 and the
+//   qualified owner above. Same-module donors span 0050E040-0050E950.
+// - Function-scope output declarations enlarged the frame. Direct map
+//   expressions and short coordinate aliases did not recover the target.
+// - A common facet call collapsed the target branch topology. Direct narrow
+//   writes into dead parameter homes reached 425B and remained nonexact.
+//   That raw-home form is not retained as canonical source.
 
 #include "..\..\include\game_globals.h"
 

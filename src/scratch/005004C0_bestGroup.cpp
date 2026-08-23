@@ -30,22 +30,6 @@
 //   improved shape but worsened positional drift from 350 to 372 bytes and did
 //   not change the first local-home hunk or assist call order, so it was rolled
 //   back.
-// - Bounded pass: canonical const TacticalAIGroup getter and gatherLocation
-//   declarations kept codegen unchanged. Moving the first sentinel assignment
-//   into the nonempty-list arm improved drift to 339 bytes, but no exact source
-//   emerged. The unresolved facts are the id/assist call order and local homes.
-// - Follow-up: a direct typed `assist != &groups` entry guard recovered 90.62%
-//   of original blocks and 304 differing bytes, but emitted 444 bytes. While,
-//   goto, and point-alias variants kept that size excess, so the exact-size
-//   430-byte natural source remains the clean reconstruction.
-// - Claim pass: moving the sentinel before the outer guard worsened drift to
-//   350 bytes; moving it into the do-loop was codegen-duplicate. Explicit
-//   groupID sequencing aligned all 16 calls but worsened drift to 363 bytes
-//   through register and point-home changes. Bool, register, pointer, and
-//   reference variants did not improve that basin.
-// - Claim pass: a sentinel volatile qualifier was codegen-duplicate. A
-//   sentinel-tested while loop reached 393 bytes. Reordering declarations was
-//   duplicate. The direct assist guard remained 304 bytes but exceeded size.
 
 #include <math.h>
 
@@ -164,3 +148,16 @@ TacticalAIGroup* TribeTacticalAIModule::bestGroup(
 
     return best;
 }
+
+// Session audit:
+// - PDB sibling selection identifies 005004C0 as the first unowned normal
+//   tactical-AI sibling after 00500670 in source order. Its owner is the
+//   qualified TribeTacticalAIModule::bestGroup symbol and its boundary is
+//   005004C0-0050066D.
+// - The clean source preserves the sentinel walk, type/action/id/null checks,
+//   ordered direct calls, candidate return, and fault order.
+// - The exact-size clean reconstruction remains nonexact at 339 differing
+//   bytes. The first ordered call gap is id versus assistGroupID evaluation.
+// - Tested id-first temporaries, direct and sentinel guards, loop forms,
+//   declaration order, point aliases, and label forms. None produced an exact
+//   result. The current source is restored to the pinned clean form.

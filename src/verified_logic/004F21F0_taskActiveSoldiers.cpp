@@ -1490,13 +1490,16 @@ LAB_004f4552:
 }
 #endif
 
+static char s_C__msdev_work_age1_x1_taitacmd_c[] =
+    "C:\\msdev\\work\\age1_x1\\taitacmd.cpp";
+
+#ifndef TAITACMD_SHARED_CONTEXT
 typedef unsigned char uchar;
 typedef unsigned long ulong;
 
 extern unsigned long debug_timeGetTime(char* file, int line);
 extern void* __cdecl operator_new(unsigned int size);
 extern void __cdecl operator_delete(void* ptr);
-static char s_C__msdev_work_age1_x1_taitacmd_c[] = "C:\\msdev\\work\\age1_x1\\taitacmd.cpp";
 
 struct XYPoint { int x; int y; };
 struct XYZPoint { int x; int y; int z; };
@@ -1780,6 +1783,7 @@ public:
     void stuffAvoidancePath(TacticalAIGroup* group, Path* path);
     void taskActiveSoldiers(ulong param_1, ulong param_2);
 };
+#endif
 
 void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
 {

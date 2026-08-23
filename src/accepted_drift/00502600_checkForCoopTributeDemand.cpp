@@ -30,6 +30,19 @@
 // the same value first. After tribute calls, the executable reloads the resource
 // cursor; the rebuild relies on its callee-saved register. Loop exits use an
 // inverted branch form. All 12 calls, amounts, players, and effects match.
+// - Fresh final validation remains a 453-byte mismatch at +0014. The frame,
+//   owner symbol, 12 ordered calls, boundary, and four resource reads match.
+// - A counted outer loop with an explicit inner zero-amount goto reached a
+//   281-byte mismatch and 95.37% exact-block coverage, but lost the target's
+//   inner tempRand test and was restored. A combined inner while reached 314
+//   bytes and changed the j setup order. Both forms were reverted.
+// - The target's first structural hunk is still the required stack spill and
+//   reload of tempRand at [esp+10]. Natural aliases, declaration order, comma
+//   setup, initial-value copies, and period loop forms did not reproduce it.
+// - Exact-finish probes: the counted outer-for form reproduced the initial
+//   spill and pointer setup, but VC5 removed the target's redundant inner
+//   tempRand test and ended at 281 bytes (-4 size). The natural do-loop kept
+//   that test but stayed at 453 bytes (+4 size). Restored this clean source.
 
 typedef unsigned char uchar;
 

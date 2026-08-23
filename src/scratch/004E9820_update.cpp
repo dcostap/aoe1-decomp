@@ -69,6 +69,26 @@
 // +0008: target push EDI/mov EBP,0; rebuild zeroes EBX/EBP then pushes EDI.
 // BINARY NOTE: the final mismatch is a prologue and early scan scheduling
 // issue. No changed call, ABI, layout, cleanup, or memory effect is retained.
+// continuation sa-f958dccf-r1: Fresh traversal variants tested positive-count
+// guarded do/while, guarded while, and skip-label forms for both removal scans.
+// The pinned top-tested source remains the only 1391-byte, 20-call basin.
+// Guarded forms add 4 or 8 bytes and duplicate loop predicates. The skip-label
+// form adds 8 bytes. The target still reads each moving array pointer after its
+// positive-count test, so the pinned source has a known malformed-object fault
+// order gap despite its valid-state codegen proximity.
+// Fresh local-lifetime variants tested split iterator initialization and joined
+// best-score initialization. They did not move the entry hunk. Reusing the
+// result local for the victory command, literal timeout reset, early victory
+// initialization, and the complete period class declaration surface were also
+// codegen duplicates or worse. No fake alias, volatile access, or raw vtable
+// was retained.
+// BINARY NOTE: the authoritative target remains 1391 bytes, 430 instructions,
+// four saved registers, one ret-4 boundary, and 20 ordered direct calls owned
+// by PDB-qualified taistrmd.cpp symbols. The mismatch begins at +0008: the
+// target saves EDI, zeros EBP, then reads the timeout member. The rebuild zeros
+// EBX and EBP, reads the member, then saves EDI. This changes invalid-this fault
+// order and shifts the following branch spans. Exact-finish is blocked by this
+// unresolved natural VC5 register and lifetime basin.
 
 extern void* __cdecl operator new(unsigned int size);
 extern void __cdecl operator delete(void* pointer);

@@ -47,6 +47,32 @@
 //     32 changed spans. Restored the natural typed source.
 // 54: Final unchanged validation confirms the pinned 445-byte source and 347
 //     differing bytes.
+// 55-57: Reviewed scalar DAT globals and casted bucket indexing improved the
+//     diagnostic diff to 344 bytes, but shortened the natural body to 429 bytes
+//     and lost block shape; restored.
+// 58-62: Full tactical member declarations and canonical object vtable names
+//     were codegen duplicates after the proven canSee +0x194 slot was restored.
+// 63-67: Typed table-slot, count-slot, char-offset, and declaration-order
+//     probes stayed in a 345-byte diff basin with the wrong saved-register
+//     ownership; restored.
+// 68-70: A live list-slot induction pointer recovered the 0x1c frame and more
+//     aligned blocks, but added pre-loop global arithmetic and worsened the
+//     positional diff to 358 bytes; restored.
+// 71-72: A contiguous count/list table overlay shortened the body to 421 bytes
+//     and changed global ownership; restored.
+// 73: Fresh unchanged validation confirms the pinned natural typed source.
+// 74-75: Replaced the outer for/break form with the PDB-supported positive
+//     guard, nested do loop, early found-ID return, and final -1 return.
+//     This improved the result to 346 differing bytes and 442 bytes, but the
+//     offset still stayed in a saved register and the frame stayed 0x18.
+// 76-77: Added the binary-proven scalar table bases and byte-offset cursor.
+//     Function-scope slot pointers and direct count rereads were codegen
+//     duplicates; they did not recover the slot home or saved-register colors.
+// 78-80: An index-derived slot pointer recovered the 0x1c frame and 91.85%
+//     shape, but worsened the positional diff to 354 bytes. Reference, raw
+//     pointer, declaration-order, and reviewed-header variants stayed there.
+// 81: Restored the pinned natural typed source and ran unchanged validation.
+//     Exactness remains blocked by the slot-pointer and object register basin.
 // BLOCKER: the natural typed source now matches the prologue, calls, CFG, size, and
 // most inner blocks, but VC5 keeps the table offset in EDI and object in ESI.
 // The oracle keeps the table slot in ESI, object in EDI, and one extra frame slot.

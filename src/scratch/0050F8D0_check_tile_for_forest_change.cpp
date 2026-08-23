@@ -47,7 +47,27 @@
 // left in scratch: behavior and field ownership are reconstructed; remaining
 // drift is prologue/register scheduling plus recursive-call relocation. The
 // best validated source is the flag-order variant at 255 differing bytes.
+// sa-557c93eb-r1: restored the PDB line-212 center-tile initializer, y-bound
+// declaration order, a byte switch selector, and the decompiler-supported
+// typed counted forest scan. The result has the exact 434-byte boundary,
+// frame, calls, CFG counts, and first 102 instructions through +0x12C.
+// The strict diff fell from 255 to 76 bytes. The remaining emitted drift is
+// localized to forest row-slot addressing: the executable materializes the
+// current row slot, while VC5 folds that slot into the first indexed load and
+// biases the later cursor to the next row. Equivalent typed cursor order,
+// split assignments, a named row table, and a named next-row pointer were
+// duplicates. Pre-increment forms changed the complete register basin.
+// sa-13047c13-r1 grouped context: the owner-include wrapper compiled this
+// owner and 0050FA90 in PDB order with /O2 /Oy /GX. Exact sibling anchors
+// 0050F410, 0050F760, 0050F7A0, 0050F7B0, 0050F7F0, 0050F800, and 0050F860
+// stayed exact in fresh standalone checks. The grouped owner symbol is
+// PDB-qualified. The context-enabled owner now emits 433 bytes with the same
+// 76-byte diff in both isolated and grouped builds. The grouped context does
+// not recover the row-slot load; the prior clean source was 434 bytes.
 
+#include <stdlib.h>
+
+#ifndef TMAP_GROUP_CONTEXT
 class RGE_Game_World;
 
 class RGE_Master_Static_Object {
@@ -95,15 +115,18 @@ public:
     void check_tile_for_forest_change(short x, short y,
                                       RGE_Game_World* world);
 };
+#else
+#include "../../include/tmap_context.h"
+#endif
 
 void TRIBE_Map::check_tile_for_forest_change(short x, short y,
                                              RGE_Game_World* world)
 {
     RGE_Tile* tile = this->map_row_offset[y] + x;
-    short x0 = x - 1;
-    short x1 = x + 1;
     short y0 = y - 1;
     short y1 = y + 1;
+    short x0 = x - 1;
+    short x1 = x + 1;
     unsigned char changed = 0;
     unsigned char object_found = 0;
     if (x0 < 0)
@@ -115,14 +138,29 @@ void TRIBE_Map::check_tile_for_forest_change(short x, short y,
     if (y1 >= this->map_height)
         y1 = (short)this->map_height - 1;
 
-    switch (tile->terrain & 0x1F) {
+    unsigned char terrain = tile->terrain & 0x1F;
+    switch (terrain) {
     case 0x0A: {
-        for (short row = y0; row <= y1; ++row) {
-            for (short col = x0; col <= x1; ++col) {
-                unsigned char nearby = (this->map_row_offset[row] + col)->terrain & 0x1F;
-                if (nearby != 0x0A && nearby != 0x12)
-                    changed = 1;
-            }
+        RGE_Tile** row_cursor;
+        RGE_Tile* row_tile;
+        row_tile = this->map_row_offset[y0] + x0;
+        row_cursor = this->map_row_offset + y0;
+        if (y0 <= y1) {
+            int row_count = (int)y1 - (int)y0 + 1;
+            do {
+                if (x0 <= x1) {
+                    RGE_Tile* scan = row_tile;
+                    int col_count = (int)x1 - (int)x0 + 1;
+                    do {
+                        unsigned char nearby = scan->terrain & 0x1F;
+                        if (nearby != 0x0A && nearby != 0x12)
+                            changed = 1;
+                        ++scan;
+                    } while (--col_count != 0);
+                }
+                row_tile = row_cursor[1] + x0;
+                ++row_cursor;
+            } while (--row_count != 0);
         }
 
         if (changed)

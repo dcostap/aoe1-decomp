@@ -34,21 +34,28 @@
 // A typed memory alias changed the basin but fell to 439B and 481 differing
 // bytes. An independent late timer test added a 0x1C frame and 514B. A goto
 // form kept 505B and reached 393 differing bytes, but lost CFG shape and was
-// rolled back. Reversed timer operands reached 399 differing bytes and was
-// rolled back. Final validation restores the pinned 505B clean source.
+// rolled back. The final x87 test uses JNE after TEST AH,41h, so bestTimer >
+// timer is required. This keeps the shipped unordered-compare behavior.
+// The original also rereads bestState at +37D5 before this test. Natural
+// nested if forms remove that compare or add a frame. The saved-register
+// basin remains unresolved.
+// r4 worker: flattened the state-2 hitpoint and state-6 timer arms into
+// sibling predicates. This restores the duplicate state reread and exact
+// cleanup block at the original relative boundary without adding a frame.
+// The result is 503B with 403 differing bytes. The saved-register basin and
+// the state copy before the next get_action call remain unresolved.
 
 #include <stdlib.h>
 #include <string.h>
 
 class ObjectMemory; class RGE_Static_Object; class RGE_Action; class RGE_Action_List;
-class PlayerLike { public: virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual int playerAlive(int owner); };
+class RGE_Player { public: virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual int isEnemy(int owner); };
 class RGE_Action { public: virtual ~RGE_Action(); virtual void av0(); virtual void av1(); virtual void av2(); virtual void av3(); virtual void av4(); virtual short actionType(); char gap_04[8]; unsigned char state; char gap_0d[0x1f]; float timer; };
 class RGE_Action_List { public: char gap[0xc]; unsigned char have_action(); RGE_Action* get_action(); };
 class RGE_Static_Object { public: virtual ~RGE_Static_Object(); char gap_04[0x2c]; float hp; char gap_34[0x14]; unsigned char object_state; char gap_49[0x13b]; RGE_Action_List* action_list; };
-class MainDecisionAIModule { public: virtual ~MainDecisionAIModule(); char gap_04[0xec]; PlayerLike* player; char gap_0f4[0x0c]; RGE_Static_Object* object(int id); };
-class TribeMainDecisionAIModule : public MainDecisionAIModule {};
+class MainDecisionAIModule { public: char gap_00[0xf0]; RGE_Player* player; RGE_Static_Object* object(int id); };
 class ObjectMemory { public: int id; short type; short group; unsigned char x; unsigned char y; unsigned char z; unsigned char owner; short hitPoints; char gap_0e[0x16]; };
-class TribeInformationAIModule { public: virtual ~TribeInformationAIModule(); char gap_04[0xfc]; TribeMainDecisionAIModule* md; char gap_104[0x0c]; int maxImportantObjectMemory; ObjectMemory* importantObjectMemory; ObjectMemory* wonderToAttack(int player_id); };
+class TribeInformationAIModule { public: virtual ~TribeInformationAIModule(); char gap_04[0xfc]; MainDecisionAIModule* md; char gap_104[0x0c]; int maxImportantObjectMemory; ObjectMemory* importantObjectMemory; ObjectMemory* wonderToAttack(int player_id); };
 
 ObjectMemory* TribeInformationAIModule::wonderToAttack(int player_id)
 {
@@ -67,7 +74,7 @@ ObjectMemory* TribeInformationAIModule::wonderToAttack(int player_id)
         do {
             if (this->importantObjectMemory[i].type == 0x114) {
                 if (player_id == -1 || this->importantObjectMemory[i].owner == player_id) {
-                    if (player_id != -1 || this->md->player->playerAlive(this->importantObjectMemory[i].owner)) {
+                    if (player_id != -1 || this->md->player->isEnemy(this->importantObjectMemory[i].owner)) {
                         RGE_Static_Object* obj = this->md->object(this->importantObjectMemory[i].id);
                         if (obj != 0) {
                             if (obj->object_state <= 2) {
@@ -87,18 +94,17 @@ ObjectMemory* TribeInformationAIModule::wonderToAttack(int player_id)
                                             bestState = state;
                                             bestTimer = timer;
                                             bestHitpoints = hp;
-                                        } else if (bestState == state) {
-                                            if (bestState == 2 && bestHitpoints < hp) {
-                                                bestObject = &this->importantObjectMemory[i];
-                                                bestState = state;
-                                                bestTimer = timer;
-                                                bestHitpoints = hp;
-                                            } else if (bestState == state && bestState == 6 && bestTimer < timer) {
-                                                bestObject = &this->importantObjectMemory[i];
-                                                bestState = state;
-                                                bestTimer = timer;
-                                                bestHitpoints = hp;
-                                            }
+                                        } else if (bestState == state && bestState == 2 && bestHitpoints < hp) {
+                                            bestObject = &this->importantObjectMemory[i];
+                                            bestState = state;
+                                            bestTimer = timer;
+                                            bestHitpoints = hp;
+                                        // BINARY NOTE: TEST AH,41h followed by JNE rejects unordered values.
+                                        } else if (bestState == state && bestState == 6 && bestTimer > timer) {
+                                            bestObject = &this->importantObjectMemory[i];
+                                            bestState = state;
+                                            bestTimer = timer;
+                                            bestHitpoints = hp;
                                         }
                                     }
                                 }

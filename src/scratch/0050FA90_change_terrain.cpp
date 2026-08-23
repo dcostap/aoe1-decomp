@@ -45,11 +45,28 @@
 // 93.66% shape similarity. Retained the conditional form as the best natural
 // structural reconstruction. Direct/raw tile forms, coordinate aliases,
 // register hints, and loop-scope changes were duplicates or worse.
-// Accepted-drift audit: do not promote. The executable reads the incoming
-// terrain byte from its stack home before reading tile->terrain. The rebuild
-// reads the external tile byte first. A bad tile pointer therefore faults with
-// different register state and read history.
+// Earlier accepted-drift audit: do not promote the old source. It read the
+// external tile byte before the incoming terrain byte and changed fault state.
+// sa-557c93eb-r1: the exact later tmap.cpp stdlib context plus a natural byte
+// accumulator recovered the executable's input-byte-first terrain transform.
+// The first 0x88 bytes then matched exactly. Binary stack homes prove that
+// col_start and row_start are int values. Restoring those widths also recovered
+// every neighbor-bound block and both lower-bound LEAs. The remaining basin is
+// one byte longer: VC5 reads x into DI, while the executable reads the complete
+// incoming dword into EDI. Short lower bounds restore that load but lose the
+// proved int-bound LEA. Scoped aliases, register hints, declaration timing,
+// and the polymorphic map prefix were duplicates or worse. The retained source
+// preserves the executable's tile-fault read order and all map writes/calls.
+// sa-13047c13-r1 grouped context: the owner-include wrapper compiled this
+// owner after 0050F8D0 in PDB order with /O2 /Oy /GX. Exact sibling anchors
+// 0050F410, 0050F760, 0050F7A0, 0050F7B0, 0050F7F0, 0050F800, and 0050F860
+// stayed exact in fresh standalone checks. The grouped owner symbol is
+// PDB-qualified, but the target remains 428 bytes with a 392-byte diff. The
+// grouped context does not recover the original EDI dword load.
 
+#include <stdlib.h>
+
+#ifndef TMAP_GROUP_CONTEXT
 class RGE_Tile_List {
 public:
     void add_node(int x, int y);
@@ -97,6 +114,9 @@ public:
     void change_terrain(short x, short y, unsigned char terrain,
                         RGE_Game_World* world);
 };
+#else
+#include "../../include/tmap_context.h"
+#endif
 
 void TRIBE_Map::change_terrain(short x, short y, unsigned char terrain,
                                RGE_Game_World* world)
@@ -104,17 +124,20 @@ void TRIBE_Map::change_terrain(short x, short y, unsigned char terrain,
     RGE_Player* player;
     RGE_Tile* tile;
     unsigned char old_border;
-    short col_start;
+    int col_start;
     short col_end;
-    short row_start;
+    int row_start;
     short row_end;
     short col;
 
     tile = this->map_row_offset[y] + x;
-    old_border = tile->terrain;
-    tile->terrain = (terrain ^ old_border) & 0x1F ^ old_border;
+    old_border = terrain;
+    old_border ^= tile->terrain;
+    old_border &= 0x1F;
+    old_border ^= tile->terrain;
+    tile->terrain = old_border;
 
-    if (world->curr_player < 1 || world->curr_player >= world->player_num)
+    if (world->curr_player <= 0 || world->curr_player >= world->player_num)
         player = 0;
     else
         player = world->players[world->curr_player];
@@ -125,12 +148,12 @@ void TRIBE_Map::change_terrain(short x, short y, unsigned char terrain,
     if (x == 0)
         col_start = 0;
     else
-        col_start = (short)((int)x - 1);
+        col_start = x - 1;
 
     if (y == 0)
         row_start = 0;
     else
-        row_start = (short)((int)y - 1);
+        row_start = y - 1;
 
     col_end = (x == this->map_width - 1) ? x : x + 1;
     row_end = (y == this->map_height - 1) ? y : y + 1;
