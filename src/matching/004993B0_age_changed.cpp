@@ -1,5 +1,7 @@
 // VA: 004993B0 age_changed (237B)
-// scr_game.cpp
+// PDB owner: protected TRIBE_Screen_Game::age_changed, scr_game.cpp:3304-3331.
+// Body: 004993B0-0049949C. 0049949D-0049949F are padding; 004994A0 is switch data.
+// Do not treat the unresolved key_down_action as a sibling owner.
 // FLAGS: config/flags/004993B0_age_changed.rsp (/GX; original scr_game.cpp EH context)
 //
 // Initial reconstruction: named age-panel/save-age ownership, the RGE player
@@ -113,6 +115,7 @@ public:
     char gap_584[0x18C];
     int save_age;
 
+protected:
     void age_changed();
 };
 
