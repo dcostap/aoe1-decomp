@@ -78,6 +78,9 @@
 //   004A16D0 selects the original constructor EH tail. The reviewed natural
 //   source then matches all 200 bytes and four calls. Target-only compilation
 //   emits the prior duplicated-cleanup drift.
+// - The extended PDB-ordered scr_mps.cpp wrapper keeps this 200-byte match.
+
+#ifndef SCR_MPS_TU_CONTEXT
 
 struct tagRECT;
 class TDrawArea;
@@ -281,6 +284,8 @@ public:
                         unsigned long p4);
     TRIBE_Screen_Disconnect(int mode);
 };
+
+#endif
 
 TRIBE_Screen_Disconnect::TRIBE_Screen_Disconnect(int mode)
     : TScreenPanel(s_Multiplayer_Disconnect_Screen)

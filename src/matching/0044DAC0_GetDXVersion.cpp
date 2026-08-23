@@ -16,7 +16,7 @@
 // probe 6 (ABI/context): changed the Windows/OLE imports to period declarations and
 //   enabled the VC5 string intrinsic surface for the proven 0x6c clear.
 // probe 7 (behavior/layout): restored the DirectX SDK-shaped local ownership and
-//   C-style COM __stdcall vtable ABI visible in the stack-self calls. Also restored
+//   typed COM __stdcall calls visible in the stack-self calls. Also restored
 //   the DX1/DX2/DX3 version stores, pDDraw ownership, and DDSURFACEDESC field offsets.
 // Exact recovery: the source now reaches the 0x114 frame, 1053-byte boundary,
 //   all 47 call sites, and exact positional bytes. It uses period API declarations,
@@ -44,74 +44,20 @@
 // Exact source shape: separate typed locals and ordinary sibling scopes produce
 //   the target homes without an aggregate, union, or incompatible pointer cast.
 
-// The old DirectDraw record is 0x6c bytes. Only these fields are touched here,
-// but retain their real offsets rather than treating the middle as a guessed
-// back-buffer field: dwFlags is +4 and ddsCaps.dwCaps is +68.
-struct DDSCAPS {
-    unsigned long dwCaps;
-};
-
-struct DDSURFACEDESC {
-    unsigned long dwSize;
-    unsigned long dwFlags;
-    char gap_08[0x60];
-    DDSCAPS ddsCaps;
-};  // 4 + 4 + 0x60 + 4 = 108
-
-// Period Windows and OLE headers provide the imported API declarations.
+// Period Windows and DirectX headers provide the imported API declarations.
 #include <string.h>
 #include <windows.h>
 #include <objbase.h>
+#define IID_IDirectDraw2 IID_IDirectDraw2_header
+#include <ddraw.h>
+#undef IID_IDirectDraw2
+#include <dplay.h>
 
-// The DirectX SDK's C++ interface methods are __stdcall.  VC5 therefore emits
-// the COM object as an explicit stack argument to each vtable call, matching
-// the original ff [vtable+slot] sequences without a hand-written vtable view.
-class IDirectDraw {
-public:
-    virtual int __stdcall QueryInterface( const void*, void** ) = 0;
-    virtual unsigned long __stdcall AddRef() = 0;
-    virtual unsigned long __stdcall Release() = 0;
-    virtual int __stdcall slot0C() = 0;
-    virtual int __stdcall slot10() = 0;
-    virtual int __stdcall slot14() = 0;
-    virtual int __stdcall CreateSurface( DDSURFACEDESC*, void**, void* ) = 0;
-    virtual int __stdcall slot1C() = 0;
-    virtual int __stdcall slot20() = 0;
-    virtual int __stdcall slot24() = 0;
-    virtual int __stdcall slot28() = 0;
-    virtual int __stdcall slot2C() = 0;
-    virtual int __stdcall slot30() = 0;
-    virtual int __stdcall slot34() = 0;
-    virtual int __stdcall slot38() = 0;
-    virtual int __stdcall slot3C() = 0;
-    virtual int __stdcall slot40() = 0;
-    virtual int __stdcall slot44() = 0;
-    virtual int __stdcall slot48() = 0;
-    virtual int __stdcall slot4C() = 0;
-    virtual int __stdcall SetCooperativeLevel( void*, unsigned long ) = 0;
-};
-
-class IDirectDraw2 : public IDirectDraw {
-};
-
-class IDirectDrawSurface {
-public:
-    virtual int __stdcall QueryInterface( const void*, void** ) = 0;
-    virtual unsigned long __stdcall AddRef() = 0;
-    virtual unsigned long __stdcall Release() = 0;
-};
-
-class IDirectDrawSurface3 : public IDirectDrawSurface {
-};
-
-class IDirectPlay3 {
-public:
-    virtual int __stdcall QueryInterface( const void*, void** ) = 0;
-    virtual unsigned long __stdcall AddRef() = 0;
-    virtual unsigned long __stdcall Release() = 0;
-};
-
-typedef int (__stdcall* DIRECTDRAWCREATE)( void*, IDirectDraw**, void* );
+// The pinned VC5 headers predate the DX3 interface declarations.  These two
+// outputs use only IUnknown::Release, so the period base interface is enough.
+// BINARY NOTE: The legacy header calls keep the target's COM argument order
+// and vtable slots.  The GUID declarations retain the target's C++ symbols.
+typedef HRESULT (__stdcall* DIRECTDRAWCREATE)( void*, LPDIRECTDRAW*, void* );
 extern const GUID CLSID_DirectPlay;
 extern const GUID IID_IDirectPlay3;
 extern const GUID IID_IDirectDraw2;
@@ -127,7 +73,7 @@ void GetDXVersion( unsigned long* param_1, unsigned long* param_2 ) {
     IDirectDraw* pDDraw;
     IDirectDrawSurface* pSurf;
     IDirectDraw2* pDDraw2;
-    IDirectDrawSurface3* pSurf3;
+    IUnknown* pSurf3;
     DIRECTDRAWCREATE DirectDrawCreate;
     OSVERSIONINFOA osVer;
     pDDraw = 0;
@@ -167,7 +113,7 @@ void GetDXVersion( unsigned long* param_1, unsigned long* param_2 ) {
             }
 
             {
-                IDirectPlay3* dp3;
+                IUnknown* dp3;
                 *param_1 = 0x300;
                 int coInitResult = CoInitialize( 0 );
                 hr = CoCreateInstance( CLSID_DirectPlay, 0, 1, IID_IDirectPlay3,
@@ -225,7 +171,7 @@ void GetDXVersion( unsigned long* param_1, unsigned long* param_2 ) {
         }
 
         *param_1 = 0x100;
-        hr = pDDraw->QueryInterface( &IID_IDirectDraw2, (void**)&pDDraw2 );
+        hr = pDDraw->QueryInterface( IID_IDirectDraw2, (void**)&pDDraw2 );
         if (hr < 0) {
             pDDraw->Release();
             FreeLibrary( DDHinst );
@@ -268,7 +214,7 @@ void GetDXVersion( unsigned long* param_1, unsigned long* param_2 ) {
             return;
         }
 
-        hr = pDDraw->CreateSurface( &desc, (void**)&pSurf, 0 );
+        hr = pDDraw->CreateSurface( &desc, &pSurf, 0 );
         if (hr < 0) {
             pDDraw->Release();
             FreeLibrary( DDHinst );
@@ -277,7 +223,7 @@ void GetDXVersion( unsigned long* param_1, unsigned long* param_2 ) {
             return;
         }
 
-        hr = pSurf->QueryInterface( &IID_IDirectDrawSurface3, (void**)&pSurf3 );
+        hr = pSurf->QueryInterface( IID_IDirectDrawSurface3, (void**)&pSurf3 );
         if (hr < 0) {
             pDDraw->Release();
             FreeLibrary( DDHinst );

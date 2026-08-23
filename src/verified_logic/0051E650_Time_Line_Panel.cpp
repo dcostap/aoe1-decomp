@@ -41,6 +41,28 @@
 // 125-byte basin. Treat this as localized equivalent compiler drift, not an
 // ownership or behavior defect. The group remains valid context for 0051E860,
 // but it is not an all-exact owner set.
+// exact-finish retry: implicit-base plus style-first initialization, signed and
+//   narrow constant spellings, field access, member access, source-line bands,
+//   /G5, and class declaration order all kept the same 125-byte schedule.
+// Moving highlightTextColor1 into the body changed the schedule but put that
+//   store after the derived vptr. Member-derived color values added loads and
+//   moved the vptr to entry. The remaining blocker is authentic header context
+//   or another natural initializer model that preserves partial construction.
+// fresh exact-finish baseline: PDB owner Time_Line_Panel::Time_Line_Panel in
+//   tpnl_tml.cpp:98-109; 276 bytes, 47 instructions, one direct TEasy_Panel
+//   call, no frame, and saved ESI. The canonical source preserves all proven
+//   field widths, values, the derived-vptr publication, and UI tail stores.
+// fresh probe: reordering the initializer-list entries to follow the original
+//   emitted stores was a duplicate 125-byte schedule.
+// fresh probe: replacing the first initializer group with body assignments kept
+//   the 276-byte boundary but widened the strict diff to 209 bytes and moved
+//   the derived vptr to entry.
+// fresh probe: moving only back_color to the body produced 126 bytes and put
+//   its store after the derived vptr; restore the initializer form.
+// fresh probe: adding the period allocation headers changed no schedule and
+//   was not retained. No natural context probe produced exact bytes.
+// BLOCKED: the remaining 125-byte difference is independent store scheduling
+//   and block order. Keep the canonical source and do not alter tpnl_tim.cpp.
 
 #include "../../include/tpnl_tml_context.h"
 

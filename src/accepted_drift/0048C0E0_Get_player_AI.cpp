@@ -28,6 +28,9 @@
 // 25: added the complete period RGE_Scenario suffix from exact scenario.cpp donors; codegen stayed at the 95-byte mismatch.
 // 26: inverted the fd success guard; this changed the call layout and worsened the result to a 290-byte mismatch, so restored the clean arm shape.
 // 27: retained the reviewed extern rge_base_game declaration for policy-correct relocation ownership; codegen stayed at 95 bytes.
+// 28: authentic scenario-wrapper validation exposed the extern global as an unresolved [0] relocation; a target-local direct storage reread restored [62C574] at all three proven sites without changing the 95-byte late drift.
+// 29: exact-finish probes for late destination/return spellings, typed overlays, volatile aliases, player/register locals, and branch-local global receivers all duplicated the same basin; restored the natural source.
+// 30: final scenario-wrapper validation: all nine ordered calls, frame, owner symbol, guards, and return paths remain aligned; 0048C0D0, 0048C2F0, and 0048C360 nearby anchors remain exact.
 // Accepted-drift review: all nine calls match. Before the two late sprintf
 // paths, only three branch displacements differ. In both paths, the rebuild
 // computes &TempText3 early and preserves it in ESI. The executable computes
@@ -98,6 +101,13 @@ public:
 };
 #endif
 
+// BINARY NOTE: scenario.cpp rereads storage 0062C574 at both language calls
+// and the late .per fallback. The authentic scenario wrapper has no linked
+// declaration for that storage, so keep the target-local direct reread.
+#ifdef SCENARIO_TU
+#define rge_base_game (*(RGE_Base_Game**)0x0062C574)
+#endif
+
 char* RGE_Scenario::Get_player_AI(int player, int use_temp_file)
 {
     char random_str[0x32];
@@ -135,3 +145,7 @@ char* RGE_Scenario::Get_player_AI(int player, int use_temp_file)
     sprintf(this->TempText3, "%s", this->AiRules[player]);
     return this->TempText3;
 }
+
+#ifdef SCENARIO_TU
+#undef rge_base_game
+#endif

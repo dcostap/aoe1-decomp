@@ -39,15 +39,14 @@
 //    order, aliases, temporary holders, and scoped declarations. Reversed
 //    calloc order restores the allocation result order but moves the pointer
 //    homes and changes 534 bytes. The natural baseline remains seven bytes.
-// 17: fault audit: the baseline can fault on the first getstring when the first
-//    calloc returns null. The original can fault on the second getstring when
-//    its first calloc returns null. Do not claim equal fault order.
-// ACCEPTED DRIFT: The seven bytes exchange the +0x10 and +0x14 private homes.
-// All valid-allocation calls, constructor arguments, element frees, array frees,
-// frame, EH state, and return paths match. Allocation-failure fault order remains
-// an open exactness question.
-// BLOCKER: Do not promote this source as exact or behavior-equivalent until a
-// natural source recovers both the array homes and the allocation fault order.
+// 17: a later exact result corrected the prior allocation-fault conclusion.
+//    Allocation order, copy order, and their null-fault order stay unchanged.
+// 18: freeing the two outer arrays in allocation order made all 608 bytes exact.
+//    This natural cleanup order also selected the original +0x10 and +0x14 homes.
+// 19: a two-entry local array also matched after the same cleanup-order change.
+//    Removing that aggregate kept the exact result, so it was incidental.
+// 20: restoring the old cleanup order caused two differing bytes with the local
+//    array and seven with separate locals. The final free order is required.
 
 #include "../../include/scr_cam_context.h"
 
@@ -174,8 +173,8 @@ void TRIBE_Campaign_Editor_Screen::make_campaign()
                     free(scenarios_text[i]);
                     free(campaign_filename[i]);
                 }
-                free(campaign_filename);
                 free(scenarios_text);
+                free(campaign_filename);
             } else {
                 this->popupOKDialog(0x2BCB, 0, 0x1C2, 100);
             }

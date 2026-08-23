@@ -19,15 +19,9 @@ class RGE_Diamond_Map_View;
 class RGE_Static_Object;
 
 struct RGE_Map_Image_Line {
-    short image_line;
-    union {
-        unsigned char draw;
-        short start_x;
-    };
-    union {
-        short row_len;
-        short line_len;
-    };
+    short tile_row;
+    short start_x;
+    short line_len;
 };
 
 struct RGE_Map_Tile_Row {

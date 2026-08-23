@@ -104,7 +104,7 @@ public:
 
 class RGE_Visible_Map {
 public:
-    unsigned char get_visible(short, short);
+    unsigned char get_visible(int, int) const;
 };
 
 class RGE_Player {

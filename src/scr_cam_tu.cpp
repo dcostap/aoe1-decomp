@@ -6,7 +6,7 @@
 #include "matching/0048FE80_fill_campaign_scenario_list.cpp"
 #include "matching/0048FF00_check_lists.cpp"
 #include "matching/0048FF80_load_campaign.cpp"
-#include "accepted_drift/00490120_make_campaign.cpp"
+#include "matching/00490120_make_campaign.cpp"
 #include "matching/00490380_add_scenario.cpp"
 #include "matching/00490400_remove_scenario.cpp"
 #include "matching/00490480_move_scenario_up.cpp"

@@ -1,7 +1,11 @@
+#ifndef SCR_MPS_TU_CONTEXT
+
 class TribeMPSetupScreen {
 public:
     virtual ~TribeMPSetupScreen();
-    int key_down_action(int p0, int p1, int p2, int p3, int p4);
+    virtual long key_down_action(long p0, short p1, int p2, int p3, int p4);
 };
 
-int TribeMPSetupScreen::key_down_action(int p0, int p1, int p2, int p3, int p4) { return 0; }
+#endif
+
+long TribeMPSetupScreen::key_down_action(long p0, short p1, int p2, int p3, int p4) { return 0; }

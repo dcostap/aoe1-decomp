@@ -1,12 +1,12 @@
 // getdxver.cpp:342-389, 160 bytes
-// ACCEPTED_DRIFT: manually reviewed pure ESI/EDI role exchange. Original keeps
+// PRIOR REVIEW: this source previously kept a pure ESI/EDI role exchange. Original keeps
 // version-info size in EDI and the allocated buffer in ESI; rebuilt uses ESI and
 // EDI respectively. Every push has the same value in the same stack position,
 // all six call targets and cleanup sequences align, all predicates/returns and
 // memory effects are identical, and 153/160 bytes match. Fault/debug context and
 // non-ABI inspection of incoming callee-saved registers can observe the swapped
 // register values, but no supported API-visible behavior changes.
-// Best: 65% (104/160 bytes diff)
+// The historical review was superseded by the exact-finish probe below.
 //
 // attempt 1-3: baseline, stack fix, 66.9%
 // attempt 4-10: various source reshapes (65-74%)
@@ -45,8 +45,16 @@
 // initialization surfaces. Each retained the same 160-byte output and ESI=size /
 // EDI=buffer coloring. A 72-variant register/type/allocation lab produced one
 // invariant codegen group (40 successful variants), with no exact variant.
-// Final canonical SDK-sample form is retained below. The remaining 8 bytes are
-// the non-local ESI/EDI role swap at size/buffer uses; no accepted_drift.
+// Final canonical SDK-sample form before exact finish. It retained an
+// eight-byte ESI/EDI role swap at the size and buffer uses.
+
+// Exact-finish probe: a real BOOL result local receives the VerQueryValueA status.
+// VC5 removes its store, but this live status local selects EDI for verSize and
+// ESI for pv. The direct GetFileVersionInfoA guard keeps its original fault order.
+// A fresh grouped compile with GetDXVersion and IsDPlay501a produced 160 bytes,
+// 63 instructions, six calls, and no unmasked byte differences for this owner.
+// Walkback: an unused result local and a result local for GetFileVersionInfoA
+// alone kept the eight-byte drift. The VerQueryValueA status local is required.
 
 #include <windows.h>
 #include <winver.h>
@@ -58,6 +66,7 @@ int IsDPlay501a() {
     UINT verSize = GetFileVersionInfoSizeA("dplayx.dll", &lpDummy);
     VS_FIXEDFILEINFO* verInfo;
     unsigned int verInfoLen;
+    BOOL result;
 
     if (verSize == 0) {
         GetLastError();
@@ -69,7 +78,8 @@ int IsDPlay501a() {
             GetLastError();
             return 0;
         }
-        if (VerQueryValueA(pv, "\\", (void**)&verInfo, &verInfoLen)) {
+        result = VerQueryValueA(pv, "\\", (void**)&verInfo, &verInfoLen);
+        if (result) {
             unsigned int a = verInfo->dwFileVersionMS;
             unsigned int b = verInfo->dwFileVersionLS;
             if (a != 0x40005) goto check;
