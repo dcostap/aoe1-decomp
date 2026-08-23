@@ -376,6 +376,7 @@ public:
     TCommunications_Handler(void* hwnd, unsigned char maxPlayers,
                             TChat* chat, GUID appGUID);
     ~TCommunications_Handler();
+    void GameOver();
     void ClearAllSerialNumbers();
     void ClearRXandTX();
     void ResetLastCommunicationTimes();
