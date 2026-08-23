@@ -1,5 +1,8 @@
 // 004BDEA0 TSpan_List_Manager::AddShape
 // Source: spanlist.cpp:827-893
+// PDB owner: ?AddShape@TSpan_List_Manager@@QAEXPAVTShape@@HHHH@Z
+// Binary body: 004BDEA0-004BDF9D; the trailing 004BDF9E-004BDF9F bytes are padding.
+// Binary anchors: direct AddSpan calls at 004BDF2D and 004BDF82.
 //
 // Attempt log:
 // - Replaced the placeholder with the natural TShape/Shape_Info outline walk;
@@ -32,14 +35,26 @@
 // - A focused typed index/base lab (11 source spellings) also formed one
 //   invariant 254-byte group; function-scope locals, identity arithmetic,
 //   inline selection, and const-view probes were duplicates or broader drift.
-// - Header-context lab: <memory.h> and <malloc.h> both restored exact bytes;
-//   retained the period-plausible <memory.h> context, which closes the
-//   three-byte index/base register coloring gap without changing ownership.
+// - Standalone header-context lab: <memory.h> and <malloc.h> both restored
+//   exact bytes. The grouped spanlist build still retains the three-byte gap.
+// - Fresh grouped validation still shows the three-byte EBP/EDX recolor at
+//   004BDEBD-004BDEC6. A combined indexed assignment was codegen-identical.
+// - A repeated info[shape_number] field model lost the selected-record basin
+//   and grew to 177 strict bytes. A malloc.h context probe kept three bytes.
+//   Both probes were reverted.
+// - Existing neighbor note: fresh 004BE1F0 AddMiniList is 73 bytes versus 71
+//   original bytes, with 38 strict differences and first mismatch at +0x0D.
+// - Exact finish: standalone <stdlib.h> and <memory.h> are now guarded by
+//   SPANLIST_SHARED_CONTEXT. The grouped build matches all 254 bytes.
+// - Walkback: removing only these guards restored the three-byte EBP/EDX
+//   recolor. The guards are required for the exact grouped context.
 
 // Main-agent audit confirmed typed selected-record ownership and retained the
 // natural shape insertion path.
+#ifndef SPANLIST_SHARED_CONTEXT
 #include <stdlib.h>
 #include <memory.h>
+#endif
 
 #ifndef SPANLIST_SHARED_CONTEXT
 struct Shape_Info {
