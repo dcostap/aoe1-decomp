@@ -107,6 +107,12 @@
 // the original 0x10 frame and reduces this target from 28 differing bytes to 15. The complete
 // prefix emits the same 15-byte result, so prior function bodies add no further
 // codegen change. The open difference is stack-home rotation after loadRules.
+// exact finish: use tempInt for each list count. Reuse tempIntNum for the
+// name length and each serialized value. This gives the original local and
+// dead-parameter homes without an explicit alias. The result is exact.
+// Reverting any one list role swap causes five differing displacement bytes.
+// Explicit playerID reuse causes one terminator SIB difference. A broader
+// direct-role form increases the frame to 0x14. Keep the natural local form.
 
 extern "C" void __cdecl rge_read(int file, void* dst, int size);
 extern float save_game_version;
@@ -146,19 +152,19 @@ TribeStrategyAIModule::TribeStrategyAIModule(int playerID, int infile)
     this->loadRules(this->ruleSetNameValue);
     this->setDifficultyLevel(this->difficultyLevel);
 
-    rge_read(infile, &tempIntNum, 4);
-    for (i = 0; i < tempIntNum; ++i) {
-        rge_read(infile, &tempInt, 4);
-        this->vcRuleSet.add(tempInt);
+    rge_read(infile, &tempInt, 4);
+    for (i = 0; i < tempInt; ++i) {
+        rge_read(infile, &tempIntNum, 4);
+        this->vcRuleSet.add(tempIntNum);
     }
-    rge_read(infile, &tempIntNum, 4);
-    for (i = 0; i < tempIntNum; ++i) {
-        rge_read(infile, &tempInt, 4);
-        this->executingRules.add(tempInt);
+    rge_read(infile, &tempInt, 4);
+    for (i = 0; i < tempInt; ++i) {
+        rge_read(infile, &tempIntNum, 4);
+        this->executingRules.add(tempIntNum);
     }
-    rge_read(infile, &tempIntNum, 4);
-    for (i = 0; i < tempIntNum; ++i) {
-        rge_read(infile, &tempInt, 4);
-        this->idleRules.add(tempInt);
+    rge_read(infile, &tempInt, 4);
+    for (i = 0; i < tempInt; ++i) {
+        rge_read(infile, &tempIntNum, 4);
+        this->idleRules.add(tempIntNum);
     }
 }

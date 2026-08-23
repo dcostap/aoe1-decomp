@@ -1,30 +1,12 @@
 // VA: 00506FE0, TribeSoldierUnitAIModule::TribeSoldierUnitAIModule
 // Donor: exact UnitAIModule-derived constructor shape from taiuaimd.cpp.
 // FLAGS: config/flags/00506FE0_TribeSoldierUnitAIModule.rsp
+// Canonical-context check: the PDB 0x134 base and PAV parameter symbol remain exact.
 
 #include <stddef.h>
+#include "../../include/taiuaimd_context.h"
 
 void* operator new(size_t size);
-struct RGE_Static_Object;
-
-class UnitAIModule {
-public:
-    virtual ~UnitAIModule();
-    char pad_04[0xFC - 4];
-    unsigned int adjustedIdleTimeoutValue;
-    unsigned int idleTimeoutValue;
-    char pad_104[0x124 - 0x104];
-    int* importantObjects;
-    int numberImportantObjects;
-
-    UnitAIModule(RGE_Static_Object* obj, int param);
-    void setAdjustedIdleTimeout(void);
-};
-
-class TribeSoldierUnitAIModule : public UnitAIModule {
-public:
-    TribeSoldierUnitAIModule(RGE_Static_Object* obj, int param);
-};
 
 TribeSoldierUnitAIModule::TribeSoldierUnitAIModule(RGE_Static_Object* obj, int param)
     : UnitAIModule(obj, param)

@@ -1,6 +1,6 @@
 #include "matching/004E6E10_VictoryConditionRuleSystem.cpp"
 #include "matching/004E7430_VictoryConditionRuleSystem.cpp"
-#include "accepted_drift/004E7440_loadRules.cpp"
+#include "matching/004E7440_loadRules.cpp"
 #include "matching/004E75D0_setRule.cpp"
 #include "matching/004E75F0_rule.cpp"
 #include "matching/004e7610_evaluateAsInProgress.cpp"
@@ -9,4 +9,4 @@
 #include "matching/004e8d10_stopExecution.cpp"
 #include "matching/004E8D20_modifyForDifficultyLevel.cpp"
 #include "matching/004E9100_TribeStrategyAIModule.cpp"
-#include "scratch/004E9260_TribeStrategyAIModule.cpp"
+#include "matching/004E9260_TribeStrategyAIModule.cpp"
