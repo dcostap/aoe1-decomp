@@ -144,6 +144,15 @@
         "0051E790": "??1Time_Line_Panel@@UAE@XZ",
         "0051E860": "?create_timeline@Time_Line_Panel@@QAEJPAVTPanel@@PAPAV1@JJJJJJJJ@Z"
       }
+    },
+    {
+      "name": "music_context",
+      "source": "src/music_tu.cpp",
+      "flags": "config/flags/default.rsp",
+      "owners": {
+        "00461910": "src/matching/00461910_TMusic_System.cpp",
+        "00462C30": "src/matching/00462C30_get_play_info.cpp"
+      }
     }
   ]
 }

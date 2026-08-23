@@ -54,63 +54,14 @@
 // dwReturn read are canonical. Remaining gap is VC5 shared-tail placement and one extra return.
 // Previous bounded result: the typed WinMM surface and explicit success jump formed
 // the prior best structural basin; the remaining gap was the shared MCI tail.
-// Translation-unit sweep: one prior out-of-line diagnostic function selects an
-// exact 309-byte body. None of the 23 available real earlier music.cpp owners
-// forms a valid direct group with this local declaration. No synthetic context
-// is retained. A future pass needs the shared TMusic_System source surface.
+// Translation-unit recovery: music_tu.cpp groups the real 00461910 constructor
+// before this body. Both owners retain one symbol, their original boundaries,
+// and zero normalized positional differences. The target's two relocations name
+// __imp__mciSendCommandA@16 at +238 and +280. All 23 tested real-owner prefixes
+// retain the target result. A larger group must migrate each added owner.
 
 #include <string.h>
-
-class tagMCI_STATUS_PARMS {
-public:
-    unsigned long dwCallback;
-    unsigned long dwReturn;
-    unsigned long dwItem;
-    unsigned long dwTrack;
-};
-
-extern "C" __declspec(dllimport) unsigned long __stdcall mciSendCommandA(
-    unsigned int, unsigned int, unsigned long, void*);
-
-class TMusic_System {
-public:
-    char path[260];
-    unsigned char music_type;
-    unsigned char _pad_0[3];
-    void* sound_system;
-    void* instance;
-    void* window;
-    int device_open;
-    unsigned int device_id;
-    char play_info[12];
-    unsigned char playing_track;
-    char file_name[261];
-    unsigned char _pad_1[2];
-    int start_track;
-    int end_track;
-    int make_cur_track;
-    unsigned long set_pos;
-    int loop;
-    int current_track;
-    int track_count;
-    int notify_waiting;
-    long start_volume;
-    long volume;
-    int paused;
-    int auto_paused;
-    int inactivated;
-    int fade_out;
-    unsigned long fade_time;
-    int fading_track;
-
-    int get_play_info(unsigned char* music_type_out,
-                      int* start_track_out,
-                      int* end_track_out,
-                      int* current_track_out,
-                      char* file_name_out,
-                      int* loop_out,
-                      unsigned long* set_pos_out);
-};
+#include "../../include/music_context.h"
 
 int TMusic_System::get_play_info(unsigned char* music_type_out,
                                  int* start_track_out,
@@ -120,7 +71,7 @@ int TMusic_System::get_play_info(unsigned char* music_type_out,
                                  int* loop_out,
                                  unsigned long* set_pos_out)
 {
-    tagMCI_STATUS_PARMS status_info;
+    MCI_STATUS_PARMS status_info;
     *music_type_out = this->music_type;
     *start_track_out = 0;
     *end_track_out = 0;
@@ -148,7 +99,7 @@ int TMusic_System::get_play_info(unsigned char* music_type_out,
     case 2: {
         status_info.dwItem = 2;
         int result = mciSendCommandA(this->device_id, 0x814, 0x102,
-                                     &status_info);
+                                     (unsigned long)&status_info);
         if (result == 0)
             *set_pos_out = status_info.dwReturn;
         break;
@@ -156,7 +107,7 @@ int TMusic_System::get_play_info(unsigned char* music_type_out,
     case 1: {
         status_info.dwItem = 2;
         int result = mciSendCommandA(this->device_id, 0x814, 0x102,
-                                     &status_info);
+                                     (unsigned long)&status_info);
         if (result == 0)
             *set_pos_out = status_info.dwReturn;
         break;
