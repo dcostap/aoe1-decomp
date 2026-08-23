@@ -37,110 +37,12 @@
 // calc_hgt share the -4 home. Function-scope i and direct member forms were
 // codegen duplicates. The full PDB virtual surface improved shape but gave
 // 592/585 bytes. The minimal slot surface remains the smaller source model.
+// context pass: include the recovered Panel.cpp TPanel layout and PanelNode
+// ownership. The scalar set_rect overload occupies vslot +0x08; the RECT
+// wrapper occupies +0x0C. The source now calls the scalar overload, matching
+// the original four scalar pushes and direct virtual slot identity.
 
-struct tagRECT { long left; long top; long right; long bottom; };
-enum PositionMode {
-    PositionFixed = 0,
-    PositionLeft = 3,
-    PositionCentered = 2,
-    PositionTop = 4,
-    PositionLeftTop = 7,
-    PositionLeftBottom = 8,
-    PositionRightTop = 9
-};
-struct PanelNode;
-
-class TPanel {
-public:
-    TPanel* previous_panel;
-    TPanel* previous_modal_panel;
-    long pnl_x;
-    long pnl_y;
-    long pnl_wid;
-    long pnl_hgt;
-    char* panel_name;
-    void* render_area;
-    tagRECT clip_rect;
-    PositionMode position_mode;
-    int need_redraw;
-    TPanel* curr_child;
-    TPanel* parent_panel;
-    TPanel* left_panel;
-    TPanel* top_panel;
-    TPanel* right_panel;
-    TPanel* bottom_panel;
-    PanelNode* node;
-    PanelNode* first_child_node;
-    PanelNode* last_child_node;
-    TPanel* tab_prev_panel;
-    TPanel* tab_next_panel;
-    int mouse_captured;
-    int active;
-    int visible;
-    int tab_stop;
-    int have_focus;
-    int overlapping_children;
-    int handle_mouse_input;
-    int just_drawn;
-    void* clip_rgn;
-    tagRECT render_rect;
-    long left_border;
-    long top_border;
-    long right_border;
-    long bottom_border;
-    long min_wid;
-    long max_wid;
-    long min_hgt;
-    long max_hgt;
-    long mouse_hold_interval;
-    long mouse_move_tolerance;
-    long mouse_down_x;
-    long mouse_down_y;
-    int mouse_down_ctrl;
-    int mouse_down_shift;
-    unsigned long mouse_down_time;
-    int error_code;
-    int z_order;
-    int display_changed_count;
-    long help_string_id;
-    long help_page_id;
-    unsigned char mouse_action;
-    unsigned char mouse_down_button;
-    unsigned char panel_type;
-    unsigned char color;
-    unsigned char fill_in_background;
-    unsigned char clip_to_parent;
-    unsigned char draw_rect2_flag;
-    unsigned char need_restore;
-
-    virtual ~TPanel();
-    virtual void setup();
-    virtual void set_rect(tagRECT rect);
-    virtual void pad03();
-    virtual void pad04();
-    virtual void pad05();
-    virtual void pad06();
-    virtual void pad07();
-    virtual void pad08();
-    virtual void pad09();
-    virtual void pad0A();
-    virtual void pad0B();
-    virtual void pad0C();
-    virtual void pad0D();
-    virtual void pad0E();
-    virtual void pad0F();
-    virtual void pad10();
-    virtual void pad11();
-    virtual void pad12();
-    virtual void pad13();
-    virtual long handle_size(long wid, long hgt);
-};
-
-struct PanelNode {
-    TPanel* panel;
-    PanelNode* prev;
-    PanelNode* next;
-};
+#include "../../include/panel_context.h"
 
 long TPanel::handle_size(long wid, long hgt)
 {
@@ -244,11 +146,10 @@ long TPanel::handle_size(long wid, long hgt)
         }
     }
 
-    tagRECT rect = { left, top, right, bottom };
-    this->set_rect(rect);
+    this->set_rect(left, top, right, bottom);
     int pass = 0;
     do {
-        for (PanelNode* node = this->first_child_node; node != 0; node = node->next) {
+        for (PanelNode* node = this->first_child_node; node != 0; node = node->next_node) {
             TPanel* child = node->panel;
             long r = child->handle_size(wid, hgt);
             if (r != 0) {

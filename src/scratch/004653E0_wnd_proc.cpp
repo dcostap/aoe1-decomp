@@ -45,52 +45,12 @@
 // emits command, timer, scroll, user in the original physical order.
 // Probes 43-47: sparse or arithmetic keyboard classifiers raised the shape
 // metric, but added a 0x10 frame and moved farther from the clean source.
+// context pass: the local slot and offset declarations moved to the recovered
+// Panel.cpp header. Rebuild output stayed at 870 bytes, 0x0C frame, 30 calls,
+// and the same 796-byte positional diff; the header is safe for this owner.
 
 #include <windows.h>
-
-class TPanel;
-struct PanelNode { TPanel* panel; PanelNode* prev_node; PanelNode* next_node; };
-struct TDrawArea { virtual ~TDrawArea(); void* Wnd; };
-
-class TPanelSystem {
-public:
-    TPanel* mouseOwner();
-    TPanel* keyboardOwner();
-    TPanel* modalPanel();
-    int GetInputEnabled();
-};
-extern TPanelSystem panel_system;
-
-class TPanel {
-public:
-    virtual ~TPanel(); virtual void v04(); virtual void v08(); virtual void v0c();
-    virtual void v10(); virtual void v14(); virtual void v18(); virtual void v1c();
-    virtual void v20(); virtual void v24(); virtual void v28(); virtual void v2c();
-    virtual void v30(); virtual void v34(); virtual void v38(); virtual void v3c();
-    virtual void v40(); virtual void v44();
-    virtual long wnd_proc(void* hwnd, unsigned int msg, unsigned int wParam, long lParam); // +48
-    virtual void v4c(); virtual void v50(); virtual void v54();
-    virtual long handle_key_down(long key, short repeat, int a3, int a4, int a5); // +58
-    virtual long handle_char(long ch, short repeat); // +5c
-    virtual long handle_command(unsigned int w, long l); // +60
-    virtual long handle_user_command(unsigned int w, long l); // +64
-    virtual long handle_timer_command(unsigned int w, long l); // +68
-    virtual long handle_scroll(long w, long l); // +6c
-    virtual long handle_mouse_down(unsigned char button, long x, long y, int a4, int a5); // +70
-    virtual long handle_mouse_move(long x, long y, int a3, int a4); // +74
-    virtual long handle_mouse_up(unsigned char button, long x, long y, int a4, int a5); // +78
-    virtual long handle_mouse_dbl_click(unsigned char button, long x, long y, int a4, int a5); // +7c
-
-    char gap04[0x1c];
-    TDrawArea* render_area; // +20
-    char gap24[0x38];
-    PanelNode* last_child_node; // +5c
-    char gap60[0x0c];
-    int active; // +6c
-
-    void get_mouse_info(unsigned int keys, long packed_pos, POINT& point,
-                        int& focus_flag, int& capture_flag);
-};
+#include "../../include/panel_context.h"
 
 long TPanel::wnd_proc(void* hwnd, unsigned int msg, unsigned int wParam, long lParam)
 {
