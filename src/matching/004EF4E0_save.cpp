@@ -22,6 +22,8 @@
 // - Original tail serialization writes `zoomingToNextAge` before the adjacent
 //   `lastCoopAttackDemandTime` field. Swapping those natural statements gives
 //   an exact 3230B / 94-call match.
+// - The canonical inline resize body stays visible for same-TU update. Four
+//   early save resize sites remain out of line, as the executable requires.
 
 void __cdecl rge_write(int file, void* data, int size);
 void* __cdecl operator new(unsigned int size);
@@ -158,7 +160,9 @@ int TribeTacticalAIModule::save(int file)
         ManagedArray_int& arr = this->civilians;
         do {
             if (i > arr.maximumSizeValue - 1) {
+#pragma inline_depth(0)
                 arr.resize(i + 1);
+#pragma inline_depth(255)
             }
             tempInt = arr.value[i];
             rge_write(file, &tempInt, 4);
@@ -176,7 +180,9 @@ int TribeTacticalAIModule::save(int file)
         ManagedArray_int& arr = this->civilianExplorers;
         do {
             if (i > arr.maximumSizeValue - 1) {
+#pragma inline_depth(0)
                 arr.resize(i + 1);
+#pragma inline_depth(255)
             }
             tempInt = arr.value[i];
             rge_write(file, &tempInt, 4);
@@ -198,7 +204,9 @@ int TribeTacticalAIModule::save(int file)
         ManagedArray_int& arr = this->soldiers;
         do {
             if (i > arr.maximumSizeValue - 1) {
+#pragma inline_depth(0)
                 arr.resize(i + 1);
+#pragma inline_depth(255)
             }
             tempInt = arr.value[i];
             rge_write(file, &tempInt, 4);
@@ -216,7 +224,9 @@ int TribeTacticalAIModule::save(int file)
         ManagedArray_int& arr = this->ungroupedSoldiers;
         do {
             if (i > arr.maximumSizeValue - 1) {
+#pragma inline_depth(0)
                 arr.resize(i + 1);
+#pragma inline_depth(255)
             }
             tempInt = arr.value[i];
             rge_write(file, &tempInt, 4);

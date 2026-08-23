@@ -31,13 +31,31 @@
 //   cursor updates in its increment clause. This restores the original JL
 //   backedge and improves the clean result to 417 differing bytes, 92.92%
 //   shape, 78/78 calls, and 0x128 frame.
-// - Signed world-time delta variants emit the original signed magic divide in
-//   case 0x15 but add auxiliary section bytes and worsen the complete result.
-//   Keep the unsigned field model and natural expression.
-// BLOCKER: The executable lowers the build-list age delta with signed imul,
-// arithmetic shift, sign correction, and a signed <= 5 test. The rebuild uses
-// unsigned mul, logical shift, and an unsigned test. A wrapped or negative
-// world-time delta changes the predicate and later call path.
+// - The registered context now exposes a narrow nonvirtual TribeBuildAIModule
+//   surface for exact anchors. A local inherited virtual view restores the
+//   original +0x44 loadBuildList call without changing shared declarations.
+//   Fresh output is 2514 bytes, 78 calls, frame 0x128, and 348 differing bytes.
+// - CVDump proves four stack locals and their names. They are startTime at
+//   -0x11C, availableTime at -0x120, incUpdateArea at -0x128, and
+//   updateAreaStartTime at -0x124.
+// - CVDump also proves three branch-local XYPoint variables named position.
+//   Their homes are -0x108, -0x118, and -0x110. These scopes restore all three
+//   x87 conversion blocks without fake aliases.
+// - Direct member timing updates restore the four timing homes and the complete
+//   common timing block. Local elapsed, total, and count values were decompiler
+//   artifacts.
+// - The executable casts the unsigned world-time delta to signed int before
+//   division. This source keeps unsigned wrap, then applies signed division and
+//   the signed <= 5 test.
+// - The signed age block and direct timing source restore the internal case-21
+//   blocks. The remaining mismatch is the late block order and boundary.
+// - Gotos, shared returns, loop forms, timer scopes, switch order, missing
+//   default, nested calls, duplicate exits, 512 ambient contexts, and supported
+//   flag axes did not recover that order.
+// BLOCKER: The executable puts the 0xBC9 finish block before cold case 21.
+// VC5 puts case 21 first, adds a loop jump, and places the finish block last.
+// With the required signed age source, the rebuilt reachable boundary is 98
+// bytes too large because it also includes the following switch table.
 
 static const char s_build_file_format[] = "%s.bld";
 
@@ -305,24 +323,33 @@ extern "C" unsigned long debug_timeGetTime(char*, int);
 extern "C" int __cdecl sprintf(char*, const char*, ...);
 #endif
 
+#ifdef TAITACMD_SHARED_CONTEXT
+// The original call uses the BuildAIModule virtual slot at +0x44.  The
+// registered shared header keeps the derived loadBuildList declaration narrow
+// for its exact owner, so use the inherited virtual surface only at this site.
+class TaitacmdBuildAIModuleVirtualView : public AIModule {
+public:
+    virtual int save(int);
+    virtual void displayBuildList();
+    virtual int loadBuildList(char*, RGE_Player*);
+};
+#endif
+
 int TribeTacticalAIModule::doSomething()
 {
-    unsigned long updateTime;
     unsigned long startTime;
-    unsigned long currentTime;
+    unsigned long availableTime;
     int incUpdateArea;
-    XYPoint position;
-    XYPoint position2;
-    XYPoint position3;
+    unsigned long updateAreaStartTime;
+    unsigned long currentTime;
     char tempName[256];
 
-    updateTime = this->md->player->world->availableComputerPlayerUpdateTime;
+    availableTime = this->md->player->world->availableComputerPlayerUpdateTime;
     startTime = debug_timeGetTime((char*)0x5880C0, 0x99C);
 
-    if (updateTime > 0) {
+    if (availableTime > 0) {
         do {
-            unsigned long availableTime =
-                debug_timeGetTime((char*)0x5880C0, 0x99F);
+            updateAreaStartTime = debug_timeGetTime((char*)0x5880C0, 0x99F);
             incUpdateArea = 1;
 
             switch (this->updateArea) {
@@ -341,7 +368,7 @@ int TribeTacticalAIModule::doSomething()
                 break;
 
             case 2:
-                this->taskCivilians(startTime, updateTime);
+                this->taskCivilians(startTime, availableTime);
                 if (this->nextCivilianToTaskValue != -1) {
                     incUpdateArea = 0;
                 }
@@ -375,7 +402,7 @@ int TribeTacticalAIModule::doSomething()
                 if (this->boats.numberValue > 0 ||
                     this->soldiers.numberValue > 0 ||
                     this->artifacts.numberValue > 0) {
-                    this->taskIdleSoldiers(startTime, updateTime);
+                    this->taskIdleSoldiers(startTime, availableTime);
                     if (this->nextIdleSoldierGroupToTaskValue != -1) {
                         incUpdateArea = 0;
                     }
@@ -386,7 +413,7 @@ int TribeTacticalAIModule::doSomething()
                 if (this->boats.numberValue > 0 ||
                     this->soldiers.numberValue > 0 ||
                     this->artifacts.numberValue > 0) {
-                    this->taskActiveSoldiers(startTime, updateTime);
+                    this->taskActiveSoldiers(startTime, availableTime);
                     if (this->nextActiveSoldierGroupToTaskValue != -1) {
                         incUpdateArea = 0;
                     }
@@ -395,7 +422,7 @@ int TribeTacticalAIModule::doSomething()
 
             case 9:
                 if (this->soldiers.numberValue > 0) {
-                    this->playTaskSoldiers(startTime, updateTime);
+                    this->playTaskSoldiers(startTime, availableTime);
                 }
                 break;
 
@@ -444,7 +471,14 @@ int TribeTacticalAIModule::doSomething()
                     BuildItem* item = this->md->buildAI.nextBuildableItem(3);
                     if (item != 0) {
                         sprintf(tempName, s_build_file_format, item->name());
-                        this->md->buildAI.loadBuildList(tempName, this->md->aiPlayer);
+#ifdef TAITACMD_SHARED_CONTEXT
+                        reinterpret_cast<TaitacmdBuildAIModuleVirtualView*>(
+                            &this->md->buildAI)->loadBuildList(
+                            tempName, this->md->aiPlayer);
+#else
+                        static_cast<BuildAIModule*>(&this->md->buildAI)
+                            ->loadBuildList(tempName, this->md->aiPlayer);
+#endif
                         this->md->updateBuildAIWithObjects();
                         this->updateNeededResources();
                     }
@@ -464,6 +498,8 @@ int TribeTacticalAIModule::doSomething()
                             RGE_Static_Object* wonder = this->md->object(
                                 -1, -1, -1, 0x25A, -1, object->id, -1, -1, -1, -1);
                             if (this->wonderInProgressValue != 0 || wonder == 0) {
+                                // BINARY NOTE: PDB gives each branch its own position home.
+                                XYPoint position;
                                 position.x = (int)object->world_x;
                                 position.y = (int)object->world_y;
                                 int id = this->civilian(&position, 1, 0x2BE, 0x2CE, 0x2BC, 0);
@@ -495,9 +531,10 @@ int TribeTacticalAIModule::doSomething()
                             RGE_Static_Object* existing = this->md->object(
                                 -1, -1, -1, 0x26A, -1, object->id, -1, -1, -1, -1);
                             if (existing == 0) {
-                                position2.x = (int)object->world_x;
-                                position2.y = (int)object->world_y;
-                                int id = this->civilian(&position2, 1, 0x2BE, 0x2CE, 0x2BC, 0);
+                                XYPoint position;
+                                position.x = (int)object->world_x;
+                                position.y = (int)object->world_y;
+                                int id = this->civilian(&position, 1, 0x2BE, 0x2CE, 0x2BC, 0);
                                 if (id != -1) {
                                     this->taskRepairer(id, object);
                                 }
@@ -518,9 +555,10 @@ int TribeTacticalAIModule::doSomething()
                             RGE_Static_Object* existing = this->md->object(
                                 -1, -1, -1, 0x26A, -1, object->id, -1, -1, -1, -1);
                             if (existing == 0) {
-                                position3.x = (int)object->world_x;
-                                position3.y = (int)object->world_y;
-                                int id = this->civilian(&position3, 1, 0x2BE, 0x2CE, 0x2BC, 0);
+                                XYPoint position;
+                                position.x = (int)object->world_x;
+                                position.y = (int)object->world_y;
+                                int id = this->civilian(&position, 1, 0x2BE, 0x2CE, 0x2BC, 0);
                                 if (id != -1) {
                                     this->taskRepairer(id, object);
                                 }
@@ -601,8 +639,9 @@ int TribeTacticalAIModule::doSomething()
 
             case 21:
                 this->evaluateBuildListInsertions();
-                if (5 < (this->md->player->world->world_time - this->lastBuildTime) /
-                         60000) {
+                // BINARY NOTE: Wrap as unsigned, then use signed age division.
+                if (5 < (int)(this->md->player->world->world_time -
+                              this->lastBuildTime) / 60000) {
                     this->md->buildAI.unskipBuildList(this->builtFirstStoragePit,
                                                        this->builtFirstGranary);
                     this->lastBuildTime = this->md->player->world->world_time;
@@ -612,18 +651,16 @@ int TribeTacticalAIModule::doSomething()
                 this->md->player->world->useComputerPlayerUpdateTime(
                     currentTime - startTime);
 
-                {
-                    int elapsed = currentTime - availableTime;
-                    int total = this->updateAreaAverageTotal + elapsed;
-                    int count = this->updateAreaAverageCount + 1;
-                    this->lastUpdateAreaTimeValue = elapsed;
-                    this->updateAreaAverageTotal = total;
-                    this->updateAreaAverageCount = count;
-                    if (count >= 20) {
-                        this->updateAreaAverageTotal = 0;
-                        this->updateAreaAverageCount = 0;
-                        this->averageUpdateAreaTimeValue = total / count;
-                    }
+                this->lastUpdateAreaTimeValue =
+                    currentTime - updateAreaStartTime;
+                this->updateAreaAverageTotal += this->lastUpdateAreaTimeValue;
+                this->updateAreaAverageCount++;
+                if (this->updateAreaAverageCount >= 20) {
+                    this->averageUpdateAreaTimeValue =
+                        this->updateAreaAverageTotal /
+                        this->updateAreaAverageCount;
+                    this->updateAreaAverageTotal = 0;
+                    this->updateAreaAverageCount = 0;
                 }
 
                 this->updateArea = 0;
@@ -635,22 +672,21 @@ int TribeTacticalAIModule::doSomething()
             }
 
             currentTime = debug_timeGetTime((char*)0x5880C0, 0xBAA);
-            int elapsed = currentTime - availableTime;
-            int total = this->updateAreaAverageTotal + elapsed;
-            int count = this->updateAreaAverageCount + 1;
-            this->lastUpdateAreaTimeValue = elapsed;
-            this->updateAreaAverageTotal = total;
-            this->updateAreaAverageCount = count;
-            if (count >= 20) {
+            this->lastUpdateAreaTimeValue =
+                currentTime - updateAreaStartTime;
+            this->updateAreaAverageTotal += this->lastUpdateAreaTimeValue;
+            this->updateAreaAverageCount++;
+            if (this->updateAreaAverageCount >= 20) {
+                this->averageUpdateAreaTimeValue =
+                    this->updateAreaAverageTotal / 20;
                 this->updateAreaAverageTotal = 0;
                 this->updateAreaAverageCount = 0;
-                this->averageUpdateAreaTimeValue = total / 20;
             }
 
             if (incUpdateArea != 0) {
                 this->updateArea++;
             }
-        } while (currentTime - startTime < updateTime);
+        } while (currentTime - startTime < availableTime);
     }
 
     currentTime = debug_timeGetTime((char*)0x5880C0, 0xBC9);

@@ -80,6 +80,21 @@
 //   The remaining 914-byte drift starts in coordinate-store scheduling. A
 //   two-byte induction-value register move remains after the refresh search.
 //   Adding exact 004F4760 after the excluded 004F21F0 did not change this body.
+// - Exact-finish pass: two branch-local aggregate XYPoint initializers match
+//   both observed x87 conversion/store orders and improve the drift to 900
+//   bytes. PDB symbols list two tcPosition locals at the same stack home.
+//   ID lifetime and argument-order variants were duplicate or worse.
+//   The shared context still declares removeGatherer as void, while the exact
+//   donor and PDB ABI prove int. Shared helper edits are outside this task.
+// - Final pin was blocked by a concurrent config/translation_units.json edit:
+//   the loader rejects 00543E00 as an owner of world_scenario_sparse. No shared
+//   config or helper file was changed by this pass.
+// - Child exact-finish pass, 2026-08-23: fresh grouped baseline was 2064 bytes,
+//   914 differing bytes, and 39/39 ordered calls. During the pass, the shared
+//   taitacmd header changed ManagedArray::resize from declaration-only to an
+//   inline body. That changed this owner to 2236 bytes with 10 new/delete calls
+//   and removed both resize calls. It also changed 004F13F0 to 679 bytes.
+//   The target source was restored; no context bridge was retained.
 
 #include <stdlib.h>
 
@@ -208,7 +223,6 @@ int TribeTacticalAIModule::taskCivilians(unsigned long param_1, unsigned long pa
     int newExplorer;
     int taskedCount;
     int j;
-    XYPoint tcPosition;
     int i;
     int k;
     int tasked;
@@ -227,8 +241,9 @@ int TribeTacticalAIModule::taskCivilians(unsigned long param_1, unsigned long pa
             do {
                 obj = this->md->object(-1, 0x6D, -1, -1, -1, -1, -1, -1, -1, -1);
                 if (obj != 0) {
-                    tcPosition.x = (int)obj->world_x;
-                    tcPosition.y = (int)obj->world_y;
+                    XYPoint tcPosition = {
+                        (int)obj->world_x, (int)obj->world_y
+                    };
                     tasked = this->idleCivilian(-1, tcPosition, 0);
                 } else {
                     tasked = this->idleCivilian(-1);
@@ -292,8 +307,9 @@ excess_explorers_done:
             do {
                 obj = this->md->object(-1, 0x6D, -1, -1, -1, -1, -1, -1, -1, -1);
                 if (obj != 0) {
-                    tcPosition.x = (int)obj->world_x;
-                    tcPosition.y = (int)obj->world_y;
+                    XYPoint tcPosition = {
+                        (int)obj->world_x, (int)obj->world_y
+                    };
                     tasked = this->idleCivilian(-1, tcPosition, 0);
                 } else {
                     tasked = this->idleCivilian(-1);

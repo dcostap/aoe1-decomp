@@ -176,6 +176,11 @@ public:
 
     const int number() const { return this->numberValue; }
 
+    void zeroNumber()
+    {
+        this->numberValue = 0;
+    }
+
     void setDesiredNumber(int number)
     {
         this->desiredNumberValue = number;

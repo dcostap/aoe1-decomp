@@ -181,7 +181,7 @@ void TribeTacticalAIModule::addObject(RGE_Static_Object* obj)
         if (obj->master_obj->object_group == 0x14) {
             id = obj->id;
             list = &this->transportBoats;
-            // BINARY NOTE: These three contains sites stay out of line.
+            // BINARY NOTE: These contains and resize sites stay out of line.
 #pragma inline_depth(0)
             if (list->contains(id) != 1) {
                 number = list->numberValue;
@@ -209,10 +209,10 @@ void TribeTacticalAIModule::addObject(RGE_Static_Object* obj)
             list = &this->fishingBoats;
             if (list->contains(id) == 1)
                 return;
-#pragma inline_depth(255)
             number = list->numberValue;
             if (number > list->maximumSizeValue - 1)
                 list->resize(number + 1);
+#pragma inline_depth(255)
             list->value[list->numberValue] = id;
             list->numberValue++;
         }

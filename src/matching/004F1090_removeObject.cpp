@@ -57,6 +57,10 @@
 //   after a successful boat removal. If the boat scan fails, it checks only
 //   artifacts. This source preserves that shipped list ownership.
 // - Exact-finish removal of temporary inline-depth pragmas remained exact.
+// - Fresh exact-finish audit: replacing the fourth war-boat inline remove body
+//   with a natural remove call produced 673 bytes, 11 calls, and 397 strict
+//   diff bytes. Restoring the body rebuilt the 765-byte exact result in the
+//   authentic taitacmd.cpp translation unit.
 
 #ifndef TAITACMD_SHARED_CONTEXT
 class TacticalAIModule {
