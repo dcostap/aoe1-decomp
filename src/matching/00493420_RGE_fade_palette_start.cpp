@@ -116,6 +116,9 @@
 // - FLAGS: config/flags/default.rsp (/nologo /c /O2 /Oy). The small VC5 flag
 //   classification sweep stayed exact after the unsized declaration change.
 
+#include "../../include/scr_cred_context.h"
+
+#if 0
 struct tagPALETTEENTRY {
     unsigned char peRed;
     unsigned char peGreen;
@@ -141,6 +144,7 @@ extern float DAT_0086b2ac;
 extern tagPALETTEENTRY DAT_0086b2b0[];
 extern tagPALETTEENTRY DAT_0086b6b0[256];
 extern TDrawArea* DAT_0086bab0;
+#endif
 
 void RGE_fade_palette_start(TDrawArea* draw_area, tagPALETTEENTRY fade_color,
                             float fade_time, unsigned char fade_type,

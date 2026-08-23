@@ -16,12 +16,13 @@ extern _GlobalFreeFn _GlobalFree;
 extern _HreadFn _Hread;
 extern _LcloseFn _Lclose;
 
-void* __cdecl DibReadBitmapInfo(int hf);
+struct tagBITMAPINFOHEADER;
+tagBITMAPINFOHEADER* __cdecl DibReadBitmapInfo(int hf);
 
-void* __cdecl ReadDibBits(char* param_1)
+unsigned char* __cdecl ReadDibBits(char* param_1)
 {
     char of[0x88];
-    void* result = 0;
+    unsigned char* result = 0;
     
     int hf = _OpenFile(param_1, of, 0);
     if (hf == -1) return 0;
@@ -32,7 +33,7 @@ void* __cdecl ReadDibBits(char* param_1)
         int size = *(int*)((char*)info + 0x14);
         _GlobalUnlock(gh(info));
         _GlobalFree(gh(info));
-        result = malloc(size);
+        result = (unsigned char*)malloc(size);
         if (result)
             _Hread(hf, result, size);
     }

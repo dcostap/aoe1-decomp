@@ -53,7 +53,16 @@
 //   reordered selected assignments did not improve the 480-byte diff.
 // - Moving cs1 before WTime removed one diagnostic Log call. The final
 //   validation restored the clean source and records the 480-byte mismatch.
+// - Authentic context pass: this source now compiles after the six exact
+//   com_sync.cpp owners in src/com_sync_tu.cpp. The grouped object keeps all
+//   six original boundaries, qualified symbols, and exact bytes.
+// - The target keeps the typed selected-record reads and direct moving-list
+//   rereads. Its final grouped result is still a 588-byte mismatch at +12,
+//   with frame 0x28 and all 8 ordered direct calls present.
+// - BINARY NOTE: the second scan compares the record PlayerNo and WTurn from
+//   the moving checksum cursor. The operand order preserves the target loads.
 
+#ifndef COM_SYNC_TU_CONTEXT
 class TDebuggingLog {
 public:
     void Log(const char* format, ...);
@@ -96,6 +105,7 @@ public:
 
     int IsPlayerOutOfSync(unsigned int playerNo, unsigned long commTurn);
 };
+#endif
 
 int RGE_Communications_Synchronize::IsPlayerOutOfSync(
     unsigned int playerNo, unsigned long commTurn) {
@@ -151,7 +161,7 @@ int RGE_Communications_Synchronize::IsPlayerOutOfSync(
 
     unsigned int i = 1;
     do {
-        if (playerNo != puVar8[-2] && puVar8[0] == commTurn) {
+        if (puVar8[-2] != playerNo && commTurn == puVar8[0]) {
             if (uVar5 == puVar8[-1] &&
                 lVar6 == puVar8[1] &&
                 mycs5 == puVar8[2] &&

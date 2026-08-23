@@ -52,10 +52,15 @@
 // - A short or long copied line index, a branch-local receiver alias, direct
 //   receiver access, and extra length initialization did not improve the
 //   reduced natural source. The clean RECT form remains pinned for audit.
+// - Full scr_cred context is not valid for this owner yet. With the exact PDB
+//   prefix and /GX, VC5 merges one final TextOutA tail. The grouped result is
+//   666 bytes with 22 calls. The standalone clean source stays at 685 bytes,
+//   preserves all 23 ordered calls, and remains the authoritative attempt.
 
-#include <windows.h>
 #include <string.h>
+#include "../../include/scr_cred_context.h"
 
+#if 0
 typedef unsigned char uchar;
 typedef unsigned long ulong;
 
@@ -113,6 +118,7 @@ public:
     void draw_scrolled_line(void* hdc, short draw_index, short line_index,
                             ulong color1, ulong color2);
 };
+#endif
 
 void TScrollTextPanel::draw_scrolled_line(void* hdc, short draw_index,
                                           short line_index, ulong color1,

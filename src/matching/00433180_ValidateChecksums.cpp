@@ -6,6 +6,7 @@
 //   begins at +30, with WTime at +34 and WTurn at +38; validation scans records
 //   1 through 0x36 using the WTime cursor at +58.
 
+#ifndef COM_SYNC_TU_CONTEXT
 typedef int COMMMESSAGES;
 
 class TCommunications_Handler {
@@ -54,6 +55,7 @@ protected:
                       long a7, long a8, long a9,
                       unsigned long checksum2);
 };
+#endif
 
 int RGE_Communications_Synchronize::ValidateChecksums(
     unsigned turn, unsigned long wRandom, unsigned long checksum1,

@@ -1,9 +1,11 @@
+#ifndef COM_SYNC_TU_CONTEXT
 class RGE_Communications_Synchronize {
 public:
     char gap_00[0x30];
 
     ~RGE_Communications_Synchronize();
 };
+#endif
 
 RGE_Communications_Synchronize::~RGE_Communications_Synchronize() {
     int* p = (int*)((char*)this + 0x38);

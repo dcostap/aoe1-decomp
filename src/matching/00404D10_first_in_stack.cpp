@@ -1,9 +1,11 @@
-// ACCEPTED_DRIFT: 7 bytes (11%) block ordering diff - VC5 inverts JNE/JE for
-// field24 check and flips set_state(1)/set_state(3) block order. Behavior identical.
+// PDB owner: RGE_Action_Missile::first_in_stack, ACT_misl.cpp lines 58-68.
+// BINARY NOTE: The target-null and sentinel tests are one compound guard.
+// This keeps one set_state(3) call site and the original fault order.
 //
 // 00404D10 RGE_Action_Missile::first_in_stack (62B)
 // ACT_misl.cpp
 
+#ifndef ACT_MISL_SHARED_CONTEXT
 class RGE_Action {
 public:
     virtual void vf00();
@@ -43,18 +45,26 @@ public:
     void first_in_stack(unsigned char value);
     void set_state(unsigned char value);
 };
+#endif
 
 void RGE_Action_Missile::first_in_stack(unsigned char value) {
     if (value != 0) {
-        if (stateValue == 0) {
-            if (field20 == 0xBF800000 || field24 == 0xBF800000) {
-                set_state(1);
-            } else {
-                set_state(3);
-            }
+#ifdef ACT_MISL_SHARED_CONTEXT
+        if (this->target_obj == 0 &&
+            (*(int*)&this->target_x == 0xBF800000 ||
+             *(int*)&this->target_y == 0xBF800000)) {
+            set_state(1);
         } else {
             set_state(3);
         }
+#else
+        if (stateValue == 0 &&
+            (field20 == 0xBF800000 || field24 == 0xBF800000)) {
+            set_state(1);
+        } else {
+            set_state(3);
+        }
+#endif
     } else {
         set_state(4);
     }

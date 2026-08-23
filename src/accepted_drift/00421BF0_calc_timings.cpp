@@ -63,6 +63,24 @@
 //   timing[12] at +0x227.  Natural direct and reversed `+` expressions both
 //   load timing[12] first under this VC5 context.  The exact calc_timing_text
 //   donor confirms that the surrounding use changes this commutative schedule.
+// - Specialist follow-up: natural unsigned `a - (0 - b)` preserved the same
+//   two-byte hunk, while the donor-supported timings union worsened two late
+//   logger displacements.  Both probes were restored.
+// - Context gate: config/translation_units.json registers basegame_prefix only
+//   through 0041EBF0; 00421BF0 is not registered.  No config edit was used.
+// - Later-module audit: src/basegame_late_tu.cpp records the PDB owner order
+//   from 0041ED00 through 00421FA0 and groups the real 00421FA0 next owner;
+//   0041E7A0 remains an independently checked prefix anchor.  Its default and
+//   /GX grouped builds preserve size, frame, six calls, publication, rollover,
+//   and fault order, but retain the two quotient-load bytes.  Authentic later
+//   owner context therefore does not resolve the gap.
+// - Fresh grouped checks: 0041E7A0 and 00421FA0 both report MATCH with their
+//   PDB-qualified owners; 00421BF0 still reports MISMATCH at two bytes.  The
+//   later owner wrapper is an evidence boundary test, not an exact claim.
+// BLOCKER: Owners after 0041EBF0 use incompatible local RGE_Base_Game
+//   declarations. Including them all would require unsupported ABI substitution
+//   or broad source edits. Keep the registered prefix and config unchanged until
+//   a canonical shared basegame declaration is proved.
 // ACCEPTED DRIFT: The only two differing bytes swap the source displacements
 //   of two adjacent MOV instructions. The original loads timings[10] into EAX
 //   and timings[12] into EDX. The rebuild reverses those two loads. Both loads
@@ -202,6 +220,11 @@ public:
     virtual int action_exit_menu();
     virtual int action_size();
     virtual int action_close();
+
+    // Context declaration for the next public basegame owner.  This is a
+    // nonvirtual call target and does not change the vtable surface.
+    struct RGE_Game_Options;
+    void set_game_options(RGE_Game_Options* options);
 
 protected:
     virtual void calc_timings();

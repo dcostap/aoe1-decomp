@@ -17,7 +17,7 @@
 //   loads flip-y and destination-info before the ClipDibBlt branch, reloads
 //   GetDibDim output before cdecl cleanup, and reuses parameter homes through
 //   the scaled/table tails.  Current source keeps the named DIBUTILS behavior
-//   and binary-proven long aliases; it remains in scratch rather than forcing
+//   and binary-proven long aliases; it remains non-exact rather than forcing
 //   opaque codegen scaffolding.
 // - A parameter-home alias reached the original frame size. It is diagnostic
 //   evidence only. The living source keeps the named vertical step.
@@ -43,6 +43,14 @@
 //   scaled source and destination fault addresses, memcpy arguments and order,
 //   loop limits, and returns match. Residual drift is private home, register,
 //   multiplication-hoist, and equivalent loop lowering.
+// - Exact-finish revisit: the PDB local names dy and sySkip support natural
+//   source-pitch/source-height ownership. Passing the proven source-height
+//   home through dest_rect restores the original second GetDibDim addresses.
+//   The reduced source reaches 0x8 frame, 4 ordered calls, 615 bytes, and a
+//   321-byte mismatch. The remaining first structural hunk is the pitch-store
+//   schedule at +0131; the scaled/table tails still use equivalent lowering.
+//   No exact result was found. Keep the natural source and do not add register
+//   scaffolding, fake volatility, or a dummy context.
 
 #include <windows.h>
 #include <windowsx.h>
@@ -63,12 +71,7 @@ void __cdecl DibBlt(BITMAPINFO256* dest_info, BYTE* dest_bits, RECT* dest_rect,
     long src_x, long src_y, long src_width, long src_height,
     int do_clip, int flip_x, int flip_y)
 {
-    long dest_direction;
-    long dest_bitmap_height;
-    long src_direction;
-    long src_bitmap_height;
-    long dest_stride;
-    long src_stride;
+    long dy, DestTotWid, DestTotHgt, DestOrien, SrcOrien;
 
     if (do_clip != 0) {
         if (!ClipDibBlt(dest_info, dest_rect, dest_x, dest_y,
@@ -76,38 +79,38 @@ void __cdecl DibBlt(BITMAPINFO256* dest_info, BYTE* dest_bits, RECT* dest_rect,
                 flip_x, flip_y))
             return;
     }
-    GetDibDim(dest_info, dest_stride, dest_bitmap_height, dest_direction);
-    GetDibDim(src_info, src_stride, src_bitmap_height, src_direction);
+    GetDibDim(dest_info, DestTotWid, DestTotHgt, DestOrien);
+    GetDibDim(src_info, dy, (long&)dest_rect, SrcOrien);
 
     if (flip_y != 0)
-        src_direction = -src_direction;
+        SrcOrien = -SrcOrien;
 
     int x_step = (src_width << 8) / dest_width;
     int y_step = (src_height << 8) / dest_height;
     BYTE* dest;
-    if (dest_direction == 1) {
-        dest = dest_bits + dest_stride * dest_y + dest_x;
+    if (DestOrien == 1) {
+        dest = dest_bits + DestTotWid * dest_y + dest_x;
     } else {
-        dest = dest_bits + dest_stride * (dest_bitmap_height - dest_y - 1) + dest_x;
+        dest = dest_bits + DestTotWid * (DestTotHgt - dest_y - 1) + dest_x;
     }
 
     if (x_step == 0x100 && y_step == 0x100 && flip_x == 0) {
-        int src_row;
-        if (src_direction == 1) {
-            src_row = src_stride * src_y;
+        long src_row;
+        if (SrcOrien == 1) {
+            src_row = src_y * dy;
         } else {
-            src_row = src_stride * (src_bitmap_height - src_y - 1);
+            src_row = ((long)dest_rect - src_y - 1) * dy;
         }
-        dest_stride = dest_direction * dest_stride;
-        src_stride = src_direction * src_stride;
         BYTE* src = src_bits + src_row + src_x;
+        DestTotWid = DestOrien * DestTotWid;
+        dy = SrcOrien * dy;
         int row = 0;
         if (dest_height < 1)
             return;
         do {
             memcpy(dest, src, dest_width);
-            dest += dest_stride;
-            src += src_stride;
+            dest += DestTotWid;
+            src += dy;
             ++row;
         } while (row < dest_height);
         return;
@@ -140,21 +143,21 @@ void __cdecl DibBlt(BITMAPINFO256* dest_info, BYTE* dest_bits, RECT* dest_rect,
     if (dest_height > 0) {
         do {
             int source_row = source_y >> 8;
-            if (src_direction != 1)
-                source_row = src_bitmap_height - 1 - source_row;
+            if (SrcOrien != 1)
+                source_row = (long)dest_rect - 1 - source_row;
 
             if (dest_width > 0) {
                 int i = 0;
                 long* x_entry = SrcXTbl;
                 do {
                     dest[i] = src_bits[(int)*x_entry +
-                        source_row * src_stride + src_x];
+                        source_row * dy + src_x];
                     ++i;
                     ++x_entry;
                 } while (i < dest_width);
             }
             source_y += y_step;
-            dest += dest_direction * dest_stride;
+            dest += DestOrien * DestTotWid;
             ++output_row;
         } while (output_row < dest_height);
     }

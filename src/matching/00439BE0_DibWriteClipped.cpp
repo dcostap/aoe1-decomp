@@ -10,10 +10,13 @@
 
 #include <windows.h>
 
+#ifndef DIB_BITMAP_INFO_256_DEFINED
+#define DIB_BITMAP_INFO_256_DEFINED
 struct BITMAPINFO256 {
     BITMAPINFOHEADER bmiHeader;
     RGBQUAD bmiColors[256];
 };
+#endif
 
 extern BITMAPINFOHEADER* __cdecl DibCreate(int bits, int width, int height);
 extern void __cdecl DibBlt(BITMAPINFO256*, unsigned char*, RECT*,

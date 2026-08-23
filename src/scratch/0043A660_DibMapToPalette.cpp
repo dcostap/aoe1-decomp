@@ -47,39 +47,34 @@
 //   These changed the frame, block coverage, or code size in the wrong direction.
 // BINARY NOTE: the shipped function has a 0x128 frame and a dword transparent-search
 // state. The current source models both facts with a separate searchState local.
+// BINARY NOTE: the grouped Dib.cpp context uses the period Win32
+// BITMAPINFOHEADER, RGBQUAD, PALETTEENTRY, GDI, and Global* declarations.
+// This removes same-name overlays that cannot coexist with the canonical SDK.
 // Current structural frontier: 921 differing bytes (85.46% shape, 21/21 ordered
 // calls, frame 0x128, code size 1025 vs 1017); remaining drift is mostly address
 // formation, branch layout, and register topology.
+// - Module probe: the canonical Win32 owner surface keeps the 0x128 frame and
+//   21 ordered calls. The isolated check is 926 bytes / 1027 bytes; the grouped
+//   wrapper is 879 bytes / 1026 bytes. The three prior exact anchors remain
+//   exact in the grouped object.
+// - Continuation probes tested DIB base pointer spellings, FAR and macro type
+//   surfaces, local declaration order, color initialization order, and a
+//   natural shared resize-copy tail. The pointer and declaration variants were
+//   codegen duplicates. The copy-tail variant reached 910 differing bytes but
+//   introduced a second memmove call and lost the 0x128/21-call structure, so
+//   it was restored.
 
-typedef unsigned char BYTE;
-typedef unsigned short WORD;
-typedef unsigned long DWORD;
+#include <windows.h>
+
 #define DIB_RGB(r, g, b) ((DWORD)(BYTE)(r) | ((DWORD)(BYTE)(g) << 8) | ((DWORD)(BYTE)(b) << 16))
-typedef void* HPALETTE;
-typedef void* HBITMAP;
 #include <string.h>
-struct RGBQUAD { BYTE rgbBlue, rgbGreen, rgbRed, rgbReserved; };
-struct PALETTEENTRY { BYTE peRed, peGreen, peBlue, peFlags; };
-struct BITMAPINFOHEADER {
-    DWORD biSize; long biWidth; long biHeight; WORD biPlanes; WORD biBitCount;
-    DWORD biCompression; DWORD biSizeImage; long biXPelsPerMeter; long biYPelsPerMeter; DWORD biClrUsed; DWORD biClrImportant;
-};
-extern "C" int (__stdcall* const GetObjectA)(void*, int, void*);
-extern "C" unsigned int (__stdcall* const GetNearestPaletteIndex)(HPALETTE, unsigned long);
-extern "C" unsigned int (__stdcall* const GetPaletteEntries)(HPALETTE,unsigned int,unsigned int,PALETTEENTRY*);
-extern "C" void* (__stdcall* const GlobalHandle)(void*);
-extern "C" int (__stdcall* const GlobalUnlock)(void*);
-extern "C" void* (__stdcall* const GlobalReAlloc)(void*, unsigned long, unsigned int);
-extern "C" void* (__stdcall* const GlobalLock)(void*);
 
 #pragma function(memcpy)
 #pragma function(memmove)
-extern "C" void* __cdecl memcpy(void*, const void*, unsigned int);
-extern "C" void* __cdecl memmove(void*, const void*, unsigned int);
-void __cdecl xlatRle4(BYTE*, DWORD, BYTE*);
-void __cdecl xlatRle8(BYTE*, DWORD, BYTE*);
-void __cdecl xlatClut8(BYTE*, DWORD, BYTE*);
-void __cdecl xlatClut4(BYTE*, DWORD, BYTE*);
+void __cdecl xlatRle4(BYTE*, unsigned int, BYTE*);
+void __cdecl xlatRle8(BYTE*, int, BYTE*);
+void __cdecl xlatClut8(BYTE*, unsigned int, BYTE*);
+void __cdecl xlatClut4(BYTE*, unsigned int, BYTE*);
 
 void DibMapToPalette(BITMAPINFOHEADER* bih, void* hbm, int transparent, int zero) {
     BYTE* bits;
@@ -87,8 +82,8 @@ void DibMapToPalette(BITMAPINFOHEADER* bih, void* hbm, int transparent, int zero
     BYTE zeroIndex=0;
     DWORD sizeImage;
     int nPalColors;
-    RGBQUAD* rgb;
     PALETTEENTRY pe;
+    RGBQUAD* rgb;
     int zeroBlue;
     BYTE hitEnd=0;
     int searchState=0;
@@ -155,13 +150,14 @@ void DibMapToPalette(BITMAPINFOHEADER* bih, void* hbm, int transparent, int zero
     bih->biClrUsed = nDibColors;
     BYTE* oldBits = bits;
     if (nPalColors < nDibColors) {
-        void* (__stdcall *getHandle)(void*) = GlobalHandle;
+        void* (__stdcall *getHandle)(const void*) = GlobalHandle;
         GlobalUnlock(getHandle(bih));
         GlobalLock(GlobalReAlloc(getHandle(bih),
             bih->biSize + nDibColors * 4 + sizeImage, 0));
 
-        if (bih->biCompression == 3)
+        if (bih->biCompression == 3) {
             bits = (BYTE*)bih + bih->biSize + 12;
+        }
         else
             bits = (BYTE*)bih + bih->biSize + bih->biClrUsed * 4;
         memmove(bits, oldBits, sizeImage);
@@ -170,12 +166,13 @@ void DibMapToPalette(BITMAPINFOHEADER* bih, void* hbm, int transparent, int zero
         else
             bits = (BYTE*)bih + bih->biSize + bih->biClrUsed * 4;
     } else if (nPalColors > nDibColors) {
-        if (bih->biCompression == 3)
+        if (bih->biCompression == 3) {
             bits = (BYTE*)bih + bih->biSize + 12;
+        }
         else
             bits = (BYTE*)bih + bih->biSize + bih->biClrUsed * 4;
         memcpy(bits, oldBits, sizeImage);
-        void* (__stdcall *getHandle)(void*) = GlobalHandle;
+        void* (__stdcall *getHandle)(const void*) = GlobalHandle;
         GlobalUnlock(getHandle(bih));
         GlobalLock(GlobalReAlloc(getHandle(bih),
             bih->biSize + nDibColors * 4 + sizeImage, 0));

@@ -35,12 +35,26 @@
 //   discarded as compiler-steering rather than canonical source. External bound symbols were codegen-identical.
 //   Remaining evidence-led blockers are the unmasked local switch-table relocations, cold case-1 epilogue
 //   placement, and the original absolute x87 bound relocations.
+// - 2026-08-24 exact-finish continuation: routing case 1 through a label after
+//   the switch, moving target_lost before case 1 inside the switch, and placing
+//   case 1 before default all reproduced the 212-byte/31-call natural basin.
+//   Restored this source after each test.
+// - 2026-08-24 exact-finish audit: fresh canonical-TU checks kept 00405510,
+//   004055A0, and 00405620 exact at 0.0000%. This update kept its 890-byte
+//   boundary, owner symbol, 31 ordered calls, frame, and x87 compare topology,
+//   but remained 212 bytes nonexact. The first drift is the switch-table
+//   relocation ([ecx+405BE0]/[edx*4+405BCC] versus local table relocations).
+//   Later drift is the cold case-one tail, x87-bound relocation, and the
+//   [esp+8] versus [esp+0xc] difference scratch home. No variant was retained.
 // Accepted-drift review: the residual is local switch-table relocation, cold
 // case-one return placement, equivalent x/y-difference stack homes, and return
 // epilogue scheduling. Both versions recompute target differences after doMove.
 // x87 compare order, all 31 calls and arguments, notifications, state changes,
 // recursive updates, and return values match.
+// Canonical-TU pass: the local declarations are guarded; the shared owner
+// surface supplies the reviewed player, world, static-object, and action types.
 
+#ifndef ACT_MOVE_CANONICAL_TU
 struct XYZBYTEPoint {
     unsigned char x;
     unsigned char y;
@@ -330,6 +344,7 @@ public:
 
     virtual unsigned char update();
 };
+#endif
 
 unsigned char RGE_Action_Move_To::update()
 {

@@ -3,8 +3,9 @@
 // RGE_fade_palette_step
 // FLAGS: default
 
-#include <windows.h>
+#include "../../include/scr_cred_context.h"
 
+#if 0
 extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
 
 extern unsigned int DAT_0086b294;
@@ -30,6 +31,7 @@ public:
     char gap_00[0x478];
     void SetPalette(void* hPal);
 };
+#endif
 
 int RGE_fade_palette_step()
 {
@@ -71,8 +73,9 @@ int RGE_fade_palette_step()
         }
     }
     
-    RGE_translate_palette(&DAT_0086b2b0, &DAT_0086b6b0, DAT_0086b2a8, DAT_0086b2a0, DAT_0086b298, DAT_0086b29c);
-    ((TDrawSystem*)DAT_0086bab0)->SetPalette(&DAT_0086b6b0);
+    RGE_translate_palette(DAT_0086b2b0, DAT_0086b6b0, DAT_0086b2a8,
+                          DAT_0086b2a0, DAT_0086b298, DAT_0086b29c);
+    DAT_0086bab0->SetPalette(DAT_0086b6b0);
     
     return done;
 }

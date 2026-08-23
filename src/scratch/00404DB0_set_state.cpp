@@ -36,8 +36,32 @@
 // as float first, which can change a threshold result. The ballistic tail has
 // the reverse problem: the original rounds acceleration through a float stack
 // home before both outputs, while the rebuild uses its extended value.
+//
+// Context audit: the PDB owner and all original line bands identify ACT_misl.cpp,
+// not ACT_make.cpp.  ACT_make.cpp set_state is 00404A70 and is already exact.
+// This target was kept in its authentic ACT_misl.cpp owner context.
+// Current claim probes: a post-distance denominator local worsened 210 to 424;
+// function-scope and declaration-order changes, an uncast guided sqrt, constants,
+// acceleration mutation, and PDB switch-case order did not change the 210 basin.
+// A double guided-distance local changed the frame to 0x2C and worsened 210 to 241.
+// All variants were restored to the pinned 210-byte clean source.
+//
+// Authentic-TU probe: src/act_misl_tu.cpp includes the PDB-ordered ACT_misl.cpp
+// owners through include/act_misl_context.h.  The module flag evidence is
+// /nologo /c /O2 /Oy /GX: the two constructors at 00404BB0 and 00404C90 carry
+// the original EH setup. Fresh wrapper extraction kept exact sibling anchors
+// 00404BB0, 00404C90, 00404D10, 00404D50, and 004054B0 after relocation
+// masking. The shared wrapper keeps the 0x28 frame and 12 ordered calls here,
+// but this body still has an 0x330-byte section with a 0x325-byte original
+// boundary and a larger positional drift than the standalone clean source. It
+// did not resolve the switch/register hunk. The x87 differences below are also
+// behavior-relevant, so this owner stays scratch and unregistered. Do not
+// replace this target owner until a source-level fix preserves the calls,
+// state publication, size, CFG, x87 precision, and fault order.
 
 #include <math.h>
+
+#ifndef ACT_MISL_SHARED_CONTEXT
 
 typedef unsigned char uchar;
 
@@ -226,6 +250,7 @@ public:
 
     void intercept(float&, float&, float&);
 };
+#endif
 
 void RGE_Action_Missile::set_state(uchar param_1)
 {

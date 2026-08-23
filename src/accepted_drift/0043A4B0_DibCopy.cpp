@@ -15,27 +15,14 @@
 // header/img temps, macro/helper, positive if/label tail, nonvolatile+volatile-cast surfaces,
 // HGLOBAL temp, and memcpy return/calling-convention decl tweaks. Best remains 6-byte
 // register-coloring drift in the second size calculation before memcpy; no exact match.
-extern void* memcpy(void* dst, const void* src, unsigned long n);
+#include <windows.h>
 
-class tagBITMAPINFOHEADER {
-public:
-    unsigned long biSize;
-    long biWidth;
-    long biHeight;
-    unsigned short biPlanes;
-    unsigned short biBitCount;
-    unsigned long biCompression;
-    volatile unsigned long biSizeImage;
-    long biXPelsPerMeter;
-    long biYPelsPerMeter;
-    unsigned long biClrUsed;
-    unsigned long biClrImportant;
-};
+extern void* memcpy(void* dst, const void* src, unsigned long n);
 
 extern "C" __declspec(dllimport) void* __stdcall GlobalAlloc(unsigned int flags, unsigned long bytes);
 extern "C" __declspec(dllimport) void* __stdcall GlobalLock(void* hMem);
 
-tagBITMAPINFOHEADER* DibCopy(tagBITMAPINFOHEADER* dib) {
+BITMAPINFOHEADER* DibCopy(BITMAPINFOHEADER* dib) {
     tagBITMAPINFOHEADER* copy;
 
     if (dib == 0) {

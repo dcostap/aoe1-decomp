@@ -1,6 +1,7 @@
 // attempt 1: direct natural shape from the asm
 // expected pattern: check target_obj, run inRange, branch to vcall 0x5c, otherwise test obj->vfFC against 0.0
 
+#ifndef ACT_MOVE_CANONICAL_TU
 class RGE_Static_Object {
 public:
     virtual float vf00();
@@ -124,19 +125,38 @@ public:
 
     void first_in_stack(unsigned char param_1);
 };
+#endif
 
 void RGE_Action_Move_To::first_in_stack(unsigned char param_1) {
     if (this->target_obj != 0) {
         if (this->obj->inRange(this->target_obj, this->range) != 0) {
+#ifdef ACT_MOVE_CANONICAL_TU
+            this->set_state(1);
+#else
             this->vf5C(1);
+#endif
             return;
         }
     }
 
-    if (this->obj->vfFC() == 0.0) {
+    if (
+#ifdef ACT_MOVE_CANONICAL_TU
+        this->obj->maximumSpeed() == 0.0
+#else
+        this->obj->vfFC() == 0.0
+#endif
+    ) {
+#ifdef ACT_MOVE_CANONICAL_TU
+        this->set_state(0x0D);
+#else
         this->vf5C(0x0D);
+#endif
         return;
     }
 
+#ifdef ACT_MOVE_CANONICAL_TU
+    this->set_state(3);
+#else
     this->vf5C(3);
+#endif
 }

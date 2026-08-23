@@ -5,6 +5,7 @@
 // record order is PlayerNo, WTime, WTurn, cs1..cs5, Random; the original
 // source writes the time/checksum fields first and PlayerNo last.
 
+#ifndef COM_SYNC_TU_CONTEXT
 struct RGE_Communications_Check {
     int PlayerNo;
     unsigned WTime;
@@ -38,6 +39,7 @@ protected:
                           long chatCrc, long dataCrc, long a7, long a8,
                           long a9);
 };
+#endif
 
 int RGE_Communications_Synchronize::Add(
     unsigned turn, unsigned long wRandom, unsigned long checksum1,

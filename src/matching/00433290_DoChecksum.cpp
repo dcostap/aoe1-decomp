@@ -25,6 +25,7 @@
 
 #include <stdio.h>
 
+#ifndef COM_SYNC_TU_CONTEXT
 class TDebuggingLog {
 public:
     void Log(const char* format, ...);
@@ -105,6 +106,7 @@ public:
 
     unsigned long DoChecksum(unsigned long turn);
 };
+#endif
 
 unsigned long RGE_Communications_Synchronize::DoChecksum(unsigned long turn) {
     unsigned long worldTime = 0;

@@ -1,3 +1,4 @@
+#ifndef ACT_MOVE_CANONICAL_TU
 class RGE_Static_Object;
 
 class RGE_Action_Object {
@@ -48,6 +49,7 @@ public:
 
     void set_state(unsigned char param_1);
 };
+#endif
 
 void RGE_Action_Move_To::set_state(unsigned char param_1)
 {
@@ -61,7 +63,11 @@ void RGE_Action_Move_To::set_state(unsigned char param_1)
     case 13:
     case 14:
         if (this->subActionValue == 0) {
+#ifdef ACT_MOVE_CANONICAL_TU
+            this->obj->vf38((unsigned long)this->obj->master_obj->name);
+#else
             this->obj->vf38(this->obj->inner->value);
+#endif
         }
         return;
     default:

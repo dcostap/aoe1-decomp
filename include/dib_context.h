@@ -5,6 +5,7 @@
 
 // BINARY NOTE: Dib.cpp uses a 256-entry RGBQUAD tail after the Win32
 // BITMAPINFOHEADER. The complete surface is 0x428 bytes.
+#define DIB_BITMAP_INFO_256_DEFINED
 struct BITMAPINFO256 {
     BITMAPINFOHEADER bmiHeader;
     RGBQUAD bmiColors[256];

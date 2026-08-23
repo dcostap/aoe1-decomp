@@ -1,33 +1,13 @@
 // VA: 0043A420 DibDraw
 // PDB: Dib.cpp lines 1546-1589 (136 bytes, 59 asm lines)
 // Default flags. No inline asm/hacks.
-// __cdecl, many params. IAT call to StretchDIBits.
+#include <windows.h>
 
-#pragma pack(push, 1)
-typedef struct {
-    unsigned int biSize;
-    int biWidth;
-    int biHeight;
-    unsigned short biPlanes;
-    unsigned short biBitCount;
-    unsigned int biCompression;
-    unsigned int biSizeImage;
-    int biXPelsPerMeter;
-    int biYPelsPerMeter;
-    unsigned int biClrUsed;
-    unsigned int biClrImportant;
-} tagBITMAPINFOHEADER;
-#pragma pack(pop)
+// __cdecl, many params. IAT call to the canonical Win32 StretchDIBits.
 
-extern "C" int __declspec(dllimport) __stdcall StretchDIBits(
-    void* hdc, int xDest, int yDest, int wDest, int hDest,
-    int xSrc, int ySrc, int wSrc, int hSrc,
-    const void* lpBits, const tagBITMAPINFOHEADER* lpBitsInfo,
-    unsigned int iUsage, long dwRop);
-
-extern "C" int __cdecl DibDraw(
+int __cdecl DibDraw(
     void* a1, int a2, int a3, int a4, int a5,
-    tagBITMAPINFOHEADER* a6, int a7, int a8, int a9, int a10,
+    BITMAPINFOHEADER* a6, int a7, int a8, int a9, int a10,
     long a11, unsigned int a12)
 {
     if (a6 == 0)
@@ -51,5 +31,5 @@ extern "C" int __cdecl DibDraw(
 
     return StretchDIBits(a1, a2, a3, a4, a5,
                          a7, a8, a9, a10,
-                         bits, a6, a12, a11);
+                         bits, (const BITMAPINFO*)a6, a12, a11);
 }

@@ -6,6 +6,9 @@
 // Tried FPU amount forms: inline int multiply, explicit (double)speed, named double val, val*=speed, swapped operands, (float)speed, volatile speed, and /Op,/Oi,/Og,/Ot,/O1 flags.
 // Best remaining drift: VC5 emits `fimul dword [esi+190h]` (6B) for `elapsed*const*speed`; original emits equivalent `fild dword [esi+190h]; fmulp` (8B). This 2-byte arithmetic encoding difference shifts branch displacements/tail by 2; behavior/calls/stack effects otherwise match.
 
+#include "../../include/scr_cred_context.h"
+
+#if 0
 extern unsigned long __cdecl debug_timeGetTime(char* file, int line);
 
 struct TPanel {
@@ -44,6 +47,7 @@ public:
     int done;         // +0x194
     virtual long handle_idle();
 };
+#endif
 
 long TScrollTextPanel::handle_idle()
 {

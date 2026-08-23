@@ -6,6 +6,11 @@
 typedef unsigned char uchar;
 typedef unsigned int uint;
 typedef unsigned long ulong;
+typedef void* HDC;
+typedef void* HRGN;
+typedef ulong COLORREF;
+typedef int BOOL;
+typedef const char* LPCSTR;
 
 typedef int PositionMode;
 typedef int RedrawMode;
@@ -16,6 +21,8 @@ struct tagRECT {
     long right;
     long bottom;
 };
+
+typedef tagRECT RECT;
 
 struct tagPALETTEENTRY {
     unsigned char peRed;
@@ -48,8 +55,8 @@ public:
     virtual void vslot_1c();
     virtual void set_redraw(int);
     virtual void vslot_24();
-    virtual void vslot_28();
-    virtual void vslot_2c();
+    virtual void draw_setup(int clear);
+    virtual void draw_finish();
     virtual void vslot_30();
     virtual void vslot_34();
     virtual void vslot_38();
@@ -104,22 +111,63 @@ public:
     virtual void take_snapshot();
     virtual void handle_reactivate();
 
-    char gap_04[0x10];
-    long width;
-    long height;
-    char gap_1c[4];
+    TPanel* previous_panel;
+    TPanel* previous_modal;
+    long pnl_x;
+    long pnl_y;
+    union {
+        long width;
+        long pnl_wid;
+    };
+    union {
+        long height;
+        long pnl_hgt;
+    };
+    char* panel_name;
     union {
         TDrawArea* render_area;
         int field_20;
     };
     long field_24;
-    char gap_28[0xb0];
+    char gap_28[0x10];
+    int need_redraw;
+    char gap_3c[4];
+    TPanel* child;
+    char gap_44[0x28];
+    int active;
+    int field_70;
+    char gap_74[0x14];
+    void* clip_rgn;
+    char gap_8c[0x4c];
     int error_code;
     char gap_dc[0x18];
 
     char* get_string(int resource_id);
     void set_curr_child(TPanel* child);
 };
+
+#define SCR_CRED_VPAD1(n) virtual void vpad##n();
+#define SCR_CRED_VPAD2(n) SCR_CRED_VPAD1(n) SCR_CRED_VPAD1(n##_1)
+#define SCR_CRED_VPAD4(n) SCR_CRED_VPAD2(n) SCR_CRED_VPAD2(n##_2)
+#define SCR_CRED_VPAD8(n) SCR_CRED_VPAD4(n) SCR_CRED_VPAD4(n##_4)
+#define SCR_CRED_VPAD16(n) SCR_CRED_VPAD8(n) SCR_CRED_VPAD8(n##_8)
+#define SCR_CRED_VPAD32(n) SCR_CRED_VPAD16(n) SCR_CRED_VPAD16(n##_16)
+
+class TChildNotify {
+public:
+    SCR_CRED_VPAD32(0)
+    SCR_CRED_VPAD8(32)
+    SCR_CRED_VPAD4(40)
+    SCR_CRED_VPAD1(44)
+    virtual void notify(void* panel, int a, int b, int c);
+};
+
+#undef SCR_CRED_VPAD32
+#undef SCR_CRED_VPAD16
+#undef SCR_CRED_VPAD8
+#undef SCR_CRED_VPAD4
+#undef SCR_CRED_VPAD2
+#undef SCR_CRED_VPAD1
 
 class TEasy_Panel : public TPanel {
 public:
@@ -153,6 +201,7 @@ public:
     void* DrawDc;
 
     void GetPalette(tagPALETTEENTRY* entries);
+    void SetPalette(tagPALETTEENTRY* entries);
     void Clear(void* rect, long flags);
     void* GetDc(char* unused);
     void ReleaseDc(char* unused);
@@ -203,10 +252,23 @@ extern TPanelSystem panel_system;
 
 class TTextPanel : public TPanel {
 public:
-    char gap_f4[0x2c];
+    char gap_f4[4];
+    short line_count;
+    char gap_fa[0x0a];
+    void* font;
+    char gap_108[4];
+    long line_height;
+    char gap_110[4];
+    long align;
+    char gap_118[4];
+    long draw_mode;
     unsigned long text_color1;
     unsigned long text_color2;
-    char gap_128[0x60];
+    char gap_128[0x38];
+    long line_offset;
+    char gap_164[0x18];
+    void* clip_region;
+    char gap_180[8];
 
     TTextPanel();
     virtual ~TTextPanel();
@@ -219,6 +281,12 @@ public:
     void set_alignment(int vertical, int horizontal);
     void set_word_wrap(int value);
     void set_text_color(unsigned long color1, unsigned long color2);
+    void draw_background();
+    void draw_border();
+    char* get_text(long index);
+    char* get_text2(long index);
+    void calc_line_pos(void* hdc, short draw_index, short line_index,
+                       RECT* line_rect, long* offset);
 };
 
 class TScrollTextPanel : public TTextPanel {
@@ -287,5 +355,45 @@ public:
     char gap[0x4b0];
     TRIBE_Screen_Main_Menu();
 };
+
+extern "C" unsigned long __cdecl debug_timeGetTime(char* file, int line);
+
+extern "C" {
+__declspec(dllimport) int __stdcall SelectClipRgn(HDC hdc, HRGN region);
+__declspec(dllimport) void* __stdcall SelectObject(HDC hdc, void* object);
+__declspec(dllimport) int __stdcall SetBkMode(HDC hdc, int mode);
+__declspec(dllimport) COLORREF __stdcall SetTextColor(HDC hdc, COLORREF color);
+__declspec(dllimport) BOOL __stdcall TextOutA(HDC hdc, int x, int y,
+                                              LPCSTR text, int count);
+}
+
+extern const char s_scr_cred_draw_005862e0[];
+
+extern float DAT_00572968;
+extern double DAT_00572970;
+extern float DAT_00572978;
+extern float DAT_0057297c;
+
+extern float DAT_0086b290;
+extern unsigned int DAT_0086b294;
+extern int DAT_0086b298;
+extern int DAT_0086b29c;
+extern int DAT_0086b2a0;
+extern unsigned char DAT_0086b2a4;
+extern tagPALETTEENTRY DAT_0086b2a8;
+extern float DAT_0086b2ac;
+extern tagPALETTEENTRY DAT_0086b2b0[];
+extern tagPALETTEENTRY DAT_0086b6b0[256];
+extern TDrawArea* DAT_0086bab0;
+
+void RGE_translate_palette(tagPALETTEENTRY* source,
+                           tagPALETTEENTRY* destination,
+                           tagPALETTEENTRY color, long amount,
+                           int first, int last);
+void RGE_fade_palette_start(TDrawArea* draw_area,
+                            tagPALETTEENTRY fade_color, float fade_time,
+                            unsigned char fade_type,
+                            tagPALETTEENTRY* palette, int first, int last);
+int RGE_fade_palette_step();
 
 #endif

@@ -7,6 +7,7 @@
 // (PlayerNo) last, advancing by 9 dwords (0x24 bytes) per iteration.
 // The previous code started at +0x30 and stored 9 consecutive dwords.
 
+#ifndef COM_SYNC_TU_CONTEXT
 class TCommunications_Handler {
     // COM handler
 };
@@ -41,6 +42,7 @@ public:
     int Add(int turn, int wRandom, int checksum1, int checksum2, int chatCrc, int dataCrc);
     int ValidateChecksums();
 };
+#endif
 
 RGE_Communications_Synchronize::RGE_Communications_Synchronize(TCommunications_Handler* handler) {
     comm = handler;

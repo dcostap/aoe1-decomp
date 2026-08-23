@@ -16,6 +16,9 @@
 //   with the exact ?draw_scrolled_line@TScrollTextPanel@@QAEXPAXFFKK@Z
 //   surface, GetDc/ReleaseDc with char* (PAD) like the matched donors.
 
+#include "../../include/scr_cred_context.h"
+
+#if 0
 extern "C" {
 __declspec(dllimport) int __stdcall SelectClipRgn(void* hdc, void* hrgn);
 __declspec(dllimport) void* __stdcall SelectObject(void* hdc, void* object);
@@ -79,6 +82,7 @@ public:
     void draw_scrolled_line(void* hdc, short x, short y,
                             unsigned long color1, unsigned long color2);
 };
+#endif
 
 void TScrollTextPanel::draw()
 {

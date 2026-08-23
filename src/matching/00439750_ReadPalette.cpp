@@ -48,6 +48,9 @@
 // - BINARY NOTE: the exact CreateIdentityPalette sibling uses a byte pointer
 //   anchored at DAT_005841e5 for this same linked color table.  That explains
 //   the shipped anchor. Its typed PAL_TABLE owner is used here instead.
+// - BINARY NOTE: the shipped call is an indirect CreatePalette IAT call. The
+//   canonical LOGPALETTE argument type is carried through the _CreatePalette
+//   import slot so the body remains exact in both isolated and grouped builds.
 
 #include <string.h>
 
@@ -64,7 +67,11 @@ extern "C" unsigned char* __cdecl RESFILE_load(unsigned long, long, void**, int*
 extern "C" char* __cdecl strtok(char*, const char*);
 extern "C" long __cdecl atol(const char*);
 extern "C" int __cdecl atoi(const char*);
-extern "C" void* (__stdcall* const CreatePalette)(void*);
+struct tagLOGPALETTE;
+// Keep the historical IAT slot indirect while using the real Win32 argument
+// type.  The owner name avoids colliding with the SDK CreatePalette function
+// declaration when this body is included in the Dib.cpp wrapper.
+extern "C" void* (__stdcall* const _CreatePalette)(const tagLOGPALETTE*);
 void __cdecl CreateIdentityPalette(void*);
 extern unsigned char shape_file_first;
 struct PAL_TABLE {
@@ -165,7 +172,7 @@ palette_entries_done:
             }
         }
         if (res_id) {
-            result = CreatePalette(lp);
+            result = _CreatePalette((const tagLOGPALETTE*)lp);
             if (do_gamma) {
                 if (rge_base_game->draw_system->DrawType == 1 ||
                     rge_base_game->draw_system->ScreenMode == 1)

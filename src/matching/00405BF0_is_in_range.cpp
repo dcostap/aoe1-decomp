@@ -2,6 +2,7 @@
 // attempt 2: remove the local target temp; VC5 is loading the member into the wrong register before the FPU branch
 #include "..\..\include\game_types.h"
 
+#ifndef ACT_MOVE_CANONICAL_TU
 class RGE_Static_Object;
 class RGE_Action_Object;
 class RGE_Action_List;
@@ -44,6 +45,7 @@ public:
 
     unsigned char is_in_range();
 };
+#endif
 
 unsigned char RGE_Action_Move_To::is_in_range() {
     float distance;

@@ -54,6 +54,11 @@
 //   detection, LINEINFO store order, cleanup, faults, and returns match. No
 //   call occurs inside a scan loop. Remaining drift is private register and
 //   cursor placement.
+// - Fresh context checks under src/dib_tu.cpp and include/dib_context.h keep
+//   the 345-byte, 0x14-frame, three-call basin. Direct bits[row + x] widened
+//   the frame to 0x1c and worsened the result. Split scan-pointer setup,
+//   function-scope scan storage, and a narrow scan index all rebuilt to the
+//   same 197-byte mismatch. The natural pointer source is restored.
 
 #include <windows.h>
 #include <stdlib.h>

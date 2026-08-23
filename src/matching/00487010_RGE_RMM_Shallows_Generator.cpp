@@ -1,46 +1,13 @@
-class RGE_Map;
-class RGE_Random_Map_Module;
+// 00487010 RGE_RMM_Shallows_Generator::RGE_RMM_Shallows_Generator
+// Source: rmm_shal.cpp lines 34-38, size 59 bytes.
 
-class RGE_Shallows_Info_Line {
-public:
-    long x;
-    long y;
-};
+#include "..\..\include\rmm_shal_context.h"
 
-class RGE_Shallows_Info {
-public:
-    RGE_Shallows_Info_Line shallows[99];
-    long shallows_num;
-};
-
-class RGE_Random_Map_Module {
-public:
-    void* vtable_ptr;
-    RGE_Random_Map_Module* parent;
-    void* list;
-    RGE_Map* map;
-    void* map_row_offset;
-    long map_width;
-    long map_height;
-    float schedule;
-    void* search_map;
-    void* search_map_rows;
-    void* stack_array;
-    void* stack_offsets;
-
-    RGE_Random_Map_Module(RGE_Map* map, RGE_Random_Map_Module* parent, int flag);
-};
-
-class RGE_RMM_Shallows_Generator : public RGE_Random_Map_Module {
-public:
-    RGE_Shallows_Info info;
-
-    RGE_RMM_Shallows_Generator(RGE_Map* map, RGE_Random_Map_Module* parent, RGE_Shallows_Info* info);
-};
-
-RGE_RMM_Shallows_Generator::RGE_RMM_Shallows_Generator(RGE_Map* map, RGE_Random_Map_Module* parent, RGE_Shallows_Info* info)
-    : RGE_Random_Map_Module(map, parent, 1) {
-    this->vtable_ptr = (void*)0x571EE4;
+RGE_RMM_Shallows_Generator::RGE_RMM_Shallows_Generator(
+    RGE_Map* in_map, RGE_Random_Map_Module* parent_module,
+    RGE_Shallows_Info* in_info)
+    : RGE_Random_Map_Module(in_map, parent_module, 1)
+{
     this->schedule = 1.1f;
-    this->info = *info;
+    this->info = *in_info;
 }

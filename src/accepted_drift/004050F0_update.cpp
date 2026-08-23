@@ -15,25 +15,52 @@
 //   rose to 69.69%, diff 743B at best; the remaining frame was 0x1C vs 0x18.
 // - old-velocity removal, widened hit-info, scoped physics locals, and derived
 //   virtual declaration were duplicate/nonproductive VC5 basins; rolled back.
-// - mode-3 target branch keeps the oracle's raw object-pointer dword in the
-//   first float argument (`*(float*)&this->obj`); this is binary-observed, not
-//   a register-forcing alias.
-// - left in scratch: frame/local-home drift (collision_list uses an extra
-//   [esp+28] home instead of the oracle's reused [esp+24]) and VC5 tail-merging
-//   one pair of mode-3 do_attack/set_state sites. Default flags retained.
+// - mode-3 target attack uses the missile object's world x/y/z fields.  The
+//   original setup loads these fields before the target virtual call.
+// - reviewed-drift source: frame/local-home drift (collision_list uses an
+//   extra [esp+28] home instead of the oracle's reused [esp+24]) and VC5
+//   tail-merging one pair of mode-3 do_attack/set_state sites. Default flags
+//   retained.
 // - outer post-move dispatch is owned by missile_type at +0x148; missile_hit_info
 //   at +0x14A remains the collision-mode switch. Reordering the natural mode-3
 //   branch before the <=2 collision-list branch aligned all 24 ordered calls.
 // - late state returns, branch-local node->object reads, direct mode-1 attack
 //   arms, and z-before-velocity ballistic source order gave 955B, frame 0x18,
 //   357 instructions, 87.11% shape, 69.97% exact blocks, and diff 653B.
-// - BINARY NOTE: the remaining first mismatch is timer x87 operand order
-//   (oracle fld time; fadd timer versus rebuilt fld timer; fadd time).
+// - BINARY NOTE: timer comparison spelling (`timer >= max_range`) restores the
+//   oracle's direct fcomp and exact timer block.  Ballistic x87 scheduling and
+//   late collision block layout remain unresolved.
+// - timer operand reversal: 943B, frame 0x18, diff 574B, 90.93% shape,
+//   74.79% exact blocks; this is the current clean frontier.
+// - mode-3 world-coordinate repair kept 943B and diff 574B, and added the
+//   exact mode-3 argument setup block.  The pointer-bitcast form was wrong.
+// - authentic-context guard was compile-neutral in standalone mode and lets
+//   the source participate in the ACT_misl.cpp wrapper without duplicate types.
 // - BINARY NOTE: the oracle duplicates mode-1 receiver setup before one shared
 //   virtual call. Direct branch-local calls preserve this shipped code shape.
 // - LIKELY INTENT: collision mode 1 selects the stored target when present and
 //   the missile object when absent; preserve the explicit arms for code shape.
+//
+// Reviewed-drift evidence: the fresh clean check keeps the 0x18 frame, all four
+// saved registers, 24 ordered calls, 37 conditional branches, and both returns.
+// It also keeps the timer >= max_range predicate, the +0x40 velocity writes,
+// the ballistic x87 update, and the missile-object world x/y/z arguments.
+// The collision switch still has every missile-hit case, node skip, state
+// publication, list deletion, and ground-impact fallback. The remaining 12
+// bytes are a tail-merge/layout difference: the rebuilt code has one fewer
+// unconditional jump and shifts the collision blocks. Call-map and field-order
+// review found no changed call, predicate, memory effect, cleanup, or fault
+// order. The source is a reviewed-drift candidate. The integration agent can
+// register it with the authentic wrapper after accepting this evidence.
+// FLAGS: config/flags/00404BB0_RGE_Action_Missile.rsp (/nologo /c /O2 /Oy /GX).
+// ACCEPTED DRIFT REVIEW: the changed bytes are a localized timer-x87 operand
+// order and collision-tail layout basin. The source preserves the same timer
+// predicate, ballistic arithmetic, world-coordinate arguments, 24 ordered
+// calls, collision cases, state publication, list cleanup, and fault order.
+// The 12-byte size loss is the compiler's tail merge, not a removed behavior.
+// Keep this natural source. Do not replace it with a helper or manual CFG.
 
+#ifndef ACT_MISL_SHARED_CONTEXT
 extern float DAT_0056e380;
 extern double DAT_0056e388;
 
@@ -406,6 +433,7 @@ public:
     RGE_Check_List();
     ~RGE_Check_List();
 };
+#endif
 
 unsigned char RGE_Action_Missile::update()
 {
@@ -456,7 +484,7 @@ unsigned char RGE_Action_Missile::update()
             x = this->velocity_x * time;
             y = this->velocity_y * time;
             z = this->velocity_z * time;
-            if (((RGE_Missile_Object*)this->obj)->max_range <= this->timer) {
+            if (this->timer >= ((RGE_Missile_Object*)this->obj)->max_range) {
                 this->set_state(1);
             }
         }
@@ -476,7 +504,7 @@ unsigned char RGE_Action_Missile::update()
             (RGE_Combat_Object*)this->target_obj2;
         if (target != 0) {
             target->do_attack(this->target_obj, target,
-                              *(float*)&this->obj, this->obj->world_y,
+                              this->obj->world_x, this->obj->world_y,
                               this->obj->world_z);
         } else {
             ((RGE_Missile_Object*)this->obj)->do_attack(

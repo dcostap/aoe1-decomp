@@ -1,6 +1,7 @@
 // intercept: ACT_misl.cpp lines 73-86
 // Raw bit-copy stores preserve the original frame-less writes for x, y, and z.
 
+#ifndef ACT_MISL_SHARED_CONTEXT
 class RGE_Master_Static_Object;
 class RGE_Static_Object;
 
@@ -46,6 +47,7 @@ public:
     unsigned char _gap[0x38];
     float radius_z;
 };
+#endif
 
 void RGE_Action_Missile::intercept(float& x, float& y, float& z) {
     if (!this->target_obj) {

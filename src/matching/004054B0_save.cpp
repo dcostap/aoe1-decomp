@@ -1,6 +1,7 @@
 // RGE_Action_Missile::save (004054B0, 94 bytes, ACT_misl.cpp)
 // Attempt 1
 
+#ifndef ACT_MISL_SHARED_CONTEXT
 void __cdecl rge_write(int handle, const void* buffer, int size);
 
 class RGE_Action {
@@ -19,6 +20,7 @@ public:
 
     void save(int handle);
 };
+#endif
 
 void RGE_Action_Missile::save(int handle) {
     RGE_Action::save(handle);

@@ -1,8 +1,7 @@
-// Safe scr_cred.cpp prefix in PDB source order.
-// PDB lines 46-470 are included. The prefix stops before 00492FB0,
-// whose accepted-drift arithmetic basin is not exact.
-// Later standalone exact owners 00493070, 00493420, and 00493540 remain
-// outside this prefix. 00493160 remains unresolved in src/scratch.
+// scr_cred.cpp owners in PDB source order.
+// 00492FB0 retains its reviewed x87 drift. 00493160 remains standalone:
+// grouped VC5 merges one TextOutA tail and loses an oracle call site.
+// All other listed owners are exact anchors.
 // The scalar deleting destructor at 00492950 has no source-line owner and is
 // intentionally excluded.
 #include "../include/scr_cred_context.h"
@@ -17,3 +16,7 @@
 #include "matching/00492E70_TScrollTextPanel.cpp"
 #include "matching/00492F70_TScrollTextPanel.cpp"
 #include "matching/00492F80_set_text.cpp"
+#include "accepted_drift/00492FB0_handle_idle.cpp"
+#include "matching/00493070_draw.cpp"
+#include "matching/00493420_RGE_fade_palette_start.cpp"
+#include "matching/00493540_RGE_fade_palette_step.cpp"
