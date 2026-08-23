@@ -5,6 +5,7 @@ import json
 import re
 from pathlib import Path
 
+from build_cache import build_artifact_lock
 from common import (
     byte_diff_metrics,
     compiler_artifact_slug,
@@ -934,24 +935,30 @@ def main() -> None:
     rebuilt_lines_json = asm_dir / f"rebuilt_{compiler_artifact_slug(record)}.lines.json"
     report_path = diff_dir / f"{slug}.txt"
 
-    if not orig_bin.exists():
-        raise SystemExit(f"Missing original bytes: {orig_bin}")
-    if not orig_json.exists():
-        raise SystemExit(f"Missing original metadata: {orig_json}")
-    if not rebuilt_bin.exists():
-        raise SystemExit(f"Missing rebuilt bytes: {rebuilt_bin}")
-    if not rebuilt_json.exists():
-        raise SystemExit(f"Missing rebuilt metadata: {rebuilt_json}")
+    lock_path = repo_path(Path("build") / "locks" / f"{compiler_artifact_slug(record)}.lock")
+    with build_artifact_lock(lock_path):
+        if not orig_bin.exists():
+            raise SystemExit(f"Missing original bytes: {orig_bin}")
+        if not orig_json.exists():
+            raise SystemExit(f"Missing original metadata: {orig_json}")
+        if not rebuilt_bin.exists():
+            raise SystemExit(f"Missing rebuilt bytes: {rebuilt_bin}")
+        if not rebuilt_json.exists():
+            raise SystemExit(f"Missing rebuilt metadata: {rebuilt_json}")
 
-    original_bytes = orig_bin.read_bytes()
-    original_meta = json.loads(orig_json.read_text(encoding="utf-8"))
-    rebuilt_bytes = rebuilt_bin.read_bytes()
-    rebuilt_meta = json.loads(rebuilt_json.read_text(encoding="utf-8"))
-    rebuilt_lines = (
-        json.loads(rebuilt_lines_json.read_text(encoding="utf-8"))
-        if rebuilt_lines_json.exists()
-        else {}
-    )
+        original_bytes = orig_bin.read_bytes()
+        original_meta = json.loads(orig_json.read_text(encoding="utf-8"))
+        rebuilt_bytes = rebuilt_bin.read_bytes()
+        rebuilt_meta = json.loads(rebuilt_json.read_text(encoding="utf-8"))
+        rebuilt_lines = (
+            json.loads(rebuilt_lines_json.read_text(encoding="utf-8"))
+            if rebuilt_lines_json.exists()
+            else {}
+        )
+    extracted_fingerprint = str(rebuilt_meta.get("build_input_fingerprint") or "")
+    listing_fingerprint = str(rebuilt_lines.get("input_fingerprint") or "")
+    if extracted_fingerprint and listing_fingerprint and extracted_fingerprint != listing_fingerprint:
+        raise SystemExit("Rebuilt object and source-map fingerprints do not match")
     pdb_record = load_pdb_function_source_map().get(record["va"].upper()) or {}
     owner_symbol_validation = owning_function_symbol_validation(
         record["name"],

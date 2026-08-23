@@ -6,6 +6,7 @@ from pathlib import Path
 
 from iced_x86 import Decoder, DecoderOptions, FlowControl, Formatter, FormatterSyntax
 
+from build_cache import build_artifact_lock, load_build_manifest
 from coff import find_function_symbol, function_symbol_section, load_coff_object
 from common import (
     compiler_artifact_slug,
@@ -211,7 +212,17 @@ def main() -> None:
         obj_slug = compiler_artifact_slug(record)
         obj_path = repo_path(Path("build") / "obj" / f"{obj_slug}.obj")
 
-    obj = load_coff_object(obj_path)
+    lock_path = ensure_build_subdir("locks") / f"{obj_slug}.lock"
+    manifest_path = ensure_build_subdir("manifests") / f"build_{obj_slug}.json"
+    # Take the complete object and its build fingerprint under the same lock
+    # used by build_function.  The COFF model owns byte copies, so extraction
+    # can continue after the lock is released without reading a replaced file.
+    with build_artifact_lock(lock_path):
+        obj = load_coff_object(obj_path)
+        build_manifest = load_build_manifest(manifest_path)
+        build_input_fingerprint = ""
+        if build_manifest is not None:
+            build_input_fingerprint = str(build_manifest.get("input_fingerprint") or "")
     if record is None:
         symbol = find_function_symbol(obj, lambda candidate: True)
     else:
@@ -252,6 +263,7 @@ def main() -> None:
 
     metadata = {
         "object": str(obj_path),
+        "build_input_fingerprint": build_input_fingerprint,
         "symbol": {
             "name": symbol.name,
             "value": symbol.value,

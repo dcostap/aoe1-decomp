@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import shutil
 import subprocess
 import sys
@@ -224,8 +225,20 @@ def rebuilt_cache_state(record: dict[str, str], slug: str) -> tuple[bool, bool, 
         asm_dir / f"rebuilt_{slug}.json",
         asm_dir / f"rebuilt_{slug}.txt",
     ]
+    extracted_manifest_fingerprint = ""
+    extracted_metadata_path = extracted_paths[1]
+    if extracted_metadata_path.is_file():
+        try:
+            extracted_metadata = json.loads(extracted_metadata_path.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            extracted_metadata = {}
+        if isinstance(extracted_metadata, dict):
+            extracted_manifest_fingerprint = str(
+                extracted_metadata.get("build_input_fingerprint") or ""
+            )
     extraction_current = bool(
         build_current
+        and extracted_manifest_fingerprint == fingerprint
         and all(path.is_file() for path in extracted_paths)
         and all(path.stat().st_mtime_ns >= obj_path.stat().st_mtime_ns for path in extracted_paths)
     )
@@ -340,6 +353,14 @@ def main() -> None:
         extra=diff_extra,
         allowed_returncodes={0, 1},
     )
+    # Keep the checker report tied to the same complete compiler-input
+    # fingerprint that selected the object. Grouped exact release checks use
+    # this value to reject a sibling-owner or wrapper change.
+    metrics_path = REPO_ROOT / "build" / "diff" / f"{slug}.json"
+    if metrics_path.is_file():
+        metrics_payload = json.loads(metrics_path.read_text(encoding="utf-8"))
+        metrics_payload["build_input_fingerprint"] = fingerprint
+        metrics_path.write_text(json.dumps(metrics_payload, indent=2), encoding="utf-8")
     if args.no_history:
         raise SystemExit(result)
     if not (did_rebuild or did_extract or args.checkpoint or args.compare_checkpoint):

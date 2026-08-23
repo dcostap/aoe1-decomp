@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import copy
 import json
 import sys
 import tempfile
@@ -163,6 +164,34 @@ class TargetSessionTests(unittest.TestCase):
                 self.assertEqual(session["probes"][0]["metrics"]["meaningful_rebuilt_size"], 61)
                 self.assertEqual(session["probes"][0]["metrics"]["call_deleted_sites"], 1)
                 self.assertEqual(session["probes"][0]["metrics"]["exact_block_coverage_percent"], 75.0)
+
+    def test_input_snapshot_records_complete_grouped_build_fingerprint(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source = root / "src" / "demo_unit_tu.cpp"
+            flags = root / "config" / "flags" / "demo.rsp"
+            source.parent.mkdir(parents=True)
+            flags.parent.mkdir(parents=True)
+            source.write_text("int demo;\n", encoding="utf-8")
+            flags.write_text("/O2\n", encoding="utf-8")
+            expected_flags_hash = target_session._sha256(flags)
+            with patch.object(target_session, "REPO_ROOT", root), patch.object(
+                target_session, "compiler_source_path", return_value=source
+            ), patch.object(
+                target_session, "preferred_flags_rsp_path", return_value=flags
+            ), patch.object(
+                target_session, "load_toolchain",
+                return_value={"compiler": {"default_rsp": "config/flags/default.rsp"}},
+            ), patch.object(
+                target_session,
+                "build_input_manifest",
+                return_value={"fingerprint": "complete-build-fingerprint"},
+            ):
+                snapshot = target_session.current_input_snapshot(self.record)
+
+        self.assertEqual(str(snapshot["source_path"]).replace("\\", "/"), "src/demo_unit_tu.cpp")
+        self.assertEqual(snapshot["flags_sha256"], expected_flags_hash)
+        self.assertEqual(snapshot["build_input_fingerprint"], "complete-build-fingerprint")
 
     def test_stage_classification_prioritizes_calls_then_frame_then_shape(self) -> None:
         self.assertIn(
@@ -441,6 +470,54 @@ class TargetSessionTests(unittest.TestCase):
             self.assertEqual(baseline["checkpoint_id"], "checkpoint-clean")
             self.assertEqual(baseline["inputs"], snapshot)
             self.assertIn("natural indexed loop", baseline["note"])
+
+    def test_grouped_exact_release_rejects_changed_sibling_context(self) -> None:
+        current_context = {
+            "fingerprint": "current-build",
+            "translation_unit": {
+                "name": "demo_unit",
+                "source": "src/demo_unit_tu.cpp",
+                "flags": "config/flags/demo.rsp",
+                "owners": {
+                    "00001000": "src/matching/00001000_demo.cpp",
+                    "00001010": "src/matching/00001010_other.cpp",
+                },
+                "symbols": {"00001010": "?other@@YAHXZ"},
+            },
+            "inputs": [
+                {"path": "src/demo_unit_tu.cpp", "sha256": "wrapper"},
+                {"path": "src/matching/00001000_demo.cpp", "sha256": "target"},
+                {"path": "src/matching/00001010_other.cpp", "sha256": "other"},
+                {"path": "config/flags/demo.rsp", "sha256": "flags"},
+            ],
+        }
+        stale_checkpoint = {"build_context": copy.deepcopy(current_context)}
+        stale_checkpoint["build_context"]["translation_unit"]["owners"]["00001010"] = (
+            "src/matching/00001010_old.cpp"
+        )
+        metrics = {
+            "result": "MATCH",
+            "artifact_fresh": True,
+            "build_input_fingerprint": "current-build",
+            "owning_symbol_validation": {"status": "match", "expected_owner": "Demo"},
+        }
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            with patch.object(target_session, "REPO_ROOT", root), patch.object(
+                target_session, "current_metric_summary", return_value=metrics
+            ), patch.object(
+                target_session, "current_input_snapshot", return_value={"build_input_fingerprint": "current-build"}
+            ), patch.object(
+                target_session, "current_build_context", return_value=current_context
+            ), patch.object(
+                target_session, "checkpoint_info", return_value=stale_checkpoint
+            ):
+                target_session.start_session(self.record, "AgentA", 2, 2.0)
+                session = target_session._load_session(self.record)
+                session["probes"] = [{"number": 1, "checkpoint": "exact-check"}]
+                target_session._write_session(self.record, session)
+                with self.assertRaisesRegex(RuntimeError, "translation-unit owners"):
+                    target_session.change_state(self.record, "AgentA", "release", "exact result")
 
     def test_pause_rejects_unresolved_source_without_clean_baseline(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:

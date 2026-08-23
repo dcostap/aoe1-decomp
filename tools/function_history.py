@@ -14,17 +14,22 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Iterable
 
+from build_cache import build_input_manifest, load_build_manifest
 from common import (
     REPO_ROOT,
     compiler_artifact_slug,
+    compiler_source_path,
     function_slug,
     load_toolchain,
+    load_pdb_function_source_map,
     preferred_flags_rsp_path,
     preferred_source_path,
+    translation_unit_for_va,
 )
 
 
 _HISTORY_VERSION = 1
+_BUILD_CONTEXT_VERSION = 1
 _LABEL_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,63}$")
 
 
@@ -185,12 +190,13 @@ def _artifact_candidates(
     source_path: Path,
     custom_flags: Path,
     compiler_slug: str | None = None,
+    build_context: dict | None = None,
 ) -> Iterable[tuple[Path, Path]]:
     yield source_path, Path("source") / source_path.name
     effective_flags = custom_flags if custom_flags.exists() else REPO_ROOT / "config" / "flags" / "default.rsp"
     if effective_flags.exists():
         yield effective_flags, Path("flags") / "effective.rsp"
-    if custom_flags.exists():
+    if custom_flags.exists() and custom_flags.resolve() != effective_flags.resolve():
         yield custom_flags, Path("flags") / custom_flags.name
     build_slug = compiler_slug or slug
     candidates = [
@@ -207,6 +213,136 @@ def _artifact_candidates(
     for path in candidates:
         if path.exists():
             yield path, Path("artifacts") / path.relative_to(REPO_ROOT / "build")
+
+    if build_context is not None:
+        seen: set[Path] = set()
+        for item in build_context.get("inputs") or []:
+            display_path = str(item.get("path") or "")
+            input_path = _resolve_context_input_path(display_path)
+            if input_path in seen:
+                continue
+            if not input_path.is_file():
+                raise FileNotFoundError(
+                    f"Missing build-context input for history checkpoint: {display_path}"
+                )
+            seen.add(input_path)
+            yield input_path, Path("context") / _context_storage_path(display_path)
+
+
+def _normalized_context_path(value: str) -> str:
+    return value.replace("\\", "/")
+
+
+def _resolve_context_input_path(value: str) -> Path:
+    normalized = _normalized_context_path(value)
+    candidate = Path(normalized)
+    return candidate if candidate.is_absolute() else REPO_ROOT / candidate
+
+
+def _context_storage_path(value: str) -> Path:
+    """Return a stable, collision-free path for one compiler input copy."""
+    normalized = _normalized_context_path(value)
+    candidate = _resolve_context_input_path(normalized)
+    try:
+        relative = candidate.resolve().relative_to(REPO_ROOT.resolve())
+    except ValueError:
+        safe_name = re.sub(r"[^A-Za-z0-9_.-]+", "_", Path(normalized).name) or "input"
+        digest = hashlib.sha256(normalized.encode("utf-8", errors="surrogateescape")).hexdigest()[:16]
+        return Path("external") / f"{digest}_{safe_name}"
+    return Path("files") / relative
+
+
+def _effective_flags(record: dict[str, str]) -> tuple[Path, bool]:
+    toolchain = load_toolchain()
+    flags = preferred_flags_rsp_path(record, toolchain)
+    default_value = Path(str(toolchain["compiler"]["default_rsp"]))
+    default = default_value if default_value.is_absolute() else REPO_ROOT / default_value
+    return flags, flags.resolve() != default.resolve()
+
+
+def _complete_build_inputs(record: dict[str, str]) -> dict:
+    """Return the current complete compiler-input manifest.
+
+    A successful build already stores this manifest. Reuse it only after the
+    current fingerprint proves that it is still current; otherwise use the
+    same manifest builder as the build cache.
+    """
+    toolchain = load_toolchain()
+    source = compiler_source_path(record)
+    flags = preferred_flags_rsp_path(record, toolchain)
+    current = build_input_manifest(source, flags, toolchain)
+    build_manifest_path = REPO_ROOT / "build" / "manifests" / f"build_{compiler_artifact_slug(record)}.json"
+    stored_payload = load_build_manifest(build_manifest_path)
+    stored = stored_payload.get("build_inputs") if stored_payload else None
+    if (
+        stored_payload
+        and stored_payload.get("returncode") == 0
+        and stored_payload.get("input_fingerprint") == current.get("fingerprint")
+        and isinstance(stored, dict)
+        and stored.get("fingerprint") == current.get("fingerprint")
+    ):
+        return stored
+    return current
+
+
+def _build_context(record: dict[str, str], metrics: dict | None = None) -> dict | None:
+    """Capture grouped TU identity and every input used by its build."""
+    group = translation_unit_for_va(int(record["va"], 16))
+    if group is None:
+        return None
+    manifest = _complete_build_inputs(record)
+    input_paths = {
+        _normalized_context_path(str(item.get("path") or ""))
+        for item in manifest.get("inputs") or []
+    }
+    required = {
+        _normalized_context_path(str(group["source"])),
+        _normalized_context_path(str(group.get("flags") or manifest.get("response_file") or "")),
+        "config/translation_units.json",
+        *(_normalized_context_path(str(owner)) for owner in (group.get("owners") or {}).values()),
+    }
+    missing = sorted(path for path in required if path and path not in input_paths)
+    if missing:
+        raise ValueError(
+            "Complete grouped build manifest does not contain required translation-unit inputs: "
+            + ", ".join(missing)
+        )
+    context = {
+        "schema": _BUILD_CONTEXT_VERSION,
+        "fingerprint": str(manifest["fingerprint"]),
+        "source": str(manifest.get("source") or group["source"]),
+        "response_file": str(manifest.get("response_file") or group.get("flags") or ""),
+        "compiler": manifest.get("compiler") or {},
+        "inputs": list(manifest.get("inputs") or []),
+        "translation_unit": {
+            "name": str(group.get("name") or ""),
+            "source": str(group.get("source") or ""),
+            "flags": str(group.get("flags") or ""),
+            "owners": dict(group.get("owners") or {}),
+            "symbols": dict(group.get("symbols") or {}),
+        },
+    }
+    owner_validation = (metrics or {}).get("owning_symbol_validation")
+    if isinstance(owner_validation, dict):
+        context["pdb_owner"] = dict(owner_validation)
+    pdb_row = load_pdb_function_source_map().get(str(record["va"]).upper()) or {}
+    pdb_symbol = str(pdb_row.get("symbol_name") or "").strip()
+    if pdb_symbol:
+        context["pdb_symbol"] = pdb_symbol
+    return context
+
+
+def current_build_context(record: dict[str, str], metrics: dict | None = None) -> dict | None:
+    """Return the current grouped compiler and owner context for one target."""
+    return _build_context(record, metrics)
+
+
+def _write_build_context(run_dir: Path, build_context: dict | None) -> None:
+    if build_context is None:
+        return
+    path = run_dir / "context" / "build_context.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(build_context, indent=2) + "\n", encoding="utf-8")
 
 
 def _copy_checkpoint_artifact(source: Path, run_dir: Path, relative: Path) -> None:
@@ -244,15 +380,26 @@ def _record_checkpoint_unlocked(record: dict[str, str], label: str | None = None
     source_sha = _sha256(source_path)
     flags_sha = _sha256(effective_flags)
     rebuilt_sha = _sha256(rebuilt_path)
+    build_context = _build_context(record, metrics)
     key = f"{source_sha}:{flags_sha}:{rebuilt_sha}"
+    if build_context is not None:
+        # The wrapper and all owner/context files are the compiler source for a
+        # grouped target. The complete input fingerprint prevents a target-only
+        # checkpoint from being reused after another owner changes.
+        key = f"tu:{build_context['fingerprint']}:{rebuilt_sha}"
     index = _load_index(slug)
     existing = next((run for run in index["runs"] if run.get("content_key") == key), None)
     if existing is not None:
         existing["summary"] = _metric_summary(metrics)
         existing["objectives"] = _metric_objectives(metrics)
         existing_run_dir = REPO_ROOT / str(existing["artifact_path"])
-        for source, relative in _artifact_candidates(slug, source_path, custom_flags, compiler_slug):
+        for source, relative in _artifact_candidates(
+            slug, source_path, custom_flags, compiler_slug, build_context
+        ):
             _copy_checkpoint_artifact(source, existing_run_dir, relative)
+        _write_build_context(existing_run_dir, build_context)
+        if build_context is not None:
+            existing["build_context"] = build_context
         if label:
             checked_label = _validate_label(label)
             for run in index["runs"]:
@@ -270,8 +417,11 @@ def _record_checkpoint_unlocked(record: dict[str, str], label: str | None = None
     timestamp = now.strftime("%Y-%m-%dT%H:%M:%SZ")
     run_id = now.strftime("%Y%m%dT%H%M%S.%fZ") + "-" + source_sha[:10]
     run_dir = _history_root(slug) / "runs" / run_id
-    for source, relative in _artifact_candidates(slug, source_path, custom_flags, compiler_slug):
+    for source, relative in _artifact_candidates(
+        slug, source_path, custom_flags, compiler_slug, build_context
+    ):
         _copy_checkpoint_artifact(source, run_dir, relative)
+    _write_build_context(run_dir, build_context)
 
     run = {
         "id": run_id,
@@ -279,7 +429,7 @@ def _record_checkpoint_unlocked(record: dict[str, str], label: str | None = None
         "content_key": key,
         "source_path": str(source_path.relative_to(REPO_ROOT)),
         "source_sha256": source_sha,
-        "custom_flags": custom_flags.exists(),
+        "custom_flags": effective_flags.resolve() != (REPO_ROOT / "config" / "flags" / "default.rsp").resolve(),
         "flags_sha256": flags_sha,
         "rebuilt_sha256": rebuilt_sha,
         "artifact_path": str(run_dir.relative_to(REPO_ROOT)),
@@ -287,6 +437,8 @@ def _record_checkpoint_unlocked(record: dict[str, str], label: str | None = None
         "summary": _metric_summary(metrics),
         "objectives": _metric_objectives(metrics),
     }
+    if build_context is not None:
+        run["build_context"] = build_context
     if label:
         checked_label = _validate_label(label)
         for prior in index["runs"]:
@@ -456,22 +608,62 @@ def _restore_checkpoint_unlocked(record: dict[str, str], selector: str) -> dict:
         backup = backup_root / "source" / current_source.name
         backup.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(current_source, backup)
-    custom_flags = REPO_ROOT / "config" / "flags" / f"{slug}.rsp"
-    if custom_flags.exists():
-        backup = backup_root / "flags" / custom_flags.name
+    try:
+        effective_flags, flags_are_custom = _effective_flags(record)
+    except (FileNotFoundError, KeyError, OSError):
+        effective_flags = REPO_ROOT / "config" / "flags" / f"{slug}.rsp"
+        flags_are_custom = effective_flags.exists()
+    if effective_flags.exists():
+        backup = backup_root / "flags" / effective_flags.name
         backup.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(custom_flags, backup)
+        shutil.copy2(effective_flags, backup)
 
     source_target.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(source_snapshot, source_target)
-    saved_flags = run_dir / "flags" / custom_flags.name
+    saved_flags = run_dir / "flags" / "effective.rsp"
+    if not saved_flags.exists():
+        # Older checkpoints also kept a copy under the custom response-file
+        # name. Keep that layout readable during the optional migration.
+        saved_flags = run_dir / "flags" / effective_flags.name
     if bool(run.get("custom_flags")):
         if not saved_flags.exists():
             raise FileNotFoundError(f"Checkpoint flags artifact is missing: {saved_flags}")
-        custom_flags.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(saved_flags, custom_flags)
-    elif custom_flags.exists():
-        custom_flags.unlink()
+        effective_flags.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(saved_flags, effective_flags)
+    elif flags_are_custom and effective_flags.exists():
+        effective_flags.unlink()
+
+    build_context = run.get("build_context") or {}
+    translation_unit = build_context.get("translation_unit") or {}
+    if translation_unit:
+        # Restore the wrapper and every canonical owner, but do not overwrite
+        # the repository manifest or shared headers as a side effect of a
+        # target-source restore. Their exact hashes remain in the checkpoint.
+        destinations: list[tuple[str, Path]] = []
+        wrapper_source = str(translation_unit.get("source") or "")
+        if wrapper_source:
+            destinations.append((wrapper_source, compiler_source_path(record)))
+        for raw_va, owner in (translation_unit.get("owners") or {}).items():
+            destination = (
+                preferred_source_path(record)
+                if str(raw_va).upper() == str(record["va"]).upper()
+                else REPO_ROOT / _normalized_context_path(str(owner))
+            )
+            destinations.append((str(owner), destination))
+        if effective_flags.exists() or bool(run.get("custom_flags")):
+            destinations.append((str(build_context.get("response_file") or ""), effective_flags))
+        for display_path, destination in destinations:
+            if not display_path:
+                continue
+            snapshot = run_dir / "context" / _context_storage_path(display_path)
+            if not snapshot.is_file():
+                raise FileNotFoundError(f"Checkpoint build-context artifact is missing: {snapshot}")
+            if destination.exists():
+                backup = backup_root / "context" / _context_storage_path(display_path)
+                backup.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(destination, backup)
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(snapshot, destination)
     return {
         **run,
         "restored_source_path": str(source_target.relative_to(REPO_ROOT)),
@@ -572,6 +764,17 @@ def format_history(record: dict[str, str], limit: int = 20) -> list[str]:
             f"{float(summary.get('block_coverage_percent') or 0):6.1f} "
             f"{int(summary.get('size_delta') or 0):+5d}  {labels}"
         )
+        context = run.get("build_context") or {}
+        translation_unit = context.get("translation_unit") or {}
+        if translation_unit:
+            pdb_owner = context.get("pdb_owner") or {}
+            lines.append(
+                f"    build context: TU={translation_unit.get('name') or '?'} "
+                f"fingerprint={str(context.get('fingerprint') or '')[:16]} "
+                f"owners={len(translation_unit.get('owners') or {})} "
+                f"symbols={len(translation_unit.get('symbols') or {})} "
+                f"pdb_owner={pdb_owner.get('status') or 'unverified'}"
+            )
     lines.append(
         "* = codegen frontier (no recorded checkpoint is closer on every tracked emitted-code objective)"
     )

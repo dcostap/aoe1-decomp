@@ -2,8 +2,12 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import re
+import threading
+from contextlib import contextmanager
 from pathlib import Path
+from typing import Iterator
 
 from common import CONFIG_DIR, REPO_ROOT, repo_path, translation_unit_for_source
 
@@ -11,6 +15,66 @@ from common import CONFIG_DIR, REPO_ROOT, repo_path, translation_unit_for_source
 CACHE_SCHEMA = 2
 _INCLUDE_RE = re.compile(r'^\s*#\s*include\s*[<"]([^>"]+)[>"]', re.MULTILINE)
 _SOURCE_SUFFIXES = {".c", ".cc", ".cpp", ".cxx", ".h", ".hh", ".hpp", ".hxx", ".inl"}
+
+
+@contextmanager
+def build_artifact_lock(path: Path) -> Iterator[None]:
+    """Serialize publishers for one compiler artifact across processes.
+
+    The lock file is a persistent one-byte file.  The operating system owns
+    the lock, so a process that exits while compiling does not leave a stale
+    lock that blocks later builds.  The file itself is kept so concurrent
+    creators do not race while creating the lock path.
+    """
+    path.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        file_descriptor = os.open(path, os.O_RDWR | os.O_CREAT | os.O_EXCL)
+    except FileExistsError:
+        pass
+    else:
+        with os.fdopen(file_descriptor, "wb") as created:
+            created.write(b"\0")
+    handle = path.open("r+b")
+    acquired = False
+    try:
+        handle.seek(0, 2)
+        if handle.tell() == 0:
+            handle.write(b"\0")
+            handle.flush()
+        handle.seek(0)
+        if os.name == "nt":
+            import msvcrt
+
+            while True:
+                try:
+                    msvcrt.locking(handle.fileno(), msvcrt.LK_NBLCK, 1)
+                    acquired = True
+                    break
+                except OSError:
+                    handle.seek(0)
+                    threading.Event().wait(0.01)
+        else:
+            import fcntl
+
+            fcntl.flock(handle.fileno(), fcntl.LOCK_EX)
+            acquired = True
+        yield
+    finally:
+        if acquired:
+            try:
+                handle.seek(0)
+                if os.name == "nt":
+                    import msvcrt
+
+                    msvcrt.locking(handle.fileno(), msvcrt.LK_UNLCK, 1)
+                else:
+                    import fcntl
+
+                    fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
+            finally:
+                handle.close()
+        else:
+            handle.close()
 
 
 def _sha256(path: Path) -> str:

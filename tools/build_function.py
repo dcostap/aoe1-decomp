@@ -5,7 +5,7 @@ import json
 import subprocess
 import sys
 
-from build_cache import build_input_manifest, build_manifest_matches
+from build_cache import build_artifact_lock, build_input_manifest, build_manifest_matches
 from common import (
     ensure_build_subdir,
     compiler_artifact_slug,
@@ -44,6 +44,7 @@ def main() -> None:
     obj_dir = ensure_build_subdir("obj")
     manifest_dir = ensure_build_subdir("manifests")
     asm_dir = ensure_build_subdir("asm")
+    lock_dir = ensure_build_subdir("locks")
     obj_path = obj_dir / f"{slug}.obj"
     log_path = manifest_dir / f"build_{slug}.json"
     listing_path = asm_dir / f"rebuilt_{slug}.cod"
@@ -51,62 +52,71 @@ def main() -> None:
     input_manifest = build_input_manifest(source_path, rsp_path, toolchain)
     fingerprint = str(input_manifest["fingerprint"])
 
-    if not args.force and build_manifest_matches(log_path, fingerprint, obj_path) and source_map_path.is_file():
-        print(f"Build cache hit: {slug} ({fingerprint[:12]})")
-        return
+    lock_path = lock_dir / f"{slug}.lock"
+    with build_artifact_lock(lock_path):
+        # Recheck after waiting.  Another VA in this translation unit may
+        # have completed the build while this process was acquiring the lock.
+        if not args.force and build_manifest_matches(log_path, fingerprint, obj_path) and source_map_path.is_file():
+            print(f"Build cache hit: {slug} ({fingerprint[:12]})")
+            return
 
-    command = [
-        str(cl_path),
-        f"@{rsp_path}",
-        "/FAsc",
-        f"/Fa{listing_path}",
-        f"/Fo{obj_path}",
-        str(source_path),
-    ]
-    for stale in (listing_path, source_map_path):
-        if stale.exists():
-            stale.unlink()
-    env = tool_env(toolchain)
-    result = subprocess.run(command, capture_output=True, text=True, env=env)
+        command = [
+            str(cl_path),
+            f"@{rsp_path}",
+            "/FAsc",
+            f"/Fa{listing_path}",
+            f"/Fo{obj_path}",
+            str(source_path),
+        ]
+        # Remove the cache marker before compiling.  If the process exits
+        # during compilation, an older object cannot look current just because
+        # the previous fingerprint happened to match this build.
+        if log_path.exists():
+            log_path.unlink()
+        for stale in (listing_path, source_map_path):
+            if stale.exists():
+                stale.unlink()
+        env = tool_env(toolchain)
+        result = subprocess.run(command, capture_output=True, text=True, env=env)
 
-    manifest = {
-        "command": command,
-        "source": str(source_path),
-        "object": str(obj_path),
-        "response_file": str(rsp_path),
-        "listing": str(listing_path),
-        "source_map": str(source_map_path),
-        "input_fingerprint": fingerprint,
-        "build_inputs": input_manifest,
-        "returncode": result.returncode,
-        "stdout": result.stdout,
-        "stderr": result.stderr,
-    }
-    log_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+        manifest = {
+            "command": command,
+            "source": str(source_path),
+            "object": str(obj_path),
+            "response_file": str(rsp_path),
+            "listing": str(listing_path),
+            "source_map": str(source_map_path),
+            "input_fingerprint": fingerprint,
+            "build_inputs": input_manifest,
+            "returncode": result.returncode,
+            "stdout": result.stdout,
+            "stderr": result.stderr,
+        }
+        log_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
 
-    sys.stdout.write(result.stdout)
-    sys.stderr.write(result.stderr)
-    print(f"Wrote {log_path}")
+        sys.stdout.write(result.stdout)
+        sys.stderr.write(result.stderr)
+        print(f"Wrote {log_path}")
 
-    if result.returncode != 0:
-        raise SystemExit(result.returncode)
-    if not obj_path.exists():
-        raise SystemExit("Compiler exited successfully but produced no object file")
+        if result.returncode != 0:
+            raise SystemExit(result.returncode)
+        if not obj_path.exists():
+            raise SystemExit("Compiler exited successfully but produced no object file")
 
-    if listing_path.exists():
-        listing_metadata = parse_listing_file(listing_path)
-        listing_metadata.update(
-            {
-                "schema": 2,
-                "listing": str(listing_path),
-                "input_fingerprint": fingerprint,
-            }
-        )
-        source_map_path.write_text(json.dumps(listing_metadata, indent=2), encoding="utf-8")
+        if listing_path.exists():
+            listing_metadata = parse_listing_file(listing_path)
+            listing_metadata.update(
+                {
+                    "schema": 2,
+                    "listing": str(listing_path),
+                    "input_fingerprint": fingerprint,
+                }
+            )
+            source_map_path.write_text(json.dumps(listing_metadata, indent=2), encoding="utf-8")
 
-    print(f"Wrote {obj_path}")
-    if source_map_path.exists():
-        print(f"Wrote {source_map_path}")
+        print(f"Wrote {obj_path}")
+        if source_map_path.exists():
+            print(f"Wrote {source_map_path}")
 
 
 if __name__ == "__main__":

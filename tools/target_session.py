@@ -19,11 +19,19 @@ from common import (
     compiler_source_path,
     function_record_by_va,
     function_slug,
+    load_pdb_function_source_map,
     load_toolchain,
     preferred_flags_rsp_path,
     preferred_source_path,
 )
-from function_history import checkpoint_info, record_checkpoint, restore_checkpoint
+from function_diagnostics import owning_function_symbol_validation
+from function_history import (
+    _context_storage_path,
+    checkpoint_info,
+    current_build_context,
+    record_checkpoint,
+    restore_checkpoint,
+)
 
 
 SESSION_VERSION = 3
@@ -365,6 +373,17 @@ def current_metric_summary(record: dict[str, str]) -> dict[str, object]:
     relocation_identity_sha256 = hashlib.sha256(
         json.dumps(relocation_identity, sort_keys=True).encode("utf-8")
     ).hexdigest()
+    owner_validation = dict(metrics.get("owning_symbol_validation") or {})
+    rebuilt_symbol = str(
+        ((rebuilt_extraction.get("symbol") or {}).get("name") if isinstance(rebuilt_extraction, dict) else "")
+        or ""
+    ).strip()
+    pdb_row = load_pdb_function_source_map().get(record["va"].upper()) or {}
+    pdb_symbol = str(pdb_row.get("symbol_name") or "").strip()
+    if rebuilt_symbol and pdb_symbol:
+        owner_validation = owning_function_symbol_validation(record["name"], rebuilt_symbol, pdb_symbol)
+    elif rebuilt_symbol:
+        owner_validation = {**owner_validation, "status": "unverified"}
     meaningful_size = rebuilt_extraction.get(
         "effective_size_bytes", rebuilt_extraction.get("meaningful_size_bytes")
     )
@@ -415,6 +434,8 @@ def current_metric_summary(record: dict[str, str]) -> dict[str, object]:
         "exact_block_coverage_percent": block_alignment.get("matched_coverage_percent"),
         "rebuilt_bin_sha256": _sha256(rebuilt_path) if rebuilt_path.exists() else "",
         "relocation_identity_sha256": relocation_identity_sha256,
+        "build_input_fingerprint": metrics.get("build_input_fingerprint", ""),
+        "owning_symbol_validation": owner_validation,
         "likely_shifted_alignment": bool(metrics.get("likely_shifted_alignment")),
         "artifact_fresh": artifact_fresh,
         "freshness_reason": freshness_reason,
@@ -564,17 +585,98 @@ def _sha256(path: Path) -> str:
 
 def current_input_snapshot(record: dict[str, str]) -> dict[str, object]:
     source = compiler_source_path(record)
+    toolchain: dict | None = None
     try:
         toolchain = load_toolchain()
         flags = preferred_flags_rsp_path(record, toolchain)
     except (FileNotFoundError, KeyError, OSError):
         flags = REPO_ROOT / "config" / "flags" / "default.rsp"
-    return {
+    snapshot: dict[str, object] = {
         "source_path": str(source.relative_to(REPO_ROOT)) if source.exists() else "",
         "source_sha256": _sha256(source) if source.exists() else "",
         "flags_path": str(flags.relative_to(REPO_ROOT)) if flags.exists() and flags.is_relative_to(REPO_ROOT) else str(flags),
         "flags_sha256": _sha256(flags) if flags.exists() else "",
     }
+    try:
+        if toolchain is None:
+            raise ValueError("toolchain is unavailable")
+        snapshot["build_input_fingerprint"] = str(
+            build_input_manifest(source, flags, toolchain)["fingerprint"]
+        )
+    except (FileNotFoundError, KeyError, OSError, ValueError):
+        # Keep the old compact input snapshot usable when the compiler context
+        # is unavailable. A check cannot pass freshness until this is filled.
+        snapshot["build_input_fingerprint"] = ""
+    return snapshot
+
+
+def _context_input_hashes(context: dict) -> dict[str, str]:
+    return {
+        str(item.get("path") or "").replace("\\", "/"): str(item.get("sha256") or "")
+        for item in context.get("inputs") or []
+        if str(item.get("path") or "")
+    }
+
+
+def _validate_grouped_checkpoint(
+    record: dict[str, str],
+    checkpoint: dict,
+    current_context: dict | None,
+    metrics: dict[str, object],
+    inputs: dict[str, object],
+    *,
+    require_exact: bool,
+) -> None:
+    """Verify that a grouped checkpoint still names the exact compiler context."""
+    if current_context is None:
+        return
+    saved_context = checkpoint.get("build_context")
+    if not isinstance(saved_context, dict):
+        raise RuntimeError(
+            "grouped checkpoint has no compiler context; legacy checkpoints cannot support an exact claim"
+        )
+    current_fingerprint = str(current_context.get("fingerprint") or "")
+    saved_fingerprint = str(saved_context.get("fingerprint") or "")
+    snapshot_fingerprint = str(inputs.get("build_input_fingerprint") or "")
+    if not current_fingerprint or snapshot_fingerprint != current_fingerprint:
+        raise RuntimeError("current grouped build fingerprint is unavailable or stale")
+    if saved_fingerprint != current_fingerprint:
+        raise RuntimeError("grouped checkpoint build fingerprint differs from the current build")
+    if require_exact and str(metrics.get("build_input_fingerprint") or "") != current_fingerprint:
+        raise RuntimeError("grouped exact result has no matching current build fingerprint")
+
+    fields = ("name", "source", "flags", "owners", "symbols")
+    saved_unit = saved_context.get("translation_unit") or {}
+    current_unit = current_context.get("translation_unit") or {}
+    for field in fields:
+        if saved_unit.get(field) != current_unit.get(field):
+            raise RuntimeError(f"grouped checkpoint translation-unit {field} differs from the current mapping")
+    if saved_context.get("pdb_symbol", "") != current_context.get("pdb_symbol", ""):
+        raise RuntimeError("grouped checkpoint PDB-qualified owner differs from the current mapping")
+
+    if _context_input_hashes(saved_context) != _context_input_hashes(current_context):
+        raise RuntimeError("grouped checkpoint wrapper, owner, flags, or declaration inputs changed")
+
+    artifact_path = checkpoint.get("artifact_path")
+    context_root = REPO_ROOT / str(artifact_path or "") / "context"
+    if not (context_root / "build_context.json").is_file():
+        raise RuntimeError("grouped checkpoint compiler-context artifact is missing")
+    for item in current_context.get("inputs") or []:
+        display_path = str(item.get("path") or "")
+        saved_path = context_root / _context_storage_path(display_path)
+        if not saved_path.is_file():
+            raise RuntimeError(f"grouped checkpoint input artifact is missing: {display_path}")
+
+    if not require_exact:
+        return
+    if metrics.get("result") != "MATCH":
+        raise RuntimeError("grouped exact release requires a current MATCH result")
+    current_owner = metrics.get("owning_symbol_validation") or {}
+    if not isinstance(current_owner, dict) or current_owner.get("status") != "match":
+        raise RuntimeError("grouped exact release requires a matching PDB-qualified owner")
+    saved_owner = saved_context.get("pdb_owner")
+    if not isinstance(saved_owner, dict) or saved_owner != current_owner:
+        raise RuntimeError("grouped checkpoint PDB-qualified owner result differs from the current result")
 
 
 def current_output_snapshot(record: dict[str, str], metrics: dict[str, object]) -> dict[str, object]:
@@ -731,6 +833,15 @@ def pin_clean_baseline(record: dict[str, str], owner: str, note: str) -> dict:
         raise RuntimeError(f"cannot pin clean source without a current completed check ({reason})")
     checkpoint = record_checkpoint(record, CLEAN_CHECKPOINT_LABEL)
     inputs = current_input_snapshot(record)
+    current_context = current_build_context(record, metrics)
+    _validate_grouped_checkpoint(
+        record,
+        checkpoint,
+        current_context,
+        metrics,
+        inputs,
+        require_exact=metrics.get("result") == "MATCH",
+    )
     baseline = {
         "checkpoint_id": checkpoint.get("id"),
         "label": CLEAN_CHECKPOINT_LABEL,
@@ -892,6 +1003,28 @@ def change_state(record: dict[str, str], owner: str, state: str, reason: str) ->
                     "release is only for an exact current result or a claim with no recorded work; "
                     "finalize unresolved work with validation, pin-clean, and pause"
                 )
+            if claim_probes and metrics.get("result") == "MATCH":
+                current_context = current_build_context(record, metrics)
+                if current_context is not None:
+                    latest_checkpoint = str(claim_probes[-1].get("checkpoint") or "")
+                    if not latest_checkpoint:
+                        raise RuntimeError(
+                            "grouped exact release requires the latest check checkpoint"
+                        )
+                    try:
+                        checkpoint = checkpoint_info(record, latest_checkpoint)
+                    except (KeyError, OSError, json.JSONDecodeError) as error:
+                        raise RuntimeError(
+                            f"grouped exact release checkpoint is unavailable ({latest_checkpoint})"
+                        ) from error
+                    _validate_grouped_checkpoint(
+                        record,
+                        checkpoint,
+                        current_context,
+                        metrics,
+                        current_input_snapshot(record),
+                        require_exact=True,
+                    )
         now = _utc_now()
         session["state"] = state
         session["updated_at"] = _iso(now)
@@ -1193,6 +1326,17 @@ def format_history(record: dict[str, str], session: dict | None, limit: int) -> 
                 f"{when:<19} {str(result):<9} {str(diff_b):>8} {diff_p:>7.1f}% {resync:>7.1f}% "
                 f"{flags:<6} {labels:<20} {source}"
             )
+            context = run.get("build_context") or {}
+            translation_unit = context.get("translation_unit") or {}
+            if translation_unit:
+                pdb_owner = context.get("pdb_owner") or {}
+                lines.append(
+                    f"    build context: TU={translation_unit.get('name') or '?'} "
+                    f"fingerprint={str(context.get('fingerprint') or '')[:16]} "
+                    f"owners={len(translation_unit.get('owners') or {})} "
+                    f"symbols={len(translation_unit.get('symbols') or {})} "
+                    f"pdb_owner={pdb_owner.get('status') or 'unverified'}"
+                )
     lines.append("")
     lines.append("Notebook probes (newest first):")
     if not probes:
