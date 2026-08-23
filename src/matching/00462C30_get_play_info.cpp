@@ -59,6 +59,9 @@
 // and zero normalized positional differences. The target's two relocations name
 // __imp__mciSendCommandA@16 at +238 and +280. All 23 tested real-owner prefixes
 // retain the target result. A larger group must migrate each added owner.
+// Exact finish: fresh grouped music_tu.cpp validation matches 309/309 bytes,
+// both ordered MCI calls, the 00462C30-00462D64 boundary, and the decorated
+// TMusic_System::get_play_info owner. No natural-source blocker remains.
 
 #include <string.h>
 #include "../../include/music_context.h"

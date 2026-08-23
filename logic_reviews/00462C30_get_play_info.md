@@ -2,16 +2,20 @@
 
 ## Phase transition
 
-The main agent suspended exact matching after bounded work exhausted natural
-control-flow forms for two MCI call sites and one shared status tail.
+The behavior review is complete. The natural typed reconstruction now matches
+in the authentic `music.cpp` translation unit.
 
-Candidate: `src/scratch/00462C30_get_play_info.cpp`.
+Owner: `TMusic_System::get_play_info` at `00462C30`.
 
 Current validation:
 
-- original size: 309 bytes; rebuilt size: 328 bytes;
-- frame, saved registers, and both MCI calls align;
-- the remaining drift is duplicated status-store and return-tail topology.
+- original and rebuilt size: 309 bytes;
+- original boundary: `00462C30-00462D64`;
+- rebuilt owner: `?get_play_info@TMusic_System@@QAEHPAEPAH11PAD1PAK@Z`;
+- frame: `0x10`; saved registers: `ebx`, `ebp`, `esi`, `edi`;
+- both indirect `mciSendCommandA@16` calls align at `+0xEC` and `+0x116`;
+- grouped bytes, calls, CFG, boundary, and owner match exactly;
+- strict positional diff: `0` bytes (`0.0000%`).
 
 ## Semantic questions
 
@@ -44,5 +48,8 @@ decompiler labels for the status fields.
 
 ## Final decision
 
-No behavioral uncertainty remains for supported MCI use. The remaining
-difference is shared-tail control-flow drift. Promote to `src/verified_logic`.
+No behavioral uncertainty remains for supported MCI use. The source is a
+natural VC5-era C++ reconstruction in the authentic `music.cpp` context.
+Fresh exact validation resolves the former shared-tail concern. Keep the
+reviewed output ownership, `dwItem` query field, full status-record call, and
+fault order.
