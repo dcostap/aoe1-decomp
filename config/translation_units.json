@@ -159,6 +159,31 @@
         "00461A20": "??1TMusic_System@@QAE@XZ",
         "00462C30": "?get_play_info@TMusic_System@@QAEHPAEPAH11PAD1PAK@Z"
       }
+    },
+    {
+      "name": "screen_campaign_selection",
+      "source": "src/scr_cams_tu.cpp",
+      "flags": "config/flags/004909D0_TRIBE_Screen_Campaign_Selection.rsp",
+      "owners": {
+        "004909D0": "src/matching/004909D0_TRIBE_Screen_Campaign_Selection.cpp",
+        "00490E30": "src/matching/00490E30_init_vars.cpp",
+        "00490EA0": "src/matching/00490EA0_TRIBE_Screen_Campaign_Selection.cpp",
+        "00490F90": "src/matching/00490F90_handle_idle.cpp",
+        "00490FF0": "src/matching/00490FF0_action.cpp",
+        "004911A0": "src/matching/004911A0_fillCampaigns.cpp",
+        "00491290": "src/matching/00491290_fillScenarios.cpp",
+        "00491350": "src/matching/00491350_startGame.cpp"
+      },
+      "symbols": {
+        "004909D0": "??0TRIBE_Screen_Campaign_Selection@@QAE@XZ",
+        "00490E30": "?init_vars@TRIBE_Screen_Campaign_Selection@@IAEXXZ",
+        "00490EA0": "??1TRIBE_Screen_Campaign_Selection@@UAE@XZ",
+        "00490F90": "?handle_idle@TRIBE_Screen_Campaign_Selection@@UAEJXZ",
+        "00490FF0": "?action@TRIBE_Screen_Campaign_Selection@@MAEJPAVTPanel@@JKK@Z",
+        "004911A0": "?fillCampaigns@TRIBE_Screen_Campaign_Selection@@IAEXXZ",
+        "00491290": "?fillScenarios@TRIBE_Screen_Campaign_Selection@@IAEXXZ",
+        "00491350": "?startGame@TRIBE_Screen_Campaign_Selection@@IAEXXZ"
+      }
     }
   ]
 }

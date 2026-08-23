@@ -2,37 +2,7 @@
 // result: first mismatch was the class layout; campaignList landed 4 bytes late
 // next try: keep the same block shape, but trim the local stub padding to account for the vptr
 
-class TPanel {
-public:
-    virtual long handle_idle();
-    void set_curr_child(TPanel* child);
-};
-
-class TScreenPanel : public TPanel {
-public:
-    virtual long handle_idle();
-};
-
-class RGE_Base_Game {
-public:
-    char gap_0[0x1D8];
-    int input_enabled;
-    void enable_input();
-};
-
-extern RGE_Base_Game* rge_base_game;
-
-class TRIBE_Screen_Campaign_Selection : public TScreenPanel {
-public:
-    char gap_0[0x48C];
-    TPanel* campaignList; // +0x490
-    char gap_1[0x34];
-    int campaignsLoaded; // +0x4C8
-
-    void fillCampaigns();
-    void fillScenarios();
-    long handle_idle();
-};
+#include "../../include/scr_cams_context.h"
 
 long TRIBE_Screen_Campaign_Selection::handle_idle() {
     if (this->campaignsLoaded == 0) {

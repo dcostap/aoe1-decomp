@@ -60,44 +60,14 @@
 
 #include <stdlib.h>
 
-class RGE_Game_Info {
-public:
-    long get_scenario_list(char*** scenarios, long& count);
-};
-
-class RGE_Base_Game {
-public:
-    char _gap_00[4];
-    RGE_Game_Info* player_game_info;    // +0x04
-};
-
-extern RGE_Base_Game* rge_base_game;
-
-class TTextPanel {
-public:
-    void empty_list();
-    int append_line(char* text, long value);
-    long get_line(long index);
-    void set_line(long line);
-    void scroll_cur_line(unsigned char dir, short param2, int param3);
-};
-
-class TRIBE_Screen_Campaign_Selection {
-public:
-    char _gap_000[0x490];
-    TTextPanel* campaignList;           // +0x490
-    char _gap_018[0x18];
-    TTextPanel* scenarioList;           // +0x4AC
-
-    void fillScenarios();
-};
+#include "../../include/scr_cams_context.h"
 
 extern "C" void __cdecl free(void* ptr);
 
 void TRIBE_Screen_Campaign_Selection::fillScenarios() {
     scenarioList->empty_list();
 
-    RGE_Game_Info* info = rge_base_game->player_game_info;
+    RGE_Game_Info* info = rge_base_game->game_info;
     char** scenarios = 0;
     long currentScenario;
 

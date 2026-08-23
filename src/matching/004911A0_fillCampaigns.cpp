@@ -20,46 +20,13 @@
 
 #include <stdlib.h>
 
-class RGE_Game_Info {
-public:
-    long get_campaign_list(char*** list, long& current);
-    unsigned char set_current_campaign(long id);
-};
-
-class RGE_Base_Game {
-public:
-    char _gap_00[4];
-    RGE_Game_Info* player_game_info;    // +0x04
-};
-
-extern RGE_Base_Game* rge_base_game;
-
-class TTextPanel {
-public:
-    char _gap_000[0x15C];
-    long sort_flag;                     // +0x15C
-
-    void empty_list();
-    int append_line(char* text, long value);
-    long get_line(long index);
-    void set_line(long line);
-    long get_line();
-    long get_id();
-};
-
-class TRIBE_Screen_Campaign_Selection {
-public:
-    char _gap_000[0x490];
-    TTextPanel* campaignList;           // +0x490
-
-    void fillCampaigns();
-};
+#include "../../include/scr_cams_context.h"
 
 void TRIBE_Screen_Campaign_Selection::fillCampaigns()
 {
     this->campaignList->empty_list();
 
-    RGE_Game_Info* info = rge_base_game->player_game_info;
+    RGE_Game_Info* info = rge_base_game->game_info;
     char** campaigns = 0;
     long current;
 
@@ -87,7 +54,7 @@ void TRIBE_Screen_Campaign_Selection::fillCampaigns()
 
         long line = this->campaignList->get_line();
         if (line != -1) {
-            RGE_Game_Info* info = rge_base_game->player_game_info;
+            RGE_Game_Info* info = rge_base_game->game_info;
             info->set_current_campaign(this->campaignList->get_id());
         }
     }

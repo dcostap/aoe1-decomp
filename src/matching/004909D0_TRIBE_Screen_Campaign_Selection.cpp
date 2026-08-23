@@ -37,86 +37,10 @@
 // POLICY: the derived vtable is now compiler-owned through the virtual
 // destructor declaration proven by same-class exact donors.
 
-class TPanel {
-public:
-    virtual ~TPanel();
-    virtual void v04(); virtual void v08(); virtual void v0C(); virtual void v10();
-    virtual void enable(int); // +14
-    virtual void setup_colours(int,int,int,int,int,int,int,int,int,int,int,int,int); // +18
-#define TPAD(n) virtual void p##n();
-    TPAD(1) TPAD(2) TPAD(3) TPAD(4) TPAD(5) TPAD(6) TPAD(7) TPAD(8)
-    TPAD(9) TPAD(10) TPAD(11) TPAD(12) TPAD(13) TPAD(14) TPAD(15) TPAD(16)
-    TPAD(17) TPAD(18) TPAD(19) TPAD(20) TPAD(21) TPAD(22) TPAD(23) TPAD(24)
-    TPAD(25) TPAD(26) TPAD(27) TPAD(28) TPAD(29) TPAD(30) TPAD(31) TPAD(32)
-    TPAD(33) TPAD(34) TPAD(35) TPAD(36) TPAD(37) TPAD(38) TPAD(39) TPAD(40)
-    TPAD(41) TPAD(42) TPAD(43) TPAD(44) TPAD(45) TPAD(46) TPAD(47) TPAD(48)
-    TPAD(49) TPAD(50)
-#undef TPAD
-    virtual void set_string(long id); // +E4 approximate
-    char gap_004[0xF0];
-    void set_tab_order(TPanel** list, int count);
-    void set_curr_child(TPanel* p);
-};
-
-class TDrawArea;
-class TScreenPanel : public TPanel {
-public:
-    char gap_F4[0x384];
-    TScreenPanel(char* name);
-    long setup(TDrawArea* area, char* prefix, int id, int flag);
-};
-
-class TTextPanel : public TPanel { public: char gap[0x68]; int zero_15c; };
-class TDropDownPanel : public TPanel {
-public:
-    void empty_list();
-    int append_line(long id, long data);
-    long get_line(long data);
-    void set_line(long line);
-};
-class TButtonPanel : public TPanel { public: char gap[0x1A4]; int hotkey; int hotkey_shift; };
-
-class TEasy_Panel : public TScreenPanel {
-public:
-    TEasy_Panel(char* name) : TScreenPanel(name) {}
-    void setup_shadow_area(int);
-    void set_ideal_size(long,long);
-    int create_text(TPanel*, TPanel**, long, long, long, long, long, long, long, long, long);
-    int create_list(TPanel*, TPanel**, long, long, long, long, long);
-    int create_auto_scrollbar(TPanel**, TTextPanel*, long);
-    int create_drop_down(TPanel*, TPanel**, long, long, long, long, long, long, long);
-    int create_button(TPanel*, TButtonPanel**, long, long, long, long, long, long, long, long, long);
-};
-class RGE_Base_Game { public: char gap[0x4c]; TDrawArea* draw_area; int difficulty(); };
-extern RGE_Base_Game* rge_base_game;
-
-class TRIBE_Screen_Campaign_Selection : public TEasy_Panel {
-public:
-    TPanel* title;               // +0x478
-    int campaignListX; int campaignListY; int campaignListWidth; int campaignListHeight;
-    TPanel* campaignTitle;       // +0x48C
-    TTextPanel* campaignList;    // +0x490
-    TPanel* campaignScrollbar;   // +0x494
-    int scenarioListX; int scenarioListY; int scenarioListWidth; int scenarioListHeight;
-    TPanel* scenarioTitle;       // +0x4A8
-    TTextPanel* scenarioList;    // +0x4AC
-    TPanel* scenarioScrollbar;   // +0x4B0
-    TPanel* difficultyTitle;     // +0x4B4
-    TDropDownPanel* difficultyDrop; // +0x4B8
-    TButtonPanel* okButton;      // +0x4BC
-    TButtonPanel* cancelButton;  // +0x4C0
-    TButtonPanel* close_button;  // +0x4C4
-    int campaignsLoaded;         // +0x4C8
-
-    TRIBE_Screen_Campaign_Selection();
-    virtual ~TRIBE_Screen_Campaign_Selection();
-    void init_vars();
-    void fillCampaigns();
-    void fillScenarios();
-};
+#include "../../include/scr_cams_context.h"
 
 TRIBE_Screen_Campaign_Selection::TRIBE_Screen_Campaign_Selection()
-    : TEasy_Panel("Campaign Selection Screen")
+    : TScreenPanel("Campaign Selection Screen")
 {
     init_vars();
     if (!setup(rge_base_game->draw_area, "scr2", 0xC384, 1)) {
@@ -135,7 +59,7 @@ TRIBE_Screen_Campaign_Selection::TRIBE_Screen_Campaign_Selection()
                     if (create_list((TPanel*)this, (TPanel**)&scenarioList, scenarioListX, scenarioListY, scenarioListWidth, scenarioListHeight, 0x0B)) {
                         if (create_auto_scrollbar(&scenarioScrollbar, scenarioList, 0x14)) {
                             if (create_text((TPanel*)this, &scenarioTitle, 0x25FE, scenarioListX - 5, scenarioListY - 0x14, 200, 0x14, 4, 0, 0, 0)) {
-                                scenarioList->zero_15c = 0;
+                                scenarioList->sort_flag = 0;
                                 if (create_text((TPanel*)this, &difficultyTitle, 0x2BCF, 0x0F, 0x172, 200, 0x14, 4, 0, 0, 0)) {
                                     if (create_drop_down((TPanel*)this, (TPanel**)&difficultyDrop, 0x82, 100, 0x14, 0x186, 0x82, 0x18, 0x0B)) {
                                         difficultyDrop->empty_list();
@@ -151,8 +75,8 @@ TRIBE_Screen_Campaign_Selection::TRIBE_Screen_Campaign_Selection()
                                                 cancel->hotkey = 0x1B;
                                                 cancel->hotkey_shift = 0;
                                                 if (create_button((TPanel*)this, &close_button, 0x03EA, 0, 0, 0, 0, 0, -1, -1, 0)) {
-                                                    close_button->enable(1);
-                                                    close_button->setup_colours(9,4,4,4,4,0x11,0x11,0x11,0x11,0,0,0,0);
+                                                    close_button->set_active(1);
+                                                    close_button->set_positioning(9,4,4,4,4,0x11,0x11,0x11,0x11,0,0,0,0);
                                                     TPanel* tabList[5];
                                                     tabList[0] = campaignList;
                                                     tabList[1] = scenarioList;
