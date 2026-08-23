@@ -7,6 +7,15 @@
 // - Current reconstruction mirrors same-TU typed armor ownership and donor local lifetimes.
 // - Main-agent audit confirmed canonical combat-object and armor ownership;
 //   emitted code remains exact.
+// BINARY NOTE: PDB identifies this symbol as the protected
+// TRIBE_Master_Combat_Object::setup(int, RGE_Sprite**, RGE_Sound**) in
+// tm_co_ob.cpp lines 73-107. Its body is [0050EB60, 0050EC85); the next
+// sibling starts at 0050EC90. The ABI is __thiscall with ret 0xC and entry
+// homes fd=+4, sprites=+8, and sounds=+0xC.
+// BINARY NOTE: The protected base setup call, publication of master_type,
+// five direct rge_read calls, version gate, scans, and cleanup stay in the
+// observed order. The FILE* constructor sibling at 0050EA60 is not this
+// symbol and keeps its own FILE* ABI.
 
 #include <stdlib.h>
 
@@ -19,19 +28,34 @@ extern float DAT_0057677c;
 
 class RGE_Sprite;
 class RGE_Sound;
+class RGE_Master_Static_Object;
 
+class RGE_Master_Action_Object {
+public:
+    virtual ~RGE_Master_Action_Object();
+    virtual void copy_obj(RGE_Master_Static_Object* object);
+    virtual void modify(float value, unsigned char attribute);
+    virtual void modify_delta(float value, unsigned char attribute);
+    virtual void modify_percent(float value, unsigned char attribute);
+    virtual void save(int file);
+
+    unsigned char master_type;
+    char gap_005[0xF7];
+
+protected:
+    int setup(RGE_Master_Action_Object* source);
+};
 class RGE_Armor_Weapon_Info {
 public:
     short type;
     short value;
 };
 
-class RGE_Master_Combat_Object {
+class RGE_Master_Combat_Object : public RGE_Master_Action_Object {
 public:
     virtual ~RGE_Master_Combat_Object();
 
-    unsigned char master_type;
-    char gap_005[0xFB];
+    RGE_Sprite* fight_sprite;
     unsigned char base_armor;
     unsigned char gap_101[1];
     short armor_num;
@@ -60,6 +84,7 @@ public:
     float orig_weapon_range;
     float orig_speed_of_attack;
 
+protected:
     int setup(int fd, RGE_Sprite** sprites, RGE_Sound** sounds);
 };
 
@@ -81,6 +106,7 @@ public:
     short orig_pierce_armor;
     unsigned char gap_162[2];
 
+protected:
     int setup(int fd, RGE_Sprite** sprites, RGE_Sound** sounds);
 };
 

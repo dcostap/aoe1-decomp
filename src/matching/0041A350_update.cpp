@@ -1,100 +1,125 @@
 // VA: 0041A350 RGE_Animated_Object::update
 // ani_obj.cpp lines 79-125
+// BINARY NOTE: PDB names this public virtual method. Its body is 0041A350-0041A3C6;
+// RGE_Animated_Object::setup at 0041A310 ends before this body.
+// BINARY NOTE: The +0x18 field is RGE_Active_Sprite_List. Its calls use
+// is_animating at +0x18 and update at +0x08. The +0x5C calls are the inherited
+// public RGE_Static_Object::set_object_state method.
+// BINARY NOTE: State 3 reads master_obj->death_sprite before the state call.
+// State 4 publishes state 5 and clears speed only after is_animating returns 0.
 
-// attempt 2: add dummy virtuals to match vtable slot positions
+class RGE_Sprite;
+class RGE_Master_Static_Object;
+class RGE_Player;
+class RGE_Game_World;
+class TDrawArea;
+class RGE_Color_Table;
+
+class RGE_Active_Sprite_List {
+public:
+    virtual ~RGE_Active_Sprite_List();
+    virtual short frame(RGE_Sprite* sprite);
+    virtual void update(float time_delta, float speed);
+    virtual void draw(short, short, short, short, short, RGE_Color_Table*, TDrawArea*);
+    virtual void normal_draw(short, short, short, RGE_Color_Table*, TDrawArea*);
+    virtual void shadow_draw(short, short, short, RGE_Color_Table*, TDrawArea*, unsigned char);
+    virtual unsigned char is_animating(RGE_Sprite* sprite);
+};
+
+class RGE_Game_World {
+public:
+    virtual ~RGE_Game_World();
+    char gap_04[0x80];
+    float world_time_delta_seconds;
+};
+
+class RGE_Player {
+public:
+    virtual ~RGE_Player();
+    char gap_04[0x38];
+    RGE_Game_World* world;
+};
+
+class RGE_Master_Static_Object {
+public:
+    virtual ~RGE_Master_Static_Object();
+    char gap_04[0x18];
+    RGE_Sprite* death_sprite;
+};
 
 class RGE_Static_Object {
 public:
     virtual ~RGE_Static_Object();
+    virtual void recycle_in_to_game(RGE_Master_Static_Object*, RGE_Player*, float, float, float);
+    virtual void recycle_out_of_game();
+    virtual void draw(TDrawArea*, short, short, RGE_Color_Table*);
+    virtual void shadow_draw(TDrawArea*, short, short, unsigned char);
+    virtual void normal_draw(TDrawArea*, short, short);
+    virtual void draw_front_frame(TDrawArea*, short, short);
+    virtual void draw_back_frame(TDrawArea*, short, short);
+    virtual void draw_frame(TDrawArea*, short, short);
     virtual unsigned char update();
+    virtual void check_damage_sprites();
+    virtual void rehook();
+    virtual void save(int);
+    virtual float teleport(float, float, float);
+    virtual void new_sprite(RGE_Sprite*);
+    virtual void add_overlay_sprite(RGE_Sprite*, unsigned char);
+    virtual void remove_overlay_sprite(RGE_Sprite*);
+    virtual void change_ownership(RGE_Player*);
+    virtual void modify(float, unsigned char);
+    virtual void modify_delta(float, unsigned char);
+    virtual void modify_percent(float, unsigned char);
+    virtual void transform(RGE_Master_Static_Object*);
+    virtual void copy_obj(RGE_Master_Static_Object*);
+    virtual void set_object_state(unsigned char);
+
+    long id;
+    RGE_Master_Static_Object* master_obj;
+    RGE_Player* owner;
+    RGE_Sprite* sprite;
+    void* old_sprite;
+    RGE_Active_Sprite_List* sprite_list;
+    char gap_1C[0x2C];
+    unsigned char object_state;
+    char gap_49[0x3F];
 };
-
-class RGE_Game_Area {
-public:
-    virtual ~RGE_Game_Area();
-    virtual void vf01();
-    virtual void update_pos(int a, int b);        // slot 2 (0x08)
-    virtual void vf03();
-    virtual void vf04();
-    virtual void vf05();
-    virtual unsigned char check_collision(void* arg);  // slot 6 (0x18)
-};
-
-// Fields at observed offsets:
-// +0x08: RGE_Master_Static_Object*
-// +0x0C: RGE_Game_World*
-// +0x10: some arg/param
-// +0x18: RGE_Game_Area*
-// +0x48: byte state (3, 4, 5)
-// +0x88: dword speed
-
-// RGE_Static_Object has slots 0, 1 (~RGE_Static_Object, update)
-// Need total 24 virtuals (0-23) for kill at slot 23
-// Adding 22 dummy virtuals (slots 2-22) + kill at slot 23
 
 class RGE_Animated_Object : public RGE_Static_Object {
 public:
-    virtual void vf02();
-    virtual void vf03();
-    virtual void vf04();
-    virtual void vf05();
-    virtual void vf06();
-    virtual void vf07();
-    virtual void vf08();
-    virtual void vf09();
-    virtual void vf10();
-    virtual void vf11();
-    virtual void vf12();
-    virtual void vf13();
-    virtual void vf14();
-    virtual void vf15();
-    virtual void vf16();
-    virtual void vf17();
-    virtual void vf18();
-    virtual void vf19();
-    virtual void vf20();
-    virtual void vf21();
-    virtual void vf22();
-    virtual void kill(int mode);  // slot 23 (0x5C)
+    float speed;
 
-    unsigned char update();
+    virtual unsigned char update();
 };
 
 // 0041A350 - 119 bytes
 unsigned char RGE_Animated_Object::update() {
     unsigned char result = RGE_Static_Object::update();
 
-    unsigned char* state_ptr = (unsigned char*)this + 0x48;
-    unsigned char state = *state_ptr;
+    unsigned char state = this->object_state;
 
     switch (state) {
     case 3: {
-        void* master = *(void**)((char*)this + 8);
-        if (*(void**)((char*)master + 0x1C) == 0) {
-            this->kill(5);
+        RGE_Master_Static_Object* master = this->master_obj;
+        if (master->death_sprite == 0) {
+            this->set_object_state(5);
         } else {
-            this->kill(4);
+            this->set_object_state(4);
         }
         break;
     }
     case 4: {
-        RGE_Game_Area* area = *(RGE_Game_Area**)((char*)this + 0x18);
-        void* field_10 = *(void**)((char*)this + 0x10);
-        unsigned char ret = area->check_collision(field_10);
+        unsigned char ret = this->sprite_list->is_animating(this->sprite);
         if (ret == 0) {
-            *state_ptr = 5;
-            *(int*)((char*)this + 0x88) = 0;
+            this->object_state = 5;
+            this->speed = 0.0f;
         }
         break;
     }
     }
 
-    int speed = *(int*)((char*)this + 0x88);
-    RGE_Game_Area* area = *(RGE_Game_Area**)((char*)this + 0x18);
-    void* obj0C = *(void**)((char*)this + 0x0C);
-    void* field_3C = *(void**)((char*)obj0C + 0x3C);
-    int param = *(int*)((char*)field_3C + 0x84);
-    area->update_pos(param, speed);
+    RGE_Game_World* world = this->owner->world;
+    this->sprite_list->update(world->world_time_delta_seconds, this->speed);
 
     return result;
 }

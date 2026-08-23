@@ -16,6 +16,12 @@
 // 12: `for (; i < newMax; i++) newList[i] = 0` in both resize arms restores
 // the original rep stosd setup, saved-register coloring, and exact 457-byte
 // output.  The named arrays and +0x88..+0x9C ownership remain canonical.
+// Exact finish: PDB and the original listing qualify this as
+// RGE_Game_World::addObject in World.cpp:3679-3760.  Its body is
+// 00545E00-00545FC8; the next bytes are padding, and the prior sibling ends
+// at 00545DF2.
+// Walkback: removing both explicit int casts from the 1.5f assignments kept
+// MATCH at 457 bytes.  The implicit conversion is the retained natural form.
 
 extern "C" void* __cdecl operator_new(unsigned int);
 extern "C" void __cdecl operator_delete(void*);
@@ -54,7 +60,7 @@ int RGE_Game_World::addObject(RGE_Static_Object* obj)
         if (this->maxNumberObjectsValue - 1 < id) {
             newMax = this->maxNumberObjectsValue * 2;
             if (newMax < id) {
-                newMax = (int)((float)id * 1.5f);
+                newMax = (float)id * 1.5f;
             }
             newList = (RGE_Static_Object**)operator_new(newMax * 4);
             if (newList == 0) return 0;
@@ -88,7 +94,7 @@ int RGE_Game_World::addObject(RGE_Static_Object* obj)
         if (this->maxNumberNegativeObjectsValue - 1 < slot) {
             newMax = this->maxNumberNegativeObjectsValue * 2;
             if (newMax < slot) {
-                newMax = (int)((float)slot * 1.5f);
+                newMax = (float)slot * 1.5f;
             }
             newList = (RGE_Static_Object**)operator_new(newMax * 4);
             if (newList == 0) return 0;
