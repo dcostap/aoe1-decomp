@@ -1,9 +1,4 @@
-class TRIBE_Player;
-
-class VictoryConditionRuleSystem {
-public:
-    int evaluateAsNonInProgress(TRIBE_Player* player, int rule);
-};
+#include "../../include/taistrmd_context.h"
 
 int VictoryConditionRuleSystem::evaluateAsNonInProgress(TRIBE_Player* player, int rule) {
     switch (rule) {

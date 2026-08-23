@@ -100,138 +100,19 @@
 // continuation: declaration order, declaration scope, for/while/do-while
 // forms, entry declarations, and scoped count locals did not improve the
 // parameter-home basin. Restore the typed clean source after each diagnostic.
+// canonical source-module pass: one shared PDB-backed AIModule, StrategyAI,
+// ManagedArray, VictoryConditionRuleSystem, Waypoint, and TribeStrategy type
+// removes all prefix redefinitions. Every preceding exact owner remains exact
+// in the ordered /GX build. This surface with natural new[]/delete[] restores
+// the original 0x10 frame and reduces this target from 28 differing bytes to 15. The complete
+// prefix emits the same 15-byte result, so prior function bodies add no further
+// codegen change. The open difference is stack-home rotation after loadRules.
 
 extern "C" void __cdecl rge_read(int file, void* dst, int size);
-extern "C" void* __cdecl operator_new(unsigned int size);
-extern "C" void __cdecl operator_delete(void* pointer);
 extern float save_game_version;
 extern float DAT_00575690;
 
-class AIModuleMessage;
-class TribeMainDecisionAIModule;
-
-class AIModule {
-public:
-    char gap_04[0xEC];
-
-    virtual ~AIModule();
-    virtual int loggingHistory();
-    virtual void setLogHistory(int value);
-    virtual void toggleLogHistory();
-    virtual void setHistoryFilename(char* filename);
-    virtual int loggingCommonHistory();
-    virtual void setLogCommonHistory(int value);
-    virtual void toggleLogCommonHistory();
-    virtual int loadState(char* filename);
-    virtual int saveState(char* filename);
-    virtual int gleanState(int value);
-    virtual int processMessage(AIModuleMessage* message);
-    virtual int update(int parameter);
-    virtual void setCallbackMessage(AIModuleMessage* message);
-    virtual int filterOutMessage(AIModuleMessage* message);
-    AIModule(char* name, int id, int parameter, void* object);
-};
-
-class StrategyAIModule : public AIModule {
-public:
-    StrategyAIModule(void* object, int parameter);
-    virtual ~StrategyAIModule();
-};
-
-template <class T>
-class ManagedArray {
-public:
-    T* value;
-    int numberValue;
-    int desiredNumberValue;
-    int maximumSizeValue;
-
-    ManagedArray()
-        : value(0), numberValue(0), desiredNumberValue(0), maximumSizeValue(0)
-    {
-    }
-
-    ~ManagedArray() {
-        if (this->value != 0) {
-            operator_delete(this->value);
-            this->value = 0;
-        }
-        this->numberValue = 0;
-        this->desiredNumberValue = 0;
-        this->maximumSizeValue = 0;
-    }
-
-    int add(T valueToAdd) {
-        int i;
-        for (i = 0; i < this->numberValue; i++) {
-            if (i >= this->maximumSizeValue)
-                break;
-            if (this->value[i] == valueToAdd)
-                return 0;
-        }
-
-        if (this->numberValue > this->maximumSizeValue - 1) {
-            int newSize = this->numberValue + 1;
-            T* newValue = (T*)operator_new(newSize * sizeof(T));
-            if (newValue != 0) {
-                int j;
-                for (j = 0; j < this->maximumSizeValue; j++) {
-                    if (j >= newSize)
-                        break;
-                    newValue[j] = this->value[j];
-                }
-                operator_delete(this->value);
-                this->value = newValue;
-                this->maximumSizeValue = newSize;
-            }
-        }
-
-        this->value[this->numberValue] = valueToAdd;
-        this->numberValue++;
-        return 1;
-    }
-};
-
-class VictoryConditionRuleSystem {
-public:
-    virtual ~VictoryConditionRuleSystem();
-    VictoryConditionRuleSystem();
-    int sn[226];
-};
-
-struct Waypoint {
-    float x;
-    float y;
-    float z;
-    unsigned char facetToNextWaypoint;
-    unsigned char padding[3];
-};
-
-class TribeStrategyAIModule : public StrategyAIModule {
-public:
-    TribeMainDecisionAIModule* md;     // +0xF0
-    int currentVictoryConditionValue;  // +0xF4
-    char ruleSetNameValue[0x101];      // +0xF8
-    int targetIDValue;                 // +0x1FC
-    int targetTypeValue;               // +0x200
-    int secondTargetIDValue;           // +0x204
-    int secondTargetTypeValue;         // +0x208
-    Waypoint targetPoint1Value;        // +0x20C
-    Waypoint targetPoint2Value;        // +0x21C
-    int targetAttributeValue;          // +0x22C
-    int targetNumberValue;             // +0x230
-    int victoryConditionChangeTimeout; // +0x234
-    ManagedArray<int> vcRuleSet;       // +0x238
-    ManagedArray<int> executingRules;  // +0x248
-    ManagedArray<int> idleRules;       // +0x258
-    VictoryConditionRuleSystem vcRules;// +0x268
-    int difficultyLevel;               // +0x5F4
-
-    virtual ~TribeStrategyAIModule();
-    TribeStrategyAIModule(int playerID, int infile);
-    int loadRules(char* name);
-    void setDifficultyLevel(int level);
-};
+#include "../../include/taistrmd_context.h"
 
 TribeStrategyAIModule::TribeStrategyAIModule(int playerID, int infile)
     : StrategyAIModule((void*)0, playerID),

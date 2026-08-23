@@ -1,7 +1,3 @@
-class VictoryConditionRuleSystem {
-public:
-    virtual ~VictoryConditionRuleSystem();
-    
-};
+#include "../../include/taistrmd_context.h"
 
 VictoryConditionRuleSystem::~VictoryConditionRuleSystem() {}

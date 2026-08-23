@@ -184,6 +184,30 @@
         "00491290": "?fillScenarios@TRIBE_Screen_Campaign_Selection@@IAEXXZ",
         "00491350": "?startGame@TRIBE_Screen_Campaign_Selection@@IAEXXZ"
       }
+    },
+    {
+      "name": "taistrmd_strategy_prefix",
+      "source": "src/taistrmd_tu.cpp",
+      "flags": "config/flags/004E9260_TribeStrategyAIModule.rsp",
+      "owners": {
+        "004E6E10": "src/matching/004E6E10_VictoryConditionRuleSystem.cpp",
+        "004E7430": "src/matching/004E7430_VictoryConditionRuleSystem.cpp",
+        "004E7440": "src/accepted_drift/004E7440_loadRules.cpp",
+        "004E75D0": "src/matching/004E75D0_setRule.cpp",
+        "004E75F0": "src/matching/004E75F0_rule.cpp",
+        "004E7610": "src/matching/004e7610_evaluateAsInProgress.cpp",
+        "004E7620": "src/matching/004E7620_evaluateAsNonInProgress.cpp",
+        "004E7690": "src/matching/004E7690_execute.cpp",
+        "004E8D10": "src/matching/004e8d10_stopExecution.cpp",
+        "004E8D20": "src/matching/004E8D20_modifyForDifficultyLevel.cpp",
+        "004E9100": "src/matching/004E9100_TribeStrategyAIModule.cpp",
+        "004E9260": "src/scratch/004E9260_TribeStrategyAIModule.cpp"
+      },
+      "symbols": {
+        "004E75F0": "?rule@VictoryConditionRuleSystem@@QAEHH@Z",
+        "004E9100": "??0TribeStrategyAIModule@@QAE@PAXH@Z",
+        "004E9260": "??0TribeStrategyAIModule@@QAE@HH@Z"
+      }
     }
   ]
 }

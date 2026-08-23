@@ -16,13 +16,7 @@ public:
 
 extern RGE_Base_Game* rge_base_game;
 
-class VictoryConditionRuleSystem {
-public:
-    virtual ~VictoryConditionRuleSystem();
-    int sn[0xE2];
-
-    void modifyForDifficultyLevel(int level);
-};
+#include "../../include/taistrmd_context.h"
 
 struct ScaleLocals {
     float scale1;

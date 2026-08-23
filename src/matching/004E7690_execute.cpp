@@ -3,11 +3,7 @@
 // - baseline reconstruction from the binary switch, named VictoryConditionRuleSystem
 //   strategic-number storage, and the player -> main-decision -> tactical-AI ownership chain.
 
-class AIModule {
-public:
-    virtual ~AIModule();
-    char gap_04[0xEC];
-};
+#include "../../include/taistrmd_context.h"
 
 class MainDecisionAIModule : public AIModule {
 public:
@@ -50,12 +46,6 @@ class TribeResourceAIModule {
 public:
     virtual ~TribeResourceAIModule();
     char bytes[0xF4];
-};
-
-class TribeStrategyAIModule {
-public:
-    virtual ~TribeStrategyAIModule();
-    char bytes[0x5F4];
 };
 
 class TribeTacticalAIModule {
@@ -110,13 +100,6 @@ public:
     char gap_004[0x234];
     TribeMainDecisionAIModule* playerAI;        // +0x238
     virtual ~TRIBE_Player();
-};
-
-class VictoryConditionRuleSystem {
-public:
-    virtual ~VictoryConditionRuleSystem();
-    int sn[0xE2];
-    int execute(TRIBE_Player* player, int state, int command);
 };
 
 int VictoryConditionRuleSystem::execute(TRIBE_Player* player, int state, int command)

@@ -75,13 +75,7 @@ extern "C" int __cdecl _unlink(const char* filename);
 #pragma intrinsic(strcmp)
 #pragma intrinsic(strlen)
 
-class VictoryConditionRuleSystem {
-public:
-    virtual ~VictoryConditionRuleSystem();
-    int sn[226];
-
-    int loadRules(char* filename);
-};
+#include "../../include/taistrmd_context.h"
 
 int VictoryConditionRuleSystem::loadRules(char* filename)
 {
