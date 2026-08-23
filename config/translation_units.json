@@ -488,7 +488,7 @@
         "00543E00": "src/accepted_drift/00543E00_load_scenario.cpp",
         "00544090": "src/accepted_drift/00544090_load_scenario.cpp",
         "00544E70": "src/matching/00544E70_load_scenario5.cpp",
-        "005451A0": "src/accepted_drift/005451A0_load_scenario6.cpp"
+        "005451A0": "src/matching/005451A0_load_scenario6.cpp"
       },
       "symbols": {
         "00543E00": "?load_scenario@RGE_Game_World@@UAEEPADPAURGE_Player_Info@@@Z",
