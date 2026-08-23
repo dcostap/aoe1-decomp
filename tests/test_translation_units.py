@@ -157,7 +157,9 @@ class TranslationUnitTests(unittest.TestCase):
         self.assertIn("owner-include-count", {issue.code for issue in missing_issues})
 
     def test_manifest_validation_requires_exact_symbols_for_duplicate_names(self) -> None:
-        group = copy.deepcopy(load_translation_units()[9])
+        group = copy.deepcopy(
+            next(group for group in load_translation_units() if group["name"] == "panel_create_button")
+        )
         group["symbols"] = {}
 
         issues = validate_translation_units([group])
@@ -170,7 +172,9 @@ class TranslationUnitTests(unittest.TestCase):
         if not object_path.is_file():
             self.skipTest("grouped object is not available in this checkout")
 
-        group = copy.deepcopy(load_translation_units()[9])
+        group = copy.deepcopy(
+            next(group for group in load_translation_units() if group["name"] == "panel_create_button")
+        )
         symbols = group["symbols"]
         assert isinstance(symbols, dict)
         symbols["00468CB0"] = "?not_a_real_symbol@@YAXXZ"
