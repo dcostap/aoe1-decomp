@@ -7,6 +7,7 @@ typedef unsigned char uchar;
 
 class RGE_Game_World;
 class RGE_Player;
+struct RGE_Player_Info;
 class RGE_Static_Object;
 class RGE_Sprite;
 class RGE_Sound;
@@ -30,16 +31,88 @@ class RGE_Unified_Visible_Map;
 class Visible_Unit_Manager;
 class RGE_RMM_Database_Controller;
 class RGE_Tile;
+class TMousePointer;
+class RGE_Game_Info;
+class RGE_Command_Give_Attribute;
 
 class TCommunications_Handler {
 public:
     unsigned long GetRandomSeed();
     int GetPlayerHumanity(int);
+    int DoCycle(unsigned long);
+    void LastWorldRandom(int);
+};
+
+class RGE_Sound {
+public:
+    short play_at_update_count;
+    short sound_num;
+    void* sound_items;
+    unsigned long cache_time;
+    short id;
+    RGE_Sound(FILE*, short);
+    RGE_Sound(int, TSound_Driver*);
+    ~RGE_Sound();
+    void stop();
+    void update(unsigned long);
+    void save(int);
+};
+
+class RGE_Color_Table {
+public:
+    virtual ~RGE_Color_Table();
+    char color_table_name[30];
+    short resource_id;
+    unsigned char type;
+    unsigned char map_color;
+    short id;
+    unsigned char table[256];
+    RGE_Color_Table(int);
+    RGE_Color_Table(FILE*, short);
+    void save(int);
+};
+
+class RGE_Master_Player {
+public:
+    virtual ~RGE_Master_Player();
+    virtual void init(int, RGE_Sprite**, RGE_Sound**);
+    virtual void master_player_slot_2();
+    virtual void add_object(short);
+    virtual void add_object_data(FILE*, short, RGE_Sprite**, RGE_Sound**, short);
+    virtual void save(int);
+    unsigned char gap_04[0x28];
+    RGE_Master_Player(int);
+    RGE_Master_Player(FILE*);
+};
+
+class RGE_Effects {
+public:
+    virtual ~RGE_Effects();
+    virtual void save(int);
+    char gap_04[0x08];
+    RGE_Effects(int);
+    RGE_Effects(char*);
+};
+
+class RGE_Sprite {
+public:
+    ~RGE_Sprite();
+    unsigned char gap_00[0x78];
+    RGE_Sprite(int, RGE_Sound**, RGE_Color_Table**);
+    RGE_Sprite(FILE*, short, RGE_Sound**);
+    RGE_Sprite(short);
+    void rehook(RGE_Sprite**);
+    void update(unsigned long);
+    void save(int);
 };
 
 class RGE_Command {
 public:
+    virtual void do_command_give_attribute(RGE_Command_Give_Attribute*);
     virtual ~RGE_Command();
+    RGE_Command(RGE_Game_World*, TCommunications_Handler*);
+    void do_commands();
+    void reset_communications(TCommunications_Handler*);
     RGE_Game_World* world;
     unsigned char* last_order;
     long last_order_size;
@@ -49,8 +122,32 @@ public:
 
 class RGE_Map {
 public:
+    virtual ~RGE_Map();
+    virtual void data_load_random_map(int);
+    virtual void load_random_map(char*, char*, char*, char*);
+    virtual unsigned char do_terrain_brush(long, long, long, unsigned char);
+    virtual unsigned char do_terrain_brush_stroke(long, long, long, long, long, unsigned char);
+    virtual unsigned char do_elevation_brush(long, long, long, unsigned char);
+    virtual unsigned char do_elevation_brush_stroke(long, long, long, long, long, unsigned char);
+    virtual unsigned char do_cliff_brush(long, long, unsigned char, unsigned char);
+    virtual unsigned char do_cliff_brush_stroke(long, long, long, long, unsigned char, unsigned char);
+    virtual void map_generate(RGE_Player*, RGE_Game_World*, RGE_Player_Info*, unsigned char*);
+    virtual void map_generate2(RGE_Game_World*, long, long, unsigned char, long);
+    virtual void save(int);
+    char gap_04[0x8DC4];
+    RGE_Unified_Visible_Map* unified_vis_map;
+    unsigned char gap_8DCC[4];
+    RGE_Map(int, RGE_Sound**, int);
+    RGE_Map(char*, char*, char*, short, short, short, RGE_Sound**);
+    void load_terrain_obj_types(char*);
+    void set_map_visible(unsigned char);
+    void set_map_fog(unsigned char);
     void new_map(long, long);
+    void load_map(int);
     void clear_map(unsigned char, unsigned char);
+    void scenario_load(int, unsigned char*);
+    void save_map(int);
+    void scenario_save(int);
 };
 
 struct RGE_Map_Gen_Info {
@@ -65,11 +162,17 @@ struct RGE_Player_Info {
     short color[9];
     unsigned char gap_26E[2];
     long player_id_hash[9];
-    short player_num;
+    union {
+        short player_num;
+        short player_num_minus1;
+    };
     unsigned char gap_296[2];
     char* scenario;
     RGE_Map_Gen_Info* map_info;
-    short map_type;
+    union {
+        short map_type;
+        short victory;
+    };
     short map_width;
     short map_height;
     short ai_info;
@@ -77,9 +180,71 @@ struct RGE_Player_Info {
     unsigned char gap_end[3];
 };
 
+class RGE_Master_Static_Object {
+public:
+    char gap_00[4];
+    unsigned char master_type;
+    char gap_05[0x0B];
+    short id;
+};
+
+class RGE_Static_Object {
+public:
+    virtual ~RGE_Static_Object();
+    long id;
+    RGE_Master_Static_Object* master_obj;
+    char gap_0C[0x29];
+    unsigned char facet;
+    char gap_36[2];
+    float world_x;
+    float world_y;
+    float world_z;
+    float attribute_amount_held;
+    unsigned char object_state;
+    char gap_49[0x53];
+    float angle;
+};
+
+class RGE_Object_Node {
+public:
+    RGE_Static_Object* object;
+    RGE_Object_Node* next;
+};
+
+class RGE_Object_List {
+public:
+    virtual void load(unsigned char, int, void*);
+    union {
+        int count;
+        RGE_Object_Node* list;
+    };
+    void* nodes;
+    RGE_Object_List();
+    ~RGE_Object_List();
+    void removeAllObjects();
+    void update();
+};
+
+class RGE_Tile_List {
+public:
+    int list_size;
+    int num_active;
+    int new_count;
+    int collapse_list;
+    void* list;
+    void del_list();
+};
+
+class RGE_Doppleganger_Creator {
+public:
+    void perform_doppleganger_checks();
+};
+
 class RGE_Player {
 public:
     virtual ~RGE_Player();
+    RGE_Player(RGE_Game_World*, RGE_Master_Player*, unsigned char, char*, unsigned char, unsigned char);
+    RGE_Player(int, RGE_Game_World*, unsigned char);
     virtual void set_game_status(unsigned char);
     virtual void do_resign(int);
     virtual void changeToHumanPlayer();
@@ -141,12 +306,43 @@ public:
     virtual void logStatus(FILE*, int);
     virtual void load_victory(int, long*, unsigned char);
     virtual void new_victory();
+    unsigned char check_victory();
+    unsigned char relation(long);
+    void destroy_objects();
+    void victory_if_game_on();
+    void loss_if_game_on();
     void set_map_visible();
     void remake_visible_map();
+    void load_info(int);
+    void set_color_table(unsigned char);
+    void set_relation(long, unsigned char);
+    void set_allied_victory(unsigned char);
+    char gap_04[0x24];
+    RGE_Object_List* objects;
+    RGE_Object_List* sleeping_objects;
+    RGE_Object_List* doppleganger_objects;
+    char gap_34[0x0C];
+    RGE_Doppleganger_Creator* doppleganger_creator;
+    char gap_44[0x14];
+    RGE_Tile_List tile_list;
+    char gap_6C[0x14];
+    unsigned char game_status;
+    char gap_81[0x83];
+    unsigned char allied_victory;
+    char gap_105[0x11B];
 };
 
 class RGE_Scenario {
 public:
+    virtual RGE_Static_Object* get_object_pointer(int);
+    virtual ~RGE_Scenario();
+    virtual void rehook();
+    virtual void save(int);
+    unsigned char gap_04[0x198C];
+    RGE_Scenario(RGE_Game_World*);
+    RGE_Scenario(int, RGE_Game_World*);
+    void update();
+    unsigned char Get_conquest_victory();
     int GetPlayerPosture(int);
     char* Get_player_AI(int, int);
     char* Get_CityPlan(int, int);
@@ -154,14 +350,40 @@ public:
 };
 
 struct RGE_Prog_Info {
-    char gap[0xC17];
+    char gap[0xB12];
+    char save_dir[261];
     char scenario_dir[261];
 };
 
 class RGE_Base_Game {
 public:
-    char gap_00[0x0C];
+    virtual ~RGE_Base_Game();
+    virtual int run();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual void set_prog_mode(int);
+    virtual void set_game_mode(int, int);
+    virtual void set_player(short);
+    virtual int get_error_code();
+    virtual char* get_string(int, long, char*, int);
+    virtual char* get_string(long, char*, int);
+    virtual char* get_string(long);
+    RGE_Game_Info* player_game_info;
+    char gap_08[0x04];
+    RGE_Prog_Info* save_prog_info;
     RGE_Prog_Info* prog_info;
+    void add_to_timing(int, int);
+    unsigned char set_campaign_info(long, long, long);
+    void set_campaign_win();
+    int difficulty();
+    unsigned char check_prog_argument(char*);
+    void write_scenario_header(int);
+    int multiplayerGame();
+    int randomGame();
+    int campaignGame();
+    int singlePlayerGame();
+    float get_game_speed();
+    int playerTeam(int);
+    int playerID(int);
     int campaign_open_scenario();
     void get_campaign_info(long*, long*, long*);
 };
@@ -169,17 +391,23 @@ public:
 class RGE_Game_World {
 public:
     virtual unsigned char data_load_world(FILE*);
+protected:
     virtual unsigned char data_load_terrain_tables(char*);
+public:
     virtual unsigned char data_load_players(char*);
     virtual unsigned char data_load_objects(char*);
     virtual unsigned char data_load_sounds(char*);
     virtual unsigned char data_load_color_tables(char*);
     virtual unsigned char data_load_sprites(char*);
+protected:
     virtual void data_load_players_type(short, short, FILE*);
+public:
     virtual void data_load_effects(char*);
     virtual void data_load_map(char*, char*, char*, char*, short, short, short, RGE_Sound**, char*);
     virtual void data_load_random_map(char*, char*, char*, char*);
+protected:
     virtual unsigned char init_player_type(int, short, unsigned char);
+public:
     virtual unsigned char init_player(int);
     virtual void load_player(int, unsigned char, short);
     virtual void color_table_init(int);
@@ -188,15 +416,21 @@ public:
     virtual void init_sprites(int);
     virtual void map_init(int, TSound_Driver*);
     virtual void effects_init(int);
+protected:
     virtual void master_player_init(int);
+public:
     virtual void command_init(int, TCommunications_Handler*);
     virtual void world_init(int, TSound_Driver*, TCommunications_Handler*);
     virtual void setup_gaia();
     virtual void setup_players(RGE_Player_Info&);
+protected:
     virtual unsigned char new_random_game(RGE_Player_Info&);
+public:
     virtual void save(int);
+protected:
     virtual void scenario_make_player(short, unsigned char, unsigned char, unsigned char, char*);
     virtual void scenario_make_map(int);
+public:
     virtual unsigned char load_scenario(char*, RGE_Player_Info*);
 protected:
     virtual unsigned char load_scenario(RGE_Player_Info&);
@@ -211,7 +445,7 @@ protected:
 public:
     virtual void logStatus(FILE*, int);
     virtual ~RGE_Game_World();
-    virtual void setup_player_colors(RGE_Player_Info*);
+    virtual void setup_player_colors(RGE_Player_Info&);
     virtual void setup_player_colors();
     virtual unsigned char data_load(char*, char*);
     virtual unsigned char init(char*, TSound_Driver*, TCommunications_Handler*);
@@ -222,23 +456,38 @@ public:
     virtual unsigned char check_game_state();
     virtual unsigned char load_world(int);
     virtual unsigned char load_game(char*);
-    virtual unsigned char new_game(RGE_Player_Info*, int);
+    virtual unsigned char new_game(RGE_Player_Info&, int);
     virtual unsigned char new_scenario(RGE_Player_Info&, int);
     virtual unsigned char save_game(char*);
-    virtual void base_save(char*);
     virtual void base_save(int);
+    virtual void base_save(char*);
     virtual unsigned char save_scenario(char*);
     virtual RGE_Scenario* get_scenario_info(char*);
     virtual void pause(unsigned char);
     virtual void scenario_init(int, RGE_Game_World*);
     virtual void scenario_init(RGE_Game_World*);
+    int initializePathingSystem();
+    void update_sounds(unsigned long);
+    void update_sprites(unsigned long);
+    int is_player_turn(int);
+    int get_accum_time_delta(int);
+    void reset_object_count();
+    void reset_communications(TCommunications_Handler*);
+    void reset_player_visible_maps();
+    void set_map_visible(unsigned char);
+    void set_map_fog(unsigned char);
+    void set_game_speed(int);
+    void update_mutual_allies();
 
     unsigned long world_time;
     unsigned long old_world_time;
     unsigned long world_time_delta;
     float timer;
     unsigned long old_time;
-    float game_speed;
+    union {
+        float game_speed;
+        int game_speed_bits;
+    };
     unsigned char temp_pause;
     unsigned char game_state;
     unsigned char game_end_condition;
@@ -315,15 +564,79 @@ extern int version_109;
 extern int version_110;
 extern int version_111;
 extern RGE_Base_Game* rge_base_game;
+extern float save_game_version;
+extern int rge_write_error;
+
+class TDebuggingLog {
+public:
+    void Log(const char*, ...);
+};
+
+class RGE_Unified_Visible_Map {
+public:
+    void suppress_updates(int);
+};
+
+class PathingSystem {
+public:
+    void zeroObstructionMap();
+};
+
+class RGE_Game_Info {
+public:
+    virtual void unused_game_info_slot();
+    virtual void deleting_destructor(int);
+    char* get_current_player_name();
+};
+
+class AIPlayBook {
+public:
+    virtual ~AIPlayBook();
+};
+
+class TMousePointer {
+public:
+    void Poll();
+};
+
+extern TDebuggingLog* L;
+extern PathingSystem pathSystem;
+extern PathingSystem aiPathSystem;
+extern int computerPlayerSetup[13];
+extern int debug_timeGetTime_cnt;
+extern int debug_timeGetTime_time;
+extern int all_cp;
+extern int debug_random_on;
+extern int debug_timeGetTime_on;
+extern int do_fixed_update;
+extern int fixed_update_time;
+extern short visible_combats;
+extern TMousePointer* MouseSystem;
+extern int logStatusOn;
+extern unsigned long lastStatusLogTime;
+extern FILE* logStatusFile;
+extern FILE* DVlogf;
+extern RGE_Static_Object** VIS_UNIT_objectsValue;
+extern float DAT_00577a14;
+extern float DAT_00577a10;
+
+extern int __cdecl debug_rand(const char*, int);
+extern void __cdecl debug_random_reset();
+extern unsigned long __cdecl debug_timeGetTime(const char*, int);
 
 extern "C" void __cdecl rge_read_uncompressed(int, void*, int);
 extern "C" void __cdecl rge_read(int, void*, int);
 extern "C" int __cdecl rge_close(int);
+extern "C" void __cdecl rge_write(int, const void*, int);
+extern "C" void __cdecl rge_write_uncompressed(int, const void*, int);
+extern "C" void __cdecl color_log(unsigned char, unsigned char, unsigned char);
 extern "C" void* __cdecl malloc(unsigned int);
 extern "C" void __cdecl free(void*);
-extern "C" void __cdecl debug_srand(char*, int, unsigned int);
+extern void __cdecl debug_srand(char*, int, unsigned int);
 extern "C" void* __cdecl calloc(unsigned int, unsigned int);
 extern "C" int __cdecl sprintf(char*, const char*, ...);
-extern "C" int __cdecl rge_open(char*, int);
+extern "C" int __cdecl rge_open(const char*, int, ...);
+extern "C" int __cdecl _unlink(const char*);
+extern "C" int __cdecl unlink(const char*);
 
 #endif
