@@ -5,80 +5,44 @@
 
 extern "C" void __cdecl _ASMSet_Shadowing(int, int, int, int);
 #define system_ignore_size_messages (*(int*)0x62E63C)
-
-class TDrawSystem {
-public:
-    int f00;
-    int f04;
-    int f08;
-    int f0C;
-    int f10;
-    int f14;
-    int f18;
-    int f1C;
-    int f20;
-    int f24;
-    int f28;
-    int f2C;
-    int f30;
-    int ColorBits;
-    int f38;
-    int f3C;
-    int f40;
-    int f44;
-    int f48;
-    int f4C;
-    int f50;
-    int f54;
-    int f58;
-    int f5C;
-    int f60;
-    int f64;
-    int f68;
-    int f6C;
-    int f70;
-    int f74;
-    char gap_78[0x478 - 0x78];
-    unsigned char DrawType;
-    unsigned char ScreenMode;
-
-    TDrawSystem();
-};
+#include "../../include/drawarea_context.h"
 
 TDrawSystem::TDrawSystem()
 {
-    this->f00 = 0;
-    this->f04 = 0;
-    this->f08 = 0;
-    this->f0C = 0;
-    this->f10 = 0;
-    this->f18 = 0;
-    this->f1C = 0;
-    this->f20 = 0;
-    this->f24 = 0;
-    this->f3C = 0;
+    this->Inst = 0;
+    this->Wnd = 0;
+    this->Pal = 0;
+    this->DrawArea = 0;
+    this->PrimaryArea = 0;
+    this->DirDraw = 0;
+    this->PrimarySurface = 0;
+    this->Clipper = 0;
+    this->DirDrawPal = 0;
+    this->ChangedMode = 0;
     this->DrawType = 0;
     this->ScreenMode = 0;
-    this->f2C = 0;
-    this->f30 = 0;
+    this->ScreenWidth = 0;
+    this->ScreenHeight = 0;
     this->ColorBits = 8;
-    this->f28 = 0;
-    this->f40 = 0;
-    this->f44 = 0;
-    this->f14 = 0;
-    this->f48 = 0;
-    this->f4C = 0;
-    this->f50 = 0;
-    this->f54 = 0;
-    this->f58 = 0;
-    this->f5C = 0;
-    this->f60 = 0;
-    this->f64 = 0;
-    this->f68 = 0;
-    this->f6C = 0;
-    this->f70 = 0;
-    this->f74 = 0;
-    this->f38 = 0;
+    this->Flags = 0;
+    this->IsBanked = 0;
+    this->CanSrcBlt = 0;
+    this->DrawAreaList = 0;
+    this->Restored = 0;
+    this->ModeAvail640 = 0;
+    this->ModeAvail800 = 0;
+    this->ModeAvail1024 = 0;
+    this->ModeAvail1280 = 0;
+    this->ModeAvail320_200 = 0;
+    this->ModeAvail320_240 = 0;
+    this->ModeAvail320_200_16 = 0;
+    this->ModeAvail320_240_16 = 0;
+    this->ModeAvail640_16 = 0;
+    this->ModeAvail800_16 = 0;
+    this->ModeAvail1024_16 = 0;
+    this->ErrorCode = 0;
     system_ignore_size_messages = 0;
     _ASMSet_Shadowing(0x00ff00ff, 0, 0xff00ff00, 0);
 }
+
+#undef system_ignore_size_messages

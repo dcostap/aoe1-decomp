@@ -1,44 +1,21 @@
-// tried the natural delete/member-call shape first; the exact match landed after moving PrimaryArea zeroing outside the inner delete check
-#include "..\..\include\game_types.h"
+// VA: 00443090 TDrawSystem::DeleteSurfaces
+// PDB source: Drawarea.cpp lines 1037-1056
 
-class TDrawArea {
-public:
-    ~TDrawArea();
-};
+#include "../../include/drawarea_context.h"
 
-class IDirectDrawSurface {
-public:
-    virtual long __stdcall QueryInterface();
-    virtual unsigned long __stdcall AddRef();
-    virtual unsigned long __stdcall Release();
-};
-
-class TDrawSystem {
-public:
-    void* Inst;
-    void* Wnd;
-    void* Pal;
-    TDrawArea* DrawArea;
-    TDrawArea* PrimaryArea;
-    char _pad_14[0x8];
-    IDirectDrawSurface* PrimarySurface;
-
-    void DeleteSurfaces();
-};
-
-void TDrawSystem::DeleteSurfaces() {
-    if (DrawArea != 0) {
-        delete DrawArea;
-        DrawArea = 0;
+void TDrawSystem::DeleteSurfaces()
+{
+    if (this->DrawArea != 0) {
+        delete this->DrawArea;
+        this->DrawArea = 0;
     }
 
-    if (PrimarySurface != 0) {
-        if (PrimaryArea != 0) {
-            delete PrimaryArea;
-        }
+    if (this->PrimarySurface != 0) {
+        if (this->PrimaryArea != 0)
+            delete this->PrimaryArea;
 
-        PrimaryArea = 0;
-        PrimarySurface->Release();
-        PrimarySurface = 0;
+        this->PrimaryArea = 0;
+        this->PrimarySurface->Release();
+        this->PrimarySurface = 0;
     }
 }

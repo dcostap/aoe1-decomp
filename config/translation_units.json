@@ -568,6 +568,37 @@
         "0041B6A0": "??0RGE_Base_Game@@QAE@PAVRGE_Prog_Info@@H@Z",
         "0041C270": "??1RGE_Base_Game@@UAE@XZ"
       }
+    },
+    {
+      "name": "drawarea_prefix",
+      "source": "src/drawarea_tu.cpp",
+      "flags": "config/flags/default.rsp",
+      "owners": {
+        "00442680": "src/matching/00442680_TDrawSystem.cpp",
+        "00442710": "src/matching/00442710_TDrawSystem.cpp",
+        "004427A0": "src/matching/004427A0_CheckAvailModes.cpp",
+        "00442860": "src/matching/00442860_CheckAvailModesCallback.cpp",
+        "004429C0": "src/matching/004429C0_IsModeAvail.cpp",
+        "00442A90": "src/accepted_drift/00442A90_Init.cpp",
+        "00442DC0": "src/matching/00442DC0_SetDisplaySize.cpp",
+        "00442EF0": "src/matching/00442EF0_ClearPrimarySurface.cpp",
+        "00442F30": "src/matching/00442F30_CheckSurfaces.cpp",
+        "00443070": "src/matching/00443070_ClearRestored.cpp",
+        "00443090": "src/matching/00443090_DeleteSurfaces.cpp"
+      },
+      "symbols": {
+        "00442680": "??0TDrawSystem@@QAE@XZ",
+        "00442710": "??1TDrawSystem@@QAE@XZ",
+        "004427A0": "?CheckAvailModes@TDrawSystem@@QAEXH@Z",
+        "00442860": "?CheckAvailModesCallback@TDrawSystem@@SGJPAU_DDSURFACEDESC@@PAX@Z",
+        "004429C0": "?IsModeAvail@TDrawSystem@@QAEHJJH@Z",
+        "00442A90": "?Init@TDrawSystem@@QAEHPAX00EEJJK@Z",
+        "00442DC0": "?SetDisplaySize@TDrawSystem@@QAEHJJH@Z",
+        "00442EF0": "?ClearPrimarySurface@TDrawSystem@@QAEXXZ",
+        "00442F30": "?CheckSurfaces@TDrawSystem@@QAEEXZ",
+        "00443070": "?ClearRestored@TDrawSystem@@QAEXXZ",
+        "00443090": "?DeleteSurfaces@TDrawSystem@@QAEXXZ"
+      }
     }
   ]
 }

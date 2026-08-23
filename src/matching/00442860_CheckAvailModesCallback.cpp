@@ -4,36 +4,14 @@
 // - Replaced the initial offset-only callback scaffold with the period DirectDraw
 //   descriptor/mode-info ownership and the observed callback return value.
 
-struct DDSURFACEDESC {
-    int dwSize;
-    int dwFlags;
-    int dwHeight;
-    int dwWidth;
-    char gap_10[0x44];
-    int dwRGBBitCount;
-};
+#include "../../include/drawarea_context.h"
 
-struct TDrawSystemModeInfo {
-    char gap_00[0x4C];
-    int ModeAvail640;
-    int ModeAvail800;
-    int ModeAvail1024;
-    int ModeAvail1280;
-    int ModeAvail320_200;
-    int ModeAvail320_240;
-    int ModeAvail320_200_16;
-    int ModeAvail320_240_16;
-    int ModeAvail640_16;
-    int ModeAvail800_16;
-    int ModeAvail1024_16;
-    int ModeAvail1280_16;
-};
-
-long __stdcall TDrawSystem_CheckAvailModesCallback(
-    DDSURFACEDESC* mode_desc, TDrawSystemModeInfo* mode_info)
+long __stdcall TDrawSystem::CheckAvailModesCallback(
+    _DDSURFACEDESC* mode_desc, void* context)
 {
     register long result = 1;
-    int bpp = mode_desc->dwRGBBitCount;
+    TDrawSystem* mode_info = (TDrawSystem*)context;
+    int bpp = mode_desc->ddpfPixelFormat.dwRGBBitCount;
 
     if (bpp == 8) {
         if (mode_desc->dwWidth == 640 && mode_desc->dwHeight == 480) {

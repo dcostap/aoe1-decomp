@@ -1,33 +1,16 @@
-class TDrawArea {
-public:
-    char gap_00[0xF4];
-    int restored;
-};
+// VA: 00443070 TDrawSystem::ClearRestored
+// PDB source: Drawarea.cpp lines 1018-1031
 
-class DrawAreaNode {
-public:
-    TDrawArea* draw_area;
-    char gap_04[0x04];
-    DrawAreaNode* next;
-};
+#include "../../include/drawarea_context.h"
 
-class TDrawSystem {
-public:
-    char gap_00[0x14];
-    DrawAreaNode* draw_area_list;
-    char gap_18[0x30];
-    int restored;
-
-    void ClearRestored();
-};
-
-void TDrawSystem::ClearRestored() {
+void TDrawSystem::ClearRestored()
+{
     DrawAreaNode* node;
 
-    node = this->draw_area_list;
-    this->restored = 0;
+    node = this->DrawAreaList;
+    this->Restored = 0;
     while (node != 0) {
-        node->draw_area->restored = 0;
-        node = node->next;
+        node->DrawArea->Restored = 0;
+        node = node->NextNode;
     }
 }

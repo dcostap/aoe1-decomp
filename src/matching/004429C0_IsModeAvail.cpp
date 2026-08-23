@@ -13,23 +13,7 @@
 // - probe 4: nested negative high-width tests preserve late je handlers for
 //   800/1024 and the inline 1280/1024-16 tails; exact match.
 
-class TDrawSystem {
-public:
-    char gap_00[0x4C];
-    int ModeAvail640;
-    int ModeAvail800;
-    int ModeAvail1024;
-    int ModeAvail1280;
-    int ModeAvail320_200;
-    int ModeAvail320_240;
-    int ModeAvail320_200_16;
-    int ModeAvail320_240_16;
-    int ModeAvail640_16;
-    int ModeAvail800_16;
-    int ModeAvail1024_16;
-
-    int IsModeAvail(long width, long height, int bpp);
-};
+#include "../../include/drawarea_context.h"
 
 int TDrawSystem::IsModeAvail(long width, long height, int bpp)
 {

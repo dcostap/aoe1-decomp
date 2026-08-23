@@ -6,39 +6,12 @@
 // probe 2: inclusive width thresholds (>= 800/1024/1280) restored the original
 //           cmp/jl forms and produced an exact 190-byte match under default flags.
 
+#include "../../include/drawarea_context.h"
+
 extern "C" __declspec(dllimport) void* __stdcall CreateICA(
     const char* driver, const char* device, const char* output, const char* data);
 extern "C" __declspec(dllimport) int __stdcall GetDeviceCaps(void* dc, int index);
 extern "C" __declspec(dllimport) int __stdcall DeleteDC(void* dc);
-extern "C" long __stdcall DirectDrawCreate(void* guid, void* direct_draw, void* outer);
-
-class IDirectDrawLike {
-public:
-    virtual long __stdcall QueryInterface();
-    virtual unsigned long __stdcall AddRef();
-    virtual unsigned long __stdcall Release();
-    virtual long __stdcall Compact();
-    virtual long __stdcall CreateClipper();
-    virtual long __stdcall CreatePalette();
-    virtual long __stdcall CreateSurface();
-    virtual long __stdcall DuplicateSurface();
-    virtual long __stdcall EnumDisplayModes(
-        unsigned long flags, void* desc, void* context, void* callback);
-};
-
-class TDrawSystem {
-public:
-    char gap_00[0x18];
-    IDirectDrawLike* DirDraw;
-    char gap_1C[0x30];
-    int ModeAvail640;
-    int ModeAvail800;
-    int ModeAvail1024;
-    int ModeAvail1280;
-
-    static long __stdcall CheckAvailModesCallback(void* mode_desc, void* context);
-    void CheckAvailModes(int param_1);
-};
 
 void TDrawSystem::CheckAvailModes(int param_1)
 {
@@ -57,7 +30,7 @@ void TDrawSystem::CheckAvailModes(int param_1)
                 this->ModeAvail1280 = 1;
         }
     } else {
-        IDirectDrawLike** direct_draw = &this->DirDraw;
+        IDirectDraw** direct_draw = &this->DirDraw;
         int was_present;
         if (this->DirDraw == 0) {
             if (DirectDrawCreate(0, direct_draw, 0) != 0)
