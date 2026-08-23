@@ -41,6 +41,9 @@
 // free receives the same pointer in the same order. Size, frame, all 25 calls,
 // EH state, cleanup, memory effects, return paths, and fault order match.
 
+#include "../../include/scr_cam_context.h"
+
+#if 0
 typedef unsigned int uint;
 
 extern "C" void* __cdecl calloc(uint count, uint size);
@@ -108,6 +111,7 @@ public:
     void fill_campaign_drop();
     void make_campaign();
 };
+#endif
 
 void TRIBE_Campaign_Editor_Screen::make_campaign()
 {

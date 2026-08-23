@@ -5,6 +5,10 @@
 
 #include "../../include/game_types.h"
 
+#include "../../include/scr_cam_context.h"
+
+#if 0
+
 // TTextPanel from Pnl_txt.cpp with methods used in this function
 class TTextPanel {
 public:
@@ -22,6 +26,7 @@ public:
 
     unsigned char check_lists();
 };
+#endif
 
 unsigned char TRIBE_Campaign_Editor_Screen::check_lists() {
     int count = campaign_scenarios->numberLines();

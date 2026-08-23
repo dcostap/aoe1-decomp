@@ -22,6 +22,9 @@
 //   match. Direct members and inline evaluation remain period-plausible source.
 // FLAGS: config/flags/0048F5D0_TRIBE_Campaign_Editor_Screen.rsp (/GX)
 
+#include "../../include/scr_cam_context.h"
+
+#if 0
 struct tagRECT;
 class TDrawArea;
 class TTextPanel;
@@ -211,6 +214,7 @@ public:
     void fill_campaign_drop();
     void load_campaign();
 };
+#endif
 
 TRIBE_Campaign_Editor_Screen::TRIBE_Campaign_Editor_Screen()
     : TScreenPanel((char*)"Campaign Editor Screen")

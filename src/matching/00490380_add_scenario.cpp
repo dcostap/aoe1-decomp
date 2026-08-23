@@ -2,6 +2,9 @@
 // Source: scr_cam.cpp lines 463-477
 // Size: 124 bytes, __thiscall
 
+#include "../../include/scr_cam_context.h"
+
+#if 0
 class TTextPanel {
 public:
     char* get_text();
@@ -27,6 +30,7 @@ public:
 
     void add_scenario();
 };
+#endif
 
 void TRIBE_Campaign_Editor_Screen::add_scenario() {
     char* text = this->scenarios->get_text();
@@ -40,7 +44,8 @@ void TRIBE_Campaign_Editor_Screen::add_scenario() {
         long line2 = this->scenarios->get_line();
         this->scenarios->delete_line(line2);
 
-        this->campaign_scenarios->scroll_cur_line(1, this->campaign_scenarios->get_line(), 1);
+        this->campaign_scenarios->scroll_cur_line(
+            (unsigned char)1, (int)this->campaign_scenarios->get_line(), 1);
     }
 
     this->need_to_save = 1;

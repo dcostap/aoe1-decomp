@@ -1,6 +1,9 @@
 // 00490480 TRIBE_Campaign_Editor_Screen::move_scenario_up
 // Size: 153 bytes
 
+#include "../../include/scr_cam_context.h"
+
+#if 0
 class TTextPanel {
 public:
     char gap_00[0xF8];
@@ -36,6 +39,7 @@ public:
 
     void move_scenario_up();
 };
+#endif
 
 void TRIBE_Campaign_Editor_Screen::move_scenario_up() {
     if (this->campaign_scenarios->get_line() <= 0) {
@@ -54,7 +58,7 @@ void TRIBE_Campaign_Editor_Screen::move_scenario_up() {
             this->campaign_scenarios->get_line() - 1);
 
         ((TListPanel*)this->campaign_scenarios)->scroll_cur_line(
-            1, (short)this->campaign_scenarios->get_line(), 1);
+            (unsigned char)1, (short)this->campaign_scenarios->get_line(), 1);
     }
 
     this->need_to_save = 1;

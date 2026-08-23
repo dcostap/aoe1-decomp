@@ -14,6 +14,10 @@
 
 #include <string.h>
 
+#include "../../include/scr_cam_context.h"
+
+#if 0
+
 class TPanel {
 public:
     virtual void v00();
@@ -77,6 +81,7 @@ public:
     void load_campaign();
     long action(TPanel*, long, unsigned long, unsigned long);
 };
+#endif
 
 long TRIBE_Campaign_Editor_Screen::action(TPanel* panel, long code, unsigned long p3, unsigned long p4)
 {
@@ -133,9 +138,9 @@ long TRIBE_Campaign_Editor_Screen::action(TPanel* panel, long code, unsigned lon
             this->add_scenario();
         } else if (panel == this->remove_button) {
             this->remove_scenario();
-        } else if (panel == this->up_button) {
+        } else if (panel == this->move_scenario_up_button) {
             this->move_scenario_up();
-        } else if (panel == this->down_button) {
+        } else if (panel == this->move_scenario_down_button) {
             this->move_scenario_down();
         }
 

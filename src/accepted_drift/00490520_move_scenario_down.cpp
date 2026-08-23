@@ -5,6 +5,9 @@
 //   scheduling). VC5 schedules call before dec; original has dec before call.
 // FLAGS: none
 
+#include "../../include/scr_cam_context.h"
+
+#if 0
 struct TTextPanel {
     char gap_00[0xF4];
     void* list;              // +0xF4
@@ -34,6 +37,7 @@ struct TRIBE_Campaign_Editor_Screen {
 
     void move_scenario_down();
 };
+#endif
 
 void TRIBE_Campaign_Editor_Screen::move_scenario_down()
 {
@@ -54,7 +58,7 @@ void TRIBE_Campaign_Editor_Screen::move_scenario_down()
             this->campaign_scenarios->set_line(
                 this->campaign_scenarios->get_line() + 1);
             this->campaign_scenarios->scroll_cur_line(
-                1, (short)this->campaign_scenarios->get_line(), 1);
+                (unsigned char)1, (short)this->campaign_scenarios->get_line(), 1);
         }
         this->need_to_save = 1;
     }

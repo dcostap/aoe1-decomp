@@ -7,6 +7,9 @@
 // the original's deferred push scheduling (push 1, call get_line, push
 // result, push 1).
 
+#include "../../include/scr_cam_context.h"
+
+#if 0
 class TTextPanel {
 public:
     char* get_text();
@@ -32,6 +35,7 @@ public:
 
     void remove_scenario();
 };
+#endif
 
 void TRIBE_Campaign_Editor_Screen::remove_scenario() {
     char* text = this->campaign_scenarios->get_text();
@@ -41,7 +45,8 @@ void TRIBE_Campaign_Editor_Screen::remove_scenario() {
         this->scenarios->set_line(line);
         line = this->campaign_scenarios->get_line();
         this->campaign_scenarios->delete_line(line);
-        this->scenarios->scroll_cur_line(1, (short)this->scenarios->get_line(), 1);
+        this->scenarios->scroll_cur_line(
+            (int)1, (short)this->scenarios->get_line(), 1);
     }
     this->need_to_save = 1;
 }

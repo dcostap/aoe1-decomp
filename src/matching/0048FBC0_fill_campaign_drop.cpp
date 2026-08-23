@@ -1,5 +1,8 @@
 // VA: 0048FBC0 TRIBE_Campaign_Editor_Screen::fill_campaign_drop | scr_cam.cpp:211-249
 
+#include "../../include/scr_cam_context.h"
+
+#if 0
 extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
 extern "C" char* __cdecl strncpy(char* dst, const char* src, unsigned int count);
 extern "C" unsigned int __cdecl strlen(const char* s);
@@ -26,6 +29,7 @@ struct TRIBE_Campaign_Editor_Screen {
     TDropDownPanel* filename_drop;
     void fill_campaign_drop();
 };
+#endif
 
 void TRIBE_Campaign_Editor_Screen::fill_campaign_drop()
 {

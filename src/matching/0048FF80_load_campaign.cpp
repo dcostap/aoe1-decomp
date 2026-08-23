@@ -7,6 +7,9 @@
 // 4: restructure as found/else so second cmp can je to no-campaign tail.
 // FLAGS: config/flags/0048FF80_load_campaign.rsp
 
+#include "../../include/scr_cam_context.h"
+
+#if 0
 class TEditPanel { public: char* get_text(); };
 class TTextPanel { public: void empty_list(); };
 class RGE_Campaign { public: char gap_000[0x20C]; RGE_Campaign(char* path); ~RGE_Campaign(); };
@@ -37,6 +40,7 @@ public:
     unsigned char check_lists();
     void load_campaign();
 };
+#endif
 
 void TRIBE_Campaign_Editor_Screen::load_campaign()
 {

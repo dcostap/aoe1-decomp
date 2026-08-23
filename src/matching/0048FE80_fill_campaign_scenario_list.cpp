@@ -2,6 +2,9 @@
 // Source: scr_cam.cpp lines 298-317
 // Size: 119 bytes, __thiscall
 
+#include "../../include/scr_cam_context.h"
+
+#if 0
 class TTextPanel {
 public:
     void empty_list();
@@ -24,6 +27,7 @@ public:
 };
 
 void __cdecl free(void* ptr);
+#endif
 
 void TRIBE_Campaign_Editor_Screen::fill_campaign_scenario_list() {
     if (this->campaign == 0)

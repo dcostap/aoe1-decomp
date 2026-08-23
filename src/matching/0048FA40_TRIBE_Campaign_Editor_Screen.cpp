@@ -2,6 +2,10 @@
 // PDB source: scr_cam.cpp lines 150-205
 // attempt 1: natural virtual destructor with panel_system destroyPanel calls and scalar deletes in source order.
 
+#include "../../include/scr_cam_context.h"
+
+#if 0
+
 class TPanelSystem {
 public:
     int destroyPanel(char* name);
@@ -42,6 +46,7 @@ public:
 
     virtual ~TRIBE_Campaign_Editor_Screen();
 };
+#endif
 
 TRIBE_Campaign_Editor_Screen::~TRIBE_Campaign_Editor_Screen()
 {

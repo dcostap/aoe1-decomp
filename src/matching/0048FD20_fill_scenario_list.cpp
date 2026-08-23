@@ -1,5 +1,8 @@
 // VA: 0048FD20 TRIBE_Campaign_Editor_Screen::fill_scenario_list | scr_cam.cpp:255-292
 
+#include "../../include/scr_cam_context.h"
+
+#if 0
 extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
 extern "C" char* __cdecl strncpy(char* dst, const char* src, unsigned int count);
 extern "C" unsigned int __cdecl strlen(const char* s);
@@ -27,6 +30,7 @@ struct TRIBE_Campaign_Editor_Screen {
     TTextPanel* scenarios;
     void fill_scenario_list();
 };
+#endif
 
 void TRIBE_Campaign_Editor_Screen::fill_scenario_list()
 {
