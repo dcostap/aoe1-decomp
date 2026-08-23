@@ -129,6 +129,21 @@
         "004055A0": "??0RGE_Action_Move_To@@QAE@PAVRGE_Action_Object@@MMMMPAVRGE_Sprite@@@Z",
         "00405620": "??0RGE_Action_Move_To@@QAE@PAVRGE_Action_Object@@PAVRGE_Static_Object@@MPAVRGE_Sprite@@@Z"
       }
+    },
+    {
+      "name": "tpnl_tml",
+      "source": "src/tpnl_tml_tu.cpp",
+      "flags": "config/flags/0051E860_create_timeline.rsp",
+      "owners": {
+        "0051E650": "src/verified_logic/0051E650_Time_Line_Panel.cpp",
+        "0051E790": "src/matching/0051E790_Time_Line_Panel.cpp",
+        "0051E860": "src/matching/0051E860_create_timeline.cpp"
+      },
+      "symbols": {
+        "0051E650": "??0Time_Line_Panel@@QAE@XZ",
+        "0051E790": "??1Time_Line_Panel@@UAE@XZ",
+        "0051E860": "?create_timeline@Time_Line_Panel@@QAEJPAVTPanel@@PAPAV1@JJJJJJJJ@Z"
+      }
     }
   ]
 }
