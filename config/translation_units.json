@@ -274,6 +274,16 @@
       "symbols": {
         "00485DC0": "?generate@RGE_RMM_Object_Generator@@UAEEXZ"
       }
+    },
+    {
+      "name": "taiuaimd_hunted_prefix",
+      "source": "src/taiuaimd_hunted_prefix_tu.cpp",
+      "flags": "config/flags/00503BB0_TribeHuntedAnimalUnitAIModule.rsp",
+      "owners": {
+        "00503BB0": "src/matching/00503BB0_TribeHuntedAnimalUnitAIModule.cpp",
+        "00503D30": "src/matching/00503D30_processNotify.cpp",
+        "00503E30": "src/matching/00503E30_processIdle.cpp"
+      }
     }
   ]
 }

@@ -54,6 +54,7 @@
 // - The canonical evasiveMoveTo world-z argument is float. Its ABI passes the
 //   same raw dword bits observed at the call site without conversion; restoring
 //   that typed surface is codegen-neutral.
+// - The shared PDB surface preserves the protected virtual symbol and exact body.
 // - Binding the scale to the return (`speed = objectValue->maximumSpeed() *
 //   SPEED_3`) reproduces the original 229-byte size and the whole FPU block
 //   through the two normalized multiplications (best: 52-byte strict diff,
@@ -63,72 +64,9 @@
 //   plus VC5's fsubr versus the original fchs/fadd tail.
 
 #include <math.h>
+#include "../../include/taiuaimd_context.h"
 
 extern const float SPEED_3; // 3.0f at [5758B0h]
-
-struct RGE_Game_World;
-struct RGE_Static_Object;
-struct RGE_Player;
-
-class RGE_Game_World {
-public:
-    virtual ~RGE_Game_World();
-    RGE_Static_Object* object(int objectID);
-};
-
-#define VPAD1(n) virtual void vpad##n();
-#define VPAD2(n) VPAD1(n) VPAD1(n##_1)
-#define VPAD4(n) VPAD2(n) VPAD2(n##_2)
-#define VPAD8(n) VPAD4(n) VPAD4(n##_4)
-#define VPAD16(n) VPAD8(n) VPAD8(n##_8)
-
-class RGE_Player {
-public:
-    virtual ~RGE_Player();
-    char pad_04[0x38];
-    RGE_Game_World* world;       // +0x3C
-
-    int computerPlayer();
-};
-
-class RGE_Static_Object {
-public:
-    virtual ~RGE_Static_Object();
-    VPAD16(object0);
-    VPAD16(object16);
-    VPAD16(object32);
-    VPAD8(object48);
-    VPAD4(object56);
-    VPAD2(object60);
-    virtual float maximumSpeed() = 0; // slot 0x3F
-
-    char pad_04[0x08];             // +0x04 .. +0x0B
-    RGE_Player* owner;             // +0x0C
-    char pad_10[0x28];
-    float world_x;                 // +0x38
-    float world_y;                 // +0x3C
-    float world_z;                 // +0x40
-};
-
-class UnitAIModule {
-public:
-    virtual ~UnitAIModule();
-    VPAD8(ai1);
-    VPAD4(ai9);
-    VPAD2(ai13);
-    VPAD1(ai15);
-    virtual int closestObject(int, int, int, int, int) = 0; // slot 0x10
-    VPAD16(ai17);
-    VPAD4(ai33);
-    VPAD2(ai37);
-    virtual int evasiveMoveTo(float, float, float, int) = 0; // slot 0x27
-    RGE_Static_Object* objectValue; // +0x4
-};
-
-struct TribeHuntedAnimalUnitAIModule : UnitAIModule {
-public:
-    int processIdle(int param_1);
-};
 
 int TribeHuntedAnimalUnitAIModule::processIdle(int param_1)
 {
