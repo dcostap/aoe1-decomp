@@ -3,60 +3,23 @@
 // relations, and allied-victory flags copied into the world's player objects.
 //
 // Attempt log:
-// - prior source used raw relation cursor arithmetic and a redundant nested
-//   count guard; it emitted a 315-byte structural mismatch.
-// - current probe restores named Friendliness/AlliedVictory arrays and the
-//   natural short-count do/while topology.
-// - baseline reached 294 bytes with 101 instructions, 0x8 frame, all 10
-//   calls aligned, and 93 strict differing bytes (24-byte edit diff).
-// - zero-based relation columns (`Attitude[other - 1]`) reproduce the
-//   original 0x11E9 running row offset; using the one-based column was a
-//   semantic/layout mistake even though its emitted code was nearly equal.
-// - ten bounded source/layout/context probes did not change the remaining
-//   codegen basin: VC5 emits `mov [esp+10h],ecx` before `mov ebp,11E9h`,
-//   uses a one-byte-longer `lea [ebp+edi]` SIB, and leaves a one-byte tail
-//   overflow/branch-span difference. The polymorphic-base and flattened
-//   relation diagnostics were rolled back.
-// - left in scratch after budget: natural typed source is behaviorally
-//   aligned; remaining drift is localized VC5 scheduling/address encoding.
-// - Main-agent audit restored polymorphic player/world/scenario ownership;
-//   emitted code remains in the documented 93-byte scheduling basin.
-// - Fresh claim baseline revalidated the same 93-byte result: all 10 ordered
-//   calls, frame, CFG, and 88/101 instruction island are aligned.
-// - Tested a period-style running relation index, an interior relation-slot
-//   anchor, reversed address terms, raw int-pointer indexing, and a const or
-//   register-qualified offset. The running-index form widened the frame to
-//   0xC; the other forms were emitted-code duplicates and were rolled back.
-// - Two focused relation-expression labs (20260811_090731,
-//   20260811_090918, 20260811_091129) covered typed/flat/raw/address-term
-//   and named-index spellings. Only row-pointer/index-row forms changed the
-//   basin, losing the aligned body; none produced the target EDI-base/EBP-
-//   index SIB or corrected the first prologue store order.
-// - Final clean source is retained: canonical Friendliness rows and
-//   AlliedVictory ownership remain the best period-plausible reconstruction;
-//   unresolved drift is the first setup scheduling swap, relation SIB
-//   encoding, and resulting one-byte branch-span shift.
-// - Fresh claim probes revalidated this basin. Flattened/raw relation terms,
-//   row aliases and references, pointer and index declaration scopes, pointer
-//   declaration order, and a real polymorphic RGE_Scenario base were either
-//   emitted-code duplicates or worse. An explicit running relation offset
-//   widened the frame to 0xC and produced a broad mismatch. The clean source
-//   remains the typed Friendliness/AlliedVictory form; no exact natural source
-//   was found. Remaining evidence is the same prologue store swap, one-byte
-//   relation LEA SIB difference, and its branch-span consequence.
-// - Fresh claim probes tested typed pointer and reference spellings, declaration
-//   order, real virtual-surface declarations, and invariant pointer placement.
-//   They were duplicates or worse. A 64-sample ambient declaration lab found
-//   one compiler-context basin with exact size and the target relation SIB, but
-//   it retained the reversed prologue store order and is diagnostic only.
-// ACCEPTED DRIFT: the first setup hunk only swaps independent initialization
-// of EBP and the private alliedVictory stack home. The relation hunk encodes
-// the same EBP+EDI address with a one-byte-longer SIB. All later differences
-// are branch displacements caused by that byte. The frame, all ten calls,
-// player and relation indices, x87 conversions, field reads, stores, loop
-// order, cleanup, return, and fault order match. This function has no SEH.
-// Thirty focused probes and an ambient declaration lab found no natural exact
-// schedule and address encoding together.
+// - The canonical tscenaro context provides the reviewed scenario, world, and
+//   player ownership. PDB lines 778-791 and exact siblings prove this context.
+// - The pinned baseline carried an explicit AlliedVictory pointer. It had one
+//   nine-byte setup-order difference. All later bytes matched.
+// - The exact source reads AlliedVictory[player - 1] at the call site. VC5
+//   derives the shipped carried pointer from this indexed expression.
+// - This form initializes the relation offset before it publishes the pointer
+//   home. It preserves every later instruction.
+// - Walkback restored only the unused pointer declaration. The result stayed
+//   exact. Walkback also restored its dead initialization. It stayed exact.
+// - Restoring the pointer increment caused 56 differences across the body.
+//   Direct indexing and removal of that increment are the required group.
+// - The declaration and initialization were incidental. The reduced source
+//   removes both. It keeps no dead compiler-steering code.
+// - Headers, translation-unit order, and default flags did not change.
+// BINARY NOTE: direct array indexing emits the original carried pointer,
+// relation induction, stack home, frame, calls, cleanup, and fault order.
 
 #include "../../include/tscenaro_context.h"
 
@@ -113,9 +76,7 @@ public:
 void T_Scenario::SaveAttributesIntoPlayers() {
     int player = 1;
     int other;
-    int* alliedVictory;
     if (player < this->world->player_num) {
-        alliedVictory = this->AlliedVictory;
         do {
             this->world->players[player]->new_attribute_num(
                 0, (float)this->Get_player_Food(player - 1));
@@ -135,13 +96,12 @@ void T_Scenario::SaveAttributesIntoPlayers() {
                             (unsigned char)this->Opponent[player - 1].Attitude[other - 1]);
                     }
                     ++other;
-        } while (other < this->world->player_num);
+                } while (other < this->world->player_num);
             }
 
             this->world->players[player]->set_allied_victory(
-                (unsigned char)*alliedVictory);
+                (unsigned char)this->AlliedVictory[player - 1]);
             ++player;
-            ++alliedVictory;
         } while (player < this->world->player_num);
     }
 }

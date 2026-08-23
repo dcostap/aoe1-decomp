@@ -121,6 +121,7 @@
         "0052BA60": "src/matching/0052ba60_GetScenarioOption.cpp",
         "0052BA70": "src/matching/0052ba70_GetPlayerAge.cpp",
         "0052BA80": "src/matching/0052BA80_update.cpp",
+        "0052BA90": "src/matching/0052BA90_SaveAttributesIntoPlayers.cpp",
         "0052BBC0": "src/matching/0052BBC0_Save_victory_conditions_into_players.cpp",
         "0052C070": "src/matching/0052c070_rehook.cpp",
         "0052C080": "src/matching/0052C080_get_object_pointer.cpp",
@@ -227,6 +228,7 @@
         "00468E50": "src/matching/00468E50_create_text.cpp",
         "00469000": "src/matching/00469000_create_input.cpp",
         "004691C0": "src/matching/004691C0_create_edit.cpp",
+        "00469380": "src/matching/00469380_create_drop_down.cpp",
         "00469910": "src/matching/00469910_create_scrollbar.cpp",
         "00469AD0": "src/matching/00469AD0_create_vert_slider.cpp",
         "00469C40": "src/matching/00469C40_create_horz_slider.cpp"
@@ -542,6 +544,7 @@
         "00475B10": "src/matching/00475B10_currentLine.cpp",
         "00475B20": "src/matching/00475B20_set_active.cpp",
         "00475B60": "src/matching/00475B60_set_focus.cpp",
+        "00475F40": "src/matching/00475F40_wnd_proc.cpp",
         "00476440": "src/matching/00476440_verify_char.cpp"
       },
       "symbols": {
@@ -554,6 +557,7 @@
         "00475B10": "?currentLine@TEditPanel@@QAEPADXZ",
         "00475B20": "?set_active@TEditPanel@@UAEXH@Z",
         "00475B60": "?set_focus@TEditPanel@@UAEXH@Z",
+        "00475F40": "?wnd_proc@TEditPanel@@UAEJPAXIIJ@Z",
         "00476440": "?verify_char@TEditPanel@@QAEHH@Z"
       }
     },
@@ -820,6 +824,7 @@
       "owners": {
         "00531AF0": "src/matching/00531AF0_RGE_Victory_Conditions.cpp",
         "00531B20": "src/matching/00531B20_RGE_Victory_Conditions.cpp",
+        "00531B70": "src/matching/00531B70_save.cpp",
         "00531E90": "src/matching/00531E90_update.cpp",
         "00531EF0": "src/matching/00531EF0_update_for_object.cpp",
         "00531F30": "src/matching/00531F30_handle_point_condition.cpp"
@@ -1157,6 +1162,7 @@
       "flags": "config/flags/default.rsp",
       "owners": {
         "00513000": "src/matching/00513000_interface_tech_avail.cpp",
+        "005153D0": "src/matching/005153D0_loadAIInformation.cpp",
         "00517B90": "src/matching/00517B90_setupEgyptian.cpp",
         "00517E10": "src/matching/00517E10_setupBabylonian.cpp",
         "005181C0": "src/matching/005181C0_setupHittite.cpp",

@@ -1,54 +1,70 @@
 // RGE_Victory_Conditions::handle_points_high_attribute_amount
 // VA: 00533410
 // victory.cpp:1489-1507
-// 95/99 bytes match (4.04% diff). 4 bytes = register swap (ecx↔eax)
-// for this->some_ptr and entry->some_index loads at start of body.
-// 5+ source forms tried (void* cast, typed struct, float** index,
-// load order reversal, local temps) — register allocation invariant.
-// 2 relocations masked (__ftol calls).
+//
+// BINARY NOTE: CodeView names the parameter `node` and the long local `amount`.
+// It proves the point-entry fields and owner offsets +0x0C, +0x1C, and +0x50.
+// The PDB also marks this method protected and proves the four virtual slots.
+// Exact recovery required the narrow PDB-backed class context below.
+// The broad shared context kept a four-byte EAX/ECX recolor.
+// A separate result local and reversed local type order both stayed exact.
+// Unused world, entry, and method surfaces were also incidental.
+// The retained surface is the smallest tested canonical context.
 
-#include "../../include/game_globals.h"
+class RGE_Victory_Entry;
 
-// Local stubs from inventory analysis
+class RGE_Player {
+public:
+    virtual ~RGE_Player();
+    char gap_04[0x4C];
+    float* attributes; // +0x50
+};
+
 class RGE_Victory_Point_Entry {
 public:
-    char gap_00;
-    unsigned char state;          // +0x01
-    char gap_02[2];
-    int some_index;               // +0x04
-    int initial_amount;           // +0x08
-    int points;                   // +0x0C
-    int curr_points;              // +0x10
-    float curr_attribute_amount;  // +0x14
+    unsigned char command;
+    unsigned char state;
+    unsigned char id;
+    unsigned char group;
+    long attribute;
+    long amount;
+    long points;
+    long curr_points;
+    float curr_attribute_amount;
+    RGE_Victory_Point_Entry* next;
 };
 
 class RGE_Victory_Conditions {
-public:
-    char gap_00[0x0C];
-    void* some_ptr;               // +0x0C
-    char gap_10[0x0C];
-    int tot_victory_points;       // +0x1C
+protected:
+    RGE_Victory_Entry* victory_list;
+    long list_num;
+    RGE_Player* player;
+    unsigned char victory;
+    char gap_11[3];
+    RGE_Victory_Point_Entry* victory_point_list;
+    long point_list_num;
+    long tot_victory_points;
 
-    void handle_points_high_attribute_amount(RGE_Victory_Point_Entry* entry);
+    virtual void handle_point_condition(RGE_Victory_Point_Entry* entry);
+    virtual void handle_condition(RGE_Victory_Entry* entry);
+    void handle_points_high_attribute_amount(RGE_Victory_Point_Entry* node);
+    virtual char* condition_description(RGE_Victory_Entry* entry);
+
+public:
+    virtual void save(int handle);
 };
 
-void RGE_Victory_Conditions::handle_points_high_attribute_amount(RGE_Victory_Point_Entry* entry) {
-    if (entry->state != 0) {
-        return;
-    }
+void RGE_Victory_Conditions::handle_points_high_attribute_amount(RGE_Victory_Point_Entry* node) {
+    if (node->state == 0) {
+        long amount = (long)this->player->attributes[node->attribute];
+        if (node->curr_attribute_amount < (float)amount) {
+            node->curr_attribute_amount = (float)amount;
+        }
 
-    // Get float from (this->some_ptr->array + entry->some_index)
-    int idx = *(int*)((char*)entry + 4);
-    float val = *(float*)(*(int*)(*(int*)((char*)this + 0x0C) + 0x50) + idx * 4);
-    
-    int intVal = (int)val;
-    if (entry->curr_attribute_amount < (float)intVal) {
-        entry->curr_attribute_amount = (float)intVal;
-    }
-
-    int result = (int)(entry->curr_attribute_amount / (float)entry->initial_amount) * entry->points;
-    if (result != entry->curr_points) {
-        this->tot_victory_points += result - entry->curr_points;
-        entry->curr_points = result;
+        amount = (long)(node->curr_attribute_amount / (float)node->amount) * node->points;
+        if (amount != node->curr_points) {
+            this->tot_victory_points += amount - node->curr_points;
+            node->curr_points = amount;
+        }
     }
 }

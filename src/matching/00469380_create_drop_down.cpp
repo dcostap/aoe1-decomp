@@ -85,11 +85,9 @@
 // order all retained the 21-byte basin. A direct cleanup return grew 33 bytes.
 // Fresh final pass: a finish-scoped result and a finish-scoped owner alias both
 // reproduced the same 21-byte cleanup schedule. The natural source remains best.
-// ACCEPTED DRIFT: Two changed branch bytes target the same shared finish path.
-// The cleanup hunk moves cdecl stack adjustment around one field load and moves
-// SETE across only MOV and POP instructions. Those instructions preserve flags.
-// The SEH chain remains active through the same stack reads and restores at the
-// same point. Values, calls, frees, branches, cleanup, and fault behavior match.
+// Superseded drift audit: It treated both early branches as equivalent.
+// Binary EAX flow disproves that claim. The second calloc failure keeps zero
+// in EAX. The old goto recomputed error == 0 and could return one instead.
 // A named post-cleanup error local grew the diff by 4 bytes. A carried calloc
 // result local changed the body or duplicated the clean basin. Empty guards and
 // dead pointer clearing were codegen duplicates. The unresolved tail is the
@@ -101,11 +99,30 @@
 // but changed register homes, spills, or early block layout. The function-scope
 // cursor/count form and redundant in-scope guards were exact 21-byte duplicates.
 // Restore the pinned clean source; no experiment improved the source model.
+// Expanded Panel_ez.cpp result: canonical TTextPanel vslot +0xEC and the
+// protected MAE owner recover the original call surface and size. The same
+// 21-byte cleanup scheduler drift remains under the natural VC5 source.
+// Earlier grouped audits kept both allocation gotos. Post-cleanup return
+// shapes, an empty post-free guard, and an error alias kept the 21-byte basin.
+// Exact finish: the PDB records list_width, list_height, x, y, width,
+// height, font_num, list_w, ideal_x, ideal_h, button_size, ideal_y, list,
+// ideal_w, and list_h. It records no temporary drop-down owner.
+// Both allocation failures return zero directly. The old shared finish label
+// changed the second failure result when the panel error field was clear.
+// Under the authentic Panel_ez prefix, the two direct returns recover the
+// original shared EH epilogue and the final free/error-load schedule.
+// Reduction: either old goto leaves 10 strict bytes. Reverting both leaves
+// 21 bytes. Local-owner, output-guard, and direct-publication forms are exact
+// duplicates. Direct publication is retained because the PDB has no owner
+// local. Removing the unused finish label and restoring PDB names stay exact.
+// The exact context reduces to the real earlier 00467A50 set_ideal_size owner.
+// Header-only compilation clones two EH epilogues and emits 844 bytes.
 // FLAGS: config\flags\00469380_create_drop_down.rsp
 
 #include <string.h>
 #include <stdlib.h>
 
+#ifndef AOE1_PANEL_EZ_CONTEXT_H
 class TDrawArea;
 struct tagRECT {
     long left;
@@ -221,40 +238,41 @@ public:
     char gap_338[0x110]; TShape* button_pics;
     int create_drop_down(TPanel*, TDropDownPanel**, long,long,long,long,long,long,long);
 };
+#endif
 
-int TEasy_Panel::create_drop_down(TPanel* parent, TDropDownPanel** out, long x, long y, long sx, long sy, long sw, long sh, long font_id)
+int TEasy_Panel::create_drop_down(TPanel* parent, TDropDownPanel** drop_panel,
+                                  long list_width, long list_height, long x,
+                                  long y, long width, long height, long font_num)
 {
-    long ix = sx * this->width / this->ideal_width;
-    long iy = sy * this->height / this->ideal_height;
-    long iw = sw * this->width / this->ideal_width;
-    long ih = sh * this->height / this->ideal_height;
-    long bh = (this->width * 18) / this->ideal_width;
-    long px = x * this->width / this->ideal_width;
-    long py = y * this->height / this->ideal_height;
-    if (font_id >= 0)
-        rge_base_game->get_font(font_id);
+    long ideal_x = x * this->width / this->ideal_width;
+    long ideal_y = y * this->height / this->ideal_height;
+    long ideal_w = width * this->width / this->ideal_width;
+    long ideal_h = height * this->height / this->ideal_height;
+    long button_size = (this->width * 18) / this->ideal_width;
+    long list_w = list_width * this->width / this->ideal_width;
+    long list_h = list_height * this->height / this->ideal_height;
+    if (font_num >= 0)
+        rge_base_game->get_font(font_num);
     else
         rge_base_game->get_font(10);
     char** list = (char**)calloc(1,4);
-    if (list == 0) { this->error = 1; goto finish; }
+    if (list == 0) { this->error = 1; return 0; }
     list[0] = (char*)calloc(0x14,1);
-    // The original returns through the shared result epilogue here and leaks
-    // the outer list allocation.
-    if (list[0] == 0) goto finish;
+    // ORIGINAL BUG: This path leaks the four-byte outer list allocation.
+    if (list[0] == 0) return 0;
     strcpy(list[0], " ");
     if (this->error == 0) {
-        TDropDownPanel* p = new TDropDownPanel;
-        *out = p;
-        if (p != 0 && p->error == 0) {
-            RGE_Font* font = rge_base_game->get_font(font_id);
-            if ((*out)->setup(this->draw_area,parent,font->font,font->font_wid,font->font_hgt,0,0,1,0xff,ix,iy,iw,ih,0,0,bh,ih,0,px,py,list,1,bh,0,0,0,0,bh,bh)) {
-                if (this->button_pics) (*out)->set_buttons(this->button_pics,0xe,-1,8,10,0xc);
-                if (this->use_bevels) (*out)->set_bevel_info(3,bevel_color1,bevel_color2,bevel_color3,bevel_color4,bevel_color5,bevel_color6);
-                (*out)->set_val_text_color(text_color1,text_color2);
-                TListPanel* lp = (*out)->list_panel;
+        *drop_panel = new TDropDownPanel;
+        if (*drop_panel != 0 && (*drop_panel)->error == 0) {
+            RGE_Font* font = rge_base_game->get_font(font_num);
+            if ((*drop_panel)->setup(this->draw_area,parent,font->font,font->font_wid,font->font_hgt,0,0,1,0xff,ideal_x,ideal_y,ideal_w,ideal_h,0,0,button_size,ideal_h,0,list_w,list_h,list,1,button_size,0,0,0,0,button_size,button_size)) {
+                if (this->button_pics) (*drop_panel)->set_buttons(this->button_pics,0xe,-1,8,10,0xc);
+                if (this->use_bevels) (*drop_panel)->set_bevel_info(3,bevel_color1,bevel_color2,bevel_color3,bevel_color4,bevel_color5,bevel_color6);
+                (*drop_panel)->set_val_text_color(text_color1,text_color2);
+                TListPanel* lp = (*drop_panel)->list_panel;
                 lp->set_text_color(text_color1,text_color2);
                 lp->set_highlight_text_color(focus_color1,focus_color2);
-                (*out)->val_panel->set_bevel_info(3,bevel_color1,bevel_color2,bevel_color3,bevel_color4,bevel_color5,bevel_color6);
+                (*drop_panel)->val_panel->set_bevel_info(3,bevel_color1,bevel_color2,bevel_color3,bevel_color4,bevel_color5,bevel_color6);
                 goto cleanup;
             }
         }
@@ -271,6 +289,5 @@ cleanup:
         } while (count != 0);
         free(list);
     }
-finish:
     return this->error == 0;
 }

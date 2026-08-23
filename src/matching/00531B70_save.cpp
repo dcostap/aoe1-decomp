@@ -35,68 +35,87 @@
 // - BINARY NOTE: PDB assigns this body to victory.cpp lines 177-244, after the constructor
 //   and destructor owners. The shared declaration leaves the 571-byte, 0xC-frame,
 //   28-call candidate unchanged. The remaining mismatch is the target-object reread order.
+// - Exact-finish probes tested a target pointer local, a nonvolatile base-id view, and a
+//   member reference. Each preserved 571 bytes, 0xC frame, and 28 ordered writes, but none
+//   reproduced the oracle's reload. The direct typed source is the smallest supported form.
+// - Current shared-context validation is 568 bytes with a 432-byte mismatch. The target
+//   block still caches the checked target_obj pointer instead of re-reading +0x28.
+// - Fresh natural probes covered inline owner helpers, reversed target assignments, pointer
+//   and object references, and target_obj[0].id. They preserved 28 ordered writes and the
+//   0xC frame, but none preserved the oracle reload. All probes were restored.
+// - Exact finish: PDB reports outfile as int and version as float. It reports three long
+//   output locals as direct function children.
+// - Moving the three output locals to function scope produced the first exact result.
+//   It restored the target_obj reread and all later bytes.
+// - An eight-case scope reduction showed that only target_obj needs function scope for
+//   code generation. All three remain there because the PDB supports that source scope.
+// - Declaration order and PDB names stayed exact. A standard-header lab produced one
+//   code group, so no new header or compiler option remains.
 
 #include "../../include/victory_context.h"
 
-void RGE_Victory_Conditions::save(int param_1) {
+void RGE_Victory_Conditions::save(int outfile) {
+    long target_obj;
+    long target_player;
     float version = 1.0f;
+    long this_obj;
 
-    rge_write(param_1, &version, 4);
-    rge_write(param_1, &this->list_num, 4);
-    rge_write(param_1, &this->victory, 1);
+    rge_write(outfile, &version, 4);
+    rge_write(outfile, &this->list_num, 4);
+    rge_write(outfile, &this->victory, 1);
 
+    // BINARY NOTE: The stored count does not bound this walk. The linked chain controls writes.
     for (RGE_Victory_Entry* entry = this->victory_list; entry != 0; entry = entry->next) {
-        long target_player_id;
-        long target_obj_id;
-        long version_field;
-
         if (entry->target_player != 0) {
-            target_player_id = entry->target_player->id;
+            target_player = entry->target_player->id;
         } else {
-            target_player_id = -1;
+            target_player = -1;
         }
 
         if (entry->this_obj != 0) {
-            target_obj_id = entry->this_obj->id;
+            this_obj = entry->this_obj->id;
         } else {
-            target_obj_id = -1;
+            this_obj = -1;
         }
 
         if (entry->target_obj != 0) {
-            version_field = entry->target_obj->id;
-            target_player_id = entry->target_obj->owner->id;
+            target_obj = entry->target_obj->id;
+            // BINARY NOTE: The executable rereads target_obj and does not test owner.
+            // This preserves the fault order for malformed entries.
+            target_player = entry->target_obj->owner->id;
         } else {
-            version_field = -1;
+            target_obj = -1;
         }
 
-        rge_write(param_1, entry, 1);
-        rge_write(param_1, &entry->obj_type, 4);
-        rge_write(param_1, &target_player_id, 4);
-        rge_write(param_1, &entry->x0, 4);
-        rge_write(param_1, &entry->y0, 4);
-        rge_write(param_1, &entry->x1, 4);
-        rge_write(param_1, &entry->y1, 4);
-        rge_write(param_1, &entry->number, 4);
-        rge_write(param_1, &entry->count, 4);
-        rge_write(param_1, &target_obj_id, 4);
-        rge_write(param_1, &version_field, 4);
-        rge_write(param_1, &entry->victory_group, 1);
-        rge_write(param_1, &entry->ally_flag, 1);
-        rge_write(param_1, &entry->state, 1);
+        rge_write(outfile, entry, 1);
+        rge_write(outfile, &entry->obj_type, 4);
+        rge_write(outfile, &target_player, 4);
+        rge_write(outfile, &entry->x0, 4);
+        rge_write(outfile, &entry->y0, 4);
+        rge_write(outfile, &entry->x1, 4);
+        rge_write(outfile, &entry->y1, 4);
+        rge_write(outfile, &entry->number, 4);
+        rge_write(outfile, &entry->count, 4);
+        rge_write(outfile, &this_obj, 4);
+        rge_write(outfile, &target_obj, 4);
+        rge_write(outfile, &entry->victory_group, 1);
+        rge_write(outfile, &entry->ally_flag, 1);
+        rge_write(outfile, &entry->state, 1);
     }
 
-    rge_write(param_1, &this->tot_victory_points, 4);
-    rge_write(param_1, &this->point_list_num, 4);
+    rge_write(outfile, &this->tot_victory_points, 4);
+    rge_write(outfile, &this->point_list_num, 4);
 
+    // BINARY NOTE: point_list_num does not bound this walk. The linked chain controls writes.
     for (RGE_Victory_Point_Entry* point = this->victory_point_list; point != 0; point = point->next) {
-        rge_write(param_1, point, 1);
-        rge_write(param_1, &point->state, 1);
-        rge_write(param_1, &point->attribute, 4);
-        rge_write(param_1, &point->amount, 4);
-        rge_write(param_1, &point->points, 4);
-        rge_write(param_1, &point->curr_points, 4);
-        rge_write(param_1, &point->id, 1);
-        rge_write(param_1, &point->group, 1);
-        rge_write(param_1, &point->curr_attribute_amount, 4);
+        rge_write(outfile, point, 1);
+        rge_write(outfile, &point->state, 1);
+        rge_write(outfile, &point->attribute, 4);
+        rge_write(outfile, &point->amount, 4);
+        rge_write(outfile, &point->points, 4);
+        rge_write(outfile, &point->curr_points, 4);
+        rge_write(outfile, &point->id, 1);
+        rge_write(outfile, &point->group, 1);
+        rge_write(outfile, &point->curr_attribute_amount, 4);
     }
 }

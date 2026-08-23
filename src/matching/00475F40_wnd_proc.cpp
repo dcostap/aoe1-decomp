@@ -3,7 +3,7 @@
 // Size: 242 bytes
 // NC: no custom flags (default /O2 /Oy)
 //
-// Status: PAUSED — 8-byte VC5 register-color drift in two base forwarding sites
+// Status: EXACT — branch-local notification code restores both base forwards
 //
 // Attempt log:
 // 1: Early if/goto reconstruction was 221 bytes with direct Win32 calls; this
@@ -115,9 +115,41 @@
 // but did not improve the forwarding sites. Restored this clean source; the
 // next useful evidence remains original TU/header provenance or a new compiler
 // context that can explain the two allocator-only register families.
+// Module-context pass: a PDB source-line-order /GX wrapper with all valid
+// earlier pnl_edit.cpp owners preserves the same 242-byte, 8-byte drift.
+// Fresh audit (sa-712cdfa6-r1): the current pnl_edit_prefix contains the nine
+// exact owners in PDB order. An audit-only append of this owner compiled the
+// same 242-byte group, so wrapper expansion is not valid evidence for a move.
+// Final check: 6 ordered calls, 100% CFG/block shape, 8 positional bytes differ.
+// Exact-finish (sa-d8fd55b7-r1): restored the direct-return source after one
+// natural branch-local result probe. The probe kept 242 bytes, six ordered
+// calls, the original boundary, and the owning symbol, but reproduced the
+// same eight-byte register recolor. The existing pnl_edit_context.h remains
+// the authentic reviewed context; temporary combined-owner wrappers were not
+// valid because their reviewed owners use incompatible local class surfaces.
+// Prior blocker: no tested policy-clean form changed the two qualified
+// base-call register families. Preserve the exact panel anchors.
+// Exact finish (sa-515f958a-r1): PDB lines 576, 578, and 579 separate the
+// edit-window guard, high-word materialization, and notification comparison.
+// A branch-local signed short at those lines restores all eight bytes.
+// Removing the named short returns the prior eight-byte recolor.
+// Moving it to function scope and removing its explicit cast stay exact.
+// HDC, low-word, result, and guard-partition variants are incidental.
+// Final source has the original 242-byte boundary and all six ordered calls.
+// The reviewed pnl_edit /GX context emits the same target section and six
+// relocation identities. The SDK InvalidateRect RECT declaration stays exact.
 
-#include <windows.h>
+#include "../../include/pnl_edit_context.h"
 
+extern "C" __declspec(dllimport) unsigned long __stdcall SetBkColor(
+    HDC hdc, unsigned long color);
+extern "C" __declspec(dllimport) int __stdcall SetBkMode(HDC hdc, int mode);
+extern "C" __declspec(dllimport) unsigned long __stdcall SetTextColor(
+    HDC hdc, unsigned long color);
+extern "C" __declspec(dllimport) int __stdcall InvalidateRect(
+    HWND hwnd, const tagRECT* rect, int erase);
+
+#if !defined(PNL_EDIT_CONTEXT_H)
 struct PanelNode;
 struct TDrawArea;
 typedef int PositionMode;
@@ -283,15 +315,15 @@ public:
 
     virtual long wnd_proc(void* param_1, unsigned int param_2, unsigned int param_3, long param_4);
 };
+#endif
 
 long TEditPanel::wnd_proc(void* param_1, unsigned int param_2, unsigned int param_3, long param_4)
 {
     HWND edit_window = edit_wnd;
     if (edit_window != 0 && active != 0 && visible != 0 && hidden == 0) {
         switch (param_2) {
-        case 7: {
+        case 7:
             return TPanel::wnd_proc(param_1, 7, param_3, param_4);
-        }
 
         case 0x133:
             if (brush != 0 && (void*)(param_4 & 0xFFFF) == edit_window) {
@@ -303,11 +335,16 @@ long TEditPanel::wnd_proc(void* param_1, unsigned int param_2, unsigned int para
             break;
 
         case 0x111:
-            if ((void*)param_4 == edit_window && (short)(param_3 >> 16) == 0x400)
-                InvalidateRect(edit_window, 0, 1);
+            if ((void*)param_4 == edit_window) {
+                // BINARY NOTE: Keep this named short. VC5 otherwise changes
+                // both later base-call argument registers.
+                short notification = param_3 >> 16;
+                if (notification == 0x400)
+                    InvalidateRect(edit_window, 0, 1);
+            }
             break;
         }
-        }
+    }
 
     return TPanel::wnd_proc(param_1, param_2, param_3, param_4);
 }

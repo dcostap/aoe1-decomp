@@ -83,7 +83,7 @@
 #include "matching/0052ba60_GetScenarioOption.cpp"
 #include "matching/0052ba70_GetPlayerAge.cpp"
 #include "matching/0052BA80_update.cpp"
-#include "accepted_drift/0052BA90_SaveAttributesIntoPlayers.cpp"
+#include "matching/0052BA90_SaveAttributesIntoPlayers.cpp"
 #include "matching/0052BBC0_Save_victory_conditions_into_players.cpp"
 #include "matching/0052c070_rehook.cpp"
 #include "matching/0052C080_get_object_pointer.cpp"

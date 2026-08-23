@@ -150,11 +150,149 @@
 // the fourth corner. The executable keeps the difference and squares it there.
 // All integer results, overflow truncation, predicates, two calls, and returns
 // match. The shorter arithmetic basin only moves later branch displacements.
+// - Exact-finish context audit: restored the full period RGE_Static_Object,
+//   RGE_Master_Static_Object, AIModule, and InformationAIModule surfaces from
+//   exact same-TU donors. The target remains a 229-byte mismatch with 128
+//   differing bytes, but keeps the original boundary, owner, calls, and stack
+//   home behavior. Natural delta and declaration-order variants were restored.
+// - Fresh exact-codegen probe: retaining the first minY delta as a natural
+//   `dy` local after the first corner predicate reproduces the original 233-byte
+//   boundary, 94-instruction CFG, both __ftol calls, all block boundaries, and
+//   all returns. The only remaining mismatch is a consistent ECX/EDX recolor:
+//   the rebuilt cursor uses ECX where the executable uses EDX, and the rebuilt
+//   player-id/coordinate accumulator uses EDX where the executable uses ECX.
+//   The source is retained because this local preserves the original raw-delta
+//   reuse and the compiler emits the observed minY load before the first test.
+//   Natural explicit-this, const, reference, indexed, declaration-order,
+//   register-qualified, and parameter-alias variants did not change that
+//   recolor. No policy-valid exact source was found.
+// - Exact finish: a staged first minX difference selects the original colors.
+//   `dxSquared = minX - tx; dxSquared *= dxSquared;` emits exact bytes.
+//   It keeps the record cursor in EDX and the squared x value in ECX.
+//   The direct repeated minX form restores the 22-byte ECX/EDX swap.
+// - Reduction removed the separate `dx` alias without changing emitted code.
+//   Compound and expanded maxY and maxX square updates are also exact.
+//   The compound form matches PDB line splits 6699/6700 and 6704/6705.
+// - The first minY square stays direct before the late `dy` declaration.
+//   Conventional raw-dy reductions emit 230 bytes and change block layout.
+// - Context and traversal audits found no other required change. Supported
+//   headers, full class layout, split and positive guards, and register hints
+//   keep the same basin. Pointer walks load the array before the count guard.
+// - Final exact result: 233 bytes, 94 instructions, two ordered __ftol calls,
+//   three returns, the original owner, and 0.0000% positional difference.
+
+class RGE_Player;
+class RGE_Master_Static_Object;
+class RGE_Static_Object;
+class RGE_Sprite;
+class RGE_Action_Object;
+class RGE_Object_List;
+class RGE_Object_Node;
+class RGE_Tile;
+class RGE_Color_Table;
+class TDrawArea;
+class RGE_Armor_Weapon_Info;
+class LOSTBL;
+
+class RGE_Master_Static_Object {
+public:
+    virtual ~RGE_Master_Static_Object();
+    virtual void copy_obj(RGE_Master_Static_Object*);
+    virtual void modify(float, unsigned char);
+    virtual void modify_delta(float, unsigned char);
+    virtual void modify_percent(float, unsigned char);
+    virtual void save(int);
+    virtual RGE_Static_Object* make_new_obj(RGE_Player*, float, float, float);
+    virtual RGE_Master_Static_Object* make_new_master();
+    virtual unsigned char check_placement(RGE_Player*, float, float, int*,
+                                          unsigned char, unsigned char,
+                                          unsigned char, unsigned char,
+                                          unsigned char, unsigned char);
+    virtual unsigned char alignment(float*, float*, void*, unsigned char);
+    virtual long calc_base_damage_ability(void*);
+    virtual void play_command_sound();
+    virtual void play_move_sound();
+    virtual void draw(TDrawArea*, short, short, RGE_Color_Table*, long, long,
+                      int, unsigned char);
+    char gap_04[0x24];
+    float los;                           // +0x2C
+};
 
 class RGE_Static_Object {
 public:
     virtual ~RGE_Static_Object();
-    int id;                              // +0x04
+    virtual void recycle_in_to_game(RGE_Master_Static_Object*, RGE_Player*,
+                                    float, float, float);
+    virtual void recycle_out_of_game();
+    virtual void draw(TDrawArea*, short, short, RGE_Color_Table*);
+    virtual void shadow_draw(TDrawArea*, short, short, unsigned char);
+    virtual void normal_draw(TDrawArea*, short, short);
+    virtual void draw_front_frame(TDrawArea*, short, short);
+    virtual void draw_back_frame(TDrawArea*, short, short);
+    virtual void draw_frame(TDrawArea*, short, short);
+    virtual unsigned char update();
+    virtual void check_damage_sprites();
+    virtual void rehook();
+    virtual void save(int);
+    virtual float teleport(float, float, float);
+    virtual void new_sprite(RGE_Sprite*);
+    virtual void add_overlay_sprite(RGE_Sprite*, unsigned char);
+    virtual void remove_overlay_sprite(RGE_Sprite*);
+    virtual void change_ownership(RGE_Player*);
+    virtual void modify(float, unsigned char);
+    virtual void modify_delta(float, unsigned char);
+    virtual void modify_percent(float, unsigned char);
+    virtual void transform(RGE_Master_Static_Object*);
+    virtual void copy_obj(RGE_Master_Static_Object*);
+    virtual void set_object_state(unsigned char);
+    virtual void remove_visible_resource();
+    virtual void create_doppleganger_when_dying();
+    virtual void destroy_obj();
+    virtual void die_die_die();
+    virtual void damage(int, RGE_Armor_Weapon_Info*, float, RGE_Player*,
+                        RGE_Static_Object*);
+    virtual float calculateDamage(int, RGE_Armor_Weapon_Info*, float,
+                                  RGE_Player*, RGE_Static_Object*);
+    virtual void rotate(long);
+    virtual unsigned char can_attack();
+    virtual void set_attribute(short, float);
+    virtual void set_attribute_amount(float, unsigned char, unsigned char);
+    virtual int heal(int, int);
+    virtual unsigned char heal(float);
+    virtual int canRepair();
+    virtual void notify_of_relation(long, unsigned char);
+    virtual void do_command(RGE_Static_Object*, float, float, float);
+    virtual void move_to(RGE_Static_Object*, float, float, float);
+    virtual void work(RGE_Static_Object*, float, float, float);
+    virtual void stop();
+    virtual void set_attack(RGE_Static_Object*);
+    virtual void play_command_sound();
+    virtual void play_move_sound();
+    virtual void new_angle(float);
+    virtual RGE_Static_Object* spawn_death_obj();
+    virtual RGE_Master_Static_Object* get_command_master(RGE_Static_Object*,
+                                                         float, float, float);
+    virtual void set_being_worked_on(RGE_Action_Object*, short, unsigned char);
+    virtual void release_being_worked_on(RGE_Static_Object*);
+    virtual unsigned char is_moving();
+    virtual RGE_Static_Object* get_target_obj();
+    virtual void enter_obj(RGE_Static_Object*);
+    virtual void exit_obj();
+    virtual int explore_terrain(RGE_Player*, unsigned char, int);
+    virtual void unexplore_terrain(RGE_Player*, unsigned char, int);
+    virtual LOSTBL* get_los_table();
+    virtual int inAttackRange(RGE_Static_Object*);
+    virtual unsigned char underAttack();
+    virtual void setUnderAttack(unsigned char);
+    virtual float calc_attack_modifier(RGE_Static_Object*);
+    virtual float getSpeed();
+    virtual float getAngle();
+    virtual float maximumSpeed();
+    virtual float rateOfFire();
+    virtual float damageCapability();
+    virtual float damageCapability(RGE_Static_Object*);
+
+    long id;                             // +0x04
     char gap_08[0x38 - 0x08];
     float world_x;                       // +0x38
     float world_y;                       // +0x3C
@@ -177,10 +315,47 @@ struct AttackMemory {
     int play;               // +0x14
 };
 
-class InformationAIModule {
+class AIModuleID {
+public:
+    virtual ~AIModuleID();
+    int id;
+    char name[0x40];
+};
+
+class AIModule {
+public:
+    virtual ~AIModule();
+    virtual int loggingHistory();
+    virtual void setLogHistory(int);
+    virtual void toggleLogHistory();
+    virtual void setHistoryFilename(char*);
+    virtual int loggingCommonHistory();
+    virtual void setLogCommonHistory(int);
+    virtual void toggleLogCommonHistory();
+    virtual int loadState(char*);
+    virtual int saveState(char*);
+    virtual int gleanState(int);
+    virtual int processMessage(void*);
+    virtual int update(int);
+    virtual void setCallbackMessage(void*);
+    virtual int filterOutMessage(void*);
+    AIModuleID idValue;
+    int playerNumberValue;
+    char playerNameValue[0x40];
+    int runningValue;
+    int pausedValue;
+    int logHistoryValue;
+    int logCommonHistoryValue;
+    void* historyLogFile;
+    char historyLogFilename[0x40];
+    int intelligenceLevelValue;
+    int priorityValue;
+    int processFrameValue;
+};
+
+class InformationAIModule : public AIModule {
 public:
     virtual ~InformationAIModule();
-    char gap_04[0xEC];
 };
 
 // Main-agent audit confirmed canonical typed attack-memory ownership and kept
@@ -201,28 +376,27 @@ int TribeInformationAIModule::withinXTilesOfAttackOnPlayer(
     int tx = (int)target->world_x;
     int ty = (int)target->world_y;
 
-    for (int i = 0; i < maxAttackMemories; i++) {
+    for (int i = 0; i < this->maxAttackMemories; i++) {
         AttackMemory* am = &attackMemories[i];
         if (am->id == -1 || !am->attackingOwner || (unsigned char)am->targetOwner != playerId)
             continue;
 
-        int dxSquared = ((unsigned char)am->minX - tx) *
-                        ((unsigned char)am->minX - tx);
+        int dxSquared = (unsigned char)am->minX - tx;
+        dxSquared *= dxSquared;
         int dySquared = ((unsigned char)am->minY - ty) *
                         ((unsigned char)am->minY - ty);
         if (dySquared + dxSquared <= tilesSq) return 1;
+        int dy = (unsigned char)am->minY - ty;
 
-        dySquared = ((unsigned char)am->maxY - ty) *
-                    ((unsigned char)am->maxY - ty);
+        dySquared = (unsigned char)am->maxY - ty;
+        dySquared *= dySquared;
         if (dySquared + dxSquared <= tilesSq) return 1;
 
-        dxSquared = ((unsigned char)am->maxX - tx) *
-                    ((unsigned char)am->maxX - tx);
+        dxSquared = (unsigned char)am->maxX - tx;
+        dxSquared *= dxSquared;
         if (dySquared + dxSquared <= tilesSq) return 1;
 
-        dySquared = ((unsigned char)am->minY - ty) *
-                    ((unsigned char)am->minY - ty);
-        if (dySquared + dxSquared <= tilesSq) return 1;
+        if (dy * dy + dxSquared <= tilesSq) return 1;
     }
 
     return 0;

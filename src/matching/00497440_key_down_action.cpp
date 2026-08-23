@@ -26,16 +26,31 @@
 //   and group guards restored the original param4 reload and block layout.
 // - changed the global receiver to the reviewed RGE_Base_Game* surface and
 //   downcast only for proven TRIBE_Game members. This was codegen-neutral.
-// - current check: exact size, frame, 101 calls, and 97.88% shape; 338 bytes
-//   differ. The first mismatch is the building-key scan's register map.
-//   Remaining drift is local register allocation and switch-table relocation.
-// BLOCKER: After each debug sprintf, the executable reads rge_base_game before
-// removing 12 cdecl argument bytes. The rebuild removes those bytes first and
-// then reads the global. A faulting global load therefore observes ESP values
-// that differ by 12 bytes.
+// - repaired the scr_game RGE_Base_Game and RGE_Master_Static_Object field
+//   surfaces from exact donors: display_selected_ids +0x9D4, show_object_id
+//   +0xC20, and hotkey_id +0xA0. The building bound is item_cnt at +0x5E0.
+// - restored the direct PDB TPanel::get_string owner after the shared context
+//   exposed a shadowing TEasy_Panel helper.
+// - made the debug status receiver short-lived. This restores the executable's
+//   global reread before cdecl cleanup. The counter increment stays in the
+//   first sprintf argument so publication precedes the call.
+// - exact transition: initialize one named master object directly from the
+//   nested get_player result. This recovered all 52 register-color bytes.
+// - exact walkback: a player alias plus the master local restored the 52-byte
+//   mismatch. A fully inlined lookup also restored that mismatch.
+// - the direct initialization and named master form are one required group.
+//   Other declaration, branch, header, context, and CPU variants were neutral
+//   or worse. None remain.
+// - final audit: MATCH, 0.0000%, 3046 bytes, frame 0x204, and 101 ordered calls.
+//   The source preserves cleanup, publication, UI faults, and malformed-input
+//   behavior. It uses no assembly, volatility, or register steering.
 
 #include <stdio.h>
 #include <string.h>
+
+#include "../../include/scr_game_context.h"
+
+#if 0
 
 struct tagRECT;
 class TDrawArea;
@@ -405,11 +420,13 @@ extern const char s_memory_filename[];
 extern const char s_ALLOWCTRLU[];
 extern const char s_force_ctrl_u[];
 
+#endif
+
 long TRIBE_Screen_Game::key_down_action(long param_1, short param_2,
                                         int param_3, int param_4, int param_5)
 {
     int game_over;
-    int result;
+    long result;
     char str[512];
 
     if (panel_system.modalPanel() != 0) {
@@ -586,12 +603,12 @@ long TRIBE_Screen_Game::key_down_action(long param_1, short param_2,
         if (rge_base_game->get_paused() == 0 &&
             rge_base_game->game_mode == 6 &&
             rge_base_game->sub_game_mode == 1) {
-            for (int i = 0; i < this->start_item; ++i) {
-                RGE_Player* player = rge_base_game->get_player();
-                if (param_1 == *this->get_string(
-                                  player->master_objects[
-                                      this->bldg_list[i].master_object_id]
-                                          ->hotkey_id)) {
+            for (int i = 0; i < this->item_cnt; ++i) {
+                // BINARY NOTE: A player alias changes VC5's register map.
+                RGE_Master_Static_Object* master =
+                    rge_base_game->get_player()->master_objects[
+                        this->bldg_list[i].master_object_id];
+                if (param_1 == *this->get_string(master->hotkey_id)) {
                     TDigital* sound = rge_base_game->get_sound(1);
                     if (sound != 0) {
                         sound->play();
@@ -680,14 +697,15 @@ long TRIBE_Screen_Game::key_down_action(long param_1, short param_2,
         case 0x4A:
             comm->TXDebugPing();
             break;
-        case 0x4D:
-            ++DAT_0086bac8;
-            sprintf(str, s_Writing_out_memory_info, DAT_0086bac8);
-            ((TRIBE_Game*)rge_base_game)->show_status_message(str, 0, -1);
+        case 0x4D: {
+            sprintf(str, s_Writing_out_memory_info, ++DAT_0086bac8);
+            TRIBE_Game* game = (TRIBE_Game*)rge_base_game;
+            game->show_status_message(str, 0, -1);
             sprintf(str, s_memory_filename, DAT_0086bac8);
             rge_base_game->dump_memory_usage(str);
             ((TRIBE_Game*)rge_base_game)->close_status_message();
             break;
+        }
         case 0x4E:
             if (rge_base_game->multiplayerGame() == 0) {
                 ((TRIBE_Game*)rge_base_game)->restart_game();

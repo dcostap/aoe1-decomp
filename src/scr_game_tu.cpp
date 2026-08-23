@@ -3,8 +3,9 @@
 // PDB source-line order is retained.  The four reviewed padding-only symbols
 // in this address band are not owners and are not included.
 //
-// Safe owner proposal for this recovery set:
-//   00493D60 [201-872]       ??0TRIBE_Screen_Game@@QAE@XZ
+// The 00493D60 constructor remains a standalone owner. Its local ABI surface
+// conflicts with the shared scr_game_context used by this grouped prefix.
+// Safe grouped owner proposal for this recovery set:
 //   004954A0 [878-1151]     ??1TRIBE_Screen_Game@@UAE@XZ
 //   00496800 [1589-1996]    ?handle_game_update@TRIBE_Screen_Game@@QAEXXZ
 //   00497440 [2163-2820]    ?key_down_action@TRIBE_Screen_Game@@UAEJJFHHH@Z
@@ -17,10 +18,10 @@
 // Use config/flags/004982E0_action.rsp for this set.  It is the one /GX set.
 // Stop before 0049B910. Its accepted-drift owner differs by seven bytes.
 // Do not add later owners until the 0049B910 boundary is resolved.
-#include "scratch/00493D60_TRIBE_Screen_Game.cpp"
 #include "matching/004954A0_TRIBE_Screen_Game.cpp"
 #include "scratch/00496800_handle_game_update.cpp"
-#include "scratch/00497440_key_down_action.cpp"
+// 00497440 is exact in isolation. Its local class surface conflicts with the
+// current sparse shared context, so it remains outside this wrapper.
 #include "scratch/004982E0_action.cpp"
 #include "scratch/004996C0_setup_buttons.cpp"
 #include "matching/0049B000_scr_game_score_compare.cpp"

@@ -32,13 +32,13 @@
 #include "../include/tplayer_context.h"
 
 // tplayer.cpp:930-975
-#include "scratch/00513000_interface_tech_avail.cpp"
+#include "matching/00513000_interface_tech_avail.cpp"
 
 // tplayer.cpp:2145-2302
-#include "accepted_drift/005153D0_loadAIInformation.cpp"
+#include "matching/005153D0_loadAIInformation.cpp"
 
 // tplayer.cpp:2550-3937
-#include "scratch/00515E00_intelligentBuildListAndRulesSelection.cpp"
+#include "matching/00515E00_intelligentBuildListAndRulesSelection.cpp"
 
 // tplayer.cpp:3943-3987
 #include "matching/00517B90_setupEgyptian.cpp"

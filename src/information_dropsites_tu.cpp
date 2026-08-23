@@ -7,6 +7,7 @@
 #include "scratch/004D9240_gameIDOfResourceObject.cpp"
 #include "scratch/004D96B0_gameIDsOfObjectType.cpp"
 #include "matching/004DAFF0_importantUnit.cpp"
+#include "matching/004DE1F0_objectToDefend.cpp"
 #include "accepted_drift/004DE330_higherPriorityObjectToDefend.cpp"
 #include "accepted_drift/004E02A0_storeLot.cpp"
 #include "matching/004E3C90_dropsitesWithinRequiredDistance.cpp"

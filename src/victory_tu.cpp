@@ -20,7 +20,7 @@
 #include "scratch/00531750_RGE_Victory_Conditions.cpp"
 #include "matching/00531AF0_RGE_Victory_Conditions.cpp"
 #include "matching/00531B20_RGE_Victory_Conditions.cpp"
-#include "scratch/00531B70_save.cpp"
+#include "matching/00531B70_save.cpp"
 #include "accepted_drift/00531DB0_check_for_victory.cpp"
 #include "matching/00531E90_update.cpp"
 #include "matching/00531EF0_update_for_object.cpp"
