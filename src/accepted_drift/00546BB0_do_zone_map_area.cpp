@@ -31,7 +31,7 @@
 //     indices, and canonical RGE_Map/RGE_Zone_Map context were rechecked;
 //     only the direct expressions and named index changed codegen, both worse.
 // 15: restored the decorated C++ helper ABI: zone_push takes long values and
-//     zone_pop takes long references; made this private method's owning symbol
+//     zone_pop takes long pointers; made this private method's owning symbol
 //     match the original AAEX spelling. Bytes remain the clean 663-byte result.
 // Continuation pass: full RGE_Map field/vtable context, RGE_Zone_Map destructor
 // context, char row-pointer casts, plain terrain byte masking, combined
@@ -40,42 +40,28 @@
 // A 108-variant lab found only the 663-byte baseline group and a worse 690-byte
 // boolean group. A 64-sample ambient declaration lab produced one 663-byte
 // group, so file-scope context is not the controlling basin here.
+// 16: the real zone_map translation unit now owns this method with the exact
+//     queue helpers, constructor, destructor, save, do_zone_map, check_info,
+//     create, and get method sequence. The target remains the same 663-byte
+//     register basin.
+// 17: split max-bound declarations, full RGE_Tile bitfields, reordered local
+//     declarations, byte-reference cells, direct row predicates, and removal
+//     of the named predicate result were duplicate or worse. Restored the
+//     smallest typed tile/cell source.
+// 18: including the exact queue helper bodies before the map methods preserved
+//     both helper matches and the target's 450-byte positional drift.
 // Accepted drift: neighbor order is left, up, right, down. Each arm has the
 // same row/cell reads, x87 predicate and NaN behavior, zone store, and queue
 // push. zone_push and zone_pop receive identical queue-local and x/y addresses.
 // Queue mutation, loop continuation, faults, and return match. Remaining drift
 // is register allocation and address arithmetic.
 
-struct RGE_Tile {
-    short sx;
-    short sy;
-    unsigned char tile_type;
-    unsigned char terrain_type : 5;
-    unsigned char border_type : 4;
-    unsigned char last_drawn_as;
-    unsigned char last_drawn_shape;
-    unsigned char draw_as;
-    unsigned char draw_attribute;
-    unsigned char last_drawn_shape2;
-    char objects[0x0c];
-};
-struct RGE_Map { virtual ~RGE_Map(); char pad04[4]; int map_width; int map_height; char pad10[0x8d8c-0x10]; RGE_Tile** map_row_offset; };
+#include "../../include/rge_zone_map_context.h"
+
 struct Zone_Queue;
 extern double DAT_00577a20;
 void __cdecl zone_push(Zone_Queue** head, Zone_Queue** tail, long x, long y);
-unsigned char __cdecl zone_pop(Zone_Queue** head, Zone_Queue** tail, long& x, long& y);
-
-class RGE_Zone_Map {
-    int numberTilesInZoneValue[257];
-    unsigned char* zone_map;
-    unsigned char** zone_map_rows;
-    unsigned char zone_info[257];
-    char pad50d[3];
-    float* terrain_passability_rules;
-    int terrain_passability_rules_num;
-    RGE_Map* map;
-    void do_zone_map_area(long x, long y, unsigned char passable, unsigned char zone);
-};
+unsigned char __cdecl zone_pop(Zone_Queue** head, Zone_Queue** tail, long* x, long* y);
 
 void RGE_Zone_Map::do_zone_map_area(long x, long y, unsigned char passable, unsigned char zone)
 {
@@ -88,8 +74,8 @@ void RGE_Zone_Map::do_zone_map_area(long x, long y, unsigned char passable, unsi
             RGE_Tile* tile = this->map->map_row_offset[y] + x - 1;
             unsigned char* cell = this->zone_map_rows[y] + x - 1;
             if (*cell == 0xff) {
-                int ok = (this->terrain_passability_rules[tile->terrain_type] > DAT_00577a20) ? 1 : 0;
-                if (ok == (passable & 0xff)) {
+                if (((this->terrain_passability_rules[tile->terrain_type] >
+                      DAT_00577a20) ? 1 : 0) == (passable & 0xff)) {
                     *cell = zone;
                     zone_push(&zone_end, &zone_queue, x - 1, y);
                 }
@@ -99,8 +85,8 @@ void RGE_Zone_Map::do_zone_map_area(long x, long y, unsigned char passable, unsi
             RGE_Tile* tile = this->map->map_row_offset[y - 1] + x;
             unsigned char* cell = this->zone_map_rows[y - 1] + x;
             if (*cell == 0xff) {
-                int ok = (this->terrain_passability_rules[tile->terrain_type] > DAT_00577a20) ? 1 : 0;
-                if (ok == (passable & 0xff)) {
+                if (((this->terrain_passability_rules[tile->terrain_type] >
+                      DAT_00577a20) ? 1 : 0) == (passable & 0xff)) {
                     *cell = zone;
                     zone_push(&zone_end, &zone_queue, x, y - 1);
                 }
@@ -110,8 +96,8 @@ void RGE_Zone_Map::do_zone_map_area(long x, long y, unsigned char passable, unsi
             RGE_Tile* tile = this->map->map_row_offset[y] + x + 1;
             unsigned char* cell = this->zone_map_rows[y] + x + 1;
             if (*cell == 0xff) {
-                int ok = (this->terrain_passability_rules[tile->terrain_type] > DAT_00577a20) ? 1 : 0;
-                if (ok == (passable & 0xff)) {
+                if (((this->terrain_passability_rules[tile->terrain_type] >
+                      DAT_00577a20) ? 1 : 0) == (passable & 0xff)) {
                     *cell = zone;
                     zone_push(&zone_end, &zone_queue, x + 1, y);
                 }
@@ -121,12 +107,12 @@ void RGE_Zone_Map::do_zone_map_area(long x, long y, unsigned char passable, unsi
             RGE_Tile* tile = this->map->map_row_offset[y + 1] + x;
             unsigned char* cell = this->zone_map_rows[y + 1] + x;
             if (*cell == 0xff) {
-                int ok = (this->terrain_passability_rules[tile->terrain_type] > DAT_00577a20) ? 1 : 0;
-                if (ok == (passable & 0xff)) {
+                if (((this->terrain_passability_rules[tile->terrain_type] >
+                      DAT_00577a20) ? 1 : 0) == (passable & 0xff)) {
                     *cell = zone;
                     zone_push(&zone_end, &zone_queue, x, y + 1);
                 }
             }
         }
-    } while (zone_pop(&zone_end, &zone_queue, x, y));
+    } while (zone_pop(&zone_end, &zone_queue, &x, &y));
 }

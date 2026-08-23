@@ -25,32 +25,9 @@
 
 #include <stddef.h>
 #include <string.h>
+#include "../../include/rge_zone_map_context.h"
 
 typedef unsigned char uchar;
-typedef unsigned short ushort;
-
-struct RGE_Map {
-    char pad_00[8];
-    long map_width;          // +0x08
-    long map_height;         // +0x0C
-    char pad_10[0x8D7C];     // +0x10 to +0x8D8B
-    char** map_row_offset;   // +0x8D8C
-};
-
-class RGE_Zone_Map {
-public:
-    int numberTilesInZoneValue[257];       // +0x000 (0x404 bytes)
-    uchar* zone_map;                       // +0x404
-    uchar** zone_map_rows;                 // +0x408
-    uchar zone_info[257];                  // +0x40C
-    char pad_50D[3];                       // +0x50D
-    float* terrain_passability_rules;      // +0x510
-    long terrain_passability_rules_num;    // +0x514
-    RGE_Map* map;                          // +0x518
-
-    uchar do_zone_map();
-    void do_zone_map_area(long param_1, long param_2, uchar param_3, uchar param_4);
-};
 
 uchar RGE_Zone_Map::do_zone_map()
 {
@@ -92,7 +69,9 @@ uchar RGE_Zone_Map::do_zone_map()
                             group_counter = 0;
 
                         // Check passability: terrain byte at offset y+5
-                        int terrainByte = this->map->map_row_offset[group][y + 5] & 0x1F;
+                        int terrainByte =
+                            ((unsigned char*)this->map->map_row_offset[group])[y + 5]
+                            & 0x1F;
                         float passability = this->terrain_passability_rules[terrainByte];
                         visible = 1;
                         // Compare with double 0.0 (passability > 0.0)

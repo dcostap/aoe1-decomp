@@ -51,6 +51,23 @@
 //   limits match. The function does not read manager fields before these
 //   calls. Remaining drift is private register ownership and manager reload
 //   placement.
+// - Fresh canonical-TU validation after the DeleteSpan exact source reached
+//   the same 184-byte mismatch; the source remains the clean frontier.
+// - Direct parameter-home mutation widened the mismatch to 316 bytes.
+// - An explicit manager receiver alias and local declaration-order changes
+//   were codegen duplicates at the 184-byte frontier.
+// - Direct y-parameter use, hybrid endpoint ownership, and alternate loop
+//   forms widened the mismatch or added an extra AddSpan call; all were
+//   restored. No exact source lead was found in this finish pass.
+// - Fresh grouped spanlist checks kept DeleteSpan and the other 20 exact
+//   anchors at MATCH. Existing AddShape and AddMiniList mismatches were not
+//   changed by this target.
+// - Finish probes: full direct parameter mutation (324-byte diff), branch-local
+//   x1 ownership (313-byte diff), direct y2 step reuse (314-byte diff), and
+//   direct equal-arm y1/y2 mutation (288-byte diff) all lost the clean basin.
+// - An explicit manager receiver local was codegen-identical to the clean
+//   source. The clean source is restored; no natural source lead explains the
+//   saved-this register move or the two-byte boundary drift.
 // FLAGS: /nologo /c /O2 /Oy /GX
 
 // Main-agent audit confirmed canonical span-manager ownership and retained the

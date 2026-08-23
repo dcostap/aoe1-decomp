@@ -54,6 +54,13 @@
 // moves the home before GetNode and reduces strict drift to 30 bytes. The
 // original home store is before the seek. Keep this behavior lead unpromoted
 // until the earlier fault-order store has a clean source explanation.
+// exact finish: initialize savedHead before first. VC5 then publishes the home
+// before the tail read, seek, and GetNode call.
+// exact finish: compare first with head. Reload head from savedHead after
+// FreeNode. Publish the final head and left bound through head.
+// walkback: delaying savedHead moved only the four-byte home store and lost the
+// match. Each retained-head alias walkback also lost the match.
+// evidence: fresh VC5 validation matched all 531 bytes and all three direct calls.
 
 #include <stdlib.h>
 
@@ -139,6 +146,8 @@ void TSpan_List_Manager::DeleteSpan(int left, int right, int line)
                 }
 
                 VSpan_Node* last = this->Line_Tail_Ptrs[line];
+                // BINARY NOTE: VC5 publishes this value before the tail read.
+                VSpan_Node* savedHead = head;
                 VSpan_Node* first = head;
 
                 if (first->EndPx < left) {
@@ -146,8 +155,6 @@ void TSpan_List_Manager::DeleteSpan(int left, int right, int line)
                         first = first->Next;
                     } while (first->EndPx < left);
                 }
-
-                VSpan_Node* savedHead = head;
 
                 if (left > first->StartPx && right < first->EndPx) {
 #ifdef SPANLIST_SHARED_CONTEXT
@@ -175,7 +182,7 @@ void TSpan_List_Manager::DeleteSpan(int left, int right, int line)
                 VSpan_Node* next;
                 if (first != 0) do {
                     if (left <= first->StartPx && right >= first->EndPx) {
-                        if (first == savedHead) savedHead = first->Next;
+                        if (first == head) savedHead = first->Next;
                         if (first == last) last = first->Prev;
                         VSpan_Node* prev = first->Prev;
                         if (prev != 0) prev->Next = first->Next;
@@ -187,6 +194,8 @@ void TSpan_List_Manager::DeleteSpan(int left, int right, int line)
                         this->FreeNode(first);
 #endif
                         this->Span_Count[line]--;
+                        // Keep the register owner equal to the published head.
+                        head = savedHead;
                         first = next;
                     } else {
                         next = 0;
@@ -195,9 +204,9 @@ void TSpan_List_Manager::DeleteSpan(int left, int right, int line)
                 if (first != 0 && right >= first->StartPx) {
                     first->StartPx = right + 1;
                 }
-                this->Line_Head_Ptrs[line] = savedHead;
+                this->Line_Head_Ptrs[line] = head;
                 this->Line_Tail_Ptrs[line] = last;
-                this->LeftMostPx[line] = savedHead->StartPx;
+                this->LeftMostPx[line] = head->StartPx;
                 this->RightMostPx[line] = last->EndPx;
             }
         }

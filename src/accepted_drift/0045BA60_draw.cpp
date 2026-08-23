@@ -31,6 +31,8 @@
 // 29: exact Poll-style pre-indexed Shape_Info source caused a 713-byte structural mismatch; restored.
 // 30: unsigned facet, Poll gap_10 class context, last_facet temp, shared err, and cursor receiver locals did not move the basin.
 // 31: reusing one cursor local for SetTrans and BltFast caused a 752-byte body and 262-byte mismatch; restored.
+// 32: fresh grouped manual VC5 /O2 /Oy /GX validation under the authentic Mouseptr.cpp wrapper matched 0045B310 and 0045B5D0; draw remained a 53-byte REGISTER_MAP_CONFLICT at +01E3.
+// 33: authoritative validation is blocked because config/flags/mouseptr_module_gx.rsp is missing; the existing build/manual response file was used only for diagnostic compilation.
 // final: after 20 meaningful hypotheses, the clean source remains scratch and paused at a 53-byte REGISTER_MAP_CONFLICT beginning at 0045BC43. Calls, frame, size, CFG, and all 13 call sites match.
 // ACCEPTED DRIFT: The changed drawing blocks recolor facet, shape-info,
 // coordinate, cursor-surface, and COM-receiver temporaries. Both builds push

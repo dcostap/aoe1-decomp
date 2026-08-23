@@ -1,50 +1,21 @@
 // VA: 0045B5D0 TMousePointer::create_surfaces
-// Initial natural source from packet. Goal: match VC5 EH new+ctor shape in Mouseptr.cpp.
-// try 1: natural source + /GX: exact through save-area init, drift began at cursor loop.
-// try 2: use cursor name buffer directly (not +4) and nested positive Max_Cursors gate: fixed buffer LEAs, best edit diff so far.
-// try 3: explicit cursor success/fail labels worsened max check/load and near branches; rolled back.
-// try 4: use explicit cursor pointer local to mirror EBX traversal; no improvement.
-// try 5: duplicate success returns in Mouse_Mode/Max_Cursors arms moved first mismatch to prologue guard; rolled back.
-// tried flags /O1, no /Oy, /Ox, /Ob0: worse or same; kept /O2 /Oy /GX.
-// tried NameBuf sizes 24/28/36/40: prologue/frame mismatches, worse; kept 32.
-// session sa24b7b590_r1 probes 1-10: combined/nested guards, for/while/do loops,
-// explicit success/failure labels, a result local, negative gates, and a bottom
-// continue loop. The guarded do/while was the metric-best diagnostic (+6 bytes,
-// diff 173), but emitted jge+jmp with the failure block before success; it did
-// not preserve the oracle's jl backedge/common success tail. Restored this natural
-// for-loop candidate after the 10-hypothesis budget; current rebuilt diff is 189
-// bytes (419 vs 394), exact through offset +0xDB, with all 7 calls aligned.
-// left in scratch: exact through offset 0xDB (save-area path); remaining cursor-loop drift is branch sizing/target selection and cursor-fail epilogue order, not accepted_drift-safe yet.
-// fresh pass: pointer-backed guarded do/while reached diff 173 and +6 bytes, but changed the proven JL backedge to JGE+jmp.
-// direct indexed, bottom-loop, labeled-tail, and result-local variants were tested; each was duplicate or structurally worse.
-// restored the natural typed indexed for-loop; current best clean source remains diff 189 with all seven calls aligned.
-// recovery probe: split the two negative cursor gates around a shared success label;
-// the diff stayed 189 but size and CFG shape worsened, so the clean indexed source is restored.
-// probe: use the donor-proven mutable TDrawArea name ABI for both surface allocations;
-// no emitted bytes moved; retain the canonical typed constructor, with cursor-tail drift unchanged.
-// shardA6 probe: adding donor-proven virtual TDrawArea cleanup changed sizeof from 0x100 to 0x104;
-// operator-new size changed and diff worsened 189->190, so the clean surface ABI is restored.
-// Fresh claim probe: an early success return for Mouse_Mode/Max_Cursors moved
-// the first mismatch to the EH prologue and worsened the structural diff; rolled back.
-// continuation sa-a6ac71bd-r1: nested guards, negative gates, explicit success
-// labels, cursor-fail goto, scoped i/NameBuf, stdio.h, and corrected polymorphic
-// TDrawArea size were duplicate or worse. The guarded do/while remains the best
-// diagnostic at 400 bytes/diff 173, but its jge+jmp backedge is not oracle code.
-// Clean source remains 419 bytes/diff 189, exact through +0xDB, seven calls aligned.
-// revisit sa-6fc3a436-r1: typed TDrawArea::DrawSystem at offset 0 preserves the
-// 0x100 allocation and all bytes. Natural loop and common-tail variants remain
-// structural duplicates or worse; retain the indexed for-loop.
-// revisit sa-903341f9-r1: the binary-supported direct indexed do/while with the
-// typed DrawSystem owner improves 419/394 to 400/394 and 173 positional bytes.
-// The remaining six bytes are VC5's jge-plus-jmp loop exit and block order.
-// Pointer-backed, nested, explicit-label, early-return, and comma-increment
-// variants were duplicate or worse. This direct do/while is now the pinned
-// clean source until a new structural clue appears.
-// Accepted-drift review: the rebuilt loop inverts the final `i < Max_Cursors`
-// branch and adds an unconditional jump back to the body. The comparison,
-// cursor update, seven calls, arguments, member accesses, and stores match.
-// Constructor or Init failure still returns zero. Every other path returns one.
-// EH state and chain restoration match on each exit.
+// Exact-finish retrospective:
+// - Evidence: the original has a counted loop with `jl` back to the cursor
+//   body. Its success cleanup follows that branch, and its failure cleanup is
+//   after success. The original also uses the left operand `0 < Max_Cursors`.
+// - Decisive change: replace the guarded do/while with a natural counted
+//   `for` loop. This removes the extra jump and six bytes.
+// - Walkback: restoring the do/while rebuilt 400 bytes with a 173-byte diff.
+//   Joining `i = 0` into the for header stayed exact. Post-increment also
+//   stayed exact, so the source keeps the period-plausible `i++` spelling.
+//   Changing the guard to `Max_Cursors > 0` rebuilt 396 bytes with a 159-byte
+//   diff. The original operand order is required.
+// - Required changes: the counted-loop topology and `0 < Max_Cursors`.
+//   The separate index assignment was incidental and is removed.
+// - BINARY NOTE: allocation publishes each cursor before Init. A null
+//   allocation or failed Init returns zero. The save area follows the same
+//   ownership and fault order. All seven direct calls, EH exits, and the
+//   394-byte boundary match under the registered Mouseptr.cpp context.
 
 #include "../../include/mouseptr_context.h"
 
@@ -70,8 +41,7 @@ int TMousePointer::create_surfaces()
     }
 
     if (this->Mouse_Mode == 0 && 0 < this->Max_Cursors) {
-        i = 0;
-        do {
+        for (i = 0; i < this->Max_Cursors; i++) {
             if (this->cursors[i] == 0) {
                 sprintf(NameBuf, "Mouse Cursor #%d", i);
                 this->cursors[i] = new TDrawArea(NameBuf, 0);
@@ -82,8 +52,7 @@ int TMousePointer::create_surfaces()
                     return 0;
                 }
             }
-            ++i;
-        } while (i < this->Max_Cursors);
+        }
     }
 
     return 1;

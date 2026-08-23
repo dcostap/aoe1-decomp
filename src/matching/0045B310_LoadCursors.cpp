@@ -18,25 +18,25 @@
 // revisit: replaced the direct operator_delete helper with natural typed delete; emitted bytes were unchanged.
 // revisit: typed both Shape_Info walks and canonicalized Shape_Info ownership/long fields; emitted bytes were unchanged.
 // revisit: a top-tested while scan improved the diagnostic diff to 72 but moved shape_info setup before the proven count guard; restored the guarded do-loop for fault order.
-// BLOCKER: the validation loop reads width, height, then Max_CY in the
-// executable. The rebuild reads width, Max_CY, then height. Its validation
-// failures also use an earlier epilogue instead of the executable's shared
-// tail. Malformed Shape_Info fault context and cleanup topology differ.
-// current worker: combining early guards, explicit shared labels, positive
-// guards, and a result-owned return did not change emitted bytes (294 diff).
-// A full nested goto form reduced diff to 279 but produced an invalid early
-// success path. A guarded top-tested validation loop reduced diff to 233 and
-// moved Shape_Info setup before the count test. It changes malformed-input
-// fault order. Restored the guarded do-loop. No accepted drift is safe.
-// Context pass: this owner now includes the canonical Mouseptr.cpp context.
-// TMousePointer, TShape, Shape_Info, and TDrawArea ownership use the reviewed
-// PDB layout. The owner remains in PDB line band 372-484 and in mouseptr_tu.cpp.
-// Continuation finish pass: a top-tested `while`/`for` validation scan reached
-// 72 positional bytes, but it loaded shape_info before the executable's
-// positive-count test. The guarded forms stayed at 233 or 294 bytes. This
-// changes malformed-input fault order, so the 72-byte candidate is rejected.
-// Volatile height/member probes did not recover the executable's register or
-// block order. The guarded do-loop remains the clean source.
+// Context pass: this owner uses the canonical Mouseptr.cpp context.
+// TMousePointer, TShape, Shape_Info, and TDrawArea use the reviewed PDB layout.
+// The owner remains in PDB line band 372-484 and in mouseptr_tu.cpp.
+//
+// Exact-finish retrospective:
+// - Evidence: the executable tests Num_Cursors before it reads shape_info.
+//   It then reads width, height, and Max_CY in that order. The target has one
+//   shared failure tail and 16 ordered direct calls.
+// - Decisive change: use a natural counted for loop with a typed Shape_Info
+//   pointer local to its body. Use `h > Max_CY` so VC5 loads height first.
+// - Walkback: reversing the comparison produced a 5-byte mismatch. Replacing
+//   the for loop with a while loop produced an 18-byte mismatch. Both changes
+//   are required. Removing the Shape_Info alias, outer index, height alias,
+//   and using typed array indexing preserved exact output.
+// - Fault order: the loop body forms shape_info only after the count test.
+//   A zero count does not dereference Shape_Info. No defensive failure path was
+//   added.
+// - Policy: the source uses natural C++ only. It keeps canonical resource
+//   ownership, object publication, destructor cleanup, and direct call ABIs.
 
 #include "../../include/mouseptr_context.h"
 
@@ -92,16 +92,12 @@ int TMousePointer::LoadCursors(char* base, int file_id, int keep_name)
 
     if (this->Mouse_Mode == 0) {
         if (this->Num_Cursors > this->Max_Cursors) return 0;
-        int i = 0;
-        if (this->Num_Cursors > 0) {
-            Shape_Info* info = (Shape_Info*)this->Cursor_Shape->shape_info;
-            long* height = &info->Height;
-            do {
-                if (height[-1] > this->Max_CX) return 0;
-                if (*height > this->Max_CY) return 0;
-                i++;
-                height += 8;
-            } while (i < this->Num_Cursors);
+        for (int i = 0; i < this->Num_Cursors; i++) {
+            // BINARY NOTE: This body-local typed pointer preserves the
+            // executable's width, height, and Max_CY fault order.
+            long* height = &((Shape_Info*)this->Cursor_Shape->shape_info)[i].Height;
+            if (height[-1] > this->Max_CX) return 0;
+            if (*height > this->Max_CY) return 0;
         }
         int cur = 0;
         if (this->Max_Cursors > 0) {

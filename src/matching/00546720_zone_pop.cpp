@@ -2,13 +2,7 @@
 // if this misses, the remaining mismatch is likely only argument/register shaping around the free call
 
 extern "C" void __cdecl free(void* block);
-
-class Zone_Queue {
-public:
-    long x;
-    long y;
-    Zone_Queue* next;
-};
+#include "../../include/rge_zone_queue_context.h"
 
 unsigned char __cdecl zone_pop(Zone_Queue** head, Zone_Queue** tail, long* x_out, long* y_out) {
     Zone_Queue* node = *head;

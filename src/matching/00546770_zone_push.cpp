@@ -1,8 +1,4 @@
-struct Zone_Queue {
-    long x;
-    long y;
-    Zone_Queue* next;
-};
+#include "../../include/rge_zone_queue_context.h"
 
 extern "C" void* __cdecl calloc(unsigned int num, unsigned int size);
 
