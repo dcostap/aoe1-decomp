@@ -119,11 +119,17 @@ Reusable empirical findings about Microsoft Visual C++ 5 code generation.
 - Keep external read-only tables `const`. Local copies change data and relocations.
 - A flat local vtable view must account for its own vptr.
 - Prefer the real inherited virtual surface when known.
+- VC5 can reverse adjacent overload entries in a vtable.
+- Use PDB symbols and observed call slots to select overload declaration order.
+- A beta caller can use fewer arguments than the later owner at one virtual slot.
+- Keep a narrow caller view. Do not change the PDB-qualified owner ABI.
 - Declaration-only padding slots are acceptable for a narrow local virtual surface.
 - Model direct members as nonvirtual and vtable dispatches as virtual at exact slots.
 - A late virtual fallback can be separate from the direct method under recovery.
 - Preserve helper arity, overload, convention, return width, and ownership.
 - PDB `__thiscall` with `ret N` requires a real member definition.
+- Public, protected, and private access change the decorated member symbol.
+- Match PDB access even when access does not change function bytes.
 - An explicit self stack argument with caller cleanup indicates cdecl or static use.
 - Narrow virtual parameters can prevent caller extension when ABI evidence supports them.
 - A byte member passed through an `int` ABI can emit `xor eax,eax; mov al,[member]`.
