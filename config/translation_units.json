@@ -114,6 +114,21 @@
         "0044B270": "src/matching/0044B270_DeleteArrays.cpp",
         "0044B2B0": "src/matching/0044B2B0_MakeArrays.cpp"
       }
+    },
+    {
+      "name": "act_move",
+      "source": "src/act_move_tu.cpp",
+      "flags": "config/flags/00405620_RGE_Action_Move_To.rsp",
+      "owners": {
+        "00405510": "src/matching/00405510_RGE_Action_Move_To.cpp",
+        "004055A0": "src/matching/004055A0_RGE_Action_Move_To.cpp",
+        "00405620": "src/matching/00405620_RGE_Action_Move_To.cpp"
+      },
+      "symbols": {
+        "00405510": "??0RGE_Action_Move_To@@QAE@HPAVRGE_Action_Object@@@Z",
+        "004055A0": "??0RGE_Action_Move_To@@QAE@PAVRGE_Action_Object@@MMMMPAVRGE_Sprite@@@Z",
+        "00405620": "??0RGE_Action_Move_To@@QAE@PAVRGE_Action_Object@@PAVRGE_Static_Object@@MPAVRGE_Sprite@@@Z"
+      }
     }
   ]
 }

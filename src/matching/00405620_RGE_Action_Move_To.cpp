@@ -83,6 +83,7 @@
 // 205B/53B; exact numeric #line context was codegen-identical. Restored the clean typed if/else source; no new
 // period-plausible source lead found. Next evidence needed is a matching VC5 EH-tail context or original source.
 
+#ifndef ACT_MOVE_CONTEXT_H
 class RGE_Action_Object;
 class RGE_Sprite;
 class RGE_Static_Object;
@@ -210,6 +211,7 @@ public:
 
     RGE_Action_Move_To(RGE_Action_Object* obj, RGE_Static_Object* target, float range_val, RGE_Sprite* spr);
 };
+#endif
 
 RGE_Action_Move_To::RGE_Action_Move_To(RGE_Action_Object* obj, RGE_Static_Object* target, float range_val, RGE_Sprite* spr)
     : RGE_Action(obj, 1)
@@ -253,12 +255,10 @@ RGE_Action_Move_To::RGE_Action_Move_To(RGE_Action_Object* obj, RGE_Static_Object
 // The oracle has one outer null test, one move-sprite null test, two branch-local stores, and one shared FS cleanup.
 // No tested source form kept all four facts and selected one local VC5 cleanup tail. The 187-byte member-RMW form is
 // rejected: it stores move_sprite before its null test. Preserve this canonical nested if/else source.
-// ACCEPTED DRIFT: The base setup, target fields, range logic, sprite reads, two
-// branch-local sprite stores, and both calls match. The rebuild clones the two
-// fallback EH epilogues. Each branch restores the same SEH link, registers,
-// stack, this return, and fault order. No call or memory effect moves across
-// cleanup. Merged-store forms are rejected despite their smaller byte drift.
-// Translation-unit sweep: one prior out-of-line diagnostic function selects an
-// exact 186-byte body. Neither available real earlier act_move.cpp owner can be
-// combined directly because their local class declarations conflict. No
-// synthetic context is retained. A future pass needs one shared action surface.
+// 2026-08-23 shared-TU recovery: the shared action surface resolves the prior
+// declaration conflicts. PDB-ordered owners 00405510 and 004055A0 select the
+// original shared EH tail. All three real owners match at 0.0000% under /GX.
+// Walkback: the target alone returns the prior 205-byte, 47-byte mismatch.
+// Either real prior alone selects the exact 186-byte body. The full PDB prefix stays exact.
+// Both priors remain because act_move.cpp owns them in source and address order.
+// The stdlib include position is incidental to this target. Owner 004055A0 retains it.

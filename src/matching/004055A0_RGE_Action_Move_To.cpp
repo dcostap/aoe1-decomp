@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 
+#ifndef ACT_MOVE_CONTEXT_H
 class RGE_Action_Object;
 class RGE_Sprite;
 class RGE_Static_Object;
@@ -40,11 +41,11 @@ public:
 
     RGE_Action_Move_To(RGE_Action_Object* obj, float x, float y, float z, float range, RGE_Sprite* spr);
 };
+#endif
 
 RGE_Action_Move_To::RGE_Action_Move_To(RGE_Action_Object* obj, float x, float y, float z, float range_val, RGE_Sprite* spr)
     : RGE_Action(obj, 1)
 {
-    vtable_ptr = (void*)0x56E3A0;
     action_type = 1;
 
     target_x = x;
