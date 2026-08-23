@@ -1,7 +1,8 @@
 // VA: 0041A150 RGE_Animated_Object::RGE_Animated_Object
-// ani_obj.cpp lines 29-32
-
-// attempt 1: natural C++ using sibling pattern from already-matched 0041A210
+// PDB owner: ani_obj.cpp lines 29-32; body boundary: 0041A150-0041A1D2.
+// BINARY NOTE: aiuaimod.cpp UnitAIModule::logDebug ends at 0041A14D.
+// The next normal PDB-owned function starts at 0041A150 in ani_obj.cpp.
+// The inherited virtual surface naturally publishes the derived vtable.
 
 class RGE_Game_World;
 class RGE_Master_Static_Object;
@@ -27,9 +28,6 @@ public:
 RGE_Animated_Object::RGE_Animated_Object(RGE_Master_Animated_Object* master,
     RGE_Player* player, float a, float b, float c, int doSetup)
     : RGE_Static_Object((RGE_Master_Static_Object*)master, player, a, b, c, 0) {
-
-    *(void**)this = (void*)0x56EC10;
-
     if (doSetup != 0) {
         setup(master, player, a, b, c);
     }
