@@ -320,6 +320,17 @@
         "00490520": "src/accepted_drift/00490520_move_scenario_down.cpp",
         "004905D0": "src/matching/004905D0_action.cpp"
       }
+    },
+    {
+      "name": "diam_map_prefix",
+      "source": "src/diam_map_tu.cpp",
+      "flags": "config/flags/00436930_RGE_Diamond_Map.rsp",
+      "owners": {
+        "00436830": "src/matching/00436830_RGE_Diamond_Map.cpp",
+        "00436930": "src/matching/00436930_RGE_Diamond_Map.cpp",
+        "004369C0": "src/matching/004369C0_setup.cpp",
+        "00436A10": "src/accepted_drift/00436A10_set_bitmap.cpp"
+      }
     }
   ]
 }

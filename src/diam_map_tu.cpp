@@ -1,0 +1,5 @@
+#include "../include/diam_map_context.h"
+#include "matching/00436830_RGE_Diamond_Map.cpp"
+#include "matching/00436930_RGE_Diamond_Map.cpp"
+#include "matching/004369C0_setup.cpp"
+#include "accepted_drift/00436A10_set_bitmap.cpp"

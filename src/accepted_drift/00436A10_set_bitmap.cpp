@@ -34,6 +34,7 @@
 // Residual drift is picture/width register choice and shared cleanup placement.
 // FLAGS: config/flags/00436A10_set_bitmap.rsp (/nologo /c /O2 /Oy /GX)
 
+#include "../../include/diam_map_context.h"
 #include <stdlib.h>
 
 class TPicture {
@@ -50,40 +51,6 @@ public:
     TPicture(char* name, long param_2, int param_3, void* param_4, int param_5);
     ~TPicture();
     long AlignedWidth();
-};
-
-class RGE_Game_World;
-
-class TPanel {
-public:
-    virtual ~TPanel();
-    char gap_04[0xF0];
-};
-
-class RGE_Map_Image_Line {
-public:
-    short tile_row;
-    short start_x;
-    short line_len;
-};
-
-class RGE_Diamond_Map : public TPanel {
-public:
-    int set_bitmap(char* name, long param_2);
-
-    RGE_Game_World* world;         // +0xF4
-    char gap_F8[0x30];
-    RGE_Map_Image_Line* map_image_lines; // +0x128
-    void* map_tile_rows;           // +0x12C
-    short map_wid;                 // +0x130
-    short map_hgt;                 // +0x132
-    short map_image_start_y;       // +0x134
-    short map_image_wid;           // +0x136
-    short map_image_hgt;           // +0x138
-    short map_tile_row_cnt;        // +0x13A
-    float map_row_step;            // +0x13C
-
-    void set_world(RGE_Game_World* w);
 };
 
 void* operator new(unsigned int);
