@@ -430,9 +430,7 @@ public:
 protected:
     virtual void scenario_make_player(short, unsigned char, unsigned char, unsigned char, char*);
     virtual void scenario_make_map(int);
-public:
-    virtual unsigned char load_scenario(char*, RGE_Player_Info*);
-protected:
+    virtual unsigned char load_scenario(char*, RGE_Player_Info&);
     virtual unsigned char load_scenario(RGE_Player_Info&);
     virtual void load_scenario1(int, RGE_Player_Info&);
     virtual void load_scenario2(int, RGE_Player_Info&);

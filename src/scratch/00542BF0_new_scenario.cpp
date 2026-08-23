@@ -37,9 +37,9 @@ unsigned char RGE_Game_World::new_scenario(RGE_Player_Info& info, int seed) {
 
     unsigned char result;
     if (info.scenario != 0) {
-        result = this->load_scenario(info.scenario, &info);
+        result = this->load_scenario(info.scenario, info);
     } else {
-        this->setup_player_colors(&info);
+        this->setup_player_colors(info);
         this->scenario_init(this);
         result = 1;
     }

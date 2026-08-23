@@ -160,6 +160,47 @@
 // Continuation sa-5abaa990-r3: a right-to-left chained clear, a named validity
 // result, and named width/quotient locals were duplicate or farther. None
 // changed the EDI zero owner. Restored the 217-byte, 61-difference source.
+// Matching-worker exact-finish sa-4f34b859-r1: the authentic view.cpp context
+// gate was rechecked through src/view_tu.cpp. Exact anchors 00534100,
+// 00534130, 00535480, 00535EB0, 00535ED0, 00535F20, 00535F70, 00535FC0,
+// 005381C0, 00538420, and 00538410 remain exact in that shared surface.
+// The target stays 217 bytes with 62 instructions, no calls, no frame, four
+// saved registers, and 61 strict differences. The first difference is the
+// original EBP zero versus rebuilt EDI zero at +5. The original restores EDI
+// before its eight clear-tail stores; the rebuild keeps the zero in EDI there.
+// A register-qualified int zero and a register-qualified panel-width local
+// both reproduced the clean 217/61 basin. Both were restored. No natural
+// source-local change tested in this claim moved the EBP/EDI basin. Next
+// evidence needs the omitted original view.cpp source or compiler context.
+// Exact-finish blocker audit sa-1f3e151c: fresh validation in the current
+// src/view_tu.cpp context reproduced 217 bytes, 62 instructions, no calls,
+// no frame, four saved registers, the matched calc_draw_vars owner, and 61
+// strict differences. Three new natural liveness tests were duplicates:
+// a short zero used only for guard and clear publication; success-arm short
+// tile-width and tile-height locals; and their combination. Each was restored.
+// BINARY NOTE: this body has no x87 work, calls, or Tile_Edge_Tables access.
+// Its writable publication is limited to the proven short fields at +0x116
+// through +0x124. The unresolved bytes are the original EBP zero versus the
+// rebuild EDI zero and the original early EDI restore before clear stores.
+// Do not add table access, x87 arithmetic, calls, or synthetic state to tune
+// this register-allocation blocker.
+// Continuation sa-7e3ccf7d-r1: fresh validation reproduced the pinned
+// 217-byte body with 61 strict differences. DIA reports only the registered
+// `this` symbol. It reports no source local or inline frame for this function.
+// Exact same-TU donor 00539D90 has the original delayed-save prologue shape.
+// Its mutable short local explains that donor's EBP zero, not this target.
+// Fifteen new variant families tested output locals, divisor reuse, predicate
+// locals, references, accessors, declaration order, chains, and register hints.
+// They also tested the PDB-backed RGE_View and TPanel method surfaces.
+// A 144-case VC5 flag classification produced three groups and no match.
+// All size-valid natural forms kept the original blocker or moved farther.
+// Adding exact predecessor 00533F70 changed later scheduling and size only.
+// It kept the rebuilt EDI zero at the first guard. That owner is not in the
+// current shared translation-unit map, so the experiment cannot support an
+// exact claim. The pinned clean source remains the smallest supported form.
+// Useful next evidence is the omitted original view.cpp source or a reviewed
+// expansion of the translation-unit owner map. Do not add fake predecessor
+// code, volatility, table reads, floating-point work, or raw register control.
 
 #ifndef RGE_VIEW_SHARED_CONTEXT
 struct tagRECT {

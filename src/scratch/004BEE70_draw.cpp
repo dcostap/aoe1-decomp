@@ -8,21 +8,41 @@
 // - BINARY NOTE: level-2 range reads +0x114; the final level-4/6 conversion reads
 //   +0x140. These are not the nearby cached fields with similar names.
 // - BINARY NOTE: the attribute scan loads each float before comparing DAT_00574524.
-// - Current clean result: 1577 bytes, 41 calls, 304 differing bytes (19.28%).
+// - Current clean result: 1577 bytes, 41 calls, 120 differing bytes (7.61%).
 // - Natural shape progress: while scan, positive string guard, direct master
 //   rereads after calls, and pre-guard armor load recover exact blocks.
-// - Remaining drift starts at the attribute switch register basin. The source
-//   still has nonexact cursor and value-register choices in that dispatch.
+// - The level-2 path rereads master_game_obj after each draw_item call. This
+//   restores the executable's external-mutation behavior and tail registers.
+// - The level-1 draw passes the selected icon as argument two. It passes the
+//   converted amount as argument four and zero as argument five.
+// - Remaining body drift starts at the get_pierce_armor result schedule. The
+//   rebuilt tail is two bytes shorter before final context filler.
+// - The local blocker is the get_pierce_armor result schedule. The executable
+//   reloads master_game_obj into ECX before it copies EAX to EDI. The rebuild
+//   copies EAX first and then reloads the member through EAX.
+// - The direct speed expression restores ftol before pierce-value extension.
+//   The final draw still uses different EAX, ECX, and EDX colors.
+// - BINARY NOTE: cases 0, 15, 16, and 17 have separate equal assignments.
+//   VC5 then emits the original eight-entry jump table at 004BF49C. Stacked
+//   labels emit only six entries and place the byte table at the wrong offset.
+// - PDB type data proves TRIBE_Player ownership at +0x110 and the nested
+//   TRIBE_Panel_Object::ValueType parameter for draw_item.
+// - An authentic constructor/destructor/set_master_info prefix changed zero
+//   target bytes. The shortest complete spnl_obj.cpp prefix is not the cause.
+// - Local width, scope, declaration order, receiver, guard, comma-expression,
+//   register, include-order, scalar-type, and supported flag probes did not
+//   recover the remaining schedule. See target-session probes 92-111.
+// - Exact-finish audit: the direct speed member expression restores the
+//   executable's ftol-before-pierce order and two exact tail blocks. Keep it.
+// - BINARY NOTE: the attribute switch references 004BF49C and 004BF4BC,
+//   after the 004BF498 draw boundary and the reviewed 004BF499 padding anchor.
 // - No inline assembly, fake vtable, or compiler-only source remains.
 // - Behavior correction: the first TextOutA call draws the player name at
 //   pnl_y. The prior source incorrectly added 0x0F to that call.
-// - 16 meaningful probes ran in this claim. Rejected probes restored the pinned
-//   source. See target-session history for each hypothesis and check result.
-// - Accepted-drift audit: do not promote. In the unit-level-2 path, the
-//   executable rereads master_game_obj after draw_item calls. The rebuild keeps
-//   the earlier pointer across those calls. In the final speed path, the rebuild
-//   pushes the pierce value before ftol; the executable calls ftol first. This
-//   changes external-call mutation behavior and helper-visible stack context.
+// - This claim ran 20 meaningful probes. Rejected probes restored the clean
+//   source. See target-session history for the complete variant families.
+// - Accepted-drift audit: do not promote. The remaining drift is the local
+//   switch relocation pair, the first guard's register basin, and tail colors.
 
 #include "../../include/game_globals.h"
 #include <windows.h>
@@ -47,6 +67,7 @@ class TDrawArea;
 class RGE_Color_Table;
 class RGE_Sprite;
 class RGE_Player;
+class TRIBE_Player;
 class RGE_Master_Static_Object;
 class RGE_Master_Combat_Object;
 
@@ -204,6 +225,9 @@ public:
     short id;                            // +0x4A
     char gap_4C[0xBC];
     RGE_Color_Table* color_table;        // +0x108
+};
+
+class TRIBE_Player : public RGE_Player {
 };
 
 class RGE_Master_Static_Object {
@@ -443,7 +467,16 @@ extern RGE_Base_Game* rge_base_game;
 
 class TRIBE_Panel_Object : public TPanel {
 public:
-    virtual void draw_item(int, int, int, int, int);
+    enum ValueType {
+        ValueTypeNumber = 0,
+        ValueTypeBonus = 1,
+        ValueTypeCompare = 2,
+        ValueTypePercent = 3,
+        ValueTypeNone = 4
+    };
+
+protected:
+    virtual void draw_item(int, int, ValueType, int, int);
 
     void* font;                         // +0xF4
     long font_wid;                      // +0xF8
@@ -452,7 +485,7 @@ public:
     TShape* item_pic;                   // +0x104
     TShape* unit_pics;                  // +0x108
     TShape** bldg_pics;                 // +0x10C
-    RGE_Player* player;                 // +0x110
+    TRIBE_Player* player;               // +0x110
     uchar gap_114[0x0C];                // +0x114..+0x11F
     uchar mode;                         // +0x120
     uchar gap_121[0xF3];                // +0x121..+0x213
@@ -463,7 +496,7 @@ public:
 class TRIBE_Scenario_Editor_Panel_Object : public TRIBE_Panel_Object {
 public:
     virtual void draw();
-    virtual void draw_item(int, int, int, int, int);
+    virtual void draw_item(int, int, ValueType, int, int);
 
     RGE_Master_Static_Object* master_game_obj; // +0x214
     int master_culture_id;                     // +0x218
@@ -607,7 +640,7 @@ void TRIBE_Scenario_Editor_Panel_Object::draw()
 
         if (unit_level == 3) {
             short amount = ((RGE_Master_Combat_Object*)master)->orig_weapon;
-            this->draw_item(0, 7, 1, amount, amount);
+            this->draw_item(0, 7, ValueTypeBonus, amount, amount);
             item_index = 1;
         } else {
             if (unit_level != 9 && unit_level != 4 && unit_level != 5 &&
@@ -628,8 +661,14 @@ void TRIBE_Scenario_Editor_Panel_Object::draw()
                     int value_type;
                     switch (attr_type) {
                     case 0:
+                        value_type = 2;
+                        break;
                     case 0x0F:
+                        value_type = 2;
+                        break;
                     case 0x10:
+                        value_type = 2;
+                        break;
                     case 0x11:
                         value_type = 2;
                         break;
@@ -646,22 +685,25 @@ void TRIBE_Scenario_Editor_Panel_Object::draw()
                         goto draw_finish;
                     }
 
-                    this->draw_item(0, 0, value_type, 0,
-                                    (int)master->attribute_amount_held[attr_index]);
+                    this->draw_item(
+                        0, value_type, ValueTypeNumber,
+                        (int)master->attribute_amount_held[attr_index], 0);
                     this->draw_finish();
                     return;
                 }
 
                 if (unit_level == 2) {
-                    RGE_Master_Combat_Object* combat =
-                        (RGE_Master_Combat_Object*)master;
-                    this->draw_item(0, 7, 1, combat->orig_weapon,
-                                    combat->orig_weapon);
-                    this->draw_item(1, 8, 1, combat->orig_armor,
-                                    combat->orig_armor);
-                    this->draw_item(2, 6, 1,
-                                    (int)combat->weapon_range,
-                                    (int)combat->weapon_range);
+                    this->draw_item(
+                        0, 7, ValueTypeBonus,
+                        ((RGE_Master_Combat_Object*)master)->orig_weapon,
+                        ((RGE_Master_Combat_Object*)master)->orig_weapon);
+                    this->draw_item(
+                        1, 8, ValueTypeBonus,
+                        ((RGE_Master_Combat_Object*)this->master_game_obj)->orig_armor,
+                        ((RGE_Master_Combat_Object*)this->master_game_obj)->orig_armor);
+                    this->draw_item(2, 6, ValueTypeBonus,
+                                    (int)((RGE_Master_Combat_Object*)this->master_game_obj)->weapon_range,
+                                    (int)((RGE_Master_Combat_Object*)this->master_game_obj)->weapon_range);
                     this->draw_finish();
                     return;
                 }
@@ -671,7 +713,7 @@ void TRIBE_Scenario_Editor_Panel_Object::draw()
 
             if (master->unit_level == 3 || master->unit_level == 4) {
                 short amount = ((RGE_Master_Combat_Object*)master)->orig_weapon;
-                this->draw_item(0, 7, 1, amount, amount);
+                this->draw_item(0, 7, ValueTypeBonus, amount, amount);
                 item_index = 1;
             }
         }
@@ -681,7 +723,7 @@ void TRIBE_Scenario_Editor_Panel_Object::draw()
         short armor_value = combat->orig_armor;
         if (this->master_game_obj->unit_level == 4 ||
             this->master_game_obj->unit_level == 6) {
-            this->draw_item(item_index, 8, 1,
+            this->draw_item(item_index, 8, ValueTypeBonus,
                             armor_value, armor_value);
             ++item_index;
         }
@@ -690,17 +732,15 @@ void TRIBE_Scenario_Editor_Panel_Object::draw()
         short pierce_value = (short)pierce_armor;
         if (this->master_game_obj->unit_level == 4 ||
             this->master_game_obj->unit_level == 6) {
-            this->draw_item(item_index, 10, 1,
+            this->draw_item(item_index, 10, ValueTypeBonus,
                             pierce_value, pierce_value);
             ++item_index;
         }
 
         if (this->master_game_obj->unit_level == 4 ||
             this->master_game_obj->unit_level == 6) {
-            RGE_Master_Combat_Object* combat =
-                (RGE_Master_Combat_Object*)this->master_game_obj;
-            short speed_value = (short)combat->orig_weapon_range;
-            this->draw_item(item_index, 6, 1,
+            short speed_value = (short)((RGE_Master_Combat_Object*)this->master_game_obj)->orig_weapon_range;
+            this->draw_item(item_index, 6, ValueTypeBonus,
                             speed_value, pierce_value);
         }
     }
