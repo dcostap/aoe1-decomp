@@ -1,123 +1,8 @@
-// VA: 00544090 RGE_Game_World::load_scenario
-// PDB source: World.cpp lines 2393-2465
-//
-// Attempt log:
-// - The initial draft had the right version dispatch and virtual slots but
-//   used raw absolute-address macros, fastcall shims, and a misnamed final
-//   get-campaign call.  It was 442 bytes with one extra direct call.
-// - The executable proves the scenario-version words are external rdata
-//   values, the base-game pointer is the typed global, and the file APIs use
-//   the same int-returning declarations as the exact scenario-header donors.
-// - The remaining source shape follows the nested version chain: the 1.02
-//   handler is shared with the 1.03 path, while later handlers jump over the
-//   chain to one common success tail and failures remain cold at the end.
-// - Typed-global/nested, source-ordered, and late-version negative/positive
-//   guard variants all settled in the same 443-byte VC5 basin.  The current
-//   candidate has 16/17 ordered calls and a localized three-byte size excess:
-//   VC5 places one near jump around the cold failure block where the original
-//   uses a short jump.  No raw-address or register-forcing scaffolding remains.
-// - The proven World vtable declarations with a destructor and setup-color
-//   overload shifted the final virtual call from slot A8 to A4 in this TU, so
-//   that surface was restored to the slot-preserving proxy.  Cleanup-label
-//   order, direct open-failure return, inverted late-version guards, and
-//   explicit version8 gotos were codegen duplicates or farther; the literal
-//   nested decompiler CFG expanded to 453 bytes and was discarded.
-// - Paused after the bounded pass: the clean 443-byte candidate remains the
-//   source reconstruction, with the remaining drift localized to cold-failure
-//   block placement/near-jump encoding rather than behavior or call identity.
-// - Follow-up: an explicit version8 label with a final inequality branch was
-//   codegen-identical. Moving success ahead of shared_80 so late versions fall
-//   through was also identical; restore the clean dispatch source.
-// - The exact get_scenario_header donor confirms related version OR chains,
-//   but its unconditional close does not establish this function's cold-tail
-//   layout. No new natural structural lead remains.
-// - Reordered the final natural version OR chain to the same-TU donor's
-//   1.09, 1.11, 1.10 order; emitted code was unchanged, so the cold-tail
-//   placement remains the structural blocker.
-// - Follow-up claim sa-063fefea-r1: the fresh baseline stayed at 443 bytes,
-//   with 17 calls, a 0x8 frame, and 197 differing bytes. Natural nested,
-//   grouped, inverted, duplicated-call, and label-order forms were worse or
-//   codegen duplicates. The target rdata labels confirm 1.11 at 0x57FB50 and
-//   1.10 at 0x57FB58. Absolute rdata forms improved resynchronization but did
-//   not fix the cold-tail placement. C-linkage API declarations and stdlib
-//   context were duplicates. Restore this natural candidate for the pause.
-// - Follow-up claim sa-6f6dd963-r1: natural late negative guards, the exact
-//   related World.cpp donor's version8 label shape, literal version strings,
-//   nested success-label placement, and full if/else dispatch were tested.
-//   The first, second, and fourth forms were codegen duplicates; the full
-//   if/else form added a load_scenario2 call and was discarded. The clean
-//   typed source remains a 443-byte reconstruction against the 440-byte
-//   target. The only unresolved drift is the cold close block order and its
-//   final branch polarity.
-// Accepted drift: all version reads and guards, 17 calls, virtual slots,
-// arguments, allocation/free behavior, failure closes, campaign-field
-// addresses, and returns match. VC5 moves the cold close block before the
-// final version handler and reverses the branch around it. Runtime paths are
-// equivalent.
-
-extern int world_update_counter;
-
-extern int version_101;
-extern int version_102;
-extern int version_103;
-extern int version_104;
-extern int version_105;
-extern int version_106;
-extern int version_107;
-extern int version_108;
-extern int version_109;
-extern int version_110;
-extern int version_111;
-
-extern int rge_read_uncompressed(int handle, void* buffer, int count);
-extern int rge_close(int handle);
-extern void* malloc(int size);
-extern int free(void* pointer);
-
-class RGE_Player_Info {
-};
-
-class RGE_Base_Game {
-public:
-    int campaign_open_scenario();
-    void get_campaign_info(int* campaign, int* player, int* scenario_count);
-};
-
-extern RGE_Base_Game* rge_base_game;
-
-class RGE_Game_World {
-public:
-    virtual void stub_00();  virtual void stub_04();  virtual void stub_08();  virtual void stub_0C();
-    virtual void stub_10();  virtual void stub_14();  virtual void stub_18();  virtual void stub_1C();
-    virtual void stub_20();  virtual void stub_24();  virtual void stub_28();  virtual void stub_2C();
-    virtual void stub_30();  virtual void stub_34();  virtual void stub_38();  virtual void stub_3C();
-    virtual void stub_40();  virtual void stub_44();  virtual void stub_48();  virtual void stub_4C();
-    virtual void stub_50();  virtual void stub_54();  virtual void stub_58();  virtual void stub_5C();
-    virtual void stub_60();  virtual void stub_64();  virtual void stub_68();  virtual void stub_6C();
-    virtual void stub_70();
-    virtual void stub_74();
-    virtual void stub_78();
-    virtual void load_scenario1(int file, RGE_Player_Info& info);
-    virtual void load_scenario2(int file, RGE_Player_Info& info);
-    virtual void load_scenario3(int file, RGE_Player_Info& info);
-    virtual void load_scenario4(int file, RGE_Player_Info& info);
-    virtual void load_scenario5(int file, RGE_Player_Info& info);
-    virtual void load_scenario6(int file, RGE_Player_Info& info);
-    virtual void load_scenario7(int file, RGE_Player_Info& info);
-    virtual void load_scenario8(int file, RGE_Player_Info& info);
-    virtual void stub_9C();
-    virtual void stub_A0();
-    virtual void stub_A4();
-    virtual void setup_player_colors(RGE_Player_Info& info);
-    virtual void stub_AC();
-
-    char gap_04[0xA0];
-    int campaign;
-    int campaign_player;
-    int campaign_scenario;
-
-    unsigned char load_scenario(RGE_Player_Info& info);
-};
+// 00544090 RGE_Game_World::load_scenario (World.cpp:2393-2465)
+// Shared World.cpp context reconstruction. Accepted drift remains 443 bytes
+// versus 440, with 197 differing bytes and 17 ordered calls. The remaining
+// difference is the cold failure-tail branch layout.
+#include "../../include/world_scenario_context.h"
 
 unsigned char RGE_Game_World::load_scenario(RGE_Player_Info& info) {
     int header_size;
@@ -188,7 +73,7 @@ shared_80:
     goto success;
 
 success:
-    this->setup_player_colors(info);
+    this->setup_player_colors(&info);
     rge_base_game->get_campaign_info(&this->campaign,
                                      &this->campaign_player,
                                      &this->campaign_scenario);

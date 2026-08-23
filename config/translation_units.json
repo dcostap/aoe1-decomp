@@ -284,6 +284,22 @@
         "00503D30": "src/matching/00503D30_processNotify.cpp",
         "00503E30": "src/matching/00503E30_processIdle.cpp"
       }
+    },
+    {
+      "name": "world_scenario_sparse",
+      "source": "src/world_scenario_tu.cpp",
+      "flags": "config/flags/default.rsp",
+      "owners": {
+        "00542BF0": "src/scratch/00542BF0_new_scenario.cpp",
+        "00543E00": "src/accepted_drift/00543E00_load_scenario.cpp",
+        "00544090": "src/accepted_drift/00544090_load_scenario.cpp",
+        "00544E70": "src/matching/00544E70_load_scenario5.cpp",
+        "005451A0": "src/accepted_drift/005451A0_load_scenario6.cpp"
+      },
+      "symbols": {
+        "00543E00": "?load_scenario@RGE_Game_World@@UAEEPADPAURGE_Player_Info@@@Z",
+        "00544090": "?load_scenario@RGE_Game_World@@MAEEAAURGE_Player_Info@@@Z"
+      }
     }
   ]
 }
