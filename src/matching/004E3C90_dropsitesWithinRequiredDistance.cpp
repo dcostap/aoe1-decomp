@@ -51,22 +51,6 @@
 // ManagedArray source then matches all 509 bytes and five calls. Target-only
 // compilation emits the reviewed duplicated-tail drift.
 
-class RGE_Static_Object;
-
-class MainDecisionAIModule {
-public:
-    RGE_Static_Object* object(int id);
-};
-
-struct ResourceInfo {
-    int id;
-    char gap_04[9];
-    unsigned char gone;
-    unsigned char dropDistance;
-    char gap_0f[1];
-    int dropsiteID;
-};
-
 class ManagedArray_int {
 public:
     int* value;
@@ -132,19 +116,6 @@ public:
         this->numberValue++;
         return 1;
     }
-};
-
-class TribeInformationAIModule {
-public:
-    char gap_000[0x100];
-    MainDecisionAIModule* md;
-    char gap_104[0x4D0 - 0x104];
-    ResourceInfo* resources[4];
-    int numResources[4];
-
-    int dropsitesWithinRequiredDistance(int& numApplicableResources,
-                                        int resourceType,
-                                        int requiredDistance);
 };
 
 int TribeInformationAIModule::dropsitesWithinRequiredDistance(

@@ -1,6 +1,5 @@
-// From taiinfmd.cpp
-
-int __stdcall importantUnit(int type_id) {
+// PDB owner: TribeInformationAIModule, taiinfmd.cpp lines 2279-2303.
+int TribeInformationAIModule::importantUnit(int type_id) {
     if (type_id != 0 && type_id != 3 && type_id != 4 && type_id != 0x18 &&
         type_id != 0x15 && type_id != 6 && type_id != 0x19 && type_id != 0x11 &&
         type_id != 0x1A && type_id != 0xC && type_id != 0x23 && type_id != 0x17 &&

@@ -1,16 +1,6 @@
-struct InnerObj {
-    char pad[0x120];
-    float field_120;
-};
-class SomeClass {
-public:
-    void reset_attack_timer();
-    char pad[0x08];
-    InnerObj* field_08;
-    char pad2[0x1B0];
-    float field_1BC;
-};
-void SomeClass::reset_attack_timer() {
-    float tmp = this->field_08->field_120;
-    this->field_1BC = tmp;
+// PDB owner: RGE_Combat_Object, com_obj.cpp lines 483-492.
+// The named float preserves the binary-observed x87 load and store.
+void RGE_Combat_Object::reset_attack_timer() {
+    float timer = this->master_obj->speed_of_attack;
+    this->attack_timer = timer;
 }
