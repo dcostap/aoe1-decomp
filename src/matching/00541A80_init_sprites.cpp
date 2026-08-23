@@ -37,39 +37,7 @@
 // parameter-slot reuse, register allocation, and per-access member reloads.
 // No inline asm; custom flags: /GX (required by the original EH frame).
 
-#include <stddef.h>
-#include <stdlib.h>
-
-void* operator new(size_t size);
-
-struct RGE_Sound;
-struct RGE_Color_Table;
-
-struct RGE_Sprite {
-    void* vtable_ptr;
-    char gap_04[0x74];
-
-    void rehook(RGE_Sprite** sprites_array);
-    RGE_Sprite(int param_1, RGE_Sound** sounds, RGE_Color_Table** color_tables);
-};
-
-void rge_read(int param_1, void* buf, int size);
-
-void* calloc(int count, int size);
-
-class RGE_Game_World {
-public:
-    virtual void init_sprites(int param_1);
-
-    char pad_00[0x30 - 4];
-    RGE_Sound** sounds;         // +0x30
-    short sprite_num;           // +0x34
-    char pad_36[2];             // +0x36
-    RGE_Sprite** sprites;       // +0x38
-    char pad_3C[0x64 - 0x3C];
-    RGE_Color_Table** color_tables; // +0x64
-
-};
+#include "../../include/world_scenario_context.h"
 
 void RGE_Game_World::init_sprites(int param_1)
 {

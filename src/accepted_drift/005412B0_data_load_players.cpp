@@ -21,35 +21,12 @@
 // Vtable call (this->data_load_players_type) pattern matches exactly.
 //
 // Parked: register scheduling difference cannot be resolved with source changes.
-// TU context (World.cpp including RGE_Game_World.h with virtual declarations)
-// would likely resolve, but single-function compilation lacks that context.
+// Full canonical World.cpp context emits the same reviewed bytes. It does not
+// change the remaining register schedule.
 
 #include <stdio.h>
 #include <stdlib.h>
-
-struct RGE_Master_Player;
-
-struct RGE_Game_World {
-    void* vtable;                       // +0x00
-    char _gap_04[0x40];                // +0x04-0x43
-    short master_player_num;           // +0x44
-    char _pad_46[2];                   // +0x46-0x47
-    RGE_Master_Player** master_players; // +0x48
-
-    unsigned char data_load_players(char* param_1);
-};
-
-// Helper struct to generate correct __thiscall vtable dispatch at slot 7
-struct RGE_Game_World_Call {
-    virtual void dummy0();
-    virtual void dummy1();
-    virtual void dummy2();
-    virtual void dummy3();
-    virtual void dummy4();
-    virtual void dummy5();
-    virtual void dummy6();
-    virtual void data_load_players_type(short type, short id, FILE* fp);
-};
+#include "../../include/world_scenario_context.h"
 
 unsigned char RGE_Game_World::data_load_players(char* param_1) {
     FILE* fp;
@@ -64,7 +41,7 @@ unsigned char RGE_Game_World::data_load_players(char* param_1) {
         this->master_players = (RGE_Master_Player**)calloc(this->master_player_num, 4);
         for (short i = 0; i < *(short*)&param_1; i++) {
             if (fscanf(fp, "%hd %hd", &type, &id) != -1) {
-                ((RGE_Game_World_Call*)this)->data_load_players_type((short)type, (short)id, fp);
+                this->data_load_players_type((short)type, (short)id, fp);
             }
         }
         fclose(fp);

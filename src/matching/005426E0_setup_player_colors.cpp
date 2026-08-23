@@ -6,31 +6,7 @@
 // attempt 2: moved 'int color = -1;' above set_color_table call -> EXACT MATCH (109/109, 0.0000%)
 // default flags
 
-void __cdecl free(void*);
-void* __cdecl calloc(size_t count, size_t size);
-
-class RGE_Player {
-public:
-    void set_color_table(unsigned char color);
-};
-
-class RGE_Color_Table {
-public:
-    char gap_00[0x24];
-    unsigned char type;  // +0x24
-};
-
-class RGE_Game_World {
-public:
-    char gap_00[0x3C];
-    short player_num;                // +0x3C
-    RGE_Player** players;            // +0x40
-    char gap_44[0x1C];
-    short color_table_num;           // +0x60
-    RGE_Color_Table** color_tables;  // +0x64
-
-    void setup_player_colors();
-};
+#include "../../include/world_scenario_context.h"
 
 void RGE_Game_World::setup_player_colors() {
     int color = -1;

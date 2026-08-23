@@ -1,17 +1,4 @@
-class RGE_Player {
-public:
-    void remake_visible_map(void);
-};
-
-class RGE_Game_World {
-public:
-    char gap_00[0x3C];
-    short player_num;
-    char gap_3E[0x02];
-    RGE_Player** players;
-
-    void reset_player_visible_maps(void);
-};
+#include "../../include/world_scenario_context.h"
 
 void RGE_Game_World::reset_player_visible_maps(void) {
     int i = 0;

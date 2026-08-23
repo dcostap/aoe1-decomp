@@ -2,6 +2,10 @@
 // Shared World.cpp context reconstruction. Accepted drift remains 443 bytes
 // versus 440, with 197 differing bytes and 17 ordered calls. The remaining
 // difference is the cold failure-tail branch layout.
+// Follow-up attempt log:
+// - Literal nested dispatch rebuilt 428 bytes and 330 differing bytes.
+// - Direct close returns rebuilt 468 bytes with 18 calls and two close sites.
+// Both forms worsened the target and were restored.
 #include "../../include/world_scenario_context.h"
 
 unsigned char RGE_Game_World::load_scenario(RGE_Player_Info& info) {
@@ -73,7 +77,7 @@ shared_80:
     goto success;
 
 success:
-    this->setup_player_colors(&info);
+    this->setup_player_colors(info);
     rge_base_game->get_campaign_info(&this->campaign,
                                      &this->campaign_player,
                                      &this->campaign_scenario);

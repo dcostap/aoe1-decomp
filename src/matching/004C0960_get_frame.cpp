@@ -54,37 +54,11 @@
 // all 514 bytes and nine calls. Target-only compilation emits the reviewed
 // duplicated-return drift.
 
+#include "../../include/sprite_context.h"
+
 extern void __cdecl addstring(char** dst, char* base, char* ext);
 extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
 extern "C" void __cdecl free(void* block);
-
-class TShape {
-public:
-    char data[0x20];
-
-    TShape(char* filename, long resource_id);
-    ~TShape();
-};
-
-class RGE_Base_Game {
-public:
-    virtual ~RGE_Base_Game();
-    void add_to_timing(int index, unsigned long value);
-};
-
-extern RGE_Base_Game* rge_base_game;
-
-class RGE_Sprite;
-
-class RGE_Picture_List {
-public:
-    short picture_num;
-    char gap_02[2];
-    RGE_Sprite* sprite;
-    short offset_x;
-    short offset_y;
-    short facet;
-};
 
 int RGE_Sprite::get_frame(short& min_x, short& min_y, short& max_x,
                           short& max_y, long frame, long facet)

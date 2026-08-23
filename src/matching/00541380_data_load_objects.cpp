@@ -14,35 +14,10 @@
 // - Main-agent audit replaced empty inline virtual bodies and the raw world vptr
 //   with canonical declarations; emitted code remains exact.
 
-extern "C" void* __cdecl fopen(const char*, const char*);
-extern "C" int __cdecl fscanf(void*, const char*, ...);
-extern "C" int __cdecl fclose(void*);
-
-struct RGE_Sprite;
-struct RGE_Sound;
-
-struct RGE_Master_Player {
-    virtual ~RGE_Master_Player();
-    virtual void d1();
-    virtual void d2();
-    virtual void add_object(short id);
-    virtual void add_object_data(void* fp, short v2, RGE_Sprite** sprites, RGE_Sound** sounds, short v1);
-};
-
-struct RGE_Game_World {
-    virtual ~RGE_Game_World();
-    char gap_04[0x2C];
-    RGE_Sound** sounds;  // +0x30
-    char gap_34[4];
-    RGE_Sprite** sprites;  // +0x38
-    char gap_3C[0x0C];
-    RGE_Master_Player** master_players;  // +0x48
-
-    unsigned char data_load_objects(char* filename);
-};
+#include "../../include/world_scenario_context.h"
 
 unsigned char RGE_Game_World::data_load_objects(char* filename) {
-    void* fp = fopen(filename, "r");
+    FILE* fp = fopen(filename, "r");
     if (fp != 0) {
         short player_count;
         short object_id;

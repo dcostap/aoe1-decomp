@@ -3,28 +3,7 @@
 // That preserves the original early dx/esi guard family while also recovering the `jl` loopback
 // and the farther shared fallback/ret1 tail.
 
-class RGE_Sprite;
-
-class RGE_Picture_List {
-public:
-    short picture_num;
-    char gap_02[0x2];
-    RGE_Sprite* sprite;
-    short offset_x;
-    short offset_y;
-    short facet;
-};
-
-class RGE_Sprite {
-public:
-    char gap_00[0x29];
-    unsigned char draw_level;
-    char gap_2A[0xC];
-    short draw_list_num;
-    RGE_Picture_List* draw_list;
-
-    int check_for_shadows();
-};
+#include "../../include/sprite_context.h"
 
 int RGE_Sprite::check_for_shadows() {
     short count;

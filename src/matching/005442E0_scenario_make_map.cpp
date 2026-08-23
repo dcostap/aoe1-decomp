@@ -1,10 +1,8 @@
-struct InnerObj { void method(int param_1, int param_2); };
-class SomeClass {
-public:
-    void scenario_make_map(int param_1);
-    char pad[0x28];
-    InnerObj* field_28;
-};
-void SomeClass::scenario_make_map(int param_1) {
-    this->field_28->method(param_1, 0);
+// 005442E0 RGE_Game_World::scenario_make_map (World.cpp:2483-2485)
+// Exact owner under the shared World.cpp scenario context.
+#include "../../include/world_scenario_context.h"
+
+void RGE_Game_World::scenario_make_map(int file)
+{
+    this->map->scenario_load(file, (unsigned char*)0);
 }

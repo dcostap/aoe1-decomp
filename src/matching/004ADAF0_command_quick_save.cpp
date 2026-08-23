@@ -1,11 +1,8 @@
-class QuickSaveHost {
-public:
-    void helper0(void);
-    void helper1(int a, int b);
-    void command_quick_save(void);
-};
 
-void QuickSaveHost::command_quick_save(void) {
-    this->helper0();
-    this->helper1(0, 0);
+
+#include "../../include/scr_sed_context.h"
+
+void TRIBE_Screen_Sed::command_quick_save(void) {
+    this->scenario_get_default_name();
+    this->command_save(0, 0);
 }

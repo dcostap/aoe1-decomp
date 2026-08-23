@@ -29,35 +29,12 @@
 // The raw-looking cursor is kept because the oracle proves EBX byte offsets,
 // repeated draw_list base loads, and the source decomp uses the same period
 // pointer-to-member arithmetic; no asm or compiler-only scaffolding is used.
+// Sprite group audit: the standalone owner is exact. With the preceding
+// 004C04F0 owner in PDB order, only the child-entry SIB base/index bytes drift;
+// the typed calls, stride, and all other bytes remain aligned. Natural address
+// and typed-entry variants did not change this context-local pair.
 
-class RGE_Sprite;
-
-class RGE_Picture_List {
-public:
-    short picture_num;
-    unsigned char gap_02[2];
-    RGE_Sprite* sprite;
-    short offset_x;
-    short offset_y;
-    short facet;
-    unsigned char gap_0E[2];
-};
-
-class RGE_Sprite {
-public:
-    unsigned char gap_00[0x2E];
-    short box_x1;
-    short box_y1;
-    short box_x2;
-    short box_y2;
-    short draw_list_num;
-    RGE_Picture_List* draw_list;
-    unsigned char gap_3C[0x24];
-    short facet_num;
-
-    unsigned char shape_hit_test(short x, short y, long facet, long value);
-    unsigned char hit_test(short x, short y, long facet, long value);
-};
+#include "../../include/sprite_context.h"
 
 unsigned char RGE_Sprite::hit_test(short x, short y, long facet, long value) {
     int index = 0;

@@ -20,33 +20,7 @@
 //
 // Accepted as benign saved-register allocation/scheduling drift. No inline asm/hacks.
 
-class RGE_Base_Game {
-public:
-    char gap[0x3FC];
-    short master_obj_id;
-};
-
-#define rge_base_game (*(RGE_Base_Game**)0x62C574)
-
-struct ListInfo {
-    char text[100];
-    short id;
-};
-
-class TListPanel {
-public:
-    void scroll_cur_line(unsigned char mode, short line, int update_scrollbar);
-};
-
-class TRIBE_Screen_Sed {
-public:
-    char gap_000[0x63C];
-    TListPanel* unit_list;
-    char gap_640[4];
-    ListInfo* unit_list_info;
-
-    void set_unit(short unit);
-};
+#include "../../include/scr_sed_context.h"
 
 void TRIBE_Screen_Sed::set_unit(short unit) {
     if (unit == -1) {

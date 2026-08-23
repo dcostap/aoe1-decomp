@@ -100,88 +100,11 @@
 // the canonical RGE_Picture_List ownership and recovers all 250 bytes.
 
 #include <stdio.h>
+#include "../../include/sprite_context.h"
 
 class RGE_Color_Table;
 class TDrawArea;
 class RGE_Sprite;
-
-class TShape {
-public:
-    char data[0x20];
-    TShape(char* filename, long resource_id);
-    ~TShape();
-};
-
-class RGE_Sound {
-public:
-    char gap_00[0x0C];
-    short id;
-};
-
-class RGE_Picture_List {
-public:
-    short picture_num;
-    char gap_02[2];
-    RGE_Sprite* sprite;
-    short offset_x;
-    short offset_y;
-    short facet;
-    char gap_0E[2];
-};
-
-class RGE_Sound_List {
-public:
-    RGE_Sound* sound[3];
-    short frame[3];
-    char gap_12[2];
-};
-
-class RGE_Sprite {
-public:
-    char pict_name[13];
-    char gap_0D[3];
-    long resource_id;
-    unsigned char loaded;
-    char gap_15[3];
-    RGE_Color_Table** color_tables;
-    TShape* shape;
-    long last_time;
-    long delta_time;
-    unsigned char color_flag;
-    unsigned char draw_level;
-    short color_table;
-    unsigned char transparent_picking_flag;
-    char gap_2D[1];
-    short box_x1;
-    short box_y1;
-    short box_x2;
-    short box_y2;
-    short draw_list_num;
-    RGE_Picture_List* draw_list;
-    RGE_Sound* main_sound;
-    unsigned char micro_man_sound;
-    char gap_41[3];
-    RGE_Sound_List* sound_list;
-    char name[21];
-    char gap_5D[1];
-    short frame_num;
-    short facet_num;
-    float base_speed;
-    float duration;
-    float pause_between_loops;
-    unsigned char flag;
-    char gap_71[1];
-    short id;
-    unsigned char mirror_flag;
-    char gap_75[3];
-
-    void do_draw(long param_1, long param_2, long param_3, long param_4,
-                 RGE_Color_Table* param_5, TDrawArea* param_6,
-                 unsigned char param_7);
-    unsigned char normal_draw(long param_1, long param_2, long param_3,
-                              long param_4, RGE_Color_Table* param_5,
-                              TDrawArea* param_6);
-};
 
 unsigned char RGE_Sprite::normal_draw(long param_1, long param_2, long param_3,
                                       long param_4, RGE_Color_Table* param_5,

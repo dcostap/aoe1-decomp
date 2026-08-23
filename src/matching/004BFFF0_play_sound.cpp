@@ -44,67 +44,7 @@
 // differ by one SIB base/index byte, try the typed member-access spelling of the
 // indexed load, not more cursor/address surgery.
 
-class RGE_Sound {
-public:
-    char gap_00[0x0C];
-    short id;
-
-    void play(int add_to_list);
-};
-
-class RGE_Sound_List {
-public:
-    RGE_Sound* sound[3];
-    short frame[3];
-    char gap_12[2];
-};
-
-class RGE_Color_Table;
-class TShape;
-class RGE_Picture_List;
-
-class RGE_Sprite {
-public:
-    char pict_name[13];
-    char gap_0D[3];
-    long resource_id;
-    unsigned char loaded;
-    char gap_15[3];
-    RGE_Color_Table** color_tables;
-    TShape* shape;
-    long last_time;
-    long delta_time;
-    unsigned char color_flag;
-    unsigned char draw_level;
-    short color_table;
-    unsigned char transparent_picking_flag;
-    char gap_2D[1];
-    short box_x1;
-    short box_y1;
-    short box_x2;
-    short box_y2;
-    short draw_list_num;
-    RGE_Picture_List* draw_list;
-    RGE_Sound* main_sound;
-    unsigned char micro_man_sound;
-    char gap_41[3];
-    RGE_Sound_List* sound_list;
-    char name[21];
-    char gap_5D[1];
-    short frame_num;
-    short facet_num;
-    char gap_62[2];
-    float base_speed;
-    float duration;
-    float pause_between_loops;
-    unsigned char flag;
-    char gap_71[1];
-    short id;
-    unsigned char mirror_flag;
-    char gap_75[3];
-
-    void play_sound(short param_1, short param_2, short param_3);
-};
+#include "../../include/sprite_context.h"
 
 void RGE_Sprite::play_sound(short param_1, short param_2, short param_3) {
     if (param_3 >= this->facet_num) {

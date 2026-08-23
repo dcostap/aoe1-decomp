@@ -21,24 +21,9 @@
 // 5. Slot local/pointer-to-member shape and ternary collapse back to the sunk-store basin.
 // 6. 2026-05-10 pass on this VA only: retried 20+ variants: direct/local new, if-null/if-not/goto common-store, assignment-in-condition, zero-init, volatile local, parameter reuse, bool temp, switch, empty-if, ternary, do/for single-pass, if/else member stores, and volatile-read. Also probed flags /O1, /Og, /Ob0, /Ox, /Gf, /Gy, /Oa, /Ot with /GX. No exact.
 // 7. 2026-05-12: Confirmed identical artifact to 00541C90 (accepted_drift). First 70 bytes exact, then test/jne +0 at join. Same causal root: VC5 new-expression + EH lowering dead-code elimination failure. Recommended for accepted_drift per Boss's 00541C90 ruling.
+// 8. Full canonical World.cpp context emits the same reviewed drift bytes.
 
-void* operator new(unsigned int size);
-
-class RGE_Game_World;
-
-class RGE_Scenario {
-public:
-    char gap_0[0x1990];
-    RGE_Scenario(RGE_Game_World* param_1);
-};
-
-class RGE_Game_World {
-public:
-    char gap_0[0x5C];
-    RGE_Scenario* scenario;
-
-    void scenario_init(RGE_Game_World* param_1);
-};
+#include "../../include/world_scenario_context.h"
 
 void RGE_Game_World::scenario_init(RGE_Game_World* param_1) {
     RGE_Scenario* s = new RGE_Scenario(param_1);

@@ -43,422 +43,14 @@
 // redraw(0x10,0) in both victory object-selection arms; this gives 70.07% blocks.
 // FLAGS: /nologo /c /O2 /Oy /GX
 
-#include <stdlib.h>
-#include <string.h>
-
-struct RGE_Static_Object;
-struct RGE_Master_Static_Object;
-struct TRIBE_Player;
-struct TShape;
-struct TMessagePanel;
-struct TScrollBarPanel;
-struct TRIBE_Main_View;
-struct RGE_Diamond_Map_View;
-struct TRIBE_Scenario_Editor_Panel_Object;
-struct RGE_Scenario;
-struct T_Scenario;
-
-struct TPanel {
-    virtual ~TPanel();
-    virtual void vf00();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void set_active(int active);        // +0x14
-    virtual void vf18();
-    virtual void vf1C();
-    virtual void redraw(int flags);             // +0x20
-    virtual void vf24();
-    virtual void vf28();
-    virtual void vf2C();
-    virtual void vf30();
-    virtual void vf34();
-    virtual void vf38();
-    virtual void vf3C();
-    virtual void vf40();
-    virtual void vf44();
-    virtual void vf48();
-    virtual void vf4C();
-    virtual void vf50();
-    virtual void vf54();
-    virtual void vf58();
-    virtual void vf5C();
-    virtual void vf60();
-    virtual void vf64();
-    virtual void vf68();
-    virtual void vf6C();
-    virtual void vf70();
-    virtual void vf74();
-    virtual void vf78();
-    virtual void vf7C();
-    virtual void vf80();
-    virtual void vf84();
-    virtual void vf88();
-    virtual void vf8C();
-    virtual void vf90();
-    virtual void vf94();
-    virtual void vf98();
-    virtual void vf9C();
-    virtual void vfA0();
-    virtual void vfA4();
-    virtual void vfA8();
-    virtual void vfAC();
-    virtual void vfB0();
-    virtual void vfB4();
-    virtual void vfB8();
-    virtual void vfBC();
-    virtual void vfC0();
-    virtual void vfC4();
-    virtual void vfC8();
-    virtual void vfCC();
-    virtual void vfD0();
-    virtual void vfD4();
-    virtual void vfD8();
-    virtual void vfDC();
-    char* panelName();
-    void set_curr_child(TPanel* child);
-    void set_help_info(long string_id, long param_2);
-};
-
-struct TRIBE_Main_View : public TPanel {
-    void get_selection_area(long* y1, long* y2, long* x1, long* x2, int flag);
-};
-
-struct TButtonPanel : public TPanel {
-    virtual void vfE0(int flags);
-    int get_state();
-    void set_radio_button();
-};
-struct TTextPanel : public TPanel {
-    int currentLineNumber();
-    virtual void set_text(char* text);
-    virtual void set_text(long text);
-    virtual void set_text(char** text, short count);
-};
-struct TListPanel : public TTextPanel {};
-struct TDropDownPanel : public TTextPanel {
-    int get_line();
-    void setCurrentLineNumber(int line);
-};
-struct TEditPanel : public TPanel {
-    char* currentLine();
-    char* get_input_buffer();
-    void set_text(char* text);
-};
-
-struct TPanelSystem {
-    void destroyPanel(char* name);
-    void setCurrentPanel(char* name, int param_2);
-};
-
-struct RGE_Tile_List {
-    char pad[0x14];
-    void del_list();
-};
-
-struct RGE_Player {
-    char gap_00[0x24];
-    RGE_Master_Static_Object** master_objects;
-    char gap_28[0x4A - 0x28];
-    short id;
-    char gap_4C[0x58 - 0x4C];
-    RGE_Tile_List tile_list;
-    void select_one_object(RGE_Static_Object* obj, int mode);
-    void unselect_object();
-    void reset_selected();
-    void set_map_loc(short x, short y);
-    void set_view_loc(float x, float y);
-    void set_map_visible();
-};
-
-struct RGE_Map {
-    void clear_map(RGE_Player* player, void* world, unsigned char terrain, long width, long height);
-};
-
-struct RGE_Game_World {
-    virtual void vf00();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
-    virtual void vf20();
-    virtual void vf24();
-    virtual void new_random_map(float size_x, float size_y, float style, long players);
-    char gap_04[0x28 - 0x04];
-    RGE_Map* map;
-    char gap_2C[0x40 - 0x2C];
-    RGE_Player** players;
-    char gap_44[0x5C - 0x44];
-    RGE_Scenario* scenario;
-};
-
-struct TRIBE_World : public RGE_Game_World {};
-
-struct RGE_Base_Game_Dispatch {
-    virtual void vf00();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void redraw(long mode, long flags);
-};
-
-struct RGE_Base_Game {
-    void* vtable_ptr;
-    char gap_04[0x10 - 0x04];
-    void* prog_window;
-    char gap_14[0x2C - 0x14];
-    int random_map_seed;
-    int save_random_game_seed;
-    int save_random_map_seed;
-    char gap_38[0x1B4 - 0x38];
-    int game_mode;
-    char gap_1B8[0x3FC - 0x1B8];
-    short master_obj_id;
-    short terrain_id;
-    short elevation_height;
-    short brush_size;
-    RGE_Player* get_player();
-    void draw_window();
-    void redraw(int flags);
-    void close();
-};
-
-struct TRIBE_Game : public RGE_Base_Game {
-    int start_menu();
-    void start_scenario_editor(char* name, int mode);
-};
-
-struct T_Scenario {
-    void SetPlayerAge(int player, int age);
-    int GetPlayerAge(long player);
-    void SetSPWhich(int player);
-    void Set_Multi_Conquest(int v);
-    void SetScenarioOption(int option, int value);
-};
-
-struct RGE_Scenario : public T_Scenario {
-    void Set_message(char* text, long which);
-    char* Get_message(long which);
-};
-
-struct TRIBE_Scenario_Editor_Panel_Object : public TPanel {
-    void set_master_info(RGE_Master_Static_Object* master, TRIBE_Player* player);
-};
-
-struct TRIBE_Screen_Sed_Open {
-    char pad[0x490];
-    TRIBE_Screen_Sed_Open();
-};
-
-extern RGE_Base_Game* rge_base_game;
-extern TPanelSystem panel_system;
-extern char s_OKDialog[];
-extern char s_QuitSaveDialog[];
-extern char s_OpenSaveDialog[];
-extern char s_NewSaveDialog[];
-extern char s_Scenario_Editor_Screen[];
-extern char s_Scenario_Editor_Open[];
-extern char s_C__msdev_work_age1_x1_scr_sed_cp[];
-
-extern int (__stdcall* const InvalidateRect)(void* hwnd, void* rect, int erase);
-extern "C" void __cdecl debug_rand(char* file, int line);
+#include "../../include/scr_sed_context.h"
 
 #define GAME_REDRAW0() (((RGE_Base_Game_Dispatch*)rge_base_game)->redraw(0, 0))
 #define GAME_PLAYER() (rge_base_game->get_player())
-#define SELECT_IF_PRESENT(obj_) do { RGE_Static_Object* _sel_obj = (obj_); if (_sel_obj != 0) { GAME_PLAYER()->select_one_object(_sel_obj, 0); } } while (0)
-
-struct TRIBE_Screen_Sed : public TPanel {
-    enum SELECT_REGION_e { SELECT_OFF = 0, SELECT_OBJECT = 1, SELECT_DEST_OBJECT = 2, SELECT_AREA = 3 };
-    enum ScenarioMode { ScenarioModeMap = 1, ScenarioModeTerrain = 2, ScenarioModePlayers = 3, ScenarioModeUnits = 4, ScenarioModeDiplomacy = 5, ScenarioModeVictory = 6, ScenarioModeVictoryMulti = 7, ScenarioModeOptions = 8, ScenarioModeMessages = 9 };
-    enum MapType { MapTypeBlank = 1, MapTypeSeed = 2, MapTypeRandom = 3 };
-    enum VictoryType { VictoryTypeStandard = 1 };
-    enum BrushSize { BrushSizeVerySmall = 1 };
-    enum PaintType { PaintTypeTerrain = 1 };
-    enum MessageType { MessageTypeNone = 0 };
-    enum { ScenarioModeMapEnum = 1 };
-    struct List_Info { char text[100]; short id; };
-
-    char gap_panel[0x478 - 4];
-    int is_multi_player;
-    int set_player_first_flag;
-    RGE_Static_Object* SelectedObject;
-    RGE_Static_Object* DestinationObject;
-    float px1;
-    float py1;
-    float px2;
-    float py2;
-    int CurrentVictory;
-    int CurrentPlayer;
-    SELECT_REGION_e SelectRegionFlag;
-    ScenarioMode scenario_mode;
-    MapType map_type;
-    VictoryType mp_victory_type;
-    BrushSize brush_size;
-    PaintType paint_type;
-    short player_num;
-    unsigned char pad_4BA[2];
-    MessageType message_type;
-    unsigned char need_to_save_flag;
-    unsigned char valid_save_spot_flag;
-    unsigned char pad_4C2[2];
-    TShape* background_pic;
-    TRIBE_Main_View* main_view;
-    RGE_Diamond_Map_View* map_view;
-    TMessagePanel* message_panel;
-    TPanel* bottom_panel;
-    TButtonPanel* scenario_mode_button[10];
-    TButtonPanel* menu_button;
-    TButtonPanel* help_button;
-    TButtonPanel* map_type_button[3];
-    TTextPanel* map_type_text[3];
-    TTextPanel* map_type_label;
-    TTextPanel* default_terrain_label;
-    TDropDownPanel* default_terrain_drop;
-    TTextPanel* map_size_label;
-    TDropDownPanel* map_size_drop;
-    TTextPanel* map_style_label;
-    TDropDownPanel* map_style_drop;
-    TTextPanel* random_seed_label;
-    TEditPanel* random_seed_input;
-    TTextPanel* random_seed_used_label;
-    TTextPanel* random_seed_used_text;
-    TButtonPanel* generate_map_button;
-    TTextPanel* map_generating_text;
-    TTextPanel* brush_size_label;
-    TButtonPanel* brush_size_button[5];
-    TTextPanel* brush_size_button_label[5];
-    TTextPanel* paint_type_label;
-    TButtonPanel* paint_type_button[3];
-    TTextPanel* paint_type_button_label[3];
-    TTextPanel* paint_terrain_label;
-    TListPanel* paint_terrain_list;
-    TScrollBarPanel* paint_terrain_scrollbar;
-    TListPanel* paint_elevation_list;
-    TScrollBarPanel* paint_elevation_scrollbar;
-    TTextPanel* player_label;
-    TDropDownPanel* player_list;
-    TDropDownPanel* player_number_list;
-    TDropDownPanel* player_advance_civilization_drop;
-    TButtonPanel* player_advance_civilization_button;
-    TTextPanel* player_inven_label[5];
-    TEditPanel* player_inven_input[5];
-    TTextPanel* player_setting_label[2];
-    TTextPanel* player_starting_age_label;
-    TDropDownPanel* player_setting_drop[2];
-    TDropDownPanel* BuildList;
-    TDropDownPanel* CityLayout;
-    TDropDownPanel* AiRules;
-    TTextPanel* player_build_text;
-    TTextPanel* player_city_text;
-    TTextPanel* AiRules_text;
-    TDropDownPanel* unit_player_list;
-    TButtonPanel* unit_mode_select[4];
-    TTextPanel* unit_mode_select_label[4];
-    TListPanel* unit_list;
-    TScrollBarPanel* unit_scrollbar;
-    List_Info* unit_list_info;
-    TShape* button_unit_pics;
-    TShape* button_bldg_pics[5];
-    TRIBE_Scenario_Editor_Panel_Object* object_panel;
-    short unit_list_size;
-    unsigned char pad_666[2];
-    TButtonPanel* victory_cond_on[6];
-    TButtonPanel* victory_and_or[2];
-    TTextPanel* victory_condition_label;
-    TTextPanel* victory_amount_label;
-    TTextPanel* victory_long_label;
-    TTextPanel* victory_text_and_or[2];
-    TTextPanel* victory_label_conquest;
-    TTextPanel* victory_label_explore;
-    TTextPanel* victory_label_explore_percent;
-    TTextPanel* victory_label_ruins;
-    TTextPanel* victory_label_artifacts;
-    TTextPanel* victory_label_discoveries;
-    TTextPanel* victory_label_gold;
-    TEditPanel* victory_condition_explore;
-    TEditPanel* victory_condition_ruins;
-    TEditPanel* victory_condition_artifacts;
-    TEditPanel* victory_condition_discoveries;
-    TEditPanel* victory_condition_gold;
-    TTextPanel* victory_cond_type_label[5];
-    TButtonPanel* victory_cond_type[5];
-    TTextPanel* victory_score_label;
-    TDropDownPanel* victory_score;
-    TTextPanel* victory_time_label;
-    TDropDownPanel* victory_time;
-    TButtonPanel* victory_button[12];
-    TDropDownPanel* victory_drop_down;
-    TDropDownPanel* victory_object_list;
-    TDropDownPanel* victory_player_list;
-    TDropDownPanel* victory_enemy_player_list;
-    TDropDownPanel* victory_attribute_list;
-    TDropDownPanel* victory_ages_list;
-    TDropDownPanel* victory_tech_list;
-    TButtonPanel* victory_button_set_object;
-    TButtonPanel* victory_button_set_destination;
-    TButtonPanel* victory_button_go_to_dest;
-    TTextPanel* victory_condition_text;
-    TTextPanel* victory_condition_type;
-    TTextPanel* victory_amount_text;
-    TTextPanel* victory_which_enemy_text;
-    TEditPanel* victory_amount_input;
-    TScrollBarPanel* victory_object_scrollbar;
-    TEditPanel* message_input;
-    TButtonPanel* message_button[5];
-    TTextPanel* message_button_label[5];
-    long current_message;
-    TTextPanel* cinematic_label[4];
-    TDropDownPanel* cinematic_input[4];
-    TTextPanel* options_label[1];
-    TButtonPanel* options_button[1];
-    TDropDownPanel* options_player_list;
-    TTextPanel* options_disable_tech_text;
-    TButtonPanel* options_disable_button[16];
-    TTextPanel* options_disable_text[16];
-    TTextPanel* Diplomacy_opponent_label[8];
-    TTextPanel* Diplomacy_player_text[8];
-    TDropDownPanel* Diplomacy_player_list;
-    TTextPanel* Diplomacy_status_label[4];
-    TButtonPanel* Diplomacy_friend_box[8][3];
-    TButtonPanel* Diplomacy_AlliedVictory[8];
-    TRIBE_World* world;
-    unsigned long update_interval;
-    unsigned long last_update_time;
-    unsigned long map_redraw_interval;
-    unsigned long last_map_redraw_time;
-    int changed_system_colors;
-    unsigned long save_text_color;
-    unsigned long save_window_color;
-
-    virtual long action(TPanel* param_1, long param_2, unsigned long param_3, unsigned long param_4);
-    void set_scenario_mode(int mode);
-    void command_menu();
-    void set_map_type(int type, int redraw);
-    void set_brush_size(int size);
-    void set_paint_type(int type, int redraw);
-    void set_terrain(short terrain);
-    void set_elevation(short elevation);
-    void set_unit_player(short player);
-    void set_unit(short unit);
-    void set_paint_object_mode();
-    void set_player(short player, unsigned char a, unsigned char b);
-    void SavePlayerActiveStatus();
-    void activate_victory_panel(int active);
-    void activate_victory_proper_fields(long line, int active);
-    void save_victory_cond_in_scenario(int current);
-    void load_victory_cond_from_scenario(int current);
-    void set_mp_victory_type(int type, int redraw);
-    void SaveDisabledItemsInScenario();
-    void LoadDisabledItemsFromScenario();
-    void set_panel_info();
-    void command_save(unsigned char event_type, unsigned char dialog_type);
-    void setup_popup_help();
-    void load_diplomacy_from_scenario(long player);
-    void save_diplomacy_in_scenario(int player);
-};
+#define SELECT_IF_PRESENT(obj_) do { \
+    RGE_Static_Object* selected_object = (obj_); \
+    if (selected_object != 0) GAME_PLAYER()->select_one_object(selected_object, 0); \
+} while (0)
 
 long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param_3, unsigned long param_4)
 {
@@ -526,7 +118,7 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
     if (param_2 == 1) {
         for (i = 0; i < 10; i++) {
             if (param_1 == this->scenario_mode_button[i]) {
-                this->set_scenario_mode(i + ScenarioModeMap);
+                this->set_scenario_mode((ScenarioMode)(i + ScenarioModeMap));
                 return 1;
             }
         }
@@ -648,7 +240,7 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
             }
             if (param_1 == this->generate_map_button) {
                 this->map_generating_text->set_active(1);
-                this->redraw(2);
+                this->set_redraw(2);
                 InvalidateRect(rge_base_game->prog_window, 0, 0);
                 rge_base_game->draw_window();
                 i = this->map_size_drop->currentLineNumber();
@@ -802,7 +394,7 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
                     }
                     this->object_panel->set_master_info(player_master, player_tribe);
                     this->set_paint_object_mode();
-                    this->object_panel->redraw(2);
+                this->object_panel->set_redraw(2);
                     return 1;
                 }
             }
@@ -823,7 +415,7 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
                 this->object_panel->set_master_info(list_master, list_tribe);
                 this->set_paint_object_mode();
                 // BINARY NOTE: the list path redraws with flag 1, not 2.
-                this->object_panel->redraw(1);
+                this->object_panel->set_redraw(1);
                 return 1;
             }
             if (param_2 == 1) {
@@ -841,7 +433,7 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
             for (i = 0; i < 5; i++) {
                 if (param_1 == this->victory_cond_type[i]) {
                     this->set_mp_victory_type(i + VictoryTypeStandard, 1);
-                    if (i != 4) { this->world->scenario->Set_Multi_Conquest(1); this->victory_cond_on[0]->vfE0(1); }
+                    if (i != 4) { this->world->scenario->Set_Multi_Conquest(1); this->victory_cond_on[0]->set_state(1); }
                     return 1;
                 }
             }

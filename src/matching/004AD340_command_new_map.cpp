@@ -45,171 +45,73 @@
 // improved structural shape from 85.53% to 86.16% without changing size.
 // final lead: keep the typed TRIBE_Game/RGE_Game_World scenario-editor flow;
 // the remaining gap is the original register/home coloring and one-byte size.
+// continuation: declare the loop index at its first loop. This restores the
+// 590-byte boundary and improves the strict difference from 433 to 330 bytes.
+// Earlier function-scope index lifetime made VC5 add one byte at the boundary.
+// continuation: authentic nearby owners from 004AAE20 through 004ADC40 were
+// added in PDB order. They preserve this 590-byte basin but do not change its
+// early this/current-tribe home swap. Alias, reference, initial-world, game,
+// increment, initializer-order, and scalar-scope variants did not fix it.
+// exact finish: the PDB lists only player_info, tribe, and map_info as stack
+// locals. Removing the synthetic name-base local and passing 0x2865 + i lets
+// VC5 create its own compensated induction spill. This also gives the compiler
+// temp the first low frame home and places tribe in its PDB-proved -0x7D4 home.
+// exact reduction: `i + 0x2865`, an explicit long cast, and the old scalar name
+// are byte-identical. Unused or dead name-base locals are also incidental.
+// Reconnecting that synthetic local returns the old 330-byte mismatch when the
+// incidental comment-line state is absent, so the direct constant stays.
 // FLAGS: default config/flags/default.rsp (/nologo /c /O2 /Oy).
 
-struct RGE_Scenario { int Get_player_Active(int index); };
-struct RGE_Player;
-struct RGE_Player_Info;
-struct TDropDownPanel { void set_line(long line); };
-struct Sound_Driver { char gap_00[1]; char mute; };
+#include "../../include/scr_sed_context.h"
 
-struct RGE_Game_World {
-    virtual void v00(); virtual void v04(); virtual void v08(); virtual void v0C();
-    virtual void v10(); virtual void v14(); virtual void v18(); virtual void v1C();
-    virtual void v20(); virtual void v24(); virtual void v28(); virtual void v2C();
-    virtual void v30(); virtual void v34(); virtual void v38(); virtual void v3C();
-    virtual void v40(); virtual void v44(); virtual void v48(); virtual void v4C();
-    virtual void v50(); virtual void v54(); virtual void v58(); virtual void v5C();
-    virtual void v60(); virtual void v64(); virtual void v68(); virtual void v6C();
-    virtual void v70(); virtual void v74(); virtual void v78(); virtual void v7C();
-    virtual void v80(); virtual void v84(); virtual void v88(); virtual void v8C();
-    virtual void v90(); virtual void v94(); virtual void v98(); virtual void v9C();
-    virtual void vA0(); virtual void vA4(); virtual void vA8(); virtual void vAC();
-    virtual void vB0(); virtual void vB4(); virtual void del_game_info();
-    virtual void vBC(); virtual void vC0(); virtual void vC4(); virtual void vC8();
-    virtual void vCC(); virtual void vD0();
-    virtual unsigned char new_scenario(RGE_Player_Info* player_info, int param);
-    char gap_04[0x3C - 4];
-    short player_num;
-    char gap_3E[2];
-    RGE_Player** players;
-    short player_count;
-    char gap_46[0x5C - 0x46];
-    RGE_Scenario* scenario;
-};
-
-class RGE_Base_Game {
-public:
-    virtual ~RGE_Base_Game();
-    char gap_04[0x5C];
-    Sound_Driver* sound_system;
-    char gap_64[0x3F4 - 0x64];
-    RGE_Game_World* world;
-};
-
-class TRIBE_Game : public RGE_Base_Game {
-public:
-    void show_status_message(int string_id, char* text, long param);
-    int load_game_data();
-    void close_status_message();
-};
-extern TRIBE_Game* rge_base_game;
-struct TPanel {
-    virtual ~TPanel();
-};
-
-struct TScreenPanel : TPanel {
-    char gap_04[0x478 - 0x04];
-    virtual ~TScreenPanel();
-};
-
-struct TRIBE_Screen_Sed : TScreenPanel {
-    int is_multi_player;
-    char gap_47C[4];
-    void* SelectedObject;
-    void* DestinationObject;
-    float px1, py1, px2, py2;
-    int CurrentVictory;
-    int CurrentPlayer;
-    char gap_4A0[4];
-    int scenario_mode;
-    int map_type;
-    int mp_victory_type;
-    int brush_size;
-    int paint_type;
-    short player_num;
-    char gap_4BA[2];
-    int message_type;
-    unsigned char need_to_save_flag;
-    char gap_4C1[0x5B8 - 0x4C1];
-    TDropDownPanel* player_number_list;
-    char gap_5BC[0x928 - 0x5BC];
-    RGE_Game_World* world;
-
-    virtual ~TRIBE_Screen_Sed();
-    void set_string(char* dst, long string_id, int len);
-    void SavePlayerActiveStatus();
-    int command_new_map(char* scenario_name, int param_2, int param_3, int param_4, int param_5, int show_status);
-};
-
-struct RGE_Info_Line {
-    short clump_num;
-    char rest[0x12];
-};
-
-struct RGE_Map_Gen_Info {
-    RGE_Info_Line land;
-    char rest[0x520 - 0x14];
-};
-
-struct RGE_Player_Info {
-    char name[9][65];
-    char type[9];
-    char tribe[9];
-    char gap_25B;
-    short color[9];
-    char gap_26E[2];
-    long player_id_hash[9];
-    short player_num;
-    char gap_296[2];
-    char* scenario;
-    RGE_Map_Gen_Info* map_info;
-    short map_type;
-    short map_width;
-    short map_height;
-    short ai_info;
-    unsigned char campaign;
-    char gap_2A9[3];
-};
-
-int TRIBE_Screen_Sed::command_new_map(char* scenario_name, int param_2, int param_3, int param_4, int param_5, int show_status)
+int TRIBE_Screen_Sed::command_new_map(char* scenario_name_in, int is_multi_player_in,
+                                      int random_seed_in, int width, int height,
+                                      int display_in)
 {
-    int i;
-    int current_tribe;
+    int tribe;
     int result;
-    long name_base_delta;
     RGE_Player_Info player_info;
     RGE_Map_Gen_Info map_info;
 
     this->need_to_save_flag = 0;
     if (rge_base_game->world == 0) {
-        if (show_status != 0) {
-            rge_base_game->show_status_message(0x44d, 0, -1);
+        if (display_in != 0) {
+            ((TRIBE_Game*)rge_base_game)->show_status_message(0x44d, 0, -1);
         }
-        if (rge_base_game->load_game_data() == 0) {
-            if (show_status != 0) {
-                rge_base_game->close_status_message();
+        if (((TRIBE_Game*)rge_base_game)->load_game_data() == 0) {
+            if (display_in != 0) {
+                ((TRIBE_Game*)rge_base_game)->close_status_message();
             }
             return 0;
         }
     }
 
     this->world = rge_base_game->world;
-    if (show_status != 0) {
-        if (scenario_name == 0) {
-            rge_base_game->show_status_message(0x44e, 0, -1);
+    if (display_in != 0) {
+        if (scenario_name_in == 0) {
+            ((TRIBE_Game*)rge_base_game)->show_status_message(0x44e, 0, -1);
         } else {
-            rge_base_game->show_status_message(0x44f, 0, -1);
+            ((TRIBE_Game*)rge_base_game)->show_status_message(0x44f, 0, -1);
         }
     }
 
-    player_info.scenario = scenario_name;
+    player_info.scenario = scenario_name_in;
     player_info.map_info = (RGE_Map_Gen_Info*)&map_info.land;
-    player_info.map_width = (short)param_4;
-    player_info.map_height = (short)param_5;
+    player_info.map_width = (short)width;
+    player_info.map_height = (short)height;
     player_info.ai_info = 0;
     player_info.player_num = 8;
-    current_tribe = 0;
-    name_base_delta = 0x2865 - (long)player_info.type;
+    tribe = 0;
 
+    int i;
     for (i = 0; i < 8; i++) {
-        current_tribe++;
-        if (current_tribe >= this->world->player_count) {
-            current_tribe = 1;
+        tribe++;
+        if (tribe >= this->world->player_count) {
+            tribe = 1;
         }
-        this->set_string(player_info.name[i], (long)(player_info.type + name_base_delta + i), 0x41);
+        this->set_string(player_info.name[i], 0x2865 + i, 0x41);
         player_info.type[i] = 0;
-        player_info.tribe[i] = (char)current_tribe;
+        player_info.tribe[i] = (char)tribe;
         player_info.color[i] = -1;
         player_info.player_id_hash[i] = i;
     }
@@ -217,15 +119,15 @@ int TRIBE_Screen_Sed::command_new_map(char* scenario_name, int param_2, int para
     map_info.land.clump_num = 0;
 
     if (rge_base_game->sound_system != 0) {
-        rge_base_game->sound_system->mute = 1;
+        ((Sound_Driver*)rge_base_game->sound_system)->mute = 1;
     }
-    result = this->world->new_scenario(&player_info, param_3) & 0xff;
+    result = this->world->new_scenario(&player_info, random_seed_in) & 0xff;
     if (result != 0 && this->world->player_num < 8) {
         result = 0;
         this->world->del_game_info();
     }
     if (rge_base_game->sound_system != 0) {
-        rge_base_game->sound_system->mute = 0;
+        ((Sound_Driver*)rge_base_game->sound_system)->mute = 0;
     }
 
     if (result != 0 && this->player_number_list != 0) {

@@ -4,25 +4,21 @@
 // Register allocation also differs (ecx for global ptr vs edx).
 // VA: 004AD630 command_outline (56B, scr_sed.cpp)
 
-extern unsigned char* rge_base_game;
-
-class TRIBE_Screen_Sed {
-public:
-    void command_outline(void);
-};
+#include "../../include/scr_sed_context.h"
 
 void TRIBE_Screen_Sed::command_outline(void)
 {
-    switch (rge_base_game[0x50]) {
+    unsigned char* game = (unsigned char*)rge_base_game;
+    switch (game[0x50]) {
     case 0:
     case 3:
-        rge_base_game[0x50] = 2;
+        game[0x50] = 2;
         return;
     case 2:
-        rge_base_game[0x50] = 1;
+        game[0x50] = 1;
         return;
     case 1:
-        rge_base_game[0x50] = 0;
+        game[0x50] = 0;
         return;
     }
 }

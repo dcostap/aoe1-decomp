@@ -50,135 +50,7 @@
 // `test ax,ax` thus give the same jle condition. No memory, width, call, CFG,
 // cleanup, or lifetime effect differs.
 
-extern "C" void __cdecl rge_read(int, void*, int);
-extern "C" void* __cdecl calloc(unsigned int, unsigned int);
-
-struct RGE_Unified_Visible_Map {
-    void suppress_updates(int);
-};
-
-struct RGE_Map {
-    virtual ~RGE_Map();
-    void load_map(int);
-    char gap_04[0x8DC4];
-    RGE_Unified_Visible_Map* unified_vis_map; // +0x8DC8
-};
-
-struct RGE_Player {
-    void load_info(int);
-};
-
-struct RGE_Base_Game {
-    virtual ~RGE_Base_Game();
-    int singlePlayerGame();
-    float get_game_speed();
-};
-
-extern RGE_Base_Game* rge_base_game;
-extern float save_game_version;
-extern float DAT_00577a10;
-
-class RGE_Game_World {
-public:
-    virtual ~RGE_Game_World();
-    virtual void v04();
-    virtual void v08();
-    virtual void v0C();
-    virtual void v10();
-    virtual void v14();
-    virtual void v18();
-    virtual void v1C();
-    virtual void v20();
-    virtual void v24();
-    virtual void v28();
-    virtual void v2C();
-    virtual void v30();
-    virtual void create_player(int file, int type, int index); // +0x34
-    virtual void v38();
-    virtual void v3C();
-    virtual void v40();
-    virtual void v44();
-    virtual void v48();
-    virtual void v4C();
-    virtual void v50();
-    virtual void v54();
-    virtual void v58();
-    virtual void v5C();
-    virtual void v60();
-    virtual void v64();
-    virtual void v68();
-    virtual void v6C();
-    virtual void v70();
-    virtual void v74();
-    virtual void v78();
-    virtual void v7C();
-    virtual void v80();
-    virtual void v84();
-    virtual void v88();
-    virtual void v8C();
-    virtual void v90();
-    virtual void v94();
-    virtual void v98();
-    virtual void v9C();
-    virtual void vA0();
-    virtual void vA4();
-    virtual void vA8();
-    virtual void vAC();
-    virtual void vB0();
-    virtual void vB4();
-    virtual void vB8();
-    virtual void vBC();
-    virtual void vC0();
-    virtual void vC4();
-    virtual void vC8();
-    virtual void vCC();
-    virtual void vD0();
-    virtual void vD4();
-    virtual void vD8();
-    virtual void vDC();
-    virtual void vE0();
-    virtual void vE4();
-    virtual void vE8();
-    virtual void vEC();
-    virtual void vF0();
-    virtual void load_player_data(int file, RGE_Game_World* world); // +0xF4
-    unsigned long world_time;       // +0x04
-    unsigned long old_world_time;   // +0x08
-    unsigned long world_time_delta; // +0x0C
-    float timer;                    // +0x10
-    unsigned long old_time;         // +0x14
-    float game_speed;               // +0x18
-    unsigned char temp_pause;       // +0x1C
-    unsigned char game_state;       // +0x1D
-    unsigned char game_end_condition; // +0x1E
-    char gap_1F[0x9];
-    RGE_Map* map;                   // +0x28
-    char gap_2C[0x10];
-    short player_num;               // +0x3C
-    char gap_3E[2];
-    RGE_Player** players;           // +0x40
-    char gap_44[0x24];
-    int next_object_id;             // +0x68
-    int next_reusable_object_id;    // +0x6C
-    char gap_70[8];
-    int random_seed;                // +0x78
-    short current_player;           // +0x7C
-    char gap_7E[6];
-    int field_84;                   // +0x84
-    char gap_88[0x1C];
-    int campaign;                   // +0xA4
-    int campaign_player;            // +0xA8
-    int campaign_scenario;          // +0xAC
-    int player_turn;                // +0xB0
-    unsigned long player_time_delta[9]; // +0xB4
-    char gap_D8[0x24];
-    int currentUpdateComputerPlayer; // +0xFC
-    int difficultyLevelValue;       // +0x100
-
-    unsigned char load_world(int file);
-    void initializePathingSystem();
-    void update_mutual_allies();
-};
+#include "../../include/world_scenario_context.h"
 
 unsigned char RGE_Game_World::load_world(int file) {
     int i;
@@ -193,14 +65,14 @@ unsigned char RGE_Game_World::load_world(int file) {
     rge_read(f, &this->world_time, 4);
     rge_read(f, &this->old_world_time, 4);
     rge_read(f, &this->world_time_delta, 4);
-    rge_read(f, &this->field_84, 4);
+    rge_read(f, &this->world_time_delta_seconds, 4);
     rge_read(f, &this->timer, 4);
     rge_read(f, &this->game_speed, 4);
     rge_read(f, &this->temp_pause, 1);
     rge_read(f, &this->next_object_id, 4);
     rge_read(f, &this->next_reusable_object_id, 4);
     rge_read(f, &this->random_seed, 4);
-    rge_read(f, &this->current_player, 2);
+    rge_read(f, &this->curr_player, 2);
 
     rge_read(f, &this->player_num, 2);
     rge_read(f, &saved_game_state, 1);
@@ -228,7 +100,7 @@ unsigned char RGE_Game_World::load_world(int file) {
         if (0 < this->player_num) {
             do {
                 rge_read(f, &player_type, 1);
-                this->create_player(f, player_type, i);
+                this->load_player(f, player_type, (short)i);
                 i++;
             } while (i < this->player_num);
         }
@@ -244,7 +116,7 @@ unsigned char RGE_Game_World::load_world(int file) {
         } while (i < this->player_num);
     }
     this->map->unified_vis_map->suppress_updates(0);
-    this->load_player_data(f, this);
+    this->scenario_init(f, this);
 
     if (save_game_version >= DAT_00577a10) {
         rge_read(f, &this->difficultyLevelValue, 4);

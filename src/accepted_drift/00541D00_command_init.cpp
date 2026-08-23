@@ -59,30 +59,14 @@
 // of the function matches 68 bytes + 14 shifted bytes, with identical behavior,
 // memory effects, register preservation, and stack cleanup once the shifted epilogue
 // is considered. No inline asm/hacks.
+// Full canonical World.cpp context emits the same reviewed drift bytes.
 
-void* __cdecl operator new(unsigned int size);
-
-class RGE_Game_World;
-class TCommunications_Handler;
-
-class RGE_Command {
-public:
-    char gap_00[0x18];
-    RGE_Command(RGE_Game_World* world, TCommunications_Handler* handler);
-};
-
-class RGE_Game_World {
-public:
-    char gap_00[0x58];
-    RGE_Command* command;
-
-    void command_init(int param1, TCommunications_Handler* param2);
-};
+#include "../../include/world_scenario_context.h"
 
 void RGE_Game_World::command_init(int param1, TCommunications_Handler* param2) {
     RGE_Command* p = new RGE_Command(this, param2);
     if ((void*)p == 0) {
         p = (RGE_Command*)0;
     }
-    this->command = p;
+    this->commands = p;
 }

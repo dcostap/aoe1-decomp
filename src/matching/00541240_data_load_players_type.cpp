@@ -8,22 +8,7 @@
 // FLAGS: /GX (needed for EH prolog in new-expression path)
 
 #include <cstdio>
-
-class RGE_Master_Player {
-public:
-    char gap_00[0x2C];  // sizeof = 0x2C
-
-    // 00460FD0
-    RGE_Master_Player(FILE* file);
-};
-
-class RGE_Game_World {
-public:
-    char gap_00[0x48];
-    RGE_Master_Player** master_players;  // +0x48
-
-    void data_load_players_type(short player_id, short flag, FILE* file);
-};
+#include "../../include/world_scenario_context.h"
 
 void RGE_Game_World::data_load_players_type(short player_id, short flag, FILE* file) {
     if (flag == 0) {

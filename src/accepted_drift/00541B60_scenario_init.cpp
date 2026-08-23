@@ -50,23 +50,9 @@
 // 2026-05-12: Verified identical artifact to sibling accepted_drift functions 00541C90/00541BC0.
 // First 75 bytes exact, then dead `test eax,eax; jne +0` at join. 16.6667% positional / 11.4583% edit diff.
 // Accepted under Boss's same-artifact ruling: zero-displacement branch is behavior-neutral; no inline asm/hacks.
+// Full canonical World.cpp context emits the same reviewed drift bytes.
 
-class RGE_Game_World;
-
-class RGE_Scenario {
-public:
-    virtual ~RGE_Scenario();
-    char gap_04[0x1990 - 0x04];
-    RGE_Scenario(int, RGE_Game_World*);
-};
-
-class RGE_Game_World {
-public:
-    char gap_00[0x5C];
-    RGE_Scenario* scenario;  // +0x5C
-
-    void scenario_init(int param1, RGE_Game_World* param2);
-};
+#include "../../include/world_scenario_context.h"
 
 void RGE_Game_World::scenario_init(int param1, RGE_Game_World* param2) {
     RGE_Scenario* p = new RGE_Scenario(param1, param2);

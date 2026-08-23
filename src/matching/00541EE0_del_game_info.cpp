@@ -12,83 +12,7 @@
 // passes.  VC5 then preserves the binary's early AX load, duplicate compare,
 // and shared transition into the second pass.  Exact with default flags.
 
-extern "C" void __cdecl free(void*);
-
-extern int world_update_counter;
-
-class RGE_Object_List {
-public:
-    void removeAllObjects();
-};
-
-class RGE_Scenario {
-public:
-    virtual void v00();
-    virtual void scalar_delete(int flags);
-};
-
-class RGE_Player {
-public:
-    virtual void scalar_delete(int flags);
-    void destroy_objects();
-};
-
-class RGE_Game_World {
-public:
-    virtual ~RGE_Game_World(); virtual void v004(); virtual void v008(); virtual void v00C();
-    virtual void v010(); virtual void v014(); virtual void v018(); virtual void v01C();
-    virtual void v020(); virtual void v024(); virtual void v028(); virtual void v02C();
-    virtual void v030(); virtual void v034(); virtual void v038(); virtual void v03C();
-    virtual void v040(); virtual void v044(); virtual void v048(); virtual void v04C();
-    virtual void v050(); virtual void v054(); virtual void v058(); virtual void v05C();
-    virtual void v060(); virtual void v064(); virtual void v068(); virtual void v06C();
-    virtual void v070(); virtual void v074(); virtual void v078(); virtual void v07C();
-    virtual void v080(); virtual void v084(); virtual void v088(); virtual void v08C();
-    virtual void v090(); virtual void v094(); virtual void v098(); virtual void v09C();
-    virtual void v0A0(); virtual void v0A4(); virtual void v0A8(); virtual void v0AC();
-    virtual void v0B0();
-    virtual void delete_all_objects(); // +0xB4
-
-    char gap_04[0x19];
-    unsigned char game_state;          // +0x1D
-    unsigned char game_end_condition;  // +0x1E
-    char gap_1F[1];
-    int sound_update_index;            // +0x20
-    int sprite_update_index;           // +0x24
-    char gap_28[0x14];
-    short player_num;                  // +0x3C
-    char gap_3E[2];
-    RGE_Player** players;              // +0x40
-    char gap_44[0x18];
-    RGE_Scenario* scenario;            // +0x5C
-    char gap_60[8];
-    int next_object_id;                // +0x68
-    int next_reusable_object_id;       // +0x6C
-    char gap_70[0x18];
-    void** objects;                    // +0x88
-    char gap_8C[4];
-    int max_objects;                   // +0x90
-    void** negative_objects;           // +0x94
-    char gap_98[4];
-    int max_negative_objects;          // +0x9C
-    char gap_A0[4];
-    int campaign;                      // +0xA4
-    int campaign_player;               // +0xA8
-    int campaign_scenario;             // +0xAC
-    int player_turn;                   // +0xB0
-    unsigned long player_time_delta[9];// +0xB4
-    RGE_Object_List* reusable_static_objects;      // +0xD8
-    RGE_Object_List* reusable_animated_objects;    // +0xDC
-    RGE_Object_List* reusable_moving_objects;      // +0xE0
-    RGE_Object_List* reusable_action_objects;      // +0xE4
-    RGE_Object_List* reusable_combat_objects;      // +0xE8
-    RGE_Object_List* reusable_missile_objects;     // +0xEC
-    RGE_Object_List* reusable_doppleganger_objects;// +0xF0
-    char gap_F4[0x0C];
-    int difficultyLevelValue;                       // +0x100
-
-    virtual void del_game_info();
-};
+#include "../../include/world_scenario_context.h"
 
 void RGE_Game_World::del_game_info()
 {
@@ -113,25 +37,25 @@ void RGE_Game_World::del_game_info()
     this->next_object_id = 0;
 
     i = 0;
-    if (this->max_objects > 0) {
+    if (this->maxNumberObjectsValue > 0) {
         do {
-            this->objects[i] = 0;
+            this->objectsValue[i] = 0;
             i++;
-        } while (i < this->max_objects);
+        } while (i < this->maxNumberObjectsValue);
     }
 
     i = 0;
-    if (this->max_negative_objects > 0) {
+    if (this->maxNumberNegativeObjectsValue > 0) {
         do {
-            this->negative_objects[i] = 0;
+            this->negativeObjectsValue[i] = 0;
             i++;
-        } while (i < this->max_negative_objects);
+        } while (i < this->maxNumberNegativeObjectsValue);
     }
 
-    this->delete_all_objects();
+    this->turn_sound_off();
 
     if (this->scenario != 0) {
-        this->scenario->scalar_delete(1);
+        delete this->scenario;
         this->scenario = 0;
     }
 
@@ -148,7 +72,7 @@ void RGE_Game_World::del_game_info()
     if (num > 0 && this->players != 0) {
         for (i = 0; i < this->player_num; i++) {
             if (this->players[i] != 0) {
-                this->players[i]->scalar_delete(1);
+                delete this->players[i];
                 this->players[i] = 0;
             }
         }

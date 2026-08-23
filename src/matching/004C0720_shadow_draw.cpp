@@ -22,68 +22,13 @@
 // draw_list_num after both parameter-home stores and reaches exact bytes.
 // Main-agent audit should review the raw 0x10-byte cursor against the original
 // source idiom; ownership, stride, call targets, and stack homes are proven.
+// Sprite group audit: the standalone owner is exact. In the PDB-ordered group,
+// 004C04F0 before this owner changes only the two commutative SIB encodings at
+// the child-entry load and LEA. Removing that prior owner restores both bytes.
+// Natural pointer, declaration, and typed-entry variants did not remove this
+// context-local drift; no compiler-only steering is retained.
 
-class RGE_Color_Table;
-class TDrawArea;
-class RGE_Sprite;
-
-class RGE_Picture_List {
-public:
-    short picture_num;
-    char gap_02[2];
-    RGE_Sprite* sprite;
-    short offset_x;
-    short offset_y;
-    short facet;
-    char gap_0E[2];
-};
-
-class RGE_Sprite {
-public:
-    char pict_name[13];
-    char gap_0D[3];
-    long resource_id;
-    unsigned char loaded;
-    char gap_15[3];
-    RGE_Color_Table** color_tables;
-    void* shape;
-    long last_time;
-    long delta_time;
-    unsigned char color_flag;
-    unsigned char draw_level;
-    short color_table;
-    unsigned char transparent_picking_flag;
-    char gap_2D[1];
-    short box_x1;
-    short box_y1;
-    short box_x2;
-    short box_y2;
-    short draw_list_num;
-    RGE_Picture_List* draw_list;
-    void* main_sound;
-    unsigned char micro_man_sound;
-    char gap_41[3];
-    void* sound_list;
-    char name[21];
-    char gap_5D[1];
-    short frame_num;
-    short facet_num;
-    float base_speed;
-    float duration;
-    float pause_between_loops;
-    unsigned char flag;
-    char gap_71[1];
-    short id;
-    unsigned char mirror_flag;
-    char gap_75[3];
-
-    void do_draw(long param_1, long param_2, long param_3, long param_4,
-                 RGE_Color_Table* param_5, TDrawArea* param_6,
-                 unsigned char param_7);
-    unsigned char shadow_draw(long param_1, long param_2, long param_3,
-                              long param_4, RGE_Color_Table* param_5,
-                              TDrawArea* param_6, unsigned char param_7);
-};
+#include "../../include/sprite_context.h"
 
 unsigned char RGE_Sprite::shadow_draw(long param_1, long param_2, long param_3,
                                       long param_4, RGE_Color_Table* param_5,

@@ -4,16 +4,9 @@
 // Attempt log:
 // try 1: natural typed new of active/animated sprite based on flags & 1.
 
-class RGE_Active_Sprite;
+#include "../../include/sprite_context.h"
+
 class RGE_Active_Animated_Sprite;
-
-class RGE_Sprite {
-public:
-    char gap_00[0x70];
-    unsigned char flags;
-
-    RGE_Active_Sprite* make_active_sprite();
-};
 
 class RGE_Active_Sprite {
 public:

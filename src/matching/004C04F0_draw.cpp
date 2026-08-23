@@ -72,69 +72,7 @@
 // fallback bytes. The result is an exact 304-byte match with no assembly.
 
 #include <stdio.h>
-
-class RGE_Color_Table;
-class TDrawArea;
-class RGE_Sprite;
-
-class RGE_Picture_List {
-public:
-    short picture_num;
-    char gap_02[2];
-    RGE_Sprite* sprite;
-    short offset_x;
-    short offset_y;
-    short facet;
-    char gap_0E[2];
-};
-
-class RGE_Sprite {
-public:
-    char pict_name[13];
-    char gap_0D[3];
-    long resource_id;
-    unsigned char loaded;
-    char gap_15[3];
-    RGE_Color_Table** color_tables;
-    void* shape;
-    long last_time;
-    long delta_time;
-    unsigned char color_flag;
-    unsigned char draw_level;
-    short color_table;
-    unsigned char transparent_picking_flag;
-    char gap_2D[1];
-    short box_x1;
-    short box_y1;
-    short box_x2;
-    short box_y2;
-    short draw_list_num;
-    RGE_Picture_List* draw_list;
-    void* main_sound;
-    unsigned char micro_man_sound;
-    char gap_41[3];
-    void* sound_list;
-    char name[21];
-    char gap_5D[1];
-    short frame_num;
-    short facet_num;
-    float base_speed;
-    float duration;
-    float pause_between_loops;
-    unsigned char flag;
-    char gap_71[1];
-    short id;
-    unsigned char mirror_flag;
-    char gap_75[3];
-
-    void do_draw(long frame, long param_2, long x, long y,
-                 RGE_Color_Table* color_table, TDrawArea* draw_area,
-                 unsigned char color_index);
-    unsigned char draw(long facet, long param_2, long param_3, long param_4,
-                       long param_5, long param_6,
-                       RGE_Color_Table* color_table, TDrawArea* draw_area,
-                       unsigned char color_index);
-};
+#include "../../include/sprite_context.h"
 
 unsigned char RGE_Sprite::draw(long facet, long param_2, long param_3,
                                long param_4, long param_5, long param_6,

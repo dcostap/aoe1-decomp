@@ -4,52 +4,7 @@
 // 1: natural reconstruction from packet/decompiler and nearby player/basegame helpers; close frame/prologue but first victory-status dispatch used if-chain instead of original switch-like dec cascade.
 // 2: use switch on widened check_victory result.
 
-class RGE_Player {
-public:
-    char gap_000[0x80];
-    unsigned char game_status;
-    char gap_081[0x104 - 0x81];
-    unsigned char allied_victory;
-
-    unsigned char check_victory(void);
-    unsigned char relation(long player_id);
-    void victory_if_game_on(void);
-    void loss_if_game_on(void);
-};
-
-class RGE_Scenario {
-public:
-    unsigned char Get_conquest_victory(void);
-};
-
-class RGE_Base_Game {
-public:
-    unsigned char set_campaign_info(long campaign, long person, long scenario);
-    void set_campaign_win(void);
-};
-
-#define rge_base_game (*(RGE_Base_Game**)0x0062C574)
-
-class RGE_Game_World {
-public:
-    char gap_00[0x1D];
-    unsigned char game_state;
-    unsigned char game_end_condition;
-    char gap_1F[0x3C - 0x1F];
-    short player_num;
-    char gap_3E[0x40 - 0x3E];
-    RGE_Player** players;
-    char gap_44[0x5C - 0x44];
-    RGE_Scenario* scenario;
-    char gap_60[0x7C - 0x60];
-    short curr_player;
-    char gap_7E[0xA4 - 0x7E];
-    long campaign;
-    long campaign_player;
-    long campaign_scenario;
-
-    unsigned char check_game_state(void);
-};
+#include "../../include/world_scenario_context.h"
 
 unsigned char RGE_Game_World::check_game_state(void)
 {

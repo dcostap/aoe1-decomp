@@ -31,22 +31,9 @@
 // positional diff are entirely the 4-byte no-op test/jne artifact and its 12-byte
 // downstream shift into padding. No inline asm/hacks used. No custom flags beyond /GX
 // needed. Same blocker as map_init (00541C20).
+// Full canonical World.cpp context emits the same reviewed drift bytes.
 
-void* operator new(unsigned int size);
-
-class RGE_Effects {
-public:
-    char gap_00[0x0C];
-    RGE_Effects(int param_1);
-};
-
-class RGE_Game_World {
-public:
-    char pad_00[0x4C];
-    RGE_Effects* effects;
-
-    void effects_init(int param_1);
-};
+#include "../../include/world_scenario_context.h"
 
 void RGE_Game_World::effects_init(int param_1) {
     RGE_Effects* e = new RGE_Effects(param_1);

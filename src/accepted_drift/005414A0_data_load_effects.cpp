@@ -43,20 +43,9 @@
 // effects as the original except for a dead zero-displacement `test eax,eax; jne +0`
 // inserted at the join, shifting the epilogue into padding. No source/flag combination
 // produced exact match without worse behavioral/codegen changes.
+// Full canonical World.cpp context emits the same reviewed drift bytes.
 
-class RGE_Effects {
-public:
-    char gap_00[0x0C];
-    RGE_Effects(char* filename);
-};
-
-class RGE_Game_World {
-public:
-    char gap_00[0x4C];
-    RGE_Effects* effects;
-
-    void data_load_effects(char* filename);
-};
+#include "../../include/world_scenario_context.h"
 
 void RGE_Game_World::data_load_effects(char* filename) {
     RGE_Effects* e;

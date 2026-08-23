@@ -39,47 +39,7 @@
 // try 36: mutating a char* self cursor through +0x4B8/+0x928/+0x40 also optimized back to the same hunk.
 // PROPOSED_ACCEPTED_DRIFT: behavior/calls/size match; remaining 11 bytes are localized to equivalent lookup-chain register topology only. Original loads player_num into EDI then world/players through EDX; rebuilt loads world/players into EDI then player_num into EDX. Same addresses are read, same null/type/flag checks, same virtual calls and stack cleanup.
 
-struct RGE_Base_Game {
-    virtual void vf00();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void set_game_mode(int mode, int arg);
-    char pad_04[0x1B4];
-    int sub_game_mode;
-    char pad_1BC[0x240];
-    short master_obj_id;
-};
-
-struct RGE_Player;
-
-struct RGE_Game_World {
-    char pad_00[0x40];
-    RGE_Player** players;
-};
-
-struct RGE_Player {
-    char pad_00[0x24];
-    void** master_objects;
-};
-
-struct TRIBE_Screen_Sed {
-    char pad_000[0x4B8];
-    short player_num;
-    char pad_4BA[0x46E];
-    RGE_Game_World* world;
-    void set_paint_object_mode();
-};
-
-struct RGE_Master_Static_Object {
-    void* vtable;
-    unsigned char obj_type;
-    char pad_05[0x167];
-    unsigned char flag;
-};
-
-#define rge_base_game (*(RGE_Base_Game**)0x62C574)
-
+#include "../../include/scr_sed_context.h"
 
 void TRIBE_Screen_Sed::set_paint_object_mode() {
     TRIBE_Screen_Sed* self = this;

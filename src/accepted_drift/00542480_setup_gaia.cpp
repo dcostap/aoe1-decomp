@@ -35,27 +35,17 @@
 //   store-in-both-arms, volatile pointer, bool temp, zero-init, assignment-in-if, and explicit casts.
 //   No exact. Direct/local sink store to success path. Common-tail variants keep the redundant join test.
 //   Member-reference reduced positional diff to 14 but worsened edit diff and still changes tail layout, so not kept.
+// - Full World.cpp context with /GX emits the same bytes as the prior local-declaration source.
+//   Direct assignment still splits the null and success cleanup paths. The clean common-tail source remains best.
+// - Exact-finish revisit: 512 /GX ambient-declaration variants emitted one identical 108-byte group.
+//   Same-TU scenario_make_player proves that direct assignment can emit a clean common join when its tail is larger.
+//   Local and indexed direct stores, const and zero-initialized locals, block and switch forms, assignment tests,
+//   post-new pointer aliases, and an inline assignment helper did not reproduce that join in this short function.
+//   The PDB has one allocation line and no separate store line, but it does not prove one source statement.
 // Accepted drift: same null-path/common-store join artifact as sibling World init helpers. Allocation size, EH frame,
 // ctor args/call, final store, stack cleanup, and behavior are understood. No inline asm/hacks.
 
-class RGE_Game_World;
-
-class RGE_Player {
-public:
-    char _gap_00[0x220];
-    RGE_Player(RGE_Game_World* world, void* masterPlayerInfo, int isGaia,
-               const char* name, int flag, int isActive);
-};
-
-class RGE_Game_World {
-public:
-    char _gap_00[0x40];
-    RGE_Player** players;        // +0x40
-    char _gap_44[0x04];
-    void** master_players;       // +0x48
-
-    void setup_gaia();
-};
+#include "../../include/world_scenario_context.h"
 
 void RGE_Game_World::setup_gaia() {
     RGE_Player* p = new RGE_Player(this, *master_players, 0, "GAIA", 0, 1);

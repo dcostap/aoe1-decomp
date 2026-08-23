@@ -3,33 +3,7 @@
 // EH-framed function (/GX)
 // Attempt log:
 
-extern "C" void* __cdecl operator_new(unsigned int);
-
-extern char s_OpenSaveDialog[];
-extern char s_Scenario_Editor_Open[];
-
-class TPanelSystem {
-public:
-    int setCurrentPanel(char* name, int mode);
-};
-
-extern TPanelSystem panel_system;
-
-class TRIBE_Screen_Sed_Open {
-public:
-    char pad[0x490];
-    TRIBE_Screen_Sed_Open();
-};
-
-class TRIBE_Screen_Sed {
-public:
-    virtual ~TRIBE_Screen_Sed();
-    char gap_00[0x4BC];
-    unsigned char field_4C0;
-    unsigned char need_to_save();
-    void popupYesNoCancelDialog(long text_id, char* panel_name, int param_4, int param_5);
-    void command_open(void);
-};
+#include "../../include/scr_sed_context.h"
 
 void TRIBE_Screen_Sed::command_open(void)
 {

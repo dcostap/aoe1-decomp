@@ -59,55 +59,7 @@
 //
 // FLAGS: /nologo /c /O2 /Oy
 
-#define VPAD1(n) virtual void vpad##n();
-#define VPAD2(n) VPAD1(n) VPAD1(n##_1)
-#define VPAD4(n) VPAD2(n) VPAD2(n##_2)
-#define VPAD8(n) VPAD4(n) VPAD4(n##_4)
-#define VPAD16(n) VPAD8(n) VPAD8(n##_8)
-
-extern "C" void* calloc(int num, int size);
-extern "C" void free(void* ptr);
-
-class RGE_Player {
-public:
-    virtual ~RGE_Player();
-    void set_color_table(unsigned char color);
-    char gap_04[0x21C];
-};
-
-class RGE_Player_Info {
-public:
-    char gap_00[0x25C];
-    short color[9];             // +0x25C
-    char gap_26E[0x26];
-    short player_num;           // +0x294
-};
-
-class RGE_Color_Table {
-public:
-    char gap_00[0x24];
-    unsigned char type;         // +0x24
-};
-
-class RGE_Game_World {
-public:
-    // The target is the original virtual slot 42.  The declarations also
-    // preserve the real vptr before the data fields.
-    virtual ~RGE_Game_World();
-    VPAD16(1) VPAD8(17)
-    virtual unsigned char new_random_game(RGE_Player_Info& info);
-    VPAD16(26)
-    virtual void setup_player_colors(RGE_Player_Info& info);
-
-    char gap_04[0x38];          // +0x04 through +0x3B
-    short player_num;           // +0x3C
-    char gap_3E[2];
-    RGE_Player** players;       // +0x40
-    char gap_44[0x1C];
-    short color_table_num;      // +0x60
-    char gap_62[2];
-    RGE_Color_Table** color_tables; // +0x64
-};
+#include "../../include/world_scenario_context.h"
 
 void RGE_Game_World::setup_player_colors(RGE_Player_Info& info) {
     int colorIdx = -1;

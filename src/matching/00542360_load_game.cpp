@@ -38,86 +38,8 @@
 // - Main-agent audit restored the canonical base/world destructor and named
 //   del_game_info surfaces; emitted code remains exact.
 
-#include <stdio.h>
 #include <string.h>
-
-extern "C" int __cdecl rge_open(const char* path, int access);
-extern "C" void __cdecl rge_read(int fd, void* buf, int size);
-extern "C" int __cdecl rge_close(int fd);
-
-class RGE_Prog_Info {
-public:
-    char gap_00[0xB12];
-    char save_dir[261];
-};
-
-class RGE_Base_Game {
-public:
-    virtual ~RGE_Base_Game();
-    char gap_04[0x08];
-    RGE_Prog_Info* prog_info;
-};
-
-extern int world_update_counter;
-extern RGE_Base_Game* rge_base_game;
-extern int save_game_version;
-
-class RGE_Game_World {
-public:
-    virtual void vf00();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
-    virtual void vf20();
-    virtual void vf24();
-    virtual void vf28();
-    virtual void vf2C();
-    virtual void vf30();
-    virtual void vf34();
-    virtual void vf38();
-    virtual void vf3C();
-    virtual void vf40();
-    virtual void vf44();
-    virtual void vf48();
-    virtual void vf4C();
-    virtual void vf50();
-    virtual void vf54();
-    virtual void vf58();
-    virtual void vf5C();
-    virtual void vf60();
-    virtual void vf64();
-    virtual void vf68();
-    virtual void vf6C();
-    virtual void vf70();
-    virtual void vf74();
-    virtual void vf78();
-    virtual void vf7C();
-    virtual void vf80();
-    virtual void vf84();
-    virtual void vf88();
-    virtual void vf8C();
-    virtual void vf90();
-    virtual void vf94();
-    virtual void vf98();
-    virtual void vf9C();
-    virtual ~RGE_Game_World();
-    virtual void vfA4();
-    virtual void vfA8();
-    virtual void vfAC();
-    virtual void vfB0();
-    virtual void vfB4();
-    virtual void del_game_info();
-    virtual void vfBC();
-    virtual void vfC0();
-    virtual void vfC4();
-    virtual unsigned char load_world(int fd);
-
-    unsigned char load_game(char* param_1);
-};
+#include "../../include/world_scenario_context.h"
 
 unsigned char RGE_Game_World::load_game(char* param_1)
 {
@@ -127,7 +49,7 @@ unsigned char RGE_Game_World::load_game(char* param_1)
 
     this->del_game_info();
 
-    sprintf(buf + 8, "%s%s", rge_base_game->prog_info->save_dir, param_1);
+    sprintf(buf + 8, "%s%s", rge_base_game->save_prog_info->save_dir, param_1);
 
     int fh = rge_open(buf + 8, 0x8000);
     if (fh != -1) {

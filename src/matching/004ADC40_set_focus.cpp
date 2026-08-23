@@ -1,20 +1,12 @@
-class GlobalUiHost {
-public:
-    void helper(int flag);
-};
-extern GlobalUiHost* g_ui;
-class SetFocusHost {
-public:
-    void parent_set_focus(int v);
-    void set_focus(int v);
-    char gap_00[0x78];
-    int field_78;
-};
-void SetFocusHost::set_focus(int v) {
-    this->parent_set_focus(v);
-    if (this->field_78) {
-        g_ui->helper(0);
+
+
+#include "../../include/scr_sed_context.h"
+
+void TRIBE_Screen_Sed::set_focus(int v) {
+    this->TScreenPanel::set_focus(v);
+    if (this->have_focus) {
+        rge_base_game->set_windows_mouse(0);
     } else {
-        g_ui->helper(1);
+        rge_base_game->set_windows_mouse(1);
     }
 }
