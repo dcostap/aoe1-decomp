@@ -163,6 +163,18 @@ def direct_call_symbols_match(original: str, rebuilt: str) -> bool:
 
 
 _SIMPLE_OWNER_NAME_RE = re.compile(r"~?[A-Za-z_][A-Za-z0-9_]*$")
+_VC5_TEMPLATE_TYPE_CODES = {
+    "D": "char",
+    "E": "unsigned char",
+    "F": "short",
+    "G": "unsigned short",
+    "H": "int",
+    "I": "unsigned int",
+    "J": "long",
+    "K": "unsigned long",
+    "M": "float",
+    "N": "double",
+}
 
 
 def _decorated_owner_name(symbol: str) -> str:
@@ -175,12 +187,23 @@ def _decorated_owner_name(symbol: str) -> str:
         separator = symbol.find("@", 1)
         if separator < 0:
             return ""
+        # A free function has the double scope separator immediately after
+        # its name. It has no owning class.
+        if symbol[separator:separator + 2] == "@@":
+            return ""
         scope = symbol[separator + 1 :]
     else:
         return ""
 
     scope = scope.split("@@", 1)[0]
     parts = [part for part in scope.split("@") if part]
+    if len(parts) >= 2 and parts[0].startswith("?$"):
+        template_name = parts[0][2:]
+        template_args = [
+            _VC5_TEMPLATE_TYPE_CODES.get(argument, argument)
+            for argument in parts[1:]
+        ]
+        return f"{template_name}<{', '.join(template_args)}>"
     return "::".join(reversed(parts))
 
 
