@@ -25,37 +25,37 @@
 //   428 bytes. A volatile map-size home widened it to 571 bytes and 16 extra
 //   bytes. Restored the clean typed source; the remaining lead is compiler
 //   scheduling of the initial clear and player-table block.
-// - Batch worker probes restored the original terrain/FPU coordinate roles by
-//   using tile_x as the map row and x as the map column. Helper calls also use
-//   the original x,tile_x argument order. This gives 568 bytes, exact frame,
-//   204 instructions, 13 calls, and a 42-byte (7.3944%) positional diff.
-// - The remaining drift is confined to the initial dimension-load order and
-//   the first pop_stack setup. The bottom pop_stack call and all later blocks
-//   are positionally exact. World/player aliases, count scope, stack pointer
-//   aliases, and reference-form stack ABI were codegen duplicates or worse.
-// ACCEPTED DRIFT: The initial clear multiplies the same width and height in the
-// opposite load order. The next hunk recolors the player index and schedules
-// valid world/player loads and private output addresses around the first
-// pop_stack call. Both builds pass identical addresses and values. All 13 calls,
-// used flags, memory effects, FPU operations, returns, and fault order match.
-// Context pass: the shared rmm_obj declaration surface is used by the full owner
-// prefix. The prefix keeps the 568-byte body and 42-byte drift.
+// Current context pass: the PDB-ordered base surface fixes the clear-size load
+// order and proves pointer-qualified stack helper symbols. PDB local order also
+// restores y, x, tile_y, tile_x, count, obj_stack, and float zone ownership.
+// The result is 568 bytes with an exact frame, 13 aligned calls, and 40 changed
+// bytes. The mismatch starts after make_placement_stack and ends at the first
+// pop_stack call. The bottom call and all later blocks are exact.
+// ACCEPTED DRIFT: The residual only recolors and schedules the player lookup,
+// count store, and private output addresses. It keeps the same memory-read and
+// fault order, arguments, calls, FPU work, state changes, and return.
+// Count-before-player lowers the residual to 25 bytes but reads count before
+// world. Keep player-before-count to preserve executable fault order.
+// A complete-world continuation tested typed world/table aliases, a sequenced
+// comma expression, first-pop loop forms, const player storage, and explicit
+// output or stack pointers. All safe forms emit this same 40-byte basin.
+// Completing the PDB player/master suffixes also moved the exact clear block
+// and increased the residual to 42 bytes, so that broad context was removed.
 
 extern "C" void* __cdecl memset(void*, int, unsigned int);
 #include "..\..\include\rmm_obj_context.h"
 
 void RGE_RMM_Object_Generator::place_avoid_objects(RGE_Object_Info_Line& info, long unused)
 {
-    Map_Stack stack;
-    long x;
-    long tile_x;
     long y;
+    long x;
+    float tile_y;
+    float tile_x;
     long count;
-    float fx;
-    float fy;
-    short zone;
-    RGE_Player* player;
+    Map_Stack obj_stack;
+    float zone;
     RGE_Master_Static_Object* master;
+    short radius;
     int i;
 
     memset(this->search_map, 1, this->map_width * this->map_height);
@@ -65,44 +65,44 @@ void RGE_RMM_Object_Generator::place_avoid_objects(RGE_Object_Info_Line& info, l
                               info.land_inner_radius, 0);
     }
 
-    this->init_stack(stack);
-    this->make_placement_stack(stack, -1, -1, -1, -1);
+    this->init_stack(&obj_stack);
+    this->make_placement_stack(obj_stack, -1, -1, -1, -1);
 
-    player = this->world->players[
+    RGE_Player* player = this->world->players[
         info.player_id & (info.player_id <= -1 ? 0 : -1)];
     count = info.number_of_groups;
 
-    while (this->pop_stack(stack, x, tile_x, *(float*)&y) && count > 0) {
+    while (this->pop_stack(&obj_stack, &x, &y, &zone) && count > 0) {
             if (info.terrain >= 0) {
-                if ((((RGE_Tile**)this->map_row_offset)[tile_x][x].terrain & 0x1f) !=
+                if ((this->map_row_offset[y][x].terrain & 0x1f) !=
                     (unsigned int)info.terrain) {
                     goto next;
                 }
             }
 
-            fx = (float)x;
-            fy = (float)tile_x;
+            tile_x = (float)x;
+            tile_y = (float)y;
             master = player->master_objects[info.obj_id];
-            zone = (short)(int)master->radius_x;
-            if (master->radius_x - (float)zone > 0.0f) {
-                fx = fx - -0.5f;
+            radius = (short)(int)master->radius_x;
+            if (master->radius_x - (float)radius > 0.0f) {
+                tile_x = tile_x - -0.5f;
             }
-            zone = (short)(int)master->radius_y;
-            if (master->radius_y - (float)zone > 0.0f) {
-                fy = fy - -0.5f;
+            radius = (short)(int)master->radius_y;
+            if (master->radius_y - (float)radius > 0.0f) {
+                tile_y = tile_y - -0.5f;
             }
 
-            if (!master->can_place(player, fx, fy, 0, 0, 1, 1, 1, 0, 1)) {
-                this->remove_area_from_lists(x, tile_x, info.object_exclusion_zone);
+            if (!master->can_place(player, tile_x, tile_y, 0, 0, 1, 1, 1, 0, 1)) {
+                this->remove_area_from_lists(x, y, info.object_exclusion_zone);
                 switch (info.group_flag) {
                 case 0:
-                    player->place_object(info.obj_id, fx, fy, 0, 1);
+                    player->place_object(info.obj_id, tile_x, tile_y, 0, 1);
                     break;
                 case 1:
-                    this->place_group(info, x, tile_x, player);
+                    this->place_group(info, x, y, player);
                     break;
                 case 2:
-                    this->place_cluster(info, x, tile_x, player);
+                    this->place_cluster(info, x, y, player);
                     break;
                 }
                 count--;
@@ -110,5 +110,5 @@ void RGE_RMM_Object_Generator::place_avoid_objects(RGE_Object_Info_Line& info, l
     next:
         ;
     }
-    this->deinit_stack(stack);
+    this->deinit_stack(&obj_stack);
 }

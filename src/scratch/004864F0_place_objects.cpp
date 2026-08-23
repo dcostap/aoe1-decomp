@@ -69,74 +69,72 @@
 // loop-local count, an info alias, and reference helpers with count-after-player
 // were 43-byte results. string.h changed the clear order and memory.h was the
 // 31-byte basin. Restore the 31-byte direct-pointer clean source.
-// Accepted-drift audit: do not promote. The executable reads this->world before
-// info.number_of_groups. The rebuild reads number_of_groups first. It also
-// moves the count store before the world and players-table reads. Concurrent
-// record changes and invalid pointer storage can change results and fault order.
-//
-// Context audit: include/rmm_obj_context.h now supplies the period RGE_Random_Map_Module,
-// object-info, player, master-object, and derived helper ownership. The real PDB prefix
-// through this owner compiles in rmm_obj_full_prefix.cpp. Exact anchor results in that
-// object are 00485C50 MATCH, 00485CB0 MATCH, 00485DC0 MATCH, 00486110 MATCH,
-// 00486180 MATCH, and 00486210 MATCH. The nonexact owners remain behavior-valid
-// context owners: 00485E50 is 8 bytes off, 00485F10 is 392 bytes off, and 004862B0
-// is 42 bytes off. The target remains 515 bytes with a 31-byte positional diff.
-// Full authentic prefix context did not move the first mismatch at +004A.
+// Current context audit: the PDB-ordered base and derived surfaces preserve all
+// six exact anchors. 00485E50 is now exact, and 004862B0 is 40 bytes off.
+// PDB symbols prove the local order y, x, tile_y, tile_x, count, obj_stack,
+// then float zone. The complete PDB world surface required by promoted
+// 00485E50 changes this target to a 45-byte setup residual. The frame and all
+// 12 calls remain exact. Every block after the first pop is exact.
+// It makes VC5 read map_height before map_width in the clear. The executable
+// reads map_width first, so invalid storage can also change that fault order.
+// Keep this function in scratch. Count-before-player reaches 31 bytes but reads
+// count before world. The retained source restores player-before-count.
+// The compiler still reads player_id before world, while the executable reads
+// world first. Invalid input storage can therefore change fault order.
+// The complete-world audit also tested both orders of the inherited width and
+// height aliases. VC5 emits the same height-first clear in each case. A named
+// map-size local was also a duplicate. Keep the direct PDB field expression.
 
-extern "C" void* __cdecl memset(void*, int, unsigned int);
 #include "..\..\include\rmm_obj_context.h"
 
 void RGE_RMM_Object_Generator::place_objects(RGE_Object_Info_Line& info)
 {
+    long y;
     long x;
-    long col;
-    float cost;
-    int count;
-    float fx;
-    float fy;
-    int zone;
+    float tile_y;
+    float tile_x;
+    long count;
     Map_Stack obj_stack;
+    float zone;
 
-    // clear occupancy byte map to 1
-    memset(this->byte_map, 1, this->width * this->height);
+    memset(this->search_map, 1, this->map_width * this->map_height);
 
-    this->init_stack(obj_stack);
+    this->init_stack(&obj_stack);
     this->make_placement_stack(obj_stack, -1, -1, -1, -1);
 
-    count = info.number_of_groups;
-    RGE_Player* player;
-    player = this->world->players[
+    RGE_Player* player = this->world->players[
         info.player_id & (info.player_id <= -1 ? 0 : -1)];
+    count = info.number_of_groups;
 
-    while (pop_stack(obj_stack, col, x, cost) && count > 0) {
-            if (info.terrain < 0 || ((this->map_row_offset[x][col].terrain & 0x1f) == (unsigned int)info.terrain)) {
-                fx = (float)col;
-                fy = (float)x;
+    while (pop_stack(&obj_stack, &x, &y, &zone) && count > 0) {
+            if (info.terrain < 0 || ((this->map_row_offset[y][x].terrain & 0x1f) == (unsigned int)info.terrain)) {
+                tile_x = (float)x;
+                tile_y = (float)y;
                 RGE_Master_Static_Object* master = player->master_objects[info.obj_id];
-                zone = (short)(int)master->radius_x;
-                if (0.0f < master->radius_x - (float)zone) {
-                    fx = fx - -0.5f;
+                short radius = (short)(int)master->radius_x;
+                if (0.0f < master->radius_x - (float)radius) {
+                    tile_x = tile_x - -0.5f;
                 }
-                zone = (short)(int)master->radius_y;
-                if (0.0f < master->radius_y - (float)zone) {
-                    fy = fy - -0.5f;
+                radius = (short)(int)master->radius_y;
+                if (0.0f < master->radius_y - (float)radius) {
+                    tile_y = tile_y - -0.5f;
                 }
-                if (!master->can_place(player, fx, fy, 0, 0, 1, 1, 1, 0, 1)) {
-                    remove_area_from_lists(col, x, info.object_exclusion_zone);
+                if (!master->can_place(player, tile_x, tile_y, 0, 0, 1, 1, 1, 0, 1)) {
+                    remove_area_from_lists(x, y, info.object_exclusion_zone);
                     switch (info.group_flag) {
                     case 0:
-                        player->place_object(info.obj_id, fx, fy, 0, 1);
+                        player->place_object(info.obj_id, tile_x, tile_y, 0, 1);
                         break;
                     case 1:
-                        place_group(info, col, x, player);
+                        place_group(info, x, y, player);
                         break;
                     case 2:
-                        place_cluster(info, col, x, player);
+                        place_cluster(info, x, y, player);
                         break;
                     }
                     count--;
                 }
             }
         }
-    this->deinit_stack(obj_stack);
+    this->deinit_stack(&obj_stack);
 }
