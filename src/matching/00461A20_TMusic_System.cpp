@@ -1,13 +1,11 @@
-class Base_TMusic_System {
-public:
-    virtual ~Base_TMusic_System();
-};
+// VA: 00461A20 TMusic_System::~TMusic_System (5B)
+// PDB source: music.cpp line 64
+// Natural destruction emits the original tail jump to close_device.
+// The 00461910, 00461A20, 00462C30 grouped prefix retains all three boundaries.
 
-class TMusic_System : public Base_TMusic_System {
-};
+#include "../../include/music_context.h"
 
-extern "C" void __stdcall probe_TMusic_System(void* p);
-#pragma alloc_text(".text", probe_TMusic_System)
-extern "C" void __stdcall probe_TMusic_System(void* p) {
-    p->TMusic_System::~TMusic_System();
+TMusic_System::~TMusic_System()
+{
+    this->close_device();
 }

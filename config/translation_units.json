@@ -151,7 +151,13 @@
       "flags": "config/flags/default.rsp",
       "owners": {
         "00461910": "src/matching/00461910_TMusic_System.cpp",
+        "00461A20": "src/matching/00461A20_TMusic_System.cpp",
         "00462C30": "src/matching/00462C30_get_play_info.cpp"
+      },
+      "symbols": {
+        "00461910": "??0TMusic_System@@QAE@EPAX0PAVTSound_Driver@@PAD@Z",
+        "00461A20": "??1TMusic_System@@QAE@XZ",
+        "00462C30": "?get_play_info@TMusic_System@@QAEHPAEPAH11PAD1PAK@Z"
       }
     }
   ]
