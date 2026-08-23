@@ -11,6 +11,15 @@
 //   reproduced the oracle's two tables and all 32 direct calls (2 bytes left).
 // - the train-mode expression is flag ? -1 : 1; this restores the original
 //   neg/sbb/and/inc sequence. MATCH.
+// PDB-qualified owner: protected __thiscall
+// TRIBE_Screen_Game::do_button_action(int, int, int),
+// ?do_button_action@TRIBE_Screen_Game@@IAEXHHH@Z.
+// BINARY NOTE: The owned body is 004987A0-00498942.  The NOP at 00498943
+// and switch tables from 00498944 are outside the function boundary.
+// BINARY NOTE: world is the TRIBE_World member at +0x5B4; score_displayed is
+// the derived field at +0x11C.  The score arm reads it before its call.
+// BINARY NOTE: action calls this owner at 0049877D.  The dispatch has no
+// writes; each arm preserves the shipped call and pop/ret 0xC cleanup.
 
 extern int allow_user_commands;
 
@@ -28,14 +37,19 @@ class TScreenPanel : public TEasy_Panel {
 class RGE_Game_World {
 public:
     virtual unsigned char data_load_world(void* file);
-    char gap_004[0x118];
+    char gap_004[0x100];
+};
+
+class TRIBE_World : public RGE_Game_World {
+public:
+    char gap_104[0x18];
     unsigned char score_displayed;
 };
 
 class TRIBE_Screen_Game : public TScreenPanel {
 public:
     char gap_478[0x13C];
-    RGE_Game_World* world;
+    TRIBE_World* world;
 
     void command_work();
     void command_move();
@@ -65,6 +79,7 @@ public:
     void command_menu();
     void command_score(int value);
 
+protected:
     void do_button_action(int action, int value, int flag);
 };
 
