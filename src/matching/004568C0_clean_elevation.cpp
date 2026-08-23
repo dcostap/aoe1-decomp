@@ -43,13 +43,17 @@
 // positional diff. The remaining drift is the current-tile increment block:
 // original increments AL before masking BL; VC5 emits the reverse order and
 // stores through BL. Keep the natural typed source and the two improvements.
-// ACCEPTED DRIFT: The original and rebuild independently increment AL and mask
-// BL, then shift AL by five. They use opposite XOR destinations but store the
-// same commutative XOR result to [ESI+5]. No memory access or branch occurs
-// inside the changed span. EAX and EBX are reloaded before their next uses, and
-// ADD overwrites the flags before the next branch. All other bytes match.
+// Translation-unit finish:
+// 34: The exact preceding preclean_elevation owner and this function both match
+// under the map.cpp Windows header context. windows.h alone is sufficient;
+// stdlib.h before or after windows.h is incidental. Replacing stdlib.h with
+// windows.h in this standalone owner also gives MATCH and removes the prior
+// seven-byte partial-register scheduling drift.
+// 35: A shared natural RGE_Tile union for the two names at byte +5 keeps both
+// the exact preclean_elevation anchor and this target exact in source order.
+// Exact result: 1478 bytes, 460 instructions, three ordered calls, 0.0000%.
 
-#include <stdlib.h>
+#include <windows.h>
 
 struct RGE_Tile {
     char gap_00[5];
