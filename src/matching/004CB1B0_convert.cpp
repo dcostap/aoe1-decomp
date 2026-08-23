@@ -63,13 +63,22 @@
 // - final clean validation retains the 333-byte natural pointer-result build:
 //   all 16 calls and the first 226 bytes align, but the success/failure tail
 //   still emits `mov esi,1; mov eax,esi` instead of the oracle's `mov eax,1`.
+// - grouped context finish: use separate typed target and int result locals.
+//   Publish result 0 on each failure edge and result 1 on each success edge,
+//   then return through one natural end label. This keeps target rereads and
+//   the object, task, constructor, delete, and add call order unchanged.
+// - exact grouped validation: compile after the existing t_c_obj owners at
+//   004CB040 and 004CB300. The target is 331 bytes with 0 differing bytes,
+//   all 16 ordered calls aligned, the original boundary reached, and the
+//   PDB-qualified virtual owner `?convert@TRIBE_Combat_Object@@UAEHHH@Z`.
+// - safe owner-map addition for the main agent: append 004CB1B0 with this
+//   source after the existing 004CB300 include in t_c_obj_heal_tu.cpp and add
+//   the same owner to the t_c_obj_heal entry. Do not add it to config here.
 // FLAGS: config/flags/004CB1B0_convert.rsp
-// ACCEPTED DRIFT: The two-byte size increase only funnels the null, allocation
-// failure, and success results through ESI before EAX. The original leaves the
-// same zero from make_action, writes zero directly on constructor failure, and
-// writes one directly on success. All calls, branches, memory effects, EH
-// states, cleanup, return values, and fault behavior match.
+// GROUPED EXACTNESS: target-only compilation uses a different EH/register
+// basin. The authentic t_c_obj owner context is required for exact bytes.
 
+#ifndef T_C_OBJ_HEAL_CONTEXT_H
 class RGE_Static_Object;
 class RGE_Game_World;
 class RGE_Action;
@@ -184,38 +193,56 @@ public:
     TRIBE_Action_Convert(TRIBE_Combat_Object* object, RGE_Task* action_id, RGE_Static_Object* target);
 };
 
+#else
+#include "../../include/t_c_obj_heal_context.h"
+
+#define world_x x
+#define world_y y
+#define world_z z
+#define get_target target_obj
+#define action_type action_id
+#define actions action_list
+
+#endif
+
 int TRIBE_Combat_Object::convert(int object_id, int force) {
-    RGE_Static_Object* result;
+    RGE_Static_Object* target;
     RGE_Task* action_id;
     TRIBE_Action_Convert* action;
+    int result;
 
-    result = owner_data->world->object(object_id);
-    if (result == 0) goto end;
+    target = owner_data->world->object(object_id);
+    if (target == 0) {
+        result = 0;
+        goto end;
+    }
 
-    if (force == 0 && actions->have_action() == 1 && actions->get_action()->get_target() == result && actions->get_action()->action_type() == 0x68) {
-        result = (RGE_Static_Object*)1;
+    if (force == 0 && actions->have_action() == 1 && actions->get_action()->get_target() == target && actions->get_action()->action_type() == 0x68) {
+        result = 1;
         goto end;
     }
 
     if (actions->have_action() == 1 && actions->get_action()->action_type() == 0x68) {
-        actions->get_action()->set_target(result, result->world_x, result->world_y, result->world_z);
-        result = (RGE_Static_Object*)1;
+        actions->get_action()->set_target(target, target->world_x, target->world_y, target->world_z);
+        result = 1;
         goto end;
     }
 
-    action_id = make_action(result, result->world_x, result->world_y, result->world_z);
-    if (action_id == 0) goto fail;
+    action_id = make_action(target, target->world_x, target->world_y, target->world_z);
+    if (action_id == 0) {
+        result = 0;
+        goto end;
+    }
 
-    action = new TRIBE_Action_Convert(this, action_id, result);
-    if (action == 0) goto fail;
+    action = new TRIBE_Action_Convert(this, action_id, target);
+    if (action == 0) {
+        result = 0;
+        goto end;
+    }
 
     actions->delete_list();
     add_action(action);
-    result = (RGE_Static_Object*)1;
-    goto end;
-
-fail:
-    result = 0;
+    result = 1;
 end:
-    return (int)result;
+    return result;
 }

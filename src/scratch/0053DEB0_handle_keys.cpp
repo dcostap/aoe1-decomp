@@ -48,7 +48,25 @@
 // 28: The improved probe was restored. The clean source remains authoritative.
 // GIVEUP: The remaining blocker is the natural VC5 x87 basin for the shared
 //         threshold addition. No accepted_drift proposal is supported.
+// 29: Fresh target checks confirmed all 13 ordered calls, the
+//     handle_keys owner symbol, and the 964-byte boundary. The clean 256-byte
+//     key source remains 127 bytes different with a 0x114 frame. Its natural
+//     homes are shorts at esp+14/+18 and the qword scratch at esp+1C.
+// 30: A diagnostic 260-byte key array reached the 0x118 frame, 964-byte size,
+//     and 124-byte difference. It still kept shorts at esp+14/+18. It is not
+//     retained because the API writes a 256-byte key state and the executable
+//     reads the four arrow keys from the proven esp+28 buffer.
+// 31: Direct GetKeyboardState(keys) with key indices 0x25-0x28, donor local
+//     order, block-local elapsed, explicit float subtraction, threshold-symbol
+//     branches, and local-scope variants were tested. They were duplicates or
+//     widened the structural difference. Registered anchor checks stayed exact.
+// BLOCKER: The executable keeps the 256-byte key buffer at esp+28, shorts at
+//          esp+10/+14, and the qword/x87 scratch at esp+18. Natural VC5 source
+//          in the registered context keeps the key buffer and calls correct,
+//          but allocates the short homes and quotient spill four bytes later.
+//          A 260-byte array fixes only the frame and is not valid source.
 
+#ifndef RGE_MAIN_VIEW_SHARED_CONTEXT
 typedef unsigned char uchar;
 typedef void* HWND;
 extern "C" __declspec(dllimport) HWND __stdcall GetForegroundWindow(void);
@@ -97,7 +115,7 @@ public:
     virtual void vf10(); virtual void vf14(); virtual void vf18(); virtual void vf1C();
     virtual void vf20(); virtual void vf24(); virtual void vf28(); virtual void vf2C();
     virtual void vf30();
-    virtual float move_to(float x, float y, int zero);
+    virtual float teleport(float x, float y, int zero);
     char gap_04[0x34];
     float x;
     float y;
@@ -113,7 +131,7 @@ class RGE_Main_View {
 public:
     virtual void vf00(); virtual void vf04(); virtual void vf08(); virtual void vf0C();
     virtual void vf10(); virtual void vf14(); virtual void vf18(); virtual void vf1C();
-    virtual void repaint(int);
+    virtual void set_redraw(int);
     char gap_04[0x1C];
     TDrawArea* render_area;
     char gap_24[0x54];
@@ -128,6 +146,7 @@ public:
 
     int handle_keys();
 };
+#endif
 
 int RGE_Main_View::handle_keys()
 {
@@ -154,22 +173,22 @@ int RGE_Main_View::handle_keys()
     if (rge_base_game->game_mode == 0x12 && this->player != 0 && this->player->selected_obj != 0) {
         RGE_Static_Object* obj = this->player->selected_obj;
         if (keys[0x2A] > 1) {
-            obj->move_to(obj->x + info->key_scroll_object_move, obj->y - info->key_scroll_object_move, 0);
+            obj->teleport(obj->x + info->key_scroll_object_move, obj->y - info->key_scroll_object_move, 0);
             changed = 1;
         }
         if (keys[0x2C] > 1) {
             RGE_Static_Object* obj2 = this->player->selected_obj;
-            obj2->move_to(obj->x - info->key_scroll_object_move, obj->y + info->key_scroll_object_move, 0);
+            obj2->teleport(obj->x - info->key_scroll_object_move, obj->y + info->key_scroll_object_move, 0);
             changed = 1;
         }
         if (keys[0x29] > 1) {
             RGE_Static_Object* obj2 = this->player->selected_obj;
-            obj2->move_to(obj->x - info->key_scroll_object_move, obj->y - info->key_scroll_object_move, 0);
+            obj2->teleport(obj->x - info->key_scroll_object_move, obj->y - info->key_scroll_object_move, 0);
             changed = 1;
         }
         if (keys[0x2B] > 1) {
             RGE_Static_Object* obj2 = this->player->selected_obj;
-            obj2->move_to(obj->x + info->key_scroll_object_move, obj->y + info->key_scroll_object_move, 0);
+            obj2->teleport(obj->x + info->key_scroll_object_move, obj->y + info->key_scroll_object_move, 0);
             changed = 1;
         }
     } else if (this->player != 0) {
@@ -224,9 +243,9 @@ int RGE_Main_View::handle_keys()
     if (horz_scroll == 0 && vert_scroll == 0)
         this->key_scrolling = 0;
     if (changed) {
-        this->repaint(1);
+        this->set_redraw(1);
         if (this->map_view != 0)
-            this->map_view->repaint(1);
+            this->map_view->set_redraw(1);
     }
     return changed;
     }

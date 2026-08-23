@@ -26,11 +26,10 @@
 //   or widened the structural gap. The remaining lead is the x87 faddp block.
 // - Reversing the threshold predicate to test fractional < threshold restores
 //   the original fcomp branch polarity and raises exact-block coverage; keep it.
-// - Reordering the commutative whole-plus-fraction expression is codegen-neutral.
-//   Moving the addition after the branch, or using a separate whole accumulator,
-//   widens the function to 779 bytes; those probes were rolled back. The live
-//   source remains the natural branch-local typed addition, with a localized
-//   fxch before faddp still unresolved.
+// - In the isolated-owner build, reordering the commutative whole-plus-fraction
+//   expression was codegen-neutral. Moving the addition after the branch, or
+//   using a separate whole accumulator, widened that build to 779 bytes.
+//   Those probes were rolled back. The isolated owner still had one FXCH.
 // - Fresh revisit: the original stack reads prove the source's vertical tests
 //   use point.x against rect.left/right, while horizontal tests use point.y
 //   against rect.top/bottom. Swapping these four typed fields recovers every
@@ -47,10 +46,22 @@
 //   selection, quantized accumulators, and a common explicit assignment. They
 //   were duplicates or widened the function; the clean branch-local form stays
 //   authoritative.
-// BLOCKER: the rebuild inserts FXCH before FADDP and therefore reverses the
-//   x87 operands. Ordinary finite sums match, but NaN payload choice and signed
-//   zero can differ. Do not accept this as commutative integer-style drift.
+// BINARY NOTE: the original uses one FADDP at the threshold join. This keeps
+// the x87 operand order, NaN payload choice, and signed-zero result.
+// - The isolated source build inserted FXCH before FADDP. The PDB module and
+//   source order require the registered vw_main wrapper context instead.
+// - The wrapper defines RGE_MAIN_VIEW_SHARED_CONTEXT before including this
+//   owner. The guard below keeps the canonical view declarations active there.
+// - Exact grouped finish: PDB lines 209-212 place both threshold loads in the
+//   arms and one whole-unit addition after the join. In the wrapper context,
+//   this emits the original FLD/FLD/FADDP block.
+// - Walkback: branch-local additions stayed at 779 bytes with a 311-byte
+//   isolated diff. The guarded common addition is 773 bytes and matches all
+//   773 bytes in a fresh context extraction.
+// - Fresh context validation: 221 instructions, 15 ordered calls, 0x2C frame,
+//   100% exact blocks, and Result: MATCH with 0.0000% positional diff.
 
+#ifndef RGE_MAIN_VIEW_SHARED_CONTEXT
 typedef void* HWND;
 
 struct tagPOINT {
@@ -157,6 +168,7 @@ extern "C" unsigned long __cdecl debug_timeGetTime(char* file, int line);
 extern const float DAT_00577900;
 extern const float DAT_00577904;
 extern const float DAT_00577908;
+#endif
 
 int RGE_Main_View::do_auto_scroll()
 {
@@ -209,13 +221,12 @@ int RGE_Main_View::do_auto_scroll()
                 if (scroll_dist2 < DAT_00577904)
                 {
                     scroll_dist2 = DAT_00577908;
-                    scroll_dist2 += (float)whole;
                 }
                 else
                 {
                     scroll_dist2 = DAT_00577904;
-                    scroll_dist2 += (float)whole;
                 }
+                scroll_dist2 += (float)whole;
             }
 
             if (scroll_dist2 > info->mouse_scroll_max_dist)

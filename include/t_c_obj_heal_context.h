@@ -27,6 +27,11 @@ public:
     RGE_Static_Object* object(int id);
 };
 
+struct OwnerData {
+    char gap_00[0x3C];
+    RGE_Game_World* world;
+};
+
 class GameShell {
 public:
     char gap_00[0x3C];
@@ -57,6 +62,8 @@ class TRIBE_Action_Heal : public RGE_Action {
 public:
     TRIBE_Action_Heal(RGE_Action_Object* owner, RGE_Task* obj, RGE_Static_Object* target);
 };
+
+class TRIBE_Action_Convert;
 
 class TRIBE_Combat_Object {
 public:
@@ -91,7 +98,10 @@ public:
 
     char gap_004[4];
     CombatDataA* can_debark_master;
-    GameShell* game;
+    union {
+        OwnerData* owner_data; // Same +0x0C owner surface used by convert.
+        GameShell* game;
+    };
     char gap_010[0x14];
     CombatDataB* can_debark_state;
     char gap_028[0x15C];
@@ -99,6 +109,23 @@ public:
 
     int can_debark();
     int heal(int id, int flag);
+    virtual int convert(int object_id, int force);
+    virtual int hunt(int object_id, int force);
+};
+
+class TRIBE_Action_Convert : public RGE_Action {
+public:
+    char gap_40[8]; // Complete converted-action allocation is 0x48 bytes.
+    TRIBE_Action_Convert(TRIBE_Combat_Object* object, RGE_Task* action_id,
+                         RGE_Static_Object* target);
+};
+
+class TRIBE_Action_Hunt : public RGE_Action {
+public:
+    int target_type;
+
+    TRIBE_Action_Hunt(TRIBE_Combat_Object* object, RGE_Task* action_id,
+                      RGE_Static_Object* target);
 };
 
 #endif

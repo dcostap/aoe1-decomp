@@ -8,7 +8,7 @@
 
 #include "matching/0053DAB0_RGE_Main_View.cpp"
 #include "matching/0053DB40_handle_idle.cpp"
-#include "scratch/0053DBA0_do_auto_scroll.cpp"
+#include "matching/0053DBA0_do_auto_scroll.cpp"
 #include "scratch/0053DEB0_handle_keys.cpp"
 #include "matching/0053E280_handle_mouse_up.cpp"
 #include "matching/0053E2F0_mouse_move_action.cpp"

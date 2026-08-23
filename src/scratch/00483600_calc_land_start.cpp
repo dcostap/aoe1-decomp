@@ -1,7 +1,8 @@
 // 00483600 RGE_RMM_Database_Controller::calc_land_start
-// rmm_dbct.cpp
+// rmm_dbct.cpp, source lines 435-545.
+//
 // Attempt log:
-// try 1-11 (prior worker): broad decompiler-shaped reconstruction.  It used
+// try 1-11 (prior worker): broad decompiler-shaped reconstruction. It used
 // roundFloat/rand_scaled helpers and an incorrectly sized local slot record;
 // the resulting 960-byte output had five extra helper calls and a 0x2c frame.
 // try 12: restored the period typed RGE_Land_Info ownership (0x34-byte lines),
@@ -47,112 +48,68 @@
 // all 16 ordered calls, and the same CFG counts. The open lead is the natural
 // declaration or register basin that preserves the target's EBX radius and
 // EBP doubled-radius roles while spilling inner deltas to the observed homes.
+// Follow-up exact-finish pass: refreshed the canonical header ABI and rebuilt
+// the natural source. The body remains a 544-byte mismatch before boundary
+// padding. The owner symbol, 16 ordered calls, x87 conversion sequence, and
+// 0x30 frame remain correct. Fresh probes found no new codegen basin:
+// narrow x/y, narrow bounds, narrow indices, declaration order, case-local
+// coordinates, controller aliasing, header context, and function-scope two
+// were duplicates or worse. Natural retry control flow reached 568 bytes.
+// Reusing radius as the outer index reached 1005 bytes, a 0x34 frame, and
+// broke the boundary. Restore the simpler loop form.
+// BINARY NOTE: The rebuilt object ends at 00483A15, ten bytes before target.
+// Earlier cached checks padded this body with ten NOP bytes. The compiler
+// object does not emit those bytes. Do not claim exactness from stale padding.
+//
+// Context audit: rmm_dbct.cpp owners 00483020, 00483200, 00483430, 00483540,
+// and 004835A0 now use one canonical random-map base and controller record
+// surface. This owner follows those exact anchors in PDB address order. The
+// target remains unresolved; this context pass does not establish exactness.
+// Individual anchor checks remain exact: 00483020 (466), 00483200 (213),
+// 00483430 (264), 00483540 (84), and 004835A0 (82). A diagnostic combined
+// object with these owners and this target keeps 00483200, 00483540, and
+// 004835A0 exact, but 00483020 and 00483430 change under combined-TU codegen;
+// it is not a safe exact group. The same object leaves this target at 1056
+// bytes, exact frame and ordered calls, with a 544-byte strict mismatch.
+// The authentic address sequence also contains unresolved 00482B70 before
+// these anchors and accepted-drift 004832E0 between them. Do not claim a full
+// rmm_dbct.cpp prefix until those owners are resolved or explicitly excluded
+// by the main-agent context review.
+// Current exact-finish probes: an original-radius copy and a reduced
+// rmm_base_context.h declaration surface were codegen duplicates. Typed outer
+// and inner output cursors changed the frame or worsened the body to 719 bytes;
+// a single typed scan cursor and a single output cursor reached 666 and 697.
+// All variants were restored. The natural source remains the 544-byte clean
+// checkpoint with exact frame, size, ordered calls, and x87 call sequence.
+// Specialist pass: the original listing places retry=false inside the inner
+// candidate do body, after its random-call pushes. This improved shape, but
+// retained a wrong local-home basin. A preguarded outer do/while with a
+// function-scope index reached a 516-byte mismatch with 0x30 frame and all
+// 16 ordered calls, but swapped this/two registers and output-pointer homes.
+// A scoped saved-radius plus parameter-index form reached 645 bytes and kept
+// 334 instructions, but added a jump and did not match the target homes.
+// Parameter-index forms without a scoped lifetime grew the frame to 0x34.
+// Restore the simpler clean source. Do not retain these nonexact forms.
 
 #include <math.h>
+#include "..\..\include\rmm_dbct_context.h"
 
-// The land table is embedded in the controller's land_info member.  Its y
-// field is the cursor used by the original compiler, hence the characteristic
-// controller+0x48 + index*0x34 address in the packet.
-extern "C" int __cdecl debug_rand(const char*, int);
-extern "C" void __cdecl Log(void*, const char*, ...);
-extern void* L;
-
-class RGE_Map;
-
-static const char s_rmm_dbct_path[] = "C:\\msdev\\work\\age1_x1\\rmm_dbct.cpp";
-static const char s_calc_land_start[] =
+static char s_rmm_dbct_path[] = "C:\\msdev\\work\\age1_x1\\rmm_dbct.cpp";
+static char s_calc_land_start[] =
     "********Random Map calc land start, rand: %d";
-static const char s_calc_land_end_point1[] =
+static char s_calc_land_end_point1[] =
     "********Random Map calc land end (point1) ";
-static const char s_calc_land_end_point2[] =
+static char s_calc_land_end_point2[] =
     "********Random Map calc land end (point2) ";
-static const char s_calc_land_end_point3[] =
+static char s_calc_land_end_point3[] =
     "********Random Map calc land end (point3) ";
-static const char s_calc_land_xy[] =
+static char s_calc_land_xy[] =
     "********Random Map calc land xy player %d (%d, %d)";
-static const char s_calc_land_end[] =
+static char s_calc_land_end[] =
     "********Random Map calc land end, rand:";
 
-struct LandInfoLine {
-    int land_size;
-    int terrain_type;
-    int x;
-    int y;
-    int base_size;
-    int area;
-    unsigned char zone;
-    unsigned char pad_19[3];
-    int clumpiness_factor;
-    int wall_1;
-    int wall_2;
-    int wall_3;
-    int wall_4;
-    unsigned char wall_fade;
-    unsigned char pad_31[3];
-};
-
-struct RGE_Land_Data_Entry {
-    long land_id;
-    unsigned char terrain_type;
-    unsigned char pad_05[3];
-    long land_avoidance_tiles;
-    long base_square_radius;
-    unsigned char zone;
-    unsigned char placement;
-    unsigned char pad_12[2];
-    int x;
-    int y;
-};
-
-struct LandInfoTable {
-    LandInfoLine land[99];
-    int land_num;
-    unsigned char base_terrain;
-    unsigned char pad_1421[3];
-    int wall_1;
-    int wall_2;
-    int wall_3;
-    int wall_4;
-    unsigned char wall_fade;
-    unsigned char pad_end[3];
-};
-
-class RGE_Random_Map_Module {
-public:
-    virtual ~RGE_Random_Map_Module();
-    RGE_Random_Map_Module* parent;
-    void* list;
-    RGE_Map* map;
-    void* map_row_offset;
-    long map_width;
-    long map_height;
-    float schedule;
-    unsigned char* search_map;
-    void* stack_array;
-    unsigned char** search_map_rows;
-    void* stack_offsets;
-};
-
-class RGE_RMM_Database_Controller : public RGE_Random_Map_Module {
-public:
-    void* world;
-    int map_type;
-    int number_of_players;
-    LandInfoTable land_info;
-    virtual unsigned char generate();
-    virtual void add_land_module(unsigned char);
-    virtual void add_terrain_module();
-    virtual void add_object_module();
-    virtual void add_elevation_module();
-    virtual unsigned char init(RGE_Map*, void*, unsigned char, long, unsigned char);
-    virtual unsigned char de_init();
-protected:
-    void calc_land_start(long start, long radius, long count,
-                         RGE_Land_Data_Entry* land);
-};
-
-void RGE_RMM_Database_Controller::calc_land_start(long start, long radius, long count,
-                                                  RGE_Land_Data_Entry* land) {
+void RGE_RMM_Database_Controller::calc_land_start(
+    long start, long radius, long count, RGE_Land_Data_Entry* land) {
     long i;
     long j;
     long x;
@@ -164,7 +121,7 @@ void RGE_RMM_Database_Controller::calc_land_start(long start, long radius, long 
     long maxx;
     long maxy;
 
-    Log(L, s_calc_land_start, debug_rand(s_rmm_dbct_path, 0x1c3));
+    L->Log(s_calc_land_start, debug_rand(s_rmm_dbct_path, 0x1c3));
     long two = radius + radius;
     bound = (float)(this->map_width - two) / sqrt((float)count);
     if (count > 3 && count < 7)
@@ -184,23 +141,23 @@ void RGE_RMM_Database_Controller::calc_land_start(long start, long radius, long 
     if (maxx >= this->map_width - radius - 1) maxx = this->map_width - radius - 2;
     if (maxy >= this->map_height - radius - 1) maxy = this->map_height - radius - 2;
 
-    switch (land->placement) {
+    switch (land->placement_type) {
     case 0:
-        Log(L, s_calc_land_end_point1);
+        L->Log(s_calc_land_end_point1);
         for (i=start;i<start+count;i++) {
-            land_info.land[i].x = (debug_rand(s_rmm_dbct_path, 0x1e5) * (this->map_width - two)) / 0x7fff + radius;
-            land_info.land[i].y = (debug_rand(s_rmm_dbct_path, 0x1e6) * (this->map_height - two)) / 0x7fff + radius;
+            this->land_info.land[i].x = (debug_rand(s_rmm_dbct_path, 0x1e5) * (this->map_width - two)) / 0x7fff + radius;
+            this->land_info.land[i].y = (debug_rand(s_rmm_dbct_path, 0x1e6) * (this->map_height - two)) / 0x7fff + radius;
         }
         break;
     case 1:
-        Log(L, s_calc_land_end_point2);
+        L->Log(s_calc_land_end_point2);
         for (i=start;i<start+count;i++) {
-            land_info.land[i].x = land->x;
-            land_info.land[i].y = land->y;
+            this->land_info.land[i].x = land->x;
+            this->land_info.land[i].y = land->y;
         }
         break;
     case 2:
-        Log(L, s_calc_land_end_point3);
+        L->Log(s_calc_land_end_point3);
         for (i=start;i<start+count;i++) {
             retry = 0;
             do {
@@ -209,13 +166,13 @@ void RGE_RMM_Database_Controller::calc_land_start(long start, long radius, long 
                 if (x > minx && x < maxx && y > miny && y < maxy)
                     goto retry_found;
                 for (j=start; j<i; ++j) {
-                    int dx=x-land_info.land[j].x; if (dx<0) dx=-dx;
-                    int dy=y-land_info.land[j].y; if (dy<0) dy=-dy;
+                    int dx=x-this->land_info.land[j].x; if (dx<0) dx=-dx;
+                    int dy=y-this->land_info.land[j].y; if (dy<0) dy=-dy;
                     if ((float)(dx*dx + dy*dy) <= bound_square) {
                         if (j == i - 1) {
-                            land_info.land[i].x = x;
-                            land_info.land[i].y = y;
-                            Log(L, s_calc_land_xy, i, x, y);
+                            this->land_info.land[i].x = x;
+                            this->land_info.land[i].y = y;
+                            L->Log(s_calc_land_xy, i, x, y);
                         }
                         goto retry_found;
                     }
@@ -227,12 +184,12 @@ retry_found:
 retry_done:
                 ;
             } while (retry);
-            land_info.land[i].x=x; land_info.land[i].y=y;
-            Log(L, s_calc_land_xy, i, x, y);
+            this->land_info.land[i].x=x; this->land_info.land[i].y=y;
+            L->Log(s_calc_land_xy, i, x, y);
         }
         break;
     default:
         break;
     }
-    Log(L, s_calc_land_end);
+    L->Log(s_calc_land_end);
 }

@@ -87,8 +87,21 @@
 // A can_save status reached 272 bytes but emitted only 9 calls. The original
 // negative <1 guards preserve both popup sites. A byte constructor parameter
 // reached 307 bytes but lost late exact blocks. Explicit byte extension was neutral.
-// Same-TU command_save declaration order was neutral. The clean 313-byte /GX
-// source remains authoritative. The shared normal cleanup tail remains unresolved.
+// Same-TU command_save declaration order was neutral. The historical clean
+// 313-byte /GX source lacked the shared normal cleanup tail.
+
+// EXACT FINISH: the PDB-qualified owner is TRIBE_Screen_Sed::command_save_as in
+// scr_sed.cpp, lines 3548-3580. The authentic grouped context keeps the real
+// earlier 004AD680 scr_sed owner before this definition. Fresh validation gives
+// 272 bytes, the 0xE4 EH frame, one ESI save, one reachable boundary, and all
+// ten ordered calls. The two popup failures, file-name buffer publication,
+// panel changes, constructor cleanup, and final EH exit are byte-identical.
+// The target is compiler-owned only by scr_sed_save_as_tu.cpp. The separate
+// scr_sed prefix context does not include this body or the 004AD680 body.
+// BINARY NOTE: scenario_name[0] and the constructor buffer argument retain the
+// shipped malformed-name behavior. Do not move the zero write to a guessed +4.
+
+#include "../../include/scr_sed_context.h"
 
 void TRIBE_Screen_Sed::command_save_as(unsigned char post_action)
 {
@@ -116,12 +129,5 @@ void TRIBE_Screen_Sed::command_save_as(unsigned char post_action)
 // emits the old 313-byte duplicated-cleanup basin. Dummy and empty definitions
 // proved that one prior out-of-line body controls this compiler state; the
 // retained group uses the real prior source instead of synthetic context.
-// DRIFT REVIEW: localized control-flow-only tail duplication is behavior-
-// equivalent under the observed calls, predicates, frame, cleanup, and stores.
-// Main-agent drift adjudication 2026-08-22: rejected. The two rebuilt popup
-// exits unlink the SEH frame before `pop esi`. The original shared exit pops
-// ESI before it unlinks the SEH frame. A stack-read fault can therefore observe
-// different handler state. The rebuilt function also has three returns instead
-// of one. Keep this target in scratch until source or context recovers the
-// shared exit, or direct evidence proves that the cleanup-order difference is
-// unreachable.
+// Exact-finish audit supersedes the earlier 313-byte drift note: the grouped
+// scr_sed.cpp context now restores the original shared exit and one return.

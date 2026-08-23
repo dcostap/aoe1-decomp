@@ -38,8 +38,15 @@
 //   success epilogue. The executable sets one before its shared epilogue.
 //   Target, task, allocation, construction, action-list effects, EH state, and
 //   return values match. No call or object access occurs in the changed tails.
+// - Authentic-context probe: compile this natural body after the exact
+//   004CB040 can_debark owner from t_c_obj.cpp. VC5 then emits the original
+//   331-byte body and all 110 instructions. The symbol is the PDB-qualified
+//   virtual member. The source keeps all 16 call sites and their identities.
+// - Integrated validation uses the canonical t_c_obj owner map. The shared
+//   Hunt declaration keeps its proven 0x44 allocation size.
 // FLAGS: config/flags/004CB060_hunt.rsp
 
+#ifndef T_C_OBJ_HEAL_CONTEXT_H
 class RGE_Static_Object;
 class RGE_Game_World;
 class RGE_Action;
@@ -125,7 +132,7 @@ public:
     virtual void pad20C();
     virtual RGE_Task* make_action(RGE_Static_Object*, float, float, float);
 
-    int hunt(int object_id, int force);
+    virtual int hunt(int object_id, int force);
 };
 
 struct OwnerData {
@@ -135,7 +142,6 @@ struct OwnerData {
 
 class TRIBE_Action_Hunt : public RGE_Action {
 public:
-    char gap_04[0x3C];
     int target_type;
 
     TRIBE_Action_Hunt(TRIBE_Combat_Object* object, RGE_Task* action_id,
@@ -143,32 +149,84 @@ public:
 };
 
 int TRIBE_Combat_Object::hunt(int object_id, int force) {
-    RGE_Static_Object* target;
-    RGE_Task* action_id;
-    TRIBE_Action_Hunt* new_action;
+    RGE_Static_Object* target = owner_data->world->object(object_id);
+    if (target == 0)
+        return 0;
 
-    target = owner_data->world->object(object_id);
-    if (target == 0) goto end;
-
-    if (force == 0 && actions->have_action() == 1 && actions->get_action()->get_target() == target && actions->get_action()->action_type() == 0x6E) {
+    if (force == 0 && actions->have_action() == 1 &&
+        actions->get_action()->get_target() == target &&
+        actions->get_action()->action_type() == 0x6E) {
         return 1;
     }
 
-    if (actions->have_action() == 1 && actions->get_action()->action_type() == 0x6E) {
-        actions->get_action()->set_target(target, target->world_x, target->world_y, target->world_z);
+    if (actions->have_action() == 1 &&
+        actions->get_action()->action_type() == 0x6E) {
+        actions->get_action()->set_target(target, target->world_x,
+                                          target->world_y, target->world_z);
         return 1;
     }
 
-    action_id = make_action(target, target->world_x, target->world_y, target->world_z);
-    if (action_id == 0) goto end;
+    RGE_Task* action_id = make_action(target, target->world_x,
+                                      target->world_y, target->world_z);
+    if (action_id == 0)
+        return 0;
 
-    new_action = new TRIBE_Action_Hunt(this, action_id, target);
-    if (new_action == 0) goto end;
+    TRIBE_Action_Hunt* new_action =
+        new TRIBE_Action_Hunt(this, action_id, target);
+    if (new_action == 0)
+        return 0;
 
     actions->delete_list();
     add_action(new_action);
     return 1;
-
-end:
-    return 0;
 }
+#else
+#include "../../include/t_c_obj_heal_context.h"
+
+#define world_x x
+#define world_y y
+#define world_z z
+#define get_target target_obj
+#define action_type action_id
+#define actions action_list
+
+int TRIBE_Combat_Object::hunt(int object_id, int force) {
+    RGE_Static_Object* target = owner_data->world->object(object_id);
+    if (target == 0)
+        return 0;
+
+    if (force == 0 && actions->have_action() == 1 &&
+        actions->get_action()->get_target() == target &&
+        actions->get_action()->action_type() == 0x6E) {
+        return 1;
+    }
+
+    if (actions->have_action() == 1 &&
+        actions->get_action()->action_type() == 0x6E) {
+        actions->get_action()->set_target(target, target->world_x,
+                                          target->world_y, target->world_z);
+        return 1;
+    }
+
+    RGE_Task* action_id = make_action(target, target->world_x,
+                                      target->world_y, target->world_z);
+    if (action_id == 0)
+        return 0;
+
+    TRIBE_Action_Hunt* new_action =
+        new TRIBE_Action_Hunt(this, action_id, target);
+    if (new_action == 0)
+        return 0;
+
+    actions->delete_list();
+    add_action(new_action);
+    return 1;
+}
+
+#undef actions
+#undef action_type
+#undef get_target
+#undef world_z
+#undef world_y
+#undef world_x
+#endif
