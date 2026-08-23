@@ -3,32 +3,13 @@
 // The inherited panel fields and the TTextPanel line/color fields are kept
 // named here so the proven offsets remain part of the source model.
 //
-// Attempt log:
-// - baseline: the prior gap-based layout and direct GDI declarations built at
-//   the right size but had shifted fields and five direct-call mismatches.
-// - restored the canonical inherited offsets, imported GDI surface, external
-//   draw string, short draw_line ABI, focus/capture predicate, and named
-//   counted line loop; this reached 303 bytes with all 13 ordered calls and
-//   18 positional bytes of remaining drift.
-// - expanded TPanel/TTextPanel/TListPanel ownership to the proven 0x1A0
-//   layout; top-scoped locals, a TPanel receiver alias, do/while, and counted
-//   for-loop spellings all emitted the same 18-byte result.
-// - six natural local-declaration order variants also collapsed to the same
-//   codegen group; no exact variant was found.
-// - left in scratch: the localized register-coloring gap is original EBX for
-//   the saved vtable/current line and EDI for DC, versus rebuilt EDI/EBX.
-// - Main-agent audit confirmed canonical panel inheritance and typed drawing
-//   ownership; no declaration-order steering survives in the source.
-// - typed Windows handle aliases (including distinct HDC/HGDIOBJ/HRGN forms)
-//   worsened the suffix or did not move the first register hunk; restored the
-//   void* GDI surface used by the exact same-TU draw donor.
-// - scoping DC/font and the loop line like the exact same-TU donor, and
-//   base-qualifying the inherited draw helpers, all reproduced the same 18-byte
-//   register-coloring group; no natural source lead remained this pass.
-// - mirroring donor 00493070's ten-slot base surface, removing the unused
-//   TTextPanel draw virtual, and scoping the locals like the donor reached an
-//   exact 303-byte match.
+// Attempt log: canonical inherited offsets, the imported GDI surface, the
+// external draw string, the short draw_line ABI, the focus/capture predicate,
+// and the counted visible-line loop produce the exact 303-byte owner.
+// The complete Pnl_lst wrapper confirms all 13 ordered calls and the original
+// panel inheritance. Keep the typed drawing ownership and loop bounds.
 
+#ifndef AOE1_PNL_LST_CONTEXT_H
 extern "C" {
 __declspec(dllimport) int __stdcall SelectClipRgn(void* hdc, void* hrgn);
 __declspec(dllimport) void* __stdcall SelectObject(void* hdc, void* object);
@@ -147,6 +128,7 @@ public:
     virtual void draw();
     void draw_highlight_bar();
 };
+#endif
 
 void TListPanel::draw()
 {

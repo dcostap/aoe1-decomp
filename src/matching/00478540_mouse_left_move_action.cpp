@@ -11,6 +11,7 @@
 // at 0x18c-0x198. The separate region guards preserve the binary-observed
 // repeated lower-bound test and are ordinary period-plausible control flow.
 
+#ifndef AOE1_PNL_LST_CONTEXT_H
 class TListPanel {
 public:
     char gap_00[0x10];
@@ -27,8 +28,11 @@ public:
     void goto_item(long param_1, long param_2);
     long mouse_left_move_action(long param_1, long param_2, int param_3, int param_4);
 };
+#endif
 
+#ifndef AOE1_PNL_LST_CONTEXT_H
 extern "C" unsigned long __cdecl debug_timeGetTime(const char* param_1, int param_2);
+#endif
 
 long TListPanel::mouse_left_move_action(long param_1, long param_2, int param_3, int param_4) {
     if (param_2 >= this->pnl_y) {

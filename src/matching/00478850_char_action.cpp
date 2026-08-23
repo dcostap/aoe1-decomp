@@ -2,6 +2,7 @@
 
 extern "C" int __cdecl toupper(int c);
 
+#ifndef AOE1_PNL_LST_CONTEXT_H
 struct TextNode {
     char* text;       // +0x00
     char gap_04[8];   // +0x04
@@ -27,6 +28,7 @@ public:
 
     long char_action(long param_1, short param_2);
 };
+#endif
 
 long TListPanel::char_action(long param_1, short param_2) {
     int ch = toupper((int)param_1);

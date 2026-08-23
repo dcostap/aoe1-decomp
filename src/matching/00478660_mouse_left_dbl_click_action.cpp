@@ -1,6 +1,7 @@
 // compact list double-click handler first
 // expected basin: call goto_item on the click target, then if the parent panel exists and the current line is in range, fire the slot 0xB4 action
 
+#ifndef AOE1_PNL_LST_CONTEXT_H
 class TPanel {
 public:
     virtual void vf00(void);
@@ -48,7 +49,7 @@ public:
     virtual void vfA8(void);
     virtual void vfAC(void);
     virtual void vfB0(void);
-    virtual void vfB4(void*, int, int, int);
+    virtual long action(TPanel*, long, unsigned long, unsigned long);
 
     char pad_00[0x3C];
     TPanel* parent_panel;
@@ -67,11 +68,12 @@ public:
 
     long mouse_left_dbl_click_action(long param_1, long param_2, int param_3, int param_4);
 };
+#endif
 
 long TListPanel::mouse_left_dbl_click_action(long param_1, long param_2, int param_3, int param_4) {
     this->goto_item(param_1, param_2);
     if (this->parent_panel != 0 && this->cur_line > -1 && this->cur_line < this->num_lines) {
-        this->parent_panel->vfB4(this, 3, this->cur_line, 0);
+        this->parent_panel->action(this, 3, this->cur_line, 0);
     }
     return 1;
 }

@@ -22,6 +22,7 @@
 // - exact: both page actions retain endpoint stores in each arm because scroll
 //   is a call that can change member state before the final store.
 
+#ifndef AOE1_PNL_LST_CONTEXT_H
 class TPanel {
 public:
     virtual ~TPanel();
@@ -93,6 +94,7 @@ public:
 
     void scroll_cur_line(unsigned char action, short line, int flag);
 };
+#endif
 
 void TListPanel::scroll_cur_line(unsigned char action, short line, int flag) {
     short old_cur = this->cur_line;

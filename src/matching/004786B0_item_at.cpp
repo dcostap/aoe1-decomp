@@ -1,3 +1,4 @@
+#ifndef AOE1_PNL_LST_CONTEXT_H
 class TListPanel {
 public:
     char gap_00[0x10];
@@ -12,6 +13,7 @@ public:
 
     short item_at(long param_1, long param_2);
 };
+#endif
 
 short TListPanel::item_at(long, long param_2) {
     int rowsize = this->spacer_size;

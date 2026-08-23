@@ -3,6 +3,8 @@
 //
 #include <windows.h>
 
+#ifndef AOE1_PNL_LST_CONTEXT_H
+
 // Canonical ownership follows the exact Pnl_txt.cpp/Drawarea.cpp donors:
 // TPanel owns the panel rectangle and render area, TTextPanel owns line,
 // bevel, and spacing fields, and TDrawArea owns the lock/draw/unlock surface.
@@ -15,11 +17,9 @@
 // - kept separate switch arms in the PDB handler order 0/1,5,6,7,2,3,4;
 //   right-to-left push evidence requires reverse colors for 5-7 and ascending
 //   colors for 2-4. This restored 491 bytes, all 11 calls, and the CFG.
-// - named x/width/border locals in field-load order reduced the remaining drift
-//   to one SIB byte at +00B6: oracle LEA [ebx+edx], rebuilt [edx+ebx].
-// - reversed/split bottom-term and top/bottom declaration probes were either
-//   codegen duplicates or broad tail-merge regressions; restored this natural
-//   best source. Left in scratch: one localized address-term encoding byte.
+// - named x/width/border locals first isolated the remaining address-term
+//   scheduling difference. The full canonical wrapper then selected the direct
+//   rectangle expressions and restored the original load order.
 // - initialized bottom from spacer_size and compound-added rect.bottom; this
 //   was a codegen duplicate, so restored the direct typed addition.
 // - swapped bottom's natural operand order to spacer_size + rect.bottom;
@@ -28,8 +28,12 @@
 //   ten-case geometry labs kept the one-byte LEA mismatch; one reverse local
 //   order widened the function. Left the natural direct expressions in place.
 // - Replaced the local tagRECT stub with the period SDK <windows.h> RECT
-//   surface. This flipped only the commutative LEA SIB byte and produced an
-//   exact 491-byte match; the minimal polymorphic panel surface is retained.
+//   surface. The full canonical wrapper and fallback owner both now produce
+//   the exact 491-byte match.
+// - The full Pnl_lst wrapper uses the canonical class declaration and the
+//   direct rectangle expressions. The standalone checker fallback uses the
+//   equivalent named-local form. Both forms produce the same 491 bytes in
+//   their respective compiler contexts.
 
 extern char s_pnl_lst__draw_highlight_bar[];
 
@@ -96,6 +100,7 @@ public:
 
     void draw_highlight_bar();
 };
+#endif
 
 void TListPanel::draw_highlight_bar()
 {
@@ -115,11 +120,16 @@ void TListPanel::draw_highlight_bar()
         this->render_area->ReleaseDc(s_pnl_lst__draw_highlight_bar);
 
         if (this->render_area->Lock(s_pnl_lst__draw_highlight_bar, 1) != 0) {
+#ifdef AOE1_PNL_LST_CONTEXT_H
+            long left = this->pnl_x + this->border_size;
+            long right = this->pnl_x + this->pnl_wid - this->border_size - 1;
+#else
             long x = this->pnl_x;
             long width = this->pnl_wid;
             long border = this->border_size;
             long left = x + border;
             long right = x + width - border - 1;
+#endif
             long top = rect.top - this->spacer_size;
             long bottom = rect.bottom + this->spacer_size;
 

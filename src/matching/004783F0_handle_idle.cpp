@@ -1,9 +1,11 @@
-// TListPanel::handle_idle — call TPanel::handle_idle, scroll timer logic
-// MATCH: 98.8% (2 bytes CMP opcode 39 vs 3B - operand order, behavior identical)
-// Left in scratch: remaining drift is CMP memory/register operand order
+// TListPanel::handle_idle — exact Pnl_lst.cpp owner.
+// The canonical panel surface restores the original compare operand order.
 
+#ifndef AOE1_PNL_LST_CONTEXT_H
 extern "C" unsigned long __cdecl debug_timeGetTime(char* param_1, int param_2);
+#endif
 
+#ifndef AOE1_PNL_LST_CONTEXT_H
 class TPanel {
 public:
     long handle_idle();
@@ -28,6 +30,7 @@ public:
 
     long handle_idle();
 };
+#endif
 
 long TListPanel::handle_idle() {
     TPanel::handle_idle();

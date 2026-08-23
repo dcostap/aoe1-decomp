@@ -2,6 +2,7 @@
 // result: exact match after restoring the base layout and reversing the range compare into the original VC5 basin
 // moved to src\matching\004784A0_mouse_move_action.cpp after local validation
 
+#ifndef AOE1_PNL_LST_CONTEXT_H
 class TTextPanel {
 public:
     virtual void vf00();
@@ -51,7 +52,7 @@ public:
     virtual void vf44();
     virtual void vf45();
     virtual void vf46();
-    virtual long track_mouse(long param_1, long param_2);
+    virtual int is_inside(long param_1, long param_2);
 
     char gap_00[0xF8];
     short item_min;
@@ -67,13 +68,14 @@ public:
     void goto_item(long param_1, long param_2);
     long mouse_move_action(long param_1, long param_2, int param_3, int param_4);
 };
+#endif
 
 long TListPanel::mouse_move_action(long param_1, long param_2, int, int) {
     if (this->auto_track == 0) {
         return 0;
     }
 
-    if (this->track_mouse(param_1, param_2) == 0) {
+    if (this->is_inside(param_1, param_2) == 0) {
         return 0;
     }
 
