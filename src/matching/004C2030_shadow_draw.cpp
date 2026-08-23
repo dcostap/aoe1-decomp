@@ -1,3 +1,4 @@
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Color_Table;
 class TDrawArea;
 class RGE_Player {
@@ -36,6 +37,8 @@ public:
 
     void shadow_draw(TDrawArea* param_1, short param_2, short param_3, unsigned char param_4);
 };
+
+#endif
 
 void RGE_Static_Object::shadow_draw(TDrawArea* param_1, short param_2, short param_3, unsigned char param_4) {
     if (this->tile != 0 && this->object_state < 7) {

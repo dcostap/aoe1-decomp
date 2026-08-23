@@ -46,7 +46,15 @@
 // also duplicates.  Direct object-radius rereads reached 612 differing bytes,
 // but changed the frame to 0x38 and lost the target size, so the named radius
 // locals remain authoritative.  No new natural source basin was found.
+// continuation sa-d34ea87b-r1: the PDB owner is RGE_Static_Object in
+// stat_obj.cpp, lines 4049-4158.  The original has one shared return, nine
+// ordered calls, a 0x40 frame, and the proven object-list cleanup path.
+// A natural common invalid-radius guard improved CFG shape but lost 33 bytes;
+// declaration, x-start, and flag-lifetime variants were no better.  They were
+// restored.  Final clean validation remains 617 differing bytes; the blocker
+// is the persistent x1/x2 home coloring and delayed x87 schedule.
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 extern float DAT_00574720;
 extern double DAT_00574718;
 extern float DAT_00574748;
@@ -141,6 +149,8 @@ public:
 
     RGE_Check_List* make_object_bounds_list(float max_dist);
 };
+
+#endif
 
 RGE_Check_List* RGE_Static_Object::make_object_bounds_list(float max_dist) {
     float radius_x;

@@ -45,6 +45,31 @@
 //   return match. The first index keeps the same extended curx value through
 //   multiplication and __ftol. Residual drift swaps private float homes and
 //   the register that owns each probability-cell address.
+// - Exact-finish pass: declare the two zeroed FPU history values separately,
+//   publish lasty before the random call, and use a reference for each byte
+//   cell. This reduces the clean nonvolatile source to 5 bytes.
+// BINARY NOTE: CodeView lists int step and float curx, W, lasty, lastx,
+// and x. It lists no width or offset local. VC5 overlaps their homes with
+// compiler temporaries after optimization.
+// - Walkback: removing volatile returns the clean 5-byte drift at +008E.
+//   Const, direct-member, address-taken, and staged-width forms did not fix it.
+// - PDB finish audit rejects volatile width: the type record for W is
+//   nonvolatile, and no source width local exists. Keep the natural source.
+// - Direct Width expressions are PDB-plausible but lose the 0x1C frame and
+//   widen the diff to 478 bytes. The cached nonvolatile form is the cleanest
+//   supported source, with only the x87 operand order unresolved.
+// - Final natural-source pass restored PDB function scope for curx, the int
+//   step name and type, and the line-489 for-loop. These changes preserve the
+//   clean five-byte result. Reusing x for the line-499 offset causes 13 bytes
+//   of drift, so keep a separate optimized offset expression home.
+// - Scalar, const, register, array, reference, declaration-order, implicit-
+//   conversion, and compound-update forms all keep the five-byte x87 hunk.
+//   Direct Width reloads remove the invariant home and change 478 bytes.
+// - Authentic 41-owner fractal.cpp builds preserve this natural 540-byte
+//   result and the same +008E hunk. Reversing the first commutative product
+//   is a codegen duplicate. Volatile width fixes the hunk in that context.
+// BLOCKER: The only exact source found requires volatile width. CodeView has
+// no volatile float local, so policy rejects that otherwise exact form.
 
 #include <stdlib.h>
 #include <string.h>
@@ -59,6 +84,7 @@ public:
 
 extern TRIGONOMETRY trig;
 
+#ifndef FRACTAL_ARRAYS_CONTEXT_H
 class PointMaker {
 public:
     int Prime_x;
@@ -102,67 +128,67 @@ public:
     char SpecialLandType;
     char _pad_end[3];
 
+protected:
     void AddingCircle(int param_1, int param_2, int param_3);
 };
+#endif
 
 void PointMaker::AddingCircle(int param_1, int param_2, int param_3) {
     if (param_3 == 0) param_3 = 1;
 
-    int angle_step = 360 / (param_3 * 3);
+    int step = 360 / (param_3 * 3);
     float width = (float)Width;
-    float step;
+    float offset;
     float x;
-    float W = 0.0f;
-    float lasty = 0.0f;
+    float curx;
+    float W;
+    float lasty;
+    lasty = 0.0f;
+    W = 0.0f;
     float lastx;
-    int angle = 0;
-
-    do {
+    for (int angle = 0; angle < 360; angle += step) {
         lastx = trig.sin360(angle) * (float)param_3;
-        float curx = trig.cos360(angle) * (float)param_3;
+        curx = trig.cos360(angle) * (float)param_3;
 
         if (lastx != lasty || curx != W) {
             int loc = (int)(width * curx + lastx);
             int prob_add = ProbabilityAdd;
             char add = (char)prob_add;
             if (loc >= 1 && loc < SizeArrays - 1) {
-                char* p = ProbArray + loc;
-                char cur = *p;
+                char& cur = ProbArray[loc];
                 if (cur == 0) {
-                    *p = add;
+                    ProbArray[loc] = add;
                     ProbabilityTiles++;
                 } else if (prob_add + (int)cur < 0xFF) {
-                    *p = add + cur;
+                    ProbArray[loc] = add + cur;
                 } else {
-                    *p = (char)-1;
+                    ProbArray[loc] = (char)-1;
                 }
             }
 
+            lasty = lastx;
             W = curx;
             int random = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x1F1);
-            lasty = lastx;
             if (random % 2) {
                 x = trig.sin360(angle) * (float)param_3;
-                step = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\fractal.cpp", 499) % 2 + x - 1.0f;
+                offset = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\fractal.cpp", 499) % 2 + x - 1.0f;
                 float y = trig.cos360(angle) * (float)param_3;
                 int random_2 = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\fractal.cpp", 500) % 2;
-                loc = (int)(width * ((float)random_2 + y - 1.0f) + step);
+                loc = (int)(width * ((float)random_2 + y - 1.0f) + offset);
                 int addp1 = ProbabilityAdd + 1;
                 if (loc >= 1 && loc < SizeArrays - 1) {
                 char add = (char)addp1;
-                char* p = ProbArray + loc;
-                char cur = *p;
+                char& cur = ProbArray[loc];
                 if (cur == 0) {
-                    *p = add;
+                    ProbArray[loc] = add;
                     ProbabilityTiles++;
                 } else if (addp1 + (int)cur < 0xFF) {
-                    *p = add + cur;
+                    ProbArray[loc] = add + cur;
                     } else {
-                        *p = (char)-1;
+                        ProbArray[loc] = (char)-1;
                     }
                 }
             }
         }
-        angle += angle_step;
-    } while (angle < 360);
+    }
 }

@@ -50,6 +50,7 @@
 // - Completed TDrawArea with its donor-proven DrawSurface member.
 // - Every cleanup check remains MATCH with 0.0000% difference.
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 extern "C" {
 __declspec(dllimport) int __stdcall SelectClipRgn(void* hdc, void* rgn);
 __declspec(dllimport) void* __stdcall GetStockObject(int id);
@@ -209,6 +210,8 @@ public:
 
     void draw_frame_3d_cube_back(TDrawArea* area, short sx, short sy);
 };
+
+#endif
 
 void RGE_Static_Object::draw_frame_3d_cube_back(TDrawArea* area, short sx, short sy)
 {

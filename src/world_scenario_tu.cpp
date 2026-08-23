@@ -18,7 +18,7 @@
 #include "matching/00540D80_set_map_fog.cpp"
 #include "matching/00540DA0_data_load_sounds.cpp"
 #include "matching/00540EB0_data_load_terrain_tables.cpp"
-#include "accepted_drift/00540FD0_data_load_color_tables.cpp"
+#include "matching/00540FD0_data_load_color_tables.cpp"
 #include "matching/005410E0_data_load_sprites.cpp"
 #include "matching/00541240_data_load_players_type.cpp"
 

@@ -9,4 +9,4 @@
 #include "matching/00426350_KillAnyMissingPlayers.cpp"
 #include "matching/00426530_NewCommand.cpp"
 #include "accepted_drift/00426650_DoCycle.cpp"
-#include "accepted_drift/00426FC0_GetDPLAYMessages.cpp"
+#include "matching/00426FC0_GetDPLAYMessages.cpp"

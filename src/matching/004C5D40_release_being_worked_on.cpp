@@ -1,3 +1,4 @@
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 extern float DAT_00574720;
 
 class RGE_Static_Object {
@@ -36,6 +37,8 @@ public:
     void set_sleep_flag(unsigned char value);
     void release_being_worked_on(RGE_Static_Object* unused);
 };
+
+#endif
 
 void RGE_Static_Object::release_being_worked_on(RGE_Static_Object* unused) {
     if (this->worker_num > 0) {

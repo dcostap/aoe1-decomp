@@ -14,6 +14,15 @@
 //     CSE-common x87 prefix into the fcomp->fnstsw window; the pointer-read suffix fsub
 //     never lands between fnstsw and test across natural/ternary/duplication forms or
 //     the ~70 sibling shapes + 20+ flag sets. Unreachable gap; clean source retained.
+// Exact finish 2026-08-23:
+//   - Four named float radius values in executable read order, followed by the complete
+//     Y expression before the X clamp, reproduce all 199 bytes in default VC5 flags.
+//   - Walkback: moving Y after the X clamp mismatches; removing any radius value mismatches;
+//     separate x/y locals and direct master-member reads remain exact. Master pointer aliases
+//     and in-place dx/dy reuse are incidental and are not retained.
+//   - BINARY NOTE: The complete Y expression stays in the pending x87 status window. This
+//     preserves the shipped fsubr/fsub order, scratch stores, and invalid-pointer fault order.
+//     The final strict comparison keeps x87 unordered values false.
 
 // PDB source: stat_obj.cpp
 // Attempt log:
@@ -218,7 +227,27 @@
 //     186B/198-diff direct-member source remains authoritative. The residue is
 //     broad structural/FPU stack and scratch/fault-order drift, not a proved
 //     localized equivalent hunk. No accepted-drift recommendation.
+// Continuation pushed-home audit:
+// - DIA proves nonvolatile float dX and dY. It lists no x/y or radius homes.
+//   Optimized omissions do not prove whether source staged those values.
+// - PUSH ECX creates dX at [esp]. After saving obj in EDX, dY reuses the dead
+//   incoming obj home at [esp+8]. Range remains at [esp+0C].
+// - The executable stores dY before it consumes the pending dX comparison.
+//   It then reads this-Y and other-Y before the dX clamp branch.
+// - Volatile dY can force this home, but DIA proves that qualifier false.
+//   Keep the home and pre-branch Y fault order as unresolved compiler context.
+// Exact-sibling continuation:
+// - Four natural radius values exact-finish 004C5E50. The same values here
+//   emit 206 bytes and do not create the pushed home because range stays live.
+// - Naming range*range at entry creates PUSH ECX and matches the first twelve
+//   bytes. It reads range before dY, which changes the executable fault order.
+// - The 199-byte, 14-difference basin still requires volatile dY and a
+//   duplicated conditional Y expression. DIA rejects the qualifier, and the
+//   expression is not a natural source model.
+// - In-place dX/dY mutation and a named comparison result also failed. Keep
+//   the direct nonvolatile source until a natural range-liveness form exists.
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Player;
 
 class RGE_Master_Static_Object {
@@ -243,6 +272,8 @@ public:
     int inRange(RGE_Static_Object* other, float range);
 };
 
+#endif
+
 int RGE_Static_Object::inRange(RGE_Static_Object* other, float range)
 {
     float dx = other->world_x - this->world_x;
@@ -255,12 +286,16 @@ int RGE_Static_Object::inRange(RGE_Static_Object* other, float range)
         dy = -dy;
     }
 
-    float x = dx - this->master_obj->radius_x - other->master_obj->radius_x;
+    float other_radius_x = other->master_obj->radius_x;
+    float this_radius_x = this->master_obj->radius_x;
+    float this_radius_y = this->master_obj->radius_y;
+    float other_radius_y = other->master_obj->radius_y;
+    float x = dx - this_radius_x - other_radius_x;
+    float y = dy - this_radius_y - other_radius_y;
 
     if (x < 0.0f) {
         x = 0.0f;
     }
-    float y = dy - this->master_obj->radius_y - other->master_obj->radius_y;
     if (y < 0.0f) {
         y = 0.0f;
     }

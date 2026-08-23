@@ -3,6 +3,7 @@
 // first close build only drifted on the indexed-byte compare encoding; a later local-pointer probe was worse and got rolled back
 // next probe: keep the simple field-based loop but spell the index expression from the other operand side
 
+#ifndef FRACTAL_ARRAYS_CONTEXT_H
 class PointMaker {
 public:
     char gap_00[0xFE4];
@@ -15,6 +16,7 @@ public:
 
     void CreateMapBasedOnProbabilityArray(void);
 };
+#endif
 
 void PointMaker::CreateMapBasedOnProbabilityArray(void) {
     int hits = 0;

@@ -39,6 +39,10 @@
 //   old-style top declaration order, were neutral or worse.  The clean typed
 //   source remains at 44 differing bytes; the EBX/EDI direction map is still
 //   unresolved without compiler steering.
+// - Exact-finish probes: the MakeSatelliteLink parity-local scope, explicit
+//   parity comparisons, complete PointMaker tail, and long direction locals
+//   all emitted the same 496-byte/44-byte basin.  Restored the clean source;
+//   no policy-valid source form changed the EBX/EDI map.
 // ACCEPTED DRIFT: The residual exchanges EBX and EDI for the final x and y
 // roles and recolors equivalent clamp temporaries. The tail stores identical
 // coordinates and node fields; one saved-register pop moves between valid
@@ -47,6 +51,7 @@
 
 extern int __cdecl debug_rand(char* param_1, int param_2);
 
+#ifndef FRACTAL_ARRAYS_CONTEXT_H
 class PrimaryPt {
 public:
     int x;
@@ -89,6 +94,7 @@ public:
 protected:
     int MakeNewLink();
 };
+#endif
 
 int PointMaker::MakeNewLink() {
     int max_x;

@@ -1,3 +1,4 @@
+#ifndef FRACTAL_ARRAYS_CONTEXT_H
 class PointMaker {
 public:
     virtual ~PointMaker();
@@ -5,5 +6,6 @@ public:
     int field_FDC;
     void SetMinimumNumberOfTiles(int v);
 };
+#endif
 
 void PointMaker::SetMinimumNumberOfTiles(int v) { this->field_FDC = v; }

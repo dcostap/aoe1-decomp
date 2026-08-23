@@ -1,24 +1,21 @@
-// ACCEPTED_DRIFT
 // VA: 0044B2B0 PointMaker::MakeArrays (112 B)
 // PDB source: fractal.cpp lines 194-206
-// Flags: default (no custom flags)
-// 
-// 2 bytes diff out of 112 (98.2% match):
-// mov eax, [esi+0xFD8] vs mov eax, [esi+0xFD4]; imul operand bytes swapped
-// cause: VC5 internal evaluation order for commutative multiplication operands.
-// Original loads Height first (from +0xFD8), rebuilt loads Width first (from +0xFD4).
-// Behaviorally identical: Height * Width == Width * Height.
-// All other code identical: prologue, loop structure, loop counter, allocation,
-// member storage, epilogue.
-// Exact translation-unit finish: the real earlier ClearArrays and DeleteArrays
-// owners select the original multiplication load order. The shared PointMaker
-// surface then matches all 112 bytes and both allocation calls. One prior body
-// alone retains the reviewed two-byte commutative-order drift.
+// Flags: default (config/flags/default.rsp)
 //
-// Key matching insight: "while (count-- != 0)" generates the exact peeled loop
-// structure without null checks on operator_new. "do-while (count-- != 0)" with
-// the same counter generates extra "test eax, eax; je alloc" null checks.
-// Counter must be 10 instead of 9 to compensate for while-loop peeling.
+// BINARY NOTE: SizeArrays uses signed int multiplication. Keep Height * Width
+// and its natural VC5 overflow behavior. Do not use a checked product.
+// BINARY NOTE: Both loops use `while (count-- != 0)` with count set to 10.
+// VC5 emits 9 as the initial value, then tests the saved value after each call.
+// This gives ten allocation attempts without an extra allocator null check.
+// BINARY NOTE: Each returned pointer is published before the retry counter
+// test. A failed second allocation leaves ProbArray published and retries only
+// PlacementArray. operator new exceptions propagate; this function has no EH
+// cleanup or array-byte initialization. ClearArrays owns later zeroing.
+//
+// Full-owner audit: the complete SetDefaultValues-through-MapCleanUp sequence
+// keeps the correct boundary and calls, but emits a two-byte Width-first drift.
+// The shorter registered prefix emitted Height-first bytes. Keep this owner
+// as reviewed drift until the integration owner selects one authentic context.
 
 void* __cdecl operator new(unsigned int size);
 

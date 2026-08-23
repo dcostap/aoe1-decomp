@@ -40,6 +40,14 @@
 // A 12-case lab found nine variants in the 670B basin and three at 674B.
 // No variant passed the size, frame, and call-set gates. The typed source is
 // restored and remains the best clean reconstruction.
+// Revisit r4: fresh validation keeps 670B / 56 differing bytes, 0x1C frame,
+// 22 ordered calls, and the original owner symbol. The first hunk is ADD
+// -12 versus SUB 12 at +024F. The second hunk is the health-call scheduler.
+// Direct Ghidra expressions, mutable coordinate bases, denominator reloads,
+// short bases, and scoped bottom aliases were tested and restored. The direct
+// expressions reached 674B / 88 bytes or changed the early register basin.
+// The best clean source remains the pinned 670B form. Anchor 004C22C0 was not
+// changed; its documented source and behavior remain protected.
 // ACCEPTED DRIFT: Code through the guarded health tail matches. The first
 // rectangle only uses ADD -12 instead of SUB 12. The second rectangle schedules
 // private x/y loads and argument pushes around a proved nonfaulting signed
@@ -48,6 +56,9 @@
 // FPU work, memory effects, branches, fault order, and cleanup match. No SEH
 // applies. The two extra bytes only change branch displacements and tail size.
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
+// This declaration surface is only for standalone owner checks. The canonical
+// grouped stat_obj.cpp context owns these types and imported declarations.
 class TDrawArea {
 public:
     char gap_00[0x38];
@@ -107,14 +118,14 @@ public:
     virtual void f20();
     virtual void f24();
     virtual void f28();
-    virtual void* get_panel();
+    virtual void* get_view_panel();
 };
 
 class RGE_Panel {
 public:
     virtual ~RGE_Panel();
     char gap_04[0x84];
-    void* clip_region;
+    void* clip_rgn;
 };
 
 class RGE_Static_Object {
@@ -142,6 +153,7 @@ extern "C" void* (__stdcall* const GetStockObject)(int);
 extern "C" void* (__stdcall* const SelectObject)(void*, void*);
 extern "C" int (__stdcall* const MoveToEx)(void*, int, int, void*);
 extern "C" int (__stdcall* const LineTo)(void*, int, int);
+#endif
 
 static char tag[] = "stat_obj::draw_frame_3d_square_front";
 
@@ -161,13 +173,13 @@ void RGE_Static_Object::draw_frame_3d_square_front(
     outline_x = this->master_obj->outline_radius_x;
     outline_y = this->master_obj->outline_radius_y;
     radius_z = this->master_obj->radius_z;
-    panel = (RGE_Panel*)rge_base_game->get_panel();
+    panel = (RGE_Panel*)rge_base_game->get_view_panel();
     if (panel != 0) {
         area->Unlock(tag);
         x += this->screen_x_offset;
         y += this->screen_y_offset;
         if (area->GetDc(tag) != 0) {
-            SelectClipRgn(area->DrawDc, panel->clip_region);
+            SelectClipRgn(area->DrawDc, panel->clip_rgn);
             if (startLoggingAI == 1 &&
                 this->groupCommanderValue == this->id && this->id >= 0) {
                 SelectObject(area->DrawDc, GetStockObject(7));

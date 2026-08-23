@@ -7,6 +7,7 @@
 // paused here: the remaining mismatch is a single register-order byte on the attr-id load, and the natural byte-offset form is the closest lead
 // target shape: for each slot, require status 1..2 and type >= 0, then call owner vfunc +0x78 with (type, value, 0)
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Master_Static_Object {
 public:
     char gap_00[0x6A];
@@ -59,6 +60,8 @@ public:
 
     void give_attribute_to_owner(void);
 };
+
+#endif
 
 void RGE_Static_Object::give_attribute_to_owner(void) {
     int i = 0;

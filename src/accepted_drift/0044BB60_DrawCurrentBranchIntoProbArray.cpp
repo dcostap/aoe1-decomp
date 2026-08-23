@@ -68,8 +68,28 @@
 //   read, function-scope prob_add, and explicit validated-index pointer were
 //   codegen duplicates.  Staged point-x/ProbabilityAdd/index declarations
 //   regressed to diff 118.  Restored the donor-style full-width prob_add and
-//   byte add locals before the bounds with the original early returns; this
-//   reaches diff 61, exact size, 97.58% shape, and 89.43% exact blocks.
+//   byte add locals before the bounds with the original early returns.
+// - A typed char-cell reference keeps the probability address live through all
+//   three writes.  It reaches diff 22, exact size, 99.19% shape, and 93.50%
+//   exact-block coverage.  The remaining bytes are register-color drift in
+//   the private probability tail.
+// BINARY NOTE: CodeView names this protected member with the IAEX decoration.
+//   Keep AddingRect and this method protected in the standalone source owner.
+// - A standalone source check reached the 22-byte result, but the authentic
+//   fractal_arrays_tu.cpp build exposed class redefinitions without the guard.
+//   Restoring the guard rebuilt ClearArrays, DeleteArrays, MakeArrays, and
+//   SetPoint as exact anchors.  The char-reference result stayed unchanged.
+// - Pointer, old-byte, declaration-order, direct-array, and staged-index
+//   reversions were nonexact or regressive.  Keep the smallest typed reference
+//   form.  AddingCircle remains unchanged at its reviewed five-byte drift.
+// - Fresh authentic 41-owner fractal.cpp probes retested staged index math,
+//   explicit pointer and byte locals, a const probability local, pointer-base
+//   aliases, commutative pointer addition, implicit signed promotion, operand
+//   reversal, and compound assignment.  They either regressed or reproduced
+//   the 22-byte basin.  The target tail needs allocator steering: it keeps the
+//   index/pointer in EAX and the full and byte probability value in ECX.  No
+//   natural PDB-supported form recovered those colors.  Restore the reduced
+//   source.  Do not use volatility, inline assembly, or synthetic aliases.
 // ACCEPTED DRIFT AUDIT:
 // - The only live instruction-shape difference starts after the draw loop.
 // - Both versions read which, Width, Point[which].y, Point[which].x,
@@ -82,6 +102,7 @@
 // - Register allocation and branch distances account for the remaining
 //   bytes. No call, writable address, publication, or fault order differs.
 
+#ifndef FRACTAL_ARRAYS_CONTEXT_H
 class PrimaryPt {
 public:
     int x;
@@ -146,9 +167,11 @@ public:
     char SpecialLandType;                // +0x1054
     char pad_end[3];                     // +0x1055
 
+protected:
     void AddingRect(int param1, int param2, int param3, int param4);
     void DrawCurrentBranchIntoProbArray(int which);
 };
+#endif
 
 void PointMaker::DrawCurrentBranchIntoProbArray(int which) {
     int point_x = Point[which].x;
@@ -190,18 +213,17 @@ void PointMaker::DrawCurrentBranchIntoProbArray(int which) {
         int prob_add = ProbabilityAdd;
         char add = (char)prob_add;
         if (prob_idx >= 1 && prob_idx < SizeArrays - 1) {
-            char* p = ProbArray + prob_idx;
-            char old = *p;
-            if (old == 0) {
-                *p = add;
+            char& cur = ProbArray[prob_idx];
+            if (cur == 0) {
+                cur = add;
                 ProbabilityTiles++;
                 return;
             }
-            if (prob_add + (int)old < 0xFF) {
-                *p = add + old;
+            if (prob_add + (int)cur < 0xFF) {
+                cur = add + cur;
                 return;
             }
-            *p = (char)-1;
+            cur = (char)-1;
         }
     }
 }

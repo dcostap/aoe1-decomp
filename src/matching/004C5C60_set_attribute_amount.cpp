@@ -1,3 +1,4 @@
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Master_Static_Object {
 public:
     char gap_00[0x7C];
@@ -14,6 +15,8 @@ public:
 
     void set_attribute_amount(float amount, unsigned char add, unsigned char clamp);
 };
+
+#endif
 
 void RGE_Static_Object::set_attribute_amount(float amount, unsigned char add, unsigned char clamp)
 {

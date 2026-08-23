@@ -2,6 +2,7 @@
 // exact match landed once the first callback used player_object_node at +0x50 and the second callback stored the new node back there
 #include "..\..\include\game_types.h"
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Object_Node;
 class RGE_Tile_List;
 class RGE_Victory_Conditions;
@@ -134,6 +135,8 @@ public:
 
     void change_unique_id();
 };
+
+#endif
 
 void RGE_Static_Object::change_unique_id() {
     this->owner->removeObject(this, this->sleep_flag, this->dopple_flag, this->player_object_node);

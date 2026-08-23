@@ -12,7 +12,7 @@
 #include "matching/004C1F30_draw.cpp"
 #include "matching/004C2030_shadow_draw.cpp"
 #include "matching/004C2080_normal_draw.cpp"
-#include "matching/004C2110_draw_front_frame.cpp"
+#include "accepted_drift/004C2110_draw_front_frame.cpp"
 #include "matching/004C2220_capture_frame.cpp"
 #include "matching/004C23F0_capture_frame_3d_cube.cpp"
 #include "matching/004C2970_draw_frame_3d_square_back.cpp"

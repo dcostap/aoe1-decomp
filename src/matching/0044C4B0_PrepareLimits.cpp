@@ -3,6 +3,7 @@
 // second pass: keep the exact field offsets but collapse back to the simplest direct expressions the original likely used
 // target shape: left/top = (dim * percent) / 100, right/bottom = dim - limit
 
+#ifndef FRACTAL_ARRAYS_CONTEXT_H
 class PointMaker {
 public:
     char gap_00[0xFD4];
@@ -17,6 +18,7 @@ public:
 
     void PrepareLimits(void);
 };
+#endif
 
 void PointMaker::PrepareLimits(void) {
     int width = this->Width;

@@ -22,6 +22,7 @@
 // - LemonLily flag probes: temporary /O1, /O2 without /Oy, /O2 /Os, /O2 /Ot, /Og /Oi, and /Ox did not match. /O1 and /Os regressed broadly; /Ot/Ox/Og and no-/Oy stayed in the same 8-edit-byte basin. No flag file kept.
 // Blocker: VC5 consistently chooses the shorter [eax+offsetReg] SIB encoding for equivalent address expressions; source-level term/order/pointer probes did not recover original longer offsetReg-base encodings. This looks like a strong accepted_drift candidate: edit diff is only SIB base/index byte choices, three one-byte branch-distance shifts caused by the shorter encodings, and a trailing alignment nop; behavior and calls/stack/memory effects match.
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Master_Static_Object {
 public:
     char gap_00[0x6A];
@@ -76,6 +77,8 @@ public:
 
     void take_attribute_from_owner(void);
 };
+
+#endif
 
 void RGE_Static_Object::take_attribute_from_owner(void) {
     int i = 0;

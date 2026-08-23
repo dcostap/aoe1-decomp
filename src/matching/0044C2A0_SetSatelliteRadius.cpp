@@ -1,3 +1,4 @@
+#ifndef FRACTAL_ARRAYS_CONTEXT_H
 class PointMaker {
 public:
     virtual ~PointMaker();
@@ -5,5 +6,6 @@ public:
     int field_FFC;
     void SetSatelliteRadius(int v);
 };
+#endif
 
 void PointMaker::SetSatelliteRadius(int v) { this->field_FFC = v; }

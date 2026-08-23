@@ -1,3 +1,4 @@
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 extern "C" void __cdecl free(void* block);
 
 class RGE_Check_Node {
@@ -12,6 +13,8 @@ public:
 
     ~RGE_Check_List();
 };
+
+#endif
 
 RGE_Check_List::~RGE_Check_List() {
     RGE_Check_Node* next;

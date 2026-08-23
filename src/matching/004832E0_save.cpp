@@ -55,163 +55,25 @@
 // - Direct typed subrecord expressions, without a map-entry local, match the
 //   original map-base and payload register colors.  The mismatch is now 10
 //   bytes and one pre-loop zero-store/branch schedule hunk.
-// - A natural for-loop widened the function by 8 bytes.  The natural typed
-//   do-while remains authoritative; a forced zero store would violate policy.
-// ACCEPTED DRIFT: The one 10-byte hunk moves the private map-index zero store
-// after the map-count branch. The local does not escape. The taken exit never
-// reads it. On the loop path, both builds store zero before its first read and
-// before any later call. Values, flags, serialized writes, cleanup, and faults
-// are identical.
+// - The previous do-while form left the zero store after the map-count branch.
+// Exact-finish:
+// - Replaced the redundant inner positive-count guard and do-while with a
+//   natural counted for loop. The map counter stays separate from the typed
+//   map index. This restores the original zero-store order.
+// - Moved both counter updates into the for increment list. This is an exact
+//   source reduction with no emitted-code change.
+// - Fresh authoritative check: MATCH, 336 bytes, 0.0000%, exact owner symbol,
+//   0x10 frame, 10 ordered rge_write calls, and the original return boundary.
+// - Reverting the counted loop to the prior guarded do-while restores the
+//   10-byte mismatch at +004E. The counted loop is required for exactness.
+// BINARY NOTE: The private map counter is initialized before the second
+// positive-count branch. The shipped exit path does not read its value.
 
 extern "C" {
     void rge_write(int file, void* data, int size);
 }
 
-class RGE_Map;
-class RGE_Game_World;
-class RGE_Tile;
-class RGE_Random_Map_Module_List;
-struct Map_Stack;
-
-class RGE_Random_Map_Module {
-public:
-    virtual ~RGE_Random_Map_Module();
-
-    RGE_Random_Map_Module* parent;
-    RGE_Random_Map_Module_List* list;
-    RGE_Map* map;
-    RGE_Tile** map_row_offset;
-    long map_width;
-    long map_height;
-    float schedule;
-    unsigned char* search_map;
-    unsigned char** search_map_rows;
-    Map_Stack* stack_array;
-    Map_Stack** stack_offsets;
-};
-
-struct RGE_Land_Data_Entry {
-    long land_id;
-    unsigned char terrain_type;
-    unsigned char pad_0[3];
-    long land_avoidance_tiles;
-    long base_square_radius;
-    unsigned char zone;
-    unsigned char placement_type;
-    unsigned char pad_1[2];
-    long x;
-    long y;
-    unsigned char amount_of_land_used_percent;
-    unsigned char by_player_flag;
-    unsigned char pad_2[2];
-    long radius;
-    long fade;
-    long clumpiness_factor;
-};
-
-struct RGE_Land_Data {
-    long map_edge_buffer[4];
-    long map_edge_fade;
-    long land_placement_edge;
-    long base_terrain;
-    long grown_land_percent;
-    long id;
-    long land_num;
-    RGE_Land_Data_Entry* land;
-};
-
-struct RGE_Terrain_Data_Entry {
-    long terrain_percent;
-    long terrain_type;
-    long clumps;
-    long spacing;
-    long base_terrain_type;
-    long clumpiness_factor;
-};
-
-struct RGE_Terrain_Data {
-    long terrain_num;
-    RGE_Terrain_Data_Entry* terrain;
-};
-
-struct RGE_Object_Data_Entry {
-    long obj_id;
-    long terrain;
-    unsigned char group_flag;
-    unsigned char scale_flag;
-    unsigned char pad_0[2];
-    long object_number_per_group;
-    long object_number_varience;
-    long number_of_groups;
-    long group_area;
-    long player_id;
-    long land_id;
-    long land_inner_radius;
-    long land_outer_radius;
-};
-
-struct RGE_Object_Data {
-    long object_num;
-    RGE_Object_Data_Entry* objects;
-};
-
-struct RGE_Elevation_Data_Entry {
-    long elevation_percent;
-    long elevation;
-    long clumps;
-    long spacing;
-    long base_terrain_type;
-    long base_elevation_type;
-};
-
-struct RGE_Elevation_Data {
-    long elevation_num;
-    RGE_Elevation_Data_Entry* elevation;
-};
-
-struct RGE_Map_Data_Entry {
-    long map_id;
-    RGE_Land_Data land_info;
-    RGE_Terrain_Data terrain_info;
-    RGE_Object_Data object_info;
-    RGE_Elevation_Data elevation_info;
-};
-
-struct RGE_Map_Data {
-    long map_num;
-    RGE_Map_Data_Entry* maps;
-};
-
-struct RGE_Land_Info {
-    unsigned char data[0x1438];
-};
-
-struct RGE_Terrain_Info {
-    unsigned char data[0x1298];
-};
-
-struct RGE_Object_Info {
-    unsigned char data[0x18C8];
-};
-
-struct RGE_Elevation_Info {
-    unsigned char data[0xF80];
-};
-
-class RGE_RMM_Database_Controller : public RGE_Random_Map_Module {
-public:
-    RGE_Game_World* world;
-    long map_type;
-    long number_of_players;
-    unsigned char land_info[0x1438];
-    unsigned char terrain_info[0x1298];
-    unsigned char object_info[0x18C8];
-    unsigned char elevation_info[0xF80];
-    RGE_Map_Data map_info;
-
-    virtual unsigned char generate();
-    unsigned char save(int file);
-};
+#include "../../include/rmm_dbct_context.h"
 
 unsigned char RGE_RMM_Database_Controller::save(int file)
 {
@@ -226,10 +88,8 @@ unsigned char RGE_RMM_Database_Controller::save(int file)
         rge_write(file_handle, controller->map_info.maps,
                   data->map_num * sizeof(RGE_Map_Data_Entry));
         local_10 = 0;
-        int map_index;
-        if (data->map_num > 0) {
-            map_index = 0;
-            do {
+        for (int map_index = 0; local_10 < data->map_num;
+             ++local_10, ++map_index) {
             RGE_Land_Data* land_info =
                 &controller->map_info.maps[map_index].land_info;
             RGE_Terrain_Data* terrain_info =
@@ -263,9 +123,6 @@ unsigned char RGE_RMM_Database_Controller::save(int file)
                           elevation_info->elevation_num * sizeof(RGE_Elevation_Data_Entry));
             }
 
-            ++local_10;
-            ++map_index;
-            } while (local_10 < data->map_num);
         }
     }
 

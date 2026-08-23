@@ -39,7 +39,8 @@
 //     Short get_point screen arguments and this mutation reproduce all 471 bytes.
 //     Typed panel, master, draw-area, and screen-point layouts preserve the match.
 
-extern int dword_0062C50C;
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
+extern int startLoggingAI;
 extern "C" __declspec(dllimport) void* __stdcall SelectClipRgn(void* hdc, void* rgn);
 extern "C" __declspec(dllimport) void* __stdcall SelectObject(void* hdc, void* obj);
 extern "C" __declspec(dllimport) void* __stdcall GetStockObject(int id);
@@ -78,7 +79,7 @@ class TPanel {
 public:
     virtual ~TPanel();
     char gap_04[0x84];
-    void* clip_region;
+    void* clip_rgn;
 };
 
 class RGE_Map {
@@ -112,7 +113,6 @@ public:
 };
 
 extern RGE_Base_Game* rge_base_game;
-static char tag[] = "stat_obj::draw_frame_3d_square_back";
 
 class RGE_Static_Object {
 public:
@@ -134,6 +134,11 @@ struct ScreenPoint {
     short x;
 };
 
+#endif
+
+static char stat_obj_square_back_tag[] =
+    "stat_obj::draw_frame_3d_square_back";
+
 void RGE_Static_Object::draw_frame_3d_square_back(TDrawArea* area, short x, short y)
 {
     RGE_Map* map;
@@ -150,10 +155,10 @@ void RGE_Static_Object::draw_frame_3d_square_back(TDrawArea* area, short x, shor
     local_4 = this->master_obj->outline_radius_y;
     view = rge_base_game->get_view_panel();
     if (view != 0) {
-        area->Unlock(tag);
-        if (area->GetDc(tag) != 0) {
-            SelectClipRgn(area->DrawDc, view->clip_region);
-            if (dword_0062C50C == 1 &&
+        area->Unlock(stat_obj_square_back_tag);
+        if (area->GetDc(stat_obj_square_back_tag) != 0) {
+            SelectClipRgn(area->DrawDc, view->clip_rgn);
+            if (startLoggingAI == 1 &&
                 this->groupCommanderValue == this->id && this->id >= 0) {
                 SelectObject(area->DrawDc, GetStockObject(7));
             } else {
@@ -173,8 +178,8 @@ void RGE_Static_Object::draw_frame_3d_square_back(TDrawArea* area, short x, shor
             MoveToEx(area->DrawDc, x2, y2, 0);
             LineTo(area->DrawDc, point.x, point.y);
             SelectClipRgn(area->DrawDc, 0);
-            area->ReleaseDc(tag);
+            area->ReleaseDc(stat_obj_square_back_tag);
         }
-        area->Lock(tag, 1);
+        area->Lock(stat_obj_square_back_tag, 1);
     }
 }

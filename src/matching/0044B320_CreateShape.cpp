@@ -20,6 +20,7 @@
 
 extern int __cdecl debug_rand(char* param_1, int param_2);
 
+#ifndef FRACTAL_ARRAYS_CONTEXT_H
 class PrimaryPt {
 public:
     int x;
@@ -94,6 +95,7 @@ public:
     void Branch(int param_1);
     int CreateShape();
 };
+#endif
 
 int PointMaker::CreateShape() {
     NumNodes = 0;

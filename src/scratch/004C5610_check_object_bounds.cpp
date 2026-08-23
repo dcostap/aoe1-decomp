@@ -43,12 +43,42 @@
 // and inverted continue forms were all codegen-equivalent to the clean loop.
 // 25: a minimal polymorphic RGE_Static_Object declaration was a codegen
 // duplicate; the explicit vptr field remains the smaller local surface.
-// BLOCKER: the executable's final x-overlap test loads dx above the radius sum,
-// uses FCOMPP, and accepts C0-or-C3. It therefore accepts an unordered NaN
-// comparison. The rebuild compares the sum with dx and accepts only clear C0,
-// which rejects unordered input. Finite comparisons agree, but NaN behavior
-// does not. Do not accept this x87 operand-order drift.
+// BINARY NOTE: The executable's final X overlap accepts less, equal, and
+// unordered x87 results. The named X limit preserves that shipped NaN behavior.
+// TU context audit: same-module stat_obj.cpp owners were tested in address order.
+// No tested authentic nearest-one or cumulative multi-owner prefix compiled
+// with this standalone class surface. Padding-only owners were excluded. No
+// context change is validated.
+// Resume audit: build/stat_obj_context_r2.h compiles the smallest shared
+// surface with real owners 004C1CF0-004C23F0 in PDB order, plus this body.
+// /GX is required for the real allocation owners. The target remains 524 B.
+// The named X limit reduces the strict difference from 102 to 43 bytes. The
+// rebuilt final X predicate now matches the executable through FCOMPP and the
+// C0-or-C3 status test. The first later normal owner, 004C2970,
+// is blocked by missing TDrawArea/ScreenPoint/Win32 drawing surfaces. No
+// config change was made. Earlier x2/y2 spill homes and the final loop exit
+// shape remain unresolved.
+// Continuation audit:
+// - Original DIA locals prove nonvolatile float dx at entry ESP-0x2C, short
+//   x2 at -0x14, short y2 at -0x10, and short y_index at -0x0C.
+// - Declaration order, function scope, register hints, casts, named temporary
+//   assignments, map/traversal scope, and debug flags reproduced one 43-byte
+//   basin. These forms do not control the two upper-bound homes.
+// - Volatile dx selects the original x2/y2 homes. It also adds a false x87
+//   exchange at the final X test. DIA proves dx is not volatile, so reject it.
+// - Reusing y_index for the initial Y bound changed the complete frame use.
+//   The omitted optimized y1 PDB record does not prove source-variable reuse.
+// - Separate row-failure returns and binary-shaped labels tail-merge to the
+//   same late CFG. The remaining 43 bytes need a natural liveness or context
+//   fact that selects both the original homes and the direct near backedge.
+// Exact-finish audit:
+// - Scoped and declaration-initialized bounds changed size or block shape;
+//   reordered bounds did not change their homes.
+// - Found labels, explicit outer-loop labels, positive continue forms,
+//   register hints, and the authentic target line number did not change code.
+// - The clean source remains the smallest tested natural reconstruction.
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 typedef unsigned char uchar;
 
 extern float DAT_00574720;
@@ -100,6 +130,8 @@ public:
     RGE_Static_Object* check_object_bounds();
 };
 
+#endif
+
 RGE_Static_Object* RGE_Static_Object::check_object_bounds()
 {
     float radius_x;
@@ -143,9 +175,11 @@ RGE_Static_Object* RGE_Static_Object::check_object_bounds()
                                 float dx = obj->world_x - this->world_x;
                                 if (dy < DAT_00574720) dy = -dy;
                                 if (dx < DAT_00574720) dx = -dx;
-                                if (dy <= object_radius_y + radius_y &&
-                                    dx <= object_radius_x + radius_x) {
-                                    return obj;
+                                if (dy <= object_radius_y + radius_y) {
+                                    float x_limit = object_radius_x + radius_x;
+                                    if (!(dx > x_limit)) {
+                                        return obj;
+                                    }
                                 }
                             }
                             n = n->next;

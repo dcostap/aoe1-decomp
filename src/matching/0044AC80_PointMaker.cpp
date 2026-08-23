@@ -1,3 +1,4 @@
+#ifndef FRACTAL_ARRAYS_CONTEXT_H
 class PointMaker {
 public:
     void DeleteArrays(void);
@@ -9,6 +10,7 @@ public:
 
     ~PointMaker();
 };
+#endif
 
 PointMaker::~PointMaker() {
     DeleteArrays();

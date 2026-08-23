@@ -56,6 +56,7 @@
 // - A named prefix through get_view_panel also matched. The full donor surface
 //   is retained because class evidence proves the complete canonical surface.
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 extern "C" {
 __declspec(dllimport) int __stdcall SelectClipRgn(void* hdc, void* rgn);
 __declspec(dllimport) void* __stdcall GetStockObject(int id);
@@ -215,6 +216,8 @@ public:
 
     void draw_frame_3d_cube_front(TDrawArea* area, short x, short y);
 };
+
+#endif
 
 void RGE_Static_Object::draw_frame_3d_cube_front(TDrawArea* area, short x, short y)
 {

@@ -244,8 +244,7 @@
       "flags": "config/flags/default.rsp",
       "owners": {
         "0044B210": "src/matching/0044B210_ClearArrays.cpp",
-        "0044B270": "src/matching/0044B270_DeleteArrays.cpp",
-        "0044B2B0": "src/matching/0044B2B0_MakeArrays.cpp"
+        "0044B270": "src/matching/0044B270_DeleteArrays.cpp"
       }
     },
     {
@@ -470,6 +469,7 @@
       "flags": "config/flags/world_scenario_sparse.rsp",
       "owners": {
         "00540A40": "src/matching/00540A40_RGE_Game_World.cpp",
+        "00540FD0": "src/matching/00540FD0_data_load_color_tables.cpp",
         "005410E0": "src/matching/005410E0_data_load_sprites.cpp",
         "00541240": "src/matching/00541240_data_load_players_type.cpp",
         "00544E70": "src/matching/00544E70_load_scenario5.cpp",
@@ -765,7 +765,8 @@
       "flags": "config/flags/00425A40_TCommunications_Handler.rsp",
       "owners": {
         "00426350": "src/matching/00426350_KillAnyMissingPlayers.cpp",
-        "00426530": "src/matching/00426530_NewCommand.cpp"
+        "00426530": "src/matching/00426530_NewCommand.cpp",
+        "00426FC0": "src/matching/00426FC0_GetDPLAYMessages.cpp"
       }
     },
     {
@@ -976,6 +977,7 @@
         "0045B310": "src/matching/0045B310_LoadCursors.cpp",
         "0045B5D0": "src/matching/0045B5D0_create_surfaces.cpp",
         "0045BD60": "src/matching/0045BD60_erase.cpp",
+        "0045BE20": "src/matching/0045BE20_set_facet.cpp",
         "0045BEE0": "src/matching/0045BEE0_off.cpp",
         "0045BF40": "src/matching/0045BF40_on.cpp",
         "0045BF80": "src/matching/0045BF80_reset.cpp",
@@ -1415,6 +1417,7 @@
       "owners": {
         "00483020": "src/matching/00483020_RGE_RMM_Database_Controller.cpp",
         "00483200": "src/matching/00483200_RGE_RMM_Database_Controller.cpp",
+        "004832E0": "src/matching/004832E0_save.cpp",
         "00483430": "src/matching/00483430_generate.cpp",
         "00483540": "src/matching/00483540_init.cpp",
         "004835A0": "src/matching/004835A0_de_init.cpp"

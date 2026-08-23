@@ -1,9 +1,11 @@
+#ifndef FRACTAL_ARRAYS_CONTEXT_H
 class PointMaker {
 public:
     virtual ~PointMaker();
     char gap_0[0x1020];
-    int field_1024;
-    int RetrieveProbMap();
+    char* ProbArray;
+    char* RetrieveProbMap();
 };
+#endif
 
-int PointMaker::RetrieveProbMap() { return this->field_1024; }
+char* PointMaker::RetrieveProbMap() { return this->ProbArray; }

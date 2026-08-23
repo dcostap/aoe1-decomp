@@ -47,10 +47,23 @@
 //   and keeps the countdown in a different parameter home. All ProbArray and
 //   PointMaker reads and stores keep the same order, addresses, and values.
 //   The function has no calls, and all branch predicates remain equivalent.
+// - Fresh exact-finish pass: the original PDB/Ghidra local `w` evidence was
+//   tested as a separate first-edge countdown, with function-scope narrow cell
+//   temporaries and the protected typed PointMaker owner. This source emitted
+//   512 bytes, 97.09% exact-block coverage, and the original y-home tail, but
+//   the Width/count preheader still differed and the strict diff was 226 bytes.
+//   The pinned 506-byte clean source was restored. No exact result was found.
+// - Final exact-finish audit tested local w ownership, function-scope cell
+//   temporaries, copied row counts, guarded do-while form, and declaration
+//   order. The closest fresh basin was 506 bytes with diff 220; the signed
+//   postdecrement basin was 512 bytes with diff 226. Both kept the original
+//   probability writes and integer predicates, but neither recovered the
+//   Width/count preheader. The pinned clean source was restored and validated.
 
 #include <stdlib.h>
 #include <string.h>
 
+#ifndef FRACTAL_ARRAYS_CONTEXT_H
 class PrimaryPt {
 public:
     int x;
@@ -130,6 +143,7 @@ protected:
     int CreateShape();
     void AddingRect(int x, int y, int w, int h);
 };
+#endif
 
 // The executable reuses the incoming argument homes as the two edge cursors
 // and their countdowns.  Keep the source in the ordinary parameter-mutating

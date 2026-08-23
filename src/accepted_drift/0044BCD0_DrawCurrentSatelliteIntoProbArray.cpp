@@ -17,6 +17,7 @@
 
 int __cdecl debug_rand(char* param_1, int param_2);
 
+#ifndef FRACTAL_ARRAYS_CONTEXT_H
 class PointMaker {
 public:
     int Prime_x;
@@ -51,17 +52,24 @@ public:
     void AddingCircle(int param_1, int param_2, int param_3);
     void DrawCurrentSatelliteIntoProbArray(int param_1);
 };
+#endif
+
+#ifdef FRACTAL_ARRAYS_CONTEXT_H
+#define FRACTAL_POINT_VALUES PointValues
+#else
+#define FRACTAL_POINT_VALUES Point
+#endif
 
 void PointMaker::DrawCurrentSatelliteIntoProbArray(int param_1) {
     int iVar4 = SatelliteRadius;
     ProbabilityAdd = 2;
     while (iVar4 >= 0) {
-        AddingCircle(Point[param_1 * 2], Point[param_1 * 2 + 1], iVar4);
+        AddingCircle(FRACTAL_POINT_VALUES[param_1 * 2], FRACTAL_POINT_VALUES[param_1 * 2 + 1], iVar4);
         ProbabilityAdd++;
         iVar4--;
     }
     
-    iVar4 = Point[param_1 * 2 + 1] * Width + Point[param_1 * 2];
+    iVar4 = FRACTAL_POINT_VALUES[param_1 * 2 + 1] * Width + FRACTAL_POINT_VALUES[param_1 * 2];
     int probAdd = ProbabilityAdd;
     if (iVar4 >= 1 && iVar4 < SizeArrays - 1) {
         char* p = ProbArray + iVar4;
@@ -78,3 +86,5 @@ void PointMaker::DrawCurrentSatelliteIntoProbArray(int param_1) {
         }
     }
 }
+
+#undef FRACTAL_POINT_VALUES

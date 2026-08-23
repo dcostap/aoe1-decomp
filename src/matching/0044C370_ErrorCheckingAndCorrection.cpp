@@ -1,6 +1,7 @@
 // PointMaker::ErrorCheckingAndCorrection
 // VA: 0044C370
 
+#ifndef FRACTAL_ARRAYS_CONTEXT_H
 class PointMaker {
 public:
     char gap_00[0xFC0];
@@ -24,6 +25,7 @@ public:
 
     void ErrorCheckingAndCorrection();
 };
+#endif
 
 void PointMaker::ErrorCheckingAndCorrection() {
     int w = Width;

@@ -9,6 +9,7 @@
 // for bottom while original uses EDX for left and ECX for bottom; pushed argument values/order are equivalent.
 // PROPOSED_ACCEPTED_DRIFT: localized benign register-choice drift in one call-setup hunk only.
 
+#ifndef FRACTAL_ARRAYS_CONTEXT_H
 class PointMaker {
 public:
     int Prime_x;
@@ -43,6 +44,7 @@ public:
     void AddingRect(int x, int y, int w, int h);
     void DrawPrimaryIntoProbabilityArray();
 };
+#endif
 
 void PointMaker::DrawPrimaryIntoProbabilityArray() {
     int i; int local_c; int local_8; int local_4;

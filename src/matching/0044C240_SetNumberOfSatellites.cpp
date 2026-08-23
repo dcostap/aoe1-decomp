@@ -1,3 +1,4 @@
+#ifndef FRACTAL_ARRAYS_CONTEXT_H
 class PointMaker {
 public:
     virtual ~PointMaker();
@@ -5,5 +6,6 @@ public:
     int field_FC4;
     void SetNumberOfSatellites(int v);
 };
+#endif
 
 void PointMaker::SetNumberOfSatellites(int v) { this->field_FC4 = v; }

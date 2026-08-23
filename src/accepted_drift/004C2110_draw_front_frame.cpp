@@ -16,18 +16,24 @@
 // - try 24: declared real virtual slot +0x20 and called it only in case0; case0 became exact but branch inverted/switch hoisted, broad regression.
 // Retry 2026-05-19 Boss pass: 10 additional variants (if-chain, case source-order swaps, case0 arg temps/reverse temps, raw thiscall probe which failed compile, real virtual slot, signed-char/direct/named game switch, break-vs-return). Several stayed in best 22.4000% basin; none fixed case0 EDX scheduling plus case block/table order.
 // 2026-05-20 MATCH: use a separate default-thiscall virtual helper class for vtable+0x20 (not __stdcall; no pushed this) AND order source cases as 0, then 2/3 square, then 1 cube. This gives exact case0 call shape and desired switch case body/table layout.
+// PDB owner audit: TDrawArea* restores the qualified owner. Strict control
+// identity then exposes two swapped direct helper targets. This is not exact.
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 extern void* rge_base_game;
 
+class TDrawArea;
 class RGE_Static_Object {
 public:
-    void draw_frame_3d_cube_front(void* a, short b, short c);
-    void draw_frame_3d_square_front(void* a, short b, short c);
-    void draw_front_frame(void* param_1, short param_2, short param_3);
+    void draw_frame_3d_cube_front(TDrawArea* a, short b, short c);
+    void draw_frame_3d_square_front(TDrawArea* a, short b, short c);
+    virtual void draw_front_frame(TDrawArea* param_1, short param_2, short param_3);
 };
 class VDraw { public:
  virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7(); virtual void front(void*, short, short); };
-void RGE_Static_Object::draw_front_frame(void* param_1, short param_2, short param_3) {
+#endif
+
+void RGE_Static_Object::draw_front_frame(TDrawArea* param_1, short param_2, short param_3) {
     int gm = *(int*)((int)rge_base_game + 0x1B4);
     if (gm == 1) { this->draw_frame_3d_cube_front(param_1, param_2, param_3); return; }
     unsigned int ot = (unsigned int)*(unsigned char*)((int)rge_base_game + 0x50);

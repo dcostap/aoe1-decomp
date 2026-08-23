@@ -128,6 +128,7 @@
 // The closer inline-helper experiment remains diagnostic only; this natural
 // typed PointMaker source is the promoted candidate.
 
+#ifndef FRACTAL_ARRAYS_CONTEXT_H
 class PrimaryPt {
 public:
     int x;
@@ -202,6 +203,7 @@ public:
     void Branch(int param_1);
     int CreateShape(int param_1, int param_2);
 };
+#endif
 
 int PointMaker::CreateShape(int param_1, int param_2) {
     NumNodes = 0;

@@ -1,3 +1,4 @@
+#ifndef FRACTAL_ARRAYS_CONTEXT_H
 class PointMaker {
 public:
     char gap_0[0xFB8];
@@ -5,6 +6,7 @@ public:
     int field_FBC;
     void SetPoint(int a, int b);
 };
+#endif
 
 void PointMaker::SetPoint(int a, int b) {
     this->field_FB8 = a;

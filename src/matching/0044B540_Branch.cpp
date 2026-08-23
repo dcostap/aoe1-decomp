@@ -3,6 +3,7 @@
 
 extern int __cdecl debug_rand(char* param_1, int param_2);
 
+#ifndef FRACTAL_ARRAYS_CONTEXT_H
 class PointMaker {
 public:
     int Prime_x;                           // +0x00
@@ -41,6 +42,13 @@ public:
     void DrawCurrentSatelliteIntoProbArray(int param_1);
     void Branch(int param_1);
 };
+#endif
+
+#ifdef FRACTAL_ARRAYS_CONTEXT_H
+#define FRACTAL_POINT_VALUES PointValues
+#else
+#define FRACTAL_POINT_VALUES Point
+#endif
 
 void PointMaker::Branch(int param_1) {
     if (((1 < CurrentNumberOfBranchLevels) &&
@@ -48,8 +56,8 @@ void PointMaker::Branch(int param_1) {
        (ProbabilityTiles < MinimumNumTiles * 2)) {
         CurrentNumberOfBranchLevels--;
         for (int i = 0; i < NumSplitsPerBranch; i++) {
-            x = Point[param_1 * 2];
-            y = Point[param_1 * 2 + 1];
+            x = FRACTAL_POINT_VALUES[param_1 * 2];
+            y = FRACTAL_POINT_VALUES[param_1 * 2 + 1];
             int iVar2 = MakeNewLink();
             DrawCurrentBranchIntoProbArray(iVar2);
             Branch(iVar2);
@@ -60,3 +68,5 @@ void PointMaker::Branch(int param_1) {
         DrawCurrentSatelliteIntoProbArray(iVar2);
     }
 }
+
+#undef FRACTAL_POINT_VALUES

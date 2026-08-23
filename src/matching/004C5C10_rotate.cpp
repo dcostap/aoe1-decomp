@@ -1,3 +1,4 @@
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Sprite {
 public:
     char gap_00[0x60];
@@ -13,6 +14,8 @@ public:
 
     virtual void rotate(long amount);
 };
+
+#endif
 
 void RGE_Static_Object::rotate(long amount) {
     int facet_num = (int)this->sprite->facet_num;

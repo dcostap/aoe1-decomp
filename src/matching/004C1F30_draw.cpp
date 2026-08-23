@@ -31,6 +31,7 @@
 
 #include <stdlib.h>
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class TDrawArea;
 class RGE_Color_Table;
 class RGE_Sprite;
@@ -176,6 +177,8 @@ public:
 extern RGE_Base_Game* rge_base_game;
 extern long SDI_Object_ID;
 extern int SDI_Draw_Line;
+
+#endif
 
 void RGE_Static_Object::draw(TDrawArea* area, short x, short y,
                              RGE_Color_Table* color_table)

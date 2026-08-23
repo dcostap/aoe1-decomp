@@ -33,6 +33,7 @@
 //   xor esi,esi / BranchDistance store order at 0044ABC7, not a behavior or layout gap.
 #include <string.h>
 
+#ifndef FRACTAL_ARRAYS_CONTEXT_H
 struct PrimaryPt {
     int x;
     int y;
@@ -94,6 +95,7 @@ public:
 
     void SetDefaultValues(void);
 };
+#endif
 
 void PointMaker::SetDefaultValues(void)
 {

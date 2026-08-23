@@ -47,6 +47,7 @@ extern int __cdecl debug_rand(char* param_1, int param_2);
 #include <stdlib.h>
 #include <string.h>
 
+#ifndef FRACTAL_ARRAYS_CONTEXT_H
 class PrimaryPt {
 public:
     int x;
@@ -95,6 +96,7 @@ public:
 
     int MakeFirstLink();
 };
+#endif
 
 int PointMaker::MakeFirstLink() {
     int dx = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x134);

@@ -1,6 +1,7 @@
 // first pass: delete the four mask pointers in order from the PointMaker tail
 // if this misses, the remaining mismatch is likely only the surrounding prolog/epilog register choice
 
+#ifndef FRACTAL_ARRAYS_CONTEXT_H
 class PointMaker {
 public:
     char gap_00[0xFA8];
@@ -11,6 +12,7 @@ public:
 
     void DeleteMasks(void);
 };
+#endif
 
 void PointMaker::DeleteMasks(void) {
     operator delete(this->Mask_2x2);

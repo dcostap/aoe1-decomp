@@ -4,6 +4,7 @@
 // __thiscall, void (TDrawArea* param_1, short param_2, short param_3)
 // Attempt 1: natural reconstruction with proper vtable layout
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class TDrawArea;
 class RGE_Color_Table;
 
@@ -104,6 +105,8 @@ struct RGE_Static_Object {
     char gap_37[0x11];                  // +0x37 selected_group, world, hp, attributes
     unsigned char object_state;         // +0x48
 };
+
+#endif
 
 void RGE_Static_Object::normal_draw(TDrawArea* param_1, short param_2, short param_3)
 {

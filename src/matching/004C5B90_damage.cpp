@@ -4,6 +4,7 @@
 //
 // Fixed: removed redundant `void* vtable_ptr` member (pushed hp from +0x30 to
 // +0x34) and changed `1.0f` to `1.0` (original uses fcomp qword with double).
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 struct RGE_Armor_Weapon_Info {
     char gap_00[2];
     short value;
@@ -66,6 +67,8 @@ public:
     void damage(int count, RGE_Armor_Weapon_Info* info, float scale, RGE_Player* player, RGE_Static_Object* object);
     void set_sleep_flag(unsigned char value);
 };
+
+#endif
 
 void RGE_Static_Object::damage(int count, RGE_Armor_Weapon_Info* info, float scale, RGE_Player* player, RGE_Static_Object* object) {
     float damage_amount;

@@ -18,6 +18,7 @@
 // GIVEUP: remaining drift is localized to inner pointer computation: original uses EAX=row (EBX*width), loads PlacementArray in ESI, adds EDI then ESI, then reuses ESI as count; rebuilt loads PlacementArray into EBP early and zeros ESI before imul. Behavior/size otherwise match; not proposing accepted_drift without approval because it is a nontrivial address-generation/register-topology hunk.
 // Retry 2026-05-20 assigned pass: 18 more probes. Tried prod/base/row pointer variants, casted integer address order, separate pcVar3 assignment, register base/prod/pc, placement local before/after width, dependency zero initializers for cVar6, volatile cVar6, and flags /Oa /Og /Ot /G6 /GB /Gr. All non-volatile source variants stayed at the same exact-size 15-byte localized pointer-computation hunk; volatile and /Oa worsened broadly; /G6 moved first mismatch earlier. GIVEUP/propose accepted_drift: current diff is localized, behavior-equivalent address-generation/register scheduling only (EBP-vs-ESI base and early `xor esi,esi`), with the neighbor tests, loop bounds, stores, and epilogues byte-identical.
 
+#ifndef FRACTAL_ARRAYS_CONTEXT_H
 class PointMaker {
 public:
     char gap_00[0xFD4];
@@ -27,6 +28,7 @@ public:
     char* PlacementArray;
     void MapCleanUpEliminatingSinglesOnly();
 };
+#endif
 
 void PointMaker::MapCleanUpEliminatingSinglesOnly() {
     int iVar4 = Height - 1;

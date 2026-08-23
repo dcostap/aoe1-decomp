@@ -35,14 +35,18 @@
 // block, but VC5 folded it back into the hot path. The clean natural source remains
 // 809B versus 819B, 21/21 ordered calls, 231 strict-diff bytes (28.2051%),
 // and 93.89% block coverage.
-// final unresolved pass: 20 meaningful hypotheses tested. The remaining mismatch
-// is the second player scan's rare found arm: the oracle branches to +32EC, moves
-// EBP, then jumps to the log block; natural VC5 source keeps that move inline.
-// Accepted-drift review: the found arm and no-match arm produce the same player
-// number before logging. All 21 DirectPlay, timer, log, error, preprocess, and
-// system-message calls preserve arguments and order. Peek/receive sizes, IDs,
-// overflow handling, counters, terminator store, loop state, and returns match.
-// Residual drift is rare-arm placement and equivalent register scheduling.
+// Earlier accepted-drift review found equivalent rare-arm placement, but the
+// exact-finish below recovers that arm with the same-TU source shape.
+// exact-finish 2026-08-23:
+// - The same-TU EnumPlayersCallback2 scan shape, with a separate result assigned
+//   in the match arm and a fallback assignment after the loop, recovered the late
+//   second found arm and its EBP move. The exact donor is Com_hand.cpp:6801-6823.
+// - The binary tests the peek count for overflow but logs the separate receive-size
+//   local. Restoring that source operand recovered the original error-path setup.
+// - Direct member indexing for the terminator recovered the original SIB encoding.
+// - Walkbacks of the scan, overflow operand, and terminator each lost exactness.
+//   The three changes are therefore required. No flag or shared-context change was
+//   needed. Exact result: 819/819 bytes, 21/21 ordered calls, frame 0x18.
 
 #include "../../include/com_hand_context.h"
 
@@ -113,7 +117,8 @@ void TCommunications_Handler::GetDPLAYMessages() {
         hr = DAT_0062c5ec->Receive(&dcoFromID, &dcoReceiveID, 8, 0, &dwCount);
         ulong elapsed = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Com_hand.cpp", 0x3ec) - t;
         if (elapsed > 50) L->Log((char*)"!!! Receive Peek slow - %u msec", elapsed);
-        if (hr == 0 && dwCount >= 4000) { L->Log((char*)"True overflow %d requested.  Max = %d", dwCount, 4000); return; }
+        // BINARY NOTE: The shipped check uses the peek count but logs the receive-size local.
+        if (hr == 0 && dwCount >= 4000) { L->Log((char*)"True overflow %d requested.  Max = %d", dwSize, 4000); return; }
         dwSize = dwCount;
         if (hr != 0) dwSize = 4000;
         t = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Com_hand.cpp", 0x403);
@@ -144,24 +149,28 @@ found_first_player:
             pno = i;
         } else pno = 0;
         L->Log((char*)"  >RX #%d %c-%d (%u)", pno, (int)*buf, (int)*buf, dwSize);
+        int pno2;
+        // BINARY NOTE: Keep the match assignment in the rare arm, as in the same-TU scan donor.
         if (dcoFromID != 0) {
             int i = this->PlayerOptions.LowPlayerNumber;
             int hi = this->PlayerOptions.HighPlayerNumber;
             if (i <= hi) {
                 ulong* p = this->PlayerOptions.dcoID + i;
                 for (; i <= hi; i++, p++) {
-                    if (*p == dcoFromID)
+                    if (*p == dcoFromID) {
+                        pno2 = i;
                         goto found_second_player;
+                    }
                 }
             }
-            i = 0;
+        }
+        pno2 = 0;
 found_second_player:
-            pno = i;
-        } else pno = 0;
-        L->Log((char*)"COMM: RX P#%d ID(%ld) siz=%db   MSG=%d '%c'", pno, dcoFromID, dwSize, (int)*buf, (int)*buf, debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Com_hand.cpp", 0x435));
+        L->Log((char*)"COMM: RX P#%d ID(%ld) siz=%db   MSG=%d '%c'", pno2, dcoFromID, dwSize, (int)*buf, (int)*buf, debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Com_hand.cpp", 0x435));
         this->RXPacketLength += dwSize;
         this->RXPackets++;
-        buf[dwSize] = 0;
+        // BINARY NOTE: Direct member indexing preserves the original SIB base and index.
+        this->InCommBuff[dwSize] = 0;
         if (dcoFromID != 0) this->PreprocessMessages(dwSize, buf, dcoFromID, dcoReceiveID, 0);
         else {
             this->EvaluateSystemMessage(dwSize, buf, 0, dcoReceiveID);

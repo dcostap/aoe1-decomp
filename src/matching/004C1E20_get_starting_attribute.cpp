@@ -1,3 +1,4 @@
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Master_Static_Object {
 public:
     void* vtable_ptr;
@@ -69,6 +70,8 @@ public:
 
     void get_starting_attribute();
 };
+
+#endif
 
 void RGE_Static_Object::get_starting_attribute()
 {

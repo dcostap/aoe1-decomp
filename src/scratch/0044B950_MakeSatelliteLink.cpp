@@ -69,6 +69,12 @@
 //   reached 184 bytes with 29 edit bytes. H15/H16 const and final_x forms
 //   reached 175 bytes. H17/H18/H19 top old_x plus context reached 184 bytes
 //   with 25 edit bytes. H20 reversed y operands was a codegen duplicate.
+// - Fresh exact-finish revisit: restored the smallest no-header source with a
+//   local old_x and direct x/y publication. Block-scoped and register-qualified
+//   candidate locals, old_y, declaration-order, operand-order, and post-update
+//   snapshot probes were duplicates. Direct-x upper-bound and candidate forms
+//   regressed to the 319-byte basin. No policy-valid natural exact basin was
+//   found.
 // BLOCKER: the executable's final tail rereads x, publishes x before y, and
 // reloads NumNodes between point stores. The current natural rebuild now keeps
 // that order. The remaining first candidate-x hunk is not exact, so this
@@ -76,9 +82,7 @@
 
 extern int __cdecl debug_rand(char* param_1, int param_2);
 
-#include <stdlib.h>
-#include <string.h>
-
+#ifndef FRACTAL_ARRAYS_CONTEXT_H
 class PrimaryPt {
 public:
     int x;
@@ -123,9 +127,9 @@ public:
 protected:
     int MakeSatelliteLink();
 };
+#endif
 
 int PointMaker::MakeSatelliteLink() {
-    int old_x;
     int dx = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x165);
     dx = dx % SatelliteDistance + 1;
     int r = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x165);
@@ -136,7 +140,7 @@ int PointMaker::MakeSatelliteLink() {
     r = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x166);
     if (r % 2) dy = -dy;
 
-    old_x = x;
+    int old_x = x;
     dx += DirX;
     dy += DirY;
 

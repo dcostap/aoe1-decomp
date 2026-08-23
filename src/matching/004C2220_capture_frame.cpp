@@ -8,6 +8,7 @@
 //   fast path and switch case 1) to preserve the different parameter load/register ordering in the original.
 // Result: MATCH locally with `python tools/check_function.py --va 004C2220`.
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class TDrawArea;
 
 extern int SDI_Capture_Info;
@@ -29,6 +30,8 @@ public:
     void capture_frame_3d_square(TDrawArea* area, short x, short y);
     void capture_frame(TDrawArea* area, short x, short y);
 };
+
+#endif
 
 void RGE_Static_Object::capture_frame(TDrawArea* area, short x, short y) {
     if (SDI_Capture_Info) {

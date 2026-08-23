@@ -33,6 +33,7 @@
 
 #include <string.h>
 
+#ifndef FRACTAL_ARRAYS_CONTEXT_H
 class PointMaker {
 public:
     char gap_000[0xFA8];
@@ -43,6 +44,7 @@ public:
 
     void CreateMasks();
 };
+#endif
 
 void PointMaker::CreateMasks() {
     Mask_2x2 = new char[16];
