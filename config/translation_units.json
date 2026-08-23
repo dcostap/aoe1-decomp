@@ -208,6 +208,16 @@
         "004E9100": "??0TribeStrategyAIModule@@QAE@PAXH@Z",
         "004E9260": "??0TribeStrategyAIModule@@QAE@HH@Z"
       }
+    },
+    {
+      "name": "scr_end",
+      "source": "src/scr_end_tu.cpp",
+      "flags": "config/flags/004936D0_TribeEndScreen.rsp",
+      "owners": {
+        "004936D0": "src/matching/004936D0_TribeEndScreen.cpp",
+        "00493C00": "src/matching/00493C00_TribeEndScreen.cpp",
+        "00493C90": "src/matching/00493C90_action.cpp"
+      }
     }
   ]
 }
