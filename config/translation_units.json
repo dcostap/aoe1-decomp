@@ -19,15 +19,11 @@
         "005468C0": "src/matching/005468C0_RGE_Zone_Map.cpp",
         "005469C0": "src/matching/005469C0_RGE_Zone_Map.cpp",
         "00546A00": "src/matching/00546A00_save.cpp",
-        "00546A90": "src/accepted_drift/00546A90_do_zone_map.cpp",
-        "00546BB0": "src/accepted_drift/00546BB0_do_zone_map_area.cpp",
         "00546E50": "src/matching/00546E50_check_info.cpp",
         "005472B0": "src/matching/005472B0_create_zone_map.cpp",
         "005473B0": "src/matching/005473B0_get_zone_map.cpp"
       },
-      "symbols": {
-        "00546A90": "?do_zone_map@RGE_Zone_Map@@QAEEXZ"
-      }
+      "symbols": {}
     },
     {
       "name": "scr_sed_save_as",
@@ -96,8 +92,6 @@
         "0052B560": "src/matching/0052B560_SetSPAllFlag.cpp",
         "0052B590": "src/matching/0052B590_SetSPAttribType.cpp",
         "0052B5C0": "src/matching/0052B5C0_SetSPVictoryType.cpp",
-        "0052B5F0": "src/accepted_drift/0052B5F0_SetSPObject.cpp",
-        "0052B630": "src/accepted_drift/0052B630_SetSPDestObjectID.cpp",
         "0052B670": "src/matching/0052B670_SetSPAmount.cpp",
         "0052B6A0": "src/matching/0052B6A0_SetPlayerAlliedVictory.cpp",
         "0052B6C0": "src/matching/0052B6C0_SetDisabledTechnology.cpp",
@@ -128,12 +122,10 @@
         "0052BA60": "src/matching/0052ba60_GetScenarioOption.cpp",
         "0052BA70": "src/matching/0052ba70_GetPlayerAge.cpp",
         "0052BA80": "src/matching/0052BA80_update.cpp",
-        "0052BA90": "src/accepted_drift/0052BA90_SaveAttributesIntoPlayers.cpp",
         "0052BBC0": "src/matching/0052BBC0_Save_victory_conditions_into_players.cpp",
         "0052C070": "src/matching/0052c070_rehook.cpp",
         "0052C080": "src/matching/0052C080_get_object_pointer.cpp",
         "0052C0A0": "src/matching/0052c0a0_get_object_ID.cpp",
-        "0052C0B0": "src/accepted_drift/0052C0B0_WriteDisabledTechnologiesToMainSystem.cpp",
         "0052C1E0": "src/matching/0052C1E0_any_sp_victory.cpp",
         "0052C230": "src/matching/0052C230_set_player_tech.cpp"
       },
@@ -144,7 +136,6 @@
         "0052AAC0": "??0T_Scenario@@QAE@PAVRGE_Game_World@@@Z",
         "0052AB90": "??0T_Scenario@@QAE@HPAVRGE_Game_World@@@Z",
         "0052AF20": "?save@T_Scenario@@UAEXH@Z",
-        "0052B5F0": "?SetSPObject@T_Scenario@@QAEXHPAVRGE_Static_Object@@@Z",
         "0052BA00": "?GetSPObject@T_Scenario@@QAEPAVRGE_Static_Object@@H@Z"
       }
     },
@@ -277,7 +268,6 @@
       "source": "src/tpnl_tml_tu.cpp",
       "flags": "config/flags/0051E860_create_timeline.rsp",
       "owners": {
-        "0051E650": "src/verified_logic/0051E650_Time_Line_Panel.cpp",
         "0051E790": "src/matching/0051E790_Time_Line_Panel.cpp",
         "0051E860": "src/matching/0051E860_create_timeline.cpp",
         "0051E9E0": "src/matching/0051E9E0_setup.cpp",
@@ -294,7 +284,6 @@
         "0051F4E0": "src/matching/0051F4E0_add_pop_total_special_event.cpp"
       },
       "symbols": {
-        "0051E650": "??0Time_Line_Panel@@QAE@XZ",
         "0051E790": "??1Time_Line_Panel@@UAE@XZ",
         "0051E860": "?create_timeline@Time_Line_Panel@@QAEJPAVTPanel@@PAPAV1@JJJJJJJJ@Z",
         "0051EB00": "?set_background@Time_Line_Panel@@QAEHPAD@Z",
@@ -446,12 +435,9 @@
         "00485CB0": "src/matching/00485CB0_add_quick_obj.cpp",
         "00485DC0": "src/matching/00485DC0_generate.cpp",
         "00485E50": "src/matching/00485E50_generate_objects.cpp",
-        "00485F10": "src/scratch/00485F10_make_placement_stack.cpp",
         "00486110": "src/matching/00486110_to_close.cpp",
         "00486180": "src/matching/00486180_set_search_area.cpp",
-        "00486210": "src/matching/00486210_remove_area_from_lists.cpp",
-        "004862B0": "src/accepted_drift/004862B0_place_avoid_objects.cpp",
-        "004864F0": "src/scratch/004864F0_place_objects.cpp"
+        "00486210": "src/matching/00486210_remove_area_from_lists.cpp"
       },
       "symbols": {
         "00485DC0": "?generate@RGE_RMM_Object_Generator@@UAEEXZ"
@@ -484,7 +470,6 @@
       "flags": "config/flags/world_scenario_sparse.rsp",
       "owners": {
         "00540A40": "src/matching/00540A40_RGE_Game_World.cpp",
-        "00540FD0": "src/accepted_drift/00540FD0_data_load_color_tables.cpp",
         "005410E0": "src/matching/005410E0_data_load_sprites.cpp",
         "00541240": "src/matching/00541240_data_load_players_type.cpp",
         "00544E70": "src/matching/00544E70_load_scenario5.cpp",
@@ -518,8 +503,7 @@
       "owners": {
         "00436830": "src/matching/00436830_RGE_Diamond_Map.cpp",
         "00436930": "src/matching/00436930_RGE_Diamond_Map.cpp",
-        "004369C0": "src/matching/004369C0_setup.cpp",
-        "00436A10": "src/accepted_drift/00436A10_set_bitmap.cpp"
+        "004369C0": "src/matching/004369C0_setup.cpp"
       }
     },
     {
@@ -581,20 +565,12 @@
       "owners": {
         "0053C400": "src/matching/0053C400_save.cpp",
         "0053C490": "src/matching/0053C490_get_visible.cpp",
-        "0053C4D0": "src/matching/0053C4D0_set_all.cpp",
-        "0053C6F0": "src/scratch/0053C6F0_explore_terrain.cpp",
-        "0053C920": "src/scratch/0053C920_unexplore_terrain.cpp",
-        "0053CAC0": "src/scratch/0053CAC0_explore_terrain_sq.cpp",
-        "0053CCF0": "src/scratch/0053CCF0_unexplore_terrain_sq.cpp"
+        "0053C4D0": "src/matching/0053C4D0_set_all.cpp"
       },
       "symbols": {
         "0053C400": "?save@RGE_Visible_Map@@QAEXH@Z",
         "0053C490": "?get_visible@RGE_Visible_Map@@QAEEHH@Z",
-        "0053C4D0": "?set_all@RGE_Visible_Map@@QAEXE@Z",
-        "0053C6F0": "?explore_terrain@RGE_Visible_Map@@QAEHHHHHHH@Z",
-        "0053C920": "?unexplore_terrain@RGE_Visible_Map@@QAEXHHHHHH@Z",
-        "0053CAC0": "?explore_terrain_sq@RGE_Visible_Map@@QAEHHHHHHH@Z",
-        "0053CCF0": "?unexplore_terrain_sq@RGE_Visible_Map@@QAEXHHHHHH@Z"
+        "0053C4D0": "?set_all@RGE_Visible_Map@@QAEXE@Z"
       }
     },
     {
@@ -602,17 +578,11 @@
       "source": "src/dib_tu.cpp",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "00438820": "src/accepted_drift/00438820_DibBlt.cpp",
-        "00438AA0": "src/scratch/00438AA0_TransDibBlt.cpp",
         "00438E80": "src/matching/00438E80_ClipDibBlt.cpp",
         "00439060": "src/matching/00439060_GetDibDim.cpp",
-        "004390A0": "src/scratch/004390A0_TileDibBlt.cpp",
-        "004395A0": "src/accepted_drift/004395A0_DibCheckTrans.cpp",
         "00439700": "src/matching/00439700_GetPaletteFromDib.cpp"
       },
-      "symbols": {
-        "00438820": "?DibBlt@@YAXPAUBITMAPINFO256@@PAEPAUtagRECT@@JJJJ01JJJJHHH@Z"
-      }
+      "symbols": {}
     },
     {
       "name": "tworld_prefix",
@@ -643,8 +613,6 @@
         "0048AC70": "src/matching/0048AC70_RGE_Scenario_Header.cpp",
         "0048ACA0": "src/matching/0048ACA0_get_size.cpp",
         "0048ACC0": "src/matching/0048ACC0_save.cpp",
-        "0048AD60": "src/accepted_drift/0048AD60_RGE_Scenario.cpp",
-        "0048AE10": "src/accepted_drift/0048AE10_RGE_Scenario.cpp",
         "0048B5A0": "src/matching/0048B5A0_RGE_Scenario.cpp",
         "0048B6C0": "src/matching/0048B6C0_InitializeTextValues.cpp",
         "0048B910": "src/matching/0048B910_Set_scenario_name.cpp",
@@ -667,10 +635,7 @@
         "0048BC90": "src/matching/0048BC90_Get_Cine_Victory.cpp",
         "0048BCA0": "src/matching/0048BCA0_Get_Cine_Loss.cpp",
         "0048BCB0": "src/matching/0048BCB0_Get_Mission_Bmp.cpp",
-        "0048BCC0": "src/accepted_drift/0048BCC0_Get_BuildList.cpp",
-        "0048BEC0": "src/accepted_drift/0048BEC0_Get_CityPlan.cpp",
         "0048C0D0": "src/matching/0048C0D0_Get_Version.cpp",
-        "0048C0E0": "src/accepted_drift/0048C0E0_Get_player_AI.cpp",
         "0048C2F0": "src/matching/0048C2F0_GetPlayerPosture.cpp",
         "0048C360": "src/matching/0048C360_GetPlayerName.cpp",
         "0048C370": "src/matching/0048C370_Get_player_Type.cpp",
@@ -691,8 +656,6 @@
         "0048AB10": "??0RGE_Scenario_Header@@QAE@PAVRGE_Scenario@@@Z",
         "0048ABB0": "??0RGE_Scenario_Header@@QAE@H@Z",
         "0048ACC0": "?save@RGE_Scenario_Header@@UAEXH@Z",
-        "0048AD60": "??0RGE_Scenario@@QAE@PAVRGE_Game_World@@@Z",
-        "0048AE10": "??0RGE_Scenario@@QAE@HPAVRGE_Game_World@@@Z",
         "0048C3E0": "?save@RGE_Scenario@@UAEXH@Z"
       }
     },
@@ -704,8 +667,6 @@
         "0041B620": "src/matching/0041B620_write_draw_log.cpp",
         "0041B650": "src/matching/0041B650_write_draw_log2.cpp",
         "0041B6A0": "src/matching/0041B6A0_RGE_Base_Game.cpp",
-        "0041BAA0": "src/accepted_drift/0041BAA0_setup.cpp",
-        "0041C270": "src/scratch/0041C270_RGE_Base_Game.cpp",
         "0041C7D0": "src/matching/0041C7D0_reset_timings.cpp",
         "0041C830": "src/matching/0041C830_add_to_timing.cpp",
         "0041C870": "src/matching/0041c870_increment_world_update_count.cpp",
@@ -744,8 +705,6 @@
         "0041B620": "?write_draw_log@@YAXPAD@Z",
         "0041B650": "?write_draw_log2@@YAXPAD@Z",
         "0041B6A0": "??0RGE_Base_Game@@QAE@PAVRGE_Prog_Info@@H@Z",
-        "0041BAA0": "?setup@RGE_Base_Game@@MAEHXZ",
-        "0041C270": "??1RGE_Base_Game@@UAE@XZ",
         "0041C9A0": "?get_string@RGE_Base_Game@@UAEPADJ@Z",
         "0041C9C0": "?get_string@RGE_Base_Game@@UAEPADJPADH@Z",
         "0041C9F0": "?get_string@RGE_Base_Game@@UAEPADHJPADH@Z",
@@ -764,7 +723,6 @@
         "004427A0": "src/matching/004427A0_CheckAvailModes.cpp",
         "00442860": "src/matching/00442860_CheckAvailModesCallback.cpp",
         "004429C0": "src/matching/004429C0_IsModeAvail.cpp",
-        "00442A90": "src/accepted_drift/00442A90_Init.cpp",
         "00442DC0": "src/matching/00442DC0_SetDisplaySize.cpp",
         "00442EF0": "src/matching/00442EF0_ClearPrimarySurface.cpp",
         "00442F30": "src/matching/00442F30_CheckSurfaces.cpp",
@@ -777,7 +735,6 @@
         "004427A0": "?CheckAvailModes@TDrawSystem@@QAEXH@Z",
         "00442860": "?CheckAvailModesCallback@TDrawSystem@@SGJPAU_DDSURFACEDESC@@PAX@Z",
         "004429C0": "?IsModeAvail@TDrawSystem@@QAEHJJH@Z",
-        "00442A90": "?Init@TDrawSystem@@QAEHPAX00EEJJK@Z",
         "00442DC0": "?SetDisplaySize@TDrawSystem@@QAEHJJH@Z",
         "00442EF0": "?ClearPrimarySurface@TDrawSystem@@QAEXXZ",
         "00442F30": "?CheckSurfaces@TDrawSystem@@QAEEXZ",
@@ -807,12 +764,8 @@
       "source": "src/com_hand_tu.cpp",
       "flags": "config/flags/00425A40_TCommunications_Handler.rsp",
       "owners": {
-        "00425A40": "src/matching/00425A40_TCommunications_Handler.cpp",
-        "004261E0": "src/accepted_drift/004261E0_TCommunications_Handler.cpp",
         "00426350": "src/matching/00426350_KillAnyMissingPlayers.cpp",
-        "00426530": "src/matching/00426530_NewCommand.cpp",
-        "00426650": "src/accepted_drift/00426650_DoCycle.cpp",
-        "00426FC0": "src/accepted_drift/00426FC0_GetDPLAYMessages.cpp"
+        "00426530": "src/matching/00426530_NewCommand.cpp"
       }
     },
     {
@@ -827,7 +780,6 @@
         "004521A0": "src/matching/004521A0_RGE_Master_Static_Object.cpp",
         "004521E0": "src/matching/004521E0_setup.cpp",
         "004524E0": "src/matching/004524E0_setup.cpp",
-        "00452B00": "src/scratch/00452B00_setup.cpp",
         "00452FA0": "src/matching/00452FA0_RGE_Master_Static_Object.cpp",
         "00452FE0": "src/matching/00452FE0_make_new_obj.cpp",
         "004530B0": "src/matching/004530B0_make_new_master.cpp",
@@ -836,11 +788,8 @@
         "00453540": "src/matching/00453540_modify_delta.cpp",
         "004535F0": "src/matching/004535F0_modify_percent.cpp",
         "004536D0": "src/matching/004536D0_save.cpp",
-        "00453C40": "src/scratch/00453C40_check_placement.cpp",
         "004543C0": "src/matching/004543C0_make_available.cpp",
-        "004543D0": "src/scratch/004543D0_alignment.cpp",
         "00454690": "src/matching/00454690_alignment_box.cpp",
-        "004547F0": "src/scratch/004547F0_draw.cpp",
         "00454950": "src/matching/00454950_get_help_message.cpp",
         "00454960": "src/matching/00454960_get_help_page.cpp",
         "00454970": "src/matching/00454970_get_hotkey.cpp",
@@ -852,9 +801,7 @@
         "004521A0": "??0RGE_Master_Static_Object@@QAE@PAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@FH@Z",
         "004521E0": "?setup@RGE_Master_Static_Object@@QAEHPAV1@@Z",
         "004524E0": "?setup@RGE_Master_Static_Object@@QAEHHPAPAVRGE_Sprite@@PAPAVRGE_Sound@@@Z",
-        "00452B00": "?setup@RGE_Master_Static_Object@@QAEHPAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@F@Z",
-        "004534A0": "?modify@RGE_Master_Static_Object@@UAEXME@Z",
-        "004543D0": "?alignment@RGE_Master_Static_Object@@UAEEAAM0PAVRGE_Game_World@@E@Z"
+        "004534A0": "?modify@RGE_Master_Static_Object@@UAEXME@Z"
       }
     },
     {
@@ -862,10 +809,8 @@
       "source": "src/scr_sedo_tu.cpp",
       "flags": "config/flags/scr_sedo.rsp",
       "owners": {
-        "004B33D0": "src/accepted_drift/004B33D0_TRIBE_Screen_Sed_Open.cpp",
         "004B36A0": "src/matching/004B36A0_TRIBE_Screen_Sed_Open.cpp",
-        "004B3740": "src/matching/004B3740_fillList.cpp",
-        "004B38A0": "src/accepted_drift/004B38A0_action.cpp"
+        "004B3740": "src/matching/004B3740_fillList.cpp"
       }
     },
     {
@@ -873,20 +818,15 @@
       "source": "src/victory_tu.cpp",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "00531750": "src/scratch/00531750_RGE_Victory_Conditions.cpp",
         "00531AF0": "src/matching/00531AF0_RGE_Victory_Conditions.cpp",
         "00531B20": "src/matching/00531B20_RGE_Victory_Conditions.cpp",
-        "00531B70": "src/scratch/00531B70_save.cpp",
-        "00531DB0": "src/accepted_drift/00531DB0_check_for_victory.cpp",
         "00531E90": "src/matching/00531E90_update.cpp",
         "00531EF0": "src/matching/00531EF0_update_for_object.cpp",
         "00531F30": "src/matching/00531F30_handle_point_condition.cpp"
       },
       "symbols": {
-        "00531750": "??0RGE_Victory_Conditions@@QAE@PAVRGE_Player@@HPAJE@Z",
         "00531AF0": "??0RGE_Victory_Conditions@@QAE@PAVRGE_Player@@@Z",
         "00531B20": "??1RGE_Victory_Conditions@@QAE@XZ",
-        "00531B70": "?save@RGE_Victory_Conditions@@UAEXH@Z",
         "00531E90": "?update@RGE_Victory_Conditions@@QAEEXZ"
       }
     },
@@ -898,14 +838,12 @@
         "004A71F0": "src/matching/004A71F0_TribeSaveGameScreen.cpp",
         "004A75C0": "src/matching/004A75C0_TribeSaveGameScreen.cpp",
         "004A7670": "src/matching/004A7670_fillList.cpp",
-        "004A7850": "src/scratch/004A7850_action.cpp",
         "004A8060": "src/matching/004A8060_save_for_scenario_editor.cpp"
       },
       "symbols": {
         "004A71F0": "??0TribeSaveGameScreen@@QAE@W4Mode@0@PADH@Z",
         "004A75C0": "??1TribeSaveGameScreen@@UAE@XZ",
         "004A7670": "?fillList@TribeSaveGameScreen@@IAEXXZ",
-        "004A7850": "?action@TribeSaveGameScreen@@MAEJPAVTPanel@@JKK@Z",
         "004A8060": "?save_for_scenario_editor@TribeSaveGameScreen@@IAEXXZ"
       }
     },
@@ -916,7 +854,6 @@
       "owners": {
         "00532220": "src/matching/00532220_handle_create_in_area.cpp",
         "00533180": "src/matching/00533180_handle_points_attribute_first.cpp",
-        "00533240": "src/scratch/00533240_handle_points_highest_attribute.cpp",
         "00533330": "src/matching/00533330_handle_points_high_attribute_once.cpp"
       }
     },
@@ -948,8 +885,6 @@
         "00451EC0": "src/matching/00451EC0_make_new_master.cpp",
         "00451F30": "src/matching/00451F30_copy_obj.cpp",
         "00451FB0": "src/matching/00451FB0_modify.cpp",
-        "00451FE0": "src/accepted_drift/00451FE0_modify_delta.cpp",
-        "00452010": "src/accepted_drift/00452010_modify_percent.cpp",
         "00452040": "src/matching/00452040_save.cpp"
       },
       "symbols": {
@@ -964,8 +899,6 @@
         "00451EC0": "?make_new_master@RGE_Master_Moving_Object@@UAEPAVRGE_Master_Static_Object@@XZ",
         "00451F30": "?copy_obj@RGE_Master_Moving_Object@@UAEXPAVRGE_Master_Static_Object@@@Z",
         "00451FB0": "?modify@RGE_Master_Moving_Object@@UAEXME@Z",
-        "00451FE0": "?modify_delta@RGE_Master_Moving_Object@@UAEXME@Z",
-        "00452010": "?modify_percent@RGE_Master_Moving_Object@@UAEXME@Z",
         "00452040": "?save@RGE_Master_Moving_Object@@UAEXH@Z"
       }
     },
@@ -987,10 +920,8 @@
         "004BD9A0": "src/matching/004BD9A0_TSpan_List_Manager.cpp",
         "004BDA00": "src/matching/004BDA00_SetSpanRegions.cpp",
         "004BDA70": "src/matching/004BDA70_ResetAll.cpp",
-        "004BDB00": "src/scratch/004BDB00_AddSpan.cpp",
         "004BDEA0": "src/matching/004BDEA0_AddShape.cpp",
         "004BDFA0": "src/matching/004BDFA0_AddShape_Align.cpp",
-        "004BE090": "src/accepted_drift/004BE090_AddLine_Align.cpp",
         "004BE1F0": "src/matching/004BE1F0_AddMiniList.cpp",
         "004BE240": "src/matching/004BE240_SubtractMiniList.cpp",
         "004BE290": "src/matching/004BE290_DeleteSpan.cpp",
@@ -999,10 +930,7 @@
         "004BE5F0": "src/matching/004BE5F0_Merge_n_Align.cpp",
         "004BE690": "src/matching/004BE690_AlignamizeSpans.cpp",
         "004BE750": "src/matching/004BE750_ScrollSpansHorizontally.cpp",
-        "004BE850": "src/verified_logic/004BE850_ScrollSpansVertically.cpp",
-        "004BE9E0": "src/matching/004BE9E0_ValidateSpan.cpp",
-        "004BEAD0": "src/accepted_drift/004BEAD0_DecodeLine.cpp",
-        "004BEB10": "src/accepted_drift/004BEB10_take_snapshot.cpp"
+        "004BE9E0": "src/matching/004BE9E0_ValidateSpan.cpp"
       },
       "symbols": {
         "004BD5E0": "??0TSpan_Node_List@@QAE@HHH@Z",
@@ -1018,10 +946,8 @@
         "004BD9A0": "??1TSpan_List_Manager@@QAE@XZ",
         "004BDA00": "?SetSpanRegions@TSpan_List_Manager@@QAEXHHHH@Z",
         "004BDA70": "?ResetAll@TSpan_List_Manager@@QAEXXZ",
-        "004BDB00": "?AddSpan@TSpan_List_Manager@@QAEXHHH@Z",
         "004BDEA0": "?AddShape@TSpan_List_Manager@@QAEXPAVTShape@@HHHH@Z",
         "004BDFA0": "?AddShape_Align@TSpan_List_Manager@@QAEXPAEPAUShape_Info@@HHH@Z",
-        "004BE090": "?AddLine_Align@TSpan_List_Manager@@QAEXHHHH@Z",
         "004BE1F0": "?AddMiniList@TSpan_List_Manager@@QAEXPAUVSpanMiniList@@HH@Z",
         "004BE240": "?SubtractMiniList@TSpan_List_Manager@@QAEXPAUVSpanMiniList@@HH@Z",
         "004BE290": "?DeleteSpan@TSpan_List_Manager@@QAEXHHH@Z",
@@ -1030,10 +956,7 @@
         "004BE5F0": "?Merge_n_Align@TSpan_List_Manager@@QAEXPAV1@0@Z",
         "004BE690": "?AlignamizeSpans@TSpan_List_Manager@@QAEXXZ",
         "004BE750": "?ScrollSpansHorizontally@TSpan_List_Manager@@QAEXHH@Z",
-        "004BE850": "?ScrollSpansVertically@TSpan_List_Manager@@QAEXHH@Z",
-        "004BE9E0": "?ValidateSpan@TSpan_List_Manager@@QAEHH@Z",
-        "004BEAD0": "?DecodeLine@TSpan_List_Manager@@QAEHPAEHEH@Z",
-        "004BEB10": "?take_snapshot@TSpan_List_Manager@@QAEXPADAAHPAVTDrawArea@@HPAPAV1@PAHH@Z"
+        "004BE9E0": "?ValidateSpan@TSpan_List_Manager@@QAEHH@Z"
       }
     },
     {
@@ -1041,7 +964,6 @@
       "source": "src/mouseptr_tu.cpp",
       "flags": "config/flags/mouseptr_module_gx.rsp",
       "owners": {
-        "0045AE50": "src/scratch/0045AE50_TMousePointer.cpp",
         "0045B000": "src/matching/0045B000_TMousePointer.cpp",
         "0045B040": "src/matching/0045B040_Shutdown_Mouse.cpp",
         "0045B0A0": "src/matching/0045B0A0_Restore_Mouse.cpp",
@@ -1052,13 +974,8 @@
         "0045B2C0": "src/matching/0045B2C0_in_game_mode.cpp",
         "0045B2E0": "src/matching/0045B2E0_set_game_window.cpp",
         "0045B310": "src/matching/0045B310_LoadCursors.cpp",
-        "0045B560": "src/accepted_drift/0045B560_delete_surfaces.cpp",
         "0045B5D0": "src/matching/0045B5D0_create_surfaces.cpp",
-        "0045B760": "src/scratch/0045B760_update_mouse_position.cpp",
-        "0045BA60": "src/accepted_drift/0045BA60_draw.cpp",
         "0045BD60": "src/matching/0045BD60_erase.cpp",
-        "0045BE20": "src/accepted_drift/0045BE20_set_facet.cpp",
-        "0045BE80": "src/accepted_drift/0045BE80_set_game_facet.cpp",
         "0045BEE0": "src/matching/0045BEE0_off.cpp",
         "0045BF40": "src/matching/0045BF40_on.cpp",
         "0045BF80": "src/matching/0045BF80_reset.cpp",
@@ -1067,7 +984,6 @@
         "0045C300": "src/matching/0045C300_GetDDBltError.cpp"
       },
       "symbols": {
-        "0045AE50": "??0TMousePointer@@QAE@H@Z",
         "0045B000": "??1TMousePointer@@QAE@XZ",
         "0045B040": "?Shutdown_Mouse@TMousePointer@@QAEHXZ",
         "0045B0A0": "?Restore_Mouse@TMousePointer@@QAEHPAVTDrawArea@@@Z",
@@ -1078,13 +994,8 @@
         "0045B2C0": "?in_game_mode@TMousePointer@@QAEHXZ",
         "0045B2E0": "?set_game_window@TMousePointer@@QAEXHHHH@Z",
         "0045B310": "?LoadCursors@TMousePointer@@QAEHPADHH@Z",
-        "0045B560": "?delete_surfaces@TMousePointer@@QAEXXZ",
         "0045B5D0": "?create_surfaces@TMousePointer@@QAEHXZ",
-        "0045B760": "?update_mouse_position@TMousePointer@@QAEHXZ",
-        "0045BA60": "?draw@TMousePointer@@QAEXH@Z",
         "0045BD60": "?erase@TMousePointer@@QAEXXZ",
-        "0045BE20": "?set_facet@TMousePointer@@QAEXH@Z",
-        "0045BE80": "?set_game_facet@TMousePointer@@QAEXH@Z",
         "0045BEE0": "?off@TMousePointer@@QAEXXZ",
         "0045BF40": "?on@TMousePointer@@QAEXXZ",
         "0045BF80": "?reset@TMousePointer@@QAEXXZ",
@@ -1100,9 +1011,7 @@
       "owners": {
         "00534100": "src/matching/00534100_delete_surfaces.cpp",
         "00534130": "src/matching/00534130_create_surfaces.cpp",
-        "00534340": "src/scratch/00534340_calc_draw_vars.cpp",
         "00535480": "src/matching/00535480_draw_view.cpp",
-        "00535610": "src/scratch/00535610_draw_object_outline.cpp",
         "00535EB0": "src/matching/00535EB0_get_center_screen_pos.cpp",
         "00535ED0": "src/matching/00535ED0_get_start_coords.cpp",
         "00535F20": "src/matching/00535F20_get_center_coords.cpp",
@@ -1124,25 +1033,21 @@
       "flags": "config/flags/004ED4F0_TribeTacticalAIModule.rsp",
       "owners": {
         "004ED1C0": "src/matching/004ED1C0_TribeTacticalAIModule.cpp",
-        "004ED4F0": "src/scratch/004ED4F0_TribeTacticalAIModule.cpp",
         "004EEB40": "src/matching/004EEB40_TribeTacticalAIModule.cpp",
         "004EEE40": "src/matching/004EEE40_updateAreaName.cpp",
         "004EEF40": "src/matching/004EEF40_update.cpp",
         "004EF4D0": "src/matching/004EF4D0_setMainDecisionAI.cpp",
         "004EF4E0": "src/matching/004EF4E0_save.cpp",
         "004F0180": "src/matching/004F0180_logGroupDebug.cpp",
-        "004F0190": "src/scratch/004F0190_doSomething.cpp",
         "004F0BC0": "src/matching/004F0BC0_clearArea.cpp",
         "004F0D70": "src/matching/004F0D70_addObject.cpp",
         "004F1090": "src/matching/004F1090_removeObject.cpp",
         "004F13F0": "src/matching/004F13F0_evaluateCivilianDistribution.cpp",
-        "004F1600": "src/scratch/004F1600_taskCivilians.cpp",
         "004F1E10": "src/matching/004F1E10_taskIdleSoldiers.cpp",
         "004F4760": "src/matching/004F4760_playTaskSoldiers.cpp"
       },
       "symbols": {
         "004ED1C0": "??0TribeTacticalAIModule@@QAE@PAXH@Z",
-        "004ED4F0": "??0TribeTacticalAIModule@@QAE@HH@Z",
         "004EEF40": "?update@TribeTacticalAIModule@@UAEHH@Z",
         "004F13F0": "?evaluateCivilianDistribution@TribeTacticalAIModule@@QAEXXZ"
       }
@@ -1156,7 +1061,6 @@
         "004ADD00": "src/matching/004ADD00_LoadDisabledItemsFromScenario.cpp",
         "004ADD50": "src/matching/004ADD50_save_info_in_scenario.cpp",
         "004ADD60": "src/matching/004ADD60_save_multi_victory_cond_in_scenario.cpp",
-        "004AE070": "src/scratch/004AE070_save_victory_cond_in_scenario.cpp",
         "004AE620": "src/matching/004AE620_load_victory_cond_from_scenario.cpp",
         "004AE9D0": "src/matching/004AE9D0_load_multi_victory_cond_from_scenario.cpp",
         "004AECB0": "src/matching/004AECB0_save_diplomacy_in_scenario.cpp",
@@ -1256,7 +1160,6 @@
       "flags": "config/flags/default.rsp",
       "owners": {
         "00513000": "src/matching/00513000_interface_tech_avail.cpp",
-        "005153D0": "src/accepted_drift/005153D0_loadAIInformation.cpp",
         "00517B90": "src/matching/00517B90_setupEgyptian.cpp",
         "00517E10": "src/matching/00517E10_setupBabylonian.cpp",
         "005181C0": "src/matching/005181C0_setupHittite.cpp",
@@ -1451,7 +1354,6 @@
       "source": "src/basegame_late_tu.cpp",
       "flags": "config/flags/0041BAA0_setup.rsp",
       "owners": {
-        "00421BF0": "src/accepted_drift/00421BF0_calc_timings.cpp",
         "00421FA0": "src/matching/00421FA0_calc_timing_text.cpp",
         "00422030": "src/matching/00422030_show_timings.cpp",
         "00422050": "src/matching/00422050_show_comm.cpp",
@@ -1513,7 +1415,6 @@
       "owners": {
         "00483020": "src/matching/00483020_RGE_RMM_Database_Controller.cpp",
         "00483200": "src/matching/00483200_RGE_RMM_Database_Controller.cpp",
-        "004832E0": "src/accepted_drift/004832E0_save.cpp",
         "00483430": "src/matching/00483430_generate.cpp",
         "00483540": "src/matching/00483540_init.cpp",
         "004835A0": "src/matching/004835A0_de_init.cpp"
@@ -1533,8 +1434,7 @@
         "004330A0": "src/matching/004330A0_Add.cpp",
         "00433180": "src/matching/00433180_ValidateChecksums.cpp",
         "00433290": "src/matching/00433290_DoChecksum.cpp",
-        "00433460": "src/matching/00433460_LogChecksums.cpp",
-        "00433AD0": "src/scratch/00433AD0_IsPlayerOutOfSync.cpp"
+        "00433460": "src/matching/00433460_LogChecksums.cpp"
       }
     },
     {
