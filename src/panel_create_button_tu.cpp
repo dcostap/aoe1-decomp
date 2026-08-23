@@ -1,5 +1,5 @@
-#include "matching/00467A50_set_ideal_size.cpp"
 #include "../include/panel_button_text_context.h"
+#include "matching/00467A50_set_ideal_size.cpp"
 #include "matching/00468530_create_button.cpp"
 #include "matching/00468CB0_create_text.cpp"
 #include "matching/00468E50_create_text.cpp"

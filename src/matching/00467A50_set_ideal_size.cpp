@@ -1,12 +1,8 @@
-class TRIBE_Screen_Sed_Open {
-public:
-    char gap_0[0xF4];
-    int field_F4;
-    int field_F8;
-    void set_ideal_size(int a, int b);
-};
-
-void TRIBE_Screen_Sed_Open::set_ideal_size(int a, int b) {
-    this->field_F4 = a;
-    this->field_F8 = b;
+// VA: 00467A50, TEasy_Panel::set_ideal_size, Panel_ez.cpp lines 559-562.
+// Exact finish: the PDB-proven protected virtual long/long owner replaces a
+// synthetic same-layout class. The shared class header belongs before the
+// ordered Panel_ez.cpp method bodies; a repeated local include was incidental.
+void TEasy_Panel::set_ideal_size(long width, long height) {
+    this->ideal_width = width;
+    this->ideal_height = height;
 }

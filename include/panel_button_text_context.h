@@ -210,6 +210,10 @@ public:
     void* brush;
     int brush_color;
 
+protected:
+    virtual void set_ideal_size(long width, long height);
+
+public:
     virtual int create_button(TPanel*, TButtonPanel**, char*, char*, long, long,
                               long, long, long, long, long);
     virtual int create_text(TPanel*, TTextPanel**, char*, long, long, long, long,
