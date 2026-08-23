@@ -1,5 +1,8 @@
 // VA: 00419650 UnitAIModule::processMisc (1383 bytes)
-// aiuaimod.cpp:5287-5689
+// PDB owner/access: protected virtual UnitAIModule::processMisc
+// (?processMisc@UnitAIModule@@MAEHXZ), aiuaimod.cpp:5287-5689.
+// Body boundary: 00419650-00419BB7 (ret at 00419BB6); next sibling starts at
+// 00419BC0. The 00419BB7-00419BBF gap is padding.
 // Typed reconstruction of the order-specific miscellaneous update pass.
 //
 // Exact-finish notes:
@@ -11,6 +14,8 @@
 //   and a move-distance local were tested and removed or walked back.
 // - INSEPARABLE: the 0x2BD branch shape and defendTargetValue source are kept
 //   together; each controls the nearby canPath call and block layout.
+// - ABI: the PDB-qualified protected access is required; public access emits
+//   the wrong decorated owner even though the function bytes stay unchanged.
 // BINARY NOTE: the 0x2BD canPath guard reads [this+0x4C], not [this+0x34].
 // BINARY NOTE: the targetless +0x90 call receives desired distance as an int
 //   push, not through an x87 store.
@@ -252,10 +257,14 @@ public:
     virtual int processNotify(void*, unsigned long);
     virtual void processGroupNotify(void*);
     virtual int processIdle(int);
+
+protected:
     virtual int processMisc();
     virtual int processRetryableOrder();
     virtual int bestUnitToHeal(int, float*);
     virtual int bestUnitToConvert(float*);
+
+public:
 
     RGE_Static_Object* objectValue;                // +0x04
     char gap_08[0x20];                            // +0x08 to +0x27

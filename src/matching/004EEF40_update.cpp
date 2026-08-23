@@ -42,6 +42,13 @@
 // and use. Later, the rebuild reads md before clearing playersToDefend, while
 // the executable clears first; both dereference md after the clear. No call
 // crosses this scheduling change. All 22 calls and ManagedArray effects match.
+// - Exact finish in the registered taitacmd.cpp context kept shared resize
+//   out of line to protect 004F13F0. A local inline growth body restores the
+//   target's three operator_new/operator_delete pairs without a helper call.
+//   The zeroNumber calls preserve the md reread and player publication order.
+// - Walkback of the local growth body restores three direct resize calls and
+//   a 1266-byte drift. Fresh reduced validation matches all 1421 bytes, 22
+//   ordered calls, the PDB-qualified owner, and every original basic block.
 
 #ifndef TAITACMD_SHARED_CONTEXT
 class AIModule {
@@ -58,6 +65,10 @@ struct ManagedArrayInt {
     int numberValue;
     int desiredNumberValue;
     int maximumSizeValue;
+
+    void zeroNumber() {
+        numberValue = 0;
+    }
 
     int add(int valueToAdd) {
         int i;
@@ -189,6 +200,36 @@ public:
 };
 #endif
 
+// BINARY NOTE: These three target insertions inline growth and emit direct
+// operator_new/operator_delete calls. The shared add method emits resize.
+static inline int addTacticalPlayer(ManagedArray<int>& array, int valueToAdd)
+{
+    int i;
+    int* newValue;
+    int newSize;
+
+    for (i = 0; i < array.numberValue; i++) {
+        if (i >= array.maximumSizeValue) break;
+        if (array.value[i] == valueToAdd) return 0;
+    }
+    if (array.numberValue > array.maximumSizeValue - 1) {
+        newSize = array.numberValue + 1;
+        newValue = (int*)operator_new(newSize * sizeof(int));
+        if (newValue != 0) {
+            for (i = 0; i < array.maximumSizeValue; i++) {
+                if (i >= newSize) break;
+                newValue[i] = array.value[i];
+            }
+            operator_delete(array.value);
+            array.value = newValue;
+            array.maximumSizeValue = newSize;
+        }
+    }
+    array.value[array.numberValue] = valueToAdd;
+    array.numberValue = array.numberValue + 1;
+    return 1;
+}
+
 int TribeTacticalAIModule::update(int)
 {
     if ((unsigned int)(this->md->player->world->tick -
@@ -243,7 +284,8 @@ int TribeTacticalAIModule::update(int)
         this->lastScalingUpdateValue = this->md->player->world->tick;
     }
 
-    this->unitsTaskedThisUpdate.numberValue = 0;
+    // BINARY NOTE: This period array method preserves the md reread below.
+    this->unitsTaskedThisUpdate.zeroNumber();
     this->md->informationAI.farmsTaskedThisUpdate.numberValue = 0;
 
     if ((unsigned int)this->md->player->world->tick / 1000U >=
@@ -257,13 +299,13 @@ int TribeTacticalAIModule::update(int)
         this->sn[0x7C], this->sn[0x80]);
 
     this->playersToAttack.numberValue = 0;
-    this->playersToAttack.add(mostHatedPlayer);
+    addTacticalPlayer(this->playersToAttack, mostHatedPlayer);
 
-    this->playersToDefend.numberValue = 0;
-    this->playersToDefend.add(this->md->player->player_id);
+    this->playersToDefend.zeroNumber();
+    addTacticalPlayer(this->playersToDefend, this->md->player->player_id);
 
     if (mostHatedPlayer != mostLikedPlayer) {
-        this->playersToDefend.add(mostLikedPlayer);
+        addTacticalPlayer(this->playersToDefend, mostLikedPlayer);
     }
 
 diplomacy:
