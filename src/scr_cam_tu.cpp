@@ -10,5 +10,5 @@
 #include "matching/00490380_add_scenario.cpp"
 #include "matching/00490400_remove_scenario.cpp"
 #include "matching/00490480_move_scenario_up.cpp"
-#include "accepted_drift/00490520_move_scenario_down.cpp"
+#include "matching/00490520_move_scenario_down.cpp"
 #include "matching/004905D0_action.cpp"

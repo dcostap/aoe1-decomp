@@ -1,9 +1,7 @@
-// 00490520 TRIBE_Campaign_Editor_Screen::move_scenario_down
-// Source: scr_cam.cpp lines 526-543, size 170 bytes
-// Exact match: 168/170 equal bytes (98.8%)
-// Remaining: 2 bytes — `dec edi` vs `call get_line` swapped (independent instruction
-//   scheduling). VC5 schedules call before dec; original has dec before call.
-// FLAGS: none
+// VA: 00490520 TRIBE_Campaign_Editor_Screen::move_scenario_down
+// Source: scr_cam.cpp lines 526-543
+// Exact-finish note: initialize the bound with `numberLines() - 1`.
+// This makes VC5 emit the decrement before the later get_line call.
 
 #include "../../include/scr_cam_context.h"
 
@@ -42,10 +40,7 @@ struct TRIBE_Campaign_Editor_Screen {
 void TRIBE_Campaign_Editor_Screen::move_scenario_down()
 {
     // No cached pointer: reload from [this+0x490] each time (matching original).
-    // Use explicit iVar1-- before get_line to match dec-before-call instruction order.
-    // (Unable to force VC5 to schedule dec before call; 2 bytes drift remain.)
-    int iVar1 = this->campaign_scenarios->numberLines();
-    iVar1--;
+    int iVar1 = this->campaign_scenarios->numberLines() - 1;
     long lVar2 = this->campaign_scenarios->get_line();
 
     if (lVar2 < iVar1) {

@@ -35,11 +35,19 @@
 // 15: executable-path audit proved that an invalid empty or space-prefixed name
 //    returns after the popup and does not clear need_to_save. Restoring that
 //    source return reduced the mismatch from 61 bytes to seven.
-// ACCEPTED DRIFT: The seven bytes only exchange the +0x10 and +0x14 private
-// homes for the two array pointers. Both calloc results keep the same source
-// ownership. Every getstring, constructor argument, element free, and array
-// free receives the same pointer in the same order. Size, frame, all 25 calls,
-// EH state, cleanup, memory effects, return paths, and fault order match.
+// 16: grouped-context finish work tested reversed calloc order, declaration
+//    order, aliases, temporary holders, and scoped declarations. Reversed
+//    calloc order restores the allocation result order but moves the pointer
+//    homes and changes 534 bytes. The natural baseline remains seven bytes.
+// 17: fault audit: the baseline can fault on the first getstring when the first
+//    calloc returns null. The original can fault on the second getstring when
+//    its first calloc returns null. Do not claim equal fault order.
+// ACCEPTED DRIFT: The seven bytes exchange the +0x10 and +0x14 private homes.
+// All valid-allocation calls, constructor arguments, element frees, array frees,
+// frame, EH state, and return paths match. Allocation-failure fault order remains
+// an open exactness question.
+// BLOCKER: Do not promote this source as exact or behavior-equivalent until a
+// natural source recovers both the array homes and the allocation fault order.
 
 #include "../../include/scr_cam_context.h"
 
