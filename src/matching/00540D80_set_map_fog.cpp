@@ -1,15 +1,13 @@
-struct Inner_00540D80 {
-    void target(int param);
-};
+// VA: 00540D80 RGE_Game_World::set_map_fog (20 B)
+// PDB-qualified owner/name: public: void __thiscall RGE_Game_World::set_map_fog(unsigned char)
+// PDB source: World.cpp lines 386-389
+// Original body boundary: 00540D80-00540D93; next symbol: 00540DA0.
+// BINARY NOTE: map is the +0x28 field. The null test precedes the direct
+// RGE_Map::set_map_fog call, preserving its fault and call order.
 
-class RGE_Game_World {
-public:
-    char gap_0[0x28];
-    Inner_00540D80 *inner_;
-    void set_map_fog(int param);
-};
+#include "../../include/world_scenario_context.h"
 
-void RGE_Game_World::set_map_fog(int param) {
-    if (this->inner_)
-        this->inner_->target(param);
+void RGE_Game_World::set_map_fog(unsigned char param) {
+    if (this->map)
+        this->map->set_map_fog(param);
 }

@@ -3,22 +3,16 @@
 // char* __thiscall get_trimmed_str(char* param_1, int param_2)
 // ret 8 (2 params)
 // FLAGS: default
+// BINARY NOTE: The qualified TEditPanel owner is anchored by update_text at
+// 00476ABB and the text member read at +0xFC. Keep the shared panel boundary.
 
+#include "../../include/pnl_edit_context.h"
 #include <string.h>
 
 extern "C" int __cdecl __ismbcspace(int);
 extern "C" unsigned char* __cdecl __mbsinc(const unsigned char*);
 extern "C" unsigned char* __cdecl __mbsncpy(unsigned char*, const unsigned char*, int);
 extern "C" unsigned char* __cdecl __mbsdec(const unsigned char*, const unsigned char*);
-
-class TEditPanel {
-public:
-    char _gap_000[0xFC];
-    char* text;                      // +0xFC
-
-    void update_text();
-    char* get_trimmed_str(char* dst, int maxlen);
-};
 
 char* TEditPanel::get_trimmed_str(char* dst, int maxlen)
 {
