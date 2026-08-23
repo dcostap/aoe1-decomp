@@ -1,9 +1,14 @@
+#ifndef AICONMOD_CANONICAL_TU
 class ConstructionAIModule {
 public:
+    enum PlacementResult { PlacementOk = 0 };
     virtual ~ConstructionAIModule();
     char gap_0[0x30C];
-    int field_310;
-    int lastPlacementReturnCode();
+    PlacementResult lastPlacementReturnCodeValue;
+    PlacementResult lastPlacementReturnCode();
 };
+#endif
 
-int ConstructionAIModule::lastPlacementReturnCode() { return this->field_310; }
+ConstructionAIModule::PlacementResult ConstructionAIModule::lastPlacementReturnCode() {
+    return this->lastPlacementReturnCodeValue;
+}

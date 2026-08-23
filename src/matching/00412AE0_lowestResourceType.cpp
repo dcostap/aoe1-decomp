@@ -1,7 +1,3 @@
-class ResourceAIModule {
-public:
-    virtual ~ResourceAIModule();
-    int lowestResourceType();
-};
+#include "../../include/airesmod_context.h"
 
-int ResourceAIModule::lowestResourceType() { return 1; }
+int ResourceAIModule::lowestResourceType() const { return 1; }

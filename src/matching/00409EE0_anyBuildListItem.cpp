@@ -1,6 +1,9 @@
 // attempt 1: sibling-style sentinel/null list scan with the param-driven early return cases
 // exact match landed with the natural three-arm return shape and the sibling-style list sentinel layout
 
+#include "../../include/aibldmod_context.h"
+
+#ifndef AIBLDMOD_SHARED_CONTEXT
 class BaseItem {
 public:
     void* vtable_ptr;
@@ -29,6 +32,7 @@ public:
 
     BuildItem* anyBuildListItem(int param_1, int param_2, int param_3);
 };
+#endif
 
 BuildItem* BuildAIModule::anyBuildListItem(int param_1, int param_2, int param_3) {
     BuildItem* item = this->buildList.next;

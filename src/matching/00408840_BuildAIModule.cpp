@@ -23,11 +23,18 @@
 // 30-32: loop-local, larger-buffer, and scoped pointer probes did not improve emitted code. The clean source stayed authoritative.
 // 33: removed the decompiler-only +4 bias from the item name read, terminator, and BuildItem constructor argument. This changed the three stack displacements to the original values and produced MATCH.
 // 34-36: exact-finish reversion checks restored each of those three source biases separately. Each check produced one mismatch at its own address. All three natural base expressions are required.
+// 37: the PDB type record gives the BuildItem constructor fourteen int/char*/float arguments. The save stream also identifies each serialized field.
+// 38: restored those field names and types. This removed the decompiler's transposed local names while keeping exact code.
+// 39: the authentic wrapper emits the exact 1240 target bytes. It also selects the all-int BuildItem constructor and inherited BaseItem call owners.
+// 40: restored the module-owned Build AI and None literals and the version_3_1 global. Their relocations keep exact code and authentic rdata ownership.
+// 41: restored BaseItem inheritance in the fallback surface. The direct setter relocations now use their PDB owners.
 // BINARY NOTE: the item name read, terminator, and constructor argument use the same local base. The prior +4 form was a decompiler stack-overlay artifact.
 
 #include <string.h>
 #include <stdlib.h>
+#include "../../include/aibldmod_context.h"
 
+#ifndef AIBLDMOD_SHARED_CONTEXT
 typedef unsigned char uchar;
 void* __cdecl operator new(unsigned int);
 extern "C" void rge_read(int fd, void* dst, int size);
@@ -63,17 +70,22 @@ public:
     }
 };
 
-class BuildItem {
+class BaseItem {
 public:
-    char pad[0x68]; // vptr at +0, next/prev remain at +0x6C/+0x70
+    char pad[0x68];
+    virtual ~BaseItem();
+    void setSkip(int); void setGameID(int); void setX(float); void setY(float); void setZ(float);
+};
+
+class BuildItem : public BaseItem {
+public:
     BuildItem* next;
     BuildItem* prev;
     char pad_tail[0x3C];
     BuildItem();
     virtual ~BuildItem();
-    BuildItem(int z, uchar permanentSkip, int y, int a, int b, int local, char* name, float x, float nskip, float gameID, int place, int skip, int num, int from);
+    BuildItem(int z, int typeID, int y, int a, int b, int local, char* name, float x, float nskip, float gameID, int place, int skip, int num, int from);
     void setBuilt(int); void setInProgress(int); void setBuildAttempts(int); void setNumberBuilds(int); void setBuildCap(int); void setSkipCycles(int); void setPermanentSkip(uchar);
-    void setSkip(int); void setGameID(int); void setX(float); void setY(float); void setZ(float);
 };
 
 class BuildAIModule : public AIModule {
@@ -89,35 +101,36 @@ public:
     BuildAIModule(int p1, int fd);
     virtual ~BuildAIModule();
 };
+#endif
 
 BuildAIModule::BuildAIModule(int p1, int fd)
-    : AIModule((char*)0x57F158, 0x3e9, p1, 0), buildList(),
+    : AIModule("Build AI", 0x3e9, p1, 0), buildList(),
       buildListLengthValue(0), numberItemsIntoBuildListValue(0)
 {
     int buildCap;
+    int buildCapValue;
     int builtValue;
     int inProgressValue;
     int buildAttemptsValue;
-    int terrainAdjOne;
+    int terrainAdjacencyOne;
     int skipValue;
-    int zSize;
-    float gameID;
-    int xSize;
+    float zSize;
+    int gameID;
+    float xSize;
     float x;
-    float uniqueID;
-    int y;
-    float buildCategory;
-    int z;
-    float terrainAdjTwo;
+    int uniqueID;
+    float y;
+    int buildCategory;
+    float z;
+    int terrainAdjacencyTwo;
     int numberBuilds;
-    int ySize;
-    float numberSkipCycles;
+    float ySize;
+    int skipCycles;
     int typeID;
     uchar permanentSkip;
     int terrainSet;
     int placeOnElevation;
     int buildFrom;
-    int local_11c;
     char name[257];
 
     this->buildList.next = &this->buildList;
@@ -132,12 +145,12 @@ BuildAIModule::BuildAIModule(int p1, int fd)
     rge_read(fd, &buildCap, 4);
     rge_read(fd, this->currentBuildItemRequestedValue, buildCap);
     this->currentBuildItemRequestedValue[buildCap] = 0;
-    if (save_game_version >= *(float*)0x56E784) {
+    if (save_game_version >= version_3_1) {
         rge_read(fd, &buildCap, 4);
         rge_read(fd, this->nextBuildItemRequestedValue, buildCap);
         this->nextBuildItemRequestedValue[buildCap] = 0;
     } else {
-        strcpy(this->nextBuildItemRequestedValue, (char*)0x57F0BC);
+        strcpy(this->nextBuildItemRequestedValue, "None");
     }
     rge_read(fd, &this->numberItemsIntoBuildListValue, 4);
 
@@ -147,46 +160,47 @@ BuildAIModule::BuildAIModule(int p1, int fd)
             rge_read(fd, &buildCap, 4);
             rge_read(fd, name, buildCap);
             name[buildCap] = 0;
-            rge_read(fd, &permanentSkip, 4);
-            rge_read(fd, &xSize, 4);
-            rge_read(fd, &y, 4);
-            rge_read(fd, &uniqueID, 4);
-            rge_read(fd, &buildCategory, 4);
-            rge_read(fd, &terrainAdjTwo, 4);
-            rge_read(fd, &x, 4);
-            rge_read(fd, &numberSkipCycles, 4);
-            rge_read(fd, &gameID, 4);
-            rge_read(fd, &zSize, 4);
-            rge_read(fd, &z, 4);
-            rge_read(fd, &buildAttemptsValue, 4);
-            rge_read(fd, &inProgressValue, 4);
-            rge_read(fd, &terrainAdjOne, 4);
-            rge_read(fd, &local_11c, 4);
-            rge_read(fd, &placeOnElevation, 4);
-            rge_read(fd, &skipValue, 4);
-            rge_read(fd, &numberBuilds, 4);
-            rge_read(fd, &buildFrom, 4);
-            rge_read(fd, &ySize, 4);
-            builtValue = -1;
-            if (save_game_version >= version_2_2) {
-                rge_read(fd, &builtValue, 4);
-            }
             rge_read(fd, &typeID, 4);
-            rge_read(fd, &terrainSet, 1);
-            BuildItem* item = new BuildItem((int)z, (uchar)permanentSkip, (int)y, 1, 0, local_11c, name, x, (float)numberSkipCycles, (float)gameID, placeOnElevation, skipValue, numberBuilds, buildFrom);
-            item->setBuilt(inProgressValue);
-            item->setInProgress(buildAttemptsValue);
-            item->setBuildAttempts(terrainAdjOne);
-            item->setSkip((int)zSize);
-            item->setGameID((int)xSize);
-            item->setX((float)uniqueID);
-            item->setY((float)buildCategory);
-            item->setZ((float)terrainAdjTwo);
-            item->setNumberBuilds((int)ySize);
-            item->setBuildCap(builtValue);
-            item->setSkipCycles(typeID);
-            item->setPermanentSkip((uchar)terrainSet);
+            rge_read(fd, &gameID, 4);
+            rge_read(fd, &uniqueID, 4);
+            rge_read(fd, &x, 4);
+            rge_read(fd, &y, 4);
+            rge_read(fd, &z, 4);
+            rge_read(fd, &xSize, 4);
+            rge_read(fd, &ySize, 4);
+            rge_read(fd, &zSize, 4);
+            rge_read(fd, &skipValue, 4);
+            rge_read(fd, &buildCategory, 4);
+            rge_read(fd, &inProgressValue, 4);
+            rge_read(fd, &builtValue, 4);
+            rge_read(fd, &buildAttemptsValue, 4);
+            rge_read(fd, &buildFrom, 4);
+            rge_read(fd, &terrainSet, 4);
+            rge_read(fd, &terrainAdjacencyOne, 4);
+            rge_read(fd, &terrainAdjacencyTwo, 4);
+            rge_read(fd, &placeOnElevation, 4);
+            rge_read(fd, &numberBuilds, 4);
+            buildCapValue = -1;
+            if (save_game_version >= version_2_2) {
+                rge_read(fd, &buildCapValue, 4);
+            }
+            rge_read(fd, &skipCycles, 4);
+            rge_read(fd, &permanentSkip, 1);
+            BuildItem* item = new BuildItem(buildCategory, typeID, uniqueID, 1, 0, buildFrom, name, xSize, ySize, zSize, terrainSet, terrainAdjacencyOne, terrainAdjacencyTwo, placeOnElevation);
+            item->setBuilt(builtValue);
+            item->setInProgress(inProgressValue);
+            item->setBuildAttempts(buildAttemptsValue);
+            item->setSkip(skipValue);
+            item->setGameID(gameID);
+            item->setX(x);
+            item->setY(y);
+            item->setZ(z);
+            item->setNumberBuilds(numberBuilds);
+            item->setBuildCap(buildCapValue);
+            item->setSkipCycles(skipCycles);
+            item->setPermanentSkip(permanentSkip);
             i++;
+            // Publish the item only after construction and field restoration.
             item->next = &this->buildList;
             BuildItem* prev = this->buildList.prev;
             item->prev = prev;

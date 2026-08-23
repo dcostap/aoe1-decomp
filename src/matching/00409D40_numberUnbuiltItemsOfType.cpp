@@ -1,6 +1,9 @@
 // attempt 1: sibling-style sentinel/null list walk with the three predicate helpers and a local count
 // exact match landed with the natural while-loop shape and the sibling-style list sentinel layout
 
+#include "../../include/aibldmod_context.h"
+
+#ifndef AIBLDMOD_SHARED_CONTEXT
 class BaseItem {
 public:
     void* vtable_ptr;
@@ -29,6 +32,7 @@ public:
 
     int numberUnbuiltItemsOfType(int param_1, int param_2);
 };
+#endif
 
 int BuildAIModule::numberUnbuiltItemsOfType(int param_1, int param_2) {
     BuildItem* item = this->buildList.next;

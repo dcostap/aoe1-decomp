@@ -1,7 +1,3 @@
-class ResourceAIModule {
-public:
-    virtual ~ResourceAIModule();
-    int processMessage(int p0);
-};
+#include "../../include/airesmod_context.h"
 
-int ResourceAIModule::processMessage(int p0) { return 0; }
+int ResourceAIModule::processMessage(AIModuleMessage* p0) { return 0; }

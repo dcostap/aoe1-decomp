@@ -8,10 +8,12 @@ struct RGE_Combat_Object_setup_5 {
     int setup(void* param1, void* param2, float param3, float param4, float param5);
 };
 
+#ifndef RGE_MISL_OBJ_SHARED_CONTEXT
 struct RGE_Missile_Object {
     char base[0x1C8];
     int setup(void* param1, void* param2, float param3, float param4, float param5);
 };
+#endif
 
 int RGE_Missile_Object::setup(void* param1, void* param2, float param3, float param4, float param5)
 {

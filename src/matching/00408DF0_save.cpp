@@ -10,10 +10,13 @@
 // - Remaining drift is local scratch scheduling: saved-this and sentinel displacements, float FSTP placement, and integer homes.
 // - Best source reconstruction: 1266 bytes, 90 differing bytes, 94.79% edit similarity. Leave in scratch.
 #include <string.h>
+#include "../../include/aibldmod_context.h"
 extern "C" void __cdecl rge_write(int, void*, int);
+#ifndef AIBLDMOD_SHARED_CONTEXT
 class BaseItem { public: virtual ~BaseItem(); char gap04[0x68]; char* name(); int typeID() const; int gameID() const; int uniqueID() const; float x() const; float y() const; float z() const; float xSize() const; float ySize() const; float zSize() const; int skip() const; };
 class BuildItem: public BaseItem { public: BuildItem* next; int buildCategory() const; int inProgress() const; int built() const; int buildAttempts() const; int buildFrom() const; int terrainSet() const; int terrainAdjacency(int) const; int placeOnElevation() const; int numberBuilds() const; int buildCap() const; int skipCycles() const; unsigned char permanentSkip() const; };
 class BuildAIModule { public: char gap0[0xf0]; BuildItem buildList; char gap160[0x40]; int buildListLengthValue; char buildListNameValue[0x101]; char lastBuildItemRequestedValue[0x101]; char currentBuildItemRequestedValue[0x101]; char nextBuildItemRequestedValue[0x101]; int numberItemsIntoBuildListValue; int save(int); };
+#endif
 #define WRITE_STRING(SRC) { strcpy(tempString, (SRC)); tempInt = strlen(tempString); rge_write(file, &tempInt, 4); rge_write(file, tempString, strlen(tempString)); }
 #define WRITE_I(EXPR) { tempInt = (EXPR); rge_write(file, &tempInt, 4); }
 #define WRITE_I_TO(VAR, EXPR) { VAR = (EXPR); rge_write(file, &VAR, 4); }

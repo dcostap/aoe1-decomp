@@ -1,5 +1,6 @@
 // first pass: typed RECT copy with direct field gates from the packet
 // removed virtual declaration because the local stub has no base class; target offsets include the real vptr in gap_000
+#ifndef AOE1_PNL_MSG_CONTEXT_H
 struct tagRECT {
     long left;
     long top;
@@ -10,10 +11,10 @@ struct tagRECT {
 class TMessagePanel {
 public:
     char gap_000[0x20];
-    int field_020;
+    int render_area;
     char gap_024[0x48];
-    int field_06C;
-    int field_070;
+    int active;
+    int visible;
     char gap_074[0x18];
     tagRECT render_rect;
     char gap_09C[0x25C];
@@ -25,9 +26,10 @@ public:
 
     void get_true_render_rect(tagRECT& rect);
 };
+#endif
 
 void TMessagePanel::get_true_render_rect(tagRECT& rect) {
-    if (this->ImageBuffer && this->field_020 && this->field_070 && this->field_06C && this->showing_message) {
+    if (this->ImageBuffer && this->render_area && this->visible && this->active && this->showing_message) {
         rect = this->UsedScreenRect;
     } else {
         rect = this->render_rect;

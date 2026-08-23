@@ -5,6 +5,7 @@
 //
 // Attempt 4: Fixed BaseItem (sizeof=0x6C) vs ConstructionItem (adds next at +0x6C).
 
+#ifndef AICONMOD_CANONICAL_TU
 class BaseItem {
 public:
     float x();
@@ -35,9 +36,29 @@ public:
 
     ConstructionItem* lot(float x, float y);
 };
+#endif
 
 ConstructionItem* ConstructionAIModule::lot(float x, float y)
 {
+#ifdef AICONMOD_CANONICAL_TU
+    ConstructionItem* p = this->constructionLots.next;
+
+    while (p != &this->constructionLots && p != 0) {
+        if (p->x() == x && p->y() == y)
+            return p;
+        p = p->next;
+    }
+
+    p = this->randomConstructionLots.next;
+
+    while (p != &this->randomConstructionLots && p != 0) {
+        if (p->x() == x && p->y() == y)
+            return p;
+        p = p->next;
+    }
+
+    return 0;
+#else
     ConstructionItem* p = this->constructionLots;
 
     while ((BaseItem*)p != &this->sentinel1 && p != 0) {
@@ -55,4 +76,5 @@ ConstructionItem* ConstructionAIModule::lot(float x, float y)
     }
 
     return 0;
+#endif
 }

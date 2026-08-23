@@ -26,5 +26,6 @@ public:
 
 void TDrawArea::GetPalette(tagPALETTEENTRY* entries)
 {
-    memcpy(entries, this->DrawSystem->Palette, 256 * sizeof(tagPALETTEENTRY));
+    for (int i = 0; i < 256; ++i)
+        entries[i] = this->DrawSystem->Palette[i];
 }

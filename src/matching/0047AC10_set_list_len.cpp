@@ -1,11 +1,14 @@
-class SomeClass {
+// 0047AC10 TScrollBarPanel::set_list_len
+// PDB: Pnl_scbr.cpp lines 258-261
+class TScrollBarPanel {
 public:
-    void some_method(int param);
-    void set_list_len(int len, int param2);
     char pad[0xF8];
-    int field_F8;
+    long list_len;
+    void set_tab_pos(long position);
+    void set_list_len(long len, long position);
 };
-void SomeClass::set_list_len(int len, int param2) {
-    this->field_F8 = len;
-    this->some_method(param2);
+
+void TScrollBarPanel::set_list_len(long len, long position) {
+    this->list_len = len;
+    this->set_tab_pos(position);
 }

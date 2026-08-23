@@ -2,6 +2,9 @@
 // result: the first mismatch was the BuildItem field layout; restoring the 0x6c/0x74/0x84 offsets landed exact
 // attempt 2: keep the loop natural and use the real helper calls for type/category/built
 
+#include "../../include/aibldmod_context.h"
+
+#ifndef AIBLDMOD_SHARED_CONTEXT
 class BaseItem {
 public:
     void* vtable_ptr;
@@ -30,6 +33,7 @@ public:
 
     int numberBuiltItemsOfType(int param_1, int param_2);
 };
+#endif
 
 int BuildAIModule::numberBuiltItemsOfType(int param_1, int param_2) {
     BuildItem* item = this->buildList.next;

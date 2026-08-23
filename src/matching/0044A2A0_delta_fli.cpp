@@ -50,6 +50,7 @@
 
 #include <string.h>
 
+#ifndef FLICS_SHARED_CONTEXT
 class RGE_Flic_Player {
 public:
     unsigned char* flic_buffer;   // +0x00
@@ -70,6 +71,7 @@ public:
 
     void delta_fli();
 };
+#endif
 
 // Main-agent audit confirmed canonical FLIC player/frame ownership and retained
 // the natural packed delta decoder.

@@ -25,6 +25,9 @@
 //   matches 661/661.
 
 #include <stdlib.h>
+#ifdef PLAYER_GROUPED_TU
+#include "../../include/player_context.h"
+#endif
 
 void rge_read(int file, void* buffer, int size);
 
@@ -32,6 +35,7 @@ extern int pathingCapValue;
 extern float save_game_version;
 extern float DAT_00570e90;
 
+#ifndef PLAYER_GROUPED_TU
 class RGE_Game_World {
 public:
     char gap_00[0x3C];
@@ -120,6 +124,7 @@ public:
     void reset_selected();
     void set_color_table(unsigned char table);
 };
+#endif
 
 RGE_Player::RGE_Player(int file, RGE_Game_World* world_arg,
                        unsigned char player_id)

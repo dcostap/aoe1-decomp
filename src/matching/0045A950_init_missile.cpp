@@ -3,6 +3,7 @@
 // inherited: no EH without ctor-shaped new; try/catch gave EBP EH; /GX present.
 // try 1: use real RGE_Action_Missile constructor in new expression instead of new+init.
 
+#ifndef RGE_MISL_OBJ_SHARED_CONTEXT
 struct RGE_Action_Object { void* vtable; };
 struct RGE_Combat_Object { void* vtable; };
 struct RGE_Static_Object {
@@ -30,6 +31,7 @@ struct RGE_Missile_Object {
     float max_range;
     void init_missile(RGE_Combat_Object* target, RGE_Static_Object* src_obj, float range);
 };
+#endif
 
 void RGE_Missile_Object::init_missile(RGE_Combat_Object* target, RGE_Static_Object* src_obj, float range)
 {

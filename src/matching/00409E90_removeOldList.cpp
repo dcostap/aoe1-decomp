@@ -1,3 +1,6 @@
+#include "../../include/aibldmod_context.h"
+
+#ifndef AIBLDMOD_SHARED_CONTEXT
 class BuildItem {
 public:
     virtual ~BuildItem();
@@ -15,6 +18,7 @@ public:
 
     void removeOldList(void);
 };
+#endif
 
 void BuildAIModule::removeOldList(void) {
     BuildItem* current = this->buildList.next;

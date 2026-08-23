@@ -1,6 +1,7 @@
 // The original packet preserves the ConstructionItem operator== decorated
 // identity. The reviewed symbol override validates this natural list search.
 
+#ifndef AICONMOD_CANONICAL_TU
 class ConstructionItem;
 
 int __cdecl operator==(const ConstructionItem& a, const ConstructionItem& b);
@@ -33,6 +34,7 @@ public:
 
     void setBuilt(ConstructionItem* item, int built);
 };
+#endif
 
 void ConstructionAIModule::setBuilt(ConstructionItem* item, int built) {
     ConstructionItem* current;

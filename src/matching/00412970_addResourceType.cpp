@@ -4,27 +4,8 @@
 // No EH framing
 
 #include "../../include/game_globals.h"
+#include "../../include/airesmod_context.h"
 #include <stdlib.h>
-
-class AIModule {
-public:
-    AIModule(char* name, int id, int param_2, void* param_1);
-    virtual ~AIModule();
-    char gap_04[0xEC];
-};
-
-class ResourceAIModule : public AIModule {
-public:
-    void* md;                      // +0xF0
-    int numberResourcesValue;      // +0xF4
-    int* resourceValue;            // +0xF8
-    int* minValue;                 // +0xFC
-    int* maxValue;                 // +0x100
-    int** resourceTypesValue;      // +0x104
-    int* numberResourceTypesValue; // +0x108
-
-    void addResourceType(int resource_idx, int type_value);
-};
 
 void* operator new(size_t size);
 void operator delete(void* ptr);

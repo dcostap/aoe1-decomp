@@ -1,3 +1,4 @@
+#ifndef AICONMOD_CANONICAL_TU
 class ConstructionItem {
 public:
     void decrementBuildAttempts(void);
@@ -5,11 +6,12 @@ public:
 
 class ConstructionAIModule {
 public:
-    virtual void decrementBuildAttempts(float x, float y, int count) const;
+    virtual void decrementBuildAttempts(float x, float y, int count);
     ConstructionItem* lot(float x, float y) const;
 };
+#endif
 
-void ConstructionAIModule::decrementBuildAttempts(float x, float y, int count) const {
+void ConstructionAIModule::decrementBuildAttempts(float x, float y, int count) {
     ConstructionItem* item = this->lot(x, y);
     if (item != 0 && count > 0) {
         do {

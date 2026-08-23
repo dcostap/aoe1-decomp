@@ -5,6 +5,9 @@
 // Both branches push identical getter results, differing only in format string.
 // FLAGS: /nologo /c /O2 /Oy
 
+#include "../../include/aibldmod_context.h"
+
+#ifndef AIBLDMOD_SHARED_CONTEXT
 extern "C" void __cdecl logCommonHistory(void* this_ptr, const char* fmt, ...);
 
 struct BaseItem2 {
@@ -51,24 +54,26 @@ struct BuildItem2 : BaseItem2 {
 struct AIModule2 {
     char _pad_00[0xF0];
     BuildItem2 buildList;          // +0xF0 (sizeof 0xB0: 0x6C + next+fields = 0x6C+0x40+1+3pad = 0xB0)
-    int buildListLength;           // +0x1A0
-    char buildListName[0x101];     // +0x1A4
+    int buildListLengthValue;      // +0x1A0
+    char buildListNameValue[0x101];// +0x1A4
+    void __cdecl logCommonHistory(char*, ...);
 };
 
-struct BuildAIModule2 : AIModule2 {
+class BuildAIModule : public AIModule2 {
     void displayBuildList();
 };
+#endif
 
-void BuildAIModule2::displayBuildList()
+void BuildAIModule::displayBuildList()
 {
-    logCommonHistory(this, "Build list '%s':", &buildListName);
+    this->logCommonHistory("Build list '%s':", buildListNameValue);
 
     BuildItem2* item = (BuildItem2*)((BuildItem2*)&buildList)->next;
     BuildItem2* sentinel = (BuildItem2*)&buildList;
 
     while (item != sentinel && item != 0) {
         if (item->built() == 1) {
-            logCommonHistory(this,
+            this->logCommonHistory(
                 "BLT Type=%-4d %-20s gID=%-4d Cat=%d uID=%d InPrg=%d BlATmpt=%d Skip=%d NumBld=%d BldCap=%d From=%d PrSkp=%d SkpCyc=%d",
                 item->typeID(), item->name(), item->gameID(),
                 item->buildCategory(), item->uniqueID(), item->inProgress(),
@@ -76,7 +81,7 @@ void BuildAIModule2::displayBuildList()
                 item->buildCap(), item->buildFrom(),
                 (unsigned int)item->permanentSkip(), item->skipCycles());
         } else {
-            logCommonHistory(this,
+            this->logCommonHistory(
                 "    Type=%-4d %-20s gID=%-4d Cat=%d uID=%d InPrg=%d BlATmpt=%d Skip=%d NumBld=%d BldCap=%d From=%d PrSkp=%d SkpCyc=%d",
                 item->typeID(), item->name(), item->gameID(),
                 item->buildCategory(), item->uniqueID(), item->inProgress(),

@@ -4,6 +4,7 @@
 // attempt 2: do-while with counter init before guard, reload flic_size_y each iteration
 #include <string.h>
 
+#ifndef FLICS_SHARED_CONTEXT
 class RGE_Flic_Player {
 public:
     char gap_00[0x90];
@@ -18,6 +19,7 @@ public:
 
     void literal();
 };
+#endif
 
 void RGE_Flic_Player::literal() {
     int i = 0;

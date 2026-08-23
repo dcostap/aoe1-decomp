@@ -3,6 +3,9 @@
 // Attempt log:
 // - novtable with virtual for EH, manual vtable, direct member access for list ptrs.
 
+#include "../../include/aibldmod_context.h"
+
+#ifndef AIBLDMOD_SHARED_CONTEXT
 extern "C" char* strcpy(char* dst, const char* src);
 
 class BaseItem {
@@ -64,6 +67,7 @@ public:
     BuildAIModule(void* param_1, int param_2);
     virtual ~BuildAIModule();
 };
+#endif
 
 BuildAIModule::BuildAIModule(void* param_1, int param_2)
     : AIModule("Build AI", 0x3E9, param_2, param_1)

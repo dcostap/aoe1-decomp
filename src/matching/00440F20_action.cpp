@@ -3,50 +3,16 @@
 // PDB source: dlg_smsg.cpp
 //
 // Attempt log:
-// - Rebuilt the decompiler-shaped fastcall/raw-address attempt around the
-//   typed dialog, panel, game/world/player, communications, and debug-log
-//   surfaces evidenced by dlg_smsg.cpp and exact same-TU donors.
-// - Delayed the check-button pointer until dispatch and changed the null
-//   fallback to a natural outer non-null guard; this restored the original
-//   prologue/CFG family and the 0x44 frame.
-// - A diagnostic cross-member check[22] cursor restored the original register
-//   topology and reached 174 differing bytes, but was normalized back to
-//   direct checkButton[i]/commPlayers[i] ownership for living source.
-// - Direct named checkButton members restored the original eight compare
-//   encodings. An explicit radioButton[3] branch produced 154 bytes but added
-//   four entry-reachable bytes beyond the original boundary, so it is not kept.
-// - A volatile radio-button array plus a no-effect radioButton[3] expression
-//   produced exact bytes. Main review rejected both codegen-only forms. The
-//   natural array and generic checkButtons tail remain authoritative.
-// - A nonvolatile standalone radioButton[3] expression was optimized away;
-//   it did not restore the binary's late load or sixth checkButtons call.
-// - Policy rerun removed volatile, the no-effect read, and all generic virtual
-//   placeholders. Named TPanel, RGE_Base_Game, and RGE_Player donors are now
-//   used. They emit the same clean 174-byte mismatch.
-// - A natural duplicate checkButtons call for the radioButton[2] fallback was
-//   tested. VC5 merges the two calls and keeps 41 of the original 42 calls.
-// - Twenty policy-valid source and context hypotheses were tested in this
-//   pass. Header context, guard polarity, parameter homes, and call layout did
-//   not recover the late load.
-// - A field-local volatile radioButton[3] model restored the late load and
-//   produced MATCH (0 bytes), but it remains a policy-invalid volatility
-//   surrogate. Identical natural fallback branches, an empty guard, and an
-//   inline no-op receiver did not preserve the load. The clean source is
-//   restored.
-// BINARY NOTE: the executable reads radioButton[3] before one checkButtons
-//   call, but has no compare, call, store, or later use for that value.
-// BINARY NOTE: DIA confirms a nonvolatile TButtonPanel* radioButton[4] at
-//   +0x504. The PDB also gives TButtonPanel its full 0x2B8 state type. A
-//   volatile member is not supported by the original type record.
-// BINARY NOTE: the constructor clears only three radioButton slots, then
-//   creates and uses the fourth slot. This is a separate shipped array bug.
-// BLOCKER: VC5 merges the default and radioButton[2] failure paths in the clean
-//   source. Each runtime path still calls checkButtons once. However, the merge
-//   removes the radioButton[3] member read and changes invalid-object fault
-//   behavior. This difference is not eligible for accepted drift.
-// LIKELY INTENT: the radioButton[2] fallback and the default path were separate
-//   source paths, with the default path first. The source statement behind the
-//   line-428 dead read is not proved.
+// - The clean baseline differed by 174 bytes and lacked one checkButtons call.
+// - PDB records map all five late emitted calls to one source line.
+// - One panel if/else-if chain and one shared tail produce exact bytes.
+// - Removing the empty radioButton[3] branch restores the 174-byte mismatch.
+// - A redundant fall-through goto was removed without changing exact output.
+// - One explicit radioButton[0] call also stayed exact, so it was removed.
+// BINARY NOTE: DIA gives radioButton four nonvolatile TButtonPanel pointers.
+// BINARY NOTE: the constructor clears only three slots before it uses slot 3.
+// ORIGINAL BUG: the final branch has an empty body. Its comparison only reads
+//   radioButton[3]. Removing it changes malformed-state faults and exact output.
 
 #include <string.h>
 
@@ -366,10 +332,9 @@ long TribeSendMessageDialog::action(TPanel* panel, long code,
         this->radioButton[1]->draw_background(0);
         this->radioButton[2]->draw_background(0);
         this->radioButton[3]->draw_background(1);
-        goto check_buttons_return;
     }
 
-    if (panel == this->radioButton[0]) {
+    else if (panel == this->radioButton[0]) {
         RGE_Player* player = rge_base_game->world->players[
             rge_base_game->world->curr_player];
         int i = 0;
@@ -384,11 +349,9 @@ long TribeSendMessageDialog::action(TPanel* panel, long code,
             }
             ++i;
         } while (i < 8);
-        this->checkButtons();
-        return 1;
     }
 
-    if (panel == this->radioButton[1]) {
+    else if (panel == this->radioButton[1]) {
         RGE_Player* player = rge_base_game->world->players[
             rge_base_game->world->curr_player];
         int i = 0;
@@ -403,11 +366,9 @@ long TribeSendMessageDialog::action(TPanel* panel, long code,
             }
             ++i;
         } while (i < 8);
-        this->checkButtons();
-        return 1;
     }
 
-    if (panel == this->radioButton[2]) {
+    else if (panel == this->radioButton[2]) {
         if (code == 1) {
             int i = 0;
             do {
@@ -415,15 +376,12 @@ long TribeSendMessageDialog::action(TPanel* panel, long code,
                     this->checkButton[i]->draw_background(1);
                 ++i;
             } while (i < 8);
-            this->checkButtons();
-            return 1;
         }
-        this->checkButtons();
-        return 1;
     }
 
-    this->checkButtons();
-    return 1;
+    // ORIGINAL BUG: preserve the shipped fourth-button read.
+    else if (panel == this->radioButton[3]) {
+    }
 
 check_buttons_return:
     this->checkButtons();

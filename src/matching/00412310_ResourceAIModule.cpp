@@ -2,33 +2,12 @@
 // VA: 00412310
 // PDB: airesmod.cpp:26-44
 // EH-framed, needs /GX
-// Matched 2026-05-31: __declspec(novtable) plus a manual vtable store after
-// materializing `param_3 * 4` recovered the delayed vptr schedule.
+// BINARY NOTE: keep the explicit vtable store after `param_3 * 4` is formed.
+// VC5 merges it with the normal derived-class store at the required position.
 
 #include "../../include/game_globals.h"
+#include "../../include/airesmod_context.h"
 #include <stdlib.h>
-
-class AIModule {
-public:
-    AIModule(char* name, int id, int param_2, void* param_1);
-    virtual ~AIModule();
-    char gap_04[0xEC];
-};
-
-class __declspec(novtable) ResourceAIModule : public AIModule {
-public:
-    void* md;                   // +0xF0
-    int numberResourcesValue;   // +0xF4
-    int* resourceValue;         // +0xF8
-    int* minValue;              // +0xFC
-    int* maxValue;              // +0x100
-    int** resourceTypesValue;   // +0x104
-    int* numberResourceTypesValue; // +0x108
-
-    ResourceAIModule(void* param_1, int param_2, int param_3,
-        int param_4, int param_5, int param_6);
-    virtual ~ResourceAIModule();
-};
 
 void* operator new(size_t size);
 void operator delete(void* ptr);

@@ -8,6 +8,7 @@
 // - Fix: declare the real RGE_Action_Missile constructor and use `new RGE_Action_Missile(...)` directly. Do not define the destructor locally; an empty local destructor emits an extra COMDAT before the target.
 // MATCH: python tools/check_function.py --va 0045A9E0 => Result: MATCH / 0.0000%.
 
+#ifndef RGE_MISL_OBJ_SHARED_CONTEXT
 struct RGE_Action_Object {
     void* vtable;
 };
@@ -39,6 +40,7 @@ struct RGE_Missile_Object {
 
     void init_missile(RGE_Combat_Object* target, float f1, float f2, float f3, float range);
 };
+#endif
 
 void RGE_Missile_Object::init_missile(RGE_Combat_Object* target, float f1, float f2, float f3, float range)
 {

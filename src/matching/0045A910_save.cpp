@@ -12,10 +12,12 @@ struct RGE_Combat_Object_save {
     void save(int fd);
 };
 
+#ifndef RGE_MISL_OBJ_SHARED_CONTEXT
 struct RGE_Missile_Object {
     char base[0x1C8];
     void save(int fd);
 };
+#endif
 
 void RGE_Missile_Object::save(int fd)
 {

@@ -5,9 +5,10 @@
 // as a real aggregate (`FlicHead`) assigned from the file buffer; VC5 lowers that aggregate assignment
 // to the original `rep movsd` and lands the EBX=this / EBP=fd / ESI=size register split.
 
-int __cdecl __open(const char* path, int access);
+#ifndef FLICS_SHARED_CONTEXT
+int __cdecl open(const char* path, int access);
 int __cdecl lseek(int fd, int offset, int whence);
-int __cdecl __tell(int fd);
+int __cdecl tell(int fd);
 int __cdecl read(int fd, void* buf, unsigned int size);
 int __cdecl close(int fd);
 void* __cdecl calloc(int count, int size);
@@ -27,13 +28,14 @@ struct RGE_Flic_Player {
     RGE_Flic_Player(char* path);
     void start();
 };
+#endif
 
 RGE_Flic_Player::RGE_Flic_Player(char* path) {
     register int size;
-    register int fd = __open(path, 0x8000);
+    register int fd = open(path, 0x8000);
     if (fd > -1) {
         lseek(fd, 0, 2);
-        size = __tell(fd);
+        size = tell(fd);
         flic_buffer = (unsigned char*)calloc(size, 1);
         lseek(fd, 0, 0);
         read(fd, flic_buffer, size);

@@ -1,17 +1,4 @@
-class ResourceItem {
-public:
-    int number();
-    int value(int index);
-};
-
-class ResourceAIModule {
-public:
-    char gap_00[0xF4];
-    int numberResourcesValue;
-
-    void incrementResource(int index, int value);
-    void incrementResources(ResourceItem* item);
-};
+#include "../../include/airesmod_context.h"
 
 void ResourceAIModule::incrementResources(ResourceItem* item) {
     int count;

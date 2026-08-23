@@ -1,7 +1,3 @@
-class ResourceAIModule {
-public:
-    virtual ~ResourceAIModule();
-    void setCallbackMessage(int p0);
-};
+#include "../../include/airesmod_context.h"
 
-void ResourceAIModule::setCallbackMessage(int p0) {}
+void ResourceAIModule::setCallbackMessage(AIModuleMessage* p0) {}

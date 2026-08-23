@@ -101,8 +101,7 @@
 // This supersedes the previous 28-byte best; the old round-3 residual (EDI push
 // before the last count, p2 home before p1) is fully resolved.
 
-class RGE_Command_Order {
-public:
+struct RGE_Command_Order {
     long unknown_00;    // +0x00
     long target_id;     // +0x04
     unsigned char unit_num; // +0x08
@@ -123,6 +122,7 @@ public:
     long last_order_time; // +0x10
     void* com_hand; // +0x14
 
+protected:
     unsigned char duplicate_check_command_order(RGE_Command_Order* param_1);
 };
 

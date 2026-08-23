@@ -5,6 +5,7 @@
 //   v1: first pass with minimal stub, wrong offset for flic_width; also EBX used for param, EDI not used.
 //   v2: correcting class layout to include drawarea & drawarea_width, full FlicHead, and using explicit member calls.
 
+#ifndef FLICS_SHARED_CONTEXT
 #pragma pack(1) // enforce exact layout
 
 class TDrawArea; // forward
@@ -50,6 +51,7 @@ public:
 extern "C" int read(int handle, void* buffer, int size); // 0054CD80 (cdecl)
 
 void RGE_Flic_Player::start(); // member function at 00449E20 (__thiscall)
+#endif
 
 RGE_Flic_Player::RGE_Flic_Player(int file_handle) {
     if (file_handle > -1) {

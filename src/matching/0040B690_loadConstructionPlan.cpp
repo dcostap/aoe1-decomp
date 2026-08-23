@@ -21,6 +21,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#ifndef AICONMOD_CANONICAL_TU
 class BaseItem { public: virtual ~BaseItem(); char gap[0x68]; };
 class ConstructionItem : public BaseItem {
 public:
@@ -52,6 +53,7 @@ public:
     ConstructionItem* lot(float, float);
     void logCommonHistory(char*, ...);
 };
+#endif
 
 extern "C" int __cdecl _unlink(const char*);
 

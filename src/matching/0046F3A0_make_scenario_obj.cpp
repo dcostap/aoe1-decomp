@@ -1,6 +1,11 @@
 // player.cpp:734-749, 102 bytes
 // attempt 1: 61.8%, vtable offsets wrong (createObj at +0 vs +0x18, vfs at +0/+4/+8 vs +0x68/+0x6C/+0xB4)
 // attempt 2: pad vtables to match original slot offsets
+#ifdef PLAYER_GROUPED_TU
+#include "../../include/player_context.h"
+#endif
+
+#ifndef PLAYER_GROUPED_TU
 class RGE_Static_Object {
 public:
     virtual void vf00_0();
@@ -69,6 +74,7 @@ public:
 
     RGE_Static_Object* make_scenario_obj(float x, float y, float z, short typeID, unsigned char objType, float param6);
 };
+#endif
 
 RGE_Static_Object* RGE_Player::make_scenario_obj(float x, float y, float z, short typeID, unsigned char objType, float param6) {
     RGE_Static_Object* obj = 0;

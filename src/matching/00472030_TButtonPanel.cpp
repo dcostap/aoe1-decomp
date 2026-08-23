@@ -1,11 +1,13 @@
 extern "C" void __cdecl free(void* ptr);
 
+// The virtual base surface is required for the final direct call to
+// TPanel::~TPanel. A free helper named destructor() selects the wrong symbol.
 class TPanel {
 public:
-    void destructor(void);
+    virtual ~TPanel();
 };
 
-class TButtonPanel {
+class TButtonPanel : public TPanel {
 public:
     virtual ~TButtonPanel();
 
@@ -33,5 +35,4 @@ TButtonPanel::~TButtonPanel() {
         free(radio_buttons);
         radio_buttons = 0;
     }
-    ((TPanel*)this)->destructor();
 }

@@ -1,7 +1,9 @@
+#ifndef AOE1_PNL_MSG_CONTEXT_H
 class TMessagePanel {
 public:
     virtual ~TMessagePanel();
-    int handle_mouse_move(int p0, int p1, int p2, int p3);
+    long handle_mouse_move(long p0, long p1, int p2, int p3);
 };
+#endif
 
-int TMessagePanel::handle_mouse_move(int p0, int p1, int p2, int p3) { return 0; }
+long TMessagePanel::handle_mouse_move(long p0, long p1, int p2, int p3) { return 0; }

@@ -19,7 +19,11 @@
 // FLAGS: config/flags/0046EB00_RGE_Player.rsp (/GX for the EH-framed dtor)
 
 #include <stdlib.h>
+#ifdef PLAYER_GROUPED_TU
+#include "../../include/player_context.h"
+#endif
 
+#ifndef PLAYER_GROUPED_TU
 class RGE_Master_Static_Object {
 public:
     virtual ~RGE_Master_Static_Object();
@@ -89,6 +93,7 @@ public:
     Visible_Resource_Manager* VR_List;
 
 };
+#endif
 
 RGE_Player::~RGE_Player() {
     RGE_Object_List* object_list;

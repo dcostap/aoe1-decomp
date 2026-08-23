@@ -1,5 +1,6 @@
 #include <string.h>
 
+#ifndef FLICS_SHARED_CONTEXT
 class RGE_Flic_Player {
 public:
     unsigned char* flic_buffer;
@@ -20,6 +21,7 @@ public:
 
     void black();
 };
+#endif
 
 void RGE_Flic_Player::black() {
     long i;

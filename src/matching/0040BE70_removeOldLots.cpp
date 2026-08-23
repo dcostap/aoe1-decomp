@@ -1,3 +1,4 @@
+#ifndef AICONMOD_CANONICAL_TU
 class ConstructionItem {
 public:
     virtual ~ConstructionItem();
@@ -16,6 +17,7 @@ public:
 
     void removeOldLots(void);
 };
+#endif
 
 void ConstructionAIModule::removeOldLots(void) {
     ConstructionItem* item = this->constructionLots.next;

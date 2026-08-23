@@ -1,9 +1,3 @@
-class ResourceAIModule {
-public:
-    virtual ~ResourceAIModule();
-    char gap_0[0xF0];
-    int field_F4;
-    int numberResources();
-};
+#include "../../include/airesmod_context.h"
 
-int ResourceAIModule::numberResources() { return this->field_F4; }
+int ResourceAIModule::numberResources() const { return this->numberResourcesValue; }

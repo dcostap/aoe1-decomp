@@ -5,146 +5,17 @@
 // clip rectangle and surface, then apply the configured shadow color table to
 // each pixel in the resulting rectangle.
 //
-// Attempt log:
-// - Replaced the prior FillRect/DrawBevel scaffold with the binary-supported
-//   TDrawArea/RGE_Color_Table ownership and the AlignedWidth row scan.
-// - Parameter-left clipping comparisons plus a negative invalid-rectangle
-//   guard recovered the original prologue, CFG, call set, and most bytes.
-// - Pointer/table declaration, address-term, and running-cursor variants were
-//   duplicate or worse; best retained output is 273 bytes, 47 differing
-//   positional bytes, with the residual confined to row-pointer scheduling.
-// - Main-agent audit replaced the raw color-table vptr field with its canonical
-//   virtual destructor surface; the validated gap is 48 bytes with unchanged
-//   size, calls, frame, and instruction shape.
-// - This session tested offset/left/Bits address-term order, table-first
-//   assignment, scoped and top-reset pixel cursors, and a Color_Table* local;
-//   cursor variants changed size/prologue or worsened the diff. The clean
-//   source below remains the best natural reconstruction.
-// - This session retested the row address expression, inner cursor scope and
-//   declaration order, plus point-of-use Bits/row-address locals. The natural
-//   canonical source remains the best living reconstruction; residual drift is
-//   the row-base/pixel cursor register schedule and a two-byte tail shift.
-// - This session moved the outer pixel declaration beside the row pointers;
-//   it improved the unchanged-size result to 273 bytes/47 differing bytes.
-//   A per-row for-initializer worsened it to 271 bytes/74 bytes. Sequential
-//   start-offset and declaration-order rewrites were codegen duplicates.
-// Main-agent audit confirmed canonical draw-area/color-table ownership and kept
-// the natural typed row/pixel traversal.
-// - Fresh pass: the exact-donor full TDrawArea/scalar-clip declaration surface
-//   was codegen-identical to this local gap/ClipRect surface (47 bytes). Adding
-//   the Drawarea stdlib/string header context worsened the result to 78 bytes;
-//   it was removed.
-// - Fresh row-pointer probes (table between pointer assignments and an explicit
-//   x1-first offset assignment) were duplicate or worse. The remaining binary
-//   lead is the original's row-base/pixel register rotation at +00C1, followed
-//   by its two-byte tail layout difference; no further natural source axis was
-//   supported by this pass.
-// - Bounded fresh pass: mutating row_offset by x1 was a codegen duplicate;
-//   72/96-case row-setup, declaration-order, and loop-shape labs produced only
-//   the existing 273-byte or shorter 271-byte basins. Canonical object-table
-//   locals, predecrement row tails, and the decompiler two-pointer topology
-//   widened the mismatch (76/228/233 bytes); all were rolled back.
-// - Final clean source remains the natural typed byte-table traversal at
-//   273 bytes/47 differing bytes. The unresolved binary lead is specifically
-//   VC5 pointer register coloring (original row base ECX, pixel EDX) plus the
-//   two-byte tail shift; no behavior, call, layout, or ABI uncertainty remains.
-// - Fresh worker pass tested a loop-local pixel cursor; it moved to a 271-byte
-//   but 74-difference basin and was restored. The neighboring exact Flic draw
-//   expression Bits + x1 + row_offset was also codegen-identical to the clean
-//   source. The natural 273-byte/47-difference source remains authoritative.
-// - Fresh structural probes tried direct typed row-start construction in each
-//   orientation arm. This fixed the original row-start/pixel register roles
-//   and reduced the resync cost, but remained a 271-byte/56-difference basin.
-//   Loop-top pixel initialization, table-object ownership, and pointer-term
-//   rewrites were worse or duplicate. The pinned natural source is restored.
-// - Fresh claim validation confirmed the pinned 273-byte/47-difference basin.
-//   A loop-top pixel reset remained 271 bytes/74 differences. A focused
-//   counted-loop lab reached 271 bytes/45 differences, but added an initial
-//   zero-count branch and changed the source-supported do-loop topology; it
-//   was not retained. The natural pinned source remains authoritative.
-// - Deep UI-type pass: inventory evidence confirms Bits is unsigned char* at
-//   +0x08, shadow_color_table is RGE_Color_Table* at +0xC8, and table is an
-//   unsigned char[256] at +0x28. No layout or helper-type uncertainty remains.
-// - This pass tested 20 distinct loop, pointer-owner, declaration-scope,
-//   update-order, scalar-width, and table-owner hypotheses, plus two combined
-//   contexts. The scoped inner cursor forms moved to the 271-byte/74-difference
-//   basin. Table-owner and row-scope variants were duplicate or worse.
-// - Recomputing row_end, reversing row updates, and changing countdown tests
-//   widened the result or changed control flow. The target keeps row base in
-//   ECX, row end in ESI, and the inner pixel cursor in EDX. The prior cursor
-//   source kept that schedule and was the best metric source before cleanup.
-// - Translation-unit audit: scalar clip fields, the full TDrawArea field
-//   surface, uchar pixel types, an unused DDSys global, memset pragma/prototype,
-//   RGE_Color_Table class spelling, and nearby declarations were duplicate.
-//   stdio, stdlib, string, windows, and game_types headers moved to 77-82
-//   differences. Full palette methods moved to 82 differences. Imported API
-//   declarations moved the tail to 48 differences. No tested context restored
-//   the original row-base ECX and pixel EDX schedule. The baseline is restored.
-// - Object audit confirms the VC5 target, 271-byte FPO body, no locals or SEH,
-//   four long parameters, layouts, and AlignedWidth call. No inline record or
-//   metadata supports another source owner for the row/pixel register swap.
-// - Source-gate cleanup: the PDB-backed TDrawArea fields now own every member
-//   from +0x38 through +0xC8, and RGE_Color_Table is a class with its named
-//   vptr-backed fields. The byte cursors are replaced by a typed indexed row
-//   loop. This is the clean semantic source even if its metric regresses.
-// - Follow-up pass: direct Bits[row_offset + x] indexing removed the row
-//   pointer and improved the typed source to a same-size 278-byte basin.
-//   Direct table ownership reached same-size 271 bytes but lost the proven
-//   saved-register prologue, so the typed table local remains the better
-//   source shape.
-// - A counted outer row loop matches the executable's row-count decrement and
-//   reaches 271 bytes with 199 differing bytes. It keeps the table local and
-//   direct Bits indexing. No row_start, row_end, pixel cursor, raw view, or
-//   steering form is retained.
-// - Fresh direct-index frontier: PDB symbols contain only this and four long
-//   parameter records. No local record proves a row or pixel cursor. The exact
-//   FillRect and Shape pixel-fill siblings support typed indexed loops, but
-//   their cursor locals were not restored here.
-// - Splitting the AlignedWidth result from its orientation multiply improved
-//   the unchanged 271-byte result from 199 to 182 differing bytes. A named
-//   aligned-width intermediate emitted the same bytes and was removed.
-// - Direct Bits term reordering, explicit indexed row arithmetic, row-count
-//   int width, table declaration order, and a while form were codegen
-//   duplicates. A direct typed table owner lost the required saved-register
-//   prologue and was removed.
-// - Redundant late y guards and do-loop forms improved shape but moved strict
-//   bytes or added guards. Mutating parameter homes for the row count widened
-//   the function. The retained source is the smallest natural typed-index
-//   form, with one AlignedWidth call and typed table ownership.
-// - Fresh accepted-drift review (20 probes): pointer row_start/row_end/pixel
-//   loops were tested against the indexed clean source. H1 no-guard pointers
-//   reached 110 bytes; H2 donor gap layout reached 95; H3 donor pointer guard
-//   reached 61; H4 combined AlignedWidth()*Orien reached 46; H5 declaration
-//   reorder and H6/H7 cursor assignments were duplicate. H8 mutated offset
-//   setup was duplicate. H9 declaration-only RGE_Color_Table reached the prior
-//   45-byte frontier, but still had the wrong row cursor register map and an
-//   extra zero-count branch, so it was not retained.
-// - H10 top-tested while reached 224 bytes; H11 no guard with int count reached
-//   82; H12 explicit row_end arithmetic, H13 scoped pixel_count, H14 int
-//   row_offset, H15 long row_count, and H16 declaration reorder were duplicate
-//   45-byte outputs. H17 direct table ownership reached 285 bytes; H18 const
-//   table was duplicate; H19 signed pixel pointers reached 73; H20 signed table
-//   pointer was duplicate. All variants were restored to the pinned source.
-//   The 45-byte pointer frontier has broad register and control-flow residue.
-//   It is not accepted drift. The clean source remains authoritative.
-// - Follow-up shape pass used Ghidra's recovered pointer topology as a new
-//   lead: row-index, table-object, mutable-pixel, saved-row, and row-end forms
-//   reached 224, 109, 222, 219, 233, and 222 bytes. Natural for/while,
-//   countdown, do/while, positive-guard, and parameter-loop forms stayed at
-//   74-87 or 82 bytes. Direct row-start construction reached 49 bytes/97.09%
-//   shape but added two bytes; role rotation returned the 45-byte basin.
-// - Context isolation removed unused forward declarations and DDSURFACEDESC
-//   from the historical pointer TU and recovered the 45-byte frontier. A
-//   144-variant lab swept pointer declaration order, row setup arithmetic, and
-//   six loop shapes. It produced four code groups, no exact, and no new shape
-//   basin. The best group stayed 271 bytes, 45 differing bytes, 96.08% shape,
-//   84.31% exact-block coverage, with one redundant zero-count branch and the
-//   ECX/ESI/EDX pointer-role rotation still unresolved.
-// Accepted-drift audit: do not promote. After AlignedWidth, the executable
-// reads Bits once before shadow_color_table and keeps that pointer through both
-// loops. The rebuild reads shadow_color_table first and reloads Bits inside the
-// pixel loop. Concurrent member changes can alter pixels and write addresses.
-// Invalid member storage can also fault in a different order.
+// Exact recovery notes:
+// - The executable clips all four inputs in place before it tests the final rectangle.
+// - Each orientation branch forms the first row pointer directly.
+// - The row loop resets one pixel cursor, translates each byte, and advances both row bounds.
+// - The first exact transition added the period-supported stdlib header to this source shape.
+// - Removing stdlib produced 72 differing bytes. The header is required.
+// - Splitting row formation, grouping the row-end delta, and removing one scope stayed exact.
+// - Replacing local layout gaps with PDB-backed DirectDraw fields stayed exact.
+// - No custom flags, aliases, fake volatility, or synthetic predecessor functions are present.
+
+#include <stdlib.h>
 
 struct tagRECT {
     long left;
@@ -153,9 +24,48 @@ struct tagRECT {
     long bottom;
 };
 
+struct _DDCOLORKEY {
+    unsigned long dwColorSpaceLowValue;
+    unsigned long dwColorSpaceHighValue;
+};
+
+struct _DDPIXELFORMAT {
+    unsigned long dwSize;
+    unsigned long dwFlags;
+    unsigned long dwFourCC;
+    unsigned long dwRGBBitCount;
+    unsigned long dwRBitMask;
+    unsigned long dwGBitMask;
+    unsigned long dwBBitMask;
+    unsigned long dwRGBAlphaBitMask;
+};
+
+struct _DDSCAPS {
+    unsigned long dwCaps;
+};
+
+struct _DDSURFACEDESC {
+    unsigned long dwSize;
+    unsigned long dwFlags;
+    unsigned long dwHeight;
+    unsigned long dwWidth;
+    long lPitch;
+    unsigned long dwBackBufferCount;
+    unsigned long dwMipMapCount;
+    unsigned long dwAlphaBitDepth;
+    unsigned long dwReserved;
+    void* lpSurface;
+    _DDCOLORKEY ddckCKDestOverlay;
+    _DDCOLORKEY ddckCKDestBlt;
+    _DDCOLORKEY ddckCKSrcOverlay;
+    _DDCOLORKEY ddckCKSrcBlt;
+    _DDPIXELFORMAT ddpfPixelFormat;
+    _DDSCAPS ddsCaps;
+};
+
 class RGE_Color_Table {
 public:
-    virtual ~RGE_Color_Table() {}
+    virtual ~RGE_Color_Table();
     char color_table_name[30];
     short resource_id;
     unsigned char type;
@@ -169,10 +79,6 @@ class BITMAPINFO256;
 class IDirectDrawSurface;
 class DrawAreaNode;
 class TSpan_List_Manager;
-
-struct _DDSURFACEDESC {
-    unsigned char bytes[0x6C];
-};
 
 class TDrawArea {
 public:
@@ -249,29 +155,37 @@ void TDrawArea::DrawShadowBox(long x1, long y1, long x2, long y2)
             return;
         }
 
-        {
-            long orientation = this->Orien;
-            long row_pitch = this->AlignedWidth();
-            row_pitch *= orientation;
-            unsigned char* table;
-            long row_offset;
+        long orientation = this->Orien;
+        long row_pitch = this->AlignedWidth() * orientation;
 
-            if (orientation < 1) {
-                row_offset = (y1 - this->Height + 1) * row_pitch;
-            }
-            else {
-                row_offset = row_pitch * y1;
-            }
+        unsigned char* row_start;
+        unsigned char* row_end;
+        unsigned char* pixel;
+        unsigned char* table;
 
-            table = this->shadow_color_table->table;
+        if (orientation < 1) {
+            row_start = this->Bits + x1;
+            row_start += (y1 - this->Height + 1) * row_pitch;
+        }
+        else {
+            row_start = this->Bits + x1;
+            row_start += row_pitch * y1;
+        }
 
-            for (long rows = y2 - y1 + 1; rows > 0; rows--) {
-                for (long x = x1; x <= x2; x++) {
-                    this->Bits[row_offset + x] =
-                        table[this->Bits[row_offset + x]];
+        row_end = row_start + (x2 - x1);
+        table = this->shadow_color_table->table;
+
+        if (y1 <= y2) {
+            int row_count = (y2 - y1) + 1;
+            do {
+                pixel = row_start;
+                for (; pixel <= row_end; pixel++) {
+                    *pixel = table[*pixel];
                 }
-                row_offset += row_pitch;
-            }
+                row_start += row_pitch;
+                row_end += row_pitch;
+                row_count--;
+            } while (row_count != 0);
         }
     }
 }

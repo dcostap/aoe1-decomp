@@ -1,40 +1,25 @@
 // VA: 00458600 RGE_Map::load_terrain_obj_types
 // map.cpp:1916-1942
 //
-// Binary facts: map.cpp PDB symbols prove short locals named num, density,
-// flag, obj_id, and id. The header scan writes num at entry offset -4.
+// BINARY NOTE: PDB symbols identify short locals named num, density, flag,
+// obj_id, and id. The header scan writes num at entry offset -4.
 //
-// The loop keeps only loaded terrain sets with fewer than 30 entries. It then
-// stores the object id, density, and placement flag, and increments the field.
+// The loader keeps the original parser and publication order. It preserves
+// narrow fscanf destinations, the loaded and count guards, and unconditional
+// fclose cleanup. Partial conversions keep the executable's fault order.
 //
-// Current reconstruction: the typed terrain ownership and guard order now
-// produce the original 341-byte size and 100 instructions. All five calls,
-// frame, and call targets align. The checker reports 121 differing bytes.
+// Exact-finish result: adding the period map.cpp <windows.h> context restored
+// the target's VC5 scheduling basin. A fresh checker reports MATCH and 0.0000%.
+// It also proves the 341-byte boundary, owner symbol, no EH frame, and five
+// ordered direct calls: fopen, fscanf, fscanf, fscanf, and fclose.
 //
-// The remaining mismatch is one placement-byte address lowering. The target
-// adds this plus num before the terrain stride. VC5 emits the equivalent tile
-// base plus num form from the natural typed member expression.
-//
-// Tested and rejected: direct pointer syntax, reversed subscripts, implicit
-// this, declaration order, cast changes, and a typed terrain-set gap. These
-// forms either duplicate the 121-byte result or lack binary support.
-// Revisit probes added typed pointer-add, pointer-local, record-reference,
-// signed-char, index-cast, and array-pointer forms. A 17-case variant lab
-// produced one codegen group. Every case stayed at 341 bytes and 121 bytes
-// differed under the authoritative checker.
-//
-// Canonical full RGE_Map layout, virtual slots, and typed pointer members also
-// emitted the same group. A cached typed record across the loop shrank the
-// function to 264 bytes and was rejected. No policy-valid exact source was
-// found. The typed direct-member source remains the clean reconstruction.
-// Keep the typed direct-member source authoritative until new source evidence
-// explains this final expression schedule.
-// Accepted-drift review: the residual placement-byte basin changes only LEA,
-// ADD, and register selection. Both versions read id, num, and flag in the same
-// order, write the same placement byte, and then increment the same count. The
-// final fscanf setup computes the same local addresses in the same argument
-// order. LEA does not access memory. All five calls and return effects match.
+// Walkback: removing only <windows.h> restored the 340-byte, 121-byte-diff
+// placement basin. Restoring that one header restored the exact result.
+// The header is supported by exact map.cpp donor 004568C0, which also requires
+// this period SDK context. No alias, raw overlay, fake volatility, or assembly
+// is required.
 
+#include <windows.h>
 #include <stdio.h>
 #include <stdlib.h>
 

@@ -5,6 +5,7 @@
 // modeled BaseItem size 0x6C and ConstructionAIModule::constructionLots at +0xF4.
 // while (item != sentinel) with explicit null return gives original loop back-edge and MATCH.
 
+#ifndef AICONMOD_CANONICAL_TU
 class BaseItem {
 public:
     virtual ~BaseItem();
@@ -46,6 +47,7 @@ public:
     int numberConstructionLotsValue;
     ConstructionItem constructionLots;
 };
+#endif
 
 int ConstructionAIModule::unplaceStructure(float x, float y, int decrement) {
     int id;

@@ -1,10 +1,13 @@
 // first pass: typed local reconstruction of image-buffer recreate path
 // FLAGS: config/flags/004790E0_set_rect.rsp uses /GX for new/delete EH state around TDrawArea construction
+#ifndef AOE1_PNL_MSG_CONTEXT_H
 extern int (__stdcall *DeleteObject)(void*);
 extern void* (__stdcall *CreateRectRgn)(int, int, int, int);
 void* operator new(unsigned int);
 void operator delete(void*);
+#endif
 
+#ifndef AOE1_PNL_MSG_CONTEXT_H
 struct RECT {
     long left;
     long top;
@@ -15,7 +18,7 @@ struct RECT {
 class TDrawArea {
 public:
     char gap_00[0x18];
-    int width_limit;
+    int Width;
     char gap_1C[0xE4];
 
     TDrawArea(char* name, int flags);
@@ -33,7 +36,7 @@ public:
     virtual void pv5(int);
     virtual void pv6();
     virtual void pv7();
-    virtual void redraw(int);
+    virtual void set_redraw(int);
 
     char gap_004[0x10];
     long pnl_wid;
@@ -69,11 +72,12 @@ public:
 
     void set_rect(long x, long y, long w, long h);
 };
+#endif
 
 void TMessagePanel::set_rect(long x, long y, long w, long h) {
     TPanel::set_rect(x, y, w, h);
 
-    if (this->pnl_wid > this->LastIBWidth || this->pnl_hgt > this->LastIBHeight || x + this->LastIBWidth >= this->render_area->width_limit) {
+    if (this->pnl_wid > this->LastIBWidth || this->pnl_hgt > this->LastIBHeight || x + this->LastIBWidth >= this->render_area->Width) {
         if (this->image_clip_region != 0) {
             DeleteObject(this->image_clip_region);
             this->image_clip_region = 0;
@@ -108,5 +112,5 @@ void TMessagePanel::set_rect(long x, long y, long w, long h) {
     }
 
     this->need_restore = 1;
-    this->redraw(1);
+    this->set_redraw(1);
 }

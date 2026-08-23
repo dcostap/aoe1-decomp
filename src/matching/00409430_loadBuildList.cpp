@@ -34,7 +34,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <io.h>
+#include "../../include/aibldmod_context.h"
 
+#ifndef AIBLDMOD_SHARED_CONTEXT
 class RGE_Master_Static_Object {
 public:
     virtual ~RGE_Master_Static_Object();
@@ -94,6 +96,7 @@ public:
     void removeOldList();
     virtual int loadBuildList(char*, RGE_Player*);
 };
+#endif
 
 int BuildAIModule::loadBuildList(char* filename, RGE_Player* player)
 {

@@ -17,6 +17,7 @@
 #include <string.h>
 #include <stdio.h>
 
+#ifndef AICONMOD_CANONICAL_TU
 class AIModuleID {
 public:
     char gap_00[0x48];
@@ -60,6 +61,7 @@ public:
 
 class ConstructionAIModule : public AIModule {
 public:
+    enum PlacementResult { PlacementOk = 0 };
     virtual ~ConstructionAIModule();
 
     int numberConstructionLotsValue;                    // +0xF0
@@ -77,6 +79,7 @@ public:
 
     ConstructionAIModule(void* param_1, int param_2);
 };
+#endif
 
 ConstructionAIModule::ConstructionAIModule(void* param_1, int param_2)
     : AIModule((char*)0x57F380, 0x3EA, param_2, param_1),
@@ -89,7 +92,7 @@ ConstructionAIModule::ConstructionAIModule(void* param_1, int param_2)
       zReferencePointValue(-1.0f),
       mapXSizeValue(-1),
       mapYSizeValue(-1),
-      lastPlacementReturnCodeValue(0)
+      lastPlacementReturnCodeValue(PlacementOk)
 {
     this->constructionLots.next = &this->constructionLots;
     this->constructionLots.prev = &this->constructionLots;

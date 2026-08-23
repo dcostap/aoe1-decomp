@@ -1,7 +1,11 @@
-class TRIBE_Map {
+class RGE_Map {
 public:
-    void target_func(int p0);
-    void save(int p);
+    virtual void save(int p);
 };
 
-void TRIBE_Map::save(int p) { this->target_func(p); }
+class TRIBE_Map : public RGE_Map {
+public:
+    virtual void save(int p);
+};
+
+void TRIBE_Map::save(int p) { RGE_Map::save(p); }

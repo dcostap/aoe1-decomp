@@ -3,6 +3,7 @@ extern "C" int strncmp(const char*, const char*, unsigned int);
 extern "C" char* strncpy(char*, const char*, unsigned int);
 long debug_timeGetTime(const char* file, int line);
 
+#ifndef AOE1_PNL_MSG_CONTEXT_H
 class TPanel {
 public:
     virtual void pv0();
@@ -10,23 +11,31 @@ public:
     virtual void pv2();
     virtual void pv3();
     virtual void pv4();
-    virtual void pv5(int);
+    virtual void set_active(int);
     virtual void pv6();
     virtual void pv7();
-    virtual void pv8(int);
+    virtual void set_redraw(int);
 
     char gap_04[0x3C];
     TPanel* parent_panel;
     char gap_44[0x9C];
-    int field_E0;
+    int display_changed_count;
     char gap_E4[0x10];
 };
 
 class TMessagePanel : public TPanel {
 public:
+    enum MessageType {
+        InfoMessage = 0,
+        BadMessage = 1,
+        DebugMessage = 2,
+        ChatMessage = 3,
+        ColoredChatMessage = 4,
+        RightInfoMessage = 5
+    };
     int message_type;
     char text[0x200];
-    int field_2F8;
+    int showing_message;
     int start_time;
     int show_message_interval;
     void* font;
@@ -40,11 +49,12 @@ public:
     void* ImageBuffer;
 
     void render_to_image_buffer();
-    void show_message(int message_type, char* text, unsigned char font_color, unsigned char back_color, void* font, long font_wid, long font_hgt);
+    void show_message(MessageType message_type, char* text, unsigned char font_color, unsigned char back_color, void* font, long font_wid, long font_hgt);
 };
+#endif
 
-void TMessagePanel::show_message(int message_type, char* text, unsigned char font_color, unsigned char back_color, void* font, long font_wid, long font_hgt) {
-    if (this->field_2F8 && this->message_type == message_type && strncmp(text, this->text, 0x1ff) == 0) {
+void TMessagePanel::show_message(TMessagePanel::MessageType message_type, char* text, unsigned char font_color, unsigned char back_color, void* font, long font_wid, long font_hgt) {
+    if (this->showing_message && this->message_type == message_type && strncmp(text, this->text, 0x1ff) == 0) {
         if (font == 0) {
             return;
         }
@@ -64,8 +74,8 @@ void TMessagePanel::show_message(int message_type, char* text, unsigned char fon
         this->text[i] = 0;
     }
     strncpy(this->text, text, 0x1ff);
-    this->field_E0++;
-    this->field_2F8 = 1;
+    this->display_changed_count++;
+    this->showing_message = 1;
     this->start_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Pnl_msg.cpp", 0x9e);
     this->font_color = font_color;
     this->index_color = 1;
@@ -75,9 +85,9 @@ void TMessagePanel::show_message(int message_type, char* text, unsigned char fon
         this->render_to_image_buffer();
     }
 
-    this->pv5(1);
-    this->pv8(1);
+    this->set_active(1);
+    this->set_redraw(1);
     if (this->parent_panel) {
-        this->parent_panel->pv8(1);
+        this->parent_panel->set_redraw(1);
     }
 }

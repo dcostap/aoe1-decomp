@@ -6,7 +6,9 @@
 // comparison and sbb/sbb pattern, matching the original exactly.
 extern "C" int strcmp(const char*, const char*);
 #pragma intrinsic(strcmp)
+#include "../../include/aibldmod_context.h"
 
+#ifndef AIBLDMOD_SHARED_CONTEXT
 class BuildAIModule {
 public:
     char gap_00[0x1A4];
@@ -14,6 +16,7 @@ public:
 
     int haveBuildList();
 };
+#endif
 
 int BuildAIModule::haveBuildList() {
     char* name = this->buildListNameValue;

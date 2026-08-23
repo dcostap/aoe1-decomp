@@ -2,6 +2,7 @@
 // Size: 121 bytes
 // FLAGS: /GX (EH frame)
 
+#ifndef AICONMOD_CANONICAL_TU
 class ConstructionItem {
 public:
     ~ConstructionItem();
@@ -24,6 +25,7 @@ public:
     ConstructionItem constructionLots;        // +0xF4
     ConstructionItem randomConstructionLots;  // +0x178
 };
+#endif
 
 ConstructionAIModule::~ConstructionAIModule() {
     if (this->numberConstructionLotsValue > 0) {

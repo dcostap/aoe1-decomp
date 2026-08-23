@@ -8,6 +8,7 @@
 // char*/int/uint/long oframe fields, packed FlicHead surface, raw pointer stores, pointer aliases, duplicate
 // expressions, local/self/volatile self shapes, if/else dispatch, switch default/tail variants, and narrow flags.
 
+#ifndef FLICS_SHARED_CONTEXT
 class RGE_Flic_Player {
 public:
     char* flic_buffer;
@@ -21,22 +22,42 @@ public:
 
     void start();
 };
+#endif
 
 void RGE_Flic_Player::start() {
-    switch (this->type) {
+#ifdef FLICS_SHARED_CONTEXT
+#define FLIC_TYPE this->flichead.type
+#define FLIC_SPEED this->flichead.speed
+#define FLIC_OFRAME1 this->flichead.oframe1
+#define FLIC_OFRAME2 this->flichead.oframe2
+#else
+#define FLIC_TYPE this->type
+#define FLIC_SPEED this->speed
+#define FLIC_OFRAME1 this->oframe1
+#define FLIC_OFRAME2 this->oframe2
+#endif
+    switch (FLIC_TYPE) {
     case 0xAF12:
-        this->oframe1 += (long)this->flic_buffer;
+        FLIC_OFRAME1 += (long)this->flic_buffer;
         break;
     case 0xAF11: {
-        int s = this->speed;
+        int s = FLIC_SPEED;
+#ifdef FLICS_SHARED_CONTEXT
+        char* tmp = (char*)this->flic_buffer + 0x84;
+#else
         char* tmp = this->flic_buffer + 0x84;
+#endif
         s = s * 5;
-        this->oframe1 = tmp;
+        FLIC_OFRAME1 = tmp;
         s = s * 5;
         s = s * 5;
-        this->speed = (s * 8) / 70;
+        FLIC_SPEED = (s * 8) / 70;
         break;
     }
     }
-    this->oframe2 = this->oframe1;
+    FLIC_OFRAME2 = FLIC_OFRAME1;
 }
+#undef FLIC_TYPE
+#undef FLIC_SPEED
+#undef FLIC_OFRAME1
+#undef FLIC_OFRAME2

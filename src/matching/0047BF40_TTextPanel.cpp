@@ -38,6 +38,7 @@
 //   including highlight_text_color1, and keep only inherited panel_state_80
 //   and panel_flag_EE in the body. This produces the exact 325-byte function.
 
+#ifndef AOE1_PNL_TXT_CONTEXT_H
 struct tagRECT;
 
 class TPanel {
@@ -175,6 +176,7 @@ public:
 
     TTextPanel();
 };
+#endif
 
 TTextPanel::TTextPanel()
     : list(0),

@@ -1,18 +1,4 @@
-class ResourceItem {
-public:
-    int number();
-    int value(int index);
-};
-
-class ResourceAIModule {
-public:
-    char gap_00[0xF0];
-    void* md;
-    int numberResourcesValue;
-
-    void decrementResource(int param_1, int param_2);
-    void decrementResources(ResourceItem* param_1);
-};
+#include "../../include/airesmod_context.h"
 
 void ResourceAIModule::decrementResources(ResourceItem* param_1) {
     int iVar1;

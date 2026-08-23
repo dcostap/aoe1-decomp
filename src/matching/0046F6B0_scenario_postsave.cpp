@@ -11,10 +11,17 @@
 //   +0x114 float view_x, +0x118 float view_y, +0x11C short map_x, +0x11E short map_y
 // Serialization idiom: write short strlen(name)+1 (includes NUL), then the name bytes.
 
+#ifdef PLAYER_GROUPED_TU
+#include "../../include/player_context.h"
+#endif
+
+#ifndef PLAYER_GROUPED_TU
 extern "C" int __cdecl strlen(const char*);
+#endif
 
 void rge_write(int file, void* data, int size);
 
+#ifndef PLAYER_GROUPED_TU
 class RGE_Game_World {
 public:
     char gap_00[0x3C];
@@ -50,6 +57,7 @@ public:
 
     void scenario_postsave(int file);
 };
+#endif
 
 void RGE_Player::scenario_postsave(int file)
 {

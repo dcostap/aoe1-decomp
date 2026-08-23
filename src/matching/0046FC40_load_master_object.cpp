@@ -8,7 +8,12 @@
 // - Exact: /GX plus natural typed new expressions reproduces all EH state stores,
 //   constructor calls, shared null stores, and the 617-byte function.
 
+#ifdef PLAYER_GROUPED_TU
+#include "../../include/player_context.h"
+#endif
+
 void* __cdecl operator new(unsigned int size);
+#ifndef PLAYER_GROUPED_TU
 class RGE_Sprite;
 class RGE_Sound;
 
@@ -17,6 +22,7 @@ public:
     char pad[0xB8];
     RGE_Master_Static_Object(int, RGE_Sprite**, RGE_Sound**, int);
 };
+#endif
 
 class RGE_Master_Animated_Object : public RGE_Master_Static_Object {
 public:
@@ -54,6 +60,7 @@ public:
     RGE_Master_Doppleganger_Object(int, RGE_Sprite**, RGE_Sound**, int);
 };
 
+#ifndef PLAYER_GROUPED_TU
 class RGE_Player {
 public:
     char gap[0x24];
@@ -62,6 +69,7 @@ public:
     void load_master_object(int file, short index, unsigned char type,
                             RGE_Sprite** sprites, RGE_Sound** sounds);
 };
+#endif
 
 void RGE_Player::load_master_object(int file, short index, unsigned char type,
                                      RGE_Sprite** sprites, RGE_Sound** sounds)

@@ -17,6 +17,7 @@
 
 extern "C" void rge_read(int fd, void* dst, int size);
 
+#ifndef AICONMOD_CANONICAL_TU
 class BaseItem {
 public:
     virtual ~BaseItem();
@@ -44,17 +45,19 @@ public:
 };
 class ConstructionAIModule : public AIModule {
 public:
+    enum PlacementResult { PlacementOk = 0 };
     virtual ~ConstructionAIModule();
     int numberConstructionLotsValue;
-    ConstructionItem lots;
-    int numberSecondValue;
-    ConstructionItem second;
+    ConstructionItem constructionLots;
+    int numberRandomConstructionLotsValue;
+    ConstructionItem randomConstructionLots;
     char constructionPlanNameValue[0x104];
     float xReferencePointValue, yReferencePointValue, zReferencePointValue;
     int mapXSizeValue, mapYSizeValue;
-    int zero310;
+    int lastPlacementReturnCodeValue;
     ConstructionAIModule(int p1, int fd);
 };
+#endif
 
 union IntFloat {
     int i;
@@ -64,15 +67,15 @@ union IntFloat {
 ConstructionAIModule::ConstructionAIModule(int p1, int fd)
     : AIModule("ConAI", 0x3ea, p1, 0),
       numberConstructionLotsValue(0),
-      lots(),
-      numberSecondValue(0),
-      second(),
+      constructionLots(),
+      numberRandomConstructionLotsValue(0),
+      randomConstructionLots(),
       xReferencePointValue(-1.0f),
       yReferencePointValue(-1.0f),
       zReferencePointValue(-1.0f),
       mapXSizeValue(-1),
       mapYSizeValue(-1),
-      zero310(0)
+      lastPlacementReturnCodeValue(PlacementOk)
 {
     char name[257];
     IntFloat x;
@@ -80,10 +83,10 @@ ConstructionAIModule::ConstructionAIModule(int p1, int fd)
     ConstructionItem* item;
     ConstructionItem* prev;
 
-    this->lots.next = &this->lots;
-    this->lots.prev = &this->lots;
-    this->second.next = &this->second;
-    this->second.prev = &this->second;
+    this->constructionLots.next = &this->constructionLots;
+    this->constructionLots.prev = &this->constructionLots;
+    this->randomConstructionLots.next = &this->randomConstructionLots;
+    this->randomConstructionLots.prev = &this->randomConstructionLots;
 
     rge_read(fd, &this->numberConstructionLotsValue, 4);
     rge_read(fd, &x.i, 4);
@@ -125,15 +128,15 @@ ConstructionAIModule::ConstructionAIModule(int p1, int fd)
         item->setGameID(inProgress.i);
         item->setUniqueID(skip.i);
         item->setSkip(built);
-        item->next = &this->lots;
-        prev = this->lots.prev;
+        item->next = &this->constructionLots;
+        prev = this->constructionLots.prev;
         item->prev = prev;
         prev->next = item;
-        this->lots.prev = item;
+        this->constructionLots.prev = item;
     }
 
-    rge_read(fd, &this->numberSecondValue, 4);
-    for (n=0; n<this->numberSecondValue; n++) {
+    rge_read(fd, &this->numberRandomConstructionLotsValue, 4);
+    for (n=0; n<this->numberRandomConstructionLotsValue; n++) {
         IntFloat y, z, uniqueID, xSize, buildAttempts, ySize, inProgress, zSize;
         IntFloat skip;
         int typeID;
@@ -163,10 +166,10 @@ ConstructionAIModule::ConstructionAIModule(int p1, int fd)
         item->setGameID(i.i);
         item->setUniqueID(xSize.i);
         item->setSkip(typeID);
-        item->next = &this->second;
-        prev = this->second.prev;
+        item->next = &this->randomConstructionLots;
+        prev = this->randomConstructionLots.prev;
         item->prev = prev;
         prev->next = item;
-        this->second.prev = item;
+        this->randomConstructionLots.prev = item;
     }
 }

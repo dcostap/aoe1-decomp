@@ -5,6 +5,7 @@
 // Probe 1: natural virtual surface with x/y/z + deltas and map bounds; body matched except byte-width return.
 // Probe 2: widen visible return to int to force mov eax/xor eax tails.
 
+#ifndef RGE_MISL_OBJ_SHARED_CONTEXT
 class RGE_Game_World;
 class RGE_Player { public: char gap_00[0x3C]; RGE_Game_World* world; };
 class RGE_Map_Info { public: char gap_00[8]; int width; int height; };
@@ -44,9 +45,9 @@ public:
     char gap_04[8];
     RGE_Player* owner; // +0C
     char gap_10[0x28];
-    float x; // +38
-    float y; // +3C
-    float z; // +40
+    union { float x; float world_x; }; // +38
+    union { float y; float world_y; }; // +3C
+    union { float z; float world_z; }; // +40
     char gap_44[0x4C];
     float dx; // +90
     float dy; // +94
@@ -54,6 +55,7 @@ public:
 
     int missile_move();
 };
+#endif
 
 int RGE_Missile_Object::missile_move()
 {
@@ -61,16 +63,16 @@ int RGE_Missile_Object::missile_move()
     float new_y;
     float new_z;
 
-    new_x = this->x + this->dx;
-    new_y = this->y + this->dy;
-    new_z = this->z + this->dz;
+    new_x = this->world_x + this->dx;
+    new_y = this->world_y + this->dy;
+    new_z = this->world_z + this->dz;
 
     if (new_x < 0.0f || (float)this->owner->world->map_info->width <= new_x ||
         new_y < 0.0f || (float)this->owner->world->map_info->height <= new_y) {
         this->destroy();
     }
 
-    if (this->move_to(new_x, new_y, new_z) == this->z) {
+    if (this->move_to(new_x, new_y, new_z) == this->world_z) {
         return 1;
     }
     return 0;

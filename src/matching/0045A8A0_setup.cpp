@@ -15,6 +15,7 @@ struct RGE_Combat_Object_setup_2 {
 extern float save_game_version;
 extern float DAT_00570930;
 
+#ifndef RGE_MISL_OBJ_SHARED_CONTEXT
 struct RGE_Missile_Object {
     char base[0x1C4];
     float max_range;                // +0x1C4
@@ -22,6 +23,7 @@ struct RGE_Missile_Object {
     
     int setup(int fd, void* game_world);
 };
+#endif
 
 int RGE_Missile_Object::setup(int fd, void* game_world)
 {

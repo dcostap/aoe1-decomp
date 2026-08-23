@@ -1,3 +1,6 @@
+#include "../../include/aibldmod_context.h"
+
+#ifndef AIBLDMOD_SHARED_CONTEXT
 class BuildItem {
 public:
     char gap_00[0x6C];
@@ -17,6 +20,7 @@ public:
 
     int numberItemsBuiltOrInProgress(void) const;
 };
+#endif
 
 int BuildAIModule::numberItemsBuiltOrInProgress(void) const {
     const BuildItem* item = this->buildList.next;

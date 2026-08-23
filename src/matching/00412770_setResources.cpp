@@ -1,17 +1,4 @@
-class ResourceItem {
-public:
-    int number();
-    int value(int index);
-};
-
-class ResourceAIModule {
-public:
-    char gap_00[0xF4];
-    int numberResourcesValue;
-
-    void setResource(int index, int value);
-    void setResources(ResourceItem* item);
-};
+#include "../../include/airesmod_context.h"
 
 void ResourceAIModule::setResources(ResourceItem* item) {
     if (item && this->numberResourcesValue == item->number()) {

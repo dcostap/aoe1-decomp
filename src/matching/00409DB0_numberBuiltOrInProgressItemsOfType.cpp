@@ -1,6 +1,9 @@
 // target: VA 00409DB0 BuildAIModule::numberBuiltOrInProgressItemsOfType(int,int)
 // first pass: walk the intrusive build list and count matching built/in-progress entries
 
+#include "../../include/aibldmod_context.h"
+
+#ifndef AIBLDMOD_SHARED_CONTEXT
 class BuildItem {
 public:
     virtual ~BuildItem();
@@ -27,6 +30,7 @@ public:
 
     int numberBuiltOrInProgressItemsOfType(int type_id, int build_category);
 };
+#endif
 
 int BuildAIModule::numberBuiltOrInProgressItemsOfType(int type_id, int build_category) {
     int count = 0;

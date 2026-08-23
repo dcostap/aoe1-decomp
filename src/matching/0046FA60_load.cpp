@@ -12,11 +12,20 @@
 //   PDB line bands/original call order prove the two allocations precede that
 //   load. This recovered the exact 475-byte body.
 
+#ifdef PLAYER_GROUPED_TU
+#include "../../include/player_context.h"
+#endif
+
+#ifndef PLAYER_GROUPED_TU
 extern "C" void __cdecl rge_read(int file, void* buffer, int size);
+#else
+void rge_read(int file, void* buffer, int size);
+#endif
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 extern float save_game_version;
 extern float DAT_00570ec0;
 
+#ifndef PLAYER_GROUPED_TU
 class RGE_Sprite;
 class RGE_Sound;
 class RGE_Master_Static_Object;
@@ -69,6 +78,7 @@ public:
     void load_master_object(int file, short index, unsigned char type,
                             RGE_Sprite** sprites, RGE_Sound** sounds);
 };
+#endif
 
 void RGE_Player::load(int file)
 {

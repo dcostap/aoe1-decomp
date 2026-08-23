@@ -1,7 +1,3 @@
-class ResourceAIModule {
-public:
-    virtual ~ResourceAIModule();
-    int update(int p0);
-};
+#include "../../include/airesmod_context.h"
 
 int ResourceAIModule::update(int p0) { return 0; }

@@ -47,6 +47,7 @@
 
 #include <string.h>
 
+#ifndef FLICS_SHARED_CONTEXT
 struct RGE_Flic_Player {
     char gap_00[0x90];
     long drawarea_width;        // +0x90
@@ -61,12 +62,15 @@ struct RGE_Flic_Player {
 
     void byte_run();
 };
+#endif
 
 // Main-agent audit confirmed canonical FLIC player/frame ownership and retained
 // the natural packed-byte decoder.
 void RGE_Flic_Player::byte_run() {
     char* chunk = this->chunk;
-    int count = this->y1 + this->flic_size_y - 1;
+    int count = this->y1;
+    count += this->flic_size_y;
+    count--;
     if (count < 0) return;
     count++;
 

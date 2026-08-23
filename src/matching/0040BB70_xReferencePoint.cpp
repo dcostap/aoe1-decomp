@@ -1,9 +1,13 @@
+#ifndef AICONMOD_CANONICAL_TU
 class ConstructionAIModule {
 public:
     virtual ~ConstructionAIModule();
     char gap_0[0x2F8];
-    float field_2FC;
+    float xReferencePointValue;
     float xReferencePoint();
 };
+#endif
 
-float ConstructionAIModule::xReferencePoint() { return this->field_2FC; }
+float ConstructionAIModule::xReferencePoint() {
+    return this->xReferencePointValue;
+}

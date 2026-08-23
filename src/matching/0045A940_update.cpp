@@ -2,6 +2,7 @@
 // PDB source: misl_obj.cpp
 // Tail jump to base::update
 
+#ifndef RGE_MISL_OBJ_SHARED_CONTEXT
 struct RGE_Combat_Object {
     unsigned char update();
 };
@@ -9,6 +10,7 @@ struct RGE_Combat_Object {
 struct RGE_Missile_Object : public RGE_Combat_Object {
     unsigned char update();
 };
+#endif
 
 unsigned char RGE_Missile_Object::update()
 {

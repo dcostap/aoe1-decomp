@@ -35,7 +35,9 @@
 // - All calls, vtable, and EH handler addresses are relocations (masked)
 
 #include <stdlib.h>
+#include "../../include/aibldmod_context.h"
 
+#ifndef AIBLDMOD_SHARED_CONTEXT
 class BuildItem {
 public:
     char gap_00[0xAC];           // +0x04 to +0xAF
@@ -68,17 +70,18 @@ class BuildAIModule : public AIModule {
 public:
     char gap_00[0xEC];           // +0x04 to +0xEF
     BuildItem buildList;          // +0xF0
-    int buildListLength;          // +0x1A0
+    int buildListLengthValue;     // +0x1A0
     char gap_1A4[0x408];          // +0x1A4 to +0x5AB
     ManagedArray_Int typesToIgnore; // +0x5AC
 
     virtual ~BuildAIModule();
     void removeOldList();
 };
+#endif
 
 BuildAIModule::~BuildAIModule()
 {
-    if (buildListLength > 0)
+    if (buildListLengthValue > 0)
         removeOldList();
 
     // typesToIgnore, ~BuildItem() and ~AIModule() called automatically by VC5

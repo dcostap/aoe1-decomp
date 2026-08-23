@@ -71,46 +71,49 @@
 //   declarations, same-TU method declarations, Windows and ambient declaration
 //   context, and reversible text-pointer forms. All kept the same basin or
 //   worsened structure; none restored scan-before-push ordering.
-// BLOCKER: the rebuild pushes calloc's constant second argument before the
-// first REPNE string scan. The executable pushes it after the scan. An invalid
-// list_info text pointer therefore reaches an exception handler with a
-// different ESP value. Do not accept this copy-lowering drift without a source
-// form that restores the original fault context.
+// - Exact finish: declaration-only panel surfaces and a reference to the
+//   list_info pointer member form one required group. Together, they emit the
+//   exact 376-byte function. The scan completes before both calloc pushes. The
+//   result publishes before its null test. The copy then reloads list_info.
+// - Walkback: removing the member reference kept the prior 380-byte basin.
+//   Restoring inline placeholder bodies while keeping the reference also kept
+//   that basin. Both changes are required. Short length, helper, pointer-scope,
+//   and pointer-reassignment probes were incidental or worse.
 
 #include <stdlib.h>
 #include <string.h>
 
 class TPanel {
 public:
-    virtual ~TPanel() {}
-    virtual void setup() {}
-    virtual void set_rect_1() {}  virtual void set_rect_2() {}
-    virtual void set_color() {}  virtual void set_active() {}
-    virtual void set_positioning() {}  virtual void set_fixed_position() {}
-    virtual void set_redraw() {}  virtual void set_overlapped_redraw() {}
-    virtual void draw_setup() {}  virtual void draw_finish() {}
-    virtual void draw() {}  virtual void draw_rect() {}
-    virtual void draw_offset() {}  virtual void draw_rect2() {}
-    virtual void draw_offset2() {}  virtual void paint() {}
-    virtual void wnd_proc() {}  virtual void handle_idle() {}
-    virtual void handle_size() {}  virtual void handle_paint() {}
-    virtual void handle_key_down() {}  virtual void handle_char() {}
-    virtual void handle_command() {}  virtual void handle_user_command() {}
-    virtual void handle_timer_command() {}  virtual void handle_scroll() {}
-    virtual void handle_mouse_down() {}  virtual void handle_mouse_move() {}
-    virtual void handle_mouse_up() {}  virtual void handle_mouse_dbl_click() {}
-    virtual void mouse_move_action() {}  virtual void mouse_left_down_action() {}
-    virtual void mouse_left_hold_action() {}  virtual void mouse_left_move_action() {}
-    virtual void mouse_left_up_action() {}  virtual void mouse_left_dbl_click_action() {}
-    virtual void mouse_right_down_action() {}  virtual void mouse_right_hold_action() {}
-    virtual void mouse_right_move_action() {}  virtual void mouse_right_up_action() {}
-    virtual void mouse_right_dbl_click_action() {}  virtual void key_down_action() {}
-    virtual void char_action() {}
-    virtual long action(TPanel*, long, unsigned long, unsigned long) { return 0; }
-    virtual void vfB8() {}  virtual void vfBC() {}  virtual void vfC0() {}
-    virtual void vfC4() {}  virtual void vfC8() {}  virtual void vfCC() {}
-    virtual void vfD0() {}  virtual void vfD4() {}  virtual void vfD8() {}
-    virtual void vfDC() {}
+    virtual ~TPanel();
+    virtual void setup();
+    virtual void set_rect_1();  virtual void set_rect_2();
+    virtual void set_color();  virtual void set_active();
+    virtual void set_positioning();  virtual void set_fixed_position();
+    virtual void set_redraw();  virtual void set_overlapped_redraw();
+    virtual void draw_setup();  virtual void draw_finish();
+    virtual void draw();  virtual void draw_rect();
+    virtual void draw_offset();  virtual void draw_rect2();
+    virtual void draw_offset2();  virtual void paint();
+    virtual void wnd_proc();  virtual void handle_idle();
+    virtual void handle_size();  virtual void handle_paint();
+    virtual void handle_key_down();  virtual void handle_char();
+    virtual void handle_command();  virtual void handle_user_command();
+    virtual void handle_timer_command();  virtual void handle_scroll();
+    virtual void handle_mouse_down();  virtual void handle_mouse_move();
+    virtual void handle_mouse_up();  virtual void handle_mouse_dbl_click();
+    virtual void mouse_move_action();  virtual void mouse_left_down_action();
+    virtual void mouse_left_hold_action();  virtual void mouse_left_move_action();
+    virtual void mouse_left_up_action();  virtual void mouse_left_dbl_click_action();
+    virtual void mouse_right_down_action();  virtual void mouse_right_hold_action();
+    virtual void mouse_right_move_action();  virtual void mouse_right_up_action();
+    virtual void mouse_right_dbl_click_action();  virtual void key_down_action();
+    virtual void char_action();
+    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    virtual void vfB8();  virtual void vfBC();  virtual void vfC0();
+    virtual void vfC4();  virtual void vfC8();  virtual void vfCC();
+    virtual void vfD0();  virtual void vfD4();  virtual void vfD8();
+    virtual void vfDC();
 
     char gap_04[0xD4];
     int error_code;                 // +0x0D8
@@ -119,25 +122,25 @@ public:
 
 class TEasy_Panel : public TPanel {
 public:
-    virtual ~TEasy_Panel() {}
-    virtual void draw_background(int) {}
-    virtual void set_ideal_size(long, long) {}
-    virtual int create_button(TPanel*, void**, long, long, long, long, long, long, long, long, long) { return 0; }
-    virtual int create_button_text(TPanel*, void**, char*, char*, long, long, long, long, long, long, long) { return 0; }
-    virtual int create_check_box(TPanel*, void**, long, long, long, long, long, long) { return 0; }
-    virtual int create_radio_button(TPanel*, void**, long, long, long, long, long, long) { return 0; }
-    virtual int create_text_number(TPanel*, void**, int, long, long, long, long, long, int, int, int) { return 0; }
-    virtual int create_text_list(TPanel*, void**, char**, long, long, long, long, long, long, int, int) { return 0; }
-    virtual int create_text(TPanel*, void**, char*, long, long, long, long, long, int, int, int) { return 0; }
-    virtual int create_input(TPanel*, void**, char*, short, long, long, long, long, long, long) { return 0; }
-    virtual int create_edit(TPanel*, void**, char*, short, long, long, long, long, long, long, int, int) { return 0; }
-    virtual int create_drop_down(TPanel*, void**, long, long, long, long, long, long, long) { return 0; }
-    virtual int create_list(TPanel*, void**, long, long, long, long, long) { return 0; }
-    virtual int create_scrollbar(TPanel*, void**, TPanel*, long, long, long, long, long) { return 0; }
-    virtual int create_auto_scrollbar(void**, TPanel*, long) { return 0; }
-    virtual int create_vert_slider(TPanel*, void**, long, long, long, long, long, long, long) { return 0; }
-    virtual int create_horz_slider(TPanel*, void**, long, long, long, long, long, long, long) { return 0; }
-    virtual void position_panel(TPanel*, long, long, long, long) {}
+    virtual ~TEasy_Panel();
+    virtual void draw_background(int);
+    virtual void set_ideal_size(long, long);
+    virtual int create_button(TPanel*, void**, long, long, long, long, long, long, long, long, long);
+    virtual int create_button_text(TPanel*, void**, char*, char*, long, long, long, long, long, long, long);
+    virtual int create_check_box(TPanel*, void**, long, long, long, long, long, long);
+    virtual int create_radio_button(TPanel*, void**, long, long, long, long, long, long);
+    virtual int create_text_number(TPanel*, void**, int, long, long, long, long, long, int, int, int);
+    virtual int create_text_list(TPanel*, void**, char**, long, long, long, long, long, long, int, int);
+    virtual int create_text(TPanel*, void**, char*, long, long, long, long, long, int, int, int);
+    virtual int create_input(TPanel*, void**, char*, short, long, long, long, long, long, long);
+    virtual int create_edit(TPanel*, void**, char*, short, long, long, long, long, long, long, int, int);
+    virtual int create_drop_down(TPanel*, void**, long, long, long, long, long, long, long);
+    virtual int create_list(TPanel*, void**, long, long, long, long, long);
+    virtual int create_scrollbar(TPanel*, void**, TPanel*, long, long, long, long, long);
+    virtual int create_auto_scrollbar(void**, TPanel*, long);
+    virtual int create_vert_slider(TPanel*, void**, long, long, long, long, long, long, long);
+    virtual int create_horz_slider(TPanel*, void**, long, long, long, long, long, long, long);
+    virtual void position_panel(TPanel*, long, long, long, long);
 };
 
 class TDialogPanel : public TEasy_Panel {
@@ -150,8 +153,8 @@ public:
     int button_font_id;             // +0x488
     int button_sound_id;            // +0x48C
 
-    virtual int setup(TPanel*, TPanel*, long, long, unsigned char, int) { return 0; }
-    virtual int setup(TPanel*, TPanel*, long, long, char*, long, int) { return 0; }
+    virtual int setup(TPanel*, TPanel*, long, long, unsigned char, int);
+    virtual int setup(TPanel*, TPanel*, long, long, char*, long, int);
 };
 
 class TListDialog : public TDialogPanel {
@@ -165,8 +168,8 @@ public:
     char gap_4A6[0x02];
     char* list_name;                // +0x4A8
 
-    virtual short get_list_id() { return 0; }
-    virtual char* get_list_name() { return 0; }
+    virtual short get_list_id();
+    virtual char* get_list_name();
 
     long setup(TPanel* param_1, char* param_2, long param_3,
                long param_4, long param_5, long param_6, long param_7,
@@ -228,15 +231,17 @@ int RGE_Dialog_List::setup(TScreenPanel* screen, char* popup_file,
 
     int i;
     int offset;
+    // BINARY NOTE: Keep this alias. It completes strlen before calloc setup and reloads list_info for strcpy.
+    rdlg_list_info*& info = this->list_info;
     i = 0;
     if (i < this->list_size) {
         offset = 0;
         while (i < this->list_size) {
-            this->list_text[i] = (char*)calloc(strlen(this->list_info->text + offset) + 1, 1);
+            this->list_text[i] = (char*)calloc(strlen(info->text + offset) + 1, 1);
             if (this->list_text[i] == 0) {
                 return 0;
             }
-            strcpy(this->list_text[i], this->list_info->text + offset);
+            strcpy(this->list_text[i], info->text + offset);
             ++i;
             offset += 0x66;
         }

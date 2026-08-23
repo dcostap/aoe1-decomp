@@ -1,8 +1,11 @@
 // first pass: natural destructor with /GX-visible virtual destructors for EH frame/vptr restore
 // use IAT-style extern function pointer for DeleteObject and explicit vptr restore to match original
+#ifndef AOE1_PNL_MSG_CONTEXT_H
 extern int (__stdcall *DeleteObject)(void*);
 void operator delete(void*);
+#endif
 
+#ifndef AOE1_PNL_MSG_CONTEXT_H
 class TDrawArea {
 public:
     ~TDrawArea(void);
@@ -31,6 +34,7 @@ public:
 
     virtual ~TMessagePanel(void);
 };
+#endif
 
 TMessagePanel::~TMessagePanel(void) {
     if (this->image_clip_region != 0) {

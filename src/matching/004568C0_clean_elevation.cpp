@@ -49,32 +49,13 @@
 // stdlib.h before or after windows.h is incidental. Replacing stdlib.h with
 // windows.h in this standalone owner also gives MATCH and removes the prior
 // seven-byte partial-register scheduling drift.
-// 35: A shared natural RGE_Tile union for the two names at byte +5 keeps both
-// the exact preclean_elevation anchor and this target exact in source order.
+// 35: A shared natural RGE_Tile declaration with the packed byte at +5 keeps
+// this target exact in the map.cpp owner context.
 // Exact result: 1478 bytes, 460 instructions, three ordered calls, 0.0000%.
 
 #include <windows.h>
-
-struct RGE_Tile {
-    char gap_00[5];
-    unsigned char terrain_elevation;
-    char gap_06[0x12];
-};
-
-class RGE_Map {
-public:
-    char gap_00[8];
-    int map_width;
-    int map_height;
-    char gap_10[0x8D7C];
-    RGE_Tile** map_row_offset;
-
-    void preclean_elevation(long x1, long y1, long x2, long y2, unsigned char elevation);
-    unsigned char postclean_elevation(long x1, long y1, long x2, long y2, unsigned char elevation);
-    void set_elev(short x1, short y1, short x2, short y2, unsigned char elevation,
-                  short amount, unsigned char relative);
-    void clean_elevation(long x1, long y1, long x2, long y2, unsigned char elevation);
-};
+#include "../../include/map_context.h"
+#include "../../include/map_tile_context.h"
 
 void RGE_Map::clean_elevation(long x1, long y1, long x2, long y2,
                               unsigned char elevation)

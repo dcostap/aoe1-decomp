@@ -15,6 +15,19 @@
 // growth; restoring it in translate caused 2 differing bytes; restoring it
 // in either nearest-color source or candidate index caused 1 differing byte.
 // Therefore the zero-based form is the smallest exact source model.
+//
+// Context audit:
+// - PDB data places this public overload in color.cpp after three sibling
+// constructors. The out-of-line virtual destructor follows it.
+// - The PDB owner ABI is
+//   RGE_Color_Table(TDrawArea*, long, tagPALETTEENTRY*, tagPALETTEENTRY*).
+// - Both exact Panel_ez.cpp callers read 256 palette entries, allocate the
+// 0x128-byte object, call this constructor, and then publish its result.
+// Their new-expression EH state owns allocation cleanup if construction fails.
+// - This constructor has no EH frame or destructible local object. It writes
+// the vptr before its first palette access. Before translation, it clears
+// resource_id, type, map_color, and table. It does not write name or id.
+// A fault therefore exposes only this binary-proven partial state.
 
 #include <string.h>
 
@@ -36,7 +49,7 @@ void RGE_translate_palette(tagPALETTEENTRY* source, tagPALETTEENTRY* target,
 
 class RGE_Color_Table {
 public:
-    virtual ~RGE_Color_Table() {}
+    virtual ~RGE_Color_Table();
     char color_table_name[30];   // +0x04
     short resource_id;           // +0x22
     unsigned char type;          // +0x24
