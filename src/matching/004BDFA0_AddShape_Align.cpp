@@ -1,5 +1,8 @@
 // 004BDFA0 TSpan_List_Manager::AddShape_Align
 // Source: spanlist.cpp:900-953
+// PDB owner: ?AddShape_Align@TSpan_List_Manager@@QAEXPAEPAUShape_Info@@HHH@Z
+// Binary body: 004BDFA0-004BE08E; 004BE08F is trailing padding.
+// Binary anchors: AddSpan calls at 004BE019 and 004BE071; cleanup is ret 14h.
 //
 // Attempt log:
 // - Reconstructed the Shape_Info outline walk from the original two loop arms;
@@ -22,6 +25,9 @@
 //   body but still had a setup drift.
 // - Adding the spanlist TU's <stdlib.h> context resolved the remaining setup
 //   and block drift; the resulting typed source is an exact match.
+// - Exact-finish audit: fresh SPANLIST_SHARED_CONTEXT builds match all 239 bytes.
+// - Walkback retained only typed Shape_Info fields, 16-bit edge locals,
+//   post-increment cursor updates, both AddSpan calls, and natural guards.
 
 // Main-agent audit confirmed typed shape/span ownership and retained the natural
 // aligned outline traversal.

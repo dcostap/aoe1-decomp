@@ -20,10 +20,16 @@
 // restored the original frame and all bytes.
 // exact: the typed map/tile-list traversal is natural source and matches the
 // original 379-byte function with all three direct calls aligned.
+// BINARY NOTE: PDB ownership is TribeInformationAIModule::lookAtMap in
+// taiinfmd.cpp, lines 8180-8222. The body ends at 004E41BA.
+// BINARY NOTE: Exact anchors are pathMap.setValue, importantObject, and
+// addImportantObject. The next PDB sibling starts at 004E41C0.
+// Exact-finish: omitting the definition's empty parameter list stayed exact.
+// Keeping the terrain local is required. Direct rereads changed the frame.
 
 #include "../../include/information_dropsites_context.h"
 
-void TribeInformationAIModule::lookAtMap(void)
+void TribeInformationAIModule::lookAtMap()
 {
     RGE_Map* map = this->md->player->world->map;
     int x = 0;
