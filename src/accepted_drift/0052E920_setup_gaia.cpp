@@ -14,46 +14,17 @@
 // The 4-byte insert at offset 0x51 shifts the remaining code; the final 4 bytes of
 // the 102-byte window are the shifted-out padding (difference in padding bytes only).
 // edit diff = 7.84% (all from the 4-byte insert + corresponding tail deletion).
-// Positional diff = 16.67% (also from 4-byte insert cascade).
+// positional diff = 16.67% (also from 4-byte insert cascade).
 //
 // No source/flag workaround found. Probes from multiple prior sessions (LemonLily,
 // GraniteCub) tried: if/else/ternary/goto/comma/volatile/while/for/switch/null-normalization
 // patterns; no /O flag variant eliminates the artifact for this +ctor SEH pattern.
 //
 // Accepted as same behavior-neutral no-op phi-merge artifact as sibling init helpers.
+// Prefix TU pass: migrated to the shared canonical tworld context without changing
+// the reviewed drift or the six exact anchors.
 
-class RGE_Master_Player {
-public:
-    void* vtable;
-};
-
-class RGE_Game_World {
-public:
-    char pad_00[0x40];
-    void** players;            // +0x40
-    char pad_44[0x4];          // +0x44 (master_player_num short + 2 pad) to +0x48
-    void** master_players;     // +0x48
-};
-
-class TRIBE_World : public RGE_Game_World {
-public:
-    void setup_gaia();
-};
-
-class TRIBE_Player {
-public:
-    char gap[0x848];
-};
-
-class TRIBE_Gaia : public TRIBE_Player {
-public:
-    char gap2[0x10];
-
-    TRIBE_Gaia(RGE_Game_World* world, RGE_Master_Player* master,
-               unsigned char player_id, char* name, unsigned char type);
-};
-
-void* operator new(unsigned int size);
+#include "../../include/tworld_prefix_context.h"
 
 void TRIBE_World::setup_gaia() {
     TRIBE_Gaia* g;

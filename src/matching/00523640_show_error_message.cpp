@@ -3,6 +3,9 @@
 
 extern "C" __declspec(dllimport) int __stdcall MessageBoxA(void* hWnd, const char* lpText, const char* lpCaption, unsigned int uType);
 
+#include "../../include/tribegam_context.h"
+
+#if 0
 class TRIBE_Game {
 public:
     // vt[0..7] padding (implicit vtable at +0x00)
@@ -25,11 +28,12 @@ public:
     void* field_10;  // +0x10, HWND or similar
     void show_error_message(int param_1);
 };
+#endif
 
 void TRIBE_Game::show_error_message(int param_1) {
     char title[256];
     char msg[256];
-    this->load_string(0xFA8, title, 256);
-    this->load_string2(1, param_1, 0, msg, 256);
-    MessageBoxA((void*)this->field_10, msg, title, 0x10);
+    this->get_string(0xFA8, title, 256);
+    this->get_string2(1, param_1, 0, msg, 256);
+    MessageBoxA(this->prog_window, msg, title, 0x10);
 }

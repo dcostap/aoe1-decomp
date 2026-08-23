@@ -4,25 +4,58 @@
 // Canonical tworld.cpp reconstruction context.
 // Layout facts come from inventory/types/all_types_reference.h.
 typedef unsigned char uchar;
-typedef void FILE;
+#ifndef _FILE_DEFINED
+struct _iobuf;
+typedef struct _iobuf FILE;
+#endif
 
 class AIPlayBook;
 class RGE_Map;
 class RGE_Sound;
 class RGE_Player;
-class RGE_Player_Info;
+struct RGE_Player_Info;
 class RGE_Master_Player;
+class RGE_Master_Static_Object;
 class RGE_Effects;
 class RGE_Color_Table;
 class RGE_Object_List;
+class RGE_Object_Node;
+class RGE_Object_Type_Info;
+class RGE_Object_Info_Holder;
+class RGE_Object_List_Node;
+class RGE_Object_List_Head;
 class RGE_Scenario;
 class RGE_Static_Object;
+class RGE_Victory_Conditions;
 class RGE_Command;
 class RGE_Sprite;
+class RGE_Tile;
 class TSound_Driver;
 class TCommunications_Handler;
+class TDrawArea;
+class T_Scenario;
 class TRIBE_Tech;
 class TRIBE_Player;
+
+struct RGE_Player_Info {
+    char name[9][65];
+    char type[9];
+    char tribe[9];
+    char gap_25B;
+    short color[9];
+    uchar gap_26E[2];
+    long player_id_hash[9];
+    short player_num;
+    uchar gap_296[2];
+    char* scenario;
+    void* map_info;
+    short map_type;
+    short map_width;
+    short map_height;
+    short ai_info;
+    uchar campaign;
+    uchar gap_2A9[3];
+};
 
 class RGE_Game_World {
 public:
@@ -80,7 +113,7 @@ public:
     virtual uchar check_game_state();
     virtual uchar load_world(int);
     virtual uchar load_game(char*);
-    virtual uchar new_game(RGE_Player_Info*, int);
+    virtual uchar new_game(RGE_Player_Info&, int);
     virtual uchar new_scenario(RGE_Player_Info&, int);
     virtual uchar save_game(char*);
     virtual void base_save(char*);
@@ -121,7 +154,7 @@ public:
     short terrain_size;
     float** terrains;
     RGE_Command* commands;
-    RGE_Scenario* scenario;
+    T_Scenario* scenario;
     short color_table_num;
     uchar gap_62[2];
     RGE_Color_Table** color_tables;
@@ -185,6 +218,7 @@ public:
     virtual void command_init(int, TCommunications_Handler*);
     virtual void world_init(int, TSound_Driver*, TCommunications_Handler*);
     virtual void setup_gaia();
+    void check_destructables(short, short, float, float, uchar);
     virtual void setup_players(RGE_Player_Info&);
     virtual uchar new_random_game(RGE_Player_Info&);
     virtual void save(int);
@@ -215,7 +249,7 @@ public:
     virtual uchar check_game_state();
     virtual uchar load_world(int);
     virtual uchar load_game(char*);
-    virtual uchar new_game(RGE_Player_Info*, int);
+    virtual uchar new_game(RGE_Player_Info&, int);
     virtual uchar new_scenario(RGE_Player_Info&, int);
     virtual uchar save_game(char*);
     virtual void base_save(char*);
@@ -239,7 +273,144 @@ public:
     int sent_zone_score;
 };
 
-class TRIBE_Player {
+class RGE_Player {
+public:
+    virtual ~RGE_Player();
+    uchar gap_04[0x20];
+    RGE_Master_Static_Object** master_objects;
+    RGE_Object_List* objects;
+    uchar gap_2C[0x08];
+    RGE_Victory_Conditions* victory;
+    uchar gap_38[0x18];
+    float* resources;
+    uchar gap_54[0xB8];
+    short civilization;
+    uchar gap_10E[0x112];
+};
+
+class RGE_Object_List {
+public:
+    void* vtable_ptr;
+    union {
+        RGE_Object_Node* list;
+        RGE_Object_List_Node* head;
+    };
+    short number_of_objects;
+    uchar gap_0A[2];
+};
+
+class RGE_Tile {
+public:
+    short screen_xpos;
+    short screen_ypos;
+    uchar tile_type;
+    uchar terrain_type : 5;
+    uchar border_type : 4;
+    uchar last_drawn_as;
+    uchar last_drawn_shape;
+    uchar draw_as;
+    uchar draw_attribute;
+    uchar last_drawn_shape2;
+    RGE_Object_List objects;
+};
+
+class RGE_Map {
+public:
+    void* vtable_ptr;
+    RGE_Tile* map;
+    long map_width;
+    long map_height;
+    long world_width;
+    long world_height;
+    uchar gap_18[0x8D74];
+    RGE_Tile** map_row_offset;
+};
+
+class RGE_Master_Static_Object {
+public:
+    void* vtable_ptr;
+    uchar gap_04[0x0C];
+    short id;
+    uchar gap_12[0x1E];
+    float radius_x;
+    float radius_y;
+    float radius_z;
+    uchar gap_3C[0x0F];
+    uchar can_be_built_on;
+};
+
+class RGE_Object_Node {
+public:
+    RGE_Static_Object* node;
+    RGE_Object_Node* next;
+    RGE_Object_Node* prev;
+    uchar centered;
+    uchar gap_0D[3];
+};
+
+class RGE_Object_Type_Info {
+public:
+    uchar gap_00[0x10];
+    short id;
+};
+
+class RGE_Object_Info_Holder {
+public:
+    uchar gap_00[0x08];
+    RGE_Object_Type_Info* type;
+};
+
+class RGE_Object_List_Node {
+public:
+    RGE_Object_Info_Holder* object;
+    RGE_Object_List_Node* next;
+};
+
+class RGE_Object_List_Head {
+public:
+    uchar gap_00[0x04];
+    RGE_Object_List_Node* head;
+};
+
+class RGE_Static_Object {
+public:
+    virtual ~RGE_Static_Object();
+    virtual void recycle_in_to_game(RGE_Master_Static_Object*, RGE_Player*, float, float, float);
+    virtual void recycle_out_of_game();
+    virtual void draw(TDrawArea*, short, short, RGE_Color_Table*);
+    virtual void shadow_draw(TDrawArea*, short, short, uchar);
+    virtual void normal_draw(TDrawArea*, short, short);
+    virtual void draw_front_frame(TDrawArea*, short, short);
+    virtual void draw_back_frame(TDrawArea*, short, short);
+    virtual void draw_frame(TDrawArea*, short, short);
+    virtual uchar update();
+    virtual void check_damage_sprites();
+    virtual void rehook();
+    virtual void save(int);
+    virtual float teleport(float, float, float);
+    virtual void new_sprite(RGE_Sprite*);
+    virtual void add_overlay_sprite(RGE_Sprite*, uchar);
+    virtual void remove_overlay_sprite(RGE_Sprite*);
+    virtual void change_ownership(RGE_Player*);
+    virtual void modify(float, uchar);
+    virtual void modify_delta(float, uchar);
+    virtual void modify_percent(float, uchar);
+    virtual void transform(RGE_Master_Static_Object*);
+    virtual void copy_obj(RGE_Master_Static_Object*);
+    virtual void set_object_state(uchar);
+    virtual void remove_visible_resource();
+    virtual void create_doppleganger_when_dying();
+    virtual void destroy_obj();
+
+    long id;
+    RGE_Master_Static_Object* master_obj;
+    RGE_Player* owner;
+    uchar gap_10[0x28];
+    float world_x;
+    float world_y;
+};
+
+class TRIBE_Player : public RGE_Player {
 public:
     virtual ~TRIBE_Player();
     virtual void v01(); virtual void v02(); virtual void v03(); virtual void v04();
@@ -250,14 +421,20 @@ public:
     virtual void v21(); virtual void v22(); virtual void v23(); virtual void v24();
     virtual void v25(); virtual void v26(); virtual void v27(); virtual void v28();
     virtual void load(int);
-    char gap_04[0x844];
+    uchar gap_220[0x628];
     TRIBE_Player(int, TRIBE_World*, uchar);
+    TRIBE_Player(TRIBE_World*, RGE_Master_Player*, uchar, char*, uchar,
+                 uchar, uchar, char*, char*, char*);
+    void rev_tech(short);
+    void new_attribute_num(short, float);
+    void add_population_entry();
 };
 
 class TRIBE_Gaia : public TRIBE_Player {
 public:
     char gap_848[0x10];
     TRIBE_Gaia(int, TRIBE_World*, uchar);
+    TRIBE_Gaia(RGE_Game_World*, RGE_Master_Player*, uchar, char*, uchar);
 };
 
 // The 0xC-byte tech object is shared by world_init and base_save.

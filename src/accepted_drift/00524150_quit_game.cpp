@@ -26,6 +26,11 @@
 // abi/context (rolled back): removing the virtual destructor changed the new
 // size to 0x4AC; an equivalent virtual slot and explicit operator-new decl.
 // kept the 0x4B0 allocation but did not move the 12-byte EH tail gap.
+// exact-finish revisit (rolled back): putting the common clear before the
+// finish label, with function-scope, bare-new, nested-scope, or reverse-label
+// variants, grew the function to 623 bytes and 213 differing bytes. A direct
+// scenario-editor return grew it to 601 bytes and 191 differing bytes. The
+// clean 582-byte source remains the smallest supported reconstruction.
 // ACCEPTED DRIFT: Two changed bytes are branch displacements to the same
 // reviewed cleanup destinations. The remaining edit exchanges the final
 // testing-scenario byte store with the independent saved-SEH-chain stack load.
@@ -39,6 +44,9 @@ extern int do_debug_random;
 extern void debug_random_write();
 extern void dump_vismap_log();
 
+#include "../../include/tribegam_context.h"
+
+#if 0
 class RGE_Game_Info {
 public:
     long current_person;
@@ -173,6 +181,7 @@ public:
     void close_game_screens(int destroy_game_screen);
     void quit_game();
 };
+#endif
 
 void TRIBE_Game::quit_game()
 {

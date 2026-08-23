@@ -12,7 +12,7 @@
 #include "matching/005213A0_TRIBE_Game.cpp"
 #include "matching/00521620_close_game_screens.cpp"
 // 00521790 setup (453-685) remains a nonexact owner and is omitted.
-#include "accepted_drift/00521FA0_setup_cmd_options.cpp"
+#include "matching/00521FA0_setup_cmd_options.cpp"
 #include "matching/00522200_setup_palette.cpp"
 #include "matching/005222C0_setup_sounds.cpp"
 #include "matching/00522770_create_world.cpp"

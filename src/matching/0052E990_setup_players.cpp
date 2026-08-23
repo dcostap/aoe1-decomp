@@ -31,90 +31,10 @@
 // or layout fact for the lone commutative SIB encoding; keep the natural source.
 // probe 40: restored the same-TU world's proven virtual surface and declared
 // setup_players at slot 24; this natural context fixes the lone SIB byte.
+// Prefix TU pass: moved the proven player/info ownership into the shared
+// tworld_prefix context. Isolated and six-owner grouped checks remain exact.
 
-struct RGE_Master_Player;
-
-class RGE_Player {
-public:
-    virtual ~RGE_Player();
-    char gap_04[0x44];
-};
-
-class TRIBE_World;
-
-class TRIBE_Player : public RGE_Player {
-public:
-    char gap_48[0x800];
-    TRIBE_Player(TRIBE_World* world, RGE_Master_Player* master,
-                 unsigned char player_id, char* name, unsigned char tribe,
-                 unsigned char make_ai, unsigned char make_lists,
-                 char* ai_1, char* ai_2, char* ai_3);
-};
-
-struct RGE_Player_Info {
-    char name[9][65];
-    char type[9];
-    char tribe[9];
-    char gap_25B;
-    short color[9];
-    char gap_26E[2];
-    long player_id_hash[9];
-    short player_num;
-    char gap_296[2];
-    char* scenario;
-    void* map_info;
-    short map_type;
-    short map_width;
-    short map_height;
-    short ai_info;
-    unsigned char campaign;
-    char gap_2A9[3];
-};
-
-class RGE_Sound;
-class TCommunications_Handler;
-
-class RGE_Game_World {
-public:
-    // The same-TU world donor places setup_players at virtual slot 24 (+0x60).
-    virtual unsigned char data_load_world(void*);
-    virtual unsigned char data_load_terrain_tables(char*);
-    virtual unsigned char data_load_players(char*);
-    virtual unsigned char data_load_objects(char*);
-    virtual unsigned char data_load_sounds(char*);
-    virtual unsigned char data_load_color_tables(char*);
-    virtual unsigned char data_load_sprites(char*);
-    virtual void data_load_players_type(short, short, void*);
-    virtual void data_load_effects(char*);
-    virtual unsigned char data_load_map(char*, char*, char*, char*, short,
-                                        short, short, RGE_Sound**, char*);
-    virtual void data_load_random_map(char*, char*, char*, char*);
-    virtual unsigned char init_player_type(int, short, unsigned char);
-    virtual unsigned char init_player(int);
-    virtual void load_player(int, unsigned char, short);
-    virtual void color_table_init(int);
-    virtual void terrain_tables_init(int);
-    virtual void init_sounds(int, void*);
-    virtual void init_sprites(int);
-    virtual void map_init(int, void*);
-    virtual void effects_init(int);
-    virtual void master_player_init(int);
-    virtual void command_init(int, TCommunications_Handler*);
-    virtual void world_init(int, void*, TCommunications_Handler*);
-    virtual void setup_gaia();
-    virtual void setup_players(RGE_Player_Info& info);
-    char gap_04[0x38];
-    short player_num;
-    char gap_3E[2];
-    RGE_Player** players;
-    char gap_44[4];
-    RGE_Master_Player** master_players;
-};
-
-class TRIBE_World : public RGE_Game_World {
-public:
-    virtual void setup_players(RGE_Player_Info& info);
-};
+#include "../../include/tworld_prefix_context.h"
 
 extern "C" int useComputerPlayers;
 
