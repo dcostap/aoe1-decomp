@@ -1,5 +1,6 @@
-class RGE_Static_Object;
+#include "../../include/tscenaro_context.h"
 
+#if 0
 struct SP_Victory_Info {
     int ObjectType;
     int AllFlag;
@@ -24,7 +25,8 @@ public:
 
     RGE_Static_Object* GetSPDestObjectID(int sp_index);
 };
+#endif
 
 RGE_Static_Object* T_Scenario::GetSPDestObjectID(int sp_index) {
-    return this->lookup_object(this->sp_victory[this->which_player][sp_index].DestObjectID);
+    return this->get_object_pointer(this->sp_victory[this->which_player][sp_index].dest_obj_ID);
 }

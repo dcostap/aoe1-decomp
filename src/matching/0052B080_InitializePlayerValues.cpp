@@ -90,14 +90,18 @@
 // 40/40 instructions, full CFG/call parity, 0 differing bytes. Promoted as MATCH.
 
 #include <string.h>
+#include "../../include/tscenaro_context.h"
 
+#if 0
 struct Player_Start_Info {
     int Gold;
     int Wood;
     int Food;
     int Stone;
 };
+#endif
 
+#if 0
 class T_Scenario {
 public:
     char gap_00[0x188C];
@@ -114,6 +118,7 @@ public:
 
     void InitializePlayerValues();
 };
+#endif
 
 void T_Scenario::InitializePlayerValues()
 {
@@ -121,18 +126,18 @@ void T_Scenario::InitializePlayerValues()
         Player_Start_Info* info = &this->player_info[i];
         memset(info, 0, sizeof(*info));
 
-        this->PlActive[i] = 0;
+        this->pl_active[i] = 0;
         info->Gold = 0;
         info->Wood = 200;
         info->Food = 200;
         info->Stone = 150;
 
-        this->PlType[i] = 0;
-        this->PlCivilization[i] = i + 1;
-        this->PlayerPosture[i] = 4;
+        this->pl_type[i] = 0;
+        this->pl_civilization[i] = i + 1;
+        this->player_posture[i] = 4;
         this->AlliedVictory[i] = 0;
         this->PlayerAge[i] = 0;
     }
 
-    this->PlType[0] = 1;
+    this->pl_type[0] = 1;
 }

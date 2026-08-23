@@ -1,5 +1,6 @@
-class RGE_Static_Object;
+#include "../../include/tscenaro_context.h"
 
+#if 0
 class T_Scenario {
 public:
     char gap_00[0x1AD4];
@@ -10,10 +11,11 @@ public:
     int get_object_ID(RGE_Static_Object* object);
     void SetSPObject(int index, RGE_Static_Object* object);
 };
+#endif
 
 void T_Scenario::SetSPObject(int index, RGE_Static_Object* object) {
     if (object != 0) {
-        int object_id = this->get_object_ID(object);
+        int object_id = this->get_object_ID((ScenarioObj*)object);
         int result;
         int which_player = this->which_player;
         result = object_id;
@@ -22,6 +24,6 @@ void T_Scenario::SetSPObject(int index, RGE_Static_Object* object) {
         int offset = index + temp * 4;
         offset = offset + offset * 2;
         offset = offset + offset * 4;
-        this->sp_victory_obj_id[offset] = result;
+        this->raw_objects.sp_victory_obj_id[offset] = result;
     }
 }

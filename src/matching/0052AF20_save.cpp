@@ -1,8 +1,11 @@
 // VA: 0052AF20 T_Scenario::save
 // Straight source from packet/asm: base save plus fixed binary blocks.
 
+#include "../../include/tscenaro_context.h"
+
 extern "C" void __cdecl rge_write(int file, void* data, int size);
 
+#if 0
 class RGE_Scenario {
 public:
     void save(int file);
@@ -13,6 +16,7 @@ public:
     void WriteDisabledTechnologiesToMainSystem(void);
     void save(int file);
 };
+#endif
 
 void T_Scenario::save(int file) {
     int checksum;

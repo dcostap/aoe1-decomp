@@ -1,3 +1,6 @@
+#include "../../include/tscenaro_context.h"
+
+#if 0
 struct Player_Start_Info {
     int Gold;
     int Wood;
@@ -12,6 +15,7 @@ public:
 
     int Get_player_Food(int param_1);
 };
+#endif
 
 int T_Scenario::Get_player_Food(int param_1) {
     if (param_1 < 0 || param_1 >= 16)

@@ -3,8 +3,9 @@
 // attempt 1: natural source from packet and neighboring WriteDisabledTechnologiesToMainSystem; code shape exact but edi based at flags, producing short [edi+small] addressing and object too small.
 // attempt 2: model disabled_tech as int[16][20] and use this->disabled_tech[i][j]; MATCH. This makes VC5 keep index*80 separate and use [edi+large member offset] addressing like original.
 
-typedef unsigned char uchar;
+#include "../../include/tscenaro_context.h"
 
+#if 0
 struct IntfProxy {
     virtual void v00();
     virtual void v04();
@@ -65,6 +66,7 @@ public:
 
     void set_player_tech(TRIBE_Player* player);
 };
+#endif
 
 #define RGE_BASE_GAME (*(RGE_Base_Game**)0x0062C574)
 
@@ -76,26 +78,26 @@ void T_Scenario::set_player_tech(TRIBE_Player* player)
         return;
     }
 
-    player->tech_abling(0x58, (uchar)this->disabled_tech[i][0]);
-    player->tech_abling(0x59, (uchar)this->disabled_tech[i][1]);
-    player->tech_abling(0x5A, (uchar)this->disabled_tech[i][2]);
-    player->tech_abling(0x5B, (uchar)this->disabled_tech[i][3]);
-    player->tech_abling(0x5E, (uchar)this->disabled_tech[i][4]);
-    player->tech_abling(0x5F, (uchar)this->disabled_tech[i][5]);
-    player->tech_abling(0x61, (uchar)this->disabled_tech[i][6]);
-    player->tech_abling(0x62, (uchar)this->disabled_tech[i][7]);
-    player->tech_abling(0x5D, (uchar)this->disabled_tech[i][8]);
-    player->tech_abling(0x60, (uchar)this->disabled_tech[i][9]);
-    player->tech_abling(0x5C, (uchar)this->disabled_tech[i][10]);
-    player->tech_abling(0x65, (uchar)this->disabled_tech[i][11]);
-    player->tech_abling(0x66, (uchar)this->disabled_tech[i][12]);
-    player->tech_abling(0x67, (uchar)this->disabled_tech[i][13]);
-    player->tech_abling(0x73, (uchar)this->disabled_tech[i][14]);
-    player->tech_abling(0x74, (uchar)this->disabled_tech[i][15]);
+    player->tech_abling(0x58, (uchar)this->DisabledTechnology[i][0]);
+    player->tech_abling(0x59, (uchar)this->DisabledTechnology[i][1]);
+    player->tech_abling(0x5A, (uchar)this->DisabledTechnology[i][2]);
+    player->tech_abling(0x5B, (uchar)this->DisabledTechnology[i][3]);
+    player->tech_abling(0x5E, (uchar)this->DisabledTechnology[i][4]);
+    player->tech_abling(0x5F, (uchar)this->DisabledTechnology[i][5]);
+    player->tech_abling(0x61, (uchar)this->DisabledTechnology[i][6]);
+    player->tech_abling(0x62, (uchar)this->DisabledTechnology[i][7]);
+    player->tech_abling(0x5D, (uchar)this->DisabledTechnology[i][8]);
+    player->tech_abling(0x60, (uchar)this->DisabledTechnology[i][9]);
+    player->tech_abling(0x5C, (uchar)this->DisabledTechnology[i][10]);
+    player->tech_abling(0x65, (uchar)this->DisabledTechnology[i][11]);
+    player->tech_abling(0x66, (uchar)this->DisabledTechnology[i][12]);
+    player->tech_abling(0x67, (uchar)this->DisabledTechnology[i][13]);
+    player->tech_abling(0x73, (uchar)this->DisabledTechnology[i][14]);
+    player->tech_abling(0x74, (uchar)this->DisabledTechnology[i][15]);
 
     player->tech_tree->check_for_new_tech();
 
-    if (this->scenario_options != 0) {
+    if (this->ScenarioOptions[0] != 0) {
         this->world->field_4C->call08(100, player);
     }
 
@@ -116,7 +118,7 @@ void T_Scenario::set_player_tech(TRIBE_Player* player)
         }
     }
 
-    if ((float)this->disabled_tech[i][14] == 0.0f) {
+    if ((float)this->DisabledTechnology[i][14] == 0.0f) {
         *(int*)((char*)player->object_50 + 0xC0) = 0x3F800000;
     }
 }

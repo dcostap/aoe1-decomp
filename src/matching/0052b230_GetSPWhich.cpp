@@ -1,3 +1,6 @@
+#include "../../include/tscenaro_context.h"
+
+#if 0
 class T_Scenario {
 public:
     virtual ~T_Scenario();
@@ -22,7 +25,8 @@ public:
 
     int GetSPWhich();
 };
+#endif
 
 int T_Scenario::GetSPWhich() {
-    return this->which_player_;
+    return this->which_player;
 }

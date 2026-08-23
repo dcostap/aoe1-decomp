@@ -1,3 +1,6 @@
+#include "../../include/tscenaro_context.h"
+
+#if 0
 struct SP_Victory_Info {
     int ObjectType;
     int AllFlag;
@@ -20,6 +23,7 @@ public:
 
     int GetSPAllFlag(int sp_index);
 };
+#endif
 
 int T_Scenario::GetSPAllFlag(int sp_index) {
     return this->sp_victory[this->which_player][sp_index].AllFlag;

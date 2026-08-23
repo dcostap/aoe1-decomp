@@ -25,6 +25,8 @@
 // version-arm reconstruction, not manual codegen plumbing.
 // current: exact candidate; revalidate after this log and promote to matching.
 
+#include "../../include/tscenaro_context.h"
+
 void rge_read(int file, void* dst, int size);
 extern const float DAT_00577318;
 extern const float DAT_0057731c;
@@ -33,6 +35,7 @@ extern const float DAT_00577324;
 extern const float DAT_00577328;
 extern const float DAT_0057732c;
 
+#if 0
 class RGE_Game_World;
 class RGE_Static_Object;
 class RGE_Timeline;
@@ -122,6 +125,7 @@ public:
     void InitializeFriendlinessValues();
     void ClearDisabledTechnologies();
 };
+#endif
 
 T_Scenario::T_Scenario(int file, RGE_Game_World* world) : RGE_Scenario(file, world) {
     int dummy = 0;

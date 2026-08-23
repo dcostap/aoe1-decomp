@@ -20,8 +20,9 @@
 
 #include <stddef.h>
 
-typedef unsigned char uchar;
+#include "../../include/tscenaro_context.h"
 
+#if 0
 struct IntfProxy {
     virtual void v00();
     virtual void v04();
@@ -62,6 +63,7 @@ public:
 
     void WriteDisabledTechnologiesToMainSystem();
 };
+#endif
 
 void T_Scenario::WriteDisabledTechnologiesToMainSystem()
 {
@@ -69,15 +71,15 @@ void T_Scenario::WriteDisabledTechnologiesToMainSystem()
     if (_w == 0)
         return;
 
-    if (_w->player_count <= 1)
+    if (_w->player_num <= 1)
         return;
 
     int i = 1;
-    uchar* flags = (uchar*)&this->disabled_tech[1];
+    uchar* flags = (uchar*)&this->DisabledTechnology[0][1];
     do {
         TRIBE_Player* player = (TRIBE_Player*)_w->players[i];
 
-        if (this->scenario_options != 0) {
+        if (this->ScenarioOptions[0] != 0) {
             _w->field_4C->call08(100, player);
         }
 
@@ -101,5 +103,5 @@ void T_Scenario::WriteDisabledTechnologiesToMainSystem()
         flags += 0x50;
         i++;
         _w = this->world;
-    } while (i < (int)_w->player_count);
+    } while (i < (int)_w->player_num);
 }

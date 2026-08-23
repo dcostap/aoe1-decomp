@@ -1,3 +1,6 @@
+#include "../../include/tscenaro_context.h"
+
+#if 0
 class T_Scenario {
 public:
     virtual ~T_Scenario();
@@ -22,7 +25,8 @@ public:
 
     int Get_victory_all_flag();
 };
+#endif
 
 int T_Scenario::Get_victory_all_flag() {
-    return this->victory_all_flag_;
+    return this->victory_all_flag;
 }

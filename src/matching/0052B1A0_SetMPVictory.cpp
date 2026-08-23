@@ -1,3 +1,6 @@
+#include "../../include/tscenaro_context.h"
+
+#if 0
 class T_Scenario {
 public:
     char gap_0[0xC];
@@ -6,8 +9,9 @@ public:
     int field_5140;
     void SetMPVictory(int v);
 };
+#endif
 
 void T_Scenario::SetMPVictory(int v) {
-    this->field_5140 = v;
-    if (v != 4) this->field_C = 1;
+    this->mp_victory_type = v;
+    if (v != 4) this->victory_conquest = 1;
 }

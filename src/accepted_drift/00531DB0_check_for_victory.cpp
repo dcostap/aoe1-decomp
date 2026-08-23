@@ -14,26 +14,10 @@
 // `add ebx,eax; cmp esi,ebx`. The same 32-bit sum is compared, both result
 // registers are dead/overwritten immediately afterward, and all CFG, memory
 // effects, and 216 function bytes otherwise align (214/216 equal).
+// BINARY NOTE: The shared victory_context.h declaration preserves the proven
+// entry fields and owner symbol. The two-byte register recolor remains.
 
-class RGE_Victory_Entry {
-public:
-    char gap_00[0x2C];
-    unsigned char victory_group; // +0x2C
-    char gap_2D;
-    unsigned char state;      // +0x2E
-    unsigned char checked_flag; // +0x2F
-    RGE_Victory_Entry* next;  // +0x30
-};
-
-class RGE_Victory_Conditions {
-public:
-    void* vtable_ptr;          // +0x00
-    RGE_Victory_Entry* victory_list; // +0x04
-    char gap_08[8];
-    unsigned char victory;     // +0x10
-
-    void check_for_victory();
-};
+#include "../../include/victory_context.h"
 
 void RGE_Victory_Conditions::check_for_victory() {
     RGE_Victory_Entry* entry = this->victory_list;

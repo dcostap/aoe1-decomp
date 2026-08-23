@@ -1,3 +1,6 @@
+#include "../../include/tscenaro_context.h"
+
+#if 0
 struct ScenarioObj {
     int pad_00;
     int id_;
@@ -9,6 +12,7 @@ public:
 
     int get_object_ID(ScenarioObj* obj);
 };
+#endif
 
 int T_Scenario::get_object_ID(ScenarioObj* obj) {
     return obj->id_;

@@ -1,26 +1,4 @@
-class RGE_Scenario;
-class RGE_Scenario_Header {
-public:
-    int error_code;
-    long version;
-    unsigned long checksum;
-    char* description;
-
-    RGE_Scenario_Header(RGE_Scenario*);
-    virtual long get_size();
-    virtual void save(int);
-    virtual ~RGE_Scenario_Header();
-};
-
-class TRIBE_Scenario_Header : public RGE_Scenario_Header {
-public:
-    int any_sp_victory;
-    int active_player_count;
-
-    TRIBE_Scenario_Header(int param_1);
-    virtual long get_size();
-    virtual void save(int);
-};
+#include "../../include/tscenaro_context.h"
 
 extern void rge_read_uncompressed(int, void*, int);
 

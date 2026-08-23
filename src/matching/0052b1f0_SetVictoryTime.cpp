@@ -1,3 +1,6 @@
+#include "../../include/tscenaro_context.h"
+
+#if 0
 class T_Scenario {
 public:
     virtual ~T_Scenario();
@@ -22,7 +25,8 @@ public:
 
     void SetVictoryTime(int v);
 };
+#endif
 
 void T_Scenario::SetVictoryTime(int v) {
-    this->victory_time_ = v;
+    this->victory_time = v;
 }

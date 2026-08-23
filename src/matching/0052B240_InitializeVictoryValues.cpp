@@ -1,5 +1,7 @@
 #include <string.h>
+#include "../../include/tscenaro_context.h"
 
+#if 0
 class RGE_Static_Object;
 
 struct Victory_StartInfo {
@@ -37,6 +39,7 @@ public:
 
     void InitializeVictoryValues();
 };
+#endif
 
 void T_Scenario::InitializeVictoryValues() {
     int* victory_values;

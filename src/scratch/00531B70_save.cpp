@@ -32,76 +32,11 @@
 //   owner field, and opposite target-local use. The first, second, third, fifth, and sixth
 //   probes duplicated the 432-byte basin. Split guards grew the body to 572 bytes. All were
 //   restored. The oracle's extra target_obj reload still needs the rejected volatile probe.
+// - BINARY NOTE: PDB assigns this body to victory.cpp lines 177-244, after the constructor
+//   and destructor owners. The shared declaration leaves the 571-byte, 0xC-frame,
+//   28-call candidate unchanged. The remaining mismatch is the target-object reread order.
 
-struct RGE_Player {
-    virtual ~RGE_Player();
-    char gap_04[0x46];
-    short id;                 // +0x4A
-};
-
-struct RGE_Master_Object {
-    char gap_00[0x12];
-    short copy_id;           // +0x12
-};
-
-struct RGE_Static_Object {
-    virtual ~RGE_Static_Object();
-    long id;                  // +0x04
-    RGE_Master_Object* master_obj; // +0x08
-    RGE_Player* owner;        // +0x0C
-};
-
-struct RGE_Victory_Entry {
-    unsigned char command;    // +0x00
-    char gap_01[3];
-    long obj_type;            // +0x04
-    RGE_Player* target_player; // +0x08
-    float x0;                 // +0x0C
-    float y0;                 // +0x10
-    float x1;                 // +0x14
-    float y1;                 // +0x18
-    long number;              // +0x1C
-    long count;               // +0x20
-    RGE_Static_Object* this_obj; // +0x24
-    RGE_Static_Object* target_obj; // +0x28
-    unsigned char victory_group; // +0x2C
-    unsigned char ally_flag;  // +0x2D
-    unsigned char state;      // +0x2E
-    char gap_2F;
-    RGE_Victory_Entry* next;  // +0x30
-};
-
-struct RGE_Victory_Point_Entry {
-    unsigned char command;    // +0x00
-    unsigned char state;      // +0x01
-    unsigned char id;         // +0x02
-    unsigned char group;      // +0x03
-    long attribute;           // +0x04
-    long amount;              // +0x08
-    long points;              // +0x0C
-    long curr_points;         // +0x10
-    float curr_attribute_amount; // +0x14
-    RGE_Victory_Point_Entry* next; // +0x18
-};
-
-class RGE_Victory_Conditions {
-public:
-    virtual void handle_point_condition(RGE_Victory_Point_Entry* entry);
-    virtual void handle_condition(RGE_Victory_Entry* entry);
-    virtual char* condition_description(RGE_Victory_Entry* entry);
-    virtual void save(int param_1);
-    RGE_Victory_Entry* victory_list; // +0x04
-    long list_num;            // +0x08
-    RGE_Player* player;       // +0x0C
-    unsigned char victory;    // +0x10
-    char gap_11[3];
-    RGE_Victory_Point_Entry* victory_point_list; // +0x14
-    long point_list_num;      // +0x18
-    long tot_victory_points;  // +0x1C
-
-};
-
-extern "C" void rge_write(int param_1, void* data, int size);
+#include "../../include/victory_context.h"
 
 void RGE_Victory_Conditions::save(int param_1) {
     float version = 1.0f;

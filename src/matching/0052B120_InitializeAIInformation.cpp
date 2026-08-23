@@ -1,7 +1,6 @@
-class RGE_Player;
-class RGE_Game_World;
-class RGE_Scenario;
+#include "../../include/tscenaro_context.h"
 
+#if 0
 class RGE_Player {
 public:
     virtual ~RGE_Player();
@@ -38,6 +37,7 @@ public:
     void InitializeAIInformation();
     void SetSPWhich(int v);
 };
+#endif
 
 void T_Scenario::InitializeAIInformation() {
     int player;

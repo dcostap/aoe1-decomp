@@ -1,3 +1,6 @@
+#include "../../include/tscenaro_context.h"
+
+#if 0
 class T_Scenario {
 public:
     virtual ~T_Scenario();
@@ -22,7 +25,8 @@ public:
 
     void SetVictoryScore(int v);
 };
+#endif
 
 void T_Scenario::SetVictoryScore(int v) {
-    this->victory_score_ = v;
+    this->victory_score = v;
 }

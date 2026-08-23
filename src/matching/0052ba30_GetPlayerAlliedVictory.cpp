@@ -1,3 +1,6 @@
+#include "../../include/tscenaro_context.h"
+
+#if 0
 class T_Scenario {
 public:
     virtual ~T_Scenario();
@@ -22,7 +25,8 @@ public:
 
     int GetPlayerAlliedVictory(int idx);
 };
+#endif
 
 int T_Scenario::GetPlayerAlliedVictory(int idx) {
-    return this->AlliedVictory_[idx];
+    return this->AlliedVictory[idx];
 }

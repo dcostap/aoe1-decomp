@@ -1,19 +1,4 @@
-class RGE_Victory_Point_Entry;
-
-class RGE_Victory_Conditions {
-public:
-    void handle_points_attribute_amount(RGE_Victory_Point_Entry* param_1);
-    void handle_points_attribute_first(RGE_Victory_Point_Entry* param_1);
-    void handle_points_highest_attribute(RGE_Victory_Point_Entry* param_1);
-    void handle_points_high_attribute_once(RGE_Victory_Point_Entry* param_1);
-    void handle_points_high_attribute_amount(RGE_Victory_Point_Entry* param_1);
-    void handle_point_condition(RGE_Victory_Point_Entry* param_1);
-};
-
-class RGE_Victory_Point_Entry {
-public:
-    unsigned char command;
-};
+#include "../../include/victory_context.h"
 
 void RGE_Victory_Conditions::handle_point_condition(RGE_Victory_Point_Entry* param_1) {
     switch (param_1->command) {

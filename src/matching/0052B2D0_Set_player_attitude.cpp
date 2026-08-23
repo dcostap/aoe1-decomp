@@ -1,8 +1,13 @@
+#include "../../include/tscenaro_context.h"
+
+#if 0
 class Friendliness {
 public:
     int Attitude[16];
 };
+#endif
 
+#if 0
 class T_Scenario {
 public:
     char gap_0[0x47A8];
@@ -10,6 +15,7 @@ public:
 
     void Set_player_attitude(int player, int target, int attitude);
 };
+#endif
 
 void T_Scenario::Set_player_attitude(int player, int target, int attitude) {
     if (((attitude == 1) || (attitude == 3) || (attitude == 0)) &&

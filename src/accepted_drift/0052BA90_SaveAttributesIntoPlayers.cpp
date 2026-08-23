@@ -58,6 +58,9 @@
 // Thirty focused probes and an ambient declaration lab found no natural exact
 // schedule and address encoding together.
 
+#include "../../include/tscenaro_context.h"
+
+#if 0
 struct Player_Start_Info {
     int Gold;
     int Wood;
@@ -105,12 +108,13 @@ public:
 
     void SaveAttributesIntoPlayers();
 };
+#endif
 
 void T_Scenario::SaveAttributesIntoPlayers() {
     int player = 1;
     int other;
     int* alliedVictory;
-    if (player < this->world->playerCount) {
+    if (player < this->world->player_num) {
         alliedVictory = this->AlliedVictory;
         do {
             this->world->players[player]->new_attribute_num(
@@ -123,7 +127,7 @@ void T_Scenario::SaveAttributesIntoPlayers() {
                 1, (float)this->Get_player_Wood(player - 1));
 
             other = 1;
-            if (other < this->world->playerCount) {
+            if (other < this->world->player_num) {
                 do {
                     if (other != player) {
                         this->world->players[player]->set_relation(
@@ -131,13 +135,13 @@ void T_Scenario::SaveAttributesIntoPlayers() {
                             (unsigned char)this->Opponent[player - 1].Attitude[other - 1]);
                     }
                     ++other;
-                } while (other < this->world->playerCount);
+        } while (other < this->world->player_num);
             }
 
             this->world->players[player]->set_allied_victory(
                 (unsigned char)*alliedVictory);
             ++player;
             ++alliedVictory;
-        } while (player < this->world->playerCount);
+        } while (player < this->world->player_num);
     }
 }

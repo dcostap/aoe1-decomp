@@ -1,3 +1,6 @@
+#include "../../include/tscenaro_context.h"
+
+#if 0
 struct Entry_0052B380 {
     char data[16];
 };
@@ -8,8 +11,9 @@ public:
     Entry_0052B380 entries_[16];
     void Set_player_Food(int index, int val);
 };
+#endif
 
 void T_Scenario::Set_player_Food(int index, int val) {
     if (index < 0 || index >= 16) return;
-    *(int*)&this->entries_[index] = val;
+    this->player_info[index].Food = val;
 }

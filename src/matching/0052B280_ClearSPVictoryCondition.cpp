@@ -1,5 +1,7 @@
 #include <string.h>
+#include "../../include/tscenaro_context.h"
 
+#if 0
 struct SP_Victory_Info {
     int ObjectType;
     int AllFlag;
@@ -22,6 +24,7 @@ public:
 
     void ClearSPVictoryCondition(int sp_index);
 };
+#endif
 
 void T_Scenario::ClearSPVictoryCondition(int sp_index) {
     memset(&this->sp_victory[this->which_player][sp_index], 0, sizeof(SP_Victory_Info));

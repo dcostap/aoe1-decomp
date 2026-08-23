@@ -36,7 +36,9 @@
 //   The smaller windef.h child header does not compile in this VC5 environment.
 
 #include <windows.h>
+#include "../../include/tscenaro_context.h"
 
+#if 0
 class RGE_Static_Object;
 class RGE_Game_World;
 class RGE_Player;
@@ -193,6 +195,7 @@ public:
     void SaveAttributesIntoPlayers();
     void Save_victory_conditions_into_players(int save_attrs);
 };
+#endif
 
 void T_Scenario::Save_victory_conditions_into_players(int save_attrs) {
     if (save_attrs != 0) {

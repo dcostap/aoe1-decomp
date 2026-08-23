@@ -1,3 +1,6 @@
+#include "../../include/tscenaro_context.h"
+
+#if 0
 class T_Scenario {
 public:
     virtual ~T_Scenario();
@@ -22,7 +25,8 @@ public:
 
     int Get_Multi_Exploration();
 };
+#endif
 
 int T_Scenario::Get_Multi_Exploration() {
-    return this->MP_Exploration_;
+    return this->victory.MP_Exploration;
 }

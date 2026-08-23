@@ -1,9 +1,5 @@
-class TRIBE_Game {
-public:
-    int baseGetSize();
-    int get_size();
-};
+#include "../../include/tscenaro_context.h"
 
-int TRIBE_Game::get_size() {
-    return this->baseGetSize() + 8;
+long TRIBE_Scenario_Header::get_size() {
+    return RGE_Scenario_Header::get_size() + 8;
 }

@@ -1,3 +1,6 @@
+#include "../../include/tscenaro_context.h"
+
+#if 0
 struct Inner_0052BA80 {
     void update();
 };
@@ -8,7 +11,8 @@ public:
     Inner_0052BA80 *ptr_;
     void update();
 };
+#endif
 
 void T_Scenario::update() {
-    this->ptr_->update();
+    this->time_line->update();
 }

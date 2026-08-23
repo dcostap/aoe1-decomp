@@ -1,3 +1,6 @@
+#include "../../include/tscenaro_context.h"
+
+#if 0
 struct SP_Victory_Info {
     int ObjectType;
     int AllFlag;
@@ -20,7 +23,8 @@ public:
 
     int GetSPObjectType(int sp_index);
 };
+#endif
 
 int T_Scenario::GetSPObjectType(int sp_index) {
-    return this->sp_victory[this->which_player][sp_index].ObjectType;
+    return this->sp_victory[this->which_player][sp_index].ObjType;
 }

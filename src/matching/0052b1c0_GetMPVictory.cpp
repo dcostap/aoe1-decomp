@@ -1,3 +1,6 @@
+#include "../../include/tscenaro_context.h"
+
+#if 0
 class T_Scenario {
 public:
     virtual ~T_Scenario();
@@ -22,7 +25,8 @@ public:
 
     int GetMPVictory();
 };
+#endif
 
 int T_Scenario::GetMPVictory() {
-    return this->mp_victory_type_;
+    return this->mp_victory_type;
 }

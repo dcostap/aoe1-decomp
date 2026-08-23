@@ -1,3 +1,6 @@
+#include "../../include/tscenaro_context.h"
+
+#if 0
 class T_Scenario {
 public:
     virtual ~T_Scenario();
@@ -22,7 +25,8 @@ public:
 
     void Set_Multi_Artifacts(int v);
 };
+#endif
 
 void T_Scenario::Set_Multi_Artifacts(int v) {
-    this->MP_Artifacts_ = v;
+    this->victory.MP_Artifacts = v;
 }

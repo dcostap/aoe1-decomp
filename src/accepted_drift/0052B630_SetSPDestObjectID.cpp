@@ -13,8 +13,9 @@
 // force this scheduling with /O2 folding.
 // Left in scratch.
 
-class RGE_Static_Object;
+#include "../../include/tscenaro_context.h"
 
+#if 0
 class T_Scenario {
 public:
     char gap_00[0x1AD8];
@@ -25,16 +26,17 @@ public:
     int get_object_ID(RGE_Static_Object* object);
     void SetSPDestObjectID(int index, RGE_Static_Object* object);
 };
+#endif
 
 void T_Scenario::SetSPDestObjectID(int index, RGE_Static_Object* object) {
     if (object != 0) {
-        int object_id = this->get_object_ID(object);
+        int object_id = this->get_object_ID((ScenarioObj*)object);
         int which_player = this->which_player;
 
         int offset;
         offset = index + (which_player + which_player * 2) * 4;
         offset = offset + offset * 2;
         offset = offset + offset * 4;
-        this->sp_victory_dest_obj_id[offset] = object_id + 1;
+        this->raw_dest_objects.sp_victory_dest_obj_id[offset] = object_id + 1;
     }
 }

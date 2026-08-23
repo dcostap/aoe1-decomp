@@ -1,3 +1,6 @@
+#include "../../include/tscenaro_context.h"
+
+#if 0
 struct Player_Start_Info {
     int gold;
     int wood;
@@ -12,6 +15,7 @@ public:
 
     void Set_player_Info(int player, Player_Start_Info* info);
 };
+#endif
 
 void T_Scenario::Set_player_Info(int player, Player_Start_Info* info) {
     if ((player >= 0) && (player < 16)) {

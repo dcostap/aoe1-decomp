@@ -1,3 +1,6 @@
+#include "../../include/tscenaro_context.h"
+
+#if 0
 class SP_Victory_Info {
 public:
     int ObjType;
@@ -26,6 +29,7 @@ public:
 
     void GetSPRectangle(int sp_index, float* x1, float* y1, float* x2, float* y2);
 };
+#endif
 
 void T_Scenario::GetSPRectangle(int sp_index, float* x1, float* y1, float* x2, float* y2) {
     *x1 = this->sp_victory[this->which_player][sp_index].x1;

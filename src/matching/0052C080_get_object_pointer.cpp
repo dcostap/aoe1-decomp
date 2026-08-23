@@ -1,9 +1,6 @@
-class RGE_Static_Object;
-class RGE_Game_World {
-public:
-    RGE_Static_Object* object(int id);
-};
+#include "../../include/tscenaro_context.h"
 
+#if 0
 class T_Scenario {
 public:
     char gap_00[0x8];
@@ -11,6 +8,7 @@ public:
 
     RGE_Static_Object* get_object_pointer(int index);
 };
+#endif
 
 RGE_Static_Object* T_Scenario::get_object_pointer(int index) {
     RGE_Static_Object* result = 0;

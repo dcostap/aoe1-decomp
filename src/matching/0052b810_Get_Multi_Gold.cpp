@@ -1,3 +1,6 @@
+#include "../../include/tscenaro_context.h"
+
+#if 0
 class T_Scenario {
 public:
     virtual ~T_Scenario();
@@ -22,7 +25,8 @@ public:
 
     int Get_Multi_Gold();
 };
+#endif
 
 int T_Scenario::Get_Multi_Gold() {
-    return this->MP_Gold_;
+    return this->victory.MP_Gold;
 }
