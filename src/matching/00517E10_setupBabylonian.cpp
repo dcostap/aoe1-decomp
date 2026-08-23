@@ -1,8 +1,23 @@
 // VA: 00517E10, TRIBE_Player::setupBabylonian, 275 bytes
 // Source: tplayer.cpp lines 4046-4084
+// BINARY NOTE: The PDB line band owns TRIBE_Player::setupBabylonian and the
+// exact body boundary is 00517E10-00517F23.  The function is __thiscall and
+// returns with the four dword stack arguments removed.
+// BINARY NOTE: The first call reads playerAI at +0x238 and calls
+// logCommonHistory.  The second call is rge_base_game->deathMatch().  The
+// death-match result is tested before any civilization-table write.
+// BINARY NOTE: p is an int table.  The observed dword stores, constants,
+// source order, branch order, and early-return fault order are intentional.
 // Attempt log:
 // - v1: switch → jump table (modern compiler optimization)
 // - v2: if-else chains → should match cmp/je pattern
+// Exact-finish: The unchanged natural source rebuilt with Result: MATCH and
+// 0.0000% strict positional difference on 2026-08-23.  No source or flag
+// delta was needed in this claim, so there was no independent exact change to
+// revert.  The fresh check proved the owner symbol, boundary, ordered calls,
+// dword stores, and return paths.  Nine tplayer anchors were rebuilt fresh:
+// 00517B90, 00517E10, 005181C0, 005188F0, 00518B50, 00518DD0, 00518F00,
+// 005192F0, and 00519320; each returned MATCH with 0.0000% difference.
 // FLAGS: /nologo /c /O2 /Oy
 
 #include "../../include/tplayer_context.h"
