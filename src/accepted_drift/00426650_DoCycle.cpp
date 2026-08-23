@@ -31,8 +31,8 @@
 //       passed to CommOut. Model that packet explicitly; byte temps may explain
 //       additional frame/liveness differences.
 //   (d) middle timeout loop is a heavy /O2 scheduling basin (elapsed/Now/G liveness,
-//       LastPlayerCommunication pointer ebx + player ebp); will need session-level liveness
-//       work.
+//       LastPlayerCommunication pointer ebx + player ebp); will need session-level
+//       liveness work.
 // - Main-agent semantic correction: modeled the 12-byte DONE packet and its +4
 //   turn field (`CommandTurnIncrement + current_turn`). This removed an actual
 //   missing memory effect, improved frame 0x7C->0x88 (target 0x8C), size -49->+15,
@@ -91,6 +91,12 @@
 // initialized private stack homes for now and lastAnyPlayerMessage. No call,
 // write, branch, stack change, external access, or fault point separates them.
 // All 55 calls, predicates, writes, returns, relocations, and values match.
+//
+// Exact-finish follow-up: separate dump and acknowledgement timestamps, change
+// the timestamp width, add a timestamp reference, move its declaration, split
+// the G declaration, inline the late maximum, and reorder the drop threshold.
+// These forms either duplicate the four-byte drift or change the CFG. The
+// canonical com_hand source remains the smallest supported reconstruction.
 
 #include "../../include/com_hand_context.h"
 

@@ -39,6 +39,22 @@
 // 527-byte basin. Moving radius initialization before the log moved to 533 bytes
 // but worsened CFG and shape. Restore the pinned typed source; no new owner fact
 // was established.
+// Exact-finish pass: target-local /Oy- probes for checksum ownership, local order,
+// suppression guard shape, and period header context did not recover the oracle.
+// The header probe failed on a duplicate _rotl declaration. All probes are
+// restored. A fresh registered-TU check uses default /Oy: 571/546 bytes, a
+// 0x10/0x14 frame, 3/3 ordered calls, and a matching PDB-qualified owner.
+// The original EBP frame needs /Oy- or a context change. This pass made no
+// shared or view-TU edit. Fresh checks still match pick_best_target 00540010 and
+// view anchors 0053DAB0, 0053DB40, 0053E280, 0053E2F0, 0053E340, 0053F660,
+// 0053F6B0, and 0053F800 at 0.0000%.
+// Specialist audit: the target PDB owner is visible.cpp, not vis_unit.cpp.
+// A temporary vis_unit.cpp source group conflicts with the registered
+// visible.cpp declarations. It cannot be an authentic target context.
+// A scoped VC5 /Oy- pragma restored the EBP frame and reached 527 bytes / 466
+// differences, but no natural source form reached the 546-byte oracle.
+// Restore the pinned default source. Fresh grouped checks still match 0053C400,
+// 0053C490, 0053C4D0, 00535480, 00538280, 00538410, and 0053DBA0.
 
 #include "../../include/visible_context.h"
 
