@@ -44,6 +44,9 @@
 //   order, 393-byte body, and exact bytes.
 // - The clean source now matches the original 393-byte body exactly under the
 //   default VC5 flags.  No inline assembly or custom flags are used.
+// - Exact-finish reversion: restoring bestMemory after bestResult and i kept
+//   the exact bytes.  The named converted distance remains required; removing
+//   it returned the 383-byte basin and a 171-byte positional diff.
 
 #include <stdlib.h>
 
@@ -109,9 +112,9 @@ public:
 ObjectMemory* TribeInformationAIModule::ruinToCapture(int playerFilter)
 {
     RGE_Static_Object* townCenter;
-    ObjectMemory* bestMemory;
     int bestResult;
     int i;
+    ObjectMemory* bestMemory;
 
     townCenter = this->md->object(
         -1, 0x6D, -1, -1, -1, -1, -1, -1, -1, -1);
