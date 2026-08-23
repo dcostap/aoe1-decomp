@@ -16,103 +16,80 @@
 // neutral. The 261-byte filename buffer and typed MCI field pointers are kept.
 // Local declaration order, pointer-truth spelling, and gap models did not move
 // codegen. The original local homes are four bytes below the rebuilt homes.
-// The remaining drift is this local shift, the zero-register initialization form,
-// and three extra instructions. No policy-safe source lead remains.
-// Accepted-drift review: all 11 MCI, mixer, sprintf, fopen, and fclose calls
+// The previous accepted drift was this local shift, zero-register reuse, and
+// add-negative versus subtract lowering. Its review confirmed that all 11 calls
 // preserve arguments and order. Track scans, device publication, MCI fields,
 // mixer numerator/divisor and division fault point, volume stores, failure
-// tails, and returns match. Residual drift is a +4 private stack-buffer shift,
-// zero-register reuse, and add-negative versus subtract lowering.
+// tails, and returns also match.
+// Translation-unit recovery: music_context.h was codegen-neutral. A typed local
+// window recovered the binary stack objects and all interior WinMM pointers.
+// Fixed-size track-count fills recovered immediate stores and direct null tests.
+// Updating start_volume before copying volume recovered the negative-bound ADD.
+// Walkback proved that direct track-count assignment, a scalar volume temporary,
+// and removal of the four-byte filename prefix each lose exact output.
 
 #include <stdio.h>
-#include <windows.h>
-#include <mmsystem.h>
+#include <string.h>
+#include "../../include/music_context.h"
 
 static const char MUSIC_WAV_FORMAT[] = "%smusic%d.wav";
 static const char MUSIC_MID_FORMAT[] = "%smusic%d.mid";
 static const char READ_MODE[] = "r";
+static const int MUSIC_MIN_VOLUME = -10000;
 
 typedef MCIERROR (WINAPI *MCI_SEND_COMMAND_PROC)(MCIDEVICEID, UINT, DWORD, DWORD);
 
-class TMusic_System {
-public:
-    char path[260];
-    unsigned char music_type;
-    unsigned char _pad_0[3];
-    void* sound_system;
-    void* instance;
-    void* window;
-    int device_open;
-    unsigned int device_id;
-    char play_info[12];
-    unsigned char playing_track;
-    char file_name[261];
-    unsigned char _pad_1[2];
-    int start_track;
-    int end_track;
-    int make_cur_track;
-    unsigned long set_pos;
-    int loop;
-    int current_track;
-    int track_count;
-    int notify_waiting;
-    long start_volume;
-    long volume;
-    int paused;
-    int auto_paused;
-    int inactivated;
-    int fade_out;
-    unsigned long fade_time;
-    int fading_track;
-    long fade_volume;
-    unsigned long last_fade_time;
-    int mixer_open;
-    HMIXER mixer_handle;
-    MIXERLINEA mixer_line_info;
-    MIXERLINECONTROLSA mixer_line_controls;
-    MIXERCONTROLA mixer_volume_control;
-    MIXERCONTROLDETAILS mixer_volume_details;
-    MIXERCONTROLDETAILS_UNSIGNED mixer_volume_value;
-    void* midi_window;
+// BINARY NOTE: MCI receives the status tail starting at dwReturn.
+struct MCI_STATUS_TAIL {
+    unsigned long dwReturn;
+    unsigned long dwItem;
+    unsigned long dwTrack;
+};
 
-    int open_device();
-    int open_mixer();
+// BINARY NOTE: the filename starts four bytes into this 265-byte stack window.
+struct Music_File_Name {
+    unsigned long prefix;
+    char text[261];
+};
+
+struct Music_Open_Locals {
+    MCI_STATUS_TAIL status_info;
+    MCI_SET_PARMS set_info;
+    MCI_OPEN_PARMSA open_info;
+    Music_File_Name file_name;
 };
 
 int TMusic_System::open_device()
 {
-    char file_name[261];
+    Music_Open_Locals locals;
 
     switch (this->music_type) {
     case 1: {
-        MCI_STATUS_PARMS status_info;
-        MCI_SET_PARMS set_info;
-        MCI_OPEN_PARMSA open_info;
         MCI_SEND_COMMAND_PROC mci = mciSendCommandA;
-        open_info.lpstrElementName = MAKEINTRESOURCEA(0x204);
+        locals.open_info.lpstrElementName = MAKEINTRESOURCEA(0x204);
         if (mci(0, 0x803, 0x3102,
-                (DWORD)&open_info.wDeviceID) == 0) {
+                (DWORD)&locals.open_info.wDeviceID) == 0) {
             this->device_open = 1;
-            this->device_id = open_info.lpstrDeviceType != 0
-                                ? (unsigned int)open_info.lpstrDeviceType : 0;
-            set_info.dwAudio = 10;
+            this->device_id = locals.open_info.lpstrDeviceType != 0
+                                ? (unsigned int)locals.open_info.lpstrDeviceType : 0;
+            locals.set_info.dwAudio = 10;
             mci(this->device_id, 0x80D, 0x402,
-                (DWORD)&set_info.dwTimeFormat);
+                (DWORD)&locals.set_info.dwTimeFormat);
 
-            status_info.dwTrack = 3;
+            locals.status_info.dwTrack = 3;
             if (mci(this->device_id, 0x814, 0x102,
-                    (DWORD)&status_info.dwReturn) == 0) {
-                this->track_count = status_info.dwItem;
+                    (DWORD)&locals.status_info.dwReturn) == 0) {
+                this->track_count = locals.status_info.dwItem;
             }
 
             if (this->open_mixer() != 0) {
-                int new_volume =
+                this->start_volume =
                     (this->mixer_volume_value.dwValue * 10000) /
                     (unsigned int)(this->mixer_volume_control.Bounds.lMaximum -
-                                   this->mixer_volume_control.Bounds.lMinimum) -
-                    10000;
-                this->start_volume = new_volume;
-                this->volume = new_volume;
+                                   this->mixer_volume_control.Bounds.lMinimum);
+                // Preserve the shipped ADD and member-store order.
+                this->start_volume += MUSIC_MIN_VOLUME;
+                this->volume = this->start_volume;
             }
             return 1;
         }
@@ -122,20 +99,21 @@ int TMusic_System::open_device()
     case 2: {
         FILE* scan_file;
         if (this->open_mixer() != 0) {
-            int new_volume =
+            this->start_volume =
                 (this->mixer_volume_value.dwValue * 10000) /
                 (unsigned int)(this->mixer_volume_control.Bounds.lMaximum -
-                               this->mixer_volume_control.Bounds.lMinimum) -
-                10000;
-            this->start_volume = new_volume;
-            this->volume = new_volume;
+                               this->mixer_volume_control.Bounds.lMinimum);
+            // Preserve the shipped ADD and member-store order.
+            this->start_volume += MUSIC_MIN_VOLUME;
+            this->volume = this->start_volume;
         }
 
-        this->track_count = 0;
+        // Preserve the shipped immediate store and direct fopen null test.
+        memset(&this->track_count, 0, sizeof(this->track_count));
         do {
-            sprintf(file_name + 4, MUSIC_MID_FORMAT, this->path,
+            sprintf(locals.file_name.text, MUSIC_MID_FORMAT, this->path,
                     this->track_count + 1);
-            scan_file = fopen(file_name + 4, READ_MODE);
+            scan_file = fopen(locals.file_name.text, READ_MODE);
             if (scan_file) {
                 fclose(scan_file);
                 ++this->track_count;
@@ -149,11 +127,12 @@ int TMusic_System::open_device()
 
     case 3: {
         FILE* scan_file;
-        this->track_count = 0;
+        // Preserve the shipped immediate store and direct fopen null test.
+        memset(&this->track_count, 0, sizeof(this->track_count));
         do {
-            sprintf(file_name + 4, MUSIC_WAV_FORMAT, this->path,
+            sprintf(locals.file_name.text, MUSIC_WAV_FORMAT, this->path,
                     this->track_count + 1);
-            scan_file = fopen(file_name + 4, READ_MODE);
+            scan_file = fopen(locals.file_name.text, READ_MODE);
             if (scan_file) {
                 fclose(scan_file);
                 ++this->track_count;

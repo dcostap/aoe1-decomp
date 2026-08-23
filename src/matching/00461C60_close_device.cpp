@@ -4,27 +4,7 @@
 // Baseline: canonical field ownership and a natural switch over music_type
 // reproduce the complete 190-byte function under the default VC5 flags.
 
-extern unsigned int (__stdcall *mciSendCommandA)(unsigned int, unsigned int,
-                                                  unsigned int, unsigned int);
-
-class TMusic_System {
-public:
-    char gap_00[0x104];
-    unsigned char music_type;
-    char gap_105[3];
-    char gap_108[0x0C];
-    int device_open;
-    unsigned int device_id;
-    char gap_11C[0x12C];
-    int track_count;
-    int notify_waiting;
-    long start_volume;
-
-    int stop_track();
-    void set_volume(long volume, int save_flag);
-    void close_mixer();
-    void close_device();
-};
+#include "../../include/music_context.h"
 
 void TMusic_System::close_device()
 {

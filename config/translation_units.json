@@ -137,12 +137,27 @@
       "owners": {
         "0051E650": "src/verified_logic/0051E650_Time_Line_Panel.cpp",
         "0051E790": "src/matching/0051E790_Time_Line_Panel.cpp",
-        "0051E860": "src/matching/0051E860_create_timeline.cpp"
+        "0051E860": "src/matching/0051E860_create_timeline.cpp",
+        "0051E9E0": "src/matching/0051E9E0_setup.cpp",
+        "0051EAB0": "src/matching/0051EAB0_set_bevel_info.cpp",
+        "0051EB00": "src/matching/0051EB00_set_background.cpp",
+        "0051EC10": "src/matching/0051EC10_set_background.cpp",
+        "0051EDD0": "src/matching/0051EDD0_set_special_events.cpp",
+        "0051EEE0": "src/matching/0051EEE0_set_special_events.cpp",
+        "0051F0A0": "src/matching/0051F0A0_set_axis_font.cpp",
+        "0051F0D0": "src/matching/0051F0D0_set_body_font.cpp",
+        "0051F100": "src/matching/0051F100_set_back_color.cpp",
+        "0051F120": "src/matching/0051F120_draw_border.cpp",
+        "0051F310": "src/matching/0051F310_init_timeline.cpp"
       },
       "symbols": {
         "0051E650": "??0Time_Line_Panel@@QAE@XZ",
         "0051E790": "??1Time_Line_Panel@@UAE@XZ",
-        "0051E860": "?create_timeline@Time_Line_Panel@@QAEJPAVTPanel@@PAPAV1@JJJJJJJJ@Z"
+        "0051E860": "?create_timeline@Time_Line_Panel@@QAEJPAVTPanel@@PAPAV1@JJJJJJJJ@Z",
+        "0051EB00": "?set_background@Time_Line_Panel@@QAEHPAD@Z",
+        "0051EC10": "?set_background@Time_Line_Panel@@QAEHPADJ@Z",
+        "0051EDD0": "?set_special_events@Time_Line_Panel@@QAEHPAD@Z",
+        "0051EEE0": "?set_special_events@Time_Line_Panel@@QAEHPADJ@Z"
       }
     },
     {
@@ -152,11 +167,15 @@
       "owners": {
         "00461910": "src/matching/00461910_TMusic_System.cpp",
         "00461A20": "src/matching/00461A20_TMusic_System.cpp",
+        "00461A30": "src/matching/00461A30_open_device.cpp",
+        "00461C60": "src/matching/00461C60_close_device.cpp",
         "00462C30": "src/matching/00462C30_get_play_info.cpp"
       },
       "symbols": {
         "00461910": "??0TMusic_System@@QAE@EPAX0PAVTSound_Driver@@PAD@Z",
         "00461A20": "??1TMusic_System@@QAE@XZ",
+        "00461A30": "?open_device@TMusic_System@@QAEHXZ",
+        "00461C60": "?close_device@TMusic_System@@QAEXXZ",
         "00462C30": "?get_play_info@TMusic_System@@QAEHPAEPAH11PAD1PAK@Z"
       }
     },
