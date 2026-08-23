@@ -6,7 +6,21 @@ struct PanelNode;
 struct RGE_Color_Table;
 class TShape;
 class TTextPanel;
-class TDrawArea;
+class RGE_Game_World;
+
+class TDrawArea {
+public:
+    void* unk0;
+    void* unk4;
+    unsigned char* Bits;
+
+    unsigned char* Lock(char* name, int mode);
+    void Unlock(char* name);
+    void DrawRect(long x1, long y1, long x2, long y2, unsigned char color);
+    void DrawBevel(long x1, long y1, long x2, long y2, unsigned char c1, unsigned char c2);
+    void DrawBevel2(long x1, long y1, long x2, long y2, unsigned char c1, unsigned char c2, unsigned char c3, unsigned char c4);
+    void DrawBevel3(long x1, long y1, long x2, long y2, unsigned char c1, unsigned char c2, unsigned char c3, unsigned char c4, unsigned char c5, unsigned char c6);
+};
 
 struct tagRECT {
     long left;
@@ -85,6 +99,7 @@ public:
     long height();
     TDrawArea* renderArea();
     void delete_panel(TPanel** panel);
+    int setup(TDrawArea* area, TPanel* parent, long left, long top, long width, long height, int value);
 };
 
 class TEasy_Panel : public TPanel {
@@ -136,14 +151,54 @@ public:
 };
 
 struct Special_Events {
-    char _gap_00[0xAC];
+    long time_slice;
+    long X_line_pos;
+    long Y_line_pos;
+    long intermediate_y_line_segment;
+    unsigned char player_id;
+    unsigned char player_color;
+    unsigned char event;
+    unsigned char gap_13;
+    long pop_total;
+    long interger_value_1;
+    long interger_value_2;
+    long start_x;
+    long start_y;
+    long start_txt_x1;
+    long start_txt_y1;
+    long start_txt_x2;
+    long start_txt_y2;
+    int text_length1;
+    char text1[50];
+    unsigned char gap_6E[2];
+    int text_length2;
+    char text2[50];
+    unsigned char gap_A6[2];
+    int icon_flag;
     Special_Events* next;
 };
 
 class TShape {
 public:
-    char _gap_00;
+    unsigned char* shape;
+    int load_type;
+    int load_size;
+    void* shape_header;
+    char gap_10[0x04];
+    void* offsets;
+    unsigned char* FShape;
+    void* shape_info;
+
+    TShape(char* name, int param_2);
+    TShape(char* name, long param_2);
     ~TShape();
+    int is_loaded();
+    unsigned char shape_minmax(long* out_minx, long* out_miny,
+                               long* out_maxx, long* out_maxy,
+                               long facet);
+    unsigned char shape_minmax(long* out_minx, long* out_miny,
+                               long* out_maxx, long* out_maxy,
+                               int facet);
 };
 
 struct RGE_Font {
@@ -152,8 +207,31 @@ struct RGE_Font {
     long font_hgt;
 };
 
+class TRIBE_History_Info {
+public:
+    long get_history_entry_num();
+};
+
+class TRIBE_Player {
+public:
+    char gap_000[0x83c];
+    TRIBE_History_Info* history_info;
+};
+
+class RGE_Game_World {
+public:
+    virtual unsigned char data_load_world(void* file);
+    char gap_04[0x38];
+    short player_num;
+    short pad_3e;
+    TRIBE_Player** players;
+};
+
 class RGE_Base_Game {
 public:
+    virtual ~RGE_Base_Game();
+    char gap_004[0x3f0];
+    RGE_Game_World* world;
     RGE_Font* get_font(int id);
 };
 
@@ -222,12 +300,33 @@ public:
 
     virtual ~Time_Line_Panel();
     virtual void draw();
+    virtual void panel_v0C();
+    virtual void panel_v10();
+    virtual void panel_v14();
+    virtual void panel_v18();
+    virtual void panel_v1C();
+    virtual void panel_v20();
+    virtual void redraw(int mode);
     Time_Line_Panel();
     long create_timeline(TPanel* parent, Time_Line_Panel** out, long x1, long y1, long x2, long y2, long axis_font_id, long body_font_id, long xden, long yden);
+    int set_background(char* name, long id);
+    int set_special_events(char* name, long id);
     long setup(TDrawArea* area, TPanel* parent, long left, long top, long width, long height,
                void* axis_font, long axis_w, long axis_h, void* body_font, long body_w, long body_h,
                char* bg, char* se, int fill_back, unsigned char back_color, int outline, unsigned char outline_color);
     void init_timeline();
+    void set_axis_font(void* font, long w, long h);
+    void set_body_font(void* font, long w, long h);
+    void set_bevel_info(int a, int b, int c, int d, int e, int f, int g);
+    int set_background(char* bg);
+    int set_special_events(char* se);
+    void set_back_color(int a, unsigned char b);
+    void draw_border();
+    void add_pop_total_special_event(long time_slice, long pop_total, long X_line_pos, int icon_flag);
+    int xPosition();
+    int yPosition();
+    int width();
+    int height();
 };
 
 #endif

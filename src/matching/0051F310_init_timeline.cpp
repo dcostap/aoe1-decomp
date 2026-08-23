@@ -21,66 +21,11 @@
 //   traversal remained exact and is the cleaner source model.
 // - v16: removed the unused explicit _ftol declaration; natural casts remained exact.
 // Exact: 455/455 bytes, 0 strict diff, exact frame/call/CFG/relocation identity.
+// BINARY NOTE: this owner uses the shared tpnl_tml.cpp timeline and world surfaces.
 
-class TRIBE_History_Info {
-public:
-    long get_history_entry_num();
-};
-
-class TRIBE_Player {
-public:
-    char gap_000[0x83c];
-    TRIBE_History_Info* history_info;
-};
-
-class RGE_Game_World {
-public:
-    virtual unsigned char data_load_world(void* file);
-    char gap_04[0x38];
-    short player_num;
-    short pad_3e;
-    TRIBE_Player** players;
-};
-
-class RGE_Base_Game {
-public:
-    virtual ~RGE_Base_Game();
-    char gap_004[0x3f0];
-    RGE_Game_World* world;
-};
+#include "../../include/tpnl_tml_context.h"
 
 extern RGE_Base_Game* rge_base_game;
-
-class Time_Line_Panel {
-public:
-    char gap_000[0x480];
-    int axis_font_hgt;          // +480
-    char gap_484[0x4dc - 0x484];
-    int X_start_line_pos;       // +4dc
-    int Y_start_line_pos;       // +4e0
-    int X_line_pos;             // +4e4
-    int Y_line_pos;             // +4e8
-    int X_line_max_width;       // +4ec
-    int Y_line_max_length;      // +4f0
-    int X_axis_length;          // +4f4
-    int Y_axis_length;          // +4f8
-    float bar_thickness;        // +4fc
-    int pop_reading_rate;       // +500
-    float time_slice_drop_rate; // +504
-    int total_slices_to_drop;   // +508
-    unsigned char drop_flag;    // +50c
-    char gap_50d[3];
-    int num_entries_page;       // +510
-    int num_history_entries;    // +514
-    char gap_518[4];
-    unsigned char timeline_flag;// +51c
-
-    int xPosition();
-    int yPosition();
-    int width();
-    int height();
-    void init_timeline();
-};
 
 void Time_Line_Panel::init_timeline()
 {

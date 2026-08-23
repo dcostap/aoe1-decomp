@@ -13,53 +13,8 @@
 // Main-agent audit confirmed canonical non-polymorphic music/mixer SDK ownership;
 // exact bytes were revalidated after promotion.
 
-#include <windows.h>
-#include <mmsystem.h>
 #include <string.h>
-
-class TMusic_System {
-public:
-    char path[260];
-    unsigned char music_type;
-    unsigned char _pad_0[3];
-    void* sound_system;
-    void* instance;
-    void* window;
-    int device_open;
-    unsigned int device_id;
-    char play_info[12];
-    unsigned char playing_track;
-    char file_name[261];
-    unsigned char _pad_1[2];
-    int start_track;
-    int end_track;
-    int make_cur_track;
-    unsigned long set_pos;
-    int loop;
-    int current_track;
-    int track_count;
-    int notify_waiting;
-    long start_volume;
-    long volume;
-    int paused;
-    int auto_paused;
-    int inactivated;
-    int fade_out;
-    unsigned long fade_time;
-    int fading_track;
-    unsigned long fade_volume;
-    unsigned long last_fade_time;
-    int mixer_open;
-    HMIXER mixer_handle;
-    MIXERLINEA mixer_line_info;
-    MIXERLINECONTROLSA mixer_line_controls;
-    MIXERCONTROLA mixer_volume_control;
-    MIXERCONTROLDETAILS mixer_volume_details;
-    MIXERCONTROLDETAILS_UNSIGNED mixer_volume_value;
-    void* midi_window;
-
-    int open_mixer();
-};
+#include "../../include/music_context.h"
 
 int TMusic_System::open_mixer()
 {

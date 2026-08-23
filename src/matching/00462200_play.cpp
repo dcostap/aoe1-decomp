@@ -39,8 +39,7 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <windows.h>
-#include <mmsystem.h>
+#include "../../include/music_context.h"
 
 extern const char MUSIC_WAV_FORMAT[];
 extern const char MUSIC_MID_FORMAT[];
@@ -53,46 +52,6 @@ extern "C" int __cdecl close(int);
 
 typedef MCIERROR (WINAPI *MCI_SEND_COMMAND_PROC)(
     unsigned int, unsigned int, unsigned long, unsigned long);
-
-class TSound_Driver {
-public:
-    int stream_file(char*, int, long);
-};
-
-class TMusic_System {
-public:
-    char path[260];
-    unsigned char music_type;
-    unsigned char _pad_0[3];
-    TSound_Driver* sound_system;
-    void* instance;
-    void* window;
-    int device_open;
-    unsigned int device_id;
-    MCI_PLAY_PARMS play_info;
-    unsigned char playing_track;
-    char file_name[261];
-    unsigned char _pad_1[2];
-    int start_track;
-    int end_track;
-    int make_cur_track;
-    unsigned long set_pos;
-    int loop;
-    int current_track;
-    int track_count;
-    int notify_waiting;
-    long start_volume;
-    long volume;
-    int paused;
-    int auto_paused;
-    int inactivated;
-    int fade_out;
-    unsigned long fade_time;
-    int fading_track;
-
-    int play(int, int, char*, int, unsigned long);
-    int stop_playing();
-};
 
 int TMusic_System::play(int from, int to, char* name, int current, unsigned long start)
 {

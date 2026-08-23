@@ -1,16 +1,7 @@
-class Time_Line_Panel {
-public:
-    char gap_000[0x4C8];
-    int bevel_type;
-    unsigned char bevel_color1;
-    unsigned char bevel_color2;
-    unsigned char bevel_color3;
-    unsigned char bevel_color4;
-    unsigned char bevel_color5;
-    unsigned char bevel_color6;
+// 0051EAB0 Time_Line_Panel::set_bevel_info (tpnl_tml.cpp:234-242)
+// BINARY NOTE: this owner uses the shared tpnl_tml.cpp timeline surface.
 
-    void set_bevel_info(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6, int param_7);
-};
+#include "../../include/tpnl_tml_context.h"
 
 void Time_Line_Panel::set_bevel_info(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6, int param_7) {
     this->bevel_type = param_1;

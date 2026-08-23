@@ -5,31 +5,7 @@
 // Probe 1: natural C++ with bad local layout/order compiled too small.
 // Probe 2: fixed binary offsets and source order (paused check, set paused before auto_paused).
 
-class TSound_Driver {
-public:
-    int pause_stream();
-};
-
-class TMusic_System {
-public:
-    char gap_000[0x104];
-    unsigned char music_type;           // +0x104
-    char gap_105[3];
-    TSound_Driver* sound_system;        // +0x108
-    void* instance;                     // +0x10C
-    char gap_110[4];
-    int device_open;                    // +0x114
-    unsigned int device_id;             // +0x118
-    char gap_11C[0x0C];
-    unsigned char playing_track;        // +0x128
-    char gap_129[0x12F];
-    int paused;                         // +0x258
-    int auto_paused;                    // +0x25C
-
-    int pause_play();
-};
-
-extern "C" __declspec(dllimport) unsigned int __stdcall mciSendCommandA(unsigned int, unsigned int, unsigned long, void*);
+#include "../../include/music_context.h"
 
 int TMusic_System::pause_play()
 {

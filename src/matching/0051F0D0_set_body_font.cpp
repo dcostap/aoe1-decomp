@@ -1,22 +1,7 @@
-class Time_Line_Panel {
-public:
-    virtual void vf00(void);
-    virtual void vf04(void);
-    virtual void vf08(void);
-    virtual void vf0C(void);
-    virtual void vf10(void);
-    virtual void vf14(void);
-    virtual void vf18(void);
-    virtual void vf1C(void);
-    virtual void redraw(int mode);
+// 0051F0D0 Time_Line_Panel::set_body_font (tpnl_tml.cpp:407-412)
+// BINARY NOTE: the shared timeline surface preserves the redraw slot at +20.
 
-    char gap_04[0x480];
-    void* body_font;
-    long body_font_wid;
-    long body_font_hgt;
-
-    void set_body_font(void* font, long width, long height);
-};
+#include "../../include/tpnl_tml_context.h"
 
 void Time_Line_Panel::set_body_font(void* font, long width, long height) {
     this->body_font = font;

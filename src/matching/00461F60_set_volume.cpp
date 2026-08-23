@@ -9,36 +9,7 @@
 // unsigned divide to the original magic `mul 0xD1B71759; shr edx,0x0D` while keeping `this`
 // in ECX and using ESI only for the mixer minimum.
 
-#include <windows.h>
-
-class TSound_Driver {
-public:
-    int set_stream_volume(long volume);
-};
-
-class TMusic_System {
-public:
-    char gap_00[0x104];
-    unsigned char music_type;           // +0x104
-    char gap_105[3];
-    TSound_Driver* sound_system;        // +0x108
-    void* instance;                     // +0x10C
-    char gap_110[4];
-    int device_open;                    // +0x114
-    char gap_118[0x13C];
-    long volume;                        // +0x254
-    char gap_258[0x20];
-    int mixer_open;                     // +0x278
-    void* mixer_handle;                 // +0x27C
-    char gap_280[0x124];
-    unsigned int mixer_min;             // +0x3A4
-    unsigned int mixer_max;             // +0x3A8
-    char gap_3AC[0x28];
-    char mixer_details[0x18];           // +0x3D4
-    unsigned int mixer_value;           // +0x3EC
-
-    void set_volume(long vol, int save_flag);
-};
+#include "../../include/music_context.h"
 
 extern "C" int (__stdcall *mixerSetControlDetails_ptr)(void*, void*, unsigned long);
 
@@ -79,9 +50,11 @@ void TMusic_System::set_volume(long vol, int save_flag)
         return;
     }
 
-    unsigned int delta = this->mixer_max - this->mixer_min;
+    unsigned int delta = this->mixer_volume_control.Bounds.dwMaximum -
+                         this->mixer_volume_control.Bounds.dwMinimum;
     vol += 10000;
     delta = (delta * vol) / 10000;
-    this->mixer_value = delta;
-    mixerSetControlDetails_ptr(this->mixer_handle, &this->mixer_details, 0);
+    this->mixer_volume_value.dwValue = delta;
+    mixerSetControlDetails_ptr(this->mixer_handle,
+                               &this->mixer_volume_details, 0);
 }

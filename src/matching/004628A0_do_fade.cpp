@@ -9,45 +9,7 @@
 
 extern unsigned long debug_timeGetTime(char* file, int line);
 extern float DAT_00570c20;
-
-class TMusic_System {
-public:
-    char path[260];
-    unsigned char music_type;
-    unsigned char pad_105[3];
-    void* sound_system;
-    void* instance;
-    void* window;
-    int device_open;
-    unsigned int device_id;
-    char play_info[12];
-    unsigned char playing_track;
-    char file_name[261];
-    unsigned char pad_22E[2];
-    int start_track;
-    int end_track;
-    int make_cur_track;
-    unsigned long set_pos;
-    int loop;
-    int current_track;
-    int track_count;
-    int notify_waiting;
-    long start_volume;
-    long volume;
-    int paused;
-    int auto_paused;
-    int inactivated;
-    int fade_out;
-    unsigned long fade_time;
-    int fading_track;
-    long fade_volume;
-    unsigned long last_fade_time;
-
-    int stop_playing();
-    void set_volume(long volume, int save_flag);
-    void end_fade();
-    void do_fade();
-};
+#include "../../include/music_context.h"
 
 void TMusic_System::do_fade() {
     if (this->paused == 0) {

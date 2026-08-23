@@ -148,7 +148,8 @@
         "0051F0D0": "src/matching/0051F0D0_set_body_font.cpp",
         "0051F100": "src/matching/0051F100_set_back_color.cpp",
         "0051F120": "src/matching/0051F120_draw_border.cpp",
-        "0051F310": "src/matching/0051F310_init_timeline.cpp"
+        "0051F310": "src/matching/0051F310_init_timeline.cpp",
+        "0051F4E0": "src/matching/0051F4E0_add_pop_total_special_event.cpp"
       },
       "symbols": {
         "0051E650": "??0Time_Line_Panel@@QAE@XZ",
@@ -157,7 +158,8 @@
         "0051EB00": "?set_background@Time_Line_Panel@@QAEHPAD@Z",
         "0051EC10": "?set_background@Time_Line_Panel@@QAEHPADJ@Z",
         "0051EDD0": "?set_special_events@Time_Line_Panel@@QAEHPAD@Z",
-        "0051EEE0": "?set_special_events@Time_Line_Panel@@QAEHPADJ@Z"
+        "0051EEE0": "?set_special_events@Time_Line_Panel@@QAEHPADJ@Z",
+        "0051F4E0": "?add_pop_total_special_event@Time_Line_Panel@@QAEXJJJH@Z"
       }
     },
     {
@@ -169,6 +171,25 @@
         "00461A20": "src/matching/00461A20_TMusic_System.cpp",
         "00461A30": "src/matching/00461A30_open_device.cpp",
         "00461C60": "src/matching/00461C60_close_device.cpp",
+        "00461D20": "src/matching/00461D20_open_mixer.cpp",
+        "00461EC0": "src/matching/00461EC0_close_mixer.cpp",
+        "00461F00": "src/matching/00461F00_set_music_type.cpp",
+        "00461F40": "src/matching/00461F40_set_fade_out.cpp",
+        "00461F60": "src/matching/00461F60_set_volume.cpp",
+        "00462010": "src/matching/00462010_play_track.cpp",
+        "00462090": "src/matching/00462090_play_file.cpp",
+        "00462140": "src/matching/00462140_play_tracks.cpp",
+        "00462200": "src/matching/00462200_play.cpp",
+        "004625C0": "src/matching/004625C0_pause_play.cpp",
+        "00462670": "src/matching/00462670_resume_play.cpp",
+        "00462740": "src/matching/00462740_stop_track.cpp",
+        "00462770": "src/matching/00462770_stop_playing.cpp",
+        "00462820": "src/matching/00462820_fade_track.cpp",
+        "00462860": "src/matching/00462860_start_fade.cpp",
+        "004628A0": "src/matching/004628A0_do_fade.cpp",
+        "004629B0": "src/matching/004629B0_end_fade.cpp",
+        "00462A10": "src/matching/00462A10_handle_messages.cpp",
+        "00462B40": "src/matching/00462B40_after_end_track.cpp",
         "00462C30": "src/matching/00462C30_get_play_info.cpp"
       },
       "symbols": {
@@ -176,6 +197,25 @@
         "00461A20": "??1TMusic_System@@QAE@XZ",
         "00461A30": "?open_device@TMusic_System@@QAEHXZ",
         "00461C60": "?close_device@TMusic_System@@QAEXXZ",
+        "00461D20": "?open_mixer@TMusic_System@@QAEHXZ",
+        "00461EC0": "?close_mixer@TMusic_System@@QAEXXZ",
+        "00461F00": "?set_music_type@TMusic_System@@QAEHE@Z",
+        "00461F40": "?set_fade_out@TMusic_System@@QAEXHH@Z",
+        "00461F60": "?set_volume@TMusic_System@@QAEXJH@Z",
+        "00462010": "?play_track@TMusic_System@@QAEHHHK@Z",
+        "00462090": "?play_file@TMusic_System@@QAEHPBDHK@Z",
+        "00462140": "?play_tracks@TMusic_System@@QAEHHHHHK@Z",
+        "00462200": "?play@TMusic_System@@QAEHHHPADHK@Z",
+        "004625C0": "?pause_play@TMusic_System@@QAEHXZ",
+        "00462670": "?resume_play@TMusic_System@@QAEHXZ",
+        "00462740": "?stop_track@TMusic_System@@QAEHXZ",
+        "00462770": "?stop_playing@TMusic_System@@QAEHXZ",
+        "00462820": "?fade_track@TMusic_System@@QAEHXZ",
+        "00462860": "?start_fade@TMusic_System@@QAEXXZ",
+        "004628A0": "?do_fade@TMusic_System@@QAEXXZ",
+        "004629B0": "?end_fade@TMusic_System@@QAEXXZ",
+        "00462A10": "?handle_messages@TMusic_System@@QAEIPAXIIJ@Z",
+        "00462B40": "?after_end_track@TMusic_System@@QAEXXZ",
         "00462C30": "?get_play_info@TMusic_System@@QAEHPAEPAH11PAD1PAK@Z"
       }
     },

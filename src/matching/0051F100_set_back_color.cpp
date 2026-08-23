@@ -1,13 +1,9 @@
-class Time_Line_Panel {
-public:
-    char gap_0[0x4B4];
-    int field_4B4;
-    unsigned char field_4B8;
+// 0051F100 Time_Line_Panel::set_back_color (tpnl_tml.cpp:419-422)
+// BINARY NOTE: this owner uses the shared tpnl_tml.cpp timeline surface.
 
-    void set_back_color(int a, unsigned char b);
-};
+#include "../../include/tpnl_tml_context.h"
 
 void Time_Line_Panel::set_back_color(int a, unsigned char b) {
-    this->field_4B4 = a;
-    this->field_4B8 = b;
+    this->fill_back = a;
+    this->back_color = b;
 }

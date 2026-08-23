@@ -27,55 +27,7 @@
 // Main-agent audit confirmed canonical non-polymorphic music/WinMM ownership and
 // natural state dispatch; exact bytes were revalidated after promotion.
 
-class tagMCI_PLAY_PARMS {
-public:
-    unsigned long dwCallback;
-    unsigned long dwFrom;
-    unsigned long dwTo;
-};
-
-class TSound_Driver {
-public:
-    int resume_stream();
-};
-
-extern "C" __declspec(dllimport) unsigned int __stdcall mciSendCommandA(
-    unsigned int, unsigned int, unsigned long, void*);
-
-class TMusic_System {
-public:
-    char path[260];
-    unsigned char music_type;
-    unsigned char _pad_0[3];
-    TSound_Driver* sound_system;
-    void* instance;
-    void* window;
-    int device_open;
-    unsigned int device_id;
-    tagMCI_PLAY_PARMS play_info;
-    unsigned char playing_track;
-    char file_name[261];
-    unsigned char _pad_1[2];
-    int start_track;
-    int end_track;
-    int make_cur_track;
-    unsigned long set_pos;
-    int loop;
-    int current_track;
-    int track_count;
-    int notify_waiting;
-    long start_volume;
-    long volume;
-    int paused;
-    int auto_paused;
-    int inactivated;
-    int fade_out;
-    unsigned long fade_time;
-    int fading_track;
-
-    void end_fade();
-    int resume_play();
-};
+#include "../../include/music_context.h"
 
 int TMusic_System::resume_play()
 {
@@ -93,14 +45,16 @@ int TMusic_System::resume_play()
 
     switch (this->music_type) {
     case 1: {
-        int result = mciSendCommandA(this->device_id, 0x806, 0, &this->play_info);
+        int result = mciSendCommandA(this->device_id, 0x806, 0,
+                                     (unsigned long)&this->play_info);
         if (result == 0) {
             this->notify_waiting++;
         }
         break;
     }
     case 2: {
-        int result = mciSendCommandA(this->device_id, 0x806, 0, &this->play_info);
+        int result = mciSendCommandA(this->device_id, 0x806, 0,
+                                     (unsigned long)&this->play_info);
         if (result == 0) {
             this->notify_waiting++;
         }
