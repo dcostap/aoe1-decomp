@@ -18,6 +18,15 @@
 // Source audit: named master/player/object ownership and ordinary virtual
 // declarations are retained; no inline asm, volatility, or codegen-only pad
 // function is used.
+//
+// Exact-finish notes:
+// - The first exact check matched 564 bytes and all 16 ordered calls.
+// - The real object, player, master, and UnitAIModule surfaces are required.
+// - Collapsing the duplicated strategic-number gate removed 3 calls and 56
+//   bytes. It also changed the first direct call, so the shipped gate stays.
+// - Removing the explicit sqrt float cast kept the exact result. The reduced
+//   source keeps that simpler form.
+// - Keep SPEED_3. The binary loads the soldier speed constant at 5758B0h.
 
 #include <math.h>
 
@@ -217,7 +226,7 @@ int TribeSoldierUnitAIModule::processIdle(int param_1)
                             float xDiff = target->world_x - this->objectValue->world_x;
                             float yDiff = target->world_y - this->objectValue->world_y;
                             float distance =
-                                (float)sqrt(xDiff * xDiff + yDiff * yDiff);
+                                sqrt(xDiff * xDiff + yDiff * yDiff);
                             float x =
                                 (float)(-((xDiff / distance) * speed)) +
                                 this->objectValue->world_x;
