@@ -63,6 +63,20 @@
 // gap-only RGE_Game_World and RGE_Map declarations kept the 338-byte current
 // diff and six ordered calls. Shared world/map vptr context is not the
 // saved-this frame cause. The diagnostic variant was not retained.
+// REVISIT (sa-c7070b98-r1):
+// - Fresh canonical-TU baseline is 328 bytes, 0xC frame, and 338 strict
+//   differing bytes. The exact owner and all six direct targets remain valid.
+// - Natural same-TU sprite/receiver/world/map aliases reached the prior
+//   331-byte, 0xC-frame basin and 316-byte strict diff. Short output order,
+//   paired coordinate locals, receiver references, explicit base/world
+//   locals, and natural short promotion did not improve that basin.
+// - The best basin still saves the receiver in EBX at entry. The executable
+//   homes this at [esp+0C], saves EBX/EBP/EDI before the sprite guard, and
+//   saves ESI only in the outline arm. No allowed natural source form fixed
+//   this frame and register ownership.
+// - Preserve the canonical short AddGDINode ABI, float get_point ABI, field
+//   loads, map fault order, and final coordinate publication. The source was
+//   restored to its pinned clean reconstruction after the probes.
 
 class TDrawArea;
 class RGE_Color_Table;

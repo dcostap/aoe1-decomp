@@ -1099,6 +1099,31 @@
       }
     },
     {
+      "name": "misl_obj_prefix",
+      "source": "src/misl_obj_tu.cpp",
+      "flags": "config/flags/0045A740_RGE_Missile_Object.rsp",
+      "owners": {
+        "0045A740": "src/matching/0045A740_RGE_Missile_Object.cpp",
+        "0045A800": "src/matching/0045A800_RGE_Missile_Object.cpp",
+        "0045A870": "src/matching/0045A870_setup.cpp",
+        "0045A8A0": "src/matching/0045A8A0_setup.cpp",
+        "0045A900": "src/matching/0045A900_rehook.cpp",
+        "0045A910": "src/matching/0045A910_save.cpp",
+        "0045A940": "src/matching/0045A940_update.cpp",
+        "0045A950": "src/matching/0045A950_init_missile.cpp",
+        "0045A9E0": "src/matching/0045A9E0_init_missile.cpp",
+        "0045AA70": "src/matching/0045AA70_missile_move.cpp"
+      },
+      "symbols": {
+        "0045A740": "??0RGE_Missile_Object@@QAE@PAX0MMMH@Z",
+        "0045A800": "??0RGE_Missile_Object@@QAE@HPAVRGE_Game_World@@H@Z",
+        "0045A870": "?setup@RGE_Missile_Object@@QAEHPAX0MMM@Z",
+        "0045A8A0": "?setup@RGE_Missile_Object@@QAEHHPAX@Z",
+        "0045A950": "?init_missile@RGE_Missile_Object@@QAEXPAVRGE_Combat_Object@@PAVRGE_Static_Object@@M@Z",
+        "0045A9E0": "?init_missile@RGE_Missile_Object@@QAEXPAVRGE_Combat_Object@@MMMM@Z"
+      }
+    },
+    {
       "name": "victory_prefix",
       "source": "src/victory_tu.cpp",
       "flags": "config/flags/default.rsp",

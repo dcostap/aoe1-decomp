@@ -81,13 +81,30 @@
 //   A four-way edge-order variant lab found no exact result; the original lbrt order remained
 //   the smallest source and size basin. No exact result was reached.
 // - Follow-up: a cursor from one tile's objects.list member to the next improved
-//   the strict diff to 1706 bytes. It required pointer arithmetic across member
-//   subobjects, so it was rejected. Keep typed row and tile indexing.
+//   the strict diff to 1706 bytes. The executable proves the +0x18 tile stride
+//   and the +0x10 list-field anchor. The current source keeps this typed cursor.
+//
+// ===== worker_sa-fced9769 session =====
+// BINARY NOTE: PDB order and live status selected check_placement at 00453C40.
+// It is the first unowned normal m_s_obj.cpp sibling after setup at 00452B00.
+// The owner is RGE_Master_Static_Object. The original range is 00453C40-004543B4.
+// The target has 11 direct calls, 82 conditional signals, and nine returns.
+//
+// Hypotheses tested in this claim included world-read order, flag ownership,
+// direct moving-master reads, typed row and list cursors, radius local scope,
+// induction declaration order, register qualification, edge order, a radius
+// pair, and a scoped current-master alias. World aliases and direct field reads
+// were worse or neutral. A typed list-field cursor with a row induction local
+// returned the best strict diff: 1706B, 1897/1909B, 73.56% shape, 38.16% exact
+// blocks, 11/11 ordered calls, and 82/82 conditional signals. No exact result.
+// The best source keeps the real moving-object fields, source read order, x87
+// checks, object-id publication, and normal cleanup. It uses no inline assembly,
+// fake volatility, config edits, or shared-header edits.
 //
 // LEFT IN SCRATCH: semantically faithful, period-plausible reconstruction reproducing the
-//   original placement box. Best recorded state: 1718B strict diff, 67.21% resync similarity,
-//   72.82% shape, 1898/1909 size, 596/587 instructions, 11/11 calls, 82/82 conditional CFG,
-//   and 37.48% exact-block coverage.
+//   original placement box. Best recorded state: 1706B strict diff, 67.89% resync similarity,
+//   73.56% shape, 1897/1909 size, 590/587 instructions, 11/11 calls, 82/82 conditional CFG,
+//   and 38.16% exact-block coverage. No exact result was reached.
 // NEXT LEADS:
 //  * Original saves this in EBP and carries map in EBX; the clean source currently saves this
 //    in ESI and leaves map in a local. This is a real declaration/liveness axis, not a reason
@@ -109,6 +126,10 @@
 // gap-only RGE_Game_World and RGE_Map declarations kept the 1725-byte current
 // diff, exact 0x44 frame, and 11 ordered calls. Shared world/map vptr context is
 // not the early prologue cause. The diagnostic variant was not retained.
+// Shared-ABI correction: the original direct target is the const
+// RGE_Visible_Map::get_visible(int, int) member. Restoring that declaration
+// reduced the current full-TU drift from 1725 to 1718 bytes. It also reduced
+// the size gap from 23 to 11 bytes without changing the 22 exact anchors.
 
 class RGE_Game_World;
 class RGE_Map;
@@ -444,11 +465,15 @@ unsigned char RGE_Master_Static_Object::check_placement(
 
     if (p10 != 0 && (p9 != 0 || radius_z > 0.0) &&
         overlap_y_min <= overlap_y_max) {
+        short current_y = overlap_y_min;
         do {
             if (overlap_x_min <= overlap_x_max) {
                 short col2 = overlap_x_min;
+                RGE_Tile* row_tiles = map->map_row_offset[current_y];
+                RGE_Object_Node** node_slot =
+                    &row_tiles[overlap_x_min].objects.list;
                 do {
-                    for (RGE_Object_Node* node = map->map_row_offset[overlap_y_min][col2].objects.list;
+                    for (RGE_Object_Node* node = *node_slot;
                          node != 0; node = node->next) {
                         RGE_Static_Object* obj = node->node;
                         if (obj->object_state < 7 &&
@@ -476,11 +501,12 @@ unsigned char RGE_Master_Static_Object::check_placement(
                             }
                         }
                     }
+                    node_slot += 6;
                     col2++;
                 } while (col2 <= overlap_x_max);
             }
-            overlap_y_min++;
-        } while (overlap_y_min <= overlap_y_max);
+            current_y++;
+        } while (current_y <= overlap_y_max);
     }
 
     return 0;

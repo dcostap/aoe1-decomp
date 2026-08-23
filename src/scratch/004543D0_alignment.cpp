@@ -80,6 +80,26 @@
 // diff, exact 0x8 frame, and four ordered calls. Shared world/map vptr context
 // is not the initial FP/control-flow cause. The diagnostic variant was not
 // retained.
+//
+// REVISIT (sa-c32269fe-r1):
+// - PDB and the original symbol qualify this target as
+//   RGE_Master_Static_Object::alignment in m_s_obj.cpp, lines 1021-1088.
+//   Its original boundary is 004543D0-00454681. The next sibling is the
+//   exact alignment_box at 00454690. Do not merge either boundary.
+// - Canonical m_s_obj TU validation kept the alignment ABI, four __ftol calls,
+//   0x8 frame, and all typed world/map and radius field accesses.
+// - behavior: writing each negative correction as an addition of `-fVarN`
+//   restored the shipped x87 correction topology. It improved the canonical
+//   result from 554 to 457 strict-diff bytes and from 68.98% to 74.69% shape.
+// - context: explicit `this->` field spelling, a typed map cursor, and typed
+//   coordinate aliases were codegen-neutral. They are not retained.
+// - control-flow: a positive flag guard gave a transient 452-byte diagnostic,
+//   but it omitted required final coordinate publication. Restoring that
+//   publication reached 471 bytes. The early zero guard remains authoritative.
+// - behavior: retaining an upper-edge accumulator changed the frame and
+//   damaged the topology. The original upper-edge locals remain unmodified.
+// - final canonical validation remains MISMATCH: 656 rebuilt bytes versus 690,
+//   457 strict-diff bytes, 74.69% shape, and 4/4 ordered __ftol calls.
 
 class RGE_Game_World;
 class RGE_Map;
@@ -130,15 +150,13 @@ unsigned char RGE_Master_Static_Object::alignment(float& param_1, float& param_2
     fVar6 = (float)param_3->map->map_height - 0.00001f;
 
     if (fVar1 < 0.0f) {
-        fVar1 = -fVar1;
-        fVar3 = fVar3 + fVar1;
-        param_1 = param_1 + fVar1;
+        fVar3 = fVar3 + (-fVar1);
+        param_1 = param_1 + (-fVar1);
         fVar1 = 0.0f;
     }
     if (fVar2 < 0.0f) {
-        fVar2 = -fVar2;
-        fVar4 = fVar4 + fVar2;
-        param_2 = param_2 + fVar2;
+        fVar4 = fVar4 + (-fVar2);
+        param_2 = param_2 + (-fVar2);
         fVar2 = 0.0f;
     }
     if (!(fVar3 < fVar5))
