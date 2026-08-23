@@ -1,14 +1,22 @@
-// TribeDiplomacyDialog::check_food
+// protected: TribeDiplomacyDialog::check_food
 // VA: 0043E650
 // dlg_dip.cpp:811-840
 //
-// Attempt log:
-// - Prior parked source used an ordinary `int hasFood`; VC5 put it in a stack slot and used EBP for `this`, causing
-//   broad frame/register drift.
-// - SpruceGlow MATCH: declare `register int hasFood` and iterate with a `TButtonPanel**` pointer. Also declare
-//   `set_disabled` as the non-virtual member before the virtual slots so the direct call keeps `ecx = *pp`, while
-//   `show` remains virtual at vtable offset 0x14.
-// Result: MATCH locally with `python tools/check_function.py --va 0043E650`.
+// BINARY NOTE: PDB and Ghidra qualify this member as protected __thiscall.
+// The owning body is 0043E650-0043E6D6 and the symbol is
+// ?check_food@TribeDiplomacyDialog@@IAEHXZ. Do not use the byte-identical
+// public QAEH symbol.
+//
+// Recovery notes:
+// - The exact body needs `register int hasFood` and a `TButtonPanel**` loop.
+// - `set_disabled` is non-virtual. It precedes five virtual slots, so `show`
+//   remains at vtable offset 0x14. The loop reloads each receiver after the
+//   direct call.
+// - The protected access is required. A public walkback kept all 135 bytes,
+//   but emitted QAEH instead of the PDB symbol IA EH.
+// - The exact source preserves the prog-mode guard, player read, ordered calls,
+//   virtual receiver reloads, loop cleanup, and final result publication.
+// Result: MATCH with `python tools/check_function.py --va 0043E650`.
 
 class RGE_Player {
 public:
@@ -38,7 +46,7 @@ public:
 };
 
 class TribeDiplomacyDialog {
-public:
+protected:
     char gap_00[0x554];
     TButtonPanel* foodTributeButton[8];
     char gap_574[0x610 - 0x574];
