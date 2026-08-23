@@ -1,6 +1,8 @@
-// first pass with the tpnl_tim local layout fixed the main field offsets and most of the body shape
-// remaining mismatch is now the top-of-function register/save basin: VC5 still chooses ebx for the first arg instead of the original esi/edi-only shape
-// next lead: probe the source family around the early equality gate and the final visible-flag push so VC5 stops saving ebx
+// BINARY NOTE: PDB-qualified owner is TRIBE_Panel_Time::set_clock_type(int,int)
+// in tpnl_tim.cpp lines 153-199. The original body is 0051DB00-0051DC3E.
+// The natural typed panel/player/world model preserves the early equality
+// fault order, canonical fields, seven-color switch, clock format, and four
+// ordered virtual calls. The reduced source is an exact byte match.
 class PlayerCivInfo {
 public:
     char gap_00[0x26];
