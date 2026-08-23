@@ -454,6 +454,20 @@
         "0053CAC0": "?explore_terrain_sq@RGE_Visible_Map@@QAEHHHHHHH@Z",
         "0053CCF0": "?unexplore_terrain_sq@RGE_Visible_Map@@QAEXHHHHHH@Z"
       }
+    },
+    {
+      "name": "dib_prefix",
+      "source": "src/dib_tu.cpp",
+      "flags": "config/flags/default.rsp",
+      "owners": {
+        "00438820": "src/accepted_drift/00438820_DibBlt.cpp",
+        "00438AA0": "src/scratch/00438AA0_TransDibBlt.cpp",
+        "00438E80": "src/matching/00438E80_ClipDibBlt.cpp",
+        "00439060": "src/matching/00439060_GetDibDim.cpp",
+        "004390A0": "src/scratch/004390A0_TileDibBlt.cpp",
+        "004395A0": "src/accepted_drift/004395A0_DibCheckTrans.cpp",
+        "00439700": "src/matching/00439700_GetPaletteFromDib.cpp"
+      }
     }
   ]
 }

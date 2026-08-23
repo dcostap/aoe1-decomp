@@ -57,27 +57,7 @@
 
 #include <windows.h>
 #include <stdlib.h>
-
-struct BITMAPINFO256 {
-    BITMAPINFOHEADER bmiHeader;
-    RGBQUAD bmiColors[256];
-};
-
-struct LINEINFO {
-    int AllTrans;
-    int MidSolid;
-    long StartX;
-    long EndX;
-};
-
-struct TRANSINFO {
-    int AnyTrans;
-    long x;
-    long y;
-    long w;
-    long h;
-    LINEINFO* LineInfo;
-};
+#include "../../include/dib_context.h"
 
 extern void __cdecl GetDibDim(BITMAPINFO256*, long&, long&, long&);
 

@@ -1,11 +1,4 @@
-class BITMAPINFO256 {
-public:
-    struct {
-        char gap_00[4];
-        long biWidth;
-        long biHeight;
-    } bmiHeader;
-};
+#include "../../include/dib_context.h"
 
 void GetDibDim(BITMAPINFO256* param_1, long* param_2, long* param_3, long* param_4) {
     *param_2 = (param_1->bmiHeader.biWidth + 3) & 0xFFFFFFFC;

@@ -6,11 +6,7 @@
 //   guards; this restored the original cmp polarity and exact bytes.
 
 #include <windows.h>
-
-struct BITMAPINFO256 {
-    BITMAPINFOHEADER bmiHeader;
-    RGBQUAD bmiColors[256];
-};
+#include "../../include/dib_context.h"
 
 int __cdecl ClipDibBlt(BITMAPINFO256* dib, RECT* rect,
     LONG& x, LONG& y, LONG& width, LONG& height,

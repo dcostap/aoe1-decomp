@@ -60,21 +60,7 @@
 #include <windowsx.h>
 #include <stdio.h>
 #include <memory.h>
-
-typedef unsigned char uchar;
-struct BITMAPINFO256 {
-    BITMAPINFOHEADER bmiHeader;
-    RGBQUAD bmiColors[256];
-};
-struct LINEINFO { int skip; int copy; int first; int last; };
-struct TRANSINFO {
-    int AnyTrans;
-    long x;
-    long y;
-    long w;
-    long h;
-    LINEINFO* LineInfo;
-};
+#include "../../include/dib_context.h"
 
 extern long SrcXTbl[];
 #pragma function(memcpy)

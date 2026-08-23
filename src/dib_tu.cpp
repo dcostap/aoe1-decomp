@@ -1,0 +1,8 @@
+#include "../include/dib_context.h"
+#include "accepted_drift/00438820_DibBlt.cpp"
+#include "scratch/00438AA0_TransDibBlt.cpp"
+#include "matching/00438E80_ClipDibBlt.cpp"
+#include "matching/00439060_GetDibDim.cpp"
+#include "scratch/004390A0_TileDibBlt.cpp"
+#include "accepted_drift/004395A0_DibCheckTrans.cpp"
+#include "matching/00439700_GetPaletteFromDib.cpp"

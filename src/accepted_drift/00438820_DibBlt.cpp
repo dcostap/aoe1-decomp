@@ -48,11 +48,7 @@
 #include <windowsx.h>
 #include <stdio.h>
 #include <memory.h>
-
-struct BITMAPINFO256 {
-    BITMAPINFOHEADER bmiHeader;
-    RGBQUAD bmiColors[256];
-};
+#include "../../include/dib_context.h"
 
 extern int __cdecl ClipDibBlt(BITMAPINFO256*, RECT*, LONG&, LONG&, LONG&, LONG&,
     LONG&, LONG&, LONG&, LONG&, int, int);

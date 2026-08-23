@@ -13,11 +13,9 @@
 #include <windowsx.h>
 #include <stdio.h>
 #include <memory.h>
+#include "../../include/dib_context.h"
 
-struct BITMAPINFO256;
-struct TRANSINFO;
-typedef unsigned char uchar;
-long __cdecl DibBlt(BITMAPINFO256*, uchar*, RECT*, long, long, long, long, BITMAPINFO256*, uchar*, long, long, long, long, int, int, int);
+void __cdecl DibBlt(BITMAPINFO256*, uchar*, RECT*, long, long, long, long, BITMAPINFO256*, uchar*, long, long, long, long, int, int, int);
 void __cdecl TransDibBlt(BITMAPINFO256*, uchar*, RECT*, long, long, long, long, BITMAPINFO256*, uchar*, TRANSINFO*, long, long, long, long, int, int, int, int);
 
 long __cdecl TileDibBlt(BITMAPINFO256 *param_1, uchar *param_2, RECT *param_3, long param_4, long param_5,
