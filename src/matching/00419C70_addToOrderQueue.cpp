@@ -1,9 +1,17 @@
 // VA: 00419C70 addToOrderQueue (607B)
+// PDB owner/access: protected nonvirtual UnitAIModule::addToOrderQueue
+// (?addToOrderQueue@UnitAIModule@@IAEHHHHHMMMMHH@Z), aiuaimod.cpp:5762-5826.
+// Body boundary: 00419C70-00419ECE; 00419ED0 is the next PDB sibling.
 // aiuaimod.cpp
 // Attempt log:
 // - Reconstructed the canonical OrderEvent queue. The queue has nine 4-byte
 //   fields, a 0x24-byte stride, and UnitAIModule fields at +0x10, +0x14, and
 //   +0x18. The p9 path shifts existing records toward the next slot.
+// - PDB/Ghidra proves this overload is protected and nonvirtual. The previous
+//   public declaration emitted identical bytes but the wrong QAEH owner symbol.
+// - The protected declaration now emits the PDB-qualified IAEH owner while
+//   preserving the exact boundary, direct allocation calls, ret 28h cleanup,
+//   queue rereads, publication order, and null-fault order.
 
 struct OrderEvent {
     int issuer;
@@ -30,6 +38,7 @@ public:
     int orderQueueMaxSizeValue;
     OrderEvent* orderQueueValue;
 
+protected:
     int addToOrderQueue(int p1, int p2, int p3, int p4,
                         float p5, float p6, float p7, float p8,
                         int p9, int p10);
