@@ -3,33 +3,17 @@
 
 // Canonical declarations for the original rmm_obj.cpp owner sequence.
 // Layout and call slots come from rmm_base.cpp and rmm_obj.cpp listings.
-// BINARY NOTE: base stack helpers use protected reference parameters.
+// BINARY NOTE: PDB-qualified base stack helpers use protected pointers.
 // BINARY NOTE: make_placement_stack is a protected derived reference method.
+// The narrow player and master virtual declarations preserve the called slots.
 
-typedef unsigned char uchar;
+#include "rmm_obj_base_context.h"
+#include "rmm_obj_world_context.h"
 
-class RGE_Map;
-class RGE_Random_Map_Module_List;
-class RGE_Game_World;
 class RGE_Player;
 class RGE_Master_Static_Object;
 class RGE_Zone_Map;
 class RGE_Zone_Map_List;
-
-struct Map_Stack {
-    long x;
-    long y;
-    float cost;
-    float total_cost;
-    Map_Stack* next;
-    Map_Stack* prev;
-};
-
-struct RGE_Tile {
-    char gap_00[5];
-    uchar terrain;
-    char gap_06[0x18 - 0x06];
-};
 
 struct RGE_Object_Info_Line {
     long obj_id;
@@ -60,14 +44,6 @@ struct RGE_Object_Info {
     long object_num;
     RGE_Land_Point_Info_Line lands[99];
     long land_num;
-};
-
-class RGE_Game_World {
-public:
-    char gap_00[0x40];
-    RGE_Player** players;
-    char gap_44[0x10];
-    float** terrains;
 };
 
 class RGE_Zone_Map {
@@ -134,65 +110,35 @@ public:
     RGE_Master_Static_Object** master_objects;
 };
 
-class RGE_Random_Map_Module {
-public:
-    virtual ~RGE_Random_Map_Module();
-    virtual uchar generate();
-
-    RGE_Random_Map_Module* parent;
-    RGE_Random_Map_Module_List* list;
-    RGE_Map* map;
-    RGE_Tile** map_row_offset;
-    union { long map_width; long width; };
-    union { long map_height; long height; };
-    float schedule;
-    union { uchar* search_map; uchar* byte_map; };
-    union { uchar** search_map_rows; uchar** rows; };
-    Map_Stack* stack_array;
-    union { Map_Stack** stack_offsets; void** map_rows; };
-
-    RGE_Random_Map_Module(RGE_Map* map,
-        RGE_Random_Map_Module* parent, uchar create_shared);
-
-protected:
-    void clear_stack();
-    void init_stack(Map_Stack& stack);
-    void deinit_stack(Map_Stack& stack);
-    void add_stack_node(Map_Stack* last, Map_Stack* node);
-    void remove_stack_node(Map_Stack* node);
-    Map_Stack* pop_stack(Map_Stack& stack,
-        long& out_col, long& out_x, float& out_cost);
-};
-
 class RGE_RMM_Object_Generator : public RGE_Random_Map_Module {
-public:
+protected:
     RGE_Game_World* world;
     RGE_Object_Info info;
     uchar terrain_table[32];
     uchar add_terrain;
 
-    RGE_RMM_Object_Generator(RGE_Map* map,
-        RGE_Random_Map_Module* parent, RGE_Game_World* world,
-        RGE_Object_Info* info, uchar add_terrain);
-    virtual uchar generate();
-    void add_quick_obj(long object_id, long number_of_groups,
-        long object_exclusion_zone);
     void generate_objects(RGE_Object_Info_Line& line);
-    uchar to_close(RGE_Object_Info_Line* line, long x, long y);
-    void set_search_area(long x, long y, long radius, uchar fill);
+    void make_placement_stack(Map_Stack& stack, long x, long y,
+        long unused, long range);
+    uchar to_close(RGE_Object_Info_Line& line, long x, long y);
     void remove_area_from_lists(long left, long right, long y);
-    void place_avoid_objects(RGE_Object_Info_Line& line, long radius);
     void place_objects(RGE_Object_Info_Line& line);
+    void place_avoid_objects(RGE_Object_Info_Line& line, long radius);
     void place_land_objects(RGE_Object_Info_Line& line, long x, long y,
         long inner_radius, long outer_radius, long index);
     void place_group(RGE_Object_Info_Line& line, long x, long y,
         RGE_Player* player);
     void place_cluster(RGE_Object_Info_Line& line, long x, long y,
         RGE_Player* player);
+    void set_search_area(long x, long y, long radius, uchar fill);
 
-protected:
-    void make_placement_stack(Map_Stack& stack, long x, long y,
-        long unused, long range);
+public:
+    RGE_RMM_Object_Generator(RGE_Map* map,
+        RGE_Random_Map_Module* parent, RGE_Game_World* world,
+        RGE_Object_Info* info, uchar add_terrain);
+    void add_quick_obj(long object_id, long number_of_groups,
+        long object_exclusion_zone);
+    virtual uchar generate();
 };
 
 #endif

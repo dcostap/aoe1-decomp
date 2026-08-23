@@ -2,7 +2,7 @@
 #include "matching/00485C50_RGE_RMM_Object_Generator.cpp"
 #include "matching/00485CB0_add_quick_obj.cpp"
 #include "matching/00485DC0_generate.cpp"
-#include "accepted_drift/00485E50_generate_objects.cpp"
+#include "matching/00485E50_generate_objects.cpp"
 #include "scratch/00485F10_make_placement_stack.cpp"
 #include "matching/00486110_to_close.cpp"
 #include "matching/00486180_set_search_area.cpp"

@@ -30,10 +30,16 @@
 // attempt 32: swap final list/ok assignment source order to probe VC5 load scheduling
 // attempt 24: tried five-slot tabList plus dummy local; stack frame shrank/worsened, rolled back
 // attempt 25: tried five-slot tabList with 264-byte info buffer; frame ok but early stack offsets worsened, rolled back
-// FLAGS: config/flags/004A71F0_TribeSaveGameScreen.rsp
+// attempt 33: restored the complete inherited virtual surface in scr_save_context.h;
+// VC5 now emits the derived vptr without a raw store, leaving only mode/vptr order drift
+// attempt 34: moved modeValue into its natural member initializer; the shared
+// scr_save.cpp build became exact while the smaller no-raw body differed by 10 bytes
+// MODULE FLAGS: config/flags/scr_save.rsp
 
 #include <string.h>
+#include "../../include/scr_save_context.h"
 
+#if 0
 class TPanel;
 class TTextPanel;
 class TEditPanel;
@@ -132,15 +138,14 @@ public:
     TribeSaveGameScreen(Mode mode, char* name, int quit_after_save);
     void fillList();
 };
+#endif
 
-TribeSaveGameScreen::TribeSaveGameScreen(Mode mode, char* name, int quit) : TScreenPanel("Save Game Screen") {
+TribeSaveGameScreen::TribeSaveGameScreen(Mode mode, char* name, int quit) : TScreenPanel("Save Game Screen"), modeValue(mode) {
     TPanel* fromPanel;
     TPanel* tabList[5];
     char info_file[260];
 
-    this->modeValue = mode;
     this->quit_after_save = quit;
-    *(unsigned long*)this = 0x573898;
     this->title = 0;
     this->input = 0;
     this->list = 0;
@@ -150,7 +155,7 @@ TribeSaveGameScreen::TribeSaveGameScreen(Mode mode, char* name, int quit) : TScr
     this->deleteButton = 0;
 
     if (name == 0 && mode == SaveGame) {
-        name = rge_base_game->get_save_game_name();
+        name = ((TRIBE_Game*)rge_base_game)->get_save_game_name();
     }
 
     fromPanel = panel_system.currentPanel();
@@ -177,7 +182,7 @@ TribeSaveGameScreen::TribeSaveGameScreen(Mode mode, char* name, int quit) : TScr
         width = 0x7A - strlen(rge_base_game->work_dir);
     }
 
-    if (!this->create_edit(this, &this->input, name, (short)width, 5, 20, 70, 600, 23, 11, 1, 1)) {
+    if (!this->create_edit(this, &this->input, name, (short)width, FormatFileName, 20, 70, 600, 23, 11, 1, 1)) {
         return;
     }
     this->input->set_help_info(0x7670, -1);

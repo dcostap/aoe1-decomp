@@ -1,7 +1,10 @@
 // attempt 1: natural save-for-scenario-editor flow; default flags missed original EH frame and first stub had wrong scenario holder/new size
 // attempt 2: use /GX, 0x490 Sed_Open size, scenario pointer at +0x5c, and virtual save at vtable +0xe4
-// FLAGS: config/flags/004A8060_save_for_scenario_editor.rsp
+// MODULE FLAGS: config/flags/scr_save.rsp
 
+#include "../../include/scr_save_context.h"
+
+#if 0
 class TPanelSystem {
 public:
     void* panel(char* name);
@@ -113,12 +116,13 @@ public:
     void popupOKDialog(long id, long a, long b, long c);
     void save_for_scenario_editor();
 };
+#endif
 
 void TribeSaveGameScreen::save_for_scenario_editor() {
-    rge_base_game->show_status_message(0x450, 0, -1);
+    ((TRIBE_Game*)rge_base_game)->show_status_message(0x450, 0, -1);
 
-    rge_base_game->scenario_holder->scenario->Set_scenario_name(this->fileName);
-    if (!rge_base_game->scenario_holder->save_scenario(this->fileName)) {
+    rge_base_game->world->scenario->Set_scenario_name(this->fileName);
+    if (!rge_base_game->world->save_scenario(this->fileName)) {
         this->popupOKDialog(0x963, 0, 0x1C2, 100);
         return;
     }
@@ -133,8 +137,8 @@ void TribeSaveGameScreen::save_for_scenario_editor() {
 
     int quit = this->quit_after_save;
     if (quit == 1) {
-        if (!rge_base_game->start_menu()) {
-            rge_base_game->close();
+        if (!((TRIBE_Game*)rge_base_game)->start_menu()) {
+            ((TRIBE_Game*)rge_base_game)->close();
             return;
         }
         panel_system.destroyPanel(scenarioName);
@@ -142,7 +146,7 @@ void TribeSaveGameScreen::save_for_scenario_editor() {
         TRIBE_Screen_Sed_Open* p = new TRIBE_Screen_Sed_Open;
         panel_system.setCurrentPanel(openName, 0);
     } else if (quit == 3) {
-        rge_base_game->start_scenario_editor(0, 0);
+        ((TRIBE_Game*)rge_base_game)->start_scenario_editor(0, 0);
     } else {
         panel_system.setCurrentPanel(scenarioName, 0);
     }

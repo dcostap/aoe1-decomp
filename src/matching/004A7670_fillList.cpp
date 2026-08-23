@@ -1,10 +1,13 @@
 // attempt 1: natural two-pass save/scenario file scan; first build was size-correct but loop used lea-after-strlen basin
 // attempt 2: keep a named fileInfo.name pointer/count to probe original strlen/strncpy register order
+// MODULE FLAGS: config/flags/scr_save.rsp
 
 #include <io.h>
 #include <stdio.h>
 #include <string.h>
+#include "../../include/scr_save_context.h"
 
+#if 0
 class TTextPanel {
 public:
     char pad[0x15C];
@@ -31,6 +34,7 @@ public:
 
     void fillList();
 };
+#endif
 
 void TribeSaveGameScreen::fillList() {
     char file_name[260];
@@ -41,10 +45,10 @@ void TribeSaveGameScreen::fillList() {
 
     long handle;
     if (this->modeValue == 0) {
-        sprintf(file_name, "%s*.gam", rge_base_game->base_path + 0xB12);
+        sprintf(file_name, "%s*.gam", (char*)rge_base_game->prog_info + 0xB12);
         handle = _findfirst(file_name, &fileInfo);
     } else {
-        sprintf(file_name, "%s*.scn", rge_base_game->base_path + 0xC17);
+        sprintf(file_name, "%s*.scn", (char*)rge_base_game->prog_info + 0xC17);
         handle = _findfirst(file_name, &fileInfo);
     }
 
@@ -59,10 +63,10 @@ void TribeSaveGameScreen::fillList() {
     }
 
     if (this->modeValue == 0) {
-        sprintf(file_name, "%s*.gmx", rge_base_game->base_path + 0xB12);
+        sprintf(file_name, "%s*.gmx", (char*)rge_base_game->prog_info + 0xB12);
         handle = _findfirst(file_name, &fileInfo);
     } else {
-        sprintf(file_name, "%s*.scx", rge_base_game->base_path + 0xC17);
+        sprintf(file_name, "%s*.scx", (char*)rge_base_game->prog_info + 0xC17);
         handle = _findfirst(file_name, &fileInfo);
     }
 

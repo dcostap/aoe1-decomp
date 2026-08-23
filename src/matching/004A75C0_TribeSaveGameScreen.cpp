@@ -1,6 +1,9 @@
 // attempt 1: natural virtual destructor with TScreenPanel-sized local stub and seven delete_panel calls; default flags missed the EH frame
-// FLAGS: config/flags/004A75C0_TribeSaveGameScreen.rsp
+// MODULE FLAGS: config/flags/scr_save.rsp
 
+#include "../../include/scr_save_context.h"
+
+#if 0
 class TPanel {
 public:
     char pad_panel[0xF0];
@@ -33,13 +36,14 @@ public:
 
     virtual ~TribeSaveGameScreen();
 };
+#endif
 
 TribeSaveGameScreen::~TribeSaveGameScreen() {
-    this->delete_panel(&this->title);
-    this->delete_panel(&this->input);
-    this->delete_panel(&this->list);
-    this->delete_panel(&this->scrollbar);
-    this->delete_panel(&this->okButton);
-    this->delete_panel(&this->cancelButton);
-    this->delete_panel(&this->deleteButton);
+    this->delete_panel((TPanel**)&this->title);
+    this->delete_panel((TPanel**)&this->input);
+    this->delete_panel((TPanel**)&this->list);
+    this->delete_panel((TPanel**)&this->scrollbar);
+    this->delete_panel((TPanel**)&this->okButton);
+    this->delete_panel((TPanel**)&this->cancelButton);
+    this->delete_panel((TPanel**)&this->deleteButton);
 }

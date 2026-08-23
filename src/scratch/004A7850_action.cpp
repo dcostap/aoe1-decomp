@@ -45,14 +45,24 @@
 // probes 45/H23, 53/H27, and 59/H30: game/prog_info alias variants worsened to
 // diff 1221 or 919; rolled back. Probe 47/H24 conditional directory selection
 // worsened to diff 1699. These tests do not prove a canonical alias shape.
-// BLOCKER: After the first _unlink, the executable reads the screen member at
-// +0x69C before rge_base_game. The rebuild reads rge_base_game first. Fault and
-// concurrent-mutation order differ before the same later calls.
+// R2: A common RGE_Base_Game pointer with branch-local directory ownership
+// restores the executable's modeValue, rge_base_game, and prog_info read order.
+// It also restores the add-before-currentLine order in both extension arms.
+// R2 probes: direct conditions delayed each global read until its branch.
+// A common prog_info pointer speculated the list read before the mode test.
+// One common sprintf recolored the prologue. Conditional calls kept size but
+// moved prog_info loads into each arm. A 256-byte buffer model changed nothing.
+// BLOCKER: VC5 keeps the global in EAX and modeValue in ECX, while the target
+// uses EDX and EAX. The rebuild also duplicates each destination LEA and push.
+// The target shares that suffix. This leaves a four-byte size difference.
+// MODULE FLAGS: config/flags/scr_save.rsp
 
 #include <stdio.h>
 #include <string.h>
 #include <io.h>
+#include "../../include/scr_save_context.h"
 
+#if 0
 class TPanel {
 public:
     char* panelName();
@@ -142,6 +152,7 @@ public:
     long action(TPanel* panel, long msg, unsigned long p3, unsigned long p4);
     void save_for_scenario_editor();
 };
+#endif
 
 long TribeSaveGameScreen::action(TPanel* panel, long msg, unsigned long p3, unsigned long p4) {
     // BINARY NOTE: The executable keeps state bytes before the formatted text in both buffers.
@@ -161,15 +172,15 @@ long TribeSaveGameScreen::action(TPanel* panel, long msg, unsigned long p3, unsi
                     sprintf(tempFileName + 4, "%s%s.scn", dir, this->list->currentLine());
                 }
                 _unlink(tempFileName + 4);
-                int mode2;
-                mode2 = this->modeValue;
-                TRIBE_Game* game2 = (TRIBE_Game*)rge_base_game;
-                RGE_Prog_Info* prog2 = game2->prog_info;
+                Mode mode2 = this->modeValue;
+                RGE_Base_Game* game2 = rge_base_game;
                 // BINARY NOTE: Each extension arm fetches the current list line before formatting.
-                if (mode2 == 0) {
-                    sprintf(tempFileName + 4, "%s%s.gmx", ((char*)prog2) + 0xB12, this->list->currentLine());
+                if (mode2 == SaveGame) {
+                    char* dir2 = game2->prog_info->save_dir;
+                    sprintf(tempFileName + 4, "%s%s.gmx", dir2, this->list->currentLine());
                 } else {
-                    sprintf(tempFileName + 4, "%s%s.scx", ((char*)prog2) + 0xC17, this->list->currentLine());
+                    char* dir2 = game2->prog_info->scenario_dir;
+                    sprintf(tempFileName + 4, "%s%s.scx", dir2, this->list->currentLine());
                 }
                 _unlink(tempFileName + 4);
                 this->list->delete_line(this->list->get_line());

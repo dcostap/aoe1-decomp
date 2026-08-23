@@ -15,7 +15,7 @@
 
 #include "..\..\include\rmm_obj_context.h"
 
-unsigned char RGE_RMM_Object_Generator::to_close(RGE_Object_Info_Line* info_line, long x, long y)
+unsigned char RGE_RMM_Object_Generator::to_close(RGE_Object_Info_Line& info_line, long x, long y)
 {
     long count = this->info.land_num;
     long i;
@@ -27,7 +27,7 @@ unsigned char RGE_RMM_Object_Generator::to_close(RGE_Object_Info_Line* info_line
         long dy = y - *p;
         if (dy < 0) dy = -dy;
 
-        if (dx < info_line->land_inner_radius && dy < info_line->land_inner_radius) {
+        if (dx < info_line.land_inner_radius && dy < info_line.land_inner_radius) {
             return 1;
         }
     }
