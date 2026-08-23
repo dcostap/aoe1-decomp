@@ -161,8 +161,33 @@
       "source": "src/information_dropsites_tu.cpp",
       "flags": "config/flags/004E3C90_dropsitesWithinRequiredDistance.rsp",
       "owners": {
+        "004D9110": "src/matching/004D9110_fullyExploredZone.cpp",
+        "004D9160": "src/matching/004D9160_setFullyExploredZone.cpp",
+        "004D91A0": "src/matching/004D91A0_tileUncovered.cpp",
+        "004D91F0": "src/matching/004D91F0_setTileExplored.cpp",
+        "004D9230": "src/matching/004D9230_ownerOfGameID.cpp",
         "004DAFF0": "src/matching/004DAFF0_importantUnit.cpp",
-        "004E3C90": "src/matching/004E3C90_dropsitesWithinRequiredDistance.cpp"
+        "004E3C90": "src/matching/004E3C90_dropsitesWithinRequiredDistance.cpp",
+        "004E3E90": "src/matching/004E3E90_numberAvailableStoragePits.cpp",
+        "004E3F80": "src/matching/004E3F80_numberAvailableGranaries.cpp",
+        "004E4040": "src/matching/004E4040_lookAtMap.cpp",
+        "004E41C0": "src/matching/004E41C0_damageInflictedPerSecond.cpp",
+        "004E4240": "src/matching/004E4240_damageInflictedPerSecond.cpp",
+        "004E42B0": "src/matching/004E42B0_timeToBeKilled.cpp",
+        "004E4350": "src/matching/004E4350_timeToBeKilled.cpp",
+        "004E43E0": "src/matching/004E43E0_closestDropsiteResID.cpp",
+        "004E4400": "src/matching/004E4400_calculatePlayVariation.cpp",
+        "004E4450": "src/matching/004E4450_convertUnitToIntType.cpp",
+        "004E4500": "src/matching/004E4500_loadUnitHistory.cpp",
+        "004E45A0": "src/matching/004E45A0_unitsThatAreMostBuilt.cpp",
+        "004E4610": "src/matching/004E4610_unitsThatAreLeastBuilt.cpp"
+      },
+      "symbols": {
+        "004D9110": "?fullyExploredZone@TribeInformationAIModule@@QAEHH@Z",
+        "004E41C0": "?damageInflictedPerSecond@TribeInformationAIModule@@QAEMPAVTacticalAIGroup@@PAVRGE_Static_Object@@@Z",
+        "004E4240": "?damageInflictedPerSecond@TribeInformationAIModule@@QAEMPAHHPAVRGE_Static_Object@@@Z",
+        "004E42B0": "?timeToBeKilled@TribeInformationAIModule@@QAEMPAVTacticalAIGroup@@PAVRGE_Static_Object@@@Z",
+        "004E4350": "?timeToBeKilled@TribeInformationAIModule@@QAEMPAHHPAVRGE_Static_Object@@@Z"
       }
     },
     {
@@ -189,7 +214,10 @@
       "source": "src/panel_create_button_tu.cpp",
       "flags": "config/flags/00468530_create_button.rsp",
       "owners": {
+        "00467560": "src/matching/00467560_draw_setup.cpp",
         "00467A50": "src/matching/00467A50_set_ideal_size.cpp",
+        "00467A70": "src/matching/00467A70_set_background.cpp",
+        "00467BE0": "src/matching/00467BE0_set_background2.cpp",
         "00468530": "src/matching/00468530_create_button.cpp",
         "00468CB0": "src/matching/00468CB0_create_text.cpp",
         "00468E50": "src/matching/00468E50_create_text.cpp",
@@ -200,6 +228,7 @@
         "00469C40": "src/matching/00469C40_create_horz_slider.cpp"
       },
       "symbols": {
+        "00467A70": "?set_background@TEasy_Panel@@QAEHPADJ@Z",
         "00468CB0": "?create_text@TEasy_Panel@@MAEHPAVTPanel@@PAPAVTTextPanel@@PADJJJJJHHH@Z",
         "00468E50": "?create_text@TEasy_Panel@@MAEHPAVTPanel@@PAPAVTTextPanel@@PAPADJJJJJJHH@Z"
       }
@@ -665,14 +694,53 @@
         "0041B650": "src/matching/0041B650_write_draw_log2.cpp",
         "0041B6A0": "src/matching/0041B6A0_RGE_Base_Game.cpp",
         "0041BAA0": "src/accepted_drift/0041BAA0_setup.cpp",
-        "0041C270": "src/scratch/0041C270_RGE_Base_Game.cpp"
+        "0041C270": "src/scratch/0041C270_RGE_Base_Game.cpp",
+        "0041C7D0": "src/matching/0041C7D0_reset_timings.cpp",
+        "0041C830": "src/matching/0041C830_add_to_timing.cpp",
+        "0041C870": "src/matching/0041c870_increment_world_update_count.cpp",
+        "0041C880": "src/matching/0041c880_increment_view_update_count.cpp",
+        "0041C890": "src/matching/0041C890_set_last_single_time.cpp",
+        "0041C8B0": "src/matching/0041C8B0_get_last_time.cpp",
+        "0041C8D0": "src/matching/0041C8D0_get_last_single_time.cpp",
+        "0041C8F0": "src/matching/0041C8F0_get_accum_time.cpp",
+        "0041C910": "src/matching/0041C910_get_max_time.cpp",
+        "0041C930": "src/matching/0041C930_get_last_max_time.cpp",
+        "0041C950": "src/matching/0041c950_get_last_world_update_count.cpp",
+        "0041C960": "src/matching/0041c960_get_last_view_update_count.cpp",
+        "0041C970": "src/matching/0041c970_get_world_update_count.cpp",
+        "0041C980": "src/matching/0041c980_get_view_update_count.cpp",
+        "0041C990": "src/matching/0041c990_get_error_code.cpp",
+        "0041C9A0": "src/matching/0041C9A0_get_string.cpp",
+        "0041C9C0": "src/matching/0041C9C0_get_string.cpp",
+        "0041C9F0": "src/matching/0041C9F0_get_string.cpp",
+        "0041CA10": "src/matching/0041CA10_get_string2.cpp",
+        "0041CB80": "src/matching/0041CB80_get_scenario_info.cpp",
+        "0041CCA0": "src/matching/0041CCA0_get_scenario_header.cpp",
+        "0041CE00": "src/matching/0041CE00_new_scenario_header.cpp",
+        "0041CE60": "src/matching/0041CE60_new_scenario_header.cpp",
+        "0041CEC0": "src/matching/0041CEC0_new_scenario_info.cpp",
+        "0041CF30": "src/matching/0041CF30_get_campaign_info.cpp",
+        "0041CF70": "src/matching/0041CF70_set_campaign_info.cpp",
+        "0041CFC0": "src/matching/0041CFC0_set_campaign_win.cpp",
+        "0041CFD0": "src/matching/0041CFD0_run.cpp",
+        "0041D0A0": "src/matching/0041D0A0_setup_cmd_options.cpp",
+        "0041E700": "src/matching/0041E700_setup_class.cpp",
+        "0041E7A0": "src/matching/0041E7A0_rge_base_game_wnd_proc.cpp",
+        "0041EBC0": "src/matching/0041EBC0_setup_palette.cpp",
+        "0041EBF0": "src/matching/0041EBF0_setup_mouse.cpp"
       },
       "symbols": {
         "0041B620": "?write_draw_log@@YAXPAD@Z",
         "0041B650": "?write_draw_log2@@YAXPAD@Z",
         "0041B6A0": "??0RGE_Base_Game@@QAE@PAVRGE_Prog_Info@@H@Z",
         "0041BAA0": "?setup@RGE_Base_Game@@MAEHXZ",
-        "0041C270": "??1RGE_Base_Game@@UAE@XZ"
+        "0041C270": "??1RGE_Base_Game@@UAE@XZ",
+        "0041C9A0": "?get_string@RGE_Base_Game@@UAEPADJ@Z",
+        "0041C9C0": "?get_string@RGE_Base_Game@@UAEPADJPADH@Z",
+        "0041C9F0": "?get_string@RGE_Base_Game@@UAEPADHJPADH@Z",
+        "0041CA10": "?get_string2@RGE_Base_Game@@UAEPADHJJPADH@Z",
+        "0041CE00": "?new_scenario_header@RGE_Base_Game@@UAEPAVRGE_Scenario_Header@@H@Z",
+        "0041CE60": "?new_scenario_header@RGE_Base_Game@@QAEPAVRGE_Scenario_Header@@PAVRGE_Scenario@@@Z"
       }
     },
     {
@@ -1069,6 +1137,141 @@
         "004ADD00": "?LoadDisabledItemsFromScenario@TRIBE_Screen_Sed@@QAEXXZ",
         "004AE620": "?load_victory_cond_from_scenario@TRIBE_Screen_Sed@@QAEXH@Z",
         "004AEE10": "?activate_victory_proper_fields@TRIBE_Screen_Sed@@QAEXHH@Z"
+      }
+    },
+    {
+      "name": "stat_obj_sparse",
+      "source": "src/stat_obj_tu.cpp",
+      "flags": "config/flags/default.rsp",
+      "owners": {
+        "004C5E50": "src/matching/004C5E50_distance_to_object.cpp"
+      },
+      "symbols": {
+        "004C5E50": "?distance_to_object@RGE_Static_Object@@QAEMPAV1@@Z"
+      }
+    },
+    {
+      "name": "tcommand_context",
+      "source": "src/tcommand_tu.cpp",
+      "flags": "config/flags/default.rsp",
+      "owners": {
+        "0050AF30": "src/matching/0050AF30_command_quick_build.cpp",
+        "0050AF80": "src/matching/0050AF80_command_shared_los.cpp",
+        "0050AFD0": "src/matching/0050AFD0_command_cancel_build.cpp",
+        "0050B020": "src/matching/0050B020_command_attack_ground.cpp",
+        "0050B0D0": "src/matching/0050B0D0_command_cheat.cpp",
+        "0050B190": "src/matching/0050B190_command_trade_attribute.cpp",
+        "0050B230": "src/matching/0050B230_command_trade_attribute.cpp",
+        "0050B290": "src/matching/0050B290_command_repair.cpp"
+      },
+      "symbols": {
+        "0050B190": "?command_trade_attribute@TRIBE_Command@@QAEXPAPAVRGE_Static_Object@@FJ@Z",
+        "0050B230": "?command_trade_attribute@TRIBE_Command@@QAEXHHJ@Z"
+      }
+    },
+    {
+      "name": "tribegam_prefix",
+      "source": "src/tribegam_tu.cpp",
+      "flags": "config/flags/00521120_TRIBE_Game.rsp",
+      "owners": {
+        "00520FC0": "src/matching/00520FC0_encrypt_codes.cpp",
+        "00521020": "src/matching/00521020_run_log.cpp",
+        "00523AE0": "src/matching/00523AE0_video_sub_wnd_proc.cpp",
+        "00521120": "src/matching/00521120_TRIBE_Game.cpp",
+        "005213A0": "src/matching/005213A0_TRIBE_Game.cpp",
+        "00521620": "src/matching/00521620_close_game_screens.cpp",
+        "00522200": "src/matching/00522200_setup_palette.cpp",
+        "005222C0": "src/matching/005222C0_setup_sounds.cpp",
+        "00522770": "src/matching/00522770_create_world.cpp",
+        "005227D0": "src/matching/005227D0_set_game_mode.cpp",
+        "00522810": "src/matching/00522810_set_player.cpp",
+        "00522860": "src/matching/00522860_set_save_game_name.cpp",
+        "005228A0": "src/matching/005228A0_set_load_game_name.cpp",
+        "005228E0": "src/matching/005228E0_get_string.cpp",
+        "00522930": "src/matching/00522930_get_string2.cpp",
+        "00523450": "src/matching/00523450_get_view_panel.cpp",
+        "005234A0": "src/matching/005234A0_get_map_panel.cpp",
+        "005234F0": "src/matching/005234F0_get_save_game_name.cpp",
+        "00523500": "src/matching/00523500_get_load_game_name.cpp",
+        "00523510": "src/matching/00523510_new_scenario_header.cpp",
+        "00523570": "src/matching/00523570_new_scenario_header.cpp",
+        "005235D0": "src/matching/005235D0_new_scenario_info.cpp",
+        "005236A0": "src/matching/005236A0_show_status_message.cpp",
+        "00523750": "src/matching/00523750_show_status_message.cpp",
+        "005237A0": "src/matching/005237A0_close_status_message.cpp",
+        "005237B0": "src/matching/005237B0_start_video.cpp",
+        "00523B10": "src/matching/00523B10_stop_video.cpp"
+      },
+      "symbols": {
+        "005228E0": "?get_string@TRIBE_Game@@UAEPADJPADH@Z",
+        "00523510": "?new_scenario_header@TRIBE_Game@@UAEPAVRGE_Scenario_Header@@H@Z",
+        "00523570": "?new_scenario_header@TRIBE_Game@@UAEPAVRGE_Scenario_Header@@PAVRGE_Scenario@@@Z",
+        "005236A0": "?show_status_message@TRIBE_Game@@QAEXPAD0J@Z",
+        "00523750": "?show_status_message@TRIBE_Game@@QAEXHPADJ@Z"
+      }
+    },
+    {
+      "name": "tplayer_civilization",
+      "source": "src/tplayer_tu.cpp",
+      "flags": "config/flags/default.rsp",
+      "owners": {
+        "005153D0": "src/accepted_drift/005153D0_loadAIInformation.cpp",
+        "00517B90": "src/matching/00517B90_setupEgyptian.cpp",
+        "00517E10": "src/matching/00517E10_setupBabylonian.cpp",
+        "005181C0": "src/matching/005181C0_setupHittite.cpp",
+        "005188F0": "src/matching/005188F0_setupChoson.cpp",
+        "00518DD0": "src/matching/00518DD0_setupMacedonian.cpp",
+        "00518F00": "src/matching/00518F00_logStatus.cpp",
+        "005192F0": "src/matching/005192F0_trackUnitGather.cpp",
+        "00519320": "src/matching/00519320_get_achievement.cpp"
+      }
+    },
+    {
+      "name": "tplayer_postpad",
+      "source": "src/tplayer_postpad_tu.cpp",
+      "flags": "config/flags/00519490_load_victory.rsp",
+      "owners": {
+        "00519500": "src/matching/00519500_new_victory.cpp",
+        "005195D0": "src/matching/005195D0_analyize_selected_objects.cpp"
+      }
+    },
+    {
+      "name": "vw_main_prefix",
+      "source": "src/vw_main_tu.cpp",
+      "flags": "config/flags/default.rsp",
+      "owners": {
+        "0053DAB0": "src/matching/0053DAB0_RGE_Main_View.cpp",
+        "0053DB40": "src/matching/0053DB40_handle_idle.cpp",
+        "0053E280": "src/matching/0053E280_handle_mouse_up.cpp",
+        "0053E2F0": "src/matching/0053E2F0_mouse_move_action.cpp",
+        "0053E340": "src/matching/0053E340_mouse_left_down_action.cpp",
+        "0053F660": "src/matching/0053F660_start_scroll_view.cpp",
+        "0053F6B0": "src/matching/0053F6B0_handle_scroll_view.cpp",
+        "0053F800": "src/matching/0053F800_draw_multi_object_outline.cpp"
+      }
+    },
+    {
+      "name": "scr_game_prefix",
+      "source": "src/scr_game_tu.cpp",
+      "flags": "config/flags/004982E0_action.rsp",
+      "owners": {
+        "004954A0": "src/matching/004954A0_TRIBE_Screen_Game.cpp",
+        "0049B000": "src/matching/0049B000_scr_game_score_compare.cpp",
+        "0049B560": "src/matching/0049B560_draw.cpp",
+        "0049B830": "src/matching/0049B830_handle_anim_pal.cpp"
+      }
+    },
+    {
+      "name": "scr_ach_prefix",
+      "source": "src/scr_ach_tu.cpp",
+      "flags": "config/flags/0048E210_TribeAchievementsScreen.rsp",
+      "owners": {
+        "0048E210": "src/matching/0048E210_TribeAchievementsScreen.cpp",
+        "0048F0B0": "src/matching/0048F0B0_draw.cpp",
+        "0048F190": "src/matching/0048F190_handle_mouse_down.cpp",
+        "0048F280": "src/matching/0048F280_action.cpp",
+        "0048F500": "src/matching/0048F500_handle_idle.cpp",
+        "0048F530": "src/matching/0048F530_wnd_proc.cpp"
       }
     }
   ]

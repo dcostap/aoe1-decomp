@@ -21,6 +21,9 @@
 // - unhandled (param_1, param_2) pairs fall to RGE_Base_Game::get_string2 (0041CA10) direct call.
 // - tail `param_4[param_5-1]=0; return param_4;` mirrors sibling get_string (005228E0).
 
+#include "../../include/tribegam_context.h"
+
+#if 0
 class RGE_Base_Game {
 public:
     virtual ~RGE_Base_Game();
@@ -40,6 +43,7 @@ class TRIBE_Game : public RGE_Base_Game {
 public:
     virtual char* get_string2(int param_1, long param_2, long param_3, char* param_4, int param_5);
 };
+#endif
 
 char* TRIBE_Game::get_string2(int param_1, long param_2, long param_3, char* param_4, int param_5)
 {

@@ -15,6 +15,9 @@
 #define VPAD8(n) VPAD4(n) VPAD4(n##_4)
 #define VPAD16(n) VPAD8(n) VPAD8(n##_8)
 
+#include "../../include/scr_ach_context.h"
+
+#if 0
 class TPanel {
 public:
     char gap_00[0xF0];        // vptr + 0xF0 bytes of data; sizeof(TPanel) = 0xF4
@@ -59,6 +62,8 @@ public:
     virtual long handle_mouse_down(unsigned char button, long x, long y, int flags, int area);
     void set_mode(long mode);
 };
+
+#endif
 
 long TribeAchievementsScreen::handle_mouse_down(unsigned char button, long x, long y, int flags, int area)
 {

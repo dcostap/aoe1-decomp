@@ -3,28 +3,7 @@
 
 extern "C" int __cdecl _ftol();
 
-class MainDecisionAIModule {
-public:
-    void* object(int id);
-};
-
-class RGE_Static_Object {
-public:
-    char gap_00[0x30];
-    float hp;                  // +0x30
-    char gap_34[4];
-    float field_38;            // +0x38
-    float field_3C;            // +0x3C
-};
-
-class TribeInformationAIModule {
-public:
-    char gap_00[0x100];
-    MainDecisionAIModule* md; // +0x100
-
-    float damagePerSecond(int id, int a, int b);
-    float timeToBeKilled(int* ids, int count, RGE_Static_Object* obj);
-};
+#include "../../include/information_dropsites_context.h"
 
 float TribeInformationAIModule::timeToBeKilled(int* ids, int count, RGE_Static_Object* obj) {
     float total = 0.0f;
@@ -39,10 +18,10 @@ float TribeInformationAIModule::timeToBeKilled(int* ids, int count, RGE_Static_O
         remaining = count;
         p = ids;
         do {
-            target = (RGE_Static_Object*)this->md->object(*p);
+            target = this->md->object(*p);
             if (target != 0) {
-                a = (int)(obj->field_3C);
-                b = (int)(obj->field_38);
+                a = (int)(obj->world_y);
+                b = (int)(obj->world_x);
                 dps = this->damagePerSecond(*p, b, a);
                 if (dps == 0.0f) {
                     dps = 600.0f;

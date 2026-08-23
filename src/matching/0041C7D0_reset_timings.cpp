@@ -2,6 +2,7 @@
 // matched via variant lab: raw int* pointer with indices [-1],[0],[1],[4],[5],[6]
 // do-while(--i) with stride 8, not for-loop or struct access
 
+#ifndef BASEGAME_GROUPED_TU
 struct RGE_Timing_Info {
     int last_time;
     int accum_time;
@@ -29,6 +30,7 @@ public:
 
     void reset_timings();
 };
+#endif
 
 void RGE_Base_Game::reset_timings() {
     this->frame_count = 0;
@@ -42,7 +44,11 @@ void RGE_Base_Game::reset_timings() {
     this->view_update_fps = 0;
 
     int i = 0x1E;
+#ifdef BASEGAME_GROUPED_TU
+    int* t = (int*)this->data_ + 1;
+#else
     int* t = (int*)this->timings;
+#endif
     do {
         t[-1] = 0;
         t[0] = 0;

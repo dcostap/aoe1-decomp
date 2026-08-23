@@ -1,5 +1,6 @@
 static char g_string_buffer[0x200];
 
+#ifndef BASEGAME_GROUPED_TU
 class RGE_Base_Game {
 public:
     virtual void vf00();
@@ -10,13 +11,14 @@ public:
     virtual void vf14();
     virtual void vf18();
     virtual void vf1C();
-    virtual void vf20(long id, char* buf, int maxlen);
+    virtual char* get_string(long id, char* buf, int maxlen);
 
     char* get_string(long id);
 };
+#endif
 
 char* RGE_Base_Game::get_string(long id)
 {
-    this->vf20(id, g_string_buffer, 0x200);
+    this->get_string(id, g_string_buffer, 0x200);
     return g_string_buffer;
 }

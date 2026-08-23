@@ -32,7 +32,9 @@
 // progress 20260429: corrected the visible command-option string spelling to match the original string triplets (compact, spaced, underscored) and rewrote '=' scans with an explicit cVar1 like Ghidra/source; codegen is unchanged (still exact size 5726, first mismatch prologue sub esp 204/edi=this hidden-home). Tested strstr-as-int surface and /G5 flag as probes; both were codegen-identical, so not kept as special context.
 
 extern "C" {
+#ifndef BASEGAME_GROUPED_TU
 extern char* (__stdcall *CharUpperA)(char* lpString);
+#endif
 char* __cdecl strstr(const char* str, const char* substr);
 char* __cdecl strncpy(char* dest, const char* src, unsigned int count);
 long __cdecl atol(const char* str);
@@ -43,12 +45,14 @@ char* __cdecl _mbsncat(char* dst, const char* src, unsigned int count);
 }
 
 // Game function declarations matching original asm calls
+#ifndef BASEGAME_GROUPED_TU
 class TDebuggingLog {
 public:
     void LogFile(int v);       // 004362B0
     void LogTimestamp(int v);  // 00436330
     void LogOutput(int v);     // 004362F0
 };
+#endif
 
 extern "C" {
 void __cdecl RESFILE_Set_Missing_Flag(int flag);          // 0047F580
@@ -56,6 +60,7 @@ TDebuggingLog* g_L;                                       // 62C4FC — global d
 }
 
 // Local stub types
+#ifndef BASEGAME_GROUPED_TU
 class RGE_Prog_Info {
 public:
     char gap_00[0xF3];
@@ -84,7 +89,9 @@ public:
     char gap_8E8[0x32F];
     char scenario_dir[261];
 };
+#endif
 
+#ifndef BASEGAME_GROUPED_TU
 class RGE_Base_Game {
 public:
     char gap_00[0x0C];
@@ -110,6 +117,7 @@ public:
     void setGameDeveloperMode(int v);   // 004227F0
     int setup_cmd_options();
 };
+#endif
 
 extern "C" {
 extern int all_cp;

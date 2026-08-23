@@ -1,10 +1,25 @@
-#include "../include/panel_button_text_context.h"
+// Authentic PDB module: C:\msdev\work\age1_x1\Panel_ez.cpp.
+// Bodies stay in PDB source-line order. Each VA has one canonical owner.
+// 004675C0 draw_background remains excluded until its full draw-area surface
+// replaces the local accepted-drift declaration set.
+#include "../include/panel_ez_context.h"
+#include "scratch/00466A90_setup.cpp"
+#include "scratch/00467380_setup_shadow_area.cpp"
+#include "matching/00467560_draw_setup.cpp"
+#include "matching/00467570_draw.cpp"
+#include "matching/004679F0_set_info_file.cpp"
 #include "matching/00467A50_set_ideal_size.cpp"
+#include "matching/00467A70_set_background.cpp"
+#include "matching/00467BE0_set_background2.cpp"
 #include "matching/00468530_create_button.cpp"
+#include "scratch/00468760_create_check_box.cpp"
+#include "scratch/004689C0_create_radio_button.cpp"
 #include "matching/00468CB0_create_text.cpp"
 #include "matching/00468E50_create_text.cpp"
 #include "matching/00469000_create_input.cpp"
 #include "matching/004691C0_create_edit.cpp"
+#include "accepted_drift/00469380_create_drop_down.cpp"
+#include "scratch/004696B0_create_list.cpp"
 #include "matching/00469910_create_scrollbar.cpp"
 #include "matching/00469AD0_create_vert_slider.cpp"
 #include "matching/00469C40_create_horz_slider.cpp"

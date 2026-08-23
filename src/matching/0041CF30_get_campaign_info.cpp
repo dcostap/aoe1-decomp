@@ -3,6 +3,7 @@
 // The +0x04 member is RGE_Game_Info::player_game_info. Keep the three
 // direct getter calls and output stores in this order.
 
+#ifndef BASEGAME_GROUPED_TU
 class RGE_Game_Info {
 public:
     int get_current_campaign(void);
@@ -16,6 +17,7 @@ public:
     char gap_00[0x04];
     RGE_Game_Info* player_game_info;
 };
+#endif
 
 void RGE_Base_Game::get_campaign_info(int* campaign, int* player, int* num_campaigns) {
     int c = this->player_game_info->get_current_campaign();

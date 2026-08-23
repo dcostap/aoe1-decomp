@@ -3,6 +3,9 @@
 // Attempt log:
 // try 1: replaced free-function shim with natural member/class surface and dllimport IsIconic.
 
+#include "../../include/scr_ach_context.h"
+
+#if 0
 extern int confirmed_close;
 
 class RGE_Base_Game {
@@ -38,6 +41,8 @@ public:
 
     virtual long wnd_proc(void* h1, unsigned int msg, unsigned int w, long l);
 };
+
+#endif
 
 long TribeAchievementsScreen::wnd_proc(void* h1, unsigned int msg, unsigned int w, long l)
 {

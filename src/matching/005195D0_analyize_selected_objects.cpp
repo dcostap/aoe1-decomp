@@ -20,89 +20,16 @@
 // - A for-header increment (`++i, ++p`) moved the build to a 2-byte drift;
 //   spelling the inner bound as `j >= sel_count` matched the oracle's
 //   `cmp edi,eax; jge` and produced exact bytes.
+// - The shared canonical player/object surface preserves the exact owner and
+//   266 emitted bytes.
+
+#include "../../include/tplayer_context.h"
 
 extern unsigned int DAT_0086bc88;
 extern unsigned int DAT_0086bc8c;
 extern float DAT_0057682c;
 extern unsigned long tribe_group_properties[];
 extern int tribe_group_properties_num;
-
-class RGE_Static_Object;
-
-class RGE_Player {
-public:
-    virtual ~RGE_Player();
-    virtual void set_game_status();
-    virtual void do_resign();
-    virtual void changeToHumanPlayer();
-    virtual void changeToComputerPlayer();
-    virtual void aiStatus();
-    virtual void isEnemy();
-    virtual void isAlly();
-    virtual void isNeutral();
-    virtual void isAllNeutral();
-    virtual void setDiplomaticStance();
-    virtual void loadAIInformation();
-    virtual void sendUnitAIOrder();
-    virtual void processAIOrder();
-    virtual void kickAI();
-    virtual void strategicNumber();
-    virtual void sendGameOrder();
-    virtual void sendAddWaypointCommand();
-    virtual void processAddWaypointCommand();
-    virtual void sendPlayCommand();
-    virtual void sendPlayCommand2();
-    virtual void sendAICommand();
-    virtual void objectCostByType();
-    virtual void trackUnitGather();
-    virtual void make_scenario_obj();
-    virtual void scenario_save();
-    virtual void scenario_load();
-    virtual void scenario_postsave();
-    virtual void scenario_postload();
-    virtual void load();
-    virtual void add_attribute_num();
-    virtual void update();
-    virtual void update_dopplegangers();
-    virtual void save();
-    virtual void save2();
-    virtual void save_info();
-    virtual void random_start();
-    virtual void make_new_object();
-
-    char gap_04[0x46];
-    short id;
-    char gap_4C[0xE4];
-    RGE_Static_Object* selected_obj;
-    RGE_Static_Object* sel_list[25];
-    unsigned int sel_object_properties;
-    short sel_count;
-    char gap_19E[0x82];
-};
-
-class RGE_Master_Static_Object {
-public:
-    virtual ~RGE_Master_Static_Object();
-    char gap_04[0x0C];
-    short id;
-    short copy_id;
-    short object_group;
-};
-
-class RGE_Static_Object {
-public:
-    virtual ~RGE_Static_Object();
-    int id;
-    RGE_Master_Static_Object* master_obj;
-    RGE_Player* owner;
-    char gap_10[0x34];
-    float attribute_amount_held;
-};
-
-class TRIBE_Player : public RGE_Player {
-public:
-    virtual void analyize_selected_objects();
-};
 
 void TRIBE_Player::analyize_selected_objects()
 {

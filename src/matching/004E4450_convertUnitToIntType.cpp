@@ -1,22 +1,4 @@
-class RGE_Master_Static_Object {
-public:
-    char gap_00[0x10];
-    short id;             // +0x10
-    short copy_id;        // +0x12
-    short object_group;   // +0x14
-};
-
-class RGE_Static_Object {
-public:
-    char gap_00[0x04];
-    long id;              // +0x04
-    RGE_Master_Static_Object* master_obj; // +0x08
-};
-
-class TribeInformationAIModule {
-public:
-    int convertUnitToIntType(RGE_Static_Object* obj) const;
-};
+#include "../../include/information_dropsites_context.h"
 
 int TribeInformationAIModule::convertUnitToIntType(RGE_Static_Object* obj) const {
     int og = obj->master_obj->object_group;

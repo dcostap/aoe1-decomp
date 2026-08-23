@@ -22,7 +22,9 @@ struct MSG_PART {
     long pt_y;
     int pad_18;
 };
+struct tagMSG;
 
+#ifndef BASEGAME_GROUPED_TU
 class TCommunications_Handler {
 public:
     int IsPaused();
@@ -46,6 +48,7 @@ public:
 
     int run();
 };
+#endif
 
 int RGE_Base_Game::run()
 {
@@ -62,12 +65,20 @@ int RGE_Base_Game::run()
                     if (msg.wParam == 0x12) {
                         return msg.lParam;
                     }
+#ifdef BASEGAME_GROUPED_TU
+                    if (this->handle_message((tagMSG*)&msg.message) != 0) {
+#else
                     if (this->translate_message(&msg.message) != 0) {
+#endif
                         translate(&msg.message);
                         dispatch(&msg.message);
                     }
                 } else {
+#ifdef BASEGAME_GROUPED_TU
+                    this->handle_idle();
+#else
                     this->idle();
+#endif
                 }
                 continue;
             }

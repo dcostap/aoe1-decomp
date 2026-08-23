@@ -1,14 +1,15 @@
+#ifndef BASEGAME_GROUPED_TU
 class RGE_Base_Game {
 public:
     virtual ~RGE_Base_Game();
     char gap_04[0x3C];
     int error_code_;
     char gap_44[0x4C4];
-    int world_update_count_;
-    int view_update_count_;
+    int world_update_count;
+    int view_update_count;
     char gap_510[4];
-    int last_world_update_count_;
-    int last_view_update_count_;
+    int last_world_update_count;
+    int last_view_update_count;
     char gap_51C[0x3DC];
     float version_;
     unsigned char scenarioGame_;
@@ -40,7 +41,8 @@ public:
 
     void increment_view_update_count();
 };
+#endif
 
 void RGE_Base_Game::increment_view_update_count() {
-    this->view_update_count_++;
+    this->view_update_count++;
 }

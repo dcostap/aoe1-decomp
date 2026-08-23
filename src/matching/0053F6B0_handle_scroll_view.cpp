@@ -1,3 +1,4 @@
+#ifndef RGE_MAIN_VIEW_SHARED_CONTEXT
 class TDrawArea;
 class TShape;
 class PanelNode;
@@ -105,6 +106,7 @@ public:
 
     int handle_scroll_view(long param_1, long param_2);
 };
+#endif
 
 int RGE_Main_View::handle_scroll_view(long param_1, long param_2) {
     int result = this->RGE_View::handle_scroll_view(param_1, param_2);

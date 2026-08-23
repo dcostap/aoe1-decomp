@@ -5,6 +5,9 @@
 // expressions occur at different stack depths but resolve to the same buffer
 // address. The earlier scratch incorrectly compensated with str+4.
 
+#include "../../include/tribegam_context.h"
+
+#if 0
 class RGE_Base_Game {
 public:
     virtual void vf00(void);
@@ -23,9 +26,10 @@ public:
     void show_status_message(int string_id, char* param_2, long param_3);
     void show_status_message(char* param_1, char* param_2, long param_3);
 };
+#endif
 
 void TRIBE_Game::show_status_message(int string_id, char* param_2, long param_3) {
     char str[0x100];
-    this->get_string(string_id, str, 0x100);
+    this->get_string((long)string_id, str, 0x100);
     this->show_status_message(str, param_2, param_3);
 }

@@ -37,7 +37,18 @@
 // The construction-rule custom/default arms also use opposite block layout,
 // but preserve predicates, logs, map reads, load arguments, and effects. All
 // 42 calls and the final debug-state restoration match.
+// BINARY NOTE: The target is now owned by the PDB-ordered tplayer.cpp module
+// through src/tplayer_tu.cpp. Its fresh baseline remains 1514 bytes, 42 calls,
+// the 0x408 frame, and the TRIBE_Player symbol.
+// Finish probes: nested debug assignment, inverted and labeled construction
+// guards, direct global reread, local initializer, declaration order, nested
+// duplicated arms, constant pointer, and fixed reference. They did not improve
+// the 808-byte baseline. The direct reread and fixed reference worsened output.
+// Restore the natural assignment and one construction if/else as authoritative.
 
+#include "../../include/tplayer_context.h"
+
+#if 0
 typedef unsigned char uchar;
 
 class RGE_Player;
@@ -221,6 +232,8 @@ extern "C" unsigned int __cdecl strlen(const char*);
 extern RGE_Base_Game* rge_base_game;
 #define base_game rge_base_game
 #define tribe_game ((TRIBE_Game*)rge_base_game)
+
+#endif
 
 void TRIBE_Player::loadAIInformation(char* aiFile, char* ruleFile, char* personalityFile, int buildId, int unused)
 {

@@ -1,7 +1,11 @@
+#include "../../include/tribegam_context.h"
+
+#if 0
 class TRIBE_Game {
 public:
     long video_wnd_proc(void* hwnd, unsigned int msg, unsigned int wparam, long lparam);
 };
+#endif
 
 extern TRIBE_Game* rge_base_game;
 

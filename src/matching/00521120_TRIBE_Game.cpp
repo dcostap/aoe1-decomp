@@ -17,6 +17,9 @@ extern int out_of_sync;
 extern int out_of_sync2;
 extern int player_dropped[9];
 
+#include "../../include/tribegam_context.h"
+
+#if 0
 class RGE_Prog_Info {
 };
 
@@ -101,6 +104,7 @@ public:
 
     TRIBE_Game(RGE_Prog_Info* prog_info, int setup_game);
 };
+#endif
 
 TRIBE_Game::TRIBE_Game(RGE_Prog_Info* prog_info, int setup_game)
     : RGE_Base_Game(prog_info, 0),

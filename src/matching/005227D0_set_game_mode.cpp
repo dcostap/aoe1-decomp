@@ -1,3 +1,6 @@
+#include "../../include/tribegam_context.h"
+
+#if 0
 class TRIBE_Screen_Game {
 public:
     void game_mode_changed(int a, int b);
@@ -21,10 +24,11 @@ public:
 
     void set_game_mode(int a, int b);
 };
+#endif
 
 void TRIBE_Game::set_game_mode(int a, int b) {
     int old_mode = this->field_1B4;
-    ((RGE_Base_Game*)this)->set_game_mode(a, b);
+    this->RGE_Base_Game::set_game_mode(a, b);
     if (this->game_screen != 0) {
         this->game_screen->game_mode_changed(old_mode, this->field_1B4);
     }

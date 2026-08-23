@@ -1,6 +1,11 @@
+// VA: 0050AFD0 TRIBE_Command::command_cancel_build
+// PDB: tcommand.cpp lines 1450-1471.
+// Exact grouped finish uses the canonical packet, log, and inherited submit.
+
 #include <windows.h>
 #include <stdio.h>
 
+#ifndef TCOMMAND_CONTEXT_H
 class RGE_Game_World;
 class TCommunications_Handler;
 
@@ -17,7 +22,7 @@ public:
     unsigned int last_order_time;
     TCommunications_Handler* com_hand;
 
-    void submit(void* cmd, int size);
+    void submit(void* cmd, long size);
 };
 
 class RGE_Static_Object {
@@ -32,19 +37,29 @@ public:
 };
 
 struct TDebuggingLog {
-    void Log(const char* format, ...);
+    void __cdecl Log(char* format, ...);
 };
 
-extern "C" TDebuggingLog* L;
+extern TDebuggingLog* L;
+
+class TRIBE_Command_Cancel_Build {
+public:
+    unsigned char command;
+    char gap_01[3];
+    int unit_id;
+};
+#endif
+
 extern "C" void* __cdecl calloc(size_t num, size_t size);
 
 void TRIBE_Command::command_cancel_build(RGE_Static_Object* obj)
 {
-    unsigned char* cmd = (unsigned char*)calloc(1, 8);
+    TRIBE_Command_Cancel_Build* cmd =
+        (TRIBE_Command_Cancel_Build*)calloc(1, 8);
     if (cmd) {
-        cmd[0] = 0x6A;
-        *(int*)(cmd + 4) = obj->id;
-        L->Log("      >SEND CMD CANCELBLD");
+        cmd->command = 0x6A;
+        cmd->unit_id = obj->id;
+        L->Log((char*)"      >SEND CMD CANCELBLD");
         this->submit(cmd, 8);
     }
 }

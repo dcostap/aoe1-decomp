@@ -25,6 +25,33 @@ public:
     RGE_Game_Info(char* filename);
     ~RGE_Game_Info();
     void save(char* filename);
+    int open_scenario();
+    int get_current_campaign();
+    int get_current_player();
+    int get_current_scenario();
+    unsigned char set_current_campaign(long value);
+    unsigned char set_current_person(long value);
+    unsigned char set_current_scenario(long value);
+    void notify_of_scenario_complete();
+};
+class RGE_Scenario;
+class RGE_Scenario_Header {
+public:
+    void* vtable_ptr;
+    int error_code;
+    long version;
+    unsigned long checksum;
+    char* description;
+    virtual void vf00();
+    virtual void write(int file);
+    ~RGE_Scenario_Header();
+    RGE_Scenario_Header(int value);
+    RGE_Scenario_Header(RGE_Scenario* scenario);
+};
+class RGE_Scenario {
+public:
+    char pad_00[0x1990];
+    RGE_Scenario(int value, int zero);
 };
 class RGE_Scenario_File_Info {
 public:
@@ -34,31 +61,126 @@ public:
 };
 class RGE_Prog_Info {
 public:
-    char gap_00[0x410];
+    char prog_name[101];
+    char prog_version[21];
+    char prog_title[121];
+    char world_db_file[261];
+    char game_data_file[261];
+    char vol_name[261];
+    unsigned char gap_402[2];
+    unsigned long vol_ser_num;
+    int verify_cd;
+    int max_players_per_cd;
     void* instance;
-    char gap_414[0x87C - 0x414];
+    void* prev_instance;
+    char registry_key[256];
+    char cmd_line[256];
+    int show_wnd_flag;
+    char icon_name[41];
+    char menu_name[41];
+    char pal_file[261];
+    char cursor_file[261];
+    int max_players;
     int check_expiration;
-    char gap_880[0x88C - 0x880];
+    short expire_month;
+    short expire_day;
+    short expire_year;
+    unsigned char gap_886[2];
+    unsigned long update_interval;
     int check_multi_copies;
-    char gap_890[0x8C8 - 0x890];
-    int scroll_speed;
-    char gap_8CC[0x8DC - 0x8CC];
+    int skip_startup;
+    int full_screen;
+    int fixed_window_size;
+    int use_dir_draw;
+    int use_sys_mem;
+    int use_music;
+    int use_sound;
+    int use_cd_audio;
+    int use_ima;
+    int use_midi;
+    int use_wave_music;
+    int fast_view;
+    int auto_scroll;
+    long mouse_scroll_edge;
+    union {
+        unsigned long mouse_scroll_interval;
+        int scroll_speed;
+    };
+    float mouse_scroll_max_dist;
+    unsigned long key_scroll_interval;
+    float key_scroll_max_dist;
+    float key_scroll_object_move;
     short interface_style;
     unsigned char gap_8DE[2];
     int main_wid;
     int main_hgt;
-    char gap_8E8[0xC17 - 0x8E8];
-    char scenario_dir[1];
+    unsigned char game_guid[0x10];
+    unsigned char zone_guid[0x10];
+    char data_dir[261];
+    char graphics_dir[261];
+    char save_dir[261];
+    char scenario_dir[261];
+    char campaign_dir[261];
+    char sounds_dir[261];
+    char resource_dir[261];
+    char ai_dir[261];
+    char avi_dir[261];
+    unsigned char gap_1235[3];
 };
+class TDrawArea;
 class TDrawSystem {
 public:
-    char gap_00[0x2C];
-    int screen_size;
+    void* Inst;
+    void* Wnd;
+    void* Pal;
+    TDrawArea* DrawArea;
+    void* PrimaryArea;
+    void* DrawAreaList;
+    void* DirDraw;
+    void* PrimarySurface;
+    void* Clipper;
+    void* DirDrawPal;
+    unsigned long Flags;
+    union {
+        int ScreenWidth;
+        int screen_size;
+    };
+    int ScreenHeight;
+    int ColorBits;
+    int ErrorCode;
+    int ChangedMode;
+    int IsBanked;
+    int CanSrcBlt;
+    int Restored;
+    int ModeAvail640;
+    int ModeAvail800;
+    int ModeAvail1024;
+    int ModeAvail1280;
+    int ModeAvail320_200;
+    int ModeAvail320_240;
+    int ModeAvail320_200_16;
+    int ModeAvail320_240_16;
+    int ModeAvail640_16;
+    int ModeAvail800_16;
+    int ModeAvail1024_16;
+    unsigned char palette[0x400];
+    unsigned char DrawType;
+    unsigned char ScreenMode;
+    unsigned char gap_47A[2];
+    TDrawSystem();
     ~TDrawSystem();
+    void CheckAvailModes(int full_screen);
+    int IsModeAvail(long width, long height, int bpp);
+    int Init(void* instance, void* window, void* palette,
+             unsigned char draw_type, unsigned char screen_mode,
+             long width, long height, unsigned long flags);
+    void Paint(void* rect);
 };
 class TDrawArea {
 public:
+    unsigned char data_[0x100];
     ~TDrawArea();
+    void Clear(void* rect, int color);
 };
 class TShape {
 public:
@@ -70,20 +192,85 @@ class TDigital;
 class TCommunications_Handler {
 public:
     ~TCommunications_Handler();
+    int IsPaused();
 };
 class TDebuggingLog {
 public:
     ~TDebuggingLog();
+    void LogFile(int value);
+    void LogTimestamp(int value);
+    void LogOutput(int value);
 };
 class TRegistry {
 public:
+    void* ghMachineKey;
+    void* ghUserKey;
+    void* ghMachineKeyRead;
+    unsigned long gdwDisp;
+    char Data[255];
+    unsigned char gap_10F[1];
     int RegGetInt(int use_user, const char* name);
     int RegSetInt(int use_user, const char* name, int value);
     ~TRegistry();
 };
 class TMousePointer {
 public:
+    int custom_draw;
+    TDrawArea* render_area;
+    TDrawArea* save_area;
+    TDrawArea* primary_area;
+    int Num_Cursors;
+    int Max_Cursors;
+    TDrawArea* cursors[16];
+    TShape* Cursor_Shape;
+    int Mouse_Mode;
+    int Max_CX;
+    int Max_CY;
+    int cWidth;
+    int cHeight;
+    int gWidth;
+    int gHeight;
+    long mouse_x;
+    long mouse_y;
+    long save_x;
+    long save_y;
+    int facet;
+    int game_facet;
+    int next_facet;
+    int last_facet;
+    int d_top;
+    int d_left;
+    int d_bottom;
+    int d_right;
+    int g_top;
+    int g_left;
+    int g_bottom;
+    int g_right;
+    int save_area_valid;
+    unsigned char save_rect[0x10];
+    unsigned char mouse_rect[0x10];
+    unsigned char cursor_rect[0x10];
+    unsigned char new_save_rect[0x10];
+    unsigned char restore_rect[0x10];
+    unsigned char game_window[0x10];
+    void* restoreSurface;
+    void* renderSurface;
+    void* PrimarySurface;
+    int active;
+    int drawn;
+    int Shutdown;
+    int Setup;
+    int GameMode;
+    int GameEnabled;
+    int MouseOnScreen;
+    unsigned long LastDrawTime;
+    long LastddError;
+    char cursor_file[260];
+    int cursor_file_id;
+    TMousePointer(int mode);
     ~TMousePointer();
+    int setup(int custom_draw, TDrawArea* draw_area, char* base,
+              int palette, int shape_number);
 };
 class RGE_Font {
 public:
@@ -107,6 +294,8 @@ public:
     virtual void vf84(); virtual void vf88(); virtual void vf8C();
     virtual void vf90(); virtual void vf94(); virtual void vf98();
     virtual void vf9C(); virtual void vfA0(int value);
+    char gap_04[0x58];
+    int header_info;
 };
 class TChat {
 public:
@@ -122,6 +311,8 @@ class TPanelSystem {
 public:
     void destroyPanel(char* name);
     void release_palette(void* palette);
+    void* get_palette(char* name, long id);
+    void DisableIME();
 };
 struct _iobuf;
 
@@ -138,6 +329,8 @@ public:
 };
 
 class RGE_Base_Game;
+struct tagMSG;
+class TPanel;
 
 extern "C" __declspec(dllimport) void* __stdcall LoadCursorA(void* instance, const char* cursor);
 extern "C" __declspec(dllimport) unsigned long __stdcall GetCurrentDirectoryA(unsigned long size, char* buffer);
@@ -198,11 +391,11 @@ public:
     virtual char* get_string(long, char*, int);
     virtual char* get_string(long);
     virtual char* get_string2(int, long, long, char*, int);
-    virtual void* get_view_panel();
-    virtual void* get_map_panel();
-    virtual void* new_scenario_header(void*);
-    virtual void* new_scenario_header(int);
-    virtual void* new_scenario_info(int);
+    virtual TPanel* get_view_panel();
+    virtual TPanel* get_map_panel();
+    virtual RGE_Scenario_Header* new_scenario_header(void*);
+    virtual RGE_Scenario_Header* new_scenario_header(int);
+    virtual RGE_Scenario* new_scenario_info(int);
     virtual void notification(int, long, long, long, long);
     virtual int reset_comm();
     virtual void send_game_options();
@@ -211,6 +404,7 @@ public:
     virtual int processCheatCode(int, char*);
     virtual int setup_music_system();
     virtual void shutdown_music_system();
+protected:
     virtual int setup();
     virtual int setup_cmd_options();
     virtual int setup_class();
@@ -228,12 +422,13 @@ public:
     virtual int setup_shapes();
     virtual int setup_blank_screen();
     virtual void setup_timings();
+public:
     virtual void stop_sound_system();
     virtual int restart_sound_system();
     virtual void stop_music_system();
     virtual int restart_music_system();
     virtual void* create_world();
-    virtual int handle_message(void*);
+    virtual int handle_message(tagMSG*);
     virtual int handle_idle();
     virtual int handle_mouse_move(void*, unsigned int, unsigned int, long);
     virtual int handle_key_down(void*, unsigned int, unsigned int, long);
@@ -350,7 +545,10 @@ public:
     unsigned long fps;
     unsigned long world_update_fps;
     unsigned long view_update_fps;
-    RGE_Timing_Info timings[30];
+    union {
+        RGE_Timing_Info timings[30];
+        char data_[0x3C0];
+    };
     int do_show_timings;
     int do_show_comm;
     int do_show_ai;
@@ -373,6 +571,8 @@ public:
     unsigned char resigned[9];
     unsigned char pad_A1E[2];
     TDrawArea* map_save_area;
+
+    RGE_Scenario_Header* new_scenario_header(RGE_Scenario* scenario);
 
     RGE_Base_Game(RGE_Prog_Info* info, int do_setup);
 
@@ -402,10 +602,30 @@ public:
     int check_multi_copies();
     unsigned char check_prog_argument(const char* argument);
     int check_for_cd(int value);
+    RGE_Scenario* get_scenario_info(char* name, int from_player_info);
+    RGE_Scenario_Header* get_scenario_header(char* name, int from_player_info);
+    void write_scenario_header(int file);
+    void get_campaign_info(int* campaign, int* player, int* scenario);
+    unsigned char set_campaign_info(long campaign, long player, long scenario);
+    void set_campaign_win();
+    void reset_timings();
+    void add_to_timing(int index, unsigned long value);
+    void increment_world_update_count();
+    void increment_view_update_count();
+    void set_last_single_time(int index, unsigned long value);
+    unsigned long get_last_time(int index);
+    unsigned long get_last_single_time(int index);
+    unsigned long get_accum_time(int index);
+    unsigned long get_max_time(int index);
+    unsigned long get_last_max_time(int index);
+    int get_last_world_update_count();
+    int get_last_view_update_count();
+    int get_world_update_count();
+    int get_view_update_count();
     void mouse_on();
     unsigned char pathFinding();
     unsigned char mpPathFinding();
-    void get_string(int string_id, char* buffer, int buffer_size);
+    void mouse_off();
 };
 
 RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* info, int do_setup)

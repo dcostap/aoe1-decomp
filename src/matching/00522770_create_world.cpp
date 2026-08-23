@@ -5,34 +5,14 @@
 
 #include "..\..\include\game_globals.h"
 #include "..\..\include\game_types.h"
+#include "../../include/tribegam_context.h"
 
-class RGE_Game_World {
-public:
-    void* vtable_ptr;
-    char gap_0[0x100];
-};
-
-class TRIBE_World : public RGE_Game_World {
-public:
-    void* tech; // +0x104
-    int victory_type; // +0x108
-    int artifact_count; // +0x10C
-    int ruin_count; // +0x110
-    unsigned char countdown_victory; // +0x114
-    unsigned char _pad_0[0x3];
-    float countdown_clock; // +0x118
-    unsigned char score_displayed; // +0x11C
-    unsigned char controllingComputerPlayer; // +0x11D
-    unsigned char _pad_1[0x2];
-    int sent_zone_score; // +0x120
-
-    TRIBE_World();
-};
-
+#if 0
 class TRIBE_Game {
 public:
     RGE_Game_World* create_world();
 };
+#endif
 
 RGE_Game_World* TRIBE_Game::create_world() {
     return new TRIBE_World;

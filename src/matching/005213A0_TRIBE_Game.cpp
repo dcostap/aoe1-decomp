@@ -15,6 +15,9 @@ extern "C" {
 extern void* StringTableX;
 extern void __cdecl RESFILE_close_new_resource_file(const char* name);
 
+#include "../../include/tribegam_context.h"
+
+#if 0
 class TPanelSystem {
 public:
     int destroyPanel(char* name);
@@ -41,6 +44,7 @@ public:
     virtual ~TRIBE_Game();
     void close_game_screens(int destroy_game_screen);
 };
+#endif
 
 TRIBE_Game::~TRIBE_Game()
 {

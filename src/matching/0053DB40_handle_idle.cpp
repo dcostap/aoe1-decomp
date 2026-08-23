@@ -1,3 +1,4 @@
+#ifndef RGE_MAIN_VIEW_SHARED_CONTEXT
 class TPanel {
 public:
     long handle_idle(void);
@@ -20,6 +21,7 @@ public:
 };
 
 extern void color_log(unsigned char, unsigned char, unsigned char);
+#endif
 
 long RGE_Main_View::handle_idle(void) {
     long result;

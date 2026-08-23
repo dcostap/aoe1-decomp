@@ -11,30 +11,7 @@
 extern float DAT_00575580;  // 0.0f
 extern float DAT_005755C0;  // 600.0f
 
-struct TacticalAIGroup {
-    int numberUnits();
-    int unit(int idx);
-};
-
-struct MainDecisionAIModule {
-    void* object(int unit_id);
-};
-
-struct RGE_Static_Object {
-    char _pad[0x30];
-    float hp;           // +0x30
-    float gap_34;       // +0x34
-    float field_38;     // +0x38
-    float field_3C;     // +0x3C
-};
-
-struct TribeInformationAIModule {
-    char _gap[0x100];
-    void* md;  // +0x100
-
-    float damagePerSecond(int uid, int val_38, int val_3C);
-    float timeToBeKilled(TacticalAIGroup* group, RGE_Static_Object* target);
-};
+#include "../../include/information_dropsites_context.h"
 
 float TribeInformationAIModule::timeToBeKilled(TacticalAIGroup* group, RGE_Static_Object* target) {
     float rVal = 0.0f;
@@ -44,18 +21,18 @@ float TribeInformationAIModule::timeToBeKilled(TacticalAIGroup* group, RGE_Stati
     if (n > 0) {
         do {
             int uid = group->unit(i);
-            void* obj = ((MainDecisionAIModule*)this->md)->object(uid);
+            RGE_Static_Object* obj = this->md->object(uid);
 
             if (obj) {
                 float dps = this->damagePerSecond(
                     group->unit(i),
-                    (int)target->field_38,
-                    (int)target->field_3C);
+                    (int)target->world_x,
+                    (int)target->world_y);
 
                 if (dps == 0.0f) {
                     dps = DAT_005755C0;
                 } else {
-                    dps = *(float*)((char*)obj + 0x30) / dps;
+                    dps = obj->hp / dps;
                 }
 
                 rVal += dps;

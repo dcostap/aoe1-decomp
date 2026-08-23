@@ -1,6 +1,7 @@
 // 0041C830 RGE_Base_Game::add_to_timing (60B)
 // basegame.cpp
 
+#ifndef BASEGAME_GROUPED_TU
 class RGE_Timing_Info {
 public:
     unsigned long accum_time;       // +0x00
@@ -20,6 +21,7 @@ public:
 
     void add_to_timing(int index, unsigned long value);
 };
+#endif
 
 void RGE_Base_Game::add_to_timing(int index, unsigned long value) {
     timings[index].accum_time += value;

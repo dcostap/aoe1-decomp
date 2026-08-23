@@ -1,5 +1,6 @@
 // first pass: direct timing wrapper around the base mouse-up handler and the add-to-timing call
 // if this is sticky, the remaining lead is likely just the literal/string timing helper shape rather than the control flow
+#ifndef RGE_MAIN_VIEW_SHARED_CONTEXT
 class RGE_Player;
 class RGE_Base_Game;
 
@@ -26,6 +27,7 @@ class RGE_Base_Game {
 public:
     void add_to_timing(int index, unsigned long value);
 };
+#endif
 
 long RGE_Main_View::handle_mouse_up(unsigned char p1, long p2, long p3, int p4, int p5) {
     unsigned long start;

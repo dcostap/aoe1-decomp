@@ -1,22 +1,14 @@
-class TacticalAIModule_tug {
-public:
-    void trackUnitGather(int a, int b, int c);
-};
+// VA: 005192F0 TRIBE_Player::trackUnitGather | tplayer.cpp:4810-4815
+// Canonical shared tplayer owner. The null guard and tactical-AI offset are
+// direct evidence from the target body.
 
-class AIModule_tug {
-public:
-    char gap_00[0x1146C];
-    TacticalAIModule_tug tactical;
-};
+#include "../../include/tplayer_context.h"
 
-class TRIBE_Player_tug {
-public:
-    void trackUnitGather(int a, int b, int c);
-    char gap_00[0x238];
-    AIModule_tug* ai_module;
-};
+void TRIBE_Player::trackUnitGather(int a, int b, int c)
+{
+    if (!this->playerAI)
+        return;
 
-void TRIBE_Player_tug::trackUnitGather(int a, int b, int c) {
-    if (!this->ai_module) return;
-    ((TacticalAIModule_tug*)((char*)this->ai_module + 0x1146C))->trackUnitGather(a, b, c);
+    ((TribeTacticalAIModule*)((char*)this->playerAI + 0x1146C))
+        ->trackUnitGather(a, b, c);
 }

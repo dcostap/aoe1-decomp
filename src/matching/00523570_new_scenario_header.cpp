@@ -1,7 +1,9 @@
 // first pass: natural `return new TRIBE_Scenario_Header(param_1);` shape against the EH/new prolog
 // /GX was required to land the exact ctor-overload basin for the 0x1C allocation
 #include "..\..\include\game_types.h"
+#include "../../include/tribegam_context.h"
 
+#if 0
 class RGE_Scenario;
 class RGE_Scenario_Header {
 public:
@@ -24,7 +26,8 @@ class TRIBE_Game {
 public:
     TRIBE_Scenario_Header* new_scenario_header(RGE_Scenario* param_1);
 };
+#endif
 
-TRIBE_Scenario_Header* TRIBE_Game::new_scenario_header(RGE_Scenario* param_1) {
+RGE_Scenario_Header* TRIBE_Game::new_scenario_header(RGE_Scenario* param_1) {
     return new TRIBE_Scenario_Header(param_1);
 }

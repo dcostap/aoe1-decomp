@@ -1,14 +1,12 @@
-struct GlobalPanel {
-    void showPanel(int val);
-};
+#include "../../include/tribegam_context.h"
 
-extern GlobalPanel g_panel;
-
+#if 0
 class TRIBE_Game {
 public:
     void close_status_message();
 };
+#endif
 
 void TRIBE_Game::close_status_message() {
-    g_panel.showPanel(1);
+    panel_system.restorePreviousPanel(1);
 }

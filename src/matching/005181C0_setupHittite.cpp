@@ -2,8 +2,10 @@
 // Source: tplayer.cpp lines 4200-4243
 // FLAGS: default
 
+#include "../../include/tplayer_context.h"
 #include <stddef.h>
 
+#if 0
 typedef unsigned char uchar;
 
 extern "C" void __cdecl logCommonHistory(void* target, const char* msg);
@@ -22,11 +24,13 @@ public:
 
 extern void* rge_base_game;  // 0x0062C574
 
+#endif
+
 void TRIBE_Player::setupHittite(int* param_1, int param_2, int param_3, int param_4)
 {
     logCommonHistory(this->playerAI, "Setting up as Hittites.");
 
-    if (deathMatch_fn(rge_base_game) == 1) {
+    if (rge_base_game->deathMatch() == 1) {
         // Deathmatch path
         if (param_2 == 0 || param_2 == 1) {
             param_1[0x41] = 100;

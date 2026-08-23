@@ -5,6 +5,9 @@
 // - v2: if-else chains → should match cmp/je pattern
 // FLAGS: /nologo /c /O2 /Oy
 
+#include "../../include/tplayer_context.h"
+
+#if 0
 typedef unsigned char uchar;
 
 void logCommonHistory(void* ai, char* msg);
@@ -22,6 +25,8 @@ public:
 
     void setupBabylonian(int* p, int type, int unused1, int unused2);
 };
+
+#endif
 
 void TRIBE_Player::setupBabylonian(int* p, int type, int unused1, int unused2)
 {

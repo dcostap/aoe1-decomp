@@ -30,11 +30,22 @@
 // Named the three draw lock tags. The raw absolute string addresses were
 // diagnostic data plumbing and are not part of the source model.
 
+#include "../../include/scr_game_context.h"
+
+#define rect clip_rect
+#define area render_area
+#define shape478 game_screen_pic
+#define panel4c0 inven_panel
+#define width pnl_wid
+#define height pnl_hgt
+
 extern unsigned char byte_62C584;
 
 static char s_scr_game_draw[] = "scr_game::draw";
 static char s_scr_game_draw2[] = "scr_game::draw2";
 static char s_scr_game_draw3[] = "scr_game::draw3";
+
+#if 0
 
 struct tagRECT {
     long left;
@@ -101,6 +112,8 @@ public:
     void draw();
 };
 
+#endif
+
 void TRIBE_Screen_Game::draw()
 {
     if (byte_62C584) {
@@ -160,3 +173,10 @@ void TRIBE_Screen_Game::draw()
         this->draw_finish();
     }
 }
+
+#undef rect
+#undef area
+#undef shape478
+#undef panel4c0
+#undef width
+#undef height

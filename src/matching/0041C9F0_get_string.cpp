@@ -1,3 +1,4 @@
+#ifndef BASEGAME_GROUPED_TU
 class RGE_Base_Game {
 public:
     virtual void vf00();
@@ -10,12 +11,13 @@ public:
     virtual void vf1C();
     virtual void vf20();
     virtual void vf24();
-    virtual void vf28(int p1, int p2, int p3, char* buf, int maxlen);
+    virtual char* get_string2(int p1, long p2, long p3, char* buf, int maxlen);
 
-    void get_string(int p1, int p2, char* buf, int maxlen);
+    char* get_string(int p1, long p2, char* buf, int maxlen);
 };
+#endif
 
-void RGE_Base_Game::get_string(int p1, int p2, char* buf, int maxlen)
+char* RGE_Base_Game::get_string(int p1, long p2, char* buf, int maxlen)
 {
-    this->vf28(p1, p2, 0, buf, maxlen);
+    return this->get_string2(p1, p2, 0, buf, maxlen);
 }

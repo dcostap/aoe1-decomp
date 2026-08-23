@@ -7,6 +7,10 @@
 //   zero. Eight physical entries provide entry zero for the timestamp and
 //   entries one through seven for the palette without out-of-bounds indexing.
 
+#include "../../include/scr_game_context.h"
+
+#if 0
+
 struct tagPALETTEENTRY {
     unsigned char peRed;
     unsigned char peGreen;
@@ -26,15 +30,18 @@ public:
 
 extern unsigned long debug_timeGetTime(const char* file, int line);
 
+#endif
+
 union HandleAnimPalData {
     unsigned long time;
-    tagPALETTEENTRY pal_entries[8];
+    scr_tagPALETTEENTRY pal_entries[8];
 };
 
 struct HandleAnimPalLocals {
     HandleAnimPalData data;
 };
 
+#if 0
 class TRIBE_Screen_Game {
 public:
     char gap_00[0x20];
@@ -56,6 +63,8 @@ public:
 
     void handle_anim_pal();
 };
+
+#endif
 
 void TRIBE_Screen_Game::handle_anim_pal()
 {

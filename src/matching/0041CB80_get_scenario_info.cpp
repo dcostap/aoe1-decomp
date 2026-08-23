@@ -20,8 +20,9 @@ extern int rge_read_uncompressed(int fd, void* buf, int len);
 extern int rge_read(int fd, void* buf, int len);
 extern int rge_close(int fd);
 extern void* malloc(int size);
-extern int free(void* p);
+extern "C" void free(void* p);
 
+#ifndef BASEGAME_GROUPED_TU
 class RGE_Game_Info {
 public:
     int open_scenario();
@@ -60,6 +61,7 @@ public:
 
     RGE_Scenario* get_scenario_info(char* param1, int param2);
 };
+#endif
 
 RGE_Scenario* RGE_Base_Game::get_scenario_info(char* param1, int param2)
 {

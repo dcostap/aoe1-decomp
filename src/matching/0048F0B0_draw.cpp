@@ -47,6 +47,9 @@
 //   relation; no exact output. Natural for/while countdown forms with the
 //   remaining assignment in the loop initializer emitted the exact bytes.
 
+#include "../../include/scr_ach_context.h"
+
+#if 0
 typedef unsigned char uchar;
 
 struct tagRECT {
@@ -149,6 +152,8 @@ public:
 };
 
 extern RGE_Base_Game* rge_base_game;
+
+#endif
 
 void TribeAchievementsScreen::draw()
 {

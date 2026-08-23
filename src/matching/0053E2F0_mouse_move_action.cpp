@@ -1,3 +1,4 @@
+#ifndef RGE_MAIN_VIEW_SHARED_CONTEXT
 class RGE_Base_Game {
 public:
     char gap_00[0x1B0];
@@ -19,8 +20,11 @@ public:
     virtual long mouse_move_action(long a, long b, int c, int d);
 };
 
+extern RGE_Base_Game* rge_base_game;
+#endif
+
 long RGE_Main_View::mouse_move_action(long a, long b, int c, int d) {
-    RGE_Base_Game* game = *(RGE_Base_Game**)0x62C574;
+    RGE_Base_Game* game = rge_base_game;
     int mode = game->prog_mode;
     if (mode == 4 || mode == 6 || mode == 7 || mode == 5) {
         mode = game->game_mode;

@@ -1,6 +1,11 @@
+// VA: 0050B190 TRIBE_Command::command_trade_attribute
+// PDB: tcommand.cpp lines 1585-1625.
+// Exact grouped finish uses the canonical packet, log, and inherited submit.
+
 #include <windows.h>
 #include <stdio.h>
 
+#ifndef TCOMMAND_CONTEXT_H
 class RGE_Game_World;
 class TCommunications_Handler;
 
@@ -17,7 +22,7 @@ public:
     unsigned int last_order_time;
     TCommunications_Handler* com_hand;
 
-    void submit(void* cmd, int size);
+    void submit(void* cmd, long size);
 };
 
 class RGE_Static_Object {
@@ -32,10 +37,20 @@ public:
 };
 
 struct TDebuggingLog {
-    void Log(const char* format, ...);
+    void __cdecl Log(char* format, ...);
 };
 
-extern "C" TDebuggingLog* L;
+extern TDebuggingLog* L;
+
+class TRIBE_Command_Trade_Attribute {
+public:
+    unsigned char command;
+    unsigned char unit_num;
+    char gap_02[2];
+    long attribute;
+};
+#endif
+
 extern "C" void* __cdecl calloc(size_t num, size_t size);
 
 void TRIBE_Command::command_trade_attribute(RGE_Static_Object** objs, short count, long attribute)
@@ -43,8 +58,9 @@ void TRIBE_Command::command_trade_attribute(RGE_Static_Object** objs, short coun
     if (objs && count >= 1) {
         int obj_count = (int)count;
         int size = obj_count * 4 + 8;
-        unsigned char* cmd = (unsigned char*)calloc(1, size);
-        int* dest = (int*)(cmd + 8);
+        TRIBE_Command_Trade_Attribute* cmd =
+            (TRIBE_Command_Trade_Attribute*)calloc(1, size);
+        int* dest = (int*)(cmd + 1);
         if (cmd) {
             for (int i = 0; i < obj_count; ++i) {
                 if (objs[i]) {
@@ -53,11 +69,12 @@ void TRIBE_Command::command_trade_attribute(RGE_Static_Object** objs, short coun
                     dest[i] = -1;
                 }
             }
-            cmd[0] = 0x6D;
-            cmd[1] = (unsigned char)count;
-            *(long*)(cmd + 4) = attribute;
+            cmd->command = 0x6D;
+            cmd->unit_num = (unsigned char)count;
+            cmd->attribute = attribute;
 
-            L->Log("      >SEND CMD TRADE ATTR (CNT=%d)", obj_count);
+            L->Log(
+                (char*)"      >SEND CMD TRADE ATTR (CNT=%d)", obj_count);
 
             this->submit(cmd, size);
         }

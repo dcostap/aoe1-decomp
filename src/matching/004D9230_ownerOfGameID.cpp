@@ -1,7 +1,3 @@
-class TribeInformationAIModule {
-public:
-    virtual ~TribeInformationAIModule();
-    int ownerOfGameID(int p0);
-};
+#include "../../include/information_dropsites_context.h"
 
 int TribeInformationAIModule::ownerOfGameID(int p0) { return -1; }

@@ -20,15 +20,14 @@
 
 #include <new.h>
 #include <string.h>
+#include <windows.h>
 
-extern "C" long (__stdcall* SendMessageA)(
-    void* hwnd, unsigned int message, unsigned int wparam, long lparam);
-extern "C" __declspec(dllimport) int __stdcall InvalidateRect(
-    void* hwnd, void* rect, int erase);
+#include "../../include/tribegam_context.h"
 
 typedef long (__stdcall *SendMessageFn)(
     void* hwnd, unsigned int message, unsigned int wparam, long lparam);
 
+#if 0
 class TPicture;
 
 class TDrawSystem {
@@ -147,6 +146,7 @@ public:
 };
 
 extern TPanelSystem panel_system;
+#endif
 
 void TRIBE_Game::stop_video(unsigned char do_stop)
 {

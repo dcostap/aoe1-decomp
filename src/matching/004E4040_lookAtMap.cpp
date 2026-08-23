@@ -21,104 +21,7 @@
 // exact: the typed map/tile-list traversal is natural source and matches the
 // original 379-byte function with all three direct calls aligned.
 
-class RGE_Static_Object;
-
-struct RGE_Object_List_Node {
-    RGE_Static_Object* object;
-    RGE_Object_List_Node* next;
-};
-
-class RGE_Object_List {
-public:
-    void* vtable;
-    RGE_Object_List_Node* list;
-};
-
-class RGE_Tile {
-public:
-    char gap_00[5];
-    unsigned char terrainType;
-    char gap_06[6];
-    RGE_Object_List objects;
-    char gap_14[4];
-};
-
-class RGE_Map {
-public:
-    char gap_00[0x8D8C];
-    RGE_Tile** mapRowOffset;
-};
-
-class RGE_World {
-public:
-    char gap_00[0x28];
-    RGE_Map* map;
-};
-
-class RGE_Player {
-public:
-    char gap_00[0x3C];
-    RGE_World* world;
-};
-
-class MainDecisionAIModule {
-public:
-    char gap_00[0xF0];
-    RGE_Player* player;
-};
-
-class RGE_Master_Static_Object {
-public:
-    void* vtable;
-    char gap_04[0x10];
-    short objectGroup;
-};
-
-class RGE_Static_Object {
-public:
-    void* vtable;
-    int id;
-    RGE_Master_Static_Object* master_obj;
-};
-
-class InfluenceMap {
-public:
-    void* vtable;
-    int xSizeValue;
-    int ySizeValue;
-    int xReferencePointValue;
-    int yReferencePointValue;
-    unsigned char* valueValue;
-    unsigned char** rowValue;
-    int coverageCountValue;
-    int connectionCountValue;
-    unsigned char unchangeableLimitValue;
-    unsigned char gap_25[3];
-
-    int setValue(int x, int y, unsigned char value);
-};
-
-class TribeInformationAIModule {
-public:
-    char gap_000[0x100];
-    MainDecisionAIModule* md;
-    int mapXSizeValue;
-    int mapYSizeValue;
-    char gap_10C[0x4C];
-    InfluenceMap pathMap;
-    char gap_180[0x288];
-    struct QuadrantLog {
-        int numberExploredTiles;
-        int numberAttacksOnUs;
-        int numberAttacksByUs;
-    } quadrantLog[4][4];
-    char gap_4C8[0x98];
-    int numberFoundForestTilesValue;
-
-    void lookAtMap(void);
-    int importantObject(int group);
-    int addImportantObject(RGE_Static_Object* object, int value);
-};
+#include "../../include/information_dropsites_context.h"
 
 void TribeInformationAIModule::lookAtMap(void)
 {
@@ -146,7 +49,7 @@ void TribeInformationAIModule::lookAtMap(void)
                         map->mapRowOffset[y][x].objects.list;
                     while (node != 0) {
                         RGE_Static_Object* object = node->object;
-                        int objectGroup = object->master_obj->objectGroup;
+                        int objectGroup = object->master_obj->object_group;
 
                         if (this->importantObject(objectGroup) == 1)
                             this->addImportantObject(object, 0);

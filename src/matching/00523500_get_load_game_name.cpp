@@ -1,3 +1,6 @@
+#include "../../include/tribegam_context.h"
+
+#if 0
 class TRIBE_Game {
 public:
     virtual ~TRIBE_Game();
@@ -6,4 +9,5 @@ public:
 
     char * get_load_game_name();
 };
-char * TRIBE_Game::get_load_game_name() { return this->get_load_game_name_; }
+#endif
+char * TRIBE_Game::get_load_game_name() { return this->load_game_name; }

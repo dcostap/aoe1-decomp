@@ -2,7 +2,9 @@
 // PDB source: tribegam.cpp
 // Attempt: natural /GX setup of 17 TDigital sounds; mirrors RGE_Base_Game::setup_sounds pattern.
 
-extern void* calloc(unsigned int num, unsigned int size);
+#include "../../include/tribegam_context.h"
+
+extern "C" void* __cdecl calloc(unsigned int num, unsigned int size);
 extern void* operator new(unsigned int size);
 
 class TSound_Driver;
@@ -14,6 +16,7 @@ public:
     int load(char* name, long param);
 };
 
+#if 0
 class TRIBE_Game {
 public:
     char gap_00[0x60];
@@ -25,6 +28,7 @@ public:
 
     int setup_sounds();
 };
+#endif
 
 int TRIBE_Game::setup_sounds()
 {

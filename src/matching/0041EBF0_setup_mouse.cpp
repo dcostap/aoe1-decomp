@@ -19,6 +19,7 @@
 
 class TDrawArea;
 
+#ifndef BASEGAME_GROUPED_TU
 class RGE_Prog_Info {
 public:
     char gap_000[0x773];
@@ -54,9 +55,12 @@ public:
     char gap_1B0[0x1C0 - 0x1B0];
     TMousePointer* mouse_pointer;
 
-    int setup_mouse();
+protected:
+    virtual int setup_mouse();
+public:
     void mouse_off();
 };
+#endif
 
 int RGE_Base_Game::setup_mouse()
 {

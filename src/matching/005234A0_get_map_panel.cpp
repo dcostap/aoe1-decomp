@@ -1,3 +1,6 @@
+#include "../../include/tribegam_context.h"
+
+#if 0
 class TPanel;
 class TRIBE_Screen_Game;
 class TPanelSystem;
@@ -24,15 +27,16 @@ class TPanelSystem {
 public:
     TPanel* panel(char* name);
 };
+#endif
 
 TPanel* TRIBE_Game::get_map_panel(void) {
-    if (this->game_mode == 4 || this->game_mode == 6 || this->game_mode == 5) {
+    if (this->prog_mode == 4 || this->prog_mode == 6 || this->prog_mode == 5) {
         if (this->game_screen != 0) {
             return this->game_screen->map_view;
         }
     }
 
-    if (this->game_mode == 7) {
+    if (this->prog_mode == 7) {
         TPanel* p = panel_system.panel((char*)"Scenario Editor Screen");
         if (p != 0) {
             return *(TPanel**)((char*)p + 0x4CC);

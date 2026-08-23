@@ -3,6 +3,9 @@
 // Fresh 2026-05-19: implement natural panel lookup/new status screen logic.
 // FLAGS: config/flags/005236A0_show_status_message.rsp (/GX required for VC5 EH state around constructor)
 
+#include "../../include/tribegam_context.h"
+
+#if 0
 class TPanel { public: virtual void vf00(); };
 class TRIBE_Screen_Status_Message;
 
@@ -27,6 +30,7 @@ public:
     TRIBE_Screen_Status_Message(char* panelName, char* s1, char* s2, long p3);
     void set_text(char* s1);
 };
+#endif
 
 static char status_screen[] = "Status Screen";
 

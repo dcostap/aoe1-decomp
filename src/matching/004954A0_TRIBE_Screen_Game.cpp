@@ -9,6 +9,10 @@
 // - The simple TScreenPanel size stub preserves the proven +0x478 derived
 //   layout and emits the expected vptr restore and base destructor call.
 
+#include "../../include/scr_game_context.h"
+
+#if 0
+
 class TShape {
 public:
     ~TShape();
@@ -99,6 +103,8 @@ public:
 
     virtual ~TRIBE_Screen_Game();
 };
+
+#endif
 
 TRIBE_Screen_Game::~TRIBE_Screen_Game() {
     panel_system.destroyPanel((char*)0x5842D8);

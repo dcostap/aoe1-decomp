@@ -51,7 +51,11 @@
 //   world fields preserve players at +0x40 and the exact bytes.
 // - Canonical reduction: removing RGE_View's trailing named slots changed 26
 //   bytes.  The full donor-supported inherited surface remains required.
+// - Grouped exact finish: direct period Win32 declarations preserve the VC5
+//   scheduling that the Windows header changed. The donor pointer form of
+//   get_frame remains exact in standalone and PDB-ordered grouped builds.
 
+#ifndef RGE_MAIN_VIEW_SHARED_CONTEXT
 extern "C" void __cdecl color_log(unsigned char, unsigned char, int);
 extern "C" __declspec(dllimport) int __stdcall ClientToScreen(void*, void*);
 extern "C" __declspec(dllimport) int __stdcall ScreenToClient(void*, void*);
@@ -130,7 +134,7 @@ public:
     char gap_1C[0x2C];
     unsigned char object_state;
 
-    int get_frame(short&, short&, short&, short&);
+    int get_frame(short*, short*, short*, short*);
 };
 
 class RGE_Master_Static_Object {
@@ -437,6 +441,7 @@ public:
                         RGE_Pick_Info*, RGE_Static_Object*, int);
     void fixup_pick_info(RGE_Pick_Info*);
 };
+#endif
 
 long RGE_Main_View::mouse_left_down_action(long param_1, long param_2,
                                            int param_3, int param_4)
@@ -464,7 +469,7 @@ long RGE_Main_View::mouse_left_down_action(long param_1, long param_2,
                     this->set_redraw(1);
                     if (((RGE_Static_Object*)pick_info.object)->sprite != 0) {
                         ((RGE_Static_Object*)pick_info.object)->get_frame(
-                            min_x, min_y, max_x, max_y);
+                            &min_x, &min_y, &max_x, &max_y);
                         // ORIGINAL BUG: The shipped code subtracts the frame
                         // origin from pick_info's screen coordinates.
                         point.x = pick_info.scr_x - min_x;
@@ -562,7 +567,7 @@ long RGE_Main_View::mouse_left_down_action(long param_1, long param_2,
                         rge_base_game->set_game_mode(8, 1);
                         if (this->movable_object->sprite != 0) {
                             this->movable_object->get_frame(
-                                min_x, min_y, max_x, max_y);
+                                &min_x, &min_y, &max_x, &max_y);
                             // ORIGINAL BUG: The shipped code subtracts the
                             // frame origin from pick_info's screen coordinates.
                             point.x = pick_info.scr_x - min_x;

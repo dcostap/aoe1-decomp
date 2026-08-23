@@ -1,9 +1,14 @@
-typedef int (__stdcall *LoadStringFunc)(void*, int, char*, int);
-extern void* DAT_0062c4a0;
-extern LoadStringFunc FN_0088a818;
+#ifndef BASEGAME_GROUPED_TU
+#include <windows.h>
+class RGE_Base_Game {
+public:
+    virtual char* get_string(long, char*, int);
+};
+extern void* StringTable;
+#endif
 
-char* __stdcall get_string(int string_id, char* buffer, int buffer_size) {
-    int result = FN_0088a818(DAT_0062c4a0, string_id, buffer, buffer_size);
+char* RGE_Base_Game::get_string(long string_id, char* buffer, int buffer_size) {
+    int result = LoadStringA(StringTable, string_id, buffer, buffer_size);
     if (!result) {
         *buffer = 0;
     }

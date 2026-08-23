@@ -1,3 +1,6 @@
+#include "../../include/scr_ach_context.h"
+
+#if 0
 class RGE_Base_Game {
 public:
     char gap_0[0x1D8];
@@ -16,6 +19,8 @@ class TribeAchievementsScreen : public TPanel {
 public:
     long handle_idle();
 };
+
+#endif
 
 long TribeAchievementsScreen::handle_idle() {
     if (!rge_base_game->input_enabled)

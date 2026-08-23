@@ -1,3 +1,4 @@
+#ifndef RGE_MAIN_VIEW_SHARED_CONTEXT
 class TPanel {
 public:
     virtual void vf00(void);
@@ -8,7 +9,7 @@ public:
     virtual void vf14(void);
     virtual void vf18(void);
     virtual void vf1C(void);
-    virtual void vf20(int param_1);
+    virtual void set_redraw(int param_1);
     virtual void vf24(void);
     virtual void vf28(void);
     virtual void vf2C(void);
@@ -62,11 +63,16 @@ public:
 
     int start_scroll_view(unsigned char param_1, long param_2, long param_3, int param_4, int param_5);
 };
+#endif
 
 int RGE_Main_View::start_scroll_view(unsigned char param_1, long param_2, long param_3, int param_4, int param_5) {
+#ifdef RGE_MAIN_VIEW_SHARED_CONTEXT
+    if (this->RGE_View::start_scroll_view(param_1, param_2, param_3, param_4, param_5) != 0) {
+#else
     if (((RGE_View*)this)->start_scroll_view(param_1, param_2, param_3, param_4, param_5) != 0) {
+#endif
         if (this->map_view != 0) {
-            this->map_view->vf20(1);
+            this->map_view->set_redraw(1);
         }
         return 1;
     }

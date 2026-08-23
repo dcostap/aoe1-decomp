@@ -6,6 +6,7 @@
 
 #define RGE_BASE_GAME_WND_PROC ((WNDPROC)0x0041E7A0)
 
+#ifndef BASEGAME_GROUPED_TU
 struct RGE_Prog_Info {
     char pad_00[0x410];
     void* instance;             // +0x410
@@ -18,11 +19,15 @@ struct RGE_Prog_Info {
 
 class RGE_Base_Game {
 public:
-    char pad_00[0x0C];
+    virtual ~RGE_Base_Game();
+    void* player_game_info;
+    void* scenario_info;
     RGE_Prog_Info* prog_info;   // +0x0C
 
-    int setup_class();
+protected:
+    virtual int setup_class();
 };
+#endif
 
 int RGE_Base_Game::setup_class() {
     if (prog_info->prev_instance != 0) {

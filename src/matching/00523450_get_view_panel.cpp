@@ -1,3 +1,6 @@
+#include "../../include/tribegam_context.h"
+
+#if 0
 class TPanel {
 public:
     char gap_00[0x4C8];
@@ -28,15 +31,16 @@ public:
     char gap_00[0x4B8];
     TPanel* main_view;
 };
+#endif
 
 TPanel* TRIBE_Game::get_view_panel()
 {
-    if (this->modeValue == 4 || this->modeValue == 6 || this->modeValue == 5) {
+    if (this->prog_mode == 4 || this->prog_mode == 6 || this->prog_mode == 5) {
         if (this->game_screen != 0)
             return this->game_screen->main_view;
     }
 
-    if (this->modeValue == 7) {
+    if (this->prog_mode == 7) {
         TPanel* panel = panel_system.panel("Scenario Editor Screen");
         if (panel != 0)
             return panel->previousPanelValue;

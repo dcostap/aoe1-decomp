@@ -10,6 +10,9 @@
 // - Main-agent audit confirmed canonical game/panel ownership and direct cleanup
 //   order; exact bytes were revalidated after promotion.
 
+#include "../../include/tribegam_context.h"
+
+#if 0
 class TPanelSystem {
 public:
     int destroyPanel(char* name);
@@ -30,6 +33,7 @@ public:
 
     void close_game_screens(int destroyGameScreen);
 };
+#endif
 
 void TRIBE_Game::close_game_screens(int destroyGameScreen)
 {

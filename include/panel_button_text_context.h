@@ -3,12 +3,38 @@
 
 typedef unsigned char uchar;
 
+class TDrawSystem;
 class TDrawArea;
+class RGE_Color_Table;
+struct tagRECT;
 class TDigital;
 class TShape;
 class TScrollBarPanel;
 class TVerticalSliderPanel;
 class THorizontalSliderPanel;
+class TListPanel;
+class TDropDownPanel;
+
+class TDrawSystem {
+public:
+    char gap_00[0x28];
+    unsigned long Flags;
+};
+
+class TDrawArea {
+public:
+    TDrawSystem* DrawSystem;
+    char gap_04[0x14];
+    long width;
+    long height;
+    TDrawArea(char*, int);
+    int Init(TDrawSystem*, long, long, int, int);
+    void Clear(tagRECT*, int);
+    unsigned char* Lock(char*, int);
+    void SetShadowTable(class RGE_Color_Table*);
+    void DrawShadowBox(long, long, long, long);
+    void Unlock(char*);
+};
 
 enum FormatType {
     FormatSingleLine = 0,
@@ -20,18 +46,24 @@ struct RGE_Font {
     long font_wid;
     long font_hgt;
 };
+typedef RGE_Font FontInfo;
 
 class TPanel {
 public:
     virtual ~TPanel();
     char gap_04[0x14 - 0x04];
-    union { long width; long base_width; long field_14; long pnl_wid; };
-    union { long height; long base_height; long field_18; long pnl_hgt; };
-    char gap_1C[4];
+    union { long width; long base_width; long screen_width; long field_14; long pnl_wid; };
+    union { long height; long base_height; long screen_height; long field_18; long pnl_hgt; };
+    char* panelNameValue;
     union { TDrawArea* draw_area; TDrawArea* render_area; };
     char gap_24[0xD8 - 0x24];
     union { long failed; long error_code; long error_flag; long error; long field_D8; };
     char gap_DC[0xF4 - 0xDC];
+    long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char);
+    void set_positioning(int, long, long, long, long, long, long, long, long,
+                         TPanel*, TPanel*, TPanel*, TPanel*);
+    void draw_rect2(unsigned char);
+    void draw_setup(int);
 };
 
 class RGE_Base_Game {
@@ -48,6 +80,9 @@ public:
     TButtonPanel();
     long setup(TDrawArea*, TPanel*, long, long, long, long, int, TDigital*, int, long);
     void set_sound_number(long sound_id);
+    void set_state_info(short state);
+    void setDrawType(int type);
+    void set_picture(short state, TShape*, short frame);
     void set_text_info(char*, void*, int, int, int, int);
     void set_text(short mode, char* text);
     void set_bevel_info(int, int, int, int, int, int, int);
@@ -80,6 +115,7 @@ class TTextPanel : public TTextPanelBase {
 public:
     virtual void vf57();
     virtual void set_text(char* text);
+    virtual void set_bevel_info(int, int, int, int, int, int, int); // +0xEC
     char gap_004[0xD4];
     union { long field_D8; long error_code; };
     char gap_0DC[0xAC];
@@ -96,7 +132,15 @@ public:
     void set_scrollbar(TScrollBarPanel*, int);
 };
 
-class TShape {};
+class TShape {
+public:
+    char data[0x20];
+    TShape(char* filename, long id);
+    ~TShape();
+    int is_loaded();
+    unsigned char shape_minmax(long&, long&, long&, long&, long);
+    unsigned char shape_draw(TDrawArea*, long, long, long, unsigned char, unsigned char*);
+};
 
 class TScrollBarPanel : public TPanel {
 public:
@@ -183,6 +227,34 @@ public:
     void set_ime_info(int, int);
 };
 
+class TListPanel {
+public:
+    char gap_00[0xD8];
+    long error;
+    TListPanel();
+    long setup(TDrawArea*, TPanel*, long, long, long, long, void*, long, long,
+               char*, int, unsigned char, int, unsigned char, short, char**, int);
+    void scroll_cur_line(unsigned char, int, unsigned char);
+    void set_bevel_info(int, int, int, int, int, int, int);
+    void set_text_color(unsigned long, unsigned long);
+    void set_highlight_text_color(unsigned long, unsigned long);
+};
+
+class TDropDownPanel : public TPanel {
+public:
+    TTextPanel* val_panel;
+    TButtonPanel* btn_panel;
+    TListPanel* list_panel;
+    char gap_100[0x144 - 0x100];
+    TDropDownPanel();
+    long setup(TDrawArea*, TPanel*, void*, int, int, int, char, int, int, int, int,
+               int, int, int, int, int, int, char*, int, int, char**, int, int,
+               char*, char*, char*, char*, int, int);
+    void set_buttons(TShape*, int, int, int, int, int);
+    void set_bevel_info(int, int, int, int, int, int, int);
+    void set_val_text_color(unsigned long, unsigned long);
+};
+
 class TEasy_Panel : public TPanel {
 public:
     long ideal_width;
@@ -204,18 +276,47 @@ public:
     unsigned long state_color2;
     char gap_340[0x448 - 0x340];
     TShape* button_pics;
-    char gap_44C[0x454 - 0x44C];
+    RGE_Color_Table* shadow_color_table;
+    char gap_450[4];
     unsigned char background_color1;
-    char gap_455[0x464 - 0x455];
+    char gap_455[0x0F];
     void* brush;
     int brush_color;
+    long allow_shadow_area;
+
+    long setup(TDrawArea*, TPanel*, char*, long, int, long, long, long, long, int);
+    void setup_shadow_area(int);
+    void draw_setup(int);
+    void draw();
+    void set_info_file(char*, long);
+    void set_use_bevels(int);
+    int set_background(char*, long);
+    int set_background2(char*, long);
+    void set_shadow_amount(long);
+    int set_palette(char*, long);
+    int set_cursor(char*, long);
+    void set_background_pos(int);
+    void set_background_colors(unsigned char, unsigned char);
+    void set_bevel_colors(unsigned char, unsigned char, unsigned char, unsigned char, unsigned char, unsigned char);
+    void set_text_colors(unsigned long, unsigned long);
+    void set_focus_colors(unsigned long, unsigned long);
+    void set_state_colors(unsigned long, unsigned long);
+    void set_button_pics(char*, long);
+    void set_popup_info_file(char*, long);
 
 protected:
     virtual void set_ideal_size(long width, long height);
 
-public:
+    // Panel_ez.cpp records these factory owners as protected virtual methods.
+    // Keep MAE decoration and the PDB virtual-slot order in the shared TU.
+    virtual int create_button(TPanel*, TButtonPanel**, long, long, long, long,
+                              long, long, long, long, long);
     virtual int create_button(TPanel*, TButtonPanel**, char*, char*, long, long,
                               long, long, long, long, long);
+    virtual int create_check_box(TPanel*, TButtonPanel**, long, long, long, long, long, long);
+    virtual int create_radio_button(TPanel*, TButtonPanel**, long, long, long, long, long, long);
+    virtual int create_text(TPanel*, TTextPanel**, int, long, long, long, long,
+                            long, int, int, int);
     virtual int create_text(TPanel*, TTextPanel**, char*, long, long, long, long,
                             long, int, int, int);
     virtual int create_text(TPanel*, TTextPanel**, char**, long, long, long, long,
@@ -224,12 +325,17 @@ public:
                              long, long, long, long, long);
     virtual int create_edit(TPanel*, TEditPanel**, char*, short, int, long, long,
                             long, long, long, int, int);
+    virtual int create_drop_down(TPanel*, TDropDownPanel**, long, long, long, long,
+                                 long, long, long);
+    virtual int create_list(TPanel*, TListPanel**, long, long, long, long, long);
     virtual int create_scrollbar(TPanel*, TScrollBarPanel**, TTextPanel*, long,
                                  long, long, long, long);
+    virtual int create_auto_scrollbar(TScrollBarPanel**, TTextPanel*, long);
     virtual int create_vert_slider(TPanel*, TVerticalSliderPanel**, long, long,
                                    long, long, long, long, long);
     virtual int create_horz_slider(TPanel*, THorizontalSliderPanel**, long, long,
                                    long, long, long, long, long);
+    virtual void position_panel(TPanel*, long, long, long, long);
 };
 
 #endif

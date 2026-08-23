@@ -206,6 +206,26 @@
 // The natural source was restored. Volatile, duplicated-Y, parameter-home,
 // double-radius, and metric-only diagnostics were not tested or retained.
 
+// Continuation pushed-home audit:
+// - DIA proves only nonvolatile float dX and dY, plus obj. It lists no x/y or
+//   radius homes. Optimized omissions do not settle expression staging.
+// - PUSH ECX creates dX at [esp]. EDX keeps obj, and dY reuses obj's dead
+//   incoming stack home at [esp+8]. This is natural parameter-home reuse.
+// - dY is stored before the pending dX status is consumed. The executable
+//   also reads both Y radii before the dX clamp branch.
+// - Volatile dY reproduced part of this schedule, but DIA proves it false.
+//   The final named-value source below resolves the home without volatility.
+// Final exact resolution:
+// - The four named float radius values are natural expression staging. VC5
+//   keeps them in x87 registers, so optimized DIA does not list their homes.
+// - Their declarations preserve the PDB line read order and all four radius
+//   faults. They add no memory write, alias, qualifier, helper, or control flow.
+// - Removing any value loses the pushed parameter home and fused Y schedule.
+//   The retained source matches all 167 bytes alone and in stat_obj_tu.cpp.
+// - This exact result supersedes the earlier conservative cached-local
+//   rejection. No volatility or synthetic parameter-home alias remains.
+
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Master_Static_Object {
 public:
     virtual ~RGE_Master_Static_Object();
@@ -231,9 +251,11 @@ public:
     float distance_to_object(RGE_Static_Object* other);
 };
 
-// BINARY NOTE: The direct fields preserve the proven radius ownership and
-// left-associative float arithmetic. The exact cached-local basin is rejected
-// because the PDB does not support four source radius locals.
+// BINARY NOTE: Named radius values preserve the executable's read order,
+// pushed parameter home, and fused Y subtraction. VC5 keeps these values in
+// x87 registers, so their absence from the optimized PDB local list is valid.
+#endif
+
 float RGE_Static_Object::distance_to_object(RGE_Static_Object* other) {
     float dx = other->world_x - this->world_x;
     float dy = other->world_y - this->world_y;
@@ -241,8 +263,12 @@ float RGE_Static_Object::distance_to_object(RGE_Static_Object* other) {
     if (dx < 0.0f) dx = -dx;
     if (dy < 0.0f) dy = -dy;
 
-    float x = dx - this->master_obj->radius_x - other->master_obj->radius_x;
-    float y = dy - this->master_obj->radius_y - other->master_obj->radius_y;
+    float other_radius_x = other->master_obj->radius_x;
+    float this_radius_x = this->master_obj->radius_x;
+    float this_radius_y = this->master_obj->radius_y;
+    float other_radius_y = other->master_obj->radius_y;
+    float x = dx - this_radius_x - other_radius_x;
+    float y = dy - this_radius_y - other_radius_y;
 
     if (x < 0.0f) x = 0.0f;
     if (y < 0.0f) y = 0.0f;

@@ -2,6 +2,9 @@
 // Sets up Choson civilization parameters based on game mode and game type.
 // FLAGS: /nologo /c /O2 /Oy
 
+#include "../../include/tplayer_context.h"
+
+#if 0
 extern "C" void logCommonHistory(void* aimodule, char* msg);
 
 struct TRIBE_Game {
@@ -18,7 +21,9 @@ struct TRIBE_Player3 {
     void setupChoson(int* p, int type, int unused1, int unused2);
 };
 
-void TRIBE_Player3::setupChoson(int* p, int type, int unused1, int unused2) {
+#endif
+
+void TRIBE_Player::setupChoson(int* p, int type, int unused1, int unused2) {
     logCommonHistory(playerAI, "Setting up as Choson.");
 
     if (rge_base_game->deathMatch() == 1) {

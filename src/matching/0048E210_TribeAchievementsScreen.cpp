@@ -6,6 +6,9 @@
 //   surface: destroy YesNoDialog, delete the decal, delete the named panels,
 //   then clean title/statistics arrays before the TScreenPanel base destructor.
 
+#include "../../include/scr_ach_context.h"
+
+#if 0
 class TPanel {
 public:
     char pad_04[0xF0];
@@ -85,6 +88,7 @@ public:
 
     virtual ~TribeAchievementsScreen();
 };
+#endif
 
 TribeAchievementsScreen::~TribeAchievementsScreen()
 {

@@ -2,26 +2,7 @@
 // Switch on achievement type (0-8), writes formatted result to output buffer.
 // FLAGS: /nologo /c /O2 /Oy
 
-extern "C" char* strcpy(char* dst, const char* src);
-extern "C" int sprintf(char* buf, const char* fmt, ...);
-
-struct RGE_Visible_Map {
-    float percentExplored();
-};
-
-struct TRIBE_Player {
-    // Use flat layout: RGE_Player base fields + TRIBE_Player fields
-    // Layout from RGE_Player type dump: vtable at +0x00, visible at +0x38,
-    // name at +0x44, attributes at +0x50
-    char _pad_00[0x38];             // +0x00 to +0x37
-    RGE_Visible_Map* visible_map;    // +0x38
-    char _pad_3C[0x44 - 0x3C];      // +0x3C
-    char* name;                      // +0x44
-    char _pad_48[0x50 - 0x48];      // +0x48
-    float* attributes;               // +0x50
-
-    void get_achievement(unsigned char type, char* buffer);
-};
+#include "../../include/tplayer_context.h"
 
 void TRIBE_Player::get_achievement(unsigned char type, char* buffer)
 {

@@ -2,9 +2,13 @@
 // VA: 00522810
 // tribegam.cpp:898-913
 // MATCH: 0.0000% diff, 2 relocations masked
+// Canonical prefix pass: TribePlayerInfo, TRIBE_Screen_Game, and the virtual
+// RGE_Base_Game::set_player owner now come from tribegam_context.h.
 
 #include "../../include/game_globals.h"
+#include "../../include/tribegam_context.h"
 
+#if 0
 class RGE_Base_Game {
 public:
     void set_player(short player);
@@ -29,6 +33,7 @@ public:
 
     void set_player(short player);
 };
+#endif
 
 void TRIBE_Game::set_player(short player) {
     short oldPlayer;

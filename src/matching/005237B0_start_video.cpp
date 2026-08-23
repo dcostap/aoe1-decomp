@@ -17,6 +17,8 @@
 #include <string.h>
 #include <windows.h>
 
+#include "../../include/tribegam_context.h"
+
 extern "C" int __cdecl __open(const char* path, int flags, ...);
 extern "C" void* __cdecl MCIWndCreateA(void* parent, void* instance,
                                          unsigned long style,
@@ -24,9 +26,10 @@ extern "C" void* __cdecl MCIWndCreateA(void* parent, void* instance,
 extern "C" unsigned long __cdecl debug_timeGetTime(char* file, int line);
 
 extern int video_codec_available;
-extern "C" long __stdcall video_sub_wnd_proc(
+extern long __stdcall video_sub_wnd_proc(
     void* hwnd, unsigned int message, unsigned int wparam, long lparam);
 
+#if 0
 class RGE_Prog_Info {
 public:
     char gap_00[0x410];
@@ -95,6 +98,7 @@ public:
     void stop_video(unsigned char do_stop);
     int start_video(int video, char* file);
 };
+#endif
 
 int TRIBE_Game::start_video(int video, char* file)
 {
@@ -132,10 +136,10 @@ int TRIBE_Game::start_video(int video, char* file)
                 temp_name);
             if (this->video_window != 0) {
                 RECT video_rect;
-                this->old_video_wnd_proc = (void*)GetWindowLongA(
+                this->old_video_wnd_proc = (int (__stdcall *)())GetWindowLongA(
                     this->video_window, -4);
                 SetWindowLongA(this->video_window, -4,
-                               (long)video_sub_wnd_proc);
+                               (long)::video_sub_wnd_proc);
 
                 if (this->video_hi_color == 0) {
                     void* palette = (void*)SendMessageA(

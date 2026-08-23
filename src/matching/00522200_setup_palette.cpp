@@ -1,12 +1,8 @@
-struct PALETTEENTRY {
-    unsigned char peRed;
-    unsigned char peGreen;
-    unsigned char peBlue;
-    unsigned char peFlags;
-};
+#include <windows.h>
 
-__declspec(dllimport) int __stdcall SetPaletteEntries(void*, unsigned int, unsigned int, PALETTEENTRY*);
+#include "../../include/tribegam_context.h"
 
+#if 0
 class RGE_Base_Game {
 public:
     void* player_game_info;      // +0x04
@@ -24,6 +20,7 @@ class TRIBE_Game : public RGE_Base_Game {
 public:
     virtual int setup_palette();
 };
+#endif
 
 int TRIBE_Game::setup_palette() {
     if (!RGE_Base_Game::setup_palette()) {
@@ -45,5 +42,3 @@ int TRIBE_Game::setup_palette() {
     }
     return 1;
 }
-
-int RGE_Base_Game::setup_palette() { return 0; }

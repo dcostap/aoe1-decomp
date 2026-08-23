@@ -22,6 +22,7 @@ extern int rge_open(const char* path, int flags);
 extern int rge_read_uncompressed(int fd, void* buf, int len);
 extern int rge_close(int fd);
 
+#ifndef BASEGAME_GROUPED_TU
 class RGE_Game_Info {
 public:
     int open_scenario();
@@ -59,6 +60,7 @@ public:
 
     RGE_Scenario_Header* get_scenario_header(char* param1, int param2);
 };
+#endif
 
 struct Scenario_Header_Work {
     char temp_name[300];

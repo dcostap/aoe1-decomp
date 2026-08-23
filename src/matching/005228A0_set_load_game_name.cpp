@@ -3,6 +3,9 @@
 
 #include <string.h>
 
+#include "../../include/tribegam_context.h"
+
+#if 0
 class TRIBE_Game {
 public:
     char gap_000[0xF68];
@@ -10,6 +13,7 @@ public:
 
     void set_load_game_name(char* param_1);
 };
+#endif
 
 void TRIBE_Game::set_load_game_name(char* param_1) {
     if (param_1 != 0) {
