@@ -11,14 +11,14 @@ struct TRIBE_Game {
 
 extern "C" { extern TRIBE_Game* rge_base_game; }
 
-struct TRIBE_Player4 {
+struct TRIBE_Player {
     char _pad_00[0x238];
     void* playerAI;
 
     void setupCarthaginian(int* p, int type, int unused1, int unused2);
 };
 
-void TRIBE_Player4::setupCarthaginian(int* p, int type, int unused1, int unused2) {
+void TRIBE_Player::setupCarthaginian(int* p, int type, int unused1, int unused2) {
     logCommonHistory(playerAI, "Setting up as Carthaginian.");
 
     if (rge_base_game->deathMatch() == 1) {

@@ -3,7 +3,7 @@
 class TDebuggingLog;
 extern void __cdecl Log(TDebuggingLog* log, char* text);
 
-class RGE_Command {
+class TRIBE_Command {
 public:
     void* vtable_ptr;
     void* world;
@@ -18,7 +18,7 @@ public:
 
 extern TDebuggingLog* g_debug_log;
 
-void RGE_Command::command_shared_los(short param_1) {
+void TRIBE_Command::command_shared_los(short param_1) {
     void* order;
 
     order = calloc(1, 0x10);

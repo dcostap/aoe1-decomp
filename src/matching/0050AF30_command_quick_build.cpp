@@ -1,6 +1,6 @@
 #include <stdlib.h>
 
-class RGE_Command {
+class TRIBE_Command {
 public:
     void submit(void* command, int size);
     void command_quick_build(short value);
@@ -16,7 +16,7 @@ struct CommandQuickBuildPacket {
     char gap_04[0x0C];
 };
 
-void RGE_Command::command_quick_build(short value) {
+void TRIBE_Command::command_quick_build(short value) {
     CommandQuickBuildPacket* packet = (CommandQuickBuildPacket*)calloc(1, 0x10);
     if (packet != 0) {
         packet->type = 0x67;

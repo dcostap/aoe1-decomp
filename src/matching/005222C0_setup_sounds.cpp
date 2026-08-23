@@ -14,7 +14,7 @@ public:
     int load(char* name, long param);
 };
 
-class TRIBE_Game_5222C0 {
+class TRIBE_Game {
 public:
     char gap_00[0x60];
     TSound_Driver* sound_system;   // +0x60
@@ -26,7 +26,7 @@ public:
     int setup_sounds();
 };
 
-int TRIBE_Game_5222C0::setup_sounds()
+int TRIBE_Game::setup_sounds()
 {
     TDigital* d;
     int i;

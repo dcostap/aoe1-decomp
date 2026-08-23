@@ -12,14 +12,14 @@ struct TRIBE_Game {
 
 extern "C" { extern TRIBE_Game* rge_base_game; }
 
-struct TRIBE_Player3 {
+struct TRIBE_Player {
     char _pad_00[0x238];
     void* playerAI;
 
     void setupEgyptian(int* p, int type, int unused1, int unused2);
 };
 
-void TRIBE_Player3::setupEgyptian(int* p, int type, int unused1, int unused2)
+void TRIBE_Player::setupEgyptian(int* p, int type, int unused1, int unused2)
 {
     logCommonHistory(playerAI, "Setting up as Egyptians.");
 
