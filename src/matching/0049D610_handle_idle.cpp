@@ -3,33 +3,9 @@
 
 // attempt 1: natural C++ 
 
-extern unsigned long debug_timeGetTime(const char* file, int line);
+#include "../../include/scr_info_context.h"
 
-class RGE_Base_Game {
-public:
-    void enable_input();
-};
-
-extern RGE_Base_Game* rge_base_game;
-
-class TPanel {
-public:
-    virtual ~TPanel();
-    int handle_idle();
-    char gap_04[0x474];
-};
-
-class TRIBE_Screen_Info : public TPanel {
-public:
-    int auto_close;     // +0x478
-    int timer;          // +0x47C
-    int last_time;      // +0x480
-
-    void close_screen();
-    int handle_idle();
-};
-
-int TRIBE_Screen_Info::handle_idle() {
+long TRIBE_Screen_Info::handle_idle() {
     if (*(int*)((char*)rge_base_game + 0x1D8) == 0) {
         rge_base_game->enable_input();
     }

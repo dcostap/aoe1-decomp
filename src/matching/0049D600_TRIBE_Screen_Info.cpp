@@ -1,12 +1,6 @@
-class Base_TRIBE_Screen_Info {
-public:
-    virtual ~Base_TRIBE_Screen_Info();
-};
-
-class TRIBE_Screen_Info : public Base_TRIBE_Screen_Info {
-public:
-    virtual ~TRIBE_Screen_Info();
-};
+// BINARY NOTE: the destructor owns the TScreenPanel base surface.  The shared
+// context preserves the original base-dtor tail and vtable owner.
+#include "../../include/scr_info_context.h"
 
 TRIBE_Screen_Info::~TRIBE_Screen_Info() {
 }

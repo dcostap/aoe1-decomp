@@ -5,53 +5,7 @@
 // screen transitions.  Numeric addresses preserve the original data objects.
 
 #include <string.h>
-
-class TPanel {
-public:
-    virtual ~TPanel();
-    char gap_04[0x18];
-    char* panel_name; // +0x1C
-    char gap_20[0x458];
-};
-
-class TPanelSystem {
-public:
-    int setCurrentPanel(char* name, int mode);
-    int destroyPanel(char* name);
-};
-
-class RGE_Base_Game {
-public:
-    void disable_input();
-    void close();
-};
-
-class TRIBE_Game : public RGE_Base_Game {
-public:
-    int start_menu();
-};
-
-class TribeSPMenuScreen {
-public:
-    char gap[0x49C];
-    TribeSPMenuScreen();
-};
-
-class TRIBE_Screen_Info : public TPanel {
-public:
-    char gap_478[0x0C];
-    TRIBE_Screen_Info(char* name, char* resource, long id, unsigned long timer);
-    void close_screen();
-};
-
-class TRIBE_Screen_Main_Menu {
-public:
-    char gap[0x4B0];
-    TRIBE_Screen_Main_Menu();
-};
-
-extern TPanelSystem panel_system;
-extern TRIBE_Game* rge_base_game;
+#include "../../include/scr_info_context.h"
 
 void TRIBE_Screen_Info::close_screen()
 {

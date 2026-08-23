@@ -36,42 +36,14 @@
 // 29: /Gr under /GX no codegen change; restored flags.
 // 30: named draw_area local before setup no codegen change; rolled back.
 // GIVEUP: still broad constructor scheduling/register basin mismatch, not accepted_drift.
+// Canonical TU pass: the reviewed TPanel/TEasy_Panel/TScreenPanel surface in
+// include/scr_info_context.h restores the original declarations.  The grouped
+// scr_info.cpp build is an exact 142-byte match with the PDB constructor owner.
 
-class TPanel {
-public:
-    virtual ~TPanel();
-    int handle_idle();
-    char gap_04[0x474];
-};
-
-class TScreenPanel : public TPanel {
-public:
-    virtual ~TScreenPanel();
-    TScreenPanel(int param);
-    int setup(void* draw_area, char* param2, void* param3, int zero);
-};
-
-class RGE_Base_Game {
-public:
-    char gap_00[0x4C];
-    void* draw_area;  // +0x4C
-};
-
-extern RGE_Base_Game* rge_base_game;
-
-class TRIBE_Screen_Info : public TScreenPanel {
-public:
-    int auto_close;           // +0x478
-    unsigned int timer;       // +0x47C
-    unsigned int last_time;   // +0x480
-
-    virtual ~TRIBE_Screen_Info();
-    void close_screen();
-    TRIBE_Screen_Info(char* name, char* param2, long param3, unsigned long timer_val);
-};
+#include "../../include/scr_info_context.h"
 
 TRIBE_Screen_Info::TRIBE_Screen_Info(char* name, char* param2, long param3, unsigned long timer_val)
-    : TScreenPanel((int)name) {
+    : TScreenPanel(name) {
     unsigned long tv = timer_val; char* p2 = param2; long p3 = param3; int zero = 0; this->timer = tv; this->auto_close = (0 < tv); this->last_time = zero;
-    if (TScreenPanel::setup(rge_base_game->draw_area, p2, (void*)p3, zero) == 0) *(int*)((char*)this+0xD8)=1;
+    if (TScreenPanel::setup(rge_base_game->draw_area, p2, p3, zero) == 0) *(int*)((char*)this+0xD8)=1;
 }

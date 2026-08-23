@@ -218,6 +218,23 @@
         "00493C00": "src/matching/00493C00_TribeEndScreen.cpp",
         "00493C90": "src/matching/00493C90_action.cpp"
       }
+    },
+    {
+      "name": "scr_info",
+      "source": "src/scr_info_tu.cpp",
+      "flags": "config/flags/0049D550_TRIBE_Screen_Info.rsp",
+      "owners": {
+        "0049D550": "src/matching/0049D550_TRIBE_Screen_Info.cpp",
+        "0049D600": "src/matching/0049D600_TRIBE_Screen_Info.cpp",
+        "0049D610": "src/matching/0049D610_handle_idle.cpp",
+        "0049D690": "src/matching/0049D690_key_down_action.cpp",
+        "0049D6B0": "src/matching/0049D6B0_mouse_left_down_action.cpp",
+        "0049D6C0": "src/matching/0049D6C0_action.cpp",
+        "0049D6E0": "src/matching/0049D6E0_close_screen.cpp"
+      },
+      "symbols": {
+        "0049D6C0": "?action@TRIBE_Screen_Info@@UAEJPAVTPanel@@JKK@Z"
+      }
     }
   ]
 }
