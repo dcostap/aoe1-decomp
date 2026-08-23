@@ -808,6 +808,18 @@
         "004A7850": "?action@TribeSaveGameScreen@@MAEJPAVTPanel@@JKK@Z",
         "004A8060": "?save_for_scenario_editor@TribeSaveGameScreen@@IAEXXZ"
       }
+    },
+    {
+      "name": "scr_load",
+      "source": "src/scr_load_tu.cpp",
+      "flags": "config/flags/0049DD40_TribeLoadSavedGameScreen.rsp",
+      "owners": {
+        "0049DD40": "src/matching/0049DD40_TribeLoadSavedGameScreen.cpp",
+        "0049E0A0": "src/matching/0049E0A0_TribeLoadSavedGameScreen.cpp",
+        "0049E150": "src/matching/0049E150_fillList.cpp",
+        "0049E2B0": "src/matching/0049E2B0_handle_idle.cpp",
+        "0049E2E0": "src/matching/0049E2E0_action.cpp"
+      }
     }
   ]
 }

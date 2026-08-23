@@ -17,7 +17,9 @@
 // FLAGS: config/flags/0049DD40_TribeLoadSavedGameScreen.rsp (/GX)
 
 #include <string.h>
+#include "../../include/scr_load_context.h"
 
+#if 0
 class TDrawArea;
 class TPanel;
 class TTextPanel;
@@ -126,6 +128,7 @@ public:
     TribeLoadSavedGameScreen();
     void fillList();
 };
+#endif
 
 TribeLoadSavedGameScreen::TribeLoadSavedGameScreen()
     : TScreenPanel("Load Saved Game Screen")
@@ -201,7 +204,7 @@ TribeLoadSavedGameScreen::TribeLoadSavedGameScreen()
         this->deleteButton->set_disabled(1);
     }
 
-    long line = this->list->get_line(rge_base_game->get_save_game_name());
+    long line = this->list->get_line(((TRIBE_Game*)rge_base_game)->get_save_game_name());
     if (line != -1) {
         this->list->scroll_cur_line(1, (short)line, 1);
     }

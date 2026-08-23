@@ -62,16 +62,23 @@
 //   reordering editor declarations all returned the same 10-byte basin. These
 //   probes support the clean RGE_Prog_Info* form but do not explain VC5's local
 //   add-after-currentLine schedule.
-// ACCEPTED DRIFT: The ten-byte edit only exchanges `ADD ESI,0xB12` with the
-// adjacent currentLine call. ESI holds prog_info->save_dir and is callee-saved;
-// the call receiver and arguments do not use it. The ADD has no memory access,
-// and the call result is consumed only after both instructions. Thus, call
-// behavior, pointer value, flags at first use, writes, cleanup, and faults match.
+// - R3 exact finish: reuse one save_dir local across both delete formats and
+//   express delete_line(get_line()) as one nested call. This natural pair makes
+//   VC5 reload and add save_dir before the second currentLine call. It also
+//   preserves the target's complete register allocation and 0x438 EH frame.
+//   Removing save_dir reuse restores the ten-byte drift. Restoring a named
+//   current_line local changes the full register topology and adds 14 bytes.
+//   A second save_dir local is exact with nested deletion, but is unnecessary.
+// - Context audit: include/scr_load_context.h and src/scr_load_tu.cpp model the
+//   PDB order through constructor, destructor, fillList, handle_idle, and action.
+//   All five grouped owners retain their exact boundaries and owning symbols.
 
 #include <io.h>
 #include <stdio.h>
 #include <string.h>
+#include "../../include/scr_load_context.h"
 
+#if 0
 class TDrawArea;
 class TTextPanel;
 class TListPanel;
@@ -228,6 +235,7 @@ public:
 
     virtual long action(TPanel*, long, unsigned long, unsigned long);
 };
+#endif
 
 long TribeLoadSavedGameScreen::action(TPanel* panel, long msg,
                                       unsigned long p3, unsigned long p4) {
@@ -251,16 +259,15 @@ long TribeLoadSavedGameScreen::action(TPanel* panel, long msg,
                         this->list->currentLine());
                 _unlink(fileName);
 
-                // BINARY NOTE: the shipped code reloads the global save-info
-                // pointer before the second currentLine call.
-                RGE_Prog_Info* prog_info2 = rge_base_game->prog_info;
+                // BINARY NOTE: reload the directory before currentLine. This
+                // preserves the shipped global and prog_info fault order.
+                save_dir = rge_base_game->prog_info->save_dir;
                 sprintf(fileName, (char*)0x586678,
-                        prog_info2->save_dir,
+                        save_dir,
                         this->list->currentLine());
                 _unlink(fileName);
 
-                long current_line = this->list->get_line();
-                this->list->delete_line(current_line);
+                this->list->delete_line(this->list->get_line());
                 if (*this->list->currentLine() == 0) {
                     this->okButton->set_disabled(1);
                     this->deleteButton->set_disabled(1);

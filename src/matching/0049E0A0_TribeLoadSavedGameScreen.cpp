@@ -3,6 +3,9 @@
 // Attempt log:
 // first: wrong offsets (+4 instead of +478) - base class needs 0x478 size.
 
+#include "../../include/scr_load_context.h"
+
+#if 0
 struct TPanel {
     virtual ~TPanel();
     void delete_panel(TPanel** panel);
@@ -25,13 +28,14 @@ struct TribeLoadSavedGameScreen : public TScreenPanel {
 
     virtual ~TribeLoadSavedGameScreen();
 };
+#endif
 
 TribeLoadSavedGameScreen::~TribeLoadSavedGameScreen() {
-    this->delete_panel(&this->screenTitle);
-    this->delete_panel(&this->listTitle);
-    this->delete_panel(&this->list);
-    this->delete_panel(&this->scrollbar);
-    this->delete_panel(&this->okButton);
-    this->delete_panel(&this->cancelButton);
-    this->delete_panel(&this->deleteButton);
+    this->delete_panel((TPanel**)&this->screenTitle);
+    this->delete_panel((TPanel**)&this->listTitle);
+    this->delete_panel((TPanel**)&this->list);
+    this->delete_panel((TPanel**)&this->scrollbar);
+    this->delete_panel((TPanel**)&this->okButton);
+    this->delete_panel((TPanel**)&this->cancelButton);
+    this->delete_panel((TPanel**)&this->deleteButton);
 }

@@ -1,5 +1,11 @@
 // VA: 0049E150 TribeLoadSavedGameScreen::fillList | scr_load.cpp:137-170
 
+#include <io.h>
+#include <stdio.h>
+#include <string.h>
+#include "../../include/scr_load_context.h"
+
+#if 0
 extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
 extern "C" char* __cdecl strncpy(char* dst, const char* src, unsigned int count);
 extern "C" unsigned int __cdecl strlen(const char* s);
@@ -27,11 +33,12 @@ struct TribeLoadSavedGameScreen {
     TTextPanel* list;
     void fillList();
 };
+#endif
 
 void TribeLoadSavedGameScreen::fillList()
 {
     char file_name[260];
-    FindDataLocal fileInfo;
+    _finddata_t fileInfo;
     long handle;
     int len;
 
@@ -41,8 +48,8 @@ void TribeLoadSavedGameScreen::fillList()
     sprintf(file_name, "%s*.gam", rge_base_game->prog_info->save_dir);
     handle = _findfirst(file_name, &fileInfo);
     while (handle != -1) {
-        len = strlen(fileInfo.name + 4) - 4;
-        strncpy(file_name, fileInfo.name + 4, len);
+        len = strlen(fileInfo.name) - 4;
+        strncpy(file_name, fileInfo.name, len);
         file_name[len] = 0;
         this->list->append_line(file_name, 0);
         if (_findnext(handle, &fileInfo) == -1) {
@@ -53,8 +60,8 @@ void TribeLoadSavedGameScreen::fillList()
     sprintf(file_name, "%s*.gmx", rge_base_game->prog_info->save_dir);
     handle = _findfirst(file_name, &fileInfo);
     while (handle != -1) {
-        len = strlen(fileInfo.name + 4) - 4;
-        strncpy(file_name, fileInfo.name + 4, len);
+        len = strlen(fileInfo.name) - 4;
+        strncpy(file_name, fileInfo.name, len);
         file_name[len] = 0;
         this->list->append_line(file_name, 0);
         if (_findnext(handle, &fileInfo) == -1) {
