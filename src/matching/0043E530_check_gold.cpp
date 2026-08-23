@@ -1,5 +1,7 @@
 // 0043E530 check_gold (136 bytes) — MATCHED
 // PDB: dlg_dip.cpp (TribeDiplomacyDialog::check_gold)
+// BINARY NOTE: PDB/Ghidra qualifies this owner as protected __thiscall;
+// the owned body is 0043E530-0043E5B7.
 
 class TButtonPanel {
 public:
@@ -28,7 +30,7 @@ extern RGE_Base_Game* rge_base_game;
 extern float DAT_0056f884;
 
 class TribeDiplomacyDialog {
-public:
+protected:
     char gap_514[0x514];
     TButtonPanel* goldTributeButton[8];
     char gap_534[0xE4];

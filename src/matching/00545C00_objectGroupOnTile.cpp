@@ -1,8 +1,12 @@
-// 00545C00 RGE_Game_World::objectGroupOnTile
-// Source: World.cpp lines 3512-3536
+// 00545C00 RGE_Game_World::objectGroupOnTile(int, int, int, int, int&)
+// PDB: World.cpp lines 3512-3536; owning range 00545C00-00545CA5.
 // Retry 2026-05-20: exact match found. Positive nested bounds plus a natural
 // `while (node != 0)` walk keeps the bad-bounds tail and not-found tail in the
 // original order and preserves the compact bottom `jne` node-loop backedge.
+// BINARY NOTE: The PDB-qualified output parameter is an int reference. The
+// preceding World anchor at 00545BF0 owns the separate unsigned-long +0xF8
+// time field; do not merge that anchor or assign this body to another class.
+// Direct map reads, output publication, and failure order remain explicit.
 
 struct RGE_Object_Node {
     void* object;            // +0x00
@@ -38,10 +42,10 @@ struct RGE_Game_World {
     char gap_00[0x28];
     RGE_Map* map;            // +0x28
 
-    int objectGroupOnTile(int owner_id, int object_group, int tile_x, int tile_y, int* output);
+    int objectGroupOnTile(int owner_id, int object_group, int tile_x, int tile_y, int& output);
 };
 
-int RGE_Game_World::objectGroupOnTile(int owner_id, int object_group, int tile_x, int tile_y, int* output)
+int RGE_Game_World::objectGroupOnTile(int owner_id, int object_group, int tile_x, int tile_y, int& output)
 {
     if (tile_x >= 0) {
         if (tile_y >= 0) {
@@ -49,7 +53,7 @@ int RGE_Game_World::objectGroupOnTile(int owner_id, int object_group, int tile_x
             if (tile_x < m->map_width) {
                 if (tile_y < m->map_height) {
                     char* row = m->row_data[tile_y];
-                    *output = *(short*)(row + tile_x * 0x18 + 0x14);
+                    output = *(short*)(row + tile_x * 0x18 + 0x14);
 
                     char* row2 = this->map->row_data[tile_y];
                     RGE_Object_Node* node = *(RGE_Object_Node**)(row2 + tile_x * 0x18 + 0x10);
@@ -71,6 +75,6 @@ int RGE_Game_World::objectGroupOnTile(int owner_id, int object_group, int tile_x
         }
     }
 
-    *output = 0;
+    output = 0;
     return -1;
 }
