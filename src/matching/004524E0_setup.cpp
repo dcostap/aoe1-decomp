@@ -9,16 +9,20 @@
 // Attempt 7: modeled the serialized name count as a short local; VC5 coalesced it to the incoming handle home and recovered the word reload.
 // exact: 0-byte strict diff, exact size/frame/69-call sequence with canonical field ownership.
 
+#ifndef RGE_MS_OBJ_SHARED_CONTEXT
 #include "../../include/game_globals.h"
+#endif
 
 class RGE_Sprite;
 class RGE_Sound;
+#ifndef RGE_MS_OBJ_SHARED_CONTEXT
 struct RGE_Damage_Sprite_Info {
     RGE_Sprite* sprite;
     unsigned char damage_percent;
     unsigned char flag;
     unsigned char pad[2];
 };
+#endif
 
 extern "C" void __cdecl rge_read(int handle, void* buffer, int size);
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
@@ -27,6 +31,7 @@ extern float save_game_version;
 extern float DAT_00570610;
 extern float DAT_00570614;
 
+#ifndef RGE_MS_OBJ_SHARED_CONTEXT
 class RGE_Master_Static_Object {
 public:
     virtual ~RGE_Master_Static_Object();
@@ -107,6 +112,7 @@ public:
 
     int setup(int handle, RGE_Sprite** sprites, RGE_Sound** sounds);
 };
+#endif
 
 int RGE_Master_Static_Object::setup(int handle, RGE_Sprite** sprites, RGE_Sound** sounds)
 {

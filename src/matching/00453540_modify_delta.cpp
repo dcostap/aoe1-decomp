@@ -1,3 +1,4 @@
+#ifndef RGE_MS_OBJ_SHARED_CONTEXT
 class RGE_Master_Static_Object {
 public:
     void* vtable_ptr;
@@ -13,6 +14,7 @@ public:
 
     void modify_delta(float value, unsigned char op);
 };
+#endif
 
 void RGE_Master_Static_Object::modify_delta(float value, unsigned char op) {
     switch (op) {

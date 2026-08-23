@@ -28,6 +28,10 @@
 // other byte fields also swap. The executable performs the first outline-radius
 // x87 comparison before many of these stores, but the rebuild performs it after
 // them. Member visibility, fault order, and FP-exception timing differ.
+// Context probe: an authentic owner-order wrapper with offset-equivalent,
+// gap-only RGE_Game_World and RGE_Map declarations kept the 199-byte diff,
+// 1183-byte body, and C4 frame. Shared world/map vptr context is not the
+// publication-order cause. The diagnostic variant was not retained.
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -37,6 +41,7 @@ class RGE_Sprite;
 class RGE_Sound;
 void __cdecl getstring(char** dest, char* src);
 
+#ifndef RGE_MS_OBJ_SHARED_CONTEXT
 struct RGE_Damage_Sprite_Info {
     RGE_Sprite* sprite;
     unsigned char damage_percent;
@@ -104,6 +109,7 @@ public:
     unsigned char draw_flag; unsigned char draw_color; char padaa[2]; float outline_radius_x; float outline_radius_y; float outline_radius_z;
     int setup(FILE* fp, RGE_Sprite** sprites, RGE_Sound** sounds, short object_id);
 };
+#endif
 
 int RGE_Master_Static_Object::setup(FILE* fp, RGE_Sprite** sprites, RGE_Sound** sounds, short object_id)
 {

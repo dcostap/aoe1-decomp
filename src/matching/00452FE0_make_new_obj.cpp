@@ -5,6 +5,7 @@ class RGE_Master_Static_Object;
 class RGE_Player;
 class RGE_Game_World;
 
+#ifndef RGE_MS_OBJ_SHARED_CONTEXT
 class RGE_Static_Object {
 public:
     char gap_00[0x84];
@@ -33,6 +34,7 @@ class RGE_Game_World {
 public:
     RGE_Static_Object* recycle_object_in_to_game(unsigned char master_type);
 };
+#endif
 
 RGE_Static_Object* RGE_Master_Static_Object::make_new_obj(RGE_Player* player, float x, float y, float z) {
     if (recyclable) {

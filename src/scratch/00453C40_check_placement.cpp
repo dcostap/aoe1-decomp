@@ -105,6 +105,10 @@
 //    overlap_x_min in edi (reloaded per row); current source keeps the row as a short local.
 //    Verify whether a natural row-local declaration can recover that coalescing without
 //    changing the proven unsigned-char parameter ABI.
+// Context probe: an authentic owner-order wrapper with offset-equivalent,
+// gap-only RGE_Game_World and RGE_Map declarations kept the 1725-byte current
+// diff, exact 0x44 frame, and 11 ordered calls. Shared world/map vptr context is
+// not the early prologue cause. The diagnostic variant was not retained.
 
 class RGE_Game_World;
 class RGE_Map;
@@ -112,6 +116,7 @@ class RGE_Player;
 class RGE_Master_Static_Object;
 class RGE_Static_Object;
 class RGE_Object_Node;
+#ifndef RGE_MS_OBJ_SHARED_CONTEXT
 class RGE_Visible_Map {
 public:
     unsigned char get_visible(int col, int row);
@@ -247,6 +252,7 @@ public:
     unsigned char fog_flag;            // +0x65
     short terrain;                     // +0x66
 };
+#endif
 
 extern RGE_Base_Game* rge_base_game;
 

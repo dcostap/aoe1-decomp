@@ -1,5 +1,6 @@
 extern "C" void __cdecl free(void* block);
 
+#ifndef RGE_MS_OBJ_SHARED_CONTEXT
 class RGE_Master_Static_Object {
 public:
     char gap_04[0x4];
@@ -9,6 +10,7 @@ public:
 
     virtual ~RGE_Master_Static_Object();
 };
+#endif
 
 RGE_Master_Static_Object::~RGE_Master_Static_Object() {
     if (this->name != 0) {

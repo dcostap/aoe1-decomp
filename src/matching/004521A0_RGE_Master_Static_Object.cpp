@@ -1,3 +1,4 @@
+#ifndef RGE_MS_OBJ_SHARED_CONTEXT
 struct _iobuf;
 class RGE_Sprite;
 class RGE_Sound;
@@ -8,6 +9,7 @@ public:
     RGE_Master_Static_Object(_iobuf* file, RGE_Sprite** sprites, RGE_Sound** sounds, short value, int doSetup);
     int setup(_iobuf* file, RGE_Sprite** sprites, RGE_Sound** sounds, short value);
 };
+#endif
 
 RGE_Master_Static_Object::RGE_Master_Static_Object(_iobuf* file, RGE_Sprite** sprites, RGE_Sound** sounds, short value, int doSetup) {
     if (doSetup != 0) {

@@ -1,6 +1,7 @@
 // VA: 00454980 calc_base_damage_ability (95B)
 // m_s_obj.cpp
 
+#ifndef RGE_MS_OBJ_SHARED_CONTEXT
 class RGE_Master_Combat_Object {
 public:
     char gap_00[0x108];
@@ -13,6 +14,7 @@ class RGE_Master_Static_Object {
 public:
     long calc_base_damage_ability(RGE_Master_Combat_Object* param);
 };
+#endif
 
 long RGE_Master_Static_Object::calc_base_damage_ability(RGE_Master_Combat_Object* param) {
     float total = 0.0f;

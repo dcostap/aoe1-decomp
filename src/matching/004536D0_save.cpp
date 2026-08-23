@@ -22,6 +22,7 @@ extern "C" void rge_write(int fd, void* src, int size);
 
 typedef unsigned char uchar;
 
+#ifndef RGE_MS_OBJ_SHARED_CONTEXT
 class RGE_Sprite {
 public:
     char gap_00[0x72];
@@ -150,6 +151,7 @@ public:
     float outline_radius_y;
     float outline_radius_z;
 };
+#endif
 
 #define W(ptr,sz) rge_write(fd,(void*)(ptr),(sz))
 

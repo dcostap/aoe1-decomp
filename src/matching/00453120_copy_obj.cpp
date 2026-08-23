@@ -32,6 +32,7 @@
 
 class RGE_Sprite;
 class RGE_Sound;
+#ifndef RGE_MS_OBJ_SHARED_CONTEXT
 struct RGE_Damage_Sprite_Info {
     RGE_Sprite* sprite;
     unsigned char damage_percent;
@@ -123,6 +124,7 @@ public:
 
     virtual void copy_obj(RGE_Master_Static_Object* src);
 };
+#endif
 
 void RGE_Master_Static_Object::copy_obj(RGE_Master_Static_Object* src) {
     short id_val = id;

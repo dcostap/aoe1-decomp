@@ -59,6 +59,10 @@
 // - A named int y copy worsened positional diff by one byte. The clean source
 //   is restored; no natural source form fixed the saved-this frame or register
 //   ownership during this claim.
+// Context probe: an authentic owner-order wrapper with offset-equivalent,
+// gap-only RGE_Game_World and RGE_Map declarations kept the 338-byte current
+// diff and six ordered calls. Shared world/map vptr context is not the
+// saved-this frame cause. The diagnostic variant was not retained.
 
 class TDrawArea;
 class RGE_Color_Table;
@@ -71,6 +75,7 @@ class RGE_Master_Combat_Object;
 class RGE_Static_Object;
 class RGE_Player;
 
+#ifndef RGE_MS_OBJ_SHARED_CONTEXT
 class RGE_Sprite {
 public:
     unsigned char draw(long param_1, long param_2, long param_3, long param_4,
@@ -294,6 +299,7 @@ public:
                       RGE_Color_Table* color_table, long param_5, long param_6,
                       int param_7, unsigned char param_8);
 };
+#endif
 
 void RGE_Master_Static_Object::draw(TDrawArea* draw_area, short x, short y,
                                     RGE_Color_Table* color_table, long param_5,

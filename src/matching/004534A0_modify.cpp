@@ -1,6 +1,7 @@
 // VA: 004534A0 modify (115B)
 // m_s_obj.cpp
 
+#ifndef RGE_MS_OBJ_SHARED_CONTEXT
 class RGE_Master_Static_Object {
 public:
     void* vtable_ptr;   // +0x0
@@ -16,6 +17,7 @@ public:
 
     void modify(float value, unsigned char op);
 };
+#endif
 
 void RGE_Master_Static_Object::modify(float value, unsigned char op) {
     switch (op) {

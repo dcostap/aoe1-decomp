@@ -37,6 +37,7 @@
 //   (`radius_x + radius_x`) recovers the target fld/fadd sequence. The full
 //   source now emits the original 337 bytes exactly.
 
+#ifndef RGE_MS_OBJ_SHARED_CONTEXT
 class RGE_Map {
 public:
     char gap_00[0x8D9A];
@@ -61,6 +62,7 @@ public:
         short& x1, short& y1, short& x2, short& y2,
         short& x3, short& y3, short& x4, short& y4);
 };
+#endif
 
 unsigned char RGE_Master_Static_Object::alignment_box(
     RGE_Game_World* world, float x, float y,

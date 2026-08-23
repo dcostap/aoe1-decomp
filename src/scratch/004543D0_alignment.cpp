@@ -75,12 +75,18 @@
 //   unordered-safe `test ah,41` emitted by `>` guards. Negated strict-less
 //   guards reproduce the C0-only form. Both guards reached 457 strict diff,
 //   74.69% shape, and 19.59% exact-block coverage. Retain this source form.
+// Context probe: an authentic owner-order wrapper with offset-equivalent,
+// gap-only RGE_Game_World and RGE_Map declarations kept the 554-byte current
+// diff, exact 0x8 frame, and four ordered calls. Shared world/map vptr context
+// is not the initial FP/control-flow cause. The diagnostic variant was not
+// retained.
 
 class RGE_Game_World;
 class RGE_Map;
 class RGE_Static_Object;
 class RGE_Player;
 
+#ifndef RGE_MS_OBJ_SHARED_CONTEXT
 class RGE_Master_Static_Object {
 public:
     virtual unsigned char alignment(float& param_1, float& param_2, RGE_Game_World* param_3, unsigned char param_4);
@@ -104,6 +110,7 @@ public:
     int map_width;        // +0x8
     int map_height;       // +0xC
 };
+#endif
 
 unsigned char RGE_Master_Static_Object::alignment(float& param_1, float& param_2, RGE_Game_World* param_3, unsigned char param_4)
 {

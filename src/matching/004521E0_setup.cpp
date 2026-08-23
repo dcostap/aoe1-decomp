@@ -5,6 +5,7 @@
 class RGE_Sprite;
 class RGE_Sound;
 
+#ifndef RGE_MS_OBJ_SHARED_CONTEXT
 class RGE_Damage_Sprite_Info {
 public:
     RGE_Sprite* sprite;
@@ -96,6 +97,7 @@ public:
 
     int setup(RGE_Master_Static_Object* src);
 };
+#endif
 
 int RGE_Master_Static_Object::setup(RGE_Master_Static_Object* src) {
     master_type = 0x0A;
