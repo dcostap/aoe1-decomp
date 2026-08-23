@@ -1,3 +1,17 @@
+// RGE_Main_View::reset_display_object_selection
+// VA: 00540700
+// PDB-qualified owner/name: public: void __thiscall RGE_Main_View::reset_display_object_selection(int)
+// PDB source: vw_main.cpp:1963-1977
+// Original body boundary: 00540700-00540747; next symbol: 00540750.
+// MATCH: 0.0000% diff; 72 bytes, 30 instructions, no calls.
+//
+// BINARY NOTE: The executable reads DispSel_List_Max at entry, reads the
+// typed DispSel_List only after the positive-count guard, and rereads the
+// maximum at the loop tail. Keep that order and the record stride.
+// Exact-finish: the typed DisplaySelectedObjRec fields and natural loop shape
+// reproduce the complete body. The proven +0x354 and +0x35C members stay in
+// this narrow owner view; no unsupported class surface is added.
+
 class DisplaySelectedObjRec {
 public:
     int active;

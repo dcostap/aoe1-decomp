@@ -1,5 +1,7 @@
-// mystring.cpp:35-49, 125 bytes
-// attempt 1: strcat-style: strlen two strings, calloc, memcpy twice, free+store
+// PDB: mystring.cpp:35-49; qualified owner: ?addstring@@YAXPAPADPAD1@Z.
+// Boundary: 00462DB0-00462E2D, after unconvert_us 00462D90-00462DAA.
+// Exact finish: strict positional match, 125/125 bytes, 0.0000% diff.
+// Natural C++: strlen two strings, calloc, memcpy twice, free+store.
 #include <stdlib.h>
 #include <string.h>
 

@@ -1,3 +1,7 @@
+// VA: 004195F0 UnitAIModule::processIdle
+// aiuaimod.cpp lines 5255-5282; protected virtual owner (PDB symbol MAEHH).
+// Body boundary: 004195F0-00419642; processGroupNotify ends at 004195E0.
+
 class UnitAIModule {
 public:
     virtual int pad0();
@@ -57,7 +61,8 @@ public:
     virtual int padc54();
     virtual int get_type();
 
-    int processIdle(int param);
+protected:
+    virtual int processIdle(int param);
 };
 
 int UnitAIModule::processIdle(int param) {
