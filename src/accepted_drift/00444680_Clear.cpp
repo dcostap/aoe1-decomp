@@ -46,6 +46,13 @@
 //   steps, fill state, and returns match. The executable's late y1 <= y2 test
 //   is redundant after its earlier y1 < y2 guard. Remaining drift is private
 //   register and block lowering.
+// - Exact-finish pass: fresh natural-source validation remains 439 bytes,
+//   0x78 frame, five ordered calls, and 218 differing bytes. Rejected positive
+//   operand swaps, split failure guards, direct row-pointer forms, row-cursor
+//   aliases, and split DirectDraw bound increments. These changed frame,
+//   branch layout, register coloring, or size. The source is restored.
+// - Protected same-TU anchors 00446230, 00446340, 00444B50, and 004443D0
+//   remain exact. No config, flag, ABI, or anchor source was changed.
 
 #include <string.h>
 

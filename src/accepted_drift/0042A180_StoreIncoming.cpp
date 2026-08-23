@@ -51,6 +51,10 @@
 // EBP, and then adds EAX. Both form the same HOLDER address. All packet reads,
 // allocation and REP-copy effects, member stores, callback-time OnHold reloads,
 // six calls, arguments, and return values keep the same order.
+// Continuation pass sa-7c90eee8, 2026-08-24: complete communications-handler
+// declarations, the grouped com_hand wrapper, explicit operator_new calls,
+// typed aliases, references, and address forms all stayed in the clean 415-byte
+// / 278-diff basin or worsened the CFG. Restored the natural reviewed source.
 
 #include <string.h>
 

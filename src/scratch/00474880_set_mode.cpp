@@ -60,7 +60,10 @@
 //   result is ignored.
 //
 // Left in scratch, remaining drift (all localized codegen):
-// - current best is 865 bytes (39.53%), shape 93.51%, size 2188 vs 2185, frame 0xC vs 0x10;
+// - prior local-context best was 865 bytes (39.53%), shape 93.51%, size 2188 vs 2185, frame 0xC vs 0x10;
+// - that 865-byte result used a local panel ABI and is not retained after the
+//   canonical context gate. The reduced canonical candidate is 2188 bytes,
+//   881 differing bytes, 96.88% ordered-call alignment, and the same 0xC frame.
 // - frame 0xC vs 0x10: original keeps a 4th slot [E0-4] caching list_wid for the above path;
 //   rebuilt keeps calc_wid in ebp (register) and spills only the fn ptr to old_mode's home.
 // - 480/484: original hoists arg3/arg4 (val_wid+btn_wid+1, val_hgt) and pushes them BEFORE the
@@ -77,113 +80,34 @@
 //   only esi and defers edi/ebp/ebx. The source probes did not recover this shrink-wrap basin.
 // Current pass: packet and mangled-name evidence confirm the nested DropdownMode parameter ABI.
 // Exact Pnl_drop.cpp donors use int declarations, but this target now uses the PDB-proven enum.
+//
+// Exact-finish context pass:
+// - The PDB module is C:\\msdev\\work\\age1_x1\\Pnl_drop.cpp, lines 408-627.
+// - The owning class is TDropDownPanel. The address sequence is the Pnl_drop.cpp
+//   set_mode body between the exact constructor, destructor, set_rect, and
+//   set_bevel_info anchors.
+// - This owner now includes include/panel_context.h. That header supplies the
+//   reviewed Panel.cpp vtable, 0xF4 layout, RECT storage, and Panel helpers.
+// - Fresh checks keep exact anchors 00473ED0, 00473F50, 00474550, and 00474670.
+// - Natural call order and panel rereads remain explicit. The shipped
+//   numberLines result locals preserve the observed numberLines-before-
+//   numberDrawLines order without reusing a panel result across checks.
 
-class TDrawArea {
-public:
-    char gap_00[0x18];
-    int Width;    // +0x18
-    int Height;   // +0x1C
-};
-
-class TPanel {
-public:
-    virtual ~TPanel();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void set_active(int mode);                                            // 0x14
-    virtual void set_positioning(int mode, long p2, long p3, long p4, long p5,
-                                 long p6, long p7, long p8, long p9,
-                                 TPanel* p10, TPanel* p11, TPanel* p12, TPanel* p13);  // 0x18
-    virtual void set_fixed_position(long p1, long p2, long p3, long p4);          // 0x1C
-    virtual void set_redraw(int mode);                                            // 0x20
-    virtual void vf24(); virtual void vf28(); virtual void vf2C(); virtual void vf30();
-    virtual void vf34(); virtual void vf38(); virtual void vf3C(); virtual void vf40();
-    virtual void vf44(); virtual void vf48(); virtual void vf4C(); virtual void vf50();
-    virtual void vf54(); virtual void vf58(); virtual void vf5C(); virtual void vf60();
-    virtual void vf64(); virtual void vf68(); virtual void vf6C(); virtual void vf70();
-    virtual void vf74(); virtual void vf78(); virtual void vf7C(); virtual void vf80();
-    virtual void vf84(); virtual void vf88(); virtual void vf8C(); virtual void vf90();
-    virtual void vf94(); virtual void vf98(); virtual void vf9C(); virtual void vfA0();
-    virtual void vfA4(); virtual void vfA8(); virtual void vfAC(); virtual void vfB0();
-    virtual long notify_action(TPanel* panel, long action, unsigned long param3,
-                               unsigned long param4);                             // 0xB4
-
-    TPanel* previousPanelValue;          // +0x04
-    TPanel* previousModalPanelValue;     // +0x08
-    long pnl_x;                          // +0x0C
-    long pnl_y;                          // +0x10
-    long pnl_wid;                        // +0x14
-    long pnl_hgt;                        // +0x18
-    char* panelNameValue;                // +0x1C
-    TDrawArea* render_area;              // +0x20
-    long clip_left;                      // +0x24
-    long clip_top;                       // +0x28
-    long clip_right;                     // +0x2C
-    long clip_bottom;                    // +0x30
-    int position_mode;                   // +0x34
-    int need_redraw;                     // +0x38
-    TPanel* curr_child;                  // +0x3C
-    TPanel* parent_panel;                // +0x40
-    TPanel* left_panel;                  // +0x44
-    TPanel* top_panel;                   // +0x48
-    TPanel* right_panel;                 // +0x4C
-    TPanel* bottom_panel;                // +0x50
-    char* node;                          // +0x54
-    char* first_child_node;              // +0x58
-    char* last_child_node;               // +0x5C
-    TPanel* tab_prev_panel;              // +0x60
-    TPanel* tab_next_panel;              // +0x64
-    int mouse_captured;                  // +0x68
-    int active;                          // +0x6C
-    int visible;                         // +0x70
-    int tab_stop;                        // +0x74
-    int have_focus;                      // +0x78
-    int overlapping_children;            // +0x7C
-    int handle_mouse_input;              // +0x80
-    int just_drawn;                      // +0x84
-    void* clip_rgn;                      // +0x88
-    char gap_8C[0x10];                   // +0x8C render_rect
-    long left_border;                    // +0x9C
-    long top_border;                     // +0xA0
-    long right_border;                   // +0xA4
-    long bottom_border;                  // +0xA8
-    long min_wid;                        // +0xAC
-    long max_wid;                        // +0xB0
-    long min_hgt;                        // +0xB4
-    long max_hgt;                        // +0xB8
-    long mouse_hold_interval;            // +0xBC
-    long mouse_move_tolerance;           // +0xC0
-    long mouse_down_x;                   // +0xC4
-    long mouse_down_y;                   // +0xC8
-    int mouse_down_ctrl;                 // +0xCC
-    int mouse_down_shift;                // +0xD0
-    unsigned long mouse_down_time;       // +0xD4
-    int error_code;                      // +0xD8
-    int z_order;                         // +0xDC
-    int display_changed_count;           // +0xE0
-    long help_string_id;                 // +0xE4
-    long help_page_id;                   // +0xE8
-    unsigned char mouse_action;          // +0xEC
-    unsigned char mouse_down_button;     // +0xED
-    unsigned char panel_type;            // +0xEE
-    unsigned char color;                 // +0xEF
-    unsigned char fill_in_background;    // +0xF0
-    unsigned char clip_to_parent;        // +0xF1
-    unsigned char draw_rect2_flag;       // +0xF2
-    unsigned char need_restore;          // +0xF3
-
-    long xPosition();
-    long yPosition();
-    long width();
-    long height();
-    void set_curr_child(TPanel* panel);
-    void set_z_order(unsigned char mode, short order);
-};
+#include "../../include/panel_context.h"
 
 class TTextPanel : public TPanel {
 public:
+    virtual ~TTextPanel();
+    virtual void set_rect(long, long, long, long);
+    virtual void set_active(int);
+    virtual void draw();
+    virtual long mouse_left_down_action(long, long, int, int);
+    virtual long key_down_action(long, short, int, int, int);
+    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    virtual void set_text(char**, short);
+    virtual void set_text(long);
+    virtual void set_text(char*);
+    virtual void set_bevel_info(int, int, int, int, int, int, int);
     int numberLines();
     int numberDrawLines();
     char gap_F4[0x8C];                   // +0xF4
@@ -193,14 +117,6 @@ public:
 
 class TScrollBarPanel : public TPanel {
 };
-
-class TPanelSystem {
-public:
-    void setModalPanel(TPanel* panel);
-    int restorePreviousModalPanel();
-};
-
-extern TPanelSystem panel_system;
 
 class TDropDownPanel : public TPanel {
 public:
@@ -263,23 +179,23 @@ void TDropDownPanel::set_mode(DropdownMode mode) {
 
     if (mode == ModeValue) {
         if (old_mode == ModeList && this->parent_panel != 0 && this->parent_panel->parent_panel != 0) {
-            if (this->clip_left < parent_x || this->clip_top < parent_y ||
-                this->clip_right > parent_w + parent_x - 1 ||
-                this->clip_bottom > parent_h + parent_y - 1) {
+            if (this->clip_rect.left < parent_x || this->clip_rect.top < parent_y ||
+                this->clip_rect.right > parent_w + parent_x - 1 ||
+                this->clip_rect.bottom > parent_h + parent_y - 1) {
                 this->parent_panel->parent_panel->set_redraw(2);
             }
         }
         this->list_panel->set_active(0);
         this->scbar_panel->set_active(0);
         if (this->draw_style == 1) {
-            this->btn_panel->set_positioning(7, 0, 0, 1, 0, this->btn_wid, this->btn_wid,
+            this->btn_panel->set_positioning(PositionLeftTop, 0, 0, 1, 0, this->btn_wid, this->btn_wid,
                                              this->btn_hgt, this->btn_hgt, 0, 0, 0, 0);
-            this->val_panel->set_positioning(7, 1, 0, 0, 0, this->val_wid, this->val_wid,
+            this->val_panel->set_positioning(PositionLeftTop, 1, 0, 0, 0, this->val_wid, this->val_wid,
                                              this->val_hgt, this->val_hgt, this->btn_panel, 0, 0, 0);
         } else {
-            this->val_panel->set_positioning(7, 0, 0, 1, 0, this->val_wid, this->val_wid,
+            this->val_panel->set_positioning(PositionLeftTop, 0, 0, 1, 0, this->val_wid, this->val_wid,
                                              this->val_hgt, this->val_hgt, 0, 0, 0, 0);
-            this->btn_panel->set_positioning(7, 1, 0, 0, 0, this->btn_wid, this->btn_wid,
+            this->btn_panel->set_positioning(PositionLeftTop, 1, 0, 0, 0, this->btn_wid, this->btn_wid,
                                              this->btn_hgt, this->btn_hgt, this->val_panel, 0, 0, 0);
         }
         this->clip_to_parent = 1;
@@ -305,7 +221,7 @@ void TDropDownPanel::set_mode(DropdownMode mode) {
                 panel_system.setModalPanel(0);
             }
             if (this->parent_panel) {
-                this->parent_panel->notify_action(this, 2, 0, 0);
+                this->parent_panel->action(this, 2, 0, 0);
                 this->mode = mode;
                 return;
             }
@@ -324,25 +240,26 @@ void TDropDownPanel::set_mode(DropdownMode mode) {
                              spacer_size * 2) + border_size * 2;
         }
         this->list_panel->set_fixed_position(0, 0, this->list_wid, this->list_hgt);
-        if (this->list_panel->numberLines() > this->list_panel->numberDrawLines()) {
+        int number_lines = this->list_panel->numberLines();
+        if (number_lines > this->list_panel->numberDrawLines()) {
             this->scbar_panel->set_active(1);
         } else {
             this->scbar_panel->set_active(0);
         }
         if (this->draw_style == 1) {
-            this->btn_panel->set_positioning(7, 0, 0, 1, 0, this->btn_wid, this->btn_wid,
+            this->btn_panel->set_positioning(PositionLeftTop, 0, 0, 1, 0, this->btn_wid, this->btn_wid,
                                              this->btn_hgt, this->btn_hgt, 0, 0, 0, 0);
-            this->val_panel->set_positioning(7, 1, 0, 0, 0, this->val_wid, this->val_wid,
+            this->val_panel->set_positioning(PositionLeftTop, 1, 0, 0, 0, this->val_wid, this->val_wid,
                                              this->val_hgt, this->val_hgt, this->btn_panel, 0, 0, 0);
         } else {
-            this->val_panel->set_positioning(7, 0, 0, 1, 0, this->val_wid, this->val_wid,
+            this->val_panel->set_positioning(PositionLeftTop, 0, 0, 1, 0, this->val_wid, this->val_wid,
                                              this->val_hgt, this->val_hgt, 0, 0, 0, 0);
-            this->btn_panel->set_positioning(7, 1, 0, 0, 0, this->btn_wid, this->btn_wid,
+            this->btn_panel->set_positioning(PositionLeftTop, 1, 0, 0, 0, this->btn_wid, this->btn_wid,
                                              this->btn_hgt, this->btn_hgt, this->val_panel, 0, 0, 0);
         }
-        this->scbar_panel->set_positioning(10, 1, 1, 0, 0, this->scbar_wid, this->scbar_wid,
+        this->scbar_panel->set_positioning(PositionRightBottom, 1, 1, 0, 0, this->scbar_wid, this->scbar_wid,
                                            0, 0, 0, this->val_panel, 0, 0);
-        this->list_panel->set_positioning(8, 0, 1, 1, 0, 0, 0, 0, 0, 0,
+        this->list_panel->set_positioning(PositionLeftBottom, 0, 1, 1, 0, 0, 0, 0, 0, 0,
                                           this->val_panel, this->scbar_panel, 0);
         this->clip_to_parent = 0;
         long calc_wid = this->list_wid;
@@ -370,25 +287,26 @@ void TDropDownPanel::set_mode(DropdownMode mode) {
                     }
                     if (this->scbar_panel->active == 0) {
                         this->list_panel->set_fixed_position(0, 0, this->list_wid, this->list_hgt);
-                        if (this->list_panel->numberLines() > this->list_panel->numberDrawLines()) {
+                        int number_lines = this->list_panel->numberLines();
+                        if (number_lines > this->list_panel->numberDrawLines()) {
                             this->scbar_panel->set_active(1);
                         }
                     }
                 }
                 if (this->draw_style == 1) {
-                    this->btn_panel->set_positioning(7, 0, 0, 1, 0, this->btn_wid, this->btn_wid,
+                    this->btn_panel->set_positioning(PositionLeftTop, 0, 0, 1, 0, this->btn_wid, this->btn_wid,
                                                      this->btn_hgt, this->btn_hgt, 0, 0, 0, 0);
-                    this->val_panel->set_positioning(7, 1, 0, 0, 0, this->val_wid, this->val_wid,
+                    this->val_panel->set_positioning(PositionLeftTop, 1, 0, 0, 0, this->val_wid, this->val_wid,
                                                      this->val_hgt, this->val_hgt, this->btn_panel, 0, 0, 0);
                 } else {
-                    this->val_panel->set_positioning(7, 0, 0, 1, 0, this->val_wid, this->val_wid,
+                    this->val_panel->set_positioning(PositionLeftTop, 0, 0, 1, 0, this->val_wid, this->val_wid,
                                                      this->val_hgt, this->val_hgt, 0, 0, 0, 0);
-                    this->btn_panel->set_positioning(7, 1, 0, 0, 0, this->btn_wid, this->btn_wid,
+                    this->btn_panel->set_positioning(PositionLeftTop, 1, 0, 0, 0, this->btn_wid, this->btn_wid,
                                                      this->btn_hgt, this->btn_hgt, this->val_panel, 0, 0, 0);
                 }
-                this->scbar_panel->set_positioning(9, 1, 1, 0, 0, this->scbar_wid, this->scbar_wid,
+                this->scbar_panel->set_positioning(PositionRightTop, 1, 1, 0, 0, this->scbar_wid, this->scbar_wid,
                                                    0, 0, 0, 0, 0, this->val_panel);
-                this->list_panel->set_positioning(7, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0,
+                this->list_panel->set_positioning(PositionLeftTop, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0,
                                                   this->scbar_panel, this->val_panel);
                 this->set_fixed_position(this->pnl_x - parent_x,
                                          this->pnl_y - parent_y - this->list_hgt - 1,
@@ -410,10 +328,11 @@ void TDropDownPanel::set_mode(DropdownMode mode) {
                 }
                 if (this->scbar_panel->active == 0) {
                     this->list_panel->set_fixed_position(0, 0, this->list_wid, this->list_hgt);
-                    if (this->list_panel->numberLines() > this->list_panel->numberDrawLines()) {
+                    int number_lines = this->list_panel->numberLines();
+                    if (number_lines > this->list_panel->numberDrawLines()) {
                         this->scbar_panel->set_active(1);
                     }
-                    this->list_panel->set_positioning(8, 0, 1, 1, 0, 0, 0, 0, 0, 0,
+                    this->list_panel->set_positioning(PositionLeftBottom, 0, 1, 1, 0, 0, 0, 0, 0, 0,
                                                       this->val_panel, this->scbar_panel, 0);
                 }
                 this->set_fixed_position(this->pnl_x - parent_x, this->pnl_y - parent_y,
@@ -425,7 +344,7 @@ void TDropDownPanel::set_mode(DropdownMode mode) {
         this->set_curr_child(this->list_panel);
         panel_system.setModalPanel(this);
         if (this->parent_panel) {
-            this->parent_panel->notify_action(this, 1, 0, 0);
+            this->parent_panel->action(this, 1, 0, 0);
         }
     }
 

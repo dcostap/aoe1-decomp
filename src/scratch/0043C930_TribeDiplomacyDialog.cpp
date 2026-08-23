@@ -48,6 +48,12 @@
 //   splits, register hints, and loop-index scopes did not improve the clean
 //   source. A delayed player alias kept the frame but changed direct targets.
 //   All such variants were restored to the pinned H21 source.
+// - claim sa-a5acd99e-r1: restored the source literals and the separate
+//   multiplayer humanity result.  The best reduced source keeps 112/112 calls,
+//   a 0x128 frame, and 2723 differing bytes.  The original keeps a 0x124 frame.
+//   Direct player aliases, byte cursors, cursor scopes, and register spelling
+//   did not recover the original setup or frame.  The current source is the
+//   best behavior-preserving checkpoint from this claim and remains nonexact.
 
 #include <stdio.h>
 
@@ -423,7 +429,7 @@ public:
 };
 
 TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parent)
-    : TDialogPanel((char*)0x584318)
+    : TDialogPanel("Diplomacy Dialog")
 {
     TButtonPanel** button;
     int y;
@@ -432,13 +438,11 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parent)
     int player_id;
     int i;
     TButtonPanel** tab_buttons;
-    int tab_count;
+    int tab_count = 0;
     int disable_buttons;
     tagPALETTEENTRY palette_color;
     char temp_str[100];
     TPanel* tab_list[35];
-
-    tab_count = 0;
 
     for (i = 0; i < 8; ++i) {
         this->title[i] = 0;
@@ -483,11 +487,11 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parent)
     }
 
     // BINARY NOTE: VC5 keeps the allocation result through this null join.
-    if ((this->buttonPics = new TShape((char*)0x584308, 0xC62C)) == 0) {
+    if ((this->buttonPics = new TShape("tradicon.shp", 0xC62C)) == 0) {
         return;
     }
 
-    if ((this->backgroundPics = new TShape((char*)0x5842F8, 0xC63A)) == 0) {
+    if ((this->backgroundPics = new TShape("dlg_plbn.shp", 0xC63A)) == 0) {
         return;
     }
 
@@ -541,7 +545,8 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parent)
         button = this->woodTributeButton;
         tab_buttons = this->allyButton;
         do {
-            RGE_Player* player = world->players[player_id];
+            RGE_Player* player = *(RGE_Player**)((char*)world->players +
+                                                  ((char*)button - (char*)this - 0x530));
 
             GetPaletteEntries(this->palette, player->color_table->color_index,
                               1, &palette_color);
@@ -562,6 +567,7 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parent)
                 disable_buttons = 1;
             } else {
                 if (rge_base_game->multiplayerGame()) {
+                    int humanity_result = 0;
                     int j = 1;
                     int humanity_count = rge_base_game->numberPlayers();
                     if (j <= humanity_count) {
@@ -569,22 +575,22 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parent)
                         if (rge_base_game->playerID(j) == player_id) {
                             int h = comm->GetPlayerHumanity(j);
                             if (h == 2 || h == 4) {
-                                humanity = h;
+                                humanity_result = h;
                             }
                         }
                             ++j;
                             humanity_count = rge_base_game->numberPlayers();
                         } while (j <= humanity_count);
                     }
-                    if (humanity != 2 && humanity != 4) {
+                    if (humanity_result != 2 && humanity_result != 4) {
                         disable_buttons = 1;
                     }
                 }
             }
 
-            int civ_font = disable_buttons ? 7 : 0x0B;
             if (this->create_text(this, &this->playerName[player_id - 1], player->name,
-                                  5, y, 0x82, 0x1E, civ_font, 0, 1, 0) == 0) {
+                                  5, y, 0x82, 0x1E,
+                                  disable_buttons ? 7 : 0x0B, 0, 1, 0) == 0) {
                 return;
             }
             rge_base_game->language(0x69, player->master_player_id, 0,
@@ -712,28 +718,28 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parent)
         return;
     }
 
-    sprintf(temp_str + 4, (char*)0x5842F4,
+    sprintf(temp_str + 4, "%ld",
             (long)(rge_base_game->get_player()->attributes[1] - this->woodTotal));
     if (this->create_text(this, &this->playerWood, temp_str + 4,
                           0x1B8, this->cur_player_row * 0x1E + 0x50,
                           0x28, 0x1E, 0x0B, 0, 1, 0) == 0) {
         return;
     }
-    sprintf(temp_str + 4, (char*)0x5842F4,
+    sprintf(temp_str + 4, "%ld",
             (long)(rge_base_game->get_player()->attributes[0] - this->foodTotal));
     if (this->create_text(this, &this->playerFood, temp_str + 4,
                           0x1E0, this->cur_player_row * 0x1E + 0x50,
                           0x28, 0x1E, 0x0B, 0, 1, 0) == 0) {
         return;
     }
-    sprintf(temp_str + 4, (char*)0x5842F4,
+    sprintf(temp_str + 4, "%ld",
             (long)(rge_base_game->get_player()->attributes[3] - this->goldTotal));
     if (this->create_text(this, &this->playerGold, temp_str + 4,
                           0x208, this->cur_player_row * 0x1E + 0x50,
                           0x28, 0x1E, 0x0B, 0, 1, 0) == 0) {
         return;
     }
-    sprintf(temp_str + 4, (char*)0x5842F4,
+    sprintf(temp_str + 4, "%ld",
             (long)(rge_base_game->get_player()->attributes[2] - this->stoneTotal));
     if (this->create_text(this, &this->playerStone, temp_str + 4,
                           0x230, this->cur_player_row * 0x1E + 0x50,

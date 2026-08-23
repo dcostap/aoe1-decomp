@@ -66,6 +66,22 @@
 // same field in the same order. Size, all six calls, allocation loops, max
 // scans, stores, cleanup, return, and fault order match. This function has no
 // SEH. Direct parameter-home source forms remain rejected as compiler steering.
+// BINARY NOTE: PDB names this owner m_co_obj.cpp, lines 182-262. The target has
+// no map, visibility, or terrain memory access. RGE_Map, RGE_Visible_Map, and
+// RGE_Terrain_Info belong to separate PDB modules, so they are not imported as
+// unsupported context here. The inherited combat layout below follows the
+// PDB-qualified m_co_obj class family and preserves the proven 0x148 size.
+// EXACT-FINISH NOTE: Fresh grouped validation keeps the m_co_obj owner and
+// 00450450-0045067C boundary, no frame/EH, six ordered direct calls, parser
+// field stores, allocation loops, cleanup, return, and malformed-input fault
+// order. The seven changed bytes are only parser-home displacements: +0x32,
+// +0x51, +0x87, +0x16B, +0x179, +0x17C, and +0x182. The original uses dead
+// parameter homes at +4, +12, and +16 and local homes at -4 and -2. Natural
+// named locals retain the behavior but do not reproduce those compiler homes.
+// Direct parameter-home forms were tested and rejected as compiler steering.
+// Network anchors 0044E9E0 and 0044ED20 remain separate InfluenceMap owners;
+// their documented row, filter, edge, count, and malformed-input behavior is
+// not imported or changed by this source.
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -80,6 +96,13 @@ class RGE_Player;
 class RGE_Game_World;
 class TDrawArea;
 class RGE_Color_Table;
+
+struct RGE_Damage_Sprite_Info {
+    RGE_Sprite* sprite;
+    unsigned char damage_percent;
+    unsigned char flag;
+    char pad[2];
+};
 
 class RGE_Armor_Weapon_Info {
 public:
@@ -113,7 +136,79 @@ public:
                       int value, unsigned char flags);
 
     unsigned char master_type;
-    char gap_005[0xB3];
+    unsigned char pad_005[3];
+    char* name;
+    short string_id;
+    short string_id2;
+    short id;
+    short copy_id;
+    short object_group;
+    unsigned char pad_016[2];
+    RGE_Sprite* sprite;
+    RGE_Sprite* death_sprite;
+    RGE_Sprite* undead_sprite;
+    unsigned char undead_flag;
+    unsigned char pad_025;
+    short hp;
+    float los;
+    unsigned char obj_max;
+    unsigned char pad_02D[3];
+    float radius_x;
+    float radius_y;
+    float radius_z;
+    RGE_Sound* selected_sound;
+    RGE_Sound* created_sound;
+    RGE_Sound* death_sound;
+    short death_spawn_obj_id;
+    unsigned char sort_number;
+    unsigned char can_be_built_on;
+    short button_pict;
+    unsigned char hide_in_scenario_editor;
+    unsigned char pad_04F;
+    short portrait_pict;
+    unsigned char available;
+    unsigned char pad_053;
+    short tile_req1;
+    short tile_req2;
+    short center_tile_req1;
+    short center_tile_req2;
+    float construction_radius_x;
+    float construction_radius_y;
+    unsigned char elevation_flag;
+    unsigned char fog_flag;
+    short terrain;
+    unsigned char movement_type;
+    unsigned char pad_069;
+    short attribute_type_held[3];
+    float attribute_amount_held[3];
+    short attribute_max_amount;
+    unsigned char pad_07E[2];
+    float attribute_rot;
+    float multiple_attribute_mod;
+    unsigned char attribute_flag[3];
+    unsigned char area_effect_object_level;
+    unsigned char combat_level;
+    unsigned char select_level;
+    unsigned char map_draw_level;
+    unsigned char unit_level;
+    unsigned char map_color;
+    unsigned char attack_reaction;
+    unsigned char convert_terrain_flag;
+    unsigned char damage_sprite_num;
+    RGE_Damage_Sprite_Info* damage_sprites;
+    long help_string_id;
+    long help_page_id;
+    long hotkey_id;
+    unsigned char recyclable;
+    unsigned char track_as_resource;
+    unsigned char create_doppleganger_on_death;
+    unsigned char resource_group;
+    unsigned char draw_flag;
+    unsigned char draw_color;
+    unsigned char pad_0AA[2];
+    float outline_radius_x;
+    float outline_radius_y;
+    float outline_radius_z;
 };
 
 class RGE_Master_Animated_Object : public RGE_Master_Static_Object {
@@ -123,7 +218,17 @@ public:
 
 class RGE_Master_Moving_Object : public RGE_Master_Animated_Object {
 public:
-    char gap_BC[0x1C];
+    RGE_Sprite* move_sprite;
+    RGE_Sprite* run_sprite;
+    float turn_speed;
+    unsigned char size_class;
+    unsigned char pad_0C9;
+    short obj_trail_id;
+    unsigned char obj_trail_options;
+    unsigned char pad_0CD[3];
+    float obj_trail_spacing;
+    unsigned char move_algorithem;
+    unsigned char pad_0D5[3];
 
     int setup(FILE* file, RGE_Sprite** sprites, RGE_Sound** sounds,
               short count);
@@ -131,7 +236,18 @@ public:
 
 class RGE_Master_Action_Object : public RGE_Master_Moving_Object {
 public:
-    char gap_D8[0x24];
+    RGE_Task_List* tasks;
+    short default_task;
+    float search_radius;
+    float work_rate;
+    short drop_site;
+    short backup_drop_site;
+    unsigned char task_by_group;
+    char gap_ED[3];
+    RGE_Sound* command_sound;
+    RGE_Sound* move_sound;
+    unsigned char run_pattern;
+    char gap_F9[3];
     virtual void modify(float value, unsigned char attribute);
 
     int setup(FILE* file, RGE_Sprite** sprites, RGE_Sound** sounds,

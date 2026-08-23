@@ -106,6 +106,18 @@
 // until a period declaration or compiler-basin donor explains the EBX/EBP
 // allocation and the target's separate cleanup sites.
 
+// sa-18f9837d-r1 finish: the period map.cpp header surface and the complete
+// RGE_Tile_Set terrain layout from exact 00458600 were restored.  They preserve
+// all proven offsets and keep the 347-byte, seven-call natural basin.
+// Short-circuit terrain scans and placement-node reloads moved registers closer
+// but merged a required cleanup call.  Explicit cleanup labels also worsened
+// the call graph.  Those forms were discarded.  The remaining gap is the
+// source lifetime that selects the original EBX/EBP/ESI/EDI allocation.
+
+#include <windows.h>
+#include <stdio.h>
+#include <stdlib.h>
+
 class RGE_Game_World;
 class RGE_Player;
 class RGE_Tile;
@@ -219,11 +231,46 @@ public:
     short id;
 };
 
+struct RGE_TOB_Picts {
+    short count;
+    short animations;
+    short shape_index;
+};
+
 class RGE_Tile_Set {
 public:
-    char gap_00[0xFE];
+    unsigned char loaded;
+    unsigned char random;
+    char name[13];
+    char pict_name[13];
+    long resource_id;
+    void* shape;
+    void* sound;
+    unsigned char map_hi_color;
+    unsigned char map_med_color;
+    unsigned char map_low_color;
+    unsigned char map_lt_cliff_color;
+    unsigned char map_rt_cliff_color;
+    unsigned char passable_terrain;
+    unsigned char impassable_terrain;
+    unsigned char is_animated;
+    short animation_frames;
+    short pause_frames;
+    float interval;
+    float pause_between_loops;
+    short frame;
+    short draw_frame;
+    float animate_last;
+    unsigned char frame_changed;
+    unsigned char drawn;
+    RGE_TOB_Picts tiles[19];
+    short terrain_to_draw;
+    short rows;
+    short cols;
+    short borders[32];
     short obj_types[30];
-    char gap_13A[0x5A];
+    short obj_density[30];
+    unsigned char obj_placement_flag[30];
     short num_obj_type;
     char gap_196[0x2];
 };

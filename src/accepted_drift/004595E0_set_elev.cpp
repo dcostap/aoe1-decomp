@@ -1,44 +1,33 @@
 // VA: 004595E0 RGE_Map::set_elev
+// map.cpp:2466-2557.
 //
-// Attempt log:
-// - Reconstructed the function from the executable packet.  The first four
-//   arguments are a column/row rectangle.  The fifth is an absolute elevation,
-//   the sixth is a relative delta, and the seventh selects relative mode.
-// - The map uses 24-byte RGE_Tile records and a row-offset table.  The update
-//   pass refreshes tile type, teleports each tile object at its current world
-//   position, queues the tile on the current player's diamond list, then calls
-//   set_map_screen_pos and request_redraw for the expanded rectangle.
-// - Reusing short row_i/col_i cursors was a codegen duplicate.  Reversing the
-//   endpoint temporary order matched the original swap stores and moved the
-//   first mismatch into the relative elevation loop.
-// - Naming old_terrain before the relative calculation reduced the gap to 536
-//   positional bytes, with exact frame, calls, and 88.85% exact block coverage.
-// - A separate low-bit local and a reordered terrain read worsened the output;
-//   both were restored.  The remaining gap is VC5 byte-width scheduling in the
-//   relative loop and late register coloring, not a call or layout mismatch.
-// - Replacing the relative-loop tile local with repeated typed row-tile member
-//   access was a natural pointer-order hypothesis, but it changed the prologue
-//   and broad layout (536 to 673 positional bytes); restored the clean source.
-// - This pass tested a retained terrain-byte pointer, row-pointer-plus-index
-//   access, declaration-order changes, accumulator guard spellings, and split
-//   zero initialization.  The byte pointer changed the basin to 559 bytes;
-//   the other forms were duplicates or worsened structure.  A focused ten-form
-//   relative update lab found no size/frame/call-set eligible variant.  Restored
-//   the clean typed candidate; the first structural mismatch remains at the
-//   relative terrain load (+0x97), with exact frame and calls.
-// - Revisit probes tested 20 distinct type, lifetime, access, guard, header,
-//   declaration-order, and loop-shape hypotheses.  Short/int terrain locals,
-//   direct rereads, row locals, references, scoped pointers, new-terrain
-//   temporaries, alternate guards, and <string.h> did not improve the clean
-//   basin.  A 36-variant lab confirmed the direct typed cached-byte form as
-//   the only size/frame/call-set basin at 801 bytes; no exact variant exists.
-//   The clean source is restored and remains 536 positional bytes from the
-//   792-byte original.
-// Accepted-drift review: the relative loop lowers the terrain byte and 16-bit
-// elevation through different registers. The executable rereads the low bits;
-// the rebuild keeps the original byte across a no-call block. Clamp and stored
-// byte values match. Both post-write guards are inert because a byte shifted
-// right by five cannot exceed eight. All five calls and tile effects match.
+// Exact-finish result: the natural VC5 source now matches all 792 bytes.
+// The checker also proves the 792-byte boundary, the PDB owner symbol, the
+// frame, the CFG, and five ordered calls.
+//
+// BINARY NOTE: The map stores 24-byte tiles behind a row-offset table. The
+// relative update rereads the terrain byte for its low bits after the clamp.
+// The expanded pass refreshes tile type, teleports tile objects, queues tiles,
+// and updates the screen and redraw rectangles.
+//
+// BINARY NOTE: The unsigned-char cast on the post-write guard is required for
+// the original byte-width lowering. The guard is inert because a byte shifted
+// right by five cannot exceed seven.
+//
+// Exact transition from the accepted-drift clean source:
+// - Direct terrain rereads replaced the cached byte local. This recovered the
+//   original tile address, row stride, load order, and store order.
+// - The unsigned-char guard cast recovered the original byte compare and
+//   removed the 13-byte structural tail.
+// - <windows.h> is required by the authentic map.cpp context. Removing it
+//   changed the complete function layout. Exact map.cpp anchors
+//   004568C0 and 00458600 support this context.
+//
+// Walkback checks: removing the guard cast produced 805 bytes and 506 changed
+// bytes. Caching the low terrain bits produced 787 bytes and 555 changed
+// bytes. Removing <windows.h> produced 790 bytes and 555 changed bytes.
+
+#include <windows.h>
 
 class RGE_Tile;
 class RGE_Static_Object;
@@ -181,9 +170,8 @@ void RGE_Map::set_elev(short col0, short row0, short col1, short row1,
             for (row_i = row0; row_i <= row1; ++row_i) {
                 for (col_i = col0; col_i <= col1; ++col_i) {
                     tile = &this->map_row_offset[row_i][col_i];
-                    unsigned char old_terrain = tile->terrain_type;
                     short new_elevation =
-                        (short)(old_terrain >> 5) + delta;
+                        (tile->terrain_type >> 5) + delta;
 
                     if (new_elevation < 0)
                         new_elevation = 0;
@@ -192,8 +180,8 @@ void RGE_Map::set_elev(short col0, short row0, short col1, short row1,
 
                     tile->terrain_type =
                         (unsigned char)(new_elevation << 5) |
-                        (old_terrain & 0x1F);
-                    if ((tile->terrain_type >> 5) > 8)
+                        (tile->terrain_type & 0x1F);
+                    if ((unsigned char)(tile->terrain_type >> 5) > 8)
                         tile->terrain_type &= 0x1F;
                 }
             }

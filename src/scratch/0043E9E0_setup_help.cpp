@@ -20,14 +20,19 @@
 //   and that the single-player branch tests and reads in_help_page_id. Correcting
 //   those two argument owners made the frame exact and improved the strict diff
 //   from 564 to 556 bytes. The remaining mismatch is geometry register scheduling.
-// - Restoring the explicit parent argument on create_button and duplicating its
-//   two OK-call arms recovers the oracle's shared call tail. Main review rejected
-//   a direct width-plus-xPosition expression because VC5 reversed those calls.
-//   Keep the explicit width call followed by xPosition.
-// - Twenty distinct checks and one four-way geometry lab found no exact source.
-//   The best natural source emits 833 bytes versus 849, with 84.14% shape and
-//   283 edit-diff bytes. The first unresolved basin stores width/x and panel
-//   geometry in a different register/home topology than the oracle.
+// - Evaluating parent width plus xPosition directly in the first geometry guard
+//   reproduced the oracle's EBX x-geometry basin. Restoring the explicit parent
+//   argument on create_button and duplicating its two OK-call arms recovered the
+//   oracle's shared call tail and improved the strict diff to 437 bytes.
+// - BINARY NOTE: the geometry helpers use the protected const QBE symbols.
+//   Reordering their declarations restores the oracle's width-then-xPosition
+//   call order and improves the strict diff to 431 bytes.
+// - BINARY NOTE: setup_help is protected. Keep the IAEXP owner symbol, not the
+//   byte-identical public QAEXP spelling.
+// - The remaining mismatch is the proven geometry home topology: the oracle
+//   stores dialog_x at the dead text-parameter home and y at the dead
+//   more_text-parameter home. Natural local variants did not reproduce this
+//   spill without unsupported compiler steering.
 
 #include <stdlib.h>
 
@@ -68,10 +73,11 @@ public:
     char gap_BC[0x298 - 0xBC];
     int hotkey;
     int hotkey_shift;
-    long width();
-    long xPosition();
-    long yPosition();
-    long height();
+    // BINARY NOTE: panel.cpp names these const methods with QBE symbols.
+    long xPosition() const;
+    long yPosition() const;
+    long width() const;
+    long height() const;
     TDrawArea* renderArea();
     void set_curr_child(TPanel* child);
     char* get_string(int id);
@@ -113,6 +119,7 @@ public:
     virtual void pad104(); virtual void pad108(); virtual void pad10c(); virtual void pad110(); virtual void pad114(); virtual void pad118(); virtual void pad11c(); virtual void pad120(); virtual void pad124(); virtual void pad128();
     virtual int setup(TDrawArea* area, TPanel* parent, long w, long h, char* info_file, long info_id, long flag); // +0x12c
 
+protected:
     void setup_help(TEasy_Panel* parent, char* text, char* more_text, long page_id, long x_limit, long y_limit);
 };
 
@@ -135,9 +142,7 @@ void THelpDialog::setup_help(TEasy_Panel* parent, char* text, char* more_text, l
         long panel_height;
         panel_height = line_count * rge_text_font->font_hgt + 0x37;
 
-        dialog_x = parent->width();
-        dialog_x += parent->xPosition();
-        if (dialog_x >= x_limit + 0x163) {
+        if (parent->width() + parent->xPosition() >= x_limit + 0x163) {
             dialog_x = abs(parent->xPosition() - x_limit - 5);
         } else if (parent->xPosition() + 10 <= x_limit - 0x159) {
             dialog_x = abs((x_limit - 0x159) - parent->xPosition());

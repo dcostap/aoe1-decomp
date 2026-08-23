@@ -35,6 +35,9 @@
 //   original LEA/store order and keeps the best source basin.
 // - declaration order, pointer aliases, register hints, split guards, and
 //   comparator spellings were tested. They were duplicates or worse.
+// - binary stack addresses show that every action formatter and its matching
+//   set_text call use one shared temp_str base. The decompiler's +4 aliases
+//   were removed; this recovers the original formatter block shape.
 // Second-pass handler-layout probes:
 // - else-if, while, explicit-break, count-limit, cursor-scope, comparator,
 //   and update-condition forms were duplicates or worse.
@@ -651,9 +654,9 @@ long TribeDiplomacyDialog::action(TPanel* panel, long event,
             ++buttons;
         }
 
-        sprintf(temp_str + 4, "%ld",
+        sprintf(temp_str, "%ld",
                 (long)rge_base_game->get_player()->attributes[3]);
-        this->playerGold->set_text(temp_str + 4);
+        this->playerGold->set_text(temp_str);
         sprintf(temp_str, "%ld",
                 (long)rge_base_game->get_player()->attributes[0]);
         this->playerFood->set_text(temp_str);
@@ -697,18 +700,18 @@ long TribeDiplomacyDialog::action(TPanel* panel, long event,
                             amount + this->goldTributeAmount[player_id - 1];
                         this->goldTotal = amount * cost + this->goldTotal;
                     }
-                    sprintf(temp_str + 4, "%ld",
+                    sprintf(temp_str, "%ld",
                             (long)(rge_base_game->get_player()->attributes[3] - this->goldTotal));
-                    this->playerGold->set_text(temp_str + 4);
+                    this->playerGold->set_text(temp_str);
                     sprintf(temp_str, "%ld",
                             (long)this->goldTributeAmount[player_id - 1]);
                     this->goldTributeButton[index]->set_text(0, temp_str);
                     this->check_gold();
                     return 1;
                 }
-                sprintf(temp_str + 4, "%ld",
+                sprintf(temp_str, "%ld",
                         (long)(rge_base_game->get_player()->attributes[3] - this->goldTotal));
-                this->playerGold->set_text(temp_str + 4);
+                this->playerGold->set_text(temp_str);
                 this->check_gold();
                 return 1;
             }
@@ -728,18 +731,18 @@ long TribeDiplomacyDialog::action(TPanel* panel, long event,
                             amount + this->woodTributeAmount[player_id - 1];
                         this->woodTotal = amount * cost + this->woodTotal;
                     }
-                    sprintf(temp_str + 4, "%ld",
+                    sprintf(temp_str, "%ld",
                             (long)(rge_base_game->get_player()->attributes[4] - this->woodTotal));
-                    this->playerWood->set_text(temp_str + 4);
+                    this->playerWood->set_text(temp_str);
                     sprintf(temp_str, "%ld",
                             (long)this->woodTributeAmount[player_id - 1]);
                     this->woodTributeButton[index]->set_text(0, temp_str);
                     this->check_wood();
                     return 1;
                 }
-                sprintf(temp_str + 4, "%ld",
+                sprintf(temp_str, "%ld",
                         (long)(rge_base_game->get_player()->attributes[4] - this->woodTotal));
-                this->playerWood->set_text(temp_str + 4);
+                this->playerWood->set_text(temp_str);
                 this->check_wood();
                 return 1;
             }
@@ -759,18 +762,18 @@ long TribeDiplomacyDialog::action(TPanel* panel, long event,
                             amount + this->foodTributeAmount[player_id - 1];
                         this->foodTotal = amount * cost + this->foodTotal;
                     }
-                    sprintf(temp_str + 4, "%ld",
+                    sprintf(temp_str, "%ld",
                             (long)(rge_base_game->get_player()->attributes[0] - this->foodTotal));
-                    this->playerFood->set_text(temp_str + 4);
+                    this->playerFood->set_text(temp_str);
                     sprintf(temp_str, "%ld",
                             (long)this->foodTributeAmount[player_id - 1]);
                     this->foodTributeButton[index]->set_text(0, temp_str);
                     this->check_food();
                     return 1;
                 }
-                sprintf(temp_str + 4, "%ld",
+                sprintf(temp_str, "%ld",
                         (long)(rge_base_game->get_player()->attributes[0] - this->foodTotal));
-                this->playerFood->set_text(temp_str + 4);
+                this->playerFood->set_text(temp_str);
                 this->check_food();
                 return 1;
             }
@@ -790,18 +793,18 @@ long TribeDiplomacyDialog::action(TPanel* panel, long event,
                             amount + this->stoneTributeAmount[player_id - 1];
                         this->stoneTotal = amount * cost + this->stoneTotal;
                     }
-                    sprintf(temp_str + 4, "%ld",
+                    sprintf(temp_str, "%ld",
                             (long)(rge_base_game->get_player()->attributes[2] - this->stoneTotal));
-                    this->playerStone->set_text(temp_str + 4);
+                    this->playerStone->set_text(temp_str);
                     sprintf(temp_str, "%ld",
                             (long)this->stoneTributeAmount[player_id - 1]);
                     this->stoneTributeButton[index]->set_text(0, temp_str);
                     this->check_stone();
                     return 1;
                 }
-                sprintf(temp_str + 4, "%ld",
+                sprintf(temp_str, "%ld",
                         (long)(rge_base_game->get_player()->attributes[2] - this->stoneTotal));
-                this->playerStone->set_text(temp_str + 4);
+                this->playerStone->set_text(temp_str);
                 this->check_stone();
                 return 1;
             }

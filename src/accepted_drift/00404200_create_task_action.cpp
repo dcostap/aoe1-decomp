@@ -17,6 +17,12 @@
 //   VC5 adds redundant tests of constructor results and a duplicate SEH return
 //   tail. Each constructor returns its allocated this pointer. Switch-table
 //   placement also differs outside the owning function boundary.
+// - Exact-finish pass: `fail: return 0; done: return action;` removes the
+//   duplicate SEH tail and reaches 73 differing bytes, but leaves one shared
+//   result test and a shifted switch table. Explicit placement new removes EH
+//   state and broadens the mismatch. Restore the pinned source after each test.
+// - Full PDB surfaces from 00404610 and positive guards are codegen duplicates.
+//   The remaining 73-byte basin is not an exact source model.
 // NEXT: Revisit only with evidence for the original common return-tail source
 //   form or a linker-bound switch-table ownership context.
 

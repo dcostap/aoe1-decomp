@@ -4,43 +4,22 @@
 // 1: natural reconstruction from the binary/decompiler, with the proven dialog layout,
 //    typed member-call surfaces, and local absolute views for fixed globals.
 // Earlier work restored the typed dialog layout and concrete button/slider
-// comparisons. The clean checkpoint had 47/47 calls, but two ordered call gaps.
+// comparisons. The natural source has 47 calls and the reviewed frame size.
+// It still has structural drift in the entry and dispatch blocks.
 // Reversed mouse-state assignment to match the original constant-2/event stores.
 // Ordered the >=99 music-disable arm before the enable arm; this aligns vf5C.
 // Used direct play_tracks arms for music types 1 and 2; VC5 merges their tail.
-// Reconstructed slider behavior: music changes also apply newSoundVolume, while
-// sound changes apply param_3 through one shared sound-slider tail.
-// Removed aliases and register qualifiers. A base-action label relocation aligned
-// all calls but introduced EBX and a 37-byte overflow, so it was rolled back.
-// Current clean source: frame 0x104, saved regs match, 47/47 calls, -1/+1 ordered
-// call sites, code is 13B short, and strict diff is 1518B (91.5009%).
-// Checker stage remains STRUCTURAL RECONSTRUCTION. The remaining lead is the
-// entry parameter-home and early block layout mismatch, not register coloring.
-// r2: explicit null-panel return/goto and a flattened dispatch worsened frame,
-//     size, or saved-register parity; restored the clean wrapper.
-// r2: returning event from speed buttons, nested speed gates, an ok predicate,
-//     and direct duplicate slider calls produced no improvement or large drift.
-// r3: replaced all seven fixed-address global macros with typed externs.  Exact
-//     donors confirm C++ linkage for rge_base_game, comm, Regs, panel_system,
-//     allow_user_commands, and do_color_log, plus C linkage for the path counter.
-// r3: adding the same-TU game_globals.h include was a codegen duplicate.
-// Left the clean typed reconstruction in place. The remaining evidence is the
-// original event/p3 parameter homes and separate speed-return blocks.
-// r4: restored param_3 for the interface-style write; this made the code size
-//     exact and moved the diff one byte closer, but VC5 still delayed the home.
-// r4: returned event from the three speed-button arms to mirror original mov
-//     eax,edi return blocks; retained the typed-data surfaces unchanged.
-// r4: restored the binary-documented register parameter qualifiers while
-//     keeping direct param_3/event use; this tests parameter homes without an
-//     alias or a typed-data address replacement.
-// r5: completed 20 focused probes. The clean source remains the metric-best
-//     natural form: exact size/frame/saved registers, 47 calls, 1493-byte diff.
-// BINARY NOTE: the original null-panel edge targets base action at 0043C80D;
-//     explicit guard forms fixed behavior but added EBX or large structural drift.
-// BINARY NOTE: null music/sound slider objects target the shared destroy tail at
-//     0043C91A, not a direct return; retain those fault and cleanup edges.
-// Next: recover the original parameter homes and separate speed-return blocks
-//     without retaining metric-only control-flow or register-steering forms.
+// Reconstructed slider behavior: music changes apply newSoundVolume through one
+// shared sound-slider tail, while sound changes apply param_3.
+// Replaced the fixed-address global views with reviewed typed externs.
+// BINARY NOTE: the null-panel edge targets base action at 0043C80D.
+// BINARY NOTE: null slider objects jump to the return epilogue at 0043C91A;
+//     they do not call destroyPanel.
+// BINARY NOTE: the OK path compares singlePlayerGame with event. The cancel
+//     path compares it with literal 1.
+// Probes tested guard placement, parameter aliases, nested speed gates, panel
+// compare order, and slider-tail placement. Unsupported metric-only forms were
+// removed. The current behavior source is 45 bytes over and remains nonexact.
 
 #include "..\..\include\game_globals.h"
 #include "..\..\include\rge_base_game_global.h"
@@ -225,8 +204,8 @@ long TribeConfigDialog::action(TPanel* panel, register long event,
     char msg[256];
     float new_speed;
     TSound_Driver* slider_sound;
-    if (panel != 0) {
-        if ((TButtonPanel*)panel == this->okButton && event == 1) {
+    if (panel) {
+        if (this->okButton == (TButtonPanel*)panel && event == 1) {
             if (this->modeValue == 0) {
                 if (rge_base_game->singlePlayerGame() == event && rge_base_game->save_paused == 0) {
                     rge_base_game->set_paused(0, 0);
@@ -357,12 +336,12 @@ long TribeConfigDialog::action(TPanel* panel, register long event,
                 this->newMusicVolume = param_3;
                 TMusic_System* music = rge_base_game->music_system;
                 if (music == 0) {
-                    goto destroy;
+                    return 1;
                 }
                 music->set_volume(param_3 * -100, 1);
                 TSound_Driver* sound = rge_base_game->sound_system;
                 if (sound == 0) {
-                    goto destroy;
+                    return 1;
                 }
                 slider_sound = sound;
                 param_3 = this->newSoundVolume;
@@ -372,7 +351,7 @@ long TribeConfigDialog::action(TPanel* panel, register long event,
                 this->newSoundVolume = param_3;
                 slider_sound = rge_base_game->sound_system;
                 if (slider_sound == 0) {
-                    goto destroy;
+                    return 1;
                 }
                 goto slider_sound_call;
             }
@@ -391,7 +370,7 @@ long TribeConfigDialog::action(TPanel* panel, register long event,
                 rge_base_game->prog_info->mouse_scroll_interval = this->scrollSpeed;
                 rge_base_game->prog_info->key_scroll_interval = this->scrollSpeed;
                 if (this->modeValue == 0) {
-                    if (rge_base_game->singlePlayerGame() == event && rge_base_game->save_paused == 0) {
+                    if (rge_base_game->singlePlayerGame() == 1 && rge_base_game->save_paused == 0) {
                         rge_base_game->set_paused(0, 0);
                     }
                     panel_system.setCurrentPanel((char*)0x5842CC, 0);
@@ -404,6 +383,9 @@ long TribeConfigDialog::action(TPanel* panel, register long event,
         goto destroy;
     }
 
+base_action:
+    return TPanel::action(panel, event, param_3, param_4);
+
 slider_sound_call:
     slider_sound->set_volume(param_3 * -100, 1);
     return 1;
@@ -411,7 +393,4 @@ slider_sound_call:
 destroy:
     panel_system.destroyPanel((char*)0x5842D8);
     return 1;
-
-base_action:
-    return TPanel::action(panel, event, param_3, param_4);
 }

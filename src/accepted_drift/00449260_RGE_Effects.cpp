@@ -49,6 +49,15 @@
 //   source remains the 479-byte basin with 47 strict differing bytes. The next
 //   useful evidence is compiler/TU context or a source form that shrink-wraps
 //   ESI without artificial register control; no such source form is retained.
+// - Exact-finish continuation: fresh checks restored the clean source after
+//   counter-left loop, negative fopen guard, explicit labels and returns,
+//   narrow virtual surface, header order, reviewed game-global context, long
+//   local widths, and a register-qualified count pointer.  The natural
+//   counter-left loop regressed to 481 bytes and 241 differing bytes.  The
+//   other forms were codegen duplicates at 479 bytes and 47 differing bytes.
+//   No test changed the ten-call order, object layout, or partial-failure
+//   stores.  Keep the clean parser until authentic effects.cpp TU evidence
+//   explains the conditional ESI save.
 // ACCEPTED DRIFT: The rebuild saves ESI for all paths. The original saves it
 // only after fopen succeeds. Both restore the incoming value before return.
 // The parse body, frame, all 10 calls, destinations, stores, and failure paths

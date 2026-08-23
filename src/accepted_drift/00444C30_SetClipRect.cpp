@@ -71,6 +71,13 @@
 // Width/Height constructor forms, long field types, fresh RECT/manager aliases,
 // and equal-width ABI parameter reordering were duplicate or worse. Direct
 // SetSpanRegions remained 28 bytes. The clean typed-RECT source is restored.
+// Exact-finish pass: a temporary authentic Drawarea.cpp prefix through
+// 00443490, the full TDrawArea method surface, the full span-manager method
+// surface, and the period standard-header set all stayed at 279 bytes and 21
+// positional differences. Deleting the cached manager was a 21-byte duplicate.
+// Removing the post-ResetAll alias produced a 277-byte context-tail result and
+// was restored. Fresh checks kept 00446230, 00446340, 00444B50, and 004443D0
+// exact. The clean source remains the smallest natural reconstruction.
 // ACCEPTED DRIFT: The 21 changed bytes only reverse the equality operands and
 // schedule constructor and SetSpanRegions argument loads through other
 // registers. Both builds push identical arguments in the same order and call

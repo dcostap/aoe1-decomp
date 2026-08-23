@@ -54,6 +54,16 @@
 //   select the same passable or impassable byte, preserve the upper tile bits,
 //   and write each tile once. There are no calls. Remaining drift is private
 //   scalar homes and counted-loop versus indexed-loop lowering.
+// - Exact-finish audit: fresh checks of five loop forms and three x-swap forms
+//   found no exact result. The best diagnostic form used short row and column
+//   indices with countdowns: 307 bytes and 183 differing bytes. It did not
+//   reproduce the target row-count home or the 303-byte boundary. Restore the
+//   pinned indexed source after each test.
+// - Exact-finish audit: the complete reviewed map.cpp class surface was a
+//   codegen duplicate. The target still requires push ecx, a local at entry
+//   -4, and a row-table byte stride of 4. A 15-variant loop/swap lab found no
+//   exact or size-eligible result. No calls, terrain writes, or map anchors
+//   were changed.
 
 class RGE_Tile {
 public:

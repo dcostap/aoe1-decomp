@@ -16,6 +16,7 @@
 // pointer-mediated font_hgt assignment moved the +30C store early but loaded param3 into EDX and worsened the diff; saved-font_wid did not help, rolled back
 // early source assignment of font_wid before font_hgt produced the right early param2 load but stores +308 before the zero-init block
 // saved font_wid temp, duplicate store, and reference-mediated delayed store did not preserve the original later +308 store; keeping the closest early-load version
+#ifndef AOE1_PNL_MSG_CONTEXT_H
 extern int TMessagePanel_vftable;
 
 class TPanel {
@@ -31,7 +32,7 @@ public:
     virtual void pv8(int);
 
     char gap_004[0x7C];
-    int field_80;
+    int handle_mouse_input;
     char gap_084[0x70];
 
     TPanel(void);
@@ -41,7 +42,22 @@ public:
 
 class TMessagePanel : public TPanel {
 public:
-    int message_type;
+    enum MessageType {
+        InfoMessage = 0,
+        BadMessage = 1,
+        DebugMessage = 2,
+        ChatMessage = 3,
+        ColoredChatMessage = 4,
+        RightInfoMessage = 5
+    };
+    enum JustType {
+        TopJust = 0,
+        BottomJust = 1,
+        LeftJust = 2,
+        RightJust = 3,
+        CenterJust = 4
+    };
+    MessageType message_type;
     char text[0x200];
     int showing_message;
     int start_time;
@@ -52,8 +68,8 @@ public:
     unsigned char font_color;
     unsigned char back_color;
     char gap_312[0xE];
-    int horz_just;
-    int vert_just;
+    JustType horz_just;
+    JustType vert_just;
     int word_wrap;
     void* image_clip_region;
     void* ImageBuffer;
@@ -69,21 +85,23 @@ public:
     TMessagePanel(void* font, long font_wid, long font_hgt);
     virtual ~TMessagePanel(void);
 };
+#endif
 
-TMessagePanel::TMessagePanel(void* font, long font_wid, long font_hgt) {
+TMessagePanel::TMessagePanel(void* font, long font_wid, long font_hgt)
+    : TPanel() {
     this->font = font;
     this->font_wid = font_wid;
     this->font_hgt = font_hgt;
     this->LastIBWidth = -1;
     this->LastIBHeight = -1;
-    this->message_type = 0;
+    this->message_type = InfoMessage;
     this->showing_message = 0;
     this->start_time = 0;
     this->show_message_interval = 8000;
     this->font_color = 0;
     this->back_color = 0;
-    this->horz_just = 2;
-    this->vert_just = 0;
+    this->horz_just = LeftJust;
+    this->vert_just = TopJust;
     this->word_wrap = 0;
     this->image_clip_region = 0;
     this->ImageBuffer = 0;
@@ -94,6 +112,6 @@ TMessagePanel::TMessagePanel(void* font, long font_wid, long font_hgt) {
     this->IconFrame2 = 0;
     *(int*)this = 0x00571668;
     this->text[0] = 0;
-    this->field_80 = 0;
+    this->handle_mouse_input = 0;
     this->set_active(0);
 }

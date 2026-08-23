@@ -80,7 +80,42 @@
 // - New claim: raw frame-address, long-index, unused FrameHead, and split
 //   temp-counter declarations were codegen duplicates.  The unresolved
 //   first gap remains the original frame-header reload and ECX/ESI coloring.
+// - Wrapper context pass: guarded the local donor declarations so the owner can
+//   share the canonical packed FlicHead, FrameHead, tagRGBQUAD, and
+//   RGE_Flic_Player declarations. Standalone codegen stayed unchanged.
+// Exact-finish pass: the first frame-header hunk still requires the original
+// stack reload and zero-home order. Prior typed-header, raw index, long-index,
+// and declaration-scope forms remain the only supported basins; no new natural
+// source recovered the missing register schedule.
+// Audit continuation: the PDB lists long index1, char* temp_buffer, and a
+// FrameHead pointer. Raw, typed, branch-local, and reordered forms stayed at
+// 212 bytes of drift. Signed-byte packet reads recovered the original INC/INC
+// blocks and 60.39% block coverage, but changed the 0-to-0x100 count behavior
+// or reduced the body to 405 bytes. Restore the typed packet form.
+// - This claim: FrameHead declaration order, a cleanup-only index1 alias, the
+//   negative file guard, register count locals, payload declaration order, and
+//   the reviewed full flics context were neutral or regressed. Restore this
+//   typed source. The first unresolved hunk remains the ECX frame-header load.
+// - Exact-finish continuation: authentic full flics.cpp compilation through
+//   src/flics_tu.cpp preserved the 407-byte owner and all surrounding symbols.
+//   PDB local-role, frame-address, loop-form, packet-cursor, signed-byte
+//   header, pre-decrement, and type-0x0B store-order probes did not beat the
+//   pinned 212-byte source. Restore the pinned source after every probe.
+// - Behavior-correct finish: the packet cursor advances past the two-byte
+//   packet-count field before each positive packet loop. Zero counts become
+//   0x100. Type-0x0B advances the palette cursor before its three stores.
+//   These forms preserve malformed stream bounds and store/fault order.
+// - Final validation in full flics.cpp: 407-byte boundary, 0x10 frame, owner
+//   symbol, and all seven direct calls match. The behavior-correct source has
+//   66.88% exact-block coverage and 221 differing bytes.
+// - Exact blocker: the original assigns the packed chunk to EBX and the
+//   packet count to EBP. Natural VC5 assigns those roles in reverse here.
+//   Tests with raw cursors, aliases, declaration order, and register locals
+//   did not recover the original schedule without worse behavior or size.
+// - BINARY NOTE: 0044A05D remains a reviewed padding-only flics.cpp boundary.
+//   No compiler-facing owner was added or changed.
 
+#ifndef FLICS_SHARED_CONTEXT
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 extern "C" void __cdecl free(void* block);
 extern "C" int __cdecl lseek(int handle, int offset, int origin);
@@ -149,6 +184,7 @@ public:
 
     void palette(tagRGBQUAD* palette);
 };
+#endif
 
 // Main-agent audit confirmed the typed file/frame/palette surfaces; byte cursors
 // are retained only where the packed FLIC chunk format requires them.
@@ -179,6 +215,7 @@ void RGE_Flic_Player::palette(tagRGBQUAD* palette)
                 packets = *(short*)((char*)chunk + 6);
                 color_index = 0;
                 unsigned char* packet = (unsigned char*)chunk + 6;
+                packet += 2;
                 if (0 < packets) {
                     int packet_count = packets;
                     do {
@@ -200,9 +237,8 @@ void RGE_Flic_Player::palette(tagRGBQUAD* palette)
                                 green[0] = input[1];
                                 ((tagRGBQUAD*)(green - 1))->rgbBlue = input[2];
                                 green += 4;
-                                color_count--;
                                 input = next;
-                            } while (color_count != 0);
+                            } while (--color_count != 0);
                             packet = input;
                         }
                         packet_count--;
@@ -214,6 +250,7 @@ void RGE_Flic_Player::palette(tagRGBQUAD* palette)
                 packets = *(short*)((char*)chunk + 6);
                 color_index = 0;
                 unsigned char* packet = (unsigned char*)chunk + 6;
+                packet += 2;
                 if (0 < packets) {
                     int packet_count = packets;
                     do {
@@ -230,14 +267,12 @@ void RGE_Flic_Player::palette(tagRGBQUAD* palette)
                             int color_count = count;
                             unsigned char* green = &color->rgbGreen;
                             do {
-                                green[1] = (unsigned char)(packet[0] << 2);
-                                green[0] = (unsigned char)(packet[1] << 2);
-                                ((tagRGBQUAD*)(green - 1))->rgbBlue =
-                                    (unsigned char)(packet[2] << 2);
-                                packet += 3;
-                                color_count--;
                                 green += 4;
-                            } while (color_count != 0);
+                                green[-3] = (unsigned char)(packet[0] << 2);
+                                green[-4] = (unsigned char)(packet[1] << 2);
+                                green[-5] = (unsigned char)(packet[2] << 2);
+                                packet += 3;
+                            } while (--color_count != 0);
                         }
                         packet_count--;
                     } while (packet_count != 0);

@@ -50,6 +50,18 @@
 // changes EBP from zero to the radio-array base. The rebuild keeps EBP zero and
 // uses EBX for that base. Residual changes are zero pushes, equivalent LEAs,
 // and one zero store. EH state, all calls, publications, links, and returns match.
+// Probe 28: the PDB-supported set_radio_info(TPanel*, int) surface and the
+// matching cast compile to the same bytes. Keep that ABI instead of the old
+// TButtonPanel** proxy.
+// Probes 29-35: nested radio-call conditions, aliases, cursor loops, parent
+// casts, zero spellings, register hints, headers, and the full factory virtual
+// surface did not move the radio register basin. A bounded eight-variant lab
+// also produced one /GX code group with the same 544-byte difference.
+// BINARY NOTE: PDB lines 209-212 and the original CFG require four separate
+// radio-call statements. The nested logical-chain form was not retained.
+// Final unresolved lead: the original loads radioButton into EBP at +0x3E3;
+// this source loads it into EBX. No natural, PDB-supported source form found
+// the EBP basin without harming the exact prefix or the dialog ABI.
 
 class TDrawArea;
 class TPanel;
@@ -103,21 +115,23 @@ public:
 class TEasy_Panel : public TPanel {
 public:
     char gap_F4[0x384];
+    virtual ~TEasy_Panel();
     long get_popup_info_id();
     char* get_popup_info_file();
-    int create_text(TPanel*, TTextPanel**, int, long, long, long, long, long, int, int, int);
-    int create_text(TPanel*, TTextPanel**, char*, long, long, long, long, long, int, int, int);
-    int create_edit(TPanel*, TEditPanel**, char*, short, long, long, long, long, long, long, int, int);
-    int create_check_box(TPanel*, TButtonPanel**, long, long, long, long, long, long);
-    int create_radio_button(TPanel*, TButtonPanel**, long, long, long, long, long, long);
-    int create_button(TPanel*, TButtonPanel**, long, long, long, long, long, long, long, long, long);
+protected:
+    virtual int create_text(TPanel*, TTextPanel**, int, long, long, long, long, long, int, int, int);
+    virtual int create_text(TPanel*, TTextPanel**, char*, long, long, long, long, long, int, int, int);
+    virtual int create_edit(TPanel*, TEditPanel**, char*, short, long, long, long, long, long, long, int, int);
+    virtual int create_check_box(TPanel*, TButtonPanel**, long, long, long, long, long, long);
+    virtual int create_radio_button(TPanel*, TButtonPanel**, long, long, long, long, long, long);
+    virtual int create_button(TPanel*, TButtonPanel**, long, long, long, long, long, long, long, long, long);
 };
 
 class TDialogPanel : public TEasy_Panel {
 public:
     char gap_478[0x18];
     TDialogPanel(char*);
-    int setup(TDrawArea*, TPanel*, long, long, char*, long, int);
+    virtual int setup(TDrawArea*, TPanel*, long, long, char*, long, int);
 };
 
 class TScreenPanel : public TEasy_Panel {};
@@ -130,7 +144,7 @@ public:
     char gap_F4[0x1A4];
     int hotkey;
     int hotkey_shift;
-    void set_radio_info(TButtonPanel**, int);
+    void set_radio_info(TPanel*, int);
 };
 
 class TShape {
@@ -326,7 +340,7 @@ TribeSendMessageDialog::TribeSendMessageDialog(TScreenPanel* parent)
     radioTitle[3]->set_help_info(-1, -1);
 
     for (n = 0; n < 4; ++n)
-        radioButton[n]->set_radio_info(radioButton, 4);
+        radioButton[n]->set_radio_info((TPanel*)radioButton, 4);
     TButtonPanel** radio_buttons = radioButton;
     radioButton[3]->draw_background(1);
     radio_buttons[0]->set_help_info(0x767B, -1);

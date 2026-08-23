@@ -8,24 +8,53 @@
 // Near match. Initial source had only a 4-byte scheduling swap in copy-loop init:
 // original `xor eax,eax; mov ecx,ebx`, rebuild `mov ecx,ebx; xor eax,eax`.
 // Tried declaration/order splits and a src local; no change.
-// Best current source uses explicit byte-offset copy, forcing original init order and
-// reducing drift to two SIB bytes: original uses `[edx+eax]` and `[edi+eax]`, rebuild
-// encodes equivalent `[eax+edx]` and `[eax+edi]`. Positional/edit diff 2/118.
-// Tried integer casts/term-order variants and dst temp; either same SIB drift or wrong
-// 112-byte size.
-// ACCEPTED_DRIFT: reviewed by Boss. Remaining diff is only equivalent SIB base/index
-// encoding in the copy loop: original `[edx+eax]` / `[edi+eax]`, rebuilt `[eax+edx]` /
-// `[eax+edi]`. Same registers, effective addresses, flags, memory effects, calls,
-// loop control, size, and epilogue.
+// Best current source uses explicit byte-offset copy and a reference alias for the
+// destination member. This keeps the original initialization and loop bytes. The
+// remaining one-byte drift is the source-load SIB: original `[edx+eax]`, rebuilt
+// `[eax+edx]`; the destination store is `[edi+eax]` in both.
+//
+// BLOCKER: no natural source variant recovered the final source-load SIB byte.
+// Integer casts, term order, pointer aliases, array views, reference views,
+// register hints, standard headers, and canonical field surfaces were tested.
+// Do not use inline assembly or a fake register wrapper.
 
 #include <stdlib.h>
 
-class TButtonPanel {
+class TDigital;
+class TShape;
+
+class TPanel {
+public:
+    virtual ~TPanel() {}
+    char pad_04[0xF0];
+};
+
+class TButtonPanel : public TPanel {
 public:
     virtual ~TButtonPanel() {}
-    char pad_04[0x138];
+    char pad_F4[0x48];
     int buttonTypeValue;              // +0x13C
-    char pad_140[0xBC];
+    int drawTypeValue;                // +0x140
+    int notifyTypeValue;              // +0x144
+    TDigital* sound;                  // +0x148
+    TShape* pic[9];                   // +0x14C
+    short pic_index[9];               // +0x170
+    char pad_182[2];                  // +0x182
+    int auto_pic_pos;                 // +0x184
+    long pic_x;                       // +0x188
+    long pic_y;                       // +0x18C
+    int all_hot;                      // +0x190
+    int draw_reverse;                 // +0x194
+    char* text1[9];                   // +0x198
+    char* text2[9];                   // +0x1BC
+    long text_x;                      // +0x1E0
+    long text_y;                      // +0x1E4
+    void* font;                       // +0x1E8
+    long font_wid;                    // +0x1EC
+    long font_hgt;                    // +0x1F0
+    short num_states;                 // +0x1F4
+    short cur_state;                  // +0x1F6
+    int is_down;                      // +0x1F8
     TButtonPanel** radio_buttons;    // +0x1FC
     short num_radio_buttons;         // +0x200
 
@@ -44,12 +73,14 @@ void TButtonPanel::set_radio_info(TButtonPanel** buttons, short count) {
         this->num_radio_buttons = count;
         this->radio_buttons = (TButtonPanel**)calloc(cnt, 4);
         if (count > 0) {
+            TButtonPanel**& destination = this->radio_buttons;
             int offset = 0;
             int remaining = cnt;
             do {
-                *(TButtonPanel**)((char*)this->radio_buttons + offset) = *(TButtonPanel**)((char*)buttons + offset);
+                *(TButtonPanel**)((char*)destination + offset) =
+                    *(TButtonPanel**)((char*)buttons + offset);
                 offset += 4;
-                remaining--;
+                --remaining;
             } while (remaining != 0);
         }
     }

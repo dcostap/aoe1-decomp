@@ -59,66 +59,41 @@
 // direct style expressions, a 16-way typed local lab, a compound final mask,
 // register qualification, and an imported API pointer all kept the 92-byte
 // group or made the code worse. The helper added a non-original call.
+// Canonical-context finish (sa-02c70e95-r1): replaced the local TPanel
+// scaffold with reviewed include/panel_context.h and the proven full edit
+// field surface. Direct, named, comma, SDK-handle, full-draw-system,
+// declaration, and final-mask probes did not change the 92-byte group.
+// Fresh checks keep the nine ordered calls, original boundary, and owner.
+// The four exact panel anchors 00473ED0, 00473F50, 00474550, and 00474670
+// remain MATCH. No exact lead was found; retain the canonical source in
+// scratch and preserve the fault-order blocker above.
 
 #include <windows.h>
 #include <stdlib.h>
+#include "../../include/panel_context.h"
 
 long pnl_sub_wnd_proc(void*, unsigned int, unsigned int, long);
 
-class TDrawSystem {
-public:
+struct TDrawSystem {
     HINSTANCE Inst;    // +0x00
-};
-
-class TDrawArea {
-public:
-    TDrawSystem* DrawSystem; // +0x00
-    HWND Wnd;                // +0x04
-};
-
-class TPanel {
-public:
-    virtual ~TPanel();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
-    virtual void vf20();
-    virtual void vf24();
-    virtual void vf28();
-    virtual void vf2C();
-    virtual void vf30();
-    virtual void vf34();
-    virtual void vf38();
-    virtual void vf3C();
-    virtual void vf40();
-    virtual void vf44();
-    virtual void vf48();
-    virtual void vf4C();
-    virtual void vf50();
-    char gap_04[0x1C];
-    TDrawArea* render_area; // +0x20
-    virtual long setup(TDrawArea* p1, TPanel* p2, long p3, long p4, long p5, long p6, unsigned char p7);
 };
 
 class TEditPanel : public TPanel {
 public:
+    TEditPanel();
+    virtual ~TEditPanel();
     enum FormatType {
         FormatMultiLine = 7
     };
 
-    char gap_24[0xF4 - 0x24];
     void* edit_wnd;             // +0xF4
     short fixed_len;            // +0xF8
     char gap_FA[0xFC - 0xFA];
     char* text;                 // +0xFC
     int text_len;               // +0x100
-    char gap_104[0x108 - 0x104];
+    int hidden;                 // +0x104
     void* brush;                // +0x108
-    char gap_10C[0x110 - 0x10C];
+    int stock_brush;            // +0x10C
     void* old_sub_wnd_proc;     // +0x110
     int text_color1;            // +0x114
     int text_color2;            // +0x118
@@ -127,12 +102,27 @@ public:
     int back_color;             // +0x124
     FormatType format;          // +0x128
     void* font;                 // +0x12C
-    char gap_130[0x144 - 0x130];
+    int multi_line;             // +0x130
+    tagRECT draw_rect;           // +0x134
     unsigned int draw_format;   // +0x144
     int auto_sel;               // +0x148
+    int sel_len;                // +0x14C
+    int bevel_type;             // +0x150
+    unsigned char bevel_color1; // +0x154
+    unsigned char bevel_color2; // +0x155
+    unsigned char bevel_color3; // +0x156
+    unsigned char bevel_color4; // +0x157
+    unsigned char bevel_color5; // +0x158
+    unsigned char bevel_color6; // +0x159
+    unsigned char pad_15A[2];   // +0x15A
+    int bevel_size;             // +0x15C
+    unsigned long imc;          // +0x160
+    int enable_ime;             // +0x164
+    int turn_ime_on;            // +0x168
 
     long setup(TDrawArea* p1, TPanel* p2, long p3, long p4, long p5, long p6, void* p7, short p8, char* p9, FormatType p10, int p11);
     void set_text(char* txt);
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
 };
 
 long TEditPanel::setup(
@@ -174,8 +164,8 @@ long TEditPanel::setup(
         0, "edit", 0,
         styleVal,
         param_3 + 1, param_4 + 1, param_5 - 2, param_6 - 2,
-        param_1->Wnd, (void*)1,
-        panel_area->DrawSystem->Inst,
+        (HWND)param_1->Wnd, (HMENU)1,
+        ((TDrawSystem*)this->render_area->DrawSystem)->Inst,
         0
     );
     if (this->edit_wnd == 0) {

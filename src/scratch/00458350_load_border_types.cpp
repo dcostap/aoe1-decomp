@@ -55,6 +55,18 @@
 // Persistent outer-cursor and explicit animation-pointer variants stayed in
 // that same 656-byte basin. The decompiler's separate FILE/float local names
 // also duplicated the clean 679-byte result. Keep the typed for-loop source.
+// 10: exact-finish context checks used unregistered wrappers with real map.cpp
+// constructor and clean_elevation prefixes, windows.h order, and /GX. They
+// emitted the same basin. Natural p-outer and row-outer loop forms emitted
+// 673 and 656 bytes; pointer declaration order did not change the result.
+// Keep the target's distinct FILE/float parser locals. Do not copy the
+// 00457F80 donor's invalid float/filename alias. Fresh validation still shows
+// seven ordered calls, the correct owner symbol, 0x58 frame, and 673 rebuilt
+// bytes against the 679-byte target boundary.
+// Exact-finish validation: <windows.h> is required by the period map.cpp
+// context, but it is codegen-neutral here. The natural nested do/while and
+// persistent row-cursor forms were tested and restored: they emit a 656-byte,
+// 0x54-frame basin with the same seven calls. Keep the clean p-outer form.
 // Accepted-drift blocker: the giant fscanf writes unbounded strings at name+4
 // and pict_name+4, then convert_us/strcpy consume each buffer from its base.
 // Different stack homes can change the four-byte prefixes and malformed-input
@@ -65,6 +77,7 @@
 // their narrow input widths; only the resource id and timing values are widened
 // at the operations where the original ABI requires it.
 
+#include <windows.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>

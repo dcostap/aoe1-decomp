@@ -29,8 +29,23 @@
 // attempt 15: ordered the text switch as cases 0, 1, 2, 4, and 3 from PDB
 // blocks. Direct case-local button1 calls recover the original immediate pushes.
 // Declaration, loop-form, spacing, and separate-zero probes were unchanged or
-// worse. Best current result: exact size and ordered call parity; diff 525,
-// shape 80.85%, with the first mismatch at +0005 in register scheduling.
+// worse. Canonical ABI reduction restored both TDialogPanel setup overloads,
+// the inline button array, and the reviewed s_592A40 empty string object. These
+// changes do not alter emitted bytes in the standalone build. Best current
+// result: exact size and ordered call parity; diff 525, shape 80.85%, with the
+// first mismatch at +0005 in register scheduling.
+//
+// BINARY NOTE: The PDB owner is Dlg_msg.cpp:71-165. The target has one
+// compiler-facing owner and no EH frame. The original calls renderArea, the
+// char* create_text slot (+0x100), one cached char* create_button slot (+0xEC),
+// eight set_text calls, set_tab_order (+0xC8), and set_curr_child in order.
+//
+// Exact-finish reduction: inline renderArea worsened the diff to 574. The
+// positive spacing guard worsened it to 536. A do/while loop added a second
+// create_button call site and 89 bytes. A while loop was a codegen duplicate.
+// Full setup overloads, array ownership, parent-base ownership, top local
+// declarations, the global empty string, and a named button height were
+// tested. The reduced clean source remains the natural local-staging form.
 // Accepted-drift review: button members clear before the first call; base setup
 // arguments and failure publication match; msg_type publishes before text
 // creation; text and button geometry, member output addresses, labels, hotkey,
@@ -48,6 +63,7 @@
 class TDrawArea;
 class TTextPanel;
 class TButtonPanel;
+extern char s_592A40[];
 
 class TPanel {
 public:
@@ -95,6 +111,8 @@ class TDialogPanel : public TEasy_Panel {
 public:
     virtual ~TDialogPanel();
     virtual int setup(TDrawArea* draw_area, TPanel* parent,
+        long width, long height, unsigned char param_5, int param_6);
+    virtual int setup(TDrawArea* draw_area, TPanel* parent,
         long width, long height, char* info_file, long info_id, int flags);
 };
 
@@ -108,14 +126,11 @@ public:
 
 class TMessageDialog : public TDialogPanel {
 public:
-    TPanel* parent;       // +0x40
-    char gap_44[0x44C];    // +0x44 to +0x48F
+    char gap_40[0x450];    // +0x40 to +0x48F; inherited parent is in TPanel
     unsigned char msg_type; // +0x490
     char gap_491[3];
     TTextPanel* text;      // +0x494
-    TButtonPanel* button0; // +0x498
-    TButtonPanel* button1; // +0x49C
-    TButtonPanel* button2; // +0x4A0
+    TButtonPanel* button[3]; // +0x498
 
     virtual ~TMessageDialog();
     long setup(TPanel* parent, char* info_file, long info_id,
@@ -125,9 +140,16 @@ public:
 
 long TMessageDialog::setup(TPanel* p1, char* p2, long p3, long p4,
     long p5, unsigned char p6, char* p7, long p8, long p9) {
-    button0 = button1 = button2 = 0;
-
-    TDrawArea* draw_area = p1->renderArea();
+    TDrawArea* draw_area;
+    int num_buttons;
+    int space;
+    int y;
+    TButtonPanel** next;
+    int x;
+    int i;
+    TButtonPanel* hotkey_button;
+    button[0] = button[1] = button[2] = 0;
+    draw_area = p1->renderArea();
     if (TDialogPanel::setup(draw_area, p1, p4, p5, p2, p3, 1) == 0) {
         return 0;
     }
@@ -138,7 +160,6 @@ long TMessageDialog::setup(TPanel* p1, char* p2, long p3, long p4,
         return 0;
     }
 
-    int num_buttons;
     switch (msg_type) {
     case 0:
         num_buttons = 1;
@@ -155,18 +176,18 @@ long TMessageDialog::setup(TPanel* p1, char* p2, long p3, long p4,
         return 0;
     }
 
-    int space = width - num_buttons * p8;
+    space = width - num_buttons * p8;
     if (space < 1) {
         space = 0;
     } else {
         space /= num_buttons + 1;
     }
 
-    int y = height - p9 - 7;
-    TButtonPanel** next = &button0;
-    int x = space;
-    for (int i = 0; i < num_buttons; ++i) {
-        if (create_button((TPanel*)this, next, (char*)"", (char*)"",
+    y = height - p9 - 7;
+    next = button;
+    x = space;
+    for (i = 0; i < num_buttons; ++i) {
+        if (create_button((TPanel*)this, next, s_592A40, s_592A40,
                 x, y, p8, p9, 0x0B, 0, 0) == 0) {
             return 0;
         }
@@ -174,32 +195,31 @@ long TMessageDialog::setup(TPanel* p1, char* p2, long p3, long p4,
         ++next;
     }
 
-    TButtonPanel* hotkey_button;
     switch (msg_type) {
     case 0:
-        button0->set_text(0, 0xFA1);
+        button[0]->set_text(0, 0xFA1);
         goto set_tab_order;
     case 1:
-        button0->set_text(0, 0xFA1);
-        button1->set_text(0, 0xFA2);
-        hotkey_button = button1;
+        button[0]->set_text(0, 0xFA1);
+        button[1]->set_text(0, 0xFA2);
+        hotkey_button = button[1];
         goto set_hotkey;
     case 2:
-        button0->set_text(0, 0xFA3);
-        button1->set_text(0, 0xFA4);
-        hotkey_button = button1;
+        button[0]->set_text(0, 0xFA3);
+        button[1]->set_text(0, 0xFA4);
+        hotkey_button = button[1];
         goto set_hotkey;
     case 4:
-        button0->set_text(0, 0xFA3);
-        button1->set_text(0, 0xFA4);
-        button2->set_text(0, 0xFA2);
-        hotkey_button = button2;
+        button[0]->set_text(0, 0xFA3);
+        button[1]->set_text(0, 0xFA4);
+        button[2]->set_text(0, 0xFA2);
+        hotkey_button = button[2];
         goto set_hotkey;
         break;
     case 3:
-        button0->set_text(0, 0xFA5);
-        button1->set_text(0, 0xFA7);
-        hotkey_button = button1;
+        button[0]->set_text(0, 0xFA5);
+        button[1]->set_text(0, 0xFA7);
+        hotkey_button = button[1];
         goto set_hotkey;
     default:
         goto set_tab_order;
@@ -209,7 +229,7 @@ set_hotkey:
     hotkey_button->hotkey = 0x1B;
     hotkey_button->hotkey_shift = 0;
 set_tab_order:
-    set_tab_order((TPanel**)&button0, num_buttons);
-    set_curr_child(button0);
+    set_tab_order((TPanel**)button, num_buttons);
+    set_curr_child(button[0]);
     return 1;
 }

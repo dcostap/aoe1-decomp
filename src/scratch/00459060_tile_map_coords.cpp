@@ -61,6 +61,16 @@
 // 47: qualified raw_y as register double; emitted the pinned 356-byte duplicate.
 // 48: restored the pinned natural source and ran unchanged validation.
 // Final: restored and pinned the natural source. Validation remains a 356-byte MISMATCH.
+// worker pass, 2026-08-23:
+// 49: reversed case 12 to `fx > DAT_005706c0`. This keeps the same 356-byte
+// diff and emits the original `fld st1`/`fcomp` block. Retained.
+// 50: `fy < DAT_005706d8` emits the original case-10 `fcom`, but moves the
+// block family and raises the diff to 474 bytes. Not retained.
+// 51: `raw_y >= ...` emits the original case-16 `fcompp`, but extends the
+// rebuilt boundary by 74 bytes. Not retained.
+// 52: register or stack diagonal temporaries in case 3 do not recover the
+// original common x87 value. They add shuffles, stores, or boundary bytes.
+// Current source preserves the natural map/tile read order and output stores.
 // left in scratch: exact source expression/FPU stack shaping remains under test.
 // Accepted-drift blocker: later switch arms use different x87 stack schedules
 // and comparison forms. These can change unordered predicates and
@@ -112,7 +122,7 @@ void RGE_Map::tile_map_coords(short x, short y, RGE_Tile* tile, float* out1, flo
         if (fx <= DAT_005706c0) { result = (DAT_005706c0 - fx) + (DAT_005706c0 - fx); goto z_result; }
         goto tile_case0;
     case 12:
-        if (DAT_005706c0 < fx) { result = (fx - DAT_005706c0) + (fx - DAT_005706c0); goto z_result; }
+        if (fx > DAT_005706c0) { result = (fx - DAT_005706c0) + (fx - DAT_005706c0); goto z_result; }
     case 0:
     case 9:
  tile_case0:

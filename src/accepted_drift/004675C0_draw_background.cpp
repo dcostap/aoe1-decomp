@@ -43,6 +43,12 @@
 // addresses. All 20 calls, lock/unlock paths, shadow and bevel state, tile
 // order, cleanup, faults, and return match. Remaining drift is private center
 // coordinate scheduling.
+// sa-6b4afaac exact-finish: H25 restored the default-case scope and was a
+// codegen duplicate. H26 cached background_pos before the shadow dimensions
+// and was a duplicate. H27 declared shadow Height before Width and worsened
+// the body; all three forms were restored. Fresh clean validation kept the
+// 20 ordered calls, frame, owner, and anchors, but rebuilt 977 bytes versus
+// the 979-byte oracle. No natural source form produced an exact result.
 
 // Panel_ez.cpp used the period Windows SDK surface.  Keep that TU context
 // visible while retaining the local class declarations below.

@@ -29,6 +29,10 @@
 // object effects, virtual dispatches, cleanup, and fault order match. This
 // function has no SEH. Eighty-two focused probes and an ambient declaration
 // sweep found no natural source form that restores the split save schedule.
+// A later authentic-module lab compiled both constructors, the destructor,
+// first_in_stack, set_state, and update after one shared declaration header.
+// Default and /GX module builds kept the same 41-byte mismatch. /Ob0, /Ob2,
+// /G5, and /GX with /Ob2 also kept it. /O1, /Os, and /G6 changed body code.
 
 class RGE_Master_Moving_Object {
 public:

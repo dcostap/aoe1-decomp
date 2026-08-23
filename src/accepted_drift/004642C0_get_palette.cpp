@@ -48,6 +48,20 @@
 // cache reads, reference counts, allocation effects, returns, cleanup, and
 // fault order match. This function has no SEH. Nineteen focused probes found
 // no natural source form that selects the original block placement.
+// Exact-finish revisit (sa-06089205-r1): authentic Windows/IME/stdlib headers,
+// the full nonvirtual TPanelSystem declaration surface, and reversed stdio/string
+// header order were codegen duplicates. A named strchr result, inner boolean
+// switch, early local declarations, duplicated strupr statements, and explicit
+// null-arm labels were also tested. The positive filename-arm forms produced
+// 456 bytes and five strupr calls; the switch produced 460 bytes and five calls;
+// labels and declarations restored the 443-byte baseline with the same 88-byte
+// CFG diff. Restored the pinned natural source.
+// Exact-finish revisit (sa-ca398724-r1): reversed guards, explicit joins, local
+// aliases, declaration order, inline helper, optimizer pragmas, six guard forms,
+// and 512 ambient declaration contexts did not produce an exact build.
+// Positive filename arms emit 456 bytes and two strupr calls. The pinned source
+// stays authoritative. Final validation: 443 bytes, 0x10C frame, four ordered
+// calls, and 88 bytes of early null-arm CFG drift.
 
 #include <string.h>
 #include <stdio.h>

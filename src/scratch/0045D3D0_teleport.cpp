@@ -41,9 +41,29 @@
 //   redundant countdown reset, typed tile ownership, signed option type, and
 //   extra CRT header context were tested.  They were unchanged, worse, or
 //   duplicate.  The current source keeps the smallest natural 150-byte basin.
+// - A named moving-master/options/tile preguard changed the register basin and
+//   regressed to 495B/441 bytes, so it was restored. The canonical-TU guard is
+//   declaration-only and does not change the standalone baseline.
+// - Exact-finish probe: moving the int countdown into the redundant positive
+//   inner guard moved the clean basin from 150 to 113 differing bytes. It
+//   recovered the original interpolation block through the loop-entry edge.
+// - The countdown guard and delayed declaration are one required source group.
+//   Reverting either restores the earlier 150-byte basin. The retained source
+//   uses the direct short count and one natural int countdown.
+// - Exact-finish walkback: named master/options/tile locals, full move-object
+//   header inclusion, separate step locals, direct step expressions, loop and
+//   coordinate reorderings, and comma or expanded assignments were regressive
+//   or codegen duplicates. They were reverted.
+// - Fresh finish evidence: the 113-byte source has 158 instructions, a 0x24
+//   frame, six ordered calls, matching x87 call setup, and a three-byte
+//   non-padding boundary overrun. The remaining mismatch is register mapping
+//   at the option guard and trail-call argument setup. No exact source-only
+//   result was found in this finish pass.
 
 #include <math.h>
 
+
+#ifndef MOVE_OBJ_CANONICAL_TU
 class RGE_Sprite;
 class RGE_Player;
 class RGE_Master_Static_Object;
@@ -187,6 +207,7 @@ public:
     char gap_04[0x20];
     RGE_Master_Static_Object** master_objects;
 };
+#endif
 
 float RGE_Moving_Object::teleport(float x, float y, float z) {
     if (((RGE_Master_Moving_Object*)this->master_obj)->obj_trail_options != 0 &&
@@ -231,9 +252,8 @@ float RGE_Moving_Object::teleport(float x, float y, float z) {
                     tx = this->world_x;
                     ty = this->world_y;
                     tz = this->world_z;
-                    int loop_count = count;
-
                     if (0 < count) {
+                        int loop_count = count;
                         do {
                             RGE_Static_Object* trail =
                                 trail_master->make_new_obj(
@@ -244,8 +264,7 @@ float RGE_Moving_Object::teleport(float x, float y, float z) {
                             tx += dx;
                             ty += dy;
                             tz += dz;
-                            --loop_count;
-                        } while (loop_count != 0);
+                        } while (--loop_count != 0);
                     }
 
                     this->trail_remainder =

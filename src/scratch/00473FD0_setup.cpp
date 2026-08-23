@@ -65,9 +65,26 @@
 // because VC5 reorders the pre-call list_wid/list_hgt and
 // scbar_wid/scbar_arrow_hgt member stores. A partial object or failing write can
 // expose different state before TPanel::setup.
+// Exact-finish audit 2026-08-23:
+// - Replaced the local TPanel stub with include/panel_context.h. The canonical
+//   0xF4 panel layout and virtual order are binary-supported. Output was
+//   unchanged at 865 bytes and 162 mismatch bytes.
+// - Added the proved TTextPanel override declarations. Output was unchanged.
+// - Restored direct btn_wid arithmetic and the explicit int p22 conversion.
+//   Member dependency, direct short passing, and base-pointer casts were
+//   measured. Each emitted the same 162-byte mismatch.
+// - A 20-variant /GX lab tested five early assignment forms and four scrollbar
+//   argument forms. It produced two codegen groups. No exact result occurred.
+// - Fresh exact checks passed for 00473ED0, 00473F50, 00474550, and 00474670.
+//   These registered Pnl_drop anchors remain unchanged.
+// - Fresh target validation still reports 865/865 bytes, 20 ordered calls,
+//   one return, 94.86% shape, and 162 positional mismatch bytes.
+// Remaining evidence: VC5 selects the opposite ECX/EAX map for the first
+//   width loads and the opposite ECX/EDX map for scrollbar list and line.
+// No natural source form tested in this claim resolves that register basin.
 
-struct TDrawArea;
-class TPanel;
+#include "../../include/panel_context.h"
+
 class TTextPanel;
 class TDropDownPanel;
 class TDropDownButtonPanel;
@@ -77,22 +94,19 @@ class TDigital;
 
 extern char s_[];
 
-class TPanel {
-public:
-    virtual ~TPanel();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual int set_active(int);
-    char gap_04[0x1C];
-    TDrawArea* render_area;
-    char gap_24[0xD0];
-    long setup(TDrawArea* area, TPanel* parent, long left, long top, long width, long height, unsigned char value);
-};
-
 class TTextPanel : public TPanel {
 public:
+    virtual ~TTextPanel();
+    virtual void set_rect(long, long, long, long);
+    virtual void set_active(int);
+    virtual void draw();
+    virtual long mouse_left_down_action(long, long, int, int);
+    virtual long key_down_action(long, short, int, int, int);
+    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    virtual void set_text(char**, short);
+    virtual void set_text(long);
+    virtual void set_text(char*);
+    virtual void set_bevel_info(int, int, int, int, int, int, int);
     char gap_F4[0x8C];
     int border_size;
     int spacer_size;

@@ -50,6 +50,27 @@
 //   always 0..7, so the different parity lowering is equivalent. The function
 //   has no calls, writes, or floating-point operations. Remaining drift is
 //   switch-block placement and private register/local scheduling.
+// - exact-finish follow-up: the corrected setConnectionCount switch evidence
+//   was applied as behavior-preserving duplicated case-7 updates. The first
+//   pass with signed direction remainder reached a 249-instruction, 312-byte
+//   mismatch, but VC5 swapped the proven x/y register colors from validation
+//   through the graph walk. Removing the CRT include reduced this to 311 bytes.
+//   Applying the duplicated form to both passes reached 550 bytes; applying it
+//   only to the second pass reached 551 bytes. None was exact.
+// - exact-finish follow-up: a self alias was codegen-neutral. A one-result
+//   accumulator grew the body to 784 bytes. Moving edgeResult into its guard
+//   was codegen-neutral. These forms were removed. The pinned natural source
+//   remains the smallest behavior-safe reconstruction.
+// - exact-finish audit: the best 249-instruction source was fresh-checked at
+//   311 differing bytes and 97.59% shape. Its first blocker is the target's
+//   EBX xSize / EDI to.x color versus VC5's reversed colors. The target also
+//   keeps a distinct second-pass case-0 to case-7 edge. Open-ended scans,
+//   cached size aliases, full local class declarations, independent second
+//   cases, and a named case-7 jump did not improve this basin. All probes were
+//   removed. The pinned 541-byte source is restored.
+// - BINARY NOTE: 0044E9E0 setConnectionCount remains unedited. Fresh audit
+//   still shows its documented 8-byte self/row home swap and its exact row,
+//   filter, count, and malformed-input behavior.
 
 #include <stdlib.h>
 

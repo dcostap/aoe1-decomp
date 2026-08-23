@@ -33,6 +33,7 @@
 // memory access or flags effect. Both forms compute the same 32-bit value.
 // Size, frame, calls, CFG, blocks, and function boundary match.
 
+#ifndef AOE1_PNL_TXT_CONTEXT_H
 struct SIZE;
 
 extern "C" short __cdecl __mbslen(const char* str);
@@ -90,6 +91,7 @@ public:
     void calc_line_pos(void* dc, short line, short current,
                        RECT* rect, long* out);
 };
+#endif
 
 void TTextPanel::calc_line_pos(void* dc, short line, short current,
                                RECT* rect, long* out)

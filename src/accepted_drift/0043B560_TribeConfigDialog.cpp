@@ -42,6 +42,13 @@
 // values, calls, arguments, and exits match. The final drift only reloads
 // cancelButton between two field stores and changes private tab-list store
 // scheduling. No external call crosses those changes. All 65 calls match.
+// - context probe: the same-TU panel field map and 0x490 TEasy boundary from
+//   the exact dlg_abt/dlg_menu donors were byte-identical and were restored.
+// - source-shape probes: int, short, enum, local-index, while, do, and ordered
+//   declaration forms did not recover the original path induction. The short
+//   form added sign extension. The do form added a second create_text site.
+// - tail probe: a local cancel-button alias recovered its first load but moved
+//   later argument homes and remained nonexact. The clean source is restored.
 
 #include <string.h>
 

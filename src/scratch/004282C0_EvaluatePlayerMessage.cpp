@@ -54,6 +54,19 @@
 //   The natural indexed loop remains the best 972-byte emitted basin at 747 strict diff bytes.
 // - The original speed arm still reads data+4 before CommandTurnIncrement. The natural rebuild reverses those reads.
 //   The original kill scan still uses a separate register topology and a late found block.
+// Continuation pass (sa-41fd801a-r1, 2026-08-24):
+// - Fresh validation remains 972/972 bytes, 24/24 ordered calls, no frame,
+//   owner-symbol match, 97.05% shape, and 747 strict diff bytes.
+// - Tested natural packet-turn statement, pointer, array, explicit-cast, and
+//   scoped-local forms. All emitted the same speed basin and retained the
+//   original packet-first read as an unresolved source-order blocker.
+// - Tested indexed, candidate/result, pointer-cursor, do/while, for, break,
+//   local-width, and declaration-order kill scans. The clean indexed while
+//   form remains the smallest natural basin. Candidate/break reached 742
+//   diagnostic diff bytes but lost original block topology and was restored.
+// - Exact finish is blocked by the speed-arm load order, the late found-block
+//   register topology, and the isolated switch-table relocation context.
+//   No fake volatility, raw cursor, dummy context, or inline assembly retained.
 
 class TDebuggingLog {
 public:

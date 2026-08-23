@@ -8,8 +8,10 @@
 // probe 2: 5.0% — virtual call fixed via thunk class with 8 dummy vfuncs
 //   remaining: EBX↔ECX swap for denom vs tab_min_x/tab_min_y
 //
-// Parked at 5.0%. Remaining 12 bytes: pure register encoding swap
-// (EBX ↔ ECX). All instructions byte-for-byte identical.
+// Exact-finish: removing the cached denom local and reading list_len through
+// the owning panel in both orientation arms recovers the original EBX/ECX
+// allocation. The compiler still emits one list_len load and all 239 bytes
+// match. This is the smallest natural source that preserves the exact body.
 
 class TScrollBarPanel;
 
@@ -49,14 +51,13 @@ public:
 };
 
 void TScrollBarPanel::set_tab_pos(long pos) {
-    int denom = this->list_len;
     this->list_num = (int)pos;
 
     if (this->orientationValue == 1) {
         // Horizontal orientation
-        if (denom > 0) {
+        if (this->list_len > 0) {
             int half = this->tabSize / 2;
-            this->tab_x = ((half + this->tab_max_x - this->tab_min_x) * (int)pos) / denom + this->tab_min_x;
+            this->tab_x = ((half + this->tab_max_x - this->tab_min_x) * (int)pos) / this->list_len + this->tab_min_x;
         }
 
         // Clamp
@@ -67,12 +68,12 @@ void TScrollBarPanel::set_tab_pos(long pos) {
         }
     } else {
         // Vertical orientation
-        if (denom > 0) {
-            if ((int)pos == denom - 1) {
+        if (this->list_len > 0) {
+            if ((int)pos == this->list_len - 1) {
                 this->tab_y = this->tab_max_y;
             } else {
                 int half = this->tabSize / 2;
-                this->tab_y = ((half + this->tab_max_y - this->tab_min_y) * (int)pos) / denom + this->tab_min_y;
+                this->tab_y = ((half + this->tab_max_y - this->tab_min_y) * (int)pos) / this->list_len + this->tab_min_y;
             }
         }
 

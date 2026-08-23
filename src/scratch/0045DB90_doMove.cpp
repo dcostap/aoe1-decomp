@@ -14,11 +14,18 @@
 // - Direct success arms, rather than one explicit shared label, preserve both
 //   original +0x1C0 virtual call sites. The count tests use the binary's <= 1
 //   and > 1 forms. The radius sum uses x*x + y*y for the observed x87 order.
-// - The best clean reconstruction has diff 2992, 75.20% shape, 3395 rebuilt
-//   bytes, and 105/105 ordered calls. The remaining gap is register, stack-home,
+// - Qualified owner: RGE_Moving_Object::doMove in move_obj.cpp. The packet
+//   boundary is 0045DB90-0045E966 (3543 bytes). The canonical move_obj TU
+//   protects the neighboring findPath and doTrivialMove anchors.
+// - The final natural frontier is diff 2976, 75.38% shape, 3395 rebuilt bytes,
+//   and 105/105 ordered calls. A positive waypoint guard, direct radius
+//   members, late distanceToGoal initialization, and scoped retry locals are
+//   retained because they improve or preserve the frontier without changing
+//   the owner or call surface. The remaining gap is register, stack-home,
 //   loop CFG, and x87 scheduling. No padding, manual vtable, or opaque codegen
 //   form is retained.
 
+#ifndef MOVE_OBJ_CANONICAL_TU
 struct Waypoint {
     float x;
     float y;
@@ -333,18 +340,15 @@ extern double DAT_00570b98;
 extern float DAT_00570ba0;
 extern float DAT_00570ba8;
 
+#endif
+
 int RGE_Moving_Object::doMove() {
     Path* path;
     Waypoint* waypoint;
     int path_result;
     float distance;
-    float distanceToGoal;
     float dY;
     float newDY;
-    float object_radius_x;
-    float object_radius_y;
-    float retry_dx;
-    float retry_dy;
 
     this->setWaitingToMove(0);
 
@@ -418,19 +422,15 @@ int RGE_Moving_Object::doMove() {
 
     path = &this->pathValue;
     path_result = 1;
-    object_radius_x = this->master_obj->radius_x;
-    object_radius_y = this->master_obj->radius_y;
-    newDY = (float)sqrt(object_radius_x * object_radius_x + object_radius_y * object_radius_y);
+    newDY = (float)sqrt(this->master_obj->radius_x * this->master_obj->radius_x +
+                        this->master_obj->radius_y * this->master_obj->radius_y);
     waypoint = path->currentWaypoint();
-    if (waypoint == 0) {
-        path_result = 0;
-    } else {
+    if (waypoint != 0) {
         waypoint = path->currentWaypoint();
         float dx = waypoint->x - this->world_x;
         waypoint = path->currentWaypoint();
         float dy = waypoint->y - this->world_y;
         if ((float)sqrt(dy * dy + dx * dx) == DAT_00570b48) {
-            path_result = 1;
             waypoint = path->currentWaypoint();
             float y = waypoint->y;
             waypoint = path->currentWaypoint();
@@ -442,9 +442,11 @@ int RGE_Moving_Object::doMove() {
             path_result = path->moveToNextWaypoint();
             this->closestDistanceToWaypoint = 100000.0f;
         }
+    } else {
+        path_result = 0;
     }
 
-    distanceToGoal = 0.0f;
+    float distanceToGoal = 0.0f;
     if (this->numberUserDefinedWaypointsValue > 1 && distance > DAT_00570ba0) {
         unsigned char zone1 = this->lookupZone(this->userDefinedWaypoints[0].x,
                                                this->userDefinedWaypoints[0].y);
@@ -469,8 +471,8 @@ int RGE_Moving_Object::doMove() {
             if (this->numberUserDefinedWaypointsValue < 1) {
                 return 0;
             }
-            retry_dx = (float)this->userDefinedWaypoints[0].x - this->world_x;
-            retry_dy = (float)this->userDefinedWaypoints[0].y - this->world_y;
+            float retry_dx = (float)this->userDefinedWaypoints[0].x - this->world_x;
+            float retry_dy = (float)this->userDefinedWaypoints[0].y - this->world_y;
             if (newDY + this->actionRange - DAT_00570ba8 <
                 (float)sqrt(retry_dy * retry_dy + retry_dx * retry_dx)) {
                 retry_success = 1;
@@ -628,8 +630,8 @@ int RGE_Moving_Object::doMove() {
                 if (this->numberUserDefinedWaypointsValue < 1) {
                     return 0;
                 }
-                retry_dx = (float)this->userDefinedWaypoints[0].x - this->world_x;
-                retry_dy = (float)this->userDefinedWaypoints[0].y - this->world_y;
+                float retry_dx = (float)this->userDefinedWaypoints[0].x - this->world_x;
+                float retry_dy = (float)this->userDefinedWaypoints[0].y - this->world_y;
                 if (newDY + this->actionRange - DAT_00570ba8 <
                     (float)sqrt(retry_dy * retry_dy + retry_dx * retry_dx)) {
                     retry_success = 1;

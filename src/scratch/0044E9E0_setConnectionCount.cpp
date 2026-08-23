@@ -25,10 +25,9 @@
 //   from 479 to 346 bytes, but the remaining block-shape drift is unresolved.
 // - removed the explicit self alias while retaining the named rows and
 //   coordinate references; codegen was unchanged, so restored the clean alias.
-// - original local evidence confirms the typed switch behavior: case 0 falls
-//   through case 7; cases 1/2, 3/4, and 5/6 use cold out-of-line arms. A
-//   numeric common-label probe reproduced the cold-arm shape but worsened
-//   positional bytes and used an unsupported source label, so it was dropped.
+// - original local evidence confirms the typed switch behavior: case 0 and
+//   case 7 share the y decrement; cases 1/2, 3/4, and 5/6 use cold arms. A
+//   numeric common-label probe used an unsupported source label and was dropped.
 // - fresh declaration-order, loop-form, scope, and switch-label probes either
 //   stayed in the same basin or lost the clean result. The natural typed source
 //   remains pinned; exact switch layout and register coloring need new donor or
@@ -47,11 +46,34 @@
 // - direct rowValue reads reached 345 bytes but lost exact blocks. A source
 //   switch label matching the cold arms reached 353 bytes and improved shape.
 //   Both forms were restored because they are not smaller exact sources.
-// Accepted-drift audit: do not promote. The executable reads rowValue before
-// xReferencePointValue, then reads yReferencePointValue after it computes the
-// row offset. The rebuild reads both reference fields in a different order.
-// Concurrent field updates can therefore select a different row and cell.
-// Invalid object storage can also fault on a different field read.
+// - duplicating the natural case-0 and case-7 y updates let VC5 merge their
+//   common tail. It also moved the other switch arms to the exact cold layout.
+//   Shape rose from 84.66% to 91.23%, with a 345-byte positional mismatch.
+// - explicit rowIndex and neighborRow variables were compiler shadows. Their
+//   removal was codegen-neutral. The typed indexed source is authoritative.
+// - a 42-variant declaration-order lab produced two nonexact code groups. A
+//   four-form typed row-expression lab produced one nonexact code group.
+//   Function-scope references, register, direct fields, and block-local offset
+//   forms stayed in the 345-byte basin. Using abs(direction) widened the body.
+// - final blocker: the target stores self at [esp+10h] and its scaled row at
+//   [esp+14h]. The rebuild swaps those homes. The target keeps scaled
+//   yReference in ECX and rows at [esp+1Ch]; the rebuild swaps those roles.
+//   This changes the preheader by four bytes and shifts all later addresses.
+// - fresh exact-finish pass: removing the yReference local and rereading the
+//   typed member in both row accesses reduced the mismatch from 345 to 8
+//   bytes. The natural source then matched all non-stack bytes, CFG shape,
+//   frame, owner symbol, boundary, and the target's zero-call set.
+// - exact-finish reduction tested plain, const, reference, top-scope, and
+//   inner-scope self aliases; row and xOffset scopes; row-index naming; loop
+//   spelling; and the donor object-header surface. These either duplicated
+//   the 8-byte result or widened the body. The reduced typed source is kept.
+// - final validation: fresh grouped bytes remain an 8-byte stack-home swap.
+//   Original self homes are [esp+10h] and row offset [esp+14h]. VC5 emits
+//   those homes in reverse. The target has no direct or indirect calls.
+// Accepted-drift audit: do not promote. The current source matches the
+// executable's rowValue, xReferencePointValue, and yReferencePointValue read
+// order. The remaining mismatch is only the compiler's stack-home choice.
+// Invalid object storage keeps the executable fault order documented here.
 
 typedef unsigned char uchar;
 
@@ -82,8 +104,6 @@ int InfluenceMap::setConnectionCount(const XYPoint& from, const XYPoint& to,
                                      int minimum, int edgeHorizontal,
                                      int edgeVertical, int allDirections)
 {
-    int rowIndex;
-    int xOffset;
     InfluenceMap* self = this;
 
     self->connectionCountValue = 0;
@@ -98,24 +118,19 @@ int InfluenceMap::setConnectionCount(const XYPoint& from, const XYPoint& to,
         int y = from.y;
         if (y <= to.y) {
             uchar** rows = self->rowValue;
-            int xReference = self->xReferencePointValue;
-            xOffset = x - xReference;
-            int yReference = self->yReferencePointValue;
-            rowIndex = y * 4;
+            int xOffset = x - self->xReferencePointValue;
             do {
-                if (rows[y - yReference]
+                if (rows[y - self->yReferencePointValue]
                                       [xOffset] >= minimum) {
                     int neighborX = x;
                     int neighborY = y;
-                    int neighborRow = rowIndex;
 
                     for (int direction = 0; direction < 8; ++direction) {
                         switch (direction) {
                         case 0:
                             --neighborX;
-                        case 7:
+                            // BINARY NOTE: VC5 merges this suffix with case 7.
                             --neighborY;
-                            neighborRow -= 4;
                             break;
                         case 1:
                         case 2:
@@ -124,18 +139,20 @@ int InfluenceMap::setConnectionCount(const XYPoint& from, const XYPoint& to,
                         case 3:
                         case 4:
                             ++neighborY;
-                            neighborRow += 4;
                             break;
                         case 5:
                         case 6:
                             --neighborX;
+                            break;
+                        case 7:
+                            --neighborY;
                             break;
                         }
 
                         if (allDirections || (direction % 2) != 0) {
                             if (neighborX >= 0 && neighborX < self->xSizeValue &&
                                 neighborY >= 0 && neighborY < self->ySizeValue) {
-                                if (rows[neighborY - yReference]
+                                if (rows[neighborY - self->yReferencePointValue]
                                                    [neighborX - self->xReferencePointValue] >= minimum) {
                                     ++self->connectionCountValue;
                                 }
@@ -146,8 +163,6 @@ int InfluenceMap::setConnectionCount(const XYPoint& from, const XYPoint& to,
                         }
                     }
                 }
-
-                rowIndex += 4;
                 ++y;
             } while (y <= to.y);
         }

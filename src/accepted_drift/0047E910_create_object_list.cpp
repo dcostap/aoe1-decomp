@@ -56,17 +56,119 @@
 // MOVSX ESI,BP instructions. They write separate registers. MOVSX preserves
 // the flags produced by XOR, so registers and flags are equal afterward. No
 // call, memory access, or branch occurs between them. All other bytes match.
+// - Fresh exact-finish audit: canonical declaration-only panel surfaces from
+//   setup, the protected helper owner, and the RGE_Player vptr changed no bytes.
+// - Natural for-loop and update-order forms worsened size or block layout.
+//   The direct do-loop remains the smallest source with exact calls and bounds.
+// - Current evidence still shows one five-byte scheduling span only. No natural
+//   source form tested here restores its XOR-before-MOVSX order.
+// - Adding the canonical setup declarations kept the same emitted basin.
 
+#include <stdlib.h>
+#include <string.h>
 #include "..\..\include\game_globals.h"
 
-class TListDialog {
+class TPanel {
 public:
-    virtual ~TListDialog();
-    char gap_04[0x4A8];
+    virtual ~TPanel();
+    virtual void setup();
+    virtual void set_rect_1();  virtual void set_rect_2();
+    virtual void set_color();  virtual void set_active();
+    virtual void set_positioning();  virtual void set_fixed_position();
+    virtual void set_redraw();  virtual void set_overlapped_redraw();
+    virtual void draw_setup();  virtual void draw_finish();
+    virtual void draw();  virtual void draw_rect();
+    virtual void draw_offset();  virtual void draw_rect2();
+    virtual void draw_offset2();  virtual void paint();
+    virtual void wnd_proc();  virtual void handle_idle();
+    virtual void handle_size();  virtual void handle_paint();
+    virtual void handle_key_down();  virtual void handle_char();
+    virtual void handle_command();  virtual void handle_user_command();
+    virtual void handle_timer_command();  virtual void handle_scroll();
+    virtual void handle_mouse_down();  virtual void handle_mouse_move();
+    virtual void handle_mouse_up();  virtual void handle_mouse_dbl_click();
+    virtual void mouse_move_action();  virtual void mouse_left_down_action();
+    virtual void mouse_left_hold_action();  virtual void mouse_left_move_action();
+    virtual void mouse_left_up_action();  virtual void mouse_left_dbl_click_action();
+    virtual void mouse_right_down_action();  virtual void mouse_right_hold_action();
+    virtual void mouse_right_move_action();  virtual void mouse_right_up_action();
+    virtual void mouse_right_dbl_click_action();  virtual void key_down_action();
+    virtual void char_action();
+    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    virtual void vfB8();  virtual void vfBC();  virtual void vfC0();
+    virtual void vfC4();  virtual void vfC8();  virtual void vfCC();
+    virtual void vfD0();  virtual void vfD4();  virtual void vfD8();
+    virtual void vfDC();
+
+    char gap_04[0xD4];
+    int error_code;                 // +0x0D8
+    char gap_DC[0x18];
 };
 
-class rdlg_list_info {
+class TEasy_Panel : public TPanel {
 public:
+    virtual ~TEasy_Panel();
+    virtual void draw_background(int);
+    virtual void set_ideal_size(long, long);
+    virtual int create_button(TPanel*, void**, long, long, long, long, long, long, long, long, long);
+    virtual int create_button_text(TPanel*, void**, char*, char*, long, long, long, long, long, long, long);
+    virtual int create_check_box(TPanel*, void**, long, long, long, long, long, long);
+    virtual int create_radio_button(TPanel*, void**, long, long, long, long, long, long);
+    virtual int create_text_number(TPanel*, void**, int, long, long, long, long, long, int, int, int);
+    virtual int create_text_list(TPanel*, void**, char**, long, long, long, long, long, long, int, int);
+    virtual int create_text(TPanel*, void**, char*, long, long, long, long, long, int, int, int);
+    virtual int create_input(TPanel*, void**, char*, short, long, long, long, long, long, long);
+    virtual int create_edit(TPanel*, void**, char*, short, long, long, long, long, long, long, int, int);
+    virtual int create_drop_down(TPanel*, void**, long, long, long, long, long, long, long);
+    virtual int create_list(TPanel*, void**, long, long, long, long, long);
+    virtual int create_scrollbar(TPanel*, void**, TPanel*, long, long, long, long, long);
+    virtual int create_auto_scrollbar(void**, TPanel*, long);
+    virtual int create_vert_slider(TPanel*, void**, long, long, long, long, long, long, long);
+    virtual int create_horz_slider(TPanel*, void**, long, long, long, long, long, long, long);
+    virtual void position_panel(TPanel*, long, long, long, long);
+};
+
+class TDialogPanel : public TEasy_Panel {
+public:
+    char gap_F4[0x384];
+    void* dlg_wnd;                  // +0x478
+    TPanel* save_parent_child;      // +0x47C
+    int text_font_id;               // +0x480
+    int input_font_id;              // +0x484
+    int button_font_id;             // +0x488
+    int button_sound_id;             // +0x48C
+
+    virtual int setup(TPanel*, TPanel*, long, long, unsigned char, int);
+    virtual int setup(TPanel*, TPanel*, long, long, char*, long, int);
+};
+
+class TListDialog : public TDialogPanel {
+public:
+    void* title;                    // +0x490
+    void* list;                     // +0x494
+    void* scroll_bar;               // +0x498
+    void* ok_btn;                   // +0x49C
+    void* cancel_btn;               // +0x4A0
+    short list_id;                  // +0x4A4
+    char gap_4A6[0x02];
+    char* list_name;                // +0x4A8
+
+    virtual short get_list_id();
+    virtual char* get_list_name();
+
+    long setup(TPanel* param_1, char* param_2, long param_3,
+               long param_4, long param_5, long param_6, long param_7,
+               long param_8, long param_9, char* param_10,
+               long param_11, long param_12, long param_13, long param_14,
+               char** param_15, short param_16, short param_17,
+               long param_18, long param_19, long param_20, long param_21,
+               long param_22);
+};
+
+class TScreenPanel : public TEasy_Panel {
+};
+
+struct rdlg_list_info {
     char text[0x64];
     short id;
 };
@@ -82,7 +184,8 @@ public:
 
 class RGE_Player {
 public:
-    char gap_00[0x22];
+    virtual ~RGE_Player();
+    char gap_04[0x1E];
     short master_object_num;           // +0x22
     RGE_Game_Object** master_objects;  // +0x24
 };
@@ -110,7 +213,16 @@ public:
     rdlg_list_info* list_info;    // +0x4B4
     char** list_text;             // +0x4B8
 
+    virtual int create_list();
+    void sort_list();
+    void calc_list_line();
+
+protected:
     int create_object_list();
+
+public:
+    int setup(TScreenPanel* screen, char* popup_file, long popup_id,
+              int list_type, char* title);
 };
 
 int RGE_Dialog_List::create_object_list()

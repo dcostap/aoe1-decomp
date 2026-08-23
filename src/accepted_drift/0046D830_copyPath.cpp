@@ -29,6 +29,16 @@
 //   declaration-scope variants did not improve the clean source.  Adding
 //   standard headers reduced one diagnostic result to 12 bytes, but had no
 //   donor-backed source evidence and was removed.  No exact result was found.
+// - Exact-finish pass: 20 fresh probes tested typed row ownership, the proven
+//   PathingSystem vptr surface, stdlib/math/stdio context, facet-mask scope,
+//   comparison order, open-path cursor ownership, and local declaration order.
+//   The stdlib plus loop-local mask form reached 12 bytes, but no variant was
+//   exact.  The pinned 14-byte source is restored.
+// - Fresh validation retains the original 0x34 frame, 1114-byte boundary,
+//   9 ordered direct calls, 33 conditional signals, and the PathingSystem
+//   owner symbol.  The residual is confined to two repeated map-index address
+//   schedules.  The 14 bytes do not change calls, writes, predicates, cleanup,
+//   or fault order.
 // ACCEPTED DRIFT: The 14 bytes only reassociate the same three integer terms
 // in two map-tile addresses. One repeated site also exchanges an independent
 // EBP mask with the ordinary facet-byte load. Both builds read the same address

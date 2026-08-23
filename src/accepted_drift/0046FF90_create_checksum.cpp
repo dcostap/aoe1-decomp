@@ -130,6 +130,13 @@
 //   codegen-neutral or worse. The remaining 11 bytes are three final-pack
 //   register-order spans. No call, predicate, memory-effect, or CFG drift is
 //   present, so the residue is behavior-equivalent but not exact.
+// Fresh exact-finish pass (sa-8888480f-r1):
+// - Rebuilt the pinned source before each final-pack probe. One combined pack,
+//   final aliases, register hints, split steps, a packed local, a chained
+//   store, and const copies all reproduced the 11-byte final-pack drift.
+// - A same-TU inline pack helper worsened the prefix by 2 bytes. It was
+//   removed. No probe changed the five ordered calls, widths, frame, boundary,
+//   arithmetic order, or owner symbol. The pinned source is restored.
 // ACCEPTED DRIFT: the only difference is instruction scheduling in the final
 // checksum pack at 00470075-00470090. Both bodies use the same four saved
 // values and perform the same three left shifts and additions in the same

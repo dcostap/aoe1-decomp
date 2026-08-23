@@ -54,11 +54,17 @@
 //   executable runs INT3 at 0047F00B before the error dialog. The natural
 //   rebuild goes directly to MessageBoxA. Inline assembly is forbidden, and a
 //   DebugBreak call would change stack and exception context. Keep in scratch.
+//   ORIGINAL BUG: The shipped fault order is INT3, then the header error dialog.
 // - fresh audit: inventory body ranges are 0047EE90-0047F00B, 0047F027-0047F075,
 //   and 0047F122-0047F173. The rebuilt matches each range's instruction shape;
 //   the checker still compares them as one contiguous stream. Its four extra
 //   calls are the header-error, list-validation, and version blocks owned by
 //   0047F00C/0047F076, not a missing API or cleanup operation in this source.
+// - fresh claim validation: --rebuild kept the owner symbol, 0x19C frame, and
+//   the 19 original calls. It still built 739 bytes against 541 bytes. The
+//   first hunk is the required 0047F00C header-error fragment. The other three
+//   extra calls are in the required 0047F076 publication and version fragment.
+//   The target source is unchanged and remains the pinned clean source.
 
 #include <stdlib.h>
 #include <string.h>
@@ -154,6 +160,7 @@ void __cdecl RESFILE_open_new_resource_file(char* name, char* cmpName, char* pat
             return;
         }
 
+        // BINARY NOTE: The shipped copy has no length guard for a malformed name.
         strcpy(node->res_name, name);
         node->next = 0;
 
@@ -196,6 +203,8 @@ void __cdecl RESFILE_open_new_resource_file(char* name, char* cmpName, char* pat
         }
 
         {
+            // BINARY NOTE: Publication occurs before password and version checks.
+            // Failure returns keep the published node and any raw file handle.
             if (strcmp(node->header->password, cmpName) != 0) {
                 MessageBoxA(0, "Error: Open_ResFile, Corruption detected in resourcefile.", "RESOURCE ERROR", 0x30);
                 return;

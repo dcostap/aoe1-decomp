@@ -1,5 +1,10 @@
 // VA: 0041A020 purgeNotifyQueue (166B)
-// aiuaimod.cpp
+// PDB owner/access: public UnitAIModule::purgeNotifyQueue(unsigned long),
+// aiuaimod.cpp:5873-5916.
+// Symbol: ?purgeNotifyQueue@UnitAIModule@@QAEXK@Z.
+// Body boundary: 0041A020-0041A0C5; padding starts at 0041A0C6.
+// The preceding 00419F00 helper is protected and has symbol
+// ?addToNotifyQueue@UnitAIModule@@IAEHHHHJJJ@Z. Do not merge these ABIs.
 // Fresh 2026-05-19: implement packet-derived notify queue purge logic.
 // try 1: natural NotifyEntry pointer: exact size, 6/166 positional; pointer setup used EAX+LEA and loop used jge/jmp.
 // try 2: model loop cursor as int* p=&entry->action: fixed pointer setup exactly; remaining 3/166 branch topology at loop end.

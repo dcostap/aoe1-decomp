@@ -42,6 +42,12 @@
 //   Every valid probe remained an 18-byte mismatch with the same two spans.
 //   These results support a compiler scheduling or historical-TU-context
 //   blocker, not an unresolved field or helper ABI.
+// - Exact-finish context audit compiled the existing unregistered
+//   `src/player_tu.cpp` wrapper with the reviewed full player.cpp surface and
+//   /GX.  Its target body had the same 897-byte size, 22 ordered calls, EH
+//   coverage, and 26 relocation sites.  After masking those relocation fields,
+//   it reproduced the same 18-byte hunk.  The grouped context is therefore a
+//   codegen duplicate, not a required owner; leave the wrapper unregistered.
 // ACCEPTED DRIFT: The 18-byte edit moves the independent `[this+8] = 5` store
 // across one tile-list argument push, LEA, and caller stack spill. No call or
 // branch occurs inside the hunk, and the store completes before the same first
@@ -51,10 +57,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <memory.h>
+#ifdef PLAYER_GROUPED_TU
+#include "../../include/player_context.h"
+#endif
 
 extern "C" void __cdecl getstring(char** destination, char* source);
 extern int pathingCapValue;
 
+#ifndef PLAYER_GROUPED_TU
 class RGE_Player;
 class RGE_Sprite;
 class RGE_Sound;
@@ -237,6 +247,7 @@ public:
     void set_view_loc(float x, float y);
     void set_map_loc(short x, short y);
 };
+#endif
 
 RGE_Player::RGE_Player(RGE_Game_World* world, RGE_Master_Player* master,
                        unsigned char player_id, char* player_name,

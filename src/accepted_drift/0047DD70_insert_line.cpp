@@ -59,6 +59,7 @@ extern "C" __declspec(dllimport) int __stdcall CompareStringA(
     const char* string1, int length1,
     const char* string2, int length2);
 
+#ifndef AOE1_PNL_TXT_CONTEXT_H
 struct TextNode {
     char* text;                         // +0x00
     char* text2;                        // +0x04
@@ -76,7 +77,7 @@ public:
     virtual void vf_14();
     virtual void vf_18();
     virtual void vf_1C();
-    virtual void redraw(int flags);     // +0x20
+    virtual void set_redraw(int flags); // +0x20
 
     char gap_04[0xF0];                  // list begins at +0xF4
 };
@@ -93,6 +94,7 @@ public:
     int insert_line(long line, char* text, char* text2, long value);
     void calc_draw_info(int recalc_scrollbar);
 };
+#endif
 
 int TTextPanel::insert_line(long line, char* text, char* text2, long value)
 {
@@ -189,6 +191,6 @@ int TTextPanel::insert_line(long line, char* text, char* text2, long value)
 
     this->num_lines++;
     this->calc_draw_info(1);
-    this->redraw(1);
+    this->set_redraw(1);
     return 1;
 }

@@ -71,6 +71,7 @@ extern "C" unsigned char* __cdecl __mbscat(unsigned char* dst,
                                                const unsigned char* src);
 extern "C" int __cdecl __ismbcspace(int ch);
 
+#ifndef AOE1_PNL_TXT_CONTEXT_H
 class TDrawArea;
 
 class TPanel {
@@ -121,6 +122,7 @@ public:
     int append_line(char* text, long value);
     int word_wrap_append(char* text);
 };
+#endif
 
 int TTextPanel::word_wrap_append(char* text)
 {

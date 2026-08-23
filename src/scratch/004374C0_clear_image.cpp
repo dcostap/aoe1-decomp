@@ -70,109 +70,69 @@
 // - Current retained natural candidate: canonical long TPanel fields with H13/H22
 //   narrow expression casts. Ordered calls remain exact, frame is 0x10, and the latest
 //   check is 212 differing bytes with 109 instructions versus 111 original.
+// - Exact-finish pass: the direct decompiler-shaped short-local reconstruction added a
+//   0x14 frame and reached 283 bytes. It is not a source template.
+// - A p-first declaration and narrow origin sum reached 204 differing bytes in 319 bytes;
+//   the reviewed full diam_map context changed the owner to protected IAEX with no body
+//   change. The interior line_len cursor, Lock-result alias, short s2, and header-only
+//   context probes were duplicate or worse. The reduced canonical candidate is retained.
+// - Final unresolved validation: frame 0x10, three ordered direct calls, exact boundary
+//   owner, and correct six-byte row stride remain aligned; 204 positional bytes differ.
+
+#include "../../include/diam_map_context.h"
 
 extern "C" void* __cdecl memset(void* dst, int value, unsigned int count);
 #pragma function(memset)
 
-struct tagRECT {
-    long left;
-    long top;
-    long right;
-    long bottom;
-};
-
 class TDrawArea {
 public:
-    void* draw_system;
-    void* wnd;
+    void* DrawSystem;
+    void* Wnd;
     unsigned char* Bits;
-    void* bitmap_info;
-    void* bitmap;
-    void* old_bitmap;
-    int width;
+    void* BitmapInfo;
+    void* Bitmap;
+    void* OldBitmap;
+    int Width;
     int Height;
     int Pitch;
     int Orien;
+    tagRECT ClipRect;
+    void* DrawDc;
+    void* DrawSurface;
+    char SurfaceDesc[0x6C];
+    void* Node;
+    char* Name;
+    unsigned char* LastBits;
+    int LastPitch;
+    void** DisplayOffsets;
+    void** CurDisplayOffsets;
+    void** FloatOffsets;
+    void* shadow_color_table;
+    void* SpanList;
+    void* CurSpanList;
+    int Float_X_Delta;
+    int Float_Y_Delta;
+    int DisplayOffsetsSz;
+    int FloatOffsetsSz;
+    int SystemMemOnly;
+    int UsingVidMem;
+    int UseTrans;
+    int IsPrimarySurface;
+    int Restored;
+    int ExtendedLines;
+    unsigned char TransColor;
+    unsigned char pad_end[3];
 
     unsigned char* Lock(char* name, int flag);
     void Unlock(char* name);
 };
 
-class TPanel {
-public:
-    virtual ~TPanel();
-
-    TPanel* previous_panel;
-    TPanel* previous_modal_panel;
-    long pnl_x;
-    long pnl_y;
-    long pnl_wid;
-    long pnl_hgt;
-    char* panel_name;
-    TDrawArea* render_area;
-    tagRECT clip_rect;
-    char gap_34[0xB8];
-    unsigned char mouse_action;
-    unsigned char mouse_down_button;
-    unsigned char panel_type;
-    unsigned char color;
-    unsigned char fill_in_background;
-    unsigned char clip_to_parent;
-    unsigned char draw_rect2_flag;
-    unsigned char need_restore;
-};
-
-struct RGE_Map_Image_Line {
-    short tile_row;
-    short start_x;
-    short line_len;
-};
-
-class RGE_Diamond_Map : public TPanel {
-public:
-    void clear_image();
-
-    void* world;
-    void* player;
-    void* map;
-    int all_visible;
-    int render_all;
-    long mouse_last_x;
-    long mouse_last_y;
-    int repos_mouse;
-    tagRECT view_rect;
-    void* last_player;
-    RGE_Map_Image_Line* map_image_lines;
-    void* map_tile_rows;
-    short map_wid;
-    short map_hgt;
-    short map_image_start_y;
-    short map_image_wid;
-    short map_image_hgt;
-    short map_tile_row_cnt;
-    float map_row_step;
-    float map_col_ratio;
-    float map_row_ratio;
-    short map_tile_draw_hgt;
-    short map_tile_draw_wid;
-    short view_col;
-    short view_row;
-    void* main_view;
-    int scrolling;
-    unsigned char fog_color;
-    unsigned char pad_159[3];
-    int draw_objects_mode;
-    unsigned long cur_player_bit;
-    int own_save_area;
-    TDrawArea* save_area;
-};
-
 void RGE_Diamond_Map::clear_image()
 {
+    unsigned char* p;
     TDrawArea* save_area;
     short start_y;
     short pi;
-    unsigned char* p;
     p = this->save_area->Lock("diam_map::clear_image", 1);
     if (p == 0)
         return;
@@ -199,8 +159,7 @@ void RGE_Diamond_Map::clear_image()
         do {
             if (yv >= this->clip_rect.top && yv <= this->clip_rect.bottom) {
                 short sx = line->start_x;
-                short origin_x = (short)this->pnl_x;
-                int s2 = (int)origin_x + (int)sx;
+                int s2 = (short)(this->pnl_x + sx);
                 int ex = (short)(s2 + line->line_len - 1);
 
                 if (s2 < this->clip_rect.left) {

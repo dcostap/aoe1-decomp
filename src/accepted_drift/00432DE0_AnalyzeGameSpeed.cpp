@@ -38,7 +38,13 @@
 //   oracle drift is register coloring at the total-turn load, loop receiver,
 //   minimum-throughput product, and final output/call setup. No metric-only
 //   source form was retained.
-// Left in scratch after the bounded 10-hypothesis assignment.
+// - The reviewed full Com_hand context changed the frame to 0x8 and widened
+//   drift to 214 bytes, so it was rejected. Its exact handler member prefix,
+//   packed PlayerOptions record, and helper ABIs are kept below.
+// - The exact call symbols are IsPlayerHuman(uint), SendSpeedChange(uint,uint),
+//   and SetFutureSpeedChange(uint,uint,unsigned long). Their 32-bit code is
+//   unchanged, but their ownership and ABI are now correct.
+// The original 31-probe attempt left this function in accepted drift.
 // ACCEPTED DRIFT: the residual hunks apply complete temporary-register changes
 // to total_turns, the human-player loop receiver, and two unsigned products.
 // Multiplication operand order gives the same 32-bit value and flags. The final
@@ -50,30 +56,77 @@
 
 #include <stdlib.h>
 
+class RGE_TimeSinceLastCall;
+class TChat;
+
+enum COMMSTATES {
+    COMM_STATE_JOINNOW = 3
+};
+
+#pragma pack(push, 1)
 class COMMPLAYEROPTIONS {
 public:
-    unsigned char gap_00[0x40];
-    unsigned char CommandTurnIncrement; // +0x40
+    unsigned char NeedsToBeSent;
+    unsigned char _pad_0[3];
+    unsigned long LastSentTime;
+    COMMSTATES ProgramState;
+    unsigned long CurrentTurn;
+    unsigned char TurnSpeedMsec;
+    unsigned char _pad_1[3];
+    unsigned long dcoID[10];
+    unsigned long AcknowledgeAfterMsec;
+    unsigned char CommandTurnIncrement;
+    unsigned char _pad_2[3];
+    int PlayerReady[10];
+    unsigned long User1[10];
+    unsigned long User2[10];
+    unsigned long User3[10];
+    unsigned long User4[10];
+    unsigned long User5[10];
+    unsigned long User6[10];
+    unsigned long User7[10];
+    int Humanity[10];
+    unsigned char InvalidPlayer[10];
+    unsigned char _pad_3[2];
+    unsigned long Initialized;
+    unsigned long RandomSeed;
+    unsigned short HighPlayerNumber;
+    unsigned short LowPlayerNumber;
+    unsigned int HostPlayerNumber;
+    int GameHasStarted;
+    unsigned long DataSizeToFollow;
 };
+#pragma pack(pop)
 
 class TCommunications_Handler {
 public:
-    unsigned char gap_00[0x10C8];
-    unsigned int current_turn; // +0x10C8
+    int OptionsChanged;
+    char* OptionsData;
+    int Steps;
+    unsigned long TickStart;
+    unsigned long TickCount;
+    unsigned long TimeSinceLastCall;
+    TChat* Chat;
+    int MeHost;
+    int HaveHostInit;
+    char InCommBuff[4001];
+    char TBuff[257];
+    unsigned char _pad_10C6[2];
+    unsigned long current_turn; // +0x10C8
     unsigned char gap_10CC[0x1550 - 0x10CC];
     COMMPLAYEROPTIONS PlayerOptions; // +0x1550
 
     int IsHost();
-    int IsPlayerHuman(int player_index);
-    void SendSpeedChange(int a, int b);
+    int IsPlayerHuman(unsigned int player_index);
+    void SendSpeedChange(unsigned int a, unsigned int b);
 };
 
 class RGE_Communications_Speed {
 public:
     char TBuff[255];                       // +0x00
     unsigned char _pad_0[1];               // +0xFF
-    void* TurnTSLC;                        // +0x100
-    void* FrameTSLC;                       // +0x104
+    RGE_TimeSinceLastCall* TurnTSLC;       // +0x100
+    RGE_TimeSinceLastCall* FrameTSLC;      // +0x104
     TCommunications_Handler* Comm;         // +0x108
     unsigned char _pad_1[4];               // +0x10C
     double AccumDiff;                      // +0x110
@@ -109,7 +162,7 @@ public:
     unsigned long AdjustmentCount;         // +0x238
     int LastFrameHadTime;                  // +0x23C
 
-    void SetFutureSpeedChange(int a, int b, int c);
+    void SetFutureSpeedChange(unsigned int a, unsigned int b, unsigned long c);
     int AnalyzeGameSpeed(unsigned int* out_granularity, unsigned int* out_frames, int param_3);
 };
 
@@ -117,8 +170,7 @@ int RGE_Communications_Speed::AnalyzeGameSpeed(unsigned int* out_granularity, un
     if (!Comm->IsHost()) return 0;
     if (NextLatencyChangeTurn != 0) return 0;
 
-    unsigned char command_increment = Comm->PlayerOptions.CommandTurnIncrement;
-    unsigned int total_turns = Comm->current_turn + command_increment;
+    unsigned long total_turns = Comm->current_turn + Comm->PlayerOptions.CommandTurnIncrement;
     if (total_turns < 20) return 0;
     
     LastAdjusted++;
@@ -155,7 +207,7 @@ int RGE_Communications_Speed::AnalyzeGameSpeed(unsigned int* out_granularity, un
     if (new_frames >= 20) new_frames = 20;
     if (new_frames <= 4) new_frames = 4;
     
-    if (new_frames * new_gran < 250) {
+    if (new_gran * new_frames < 250) {
         new_frames = 250 / new_gran + 1;
     }
     

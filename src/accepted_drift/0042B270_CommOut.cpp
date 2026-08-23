@@ -1,5 +1,8 @@
 // VA: 0042B270 TCommunications_Handler::CommOut
 // Com_hand.cpp:4087-4459
+// PDB OWNER NOTE: inventory/all_functions.csv and the PDB line map identify
+// this VA as CommOut. No AnalyzeSyncMessage symbol or line span exists here.
+// Keep this one compiler-facing owner. Do not add an AnalyzeSyncMessage alias.
 //
 // Canonical reconstruction of the period communications packet builder.  The
 // header/packet records, PlayerOptions fields, DestMap, and DirectPlay Send

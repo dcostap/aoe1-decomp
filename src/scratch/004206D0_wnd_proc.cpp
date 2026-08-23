@@ -377,8 +377,9 @@ long __stdcall RGE_Base_Game::wnd_proc(void* hwnd, unsigned int msg,
 
     case 0x111:
         color_log(0x32, 0x16, 3);
-        self->handle_command(hwnd, 0x111, wparam, lparam);
-        goto default_window_proc;
+        if (self->handle_command(hwnd, 0x111, wparam, lparam) != 0)
+            goto default_window_proc;
+        goto panel_return_after_exit_menu;
 
     case 0x112:
         if (wparam == 0xF100 && self->prog_info->field_894 != 0 &&

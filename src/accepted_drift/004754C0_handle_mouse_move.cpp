@@ -75,6 +75,16 @@
 //   order selects the oracle LEA SIB encoding but does not move the ctrl push.
 // Fresh final pass: a post-coordinate receiver plus named edge and a split
 // compound edge calculation both reproduced the same 15-byte output.
+// - Final canonical-context pass included reviewed panel_context.h and the
+//   proven full TEditPanel layout. It stayed in the 253-byte/15-byte group;
+//   the inline edge form fell to 235 bytes and 90 changed bytes. The PDB
+//   owner remains Pnl_drop.cpp/TDropDownButtonPanel, so the edit-panel-only
+//   context was restored rather than retained as an unsupported exact lead.
+// - A narrow const-qualifier check for Panel.cpp coordinate accessors was
+//   codegen-neutral and was reverted with its shared-header experiment.
+// - Fresh checks kept exact anchors 00473ED0, 00473F50, 00474550, and
+//   00474670 unchanged. This target has no selection/caret publication or
+//   window API calls; those behaviors are outside its Pnl_drop.cpp body.
 // ACCEPTED DRIFT: The 15 changed bytes move one nonfaulting LEA around a stack
 // argument save and child-pointer load. The same right edge and call arguments
 // result. The final base forward only recolors two temporary registers. Values,

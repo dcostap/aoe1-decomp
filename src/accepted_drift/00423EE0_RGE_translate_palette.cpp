@@ -45,13 +45,22 @@
 // ordinary four-slot array reconstruction as the clean unresolved source.
 // Revisit: matching the Ghidra declaration order by initializing intense[0] before s was a
 // codegen duplicate. Final validation remains 437 differing bytes and a 456-byte rebuild.
+// Context pass: src/color_tu.cpp is an unregistered PDB-ordered wrapper for color.cpp. A fresh
+// drawarea_context.h plus string.h build kept the C++ owner symbol, zero calls, 0x10 frame, and
+// palette body, but emitted 456 bytes with reachable code beyond the 449-byte boundary.
 // Accepted-drift review: the prologue computes identical source cursor,
 // destination cursor, and destination-minus-source delta values with different
 // registers. Body arithmetic and source reads match. Each iteration stores red,
 // green, blue, then flags in the same order. The late delta reload moves only a
 // private stack read, and the function makes no calls.
+// Exact-finish pass: fresh prologue, width, declaration, pointer, type, header,
+// and comma-expression tests did not remove the seven-byte prologue shift.
+// A seven-variant prologue lab also found no size/frame-eligible or exact form.
+// The four-slot scratch array remains the smallest body model with stable blocks.
 
+#ifndef COLOR_TU_CONTEXT
 struct tagPALETTEENTRY { unsigned char peRed, peGreen, peBlue, peFlags; };
+#endif
 
 void __cdecl RGE_translate_palette(tagPALETTEENTRY* src, tagPALETTEENTRY* dst, tagPALETTEENTRY color, long pct, int keep1, int keep2)
 {

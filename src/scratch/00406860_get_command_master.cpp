@@ -145,6 +145,18 @@
 //   traffic. Reference, aggregate, address-taken, early-init, and isolated
 //   volatile-index forms did not reduce that traffic. Clean direct member
 //   source remains authoritative; no accepted-drift promotion is supported.
+// - 2026-08-24 command/action context pass: replaced the reconstructed task-list
+//   surface with the exact act_obj RGE_Master_Command/getTask surface from the
+//   matching getTask donor. Fresh output kept both ordered indirect calls,
+//   commandable rereads, player-array null/index behavior, and return ownership.
+//   It stayed in the 217-byte effective-code basin with 143 differing bytes.
+//   Natural target, z, index, guard, declaration-order, and address-taken probes
+//   did not recover target=EBX, z=EBP, or the original index home. The volatile
+//   probe recovered those colors but added unsupported memory traffic and was
+//   rejected.
+// - Final validation: the command surface is retained as the smallest supported
+//   source model. The exact owner is RGE_Action_Object::get_command_master in
+//   act_obj.cpp. The unresolved difference is register and block allocation.
 
 class RGE_Static_Object;
 class RGE_Action_Object;
@@ -225,16 +237,13 @@ public:
 class RGE_Moving_Object : public RGE_Static_Object {
 };
 
-class RGE_Task_List {
+class RGE_Master_Command {
 public:
-    virtual RGE_Task* create_task(short task_type, short id);
-    virtual RGE_Task* get_target_task(RGE_Action_Object* action,
-                                      RGE_Static_Object* target,
-                                      float x, float y, float z);
-    virtual int is_attack_task(RGE_Task* task);
-    virtual int check_task(RGE_Task* task, RGE_Action_Object* action,
-                           RGE_Static_Object* target);
-    virtual ~RGE_Task_List();
+    // BINARY NOTE: The target calls slot +4 of the command object at +0xD8.
+    virtual void vf00(void);
+    virtual RGE_Task* getTask(RGE_Action_Object* action,
+                              RGE_Static_Object* target,
+                              float x, float y, float z);
 };
 
 class RGE_Master_Static_Object {
@@ -293,14 +302,14 @@ public:
     virtual ~RGE_Master_Action_Object();
     virtual void copy_obj(RGE_Master_Static_Object* object);
     virtual RGE_Task_List* create_task_list();
-    RGE_Task_List* tasks;            // +0xD8
+    RGE_Master_Command* command;     // +0xD8
     short default_task;              // +0xDC
     char gap_DE[2];                   // +0xDE..+0xDF
     float search_radius;              // +0xE0
     float work_rate;                  // +0xE4
     short drop_site;                  // +0xE8
     short backup_drop_site;           // +0xEA
-    unsigned char task_by_group;     // +0xEC
+    unsigned char commandable;       // +0xEC
     char gap_ED[3];                   // +0xED..+0xEF
     RGE_Sound* command_sound;        // +0xF0
     RGE_Sound* move_sound;           // +0xF4
@@ -325,23 +334,23 @@ public:
 RGE_Master_Static_Object* RGE_Action_Object::get_command_master(RGE_Static_Object* target,
                                                                 float x, float y, float z)
 {
-    if (target == this || ((RGE_Master_Action_Object*)this->master_obj)->task_by_group == 0) {
+    if (target == this || ((RGE_Master_Action_Object*)this->master_obj)->commandable == 0) {
         return this->master_obj;
     }
-    if (((RGE_Master_Action_Object*)this->master_obj)->tasks->get_target_task(
+    if (((RGE_Master_Action_Object*)this->master_obj)->command->getTask(
             this, target, x, y, z) != 0) {
         return this->master_obj;
     }
-    if (((RGE_Master_Action_Object*)this->master_obj)->task_by_group != 0) {
+    if (((RGE_Master_Action_Object*)this->master_obj)->commandable != 0) {
         RGE_Master_Static_Object* obj;
         for (int i = 0; i < this->owner->master_object_num; i++) {
             obj = this->owner->master_objects[i];
             if (obj != 0 &&
                 obj->object_group == this->master_obj->object_group &&
                 obj->master_type == this->master_obj->master_type &&
-                ((RGE_Master_Action_Object*)obj)->task_by_group ==
-                    ((RGE_Master_Action_Object*)this->master_obj)->task_by_group) {
-                if (((RGE_Master_Action_Object*)obj)->tasks->get_target_task(
+                ((RGE_Master_Action_Object*)obj)->commandable ==
+                    ((RGE_Master_Action_Object*)this->master_obj)->commandable) {
+                if (((RGE_Master_Action_Object*)obj)->command->getTask(
                         this, target, x, y, z) != 0) {
                     return obj;
                 }

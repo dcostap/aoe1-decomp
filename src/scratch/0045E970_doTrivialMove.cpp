@@ -49,11 +49,35 @@
 //   passable guard worsened the result; a PDB-local lifetime rewrite reduced
 //   call alignment; and reusing found for passable was another duplicate.
 //   All experiments were restored to this clean source.
+// - this claim tested the binary-supported newX, angleDelta, and facetDelta
+//   local roles. The angleDelta spelling was emitted-code duplicate evidence.
+// - BINARY NOTE: the shipped fallback publishes the passability coordinates,
+//   then rereads both floor expressions for teleport. Keep both direct calls.
+// - BINARY NOTE: the late next-distance path keeps one double coordinate
+//   product, then rounds the distance to float before its ordered tests.
+// - the preceding exact move_obj.cpp definitions were restored in the
+//   unregistered wrapper. This context was emitted-code duplicate evidence.
+// - current bounded pause: fresh result is 2799 differing bytes, 74.03%
+//   shape, 0x2C frame, and all 83 direct-call sites aligned. Exact finish
+//   remains unresolved at the first local home and steering x87 block.
+// - exact-finish audit: the reviewed canonical move_obj context emitted the
+//   same bytes, calls, frame, boundary, and owner, so the standalone context
+//   is not the blocker.
+// - BINARY NOTE: the original uses EDI for the facet count, then spills it to
+//   [esp+0C]. A register hint did not change VC5's EBX/[esp+24] basin.
+// - BINARY NOTE: the original late next-distance block keeps the mixed float
+//   and qword x87 sequence. A double local lowered to two qword stores and
+//   was rejected despite a nine-byte metric gain.
+// - ORIGINAL BUG: the original dword alreadyMoving home is required. A bool
+//   reconstruction emitted a byte home and shifted the whole entry CFG.
+// - direct target-distance expressions changed the control-flow basin and
+//   were restored. Keep named target reads and the ordered object rereads.
 
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 
+#ifndef MOVE_OBJ_CANONICAL_TU
 struct Waypoint {
     float x;
     float y;
@@ -313,18 +337,21 @@ extern float DAT_00570bd8;
 extern double DAT_00570be0;
 extern double DAT_00570bf0;
 
+#endif
+
 int RGE_Moving_Object::doTrivialMove(float x, float y)
 {
+    int numberFacets;
     float targetDY;
-    float angleDX;
+    float dX;
     float newAngle;
     float distanceToCover;
-    float dX;
+    float newX;
     float newY;
     float curDistance;
     int alreadyMoving;
     float dY;
-    int numberFacets;
+    float angleDelta;
     int i;
     int found;
     int passable;
@@ -367,35 +394,35 @@ int RGE_Moving_Object::doTrivialMove(float x, float y)
     }
 
     if (alreadyMoving == 1) {
-        angleDX = x - this->world_x;
+        dX = x - this->world_x;
         dY = y - this->world_y;
     } else {
-        angleDX = x - ((float)floor((double)this->world_x) - DAT_00570b80);
+        dX = x - ((float)floor((double)this->world_x) - DAT_00570b80);
         dY = y - ((float)floor((double)this->world_y) - DAT_00570b80);
     }
 
-    targetDY = (float)atan2((double)dY, (double)angleDX);
+    targetDY = (float)atan2((double)dY, (double)dX);
     this->boundAngle(&targetDY, -1);
 
-    dY = targetDY - this->angle;
-    while (dY < DAT_00570b70) {
-        dY = dY - DAT_00570b4c;
+    angleDelta = targetDY - this->angle;
+    while (angleDelta < DAT_00570b70) {
+        angleDelta = angleDelta - DAT_00570b4c;
     }
-    while (dY > DAT_00570b68) {
-        dY = dY - DAT_00570b50;
+    while (angleDelta > DAT_00570b68) {
+        angleDelta = angleDelta - DAT_00570b50;
     }
 
-    newY = dY * (float)numberFacets * DAT_00570b78;
+    float facetDelta = (float)(angleDelta * numberFacets) * DAT_00570b78;
     this->boundAngle(&this->angle, numberFacets);
 
     while (this->turnTimer <= DAT_00570b48 &&
-           (newY > DAT_00570bb0 || newY < DAT_00570bb8)) {
+           (facetDelta > DAT_00570bb0 || facetDelta < DAT_00570bb8)) {
         this->turnTimer = ((RGE_Master_Moving_Object*)this->master_obj)->turn_speed + this->turnTimer;
-        if (dY >= DAT_00570b48) {
-            newY = newY - DAT_00570b64;
+        if (angleDelta >= DAT_00570b48) {
+            facetDelta = facetDelta - DAT_00570b64;
             this->angle = DAT_00570b40 / (float)numberFacets + this->angle;
         } else {
-            newY = newY - DAT_00570b60;
+            facetDelta = facetDelta - DAT_00570b60;
             this->angle = this->angle - DAT_00570b40 / (float)numberFacets;
         }
     }
@@ -406,12 +433,12 @@ int RGE_Moving_Object::doTrivialMove(float x, float y)
     this->velocity_x = (float)cos((double)this->angle) * newAngle;
     this->velocity_y = (float)sin((double)this->angle) * newAngle;
     distanceToCover = this->velocity_y;
-    dX = this->world_x + this->velocity_x;
+    newX = this->world_x + this->velocity_x;
     newY = this->world_y + distanceToCover;
 
     passable = 1;
     if (((RGE_Master_Static_Object*)this->master_obj)->radius_z > DAT_00570b48) {
-        passable = pathSystem.passable(this, dX, newY, 1);
+        passable = pathSystem.passable(this, newX, newY, 1);
     }
 
     if (passable == 0) {
@@ -430,9 +457,9 @@ int RGE_Moving_Object::doTrivialMove(float x, float y)
 
         passable = 1;
         this->collisionAvoidanceDistance = 0.0f;
-        dX = (float)floor((double)this->world_x) - DAT_00570b80;
+        newX = (float)floor((double)this->world_x) - DAT_00570b80;
         newY = (float)floor((double)this->world_y) - DAT_00570b80;
-        passable = pathSystem.passable(this, dX, newY, passable);
+        passable = pathSystem.passable(this, newX, newY, passable);
         if (passable != 0) {
             this->teleport((float)floor((double)this->world_x) - DAT_00570b80,
                            (float)floor((double)this->world_y) - DAT_00570b80,
@@ -446,14 +473,14 @@ int RGE_Moving_Object::doTrivialMove(float x, float y)
         if (target != 0) {
             RGE_Master_Static_Object* master =
                 (RGE_Master_Static_Object*)this->master_obj;
-            float radius =
-                (float)sqrt(master->radius_y * master->radius_y +
-                            master->radius_x * master->radius_x);
             float targetDX = target->world_x - this->world_x;
             float targetDY2 = target->world_y - this->world_y;
             float targetDistance =
                 (float)sqrt(targetDY2 * targetDY2 + targetDX * targetDX);
-            if (targetDistance < radius + this->actionRange - DAT_00570ba8) {
+            if (targetDistance <
+                (float)sqrt(master->radius_y * master->radius_y +
+                            master->radius_x * master->radius_x) +
+                this->actionRange - DAT_00570ba8) {
                 return 5;
             }
         }
@@ -560,17 +587,17 @@ int RGE_Moving_Object::doTrivialMove(float x, float y)
     this->closestDistanceToWaypoint = 100000.0f;
 
     if (alreadyMoving == 1) {
-        angleDX = path->currentWaypoint()->x - this->world_x;
+        dX = path->currentWaypoint()->x - this->world_x;
         dY = path->currentWaypoint()->y - this->world_y;
     } else {
-        angleDX = path->currentWaypoint()->x - ((float)floor((double)this->world_x) - DAT_00570b80);
+        dX = path->currentWaypoint()->x - ((float)floor((double)this->world_x) - DAT_00570b80);
         dY = path->currentWaypoint()->y - ((float)floor((double)this->world_y) - DAT_00570b80);
     }
 
-    targetDY = (float)atan2((double)dY, (double)angleDX);
+    targetDY = (float)atan2((double)dY, (double)dX);
     this->boundAngle(&targetDY, -1);
-    dY = targetDY - this->angle;
-    newY = dY * (float)numberFacets * DAT_00570b78;
+    angleDelta = targetDY - this->angle;
+    facetDelta = (float)(angleDelta * numberFacets) * DAT_00570b78;
 
     if (this->turnTimer > DAT_00570b48) {
         this->speed = 0.0f;
@@ -578,15 +605,15 @@ int RGE_Moving_Object::doTrivialMove(float x, float y)
     }
 
     do {
-        if (newY <= DAT_00570bc8 && newY >= DAT_00570bd0) {
+        if (facetDelta <= DAT_00570bc8 && facetDelta >= DAT_00570bd0) {
             break;
         }
         this->turnTimer = ((RGE_Master_Moving_Object*)this->master_obj)->turn_speed + this->turnTimer;
-        if (dY >= DAT_00570b48) {
-            newY = newY - DAT_00570b64;
+        if (angleDelta >= DAT_00570b48) {
+            facetDelta = facetDelta - DAT_00570b64;
             this->angle = DAT_00570b40 / (float)numberFacets + this->angle;
         } else {
-            newY = newY - DAT_00570b60;
+            facetDelta = facetDelta - DAT_00570b60;
             this->angle = this->angle - DAT_00570b40 / (float)numberFacets;
         }
     } while (this->turnTimer <= DAT_00570b48);
@@ -597,12 +624,12 @@ int RGE_Moving_Object::doTrivialMove(float x, float y)
     this->velocity_y = (float)sin((double)this->angle) * newAngle;
     this->velocity_x = (float)cos((double)this->angle) * newAngle;
     distanceToCover = this->velocity_y;
-    dX = this->world_x + this->velocity_x;
+    newX = this->world_x + this->velocity_x;
     newY = this->world_y + distanceToCover;
 
     passable = 1;
     if (((RGE_Master_Static_Object*)this->master_obj)->radius_z > DAT_00570b48) {
-        passable = pathSystem.passable(this, dX, newY, 1);
+        passable = pathSystem.passable(this, newX, newY, 1);
     }
     if (passable == 0) {
         if (this->owner->computerPlayer() == 1) {
@@ -623,7 +650,7 @@ int RGE_Moving_Object::doTrivialMove(float x, float y)
     float destinationZ;
     Waypoint* waypoint = path->currentWaypoint();
     if (waypoint == 0) {
-        float dx = x - dX;
+        float dx = x - newX;
         float dy = y - newY;
         curDistance = (float)sqrt(dy * dy + dx * dx);
         destinationZ = this->world_z + this->velocity_z;
@@ -635,8 +662,8 @@ int RGE_Moving_Object::doTrivialMove(float x, float y)
         dx = path->currentWaypoint()->x - (this->world_x + this->velocity_x);
         dy = path->currentWaypoint()->y - (this->world_y + this->velocity_y);
         // BINARY NOTE: VC5 emits the original qword x87 temporary for this value.
-        double nextDistance = sqrt((double)dy * (double)dy +
-                                   (double)dx * (double)dx);
+        float nextDistance =
+            (float)sqrt(dy * dy + (double)dx * (double)dx);
 
         if ((this->closestDistanceToWaypoint < nextDistance && curDistance < 0.25f) ||
             (this->lastFacet2 == this->facet && this->lastFacet2 != this->lastFacet &&
@@ -658,7 +685,7 @@ int RGE_Moving_Object::doTrivialMove(float x, float y)
         destinationZ = this->world_z + this->velocity_z;
     }
 
-    this->teleport(dX, newY, destinationZ);
+    this->teleport(newX, newY, destinationZ);
 
 moved:
     float deltaZ = destinationZ - this->world_z;

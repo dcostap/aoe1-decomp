@@ -18,7 +18,14 @@
 // - unresolved compiler basin: VC5 tail-merges the up calc/redraw pair into a later tail and omits the down-specific get_text/mbslen pair; direct-tail variants restore calls but lose size and shape.
 // - takeover probes: an up local argument did not restore a call site; direct down tails restored 36 calls but added 154-158 bytes. Shared clamp labels did not reduce that basin.
 // - takeover probes: direct-member, explicit-short-cast, and base-pointer receiver forms stayed in the 32-call basin. Block-local and function-wide line forms stayed in the oversized 36-call basin.
+// - takeover probes: a separate left-arrow positive-column block is the best
+//   natural basin at 1076 positional bytes, 85.13% shape, and the exact 1289-
+//   byte size. It preserves the oracle's distinct left calc/redraw block.
+// - takeover probes: restoring the down-arrow get_text/mbslen pair reaches the
+//   full 36-call surface but grows 154-158 bytes and loses the target layout.
 // - left in scratch: remaining drift is switch-table relocation masking, one calc_input_pos/redraw tail pair, and the shared page clamp.
+// - current claim probes: a shared left assignment changed the 32-call basin to 34 calls and worsened the diff.
+// - current claim probes: explicit up/right labels removed calls and worsened the shape, so the pinned clean source remains.
 
 #include <stddef.h>
 
@@ -128,6 +135,10 @@ long TInputPanel::key_down_action(long key, short, int, int param4, int param5)
         col = this->cur_col;
         if (col > 0) {
             col--;
+            this->cur_col = col;
+            this->calc_input_pos();
+            this->set_redraw(1);
+            return 1;
         } else {
             col = this->cur_line;
             if (col <= 0)

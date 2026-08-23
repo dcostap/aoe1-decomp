@@ -134,6 +134,13 @@
 // order, loop form, and all eight notification-tail combinations across 243
 // variants. No exact result occurred. The tail lab's best 232B/156 group
 // used node tails and remains rejected for the proven memory-order difference.
+// sa-233b3a5b-r1 audit: cvdump proves the target owner is in act_list.obj,
+// with a nonvirtual RGE_Action_List destructor and the full RGE_Action accessors.
+// These authentic declarations do not change the 224B natural codegen basin.
+// BLOCKED: the oracle spills node at +0037 and its short type at +005F/+008C.
+// Natural source variants keep those values in registers until later use.
+// The oracle also loads each notify vtable from action at EBX. Node-tail source
+// variants reach 232B/156 but add a proven wrong node-action memory read.
 #include <stdlib.h>
 
 class RGE_Action_List;
@@ -228,12 +235,23 @@ public:
     virtual void copy_obj(RGE_Master_Action_Object* object);
     virtual void copy_obj_sprites(RGE_Master_Action_Object* object,
                                   RGE_Task* source, RGE_Task* dest);
+    short get_action_type(void);
+    RGE_Task* get_task(void);
+    unsigned char get_state(void);
     virtual void get_state_name(char* dest);
     virtual RGE_Static_Object* get_target_obj(void);
     virtual RGE_Static_Object* get_target_obj2(void);
     virtual void set_target_obj(RGE_Static_Object* object);
     virtual void set_target_obj2(RGE_Static_Object* object);
     virtual void set_state(unsigned char value);
+    float targetX(void);
+    float targetY(void);
+    float targetZ(void);
+    int getTargetID(void);
+    int getTarget2ID(void);
+    unsigned char subAction(void);
+    void setSubAction(unsigned char value);
+    float get_timer(void);
 
     short action_type;
     char gap_06[2];
@@ -263,6 +281,11 @@ public:
 
 class RGE_Action_List {
 public:
+    RGE_Action_List(RGE_Action_Object* object);
+    void load(int file);
+    void rehook(void);
+    void save(int file);
+    void delete_list(void);
     virtual RGE_Action* create_action(int value, short type);
     virtual RGE_Action* create_task_action(RGE_Task* task,
                                             RGE_Static_Object* object,
@@ -273,11 +296,21 @@ public:
     virtual void copy_obj(RGE_Master_Action_Object* object);
     virtual void copy_obj_sprites(RGE_Master_Action_Object* object,
                                   RGE_Task* source, RGE_Task* dest);
-    virtual ~RGE_Action_List();
+    ~RGE_Action_List();
     RGE_Action_Object* obj;
     RGE_Action_Node* list;
 
+    void add_action(RGE_Action* action);
+    void add_action_at_end(RGE_Action* action);
     void add_action_at_end_of_action_queue(RGE_Action* action);
+    void remove_action(void);
+    int have_action(void);
+    int action_stop(void);
+    int action_move_to(RGE_Static_Object* object, float x, float y, float z);
+    int action_work(RGE_Static_Object* object, float x, float y, float z);
+    RGE_Action_Node* get_list(void);
+    RGE_Action* get_action(void);
+    RGE_Task* get_task(void);
 };
 
 void RGE_Action_List::add_action_at_end_of_action_queue(RGE_Action* action) {

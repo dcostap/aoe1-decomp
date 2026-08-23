@@ -38,6 +38,7 @@
 // r8 rejected: naming the palette handle reached diff 1122 and exact size, but the target reloads the global palette at both calls while that alias loads it once; do not retain this metric-only form.
 // r8 final: direct global palette calls, direct ImageRect.top, and the pointer-increment text walk are the reduced natural source. First divergence is the GetPaletteEntries setup at +00EC; target LEA p precedes its cached IAT load.
 #include <string.h>
+#ifndef AOE1_PNL_MSG_CONTEXT_H
 #include "..\..\include\rge_base_game_global.h"
 
 struct tagRECT { long left; long top; long right; long bottom; };
@@ -74,7 +75,7 @@ class TShape;
 class TDrawArea {
 public:
     char gap_00[0x38];
-    void* hdc;
+    void* DrawDc;
 
     void PtrClear(tagRECT* rect, int mode);
     void SetClipRect(tagRECT* rect);
@@ -100,8 +101,7 @@ public:
     char gap_1C[4];
     TDrawArea* render_area;
     char gap_24[0x68];
-    long draw_left;
-    long draw_top;
+    tagRECT render_rect;
     char gap_94[0x5F];
     unsigned char need_restore;
 };
@@ -147,6 +147,7 @@ public:
 
     int render_to_image_buffer();
 };
+#endif
 
 int TMessagePanel::render_to_image_buffer() {
     tagRECT* image_rect;
@@ -178,7 +179,8 @@ int TMessagePanel::render_to_image_buffer() {
     char* text = this->text;
     if (this->text[0] == 0) {
         SetRect(&this->UsedImageRect, 0, 0, 1, 1);
-        SetRect(&this->UsedScreenRect, this->draw_left, this->draw_top, this->draw_left + 1, this->draw_top + 1);
+        SetRect(&this->UsedScreenRect, this->render_rect.left, this->render_rect.top,
+                this->render_rect.left + 1, this->render_rect.top + 1);
         this->ImageTextActive = 1;
         return 1;
     }
@@ -189,8 +191,8 @@ int TMessagePanel::render_to_image_buffer() {
     }
 
     this->ImageBuffer->SetClipRect(image_rect);
-    SelectClipRgn(this->ImageBuffer->hdc, this->image_clip_region);
-    old_font = SelectObject(this->ImageBuffer->hdc, this->font);
+    SelectClipRgn(this->ImageBuffer->DrawDc, this->image_clip_region);
+    old_font = SelectObject(this->ImageBuffer->DrawDc, this->font);
 
     if (this->index_color != 0) {
         GetPaletteEntries(rge_base_game_at_storage()->draw_system->Pal, this->font_color, 1, &p);
@@ -203,10 +205,10 @@ int TMessagePanel::render_to_image_buffer() {
     }
 
     if (this->message_type == 2) {
-        SetBkColor(this->ImageBuffer->hdc, 0);
-        SetBkMode(this->ImageBuffer->hdc, 2);
+        SetBkColor(this->ImageBuffer->DrawDc, 0);
+        SetBkMode(this->ImageBuffer->DrawDc, 2);
     } else {
-        SetBkMode(this->ImageBuffer->hdc, 1);
+        SetBkMode(this->ImageBuffer->DrawDc, 1);
     }
 
     wid = this->pnl_wid - 2;
@@ -218,7 +220,7 @@ int TMessagePanel::render_to_image_buffer() {
         ++text;
     }
     len = (int)(text - this->text);
-    int ok = GetTextExtentPoint32A(this->ImageBuffer->hdc, this->text, len, &ts);
+    int ok = GetTextExtentPoint32A(this->ImageBuffer->DrawDc, this->text, len, &ts);
 
     if (ok == 0) {
         SetRect(&rect, x, y, x + wid - 2, y + hgt - 2);
@@ -283,18 +285,18 @@ int TMessagePanel::render_to_image_buffer() {
         if (this->UsedImageRect.right > this->ImageRect.right) this->UsedImageRect.right = this->ImageRect.right;
         if (this->UsedImageRect.bottom > this->ImageRect.bottom) this->UsedImageRect.bottom = this->ImageRect.bottom;
 
-        SetTextColor(this->ImageBuffer->hdc, back_rgb);
+        SetTextColor(this->ImageBuffer->DrawDc, back_rgb);
         SetRect(&rect, x, y, x + wid - 1, y + hgt - 1);
-        DrawTextA(this->ImageBuffer->hdc, this->text, -1, &rect, flags);
+        DrawTextA(this->ImageBuffer->DrawDc, this->text, -1, &rect, flags);
         SetRect(&rect, x, y + 2, x + wid - 1, y + hgt + 1);
-        DrawTextA(this->ImageBuffer->hdc, this->text, -1, &rect, flags);
+        DrawTextA(this->ImageBuffer->DrawDc, this->text, -1, &rect, flags);
         SetRect(&rect, x + 2, y, x + wid + 1, y + hgt - 1);
-        DrawTextA(this->ImageBuffer->hdc, this->text, -1, &rect, flags);
+        DrawTextA(this->ImageBuffer->DrawDc, this->text, -1, &rect, flags);
         SetRect(&rect, x + 2, y + 2, x + wid + 1, y + hgt + 1);
-        DrawTextA(this->ImageBuffer->hdc, this->text, -1, &rect, flags);
-        SetTextColor(this->ImageBuffer->hdc, font_rgb);
+        DrawTextA(this->ImageBuffer->DrawDc, this->text, -1, &rect, flags);
+        SetTextColor(this->ImageBuffer->DrawDc, font_rgb);
         SetRect(&rect, x + 1, y + 1, x + wid, y + hgt);
-        DrawTextA(this->ImageBuffer->hdc, this->text, -1, &rect, flags);
+        DrawTextA(this->ImageBuffer->DrawDc, this->text, -1, &rect, flags);
 
         if (this->Icon1 != 0) {
             Shape_Info* info = this->Icon1->shape_info;
@@ -315,13 +317,13 @@ int TMessagePanel::render_to_image_buffer() {
         this->ImageTextActive = 1;
     }
 
-    SelectObject(this->ImageBuffer->hdc, old_font);
-    SelectClipRgn(this->ImageBuffer->hdc, 0);
+    SelectObject(this->ImageBuffer->DrawDc, old_font);
+    SelectClipRgn(this->ImageBuffer->DrawDc, 0);
     this->ImageBuffer->ReleaseDc("pnl_msg::render_to_image_buffer");
 
-    this->UsedScreenRect.left = this->UsedImageRect.left + this->draw_left;
-    this->UsedScreenRect.top = this->UsedImageRect.top + this->draw_top;
-    this->UsedScreenRect.right = this->UsedImageRect.right + this->draw_left;
-    this->UsedScreenRect.bottom = this->UsedImageRect.bottom + this->draw_top;
+    this->UsedScreenRect.left = this->UsedImageRect.left + this->render_rect.left;
+    this->UsedScreenRect.top = this->UsedImageRect.top + this->render_rect.top;
+    this->UsedScreenRect.right = this->UsedImageRect.right + this->render_rect.left;
+    this->UsedScreenRect.bottom = this->UsedImageRect.bottom + this->render_rect.top;
     return this->ImageTextActive;
 }

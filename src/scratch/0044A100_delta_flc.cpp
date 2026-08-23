@@ -71,12 +71,55 @@
 // - The switch did reproduce the original subtract/dec classifier chain.
 //   Raw int* cursors, address-taken cur_y, register hints, and dead-cur_y
 //   removal did not improve that basin.  Restored the pinned clean source.
+// Continuation exact-finish pass (sa-46d4712a-r5):
+// - Re-tested the packed cursor owner, outer counter shape, packet output
+//   alias, payload alias, classifier flag type, and declaration order.
+// - A full-width packet counter reached the original 412-byte boundary and
+//   326 differing bytes, but it lost the proven ushort packet width and had
+//   lower block shape.  It is not an authentic source model.
+// - No natural variant restored the original EBP stream cursor, EDI packet
+//   value, and early EBP save together.  Restored the pinned ushort source.
+// Continuation pass (sa-d8218ca7-r1):
+// - cvdump confirms the original PDB owner is the private RGE_Flic_Player
+//   delta_flc symbol and names only cur_y at stack offset -0xC.  The function
+//   range is 0x19C bytes; no extra named local or call ABI evidence is present.
+// - A one-cursor ushort stream rooted at the signed line-count word reached
+//   398 bytes / 379 differing bytes and saved EBP, but EBP held the constant
+//   two rather than the stream.  Its natural switch classifier reached 401
+//   bytes / 373 differing bytes with a 0x10 frame; both were restored.
+// - Cur_y-before-stream declaration order, a cached local chunk owner, and a
+//   function-scope packet result were codegen duplicates of the clean source.
+// - A full function-scope reconstruction from the Ghidra local order reached
+//   399 bytes / 382 differing bytes and lower shape.  It was restored because
+//   it changed signed scheduling and did not recover the original register
+//   basin.  The pinned two-cursor source remains the smallest natural model.
+// Exact-finish audit (sa-9afe1787-r1):
+// - Read the complete LESSONS.md, matching workflow, dossier, PDB bands, and
+//   original assembly.  The owner is private RGE_Flic_Player::delta_flc in
+//   flics.cpp, range 0044A100-0044A29B, with no calls.
+// - The authentic full-TU wrapper is src/flics_tu.cpp.  It keeps the reviewed
+//   FLIC class and all neighboring flics.cpp owners.  The wrapper is not yet a
+//   registered checker translation unit, so its direct object is evidence only.
+// - A one-cursor ushort stream reached 398 bytes / 379 differing bytes.  EBP
+//   held the constant two, not the stream.  Explicit byte-base stepping was a
+//   codegen duplicate.
+// - A narrow ushort classifier reached 398 bytes / 376 differing bytes.  It
+//   kept the frame but worsened positional bytes.  The full Ghidra-local source
+//   reached 404 bytes / 379 differing bytes and lower shape.
+// - A full-width packet accumulator reached 409 bytes / 326 differing bytes.
+//   It is rejected: the executable proves a ushort packet value at test DI and
+//   the source loses that width.  The register-qualified stream was duplicate.
+// - Restored the pinned natural two-cursor source after each probe.  Final
+//   validation remains 397 bytes / 367 differing bytes / 0xC frame / zero calls.
+//   The unresolved blocker is the authentic EBP stream, EDI packet, and early
+//   EBP-save allocation basin.  No exact claim is made.
 
 #include <string.h>
 
 typedef unsigned char uchar;
 typedef unsigned short ushort;
 
+#ifndef FLICS_SHARED_CONTEXT
 class RGE_Flic_Player {
 public:
     char gap_00[0x90];
@@ -87,6 +130,7 @@ public:
     char* chunk;
     void delta_flc();
 };
+#endif
 
 // Main-agent audit confirmed canonical FLIC player/frame ownership and retained
 // the natural packed ushort delta decoder.

@@ -42,6 +42,7 @@
 // follow-up result: restored the pinned natural source; no exact or small localized equivalent drift lead remains.
 // follow-up next lead: recover the original local lifetime that keeps palette back color in EBX and coordinate homes on the stack.
 #include <string.h>
+#ifndef AOE1_PNL_MSG_CONTEXT_H
 #include <windows.h>
 
 struct DrawSystem { char gap_00[8]; void* Pal; };
@@ -182,6 +183,7 @@ public:
     int render_to_image_buffer();
     virtual void draw();
 };
+#endif
 
 void TMessagePanel::draw() {
     if (this->render_area == 0 || this->visible == 0 || this->active == 0 || this->showing_message == 0) {

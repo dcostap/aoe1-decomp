@@ -2,6 +2,11 @@
 // PDB source: dlg_dip.cpp:880-903
 // Size: 195 bytes
 // Calling convention: __thiscall
+// BINARY NOTE: PDB order places this protected virtual sibling at 0043E770,
+// immediately after check_stone's 0043E767 body. Bytes 0043E768-0043E76F are
+// padding data, not a second function. The owning body ends at 0043E832.
+// BINARY NOTE: Keep the protected MAEXXZ owner. A public UAEXXZ declaration
+// emitted identical body bytes but is not the qualified PDB symbol.
 // ACCEPTED_DRIFT: the sole emitted difference is `cmp eax, ebp` in the
 // executable versus `test eax, eax` in the rebuild after `xor ebp, ebp`.
 // The following branch consumes only ZF, so calls, memory effects, CFG, and
@@ -22,8 +27,13 @@
 // - Best validation: size/frame/call-set and 193/195 bytes match; the sole remaining drift is
 //   original `cmp eax,ebp` versus rebuilt `test eax,eax` at +0x14 (2 bytes, no CFG or call drift).
 // - No inline asm or custom flags. LEFT IN SCRATCH: the isolated zero-compare instruction
-//   appears to require original TU/source context; further variants were exhausted under the
-//   10-hypothesis budget.
+//   appears to require original TU/source context; the initial bounded variant pass was
+//   exhausted.
+// - Exact-finish pass: restored `protected virtual draw()` after confirming that the
+//   byte-identical public form emits the wrong UAEXXZ symbol. Pointer casts, integer and
+//   reference zero aliases, redundant predicates, early-return layout, declaration-scope
+//   changes, duplicate initialization, period-header context, and computed-zero forms did
+//   not recover CMP; the reduced natural source remains 193/195 bytes exact.
 
 extern "C" int __cdecl _ASMSet_Color_Xform(int param_1);
 
@@ -93,10 +103,10 @@ public:
 };
 
 class TribeDiplomacyDialog : public TDialogPanel {
-public:
+protected:
     char _pad_490[0x60C - 0x490];
     TShape* backgroundPics;
-    void draw();
+    virtual void draw();
 };
 
 void TribeDiplomacyDialog::draw()

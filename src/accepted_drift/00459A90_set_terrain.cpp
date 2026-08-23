@@ -47,6 +47,18 @@
 //   expanded border bounds, border call order, redraw arguments, fault
 //   addresses, and return match. Residual drift is private bounds homes,
 //   register ownership, and equivalent nested-loop lowering.
+// - Exact-finish revisit: <windows.h> is required by the authentic map.cpp
+//   donor context. It is codegen-neutral here, but it is retained.
+// - A typed byte cursor at tile +5 is binary-supported by the original
+//   [tile+5] and [tile+4] reads. It reduced the positional diff from 505 to
+//   485 bytes and recovered the exact inner tile-count block. The result is
+//   still 5 bytes short and has broad private-register and local-home drift.
+// - Tested inner do-while, outer do-while, receiver alias, void* terrain
+//   pointers, min-column local, early terrain initializers, local declaration
+//   order, function-scope cursors, and reduced virtual surface. They were
+//   duplicates or worse. The clean typed byte-cursor source is restored.
+
+#include <windows.h>
 
 class RGE_Player;
 class RGE_Game_World;
@@ -214,15 +226,16 @@ void RGE_Map::set_terrain(RGE_Player* player, RGE_Game_World* world,
             if ((blend != 0 || player != 0) && y1 <= y2) {
                 for (short row = y1; row <= y2; ++row) {
                     if (x1 <= x2) {
-                        RGE_Tile* tile =
-                            this->map_row_offset[(int)row] + (int)x1;
+                        unsigned char* tile_terrain =
+                            (unsigned char*)this->map_row_offset[(int)row] +
+                            (int)x1 * sizeof(RGE_Tile) + 5;
                         for (short col = x1; col <= x2; ++col) {
                             if (this->terrain_types[terrain_index].tiles[
-                                    (int)tile->tile_type].count > 0) {
-                                unsigned char old_value = tile->terrain_type;
+                                    tile_terrain[-1]].count > 0) {
+                                unsigned char old_value = *tile_terrain;
                                 short old_terrain = (short)(old_value & 0x1F);
                                 if (old_terrain != terrain_id && blend != 0) {
-                                    tile->terrain_type =
+                                    *tile_terrain =
                                         (unsigned char)((terrain ^ old_value) & 0x1F) ^ old_value;
                                 }
                                 if (player != 0) {
@@ -231,7 +244,7 @@ void RGE_Map::set_terrain(RGE_Player* player, RGE_Game_World* world,
                                         arg9, -1, -1);
                                 }
                             }
-                            ++tile;
+                            tile_terrain += sizeof(RGE_Tile);
                         }
                     }
                 }

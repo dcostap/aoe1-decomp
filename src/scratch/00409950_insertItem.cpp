@@ -33,6 +33,13 @@
 // try 28: positive outer guards with a natural result local produced one return but added a 4-byte frame and reduced structural coverage; restored direct failure returns.
 // try 29: local declaration order, mutable-period string types, period stdlib allocation declarations, and the string-header declaration all emitted duplicate 573B code.
 // CURRENT EVIDENCE: canonical item/list ownership is stable. The remaining blocker is source CFG/EH topology: original has one late cleanup epilogue, while natural VC5 source keeps three returns and the name buffer four bytes higher.
+// retry 2026-08-23:
+// try 30: direct literal strncpy statements removed the local text pointer, but VC5 emitted 572B and 487 differing bytes; the immediate-push order still differed.
+// try 31: one explicit failure label reduced the output to 554B and 468 differing bytes, but VC5 emitted a near jg to the finish instead of the original short jle plus zero/jmp tail. Restored.
+// try 32: an uninitialized result local optimized back to the 573B clean output. A success-default result added a 4-byte frame and 495 differing bytes. Restored.
+// try 33: placing a valid-body label before the failure assignment reproduced the 554B/468-byte basin, not the original branch layout. Restored.
+// try 34: reusing index, sequence, and result values, reusing the index parameter, and lifting item/next locals produced duplicate 572B or 573B code. Restored.
+// CURRENT BLOCKER: fresh checks still show 573B versus 542B, 471 differing bytes, 16/16 ordered calls, and 56.29% exact-block coverage. The original has one shared late cleanup tail; these natural CFG variants do not recover it. Do not retain compiler-steering or opaque context forms.
 
 #include <string.h>
 #include <stdlib.h>

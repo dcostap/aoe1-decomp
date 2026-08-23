@@ -41,6 +41,11 @@
 //   addresses. File calls, retry and number updates, allocation, lock handling,
 //   bottom-up rows, uninitialized padding bytes, cleanup, faults, and returns
 //   match. Remaining drift is header setup scheduling and retry-tail placement.
+// - Exact-finish revisit: fresh DrawShadowBox validation stayed exact. Header
+//   order, named-height product, row-count ownership, declaration order,
+//   register qualification, CRT headers, early palette call, and bounded retry
+//   forms were tested. They were worse or duplicate. The clean source is
+//   restored; the first mismatch remains the header scheduling hunk.
 
 #include <windows.h>
 #include <stdio.h>

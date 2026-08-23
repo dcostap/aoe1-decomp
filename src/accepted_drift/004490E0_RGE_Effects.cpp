@@ -1,9 +1,9 @@
 // VA: 004490E0 RGE_Effects::RGE_Effects(int fd)
 // effects.cpp lines 21-63
 // 352 bytes
-// BLOCKER: VC5 keeps one extra outer-entry jump in the natural typed source.
-// The current candidate keeps EBX as this. The remaining CFG drift is not an
-// ABI, field-layout, or call-order issue.
+// BLOCKER: VC5 emits the inner count branch before the list publication store.
+// The target keeps the same instructions but emits cmp, mov, then jle.
+// The remaining four bytes are instruction order only.
 //
 // Attempt log:
 // - natural C++ with vtable_ptr member: esi=this, ebx=&effect_num, ebp=0/running offset
@@ -79,11 +79,28 @@
 // file descriptors, and member or heap destinations. The first effect still
 // owns every name read. Count rereads, null-list publication, partial-load
 // faults, loop progress, zero-count cleanup, vptr publication, and returns
-// match. Residual drift is one outer-entry jump and equivalent private
-// loop-state reload scheduling.
+// match. Residual drift is the four-byte inner cmp/store/jle order.
+//
+// Exact-finish pass:
+// - The old clean source rebuilt 360 bytes with a 262-byte diff. The reduced
+//   typed source below rebuilds 352 bytes with a 4-byte diff.
+// - Moving list-address formation into the positive count arm recovered the
+//   target outer entry, list address, boundary, and all 128 instructions.
+// - Direct zero publication in the negative arm recovered the target partial
+//   object state. It must not publish the list address before that guard.
+// - An exact donor at 004C8490 supports a repeated counter-left guard and
+//   allocation publication pattern. The target still needs its list alias.
+// - Assignment-before-guard, a short inner counter, duplicate inner cleanup,
+//   a named post-inner label, and allocator headers did not improve the 4-byte
+//   result. The changed forms were restored.
+// - Fresh validation: 10 ordered calls, exact boundary, 0x14 frame, 128
+//   instructions, two returns, two jumps, and 350 equal bytes.
+// - The target has no EH frame. The source keeps the authentic virtual surface
+//   and vptr publication. World-level new/constructor EH owners are unchanged.
+
+#include <stdlib.h>
 
 void __cdecl rge_read(int fd, void* buf, int size);
-void* __cdecl calloc(int count, int size);
 
 struct RGE_Effect_Command {
     unsigned char command; unsigned char _pad_0;
@@ -112,7 +129,6 @@ RGE_Effects::RGE_Effects(int fd) {
     int file = fd;
     long* peffect = &this->effect_num;
     int outer_count;
-    int inner_count;
     rge_read(file, peffect, 4);
     if (*peffect > 0) {
         this->effects = (RGE_Effect*)calloc(*peffect, 0x2C);
@@ -121,33 +137,31 @@ RGE_Effects::RGE_Effects(int fd) {
             do {
                 RGE_Effect* effect;
                 RGE_Effect* fields;
-                RGE_Effect_Command** list_ptr;
-                short* count_ptr;
                 effect = this->effects;
                 fields = &this->effects[outer_count];
                 rge_read(file, effect->name, 0x1F);
-                count_ptr = &fields->effect_list_num;
-                list_ptr = &fields->effect_list;
-                rge_read(file, count_ptr, 2);
+                rge_read(file, &fields->effect_list_num, 2);
                 if (fields->effect_list_num > 0) {
+                    int inner_count;
+                    RGE_Effect_Command*& list = fields->effect_list;
                     RGE_Effect_Command* allocated =
                         (RGE_Effect_Command*)calloc(fields->effect_list_num, 0x0C);
                     inner_count = 0;
-                    *list_ptr = allocated;
-                    if (fields->effect_list_num > 0) {
+                    if (inner_count < fields->effect_list_num) {
+                        list = allocated;
                         do {
                             RGE_Effect_Command* command =
-                                &(*list_ptr)[inner_count];
+                                &list[inner_count];
                             rge_read(file, &command->command, 1);
                             rge_read(file, &command->change_num1, 2);
                             rge_read(file, &command->change_num2, 2);
                             rge_read(file, &command->change_num3, 2);
                             rge_read(file, &command->change_amount, 4);
                             inner_count++;
-                        } while (inner_count < *(short*)count_ptr);
+                        } while (inner_count < fields->effect_list_num);
                     }
                 } else {
-                    *list_ptr = 0;
+                    fields->effect_list = 0;
                 }
                 outer_count++;
             } while (outer_count < this->effect_num);

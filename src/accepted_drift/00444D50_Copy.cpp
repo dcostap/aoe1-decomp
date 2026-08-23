@@ -37,6 +37,15 @@
 // updates, transparent flags, 0062E64C/0062E650 store order, error mapping,
 // and returns. Residual drift is the zero register and equivalent integer
 // address/subtract lowering for private RECT and extent locals.
+// - Fresh context probes: the reviewed full Drawarea declaration surface plus
+//   a fallback-first DirectDraw condition reduced the function to 862 bytes
+//   and 98.08% shape, with all six calls aligned. The instruction stream still
+//   differed at two LEA encodings and two subtraction lowerings; relocation
+//   placeholders also remained. Reverted this probe because it was not exact.
+// - Final unresolved validation restored the pinned standalone source: 851
+//   bytes, 716 differing bytes, 0x20 frame, six ordered calls, and matching
+//   owner symbol. DrawShadowBox (00446230) and GetPalette (00446340) stayed
+//   exact at 271 and 40 bytes during fresh anchor checks.
 
 #include <windows.h>
 

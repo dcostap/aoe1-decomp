@@ -34,146 +34,21 @@
 // 31: windows.h changed the basin slightly to 964 bytes (diff 674), but did not recover the target CFG; restore the no-header source context.
 // 32: Two named short border lookup values in the natural else-if tree produced 1006 bytes (diff 679) and lost exact early blocks; restore the direct chain.
 // 33: A char edge selector was a codegen duplicate of the clean unsigned-byte source (960 bytes, diff 673); retain the simpler typed form.
+// Translation-unit context: map.cpp, source lines 2845-3012, RGE_Map owner.
+// The shared map surface preserves the owner symbol. The pre-bug-fix source was
+// 960 bytes with a 673-byte diff. Its PDB-order grouped result was nonexact.
+// ORIGINAL BUG: the border table uses the first neighbor that differs from the
+// center terrain. The 0045A253 join and 0045A259 AL store prove this lookup order.
+// This can select a different border. Do not replace it with ter_lft lookup.
+// The named border_table pointer is required by the original current-border base.
+// Context recovery pass: border_table reduced the standalone result from 960 to
+// 913 bytes and the positional diff from 673 to 611 bytes. Eight calls stayed ordered.
+// A nested border-neighbor expression restores the shipped first-mismatch lookup.
+// It emits 1328 bytes, 461 instructions, and 78.87% exact-block coverage.
+// Keep it for behavior. The extra 213 bytes remain a code-generation blocker.
 
-struct RGE_Tile {
-    short screen_xpos;
-    short screen_ypos;
-    unsigned char tile_type;
-    unsigned char terrain_type;
-    unsigned char border_type;
-    unsigned char last_drawn_as;
-    unsigned char last_drawn_shape;
-    unsigned char draw_as;
-    unsigned char draw_attribute;
-    unsigned char last_drawn_shape2;
-    char gap_0C[0x0C];
-};
-
-struct RGE_TOB_Picts {
-    short count;
-    short animations;
-    short shape_index;
-};
-
-struct RGE_Tile_Size {
-    short width;
-    short height;
-    short y_delta;
-};
-
-class RGE_Sound;
-class TShape;
-
-class RGE_Tile_Set {
-public:
-    unsigned char loaded;
-    unsigned char random;
-    char name[13];
-    char pict_name[13];
-    long resource_id;
-    TShape* shape;
-    RGE_Sound* sound;
-    unsigned char map_hi_color;
-    unsigned char map_med_color;
-    unsigned char map_low_color;
-    unsigned char map_lt_cliff_color;
-    unsigned char map_rt_cliff_color;
-    unsigned char passable_terrain;
-    unsigned char impassable_terrain;
-    unsigned char is_animated;
-    short animation_frames;
-    short pause_frames;
-    float interval;
-    float pause_between_loops;
-    short frame;
-    short draw_frame;
-    float animate_last;
-    unsigned char frame_changed;
-    unsigned char drawn;
-    RGE_TOB_Picts tiles[19];
-    short terrain_to_draw;
-    short rows;
-    short cols;
-    short borders[32];
-    short obj_types[30];
-    short obj_density[30];
-    unsigned char obj_placement_flag[30];
-    short num_obj_type;
-    unsigned char pad_end[2];
-};
-
-class RGE_Border_Set {
-public:
-    unsigned char loaded;
-    unsigned char random;
-    char name[13];
-    char pict_name[13];
-    long resource_id;
-    TShape* shape;
-    RGE_Sound* sound;
-    unsigned char map_hi_color;
-    unsigned char map_med_color;
-    unsigned char map_low_color;
-    unsigned char is_animated;
-    short animation_frames;
-    short pause_frames;
-    float interval;
-    float pause_between_loops;
-    short frame;
-    short draw_frame;
-    float animate_last;
-    unsigned char frame_changed;
-    unsigned char drawn;
-    RGE_TOB_Picts borders[19][12];
-    unsigned char draw_tile;
-    unsigned char pad_0;
-    short underlay_terrain;
-    short border_style;
-};
-
-class RGE_Map {
-public:
-    virtual ~RGE_Map();
-    RGE_Tile* map;
-    long map_width;
-    long map_height;
-    long world_width;
-    long world_height;
-    RGE_Tile_Size tilesizes[19];
-    unsigned char pad_8A[2];
-    RGE_Tile_Set terrain_types[32];
-    RGE_Border_Set border_types[16];
-    RGE_Tile** map_row_offset;
-    short num_terrain;
-    short num_borders;
-    short max_terrain;
-    short tile_width;
-    short tile_height;
-    short tile_half_height;
-    short tile_half_width;
-    short elev_height;
-    short cur_row;
-    short cur_col;
-    short block_beg_row;
-    short block_end_row;
-    short block_beg_col;
-    short block_end_col;
-    unsigned char any_frame_change;
-    unsigned char pad_8D[3];
-    unsigned char* search_map;
-    unsigned char** search_map_rows;
-    unsigned char map_visible_flag;
-    unsigned char fog_flag;
-    unsigned char pad_8DBA[2];
-    void* random_map;
-    void* game_world;
-    void* map_zones;
-    void* unified_vis_map;
-    void* unit_manager;
-
-    void check_for_border(unsigned char current, unsigned char* other);
-    void get_border_type(short x, short y);
-};
+#include "../../include/map_context.h"
+#include "../../include/map_tile_context.h"
 
 void RGE_Map::get_border_type(short x, short y)
 {
@@ -197,18 +72,18 @@ void RGE_Map::get_border_type(short x, short y)
     RGE_Tile** rows = this->map_row_offset;
     xi = x;
     RGE_Tile* cur = rows[y] + xi;
-    ter_top_lft = cur->terrain_type & 0x1f;
+    ter_top_lft = cur->terrain_elevation & 0x1f;
 
-    if (y > 0) ter_lft = rows[y - 1][xi].terrain_type & 0x1f; else ter_lft = ter_top_lft;
+    if (y > 0) ter_lft = rows[y - 1][xi].terrain_elevation & 0x1f; else ter_lft = ter_top_lft;
     yMax = this->map_height - 1;
-    if (y < yMax) tile = rows[y + 1][xi].terrain_type & 0x1f; else tile = ter_top_lft;
-    if (x > 0) ter_rgt = rows[y][xi - 1].terrain_type & 0x1f; else ter_rgt = ter_top_lft;
+    if (y < yMax) tile = rows[y + 1][xi].terrain_elevation & 0x1f; else tile = ter_top_lft;
+    if (x > 0) ter_rgt = rows[y][xi - 1].terrain_elevation & 0x1f; else ter_rgt = ter_top_lft;
     xMax = this->map_width - 1;
-    if (xi < xMax) ter_bot = rows[y][xi + 1].terrain_type & 0x1f; else ter_bot = ter_top_lft;
-    if (y > 0 && x > 0) ter_bot_lft = rows[y - 1][xi - 1].terrain_type & 0x1f; else ter_bot_lft = ter_top_lft;
-    if (y > 0 && xi < xMax) ter_top = rows[y - 1][xi + 1].terrain_type & 0x1f; else ter_top = ter_top_lft;
-    if (y < yMax && x > 0) ter_bot_rgt = rows[y + 1][xi - 1].terrain_type & 0x1f; else ter_bot_rgt = ter_top_lft;
-    if (y < yMax && xi < xMax) ter_final = rows[y + 1][xi + 1].terrain_type & 0x1f; else ter_final = ter_top_lft;
+    if (xi < xMax) ter_bot = rows[y][xi + 1].terrain_elevation & 0x1f; else ter_bot = ter_top_lft;
+    if (y > 0 && x > 0) ter_bot_lft = rows[y - 1][xi - 1].terrain_elevation & 0x1f; else ter_bot_lft = ter_top_lft;
+    if (y > 0 && xi < xMax) ter_top = rows[y - 1][xi + 1].terrain_elevation & 0x1f; else ter_top = ter_top_lft;
+    if (y < yMax && x > 0) ter_bot_rgt = rows[y + 1][xi - 1].terrain_elevation & 0x1f; else ter_bot_rgt = ter_top_lft;
+    if (y < yMax && xi < xMax) ter_final = rows[y + 1][xi + 1].terrain_elevation & 0x1f; else ter_final = ter_top_lft;
 
     check_for_border(ter_top_lft, &ter_lft);
     check_for_border(ter_top_lft, &tile);
@@ -219,13 +94,22 @@ void RGE_Map::get_border_type(short x, short y)
     check_for_border(ter_top_lft, &ter_bot_rgt);
     check_for_border(ter_top_lft, &ter_final);
 
-    if (ter_lft == ter_top_lft && tile == ter_top_lft && ter_rgt == ter_top_lft && ter_bot == ter_top_lft &&
-        ter_bot_lft == ter_top_lft && ter_top == ter_top_lft && ter_bot_rgt == ter_top_lft && ter_final == ter_top_lft) {
+    unsigned char border_neighbor =
+        ter_lft != ter_top_lft ? ter_lft :
+        tile != ter_top_lft ? tile :
+        ter_rgt != ter_top_lft ? ter_rgt :
+        ter_bot != ter_top_lft ? ter_bot :
+        ter_bot_lft != ter_top_lft ? ter_bot_lft :
+        ter_top != ter_top_lft ? ter_top :
+        ter_bot_rgt != ter_top_lft ? ter_bot_rgt :
+        ter_final;
+    if (border_neighbor == ter_top_lft) {
         cur->border_type = 0;
         return;
     }
 
-    short border = this->terrain_types[ter_top_lft].borders[(unsigned char)ter_lft];
+    short* border_table = this->terrain_types[ter_top_lft].borders;
+    short border = border_table[border_neighbor];
     if (border == -1 || border < 0 || border >= 16 || this->border_types[border].loaded == 0) {
         cur->border_type = 0;
         return;
@@ -234,45 +118,46 @@ void RGE_Map::get_border_type(short x, short y)
     unsigned char edge;
     if (this->border_types[border].border_style == 1) {
         edge = 0;
-        if (this->terrain_types[ter_top_lft].borders[(unsigned char)ter_lft] == border) edge |= 1;
-        if (this->terrain_types[ter_top_lft].borders[(unsigned char)tile] == border) edge |= 2;
-        if (this->terrain_types[ter_top_lft].borders[(unsigned char)ter_rgt] == border) edge |= 4;
-        if (this->terrain_types[ter_top_lft].borders[(unsigned char)ter_bot] == border) edge |= 8;
+        if (border_table[(unsigned char)ter_lft] == border) edge |= 1;
+        if (border_table[(unsigned char)tile] == border) edge |= 2;
+        if (border_table[(unsigned char)ter_rgt] == border) edge |= 4;
+        if (border_table[(unsigned char)ter_bot] == border) edge |= 8;
         cur->border_type = (unsigned char)((border & 0xf) | (edge << 4));
         return;
     }
 
-    if (this->terrain_types[ter_top_lft].borders[(unsigned char)ter_lft] == border &&
-        this->terrain_types[ter_top_lft].borders[(unsigned char)ter_rgt] == border) {
+    if (border_table[(unsigned char)ter_lft] == border &&
+        border_table[(unsigned char)ter_rgt] == border) {
         edge = 1;
-    } else if (this->terrain_types[ter_top_lft].borders[(unsigned char)ter_lft] == border &&
-               this->terrain_types[ter_top_lft].borders[(unsigned char)ter_bot] == border) {
+    } else if (border_table[(unsigned char)ter_lft] == border &&
+               border_table[(unsigned char)ter_bot] == border) {
         edge = 2;
-    } else if (this->terrain_types[ter_top_lft].borders[(unsigned char)tile] == border &&
-               this->terrain_types[ter_top_lft].borders[(unsigned char)ter_rgt] == border) {
+    } else if (border_table[(unsigned char)tile] == border &&
+               border_table[(unsigned char)ter_rgt] == border) {
         edge = 3;
-    } else if (this->terrain_types[ter_top_lft].borders[(unsigned char)tile] == border &&
-               this->terrain_types[ter_top_lft].borders[(unsigned char)ter_bot] == border) {
+    } else if (border_table[(unsigned char)tile] == border &&
+               border_table[(unsigned char)ter_bot] == border) {
         edge = 4;
-    } else if (this->terrain_types[ter_top_lft].borders[(unsigned char)ter_lft] == border) {
+    } else if (border_table[(unsigned char)ter_lft] == border) {
         edge = 9;
-    } else if (this->terrain_types[ter_top_lft].borders[(unsigned char)tile] == border) {
+    } else if (border_table[(unsigned char)tile] == border) {
         edge = 10;
-    } else if (this->terrain_types[ter_top_lft].borders[(unsigned char)ter_rgt] == border) {
+    } else if (border_table[(unsigned char)ter_rgt] == border) {
         edge = 11;
-    } else if (this->terrain_types[ter_top_lft].borders[(unsigned char)ter_bot] == border) {
+    } else if (border_table[(unsigned char)ter_bot] == border) {
         edge = 12;
-    } else if (this->terrain_types[ter_top_lft].borders[(unsigned char)ter_bot_lft] == border) {
+    } else if (border_table[(unsigned char)ter_bot_lft] == border) {
         edge = 5;
-    } else if (this->terrain_types[ter_top_lft].borders[(unsigned char)ter_top] == border) {
+    } else if (border_table[(unsigned char)ter_top] == border) {
         edge = 6;
-    } else if (this->terrain_types[ter_top_lft].borders[(unsigned char)ter_bot_rgt] == border) {
+    } else if (border_table[(unsigned char)ter_bot_rgt] == border) {
         edge = 7;
-    } else if (this->terrain_types[ter_top_lft].borders[ter_final] == border) {
+    } else if (border_table[ter_final] == border) {
         edge = 8;
     } else {
         cur->border_type = 0;
         return;
     }
+
     cur->border_type = (unsigned char)((border & 0xf) | (edge << 4));
 }

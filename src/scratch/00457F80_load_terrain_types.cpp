@@ -36,11 +36,26 @@
 // division inputs. Different local homes can change these effects and faults.
 // The unbounded name and pict_name conversions also have different overflow
 // fault addresses. Keep this parser in scratch.
+// Exact-finish audit: fresh malformed-input alias, header, declaration-scope,
+// width, branch, and aggregate probes did not produce an exact result. The
+// closest natural basin remains 324 bytes with frame 0x5C, but it reuses the
+// post-float short as terrain_to_draw and is not a valid source recovery.
+// A 16-variant source-axis lab found no size/frame/call-set invariant lead.
+// The pinned natural source is restored; the open blocker is still local-home
+// placement around the giant fscanf and its partial-conversion fault order.
+// Managed pass: the required <windows.h> context and polymorphic RGE_Map owner
+// preserve the map.cpp basin but do not change the 331-byte result. Fresh
+// probes tested parameter-home views, narrow destination reuse, branch order,
+// and typed interval overlap. The best result was 324 bytes with frame 0x5C.
+// It used an unsupported post-float alias and was discarded. The final source
+// keeps distinct narrow fields, separate float locals, ordered calls, and
+// unconditional fclose. Final validation remains MISMATCH: 331 bytes, frame
+// 0x60 versus 0x5C, with all eight ordered calls aligned.
 
+#include <windows.h>
 #include <stdio.h>
 
 extern "C" void __cdecl convert_us(char*);
-extern "C" void __cdecl strcpy(char*, char*);
 
 class RGE_Sound;
 
@@ -49,6 +64,7 @@ struct RGE_TOB_Picts {
     short animations;
     short shape_index;
 };
+
 
 class RGE_Tile_Set {
 public:
@@ -90,7 +106,22 @@ public:
 
 class RGE_Map {
 public:
-    char gap_00[0x8C];
+    virtual ~RGE_Map();
+    virtual void data_load_random_map(int);
+    virtual void load_random_map(char*, char*, char*, char*);
+    virtual unsigned char do_terrain_brush(long, long, long, unsigned char);
+    virtual unsigned char do_terrain_brush_stroke(long, long, long, long, long,
+                                                   unsigned char);
+    virtual unsigned char do_elevation_brush(long, long, long, unsigned char);
+    virtual unsigned char do_elevation_brush_stroke(long, long, long, long, long,
+                                                     unsigned char);
+    virtual unsigned char do_cliff_brush(long, long, unsigned char, unsigned char);
+    virtual unsigned char do_cliff_brush_stroke(long, long, long, long,
+                                                 unsigned char, unsigned char);
+    virtual void map_generate(void*, void*, void*, unsigned char*);
+    virtual void map_generate2(void*, long, long, unsigned char, long);
+
+    char gap_00[0x88];
     RGE_Tile_Set terrain_types[32];
     char gap_after_terrain[0x8D90 - 0x338C];
     short num_terrain;
@@ -113,8 +144,8 @@ void RGE_Map::load_terrain_types(char* filename, RGE_Sound** sounds)
             int resource_id = (int)terrain_count + 1;
             do {
                 short border_num;
-                short border;
                 short sound_id;
+                short border;
                 short low_color;
                 short med_color;
                 short hi_color;

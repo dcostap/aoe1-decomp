@@ -30,16 +30,35 @@
 //   count overlay, comma-guard/do-while forms, split relation flags, and the
 //   file-handle attribute read. They were unchanged, worsened, or broadened
 //   register drift. Restored this clean source after each check.
-// - Final lead: the remaining 386-byte drift starts at the delayed EBP save;
+// - Follow-up binary review proved a distinct one-byte relation local at the
+//   incoming file home and a saved team flag at the -4 local. The natural
+//   two-flag/do-while form preserves all calls, size, frame, faults, and the
+//   late relation islands; its best strict result is 262 differing bytes.
+// - For-header and explicit-label loop forms changed block layout without
+//   closing the remaining register-color and loop-head gap. The guarded
+//   do-while form is retained as the simplest supported source model.
+// - Final lead: the remaining 262-byte drift starts at the delayed EBP save;
 //   calls, frame, size, and canonical field ownership are already aligned.
+// - Exact-finish probe: a natural pointer to the mapped player slot (`&pos[i]`)
+//   restores the original LEA/address/value schedule and reduces strict drift
+//   to 252 bytes. Keep this pointer because the executable proves its lifetime.
+// - Direct file use, declaration reordering, register hints, loop-header forms,
+//   and the full player/scenario context were tested. They did not improve the
+//   pointer basin. A normal C++ rge_read declaration is codegen-neutral.
+// - Exact finish remains blocked by the original EBP file / EBX team coloring,
+//   the loop-head reload block, and the one-byte boundary difference.
 
 #include <stdlib.h>
+#ifdef PLAYER_GROUPED_TU
+#include "../../include/player_context.h"
+#endif
 
-extern "C" void __cdecl rge_read(int file, void* buffer, int size);
+void rge_read(int file, void* buffer, int size);
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 
 class RGE_Player;
 
+#ifndef PLAYER_GROUPED_TU
 class RGE_Base_Game {
 public:
     char gap_00[0x1B0];
@@ -57,7 +76,9 @@ public:
 };
 
 extern TCommunications_Handler* comm;
+#endif
 
+#ifndef PLAYER_GROUPED_TU
 class RGE_Game_World {
 public:
     char gap_00[0x3C];
@@ -156,6 +177,7 @@ public:
     short map_x;
     short map_y;
 };
+#endif
 
 void RGE_Player::scenario_load(int file, long* pos, float version)
 {
@@ -163,12 +185,13 @@ void RGE_Player::scenario_load(int file, long* pos, float version)
     unsigned char player_count;
     short count;
     int human_team;
-    char* name_buffer;
+    int saved_human_team;
 
     if (version <= 1.05) {
         int file_handle = file;
         rge_read(file, &name_length, 2);
         if (name_length > 0) {
+            char* name_buffer;
             name_buffer = (char*)calloc((int)name_length, 1);
             rge_read(file_handle, name_buffer, (int)name_length);
             if (this->name == 0) {
@@ -184,6 +207,7 @@ void RGE_Player::scenario_load(int file, long* pos, float version)
         rge_read(file_handle, &this->map_y, 2);
 
         human_team = 0;
+        saved_human_team = 0;
         if (rge_base_game->prog_mode != 7) {
             for (int player = 1; player < 9; player++) {
                 if (rge_base_game->playerID(player) == this->id &&
@@ -191,6 +215,7 @@ void RGE_Player::scenario_load(int file, long* pos, float version)
                      comm->GetPlayerHumanity(player) == 4)) {
                     if (rge_base_game->playerTeam(player - 1) > 1) {
                         human_team = 1;
+                        saved_human_team = 1;
                     }
                     break;
                 }
@@ -211,26 +236,30 @@ void RGE_Player::scenario_load(int file, long* pos, float version)
         }
 
         rge_read(file_handle, &count, 2);
-        while (i < count) {
-                rge_read(file_handle, &file, 1);
+        if (count > 0) {
+            do {
+                unsigned char relation_value;
+                rge_read(file_handle, &relation_value, 1);
                 if (human_team == 0) {
-                    int player_id = pos[i];
-                    if (player_id < this->world->player_num && player_id >= 0) {
-                        this->relations[player_id] = (unsigned char)file;
-                        if (player_id == 0) {
+                    long* player_id = &pos[i];
+                    if (*player_id < this->world->player_num && *player_id >= 0) {
+                        this->relations[*player_id] = relation_value;
+                        if (*player_id == 0) {
                             this->unitDiplomacy[0] = 0;
                         } else if (i == this->id) {
-                            this->unitDiplomacy[player_id] = 1;
-                        } else if ((unsigned char)file == 0) {
-                            this->unitDiplomacy[player_id] = 2;
-                        } else if ((unsigned char)file == 1) {
-                            this->unitDiplomacy[player_id] = 3;
+                            this->unitDiplomacy[*player_id] = 1;
+                        } else if (relation_value == 0) {
+                            this->unitDiplomacy[*player_id] = 2;
+                        } else if (relation_value == 1) {
+                            this->unitDiplomacy[*player_id] = 3;
                         } else {
-                            this->unitDiplomacy[player_id] = 4;
+                            this->unitDiplomacy[*player_id] = 4;
                         }
                     }
                 }
-                i++;
+                ++i;
+                human_team = saved_human_team;
+            } while (i < count);
         }
 
         if (version > 1.08) {

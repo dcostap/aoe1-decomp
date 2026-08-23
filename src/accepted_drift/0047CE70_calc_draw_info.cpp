@@ -60,6 +60,7 @@
 // scratch are dead after use. Values, flags, memory effects, calls, branches,
 // cleanup, and fault order are identical.
 
+#ifndef AOE1_PNL_TXT_CONTEXT_H
 struct tagRECT {
     long left;
     long top;
@@ -144,6 +145,7 @@ public:
     virtual void set_rect(long left, long top, long width, long height);
     void calc_draw_info(int recalc_scrollbar);
 };
+#endif
 
 void TTextPanel::calc_draw_info(int recalc_scrollbar)
 {

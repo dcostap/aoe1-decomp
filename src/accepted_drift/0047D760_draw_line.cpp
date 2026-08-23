@@ -44,6 +44,7 @@
 
 #include <windows.h>
 
+#ifndef AOE1_PNL_TXT_CONTEXT_H
 class TDrawArea;
 
 class TPanel {
@@ -75,6 +76,7 @@ public:
     void draw_line(void* dc, short line_index, short line,
                    unsigned long color1, unsigned long color2);
 };
+#endif
 
 struct DrawLineRect {
     TTextPanel* receiver;

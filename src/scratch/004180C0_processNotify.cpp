@@ -1,628 +1,540 @@
 // VA: 004180C0 UnitAIModule::processNotify (4916 bytes)
-// aiuaimod.cpp:4423-5186
+// PDB owner: aiuaimod.cpp, lines 4423-5186.
 //
-// Attempt log:
-// - Replaced the range-only placeholder with typed NotifyEvent and local ABI
-//   surfaces for UnitAIModule, RGE_Static_Object, and RGE_Player.
-// - Baseline captured the attack list, target, path, stop, logging, and queue
-//   cases from the original switch and call map.
-// - Split the three ordered stop-notification cases. This improved the size,
-//   CFG, call alignment, and positional diff.
-// - Materialized target coordinates as a liveness probe. It moved the diff
-//   farther and was rolled back.
-// - Added the binary-supported no-op path for unused in-range notifications.
-// - Explicit switch arms for unused types 502-698 did not preserve the
-//   original shared return layout; the diff worsened and the probe was rolled
-//   back.
-// - A narrower explicit arm set for 602-698 also worsened the same basin and
-//   was rolled back. The binary labels confirm shared jump-table targets, but
-//   source case spelling is not the remaining structural fix.
-// - Restored the binary order-notify predicate topology: test the non-minus
-//   current-action offset before the minus-order/p1 test, and removed the
-//   unsupported notifyCommander call from the 0x2d4 stop arm. This improved
-//   shape from 51.29% to 60.94%, reduced the positional diff by 14 bytes, and
-//   resolved three extra callback sites.
-// - BINARY NOTE: RGE_Player::id is read at +0x4A; visibleMap remains at +0x38.
-//   The reviewed FILE* and literal logging surface preserves the same codegen.
-// - The clean source remains unresolved. A donor-shaped two-stage 699 removal
-//   arm improved shape and late exact blocks, but moved the positional diff
-//   from 4563 to 4566 bytes. It was not retained in the clean source.
-// - BINARY NOTE: the attack response has two capability/range/path/attack
-//   ladders in the non-special target path. The simpler one-ladder source was
-//   replaced with the observed zero-capability and ratio tests.
-// - BINARY NOTE: RGE_Static_Object::hp is a float at +0x30. world_x remains
-//   at +0x38. The local layout now models both proven fields.
-// - BINARY NOTE: damageCapability() and damageCapability(object) use the
-//   +0x108 and +0x104 slots. Their local declaration order is codegen-active.
-// - Hypotheses tested in this pass: found-flag removal, two goto-shaped scans,
-//   capability call recovery, virtual declaration order, event aliasing,
-//   branch-local FPU stores, global-zero/literal provenance, and no-target
-//   path recovery. The binary-supported capability paths remain even though
-//   the broad structural difference is 4599 bytes.
-// Left in scratch: structural call-site and frame drift remain broad.
+// Recovery notes:
+// - The PDB gives one body at 004180C0-004193F3.
+// - The authentic UnitAIModule type is 0x134 bytes.
+// - Exact donor 00506320 proves both attacking-unit scans and array growth.
+// - Source case order is 508, 506, 505, 507, 514, 523, 510, 600, 699.
+// - Four nested weaponRange and canPath ladders restore all 148 calls.
+// - BINARY NOTE: every attack and path call rereads event->caller.
+// - This differs from attacker->id when the event or object graph changes.
+// - BINARY NOTE: zero target damage stores zero currentTargetDC.
+// - Nonzero target damage calls objectValue->damageCapability(target).
+// - The 505 and 507 arms share one chained order-publication tail.
+// - The 506 arm keeps a distinct direct order-publication tail.
+// - Direct cleanup tails preserve all stop and commander notifications.
+// - PDB locals name currentTargetDC, both kill times, three target coordinates,
+//   tileY, and tileX. Their proven homes overlap parameters and scoped locals.
+// - The authentic context removes five register-only byte differences.
+// - Current best has exact size, frame, CFG, 148 calls, and 12 byte differences.
+// - Residual drift is one move argument register map and two publication stores.
+// - Tested aliases, accessors, literal forms, condition forms, and local scopes.
+// - Those forms duplicated this basin or changed valid behavior and layout.
+// - Needed evidence is the original 4757 call spelling or fuller header context.
 
-#if 0
-#include "../../include/unit_ai_module.h"
-
-int UnitAIModule::processNotify(void* notifyEvent)
-{
-    int mType = *(int*)((char*)notifyEvent + 8);  // NotifyEvent.mType at +0x08
-    int dispatchKey = mType - 500;
-    
-    if (dispatchKey < 0 || dispatchKey > 199) {
-        return 0; // Unhandled
-    }
-    
-    switch (dispatchKey) {
-    case 0: // mType == 500: Attack notification
-        // Complex logic:
-        // - Get caller from notifyEvent
-        // - Add to attackingUnits list
-        // - Check team, check current target
-        // - Return 2/3/4 based on state
-        // Falls through to default
-        break;
-        
-    case 1: // mType == 501
-        return 0;
-        
-    case 2: // mType == 502
-        return 0;
-        
-    case 26: // mType == 526 (0x20E): Under attack
-        // Under attack notification
-        // - Get caller 
-        // - Call lookUpObject(caller)
-        // - Check if valid target
-        // - If no defendTarget: set defendTarget, stop current action
-        // - Add to attackingUnits
-        break;
-        
-    default:
-        return 0;
-    }
-    
-    return 0;
-}
-#endif
-
-// Canonical binary-supported reconstruction. The old range-only sketch above
-// stays disabled as a record of the initial placeholder.
-
-typedef unsigned char uchar;
+#include <stdio.h>
 typedef unsigned long ulong;
-
-struct NotifyEvent {
-    int caller;
-    int recipient;
-    int mType;
-    long p1;
-    long p2;
-    long p3;
-};
-
-class RGE_Master_Static_Object {
-public:
-    virtual ~RGE_Master_Static_Object();
-    char gap_04[0x0C];
-    short id;
-    short copy_id;
-    short object_group;
-};
-
-class RGE_Player;
-
-#define OBJECT_PAD(n) virtual void objectPad##n();
-class RGE_Static_Object {
-public:
-    OBJECT_PAD(0) OBJECT_PAD(1) OBJECT_PAD(2) OBJECT_PAD(3)
-    OBJECT_PAD(4) OBJECT_PAD(5) OBJECT_PAD(6) OBJECT_PAD(7)
-    OBJECT_PAD(8) OBJECT_PAD(9) OBJECT_PAD(10) OBJECT_PAD(11)
-    OBJECT_PAD(12) OBJECT_PAD(13) OBJECT_PAD(14) OBJECT_PAD(15)
-    OBJECT_PAD(16) OBJECT_PAD(17) OBJECT_PAD(18) OBJECT_PAD(19)
-    OBJECT_PAD(20) OBJECT_PAD(21) OBJECT_PAD(22) OBJECT_PAD(23)
-    OBJECT_PAD(24) OBJECT_PAD(25) OBJECT_PAD(26) OBJECT_PAD(27)
-    OBJECT_PAD(28) OBJECT_PAD(29) OBJECT_PAD(30) OBJECT_PAD(31)
-    OBJECT_PAD(32) OBJECT_PAD(33) OBJECT_PAD(34) OBJECT_PAD(35)
-    OBJECT_PAD(36) OBJECT_PAD(37) OBJECT_PAD(38) OBJECT_PAD(39)
-    OBJECT_PAD(40) OBJECT_PAD(41) OBJECT_PAD(42) OBJECT_PAD(43)
-    OBJECT_PAD(44) OBJECT_PAD(45) OBJECT_PAD(46) OBJECT_PAD(47)
-    OBJECT_PAD(48) OBJECT_PAD(49) OBJECT_PAD(50) OBJECT_PAD(51)
-    OBJECT_PAD(52) OBJECT_PAD(53) OBJECT_PAD(54) OBJECT_PAD(55)
-    OBJECT_PAD(56)
-    virtual int inAttackRange(RGE_Static_Object* object);
-    virtual uchar underAttack();
-    virtual void setUnderAttack(uchar value);
-    OBJECT_PAD(60) OBJECT_PAD(61) OBJECT_PAD(62) OBJECT_PAD(63)
-    OBJECT_PAD(64)
-    virtual float damageCapability();
-    virtual float damageCapability(RGE_Static_Object* object);
-    // This call has four integer arguments at the observed +0x10C slot.
-    virtual float weaponRange(int, int, int, int);
-    OBJECT_PAD(68) OBJECT_PAD(69) OBJECT_PAD(70) OBJECT_PAD(71)
-    OBJECT_PAD(72) OBJECT_PAD(73) OBJECT_PAD(74) OBJECT_PAD(75)
-    OBJECT_PAD(76) OBJECT_PAD(77) OBJECT_PAD(78) OBJECT_PAD(79)
-    OBJECT_PAD(80) OBJECT_PAD(81) OBJECT_PAD(82) OBJECT_PAD(83)
-    OBJECT_PAD(84) OBJECT_PAD(85) OBJECT_PAD(86) OBJECT_PAD(87)
-    OBJECT_PAD(88) OBJECT_PAD(89) OBJECT_PAD(90) OBJECT_PAD(91)
-    OBJECT_PAD(92) OBJECT_PAD(93) OBJECT_PAD(94) OBJECT_PAD(95)
-    OBJECT_PAD(96) OBJECT_PAD(97) OBJECT_PAD(98)
-    virtual int stopAction();
-    OBJECT_PAD(100)
-    virtual int canPath(int, float, float*, int, int, int);
-
-    int id;
-    RGE_Master_Static_Object* master_obj;
-    RGE_Player* owner;
-    char gap_10[0x20];
-    float hp;
-    char gap_34[4];
-    float world_x;
-    float world_y;
-    float world_z;
-
-    int commanderRemoveFromGroup(int objectId);
-};
-#undef OBJECT_PAD
-
-#define PLAYER_PAD(n) virtual void playerPad##n();
-class RGE_Player {
-public:
-    PLAYER_PAD(0) PLAYER_PAD(1) PLAYER_PAD(2) PLAYER_PAD(3)
-    PLAYER_PAD(4) PLAYER_PAD(5) PLAYER_PAD(6) PLAYER_PAD(7)
-    PLAYER_PAD(8) PLAYER_PAD(9) PLAYER_PAD(10) PLAYER_PAD(11)
-    PLAYER_PAD(12) PLAYER_PAD(13) PLAYER_PAD(14) PLAYER_PAD(15)
-    PLAYER_PAD(16) PLAYER_PAD(17) PLAYER_PAD(18) PLAYER_PAD(19)
-    PLAYER_PAD(20) PLAYER_PAD(21) PLAYER_PAD(22) PLAYER_PAD(23)
-    PLAYER_PAD(24) PLAYER_PAD(25) PLAYER_PAD(26) PLAYER_PAD(27)
-    PLAYER_PAD(28) PLAYER_PAD(29) PLAYER_PAD(30) PLAYER_PAD(31)
-    PLAYER_PAD(32) PLAYER_PAD(33) PLAYER_PAD(34) PLAYER_PAD(35)
-    PLAYER_PAD(36) PLAYER_PAD(37) PLAYER_PAD(38) PLAYER_PAD(39)
-    PLAYER_PAD(40) PLAYER_PAD(41) PLAYER_PAD(42) PLAYER_PAD(43)
-    PLAYER_PAD(44) PLAYER_PAD(45) PLAYER_PAD(46) PLAYER_PAD(47)
-    PLAYER_PAD(48) PLAYER_PAD(49) PLAYER_PAD(50) PLAYER_PAD(51)
-    PLAYER_PAD(52) PLAYER_PAD(53) PLAYER_PAD(54) PLAYER_PAD(55)
-    PLAYER_PAD(56) PLAYER_PAD(57)
-    virtual void notify(int, int, int, long, long, long);
-
-    int computerPlayer();
-    char gap_04[0x34];
-    void* visibleMap;
-    void* world;
-    char gap_40[0x0A];
-    short id;
-};
-#undef PLAYER_PAD
-
-struct AttackingUnits {
-    int* value;
-    int numberValue;
-    int desiredNumberValue;
-    int maximumSizeValue;
-};
-
-#define UNIT_PAD(n) virtual int unitPad##n();
-class UnitAIModule {
-public:
-    virtual ~UnitAIModule();
-    UNIT_PAD(1) UNIT_PAD(2) UNIT_PAD(3) UNIT_PAD(4)
-    UNIT_PAD(5) UNIT_PAD(6)
-    virtual int notifyCommander(NotifyEvent* event);
-    UNIT_PAD(8) UNIT_PAD(9) UNIT_PAD(10) UNIT_PAD(11)
-    virtual int bestUnitToAttack(int, int, float*);
-    UNIT_PAD(13) UNIT_PAD(14) UNIT_PAD(15)
-    virtual int closestObject(int, int, int, int, int*);
-    virtual int closestResourceObject(int, int*);
-    virtual int closestUndiscoveredTile(int*, int*, int);
-    UNIT_PAD(19)
-    virtual int canAttackUnit(RGE_Static_Object*);
-    UNIT_PAD(21)
-    virtual int stopObject(int);
-    virtual int attackObject(int, int);
-    UNIT_PAD(24) UNIT_PAD(25)
-    virtual int gatherObject(int, int);
-    UNIT_PAD(27) UNIT_PAD(28) UNIT_PAD(29) UNIT_PAD(30) UNIT_PAD(31)
-    virtual int explore(int, int, int);
-    UNIT_PAD(33) UNIT_PAD(34) UNIT_PAD(35)
-    virtual int moveTo(float, float, float, float, int);
-    UNIT_PAD(37) UNIT_PAD(38) UNIT_PAD(39) UNIT_PAD(40)
-    virtual int runAwayFromAttackers(int);
-    UNIT_PAD(42) UNIT_PAD(43) UNIT_PAD(44) UNIT_PAD(45)
-    UNIT_PAD(46) UNIT_PAD(47)
-    virtual int convertToLOSResourceType(int);
-    UNIT_PAD(49) UNIT_PAD(50) UNIT_PAD(51) UNIT_PAD(52)
-    virtual int processIdle(int);
-    virtual int processNotify(NotifyEvent*, ulong);
-
-    RGE_Static_Object* objectValue;
-    int moodValue;
-    int objectCategoryValue;
-    int orderQueueSizeValue;
-    int orderQueueMaxSizeValue;
-    void* orderQueueValue;
-    int notifyQueueSizeValue;
-    int notifyQueueMaxSizeValue;
-    void* notifyQueueValue;
-    int currentOrderValue;
-    int currentOrderPriorityValue;
-    int currentActionValue;
-    int currentTargetValue;
-    int currentTargetTypeValue;
-    float currentTargetXValue;
-    float currentTargetYValue;
-    float currentTargetZValue;
-    float desiredTargetDistanceValue;
-    int defendTargetValue;
-    int lastOrderValue;
-    int lastActionValue;
-    int lastTargetValue;
-    int lastTargetTypeValue;
-    AttackingUnits attackingUnitsValue;
-    char waypointGap[0x80];
-    int waypointQueueSizeValue;
-    ulong lastUpdateTimeValue;
-    ulong idleTimerValue;
-    ulong adjustedIdleTimeoutValue;
-    ulong idleTimeoutValue;
-    ulong secondaryTimerValue;
-    ulong lookAroundTimerValue;
-    ulong lookAroundTimeoutValue;
-    float lastWorldPositionX;
-    float lastWorldPositionY;
-    float lastWorldPositionZ;
-    char gap_11C[4];
-    float defenseBufferValue;
-    int* importantObjects;
-    int numberImportantObjects;
-    void* playStatus;
-    uchar stopAfterTargetKilledValue;
-
-    RGE_Static_Object* lookupObject(int id);
-    void purgeNotifyQueue(ulong flags);
-    void askForHelp(int id);
-    int addToWaypointQueue(int x, int y);
-    uchar visibleStatus(void* map, int x, int y);
-    void removeCurrentTarget();
-    void setCurrentAction(int value);
-};
-#undef UNIT_PAD
-
-extern "C" {
-    typedef struct _iobuf FILE;
-    extern FILE* actionFile;
-    int fprintf(FILE*, const char*, ...);
-    void* __cdecl operator_new(unsigned int size);
-    void __cdecl operator_delete(void* block);
-}
-
+extern FILE* actionFile;
 extern float DAT_0056ebc8;
+extern float DAT_0056ebf4;
+#define AOE1_AIUAIMOD_PROCESS_NOTIFY_CONTEXT
+#include "../../include/aiuaimod_context.h"
+#undef AOE1_AIUAIMOD_PROCESS_NOTIFY_CONTEXT
 
-#define LOG_STOP(line) do { \
-    if (actionFile != 0) { \
-        int stopObjectId = -1; \
-        if (this->objectValue != 0) stopObjectId = this->objectValue->id; \
-        fprintf(actionFile, "#%d call stopObject %s %d\n", stopObjectId, \
-                "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", (line)); \
-    } \
-} while (0)
 
-#define ADD_ATTACKER(attackerId) do { \
-    int attackerCount = this->attackingUnitsValue.numberValue; \
-    if (this->attackingUnitsValue.maximumSizeValue - 1 < attackerCount) { \
-        int newSize = attackerCount + 1; \
-        int* newValue = (int*)operator_new(newSize * 4); \
-        if (newValue != 0) { \
-            int copyIndex = 0; \
-            if (this->attackingUnitsValue.maximumSizeValue > 0) { \
-                do { \
-                    if (newSize <= copyIndex) break; \
-                    newValue[copyIndex] = this->attackingUnitsValue.value[copyIndex]; \
-                    ++copyIndex; \
-                } while (copyIndex < this->attackingUnitsValue.maximumSizeValue); \
+#define LOG_STOP(lineNumber) \
+    do { \
+        if (actionFile != 0) { \
+            long objectID; \
+            if (this->objectValue != 0) { \
+                objectID = this->objectValue->id; \
+            } else { \
+                objectID = -1; \
             } \
-            operator_delete(this->attackingUnitsValue.value); \
-            this->attackingUnitsValue.value = newValue; \
-            this->attackingUnitsValue.maximumSizeValue = newSize; \
+            fprintf(actionFile, "#%d call stopObject %s %d\n", objectID, \
+                    "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", (lineNumber)); \
         } \
-    } \
-    this->attackingUnitsValue.value[this->attackingUnitsValue.numberValue] = (attackerId); \
-    this->attackingUnitsValue.numberValue = this->attackingUnitsValue.numberValue + 1; \
-} while (0)
-
-#define REMOVE_ATTACKER(attackerId) do { \
-    int removeCount = this->attackingUnitsValue.numberValue; \
-    int removeIndex = 0; \
-    if (removeCount > 0) { \
-        while (removeIndex < this->attackingUnitsValue.maximumSizeValue) { \
-            if (this->attackingUnitsValue.value[removeIndex] == (attackerId)) break; \
-            ++removeIndex; \
-            if (removeCount <= removeIndex) break; \
-        } \
-    } \
-    if (removeIndex < removeCount && removeIndex < this->attackingUnitsValue.maximumSizeValue) { \
-        if (removeIndex < this->attackingUnitsValue.maximumSizeValue - 1) { \
-            do { \
-                this->attackingUnitsValue.value[removeIndex] = \
-                    this->attackingUnitsValue.value[removeIndex + 1]; \
-                ++removeIndex; \
-            } while (removeIndex < this->attackingUnitsValue.maximumSizeValue - 1); \
-        } \
-        removeCount = this->attackingUnitsValue.numberValue - 1; \
-        this->attackingUnitsValue.numberValue = removeCount; \
-        if (removeCount < 0) this->attackingUnitsValue.numberValue = 0; \
-    } \
-} while (0)
-
-#define PROCESS_ORDER_NOTIFY(stopFlag, lineA, lineB, lineC, lineD, lineE, lineF) do { \
-    int order = this->currentOrderValue; \
-    if (order == 700 && event->p1 == 600) { \
-        if (this->processIdle(0) != 5) return 2; \
-        if (this->currentOrderValue == 0x2D5 || \
-            this->objectValue->owner->computerPlayer() == 0) { \
-            this->removeCurrentTarget(); \
-            LOG_STOP(lineA); \
-            this->stopObject(stopFlag); \
-            return 2; \
-        } \
-        if (this->moveTo(this->currentTargetXValue, this->currentTargetYValue, \
-                         this->currentTargetZValue, \
-                         this->desiredTargetDistanceValue + 2.0f, 1) != 0) { \
-            int oldOrder = this->currentOrderValue; \
-            this->currentOrderValue = -1; \
-            this->currentOrderPriorityValue = -1; \
-            this->lastOrderValue = oldOrder; \
-            return 2; \
-        } \
-        this->removeCurrentTarget(); \
-        LOG_STOP(lineB); \
-        this->stopObject(stopFlag); \
-        return 2; \
-    } \
-    if (order != -1 && this->currentActionValue + 100 == order) { \
-        this->removeCurrentTarget(); \
-        LOG_STOP(lineD); \
-        this->stopObject(stopFlag); \
-        return 2; \
-    } \
-    if (order == -1 && this->currentActionValue == event->p1) { \
-        this->removeCurrentTarget(); \
-        LOG_STOP(lineC); \
-        this->stopObject(stopFlag); \
-        return 2; \
-    } \
-    if (order == 0x2D4 && event->p1 == 0x262) { \
-        this->removeCurrentTarget(); \
-        LOG_STOP(lineE); \
-        this->stopObject(0); \
-        return 2; \
-    } \
-    if (order == 0x2BD && event->p1 == 0x262) { \
-        this->setCurrentAction(-1); \
-        return 2; \
-    } \
-    if (order != 0x2D5 || event->p1 != 600) return 2; \
-    this->removeCurrentTarget(); \
-    LOG_STOP(lineF); \
-    this->stopObject(1); \
-    return 2; \
-} while (0)
+    } while (0)
 
 int UnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
 {
+    float targetX;
+
     switch (event->mType) {
     case 500:
-    case 527:
+    case 527: {
         this->notifyCommander(event);
 
-        if (event->p2 < 1) {
-            this->objectValue->owner->notify(this->objectValue->id,
-                                             this->objectValue->id, 0x209,
-                                             event->caller, 0, 0);
+        if (event->p2 <= 0) {
+            RGE_Static_Object* object = this->objectValue;
+            object->owner->notify(object->id, object->id, 0x209,
+                                  event->caller, 0, 0);
             this->purgeNotifyQueue(param_2);
             return 4;
         }
 
         if (this->attackingUnitsValue.numberValue == 0 ||
             this->objectValue->owner->computerPlayer() == 1) {
-            this->objectValue->owner->notify(this->objectValue->id,
-                                             this->objectValue->id, 0x201,
-                                             event->caller, 0, 0);
+            RGE_Static_Object* object = this->objectValue;
+            object->owner->notify(object->id, object->id, 0x201,
+                                  event->caller, 0, 0);
         }
 
-        {
-            int i = 0;
-            int count = this->attackingUnitsValue.numberValue;
-            int found = 0;
-            if (count > 0) {
-                do {
-                    if (this->attackingUnitsValue.maximumSizeValue <= i) break;
-                    if (this->attackingUnitsValue.value[i] == event->caller) {
-                        found = 1;
-                        break;
-                    }
-                    ++i;
-                } while (i < count);
+        int count = this->attackingUnitsValue.numberValue;
+        int i = 0;
+        for (; i < count && i < this->attackingUnitsValue.maximumSizeValue; ++i) {
+            if (this->attackingUnitsValue.value[i] == event->caller) {
+                goto skip_help;
             }
-            if (found == 0 && this->objectValue->owner->computerPlayer() == 0 &&
-                this->currentTargetValue != event->caller) {
-                this->askForHelp(event->caller);
+        }
+        if (this->objectValue->owner->computerPlayer() == 0 &&
+            this->currentTargetValue != event->caller) {
+            this->askForHelp(event->caller);
+        }
+
+    skip_help:
+        i = 0;
+        int caller = event->caller;
+        count = this->attackingUnitsValue.numberValue;
+        for (; i < count && i < this->attackingUnitsValue.maximumSizeValue; ++i) {
+            if (this->attackingUnitsValue.value[i] == caller) {
+                goto after_add;
             }
         }
 
-        {
-            int i = 0;
-            int count = this->attackingUnitsValue.numberValue;
-            int found = 0;
-            if (count > 0) {
-                do {
-                    if (this->attackingUnitsValue.maximumSizeValue <= i) break;
-                    if (this->attackingUnitsValue.value[i] == event->caller) {
-                        found = 1;
-                        break;
-                    }
-                    ++i;
-                } while (i < count);
+        if (this->attackingUnitsValue.numberValue >
+            this->attackingUnitsValue.maximumSizeValue - 1) {
+            int newMaximum = this->attackingUnitsValue.numberValue + 1;
+            int* newValue = (int*)operator new(newMaximum * 4);
+            if (newValue != 0) {
+                for (i = 0;
+                     i < this->attackingUnitsValue.maximumSizeValue &&
+                     i < newMaximum;
+                     ++i) {
+                    newValue[i] = this->attackingUnitsValue.value[i];
+                }
+                operator delete(this->attackingUnitsValue.value);
+                this->attackingUnitsValue.value = newValue;
+                this->attackingUnitsValue.maximumSizeValue = newMaximum;
             }
-            if (found == 0) ADD_ATTACKER(event->caller);
         }
+        this->attackingUnitsValue.value[
+            this->attackingUnitsValue.numberValue] = caller;
+        this->attackingUnitsValue.numberValue++;
 
+    after_add:
         this->objectValue->setUnderAttack(1);
-        if (this->currentOrderValue != 0x2D5 && this->currentOrderValue != -1 &&
+        if (this->currentOrderValue != 0x2D5 &&
+            this->currentOrderValue != -1 &&
             this->objectValue->owner->computerPlayer() == 0) {
             return 2;
         }
-        if (this->currentOrderValue == 0x2D5) return 2;
+        if (this->currentOrderValue == 0x2D5) {
+            return 2;
+        }
 
-        {
-            RGE_Static_Object* attacker = this->lookupObject(event->caller);
-            if (attacker == 0) return 2;
-            if (attacker->owner->id == this->objectValue->owner->id) return 2;
+        RGE_Static_Object* attacker = this->lookupObject(event->caller);
+        if (attacker == 0) {
+            return 2;
+        }
+        if (attacker->owner->id == this->objectValue->owner->id) {
+            return 2;
+        }
+        if (this->currentActionValue == 0x25B &&
+            this->runAwayFromAttackers(1) == 1) {
+            return 3;
+        }
 
-            if (this->currentActionValue == 0x25B &&
-                this->runAwayFromAttackers(1) == 1) {
-                return 3;
-            }
+        RGE_Static_Object* target = 0;
+        if (this->currentTargetValue != -1) {
+            target = this->lookupObject(this->currentTargetValue);
+        }
 
-            RGE_Static_Object* target = 0;
-            if (this->currentTargetValue != -1) {
-                target = this->lookupObject(this->currentTargetValue);
-            }
-
-            if (target != 0) {
-                short group = target->master_obj->object_group;
-                short masterId = target->master_obj->id;
-                if ((group == 3 || group == 0x1B) &&
-                    masterId != 0x4F && masterId != 199 && masterId != 0x45 &&
-                    this->objectValue->owner->computerPlayer() == 0) {
-                    if (this->canAttackUnit(attacker) != 1) {
-                        if (this->currentActionValue != 0x262) {
-                            this->runAwayFromAttackers(1);
-                        }
-                        return 3;
+        if (target == 0) {
+            if (this->canAttackUnit(attacker) == 1) {
+                if (this->objectValue->inAttackRange(attacker) != 1) {
+                    if (this->objectValue->canPath(
+                            event->caller,
+                            this->objectValue->weaponRange(),
+                            0, 0, -1, -1) != 1) {
+                        goto no_target_failed;
                     }
-                    if (this->objectValue->inAttackRange(attacker) != 1) {
-                        float pathDistance = this->objectValue->weaponRange(0, 0, -1, -1);
-                        if (this->objectValue->canPath((int)attacker, pathDistance,
-                                                       0, -1, -1, -1) != 1) {
-                            if (this->currentActionValue != 0x262) {
-                                this->runAwayFromAttackers(1);
-                            }
-                            return 3;
-                        }
-                    }
-                    if (this->attackObject(attacker->id, 1) == 1 &&
-                        this->currentOrderValue != 0x2BC) {
-                        this->currentOrderValue = -1;
-                        return 3;
-                    }
-                } else {
-                    if (this->objectValue->owner->computerPlayer() == 0) return 2;
-                    if (target->master_obj->id == 0x114) return 2;
-
-                    float targetDamage = target->damageCapability();
-                    float firstCapability;
-                    if (targetDamage == DAT_0056ebc8) {
-                        firstCapability = this->objectValue->damageCapability(target);
-                    } else {
-                        firstCapability = 0.0f;
-                    }
-                    if (this->canAttackUnit(attacker) == 1 &&
-                        firstCapability != DAT_0056ebc8) {
-                        if (this->objectValue->inAttackRange(attacker) != 1) {
-                            float pathDistance = this->objectValue->weaponRange(0, 0, -1, -1);
-                            if (this->objectValue->canPath((int)attacker, pathDistance,
-                                                           0, -1, -1, -1) != 1) {
-                                goto capabilityCheck;
-                            }
-                        }
-                        this->attackObject(attacker->id, 1);
-                    }
-
-                capabilityCheck:
-                    float targetCapability = target->damageCapability(this->objectValue);
-                    float targetRatio;
-                    if (targetCapability > DAT_0056ebc8) {
-                        targetRatio = target->hp / targetCapability;
-                    } else {
-                        targetRatio = 25000.0f;
-                    }
-                    float attackerCapability = attacker->damageCapability(this->objectValue);
-                    float attackerRatio;
-                    if (attackerCapability > DAT_0056ebc8) {
-                        attackerRatio = attacker->hp / attackerCapability;
-                    } else {
-                        attackerRatio = 25000.0f;
-                    }
-                    if (this->canAttackUnit(attacker) != 1 ||
-                        attackerRatio >= targetRatio) {
-                        return 2;
-                    }
-                    if (this->objectValue->inAttackRange(attacker) != 1) {
-                        float pathDistance = this->objectValue->weaponRange(0, 0, -1, -1);
-                        if (this->objectValue->canPath((int)attacker, pathDistance,
-                                                       0, -1, -1, -1) != 1) {
-                            return 2;
-                        }
-                    }
-                    this->attackObject(attacker->id, 1);
-                    return 2;
+                }
+                if (this->attackObject(event->caller, 1) == 1 &&
+                    this->currentOrderValue != 0x2BC) {
+                    this->currentOrderValue = -1;
+                    return 3;
                 }
             } else {
-                if (this->canAttackUnit(attacker) == 1 &&
-                    this->objectValue->inAttackRange(attacker) == 1) {
-                    if (this->attackObject(attacker->id, 1) == 1 &&
-                        this->currentOrderValue != 700) {
-                        this->currentOrderValue = -1;
-                        return 3;
-                    }
-                } else if (this->currentActionValue != 0x262) {
+            no_target_failed:
+                if (this->currentActionValue != 0x262) {
                     this->runAwayFromAttackers(1);
+                    return 3;
                 }
+            }
+            return 3;
+        }
+
+        short objectGroup = target->master_obj->object_group;
+        if ((objectGroup == 3 || objectGroup == 0x1B) &&
+            target->master_obj->id != 0x4F &&
+            target->master_obj->id != 199 &&
+            target->master_obj->id != 0x45 &&
+            this->objectValue->owner->computerPlayer() == 0) {
+            if (this->canAttackUnit(attacker) == 1) {
+                if (this->objectValue->inAttackRange(attacker) == 1 ||
+                    this->objectValue->canPath(
+                        event->caller, this->objectValue->weaponRange(),
+                        0, 0, -1, -1) == 1) {
+                    this->attackObject(event->caller, 1);
+                    return 3;
+                }
+            }
+            this->runAwayFromAttackers(1);
+            return 3;
+        }
+
+        if (this->objectValue->owner->computerPlayer() != 1) {
+            return 2;
+        }
+        if (target->master_obj->id == 0x114) {
+            return 2;
+        }
+
+        float targetDamage = target->damageCapability();
+        float objectDamage;
+        if (targetDamage == DAT_0056ebc8) {
+            objectDamage = 0.0f;
+        } else {
+            objectDamage = this->objectValue->damageCapability(target);
+        }
+
+        if (this->canAttackUnit(attacker) == 1 &&
+            objectDamage == DAT_0056ebc8) {
+            if (this->objectValue->inAttackRange(attacker) != 1) {
+                if (this->objectValue->canPath(
+                        event->caller,
+                        this->objectValue->weaponRange(),
+                        0, 0, -1, -1) != 1) {
+                    goto compare_capability;
+                }
+            }
+            this->attackObject(event->caller, 1);
+        }
+
+    compare_capability:
+        float targetCapability = target->damageCapability(this->objectValue);
+        float targetRatio;
+        if (targetCapability > DAT_0056ebc8) {
+            targetRatio = target->hitPoints / targetCapability;
+        } else {
+            targetRatio = 25000.0f;
+        }
+
+        float attackerCapability = attacker->damageCapability(this->objectValue);
+        float attackerRatio;
+        if (attackerCapability > DAT_0056ebc8) {
+            attackerRatio = attacker->hitPoints / attackerCapability;
+        } else {
+            attackerRatio = 25000.0f;
+        }
+
+        if (this->canAttackUnit(attacker) != 1 ||
+            attackerRatio >= targetRatio) {
+            return 2;
+        }
+        if (this->objectValue->inAttackRange(attacker) != 1) {
+            if (this->objectValue->canPath(
+                    event->caller,
+                    this->objectValue->weaponRange(),
+                    0, 0, -1, -1) != 1) {
+                return 2;
+            }
+        }
+        this->attackObject(event->caller, 1);
+        return 2;
+    }
+
+    case 508: {
+        RGE_Static_Object* target = this->lookupObject(this->currentTargetValue);
+        if (target != 0) {
+            uchar visible = this->visibleStatus(
+                this->objectValue->owner->visible,
+                (int)target->world_x, (int)target->world_y);
+            if (target->owner->id == 0) {
+                return 2;
+            }
+            if (visible == 0x0F) {
+                return 2;
+            }
+
+            targetX = this->currentTargetXValue;
+            float targetY = this->currentTargetYValue;
+            float targetZ = this->currentTargetZValue;
+            int candidate = this->bestUnitToAttack(1, 0, 0);
+            if (candidate != -1 &&
+                candidate != this->currentTargetValue &&
+                this->attackObject(candidate, 1) == 1) {
+                this->currentOrderValue = -1;
+                return 3;
+            }
+            if (this->objectValue->owner->computerPlayer() == 0 &&
+                this->moveTo(targetX, targetY, targetZ, 0, 1) == 1) {
+                int oldOrder = this->currentOrderValue;
+                this->currentOrderValue = -1;
+                this->lastOrderValue = oldOrder;
+                this->currentOrderPriorityValue = -1;
                 return 3;
             }
         }
-        return 3;
+        this->removeCurrentTarget();
+        LOG_STOP(0x1269);
+        this->stopObject(1);
+        this->notifyCommander(event);
+        return 2;
+    }
 
-    case 505:
-        PROCESS_ORDER_NOTIFY(1, 0x12E9, 0x12F3, 0x130D, 0x1304, 0x1317, 0x1325);
-    case 506:
-        PROCESS_ORDER_NOTIFY(0, 0x128B, 0x129B, 0x12B7, 0x12AF, 0x12C0, 0x12CD);
-    case 507:
-        PROCESS_ORDER_NOTIFY(1, 0x1341, 0x134B, 0x1365, 0x135C, 0x136F, 0x137D);
-
-    case 508:
-        {
-            RGE_Static_Object* target = this->lookupObject(this->currentTargetValue);
-            if (target != 0) {
-                int targetY = (int)target->world_y;
-                int targetX = (int)target->world_x;
-                uchar visible = this->visibleStatus(this->objectValue->owner->visibleMap,
-                                                     targetX, targetY);
-                if (target->owner->id != 0 && visible != 0x0F) {
-                    float targetZ = this->currentTargetZValue;
-                    int candidate = this->bestUnitToAttack(1, 0, 0);
-                    if (candidate != -1 && candidate != this->currentTargetValue &&
-                        this->attackObject(candidate, 1) == 1) {
-                        this->currentOrderValue = -1;
-                        return 3;
-                    }
-                    if (this->objectValue->owner->computerPlayer() == 0 &&
-                        this->moveTo(this->currentTargetXValue,
-                                     this->currentTargetYValue, targetZ, 0, 1) == 1) {
-                        int oldOrder = this->currentOrderValue;
-                        this->currentOrderValue = -1;
-                        this->lastOrderValue = oldOrder;
-                        this->currentOrderPriorityValue = -1;
-                        return 3;
-                    }
-                }
+    case 506: {
+        int order = this->currentOrderValue;
+        if (order == 700 && event->p1 == 600) {
+            if (this->processIdle(0) != 5) {
+                return 2;
             }
+            if (this->currentOrderValue == 0x2D5 ||
+                this->objectValue->owner->computerPlayer() == 0) {
+                this->removeCurrentTarget();
+                LOG_STOP(0x128B);
+                this->stopObject(0);
+                return 2;
+            }
+            if (this->moveTo(this->currentTargetXValue,
+                             this->currentTargetYValue,
+                             this->currentTargetZValue,
+                             this->desiredTargetDistanceValue - DAT_0056ebf4,
+                             1) == 0) {
+                this->removeCurrentTarget();
+                LOG_STOP(0x129B);
+                this->stopObject(0);
+                return 2;
+            }
+            this->lastOrderValue = this->currentOrderValue;
+            this->currentOrderValue = -1;
+            this->currentOrderPriorityValue = -1;
+            return 2;
+        }
+        if (order != -1 && this->currentActionValue + 100 == order) {
             this->removeCurrentTarget();
-            LOG_STOP(0x1269);
+            LOG_STOP(0x12AF);
+            this->stopObject(1);
+            return 2;
+        }
+        if (order == -1 && this->currentActionValue == event->p1) {
+            this->removeCurrentTarget();
+            LOG_STOP(0x12B7);
+            this->stopObject(1);
+            return 2;
+        }
+        if (order == 0x2D4 && event->p1 == 0x262) {
+            this->removeCurrentTarget();
+            LOG_STOP(0x12C0);
+            this->stopObject(0);
+            return 2;
+        }
+        if (order == 0x2BD && event->p1 == 0x262) {
+            this->setCurrentAction(-1);
+            return 2;
+        }
+        if (order != 0x2D5 || event->p1 != 600) {
+            return 2;
+        }
+        this->removeCurrentTarget();
+        LOG_STOP(0x12CD);
+        this->stopObject(1);
+        return 2;
+    }
+
+    case 505: {
+        int order = this->currentOrderValue;
+        if (order == 700 && event->p1 == 600) {
+            if (this->processIdle(0) != 5) {
+                return 2;
+            }
+            if (this->currentOrderValue == 0x2D5 ||
+                this->objectValue->owner->computerPlayer() == 0) {
+                this->removeCurrentTarget();
+                LOG_STOP(0x12E9);
+                this->stopObject(1);
+                return 2;
+            }
+            if (this->moveTo(this->currentTargetXValue,
+                             this->currentTargetYValue,
+                             this->currentTargetZValue,
+                             this->desiredTargetDistanceValue - DAT_0056ebf4,
+                             1) == 0) {
+                this->removeCurrentTarget();
+                LOG_STOP(0x12F3);
+                this->stopObject(1);
+                return 2;
+            }
+            this->lastOrderValue = this->currentOrderValue;
+            this->currentOrderValue = this->currentOrderPriorityValue = -1;
+            return 2;
+        }
+        if (order != -1 && this->currentActionValue + 100 == order) {
+            this->removeCurrentTarget();
+            LOG_STOP(0x1304);
             this->stopObject(1);
             this->notifyCommander(event);
             return 2;
         }
+        if (order == -1 && this->currentActionValue == event->p1) {
+            this->removeCurrentTarget();
+            LOG_STOP(0x130D);
+            this->stopObject(1);
+            this->notifyCommander(event);
+            return 2;
+        }
+        if (order == 0x2D4 && event->p1 == 0x262) {
+            this->removeCurrentTarget();
+            LOG_STOP(0x1317);
+            this->stopObject(0);
+            this->notifyCommander(event);
+            return 2;
+        }
+        if (order == 0x2BD && event->p1 == 0x262) {
+            this->setCurrentAction(-1);
+            return 2;
+        }
+        if (order != 0x2D5 || event->p1 != 600) {
+            return 2;
+        }
+        this->removeCurrentTarget();
+        LOG_STOP(0x1325);
+        this->stopObject(1);
+        return 2;
+    }
+
+    case 507: {
+        int order = this->currentOrderValue;
+        if (order == 700 && event->p1 == 600) {
+            if (this->processIdle(0) != 5) {
+                return 2;
+            }
+            if (this->currentOrderValue == 0x2D5 ||
+                this->objectValue->owner->computerPlayer() == 0) {
+                this->removeCurrentTarget();
+                LOG_STOP(0x1341);
+                this->stopObject(1);
+                return 2;
+            }
+            if (this->moveTo(this->currentTargetXValue,
+                             this->currentTargetYValue,
+                             this->currentTargetZValue,
+                             this->desiredTargetDistanceValue - DAT_0056ebf4,
+                             1) == 0) {
+                this->removeCurrentTarget();
+                LOG_STOP(0x134B);
+                this->stopObject(1);
+                return 2;
+            }
+            this->lastOrderValue = this->currentOrderValue;
+            this->currentOrderValue = this->currentOrderPriorityValue = -1;
+            return 2;
+        }
+        if (order != -1 && this->currentActionValue + 100 == order) {
+            this->removeCurrentTarget();
+            LOG_STOP(0x135C);
+            this->stopObject(1);
+            this->notifyCommander(event);
+            return 2;
+        }
+        if (order == -1 && this->currentActionValue == event->p1) {
+            this->removeCurrentTarget();
+            LOG_STOP(0x1365);
+            this->stopObject(1);
+            this->notifyCommander(event);
+            return 2;
+        }
+        if (order == 0x2D4 && event->p1 == 0x262) {
+            this->removeCurrentTarget();
+            LOG_STOP(0x136F);
+            this->stopObject(0);
+            this->notifyCommander(event);
+            return 2;
+        }
+        if (order == 0x2BD && event->p1 == 0x262) {
+            this->setCurrentAction(-1);
+            return 2;
+        }
+        if (order != 0x2D5 || event->p1 != 600) {
+            return 2;
+        }
+        this->removeCurrentTarget();
+        LOG_STOP(0x137D);
+        this->stopObject(1);
+        return 2;
+    }
+
+    case 514: {
+        int action = this->currentActionValue;
+        if (action == 0x25D || action == 0x26F) {
+            int x;
+            int y;
+            if (this->closestUndiscoveredTile(&x, &y, 1) == 1) {
+                this->addToWaypointQueue(x, y);
+                if (this->explore(x, y, 1) == 0) {
+                    this->removeCurrentTarget();
+                    LOG_STOP(0x1396);
+                    this->stopObject(1);
+                    this->notifyCommander(event);
+                }
+                this->currentActionValue = action;
+                return 3;
+            }
+            this->removeCurrentTarget();
+            LOG_STOP(0x13A6);
+            this->stopObject(1);
+            this->notifyCommander(event);
+            return 2;
+        } else {
+            if (action != 0x261) {
+                return 2;
+            }
+            int resourceType = this->currentTargetTypeValue;
+            if (resourceType == -1) {
+                resourceType = this->lastTargetTypeValue;
+            }
+            int losType = this->convertToLOSResourceType(resourceType);
+            int targetID;
+            if (losType != -1) {
+                targetID = this->closestResourceObject(losType, 0);
+            } else {
+                targetID = this->closestObject(resourceType, -1, -1, -1, 0);
+            }
+            if (targetID != -1) {
+                if (this->gatherObject(targetID, 1) == 1) {
+                    return 3;
+                }
+                this->removeCurrentTarget();
+                LOG_STOP(0x13CE);
+                this->stopObject(1);
+                this->notifyCommander(event);
+                return 2;
+            } else {
+                this->removeCurrentTarget();
+                LOG_STOP(0x13DA);
+                this->stopObject(1);
+                this->notifyCommander(event);
+                return 2;
+            }
+        }
+    }
+
+    case 523: {
+        this->objectValue->stopAction();
+        this->removeCurrentTarget();
+        LOG_STOP(0x13E7);
+        this->stopObject(1);
+        this->purgeNotifyQueue(param_2);
+        this->orderQueueSizeValue = 0;
+        RGE_Static_Object* commander =
+            this->lookupObject(this->objectValue->groupCommanderValue);
+        if (commander != 0) {
+            commander->commanderRemoveFromGroup(this->objectValue->id);
+        }
+        return 2;
+    }
 
     case 510:
         this->objectValue->stopAction();
@@ -631,95 +543,53 @@ int UnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
         this->stopObject(1);
         return 2;
 
-    case 514:
-        {
-            int action = this->currentActionValue;
-            if (action == 0x25D || action == 0x26F) {
-                int x;
-                int y;
-                if (this->closestUndiscoveredTile(&x, &y, 1) == 1) {
-                    this->addToWaypointQueue(x, y);
-                    if (this->explore(x, y, 1) == 0) {
-                        this->removeCurrentTarget();
-                        LOG_STOP(0x1396);
-                        this->stopObject(1);
-                        this->notifyCommander(event);
-                    }
-                    this->currentActionValue = action;
-                    return 3;
-                }
-                this->removeCurrentTarget();
-                LOG_STOP(0x13A6);
-            } else {
-                if (action != 0x261) return 2;
-                int resource = this->currentTargetTypeValue;
-                if (resource == -1) resource = this->lastTargetTypeValue;
-                int targetId = this->convertToLOSResourceType(resource);
-                if (targetId == -1) {
-                    targetId = this->closestObject(resource, -1, -1, -1, 0);
-                } else {
-                    targetId = this->closestResourceObject(targetId, 0);
-                }
-                if (targetId == -1) {
-                    this->removeCurrentTarget();
-                    LOG_STOP(0x13DA);
-                    this->stopObject(1);
-                    this->notifyCommander(event);
-                    return 2;
-                }
-                if (this->gatherObject(targetId, 1) == 1) return 3;
-                this->removeCurrentTarget();
-                LOG_STOP(0x13CE);
+    case 600: {
+        int count = this->attackingUnitsValue.numberValue;
+        int caller = event->caller;
+        int i = 0;
+        for (; i < count && i < this->attackingUnitsValue.maximumSizeValue; ++i) {
+            if (this->attackingUnitsValue.value[i] == caller) {
+                goto attacker_added;
             }
-            this->stopObject(1);
-            this->notifyCommander(event);
-            return 2;
         }
+        if (this->attackingUnitsValue.numberValue >
+            this->attackingUnitsValue.maximumSizeValue - 1) {
+            int newMaximum = this->attackingUnitsValue.numberValue + 1;
+            int* newValue = (int*)operator new(newMaximum * 4);
+            if (newValue != 0) {
+                for (i = 0;
+                     i < this->attackingUnitsValue.maximumSizeValue &&
+                     i < newMaximum;
+                     ++i) {
+                    newValue[i] = this->attackingUnitsValue.value[i];
+                }
+                operator delete(this->attackingUnitsValue.value);
+                this->attackingUnitsValue.value = newValue;
+                this->attackingUnitsValue.maximumSizeValue = newMaximum;
+            }
+        }
+        this->attackingUnitsValue.value[
+            this->attackingUnitsValue.numberValue] = caller;
+        this->attackingUnitsValue.numberValue++;
 
-    case 523:
-        this->objectValue->stopAction();
-        this->removeCurrentTarget();
-        LOG_STOP(0x13E7);
-        this->stopObject(1);
-        this->purgeNotifyQueue(param_2);
-        this->orderQueueSizeValue = 0;
-        {
-            RGE_Static_Object* commander =
-                this->lookupObject(*(int*)((char*)this->objectValue + 0x78));
-            if (commander != 0) {
-                commander->commanderRemoveFromGroup(this->objectValue->id);
-            }
-        }
-        return 2;
-
-    case 600:
-        {
-            int i = 0;
-            int count = this->attackingUnitsValue.numberValue;
-            int found = 0;
-            if (count > 0) {
-                do {
-                    if (this->attackingUnitsValue.maximumSizeValue <= i) break;
-                    if (this->attackingUnitsValue.value[i] == event->caller) {
-                        found = 1;
-                        break;
-                    }
-                    ++i;
-                } while (i < count);
-            }
-            if (found == 0) ADD_ATTACKER(event->caller);
-        }
+    attacker_added:
         this->objectValue->setUnderAttack(1);
         return 2;
+    }
 
-    case 699:
-        REMOVE_ATTACKER(event->caller);
+    case 699: {
+        int count = this->attackingUnitsValue.numberValue;
+        int i = 0;
+        for (; i < count && i < this->attackingUnitsValue.maximumSizeValue; ++i) {
+            if (this->attackingUnitsValue.value[i] == event->caller) {
+                this->attackingUnitsValue.remove(event->caller);
+                return 2;
+            }
+        }
         return 2;
+    }
 
     default:
-        // The jump table routes the unused in-range notifications to the
-        // ordinary return block. Only the out-of-range and 501 paths stop.
-        if (event->mType >= 502 && event->mType <= 698) return 2;
         this->removeCurrentTarget();
         LOG_STOP(0x1439);
         this->stopObject(1);
@@ -728,6 +598,4 @@ int UnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
     }
 }
 
-#undef REMOVE_ATTACKER
-#undef ADD_ATTACKER
 #undef LOG_STOP
