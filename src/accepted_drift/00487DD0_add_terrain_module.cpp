@@ -59,6 +59,19 @@
 //   exact blocks, and 5/5 ordered calls. Ten bytes remain in the fallback
 //   loop's consistent register recolor: original EAX cursor/ECX type versus
 //   rebuilt ECX cursor/EAX type. No exact policy-valid source was found.
+// - Fresh exact-finish probes: direct typed-line member access, field-cursor
+//   spelling, declaration-order changes, register-qualified locals, a shared
+//   loop counter, and a six-form natural fallback variant lab all retained the
+//   same ten-byte basin or regressed structure. A full random-map base and
+//   database ownership model preserved the proven offsets but produced a
+//   twelve-byte basin with reversed early multiply operands; it also retained
+//   the fallback recolor. All diagnostic forms were restored.
+// - Exact-finish continuation: shared adjustment counters and type locals,
+//   shared line lifetimes, canonical long terrain fields, field-reference
+//   aliases, a sparse switch, and the full local RMM context were tested.
+//   The ten-byte fallback EAX/ECX recolor remained or structure regressed;
+//   all such forms were restored. The target's pushed logger receiver proves
+//   the period static TDebuggingLog::Log(TDebuggingLog*, char*, ...) surface.
 // ACCEPTED DRIFT: All ten changed bytes form that one consistent EAX/ECX
 // exchange. Instruction order, memory addresses, branches, flags, and calls
 // remain equal under the map. Both values have the same live ranges, and the
@@ -69,9 +82,11 @@ typedef unsigned char uchar;
 
 extern "C" int __cdecl debug_rand(char* file, int line);
 
-class TDebuggingLog {};
+class TDebuggingLog {
+public:
+    static void Log(TDebuggingLog* log, char* fmt, ...);
+};
 extern TDebuggingLog* L;
-extern void __cdecl Log(TDebuggingLog* log, char* fmt, ...);
 
 struct RGE_Land_Data {
     int map_edge_buffer[4];
@@ -216,5 +231,5 @@ void TRIBE_RMM_Database_Controller::add_terrain_module()
     }
 
     int final_rand = debug_rand("C:\\msdev\\work\\age1_x1\\rmm_tdbc.cpp", 0x180);
-    Log(L, "Random Map terrain initilization, rand: %d", final_rand);
+    TDebuggingLog::Log(L, "Random Map terrain initilization, rand: %d", final_rand);
 }

@@ -24,6 +24,13 @@
 // Fresh bounded pass: chained stores, comma sequencing, and a reference output
 // alias reproduced the same 31 bytes. Full and partial member initializer lists
 // widened the mismatch to 160 and 163 bytes. The clean body stores remain best.
+// Canonical surface pass: inventory evidence makes TEditPanel a direct TPanel
+// child, and the later PDB owner requires TribeMPCreateDialog::action in the
+// virtual surface. Both declarations preserve the 31-byte frontier.
+// Authentic scr_cj.cpp base context, the source-order prefix, and a later
+// destructor owner wrapper were also compiled without changing that frontier.
+// Literal resource strings were tested and rolled back because they changed
+// three relocation spans. The reviewed absolute addresses remain required.
 // ACCEPTED DRIFT: The 31-byte hunk moves setup argument preparation and the EH
 // state-zero store across the derived vptr and five null member stores. Both
 // builds perform those six object stores in the same order. No call, branch, or
@@ -54,7 +61,9 @@ public:
     void set_curr_child(TPanel* child);
 };
 class TTextPanel : public TPanel { };
-class TEditPanel : public TTextPanel { };
+// BINARY NOTE: TEditPanel is a direct TPanel child in the reviewed type
+// inventory. It is not derived from TTextPanel.
+class TEditPanel : public TPanel { };
 class TEasy_Panel : public TPanel {
 public:
     char gap_F4[0x384];
@@ -96,6 +105,7 @@ public:
     TButtonPanel* okButton;
     TButtonPanel* cancelButton;
     virtual ~TribeMPCreateDialog();
+    virtual long action(TPanel*, long, unsigned long, unsigned long);
     TribeMPCreateDialog(TPanel* parent);
 };
 

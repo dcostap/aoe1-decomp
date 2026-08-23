@@ -61,104 +61,25 @@
 // Final current basin: diff 262, size 414, shape 80.62%, exact blocks 35.77%,
 // no frame, four saved registers, and two ordered calls. First structural
 // divergence remains the switch tail-merged second-size arithmetic.
+// Fresh exact-finish audit: the size-before-type switch form reached 440 bytes
+// and diff 119, but added a live radius register and 26 bytes after the target.
+// Y-field pointers improved the loop anchor but retained the same overrun.
+// Indexed records, update-order, integer-pointer, zero-liveness, and VC5 flag
+// probes did not produce a smaller natural source. The shared context probe
+// also emitted the wrong map-field order and a 412-byte function. All probes
+// were restored to this policy-clean source.
+// Fresh validation: 412 emitted bytes, 262 strict differing bytes, no frame,
+// four saved registers, two ordered direct calls, and the original owner.
+// Exact-finish follow-up: the canonical random-map base declaration replaced
+// the duplicate local base surface without changing codegen. Branch-local
+// area scopes and compound area assignments were codegen duplicates. Direct
+// second-size products reached 404 bytes; helpers changed calls or load order.
+// Keep the canonical base context and the direct area expressions.
+// Wrapper repair: use the canonical controller context instead of repeating
+// terrain, land, generator, and controller declarations. The body is unchanged.
 
 #include <new.h>
-
-class RGE_Map;
-
-class RGE_Random_Map_Module {
-public:
-    virtual unsigned char generate();
-    virtual ~RGE_Random_Map_Module();
-
-    void* parent;
-    void* list;
-    RGE_Map* map;
-    void* map_row_offset;
-    long map_width;          // +0x14
-    long map_height;         // +0x18
-    float schedule;
-    void* search_map;
-    void* search_map_rows;
-    void* stack_array;
-    void* stack_offsets;
-};
-
-class RGE_Terrain_Info_Line {
-public:
-    long terrain_size;
-    long terrain_generated;
-    long terrain_type;
-    long clumps;
-    long spacing;
-    long base_terrain_type;
-    long clumpiness_factor;
-    long avoid_hot_spots;
-};
-
-class RGE_Terrain_Hot_Spots {
-public:
-    long x;
-    long y;
-    long radius;
-    long fade;
-};
-
-class RGE_Terrain_Info {
-public:
-    RGE_Terrain_Info_Line terrain[99];
-    long terrain_num;
-    RGE_Terrain_Hot_Spots hot_spots[99];
-    long hot_spot_num;
-};
-
-class RGE_Land_Info_Line {
-public:
-    long land_size;
-    long terrain_type;
-    long x;
-    long y;
-    long base_size;
-    long area;
-    unsigned char zone;
-    unsigned char pad_19[3];
-    long clumpiness_factor;
-    long wall_1_avoidance_line;
-    long wall_2_avoidance_line;
-    long wall_3_avoidance_line;
-    long wall_4_avoidance_line;
-    unsigned char wall_fade;
-    unsigned char pad_31[3];
-};
-
-class RGE_Land_Info {
-public:
-    RGE_Land_Info_Line land[99];
-    long land_num;
-    unsigned char base_terrain;
-    unsigned char pad_1421[3];
-    long wall_1_avoidance_line;
-    long wall_2_avoidance_line;
-    long wall_3_avoidance_line;
-    long wall_4_avoidance_line;
-    unsigned char wall_fade;
-    unsigned char pad_1435[3];
-};
-
-class RGE_RMM_Terrain_Generator : public RGE_Random_Map_Module {
-public:
-    char gap_30[0x1298];
-    void* map_zone;
-    virtual unsigned char generate();
-    RGE_RMM_Terrain_Generator(RGE_Map* map, RGE_Random_Map_Module* module,
-                              RGE_Terrain_Info* info);
-};
-
-class RGE_RMM_Controller : public RGE_Random_Map_Module {
-public:
-    void add_terrain_module(RGE_Terrain_Info& terrain_info,
-                            RGE_Land_Info& land_info, long type);
-};
+#include "../../include/rmm_cntr_context.h"
 
 void RGE_RMM_Controller::add_terrain_module(RGE_Terrain_Info& terrain_info,
                                               RGE_Land_Info& land_info,

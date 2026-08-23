@@ -50,6 +50,10 @@
 //   source uses text_y = y + 2 and text_y + 1 for the last two panels.
 // - unresolved pass: direct indexed arrays are a strong shape lead, but the
 //   remaining add ebx,2 versus lea ebx,[ebp+2] basin is not exact.
+// - Authentic scr_mps.cpp context used the canonical screen layout and /GX.
+//   PDB-ordered compilation kept 3240 bytes, 127 calls, and the 1478-byte diff.
+
+#ifndef SCR_MPS_TU_CONTEXT
 
 extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
 
@@ -61,15 +65,22 @@ class TDropDownPanel;
 class TEditPanel;
 class TScrollBarPanel;
 
+enum FormatType {
+    FORMAT_TYPE_DEFAULT = 0
+};
+
 class TPanel {
 public:
+    enum PositionMode {
+        POSITION_MODE_DEFAULT = 0
+    };
     virtual ~TPanel();
     virtual long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char);
     virtual void set_rect(tagRECT);
     virtual void set_rect(long, long, long, long);
     virtual void set_color(unsigned char);
     virtual void set_active(int);
-    virtual void set_positioning(int, long, long, long, long, long, long, long, long,
+    virtual void set_positioning(PositionMode, long, long, long, long, long, long, long, long,
                                  TPanel*, TPanel*, TPanel*, TPanel*);
     virtual void set_fixed_position(long, long, long, long);
     virtual void set_redraw(int);
@@ -204,7 +215,7 @@ public:
     int create_check_box(TPanel* parent, TButtonPanel** out,
                          long p3, long p4, long p5, long p6, long p7, long p8);
     int create_edit(TPanel* parent, TEditPanel** out, char* text,
-                    short width, long format, long x, long y, long w,
+                    short width, FormatType format, long x, long y, long w,
                     long h, long font, int p11, int p12);
     int create_drop_down(TPanel* parent, TDropDownPanel** out,
                          long p3, long p4, long p5, long p6, long p7,
@@ -327,6 +338,8 @@ public:
 
     TribeMPSetupScreen();
 };
+
+#endif
 
 TribeMPSetupScreen::TribeMPSetupScreen()
     : TScreenPanel("MP Setup Screen")
@@ -545,7 +558,7 @@ TribeMPSetupScreen::TribeMPSetupScreen()
                                         this->chatBox, 0x14) == 0) {
             return;
         }
-        if (this->create_edit(this, &this->chatInput, "", 0xF7, 0,
+        if (this->create_edit(this, &this->chatInput, "", 0xF7, (FormatType)0,
                               10, 0x192, 400, 0x17, 10, 1, 0) == 0) {
             return;
         }
@@ -643,7 +656,7 @@ TribeMPSetupScreen::TribeMPSetupScreen()
         return;
     }
     this->close_button->set_active(1);
-    this->close_button->set_positioning(9, 4, 4, 4, 4,
+    this->close_button->set_positioning((TPanel::PositionMode)9, 4, 4, 4, 4,
                                         0x11, 0x11, 0x11, 0x11,
                                         0, 0, 0, 0);
     this->cancelButton->hotkey = 0x1B;

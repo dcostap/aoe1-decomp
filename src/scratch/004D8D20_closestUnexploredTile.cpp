@@ -163,7 +163,8 @@ struct ManagedArray_int {
 
 class TribeInformationAIModule {
 public:
-    char gap_00[0x100];
+    virtual ~TribeInformationAIModule();
+    char gap_04[0xfc];
     TribeMainDecisionAIModule* md;
     int mapXSizeValue;
     int mapYSizeValue;

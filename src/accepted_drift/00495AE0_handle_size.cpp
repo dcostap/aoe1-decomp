@@ -47,6 +47,12 @@
 //   duplicate or worse codegen.  H21 added the full adjacent TPanel surface;
 //   it was duplicate.  H22 replaced tagRECT with the period windows.h type;
 //   it was neutral.
+// - H23 moved button-panel[16] setup after all three size arms.  It removed
+//   one call and worsened the size and CFG, so it was restored.
+// - H24 shared button-panel[16] setup only between the large and medium arms.
+//   It aligned all 82 call sites, but worsened size and structural coverage.
+// - H25 named each grid button and stored draw_type after cursor updates.  It
+//   added a 0x24 frame and worsened the result, so it was restored.
 //
 // BINARY NOTE: the first save loop uses EDI for save_score_active and EBX for
 // score_panel.  The retained pointer shape reproduces this register order.

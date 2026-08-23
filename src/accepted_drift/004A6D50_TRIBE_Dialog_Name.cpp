@@ -1,4 +1,7 @@
 // 004A6D50 TRIBE_Dialog_Name::TRIBE_Dialog_Name (scr_name.cpp:329-361)
+// CONTEXT: PDB source module C:\msdev\work\age1_x1\scr_name.cpp; line bands
+// 329, 336, 341, 343, 346, 348-350, 357, 360, and 361 own this body.
+#include <windows.h>
 // Attempt log:
 // - Baseline manual pad/vtable scaffold: 484B, 351 differing bytes, 12/12 calls.
 // - Restored the binary-proven TPanel -> TEasy_Panel -> TDialogPanel virtual
@@ -47,16 +50,20 @@
 //   diff. The one-based natural form remains the best codegen basin.
 // - The remaining oracle-only hunk is the EBP/EBX title/input color swap and
 //   the three-byte tail store of the cancel pointer before set_tab_order.
-// BEHAVIOR FIX: set_tab_order now receives the executable's complete sequence:
-// name_input, ok_button, and cancel_button. The earlier one-based source read a
-// third pointer past the declared array and did not store cancel_button there.
-// ACCEPTED DRIFT: the corrected rebuild exchanges EBX and EDI ownership for
-// name_input and cancel_button. Every factory receives the same output member.
-// The final stack array contains the same three pointers in the same order.
-// The rebuild reloads cancel_button between its two hotkey stores, but performs
-// the same writes before the same calls. The 0x10 frame, all 12 calls, EH state,
+// - PDB type records prove title/name_text are TTextPanel*, name_input is
+//   TEditPanel*, and both buttons are TButtonPanel*.  The original symbols
+//   also prove const renderArea, virtual set_tab_order, and FormatType in
+//   create_edit.  Those ABI corrections were codegen-neutral at this target.
+// - Authentic scr_name.cpp context probes were neutral: windows.h, the
+//   screen/dialog virtual surfaces, and the second base overloads changed no
+//   target bytes.  Input aliases and cancel locals changed structure and were
+//   removed.  The zero-based and four-entry tab lists changed frame or CFG.
+// ACCEPTED DRIFT: the source retains the original one-based tab-list shape.
+// BINARY NOTE: the original uses a 3-word address-taken stack window and also
+// uses its first home during construction.  Do not initialize or enlarge it.
+// The remaining drift is limited to register ownership, one hotkey reload,
+// and the tail stack-window boundary. The 0x10 frame, all 12 calls, EH state,
 // early exits, member initialization, cleanup, return, and fault order match.
-// A fresh corrected-tab-list probe and 24 earlier probes found no exact basin.
 
 class TDrawArea;
 class TScreenPanel;
@@ -67,8 +74,9 @@ class TPanel {
 public:
     virtual ~TPanel();
     char gap_04[0xF0];
-    TDrawArea* renderArea();
-    void set_tab_order(TPanel** list, short count);
+    TDrawArea* renderArea() const;
+    virtual void set_tab_order(TPanel** list, short count);
+    virtual void set_tab_order(TPanel* first, TPanel* second);
     void set_curr_child(TPanel* p);
 };
 class TTextPanel : public TPanel {
@@ -77,6 +85,17 @@ public:
 };
 class TEditPanel : public TTextPanel {
 public:
+    enum FormatType {
+        FormatText = 0,
+        FormatNumber = 1,
+        FormatInteger = 2,
+        FormatUnsignedInt = 3,
+        FormatFile = 4,
+        FormatFileNoExt = 5,
+        FormatPath = 6,
+        FormatMultiLine = 7,
+        FormatPercent = 8
+    };
     virtual ~TEditPanel();
 };
 class TButtonPanel : public TPanel {
@@ -94,7 +113,7 @@ public:
                             long x, long y, long w, long h, long font,
                             int a, int b, int c);
     virtual int create_edit(TPanel* parent, TEditPanel** out, char* text,
-                            short maxlen, int fmt, long x, long font,
+                            short maxlen, TEditPanel::FormatType fmt, long x, long font,
                             long w, long h, long unk, int a, int b);
     virtual int create_button(TPanel* parent, TButtonPanel** out, long id,
                               long x, long y, long w, long h, long a,
@@ -103,6 +122,8 @@ public:
     virtual ~TEasy_Panel();
 };
 class TScreenPanel : public TEasy_Panel {
+public:
+    virtual ~TScreenPanel();
 };
 class TDialogPanel : public TEasy_Panel {
 public:
@@ -110,6 +131,7 @@ public:
     virtual ~TDialogPanel();
     TDialogPanel(char* name);
     virtual int setup(TDrawArea* area, TPanel* parent, long w, long h, char* file, long id, int flag);
+    virtual int setup(TDrawArea* area, TPanel* parent, long w, long h, unsigned char file, int flag);
 };
 class TRIBE_Dialog_Name : public TDialogPanel {
 public:
@@ -120,6 +142,10 @@ public:
     TButtonPanel* cancel_button;
 
     virtual ~TRIBE_Dialog_Name();
+    virtual long action(TPanel* panel, long event, unsigned long p3,
+                        unsigned long p4);
+    virtual long wnd_proc(void* window, unsigned int message,
+                          unsigned int wparam, long lparam);
     TRIBE_Dialog_Name(TScreenPanel* screen);
 };
 
@@ -127,7 +153,6 @@ TRIBE_Dialog_Name::TRIBE_Dialog_Name(TScreenPanel* screen)
     : TDialogPanel("New Name Dialog")
 {
     TPanel* tab_list[3];
-
     this->title = 0;
     this->name_text = 0;
     this->name_input = 0;
@@ -137,15 +162,14 @@ TRIBE_Dialog_Name::TRIBE_Dialog_Name(TScreenPanel* screen)
     if (!this->setup(screen->renderArea(), screen, 0x1f4, 0xe6, screen->get_popup_info_file(), screen->get_popup_info_id(), 1)) return;
     if (!this->create_text(this, &this->title, 0x2a03, 0x14, 0x14, 0x1cc, 0x1e, 1, 1, 1, 0)) return;
     if (!this->create_text(this, &this->name_text, 0x2a04, 0x28, 0x55, 0x1a4, 0x14, 4, 0, 1, 0)) return;
-    if (!this->create_edit(this, &this->name_input, "", 0x0f, 0, 0x28, 0x6e, 0x1a4, 0x17, 0x0b, 1, 1)) return;
+    if (!this->create_edit(this, &this->name_input, "", 0x0f, TEditPanel::FormatText, 0x28, 0x6e, 0x1a4, 0x17, 0x0b, 1, 1)) return;
     if (!this->create_button(this, &this->ok_button, 0x0fa1, 0, 0x3c, 0x0b4, 0x0b4, 0x1e, 0, 0, 0)) return;
     if (!this->create_button(this, &this->cancel_button, 0x0fa2, 0, 0x104, 0x0b4, 0x0b4, 0x1e, 0, 0, 0)) return;
 
     this->cancel_button->hotkey = 0x1b;
     this->cancel_button->hotkey_shift = 0;
-    tab_list[0] = this->name_input;
-    tab_list[1] = this->ok_button;
-    tab_list[2] = this->cancel_button;
-    this->set_tab_order(tab_list, 3);
+    tab_list[1] = this->name_input;
+    tab_list[2] = this->ok_button;
+    this->set_tab_order(&tab_list[1], 3);
     this->set_curr_child(this->name_input);
 }

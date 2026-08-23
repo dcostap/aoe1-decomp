@@ -1,6 +1,6 @@
 // TribeGameSettingsScreen::handle_idle
 // VA: 004B5BB0, scr_set.cpp:554-582
-// Status: PARKED in scratch - 1-byte VC5 branch target drift
+// Status: exact under the canonical scr_set context surface.
 //
 // Attempt log:
 // v0: Basic member function struct layout → 2 bytes diff (1.09%)
@@ -10,15 +10,9 @@
 // v2: Comma expression, dummy if, etc. → no effect on jne target
 // v3: Local pointer scope block → extra push edi (64% regression)
 //
-// Remaining diff: 1 byte at offset 0x47
-//   Original: 75 0b (jne past call + reload = 11 bytes)
-//   Rebuilt:  75 05 (jne past call only = 5 bytes, reload outside block)
-// The `mov ecx, [62C574h]` reload is placed INSIDE the if-true block in
-// the original but OUTSIDE in the rebuilt. VC5 optimization difference -
-// cannot force reload position from C++ source without extra register
-// allocation.
-//
-// Everything else (182 of 183 bytes) matches exactly including:
+// The former isolated source left one branch-target byte. The canonical
+// module surface restores that reload placement and matches all 183 bytes.
+// The exact result includes:
 //   - Prologue: push esi, mov esi, ecx
 //   - All field accesses ([esi+504h], [esi+4F0h], [esi+55Ch])
 //   - All call sites (fillScenarios, fillMissionText, activatePanels,
@@ -27,6 +21,9 @@
 //   - Sub eax, ecx for time comparison
 //   - Ret clean epilogue
 
+#define SCR_SET_CONTEXT_GROUP 1
+#include "../../include/scr_set_context.h"
+#ifndef SCR_SET_CONTEXT_GROUP
 extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
 
 struct TCommunications_Handler {
@@ -69,6 +66,7 @@ struct TribeGameSettingsScreen : TPanel {
 
 #define rge_base_game (*(RGE_Base_Game**)0x62C574)
 #define comm (*(TCommunications_Handler**)0x62C4C0)
+#endif
 
 long TribeGameSettingsScreen::handle_idle() {
     if (scenariosLoaded == 0) {

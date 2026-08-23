@@ -45,6 +45,19 @@
 //   original self=ESI/object=EDI; rebuilt self=EDI/object=ESI.
 // - Main review replaced generic virtual-slot declarations with real TPanel
 //   inheritance and the canonical RGE_Static_Object method surface.
+// - Exact-finish probes: function-scope player/object declarations in both
+//   orders, the declared derived destructor, proven RGE_View and
+//   RGE_Diamond_Map field surfaces, and function-scope draw_level were all
+//   codegen duplicates. Restored the pinned source after each probe.
+// - Exact-finish validation: fresh checker remains 509 bytes, 0x10 frame,
+//   13/13 ordered calls, and 14 changed bytes. The only drift is the complete
+//   ESI/EDI semantic-role exchange: original this=ESI/object=EDI; rebuilt
+//   this=EDI/object=ESI. No natural context probe changed that allocation.
+// - Follow-up probes: polymorphic RGE_Player, same-TU RGE_Base_Game and full
+//   tool-box declarations, string.h context, branch-local declaration order,
+//   and draw-level scope all emitted the same 14-byte drift.
+// - A selection-local scope moved below the pause guard reduced the frame to
+//   0xC and increased drift to 43 bytes. Restored the 0x10-frame source.
 // ACCEPTED DRIFT: The 14 changed bytes exchange ESI and EDI for `this` and the
 // selected object. One register-only move also shifts across the unchanged EDI
 // save. Every memory operand, argument, result, flag, call, branch, stack save,

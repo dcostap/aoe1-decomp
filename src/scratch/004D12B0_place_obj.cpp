@@ -52,6 +52,17 @@
 // surface. It is codegen-neutral and replaces the raw vtable field. Minimal
 // global declarations, a register output parameter, out[0], and one function-
 // wide result also reproduced the same seven-byte epilogue basin.
+// TU context audit: same-module tact_mob.cpp owners were tested in address order.
+// No tested authentic nearest-one or cumulative multi-owner prefix compiled
+// with this standalone class surface. No context change is validated.
+// Exact-finish pass: restored the PDB-proven protected access. Direct, comma,
+// named, alias, chained, folded-branch, bool, array, const, post-increment, and
+// fixed memcpy publication forms all emitted the same seven-byte epilogue drift.
+// Complete output-pointee context and /G3, /G4, /G5, and /Zi were also neutral.
+// /G6 changed the complete function and was removed. The original stores the
+// created pointer before all four register pops. VC5 moves that store after the
+// EDI, ESI, and EBP pops here. Authentic same-TU compilation remains the useful
+// next test because source-only publication forms now share one codegen basin.
 
 #include "../../include/game_globals.h"
 
@@ -119,6 +130,7 @@ public:
     float place_y;
     char gap_28[0x18];
     short obj_id;
+protected:
     unsigned char place_obj(RGE_Static_Object** out);
 };
 

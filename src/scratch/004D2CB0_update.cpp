@@ -68,6 +68,7 @@
 //   a state-6 pickup transition, positive-arm state-8 restructuring, and
 //   object-state casts/volatile. These either worsened codegen or were neutral.
 
+#ifndef TACT_TRD_SHARED_CONTEXT
 #define V_DUMMY(N) virtual void v##N()
 
 class RGE_Static_Object;
@@ -235,6 +236,8 @@ public:
     unsigned char subActionValue;
     char gap_3D[0x03];
 };
+#undef V_DUMMY
+#endif
 
 extern float DAT_00575348;
 extern float DAT_00575358;
@@ -244,6 +247,7 @@ extern double DAT_00575350;
 extern double DAT_00575368;
 extern float DAT_00575370;
 
+#ifndef TACT_TRD_SHARED_CONTEXT
 class RGE_Task {
 public:
     char gap_00[0x48];
@@ -256,6 +260,7 @@ public:
     float pick_up_y;
     virtual unsigned char update();
 };
+#endif
 
 unsigned char TRIBE_Action_Trade::update()
 {

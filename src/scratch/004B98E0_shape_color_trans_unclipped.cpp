@@ -205,6 +205,22 @@
 //   32-case ambient declaration lab produced 11 eligible 268-byte variants,
 //   all at the same first divergence; other variants were 271 bytes. Neither
 //   context axis is a useful lead.
+// sa-b67e446d-r1 exact-codegen pass (2026-08-23):
+// - Replayed the binary-proven td row home, p2 byte-count home, guarded row
+//   count, and shared source-advance tails from exact same-TU decoders. This
+//   diagnostic source matched setup through +0x87 and reached 268B/132 diff,
+//   but retained rejected td pointer punning and goto-based tail steering.
+// - Adding the period <string.h> context changed that diagnostic to 268B with
+//   all 101 instruction shapes and both calls aligned. Only two SIB bytes
+//   remained: original palette reads use [edx+ebx], while VC5 emitted the
+//   equivalent [ebx+edx]. Palette structs, references, pointer addition,
+//   reversed subscripting, pointer typedefs, and array-parameter spelling did
+//   not change those bytes. Narrow index locals changed the frame or prologue.
+// - The two-byte frontier is not retained because its td cast and labels are
+//   compiler-steering forms, not the simplest supported source. The natural
+//   typed row reconstruction remains authoritative. Its known fault-order
+//   difference also blocks semantic acceptance: it reads td->Orien before the
+//   original header-field reads on invalid input.
 // FLAGS: /nologo /c /O2 /Oy
 
 extern "C" void* __cdecl memset(void*, int, unsigned int);

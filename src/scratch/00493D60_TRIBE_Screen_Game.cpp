@@ -92,6 +92,18 @@
 // base-pointer ownership, and a function-scope string buffer. The player and
 // draw-area locals worsened structure or call order. Other probes emitted the
 // clean 5859-byte baseline with diff 3154. Restored the clean source.
+// 2026-08-23 subagent sa-727c2e97: fresh validation kept this standalone
+// scr_game.cpp owner. The grouped scr_game_context surface moved the base-game
+// world field by four bytes and changed message-panel setup calls. It was not
+// retained. The local TPanel surface now follows the proven full slot order
+// and size. Panel constructors use reviewed pointer and long types.
+// TRIBE_Main_View now uses its implicit constructor. This removes the old raw
+// vptr write. A typed AnimPalEntry trial reproduced more original blocks but
+// lost seven bytes. It was restored because exactness is the first gate.
+// Final unresolved evidence: one byte is missing. The ordered 180-call list,
+// frame, saved registers, owner symbol, and CFG signals match. Inventory and
+// object constructor loads remain reordered. The draw loop still loads the
+// game receiver through EAX, not EDX. Do not claim exactness.
 
 #include "../../include/game_types.h"
 #include "../../include/game_globals.h"
@@ -116,13 +128,68 @@ class TScrollBarPanel;
 class TPanel {
 public:
     virtual ~TPanel();
-    virtual long setup(TDrawArea*, TPanel*, int, int, int, int, int);
-    virtual void vf_08();
-    virtual void vf_0c();
-    virtual void vf_10();
+    TPanel();
+    virtual long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char);
+    virtual void set_rect(struct tagRECT);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_color(unsigned char);
     virtual void set_active(int);
-    char panel_gap_04[0xd4];
+    virtual void set_positioning(int, long, long, long, long, long, long,
+                                 long, long, TPanel*, TPanel*, TPanel*, TPanel*);
+    virtual void set_fixed_position(long, long, long, long);
+    virtual void set_redraw(int);
+    virtual void set_overlapped_redraw(TPanel*, TPanel*, int);
+    virtual void draw_setup(int);
+    virtual void draw_finish();
+    virtual void draw();
+    virtual void draw_rect(struct tagRECT*);
+    virtual void draw_offset(long, long, struct tagRECT*);
+    virtual void draw_rect2(struct tagRECT*);
+    virtual void draw_offset2(long, long, struct tagRECT*);
+    virtual void paint();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual long handle_idle();
+    virtual long handle_size(long, long);
+    virtual long handle_paint();
+    virtual long handle_key_down(long, short, int, int, int);
+    virtual long handle_char(long, short);
+    virtual long handle_command(unsigned int, long);
+    virtual long handle_user_command(unsigned int, long);
+    virtual long handle_timer_command(unsigned int, long);
+    virtual long handle_scroll(long, long);
+    virtual long handle_mouse_down(unsigned char, long, long, int, int);
+    virtual long handle_mouse_move(long, long, int, int);
+    virtual long handle_mouse_up(unsigned char, long, long, int, int);
+    virtual long handle_mouse_dbl_click(unsigned char, long, long, int, int);
+    virtual long mouse_move_action(long, long, int, int);
+    virtual long mouse_left_down_action(long, long, int, int);
+    virtual long mouse_left_hold_action(long, long, int, int);
+    virtual long mouse_left_move_action(long, long, int, int);
+    virtual long mouse_left_up_action(long, long, int, int);
+    virtual long mouse_left_dbl_click_action(long, long, int, int);
+    virtual long mouse_right_down_action(long, long, int, int);
+    virtual long mouse_right_hold_action(long, long, int, int);
+    virtual long mouse_right_move_action(long, long, int, int);
+    virtual long mouse_right_up_action(long, long, int, int);
+    virtual long mouse_right_dbl_click_action(long, long, int, int);
+    virtual long key_down_action(long, short, int, int, int);
+    virtual long char_action(long, short);
+    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    virtual void get_true_render_rect(struct tagRECT*);
+    virtual int is_inside(long, long);
+    virtual void set_focus(int);
+    virtual void set_tab_order(TPanel*, TPanel*);
+    virtual void set_tab_order(TPanel**, short);
+    virtual unsigned char get_help_info(char**, long*, long, long);
+    virtual void stop_sound_system();
+    virtual int restart_sound_system();
+    virtual void take_snapshot();
+    virtual void handle_reactivate();
+    char panel_gap_04[0x1c];
+    TDrawArea* render_area;
+    char panel_gap_24[0xb4];
     int error_code;
+    char panel_tail_d[0x18];
     char* get_string(int id);
     int get_string(int id, char* buffer, int count);
     void set_help_info(int, int);
@@ -132,7 +199,7 @@ public:
 
 class TScreenPanel : public TPanel {
 public:
-    char screen_gap_dc[0x478 - 0xdc];
+    char screen_gap_dc[0x478 - 0xf4];
     TScreenPanel(char* name);
     long setup(TDrawArea* draw_area, char* name, int id, int flag);
     int create_text(TPanel* parent, TTextPanel** out, int string_id, int x, int y, int w, int h, int a, int b, int c, int d);
@@ -146,22 +213,23 @@ public:
     TShape(char* filename, int id);
     int is_loaded();
 };
-class RGE_Player;
+class RGE_Player {};
+class TRIBE_Player : public RGE_Player {};
 class TFont;
 class TDigital;
 class RGE_Game_World;
-class RGE_Font { public: TFont* font; int font_wid; int font_hgt; };
+class RGE_Font { public: void* font; long font_wid; long font_hgt; };
 class RGE_View : public TPanel {
 public:
     long setup(TDrawArea*, TPanel*, int, int, int, int, unsigned char, int, char*);
     void set_world(RGE_Game_World*);
     void set_player(RGE_Player*);
 };
-class RGE_Main_View : public RGE_View { public: char MAIN_VIEW_gap[0x380 - 0xdc]; RGE_Main_View(); };
-class TRIBE_Main_View : public RGE_Main_View { public: TRIBE_Main_View() { *(int*)this = 0x572AA8; } };
+class RGE_Main_View : public RGE_View { public: char MAIN_VIEW_gap[0x380 - 0xf4]; RGE_Main_View(); };
+class TRIBE_Main_View : public RGE_Main_View {};
 class RGE_Diamond_Map : public TPanel {
 public:
-    char diamond_gap_dc[0x150 - 0xdc];
+    char diamond_gap_dc[0x150 - 0xf4];
     TRIBE_Main_View* main_view;
     char diamond_gap_154[0x174 - 0x154];
     long setup(TDrawArea*, TPanel*, int, int, int, int, unsigned char, int, void*);
@@ -170,11 +238,11 @@ public:
     void set_player(RGE_Player*);
 };
 class TRIBE_Diamond_Map_View : public RGE_Diamond_Map { public: TRIBE_Diamond_Map_View(); };
-class TRIBE_Panel_Inven : public TPanel { public: char inven_gap[0x118 - 0xdc]; TRIBE_Panel_Inven(TDrawArea*, TPanel*, TFont*, RGE_Player*); };
-class TRIBE_Panel_Object : public TPanel { public: char object_gap[0x214 - 0xdc]; TRIBE_Panel_Object(TDrawArea*, TPanel*, TFont*, int, int, TShape*, TShape**, RGE_Player*); };
+class TRIBE_Panel_Inven : public TPanel { public: char inven_gap[0x118 - 0xf4]; TRIBE_Panel_Inven(TDrawArea*, TPanel*, void*, TRIBE_Player*); };
+class TRIBE_Panel_Object : public TPanel { public: char object_gap[0x214 - 0xf4]; TRIBE_Panel_Object(TDrawArea*, TPanel*, void*, long, long, TShape*, TShape**, TRIBE_Player*); };
 class TButtonPanel : public TPanel {
 public:
-    char button_gap_dc[0x2c0 - 0xdc];
+    char button_gap_dc[0x2c0 - 0xf4];
     unsigned char draw_type_byte;
     char button_gap_2c1[0x3d4 - 0x2c1];
     void set_text_color(int, int, int);
@@ -185,21 +253,20 @@ public:
     void set_text(int, char*);
     void set_bevel_info(int, int, int, int, int, int, int);
 };
-class TRIBE_Panel_Button : public TButtonPanel { public: TRIBE_Panel_Button(TDrawArea*, TPanel*, TDigital*, TFont*, int, int, TShape*); void set_text_msg(char*); };
+class TRIBE_Panel_Button : public TButtonPanel { public: TRIBE_Panel_Button(TDrawArea*, TPanel*, TDigital*, void*, long, long, TShape*); void set_text_msg(char*); };
 class TMessagePanel : public TPanel {
 public:
-    char message_gap[0x380 - 0xdc];
-    TMessagePanel(TFont*, int, int);
-    long setup(TDrawArea*, TPanel*, int, int, int, int, int);
+    char message_gap[0x380 - 0xf4];
+    TMessagePanel(void*, long, long);
     void set_justification(int, int, int);
 };
-class TRIBE_Panel_Time : public TPanel { public: char time_gap[0x174 - 0xdc]; TRIBE_Panel_Time(TDrawArea*, TPanel*); void startup(); void set_clock_type(int, int); };
-class TRIBE_Panel_Pop : public TPanel { public: char pop_gap[0x164 - 0xdc]; TRIBE_Panel_Pop(TDrawArea*, TPanel*); void startup(); };
+class TRIBE_Panel_Time : public TPanel { public: char time_gap[0x174 - 0xf4]; TRIBE_Panel_Time(TDrawArea*, TPanel*); void startup(); void set_clock_type(int, int); };
+class TRIBE_Panel_Pop : public TPanel { public: char pop_gap[0x164 - 0xf4]; TRIBE_Panel_Pop(TDrawArea*, TPanel*); void startup(); };
 class TTextPanel : public TPanel {
 public:
-    char text_gap[0x188 - 0xdc];
+    char text_gap[0x188 - 0xf4];
     TTextPanel();
-    long setup(TDrawArea*, TPanel*, int, int, int, int, TFont*, int, int, char*, int, unsigned char, int, unsigned char, int, char*);
+    long setup(TDrawArea*, TPanel*, long, long, long, long, void*, long, long, char*, int, unsigned char, int, unsigned char, short, char*);
     void set_alignment(int, int);
     void set_back_pic(char*);
     void set_fill_back(int, unsigned char);
@@ -208,7 +275,7 @@ public:
     void empty_list();
 };
 class TScrollBarPanel : public TPanel { public: void set_bevel_info(int,int,int,int,int,int,int); };
-class RGE_Panel_Tool_Box : public TPanel { public: char toolbox_gap[0x120 - 0xdc]; RGE_Panel_Tool_Box(TDrawArea*, TPanel*, int,int,int,int,TFont*,int,int,TDigital*,TScreenPanel*,RGE_View*,RGE_Diamond_Map*); };
+class RGE_Panel_Tool_Box : public TPanel { public: char toolbox_gap[0x120 - 0xf4]; RGE_Panel_Tool_Box(TDrawArea*, TPanel*, long,long,long,long,void*,long,long,TDigital*,TScreenPanel*,RGE_View*,RGE_Diamond_Map*); };
 
 class TRIBE_Screen_Game : public TScreenPanel {
 public:
@@ -222,7 +289,7 @@ public:
 };
 
 struct ProgInfoStub { char gap_00[0x888]; unsigned long update_interval; };
-struct BaseGameStub {
+struct RGE_Base_Game {
     virtual void vf_00();
     virtual void vf_04();
     virtual void vf_08();
@@ -242,14 +309,14 @@ struct BaseGameStub {
     RGE_Game_World* world;
     char gap_3f8[0xa20 - 0x3f8];
     void* map_save_area;
-    RGE_Player* get_player();
+    TRIBE_Player* get_player();
     RGE_Font* get_font(int);
     TDigital* get_sound(int);
     int singlePlayerGame();
     int multiplayerGame();
     unsigned char check_prog_argument(char*);
 };
-extern BaseGameStub* rge_base_game;
+extern RGE_Base_Game* rge_base_game;
 
 extern char s_btnunit_shp[];
 extern char s_btntech_shp[];
@@ -491,7 +558,7 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
     for (i = 3; i != 0; i--) {
         (*draw_buttons)->setDrawType(3);
         (*draw_buttons)->draw_type_byte = 3;
-        (*draw_buttons)->set_text(0, (*(BaseGameStub**)0x62c574)->get_string(0x66, (*draw_buttons)->get_id(), 0, str, 0x200));
+        (*draw_buttons)->set_text(0, (*(RGE_Base_Game**)0x62c574)->get_string(0x66, (*draw_buttons)->get_id(), 0, str, 0x200));
         (*draw_buttons)->set_bevel_info(3, OFF8(0x320), OFF8(0x321), OFF8(0x322), OFF8(0x323), OFF8(0x324), OFF8(0x325));
         draw_buttons++;
     }

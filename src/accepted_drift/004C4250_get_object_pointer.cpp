@@ -114,6 +114,15 @@
 // and const canonical pointers did not move the hunk. Restored and validated
 // the clean source. The original still uses ESI for owner and EDX for the
 // short tail compare; current natural source uses EDX and ESI respectively.
+// 2026-08-23 sa-28ee6a8e-r1 exact-finish pass: the current checker exposes
+// 218 emitted bytes versus the 219-byte original. The six ordered long
+// find_by_id calls, FPO frame, saved registers, CFG, owner symbol, object-list
+// indexing, player/world rereads, bounds, null paths, and returned ownership
+// remain exact. Parameter-home zero/index forms widened to 225/229 bytes or
+// 151/153 differing bytes. Split byte initialization with a real register
+// hint reproduced the 218/37 basin. Restored the clean source after each test;
+// no natural lifetime or parameter-home form selected the original ESI owner
+// and EDX short compare without losing the BL home.
 // ACCEPTED DRIFT: The 37 changed bytes exchange the owner and promoted player
 // index between ESI and EDX. The tail uses equivalent zero-extension forms and
 // schedules one private byte-home store around the same world load. All six

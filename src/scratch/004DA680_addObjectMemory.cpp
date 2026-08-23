@@ -51,6 +51,15 @@
 // The original still loads max into EBP, initializes empty in EDI, tests max,
 // then reads importantObjectMemory. The clean source loads max into EDI, reads
 // importantObjectMemory early, and initializes empty in EBP.
+// sa-ab1b1e07-r1: authenticated Information-AI inheritance, registered
+// TribeMainDecisionAIModule ownership, full managed-array field anchors,
+// polymorphic player/object/world declarations, narrow player rereads, direct
+// player-id rereads, pointer aliases, declaration order, and guarded scan forms
+// did not recover the original basin. The typed while scan remains the closest
+// source at 431 positional bytes, with six ordered calls and no frame.
+// sa-ab1b1e07-r1: guarded pointer assignment preserves the observed fault order
+// but emits 1144 or 1337 bytes and loses the target CFG. The clean source keeps
+// the exact-size scan and late tails as the pinned codegen baseline.
 // BLOCKER: The rebuild hoists importantObjectMemory before the maximum-count
 // test. The executable reads that member only when the scan can run. For a
 // zero or negative count, the rebuild performs an extra pointer read. Fault

@@ -21,6 +21,17 @@
 // read follows the matching write in both builds, and register use after each
 // load is identical. Calls, values, writes, predicates, cleanup, and faults are
 // therefore equal. All non-displacement bytes match.
+//
+// Exact-finish audit: reusing one find handle, changing four-byte signed types,
+// swapping handle phases, naming the old-entry pointer, and splitting the
+// looped initializer did not change this exchange. The clean source remains
+// the smallest supported reconstruction.
+//
+// Exact-finish audit update: a fresh build also kept this exchange after
+// swapping the count and handle declarations and after scoping the first-scan
+// handle. The fresh grouped result is 985 equal bytes and 10 differing
+// displacement bytes. The exact screen/list callers at 004B44F0 and 004B5E00
+// remain separate anchors; their fresh checks are exact.
 
 #include <stdio.h>
 #include <stdlib.h>

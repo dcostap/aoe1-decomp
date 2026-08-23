@@ -36,6 +36,13 @@
 // - Fresh final probes tested compound per-arm ranges, duplicated upper-bound
 //   checks after the facet-arm recovery, and a separate upper-bound local.
 //   None improved the 33-byte result. The scoped canonical source remains.
+// - Re-read orig/ghidra_decomp/sprite.cpp.decomp as source-recovery evidence.
+//   Its stack-slot names confirm the same typed shape_minmax output slots,
+//   mirrored lower/upper transforms, and common y-bound fault order.  A
+//   decompiler-shaped output reorder reached 33 bytes only after the same
+//   mirrored assignment form was restored; the simpler canonical source is
+//   retained.  A 49-variant bound/header lab and a 294-variant declaration
+//   lab found no exact basin.
 // ACCEPTED DRIFT: The x-range hunk computes the same lower and upper bounds.
 // The original duplicates the upper compare and shares its `jg`; the rebuild
 // shares the compare and branch. The later differences only recolor registers

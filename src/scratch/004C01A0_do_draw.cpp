@@ -21,10 +21,9 @@
 //   direct TShape new-expression, and use signed int promotion for the uchar
 //   draw-level parameter.  These moved the diff from 497 to 440 bytes.
 // - control-flow: positive non-null color-table arms reproduce the oracle's
-//   `je` null blocks.  A prior branch-local color byte preserved the second
-//   mirror call site, but it read color_flag before _ASMSet_Color_Xform.  The
-//   executable reads color_flag after that call.  The cache was removed to
-//   preserve call-mutation and member-fault behavior.
+//   `je` null blocks.  The fixed mirror arm rereads color_flag after
+//   _ASMSet_Color_Xform.  The dynamic mirror arm reads color_flag before its
+//   color-table lookup, as the executable proves, so its local byte is kept.
 // - follow-up: delaying the typed filename initialization until the lazy-load
 //   arm changed the EH prologue and widened the result to 765 bytes; restored.
 // - follow-up: a direct get_facetindex predicate and swapped natural local
@@ -37,61 +36,36 @@
 //   remains the first structural mismatch.
 // - revisit: direct fixed-table shape calls in both mirror and draw arms
 //   recover the original 270-instruction CFG and raise shape similarity to
-//   93.70%; the best clean basin is 826 bytes and 375 differing bytes.
-//   A function-scope table pointer is retained because the binary has one
-//   repeated pointer lifetime across the dynamic color arms.  Twenty distinct
-//   source, ABI, context, layout, and lifetime probes did not recover the
-//   original EBX/EBP color or the remaining dynamic-table blocks.  No inline
-//   assembly or compiler-only source remains.
-// - Accepted-drift blocker: with the required direct color_flag read, VC5
-//   merges mirror call sites.  Keeping separate sites requires the early cache
-//   that changes behavior across _ASMSet_Color_Xform.  Keep the natural direct
-//   member source in scratch.
-// - worker pass (sa-73e7a070-r1): restoring branch-local table declarations and
-//   the early mirror color byte recovered the prior codegen frontier: 826 bytes,
-//   270 instructions, all 23 ordered calls, and 375 differing bytes.  The
-//   original reads color_flag after _ASMSet_Color_Xform, so this cache is not
-//   retained in the policy-safe source.
-// - worker probes: a frame local copy widened the mismatch to 763 bytes;
-//   `register frame`, declaration-order changes, a shape alias, an explicit
-//   uchar cast, and stdlib header context were duplicates or worse.  Moving the
-//   color assignment after ASMSet restored direct behavior but merged one call.
-// - final worker state: restored the direct-member, function-scope-table source
-//   at 788 bytes and 415 differing bytes.  The remaining first mismatch is the
-//   EBX/EBP frame-zero register basin; no natural source lead recovered it.
+//   93.70%; the best source basin is 826 bytes and 375 differing bytes.
+//   The mirror call count and ordered call map are exact.  The remaining
+//   differences are the EBX/EBP parameter-zero basin and dynamic table blocks.
+//   No inline assembly or compiler-only source remains.
+// - The target remains in scratch.  The fixed mirror member read stays after
+//   ASMSet_Color_Xform, while the dynamic mirror byte stays before table lookup.
+// - worker pass: branch-local table declarations plus the dynamic mirror byte
+//   recover all 23 ordered calls.  The fixed mirror call still rereads the
+//   member after ASMSet_Color_Xform.  This preserves fault order.
+// - context pass: the reviewed full sprite_context.h owner surface and the
+//   neighboring game_globals.h declaration context are codegen duplicates.
+//   Local-order, zero-local, register-frame, and common-call CFG probes were
+//   also duplicates or worse.  The common-call probe widened the frame to
+//   0x110 and lost one shape_mirror site; it was restored.
+// - final worker state: current source is the natural 826-byte, 23-call
+//   reconstruction.  Fresh checks still report 375 differing bytes.  The
+//   first mismatch is the callee-saved frame/zero register color at +001C.
 
+#include <stdlib.h>
 #include <stdio.h>
+#include "../../include/sprite_context.h"
+#include "../../include/game_globals.h"
 
 typedef unsigned char uchar;
-
-class RGE_Color_Table;
-class TDrawArea;
-class RGE_Sprite;
-class RGE_Picture_List;
-class RGE_Sound;
-class RGE_Sound_List;
-
-class TShape {
-public:
-    char data[0x20];
-
-    TShape(char* filename, long resource_id);
-    ~TShape();
-    uchar shape_draw(TDrawArea*, long, long, long, uchar, uchar*);
-    uchar shape_mirror(TDrawArea*, long, long, long, uchar, uchar*);
-};
 
 class RGE_Color_Table {
 public:
     char gap_00[0x26];
     short id;
     uchar table[0x100];
-};
-
-class RGE_Base_Game {
-public:
-    virtual ~RGE_Base_Game();
-    void add_to_timing(int index, unsigned long value);
 };
 
 class DClipInfo_List {
@@ -113,59 +87,12 @@ extern int SDI_Draw_Level;
 extern int do_draw_log;
 extern int safe_draw_log;
 
-class RGE_Sprite {
-public:
-    char pict_name[13];
-    char gap_0D[3];
-    long resource_id;
-    uchar loaded;
-    char gap_15[3];
-    RGE_Color_Table** color_tables;
-    TShape* shape;
-    long last_time;
-    long delta_time;
-    uchar color_flag;
-    uchar draw_level;
-    short color_table;
-    uchar transparent_picking_flag;
-    char gap_2D[1];
-    short box_x1;
-    short box_y1;
-    short box_x2;
-    short box_y2;
-    short draw_list_num;
-    RGE_Picture_List* draw_list;
-    RGE_Sound* main_sound;
-    uchar micro_man_sound;
-    char gap_41[3];
-    RGE_Sound_List* sound_list;
-    char name[21];
-    char gap_5D[1];
-    short frame_num;
-    short facet_num;
-    char gap_62[2];
-    float base_speed;
-    float duration;
-    float pause_between_loops;
-    uchar flag;
-    char gap_71[1];
-    short id;
-    uchar mirror_flag;
-    char gap_75[3];
-
-    uchar get_facetindex(long facet, long frame, long& frame_out);
-    void do_draw(long facet, long frame, long x, long y,
-                 RGE_Color_Table* color_table, TDrawArea* draw_area,
-                 uchar draw_level);
-};
-
 void RGE_Sprite::do_draw(long facet, long frame, long x, long y,
                          RGE_Color_Table* color_table,
                          TDrawArea* draw_area, uchar draw_level)
 {
     char s[256];
     long facetindex;
-    uchar* table;
     char* fname = 0;
 
     if (frame >= this->frame_num) {
@@ -222,6 +149,8 @@ void RGE_Sprite::do_draw(long facet, long frame, long x, long y,
             goto draw_done;
         }
         else {
+            uchar* table;
+            uchar color = this->color_flag;
             if (this->color_tables[this->color_table] != 0) {
                 _ASMSet_Color_Xform((this->color_table + 1) * 0x10);
                 table = this->color_tables[this->color_table]->table;
@@ -230,7 +159,7 @@ void RGE_Sprite::do_draw(long facet, long frame, long x, long y,
                 table = 0;
             }
             this->shape->shape_mirror(draw_area, x, y, facetindex,
-                                      this->color_flag, table);
+                                      color, table);
         }
     }
     else {
@@ -257,6 +186,7 @@ void RGE_Sprite::do_draw(long facet, long frame, long x, long y,
             }
         }
         else {
+            uchar* table;
             if (this->color_tables[this->color_table] != 0) {
                 _ASMSet_Color_Xform((this->color_table + 1) * 0x10);
                 table = this->color_tables[this->color_table]->table;

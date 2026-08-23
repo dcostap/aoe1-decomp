@@ -78,8 +78,31 @@
 // draw_list[i] address with different private registers and ADD/LEA lowering.
 // The four fscanf destinations, argument order, reads, writes, loop predicate,
 // calls, publication order, fault order, and all later blocks match.
+// - Exact-finish audit: direct indexed draw fields recover the original
+//   ECX/EDX/LEA draw hunk, but change the later sound-count width basin to a
+//   short load and add one byte. Typed entry, reference, pointer, declaration,
+//   count, header, and typed-shape variants did not improve the exact result.
+// - Diagnostic dword-home and union overlays were rejected. They either moved
+//   the dword load before the guard or changed the parser frame and topology.
+// - The same-TU game_globals header is retained as supported sprite.cpp
+//   context; it is codegen-neutral here. TShape* is retained as typed member
+//   ownership; the constructor remains no-EH and emits no destructor calls.
+// BINARY NOTE: fresh checks keep 004BF720 and 004BFCE0 exact. The documented
+// 004BF790 behavior source remains unchanged; its known drift is 227 bytes.
+// - This claim tested direct indexed draw fields with the sound-width cast.
+//   They recover the target draw LEA but force a short sound-count load.
+//   The result is 702 bytes and 191 differing bytes, so it was rolled back.
+// - Removing or shortening the draw allocation result changes publication
+//   order, fault order, or branch spans. It does not recover the target.
+// - Natural reference aliases, declaration order, const ownership, and sound
+//   count scope were duplicates or retained the same width basin.
+// - Integer sound-count aliases add a frame or move the parser homes.
+//   Raw home overlays remain unsupported and were not retained.
+// UNRESOLVED: natural VC5 source has not combined the exact draw LEA basin
+// with the target's later full-width sound-count load.
 
 #include <stdio.h>
+#include "..\..\include\game_globals.h"
 
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 extern "C" void __cdecl convert_us(char* str);
@@ -90,6 +113,7 @@ static const char s_picture_format[] = " %hd %hd %hd %hd";
 static const char s_sound_format[] = "%hd %hd %hd";
 
 class RGE_Color_Table;
+class TShape;
 class RGE_Sprite;
 
 class RGE_Sound {
@@ -124,7 +148,7 @@ public:
     unsigned char loaded;
     char gap_15[3];
     RGE_Color_Table** color_tables;
-    void* shape;
+    TShape* shape;
     long last_time;
     long delta_time;
     unsigned char color_flag;

@@ -6,44 +6,31 @@
 // period C++ structure suggested by the executable: scenario reload first,
 // random/scenario player setup, then the ordered summary-panel writes.
 //
-// Attempt log:
-// - baseline: canonical ownership is TribeMPSetupScreen fields
-//   +5F0 scenarioPlayerDrop[8], +62C settingText[20], +728 player count,
-//   +740 saveScenarioName[256], +840 saveRandomGame, +848 scenarioInfo,
-//   +84C settingsFixed, +850 numberAnyPlayers, +860 defaultColor[8], and
-//   +6DC/+6E0 number-player panels.  The local buffers use the proven stack
-//   order str1[256], str2[256], file_name[0x118] (the first findfirst scratch
-//   window is file_name+4), str3[256], then _finddata_t.
-// - hoisted scenario_dir/scenario_name and used file_name+4 for the first
-//   existence-only findfirst; this aligned the two scenario path windows.
-// - restored the Players summary branch and explicit victory cases 1..9;
-//   call count/ordered call targets and total code size now match.
-// - corrected random/scenario change gating from the executable: random mode
-//   changes only when saveRandomGame is zero.
-// - tested one natural shared player_index initialized before the scenarioInfo
-//   lifetime check; this fixed the first xor/cmp null-test block, but added a
-//   4-byte local-stack shift and worsened the total diff, so it was rolled back.
-// - left in scratch: remaining drift begins at the scenarioInfo null-test
-//   (original cmp against the active zero register vs rebuilt test), followed
-//   by source-order/register-coloring differences in the long summary body.
-// - completed 21 recorded hypotheses across liveness, layout, control flow,
-//   ABI, and compiler context. The clean baseline remains the best result:
-//   3522 bytes, 0x534 frame, 150 ordered calls, and 1554 differing bytes.
-// - the shared-index variant reproduced the original `xor ebx; cmp ecx,ebx`
-//   null guard and later zero reuse, but shifted every address-taken buffer by
-//   four bytes. Reversion is required because stack homes are binary evidence.
-// - BINARY NOTE: the executable reads a separate scenario-name panel at +624.
-//   Keep that canonical owner even though it changes the wider VC5 basin.
-// - Correcting that owner keeps all 150 calls and the 0x534 frame, but grows
-//   the body by 98 bytes and changes the broad register basin. Do not accept
-//   this function until global rereads, panel arguments, scenario mutations,
-//   and address-taken buffer reads are audited across all external calls.
-// - tested a block-scoped active-player index initialized before scenarioInfo
-//   cleanup.  It recovered the original EBX zero/null guard and four exact
-//   early blocks, but moved every address-taken buffer by four bytes; rolled
-//   back because stack homes are binary evidence.
-// - register-qualifying that index produced duplicate codegen.  The clean
-//   behavior-correct source remains the current checkpoint.
+// Exact recovery notes:
+// - Canonical fields include scenarioPlayerDrop at +5F0, scenarioName at
+//   +624, settingText at +62C, and the scenario state at +728 through +888.
+// - The authentic local order is str1, str2, file_name, str3, and file_info.
+//   Each call uses the declared buffer base. The first _findfirst uses the
+//   file_name storage as an existence-only scratch record.
+// - The scoped player index starts before scenarioInfo cleanup. A reset before
+//   the active-player scan keeps the executable's shared zero value.
+// - The random setup clears settingsFixed before it publishes both counts.
+//   The save-name branch writes the nonzero random case first.
+// - BINARY NOTE: both game-kind summary paths publish through scenarioName at
+//   +624. settingText[0] is a different panel.
+// - Victory type 9 always selects string 0x10EC. It is not the default case.
+// - The checksum array uses a fixed source loop. Direct memset changes VC5's
+//   address setup order.
+// - The first exact transition also removed one extra map-setting increment
+//   and used the shipped `scenarioPlayerCount >= 3` test.
+// - Walkback kept exact output after removing extra same-TU includes, narrowing
+//   player_index scope, and replacing field dependencies with literal zeros.
+//   Removing the player-index reset, changing save-branch order, using memset,
+//   or publishing through settingText[0] broke exact output.
+// - Fresh authoritative validation: 3522 bytes, frame 0x534, 150 ordered calls,
+//   qualified owner, Result: MATCH, and 0.0000%.
+
+#ifndef SCR_MPS_TU_CONTEXT
 
 #include <io.h>
 #include <stdio.h>
@@ -201,7 +188,7 @@ public:
     int Get_player_Type(int index);
 };
 
-extern TRIBE_Game* rge_base_game;
+extern RGE_Base_Game* rge_base_game;
 
 class TribeMPSetupScreen : public TScreenPanel {
 public:
@@ -236,21 +223,21 @@ public:
     void updateSummary();
 };
 
+#endif
+
 void TribeMPSetupScreen::updateSummary()
 {
     int changed = 0;
     char str1[256];
     char str2[256];
-    // The first existence-only _findfirst uses file_name + 4 as its
-    // _finddata_t scratch window; the extra tail reaches the following str3
-    // without overlapping it in the original stack layout.
+    // The first existence-only _findfirst uses file_name as its _finddata_t
+    // scratch window. The extra tail reaches str3 without overlap.
     char file_name[0x118];
     char str3[256];
     struct _finddata_t file_info;
     char* scenario_dir;
     char* scenario_name;
 
-    int setting = 0;
     if (rge_base_game->scenarioGame()) {
         if (this->saveRandomGame == 0) {
             if (strcmp(rge_base_game->scenarioName(), this->saveScenarioName) != 0) {
@@ -265,6 +252,7 @@ void TribeMPSetupScreen::updateSummary()
 
     if (changed != 0) {
         if (rge_base_game->scenarioGame()) {
+            int player_index = 0;
             if (this->scenarioInfo != 0) {
                 delete this->scenarioInfo;
                 this->scenarioInfo = 0;
@@ -272,19 +260,19 @@ void TribeMPSetupScreen::updateSummary()
 
             scenario_dir = rge_base_game->prog_info->scenario_dir;
             scenario_name = rge_base_game->scenarioName();
-            sprintf(str1 + 4, CSTR(0x00586114), scenario_dir, scenario_name);
-            long handle = _findfirst(str1 + 4,
-                                     (struct _finddata_t*)(file_name + 4));
+            sprintf(str1, CSTR(0x00586114), scenario_dir, scenario_name);
+            long handle = _findfirst(str1,
+                                     (struct _finddata_t*)file_name);
             if (handle == -1) {
-                sprintf(str1 + 4, CSTR(0x00586840),
+                sprintf(str1, CSTR(0x00586840),
                         rge_base_game->scenarioName());
             } else {
-                sprintf(str1 + 4, CSTR(0x00586838),
+                sprintf(str1, CSTR(0x00586838),
                         rge_base_game->scenarioName());
             }
 
-            if (str1[4] != '.') {
-                this->scenarioInfo = rge_base_game->get_scenario_info(str1 + 4, 0);
+            if (str1[0] != '.') {
+                this->scenarioInfo = rge_base_game->get_scenario_info(str1, 0);
             }
 
             if (this->scenarioInfo == 0) {
@@ -295,20 +283,21 @@ void TribeMPSetupScreen::updateSummary()
                 }
 
                 this->settingsFixed = this->scenarioInfo->any_sp_victory();
+                player_index = 0;
                 this->numberAnyPlayers = 0;
                 this->scenarioPlayerCount = 0;
 
-                for (int player_index = 0; player_index < 9; ++player_index) {
-                    if (this->scenarioInfo->Get_player_Active(player_index) != 0) {
+                for (; player_index < 9; ++player_index) {
+                    if (((RGE_Scenario*)this->scenarioInfo)->Get_player_Active(player_index) != 0) {
                         ++this->scenarioPlayerCount;
-                        sprintf(str2 + 4, CSTR(0x00584610), player_index + 1);
+                        sprintf(str2, CSTR(0x00584610), player_index + 1);
                         if (rge_base_game->multiplayerGame() ||
                             (rge_base_game->singlePlayerGame() &&
-                             this->scenarioInfo->Get_player_Type(player_index) == 1)) {
+                             ((RGE_Scenario*)this->scenarioInfo)->Get_player_Type(player_index) == 1)) {
                             ++this->numberAnyPlayers;
                             for (int append_index = 0; append_index < 8; ++append_index) {
                                 this->scenarioPlayerDrop[append_index]->append_line(
-                                    str2 + 4, player_index);
+                                    str2, player_index);
                             }
                         }
                     }
@@ -321,7 +310,7 @@ void TribeMPSetupScreen::updateSummary()
                         if (player == 9) {
                             player = 0;
                         }
-                    } while (this->scenarioInfo->Get_player_Active(player) == 0);
+                    } while (((RGE_Scenario*)this->scenarioInfo)->Get_player_Active(player) == 0);
 
                     this->defaultColor[color_index] = (unsigned char)player + 1;
                     ((TRIBE_Game*)rge_base_game)->setScenarioPlayer(color_index, player);
@@ -336,9 +325,9 @@ void TribeMPSetupScreen::updateSummary()
             for (int random_empty_index = 0; random_empty_index < 8; ++random_empty_index) {
                 this->scenarioPlayerDrop[random_empty_index]->empty_list();
             }
+            this->settingsFixed = 0;
             this->scenarioPlayerCount = 8;
             this->numberAnyPlayers = 8;
-            this->settingsFixed = 0;
 
             for (int random_index = 0; random_index < 8; ++random_index) {
                 this->defaultColor[random_index] = (unsigned char)random_index + 1;
@@ -346,11 +335,11 @@ void TribeMPSetupScreen::updateSummary()
                 ((TRIBE_Game*)rge_base_game)->setPlayerColor(
                     random_index, this->defaultColor[random_index]);
                 rge_base_game->setPlayerTeam(random_index, 1);
-                sprintf(str2 + 4, CSTR(0x00584610), random_index + 1);
+                sprintf(str2, CSTR(0x00584610), random_index + 1);
                 for (int random_append_index = 0; random_append_index < 8;
                      ++random_append_index) {
                     this->scenarioPlayerDrop[random_append_index]->append_line(
-                        str2 + 4, random_index);
+                        str2, random_index);
                 }
             }
         }
@@ -360,228 +349,232 @@ void TribeMPSetupScreen::updateSummary()
         }
 
         this->saveRandomGame = rge_base_game->randomGame();
-        if (this->saveRandomGame == 0) {
-            strcpy(this->saveScenarioName, rge_base_game->scenarioName());
-        } else {
+        if (this->saveRandomGame != 0) {
             this->saveScenarioName[0] = 0;
+        } else {
+            strcpy(this->saveScenarioName, rge_base_game->scenarioName());
         }
 
-        memset(this->scenarioCheckSum, 0, 8 * sizeof(long));
+        for (int checksum_index = 0; checksum_index < 8; ++checksum_index) {
+            this->scenarioCheckSum[checksum_index] = 0;
+        }
 
         if (rge_base_game->scenarioGame()) {
             scenario_dir = rge_base_game->prog_info->scenario_dir;
             scenario_name = rge_base_game->scenarioName();
-            sprintf(file_name + 4, CSTR(0x00586114), scenario_dir, scenario_name);
-            long handle = _findfirst(file_name + 4, &file_info);
+            sprintf(file_name, CSTR(0x00586114), scenario_dir, scenario_name);
+            long handle = _findfirst(file_name, &file_info);
             if (handle == -1) {
-                sprintf(file_name + 4, CSTR(0x00586840),
+                sprintf(file_name, CSTR(0x00586840),
                         rge_base_game->scenarioName());
             } else {
-                sprintf(file_name + 4, CSTR(0x00586838),
+                sprintf(file_name, CSTR(0x00586838),
                         rge_base_game->scenarioName());
             }
-            this->myScenarioChecksum = rge_base_game->get_scenario_checksum(file_name + 4);
+            this->myScenarioChecksum = rge_base_game->get_scenario_checksum(file_name);
         } else {
             this->myScenarioChecksum = 0;
         }
     }
 
+    int setting;
     for (int i = 0; i < 20; ++i) {
         this->settingText[i]->set_active(0);
     }
 
     if (rge_base_game->scenarioGame()) {
-        sprintf(str2 + 4, this->get_string(0x25ED),
+        sprintf(str2, this->get_string(0x25ED),
                 rge_base_game->scenarioName());
-        this->scenarioName->set_text(str2 + 4);
+        this->scenarioName->set_text(str2);
         setting = 3;
     } else {
-        if (rge_base_game->deathMatch()) {
-            this->get_string(0x2617, str1 + 4, 0x100);
+        if (((TRIBE_Game*)rge_base_game)->deathMatch()) {
+            this->get_string(0x2617, str1, 0x100);
         } else {
-            this->get_string(0x25B5, str1 + 4, 0x100);
+            this->get_string(0x25B5, str1, 0x100);
         }
-        sprintf(str2 + 4, this->get_string(0x25ED), str1 + 4);
-        this->settingText[setting]->set_text(str2 + 4);
+        sprintf(str2, this->get_string(0x25ED), str1);
+        this->scenarioName->set_text(str2);
         setting = 1;
     }
 
     if (rge_base_game->randomGame()) {
         switch (((TRIBE_Game*)rge_base_game)->mapSize()) {
-        case 0: strcpy(str1 + 4, this->get_string(0x2973)); break;
-        case 1: strcpy(str1 + 4, this->get_string(0x2974)); break;
-        case 2: strcpy(str1 + 4, this->get_string(0x2975)); break;
-        case 3: strcpy(str1 + 4, this->get_string(0x2976)); break;
-        case 4: strcpy(str1 + 4, this->get_string(0x2977)); break;
-        case 5: strcpy(str1 + 4, this->get_string(0x2978)); break;
+        case 0: strcpy(str1, this->get_string(0x2973)); break;
+        case 1: strcpy(str1, this->get_string(0x2974)); break;
+        case 2: strcpy(str1, this->get_string(0x2975)); break;
+        case 3: strcpy(str1, this->get_string(0x2976)); break;
+        case 4: strcpy(str1, this->get_string(0x2977)); break;
+        case 5: strcpy(str1, this->get_string(0x2978)); break;
         }
-        sprintf(str2 + 4, this->get_string(0x25DA), str1 + 4);
-        this->settingText[setting]->set_text(str2 + 4);
+        sprintf(str2, this->get_string(0x25DA), str1);
+        this->settingText[setting]->set_text(str2);
         this->settingText[setting]->set_active(1);
         ++setting;
 
         switch (((TRIBE_Game*)rge_base_game)->mapType()) {
-        case 0: strcpy(str1 + 4, this->get_string(0x296A)); break;
-        case 1: strcpy(str1 + 4, this->get_string(0x296B)); break;
-        case 2: strcpy(str1 + 4, this->get_string(0x296C)); break;
-        case 3: strcpy(str1 + 4, this->get_string(0x296D)); break;
-        case 4: strcpy(str1 + 4, this->get_string(0x296E)); break;
-        case 5: strcpy(str1 + 4, this->get_string(0x296F)); break;
-        case 6: strcpy(str1 + 4, this->get_string(0x2970)); break;
-        case 7: strcpy(str1 + 4, this->get_string(0x2971)); break;
-        case 8: strcpy(str1 + 4, this->get_string(0x2972)); break;
+        case 0: strcpy(str1, this->get_string(0x296A)); break;
+        case 1: strcpy(str1, this->get_string(0x296B)); break;
+        case 2: strcpy(str1, this->get_string(0x296C)); break;
+        case 3: strcpy(str1, this->get_string(0x296D)); break;
+        case 4: strcpy(str1, this->get_string(0x296E)); break;
+        case 5: strcpy(str1, this->get_string(0x296F)); break;
+        case 6: strcpy(str1, this->get_string(0x2970)); break;
+        case 7: strcpy(str1, this->get_string(0x2971)); break;
+        case 8: strcpy(str1, this->get_string(0x2972)); break;
         }
-        sprintf(str2 + 4, this->get_string(0x25B6), str1 + 4);
-        this->settingText[setting]->set_text(str2 + 4);
+        sprintf(str2, this->get_string(0x25B6), str1);
+        this->settingText[setting]->set_text(str2);
         this->settingText[setting]->set_active(1);
         ++setting;
     }
-    ++setting;
 
     if (rge_base_game->scenarioGame()) {
         if (this->settingsFixed == 0 && this->scenarioPlayerCount != 2) {
-            sprintf(str2 + 4, CSTR(0x00586C20), this->get_string(0x25B7),
+            sprintf(str2, CSTR(0x00586C20), this->get_string(0x25B7),
                     2, this->scenarioPlayerCount);
         } else {
-            sprintf(str2 + 4, CSTR(0x00586C18), this->get_string(0x25B7),
+            sprintf(str2, CSTR(0x00586C18), this->get_string(0x25B7),
                     this->scenarioPlayerCount);
         }
     } else {
-        sprintf(str2 + 4, CSTR(0x00586C0C), this->get_string(0x25B7));
+        sprintf(str2, CSTR(0x00586C0C), this->get_string(0x25B7));
     }
-    this->settingText[setting]->set_text(str2 + 4);
+    this->settingText[setting]->set_text(str2);
     this->settingText[setting]->set_active(1);
     ++setting;
 
     switch (((TRIBE_Game*)rge_base_game)->victoryType()) {
     case 1:
-        strcpy(str1 + 4, this->get_string(0x10E1));
+        strcpy(str1, this->get_string(0x10E1));
         goto victory_plain;
     case 7:
-        strcpy(str1 + 4, this->get_string(0x10E9));
+        strcpy(str1, this->get_string(0x10E9));
         goto victory_amount;
     case 8:
-        strcpy(str1 + 4, this->get_string(0x10EA));
+        strcpy(str1, this->get_string(0x10EA));
 victory_amount:
-        sprintf(str2 + 4, this->get_string(0x25BE), str1 + 4,
+        sprintf(str2, this->get_string(0x25BE), str1,
                 ((TRIBE_Game*)rge_base_game)->victoryAmount());
         goto victory_done;
+    case 9:
+        strcpy(str1, this->get_string(0x10EC));
+        goto victory_plain;
     case 2:
     case 3:
     case 4:
     case 5:
     case 6:
-    case 9:
     default:
         if (rge_base_game->randomGame()) {
-            strcpy(str1 + 4, this->get_string(0x10EC));
+            strcpy(str1, this->get_string(0x10EC));
         } else {
-            strcpy(str1 + 4, this->get_string(0x10E7));
+            strcpy(str1, this->get_string(0x10E7));
         }
         goto victory_plain;
     victory_plain:
-        sprintf(str2 + 4, this->get_string(0x25BC), str1 + 4);
+        sprintf(str2, this->get_string(0x25BC), str1);
 victory_done:
         break;
     }
-    this->settingText[setting]->set_text(str2 + 4);
+    this->settingText[setting]->set_text(str2);
     this->settingText[setting]->set_active(1);
     ++setting;
 
     int age = ((TRIBE_Game*)rge_base_game)->startingAge();
     if (age == 0) {
-        this->get_string(0x10E7, str1 + 4, 0x100);
+        this->get_string(0x10E7, str1, 0x100);
     } else if (age == 1) {
-        this->get_string(0x106E, str1 + 4, 0x100);
+        this->get_string(0x106E, str1, 0x100);
     } else {
-        this->get_string(age + 0x1067, str1 + 4, 0x100);
+        this->get_string(age + 0x1067, str1, 0x100);
     }
-    sprintf(str2 + 4, this->get_string(0x25E4), str1 + 4);
-    this->settingText[setting]->set_text(str2 + 4);
+    sprintf(str2, this->get_string(0x25E4), str1);
+    this->settingText[setting]->set_text(str2);
     this->settingText[setting]->set_active(1);
     ++setting;
 
     int resources = ((TRIBE_Game*)rge_base_game)->resourceLevel();
     if (resources == 0) {
-        this->get_string(0x10E7, str1 + 4, 0x100);
+        this->get_string(0x10E7, str1, 0x100);
     } else {
-        this->get_string(resources + 0x25E5, str1 + 4, 0x100);
+        this->get_string(resources + 0x25E5, str1, 0x100);
     }
-    sprintf(str2 + 4, this->get_string(0x25E5), str1 + 4);
-    this->settingText[setting]->set_text(str2 + 4);
+    sprintf(str2, this->get_string(0x25E5), str1);
+    this->settingText[setting]->set_text(str2);
     this->settingText[setting]->set_active(1);
     ++setting;
 
     rge_base_game->difficulty();
-    this->get_string(rge_base_game->difficulty() + 0x2BD0, str1 + 4, 0x100);
-    this->get_string(0x25E0, str2 + 4, 0x100);
-    sprintf(str3 + 4, str2 + 4, str1 + 4);
-    this->settingText[setting]->set_text(str3 + 4);
+    this->get_string(rge_base_game->difficulty() + 0x2BD0, str1, 0x100);
+    this->get_string(0x25E0, str2, 0x100);
+    sprintf(str3, str2, str1);
+    this->settingText[setting]->set_text(str3);
     this->settingText[setting]->set_active(1);
     ++setting;
 
     if (((TRIBE_Game*)rge_base_game)->randomizePositions()) {
-        this->get_string(0xFA4, str1 + 4, 0x100);
+        this->get_string(0xFA4, str1, 0x100);
     } else {
-        this->get_string(0xFA3, str1 + 4, 0x100);
+        this->get_string(0xFA3, str1, 0x100);
     }
-    sprintf(str2 + 4, this->get_string(0x25E9), str1 + 4);
-    this->settingText[setting]->set_text(str2 + 4);
+    sprintf(str2, this->get_string(0x25E9), str1);
+    this->settingText[setting]->set_text(str2);
     this->settingText[setting]->set_active(1);
     ++setting;
 
     if (rge_base_game->fullVisibility()) {
-        strcpy(str1 + 4, this->get_string(0xFA3));
+        strcpy(str1, this->get_string(0xFA3));
     } else {
-        strcpy(str1 + 4, this->get_string(0xFA4));
+        strcpy(str1, this->get_string(0xFA4));
     }
-    sprintf(str2 + 4, this->get_string(0x25B8), str1 + 4);
-    this->settingText[setting]->set_text(str2 + 4);
+    sprintf(str2, this->get_string(0x25B8), str1);
+    this->settingText[setting]->set_text(str2);
     this->settingText[setting]->set_active(1);
     ++setting;
 
     if (((TRIBE_Game*)rge_base_game)->fullTechTree()) {
-        this->get_string(0xFA3, str1 + 4, 0x100);
+        this->get_string(0xFA3, str1, 0x100);
     } else {
-        this->get_string(0xFA4, str1 + 4, 0x100);
+        this->get_string(0xFA4, str1, 0x100);
     }
-    sprintf(str2 + 4, this->get_string(0x25EC), str1 + 4);
-    this->settingText[setting]->set_text(str2 + 4);
+    sprintf(str2, this->get_string(0x25EC), str1);
+    this->settingText[setting]->set_text(str2);
     this->settingText[setting]->set_active(1);
     ++setting;
 
     if (rge_base_game->multiplayerGame()) {
         if (rge_base_game->allowCheatCodes()) {
-            strcpy(str1 + 4, this->get_string(0xFA3));
+            strcpy(str1, this->get_string(0xFA3));
         } else {
-            strcpy(str1 + 4, this->get_string(0xFA4));
+            strcpy(str1, this->get_string(0xFA4));
         }
-        sprintf(str2 + 4, this->get_string(0x25BB), str1 + 4);
-        this->settingText[setting]->set_text(str2 + 4);
+        sprintf(str2, this->get_string(0x25BB), str1);
+        this->settingText[setting]->set_text(str2);
         this->settingText[setting]->set_active(1);
         ++setting;
     }
 
     if (rge_base_game->multiplayerGame()) {
         this->get_string(((TRIBE_Game*)rge_base_game)->mpPathFinding() + 0x260E,
-                         str1 + 4, 0x100);
+                         str1, 0x100);
     } else {
         this->get_string(rge_base_game->pathFinding() + 0x260E,
-                         str1 + 4, 0x100);
+                         str1, 0x100);
     }
-    sprintf(str2 + 4, this->get_string(0x25F1), str1 + 4);
-    this->settingText[setting]->set_text(str2 + 4);
+    sprintf(str2, this->get_string(0x25F1), str1);
+    this->settingText[setting]->set_text(str2);
     this->settingText[setting]->set_active(1);
     ++setting;
 
-    sprintf(str2 + 4, this->get_string(0x25F0),
+    sprintf(str2, this->get_string(0x25F0),
             ((TRIBE_Game*)rge_base_game)->popLimit());
-    this->settingText[setting]->set_text(str2 + 4);
+    this->settingText[setting]->set_text(str2);
     this->settingText[setting]->set_active(1);
 
     if (rge_base_game->singlePlayerGame()) {
         if (rge_base_game->scenarioGame() == 0 ||
-            (this->settingsFixed == 0 && this->scenarioPlayerCount > 2)) {
+            (this->settingsFixed == 0 && this->scenarioPlayerCount >= 3)) {
             this->numberPlayersTitle->set_active(1);
             this->numberPlayersDrop->set_active(1);
         } else {

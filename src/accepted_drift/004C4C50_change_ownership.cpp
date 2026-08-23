@@ -15,6 +15,13 @@
 // slots in place of raw vptr/slot-zero placeholders; emitted code is unchanged.
 // fresh worker: direct this->master_obj lookup before naming old_master widened
 // to 136B/45.2%; restored canonical old-master local.
+// exact-finish audit: the current accepted_drift owner still preserves the
+// old-player remove call, new-player add call, node publication, player and
+// master rereads, direct helpers, resource/state updates, and fault order.
+// A fresh checker run keeps all nine calls ordered and the PDB owner symbol,
+// but emits 299 bytes versus the 301-byte oracle with the same 134-byte drift.
+// No natural source change passed the exact checker; the clean source remains
+// authoritative and no registered stat_obj anchor was changed.
 // fresh worker: distinct old_sprite declared after old_master preserved 301B/134
 // basin; restored existing clean source.
 // fresh worker: reversed sprite/master comparison operands changed only cmp
@@ -59,6 +66,9 @@
 // exactly. Size, all nine calls, predicates, x87 HP calculation, ownership
 // stores, notifications, cleanup, and fault order match. This function has no
 // SEH. Twenty-eight focused probes found no natural exact register allocation.
+// TU context audit: same-module stat_obj.cpp owners were tested in address order.
+// No tested authentic nearest-one or cumulative multi-owner prefix compiled
+// with this standalone class surface. No context change is validated.
 
 class RGE_Sprite;
 class RGE_Active_Sprite_List;

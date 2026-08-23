@@ -38,22 +38,36 @@
 //   period-plausible and reduced the positional mismatch from 38 to 15 bytes.
 //   Typed area-expression and accumulator-order probes left the same 15-byte
 //   basin, so the simple field expression and natural indexed insertion stay.
-// ACCEPTED DRIFT: The one 15-byte hunk schedules two signed IMUL memory operands
-// before, rather than after, independent EAX and EBP initialization. The two
-// factors are exchanged, but their truncated 32-bit product is equal. The final
-// one-operand IMUL receives identical EAX and EDX inputs. Intermediate flags are
-// dead. Both ordinary fields are read once, with no intervening write or call.
+// - The first context pass found a two-byte result with the base destructor.
+//   Natural area expressions kept the wrong operand order. Full helper and
+//   controller declaration surfaces widened the body to 205 bytes.
+// Exact-finish:
+// - The authentic polymorphic base surface, typed map-row pointer, and protected
+//   controller method produce the target operand order and protected symbol.
+// - Removing the base destructor restores the 15-byte mismatch. The canonical
+//   field access types and base access level remain for source correctness.
+// - A public controller method keeps the bytes exact but changes the PDB owner
+//   form. The protected method is required.
+// - Full helper and controller declaration surfaces widen the body to 205 bytes.
+//   They are not retained without codegen evidence for this owner.
+// - Final result: 578 bytes, 0 differing bytes, 0 calls, 0x8 frame, and the
+//   original function boundary.
 
 struct RGE_Map;
+struct RGE_Tile;
 struct RGE_Random_Map_Module_List;
 struct Map_Stack;
 
-struct RGE_Random_Map_Module {
+class RGE_Random_Map_Module {
+public:
+    virtual ~RGE_Random_Map_Module();
     virtual unsigned char generate();
+
+protected:
     RGE_Random_Map_Module* parent;
     RGE_Random_Map_Module_List* list;
     RGE_Map* map;
-    void* map_row_offset;
+    RGE_Tile** map_row_offset;
     long map_width;
     long map_height;
     float schedule;
@@ -177,7 +191,8 @@ struct RGE_Elevation_Info {
 
 struct RGE_Game_World;
 
-struct RGE_RMM_Database_Controller : RGE_Random_Map_Module {
+class RGE_RMM_Database_Controller : public RGE_Random_Map_Module {
+public:
     RGE_Game_World* world;
     long map_type;
     long number_of_players;
@@ -187,6 +202,7 @@ struct RGE_RMM_Database_Controller : RGE_Random_Map_Module {
     RGE_Elevation_Info elevation_info;
     RGE_Map_Data map_info;
 
+protected:
     virtual void add_elevation_module();
 };
 

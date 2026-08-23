@@ -42,6 +42,10 @@
 // - The reviewed RGE_Random_Map_Module base and inherited stack-helper surface
 //   were codegen duplicates. Explicit or narrow-volatile link stores stayed at
 //   911 differing bytes and 981 bytes. The clean source is restored.
+// - Claim probes tested aggregate, pair, single-link, constructor, qualification,
+//   register, direct-loop, and polymorphic-surface forms. None improved 648.
+// - The clean source keeps the natural POD stack and named pop result. It keeps
+//   world access after placement setup and count after the area scan.
 
 extern "C" int __cdecl debug_rand(char* file, int line);
 extern "C" long __cdecl ftol(float);

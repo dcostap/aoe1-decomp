@@ -66,6 +66,18 @@
 // - H26/H27 tested complete declaration orders from Ghidra and raw CodeView.
 //   Both worsened the entry allocation (962/968); restored H12.
 //
+// - Exact-finish H29 changed only the tool-age do-while test to `!= 0`; VC5
+//   moved to 1104 bytes, so it was restored. H30 `register count` was a
+//   duplicate 953-byte basin. H31 swapped only count/warshipCount and reached
+//   954 bytes. H32 declared the sentinel before item and used one natural
+//   sentinel/null condition; it was a duplicate 953-byte basin. All were
+//   restored.
+// - H35 mirrored Ghidra's second tool-age guard and !=0 backedge: 1776 bytes,
+//   diff 1104. H36 interleaved declarations: diff 962 and a worse prologue.
+// - H38 used an explicit resource-fill do-while: diff 951 but wrong topology
+//   and broad allocation drift. H39 kept the 0x9B value live: diff 969.
+// - H42 used a scoped gatherer index: diff 958. H35-H42 were restored.
+
 // LEFT IN SCRATCH: semantically faithful natural reconstruction with correct
 // class surface (/GX EH frame, 0xB0 BuildItem), 61/61 ordered calls, and the
 // best observed diff (953; 53.51%). Remaining drift includes broad register

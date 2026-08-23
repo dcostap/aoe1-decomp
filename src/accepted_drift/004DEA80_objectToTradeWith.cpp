@@ -14,6 +14,17 @@
 //   ordered calls. Its 117 differing bytes start at the coordinate conversion.
 // - Split coordinate statements and candidate assignment forms emit the same
 //   117-byte result. No raw cursor or compiler-steering form is retained.
+// Exact-finish pass:
+// - Fresh validation keeps the original 277-byte boundary, 0x0C frame, owner
+//   symbol, four ordered direct calls, and all pre-distance blocks exact.
+// - Tested direct record reads, delayed and scoped candidate declarations,
+//   reference and pointer forms, result declaration/store order, coordinate
+//   temporary order, and period-style register qualifiers. These forms stayed
+//   in the same arithmetic basin or changed earlier structure.
+// - The remaining supported mismatch starts at the coordinate block: VC5 emits
+//   `add esi,ebp` and candidate ESI before the first fld; the executable emits
+//   `lea edi,[ecx+ebp]` after loading unit x, then rereads unit and publishes
+//   candidate EDI. No tested natural source form recovered that schedule.
 // Accepted-drift review: both versions capture importantObjectMemory before
 // the first _ftol call, then convert unit x and y in the same order. The rebuild
 // computes the candidate address earlier with ADD and reads candidate x before

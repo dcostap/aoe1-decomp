@@ -10,10 +10,19 @@
 // 7: combined while condition matched block layout; remaining drift is this/sentinel register swap (EDI/EBX).
 // 8: add explicit self local in the combined-condition shape to try to color this as EBX; no register change.
 // 9: const sentinel/direct this spelling: no register change.
-// ACCEPTED_DRIFT: reviewed 13-byte localized VC5 register-coloring drift only.
-// Original keeps this in EBX and sentinel in EDI; rebuilt keeps this in EDI and sentinel in EBX.
-// Block layout, calls, stack/EH offsets, object sizes, and behavior match; differences are address/register encodings and pop order only.
+// 10: canonical shared prefix emitted the same 368-byte body and preserved the then-current seven exact anchors.
+// 11: a real BuildItem reference alias for the list member recovered the original
+//     this/list register colors without changing the list tests or calls.
+// 12: exact-finish reduction removed the sentinel local and joined item setup.
+//     Direct comparisons with the list reference remain exact. Removing the list
+//     reference restores the reviewed 13-byte drift.
+// EXACT CANDIDATE: fresh checker result is MATCH with 0.0000% difference.
+// BINARY NOTE: the exact body has the original 0x70 EH frame, 368-byte boundary,
+//     15 ordered direct calls, and original resource predicate and fault order.
+// BINARY NOTE: fresh checks match all eight anchors. A canonical-prefix
+//     transition left every anchor section unchanged.
 
+#ifndef TAIBLDMD_SHARED_CONTEXT
 class BuildItem;
 class ResourceItem;
 class TRIBE_Player;
@@ -82,18 +91,17 @@ public:
 
     int blockingResource();
 };
+#endif
 
 int TribeBuildAIModule::blockingResource()
 {
-    BuildItem* item;
-    BuildItem* const sentinel = &this->buildList;
-
-    item = this->buildList.next;
-    while (item != sentinel && item != 0 &&
+    BuildItem& list = this->buildList;
+    BuildItem* item = list.next;
+    while (item != &list && item != 0 &&
            (item->built() || item->inProgress() || item->skip() == 1 || item->permanentSkip())) {
         item = item->next;
     }
-    if (item == sentinel || item == 0) {
+    if (item == &list || item == 0) {
         return -1;
     }
 

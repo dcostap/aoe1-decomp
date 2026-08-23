@@ -19,6 +19,10 @@
 // Current unresolved result: 1641 strict differing bytes, 96.93% shape similarity,
 // 91.60% exact-block coverage, and 105/105 ordered calls. The main gaps are the shared
 // fallback tail size, the file_info stack home, and final-loop register coloring.
+// Authentic scr_mps.cpp context selected the PDB virtual symbol and reduced the
+// body to 2468 bytes. It kept 105 calls and reduced the strict diff to 1639 bytes.
+
+#ifndef SCR_MPS_TU_CONTEXT
 
 #include <string.h>
 #include <io.h>
@@ -251,6 +255,8 @@ public:
     long action(TPanel* param_1, long param_2, unsigned long param_3, unsigned long param_4);
 };
 
+#endif
+
 long TribeMPSetupScreen::action(TPanel* param_1, long param_2, unsigned long param_3, unsigned long param_4)
 {
     char file_name[260];
@@ -365,7 +371,7 @@ long TribeMPSetupScreen::action(TPanel* param_1, long param_2, unsigned long par
         } else if (param_2 == 1) {
             for (int i = 0; i < 8; i++) {
                 if (param_1 == this->playerColor[i]) {
-                    rge_base_game->setPlayerColor(i, this->playerColor[i]->get_id());
+                    ((TRIBE_Game*)rge_base_game)->setPlayerColor(i, this->playerColor[i]->get_id());
                     if (rge_base_game->multiplayerGame() && !comm->IsHost()) {
                         this->myPlayerColor = this->playerColor[i]->get_id();
                         return 1;
@@ -436,7 +442,7 @@ long TribeMPSetupScreen::action(TPanel* param_1, long param_2, unsigned long par
                     return 1;
                 }
                 if (param_1 == this->playerCivDrop[i]) {
-                    rge_base_game->setCivilization(i, this->playerCivDrop[i]->get_id());
+                    ((TRIBE_Game*)rge_base_game)->setCivilization(i, this->playerCivDrop[i]->get_id());
                     if (rge_base_game->multiplayerGame() && !comm->IsHost()) {
                         this->myCivilization = this->playerCivDrop[i]->get_id();
                         return 1;
@@ -445,20 +451,20 @@ long TribeMPSetupScreen::action(TPanel* param_1, long param_2, unsigned long par
                 }
                 if (param_1 == this->scenarioPlayerDrop[i]) {
                     if (rge_base_game->multiplayerGame()) {
-                        rge_base_game->setScenarioPlayer(i, this->scenarioPlayerDrop[i]->get_id());
+                        ((TRIBE_Game*)rge_base_game)->setScenarioPlayer(i, this->scenarioPlayerDrop[i]->get_id());
                         if (!comm->IsHost()) {
                             this->myScenarioPlayer = this->scenarioPlayerDrop[i]->get_id();
                             return 1;
                         }
                         goto L_1F6B;
                     }
-                    rge_base_game->setScenarioPlayer(0, this->scenarioPlayerDrop[0]->get_id());
+                    ((TRIBE_Game*)rge_base_game)->setScenarioPlayer(0, this->scenarioPlayerDrop[0]->get_id());
                     int sp = 1;
                     int player = 0;
                     do {
-                        if (player != rge_base_game->scenarioPlayer(0) &&
-                            this->scenarioInfo->Get_player_Active(player) != 0) {
-                            rge_base_game->setScenarioPlayer(sp, player);
+                        if (player != ((TRIBE_Game*)rge_base_game)->scenarioPlayer(0) &&
+                            ((RGE_Scenario*)this->scenarioInfo)->Get_player_Active(player) != 0) {
+                            ((TRIBE_Game*)rge_base_game)->setScenarioPlayer(sp, player);
                             sp++;
                             if (sp >= rge_base_game->numberPlayers()) break;
                         }

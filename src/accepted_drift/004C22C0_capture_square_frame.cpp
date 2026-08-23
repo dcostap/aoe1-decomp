@@ -61,11 +61,15 @@
 //   The clean natural source remains the 158-byte frontier.
 // - Revisit probe: hoisting x1, y1, and x2 to function scope while retaining
 //   the named y0 local was codegen-neutral.  The clean source was restored.
-// - Accepted drift: all five calls align. Both AddGDINode calls receive the
-//   same coordinates, colors, object ID, and health bounds. Frame-output homes,
-//   member ownership order, health conversion, signed division, clamp, state
-//   guard, and returns match. Remaining drift is private coordinate liveness
-//   and argument scheduling before side-effect boundaries.
+// - Earlier accepted-drift review confirmed all five call sites, frame-output
+//   homes, member ownership order, health conversion, signed division, clamp,
+//   state guard, and returns.  The raw coordinate audit below supersedes its
+//   assumed clean-coordinate argument values.
+// - DIA confirms the original names render_area, x, and y, and the local order
+//   min_y, min_x, y0, max_y, max_x.  The reduced source now keeps those names.
+// - ORIGINAL BUG: the original first AddGDINode setup reuses screen_y_offset
+//   for its y-line and max-x terms.  The second node reloads that y-line from
+//   the dead x parameter home.  Keep this shipped coordinate behavior.
 
 #include <stdlib.h>
 
@@ -133,30 +137,31 @@ public:
     char gap_36[0x12];
     unsigned char object_state;
 
-    int get_frame(short& param_1, short& param_2, short& param_3,
-                  short& param_4);
-    void capture_square_frame(TDrawArea* param_1, short param_2, short param_3);
+    int get_frame(short& min_x, short& min_y, short& max_x, short& max_y);
+    void capture_square_frame(TDrawArea* render_area, short x, short y);
 };
 
-void RGE_Static_Object::capture_square_frame(TDrawArea* param_1,
-                                             short param_2, short param_3)
+void RGE_Static_Object::capture_square_frame(TDrawArea* render_area,
+                                             short x, short y)
 {
-    short min_x;
     short min_y;
+    short min_x;
+    int y0;
     short max_y;
     short max_x;
-    int y0;
 
     if (this->sprite != 0 && this->sprite_list != 0) {
         this->sprite_list->get_facetindex(this->sprite, this->facet);
 
         if (this->get_frame(min_x, min_y, max_x, max_y) != 0) {
-            int x1 = param_2 + min_x - 1 + this->screen_x_offset;
-            int y1 = param_3 + min_y - 1 + this->screen_y_offset;
-            y0 = param_3 + max_y + 1 + this->screen_y_offset;
-            int x2 = param_2 + max_x + 1 + this->screen_x_offset;
+            int x1 = x + min_x - 1 + this->screen_x_offset;
+            int y1 = y + min_y - 1 + this->screen_y_offset;
+            y0 = y + max_y + 1 + this->screen_y_offset;
+            int y_line = y0 + this->screen_y_offset + 1;
+            int x2 = max_x + this->screen_y_offset +
+                     this->screen_x_offset + 1;
 
-            SDI_List->AddGDINode(4, y0, x1, y1, x2, y0,
+            SDI_List->AddGDINode(4, y_line, x1, y1, x2, y_line,
                                  0, 0, 0, 0, 10, 0xff, SDI_Object_ID);
 
             if (this->object_state <= 2) {
@@ -172,7 +177,7 @@ void RGE_Static_Object::capture_square_frame(TDrawArea* param_1,
                         health_right = x1 + 25;
                     }
 
-                    SDI_List->AddGDINode(2, y0, x1, y1 - 6, x1 + 26,
+                    SDI_List->AddGDINode(2, y_line, x1, y1 - 6, x1 + 26,
                                          y1 - 1, health_right, 0,
                                          health_right + 1, 0, 20, 0xff,
                                          SDI_Object_ID);

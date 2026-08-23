@@ -38,6 +38,25 @@
 // reversed player-id comparison, moving AttackMemory pointers, typed 0x18
 // byte offsets, and field-pointer max reads all reproduced the 281-byte
 // basin or made the frame and CFG worse. The clean typed source is restored.
+// Exact-finish sa-8dee7342-r1: the authentic information-AI context restored
+// the original register basin. MainDecisionAIModule inherits the period
+// AIModule surface, and the registered TribeMainDecisionAIModule type owns
+// md at +0x100. The exact source keeps direct attackMemories[i] traversal,
+// the id == -1 sentinel guard, the player reread, four mapBound calls, and
+// both ordered setMisc loops. No volatile access, inline assembly, raw vtable,
+// dummy function, or changed call surface is used.
+// Exact transition: the pinned natural source was 281 bytes different. The
+// full period information context plus the registered derived md type reached
+// 381 bytes with 0.0000% difference. Walkback kept the exact result when md
+// used its base pointer type, but removing the registered derived type
+// broke exactness. The complete AttackMemory tail was incidental: its proven
+// 0x18-byte gap also stayed exact. The canonical AIModuleID field surface and
+// the derived type declaration remain because PDB ownership supports them.
+// The narrow derived declaration exposes only the inherited player anchor;
+// the target does not access any unproven TribeMainDecision members.
+// BINARY NOTE: the executable tests each stored attack-memory id against -1
+// before target-owner and player-owner predicates. The second int parameter is
+// not read. Keep this fault and object-ID behavior.
 
 struct XYPoint {
     int x;
@@ -69,16 +88,48 @@ public:
     unsigned short id;
 };
 
-class MainDecisionAIModule {
+class AIModuleID {
 public:
-    char gap_000[0xF0];
+    virtual ~AIModuleID();
+    int id;
+    char name[64];
+};
+
+class AIModule {
+public:
+    virtual ~AIModule();
+    AIModuleID idValue;
+    int playerNumberValue;
+    char playerNameValue[64];
+    int runningValue;
+    int pausedValue;
+    int logHistoryValue;
+    int logCommonHistoryValue;
+    void* historyLogFile;
+    char historyLogFilename[64];
+    int intelligenceLevelValue;
+    int priorityValue;
+    int processFrameValue;
+};
+
+class MainDecisionAIModule : public AIModule {
+public:
+    virtual ~MainDecisionAIModule();
     RGE_Player* player; // +F0
 };
 
-class TribeInformationAIModule {
+class TribeMainDecisionAIModule : public MainDecisionAIModule {
+};
+
+class InformationAIModule : public AIModule {
 public:
-    char gap_000[0x100];
-    MainDecisionAIModule* md; // +100
+    virtual ~InformationAIModule();
+};
+
+class TribeInformationAIModule : public InformationAIModule {
+public:
+    char gap_0F0[0x10];
+    TribeMainDecisionAIModule* md; // +100
     int mapXSizeValue;        // +104
     int mapYSizeValue;        // +108
     char gap_10C[0x1FC - 0x10C];
@@ -86,6 +137,7 @@ public:
     AttackMemory* attackMemories; // +200
 
     int mapBound(XYPoint* pt);
+    virtual ~TribeInformationAIModule();
     void addPriorAttackInfluences(int targetOwner, int unused);
 };
 

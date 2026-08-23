@@ -53,62 +53,8 @@
 // commutative. Both ordinary field loads complete before any later operation,
 // and the product and IMUL flags are equal. All remaining bytes match.
 
-struct Map_Stack {
-    long x;                 // +0x00
-    long y;                 // +0x04
-    float cost;             // +0x08
-    float tot_cost;         // +0x0C
-    Map_Stack* next;        // +0x10
-    Map_Stack* prev;        // +0x14
-};
-
 extern "C" int __cdecl debug_rand(char* file, int line);
-
-class RGE_Map;
-class RGE_Random_Map_Module_List;
-struct RGE_Tile;
-
-class RGE_Random_Map_Module {
-public:
-    virtual unsigned char generate();
-    RGE_Random_Map_Module* parent;  // +0x04
-    RGE_Random_Map_Module_List* list; // +0x08
-    RGE_Map* map;                   // +0x0C
-    RGE_Tile** map_row_offset;      // +0x10
-    long map_width;                 // +0x14
-    long map_height;                // +0x18
-    float schedule;                 // +0x1C
-    unsigned char* search_map;      // +0x20
-    unsigned char** search_map_rows; // +0x24
-    Map_Stack* stack_array;         // +0x28
-    Map_Stack** stack_offsets;      // +0x2C
-
-protected:
-    void add_stack_node(Map_Stack* target, Map_Stack* node);
-};
-
-struct RGE_Elevation_Info_Line {
-    long elevation_size;
-    long elevation;
-    long clumps;
-    long spacing;
-    long base_elevation;
-    long base_terrain_type;
-};
-
-struct RGE_Elevation_Hot_Spots {
-    long x;
-    long y;
-    long radius;
-    long fade;
-};
-
-struct RGE_Elevation_Info {
-    RGE_Elevation_Info_Line elevation[99];
-    long elevation_num;
-    RGE_Elevation_Hot_Spots hot_spots[99];
-    long hot_spot_num;
-};
+#include "..\..\include\rmm_elev_context.h"
 
 // Main-agent audit confirmed canonical elevation stack/map ownership and kept
 // the natural randomized linking loop.
@@ -221,15 +167,21 @@ struct RGE_Elevation_Info {
 // PDB-proven height-first load. The terrain donor's do/while changed the whole
 // function. The exact adjacent-field overlay remains rejected raw plumbing.
 // Restore the canonical float Map_Stack and direct PDB-named base fields.
-class RGE_RMM_Elevation_Generator : public RGE_Random_Map_Module {
-public:
-    RGE_Elevation_Info info;
-    virtual unsigned char generate();
-
-protected:
-    void link_stack_randomly(Map_Stack* param_1);
-};
-
+// Claim sa-ececb6bf-r1: fresh validation retained the 234-byte, 2-byte
+// mismatch with 3/3 ordered calls, the original boundary, and the PDB owner.
+// Base height/width aliases, reversed products, and an explicit height
+// accumulator all emitted the same width-first terminal product. Reusing the
+// loaded dimensions changed the early register basin and widened the diff to
+// 181 bytes. A swapped adjacent-field context also broke the earlier exact
+// blocks. Keep the authentic base layout, list publication, random call order,
+// bounds, duplicate insertion behavior, and fault order. The unsupported
+// adjacent-field overlay is not retained.
+// Claim sa-216d0dfc-r1: exact-finish audit restored the pinned natural source.
+// A height accumulator and scoped terminal dimension locals were codegen
+// duplicates. Mixed cached/fresh dimension products changed the early basin
+// and widened the diff. The 00484BE2/00484BE5 operand order remains a
+// two-byte commutative drift. Keep the exact RMM anchors: 234-byte boundary,
+// no frame, four saved registers, three ordered calls, cleanup, and PDB owner.
 void RGE_RMM_Elevation_Generator::link_stack_randomly(Map_Stack* param_1) {
     Map_Stack* stack;
     long width = this->map_width;

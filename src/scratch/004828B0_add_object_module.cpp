@@ -37,105 +37,16 @@
 // constant-local, typed-loop, and allocation-result-home probes did not improve
 // that basin. Explicit operator-new plus placement construction removed the
 // EH frame and lost the target boundary, so it was rejected.
+// H1/H4: count/i/object_info declaration permutations were neutral at 486 bytes.
+// H2: a real land-info reference alias was codegen-neutral.
+// H3: a temporary reference-signature header test was codegen-neutral; the
+// canonical pointer declaration is restored.
+// H5: reversing object[3]/object[4] outer and exclusion assignments worsened
+// the result to 488 bytes; retain the shipped source order.
+// H6/H7: named 6/4 locals and long count/index types did not improve output.
+// H8/H9: period stdlib and new headers were codegen-neutral and removed.
 
-class RGE_Map;
-class RGE_Game_World { public: char pad[0x141c]; int land_num; };
-class RGE_Land_Info_Line {
-public:
-    long land_size;
-    long terrain_type;
-    long x;
-    long y;
-    long base_size;
-    long area;
-    unsigned char zone;
-    unsigned char pad_19[3];
-    long clumpiness_factor;
-    long wall_1_avoidance_line;
-    long wall_2_avoidance_line;
-    long wall_3_avoidance_line;
-    long wall_4_avoidance_line;
-    unsigned char wall_fade;
-    unsigned char pad_31[3];
-};
-class RGE_Land_Info {
-public:
-    RGE_Land_Info_Line land[99];
-    long land_num;
-    unsigned char base_terrain;
-    unsigned char pad_1421[3];
-    long wall_1_avoidance_line;
-    long wall_2_avoidance_line;
-    long wall_3_avoidance_line;
-    long wall_4_avoidance_line;
-    unsigned char wall_fade;
-    unsigned char pad_end[3];
-};
-class RGE_RMM_Object_Generator;
-class RGE_Object_Number_Per_Group {
-public:
-    unsigned char _0_1_;
-    unsigned char _1_1_;
-    unsigned char pad[2];
-};
-class RGE_Object_Initial_Flags {
-public:
-    struct Bytes {
-        unsigned char group_flag;
-        unsigned char scale_flag;
-        unsigned short _10_2_;
-    };
-    union {
-        Bytes bytes;
-        unsigned long group_flags;
-    };
-};
-class RGE_Object_Info_Line {
-public:
-    long obj_id;
-    long terrain;
-    RGE_Object_Initial_Flags initial_flags;
-    RGE_Object_Number_Per_Group object_number_per_group;
-    long object_number_varience;
-    long number_of_groups;
-    long group_area;
-    long player_id;
-    long land_id;
-    long land_inner_radius;
-    long land_outer_radius;
-    long object_exclusion_zone;
-};
-class RGE_Land_Point_Info_Line {
-public:
-    long x;
-    long y;
-    long id;
-    long player_id;
-};
-class RGE_Object_Info {
-public:
-    RGE_Object_Info_Line objects[99];
-    long object_num;
-    RGE_Land_Point_Info_Line lands[99];
-    long land_num;
-};
-class RGE_Random_Map_Module {
-public:
-    virtual ~RGE_Random_Map_Module();
-    void* parent;
-    void* list;
-    RGE_Map* map;
-    char pad[0x20];
-};
-class RGE_RMM_Object_Generator : public RGE_Random_Map_Module {
-public:
-    char data[0x1920 - 0x30];
-    RGE_RMM_Object_Generator(RGE_Map*, RGE_Random_Map_Module*, RGE_Game_World*, RGE_Object_Info*, unsigned char);
-};
-class RGE_RMM_Controller : public RGE_Random_Map_Module {
-public:
-    void add_object_module(RGE_Game_World*, RGE_Land_Info*);
-};
+#include "../../include/rmm_cntr_context.h"
 
 void RGE_RMM_Controller::add_object_module(RGE_Game_World* world, RGE_Land_Info* lands)
 {

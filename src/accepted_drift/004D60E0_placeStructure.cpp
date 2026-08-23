@@ -64,6 +64,16 @@
 // complete private register-role exchange through the scan. Every address, value, branch,
 // call, memory effect, return, cleanup action, and fault order matches. Size, 0xAC frame,
 // all 62 calls, CFG, and the owning symbol also match.
+// TU context audit: same-module taiconmd.cpp owners were tested in address order.
+// No tested authentic nearest-one or cumulative multi-owner prefix compiled
+// with this standalone class surface. No context change is validated.
+// Follow-up sa-a5f6b303-r1: canonical taibldmd BuildItem and BaseItem declaration
+// surfaces, split cursor declaration, and reversed typeID operands were each
+// rebuilt fresh. All retained the clean 1689-byte body, 0xAC EH frame, 62-call
+// order, CFG, and 73-byte register-role mismatch. The grouped nine-anchor
+// taibldmd context was rebuilt separately; its source owners remained intact.
+// Restore the clean source after each probe. No exact source transition is
+// supported by this evidence.
 
 // FLAGS: config/flags/004D60E0_placeStructure.rsp uses /GX for original EH frame.
 

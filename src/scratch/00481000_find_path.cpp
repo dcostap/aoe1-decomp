@@ -125,6 +125,15 @@
 //   distance statements, and scoped tcost locals. They were neutral or worse.
 // - The four-byte flag array remains the best structural basin at 72.08% shape.
 //   Its unused first byte is still a source-recovery question.
+// 2026-08-23 sa-5b9d5631-r1 exact-finish probes:
+// - Tested separate up/down/right byte flags over a float scratch local and a
+//   function-scope heuristic cost. This worsened the result to 2013 bytes and
+//   59.87% shape, so the four-byte array remains the clean source.
+// - Tested an early non-passable return and a late failure label. Both moved
+//   the failure block but added 43 bytes and worsened the result to 2196 bytes.
+// - Restored and validated the pinned source. The remaining gap starts at the
+//   shared failure branch and the cost/hcost local basin; no supported natural
+//   exact source was found in this claim.
 // BINARY NOTE: The target has ten direct calls in fixed order, a 0x24 frame, and
 // four saved registers. The remaining mismatch starts at the post-gate distance
 // block: VC5 colors the x/y working registers opposite the executable and places
@@ -140,6 +149,7 @@ extern "C" double sqrt(double value);
 
 extern float DAT_00571e50;
 
+#ifndef RMM_BASE_SHARED_CONTEXT
 class RGE_Tile {
 public:
     short screen_xpos;
@@ -155,7 +165,7 @@ public:
     char gap_0C[0x0C];
 };
 
-class Map_Stack {
+struct Map_Stack {
 public:
     long x;
     long y;
@@ -187,6 +197,7 @@ protected:
     unsigned char find_path(Map_Stack& path_stack, long x, long y,
                             long& target_x, long& target_y, float* terrain_cost);
 };
+#endif
 
 unsigned char RGE_Random_Map_Module::find_path(Map_Stack& path_stack, long x, long y,
                                                 long& target_x, long& target_y,

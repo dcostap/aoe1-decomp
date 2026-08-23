@@ -42,6 +42,9 @@
 // These tests confirm 14/14 ordered calls and 0x14 rebuilt frame versus the
 // original 0x1c frame; the next lead remains original local-home/register
 // allocation, not ABI or behavior.
+// continuation Shape-prefix audit: PDB locals ret_num, shape_y1, shape_x1,
+// and rect were restored in declaration order. Bound-local order variants did
+// not improve code. The ret_num stack home and 0x1c frame remain unresolved.
 
 typedef unsigned char byte;
 
@@ -173,8 +176,11 @@ extern "C" void __cdecl ASMDraw_Sprite(void*, long, long, long, long, long, long
 byte TShape::shape_draw(TDrawArea* td, long x, long y, long shape_num,
                         byte mode, byte* table)
 {
-    byte ret;
-    ret = 0;
+    byte ret_num;
+    long shape_y1;
+    long shape_x1;
+    tagRECT rect;
+    ret_num = 0;
 
     if (shape_num >= 0 &&
         this->Check_shape(shape_num, (char*)0x00587058) == 0) {
@@ -214,7 +220,7 @@ byte TShape::shape_draw(TDrawArea* td, long x, long y, long shape_num,
       }
       else {
 
-        tagRECT rect = td->ClipRect;
+        rect = td->ClipRect;
         if (this->shape != 0) {
         Shape_Header* frame = (Shape_Header*)
             (this->shape + this->offsets[shape_num].shape);
@@ -222,38 +228,38 @@ byte TShape::shape_draw(TDrawArea* td, long x, long y, long shape_num,
 
         long x0 = frame->xmin + x;
         long y0 = frame->ymin + y;
-        long x1 = frame->xmax + x;
-        long y1 = frame->ymax + y;
+        shape_x1 = frame->xmax + x;
+        shape_y1 = frame->ymax + y;
         long original_x0 = x0;
         long original_y0 = y0;
-        long original_x1 = x1;
-        long original_y1 = y1;
+        long original_x1 = shape_x1;
+        long original_y1 = shape_y1;
 
         if (x0 < rect.left)
             x0 = rect.left;
         if (y0 < rect.top)
             y0 = rect.top;
-        if (x1 > rect.right)
-            x1 = rect.right;
-        if (y1 > rect.bottom)
-            y1 = rect.bottom;
+        if (shape_x1 > rect.right)
+            shape_x1 = rect.right;
+        if (shape_y1 > rect.bottom)
+            shape_y1 = rect.bottom;
         if (x0 < 0)
             x0 = 0;
         if (y0 < 0)
             y0 = 0;
-        if (x1 >= td->Width)
-            x1 = td->Width - 1;
-        if (y1 >= td->Height)
-            y1 = td->Height - 1;
+        if (shape_x1 >= td->Width)
+            shape_x1 = td->Width - 1;
+        if (shape_y1 >= td->Height)
+            shape_y1 = td->Height - 1;
 
-        if (x0 <= x1 && y0 <= y1) {
+        if (x0 <= shape_x1 && y0 <= shape_y1) {
             if (x0 == original_x0 && y0 == original_y0 &&
-                x1 == original_x1 && y1 == original_y1) {
+                shape_x1 == original_x1 && shape_y1 == original_y1) {
                 switch ((unsigned char)mode) {
                 case 2:
                     if (table == 0) {
-                        long draw_x = x1;
-                        long draw_y = y1;
+                        long draw_x = shape_x1;
+                        long draw_y = shape_y1;
                         return this->shape_draw_unclipped(td, draw_x, draw_y,
                                                            shape_num);
                     }
@@ -276,7 +282,7 @@ byte TShape::shape_draw(TDrawArea* td, long x, long y, long shape_num,
                                                            shape_num);
                     }
                 default:
-                    return ret;
+                    return ret_num;
                 }
             }
 
@@ -284,25 +290,26 @@ byte TShape::shape_draw(TDrawArea* td, long x, long y, long shape_num,
             case 2:
                 if (table != 0)
                     return this->shape_shadow_clipped(
-                        td, original_x0, original_y0, x0, y0, x1, y1, table);
+                        td, original_x0, original_y0, x0, y0,
+                        shape_x1, shape_y1, table);
                 break;
             case 1:
                 if (table != 0)
                     return this->shape_color_trans_clipped(
                         td, original_x0, original_y0, shape_num,
-                        x0, y0, x1, y1, table);
+                        x0, y0, shape_x1, shape_y1, table);
                 break;
             case 0:
                 break;
             default:
-                return ret;
+                return ret_num;
             }
             return this->shape_draw_clipped(td, original_x0, original_y0,
-                                            x0, y0, x1, y1);
+                                            x0, y0, shape_x1, shape_y1);
         }
       }
     }
     }
 
-    return ret;
+    return ret_num;
 }

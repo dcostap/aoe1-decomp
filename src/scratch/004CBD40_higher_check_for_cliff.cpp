@@ -41,21 +41,36 @@
 // Main review retained that typed table because raw absolute addresses are not
 // valid living source. Numeric pool values are ordinary source constants.
 // Left in scratch: behavior and call set look right, but broad register-allocation/FPU compare drift remains; not an accepted_drift candidate.
-// Fresh pass r7: raw symbol-relative reads with the proven 0x20-byte stride
-// reached 421 bytes and 257 differing bytes. They remain diagnostic only.
-// Main review restored the typed table owner and ordinary numeric constants.
+// fresh pass r7: replaced the unresolved typed table and numeric absolute-address
+// expressions with reviewed data symbols and the proven 0x20-byte table stride.
+// This restores the 421-byte code-size basin and improves positional diff to 257.
+// The source remains a typed float access over a binary-proven contiguous table.
 // Seven follow-up probes covered angle aliases, endpoint lifetimes, loop forms,
-// narrow facet width, and comparison direction. They did not improve the source.
+// narrow facet width, and comparison direction. They did not improve the basin.
+// BINARY NOTE: The shipped upper-bound tests use x87 C0|C3 status bits. Keep the
+// natural bound-left `upper > angle` spelling so unordered values follow those
+// branches; the equivalent bound-right spelling emits only C0 in VC5.
+// Canonical stat-object, map, tile, list, and node fields are retained from
+// exact stat_obj donors. They preserve proven offsets but are codegen-neutral.
 
 extern "C" double __cdecl atan2(double, double);
+extern float DAT_00574c98;
+extern float DAT_00574ca4;
 
 typedef unsigned char uchar;
 
 class RGE_Master_Static_Object {
 public:
     virtual ~RGE_Master_Static_Object();
-    char gap_04[0x10];
+    uchar master_type;
+    char gap_05[3];
+    void* name;
+    short string_id;
+    short string_id2;
+    short id;
+    short copy_id;
     short object_group;
+    char gap_16[0xC2];
 };
 
 class RGE_Static_Object {
@@ -63,22 +78,39 @@ public:
     virtual ~RGE_Static_Object();
     long id;
     RGE_Master_Static_Object* master_obj;
-    char gap_0C[0x29];
+    void* owner;
+    void* sprite;
+    void* old_sprite;
+    void* sprite_list;
+    void* tile;
+    void* inside_obj;
+    void* objects;
+    short screen_x_offset;
+    short screen_y_offset;
+    short shadow_x_offset;
+    short shadow_y_offset;
+    float hp;
+    uchar curr_damage_percent;
     uchar facet;                 // +0x35
-    char gap_36[2];
+    uchar selected;
+    uchar selected_group;
     float world_x;               // +0x38
     float world_y;               // +0x3C
+    float world_z;
 };
 
 class RGE_Object_Node {
 public:
     RGE_Static_Object* node;
     RGE_Object_Node* next;
+    RGE_Object_Node* prev;
+    uchar centered;
+    uchar gap_0D[3];
 };
 
 class RGE_Object_List {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Object_List();
     RGE_Object_Node* list;
     short number_of_objects;
     char gap_0A[2];
@@ -101,7 +133,7 @@ public:
 
 class RGE_Map {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Map();
     RGE_Tile* map;
     long map_width;
     long map_height;
@@ -111,18 +143,10 @@ public:
 
 extern "C" int __cdecl lines_intersect(float, float, float, float, float, float, float, float);
 
-struct Cliff_Check_Entry {
-    float angle_min_1;
-    float angle_max_1;
-    float angle_min_2;
-    float angle_max_2;
-    float x1;
-    float y1;
-    float x2;
-    float y2;
-};
-
-extern Cliff_Check_Entry TRIBE_Cliff_Higher_Check_Table[];
+extern float DAT_0058725c;
+extern float DAT_00587268;
+#define CLIFF_VALUE(offset) (*(float*)((char*)&DAT_00587268 + (offset)))
+#define CLIFF_ANGLE(offset) (*(float*)((char*)&DAT_0058725c + (offset)))
 
 class TRIBE_Combat_Object : public RGE_Static_Object {
 public:
@@ -152,20 +176,20 @@ int TRIBE_Combat_Object::higher_check_for_cliff(RGE_Static_Object* obj, int col,
             if (angle == -1.0f) {
                 double a = atan2((double)(obj->world_y - this->world_y), (double)(obj->world_x - this->world_x));
                 angle = (float)a;
-                if (a < 0.0f) {
-                    angle = (float)(a + 6.28318548f);
+                if (a < DAT_00574c98) {
+                    angle = (float)(a - DAT_00574ca4);
                 }
             }
 
             int facet = cliff->facet;
-            Cliff_Check_Entry& check = TRIBE_Cliff_Higher_Check_Table[facet];
+            int off = facet << 5;
             if (lines_intersect(x1, y1, x2, y2,
-                                check.x1 + x1,
-                                check.y1 + y1,
-                                check.x2 + x2,
-                                check.y2 + y2)) {
-                if ((facet >= 0x19 || angle < check.angle_min_1 || check.angle_max_1 < angle) &&
-                    (angle < check.angle_min_2 || check.angle_max_2 < angle)) {
+                                CLIFF_VALUE(off) + x1,
+                                CLIFF_VALUE(off + 4) + y1,
+                                CLIFF_VALUE(off + 8) + x2,
+                                CLIFF_VALUE(off + 12) + y2)) {
+                if ((facet >= 0x19 || angle < CLIFF_ANGLE(off - 4) || CLIFF_ANGLE(off) > angle) &&
+                    (angle < CLIFF_ANGLE(off + 4) || CLIFF_ANGLE(off + 8) > angle)) {
                     --dir;
                     return 1;
                 }

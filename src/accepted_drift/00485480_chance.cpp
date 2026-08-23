@@ -8,14 +8,11 @@
 // Remaining drift is localized: EBX/EBP allocation swap for wall3/x_chance, equivalent
 // positive-Y arithmetic scheduling, and ECX/EDX choice for fade multiply. Candidate only.
 
-class RGE_RMM_Land_Generator {
-public:
-    char gap0[0x14];
-    long width;
+#include "../../include/rmm_land_context.h"
 
-    unsigned char chance(long x, long y, long land_id);
-};
-
+// The accepted-drift owner keeps its proved flat address basin. The complete
+// RMM land surface is canonical in the shared context; this narrow overlay is
+// retained only for the original owner-local codegen shape.
 struct LandInfo_00485480 {
     char gap0[0x50];
     long wall_1_avoidance_line;
@@ -27,7 +24,8 @@ struct LandInfo_00485480 {
 
 unsigned char RGE_RMM_Land_Generator::chance(long x, long y, long land_id)
 {
-    LandInfo_00485480* land_info = (LandInfo_00485480*)((char*)this + land_id * 52);
+    LandInfo_00485480* land_info =
+        (LandInfo_00485480*)((char*)this + land_id * 52);
     unsigned char fade = land_info->wall_fade;
     if (fade > 0) {
         long wall_1 = land_info->wall_1_avoidance_line;
@@ -39,7 +37,7 @@ unsigned char RGE_RMM_Land_Generator::chance(long x, long y, long land_id)
         if (a <= xpos)
             x_chance = xpos;
 
-        long right = width;
+        long right = *(long*)((char*)this + 0x14);
         a += wall_1;
         right -= wall_3;
         xpos += right;

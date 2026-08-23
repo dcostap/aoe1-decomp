@@ -1,5 +1,7 @@
 // VA: 00480A20 RGE_Random_Map_Module::remove_module(RGE_Random_Map_Module*)
 // PDB source: rmm_base.cpp lines 174-206 (90 bytes, 41 asm lines)
+// PDB owner: protected ?remove_module@RGE_Random_Map_Module@@IAEEPAV1@@Z.
+// Canonical owner context: src/rmm_base_tu.cpp with rmm_base_context.h.
 // Default flags
 //
 // __thiscall: this in ecx, 1 stack param (RGE_Random_Map_Module*). ret 4 cleanup.
@@ -29,35 +31,30 @@
 // original `mov eax,[edx+4]` immediately after `edx=eax`, and (b) an eax/ecx color
 // swap through the list walk. The compared pointers, memory operations, branches,
 // free call/cleanup, return values, and tail bytes are identical; no window/truncation issue.
+//
+// 2026-08-23 canonical-owner audit:
+// - A fresh rmm_base_tu.cpp build preserved the 23 non-scratch owner sections
+//   against the prior canonical audit object after relocation masking. This
+//   protects the exact owner set, including clear_stack at 00480E50.
+// - The fresh checker still proves the 00480A20-00480A79 boundary, one ordered
+//   free call with ret-4 cleanup, and the protected PDB owner above.
+// - Natural declaration, source-order, and pointer-shape variants did not move
+//   the 13-byte register-map drift. The source stays accepted drift.
 
+#include "../../include/rmm_base_context.h"
 #include <stdlib.h>
 
-class RGE_Random_Map_Module;
-
-struct Node {
-    RGE_Random_Map_Module* module;
-    Node* next;
-};
-
-class RGE_Random_Map_Module {
-public:
-    char pad_00[8];
-    Node* list;
-
-    unsigned char remove_module(RGE_Random_Map_Module* param_1);
-};
-
 unsigned char RGE_Random_Map_Module::remove_module(RGE_Random_Map_Module* param_1) {
-    Node* head = this->list;
-    Node* found = 0;
+    RGE_Random_Map_Module_List* head = this->list;
+    RGE_Random_Map_Module_List* found = 0;
 
     if (head != 0) {
         if (head->module == param_1) {
             found = head;
             this->list = head->next;
         } else {
-            Node* curr;
-            Node** pprev = &head->next;
+            RGE_Random_Map_Module_List* curr;
+            RGE_Random_Map_Module_List** pprev = &head->next;
             curr = *pprev;
             if (curr != 0) {
                 do {

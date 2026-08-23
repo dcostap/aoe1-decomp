@@ -5,46 +5,21 @@
 // The screen fields and the narrow game/communications setter parameters use
 // the period ABI surfaces established by same-TU donors.
 //
-// Attempt log (orch-scrmps-fresh-03):
-// - Re-established the binary-backed ownership before probing codegen: the
-//   screen owns scenarioPlayerCount (+0x728) and scenarioInfo (+0x848), while
-//   the TRIBE_Game and communications globals provide the player setters.
-// - Fresh baseline: natural scenario-player compaction, first-any selection,
-//   random-game initialization, teams, humanity, and dropdown refresh.  The
-//   first-any locals follow the executable's actual roles: the scenario index
-//   is first_any_civ, its civilization is first_any_color, and its palette
-//   color is local_4; first_any_player is the register-only post-loop copy.
-// - Corrected ABI evidence from basegame.cpp, tribegam.cpp, and com_hand.cpp:
-//   setNumberPlayers/setPlayerTeam/setPlayerColor take int values, while
-//   SetPlayerHumanity takes the PLAYERHUMANITY enum.  This reduced the clean
-//   candidate from a 560-byte/400-byte-diff build to 556 bytes with a 20-byte
-//   diff and all 49 relocation identities exact.
-// - Declaration-order, direct-this/ordinary screen-alias, inherited
-//   TScreenPanel, induction-scope, and register-qualification probes were
-//   codegen duplicates.  The remaining localized drift is saved-this/count
-//   register coloring (original EBX=this/EBP=count versus rebuilt
-//   EBP=this/EBX=count) plus the random-loop tail's compare/move order.
-// - Final unresolved source is restored to the simplest typed form; leave in
-//   scratch for a later worker rather than retain compiler-steering aliases.
-// - Fresh claim: moving active-loop declarations to function scope, putting
-//   the random assignment in the do-while condition, and flattening the
-//   same-size screen base were codegen duplicates. Restored the pinned source.
-// - Scoped the screen alias to the scenario branch and called the final
-//   refresh through this; codegen stayed identical, so restored the clean form.
-// - Swapped the typed scenario-player and active-player declarations; the
-//   saved-source diff grew from 20 to 21 bytes, so restored the clean order.
-// - Revisit: using the direct player+1 expression and then assigning that
-//   value back to player reproduces the random-loop tail.  The removed color
-//   temporary had caused a compare-before-move schedule.
-// - Revisit: the proven complete screen member surface and 128 ambient
-//   declaration samples did not change the remaining register coloring.
-// - Current clean candidate: 556 bytes with 15 differing bytes.  All calls,
-//   blocks, size, frame, and CFG signals match.  Remaining drift is only the
-//   EBX/EBP assignment for this and the active-player count.
-// ACCEPTED DRIFT: All 15 changed bytes form one complete EBX/EBP permutation.
-// The original keeps `this` in EBX and the active-player count in EBP. The
-// rebuild exchanges those registers. Instruction order, operands, flags,
-// memory accesses, 27 calls, branches, cleanup, and fault order are identical.
+// Recovery notes:
+// - PDB evidence assigns this method to scr_mps.cpp lines 2793-2886.
+// - The screen owns scenarioPlayerCount (+0x728) and scenarioInfo (+0x848).
+// - The game and communications objects own the player publication calls.
+// - The executable uses int setter arguments and PLAYERHUMANITY values.
+// - The executable publishes scenario players, civilizations, colors, teams,
+//   and humanity in the order shown below.
+// - BINARY NOTE: the decompiler-only first_any_player copy is not needed.
+//   first_any_civ carries that value through the later lookup and publication.
+// - Removing that copy changed the saved-register assignment to the original:
+//   EBX holds this and EBP holds the active-player count.
+// - Exact-finish walkback restored the copy and returned to the 15-byte drift.
+// - Removing the screen pointer alias also kept the exact result.
+// - Fresh exact check: 556 bytes, 27 ordered calls, correct owner, and 0 bytes
+//   differ. The checker reported MATCH and 0.0000%.
 
 class RGE_Scenario {
 public:
@@ -165,51 +140,47 @@ extern "C" int __cdecl debug_rand(char* file, int line);
 
 void TribeMPSetupScreen::setupSinglePlayerPlayers() {
     int first_any_civ;
-    int first_any_player;
     int first_any_color;
     int first_any_color_index;
-    TribeMPSetupScreen* screen = this;
     if (rge_base_game->scenarioGame() != 0) {
         first_any_civ = -1;
-        first_any_player = -1;
         first_any_color = -1;
         first_any_color_index = -1;
 
-        if (screen->scenarioInfo != 0) {
+        if (this->scenarioInfo != 0) {
             int player_count = 0;
             int scenario_player = 0;
             do {
-                if (screen->scenarioInfo->Get_player_Active(scenario_player) != 0) {
+                if (this->scenarioInfo->Get_player_Active(scenario_player) != 0) {
                     ((TRIBE_Game*)rge_base_game)->setScenarioPlayer(
                         player_count, scenario_player);
                     int civilization =
-                        screen->scenarioInfo->Get_player_Civ(scenario_player);
+                        this->scenarioInfo->Get_player_Civ(scenario_player);
                     ((TRIBE_Game*)rge_base_game)->setCivilization(
                         player_count, civilization);
                     ((TRIBE_Game*)rge_base_game)->setPlayerColor(
                         player_count, scenario_player + 1);
 
-                    if (screen->scenarioInfo->Get_player_Type(scenario_player) == 1 &&
+                    if (this->scenarioInfo->Get_player_Type(scenario_player) == 1 &&
                         first_any_civ == -1) {
                         first_any_civ = scenario_player;
                         first_any_color =
-                            screen->scenarioInfo->Get_player_Civ(scenario_player);
+                            this->scenarioInfo->Get_player_Civ(scenario_player);
                         first_any_color_index = scenario_player + 1;
                     }
-                    first_any_player = first_any_civ;
                     ++player_count;
                 }
                 ++scenario_player;
             } while (scenario_player < 9);
         }
 
-        rge_base_game->setNumberPlayers(screen->scenarioPlayerCount);
-        if (first_any_player != -1) {
+        rge_base_game->setNumberPlayers(this->scenarioPlayerCount);
+        if (first_any_civ != -1) {
             int player = 1;
-            if (screen->scenarioPlayerCount > 1) {
-                while (player < screen->scenarioPlayerCount) {
+            if (this->scenarioPlayerCount > 1) {
+                while (player < this->scenarioPlayerCount) {
                     if (((TRIBE_Game*)rge_base_game)->scenarioPlayer(player) ==
-                        first_any_player) {
+                        first_any_civ) {
                         int scenario_player =
                             ((TRIBE_Game*)rge_base_game)->scenarioPlayer(0);
                         ((TRIBE_Game*)rge_base_game)->setScenarioPlayer(
@@ -228,8 +199,7 @@ void TribeMPSetupScreen::setupSinglePlayerPlayers() {
                 }
             }
 
-            ((TRIBE_Game*)rge_base_game)->setScenarioPlayer(
-                0, first_any_player);
+            ((TRIBE_Game*)rge_base_game)->setScenarioPlayer(0, first_any_civ);
             ((TRIBE_Game*)rge_base_game)->setCivilization(0, first_any_color);
             ((TRIBE_Game*)rge_base_game)->setPlayerColor(
                 0, first_any_color_index);
@@ -260,5 +230,5 @@ void TribeMPSetupScreen::setupSinglePlayerPlayers() {
         ++player;
     } while (player <= 8);
     comm->SetPlayerHumanity(9, ME_ABSENT);
-    screen->fillNumberPlayers();
+    this->fillNumberPlayers();
 }

@@ -102,37 +102,20 @@
 //   forms. These were duplicates or worse. Direct repeated typed row indexing
 //   and the do-counted loops remain the clearest natural structure. No
 //   parameter-home aliases were restored.
+// - Exact-finish audit: the PDB owner is rmm_clif.cpp, lines 348-375, in
+//   RGE_RMM_Cliffs_Generator. The target has one direct remove_stack_node call,
+//   a 0x08 frame, and the protected IAEX owner. Fresh checks keep 004821A0,
+//   004828A0, 004832E0, and 00483430 unchanged and exact.
+// - This claim tested endpoint declaration order, split assignments, early
+//   coordinate lifetimes, a right-bound local, and the reviewed random-map
+//   base header. These tests did not improve the 168-byte residue. The last
+//   non-exact source was restored before validation.
+// - The reviewed rmm_base_context.h and protected access are retained. They
+//   match the PDB class surface and emit the same 243-byte code. The remaining
+//   evidence gap is early ESI/EBP/EBX/EAX allocation and one missing `mov ebx,
+//   eax` after the inner scan. No natural source lead recovered these bytes.
 
-struct Map_Stack {
-    long x;
-    long y;
-    float cost;
-    float tot_cost;
-    Map_Stack* next;
-    Map_Stack* prev;
-};
-
-struct RGE_Tile;
-struct RGE_Map;
-
-class RGE_Random_Map_Module {
-public:
-    virtual unsigned char generate(void);
-
-    void* parent;
-    void* list;
-    RGE_Map* map;
-    RGE_Tile** map_row_offset;
-    long map_width;
-    long map_height;
-    float schedule;
-    unsigned char* search_map;
-    unsigned char** search_map_rows;
-    Map_Stack* stack_array;
-    Map_Stack** stack_offsets;
-
-    void remove_stack_node(Map_Stack* node);
-};
+#include "../../include/rmm_base_context.h"
 
 struct RGE_Cliffs_Hot_Spots {
     long x;
@@ -158,6 +141,7 @@ public:
     RGE_Cliffs_Info info;
     Map_Stack valid_cliff_sites;
 
+protected:
     void invalidate_cliff_area(long x, long y, long spacing);
 };
 
@@ -223,3 +207,13 @@ void RGE_RMM_Cliffs_Generator::invalidate_cliff_area(long x, long y, long spacin
 // - A 288-variant structured lab found no exact result. Its best invariant
 //   group matched this 243-byte, 168-diff basin. An 8-sample ambient lab also
 //   found no new emitted-code group. Keep the clean natural source here.
+
+// - Fresh owner audit: PDB rmm_clif.cpp lines 348-375 names the protected
+//   IAEX owner and the four canonical local homes. The current source keeps
+//   the reviewed base class, cliff fields, direct helper call, cleanup, and
+//   original x2-versus-height fault order.
+// - Fresh probes tested lower-endpoint lifetime, PDB local declaration order,
+//   register input aliases, PDB radius spelling, and real x1/y1 copies.
+//   The first four stayed in the 243-byte, 168-difference basin or duplicated
+//   it. Real x1/y1 copies produced 240 bytes and 217 differences. Restore the
+//   pinned natural source after each probe.

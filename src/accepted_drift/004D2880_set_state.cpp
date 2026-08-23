@@ -46,10 +46,18 @@
 // constructor-result EAX/EDI handoff placements, and local register choices.
 // EH states, constructor null paths, all 36 calls and arguments, object reads,
 // x87 comparison order, stores, notifications, and returns match.
+// Exact-finish: declare the Move_To result inside cases 4 and 8. Keep each
+// natural null, add_action, and setSubAction tail in its case. This restores
+// both constructor-result handoffs and the shipped action-list call order.
+// Walkback to one function-scope action and a shared goto tail restored the
+// 530-byte mismatch and was rejected. The case-local form is exact.
+// Final validation: 1020/1020 bytes, 36/36 calls, matching owner symbol, and
+// 0.0000% positional difference. Direct object/master reads and x87 order
+// remain in the source.
 // FLAGS: config\\flags\\004D2880_set_state.rsp (/nologo /c /O2 /Oy /GX)
 
 #include "..\\..\\include\\game_globals.h"
-
+#ifndef TACT_TRD_SHARED_CONTEXT
 class RGE_Sprite;
 class RGE_Action;
 class RGE_Action_List;
@@ -283,11 +291,10 @@ public:
     RGE_Sprite* get_wait_sprite();
     RGE_Sprite* get_move_sprite();
 };
+#endif
 
 void TRIBE_Action_Trade::set_state(unsigned char param_1)
 {
-    RGE_Action_Move_To* action;
-
     this->sub_actions->delete_list();
     this->state = param_1;
 
@@ -332,12 +339,18 @@ void TRIBE_Action_Trade::set_state(unsigned char param_1)
         this->target_y = this->target_obj->world_y;
         this->target_z = this->target_obj->world_z;
 
-        action = new RGE_Action_Move_To(
+        RGE_Action_Move_To* action = new RGE_Action_Move_To(
             this->obj,
             this->target_obj,
             this->task->work_range,
             this->get_move_sprite());
-        goto add_move_action;
+        if (action == 0) {
+            this->set_state(0x0D);
+            return;
+        }
+        this->sub_actions->add_action(action);
+        action->setSubAction(1);
+        return;
     }
 
     case 6:
@@ -378,12 +391,18 @@ void TRIBE_Action_Trade::set_state(unsigned char param_1)
             }
 
             if (this->target_obj2 != 0) {
-                action = new RGE_Action_Move_To(
+                RGE_Action_Move_To* action = new RGE_Action_Move_To(
                     this->obj,
                     this->target_obj2,
                     0.0f,
                     this->get_move_sprite());
-                goto add_move_action;
+                if (action == 0) {
+                    this->set_state(0x0D);
+                    return;
+                }
+                this->sub_actions->add_action(action);
+                action->setSubAction(1);
+                return;
             }
 
             this->obj->notify(this->obj->id, this->obj->id, 0x203, 0x267, 0, 0);
@@ -402,12 +421,4 @@ void TRIBE_Action_Trade::set_state(unsigned char param_1)
     default:
         return;
     }
-
-add_move_action:
-    if (action == 0) {
-        this->set_state(0x0D);
-        return;
-    }
-    this->sub_actions->add_action(action);
-    action->setSubAction(1);
 }

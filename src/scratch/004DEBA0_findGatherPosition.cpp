@@ -48,6 +48,15 @@
 // passed to mapBound, setupInfluenceMap, and line/path calls. This changes
 // external pointer values and the ESP context of all 11 calls, so the gap is
 // not eligible as private local-home drift.
+//
+// Current pass sa-8052b5e7-r1:
+// - Fresh checks retained the natural source and all 11 ordered direct/virtual
+//   calls. Reusing loop counters, point declaration orders, and authentic
+//   information/object field context emitted the same 0x50-frame basin.
+// - The exact same-TU blotExploredMap donor's y,x point declaration was worse
+//   (623-byte diff) and was restored. It is not the target's proven layout.
+// - The remaining 0x50 versus 0x54 gap remains a real address-taken local
+//   topology blocker, not padding or private local-home drift.
 
 typedef unsigned char uchar;
 struct XYPoint { int x; int y; };

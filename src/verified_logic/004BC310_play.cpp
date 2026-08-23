@@ -101,6 +101,7 @@
 
 #include "..\..\include\game_globals.h"
 
+#ifndef SOUND_CANONICAL_TU
 class RGE_Sound_Info;
 class TSound_Driver;
 
@@ -146,9 +147,11 @@ public:
     TDigital* digital_sound;     // +0x18
     unsigned char loaded;        // +0x1C
     char _gap_1D[3];
-    unsigned long time_field;    // +0x20
+    unsigned long time;          // +0x20
 };
+#endif
 
+#ifndef SOUND_CANONICAL_TU
 extern "C" int __cdecl debug_rand(char* file, int line);
 extern "C" int __cdecl sprintf(char* buf, const char* fmt, ...);
 extern "C" unsigned long __cdecl debug_timeGetTime(char* file, int line);
@@ -160,6 +163,7 @@ extern void __cdecl write_draw_log2(char* msg);
 extern int do_draw_log;       // 0x62C498
 extern int safe_draw_log;     // 0x592A5C
 extern int debug_timeGetTime_on;  // 0x62C4E8
+#endif
 
 void RGE_Sound::play(int play_list_param)
 {
@@ -204,7 +208,7 @@ void RGE_Sound::play(int play_list_param)
                         debug_timeGetTime_on = 0;
                         unsigned long time_val = debug_timeGetTime(
                             "C:\\msdev\\work\\age1_x1\\Sound.cpp", 0x108);
-                        this->sounds[idx].time_field = time_val;
+                        this->sounds[idx].time = time_val;
                         debug_timeGetTime_on = saved_time_get;
                     }
                     return;

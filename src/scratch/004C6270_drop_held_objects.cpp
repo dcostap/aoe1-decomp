@@ -65,9 +65,14 @@
 //   0xB4, but kept EBP for this. Running cursors, nested do loops, and retry
 //   index variants were rejected for frame, call, or shape drift. Final
 //   validation: 384 rebuilt bytes versus 387, four ordered calls, mismatch.
-// - Main review rejected the pointer overlays as compiler-facing steering.
-//   The living source keeps distinct x, y, and next values with their real
-//   types. The binary can still reuse their homes after their lifetimes end.
+// - resumed exact-finish pass: the distinct typed x/y/next source is the
+//   clean natural baseline at 386 bytes, 0xB4, and four ordered calls, with
+//   a 285-byte mismatch. Real array aggregates, a typed drop_y/next union,
+//   running radius cursors, goto retry labels, declaration reorders, and a
+//   register-qualified self alias were tested and rejected. The union
+//   reproduced the prior 384-byte, 277-byte diagnostic basin but still used
+//   an unsupported local overlap. No exact result was found; keep the
+//   separate typed source and do not claim the pointer-overlap candidate.
 
 class RGE_Static_Object;
 class RGE_Master_Static_Object {
@@ -195,7 +200,6 @@ unsigned char RGE_Static_Object::drop_held_objects(int mode)
     int i = 1;
     unsigned char count = 0;
     RGE_Object_Node* temp;
-    RGE_Object_Node* next;
     float x;
     float y;
     float drop_y[10];
@@ -203,17 +207,15 @@ unsigned char RGE_Static_Object::drop_held_objects(int mode)
     float drop_x[10];
     float radius_y[10];
     drop_x[1] = this->world_x;
-    radius_x[1] = this->master_obj->radius_x + this->master_obj->radius_x;
     drop_y[1] = this->world_y;
+    radius_x[1] = this->master_obj->radius_x + this->master_obj->radius_x;
     radius_y[1] = this->master_obj->radius_y + this->master_obj->radius_y;
     temp = this->objects->first;
 
     while (temp != 0) {
+        RGE_Object_Node* next;
         next = temp->next;
-        do {
-                if (i <= 0) {
-                    break;
-                }
+        while (i > 0) {
                     if (this->find_drop_location(mode, &x, &y, temp->object->master_obj, temp->object, drop_x[1], drop_y[1], radius_x[1], radius_y[1])) {
                         RGE_Static_Object* held = temp->object;
                         held->set_location(this->world_x, this->world_y, this->world_z);
@@ -236,7 +238,7 @@ unsigned char RGE_Static_Object::drop_held_objects(int mode)
                     drop_y[i] = drop_y[i + 1];
                     radius_y[i] = radius_y[i + 1];
                     radius_x[i] = radius_x[i + 1];
-        } while (i > 0);
+        }
         temp = next;
     }
     return count;

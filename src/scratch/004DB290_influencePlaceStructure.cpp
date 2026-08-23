@@ -8,7 +8,7 @@
 // - This claim tested 20 meaningful source, ABI, layout, control-flow, and
 //   liveness hypotheses.  A diagnostic branch variant reached 3,425 diff bytes.
 // - The current source is the best natural reconstruction after the probes.
-//   It emits 3,834 of 3,868 bytes, 55 calls, and 67.14% shape similarity.
+//   It emits 3,834 of 3,868 bytes, 55 calls, and 67.32% shape similarity.
 // - The source keeps /GX, the +0x3c player world field, and the inherited
 //   AIModule logCommonHistory varargs surface from binary evidence.
 // - A late timeout save label moves the second state strncpy near the original
@@ -24,6 +24,13 @@
 // - Rejected: duplicated branch-local strncpy calls, direct age predicates,
 //   lookupZone result assignment, inline unsupported-size cleanup, and result
 //   lifetime changes. They changed shape without a better natural result.
+// - Focused audit: original RGE_Player::world is at +0x3c.  The +0x14 gap
+//   change preserved the 55-call set and was retained as the binary-supported
+//   field layout.  Direct-coordinate assignment reordering changed only the
+//   local codegen basin and was restored; scalar parameter reads have no fault.
+// - Removing coordinateObject added one ftol call and broke ordered-call
+//   parity.  The common coordinate receiver is retained.  An explicit
+//   master-null return changed the CFG without a better exact candidate.
 // - Open drift: the frame is 0x188 versus 0x190.  The early register colors,
 //   first cold log block, and many stack homes still differ.
 
@@ -88,13 +95,13 @@ class BaseItem {
 public:
     virtual ~BaseItem();
 
-    int typeID();
+    int typeID() const;
     int uniqueID();
     void setTypeID(int value);
-    float x();
-    float y();
-    float xSize();
-    float ySize();
+    float x() const;
+    float y() const;
+    float xSize() const;
+    float ySize() const;
     char* name();
 
     int typeIDValue;
@@ -165,7 +172,7 @@ public:
     virtual ~RGE_Player();
     char gap_04[0x20];
     RGE_Master_Static_Object** master_objects;
-    char gap_28[0x10];
+    char gap_28[0x14];
     RGE_Game_World* world;
 };
 

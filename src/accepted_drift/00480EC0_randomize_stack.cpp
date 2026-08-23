@@ -172,9 +172,21 @@
 //   same list, node, and bucket addresses. Random scaling, pair order,
 //   post-mutation next rereads, loop counts, and returns match. The extra
 //   original word stores only private pair-loop state.
+// - Exact-finish audit: the natural two-scalar state aggregate is the only
+//   policy-plausible source tested here that reaches the 0x968 frame, 237-byte
+//   boundary, 82 instructions, exact CFG, and all five ordered calls. Its
+//   residual is a stable 10-byte EBX/EDI register recolor. Declaration order,
+//   receiver aliases, cursor scope, counter width, /GX, and loop rotation did
+//   not alter that recolor. The aggregate is retained as diagnostic evidence,
+//   not as an exact claim; the source below restores direct Map_Stack ownership.
+// - Exact-finish linkage audit: extern C debug_rand matches the original
+//   _debug_rand relocation in the canonical wrapper. A fresh wrapper build
+//   changed only randomize_stack; the other 23 defined rmm_base owners stayed
+//   byte-identical, including clear_stack at 00480E50.
 
-extern int __cdecl debug_rand(char* file, int line);
+extern "C" int __cdecl debug_rand(char* file, int line);
 
+#ifndef RMM_BASE_SHARED_CONTEXT
 struct Map_Stack {
     long x;           // +0x00
     long y;           // +0x04
@@ -186,10 +198,11 @@ struct Map_Stack {
 
 class RGE_Random_Map_Module {
 protected:
-    void init_stack(Map_Stack* stack);
+    void init_stack(Map_Stack& stack);
     void add_stack_node(Map_Stack* stack, Map_Stack* node);
     void randomize_stack(Map_Stack* param_1);
 };
+#endif
 
 void RGE_Random_Map_Module::randomize_stack(Map_Stack* param_1)
 {
@@ -197,7 +210,7 @@ void RGE_Random_Map_Module::randomize_stack(Map_Stack* param_1)
     int i;
 
     for (i = 0; i < 100; i++) {
-        init_stack(&sub_stacks[i]);
+        init_stack(sub_stacks[i]);
     }
 
     for (int outer = 2; outer != 0; outer--) {

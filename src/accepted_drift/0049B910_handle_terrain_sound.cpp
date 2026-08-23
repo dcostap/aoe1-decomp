@@ -40,9 +40,15 @@
 //   bytes; split sentinel initialization regressed to eleven bytes.
 // - declaring the result locals before the map load changed scheduling but
 //   still emitted the same seven-byte group; the remaining gap is EBX/EBP color.
+// - integrated the proven map, world, sound, and screen fields through
+//   scr_game_context.h; standalone and wrapper builds kept the same seven-byte
+//   register group. The receiver and stream/UI behavior remain unchanged.
 
+#include "../../include/scr_game_context.h"
+
+#if 0
 extern "C" void __cdecl color_log(unsigned char a, unsigned char b, int c);
-extern unsigned long debug_timeGetTime(const char* file, int line);
+extern "C" unsigned long debug_timeGetTime(const char* file, int line);
 
 extern int disable_terrain_sounds;
 extern int _bPlaying;
@@ -124,8 +130,9 @@ public:
 
     void handle_terrain_sound();
 };
+#endif
 
-static const char s_scr_game_cpp[] =
+static const char s_scr_game_cpp_local[] =
     "C:\\msdev\\work\\age1_x1\\scr_game.cpp";
 
 void TRIBE_Screen_Game::handle_terrain_sound() {
@@ -135,7 +142,7 @@ void TRIBE_Screen_Game::handle_terrain_sound() {
         rge_base_game->sound_system != 0 &&
         disable_terrain_sounds == 0) {
         unsigned long now =
-            debug_timeGetTime(s_scr_game_cpp, 0x121D);
+            debug_timeGetTime((char*)s_scr_game_cpp_local, 0x121D);
 
         if (this->terrain_playing != 0) {
             if (now - this->last_terrain_sound_time < 1000) {
@@ -187,13 +194,13 @@ void TRIBE_Screen_Game::handle_terrain_sound() {
         }
 
         color_log(0x54, 0x4C, 4);
-        debug_timeGetTime(s_scr_game_cpp, 0x125B);
+        debug_timeGetTime((char*)s_scr_game_cpp_local, 0x125B);
         rge_base_game->sound_system->stop_stream();
         rge_base_game->sound_system->stream_file(file_name, 0, 0);
         color_log(0x54, 0x32, 4);
         this->terrain_playing = 1;
         this->terrain_sound_start_time =
-            debug_timeGetTime(s_scr_game_cpp, 0x1262);
+            debug_timeGetTime((char*)s_scr_game_cpp_local, 0x1262);
     }
 
 done:

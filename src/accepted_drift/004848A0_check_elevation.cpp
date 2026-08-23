@@ -94,6 +94,29 @@
 //   row read, next-row read before loop exit, and terrain/elevation predicates.
 //   The second scan has the same byte-count wrap and return. This function has
 //   no calls or writes. Remaining drift is private count, row, and pointer homes.
+// Exact-finish audit (sa-a5e32b5c-r1):
+// - Replaced the synthetic pure-generate base with the minimal period surface:
+//   virtual base destructor, typed map pointer, RGE_Object_List destructor, and
+//   the derived generate slot. The protected helper now matches the PDB owner
+//   symbol IAEEEJJJEE.
+// - A distinct first-scan index local recovered the original [esp+10] counter
+//   home and improved the natural typed reconstruction to 403 bytes / 339
+//   differing bytes. Typed narrow terrain/elevation bitfields and a block-scoped
+//   second row scan remain policy-compliant.
+// - Declaration, initializer, pointer-seed, predicate, and row-cursor alias
+//   probes were duplicate or farther. Radius-home reuse changed the prologue
+//   and widened the mismatch. No exact result was found.
+// Exact-finish continuation (sa-c93cd21e-r1):
+// - Typed row-base plus x1 inside each row changed the frame to 0x10 and
+//   shortened the body. A named typed row offset kept the frame but widened
+//   the body to 409 bytes / 385 differing bytes. Both forms were restored.
+// - y2-before-x2, radius-home y2 reuse, while-form control flow, and bound
+//   declaration order were duplicate or farther. The x2-before-y2 form is
+//   retained. The base generate slot is authentic RMM context and codegen
+//   neutral, so it remains in the local owner surface.
+// - Final blocker remains the first-scan row-pointer spill and x2/y2 local
+//   rotation. The typed map fields, clipped bounds, parameter homes, cleanup,
+//   and early-failure order remain unchanged.
 
 typedef unsigned char uchar;
 
@@ -108,11 +131,23 @@ struct Map_Stack {
     Map_Stack* prev;
 };
 
+class RGE_Object_Node;
+
+class RGE_Object_List {
+public:
+    virtual ~RGE_Object_List();
+
+    RGE_Object_Node* list;
+    short number_of_objects;
+    unsigned char pad_0A[2];
+};
+
 struct RGE_Tile {
     short screen_xpos;
     short screen_ypos;
     unsigned char tile_type;
-    unsigned char terrain_type;
+    unsigned char terrain_type : 5;
+    unsigned char elevation : 3;
     unsigned char border_type : 4;
     unsigned char border_shape : 4;
     unsigned char last_drawn_as;
@@ -120,18 +155,20 @@ struct RGE_Tile {
     unsigned char draw_as;
     unsigned char draw_attribute;
     unsigned char last_drawn_shape2;
-    char objects[12];
+    RGE_Object_List objects;
 };
 
+class RGE_Map;
 class RGE_Random_Map_Module_List;
 
 class RGE_Random_Map_Module {
 public:
+    virtual ~RGE_Random_Map_Module();
     virtual uchar generate() = 0;
 
     RGE_Random_Map_Module* parent;
     RGE_Random_Map_Module_List* list;
-    void* map;
+    RGE_Map* map;
     RGE_Tile** map_row_offset;
     long map_width;
     long map_height;
@@ -144,24 +181,27 @@ public:
 
 class RGE_RMM_Elevation_Generator : public RGE_Random_Map_Module {
 public:
+    virtual uchar generate();
 
+protected:
     uchar check_elevation(uchar elev, long x, long y, long radius, uchar terrain, uchar min_elev);
 };
 
 uchar RGE_RMM_Elevation_Generator::check_elevation(uchar elev, long x, long y, long radius, uchar terrain, uchar min_elev)
 {
     long count = 0;
-    long x1;
-    long y1;
-    long y2;
-    long x2;
-    RGE_Tile** row_ptr;
-    RGE_Tile* row;
     if (radius > 0) {
+        long x1;
+        long y1;
+        long x2;
+        long y2;
+        RGE_Tile** row_ptr;
+        RGE_Tile* row;
+        long index1;
         x1 = x - radius;
         y1 = y - radius;
-        y2 = y + radius;
         x2 = radius + x;
+        y2 = y + radius;
         if (x1 < 0) {
             x1 = 0;
         }
@@ -174,20 +214,16 @@ uchar RGE_RMM_Elevation_Generator::check_elevation(uchar elev, long x, long y, l
         if (y2 >= this->map_height) {
             y2 = this->map_height - 1;
         }
-        row_ptr = &this->map_row_offset[y1];
+        row_ptr = this->map_row_offset + y1;
         row = *row_ptr + x1;
-        for (; y1 <= y2; ++y1) {
+        index1 = y1;
+        for (; index1 <= y2; ++index1) {
             if (x1 <= x2) {
                 RGE_Tile* cell = row;
                 long xx = x1;
                 do {
-                    if (terrain == 0xFF) {
-                        return 0;
-                    }
-                    if ((cell->terrain_type & 0x1F) != terrain) {
-                        return 0;
-                    }
-                    if ((cell->terrain_type >> 5) < min_elev) {
+                    if (terrain == 0xFF || cell->terrain_type != terrain
+                        || cell->elevation < min_elev) {
                         return 0;
                     }
                     ++xx;
@@ -217,10 +253,12 @@ uchar RGE_RMM_Elevation_Generator::check_elevation(uchar elev, long x, long y, l
         y2 = this->map_height - 1;
     }
 
-    RGE_Tile** row_ptr2 = &this->map_row_offset[y1];
+    RGE_Tile* row_base2;
+    RGE_Tile** row_ptr2;
+    row_ptr2 = this->map_row_offset + y1;
     // Keep the initial second-scan row load on the named row-table cursor.
     // The oracle loads the row pointer and its row address as separate values.
-    RGE_Tile* row_base2 = *row_ptr2 + x1;
+    row_base2 = *row_ptr2 + x1;
     if (y1 <= y2) {
         long rows_left = y2 - y1 + 1;
         do {
@@ -228,7 +266,7 @@ uchar RGE_RMM_Elevation_Generator::check_elevation(uchar elev, long x, long y, l
                 RGE_Tile* cell = row_base2;
                 long cols_left = x2 - x1 + 1;
                 do {
-                    if ((cell->terrain_type >> 5) == elev) {
+                    if (cell->elevation == elev) {
                         ++count;
                     }
                     ++cell;

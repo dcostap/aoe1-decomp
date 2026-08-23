@@ -81,6 +81,15 @@
 // civ/team reset uses `sub 0x32` versus `add -0x32`; its flags are dead. All 83
 // calls, pushed values, branches, fills, memory effects, returns, and fault order
 // match. The frame, saved registers, EH state, and function boundary also match.
+// Authentic scr_mps.cpp context kept 1847 bytes, 83 calls, and the 67-byte diff.
+// - DIA private symbols prove scoped msg[1024], playerColorUsed[8], msg[256],
+//   temp_team[8], temp_color[8], and temp_civ[8]. The two int arrays share
+//   the original EBP-1376 home because their lifetimes do not overlap.
+// - Adding exact 004A0D80, 004A1300, and 004A1640 owners preserved this result.
+//   The reviewed RGE_Base_Game* global type is required. TRIBE_Game* changed
+//   the target to a 563-byte register-allocation basin.
+
+#ifndef SCR_MPS_TU_CONTEXT
 
 #include <string.h>
 #include <windows.h>
@@ -273,7 +282,7 @@ public:
     int pad_85C[3];                 // +85C
     long scenarioCheckSum[8];       // +868 .. +884
     int pad_888;                    // +888
-    int field_88C;                  // +88C
+    int resend_game_options;        // +88C
 
     virtual ~TribeMPSetupScreen();
 
@@ -284,16 +293,14 @@ public:
     int startGame();
 };
 
+#endif
+
 int TribeMPSetupScreen::startGame()
 {
     int send_options = 0;
-    int temp_team[8];
-    int temp_color[8];
-    int temp_civ[8];
-    char msg_small[256];
-    char msg[1024];
 
     if (rge_base_game->multiplayerGame()) {
+        char msg[1024];
         if (!comm->IsHost()) {
             return 0;
         }
@@ -344,7 +351,7 @@ int TribeMPSetupScreen::startGame()
             int hum = comm->GetPlayerHumanity(u4b);
             if (hum == 2 || hum == 4) {
                 long id = this->scenarioPlayerDrop[0]->get_id(i3);
-                rge_base_game->setScenarioPlayer(u12, id);
+                ((TRIBE_Game*)rge_base_game)->setScenarioPlayer(u12, id);
                 i3++;
                 if (i3 >= this->scenarioPlayerDrop[0]->list_panel->numberLines()) {
                     i3 = 0;
@@ -355,7 +362,9 @@ int TribeMPSetupScreen::startGame()
     }
 
     if (rge_base_game->multiplayerGame()) {
-        memset(temp_team, 0, sizeof(temp_team));
+        int playerColorUsed[8];
+        char msg[256];
+        memset(playerColorUsed, 0, sizeof(playerColorUsed));
         int i5 = 0;
         int u12 = 0;
         int num = rge_base_game->numberPlayers();
@@ -366,11 +375,11 @@ int TribeMPSetupScreen::startGame()
                 int hum = comm->GetPlayerHumanity(u4c);
                 if (hum == 2 || hum == 4) {
                     if (hum == 2) {
-                        int c = rge_base_game->playerColor(u12);
-                        if (temp_team[c - 1] == 0) {
+                        int c = ((TRIBE_Game*)rge_base_game)->playerColor(u12);
+                        if (playerColorUsed[c - 1] == 0) {
                             i5++;
-                            c = rge_base_game->playerColor(u12);
-                            temp_team[c - 1] = 1;
+                            c = ((TRIBE_Game*)rge_base_game)->playerColor(u12);
+                            playerColorUsed[c - 1] = 1;
                         }
                     } else {
                         i5++;
@@ -384,14 +393,14 @@ int TribeMPSetupScreen::startGame()
             return 0;
         }
         if (rge_base_game->scenarioGame() && i5 > this->scenarioPlayerCount) {
-            sprintf(msg_small, this->get_string(0x25c3), this->scenarioPlayerCount);
-            this->popupOKDialog(msg_small, 0, 0x1c2, 100);
+            sprintf(msg, this->get_string(0x25c3), this->scenarioPlayerCount);
+            this->popupOKDialog(msg, 0, 0x1c2, 100);
             return 0;
         }
         if (rge_base_game->scenarioGame() && this->settingsFixed != 0 &&
             i5 != this->scenarioPlayerCount) {
-            sprintf(msg_small, this->get_string(0x25c5), this->scenarioPlayerCount);
-            this->popupOKDialog(msg_small, 0, 0x1c2, 100);
+            sprintf(msg, this->get_string(0x25c5), this->scenarioPlayerCount);
+            this->popupOKDialog(msg, 0, 0x1c2, 100);
             return 0;
         }
 
@@ -415,7 +424,7 @@ int TribeMPSetupScreen::startGame()
         }
     }
 
-    if (rge_base_game->scenarioGame() && rge_base_game->randomizePositions()) {
+    if (rge_base_game->scenarioGame() && ((TRIBE_Game*)rge_base_game)->randomizePositions()) {
         this->calcRandomPositions();
         if (rge_base_game->multiplayerGame()) {
             send_options = 1;
@@ -438,11 +447,11 @@ int TribeMPSetupScreen::startGame()
         int num = rge_base_game->numberPlayers();
         if (num > 0) {
             do {
-                int civ = rge_base_game->civilization(i5);
+                int civ = ((TRIBE_Game*)rge_base_game)->civilization(i5);
                 if (civ >= 0x32) {
                     Log(L, (char*)0x00586894);
-                    civ = rge_base_game->civilization(i5);
-                    rge_base_game->setCivilization(i5, civ - 0x32);
+                    civ = ((TRIBE_Game*)rge_base_game)->civilization(i5);
+                    ((TRIBE_Game*)rge_base_game)->setCivilization(i5, civ - 0x32);
                     send_options = 1;
                 }
                 int team = rge_base_game->playerTeam(i5);
@@ -458,6 +467,9 @@ int TribeMPSetupScreen::startGame()
     }
 
     if (rge_base_game->multiplayerGame()) {
+        int temp_team[8];
+        int temp_color[8];
+        int temp_civ[8];
         int idx = 0;
         for (int i = 0; i < 8; i++) temp_team[i] = 1;
         for (int j = 0; j < 8; j++) temp_civ[j] = 1;
@@ -471,16 +483,16 @@ int TribeMPSetupScreen::startGame()
             int hum = comm->GetPlayerHumanity(u12);
             if (hum == 2 || hum == 4) {
                 int p = u12 - 1;
-                temp_color[cnt] = rge_base_game->playerColor(p);
-                temp_civ[cnt] = rge_base_game->civilization(p);
+                temp_color[cnt] = ((TRIBE_Game*)rge_base_game)->playerColor(p);
+                temp_civ[cnt] = ((TRIBE_Game*)rge_base_game)->civilization(p);
                 temp_team[cnt] = rge_base_game->playerTeam(p);
                 cnt++;
             }
         }
         if (cnt > 0) {
             for (int i = 0; i < 8; i++) {
-                rge_base_game->setPlayerColor(i, temp_color[i]);
-                rge_base_game->setCivilization(i, temp_civ[i]);
+                ((TRIBE_Game*)rge_base_game)->setPlayerColor(i, temp_color[i]);
+                ((TRIBE_Game*)rge_base_game)->setCivilization(i, temp_civ[i]);
                 rge_base_game->setPlayerTeam(i, temp_team[i]);
             }
             send_options = 1;
@@ -490,16 +502,16 @@ int TribeMPSetupScreen::startGame()
     panel_system.destroyPanel((char*)0x00586218);
 
     if (rge_base_game->multiplayerGame()) {
-        if (send_options || this->field_88C != 0) {
+        if (send_options || this->resend_game_options != 0) {
             rge_base_game->beginStart();
-            this->field_88C = 0;
+            this->resend_game_options = 0;
         }
         comm->LaunchMultiplayerGame();
         chat->setWindowHandle(AppWnd);
         comm->SetWindowHandle(AppWnd);
     }
 
-    if (!rge_base_game->start_game(0)) {
+    if (!((TRIBE_Game*)rge_base_game)->start_game(0)) {
         this->popupOKDialog(0x961, 0, 0x1c2, 100);
         return 0;
     }

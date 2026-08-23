@@ -34,6 +34,16 @@
 // Logical-negation guards improved block coverage but widened the body by 5
 // bytes. A natural for-loop was a codegen duplicate. Restored the pinned
 // typed source; no policy-valid exact source found.
+// BINARY NOTE: 004CBD40 confirms that shipped x87 unordered
+// comparisons use C0|C3 status bits. The target's direct relational forms
+// preserve those flags, including its initial world-z NaN path. Moving the
+// helper declaration to its PDB-qualified TRIBE owner, offset-first compound
+// assignments, and donor local declaration order were codegen duplicates.
+// Fresh final validation: owner, 701-byte boundary, six calls, direct __ftol
+// sites, virtual slot +0x248, target rereads, map fault order, and return clamp
+// are correct. The only mismatch remains two secondary tile additions: original
+// stack loads plus ADD, rebuilt equivalent LEA; no natural policy-valid source
+// form found that changes this basin without fake volatility or dummy context.
 // Accepted-drift review: the residual only forms the two neighboring tile
 // pairs with stack-load plus ADD versus equivalent LEA instructions. The final
 // call mutates coordinate registers that the next loop iteration overwrites.

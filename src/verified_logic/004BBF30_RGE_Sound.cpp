@@ -95,6 +95,7 @@
 
 #include "..\..\include\game_globals.h"
 
+#ifndef SOUND_CANONICAL_TU
 class RGE_Sound_Info;
 
 class TSound_Driver;
@@ -129,6 +130,7 @@ public:
     unsigned char _gap_1D[3];
     unsigned long time;           // +0x20
 };
+#endif
 
 extern void __cdecl rge_read(int handle, void* buf, int size);
 extern void* __cdecl calloc(int num, int size);

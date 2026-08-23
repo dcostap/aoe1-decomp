@@ -17,6 +17,7 @@
 // with corresponding branch-displacement and pop-placement shifts. Since EDI is callee-saved, the
 // early push/pop preserves caller state on all exits; memory effects, calls, returns, and tail bytes match.
 
+#ifndef SOUND_CANONICAL_TU
 class TDigital {
 public:
     void unload(void);
@@ -45,6 +46,7 @@ public:
 
     void update(unsigned long now);
 };
+#endif
 
 void RGE_Sound::update(unsigned long now) {
     short count = this->sound_num;

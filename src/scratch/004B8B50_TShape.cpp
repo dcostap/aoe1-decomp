@@ -60,6 +60,13 @@
 // - Original assembly still proves `mov ebx,1; push ebx` before the first log,
 //   then EBX-backed load_type stores in both file-success arms and the second log.
 //   The simplest source that causes this register liveness remains unresolved.
+// sa-c2d88934-r1 revisit (2026-08-23):
+// - Legacy PDB records confirm Shape.cpp, TShape size 0x20, fields at +00..+1C,
+//   and only the NextFile local. The constructor has no base or vptr activity.
+// - Grouped SLP publication, reversed SLP publication order, a register local,
+//   scoped file locals, and declaration-order variants were exact-code duplicates.
+// - Restored the pinned natural source. Fresh validation remains 635 bytes,
+//   18 aligned calls, and 381 differing bytes. EBX constant liveness is blocked.
 
 #include <string.h>
 
@@ -119,7 +126,7 @@ public:
     TShape(char* filename, long resource_id);
 };
 
-TShape::TShape(char* filename, long resource_id)
+TShape::TShape(char* filename, long resource_file_id)
 {
     this->shape = 0;
     this->shape_header = 0;
@@ -129,7 +136,7 @@ TShape::TShape(char* filename, long resource_id)
 
     char NextFile[260];
     int fd;
-    if (shape_file_first || resource_id < 0) {
+    if (shape_file_first || resource_file_id < 0) {
     color_log('T', 'T', 1);
 
     strcpy(NextFile, filename);
@@ -166,9 +173,9 @@ TShape::TShape(char* filename, long resource_id)
     color_log('T', '_', 1);
     }
 
-    if (this->FShape == 0 && this->shape == 0 && resource_id >= 0) {
+    if (this->FShape == 0 && this->shape == 0 && resource_file_id >= 0) {
         Shape_Loads++;
-        this->shape = (uchar*)RESFILE_load(0x73687020, resource_id, this->load_type, this->load_size);
+        this->shape = (uchar*)RESFILE_load(0x73687020, resource_file_id, this->load_type, this->load_size);
         if (this->shape != 0) {
             if (((Shape_File_Header*)this->shape)->version == shape_version_110) {
                 this->head = (Shape_File_Header*)this->shape;
@@ -176,7 +183,7 @@ TShape::TShape(char* filename, long resource_id)
                 return;
             }
         } else {
-            this->shape = (uchar*)RESFILE_load(0x736c7020, resource_id, this->load_type, this->load_size);
+            this->shape = (uchar*)RESFILE_load(0x736c7020, resource_file_id, this->load_type, this->load_size);
             if (this->shape != 0) {
                 this->FShape = (SLhape_File_Header*)this->shape;
                 this->shape = 0;

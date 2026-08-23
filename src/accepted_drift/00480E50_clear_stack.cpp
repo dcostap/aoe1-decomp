@@ -1,12 +1,19 @@
-// ACCEPTED_DRIFT: inner-loop scheduling drift only: inc edx and add eax,18h are swapped; the later cmp overwrites flags and the same stack entries are cleared.
-// tried the straightforward nested-loop zeroing shape first
-// tried pointer-temp and late-init variants; mismatch stayed in the inner-loop register basin
-// remaining drift is the `add eax,18h` / `inc edx` ordering and the associated register assignment
+// BINARY NOTE: The PDB proves a 0x18-byte Map_Stack and Map_Stack** rows.
+// Direct indexed ownership preserves the original index and cursor update order.
+// Reversing the old raw-cursor updates did not change their emitted order.
 
-class Map_Stack;
+#ifndef RMM_BASE_SHARED_CONTEXT
+struct Map_Stack {
+    long x;
+    long y;
+    float cost;
+    float tot_cost;
+    Map_Stack* next;
+    Map_Stack* prev;
+};
 
 class RGE_Random_Map_Module {
-public:
+protected:
     char gap_00[0x14];
     long map_width;
     long map_height;
@@ -15,26 +22,16 @@ public:
 
     void clear_stack(void);
 };
+#endif
 
 void RGE_Random_Map_Module::clear_stack(void) {
     int y;
-    int offset;
     int x;
 
-    y = 0;
-    if (0 < this->map_height) {
-        do {
-            x = 0;
-            if (0 < this->map_width) {
-                offset = 0;
-                do {
-                    offset += 0x18;
-                    ++x;
-                    *(int*)((char*)this->stack_offsets[y] + offset - 8) = 0;
-                    *(int*)((char*)this->stack_offsets[y] + offset - 4) = 0;
-                } while (x < this->map_width);
-            }
-            ++y;
-        } while (y < this->map_height);
+    for (y = 0; y < this->map_height; ++y) {
+        for (x = 0; x < this->map_width; ++x) {
+            this->stack_offsets[y][x].next = 0;
+            this->stack_offsets[y][x].prev = 0;
+        }
     }
 }

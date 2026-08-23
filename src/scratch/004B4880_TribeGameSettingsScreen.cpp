@@ -25,13 +25,19 @@
 // surface, and expression-shape variants all retained the same 779-byte drift.
 // Narrow volatile forced a wrong frame and was discarded. The clean source is
 // pinned below as the best supported reconstruction.
+// Module-context pass: the authentic scr_set.cpp wrapper and shared
+// scr_set_context.h surface reduce the constructor to 42 differing bytes.
+// All other scr_set owners compile with one canonical screen surface.
 // BLOCKER: The executable completes the scenario-column multiplication and
 // signed division before it loads scenarioList. The rebuild loads scenarioList
 // before the width read and division. A bad list pointer or zero ideal_width
 // therefore faults in a different order.
 
 #include <stdio.h>
+#define SCR_SET_CONTEXT_GROUP 1
+#include "../../include/scr_set_context.h"
 
+#ifndef SCR_SET_CONTEXT_GROUP
 struct tagRECT {
     long left;
     long top;
@@ -501,6 +507,7 @@ protected:
     void fillMissionText();
     void activatePanels();
 };
+#endif
 
 TribeGameSettingsScreen::TribeGameSettingsScreen()
     : TScreenPanel((char*)0x00586808)

@@ -206,6 +206,45 @@
 //   first row before the empty-row test and read the next row before the loop-
 //   end test. The function makes no calls. Remaining drift is private incoming-
 //   parameter-home reuse and register allocation.
+//
+// Final specialist audit (sa-09226ca5): fresh checker validation remains 224
+// bytes with 147 differing bytes. The dossier and original assembly prove no
+// calls, random operations, or x87 operations in this target. The original
+// writes y1 to the dead range home, spills the row-table cursor to the y home,
+// keeps x1 in EBX, and uses CL for the terrain mask. The natural typed source
+// retains y1/x1 in other homes and uses BL. A raw byte-row and parameter-home
+// experiment reached 141 differing bytes, but it was not retained: it replaced
+// proven RGE_Tile ownership with an unsupported cursor/alias model. Typed row
+// pointer forms, declaration order, bound initialization, and address aliases
+// were duplicate or worse. Restore the pinned typed source when blocked.
+
+// Exact-finish continuation (sa-1b301fbe):
+// - The PDB/Ghidra decorated symbol is protected (`IAEEJJEEE`), so the local
+//   owner declaration uses protected access. This changes no function bytes.
+// - A pre-guarded outer do/while kept the first-row setup readable but widened
+//   the result to 216 bytes and 175 differing bytes. The exact sibling-style
+//   counted outer for reached 230 bytes and 191 differing bytes. Both were
+//   rolled back.
+// - Moving index1 assignment after the initial typed row loads while retaining
+//   the clean while CFG reached 225 bytes and 190 differing bytes. It was
+//   rolled back.
+// - The remaining binary-supported blocker is the known home/register basin:
+//   original y1 uses the dead range home, x1 remains in EBX, row_ptr is spilled
+//   to the y home, and the terrain mask uses CL. The clean typed source uses
+//   the other proven parameter homes and BL. Do not replace the typed tile
+//   owner with a raw cursor or synthetic operand steering.
+
+// Exact-finish continuation (sa-35b4adb8-r1):
+// - Reusing the dead x parameter as the typed outer row counter improved the
+//   clean diagnostic from 147 to 146 differing bytes and raised shape to
+//   85.42%, but it kept the wrong first store and x1 home. Removing its dead
+//   duplicate index local was codegen-identical.
+// - The typed terrain-byte spelling was rejected because this local RGE_Tile
+//   surface does not prove such a member. The source was restored unchanged.
+// - Fresh final validation is 224 bytes, 147 differing bytes, zero calls,
+//   matching protected owner decoration, three returns, and ret 14h cleanup.
+// - Anchor 00484470 was independently checked and remains an exact 578-byte
+//   match. Keep the pinned typed source; no policy-valid exact lead remains.
 
 class RGE_Map;
 class RGE_Object_Node;
@@ -266,7 +305,7 @@ public:
 };
 
 class RGE_RMM_Elevation_Generator : public RGE_Random_Map_Module {
-public:
+protected:
 
     unsigned char check_start_elevation(long x, long y, unsigned char terrain, unsigned char elevation, unsigned char range);
 };

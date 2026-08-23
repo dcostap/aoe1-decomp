@@ -29,6 +29,13 @@
 //   exact blocks. Function-scope curx and one shared done flag were duplicates.
 // - The Ghidra packet confirms the original EAX stream cursor, x-home opcode, and
 //   separate legacy cursor/flag topology. Natural source variants did not recover it.
+//
+// continuation Shape-prefix audit:
+// - PDB locals identify one shared uchar `command`, uchar `done`, and long `r`.
+//   Using that natural shared command improved strict drift from 499 to 498 bytes.
+// - Typed data-table indexing, nested offset expressions, branch-local cursors,
+//   and FShape->Version ownership were duplicate or worse. The EAX cursor basin
+//   remains unresolved, so this owner stays outside the prefix wrapper.
 
 #include <memory.h>
 
@@ -85,7 +92,7 @@ public:
 unsigned char TShape::shape_check(long x, long y, long frame)
 {
     unsigned char* p;
-    unsigned char code;
+    unsigned char command;
 
     if (frame < 0) return 0;
     if (Check_shape(frame, "RGL_shape_draw")) return 0;
@@ -111,34 +118,34 @@ unsigned char TShape::shape_check(long x, long y, long frame)
         p = base + data_offset;
         while (minx < width) {
             if (px < minx) return 0;
-            code = *p++;
-            switch (code & 0xf) {
+            command = *p++;
+            switch (command & 0xf) {
             case 0: case 4: case 8: case 12: {
-                unsigned int n = ((unsigned int)code) >> 2;
+                unsigned int n = ((unsigned int)command) >> 2;
                 minx += n;
                 if (px < minx) return 1;
                 p += n;
                 break;
             }
             case 2: {
-                unsigned int n = (((unsigned int)code) << 4) | *p++;
+                unsigned int n = (((unsigned int)command) << 4) | *p++;
                 minx += n;
                 if (px < minx) return 1;
                 p += n;
                 break;
             }
             case 1: case 5: case 9: case 13: {
-                unsigned int n = ((unsigned int)code) >> 2;
+                unsigned int n = ((unsigned int)command) >> 2;
                 minx += n;
                 break;
             }
             case 3: {
-                unsigned int n = (((unsigned int)code) << 4) | *p++;
+                unsigned int n = (((unsigned int)command) << 4) | *p++;
                 minx += n;
                 break;
             }
             case 6: {
-                unsigned int n = ((unsigned int)code) >> 4;
+                unsigned int n = ((unsigned int)command) >> 4;
                 if (n == 0) n = *p++;
                 minx += n;
                 if (px < minx) return 1;
@@ -146,7 +153,7 @@ unsigned char TShape::shape_check(long x, long y, long frame)
                 break;
             }
             case 7: case 10: {
-                unsigned int n = ((unsigned int)code) >> 4;
+                unsigned int n = ((unsigned int)command) >> 4;
                 if (n == 0) n = *p++;
                 minx += n;
                 if (px < minx) return 1;
@@ -154,7 +161,7 @@ unsigned char TShape::shape_check(long x, long y, long frame)
                 break;
             }
             case 11: case 14: {
-                unsigned int n = ((unsigned int)code) >> 4;
+                unsigned int n = ((unsigned int)command) >> 4;
                 if (n == 0) n = *p++;
                 minx += n;
                 if (px < minx) return 1;
@@ -179,41 +186,41 @@ unsigned char TShape::shape_check(long x, long y, long frame)
                 if (minY < y) {
                     int rows = y - minY;
                     do {
-                        bool done = false;
+                        unsigned char done = 0;
                         do {
-                            unsigned char c = *p++;
-                            if ((c & 1) == 1) {
-                                c >>= 1;
-                                if (c == 0) done = 1; else p += c;
+                            command = *p++;
+                            if ((command & 1) == 1) {
+                                command >>= 1;
+                                if (command == 0) done = 1; else p += command;
                             } else {
-                                if ((c & 0xfe) == 0) done = 1; else ++p;
+                                if ((command & 0xfe) == 0) done = 1; else ++p;
                             }
                         } while (!done);
                         --rows;
                     } while (rows != 0);
                 }
-                int curx = minX2;
-                bool done = false;
+                long r = minX2;
+                unsigned char done = 0;
                 do {
-                    unsigned char c = *p++;
-                    if ((c & 1) == 1) {
-                        c >>= 1;
-                        if (c == 0) {
+                    command = *p++;
+                    if ((command & 1) == 1) {
+                        command >>= 1;
+                        if (command == 0) {
                             int n = *p;
-                            curx += n;
-                            if (curx > x) return 0;
+                            r += n;
+                            if (r > x) return 0;
                         } else {
-                            curx += c;
-                            if (curx > x) return 1;
-                            p += c;
+                            r += command;
+                            if (r > x) return 1;
+                            p += command;
                         }
                     } else {
-                        c >>= 1;
-                        if (c == 0) {
+                        command >>= 1;
+                        if (command == 0) {
                             done = 1;
                         } else {
-                            curx += c;
-                            if (curx > x) return 1;
+                            r += command;
+                            if (r > x) return 1;
                         }
                         ++p;
                     }

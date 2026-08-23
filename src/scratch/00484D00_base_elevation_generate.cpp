@@ -35,69 +35,10 @@
 
 #include <math.h>
 
-struct Map_Stack {
-    long x;
-    long y;
-    float cost;
-    float tot_cost;
-    Map_Stack* next;
-    Map_Stack* prev;
-};
-
-struct RGE_Map;
-struct RGE_Random_Map_Module_List;
-
-struct RGE_Tile {
-    short screen_xpos;
-    short screen_ypos;
-    unsigned char tile_type;
-    unsigned char terrain_type : 5;
-    unsigned char elevation : 3;
-    unsigned char border_type : 4;
-    unsigned char border_shape : 4;
-    char objects[12];
-};
-
-struct RGE_Elevation_Info_Line {
-    long elevation_size;
-    long elevation;
-    long clumps;
-    long spacing;
-    long base_elevation;
-    long base_terrain_type;
-};
-
-struct RGE_Elevation_Info {
-    RGE_Elevation_Info_Line elevation[99];
-    long elevation_num;
-    char hot_spots[99][0x10];
-    long hot_spot_num;
-};
+#include "..\..\include\rmm_elev_context.h"
 
 extern int __cdecl debug_rand(char* file, int line);
 extern char s_C__msdev_work_age1_x1_rmm_elev_c[];
-
-class RGE_Random_Map_Module {
-public:
-    virtual unsigned char generate() = 0;
-    RGE_Random_Map_Module* parent;
-    RGE_Random_Map_Module_List* list;
-    RGE_Map* map;
-    RGE_Tile** map_row_offset;
-    long map_width;
-    long map_height;
-    float schedule;
-    unsigned char* search_map;
-    unsigned char** search_map_rows;
-    Map_Stack* stack_array;
-    Map_Stack** stack_offsets;
-
-    void init_stack(Map_Stack* stack);
-    void deinit_stack(Map_Stack* stack);
-    void add_stack_node(Map_Stack* target, Map_Stack* node);
-    Map_Stack* pop_stack(Map_Stack* head, long* x, long* y, float* cost);
-    void push_stack(Map_Stack* list, long x, long y, float cost, float tot_cost);
-};
 
 // Main-agent audit confirmed canonical elevation/map-stack ownership and kept
 // the natural typed clump-expansion source.
@@ -116,21 +57,6 @@ public:
 // executable-supported helper surfaces. The prior 10-probe campaign already
 // exhausted natural phase-loop/local-window leads; retain this readable source
 // rather than repeat the 14-byte boundary/frame basin blindly.
-class RGE_RMM_Elevation_Generator : public RGE_Random_Map_Module {
-public:
-    virtual unsigned char generate();
-    RGE_Elevation_Info info;
-
-    unsigned char check_start_elevation(long x, long y, unsigned char terrain,
-        unsigned char elevation, unsigned char range);
-    void remove_area_from_lists(long x, long y, long radius);
-    unsigned char check_elevation(unsigned char elevation, long x, long y,
-        long radius, unsigned char terrain, unsigned char min_elevation);
-    float fig_chance(long p0, long p1, long p2);
-    void link_stack_randomly(Map_Stack* stack);
-    unsigned char base_elevation_generate(RGE_Elevation_Info_Line line);
-};
-
 unsigned char RGE_RMM_Elevation_Generator::base_elevation_generate(
     RGE_Elevation_Info_Line line)
 {
