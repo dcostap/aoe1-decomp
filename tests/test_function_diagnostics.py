@@ -274,6 +274,26 @@ class CoffAndDiagnosticTests(unittest.TestCase):
         self.assertEqual(wrong_reverse_kind["status"], "mismatch")
         self.assertEqual(ambiguous["status"], "unverified")
 
+    def test_owning_symbol_validation_rejects_wrong_pdb_class(self) -> None:
+        valid = owning_function_symbol_validation(
+            "reset_attack_timer",
+            "?reset_attack_timer@RGE_Combat_Object@@QAEXXZ",
+            "RGE_Combat_Object::reset_attack_timer",
+        )
+        wrong_class = owning_function_symbol_validation(
+            "reset_attack_timer",
+            "?reset_attack_timer@SomeClass@@QAEXXZ",
+            "RGE_Combat_Object::reset_attack_timer",
+        )
+        free_function = owning_function_symbol_validation(
+            "importantUnit",
+            "?importantUnit@@YGHH@Z",
+            "TribeInformationAIModule::importantUnit",
+        )
+        self.assertEqual(valid["status"], "match")
+        self.assertEqual(wrong_class["status"], "mismatch")
+        self.assertEqual(free_function["status"], "mismatch")
+
     def test_mismatch_classifier_reports_owner_symbol_difference(self) -> None:
         result = self._classify(
             "E9 00 00 00 00",

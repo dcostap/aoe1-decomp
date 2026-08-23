@@ -165,8 +165,31 @@ def direct_call_symbols_match(original: str, rebuilt: str) -> bool:
 _SIMPLE_OWNER_NAME_RE = re.compile(r"~?[A-Za-z_][A-Za-z0-9_]*$")
 
 
-def owning_function_symbol_validation(expected_name: str, rebuilt_symbol: str) -> dict[str, str]:
-    """Validate a rebuilt owner when inventory has an unambiguous simple name."""
+def _decorated_owner_name(symbol: str) -> str:
+    """Return the qualified C++ owner encoded in a simple VC5 symbol."""
+    if symbol.startswith(("??0", "??1")):
+        scope = symbol[3:]
+    elif symbol.startswith(("??_G", "??_E")):
+        scope = symbol[4:]
+    elif symbol.startswith("?"):
+        separator = symbol.find("@", 1)
+        if separator < 0:
+            return ""
+        scope = symbol[separator + 1 :]
+    else:
+        return ""
+
+    scope = scope.split("@@", 1)[0]
+    parts = [part for part in scope.split("@") if part]
+    return "::".join(reversed(parts))
+
+
+def owning_function_symbol_validation(
+    expected_name: str,
+    rebuilt_symbol: str,
+    expected_qualified_name: str = "",
+) -> dict[str, str]:
+    """Validate the method name, kind, and PDB-qualified C++ owner."""
     expected = expected_name.strip()
     rebuilt = rebuilt_symbol.strip()
     result = {
@@ -174,6 +197,8 @@ def owning_function_symbol_validation(expected_name: str, rebuilt_symbol: str) -
         "rebuilt": rebuilt,
         "expected_normalized": "",
         "rebuilt_normalized": "",
+        "expected_owner": "",
+        "rebuilt_owner": "",
         "status": "unverified",
     }
     if not rebuilt or _SIMPLE_OWNER_NAME_RE.fullmatch(expected) is None:
@@ -183,7 +208,13 @@ def owning_function_symbol_validation(expected_name: str, rebuilt_symbol: str) -
     names_match = result["expected_normalized"] == result["rebuilt_normalized"]
     rebuilt_is_destructor = rebuilt.startswith(("??1", "??_G", "??_E"))
     kind_matches = rebuilt_is_destructor if expected.startswith("~") else not rebuilt_is_destructor
-    result["status"] = "match" if names_match and kind_matches else "mismatch"
+    owner_matches = True
+    qualified = expected_qualified_name.strip()
+    if "::" in qualified:
+        result["expected_owner"] = qualified.rsplit("::", 1)[0]
+        result["rebuilt_owner"] = _decorated_owner_name(rebuilt)
+        owner_matches = result["expected_owner"] == result["rebuilt_owner"]
+    result["status"] = "match" if names_match and kind_matches and owner_matches else "mismatch"
     return result
 
 

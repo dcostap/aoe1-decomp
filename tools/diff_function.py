@@ -11,6 +11,7 @@ from common import (
     ensure_build_subdir,
     function_record_by_va,
     function_slug,
+    load_pdb_function_source_map,
     repo_path,
 )
 from function_diagnostics import (
@@ -951,8 +952,11 @@ def main() -> None:
         if rebuilt_lines_json.exists()
         else {}
     )
+    pdb_record = load_pdb_function_source_map().get(record["va"].upper()) or {}
     owner_symbol_validation = owning_function_symbol_validation(
-        record["name"], str((rebuilt_meta.get("symbol") or {}).get("name") or "")
+        record["name"],
+        str((rebuilt_meta.get("symbol") or {}).get("name") or ""),
+        str(pdb_record.get("symbol_name") or ""),
     )
     owner_symbol_mismatch = (
         owner_symbol_validation if owner_symbol_validation["status"] == "mismatch" else None
