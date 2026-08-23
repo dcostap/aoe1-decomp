@@ -2,9 +2,11 @@
 // BINARY NOTE: The owned body is only 00424EA0 (ret).  The bytes through
 // 00424EAF are padding/data before ShowReturn at 00424EB0, not extra code.
 
+#ifndef COM_ERR_TU_CONTEXT
 class RGE_Comm_Error {
 public:
     ~RGE_Comm_Error();
 };
+#endif
 
 RGE_Comm_Error::~RGE_Comm_Error() {}

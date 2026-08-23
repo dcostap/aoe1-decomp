@@ -17,6 +17,7 @@
 // The empty non-match arms preserve the original shared-default fallthrough and are
 // required by the observed branch targets, not by register or volatility steering.
 
+#ifndef COM_ERR_TU_CONTEXT
 class TDebuggingLog;
 extern TDebuggingLog* L;
 extern void Log(TDebuggingLog* log, char* fmt, ...);
@@ -29,7 +30,9 @@ public:
     void NotifyWindowParam(int msg, long param);
     void ShowReturn(long code, char* context);
 };
+#endif
 
+#ifndef COM_ERR_TU_CONTEXT
 enum {
     COMM_NO_NEW_PLAYERS = 0x17AB,
     COMM_FATAL_ERROR = 0x17AC,
@@ -37,6 +40,7 @@ enum {
     COMM_NO_LINK = 0x17AE,
     COMM_CANCEL_GAME = 0x17B9,
 };
+#endif
 
 void RGE_Comm_Error::ShowReturn(long code, char* context) {
     if (code == 0) {

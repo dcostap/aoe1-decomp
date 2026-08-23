@@ -786,6 +786,23 @@
       }
     },
     {
+      "name": "com_err",
+      "source": "src/com_err_tu.cpp",
+      "flags": "config/flags/com_err.rsp",
+      "owners": {
+        "00424E40": "src/matching/00424E40_RGE_Comm_Error.cpp",
+        "00424E60": "src/matching/00424E60_NotifyWindowParam.cpp",
+        "00424EA0": "src/matching/00424EA0_RGE_Comm_Error.cpp",
+        "00424EB0": "src/matching/00424EB0_ShowReturn.cpp"
+      },
+      "symbols": {
+        "00424E40": "??0RGE_Comm_Error@@QAE@PAX@Z",
+        "00424E60": "?NotifyWindowParam@RGE_Comm_Error@@QAEXW4COMMMESSAGES@@J@Z",
+        "00424EA0": "??1RGE_Comm_Error@@QAE@XZ",
+        "00424EB0": "?ShowReturn@RGE_Comm_Error@@QAEXJPAD@Z"
+      }
+    },
+    {
       "name": "com_hand_prefix",
       "source": "src/com_hand_tu.cpp",
       "flags": "config/flags/00425A40_TCommunications_Handler.rsp",

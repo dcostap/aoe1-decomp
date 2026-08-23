@@ -3,6 +3,7 @@
 // BINARY NOTE: 00424E22-00424E2F and 00424E31-00424E3F are padding/data around
 // the one-byte IPAD::~IPAD sibling.  Do not claim synthetic owners for them.
 
+#ifndef COM_ERR_TU_CONTEXT
 class RGE_Comm_Error {
 public:
     void* HostHWND;
@@ -10,6 +11,7 @@ public:
 
     RGE_Comm_Error(void* param);
 };
+#endif
 
 RGE_Comm_Error::RGE_Comm_Error(void* param) {
     HostHWND = param;
