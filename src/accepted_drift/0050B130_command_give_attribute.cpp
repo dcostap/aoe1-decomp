@@ -1,35 +1,64 @@
-// ACCEPTED_DRIFT: packet-fill scheduling/register drift only. Rebuilt loads/stores the two amount dwords before the byte fields while original fills byte 3 first; all writes target the same newly allocated packet before the same log/submit calls and stack cleanup.
-// tried natural packet-fill form from the tcommand.cpp packet: behavior is correct, but VC5 schedules the two amount loads before the byte/int arg loads; no match yet.
-// tried local arg temps; no codegen change.
-// tried volatile packet writes; preserves store order slightly better, but still leaves broad register/scheduling drift, so kept in scratch.
-// tried spelling amount arguments as int instead of float; same codegen family, kept int because packet stores raw dwords like the original.
+// VA: 0050B130 TRIBE_Command::command_give_attribute
+// PDB: tcommand.cpp lines 1553-1579.
+// Exact code needs declaration-order packet writes.
+
 #include <stdlib.h>
+
+#ifndef TCOMMAND_CONTEXT_H
+class TDebuggingLog {
+public:
+    void __cdecl Log(char* format, ...);
+};
+
+extern TDebuggingLog* L;
 
 class RGE_Command {
 public:
-    void submit(void* data, int size);
+    virtual ~RGE_Command();
+
+protected:
+    void submit(void* data, long size);
 };
 
 class TRIBE_Command : public RGE_Command {
 public:
-    void command_give_attribute(int player_id, int to_player_id, int attr, float amount, float amount2);
+    virtual void command_give_attribute(
+        int player_id,
+        int to_player_id,
+        int attr,
+        float amount,
+        float amount2);
 };
 
-extern void* L;
-extern void Log(void* log, const char* format, ...);
+class TRIBE_Command_Give_Attribute {
+public:
+    unsigned char command;
+    unsigned char player_id;
+    unsigned char to_player_id;
+    unsigned char attr_id;
+    float attr_amount;
+    float attr_cost;
+};
+#endif
 
-void TRIBE_Command::command_give_attribute(int player_id, int to_player_id, int attr, float amount, float amount2) {
-    unsigned char* packet = (unsigned char*)calloc(1, 0x0C);
-    unsigned char attr_byte = (unsigned char)attr;
-    int to_player = to_player_id;
-    int player = player_id;
-    ((volatile unsigned char*)packet)[3] = attr_byte;
-    *(float*)(packet + 4) = amount;
-    float amount2_value = amount2;
-    packet[0] = 0x6C;
-    packet[1] = (unsigned char)player;
-    packet[2] = (unsigned char)to_player;
-    *(float*)(packet + 8) = amount2_value;
-    Log(L, "      >SEND CMD GIVE ATTR (PLR=%d,TO=%d)", player, to_player);
-    this->submit(packet, 0x0C);
+void TRIBE_Command::command_give_attribute(
+    int player_id,
+    int to_player_id,
+    int attr,
+    float amount,
+    float amount2)
+{
+    TRIBE_Command_Give_Attribute* packet =
+        (TRIBE_Command_Give_Attribute*)calloc(
+            1, sizeof(TRIBE_Command_Give_Attribute));
+    packet->command = 0x6C;
+    packet->player_id = (unsigned char)player_id;
+    packet->to_player_id = (unsigned char)to_player_id;
+    packet->attr_id = (unsigned char)attr;
+    packet->attr_amount = amount;
+    packet->attr_cost = amount2;
+    L->Log("      >SEND CMD GIVE ATTR (PLR=%d,TO=%d)",
+           player_id,
+           to_player_id);
+    this->submit(packet, sizeof(TRIBE_Command_Give_Attribute));
 }

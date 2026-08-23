@@ -34,25 +34,12 @@
 // declaration/zero-init, assignment-in-if, comma, do/while break, raw member store, void* member surface, and
 // RGE_Player inheritance surface. No exact. Common-tail family always keeps `test eax,eax; jne +0`; direct/ternary
 // forms sink store/epilogue into success path; store-arms lower positional bytes but add real branch/store drift.
-class RGE_Player;
-class TRIBE_Victory_Conditions;
-
-class TRIBE_Player {
-public:
-    char gap_00[0x34];
-    TRIBE_Victory_Conditions* victory;
-
-    void load_victory(int param_1, long* param_2, unsigned char param_3);
-};
-
-class TRIBE_Victory_Conditions {
-public:
-    char pad_0[0x20];
-    TRIBE_Victory_Conditions(RGE_Player* player, int param_1, long* param_2, unsigned char param_3);
-};
+// Post-padding canonical pass: the shared TRIBE_Player and virtual owner now
+// match. The remaining 24 bytes are the proven VC5 join-test drift.
+#include "../../include/tplayer_context.h"
 
 void TRIBE_Player::load_victory(int param_1, long* param_2, unsigned char param_3) {
-    TRIBE_Victory_Conditions* v = new TRIBE_Victory_Conditions((RGE_Player*)this, param_1, param_2, param_3);
+    TRIBE_Victory_Conditions* v = new TRIBE_Victory_Conditions(this, param_1, param_2, param_3);
     if (v == 0) {
         v = 0;
     }

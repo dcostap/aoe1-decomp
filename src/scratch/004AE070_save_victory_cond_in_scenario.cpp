@@ -31,6 +31,9 @@
 // Managed pass: the baseline is exact-size/frame (1375/0x14) with 53/55 static calls; the unresolved blocker is VC5's merged case-6/case-9 SetSPVictoryType/SetSPObject tail and the amount/player/object home permutation.
 // Follow-up: the full decompiler local model and explicit else/return forms stayed at 53/55 calls and did not change the 771-byte diff.
 // BINARY NOTE: the original decorated owner is protected (IAEX); retain protected access even though it does not change body bytes.
+// Continuation: direct grouped scr_sed context with long selection outputs kept the same merged case-6/case-9 tail; it is not the PDB scr_sed2 owner.
+// Continuation: declaration-order and four-byte-width variants were codegen duplicates. Branch-local selected-object pointers separated tails but changed the proven amount/object topology and remained non-exact.
+// Continuation: validate_translation_units.py reports unrelated manifest issues. Use direct grouped validation for this target. Do not edit config/translation_units.json.
 
 #include "../../include/scr_sed2_context.h"
 

@@ -1,22 +1,26 @@
-// first pass: delegate to the random-map module ctor, then copy the 0x130-byte cliff info block and set the scalar field
-// if this misses, the remaining mismatch is likely only the bulk-copy shape versus the original rep movsd basin
+#include "../../include/rmm_obj_base_context.h"
 
-class RGE_Map;
-class RGE_Random_Map_Module {
-public:
-    RGE_Random_Map_Module(RGE_Map* map, RGE_Random_Map_Module* module, int enable);
+// BINARY NOTE: PDB passes RGE_Cliffs_Info by value. Its 0x4C0-byte layout
+// accounts for the constructor's ret 0x4C8 cleanup and rep movsd copy.
+struct RGE_Cliffs_Hot_Spots {
+    long x;
+    long y;
+    long radius;
 };
 
 struct RGE_Cliffs_Info {
-    long data[0x130];
+    long number_of_cliffs;
+    long number_of_cliffs_variance;
+    long average_cliff_size;
+    long cliff_size_variance;
+    long cliff_terrain_spacing;
+    long cliff_to_cliff_spacing;
+    RGE_Cliffs_Hot_Spots hot_spots[99];
+    long hot_spot_num;
 };
 
 class RGE_RMM_Cliffs_Generator : public RGE_Random_Map_Module {
 public:
-    void* vftable;
-    char gap_04[0x18];
-    unsigned long field_1C;
-    char gap_20[0x10];
     RGE_Cliffs_Info info;
 
     RGE_RMM_Cliffs_Generator(RGE_Map* map, RGE_Random_Map_Module* module, RGE_Cliffs_Info cliffs_info);
@@ -24,7 +28,6 @@ public:
 
 RGE_RMM_Cliffs_Generator::RGE_RMM_Cliffs_Generator(RGE_Map* map, RGE_Random_Map_Module* module, RGE_Cliffs_Info cliffs_info)
     : RGE_Random_Map_Module(map, module, 1) {
-    this->vftable = (void*)0x00571E64;
     this->info = cliffs_info;
-    this->field_1C = 0x3FE00000;
+    this->schedule = 1.75f;
 }

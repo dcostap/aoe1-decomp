@@ -1,5 +1,7 @@
 // VA: 004C6B80 RGE_Static_Object::addToObstructionMap
 // PDB source: stat_obj.cpp, lines 4222-4293
+// BINARY NOTE: PDB-qualified owner is RGE_Static_Object::addToObstructionMap(int).
+// BINARY NOTE: The body is [004C6B80, 004C6C8A); 004C6C90 starts the next symbol.
 // Attempt log:
 // baseline: natural typed reconstruction of the radius-bounded obstruction-map
 // update; master radius fields, world coordinates, and both pathing systems are

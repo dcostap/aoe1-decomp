@@ -39,6 +39,13 @@
 // DirectDraw failure codes, mode changes, palette bytes, surface setup, caps,
 // return values, and faulting member accesses match. Residual drift is stack
 // parameter preload and equivalent receiver/vtable register scheduling.
+// Exact-finish audit: a fresh grouped check stayed at 453 differing bytes and
+// 801 rebuilt bytes versus 802 original bytes. Calls, frame, owner, and EH
+// gates matched. A direct DirDraw GetCaps probe reached diff 436 but did not
+// recover the entry block or exact bytes, so the clean source was restored.
+// Exact-finish audit: the canonical anchors 00446230, 00446340, 00444B50,
+// and 004443D0 stayed exact after the target rebuild. A local SDK declaration
+// probe was blocked by duplicate definitions in the authentic Drawarea TU.
 
 #include <string.h>
 #include "../../include/drawarea_context.h"

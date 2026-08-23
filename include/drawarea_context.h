@@ -175,10 +175,10 @@ public:
     virtual long __stdcall Lock();
     virtual long __stdcall ReleaseDC();
     virtual long __stdcall Restore();
-    virtual long __stdcall SetClipper();
+    virtual long __stdcall SetClipper(void*);
     virtual long __stdcall SetColorKey();
     virtual long __stdcall SetOverlayPosition();
-    virtual long __stdcall SetPalette();
+    virtual long __stdcall SetPalette(void*);
     virtual long __stdcall Unlock();
 };
 
@@ -216,7 +216,7 @@ public:
     virtual long __stdcall CreateClipper(unsigned long, IDirectDrawClipper**, void*);
     virtual long __stdcall CreatePalette(unsigned long, PALETTEENTRY*,
                                          IDirectDrawPalette**, void*);
-    virtual long __stdcall CreateSurface();
+    virtual long __stdcall CreateSurface(_DDSURFACEDESC*, IDirectDrawSurface**, void*);
     virtual long __stdcall DuplicateSurface();
     virtual long __stdcall EnumDisplayModes(unsigned long, _DDSURFACEDESC*,
                                             void*, void*);
@@ -342,6 +342,10 @@ public:
     void ClearPrimarySurface();
     void DeleteSurfaces();
     int CreateSurfaces();
+    void HandleSize(void*, unsigned int, unsigned int, long);
+    void HandlePaletteChanged(void*, unsigned int, unsigned int, long);
+    int HandleQueryNewPalette(void*, unsigned int, unsigned int, long);
+    void ModifyPalette(int, int, tagPALETTEENTRY*);
     int GetIsLostErrorNum(long);
     int GetRestoreErrorNum(long);
     unsigned char CheckSurfaces();
