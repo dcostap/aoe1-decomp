@@ -1,6 +1,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+// PDB owner: ?getstring@@YAXPAPADPAD@Z in mystring.cpp, lines 53-61.
+// Boundary: 00462E30-00462E7B; the next symbol starts at 00462E80.
+// BINARY NOTE: free, calloc, publication, and copy occur in this order.
+// ORIGINAL BUG: a failed calloc is published before the copy faults.
 void getstring(char** param_1, char* param_2) {
     unsigned int len;
     char* dst;
