@@ -61,6 +61,16 @@
 // outputs. Each later predicate follows its corresponding parsed byte, so the
 // parsed values, tests, calls, writes, cleanup, and faults are equal. The two
 // one-byte outputs cannot overlap, and all remaining bytes match.
+// continuation audit: the authentic taistrmd_strategy_prefix wrapper remains the
+// compiler context. All ten other grouped owners still validate as MATCH.
+// Original CodeView homes are temp -0x100, ruleValue -0x104, ruleIndex -0x108,
+// commentTemp2 -0x109, and commentTemp1 -0x10A. The clean source uses a 260-byte
+// temp and two scalar byte locals to preserve the 0x10C frame and logical output
+// order. Reversed declarations, reversed destinations, reversed predicates, a
+// dead ruleIndex, and a byte overlay were rechecked in the grouped context.
+// The destination-only basin swaps the parsed-byte predicates. The overlay changes
+// the frame or emits a word load. No natural source preserves semantics and reaches
+// the original four byte homes. Keep this accepted drift and its fault order.
 
 extern "C" int __cdecl strcmp(const char* left, const char* right);
 extern "C" unsigned int __cdecl strlen(const char* text);
