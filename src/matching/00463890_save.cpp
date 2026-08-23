@@ -1,3 +1,4 @@
+#ifndef OBJLIST_SHARED_CONTEXT
 class RGE_Static_Object;
 
 class RGE_Object_Node {
@@ -32,6 +33,11 @@ public:
 };
 
 extern void rge_write(int file, void* data, int size);
+#endif
+
+#ifdef OBJLIST_SHARED_CONTEXT
+extern void rge_write(int file, void* data, int size);
+#endif
 
 void RGE_Object_List::save(int file) {
     unsigned char finished;

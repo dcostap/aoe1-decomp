@@ -6,6 +6,7 @@
 // - RGE_Master_Static_Object: vtable_ptr at +0, fog_flag at +0x65
 // - Fog logic: if(fog) check master_obj->fog_flag before calling node->shadow_draw
 
+#ifndef OBJLIST_SHARED_CONTEXT
 class TDrawArea;
 
 class RGE_Master_Static_Object {
@@ -116,6 +117,7 @@ public:
 
     void shadow_draw(TDrawArea* draw_area, short x, short y, unsigned char param_4, unsigned char fog);
 };
+#endif
 
 void RGE_Object_List::shadow_draw(TDrawArea* draw_area, short x, short y, unsigned char param_4, unsigned char fog)
 {

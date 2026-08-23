@@ -12,6 +12,7 @@
 // probe 1: baseline emitted the exact frame/calls/size but reversed the x87 square/add tree; try x-square before y-square to mirror the oracle's fmul order.
 
 
+#ifndef OBJLIST_SHARED_CONTEXT
 class RGE_Master_Static_Object {
 public:
     char gap_00[0x10];
@@ -43,6 +44,7 @@ public:
 
     RGE_Static_Object* find_by_master_id(long master_id, float x, float y, unsigned char use_state, unsigned char state, RGE_Static_Object* zone_obj);
 };
+#endif
 
 RGE_Static_Object* RGE_Object_List::find_by_master_id(long master_id, float x, float y, unsigned char use_state, unsigned char state, RGE_Static_Object* zone_obj)
 {

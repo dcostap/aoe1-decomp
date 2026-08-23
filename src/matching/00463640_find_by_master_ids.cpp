@@ -4,6 +4,7 @@
 // 1: adapted exact find_by_group source shape for two master ids; close but null-object branch emitted before master id load.
 // 2: hoist master_id load before null check to match original VC5 scheduling/decompiler order.
 
+#ifndef OBJLIST_SHARED_CONTEXT
 class RGE_Static_Object;
 
 class RGE_Master_Static_Object {
@@ -38,6 +39,7 @@ public:
 
     RGE_Static_Object* find_by_master_ids(long id1, long id2, float x, float y, unsigned char check_player, unsigned char player_id, RGE_Static_Object* zone_obj);
 };
+#endif
 
 RGE_Static_Object* RGE_Object_List::find_by_master_ids(long id1, long id2, float x, float y, unsigned char check_player, unsigned char player_id, RGE_Static_Object* zone_obj)
 {

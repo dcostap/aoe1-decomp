@@ -1,3 +1,4 @@
+#ifndef OBJLIST_SHARED_CONTEXT
 class RGE_Static_Object {
 public:
     virtual char vf00();
@@ -32,6 +33,15 @@ public:
 
     void update(void);
 };
+#endif
+
+#ifdef OBJLIST_SHARED_CONTEXT
+class TMousePointer {
+public:
+    void Poll(void);
+};
+extern TMousePointer* MouseSystem;
+#endif
 
 void RGE_Object_List::update(void) {
     RGE_Object_Node* pRVar1 = this->list;

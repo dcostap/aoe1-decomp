@@ -1,3 +1,4 @@
+#ifndef OBJLIST_SHARED_CONTEXT
 class RGE_Object {
 public:
     virtual void vf00(void);
@@ -27,6 +28,7 @@ public:
 
     void rehook_list();
 };
+#endif
 
 void RGE_Object_List::rehook_list() {
     RGE_Object_Node* node;

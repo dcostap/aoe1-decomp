@@ -11,6 +11,7 @@ struct ObjectDetails {
     GroupInfo* info;
 };
 
+#ifndef OBJLIST_SHARED_CONTEXT
 struct RGE_Object_Node {
     void* object;
     RGE_Object_Node* next;
@@ -24,6 +25,7 @@ public:
 
     void* find_by_group(long group);
 };
+#endif
 
 void* RGE_Object_List::find_by_group(long group) {
     RGE_Object_Node* node = this->list;

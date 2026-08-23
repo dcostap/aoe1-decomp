@@ -2,6 +2,7 @@
 // Attempt log:
 // initial natural switch/new constructor implementation from packet.
 
+#ifndef OBJLIST_SHARED_CONTEXT
 class RGE_Game_World;
 
 class RGE_Static_Object { public: char pad[0x88]; RGE_Static_Object(int, RGE_Game_World*, int); };
@@ -16,6 +17,7 @@ class RGE_Object_List {
 public:
     virtual void load(unsigned char type, int mode, RGE_Game_World* world);
 };
+#endif
 
 void RGE_Object_List::load(unsigned char type, int mode, RGE_Game_World* world)
 {

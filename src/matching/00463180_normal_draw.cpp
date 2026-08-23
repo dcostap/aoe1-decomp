@@ -4,6 +4,7 @@
 
 #include <stdlib.h>
 
+#ifndef OBJLIST_SHARED_CONTEXT
 class TDrawArea;
 
 class RGE_Master_Static_Object {
@@ -114,6 +115,7 @@ public:
     RGE_Object_Node* sort();
     void normal_draw(TDrawArea* draw_area, short x, short y, unsigned char fog);
 };
+#endif
 
 void RGE_Object_List::normal_draw(TDrawArea* draw_area, short x, short y, unsigned char fog)
 {

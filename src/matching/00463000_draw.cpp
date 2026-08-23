@@ -2,6 +2,7 @@
 // PDB source: obj_list.cpp:205-314
 // Size: 221 bytes
 
+#ifndef OBJLIST_SHARED_CONTEXT
 struct RGE_Game_World {
     unsigned char g0[0x3C];
     short player_num;
@@ -57,13 +58,18 @@ struct RGE_Object_List {
     short number_of_objects;       // +0x08
     void draw(void* param_1, short param_2, short param_3, unsigned char param_4);
 };
+#endif
 
 void RGE_Object_List::draw(void* param_1, short param_2, short param_3, unsigned char param_4)
 {
     RGE_Object_Node* p = list;
     if (!p) return;
     do {
+#ifdef OBJLIST_SHARED_CONTEXT
+        RGE_Object_Draw_View* obj = (RGE_Object_Draw_View*)p->node;
+#else
         ObjForDraw* obj = p->node;
+#endif
         if (obj) {
             RGE_Player* owner = obj->owner;
             unsigned char should_draw = 1;

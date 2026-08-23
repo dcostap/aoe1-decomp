@@ -6,6 +6,7 @@
 // 3: spell best-distance comparison as `best_dist > dist` to match original FPU compare direction.
 // 4: reload node->object for direct return/distance block so VC5 uses ECX/EAX like original instead of carried ESI.
 
+#ifndef OBJLIST_SHARED_CONTEXT
 class RGE_Static_Object;
 
 class RGE_Master_Static_Object {
@@ -40,6 +41,7 @@ public:
 
     RGE_Static_Object* find_by_group(long group, float x, float y, unsigned char check_player, unsigned char player_id, RGE_Static_Object* zone_obj);
 };
+#endif
 
 RGE_Static_Object* RGE_Object_List::find_by_group(long group, float x, float y, unsigned char check_player, unsigned char player_id, RGE_Static_Object* zone_obj)
 {

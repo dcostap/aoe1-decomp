@@ -1,3 +1,4 @@
+#ifndef OBJLIST_SHARED_CONTEXT
 struct RGE_Object_Node {
     void* object;
     RGE_Object_Node* next;
@@ -11,6 +12,7 @@ public:
 
     void invert(void);
 };
+#endif
 
 void RGE_Object_List::invert(void) {
     RGE_Object_Node* prev = 0;

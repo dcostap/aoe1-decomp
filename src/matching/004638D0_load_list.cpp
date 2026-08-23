@@ -1,3 +1,4 @@
+#ifndef OBJLIST_SHARED_CONTEXT
 class RGE_Game_World;
 
 extern void rge_read(int param_1, void* param_2, int param_3);
@@ -8,6 +9,11 @@ public:
     void invert(void);
     void load_list(int param_1, RGE_Game_World* param_2);
 };
+#endif
+
+#ifdef OBJLIST_SHARED_CONTEXT
+extern void rge_read(int param_1, void* param_2, int param_3);
+#endif
 
 void RGE_Object_List::load_list(int param_1, RGE_Game_World* param_2) {
     unsigned char param_3;

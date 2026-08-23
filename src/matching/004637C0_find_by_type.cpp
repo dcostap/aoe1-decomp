@@ -14,6 +14,7 @@
 
 #include <math.h>
 
+#ifndef OBJLIST_SHARED_CONTEXT
 struct RGE_Object_Node {
     class RGE_Static_Object* obj;
     RGE_Object_Node* next;
@@ -38,6 +39,7 @@ struct RGE_Object_List {
 
     RGE_Static_Object* find_by_type(unsigned char type, float x, float y, unsigned char check_state, unsigned char state);
 };
+#endif
 
 RGE_Static_Object* RGE_Object_List::find_by_type(unsigned char type, float x, float y, unsigned char check_state, unsigned char state)
 {

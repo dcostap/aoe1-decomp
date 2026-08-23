@@ -9,6 +9,7 @@
 
 #include <stdlib.h>
 
+#ifndef OBJLIST_SHARED_CONTEXT
 class RGE_Master_Static_Object {
 public:
     void* vtable_ptr;
@@ -123,6 +124,7 @@ public:
 
     RGE_Object_Node* sort();
 };
+#endif
 
 RGE_Object_Node* RGE_Object_List::sort()
 {
