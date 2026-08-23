@@ -26,6 +26,7 @@
 
 #include <windows.h>
 
+#ifndef BASEGAME_GROUPED_TU
 class RGE_Prog_Info {
 public:
     char prog_name[101];
@@ -46,10 +47,12 @@ class TPanelSystem {
 public:
     void DisableIME();
 };
+#endif
 
 extern TPanelSystem panel_system;
 extern HWND AppWnd;
 
+#ifndef BASEGAME_GROUPED_TU
 class RGE_Base_Game {
 public:
     virtual ~RGE_Base_Game();
@@ -58,8 +61,10 @@ public:
     RGE_Prog_Info* prog_info;
     HWND prog_window;
 
+protected:
     virtual int setup_main_window();
 };
+#endif
 
 int RGE_Base_Game::setup_main_window()
 {

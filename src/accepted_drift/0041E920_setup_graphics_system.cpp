@@ -61,6 +61,7 @@
 
 class TDrawArea;
 
+#ifndef BASEGAME_GROUPED_TU
 class RGE_Prog_Info {
 public:
     char gap_000[0x410];
@@ -136,6 +137,7 @@ public:
     virtual int setup_cmd_options();
     virtual int setup_class();
     virtual int setup_main_window();
+protected:
     virtual int setup_graphics_system();
 
     char gap_004[0x08];
@@ -149,6 +151,7 @@ public:
     TDrawSystem* draw_system;              // +0x48
     TDrawArea* draw_area;                  // +0x4C
 };
+#endif
 
 extern TPanelSystem panel_system;
 
