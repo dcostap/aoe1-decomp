@@ -1,15 +1,16 @@
-struct Fwd_87C0 {
-    void target();
+class TPanel {
+public:
+    void release_mouse();
 };
 
-class RGE_Game_World : public Fwd_87C0 {
+class RGE_Diamond_Map : public TPanel {
 public:
     char gap_0[0x154];
-    int field_154;
+    int scrolling;
     void end_scroll_view();
 };
 
-void RGE_Game_World::end_scroll_view() {
-    this->field_154 = 0;
-    this->target();
+void RGE_Diamond_Map::end_scroll_view() {
+    this->scrolling = 0;
+    this->release_mouse();
 }

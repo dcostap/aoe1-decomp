@@ -1,4 +1,4 @@
-class TRIBE_Gaia {
+class RGE_Diamond_Map {
 public:
     virtual void vf00();
     virtual void vf04();
@@ -14,7 +14,7 @@ public:
     void set_player(int value);
 };
 
-void TRIBE_Gaia::set_player(int value) {
+void RGE_Diamond_Map::set_player(int value) {
     this->field_F8 = value;
     this->notify(2);
 }
