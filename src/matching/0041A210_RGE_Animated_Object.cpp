@@ -1,6 +1,10 @@
-// attempt 1: EH-framed ctor sibling with the three-arg RGE_Static_Object base call and optional setup helper
-// result: default flags were too small; /GX was required for the constructor/EH basin
-// attempt 2: kept the natural base-call/vptr-store/setup order used by the sibling ctor
+// VA: 0041A210 RGE_Animated_Object::RGE_Animated_Object
+// PDB owner: ani_obj.cpp lines 38-41; body boundary: 0041A210-0041A275.
+// BINARY NOTE: 0041A150 is the preceding ani_obj.cpp constructor and ends at
+// 0041A1D2. The compiler-generated deleting destructor starts at 0041A1E0.
+// The next normal PDB-owned function is this constructor at 0041A210.
+// BINARY NOTE: The constructor publishes the inherited virtual ABI after its
+// base call. Keep that publication, cleanup, and setup order natural.
 
 class RGE_Game_World;
 
@@ -19,7 +23,6 @@ public:
 
 RGE_Animated_Object::RGE_Animated_Object(int mode, RGE_Game_World* world, int doSetup)
     : RGE_Static_Object(mode, world, 0) {
-    *(void**)this = (void*)0x56EC10;
     if (doSetup != 0) {
         setup(mode, world);
     }
