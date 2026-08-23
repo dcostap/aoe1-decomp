@@ -8,6 +8,9 @@
 // - Split the negative coordinate checks before the map bounds check. VC5 then
 //   reused the incoming XYZPoint home and emitted all 419 bytes exactly.
 // - Exact with default flags. No inline asm or custom flags.
+// - PDB-qualified owner is public virtual RGE_Moving_Object::canPath in
+//   move_obj.cpp:2208-2256. The body ends at ret 24h, 0045F9C2; padding starts
+//   at 0045F9C3. The virtual qualifier keeps the rebuilt owner symbol exact.
 
 struct XYPoint {
     int x;
@@ -92,9 +95,9 @@ public:
 
 class RGE_Moving_Object : public RGE_Animated_Object {
 public:
-    int canPath(XYZPoint point, float tolerance, int targetID,
-                float* costOut, int useAI, int unobPlayerID,
-                int unobGroupID);
+    virtual int canPath(XYZPoint point, float tolerance, int targetID,
+                        float* costOut, int useAI, int unobPlayerID,
+                        int unobGroupID);
 };
 
 class PathingSystem {
