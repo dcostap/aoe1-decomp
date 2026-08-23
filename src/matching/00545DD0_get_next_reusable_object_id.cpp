@@ -11,12 +11,11 @@ public:
 };
 
 long RGE_Game_World::get_next_reusable_object_id() {
-    if (this->scenario_object_flag != 0) {
-        long sid = this->scenario_object_id;
-        if (sid < this->next_reusable_object_id) {
-            this->next_reusable_object_id = sid - 1;
+    if (this->scenario_object_flag) {
+        if (this->scenario_object_id < this->next_reusable_object_id) {
+            this->next_reusable_object_id = this->scenario_object_id - 1;
         }
-        return sid;
+        return this->scenario_object_id;
     }
 
     return this->next_reusable_object_id--;
