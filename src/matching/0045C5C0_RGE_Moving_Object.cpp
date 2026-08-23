@@ -11,6 +11,7 @@
 //   in the body) naturally delayed the derived-vptr store to the original
 //   position; result is an exact 308-byte MATCH with no manual vptr code.
 
+#ifndef MOVE_OBJ_CANONICAL_TU
 class RGE_Game_World;
 
 class RGE_Animated_Object {
@@ -81,6 +82,7 @@ public:
     void setGoal(float x, float y, float z);
     virtual int setup(int mode, RGE_Game_World* world);
 };
+#endif
 
 RGE_Moving_Object::RGE_Moving_Object(int mode,
                                      RGE_Game_World* world,

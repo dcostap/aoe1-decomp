@@ -10,6 +10,7 @@
 //   destructors, and base RGE_Static_Object destructor in the original order.
 // Result: MATCH locally with `python tools/check_function.py --va 0045C700`.
 
+#ifndef MOVE_OBJ_CANONICAL_TU
 void __cdecl operator delete(void* p);
 
 class Path {
@@ -33,6 +34,7 @@ public:
 
     virtual ~RGE_Moving_Object();
 };
+#endif
 
 RGE_Moving_Object::~RGE_Moving_Object() {
     if (this->userDefinedWaypoints != 0) {

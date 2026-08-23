@@ -10,6 +10,7 @@
 // - The natural initializer ordering reproduces the delayed derived-vptr store
 //   and all 333 bytes exactly; no manual vptr or raw-offset code is retained.
 
+#ifndef MOVE_OBJ_CANONICAL_TU
 class RGE_Master_Animated_Object;
 class RGE_Master_Moving_Object;
 class RGE_Player;
@@ -92,6 +93,7 @@ public:
                       RGE_Player* player,
                       float x, float y, float z);
 };
+#endif
 
 RGE_Moving_Object::RGE_Moving_Object(RGE_Master_Moving_Object* master,
                                      RGE_Player* player,
