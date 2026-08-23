@@ -12,6 +12,8 @@ repository-wide rules. This file owns the matching procedure.
 - Do not commit.
 - Do not search the web or use web search tools.
 - Keep one compiler-facing source owner.
+- Establish authentic translation-unit context before broad source-shape tuning.
+- Never use a synthetic dummy function to support an exact claim.
 
 A claim is one pass, not the lifetime of the function. It does not select the
 worker's methods or indicate exhaustion.
@@ -43,15 +45,36 @@ assignment. Complete the exact-finish retrospective before you report.
 3. If it is paused, read its source attempt log and bounded session brief.
 4. Start a target session.
 5. Read the function packet and collect focused binary evidence.
-6. Establish canonical field, array, class, global, and ABI ownership.
-7. Write the simplest period-plausible reconstruction.
-8. Record its first successful check as the baseline.
-9. Use evidence to prioritize source, type, layout, control-flow, context, and
+6. Establish the original translation-unit context before broad source-shape
+   tuning. Use only the PDB source module, source-line and source-order bands,
+   class ownership, address sequence, and exact anchors. Record what each item
+   proves. Mark unsupported context as unknown.
+7. Establish canonical field, array, class, global, and ABI ownership.
+8. Write the simplest period-plausible reconstruction.
+9. Record its first successful check as the baseline.
+10. Use evidence to prioritize source, type, layout, control-flow, context, and
    flag hypotheses. Bounded exploratory tests are valid when their result will
    teach you something.
-10. Keep the clean source model authoritative. Discard opaque metric-only forms.
-11. Stop whenever you give up making progress.
-12. Finish the target using the exact or unresolved procedure below.
+11. Keep the clean source model authoritative. Discard opaque metric-only forms.
+12. Stop whenever you give up making progress.
+13. Finish the target using the exact or unresolved procedure below.
+
+### Translation-unit context gate
+
+Complete the context pass before broad changes to declarations, source shape,
+control flow, lifetimes, or ambient compiler context. The pass must identify:
+
+- the PDB source module;
+- source-line and source-order bands;
+- the owning class;
+- the target's address sequence; and
+- exact anchors that link the target to the proposed context.
+
+Use exact anchors and address sequence to separate same-named or nearby donors.
+Do not infer context from folder placement, symbol names, old metrics, or
+relocation masking. Do not add a dummy function, wrapper, or unused declaration
+only to create an exact result. A context hypothesis is not an exact claim until
+the real target source has one compiler-facing owner and passes the checker.
 
 ## Status and leases
 
@@ -81,6 +104,12 @@ main agent updates that file.
 
 Use local declarations for uncertain one-function facts. Change shared headers
 only when the assignment authorizes it and reusable binary evidence justifies it.
+
+Complete the translation-unit context gate before broad source-shape tuning.
+Restore period-plausible headers, declarations, and source order only when the
+PDB module, line or order bands, class ownership, address sequence, or exact
+anchors support them. Keep target behavior, ABI, ownership, and checker results
+as the authority.
 
 ## Recorded checks
 
@@ -112,7 +141,8 @@ equivalence, change status, or select the worker's method.
 
 ## Variant labs
 
-Use `variant_lab.py` only after behavior, calls, cleanup, and layout are known.
+Use `variant_lab.py` only after behavior, calls, cleanup, layout, and the
+translation-unit context gate are known.
 Build deliberate source-level axes around one understood mismatch. Broad and
 speculative sweeps are valid after the source model is understood. Do not retain
 an opaque nonexact result only because it changes compiler output.
@@ -136,6 +166,8 @@ The first exact result starts the finish process. Do not report immediately.
    forms. Prefer the smallest natural, period-plausible source that stays exact.
 6. Do not retain a strange form only because it survived reduction. Apply the
    source-recovery and ownership rules before you accept it.
+   Keep only context changes supported by authentic PDB, class, address, or
+   exact-anchor evidence.
 7. Review source, flags, ownership, and policy compliance.
 8. Run the authoritative function checker. Require `Result: MATCH` and
    `0.0000%` on the reduced source.

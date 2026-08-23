@@ -13,7 +13,13 @@ The user-designated main agent owns:
 - returned-work review;
 - status moves and commits;
 - reviewed shared ABI evidence;
+- the reviewed original translation-unit context for each target;
 - semantic-review ledgers and promotion decisions.
+
+Translation-unit context includes the PDB source module, source-line and source
+order bands, class ownership, address sequence, and exact anchors. The main
+agent must review the evidence that links a target to this context. A folder,
+name, metric, or synthetic dummy function is not context evidence.
 
 Subagent output is a proposal. The main agent must inspect and validate it before
 integration.
@@ -50,6 +56,12 @@ requirements in the worker prompt:
   were required, incidental, or inseparable.
 - Report reusable lesson candidates. Do not edit `LESSONS.md` unless the
   assignment authorizes that shared-file change.
+
+Before broad source-shape tuning, require an authentic translation-unit context
+pass. The worker must record the PDB source module, source-line and source order
+evidence, class owner, address sequence, and exact anchors. Mark each item as
+proved, likely, or unknown. Do not replace missing context with a synthetic
+dummy function or a name-based donor.
 
 Do not weaken this requirement with prompt text such as "otherwise pin and
 pause" without the effort conditions above.
@@ -147,6 +159,7 @@ Review all available evidence:
 - ordered calls, CFG, frame, ABI, cleanup, and memory effects;
 - generated claim, probe, checkpoint, and last-gain history, when available;
 - existing review ledgers and relevant Git history;
+- authentic translation-unit context and its unresolved parts;
 - known behavior questions and useful approaches that remain untested.
 
 Treat source comments as the durable record. Generated work history can support
@@ -215,6 +228,10 @@ required ordering, or strange shipped behavior. Use `BINARY NOTE:`,
 `ORIGINAL BUG:`, and `LIKELY INTENT:` to separate evidence from interpretation.
 Remove stale probe explanations and comments that only repeat the code. Do not
 state a suspected copy mistake or developer motive as fact.
+
+Confirm that the exact source has one compiler-facing owner and uses the
+reviewed translation-unit context. Do not promote a result that depends on a
+synthetic dummy function or an unproved context substitute.
 
 Do not accept or reject an unresolved return based on a probe or hypothesis
 count. Review the evidence, source quality, open questions, and possible next
