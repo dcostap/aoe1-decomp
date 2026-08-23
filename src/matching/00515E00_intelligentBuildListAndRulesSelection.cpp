@@ -68,6 +68,33 @@
 // - 2026-08-22: tested the natural int buildLists[126] owner and a common
 //   post-switch setRule(0x4A) tail. Both moved the function farther and were
 //   restored. Keep the packet layout and branch-local call form.
+// - 2026-08-23: restored one natural setRule expression in each random-goal
+//   arm. This preserves every rule reread and debug_rand call. VC5 then emits
+//   the original shared argument and call tail, reducing the strict difference
+//   from 1481 bytes to 55 bytes.
+// - 2026-08-23: a complete permutation check of the six case-3 updates found
+//   one source order that emits the original complete block. The retained
+//   BL1, BL2, BL0x14, BL0x15, BL0x12, BL0x13 order reduces the difference to
+//   10 bytes without changing any call, predicate, frame, or boundary.
+// - 2026-08-23: the final 10 bytes are the two paired case-7/10 and case-9
+//   load/store register maps. Reversing either pair restores its local fault
+//   order, but changes tail ownership, removes one late setRule call, and moves
+//   thousands of later bytes. Named values, expanded assignments, a shared
+//   source label, register qualification, and the current tplayer.cpp wrapper
+//   did not recover both the local order and the exact later basin.
+// - 2026-08-24: focused natural-form labs tested direct, expanded, comma,
+//   pointer, reference, and asymmetric cached-low pair updates. Every low-first
+//   form changed the early failure branch or the later basin. The direct
+//   high-first form remains the smallest clean source with exact size, frame,
+//   boundary, owner, and all 131 ordered calls. The ten raw spans are seven
+//   unmasked paired-map bytes and three late register-color bytes.
+// - 2026-08-24: reordered the cheat locals to food, gold, wood, and stone.
+//   This restores the three shipped zero-register bytes.
+// - 2026-08-24: reordered cases 4, 7/10, and 9 as one low-first group.
+//   This restores seven bytes and keeps the shared suffix and all 131 calls.
+//   Reverting any group member breaks exact tail ownership. Reverting the
+//   cheat declaration order leaves only its three register bytes different.
+//   The reduced natural source now matches all 6631 bytes at the PDB boundary.
 // Notes:
 // - The packet's decompiler folds the saved game difficulty into buildLists[0]; the
 //   real stack has `gameDifficulty` at +0x14 and `buildLists[125]` at +0x18.
@@ -75,7 +102,9 @@
 //   build-list weight array by subtracting one.
 // - Uses fixed-address globals/strings for the known tplayer.cpp counters and log text.
 
-#include <string.h>
+#include "../../include/tplayer_context.h"
+
+#if 0
 
 typedef unsigned char uchar;
 
@@ -93,14 +122,6 @@ extern int DAT_00886c40;
 extern int DAT_00886c44;
 extern int DAT_00886c48;
 extern int allowAIToCheat;
-
-#define S_TPLAYER_CPP ((char*)0x0058AC44)
-#define S_RANDOM_GAME_SPECIALIZED ((char*)0x0058AF78)
-#define S_SETTING_AI_PERSONALITY ((char*)0x0058B130)
-#define S_SELECTED_BEST_BUILD_LIST ((char*)0x0058B148)
-#define S_I_AM_THE_CIV ((char*)0x0058B16C)
-
-extern int __cdecl debug_rand(char* file, int line);
 
 struct BuildListPacket_00515E00 {
     int weights[125];
@@ -228,6 +249,8 @@ public:
                                                int mapType, int victoryType, int mapSize);
 };
 
+#endif
+
 #define SET_RULE(rule_id, value) this->playerAI->strategyAI.setRule((rule_id), (value))
 #define GET_RULE(rule_id) this->playerAI->strategyAI.rule((rule_id))
 #define BL(n) buildLists[(n) - 1]
@@ -354,18 +377,20 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* buildListName, ch
             BL(5) += 40;
             break;
         case 3:
-            BL(0x12) -= 60;
+            // BINARY NOTE: this independent update order fixes VC5's complete block schedule.
             BL(1) += 40;
-            BL(0x13) -= 60;
             BL(2) += 20;
             BL(0x14) += 20;
             BL(0x15) += 20;
+            BL(0x12) -= 60;
+            BL(0x13) -= 60;
             break;
         case 4:
             BL(7) += 15;
             BL(8) += 15;
-            BL(0x15) += 20;
+            // BINARY NOTE: related pair cases need this low-first order for the shipped shared tail.
             BL(0x14) += 20;
+            BL(0x15) += 20;
             break;
         case 5:
             BL(7) += 15;
@@ -379,8 +404,8 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* buildListName, ch
             break;
         case 7:
         case 10:
-            BL(0x15) -= 60;
             BL(0x14) -= 60;
+            BL(0x15) -= 60;
             break;
         case 8:
             BL(0x14) += 40;
@@ -391,8 +416,8 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* buildListName, ch
             }
             break;
         case 9:
-            BL(0x15) += 100;
             BL(0x14) += 100;
+            BL(0x15) += 100;
             break;
         }
     }
@@ -776,54 +801,35 @@ selectedCountersDone:
         randomValue -= 1;
     }
 
-    int nextGoal;
     switch (randomValue) {
     case -2:
-    case -1: {
+    case -1:
         SET_RULE(0x49, debug_rand(S_TPLAYER_CPP, 0xEA2) % 2 + 0x0E);
-        int firstGoal = GET_RULE(0x49);
-        randomValue = debug_rand(S_TPLAYER_CPP, 0xEA4);
-        nextGoal = firstGoal + randomValue % 4 + 1;
-        SET_RULE(0x4A, nextGoal);
+        SET_RULE(0x4A, GET_RULE(0x49) + debug_rand(S_TPLAYER_CPP, 0xEA4) % 4 + 1);
         break;
-    }
-    case 0: {
+    case 0:
         SET_RULE(0x49, debug_rand(S_TPLAYER_CPP, 0xEA7) % 2 + 0x0F);
-        nextGoal = GET_RULE(0x49);
-        randomValue = debug_rand(S_TPLAYER_CPP, 0xEA9);
-        nextGoal += 1 + randomValue % 4;
-        SET_RULE(0x4A, nextGoal);
+        SET_RULE(0x4A, GET_RULE(0x49) + debug_rand(S_TPLAYER_CPP, 0xEA9) % 4 + 1);
         break;
-    }
     case 1:
         SET_RULE(0x49, debug_rand(S_TPLAYER_CPP, 0xEAC) % 3 + 0x10);
-        nextGoal = GET_RULE(0x49);
-        nextGoal += 1 + debug_rand(S_TPLAYER_CPP, 0xEAE) % 5;
-        SET_RULE(0x4A, nextGoal);
+        SET_RULE(0x4A, GET_RULE(0x49) + debug_rand(S_TPLAYER_CPP, 0xEAE) % 5 + 1);
         break;
     case 2:
         SET_RULE(0x49, debug_rand(S_TPLAYER_CPP, 0xEB1) % 2 + 0x11);
-        nextGoal = GET_RULE(0x49);
-        nextGoal += 1 + debug_rand(S_TPLAYER_CPP, 0xEB3) % 6;
-        SET_RULE(0x4A, nextGoal);
+        SET_RULE(0x4A, GET_RULE(0x49) + debug_rand(S_TPLAYER_CPP, 0xEB3) % 6 + 1);
         break;
     case 3:
         SET_RULE(0x49, debug_rand(S_TPLAYER_CPP, 0xEB6) % 2 + 0x12);
-        nextGoal = GET_RULE(0x49);
-        nextGoal += 1 + debug_rand(S_TPLAYER_CPP, 0xEB8) % 7;
-        SET_RULE(0x4A, nextGoal);
+        SET_RULE(0x4A, GET_RULE(0x49) + debug_rand(S_TPLAYER_CPP, 0xEB8) % 7 + 1);
         break;
     case 4:
         SET_RULE(0x49, debug_rand(S_TPLAYER_CPP, 0xEBB) % 4 + 0x12);
-        nextGoal = GET_RULE(0x49);
-        nextGoal += 1 + debug_rand(S_TPLAYER_CPP, 0xEBD) % 8;
-        SET_RULE(0x4A, nextGoal);
+        SET_RULE(0x4A, GET_RULE(0x49) + debug_rand(S_TPLAYER_CPP, 0xEBD) % 8 + 1);
         break;
     default:
         SET_RULE(0x49, debug_rand(S_TPLAYER_CPP, 0xEC1) % 2 + 0x12);
-        nextGoal = GET_RULE(0x49);
-        nextGoal += 1 + debug_rand(S_TPLAYER_CPP, 0xEC3) % 9;
-        SET_RULE(0x4A, nextGoal);
+        SET_RULE(0x4A, GET_RULE(0x49) + debug_rand(S_TPLAYER_CPP, 0xEC3) % 9 + 1);
         break;
     }
     SET_RULE(0xD0, 1);
@@ -855,9 +861,9 @@ selectedCountersDone:
 
     if (allowAIToCheat != 0) {
         int cheatFood = 0;
+        int cheatGold = 0;
         int cheatWood = 0;
         int cheatStone = 0;
-        int cheatGold = 0;
         if (difficultyCopy == 0) {
             cheatFood = 2000;
             cheatWood = 2000;
