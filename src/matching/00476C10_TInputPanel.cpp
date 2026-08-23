@@ -13,12 +13,20 @@
 // offset stores (exact-size but 87 positional / 26 edit), derived-only virtual (broad
 // byte-0 mismatch), initializer-list scalar form (short), novtable virtual surface
 // (also matched), empty dtor definition (short/COMDAT), and manual base ctor in body
-// (short/wrong). Winning minimal source declares non-virtual base/derived destructors
-// (declarations only) plus real base constructor in initializer list and raw observed
-// field stores. The destructor declarations are enough under /GX to trigger the original
-// lightweight constructor EH frame/base cleanup context without emitting extra COMDATs.
+// (short/wrong). Winning minimal source declares the non-virtual base destructor plus
+// the real base constructor in the initializer list, uses the proven input fields, and
+// keeps raw access only for the inherited and vptr anchors.
+// The base destructor declaration is enough under /GX to trigger the original
+// lightweight constructor EH frame/base cleanup context without emitting extra COMDATs;
+// the derived destructor declaration is not needed.
+// Exact-finish 2026-08-24: removing the base destructor declaration produced 137 bytes;
+// removing the derived declaration stayed exact. The reviewed full pnl_inp context
+// injected a compiler vptr store and produced 187 bytes, so this narrow local surface
+// preserves the proven constructor ABI while its fields retain the canonical offsets.
 
 extern "C" __declspec(dllimport) unsigned long __stdcall GetCaretBlinkTime();
+
+class TDigital;
 
 struct TTextPanel {
     char gap[0x188];
@@ -27,27 +35,41 @@ struct TTextPanel {
 };
 
 struct TInputPanel : TTextPanel {
-    char rest[0x30];
+    unsigned char caret_color;
+    unsigned char pad_189[3];
+    unsigned long caret_interval;
+    unsigned long caret_last_time;
+    int draw_caret;
+    TDigital* overLengthSound;
+    int format_type;
+    char* input_buffer;
+    char* input_buffer1;
+    char* input_buffer2;
+    short input_len;
+    short max_len;
+    int insert_mode;
+    short input_pos;
+    unsigned char pad_1B6[2];
     TInputPanel();
-    ~TInputPanel();
 };
 
 TInputPanel::TInputPanel() : TTextPanel()
 {
-    *(unsigned char*)((char*)this + 0x188) = 0;
-    *(int*)((char*)this + 0x18C) = GetCaretBlinkTime();
-    *(int*)((char*)this + 0x190) = 0;
-    *(int*)((char*)this + 0x194) = 1;
-    *(int*)((char*)this + 0x1B0) = 1;
+    this->caret_color = 0;
+    this->caret_interval = GetCaretBlinkTime();
+    this->caret_last_time = 0;
+    this->draw_caret = 1;
+    this->insert_mode = 1;
     *(int*)((char*)this + 0x80) = 1;
     *(int*)((char*)this + 0x170) = 1;
-    *(int*)((char*)this + 0x198) = 0;
-    *(int*)((char*)this + 0x1A0) = 0;
-    *(int*)((char*)this + 0x1A4) = 0;
-    *(int*)((char*)this + 0x1A8) = 0;
-    *(short*)((char*)this + 0x1AC) = 0;
-    *(short*)((char*)this + 0x1AE) = 0;
-    *(short*)((char*)this + 0x1B4) = 0;
+    this->overLengthSound = 0;
+    this->input_buffer = 0;
+    this->input_buffer1 = 0;
+    this->input_buffer2 = 0;
+    this->input_len = 0;
+    this->max_len = 0;
+    this->input_pos = 0;
+    // BINARY NOTE: The constructor emits this derived-vptr store late.
     *(int*)this = 0x571488;
     *(char*)((char*)this + 0xEE) = 7;
     *(int*)((char*)this + 0x114) = 5;
