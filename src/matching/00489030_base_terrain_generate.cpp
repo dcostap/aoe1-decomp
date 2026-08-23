@@ -15,8 +15,9 @@
 // - Keep loc_stack.x as the horizontal bound and max_x as the row bound; this
 //   is the best structural checkpoint (2240 vs 2204 bytes, 90.04% shape).
 // - Passing y-field addresses for the stack records regressed; rolled back.
-// - A union reusing the fairness slot for the later score regressed shape;
-//   rolled back. Remaining mismatch is structural, beginning at the prologue.
+// - An early pointer alias that forced the fairness slot into the later score
+//   regressed shape; a real storage union was not tested at that checkpoint.
+//   Remaining mismatch was structural, beginning at the prologue.
 //
 // Session sa-c246dc4c-r1 (bounded continuation, budget 10):
 // - SEMANTIC FIX: fair-extend third condition is search_map_rows[x][chance] < 0x1e
@@ -35,8 +36,8 @@
 // - Tile stores use full member expressions (map_row_offset[x][chance].terrain_type)
 //   so VC5 anchors the address at the +5 terrain byte like the original.
 // - Negative evidence: declaration position of fStack_a4c (after fair_count,
-//   before fair_count, or last), a union forcing the +0x18 slot share, and
-//   base_area/loc_stack_x declaration order are ALL codegen-neutral or worse.
+//   before fair_count, or last), pointer aliases, and base_area/loc_stack_x
+//   declaration order were codegen-neutral or worse at this checkpoint.
 //   VC5's slot allocator here does not follow declaration order for this
 //   function, so the score/index1 slot coloring could not be steered by
 //   source ordering.
@@ -73,9 +74,10 @@
 //   matches the target cmp/jg pair and reduces the mismatch by two bytes.
 // - BINARY NOTE: Write cleanup as x > max_x. This matches the target cmp/jle
 //   pair and removes one control-flow difference.
-// - Negative evidence: unions, pointer aliases, float count casts, typed raw
-//   terrain pointers, and local declaration order did not improve the clean
-//   143-byte result. Restore them before promotion.
+// - Negative evidence: pointer aliases, float count casts, typed raw terrain
+//   pointers, and local declaration order did not improve the clean 143-byte
+//   result. A later exact pass found that a real union and output aggregate
+//   were required; those are not the discarded pointer-alias probe.
 // - Accepted-drift review: 47 evidence-led probes did not find a natural exact
 //   form. Fresh score-scope and tile-store-cast probes emitted unchanged code.
 // - The 143 changed bytes have two causes. VC5 rotates private homes for the
@@ -86,114 +88,46 @@
 //   following `pop_stack` setup only recolors its three local-address registers.
 // - The two reported CFG differences are changed private-memory operands. Their
 //   successor blocks are identical. The function has no exception handler.
-// - Final result: exact 0xA54 frame, saved registers, 68 conditions, three
+// - Prior result: exact 0xA54 frame, saved registers, 68 conditions, three
 //   jumps, one return, and all 35 ordered calls. The rebuilt body is two bytes
 //   longer. Calls, external reads, stores, x87 order, cleanup, and fault order
 //   match the executable.
+// Context pass: the shared rmm_terr surface restores the PDB terrain line,
+// tile, zone, and random-map owners.
+//
+// Exact-finish pass sa-a87dc8ed-r2:
+// - BINARY NOTE: pop_stack writes adjacent long x/chance outputs. A local
+//   Stack_Coordinates aggregate with references preserves those two homes.
+// - BINARY NOTE: the +0x18 home holds fair_count before the score phase and
+//   the float score after it. The anonymous union models this proven reuse.
+// - Walkback: removing the coordinate aggregate leaves 32 changed bytes.
+//   Removing the union also leaves 32 changed bytes. Restoring both gives the
+//   exact body. The original bound names and assignments remain sufficient.
+// - Exact checker result: 2204 bytes, 35 ordered calls, 40/40 relocation
+//   anchors, and Result: MATCH with 0.0000% strict positional difference.
 
-typedef unsigned char uchar;
-
-extern "C" int __cdecl debug_rand(char* file, int line);
+#include "../../include/rmm_terr_context.h"
 
 extern "C" double __cdecl sqrt(double value);
 #pragma intrinsic(sqrt)
 
-struct Map_Stack {
-    long x;
-    long y;
-    float cost;
-    float tot_cost;
-    Map_Stack* next;
-    Map_Stack* prev;
-};
-
-struct RGE_Terrain_Hot_Spots {
-    long x;
-    long y;
-    long radius;
-    long fade;
-};
-
-struct RGE_Terrain_Info_Line {
-    long terrain_size;
-    long terrain_generated;
-    long terrain_type;
-    long clumps;
-    long spacing;
-    long base_terrain_type;
-    long clumpiness_factor;
-    long avoid_hot_spots;
-};
-
-struct RGE_Terrain_Info {
-    RGE_Terrain_Info_Line terrain[99];
-    long terrain_num;
-    RGE_Terrain_Hot_Spots hot_spots[99];
-    long hot_spot_num;
-};
-
-struct RGE_Tile {
-    short screen_xpos;
-    short screen_ypos;
-    uchar tile_type;
-    uchar terrain_type : 5;
-    uchar border_type : 4;
-    uchar last_drawn_as;
-    uchar last_drawn_shape;
-    uchar draw_as;
-    uchar draw_attribute;
-    uchar last_drawn_shape2;
-    char objects[12];
-};
-
-class RGE_Map;
-
-class RGE_Random_Map_Module {
-public:
-    virtual uchar generate() = 0;
-
-    RGE_Random_Map_Module* parent;
-    void* list;
-    RGE_Map* map;
-    RGE_Tile** map_row_offset;
-    long map_width;
-    long map_height;
-    float schedule;
-    uchar* search_map;
-    uchar** search_map_rows;
-    Map_Stack* stack_array;
-    Map_Stack** stack_offsets;
-
-    void init_stack(Map_Stack* stack);
-    void deinit_stack(Map_Stack* stack);
-    Map_Stack* pop_stack(Map_Stack* head, long* x, long* y, float* cost);
-    void push_stack(Map_Stack* list, long x, long y, float cost, float total_cost);
-};
-
-class RGE_Zone_Map {
-public:
-    uchar get_zone_info(long x, long y);
-};
-
-class RGE_RMM_Terrain_Generator : public RGE_Random_Map_Module {
-public:
-    RGE_Terrain_Info info;
-    RGE_Zone_Map* map_zone;
-
-    virtual uchar generate();
-    void link_stack_randomly(Map_Stack* stack, uchar terrain);
-    uchar check_terrain(uchar terrain, long x, long y, long radius, uchar avoid_terrain);
-    void remove_area_from_lists(long x, long y, long radius);
-    float fig_chance(long terrain, long x, long y, long factor);
-    uchar base_terrain_generate(RGE_Terrain_Info_Line line);
-};
-
 uchar RGE_RMM_Terrain_Generator::base_terrain_generate(RGE_Terrain_Info_Line line)
 {
-    long x;
-    long y;
-    long chance;
-    float fStack_a4c;
+    // BINARY NOTE: pop_stack writes x and chance to adjacent long homes.
+    // Keep the proven pair together, then use named references in the body.
+    struct Stack_Coordinates {
+        long x;
+        long chance;
+    } coordinates;
+    long& x = coordinates.x;
+    long& chance = coordinates.chance;
+
+    // BINARY NOTE: the shipped body reuses the +0x18 home for fair_count and
+    // the later float score after the fairness phase ends.
+    union {
+        float fStack_a4c;
+        long fair_count;
+    };
     uchar done;
     long local_a44;
     long clump_size;
@@ -212,13 +146,12 @@ uchar RGE_RMM_Terrain_Generator::base_terrain_generate(RGE_Terrain_Info_Line lin
     uchar terrain_fairness_zones[99];
     Map_Stack stack[99];
 
-    // The original keeps the horizontal bound in a separate long (loc_stack_x)
-    // and the list-head sentinel in loc_stack; max_x is the row bound.
+    // The original keeps the two bounds in separate homes. loc_stack_x is
+    // the horizontal bound and max_x is the row bound.
     loc_stack_x = this->map_width - 1;
     max_x = this->map_height - 1;
-    fStack_a4c = 0.0f;
     {
-    int fair_count = 0;
+    fair_count = 0;
 
     if (line.avoid_hot_spots == 2 && this->info.hot_spot_num > 0) {
         hot_i = 0;

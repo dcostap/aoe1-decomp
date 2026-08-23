@@ -53,81 +53,24 @@
 // predicate order, initial-row read, and next-row read before loop exit. The
 // second scan has the same byte-count wrap and return. This function has no
 // calls or writes. Remaining drift is private local-home and register choice.
+// Context pass: the shared rmm_terr surface now owns RGE_Map, RGE_Tile, and the
+// inherited random-map fields. The checker remains 437 bytes with 295 changed
+// bytes and the same two scans, clipped bounds, predicates, and return paths.
+// Exact-owner follow-up after 00489030 became exact:
+// - The complete PDB owner order and all exact neighbors leave this output
+//   unchanged. The grouped target is 437 bytes with a 0x18 frame and no calls.
+// - The target keeps this, the result, first row, row-table cursor, base terrain,
+//   and tile offset in the six proven homes from entry -0x18 through -0x04.
+// - Scalar, block-local, array, one-field object, two-field aggregate, aggregate
+//   reference, and explicit-owner forms did not recover that home order.
+// - Direct, address, row-first, and explicit-offset typed row setup forms did
+//   not improve the exact-size source.
+// - Reusing the dead radius home for max_y matches an exact rmm_elev.cpp donor,
+//   but it hoists y and reduces this function to 430 bytes. It is not retained.
+// - Function-scope bounds and cursor reuse reduces the body to 423 bytes and
+//   loses exact blocks. The source keeps the simpler block-scoped typed model.
 
-typedef unsigned char uchar;
-
-struct RGE_Tile {
-    char gap_00[5];
-    unsigned char terrain_type;
-    char gap_06[0x12];
-};
-
-class RGE_Tile_Set {
-public:
-    unsigned char loaded;
-    unsigned char random;
-    char name[13];
-    char pict_name[13];
-    long resource_id;
-    void* shape;
-    void* sound;
-    unsigned char map_hi_color;
-    unsigned char map_med_color;
-    unsigned char map_low_color;
-    unsigned char map_lt_cliff_color;
-    unsigned char map_rt_cliff_color;
-    unsigned char passable_terrain;
-    unsigned char impassable_terrain;
-    unsigned char is_animated;
-    short animation_frames;
-    short pause_frames;
-    float interval;
-    float pause_between_loops;
-    short frame;
-    short draw_frame;
-    float animate_last;
-    unsigned char frame_changed;
-    unsigned char drawn;
-    char tiles[0x72];
-    short terrain_to_draw;
-    short rows;
-    short cols;
-    char rest[0x198 - 0xC0];
-};
-
-class RGE_Map {
-public:
-    virtual ~RGE_Map();
-    RGE_Tile* map;
-    long map_width;
-    long map_height;
-    long world_width;
-    long world_height;
-    char tile_sizes[0x74];
-    RGE_Tile_Set terrain_types[32];
-};
-
-class RGE_Random_Map_Module {
-public:
-    virtual uchar generate() = 0;
-    RGE_Random_Map_Module* parent;
-    void* list;
-    RGE_Map* map;
-    RGE_Tile** map_row_offset;
-    long map_width;
-    long map_height;
-    float schedule;
-    uchar* search_map;
-    uchar** search_map_rows;
-    void* stack_array;
-    void* stack_offsets;
-};
-
-class RGE_RMM_Terrain_Generator : public RGE_Random_Map_Module {
-public:
-    uchar check_terrain(uchar terrain, long x, long y, long radius,
-                        uchar avoid_terrain);
-};
+#include "../../include/rmm_terr_context.h"
 
 uchar RGE_RMM_Terrain_Generator::check_terrain(
     uchar terrain, long x, long y, long radius, uchar avoid_terrain)

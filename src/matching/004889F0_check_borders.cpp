@@ -4,18 +4,7 @@
 // 1: initial structured reconstruction from packet/decompiler; row typed int* caused x offset scale-by-4.
 // 2: model rows as byte rows.
 
-typedef unsigned char uchar;
-
-class RGE_RMM_Terrain_Generator {
-public:
-    char gap_00[0x10];
-    unsigned char** rows;
-    int width;
-    int height;
-
-    uchar water(uchar terrain);
-    void check_borders();
-};
+#include "../../include/rmm_terr_context.h"
 
 void RGE_RMM_Terrain_Generator::check_borders()
 {

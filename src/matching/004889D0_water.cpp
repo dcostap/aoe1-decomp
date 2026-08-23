@@ -1,7 +1,4 @@
-class RGE_RMM_Terrain_Generator {
-public:
-    unsigned char water(unsigned char value);
-};
+#include "../../include/rmm_terr_context.h"
 
 unsigned char RGE_RMM_Terrain_Generator::water(unsigned char value) {
     if (value == 1) {

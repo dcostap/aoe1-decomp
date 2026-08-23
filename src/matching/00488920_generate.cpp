@@ -3,29 +3,7 @@
 // Attempt log:
 // Probe 1: packet-derived natural source with terrain table and by-value 0x20 struct call.
 
-struct RGE_Terrain_Info_Line {
-    int a0; int a4; int a8; int aC; int a10; int a14; int a18; int a1C;
-};
-
-class RGE_Zone_Map_List {
-public:
-    long create_zone_map(float* table, long count);
-    void* get_zone_map(long id);
-};
-
-class RGE_RMM_Terrain_Generator {
-public:
-    virtual unsigned char generate();
-    char gap_04[0x08];
-    void* world; // +0C, zonemap list at +8DC4
-    char gap_10[0x20];
-    RGE_Terrain_Info_Line info[99]; // +30
-    char gap_after[0x24];
-    int terrain_num; // +C90 approximate via padding below not used by layout? 
-    void generate_modifiers();
-    unsigned char base_terrain_generate(RGE_Terrain_Info_Line line);
-    void check_borders();
-};
+#include "../../include/rmm_terr_context.h"
 
 unsigned char RGE_RMM_Terrain_Generator::generate()
 {
@@ -39,9 +17,13 @@ unsigned char RGE_RMM_Terrain_Generator::generate()
         index++;
     } while (index < 99);
 
-    RGE_Zone_Map_List* zml = *(RGE_Zone_Map_List**)((char*)this->world + 0x8DC4);
+    // The executable reloads the map's zone-list field for the second call.
+    // Keep the direct map-relative loads: they preserve fault order and the
+    // two original relocation anchors while using the canonical base field.
+    RGE_Zone_Map_List* zml = *(RGE_Zone_Map_List**)((char*)this->map + 0x8DC4);
     long zid = zml->create_zone_map(terrain_table, 99);
-    *(void**)((char*)this + 0x12C8) = (*(RGE_Zone_Map_List**)((char*)this->world + 0x8DC4))->get_zone_map(zid);
+    *(void**)((char*)this + 0x12C8) =
+        (*(RGE_Zone_Map_List**)((char*)this->map + 0x8DC4))->get_zone_map(zid);
 
     index = 0;
     if (*(int*)((char*)this + 0xC90) > 0) {

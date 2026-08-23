@@ -42,43 +42,7 @@
 //   Loop_count copy + /8 spelling + max_x-first declaration = exact 239-byte match
 //   with 3/3 ordered calls and 5/5 relocation identity.
 
-extern "C" int __cdecl debug_rand(char* file, int line);
-
-class RGE_Map;
-class RGE_Random_Map_Module_List;
-
-struct Map_Stack {
-    long x;
-    long y;
-    float cost;
-    float tot_cost;
-    Map_Stack* next;
-    Map_Stack* prev;
-};
-
-class RGE_Random_Map_Module {
-public:
-    virtual unsigned char generate() = 0;
-
-    RGE_Random_Map_Module* parent;
-    RGE_Random_Map_Module_List* list;
-    RGE_Map* map;
-    void* map_row_offset;
-    long map_width;
-    long map_height;
-    float schedule;
-    unsigned char* search_map;
-    unsigned char** search_map_rows;
-    Map_Stack* stack_array;
-    Map_Stack** stack_offsets;
-
-    void add_stack_node(Map_Stack* target, Map_Stack* node);
-};
-
-class RGE_RMM_Terrain_Generator : public RGE_Random_Map_Module {
-public:
-    void link_stack_randomly(Map_Stack* param_1, unsigned char param_2);
-};
+#include "../../include/rmm_terr_context.h"
 
 void RGE_RMM_Terrain_Generator::link_stack_randomly(Map_Stack* param_1, unsigned char param_2)
 {

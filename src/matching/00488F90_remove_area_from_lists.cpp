@@ -1,19 +1,4 @@
-// 00488F90 RGE_RMM_Terrain_Generator::remove_area_from_lists (154B)
-// rmm_terr.cpp:279-300
-// void __thiscall remove_area_from_lists(long param_1, long param_2, long param_3)
-
-class RGE_RMM_Terrain_Generator {
-public:
-    // Inherits from RGE_Random_Map_Module (0x30 bytes base)
-    char pad_00[0x14];
-    long map_width;                 // +0x14
-    long map_height;                // +0x18
-    char pad_1C[0x2C - 0x1C];
-    void** stack_arrays;            // +0x2C
-
-    void remove_area_from_lists(long p1, long p2, long p3);
-    void remove_stack_node(void* node);
-};
+#include "../../include/rmm_terr_context.h"
 
 void RGE_RMM_Terrain_Generator::remove_area_from_lists(long p1, long p2, long p3)
 {
@@ -39,7 +24,7 @@ void RGE_RMM_Terrain_Generator::remove_area_from_lists(long p1, long p2, long p3
             base <<= 3;
             count++;
             do {
-                remove_stack_node((void*)((char*)stack_arrays[y] + base));
+                remove_stack_node((Map_Stack*)((char*)stack_arrays[y] + base));
                 base += 24;
                 count--;
             } while (count != 0);

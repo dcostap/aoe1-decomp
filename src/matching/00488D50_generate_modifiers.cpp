@@ -9,56 +9,21 @@
 // - the exact source shape uses a direct hot-spot guard, declares the y-anchored
 //   cursor before the scoped count, and keeps modifier function-scoped; this
 //   reproduces the original initialization block and output register coloring.
+// - The grouped rmm_terr.cpp context needs a named map size. Load map_width,
+//   then compound-multiply map_height. This keeps the anchor exact.
 
 #include <math.h>
 #include <string.h>
 
-struct RGE_Map;
-struct RGE_Random_Map_Module_List;
-struct Map_Stack;
-
-struct RGE_Terrain_Hot_Spot {
-    long x;
-    long y;
-    long radius;
-    long fade;
-};
-
-struct RGE_Terrain_Info {
-    long terrain[99 * 8];
-    long terrain_num;
-    RGE_Terrain_Hot_Spot hot_spots[99];
-    long hot_spot_num;
-};
-
-class RGE_Random_Map_Module {
-public:
-    virtual unsigned char generate() = 0;
-    RGE_Random_Map_Module* parent;
-    RGE_Random_Map_Module_List* list;
-    RGE_Map* map;
-    void* map_row_offset;
-    long map_width;
-    long map_height;
-    float schedule;
-    unsigned char* search_map;
-    unsigned char** search_map_rows;
-    Map_Stack* stack_array;
-    Map_Stack** stack_offsets;
-};
-
-class RGE_RMM_Terrain_Generator : public RGE_Random_Map_Module {
-public:
-    RGE_Terrain_Info info;
-
-    void generate_modifiers();
-};
+#include "../../include/rmm_terr_context.h"
 
 void RGE_RMM_Terrain_Generator::generate_modifiers()
 {
     long modifier;
 
-    memset(this->search_map, 0, this->map_width * this->map_height);
+    long map_size = this->map_width;
+    map_size *= this->map_height;
+    memset(this->search_map, 0, map_size);
 
     long y = 0;
     if (y < this->map_height) {
