@@ -1,15 +1,23 @@
 // 004249D0 RGE_Communications_Addresses::RGE_Communications_Addresses
 // Source: com_addr.cpp lines 8-79
+// PDB owner: com_addr.cpp lines 8-79, body 004249D0-00424AB2
 // Size: 227 bytes, EH-framed
 //
 // Attempt log:
 // Probe 1: natural constructor with new IPAD[8], GetHostName, SetIPAddresses, SetIPAliases, /GX
+// Probe 2: canonical hostname array with the old gap retained; 3-byte mismatch from shifted fields.
+// Probe 3: removed the redundant gap; exact 227-byte match.
+// Probe 4: typed WSADATA and direct WSAStartup output address; exact result unchanged.
+//
+// BINARY NOTE: The PDB boundary ends at 00424AB3. The next bytes are padding.
+// BINARY NOTE: The constructor stores comm at +0x00, Status at +0x214, and pIPAD at +0x220.
+// BINARY NOTE: The ordered calls are EraseInformation, WSAStartup, IPAD allocation and construction,
+// GetHostName, the 0xFF buffer allocation, SetIPAddresses, SetIPAliases, and buffer deletion.
 
 #include "..\..\include\game_globals.h"
 
 class TCommunications_Handler;
 
-#pragma pack(push, 1)
 class IPAD {
 public:
     char DottedIPAddress[0x20];  // +0x00 to +0x1F
@@ -17,16 +25,14 @@ public:
     IPAD() {}
     ~IPAD() {}
 };
-#pragma pack(pop)
 
 void* __cdecl operator new(unsigned int size);
 
 class RGE_Communications_Addresses {
 public:
     TCommunications_Handler* comm;   // +0x00
-    char wsaData[0x190];             // +0x04 (WSADATA up to hostname)
-    char* hostname;                  // +0x194
-    char _gap_198[0x7C];            // +0x198 to +0x213
+    WSADATA wsaData;                  // +0x04
+    char hostname[0x80];             // +0x194 to +0x213
     int Status;                      // +0x214
     int AddressesAvailable;          // +0x218
     int AliasesAvailable;            // +0x21C
@@ -44,7 +50,7 @@ RGE_Communications_Addresses::RGE_Communications_Addresses(TCommunications_Handl
     this->comm = handler;
     this->EraseInformation();
 
-    int wsResult = WSAStartup(0x101, (WSADATA*)&this->wsaData);
+    int wsResult = WSAStartup(0x101, &this->wsaData);
 
     this->pIPAD = new IPAD[8];
 

@@ -1,7 +1,20 @@
-// 00540750 RGE_Game_World::RGE_Game_World
+// public: __thiscall RGE_Game_World::RGE_Game_World(void)
+// VA: 00540750
+// PDB-qualified owner/name: public: __thiscall RGE_Game_World::RGE_Game_World(void)
+// PDB source: World.cpp:138-221
+// Original body boundary: 00540750-00540A0B; next symbol: 00540A40.
+// 00540700 is the separate vw_main.cpp sibling and ends at 00540747.
 // Attempt log:
 // 1: natural constructor from packet with local layout and RGE_Object_List new calls; /GX required for original EH frame but local layout was shifted.
 // 2: switched to byte-offset field accesses to preserve proven RGE_Game_World offsets.
+// Exact-finish: the current source is the reduced exact reconstruction.  The
+// typed full World.cpp class probe moved the vftable store to entry and changed
+// 42 bytes, so it was restored.  The current narrow surface keeps the proven
+// constructor ABI and direct RGE_Object_List calls.
+// BINARY NOTE: The first two allocations publish objectsValue before the seven
+// separate list allocations.  The repeated guarded constructor blocks preserve
+// exception cleanup state and fault order.  The observed field widths and all
+// byte offsets come from the target's this-relative stores.
 
 #include <stdio.h>
 

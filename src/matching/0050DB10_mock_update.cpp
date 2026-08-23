@@ -60,6 +60,26 @@
 // nonnull. It also removes two repeated object-null tests after a stable
 // nonnull guard with no intervening call. All four calls, pointer writes,
 // destructor conditions, x87 predicates, and the final time store match.
+// Exact-finish revisit (sa-da8cec2e-r1): moving both delete checks outside
+// their stable nonnull guards restores the two binary post-scan null tests,
+// their fault order, and the missing original blocks. A natural outer scan
+// loop then reaches 527 bytes / 456 positional-diff bytes with all four calls
+// ordered and matched. The remaining two-byte gap is the VC5 loop basin:
+// it emits an unconditional backedge and moves the surviving e-null compare
+// after the loop instead of retaining the binary's redundant post-next test.
+// Tested loop forms that used comma assignments, do/while, for updates, and
+// explicit guards did not improve this basin. The current source keeps the
+// smallest natural typed scan. Exact match remained unresolved.
+// Exact-finish completion (sa-1912d0a2-r1): changing the predecessor update
+// from `e = n` to the natural reread `e = e->next`, and rereading
+// `time_list` for the object cleanup and predecessor scans, restores the
+// original copy-before-null-test order. Fresh result: 529/529 bytes,
+// 201/201 instructions, all four ordered calls, no frame, and exact owner.
+// Walkback: function-scope `p` reduced to block-local cursors with no change;
+// either direct `time_list` reread caused one localized 4-byte hunk; `e = n`
+// returned to the 527-byte predecessor-loop basin. Keep the direct rereads.
+
+#include "..\\..\\include\\game_globals.h"
 
 struct RGE_Static_Object { virtual ~RGE_Static_Object(); };
 struct RGE_Master_Static_Object { virtual ~RGE_Master_Static_Object(); virtual void v4(); virtual void v8(); virtual void vc(); virtual void v10(); virtual void v14(); virtual RGE_Static_Object* create(void* player, int x, int y, int z); };
@@ -106,8 +126,14 @@ void RGE_Timeline::mock_update(float t)
         list = time_list;
         e = time_list;
         if (e != 0) {
-            while (e->next != 0 && e->next->time <= old_time)
+            while (e != 0) {
+                n = e->next;
+                if (n == 0)
+                    break;
+                if (n->time > old_time)
+                    break;
                 e = e->next;
+            }
             while (e != 0) {
                 if (e->time <= t) break;
                 if (!(e->time > old_time)) {
@@ -115,12 +141,13 @@ void RGE_Timeline::mock_update(float t)
                     case 1:
                         obj = e->this_obj;
                         if (obj != 0) {
-                            for (n = list; n != 0; n = n->next) {
-                                if (obj == n->this_obj) n->this_obj = 0;
-                                if (obj == n->target_obj) n->target_obj = 0;
+                            RGE_Time_Entry* p = time_list;
+                            for (; p != 0; p = p->next) {
+                                if (obj == p->this_obj) p->this_obj = 0;
+                                if (obj == p->target_obj) p->target_obj = 0;
                             }
-                            if (obj != 0) delete obj;
                         }
+                        if (obj != 0) delete obj;
                         break;
                     case 4:
                         {
@@ -141,10 +168,10 @@ void RGE_Timeline::mock_update(float t)
                 if (e == list) {
                     e = 0;
                 } else {
-                    n = list;
-                    while (n != 0) {
-                        if (n->next == e) e = n;
-                        n = n->next;
+                    RGE_Time_Entry* p = time_list;
+                    while (p != 0) {
+                        if (p->next == e) e = p;
+                        p = p->next;
                     }
                 }
             }
@@ -175,8 +202,8 @@ void RGE_Timeline::mock_update(float t)
                             if (obj == n->this_obj) n->this_obj = 0;
                             if (obj == n->target_obj) n->target_obj = 0;
                         }
-                        if (obj != 0) delete obj;
                     }
+                    if (obj != 0) delete obj;
                     break;
                 }
             }
