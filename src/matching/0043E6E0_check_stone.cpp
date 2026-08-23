@@ -1,14 +1,23 @@
-// 0043E6E0 TribeDiplomacyDialog::check_stone
-// Size: 136 bytes
+// protected: TribeDiplomacyDialog::check_stone
+// VA: 0043E6E0; dlg_dip.cpp:846-874; body: 0043E6E0-0043E767
+// PDB/Ghidra symbol: ?check_stone@TribeDiplomacyDialog@@IAEHXZ
+// BINARY NOTE: Do not replace protected access with public access. The public
+// QAEH symbol is byte-identical but is not the PDB-qualified owner.
+// BINARY NOTE: Keep the prog-mode guard, resource check, ordered calls,
+// receiver reloads, loop cleanup, and final result publication.
+// EXACT FINISH: A public reversion kept the bytes but emitted QAEH. The
+// protected source emits IAEHXZ and remains an exact match.
 
-extern void* rge_base_game;
+class RGE_Player;
 
 class RGE_Base_Game {
 public:
-    void* get_player();
+    RGE_Player* get_player();
     char gap_00[0x1B0];
     int prog_mode;              // +0x1B0
 };
+
+extern RGE_Base_Game* rge_base_game;
 
 class TButtonPanel {
 public:
@@ -21,16 +30,16 @@ public:
     void set_disabled(int val);
 };
 
-class Player {
+class RGE_Player {
 public:
     char gap_00[0x50];
-    float attr[2];               // actually attr array, index 2 is at +0x08 from attrs pointer
+    float* attributes;
 };
 
 class TribeDiplomacyDialog {
-public:
+protected:
     char gap_00[0x574];
-    void* stoneTributeButton[8]; // +0x574 (array of 8 void*)
+    TButtonPanel* stoneTributeButton[8]; // +0x574
     char gap_594[0x88];
     float stoneTotal;            // +0x61C
     char gap_620[0x90];
@@ -44,17 +53,13 @@ int TribeDiplomacyDialog::check_stone() {
     int result;
     int i;
     TButtonPanel** ppButton;
-    RGE_Base_Game* base_game;
-    Player* player;
-    float* attr;
+    RGE_Player* player;
 
-    base_game = *(RGE_Base_Game**)0x62C574;
-    if (base_game->prog_mode == 5) {
+    if (rge_base_game->prog_mode == 5) {
         result = 1;
     } else {
-        player = (Player*)base_game->get_player();
-        attr = *(float**)((char*)player + 0x50);
-        if (attr[2] - this->stoneTotal > 0.0f) {
+        player = rge_base_game->get_player();
+        if (player->attributes[2] - this->stoneTotal > 0.0f) {
             result = 0;
         } else {
             result = 1;
@@ -62,7 +67,7 @@ int TribeDiplomacyDialog::check_stone() {
     }
 
     i = 0;
-    ppButton = (TButtonPanel**)this->stoneTributeButton;
+    ppButton = this->stoneTributeButton;
     do {
         if (*ppButton != 0) {
             if (i == this->cur_player_row) {
