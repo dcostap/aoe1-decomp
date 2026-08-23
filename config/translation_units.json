@@ -1374,16 +1374,38 @@
       }
     },
     {
-      "name": "obj_list_prefix",
+      "name": "obj_list",
       "source": "src/obj_list_tu.cpp",
-      "flags": "config/flags/default.rsp",
+      "flags": "config/flags/00463930_load.rsp",
       "owners": {
         "00462E80": "src/matching/00462E80_RGE_Object_List.cpp",
+        "00462EA0": "src/matching/00462EA0_RGE_Object_List.cpp",
+        "00462EF0": "src/matching/00462EF0_removeAllObjects.cpp",
+        "00462F30": "src/matching/00462F30_add_node.cpp",
+        "00462F70": "src/matching/00462F70_remove_node.cpp",
+        "00462FD0": "src/matching/00462FD0_invert.cpp",
+        "00463000": "src/matching/00463000_draw.cpp",
+        "00463100": "src/matching/00463100_shadow_draw.cpp",
+        "00463180": "src/matching/00463180_normal_draw.cpp",
+        "00463210": "src/matching/00463210_update.cpp",
+        "00463260": "src/matching/00463260_sort.cpp",
+        "004632E0": "src/matching/004632E0_find_by_group.cpp",
+        "00463310": "src/matching/00463310_find_by_group.cpp",
         "00463490": "src/matching/00463490_find_by_id.cpp",
-        "004634C0": "src/matching/004634C0_find_by_master_id.cpp"
+        "004634C0": "src/matching/004634C0_find_by_master_id.cpp",
+        "00463640": "src/matching/00463640_find_by_master_ids.cpp",
+        "004637C0": "src/matching/004637C0_find_by_type.cpp",
+        "00463890": "src/matching/00463890_save.cpp",
+        "004638D0": "src/matching/004638D0_load_list.cpp",
+        "00463910": "src/matching/00463910_rehook_list.cpp",
+        "00463930": "src/matching/00463930_load.cpp"
       },
       "symbols": {
-        "004634C0": "?find_by_master_id@RGE_Object_List@@QAEPAVRGE_Static_Object@@JMMEEPAV2@@Z"
+        "00463000": "?draw@RGE_Object_List@@QAEXPAXFFE@Z",
+        "004632E0": "?find_by_group@RGE_Object_List@@QAEPAXJ@Z",
+        "00463310": "?find_by_group@RGE_Object_List@@QAEPAVRGE_Static_Object@@JMMEEPAV2@@Z",
+        "004634C0": "?find_by_master_id@RGE_Object_List@@QAEPAVRGE_Static_Object@@JMMEEPAV2@@Z",
+        "00463930": "?load@RGE_Object_List@@UAEXEHPAVRGE_Game_World@@@Z"
       }
     },
     {
