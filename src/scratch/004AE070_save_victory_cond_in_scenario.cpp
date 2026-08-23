@@ -32,61 +32,17 @@
 // Follow-up: the full decompiler local model and explicit else/return forms stayed at 53/55 calls and did not change the 771-byte diff.
 // BINARY NOTE: the original decorated owner is protected (IAEX); retain protected access even though it does not change body bytes.
 
-extern "C" int __cdecl atoi(const char*);
+#include "../../include/scr_sed2_context.h"
 
-class TButtonPanel { public: int get_state(); };
-class TEditPanel { public: char* currentLine(); };
-class TDropDownPanel { public: long get_line(); long get_id(); };
-class RGE_View { public: void get_selection_area(long*, long*, long*, int*, int); };
-class RGE_Static_Object;
-class T_Scenario {
-public:
-    void Set_victory_all_flag(int);
-    void Set_Multi_Conquest(int);
-    void ClearSPVictoryCondition(int);
-    void SetSPRectangle(int,float,float,float,float);
-    void SetSPObjectType(int,int);
-    void SetSPPlayerID(int,int);
-    void SetSPAllFlag(int,int);
-    void SetSPAttribType(int,int);
-    void SetSPVictoryType(int,int);
-    void SetSPObject(int,RGE_Static_Object*);
-    void SetSPDestObjectID(int,RGE_Static_Object*);
-    void SetSPAmount(int,int);
-};
-class World { public: char gap[0x5c]; T_Scenario* scenario; };
-
-class TRIBE_Screen_Sed {
-public:
-    char gap0[0x480];
-    RGE_Static_Object* SelectedObject;
-    RGE_Static_Object* DestinationObject;
-    float px1, py1, px2, py2;
-    char gap498[0x4C8-0x498]; RGE_View* main_view;
-    char gap4CC[0x668-0x4CC]; TButtonPanel* victory_cond_on0;
-    char gap66C[0x684-0x66C]; TButtonPanel* victory_and_or1;
-    char gap688[0x6F0-0x688]; TButtonPanel* victory_cond_type4;
-    char gap6F4[0x734-0x6F4]; TDropDownPanel* victory_drop_down;
-    TDropDownPanel* victory_object_list;
-    char gap73C[0x740-0x73C]; TDropDownPanel* victory_enemy_player_list;
-    TDropDownPanel* victory_attribute_list;
-    TDropDownPanel* victory_ages_list;
-    TDropDownPanel* victory_tech_list;
-    char gap750[0x76C-0x750]; TEditPanel* victory_amount_input;
-    char gap770[0x928-0x770]; World* world;
-protected:
-    void save_victory_cond_in_scenario(int index);
-};
 #define SCEN (this->world->scenario)
-
 void TRIBE_Screen_Sed::save_victory_cond_in_scenario(int index)
 {
-    if (this->victory_and_or1->get_state())
+    if (this->victory_and_or[1]->get_state())
         SCEN->Set_victory_all_flag(1);
     else
         SCEN->Set_victory_all_flag(0);
 
-    if (!this->victory_cond_on0->get_state() && this->victory_cond_type4->get_state())
+    if (!this->victory_cond_on[0]->get_state() && this->victory_cond_type[4]->get_state())
         SCEN->Set_Multi_Conquest(0);
     else
         SCEN->Set_Multi_Conquest(1);

@@ -15,62 +15,18 @@
 // All field offsets, loop structure, and control flow are identical.
 // Parked in scratch per Boss direction.
 
-struct ShapeInfo {
-    int _pad[4];
-    int width;       // +0x10
-    int height;      // +0x14
-    int hotspot_x;   // +0x18
-    int hotspot_y;   // +0x1C
-};
-
-struct CursorShape {
-    char _pad[0x1C];
-    ShapeInfo* shape_infos;  // +0x1C
-};
-
-class TMousePointer {
-public:
-    int custom_draw;         // +0x00
-    void* render_area;       // +0x04
-    void* save_area;         // +0x08
-    void* primary_area;      // +0x0C
-    int Num_Cursors;         // +0x10
-    int Max_Cursors;         // +0x14
-    void* cursors[16];       // +0x18
-    CursorShape* Cursor_Shape; // +0x58
-    int Mouse_Mode;          // +0x5C
-    int Max_CX;              // +0x60
-    int Max_CY;              // +0x64
-    int cWidth;              // +0x68
-    int cHeight;             // +0x6C
-    int gWidth;              // +0x70
-    int gHeight;             // +0x74
-    int mouse_x;             // +0x78
-    int mouse_y;             // +0x7C
-    int save_x;              // +0x80
-    int save_y;              // +0x84
-    int facet;               // +0x88
-    int game_facet;          // +0x8C
-    int next_facet;          // +0x90
-    int last_facet;          // +0x94
-    int d_top;               // +0x98
-    int d_left;              // +0x9C
-    int d_bottom;            // +0xA0
-    int d_right;             // +0xA4
-
-    void set_facet(int f);
-};
+#include "../../include/mouseptr_context.h"
 
 void TMousePointer::set_facet(int f) {
     if (f < 0 || f >= this->Num_Cursors)
         return;
 
     this->facet = f;
-    ShapeInfo* info = this->Cursor_Shape->shape_infos + f;
-    this->cWidth = info->width;
-    this->cHeight = info->height;
-    this->d_top = info->hotspot_y;
-    this->d_left = info->hotspot_x;
-    this->d_right = this->cWidth - info->hotspot_x;
-    this->d_bottom = this->cHeight - info->hotspot_y;
+    Shape_Info* info = this->Cursor_Shape->shape_info + f;
+    this->cWidth = info->Width;
+    this->cHeight = info->Height;
+    this->d_top = info->Hotspot_Y;
+    this->d_left = info->Hotspot_X;
+    this->d_right = this->cWidth - info->Hotspot_X;
+    this->d_bottom = this->cHeight - info->Hotspot_Y;
 }

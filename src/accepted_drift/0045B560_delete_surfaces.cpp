@@ -16,26 +16,9 @@
 // alignment/branch-target shifts. Calls, stack cleanup, memory writes, loop bounds,
 // predicates, and return behavior match.
 
+#include "../../include/mouseptr_context.h"
+
 void operator_delete(void* ptr);
-
-class TDrawArea {
-public:
-    ~TDrawArea();
-};
-
-class TMousePointer {
-public:
-    int custom_draw;
-    TDrawArea* render_area;
-    TDrawArea* save_area;
-    TDrawArea* primary_area;
-    int Num_Cursors;
-    int Max_Cursors;
-    TDrawArea* cursors[16];
-
-    void delete_surfaces();
-    void reset();
-};
 
 void TMousePointer::delete_surfaces()
 {

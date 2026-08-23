@@ -1,3 +1,4 @@
+#ifndef RGE_MO_OBJ_SHARED_CONTEXT
 class RGE_Master_Static_Object {
 public:
     virtual void modify_delta(float value, unsigned char attribute);
@@ -21,6 +22,7 @@ public:
 
     void modify_delta(float value, unsigned char attribute);
 };
+#endif
 
 void RGE_Master_Moving_Object::modify_delta(float value, unsigned char attribute) {
     if (attribute != 6) {

@@ -41,6 +41,7 @@
 
 static const char s_build_file_format[] = "%s.bld";
 
+#ifndef TAITACMD_SHARED_CONTEXT
 struct XYPoint {
     int x;
     int y;
@@ -302,6 +303,7 @@ public:
 
 extern "C" unsigned long debug_timeGetTime(char*, int);
 extern "C" int __cdecl sprintf(char*, const char*, ...);
+#endif
 
 int TribeTacticalAIModule::doSomething()
 {

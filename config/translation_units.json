@@ -200,8 +200,8 @@
         "00469C40": "src/matching/00469C40_create_horz_slider.cpp"
       },
       "symbols": {
-        "00468CB0": "?create_text@TEasy_Panel@@UAEHPAVTPanel@@PAPAVTTextPanel@@PADJJJJJHHH@Z",
-        "00468E50": "?create_text@TEasy_Panel@@UAEHPAVTPanel@@PAPAVTTextPanel@@PAPADJJJJJJHH@Z"
+        "00468CB0": "?create_text@TEasy_Panel@@MAEHPAVTPanel@@PAPAVTTextPanel@@PADJJJJJHHH@Z",
+        "00468E50": "?create_text@TEasy_Panel@@MAEHPAVTPanel@@PAPAVTTextPanel@@PAPADJJJJJJHH@Z"
       }
     },
     {
@@ -500,6 +500,7 @@
         "00492F80": "src/matching/00492F80_set_text.cpp"
       },
       "symbols": {
+        "00492A50": "?handle_idle@TRIBE_Credits_Screen@@UAEJXZ",
         "00492CC0": "?draw@TRIBE_Credits_Screen@@UAEXXZ",
         "00492D70": "?action@TRIBE_Credits_Screen@@UAEJPAVTPanel@@JKK@Z"
       }
@@ -517,7 +518,8 @@
         "00475B00": "src/matching/00475B00_get_input_buffer.cpp",
         "00475B10": "src/matching/00475B10_currentLine.cpp",
         "00475B20": "src/matching/00475B20_set_active.cpp",
-        "00475B60": "src/matching/00475B60_set_focus.cpp"
+        "00475B60": "src/matching/00475B60_set_focus.cpp",
+        "00476440": "src/matching/00476440_verify_char.cpp"
       },
       "symbols": {
         "00475930": "?pnl_sub_wnd_proc@@YGJPAXIIJ@Z",
@@ -528,7 +530,8 @@
         "00475B00": "?get_input_buffer@TEditPanel@@QAEPADXZ",
         "00475B10": "?currentLine@TEditPanel@@QAEPADXZ",
         "00475B20": "?set_active@TEditPanel@@UAEXH@Z",
-        "00475B60": "?set_focus@TEditPanel@@UAEXH@Z"
+        "00475B60": "?set_focus@TEditPanel@@UAEXH@Z",
+        "00476440": "?verify_char@TEditPanel@@QAEHH@Z"
       }
     },
     {
@@ -668,6 +671,7 @@
         "0041B620": "?write_draw_log@@YAXPAD@Z",
         "0041B650": "?write_draw_log2@@YAXPAD@Z",
         "0041B6A0": "??0RGE_Base_Game@@QAE@PAVRGE_Prog_Info@@H@Z",
+        "0041BAA0": "?setup@RGE_Base_Game@@MAEHXZ",
         "0041C270": "??1RGE_Base_Game@@UAE@XZ"
       }
     },
@@ -819,6 +823,252 @@
         "0049E150": "src/matching/0049E150_fillList.cpp",
         "0049E2B0": "src/matching/0049E2B0_handle_idle.cpp",
         "0049E2E0": "src/matching/0049E2E0_action.cpp"
+      }
+    },
+    {
+      "name": "m_mo_obj",
+      "source": "src/m_mo_obj_tu.cpp",
+      "flags": "config/flags/00451A20_RGE_Master_Moving_Object.rsp",
+      "owners": {
+        "00451A20": "src/matching/00451A20_RGE_Master_Moving_Object.cpp",
+        "00451AA0": "src/matching/00451AA0_RGE_Master_Moving_Object.cpp",
+        "00451B10": "src/matching/00451B10_RGE_Master_Moving_Object.cpp",
+        "00451B90": "src/matching/00451B90_setup.cpp",
+        "00451C10": "src/matching/00451C10_setup.cpp",
+        "00451D10": "src/matching/00451D10_setup.cpp",
+        "00451DE0": "src/matching/00451DE0_RGE_Master_Moving_Object.cpp",
+        "00451DF0": "src/matching/00451DF0_make_new_obj.cpp",
+        "00451EC0": "src/matching/00451EC0_make_new_master.cpp",
+        "00451F30": "src/matching/00451F30_copy_obj.cpp",
+        "00451FB0": "src/matching/00451FB0_modify.cpp",
+        "00451FE0": "src/accepted_drift/00451FE0_modify_delta.cpp",
+        "00452010": "src/accepted_drift/00452010_modify_percent.cpp",
+        "00452040": "src/matching/00452040_save.cpp"
+      },
+      "symbols": {
+        "00451A20": "??0RGE_Master_Moving_Object@@QAE@PAV0@H@Z",
+        "00451AA0": "??0RGE_Master_Moving_Object@@QAE@HPAPAVRGE_Sprite@@PAPAVRGE_Sound@@H@Z",
+        "00451B10": "??0RGE_Master_Moving_Object@@QAE@PAXPAPAX1HH@Z",
+        "00451B90": "?setup@RGE_Master_Moving_Object@@IAEHPAV1@@Z",
+        "00451C10": "?setup@RGE_Master_Moving_Object@@IAEHHPAPAVRGE_Sprite@@PAPAVRGE_Sound@@@Z",
+        "00451D10": "?setup@RGE_Master_Moving_Object@@IAEHPAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@F@Z",
+        "00451DE0": "??1RGE_Master_Moving_Object@@UAE@XZ",
+        "00451DF0": "?make_new_obj@RGE_Master_Moving_Object@@UAEPAVRGE_Static_Object@@PAVRGE_Player@@MMM@Z",
+        "00451EC0": "?make_new_master@RGE_Master_Moving_Object@@UAEPAVRGE_Master_Static_Object@@XZ",
+        "00451F30": "?copy_obj@RGE_Master_Moving_Object@@UAEXPAVRGE_Master_Static_Object@@@Z",
+        "00451FB0": "?modify@RGE_Master_Moving_Object@@UAEXME@Z",
+        "00451FE0": "?modify_delta@RGE_Master_Moving_Object@@UAEXME@Z",
+        "00452010": "?modify_percent@RGE_Master_Moving_Object@@UAEXME@Z",
+        "00452040": "?save@RGE_Master_Moving_Object@@UAEXH@Z"
+      }
+    },
+    {
+      "name": "spanlist",
+      "source": "src/spanlist_tu.cpp",
+      "flags": "config/flags/spanlist.rsp",
+      "owners": {
+        "004BD5E0": "src/matching/004BD5E0_TSpan_Node_List.cpp",
+        "004BD640": "src/matching/004BD640_TSpan_Node_List.cpp",
+        "004BD690": "src/matching/004BD690_SetNumZones.cpp",
+        "004BD720": "src/matching/004BD720_InitNewZone.cpp",
+        "004BD790": "src/matching/004BD790_GetNode.cpp",
+        "004BD800": "src/matching/004BD800_FreeNode.cpp",
+        "004BD820": "src/matching/004BD820_FreeThread.cpp",
+        "004BD880": "src/matching/004BD880_ReclaimAllNodes.cpp",
+        "004BD8A0": "src/matching/004BD8A0_ResetStats.cpp",
+        "004BD8B0": "src/matching/004BD8B0_TSpan_List_Manager.cpp",
+        "004BD9A0": "src/matching/004BD9A0_TSpan_List_Manager.cpp",
+        "004BDA00": "src/matching/004BDA00_SetSpanRegions.cpp",
+        "004BDA70": "src/matching/004BDA70_ResetAll.cpp",
+        "004BDB00": "src/scratch/004BDB00_AddSpan.cpp",
+        "004BDEA0": "src/matching/004BDEA0_AddShape.cpp",
+        "004BDFA0": "src/matching/004BDFA0_AddShape_Align.cpp",
+        "004BE090": "src/accepted_drift/004BE090_AddLine_Align.cpp",
+        "004BE1F0": "src/matching/004BE1F0_AddMiniList.cpp",
+        "004BE240": "src/matching/004BE240_SubtractMiniList.cpp",
+        "004BE290": "src/scratch/004BE290_DeleteSpan.cpp",
+        "004BE4B0": "src/matching/004BE4B0_DeleteShape.cpp",
+        "004BE5B0": "src/matching/004BE5B0_PointVisible.cpp",
+        "004BE5F0": "src/matching/004BE5F0_Merge_n_Align.cpp",
+        "004BE690": "src/matching/004BE690_AlignamizeSpans.cpp",
+        "004BE750": "src/matching/004BE750_ScrollSpansHorizontally.cpp",
+        "004BE850": "src/verified_logic/004BE850_ScrollSpansVertically.cpp",
+        "004BE9E0": "src/matching/004BE9E0_ValidateSpan.cpp",
+        "004BEAD0": "src/accepted_drift/004BEAD0_DecodeLine.cpp",
+        "004BEB10": "src/accepted_drift/004BEB10_take_snapshot.cpp"
+      },
+      "symbols": {
+        "004BD5E0": "??0TSpan_Node_List@@QAE@HHH@Z",
+        "004BD640": "??1TSpan_Node_List@@QAE@XZ",
+        "004BD690": "?SetNumZones@TSpan_Node_List@@QAEXH@Z",
+        "004BD720": "?InitNewZone@TSpan_Node_List@@QAEXH@Z",
+        "004BD790": "?GetNode@TSpan_Node_List@@QAEPAUVSpan_Node@@XZ",
+        "004BD800": "?FreeNode@TSpan_Node_List@@QAEXPAUVSpan_Node@@@Z",
+        "004BD820": "?FreeThread@TSpan_Node_List@@QAEHPAUVSpan_Node@@0@Z",
+        "004BD880": "?ReclaimAllNodes@TSpan_Node_List@@QAEXXZ",
+        "004BD8A0": "?ResetStats@TSpan_Node_List@@QAEXXZ",
+        "004BD8B0": "??0TSpan_List_Manager@@QAE@HH@Z",
+        "004BD9A0": "??1TSpan_List_Manager@@QAE@XZ",
+        "004BDA00": "?SetSpanRegions@TSpan_List_Manager@@QAEXHHHH@Z",
+        "004BDA70": "?ResetAll@TSpan_List_Manager@@QAEXXZ",
+        "004BDB00": "?AddSpan@TSpan_List_Manager@@QAEXHHH@Z",
+        "004BDEA0": "?AddShape@TSpan_List_Manager@@QAEXPAVTShape@@HHHH@Z",
+        "004BDFA0": "?AddShape_Align@TSpan_List_Manager@@QAEXPAEPAUShape_Info@@HHH@Z",
+        "004BE090": "?AddLine_Align@TSpan_List_Manager@@QAEXHHHH@Z",
+        "004BE1F0": "?AddMiniList@TSpan_List_Manager@@QAEXPAUVSpanMiniList@@HH@Z",
+        "004BE240": "?SubtractMiniList@TSpan_List_Manager@@QAEXPAUVSpanMiniList@@HH@Z",
+        "004BE290": "?DeleteSpan@TSpan_List_Manager@@QAEXHHH@Z",
+        "004BE4B0": "?DeleteShape@TSpan_List_Manager@@QAEXPAVTShape@@HHHH@Z",
+        "004BE5B0": "?PointVisible@TSpan_List_Manager@@QAEHHH@Z",
+        "004BE5F0": "?Merge_n_Align@TSpan_List_Manager@@QAEXPAV1@0@Z",
+        "004BE690": "?AlignamizeSpans@TSpan_List_Manager@@QAEXXZ",
+        "004BE750": "?ScrollSpansHorizontally@TSpan_List_Manager@@QAEXHH@Z",
+        "004BE850": "?ScrollSpansVertically@TSpan_List_Manager@@QAEXHH@Z",
+        "004BE9E0": "?ValidateSpan@TSpan_List_Manager@@QAEHH@Z",
+        "004BEAD0": "?DecodeLine@TSpan_List_Manager@@QAEHPAEHEH@Z",
+        "004BEB10": "?take_snapshot@TSpan_List_Manager@@QAEXPADAAHPAVTDrawArea@@HPAPAV1@PAHH@Z"
+      }
+    },
+    {
+      "name": "mouseptr",
+      "source": "src/mouseptr_tu.cpp",
+      "flags": "config/flags/mouseptr_module_gx.rsp",
+      "owners": {
+        "0045AE50": "src/scratch/0045AE50_TMousePointer.cpp",
+        "0045B000": "src/matching/0045B000_TMousePointer.cpp",
+        "0045B040": "src/matching/0045B040_Shutdown_Mouse.cpp",
+        "0045B0A0": "src/matching/0045B0A0_Restore_Mouse.cpp",
+        "0045B120": "src/matching/0045B120_setup.cpp",
+        "0045B290": "src/matching/0045B290_set_game_mode.cpp",
+        "0045B2A0": "src/matching/0045B2A0_set_game_enable.cpp",
+        "0045B2B0": "src/matching/0045B2B0_get_game_enable.cpp",
+        "0045B2C0": "src/matching/0045B2C0_in_game_mode.cpp",
+        "0045B2E0": "src/matching/0045B2E0_set_game_window.cpp",
+        "0045B310": "src/scratch/0045B310_LoadCursors.cpp",
+        "0045B560": "src/accepted_drift/0045B560_delete_surfaces.cpp",
+        "0045B5D0": "src/accepted_drift/0045B5D0_create_surfaces.cpp",
+        "0045B760": "src/scratch/0045B760_update_mouse_position.cpp",
+        "0045BA60": "src/accepted_drift/0045BA60_draw.cpp",
+        "0045BD60": "src/matching/0045BD60_erase.cpp",
+        "0045BE20": "src/accepted_drift/0045BE20_set_facet.cpp",
+        "0045BE80": "src/accepted_drift/0045BE80_set_game_facet.cpp",
+        "0045BEE0": "src/matching/0045BEE0_off.cpp",
+        "0045BF40": "src/matching/0045BF40_on.cpp",
+        "0045BF80": "src/matching/0045BF80_reset.cpp",
+        "0045BF90": "src/matching/0045BF90_center.cpp",
+        "0045C010": "src/matching/0045C010_Poll.cpp",
+        "0045C300": "src/matching/0045C300_GetDDBltError.cpp"
+      },
+      "symbols": {
+        "0045AE50": "??0TMousePointer@@QAE@H@Z",
+        "0045B000": "??1TMousePointer@@QAE@XZ",
+        "0045B040": "?Shutdown_Mouse@TMousePointer@@QAEHXZ",
+        "0045B0A0": "?Restore_Mouse@TMousePointer@@QAEHPAVTDrawArea@@@Z",
+        "0045B120": "?setup@TMousePointer@@QAEHHPAVTDrawArea@@PADHH@Z",
+        "0045B290": "?set_game_mode@TMousePointer@@QAEXH@Z",
+        "0045B2A0": "?set_game_enable@TMousePointer@@QAEXH@Z",
+        "0045B2B0": "?get_game_enable@TMousePointer@@QAEHXZ",
+        "0045B2C0": "?in_game_mode@TMousePointer@@QAEHXZ",
+        "0045B2E0": "?set_game_window@TMousePointer@@QAEXHHHH@Z",
+        "0045B310": "?LoadCursors@TMousePointer@@QAEHPADHH@Z",
+        "0045B560": "?delete_surfaces@TMousePointer@@QAEXXZ",
+        "0045B5D0": "?create_surfaces@TMousePointer@@QAEHXZ",
+        "0045B760": "?update_mouse_position@TMousePointer@@QAEHXZ",
+        "0045BA60": "?draw@TMousePointer@@QAEXH@Z",
+        "0045BD60": "?erase@TMousePointer@@QAEXXZ",
+        "0045BE20": "?set_facet@TMousePointer@@QAEXH@Z",
+        "0045BE80": "?set_game_facet@TMousePointer@@QAEXH@Z",
+        "0045BEE0": "?off@TMousePointer@@QAEXXZ",
+        "0045BF40": "?on@TMousePointer@@QAEXXZ",
+        "0045BF80": "?reset@TMousePointer@@QAEXXZ",
+        "0045BF90": "?center@TMousePointer@@QAEXXZ",
+        "0045C010": "?Poll@TMousePointer@@QAEXXZ",
+        "0045C300": "?GetDDBltError@TMousePointer@@QAEHJ@Z"
+      }
+    },
+    {
+      "name": "view",
+      "source": "src/view_tu.cpp",
+      "flags": "config/flags/00533510_RGE_View.rsp",
+      "owners": {
+        "00534100": "src/matching/00534100_delete_surfaces.cpp",
+        "00534130": "src/matching/00534130_create_surfaces.cpp",
+        "00534340": "src/scratch/00534340_calc_draw_vars.cpp",
+        "00535480": "src/matching/00535480_draw_view.cpp",
+        "00535610": "src/scratch/00535610_draw_object_outline.cpp",
+        "00535EB0": "src/matching/00535EB0_get_center_screen_pos.cpp",
+        "00535ED0": "src/matching/00535ED0_get_start_coords.cpp",
+        "00535F20": "src/matching/00535F20_get_center_coords.cpp",
+        "00535F70": "src/matching/00535F70_get_tile_sizes.cpp",
+        "00535FC0": "src/matching/00535FC0_get_max_size.cpp",
+        "005381C0": "src/matching/005381C0_Update_Render_Pointers.cpp",
+        "00538280": "src/accepted_drift/00538280_Add_GDI_Clip_Mask.cpp",
+        "00538410": "src/matching/00538410_draw_multi_object_outline.cpp",
+        "00538420": "src/matching/00538420_Draw_GDI_Object.cpp",
+        "00538590": "src/matching/00538590_get_tile_mask_num.cpp"
+      },
+      "symbols": {
+        "00538590": "?get_tile_mask_num@RGE_View@@IAEHHHHHK@Z"
+      }
+    },
+    {
+      "name": "taitacmd",
+      "source": "src/taitacmd_tu.cpp",
+      "flags": "config/flags/004ED4F0_TribeTacticalAIModule.rsp",
+      "owners": {
+        "004ED1C0": "src/matching/004ED1C0_TribeTacticalAIModule.cpp",
+        "004ED4F0": "src/scratch/004ED4F0_TribeTacticalAIModule.cpp",
+        "004EEB40": "src/matching/004EEB40_TribeTacticalAIModule.cpp",
+        "004EEE40": "src/matching/004EEE40_updateAreaName.cpp",
+        "004EEF40": "src/accepted_drift/004EEF40_update.cpp",
+        "004EF4D0": "src/matching/004EF4D0_setMainDecisionAI.cpp",
+        "004EF4E0": "src/matching/004EF4E0_save.cpp",
+        "004F0180": "src/matching/004F0180_logGroupDebug.cpp",
+        "004F0190": "src/scratch/004F0190_doSomething.cpp",
+        "004F0BC0": "src/matching/004F0BC0_clearArea.cpp",
+        "004F0D70": "src/matching/004F0D70_addObject.cpp",
+        "004F1090": "src/matching/004F1090_removeObject.cpp",
+        "004F13F0": "src/matching/004F13F0_evaluateCivilianDistribution.cpp",
+        "004F1600": "src/scratch/004F1600_taskCivilians.cpp",
+        "004F1E10": "src/matching/004F1E10_taskIdleSoldiers.cpp",
+        "004F4760": "src/matching/004F4760_playTaskSoldiers.cpp"
+      },
+      "symbols": {
+        "004ED1C0": "??0TribeTacticalAIModule@@QAE@PAXH@Z",
+        "004ED4F0": "??0TribeTacticalAIModule@@QAE@HH@Z",
+        "004EEF40": "?update@TribeTacticalAIModule@@UAEHH@Z",
+        "004F13F0": "?evaluateCivilianDistribution@TribeTacticalAIModule@@QAEXXZ"
+      }
+    },
+    {
+      "name": "scr_sed2",
+      "source": "src/scr_sed2_tu.cpp",
+      "flags": "config/flags/scr_sed2.rsp",
+      "owners": {
+        "004ADC80": "src/matching/004ADC80_SaveDisabledItemsInScenario.cpp",
+        "004ADD00": "src/matching/004ADD00_LoadDisabledItemsFromScenario.cpp",
+        "004ADD50": "src/matching/004ADD50_save_info_in_scenario.cpp",
+        "004ADD60": "src/matching/004ADD60_save_multi_victory_cond_in_scenario.cpp",
+        "004AE070": "src/scratch/004AE070_save_victory_cond_in_scenario.cpp",
+        "004AE620": "src/matching/004AE620_load_victory_cond_from_scenario.cpp",
+        "004AE9D0": "src/matching/004AE9D0_load_multi_victory_cond_from_scenario.cpp",
+        "004AECB0": "src/matching/004AECB0_save_diplomacy_in_scenario.cpp",
+        "004AED50": "src/matching/004AED50_load_diplomacy_from_scenario.cpp",
+        "004AEE10": "src/matching/004AEE10_activate_victory_proper_fields.cpp",
+        "004AF320": "src/matching/004AF320_init_module_variables.cpp",
+        "004AF6C0": "src/matching/004AF6C0_create_all_buttons_etc.cpp",
+        "004B1A50": "src/matching/004B1A50_position_panels.cpp",
+        "004B29E0": "src/matching/004B29E0_activate_victory_panel.cpp",
+        "004B2AA0": "src/matching/004B2AA0_MakeFileList.cpp",
+        "004B2BC0": "src/matching/004B2BC0_Set_player_advance_civilization_text.cpp",
+        "004B2C50": "src/matching/004B2C50_SavePlayerActiveStatus.cpp",
+        "004B2DD0": "src/matching/004B2DD0_create_check_box.cpp",
+        "004B2E60": "src/matching/004B2E60_create_radio_button.cpp"
+      },
+      "symbols": {
+        "004ADD00": "?LoadDisabledItemsFromScenario@TRIBE_Screen_Sed@@QAEXXZ",
+        "004AE620": "?load_victory_cond_from_scenario@TRIBE_Screen_Sed@@QAEXH@Z",
+        "004AEE10": "?activate_victory_proper_fields@TRIBE_Screen_Sed@@QAEXHH@Z"
       }
     }
   ]

@@ -4,6 +4,7 @@
 // The earlier decompiler-style iVar2/iVar3 locals had correct behavior but
 // forced broad register-allocation drift.
 
+#ifndef SPANLIST_SHARED_CONTEXT
 class TSpan_List_Manager {
 public:
     char gap_00[0x50];
@@ -16,6 +17,7 @@ public:
 
     void SetSpanRegions(int param_1, int param_2, int param_3, int param_4);
 };
+#endif
 
 void TSpan_List_Manager::SetSpanRegions(int param_1, int param_2, int param_3, int param_4) {
     int temp;

@@ -2,6 +2,7 @@
 // spanlist.cpp:1436-1477
 // Default flags
 
+#ifndef SPANLIST_SHARED_CONTEXT
 struct VSpan_Node {
     VSpan_Node* Next;   // +0
     char gap_04[4];     // +4
@@ -22,6 +23,7 @@ public:
 
     void Merge_n_Align(TSpan_List_Manager* p1, TSpan_List_Manager* p2);
 };
+#endif
 
 void TSpan_List_Manager::Merge_n_Align(TSpan_List_Manager* p1, TSpan_List_Manager* p2)
 {

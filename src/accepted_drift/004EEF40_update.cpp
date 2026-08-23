@@ -43,6 +43,7 @@
 // the executable clears first; both dereference md after the clear. No call
 // crosses this scheduling change. All 22 calls and ManagedArray effects match.
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class AIModule {
 public:
     virtual ~AIModule();
@@ -186,6 +187,7 @@ public:
     int doSomething();
     int update(int);
 };
+#endif
 
 int TribeTacticalAIModule::update(int)
 {

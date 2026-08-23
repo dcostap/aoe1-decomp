@@ -8,6 +8,7 @@
 //   EndPx < StartPx so VC5 loads StartPx into esi before EndPx into edx and
 //   emits cmp esi,edx; jg. EXACT MATCH at probe 2.
 
+#ifndef SPANLIST_SHARED_CONTEXT
 struct VSpan_Node {
     VSpan_Node* Next;      // +0x00
     VSpan_Node* Prev;      // +0x04
@@ -46,6 +47,7 @@ public:
 
     int ValidateSpan(int line);
 };
+#endif
 
 int TSpan_List_Manager::ValidateSpan(int line)
 {

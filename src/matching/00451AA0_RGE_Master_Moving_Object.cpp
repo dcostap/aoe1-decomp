@@ -7,6 +7,7 @@
 
 #include "..\..\include\game_globals.h"
 
+#ifndef RGE_MO_OBJ_SHARED_CONTEXT
 class RGE_Master_Static_Object {
 public:
     virtual ~RGE_Master_Static_Object();
@@ -23,6 +24,7 @@ public:
     void setup(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3);
     RGE_Master_Moving_Object(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3, int param_4);
 };
+#endif
 
 RGE_Master_Moving_Object::RGE_Master_Moving_Object(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3, int param_4)
     : RGE_Master_Animated_Object(param_1, param_2, param_3, 0)

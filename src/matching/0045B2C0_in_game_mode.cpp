@@ -1,14 +1,7 @@
-class TMousePointer {
-public:
-    char gap_00[0x138];
-    int game_mode;
-    int game_enabled;
-
-    int in_game_mode();
-};
+#include "../../include/mouseptr_context.h"
 
 int TMousePointer::in_game_mode() {
-    if (this->game_mode && this->game_enabled) {
+    if (this->GameMode && this->GameEnabled) {
         return 1;
     }
     return 0;

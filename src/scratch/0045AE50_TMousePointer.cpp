@@ -62,31 +62,9 @@
 // the pinned pointer-based aggregate source; the first mismatch remains at
 // save_rect initialization (+0D).
 
-#include <windows.h>
-
-typedef unsigned long ulong;
-typedef RECT RECT4;
-
-class TDrawArea;
-class TShape;
-class IDirectDrawSurface;
+#include "../../include/mouseptr_context.h"
 
 extern "C" ulong __cdecl debug_timeGetTime(char* file, int line);
-
-class TMousePointer {
-public:
-    int custom_draw; TDrawArea* render_area; TDrawArea* save_area; TDrawArea* primary_area;
-    int Num_Cursors; int Max_Cursors; TDrawArea* cursors[16];
-    TShape* Cursor_Shape; int Mouse_Mode; int Max_CX; int Max_CY;
-    int cWidth; int cHeight; int gWidth; int gHeight; long mouse_x; long mouse_y; long save_x; long save_y;
-    int facet; int game_facet; int next_facet; int last_facet; int d_top; int d_left; int d_bottom; int d_right;
-    int g_top; int g_left; int g_bottom; int g_right; int save_area_valid;
-    RECT4 save_rect; RECT4 mouse_rect; RECT4 cursor_rect; RECT4 new_save_rect; RECT4 restore_rect;
-    RECT4 game_window; IDirectDrawSurface* restoreSurface; IDirectDrawSurface* renderSurface;
-    IDirectDrawSurface* PrimarySurface; int active; int drawn; int Shutdown; int Setup; int GameMode; int GameEnabled;
-    int MouseOnScreen; ulong LastDrawTime; long LastddError; char cursor_file[0x104]; int cursor_file_id;
-    TMousePointer(int mode);
-};
 
 TMousePointer::TMousePointer(int mode)
 {

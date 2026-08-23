@@ -27,6 +27,7 @@ void __cdecl rge_write(int file, void* data, int size);
 void* __cdecl operator new(unsigned int size);
 void __cdecl operator delete(void* ptr);
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class AIModule {
 public:
     virtual ~AIModule();
@@ -142,6 +143,7 @@ public:
 
     virtual int save(int file);
 };
+#endif
 
 int TribeTacticalAIModule::save(int file)
 {

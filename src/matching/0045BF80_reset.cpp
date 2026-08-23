@@ -1,14 +1,6 @@
-class TMousePointer {
-public:
-    virtual ~TMousePointer();
-    char gap_4[0xB4];
-    int field_B8;
-    char gap_BC[0x70];
-    int field_12C;
-    void reset();
-};
+#include "../../include/mouseptr_context.h"
 
 void TMousePointer::reset() {
-    this->field_B8 = 0;
-    this->field_12C = 0;
+    this->save_area_valid = 0;
+    this->drawn = 0;
 }

@@ -1,40 +1,19 @@
 // VA: 0048F280 TribeAchievementsScreen::action (638 B)
 // PDB source: scr_ach.cpp (lines 808-905)
 //
-// Attempt log:
-// - Replaced the unrelated message-dispatch shim with the packet-grounded
-//   button action tree, preserving the source's timeline/aftermath split,
-//   typed panel-name comparison, and base action fallback.
-// - Inverted the end-game guard to retain the original inline quit branch;
-//   this improved the reconstruction from 563 to 174 strict-diff bytes and
-//   aligned the first 19 calls.
-// - Nested/else-if close-button forms, a scoped return local, a switch probe,
-//   an explicit goto label, qualified base close, and an explicit dialog else
-//   arm did not change the best emitted code (or made it worse); restored the
-//   ordinary typed source.
-// - Paused with the best clean reconstruction: 618 rebuilt bytes versus 638,
-//   24 versus 25 calls, and one missing duplicate close call caused by VC5
-//   tail-merging the close-button and dialog close paths.
-// fresh bounded pass (orch-scrach-02): return-literal, canonical draw TPanel
-//   virtual-surface, polymorphic RGE_Base_Game, direct/referenced/aliased/
-//   qualified close receivers, direct panelName, and volatile global/id probes
-//   did not change the 618-byte basin; volatile id restored the call count but
-//   broadened the body to 645 bytes. A 16-variant close-receiver lab likewise
-//   collapsed to one group with the missing close call.
-// shardB3-8F280 bounded call-gap pass: call-map evidence confirms that the
-//   missing rebuilt call is the close-button close at +01D2; the typed source
-//   already contains both behavior-backed close calls. No new natural source
-//   form was supported, so the clean reconstruction remains unchanged.
-// left in scratch: restored the natural typed action tree; remaining blocker is
-//   the compiler's close-button-to-dialog-close tail merge (one missing direct
-//   close call), with no ABI/call-set or broad CFG uncertainty.
-// ACCEPTED DRIFT: VC5 merges two mutually exclusive close calls into one tail.
-// The close-button path reaches it before any panel-name work. The rejected
-// negative dialog path reaches it after destroyPanel and only when id is zero. Each path
-// still calls close once and returns one. The stack, registers, memory effects,
-// fallback calls, and fault order match. There is no SEH or cleanup difference.
+// Exact source notes:
+// - The natural button action tree preserves the timeline and aftermath paths,
+//   typed panel-name test, and base action fallback.
+// - A branch-local return in the dialog path made VC5 merge both close calls.
+//   That form emitted 24 calls and removed the close-button call site.
+// - PDB lines 897-901 show one dialog condition, two arms, and one shared
+//   return. Expressing that source shape restores both direct close calls.
+// - The complete PDB-order scr_ach translation unit emits all 638 bytes exactly.
 
 #include <string.h>
+#include "../../include/scr_ach_context.h"
+
+#if 0
 
 class TDrawArea;
 
@@ -141,6 +120,8 @@ public:
     void set_mode(long mode);
 };
 
+#endif
+
 long TribeAchievementsScreen::action(TPanel* panel, long id,
                                      unsigned long param3,
                                      unsigned long param4)
@@ -196,13 +177,12 @@ long TribeAchievementsScreen::action(TPanel* panel, long id,
                 if (panel_name != 0 &&
                     strcmp(panel->panelName(), "YesNoDialog") == 0) {
                     panel_system.destroyPanel("YesNoDialog");
-                    if (id != 0) {
-                        confirmed_close = 0;
-                        return 1;
-                    } else {
+                    if (id == 0) {
                         rge_base_game->close();
-                        return 1;
+                    } else {
+                        confirmed_close = 0;
                     }
+                    return 1;
                 }
 
                 return TEasy_Panel::action(panel, id, param3, param4);

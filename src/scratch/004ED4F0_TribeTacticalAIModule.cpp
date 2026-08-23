@@ -114,6 +114,7 @@ extern "C" int __cdecl rge_read(int file, void* dst, int size);
 extern "C" void* __cdecl operator_new(unsigned int size);
 extern "C" void __cdecl operator_delete(void* p);
 extern float save_game_version;
+#ifndef TAITACMD_SHARED_CONTEXT
 class TribeMainDecisionAIModule;
 
 class TacticalAIModule { public: virtual ~TacticalAIModule(); char base[0xEC]; TacticalAIModule(void* owner, int player); };
@@ -160,6 +161,7 @@ public:
     virtual ~TribeTacticalAIModule();
     TribeTacticalAIModule(int param_1, int param_2);
 };
+#endif
 
 TribeTacticalAIModule::TribeTacticalAIModule(int param_1, int param_2)
     : TacticalAIModule(0, param_1),
@@ -874,7 +876,11 @@ LAB_004ee6c3:
   iVar1 = 0;
   if (0 < *piVar2) {
     do {
+#ifdef TAITACMD_SHARED_CONTEXT
+      pTVar5 = this->createGroup(0);
+#else
       pTVar5 = createGroup(this,0);
+#endif
       if (pTVar5 != (TacticalAIGroup *)0x0) {
         TacticalAIGroup::load(pTVar5,file);
       }

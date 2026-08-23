@@ -1,33 +1,7 @@
 // VA: 004B2AA0 TRIBE_Screen_Sed::MakeFileList
 // Baseline: period-style file enumeration used by the scenario-editor drop-down.
 
-extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
-extern "C" char* __cdecl strncpy(char* dst, const char* src, unsigned int count);
-extern "C" unsigned int __cdecl strlen(const char* text);
-extern "C" long __cdecl _findfirst(const char* filespec, void* file_info);
-extern "C" int __cdecl _findnext(long handle, void* file_info);
-
-class TDropDownPanel {
-public:
-    void empty_list();
-    int append_line(long string_id, long value);
-    int append_line(char* text, long value);
-};
-
-struct FindDataLocal {
-    unsigned int attrib;
-    long time_create;
-    long time_access;
-    long time_write;
-    unsigned long size;
-    char name[260];
-};
-
-class TRIBE_Screen_Sed {
-public:
-    int MakeFileList(TDropDownPanel* list, char* directory, char* extension,
-                     unsigned char show_none, unsigned char show_random);
-};
+#include "../../include/scr_sed2_context.h"
 
 int TRIBE_Screen_Sed::MakeFileList(TDropDownPanel* list, char* directory,
                                    char* extension, unsigned char show_none,

@@ -4,6 +4,7 @@
 
 #include <stdlib.h>
 
+#ifndef SPANLIST_SHARED_CONTEXT
 class VSpan_Node;
 
 class TSpan_Node_List {
@@ -43,6 +44,7 @@ public:
 
     ~TSpan_List_Manager();
 };
+#endif
 
 TSpan_List_Manager::~TSpan_List_Manager() {
     if (Line_Head_Ptrs != 0) free(Line_Head_Ptrs);

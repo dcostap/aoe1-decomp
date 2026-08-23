@@ -56,10 +56,15 @@
 // - Fresh contextual pass restored the exact same-TU TacticalAIModule virtual
 //   inheritance. The emitted body is unchanged. The decompiler-shaped local
 //   reuse, stored-field cap comparison, and inline numberCivilians accessor are
-//   also codegen duplicates. The observable count-reread blocker remains.
+//   also codegen duplicates. The observable count-reread blocker remained.
+// - Exact finish: use the canonical ManagedArray number and setDesiredNumber
+//   inline methods at the low-count publication boundary. This preserves the
+//   executable's civilian-count reread and keeps the explorer-demand store
+//   before the sn[3] load. Direct field access loses one or both properties.
 
 extern "C" double __cdecl ceil(double);
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class RGE_Visible_Map {
 public:
     float percentExplored();
@@ -79,6 +84,9 @@ public:
             this->resize(index + 1);
         return this->value[index];
     }
+
+    const int number() const { return this->numberValue; }
+    void setDesiredNumber(int number) { this->desiredNumberValue = number; }
 };
 
 class TribeInformationAIModule {
@@ -168,6 +176,7 @@ public:
     void displayCivilianDistribution();
     void updateGathererDistribution();
 };
+#endif
 
 void TribeTacticalAIModule::evaluateCivilianDistribution()
 {
@@ -181,11 +190,24 @@ void TribeTacticalAIModule::evaluateCivilianDistribution()
     percentExplored = (int)(this->md->player->visibleMap->percentExplored() * 100.0f);
 
     list = &this->playersToAttack;
+#ifdef TAITACMD_SHARED_CONTEXT
+    if (list->maximumSizeValue - 1 < 0)
+        list->resize(1);
+    numberItems = this->md->informationAI.numberGameIDsOwnedBy(-1,
+                                                               list->value[0]);
+#else
     numberItems = this->md->informationAI.numberGameIDsOwnedBy(-1, (*list)[0]);
+#endif
 
     if (this->civilians.numberValue >= 3) {
     list = &this->civilians;
+#ifdef TAITACMD_SHARED_CONTEXT
+    if (list->maximumSizeValue - 1 < 0)
+        list->resize(1);
+    if (this->md->informationAI.fullyExploredZone(list->value[0]) == 1) {
+#else
     if (this->md->informationAI.fullyExploredZone((*list)[0]) == 1) {
+#endif
         zero = 0;
         this->civilianExplorers.desiredNumberValue = (int)ceil((float)((double)this->sn[0] * this->civilians.numberValue) * 0.01f);
         desired = this->numberSoldierExplorers();
@@ -236,9 +258,10 @@ void TribeTacticalAIModule::evaluateCivilianDistribution()
             if (desired != -1 && desired < 1) {
                 this->desiredNumberGatherers = desired;
             }
-            gatherers = this->civilians.numberValue -
+            // BINARY NOTE: Reread the count before publishing explorer demand.
+            gatherers = this->civilians.number() -
                         this->desiredNumberGatherers;
-            this->civilianExplorers.desiredNumberValue = gatherers;
+            this->civilianExplorers.setDesiredNumber(gatherers);
             desired = this->sn[3];
             if (desired == -1 || gatherers <= desired)
                 goto low_count_done;

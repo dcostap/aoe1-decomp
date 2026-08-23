@@ -87,7 +87,11 @@
 // post-call node-type reread, and returns. Values used after AddSpan are private
 // copies in both builds. Remaining differences are register and stack-home
 // assignment.
+// Recovered view.cpp TU pass: exact 005381C0 precedes this owner on the shared
+// RGE_View surface. The /GX grouped result remains 384/385 bytes with 153
+// differences and all nine calls ordered.
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 struct DClipInfo_Node {
     char gap_00[0x2C];
     int Node_Type;          // +0x2C
@@ -111,6 +115,7 @@ class RGE_View {
 public:
     void Add_GDI_Clip_Mask(DClipInfo_Node* node, TSpan_List_Manager* span_mgr);
 };
+#endif
 
 void RGE_View::Add_GDI_Clip_Mask(DClipInfo_Node* node, TSpan_List_Manager* span_mgr)
 {

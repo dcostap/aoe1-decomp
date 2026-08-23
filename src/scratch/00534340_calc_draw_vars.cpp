@@ -154,7 +154,14 @@
 // The original still restores EDI before the eight clear-tail stores, while
 // the clean rebuild keeps zero in EDI until after those stores.  This changes
 // EDI at a faulting invalid-this store, so strict accepted drift is not proved.
+// Recovered view.cpp TU pass: the shared 0x360 RGE_View surface, /GX module
+// flags, and exact 00534100/00534130 prefixes keep the 217-byte, 61-difference
+// basin. Earlier view.cpp owners are not yet on the shared surface.
+// Continuation sa-5abaa990-r3: a right-to-left chained clear, a named validity
+// result, and named width/quotient locals were duplicate or farther. None
+// changed the EDI zero owner. Restored the 217-byte, 61-difference source.
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 struct tagRECT {
     long left;
     long top;
@@ -259,6 +266,7 @@ public:
 protected:
     void calc_draw_vars();
 };
+#endif
 
 void RGE_View::calc_draw_vars() {
     int pw;

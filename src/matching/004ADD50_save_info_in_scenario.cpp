@@ -1,7 +1,5 @@
-class TRIBE_Screen_Sed {
-public:
-    virtual ~TRIBE_Screen_Sed();
-    void save_info_in_scenario();
-};
+
+
+#include "../../include/scr_sed2_context.h"
 
 void TRIBE_Screen_Sed::save_info_in_scenario() {}

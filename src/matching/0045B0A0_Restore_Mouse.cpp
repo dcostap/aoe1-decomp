@@ -4,40 +4,7 @@
 // MATCHED. Exact 115-byte match confirmed via local check_function.py.
 // First-pass match with correct member offsets from inventory type dumps.
 
-class IDirectDrawSurface;
-class TDrawArea;
-
-class TDrawSystem {
-public:
-    char gap_00[0x10];
-    TDrawArea* PrimaryArea;
-    char gap_14[0x08];
-    IDirectDrawSurface* PrimarySurface;
-};
-
-class TDrawArea {
-public:
-    TDrawSystem* DrawSystem;
-    char gap_04[0x38];
-    IDirectDrawSurface* DrawSurface;
-};
-
-class TMousePointer {
-public:
-    int custom_draw;
-    TDrawArea* render_area;
-    TDrawArea* save_area;
-    TDrawArea* primary_area;
-    char gap_10[0x110];
-    IDirectDrawSurface* renderSurface;
-    IDirectDrawSurface* PrimarySurface;
-    char gap_128[8];
-    int Shutdown;
-    int Setup;
-
-    int Restore_Mouse(TDrawArea* param_1);
-    int LoadCursors(char* a2, int a3, int a4);
-};
+#include "../../include/mouseptr_context.h"
 
 int TMousePointer::Restore_Mouse(TDrawArea* param_1) {
     if (this->Shutdown == 0)

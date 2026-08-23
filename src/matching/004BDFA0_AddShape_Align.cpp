@@ -27,6 +27,7 @@
 // aligned outline traversal.
 #include <stdlib.h>
 
+#ifndef SPANLIST_SHARED_CONTEXT
 struct Shape_Info {
     unsigned long Shape_Data_Offsets;
     unsigned long Shape_Outline_Offset;
@@ -77,6 +78,7 @@ public:
     void AddShape_Align(unsigned char* data, Shape_Info* shape,
                         int x, int y, int align);
 };
+#endif
 
 void TSpan_List_Manager::AddShape_Align(unsigned char* data, Shape_Info* shape,
                                         int x, int y, int align)

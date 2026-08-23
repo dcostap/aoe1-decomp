@@ -1,5 +1,6 @@
 #include <stdlib.h>
 
+#ifndef SPANLIST_SHARED_CONTEXT
 class VSpan_Node;
 
 class TSpan_Node_List {
@@ -22,6 +23,7 @@ public:
 
     ~TSpan_Node_List();
 };
+#endif
 
 TSpan_Node_List::~TSpan_Node_List(void) {
     int i = 0;

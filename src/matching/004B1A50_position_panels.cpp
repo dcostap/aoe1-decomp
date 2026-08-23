@@ -14,162 +14,7 @@
 // - Swapped the option-loop increment statements: advancing the panel cursor
 //   before the row coordinate reproduces the original EBX/EDI allocation.
 
-class TPanel {
-public:
-    virtual void vf00();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void set_position(int, int, int, int, int, int, int, int, int,
-                              TPanel*, TPanel*, TPanel*, TPanel*);
-    virtual void set_fixed_position(int, int, int, int);
-    void set_z_order(unsigned char, int);
-};
-
-class TTextPanel : public TPanel {
-public:
-    int numberLines();
-    int numberDrawLines();
-};
-class TButtonPanel : public TPanel {};
-class TDropDownPanel : public TPanel {};
-class TEditPanel : public TPanel {};
-class TListPanel : public TTextPanel {};
-class TScrollBarPanel : public TPanel {};
-class TMessagePanel : public TPanel {};
-class TRIBE_Main_View : public TPanel {};
-class RGE_Diamond_Map_View : public TPanel {};
-class TRIBE_Scenario_Editor_Panel_Object : public TPanel {};
-class TShape;
-
-class TRIBE_Screen_Sed {
-public:
-    char gap_000[0x478];
-    char gap_478_to_4c4[0x4c4 - 0x478];
-    TShape* background_pic;
-    TRIBE_Main_View* main_view;
-    RGE_Diamond_Map_View* map_view;
-    TMessagePanel* message_panel;
-    TPanel* bottom_panel;
-    TButtonPanel* scenario_mode_button[10];
-    TButtonPanel* menu_button;
-    TButtonPanel* help_button;
-    TButtonPanel* map_type_button[3];
-    TTextPanel* map_type_text[3];
-    TTextPanel* map_type_label;
-    TTextPanel* default_terrain_label;
-    TDropDownPanel* default_terrain_drop;
-    TTextPanel* map_size_label;
-    TDropDownPanel* map_size_drop;
-    TTextPanel* map_style_label;
-    TDropDownPanel* map_style_drop;
-    TTextPanel* random_seed_label;
-    TEditPanel* random_seed_input;
-    TTextPanel* random_seed_used_label;
-    TTextPanel* random_seed_used_text;
-    TButtonPanel* generate_map_button;
-    TTextPanel* map_generating_text;
-    TTextPanel* brush_size_label;
-    TButtonPanel* brush_size_button[5];
-    TTextPanel* brush_size_button_label[5];
-    TTextPanel* paint_type_label;
-    TButtonPanel* paint_type_button[3];
-    TTextPanel* paint_type_button_label[3];
-    TTextPanel* paint_terrain_label;
-    TListPanel* paint_terrain_list;
-    TScrollBarPanel* paint_terrain_scrollbar;
-    TListPanel* paint_elevation_list;
-    TScrollBarPanel* paint_elevation_scrollbar;
-    TTextPanel* player_label;
-    TDropDownPanel* player_list;
-    TDropDownPanel* player_number_list;
-    TDropDownPanel* player_advance_civilization_drop;
-    TButtonPanel* player_advance_civilization_button;
-    TTextPanel* player_inven_label[5];
-    TEditPanel* player_inven_input[5];
-    TTextPanel* player_setting_label[2];
-    TTextPanel* player_starting_age_label;
-    TDropDownPanel* player_setting_drop[2];
-    TDropDownPanel* BuildList;
-    TDropDownPanel* CityLayout;
-    TDropDownPanel* AiRules;
-    TTextPanel* player_build_text;
-    TTextPanel* player_city_text;
-    TTextPanel* AiRules_text;
-    TDropDownPanel* unit_player_list;
-    TButtonPanel* unit_mode_select[4];
-    TTextPanel* unit_mode_select_label[4];
-    TListPanel* unit_list;
-    TScrollBarPanel* unit_scrollbar;
-    TPanel* unit_list_info;
-    TShape* button_unit_pics;
-    TShape* button_bldg_pics[5];
-    TButtonPanel* object_panel;
-    char unit_list_size_pad[4];
-    TButtonPanel* victory_cond_on[6];
-    TButtonPanel* victory_and_or[2];
-    TTextPanel* victory_condition_label;
-    TTextPanel* victory_amount_label;
-    TTextPanel* victory_long_label;
-    TTextPanel* victory_text_and_or[2];
-    TTextPanel* victory_label_conquest;
-    TTextPanel* victory_label_explore;
-    TTextPanel* victory_label_explore_percent;
-    TTextPanel* victory_label_ruins;
-    TTextPanel* victory_label_artifacts;
-    TTextPanel* victory_label_discoveries;
-    TTextPanel* victory_label_gold;
-    TEditPanel* victory_condition_explore;
-    TEditPanel* victory_condition_ruins;
-    TEditPanel* victory_condition_artifacts;
-    TEditPanel* victory_condition_discoveries;
-    TEditPanel* victory_condition_gold;
-    TTextPanel* victory_cond_type_label[5];
-    TButtonPanel* victory_cond_type[5];
-    TTextPanel* victory_score_label;
-    TDropDownPanel* victory_score;
-    TTextPanel* victory_time_label;
-    TDropDownPanel* victory_time;
-    TButtonPanel* victory_button[12];
-    TDropDownPanel* victory_drop_down;
-    TDropDownPanel* victory_object_list;
-    TDropDownPanel* victory_player_list;
-    TDropDownPanel* victory_enemy_player_list;
-    TDropDownPanel* victory_attribute_list;
-    TDropDownPanel* victory_ages_list;
-    TDropDownPanel* victory_tech_list;
-    TButtonPanel* victory_button_set_object;
-    TButtonPanel* victory_button_set_destination;
-    TButtonPanel* victory_button_go_to_dest;
-    TTextPanel* victory_condition_text;
-    TTextPanel* victory_condition_type;
-    TTextPanel* victory_amount_text;
-    TTextPanel* victory_which_enemy_text;
-    TEditPanel* victory_amount_input;
-    TScrollBarPanel* victory_object_scrollbar;
-    TEditPanel* message_input;
-    TButtonPanel* message_button[5];
-    TTextPanel* message_button_label[5];
-    char current_message_pad[4];
-    TTextPanel* cinematic_label[4];
-    TDropDownPanel* cinematic_input[4];
-    TTextPanel* options_label[1];
-    TButtonPanel* options_button[1];
-    TDropDownPanel* options_player_list;
-    TTextPanel* options_disable_tech_text;
-    TButtonPanel* options_disable_button[16];
-    TTextPanel* options_disable_text[16];
-    TTextPanel* Diplomacy_opponent_label[8];
-    TTextPanel* Diplomacy_player_text[8];
-    TDropDownPanel* Diplomacy_player_list;
-    TTextPanel* Diplomacy_status_label[4];
-    TButtonPanel* Diplomacy_friend_box[8][3];
-    TButtonPanel* Diplomacy_AlliedVictory[8];
-
-    void position_panels();
-};
+#include "../../include/scr_sed2_context.h"
 
 void TRIBE_Screen_Sed::position_panels()
 {
@@ -178,33 +23,33 @@ void TRIBE_Screen_Sed::position_panels()
 
     for (int mode_row = 0; mode_row < 5; ++mode_row) {
         TButtonPanel* previous = mode_row == 0 ? 0 : this->scenario_mode_button[mode_row - 1];
-        this->scenario_mode_button[mode_row]->set_position(
+        this->scenario_mode_button[mode_row]->set_positioning(
             7, 2, 2, 2, 2, 0x32, 0x6d, 0x16, 0x16, previous, 0, 0, 0);
     }
     for (int mode_col = 5; mode_col < 10; ++mode_col) {
         TButtonPanel* previous = mode_col == 5 ? 0 : this->scenario_mode_button[mode_col - 1];
-        this->scenario_mode_button[mode_col]->set_position(
+        this->scenario_mode_button[mode_col]->set_positioning(
             7, 2, 2, 2, 2, 0x32, 0x6d, 0x16, 0x16, previous,
             this->scenario_mode_button[mode_col - 5], 0, 0);
     }
 
-    this->menu_button->set_position(9, 2, 5, 3, 3, 0x3a, 0x3a, 0x14, 0x28, 0, 0, 0, 0);
-    this->help_button->set_position(10, 5, 5, 5, 5, 0x14, 0x1e, 0x14, 0x1e, 0, 0, 0, 0);
-    this->map_view->set_position(10, 0, 0, 0, 0, 0xe6, 0xe6, 0x87, 0x87, 0, 0, 0, 0);
-    this->bottom_panel->set_position(8, 2, 2, 2, 2, 0, 0, 0x89, 0x89, 0, 0, this->map_view, 0);
-    this->unit_list->set_position(7, 0, 6, 0, 4, 0x7c, 200, 0, 0, 0, this->menu_button, 0, this->bottom_panel);
-    this->object_panel->set_position(8, 4, 4, 4, 4, 0x96, 0x96, 0x6c, 0x6c, 0, 0, 0, 0);
+    this->menu_button->set_positioning(9, 2, 5, 3, 3, 0x3a, 0x3a, 0x14, 0x28, 0, 0, 0, 0);
+    this->help_button->set_positioning(10, 5, 5, 5, 5, 0x14, 0x1e, 0x14, 0x1e, 0, 0, 0, 0);
+    this->map_view->set_positioning(10, 0, 0, 0, 0, 0xe6, 0xe6, 0x87, 0x87, 0, 0, 0, 0);
+    this->bottom_panel->set_positioning(8, 2, 2, 2, 2, 0, 0, 0x89, 0x89, 0, 0, this->map_view, 0);
+    this->unit_list->set_positioning(7, 0, 6, 0, 4, 0x7c, 200, 0, 0, 0, this->menu_button, 0, this->bottom_panel);
+    this->object_panel->set_positioning(8, 4, 4, 4, 4, 0x96, 0x96, 0x6c, 0x6c, 0, 0, 0, 0);
 
     TScrollBarPanel* unit_panel = (TScrollBarPanel*)this->unit_list;
     int number_lines = ((TTextPanel*)unit_panel)->numberLines();
     int number_draw_lines = ((TTextPanel*)unit_panel)->numberDrawLines();
     if (number_lines > number_draw_lines) {
-        this->unit_list->set_position(7, 0, 6, 0, 4, 0x68, 0xdc, 0, 0, 0, this->menu_button, 0, this->bottom_panel);
-        this->unit_scrollbar->set_position(7, 1, 1, 0, 2, 0x12, 0x12, 0, 0, this->unit_list, this->menu_button, 0, this->bottom_panel);
+        this->unit_list->set_positioning(7, 0, 6, 0, 4, 0x68, 0xdc, 0, 0, 0, this->menu_button, 0, this->bottom_panel);
+        this->unit_scrollbar->set_positioning(7, 1, 1, 0, 2, 0x12, 0x12, 0, 0, this->unit_list, this->menu_button, 0, this->bottom_panel);
         unit_panel = this->unit_scrollbar;
     }
-    this->main_view->set_position(7, 0, 6, 0, 4, 0, 0, 0, 0, unit_panel, this->menu_button, 0, this->bottom_panel);
-    this->message_panel->set_position(8, 4, 4, 4, 4, 0, 0, 0x18, 0x18, 0, 0, 0, 0);
+    this->main_view->set_positioning(7, 0, 6, 0, 4, 0, 0, 0, 0, unit_panel, this->menu_button, 0, this->bottom_panel);
+    this->message_panel->set_positioning(8, 4, 4, 4, 4, 0, 0, 0x18, 0x18, 0, 0, 0, 0);
 
     this->map_type_label->set_fixed_position(4, 4, 0x78, 0x16);
     this->map_type_button[0]->set_fixed_position(4, 0x16, 0x16, 0x16);
@@ -360,7 +205,7 @@ void TRIBE_Screen_Sed::position_panels()
         ++message_label;
     } while (message_y < 0x85);
 
-    this->message_input->set_position(7, 0xaf, 4, 0x28, 4, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->message_input->set_positioning(7, 0xaf, 4, 0x28, 4, 0, 0, 0, 0, 0, 0, 0, 0);
 
     int cinematic_y = 0x16;
     TDropDownPanel** cinematic_input = this->cinematic_input;

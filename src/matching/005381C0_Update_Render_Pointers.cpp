@@ -5,6 +5,7 @@
 // first pass: exact MATCH on first compile. Local TPanel/TDrawArea stubs with
 // exact layout + natural control flow. 190 bytes, 0 diff, 2 masked relocations.
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 #include <stdlib.h>
 
 // Local layout stubs. TPanel-sized base region (0x00-0xF3) + RGE_View fields.
@@ -35,6 +36,7 @@ public:
 
     void Update_Render_Pointers();
 };
+#endif
 
 void RGE_View::Update_Render_Pointers() {
     unsigned char* bits = render_area->Bits;

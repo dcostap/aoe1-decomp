@@ -9,49 +9,7 @@
 //   the original `cmp player_num,active_players; jl` and producing an exact
 //   match.
 
-class TDropDownPanel {
-public:
-    long get_line();
-    void empty_list();
-    int append_line(long string_id, long value);
-    void set_line(long line);
-};
-
-class RGE_Scenario {
-public:
-    void Set_player_Active(int player, int active);
-};
-
-class TRIBE_World {
-public:
-    char gap_00[0x3C];
-    short player_num;
-    char gap_3E[0x1C];
-    RGE_Scenario* scenario;
-};
-
-class TRIBE_Screen_Sed {
-public:
-    char gap_000[0x4B8];
-    short player_num;
-    char gap_4BA[0x5B4 - 0x4BA];
-    TDropDownPanel* player_list;
-    TDropDownPanel* player_number_list;
-    char gap_5BC[0x618 - 0x5BC];
-    TDropDownPanel* unit_player_list;
-    char gap_61C[0x73C - 0x61C];
-    TDropDownPanel* victory_player_list;
-    TDropDownPanel* victory_enemy_player_list;
-    char gap_744[0x7CC - 0x744];
-    TDropDownPanel* options_player_list;
-    char gap_7D0[0x894 - 0x7D0];
-    TDropDownPanel* Diplomacy_player_list;
-    char gap_898[0x928 - 0x898];
-    TRIBE_World* world;
-
-    void set_player(short player, unsigned char update, unsigned char refresh);
-    void SavePlayerActiveStatus();
-};
+#include "../../include/scr_sed2_context.h"
 
 void TRIBE_Screen_Sed::SavePlayerActiveStatus()
 {

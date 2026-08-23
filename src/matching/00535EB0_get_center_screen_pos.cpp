@@ -1,3 +1,4 @@
+#ifndef RGE_VIEW_SHARED_CONTEXT
 class RGE_View {
 public:
     char gap_00[0x11A];
@@ -6,6 +7,7 @@ public:
 
     void get_center_screen_pos(short* row, short* col);
 };
+#endif
 
 void RGE_View::get_center_screen_pos(short* row, short* col) {
     *row = center_scr_row;

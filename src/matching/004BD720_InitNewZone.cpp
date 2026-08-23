@@ -5,6 +5,7 @@
 // - natural C++ scaffold used calloc and omitted counters/free pool updates.
 // - switched to malloc and full observed fields.
 
+#ifndef SPANLIST_SHARED_CONTEXT
 struct VSpan_Node;
 
 class TSpan_Node_List {
@@ -26,6 +27,7 @@ public:
     void InitNewZone(int growSize);
     void SetNumZones(int newCount);
 };
+#endif
 
 extern "C" void* __cdecl malloc(unsigned int size);
 

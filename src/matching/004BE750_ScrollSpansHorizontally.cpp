@@ -13,6 +13,7 @@
 
 #include <stdlib.h>
 
+#ifndef SPANLIST_SHARED_CONTEXT
 struct VSpan_Node {
     VSpan_Node* Next;      // +0x00
     VSpan_Node* Prev;      // +0x04
@@ -59,6 +60,7 @@ public:
     void ResetAll();
     void ScrollSpansHorizontally(int dx, int use_regions);
 };
+#endif
 
 void TSpan_List_Manager::ScrollSpansHorizontally(int dx, int use_regions)
 {

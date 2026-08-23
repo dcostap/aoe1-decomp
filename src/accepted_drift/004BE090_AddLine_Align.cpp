@@ -57,6 +57,7 @@
 // natural aligned Bresenham construction.
 #include <stdlib.h>
 
+#ifndef SPANLIST_SHARED_CONTEXT
 struct VSpan_Node;
 
 class TSpan_Node_List {
@@ -84,6 +85,7 @@ public:
 
     void AddLine_Align(int x1, int y1, int x2, int y2);
 };
+#endif
 
 void TSpan_List_Manager::AddLine_Align(int x1, int y1, int x2, int y2)
 {

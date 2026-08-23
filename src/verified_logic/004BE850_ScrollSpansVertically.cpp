@@ -33,6 +33,7 @@
 
 extern "C" int __cdecl abs(int);
 
+#ifndef SPANLIST_SHARED_CONTEXT
 struct VSpan_Node;
 
 // Main-agent audit confirmed canonical span-list ownership and retained the
@@ -62,6 +63,7 @@ public:
     void ResetAll();
     void ScrollSpansVertically(int dy, int use_regions);
 };
+#endif
 
 void TSpan_List_Manager::ScrollSpansVertically(int dy, int use_regions)
 {
@@ -93,7 +95,11 @@ void TSpan_List_Manager::ScrollSpansVertically(int dy, int use_regions)
     while (line < this->Num_Lines) {
         if (this->Line_Head_Ptrs[line] != 0) {
             if (src_line < clear_first || src_line > use_regions) {
+#ifdef SPANLIST_SHARED_CONTEXT
+                this->VSList.FreeThread(this->Line_Head_Ptrs[line], this->Line_Tail_Ptrs[line]);
+#else
                 this->FreeThread(this->Line_Head_Ptrs[line], this->Line_Tail_Ptrs[line]);
+#endif
                 this->Line_Head_Ptrs[line] = 0;
                 this->Line_Tail_Ptrs[line] = 0;
                 this->Span_Count[line] = 0;

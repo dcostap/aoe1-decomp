@@ -70,6 +70,16 @@
 //   caller-side explorer scan and append. Duplicate failure still exits through
 //   skip_append. This is codegen-identical to the 2083-byte frontier and gives
 //   the scan to its canonical method owner; resize remains declaration-only.
+// - Shared-context pass: restore the nested inline operator[] allocation body.
+//   The grouped function then equaled all 2083 standalone bytes. The prior
+//   declaration-only shared resize surface had collapsed it to 1312 bytes.
+// - Contextual matching pass: retain a civilian-array owner across the setup
+//   resize and publication, compare the requested ID against civilians[i],
+//   and let operator[] own the timed-return capacity guard. The grouped and
+//   standalone bodies now equal 2064 bytes, with exact frame, calls, and CFG.
+//   The remaining 914-byte drift starts in coordinate-store scheduling. A
+//   two-byte induction-value register move remains after the refresh search.
+//   Adding exact 004F4760 after the excluded 004F21F0 did not change this body.
 
 #include <stdlib.h>
 
@@ -78,6 +88,7 @@ extern "C" {
     void __cdecl operator_delete(void* block);
 }
 
+#ifndef TAITACMD_SHARED_CONTEXT
 struct XYPoint { int x; int y; };
 
 class RGE_Static_Object {
@@ -189,6 +200,7 @@ public:
 
     int taskCivilians(unsigned long param_1, unsigned long param_2);
 };
+#endif
 
 extern unsigned long debug_timeGetTime(const char* file, int line);
 
@@ -289,10 +301,11 @@ excess_explorers_done:
             } while (tasked != -1 && this->addGatherer(tasked) != 0 &&
                      this->numberGatherersValue < this->desiredNumberGatherersValue);
         }
-        if (this->civilians.maximumSizeValue - 1 < 0) {
-            this->civilians.resize(1);
+        ManagedArray<int>* civilianList = &this->civilians;
+        if (civilianList->maximumSizeValue - 1 < 0) {
+            civilianList->resize(1);
         }
-        this->nextCivilianToTaskValue = this->civilians.value[0];
+        this->nextCivilianToTaskValue = civilianList->value[0];
         if (debug_timeGetTime((const char*)0x005880C0, 0x0D8A) - param_1 >= param_2) {
             return 0;
         }
@@ -300,12 +313,11 @@ excess_explorers_done:
 
     // Refresh phase: find the civilian to task this tick and task the rest.
     for (i = 0; i < this->civilians.numberValue; i++) {
-        if (this->civilians[i] == this->nextCivilianToTaskValue) break;
+        if (this->nextCivilianToTaskValue == this->civilians[i]) break;
     }
     if (i >= this->civilians.numberValue) goto no_more;
 
-    taskedCount = i;
-    taskedCount = taskedCount + 1;
+    taskedCount = i + 1;
     newExplorer = taskedCount * 4;
     do {
         j = j + 1;
@@ -333,9 +345,7 @@ task_done:
             if (i > 0) {
                 // Binary-proven capacity touch: ensure room for civilians[i-1]
                 // before returning, matching the inline operator[] grow.
-                if (i > this->civilians.maximumSizeValue - 1) {
-                    this->civilians[i - 1];
-                }
+                this->civilians[i - 1];
             }
             goto done;
         }

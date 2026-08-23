@@ -48,6 +48,7 @@
 
 #include <stdlib.h>
 
+#ifndef SPANLIST_SHARED_CONTEXT
 struct VSpan_Node {
     VSpan_Node* Next;
     VSpan_Node* Prev;
@@ -95,6 +96,7 @@ public:
 
     void AddSpan(int start, int end, int line);
 };
+#endif
 
 void TSpan_List_Manager::AddSpan(int start, int end, int line)
 {

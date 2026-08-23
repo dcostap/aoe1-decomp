@@ -1,3 +1,4 @@
+#ifndef RGE_VIEW_SHARED_CONTEXT
 void __cdecl operator_delete(void* ptr);
 
 class TDrawArea {
@@ -12,6 +13,7 @@ public:
 
     void delete_surfaces(void);
 };
+#endif
 
 void RGE_View::delete_surfaces(void) {
     TDrawArea* area;

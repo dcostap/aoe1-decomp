@@ -46,34 +46,9 @@
 // Constructor or Init failure still returns zero. Every other path returns one.
 // EH state and chain restoration match on each exit.
 
+#include "../../include/mouseptr_context.h"
+
 extern "C" int sprintf(char* buffer, const char* format, ...);
-
-class TDrawSystem;
-
-class TDrawArea {
-public:
-    TDrawSystem* DrawSystem;
-    char gap[0xFC];
-    TDrawArea(char* name, int height);
-    int Init(TDrawSystem* draw_system, int width, int height, int x, int y);
-};
-
-class TMousePointer {
-public:
-    int custom_draw;              // +0x00
-    TDrawArea* render_area;       // +0x04
-    TDrawArea* save_area;         // +0x08
-    TDrawArea* primary_area;      // +0x0C
-    int Num_Cursors;              // +0x10
-    int Max_Cursors;              // +0x14
-    TDrawArea* cursors[16];       // +0x18
-    char gap_58[0x5C - 0x58];
-    int Mouse_Mode;               // +0x5C
-    int Max_CX;                   // +0x60
-    int Max_CY;                   // +0x64
-
-    int create_surfaces();
-};
 
 int TMousePointer::create_surfaces()
 {

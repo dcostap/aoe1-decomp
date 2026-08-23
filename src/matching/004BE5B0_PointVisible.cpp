@@ -2,6 +2,7 @@
 // Checks if a point (x, y) is visible by walking span linked list.
 // FLAGS: /nologo /c /O2 /Oy
 
+#ifndef SPANLIST_SHARED_CONTEXT
 struct VSpan_Node {
     VSpan_Node* next;     // +0x00
     char _pad_04[4];       // +0x04
@@ -17,12 +18,17 @@ struct TSpan_List_Manager {
 
     int PointVisible(int x, int y);
 };
+#endif
 
 int TSpan_List_Manager::PointVisible(int x, int y)
 {
     if (y < 0 || y >= num_lines) return 0;
 
+#ifdef SPANLIST_SHARED_CONTEXT
+    VSpan_Node* node = this->Line_Head_Ptrs[y];
+#else
     VSpan_Node* node = line_head_ptrs[y];
+#endif
     if (!node) return 0;
 
     while (node) {

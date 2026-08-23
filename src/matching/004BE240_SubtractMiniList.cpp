@@ -4,6 +4,7 @@
 // with x/y offsets copied to locals before the loop and the 3-byte mini-span
 // pointer advance left as the last statement in the loop body.
 
+#ifndef SPANLIST_SHARED_CONTEXT
 class VSpanMiniList {
 public:
     unsigned char Y_delta;
@@ -29,6 +30,7 @@ public:
     void DeleteSpan(int x_start, int x_end, int y_delta);
     void SubtractMiniList(VSpanMiniList* mini, int x_off, int y_off);
 };
+#endif
 
 void TSpan_List_Manager::SubtractMiniList(VSpanMiniList* mini, int x_off, int y_off) {
     if (mini == 0) {

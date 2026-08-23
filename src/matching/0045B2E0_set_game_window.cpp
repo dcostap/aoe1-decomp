@@ -1,16 +1,8 @@
-class TMousePointer {
-public:
-    char gap_0[0x10C];
-    int field_10C;
-    int field_110;
-    int field_114;
-    int field_118;
-    void set_game_window(int a, int b, int c, int d);
-};
+#include "../../include/mouseptr_context.h"
 
 void TMousePointer::set_game_window(int a, int b, int c, int d) {
-    this->field_10C = a;
-    this->field_110 = b;
-    this->field_114 = c;
-    this->field_118 = d;
+    this->game_window.left = a;
+    this->game_window.top = b;
+    this->game_window.right = c;
+    this->game_window.bottom = d;
 }

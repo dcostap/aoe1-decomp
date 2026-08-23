@@ -52,6 +52,7 @@
 static const char s_taitacmd_cpp[] =
     "C:\\msdev\\work\\age1_x1\\taitacmd.cpp";
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class RGE_Player;
 class RGE_Static_Object;
 class TribeMainDecisionAIModule;
@@ -162,6 +163,7 @@ public:
 
     void taskIdleSoldiers(unsigned long, unsigned long);
 };
+#endif
 
 extern unsigned long debug_timeGetTime(const char*, int);
 

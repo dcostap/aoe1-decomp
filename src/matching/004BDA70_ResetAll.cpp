@@ -4,6 +4,7 @@
 
 #include <string.h>
 
+#ifndef SPANLIST_SHARED_CONTEXT
 class TSpan_Node_List {
 public:
     void ReclaimAllNodes();
@@ -21,6 +22,7 @@ public:
 
     void ResetAll();
 };
+#endif
 
 void TSpan_List_Manager::ResetAll()
 {

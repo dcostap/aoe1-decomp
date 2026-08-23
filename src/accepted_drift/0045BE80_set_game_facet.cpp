@@ -26,51 +26,18 @@
 // while original stores game_facet and shifts first. The same values are used, all
 // later stores/subtractions match, and size/epilogue are intact (no truncation).
 
-class Shape_Info {
-public:
-    char pad_00[0x10];
-    int width;
-    int height;
-    int hotspot_x;
-    int hotspot_y;
-};
-
-class TShape {
-public:
-    char pad_00[0x1C];
-    Shape_Info* shape_info;
-};
-
-class TMousePointer {
-public:
-    char gap_00[0x10];
-    int Num_Cursors;
-    char gap_14[0x58 - 0x14];
-    TShape* Cursor_Shape;
-    char gap_5C[0x70 - 0x5C];
-    int gWidth;
-    int gHeight;
-    char gap_78[0x8C - 0x78];
-    int game_facet;
-    char gap_90[0xA8 - 0x90];
-    int g_top;
-    int g_left;
-    int g_bottom;
-    int g_right;
-
-    void set_game_facet(int facet);
-};
+#include "../../include/mouseptr_context.h"
 
 void TMousePointer::set_game_facet(int facet) {
     if (facet >= 0 && facet < this->Num_Cursors) {
         Shape_Info* info = this->Cursor_Shape->shape_info;
         this->game_facet = facet;
         info = (Shape_Info*)((char*)info + (facet << 5));
-        this->gWidth = info->width;
-        this->gHeight = info->height;
-        this->g_top = info->hotspot_y;
-        this->g_left = info->hotspot_x;
-        this->g_right = this->gWidth - info->hotspot_x;
-        this->g_bottom = this->gHeight - info->hotspot_y;
+        this->gWidth = info->Width;
+        this->gHeight = info->Height;
+        this->g_top = info->Hotspot_Y;
+        this->g_left = info->Hotspot_X;
+        this->g_right = this->gWidth - info->Hotspot_X;
+        this->g_bottom = this->gHeight - info->Hotspot_Y;
     }
 }

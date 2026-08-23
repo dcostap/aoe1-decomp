@@ -36,6 +36,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifndef SPANLIST_SHARED_CONTEXT
 struct Shape_Info {
     unsigned long Shape_Data_Offsets;
     unsigned long Shape_Outline_Offset;
@@ -107,6 +108,7 @@ public:
     void DeleteSpan(int start, int end, int line);
     void DeleteShape(TShape* shape, int shape_number, int x, int y, int mirror);
 };
+#endif
 
 void TSpan_List_Manager::DeleteShape(TShape* shape, int shape_number,
                                       int x, int y, int mirror)

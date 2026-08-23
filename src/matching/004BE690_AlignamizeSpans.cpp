@@ -8,6 +8,7 @@
 // - Keeping the aligned EndPx value in an explicit int local reproduces the
 //   original carried compare/store scheduling; exact match at probe 7.
 
+#ifndef SPANLIST_SHARED_CONTEXT
 struct VSpan_Node {
     VSpan_Node* Next;      // +0x00
     VSpan_Node* Prev;      // +0x04
@@ -53,6 +54,7 @@ public:
 
     void AlignamizeSpans();
 };
+#endif
 
 void TSpan_List_Manager::AlignamizeSpans()
 {

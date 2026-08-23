@@ -23,6 +23,7 @@
 class RGE_Sprite;
 class RGE_Sound;
 
+#ifndef RGE_MO_OBJ_SHARED_CONTEXT
 struct RGE_Master_Animated_Object {
     char base[0xBC];
     int setup(FILE* file, RGE_Sprite** sprites, RGE_Sound** sounds, short count);
@@ -41,6 +42,7 @@ struct RGE_Master_Moving_Object : RGE_Master_Animated_Object {
 
     int setup(FILE* file, RGE_Sprite** sprites, RGE_Sound** sounds, short count);
 };
+#endif
 
 int RGE_Master_Moving_Object::setup(FILE* file, RGE_Sprite** sprites,
                                     RGE_Sound** sounds, short count)

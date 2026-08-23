@@ -75,6 +75,7 @@
 //   or updateAreaAverageTotal back into the body produced 33, 26, and 7 byte
 //   mismatches. The ordered post-ResourceItem initializer group is required.
 
+#ifndef TAITACMD_SHARED_CONTEXT
 void __cdecl operator delete(void* p);
 class TacticalAIModule { public: virtual ~TacticalAIModule(); char base[0xEC]; TacticalAIModule(void* owner, int player); };
 struct ManagedIntArray {
@@ -116,6 +117,7 @@ public:
     virtual ~TribeTacticalAIModule();
     TribeTacticalAIModule(void* param_1, int param_2);
 };
+#endif
 
 TribeTacticalAIModule::TribeTacticalAIModule(void* param_1, int param_2)
     : TacticalAIModule(param_1, param_2),

@@ -5,6 +5,7 @@
 // - Exact match with an unsigned switch input, producing the original `ja`
 //   bounds check and jump table.
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class TribeTacticalAIModule {
 public:
     char gap_000[0xE1C];
@@ -12,6 +13,7 @@ public:
 
     char* updateAreaName();
 };
+#endif
 
 char* TribeTacticalAIModule::updateAreaName()
 {

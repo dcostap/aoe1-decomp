@@ -2,10 +2,7 @@
 // PDB source: Mouseptr.cpp
 // Attempt log:
 
-class TMousePointer {
-public:
-    int GetDDBltError(long a_hresult);
-};
+#include "../../include/mouseptr_context.h"
 
 int TMousePointer::GetDDBltError(long a_hresult)
 {

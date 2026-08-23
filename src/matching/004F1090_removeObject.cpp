@@ -58,6 +58,7 @@
 //   artifacts. This source preserves that shipped list ownership.
 // - Exact-finish removal of temporary inline-depth pragmas remained exact.
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class TacticalAIModule {
 public:
     virtual ~TacticalAIModule();
@@ -130,6 +131,7 @@ public:
     int removeFromGroup(int objectId);
     void removeObject(int objectId);
 };
+#endif
 
 void TribeTacticalAIModule::removeObject(int objectId)
 {

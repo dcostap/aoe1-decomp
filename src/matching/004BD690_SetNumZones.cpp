@@ -7,6 +7,7 @@
 //   indexed for loop copying both arrays under the `if (Zone_Ptrs)` guard.
 // Result: MATCH locally with `python tools/check_function.py --va 004BD690`.
 
+#ifndef SPANLIST_SHARED_CONTEXT
 struct VSpan_Node;
 
 extern void* __cdecl calloc(int num, int size);
@@ -21,6 +22,7 @@ public:
 
     void SetNumZones(int newCount);
 };
+#endif
 
 void TSpan_Node_List::SetNumZones(int newCount) {
     if (newCount >= this->Max_Zones) {

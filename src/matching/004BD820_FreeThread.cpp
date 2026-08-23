@@ -1,6 +1,7 @@
 // attempt 1: direct free-thread walk/splice using the real list offsets from the type dump
 // target shape: return 0 on null head; otherwise count nodes, bump Free_Blocks, and splice the chain onto Free_Head
 
+#ifndef SPANLIST_SHARED_CONTEXT
 struct VSpan_Node {
     VSpan_Node* Next;
     VSpan_Node* Prev;
@@ -17,6 +18,7 @@ public:
 
     int FreeThread(VSpan_Node* first, VSpan_Node* second);
 };
+#endif
 
 int TSpan_Node_List::FreeThread(VSpan_Node* first, VSpan_Node* second) {
     int count;

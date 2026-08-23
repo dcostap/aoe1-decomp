@@ -12,6 +12,7 @@
 class RGE_Master_Moving_Object;
 class RGE_Player;
 
+#ifndef RGE_MO_OBJ_SHARED_CONTEXT
 class RGE_Static_Object {
 public:
     char gap_04[0x84];
@@ -47,6 +48,7 @@ public:
 
     RGE_Static_Object* make_new_obj(RGE_Player* player, float x, float y, float z);
 };
+#endif
 
 RGE_Static_Object* RGE_Master_Moving_Object::make_new_obj(RGE_Player* player,
                                                            float x, float y, float z) {

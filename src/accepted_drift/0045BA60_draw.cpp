@@ -39,49 +39,12 @@
 // The last-facet store moves across an unrelated mode read. All calls, used
 // flags, memory effects, returns, cleanup, and fault behavior match.
 
-#include <windows.h>
+#include "../../include/mouseptr_context.h"
 
-typedef unsigned long ulong;
-typedef unsigned char uchar;
-
-typedef RECT RECT4;
-struct Shape_Info {
-    unsigned long Shape_Data_Offsets;
-    unsigned long Shape_Outline_Offset;
-    long Reserved1;
-    long Reserved2;
-    long Width;
-    long Height;
-    long Hotspot_X;
-    long Hotspot_Y;
-};
-
-class IDirectDrawSurface;
 class IDirectDrawClipper;
 
-class TDrawArea {
-public:
-    char gap_00[0x3C];
-    IDirectDrawSurface* DrawSurface;
-    uchar* Lock(char* name, int flag);
-    void Unlock(char* name);
-    void SetTrans(int a, uchar b);
-};
-
-class TShape {
-public:
-    uchar* shape;
-    int load_type;
-    int load_size;
-    void* shape_header;
-    void* head;
-    void* offsets;
-    void* FShape;
-    Shape_Info* shape_info;
-    uchar shape_draw(TDrawArea* area, long x, long y, long facet, uchar a, uchar* b);
-};
-
 extern "C" ulong __cdecl debug_timeGetTime(char* file, int line);
+extern "C" __declspec(dllimport) int __stdcall InvalidateRect(void* hwnd, const RECT4* rect, int erase);
 #define STR_MOUSEPTR_CPP ((char*)0x00584BD0)
 #define STR_MOUSEPTR_DRAW ((char*)0x00584C38)
 
@@ -90,23 +53,6 @@ extern "C" ulong __cdecl debug_timeGetTime(char* file, int line);
 #define CALL_DD_CLIP(surf, out) ((long (__stdcall*)(void*, void*))VTBL(surf)[15])((surf),(out))
 #define CALL_DD_SETCLIP(surf, clip) ((long (__stdcall*)(void*, void*))VTBL(surf)[28])((surf),(clip))
 #define CALL_DD_BLTFAST(surf, x, y, src, srcR, flags) ((long (__stdcall*)(void*, long, long, void*, void*, unsigned long))VTBL(surf)[7])((surf),(x),(y),(src),(srcR),(flags))
-
-class TMousePointer {
-public:
-    TDrawArea* custom_draw; TDrawArea* render_area; TDrawArea* save_area; TDrawArea* primary_area;
-    int Num_Cursors; int Max_Cursors; TDrawArea* cursors[16]; TShape* Cursor_Shape; int Mouse_Mode; int Max_CX; int Max_CY;
-    int cWidth; int cHeight; int gWidth; int gHeight; int mouse_x; int mouse_y; int save_x; int save_y;
-    int facet; int game_facet; int next_facet; int last_facet; int d_top; int d_left; int d_bottom; int d_right;
-    int g_top; int g_left; int g_bottom; int g_right; int save_area_valid;
-    RECT4 save_rect; RECT4 mouse_rect; RECT4 cursor_rect; RECT4 new_save_rect; RECT4 restore_rect;
-    char gap_10C[0x10];
-    IDirectDrawSurface* restoreSurface;
-    IDirectDrawSurface* renderSurface;
-    IDirectDrawSurface* PrimarySurface; int active; int drawn; int Shutdown; int Setup; int GameMode; int GameEnabled;
-    int MouseOnScreen; ulong LastDrawTime; long LastddError;
-    int update_mouse_position();
-    void draw(int forced);
-};
 
 void TMousePointer::draw(int forced)
 {

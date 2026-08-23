@@ -1,3 +1,4 @@
+#ifndef RGE_VIEW_SHARED_CONTEXT
 class RGE_View {
 public:
     char gap_00[0x108];
@@ -8,6 +9,7 @@ public:
 
     void get_tile_sizes(short* width, short* height, short* half_width, short* half_height);
 };
+#endif
 
 void RGE_View::get_tile_sizes(short* width, short* height, short* half_width, short* half_height) {
     if (width != 0) {

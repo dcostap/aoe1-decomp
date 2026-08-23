@@ -34,7 +34,19 @@
 // get_tile_screen_coords fails. It does not clear fog_next_shape on that path.
 // Accepted-drift review also remains blocked by the later draw_flag/global
 // pointer-read order, which changes invalid-owner fault context.
+// Recovered view.cpp TU pass: the shared 0x360 RGE_View surface, /GX module
+// flags, and exact 00535480 prefix keep 666/665 bytes and 233 differences.
+// The 12 calls remain ordered. The output homes and fault-order blocker remain.
+// Continuation sa-5abaa990-r3: PDB lines 2110-2113 prove both center updates
+// precede the sprite test. Lines 2116-2119 prove the SDI store and draw-flag
+// read precede the placement-color test. Canonical x1..y4 output names and an
+// explicit draw-flag local restore that source order and the original early
+// master draw-flag read. The grouped result improves to 188 strict differences
+// with 12/12 ordered calls, but grows to 673/665 bytes. The remaining blocker
+// is a three-way scr_x/scr_y/frame-color stack-home cycle and later argument
+// scheduling. The result is not exact; preserve these binary-backed order fixes.
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 struct tagPOINT {
     long x;
     long y;
@@ -173,21 +185,21 @@ public:
     unsigned char facet;                    // +0x35
     char gap_36[0x96];
 };
+#endif
 
 void RGE_View::draw_object_outline() {
     short placement;
     short x1;
-    short y2;
-    short x4;
-    short y3;
-    short x2;
     short y1;
-    short scr_x;
-    unsigned char frame_color;
-    short scr_y;
+    short x2;
+    short y2;
     short x3;
+    short y3;
+    short x4;
     short y4;
-    short alignment_tail;
+    short scr_x;
+    short scr_y;
+    unsigned char frame_color;
     tagPOINT point;
     RGE_Pick_Info pick_info;
 
@@ -213,53 +225,52 @@ void RGE_View::draw_object_outline() {
 
     master->alignment(&pick_info.x, &pick_info.y, this->world, 0);
     if (this->get_tile_screen_coords(
-            (short)pick_info.x, (short)pick_info.y, &x3, &scr_y, 1) == 0)
+            (short)pick_info.x, (short)pick_info.y, &scr_x, &scr_y, 1) == 0)
         return;
 
     master->alignment_box(this->world, pick_info.x, pick_info.y,
-                              x4, y2, scr_x, y3, y4, y1, x2,
-                              alignment_tail);
+                          x1, y1, x2, y2, x3, y3, x4, y4);
 
-        placement = (unsigned char)master->check_placement(
-            rge_base_game->get_player(), pick_info.x, pick_info.y,
-            0, 1, master->elevation_flag, 0, 1, 1, 1);
-        fog_next_shape = 1;
-        if (placement == 0) {
-            fog_next_shape = 5;
+    placement = (unsigned char)master->check_placement(
+        rge_base_game->get_player(), pick_info.x, pick_info.y,
+        0, 1, master->elevation_flag, 0, 1, 1, 1);
+    fog_next_shape = 1;
+    if (placement == 0) {
+        fog_next_shape = 5;
+    } else {
+        unsigned int shape = (this->world->world_time >> 7) & 7;
+        if (shape < 4)
+            shape += 0x24;
+        else
+            shape = 0x2C - shape;
+        fog_next_shape = (shape << 4) | 9;
+    }
+
+    scr_x += ((int)x1 - (int)x3) / 2 + x3;
+    scr_y += ((int)y2 - (int)y4) / 2 + y4;
+
+    if (master->sprite != 0) {
+        SDI_Draw_Line = (int)scr_y;
+        int draw_flag = master->draw_flag & 1;
+
+        if (placement == 0)
+            frame_color = master->draw_color;
+        else
+            frame_color = 0x97;
+
+        if (rge_base_game->game_mode == 8 &&
+            rge_base_game->sub_game_mode == 1 &&
+            this->movable_object != 0) {
+            RGE_Static_Object* movable = this->movable_object;
+            RGE_Color_Table* colors = movable->owner->color_table;
+            master->draw(this->render_area, scr_x, scr_y, colors,
+                         movable->facet, 0, draw_flag, frame_color);
         } else {
-            unsigned int shape = (this->world->world_time >> 7) & 7;
-            if (shape < 4)
-                shape += 0x24;
-            else
-                shape = 0x2C - shape;
-            fog_next_shape = (shape << 4) | 9;
+            RGE_Color_Table* colors = rge_base_game->get_player()->color_table;
+            master->draw(this->render_area, scr_x, scr_y, colors,
+                         0, 0, draw_flag, frame_color);
         }
-
-        if (master->sprite != 0) {
-            x3 = (short)((int)x3 + ((int)x4 - (int)y4) / 2 + y4);
-            scr_y = (short)((int)scr_y + ((int)y3 - (int)alignment_tail) / 2 +
-                         alignment_tail);
-            SDI_Draw_Line = (int)scr_y;
-
-            if (placement == 0)
-                frame_color = master->draw_color;
-            else
-                frame_color = 0x97;
-
-            if (rge_base_game->game_mode == 8 &&
-                rge_base_game->sub_game_mode == 1 &&
-                this->movable_object != 0) {
-                RGE_Static_Object* movable = this->movable_object;
-                RGE_Color_Table* colors = movable->owner->color_table;
-                master->draw(this->render_area, x3, scr_y, colors,
-                             movable->facet, 0, master->draw_flag & 1,
-                             frame_color);
-            } else {
-                RGE_Color_Table* colors = rge_base_game->get_player()->color_table;
-                master->draw(this->render_area, x3, scr_y, colors,
-                             0, 0, master->draw_flag & 1, frame_color);
-            }
-        }
+    }
 
     fog_next_shape = 0;
 }

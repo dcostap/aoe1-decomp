@@ -1,3 +1,4 @@
+#ifndef SPANLIST_SHARED_CONTEXT
 class VSpanMiniList {
 public:
     unsigned char x;
@@ -10,6 +11,7 @@ public:
     void AddSpan(int y1, int y2, int x);
     void AddMiniList(VSpanMiniList* list, int yoff, int xoff);
 };
+#endif
 
 void TSpan_List_Manager::AddMiniList(VSpanMiniList* list, int yoff, int xoff) {
     if (list == 0) {

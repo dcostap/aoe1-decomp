@@ -50,9 +50,14 @@
 // 319 strict bytes. Making head mutable gave 206 bytes but published it before
 // the null guard. Keeping the 124-byte clean source is the smallest supported
 // model; the pre-GetNode home remains unresolved.
+// continuation: publishing savedHead after the seek but before the split guard
+// moves the home before GetNode and reduces strict drift to 30 bytes. The
+// original home store is before the seek. Keep this behavior lead unpromoted
+// until the earlier fault-order store has a clean source explanation.
 
 #include <stdlib.h>
 
+#ifndef SPANLIST_SHARED_CONTEXT
 struct VSpan_Node {
     VSpan_Node* Next;
     VSpan_Node* Prev;
@@ -99,6 +104,7 @@ public:
 
     void DeleteSpan(int left, int right, int line);
 };
+#endif
 
 void TSpan_List_Manager::DeleteSpan(int left, int right, int line)
 {
@@ -119,7 +125,11 @@ void TSpan_List_Manager::DeleteSpan(int left, int right, int line)
             if (left <= this->RightMostPx[line]) {
                 if (left <= this->LeftMostPx[line]
                     && right >= this->RightMostPx[line]) {
+#ifdef SPANLIST_SHARED_CONTEXT
+                    this->VSList.FreeThread(head, this->Line_Tail_Ptrs[line]);
+#else
                     this->FreeThread(head, this->Line_Tail_Ptrs[line]);
+#endif
                     this->Line_Head_Ptrs[line] = 0;
                     this->Line_Tail_Ptrs[line] = 0;
                     this->Span_Count[line] = 0;
@@ -137,8 +147,14 @@ void TSpan_List_Manager::DeleteSpan(int left, int right, int line)
                     } while (first->EndPx < left);
                 }
 
+                VSpan_Node* savedHead = head;
+
                 if (left > first->StartPx && right < first->EndPx) {
+#ifdef SPANLIST_SHARED_CONTEXT
+                    VSpan_Node* node = this->VSList.GetNode();
+#else
                     VSpan_Node* node = this->GetNode();
+#endif
                     node->Prev = first;
                     node->Next = first->Next;
                     first->Next = node;
@@ -156,7 +172,6 @@ void TSpan_List_Manager::DeleteSpan(int left, int right, int line)
                     first = first->Next;
                 }
 
-                VSpan_Node* savedHead = head;
                 VSpan_Node* next;
                 if (first != 0) do {
                     if (left <= first->StartPx && right >= first->EndPx) {
@@ -166,7 +181,11 @@ void TSpan_List_Manager::DeleteSpan(int left, int right, int line)
                         if (prev != 0) prev->Next = first->Next;
                         if (first->Next != 0) first->Next->Prev = first->Prev;
                         next = first->Next;
+#ifdef SPANLIST_SHARED_CONTEXT
+                        this->VSList.FreeNode(first);
+#else
                         this->FreeNode(first);
+#endif
                         this->Span_Count[line]--;
                         first = next;
                     } else {

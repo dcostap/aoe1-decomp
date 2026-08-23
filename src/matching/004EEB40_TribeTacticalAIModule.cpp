@@ -24,6 +24,7 @@
 //   retained only because the executable proves the one out-of-line call and
 //   the 13 inlined scalar cleanups.
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class TacticalAIModule {
 public:
     virtual ~TacticalAIModule();
@@ -160,6 +161,7 @@ public:
     int removeAllGroups(int);
     virtual ~TribeTacticalAIModule();
 };
+#endif
 
 TribeTacticalAIModule::~TribeTacticalAIModule()
 {

@@ -53,12 +53,16 @@
 // matching pass sa-3bf37621-r1: named col/row, bounds, and mask-number locals
 // preserve the caller's (col,row,width,height,mask) ownership. This source
 // compiles to the same clean basin as the pinned candidate.
-// Accepted drift: interior neighbor reads remain N,E,S,W,NE,SE,SW,NW. Edge
-// reads remain W,E,N,S,NW,SW,NE,SE with the same guards. The original has two
-// redundant edge tests and one shared return; the rebuild removes those tests
-// and duplicates the return. No reachable read, mask bit, fault order, or
-// result changes. The function has no calls or writes.
+// Accepted-drift baseline: interior reads remained N,E,S,W,NE,SE,SW,NW. Edge
+// reads remained W,E,N,S,NW,SW,NE,SE. The old isolated rebuild removed two
+// repeated edge tests and duplicated the return.
+// Exact grouped finish: the PDB-ordered shared prefix and /GX module flags
+// recover the original X/Y register roles, 382-byte boundary, and common return.
+// Four independent diagonal guards retain both repeated edge tests. Splitting
+// only the left or right pair is nonexact, so both source groups are required.
+// Final grouped result: MATCH, 0.0000%, 120 instructions, and no calls or writes.
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 extern unsigned long* unified_map_offsets[];
 
 class RGE_View {
@@ -69,6 +73,7 @@ public:
     int get_tile_mask_num(int col, int row, int map_width, int map_height,
                           unsigned long mask);
 };
+#endif
 
 int RGE_View::get_tile_mask_num(int col, int row, int map_width,
                                 int map_height, unsigned long mask)
@@ -103,18 +108,18 @@ int RGE_View::get_tile_mask_num(int col, int row, int map_width,
         int max_row = map_height - 1;
         if (row < max_row && (unified_map_offsets[row + 1][col] & mask) == 0)
             mask_number |= 0x20;
-        if (0 < col) {
-            if (0 < row && (unified_map_offsets[row - 1][col - 1] & mask) == 0)
-                mask_number |= 0x01;
-            if (row < max_row && (unified_map_offsets[row + 1][col - 1] & mask) == 0)
-                mask_number |= 0x02;
-        }
-        if (col < max_col) {
-            if (0 < row && (unified_map_offsets[row - 1][col + 1] & mask) == 0)
-                mask_number |= 0x08;
-            if (row < max_row && (unified_map_offsets[row + 1][col + 1] & mask) == 0)
-                mask_number |= 0x04;
-        }
+        if (0 < col && 0 < row &&
+            (unified_map_offsets[row - 1][col - 1] & mask) == 0)
+            mask_number |= 0x01;
+        if (0 < col && row < max_row &&
+            (unified_map_offsets[row + 1][col - 1] & mask) == 0)
+            mask_number |= 0x02;
+        if (col < max_col && 0 < row &&
+            (unified_map_offsets[row - 1][col + 1] & mask) == 0)
+            mask_number |= 0x08;
+        if (col < max_col && row < max_row &&
+            (unified_map_offsets[row + 1][col + 1] & mask) == 0)
+            mask_number |= 0x04;
     }
 
     return this->EdgeNumber[mask_number];

@@ -1,3 +1,4 @@
+#ifndef SPANLIST_SHARED_CONTEXT
 struct VSpan_Node {
     VSpan_Node* Next;
     VSpan_Node* Prev;
@@ -12,6 +13,7 @@ public:
 
     void FreeNode(VSpan_Node* node);
 };
+#endif
 
 void TSpan_Node_List::FreeNode(VSpan_Node* node) {
     node->Next = this->Free_Head;

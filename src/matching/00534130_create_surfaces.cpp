@@ -2,6 +2,7 @@
 // Attempt log:
 // initial natural implementation from packet with real constructors/destructors; relies on /GX EH lowering.
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 extern "C" void* __cdecl operator_new(unsigned int);
 extern "C" void __cdecl operator_delete(void*);
 
@@ -40,6 +41,7 @@ public:
 
     int create_surfaces();
 };
+#endif
 
 int RGE_View::create_surfaces()
 {

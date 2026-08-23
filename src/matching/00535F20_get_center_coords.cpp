@@ -1,3 +1,4 @@
+#ifndef RGE_VIEW_SHARED_CONTEXT
 class RGE_View {
 public:
     char gap_00[0x11A];
@@ -9,6 +10,7 @@ public:
 
     void get_center_coords(short* map_col, short* map_row, short* scr_col, short* scr_row);
 };
+#endif
 
 void RGE_View::get_center_coords(short* map_col, short* map_row, short* scr_col, short* scr_row) {
     if (map_col != 0) {

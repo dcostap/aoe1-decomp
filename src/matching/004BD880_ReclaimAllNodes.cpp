@@ -1,4 +1,5 @@
-class SomeClass {
+#ifndef SPANLIST_SHARED_CONTEXT
+class TSpan_Node_List {
 public:
     void ReclaimAllNodes();
     char pad[0x10];
@@ -10,7 +11,8 @@ public:
     char pad2[0x14];
     int field_38;
 };
-void SomeClass::ReclaimAllNodes() {
+#endif
+void TSpan_Node_List::ReclaimAllNodes() {
     this->field_10 = 0;
     this->field_14 = 0;
     this->field_18 = 0;

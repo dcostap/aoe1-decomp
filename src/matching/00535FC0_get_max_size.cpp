@@ -1,3 +1,4 @@
+#ifndef RGE_VIEW_SHARED_CONTEXT
 class RGE_View {
 public:
     char gap_00[0x116];
@@ -6,6 +7,7 @@ public:
 
     void get_max_size(short* cols, short* rows);
 };
+#endif
 
 void RGE_View::get_max_size(short* cols, short* rows) {
     *cols = max_col_num;

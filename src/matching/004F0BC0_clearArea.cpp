@@ -13,6 +13,7 @@
 // - Ordered switch arms by the original emitted block order. This produced an
 //   exact match with the default VC5 flags.
 
+#ifndef TAITACMD_SHARED_CONTEXT
 #define VPAD(n) virtual void v##n();
 
 class RGE_Static_Object {
@@ -54,6 +55,7 @@ public:
     int moveUnit(int object_id, float x, float y, int priority);
     int clearArea(int object_id, float x1, float y1, float x2, float y2);
 };
+#endif
 
 int TribeTacticalAIModule::clearArea(int object_id, float x1, float y1,
                                      float x2, float y2)

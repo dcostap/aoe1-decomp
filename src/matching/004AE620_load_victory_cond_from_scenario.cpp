@@ -23,8 +23,8 @@
 // 21: Modeled the proven adjacent four-byte stack slot and 40-byte text buffer as a typed local aggregate; the string LEA now matches.
 // 22: Made the adjacent slot an int field used as the itoa value; this restored the original dead local store and reduced the diff to 14 stack-displacement bytes.
 // 23: Typed RGE_Static_Obj pointers and declaration reorders were neutral; reversed aggregate fields moved the string home and worsened the diff.
-// GIVEUP: left in scratch; exact calls, size, frame, CFG, and block topology match. Remaining drift is 14 local stack displacements.
-// Managed claim notes: the natural source remains the 14-byte clean reconstruction.
+// The former clean source matched calls, size, frame, CFG, and block topology.
+// It had 14 local stack-displacement differences.
 // The first 20-probe checkpoint tested stack ownership, declaration order, field
 // types, liveness, comma evaluation, register qualification, and aggregate forms.
 // A typed amount/destination/text aggregate plus a separate scalar destination
@@ -34,67 +34,35 @@
 // the destination result; the aggregate copy stores it before that push.
 // Reversions restored the natural source. Open lead: recover that spill timing
 // through a period-plausible local ownership model, not a duplicate alias.
-// ACCEPTED DRIFT: All 14 changed bytes are stack displacements. One is a dead
-// amount spill after the same value is pushed for itoa. Four consistently shift
-// the converted rectangle locals by one dword. The remaining homes hold obj and
-// destobj during nonoverlapping live ranges; the rebuild safely reuses one home.
-// Every call receives the same values and addresses. Writes, predicates,
-// cleanup, and fault order match, and all opcode and relocation bytes match.
+// Exact finish:
+// - DIA gives Amount at -0x30, destobj at -0x2C, and str[40] at -0x28.
+// - DIA gives x1, y1, x2, and y2 at -0x38 through -0x44.
+// - The original case-1 block reads Amount. The case-3 block reads destobj.
+// - Separate PDB-named locals plus the Amount predicate recover all 880 bytes.
+// - Keeping either the aggregate or the destobj predicate leaves four bytes.
+// ORIGINAL BUG: Case 1 tests Amount instead of destobj.
+// Binary offsets +0x2E0 and +0x349 read the distinct PDB homes.
+// The selected victory line can depend on the amount when no destination exists.
+// Keep this shipped UI behavior instead of correcting the predicate.
 
-extern "C" char* __cdecl itoa(int, char*, int);
-
-class RGE_Static_Obj;
-
-struct VictoryTextBuffer {
-    int amount;
-    char str[40];
-};
-
-class TListLike { public: virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19(); virtual void v20(); virtual void v21(); virtual void v22(); virtual void v23(); virtual void v24(); virtual void v25(); virtual void v26(); virtual void v27(); virtual void v28(); virtual void v29(); virtual void v30(); virtual void v31(); virtual void v32(); virtual void v33(); virtual void v34(); virtual void v35(); virtual void v36(); virtual void v37(); virtual void v38(); virtual void v39(); virtual void v40(); virtual void v41(); virtual void v42(); virtual void v43(); virtual void v44(); virtual void v45(); virtual void v46(); virtual void v47(); virtual void v48(); virtual void v49(); virtual void v50(); virtual void v51(); virtual void v52(); virtual void v53(); virtual void v54(); virtual void v55(); virtual void set_data(int); };
-class TDropDownPanel { public: void set_line(long); void setCurrentLineNumber(int); int get_line(int); void setCurrentLineId(int); };
-class TEditPanel { public: void set_text(char*); };
-class RGE_View { public: void set_selection_area(long,long,long,long); };
-class T_Scenario {
-public:
-    virtual void v0(); virtual void v1(); virtual void reset();
-    int Get_victory_all_flag(); void SetSPWhich(int);
-    int GetSPAmount(int); int GetSPPlayerID(int); int GetSPObjectType(int); RGE_Static_Obj* GetSPObject(int);
-    RGE_Static_Obj* GetSPDestObjectID(int); int GetSPVictoryType(int); int GetSPAttribType(int);
-    int GetSPAllFlag(int); void GetSPRectangle(int, float*, float*, float*, float*);
-};
-class World { public: char gap[0x5c]; T_Scenario* scenario; };
-
-class TRIBE_Screen_Sed {
-public:
-    char gap0[0x480];
-    RGE_Static_Obj* SelectedObject;
-    RGE_Static_Obj* DestinationObject;
-    float px1, py1, px2, py2;
-    char gap498[0x4b8-0x498]; short player_num;
-    char gap4ba[0x4c8-0x4ba]; RGE_View* main_view;
-    char gap4cc[0x680-0x4cc]; TListLike* victory_and_or0; TListLike* victory_and_or1;
-    char gap688[0x734-0x688]; TDropDownPanel* victory_drop_down; TDropDownPanel* victory_object_list;
-    char gap73c[4]; TDropDownPanel* victory_enemy_player_list; TDropDownPanel* victory_attribute_list; TDropDownPanel* victory_ages_list; TDropDownPanel* victory_tech_list;
-    char gap750[0x76c-0x750]; TEditPanel* victory_amount_input;
-    char gap770[0x928-0x770]; World* world;
-    void load_victory_cond_from_scenario(int index);
-};
+#include "../../include/scr_sed2_context.h"
 
 void TRIBE_Screen_Sed::load_victory_cond_from_scenario(int index)
 {
-    VictoryTextBuffer text;
-    RGE_Static_Obj* destobj;
+    char str[40];
+    RGE_Static_Object* destobj;
+    int Amount;
     int VictoryType;
     long x1, y1, x2, y2;
-    RGE_Static_Obj* obj;
+    RGE_Static_Object* obj;
 
     int all = this->world->scenario->Get_victory_all_flag();
     if (all != 0) {
-        this->victory_and_or0->set_data(0);
-        this->victory_and_or1->set_data(1);
+        this->victory_and_or[0]->set_state(0);
+        this->victory_and_or[1]->set_state(1);
     } else {
-        this->victory_and_or0->set_data(1);
-        this->victory_and_or1->set_data(0);
+        this->victory_and_or[0]->set_state(1);
+        this->victory_and_or[1]->set_state(0);
     }
 
     if (index < 0) return;
@@ -102,9 +70,9 @@ void TRIBE_Screen_Sed::load_victory_cond_from_scenario(int index)
     this->DestinationObject = 0;
     this->world->scenario->reset();
     this->world->scenario->SetSPWhich((int)this->player_num - 1);
-    text.amount = this->world->scenario->GetSPAmount(index);
-    itoa(text.amount, text.str, 10);
-    this->victory_amount_input->set_text(text.str);
+    Amount = this->world->scenario->GetSPAmount(index);
+    itoa(Amount, str, 10);
+    this->victory_amount_input->set_text(str);
     this->victory_enemy_player_list->set_line(this->world->scenario->GetSPPlayerID(index) - 1);
     this->victory_object_list->setCurrentLineNumber(this->victory_object_list->get_line(this->world->scenario->GetSPObjectType(index)));
     obj = this->world->scenario->GetSPObject(index);
@@ -112,7 +80,7 @@ void TRIBE_Screen_Sed::load_victory_cond_from_scenario(int index)
     this->SelectedObject = obj;
     this->DestinationObject = destobj;
     VictoryType = this->world->scenario->GetSPVictoryType(index);
-    int attrib = this->world->scenario->GetSPAttribType(index);
+    int AttributeType = this->world->scenario->GetSPAttribType(index);
     this->world->scenario->GetSPRectangle(index, &this->px1, &this->py1, &this->px2, &this->py2);
     x1 = (long)this->px1; y1 = (long)this->py1; x2 = (long)this->px2; y2 = (long)this->py2;
     this->main_view->set_selection_area(-1,-1,-1,-1);
@@ -120,7 +88,7 @@ void TRIBE_Screen_Sed::load_victory_cond_from_scenario(int index)
 
     switch (VictoryType) {
     case 4:
-        switch (attrib) {
+        switch (AttributeType) {
         case 0: this->victory_drop_down->setCurrentLineNumber(10); break;
         case 3: this->victory_drop_down->setCurrentLineNumber(11); break;
         case 1: this->victory_drop_down->setCurrentLineNumber(12); break;
@@ -136,18 +104,20 @@ void TRIBE_Screen_Sed::load_victory_cond_from_scenario(int index)
         break;
     case 6:
         this->victory_drop_down->setCurrentLineNumber(17);
-        this->victory_attribute_list->setCurrentLineId(attrib);
+        this->victory_attribute_list->setCurrentLineId(AttributeType);
         return;
     case 7:
         this->victory_drop_down->setCurrentLineNumber(18);
-        this->victory_tech_list->setCurrentLineId(attrib);
+        this->victory_tech_list->setCurrentLineId(AttributeType);
         return;
     case 5:
         if (obj == 0) return;
         this->victory_drop_down->setCurrentLineNumber(9);
         break;
     case 1:
-        if (destobj != 0) this->victory_drop_down->setCurrentLineNumber(5);
+        // ORIGINAL BUG: PDB home -0x30 and the case-1 load use Amount.
+        // The destination object does not select line 5 in this case.
+        if (Amount != 0) this->victory_drop_down->setCurrentLineNumber(5);
         else if (obj != 0) this->victory_drop_down->setCurrentLineNumber(6);
         else if (this->world->scenario->GetSPAllFlag(index)) this->victory_drop_down->setCurrentLineNumber(7);
         else this->victory_drop_down->setCurrentLineNumber(8);

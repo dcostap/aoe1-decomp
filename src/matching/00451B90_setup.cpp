@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 
+#ifndef RGE_MO_OBJ_SHARED_CONTEXT
 struct RGE_Master_Animated_Object_setup {
     char base[0xBC];
     int setup(void* src);
@@ -21,10 +22,15 @@ struct RGE_Master_Moving_Object {
     unsigned char move_algorithem;
     int setup(RGE_Master_Moving_Object* src);
 };
+#endif
 
 int RGE_Master_Moving_Object::setup(RGE_Master_Moving_Object* src)
 {
+#ifdef RGE_MO_OBJ_SHARED_CONTEXT
+    RGE_Master_Animated_Object::setup(src);
+#else
     ((RGE_Master_Animated_Object_setup*)this)->setup(src);
+#endif
     
     *(unsigned char*)((char*)this + 4) = 0x1E;
     

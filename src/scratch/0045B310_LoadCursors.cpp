@@ -28,66 +28,19 @@
 // success path. A guarded top-tested validation loop reduced diff to 233 and
 // moved Shape_Info setup before the count test. It changes malformed-input
 // fault order. Restored the guarded do-loop. No accepted drift is safe.
+// Context pass: this owner now includes the canonical Mouseptr.cpp context.
+// TMousePointer, TShape, Shape_Info, and TDrawArea ownership use the reviewed
+// PDB layout. The owner remains in PDB line band 372-484 and in mouseptr_tu.cpp.
+// Continuation finish pass: a top-tested `while`/`for` validation scan reached
+// 72 positional bytes, but it loaded shape_info before the executable's
+// positive-count test. The guarded forms stayed at 233 or 294 bytes. This
+// changes malformed-input fault order, so the 72-byte candidate is rejected.
+// Volatile height/member probes did not recover the executable's register or
+// block order. The guarded do-loop remains the clean source.
+
+#include "../../include/mouseptr_context.h"
 
 extern "C" int sprintf(char*, const char*, ...);
-
-struct Shape_Info {
-    unsigned long Shape_Data_Offsets;
-    unsigned long Shape_Outline_Offset;
-    long Reserved1;
-    long Reserved2;
-    long Width;
-    long Height;
-    long Hotspot_X;
-    long Hotspot_Y;
-};
-
-class TDrawArea {
-public:
-    void Clear(void* rect, int flags);
-    void SetTrans(int on, unsigned char value);
-    unsigned char* Lock(char* name, int write);
-    void Unlock(char* name);
-    void FillRect(long x, long y, long w, long h, unsigned char color);
-};
-
-class TShape {
-public:
-    char gap_00[0x18];
-    void* FShape;          // +18
-    Shape_Info* shape_info; // +1c
-    TShape(char* filename, int file_id);
-    ~TShape();
-    int is_loaded();
-    int shape_count();
-    unsigned char shape_draw(TDrawArea* dst, long hot_x, long hot_y, int index, unsigned char flag, unsigned char* table);
-};
-
-class TMousePointer {
-public:
-    int custom_draw;          // +00
-    TDrawArea* render_area;   // +04
-    TDrawArea* save_area;     // +08
-    TDrawArea* primary_area;  // +0c
-    int Num_Cursors;          // +10
-    int Max_Cursors;          // +14
-    TDrawArea* cursors[16];   // +18
-    TShape* Cursor_Shape;     // +58
-    int Mouse_Mode;           // +5c
-    int Max_CX;               // +60
-    int Max_CY;               // +64
-    char gap_68[0x88-0x68];
-    int facet;                // +88
-    int game_facet;           // +8c
-    char gap_90[0x14c-0x90];
-    char cursor_file[0x104];  // +14c
-    int cursor_file_id;       // +250
-
-    int LoadCursors(char* base, int file_id, int keep_name);
-    int create_surfaces();
-    void set_facet(int);
-    void set_game_facet(int);
-};
 
 int TMousePointer::LoadCursors(char* base, int file_id, int keep_name)
 {
@@ -144,7 +97,8 @@ int TMousePointer::LoadCursors(char* base, int file_id, int keep_name)
             Shape_Info* info = (Shape_Info*)this->Cursor_Shape->shape_info;
             long* height = &info->Height;
             do {
-                if (height[-1] > this->Max_CX || *height > this->Max_CY) return 0;
+                if (height[-1] > this->Max_CX) return 0;
+                if (*height > this->Max_CY) return 0;
                 i++;
                 height += 8;
             } while (i < this->Num_Cursors);

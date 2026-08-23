@@ -44,6 +44,7 @@
 // - exact: placing the top-rectangle update before the right and bottom updates
 //   reproduces all 387 bytes, including the delayed-register scheduling.
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 #include <windows.h>
 
 class TDrawArea {
@@ -75,6 +76,7 @@ public:
     long view_function_terrain(unsigned char, tagRECT);
     long view_function(unsigned char, unsigned char, void*, void*, void*, void*, void*, void*, void*);
 };
+#endif
 
 void RGE_View::draw_view(unsigned char p1, TDrawArea* p2)
 {

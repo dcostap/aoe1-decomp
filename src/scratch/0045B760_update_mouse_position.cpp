@@ -48,29 +48,19 @@
 // clipping temporaries grew the frame to 0xC and reached 276 bytes. A register
 // selector and the retained top/bottom local forms were duplicate basins.
 // The clean 758-byte source remains the smallest natural reconstruction.
+// Context pass: this owner now includes the canonical Mouseptr.cpp context.
+// TMousePointer, TDrawSystem, TDrawArea, and RECT4 ownership use the reviewed
+// PDB layout. The owner remains in PDB line band 567-717 and in mouseptr_tu.cpp.
+// Continuation finish pass: named zero, register-selector, nested game-window,
+// and historical clipping forms either reproduced the 196-byte basin or grew
+// the frame/body. The retained source preserves the executable's clipping and
+// publication order; the EBX/EDI/EBP register basin remains unresolved.
 
-typedef unsigned char uchar;
+#include "../../include/mouseptr_context.h"
+
 struct POINT { long x; long y; };
-struct RECT4 { long left; long top; long right; long bottom; };
 extern "C" int (__stdcall* const GetCursorPos)(POINT*);
 extern "C" int (__stdcall* const ScreenToClient)(void*, POINT*);
-
-struct TDrawSystem { char gap[0x479]; uchar ScreenMode; };
-class TDrawArea { public: TDrawSystem* DrawSystem; void* Wnd; char gap08[0x10]; int Width; int Height; };
-class TShape;
-
-class TMousePointer {
-public:
-    int custom_draw; TDrawArea* render_area; TDrawArea* save_area; TDrawArea* primary_area;
-    int Num_Cursors; int Max_Cursors; TDrawArea* cursors[16]; TShape* Cursor_Shape; int Mouse_Mode; int Max_CX; int Max_CY;
-    int cWidth; int cHeight; int gWidth; int gHeight; int mouse_x; int mouse_y; int save_x; int save_y;
-    int facet; int game_facet; int next_facet; int last_facet; int d_top; int d_left; int d_bottom; int d_right;
-    int g_top; int g_left; int g_bottom; int g_right; int save_area_valid;
-    RECT4 save_rect; RECT4 mouse_rect; RECT4 cursor_rect; RECT4 new_save_rect; RECT4 restore_rect; RECT4 game_window;
-    void* restoreSurface; void* renderSurface; void* PrimarySurface; int active; int drawn; int Shutdown; int Setup; int GameMode; int GameEnabled;
-    int MouseOnScreen; unsigned long LastDrawTime; long LastddError;
-    int update_mouse_position();
-};
 
 int TMousePointer::update_mouse_position() {
     POINT point;

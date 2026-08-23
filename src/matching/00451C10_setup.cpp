@@ -24,6 +24,7 @@ extern "C" {
 class RGE_Sprite;
 class RGE_Sound;
 
+#ifndef RGE_MO_OBJ_SHARED_CONTEXT
 struct RGE_Master_Animated_Object {
     virtual ~RGE_Master_Animated_Object();
     unsigned char master_type;
@@ -43,6 +44,7 @@ struct RGE_Master_Moving_Object : RGE_Master_Animated_Object {
     unsigned char move_algorithem;
     int setup(int fd, RGE_Sprite** sprites, RGE_Sound** sounds);
 };
+#endif
 
 int RGE_Master_Moving_Object::setup(int fd, RGE_Sprite** sprites, RGE_Sound** sounds)
 {

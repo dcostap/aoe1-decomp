@@ -2,6 +2,7 @@
 // PDB source: view.cpp lines 4347-4387
 // attempt 1: direct decompiler-shaped control flow and typed fields.
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 class TDrawArea {
 public:
     void DrawLine(int x1, int y1, int x2, int y2, unsigned char color);
@@ -26,6 +27,7 @@ class RGE_View {
 public:
     void Draw_GDI_Object(DClipInfo_Node* node, TDrawArea* draw);
 };
+#endif
 
 void RGE_View::Draw_GDI_Object(DClipInfo_Node* node, TDrawArea* draw) {
     int i;

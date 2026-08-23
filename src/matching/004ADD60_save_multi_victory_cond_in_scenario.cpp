@@ -1,151 +1,96 @@
 // 004ADD60 TRIBE_Screen_Sed::save_multi_victory_cond_in_scenario
 // Attempt log:
 // 1: direct natural reconstruction from asm/PDB lines with local UI/scenario surfaces.
+// 2: The shared scr_sed2 context recovered the canonical world and screen owners.
+// 3: PDB-qualified T_Scenario Set_Multi_* calls and TTextPanel::currentLine
+//    restored all 40 direct targets and the complete 762-byte function.
 
-extern "C" int __cdecl atoi(const char*);
-
-class TButtonPanel { public: int get_state(); };
-class TDropDownPanel { public: long get_id(); };
-class TEditPanel { public: char* get_string(); };
-class T_Scenario {
-public:
-    char pad[0x5c];
-    void* info;
-};
-class TRIBE_Scenario_Info {
-public:
-    void SetMPVictory(int);
-    void SetVictoryScore(int);
-    void SetVictoryTime(int);
-    void Set_victory_all_flag(int);
-    void Set_victory_capture_flag(int);
-    void Set_victory_ruins(int);
-    void Set_victory_artifacts(int);
-    void Set_victory_exploration(int);
-    void Set_victory_conquest_flag(int);
-    void Set_victory_unused(int);
-};
-
-class TRIBE_Screen_Sed {
-public:
-    char pad0[0x4ac];
-    int mp_victory_type;
-    char pad4b0[0x668-0x4b0];
-    TButtonPanel* capture_check;
-    TButtonPanel* ruins_check;
-    TButtonPanel* artifacts_check;
-    TButtonPanel* exploration_check;
-    TButtonPanel* conquest_check;
-    TButtonPanel* unused_check;
-    char pad680[0x684-0x680];
-    TButtonPanel* all_victory_checkbox;
-    char pad688[0x6b8-0x688];
-    TEditPanel* ruins_edit;
-    TEditPanel* artifacts_edit;
-    TEditPanel* exploration_edit;
-    TEditPanel* conquest_edit;
-    TEditPanel* unused_edit;
-    char pad6cc[0x6e0-0x6cc];
-    TButtonPanel* standard_victory;
-    TButtonPanel* score_victory;
-    TButtonPanel* time_victory;
-    TButtonPanel* conquest_victory;
-    TButtonPanel* none_victory;
-    char pad6f4[4];
-    TDropDownPanel* score_dropdown;
-    char pad6fc[4];
-    TDropDownPanel* time_dropdown;
-    char pad704[0x928-0x704];
-    T_Scenario* scenario;
-    void save_multi_victory_cond_in_scenario();
-};
-
-#define INFO ((TRIBE_Scenario_Info*)this->scenario->info)
+#include "../../include/scr_sed2_context.h"
 
 void TRIBE_Screen_Sed::save_multi_victory_cond_in_scenario()
 {
     switch (this->mp_victory_type) {
     case 1:
-        INFO->SetMPVictory(0);
+        this->world->scenario->SetMPVictory(0);
         break;
     case 2:
-        INFO->SetMPVictory(1);
+        this->world->scenario->SetMPVictory(1);
         break;
     case 3:
-        INFO->SetMPVictory(2);
+        this->world->scenario->SetMPVictory(2);
         break;
     case 4:
-        INFO->SetMPVictory(3);
+        this->world->scenario->SetMPVictory(3);
         break;
     default:
-        INFO->SetMPVictory(4);
+        this->world->scenario->SetMPVictory(4);
         break;
     }
 
-    INFO->SetVictoryScore(this->score_dropdown->get_id());
-    INFO->SetVictoryTime(this->time_dropdown->get_id());
+    this->world->scenario->SetVictoryScore(this->victory_score->get_id());
+    this->world->scenario->SetVictoryTime(this->victory_time->get_id());
 
-    if (this->standard_victory->get_state()) {
-        INFO->SetMPVictory(0);
-    } else if (this->score_victory->get_state()) {
-        INFO->SetMPVictory(1);
-    } else if (this->time_victory->get_state()) {
-        INFO->SetMPVictory(2);
-    } else if (this->conquest_victory->get_state()) {
-        INFO->SetMPVictory(3);
+    if (this->victory_cond_type[0]->get_state()) {
+        this->world->scenario->SetMPVictory(0);
+    } else if (this->victory_cond_type[1]->get_state()) {
+        this->world->scenario->SetMPVictory(1);
+    } else if (this->victory_cond_type[2]->get_state()) {
+        this->world->scenario->SetMPVictory(2);
+    } else if (this->victory_cond_type[3]->get_state()) {
+        this->world->scenario->SetMPVictory(3);
     } else {
-        INFO->SetMPVictory(4);
+        this->world->scenario->SetMPVictory(4);
     }
 
-    INFO->SetVictoryScore(this->score_dropdown->get_id());
-    INFO->SetVictoryTime(this->time_dropdown->get_id());
+    this->world->scenario->SetVictoryScore(this->victory_score->get_id());
+    this->world->scenario->SetVictoryTime(this->victory_time->get_id());
 
-    if (this->all_victory_checkbox->get_state()) {
-        INFO->Set_victory_all_flag(1);
+    if (this->victory_and_or[1]->get_state()) {
+        this->world->scenario->Set_victory_all_flag(1);
     } else {
-        INFO->Set_victory_all_flag(0);
+        this->world->scenario->Set_victory_all_flag(0);
     }
 
-    if (!this->capture_check->get_state() && this->none_victory->get_state()) {
-        INFO->Set_victory_capture_flag(0);
+    if (!this->victory_cond_on[0]->get_state() && this->victory_cond_type[4]->get_state()) {
+        this->world->scenario->Set_Multi_Conquest(0);
     } else {
-        INFO->Set_victory_capture_flag(1);
+        this->world->scenario->Set_Multi_Conquest(1);
     }
 
-    int value = atoi(this->ruins_edit->get_string());
-    if (this->ruins_check->get_state()) {
+    int value = atoi(this->victory_condition_explore->currentLine());
+    if (this->victory_cond_on[1]->get_state()) {
         if (value < 1) value = 1;
         if (value > 100) value = 100;
-        INFO->Set_victory_ruins(value);
+        this->world->scenario->Set_Multi_Exploration(value);
     } else {
-        INFO->Set_victory_ruins(0);
+        this->world->scenario->Set_Multi_Exploration(0);
     }
 
-    value = atoi(this->artifacts_edit->get_string());
-    if (this->artifacts_check->get_state()) {
-        INFO->Set_victory_artifacts(value);
+    value = atoi(this->victory_condition_ruins->currentLine());
+    if (this->victory_cond_on[2]->get_state()) {
+        this->world->scenario->Set_Multi_Ruins(value);
     } else {
-        INFO->Set_victory_artifacts(0);
+        this->world->scenario->Set_Multi_Ruins(0);
     }
 
-    value = atoi(this->exploration_edit->get_string());
-    if (this->exploration_check->get_state()) {
-        INFO->Set_victory_exploration(value);
+    value = atoi(this->victory_condition_artifacts->currentLine());
+    if (this->victory_cond_on[3]->get_state()) {
+        this->world->scenario->Set_Multi_Artifacts(value);
     } else {
-        INFO->Set_victory_exploration(0);
+        this->world->scenario->Set_Multi_Artifacts(0);
     }
 
-    value = atoi(this->conquest_edit->get_string());
-    if (this->conquest_check->get_state()) {
-        INFO->Set_victory_conquest_flag(value);
+    value = atoi(this->victory_condition_discoveries->currentLine());
+    if (this->victory_cond_on[4]->get_state()) {
+        this->world->scenario->Set_Multi_Discoveries(value);
     } else {
-        INFO->Set_victory_conquest_flag(0);
+        this->world->scenario->Set_Multi_Discoveries(0);
     }
 
-    value = atoi(this->unused_edit->get_string());
-    if (this->unused_check->get_state()) {
-        INFO->Set_victory_unused(value);
+    value = atoi(this->victory_condition_gold->currentLine());
+    if (this->victory_cond_on[5]->get_state()) {
+        this->world->scenario->Set_Multi_Gold(value);
     } else {
-        INFO->Set_victory_unused(0);
+        this->world->scenario->Set_Multi_Gold(0);
     }
 }

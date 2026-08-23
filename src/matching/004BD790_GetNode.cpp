@@ -9,6 +9,7 @@
 
 #include "..\..\include\game_globals.h"
 
+#ifndef SPANLIST_SHARED_CONTEXT
 struct VSpan_Node {
     VSpan_Node* Next;
     char _pad[12];
@@ -30,6 +31,7 @@ public:
     void InitNewZone(int growSize);
     VSpan_Node* GetNode();
 };
+#endif
 
 VSpan_Node* TSpan_Node_List::GetNode()
 {

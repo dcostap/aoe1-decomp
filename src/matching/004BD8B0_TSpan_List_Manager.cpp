@@ -9,6 +9,7 @@
 
 #include <stdlib.h>
 
+#ifndef SPANLIST_SHARED_CONTEXT
 class VSpan_Node;
 
 class TSpan_Node_List {
@@ -51,9 +52,14 @@ public:
     ~TSpan_List_Manager();
     void SetSpanRegions(int, int, int, int);
 };
+#endif
 
 TSpan_List_Manager::TSpan_List_Manager(int NumPixels, int NumLines)
+#ifdef SPANLIST_SHARED_CONTEXT
+    : VSList(((NumPixels + 31) / 32) * NumLines, NumLines << 4, 0x10)
+#else
     : TSpan_Node_List(((NumPixels + 31) / 32) * NumLines, NumLines << 4, 0x10)
+#endif
 {
     this->Num_Lines = NumLines;
     if (NumLines < 0x10) this->Num_Lines = 0x10;

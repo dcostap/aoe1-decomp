@@ -55,7 +55,12 @@
 //   extra resize call. Restoring the depth immediately gives an exact match.
 // - Exact-finish reduction removed four redundant returns and flattened the
 //   soldier else-if. Both reductions remained exact.
+// - The shared template surface initially inlined three contains calls and
+//   moved the function into an 816-byte register basin. The executable keeps
+//   all three calls out of line. One narrow inline-depth region restores the
+//   exact isolated and grouped output without changing nearby exact owners.
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class RGE_Master_Static_Object {
 public:
     virtual ~RGE_Master_Static_Object();
@@ -138,6 +143,7 @@ public:
 
     void addObject(RGE_Static_Object* obj);
 };
+#endif
 
 void TribeTacticalAIModule::addObject(RGE_Static_Object* obj)
 {
@@ -175,6 +181,8 @@ void TribeTacticalAIModule::addObject(RGE_Static_Object* obj)
         if (obj->master_obj->object_group == 0x14) {
             id = obj->id;
             list = &this->transportBoats;
+            // BINARY NOTE: These three contains sites stay out of line.
+#pragma inline_depth(0)
             if (list->contains(id) != 1) {
                 number = list->numberValue;
                 if (number > list->maximumSizeValue - 1)
@@ -201,6 +209,7 @@ void TribeTacticalAIModule::addObject(RGE_Static_Object* obj)
             list = &this->fishingBoats;
             if (list->contains(id) == 1)
                 return;
+#pragma inline_depth(255)
             number = list->numberValue;
             if (number > list->maximumSizeValue - 1)
                 list->resize(number + 1);

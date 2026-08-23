@@ -11,6 +11,7 @@
 //   derived vtable store, optional setup call, and return-this epilogue.
 // Result: MATCH locally with `python tools/check_function.py --va 00451B10`.
 
+#ifndef RGE_MO_OBJ_SHARED_CONTEXT
 class RGE_Master_Animated_Object {
 public:
     virtual ~RGE_Master_Animated_Object();
@@ -24,6 +25,7 @@ public:
     int setup(void* stream, void** sprites, void** sounds, int index);
     RGE_Master_Moving_Object(void* stream, void** sprites, void** sounds, int index, int flag);
 };
+#endif
 
 RGE_Master_Moving_Object::RGE_Master_Moving_Object(void* stream, void** sprites, void** sounds, int index, int flag)
     : RGE_Master_Animated_Object(stream, sprites, sounds, index, 0)

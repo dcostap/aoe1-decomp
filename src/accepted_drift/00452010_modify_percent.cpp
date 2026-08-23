@@ -1,3 +1,4 @@
+#ifndef RGE_MO_OBJ_SHARED_CONTEXT
 class RGE_Master_Animated_Object {
 public:
     virtual void modify_percent(float value, unsigned char attribute);
@@ -10,6 +11,7 @@ public:
 
     void modify_percent(float value, unsigned char attribute);
 };
+#endif
 
 void RGE_Master_Moving_Object::modify_percent(float value, unsigned char attribute) {
     if (attribute != 6) {

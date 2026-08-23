@@ -56,6 +56,7 @@ extern "C" int __cdecl open(const char* path, int flags, ...);
 extern "C" int __cdecl close(int fd);
 extern "C" int __cdecl write(int fd, const void* buf, unsigned int count);
 
+#ifndef SPANLIST_SHARED_CONTEXT
 struct PALETTEENTRY { unsigned char peRed, peGreen, peBlue, peFlags; };
 struct RGBQUAD { unsigned char rgbBlue, rgbGreen, rgbRed, rgbReserved; };
 #pragma pack(push, 2)
@@ -80,7 +81,6 @@ struct BITMAPINFOHEADER {
     unsigned int biClrUsed;
     unsigned int biClrImportant;
 };
-static const char s_default_snapshot_name[] = "C:\\AOE_%03d.BMP";
 class TDrawArea { public: void GetPalette(PALETTEENTRY* pal); };
 
 class TSpan_List_Manager {
@@ -91,6 +91,9 @@ public:
     int DecodeLine(unsigned char* dst, int y, unsigned char color, int infile);
     void take_snapshot(char* name, int& number, TDrawArea* area, int color, TSpan_List_Manager** spans, int* colors, int count);
 };
+#endif
+
+static const char s_default_snapshot_name[] = "C:\\AOE_%03d.BMP";
 
 void TSpan_List_Manager::take_snapshot(char* name, int& number, TDrawArea* area, int color, TSpan_List_Manager** spans, int* colors, int count)
 {

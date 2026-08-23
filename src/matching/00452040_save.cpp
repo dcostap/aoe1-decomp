@@ -8,6 +8,7 @@ extern "C" {
 }
 
 // RGE_Master_Animated_Object base: 0xBC bytes
+#ifndef RGE_MO_OBJ_SHARED_CONTEXT
 struct RGE_Master_Animated_Object_save {
     char base[0xBC];
     void save(int fd);
@@ -28,6 +29,7 @@ struct RGE_Master_Moving_Object {
     
     void save(int fd);
 };
+#endif
 
 void RGE_Master_Moving_Object::save(int fd)
 {
@@ -44,7 +46,11 @@ void RGE_Master_Moving_Object::save(int fd)
     else
         temp_move_sprite = -1;
     
+#ifdef RGE_MO_OBJ_SHARED_CONTEXT
+    RGE_Master_Animated_Object::save(fd);
+#else
     ((RGE_Master_Animated_Object_save*)this)->save(fd);
+#endif
     
     rge_write(fd, &temp_run_sprite, 2);
     rge_write(fd, &temp_move_sprite, 2);

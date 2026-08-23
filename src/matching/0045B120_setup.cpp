@@ -8,25 +8,10 @@
 // proved by the exact Mouseptr siblings rather than decompiler cursor names.
 #include <stdio.h>
 
-class TMousePointer;
-class TDrawArea;
-class IDirectDrawSurface;
+#include "../../include/mouseptr_context.h"
+
 extern TMousePointer* MouseSystem;
 extern "C" __declspec(dllimport) void* __stdcall SetCursor(void*);
-class TDrawSystem { public: char gap_00[0x10]; TDrawArea* PrimaryArea; char gap_14[8]; IDirectDrawSurface* PrimarySurface; char gap_20[0x458]; unsigned char DrawType; };
-class TDrawArea { public: TDrawSystem* DrawSystem; char gap_04[0x38]; IDirectDrawSurface* DrawSurface; };
-class TShape { public: char gap[0x18]; void* FShape; void* shape_info; TShape(char*, int); int is_loaded(); long shape_count(); };
-class TMousePointer {
-public:
-    int custom_draw; TDrawArea* render_area; TDrawArea* save_area; TDrawArea* primary_area;
-    int Num_Cursors; int Max_Cursors; char gap_18[0x40]; TShape* Cursor_Shape;
-    char gap_5c[0xC4]; IDirectDrawSurface* renderSurface; IDirectDrawSurface* PrimarySurface;
-    char gap_128[0xC]; int Setup;
-    int LoadCursors(char* base, int palette, int keep_name);
-    void set_facet(int);
-    void set_game_facet(int);
-    int setup(int custom_draw, TDrawArea* render_area, char* base, int palette, int max_cursors);
-};
 
 int TMousePointer::setup(int custom_draw, TDrawArea* render_area, char* base, int palette, int max_cursors) {
     char file_name[260];

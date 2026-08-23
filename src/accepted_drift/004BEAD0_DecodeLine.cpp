@@ -2,6 +2,7 @@
 // tried the straightforward nested-loop shape; mismatch stayed at the early push/register order (node/line registers swapped)
 // tried a dest alias and the same loop body; VC5 still picked the wrong node/line register basin
 
+#ifndef SPANLIST_SHARED_CONTEXT
 class VSpan_Node {
 public:
     VSpan_Node* Next;
@@ -17,6 +18,7 @@ public:
 
     int DecodeLine(unsigned char* line, int line_index, unsigned char delta, int unused);
 };
+#endif
 
 int TSpan_List_Manager::DecodeLine(unsigned char* line, int line_index, unsigned char delta, int unused) {
     int count = 0;

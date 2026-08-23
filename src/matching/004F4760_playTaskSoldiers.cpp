@@ -24,6 +24,7 @@ extern "C" {
     void __cdecl operator_delete(void* ptr);
 }
 
+#ifndef TAITACMD_SHARED_CONTEXT
 template <class T>
 class ManagedArray {
 public:
@@ -178,6 +179,7 @@ public:
     TacticalAIGroup* groupUnitIsIn(int unit);
     TacticalAIGroup* createGroup(int kind);
 };
+#endif
 
 void TribeTacticalAIModule::playTaskSoldiers(unsigned long param_1,
                                               unsigned long param_2)

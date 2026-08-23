@@ -1,3 +1,4 @@
+#ifndef SPANLIST_SHARED_CONTEXT
 class TSpan_Node_List {
 public:
     char gap_0[0x2C];
@@ -7,6 +8,7 @@ public:
     int field_38;
     void ResetStats();
 };
+#endif
 
 void TSpan_Node_List::ResetStats() {
     this->field_2C = 0;

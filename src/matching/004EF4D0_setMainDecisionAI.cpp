@@ -1,9 +1,12 @@
+#ifndef TAITACMD_SHARED_CONTEXT
+class TribeMainDecisionAIModule;
 class TribeTacticalAIModule {
 public:
     virtual ~TribeTacticalAIModule();
     char gap_04[0xEC];
-    int mainDecisionAI_;
+    TribeMainDecisionAIModule* md;
 
-    void setMainDecisionAI(int);
+    void setMainDecisionAI(TribeMainDecisionAIModule*);
 };
-void TribeTacticalAIModule::setMainDecisionAI(int val) { this->mainDecisionAI_ = val; }
+#endif
+void TribeTacticalAIModule::setMainDecisionAI(TribeMainDecisionAIModule* val) { this->md = val; }
