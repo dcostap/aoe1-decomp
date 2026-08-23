@@ -17,8 +17,7 @@
 //   (1) branch-duplicated set_info_file/set_popup_info_file and set_button_pics
 //       calls (culture == 4 literal pushed twice, else branch CSEs culture+id
 //       into edi) recovered the original branch-local argument pushes;
-//   (2) pic-local loop (`TShape* pic; if (i < 12) pic = border1 else border2;
-//       button_panel[i]->border_pic = pic;`) kept the button load at the store
+//   (2) the 17-item border publication loop keeps the button load at the store
 //       site instead of hoisting it before the i<12 guard;
 //   (3) `save_culture = player->culture;` (CSE with the guard load) selects the
 //       original EAX store instead of the EBX clamp copy.
@@ -28,6 +27,15 @@
 //   /set_redraw per donor-slot evidence; TButtonPanel : TPanel with virtual
 //   ~TButtonPanel; RGE_Base_Game/RGE_Player virtual dtors; real TPanel fields
 //   previousPanelValue..panelNameValue). Codegen unchanged (still exact).
+// - owner/boundary: PDB names TRIBE_Screen_Game::player_changed in scr_game.cpp
+//   lines 3048-3255, body 00498A50-004992C8. 00498950 is jump-table data in
+//   do_button_action, not a function.
+// - exact-finish audit: the common-call walkback removed one set_info_file call
+//   and missed by 1784 bytes. The save-culture walkback changed one byte. The
+//   direct conditional border assignment stayed exact and is the smaller form.
+//   Final validation preserves the 0x204 EH frame, ebx/ebp/esi/edi saves, all 73
+//   ordered calls, stack homes, shape publication, delete/new fault order, and
+//   ret 8 cleanup. No synthetic owner, assembly, volatility, or config change.
 
 #include <stdio.h>
 
@@ -409,13 +417,8 @@ void TRIBE_Screen_Game::player_changed(int old_player, int new_player) {
             this->game_screen_pic = new TShape(str, game_pic_id);
 
             for (int i = 0; i < 0x11; ++i) {
-                TShape* pic;
-                if (i < 0x0C) {
-                    pic = this->button_border1_pic;
-                } else {
-                    pic = this->button_border2_pic;
-                }
-                this->button_panel[i]->border_pic = pic;
+                this->button_panel[i]->border_pic =
+                    (i < 0x0C) ? this->button_border1_pic : this->button_border2_pic;
             }
 
             if (this->pnl_wid >= 0x320 && this->pnl_hgt >= 0x258) {
