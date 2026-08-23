@@ -19,73 +19,7 @@
 //   preserved the natural source and emitted the oracle's sentinel-before-zero
 //   stores exactly: MATCH (328/328 bytes, 6/6 calls, default flags).
 
-extern "C" {
-    void* __cdecl operator_new(unsigned int size);
-    void __cdecl operator_delete(void* block);
-}
-
-class RGE_Game_World;
-class RGE_Player;
-class RGE_Static_Object;
-
-class RGE_Game_World {
-public:
-    RGE_Static_Object* object(int index);
-};
-
-class RGE_Player {
-public:
-    char gap_00[0x3C];
-    RGE_Game_World* world; // +0x3C
-};
-
-class RGE_Static_Object {
-public:
-    virtual ~RGE_Static_Object();
-
-    int id;                         // +0x04
-    void* master_obj;               // +0x08
-    RGE_Player* owner;              // +0x0C
-
-    float distance_to_object(RGE_Static_Object* other);
-};
-
-template <class T>
-class ManagedArray {
-public:
-    T* value;
-    int numberValue;
-    int desiredNumberValue;
-    int maximumSizeValue;
-
-    T& operator[](int index) {
-        if (index > this->maximumSizeValue - 1) {
-            int new_size = index + 1;
-            T* new_value = (T*)operator_new(new_size * sizeof(T));
-            if (new_value != 0) {
-                for (int i = 0; i < this->maximumSizeValue && i < new_size; i++) {
-                    new_value[i] = this->value[i];
-                }
-                operator_delete(this->value);
-                this->value = new_value;
-                this->maximumSizeValue = new_size;
-            }
-        }
-        return this->value[index];
-    }
-};
-
-class UnitAIModule {
-public:
-    virtual ~UnitAIModule();
-
-    RGE_Static_Object* objectValue; // +0x04
-    char gap_08[0x60 - 0x08];
-    ManagedArray<int> attackingUnitsValue; // +0x60
-    char gap_70[0x134 - 0x70];
-
-    virtual int closestAttacker(float* attackDistance);
-};
+#include "../../include/aiuaimod_context.h"
 
 int UnitAIModule::closestAttacker(float* attackDistance) {
     int attackObject;

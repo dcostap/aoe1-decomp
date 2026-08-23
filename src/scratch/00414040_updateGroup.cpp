@@ -44,209 +44,26 @@
 //   counter for the three-trigger phase loop moved the frame to 0xF8 and the
 //   diff to 1598 bytes. A typed int* group-list cursor raises shape similarity
 //   to 75.25% with 27.38% exact-block coverage.
-// - The executable writes groupList[0] = 0. Retain this memory effect even
-//   though it moves the rebuild to a wider code-generation basin.
+// - BINARY NOTE: the phase-255 path zeros all five totalHitPoints entries.
+//   It indexes that typed array by group and publishes totalHitPoints[i].
+//   The group-list cursor starts at groupList + 1 and advances after each
+//   member. These forms preserve the observed typed array addresses.
 // - Open blocker: the executable frame is 0xFC and this natural source frame
-//   is 0xF8. The first mismatch remains the prologue; broad structural drift
-//   remains despite exact ordered calls.
+//   is 0xF8. The first mismatch remains the prologue. Direct calls and their
+//   order match, but broad control-flow drift remains.
 // MANAGEDARRAY AUDIT: group-member growth guards, copies, publication, resize,
 // value reads, and field offsets follow the expected template behavior. No
 // shared template change is required.
 // BLOCKER: The executable frame is 0xFC and the natural source frame is 0xF8.
 // A 52-entry group list fixes only the frame and adds unsupported local storage.
 // Broad CFG drift also remains despite all 42 calls aligning.
+// Canonical-context pass: this owner uses the PDB aiuaimod.cpp surfaces and
+// the real bestUnitToAttack slot at vtable +0x30. The source has 42 direct
+// calls in the oracle order. The full prefix through 00414800 keeps this body
+// in the same code-generation basin. Do not change 00413AB0 queue indexing
+// or its timer and current-order publication while testing this owner.
 
-void* __cdecl operator new(unsigned int size);
-void __cdecl operator delete(void* block);
-
-class UnitAIModule;
-class AIPlay;
-class AIPlayBook;
-class AIPlayPhase;
-class AIPlayPhaseTrigger;
-class AIPlayPhaseCommand;
-class AIPlayStatus;
-class RGE_Game_World;
-class RGE_Player;
-class RGE_Master_Static_Object;
-class RGE_Static_Object;
-
-template <class T>
-class ManagedArray {
-public:
-    T* value;
-    int numberValue;
-    int desiredNumberValue;
-    int maximumSizeValue;
-
-    int resize(int newSize);
-
-    T& operator[](int index) {
-        if (index > this->maximumSizeValue - 1) {
-            int newSize = index + 1;
-            T* newValue = (T*)operator new(newSize * sizeof(T));
-            if (newValue != 0) {
-                for (int i = 0;
-                     i < this->maximumSizeValue && i < newSize;
-                     i++) {
-                    newValue[i] = this->value[i];
-                }
-                operator delete(this->value);
-                this->value = newValue;
-                this->maximumSizeValue = newSize;
-            }
-        }
-        return this->value[index];
-    }
-};
-
-class RGE_Game_World {
-public:
-    virtual ~RGE_Game_World();
-    int world_time;
-    char gap_08[0x98];
-    AIPlayBook* playbook;
-};
-
-class RGE_Player {
-public:
-    virtual ~RGE_Player();
-    char gap_04[0x38];
-    RGE_Game_World* world;
-};
-
-class RGE_Master_Static_Object {
-public:
-    virtual ~RGE_Master_Static_Object();
-    char gap_04[0x22];
-    short maximumHitPoints;
-    char gap_28[0x08];
-    float hitPoints;
-};
-
-#define VPAD1(n) virtual int vpad##n();
-#define VPAD2(n) VPAD1(n) VPAD1(n##_1)
-#define VPAD4(n) VPAD2(n) VPAD2(n##_2)
-#define VPAD8(n) VPAD4(n) VPAD4(n##_4)
-#define VPAD16(n) VPAD8(n) VPAD8(n##_8)
-#define VPAD32(n) VPAD16(n) VPAD16(n##_16)
-#define VPAD64(n) VPAD32(n) VPAD32(n##_32)
-
-class RGE_Static_Object {
-public:
-    virtual ~RGE_Static_Object();
-    int id;
-    RGE_Master_Static_Object* master_obj;
-    RGE_Player* owner;
-    char gap_10[0x20];
-    float hitPoints;
-    char gap_34[0x04];
-    float world_x;
-    float world_y;
-    float world_z;
-    char gap_44[0x04];
-    unsigned char object_state;
-    char gap_49[0x1B];
-    ManagedArray<int> groupMembers;
-
-    VPAD64(1)
-    VPAD32(65)
-    VPAD8(97)
-    VPAD4(105)
-    VPAD1(109)
-    virtual int groupUnitCommand(int index, int mode);
-    virtual int groupUnitCallback(int value);
-    VPAD2(112)
-    virtual int groupUnitCount();
-
-    UnitAIModule* unitAI();
-    float distance_to_position(float x, float y, float z);
-};
-
-class AIPlayBook {
-public:
-    AIPlay* play(int playNumber);
-};
-
-class AIPlayPhaseTrigger {
-public:
-    unsigned char typeValue;
-    char gap_01[3];
-    int value1Value;
-    int value2Value;
-    unsigned char phaseValue;
-    unsigned char nextPhaseValue;
-    char gap_0E[2];
-    int randomnessValue;
-};
-
-class AIPlayPhaseCommand {
-public:
-    unsigned char groupValue;
-    unsigned char typeValue;
-    char gap_02[2];
-    int value1Value;
-    int value2Value;
-    int value3Value;
-};
-
-class AIPlayPhase {
-public:
-    AIPlayPhaseTrigger* trigger(int index);
-    AIPlayPhaseCommand* command(int index);
-};
-
-class AIPlay {
-public:
-    AIPlayPhase* phase(int phaseNumber);
-    int groupGivenCommandOnPhase(int group, int commandType, int phase);
-    int fillGroups(AIPlayStatus* status, int* groupList, int groupCount,
-                   RGE_Game_World* world);
-};
-
-struct AIPlayGrouping {
-    int id;
-    unsigned char groupValue;
-    unsigned char typeValue;
-    char gap_06[2];
-};
-
-class AIPlayStatus {
-public:
-    AIPlayGrouping groupings[50];
-    int playNumberValue;
-    int targetValue;
-    int originalPointX;
-    int originalPointY;
-    int originalPointZ;
-    char gap_1A4[0x14];
-    unsigned char currentPhaseValue;
-    char gap_1B9[3];
-    int savedAttackerValue;
-    int lastPhaseChangeTimeValue;
-
-    unsigned char group(int id);
-    int originalHitPoints(int group);
-    void setOriginalHitPoints(int group, int value);
-};
-
-class UnitAIModule {
-public:
-    virtual ~UnitAIModule();
-    VPAD1(1) VPAD1(2) VPAD1(3) VPAD1(4) VPAD1(5) VPAD1(6)
-    VPAD1(7) VPAD1(8) VPAD1(9) VPAD1(10) VPAD1(11)
-    virtual int find_unit(int mode, int x, int y);
-
-    RGE_Static_Object* objectValue;
-    char gap_08[0x124];
-    AIPlayStatus* playStatus;
-
-    RGE_Static_Object* lookupObject(int id);
-    int selectNewPlayPhase(int phase, int param_2);
-    void updateGroup(unsigned long param_1);
-};
-
-#undef VPAD1
+#include "../../include/aiuaimod_context.h"
 
 void UnitAIModule::updateGroup(unsigned long param_1)
 {
@@ -254,7 +71,6 @@ void UnitAIModule::updateGroup(unsigned long param_1)
     int newTarget;
     AIPlay* play;
     AIPlayPhase* phase;
-    int i;
     int totalHitPoints[5];
     int groupList[50];
     int triggerSatisfied;
@@ -264,12 +80,12 @@ void UnitAIModule::updateGroup(unsigned long param_1)
     int a;
     int groupCount;
 
-    if (this->playStatus != 0 &&
+    if (this->playStatus &&
         (play = this->objectValue->owner->world->playbook->play(
              this->playStatus->playNumberValue)) != 0) {
         target = this->lookupObject(this->playStatus->targetValue);
-        if (target == 0) {
-            newTarget = this->find_unit(1, 0, 0);
+        if (!target) {
+            newTarget = this->bestUnitToAttack(1, 0, (float*)0);
             RGE_Static_Object* object = this->objectValue;
             int memberIndex = 0;
             if (object->groupMembers.numberValue > 0) {
@@ -287,7 +103,7 @@ void UnitAIModule::updateGroup(unsigned long param_1)
                             object->groupMembers.value[memberIndex]);
                         if (object != 0 && object->unitAI() != 0) {
                             UnitAIModule* memberAI = object->unitAI();
-                            newTarget = memberAI->find_unit(1, 0, 0);
+                            newTarget = memberAI->bestUnitToAttack(1, 0, (float*)0);
                         }
                     }
 
@@ -310,11 +126,11 @@ foundTrigger:
         }
 
         if (this->playStatus->currentPhaseValue == 0xFD) {
+            totalHitPoints[0] = 0;
             totalHitPoints[1] = 0;
             totalHitPoints[2] = 0;
             totalHitPoints[3] = 0;
             totalHitPoints[4] = 0;
-            groupList[0] = 0;
             groupCount = 0;
             deadCount = 0;
             if (this->objectValue->groupMembers.numberValue > 0) {
@@ -348,23 +164,21 @@ foundTrigger:
             play->fillGroups(this->playStatus, groupList + 1, groupCount,
                              this->objectValue->owner->world);
             if (groupCount > 0) {
-                int* group = groupList;
+                int* group = groupList + 1;
                 int remaining = groupCount;
                 do {
-                    ++group;
                     RGE_Static_Object* member = this->lookupObject(*group);
-                    unsigned char groupNumber =
-                        this->playStatus->group(*group);
-                    int hitPoints = (int)member->hitPoints;
-                    totalHitPoints[groupNumber + 1] += hitPoints;
+                    totalHitPoints[this->playStatus->group(*group)] +=
+                        (int)member->hitPoints;
                     --remaining;
+                    ++group;
                 } while (remaining != 0);
             }
 
-            i = 0;
+            int i = 0;
             do {
                 this->playStatus->setOriginalHitPoints(
-                    i, totalHitPoints[i + 1]);
+                    i, totalHitPoints[i]);
                 ++i;
             } while (i < 5);
             this->selectNewPlayPhase(0, 0);
@@ -372,8 +186,8 @@ foundTrigger:
         }
 
         phase = play->phase((unsigned int)this->playStatus->currentPhaseValue);
-        if (phase != 0) {
-            i = 0;
+        if (phase) {
+            int i = 0;
             do {
                 trigger = phase->trigger(i);
                 if (trigger != 0 && trigger->typeValue != 0) {
@@ -381,20 +195,15 @@ foundTrigger:
                     case 1: {
                         triggerSatisfied = 1;
                         a = 0;
-                        do {
-                            if (triggerSatisfied == 0) {
-                                break;
-                            }
+                        while (triggerSatisfied != 0) {
                             int command = play->groupGivenCommandOnPhase(
                                 a, 1, this->playStatus->currentPhaseValue);
                             if (command != -1) {
                                 AIPlayPhaseCommand* phaseCommand =
                                     phase->command(command);
                                 int groupingOffset = 0;
-                                do {
-                                    if (triggerSatisfied == 0) {
-                                        break;
-                                    }
+                                while (triggerSatisfied != 0 &&
+                                       groupingOffset < 400) {
                                     AIPlayGrouping* grouping =
                                         (AIPlayGrouping*)((char*)this->playStatus +
                                                           groupingOffset);
@@ -417,15 +226,18 @@ foundTrigger:
                                         }
                                     }
                                     groupingOffset += 8;
-                                } while (groupingOffset < 400);
+                                }
                             }
                             ++a;
-                        } while (a < 5);
+                            if (a >= 5) {
+                                break;
+                            }
+                        }
                         break;
                     }
                     case 2: {
-                        int deadGroups = 0;
                         int matchingGroups = 0;
+                        int deadGroups = 0;
                         int groupingOffset = 0;
                         do {
                             AIPlayGrouping* grouping =

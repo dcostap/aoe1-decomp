@@ -21,73 +21,11 @@
 
 #include <math.h>
 #include "../../include/game_globals.h"
-
-struct VisibleUnitEntry {
-    int object_id;              // +0x00
-    unsigned char distance;     // +0x04
-    unsigned char owner;        // +0x05
-    unsigned char gap_06[2];
-};
+#include "../../include/aiuaimod_context.h"
 
 extern int DAT_0087d7c8[5];
 extern VisibleUnitEntry* DAT_0087d7e0[5];
 extern int numberDifferentPlayerObjectsVisible;
-
-class RGE_Game_World;
-class RGE_Player;
-class RGE_Master_Static_Object;
-class RGE_Static_Object;
-
-class RGE_Game_World {
-public:
-    virtual ~RGE_Game_World();
-    RGE_Static_Object* object(int id);
-};
-
-class RGE_Player {
-public:
-    virtual ~RGE_Player();
-    int id;                         // +0x04
-    char gap_08[0x34];
-    RGE_Game_World* world;          // +0x3C
-};
-
-class RGE_Master_Static_Object {
-public:
-    virtual ~RGE_Master_Static_Object();
-    char gap_04[0x0C];
-    short id;                        // +0x10
-    short gap_12;
-    short object_group;              // +0x14
-};
-
-class RGE_Static_Object {
-public:
-    virtual ~RGE_Static_Object();
-
-    int id;                          // +0x04
-    RGE_Master_Static_Object* master_obj; // +0x08
-    RGE_Player* owner;               // +0x0C
-    char gap_10[0x38];
-    unsigned char object_state;      // +0x48
-};
-
-class UnitAIModule {
-public:
-    virtual ~UnitAIModule();
-    virtual void save(int);
-    virtual void load(int);
-    virtual RGE_Player* owner();
-    virtual int order(int, int, int, int, float, float, float, float, int, int, int);
-    virtual int notify(int, int, int, long, long, long);
-    virtual int notifyCommander(int, int, int, long, long, long);
-    virtual int notifyCommander(void*);
-    virtual void search();           // +0x20
-    virtual int closestObject(int, int, int, int, int*);
-
-    RGE_Static_Object* objectValue;  // +0x04
-    char gap_08[0x2C];
-};
 
 int UnitAIModule::closestObject(int param_1, int param_2, int param_3,
                                 int param_4, int* param_5) {

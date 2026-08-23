@@ -39,6 +39,7 @@
 // codegen duplicate. Exact donors confirm the same natural switch family;
 // retain the shared-tail candidate and pause at the isolated register drift.
 
+#ifndef TACT_BLD_CONTEXT_H
 class RGE_Static_Object;
 class RGE_Action_Object;
 class RGE_Player;
@@ -225,6 +226,7 @@ public:
 };
 
 extern RGE_Base_Game* rge_base_game;
+#endif
 
 unsigned char TRIBE_Action_Build::update()
 {

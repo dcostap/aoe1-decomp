@@ -1,12 +1,22 @@
+#ifndef ACT_ATAK_CONTEXT_H
 class RGE_Sprite;
 
-class RGE_Master_Action_Object {
+class RGE_Master_Static_Object {
 public:
-    char gap_00[0x18];
+    virtual ~RGE_Master_Static_Object();
+    char gap_04[0x14];
     RGE_Sprite* sprite;
     char gap_1C[0xA0];
+};
+
+class RGE_Master_Action_Object : public RGE_Master_Static_Object {
+public:
     RGE_Sprite* move_sprite;
     char gap_C0[0x3C];
+};
+
+class RGE_Master_Combat_Object : public RGE_Master_Action_Object {
+public:
     RGE_Sprite* fight_sprite;
 };
 
@@ -15,7 +25,7 @@ public:
     virtual void vf00(void);
 
     int gap_04;
-    RGE_Master_Action_Object* master_obj;
+    RGE_Master_Static_Object* master_obj;
 };
 
 class RGE_Task {
@@ -39,12 +49,14 @@ public:
 
     void copy_obj_sprites(RGE_Master_Action_Object* param_1, RGE_Task* param_2, RGE_Task* param_3);
 };
+#endif
 
 void RGE_Action_Attack::copy_obj_sprites(RGE_Master_Action_Object* param_1, RGE_Task* param_2, RGE_Task* param_3) {
     if (this->move_sprite != 0) {
         if ((param_2 != 0) && (param_3 != 0) && (this->move_sprite == param_2->move_sprite)) {
             this->move_sprite = param_3->move_sprite;
-        } else if (this->move_sprite == this->obj->master_obj->move_sprite) {
+        } else if (this->move_sprite ==
+                   ((RGE_Master_Action_Object*)this->obj->master_obj)->move_sprite) {
             this->move_sprite = param_1->move_sprite;
         }
     }
@@ -54,8 +66,10 @@ void RGE_Action_Attack::copy_obj_sprites(RGE_Master_Action_Object* param_1, RGE_
             this->fight_sprite = param_3->work_sprite;
         } else if ((param_2 != 0) && (param_3 != 0) && (this->fight_sprite == param_2->work_sprite2)) {
             this->fight_sprite = param_3->work_sprite2;
-        } else if (this->fight_sprite == this->obj->master_obj->fight_sprite) {
-            this->fight_sprite = param_1->fight_sprite;
+        } else if (this->fight_sprite ==
+                   ((RGE_Master_Combat_Object*)this->obj->master_obj)->fight_sprite) {
+            this->fight_sprite =
+                ((RGE_Master_Combat_Object*)param_1)->fight_sprite;
         }
     }
 

@@ -1,13 +1,6 @@
 int debug_rand(char* file, int line);
 
-class UnitAIModule {
-public:
-    char gap_00[0xFC];
-    unsigned int adjustedIdleTimeoutValue;
-    unsigned int idleTimeoutValue;
-
-    void setAdjustedIdleTimeout(void);
-};
+#include "../../include/aiuaimod_context.h"
 
 void UnitAIModule::setAdjustedIdleTimeout(void) {
     unsigned int idleTimeout = this->idleTimeoutValue;

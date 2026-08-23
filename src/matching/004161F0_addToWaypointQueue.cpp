@@ -1,18 +1,4 @@
-struct Waypoint {
-    float x;
-    float y;
-    float z;
-    unsigned char facetToNextWaypoint;
-};
-
-class UnitAIModule {
-public:
-    char gap_00[0x70];
-    Waypoint waypointQueue[8];
-    int waypointQueueSizeValue;
-
-    int addToWaypointQueue(int param_1, int param_2);
-};
+#include "../../include/aiuaimod_context.h"
 
 int UnitAIModule::addToWaypointQueue(int param_1, int param_2) {
     if (this->waypointQueueSizeValue >= 8) {

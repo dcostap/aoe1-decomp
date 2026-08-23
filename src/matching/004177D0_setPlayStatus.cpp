@@ -9,26 +9,13 @@
 
 void* __cdecl operator new(unsigned int sz);
 
-class AIPlayStatus {
-public:
-    char gap_00[0x1C8];
-    AIPlayStatus();
-    void copy(AIPlayStatus* other);
-};
-
-class UnitAIModule {
-public:
-    char gap_00[0x12C];
-    AIPlayStatus* play_status;
-
-    void setPlayStatus(AIPlayStatus* status);
-};
+#include "../../include/aiuaimod_context.h"
 
 void UnitAIModule::setPlayStatus(AIPlayStatus* status) {
-    if (play_status == 0) {
-        play_status = new AIPlayStatus();
+    if (playStatus == 0) {
+        playStatus = new AIPlayStatus();
     }
-    if (play_status != 0 && status != 0) {
-        play_status->copy(status);
+    if (playStatus != 0 && status != 0) {
+        playStatus->copy(status);
     }
 }

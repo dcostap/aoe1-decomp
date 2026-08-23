@@ -15,6 +15,7 @@
 //   The named forms remain because they satisfy source ownership policy.
 // - VALIDATION: check_function.py --va 004014B0 --detail full => MATCH, 0.0000%.
 
+#ifndef ACT_ATAK_CONTEXT_H
 class RGE_Sprite;
 class RGE_Task;
 class RGE_Action_List;
@@ -198,6 +199,7 @@ public:
 
     int ready_to_attack(int& range_status);
 };
+#endif
 
 void RGE_Action_Attack::first_in_stack(unsigned char param_1)
 {

@@ -16,37 +16,7 @@
 
 extern float DAT_0056ebe0;
 
-class Visible_Resource_Manager;
-
-class RGE_Master_Static_Object {
-public:
-    virtual ~RGE_Master_Static_Object();
-    char gap_04[0x24];
-    float los;
-};
-
-class RGE_Player {
-public:
-    virtual ~RGE_Player();
-    char gap_04[0x10C];
-    Visible_Resource_Manager* VR_List;
-};
-
-class VISIBLE_RESOURCE_REC {
-public:
-    int object_id;
-    unsigned char distance;
-    unsigned char zone;
-    unsigned char pos_x;
-    unsigned char pos_y;
-};
-
-class Visible_Resource_Manager {
-public:
-    VISIBLE_RESOURCE_REC* Get_Closest_Resource(
-        int x, int y, int zone, int resourceType,
-        int* excludeList, int excludeCount);
-};
+#include "../../include/aiuaimod_context.h"
 
 #define VPAD1(n) virtual void vf##n();
 #define VPAD2(n) VPAD1(n) VPAD1(n##_1)
@@ -56,7 +26,7 @@ public:
 #define VPAD32(n) VPAD16(n) VPAD16(n##_16)
 #define VPAD64(n) VPAD32(n) VPAD32(n##_32)
 
-class RGE_Static_Object {
+class RGE_Static_Object_Path_Query6 {
 public:
     VPAD64(0)
     VPAD32(64)
@@ -65,22 +35,6 @@ public:
     virtual int canPath(int objectId, float distance, float* path,
                         int param_4, int param_5, int param_6);
 
-    long id;
-    RGE_Master_Static_Object* master_obj;
-    RGE_Player* owner;
-    char gap_10[0x28];
-    float world_x;
-    float world_y;
-
-    unsigned char currentZone();
-};
-
-class UnitAIModule {
-public:
-    virtual ~UnitAIModule();
-    RGE_Static_Object* objectValue;
-
-    virtual int closestResourceObject(int resourceType, int* distance);
 };
 
 int UnitAIModule::closestResourceObject(int resourceType, int* distance) {
@@ -109,8 +63,8 @@ int UnitAIModule::closestResourceObject(int resourceType, int* distance) {
             return -1;
         }
 
-        if (this->objectValue->canPath(resource->object_id, 1.0f, 0,
-                                       0, -1, -1) == 1) {
+        if (((RGE_Static_Object_Path_Query6*)this->objectValue)
+                ->canPath(resource->object_id, 1.0f, 0, 0, -1, -1) == 1) {
             break;
         }
 

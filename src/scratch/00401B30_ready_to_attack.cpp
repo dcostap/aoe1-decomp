@@ -51,9 +51,15 @@
 //   Duplicating the close source arm tail-merged back to the clean basin.
 // - Reversed threshold predicates were codegen-duplicate. The clean source is
 //   restored and remains the current natural checkpoint.
+// Authentic Act_atak.cpp context pass (sa-1349a780-r1):
+// - The shared /GX wrapper and canonical object/master declarations emitted
+//   the same x87 body. The result stays 961 bytes with 613 positional bytes
+//   of drift and 22 ordered calls. The module prefix does not move the first
+//   distance/range divergence.
 
 #include <math.h>
 
+#ifndef ACT_ATAK_CONTEXT_H
 extern float DAT_0056e0cc;
 
 class RGE_Sprite;
@@ -333,6 +339,7 @@ public:
 
     int ready_to_attack(int&);
 };
+#endif
 
 int RGE_Action_Attack::ready_to_attack(int& range_status)
 {

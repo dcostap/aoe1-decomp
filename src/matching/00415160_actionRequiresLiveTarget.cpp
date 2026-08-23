@@ -1,13 +1,7 @@
 // first pass: direct byte flag check, then whitelist the live-target action ids
 // if this misses, the remaining mismatch is likely only the early return layout or the byte-field placement
 
-class UnitAIModule {
-public:
-    char gap_00[0x12C];
-    unsigned char stopAfterTargetKilledValue;
-
-    virtual int actionRequiresLiveTarget(int actionId);
-};
+#include "../../include/aiuaimod_context.h"
 
 int UnitAIModule::actionRequiresLiveTarget(int actionId) {
     if (this->stopAfterTargetKilledValue != 1) {

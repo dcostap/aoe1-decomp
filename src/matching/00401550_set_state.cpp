@@ -2,6 +2,7 @@
 // Attempt log:
 // initial natural switch with local class surfaces; iterate with check_function.
 
+#ifndef ACT_ATAK_CONTEXT_H
 class RGE_Sprite;
 class RGE_Static_Object;
 class RGE_Action_Object;
@@ -170,6 +171,7 @@ public:
     unsigned char indirect_fire_flag;
     unsigned char gap_5B;
 };
+#endif
 
 void RGE_Action_Attack::set_state(unsigned char param_1)
 {

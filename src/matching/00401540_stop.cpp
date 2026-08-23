@@ -1,3 +1,4 @@
+#ifndef ACT_ATAK_CONTEXT_H
 class RGE_Action_Attack {
 public:
     virtual void vf00(void);
@@ -27,6 +28,7 @@ public:
 
     int stop(void);
 };
+#endif
 
 int RGE_Action_Attack::stop(void) {
     this->set_state(1);

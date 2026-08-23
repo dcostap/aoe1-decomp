@@ -19,65 +19,7 @@
 
 extern FILE* actionFile;
 
-#define VPAD1(n) virtual void vpad##n();
-#define VPAD2(n) VPAD1(n) VPAD1(n##_1)
-#define VPAD4(n) VPAD2(n) VPAD2(n##_2)
-#define VPAD8(n) VPAD4(n) VPAD4(n##_4)
-#define VPAD16(n) VPAD8(n) VPAD8(n##_8)
-#define VPAD64(n) VPAD16(n) VPAD16(n##_16) VPAD32(n##_32)
-#define VPAD32(n) VPAD16(n) VPAD16(n##_16)
-
-class RGE_Master_Static_Object {
-public:
-    char gap_00[0x14];
-    short object_group;
-};
-
-class RGE_Static_Object;
-
-class RGE_Game_World {
-public:
-    RGE_Static_Object* object(int id);
-};
-
-class RGE_Player {
-public:
-    char gap_00[0x3C];
-    RGE_Game_World* world;
-};
-
-class RGE_Static_Object {
-public:
-    VPAD64(0)
-    VPAD16(64)
-    VPAD8(80)
-    virtual void vpad88();
-    virtual int canHunt(int targetId, int flag);
-
-    int id;
-    RGE_Master_Static_Object* master_obj;
-    RGE_Player* owner;
-    char gap_10[0x38 - 0x10];
-    int world_x;
-    int world_y;
-    int world_z;
-};
-
-class UnitAIModule {
-public:
-    VPAD16(0)
-    VPAD4(16)
-    VPAD2(20)
-    virtual void stopObject(int flag);
-
-    RGE_Static_Object* objectValue;
-    char gap_08[0x30 - 0x08];
-    int currentActionValue;
-
-    void setCurrentAction(int action);
-    void setCurrentTarget(int id, int group, int x, int y, int z);
-    int huntObject(int param_1, int param_2);
-};
+#include "../../include/aiuaimod_context.h"
 
 int UnitAIModule::huntObject(int param_1, int param_2) {
     if (param_2 != 0 || this->currentActionValue != 0x265) {
@@ -96,7 +38,7 @@ int UnitAIModule::huntObject(int param_1, int param_2) {
         }
 
         this->stopObject(1);
-        if (this->objectValue->canHunt(param_1, param_2) == 1) {
+        if (this->objectValue->hunt(param_1, param_2) == 1) {
             RGE_Static_Object* target =
                 this->objectValue->owner->world->object(param_1);
             this->setCurrentAction(0x265);
@@ -115,11 +57,3 @@ int UnitAIModule::huntObject(int param_1, int param_2) {
     }
     return 0;
 }
-
-#undef VPAD64
-#undef VPAD32
-#undef VPAD16
-#undef VPAD8
-#undef VPAD4
-#undef VPAD2
-#undef VPAD1

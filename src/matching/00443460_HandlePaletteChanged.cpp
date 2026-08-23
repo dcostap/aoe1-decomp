@@ -1,11 +1,6 @@
-class TDrawSystem {
-public:
-    void* gap_00;
-    void* Wnd;
-
-    int HandleQueryNewPalette(void* hwnd, unsigned int msg, unsigned int wparam, long lparam);
-    void HandlePaletteChanged(void* hwnd, unsigned int msg, unsigned int wparam, long lparam);
-};
+// BINARY NOTE: the canonical Drawarea context preserves the exact owner and
+// the member-call ABI for HandleQueryNewPalette.
+#include "../../include/drawarea_context.h"
 
 void TDrawSystem::HandlePaletteChanged(void* hwnd, unsigned int msg, unsigned int wparam, long lparam) {
     if (hwnd != this->Wnd) {

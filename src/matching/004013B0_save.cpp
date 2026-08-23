@@ -3,6 +3,7 @@
 // Exact reconstruction: copy the handle before reusing the parameter home for
 // the short sprite ID. VC5 then preserves the original partial-register stores.
 
+#ifndef ACT_ATAK_CONTEXT_H
 class RGE_Sprite {
 public:
     char gap_00[0x72];
@@ -56,6 +57,7 @@ public:
 
     void save(int param_1);
 };
+#endif
 
 void RGE_Action_Attack::save(int param_1) {
     int handle = param_1;

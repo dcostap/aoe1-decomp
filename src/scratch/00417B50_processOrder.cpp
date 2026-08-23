@@ -25,7 +25,7 @@
 // remains scratch because dispatch/tail topology and byte scheduling remain
 // unresolved.
 // - Preserved the 0x2C6 range as a branch-local float value; this
-//   keeps the original's separate +0x90 call site from collapsing into 0x2D4.
+//   keeps the original's separate +0x90 call site from collapsing into +0x2D4.
 //   The rebuilt call map is now 42/42, with 832 differing bytes.
 // - Probe: removed the branch-local float range; this merged the +0x2C6 call
 //   with +0x2D4 and lost one required virtual call, so restore the clean form.
@@ -56,10 +56,17 @@
 //   explicit stop-tail forms. They either duplicated an existing basin or
 //   worsened size, control flow, or call count. Remaining leads are the
 //   original action-log tail source shape, compiler context, and relocations.
+// - Fresh probe: a source goto for the shared false-actionFile stop tail
+//   preserved the observed call count but grew the function by 123 bytes.
+//   Restore the natural local-tail source.
+// - Fresh probe: long coordinate temporaries are codegen-identical to int
+//   temporaries. Keep int because the canonical fields and ABI are int.
 // BLOCKER: order 0x2C6 passes range by a raw dword copy in the executable. The
 // rebuild loads and stores range through x87 before the virtual call. A
 // signaling NaN can raise, become quiet, or change payload bits. FP exception,
 // argument-bit, and fault timing can differ. Keep this dispatcher in scratch.
+// Canonical-context pass: the protected PDB declaration emits the required
+// MAE owner. The complete prefix preserves all 1269 bytes and 42 calls.
 
 #include <stdio.h>
 
@@ -68,178 +75,7 @@ void __cdecl operator delete(void* block);
 extern FILE* actionFile;
 inline void* __cdecl operator new(unsigned int, void* ptr) { return ptr; }
 
-class AIPlay;
-class AIPlayBook;
-class RGE_Game_World;
-class RGE_Player;
-class RGE_Master_Static_Object;
-class RGE_Static_Object;
-class AIPlayStatus;
-class UnitAIModule;
-
-class AIPlayBook {
-public:
-    AIPlay* play(int playNumber);
-};
-
-class RGE_Game_World {
-public:
-    virtual ~RGE_Game_World();
-    char gap_04[0x9C];
-    AIPlayBook* playbook;
-};
-
-class RGE_Player {
-public:
-    virtual ~RGE_Player();
-    char gap_04[0x38];
-    RGE_Game_World* world;
-};
-
-class RGE_Master_Static_Object {
-public:
-    virtual ~RGE_Master_Static_Object();
-    char gap_04[0x0C];
-    short id;
-};
-
-class RGE_Static_Object {
-public:
-    virtual ~RGE_Static_Object();
-    int id;
-    RGE_Master_Static_Object* master_obj;
-    RGE_Player* owner;
-    char gap_10[0x28];
-    float world_x;
-    float world_y;
-    float world_z;
-};
-
-class AIPlayStatus {
-public:
-    char gap_00[0x190];
-    int playNumberValue;
-    int targetValue;
-    int originalPointX;
-    int originalPointY;
-    int originalPointZ;
-    char gap_1A4[0x24];
-
-    AIPlayStatus();
-};
-
-class AIPlayPhase;
-
-struct OrderEvent {
-    int issuer;
-    int orderType;
-    int priority;
-    int target;
-    int targetOwner;
-    float targetX;
-    float targetY;
-    float targetZ;
-    float range;
-};
-
-class UnitAIModule {
-public:
-    virtual ~UnitAIModule();
-    virtual void save(int);
-    virtual void load(int);
-    virtual RGE_Player* owner() const;
-    virtual int order(int, int, int, int, float, float, float, float, int, int, int);
-    virtual int notify(int, int, int, long, long, long);
-    virtual int notifyCommander(int, int, int, long, long, long);
-    virtual int notifyCommander(void*);
-    virtual void search();
-    virtual int importantWhenDead(int);
-    virtual int retryableOrder(int);
-    virtual int actionRequiresLiveTarget(int);
-    virtual int bestUnitToAttack(int, int, float*);
-    virtual int mostDangerousEnemy(float*);
-    virtual int weakestEnemy(float*);
-    virtual int closestAttacker(float*);
-    virtual int closestObject(int, int, int, int, int*);
-    virtual int closestResourceObject(int, int*);
-    virtual int closestUndiscoveredTile(int*, int*, int);
-    virtual void logDebug(char*);
-    virtual int canAttackUnit(RGE_Static_Object*);
-    virtual int canAttackUnitAtNeutrality(int);
-    virtual int stopObject(int);
-    virtual int attackObject(int, int);
-    virtual int attackRoundupObject(int);
-    virtual int huntObject(int, int);
-    virtual int gatherObject(int, int);
-    virtual int convertObject(int, int);
-    virtual int healObject(int, int);
-    virtual int repairObject(int, int);
-    virtual int buildObject(int, int);
-    virtual int tradeWithObject(int, int);
-    virtual int explore(int, int, int);
-    virtual int enterObject(int, int);
-    virtual int unload(int, float, float);
-    virtual int transportObject(float, float, float, int);
-    virtual int moveTo(int, int);
-    virtual int moveTo(int, float, int);
-    virtual int moveTo(float, float, float, float, int);
-    virtual int evasiveMoveTo(float, float, float, int);
-    virtual int intelligentEvasiveMoveTo(float, float, float, int, int);
-    virtual int runAwayFromAttackers(int);
-    virtual int followObject(int, float, int);
-    virtual int defendObject(int, float, int);
-    virtual int defendPosition(float, float, float, int);
-    virtual int seekAndDestroy(int, int, int, int);
-    virtual int exploreAndDestroy(int, int, int);
-
-    RGE_Static_Object* objectValue;
-    int moodValue;
-    int objectCategoryValue;
-    int orderQueueSizeValue;
-    int orderQueueMaxSizeValue;
-    OrderEvent* orderQueueValue;
-    int notifyQueueSizeValue;
-    int notifyQueueMaxSizeValue;
-    void* notifyQueueValue;
-    int currentOrderValue;
-    int currentOrderPriorityValue;
-    int currentActionValue;
-    int currentTargetValue;
-    int currentTargetTypeValue;
-    float currentTargetXValue;
-    float currentTargetYValue;
-    float currentTargetZValue;
-    float desiredTargetDistanceValue;
-    int defendTargetValue;
-    int lastOrderValue;
-    int lastActionValue;
-    int lastTargetValue;
-    int lastTargetTypeValue;
-    int* attackingUnitsValue;
-    int attackingUnitsNumberValue;
-    int attackingUnitsDesiredValue;
-    int attackingUnitsMaximumValue;
-    char waypointGap[0x80];
-    int waypointQueueSizeValue;
-    unsigned long lastUpdateTimeValue;
-    unsigned long idleTimerValue;
-    unsigned long adjustedIdleTimeoutValue;
-    unsigned long idleTimeoutValue;
-    unsigned long secondaryTimerValue;
-    unsigned long lookAroundTimerValue;
-    unsigned long lookAroundTimeoutValue;
-    float lastWorldPositionX;
-    float lastWorldPositionY;
-    float lastWorldPositionZ;
-    char gap_11C[4];
-    float defenseBufferValue;
-    int* importantObjects;
-    int numberImportantObjects;
-    AIPlayStatus* playStatus;
-
-    void removeCurrentTarget();
-    virtual int processOrder(OrderEvent*, int);
-};
+#include "../../include/aiuaimod_context.h"
 
 int UnitAIModule::processOrder(OrderEvent* param_1, int param_2) {
     OrderEvent* order = param_1;

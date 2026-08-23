@@ -1,3 +1,4 @@
+#ifndef ACT_ATAK_CONTEXT_H
 class RGE_Sprite;
 class RGE_Action_Object;
 class RGE_Action_List;
@@ -76,6 +77,7 @@ public:
     unsigned char indirect_fire_flag;
     unsigned char gap_5B;
 };
+#endif
 
 RGE_Action_Attack::RGE_Action_Attack(int param_1, RGE_Action_Object* param_2)
     : RGE_Action(param_1, param_2, 1)

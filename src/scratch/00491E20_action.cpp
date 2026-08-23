@@ -1,5 +1,6 @@
 // VA: 00491E20 TribeJoinScreen::action
 // PDB source: scr_cj.cpp, lines 289-368
+// BLOCKER: EH handler identity and FS/ESI unwind order remain 12 bytes apart.
 //
 // Canonical ownership is TribeJoinScreen's named panel fields at +0x478..+0x4AC.
 // The two 256-byte formatting buffers are the natural local arrays used by the
@@ -51,10 +52,24 @@
 //   0057B388. Isolated object extraction cannot recover that final linked
 //   identity. The original also restores FS before POP ESI; VC5 emits POP ESI
 //   before the FS restore here. No natural source/context probe changed it.
+// - PDB correction: scr_cj.cpp owns this function. scr_cam.cpp does not own it.
+//   The authentic scr_cj.cpp prefix kept the same 12-byte frontier.
+// - Later EH probes: /G5, /G6, /Zi, and /Zd kept the same code.
+//   Direct returns, paired register hints, and immediate-base qualification
+//   also kept the same code. Their natural interaction groups were neutral.
+// - Authentic TU context: scr_cj_tu.cpp includes the five earlier PDB owners
+//   in source-line order. Each earlier owner remains an exact anchor. Target-
+//   only and every authentic prefix rebuild stay at 12 bytes of drift.
+// - Remaining EH blocker: the original handler is the linked 0055EA3C stub;
+//   the grouped object owns a local $L handler. The original restores FS before
+//   POP ESI; VC5 restores FS after POP ESI. No supported sibling context or
+//   flag set recovers either identity or unwind order.
 // FLAGS: /nologo /c /O2 /Oy /GX (retained for the binary EH registration).
 
-#include <stdio.h>
+#include "../../include/scr_cj_context.h"
 
+#if 0
+#include <stdio.h>
 struct tagRECT {
     long left;
     long top;
@@ -226,6 +241,8 @@ public:
     virtual long action(TPanel*, long, unsigned long, unsigned long);
     void fillList();
 };
+
+#endif
 
 long TribeJoinScreen::action(TPanel* panel, long command,
                              unsigned long param3, unsigned long param4)

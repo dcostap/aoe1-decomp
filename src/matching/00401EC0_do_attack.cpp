@@ -1,3 +1,4 @@
+#ifndef ACT_ATAK_CONTEXT_H
 class RGE_Static_Object;
 
 class RGE_Action_Object {
@@ -130,6 +131,10 @@ public:
     virtual void vf1F4(void);
     virtual void vf1F8(void);
     virtual void vf1FC(void);
+};
+
+class RGE_Combat_Object : public RGE_Action_Object {
+public:
     virtual void vf200(void);
     virtual void vf204(void);
     virtual void vf208(void);
@@ -138,8 +143,8 @@ public:
     virtual void vf214(void);
     virtual void vf218(void);
     virtual void vf21C(void);
-    virtual void vf220(float x, float y, float z, RGE_Action_Object* obj);
-    virtual void vf224(RGE_Static_Object* target, RGE_Action_Object* obj);
+    virtual void attack(RGE_Static_Object* target, RGE_Action_Object* obj);
+    virtual void attack(float x, float y, float z, RGE_Action_Object* obj);
 };
 
 class RGE_Action_Attack {
@@ -157,15 +162,16 @@ public:
 
     void do_attack(void);
 };
+#endif
 
 void RGE_Action_Attack::do_attack(void)
 {
-    RGE_Action_Object* my_obj = this->obj;
+    RGE_Combat_Object* my_obj = (RGE_Combat_Object*)this->obj;
 
     if (this->target_obj) {
-        my_obj->vf224(this->target_obj, my_obj);
+        my_obj->attack(this->target_obj, my_obj);
     } else {
-        my_obj->vf220(this->target_x, this->target_y, this->target_z, my_obj);
+        my_obj->attack(this->target_x, this->target_y, this->target_z, my_obj);
     }
     this->need_to_attack = 0;
 }

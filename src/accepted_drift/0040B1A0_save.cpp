@@ -11,13 +11,14 @@
 // the same value and width at the same ordered call. The fixed string buffer,
 // list cursors, field reads, branches, null exits, and return value match.
 // Size, 0x118 frame, all 67 calls, memory effects, fault order, and cleanup
-// match. This function has no SEH. Seventy prior probes found no natural stack
+// match. This function has no SEH. Seventy-two prior probes found no natural stack
 // allocation form that removes the displacement drift.
 
 #include <string.h>
 
 extern "C" void rge_write(int fd, void* src, int size);
 
+#ifndef AICONMOD_CANONICAL_TU
 class AIModuleMessage;
 
 class AIModuleID {
@@ -117,6 +118,7 @@ public:
     int lastPlacementReturnCodeValue;
     virtual int save(int fd);
 };
+#endif
 
 int ConstructionAIModule::save(int fd)
 {

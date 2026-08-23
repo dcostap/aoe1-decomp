@@ -1,11 +1,4 @@
-class UnitAIModule {
-public:
-    char gap_00[0x124];
-    int* importantObjects;       // +0x124
-    int numberImportantObjects;  // +0x128
-
-    int importantObject(int obj);
-};
+#include "../../include/aiuaimod_context.h"
 
 int UnitAIModule::importantObject(int obj) {
     int i = 0;

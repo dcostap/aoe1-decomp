@@ -4,49 +4,26 @@
 // reuse ESI for the zero store after the count test and shifts the loop by 4 bytes.
 // Previous scratch state had behavior/calls/FPU compare modeled but drifted from that store order.
 
-extern int g_object_count;
-extern int* g_object_ids;
-#pragma comment(linker, "/include:_g_object_count")
-
-class RGE_Static_Object {
-public:
-    char gap_00[0x30];
-    float hp;
-};
-
-class UnitAIModule {
-public:
-    virtual void vf00();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
-    virtual void update_los();
-
-    RGE_Static_Object* lookupObject(int id);
-    int weakestEnemy(float* outHp);
-};
+#include "../../include/game_globals.h"
+#include "../../include/aiuaimod_context.h"
 
 int UnitAIModule::weakestEnemy(float* outHp) {
-    this->update_los();
+    this->search();
     int bestId = -1;
     float bestHp = 0.0f;
     int i = 0;
-    if (g_object_count > 0) {
+    if ((int)DAT_0087d7d8 > 0) {
         do {
-            int id = *(int*)((char*)g_object_ids + i * 8);
+            int id = *(int*)((char*)DAT_0087d7f0 + i * 8);
             RGE_Static_Object* obj = this->lookupObject(id);
             if (obj != 0) {
-                if (bestId == -1 || obj->hp < bestHp) {
-                    bestHp = obj->hp;
-                    bestId = *(int*)((char*)g_object_ids + i * 8);
+                if (bestId == -1 || obj->hitPoints < bestHp) {
+                    bestHp = obj->hitPoints;
+                    bestId = *(int*)((char*)DAT_0087d7f0 + i * 8);
                 }
             }
             i++;
-        } while (i < g_object_count);
+        } while (i < (int)DAT_0087d7d8);
     }
     if (outHp != 0) {
         *outHp = bestHp;

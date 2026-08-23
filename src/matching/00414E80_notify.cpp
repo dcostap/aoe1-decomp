@@ -7,28 +7,10 @@
 // `while(1)` with `if(i>=max) goto fail2; ... if(i<n) continue; return 0;` and a separate
 // `fail2: return 0;`. This recovers the original loop block order/register coloring and final
 // addToNotifyQueue pushes. MATCH.
+// PDB FPO and vtable evidence prove the public virtual UAE owner. The prior
+// isolated declaration emitted exact body bytes under the wrong QAE symbol.
 
-class RGE_Static_Object {
-public:
-    char gap_00[0x48];
-    unsigned char object_state;
-};
-
-class UnitAIModule {
-public:
-    virtual ~UnitAIModule();
-    RGE_Static_Object* objectValue; // +0x04
-    char gap_08[0x28];
-    int currentActionValue;         // +0x30
-    char gap_34[0x2C];
-    int* attackingUnitsValue;       // +0x60
-    int attackingUnitsNumberValue;  // +0x64
-    char gap_68[4];
-    int attackingUnitsMaximumSizeValue; // +0x6C
-
-    int notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6);
-    int addToNotifyQueue(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6);
-};
+#include "../../include/aiuaimod_context.h"
 
 int UnitAIModule::notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6)
 {
@@ -39,15 +21,15 @@ int UnitAIModule::notify(int param_1, int param_2, int param_3, long param_4, lo
     int target = param_1;
 
     if (msg == 0x2BB) {
-        int n = attackingUnitsNumberValue;
+        int n = attackingUnitsValue.numberValue;
         int i = 0;
         if (n <= 0)
             goto fail2;
-        int max = attackingUnitsMaximumSizeValue;
+        int max = attackingUnitsValue.maximumSizeValue;
         while (1) {
             if (i >= max)
                 goto fail2;
-            if (attackingUnitsValue[i] == target)
+            if (attackingUnitsValue.value[i] == target)
                 goto found;
             ++i;
             if (i < n)

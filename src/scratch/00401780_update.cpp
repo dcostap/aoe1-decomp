@@ -62,7 +62,12 @@
 //   and case-label reorderings were tested. They were worse or unchanged.
 // - Retain the typed H36 source. It is non-exact, but it is the best measured
 //   source in this pass. The direct switch table remains unresolved.
+// Authentic Act_atak.cpp context pass (sa-1349a780-r1):
+// - The shared /GX wrapper and canonical virtual surfaces emitted this same
+//   782-byte body. All 31 calls remain aligned. The PDB prefix does not change
+//   the sparse-switch basin or the 434-byte positional drift.
 
+#ifndef ACT_ATAK_CONTEXT_H
 typedef unsigned char uchar;
 
 class RGE_Action;
@@ -255,6 +260,7 @@ public:
     int ready_to_attack(int& rangeStatus);
     void do_attack();
 };
+#endif
 
 uchar RGE_Action_Attack::update()
 {

@@ -1,24 +1,4 @@
-class RGE_Player {
-public:
-    char gap_00[0x4A];
-    short id;
-    char gap_4C[0x38];
-    unsigned char* relations;
-};
-
-class RGE_Static_Object {
-public:
-    char gap_00[0x0C];
-    RGE_Player* owner;
-};
-
-class UnitAIModule {
-public:
-    char gap_00[4];
-    RGE_Static_Object* objectValue;
-
-    int isNeutralOwner(int player_id);
-};
+#include "../../include/aiuaimod_context.h"
 
 int UnitAIModule::isNeutralOwner(int player_id) {
     RGE_Player* owner = this->objectValue->owner;

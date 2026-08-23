@@ -52,12 +52,17 @@
 // - A natural initial-wait local and a period register hint on the read-only wait
 //   parameter were both codegen duplicates at 45 bytes. Restored the clean source;
 //   the remaining drift is still post-set_target register coloring.
+// Authentic Act_atak.cpp context pass (sa-1349a780-r1):
+// - The shared /GX wrapper, PDB owner order, and canonical action, object, and
+//   master surfaces emitted the same 311-byte body and 45-byte drift. This
+//   rules out the tested module prefix and declaration context as the blocker.
 // ACCEPTED DRIFT: The 45 changed bytes schedule stack-parameter loads and
 // independent wait, range, minimum-range, missile, move, and fight stores
 // through different registers after set_target_obj. The fallback chains only
 // recolor identical master-object reads. Both calls, EH state, values, used
 // flags, member effects, cleanup, return, and fault order match.
 
+#ifndef ACT_ATAK_CONTEXT_H
 class RGE_Sprite;
 class RGE_Action_Object;
 class RGE_Action_List;
@@ -68,7 +73,7 @@ class RGE_Master_Static_Object {
 public:
     virtual ~RGE_Master_Static_Object();
     char pad04[0x14];
-    RGE_Sprite* wait_sprite;       // +0x18
+    RGE_Sprite* sprite;            // +0x18
     char pad1C[0x9C];
 };
 
@@ -80,7 +85,7 @@ public:
 class RGE_Master_Moving_Object : public RGE_Master_Animated_Object {
 public:
     RGE_Sprite* move_sprite;       // +0xBC
-    RGE_Sprite* move_sprite2;      // +0xC0
+    RGE_Sprite* run_sprite;        // +0xC0
     char padC4[0x14];
 };
 
@@ -100,7 +105,7 @@ class RGE_Static_Object {
 public:
     virtual ~RGE_Static_Object();
     long id;
-    RGE_Master_Combat_Object* master_obj;
+    RGE_Master_Static_Object* master_obj;
     RGE_Player* owner;
     RGE_Sprite* sprite;
     RGE_Sprite* old_sprite;
@@ -189,6 +194,7 @@ public:
     unsigned char indirect_fire_flag;
     unsigned char gap_5B;
 };
+#endif
 
 RGE_Action_Attack::RGE_Action_Attack(RGE_Action_Object* action_obj, RGE_Static_Object* target, RGE_Sprite* move, RGE_Sprite* fight, RGE_Sprite* wait, float range, float min_range, short missile_id, short fire_frame)
     : RGE_Action(action_obj, 1)
@@ -213,20 +219,24 @@ RGE_Action_Attack::RGE_Action_Attack(RGE_Action_Object* action_obj, RGE_Static_O
         this->was_same_owner = 0;
     }
     if (move == 0) {
-        RGE_Sprite* spr = this->obj->master_obj->move_sprite2;
+        RGE_Master_Moving_Object* master =
+            (RGE_Master_Moving_Object*)this->obj->master_obj;
+        RGE_Sprite* spr = master->run_sprite;
         if (spr == 0) {
-            spr = this->obj->master_obj->move_sprite;
+            spr = master->move_sprite;
         }
         this->move_sprite = spr;
     }
     if (fight == 0) {
-        this->fight_sprite = this->obj->master_obj->fight_sprite;
+        this->fight_sprite =
+            ((RGE_Master_Combat_Object*)this->obj->master_obj)->fight_sprite;
     }
     if (wait == 0) {
-        this->wait_sprite = this->obj->master_obj->wait_sprite;
+        this->wait_sprite = this->obj->master_obj->sprite;
     }
     if (range == 0.0f) {
-        this->range = this->obj->master_obj->weapon_range;
+        this->range =
+            ((RGE_Master_Combat_Object*)this->obj->master_obj)->weapon_range;
         if (this->range == 0.0f) {
             this->range = 0.4f;
         }

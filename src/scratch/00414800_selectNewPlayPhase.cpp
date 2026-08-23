@@ -14,11 +14,14 @@
 //   it with 0x190.
 // - The member filter uses a nested guard and reuses param_1 for the group
 //   byte. The original writes that value before group() and compares it after.
+// - The play number is read before the object/world/playbook receiver.
 // - The case-1 phase byte is a narrow local. The case-3 value is loaded before
-//   unitAI(), and case 4 loads the point fields before unitAI().
+//   unitAI(). Cases 4 and 8 load their integer fields before unitAI().
 // - The case-5 scan uses a while loop. This emits the original jl backedge.
-// - The current natural source is 1164 rebuilt bytes versus 1298 original
-//   bytes, with a 0x34 frame and 952 strict differing bytes.
+// - Case 5 reads found->hitPoints and master_obj->maximumHitPoints. These are
+//   the object and master fields proven by the corrected canonical ABI.
+// - The current natural source is 1216 rebuilt bytes versus 1298 original
+//   bytes, with a 0x2C frame and 934 strict differing bytes.
 // - Direct order calls improved shape but added one virtual call. They were
 //   not retained because the original has 25 ordered calls.
 //
@@ -27,155 +30,28 @@
 // MANAGEDARRAY AUDIT: group-member capacity checks, resize calls, value reads,
 // and field offsets follow the expected template behavior. No shared template
 // change is required.
-// BLOCKER: The rebuild is 134 bytes short, with a 0x34 frame versus 0x44 and 42
+// BLOCKER: The rebuild is 82 bytes short, with a 0x2C frame versus 0x44 and 34
 // fewer instructions. Broad register and local-lifetime recovery remains
 // incomplete despite all 25 calls aligning.
+// Canonical-context pass: this owner now uses the PDB aiuaimod.cpp surfaces.
+// Its 1216-byte body, 0x2C frame, 25 calls, and 934-byte diff stay unchanged.
+// The corrected object and master hit-point fields follow updateGroup.
 
-void __cdecl operator delete(void* block);
-
-class AIPlay;
-class AIPlayBook;
-class AIPlayPhase;
-class AIPlayPhaseCommand;
-class AIPlayStatus;
-class RGE_Game_World;
-class RGE_Player;
-class RGE_Master_Static_Object;
-class RGE_Static_Object;
-class UnitAIModule;
-
-template <class T>
-class ManagedArray {
-public:
-    T* value;
-    int numberValue;
-    int desiredNumberValue;
-    int maximumSizeValue;
-
-    int resize(int newSize);
-};
-
-class AIPlayBook {
-public:
-    AIPlay* play(int playNumber);
-};
-
-class RGE_Game_World {
-public:
-    virtual ~RGE_Game_World();
-    char gap_04[0x9C];
-    AIPlayBook* playbook;
-};
-
-class RGE_Player {
-public:
-    virtual ~RGE_Player();
-    char gap_04[0x38];
-    RGE_Game_World* world;
-    char gap_40[0x0A];
-    short id;
-};
-
-class RGE_Master_Static_Object {
-public:
-    virtual ~RGE_Master_Static_Object();
-    char gap_04[0x22];
-    short maximumHitPoints;
-    char gap_28[0x08];
-    float hitPoints;
-};
-
-class RGE_Static_Object {
-public:
-    virtual ~RGE_Static_Object();
-    int id;
-    RGE_Master_Static_Object* master_obj;
-    RGE_Player* owner;
-    char gap_10[0x28];
-    float world_x;
-    float world_y;
-    float world_z;
-    char gap_44[0x20];
-    ManagedArray<int> groupMembers;
-
-    UnitAIModule* unitAI();
-    float distance_to_position(float x, float y, float z);
-};
-
-class AIPlayPhaseCommand {
-public:
-    unsigned char groupValue;
-    unsigned char typeValue;
-    char gap_02[2];
-    int value1Value;
-    int value2Value;
-    int value3Value;
-};
-
-class AIPlayPhase {
-public:
-    AIPlayPhaseCommand* command(int index);
-};
-
-class AIPlay {
-public:
-    AIPlayPhase* phase(int phaseNumber);
-    int gatherTolerance(int group, int phase);
-};
-
-struct AIPlayGrouping {
-    int id;
-    unsigned char groupValue;
-    unsigned char typeValue;
-    char gap_06[2];
-};
-
-class AIPlayStatus {
-public:
-    AIPlayGrouping groupings[50];
-    int playNumberValue;
-    int targetValue;
-    int originalPointX;
-    int originalPointY;
-    int originalPointZ;
-    char gap_1A4[0x14];
-    unsigned char currentPhaseValue;
-    char gap_1B9[3];
-    int savedAttackerValue;
-
-    unsigned char group(int id);
-    void resetHitPoints(int group, RGE_Game_World* world);
-    void removeDeadUnits(int group, RGE_Game_World* world);
-};
-
-class UnitAIModule {
-public:
-    virtual ~UnitAIModule();
-    virtual void save(int);
-    virtual void load(int);
-    virtual RGE_Player* owner() const;
-    virtual int order(int, int, int, int, float, float, float, float,
-                      int, int, int);
-
-    RGE_Static_Object* objectValue;
-    char gap_08[0x124];
-    AIPlayStatus* playStatus;
-
-    RGE_Static_Object* lookupObject(int id);
-    int currentAction();
-    int selectNewPlayPhase(int phase, int param_2);
-};
+#include "../../include/aiuaimod_context.h"
 
 int UnitAIModule::selectNewPlayPhase(int param_1, int param_2)
 {
     int phase = 0;
+    AIPlayPhase* phaseObject;
+    RGE_Static_Object* target;
+    AIPlay* play;
 
     if (this->playStatus == 0) {
         return 0;
     }
 
-    AIPlay* play = this->objectValue->owner->world->playbook->play(
-        this->playStatus->playNumberValue);
+    int playNumber = this->playStatus->playNumberValue;
+    play = this->objectValue->owner->world->playbook->play(playNumber);
     if (play == 0) {
         return 0;
     }
@@ -186,13 +62,12 @@ int UnitAIModule::selectNewPlayPhase(int param_1, int param_2)
         return 1;
     }
 
-    AIPlayPhase* phaseObject = play->phase(param_1);
+    phaseObject = play->phase(param_1);
     if (phaseObject == 0) {
         return 0;
     }
 
-    RGE_Static_Object* target =
-        this->lookupObject(this->playStatus->targetValue);
+    target = this->lookupObject(this->playStatus->targetValue);
     if (target == 0) {
         return 0;
     }
@@ -224,7 +99,8 @@ int UnitAIModule::selectNewPlayPhase(int param_1, int param_2)
                             member->groupMembers.resize(i + 1);
                         }
 
-                        member = this->lookupObject(member->groupMembers.value[i]);
+                        member = this->lookupObject(
+                            member->groupMembers.value[i]);
                         if (member != 0 && member->unitAI() != 0) {
                             param_1 = command->groupValue;
                             if (this->playStatus->group(member->id) !=
@@ -285,15 +161,19 @@ int UnitAIModule::selectNewPlayPhase(int param_1, int param_2)
                                 orderY = -1.0f;
                                 orderZ = -1.0f;
                                 break;
-                            case 4:
+                            case 4: {
+                                int pointX = this->playStatus->originalPointX;
+                                int pointY = this->playStatus->originalPointY;
+                                int pointZ = this->playStatus->originalPointZ;
                                 orderAction = 0x2C6;
                                 param_1 = -1;
                                 orderTargetOwner = -1;
-                                orderX = (float)this->playStatus->originalPointX;
-                                orderY = (float)this->playStatus->originalPointY;
-                                orderZ = (float)this->playStatus->originalPointZ;
                                 memberAI = member->unitAI();
+                                orderX = (float)pointX;
+                                orderY = (float)pointY;
+                                orderZ = (float)pointZ;
                                 break;
+                            }
                             case 5: {
                                 param_1 = -1;
                                 int groupingOffset = 0;
@@ -304,7 +184,7 @@ int UnitAIModule::selectNewPlayPhase(int param_1, int param_2)
                                         RGE_Static_Object* found =
                                             this->lookupObject(grouping->id);
                                         if (found != 0 &&
-                                            (int)found->master_obj->hitPoints + 1 <
+                                            (int)found->hitPoints + 1 <
                                                 found->master_obj->maximumHitPoints) {
                                             param_1 = found->id;
                                             break;
@@ -323,15 +203,19 @@ int UnitAIModule::selectNewPlayPhase(int param_1, int param_2)
                                 orderZ = -1.0f;
                                 break;
                             }
-                            case 8:
+                            case 8: {
+                                int commandX = command->value1Value;
+                                int commandY = command->value2Value;
+                                int commandZ = command->value3Value;
                                 memberAI = member->unitAI();
                                 orderAction = 0x2D8;
                                 param_1 = -1;
                                 orderTargetOwner = -1;
-                                orderX = (float)command->value1Value + target->world_x;
-                                orderY = (float)command->value2Value + target->world_y;
-                                orderZ = (float)command->value3Value + target->world_z;
+                                orderX = (float)commandX + target->world_x;
+                                orderY = (float)commandY + target->world_y;
+                                orderZ = (float)commandZ + target->world_z;
                                 break;
+                            }
                             default:
                                 goto next_member;
                             }

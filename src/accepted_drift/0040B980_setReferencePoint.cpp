@@ -24,13 +24,14 @@
 // - v14/session probes 8-11: initial field assignment order `mapX, mapY, xRef, yRef, zRef` preserves
 //   that alignment. Explicit bound/current temporaries, ordered gotos, and parameter-home mutation
 //   did not improve the localized upper-bound FPU stack-home mismatch; the last was diagnostic only.
+// - Exact-finish context pass: use the reviewed shared aiconmod.cpp declarations and natural delete
+//   in the canonical module wrapper. Fresh standalone and wrapper builds keep the same 30-byte drift.
 // BLOCKER: behavior, sizes, field offsets, direct-call ABI, and compiled length match (495/495), with
 // first 334 bytes equal. Remaining 30 bytes are localized to x/y upper-bound FPU temporaries: original
 // stores each decremented bound at entry-home +8 before fsubr, while rebuilt reuses entry-home +4 after
-// fsubr. The observed slot-0 cleanup declaration is kept; natural virtual-destructor/delete lowering
-// added a 4-byte null/cleanup block and moved farther.
-// Fresh final pass: named integer limits changed the register basin, and
-// reversed upper-bound comparisons widened both blocks. Neither was closer.
+// fsubr. The canonical ConstructionItem destructor surface and natural delete preserve the body and
+// ordered virtual call, but do not move these private stack homes. Named integer limits changed the
+// register basin, and reversed upper-bound comparisons widened both blocks. Neither was closer.
 // ACCEPTED DRIFT: Each changed upper-bound block executes the same x()/xSize()
 // or y()/ySize() calls, multiply, reverse subtract, integer-to-float load, and
 // comparison in that order. VC5 only moves the non-faulting valid-object bound
@@ -38,52 +39,7 @@
 // floating-point operations, flags, branches, list edits, calls, and cleanup
 // match. No private temporary escapes.
 
-typedef unsigned int uint;
-
-class BaseItem {
-public:
-    virtual void destroy(unsigned int flags);
-    char gap_04[0x68];
-
-    float x() const;
-    float y() const;
-    float z() const;
-    float xSize() const;
-    float ySize() const;
-    void setX(float v);
-    void setY(float v);
-    void setZ(float v);
-};
-
-class ConstructionItem : public BaseItem {
-public:
-    ConstructionItem* next;
-    ConstructionItem* prev;
-    char gap_74[0x0c];
-};
-
-class AIModule {
-public:
-    virtual ~AIModule();
-    char gap_04[0xEC];
-};
-
-class ConstructionAIModule : public AIModule {
-public:
-    int numberConstructionLotsValue;
-    ConstructionItem constructionLots;
-    int numberRandomConstructionLotsValue;
-    ConstructionItem randomConstructionLots;
-    char gap_1f8[0x2fc - 0x1f8];
-    float xReferencePointValue;
-    float yReferencePointValue;
-    float zReferencePointValue;
-    int mapXSizeValue;
-    int mapYSizeValue;
-
-    void removeOldLots();
-    void setReferencePoint(int mapX, int mapY, float xRef, float yRef, float zRef);
-};
+#include "../../include/aiconmod_context.h"
 
 void ConstructionAIModule::setReferencePoint(int mapX, int mapY, float xRef, float yRef, float zRef)
 {
@@ -113,7 +69,7 @@ void ConstructionAIModule::setReferencePoint(int mapX, int mapY, float xRef, flo
             ConstructionItem* next = item->next;
             item->prev->next = next;
             item->next->prev = item->prev;
-            item->destroy(1);
+            delete item;
             item = next;
         } else {
             item = item->next;

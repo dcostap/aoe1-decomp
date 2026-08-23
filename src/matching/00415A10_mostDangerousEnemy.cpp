@@ -21,23 +21,23 @@
 // register allocation, branch distances, and 188/188-byte equality.
 
 #include "../../include/game_globals.h"
+#include "../../include/aiuaimod_context.h"
 
-class RGE_Master_Static_Object {
+class RGE_Master_Combat_Object_View {
 public:
     char gap_000[0x108];
-    short field_108;
+    short weapon_num;
     char gap_10A[2];
-    int field_10C;
+    void* weapon;
 };
-
-class RGE_Player;
 
 struct UnitAIObjectEntry {
     int object_id;
     int unknown;
 };
 
-class RGE_Static_Object {
+// Beta uses narrower argument lists at these two established object slots.
+class RGE_Static_Object_Threat_Query {
 public:
     virtual void v00(); virtual void v04(); virtual void v08(); virtual void v0C();
     virtual void v10(); virtual void v14(); virtual void v18(); virtual void v1C();
@@ -47,7 +47,7 @@ public:
     virtual void v50(); virtual void v54(); virtual void v58(); virtual void v5C();
     virtual void v60(); virtual void v64(); virtual void v68(); virtual void v6C();
     virtual void v70();
-    virtual float threat2(int a, int b, float c); // +0x74
+    virtual float calculateDamage(int, void*, float); // +0x74
     virtual void v78(); virtual void v7C(); virtual void v80(); virtual void v84();
     virtual void v88(); virtual void v8C(); virtual void v90(); virtual void v94();
     virtual void v98(); virtual void v9C(); virtual void vA0(); virtual void vA4();
@@ -56,28 +56,12 @@ public:
     virtual void vC8(); virtual void vCC(); virtual void vD0(); virtual void vD4();
     virtual void vD8(); virtual void vDC(); virtual void vE0(); virtual void vE4();
     virtual void vE8(); virtual void vEC();
-    virtual float threat1(RGE_Static_Object* a, RGE_Player* owner, RGE_Static_Object* b); // +0xF0
-
-    int id;
-    RGE_Master_Static_Object* master_obj;
-    RGE_Player* owner;
-};
-
-class UnitAIModule {
-public:
-    virtual ~UnitAIModule();
-    virtual void v04(); virtual void v08(); virtual void v0C();
-    virtual void v10(); virtual void v14(); virtual void v18(); virtual void v1C();
-    virtual void preMostDangerous(); // +0x20
-
-    RGE_Static_Object* objectValue;
-
-    RGE_Static_Object* lookupObject(int id);
-    int mostDangerousEnemy(float* outThreat);
+    virtual float calc_attack_modifier(RGE_Static_Object*, RGE_Player*,
+                                       RGE_Static_Object*); // +0xF0
 };
 
 int UnitAIModule::mostDangerousEnemy(float* outThreat) {
-    preMostDangerous();
+    search();
 
     int best = -1;
     float bestThreat = 0.0f;
@@ -86,8 +70,12 @@ int UnitAIModule::mostDangerousEnemy(float* outThreat) {
         do {
             RGE_Static_Object* obj = lookupObject(((UnitAIObjectEntry*)DAT_0087d7f0)[i].object_id);
             if (obj) {
-                float f = objectValue->threat2(obj->master_obj->field_108, obj->master_obj->field_10C,
-                    objectValue->threat1(obj, obj->owner, obj));
+                float f = ((RGE_Static_Object_Threat_Query*)objectValue)
+                    ->calculateDamage(
+                        ((RGE_Master_Combat_Object_View*)obj->master_obj)->weapon_num,
+                        ((RGE_Master_Combat_Object_View*)obj->master_obj)->weapon,
+                        ((RGE_Static_Object_Threat_Query*)objectValue)
+                            ->calc_attack_modifier(obj, obj->owner, obj));
                 if (best == -1 || f > bestThreat) {
                     bestThreat = f;
                     best = ((UnitAIObjectEntry*)DAT_0087d7f0)[i].object_id;

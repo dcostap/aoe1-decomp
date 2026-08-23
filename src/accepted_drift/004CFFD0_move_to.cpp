@@ -6,6 +6,7 @@
 //   Original: ecx=z→[28h], edx=x→[20h], eax=y→[24h]. Rebuilt: ecx=y→[24h], edx=z→[28h], eax=x→[20h].
 //   True path (129 bytes) byte-identical.
 
+#ifndef TACT_HNT_SHARED_CONTEXT
 // Vtable helper for virtual method calls at +0x54, +0x58, +0x5C
 struct ActionHuntVtable {
     virtual void _v00();
@@ -60,8 +61,35 @@ struct TRIBE_Action_Hunt {
 
     virtual int move_to(RGE_Static_Object* target, float x, float y, float z);
 };
+#endif
 
 int TRIBE_Action_Hunt::move_to(RGE_Static_Object* target, float x, float y, float z) {
+#ifdef TACT_HNT_SHARED_CONTEXT
+    if (target != 0 && target->owner == this->obj->owner) {
+        RGE_Master_Action_Object* master =
+            static_cast<RGE_Master_Action_Object*>(this->obj->master_obj);
+        short id = target->master_obj->id;
+        if ((id == master->drop_site || id == master->backup_drop_site) &&
+            this->obj->attribute_amount_held > DAT_00575150) {
+            if (target == this->target_obj2 && this->state == 8) {
+                return 1;
+            }
+            this->set_target_obj(0);
+            this->target_x = -1.0f;
+            this->target_y = -1.0f;
+            this->target_z = -1.0f;
+            this->set_target_obj2(target);
+            this->set_state(8);
+            return 1;
+        }
+    }
+    this->target_z = z;
+    this->target_x = x;
+    this->target_y = y;
+    this->set_target_obj(0);
+    this->set_state(0x0F);
+    return 1;
+#else
     if (target != 0) {
         void* p1 = this->field_08;
         if (target->owner == *(void**)((char*)p1 + 0x0C)) {
@@ -90,4 +118,5 @@ int TRIBE_Action_Hunt::move_to(RGE_Static_Object* target, float x, float y, floa
     ((ActionHuntVtable*)this)->_v54(0);
     ((ActionHuntVtable*)this)->_v5C(0x0F);
     return 1;
+#endif
 }

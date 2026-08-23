@@ -173,12 +173,17 @@
 //   the original register map.
 // - Final validation: 237 bytes, 71 instructions, exact call set, no frame,
 //   and 21 positional bytes of register-only drift beginning at +0015.
+// Authentic Act_atak.cpp context pass (sa-1349a780-r1):
+// - The shared /GX wrapper, PDB owner order, and canonical action, object, and
+//   master surfaces emitted the same 237-byte body and 21-byte drift. The
+//   tested module context does not change the initial load schedule.
 // ACCEPTED DRIFT: The initial hunk schedules stack-parameter loads and
 // independent coordinate, range, sprite, and frame stores through different
 // registers. The fallback hunk only recolors the same master-object sprite
 // chain. Values, the base-constructor call, used flags, member effects, return,
 // and fault order match.
 
+#ifndef ACT_ATAK_CONTEXT_H
 class RGE_Sprite;
 class RGE_Action_List;
 class RGE_Task_List;
@@ -552,6 +557,7 @@ public:
                      RGE_Sprite* p5, RGE_Sprite* p6, RGE_Sprite* p7, float p8, float p9,
                      short p10, short p11);
 };
+#endif
 
 RGE_Action_Attack::RGE_Action_Attack(RGE_Action_Object* obj, float p2, float p3, float p4,
                                      RGE_Sprite* p5, RGE_Sprite* p6, RGE_Sprite* p7, float p8, float p9,

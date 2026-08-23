@@ -10,54 +10,39 @@
 #define VPAD32(n) VPAD16(n) VPAD16(n##_16)
 #define VPAD64(n) VPAD32(n) VPAD32(n##_32)
 
-class TargetLike;
-class UnitLike;
-class OwnerLike { public: char gap_00[0x3C]; class RGE_World* world; };
-class RGE_World { public: TargetLike* object(int id); };
-class TargetLike { public: char gap_00[0x38]; int x; int y; int z; };
+#include "../../include/aiuaimod_context.h"
 
-class UnitAIModule {
-public:
-    virtual void vf00(); virtual void vf01(); virtual void vf02(); virtual void vf03();
-    virtual void vf04(); virtual void vf05(); virtual void vf06(); virtual void vf07();
-    virtual void vf08(); virtual void vf09(); virtual void vf10(); virtual void vf11();
-    virtual void vf12(); virtual void vf13(); virtual void vf14(); virtual void vf15();
-    virtual void vf16(); virtual void vf17(); virtual void vf18(); virtual void vf19();
-    virtual int canAttack(TargetLike* target);
-    UnitLike* unit;
-    char gap_08[0x30 - 0x08];
-    int currentAction;
-    int currentTarget;
-    void setCurrentAction(int action);
-    void setCurrentTarget(int id, int x, int y, int z);
-    int attackRoundupObject(int targetId);
-};
-
-class UnitLike {
+// Beta uses four arguments at weaponRange and two at canPath.
+class RGE_Static_Object_Roundup_Query {
 public:
     VPAD64(0) VPAD2(64) VPAD1(66)
-    virtual float vf_10c(int a, int b, int c, int d); // slot 67
+    virtual float weaponRange(int, int, int, int); // slot 67
     VPAD16(68)
-    virtual int vf_150(int targetId, int flag);       // slot 84
+    virtual int attack(int, int);                     // slot 84
     VPAD16(85)
-    virtual int vf_194(int targetId, float f);        // slot 101
-    char gap_04[0x08];
-    OwnerLike* owner;
+    virtual int canPath(int, float);                  // slot 101
 };
 
 int UnitAIModule::attackRoundupObject(int targetId) {
-    if (this->currentTarget != targetId) {
-        TargetLike* target = this->unit->owner->world->object(targetId);
+    if (this->currentTargetValue != targetId) {
+        RGE_Static_Object* target =
+            this->objectValue->owner->world->object(targetId);
         if (target != 0) {
-            if (this->canAttack(target)) {
-                if (this->currentAction != -1) {
-                    if (!this->unit->vf_194(targetId, this->unit->vf_10c(0, 0, -1, -1))) {
+            if (this->canAttackUnit(target)) {
+                if (this->currentActionValue != -1) {
+                    if (!((RGE_Static_Object_Roundup_Query*)this->objectValue)
+                             ->canPath(
+                                 targetId,
+                                 ((RGE_Static_Object_Roundup_Query*)this->objectValue)
+                                     ->weaponRange(0, 0, -1, -1))) {
                         return 0;
                     }
                 }
-                if (this->unit->vf_150(targetId, 1) == 1) {
+                if (((RGE_Static_Object_Roundup_Query*)this->objectValue)
+                        ->attack(targetId, 1) == 1) {
                     this->setCurrentAction(0x258);
-                    this->setCurrentTarget(targetId, target->x, target->y, target->z);
+                    this->setCurrentTarget(targetId, target->world_x,
+                                           target->world_y, target->world_z);
                     return 1;
                 }
             }
@@ -65,3 +50,11 @@ int UnitAIModule::attackRoundupObject(int targetId) {
     }
     return 0;
 }
+
+#undef VPAD64
+#undef VPAD32
+#undef VPAD16
+#undef VPAD8
+#undef VPAD4
+#undef VPAD2
+#undef VPAD1

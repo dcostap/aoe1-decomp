@@ -12,32 +12,18 @@
 // direct `return 1` in the while/continue shape kept that same drift. The goto-found tail matched.
 // Waypoint struct: 0x10 bytes (float x,y,z + 1 byte), array at this+0x70, size at this+0xF0.
 
-struct Waypoint {
-    float x;
-    float y;
-    float z;
-    unsigned char facet;
-};
-
-class UnitAIModule {
-public:
-    char gap_00[0x70];
-    Waypoint waypointQueue[8];
-    int waypointQueueSize;
-
-    int inWaypointQueue(int x, int y) const;
-};
+#include "../../include/aiuaimod_context.h"
 
 int UnitAIModule::inWaypointQueue(int x, int y) const {
     int i = 0;
-    if (waypointQueueSize > 0) {
+    if (waypointQueueSizeValue > 0) {
         float fx = (float)x;
         while (1) {
             if (waypointQueue[i].x == fx) {
                 if ((float)y == waypointQueue[i].y) goto found;
             }
             i++;
-            if (i < waypointQueueSize) continue;
+            if (i < waypointQueueSizeValue) continue;
             return 0;
         }
 found:

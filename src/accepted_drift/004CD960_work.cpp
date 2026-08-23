@@ -15,6 +15,7 @@
 // branches, calls, stack cleanup, stores to same fields, and return values are otherwise identical.
 // No inline asm/hacks.
 
+#ifndef TACT_BLD_CONTEXT_H
 class RGE_Static_Object;
 
 class TRIBE_Action_Build {
@@ -40,19 +41,19 @@ public:
     virtual void vf48();
     virtual void vf4C();
     virtual void vf50();
-    virtual void set_target(RGE_Static_Object* target);
+    virtual void set_target_obj(RGE_Static_Object* target);
     virtual void vf58();
-    virtual void set_action_type(int type);
+    virtual int set_state(int type);
 
     void* vptr2;                    // 0x04
-    RGE_Static_Object* actor;       // 0x08
-    unsigned char action;           // 0x0c
+    RGE_Static_Object* obj;         // 0x08
+    unsigned char state;            // 0x0c
     char gap_0d[3];
-    RGE_Static_Object* target;      // 0x10
+    RGE_Static_Object* target_obj;  // 0x10
     char gap_14[0x0c];
-    float x;                        // 0x20
-    float y;                        // 0x24
-    float z;                        // 0x28
+    float target_x;                 // 0x20
+    float target_y;                 // 0x24
+    float target_z;                 // 0x28
 
     int work(RGE_Static_Object* target, float param_2, float param_3, float param_4);
 };
@@ -68,26 +69,28 @@ public:
     OwnerInfo* owner;
 };
 
+#endif
+
 int TRIBE_Action_Build::work(RGE_Static_Object* target, float param_2, float param_3, float param_4) {
-    if (target != 0 && target->owner->id == this->actor->owner->id) {
-        if (target == this->target) {
-            unsigned char action = this->action;
+    if (target != 0 && target->owner->id == this->obj->owner->id) {
+        if (target == this->target_obj) {
+            unsigned char action = this->state;
             if (action == 4 || action == 6) {
                 return 1;
             }
         }
-        this->set_target(target);
-        this->set_action_type(4);
+        this->set_target_obj(target);
+        this->set_state(4);
         return 1;
     }
 
     int iz = *(int*)&param_4;
     int ix = *(int*)&param_2;
     int iy = *(int*)&param_3;
-    *(int*)&this->z = iz;
-    *(int*)&this->x = ix;
-    *(int*)&this->y = iy;
-    this->set_target(0);
-    this->set_action_type(11);
+    *(int*)&this->target_z = iz;
+    *(int*)&this->target_x = ix;
+    *(int*)&this->target_y = iy;
+    this->set_target_obj(0);
+    this->set_state(11);
     return 1;
 }

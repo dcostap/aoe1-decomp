@@ -62,314 +62,55 @@
 //   assignments, an idle-timer local, split order-loop declarations, and an
 //   unused current-order local either duplicated the clean output or were
 //   optimized away. Retain the clean natural source while this blocker remains.
+// - Authentic-context pass: the complete PDB prefix through this owner now
+//   compiles from canonical owner includes. Every exact anchor stays exact.
+//   The accepted save drift and this owner's bytes also stay unchanged.
+//   The prefix uses /O2 /Oy /GX, as required by three exact early owners.
+//   Thus, missing prefix context does not cause the timer publication drift.
+//   Extending the prefix through 00414800 also leaves this body unchanged.
+// - The canonical declaration also restores the PDB-qualified nonvirtual
+//   `?update@UnitAIModule@@QAEHK@Z` owner. The prior virtual declaration had
+//   the same code bytes but the wrong owning symbol.
+// - The later five-argument moveTo owner proves the canonical virtual ABI.
+//   This call uses a binary-proven four-argument beta view at the same slot.
+// - Typed notify and order indexing is required. VC5 derives the 0x18 and 0x24
+//   byte induction variables after each initial bound test. This recovers the
+//   executable's timer publication order and both queue-loop stack lifetimes.
+// - Current reduced check: 1372 bytes, 37 aligned calls, 463 instructions,
+//   98.27% shape, 95.23% exact-block coverage, and 226 strict diff bytes.
+//   BLOCKER: the executable publishes currentOrder to the incoming parameter
+//   home before the post-queue state guard. Natural tail locals and parameter
+//   assignments are removed by VC5. The rebuild therefore stays seven bytes
+//   short at +0467 and speculates one later currentAction read.
 
 #include <stdio.h>
 
-typedef unsigned char uchar;
-
-template <class T>
-class ManagedArrayInt {
-public:
-    T* value;
-    int numberValue;
-    int desiredNumberValue;
-    int maximumSizeValue;
-
-    T& operator[](int index) {
-        if (index > this->maximumSizeValue - 1) {
-            int new_size = index + 1;
-            T* new_value = (T*)operator_new(new_size * sizeof(T));
-            if (new_value != 0) {
-                for (int i = 0;
-                     i < this->maximumSizeValue && i < new_size;
-                     ++i) {
-                    new_value[i] = this->value[i];
-                }
-                operator_delete(this->value);
-                this->value = new_value;
-                this->maximumSizeValue = new_size;
-            }
-        }
-        return this->value[index];
-    }
-
-    int remove(int valueToRemove) {
-        int i = 0;
-        int max = this->maximumSizeValue;
-
-        for (; i < max; ++i) {
-            if (this->value[i] == valueToRemove) {
-                break;
-            }
-        }
-
-        if (i >= max) {
-            return 0;
-        }
-
-        --max;
-        if (i < max) {
-            do {
-                this->value[i] = this->value[i + 1];
-                ++i;
-            } while (i < this->maximumSizeValue - 1);
-        }
-
-        int number = this->numberValue - 1;
-        this->numberValue = number;
-        if (number < 0) {
-            this->numberValue = 0;
-        }
-        return 1;
-    }
-};
-
-void* operator_new(unsigned int size);
-void operator_delete(void* block);
-
-class RGE_Action_List {
-public:
-    virtual ~RGE_Action_List();
-    unsigned char have_action();
-};
-
-class RGE_Player {
-public:
-    virtual ~RGE_Player();
-    int computerPlayer();
-};
-
-class UnitAIModule;
-class RGE_Static_Object;
-
-class RGE_Static_Object {
-public:
-    virtual ~RGE_Static_Object();
-    virtual void recycle_in_to_game(void*, RGE_Player*, float, float, float);
-    virtual void recycle_out_of_game();
-    virtual void draw(void*, short, short, void*);
-    virtual void shadow_draw(void*, short, short, unsigned char);
-    virtual void normal_draw(void*, short, short);
-    virtual void draw_front_frame(void*, short, short);
-    virtual void draw_back_frame(void*, short, short);
-    virtual void draw_frame(void*, short, short);
-    virtual unsigned char update();
-    virtual void check_damage_sprites();
-    virtual void rehook();
-    virtual void save(int);
-    virtual float teleport(float, float, float);
-    virtual void new_sprite(void*);
-    virtual void add_overlay_sprite(void*, unsigned char);
-    virtual void remove_overlay_sprite(void*);
-    virtual void change_ownership(RGE_Player*);
-    virtual void modify(float, unsigned char);
-    virtual void modify_delta(float, unsigned char);
-    virtual void modify_percent(float, unsigned char);
-    virtual void transform(void*);
-    virtual void copy_obj(void*);
-    virtual void set_object_state(unsigned char);
-    virtual void remove_visible_resource();
-    virtual void create_doppleganger_when_dying();
-    virtual void destroy_obj();
-    virtual void die_die_die();
-    virtual void damage(int, void*, float, RGE_Player*, RGE_Static_Object* = 0);
-    virtual float calculateDamage(int, void*, float, RGE_Player*, RGE_Static_Object* = 0);
-    virtual void rotate(long);
-    virtual unsigned char can_attack();
-    virtual void set_attribute(short, float);
-    virtual void set_attribute_amount(float, unsigned char, unsigned char);
-    virtual int heal(int, int);
-    virtual unsigned char heal(float);
-    virtual int canRepair();
-    virtual void notify_of_relation(long, unsigned char);
-    virtual void do_command(RGE_Static_Object*, float, float, float);
-    virtual void move_to(RGE_Static_Object*, float, float, float);
-    virtual void work(RGE_Static_Object*, float, float, float);
-    virtual void stop();
-    virtual void set_attack(RGE_Static_Object*);
-    virtual void play_command_sound();
-    virtual void play_move_sound();
-    virtual void new_angle(float);
-    virtual RGE_Static_Object* spawn_death_obj();
-    virtual void* get_command_master(RGE_Static_Object*, float, float, float);
-    virtual void set_being_worked_on(void*, short, unsigned char);
-    virtual void release_being_worked_on(RGE_Static_Object*);
-    virtual unsigned char is_moving();
-    virtual RGE_Static_Object* get_target_obj();
-    virtual void enter_obj(RGE_Static_Object*);
-    virtual void exit_obj();
-    virtual int explore_terrain(RGE_Player*, unsigned char, int);
-    virtual void unexplore_terrain(RGE_Player*, unsigned char, int);
-    virtual void* get_los_table();
-    virtual int inAttackRange(RGE_Static_Object*);
-    virtual unsigned char underAttack();
-    virtual void setUnderAttack(unsigned char);
-    virtual float calc_attack_modifier(RGE_Static_Object*);
-    virtual float getSpeed();
-    virtual float getAngle();
-    virtual float maximumSpeed();
-    virtual float rateOfFire();
-    virtual float damageCapability(RGE_Static_Object*);
-    virtual float damageCapability();
-    virtual float weaponRange(int);
-    virtual float minimumWeaponRange();
-    virtual int passableTile(float, float, int);
-    virtual unsigned char facetToNextWaypoint();
-    virtual int currentTargetID();
-    virtual float currentTargetX();
-    virtual float currentTargetY();
-    virtual float currentTargetZ();
-    virtual void setWaitingToMove(unsigned char);
-    virtual unsigned char waitingToMove();
-
-    long id;                                      // +0x04
-    void* master_obj;                             // +0x08
-    RGE_Player* owner;                            // +0x0C
-    char gap_10[0x20];                            // +0x10
-    float hitPoints;                              // +0x30
-    char gap_34[4];                               // +0x34
-    float world_x;                                // +0x38
-    float world_y;                                // +0x3C
-    float world_z;                                // +0x40
-    float attribute_amount_held;                  // +0x44
-    unsigned char object_state;                   // +0x48
-    char gap_49[7];                               // +0x49
-    void* player_object_node;                     // +0x50
-    ManagedArrayInt<int> pathingGroupMembers;     // +0x54
-    ManagedArrayInt<int> groupMembers;            // +0x64
-    UnitAIModule* unitAIValue;                    // +0x74
-    int groupCommanderValue;                      // +0x78
-    int zoneMapIndex;                              // +0x7C
-    float groupRangeValue;                         // +0x80
-    char gap_84[0x100];                            // +0x84
-    RGE_Action_List* actions;                     // +0x184
-
-    UnitAIModule* unitAI();
-    float distance_to_object(RGE_Static_Object* object);
-};
-
-class UnitAIModule {
-public:
-    virtual ~UnitAIModule();
-    virtual void save(int);
-    virtual void load(int);
-    virtual RGE_Player* owner() const;
-    virtual int order(int, int, int, int, float, float, float, float,
-                      int, int, int);
-    virtual int notify(int, int, int, long, long, long);
-    virtual int notifyCommander(int, int, int, long, long, long);
-    virtual int notifyCommander(void*);
-    virtual void search();
-    virtual int importantWhenDead(int);
-    virtual int retryableOrder(int);
-    virtual int actionRequiresLiveTarget(int);
-    virtual int bestUnitToAttack(int, int, float*);
-    virtual int mostDangerousEnemy(float*);
-    virtual int weakestEnemy(float*);
-    virtual int closestAttacker(float*);
-    virtual int closestObject(int, int, int, int, int*);
-    virtual int closestResourceObject(int, int*);
-    virtual int closestUndiscoveredTile(int*, int*, int);
-    virtual void logDebug(char*);
-    virtual int canAttackUnit(RGE_Static_Object*);
-    virtual int canAttackUnitAtNeutrality(int);
-    virtual int stopObject(int);
-    virtual int attackObject(int, int);
-    virtual int attackRoundupObject(int);
-    virtual int huntObject(int, int);
-    virtual int gatherObject(int, int);
-    virtual int convertObject(int, int);
-    virtual int healObject(int, int);
-    virtual int repairObject(int, int);
-    virtual int buildObject(int, int);
-    virtual int tradeWithObject(int, int);
-    virtual int explore(int, int, int);
-    virtual int enterObject(int, int);
-    virtual int unload(int, float, float);
-    virtual int transportObject(float, float, float, int);
-    virtual int moveTo(int, int);
-    virtual int moveTo(int, float, int);
-    virtual int moveTo(float, float, float, float);
-    virtual int evasiveMoveTo(float, float, float, int);
-    virtual int intelligentEvasiveMoveTo(float, float, float, int, int);
-    virtual int runAwayFromAttackers(int);
-    virtual int followObject(int, float, int);
-    virtual int defendObject(int, float, int);
-    virtual int defendPosition(float, float, float, int);
-    virtual int seekAndDestroy(int, int, int, int);
-    virtual int exploreAndDestroy(int, int, int);
-    virtual int importantObject(int);
-    virtual int convertToLOSResourceType(int);
-    virtual int canConvert(int);
-    virtual int processOrder(void*, int);
-    virtual int processNotify(void*, unsigned long);
-    virtual void processGroupNotify(void*);
-    virtual int processIdle(int);
-    virtual int processMisc();
-    virtual int processRetryableOrder();
-    virtual int bestUnitToHeal(int, float*);
-    virtual int bestUnitToConvert(float*);
-    virtual int update(unsigned long);
-
-    RGE_Static_Object* objectValue;                // +0x04
-    int moodValue;                                 // +0x08
-    int objectCategoryValue;                       // +0x0C
-    int orderQueueSizeValue;                       // +0x10
-    int orderQueueMaxSizeValue;                    // +0x14
-    void* orderQueueValue;                         // +0x18
-    int notifyQueueSizeValue;                      // +0x1C
-    int notifyQueueMaxSizeValue;                   // +0x20
-    void* notifyQueueValue;                        // +0x24
-    int currentOrderValue;                         // +0x28
-    int currentOrderPriorityValue;                 // +0x2C
-    int currentActionValue;                        // +0x30
-    int currentTargetValue;                        // +0x34
-    int currentTargetTypeValue;                    // +0x38
-    float currentTargetXValue;                     // +0x3C
-    float currentTargetYValue;                     // +0x40
-    float currentTargetZValue;                     // +0x44
-    float desiredTargetDistanceValue;              // +0x48
-    int defendTargetValue;                          // +0x4C
-    int lastOrderValue;                             // +0x50
-    int lastActionValue;                            // +0x54
-    int lastTargetValue;                            // +0x58
-    int lastTargetTypeValue;                        // +0x5C
-    ManagedArrayInt<int> attackingUnitsValue;      // +0x60
-    char waypointGap[0x80];                         // +0x70
-    int waypointQueueSizeValue;                    // +0xF0
-    unsigned long lastUpdateTimeValue;              // +0xF4
-    unsigned long idleTimerValue;                  // +0xF8
-    unsigned long adjustedIdleTimeoutValue;        // +0xFC
-    unsigned long idleTimeoutValue;                // +0x100
-    unsigned long secondaryTimerValue;              // +0x104
-    unsigned long lookAroundTimerValue;            // +0x108
-    unsigned long lookAroundTimeoutValue;           // +0x10C
-    float lastWorldPositionX;                      // +0x110
-    float lastWorldPositionY;                      // +0x114
-    float lastWorldPositionZ;                      // +0x118
-    char gap_11C[4];                               // +0x11C
-    float defenseBufferValue;                      // +0x120
-    int* importantObjects;                          // +0x124
-    int numberImportantObjects;                     // +0x128
-    void* playStatus;                               // +0x12C
-    unsigned char stopAfterTargetKilledValue;       // +0x130
-
-    RGE_Static_Object* lookupObject(int id);
-    void removeCurrentTarget();
-    int currentTarget();
-    void purgeNotifyQueue(unsigned long time);
-    void updateGroup(unsigned long time);
-    void lookAround();
-};
+#include "../../include/aiuaimod_context.h"
 
 #define taskedThisUpdate (*(int*)0x592A48)
 #define searchedThisUpdate (*(int*)0x592A4C)
 #define numberVisibleObjects (*(int*)0x592A50)
 #define numberDifferentPlayerObjectsVisible (*(int*)0x592A54)
 extern FILE* actionFile;
-extern const float DAT_0056ebc0;
+extern float DAT_0056ebc0;
 #define actionFormat ((const char*)0x57F964)
 #define actionSource ((const char*)0x57F980)
+
+#define AI_UPDATE_VPAD(n) virtual int updateVpad##n();
+class UnitAIModule_Move_Query4 {
+public:
+    AI_UPDATE_VPAD(00) AI_UPDATE_VPAD(01) AI_UPDATE_VPAD(02) AI_UPDATE_VPAD(03)
+    AI_UPDATE_VPAD(04) AI_UPDATE_VPAD(05) AI_UPDATE_VPAD(06) AI_UPDATE_VPAD(07)
+    AI_UPDATE_VPAD(08) AI_UPDATE_VPAD(09) AI_UPDATE_VPAD(10) AI_UPDATE_VPAD(11)
+    AI_UPDATE_VPAD(12) AI_UPDATE_VPAD(13) AI_UPDATE_VPAD(14) AI_UPDATE_VPAD(15)
+    AI_UPDATE_VPAD(16) AI_UPDATE_VPAD(17) AI_UPDATE_VPAD(18) AI_UPDATE_VPAD(19)
+    AI_UPDATE_VPAD(20) AI_UPDATE_VPAD(21) AI_UPDATE_VPAD(22) AI_UPDATE_VPAD(23)
+    AI_UPDATE_VPAD(24) AI_UPDATE_VPAD(25) AI_UPDATE_VPAD(26) AI_UPDATE_VPAD(27)
+    AI_UPDATE_VPAD(28) AI_UPDATE_VPAD(29) AI_UPDATE_VPAD(30) AI_UPDATE_VPAD(31)
+    AI_UPDATE_VPAD(32) AI_UPDATE_VPAD(33) AI_UPDATE_VPAD(34) AI_UPDATE_VPAD(35)
+    virtual int moveTo(float, float, float, float); // +0x90
+};
+#undef AI_UPDATE_VPAD
 
 int UnitAIModule::update(unsigned long param_1)
 {
@@ -420,7 +161,7 @@ int UnitAIModule::update(unsigned long param_1)
                         int idleResult = this->processIdle(0);
                         if (idleResult == 5) {
                             if (this->currentOrderValue != 0x2D5) {
-                                if (this->moveTo(
+                                if (((UnitAIModule_Move_Query4*)this)->moveTo(
                                         this->currentTargetXValue,
                                         this->currentTargetYValue,
                                         this->currentTargetZValue,
@@ -509,10 +250,9 @@ int UnitAIModule::update(unsigned long param_1)
 
     {
         int i = 0;
-        int offset = 0;
         while (i < this->notifyQueueSizeValue) {
             int result = this->processNotify(
-                (char*)this->notifyQueueValue + offset, param_1);
+                &this->notifyQueueValue[i], param_1);
             if (result == 4) {
                 this->purgeNotifyQueue(param_1);
                 return 0;
@@ -521,7 +261,6 @@ int UnitAIModule::update(unsigned long param_1)
                 break;
             }
             ++i;
-            offset += 0x18;
         }
     }
 
@@ -552,15 +291,13 @@ int UnitAIModule::update(unsigned long param_1)
 
     if (this->currentActionValue == -1) {
         int i = 0;
-        int offset = 0;
         while (i < this->orderQueueSizeValue) {
             int result = this->processOrder(
-                (char*)this->orderQueueValue + offset, i);
+                &this->orderQueueValue[i], i);
             if (result == 1) {
                 break;
             }
             ++i;
-            offset += 0x24;
         }
     }
 

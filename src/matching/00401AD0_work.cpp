@@ -17,6 +17,7 @@
 // - Main review replaced generic virtual slots with the canonical RGE_Action_Attack surface.
 // VALIDATION: check_function.py --va 00401AD0 --rebuild --detail full => MATCH, 0.0000%.
 
+#ifndef ACT_ATAK_CONTEXT_H
 class RGE_Static_Object;
 class RGE_Action_Object;
 class RGE_Action_List;
@@ -59,6 +60,7 @@ public:
     char gap_14[0x46];
     unsigned char indirect_fire_flag;
 };
+#endif
 
 int RGE_Action_Attack::work(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) {
     if (param_1 != 0) {
