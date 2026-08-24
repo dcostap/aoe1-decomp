@@ -21,6 +21,7 @@
 class RGE_Action;
 class RGE_Action_List;
 class RGE_Action_Object;
+struct RGE_Armor_Weapon_Info;
 class RGE_Color_Table;
 class RGE_Master_Action_Object;
 class RGE_Master_Static_Object;
@@ -122,62 +123,71 @@ public:
 
 class RGE_Static_Object {
 public:
-    virtual void vf00();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
-    virtual void vf20();
-    virtual void vf24();
-    virtual void vf28();
-    virtual void vf2C();
-    virtual void vf30();
-    virtual void vf34();
-    virtual void vf38();
-    virtual void vf3C();
-    virtual void vf40();
-    virtual void vf44();
-    virtual void vf48();
-    virtual void vf4C();
-    virtual void vf50();
-    virtual void vf54();
-    virtual void vf58();
-    virtual void vf5C();
-    virtual void vf60();
-    virtual void vf64();
-    virtual void vf68();
-    virtual void vf6C();
-    virtual void vf70();
-    virtual void vf74();
-    virtual void vf78();
-    virtual void vf7C();
-    virtual void vf80();
-    virtual void vf84();
-    virtual void vf88();
-    virtual void vf8C();
-    virtual void vf90();
-    virtual void vf94();
-    virtual void vf98();
-    virtual void vf9C();
-    virtual void vfA0();
-    virtual void vfA4();
-    virtual void vfA8();
-    virtual void vfAC();
-    virtual void vfB0();
-    virtual void vfB4();
-    virtual void vfB8();
-    virtual void vfBC();
-    virtual void notify_target_set(RGE_Action_Object*, short, int);
-    virtual void notify_target_clear(RGE_Action_Object*);
+    // This is the authentic prefix of stat_obj.h's virtual surface.  The
+    // action TU only calls the two slots at +0xC0 and +0xC4.
+    virtual ~RGE_Static_Object();
+    virtual void recycle_in_to_game(RGE_Master_Static_Object*, RGE_Player*,
+                                    float, float, float);
+    virtual void recycle_out_of_game();
+    virtual void draw(TDrawArea*, short, short, RGE_Color_Table*);
+    virtual void shadow_draw(TDrawArea*, short, short, unsigned char);
+    virtual void normal_draw(TDrawArea*, short, short);
+    virtual void draw_front_frame(TDrawArea*, short, short);
+    virtual void draw_back_frame(TDrawArea*, short, short);
+    virtual void draw_frame(TDrawArea*, short, short);
+    virtual unsigned char update();
+    virtual void check_damage_sprites();
+    virtual void rehook();
+    virtual void save(int);
+    virtual float teleport(float, float, float);
+    virtual void new_sprite(RGE_Sprite*);
+    virtual void add_overlay_sprite(RGE_Sprite*, unsigned char);
+    virtual void remove_overlay_sprite(int);
+    virtual void change_ownership(RGE_Player*);
+    virtual void modify(float, unsigned char);
+    virtual void modify_delta(float, unsigned int);
+    virtual void modify_percent(float, unsigned char);
+    virtual void transform(RGE_Master_Static_Object*);
+    virtual void copy_obj(RGE_Master_Static_Object*);
+    virtual void set_object_state(unsigned char);
+    virtual void remove_visible_resource();
+    virtual void create_doppleganger_when_dying();
+    virtual void destroy_obj();
+    virtual void die_die_die();
+    virtual void damage(int, RGE_Armor_Weapon_Info*, float, RGE_Player*,
+                        RGE_Static_Object*);
+    virtual float calculateDamage(int, RGE_Armor_Weapon_Info*, float,
+                                  RGE_Player*, RGE_Static_Object*);
+    virtual void rotate(long);
+    virtual unsigned char can_attack();
+    virtual void set_attribute(short, float);
+    virtual void set_attribute_amount(float, unsigned char);
+    virtual int heal(int, int);
+    virtual unsigned char heal(float);
+    virtual int canRepair();
+    virtual void notify_of_relation(long, unsigned char);
+    virtual void do_command(RGE_Static_Object*, float, float, float);
+    virtual void move_to(RGE_Static_Object*, float, float, float);
+    virtual void work(RGE_Static_Object*, float, float, float);
+    virtual void stop();
+    virtual void set_attack(RGE_Static_Object*);
+    virtual void play_command_sound();
+    virtual void play_move_sound();
+    virtual void new_angle(float);
+    virtual RGE_Static_Object* spawn_death_obj();
+    virtual RGE_Master_Static_Object* get_command_master(RGE_Static_Object*,
+                                                          float, float, float);
+    virtual void set_being_worked_on(RGE_Action_Object*, short, unsigned char);
+    virtual void release_being_worked_on(RGE_Static_Object*);
 
-    int id;
-    char gap_08[0x40];
+    long id;
+    RGE_Master_Static_Object* master_obj;
+    RGE_Unit_Object_Owner* owner;
+    RGE_Sprite* sprite;
+    char gap_14[0x34];
     unsigned char object_state;
 
-    RGE_Static_Object* get_object_pointer(int);
+    RGE_Static_Object* get_object_pointer(long);
     RGE_Sprite* get_sprite_pointer(short);
 };
 
@@ -192,31 +202,9 @@ public:
     RGE_Game_World* world;
 };
 
-class RGE_Action_Object {
-public:
-    virtual ~RGE_Action_Object();
-    virtual void recycle_in_to_game(RGE_Master_Static_Object*, RGE_Player*,
-                                    float, float, float);
-    virtual void recycle_out_of_game();
-    virtual void draw(TDrawArea*, short, short, RGE_Color_Table*);
-    virtual void shadow_draw(void*, short, short, unsigned char);
-    virtual void normal_draw(void*, short, short);
-    virtual void draw_front_frame(void*, short, short);
-    virtual void draw_back_frame(void*, short, short);
-    virtual void draw_frame(void*, short, short);
-    virtual unsigned char update();
-    virtual void check_damage_sprites();
-    virtual void rehook();
-    virtual void save(int);
-    virtual float teleport(float, float, float);
-    virtual void new_sprite(RGE_Sprite*);
-
-    int gap_04;
-    RGE_Master_Action_Object* master_obj;
-    RGE_Unit_Object_Owner* owner;
-    RGE_Sprite* sprite;
-
-};
+class RGE_Animated_Object : public RGE_Static_Object {};
+class RGE_Moving_Object : public RGE_Animated_Object {};
+class RGE_Action_Object : public RGE_Moving_Object {};
 
 class RGE_Action {
 public:

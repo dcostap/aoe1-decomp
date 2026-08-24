@@ -45,7 +45,10 @@ int RGE_Action::setup(int param_1, RGE_Action_Object* param_2)
     if (short_val == -1) {
         this->task = 0;
     } else {
-        RGE_Task_List* task_list = this->obj->master_obj->tasks;
+        // BINARY NOTE: Action-master task data starts at +0xD8.
+        RGE_Master_Action_Object* action_master =
+            (RGE_Master_Action_Object*)this->obj->master_obj;
+        RGE_Task_List* task_list = action_master->tasks;
         this->task = task_list->list[short_val];
     }
 
