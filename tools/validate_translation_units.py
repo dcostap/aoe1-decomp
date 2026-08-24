@@ -293,12 +293,24 @@ def validate_translation_units(
             issues.append(_issue("missing-source", f"{group_label} has no wrapper source"))
         elif not source.is_file():
             issues.append(_issue("missing-source", f"{group_label} wrapper is missing: {source}"))
-        elif source.suffix.lower() != ".cpp":
-            issues.append(_issue("wrapper-extension", f"{group_label} wrapper is not C++: {source}"))
+        elif source.suffix.lower() not in {".c", ".cpp"}:
+            issues.append(
+                _issue("wrapper-extension", f"{group_label} wrapper is not C or C++: {source}"),
+            )
 
         flags = str(group.get("flags") or "").strip()
-        if flags and not _resolve_path(flags, root).is_file():
+        flags_path = _resolve_path(flags, root)
+        if flags and not flags_path.is_file():
             issues.append(_issue("missing-flags", f"{group_label} flags are missing: {flags}"))
+        elif source.suffix.lower() == ".c" and flags_path.is_file():
+            flag_tokens = flags_path.read_text(encoding="utf-8", errors="replace").upper().split()
+            if "/TC" not in flag_tokens:
+                issues.append(
+                    _issue(
+                        "c-language-mode",
+                        f"{group_label} C wrapper flags do not select C with /TC: {flags_path}",
+                    ),
+                )
 
         owners = group.get("owners")
         if not isinstance(owners, dict) or not owners:

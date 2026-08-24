@@ -2651,6 +2651,33 @@
         "0050B5E0": "src/matching/0050B5E0_create_train_list.cpp",
         "0050B700": "src/matching/0050B700_create_research_list.cpp"
       }
+    },
+    {
+      "name": "dsutil_prefix",
+      "source": "src/dsutil_tu.c",
+      "flags": "config/flags/00448BA0_ds_stream_time_func.rsp",
+      "owners": {
+        "004477D0": "src/matching/004477D0_ShowErrMsg.c",
+        "004477E0": "src/matching/004477E0_DSLoadSoundBuffer.c",
+        "004478F0": "src/matching/004478F0_DSGetWaveResource.c",
+        "00447950": "src/matching/00447950_SndObjCreate.c",
+        "00447A60": "src/matching/00447A60_SndObjGetFreeBuffer.c",
+        "00447B20": "src/matching/00447B20_SndObjPlay.cpp",
+        "00447BC0": "src/matching/00447BC0_DSFillSoundBuffer.c",
+        "00447C60": "src/matching/00447C60_DSParseWaveResource.c",
+        "00447F40": "src/matching/00447F40_WaveReadFile.c",
+        "00448080": "src/matching/00448080_WaveCreateFile.c",
+        "00448250": "src/matching/00448250_WaveCloseWriteFile.c",
+        "00448400": "src/matching/00448400_riffCopyChunk.c",
+        "004484D0": "src/matching/004484D0_WaveLoadFile.c",
+        "004485C0": "src/matching/004485C0_WaveSaveFile.c",
+        "004486B0": "src/matching/004486B0_ds_stream_exit.cpp",
+        "004486F0": "src/matching/004486F0_ds_stream_file.c",
+        "00448A40": "src/matching/00448A40_ds_stream_volume.cpp",
+        "00448A70": "src/matching/00448A70_ds_stream_resume.c",
+        "00448A80": "src/matching/00448A80_ds_stream_stop.c",
+        "00448B30": "src/matching/00448B30_ds_stream_messages.c"
+      }
     }
   ]
 }

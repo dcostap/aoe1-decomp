@@ -136,6 +136,44 @@ class TranslationUnitTests(unittest.TestCase):
 
         self.assertIn("missing-source", {issue.code for issue in issues})
 
+    def test_manifest_validation_accepts_c_wrapper_with_tc(self) -> None:
+        group = copy.deepcopy(load_translation_units()[0])
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            wrapper = root / "src" / "demo_tu.c"
+            flags = root / "config" / "flags" / "demo.rsp"
+            wrapper.parent.mkdir(parents=True)
+            flags.parent.mkdir(parents=True)
+            wrapper.write_text("int demo(void) { return 0; }\n", encoding="utf-8")
+            flags.write_text("/nologo /c /O2 /TC\n", encoding="utf-8")
+            group["source"] = "src/demo_tu.c"
+            group["flags"] = "config/flags/demo.rsp"
+
+            issues = validate_translation_units([group], root=root)
+
+        issue_codes = {issue.code for issue in issues}
+        self.assertNotIn("wrapper-extension", issue_codes)
+        self.assertNotIn("c-language-mode", issue_codes)
+
+    def test_manifest_validation_requires_tc_for_c_wrapper(self) -> None:
+        group = copy.deepcopy(load_translation_units()[0])
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            wrapper = root / "src" / "demo_tu.c"
+            flags = root / "config" / "flags" / "demo.rsp"
+            wrapper.parent.mkdir(parents=True)
+            flags.parent.mkdir(parents=True)
+            wrapper.write_text("int demo(void) { return 0; }\n", encoding="utf-8")
+            flags.write_text("/nologo /c /O2\n", encoding="utf-8")
+            group["source"] = "src/demo_tu.c"
+            group["flags"] = "config/flags/demo.rsp"
+
+            issues = validate_translation_units([group], root=root)
+
+        self.assertIn("c-language-mode", {issue.code for issue in issues})
+
     def test_manifest_validation_requires_owner_include_order_and_count(self) -> None:
         group = copy.deepcopy(load_translation_units()[1])
         owners = group["owners"]
