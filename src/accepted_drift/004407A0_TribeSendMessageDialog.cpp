@@ -63,6 +63,9 @@
 // this source loads it into EBX. No natural, PDB-supported source form found
 // the EBP basin without harming the exact prefix or the dialog ABI.
 
+#ifdef DLG_SMSG_CANONICAL_TU
+#include "../../include/dlg_smsg_context.h"
+#else
 class TDrawArea;
 class TPanel;
 class TTextPanel;
@@ -217,6 +220,7 @@ public:
 
     TribeSendMessageDialog(TScreenPanel*);
 };
+#endif
 
 TribeSendMessageDialog::TribeSendMessageDialog(TScreenPanel* parent)
     : TDialogPanel("Send Message Dialog")

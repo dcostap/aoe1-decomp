@@ -1,5 +1,8 @@
+#ifndef ACT_LIST_SHARED_CONTEXT
 void* __cdecl calloc(unsigned int count, unsigned int size);
+#endif
 
+#ifndef ACT_LIST_SHARED_CONTEXT
 class RGE_Action {
 public:
     virtual void vf00(int);
@@ -32,13 +35,14 @@ public:
 
     void add_action(RGE_Action* action);
 };
+#endif
 
 void RGE_Action_List::add_action(RGE_Action* action) {
     RGE_Action_Node* node;
 
-    if (this->obj->state > 2) {
+    if (this->obj->object_state > 2) {
         if (action != 0) {
-            action->vf00(1);
+            delete action;
         }
         return;
     }
@@ -47,5 +51,5 @@ void RGE_Action_List::add_action(RGE_Action* action) {
     node->action = action;
     node->next = this->list;
     this->list = node;
-    action->activate(1);
+    action->first_in_stack(1);
 }

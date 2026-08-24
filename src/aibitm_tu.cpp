@@ -1,0 +1,38 @@
+// Authentic aibitm.cpp owner wrapper.
+// PDB module: C:\\msdev\\work\\age1_x1\\aibitm.cpp
+// Includes follow the PDB source-line order (30 through 281).
+// The compiler-generated scalar deleting destructor at 00407DE0 is emitted
+// by the natural virtual BaseItem surface and is listed in the proposal.
+#include "../include/aibitm_context.h"
+
+#include "matching/00407D80_BaseItem.cpp"
+#include "matching/00407E00_BaseItem.cpp"
+#include "matching/00407E70_BaseItem.cpp"
+#include "matching/00407EF0_BaseItem.cpp"
+#include "matching/00407F70_BaseItem.cpp"
+#include "matching/00407F80_operator.cpp"
+#include "matching/00407FC0_operator.cpp"
+#include "scratch/00407FE0_operator.cpp"
+#include "scratch/00408000_operator.cpp"
+#include "matching/00408020_typeID.cpp"
+#include "matching/00408030_gameID.cpp"
+#include "matching/00408040_uniqueID.cpp"
+#include "matching/00408050_name.cpp"
+#include "matching/00408060_x.cpp"
+#include "matching/00408070_y.cpp"
+#include "matching/00408080_z.cpp"
+#include "matching/00408090_xSize.cpp"
+#include "matching/004080A0_ySize.cpp"
+#include "matching/004080B0_zSize.cpp"
+#include "matching/004080C0_skip.cpp"
+#include "matching/004080D0_setTypeID.cpp"
+#include "matching/004080E0_setGameID.cpp"
+#include "matching/004080F0_setUniqueID.cpp"
+#include "matching/00408100_setName.cpp"
+#include "matching/00408120_setX.cpp"
+#include "matching/00408130_setY.cpp"
+#include "matching/00408140_setZ.cpp"
+#include "matching/00408150_setXSize.cpp"
+#include "matching/00408160_setYSize.cpp"
+#include "matching/00408170_setZSize.cpp"
+#include "matching/00408180_setSkip.cpp"

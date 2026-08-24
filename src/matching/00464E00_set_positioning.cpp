@@ -1,6 +1,7 @@
 // 00464E00 TPanel::set_positioning
 // Panel.cpp:1158-1183, 166 bytes, __thiscall, ret 34h
 
+#ifndef AOE1_PANEL_CONTEXT_H
 class TDrawArea {
 public:
     char gap_00[0x18];
@@ -80,6 +81,7 @@ public:
                          TPanel* p12, TPanel* p13);
 };
 
+#endif
 void TPanel::set_positioning(int p1, int p2, int p3, int p4,
                              int p5, int p6, int p7, int p8,
                              int p9, TPanel* p10, TPanel* p11,
@@ -100,12 +102,12 @@ void TPanel::set_positioning(int p1, int p2, int p3, int p4,
     bottom_panel = p13;
 
     if (render_area != 0) {
-        positioning_callback(render_area->Width, render_area->Height);
+        handle_size(render_area->Width, render_area->Height);
     } else {
-        positioning_callback(0, 0);
+        handle_size(0, 0);
     }
 
     if (active != 0) {
-        redraw(2);
+        set_redraw(2);
     }
 }

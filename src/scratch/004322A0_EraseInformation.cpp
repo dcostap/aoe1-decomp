@@ -1,11 +1,16 @@
+#ifndef COM_SESS_TU_CONTEXT
 extern "C" void* __cdecl memset(void* dest, int val, unsigned int count);
-class SomeClass {
+struct EraseSessionRecord {
+    char bytes[0x238];
+};
+class TCommunications_Sessions {
 public:
     void EraseInformation();
-    int field_00;
-    int data[0x115E6];
+    int SessionCount;
+    EraseSessionRecord Session[501];
 };
-void SomeClass::EraseInformation() {
-    this->field_00 = 0;
-    memset(this->data, 0, sizeof(this->data));
+#endif
+void TCommunications_Sessions::EraseInformation() {
+    this->SessionCount = 0;
+    memset(this->Session, 0, sizeof(this->Session));
 }

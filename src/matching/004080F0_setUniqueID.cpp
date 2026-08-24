@@ -1,12 +1,5 @@
-class BaseItem {
-public:
-    virtual ~BaseItem();
-    char gap_04[8];
-    int uniqueID_;
+#include "../../include/aibitm_context.h"
 
-    void setUniqueID(int);
-};
-
-void BaseItem::setUniqueID(int val) {
-    this->uniqueID_ = val;
+void BaseItem::setUniqueID(int value) {
+    uniqueIDValue = value;
 }

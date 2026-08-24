@@ -16,6 +16,9 @@
 
 #include <string.h>
 
+#ifdef DLG_SMSG_CANONICAL_TU
+#include "../../include/dlg_smsg_context.h"
+#else
 class TDrawArea;
 class TButtonPanel;
 class TEditPanel;
@@ -235,6 +238,7 @@ public:
                         unsigned long b);
     void checkButtons();
 };
+#endif
 
 long TribeSendMessageDialog::action(TPanel* panel, long code,
                                     unsigned long a, unsigned long b)

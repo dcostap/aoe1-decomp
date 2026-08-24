@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_CONTEXT_H
 class TPanel {
 public:
     virtual void vf00(void);
@@ -63,6 +64,7 @@ public:
     int restorePreviousModalPanel(void);
 };
 
+#endif
 int TPanelSystem::restorePreviousModalPanel(void) {
     TPanel* panel;
 
@@ -73,7 +75,7 @@ int TPanelSystem::restorePreviousModalPanel(void) {
     if (panel == 0) {
         return 0;
     }
-    panel->set_focus_state(1);
+    panel->set_focus(1);
     setMouseOwner(panel);
     setKeyboardOwner(panel);
     modalPanelValue = panel;

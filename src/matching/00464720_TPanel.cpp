@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_CONTEXT_H
 struct PanelNode;
 struct TDrawArea;
 struct HRGN__;
@@ -88,6 +89,7 @@ public:
     TPanel(char* name);
 };
 
+#endif
 TPanel::TPanel(char* name) {
     previousPanelValue = 0;
     previousModalPanelValue = 0;
@@ -143,7 +145,6 @@ TPanel::TPanel(char* name) {
     field_EF = 0;
     field_F0 = 0;
     field_F2 = 0;
-    vftable = &TPanel_vftable;
     field_8C = 0;
     field_90 = 0;
     field_94 = 0;

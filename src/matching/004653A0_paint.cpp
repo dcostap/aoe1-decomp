@@ -1,5 +1,8 @@
+#ifndef AOE1_PANEL_CONTEXT_H
 extern "C" __declspec(dllimport) int __stdcall ValidateRect(void* hwnd, const void* rect);
+#endif
 
+#ifndef AOE1_PANEL_CONTEXT_H
 struct tagRECT {
     long left;
     long top;
@@ -30,6 +33,7 @@ public:
     int visible;
 };
 
+#endif
 void TPanel::paint(void) {
     if (render_area != 0 && visible != 0 && active != 0) {
         render_area->DrawSystem->Paint(&clip_rect);

@@ -1,7 +1,9 @@
+#ifndef AOE1_AIEMOMOD_TU_CONTEXT
 class EmotionalAIModule {
 public:
     virtual ~EmotionalAIModule();
-    int defaultState();
+    int defaultState() const;
 };
+#endif
 
-int EmotionalAIModule::defaultState() { return 4; }
+int EmotionalAIModule::defaultState() const { return 4; }

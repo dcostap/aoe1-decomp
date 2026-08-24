@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_CONTEXT_H
 class TPanel {
 public:
     virtual ~TPanel();
@@ -18,6 +19,7 @@ public:
     int panelName();
 };
 
-int TPanel::panelName() {
-    return this->panelName_;
+#endif
+char* TPanel::panelName() {
+    return this->panel_name;
 }

@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_CONTEXT_H
 class TPanel {
 public:
     virtual void vf00(void);
@@ -19,16 +20,17 @@ public:
     virtual void set_active(int active);
 };
 
+#endif
 void TPanel::set_active(int is_active) {
     if (active != is_active) {
         active = is_active;
         if (is_active != 0) {
-            redraw(1);
+        set_redraw(1);
             return;
         }
         release_mouse();
         if (parent_panel != 0) {
-            parent_panel->redraw(1);
+            parent_panel->set_redraw(1);
         }
     }
 }

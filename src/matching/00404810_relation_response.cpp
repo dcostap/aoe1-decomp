@@ -1,3 +1,4 @@
+#ifndef ACT_LIST_SHARED_CONTEXT
 class RGE_Action {
 public:
     virtual int vf00(void);
@@ -31,10 +32,11 @@ public:
 
     int relation_response(long, unsigned char);
 };
+#endif
 
 int RGE_Action_List::relation_response(long param_1, unsigned char param_2) {
     if (this->list != 0) {
-        return this->list->action->vf3C(param_1, param_2) & 0xff;
+        return this->list->action->relation_response(param_1, param_2) & 0xff;
     }
     return 0;
 }

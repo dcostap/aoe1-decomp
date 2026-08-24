@@ -1,3 +1,4 @@
+#ifndef ACT_TRAN_SHARED_CONTEXT
 class RGE_Action_Transport {
 public:
     virtual ~RGE_Action_Transport();
@@ -26,8 +27,13 @@ public:
     virtual int vf5C(int);
     int stop();
 };
+#endif
 
 int RGE_Action_Transport::stop() {
+#ifdef ACT_TRAN_SHARED_CONTEXT
+    this->set_state(2);
+#else
     this->vf5C(2);
+#endif
     return 1;
 }

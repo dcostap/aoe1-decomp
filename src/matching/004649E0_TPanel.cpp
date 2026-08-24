@@ -1,6 +1,7 @@
 extern "C" void __cdecl free(void* block);
 extern "C" __declspec(dllimport) int __stdcall DeleteObject(void* object);
 
+#ifndef AOE1_PANEL_CONTEXT_H
 struct PanelNode;
 class TPanel;
 
@@ -66,6 +67,7 @@ public:
     void remove_panel_node(PanelNode* node);
 };
 
+#endif
 TPanel::~TPanel() {
     TPanel* self;
 
@@ -89,7 +91,7 @@ TPanel::~TPanel() {
         clip_rgn = 0;
     }
     if (parent_panel != 0) {
-        parent_panel->vf20(2);
+        parent_panel->set_redraw(2);
     }
     if (panelNameValue != 0) {
         free(panelNameValue);

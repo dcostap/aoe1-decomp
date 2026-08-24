@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_CONTEXT_H
 class TPanel;
 
 struct PanelNode {
@@ -67,6 +68,7 @@ public:
     long handle_key_down(long key, short ch, int a3, int a4, int a5);
 };
 
+#endif
 long TPanel::handle_key_down(long key, short ch, int a3, int a4, int a5) {
     PanelNode* node;
     long result;
@@ -78,14 +80,14 @@ long TPanel::handle_key_down(long key, short ch, int a3, int a4, int a5) {
 
     node = last_child_node;
     while (node != 0) {
-        result = node->panel->vf58(key, ch, a3, a4, a5);
+        result = node->panel->handle_key_down(key, ch, a3, a4, a5);
         if (result != 0) {
             return result;
         }
         node = node->prev_node;
     }
 
-    result = vfAC(key, ch, a3, a4, a5);
+    result = key_down_action(key, ch, a3, a4, a5);
     if (result != 0) {
         return result;
     }

@@ -14,6 +14,7 @@
 extern float DAT_0056e6c8;
 extern float DAT_0056e6cc;
 
+#ifndef ACT_TRAN_SHARED_CONTEXT
 class RGE_Sprite;
 
 class RGE_Master_Static_Object {
@@ -106,6 +107,7 @@ public:
     int targetZone(void);
     virtual int next_to_drop_off_terrain(void);
 };
+#endif
 
 int RGE_Action_Transport::next_to_drop_off_terrain(void)
 {

@@ -1,5 +1,6 @@
 extern "C" __declspec(dllimport) int __stdcall SelectClipRgn(void* hdc, void* hrgn);
 
+#ifndef AOE1_PANEL_CONTEXT_H
 struct tagRECT {
     long left;
     long top;
@@ -29,6 +30,7 @@ public:
     virtual void draw_setup(int clear);
 };
 
+#endif
 void TPanel::draw_setup(int clear) {
     void* dc;
     tagRECT* rect;

@@ -17,6 +17,7 @@
 // store ordering, and the ordinary single-store spelling emits fst/fcomp.
 // Status: exact validated match.
 
+#ifndef AOE1_TACT_ART_TU_CONTEXT
 #include <stddef.h>
 
 extern double DAT_00574f08;
@@ -124,6 +125,7 @@ public:
 
     void* check_ownership();
 };
+#endif
 
 unsigned char TRIBE_Action_Artifact::update() {
     unsigned char val = action_list->update();

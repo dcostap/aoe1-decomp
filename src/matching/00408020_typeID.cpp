@@ -1,11 +1,5 @@
-class BaseItem {
-public:
-    virtual ~BaseItem();
-    int typeID_;
-
-    int typeID() const;
-};
+#include "../../include/aibitm_context.h"
 
 int BaseItem::typeID() const {
-    return this->typeID_;
+    return this->typeIDValue;
 }

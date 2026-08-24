@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_CONTEXT_H
 class TPanel {
 public:
     virtual void vf00(void);
@@ -70,6 +71,7 @@ public:
     void setModalPanel(TPanel* panel);
 };
 
+#endif
 void TPanelSystem::setModalPanel(TPanel* panel) {
     if (modalPanelValue != 0 && panel != 0) {
         panel->setPreviousModalPanel(modalPanelValue);
@@ -93,6 +95,6 @@ void TPanelSystem::setModalPanel(TPanel* panel) {
             return;
         }
         prevCurrentChildValue = 0;
-        panel->vfC0(1);
+        panel->set_focus(1);
     }
 }

@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_CONTEXT_H
 class TPanel {
 public:
     char gap_00[0xF3];
@@ -18,6 +19,7 @@ public:
     void set_restore(void);
 };
 
+#endif
 void TPanelSystem::set_restore(void) {
     PanelNode* node;
 

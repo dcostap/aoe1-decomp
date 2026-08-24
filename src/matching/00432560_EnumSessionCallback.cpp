@@ -1,6 +1,7 @@
 // 00432560 EnumSessionCallback
 // pass DPSESSIONDESC2 GUIDs by value to AddSession; original builds argument copies directly on stack.
 
+#ifndef COM_SESS_TU_CONTEXT
 struct GUID {
     unsigned int d[4];
 };
@@ -29,6 +30,7 @@ public:
                    unsigned long user1, unsigned long user2,
                    unsigned long user3, unsigned long user4);
 };
+#endif
 
 extern "C" int __stdcall EnumSessionCallback(DPSESSIONDESC2* desc, unsigned long* timeout,
                                               unsigned long flags, void* context) {
@@ -36,6 +38,19 @@ extern "C" int __stdcall EnumSessionCallback(DPSESSIONDESC2* desc, unsigned long
         return 0;
     }
 
+#ifdef COM_SESS_TU_CONTEXT
+    ((TCommunications_Sessions*)context)->AddSession(
+        desc->fields.guidInstance,
+        desc->fields.guidApplication,
+        desc->fields.dwMaxPlayers,
+        desc->fields.dwCurrentPlayers,
+        desc->fields.lpszSessionNameA,
+        desc->fields.lpszPasswordA,
+        desc->fields.dwUser1,
+        desc->fields.dwUser2,
+        desc->fields.dwUser3,
+        desc->fields.dwUser4);
+#else
     ((TCommunications_Sessions*)context)->AddSession(
         desc->guidInstance,
         desc->guidApplication,
@@ -47,5 +62,6 @@ extern "C" int __stdcall EnumSessionCallback(DPSESSIONDESC2* desc, unsigned long
         desc->dwUser2,
         desc->dwUser3,
         desc->dwUser4);
+#endif
     return 1;
 }

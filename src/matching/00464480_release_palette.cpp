@@ -1,5 +1,6 @@
 extern "C" __declspec(dllimport) int __stdcall DeleteObject(void* object);
 
+#ifndef AOE1_PANEL_CONTEXT_H
 class TPanelSystem {
 public:
     char gap_00[0x1C];
@@ -10,6 +11,7 @@ public:
     void release_palette(void* palette);
 };
 
+#endif
 void TPanelSystem::release_palette(void* target_palette) {
     int i;
 

@@ -57,6 +57,7 @@
 // These changes are required for source policy and ABI ownership, but are
 // incidental to emitted bytes. No inseparable cleanup group was found.
 
+#ifndef TPNL_POP_SHARED_CONTEXT
 #include <windows.h>
 #include <stdio.h>
 
@@ -258,6 +259,7 @@ public:
     int render_to_image_buffer();
     virtual void draw();
 };
+#endif
 
 void TRIBE_Panel_Pop::draw()
 {

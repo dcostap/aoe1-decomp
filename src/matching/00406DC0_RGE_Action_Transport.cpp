@@ -1,3 +1,4 @@
+#ifndef ACT_TRAN_SHARED_CONTEXT
 class RGE_Task;
 
 class RGE_Action {
@@ -19,6 +20,7 @@ public:
 
     RGE_Action_Transport(int file, RGE_Task* task, float x, float y, float z);
 };
+#endif
 
 RGE_Action_Transport::RGE_Action_Transport(int file, RGE_Task* task, float x, float y, float z)
     : RGE_Action(file, 1) {

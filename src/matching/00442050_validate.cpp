@@ -45,6 +45,7 @@ struct VirtualHelper {
     virtual void _v68();   // vtable[+0x68] — the actual method
 };
 
+#ifndef DPL_OBJ_SHARED_CONTEXT
 struct RGE_Doppleganger_Object {
     char gap_00[4];     // vtable +0x00
     int id;             // +0x04
@@ -60,6 +61,7 @@ struct RGE_Doppleganger_Object {
 
     void validate();
 };
+#endif
 
 void RGE_Doppleganger_Object::validate() {
     void* tmp_a = *(void**)((char*)this->world + 0x3C);

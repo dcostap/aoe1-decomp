@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_CONTEXT_H
 struct tagRECT {
     long left;
     long top;
@@ -27,6 +28,7 @@ public:
     virtual void draw_rect(tagRECT* rect);
 };
 
+#endif
 void TPanel::draw_rect(tagRECT* rect) {
     tagRECT save_rect;
 

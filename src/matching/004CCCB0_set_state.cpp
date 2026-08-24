@@ -14,6 +14,7 @@
 // attempt 4: corrected RGE_Action_List::add_action and Move_To sprite
 // parameter ABIs; exact bytes under config/flags/004CCCB0_set_state.rsp.
 
+#ifndef AOE1_TACT_ART_TU_CONTEXT
 class RGE_Action;
 class RGE_Action_Object;
 class RGE_Sprite;
@@ -102,6 +103,7 @@ class TRIBE_Action_Artifact : public RGE_Action {
 public:
     virtual void set_state(unsigned char new_state);
 };
+#endif
 
 void TRIBE_Action_Artifact::set_state(unsigned char new_state) {
     this->state = new_state;

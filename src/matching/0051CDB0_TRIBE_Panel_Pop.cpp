@@ -2,6 +2,7 @@
 // Size: 139 bytes
 // FLAGS: /GX (EH frame)
 
+#ifndef TPNL_POP_SHARED_CONTEXT
 __declspec(dllimport) int __stdcall DeleteObject(void* obj);
 
 class TDrawArea {
@@ -21,6 +22,7 @@ class TRIBE_Panel_Pop : public TPanel {
 public:
     virtual ~TRIBE_Panel_Pop();
 };
+#endif
 
 TRIBE_Panel_Pop::~TRIBE_Panel_Pop() {
     TDrawArea* buf;

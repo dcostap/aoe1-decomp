@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_CONTEXT_H
 class TPanel {
 public:
     virtual ~TPanel();
@@ -18,6 +19,7 @@ public:
     int get_focus();
 };
 
+#endif
 int TPanel::get_focus() {
-    return this->have_focus_;
+    return this->have_focus;
 }

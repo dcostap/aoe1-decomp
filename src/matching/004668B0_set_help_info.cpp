@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_CONTEXT_H
 class TPanel {
 public:
     char gap_0[0xE4];
@@ -6,6 +7,7 @@ public:
     void set_help_info(int a, int b);
 };
 
+#endif
 void TPanel::set_help_info(int a, int b) {
     this->field_E4 = a;
     this->field_E8 = b;

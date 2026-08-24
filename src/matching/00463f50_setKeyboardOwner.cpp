@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_CONTEXT_H
 class TPanelSystem {
 public:
     int mouseOwner_;
@@ -11,9 +12,10 @@ public:
     int ImeOn_;
     int InputEnabled_;
 
-    void setKeyboardOwner(int v);
+    void setKeyboardOwner(TPanel* v);
 };
 
-void TPanelSystem::setKeyboardOwner(int v) {
-    this->keyboardOwner_ = v;
+#endif
+void TPanelSystem::setKeyboardOwner(TPanel* v) {
+    this->keyboardOwnerValue = v;
 }

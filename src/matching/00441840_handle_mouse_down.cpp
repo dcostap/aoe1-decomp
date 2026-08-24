@@ -1,6 +1,9 @@
 // attempt 1: mirror the close 0043EE10 dialog shape with the quick-message member at +0x490
 // target shape: hit-test via slot +0xBC, button action via slot +0xB4, otherwise forward to TEasy_Panel::handle_mouse_down
 
+#ifdef DLG_SMSG_CANONICAL_TU
+#include "../../include/dlg_smsg_context.h"
+#else
 typedef unsigned char uchar;
 
 class TPanel {};
@@ -74,6 +77,7 @@ public:
 
     long handle_mouse_down(uchar button, long x, long y, int flags, int area);
 };
+#endif
 
 long TribeSendQuickMessageDialog::handle_mouse_down(uchar button, long x, long y, int flags, int area) {
     if (this->is_inside(x, y) == 0) {

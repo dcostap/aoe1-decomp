@@ -2,6 +2,7 @@ class RGE_Action_Object;
 class RGE_Task;
 class RGE_Static_Object;
 
+#ifndef AOE1_TACT_ART_TU_CONTEXT
 class RGE_Action {
 public:
     virtual void vf00(void);
@@ -19,6 +20,7 @@ public:
 
     TRIBE_Action_Artifact(RGE_Action_Object* object, RGE_Task* task, RGE_Static_Object* target);
 };
+#endif
 
 TRIBE_Action_Artifact::TRIBE_Action_Artifact(RGE_Action_Object* object, RGE_Task* task, RGE_Static_Object* target)
     : RGE_Action(object, 1) {

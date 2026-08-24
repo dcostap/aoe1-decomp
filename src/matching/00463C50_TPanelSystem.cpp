@@ -15,13 +15,17 @@
 // GIVEUP: best exact-size source is try 4-style 55 positional / 17 edit. Remaining drift is structural prologue/local/register allocation: original uses one push-ecx local, EBX=DeleteObject thunk, and EAX zeroed after each call; rebuilt insists on sub esp,8, EBX=zero, and stack-held thunk. Not proposing accepted_drift because prologue and palette loop register topology differ broadly.
 
 extern "C" void __cdecl free(void* ptr);
+#ifndef AOE1_PANEL_CONTEXT_H
 extern "C" int (__stdcall* const DeleteObject)(void* object);
 
+#ifndef AOE1_PANEL_CONTEXT_H
 class TPanel {
 public:
     virtual void* scalar_deleting_destructor(unsigned int flags);
 };
+#endif
 
+#ifndef AOE1_PANEL_CONTEXT_H
 struct PanelNode {
     TPanel* panel;
     PanelNode* prev_node;
@@ -53,7 +57,9 @@ public:
     void EnableIME(void);
     ~TPanelSystem(void);
 };
+#endif
 
+#endif
 TPanelSystem::~TPanelSystem(void) {
     this->restore_system_colors();
 
@@ -65,7 +71,7 @@ TPanelSystem::~TPanelSystem(void) {
                 node = node->next_node;
                 TPanel* panel = node->prev_node->panel;
                 if (panel != 0) {
-                    panel->scalar_deleting_destructor(1);
+                    delete panel;
                 }
                 free(node->prev_node);
             } while (node != this->panelListValue);

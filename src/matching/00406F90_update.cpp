@@ -22,6 +22,7 @@
 // - The source now matches all function bytes. The standalone extraction still
 //   reports local switch-table relocations, but they do not affect exact bytes.
 
+#ifndef ACT_TRAN_SHARED_CONTEXT
 class RGE_Action;
 class RGE_Action_List;
 class RGE_Action_Object;
@@ -287,6 +288,7 @@ public:
     int targetZone(void);
     virtual int next_to_drop_off_terrain(void);
 };
+#endif
 
 unsigned char RGE_Action_Transport::update(void)
 {

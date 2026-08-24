@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_CONTEXT_H
 class TPanel {
 public:
     char gap_00[0x20];
@@ -11,6 +12,7 @@ public:
     virtual int is_inside(long x, long y);
 };
 
+#endif
 int TPanel::is_inside(long x, long y) {
     if (active != 0) {
         if (x >= clip_left) {

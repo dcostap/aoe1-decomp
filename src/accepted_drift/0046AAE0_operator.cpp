@@ -10,6 +10,7 @@
 // in the pre-loop setup; reversed delta/different edx base but comparison is symmetric
 // for equality, so all memory effects and return values are equivalent.
 
+#ifndef PATH_TU_CONTEXT
 struct Waypoint {
     float x;
     float y;
@@ -30,6 +31,7 @@ struct Path {
 
     int operator==(const Path& other) const;
 };
+#endif
 
 int Path::operator==(const Path& other) const {
     int i = 0;

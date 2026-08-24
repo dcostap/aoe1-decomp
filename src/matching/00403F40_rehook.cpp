@@ -1,3 +1,4 @@
+#ifndef ACT_LIST_SHARED_CONTEXT
 class RGE_Action {
 public:
     virtual void vf00(void);
@@ -20,6 +21,7 @@ public:
 
     void rehook(void);
 };
+#endif
 
 void RGE_Action_List::rehook(void) {
     RGE_Action_Node* node;

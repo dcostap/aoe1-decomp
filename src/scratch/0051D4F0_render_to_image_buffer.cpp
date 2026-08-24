@@ -62,7 +62,13 @@
 // BLOCKER: exact 668B remains blocked by the four-byte local-frame placement
 // and downstream rectangle scheduling. Calls, ABI, pixel layout, cleanup, and
 // fault order are understood.
+// TU PASS: the authentic tpnl_pop.cpp wrapper uses PDB owner order and the
+// /O2 /Oy /GX response file. It compiled 10 entries: 7/8 exact owners match,
+// the generated deleting destructor matches, and the observed target is 430
+// bytes different with one boundary escape. The grouped set_rect owner is
+// 228 bytes different under shared context. No exact tuning follows this pass.
 
+#ifndef TPNL_POP_SHARED_CONTEXT
 #include <stdio.h>
 struct tagRECT { long left, top, right, bottom; };
 typedef tagRECT RECT;
@@ -222,6 +228,8 @@ extern "C" int (__stdcall* const SetBkMode)(void*, int);
 extern "C" unsigned long (__stdcall* const SetTextColor)(void*, unsigned long);
 extern "C" __declspec(dllimport) int __stdcall SetRect(RECT*, int, int, int, int);
 extern "C" int (__stdcall* const DrawTextA)(void*, char*, int, RECT*, unsigned int);
+#endif
+
 static char tag[] = "tpnl_tim::render_to_image_buffer";
 
 int TRIBE_Panel_Pop::render_to_image_buffer()

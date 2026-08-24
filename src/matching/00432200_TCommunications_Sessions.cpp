@@ -6,7 +6,8 @@
 // loads from fixed offsets and blocked VC5's natural base-pointer copy sequence
 // (`lea ecx,[eax+12DCh]` / `add eax,12ECh`).
 
-struct GUID { unsigned int d0,d1,d2,d3; };
+#ifndef COM_SESS_TU_CONTEXT
+struct GUID { unsigned int d[4]; };
 struct IDirectPlay3 {};
 
 extern IDirectPlay3* glpSERV;
@@ -31,6 +32,7 @@ public:
     void EraseInformation();
     int Refresh();
 };
+#endif
 
 TCommunications_Sessions::TCommunications_Sessions(TCommunications_Handler* handler) {
     g_com_handler = handler;

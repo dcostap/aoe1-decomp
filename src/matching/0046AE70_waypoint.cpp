@@ -1,3 +1,4 @@
+#ifndef PATH_TU_CONTEXT
 struct Waypoint {
     char bytes[0x10];
 };
@@ -12,6 +13,7 @@ public:
 
     const Waypoint* waypoint(int index) const;
 };
+#endif
 
 const Waypoint* Path::waypoint(int index) const {
     if (pathValue != 0 && index > -1 && index < currentSizeValue) {

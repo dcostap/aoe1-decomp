@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_CONTEXT_H
 struct tagPOINT {
     long x;
     long y;
@@ -8,6 +9,7 @@ public:
     void get_mouse_info(unsigned int keys, long packed_pos, tagPOINT& pt, int& focus_flag, int& capture_flag);
 };
 
+#endif
 void TPanel::get_mouse_info(unsigned int keys, long packed_pos, tagPOINT& pt, int& focus_flag, int& capture_flag) {
     int x;
     int y;

@@ -1,12 +1,5 @@
-class BaseItem {
-public:
-    virtual ~BaseItem();
-    char gap_04[80];
-    float y_;
+#include "../../include/aibitm_context.h"
 
-    void setY(float);
-};
-
-void BaseItem::setY(float val) {
-    this->y_ = val;
+void BaseItem::setY(float value) {
+    yValue = value;
 }

@@ -11,6 +11,7 @@
 //   manual vptr store is retained.
 // FLAGS: config/flags/004418A0_RGE_Doppleganger_Object.rsp
 
+#ifndef DPL_OBJ_SHARED_CONTEXT
 class RGE_Master_Animated_Object {
 };
 
@@ -101,6 +102,7 @@ public:
     char gap_AA[2];
     int doppledObjectID;                    // +AC
 };
+#endif
 
 RGE_Doppleganger_Object::RGE_Doppleganger_Object(RGE_Master_Doppleganger_Object* master, RGE_Player* player, float x, float y, float z, int doSetup, RGE_Static_Object* doppled)
     : RGE_Animated_Object(master, player, x, y, z, 0)

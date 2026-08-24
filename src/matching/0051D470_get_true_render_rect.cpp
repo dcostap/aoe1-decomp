@@ -1,6 +1,7 @@
 // VA: 0051D470 TRIBE_Panel_Pop::get_true_render_rect
 // PDB source: tpnl_pop.cpp, lines 299-307
 
+#ifndef TPNL_POP_SHARED_CONTEXT
 class TDrawArea;
 
 struct tagRECT {
@@ -31,6 +32,7 @@ public:
 
     void get_true_render_rect(tagRECT& rect);
 };
+#endif
 
 void TRIBE_Panel_Pop::get_true_render_rect(tagRECT& rect) {
     if (this->ImageBuffer && this->render_area && this->visible && this->active) {

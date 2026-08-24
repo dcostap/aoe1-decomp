@@ -4,6 +4,7 @@
 // Keeping one shared image_buffer local and the final `if (image_buffer != 0)` copy path first
 // preserves the original saved-register and branch-layout family.
 
+#ifndef TPNL_TIM_SHARED_CONTEXT
 struct tagRECT {
     long left;
     long top;
@@ -76,6 +77,10 @@ public:
 
     void set_rect(long x, long y, long width, long height);
 };
+#else
+#include "../../include/tpnl_tim_context.h"
+char s_time_message_panel[] = "time message panel";
+#endif
 
 void TRIBE_Panel_Time::set_rect(long x, long y, long width, long height) {
     TDrawArea* image_buffer;

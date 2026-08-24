@@ -4,6 +4,7 @@
 
 #include <math.h>
 
+#ifndef PATH_TU_CONTEXT
 struct Waypoint {
     float x;
     float y;
@@ -24,6 +25,7 @@ struct Path {
 
     int contains(const Waypoint& wp) const;
 };
+#endif
 
 int Path::contains(const Waypoint& wp) const {
     for (int i = 0; i < currentSizeValue; i++) {

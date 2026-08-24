@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_CONTEXT_H
 class TPanel {
 public:
     virtual void vf00(void);
@@ -54,6 +55,7 @@ public:
     void set_tab_order(TPanel** panels, short count);
 };
 
+#endif
 void TPanel::set_tab_order(TPanel** panels, short count) {
     int i;
     int total;
@@ -75,7 +77,7 @@ void TPanel::set_tab_order(TPanel** panels, short count) {
             } else {
                 next = panels[i + 1];
             }
-            panels[i]->vfC4(prev, next);
+            panels[i]->set_tab_order(prev, next);
             i++;
         } while (i < total);
     }

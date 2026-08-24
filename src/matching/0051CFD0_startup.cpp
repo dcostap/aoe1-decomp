@@ -6,6 +6,7 @@
 // attempt 2: local RGE_Player* p temp + 'this->max_pop > limit' compare -> EXACT MATCH (107/107, 0.0000%)
 // default flags
 
+#ifndef TPNL_POP_SHARED_CONTEXT
 class RGE_Base_Game;
 extern RGE_Base_Game* rge_base_game;
 
@@ -33,6 +34,7 @@ public:
 
     void startup();
 };
+#endif
 
 void TRIBE_Panel_Pop::startup() {
     this->world = rge_base_game->world;

@@ -1,3 +1,4 @@
+#ifndef AOE1_TACT_ART_TU_CONTEXT
 class TRIBE_Action_Artifact {
 public:
     virtual void vf00(void);
@@ -33,18 +34,31 @@ public:
 
     void first_in_stack(unsigned char value);
 };
+#endif
 
 void TRIBE_Action_Artifact::first_in_stack(unsigned char value) {
     if (value == 0) {
         return;
     }
     if (this->field_10 != 0) {
+#ifdef AOE1_TACT_ART_TU_CONTEXT
+        this->set_state(5);
+#else
         this->vf5C(5);
+#endif
         return;
     }
     if ((this->field_20 != (int)0xBF800000) && (this->field_24 != (int)0xBF800000)) {
+#ifdef AOE1_TACT_ART_TU_CONTEXT
+        this->set_state(4);
+#else
         this->vf5C(4);
+#endif
         return;
     }
+#ifdef AOE1_TACT_ART_TU_CONTEXT
+    this->set_state(6);
+#else
     this->vf5C(6);
+#endif
 }

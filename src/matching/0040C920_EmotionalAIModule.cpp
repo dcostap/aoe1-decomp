@@ -11,6 +11,7 @@ char* __cdecl strcpy(char* dest, const char* src);
 
 void __cdecl rge_read(int handle, void* buf, int size);
 
+#ifndef AOE1_AIEMOMOD_TU_CONTEXT
 class AIModule {
 public:
     char gap_04[0xEC];
@@ -46,6 +47,7 @@ public:
     EmotionalAIModule(int param1, int param2);
     void setOverallState(int state);
 };
+#endif
 
 EmotionalAIModule::EmotionalAIModule(int param1, int param2)
     : AIModule("Emotional AI", 0x3EC, param1, 0)

@@ -1,3 +1,4 @@
+#ifndef DPL_OBJ_SHARED_CONTEXT
 class RGE_Game_World;
 
 extern int* unified_map_offsets[];
@@ -21,13 +22,18 @@ public:
 
     virtual int setup(int, RGE_Game_World*);
 };
+#endif
 
 int RGE_Doppleganger_Object::setup(int param_1, RGE_Game_World* param_2) {
     RGE_Animated_Object::setup(param_1, param_2);
     int x = (int)(long)(field_3c);
     field_4e = 0x19;
     int y = (int)(long)(field_38);
+#ifdef DPL_OBJ_SHARED_CONTEXT
+    this->MapAddress = (unsigned long*)unified_map_offsets[x] + y;
+#else
     MapAddress = (int*)unified_map_offsets[x] + y;
+#endif
     LastMapValue = 0;
     CantSeeBits = 0;
     return 1;

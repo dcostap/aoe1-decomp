@@ -22,6 +22,7 @@
 #include <stdlib.h>
 #include <math.h>
 
+#ifndef DPL_OBJ_SHARED_CONTEXT
 // RGE_Game_World stub
 struct RGE_Game_World {
     char gap_00[4];
@@ -102,6 +103,7 @@ struct RGE_Doppleganger_Object : public RGE_Animated_Object {
 
 // Global DDlogf at VA 0x0062E638
 extern FILE* DDlogf;
+#endif
 
 unsigned char RGE_Doppleganger_Object::update()
 {

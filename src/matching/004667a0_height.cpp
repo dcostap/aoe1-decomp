@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_CONTEXT_H
 class TPanel {
 public:
     virtual ~TPanel();
@@ -18,6 +19,7 @@ public:
     int height();
 };
 
+#endif
 int TPanel::height() {
     return this->pnl_hgt_;
 }

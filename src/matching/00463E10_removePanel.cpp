@@ -1,11 +1,15 @@
 extern "C" void __cdecl free(void* block);
+#ifndef AOE1_PANEL_CONTEXT_H
 
+#ifndef AOE1_PANEL_CONTEXT_H
 struct PanelNode {
     void* panel;
     PanelNode* prev_node;
     PanelNode* next_node;
 };
+#endif
 
+#ifndef AOE1_PANEL_CONTEXT_H
 class TPanelSystem {
 public:
     char gap_00[0x14];
@@ -14,7 +18,9 @@ public:
     PanelNode* findPanelNode(char* name);
     int removePanel(char* name);
 };
+#endif
 
+#endif
 int TPanelSystem::removePanel(char* name) {
     PanelNode* node;
 

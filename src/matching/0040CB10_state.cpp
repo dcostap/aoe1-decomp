@@ -1,11 +1,13 @@
+#ifndef AOE1_AIEMOMOD_TU_CONTEXT
 class EmotionalAIModule {
 public:
     char gap_0[0xF4];
-    int arr_[6];
-    int state(int index);
+    int stateValue[6];
+    int state(int index) const;
 };
+#endif
 
-int EmotionalAIModule::state(int index) {
+int EmotionalAIModule::state(int index) const {
     if (index < 0 || index >= 6) return -1;
-    return this->arr_[index];
+    return this->stateValue[index];
 }

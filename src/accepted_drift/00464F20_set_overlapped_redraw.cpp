@@ -15,6 +15,7 @@
 
 #include <stddef.h>
 
+#ifndef AOE1_PANEL_CONTEXT_H
 class TPanel;
 
 struct tagRECT {
@@ -54,6 +55,7 @@ public:
     void set_overlapped_redraw(TPanel* param_1, TPanel* param_2, int param_3);
 };
 
+#endif
 void TPanel::set_overlapped_redraw(TPanel* param_1, TPanel* param_2, int param_3)
 {
     tagRECT p1_rect = param_1->clip_rect;
@@ -88,10 +90,10 @@ void TPanel::set_overlapped_redraw(TPanel* param_1, TPanel* param_2, int param_3
                       (n_top <= p1_bottom && p1_bottom <= n_bottom)) ||
                      (p1_top < n_top && n_bottom < p1_bottom)))
                 {
-                    panel->redraw(param_3);
+                    panel->set_redraw(param_3);
                 }
             } else {
-                panel->redraw(param_3);
+                    panel->set_redraw(param_3);
             }
         }
         node = node->next_node;

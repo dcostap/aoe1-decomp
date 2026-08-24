@@ -24,6 +24,9 @@
 //   Both Mode cases assign title_id before the call; this is a plausible
 //   period source form, not a register-forcing alias.
 
+#ifdef DLG_SMSG_CANONICAL_TU
+#include "../../include/dlg_smsg_context.h"
+#else
 class TDrawArea;
 
 class TPanel {
@@ -92,6 +95,7 @@ public:
     virtual long handle_mouse_down(unsigned char button, long x, long y,
                                    int flags, int area);
 };
+#endif
 
 TribeSendQuickMessageDialog::TribeSendQuickMessageDialog(TScreenPanel* parent,
                                                          Mode mode)

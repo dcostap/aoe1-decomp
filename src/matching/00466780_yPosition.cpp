@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_CONTEXT_H
 class TPanel {
 public:
     virtual ~TPanel();
@@ -18,6 +19,7 @@ public:
     int yPosition();
 };
 
+#endif
 int TPanel::yPosition() {
     return this->pnl_y_;
 }

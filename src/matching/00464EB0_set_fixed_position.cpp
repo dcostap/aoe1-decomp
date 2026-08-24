@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_CONTEXT_H
 class TPanel {
 public:
     virtual void vf00(void);
@@ -11,6 +12,7 @@ public:
     virtual void set_fixed_position(long left, long top, long right, long bottom);
 };
 
+#endif
 void TPanel::set_fixed_position(long left, long top, long right, long bottom) {
-    set_position(0, left, top, 0, 0, right, right, bottom, bottom, 0, 0, 0, 0);
+    set_positioning(0, left, top, 0, 0, right, right, bottom, bottom, 0, 0, 0, 0);
 }

@@ -18,6 +18,9 @@
 
 #include <string.h>
 
+#ifdef DLG_SMSG_CANONICAL_TU
+#include "../../include/dlg_smsg_context.h"
+#else
 class TPanel {
 public:
     virtual ~TPanel();
@@ -113,6 +116,7 @@ public:
     virtual long action(TPanel* panel, long code, unsigned long a,
                         unsigned long b);
 };
+#endif
 
 long TribeSendQuickMessageDialog::action(TPanel* panel, long code,
                                          unsigned long a, unsigned long b)

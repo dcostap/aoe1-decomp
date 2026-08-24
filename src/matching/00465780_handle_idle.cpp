@@ -1,5 +1,6 @@
 extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
 
+#ifndef AOE1_PANEL_CONTEXT_H
 class TPanel;
 
 struct PanelNode {
@@ -88,6 +89,7 @@ public:
     long handle_idle(void);
 };
 
+#endif
 long TPanel::handle_idle(void) {
     PanelNode* node;
     long result;
@@ -96,16 +98,16 @@ long TPanel::handle_idle(void) {
         if ((int)(debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Panel.cpp", 0x5FD) - mouse_down_time) >= mouse_hold_interval) {
             mouse_action = 2;
             if (mouse_down_button == 1) {
-                vf88(mouse_down_ctrl, mouse_down_x, mouse_down_y, mouse_down_shift);
+                mouse_left_hold_action(mouse_down_ctrl, mouse_down_x, mouse_down_y, mouse_down_shift);
             } else {
-                vf9C(mouse_down_ctrl, mouse_down_x, mouse_down_y, mouse_down_shift);
+                mouse_right_hold_action(mouse_down_ctrl, mouse_down_x, mouse_down_y, mouse_down_shift);
             }
         }
     }
 
     node = last_child_node;
     while (node != 0) {
-        result = node->panel->vf4C();
+                result = node->panel->handle_idle();
         if (result != 0) {
             return result;
         }

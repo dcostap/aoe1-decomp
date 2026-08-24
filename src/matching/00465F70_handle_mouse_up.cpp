@@ -4,6 +4,7 @@
 // Baseline reconstruction: use the period-plausible TPanel member surface and
 // typed virtual calls, rather than the prior free-function vtable scaffolding.
 
+#ifndef AOE1_PANEL_CONTEXT_H
 struct PanelNode;
 
 class TPanel {
@@ -96,6 +97,7 @@ struct PanelNode {
     PanelNode* prev_node;
 };
 
+#endif
 long TPanel::handle_mouse_up(unsigned char param_1, long param_2, long param_3,
                              int param_4, int param_5)
 {

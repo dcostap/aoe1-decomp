@@ -57,6 +57,7 @@
 // probe sa-0cd2e7ef-r1 #2: reset j to zero, kept i as the direct second-array
 // index, and incremented both values; result was an exact MATCH.
 
+#ifndef PATH_TU_CONTEXT
 void* __cdecl operator_new(unsigned int size);
 void __cdecl operator_delete(void* ptr);
 
@@ -88,6 +89,7 @@ public:
     ~Path();
     Path operator+(const Path& other) const;
 };
+#endif
 
 Path Path::operator+(const Path& other) const {
     Path newPath(maxSizeValue + other.maxSizeValue);

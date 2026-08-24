@@ -1,4 +1,5 @@
-class RGE_Static_Object {
+#ifndef AOE1_TACT_ART_TU_CONTEXT
+class TRIBE_Action_Artifact {
 public:
     virtual void vf00();
     virtual void vf04();
@@ -26,7 +27,12 @@ public:
     virtual void vf5C(int val);
     void reset_owner();
 };
+#endif
 
-void RGE_Static_Object::reset_owner() {
+void TRIBE_Action_Artifact::reset_owner() {
+#ifdef AOE1_TACT_ART_TU_CONTEXT
+    this->set_state(0x64);
+#else
     this->vf5C(0x64);
+#endif
 }

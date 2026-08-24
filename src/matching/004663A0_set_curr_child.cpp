@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_CONTEXT_H
 class TPanel {
 public:
     virtual void vf00(void);
@@ -58,17 +59,18 @@ public:
     void set_curr_child(TPanel* child);
 };
 
+#endif
 void TPanel::set_curr_child(TPanel* child) {
     TPanel* old_child;
 
     old_child = curr_child;
     if (child != old_child) {
         if (old_child != 0 && have_focus != 0) {
-            old_child->set_focus_state(0);
+        old_child->set_focus(0);
         }
         curr_child = child;
         if (child != 0 && have_focus != 0) {
-            child->set_focus_state(1);
+        child->set_focus(1);
         }
     }
 }

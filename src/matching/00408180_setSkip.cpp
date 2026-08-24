@@ -1,12 +1,5 @@
-class BaseItem {
-public:
-    virtual ~BaseItem();
-    char gap_04[100];
-    int skip_;
+#include "../../include/aibitm_context.h"
 
-    void setSkip(int);
-};
-
-void BaseItem::setSkip(int val) {
-    this->skip_ = val;
+void BaseItem::setSkip(int value) {
+    skipValue = value;
 }

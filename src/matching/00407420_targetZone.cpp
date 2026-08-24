@@ -1,3 +1,4 @@
+#ifndef ACT_TRAN_SHARED_CONTEXT
 class RGE_Static_Object {
 public:
     unsigned char lookupZone(int x, int y);
@@ -13,6 +14,7 @@ public:
 
     int targetZone(void);
 };
+#endif
 
 int RGE_Action_Transport::targetZone(void) {
     if (*(int*)&this->target_x != 0xBF800000) {

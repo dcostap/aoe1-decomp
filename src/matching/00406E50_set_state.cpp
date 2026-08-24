@@ -8,6 +8,7 @@
 // - Replaced equivalent guards with a natural switch whose case order keeps
 //   states 4/11 inline and state 2 in the late handler; exact under /GX.
 
+#ifndef ACT_TRAN_SHARED_CONTEXT
 class RGE_Sprite;
 
 class RGE_Master_Action_Object {
@@ -111,6 +112,7 @@ class RGE_Action_Transport : public RGE_Action {
 public:
     virtual void set_state(unsigned char state);
 };
+#endif
 
 void RGE_Action_Transport::set_state(unsigned char param_1)
 {

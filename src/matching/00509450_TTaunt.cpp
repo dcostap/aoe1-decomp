@@ -1,5 +1,6 @@
 class TSound_Driver;
 
+#ifndef AOE1_TAUNT_CONTEXT_H
 class TTaunt {
 public:
     char gap_00[0x113];
@@ -10,6 +11,7 @@ public:
     TTaunt(TSound_Driver* sound_driver);
     int RestartSoundSystem(TSound_Driver* sound_driver);
 };
+#endif
 
 TTaunt::TTaunt(TSound_Driver* sound_driver) {
     this->TauntDir_0 = 0;

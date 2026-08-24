@@ -1,6 +1,7 @@
 extern "C" __declspec(dllimport) unsigned long __stdcall GetSysColor(int index);
 extern "C" __declspec(dllimport) int __stdcall SetSysColors(int count, const int* elements, const unsigned long* colors);
 
+#ifndef AOE1_PANEL_CONTEXT_H
 class TPanelSystem {
 public:
     char gap_00[0xACC];
@@ -11,6 +12,7 @@ public:
     void restore_system_colors(void);
 };
 
+#endif
 void TPanelSystem::restore_system_colors(void) {
     int elems[2];
     unsigned long colors[2];

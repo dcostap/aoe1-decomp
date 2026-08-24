@@ -8,9 +8,11 @@
 // duplicated strcpy tails.
 #include "..\..\include\game_globals.h"
 #include <string.h>
+#ifndef ACT_LIST_SHARED_CONTEXT
 class RGE_Action { public: char gap_00[4]; short action_type; };
 class RGE_Action_Node { public: RGE_Action* action; };
 class RGE_Action_List { public: char gap_00[8]; RGE_Action_Node* list; void get_action_name(char* dest); };
+#endif
 void RGE_Action_List::get_action_name(char* dest)
 {
  const char* name;

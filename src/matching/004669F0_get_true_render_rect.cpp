@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_CONTEXT_H
 struct tagRECT {
     long left;
     long top;
@@ -12,6 +13,7 @@ public:
     tagRECT render_rect; // 0x8C
 };
 
+#endif
 void TPanel::get_true_render_rect(tagRECT& rect) {
     rect.left = render_rect.left;
     rect.top = render_rect.top;

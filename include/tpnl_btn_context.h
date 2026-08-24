@@ -5,6 +5,8 @@
 // The owner wrapper follows PDB source order.  The normal module uses the
 // pinned VC5 flags, with /GX required by the constructor owner.
 
+#include <windows.h>
+
 class TDigital;
 class TShape;
 class TPanel;

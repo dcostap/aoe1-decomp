@@ -1,3 +1,4 @@
+#ifndef PATH_TU_CONTEXT
 struct Waypoint {
     char bytes[0x10];
 };
@@ -12,6 +13,7 @@ public:
 
     const Waypoint* previousWaypoint() const;
 };
+#endif
 
 const Waypoint* Path::previousWaypoint() const {
     int next_index;

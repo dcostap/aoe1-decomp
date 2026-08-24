@@ -1,5 +1,6 @@
 #include <string.h>
 
+#ifndef AOE1_PANEL_CONTEXT_H
 class TPanel;
 
 struct PanelNode {
@@ -75,18 +76,19 @@ public:
     unsigned char get_help_info(char** out_str, long* out_page, long x, long y);
 };
 
+#endif
 unsigned char TPanel::get_help_info(char** out_str, long* out_page, long x, long y) {
     PanelNode* node;
 
     if (active == 0) {
         return 0;
     }
-    if (vfBC(x, y) == 0) {
+    if (is_inside(x, y) == 0) {
         return 0;
     }
     node = last_child_node;
     while (node != 0) {
-        if (node->panel->vfCC(out_str, out_page, x, y)) {
+        if (node->panel->get_help_info(out_str, out_page, x, y)) {
             return 1;
         }
         node = node->prev_node;

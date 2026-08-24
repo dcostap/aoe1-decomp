@@ -1,3 +1,4 @@
+#ifndef COM_SERV_TU_CONTEXT
 struct _GUID;
 
 struct ServiceInfo {
@@ -14,6 +15,7 @@ public:
 
     void EnumServiceGUID(int index, _GUID* guid);
 };
+#endif
 
 void TCommunications_Services::EnumServiceGUID(int index, _GUID* guid) {
     if ((index >= 0) && (index <= this->ServiceCount)) {

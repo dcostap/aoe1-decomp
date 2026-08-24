@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_CONTEXT_H
 struct PanelNode;
 
 class TPanel {
@@ -69,6 +70,7 @@ struct PanelNode {
     PanelNode* next_node;
 };
 
+#endif
 void TPanel::handle_reactivate(void) {
     PanelNode* node;
 

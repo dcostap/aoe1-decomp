@@ -4,6 +4,7 @@
 
 #include <string.h>
 
+#ifndef COM_SERV_TU_CONTEXT
 struct GUID {};
 
 extern "C" void __stdcall DirectPlayEnumerateA(void* callback, void* lpContext);
@@ -31,6 +32,7 @@ public:
     void SetServiceActive(int index, int active);
     int IncServiceCount();
 };
+#endif
 
 TCommunications_Services::TCommunications_Services() {
     this->ServiceCount = 0;

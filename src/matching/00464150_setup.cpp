@@ -1,5 +1,6 @@
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 extern "C" __declspec(dllimport) unsigned long __stdcall GetSysColor(int index);
+#ifndef AOE1_PANEL_CONTEXT_H
 
 struct PanelNode {
     void* panel;
@@ -19,6 +20,7 @@ public:
     int setup(void);
 };
 
+#endif
 int TPanelSystem::setup(void) {
     panelListValue = (PanelNode*)calloc(1, 0x0C);
     if (panelListValue == 0) {

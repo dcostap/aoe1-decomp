@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_CONTEXT_H
 class TPanel {
 public:
     virtual ~TPanel();
@@ -18,6 +19,7 @@ public:
     int previousModalPanel();
 };
 
-int TPanel::previousModalPanel() {
-    return this->previousModalPanel_;
+#endif
+TPanel* TPanel::previousModalPanel() {
+    return this->previous_modal_panel;
 }

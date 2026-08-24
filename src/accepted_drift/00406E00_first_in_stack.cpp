@@ -4,6 +4,7 @@
 // vs original's hardcoded 56E6B8h address (masked in comparison).
 // VA: 00406E00 first_in_stack (70B, act_tran.cpp)
 
+#ifndef ACT_TRAN_SHARED_CONTEXT
 class RGE_Action_Transport {
 public:
     virtual void vf00(void);
@@ -36,12 +37,21 @@ public:
 
     void first_in_stack(unsigned char param_1);
 };
+#endif
 
 void RGE_Action_Transport::first_in_stack(unsigned char param_1)
 {
+#ifdef ACT_TRAN_SHARED_CONTEXT
+    if (param_1 != 0 && this->field_20 >= 0.0f && this->field_24 >= 0.0f) {
+        this->set_state(0xB);
+        return;
+    }
+    this->set_state(2);
+#else
     if (param_1 != 0 && this->field_20 >= 0.0f && this->field_24 >= 0.0f) {
         this->method_5C(0xB);
         return;
     }
     this->method_5C(2);
+#endif
 }

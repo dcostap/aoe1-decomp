@@ -19,6 +19,7 @@
 
 extern "C" int __cdecl __ftol();
 
+#ifndef DPL_OBJ_SHARED_CONTEXT
 struct RGE_Active_Sprite_Node;
 struct RGE_Active_Sprite_List;
 
@@ -30,9 +31,10 @@ struct RGE_Active_Sprite_List {
     RGE_Active_Sprite_Node* copy_sprite_list();
     void use_sprite_list(RGE_Active_Sprite_Node* list);
 };
+#endif
 
 // VirtualHelper for vtable calls: destroy_obj at +0x68, validate at +0x1F0
-struct VirtualHelper {
+struct RecycleVirtualHelper {
     virtual void _v00();
     virtual void _v04();
     virtual void _v08();
@@ -160,6 +162,7 @@ struct VirtualHelper {
     virtual void validate();        // +0x1F0 (slot 124)
 };
 
+#ifndef DPL_OBJ_SHARED_CONTEXT
 extern unsigned long* unified_map_offsets[];
 
 class RGE_Master_Static_Object;
@@ -184,6 +187,7 @@ class RGE_Doppleganger_Object : public RGE_Animated_Object {
 public:
     void recycle_in_to_game(RGE_Master_Static_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5, RGE_Static_Object* param_6);
 };
+#endif
 
 void RGE_Doppleganger_Object::recycle_in_to_game(
     RGE_Master_Static_Object* param_1,
@@ -259,7 +263,7 @@ void RGE_Doppleganger_Object::recycle_in_to_game(
         if (*(unsigned char*)((char*)obj + 0x48) >= 7) {
             *(int*)((char*)this + 0x8C) = 0;  // doppled_object = NULL
             *(int*)((char*)this + 0xAC) = -1;  // doppledObjectID = -1
-            ((VirtualHelper*)this)->validate();
+            ((RecycleVirtualHelper*)this)->validate();
             return;
         }
     } else {
@@ -267,9 +271,9 @@ void RGE_Doppleganger_Object::recycle_in_to_game(
         *(int*)((char*)this + 0xAC) = -1;  // doppledObjectID = -1
         *(int*)((char*)this + 0x94) = 0;   // doppled_master_obj = NULL
         *(int*)((char*)this + 0x98) = 0;   // doppled_player = 0
-        ((VirtualHelper*)this)->destroy_obj();
+        ((RecycleVirtualHelper*)this)->destroy_obj();
     }
 
     // Shared tail: call validate
-    ((VirtualHelper*)this)->validate();
+    ((RecycleVirtualHelper*)this)->validate();
 }

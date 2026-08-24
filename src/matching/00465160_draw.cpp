@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_CONTEXT_H
 struct tagRECT {
     long left;
     long top;
@@ -64,6 +65,7 @@ public:
     unsigned char draw_rect2_flag;
 };
 
+#endif
 void TPanel::draw(void) {
     TDrawArea* area;
 

@@ -1,3 +1,4 @@
+#ifndef PATH_TU_CONTEXT
 class Path {
 public:
     char gap_00[0x2C];
@@ -6,6 +7,7 @@ public:
 
     int moveToNextWaypoint();
 };
+#endif
 
 int Path::moveToNextWaypoint() {
     int index;

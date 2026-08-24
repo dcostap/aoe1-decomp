@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_CONTEXT_H
 struct tagRECT {
     int left;
     int top;
@@ -13,6 +14,7 @@ public:
     tagRECT clipRectangle(void) const;
 };
 
+#endif
 tagRECT TPanel::clipRectangle(void) const {
     return clip_rect;
 }

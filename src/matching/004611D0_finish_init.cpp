@@ -35,6 +35,7 @@
 // sounds param in ebp, losing the struct pointer.
 // Cannot control this from single-function TU.
 
+#ifndef MST_PLAY_SHARED_CONTEXT
 #include <stdlib.h>
 
 extern "C" {
@@ -53,13 +54,22 @@ public:
 
     void finish_init(int fd, void** sprites, void** sounds);
 };
+#endif
 
+#ifdef MST_PLAY_SHARED_CONTEXT
+void RGE_Master_Player::finish_init(int fd, RGE_Sprite** sprites, RGE_Sound** sounds)
+#else
 void RGE_Master_Player::finish_init(int fd, void** sprites, void** sounds)
+#endif
 {
     rge_read(fd, &this->master_object_num, 2);
 
     if (this->master_object_num > 0) {
+#ifdef MST_PLAY_SHARED_CONTEXT
+        this->master_objects = (RGE_Master_Static_Object**)calloc((int)this->master_object_num, 4);
+#else
         this->master_objects = (void**)calloc((int)this->master_object_num, 4);
+#endif
         rge_read(fd, this->master_objects, (int)this->master_object_num * 4);
 
         for (int i = 0; (short)i < this->master_object_num; i++) {

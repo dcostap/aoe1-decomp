@@ -1,6 +1,7 @@
 class RGE_Static_Object;
 class RGE_Task;
 
+#ifndef AOE1_TACT_ART_TU_CONTEXT
 class RGE_Action {
 public:
     virtual ~RGE_Action();
@@ -40,6 +41,7 @@ public:
     virtual void set_state(unsigned char v);
     int work(RGE_Static_Object* param_1, float param_2, float param_3, float param_4);
 };
+#endif
 
 int TRIBE_Action_Artifact::work(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) {
     if (param_1 != 0) {

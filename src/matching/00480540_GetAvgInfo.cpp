@@ -1,10 +1,4 @@
-extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
-
-class RGE_TimeSinceLastCall {
-public:
-    unsigned long GetAvg(int value);
-    char* GetAvgInfo(int value);
-};
+#include "../../include/rge_tslc_context.h"
 
 char* RGE_TimeSinceLastCall::GetAvgInfo(int value) {
     unsigned long avg;

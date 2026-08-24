@@ -1,6 +1,3 @@
-class RGE_TimeSinceLastCall {
-public:
-    ~RGE_TimeSinceLastCall();
-};
+#include "../../include/rge_tslc_context.h"
 
 RGE_TimeSinceLastCall::~RGE_TimeSinceLastCall() {}

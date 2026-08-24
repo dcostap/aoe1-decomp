@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_CONTEXT_H
 class TPanel;
 
 struct PanelNode {
@@ -15,6 +16,7 @@ public:
     void add_panel_node(PanelNode* node, PanelNode* sibling, int after);
 };
 
+#endif
 void TPanel::add_panel_node(PanelNode* node, PanelNode* sibling, int after) {
     if (sibling == 0) {
         sibling = first_child_node;

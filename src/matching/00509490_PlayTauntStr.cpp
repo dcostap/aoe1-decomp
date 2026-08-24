@@ -15,6 +15,7 @@ extern "C" unsigned int __cdecl strlen(const char*);
 extern const char DAT_00576548[];
 extern const char DAT_00576550[];
 
+#ifndef AOE1_TAUNT_CONTEXT_H
 class TTaunt {
 public:
     char gap_000[0x194];
@@ -24,6 +25,7 @@ public:
     int PlayTauntNo(int taunt_no);
     int PlayTauntStr(char* str, unsigned char allow_mute);
 };
+#endif
 
 int TTaunt::PlayTauntStr(char* str, unsigned char allow_mute)
 {

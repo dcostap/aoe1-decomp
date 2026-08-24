@@ -24,6 +24,7 @@
 // as the update cursor (EDX as z), while VC5's clean source uses the opposite
 // coloring; leave canonical source authoritative for the next worker.
 
+#ifndef AOE1_PANEL_CONTEXT_H
 class TPanel;
 
 struct PanelNode {
@@ -96,6 +97,7 @@ public:
     void set_child_z_order(TPanel* child, unsigned char mode, short order);
 };
 
+#endif
 void TPanel::set_child_z_order(TPanel* child, unsigned char mode, short order)
 {
     PanelNode* node;

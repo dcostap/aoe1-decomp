@@ -12,6 +12,7 @@
 char* __cdecl strcpy(char* dest, const char* src);
 void* __cdecl memset(void* dest, int c, unsigned int count);
 
+#ifndef AOE1_AIEMOMOD_TU_CONTEXT
 class AIModule {
 public:
     // +0x00: vptr (4 bytes)
@@ -50,6 +51,7 @@ public:
     EmotionalAIModule(int param1, int param2);
     void setOverallState(int state);
 };
+#endif
 
 EmotionalAIModule::EmotionalAIModule(void* param1, int param2)
     : AIModule("Emotional AI", 0x3EC, param2, param1)

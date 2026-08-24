@@ -1,3 +1,4 @@
+#ifndef COM_SERV_TU_CONTEXT
 struct ServiceInfo {
     char Name[0x60];
 };
@@ -9,6 +10,7 @@ public:
 
     char* GetServiceName(int index);
 };
+#endif
 
 char* TCommunications_Services::GetServiceName(int index) {
     if ((index >= 0) && (index <= this->ServiceCount)) {

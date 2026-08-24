@@ -1,21 +1,4 @@
-#include <stdio.h>
-extern "C" unsigned long __cdecl debug_timeGetTime(char* file, int line);
-
-class RGE_TimeSinceLastCall {
-public:
-    char TBuff[0x100];
-    unsigned long lowTSLC;
-    unsigned long highTSLC;
-    unsigned long TSLC;
-    unsigned long aTSLC[100];
-    char gap[4];
-    int Offset;
-    unsigned long LastCall;
-    unsigned long FirstCall;
-    unsigned long Now;
-
-    char* GetElapsedFirstCall();
-};
+#include "../../include/rge_tslc_context.h"
 
 char* RGE_TimeSinceLastCall::GetElapsedFirstCall()
 {

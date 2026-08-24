@@ -8,6 +8,7 @@
 // Waypoint home and ret 10h, so use the period ABI's by-value parameter.
 // probe 3: the by-value Waypoint ABI reproduces the original 205-byte function.
 
+#ifndef PATH_TU_CONTEXT
 void* __cdecl operator_new(unsigned int size);
 void __cdecl operator_delete(void* ptr);
 
@@ -31,6 +32,7 @@ struct Path {
 
     int insertAtEnd(Waypoint wp);
 };
+#endif
 
 int Path::insertAtEnd(Waypoint wp) {
     if (currentSizeValue == maxSizeValue) {

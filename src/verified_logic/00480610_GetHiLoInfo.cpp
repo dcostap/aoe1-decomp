@@ -96,24 +96,7 @@
 // loop now leaves its stack home at zero and never overwrites it with the
 // quotient, matching the executable's stack-alias/fault-handler behavior.
 
-#include <stdio.h>
-
-class RGE_TimeSinceLastCall {
-public:
-    char TBuff[255];
-    unsigned char _pad_0[1];
-    unsigned long lowTSLC;
-    unsigned long highTSLC;
-    unsigned long TSLC;
-    unsigned long aTSLC[101];
-    int Offset;
-    unsigned long LastCall;
-    unsigned long FirstCall;
-    unsigned long Now;
-    unsigned long cps;
-
-    char* GetHiLoInfo(int param_1);
-};
+#include "../../include/rge_tslc_context.h"
 
 char* RGE_TimeSinceLastCall::GetHiLoInfo(int param_1)
 {

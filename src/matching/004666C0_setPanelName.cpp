@@ -8,6 +8,7 @@
 #include <string.h>
 #include <stdlib.h>
 
+#ifndef AOE1_PANEL_CONTEXT_H
 class TPanel {
 public:
     unsigned char gap_00[0x1C];
@@ -16,6 +17,7 @@ public:
     void setPanelName(const char* name);
 };
 
+#endif
 void TPanel::setPanelName(const char* name) {
     if (name != 0 && strlen(name) != 0) {
         char* old = panel_name;

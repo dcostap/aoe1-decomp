@@ -1,6 +1,9 @@
+#ifndef AOE1_PANEL_CONTEXT_H
 extern "C" __declspec(dllimport) int __stdcall GetCursorPos(void* point);
 extern "C" __declspec(dllimport) int __stdcall ScreenToClient(void* hwnd, void* point);
+#endif
 
+#ifndef AOE1_PANEL_CONTEXT_H
 struct tagPOINT {
     long x;
     long y;
@@ -26,6 +29,7 @@ public:
     void get_mouse_pos(tagPOINT& pt);
 };
 
+#endif
 void TPanel::get_mouse_pos(tagPOINT& pt) {
     GetCursorPos(&pt);
     if (render_area->DrawSystem->ScreenMode != 2) {

@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_CONTEXT_H
 class TPanel;
 
 struct PanelNode {
@@ -17,6 +18,7 @@ public:
     void remove_panel_node(PanelNode* node);
 };
 
+#endif
 void TPanel::remove_panel_node(PanelNode* node) {
     if (node == first_child_node) {
         first_child_node = node->next_node;

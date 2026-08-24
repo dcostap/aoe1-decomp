@@ -1,12 +1,5 @@
-class BaseItem {
-public:
-    virtual ~BaseItem();
-    char gap_04[92];
-    float ySize_;
-
-    float ySize() const;
-};
+#include "../../include/aibitm_context.h"
 
 float BaseItem::ySize() const {
-    return this->ySize_;
+    return this->ySizeValue;
 }

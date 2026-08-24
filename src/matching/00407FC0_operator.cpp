@@ -1,9 +1,5 @@
-// The original packet preserves the BaseItem operator== decorated identity.
-// The reviewed symbol override lets the checker validate this natural wrapper.
-class BaseItem;
+#include "../../include/aibitm_context.h"
 
-int __cdecl operator==(BaseItem const& lhs, BaseItem const& rhs);
-
-int __cdecl operator!=(BaseItem const& lhs, BaseItem const& rhs) {
+int __cdecl operator!=(const BaseItem& lhs, const BaseItem& rhs) {
     return !operator==(lhs, rhs);
 }

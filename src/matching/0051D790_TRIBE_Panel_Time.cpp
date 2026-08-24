@@ -1,3 +1,4 @@
+#ifndef TPNL_TIM_SHARED_CONTEXT
 class TDrawArea;
 struct HRGN__;
 typedef HRGN__* HRGN;
@@ -65,6 +66,9 @@ public:
 
     TRIBE_Panel_Time(TDrawArea* draw_area, TPanel* parent);
 };
+#else
+#include "../../include/tpnl_tim_context.h"
+#endif
 
 TRIBE_Panel_Time::TRIBE_Panel_Time(TDrawArea* draw_area, TPanel* parent) : TPanel() {
     this->field_80 = 0;

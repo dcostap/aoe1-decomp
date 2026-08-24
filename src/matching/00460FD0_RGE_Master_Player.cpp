@@ -9,6 +9,7 @@
 // - Replaced the manual vtable field/store with the proven polymorphic class surface;
 //   compiler-generated vptr remains exact and is the retained canonical source.
 
+#ifndef MST_PLAY_SHARED_CONTEXT
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -38,6 +39,7 @@ public:
 
     RGE_Master_Player(FILE* file);
 };
+#endif
 
 RGE_Master_Player::RGE_Master_Player(FILE* file)
 {

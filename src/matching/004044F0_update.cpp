@@ -1,3 +1,4 @@
+#ifndef ACT_LIST_SHARED_CONTEXT
 class RGE_Static_Object;
 
 class RGE_Action {
@@ -32,6 +33,7 @@ public:
     void remove_action();
     unsigned char update();
 };
+#endif
 
 unsigned char RGE_Action_List::update() {
     RGE_Action_Node* node;

@@ -1,12 +1,5 @@
-class BaseItem {
-public:
-    virtual ~BaseItem();
-    char gap_04[76];
-    float x_;
-
-    float x() const;
-};
+#include "../../include/aibitm_context.h"
 
 float BaseItem::x() const {
-    return this->x_;
+    return this->xValue;
 }

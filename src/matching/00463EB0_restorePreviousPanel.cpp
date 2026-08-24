@@ -1,6 +1,7 @@
 extern "C" __declspec(dllimport) int __stdcall UpdateWindow(void* hwnd);
 extern void* AppWnd;
 
+#ifndef AOE1_PANEL_CONTEXT_H
 class TPanel {
 public:
     virtual void vf00(void);
@@ -67,6 +68,7 @@ public:
     int restorePreviousPanel(int destroy_current);
 };
 
+#endif
 int TPanelSystem::restorePreviousPanel(int destroy_current) {
     TPanel* previous;
     TPanel* current;
@@ -88,8 +90,8 @@ int TPanelSystem::restorePreviousPanel(int destroy_current) {
         destroyPanel(current->panelName());
     }
     currentPanelValue = previous;
-    previous->vfC0(1);
-    currentPanelValue->vf20(2);
+    previous->set_focus(1);
+    currentPanelValue->set_redraw(2);
     UpdateWindow(AppWnd);
     return 1;
 }

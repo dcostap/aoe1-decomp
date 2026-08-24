@@ -35,6 +35,7 @@
 //           explicit void parameter, static/const variation, operator, or dtor
 //           still matches, while no decl, foo(), or ctor-only loses the basin.
 
+#ifndef PATH_TU_CONTEXT
 void* __cdecl operator_new(unsigned int size);
 void __cdecl operator_delete(void* ptr);
 
@@ -87,6 +88,7 @@ struct Path {
 
     Path& operator=(const Path& other);
 };
+#endif
 
 Path& Path::operator=(const Path& other) {
     if (maxSizeValue < other.maxSizeValue) {

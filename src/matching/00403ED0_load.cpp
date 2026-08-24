@@ -8,6 +8,7 @@
 // - This source emits the exact 107-byte body and all four ordered calls.
 // - The exact result uses the original EDI receiver and ESI action result.
 
+#ifndef ACT_LIST_SHARED_CONTEXT
 class RGE_Action;
 class RGE_Action_Object;
 
@@ -27,9 +28,12 @@ public:
     void delete_list(void);
     void load(int param_1);
 };
+#endif
 
 void rge_read(int param_1, void* param_2, int param_3);
+#ifndef ACT_LIST_SHARED_CONTEXT
 void* calloc(unsigned int param_1, unsigned int param_2);
+#endif
 
 void RGE_Action_List::load(int param_1) {
     RGE_Action* action;

@@ -6,6 +6,7 @@
 // final narrow byte member copied as a byte, recover the original EBP=new_path / EDI=index
 // loop and exact byte sequence.
 
+#ifndef PATH_TU_CONTEXT
 void* __cdecl operator_new(unsigned int size);
 void __cdecl operator_delete(void* ptr);
 
@@ -29,6 +30,7 @@ struct Path {
 
     int insertAtCurrent(const Waypoint& wp);
 };
+#endif
 
 int Path::insertAtCurrent(const Waypoint& wp) {
     if (currentSizeValue > 1000) return 0;

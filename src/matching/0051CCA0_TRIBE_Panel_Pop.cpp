@@ -4,6 +4,7 @@
 
 // Attempt log:
 
+#ifndef TPNL_POP_SHARED_CONTEXT
 class TDrawArea;
 
 class RGE_Font {
@@ -54,6 +55,7 @@ public:
     TRIBE_Panel_Pop(TDrawArea* area, TPanel* parent);
     virtual ~TRIBE_Panel_Pop();
 };
+#endif
 
 TRIBE_Panel_Pop::TRIBE_Panel_Pop(TDrawArea* area, TPanel* parent) {
     RGE_Font* f;

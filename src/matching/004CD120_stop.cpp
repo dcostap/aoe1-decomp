@@ -1,3 +1,4 @@
+#ifndef AOE1_TACT_ART_TU_CONTEXT
 class TRIBE_Action_Artifact {
 public:
     virtual ~TRIBE_Action_Artifact();
@@ -26,8 +27,13 @@ public:
     virtual int vf5C(int);
     int stop();
 };
+#endif
 
 int TRIBE_Action_Artifact::stop() {
+#ifdef AOE1_TACT_ART_TU_CONTEXT
+    this->set_state(6);
+#else
     this->vf5C(6);
+#endif
     return 1;
 }

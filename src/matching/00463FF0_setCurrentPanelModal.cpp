@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_CONTEXT_H
 class TPanel {
 public:
     void setPreviousModalPanel(TPanel* panel);
@@ -12,6 +13,7 @@ public:
     void setCurrentPanelModal(void);
 };
 
+#endif
 void TPanelSystem::setCurrentPanelModal(void) {
     TPanel* modal;
 

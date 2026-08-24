@@ -1,3 +1,4 @@
+#ifndef COM_SERV_TU_CONTEXT
 struct ServiceInfo {
     char Name[0x50];
     void* GUID;
@@ -12,6 +13,7 @@ public:
 
     void SetServiceActive(int index, int active);
 };
+#endif
 
 void TCommunications_Services::SetServiceActive(int index, int active) {
     if ((index >= 0) && (index <= this->ServiceCount)) {

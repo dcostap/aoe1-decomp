@@ -2766,6 +2766,531 @@
         "00520E30": "?set_info@TRIBE_Panel_Text_Line@@QAEXEPADJ@Z",
         "00520ED0": "?draw@TRIBE_Panel_Text_Line@@UAEXXZ"
       }
+    },
+    {
+      "name": "pnl_lst_prefix",
+      "source": "src/pnl_lst_tu.cpp",
+      "flags": "config/flags/default.rsp",
+      "owners": {
+        "004782A0": "src/matching/004782A0_TListPanel.cpp",
+        "00478330": "src/matching/00478330_TListPanel.cpp"
+      }
+    },
+    {
+      "name": "act_list",
+      "source": "src/act_list_tu.cpp",
+      "flags": "config/flags/00404200_create_task_action.rsp",
+      "owners": {
+        "00403EA0": "src/matching/00403EA0_RGE_Action_List.cpp",
+        "00403EC0": "src/matching/00403EC0_RGE_Action_List.cpp",
+        "00403ED0": "src/matching/00403ED0_load.cpp",
+        "00403F40": "src/matching/00403F40_rehook.cpp",
+        "00403F60": "src/matching/00403F60_save.cpp",
+        "00403FA0": "src/matching/00403FA0_delete_list.cpp",
+        "00403FC0": "src/matching/00403FC0_create_action.cpp",
+        "004044A0": "src/matching/004044A0_inside_obj_update.cpp",
+        "004044F0": "src/matching/004044F0_update.cpp",
+        "00404760": "src/matching/00404760_have_action.cpp",
+        "00404770": "src/matching/00404770_action_stop.cpp",
+        "00404790": "src/matching/00404790_action_move_to.cpp",
+        "004047C0": "src/matching/004047C0_action_work.cpp",
+        "004047F0": "src/matching/004047F0_attack_response.cpp",
+        "00404810": "src/matching/00404810_relation_response.cpp",
+        "00404850": "src/matching/00404850_get_task.cpp",
+        "00404860": "src/matching/00404860_copy_obj.cpp",
+        "00404890": "src/matching/00404890_copy_obj_sprites.cpp",
+        "004048C0": "src/matching/004048C0_get_action_name.cpp"
+      },
+      "symbols": {
+        "004044F0": "?update@RGE_Action_List@@UAEEXZ",
+        "00404860": "?copy_obj@RGE_Action_List@@UAEXPAVRGE_Master_Action_Object@@@Z"
+      }
+    },
+    {
+      "name": "act_tran",
+      "source": "src/act_tran_tu.cpp",
+      "flags": "config/flags/00406E50_set_state.rsp",
+      "owners": {
+        "00406D60": "src/matching/00406D60_RGE_Action_Transport.cpp",
+        "00406DC0": "src/matching/00406DC0_RGE_Action_Transport.cpp",
+        "00406E50": "src/matching/00406E50_set_state.cpp",
+        "00406F90": "src/matching/00406F90_update.cpp",
+        "00407160": "src/matching/00407160_stop.cpp",
+        "00407170": "src/matching/00407170_move_to.cpp",
+        "004071A0": "src/matching/004071A0_work.cpp",
+        "004072B0": "src/matching/004072B0_next_to_drop_off_terrain.cpp",
+        "00407420": "src/matching/00407420_targetZone.cpp"
+      },
+      "symbols": {
+        "00406D60": "??0RGE_Action_Transport@@QAE@HPAVRGE_Action_Object@@@Z",
+        "00406DC0": "??0RGE_Action_Transport@@QAE@HPAVRGE_Task@@MMM@Z"
+      }
+    },
+    {
+      "name": "aiemomod",
+      "source": "src/aiemomod_tu.cpp",
+      "flags": "config/flags/0040C920_EmotionalAIModule.rsp",
+      "owners": {
+        "0040C7C0": "src/matching/0040C7C0_EmotionalAIModule.cpp",
+        "0040C920": "src/matching/0040C920_EmotionalAIModule.cpp",
+        "0040CAA0": "src/matching/0040CAA0_setMainDecisionAI.cpp",
+        "0040CAB0": "src/matching/0040CAB0_save.cpp",
+        "0040CAE0": "src/matching/0040CAE0_stateName.cpp",
+        "0040CB10": "src/matching/0040CB10_state.cpp",
+        "0040CB30": "src/matching/0040CB30_setState.cpp",
+        "0040CB50": "src/matching/0040CB50_incrementState.cpp",
+        "0040CB80": "src/matching/0040CB80_decrementState.cpp",
+        "0040CBB0": "src/matching/0040CBB0_overallState.cpp",
+        "0040CBE0": "src/matching/0040CBE0_setOverallState.cpp",
+        "0040CD80": "src/matching/0040CD80_defaultState.cpp"
+      },
+      "symbols": {
+        "0040C7C0": "??0EmotionalAIModule@@QAE@PAXH@Z",
+        "0040C920": "??0EmotionalAIModule@@QAE@HH@Z",
+        "0040CB10": "?state@EmotionalAIModule@@QBEHH@Z",
+        "0040CBB0": "?overallState@EmotionalAIModule@@QBEHXZ"
+      }
+    },
+    {
+      "name": "aibitm",
+      "source": "src/aibitm_tu.cpp",
+      "flags": "config/flags/default.rsp",
+      "owners": {
+        "00407D80": "src/matching/00407D80_BaseItem.cpp",
+        "00407F70": "src/matching/00407F70_BaseItem.cpp",
+        "00408020": "src/matching/00408020_typeID.cpp",
+        "00408030": "src/matching/00408030_gameID.cpp",
+        "00408040": "src/matching/00408040_uniqueID.cpp",
+        "00408050": "src/matching/00408050_name.cpp",
+        "00408060": "src/matching/00408060_x.cpp",
+        "00408070": "src/matching/00408070_y.cpp",
+        "00408080": "src/matching/00408080_z.cpp",
+        "00408090": "src/matching/00408090_xSize.cpp",
+        "004080A0": "src/matching/004080A0_ySize.cpp",
+        "004080B0": "src/matching/004080B0_zSize.cpp",
+        "004080C0": "src/matching/004080C0_skip.cpp",
+        "004080D0": "src/matching/004080D0_setTypeID.cpp",
+        "004080E0": "src/matching/004080E0_setGameID.cpp",
+        "004080F0": "src/matching/004080F0_setUniqueID.cpp",
+        "00408100": "src/matching/00408100_setName.cpp",
+        "00408120": "src/matching/00408120_setX.cpp",
+        "00408130": "src/matching/00408130_setY.cpp",
+        "00408140": "src/matching/00408140_setZ.cpp",
+        "00408150": "src/matching/00408150_setXSize.cpp",
+        "00408160": "src/matching/00408160_setYSize.cpp",
+        "00408170": "src/matching/00408170_setZSize.cpp",
+        "00408180": "src/matching/00408180_setSkip.cpp"
+      },
+      "symbols": {
+        "00407D80": "??0BaseItem@@QAE@XZ",
+        "00408020": "?typeID@BaseItem@@QBEHXZ",
+        "00408030": "?gameID@BaseItem@@QBEHXZ",
+        "00408040": "?uniqueID@BaseItem@@QBEHXZ",
+        "00408050": "?name@BaseItem@@QAEPADXZ",
+        "00408060": "?x@BaseItem@@QBEMXZ",
+        "00408070": "?y@BaseItem@@QBEMXZ",
+        "00408080": "?z@BaseItem@@QBEMXZ",
+        "00408090": "?xSize@BaseItem@@QBEMXZ",
+        "004080A0": "?ySize@BaseItem@@QBEMXZ",
+        "004080B0": "?zSize@BaseItem@@QBEMXZ",
+        "004080C0": "?skip@BaseItem@@QBEHXZ",
+        "00408120": "?setX@BaseItem@@QAEXM@Z",
+        "00408130": "?setY@BaseItem@@QAEXM@Z",
+        "00408140": "?setZ@BaseItem@@QAEXM@Z"
+      }
+    },
+    {
+      "name": "dlg_smsg",
+      "source": "src/dlg_smsg_tu.cpp",
+      "flags": "config/flags/004407A0_TribeSendMessageDialog.rsp",
+      "owners": {
+        "00440E20": "src/matching/00440E20_TribeSendMessageDialog.cpp",
+        "00440F20": "src/matching/00440F20_action.cpp",
+        "00441410": "src/matching/00441410_checkButtons.cpp",
+        "00441530": "src/matching/00441530_TribeSendQuickMessageDialog.cpp",
+        "00441650": "src/matching/00441650_TribeSendQuickMessageDialog.cpp",
+        "004416C0": "src/matching/004416C0_action.cpp",
+        "00441840": "src/matching/00441840_handle_mouse_down.cpp"
+      },
+      "symbols": {
+        "00440F20": "?action@TribeSendMessageDialog@@MAEJPAVTPanel@@JKK@Z",
+        "004416C0": "?action@TribeSendQuickMessageDialog@@UAEJPAVTPanel@@JKK@Z"
+      }
+    },
+    {
+      "name": "com_serv",
+      "source": "src/com_serv_tu.cpp",
+      "flags": "config/flags/default.rsp",
+      "owners": {
+        "00431FB0": "src/matching/00431FB0_TCommunications_Services.cpp",
+        "00432030": "src/matching/00432030_TCommunications_Services.cpp",
+        "00432040": "src/matching/00432040_GetServiceCount.cpp",
+        "00432060": "src/matching/00432060_GetServiceName.cpp",
+        "00432080": "src/matching/00432080_SetServiceName.cpp",
+        "004320C0": "src/matching/004320C0_GetServiceGUID.cpp",
+        "004320F0": "src/matching/004320F0_EnumServiceGUID.cpp",
+        "00432120": "src/matching/00432120_GetServiceActive.cpp",
+        "00432150": "src/matching/00432150_SetServiceActive.cpp",
+        "00432180": "src/matching/00432180_DPEnumCallback.cpp"
+      }
+    },
+    {
+      "name": "com_sess",
+      "source": "src/com_sess_tu.cpp",
+      "flags": "config/flags/default.rsp",
+      "owners": {
+        "00432200": "src/matching/00432200_TCommunications_Sessions.cpp",
+        "00432290": "src/matching/00432290_TCommunications_Sessions.cpp",
+        "004322C0": "src/matching/004322C0_GetSessionCount.cpp",
+        "004322D0": "src/matching/004322D0_GetSessionName.cpp",
+        "004322F0": "src/matching/004322F0_GetSessionMaxPlayers.cpp",
+        "00432320": "src/matching/00432320_GetSessionCurrentPlayers.cpp",
+        "00432350": "src/matching/00432350_GetSessionGUID.cpp",
+        "00432390": "src/matching/00432390_AddSession.cpp",
+        "004324F0": "src/matching/004324F0_Refresh.cpp",
+        "00432560": "src/matching/00432560_EnumSessionCallback.cpp",
+        "004325E0": "src/matching/004325E0_IsEqualGuid.cpp"
+      }
+    },
+    {
+      "name": "dpl_obj",
+      "source": "src/dpl_obj_tu.cpp",
+      "flags": "config/flags/004418A0_RGE_Doppleganger_Object.rsp",
+      "owners": {
+        "00441A70": "src/matching/00441A70_RGE_Doppleganger_Object.cpp",
+        "00441D30": "src/matching/00441D30_setup.cpp",
+        "00441DA0": "src/matching/00441DA0_setup.cpp",
+        "00441F80": "src/matching/00441F80_save.cpp",
+        "00442050": "src/matching/00442050_validate.cpp",
+        "00442100": "src/matching/00442100_RGE_Doppleganger_Creator.cpp",
+        "00442180": "src/matching/00442180_RGE_Doppleganger_Creator.cpp"
+      },
+      "symbols": {
+        "00441D30": "?setup@RGE_Doppleganger_Object@@UAEHPAVRGE_Master_Doppleganger_Object@@PAVRGE_Player@@MMM@Z",
+        "00441DA0": "?setup@RGE_Doppleganger_Object@@UAEHHPAVRGE_Game_World@@@Z",
+        "00441A70": "??0RGE_Doppleganger_Object@@QAE@HPAVRGE_Game_World@@H@Z"
+      }
+    },
+    {
+      "name": "flics",
+      "source": "src/flics_tu.cpp",
+      "flags": "config/flags/default.rsp",
+      "owners": {
+        "00449B30": "src/matching/00449B30_RGE_Flic_Player.cpp",
+        "00449BE0": "src/matching/00449BE0_RGE_Flic_Player.cpp",
+        "00449C40": "src/matching/00449C40_RGE_Flic_Player.cpp",
+        "00449DF0": "src/matching/00449DF0_resolution.cpp",
+        "00449E00": "src/matching/00449E00_time_delay.cpp",
+        "00449E10": "src/matching/00449E10_frames.cpp",
+        "00449E20": "src/matching/00449E20_start.cpp",
+        "00449E80": "src/matching/00449E80_reset.cpp",
+        "00449E90": "src/matching/00449E90_draw.cpp",
+        "0044A090": "src/matching/0044A090_literal.cpp",
+        "0044A2A0": "src/matching/0044A2A0_delta_fli.cpp",
+        "0044A390": "src/matching/0044A390_black.cpp"
+      },
+      "symbols": {
+        "00449B30": "??0RGE_Flic_Player@@QAE@PAD@Z",
+        "00449BE0": "??0RGE_Flic_Player@@QAE@H@Z"
+      }
+    },
+    {
+      "name": "mst_play",
+      "source": "src/mst_play_tu.cpp",
+      "flags": "config/flags/00461270_load_master_object.rsp",
+      "owners": {
+        "00460FD0": "src/matching/00460FD0_RGE_Master_Player.cpp",
+        "004610C0": "src/matching/004610C0_RGE_Master_Player.cpp",
+        "00461150": "src/matching/00461150_RGE_Master_Player.cpp",
+        "004611D0": "src/matching/004611D0_finish_init.cpp",
+        "00461270": "src/matching/00461270_load_master_object.cpp",
+        "00461530": "src/matching/00461530_create_master_object_space.cpp",
+        "00461560": "src/matching/00461560_load_object.cpp"
+      },
+      "symbols": {
+        "00460FD0": "??0RGE_Master_Player@@QAE@PAU_iobuf@@@Z",
+        "004610C0": "??0RGE_Master_Player@@QAE@H@Z"
+      }
+    },
+    {
+      "name": "panel",
+      "source": "src/panel_tu.cpp",
+      "flags": "config/flags/default.rsp",
+      "owners": {
+        "00463BE0": "src/matching/00463BE0_TPanelSystem.cpp",
+        "00463C50": "src/matching/00463C50_TPanelSystem.cpp",
+        "00463D00": "src/matching/00463d00_currentPanel.cpp",
+        "00463D20": "src/matching/00463d20_mouseOwner.cpp",
+        "00463D30": "src/matching/00463d30_keyboardOwner.cpp",
+        "00463D40": "src/matching/00463d40_modalPanel.cpp",
+        "00463D50": "src/matching/00463D50_panel.cpp",
+        "00463D80": "src/matching/00463D80_addPanel.cpp",
+        "00463E10": "src/matching/00463E10_removePanel.cpp",
+        "00463E60": "src/matching/00463E60_setCurrentPanel.cpp",
+        "00463EB0": "src/matching/00463EB0_restorePreviousPanel.cpp",
+        "00463F40": "src/matching/00463f40_setMouseOwner.cpp",
+        "00463F50": "src/matching/00463f50_setKeyboardOwner.cpp",
+        "00463FF0": "src/matching/00463FF0_setCurrentPanelModal.cpp",
+        "00464010": "src/matching/00464010_restorePreviousModalPanel.cpp",
+        "00464100": "src/matching/00464100_inSystem.cpp",
+        "00464120": "src/matching/00464120_inSystem.cpp",
+        "00464150": "src/matching/00464150_setup.cpp",
+        "004641B0": "src/matching/004641B0_findPanelNode.cpp",
+        "00464260": "src/matching/00464260_setCurrentPanel.cpp",
+        "00464480": "src/matching/00464480_release_palette.cpp",
+        "004644E0": "src/matching/004644E0_DisableIME.cpp",
+        "00464510": "src/matching/00464510_EnableIME.cpp",
+        "00464540": "src/matching/00464540_IsIMEEnabled.cpp",
+        "00464550": "src/matching/00464550_TurnIMEOn.cpp",
+        "00464590": "src/matching/00464590_TurnIMEOff.cpp",
+        "004645D0": "src/matching/004645d0_IsIMEOn.cpp",
+        "004645E0": "src/matching/004645e0_GetInputEnabled.cpp",
+        "004645F0": "src/matching/004645f0_EnableInput.cpp",
+        "00464600": "src/matching/00464600_DisableInput.cpp",
+        "00464610": "src/matching/00464610_stop_sound_system.cpp",
+        "00464640": "src/matching/00464640_restart_sound_system.cpp",
+        "00464680": "src/matching/00464680_restore_system_colors.cpp",
+        "004646F0": "src/matching/004646F0_set_restore.cpp",
+        "004649E0": "src/matching/004649E0_TPanel.cpp",
+        "00464A80": "src/matching/00464A80_setup.cpp",
+        "00464B50": "src/matching/00464B50_add_panel_node.cpp",
+        "00464BF0": "src/matching/00464BF0_remove_panel_node.cpp",
+        "00464C50": "src/matching/00464C50_set_rect.cpp",
+        "00464DA0": "src/matching/00464DA0_set_color.cpp",
+        "00464DC0": "src/matching/00464DC0_set_active.cpp",
+        "00464E00": "src/matching/00464E00_set_positioning.cpp",
+        "00464EB0": "src/matching/00464EB0_set_fixed_position.cpp",
+        "00464EE0": "src/matching/00464EE0_set_redraw.cpp",
+        "00465050": "src/matching/00465050_set_any_overlapping_redraw.cpp",
+        "00465160": "src/matching/00465160_draw.cpp",
+        "004651C0": "src/matching/004651C0_draw_rect.cpp",
+        "00465220": "src/matching/00465220_draw_offset.cpp",
+        "004652C0": "src/matching/004652C0_draw_rect2.cpp",
+        "004652F0": "src/matching/004652F0_draw_offset2.cpp",
+        "00465320": "src/matching/00465320_draw_setup.cpp",
+        "00465370": "src/matching/00465370_draw_finish.cpp",
+        "004653A0": "src/matching/004653A0_paint.cpp",
+        "00465B30": "src/matching/00465B30_handle_key_down.cpp",
+        "00465BE0": "src/matching/00465BE0_handle_char.cpp",
+        "00465C30": "src/matching/00465c30_handle_command.cpp",
+        "00465C40": "src/matching/00465c40_handle_user_command.cpp",
+        "00465C50": "src/matching/00465c50_handle_timer_command.cpp",
+        "00465C60": "src/matching/00465c60_handle_scroll.cpp",
+        "00465C70": "src/matching/00465C70_handle_mouse_down.cpp",
+        "00465F70": "src/matching/00465F70_handle_mouse_up.cpp",
+        "00466140": "src/matching/00466140_action.cpp",
+        "00466170": "src/matching/00466170_get_mouse_info.cpp",
+        "004661D0": "src/matching/004661D0_get_mouse_pos.cpp",
+        "00466220": "src/matching/00466220_capture_mouse.cpp",
+        "00466280": "src/matching/00466280_release_mouse.cpp",
+        "004662C0": "src/matching/004662C0_is_redraw_needed.cpp",
+        "004662E0": "src/matching/004662E0_is_inside.cpp",
+        "00466350": "src/matching/00466350_bound_point.cpp",
+        "004663A0": "src/matching/004663A0_set_curr_child.cpp",
+        "004663F0": "src/matching/004663F0_set_focus.cpp",
+        "00466420": "src/matching/00466420_get_focus.cpp",
+        "00466430": "src/matching/00466430_set_z_order.cpp",
+        "00466490": "src/matching/00466490_set_child_z_order.cpp",
+        "00466650": "src/matching/00466650_set_tab_order.cpp",
+        "00466680": "src/matching/00466680_setPreviousPanel.cpp",
+        "00466690": "src/matching/00466690_previousModalPanel.cpp",
+        "004666A0": "src/matching/004666a0_setPreviousModalPanel.cpp",
+        "004666B0": "src/matching/004666b0_panelName.cpp",
+        "004666C0": "src/matching/004666C0_setPanelName.cpp",
+        "00466770": "src/matching/00466770_xPosition.cpp",
+        "00466780": "src/matching/00466780_yPosition.cpp",
+        "00466790": "src/matching/00466790_width.cpp",
+        "004667A0": "src/matching/004667a0_height.cpp",
+        "004667B0": "src/matching/004667b0_renderArea.cpp",
+        "004667C0": "src/matching/004667C0_clipRectangle.cpp",
+        "004667F0": "src/matching/004667F0_setClipRectangle.cpp",
+        "00466820": "src/matching/00466820_delete_panel.cpp",
+        "00466870": "src/matching/00466870_get_string.cpp",
+        "00466890": "src/matching/00466890_get_help_message.cpp",
+        "004668A0": "src/matching/004668a0_get_help_page.cpp",
+        "004668B0": "src/matching/004668B0_set_help_info.cpp",
+        "004668D0": "src/matching/004668D0_get_help_info.cpp",
+        "00466980": "src/matching/00466980_stop_sound_system.cpp",
+        "004669A0": "src/matching/004669A0_restart_sound_system.cpp",
+        "004669D0": "src/matching/004669D0_handle_reactivate.cpp",
+        "004669F0": "src/matching/004669F0_get_true_render_rect.cpp"
+      },
+      "symbols": {
+        "00463E60": "?setCurrentPanel@TPanelSystem@@QAEHPADH@Z",
+        "00464100": "?inSystem@TPanelSystem@@QAEHPAD@Z",
+        "00464120": "?inSystem@TPanelSystem@@QAEHPAVTPanel@@@Z",
+        "00464150": "?setup@TPanelSystem@@QAEHXZ",
+        "00464260": "?setCurrentPanel@TPanelSystem@@QAEXPAVTPanel@@H@Z",
+        "00464610": "?stop_sound_system@TPanelSystem@@QAEXXZ",
+        "00464640": "?restart_sound_system@TPanelSystem@@QAEHXZ",
+        "00464A80": "?setup@TPanel@@UAEHPAUTDrawArea@@PAV1@JJJJH@Z",
+        "00466980": "?stop_sound_system@TPanel@@UAEXXZ",
+        "004669A0": "?restart_sound_system@TPanel@@UAEHXZ",
+        "00463D00": "?currentPanel@TPanelSystem@@QAEPAVTPanel@@XZ",
+        "00463D20": "?mouseOwner@TPanelSystem@@QAEPAVTPanel@@XZ",
+        "00463D30": "?keyboardOwner@TPanelSystem@@QAEPAVTPanel@@XZ",
+        "00463D40": "?modalPanel@TPanelSystem@@QAEPAVTPanel@@XZ",
+        "00463D50": "?panel@TPanelSystem@@QAEPAVTPanel@@PAD@Z",
+        "00464C50": "?set_rect@TPanel@@UAEXHHHH@Z",
+        "00465160": "?draw@TPanel@@UAEXXZ",
+        "004651C0": "?draw_rect@TPanel@@UAEXPAUtagRECT@@@Z",
+        "00465220": "?draw_offset@TPanel@@UAEXJJPAUtagRECT@@@Z",
+        "004653A0": "?paint@TPanel@@UAEXXZ",
+        "004662E0": "?is_inside@TPanel@@UAEHJJ@Z",
+        "00466650": "?set_tab_order@TPanel@@QAEXPAX0@Z",
+        "00466690": "?previousModalPanel@TPanel@@QAEPAV1@XZ",
+        "004666B0": "?panelName@TPanel@@QAEPADXZ",
+        "004667C0": "?clipRectangle@TPanel@@QBE?AUtagRECT@@XZ",
+        "00466870": "?get_string@TPanel@@QAEPADH@Z"
+      }
+    },
+    {
+      "name": "path",
+      "source": "src/path_tu.cpp",
+      "flags": "config/flags/0046A8E0_operator.rsp",
+      "owners": {
+        "0046A740": "src/matching/0046A740_Path.cpp",
+        "0046A7F0": "src/matching/0046A7F0_Path.cpp",
+        "0046AB60": "src/matching/0046AB60_insertAtCurrent.cpp",
+        "0046AC10": "src/matching/0046AC10_insertAtEnd.cpp",
+        "0046ACE0": "src/matching/0046ACE0_contains.cpp",
+        "0046ADA0": "src/matching/0046ADA0_killPath.cpp",
+        "0046ADB0": "src/matching/0046ADB0_maxNumberOfWaypoints.cpp",
+        "0046ADC0": "src/matching/0046ADC0_numberOfWaypoints.cpp",
+        "0046ADD0": "src/matching/0046ADD0_timeStamp.cpp",
+        "0046ADE0": "src/matching/0046ADE0_setTimeStamp.cpp",
+        "0046ADF0": "src/matching/0046ADF0_length.cpp",
+        "0046AE50": "src/matching/0046AE50_start.cpp",
+        "0046AE60": "src/matching/0046AE60_goal.cpp",
+        "0046AE70": "src/matching/0046AE70_waypoint.cpp",
+        "0046AEA0": "src/matching/0046AEA0_currentWaypoint.cpp",
+        "0046AEC0": "src/matching/0046AEC0_currentWaypointNumber.cpp",
+        "0046AED0": "src/matching/0046AED0_setCurrentWaypointNumber.cpp",
+        "0046AEE0": "src/matching/0046AEE0_nextWaypoint.cpp",
+        "0046AF10": "src/matching/0046AF10_previousWaypoint.cpp",
+        "0046AF40": "src/matching/0046AF40_firstWaypoint.cpp",
+        "0046AF60": "src/matching/0046AF60_lastWaypoint.cpp",
+        "0046AF80": "src/matching/0046AF80_initToStart.cpp",
+        "0046AF90": "src/matching/0046AF90_initToEnd.cpp",
+        "0046AFA0": "src/matching/0046AFA0_moveToNextWaypoint.cpp",
+        "0046AFC0": "src/matching/0046AFC0_moveToLastWaypoint.cpp",
+        "0046AFE0": "src/matching/0046AFE0_distanceToNextWaypoint.cpp"
+      },
+      "symbols": {
+        "0046ADC0": "?numberOfWaypoints@Path@@QBEHXZ",
+        "0046ADD0": "?timeStamp@Path@@QBEKXZ",
+        "0046AE50": "?start@Path@@QBEABUWaypoint@@XZ",
+        "0046AE70": "?waypoint@Path@@QBEPBUWaypoint@@H@Z",
+        "0046AEA0": "?currentWaypoint@Path@@QBEPAUWaypoint@@XZ",
+        "0046AEC0": "?currentWaypointNumber@Path@@QBEHXZ",
+        "0046AEE0": "?nextWaypoint@Path@@QBEPBUWaypoint@@XZ",
+        "0046AF60": "?lastWaypoint@Path@@QBEPBUWaypoint@@XZ"
+      }
+    },
+    {
+      "name": "rge_tslc",
+      "source": "src/rge_tslc_tu.cpp",
+      "flags": "config/flags/default.rsp",
+      "owners": {
+        "00480390": "src/matching/00480390_RGE_TimeSinceLastCall.cpp",
+        "004803F0": "src/matching/004803F0_RGE_TimeSinceLastCall.cpp",
+        "00480400": "src/matching/00480400_GetAvg.cpp",
+        "00480460": "src/matching/00480460_Get.cpp",
+        "00480480": "src/matching/00480480_Set.cpp",
+        "00480510": "src/matching/00480510_Skip.cpp",
+        "00480540": "src/matching/00480540_GetAvgInfo.cpp",
+        "00480570": "src/matching/00480570_GetHiLoMaxInfo.cpp",
+        "004806A0": "src/matching/004806A0_CPS.cpp",
+        "004806C0": "src/matching/004806C0_GetFirstCall.cpp",
+        "004806D0": "src/matching/004806D0_GetElapsedFirstCall.cpp",
+        "00480770": "src/matching/00480770_Test.cpp"
+      },
+      "symbols": {
+        "00480400": "?GetAvg@RGE_TimeSinceLastCall@@QAEKH@Z",
+        "00480460": "?Get@RGE_TimeSinceLastCall@@QAEKXZ"
+      }
+    },
+    {
+      "name": "tact_art",
+      "source": "src/tact_art_tu.cpp",
+      "flags": "config/flags/004CCCB0_set_state.rsp",
+      "owners": {
+        "004CCBA0": "src/matching/004CCBA0_TRIBE_Action_Artifact.cpp",
+        "004CCC00": "src/matching/004CCC00_TRIBE_Action_Artifact.cpp",
+        "004CCC30": "src/matching/004CCC30_TRIBE_Action_Artifact.cpp",
+        "004CCCB0": "src/matching/004CCCB0_set_state.cpp",
+        "004CCDF0": "src/matching/004CCDF0_update.cpp",
+        "004CCF30": "src/matching/004CCF30_check_ownership.cpp",
+        "004CD120": "src/matching/004CD120_stop.cpp",
+        "004CD130": "src/matching/004CD130_move_to.cpp",
+        "004CD160": "src/matching/004CD160_work.cpp"
+      },
+      "symbols": {
+        "004CCBA0": "??0TRIBE_Action_Artifact@@QAE@HPAVRGE_Action_Object@@@Z",
+        "004CCC00": "??0TRIBE_Action_Artifact@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@PAVRGE_Static_Object@@@Z",
+        "004CCC30": "??0TRIBE_Action_Artifact@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@MMM@Z"
+      }
+    },
+    {
+      "name": "taunt",
+      "source": "src/taunt_tu.cpp",
+      "flags": "config/flags/005096A0_RestartSoundSystem.rsp",
+      "owners": {
+        "00509450": "src/matching/00509450_TTaunt.cpp",
+        "00509490": "src/matching/00509490_PlayTauntStr.cpp",
+        "00509530": "src/matching/00509530_PlayTauntNo.cpp",
+        "00509610": "src/matching/00509610_GetTauntNo.cpp",
+        "00509640": "src/matching/00509640_GetTauntText.cpp",
+        "00509670": "src/matching/00509670_StopSoundSystem.cpp",
+        "005096A0": "src/matching/005096A0_RestartSoundSystem.cpp"
+      }
+    },
+    {
+      "name": "tpnl_btn",
+      "source": "src/tpnl_btn_tu.cpp",
+      "flags": "config/flags/00519DA0_TRIBE_Panel_Button.rsp",
+      "owners": {
+        "00519DA0": "src/matching/00519DA0_TRIBE_Panel_Button.cpp",
+        "00519EA0": "src/matching/00519EA0_set_text_msg.cpp",
+        "00519EE0": "src/matching/00519EE0_is_inside.cpp",
+        "0051A570": "src/matching/0051A570_set_display_garrison.cpp",
+        "0051A590": "src/matching/0051A590_set_garrison_number.cpp",
+        "0051A5B0": "src/matching/0051A5B0_get_garrison_number.cpp"
+      }
+    },
+    {
+      "name": "tpnl_pop",
+      "source": "src/tpnl_pop_tu.cpp",
+      "flags": "config/flags/0051CDB0_TRIBE_Panel_Pop.rsp",
+      "owners": {
+        "0051CCA0": "src/matching/0051CCA0_TRIBE_Panel_Pop.cpp",
+        "0051CDB0": "src/matching/0051CDB0_TRIBE_Panel_Pop.cpp",
+        "0051CFD0": "src/matching/0051CFD0_startup.cpp",
+        "0051D040": "src/matching/0051D040_get_player_id.cpp",
+        "0051D060": "src/matching/0051D060_draw.cpp",
+        "0051D470": "src/matching/0051D470_get_true_render_rect.cpp",
+        "0051D4E0": "src/matching/0051D4E0_handle_idle.cpp"
+      },
+      "symbols": {
+        "0051D060": "?draw@TRIBE_Panel_Pop@@UAEXXZ"
+      }
+    },
+    {
+      "name": "tpnl_tim",
+      "source": "src/tpnl_tim_tu.cpp",
+      "flags": "config/flags/0051E2B0_render_to_image_buffer.rsp",
+      "owners": {
+        "0051D790": "src/matching/0051D790_TRIBE_Panel_Time.cpp",
+        "0051D8B0": "src/matching/0051D8B0_TRIBE_Panel_Time.cpp",
+        "0051DAD0": "src/matching/0051DAD0_startup.cpp",
+        "0051DC60": "src/matching/0051DC60_get_clock_type.cpp",
+        "0051DC70": "src/matching/0051DC70_get_player_id.cpp",
+        "0051DC90": "src/matching/0051DC90_draw.cpp",
+        "0051E0E0": "src/matching/0051E0E0_get_true_render_rect.cpp"
+      },
+      "symbols": {
+        "0051DC90": "?draw@TRIBE_Panel_Time@@UAEXXZ"
+      }
     }
   ]
 }

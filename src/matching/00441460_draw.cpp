@@ -8,6 +8,9 @@
 // - modeled RGE_Color_Table::table as the proven inline byte array at +0x28 rather
 //   than a pointer; exact 203-byte match.
 
+#ifdef DLG_SMSG_CANONICAL_TU
+#include "../../include/dlg_smsg_context.h"
+#else
 typedef unsigned char uchar;
 typedef unsigned long ulong;
 
@@ -171,6 +174,7 @@ public:
 
     virtual void draw();
 };
+#endif
 
 void TribeSendMessageDialog::draw()
 {

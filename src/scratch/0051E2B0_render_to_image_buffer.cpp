@@ -44,6 +44,7 @@
 // BLOCKER: original frame is 0x114 with EBP/EBX bounds and EDI flags; current
 // typed source uses a 0x11c frame with a different local/register basin.
 
+#ifndef TPNL_TIM_SHARED_CONTEXT
 extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
 extern "C" __declspec(dllimport) int __stdcall SelectClipRgn(void* hdc, void* hrgn);
 extern "C" __declspec(dllimport) void* __stdcall SelectObject(void* hdc, void* obj);
@@ -254,6 +255,9 @@ public:
 protected:
     int render_to_image_buffer();
 };
+#else
+#include "../../include/tpnl_tim_context.h"
+#endif
 
 int TRIBE_Panel_Time::render_to_image_buffer() {
     void* old_font;

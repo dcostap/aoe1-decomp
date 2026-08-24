@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_CONTEXT_H
 class TPanel {
 public:
     virtual void vf00(void);
@@ -18,9 +19,10 @@ public:
     virtual void set_color(unsigned char color);
 };
 
+#endif
 void TPanel::set_color(unsigned char color) {
     this->color = color;
     if (active != 0) {
-        redraw(2);
+        set_redraw(2);
     }
 }

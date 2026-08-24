@@ -13,6 +13,7 @@
 // natural owner-count semantics.
 // Status: exact under the default VC5 flags.
 
+#ifndef AOE1_TACT_ART_TU_CONTEXT
 #include <stdlib.h>
 #include <string.h>
 
@@ -155,6 +156,7 @@ class TRIBE_Action_Artifact : public RGE_Action {
 public:
     RGE_Player* check_ownership();
 };
+#endif
 
 RGE_Player* TRIBE_Action_Artifact::check_ownership() {
     RGE_Action_Object* obj = this->object;

@@ -3,6 +3,7 @@
 // The shipped code stores world at +0x114 before the time call, then stores
 // its result at +0x11C. The direct call and its source path/line are required.
 
+#ifndef TPNL_TIM_SHARED_CONTEXT
 extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
 
 class RGE_Base_Game {
@@ -22,6 +23,9 @@ public:
 
     void startup(void);
 };
+#else
+#include "../../include/tpnl_tim_context.h"
+#endif
 
 void TRIBE_Panel_Time::startup(void) {
     this->world = rge_base_game->world;

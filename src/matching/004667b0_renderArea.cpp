@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_CONTEXT_H
 class TPanel {
 public:
     virtual ~TPanel();
@@ -18,6 +19,7 @@ public:
     int renderArea();
 };
 
+#endif
 int TPanel::renderArea() {
     return this->render_area_;
 }

@@ -6,6 +6,7 @@
 
 #include <string.h>
 
+#ifndef COM_SESS_TU_CONTEXT
 struct GUID {
     unsigned int d[4];
 };
@@ -38,6 +39,7 @@ public:
                    unsigned long user3, unsigned long user4);
     int IncSessionCount();
 };
+#endif
 
 int TCommunications_Sessions::AddSession(GUID sessGUID, GUID appGUID,
                                           unsigned long maxPlayers, unsigned long currentPlayers,

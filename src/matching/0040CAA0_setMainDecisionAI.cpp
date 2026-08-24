@@ -1,9 +1,12 @@
+#ifndef AOE1_AIEMOMOD_TU_CONTEXT
+class MainDecisionAIModule;
 class EmotionalAIModule {
 public:
     virtual ~EmotionalAIModule();
     char gap_0[0xEC];
-    int field_F0;
-    void setMainDecisionAI(int v);
+    MainDecisionAIModule* md;
+    void setMainDecisionAI(MainDecisionAIModule* v);
 };
+#endif
 
-void EmotionalAIModule::setMainDecisionAI(int v) { this->field_F0 = v; }
+void EmotionalAIModule::setMainDecisionAI(MainDecisionAIModule* v) { this->md = v; }

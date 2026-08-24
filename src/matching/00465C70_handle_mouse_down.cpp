@@ -2,6 +2,7 @@
 // PDB source: Panel.cpp
 // Attempt log:
 
+#ifndef AOE1_PANEL_CONTEXT_H
 struct PanelNode {
     class TPanel* panel;
     PanelNode* prev_node;
@@ -95,17 +96,18 @@ public:
 
 extern unsigned long __cdecl debug_timeGetTime(char* file, int line);
 
+#endif
 long TPanel::handle_mouse_down(unsigned char param_1, long param_2, long param_3, int param_4, int param_5)
 {
     if (this->active == 0)
         return 0;
 
     if (this->mouse_captured == 0) {
-        if (this->vfBC(param_2, param_3) == 0)
+        if (this->is_inside(param_2, param_3) == 0)
             return 0;
 
         for (PanelNode* node = this->last_child_node; node != 0; node = node->prev_node) {
-            long result = node->panel->vf70(param_1, param_2, param_3, param_4, param_5);
+            long result = node->panel->handle_mouse_down(param_1, param_2, param_3, param_4, param_5);
             if (result != 0)
                 return result;
         }
@@ -130,9 +132,9 @@ long TPanel::handle_mouse_down(unsigned char param_1, long param_2, long param_3
         return 0;
 
     if (this->mouse_down_button == 1) {
-        this->vf84(param_2, param_3, param_4, param_5);
+        this->mouse_left_down_action(param_2, param_3, param_4, param_5);
     } else {
-        this->vf98(param_2, param_3, param_4, param_5);
+        this->mouse_right_down_action(param_2, param_3, param_4, param_5);
     }
     return 1;
 }

@@ -1,5 +1,6 @@
 void __cdecl operator delete(void* ptr);
 
+#ifndef AOE1_TAUNT_CONTEXT_H
 class TDigital {
 public:
     ~TDigital();
@@ -11,6 +12,7 @@ public:
 
     void StopSoundSystem(void);
 };
+#endif
 
 void TTaunt::StopSoundSystem(void) {
     int i = 4;

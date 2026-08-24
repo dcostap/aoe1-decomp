@@ -8,6 +8,7 @@
 
 #include "..\..\include\game_globals.h"
 
+#ifndef AOE1_AIEMOMOD_TU_CONTEXT
 class AIModule {
 public:
     char _gap_00[0xF0];
@@ -21,6 +22,7 @@ public:
 
     void setOverallState(int state);
 };
+#endif
 
 void EmotionalAIModule::setOverallState(int state)
 {

@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_CONTEXT_H
 struct tagRECT {
     int left;
     int top;
@@ -16,6 +17,7 @@ public:
     void setClipRectangle(tagRECT rect);
 };
 
+#endif
 void TPanel::setClipRectangle(tagRECT rect) {
     this->clip_rect = rect;
 }

@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_CONTEXT_H
 class TPanel {
 public:
     virtual ~TPanel();
@@ -18,6 +19,7 @@ public:
     int get_help_message();
 };
 
+#endif
 int TPanel::get_help_message() {
     return this->help_string_id_;
 }

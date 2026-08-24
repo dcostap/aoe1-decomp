@@ -1,10 +1,4 @@
-class BaseItem {
-public:
-    virtual ~BaseItem();
-    int typeIDValue;
-
-    void setTypeID(int);
-};
+#include "../../include/aibitm_context.h"
 
 void BaseItem::setTypeID(int value) {
     typeIDValue = value;

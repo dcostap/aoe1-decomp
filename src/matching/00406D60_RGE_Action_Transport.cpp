@@ -1,3 +1,4 @@
+#ifndef ACT_TRAN_SHARED_CONTEXT
 class RGE_Action_Object;
 
 class RGE_Action {
@@ -12,6 +13,7 @@ public:
 
     RGE_Action_Transport(int id, RGE_Action_Object* object);
 };
+#endif
 
 RGE_Action_Transport::RGE_Action_Transport(int id, RGE_Action_Object* object)
     : RGE_Action(id, object, 1) {

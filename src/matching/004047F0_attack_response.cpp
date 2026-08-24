@@ -1,3 +1,4 @@
+#ifndef ACT_LIST_SHARED_CONTEXT
 class RGE_Static_Object;
 
 class RGE_Action {
@@ -31,6 +32,7 @@ public:
 
     int attack_response(RGE_Static_Object* obj);
 };
+#endif
 
 int RGE_Action_List::attack_response(RGE_Static_Object* obj) {
     if (this->list != 0) {

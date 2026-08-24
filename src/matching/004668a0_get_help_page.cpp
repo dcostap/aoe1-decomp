@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_CONTEXT_H
 class TPanel {
 public:
     virtual ~TPanel();
@@ -18,6 +19,7 @@ public:
     int get_help_page();
 };
 
+#endif
 int TPanel::get_help_page() {
     return this->help_page_id_;
 }

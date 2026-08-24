@@ -1,3 +1,4 @@
+#ifndef COM_SESS_TU_CONTEXT
 class _GUID {
 public:
     unsigned long x;
@@ -10,6 +11,7 @@ class TCommunications_Sessions {
 public:
     int IsEqualGuid(_GUID* guid1, _GUID* guid2);
 };
+#endif
 
 int TCommunications_Sessions::IsEqualGuid(_GUID* guid1, _GUID* guid2) {
     if (guid1->x == guid2->x) {

@@ -5,16 +5,7 @@
 // attempt 5: fix idx/sum checks, size 80
 // attempt 6: back to attempt 4 structure, fix idx to match original test edx,edx
 
-class RGE_TimeSinceLastCall {
-public:
-    char gap_00[0x10C];
-    unsigned long aTSLC[101];
-    int Offset;
-    char gap_2A4[0xC];
-    unsigned long cps;
-
-    unsigned long GetAvg(int count);
-};
+#include "../../include/rge_tslc_context.h"
 
 unsigned long RGE_TimeSinceLastCall::GetAvg(int count) {
     unsigned long sum = 0;

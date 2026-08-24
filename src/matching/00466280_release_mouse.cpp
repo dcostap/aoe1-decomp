@@ -1,5 +1,6 @@
 extern "C" __declspec(dllimport) int __stdcall ReleaseCapture(void);
 
+#ifndef AOE1_PANEL_CONTEXT_H
 class TPanel;
 class TPanelSystem {
 public:
@@ -17,6 +18,7 @@ public:
     void release_mouse(void);
 };
 
+#endif
 void TPanel::release_mouse(void) {
     if (mouse_captured != 0) {
         if (panel_system.mouseOwner() == this) {

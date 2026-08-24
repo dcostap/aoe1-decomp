@@ -1,12 +1,5 @@
-class BaseItem {
-public:
-    virtual ~BaseItem();
-    char gap_04[100];
-    int skip_;
-
-    int skip() const;
-};
+#include "../../include/aibitm_context.h"
 
 int BaseItem::skip() const {
-    return this->skip_;
+    return this->skipValue;
 }

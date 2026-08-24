@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_CONTEXT_H
 class TDrawArea;
 
 class TPanel {
@@ -13,6 +14,7 @@ public:
     unsigned char is_redraw_needed(void);
 };
 
+#endif
 unsigned char TPanel::is_redraw_needed(void) {
     if (render_area != 0 && visible != 0 && active != 0) {
         return need_redraw;

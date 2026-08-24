@@ -1,3 +1,4 @@
+#ifndef PATH_TU_CONTEXT
 class Path {
 public:
     virtual ~Path();
@@ -5,5 +6,10 @@ public:
     int field_2C;
     int numberOfWaypoints();
 };
+#endif
 
+#ifdef PATH_TU_CONTEXT
+int Path::numberOfWaypoints() const { return this->currentSizeValue; }
+#else
 int Path::numberOfWaypoints() { return this->field_2C; }
+#endif

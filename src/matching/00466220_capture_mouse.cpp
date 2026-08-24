@@ -1,5 +1,6 @@
 extern "C" __declspec(dllimport) void* __stdcall SetCapture(void* hwnd);
 
+#ifndef AOE1_PANEL_CONTEXT_H
 class TPanel;
 class TPanelSystem {
 public:
@@ -25,6 +26,7 @@ public:
     int capture_mouse(void);
 };
 
+#endif
 int TPanel::capture_mouse(void) {
     TPanel* owner;
 

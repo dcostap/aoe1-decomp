@@ -28,6 +28,7 @@
 //   `vt[13]`. This forces the vtable load before the dwSize store while preserving the later argument push order.
 // Result: MATCH locally with `python tools/check_function.py --va 004324F0`.
 
+#ifndef COM_SESS_TU_CONTEXT
 struct DPSESSIONDESC2 {
     unsigned long a[20];
 };
@@ -37,6 +38,7 @@ public:
     void EraseInformation();
     int Refresh();
 };
+#endif
 
 #define glpSERV (*(void**)0x62CF6C)
 
@@ -71,3 +73,5 @@ int TCommunications_Sessions::Refresh() {
         this,
         1);
 }
+
+#undef glpSERV

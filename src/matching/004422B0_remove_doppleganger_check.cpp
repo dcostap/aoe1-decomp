@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 
+#ifndef DPL_OBJ_SHARED_CONTEXT
 // Forward declare RGE_Game_World for world_time access
 struct RGE_Game_World {
     char gap_00[4];              // +0x00: vtable ptr
@@ -36,8 +37,11 @@ public:
 
     int remove_doppleganger_check(RGE_Static_Object* obj);
 };
+#endif
 
+#ifndef DPL_OBJ_SHARED_CONTEXT
 extern FILE* DDlogf;  // 62E638h
+#endif
 
 int RGE_Doppleganger_Creator::remove_doppleganger_check(RGE_Static_Object* obj)
 {

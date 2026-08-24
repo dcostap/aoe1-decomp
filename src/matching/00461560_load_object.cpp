@@ -6,6 +6,7 @@
 // - Kept /GX because original has EH registration around repeated operator new + constructors.
 // - Used original physical switch body order (10,20,30,60,40,50,25) and RGE_Master_Player vptr+gap[0x18] layout so master_objects is +0x1C. Exact match.
 
+#ifndef MST_PLAY_SHARED_CONTEXT
 void* __cdecl operator new(unsigned int size);
 struct _iobuf; class RGE_Sprite; class RGE_Sound;
 class RGE_Master_Static_Object { public: char pad[0xB8]; RGE_Master_Static_Object(_iobuf*, RGE_Sprite**, RGE_Sound**, short, int); };
@@ -22,6 +23,7 @@ public:
     RGE_Master_Static_Object** master_objects;
     virtual void load_object(_iobuf* file, unsigned char type, RGE_Sprite** sprites, RGE_Sound** sounds, short index);
 };
+#endif
 
 void RGE_Master_Player::load_object(_iobuf* file, unsigned char type, RGE_Sprite** sprites, RGE_Sound** sounds, short index)
 {

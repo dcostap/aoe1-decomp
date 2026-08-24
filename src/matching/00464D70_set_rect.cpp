@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_CONTEXT_H
 struct tagRECT {
     long left;
     long top;
@@ -15,6 +16,7 @@ public:
     virtual void set_rect(tagRECT rect);
 };
 
+#endif
 void TPanel::set_rect(tagRECT rect) {
-    set_pos(rect.left, rect.top, (rect.right - rect.left) + 1, (rect.bottom - rect.top) + 1);
+    set_rect(rect.left, rect.top, (rect.right - rect.left) + 1, (rect.bottom - rect.top) + 1);
 }

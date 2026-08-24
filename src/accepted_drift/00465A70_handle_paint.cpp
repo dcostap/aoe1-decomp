@@ -11,6 +11,7 @@
 
 extern "C" __declspec(dllimport) int __stdcall IsIconic(void* hWnd);
 
+#ifndef AOE1_PANEL_CONTEXT_H
 class RGE_Base_Game {
 public:
     char gap_00[0x18];
@@ -93,28 +94,29 @@ public:
     long handle_paint(void);
 };
 
+#endif
 long TPanel::handle_paint(void) {
     PanelNode* node = 0;
-    ParentPanel* parent;
+        TPanel* parent;
 
     if (render_area != 0 && visible != 0 && active != 0 && rge_base_game->prog_active != 0 && IsIconic(render_area->Wnd) == 0) {
         if (need_redraw != 0) {
             node = first_child_node;
             while (node != 0) {
-                node->panel->vf20(need_redraw);
+                node->panel->set_redraw(need_redraw);
                 node = node->next_node;
             }
             parent = parent_panel;
             if (parent != 0 && parent->overlapping_children != 0) {
-                parent->vf24(this, this, need_redraw);
+                parent->set_overlapped_redraw(this, this, need_redraw);
             }
-            vf30();
+            draw();
             need_redraw = 0;
             just_drawn = 1;
         }
         node = first_child_node;
         while (node != 0) {
-            node->panel->vf54();
+            node->panel->handle_paint();
             node = node->next_node;
         }
         just_drawn = 0;

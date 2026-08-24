@@ -6,6 +6,9 @@
 // attempt 2: added /GX rsp -> EXACT MATCH (106/106, 0.0000%)
 // FLAGS: /GX (needed for EH prolog in virtual destructor with delete calls)
 
+#ifdef DLG_SMSG_CANONICAL_TU
+#include "../../include/dlg_smsg_context.h"
+#else
 class TPanel;
 
 class TEditPanel {
@@ -37,6 +40,7 @@ public:
 
     virtual ~TribeSendQuickMessageDialog();
 };
+#endif
 
 TribeSendQuickMessageDialog::~TribeSendQuickMessageDialog() {
     delete this->chatInput;

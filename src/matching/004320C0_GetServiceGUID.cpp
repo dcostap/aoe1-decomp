@@ -1,3 +1,4 @@
+#ifndef COM_SERV_TU_CONTEXT
 struct _GUID {
     unsigned long Data1;
     unsigned short Data2;
@@ -19,6 +20,7 @@ public:
 
     _GUID GetServiceGUID(int index);
 };
+#endif
 
 _GUID TCommunications_Services::GetServiceGUID(int index) {
     return *this->Service[index].GUID;

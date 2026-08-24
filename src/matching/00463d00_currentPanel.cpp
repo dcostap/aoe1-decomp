@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_CONTEXT_H
 class TPanelSystem {
 public:
     int mouseOwner_;
@@ -11,9 +12,10 @@ public:
     int ImeOn_;
     int InputEnabled_;
 
-    int currentPanel();
+    TPanel* currentPanel();
 };
 
-int TPanelSystem::currentPanel() {
-    return this->currentPanel_;
+#endif
+TPanel* TPanelSystem::currentPanel() {
+    return this->currentPanelValue;
 }

@@ -17,6 +17,9 @@
 // Main-agent audit restored the child panel inheritance surfaces; emitted
 // code remains exact.
 
+#ifdef DLG_SMSG_CANONICAL_TU
+#include "../../include/dlg_smsg_context.h"
+#else
 extern void __cdecl operator_delete(void*);
 
 class TPanel {
@@ -64,6 +67,7 @@ public:
 
     virtual ~TribeSendMessageDialog();
 };
+#endif
 
 TribeSendMessageDialog::~TribeSendMessageDialog()
 {

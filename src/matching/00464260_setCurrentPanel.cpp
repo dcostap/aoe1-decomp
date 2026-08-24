@@ -1,6 +1,7 @@
 extern "C" __declspec(dllimport) int __stdcall UpdateWindow(void* hwnd);
 extern void* AppWnd;
 
+#ifndef AOE1_PANEL_CONTEXT_H
 class TPanel {
 public:
     virtual void vf00(void);
@@ -65,14 +66,15 @@ public:
     void setCurrentPanel(TPanel* panel, int mode);
 };
 
+#endif
 void TPanelSystem::setCurrentPanel(TPanel* panel, int mode) {
     panel->setPreviousPanel(currentPanelValue);
     if (currentPanelValue != 0) {
-        currentPanelValue->vfC0(0);
+        currentPanelValue->set_focus(0);
     }
     currentPanelValue = panel;
-    panel->vfC0(1);
-    currentPanelValue->vf20(2);
+    panel->set_focus(1);
+    currentPanelValue->set_redraw(2);
     UpdateWindow(AppWnd);
     if (mode != 0) {
         setCurrentPanelModal();

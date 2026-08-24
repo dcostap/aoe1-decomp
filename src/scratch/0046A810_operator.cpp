@@ -25,6 +25,7 @@
 
 #include <iostream.h>
 
+#ifndef PATH_TU_CONTEXT
 class Waypoint {
 public:
     float x;
@@ -44,6 +45,7 @@ public:
     int currentSizeValue;
     int currentWaypointValue;
 };
+#endif
 
 ostream& __cdecl operator<<(ostream& os, const Path& path) {
     for (int i = 0; i < path.currentSizeValue; i++) {

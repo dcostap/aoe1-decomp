@@ -1,3 +1,4 @@
+#ifndef COM_SESS_TU_CONTEXT
 struct _GUID {
     char bytes[0x10];
 };
@@ -18,6 +19,7 @@ public:
 
     _GUID* GetSessionGUID(int index);
 };
+#endif
 
 _GUID* TCommunications_Sessions::GetSessionGUID(int index) {
     if ((index >= 0) && (index <= this->SessionCount)) {

@@ -136,24 +136,7 @@
 // register basin (140-152B, 100+ diff) and lose exactness, so this quirk is
 // binary-required.
 
-#include <stdio.h>
-
-class RGE_TimeSinceLastCall {
-public:
-    char TBuff[255];
-    unsigned char TBuff_pad;
-    unsigned long lowTSLC;      // +0x100
-    unsigned long highTSLC;     // +0x104
-    unsigned long TSLC;         // +0x108
-    unsigned long aTSLC[101];   // +0x10C (101*4 = 0x194, ends at 0x2A0)
-    int Offset;                 // +0x2A0
-    unsigned long LastCall;     // +0x2A4
-    unsigned long FirstCall;    // +0x2A8
-    unsigned long Now;          // +0x2AC
-    unsigned long cps;          // +0x2B0
-
-    char* GetHiLoMaxInfo(int param_1);
-};
+#include "../../include/rge_tslc_context.h"
 
 char* RGE_TimeSinceLastCall::GetHiLoMaxInfo(int param_1)
 {

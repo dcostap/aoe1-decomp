@@ -1,12 +1,4 @@
-class RGE_TimeSinceLastCall {
-public:
-    virtual ~RGE_TimeSinceLastCall();
-    char gap_04[0x2AC];
-    unsigned long cps;
-
-    unsigned long GetAvg(int count);
-    unsigned long CPS();
-};
+#include "../../include/rge_tslc_context.h"
 
 unsigned long RGE_TimeSinceLastCall::CPS() {
     this->cps = 0;

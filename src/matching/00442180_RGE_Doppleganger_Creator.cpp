@@ -2,6 +2,7 @@
 // blocker watch: this is a tiny teardown helper; if VC5 drifts, the first probes are whether the object pointer should live in esi the whole time and whether the global file handle wants a direct test/load
 #include <stdio.h>
 
+#ifndef DPL_OBJ_SHARED_CONTEXT
 class RGE_Doppleganger_Creator {
 public:
     void* owner;
@@ -14,9 +15,12 @@ public:
 
     ~RGE_Doppleganger_Creator();
 };
+#endif
 
 extern "C" void __cdecl free(void* ptr);
+#ifndef DPL_OBJ_SHARED_CONTEXT
 extern FILE* DDlogf;
+#endif
 
 RGE_Doppleganger_Creator::~RGE_Doppleganger_Creator() {
     if (this->Objects != 0) {

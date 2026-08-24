@@ -1,5 +1,6 @@
 extern "C" void __cdecl free(void* block);
 
+#ifndef ACT_LIST_SHARED_CONTEXT
 class RGE_Action;
 class RGE_Action_Object;
 
@@ -34,6 +35,7 @@ public:
     virtual short type();
     virtual void first_in_stack(unsigned char param_1);
 };
+#endif
 
 void RGE_Action_List::remove_action() {
     RGE_Action_Node* pRVar1;
@@ -42,10 +44,10 @@ void RGE_Action_List::remove_action() {
     if (pRVar1 != 0) {
         this->list = pRVar1->next;
         if (pRVar1->action != 0) {
-            pRVar1->action->destroy(1);
+            delete pRVar1->action;
         }
         free(pRVar1);
-        if (this->list != 0 && (unsigned char)this->obj->gap_00[0x48] < 3) {
+        if (this->list != 0 && this->obj->object_state < 3) {
             this->list->action->first_in_stack(0);
         }
     }

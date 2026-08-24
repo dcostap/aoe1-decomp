@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_CONTEXT_H
 class TPanel {
 public:
     char gap_00[0x60];
@@ -9,8 +10,9 @@ public:
     void set_tab_order(void* param1, void* param2);
 };
 
+#endif
 void TPanel::set_tab_order(void* param1, void* param2) {
-    tab_prev_panel = param1;
-    tab_next_panel = param2;
+    tab_prev_panel = (TPanel*)param1;
+    tab_next_panel = (TPanel*)param2;
     tab_stop = 1;
 }

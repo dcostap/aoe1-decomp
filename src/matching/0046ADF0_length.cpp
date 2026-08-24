@@ -15,6 +15,7 @@
 
 #include <math.h>
 
+#ifndef PATH_TU_CONTEXT
 struct Waypoint {
     float x;
     float y;
@@ -31,6 +32,7 @@ public:
 
     float length(void) const;
 };
+#endif
 
 float Path::length(void) const {
     float total = 0.0f;

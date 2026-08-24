@@ -1,20 +1,4 @@
-unsigned long debug_timeGetTime(const char* file, int line);
-
-class RGE_TimeSinceLastCall {
-public:
-    char gap_00[0x100];
-    long lowTSLC;
-    long highTSLC;
-    char gap_108[0x4];
-    long aTSLC[0x65];
-    long Offset;
-    long LastCall;
-    long FirstCall;
-    long Now;
-    long cps;
-
-    RGE_TimeSinceLastCall();
-};
+#include "../../include/rge_tslc_context.h"
 
 RGE_TimeSinceLastCall::RGE_TimeSinceLastCall() {
     lowTSLC = 0x1869F;

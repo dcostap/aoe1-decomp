@@ -5,6 +5,7 @@
 extern "C" __declspec(dllimport) int __stdcall DeleteObject(void* hObject);
 extern "C" __declspec(dllimport) void* __stdcall CreateRectRgn(int x1, int y1, int x2, int y2);
 
+#ifndef AOE1_PANEL_CONTEXT_H
 class TDrawArea {
 public:
     char gap_00[0x18];
@@ -51,6 +52,7 @@ public:
     void set_rect(int left, int top, int width, int height);
 };
 
+#endif
 void TPanel::set_rect(int left, int top, int width, int height)
 {
     pnl_wid = width;
@@ -117,6 +119,6 @@ void TPanel::set_rect(int left, int top, int width, int height)
     }
 
     if (active != 0) {
-        redraw(2);
+        set_redraw(2);
     }
 }

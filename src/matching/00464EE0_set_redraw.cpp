@@ -1,5 +1,8 @@
+#ifndef AOE1_PANEL_CONTEXT_H
 extern "C" __declspec(dllimport) int __stdcall InvalidateRect(void* hwnd, const void* rect, int erase);
+#endif
 
+#ifndef AOE1_PANEL_CONTEXT_H
 struct tagRECT {
     long left;
     long top;
@@ -27,6 +30,7 @@ public:
     virtual void set_redraw(int mode);
 };
 
+#endif
 void TPanel::set_redraw(int mode) {
     if (mode == 1 && need_redraw == 2) {
         return;

@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_CONTEXT_H
 class TPanel {
 public:
     char* panelName(void);
@@ -11,6 +12,7 @@ public:
     int inSystem(TPanel* panel);
 };
 
+#endif
 int TPanelSystem::inSystem(TPanel* panel) {
     if (panel != 0) {
         if (findPanelNode(panel->panelName()) != 0) {

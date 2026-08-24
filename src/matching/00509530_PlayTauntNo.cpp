@@ -11,6 +11,7 @@
 
 extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
 
+#ifndef AOE1_TAUNT_CONTEXT_H
 class TDigital {
 public:
     int is_playing();
@@ -30,6 +31,7 @@ public:
 
     int PlayTauntNo(int num);
 };
+#endif
 
 int TTaunt::PlayTauntNo(int num)
 {

@@ -37,6 +37,7 @@
 
 #include <stdio.h>
 
+#ifndef DPL_OBJ_SHARED_CONTEXT
 class RGE_Static_Object;
 class RGE_Player;
 
@@ -92,8 +93,11 @@ public:
     void remove_doppleganger_check(RGE_Static_Object* obj);
     void perform_doppleganger_checks();
 };
+#endif
 
+#ifndef DPL_OBJ_SHARED_CONTEXT
 extern FILE* DDlogf;
+#endif
 
 void RGE_Doppleganger_Creator::perform_doppleganger_checks()
 {

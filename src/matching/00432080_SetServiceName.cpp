@@ -1,3 +1,4 @@
+#ifndef COM_SERV_TU_CONTEXT
 class SPs {
 public:
     char Name[80];
@@ -10,6 +11,7 @@ public:
 
     int SetServiceName(int serviceIndex, char* name);
 };
+#endif
 
 extern "C" char* strcpy(char*, const char*);
 

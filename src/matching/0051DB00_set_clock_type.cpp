@@ -3,6 +3,7 @@
 // The natural typed panel/player/world model preserves the early equality
 // fault order, canonical fields, seven-color switch, clock format, and four
 // ordered virtual calls. The reduced source is an exact byte match.
+#ifndef TPNL_TIM_SHARED_CONTEXT
 class PlayerCivInfo {
 public:
     char gap_00[0x26];
@@ -61,6 +62,9 @@ public:
 
     void set_clock_type(int clock_type, int player_id);
 };
+#else
+#include "../../include/tpnl_tim_context.h"
+#endif
 
 void TRIBE_Panel_Time::set_clock_type(int clock_type, int player_id) {
     if (this->field_100 == clock_type) {
@@ -131,9 +135,17 @@ void TRIBE_Panel_Time::set_clock_type(int clock_type, int player_id) {
     }
 
     if (clock_type == 0) {
+#ifdef TPNL_TIM_SHARED_CONTEXT
+        this->set_active(0);
+#else
         this->set_visible(0);
+#endif
     } else {
+#ifdef TPNL_TIM_SHARED_CONTEXT
+        this->set_active(1);
+#else
         this->set_visible(1);
+#endif
     }
     this->set_redraw(1);
     this->parent_panel->set_redraw(1);

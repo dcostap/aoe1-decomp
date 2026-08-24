@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_CONTEXT_H
 class TPanel {
 public:
     virtual ~TPanel();
@@ -18,6 +19,7 @@ public:
     void setPreviousPanel(int v);
 };
 
+#endif
 void TPanel::setPreviousPanel(int v) {
     this->previousPanel_ = v;
 }

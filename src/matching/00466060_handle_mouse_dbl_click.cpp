@@ -11,6 +11,7 @@
 // Exact: return a child's nonzero result directly; fallback alone returns the literal 1.
 // Canonical ownership: TPanel fields +0x5C/+0x68/+0x6C/+0x80 and PanelNode::prev at +0x04.
 
+#ifndef AOE1_PANEL_CONTEXT_H
 struct PanelNode;
 
 struct TPanel {
@@ -61,6 +62,7 @@ struct PanelNode {
     PanelNode* next;   // +0x08
 };
 
+#endif
 long TPanel::handle_mouse_dbl_click(unsigned char param_1, long param_2, long param_3,
                                     int param_4, int param_5)
 {
@@ -72,7 +74,7 @@ long TPanel::handle_mouse_dbl_click(unsigned char param_1, long param_2, long pa
             return 0;
 
         for (PanelNode* node = last_child_node; node; node = node->prev) {
-            long child_result = node->panel->handle_dbl_click_child(
+            long child_result = node->panel->handle_mouse_dbl_click(
                 param_1, param_2, param_3, param_4, param_5);
             if (child_result)
                 return child_result;

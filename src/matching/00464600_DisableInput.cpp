@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_CONTEXT_H
 class TPanelSystem {
 public:
     int mouseOwner_;
@@ -14,6 +15,7 @@ public:
     void DisableInput();
 };
 
+#endif
 void TPanelSystem::DisableInput() {
     this->InputEnabled_ = 0;
 }

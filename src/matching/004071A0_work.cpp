@@ -12,6 +12,7 @@
 // - Swapped source assignment order to target_x, target_y, target_z; VC5 then
 //   emitted the original y/x store order and the function matched exactly.
 
+#ifndef ACT_TRAN_SHARED_CONTEXT
 class RGE_Static_Object {
 public:
     virtual ~RGE_Static_Object();
@@ -77,6 +78,7 @@ class RGE_Action_Transport : public RGE_Action {
 public:
     int work(RGE_Static_Object* object, float x, float y, float z);
 };
+#endif
 
 int RGE_Action_Transport::work(RGE_Static_Object* object, float x, float y, float z)
 {

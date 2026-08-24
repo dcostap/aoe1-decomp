@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_CONTEXT_H
 class TPanel {
 public:
     char gap_00[0x40];
@@ -9,6 +10,7 @@ public:
     void set_z_order(unsigned char mode, short z_order);
 };
 
+#endif
 void TPanel::set_z_order(unsigned char mode, short order) {
     if (this->parent_panel != 0) {
         this->parent_panel->set_child_z_order(this, mode, order);

@@ -1,5 +1,7 @@
+class RGE_Action_Object;
 class RGE_Task;
 
+#ifndef AOE1_TACT_ART_TU_CONTEXT
 class RGE_Action {
 public:
     virtual void vf00(void);
@@ -17,10 +19,11 @@ public:
     char gap_2C[0x04];
     RGE_Task* task;
 
-    TRIBE_Action_Artifact(int file, RGE_Task* task, float x, float y, float z);
+    TRIBE_Action_Artifact(RGE_Action_Object* file, RGE_Task* task, float x, float y, float z);
 };
+#endif
 
-TRIBE_Action_Artifact::TRIBE_Action_Artifact(int file, RGE_Task* task, float x, float y, float z)
+TRIBE_Action_Artifact::TRIBE_Action_Artifact(RGE_Action_Object* file, RGE_Task* task, float x, float y, float z)
     : RGE_Action(file, 1) {
     this->task = task;
     this->action_type = 0x6B;

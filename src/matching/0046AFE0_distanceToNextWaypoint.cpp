@@ -17,6 +17,7 @@
 
 extern float DAT_00570e40;
 
+#ifndef PATH_TU_CONTEXT
 struct Waypoint {
     float x;
     float y;
@@ -37,6 +38,7 @@ struct Path {
 
     float distanceToNextWaypoint() const;
 };
+#endif
 
 float Path::distanceToNextWaypoint() const {
     float result = DAT_00570e40;

@@ -45,6 +45,7 @@
 
 #include <stdlib.h>
 
+#ifndef ACT_LIST_SHARED_CONTEXT
 struct RGE_Action_Node;
 
 class RGE_Action {
@@ -75,13 +76,16 @@ struct RGE_Action_List {
     RGE_Action_Node* list;
     void add_action_at_end(RGE_Action* action);
 };
+#endif
 
+#ifndef ACT_LIST_SHARED_CONTEXT
 void* calloc(int count, int size);
+#endif
 
 void RGE_Action_List::add_action_at_end(RGE_Action* action) {
     if (obj->object_state > 2) {
         if (action) {
-            action->func0(1);
+            delete action;
         }
         return;
     }
@@ -99,15 +103,15 @@ void RGE_Action_List::add_action_at_end(RGE_Action* action) {
             cur = cur->next;
         }
 
-        action->func7(1);
+            action->first_in_stack(1);
         return;
     }
 
     list = n;
-    action->func7(1);
+        action->first_in_stack(1);
     return;
 
 attach:
     cur->next = n;
-    action->func7(1);
+    action->first_in_stack(1);
 }

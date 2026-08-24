@@ -143,6 +143,7 @@
 // variants reach 232B/156 but add a proven wrong node-action memory read.
 #include <stdlib.h>
 
+#ifndef ACT_LIST_SHARED_CONTEXT
 class RGE_Action_List;
 class RGE_Action_Object;
 class RGE_Static_Object;
@@ -312,6 +313,7 @@ public:
     RGE_Action* get_action(void);
     RGE_Task* get_task(void);
 };
+#endif
 
 void RGE_Action_List::add_action_at_end_of_action_queue(RGE_Action* action) {
     RGE_Action_Node* node;

@@ -1,12 +1,5 @@
-class BaseItem {
-public:
-    virtual ~BaseItem();
-    char gap_04[4];
-    int gameID_;
-
-    int gameID() const;
-};
+#include "../../include/aibitm_context.h"
 
 int BaseItem::gameID() const {
-    return this->gameID_;
+    return this->gameIDValue;
 }

@@ -3,6 +3,7 @@
 // __thiscall, void
 // FLAGS: default + /GX
 
+#ifndef TPNL_POP_SHARED_CONTEXT
 #include <stdlib.h>
 #include <new.h>
 
@@ -29,24 +30,22 @@ struct tagRECT {
     int bottom;
 };
 
-struct VirtualHelper {
-    virtual void dtor();
-    virtual void _v04();
-    virtual void _v08();
-    virtual void _v0C();
-    virtual void _v10();
-    virtual void _v14();
-    virtual void _v18();
-    virtual void _v1C();
-    virtual void _v20(int);
-};
-
 class TPanel {
 public:
     TPanel();
     virtual ~TPanel();
-    long setup(TDrawArea* area, TPanel* parent, int a, int b, int c, int d, char e);
-    void set_rect(int param_1, int param_2, int param_3, int param_4);
+    virtual long setup(TDrawArea* area, TPanel* parent, long a, long b,
+                       long c, long d, unsigned char e);
+    virtual void set_rect(tagRECT);
+    virtual void set_rect(long param_1, long param_2, long param_3,
+                          long param_4);
+    virtual void set_color(unsigned char);
+    virtual void set_active(int);
+    virtual void set_positioning(int, long, long, long, long, long, long,
+                                 long, long, TPanel*, TPanel*, TPanel*,
+                                 TPanel*);
+    virtual void set_fixed_position(long, long, long, long);
+    virtual void set_redraw(int);
     char gap_04[0x10];
     int pnl_wid;           // +0x14
     int pnl_hgt;           // +0x18
@@ -66,10 +65,12 @@ public:
 class TRIBE_Panel_Pop : public TPanel {
 public:
     virtual ~TRIBE_Panel_Pop();
-    virtual void set_rect(int param_1, int param_2, int param_3, int param_4);
+    virtual void set_rect(long param_1, long param_2, long param_3,
+                          long param_4);
 };
+#endif
 
-void TRIBE_Panel_Pop::set_rect(int param_1, int param_2, int param_3, int param_4) {
+void TRIBE_Panel_Pop::set_rect(long param_1, long param_2, long param_3, long param_4) {
     TPanel::set_rect(param_1, param_2, param_3, param_4);
 
     if (this->pnl_wid > this->LastIBWidth) goto need_realloc;
@@ -119,5 +120,5 @@ skip_realloc:
 
     *(unsigned char*)((char*)this + 0xF3) = 1;
 
-    ((VirtualHelper*)this)->_v20(1);
+    this->set_redraw(1);
 }

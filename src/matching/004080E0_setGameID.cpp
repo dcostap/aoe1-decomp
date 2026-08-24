@@ -1,12 +1,5 @@
-class BaseItem {
-public:
-    virtual ~BaseItem();
-    char gap_04[4];
-    int gameID_;
+#include "../../include/aibitm_context.h"
 
-    void setGameID(int);
-};
-
-void BaseItem::setGameID(int val) {
-    this->gameID_ = val;
+void BaseItem::setGameID(int value) {
+    gameIDValue = value;
 }

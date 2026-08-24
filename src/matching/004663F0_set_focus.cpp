@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_CONTEXT_H
 class TPanel {
 public:
     virtual void vf00(void);
@@ -58,12 +59,13 @@ public:
     virtual void set_focus(int focus);
 };
 
+#endif
 void TPanel::set_focus(int focus) {
     if (focus != have_focus) {
         have_focus = focus;
-        redraw(1);
+        set_redraw(1);
         if (curr_child != 0) {
-            curr_child->child_set_focus(have_focus);
+            curr_child->set_focus(have_focus);
         }
     }
 }

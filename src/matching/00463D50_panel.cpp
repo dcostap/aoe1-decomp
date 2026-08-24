@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_CONTEXT_H
 struct PanelNode;
 class TPanel;
 
@@ -11,6 +12,7 @@ struct PanelNode {
     TPanel* panel;
 };
 
+#endif
 TPanel* TPanelSystem::panel(char* name) {
     PanelNode* node;
 

@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_CONTEXT_H
 class TPanel;
 
 struct PanelNode {
@@ -62,6 +63,7 @@ public:
     long handle_char(long key, short ch);
 };
 
+#endif
 long TPanel::handle_char(long key, short ch) {
     PanelNode* node;
     long result;
@@ -71,11 +73,11 @@ long TPanel::handle_char(long key, short ch) {
     }
     node = last_child_node;
     while (node != 0) {
-        result = node->panel->vf5C(key, ch);
+        result = node->panel->handle_char(key, ch);
         if (result != 0) {
             return result;
         }
         node = node->prev_node;
     }
-    return vfB0(key, ch);
+    return char_action(key, ch);
 }

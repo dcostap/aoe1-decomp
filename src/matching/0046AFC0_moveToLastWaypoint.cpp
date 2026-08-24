@@ -1,3 +1,4 @@
+#ifndef PATH_TU_CONTEXT
 class Path {
 public:
     char gap_00[0x30];
@@ -5,6 +6,7 @@ public:
 
     int moveToLastWaypoint();
 };
+#endif
 
 int Path::moveToLastWaypoint() {
     if (currentWaypointValue > 0) {

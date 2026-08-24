@@ -17,6 +17,7 @@
 
 #include <stdlib.h>
 
+#ifndef AOE1_PANEL_CONTEXT_H
 class TPanel;
 
 struct PanelNode {
@@ -70,6 +71,7 @@ public:
     long handle_mouse_move(long x, long y, int a, int b);
 };
 
+#endif
 long TPanel::handle_mouse_move(long x, long y, int a, int b)
 {
     if (this->active == 0) {
@@ -82,7 +84,7 @@ long TPanel::handle_mouse_move(long x, long y, int a, int b)
         }
         PanelNode* node = this->last_child_node;
         while (node != 0) {
-            int r = node->panel->child_mouse_move(x, y, a, b);
+            int r = node->panel->handle_mouse_move(x, y, a, b);
             if (r != 0) {
                 return r;
             }
@@ -91,7 +93,7 @@ long TPanel::handle_mouse_move(long x, long y, int a, int b)
         if (this->handle_mouse_input == 0) {
             return 0;
         }
-        return this->on_mouse_move(x, y, a, b);
+        return this->mouse_move_action(x, y, a, b);
     }
 
     if (this->handle_mouse_input == 0) {
@@ -114,13 +116,13 @@ long TPanel::handle_mouse_move(long x, long y, int a, int b)
 
     this->mouse_action = 3;
     if (this->mouse_down_button == 1) {
-        this->on_left_drag(x, y, a, b);
+        this->mouse_left_move_action(x, y, a, b);
         return 1;
     }
     if (this->mouse_down_button == 2) {
-        this->on_right_drag(x, y, a, b);
+        this->mouse_right_move_action(x, y, a, b);
         return 1;
     }
-    this->on_mouse_move(x, y, a, b);
+    this->mouse_move_action(x, y, a, b);
     return 1;
 }

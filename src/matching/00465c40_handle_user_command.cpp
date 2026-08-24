@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_CONTEXT_H
 class TPanel {
 public:
     virtual ~TPanel();
@@ -18,6 +19,7 @@ public:
     int handle_user_command(int, int);
 };
 
+#endif
 int TPanel::handle_user_command(int, int) {
     return 0;
 }

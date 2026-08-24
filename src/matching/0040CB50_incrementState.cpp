@@ -1,3 +1,4 @@
+#ifndef AOE1_AIEMOMOD_TU_CONTEXT
 class EmotionalAIModule {
 public:
     char gap_00[0xF4];
@@ -5,6 +6,7 @@ public:
 
     void incrementState(int index, int value);
 };
+#endif
 
 void EmotionalAIModule::incrementState(int index, int value) {
     if ((index >= 0) && (index < 6)) {

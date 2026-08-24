@@ -1,14 +1,20 @@
+ #ifndef AOE1_PANEL_CONTEXT_H
+#ifndef AOE1_PANEL_CONTEXT_H
 struct PanelNode;
 
 class TPanel {
 public:
     void release_mouse(void);
 };
+#endif
 
+#ifndef AOE1_PANEL_CONTEXT_H
 struct PanelNode {
     TPanel* panel;
 };
+#endif
 
+#ifndef AOE1_PANEL_CONTEXT_H
 class TPanelSystem {
 public:
     TPanel* mouseOwnerValue;
@@ -19,7 +25,9 @@ public:
     void setCurrentPanel(TPanel* panel, int mode);
     int setCurrentPanel(char* name, int mode);
 };
+#endif
 
+#endif
 int TPanelSystem::setCurrentPanel(char* name, int mode) {
     PanelNode* node;
 

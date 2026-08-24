@@ -1,3 +1,4 @@
+#ifndef ACT_LIST_SHARED_CONTEXT
 class RGE_Master_Action_Object;
 
 class RGE_Action {
@@ -34,6 +35,7 @@ public:
 
     void copy_obj(RGE_Master_Action_Object* param_1);
 };
+#endif
 
 void RGE_Action_List::copy_obj(RGE_Master_Action_Object* param_1) {
     RGE_Action_Node* node = this->list;

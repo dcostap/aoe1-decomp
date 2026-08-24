@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_CONTEXT_H
 class TPanelSystem {
 public:
     int mouseOwner_;
@@ -11,9 +12,10 @@ public:
     int ImeOn_;
     int InputEnabled_;
 
-    int modalPanel();
+    TPanel* modalPanel();
 };
 
-int TPanelSystem::modalPanel() {
-    return this->modalPanel_;
+#endif
+TPanel* TPanelSystem::modalPanel() {
+    return this->modalPanelValue;
 }

@@ -1,3 +1,4 @@
+#ifndef AOE1_AIEMOMOD_TU_CONTEXT
 class EmotionalAIModule {
 public:
     char gap_00[0xF4];
@@ -5,6 +6,7 @@ public:
 
     int overallState(void) const;
 };
+#endif
 
 int EmotionalAIModule::overallState(void) const {
     int maxValue = this->stateValue[0];

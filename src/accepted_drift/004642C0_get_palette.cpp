@@ -68,6 +68,7 @@
 
 extern "C" void* __cdecl ReadPalette(char*, long, int);
 
+#ifndef AOE1_PANEL_CONTEXT_H
 class TPanel;
 struct PanelNode;
 
@@ -88,6 +89,7 @@ public:
     void* get_palette(char* param_1, long param_2);
 };
 
+#endif
 void* TPanelSystem::get_palette(char* param_1, long param_2)
 {
     char file_name[260];

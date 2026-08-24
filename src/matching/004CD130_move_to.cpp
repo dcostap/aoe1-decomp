@@ -1,3 +1,6 @@
+class RGE_Static_Object;
+
+#ifndef AOE1_TACT_ART_TU_CONTEXT
 class TRIBE_Action_Artifact {
 public:
     virtual void vf00(void);
@@ -24,18 +27,23 @@ public:
     virtual void vf54(void);
     virtual void vf58(void);
     virtual void vf5C(int mode);
-    virtual int move_to(void* obj, float x, float y, float z);
+    virtual int move_to(RGE_Static_Object* obj, float x, float y, float z);
 
     char gap_04[0x1C];
     float move_x;
     float move_y;
     float move_z;
 };
+#endif
 
-int TRIBE_Action_Artifact::move_to(void* obj, float x, float y, float z) {
+int TRIBE_Action_Artifact::move_to(RGE_Static_Object* obj, float x, float y, float z) {
     this->move_x = x;
     this->move_y = y;
     this->move_z = z;
+#ifdef AOE1_TACT_ART_TU_CONTEXT
+    this->set_state(4);
+#else
     this->vf5C(4);
+#endif
     return 1;
 }

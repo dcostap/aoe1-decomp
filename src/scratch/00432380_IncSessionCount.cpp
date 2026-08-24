@@ -1,9 +1,13 @@
-class TCom_Speed_Data {
+#ifndef COM_SESS_TU_CONTEXT
+class TCommunications_Sessions {
 public:
-    volatile int sessionCount;
-    void IncSessionCount();
+    int SessionCount;
+    int IncSessionCount();
 };
+#endif
 
-void TCom_Speed_Data::IncSessionCount() {
-    this->sessionCount = this->sessionCount + 1;
+int TCommunications_Sessions::IncSessionCount() {
+    int value = this->SessionCount + 1;
+    this->SessionCount = value;
+    return value;
 }

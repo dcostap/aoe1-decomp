@@ -1,3 +1,4 @@
+#ifndef TPNL_TIM_SHARED_CONTEXT
 extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
 extern "C" long __cdecl __ftol(void);
 
@@ -60,6 +61,9 @@ public:
     virtual long handle_idle();
 
 };
+#else
+#include "../../include/tpnl_tim_context.h"
+#endif
 
 long TRIBE_Panel_Time::handle_idle() {
     ((TPanel*)this)->handle_idle();

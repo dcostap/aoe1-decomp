@@ -1,11 +1,18 @@
+#ifndef PATH_TU_CONTEXT
 void* __cdecl operator_new(unsigned int);
 void __cdecl operator_delete(void*);
 struct Waypoint { float x,y,z; unsigned char facetToNextWaypoint; char pad[3]; };
 struct Path { int timeStampValue; float startValue[3]; int gap10; float goalValue[3]; int gap20; Waypoint* pathValue; int maxSizeValue; int currentSizeValue; int currentWaypointValue; Path(int); };
+#endif
 Path::Path(int max_size)
 {
     timeStampValue=0; pathValue=0; maxSizeValue=0; currentSizeValue=0; currentWaypointValue=0;
+#ifdef PATH_TU_CONTEXT
+    startValue.x=0; startValue.y=0; startValue.z=0;
+    goalValue.x=0; goalValue.y=0; goalValue.z=0;
+#else
     startValue[0]=0; startValue[1]=0; startValue[2]=0; goalValue[0]=0; goalValue[1]=0; goalValue[2]=0;
+#endif
     if (max_size == 0 || max_size >= 0) {
         maxSizeValue=max_size;
         Waypoint* new_path=(Waypoint*)operator_new(max_size<<4);

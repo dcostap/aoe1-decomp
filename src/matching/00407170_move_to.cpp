@@ -1,3 +1,4 @@
+#ifndef ACT_TRAN_SHARED_CONTEXT
 class RGE_Static_Object;
 
 class RGE_Action_Transport {
@@ -33,6 +34,7 @@ public:
 
     virtual int move_to(RGE_Static_Object* object, float x, float y, float z);
 };
+#endif
 
 int RGE_Action_Transport::move_to(RGE_Static_Object* object, float x, float y, float z) {
     this->field_20 = x;

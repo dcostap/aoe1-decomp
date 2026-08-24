@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_CONTEXT_H
 struct PanelNode;
 
 class TPanel {
@@ -71,6 +72,7 @@ public:
     void stop_sound_system(void);
 };
 
+#endif
 void TPanelSystem::stop_sound_system(void) {
     PanelNode* node;
 

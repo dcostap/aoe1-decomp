@@ -14,14 +14,18 @@
 extern "C" void* __cdecl memcpy(void* dst, const void* src, int size);
 #pragma intrinsic(memcpy)
 
+#ifndef DPL_OBJ_SHARED_CONTEXT
 extern "C" void* __cdecl calloc(int num, int size);
 extern "C" void  __cdecl free(void* ptr);
+#endif
 
+#ifndef DPL_OBJ_SHARED_CONTEXT
 struct FILE;
 extern int __cdecl fprintf(FILE* stream, const char* format, ...);
-
 extern FILE* DDlogf;
+#endif
 
+#ifndef DPL_OBJ_SHARED_CONTEXT
 class RGE_Game_World {
 public:
     virtual unsigned char data_load_world(void* file);
@@ -49,6 +53,7 @@ public:
 
     void expand_allocations(int grow_size);
 };
+#endif
 
 void RGE_Doppleganger_Creator::expand_allocations(int grow_size)
 {
@@ -76,8 +81,14 @@ void RGE_Doppleganger_Creator::expand_allocations(int grow_size)
     free(this->Last_Map_Value);
     free(this->Object_ids);
 
+#ifdef DPL_OBJ_SHARED_CONTEXT
+    this->Objects = (RGE_Static_Object**)r0;
+    this->Map_Addresses = (unsigned long**)r1;
+    this->Last_Map_Value = (unsigned long*)r2;
+#else
     this->Objects = (void**)r0;
     this->Map_Addresses = (void**)r1;
     this->Last_Map_Value = r2;
+#endif
     this->Object_ids = (int*)r3;
 }

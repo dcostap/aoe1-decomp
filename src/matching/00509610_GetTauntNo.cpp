@@ -1,9 +1,11 @@
 #include <stdlib.h>
 
+#ifndef AOE1_TAUNT_CONTEXT_H
 class TTaunt {
 public:
     int GetTauntNo(char* text);
 };
+#endif
 
 int TTaunt::GetTauntNo(char* text) {
     int value;

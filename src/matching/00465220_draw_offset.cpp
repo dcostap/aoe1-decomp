@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_CONTEXT_H
 struct tagRECT {
     long left;
     long top;
@@ -34,6 +35,7 @@ public:
     virtual void draw_offset(long x, long y, tagRECT* rect);
 };
 
+#endif
 void TPanel::draw_offset(long x, long y, tagRECT* rect) {
     tagRECT save_rect;
 

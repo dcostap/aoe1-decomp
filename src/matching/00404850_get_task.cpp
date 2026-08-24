@@ -1,3 +1,4 @@
+#ifndef ACT_LIST_SHARED_CONTEXT
 class RGE_Task;
 
 class RGE_Action {
@@ -18,6 +19,7 @@ public:
 
     RGE_Task* get_task(void);
 };
+#endif
 
 RGE_Task* RGE_Action_List::get_task(void) {
     if (this->list != 0) {

@@ -1,3 +1,4 @@
+#ifndef PATH_TU_CONTEXT
 void __cdecl operator_delete(void* ptr);
 
 struct Waypoint {
@@ -11,6 +12,7 @@ public:
 
     ~Path();
 };
+#endif
 
 Path::~Path() {
     if (pathValue != 0) {

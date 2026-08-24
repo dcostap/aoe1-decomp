@@ -1,3 +1,4 @@
+#ifndef TPNL_TIM_SHARED_CONTEXT
 struct tagRECT {
     int left;
     int top;
@@ -19,6 +20,9 @@ public:
 
     void get_true_render_rect(tagRECT& rect);
 };
+#else
+#include "../../include/tpnl_tim_context.h"
+#endif
 
 void TRIBE_Panel_Time::get_true_render_rect(tagRECT& rect) {
     if (this->image_buffer != 0 && this->render_area != 0 && this->field_70 != 0 && this->field_6C != 0) {

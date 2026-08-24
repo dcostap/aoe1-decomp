@@ -36,6 +36,7 @@
 
 typedef unsigned long ulong;
 
+#ifndef DPL_OBJ_SHARED_CONTEXT
 class RGE_Game_World;
 class RGE_Color_Table;
 class RGE_Master_Static_Object;
@@ -95,6 +96,7 @@ public:
     char map_color;             // +0xA9
     int doppledObjectID;        // +0xAC
 };
+#endif
 
 RGE_Doppleganger_Object::RGE_Doppleganger_Object(int handle, RGE_Game_World* world, int param_3)
     : RGE_Animated_Object(handle, world, 0)

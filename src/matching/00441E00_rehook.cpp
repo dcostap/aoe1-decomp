@@ -64,6 +64,7 @@
 // 100% block coverage, and 0 positional/edit diff.  Kept; no custom flags
 // or inline assembly.
 
+#ifndef DPL_OBJ_SHARED_CONTEXT
 struct RGE_Game_World;
 struct RGE_Color_Table;
 struct RGE_Master_Static_Object;
@@ -139,6 +140,7 @@ struct RGE_Doppleganger_Object : RGE_Animated_Object {
 
     virtual void rehook();
 };
+#endif
 
 void RGE_Doppleganger_Object::rehook() {
     RGE_Player* player;

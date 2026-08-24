@@ -1,13 +1,12 @@
-class Base_TTaunt {
+#ifndef AOE1_TAUNT_CONTEXT_H
+class TTaunt {
 public:
-    virtual ~Base_TTaunt();
+    ~TTaunt();
+    void StopSoundSystem();
 };
+#endif
 
-class TTaunt : public Base_TTaunt {
-};
-
-extern "C" void probe_TTaunt(TTaunt* p);
-#pragma alloc_text(".xtra", probe_TTaunt)
-extern "C" void probe_TTaunt(TTaunt* p) {
-    p->TTaunt::~TTaunt();
+TTaunt::~TTaunt()
+{
+    StopSoundSystem();
 }

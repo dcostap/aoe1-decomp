@@ -1,4 +1,5 @@
 // FLAGS: /GX is required for the binary-observed new-expression EH frame.
+#ifndef ACT_LIST_SHARED_CONTEXT
 class RGE_Action_Object;
 
 class RGE_Action {
@@ -53,6 +54,7 @@ public:
 
     RGE_Action_Object* obj;
 };
+#endif
 
 RGE_Action* RGE_Action_List::create_action(int param_1, short param_2) {
     switch (param_2) {

@@ -1,3 +1,4 @@
+#ifndef ACT_LIST_SHARED_CONTEXT
 class RGE_Action {
 public:
     virtual int vf00(void);
@@ -27,10 +28,11 @@ public:
 
     int action_stop(void);
 };
+#endif
 
 int RGE_Action_List::action_stop(void) {
     if (this->list != 0) {
-        return this->list->action->vf2C();
+        return this->list->action->stop();
     }
     return 0;
 }

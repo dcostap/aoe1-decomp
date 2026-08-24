@@ -1,3 +1,4 @@
+#ifndef TPNL_TIM_SHARED_CONTEXT
 extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
 extern "C" __declspec(dllimport) int __stdcall SelectClipRgn(void* hdc, void* hrgn);
 extern "C" __declspec(dllimport) void* __stdcall SelectObject(void* hdc, void* obj);
@@ -209,6 +210,9 @@ public:
     int render_to_image_buffer();
     virtual void draw();
 };
+#else
+#include "../../include/tpnl_tim_context.h"
+#endif
 
 // BINARY NOTE: The oracle has 32 ordered calls, a 0x134 frame, and one saved ESI.
 // BINARY NOTE: The rectangle block uses sub/sub/add/add before its first SetRect call.

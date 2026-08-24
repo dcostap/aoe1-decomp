@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_CONTEXT_H
 class PanelNode;
 class TPanel;
 
@@ -26,6 +27,7 @@ public:
     TPanelSystem(void);
 };
 
+#endif
 TPanelSystem::TPanelSystem(void) {
     int* counts;
     char (*files)[260];

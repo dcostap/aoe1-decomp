@@ -1,5 +1,6 @@
 extern "C" __declspec(dllimport) int __stdcall SelectClipRgn(void* hdc, void* hrgn);
 
+#ifndef AOE1_PANEL_CONTEXT_H
 class TDrawArea {
 public:
     char gap_00[0x38];
@@ -20,6 +21,7 @@ public:
     virtual void draw_finish(void);
 };
 
+#endif
 void TPanel::draw_finish(void) {
     void* dc;
 

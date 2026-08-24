@@ -4,6 +4,7 @@ public:
     short field_4A;
 };
 
+#ifndef TPNL_POP_SHARED_CONTEXT
 class TRIBE_Panel_Pop {
 public:
     char gap_0[0x10C];
@@ -11,6 +12,7 @@ public:
 
     int get_player_id();
 };
+#endif
 
 int TRIBE_Panel_Pop::get_player_id() {
     if (this->member_10C) {

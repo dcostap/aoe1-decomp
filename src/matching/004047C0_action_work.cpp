@@ -1,3 +1,4 @@
+#ifndef ACT_LIST_SHARED_CONTEXT
 class RGE_Static_Object;
 class RGE_Action {
 public:
@@ -30,6 +31,7 @@ public:
 
     int action_work(RGE_Static_Object* param_1, float param_2, float param_3, float param_4);
 };
+#endif
 
 int RGE_Action_List::action_work(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) {
     if (this->list != 0) {

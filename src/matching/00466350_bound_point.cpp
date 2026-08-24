@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_CONTEXT_H
 struct tagRECT {
     long left;
     long top;
@@ -13,6 +14,7 @@ public:
     int bound_point(long& x, long& y);
 };
 
+#endif
 int TPanel::bound_point(long& x, long& y) {
     int bounded;
     long limit;

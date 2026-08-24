@@ -17,6 +17,7 @@
 // Main-agent audit restored the canonical TPanel destructor slot; emitted
 // code remains exact.
 
+#ifndef AOE1_PANEL_CONTEXT_H
 struct tagRECT {
     long left;
     long top;
@@ -52,10 +53,11 @@ public:
     void set_any_overlapping_redraw(TPanel* param_1, int param_2);
 };
 
+#endif
 void TPanel::set_any_overlapping_redraw(TPanel* param_1, int param_2)
 {
     tagRECT this_rect = param_1->clip_rect;
-    PanelNode* temp_node = first_child_node;
+    PanelNode* temp_node = this->first_child_node;
 
     while (temp_node != 0) {
         TPanel* panel = temp_node->panel;

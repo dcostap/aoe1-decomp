@@ -1,3 +1,4 @@
+#ifndef TPNL_TIM_SHARED_CONTEXT
 class TDrawArea;
 struct HRGN__;
 typedef HRGN__* HRGN;
@@ -39,6 +40,9 @@ class TDrawArea {
 public:
     ~TDrawArea();
 };
+#else
+#include "../../include/tpnl_tim_context.h"
+#endif
 
 TRIBE_Panel_Time::~TRIBE_Panel_Time() {
     TDrawArea* image_buffer;

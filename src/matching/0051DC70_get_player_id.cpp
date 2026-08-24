@@ -1,3 +1,4 @@
+#ifndef TPNL_TIM_SHARED_CONTEXT
 class InnerType {
 public:
     char gap_0[0x4A];
@@ -11,6 +12,9 @@ public:
 
     int get_player_id();
 };
+#else
+#include "../../include/tpnl_tim_context.h"
+#endif
 
 int TRIBE_Panel_Time::get_player_id() {
     if (this->member_118) {

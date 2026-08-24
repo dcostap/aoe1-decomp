@@ -1,3 +1,4 @@
+#ifndef ACT_LIST_SHARED_CONTEXT
 class RGE_Action {
 public:
     virtual void vf00(void);
@@ -26,6 +27,7 @@ public:
     void remove_action(void);
     unsigned char inside_obj_update(void);
 };
+#endif
 
 unsigned char RGE_Action_List::inside_obj_update(void) {
     if (this->list == 0) {
@@ -39,7 +41,7 @@ unsigned char RGE_Action_List::inside_obj_update(void) {
         result = this->list->action->inside_obj_update();
         node = this->list->next;
         while (node != 0) {
-            node->action->vf24();
+            node->action->idle_update();
             node = node->next;
         }
 

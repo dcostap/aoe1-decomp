@@ -11,6 +11,7 @@
 //   against `[edi+18]` and exact tail cleanup.
 // Result: MATCH locally with `python tools/check_function.py --va 00461150`.
 
+#ifndef MST_PLAY_SHARED_CONTEXT
 #include <stdlib.h>
 
 class RGE_Master_Static_Object {
@@ -30,6 +31,7 @@ public:
 
     virtual ~RGE_Master_Player();
 };
+#endif
 
 RGE_Master_Player::~RGE_Master_Player() {
     *(int*)this = 0x00570C08;

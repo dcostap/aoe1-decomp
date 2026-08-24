@@ -1,7 +1,3 @@
-class BaseItem {
-public:
-    virtual ~BaseItem();
-    
-};
+#include "../../include/aibitm_context.h"
 
 BaseItem::~BaseItem() {}

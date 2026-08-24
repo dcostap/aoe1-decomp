@@ -1,3 +1,6 @@
+#ifdef DLG_SMSG_CANONICAL_TU
+#include "../../include/dlg_smsg_context.h"
+#else
 class TButtonPanel {
 public:
     int get_state(void);
@@ -17,6 +20,7 @@ public:
 
     void checkButtons(void);
 };
+#endif
 
 void TribeSendMessageDialog::checkButtons(void) {
     int* commPlayer = this->commPlayers;

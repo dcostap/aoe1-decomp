@@ -26,6 +26,7 @@
 // NEXT: Revisit only with evidence for the original common return-tail source
 //   form or a linker-bound switch-table ownership context.
 
+#ifndef ACT_LIST_SHARED_CONTEXT
 class RGE_Action;
 class RGE_Action_Object;
 class RGE_Master_Combat_Object;
@@ -177,6 +178,7 @@ public:
 
     RGE_Action_Object* obj;
 };
+#endif
 
 RGE_Action* RGE_Action_List::create_task_action(
     RGE_Task* task,

@@ -9,6 +9,7 @@
 
 class TSound_Driver;
 
+#ifndef AOE1_TAUNT_CONTEXT_H
 class TDigital {
 public:
     char _gap_00[0x3C];  // padding to sizeof 0x3C
@@ -25,6 +26,7 @@ public:
 
     int RestartSoundSystem(TSound_Driver* driver);
 };
+#endif
 
 int TTaunt::RestartSoundSystem(TSound_Driver* driver)
 {

@@ -1,12 +1,5 @@
-class BaseItem {
-public:
-    virtual ~BaseItem();
-    char gap_04[88];
-    float xSize_;
+#include "../../include/aibitm_context.h"
 
-    void setXSize(float);
-};
-
-void BaseItem::setXSize(float val) {
-    this->xSize_ = val;
+void BaseItem::setXSize(float value) {
+    xSizeValue = value;
 }

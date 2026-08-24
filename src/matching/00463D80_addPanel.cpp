@@ -1,11 +1,15 @@
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
+#ifndef AOE1_PANEL_CONTEXT_H
 
+#ifndef AOE1_PANEL_CONTEXT_H
 class TPanel {
 public:
     char* panelName(void);
     void setPreviousPanel(TPanel* panel);
 };
+#endif
 
+#ifndef AOE1_PANEL_CONTEXT_H
 struct PanelNode {
     TPanel* panel;
     PanelNode* prev_node;
@@ -22,7 +26,9 @@ public:
     void setCurrentPanel(TPanel* panel, int mode);
     int addPanel(TPanel* panel, int make_current, int mode);
 };
+#endif
 
+#endif
 int TPanelSystem::addPanel(TPanel* panel, int make_current, int mode) {
     PanelNode* node;
 

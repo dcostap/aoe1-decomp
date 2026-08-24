@@ -1,10 +1,14 @@
 extern "C" int __cdecl strcmp(const char* s1, const char* s2);
+#ifndef AOE1_PANEL_CONTEXT_H
 
+#ifndef AOE1_PANEL_CONTEXT_H
 class TPanel {
 public:
     char* panelName(void);
 };
+#endif
 
+#ifndef AOE1_PANEL_CONTEXT_H
 struct PanelNode {
     TPanel* panel;
     PanelNode* prev_node;
@@ -21,7 +25,9 @@ public:
 
     PanelNode* findPanelNode(char* name);
 };
+#endif
 
+#endif
 PanelNode* TPanelSystem::findPanelNode(char* name) {
     TPanelSystem* self;
     char* target;

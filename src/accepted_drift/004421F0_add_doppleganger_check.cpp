@@ -34,6 +34,7 @@
 
 #include <stdio.h>
 
+#ifndef DPL_OBJ_SHARED_CONTEXT
 // Local type stubs matching the exact layouts from type dumps
 class RGE_Game_World {
 public:
@@ -90,6 +91,7 @@ public:
     int add_doppleganger_check(RGE_Static_Object* obj, unsigned long* map_addr);
     void expand_allocations(int extra);
 };
+#endif
 
 extern FILE* DDlogf;
 

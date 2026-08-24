@@ -2,12 +2,15 @@
 // Prologue scheduling fix: match load order by swapping field assignments
 
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
+#ifndef AOE1_PANEL_CONTEXT_H
 
+#ifndef AOE1_PANEL_CONTEXT_H
 struct TDrawArea {
     char gap_00[0x18];
     long width;
     long height;
 };
+#endif
 
 class TPanel;
 
@@ -68,6 +71,7 @@ public:
     int setup(TDrawArea* area, TPanel* parent, long left, long top, long width, long height, int value);
 };
 
+#endif
 int TPanel::setup(TDrawArea* area, TPanel* parent, long left, long top, long width, long height, int value) {
     // render_area first to match original prologue
     render_area = area;
@@ -83,11 +87,11 @@ int TPanel::setup(TDrawArea* area, TPanel* parent, long left, long top, long wid
         max_hgt = height;
     }
     if (area != 0) {
-        vf50(area->width, area->height);
+        handle_size(area->width, area->height);
     } else {
-        vf50(0, 0);
+        handle_size(0, 0);
     }
-    vf10(value);
+    set_color((unsigned char)value);
     field_68 = 0;
     if (node == 0) {
         node = (PanelNode*)calloc(1, 0xC);
