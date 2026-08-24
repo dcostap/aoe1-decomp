@@ -2,19 +2,20 @@
 //
 // Source module: C:\\msdev\\work\\age1_x1\\taibldmd.cpp
 // PDB owner order is preserved from lines 62 through 1773.  004D3AB0 is the
-// compiler-generated vector deleting destructor between the destructor and
+// compiler-generated scalar deleting destructor between the destructor and
 // second constructor; it is emitted by the canonical virtual surface and is
 // listed in the candidate proposal, not included as a source owner.
 //
 // The original initialize, nextBuildableItem, and blockingResource bodies have
-// EH-aware frames.  The candidate therefore uses the reviewed /GX flag set.
+// EH-aware frames.  They remain observed because this exact-owner group uses
+// the period /O2 /Oy flags required by its exact addResearch owner.
 // This wrapper is a proposal only.  It does not register global configuration.
 //
-// Candidate categories are recorded in build/candidate_tus/proposals/
-// taibldmd_cpp.json.  Sixteen normal owners and the generated deleting
-// destructor match in this grouped compile.  The remaining twelve normal
-// owners are observed mismatches, not exact claims.  Their source banks and
-// status remain unchanged for main-agent review.
+// Candidate categories are recorded in
+// build/candidate_tus/taibldmd_cpp_proposal.json.  Sixteen normal matching
+// owners and the generated deleting destructor are exact candidates.  The
+// remaining twelve normal owners are observed mismatches, not exact claims.
+// Their source banks and status remain unchanged for main-agent review.
 //
 // The candidate uses no synthetic function, inline assembly, absolute-address
 // stub, or duplicate compiler owner.  The prior readyToResearch padding helper

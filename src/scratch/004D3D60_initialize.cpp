@@ -97,7 +97,9 @@ public:
 
 class ResourceItem {
 public:
-    void* vtable_ptr;                 // +0x00
+    // BINARY NOTE: the first word is the real virtual destructor pointer.
+    // Use the period C++ surface instead of a raw vtable field.
+    virtual ~ResourceItem();
     ResourceItem* next;               // +0x04
     ResourceItem* prev;               // +0x08
     int valueValue[8];                // +0x0C
@@ -106,7 +108,6 @@ public:
     int numberValue;                  // +0x6C
 
     ResourceItem(int count);
-    ~ResourceItem();
     void setAllValues(int value);
     int value(int index);
 };
