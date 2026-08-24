@@ -11,5 +11,7 @@ public:
 };
 #endif
 
+// BINARY NOTE: The destructor stores the DiplomacyAIModule vtable, then tail-jumps to AIModule::~AIModule.
+// Grouped validation: aidipmod.cpp emits MATCH for 0040BFF0 and generated 0040BF20.
 DiplomacyAIModule::~DiplomacyAIModule() {
 }

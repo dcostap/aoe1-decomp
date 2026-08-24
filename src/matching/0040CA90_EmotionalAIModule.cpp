@@ -1,10 +1,10 @@
 #ifndef AOE1_AIEMOMOD_TU_CONTEXT
-class Base_EmotionalAIModule {
+class AIModule {
 public:
-    virtual ~Base_EmotionalAIModule();
+    virtual ~AIModule();
 };
 
-class EmotionalAIModule : public Base_EmotionalAIModule {
+class EmotionalAIModule : public AIModule {
 public:
     virtual ~EmotionalAIModule();
 };

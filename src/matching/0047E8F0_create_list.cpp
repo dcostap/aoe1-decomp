@@ -8,6 +8,7 @@ public:
 };
 #endif
 #ifdef RDLG_LST_TU_CONTEXT
+// BINARY NOTE: The shipped guard lowers to DEC/JZ and a tail jump.
 int RGE_Dialog_List::create_list() {
     if (this->list_type - 1)
         return 0;

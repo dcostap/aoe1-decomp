@@ -25,6 +25,6 @@ extern float DAT_00574f14;
 #include "matching/004CD120_stop.cpp"
 #include "matching/004CD130_move_to.cpp"
 #include "matching/004CD160_work.cpp"
-#include "scratch/004CD1A0_reset_owner.cpp"
+#include "matching/004CD1A0_reset_owner.cpp"
 
 #undef AOE1_TACT_ART_TU_CONTEXT

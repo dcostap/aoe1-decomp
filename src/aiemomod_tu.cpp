@@ -24,7 +24,7 @@
 
 #include "matching/0040C7C0_EmotionalAIModule.cpp"
 #include "matching/0040C920_EmotionalAIModule.cpp"
-#include "scratch/0040CA90_EmotionalAIModule.cpp"
+#include "matching/0040CA90_EmotionalAIModule.cpp"
 #include "matching/0040CAA0_setMainDecisionAI.cpp"
 #include "matching/0040CAB0_save.cpp"
 #include "matching/0040CAE0_stateName.cpp"

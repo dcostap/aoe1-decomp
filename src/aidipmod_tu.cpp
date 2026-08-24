@@ -94,7 +94,7 @@ public:
 #define AOE1_AIDIPMOD_TU_CONTEXT 1
 #include "matching/0040BEC0_DiplomacyAIModule.cpp"
 #include "matching/0040BF40_DiplomacyAIModule.cpp"
-#include "scratch/0040BFF0_DiplomacyAIModule.cpp"
+#include "matching/0040BFF0_DiplomacyAIModule.cpp"
 #include "matching/0040C000_setMainDecisionAI.cpp"
 #include "matching/0040C010_update.cpp"
 #include "matching/0040C0A0_save.cpp"

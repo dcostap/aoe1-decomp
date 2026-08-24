@@ -14,7 +14,7 @@
 #include "matching/0047E6B0_setup.cpp"
 #include "matching/0047E830_RGE_Dialog_List.cpp"
 #include "matching/0047E8C0_get_list_id.cpp"
-#include "scratch/0047E8F0_create_list.cpp"
+#include "matching/0047E8F0_create_list.cpp"
 #include "accepted_drift/0047E910_create_object_list.cpp"
 #include "matching/0047EAA0_rdlg_list_compare.cpp"
 #include "matching/0047EAD0_sort_list.cpp"

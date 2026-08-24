@@ -30,7 +30,7 @@
 #include "matching/00431FB0_TCommunications_Services.cpp"
 #include "matching/00432030_TCommunications_Services.cpp"
 #include "matching/00432040_GetServiceCount.cpp"
-#include "scratch/00432050_IncServiceCount.cpp"
+#include "matching/00432050_IncServiceCount.cpp"
 #include "matching/00432060_GetServiceName.cpp"
 #include "matching/00432080_SetServiceName.cpp"
 #include "matching/004320C0_GetServiceGUID.cpp"

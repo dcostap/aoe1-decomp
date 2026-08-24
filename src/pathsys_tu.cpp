@@ -46,9 +46,9 @@
 #undef VPAD16
 #undef VPAD32
 
-#include "scratch/0046D250_incrementInitialPaths.cpp"
-#include "scratch/0046D260_incrementContinuePaths.cpp"
-#include "scratch/0046D270_incrementCanPaths.cpp"
+#include "matching/0046D250_incrementInitialPaths.cpp"
+#include "matching/0046D260_incrementContinuePaths.cpp"
+#include "matching/0046D270_incrementCanPaths.cpp"
 #include "scratch/0046D280_passable.cpp"
 #include "matching/0046D740_checksum.cpp"
 #include "matching/0046D770_printState.cpp"

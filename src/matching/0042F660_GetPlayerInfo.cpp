@@ -1,7 +1,12 @@
 #ifndef COM_LOBY_CONTEXT
+struct DPNAME_gpi {
+    char gap_00[0x08];
+    char* lpszShortName;
+};
+
 struct DPLCONNECTION_gpi {
     char gap_00[0x0C];
-    void* lpPlayerName;
+    DPNAME_gpi* lpPlayerName;
 };
 
 class RGE_Lobby {
@@ -17,6 +22,6 @@ unsigned char RGE_Lobby::GetPlayerInfo(char** out) {
     if (this->lobby_game == 0) {
         return 0;
     }
-    *out = (char*)this->glpdplConnection->lpPlayerName;
+    *out = this->glpdplConnection->lpPlayerName->lpszShortName;
     return 1;
 }

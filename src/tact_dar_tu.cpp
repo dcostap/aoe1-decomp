@@ -17,8 +17,8 @@
 #include "matching/004CE5F0_TRIBE_Action_Discovery_Artifact.cpp"
 #include "scratch/004CE670_TRIBE_Action_Discovery_Artifact.cpp"
 #include "matching/004CE6D0_save.cpp"
-#include "scratch/004CE700_first_in_stack.cpp"
-#include "scratch/004CE720_set_state.cpp"
+#include "matching/004CE700_first_in_stack.cpp"
+#include "matching/004CE720_set_state.cpp"
 #include "accepted_drift/004CE740_update.cpp"
 #include "matching/004CE7A0_check_objects.cpp"
 

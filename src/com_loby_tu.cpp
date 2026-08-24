@@ -12,7 +12,7 @@
 #include "scratch/0042F3A0_EnumPlayersCallbackLobby.cpp"
 #include "matching/0042F430_CheckForLobbyLaunch.cpp"
 #include "matching/0042F640_IsThisHost.cpp"
-#include "scratch/0042F660_GetPlayerInfo.cpp"
+#include "matching/0042F660_GetPlayerInfo.cpp"
 #include "scratch/0042F680_GetSessionInfo.cpp"
 #include "matching/0042F6B0_SendZoneHandshakeResponse.cpp"
 #include "matching/0042F6C0_GameIsOver.cpp"

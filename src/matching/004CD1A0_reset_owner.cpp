@@ -29,10 +29,11 @@ public:
 };
 #endif
 
+// BINARY NOTE: tact_art.cpp lines 263-265 dispatch state 100 through vslot 0x5C.
 void TRIBE_Action_Artifact::reset_owner() {
 #ifdef AOE1_TACT_ART_TU_CONTEXT
-    this->set_state(0x64);
+    this->set_state(100);
 #else
-    this->vf5C(0x64);
+    this->vf5C(100);
 #endif
 }
