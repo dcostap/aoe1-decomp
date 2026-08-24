@@ -11,6 +11,9 @@
 //
 // 0043EEC0 is the compiler-generated scalar deleting destructor. It has no
 // standalone source owner and is checked as a generated companion.
+// 0043EE70 remains observed in the grouped candidate: the full polymorphic
+// context moves its vptr store before the field stores, unlike the exact
+// standalone constructor anchor.
 
 #define DLG_LIST_SHARED_CONTEXT 1
 #include "../include/dlg_list_context.h"

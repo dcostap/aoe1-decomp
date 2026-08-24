@@ -99,20 +99,22 @@ public:
     virtual long action(TPanel*, long, unsigned long, unsigned long);
     virtual void draw_background(int);
     virtual void set_ideal_size(long, long);
-    virtual int create_button(TPanel*, TButtonPanel**, long, long, long, long,
-                              long, long, long, long, long);
+    // BINARY NOTE: The shipped call slots place the long create_button
+    // overload at +0xE8 and the char* create_text overload at +0x100.
     virtual int create_button(TPanel*, TButtonPanel**, char*, char*, long, long,
+                              long, long, long, long, long);
+    virtual int create_button(TPanel*, TButtonPanel**, long, long, long, long,
                               long, long, long, long, long);
     virtual int create_check_box(TPanel*, TButtonPanel**, long, long, long, long,
                                  long, long);
     virtual int create_radio_button(TPanel*, TButtonPanel**, long, long, long,
                                     long, long, long);
-    virtual int create_text(TPanel*, TTextPanel**, int, long, long, long, long,
-                            long, int, int, int);
-    virtual int create_text(TPanel*, TTextPanel**, char**, long, long, long,
-                            long, long, long, int, int);
     virtual int create_text(TPanel*, TTextPanel**, char*, long, long, long, long,
                             long, long, long, long);
+    virtual int create_text(TPanel*, TTextPanel**, char**, long, long, long,
+                            long, long, long, int, int);
+    virtual int create_text(TPanel*, TTextPanel**, int, long, long, long, long,
+                            long, int, int, int);
     virtual int create_input(TPanel*, TPanel**, char*, short, long, long, long,
                              long, long, long);
     virtual int create_edit(TPanel*, TPanel**, char*, short, long, long, long,
@@ -188,9 +190,9 @@ public:
     virtual long setup(TPanel*, char*, long, long, long, long, long, long, long,
                        char*, long, long, long, long, char**, short, short,
                        long, long, long, long, long);
-    virtual long setup(TPanel*, char*, long, long, long, long, long, long, long,
-                       int, long, long, long, long, char**, short, short,
-                       long, long, long, long, long);
+    long setup(TPanel*, char*, long, long, long, long, long, long, long,
+               int, long, long, long, long, char**, short, short,
+               long, long, long, long, long);
     virtual long key_down_action(long, short, int, int, int);
     virtual long action(TPanel*, long, unsigned long, unsigned long);
     virtual short get_list_id();

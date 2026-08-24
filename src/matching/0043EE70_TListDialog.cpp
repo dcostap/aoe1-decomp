@@ -1,29 +1,4 @@
-#ifdef DLG_LIST_SHARED_CONTEXT
 #include "../../include/dlg_list_context.h"
-#else
-class TDialogPanel {
-public:
-    void* vftable;
-    char gap_04[0x474];
-
-    TDialogPanel(char* param_1);
-};
-
-class TListDialog : public TDialogPanel {
-public:
-    char gap_478[0x18];
-    void* title;        // 0x490
-    void* list;         // 0x494
-    void* scroll_bar;   // 0x498
-    void* ok_btn;       // 0x49C
-    void* cancel_btn;   // 0x4A0
-    short list_id;      // 0x4A4
-    char gap_4A6[0x2];
-    void* list_name;    // 0x4A8
-
-    TListDialog(char* param_1);
-};
-#endif
 
 TListDialog::TListDialog(char* param_1) : TDialogPanel(param_1) {
     this->list_id = -1;

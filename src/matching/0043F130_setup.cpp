@@ -3,6 +3,8 @@
 
 // attempt 1: wrapper that resolves string, calls main setup
 // ret 58h
+// BINARY NOTE: The wrapper uses a direct qualified call to the char* overload.
+// The shipped call target is the main setup body, not a virtual dispatch.
 
 #include <string.h>
 
@@ -54,6 +56,11 @@ public:
     virtual ~TListDialog();
     long setup(TPanel* param_1, char* param_2, long param_3, long param_4,
         long param_5, long param_6, long param_7, long param_8, long param_9,
+        char* param_10, long param_11, long param_12, long param_13, long param_14,
+        char** param_15, short param_16, short param_17, long param_18, long param_19,
+        long param_20, long param_21, long param_22);
+    long setup(TPanel* param_1, char* param_2, long param_3, long param_4,
+        long param_5, long param_6, long param_7, long param_8, long param_9,
         int param_10, long param_11, long param_12, long param_13, long param_14,
         char** param_15, short param_16, short param_17, long param_18, long param_19,
         long param_20, long param_21, long param_22);
@@ -70,7 +77,7 @@ long TListDialog::setup(TPanel* param_1, char* param_2, long param_3, long param
     char str[256];
     TPanel::get_string((int)param_10, str, 0x100);
     
-    return ((TListDialog*)this)->setup(param_1, param_2, param_3, param_4,
+    return this->TListDialog::setup(param_1, param_2, param_3, param_4,
         param_5, param_6, param_7, param_8, param_9,
         str, param_11, param_12, param_13, param_14,
         param_15, param_16, param_17, param_18, param_19,
