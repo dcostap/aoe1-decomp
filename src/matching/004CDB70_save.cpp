@@ -3,7 +3,7 @@ void rge_write(int file, void* data, int size);
 
 class RGE_Action {
 public:
-    virtual void vf00(void);
+    virtual ~RGE_Action();
     void save(int file);
 };
 

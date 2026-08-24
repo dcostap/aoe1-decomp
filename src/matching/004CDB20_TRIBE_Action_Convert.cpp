@@ -11,7 +11,7 @@ class RGE_Task;
 
 class RGE_Action {
 public:
-    virtual void vf00(void);
+    virtual ~RGE_Action();
     RGE_Action(RGE_Action_Object* object, int doSetup);
 
     unsigned short action_type;

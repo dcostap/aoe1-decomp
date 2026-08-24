@@ -16,13 +16,12 @@
 // their PDB order and leaves the nearby compiler-generated deleting destructor
 // to the compiler.
 //
-// Candidate TU validation (default_gx.rsp): seven body owners are exact and
-// the vector-deleting destructor is exact.  004CDA90 and 004CDBB0 compile in
-// this authentic context with observed TU-local drift.  The first_in_stack
-// standalone owner is exact; 004CDA90 retains a separate 10-byte standalone
-// scheduling mismatch.  The two exact claims are blocked by source views that
-// conflict with the shared RGE_Base_Game ABI at +0040/+0044 and with the
-// first_in_stack master-object view; do not claim full-TU exactness for them.
+// Candidate TU validation (default_gx.rsp): six body owners are exact, and
+// work is an observed exact body.  The vector-deleting destructor is exact.
+// 004CDA90 and 004CDBB0 compile in this authentic context with observed drift.
+// Keep work observed because its per-function response file has a default-flag
+// overlay that is not safe to group with this /GX TU.  Do not claim full-TU
+// exactness while the two context-drift bodies remain unresolved.
 
 #define TACT_CNV_SHARED_CONTEXT 1
 #include "../include/tact_cnv_context.h"

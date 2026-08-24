@@ -19,6 +19,7 @@
 // 16: reread this->obj in notification arguments while retaining the scoped actor local; emitted code returned exactly to the clean 604-byte baseline; restored direct typed source.
 // 17: changing object_group from int to its proven short field width grew code to 609 bytes and worsened diff to 575; restored the clean 604-byte source.
 // 18: used direct target->master_obj expressions for the group and id, then declared the actor after the group load; this preserves the target-master reload and late actor lifetime from the oracle. Exact 595-byte match.
+// 19: Policy cleanup replaced placeholder slots and the raw vtable field with named period class declarations. The authentic TU keeps this body observed: it has 375 differing bytes and one boundary escape.
 
 typedef unsigned char uchar;
 
@@ -33,7 +34,7 @@ public:
 
 class RGE_Master_Static_Object {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Master_Static_Object();
     char gap_04[0x0C];
     short id;
     short copy_id;
@@ -44,7 +45,7 @@ public:
 
 class RGE_Static_Object {
 public:
-    virtual void _s0();
+    virtual ~RGE_Static_Object();
 
     char gap_04[4];
     RGE_Master_Static_Object* master_obj;
@@ -56,31 +57,35 @@ public:
 class RGE_Action_Object : public RGE_Static_Object {
 };
 
+class RGE_Action_List;
+class RGE_Task;
+class RGE_Master_Action_Object;
+
 class RGE_Action {
 public:
     virtual ~RGE_Action();
-    virtual int vf04(RGE_Action_Object*);
-    virtual int vf08(int, RGE_Action_Object*);
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14(int);
-    virtual short vf18();
-    virtual void vf1C(uchar);
-    virtual uchar vf20();
-    virtual uchar vf24();
-    virtual uchar vf28();
-    virtual int vf2C();
-    virtual int vf30(void*, float, float, float);
-    virtual int vf34(void*, float, float, float);
-    virtual uchar vf38(void*);
-    virtual uchar vf3C(long, uchar);
-    virtual void vf40(void*);
-    virtual void vf44(void*, void*, void*);
-    virtual void vf48(char*);
-    virtual void* vf4C();
-    virtual void* vf50();
-    virtual void set_target_obj(void*);
-    virtual void set_target_obj2(void*);
+    virtual int setup(RGE_Action_Object*);
+    virtual int setup(int, RGE_Action_Object*);
+    virtual RGE_Action_List* create_action_list(RGE_Action_Object*);
+    virtual void rehook();
+    virtual void save(int);
+    virtual short type();
+    virtual void first_in_stack(uchar);
+    virtual uchar inside_obj_update();
+    virtual uchar idle_update();
+    virtual uchar update();
+    virtual int stop();
+    virtual int move_to(RGE_Static_Object*, float, float, float);
+    virtual int work(RGE_Static_Object*, float, float, float);
+    virtual uchar attack_response(RGE_Static_Object*);
+    virtual uchar relation_response(long, uchar);
+    virtual void copy_obj(RGE_Master_Action_Object*);
+    virtual void copy_obj_sprites(RGE_Master_Action_Object*, RGE_Task*, RGE_Task*);
+    virtual void get_state_name(char*);
+    virtual RGE_Static_Object* get_target_obj();
+    virtual RGE_Static_Object* get_target_obj2();
+    virtual void set_target_obj(RGE_Static_Object*);
+    virtual void set_target_obj2(RGE_Static_Object*);
     virtual void set_state(uchar);
 
     short action_type;
@@ -105,10 +110,23 @@ public:
 
 class RGE_Base_Game {
 public:
-    virtual void g00(); virtual void g04(); virtual void g08(); virtual void g0C();
-    virtual void g10(); virtual void g14(); virtual void g18(); virtual void g1C();
-    virtual void g20(); virtual void g24(); virtual void g28(); virtual void g2C();
-    virtual void g30(); virtual void g34(); virtual void g38(); virtual void g3C();
+    virtual ~RGE_Base_Game();
+    virtual int run();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual void set_prog_mode(int);
+    virtual void set_game_mode(int, int);
+    virtual void set_player(short);
+    virtual int get_error_code();
+    virtual char* get_string(int, long, char*, int);
+    virtual char* get_string(long, char*, int);
+    virtual char* get_string(long);
+    virtual char* get_string2(int, long, long, char*, int);
+    virtual void* get_view_panel();
+    virtual void* get_map_panel();
+    virtual void* new_scenario_header(void*);
+    virtual void* new_scenario_header(int);
+    virtual void* new_scenario_info(int);
+    virtual void notification(int, long, long, long, long);
     virtual void notify(int, int, int, int, int);
 };
 
