@@ -1583,15 +1583,6 @@
       }
     },
     {
-      "name": "pnl_lst_prefix",
-      "source": "src/pnl_lst_tu.cpp",
-      "flags": "config/flags/default.rsp",
-      "owners": {
-        "004782A0": "src/matching/004782A0_TListPanel.cpp",
-        "00478330": "src/matching/00478330_TListPanel.cpp"
-      }
-    },
-    {
       "name": "tpnl_inv_prefix",
       "source": "src/tpnl_inv_tu.cpp",
       "flags": "config/flags/0051A5C0_TRIBE_Panel_Inven.rsp",
