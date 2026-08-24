@@ -5,6 +5,7 @@
 
 #include <string.h>
 
+#ifndef AOE1_AIMODULE_TU_CONTEXT
 class AIModuleID {
 public:
     AIModuleID(char* str, int param);
@@ -14,7 +15,7 @@ public:
 
 class AIModuleMessage {
 public:
-    void* vtable_ptr;
+    virtual ~AIModuleMessage();
     int id;
     char text[0x80];
     int priority;
@@ -29,6 +30,7 @@ public:
     AIModuleMessage(int sender_id, int recipient_id, int msg_id, int msg_priority,
                     long p5, long p6, long p7, AIModuleMessage* callback, int timestamp);
 };
+#endif
 
 AIModuleMessage::AIModuleMessage(int sender_id, int recipient_id, int msg_id, int msg_priority,
                                  long p5, long p6, long p7, AIModuleMessage* callback, int timestamp)
@@ -42,6 +44,5 @@ AIModuleMessage::AIModuleMessage(int sender_id, int recipient_id, int msg_id, in
     this->data3 = p7;
     this->callbackMessage = callback;
     this->timeStamp = timestamp;
-    this->vtable_ptr = (void*)0x56E92C;
     strcpy(this->text, (char*)0x592A40);
 }

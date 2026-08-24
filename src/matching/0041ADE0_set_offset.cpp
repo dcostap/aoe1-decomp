@@ -1,3 +1,4 @@
+#ifndef ASPRITE_FULL_TU
 class RGE_Active_Sprite {
 public:
     void* sprite;
@@ -8,6 +9,7 @@ public:
 
     virtual void set_offset(long param_1, long param_2);
 };
+#endif
 
 void RGE_Active_Sprite::set_offset(long param_1, long param_2) {
     this->offset_x = param_1;

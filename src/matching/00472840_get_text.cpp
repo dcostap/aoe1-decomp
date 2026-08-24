@@ -1,3 +1,4 @@
+#ifndef PNL_BTN_SHARED_CONTEXT
 class TButtonPanel {
 public:
     char gap_00[0x198];
@@ -8,6 +9,7 @@ public:
 
     int get_text(short state, char** text1, char** text2);
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
 int TButtonPanel::get_text(short state, char** out_text1, char** out_text2) {
     if (state == -1) {

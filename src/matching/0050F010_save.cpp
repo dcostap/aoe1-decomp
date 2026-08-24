@@ -7,6 +7,7 @@ extern "C" {
     void rge_write(int fd, void* buf, int size);
 }
 
+#ifndef TM_CO_OB_SHARED_CONTEXT
 // Range: RGE_Master_Combat_Object = 0x148 bytes
 struct RGE_Master_Combat_Object_save {
     char base[0x148];
@@ -23,6 +24,7 @@ struct TRIBE_Master_Combat_Object {
 
     void save(int fd);
 };
+#endif
 
 void TRIBE_Master_Combat_Object::save(int fd)
 {
@@ -30,7 +32,11 @@ void TRIBE_Master_Combat_Object::save(int fd)
     
     int i;
     for (i = 0; i < 3; i++)
+#ifdef TM_CO_OB_SHARED_CONTEXT
+        rge_write(fd, (unsigned char*)build_inventory + i * 6, 6);
+#else
         rge_write(fd, build_inventory + i * 6, 6);
+#endif
     
     rge_write(fd, &build_pts_required, 2);
     rge_write(fd, &id_of_building_obj, 2);

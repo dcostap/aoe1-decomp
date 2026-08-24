@@ -1,3 +1,4 @@
+#ifndef PNL_BTN_SHARED_CONTEXT
 class TButtonPanel {
 public:
     char gap_00[0x2A0];
@@ -11,6 +12,7 @@ public:
 
     void set_bevel_info(int bevel_type, int c1, int c2, int c3, int c4, int c5, int c6);
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
 void TButtonPanel::set_bevel_info(int type, int c1, int c2, int c3, int c4, int c5, int c6) {
     bevel_type = type;

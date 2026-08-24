@@ -1,3 +1,4 @@
+#ifndef AOE1_AIDIPMOD_TU_CONTEXT
 class RGE_Game_World {
 public:
     char gap_000[0x3C];
@@ -38,6 +39,7 @@ public:
 
     void setRelation(int player_id, int stance);
 };
+#endif
 
 void DiplomacyAIModule::setRelation(int player_id, int stance) {
     if (player_id > 0) {

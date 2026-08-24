@@ -1,3 +1,4 @@
+#ifndef AOE1_AIMODULE_TU_CONTEXT
 class AIModule {
 public:
     virtual ~AIModule();
@@ -6,4 +7,9 @@ public:
 
     void stop();
 };
+#endif
+#ifdef AOE1_AIMODULE_TU_CONTEXT
+void AIModule::stop() { this->runningValue = 0; }
+#else
 void AIModule::stop() { this->running_ = 0; }
+#endif

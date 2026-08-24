@@ -16,6 +16,7 @@
 extern FILE* commonHistoryLogFile;
 extern char emptyString[];
 
+#ifndef AOE1_AIMODULE_TU_CONTEXT
 class AIModule {
 public:
     char gap_00[0x9C];
@@ -24,6 +25,7 @@ public:
     void logCommonHistory(char* fmt, ...);
     void setLogCommonHistory(int on);
 };
+#endif
 
 void AIModule::setLogCommonHistory(int on)
 {

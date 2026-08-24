@@ -1,11 +1,14 @@
 extern "C" __declspec(dllimport) long __stdcall SendMessageA(void* hwnd, unsigned int msg, unsigned int wparam, long lparam);
 
+#ifndef PNL_BTN_SHARED_CONTEXT
 class TDrawArea {
 public:
     char gap_00[0x04];
     void* Wnd;
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
+#ifndef PNL_BTN_SHARED_CONTEXT
 class TButtonPanel {
 public:
     virtual void vf00(void);
@@ -26,10 +29,12 @@ public:
     short cur_state;
     long is_down;
 
+    void set_redraw(int);
     void release_mouse(void);
     void do_right_action(int ctrl);
     long mouse_right_up_action(long x, long y, int ctrl, int shift);
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
 long TButtonPanel::mouse_right_up_action(long x, long y, int ctrl, int shift) {
     release_mouse();
@@ -37,14 +42,14 @@ long TButtonPanel::mouse_right_up_action(long x, long y, int ctrl, int shift) {
         if (buttonTypeValue != 2) {
             is_down = 0;
         }
-        vf20(1);
+        set_redraw(1);
         SendMessageA(render_area->Wnd, 0x0F, 0, 0);
         do_right_action(shift);
         return 1;
     }
     if (buttonTypeValue == 2 && cur_state == 1) {
         is_down = 1;
-        vf20(1);
+        set_redraw(1);
     }
     return 1;
 }

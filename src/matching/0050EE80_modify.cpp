@@ -14,15 +14,14 @@
 //     param_1 bits loaded at use inside loop2 (mov ebx,[esp+10h] after cmp/jne).
 //   - rebuilt hoists bases to ebx/eax, hoists param_1 into edi before loop2, and loop4
 //     reuses eax as short ptr (2 bytes shorter setup) -> shifts 'd' handler up 2 bytes.
-// - h2 do/while pointer scans plus the canonical inherited attribute arrays: 103/233,
-//   then a narrow volatile raw-parameter load preserved the original per-match reload,
-//   87/233. Resetting the cursor locals for the third scan restored the original block
+// - h2 do/while pointer scans plus the canonical inherited attribute arrays: 103/233.
+//   Resetting the cursor locals for the third scan restored the original block
 //   topology (6 bytes left: cursor-reset move order only).
 // - h3 swapped each reset to assign the value cursor before the type cursor: exact 233/233.
-//   The final source keeps only a volatile read of the raw parameter bits because the
-//   executable demonstrably reloads [esp+10h] after the type test; the destination is
-//   an ordinary member store. Default flags: /O2 /Oy.
+//   The module wrapper uses the natural member assignment. The remaining reload
+//   difference is observed codegen drift, not a source-level volatility contract.
 
+#ifndef TM_CO_OB_SHARED_CONTEXT
 class RGE_Master_Static_Object {
 public:
     virtual void _virt0();
@@ -193,6 +192,7 @@ public:
 
     void modify(float param_1, unsigned char param_2);
 };
+#endif
 
 void TRIBE_Master_Combat_Object::modify(float param_1, unsigned char param_2)
 {
@@ -221,8 +221,7 @@ void TRIBE_Master_Combat_Object::modify(float param_1, unsigned char param_2)
         type = types;
         do {
             if (*type == 4)
-                // The original rereads the parameter bits at each matching store.
-                *(int*)value = *(volatile int*)&param_1;
+                *(float*)value = param_1;
             type++;
             value++;
             remaining--;

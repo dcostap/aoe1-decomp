@@ -1,12 +1,5 @@
-class BuildItem {
-public:
-    virtual ~BuildItem();
-    char gap_04[124];
-    int inProgress_;
-
-    int inProgress() const;
-};
+#include "../../include/aiblditm_context.h"
 
 int BuildItem::inProgress() const {
-    return this->inProgress_;
+    return progressValue;
 }

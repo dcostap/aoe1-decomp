@@ -1,12 +1,15 @@
 class TDigital;
 
+#ifndef PNL_BTN_SHARED_CONTEXT
 class RGE_Base_Game {
 public:
     TDigital* get_sound(int index);
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
 extern RGE_Base_Game* rge_base_game;
 
+#ifndef PNL_BTN_SHARED_CONTEXT
 class TButtonPanel {
 public:
     virtual void vf00(void);
@@ -69,6 +72,7 @@ public:
     char gap_14C[0x168];
     int sound_number;
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
 int TButtonPanel::restart_sound_system(void) {
     if (this->sound_number != -1) {

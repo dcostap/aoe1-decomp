@@ -1,3 +1,4 @@
+#ifndef AOE1_AIDIPMOD_TU_CONTEXT
 class RGE_Player;
 class RGE_Game_World {
 public:
@@ -37,6 +38,7 @@ public:
     char gap_40[0xA];
     short id;
 };
+#endif
 
 int DiplomacyAIModule::isAlliedWithMe(int player_num) const
 {

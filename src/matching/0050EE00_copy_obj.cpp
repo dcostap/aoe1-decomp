@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 
+#ifndef TM_CO_OB_SHARED_CONTEXT
 #pragma pack(push, 1)
 struct AttributeCost {
     short type;     // 0
@@ -26,8 +27,13 @@ struct TRIBE_Master_Combat_Object {
 
     void copy_obj(void* src);
 };
+#endif
 
+#ifdef TM_CO_OB_SHARED_CONTEXT
+void TRIBE_Master_Combat_Object::copy_obj(RGE_Master_Static_Object* src)
+#else
 void TRIBE_Master_Combat_Object::copy_obj(void* src)
+#endif
 {
     ((RGE_Master_Combat_Object_copy*)this)->copy_obj(src);
     

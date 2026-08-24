@@ -1,14 +1,8 @@
-class BuildItem {
-public:
-    char gap_00[0x90];
-    int terrainAdjacencyValue[3];
-
-    int terrainAdjacency(int index) const;
-};
+#include "../../include/aiblditm_context.h"
 
 int BuildItem::terrainAdjacency(int index) const {
     if ((index >= 1) && (index <= 2)) {
-        return this->terrainAdjacencyValue[index];
+        return terrainAdjacencyValue[index - 1];
     }
     return -1;
 }

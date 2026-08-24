@@ -1,3 +1,4 @@
+#ifndef AOE1_AIDIPMOD_TU_CONTEXT
 class RGE_Game_World {
 public:
     char gap_00[0x3C];
@@ -27,6 +28,7 @@ public:
 
     int isNeutral(int player) const;
 };
+#endif
 
 int DiplomacyAIModule::isNeutral(int player) const {
     RGE_Player* pVar1;

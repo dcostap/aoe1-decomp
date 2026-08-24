@@ -1,16 +1,17 @@
 // VA: 00471EC0 TButtonPanel constructor
 // PDB source: Pnl_btn.cpp
-// Attempt log:
-// - 1st attempt: novtable + manual vtable + body field assignments + array loop
+// The wrapper supplies the reviewed class layout and normal C++ construction.
 
 #include <string.h>
 
+#ifndef PNL_BTN_SHARED_CONTEXT
 struct tagRECT {
     long left;
     long top;
     long right;
     long bottom;
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
 class TDrawArea;
 class PanelNode;
@@ -18,6 +19,7 @@ class TDigital;
 class TShape;
 
 // Minimal TPanel layout (0xF4 bytes)
+#ifndef PNL_BTN_SHARED_CONTEXT
 class TPanel {
 public:
     void* vtable;                       // +0x00
@@ -83,8 +85,10 @@ public:
     unsigned char need_restore;         // +0xF3
     TPanel(); // constructor at 004648B0, defined elsewhere
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
 // TButtonPanel extends TPanel, 0x2B8 bytes total
+#ifndef PNL_BTN_SHARED_CONTEXT
 class __declspec(novtable) TButtonPanel : public TPanel {
 public:
     long id[9];                         // +0xF4 (36 bytes)
@@ -135,6 +139,7 @@ public:
 
     TButtonPanel();
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
 TButtonPanel::TButtonPanel()
 {
@@ -179,10 +184,7 @@ TButtonPanel::TButtonPanel()
     disabled = 0;
     sound_number = -1;
 
-    // Manual vtable write (after all scalar fields, like original)
-    *(void**)this = (void*)0x570FC8;
-
-    // Override TPanel's panel_type
+    // The compiler emits the derived vptr as part of normal construction.
     ((TPanel*)this)->panel_type = 3;
 
     // Array initialization loop (9 iterations)

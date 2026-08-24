@@ -1,5 +1,6 @@
 extern "C" void __cdecl rge_read(int handle, void* buffer, int size);
 
+#ifndef ASP_LIST_SHARED_CONTEXT
 class RGE_Color_Table;
 class RGE_Sprite;
 class TDrawArea;
@@ -31,6 +32,7 @@ public:
 
     void load(int param_1, RGE_Sprite** param_2);
 };
+#endif
 
 void RGE_Active_Sprite_List::load(int param_1, RGE_Sprite** param_2) {
     unsigned char cVar4;

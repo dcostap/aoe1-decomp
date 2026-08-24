@@ -1,3 +1,4 @@
+#ifndef ASP_LIST_SHARED_CONTEXT
 class RGE_Sprite;
 
 class RGE_Active_Sprite {
@@ -30,6 +31,7 @@ public:
 
     short frame(RGE_Sprite* param_1);
 };
+#endif
 
 short RGE_Active_Sprite_List::frame(RGE_Sprite* param_1) {
     RGE_Active_Sprite_Node* node = this->list;

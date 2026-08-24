@@ -1,3 +1,4 @@
+#ifndef PNL_BTN_SHARED_CONTEXT
 class TButtonPanel {
 public:
     void set_text_pos(long x, long y);
@@ -5,6 +6,7 @@ public:
     void set_font(void* font, long width, long height);
     void set_text_info(char* text, void* font, long width, long height, long x, long y);
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
 void TButtonPanel::set_text_info(char* text, void* font, long width, long height, long x, long y) {
     set_text_pos(x, y);

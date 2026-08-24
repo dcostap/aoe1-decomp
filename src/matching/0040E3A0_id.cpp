@@ -2,24 +2,33 @@
 // AIModule::id - returns struct by value. VC5 NRVO writes to hidden output ptr.
 #include <string.h>
 
-struct AIModuleID {
-    void* vtable;
+#ifndef AOE1_AIMODULE_TU_CONTEXT
+class AIModuleID {
+    virtual ~AIModuleID();
     int id;
     int data[0x10];
 };
 
 class AIModule {
 public:
-    char gap_00[8];
-    int some_id;
-    int some_data[0x10];
+    virtual ~AIModule();
+    AIModuleID idValue;
+    int playerNumberValue;
+    char playerNameValue[64];
+    int runningValue;
+    int pausedValue;
+    int logHistoryValue;
+    int logCommonHistoryValue;
+    void* historyLogFile;
+    char historyLogFilename[64];
+    int intelligenceLevelValue;
+    int priorityValue;
+    int processFrameValue;
 
-    void id(AIModuleID& result) const;
+    AIModuleID id() const;
 };
+#endif
 
-void AIModule::id(AIModuleID& result) const {
-    volatile int dummy = 0;
-    result.id = this->some_id;
-    memcpy(result.data, this->some_data, 0x40);
-    result.vtable = (void*)0x56E928;
+AIModuleID AIModule::id() const {
+    return this->idValue;
 }

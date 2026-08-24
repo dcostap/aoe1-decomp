@@ -1,12 +1,5 @@
-class BuildItem {
-public:
-    virtual ~BuildItem();
-    char gap_04[164];
-    int skipCycles_;
+#include "../../include/aiblditm_context.h"
 
-    int skipCycles() const;
-};
-
-int BuildItem::skipCycles() const {
-    return this->skipCycles_;
+int BuildItem::skipCycles() {
+    return skipCyclesValue;
 }

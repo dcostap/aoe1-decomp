@@ -1,12 +1,5 @@
-class BuildItem {
-public:
-    virtual ~BuildItem();
-    char gap_04[164];
-    int skipCycles_;
+#include "../../include/aiblditm_context.h"
 
-    void setSkipCycles(int);
-};
-
-void BuildItem::setSkipCycles(int val) {
-    this->skipCycles_ = val;
+void BuildItem::setSkipCycles(int value) {
+    skipCyclesValue = value;
 }

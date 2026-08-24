@@ -1,18 +1,17 @@
 // VA: 0040BF40 DiplomacyAIModule::DiplomacyAIModule (EH ctor)
 // Source: aidipmod.cpp lines 40-47
-// Size: 163 bytes, EH-framed (/GX) — config/flags/0040BF40_DiplomacyAIModule.rsp
+// Size: 163 bytes, EH-framed (/GX) in the grouped aidipmod translation unit.
 //
-// The original writes the derived vptr after md=0 and the file-handle reload.
-// VC5's normal derived-vptr initialization writes it before md=0.
-// novtable plus this proven explicit store preserves the original order.
+// The policy-valid natural constructor keeps VC5's derived-vptr initialization.
+// The shipped bytes store that vptr later, so this owner is observed in the TU.
 // Base size is 0xF0: vptr plus the 0xEC-byte base tail.
-// Exact check: 163/163 bytes, owner symbol matched, direct calls matched.
 
 #include "..\..\include\game_globals.h"
 
 class MainDecisionAIModule;
 
-class __declspec(novtable) AIModule {
+#ifndef AOE1_AIDIPMOD_TU_CONTEXT
+class AIModule {
 public:
     char _gap_04[0xEC];
 
@@ -21,7 +20,7 @@ public:
     AIModule(const char* name, unsigned long help_id, int param1, int param2);
 };
 
-class __declspec(novtable) DiplomacyAIModule : public AIModule {
+class DiplomacyAIModule : public AIModule {
 public:
     MainDecisionAIModule* md;            // +0xF0
     int dislikeTable[10];                // +0xF4
@@ -30,15 +29,14 @@ public:
 
     DiplomacyAIModule(int param, int file_handle);
 };
+#endif
 
 extern int __cdecl rge_read(int handle, void* buf, int size);
-extern void* DiplomacyAIModule_vtable;
 
 DiplomacyAIModule::DiplomacyAIModule(int param, int file_handle)
     : AIModule("Diplomacy AI", 0x3EB, param, 0)
 {
     this->md = 0;
-    *(void**)this = &DiplomacyAIModule_vtable;
     unsigned char* cp = this->changeableTable;
     int* lp = this->likeTable;
     int count = 10;

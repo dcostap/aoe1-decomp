@@ -1,6 +1,7 @@
 extern "C" char* __cdecl strcpy(char* dest, const char* src);
 extern "C" char* __cdecl strncpy(char* dest, const char* src, unsigned int count);
 
+#ifndef AOE1_AIMODULE_TU_CONTEXT
 class AIModule {
 public:
     char gap_00[0x4C];
@@ -9,6 +10,7 @@ public:
 
     void setPlayer(int playerNumber, char* playerName);
 };
+#endif
 
 extern char s_Unknown[];
 

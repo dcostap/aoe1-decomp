@@ -16,6 +16,7 @@
 
 #include <stdlib.h>
 
+#ifndef AOE1_AIMDMOD_TU_CONTEXT_H
 class RGE_Static_Object {
 public:
     char gap_00[4];
@@ -36,6 +37,7 @@ public:
 
     int addObject(RGE_Static_Object* obj);
 };
+#endif
 
 int MainDecisionAIModule::addObject(RGE_Static_Object* obj) {
     if (obj == NULL) return 0;

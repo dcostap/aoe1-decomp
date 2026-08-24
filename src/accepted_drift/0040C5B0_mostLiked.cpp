@@ -12,6 +12,7 @@
 
 class MainDecisionAIModule;
 
+#ifndef AOE1_AIDIPMOD_TU_CONTEXT
 class DiplomacyAIModule {
 public:
     char gap_00[0xF0];
@@ -20,11 +21,12 @@ public:
     int likeTable[10];                   // +0x11C
     unsigned char changeableTable[10];   // +0x144
 
-    int mostLiked(int param1, int param2);
-    int isEnemy(int id);
+    int mostLiked(int param1, int param2) const;
+    int isEnemy(int id) const;
 };
+#endif
 
-int DiplomacyAIModule::mostLiked(int param1, int param2)
+int DiplomacyAIModule::mostLiked(int param1, int param2) const
 {
     int result;
     int delta;

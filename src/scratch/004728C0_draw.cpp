@@ -82,21 +82,28 @@ __declspec(dllimport) int __stdcall SelectClipRgn(void* hdc, void* rgn);
 __declspec(dllimport) int __stdcall SetBkMode(void* hdc, int mode);
 __declspec(dllimport) unsigned long __stdcall SetTextColor(void* hdc, unsigned long color);
 __declspec(dllimport) int __stdcall TextOutA(void* hdc, int x, int y, const char* s, int len);
+#ifndef PNL_BTN_SHARED_CONTEXT
 __declspec(dllimport) int __stdcall GetTextExtentPoint32A(void* hdc, const char* s, int len, void* size);
+#endif
 }
 
+#ifndef PNL_BTN_SHARED_CONTEXT
 struct tagRECT {
     long left;
     long top;
     long right;
     long bottom;
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
+#ifndef PNL_BTN_SHARED_CONTEXT
 struct tagSIZE {
     long cx;
     long cy;
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
+#ifndef PNL_BTN_SHARED_CONTEXT
 class TDrawArea {
 public:
     void Clear(tagRECT* rect, unsigned char color);
@@ -119,12 +126,15 @@ public:
                      unsigned char c1, unsigned char c2, unsigned char c3,
                      unsigned char c4, unsigned char c5, unsigned char c6);
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
+#ifndef PNL_BTN_SHARED_CONTEXT
 class TShape {
 public:
     void shape_minmax(long* x_min, long* y_min, long* x_max, long* y_max, int index);
     void shape_draw(TDrawArea* area, long x, long y, int index, unsigned char a, unsigned char* b);
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
 class TPanel;
 class TButtonPanel;
@@ -135,6 +145,7 @@ class TButtonPanel;
 #define VPAD8(n) VPAD4(n) VPAD4(n##_4)
 #define VPAD16(n) VPAD8(n) VPAD8(n##_8)
 
+#ifndef PNL_BTN_SHARED_CONTEXT
 class TPanel {
 public:
     virtual ~TPanel();
@@ -143,9 +154,9 @@ public:
     virtual void draw_setup(int clear);      // slot 0x28
     virtual void draw_finish();              // slot 0x2C
     virtual void parent_slot_130x30();       // slot 0x30 pad
-    virtual void parent_slot_34(tagRECT* rect);  // slot 0x34
+    virtual void draw_rect(tagRECT* rect);  // slot 0x34
     virtual void parent_slot_38pad();        // slot 0x38 pad
-    virtual void parent_slot_3C(tagRECT* rect);  // slot 0x3C
+    virtual void draw_rect2(tagRECT* rect);  // slot 0x3C
 
     char gap_04[8];                     // +0x04
     long pnl_x;                         // +0x0C
@@ -171,7 +182,9 @@ public:
     unsigned char color;                // +0xEF
     char gap_F0[4];                     // +0xF0
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
+#ifndef PNL_BTN_SHARED_CONTEXT
 class TButtonPanel : public TPanel {
 public:
     virtual ~TButtonPanel();
@@ -214,6 +227,7 @@ public:
 
     void draw();
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
 void TButtonPanel::draw()
 {
@@ -234,9 +248,9 @@ void TButtonPanel::draw()
         TPanel* parent = this->parent_panel;
         if (parent != 0) {
             if (this->bevel_type >= 2 && this->bevel_type <= 4) {
-                parent->parent_slot_3C(&this->clip_rect);
+                parent->draw_rect2(&this->clip_rect);
             } else if (parent->just_drawn == 0) {
-                parent->parent_slot_34(&this->clip_rect);
+                parent->draw_rect(&this->clip_rect);
             }
         }
     }

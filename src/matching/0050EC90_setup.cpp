@@ -16,6 +16,7 @@
 
 #include <stdio.h>
 
+#ifndef TM_CO_OB_SHARED_CONTEXT
 class RGE_Sprite;
 class RGE_Sound;
 
@@ -81,6 +82,7 @@ public:
 
     int setup(FILE* file, RGE_Sprite** sprites, RGE_Sound** sounds, short count);
 };
+#endif
 
 int TRIBE_Master_Combat_Object::setup(FILE* file, RGE_Sprite** sprites,
                                       RGE_Sound** sounds, short count)

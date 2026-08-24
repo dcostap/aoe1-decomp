@@ -1,14 +1,23 @@
 extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
 
 class TButtonPanel;
+#ifndef PNL_BTN_SHARED_CONTEXT
+class TPanel {
+public:
+    void action(TButtonPanel*, int, long, long);
+};
+#endif
 
+#ifndef PNL_BTN_SHARED_CONTEXT
 class TDigital {
 public:
     int is_playing(void);
     void stop(void);
     int play(void);
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
+#ifndef PNL_BTN_SHARED_CONTEXT
 class NotifyTarget {
 public:
     virtual void vf00(void);
@@ -58,7 +67,9 @@ public:
     virtual void vfB0(void);
     virtual void vfB4(TButtonPanel* panel, int code, long id, long id2);
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
+#ifndef PNL_BTN_SHARED_CONTEXT
 class TButtonPanel {
 public:
     virtual void vf00(void);
@@ -72,7 +83,7 @@ public:
     virtual void vf20(int mode);
 
     char gap_04[0x3C];
-    NotifyTarget* notify_target;
+    TPanel* parent_panel;
     char gap_44[0xB0];
     long id[9];
     long id2[9];
@@ -88,9 +99,11 @@ public:
     char gap_208[0xA8];
     long disabled;
 
+    void set_redraw(int);
     int capture_mouse(void);
     long mouse_right_down_action(long x, long y, int ctrl, int shift);
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
 long TButtonPanel::mouse_right_down_action(long x, long y, int ctrl, int shift) {
     if (disabled != 0) {
@@ -105,9 +118,9 @@ long TButtonPanel::mouse_right_down_action(long x, long y, int ctrl, int shift) 
     capture_mouse();
     is_down = 1;
     button_down_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Pnl_btn.cpp", 0x3CC);
-    vf20(1);
-    if (notify_target != 0) {
-        notify_target->vfB4(this, 5, id[cur_state], id2[cur_state]);
+    set_redraw(1);
+    if (parent_panel != 0) {
+        parent_panel->action(this, 5, id[cur_state], id2[cur_state]);
     }
     return 1;
 }

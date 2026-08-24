@@ -1,12 +1,5 @@
-class BuildItem {
-public:
-    virtual ~BuildItem();
-    char gap_04[160];
-    int buildCap_;
+#include "../../include/aiblditm_context.h"
 
-    int buildCap() const;
-};
-
-int BuildItem::buildCap() const {
-    return this->buildCap_;
+int BuildItem::buildCap() {
+    return buildCapValue;
 }

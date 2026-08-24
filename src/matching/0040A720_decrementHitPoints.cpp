@@ -1,3 +1,4 @@
+#ifndef AIBOBJ_CONTEXT_READY
 class BaseObject {
 public:
     virtual ~BaseObject();
@@ -6,6 +7,7 @@ public:
 
     void decrementHitPoints(int);
 };
+#endif
 
 void BaseObject::decrementHitPoints(int val) {
     this->hitPoints_ -= val;

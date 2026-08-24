@@ -1,3 +1,4 @@
+#ifndef AOE1_AIMODULE_TU_CONTEXT
 class AIModuleID {
 public:
     int id;
@@ -9,6 +10,7 @@ class AIModule {
 public:
     int purgeMessagesWithPriorityBelow(AIModuleID p, int priority);
 };
+#endif
 
 int AIModule::purgeMessagesWithPriorityBelow(AIModuleID p, int priority) {
     return 0;

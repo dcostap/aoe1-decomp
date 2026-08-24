@@ -1,3 +1,4 @@
+#ifndef ASP_LIST_SHARED_CONTEXT
 class RGE_Sprite;
 
 class RGE_Active_Sprite {
@@ -35,6 +36,7 @@ public:
 
     short get_facetindex(RGE_Sprite* param_1, short param_2);
 };
+#endif
 
 short RGE_Active_Sprite_List::get_facetindex(RGE_Sprite* param_1, short param_2) {
     RGE_Active_Sprite_Node* node = this->list;

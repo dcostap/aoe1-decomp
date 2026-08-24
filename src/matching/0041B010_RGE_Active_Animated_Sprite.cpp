@@ -8,6 +8,7 @@
 // - behavior: a separate frame_time value preserved the FPU product across __ftol and produced an exact 259-byte match.
 // FLAGS: /GX is required for the original constructor EH frame.
 
+#ifndef ASPRITE_FULL_TU
 class RGE_Sprite {
 public:
     char gap_00[0x5E];
@@ -47,6 +48,7 @@ public:
 extern double DAT_0056ee78;
 extern float DAT_0056ee80;
 extern int debug_rand(char* file, int line);
+#endif
 
 RGE_Active_Animated_Sprite::RGE_Active_Animated_Sprite(RGE_Sprite* spr)
     : RGE_Active_Sprite(spr)

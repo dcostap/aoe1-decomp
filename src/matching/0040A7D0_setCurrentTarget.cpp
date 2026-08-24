@@ -1,3 +1,4 @@
+#ifndef AIBOBJ_CONTEXT_READY
 class BaseObject {
 public:
     virtual ~BaseObject();
@@ -6,6 +7,7 @@ public:
 
     void setCurrentTarget(int);
 };
+#endif
 
 void BaseObject::setCurrentTarget(int val) {
     this->currentTarget_ = val;

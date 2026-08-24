@@ -1,3 +1,4 @@
+#ifndef ASP_LIST_SHARED_CONTEXT
 class RGE_Sprite;
 
 class RGE_Active_Sprite {
@@ -38,6 +39,7 @@ public:
     unsigned char get_frame(short* param_1, short* param_2, short* param_3,
                             short* param_4, RGE_Sprite* param_5, long param_6);
 };
+#endif
 
 unsigned char RGE_Active_Sprite_List::get_frame(short* param_1, short* param_2, short* param_3,
                                                 short* param_4, RGE_Sprite* param_5, long param_6) {

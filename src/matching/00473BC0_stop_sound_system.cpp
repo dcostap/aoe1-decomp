@@ -1,5 +1,6 @@
 class TDigital;
 
+#ifndef PNL_BTN_SHARED_CONTEXT
 class TButtonPanel {
 public:
     virtual void vf00(void);
@@ -59,6 +60,7 @@ public:
     char gap_04[0x144];
     TDigital* sound;
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
 void TButtonPanel::stop_sound_system(void) {
     if (this->sound != 0) {

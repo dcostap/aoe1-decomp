@@ -1,3 +1,4 @@
+#ifndef PNL_BTN_SHARED_CONTEXT
 class TButtonPanel {
 public:
     virtual void vf00(void);
@@ -13,10 +14,12 @@ public:
     char gap_04[0x1F2];
     short cur_state;
 
+    void set_redraw(int);
     void set_state(short param_1);
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
 void TButtonPanel::set_state(short param_1) {
     this->cur_state = param_1;
-    this->vf20(1);
+    this->set_redraw(1);
 }

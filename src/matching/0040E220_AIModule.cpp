@@ -3,21 +3,22 @@
 //
 // Attempt log:
 // - Prior scratch only initialized scalar fields and compiled to 64 bytes, missing the original inline string copy.
-// - SpruceGlow MATCH: use the real layout through processFrameValue, set the vptr manually after scalar fields, and
-//   call natural `strcpy(playerNameValue, "Unknown")`. VC5 inlines strcpy into the original REP string copy sequence.
-// Result: MATCH locally with `python tools/check_function.py --va 0040E220`.
+// - Use the real layout through processFrameValue and the natural string copy.
+//   The authentic TU context supplies the virtual class surface.
 
 extern "C" char* strcpy(char* dst, const char* src);
 
+#ifndef AOE1_AIMODULE_TU_CONTEXT
 class AIModuleID {
 public:
+    virtual ~AIModuleID();
     AIModuleID(char* str, int param);
     char gap_00[0x48];
 };
 
 class AIModule {
 public:
-    char vtable[4];             // +0x00
+    virtual ~AIModule();
     AIModuleID id;              // +0x04
     int playerNumberValue;      // +0x4C
     char playerNameValue[64];   // +0x50
@@ -33,8 +34,9 @@ public:
 
     AIModule();
 };
+#endif
 
-AIModule::AIModule() : id((char*)0x592A40, -1) {
+AIModule::AIModule() : idValue((char*)0x592A40, -1) {
     this->playerNumberValue = -1;
     this->runningValue = 0;
     this->pausedValue = 0;
@@ -44,6 +46,5 @@ AIModule::AIModule() : id((char*)0x592A40, -1) {
     this->intelligenceLevelValue = 5;
     this->priorityValue = 50;
     this->processFrameValue = 0;
-    *(int*)this = 0x56E930;
     strcpy(this->playerNameValue, (const char*)0x57F074);
 }

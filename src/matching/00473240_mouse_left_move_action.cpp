@@ -8,7 +8,14 @@
 extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
 
 class TButtonPanel;
+#ifndef PNL_BTN_SHARED_CONTEXT
+class TPanel {
+public:
+    void action(TButtonPanel*, int, long, long);
+};
+#endif
 
+#ifndef PNL_BTN_SHARED_CONTEXT
 class NotifyTarget {
 public:
     virtual void vf00(void);
@@ -58,7 +65,9 @@ public:
     virtual void vfB0(void);
     virtual void vfB4(TButtonPanel* panel, int code, long id, long id2);
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
+#ifndef PNL_BTN_SHARED_CONTEXT
 class TButtonPanel {
 public:
     virtual void vf00(void);
@@ -111,7 +120,7 @@ public:
     virtual int is_inside(long x, long y);
 
     char gap_04[0x3C];
-    NotifyTarget* notify_target;       // +0x40
+    TPanel* parent_panel;              // +0x40
     char gap_44[0xB0];                 // to +0xF4
     long id[9];                        // +0xF4
     long id2[9];                       // +0x118
@@ -121,8 +130,10 @@ public:
     char gap_1FC[0x8];                 // to +0x204
     unsigned long button_down_time;    // +0x204
 
+    void set_redraw(int);
     long mouse_left_move_action(long x, long y, int ctrl, int shift);
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
 long TButtonPanel::mouse_left_move_action(long x, long y, int ctrl, int shift) {
     int new_state = (this->is_inside(x, y) != 0);
@@ -131,15 +142,15 @@ long TButtonPanel::mouse_left_move_action(long x, long y, int ctrl, int shift) {
         if (new_state != 0) {
             this->button_down_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Pnl_btn.cpp", 0x389);
         }
-        this->vf20(1);
-        NotifyTarget* target = this->notify_target;
+        this->set_redraw(1);
+        TPanel* target = this->parent_panel;
         if (this->is_down != 0) {
             if (target != 0) {
-                target->vfB4(this, 2, this->id[this->cur_state], this->id2[this->cur_state]);
+                target->action(this, 2, this->id[this->cur_state], this->id2[this->cur_state]);
                 return 1;
             }
         } else if (target != 0) {
-            target->vfB4(this, 3, this->id[this->cur_state], this->id2[this->cur_state]);
+            target->action(this, 3, this->id[this->cur_state], this->id2[this->cur_state]);
         }
     }
     return 1;

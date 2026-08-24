@@ -1,3 +1,4 @@
+#ifndef AIBOBJ_CONTEXT_READY
 class BaseObject {
 public:
     virtual ~BaseObject();
@@ -6,6 +7,7 @@ public:
 
     float currentTargetXPosition() const;
 };
+#endif
 
 float BaseObject::currentTargetXPosition() const {
     return this->currentTargetXPosition_;

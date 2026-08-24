@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 
+#ifndef TM_CO_OB_SHARED_CONTEXT
 class RGE_Sprite;
 class RGE_Sound;
 
@@ -19,6 +20,7 @@ public:
     TRIBE_Master_Combat_Object(FILE* param_1, RGE_Sprite** param_2, RGE_Sound** param_3, short param_4, int param_5);
     int setup(FILE* param_1, RGE_Sprite** param_2, RGE_Sound** param_3, short param_4);
 };
+#endif
 
 TRIBE_Master_Combat_Object::TRIBE_Master_Combat_Object(FILE* param_1, RGE_Sprite** param_2, RGE_Sound** param_3, short param_4, int param_5)
     : RGE_Master_Combat_Object(param_1, param_2, param_3, param_4, 0) {

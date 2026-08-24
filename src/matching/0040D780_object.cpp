@@ -19,6 +19,7 @@
 extern void* __cdecl operator new(unsigned int size);
 extern void __cdecl operator delete(void* p);
 
+#ifndef AOE1_AIMDMOD_TU_CONTEXT_H
 class UnitAIModule;
 
 class UnitAIModule {
@@ -61,26 +62,23 @@ public:
 
 class AIModule {
 public:
-    virtual void v00();
-    virtual int vf04();
-    virtual int vf08();
-    virtual int vf0C();
-    virtual int vf10();
-    virtual int vf14();
-    virtual int vf18();
-    virtual int vf1C();
-    virtual int vf20();
-    virtual int vf24();
-    virtual int vf28();
-    virtual int vf2C();
-    virtual int vf30();
-    virtual int vf34();
-    virtual int vf38();
-    virtual int vf3C();
-    virtual int vf40();
-    virtual int vf44();
-    virtual int vf48();
-    virtual int canPerformAction(int obj_id, int filter);
+    virtual ~AIModule();
+    virtual int loggingHistory();
+    virtual void setLogHistory(int);
+    virtual void toggleLogHistory();
+    virtual void setHistoryFilename(char*);
+    virtual int loggingCommonHistory();
+    virtual void setLogCommonHistory(int);
+    virtual void toggleLogCommonHistory();
+    virtual int loadState(char*);
+    virtual int saveState(char*);
+    virtual int gleanState(int);
+    virtual int processMessage(void*);
+    virtual int update(int);
+    virtual void setCallbackMessage(void*);
+    virtual int filterOutMessage(void*);
+
+    char gap_04[0xEC];
 };
 
 template <class T>
@@ -112,15 +110,23 @@ public:
 
 class MainDecisionAIModule : public AIModule {
 public:
-    char gap_04[0xF0 - 0x04];
     RGE_Player* player;       // +F0
     ManagedArray<int> objects; // +F4
+
+    virtual ~MainDecisionAIModule();
+    virtual void setLogHistory(int);
+    virtual int save(int);
+    virtual int addObject(RGE_Static_Object*);
+    virtual int removeObject(int);
+    virtual int objectGroupThatCanPerformAction(int);
+    virtual int canPerformAction(int, int);
 
     RGE_Static_Object* object(int object_id, int type, int class_id, int action,
                               int can_perform_action, int current_target,
                               int current_target_type, int unused, int state,
                               int attribute_amount);
 };
+#endif
 
 RGE_Static_Object* MainDecisionAIModule::object(int object_id, int type, int class_id, int action,
                                                 int can_perform_action, int current_target,

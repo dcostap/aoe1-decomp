@@ -1,3 +1,4 @@
+#ifndef AOE1_AIMODULE_TU_CONTEXT
 class AIModule {
 public:
     virtual ~AIModule();
@@ -6,4 +7,9 @@ public:
 
     char * playerName();
 };
+#endif
+#ifdef AOE1_AIMODULE_TU_CONTEXT
+char* AIModule::playerName() { return this->playerNameValue; }
+#else
 char * AIModule::playerName() { return this->playerName_; }
+#endif

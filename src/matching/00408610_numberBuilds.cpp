@@ -1,12 +1,5 @@
-class BuildItem {
-public:
-    virtual ~BuildItem();
-    char gap_04[156];
-    int numberBuilds_;
+#include "../../include/aiblditm_context.h"
 
-    int numberBuilds() const;
-};
-
-int BuildItem::numberBuilds() const {
-    return this->numberBuilds_;
+int BuildItem::numberBuilds() {
+    return numberBuildsValue;
 }

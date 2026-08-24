@@ -6,6 +6,7 @@
 struct _iobuf;
 extern int __cdecl fclose(_iobuf*);
 
+#ifndef AOE1_AIMODULE_TU_CONTEXT
 class AIModuleID {
 public:
     virtual ~AIModuleID();
@@ -13,22 +14,19 @@ public:
 
 class AIModule {
 public:
-    void* vtable;
+    virtual ~AIModule();
     char idValue[0x48];          // at +4
     char gap_4C[0x50];
     int logCommonHistoryValue;   // at +0x9C
 
     ~AIModule();
 };
+#endif
 
 extern _iobuf* DAT_00592A44;
-extern void* AIModule_vtable;
-
 AIModule::~AIModule() {
-    vtable = &AIModule_vtable;
     if (logCommonHistoryValue != 0 && DAT_00592A44 != 0) {
         fclose(DAT_00592A44);
         DAT_00592A44 = 0;
     }
-    ((AIModuleID*)&this->idValue)->AIModuleID::~AIModuleID();
 }

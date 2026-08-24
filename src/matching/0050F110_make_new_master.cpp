@@ -1,5 +1,6 @@
 // first pass: direct new-expression for the EH-framed factory helper
 // if this is sticky, the only real follow-up is whether /GX is required to keep the ctor/new basin
+#ifndef TM_CO_OB_SHARED_CONTEXT
 class RGE_Master_Static_Object {
 public:
     void* vtable_ptr;
@@ -17,6 +18,7 @@ public:
     TRIBE_Master_Combat_Object(TRIBE_Master_Combat_Object* source, int do_setup);
     RGE_Master_Static_Object* make_new_master(void);
 };
+#endif
 
 RGE_Master_Static_Object* TRIBE_Master_Combat_Object::make_new_master(void) {
     return new TRIBE_Master_Combat_Object(this, 1);

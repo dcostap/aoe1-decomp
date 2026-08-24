@@ -3,6 +3,7 @@
 // BINARY NOTE: The PDB owner is protected setup(TRIBE_Master_Combat_Object*).
 // Its body is [0050EAE0,0050EB60), and its base call is 0044FFB0.
 
+#ifndef TM_CO_OB_SHARED_CONTEXT
 class RGE_Sprite;
 class RGE_Sound;
 class RGE_Master_Static_Object;
@@ -85,6 +86,7 @@ public:
 protected:
     int setup(TRIBE_Master_Combat_Object* src);
 };
+#endif
 
 int TRIBE_Master_Combat_Object::setup(TRIBE_Master_Combat_Object* src)
 {

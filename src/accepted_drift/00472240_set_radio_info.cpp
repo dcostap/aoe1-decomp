@@ -23,12 +23,15 @@
 class TDigital;
 class TShape;
 
+#ifndef PNL_BTN_SHARED_CONTEXT
 class TPanel {
 public:
     virtual ~TPanel() {}
     char pad_04[0xF0];
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
+#ifndef PNL_BTN_SHARED_CONTEXT
 class TButtonPanel : public TPanel {
 public:
     virtual ~TButtonPanel() {}
@@ -60,6 +63,7 @@ public:
 
     void set_radio_info(TButtonPanel** buttons, short count);
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
 void TButtonPanel::set_radio_info(TButtonPanel** buttons, short count) {
     int old_radio = (int)this->radio_buttons;

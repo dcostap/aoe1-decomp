@@ -1,3 +1,4 @@
+#ifndef PNL_BTN_SHARED_CONTEXT
 class TButtonPanel {
 public:
     virtual void vf00(void);
@@ -14,13 +15,15 @@ public:
     unsigned long highlight_text_color1[9];
     unsigned long highlight_text_color2[9];
 
+    void set_redraw(int);
     void set_highlight_text_color(int state, unsigned long color1, unsigned long color2);
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
 void TButtonPanel::set_highlight_text_color(int state, unsigned long color1, unsigned long color2) {
     if (state >= 0 && state <= 8) {
         highlight_text_color1[state] = color1;
         highlight_text_color2[state] = color2;
-        vf20(1);
+        set_redraw(1);
     }
 }

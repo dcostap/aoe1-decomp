@@ -1,10 +1,12 @@
-class RGE_Sprite {
+#ifndef ASPRITE_FULL_TU
+class RGE_Active_Animated_Sprite {
 public:
-    char gap_0[0x14];
+    char gap_00[0x14];
     short frame;
-    void set_frame(short v);
+    void set_frame(short value);
 };
+#endif
 
-void RGE_Sprite::set_frame(short v) {
-    this->frame = v;
+void RGE_Active_Animated_Sprite::set_frame(short value) {
+    this->frame = value;
 }

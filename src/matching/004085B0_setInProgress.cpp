@@ -1,12 +1,5 @@
-class BuildItem {
-public:
-    virtual ~BuildItem();
-    char gap_04[124];
-    int inProgress_;
+#include "../../include/aiblditm_context.h"
 
-    void setInProgress(int);
-};
-
-void BuildItem::setInProgress(int val) {
-    this->inProgress_ = val;
+void BuildItem::setInProgress(int value) {
+    progressValue = value;
 }

@@ -1,12 +1,5 @@
-class BuildItem {
-public:
-    virtual ~BuildItem();
-    char gap_04[156];
-    int numberBuilds_;
-
-    void incrementNumberBuilds();
-};
+#include "../../include/aiblditm_context.h"
 
 void BuildItem::incrementNumberBuilds() {
-    this->numberBuilds_++;
+    ++numberBuildsValue;
 }

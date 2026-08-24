@@ -1,3 +1,4 @@
+#ifndef ASPRITE_FULL_TU
 class RGE_Sprite {
 public:
     void get_facetindex(int facet, int frame, long* out_index);
@@ -11,6 +12,7 @@ public:
 
     virtual short get_facetindex(short facet);
 };
+#endif
 
 short RGE_Active_Animated_Sprite::get_facetindex(short facet) {
     long facet_index;

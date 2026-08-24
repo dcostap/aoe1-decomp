@@ -21,6 +21,7 @@ class RGE_Static_Object;
 extern "C" void* __cdecl operator_new(unsigned int size);
 extern "C" void __cdecl operator_delete(void* ptr);
 
+#ifndef AOE1_AIMDMOD_TU_CONTEXT_H
 class RGE_Game_World {
 public:
     char gap_00[0x88];
@@ -45,6 +46,7 @@ public:
 
     int numberObjectsWithGroup(int groupId);
 };
+#endif
 
 int MainDecisionAIModule::numberObjectsWithGroup(int groupId) {
     int count = 0;

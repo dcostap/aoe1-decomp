@@ -3,6 +3,7 @@
 // The priority argument is unused. Scope exit preserves AIModuleID cleanup.
 // Exact check: 14/14 bytes with the original direct destructor target.
 
+#ifndef AOE1_AIMODULE_TU_CONTEXT
 class AIModuleID {
 public:
     int id;
@@ -14,6 +15,7 @@ class AIModule {
 public:
     int purgeCallbacksWithPriorityBelow(AIModuleID p, int priority);
 };
+#endif
 
 int AIModule::purgeCallbacksWithPriorityBelow(AIModuleID p, int priority) {
     return 0;

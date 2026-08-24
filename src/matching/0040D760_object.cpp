@@ -1,3 +1,4 @@
+#ifndef AOE1_AIMDMOD_TU_CONTEXT_H
 class RGE_Static_Object;
 
 class RGE_Game_World {
@@ -18,6 +19,7 @@ public:
 
     RGE_Static_Object* object(int param);
 };
+#endif
 
 RGE_Static_Object* MainDecisionAIModule::object(int param) {
     return this->player->world->object(param);

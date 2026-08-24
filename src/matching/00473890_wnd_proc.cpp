@@ -4,12 +4,23 @@
 
 extern "C" __declspec(dllimport) long __stdcall SendMessageA(void* hwnd, unsigned msg, unsigned wparam, long lparam);
 
+#ifndef PNL_BTN_SHARED_CONTEXT
+class TDrawArea {
+public:
+    char gap_00[4];
+    void* Wnd;
+};
+#endif
+
+#ifndef PNL_BTN_SHARED_CONTEXT
 class TPanel {
 public:
     virtual ~TPanel();
     long wnd_proc(void* hwnd, unsigned msg, unsigned wp, long lp);
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
+#ifndef PNL_BTN_SHARED_CONTEXT
 class TButtonPanel : public TPanel {
 public:
     virtual void pad2();
@@ -23,7 +34,7 @@ public:
     virtual void padA();
 
     char gap_004[0x20 - 0x04];
-    void* hwnd_holder;
+    TDrawArea* render_area;
     char gap_024[0x13C - 0x24];
     int buttonTypeValue;
     char gap_140[0x1F8 - 0x140];
@@ -31,9 +42,11 @@ public:
     char gap_1FC[0x2AC - 0x1FC];
     unsigned key_down;
 
+    void set_redraw(int);
     long wnd_proc(void* hwnd, unsigned msg, unsigned wp, long lp);
     void do_action();
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
 long TButtonPanel::wnd_proc(void* hwnd, unsigned msg, unsigned wp, long lp) {
     if (msg == 0x101 && this->key_down != 0 && wp == this->key_down) {
@@ -42,8 +55,8 @@ long TButtonPanel::wnd_proc(void* hwnd, unsigned msg, unsigned wp, long lp) {
         if (buttonType != 2) {
             this->is_down = 0;
         }
-        this->v20(1);
-        SendMessageA(*(void**)((char*)this->hwnd_holder + 4), 0x0F, 0, 0);
+        this->set_redraw(1);
+        SendMessageA(this->render_area->Wnd, 0x0F, 0, 0);
         this->do_action();
         return 1;
     }

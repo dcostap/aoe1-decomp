@@ -4,6 +4,7 @@
 // unused. Scope exit calls the direct AIModuleID destructor and returns zero.
 // Exact after matching the vptr-bearing object size and the destructor ABI.
 
+#ifndef AOE1_AIMODULE_TU_CONTEXT
 class AIModuleID {
 public:
     virtual ~AIModuleID();
@@ -14,6 +15,7 @@ class AIModule {
 public:
     int purgeMessagesWithID(AIModuleID p, int id);
 };
+#endif
 
 int AIModule::purgeMessagesWithID(AIModuleID p, int id) {
     return 0;

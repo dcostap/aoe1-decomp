@@ -1,3 +1,4 @@
+#ifndef PNL_BTN_SHARED_CONTEXT
 class TPanel {
 public:
     virtual void vf00(void);
@@ -65,13 +66,17 @@ public:
 
     long handle_mouse_down(unsigned char button, long x, long y, int ctrl, int shift);
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
+#ifndef PNL_BTN_SHARED_CONTEXT
 class TButtonPanel : public TPanel {
 public:
     char gap_0C[0x228];
 
+    int is_inside(long, long);
     long handle_mouse_down(unsigned char button, long x, long y, int ctrl, int shift);
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
 long TButtonPanel::handle_mouse_down(unsigned char button, long x, long y, int ctrl, int shift) {
     if (visible == 0) {
@@ -80,7 +85,7 @@ long TButtonPanel::handle_mouse_down(unsigned char button, long x, long y, int c
     if (active != 0) {
         return 0;
     }
-    if (vfE4(x, y) == 0) {
+    if (is_inside(x, y) == 0) {
         return 0;
     }
     return ((TPanel*)this)->handle_mouse_down(button, x, y, ctrl, shift);

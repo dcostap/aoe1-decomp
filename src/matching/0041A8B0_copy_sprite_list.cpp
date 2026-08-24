@@ -1,3 +1,4 @@
+#ifndef ASP_LIST_SHARED_CONTEXT
 class RGE_Sprite;
 class RGE_Active_Sprite;
 
@@ -28,6 +29,7 @@ public:
     void add_sprite(RGE_Sprite* sprite, unsigned char order, long offset_x, long offset_y);
     RGE_Active_Sprite_Node* copy_sprite_list();
 };
+#endif
 
 RGE_Active_Sprite_Node* RGE_Active_Sprite_List::copy_sprite_list() {
     RGE_Active_Sprite_Node* old_list = this->list;

@@ -1,3 +1,4 @@
+#ifndef ASPRITE_FULL_TU
 class RGE_Color_Table;
 class TDrawArea;
 class RGE_Sprite {
@@ -18,6 +19,7 @@ public:
 
     void normal_draw(short param_1, long param_2, long param_3, RGE_Color_Table* param_4, TDrawArea* param_5);
 };
+#endif
 
 void RGE_Active_Animated_Sprite::normal_draw(short param_1, long param_2, long param_3, RGE_Color_Table* param_4, TDrawArea* param_5) {
     this->sprite->normal_draw((long)param_1, (long)this->frame, param_2, param_3, param_4, param_5);

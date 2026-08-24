@@ -1,12 +1,14 @@
 // 0040C010 DiplomacyAIModule::update
 // try 1: avoid bound local; reload player/world at loop bottom like original, no cached num_players.
 class MainDecisionAIModule;
+#ifndef AOE1_AIDIPMOD_TU_CONTEXT
 class AIModule { public: virtual ~AIModule() {} virtual void dummy1() {} char _gap_04[0xEC]; };
 class DiplomacyAIModule : public AIModule {
 public:
     MainDecisionAIModule* md; int dislikeTable[10]; int likeTable[10]; unsigned char changeableTable[10];
-    int update(int param); int isAlly(int id); int isAlliedWithMe(int id); void changeStance(int id, int a, int b);
+    virtual int update(int param); int isAlly(int id); int isAlliedWithMe(int id); void changeStance(int id, int a, int b);
 };
+#endif
 int DiplomacyAIModule::update(int)
 {
     int i = 1;

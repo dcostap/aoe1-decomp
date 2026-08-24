@@ -2,6 +2,7 @@
 
 void* operator new(unsigned int);
 void operator delete(void*);
+#ifndef AOE1_AIMDMOD_TU_CONTEXT_H
 class RGE_Static_Object;
 class RGE_Game_World { public: RGE_Static_Object* object(long id); };
 class GameShell { public: char gap_00[0x3C]; RGE_Game_World* world; };
@@ -18,6 +19,7 @@ public:
     long object_capacity;
     int numberBusyObjects();
 };
+#endif
 
 int MainDecisionAIModule::numberBusyObjects() {
     int count = 0;

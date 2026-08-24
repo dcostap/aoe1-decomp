@@ -1,3 +1,4 @@
+#ifndef AIBOBJ_CONTEXT_READY
 class BaseObject {
 public:
     virtual ~BaseObject();
@@ -6,6 +7,7 @@ public:
 
     void setYPosition(float);
 };
+#endif
 
 void BaseObject::setYPosition(float val) {
     this->yPosition_ = val;

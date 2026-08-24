@@ -1,3 +1,4 @@
+#ifndef PNL_BTN_SHARED_CONTEXT
 class TButtonPanel {
 public:
     virtual ~TButtonPanel();
@@ -5,5 +6,6 @@ public:
     int field_140;
     int drawType();
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
 int TButtonPanel::drawType() { return this->field_140; }

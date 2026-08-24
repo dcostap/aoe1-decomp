@@ -1,3 +1,4 @@
+#ifndef ASPRITE_FULL_TU
 class RGE_Sprite;
 
 class RGE_Active_Sprite {
@@ -13,6 +14,7 @@ class RGE_Sprite {
 public:
     unsigned char get_lowest_draw_level();
 };
+#endif
 
 unsigned char RGE_Active_Sprite::get_lowest_draw_level() {
     if (this->sprite != 0) {

@@ -3,6 +3,7 @@
 
 extern "C" void __cdecl free(void* block);
 
+#ifndef ASP_LIST_SHARED_CONTEXT
 class RGE_Sprite;
 class RGE_Static_Object;
 
@@ -32,6 +33,7 @@ public:
     RGE_Static_Object* owner;
     void remove_sprite(RGE_Sprite* param_1);
 };
+#endif
 
 void RGE_Active_Sprite_List::remove_sprite(RGE_Sprite* param_1) {
     RGE_Active_Sprite_Node* p = this->list;

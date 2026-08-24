@@ -8,8 +8,9 @@ extern "C" {
     void* __cdecl operator_new(size_t size);
 }
 
+ #ifndef AIBOBJ_CONTEXT_READY
 struct BaseObject {
-    void* vtable;
+    virtual ~BaseObject();
     class BaseObject* next;
     class BaseObject* prev;
     int numberGroupsValue;
@@ -37,6 +38,7 @@ struct BaseObject {
 
     BaseObject(const BaseObject& src);
 };
+#endif
 
 BaseObject::BaseObject(const BaseObject& src)
 {
@@ -62,8 +64,6 @@ BaseObject::BaseObject(const BaseObject& src)
     currentTargetXPositionValue = src.currentTargetXPositionValue;
     currentTargetYPositionValue = src.currentTargetYPositionValue;
     currentTargetZPositionValue = src.currentTargetZPositionValue;
-    vtable = (void*)0x56E798;
-    
     groupIDValue = (int*)operator_new(numberGroupsValue * 4);
     
     int i;

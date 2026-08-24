@@ -3,6 +3,7 @@
 // The remaining arguments are unused. Scope exit preserves AIModuleID cleanup.
 // Exact check: 14/14 bytes with the original direct destructor target.
 
+#ifndef AOE1_AIMODULE_TU_CONTEXT
 class AIModuleID {
 public:
     int id;
@@ -14,6 +15,7 @@ class AIModule {
 public:
     int purgeCallbacksWithData(AIModuleID id, int type, int priority, long data);
 };
+#endif
 
 int AIModule::purgeCallbacksWithData(AIModuleID id, int type, int priority, long data) {
     return 0;

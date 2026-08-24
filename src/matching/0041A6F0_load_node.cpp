@@ -15,6 +15,7 @@
 
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 
+#ifndef ASP_LIST_SHARED_CONTEXT
 class RGE_Sprite;
 class RGE_Static_Object;
 class RGE_Color_Table;
@@ -74,6 +75,7 @@ public:
     RGE_Active_Sprite_Node* list;
     RGE_Static_Object* owner;
 };
+#endif
 
 unsigned char RGE_Active_Sprite_List::load_node(int param_1, unsigned char param_2, RGE_Sprite** param_3) {
     RGE_Active_Sprite_Node* node;

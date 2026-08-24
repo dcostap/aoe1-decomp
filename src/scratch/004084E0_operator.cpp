@@ -1,4 +1,5 @@
-struct BuildItem { int pad; int priority; };
-int __cdecl operator_greater(const BuildItem& a, const BuildItem& b) {
-    return a.priority > b.priority;
+#include "../../include/aiblditm_context.h"
+
+int __cdecl operator>(const BuildItem& left, const BuildItem& right) {
+    return left.typeIDValue > right.typeIDValue;
 }

@@ -1,3 +1,4 @@
+#ifndef PNL_BTN_SHARED_CONTEXT
 class TButtonPanel {
 public:
     virtual void vf00(void);
@@ -16,8 +17,10 @@ public:
     short num_states;
     short cur_state;
 
+    void set_redraw(int);
     void set_state_by_id(long id);
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
 void TButtonPanel::set_state_by_id(long target_id) {
     int i;
@@ -25,7 +28,7 @@ void TButtonPanel::set_state_by_id(long target_id) {
     for (i = 0; i < num_states; i++) {
         if (id[i] == target_id) {
             cur_state = (short)i;
-            vf20(1);
+            set_redraw(1);
             return;
         }
     }

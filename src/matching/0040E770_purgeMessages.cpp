@@ -1,3 +1,4 @@
+#ifndef AOE1_AIMODULE_TU_CONTEXT
 class AIModuleID {
 public:
     virtual ~AIModuleID();
@@ -8,5 +9,6 @@ class AIModule {
 public:
     int purgeMessages(AIModuleID p);
 };
+#endif
 
 int AIModule::purgeMessages(AIModuleID p) { return 0; }

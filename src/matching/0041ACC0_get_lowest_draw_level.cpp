@@ -1,3 +1,4 @@
+#ifndef ASP_LIST_SHARED_CONTEXT
 class RGE_Active_Sprite {
 public:
     unsigned char get_lowest_draw_level();
@@ -19,6 +20,7 @@ public:
 
     unsigned char get_lowest_draw_level();
 };
+#endif
 
 unsigned char RGE_Active_Sprite_List::get_lowest_draw_level() {
     unsigned char min_level = 0x14;

@@ -1,5 +1,6 @@
 extern "C" void __cdecl rge_write(int file, void* data, int size);
 
+#ifndef ASP_LIST_SHARED_CONTEXT
 class RGE_Active_Sprite {
 public:
     virtual void vf00();
@@ -23,6 +24,7 @@ public:
 
     void save(int file);
 };
+#endif
 
 void RGE_Active_Sprite_List::save(int file) {
     RGE_Active_Sprite_Node* node = this->list;

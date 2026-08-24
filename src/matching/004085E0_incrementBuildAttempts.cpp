@@ -1,12 +1,5 @@
-class BuildItem {
-public:
-    virtual ~BuildItem();
-    char gap_04[132];
-    int buildAttempts_;
-
-    void incrementBuildAttempts();
-};
+#include "../../include/aiblditm_context.h"
 
 void BuildItem::incrementBuildAttempts() {
-    this->buildAttempts_++;
+    ++buildAttemptsValue;
 }

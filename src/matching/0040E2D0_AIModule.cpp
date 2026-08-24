@@ -4,13 +4,15 @@
 
 #include <string.h>
 
-struct AIModuleID {
+#ifndef AOE1_AIMODULE_TU_CONTEXT
+class AIModuleID {
+    virtual ~AIModuleID();
     char gap_00[0x48];
     AIModuleID(int a, char* str);
 };
 
 struct AIModule {
-    void* vtable;           // +0x00
+    virtual ~AIModule();
     AIModuleID id;          // +0x04, sizeof 0x48 → ends at +0x4C
     int field_4C;           // +0x4C
     char name[0x40];        // +0x50, string buffer
@@ -27,11 +29,25 @@ struct AIModule {
     AIModule();
     AIModule(int a, int b, int c, int d);
 };
+#endif
 
-// External vtable symbol
-extern void* AIModule_vtable;
-
+#ifdef AOE1_AIMODULE_TU_CONTEXT
+AIModule::AIModule(char* name, int id, int player, void* owner)
+    : idValue(name, id) {
+#else
 AIModule::AIModule(int a, int b, int c, int d) : id(a, (char*)b) {
+#endif
+#ifdef AOE1_AIMODULE_TU_CONTEXT
+    playerNumberValue = player;
+    runningValue = 0;
+    pausedValue = 0;
+    logHistoryValue = 0;
+    logCommonHistoryValue = 0;
+    historyLogFile = 0;
+    intelligenceLevelValue = 5;
+    priorityValue = 50;
+    processFrameValue = 0;
+#else
     field_4C = c;
     field_90 = 0;
     field_94 = 0;
@@ -41,6 +57,10 @@ AIModule::AIModule(int a, int b, int c, int d) : id(a, (char*)b) {
     field_E4 = 5;
     field_E8 = 50;
     field_EC = 0;
-    vtable = &AIModule_vtable;
+#endif
+#ifndef AOE1_AIMODULE_TU_CONTEXT
     strcpy(name, "");
+#else
+    strcpy(playerNameValue, "");
+#endif
 }

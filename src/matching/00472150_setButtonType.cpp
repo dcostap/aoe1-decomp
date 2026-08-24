@@ -1,3 +1,4 @@
+#ifndef PNL_BTN_SHARED_CONTEXT
 class TButtonPanel {
 public:
     virtual ~TButtonPanel();
@@ -5,5 +6,6 @@ public:
     int field_13C;
     void setButtonType(int v);
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
 void TButtonPanel::setButtonType(int v) { this->field_13C = v; }

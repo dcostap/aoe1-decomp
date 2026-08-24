@@ -16,11 +16,13 @@
 extern "C" __declspec(dllimport) long __stdcall SendMessageA(
     void* hwnd, unsigned int msg, unsigned int wparam, long lparam);
 
+#ifndef PNL_BTN_SHARED_CONTEXT
 class TDrawArea {
 public:
     char gap_00[0x04];
     void* Wnd;
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
 class TButtonPanel;
 
@@ -31,6 +33,7 @@ class TButtonPanel;
 #define VPAD16(n) VPAD8(n) VPAD8(n##_8)
 #define VPAD32(n) VPAD16(n) VPAD16(n##_16)
 
+#ifndef PNL_BTN_SHARED_CONTEXT
 class TPanel {
 public:
     virtual ~TPanel();
@@ -48,7 +51,9 @@ public:
     TPanel* parent_panel;
     char gap_44[0xB0];
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
+#ifndef PNL_BTN_SHARED_CONTEXT
 class TButtonPanel : public TPanel {
 public:
     virtual ~TButtonPanel();
@@ -69,6 +74,7 @@ public:
     void set_radio_button(void);
     void do_action(void);
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
 void TButtonPanel::do_action(void) {
     if (this->buttonTypeValue == 3) {

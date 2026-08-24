@@ -25,14 +25,15 @@
 //   constructor and nontrivial destructor restored the missing VC5 EH state
 //   transition and produced an exact match.
 //
-// The explicit derived-vtable write is retained only because the oracle proves
-// its delayed position and the natural compiler-owned-vptr form did not match.
+// The grouped wrapper uses the natural inherited virtual surface.  The former
+// metric-only explicit vtable write is not part of the policy-valid source.
 
 #include <new.h>
 #include <stdlib.h>
 
 extern "C" void __cdecl rge_read(int, void*, int);
 
+#ifndef AOE1_AIMDMOD_TU_CONTEXT_H
 class RGE_Player {};
 
 struct ManagedArray_RGE_Player {
@@ -64,7 +65,7 @@ public:
     virtual ~AIModule();
 };
 
-class __declspec(novtable) MainDecisionAIModule : public AIModule {
+class MainDecisionAIModule : public AIModule {
 public:
     RGE_Player* player;              // +0xF0
     ManagedArray_RGE_Player objects;  // +0xF4
@@ -72,6 +73,7 @@ public:
     MainDecisionAIModule(int param_1, RGE_Player* param_2, int param_3);
     virtual ~MainDecisionAIModule();
 };
+#endif
 
 MainDecisionAIModule::MainDecisionAIModule(int param_1, RGE_Player* param_2, int param_3)
     : AIModule("Main Decision AI", 1000, param_1, 0),
@@ -81,7 +83,6 @@ MainDecisionAIModule::MainDecisionAIModule(int param_1, RGE_Player* param_2, int
     RGE_Player* saved_p;
     int count;
 
-    *(void**)this = (void*)0x56E8D8;
     rge_read(param_3, &count, 4);
 
     param_1 = 0;

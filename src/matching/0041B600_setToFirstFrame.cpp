@@ -1,3 +1,4 @@
+#ifndef ASPRITE_FULL_TU
 class RGE_Active_Animated_Sprite {
 public:
     char gap_00[0x14];
@@ -8,6 +9,7 @@ public:
 
     void setToFirstFrame();
 };
+#endif
 
 void RGE_Active_Animated_Sprite::setToFirstFrame() {
     frame_changed = 1;

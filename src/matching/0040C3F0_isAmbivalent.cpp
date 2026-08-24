@@ -1,9 +1,11 @@
+#ifndef AOE1_AIDIPMOD_TU_CONTEXT
 class DiplomacyAIModule {
 public:
     int isDisliked(int player) const;
     int isLiked(int player) const;
-    int isAmbivalent(int player) const;
+int isAmbivalent(int player) const;
 };
+#endif
 
 int DiplomacyAIModule::isAmbivalent(int player) const {
     if (this->isDisliked(player) == 0) {

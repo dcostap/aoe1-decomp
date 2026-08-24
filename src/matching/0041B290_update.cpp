@@ -10,6 +10,7 @@
 //   before setting animate_flag and clearing frame_looped; this reproduces the
 //   oracle's CX load/decrement and exact 409-byte function without fake aliases.
 
+#ifndef ASPRITE_FULL_TU
 class RGE_Color_Table;
 class TDrawArea;
 
@@ -67,6 +68,7 @@ public:
 };
 
 extern double DAT_0056ee78;
+#endif
 void RGE_Active_Animated_Sprite::update(float param_1, float param_2)
 {
     frame_changed = 0;

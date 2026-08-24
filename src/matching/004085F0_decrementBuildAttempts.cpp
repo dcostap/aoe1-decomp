@@ -1,14 +1,8 @@
-class BuildItem {
-public:
-    char gap_0[0x88];
-    int field_88;
-
-    void decrementBuildAttempts();
-};
+#include "../../include/aiblditm_context.h"
 
 void BuildItem::decrementBuildAttempts() {
-    this->field_88--;
-    if (this->field_88 < 0) {
-        this->field_88 = 0;
+    --buildAttemptsValue;
+    if (buildAttemptsValue < 0) {
+        buildAttemptsValue = 0;
     }
 }

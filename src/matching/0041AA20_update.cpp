@@ -1,3 +1,4 @@
+#ifndef ASP_LIST_SHARED_CONTEXT
 class RGE_Active_Sprite {
 public:
     virtual void vf00();
@@ -22,6 +23,7 @@ public:
 
     void update(float param_1, float param_2);
 };
+#endif
 
 void RGE_Active_Sprite_List::update(float param_1, float param_2) {
     RGE_Active_Sprite_Node* node = this->list;

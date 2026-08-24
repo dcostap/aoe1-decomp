@@ -7,6 +7,7 @@
 // Probe 2: put the changeable (0..100) arm first; original cmp/je targets the
 // non-changeable arm while keeping the changeable arm inline.
 
+#ifndef AOE1_AIDIPMOD_TU_CONTEXT
 class DiplomacyWorld {
 public:
     virtual ~DiplomacyWorld();
@@ -42,8 +43,9 @@ public:
     int likeTable[10];                   // +0x11C
     unsigned char changeableTable[10];   // +0x144
 
-    void setStance(int player, int type, int value);
+void setStance(int player, int type, int value);
 };
+#endif
 
 void DiplomacyAIModule::setStance(int player, int type, int value)
 {

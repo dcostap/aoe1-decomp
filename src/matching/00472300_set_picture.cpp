@@ -1,5 +1,6 @@
 class TShape;
 
+#ifndef PNL_BTN_SHARED_CONTEXT
 class TButtonPanel {
 public:
     virtual void vf00(void);
@@ -22,11 +23,13 @@ public:
     TShape* pic[9];
     short pic_index[9];
 
+    void set_redraw(int);
     void set_picture(short param_1, TShape* param_2, short param_3);
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
 void TButtonPanel::set_picture(short param_1, TShape* param_2, short param_3) {
     this->pic[param_1] = param_2;
     this->pic_index[param_1] = param_3;
-    this->vf20(1);
+    this->set_redraw(1);
 }

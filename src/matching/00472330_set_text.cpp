@@ -11,6 +11,7 @@
 extern "C" void __cdecl free(void* ptr);
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 
+#ifndef PNL_BTN_SHARED_CONTEXT
 class TButtonPanel {
 public:
     virtual ~TButtonPanel();
@@ -29,6 +30,7 @@ public:
 
     void set_text(short state, char* text);
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
 void TButtonPanel::set_text(short state, char* text) {
     if (text1[state] != 0) {

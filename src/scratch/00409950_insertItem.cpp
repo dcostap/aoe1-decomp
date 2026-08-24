@@ -44,6 +44,8 @@
 #include <string.h>
 #include <stdlib.h>
 
+// The module wrapper supplies the canonical class surface.
+#ifndef AIBLDMOD_SHARED_CONTEXT
 class RGE_Master_Static_Object {
 public:
     virtual ~RGE_Master_Static_Object();
@@ -115,6 +117,7 @@ public:
     int buildListLengthValue;
     int insertItem(RGE_Player* player, int objType, int count, int itemType, int p5, int buildCap, int index);
 };
+#endif
 
 static const char s_SetGatherPercentage[] = "SetGatherPercentage";
 static const char s_AddedBuildListItem[] = "AddedBuildListItem";

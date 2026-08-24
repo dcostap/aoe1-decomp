@@ -1,3 +1,4 @@
+#ifndef PNL_BTN_SHARED_CONTEXT
 class TButtonPanel {
 public:
     char gap_00[0x1F6];
@@ -8,6 +9,7 @@ public:
 
     void get_text_color(short state, unsigned long* color1, unsigned long* color2);
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
 void TButtonPanel::get_text_color(short state, unsigned long* color1, unsigned long* color2) {
     if (state == -1) {

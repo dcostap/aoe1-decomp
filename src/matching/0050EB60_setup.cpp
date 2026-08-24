@@ -26,6 +26,7 @@ extern "C" {
 extern float save_game_version;
 extern float DAT_0057677c;
 
+#ifndef TM_CO_OB_SHARED_CONTEXT
 class RGE_Sprite;
 class RGE_Sound;
 class RGE_Master_Static_Object;
@@ -109,6 +110,7 @@ public:
 protected:
     int setup(int fd, RGE_Sprite** sprites, RGE_Sound** sounds);
 };
+#endif
 
 int TRIBE_Master_Combat_Object::setup(int fd, RGE_Sprite** sprites,
                                       RGE_Sound** sounds)

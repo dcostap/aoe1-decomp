@@ -1,3 +1,4 @@
+#ifndef PNL_BTN_SHARED_CONTEXT
 class TButtonPanel {
 public:
     virtual void vf00(void);
@@ -15,12 +16,14 @@ public:
     long font_wid;
     long font_hgt;
 
+    void set_redraw(int);
     void set_font(void* param_1, long param_2, long param_3);
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
 void TButtonPanel::set_font(void* param_1, long param_2, long param_3) {
     this->font = param_1;
     this->font_wid = param_2;
     this->font_hgt = param_3;
-    this->vf20(1);
+    this->set_redraw(1);
 }

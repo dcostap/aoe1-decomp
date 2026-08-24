@@ -1,3 +1,4 @@
+#ifndef AOE1_AIDIPMOD_TU_CONTEXT
 class PlayerWorld {
 public:
     char gap_00[0x3C];
@@ -25,10 +26,11 @@ public:
     char gap_00[0xF0];
     MainDecisionAIModule* md;
 
-    int isEnemy(int player);
+    int isEnemy(int player) const;
 };
+#endif
 
-int DiplomacyAIModule::isEnemy(int player) {
+int DiplomacyAIModule::isEnemy(int player) const {
     if (player > 0) {
         RGE_Player* pRVar1 = this->md->player;
         if (player <= pRVar1->world->player_num) {

@@ -1,3 +1,4 @@
+#ifndef ASPRITE_FULL_TU
 void rge_read(int handle, void* buffer, int size);
 
 class RGE_Sprite;
@@ -26,6 +27,7 @@ public:
 
     RGE_Active_Animated_Sprite(int param_1, RGE_Sprite** param_2);
 };
+#endif
 
 RGE_Active_Animated_Sprite::RGE_Active_Animated_Sprite(int param_1, RGE_Sprite** param_2)
     : RGE_Active_Sprite(param_1, param_2) {

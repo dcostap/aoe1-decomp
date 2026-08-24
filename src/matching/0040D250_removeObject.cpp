@@ -1,3 +1,4 @@
+#ifndef AOE1_AIMDMOD_TU_CONTEXT_H
 struct ManagedArray_Int {
     int* value;
     int numberValue;
@@ -20,6 +21,7 @@ public:
 
     int removeObject(int objectId);
 };
+#endif
 
 int MainDecisionAIModule::removeObject(int objectId) {
     int i = 0;

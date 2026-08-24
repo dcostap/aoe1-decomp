@@ -7,6 +7,7 @@
 //   ChangeStance is more complex than simple clamp (has player chain, weighted calc)
 // Baseline candidate: natural guarded switch with in-place table adjustments and clamps.
 
+#ifndef AOE1_AIDIPMOD_TU_CONTEXT
 class DiplomacyWorld {
 public:
     virtual ~DiplomacyWorld();
@@ -42,8 +43,9 @@ public:
     int likeTable[10];                   // +0x11C
     unsigned char changeableTable[10];   // +0x144
 
-    void changeStance(int player, int type, int value);
+void changeStance(int player, int type, int value);
 };
+#endif
 
 void DiplomacyAIModule::changeStance(int player, int type, int value)
 {

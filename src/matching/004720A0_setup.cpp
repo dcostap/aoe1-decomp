@@ -18,12 +18,15 @@
 class TDrawArea;
 class TDigital;
 
+#ifndef PNL_BTN_SHARED_CONTEXT
 class TPanel {
 public:
     virtual ~TPanel();
     long setup(TDrawArea* draw_area, TPanel* parent, long x, long y, long width, long height, int modal);
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
+#ifndef PNL_BTN_SHARED_CONTEXT
 class TButtonPanel : public TPanel {
 public:
     char gap_04[0x13C];
@@ -46,6 +49,7 @@ public:
         long button_id
     );
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
 long TButtonPanel::setup(
     TDrawArea* draw_area,

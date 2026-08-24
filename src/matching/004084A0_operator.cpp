@@ -1,9 +1,5 @@
-class BuildItem {
-public:
-    char gap_00[0x4];
-    int value;
-};
+#include "../../include/aiblditm_context.h"
 
-int __cdecl operator!=(BuildItem const& lhs, BuildItem const& rhs) {
-    return lhs.value != rhs.value;
+int __cdecl operator!=(const BuildItem& left, const BuildItem& right) {
+    return left.typeIDValue != right.typeIDValue;
 }

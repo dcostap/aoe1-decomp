@@ -18,6 +18,7 @@ extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
 #define VPAD16(n) VPAD8(n) VPAD8(n##_8)
 #define VPAD32(n) VPAD16(n) VPAD16(n##_16)
 
+#ifndef PNL_BTN_SHARED_CONTEXT
 class TPanel {
 public:
     virtual ~TPanel();
@@ -32,7 +33,9 @@ public:
     TPanel* parent_panel;
     char gap_44[0xB0];
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
+#ifndef PNL_BTN_SHARED_CONTEXT
 class TButtonPanel : public TPanel {
 public:
     virtual ~TButtonPanel();
@@ -47,6 +50,7 @@ public:
 
     virtual long mouse_right_move_action(long x, long y, int ctrl, int shift);
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
 long TButtonPanel::mouse_right_move_action(long x, long y, int ctrl, int shift) {
     int new_is_down = (this->is_inside(x, y) != 0);

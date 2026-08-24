@@ -3,6 +3,7 @@
 // FLAGS: /GX
 // retry: full copy-constructor surface with AIModuleID member ctors, visible dtors for EH, and setText(other->text).
 
+#ifndef AOE1_AIMODULE_TU_CONTEXT
 class AIModuleID {
 public:
     char gap_00[4];
@@ -15,7 +16,7 @@ public:
 
 class AIModuleMessage {
 public:
-    void* vtable_ptr;
+    virtual ~AIModuleMessage();
     int id;
     char text[0x80];
     int priority;
@@ -32,6 +33,7 @@ public:
     AIModuleMessage(AIModuleMessage* other);
     void setText(char* text);
 };
+#endif
 
 AIModuleMessage::AIModuleMessage(AIModuleMessage* other)
     : id(other->id),
@@ -46,6 +48,5 @@ AIModuleMessage::AIModuleMessage(AIModuleMessage* other)
     this->timeStamp = other->timeStamp;
     this->next = 0;
     this->prev = 0;
-    this->vtable_ptr = (void*)0x56E92C;
     this->setText(other->text);
 }

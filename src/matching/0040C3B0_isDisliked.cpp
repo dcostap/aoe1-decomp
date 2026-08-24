@@ -1,3 +1,4 @@
+#ifndef AOE1_AIDIPMOD_TU_CONTEXT
 class WorldStub {
 public:
     char gap_00[0x3C];
@@ -22,8 +23,9 @@ public:
     MainDecisionAIModule* md;
     int dislikeTable[10];
 
-    int isDisliked(int player) const;
+int isDisliked(int player) const;
 };
+#endif
 
 int DiplomacyAIModule::isDisliked(int player) const {
     if (((player > 0) && (player < this->md->player->world->player_num)) && (this->dislikeTable[player] > 0x31)) {

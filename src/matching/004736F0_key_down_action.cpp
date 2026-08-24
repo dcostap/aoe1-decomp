@@ -11,22 +11,26 @@
 
 extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
 
+#ifndef PNL_BTN_SHARED_CONTEXT
 struct tagRECT {
     long left;
     long top;
     long right;
     long bottom;
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
 class TDrawArea;
 class TButtonPanel;
 
+#ifndef PNL_BTN_SHARED_CONTEXT
 class TDigital {
 public:
     int is_playing(void);
     void stop(void);
     int play(void);
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
 #define VPAD1(n) virtual void vpad##n();
 #define VPAD2(n) VPAD1(n) VPAD1(n##_1)
@@ -35,6 +39,7 @@ public:
 #define VPAD16(n) VPAD8(n) VPAD8(n##_8)
 #define VPAD32(n) VPAD16(n) VPAD16(n##_16)
 
+#ifndef PNL_BTN_SHARED_CONTEXT
 class TPanel {
 public:
     virtual ~TPanel();
@@ -110,7 +115,9 @@ public:
     void set_curr_child(TPanel* child);
     long handle_key_down(long key, short ch, int a3, int a4, int a5);
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
+#ifndef PNL_BTN_SHARED_CONTEXT
 class TButtonPanel : public TPanel {
 public:
     long id[9];
@@ -161,6 +168,7 @@ public:
 
     long key_down_action(long key, short ch, int a3, int a4, int a5);
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
 long TButtonPanel::key_down_action(long key, short ch, int a3, int a4, int a5) {
     TPanel* child;

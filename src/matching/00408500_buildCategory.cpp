@@ -1,12 +1,5 @@
-class BuildItem {
-public:
-    virtual ~BuildItem();
-    char gap_04[112];
-    int buildCategory_;
-
-    int buildCategory() const;
-};
+#include "../../include/aiblditm_context.h"
 
 int BuildItem::buildCategory() const {
-    return this->buildCategory_;
+    return buildCategoryValue;
 }

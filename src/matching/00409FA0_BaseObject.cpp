@@ -3,9 +3,10 @@
 
 #include <string.h>
 
+#ifndef AIBOBJ_CONTEXT_READY
 class BaseObject {
 public:
-    void* vtable;            // +0x00
+    virtual ~BaseObject();
     class BaseObject* next;  // +0x04
     class BaseObject* prev;  // +0x08
     int numberGroupsValue;   // +0x0C
@@ -33,6 +34,7 @@ public:
 
     BaseObject();
 };
+#endif
 
 BaseObject::BaseObject()
 {
@@ -59,7 +61,5 @@ BaseObject::BaseObject()
     currentTargetXPositionValue = 0.0f;
     currentTargetYPositionValue = 0.0f;
     currentTargetZPositionValue = 0.0f;
-    vtable = (void*)0x56E798;
-    
     strcpy(nameValue, "");
 }

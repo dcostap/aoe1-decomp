@@ -5,6 +5,7 @@
 // Attempt log:
 // (fresh claim sa-0ea2a8b5-r1; cluster: aidipmod.cpp sibling of mostLiked/update/isAlly)
 
+#ifndef AOE1_AIDIPMOD_TU_CONTEXT
 class RGE_Victory_Conditions {
 public:
     int get_victory_points();
@@ -33,7 +34,7 @@ public:
     int likeTable[10];                 // +0x11C
     unsigned char changeableTable[10]; // +0x144
 
-    int mostHated(int param1, int param2, int param3, int param4) const;
+int mostHated(int param1, int param2, int param3, int param4) const;
     int isAlly(int id) const;
 };
 
@@ -48,6 +49,7 @@ public:
     char gap_4C[0x34];
     unsigned char game_status;  // +0x80
 };
+#endif
 
 int DiplomacyAIModule::mostHated(int param1, int param2, int param3, int param4) const
 {

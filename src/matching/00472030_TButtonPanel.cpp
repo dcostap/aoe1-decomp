@@ -2,11 +2,14 @@ extern "C" void __cdecl free(void* ptr);
 
 // The virtual base surface is required for the final direct call to
 // TPanel::~TPanel. A free helper named destructor() selects the wrong symbol.
+#ifndef PNL_BTN_SHARED_CONTEXT
 class TPanel {
 public:
     virtual ~TPanel();
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
+#ifndef PNL_BTN_SHARED_CONTEXT
 class TButtonPanel : public TPanel {
 public:
     virtual ~TButtonPanel();
@@ -17,6 +20,7 @@ public:
     char gap_1E0[0x1C];
     TButtonPanel** radio_buttons;
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
 TButtonPanel::~TButtonPanel() {
     int i;

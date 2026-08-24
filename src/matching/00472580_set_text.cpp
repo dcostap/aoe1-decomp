@@ -1,9 +1,11 @@
+#ifndef PNL_BTN_SHARED_CONTEXT
 class TButtonPanel {
 public:
     int get_string(int string_id, char* buffer, int length);
     void set_text(short state, char* text1, char* text2);
     void set_text(short state, long string_id1, long string_id2);
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
 void TButtonPanel::set_text(short state, long string_id1, long string_id2) {
     char str2[256];

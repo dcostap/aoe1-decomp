@@ -1,3 +1,4 @@
+#ifndef AOE1_AIMODULE_TU_CONTEXT
 class AIModuleID {
 public:
     void setID(int a, char* b);
@@ -10,6 +11,7 @@ public:
 
     void setSender(int a, char* b);
 };
+#endif
 
 void AIModuleMessage::setSender(int a, char* b) {
     this->sender.setID(a, b);

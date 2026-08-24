@@ -101,9 +101,9 @@
 // - Inline/member lifetime declarations, the full polymorphic header surface,
 //   aggregate objects(), and destructor declarations either duplicated that
 //   no-EH output or worsened size; the aggregate form was restored.
-// - Retain the readable typed AIModuleID fields/vptr and donor-backed ABI, but
-//   retain the explicit AIModule/derived vptr surface because it is the only
-//   tested form preserving the delayed derived-vptr write.
+// - Retain the readable typed AIModuleID fields and donor-backed ABI.  The
+//   policy-valid grouped source uses the inherited virtual surface and does
+//   not retain the metric-only explicit vptr form.
 // - Remaining blocker: VC5 still emits no EH frame, while the oracle has the
 //   FS-first three-slot frame and original cleanup metadata; no natural tested
 //   source surface selects that family. Leave in scratch, not accepted-drift.
@@ -135,6 +135,7 @@
 // - Leave the natural typed source in scratch. The remaining mismatch is the
 //   byte-zero EH/function-boundary topology, not accepted equivalent drift.
 
+#ifndef AOE1_AIMDMOD_TU_CONTEXT_H
 template <class T>
 class ManagedArray {
 public:
@@ -157,8 +158,8 @@ class RGE_Player {};
 
 // Binary-backed AIModule surface, combining the exact CE90 load-constructor
 // layout with the exact D020 destructor's real AIModuleID/member lifetime
-// surface.  The derived constructor still writes its delayed vtable explicitly
-// because CE90 proves that source/context ownership for this TU.
+// surface.  The grouped wrapper supplies the natural inherited virtual
+// surface; it does not hand-write a vtable.
 class AIModuleID {
 public:
     virtual ~AIModuleID();
@@ -200,9 +201,7 @@ public:
     virtual int filterOutMessage(AIModuleMessage* message);
 };
 
-extern void* MainDecisionAIModule_vtable;
-
-class __declspec(novtable) MainDecisionAIModule : public AIModule {
+class MainDecisionAIModule : public AIModule {
 public:
     RGE_Player* player;
     ManagedArray<int> objects;
@@ -217,9 +216,9 @@ public:
 
     MainDecisionAIModule(void* param_1, int param_2, RGE_Player* param_3);
 };
+#endif
 
 MainDecisionAIModule::MainDecisionAIModule(void* param_1, int param_2, RGE_Player* param_3)
     : AIModule("Main Decision AI", 1000, param_2, param_1), player(param_3), objects()
 {
-    *(void**)this = &MainDecisionAIModule_vtable;
 }

@@ -1,3 +1,4 @@
+#ifndef AOE1_AIMODULE_TU_CONTEXT
 class AIModule {
 public:
     char gap_00[0xEC];
@@ -5,6 +6,7 @@ public:
 
     void incrementProcessFrame();
 };
+#endif
 
 void AIModule::incrementProcessFrame() {
     int frame;

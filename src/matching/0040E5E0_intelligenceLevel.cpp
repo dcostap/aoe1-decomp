@@ -1,3 +1,4 @@
+#ifndef AOE1_AIMODULE_TU_CONTEXT
 class AIModule {
 public:
     virtual ~AIModule();
@@ -6,4 +7,9 @@ public:
 
     int intelligenceLevel() const;
 };
+#endif
+#ifdef AOE1_AIMODULE_TU_CONTEXT
+int AIModule::intelligenceLevel() const { return this->intelligenceLevelValue; }
+#else
 int AIModule::intelligenceLevel() const { return this->intelligenceLevel_; }
+#endif

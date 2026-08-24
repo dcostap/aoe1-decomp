@@ -1,3 +1,4 @@
+#ifndef AIBOBJ_CONTEXT_READY
 class BaseObject {
 public:
     char gap_0[0x80];
@@ -5,6 +6,7 @@ public:
 
     void incrementMaxHitPoints(int value);
 };
+#endif
 
 void BaseObject::incrementMaxHitPoints(int value) {
     this->field_80 += value;

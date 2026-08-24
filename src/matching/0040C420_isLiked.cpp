@@ -1,3 +1,4 @@
+#ifndef AOE1_AIDIPMOD_TU_CONTEXT
 class WorldStub {
 public:
     char gap_00[0x3C];
@@ -23,8 +24,9 @@ public:
     char gap_F4[0x28];
     int likeTable[10];
 
-    int isLiked(int player) const;
+int isLiked(int player) const;
 };
+#endif
 
 int DiplomacyAIModule::isLiked(int player) const {
     if (((player > 0) && (player < this->md->player->world->player_num)) && (this->likeTable[player] > 0x31)) {

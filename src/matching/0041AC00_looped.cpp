@@ -1,3 +1,4 @@
+#ifndef ASP_LIST_SHARED_CONTEXT
 class RGE_Sprite;
 
 class RGE_Active_Sprite {
@@ -34,6 +35,7 @@ public:
 
     unsigned char looped(RGE_Sprite* param_1);
 };
+#endif
 
 unsigned char RGE_Active_Sprite_List::looped(RGE_Sprite* param_1) {
     RGE_Active_Sprite_Node* node = this->list;

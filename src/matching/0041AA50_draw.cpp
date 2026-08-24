@@ -1,3 +1,4 @@
+#ifndef ASP_LIST_SHARED_CONTEXT
 class RGE_Color_Table;
 class TDrawArea;
 
@@ -30,6 +31,7 @@ public:
               short param_4, short param_5, RGE_Color_Table* param_6,
               TDrawArea* param_7);
 };
+#endif
 
 void RGE_Active_Sprite_List::draw(short param_1, short param_2, short param_3,
                                   short param_4, short param_5, RGE_Color_Table* param_6,

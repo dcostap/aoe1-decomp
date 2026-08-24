@@ -1,6 +1,7 @@
 // RGE_Active_Animated_Sprite::save (0041B210, 124 bytes, asprite.cpp)
 // Attempt 1
 
+#ifndef ASPRITE_FULL_TU
 void rge_write(int param_1, void* param_2, int param_3);
 
 class RGE_Active_Sprite {
@@ -22,6 +23,7 @@ public:
 
     void save(int param_1);
 };
+#endif
 
 void RGE_Active_Animated_Sprite::save(int param_1) {
     RGE_Active_Sprite::save(param_1);

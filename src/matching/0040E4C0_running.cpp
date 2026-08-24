@@ -1,3 +1,4 @@
+#ifndef AOE1_AIMODULE_TU_CONTEXT
 class AIModule {
 public:
     virtual ~AIModule();
@@ -6,4 +7,9 @@ public:
 
     int running() const;
 };
+#endif
+#ifdef AOE1_AIMODULE_TU_CONTEXT
+int AIModule::running() const { return this->runningValue; }
+#else
 int AIModule::running() const { return this->running_; }
+#endif

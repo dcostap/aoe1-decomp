@@ -1,5 +1,6 @@
 extern "C" void __cdecl free(void* block);
 
+#ifndef ASP_LIST_SHARED_CONTEXT
 class RGE_Static_Object {
 public:
     void remove_shadows();
@@ -28,6 +29,7 @@ public:
 
     void delete_list();
 };
+#endif
 
 void RGE_Active_Sprite_List::delete_list() {
     RGE_Active_Sprite_Node* node = this->list;

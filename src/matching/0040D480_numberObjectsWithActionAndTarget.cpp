@@ -11,6 +11,7 @@
 extern "C" void* __cdecl operator_new(unsigned int size);
 extern "C" void __cdecl operator_delete(void* ptr);
 
+#ifndef AOE1_AIMDMOD_TU_CONTEXT_H
 class RGE_Static_Object;
 class UnitAIModule;
 
@@ -49,6 +50,7 @@ public:
 
     int numberObjectsWithActionAndTarget(int action, int target);
 };
+#endif
 
 int MainDecisionAIModule::numberObjectsWithActionAndTarget(int action, int target) {
     int count = 0;

@@ -1,3 +1,4 @@
+#ifndef AOE1_AIDIPMOD_TU_CONTEXT
 class RGE_Game_World {
 public:
     char gap_00[0x3C];
@@ -25,10 +26,11 @@ public:
     char gap_00[0xF0];
     MainDecisionAIModule* md;
 
-    int isAlly(int param_1);
+    int isAlly(int param_1) const;
 };
+#endif
 
-int DiplomacyAIModule::isAlly(int param_1) {
+int DiplomacyAIModule::isAlly(int param_1) const {
     if (param_1 == this->md->player->id) {
         return 1;
     }

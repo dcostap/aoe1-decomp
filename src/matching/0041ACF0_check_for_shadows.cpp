@@ -1,3 +1,4 @@
+#ifndef ASP_LIST_SHARED_CONTEXT
 class RGE_Active_Sprite {
 public:
     int check_for_shadows();
@@ -19,6 +20,7 @@ public:
 
     int check_for_shadows();
 };
+#endif
 
 int RGE_Active_Sprite_List::check_for_shadows() {
     RGE_Active_Sprite_Node* node = this->list;

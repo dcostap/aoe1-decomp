@@ -1,19 +1,22 @@
 // VA: 0041B560 frame_passed (44B, asprite.cpp)
-// Match exact label order: ret1 is fallthrough, ret0 is jump target
+// The two return labels preserve the shipped branch layout.
 
+#ifndef ASPRITE_FULL_TU
 class RGE_Active_Animated_Sprite {
 public:
-    char gap_00[0x14];
-    short frame;              // +0x14
+    virtual ~RGE_Active_Animated_Sprite();
+    char gap_04[0x10];
+    short frame;
     char gap_16[0x0A];
-    short last_frame;         // +0x20
-    unsigned char frame_changed; // +0x22
-    unsigned char frame_looped;  // +0x23
+    short last_frame;
+    unsigned char frame_changed;
+    unsigned char frame_looped;
 
-    int frame_passed(short param_1);
+    virtual unsigned char frame_passed(short param_1);
 };
+#endif
 
-int RGE_Active_Animated_Sprite::frame_passed(short param_1) {
+unsigned char RGE_Active_Animated_Sprite::frame_passed(short param_1) {
     if (this->frame_changed == 0) goto ret0;
     if (this->frame_looped != 0) goto ret1;
     if (this->frame < param_1) goto ret0;

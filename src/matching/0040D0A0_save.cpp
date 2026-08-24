@@ -4,6 +4,7 @@ void rge_write(int hFile, const void* buffer, int count);
 void* operator new(unsigned int);
 void operator delete(void*);
 
+#ifndef AOE1_AIMDMOD_TU_CONTEXT_H
 class MainDecisionAIModule {
 public:
     char gap_000[0xF4];
@@ -13,6 +14,7 @@ public:
     long object_capacity;
     int save(int hFile);
 };
+#endif
 
 int MainDecisionAIModule::save(int hFile) {
     int temp = this->object_count;

@@ -1,3 +1,4 @@
+#ifndef AOE1_AIMODULE_TU_CONTEXT
 class AIModule {
 public:
     virtual ~AIModule();
@@ -6,4 +7,9 @@ public:
 
     virtual int loggingCommonHistory() const;
 };
+#endif
+#ifdef AOE1_AIMODULE_TU_CONTEXT
+int AIModule::loggingCommonHistory() const { return this->logCommonHistoryValue; }
+#else
 int AIModule::loggingCommonHistory() const { return this->loggingCommonHistory_; }
+#endif

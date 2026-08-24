@@ -1,12 +1,5 @@
-class BuildItem {
-public:
-    virtual ~BuildItem();
-    char gap_04[132];
-    int buildAttempts_;
-
-    int buildAttempts() const;
-};
+#include "../../include/aiblditm_context.h"
 
 int BuildItem::buildAttempts() const {
-    return this->buildAttempts_;
+    return buildAttemptsValue;
 }

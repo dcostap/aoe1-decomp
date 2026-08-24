@@ -1,5 +1,6 @@
 class TShape;
 
+#ifndef PNL_BTN_SHARED_CONTEXT
 class TButtonPanel {
 public:
     char gap_00[0x184];
@@ -11,6 +12,7 @@ public:
     void set_picture(short state, TShape* shape, short index);
     void set_picture_info(TShape* shape, short index, long x, long y, int all_hot, int auto_pic_pos);
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
 void TButtonPanel::set_picture_info(TShape* shape, short index, long x, long y, int all_hot_value, int auto_pic_pos_value) {
     pic_x = x;

@@ -1,3 +1,4 @@
+#ifndef PNL_BTN_SHARED_CONTEXT
 class TButtonPanel {
 public:
     virtual void vf00(void);
@@ -15,12 +16,14 @@ public:
     char gap_84[0x22C];
     int disabled;
 
+    void set_redraw(int);
     void set_disabled(int disabled);
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
 void TButtonPanel::set_disabled(int is_disabled) {
     disabled = is_disabled;
-    vf20(1);
+        set_redraw(1);
     if (disabled != 0) {
         active = 0;
         return;

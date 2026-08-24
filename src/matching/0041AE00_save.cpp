@@ -1,5 +1,6 @@
 extern "C" void __cdecl rge_write(int param_1, void* param_2, int param_3);
 
+#ifndef ASPRITE_FULL_TU
 class RGE_Sprite {
 public:
     char gap_00[0x72];
@@ -16,6 +17,7 @@ public:
 
     virtual void save(int param_1);
 };
+#endif
 
 void RGE_Active_Sprite::save(int param_1) {
     rge_write(param_1, &this->type, 1);

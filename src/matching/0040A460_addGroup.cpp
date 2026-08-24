@@ -8,8 +8,9 @@ extern "C" {
     void __cdecl operator_delete(void* ptr);
 }
 
+#ifndef AIBOBJ_CONTEXT_READY
 struct BaseObject {
-    void* vtable;
+    virtual ~BaseObject();
     class BaseObject* next;
     class BaseObject* prev;
     int numberGroupsValue;
@@ -38,6 +39,7 @@ struct BaseObject {
     int inGroup(int group_id);
     int addGroup(int group_id);
 };
+#endif
 
 int BaseObject::addGroup(int group_id)
 {

@@ -1,3 +1,4 @@
+#ifndef AOE1_AIDIPMOD_TU_CONTEXT
 class WorldStub {
 public:
     char gap_00[0x3C];
@@ -23,8 +24,9 @@ public:
     char gap_F4[0x50];
     unsigned char changeableTable[10];
 
-    int isChangeable(int player) const;
+int isChangeable(int player) const;
 };
+#endif
 
 int DiplomacyAIModule::isChangeable(int player) const {
     if (((player > 0) && (player < this->md->player->world->player_num)) && (this->changeableTable[player] == 1)) {

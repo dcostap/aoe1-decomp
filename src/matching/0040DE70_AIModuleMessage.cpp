@@ -3,6 +3,7 @@
 
 #include <string.h>
 
+#ifndef AOE1_AIMODULE_TU_CONTEXT
 class AIModuleID {
 public:
     AIModuleID(char* str, int param);
@@ -10,9 +11,9 @@ public:
     char gap_00[0x48];
 };
 
-class __declspec(novtable) AIModuleMessage {
+class AIModuleMessage {
 public:
-    void* vptr;
+    virtual ~AIModuleMessage();
     int id;
     char text[0x80];
     int priority;
@@ -28,6 +29,7 @@ public:
 
     AIModuleMessage();
 };
+#endif
 
 AIModuleMessage::AIModuleMessage()
     : id(0), priority(0), sender((char*)0x57F4B0, 0), recipient((char*)0x57F4A4, 0)
@@ -39,6 +41,5 @@ AIModuleMessage::AIModuleMessage()
     timeStamp = 0;
     next = 0;
     prev = 0;
-    *(int*)this = 0x56E92C;
     strcpy(text, (char*)0x592A40);
 }

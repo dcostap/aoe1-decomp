@@ -1,3 +1,4 @@
+#ifndef PNL_BTN_SHARED_CONTEXT
 class TButtonPanel {
 public:
     virtual void vf00(void);
@@ -15,9 +16,11 @@ public:
     char gap_140[0xB8];
     int is_down;
 
+    void set_redraw(int);
     void release_mouse(void);
     void reset(void);
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
 void TButtonPanel::reset(void) {
     release_mouse();
@@ -25,6 +28,6 @@ void TButtonPanel::reset(void) {
         if (buttonTypeValue != 2) {
             is_down = 0;
         }
-        vf20(1);
+        set_redraw(1);
     }
 }

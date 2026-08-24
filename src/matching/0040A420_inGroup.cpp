@@ -2,14 +2,17 @@
 // PDB: aibobj.cpp:212-217, 50 bytes
 // __thiscall, ret 4
 
+#ifndef AIBOBJ_CONTEXT_READY
 class BaseObject {
 public:
-    char pad_00[0x0C];
+    virtual ~BaseObject();
+    char gap_04[0x08];
     int count;
     int* groups;
 
     int inGroup(int groupId) const;
 };
+#endif
 
 int BaseObject::inGroup(int groupId) const {
     int n = this->count;

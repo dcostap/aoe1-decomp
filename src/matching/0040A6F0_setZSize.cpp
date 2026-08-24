@@ -1,3 +1,4 @@
+#ifndef AIBOBJ_CONTEXT_READY
 class BaseObject {
 public:
     virtual ~BaseObject();
@@ -6,6 +7,7 @@ public:
 
     void setZSize(float);
 };
+#endif
 
 void BaseObject::setZSize(float val) {
     this->zSize_ = val;

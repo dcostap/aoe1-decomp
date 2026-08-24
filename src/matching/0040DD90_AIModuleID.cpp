@@ -7,17 +7,18 @@
 
 #include <string.h>
 
-struct AIModuleID {
-    void* vtable;      // +0x00
+#ifndef AOE1_AIMODULE_TU_CONTEXT
+class AIModuleID {
+    virtual ~AIModuleID();
     int id;            // +0x04
     char name[64];     // +0x08
 
     AIModuleID(char* name_str, int id_value);
 };
+#endif
 
 AIModuleID::AIModuleID(char* name_str, int id_value) {
     this->id = id_value;
-    this->vtable = (void*)0x0056E928;
 
     if (name_str != NULL) {
         strncpy(this->name, name_str, 0x3F);

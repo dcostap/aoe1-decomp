@@ -15,6 +15,7 @@
 
 // AIModuleID size 0x48 (from inventory types dump)
 // vtable_ptr is implicit via virtual destructor — do NOT declare it as a field
+#ifndef AOE1_AIMODULE_TU_CONTEXT
 class AIModuleID {
 public:
     int id;            // +0x4 (4)
@@ -42,6 +43,7 @@ public:
 
     virtual ~AIModuleMessage();
 };
+#endif
 
 AIModuleMessage::~AIModuleMessage()
 {

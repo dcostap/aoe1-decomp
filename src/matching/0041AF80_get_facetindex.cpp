@@ -1,3 +1,4 @@
+#ifndef ASPRITE_FULL_TU
 class RGE_Sprite;
 
 class RGE_Active_Sprite {
@@ -11,6 +12,7 @@ class RGE_Sprite {
 public:
     unsigned char get_facetindex(long param_1, long param_2, long* facet_index);
 };
+#endif
 
 short RGE_Active_Sprite::get_facetindex(short param_1) {
     long facet_index = 0;

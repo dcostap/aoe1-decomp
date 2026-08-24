@@ -10,6 +10,7 @@
 // Exact-finish: removing the two unused derived destructor declarations kept
 // this constructor exact. They are not codegen-active in this translation unit.
 
+#ifndef TM_CO_OB_SHARED_CONTEXT
 class RGE_Sprite;
 class RGE_Sound;
 
@@ -33,6 +34,7 @@ public:
 
     TRIBE_Master_Combat_Object(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3, int param_4);
 };
+#endif
 
 TRIBE_Master_Combat_Object::TRIBE_Master_Combat_Object(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3, int param_4)
     : RGE_Master_Combat_Object(param_1, param_2, param_3, 0) {

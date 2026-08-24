@@ -1,10 +1,12 @@
 // first pass: special-case attribute 0x64, otherwise forward to the base implementation
 // for the 0x64 path, walk the three 6-byte entries starting at +0x14A and add the floored delta to the amount field
 
+#ifndef TM_CO_OB_SHARED_CONTEXT
 class TRIBE_Master_Combat_Object {
 public:
     virtual void modify_delta(float value, unsigned char attribute);
 };
+#endif
 
 struct BuildInventoryEntry {
     short amount;

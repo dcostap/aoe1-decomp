@@ -1,12 +1,5 @@
-class BuildItem {
-public:
-    virtual ~BuildItem();
-    char gap_04[120];
-    int priority_;
-
-    int priority() const;
-};
+#include "../../include/aiblditm_context.h"
 
 int BuildItem::priority() const {
-    return this->priority_;
+    return priorityValue;
 }

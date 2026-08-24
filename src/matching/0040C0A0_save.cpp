@@ -3,20 +3,26 @@
 
 extern "C" int __cdecl rge_write(int handle, void* buffer, int count);
 
-class Base_DiplomacyAIModule {
+class MainDecisionAIModule;
+
+#ifndef AOE1_AIDIPMOD_TU_CONTEXT
+class AIModule {
 public:
-    virtual ~Base_DiplomacyAIModule();
+    virtual ~AIModule();
+    char gap_04[0xEC];
 };
 
-class DiplomacyAIModule : public Base_DiplomacyAIModule {
+class DiplomacyAIModule : public AIModule {
 public:
-    char gap_04[0x118];
+    MainDecisionAIModule* md;
+    int dislikeTable[10];
     int likeTable[10];
     unsigned char changeableTable[10];
 
     virtual ~DiplomacyAIModule();
-    int save(int param_1);
+    virtual int save(int param_1);
 };
+#endif
 
 int DiplomacyAIModule::save(int param_1) {
     unsigned char* changeableTable = this->changeableTable;

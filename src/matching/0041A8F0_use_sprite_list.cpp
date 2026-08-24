@@ -1,3 +1,4 @@
+#ifndef ASP_LIST_SHARED_CONTEXT
 class RGE_Active_Sprite_Node;
 
 class RGE_Active_Sprite_List {
@@ -8,6 +9,7 @@ public:
     void delete_list();
     void use_sprite_list(RGE_Active_Sprite_Node* list);
 };
+#endif
 
 void RGE_Active_Sprite_List::use_sprite_list(RGE_Active_Sprite_Node* list) {
     this->delete_list();

@@ -9,6 +9,7 @@
 
 class MainDecisionAIModule;
 
+#ifndef AOE1_AIDIPMOD_TU_CONTEXT
 // AIModule stub: size 0xF0 with vptr
 class AIModule {
 public:
@@ -16,7 +17,7 @@ public:
     virtual void dummy1() {}
     char _gap_04[0xEC];
 
-    AIModule(const char* name, unsigned long help_id, int param1, int param2);
+    AIModule(const char* name, unsigned long help_id, int param1, void* param2);
 };
 
 class DiplomacyAIModule : public AIModule {
@@ -26,10 +27,11 @@ public:
     int likeTable[10];                   // +0x11C
     unsigned char changeableTable[10];   // +0x144
 
-    DiplomacyAIModule(int param1, int param2);
+    DiplomacyAIModule(void* param1, int param2);
 };
+#endif
 
-DiplomacyAIModule::DiplomacyAIModule(int param1, int param2)
+DiplomacyAIModule::DiplomacyAIModule(void* param1, int param2)
     : AIModule("Diplomacy AI", 0x3EB, param2, param1)
 {
     this->md = 0;

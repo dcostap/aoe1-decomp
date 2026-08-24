@@ -1,12 +1,5 @@
-class BuildItem {
-public:
-    virtual ~BuildItem();
-    char gap_04[0xA8];
-    unsigned char permanentSkip_;
-
-    unsigned char permanentSkip();
-};
+#include "../../include/aiblditm_context.h"
 
 unsigned char BuildItem::permanentSkip() {
-    return this->permanentSkip_;
+    return permanentSkipValue;
 }

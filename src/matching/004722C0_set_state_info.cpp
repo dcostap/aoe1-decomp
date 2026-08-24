@@ -1,3 +1,4 @@
+#ifndef PNL_BTN_SHARED_CONTEXT
 class TButtonPanel {
 public:
     char gap_00[0x13C];
@@ -7,6 +8,7 @@ public:
 
     void set_state_info(short param);
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
 void TButtonPanel::set_state_info(short param) {
     buttonTypeValue = 3;

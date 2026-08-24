@@ -1,3 +1,4 @@
+#ifndef PNL_BTN_SHARED_CONTEXT
 class TButtonPanel {
 public:
     virtual void vf00(void);
@@ -16,6 +17,7 @@ public:
 
     void set_id(short param_1, long param_2, long param_3);
 };
+#endif /* PNL_BTN_SHARED_CONTEXT */
 
 void TButtonPanel::set_id(short param_1, long param_2, long param_3) {
     this->id[param_1] = param_2;

@@ -81,6 +81,7 @@
 
 #include <stdlib.h>
 
+#ifndef AOE1_AIMDMOD_TU_CONTEXT_H
 class AIModuleMessage;
 class RGE_Player;
 class RGE_Static_Object;
@@ -159,5 +160,6 @@ public:
     virtual int objectGroupThatCanPerformAction(int action);
     virtual int canPerformAction(int action, int target);
 };
+#endif
 
 MainDecisionAIModule::~MainDecisionAIModule() {}
