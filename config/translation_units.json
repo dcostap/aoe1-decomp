@@ -1870,7 +1870,11 @@
       "symbols": {
         "0046E4B0": "??0RGE_Player@@QAE@HPAVRGE_Game_World@@E@Z",
         "0046F050": "?sendPlayCommand@RGE_Player@@UAEXHHH@Z",
-        "0046F140": "?sendPlayCommand@RGE_Player@@UAEXHPAHHHH@Z"
+        "0046F140": "?sendPlayCommand@RGE_Player@@UAEXHPAHHHH@Z",
+        "0046F200": "?pathingAttemptCap@RGE_Player@@QAEHXZ",
+        "0046F210": "?setPathingAttemptCap@RGE_Player@@QAEXH@Z",
+        "0046F220": "?pathingDelayCap@RGE_Player@@QAEHXZ",
+        "0046F230": "?setPathingDelayCap@RGE_Player@@QAEXH@Z"
       }
     },
     {
@@ -1916,6 +1920,23 @@
       "symbols": {
         "004B4880": "??0TribeGameSettingsScreen@@QAE@XZ",
         "004B5920": "??1TribeGameSettingsScreen@@UAE@XZ"
+      }
+    },
+    {
+      "name": "move_obj_prefix",
+      "source": "src/move_obj_tu.cpp",
+      "flags": "config/flags/0045C450_RGE_Moving_Object.rsp",
+      "owners": {
+        "0045C450": "src/matching/0045C450_RGE_Moving_Object.cpp",
+        "0045C5C0": "src/matching/0045C5C0_RGE_Moving_Object.cpp",
+        "0045C970": "src/matching/0045C970_setup.cpp",
+        "0045CAA0": "src/matching/0045CAA0_setup.cpp"
+      },
+      "symbols": {
+        "0045C450": "??0RGE_Moving_Object@@QAE@PAVRGE_Master_Moving_Object@@PAVRGE_Player@@MMMH@Z",
+        "0045C5C0": "??0RGE_Moving_Object@@QAE@HPAVRGE_Game_World@@H@Z",
+        "0045C970": "?setup@RGE_Moving_Object@@QAEHPAVRGE_Master_Moving_Object@@PAVRGE_Player@@MMM@Z",
+        "0045CAA0": "?setup@RGE_Moving_Object@@QAEHHPAX@Z"
       }
     }
   ]

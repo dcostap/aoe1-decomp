@@ -3,13 +3,13 @@
 // PDB lines are move_obj.cpp:96-305. The next owner is save at 0045CE00.
 //
 // PREFIX CHECKPOINT: this wrapper compiles with the 0045C450 /GX flag set.
-// The six grouped bodies are not exact under the current canonical header:
-// their fresh sizes are 336, 320, 144, 480, 304, and 864 bytes versus 333,
-// 308, 135, 471, 291, and 862. Keep this boundary until the authentic header
-// context is recovered. Later owners remain standalone until declaration
-// recovery.
+// The candidate-TU checker proves exact grouped output for 0045C450,
+// 0045C5C0, 0045C970, and 0045CAA0. It also proves the generated deleting
+// destructor at 0045C5A0. The destructor at 0045C700 and recycle owner at
+// 0045C790 retain one wrong direct relocation each. Keep this boundary until
+// those declarations are recovered. Later owners remain standalone.
 // The canonical moving-object surface is declared once in move_obj_context.h.
-// This wrapper is intentionally not added to translation_units.json.
+// The four grouped exact owners are registered in translation_units.json.
 
 #define MOVE_OBJ_CANONICAL_TU 1
 #include "../include/move_obj_context.h"

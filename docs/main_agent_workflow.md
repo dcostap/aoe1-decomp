@@ -31,6 +31,35 @@ infer a missing execution contract.
 
 Assign each participant exactly one role.
 
+### Translation-unit captain
+
+Assign one exclusive PDB source module. A captain must not launch subagents.
+
+The main agent prepares the module packet:
+
+```text
+python tools/plan_translation_unit.py --module <pdb-file>
+```
+
+The captain owns the module wrapper, module context, and module function files.
+The captain must not edit global config, shared headers, metrics, or commits.
+
+The full authentic translation unit is the destination. A proven source prefix
+is a valid checkpoint.
+
+The captain writes one candidate proposal and validates it with:
+
+```text
+python tools/validate_candidate_tu.py --proposal <proposal.json>
+```
+
+The proposal lists exact owners, observed nonexact owners, generated functions,
+and exact decorated symbols. Candidate artifacts stay under
+`build\candidate_tus` and do not replace registered build evidence.
+
+The main agent reviews the proposal, applies source-bank moves, updates global
+config, reruns registered checks, and commits the result.
+
 ### Matching worker
 
 Assign one VA, one lease owner, and a compact evidence card. Include known prior

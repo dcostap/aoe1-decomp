@@ -278,6 +278,8 @@ def compare_object_owner(
     va: int,
     group: dict[str, object],
     expected_pdb_symbol: str = "",
+    *,
+    require_owner: bool = True,
 ) -> dict[str, object]:
     record = function_record_by_va(va)
     symbol = _select_symbol(obj, va, group)
@@ -324,7 +326,7 @@ def compare_object_owner(
         metrics["result"] == "MATCH"
         and not relocation_validation["target_mismatches"]
         and not extent["has_code_overflow"]
-        and owner_match
+        and (owner_match or not require_owner)
     )
     return {
         "va": f"{va:08X}",
