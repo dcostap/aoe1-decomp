@@ -14,8 +14,8 @@
 //   local handle_tech owner at 0052C970.
 // - 0052C970 preserves the TRIBE_Player_Tech::get_tech_state call at 0050C58C.
 // - 0052C9B0 preserves the base add call at 00532930 and command 'd'.
-// 0052C970 remains scratch. The current context loads +0x2D4 instead of the
-// original +0x220 player technology owner offset.
+// 0052C970 uses the canonical 0x220-byte RGE_Player boundary and the first
+// TRIBE_Player technology owner field at +0x220.
 //
 // Do not add this module to config here. Its owners remain individually
 // published through the existing function map until the main agent registers
@@ -36,7 +36,7 @@
 #include "matching/0052C950_handle_condition.cpp"
 
 // tvictory.cpp:63-67
-#include "scratch/0052C970_handle_tech.cpp"
+#include "matching/0052C970_handle_tech.cpp"
 
 // tvictory.cpp:71-83
 #include "matching/0052C9B0_add_tech.cpp"

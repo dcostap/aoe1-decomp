@@ -18,7 +18,7 @@ public:
 // TRIBE_Player tech-tree member at +0x220.
 class TRIBE_Player : public RGE_Player {
 public:
-    char gap_54[0x1CC];
+    char gap_108[0x118];
     TRIBE_Player_Tech* tech_tree; // +0x220
 };
 

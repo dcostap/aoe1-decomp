@@ -15,7 +15,7 @@
 
 #include "matching/0044C5A0_RGE_Campaign_Info.cpp"
 #include "matching/0044C780_RGE_Campaign_Info.cpp"
-#include "scratch/0044C870_RGE_Campaign_Info.cpp"
+#include "matching/0044C870_RGE_Campaign_Info.cpp"
 #include "matching/0044C8A0_save.cpp"
 #include "matching/0044C930_rehook_campaigns.cpp"
 #include "matching/0044CA90_set_current_scenario.cpp"
@@ -33,9 +33,9 @@
 #include "matching/0044CEF0_set_current_campaign.cpp"
 #include "matching/0044D050_get_current_campaign.cpp"
 
-#include "scratch/0044D0C0_get_current_scenario.cpp"
+#include "matching/0044D0C0_get_current_scenario.cpp"
 #include "scratch/0044D0F0_set_current_scenario.cpp"
-#include "scratch/0044D130_get_scenario_list.cpp"
+#include "matching/0044D130_get_scenario_list.cpp"
 #include "matching/0044D160_notify_of_scenario_complete.cpp"
 #include "matching/0044D180_open_scenario.cpp"
 
@@ -45,8 +45,8 @@
 #include "matching/0044D470_find_campaigns.cpp"
 #include "matching/0044D710_add_new_person.cpp"
 #include "matching/0044D7D0_set_current_person.cpp"
-#include "scratch/0044D7F0_set_current_campaign.cpp"
-#include "scratch/0044D820_set_current_scenario.cpp"
+#include "matching/0044D7F0_set_current_campaign.cpp"
+#include "matching/0044D820_set_current_scenario.cpp"
 #include "matching/0044D850_get_people_list.cpp"
 #include "matching/0044D8C0_get_campaign_list.cpp"
 #include "matching/0044D940_get_scenario_list.cpp"
@@ -54,7 +54,7 @@
 #include "matching/0044D9B0_get_current_campaign.cpp"
 #include "matching/0044D9D0_get_current_player.cpp"
 #include "matching/0044D9E0_get_current_player_name.cpp"
-#include "scratch/0044DA00_notify_of_scenario_complete.cpp"
+#include "matching/0044DA00_notify_of_scenario_complete.cpp"
 #include "matching/0044DA30_open_scenario.cpp"
 #include "matching/0044DA50_remove_player.cpp"
 

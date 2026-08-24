@@ -6,7 +6,6 @@ extern void __cdecl free(void*);
 
 class RGE_Campaign_Info {
 public:
-    virtual void vf00();
     ~RGE_Campaign_Info();
 };
 

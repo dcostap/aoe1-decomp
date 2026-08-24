@@ -36,6 +36,8 @@ extern int version_marker;
 
 class RGE_Campaign {
 public:
+    char gap_00[0x20C];
+
     char* get_name();
     long scenario_number();
     char* get_scenario_name(int index);
