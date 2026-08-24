@@ -20,15 +20,7 @@ public:
     long Width;
     long Height;
 
-    virtual ~TDrawArea();
-    virtual void vf1();
-    virtual void vf2();
-    virtual void vf3();
-    virtual void vf4();
-    virtual void vf5();
-    virtual void vf6();
-    virtual void enterCS(int);
-    virtual void leaveCS();
+    ~TDrawArea();
     void* Lock(char*, int);
     void Unlock(char*);
     void SetClipRect(tagRECT*);
@@ -184,7 +176,6 @@ public:
 };
 
 extern "C" unsigned long __cdecl debug_timeGetTime(const char*, int);
-extern void* TScrollBarPanel_vftable;
 
 class TScrollBarPanel : public TPanel {
 public:

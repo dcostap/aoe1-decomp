@@ -3,6 +3,9 @@
 // Attempt log:
 // 1: natural constructor without virtual base surface built only 336 bytes/no EH.
 // 2: make TPanel/TScrollBarPanel virtual-destructor classes to trigger original constructor EH frame.
+// BLOCKER: Natural construction emits the derived vptr at entry. The executable
+// stores it after the field stores. A manual vptr store matches bytes but is not
+// policy-valid, so this source remains observed in the candidate TU.
 
 #ifndef PNL_SCBR_CANONICAL_TU
 struct tagRECT {
@@ -13,7 +16,6 @@ struct tagRECT {
 };
 
 extern "C" __declspec(dllimport) int __stdcall SetRect(tagRECT* rect, int left, int top, int right, int bottom);
-extern void* TScrollBarPanel_vftable;
 
 class TPanel {
 public:
@@ -125,7 +127,6 @@ TScrollBarPanel::TScrollBarPanel() : TPanel()
     this->bevel_color4 = 0;
     this->bevel_color5 = 0;
     this->bevel_color6 = 0;
-    *(void**)this = &TScrollBarPanel_vftable;
     this->field_EE = 5;
     this->field_C0 = 0;
     SetRect(&this->up_rect, 0, 0, 0, 0);
