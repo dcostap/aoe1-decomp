@@ -1,3 +1,5 @@
+// BINARY NOTE: aimodule.cpp line 467 reads priority at +0xE8, subtracts delta,
+// and calls setPriority directly. The shipped body has no temporary local.
 #ifndef AOE1_AIMODULE_TU_CONTEXT
 class AIModule {
 public:
@@ -8,12 +10,6 @@ public:
     int priorityValue;
 };
 #endif
-#ifdef AOE1_AIMODULE_TU_CONTEXT
 int AIModule::decrementPriority(int delta) {
-    return this->setPriority(this->priorityValue - delta);
+    return setPriority(priorityValue - delta);
 }
-#else
-int AIModule::decrementPriority(int delta) {
-    return this->setPriority(this->priorityValue - delta);
-}
-#endif

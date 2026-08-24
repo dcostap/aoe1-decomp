@@ -206,7 +206,9 @@ public:
     virtual void vf03C(); virtual void vf040(); virtual void vf044();
     virtual void vf048(); virtual void vf04C(); virtual void vf050();
     virtual void vf054(); virtual void vf058(); virtual void vf05C();
-    virtual void vf060(); virtual void vf064(); virtual void vf068();
+    virtual void vf060(); virtual void vf064();
+    // BINARY NOTE: the shipped base slot at +0x6C is die_die_die.
+    virtual void die_die_die();
     virtual void vf06C(); virtual void vf070(); virtual void vf074();
     virtual void vf070(int, int, float, int, RGE_Combat_Object*);
     virtual void vf078(); virtual void vf07C(); virtual void vf080();
@@ -214,7 +216,6 @@ public:
     virtual void vf090(); virtual void vf094(); virtual void vf098();
     virtual void modify(float value, unsigned char attribute);
     virtual void set_object_state(unsigned char state);
-    virtual void die_die_die();
     virtual void transform(RGE_Master_Static_Object* master);
     virtual void change_ownership(RGE_Player* player);
     virtual void take_attribute_from_owner();
@@ -663,6 +664,9 @@ public:
     int build(int, int);
     void initUnitAI();
     unsigned char produceWhenKilledBy(int) const;
+    virtual void cancel_object();
+    virtual unsigned char keepGatheringWhenObjectIsOut(int) const;
+    virtual unsigned char useSameZoneDropsite() const;
     unsigned char heal(float);
     int higher_check_for_cliff(RGE_Static_Object*, int, int,
                                float, float, float, float,

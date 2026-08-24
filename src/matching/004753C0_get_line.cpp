@@ -1,3 +1,6 @@
+#include "../../include/pnl_drop_context.h"
+#define PNL_DROP_CONTEXT
+
 #ifndef PNL_DROP_CONTEXT
 class MemberType {
 public:

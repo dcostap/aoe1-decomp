@@ -632,6 +632,7 @@ public:
     int originalUnitNumber() const;
     void setOriginalUnitNumber(int);
     const Waypoint& location() const;
+    void setCurrentAttackWaypoint(unsigned char);
     void setLocation(float, float, float);
     void setLocation(int, int, int);
     int action() const;
@@ -784,6 +785,7 @@ public:
     int stopUnit(int, int);
     int numberItemsToDefend();
     int numberItemsToAttack();
+    int numberUnitsInGroups(int);
     int itemToCapture();
     int itemToBringToArea();
     unsigned long attackLimiterTime(int);

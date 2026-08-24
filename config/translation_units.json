@@ -1199,6 +1199,7 @@
       "source": "src/taitacmd_tu.cpp",
       "flags": "config/flags/004ED4F0_TribeTacticalAIModule.rsp",
       "owners": {
+        "004ED040": "src/matching/004ED040_setCurrentAttackWaypoint.cpp",
         "004ED1C0": "src/matching/004ED1C0_TribeTacticalAIModule.cpp",
         "004EEB40": "src/matching/004EEB40_TribeTacticalAIModule.cpp",
         "004EEE40": "src/matching/004EEE40_updateAreaName.cpp",
@@ -1211,7 +1212,8 @@
         "004F1090": "src/matching/004F1090_removeObject.cpp",
         "004F13F0": "src/matching/004F13F0_evaluateCivilianDistribution.cpp",
         "004F1E10": "src/matching/004F1E10_taskIdleSoldiers.cpp",
-        "004F4760": "src/matching/004F4760_playTaskSoldiers.cpp"
+        "004F4760": "src/matching/004F4760_playTaskSoldiers.cpp",
+        "004F6160": "src/matching/004F6160_numberSoldierExplorers.cpp"
       },
       "symbols": {
         "004ED1C0": "??0TribeTacticalAIModule@@QAE@PAXH@Z",
@@ -1582,6 +1584,9 @@
       "source": "src/aipbook_tu.cpp",
       "flags": "config/flags/00410220_loadPlays.rsp",
       "owners": {
+        "0040F360": "src/matching/0040F360_setName.cpp",
+        "0040F3D0": "src/matching/0040F3D0_isTargetType.cpp",
+        "0040F440": "src/matching/0040F440_isTargetCharacteristic.cpp",
         "0040FC30": "src/matching/0040FC30_AIPlayStatus.cpp",
         "0040FE90": "src/matching/0040FE90_load.cpp",
         "0040FF70": "src/matching/0040FF70_save.cpp",
@@ -2201,15 +2206,22 @@
         "00474820": "src/matching/00474820_set_buttons.cpp",
         "00475110": "src/matching/00475110_numberLines.cpp",
         "00475130": "src/matching/00475130_currentLineNumber.cpp",
+        "00475150": "src/matching/00475150_setCurrentLineNumber.cpp",
         "004751C0": "src/matching/004751C0_currentLine.cpp",
+        "00475210": "src/matching/00475210_set_sorted.cpp",
         "00475230": "src/matching/00475230_get_sorted.cpp",
         "004752A0": "src/matching/004752A0_append_line.cpp",
         "004752D0": "src/matching/004752D0_append_line.cpp",
         "00475300": "src/matching/00475300_insert_line.cpp",
         "00475330": "src/matching/00475330_insert_line.cpp",
+        "00475360": "src/matching/00475360_delete_line.cpp",
         "00475380": "src/matching/00475380_get_line.cpp",
+        "004753A0": "src/matching/004753A0_get_line.cpp",
+        "004753C0": "src/matching/004753C0_get_line.cpp",
         "004753E0": "src/matching/004753E0_get_text.cpp",
+        "00475400": "src/matching/00475400_get_text.cpp",
         "00475420": "src/matching/00475420_get_id.cpp",
+        "00475440": "src/matching/00475440_get_id.cpp",
         "00475460": "src/matching/00475460_empty_list.cpp",
         "00475470": "src/matching/00475470_TDropDownButtonPanel.cpp"
       },
@@ -2222,8 +2234,12 @@
         "00475300": "?insert_line@TDropDownPanel@@QAEHJPADJ@Z",
         "00475330": "?insert_line@TDropDownPanel@@QAEHJJJ@Z",
         "00475380": "?get_line@TDropDownPanel@@QAEHXZ",
+        "004753A0": "?get_line@TDropDownPanel@@QAEHJ@Z",
+        "004753C0": "?get_line@TDropDownPanel@@QAEHPAD@Z",
         "004753E0": "?get_text@TDropDownPanel@@QAEPADXZ",
-        "00475420": "?get_id@TDropDownPanel@@QAEHXZ"
+        "00475400": "?get_text@TDropDownPanel@@QAEPADJ@Z",
+        "00475420": "?get_id@TDropDownPanel@@QAEHXZ",
+        "00475440": "?get_id@TDropDownPanel@@QAEHJ@Z"
       }
     },
     {
@@ -3504,6 +3520,7 @@
         "00475B60": "src/matching/00475B60_set_focus.cpp",
         "00475CC0": "src/matching/00475CC0_set_rect.cpp",
         "00475DD0": "src/matching/00475DD0_set_redraw.cpp",
+        "00475E10": "src/matching/00475E10_set_text_color.cpp",
         "00475E30": "src/matching/00475E30_set_highlight_text_color.cpp",
         "00475E40": "src/matching/00475E40_set_back_color.cpp",
         "00475F20": "src/matching/00475F20_set_ime_info.cpp",
@@ -3517,6 +3534,7 @@
       },
       "symbols": {
         "00475970": "?set_text@TEditPanel@@QAEXPAD@Z",
+        "00475E10": "?set_text_color@TEditPanel@@QAEXKK@Z",
         "00475F40": "?wnd_proc@TEditPanel@@UAEJPAXIIJ@Z"
       }
     },
@@ -3922,6 +3940,8 @@
         "0040E5F0": "src/matching/0040E5F0_setIntelligenceLevel.cpp",
         "0040E630": "src/matching/0040E630_priority.cpp",
         "0040E640": "src/matching/0040E640_setPriority.cpp",
+        "0040E680": "src/matching/0040E680_incrementPriority.cpp",
+        "0040E6A0": "src/matching/0040E6A0_decrementPriority.cpp",
         "0040E6C0": "src/matching/0040E6C0_sendMessage.cpp",
         "0040E6D0": "src/matching/0040E6D0_receiveMessage.cpp",
         "0040E6E0": "src/matching/0040E6E0_processMessage.cpp",
@@ -4256,6 +4276,9 @@
         "004CA0F0": "src/matching/004CA0F0_TRIBE_Combat_Object.cpp",
         "004CA1A0": "src/matching/004CA1A0_TRIBE_Combat_Object.cpp",
         "004CA510": "src/matching/004CA510_create_action_list.cpp",
+        "004CA780": "src/matching/004CA780_cancel_object.cpp",
+        "004CB860": "src/matching/004CB860_keepGatheringWhenObjectIsOut.cpp",
+        "004CB8B0": "src/matching/004CB8B0_useSameZoneDropsite.cpp",
         "004CBD30": "src/matching/004CBD30_lines_intersect.cpp"
       },
       "symbols": {

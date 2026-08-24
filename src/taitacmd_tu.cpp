@@ -3,6 +3,7 @@
 #define TAITACMD_SHARED_CONTEXT 1
 #include "../include/taitacmd_context.h"
 
+#include "matching/004ED040_setCurrentAttackWaypoint.cpp"
 #include "matching/004ED1C0_TribeTacticalAIModule.cpp"
 #include "scratch/004ED4F0_TribeTacticalAIModule.cpp"
 #include "matching/004EEB40_TribeTacticalAIModule.cpp"
@@ -23,5 +24,6 @@
 #include "matching/004F4760_playTaskSoldiers.cpp"
 // 004F4AA0 stays separate. Its canonical resize-call surface regresses the
 // earlier shared ManagedArray anchors.
+#include "matching/004F6160_numberSoldierExplorers.cpp"
 
 #undef TAITACMD_SHARED_CONTEXT

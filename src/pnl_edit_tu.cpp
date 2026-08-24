@@ -26,7 +26,7 @@
 #include "matching/00475B60_set_focus.cpp"
 #include "matching/00475CC0_set_rect.cpp"
 #include "matching/00475DD0_set_redraw.cpp"
-#include "scratch/00475E10_set_text_color.cpp"
+#include "matching/00475E10_set_text_color.cpp"
 #include "matching/00475E30_set_highlight_text_color.cpp"
 #include "matching/00475E40_set_back_color.cpp"
 #include "accepted_drift/00475E50_set_bevel_info.cpp"
