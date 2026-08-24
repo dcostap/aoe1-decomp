@@ -4,10 +4,9 @@
 // source-line order, not linked-address order. The scalar deleting destructor
 // at 00479030 is compiler-generated and stays in the generated category.
 //
-// Flags: config/flags/00479050_TMessagePanel.rsp (/nologo /c /O2 /Oy /GX).
-// Three existing owners have /GX overlays; the other owners use default.rsp.
-// A single original module flag set is not proved. The candidate report keeps
-// this as a flag-risk observation and records the default-flags control run.
+// Candidate flags: config/flags/default.rsp (/nologo /c /O2 /Oy).
+// Existing /GX overlays remain observations. The default module flags produce
+// seven exact grouped owners and avoid an unsupported per-function flag split.
 //
 // Policy: no synthetic function, handwritten assembly, raw cursor owner, or
 // metric-only register steering is added by this wrapper.
