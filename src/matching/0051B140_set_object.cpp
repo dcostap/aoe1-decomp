@@ -1,17 +1,22 @@
 #ifndef AOE1_TPNL_OBJ_CONTEXT_H
 class RGE_Static_Object;
+struct tagRECT;
 
 class TRIBE_Panel_Object {
 public:
-    virtual void vf00(void);
-    virtual void vf04(void);
-    virtual void vf08(void);
-    virtual void vf0C(void);
-    virtual void vf10(void);
-    virtual void vf14(void);
-    virtual void vf18(void);
-    virtual void vf1C(void);
-    virtual void vf20(int mode);
+    virtual ~TRIBE_Panel_Object();
+    virtual long setup(void*, TRIBE_Panel_Object*, long, long, long, long,
+                       unsigned char);
+    virtual void set_rect(tagRECT);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_color(unsigned char);
+    virtual void set_active(int);
+    virtual void set_positioning(int, long, long, long, long, long, long,
+                                 long, long, TRIBE_Panel_Object*,
+                                 TRIBE_Panel_Object*, TRIBE_Panel_Object*,
+                                 TRIBE_Panel_Object*);
+    virtual void set_fixed_position(long, long, long, long);
+    virtual void set_redraw(int mode);
     char gap_04[0x110];
     RGE_Static_Object* game_obj;
 
@@ -30,6 +35,6 @@ void TRIBE_Panel_Object::set_object(RGE_Static_Object* object) {
 #ifdef AOE1_TPNL_OBJ_CONTEXT_H
     this->set_redraw(1);
 #else
-    vf20(1);
+    set_redraw(1);
 #endif
 }
