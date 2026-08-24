@@ -10,7 +10,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT / "tools"))
 
-from expensive_full_sweep_validation import run_checks  # noqa: E402
+from expensive_full_sweep_validation import interleaved_indices, run_checks  # noqa: E402
 
 
 class ExpensiveFullSweepValidationTests(unittest.TestCase):
@@ -42,6 +42,28 @@ class ExpensiveFullSweepValidationTests(unittest.TestCase):
     def test_jobs_must_be_positive(self) -> None:
         with self.assertRaisesRegex(ValueError, "at least 1"):
             run_checks(["00400000"], 0)
+
+    def test_parallel_checks_interleave_artifacts_but_restore_result_order(self) -> None:
+        self.assertEqual(
+            [0, 2, 4, 1, 3],
+            interleaved_indices(["A", "A", "B", "B", "C"]),
+        )
+
+        def checker(va: str) -> subprocess.CompletedProcess[str]:
+            return subprocess.CompletedProcess(["check", va], 0, va, "")
+
+        vas = ["A1", "A2", "B1", "B2", "C1"]
+        results = run_checks(
+            vas,
+            2,
+            checker=checker,
+            schedule_keys=["A", "A", "B", "B", "C"],
+        )
+        self.assertEqual(vas, [result.stdout for result in results])
+
+    def test_schedule_key_count_must_match(self) -> None:
+        with self.assertRaisesRegex(ValueError, "match the VA count"):
+            run_checks(["00400000"], 2, schedule_keys=[])
 
 
 if __name__ == "__main__":

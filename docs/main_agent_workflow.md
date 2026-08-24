@@ -157,6 +157,8 @@ python tools/expensive_full_sweep_validation.py --matching-only
 Use `--jobs 1` for a serial reference run. Use `--jobs N` to select another
 bounded worker count. Parallel execution preserves input result order. It does
 not change byte, boundary, symbol, relocation, or control-target checks.
+The scheduler interleaves compiler artifacts. This prevents all workers from
+waiting on one TU build lock when adjacent owners share a wrapper.
 
 The compiler cache fingerprint includes:
 

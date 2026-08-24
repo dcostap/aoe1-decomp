@@ -12,6 +12,7 @@ from typing import Callable, Sequence
 from common import (
     REPO_ROOT,
     classify_corpus_bucket,
+    compiler_artifact_slug,
     ensure_build_subdir,
     load_asm_special_function_names,
     load_asm_special_regions,
@@ -92,12 +93,28 @@ def run_check(va: str) -> subprocess.CompletedProcess[str]:
     return subprocess.run(command, capture_output=True, text=True)
 
 
+def interleaved_indices(schedule_keys: Sequence[str]) -> list[int]:
+    """Round-robin input indices across compiler artifacts."""
+    grouped_indices: dict[str, list[int]] = {}
+    for index, key in enumerate(schedule_keys):
+        grouped_indices.setdefault(key, []).append(index)
+    result: list[int] = []
+    depth = 0
+    while len(result) < len(schedule_keys):
+        for indices in grouped_indices.values():
+            if depth < len(indices):
+                result.append(indices[depth])
+        depth += 1
+    return result
+
+
 def run_checks(
     vas: Sequence[str],
     jobs: int,
     *,
     checker: Callable[[str], subprocess.CompletedProcess[str]] | None = None,
     progress: Callable[[int, int], None] | None = None,
+    schedule_keys: Sequence[str] | None = None,
 ) -> list[subprocess.CompletedProcess[str]]:
     """Run independent checks concurrently and preserve input result order."""
     if jobs < 1:
@@ -106,6 +123,8 @@ def run_checks(
     total = len(vas)
     if total == 0:
         return []
+    if schedule_keys is not None and len(schedule_keys) != total:
+        raise ValueError("schedule_keys must match the VA count")
 
     completed = 0
     progress_lock = threading.Lock()
@@ -121,8 +140,19 @@ def run_checks(
 
     if jobs == 1:
         return [run_one(va) for va in vas]
+
+    execution_indices = list(range(total))
+    if schedule_keys is not None:
+        execution_indices = interleaved_indices(schedule_keys)
+
     with ThreadPoolExecutor(max_workers=jobs) as executor:
-        return list(executor.map(run_one, vas))
+        futures = {
+            index: executor.submit(run_one, vas[index]) for index in execution_indices
+        }
+        results: list[subprocess.CompletedProcess[str] | None] = [None] * total
+        for index, future in futures.items():
+            results[index] = future.result()
+    return [result for result in results if result is not None]
 
 
 def main() -> None:
@@ -165,6 +195,7 @@ def main() -> None:
         lines.append("")
     planned_rows: list[tuple[Path, dict[str, str] | None, str, str]] = []
     check_vas: list[str] = []
+    check_artifacts: list[str] = []
     for source in sources:
         slug = source.stem
         source_key = slug.upper()
@@ -186,12 +217,20 @@ def main() -> None:
             continue
         planned_rows.append((source, record, "check", ""))
         check_vas.append(record["va"])
+        check_artifacts.append(compiler_artifact_slug(record))
 
     def report_progress(completed: int, total: int) -> None:
         if completed == total or completed % 25 == 0:
             print(f"Checks complete: {completed}/{total}", flush=True)
 
-    results = iter(run_checks(check_vas, args.jobs, progress=report_progress))
+    results = iter(
+        run_checks(
+            check_vas,
+            args.jobs,
+            progress=report_progress,
+            schedule_keys=check_artifacts,
+        )
+    )
     passed = 0
     failed = 0
     missing_inventory = 0
