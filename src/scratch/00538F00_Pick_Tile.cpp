@@ -82,6 +82,7 @@
 //   allocation model.
 // FLAGS: /nologo /c /O2 /Oy
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 class RGE_Map {
 public:
     virtual ~RGE_Map();
@@ -118,6 +119,7 @@ protected:
 public:
     int Pick_Tile(long px, long py, int* col_out, int* row_out);
 };
+#endif
 
 int RGE_View::Pick_Tile(long px, long py, int* col_out, int* row_out) {
     int map_h;

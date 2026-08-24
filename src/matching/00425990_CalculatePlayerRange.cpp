@@ -10,8 +10,11 @@
 // 8+ attempts across all variants. 0 relocations.
 // Same behavior, same field layout.
 
+#if !defined(COM_HAND_TU_CONTEXT)
 #include "../../include/game_globals.h"
+#endif // COM_HAND_TU_CONTEXT
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_00[0x12D8];
@@ -24,13 +27,15 @@ public:
     int IsPlayerComputer(int playerIndex);
     int CalculatePlayerRange(void);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 int TCommunications_Handler::CalculatePlayerRange(void) {
     unsigned int i = 1;
     unsigned short maxPlayers = this->MaxGamePlayers;
 
-    this->HighPlayerNumber = 0;
-    this->LowPlayerNumber = maxPlayers + 1;
+    this->PlayerOptions.HighPlayerNumber = 0;
+    this->PlayerOptions.LowPlayerNumber = maxPlayers + 1;
 
     if ((int)maxPlayers < 1)
         goto done;
@@ -44,15 +49,15 @@ int TCommunications_Handler::CalculatePlayerRange(void) {
         }
 update:
         {
-            int high = (int)this->HighPlayerNumber;
+            int high = (int)this->PlayerOptions.HighPlayerNumber;
             if (high <= (int)i)
                 high = i;
-            this->HighPlayerNumber = (unsigned short)high;
+            this->PlayerOptions.HighPlayerNumber = (unsigned short)high;
 
-            int low = (int)this->LowPlayerNumber;
+            int low = (int)this->PlayerOptions.LowPlayerNumber;
             if (low >= (int)i)
                 low = i;
-            this->LowPlayerNumber = (unsigned short)low;
+            this->PlayerOptions.LowPlayerNumber = (unsigned short)low;
         }
 skip:
         i++;

@@ -1,14 +1,18 @@
 // VA: 0049D440 TRIBE_Screen_Game::any_selected_have_action (101 B)
 // PDB source: scr_game.cpp lines 5882-5902
 
+#if !defined(SCR_GAME_TU_CONTEXT)
 extern void* rge_base_game;
+#endif
 extern void* __fastcall get_player(void* game);
 extern unsigned char __fastcall have_action(void* obj);
 
+#if !defined(SCR_GAME_TU_CONTEXT)
 class TRIBE_Screen_Game {
 public:
     int any_selected_have_action();
 };
+#endif
 
 int TRIBE_Screen_Game::any_selected_have_action() {
     void* player = get_player(rge_base_game);

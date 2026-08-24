@@ -1,5 +1,6 @@
 // 00515070 TRIBE_Player::addObject (tplayer.cpp:1974-1997, 105B)
 
+#ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
 class RGE_Player {
 public:
     virtual void* addObject(void* obj, int p2, int p3);
@@ -46,6 +47,7 @@ public:
 
     void* addObject(void* obj, int param2, int param3);
 };
+#endif
 
 void* TRIBE_Player::addObject(void* obj, int param2, int param3)
 {

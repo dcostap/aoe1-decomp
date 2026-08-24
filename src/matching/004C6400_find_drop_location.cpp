@@ -55,6 +55,7 @@ extern int __cdecl debug_rand(char*, int);
 extern float DAT_00574720;
 extern float DAT_00574764;
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Game_World;
 class RGE_Player;
 class RGE_Static_Object;
@@ -182,6 +183,7 @@ public:
     unsigned char find_drop_location(int, float*, float*, RGE_Master_Static_Object*,
                                      RGE_Static_Object*, float, float, float, float);
 };
+#endif
 
 unsigned char RGE_Static_Object::find_drop_location(
     int terrain, float* x, float* y, RGE_Master_Static_Object* master,

@@ -7,7 +7,16 @@
 
 typedef unsigned char uchar;
 
+#ifndef ZERO_F
+#define ZERO_F 0.0f
+#define ONE_F 1.0f
+#define TILE_EPSILON 0.001f
+#define SCREEN_BIAS 0.0f
+#endif
+
 extern float DAT_00574720;
+extern float DAT_00574724;
+extern float DAT_00574728;
 extern double DAT_00574718;
 extern float DAT_00574748;
 extern float DAT_0057474c;
@@ -18,6 +27,25 @@ class RGE_Master_Static_Object;
 class RGE_Player;
 class RGE_Game_World;
 class RGE_Map;
+class RGE_Sprite;
+class RGE_Visible_Map;
+class LOSTBL;
+struct XYPoint { int x; int y; };
+class RGE_Zone_Map {
+public:
+    unsigned char get_zone_info(int, int);
+    int withinRange(unsigned char, int, int, float);
+    int findClosestPointInTerrainType(XYPoint, XYPoint*);
+    int findClosestPointInTerrainType(XYPoint, XYPoint*, int, int, int);
+};
+class RGE_Zone_Map_List {
+public:
+    RGE_Zone_Map* get_zone_map_by_terrain(void*, int, int*);
+    RGE_Zone_Map* get_zone_map_by_index(int);
+    RGE_Zone_Map* get_zone_map(long);
+    RGE_Zone_Map* get_zone_map(int, int, int*);
+    RGE_Zone_Map* get_zone_map(void*, int, int*);
+};
 class RGE_Tile;
 class RGE_Object_List;
 struct RGE_Object_Node;
@@ -27,18 +55,92 @@ class RGE_Action_Object;
 class RGE_Active_Sprite_Node;
 class RGE_Color_Table;
 class UnitAIModule;
+class RGE_Victory_Conditions;
+class RGE_Sound;
+class Visible_Resource_Manager;
+class RGE_Doppleganger_Creator;
+class PathingSystem;
+class InfluenceMap;
 class TPanel;
 typedef TPanel RGE_Panel;
+
+class ManagedArrayInt {
+public:
+    int* value;
+    int numberValue;
+    int desiredNumberValue;
+    int maximumSizeValue;
+    ManagedArrayInt() : value(0), numberValue(0), desiredNumberValue(0), maximumSizeValue(0) {}
+    ~ManagedArrayInt();
+    int& operator[](int index) { return this->value[index]; }
+    operator int*() const { return this->value; }
+    ManagedArrayInt& operator=(int* pointer) { this->value = pointer; return *this; }
+};
+typedef ManagedArrayInt ManagedArray_int;
+
+struct Inner_004C4C40 {
+    void target(int);
+};
+
+class RGE_Victory_Conditions {
+public:
+    void update_for_object(void*);
+};
+
+class RGE_Sound {
+public:
+    void play(int);
+};
+
+class Visible_Resource_Manager {
+public:
+    int Remove_Resource(int, int);
+};
+
+class RGE_Doppleganger_Creator {
+public:
+    int remove_doppleganger_check(RGE_Static_Object*);
+    int add_doppleganger_check(RGE_Static_Object*);
+    int add_doppleganger_check(RGE_Static_Object*, void*);
+};
+
+class UnitAIModule {
+public:
+    void setPlayStatus(int);
+    int playStatus;
+};
+
+class PathingSystem {
+public:
+    void incrementObstruction(int, int);
+    void decrementObstruction(int, int);
+};
+extern PathingSystem pathSystem;
+extern PathingSystem aiPathSystem;
+
+class InfluenceMap {
+public:
+    int incrementValue(int, int, int);
+    int decrementValue(int, int, int);
+};
 
 extern "C" {
 __declspec(dllimport) int __stdcall SelectClipRgn(void*, void*);
 __declspec(dllimport) void* __stdcall GetStockObject(int);
 __declspec(dllimport) void* __stdcall SelectObject(void*, void*);
-__declspec(dllimport) int __stdcall MoveToEx(void*, int, int, void*);
-__declspec(dllimport) int __stdcall LineTo(void*, int, int);
 }
 
 extern int startLoggingAI;
+extern int debug_random_on;
+extern "C" int __cdecl debug_rand(char*, int);
+extern "C" void __cdecl debug_srand(char*, int, int);
+extern void __cdecl operator_delete(void*);
+struct DamageSpriteInfo {
+    unsigned char damage_percent;
+    unsigned char flag;
+    unsigned char gap_02[2];
+    RGE_Sprite* sprite;
+};
 
 class TDrawArea {
 public:
@@ -53,6 +155,7 @@ public:
     void Unlock(char*);
     void* GetDc(char*);
     void ReleaseDc(char*);
+    void DrawRect(long, long, long, long, unsigned char);
     void FillRect(long, long, long, long, unsigned char);
 };
 
@@ -66,6 +169,21 @@ public:
 struct ScreenPoint {
     short y;
     short x;
+};
+
+class Shape_Info {
+public:
+    unsigned char gap_00[0x10];
+    int width;
+    int height;
+    int hotspot_x;
+    int hotspot_y;
+};
+
+class TShape {
+public:
+    unsigned char gap_00[0x18];
+    Shape_Info* FShape;
 };
 
 class RGE_Base_Game {
@@ -88,6 +206,8 @@ public:
     unsigned char gap_51[0x15F];
     int prog_mode;                      // +0x1B0
     int game_mode;                      // +0x1B4
+    int display_selected_ids;
+    TShape* get_shape(int);
 };
 
 class VDraw {
@@ -99,6 +219,14 @@ public:
 
 extern RGE_Base_Game* rge_base_game;
 extern long SDI_Object_ID;
+class DClipInfo_List {
+public:
+    void AddGDINode(int, int, short, short, short, short, short, short,
+                    short, short, int, int, int);
+    void AddDrawNode(void*, Shape_Info*, int, int, int, int,
+                     unsigned char*, int, int, int);
+};
+extern DClipInfo_List* SDI_List;
 extern int SDI_Draw_Line;
 extern int SDI_Capture_Info;
 
@@ -107,10 +235,19 @@ struct RGE_Armor_Weapon_Info {
     short value;
 };
 
+struct RGE_Object_Info {
+    unsigned char gap_00[0x26];
+    short field_26;
+    float screen_x_offset;
+};
+
 class RGE_Sprite {
 public:
     unsigned char gap_00[0x60];
     short facet_num;
+    int id;
+    int nFacets;
+    unsigned char hit_test(short, short, long, long);
 };
 
 class RGE_Master_Static_Object {
@@ -125,9 +262,9 @@ public:
     short copy_id;
     short object_group;
     unsigned char gap_16[2];
-    void* sprite;
-    void* death_sprite;
-    void* undead_sprite;
+    RGE_Sprite* sprite;
+    RGE_Sprite* death_sprite;
+    RGE_Sprite* undead_sprite;
     unsigned char undead_flag;
     unsigned char gap_25[1];
     short hp;
@@ -136,10 +273,12 @@ public:
     float radius_x;                     // +0x30
     float radius_y;                     // +0x34
     float radius_z;                     // +0x38
-    void* selected_sound;               // +0x3C
-    void* created_sound;                // +0x40
-    void* death_sound;                  // +0x44
+    RGE_Sound* selected_sound;          // +0x3C
+    RGE_Sound* created_sound;           // +0x40
+    RGE_Sound* death_sound;             // +0x44
     short death_spawn_obj_id;           // +0x48
+    short obj_max;
+    RGE_Static_Object* vf18(RGE_Player*, float, float, float);
     unsigned char sort_number;          // +0x4A
     unsigned char can_be_built_on;      // +0x4B
     short button_pict;                  // +0x4C
@@ -174,6 +313,18 @@ public:
     float outline_radius_x;              // +0xAC
     float outline_radius_y;              // +0xB0
     float outline_radius_z;              // +0xB4
+    unsigned char draw_color;
+    float decay;
+    int damage_sprite_num;
+    DamageSpriteInfo* damage_sprites;
+    float size_x;
+    float size_y;
+    unsigned char track_as_resource;
+    unsigned char create_doppleganger_on_death;
+    unsigned char resource_group;
+    RGE_Static_Object* make_new_obj(RGE_Player*, float, float, float, RGE_Static_Object*);
+    int check_placement(RGE_Player*, float, float, float);
+    int check_placement(RGE_Player*, float, float, int, int, int, int, int, int, int);
 };
 
 class RGE_Map {
@@ -182,9 +333,14 @@ public:
     void* map;                          // +0x04
     long map_width;                     // +0x08
     long map_height;                    // +0x0C
+    float screen_x_scale;
+    float screen_y_scale;
     unsigned char gap_10[0x8D8C - 0x10];
     RGE_Tile** map_row_offset;          // +0x8D8C
+    RGE_Zone_Map_List* map_zones;
     void get_point(short*, short*, float, float, float, short, short);
+    void request_redraw(int, int, int, int);
+    void request_redraw(int, int, int, int, int);
 };
 
 class RGE_Game_World {
@@ -192,10 +348,32 @@ public:
     virtual ~RGE_Game_World();
     unsigned char gap_04[0x24];
     RGE_Map* map;                       // +0x28
+    long world_time;
     unsigned char gap_2c[0x50];
     short curr_player;                  // +0x7C
+    short player_num;
+    short terrain_num;
+    short terrain_size;
+    RGE_Sprite** sprites;
+    short sprite_num;
+    RGE_Player** players;
+    float** terrains;
+    float attr_rate;
+    void add_object(RGE_Static_Object*);
+    RGE_Static_Object* object(int);
+    unsigned char recycle_object_out_of_game(unsigned char, RGE_Static_Object*);
     int get_next_reusable_object_id();
     int get_next_object_id();
+};
+
+class RGE_Visible_Map {
+public:
+    LOSTBL* get_los_table(int, int);
+    int explore_terrain(int, int, int, int, int, int);
+    int explore_terrain_sq(int, int, int, int, int, int);
+    int unexplore_terrain(int, int, int, int, int, int);
+    int unexplore_terrain_sq(int, int, int, int, int, int);
+    LOSTBL* get_los_table();
 };
 
 class RGE_Player {
@@ -227,6 +405,19 @@ public:
     RGE_Game_World* world;              // +0x3C
     unsigned char gap_40[0xC8];
     RGE_Color_Table* color_table;       // +0x108
+    RGE_Victory_Conditions* victory_conditions;
+    short id;
+    unsigned char sleep_flag;
+    unsigned char dopple_flag;
+    void unselect_one_object(void*);
+    int computerPlayer();
+    RGE_Master_Static_Object** master_objects;
+    RGE_Object_List* objects;
+    RGE_Object_List* sleeping_objects;
+    RGE_Object_List* doppleganger_objects;
+    RGE_Doppleganger_Creator* doppleganger_creator;
+    Visible_Resource_Manager* VR_List;
+    RGE_Visible_Map* visible;
     virtual RGE_Object_Node* addObject(RGE_Static_Object*, int, int);
     virtual void removeObject(RGE_Static_Object*, int, int, RGE_Object_Node*);
 };
@@ -248,10 +439,17 @@ public:
     virtual unsigned char looped(RGE_Sprite*);
     virtual short get_facetindex(RGE_Sprite*, short);
     virtual unsigned char load_node(int, unsigned char, RGE_Sprite**);
+    void load(int, RGE_Sprite**);
+    void add_sprite(RGE_Sprite*, int, int, int);
+    void remove_sprite(RGE_Sprite*);
+    void delete_list();
+    void save(int);
+    unsigned char get_frame(short*, short*, short*, short*, RGE_Sprite*, long);
 };
 
 struct RGE_Object_Node {
     RGE_Static_Object* node;
+    RGE_Static_Object* object;
     RGE_Object_Node* next;
     RGE_Object_Node* prev;
     unsigned char centered;
@@ -263,14 +461,22 @@ public:
     virtual ~RGE_Object_List();
     RGE_Object_List();
     RGE_Object_Node* list;              // +0x04 or +0x10 in a tile
+    RGE_Object_Node* head;
+    RGE_Object_Node* first;
     short number_of_objects;
+    short obj_max;
     unsigned char gap_0A[2];
     operator RGE_Object_Node*() { return this->list; }
+    void remove_node(void*, RGE_Object_Node*);
+    RGE_Object_Node* add_node(RGE_Static_Object*);
+    RGE_Static_Object* find_by_id(int);
 };
 
 class RGE_Tile {
 public:
     unsigned char gap_00[0x0C];
+    short tile_type;
+    short tile_level;
     RGE_Object_List objects;            // list at +0x10
 };
 
@@ -294,6 +500,10 @@ public:
 class RGE_Static_Object {
 public:
     virtual ~RGE_Static_Object();
+    RGE_Static_Object(RGE_Master_Static_Object*, RGE_Player*, float, float, float, int);
+    RGE_Static_Object(int, RGE_Game_World*, int);
+    int setup(RGE_Master_Static_Object*, RGE_Player*, float, float, float);
+    int setup(int, RGE_Game_World*);
     virtual void recycle_in_to_game(RGE_Master_Static_Object*, RGE_Player*, float, float, float);
     virtual void recycle_out_of_game();
     virtual void draw(TDrawArea*, short, short, RGE_Color_Table*);
@@ -306,11 +516,14 @@ public:
     void draw_frame_3d_square_front(TDrawArea*, short, short);
     void draw_frame_3d_cube_back(void*, short, short);
     void draw_frame_3d_cube_back(TDrawArea*, short, short);
+    void draw_frame_3d_cube_back_case(TDrawArea*, short, short);
     void draw_frame_3d_square_back(void*, short, short);
     void draw_frame_3d_square_back(TDrawArea*, short, short);
     void capture_frame_3d_cube(TDrawArea*, short, short);
     void capture_frame_3d_square(TDrawArea*, short, short);
     void capture_square_frame(TDrawArea*, short, short);
+    int get_frame(short&, short&, short&, short&);
+    int get_frame(short*, short*, short*, short*);
     virtual unsigned char update();
     virtual void check_damage_sprites();
     virtual void rehook();
@@ -353,14 +566,15 @@ public:
     virtual void set_being_worked_on(RGE_Action_Object*, short, unsigned char);
     virtual void release_being_worked_on(RGE_Static_Object*);
     virtual unsigned char is_moving();
+    virtual unsigned char is_dying();
     virtual RGE_Static_Object* get_target_obj();
     virtual void enter_obj(RGE_Static_Object*);
     virtual void exit_obj();
     virtual int explore_terrain(RGE_Player*, unsigned char, int);
     virtual void unexplore_terrain(RGE_Player*, unsigned char, int);
-    virtual void* get_los_table();
+    virtual LOSTBL* get_los_table();
     virtual int inAttackRange(RGE_Static_Object*);
-    virtual unsigned char underAttack();
+    virtual unsigned char underAttack() const;
     virtual void setUnderAttack(unsigned char);
     virtual float calc_attack_modifier(RGE_Static_Object*);
     virtual float getSpeed();
@@ -376,6 +590,59 @@ public:
     virtual int currentTargetID();
     virtual float currentTargetX();
     virtual float currentTargetY();
+    void release_from_holder();
+    unsigned char more_room();
+    float distance_to_position(float, float, float);
+    unsigned char hit_test(short, short, short, short, short);
+    unsigned char box_hit_test(short, short, short, short, short, short);
+    void set_location(float, float, float);
+    int isGroupCommander();
+    int inGroup();
+    int unitIsInGroup(int);
+    int createGroup(int*, int, int, float);
+    int commanderCreateGroup(int*, int, int, float);
+    int addToGroup(int, float);
+    int commanderAddToGroup(int, float);
+    int removeFromGroup(int);
+    int commanderRemoveFromGroup(int);
+    int destroyGroup();
+    int commanderDestroyGroup();
+    void addToPathingGroup(int);
+    void removeAllFromPathingGroup();
+    void remove_shadows();
+    int get_action_checksum();
+    int get_waypoint_checksum();
+    int boundToFacet(float, float, int);
+    int numberFacets();
+    unsigned char lookupZone(XYPoint);
+    unsigned char lookupZone(int, int);
+    unsigned char currentZone();
+    int withinRangeOfZoneAtPoint(unsigned char, float, void*);
+    int withinRangeOfZone(unsigned char, float);
+    int findClosestPointInTerrainType(XYPoint, XYPoint*, int, int, int);
+    void logDebug(char*, ...);
+    void changeInfluenceMap(InfluenceMap*, int, int, int);
+    int removeFromObstructionMap(int);
+    int addToObstructionMap(int);
+    float get_terrain_speed(unsigned char);
+    float vf34(int, int, int);
+    void vfD0(RGE_Static_Object*);
+    void funcD4();
+    void funcDC(void*, int, int);
+    void notify(RGE_Player*);
+    void notify(long, long, int, int, int, int);
+    void setDamage(float);
+    void setHealth(float);
+    void setDamage(RGE_Player*, int, int);
+    void setHealth(RGE_Player*, int, int);
+    UnitAIModule* unitAI();
+    void vfD8(RGE_Player*, int, int);
+    void vfDC(RGE_Player*, int, int);
+    void tileOp0(void*, int, int);
+    void tileOp1(void*, int, int);
+    void setSprite(void*);
+    void update(int);
+    RGE_Sprite* get_sprite_pointer(short);
     void give_attribute_to_owner();
     void take_attribute_from_owner();
     void get_starting_attribute();
@@ -387,7 +654,7 @@ public:
     int inRange(RGE_Static_Object*, float);
     float distance_to_object(RGE_Static_Object*);
     RGE_Check_List* make_object_bounds_list(float);
-    int objectCollisionList(float);
+    RGE_Check_List* objectCollisionList(float);
     RGE_Static_Object* check_object_bounds();
 
     long id;                            // +0x04
@@ -396,14 +663,17 @@ public:
     RGE_Sprite* sprite;                 // +0x10
     RGE_Sprite* old_sprite;             // +0x14
     RGE_Active_Sprite_List* sprite_list; // +0x18
+    Inner_004C4C40* ptr_;
     RGE_Tile* tile;                     // +0x1C
     RGE_Static_Object* inside_obj;      // +0x20
     RGE_Object_List* objects;           // +0x24
+    RGE_Object_Info* object_info;
     short screen_x_offset;              // +0x28
     short screen_y_offset;              // +0x2A
     short shadow_x_offset;              // +0x2C
     short shadow_y_offset;              // +0x2E
     float hp;                           // +0x30
+    float hit_points;
     unsigned char curr_damage_percent;  // +0x34
     unsigned char facet;                // +0x35
     unsigned char selected;             // +0x36
@@ -420,18 +690,33 @@ public:
     unsigned char type;                 // +0x4E
     unsigned char worker_num;           // +0x4F
     RGE_Object_Node* player_object_node; // +0x50
-    unsigned char gap_54[0x20];         // +0x54
+    ManagedArrayInt pathingGroupMembers; // +0x54
+    ManagedArrayInt groupMembers;        // +0x64
     UnitAIModule* unitAIValue;          // +0x74
     int groupCommanderValue;            // +0x78
+    int field_68;
+    int groupMembersCount;
+    int group_maximum;
+    int pathingGroupCount;
+    int pathingGroupMax;
+    int pathingGroupMembers_numberValue;
+    int group_number;
+    int group_max;
+    int* group_value;
     int zoneMapIndex;                   // +0x7C
     float groupRangeValue;              // +0x80
     unsigned char inObstructionMapValue; // +0x84
     unsigned char lastInObstructionMapValue; // +0x85
     unsigned char underAttackValue;     // +0x86
     unsigned char gap_87;               // +0x87
+    unsigned char field_86;
 
     void set_sleep_flag(unsigned char);
     void capture_frame(TDrawArea*, short, short);
+    RGE_Static_Object* get_object_pointer(long);
+    unsigned char drop_held_objects(int);
+    unsigned char find_drop_location(int, float*, float*, RGE_Master_Static_Object*,
+                                     RGE_Static_Object*, float, float, float, float);
 };
 
 class RGE_Animated_Object : public RGE_Static_Object {

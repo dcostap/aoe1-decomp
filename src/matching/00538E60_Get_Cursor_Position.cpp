@@ -1,6 +1,7 @@
 // 00538E60 RGE_View::Get_Cursor_Position
 // Source: view.cpp lines 4716-4741. 151 bytes. __thiscall, ret 0Ch.
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 extern "C" int (__stdcall * const GetCursorPos)(void*);
 extern "C" int (__stdcall * const ScreenToClient)(void*, void*);
 
@@ -21,13 +22,22 @@ struct tagPOINT {
     int x;
     int y;
 };
+#endif
 
 int RGE_View::Get_Cursor_Position(void* point, int offset_x, int offset_y) {
+#ifdef RGE_VIEW_SHARED_CONTEXT
+    GetCursorPos((POINT*)point);
+#else
     GetCursorPos(point);
+#endif
     void* d1 = *(void**)this->display_info;   // +0 = flag_struct ptr
     if (*(unsigned char*)((char*)d1 + 0x479) == 1) {
         void* hwnd = *((void**)this->display_info + 1);  // +4 = hwnd
+#ifdef RGE_VIEW_SHARED_CONTEXT
+        ScreenToClient(hwnd, (POINT*)point);
+#else
         ScreenToClient(hwnd, point);
+#endif
         if (((tagPOINT*)point)->x > 0x7FFF)
             ((tagPOINT*)point)->x -= 0x10000;
         if (((tagPOINT*)point)->y > 0x7FFF)

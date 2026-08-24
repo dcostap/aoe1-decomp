@@ -14,6 +14,7 @@
 #define STR_SEND_CMD_MOVE2 "      >SEND CMD MOVE2 (CNT=%d,OWN=%d,UNIT=%s)"
 #define STR_X              "X"
 
+#ifndef COMMAND_TU_CONTEXT
 class RGE_Game_World;
 class RGE_Master_Static_Object { public: char pad_00[8]; const char* name; };
 class RGE_Static_Object { public: char pad_00[8]; RGE_Master_Static_Object* master_obj; };
@@ -36,6 +37,7 @@ public:
     void submit(void* buf, long size);
 };
 class RGE_Game_World { public: RGE_Static_Object* object(int id); };
+#endif
 void RGE_Command::command_move(int player, int* arr, int count, int param4, int unused, float x, float y)
 {
     if (arr != 0 && count >= 1) {

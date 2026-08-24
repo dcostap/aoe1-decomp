@@ -90,8 +90,11 @@
 
 #include <windows.h>
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 extern int fog_next_shape;
+#endif
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 class RGE_Map;
 class RGE_Player;
 class RGE_Visible_Map;
@@ -248,6 +251,13 @@ public:
                                   RGE_Static_Object* skip, unsigned char through_fog);
     int hit_tile(RGE_Tile* tile, short sx, short sy, short a, short b, tagPOINT* pt);
 };
+#endif
+
+#ifdef RGE_VIEW_SHARED_CONTEXT
+#define RGE_VIEW_OBJECTS(tile) ((tile)->objects)
+#else
+#define RGE_VIEW_OBJECTS(tile) (&(tile)->objects)
+#endif
 
 long RGE_View::view_function(register unsigned char a1, register unsigned char a2, tagPOINT* p1, tagPOINT* p2,
                              void** out_obj, float* out_x, float* out_y, short* out_col, short* out_row)
@@ -430,26 +440,26 @@ long RGE_View::view_function(register unsigned char a1, register unsigned char a
                                 if (this->function_mode == 0x1E) {
                                     this->cur_render_area->CurSpanList = this->Terrain_Fog_Clip_Mask;
                                     fog_next_shape = 1;
-                                    tile_ptr->objects.shadow_draw(this->cur_render_area, map_row, cur_col_num, 1, tile);
+                                    RGE_VIEW_OBJECTS(tile_ptr)->shadow_draw(this->cur_render_area, map_row, cur_col_num, 1, tile);
                                     this->cur_render_area->CurSpanList = this->Terrain_Clip_Mask;
                                     fog_next_shape = 0;
-                                    tile_ptr->objects.shadow_draw(this->cur_render_area, map_row, cur_col_num, 1, tile);
+                                    RGE_VIEW_OBJECTS(tile_ptr)->shadow_draw(this->cur_render_area, map_row, cur_col_num, 1, tile);
                                     this->cur_render_area->CurSpanList = this->cur_render_area->SpanList;
                                 }
                                 if (this->function_mode == 0x1F) {
                                     this->cur_render_area->CurSpanList = this->Terrain_Fog_Clip_Mask;
                                     fog_next_shape = 1;
-                                    tile_ptr->objects.shadow_draw(this->cur_render_area, map_row, cur_col_num, 0x0A, tile);
+                                    RGE_VIEW_OBJECTS(tile_ptr)->shadow_draw(this->cur_render_area, map_row, cur_col_num, 0x0A, tile);
                                     this->cur_render_area->CurSpanList = this->Terrain_Clip_Mask;
                                     fog_next_shape = 0;
-                                    tile_ptr->objects.shadow_draw(this->cur_render_area, map_row, cur_col_num, 0x0A, tile);
+                                    RGE_VIEW_OBJECTS(tile_ptr)->shadow_draw(this->cur_render_area, map_row, cur_col_num, 0x0A, tile);
                                     this->cur_render_area->CurSpanList = this->cur_render_area->SpanList;
                                 }
                                 if (this->function_mode == 0x20) {
                                     if (this->map->fog_flag != 0 && visible == 0x80) {
                                         fog_next_shape = 1;
                                     }
-                                    tile_ptr->objects.shadow_draw(this->cur_render_area, map_row, cur_col_num, 0, tile);
+                                    RGE_VIEW_OBJECTS(tile_ptr)->shadow_draw(this->cur_render_area, map_row, cur_col_num, 0, tile);
                                 } else {
                                     if (this->function_mode != 0x15) {
                                         goto col_continue;
@@ -457,7 +467,7 @@ long RGE_View::view_function(register unsigned char a1, register unsigned char a
                                     if (this->map->fog_flag != 0 && visible == 0x80) {
                                         fog_next_shape = 1;
                                     }
-                                    tile_ptr->objects.normal_draw(this->cur_render_area, map_row, cur_col_num, tile);
+                                    RGE_VIEW_OBJECTS(tile_ptr)->normal_draw(this->cur_render_area, map_row, cur_col_num, tile);
                                 }
                                 fog_next_shape = 0;
                             }
@@ -572,3 +582,5 @@ long RGE_View::view_function(register unsigned char a1, register unsigned char a
     }
     return fog_flag;
 }
+
+#undef RGE_VIEW_OBJECTS

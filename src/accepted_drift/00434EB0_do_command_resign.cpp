@@ -13,6 +13,7 @@
 // store differs. ACCEPTED_DRIFT 2026-05-21 (Boss approved).
 #include "../../include/game_globals.h"
 
+#ifndef COMMAND_TU_CONTEXT
 struct RGE_Command_Resign {
     unsigned char command;
     unsigned char player_id;
@@ -49,6 +50,7 @@ public:
 };
 
 extern RGE_Base_Game* rge_base_game;
+#endif
 
 void RGE_Command::do_command_resign(RGE_Command_Resign* cmd)
 {

@@ -12,10 +12,14 @@
 // Log is __cdecl with 3 params (add esp, 0Ch after call).
 // FLAGS: /nologo /c /O2 /Oy
 
+#if !defined(COM_HAND_TU_CONTEXT)
 extern "C" {
+#if !defined(COM_HAND_TU_CONTEXT)
     extern void* L; // TDebuggingLog* at [62C4FCh]
+#endif // COM_HAND_TU_CONTEXT
     void __cdecl Log(void* log, const char* fmt, int val);
 }
+#endif // COM_HAND_TU_CONTEXT
 
 struct TCommunicationsHandler3 {
     char _pad_10C8[0x10C8];

@@ -15,6 +15,7 @@
 //   variants were rejected by policy or by the emitted code.
 // - Exact validation: 399 bytes, 9 ordered calls, frame 0x70, diff 0.
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Static_Object;
 
 class RGE_Game_World {
@@ -66,6 +67,7 @@ public:
     int createGroup(int* members, int count, int commanderId, float range);
     int commanderAddToGroup(int id, float range);
 };
+#endif
 
 int RGE_Static_Object::commanderAddToGroup(int id, float range)
 {

@@ -5,6 +5,7 @@
 // Key: gap array char[0xA7C] before tribe_game_options to get correct
 // +0xA7C member offset. C-style cast to RGE_Base_Game* for base call.
 
+#ifndef TRIBEGAM_TU_CONTEXT
 class RGE_Base_Game {
 public:
     void setMapSize(int x, int y, int z);
@@ -30,6 +31,7 @@ public:
 
     void setMapSize(MapSize size);
 };
+#endif
 
 void TRIBE_Game::setMapSize(MapSize size) {
     this->tribe_game_options.mapSizeValue = size;

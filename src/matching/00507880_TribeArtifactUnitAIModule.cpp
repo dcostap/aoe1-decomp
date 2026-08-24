@@ -7,10 +7,12 @@
 
 void* operator new(size_t size);
 
+#ifndef TAIUAIMD_COMPLETE_TU
 class TribeArtifactUnitAIModule : public UnitAIModule {
 public:
     TribeArtifactUnitAIModule(RGE_Static_Object* obj, int param);
 };
+#endif
 
 TribeArtifactUnitAIModule::TribeArtifactUnitAIModule(
     RGE_Static_Object* obj, int param)

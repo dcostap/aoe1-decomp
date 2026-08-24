@@ -25,6 +25,7 @@
 //   189-byte layout byte-for-byte.  PDB line map (arm1 5240->5244->5245,
 //   arm2 5242->5244->5245) is the fingerprint: both redraws map to line 5244.
 
+#if !defined(SCR_GAME_TU_CONTEXT)
 class TPanel {
 public:
     virtual void v0();
@@ -92,6 +93,7 @@ public:
     void reset_score_display();
     void command_score(int a1);
 };
+#endif
 
 void TRIBE_Screen_Game::command_score(int a1)
 {

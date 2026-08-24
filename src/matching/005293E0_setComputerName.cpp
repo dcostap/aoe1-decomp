@@ -1,10 +1,12 @@
+#ifndef TRIBEGAM_TU_CONTEXT
 class TRIBE_Game {
 public:
     char gap_0[0xACD];
     unsigned char arr_[1];
     void setComputerName(int i, unsigned char v);
 };
+#endif
 
 void TRIBE_Game::setComputerName(int i, unsigned char v) {
-    this->arr_[i] = v;
+    this->tribe_game_options.computerNameValue[i] = v;
 }

@@ -1,3 +1,4 @@
+#ifndef TRIBEGAM_TU_CONTEXT
 class TRIBE_Game {
 public:
     virtual ~TRIBE_Game();
@@ -6,4 +7,5 @@ public:
 
     void setRandomStartValue(int);
 };
-void TRIBE_Game::setRandomStartValue(int val) { this->randomStartValue_ = val; }
+#endif
+void TRIBE_Game::setRandomStartValue(int val) { this->random_start_value = val; }

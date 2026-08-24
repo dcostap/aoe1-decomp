@@ -3,7 +3,9 @@
 // char* WaitingOnInfo(unsigned int param_1)
 
 // ——— Globals ———
+#if !defined(COM_HAND_TU_CONTEXT)
 extern void* rge_base_game;               // 0x0062C574 — RGE_Base_Game* pointer
+#endif // COM_HAND_TU_CONTEXT
 extern char g_status_buffer[0x20];         // 0x0062C588 — string output buffer
 
 // ——— RGE_Base_Game stub (vtable layout only, vt[8] = get_string) ———
@@ -22,6 +24,7 @@ struct RGE_Base_Game_Stub {
 };
 
 // ——— TCommunications_Handler stub ———
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
     char pad_0000[0x10C8];
 public:
@@ -33,6 +36,8 @@ public:
     int IsPlayerHuman(unsigned int param_1);
     char* WaitingOnInfo(unsigned int param_1);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 char* TCommunications_Handler::WaitingOnInfo(unsigned int param_1)
 {

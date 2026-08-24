@@ -14,17 +14,26 @@ unsigned long debug_timeGetTime(const char* file, int line);
 void* operator new(unsigned int);
 void operator delete(void*);
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TDebuggingLog { public: void Log(char* fmt, ...); };
-extern TDebuggingLog* L;
-extern const char s_Com_hand_cpp[];
-extern unsigned int DAT_0062cf04;
+#endif // COM_HAND_TU_CONTEXT
 
+#if !defined(COM_HAND_TU_CONTEXT)
+extern TDebuggingLog* L;
+#endif // COM_HAND_TU_CONTEXT
+extern const char s_Com_hand_cpp[];
+#if !defined(COM_HAND_TU_CONTEXT)
+extern unsigned int DAT_0062cf04;
+#endif // COM_HAND_TU_CONTEXT
+
+#if !defined(COM_HAND_TU_CONTEXT)
 struct IUnknown {
     virtual long __stdcall QueryInterface(void*, void**) = 0;
     virtual unsigned long __stdcall AddRef() = 0;
     virtual unsigned long __stdcall Release() = 0;
 };
 
+#if !defined(COM_HAND_TU_CONTEXT)
 struct IDirectPlay3 : IUnknown {
     virtual long __stdcall AddPlayerToGroup() = 0;
     virtual long __stdcall Close() = 0;
@@ -52,14 +61,23 @@ struct IDirectPlay3 : IUnknown {
     virtual int __stdcall Send(unsigned int from, unsigned int to,
                                int flags, void* msg, unsigned int size) = 0;
 };
+#endif // COM_HAND_TU_CONTEXT
 
+#endif // COM_HAND_TU_CONTEXT
+
+#if !defined(COM_HAND_TU_CONTEXT)
 extern IDirectPlay3* DAT_0062c5ec;
+#endif // COM_HAND_TU_CONTEXT
 
+#if !defined(COM_HAND_TU_CONTEXT)
 struct COMMPLAYEROPTIONS {
     char gap_00[0x14];
     unsigned int dcoID[10];       // +0x14
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_0000[0x12C0];
@@ -73,6 +91,8 @@ public:
     COMMPLAYEROPTIONS PlayerOptions;
     int TXResendRequest(unsigned int serial, unsigned int player);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 int TCommunications_Handler::TXResendRequest(unsigned int serial, unsigned int player) {
     if (!this->RGE_Guaranteed_Delivery) {
@@ -98,7 +118,7 @@ int TCommunications_Handler::TXResendRequest(unsigned int serial, unsigned int p
     unsigned long sendStart = debug_timeGetTime(s_Com_hand_cpp, 4009);
     L->Log("  >TX RES REQ #%d %d (%d)", player, serial, 8);
     int to = this->PlayerOptions.dcoID[player];
-    IDirectPlay3* dp = DAT_0062c5ec;
+    IDirectPlay3* dp = (IDirectPlay3*)DAT_0062c5ec;
     int ok = dp->Send(DAT_0062cf04, to, 0, msg, 8);
     unsigned long elapsed2 = debug_timeGetTime(s_Com_hand_cpp, 4024) - sendStart;
     if (elapsed2 > 50) {

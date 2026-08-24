@@ -1,3 +1,4 @@
+#ifndef RGE_VIEW_SHARED_CONTEXT
 struct DClipInfo_Node {
     DClipInfo_Node* Next;
 };
@@ -11,6 +12,7 @@ public:
 
     void FreeNode(DClipInfo_Node* node);
 };
+#endif
 
 void DClipInfo_List::FreeNode(DClipInfo_Node* node) {
     node->Next = Free_Head;

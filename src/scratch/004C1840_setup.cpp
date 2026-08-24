@@ -58,6 +58,7 @@ extern void operator delete(void* ptr);
 
 extern float save_game_version;
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class ManagedArrayInt {
 public:
     int* value;
@@ -214,6 +215,7 @@ public:
     int setup(int file, RGE_Game_World* world);
 
 };
+#endif
 
 int RGE_Static_Object::setup(int file, RGE_Game_World* world) {
     int save_file = file;

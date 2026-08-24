@@ -1,3 +1,4 @@
+#if !defined(SCR_GAME_TU_CONTEXT)
 class TPanel;
 class TButtonPanel;
 
@@ -35,6 +36,7 @@ public:
 
     void command_unselect(void);
 };
+#endif
 
 void TRIBE_Screen_Game::command_unselect(void) {
     if (rge_base_game->get_paused() == 0) {

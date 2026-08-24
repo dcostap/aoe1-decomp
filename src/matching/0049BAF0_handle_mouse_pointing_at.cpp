@@ -14,6 +14,7 @@
 // - Main-agent audit restored canonical base-game destructor ownership and
 //   retained the typed panel/button scan; exact bytes were revalidated.
 
+#if !defined(SCR_GAME_TU_CONTEXT)
 extern "C" __declspec(dllimport) void* __stdcall GetForegroundWindow(void);
 
 struct tagPOINT {
@@ -120,6 +121,7 @@ public:
 
     void handle_mouse_pointing_at();
 };
+#endif
 
 void TRIBE_Screen_Game::handle_mouse_pointing_at() {
     void* window = rge_base_game->prog_window;
@@ -161,7 +163,7 @@ void TRIBE_Screen_Game::handle_mouse_pointing_at() {
     short found = -1;
     short i = 0;
     while (i < 0x11) {
-        TButtonPanel** slot = &this->button_panel[i];
+        TRIBE_Panel_Button** slot = &this->button_panel[i];
         if ((*slot)->enabled != 0 && (*slot)->get_id() != -1 &&
             (*slot)->button_action(point.x, point.y) != 0) {
             found = i;

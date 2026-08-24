@@ -20,6 +20,7 @@
 typedef unsigned char uchar;
 typedef unsigned long ulong;
 
+#ifndef TAIUAIMD_COMPLETE_TU
 class RGE_Game_World;
 class RGE_Master_Static_Object;
 class RGE_Static_Object;
@@ -381,18 +382,27 @@ class TribeCivilianUnitAIModule : public UnitAIModule {
 public:
     int processNotify(NotifyEvent* event, ulong flags);
 };
+#endif
 
 int TribeCivilianUnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
 {
     switch (event->mType - 0x1f4) {
     case 0x1b:
+#ifdef TAIUAIMD_COMPLETE_TU
+        if (taiuaimd_world_difficulty(this->objectValue->owner->world) >= 3) {
+#else
         if (this->objectValue->owner->world->difficultyLevel() >= 3) {
+#endif
             return 2;
         }
         // Intentional fall-through: 0x20f is the high-priority spelling of 0x1f4.
     case 0: {
         if (event->p2 <= 0) {
+#ifdef TAIUAIMD_COMPLETE_TU
+            taiuaimd_player_notify(this->objectValue->owner,
+#else
             this->objectValue->owner->notify(
+#endif
                 this->objectValue->id, this->objectValue->id, 0x209,
                 event->caller, 0, 0);
             this->purgeNotifyQueue(param_2);
@@ -407,12 +417,20 @@ int TribeCivilianUnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
 
         if (this->objectValue->owner->computerPlayer() == 1) {
             if (eventObject->owner->id != 0 || eventObject->id != this->currentTargetValue) {
+#ifdef TAIUAIMD_COMPLETE_TU
+                taiuaimd_player_notify(this->objectValue->owner,
+#else
                 this->objectValue->owner->notify(
+#endif
                     this->objectValue->id, this->objectValue->id, 0x201,
                     event->caller, 0, 0);
             }
         } else if (this->attackingUnitsValue.numberValue == 0) {
+#ifdef TAIUAIMD_COMPLETE_TU
+            taiuaimd_player_notify(this->objectValue->owner,
+#else
             this->objectValue->owner->notify(
+#endif
                 this->objectValue->id, this->objectValue->id, 0x201,
                 event->caller, 0, 0);
         }
@@ -466,7 +484,11 @@ found_attacker:
 already_attacking:
         this->objectValue->setUnderAttack(1);
         float speed = this->objectValue->getSpeed();
+#ifdef TAIUAIMD_COMPLETE_TU
+        int state = taiuaimd_object_action_state(this->objectValue);
+#else
         int state = this->objectValue->actionState();
+#endif
 
         if (this->currentOrderValue == 0x2c6 && speed > 0.0f) {
             goto return_two;
@@ -476,14 +498,22 @@ already_attacking:
         }
         if (this->currentOrderValue == 0x2c9 && state == 0x0c &&
             targetObject != 0 && targetObject->master_obj->object_group == 10 &&
+#ifdef TAIUAIMD_COMPLETE_TU
+            ((RGE_Static_Object*)(*(long*)((char*)event + 0x0C)))->owner->id == 0) {
+#else
             ((RGE_Static_Object*)event->p1)->owner->id == 0) {
+#endif
             goto return_two;
         }
         if (this->currentOrderValue == 0x2ce) {
             goto return_two;
         }
 
+#ifdef TAIUAIMD_COMPLETE_TU
+        if (((RGE_Static_Object*)(*(long*)((char*)event + 0x0C)))->owner->id == 0) {
+#else
         if (((RGE_Static_Object*)event->p1)->owner->id == 0) {
+#endif
             if (this->currentOrderValue != -1) {
                 this->order(this->objectValue->id, this->currentOrderValue,
                             this->currentTargetValue, -1,
@@ -527,7 +557,11 @@ already_attacking:
     }
 
     case 6:
+#ifdef TAIUAIMD_COMPLETE_TU
+        if (this->currentActionValue == *(long*)((char*)event + 0x0C)) {
+#else
         if (this->currentActionValue == event->p1) {
+#endif
             this->removeCurrentTarget();
             if (actionFile != 0) {
                 int id;
@@ -546,7 +580,11 @@ already_attacking:
         break;
 
     case 5:
+#ifdef TAIUAIMD_COMPLETE_TU
+        if (this->currentActionValue == *(long*)((char*)event + 0x0C)) {
+#else
         if (this->currentActionValue == event->p1) {
+#endif
             this->removeCurrentTarget();
             if (actionFile != 0) {
                 int id;
@@ -719,7 +757,11 @@ already_attacking:
                 result = this->closestObject(type, 3, 0, -1, 0);
             }
             if (result != -1 &&
+#ifdef TAIUAIMD_COMPLETE_TU
+                taiuaimd_object_can_path(this->objectValue, result, 1.0f, 0, 0, -1, -1) == 1 &&
+#else
                 this->objectValue->canPath(result, 1.0f, 0, 0, -1, -1) == 1 &&
+#endif
                 this->buildObject(result, 1) == 1) {
                 return 3;
             }

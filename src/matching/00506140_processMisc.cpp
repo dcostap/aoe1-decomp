@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 
+#ifndef TAIUAIMD_COMPLETE_TU
 typedef unsigned char uchar;
 
 class RGE_Action;
@@ -124,13 +125,18 @@ class TribePriestUnitAIModule : public UnitAIModule {
 public:
     int processMisc();
 };
+#endif
 
 extern FILE* actionFile;
 
 int TribePriestUnitAIModule::processMisc()
 {
     if (this->objectValue->owner->computerPlayer() == 1) {
+#ifdef TAIUAIMD_COMPLETE_TU
+        RGE_Action_Object* object = (RGE_Action_Object*)this->objectValue;
+#else
         RGE_Action_Object* object = this->objectValue;
+#endif
 
         if (object->attribute_amount_held >= 100.0f) {
             if (object->actions->have_action() != 1 ||

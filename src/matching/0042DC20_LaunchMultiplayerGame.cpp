@@ -7,10 +7,17 @@
 typedef unsigned char uchar;
 typedef unsigned short ushort;
 
+#if !defined(COM_HAND_TU_CONTEXT)
 extern "C" void __cdecl Log(void* log, const char* fmt, ...);
+#endif // COM_HAND_TU_CONTEXT
+#if !defined(COM_HAND_TU_CONTEXT)
 extern void* g_pDebugLog;     // at 62C4FCh
+#endif // COM_HAND_TU_CONTEXT
+#if !defined(COM_HAND_TU_CONTEXT)
 extern long g_DAT_0062c5ec;   // at 62C5ECh
+#endif // COM_HAND_TU_CONTEXT
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     void EnableNewPlayers(long param_2, long param_3);
@@ -47,21 +54,23 @@ public:
     char pad_171C[0x04];                // 0x171C to 0x171F
     int LastTurnAck;                     // +0x1720
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 void TCommunications_Handler::LaunchMultiplayerGame()
 {
-    this->EnableNewPlayers(g_DAT_0062c5ec, 0);
-    this->ProgramState = 5;
+    this->EnableNewPlayers((int)g_DAT_0062c5ec, 0);
+    this->PlayerOptions.ProgramState = 5;
     this->CalculatePlayerRange();
     unsigned int idx = 1;
-    this->GameHasStarted = 1;
+    this->PlayerOptions.GameHasStarted = 1;
     this->ClearRXandTX();
     this->PackPlayersDown();
 
     // Loop over players to set serial numbers (uses idx=1 with jbe loop)
     if (this->MaxGamePlayers >= 1) {
         int base_serial = 2000;
-        int* pp = &this->PlayerHighSerialNumber;
+        int* pp = (int*)&this->PlayerHighSerialNumber[0];
         do {
             if (pp[15] != 0) {
                 *pp = base_serial;
@@ -77,23 +86,23 @@ void TCommunications_Handler::LaunchMultiplayerGame()
     this->GTDSerialNo = this->Me * 2000 + 1;
     Log(g_pDebugLog, "HOST Set own serial to =%d", this->GTDSerialNo);
     this->SendSharedData(1);
-    this->current_turn = this->CommandTurnIncrement + 1;
+    this->current_turn = this->PlayerOptions.CommandTurnIncrement + 1;
 
     // Clear player acknowledgements if multiplayer
     if (this->Multiplayer != 0) {
         Log(g_pDebugLog, "Clear player acknowledgements");
-        unsigned int low = this->LowPlayerNumber;
+        unsigned int low = this->PlayerOptions.LowPlayerNumber;
         unsigned int i = low;
-        if (i <= this->HighPlayerNumber) {
+        if (i <= this->PlayerOptions.HighPlayerNumber) {
             // NOTE: high is NOT cached — reloaded from memory each iteration
-            int* ack = &this->LastTurnAck + low;
+            int* ack = (int*)this->LastTurnAck + low;
             do {
                 if (i != (unsigned int)this->Me) {
                     *ack = 0;
                 }
                 i++;
                 ack++;
-            } while (i <= this->HighPlayerNumber);
+            } while (i <= this->PlayerOptions.HighPlayerNumber);
         }
     }
 

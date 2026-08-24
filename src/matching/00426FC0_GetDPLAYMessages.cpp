@@ -52,14 +52,29 @@
 
 typedef unsigned long ulong;
 #if 0
+#if !defined(COM_HAND_TU_CONTEXT)
 extern ulong __cdecl debug_timeGetTime(const char* file, int line);
+#endif // COM_HAND_TU_CONTEXT
+#if !defined(COM_HAND_TU_CONTEXT)
 class TDebuggingLog { public: void Log(char* fmt, ...); };
-class RGE_Comm_Error { public: void ShowReturn(long result, char* msg); };
-class IDirectPlay4A;
-extern TDebuggingLog* L;
-extern IDirectPlay4A* DAT_0062c5ec;
-extern ulong DAT_0062cf04;
+#endif // COM_HAND_TU_CONTEXT
 
+#if !defined(COM_HAND_TU_CONTEXT)
+class RGE_Comm_Error { public: void ShowReturn(long result, char* msg); };
+#endif // COM_HAND_TU_CONTEXT
+
+class IDirectPlay4A;
+#if !defined(COM_HAND_TU_CONTEXT)
+extern TDebuggingLog* L;
+#endif // COM_HAND_TU_CONTEXT
+#if !defined(COM_HAND_TU_CONTEXT)
+extern IDirectPlay4A* DAT_0062c5ec;
+#endif // COM_HAND_TU_CONTEXT
+#if !defined(COM_HAND_TU_CONTEXT)
+extern ulong DAT_0062cf04;
+#endif // COM_HAND_TU_CONTEXT
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class IDirectPlay4A {
 public:
     virtual void v00(); virtual void v04(); virtual void v08(); virtual void v0C();
@@ -71,7 +86,10 @@ public:
     virtual void v48(); virtual void v4C(); virtual void v50(); virtual void v54(); virtual void v58(); virtual void v5C(); virtual void v60();
     virtual long __stdcall Receive(ulong* from, ulong* to, unsigned long flags, void* data, ulong* size);
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_0000[0x24];
@@ -91,6 +109,8 @@ public:
     void EvaluateSystemMessage(ulong size, char* msg, int a, ulong to);
     int PreprocessMessages(ulong size, char* msg, ulong from, ulong to, int cached);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 #endif
 
 void TCommunications_Handler::GetDPLAYMessages() {

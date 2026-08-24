@@ -1,3 +1,4 @@
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Static_Object {
 public:
     virtual void vf00() = 0;
@@ -38,6 +39,7 @@ public:
     void rehook(void);
     RGE_Static_Object* get_object_pointer(long id);
 };
+#endif
 
 void RGE_Static_Object::rehook(void) {
     RGE_Static_Object* obj;

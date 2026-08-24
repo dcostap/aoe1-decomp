@@ -17,6 +17,7 @@
 
 #include <math.h>
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Master_Static_Object {
 public:
     char gap_00[0x30];
@@ -35,6 +36,7 @@ public:
 
     float distance_to_position(float x, float y, float z);
 };
+#endif
 
 float RGE_Static_Object::distance_to_position(float x, float y, float z)
 {

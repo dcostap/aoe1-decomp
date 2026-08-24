@@ -4,6 +4,7 @@
 
 #include <stdlib.h>
 
+#ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
 class RGE_Player {
 public:
     virtual ~RGE_Player();
@@ -35,6 +36,7 @@ public:
 
     virtual ~TRIBE_Player();
 };
+#endif
 
 TRIBE_Player::~TRIBE_Player()
 {

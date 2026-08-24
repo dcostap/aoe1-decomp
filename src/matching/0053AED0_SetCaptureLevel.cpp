@@ -1,3 +1,4 @@
+#ifndef RGE_VIEW_SHARED_CONTEXT
 class DClipInfo_List {
 public:
     char gap_00[0x4C];
@@ -7,6 +8,7 @@ public:
 
     void SetCaptureLevel(int min_level, int max_level);
 };
+#endif
 
 void DClipInfo_List::SetCaptureLevel(int min_level, int max_level) {
     int temp;

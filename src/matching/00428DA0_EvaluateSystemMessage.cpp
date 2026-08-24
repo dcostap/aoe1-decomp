@@ -14,20 +14,29 @@
 #include <stdio.h>
 #include <string.h>
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TDebuggingLog {
 public:
     static void __cdecl Log(TDebuggingLog* log, const char* fmt, ...);
     void FlushLog();
 };
+#endif // COM_HAND_TU_CONTEXT
+
+#if !defined(COM_HAND_TU_CONTEXT)
 extern TDebuggingLog* L;                          // 62C4FCh
+#endif // COM_HAND_TU_CONTEXT
 extern "C" int g_DirectPlayConversation;          // 62C5ECh
 
+#if !defined(COM_HAND_TU_CONTEXT)
 struct MSGFORMAT_KILL_PLAYER {
     int dcoID;
     int CurrentTurn;
     int current_turn;
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 struct COMMPLAYEROPTIONS {
     unsigned char NeedsToBeSent;       // +0x00 (0x1550)
     unsigned char _pad0[3];
@@ -59,7 +68,10 @@ struct COMMPLAYEROPTIONS {
     int GameHasStarted;                // +0x1C8 (0x1718)
     unsigned long DataSizeToFollow;    // +0x1CC (0x171C)
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     // BINARY NOTE: This field surface follows the canonical communications donor
@@ -192,6 +204,8 @@ public:
     void EvaluateSystemMessage(unsigned long unused_1, char* system_message_data,
                                unsigned long message_id_home, unsigned long unused_4);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 // The executable's .rdata labels and addresses identify these reviewed strings.
 // Keep the names local to this function. Do not encode their addresses in expressions.

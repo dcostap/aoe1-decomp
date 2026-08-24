@@ -9,7 +9,11 @@
 #include <cstdio>
 #include "../../include/taiuaimd_context.h"
 
+#ifdef TAIUAIMD_COMPLETE_TU
+extern FILE* actionFile;  // FILE* at 0x62C4CC
+#else
 extern void* actionFile;  // FILE* at 0x62C4CC
+#endif
 extern int fprintf(void*, const char*, ...);
 
 // String constants at fixed RVAs in .rdata

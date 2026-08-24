@@ -2,20 +2,29 @@
 
 struct DirectPlay;
 
+#if !defined(COM_HAND_TU_CONTEXT)
 struct DirectPlayVtbl {
     char gap_00[0x24];
     long (__stdcall* destroyMyPlayer)(DirectPlay* self, int playerId);
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 struct DirectPlay {
     DirectPlayVtbl* lpVtbl;
 };
+#endif // COM_HAND_TU_CONTEXT
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class RGE_Comm_Error {
 public:
     void ShowReturn(long param_1, char* param_2);
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_00[0x10E0];
@@ -25,6 +34,8 @@ public:
 
     long DestroyMyPlayer();
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 extern DirectPlay* g_comm_player_bits; // 62C5EC
 extern int g_self_player;              // 62CF04

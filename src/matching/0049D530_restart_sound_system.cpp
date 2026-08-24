@@ -1,11 +1,13 @@
+#if !defined(SCR_GAME_TU_CONTEXT)
 class TPanel {
 public:
-    virtual void restart_sound_system();
+    virtual int restart_sound_system();
 };
 
 class TRIBE_Screen_Game : public TPanel {
 public:
-    void restart_sound_system();
+    int restart_sound_system();
 };
+#endif
 
-void TRIBE_Screen_Game::restart_sound_system() { TPanel::restart_sound_system(); }
+int TRIBE_Screen_Game::restart_sound_system() { return TPanel::restart_sound_system(); }

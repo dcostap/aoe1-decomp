@@ -8,7 +8,11 @@
 // This wrapper is intentionally not added to translation_units.json.
 
 #define RGE_MISL_OBJ_SHARED_CONTEXT 1
-#include "../include/misl_obj_context.h"
+#include "misl_obj_module_context.h"
+
+// The original module emits the class destructor COMDAT between the two
+// constructors. Keep the declaration in this module-local context.
+RGE_Missile_Object::~RGE_Missile_Object() {}
 
 #include "matching/0045A740_RGE_Missile_Object.cpp"
 #include "matching/0045A800_RGE_Missile_Object.cpp"

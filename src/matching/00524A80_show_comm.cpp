@@ -5,6 +5,7 @@
 // attempt 1: natural chain with accumulated GetCommInfo results -> EXACT MATCH (110/110, 0.0000%)
 // default flags; VC5 evaluates args right-to-left, matching the accumulated-stack pattern
 
+#ifndef TRIBEGAM_TU_CONTEXT
 class TCommunications_Handler {
 public:
     // 0042CD50
@@ -26,6 +27,7 @@ public:
 
     void show_comm();
 };
+#endif
 
 void TRIBE_Game::show_comm() {
     if (this->game_screen == 0) return;

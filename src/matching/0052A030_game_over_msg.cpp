@@ -1,4 +1,5 @@
 #pragma warning(disable:4234)
+#ifndef TRIBEGAM_TU_CONTEXT
 class RGE_Player {
 public:
     char gap_00[0x80];
@@ -34,6 +35,7 @@ public:
 
     char* game_over_msg();
 };
+#endif
 
 char* TRIBE_Game::game_over_msg() {
     RGE_Game_World* world = this->world;

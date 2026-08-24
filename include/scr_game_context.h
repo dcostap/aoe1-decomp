@@ -20,6 +20,11 @@ struct tagRECT {
     long right;
     long bottom;
 };
+
+struct tagPOINT {
+    long x;
+    long y;
+};
 #endif
 
 class TDrawArea;
@@ -36,6 +41,7 @@ class THorizontalSliderPanel;
 class RGE_Static_Object;
 class RGE_Object_List;
 class RGE_Player;
+class TRIBE_Player;
 class RGE_Color_Table;
 class RGE_Master_Static_Object;
 class RGE_Master_Combat_Object;
@@ -46,6 +52,7 @@ class RGE_Victory_Conditions;
 class RGE_Player_Info;
 class RGE_Sound;
 class RGE_Map;
+class RGE_Tile;
 class TSound_Driver {
 public:
     int stop_stream();
@@ -56,6 +63,7 @@ class TDebuggingLog;
 class TFont;
 class TDigital;
 class TPanel;
+struct PanelNode;
 class TEasy_Panel;
 class TScreenPanel;
 class RGE_View;
@@ -110,21 +118,34 @@ struct TPanelBaseFields {
     long pnl_wid;
     long pnl_hgt;
     char* panelNameValue;
-    TDrawArea* render_area;
+    union {
+        TDrawArea* render_area;
+        TDrawArea* draw_surface;
+    };
     tagRECT clip_rect;
     int position_mode;
     union {
         int need_redraw;
         int mode;
+        int panel_mode;
     };
-    TPanel* curr_child;
-    TPanel* parent_panel;
+    union {
+        TPanel* curr_child;
+        TPanel* panel_state;
+    };
+    union {
+        TPanel* parent_panel;
+        TPanel* panel_40;
+    };
     TPanel* left_panel;
     TPanel* top_panel;
     TPanel* right_panel;
     TPanel* bottom_panel;
     void* node;
-    void* first_child_node;
+    union {
+        void* first_child_node;
+        PanelNode* child_list;
+    };
     void* last_child_node;
     TPanel* tab_prev_panel;
     TPanel* tab_next_panel;
@@ -133,12 +154,24 @@ struct TPanelBaseFields {
         int active;
         int field_6C;
     };
-    int visible;
+    union {
+        int visible;
+        int field_70;
+    };
     int tab_stop;
-    int have_focus;
-    int overlapping_children;
+    union {
+        int have_focus;
+        void* input_window;
+    };
+    union {
+        int overlapping_children;
+        int field_7C;
+    };
     int handle_mouse_input;
-    int just_drawn;
+    union {
+        int just_drawn;
+        int redraw_needed;
+    };
     void* clip_rgn;
     tagRECT render_rect;
     long left_border;
@@ -186,11 +219,18 @@ public:
 class TDrawArea {
 public:
     TDrawSystem* DrawSystem;
+    void* hwnd;
     void LockWindow(void*);
     unsigned char* Lock(char*, int);
     void Unlock(char*);
     void FillRect(long, long, long, long, unsigned char);
     void SetClipRect(tagRECT*);
+};
+
+struct PanelNode {
+    TPanel* panel;
+    char gap_04[4];
+    PanelNode* next;
 };
 
 class TPanel {
@@ -204,6 +244,7 @@ public:
     virtual void set_active(int);
     virtual void set_positioning(int, long, long, long, long, long, long,
                                  long, long, TPanel*, TPanel*, TPanel*, TPanel*);
+    void set_positioning(int, long, long, long, long, long, long, long, long);
     virtual void set_fixed_position(long, long, long, long);
     virtual void set_redraw(int);
     virtual void set_overlapped_redraw(TPanel*, TPanel*, int);
@@ -261,21 +302,34 @@ public:
     long pnl_wid;
     long pnl_hgt;
     char* panelNameValue;
-    TDrawArea* render_area;
+    union {
+        TDrawArea* render_area;
+        TDrawArea* draw_surface;
+    };
     tagRECT clip_rect;
     int position_mode;
     union {
         int need_redraw;
         int mode;
+        int panel_mode;
     };
-    TPanel* curr_child;
-    TPanel* parent_panel;
+    union {
+        TPanel* curr_child;
+        TPanel* panel_state;
+    };
+    union {
+        TPanel* parent_panel;
+        TPanel* panel_40;
+    };
     TPanel* left_panel;
     TPanel* top_panel;
     TPanel* right_panel;
     TPanel* bottom_panel;
     void* node;
-    void* first_child_node;
+    union {
+        void* first_child_node;
+        PanelNode* child_list;
+    };
     void* last_child_node;
     TPanel* tab_prev_panel;
     TPanel* tab_next_panel;
@@ -284,12 +338,24 @@ public:
         int active;
         int field_6C;
     };
-    int visible;
+    union {
+        int visible;
+        int field_70;
+    };
     int tab_stop;
-    int have_focus;
-    int overlapping_children;
+    union {
+        int have_focus;
+        void* input_window;
+    };
+    union {
+        int overlapping_children;
+        int field_7C;
+    };
     int handle_mouse_input;
-    int just_drawn;
+    union {
+        int just_drawn;
+        int redraw_needed;
+    };
     void* clip_rgn;
     tagRECT render_rect;
     long left_border;
@@ -326,8 +392,19 @@ public:
 
 
     char* panelName();
+    void target_func(int);
+    int pick_tile(long, long, short*, short*, RGE_Tile**);
+    void update();
+    void update(int);
+    void show_message(int, char*, int, int, int, int, int);
+    void set_text(char*);
+    void set_text(int, char*, int);
+    void set_text_color(int, int);
+    void set_text_color(int, int, int);
+    void set_player(RGE_Player*);
     char* get_string(int);
     int get_string(int, char*, int);
+    char* get_string(int, int, int, int, int, int);
     void set_curr_child(TPanel*);
     void set_help_info(int, int);
     void set_z_order(unsigned char, int);
@@ -336,6 +413,56 @@ public:
     void set_object(RGE_Static_Object*);
     void remove_message();
     void set_visible(int);
+};
+
+class RGE_Command {
+public:
+    void command_group(int);
+    void command_group_by_number(int);
+    void command_select_group(int, int);
+    void command_menu();
+    void do_commands(int);
+};
+
+class TRIBE_Command {
+public:
+    void command_quick_build(int);
+    void command_game_speed(float);
+    void do_commands(int);
+    void do_commands();
+    void command_queue(RGE_Static_Object*, int, short);
+};
+
+struct Speed_Message {
+    union {
+        float new_speed;
+        char msg[256];
+    };
+    char pad[4];
+};
+
+class TribeSendMessageDialog {
+public:
+    TribeSendMessageDialog(TPanel*, int);
+    TribeSendMessageDialog(TPanel*);
+};
+
+class TribeSendQuickMessageDialog {
+public:
+    TribeSendQuickMessageDialog(TPanel*, int);
+    TribeSendQuickMessageDialog(TPanel*);
+};
+
+class TribeDiplomacyDialog {
+public:
+    TribeDiplomacyDialog(TPanel*, int);
+    TribeDiplomacyDialog(TPanel*);
+};
+
+class TribeMenuDialog {
+public:
+    TribeMenuDialog(TPanel*, int);
+    TribeMenuDialog(TPanel*);
 };
 
 class TEasy_Panel : public TPanel {
@@ -381,6 +508,7 @@ public:
 
     void setup_popup_help();
     void popupYesNoDialog(char*, void*, int, int);
+    void popupYesNoDialog(long, char*, int, int);
     void popupYesNoCancelDialog(char*, char*, int, int);
 };
 
@@ -478,11 +606,18 @@ class RGE_Main_View : public RGE_View {
 public:
     char gap_380[0x20];
     RGE_Main_View();
+    void vfF0();
+    int message_active;
 };
 
 class TRIBE_Main_View : public RGE_Main_View {
 public:
-    TRIBE_Main_View();
+    virtual ~TRIBE_Main_View();
+    void vf20(int);
+    void redraw(int);
+    long width();
+    void update();
+    void update(int);
 };
 
 class RGE_Diamond_Map : public TPanel {
@@ -495,6 +630,8 @@ public:
     void set_world(RGE_Game_World*);
     void set_bitmap(char*, int);
     void set_player(RGE_Player*);
+    int pick_tile(long, long, short*, short*);
+    void update();
 };
 
 class TRIBE_Diamond_Map_View : public RGE_Diamond_Map {
@@ -514,12 +651,17 @@ public:
     TRIBE_Panel_Object(TDrawArea*, TPanel*, TFont*, int, int, TShape*,
                        TShape**, RGE_Player*);
     void set_object(RGE_Static_Object*);
+    void set_player(RGE_Player*);
 };
 
 class TButtonPanel : public TPanel {
 public:
     char gap_F4[0x1cc];
-    unsigned char draw_type_byte;
+    union {
+        unsigned char draw_type_byte;
+        unsigned char draw_type;
+    };
+    int enabled;
     char gap_2C1[0x113];
     long hotkey;
     long hotkey_shift;
@@ -532,9 +674,13 @@ public:
     void setDrawType(int);
     long get_id();
     void set_text(int, char*);
+    void set_text(int, char*, char*);
     void set_text(char*);
     void set_bevel_info(int, int, int, int, int, int, int);
     void set_picture(short, TShape*, short);
+    void vf14(int);
+    int button_action(long, long);
+    char* help_text;
 };
 
 class TRIBE_Panel_Button : public TButtonPanel {
@@ -546,12 +692,21 @@ public:
     TShape* border_pic;
     char gap_2C8[0x108];
     int in_use;
+    int disabled;
+    unsigned char* color_table;
+    int border_frame;
 
     TRIBE_Panel_Button(TDrawArea*, TPanel*, TDigital*, TFont*, int, int,
                        TShape*);
     void set_text_msg(char*);
+    void set_text(int, char*, char*);
     void set_display_garrison(int);
     void set_garrison_number(int);
+    void set_active(int);
+    void set_disabled(int);
+    int get_id2();
+    void reset();
+    void set_text(int, char*, int);
 };
 
 class TMessagePanel : public TPanel {
@@ -563,6 +718,8 @@ public:
     void remove_message();
     void show_message2(int, char*, unsigned long, unsigned long, void*, long,
                        long, void*, int, void*, int);
+    void show_message(int, char*, int, int, int, int, int);
+    void show_message(int, const char*);
 };
 
 class TTextPanel : public TPanel {
@@ -580,6 +737,13 @@ public:
     virtual void set_text(long);
     virtual void set_text(char**, short);
     void empty_list();
+    void vf14(int);
+    void vf20(int);
+    void vfE4(int);
+    int pause_flag;
+    void set_state(int);
+    void redraw(int);
+    char* get_text();
 };
 
 class TScrollBarPanel : public TPanel {
@@ -608,6 +772,8 @@ public:
     RGE_Panel_Tool_Box(TDrawArea*, TPanel*, int, int, int, int, TFont*, int,
                        int, TDigital*, TScreenPanel*, RGE_View*,
                        RGE_Diamond_Map*);
+    void game_mode_changed(int, int);
+    void vf14(int);
 };
 
 class RGE_Player {
@@ -633,8 +799,10 @@ public:
     RGE_Color_Table* color_table;
     char gap_10c[0x24];
     RGE_Static_Object* selected_obj;
+    RGE_Static_Object* sel_list[25];
     char gap_134[0x68];
     short sel_count;
+    long id;
 
     virtual void set_game_status(unsigned char);
     virtual void do_resign(int);
@@ -653,6 +821,27 @@ public:
                                 float, int, int, int);
     unsigned char unit_level_selected();
     int is_group_selected(short);
+    unsigned char get_selected_objects_to_command();
+    void command_add_attribute(int, float);
+    unsigned char check_obj_cost(short, short*, float, int);
+    void group_objects(int);
+    void unselect_object(RGE_Static_Object*);
+    void unselect_object();
+    void select_group(int);
+    void select_object(RGE_Static_Object*);
+    void set_view_loc(long, long);
+    void set_map_loc(long, long);
+    void command_stop();
+    void command_formation(int);
+    void command_stand_ground();
+    void ungroup_objects();
+    RGE_Static_Object* find_obj(int);
+    RGE_Static_Object* find_obj(int, int);
+    RGE_Static_Object* find_obj();
+    RGE_Static_Object* find_obj(int, RGE_Static_Object*);
+    void unselect_area();
+    unsigned char check_tech_cost(short*, short*);
+    void command_building_make_obj(short);
     unsigned char relation(long);
     virtual void kickAI(int);
     virtual void vp_3c(); virtual void vp_40(); virtual void vp_44();
@@ -671,6 +860,9 @@ public:
     virtual void resign(int, long);
     void interface_item_avail(Item_Avail**, short*, short);
     void interface_tech_avail(Item_Avail**, short*, short);
+};
+
+class RGE_PlayerExt : public RGE_Player {
 };
 
 class RGE_Game_World {
@@ -710,10 +902,29 @@ class TRIBE_World : public RGE_Game_World {
 public:
     TRIBE_Tech* tech;
     char gap_108[0x14];
-    unsigned char score_displayed;
+    union {
+        unsigned char score_displayed;
+        unsigned char countdown_victory;
+    };
     unsigned char controllingComputerPlayer;
     char gap_11E[2];
     int sent_zone_score;
+    int victory_type;
+    union {
+        TRIBE_Command* command;
+        TRIBE_Command* commands;
+    };
+    struct WorldInfo {
+        int cheat_visibility_flag;
+    };
+    WorldInfo* info;
+    int show_score;
+
+    class FogState {
+    public:
+        int fog_of_war;
+    };
+    FogState* fog_state;
 
     void send_zone_score_info();
 };
@@ -747,7 +958,9 @@ public:
 
     char gap_04[8];
     RGE_Prog_Info* prog_info;
-    char gap_10[0x40];
+    char gap_10[0x0c];
+    int prog_active;
+    char gap_1c[0x34];
     union {
         TDrawArea* draw_area;
         unsigned char outline_type;
@@ -758,7 +971,9 @@ public:
     int prog_mode;
     int game_mode;
     int sub_game_mode;
-    char gap_1bc[0x23c];
+    char gap_1c0[0x18];
+    int input_enabled;
+    char gap_1dc[0x220];
     RGE_Game_World* world;
     char gap_3fc[0x5d8];
     int display_selected_ids;
@@ -766,8 +981,22 @@ public:
     int save_paused;
     char gap_a04[0x1c];
     void* map_save_area;
+    int quick_build;
 
     int multiplayerGame();
+    int allowCheatCodes();
+    void enable_input();
+    void set_game_action(int, int);
+    void set_font(int, int);
+    void request_pause(int);
+    void request_pause();
+    void set_game_speed(float);
+    void build_mode(int, int);
+    int language(int);
+    char* language(int, int, int, char*, int);
+    void vf10(int, int);
+    void vf14(int, int);
+    void vf14(int);
     int singlePlayerGame();
     int numberPlayers();
     int playerID(int);
@@ -777,7 +1006,10 @@ public:
     void set_last_single_time(int, unsigned long);
     void add_to_timing(int, unsigned long);
     void increment_world_update_count();
-    RGE_Player* get_player();
+    TRIBE_Player* get_player();
+    RGE_Player* get_player(void***, short*, int, int, int, int);
+    TRIBE_Player* get_player(int, short*);
+    TRIBE_Player* get_player(int);
     RGE_Font* get_font(int);
     int get_paused();
     void set_map_visible(int);
@@ -791,6 +1023,15 @@ public:
     int gameDeveloperMode();
     unsigned char check_prog_argument(const char*);
     void dump_memory_usage(char*);
+    void goto_notification_loc();
+    void* prog_window;
+    void get_mouse_pos(tagPOINT);
+    void set_font(int);
+    int master_obj_id;
+    int do_show_timings;
+    int do_show_comm;
+    int do_show_ai;
+    int get_countdown_timer(int, int*);
 };
 
 class TRIBE_Game : public RGE_Base_Game {
@@ -810,7 +1051,7 @@ public:
     TPanel* currentPanel();
     TPanel* mouseOwner();
     TPanel* panel(char*);
-    int modalPanel();
+    TPanel* modalPanel();
     int setCurrentPanel(char*, int);
     int destroyPanel(char*);
 };
@@ -835,6 +1076,9 @@ public:
     int TXDebugPing();
     int GetPlayerHumanity(unsigned int);
     char* GetPlayerName(unsigned int);
+    void SendChatMsgAll(const char*);
+    void SendIResignMsg();
+    void GameOver();
 };
 
 class PLAYER_SCORE {
@@ -931,12 +1175,24 @@ class TRIBE_Player : public RGE_Player {
 public:
     TRIBE_Player_Tech* tech_tree;
     RGE_Static_Object* sel_list[25];
+    unsigned char check_obj_cost(short, short*, float, int);
+    int artifact_held_time;
+    int ruin_held_time;
+    void command_building_cancel();
+    unsigned char check_tech_cost(short, short*, float, int);
+    void command_building_make_tech(short);
+    unsigned char check_tech_cost();
+    void command_building_make_tech();
+    void command_trade_attribute(long);
+    void unselect_area();
 };
 
 class RGE_Static_Object {
 public:
     virtual ~RGE_Static_Object();
     long id;
+    long world_x;
+    long world_y;
     RGE_Master_Static_Object* master_obj;
     RGE_Player* owner;
     char gap_10[0x14];
@@ -984,6 +1240,7 @@ public:
     long help_page_id;
     long hotkey_id;
     char gap_a4[0x14];
+    unsigned char building_connect_flag;
 };
 
 class TRIBE_Master_Combat_Object : public RGE_Master_Static_Object {
@@ -1012,6 +1269,12 @@ public:
 class TDebuggingLog {
 public:
     static void Log(TDebuggingLog*, const char*, ...);
+    void Log(const char*, ...);
+};
+
+class TChat {
+public:
+    char* GetChatMsg(int);
 };
 
 class TribeSaveGameScreen {
@@ -1050,15 +1313,47 @@ public:
     TPanel* text_line_panel;
     TTextPanel* quit_message_panel;
     TRIBE_Panel_Time* time_panel;
-    TPanel* countdown_clock[10];
+    TRIBE_Panel_Time* countdown_clock[10];
     TPanel* pop_panel;
-    TMessagePanel* message_panel;
-    TMessagePanel* message_panel2;
-    TMessagePanel* message_panel3;
-    TMessagePanel* message_panel4;
-    TMessagePanel* message_panel5;
-    TMessagePanel* message_panel6;
-    TPanel* chat_panel[8];
+    union {
+        struct {
+            TMessagePanel* message_panel;
+            TMessagePanel* message_panel2;
+            TMessagePanel* message_panel3;
+            TMessagePanel* message_panel4;
+            TMessagePanel* message_panel5;
+            TMessagePanel* message_panel6;
+        };
+        struct {
+            TMessagePanel* msg_panel_0;
+            TMessagePanel* msg_panel_1;
+            TMessagePanel* msg_panel_2;
+            TMessagePanel* msg_panel_3;
+            TMessagePanel* msg_panel_4;
+            TMessagePanel* msg_panel_5;
+        };
+        struct {
+            TMessagePanel* message_panel1;
+            TMessagePanel* message_panel2_alt;
+            TMessagePanel* message_panel3_alt;
+            TMessagePanel* message_panel4_alt;
+            TMessagePanel* message_panel5_alt;
+            TMessagePanel* message_panel6_alt;
+        };
+        struct {
+            TMessagePanel* ai_panel_1;
+            TMessagePanel* ai_panel_2;
+            TMessagePanel* ai_panel_3;
+            TMessagePanel* ai_panel_4;
+            TMessagePanel* ai_panel_5;
+            TMessagePanel* ai_panel_6;
+        };
+        TMessagePanel* message_panels_at_544[6];
+    };
+    union {
+        TPanel* chat_panel[8];
+        TMessagePanel* message_panels[8];
+    };
     RGE_Panel_Tool_Box* tool_box;
     TPanel* age_panel;
     TTextPanel* pause_text;
@@ -1066,7 +1361,10 @@ public:
     TMessagePanel* score_panel[8];
     TTextPanel* log_text;
     TScrollBarPanel* log_scrollbar;
-    TRIBE_World* world;
+    union {
+        TRIBE_World* world;
+        void* comm_handler;
+    };
     unsigned long update_interval;
     unsigned long last_update_time;
     unsigned long map_redraw_interval;
@@ -1100,8 +1398,14 @@ public:
     };
     AnimPalEntry anim_pal_table[7];
     char gap_6b3[0x55];
-    long mouse_last_x;
-    long mouse_last_y;
+    union {
+        long mouse_last_x;
+        long last_mouse_x;
+    };
+    union {
+        long mouse_last_y;
+        long last_mouse_y;
+    };
     union {
         struct {
             int save_age;
@@ -1109,7 +1413,11 @@ public:
             long save_screen_width;
             unsigned long game_over_time;
             int showing_game_over;
-            int chat_line;
+            union {
+                int chat_line;
+                int next_chat_panel;
+                int message_index;
+            };
             unsigned long view_interval;
             unsigned long last_view_time;
             union {
@@ -1150,12 +1458,12 @@ public:
     void handle_game_update();
     long key_down_action(long, short, int, int, int);
     long action(TPanel*, long, unsigned long, unsigned long);
-    void do_button_action(int, unsigned long, int);
+    void do_button_action(int, int, int);
     void setup_buttons();
     void reset_score_display();
     void player_changed(int, int);
     void reset_clocks();
-    void command_score(unsigned int);
+    void command_score(int);
     void command_group_by_number(int);
     void command_select_group(int, int);
     void command_formation(int);
@@ -1188,6 +1496,80 @@ public:
     short calc_button_loc(unsigned char);
     void set_button(TShape*, short, short, long, long, long, long, long,
                     unsigned char*, char*, char*, int);
+
+    void set_redraw(int);
+    void set_overlapped_redraw(TPanel*, TPanel*, int);
+    void set_map_buttons_redraw(int);
+    long handle_paint();
+    long handle_idle();
+    long wnd_proc(void*, unsigned int, unsigned int, long);
+    long handle_mouse_down(unsigned char, long, long, int, int);
+    void handle_user_command(int, int);
+    void target_00497280(int, int);
+    void handle_pause();
+    void handle_resume();
+    void handleChatReceived(int);
+    void handle_mouse_pointing_at();
+    void display_system_message(char*);
+    long char_action(long, short);
+    void show_timings(char*, char*);
+    void show_comm(char*, char*, char*, char*, char*, char*);
+    void show_ai(char*, char*, char*, char*, char*, char*);
+    void show_message(int, char*, unsigned char, unsigned char);
+    void reset_buttons();
+    void game_mode_changed(int, int);
+    void command_game_speed(int);
+    void set_info_file(char*);
+    void set_info_file(char*, long);
+    void set_popup_info_file(char*);
+    void set_popup_info_file(char*, long);
+    void set_button_pics();
+    void set_button_pics(char*, long);
+    void set_bevel_colors(int, int, int, int, int, int);
+    int bevel_color1;
+    int bevel_color2;
+    int bevel_color3;
+    int bevel_color4;
+    int bevel_color5;
+    int bevel_color6;
+    void command_build();
+    void command_chat();
+    void command_repair();
+    void command_heal();
+    void command_convert();
+    void command_diplomacy();
+    void command_research(int);
+    int popup_help_flag;
+    void clear_popup_help();
+    void command_save_game();
+    void command_save_scenario();
+    void command_stop();
+    void command_trade();
+    void command_trade_with(int);
+    void command_train(int, short);
+    void command_unload();
+    void command_view_tribe();
+    void command_outline();
+    void command_pause();
+    void command_more();
+    void command_menu();
+    void command_group();
+    int field_5E4;
+    int field_7B4;
+    unsigned long last_pause_time;
+    unsigned long last_game_speed_time;
+    void command_attack_ground();
+    void command_stand_ground();
+    void command_trade_attribute(long);
+    void command_quit();
+    void stop_sound_system();
+    int restart_sound_system();
+    void add_log(int);
+    void set_focus(int);
+    int field_14;
+    int field_18;
+    void vf20(int);
+    void vf50(int, int);
 };
 
 extern RGE_Base_Game* rge_base_game;
@@ -1195,15 +1577,18 @@ extern int disable_terrain_sounds;
 extern int _bPlaying;
 extern TPanelSystem panel_system;
 extern TCommunications_Handler* comm;
+extern TChat* chat;
 extern TDebuggingLog* L;
 extern int start_paused;
 extern int allow_user_commands;
+extern int do_fixed_update;
 extern int displayPathingFlags;
 extern int MapPathsDisplay;
 extern int view_debug_spans;
 extern int view_debug_redraw_all;
 extern int view_debug_ObstructionMap;
 extern int view_debug_Objects;
+extern int show_timing_max;
 extern int view_debug_palette;
 extern int View_Grid_Mode;
 extern int confirmed_close;
@@ -1214,6 +1599,7 @@ extern unsigned char do_color_log;
 extern unsigned char production_queues_is_use;
 extern int DAT_0086bac8;
 extern char Save_Game_Screen[];
+extern char s_Save_Game_Screen[];
 extern char s_Game_Screen[];
 extern char s_scr6[];
 extern char s_scr_game_cpp[];

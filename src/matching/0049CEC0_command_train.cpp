@@ -47,6 +47,7 @@
 // - The resulting source is an exact 240-byte match under the pinned default
 //   /O2 /Oy flags; the stale per-function /GX override was removed.
 
+#if !defined(SCR_GAME_TU_CONTEXT)
 struct RGE_Static_Object;
 struct TRIBE_Player;
 struct TMessagePanel;
@@ -109,6 +110,7 @@ public:
 
     void command_train(int player_id, short train_id);
 };
+#endif
 
 void TRIBE_Screen_Game::command_train(int player_id, short train_id) {
     short attr;

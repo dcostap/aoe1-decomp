@@ -77,6 +77,7 @@ struct Tile_BlackEdge_Table {
     VSpanMiniList* black_UNdraw;
 };
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 class RGE_View {
 public:
     char gap_000[0x184];
@@ -88,6 +89,7 @@ public:
 protected:
     void Init_Tile_Edge_Tables();
 };
+#endif
 void RGE_View::Init_Tile_Edge_Tables()
 {
     int fd, len;

@@ -33,6 +33,7 @@
 //   natural signed-short promotion remains exact.
 // FLAGS: /nologo /c /O2 /Oy
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 struct tagPOINT { long x, y; };
 
 struct RGE_Pick_Info {
@@ -95,6 +96,7 @@ public:
                        RGE_Pick_Info* info, RGE_Static_Object* object);
     void draw_paint_brush();
 };
+#endif
 
 void RGE_View::draw_paint_brush() {
     Paint_Brush_Storage storage;

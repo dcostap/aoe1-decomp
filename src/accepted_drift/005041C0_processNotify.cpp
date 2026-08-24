@@ -29,6 +29,7 @@
 // - v10: if(p2<=0) fixes branch layout (90 bytes match), register allocation persists
 // FLAGS: /nologo /c /O2 /Oy
 
+#ifndef TAIUAIMD_COMPLETE_TU
 typedef unsigned char uchar;
 
 struct NotifyEvent {
@@ -90,6 +91,7 @@ public:
 
     int processNotify(NotifyEvent* event, unsigned long param_2);
 };
+#endif
 
 int TribeElephantUnitAIModule::processNotify(NotifyEvent* event, unsigned long param_2)
 {

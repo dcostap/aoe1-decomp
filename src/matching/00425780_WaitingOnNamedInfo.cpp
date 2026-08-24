@@ -3,8 +3,11 @@
 // Com_hand.cpp:134-152
 // MATCH: 0.0000% diff, 0 relocations masked
 
+#if !defined(COM_HAND_TU_CONTEXT)
 #include "../../include/game_globals.h"
+#endif // COM_HAND_TU_CONTEXT
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_00[0xFC5];
@@ -17,8 +20,12 @@ public:
     char* GetPlayerName(int playerIndex);
     char* WaitingOnNamedInfo(int playerIndex);
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 extern "C" int debug_timeGetTime(char* file, int line);
+#endif // COM_HAND_TU_CONTEXT
 extern "C" int sprintf(char* buffer, const char* format, ...);
 
 char* TCommunications_Handler::WaitingOnNamedInfo(int playerIndex) {

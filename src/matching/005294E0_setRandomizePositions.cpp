@@ -1,3 +1,4 @@
+#ifndef TRIBEGAM_TU_CONTEXT
 class TRIBE_Game {
 public:
     virtual ~TRIBE_Game();
@@ -6,4 +7,5 @@ public:
 
     void setRandomizePositions(int);
 };
-void TRIBE_Game::setRandomizePositions(int val) { this->randomizePositions_ = val; }
+#endif
+void TRIBE_Game::setRandomizePositions(int val) { this->tribe_game_options.randomizePositionsValue = (unsigned char)val; }

@@ -1,3 +1,4 @@
+#if !defined(COM_HAND_TU_CONTEXT)
 struct Fwd_6FB0 {
     void target();
 };
@@ -8,6 +9,7 @@ public:
     int field_12A8;
     void ShutdownGameMessages();
 };
+#endif // COM_HAND_TU_CONTEXT
 
 void RGE_Base_Game::ShutdownGameMessages() {
     this->field_12A8 = 1;

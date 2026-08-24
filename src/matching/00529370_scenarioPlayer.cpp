@@ -1,3 +1,4 @@
+#ifndef TRIBEGAM_TU_CONTEXT
 class TRIBE_Game {
 public:
     virtual ~TRIBE_Game();
@@ -5,5 +6,6 @@ public:
     int array_AA0[1];
     int scenarioPlayer(int idx);
 };
+#endif
 
-int TRIBE_Game::scenarioPlayer(int idx) { return this->array_AA0[idx]; }
+int TRIBE_Game::scenarioPlayer(int idx) { return this->tribe_game_options.scenarioPlayerValue[idx]; }

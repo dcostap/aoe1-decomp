@@ -1,3 +1,4 @@
+#ifndef TRIBEGAM_TU_CONTEXT
 class TRIBE_Game {
 public:
     virtual ~TRIBE_Game();
@@ -6,4 +7,5 @@ public:
 
     int mapSize() const;
 };
-int TRIBE_Game::mapSize() const { return this->mapSize_; }
+#endif
+int TRIBE_Game::mapSize() const { return this->tribe_game_options.mapSizeValue; }

@@ -3,6 +3,7 @@
 
 #include <windows.h>
 
+#ifndef PNL_TXT_TU_CONTEXT
 class TTextPanel {
 public:
     enum CharType {
@@ -13,6 +14,7 @@ public:
 
     CharType char_type(unsigned char* text);
 };
+#endif
 
 TTextPanel::CharType TTextPanel::char_type(unsigned char* text) {
     if (text != 0 && *text != 0) {

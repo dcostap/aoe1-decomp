@@ -63,6 +63,7 @@ class TShape;
 class Shape_Info;
 class DClipInfo_List;
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Map {
 public:
     virtual ~RGE_Map();
@@ -191,6 +192,7 @@ public:
 
     void capture_frame_3d_square(TDrawArea* area, short x, short y);
 };
+#endif
 
 void RGE_Static_Object::capture_frame_3d_square(
     TDrawArea* param_2, short param_3, short param_4)

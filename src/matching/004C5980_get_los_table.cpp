@@ -1,3 +1,4 @@
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 struct LOSTBL;
 
 class RGE_Visible_Map {
@@ -25,6 +26,7 @@ public:
 
     LOSTBL* get_los_table(void);
 };
+#endif
 
 LOSTBL* RGE_Static_Object::get_los_table(void) {
     if (this->owner == 0) {

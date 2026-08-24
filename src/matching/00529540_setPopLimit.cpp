@@ -1,3 +1,4 @@
+#ifndef TRIBEGAM_TU_CONTEXT
 class TRIBE_Game {
 public:
     virtual ~TRIBE_Game();
@@ -6,4 +7,5 @@ public:
 
     void setPopLimit(unsigned char);
 };
-void TRIBE_Game::setPopLimit(unsigned char val) { this->popLimit_ = val; }
+#endif
+void TRIBE_Game::setPopLimit(unsigned char val) { this->tribe_game_options.popLimitValue = val; }

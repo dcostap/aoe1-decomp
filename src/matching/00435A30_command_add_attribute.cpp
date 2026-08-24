@@ -1,5 +1,6 @@
 #include <stdlib.h>
 
+#ifndef COMMAND_TU_CONTEXT
 class TDebuggingLog {
 public:
     void Log(const char* format, ...);
@@ -12,6 +13,7 @@ public:
     void submit(void* param_1, long param_2);
     void command_add_attribute(int param_1, int param_2, float param_3);
 };
+#endif
 
 void RGE_Command::command_add_attribute(int param_1, int param_2, float param_3) {
     unsigned char* cmd = (unsigned char*)calloc(1, 8);

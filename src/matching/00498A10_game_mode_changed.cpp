@@ -1,3 +1,4 @@
+#if !defined(SCR_GAME_TU_CONTEXT)
 class RGE_Panel_Tool_Box {
 public:
     void game_mode_changed(int a, int b);
@@ -13,6 +14,7 @@ public:
     void reset_buttons(void);
     void game_mode_changed(int a, int b);
 };
+#endif
 
 void TRIBE_Screen_Game::game_mode_changed(int a, int b) {
     if (this->tool_box != 0) {

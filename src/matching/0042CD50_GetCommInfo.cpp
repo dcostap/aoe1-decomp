@@ -23,9 +23,12 @@
 
 extern "C" int __cdecl sprintf(char*, const char*, ...);
 #include <string.h>
+#if !defined(COM_HAND_TU_CONTEXT)
 extern unsigned long debug_timeGetTime(const char* file, int line);
+#endif // COM_HAND_TU_CONTEXT
 typedef unsigned long ulong;
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class IDirectPlay2 {
 public:
     virtual long __stdcall QueryInterface(void*, void**) = 0;
@@ -47,11 +50,18 @@ public:
     virtual long __stdcall GetGroupName(ulong, void*, ulong*) = 0;
     virtual long __stdcall GetMessageCount(ulong, ulong*) = 0;
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 extern IDirectPlay2* DAT_0062c5ec;
+#endif // COM_HAND_TU_CONTEXT
+#if !defined(COM_HAND_TU_CONTEXT)
 extern ulong DAT_0062cf04;
+#endif // COM_HAND_TU_CONTEXT
 extern const char s_Com_hand_cpp[];
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class RGE_Communications_Speed {
 public:
     char gap_0000[0x238];
@@ -62,7 +72,10 @@ public:
     char* GetSelfPlayerOptimalSpeedStr();
     char* GetPlayerSpeedStatusStr(int player);
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_0000[0x1C];
@@ -86,6 +99,8 @@ public:
     char* GetReadyPlayerStr();
     int IsPlayerHuman(unsigned int player);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 char* TCommunications_Handler::GetCommInfo(unsigned char which) {
     char* p = (char*)0x62C6F0;

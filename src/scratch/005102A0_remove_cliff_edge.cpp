@@ -84,6 +84,7 @@
 // translation_unit_prefixes.py rejects this VA. No wrapper or config edit was
 // made during this pass.
 
+#ifndef TMAP_GROUP_CONTEXT
 struct TRIBE_Cliff_Info {
     int info[4];
 };
@@ -130,6 +131,7 @@ public:
     RGE_Static_Object* make_new_cliff(long x, long y, TRIBE_Cliff_Info info);
     void remove_cliff_edge(long x, long y, long dir);
 };
+#endif
 
 void TRIBE_Map::remove_cliff_edge(long x, long y, long dir)
 {

@@ -1,3 +1,4 @@
+#ifndef COMMAND_TU_CONTEXT
 class RGE_Static_Object;
 class RGE_Game_World {
 public:
@@ -11,6 +12,7 @@ public:
 
     RGE_Static_Object* get_obj(int id);
 };
+#endif
 
 RGE_Static_Object* RGE_Command::get_obj(int id) {
     if (id == -1) {

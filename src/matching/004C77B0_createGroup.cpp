@@ -12,6 +12,7 @@
 // Main-agent audit restored canonical object polymorphism and natural
 // new[]/delete[] ownership; emitted code remains exact.
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class ManagedArray_int {
 public:
     int* value;
@@ -32,6 +33,7 @@ public:
 
     int createGroup(int* list, int count, int commander, float range);
 };
+#endif
 
 int RGE_Static_Object::createGroup(int* list, int count, int commander, float range)
 {

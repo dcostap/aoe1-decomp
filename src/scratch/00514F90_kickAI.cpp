@@ -1,3 +1,4 @@
+#ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
 struct Inner_00514F90 {
     void target(int param);
 };
@@ -8,6 +9,7 @@ public:
     Inner_00514F90 *inner_;
     void kickAI(int param);
 };
+#endif
 
 void TRIBE_Player::kickAI(int param) {
     if (this->inner_)

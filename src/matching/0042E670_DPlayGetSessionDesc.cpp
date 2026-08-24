@@ -1,13 +1,17 @@
+#if !defined(COM_HAND_TU_CONTEXT)
 struct GUID {
     unsigned long Data1;
     unsigned short Data2;
     unsigned short Data3;
     unsigned char Data4[8];
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 void* __cdecl calloc(unsigned int count, unsigned int size);
 void __cdecl free(void* ptr);
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class RGE_Comm_Error {
 public:
     void* HostHWND;            // +0x00
@@ -15,11 +19,16 @@ public:
 
     void ShowReturn(long result, const char* msg);
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class TDebuggingLog {
 public:
     void Log(const char* format, ...);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 // COM-like interface with GetSessionDesc at vtable[22] (offset 0x58)
 struct ISession {
@@ -48,6 +57,7 @@ struct ISession {
     virtual long __stdcall GetSessionDesc(void* buf, unsigned long* dwSize) = 0;
 };
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     // Fields we care about:
@@ -60,6 +70,8 @@ public:
 
     long DPlayGetSessionDesc();
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 long TCommunications_Handler::DPlayGetSessionDesc() {
     unsigned long dwSize;
@@ -92,5 +104,9 @@ long TCommunications_Handler::DPlayGetSessionDesc() {
 
 void* __cdecl calloc(unsigned int count, unsigned int size) { return 0; }
 void __cdecl free(void* ptr) { }
+#if !defined(COM_HAND_TU_CONTEXT)
 void RGE_Comm_Error::ShowReturn(long result, const char* msg) { }
+#endif // COM_HAND_TU_CONTEXT
+#if !defined(COM_HAND_TU_CONTEXT)
 void TDebuggingLog::Log(const char* format, ...) { }
+#endif // COM_HAND_TU_CONTEXT

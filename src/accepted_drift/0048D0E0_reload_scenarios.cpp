@@ -37,6 +37,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifndef AOE1_SCENINFO_TU_CONTEXT
 struct _finddata_t {
     unsigned attrib;
     long time_create;
@@ -45,18 +46,24 @@ struct _finddata_t {
     unsigned long size;
     char name[260];
 };
+#endif
 
+#ifndef AOE1_SCENINFO_TU_CONTEXT
 extern "C" {
     long _findfirst(const char* pattern, struct _finddata_t* file_info);
     int _findnext(long handle, struct _finddata_t* file_info);
 }
+#endif
 
+#ifndef AOE1_SCENINFO_TU_CONTEXT
 extern "C" {
     int rge_open(char* filename, int mode);
     void rge_read_uncompressed(int fd, void* buf, int size);
     void rge_close(int fd);
 }
+#endif
 
+#ifndef AOE1_SCENINFO_TU_CONTEXT
 class RGE_Scenario_Header {
 public:
     ~RGE_Scenario_Header();
@@ -115,6 +122,7 @@ public:
 
     void reload_scenarios();
 };
+#endif
 
 void RGE_Scenario_File_Info::reload_scenarios()
 {

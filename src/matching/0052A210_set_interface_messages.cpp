@@ -1,10 +1,10 @@
 class MouseClickInfo;
+#ifndef TRIBEGAM_TU_CONTEXT
 class TRIBE_Screen_Game {
 public:
     char gap_00[0x8DC];
     unsigned short interface_messages;
 };
-
 class TRIBE_Game {
 public:
     char gap_00[0xC];
@@ -13,6 +13,7 @@ public:
     void SetClickTables(MouseClickInfo* p1, int p2, MouseClickInfo* p3, int p4);
     void set_interface_messages();
 };
+#endif
 
 void TRIBE_Game::set_interface_messages() {
     if (this->game_screen->interface_messages == 1) {

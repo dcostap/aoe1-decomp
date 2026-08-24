@@ -1,5 +1,6 @@
 extern "C" void* __cdecl malloc(unsigned int size);
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 struct DClipInfo_Node;
 
 class DClipInfo_List {
@@ -21,6 +22,7 @@ public:
     void SetNumZones(int num_zones);
     void InitNewZone(int zone_size);
 };
+#endif
 
 void DClipInfo_List::InitNewZone(int zone_size) {
     int zone_index;

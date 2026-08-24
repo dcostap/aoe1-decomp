@@ -33,6 +33,7 @@
 
 #include <stdlib.h>
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Sprite;
 
 class RGE_Active_Sprite_List {
@@ -70,6 +71,7 @@ struct RGE_Static_Object {
     int get_frame(short& min_x, short& min_y, short& max_x, short& max_y);
     unsigned char box_hit_test(short param_1, short param_2, short param_3, short param_4, short param_5, short param_6);
 };
+#endif
 
 unsigned char RGE_Static_Object::box_hit_test(short param_1, short param_2, short param_3, short param_4, short param_5, short param_6) {
     if (this->sprite == 0) return 0;

@@ -31,6 +31,7 @@
 // were duplicates or worse. Calls, frame, CFG counts, and boundary remain aligned;
 // the open blocker is the EBX tile/end-bound allocation and related flag homes.
 
+#ifndef TMAP_GROUP_CONTEXT
 typedef unsigned char uchar;
 
 struct RGE_Tile {
@@ -71,6 +72,7 @@ public:
     void tribe_clean_terrain(long x1, long y1, long x2, long y2,
                              uchar flag, uchar terrain);
 };
+#endif
 
 void TRIBE_Map::tribe_clean_terrain(long x1, long y1, long x2, long y2,
                                     uchar flag, uchar terrain)

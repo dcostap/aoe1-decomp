@@ -47,6 +47,7 @@ typedef unsigned long ulong;
 
 #define unified_map_offsets ((ulong**)0x00886808)
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Game_World;
 class RGE_Player;
 class RGE_Static_Object;
@@ -125,6 +126,7 @@ public:
     float world_y;                                // +0x3C
     float world_z;                                // +0x40
 };
+#endif
 
 void RGE_Static_Object::remove_visible_resource() {
     ulong mask;

@@ -10,9 +10,10 @@
 //   450 bytes with the default flags.
 
 extern "C" __declspec(dllimport) void* __stdcall SetCursor(void* hcur);
-extern "C" __declspec(dllimport) long __stdcall SetClassLongA(
+extern "C" __declspec(dllimport) long __stdcall SetClassLongA_tribe(
     void* hwnd, long index, long value);
 
+#ifndef TRIBEGAM_TU_CONTEXT
 class TPanelSystem {
 public:
     int setCurrentPanel(char* name, int mode);
@@ -115,6 +116,7 @@ public:
 
     int setup_video_system();
 };
+#endif
 
 int TRIBE_Game::setup_video_system()
 {
@@ -132,7 +134,7 @@ int TRIBE_Game::setup_video_system()
 
     if (this->draw_system->ScreenMode == 2) {
         SetCursor(0);
-        SetClassLongA(this->prog_window, -12, 0);
+        SetClassLongA_tribe(this->prog_window, -12, 0);
         this->mouse_pointer->Shutdown_Mouse();
 
         this->video_save_res_wid = this->draw_system->ScreenWidth;

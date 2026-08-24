@@ -1,3 +1,4 @@
+#ifndef RDLG_LST_TU_CONTEXT
 class RGE_Base_Game {
 public:
     char gap_00[0x3FC];
@@ -13,6 +14,7 @@ public:
 
     virtual short get_cur_id();
 };
+#endif
 
 short RGE_Dialog_List::get_cur_id() {
     int list_type;

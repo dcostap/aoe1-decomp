@@ -31,6 +31,7 @@
 
 extern "C" void __cdecl free(void*);
 
+#ifndef RGE_MAIN_VIEW_SHARED_CONTEXT
 struct RGE_Static_Object;
 struct RGE_Master_Static_Object;
 struct RGE_Action_Object;
@@ -187,6 +188,7 @@ struct RGE_Master_Static_Object {
     char gap_0DC[0x10];
     unsigned char flag_ec; // +EC
 };
+#endif
 
 RGE_Static_Object* RGE_Main_View::pick_best_target(long x, long y, int* attacking_out, short action_filter) {
     short selected_count;

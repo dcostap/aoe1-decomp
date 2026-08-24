@@ -11,6 +11,7 @@
 extern int logDebugID;
 extern FILE* debugOut;
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Game_World {
 public:
     char gap_00[0x04];
@@ -32,6 +33,8 @@ public:
 
     void logDebug(char* format, ...);
 };
+
+#endif
 
 void RGE_Static_Object::logDebug(char* format, ...)
 {

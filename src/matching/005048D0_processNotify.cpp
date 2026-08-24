@@ -13,10 +13,16 @@
 
 void* __cdecl operator new(unsigned int);
 void __cdecl operator delete(void*);
+#ifdef TAIUAIMD_COMPLETE_TU
+extern float DAT_005758b0;
+extern float DAT_005758c4;
+#else
 extern const float DAT_005758b0;
 extern const float DAT_005758c4;
+#endif
 extern "C" double __cdecl sqrt(double);
 
+#ifndef TAIUAIMD_COMPLETE_TU
 struct NotifyEvent { char pad[8]; int type; };
 struct RGE_Static_Object {
     virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
@@ -122,6 +128,7 @@ class TribeRangedUnitAIModule2 : public UnitAIModule {
 public:
     int processNotify(NotifyEvent*, unsigned long);
 };
+#endif
 
 int TribeRangedUnitAIModule2::processNotify(NotifyEvent* ev, unsigned long flags)
 {
@@ -130,20 +137,39 @@ int TribeRangedUnitAIModule2::processNotify(NotifyEvent* ev, unsigned long flags
     float dx;
     float dy;
     float len;
+#ifdef TAIUAIMD_COMPLETE_TU
+    if (*(int*)((char*)ev + 8) != 0x200) {
+#else
     if (ev->type != 0x200) {
+#endif
+#ifdef TAIUAIMD_COMPLETE_TU
+        return this->baseProcessNotify(ev, flags);
+#else
         return ((UnitAIModule*)this)->processNotify(ev, flags);
+#endif
     }
     target = 0;
     if (this->state != 0x258 ||
-        (target = this->obj->world->objects->object(this->target_id)) == 0 ||
+        (target = this->obj->world->object(this->target_id)) == 0 ||
+#ifdef TAIUAIMD_COMPLETE_TU
+        ((ObjVtbl*)target)->funcF4() == DAT_005758c4)
+#else
         target->vf_F4() == DAT_005758c4)
+#endif
         return 2;
 
     this->order(this->obj->id, 0x2bc, this->target_id, -1, this->p3c, this->p40, this->p44, this->p48, 0, 1, this->p2c);
 
+#ifdef TAIUAIMD_COMPLETE_TU
+    evasiveMoveDistance = ((ObjVtbl*)this->obj)->funcFC() *
+                          ((ObjVtbl*)this->obj)->func100() * DAT_005758b0;
+    dx = target->world_x - this->obj->x;
+    dy = target->world_y - this->obj->y;
+#else
     evasiveMoveDistance = this->obj->vf_FC() * this->obj->vf_100() * DAT_005758b0;
     dx = target->x - this->obj->x;
     dy = target->y - this->obj->y;
+#endif
 
     if (this->count > 0) {
         int i = 0;
@@ -189,10 +215,15 @@ int TribeRangedUnitAIModule2::processNotify(NotifyEvent* ev, unsigned long flags
                             this->capacity = newCount;
                         }
                     }
-                    RGE_Static_Object* obj2 = this->obj->world->objects->object(this->ids[i]);
+                    RGE_Static_Object* obj2 = this->obj->world->object(this->ids[i]);
                     if (obj2) {
+#ifdef TAIUAIMD_COMPLETE_TU
+                        dx += obj2->world_x - this->obj->x;
+                        dy += obj2->world_y - this->obj->y;
+#else
                         dx += obj2->x - this->obj->x;
                         dy += obj2->y - this->obj->y;
+#endif
                     }
                 }
             ++i;

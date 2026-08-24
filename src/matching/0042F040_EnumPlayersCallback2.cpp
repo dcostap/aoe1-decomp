@@ -4,22 +4,32 @@
 // Calling convention: __stdcall
 
 extern "C" int __cdecl sprintf(char* buf, const char* fmt, ...);
+#if !defined(COM_HAND_TU_CONTEXT)
 extern "C" void Log(void* log, const char* fmt, ...);
+#endif // COM_HAND_TU_CONTEXT
 
+#if !defined(COM_HAND_TU_CONTEXT)
 struct DPNAME {
     unsigned long dwSize;       // +0x00
     unsigned long dwFlags;      // +0x04
     char* lpszShortName;        // +0x08  (ANSI version)
     char* lpszLongName;         // +0x0C
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     void UpdatePlayerInformation(unsigned long param_1, char* shortName, char* longName);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 // Globals
+#if !defined(COM_HAND_TU_CONTEXT)
 extern void* L;                       // [0x62C4FC] TDebuggingLog*
+#endif // COM_HAND_TU_CONTEXT
 extern char DAT_0062c5f0[];           // [0x62C5F0] sprintf buffer
 
 int __stdcall EnumPlayersCallback2(
@@ -51,6 +61,6 @@ logging:
     Log(L, "ENUM DEBUG: %s", DAT_0062c5f0);
     Log(L, "FORCEENUM %d name=%s id=%d", param_1, param_3->lpszShortName, foundIndex);
     Log(L, "FILL PLAYER INFORMATION.");
-    ((TCommunications_Handler*)param_5)->UpdatePlayerInformation(param_1, param_3->lpszShortName, param_3->lpszLongName);
+    ((TCommunications_Handler*)param_5)->UpdatePlayerInformation(param_1, (char*)param_3->lpszShortName, (char*)param_3->lpszLongName);
     return 1;
 }

@@ -4,6 +4,7 @@
 // Remaining diff: xor edx,edx vs xor ecx,ecx; mov ecx,[esp+4] vs mov edx,[esp+4]; inc edx vs inc ecx.
 // These are register swaps (edx↔ecx) for counter vs parameter. 37 trailing bytes identical.
 
+#ifndef PNL_TXT_TU_CONTEXT
 struct TextNode {
     char* text;
     char gap_04[8];
@@ -17,6 +18,7 @@ public:
 
     char* get_text(long index);
 };
+#endif
 
 extern char DAT_0086B250;
 

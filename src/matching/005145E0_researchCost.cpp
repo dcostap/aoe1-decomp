@@ -1,6 +1,7 @@
 // 005145E0 TRIBE_Player::researchCost
 // PDB source: tplayer.cpp
 
+#ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
 class ResourceItem {
 public:
     void incrementValue(int type, int amount);
@@ -18,6 +19,7 @@ public:
 
     void researchCost(int tech_id, int unused, ResourceItem* resources, int unused2);
 };
+#endif
 
 void TRIBE_Player::researchCost(int tech_id, int unused, ResourceItem* resources, int unused2) {
     short inv_amt_2;

@@ -5,6 +5,7 @@
 
 #include <stddef.h>
 
+#ifndef TAIUAIMD_COMPLETE_TU
 void* operator new(size_t size);
 struct RGE_Static_Object;
 
@@ -25,6 +26,7 @@ class TribeTransportShipUnitAIModule : public UnitAIModule {
 public:
     TribeTransportShipUnitAIModule(RGE_Static_Object* obj, int param);
 };
+#endif
 
 TribeTransportShipUnitAIModule::TribeTransportShipUnitAIModule(RGE_Static_Object* obj, int param)
     : UnitAIModule(obj, param)

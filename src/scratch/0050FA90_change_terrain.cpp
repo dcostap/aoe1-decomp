@@ -115,7 +115,7 @@ public:
                         RGE_Game_World* world);
 };
 #else
-#include "../../include/tmap_context.h"
+// The tmap translation-unit wrapper supplies src/tmap_context_local.h.
 #endif
 
 void TRIBE_Map::change_terrain(short x, short y, unsigned char terrain,

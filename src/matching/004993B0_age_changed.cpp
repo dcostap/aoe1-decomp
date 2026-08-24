@@ -10,6 +10,7 @@
 // the local class gaps preserve the proven +0x580/+0x710 ownership and do not
 // use decompiler cursor arithmetic or compiler-steering code.
 
+#if !defined(SCR_GAME_TU_CONTEXT)
 class TTextPanel {
 public:
     virtual ~TTextPanel();
@@ -118,6 +119,7 @@ public:
 protected:
     void age_changed();
 };
+#endif
 
 void TRIBE_Screen_Game::age_changed() {
     char str[512];

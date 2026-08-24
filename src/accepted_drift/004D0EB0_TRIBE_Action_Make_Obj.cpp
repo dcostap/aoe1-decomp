@@ -47,6 +47,7 @@
 
 class RGE_Action_Object;
 
+#ifndef TACT_MOB_SHARED_CONTEXT
 class RGE_Action {
 public:
     virtual ~RGE_Action();
@@ -65,6 +66,7 @@ public:
 
     TRIBE_Action_Make_Obj(RGE_Action_Object* obj, short obj_id, int unique_id, unsigned char pre_paid);
 };
+#endif
 
 TRIBE_Action_Make_Obj::TRIBE_Action_Make_Obj(RGE_Action_Object* obj, short obj_id, int unique_id, unsigned char pre_paid)
     : RGE_Action(obj, 1)

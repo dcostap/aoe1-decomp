@@ -1,3 +1,4 @@
+#ifndef TRIBEGAM_TU_CONTEXT
 class TRIBE_Game {
 public:
     virtual ~TRIBE_Game();
@@ -5,5 +6,6 @@ public:
     unsigned char field_AD7;
     int longCombat();
 };
+#endif
 
-int TRIBE_Game::longCombat() { return this->field_AD7; }
+int TRIBE_Game::longCombat() { return this->tribe_game_options.longCombatValue; }

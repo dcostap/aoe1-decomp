@@ -72,41 +72,59 @@ typedef unsigned long ulong;
 typedef unsigned int uint;
 typedef unsigned char uchar;
 
+#if !defined(COM_HAND_TU_CONTEXT)
 enum COMMSTATUS {
     SERVICE_AVAILABLE = 5
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 enum COMMMESSAGES {
     COMM_UPDATE_PLAYERS = 0x17A4,
     COMM_PLAYER_KICKED = 0x17AA,
     COMM_PLAYER_SERVICE_ERROR = 0x17B7
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 enum PLAYERHUMANITY {
     ME_HUMAN = 2
 };
+#endif // COM_HAND_TU_CONTEXT
 
 #define S(x) ((char*)(x))
 #define CS(x) ((const char*)(x))
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TDebuggingLog {
 public:
     void Log(char* format, ...);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 class TChat {
 public:
     int AddChatMsg(char* speaker, char* text, uchar taunt);
+    int AddChatMsg(NAME speaker, char* text, uchar taunt);
+    int inChatGroup(int index);
+    void ClearChat();
 };
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class RGE_Comm_Error {
 public:
     void ShowReturn(long result, char* text);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 // DirectPlay 2 is the period interface held at 0062C5EC.  Its named Send
 // method is vtable slot 26 (+0x68); keeping the real interface order avoids a
 // fabricated dispatch view while preserving the COM __stdcall ABI.
+#if !defined(COM_HAND_TU_CONTEXT)
 class IDirectPlay2 {
 public:
     virtual long __stdcall QueryInterface(void* iid, void** object) = 0;
@@ -157,7 +175,10 @@ public:
     virtual long __stdcall SetPlayerName(ulong player, void* name, ulong flags) = 0;
     virtual long __stdcall SetSessionDesc(void* desc, ulong flags) = 0;
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class RGE_Communications_Speed {
 public:
     uchar GetHighLatencyCenti();
@@ -165,7 +186,10 @@ public:
     void SetPlayerTurnSpeed(uint player, uchar avg_frame, uchar high_latency);
     void SetActualLatency(uint player, ulong elapsed);
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class RGE_Base_Game {
 public:
     virtual ~RGE_Base_Game();
@@ -181,6 +205,8 @@ public:
     virtual char* get_string2(int type, long id, long value, char* buffer,
                               int size);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 struct MSGFORMAT_ACKNOWLEDGE_GUARANTEED {
     uchar Command;
@@ -217,9 +243,11 @@ struct MSGFORMAT_SETREADYOPTIONS {
     ulong User7;
     ulong CommunicationsVersionCode;
     uchar RGEGuaranteed;
+    uchar GuaranteedDeliveryByte;
     uchar pad_25[3];
 };
 
+#if !defined(COM_HAND_TU_CONTEXT)
 struct COMMPLAYEROPTIONS {
     uchar NeedsToBeSent;
     uchar pad_01[3];
@@ -251,8 +279,12 @@ struct COMMPLAYEROPTIONS {
     int GameHasStarted;
     ulong DataSizeToFollow;
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 extern ulong debug_timeGetTime(char* file, int line);
+#endif // COM_HAND_TU_CONTEXT
 extern "C" int sprintf(char* buffer, const char* format, ...);
 
 #define L (*(TDebuggingLog**)0x0062C4FC)
@@ -264,6 +296,7 @@ extern "C" int sprintf(char* buffer, const char* format, ...);
 #define LAST_SENT_TIME (*(ulong*)0x008884D4)
 #define RGE_BASE_GAME (*(RGE_Base_Game**)0x0062C574)
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_00[0x18];
@@ -334,6 +367,8 @@ public:
     int PreprocessMessages(ulong param_1, char* message, ulong from,
                            ulong to, int cached);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 int TCommunications_Handler::PreprocessMessages(ulong param_1, char* message,
                                                  ulong from, ulong to, int cached)

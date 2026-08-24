@@ -9,6 +9,7 @@
 // - baseline: natural same-TU source shape with named panel/game ownership;
 //   first compile/check recorded by target_session.
 
+#if !defined(SCR_GAME_TU_CONTEXT)
 extern "C" void __cdecl color_log(unsigned char a, unsigned char b,
                                    unsigned char c);
 
@@ -56,6 +57,7 @@ public:
     void handle_mouse_pointing_at();
     long handle_idle();
 };
+#endif
 
 long TRIBE_Screen_Game::handle_idle() {
     long result;

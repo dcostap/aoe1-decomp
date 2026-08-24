@@ -1,3 +1,4 @@
+#ifndef TRIBEGAM_TU_CONTEXT
 class TRIBE_Game {
 public:
     virtual ~TRIBE_Game();
@@ -7,7 +8,8 @@ public:
 
     void setVictoryType(int, int);
 };
+#endif
 void TRIBE_Game::setVictoryType(int type, int amount) {
-    this->victoryType_ = type;
-    this->victoryAmount_ = amount;
+    this->tribe_game_options.victoryTypeValue = type;
+    this->tribe_game_options.victoryAmountValue = amount;
 }

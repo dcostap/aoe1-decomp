@@ -42,6 +42,7 @@
 // Final validated metrics: 181 bytes, ret 10h; 22 positional (12.1547%),
 // 25 edit/resync (13.81%), 100% ordered-call alignment.
 
+#ifndef TMAP_GROUP_CONTEXT
 struct RGE_Game_World;
 struct RGE_Object_List { char bytes[0xC]; };
 struct RGE_Tile {
@@ -126,6 +127,7 @@ struct TRIBE_Map : RGE_Map {
     unsigned char do_terrain_brush_check(long x, long y);
     void tribe_clean_elevation(long x_start, long y_start, long x_end, long y_end);
 };
+#endif
 
 void TRIBE_Map::tribe_clean_elevation(long x_start, long y_start, long x_end, long y_end)
 {

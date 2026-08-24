@@ -5,6 +5,7 @@
 
 #include "../../include/game_globals.h"
 
+#ifndef TRIBEGAM_TU_CONTEXT
 class RGE_Player {
 public:
     unsigned char gap_00[0x80];
@@ -32,27 +33,28 @@ public:
     RGE_Player* get_player(void);
     int start_video(int param_1, char* param_2);
 };
+#endif
 
 void TRIBE_Game::do_game_over(void) {
     disconnect_multiplayer_game();
     
-    if (this->testing_scenario != 0) {
+    if (this->testing_scenario[0] != 0) {
         quit_game();
         return;
     }
     
-    int mode = this->game_type;
+    int mode = this->prog_mode;
     if (mode == 4 || mode == 6 || mode == 5 || mode == 3) {
-        this->game_type = 0;
-        if (this->some_video_object != 0) {
+        this->prog_mode = 0;
+        if (this->world != 0) {
             turn_world_sound_off();
             
             RGE_Player* player = get_player();
             if (player->game_status == 1) {
-                start_video(4, (char*)(*(int*)((char*)this->some_video_object + 0x5C) + 0x15E8));
+                start_video(4, (char*)(*(int*)((char*)this->world + 0x5C) + 0x15E8));
                 return;
             }
-            start_video(4, (char*)(*(int*)((char*)this->some_video_object + 0x5C) + 0x16C8));
+            start_video(4, (char*)(*(int*)((char*)this->world + 0x5C) + 0x16C8));
         }
     }
 }

@@ -1,6 +1,7 @@
 // 0049C280 TRIBE_Screen_Game::command_fps
 // first pass: direct panel virtual call surface and binary-proven screen offsets.
 
+#if !defined(SCR_GAME_TU_CONTEXT)
 class RGE_Base_Game {
 public:
     char gap_00[0x8E8];
@@ -28,6 +29,7 @@ public:
 
     void command_fps();
 };
+#endif
 
 void TRIBE_Screen_Game::command_fps() {
     RGE_Base_Game* game = rge_base_game;

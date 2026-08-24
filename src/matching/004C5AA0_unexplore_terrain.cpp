@@ -10,6 +10,7 @@
 
 extern "C" long __cdecl _ftol(void);
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Master_Static_Object {
 public:
     char gap_00[0x28];
@@ -53,6 +54,7 @@ public:
 
     void unexplore_terrain(RGE_Player* player, unsigned char mode, int range);
 };
+#endif
 
 void RGE_Static_Object::unexplore_terrain(RGE_Player* player, unsigned char mode, int range)
 {

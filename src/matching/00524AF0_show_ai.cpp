@@ -40,6 +40,7 @@
 #include <string.h>
 #include <stdio.h>
 
+#ifndef TRIBEGAM_TU_CONTEXT
 class RGE_Player {
 public:
     int computerPlayer();
@@ -80,6 +81,7 @@ public:
     TRIBE_Screen_Game* game_screen;
     virtual void show_ai();
 };
+#endif
 
 void TRIBE_Game::show_ai()
 {
@@ -90,7 +92,7 @@ void TRIBE_Game::show_ai()
     }
 
     if (this->world->players[this->world->curr_player]->computerPlayer() == 1) {
-        const char* n = this->world->players[this->world->curr_player]->name(1);
+        const char* n = this->world->players[this->world->curr_player]->ai_name(1);
         if (n == 0) {
             sprintf(s[0], "Player #%d: AI is not functional.",
                     (int)this->world->curr_player);
@@ -102,7 +104,7 @@ void TRIBE_Game::show_ai()
         char (*destination)[256] = &s[2];
         for (; i <= 6; ++i) {
             const char* p = this->world->players[
-                this->world->curr_player]->name(i);
+                this->world->curr_player]->ai_name(i);
             char* output = destination[-1];
             const char* source = "";
             if (p != 0) {
@@ -113,7 +115,7 @@ void TRIBE_Game::show_ai()
         }
     } else {
         const char* p = this->world->players[
-            this->world->curr_player]->name(0);
+            this->world->curr_player]->ai_name(0);
         strcpy(s[0], p);
         sprintf(s[1], "Player #%d is not a computer player.",
                 (int)this->world->curr_player);

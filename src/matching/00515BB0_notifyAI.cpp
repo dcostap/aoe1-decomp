@@ -19,6 +19,7 @@ class RGE_Static_Object;
 class UnitAIModule;
 class TacticalAIGroup;
 
+#ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
 class RGE_Game_World { public: RGE_Static_Object* object(int id); };
 class RGE_Player { public: char gap_00[0x3C]; RGE_Game_World* world; };
 class Owner { public: char gap_00[0x4A]; short id; };
@@ -52,6 +53,7 @@ public:
     PlayerAI* playerAI;
     void notifyAI(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6);
 };
+#endif
 
 void TRIBE_Player::notifyAI(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6)
 {

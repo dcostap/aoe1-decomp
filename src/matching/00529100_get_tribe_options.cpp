@@ -44,6 +44,7 @@
 //  - Main-agent audit confirmed the polymorphic game/options ownership and
 //    natural indexed copy; exact bytes were revalidated after promotion.
 
+#ifndef TRIBEGAM_TU_CONTEXT
 class RGE_Base_Game {
 public:
     virtual ~RGE_Base_Game();
@@ -101,6 +102,7 @@ public:
 
     void get_tribe_options(TRIBE_Game_Options* opt);
 };
+#endif
 
 void TRIBE_Game::get_tribe_options(TRIBE_Game_Options* opt)
 {

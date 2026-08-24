@@ -1,6 +1,7 @@
 // VA: 00529000 TRIBE_Game::set_tribe_options (253 B)
 // Packet-grounded: copy the network options through the typed setter surface.
 
+#ifndef TRIBEGAM_TU_CONTEXT
 class TRIBE_Game {
 public:
     enum MapSize {
@@ -60,6 +61,7 @@ public:
 
     void set_tribe_options(TRIBE_Game_Options*);
 };
+#endif
 
 void TRIBE_Game::set_tribe_options(TRIBE_Game_Options* options) {
     int i;

@@ -59,6 +59,7 @@
 #include <stdlib.h>
 extern "C" void __cdecl free(void*);
 
+#ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
 class RGE_Static_Object;
 
 class RGE_Master_Static_Object {
@@ -118,6 +119,7 @@ public:
     virtual void v10() = 0;
     virtual void clear_wall_data() = 0;
 };
+#endif
 
 unsigned char TRIBE_Player::command_make_wall(short type, long p2, long p3,
                                                long p4, long p5)

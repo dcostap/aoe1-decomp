@@ -17,6 +17,7 @@
 
 #include <stdlib.h>
 
+#ifndef RGE_MAIN_VIEW_SHARED_CONTEXT
 class RGE_Static_Object;
 class RGE_Tile;
 
@@ -114,6 +115,7 @@ public:
 
     int command_make_move(long param_1, long param_2);
 };
+#endif
 
 int RGE_Main_View::command_make_move(long param_1, long param_2)
 {

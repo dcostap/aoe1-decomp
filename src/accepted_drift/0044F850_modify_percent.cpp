@@ -1,5 +1,6 @@
 // tried both `value * work_rate`, `work_rate *= value`, an explicit result local, a rewrite-through-value-parameter form, and a volatile RHS load; VC5 stayed in the fld-work_rate / fmul-value basin
 // the remaining gap is now isolated to that FPU operand-load order in the special attribute==0x0D path
+#ifndef RGE_MAC_OBJ_SHARED_CONTEXT
 class RGE_Master_Moving_Object {
 public:
     virtual void vf00(void);
@@ -40,6 +41,7 @@ public:
 
     void modify_percent(float value, unsigned char attribute);
 };
+#endif
 
 void RGE_Master_Action_Object::modify_percent(float value, unsigned char attribute) {
     if (attribute != 0x0D) {

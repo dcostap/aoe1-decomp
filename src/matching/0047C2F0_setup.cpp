@@ -1,6 +1,7 @@
 // VA: 0047C2F0 TTextPanel::setup
 // PDB source: Pnl_txt.cpp
 
+#ifndef PNL_TXT_TU_CONTEXT
 class TDrawArea;
 class TPanel {
 public:
@@ -44,6 +45,7 @@ public:
     void set_alignment(int a, int b);
     void set_back_pic(char* p);
 };
+#endif
 
 long TTextPanel::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4,
                        long param_5, long param_6, void* param_7, long param_8,

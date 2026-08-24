@@ -32,6 +32,7 @@
 
 extern const float SPEED_3; // 3.0f at [5758B0h]
 
+#ifndef TAIUAIMD_COMPLETE_TU
 class RGE_Master_Static_Object {
 public:
     char gap_00[0x10];
@@ -183,58 +184,78 @@ class TribeSoldierUnitAIModule : public UnitAIModule {
 public:
     int processIdle(int param_1);
 };
+#endif
 
+#ifdef TAIUAIMD_COMPLETE_TU
+#define TAIUAIMD_THIS self
+int taiuaimd_soldier_processIdle(TribeSoldierUnitAIModule* self, int param_1)
+#else
+#define TAIUAIMD_THIS this
 int TribeSoldierUnitAIModule::processIdle(int param_1)
+#endif
 {
-    if (param_1 == 1 && this->processRetryableOrder() == 8) {
+    if (param_1 == 1 && TAIUAIMD_THIS->processRetryableOrder() == 8) {
         return 6;
     }
 
-    if (this->objectValue->owner->id != 0 &&
-        (this->objectValue->owner->computerPlayer() != 0 ||
-         this->objectValue->master_obj->id != 0x12B)) {
-        if (this->currentActionValue != 0x2D5 ||
-            (this->objectValue->master_obj->id != 0x23 &&
-             this->objectValue->master_obj->id != 0x24 &&
-             this->objectValue->master_obj->id != 0xFA)) {
-            int targetID = this->bestUnitToAttack(1, 0, 0);
-            if (targetID != -1 && this->attackObject(targetID, 1) == 1) {
+    if (TAIUAIMD_THIS->objectValue->owner->id != 0 &&
+        (TAIUAIMD_THIS->objectValue->owner->computerPlayer() != 0 ||
+         TAIUAIMD_THIS->objectValue->master_obj->id != 0x12B)) {
+        if (TAIUAIMD_THIS->currentActionValue != 0x2D5 ||
+            (TAIUAIMD_THIS->objectValue->master_obj->id != 0x23 &&
+             TAIUAIMD_THIS->objectValue->master_obj->id != 0x24 &&
+             TAIUAIMD_THIS->objectValue->master_obj->id != 0xFA)) {
+            int targetID = TAIUAIMD_THIS->bestUnitToAttack(1, 0, 0);
+            if (targetID != -1 && TAIUAIMD_THIS->attackObject(targetID, 1) == 1) {
                 return 6;
             }
 
-            if (this->objectValue->owner->computerPlayer() != 0 &&
-                this->objectValue->inGroup() != 1) {
-                this->objectValue->owner->world->difficultyLevel();
+            if (TAIUAIMD_THIS->objectValue->owner->computerPlayer() != 0 &&
+#ifdef TAIUAIMD_COMPLETE_TU
+                taiuaimd_object_in_group(TAIUAIMD_THIS->objectValue) != 1) {
+                taiuaimd_world_difficulty(TAIUAIMD_THIS->objectValue->owner->world);
+#else
+                TAIUAIMD_THIS->objectValue->inGroup() != 1) {
+                TAIUAIMD_THIS->objectValue->owner->world->difficultyLevel();
+#endif
 
                 if ((rge_base_game->scenarioGame() == 1 &&
                      rge_base_game->singlePlayerGame() == 1 &&
-                     this->objectValue->owner->strategicNumber(0x8F) == 0) ||
+#ifdef TAIUAIMD_COMPLETE_TU
+                     taiuaimd_player_strategic_number(TAIUAIMD_THIS->objectValue->owner, 0x8F) == 0) ||
+#else
+                     TAIUAIMD_THIS->objectValue->owner->strategicNumber(0x8F) == 0) ||
+#endif
                     (rge_base_game->singlePlayerGame() == 1 &&
-                     this->objectValue->owner->strategicNumber(0x8F) == 0)) {
+#ifdef TAIUAIMD_COMPLETE_TU
+                     taiuaimd_player_strategic_number(TAIUAIMD_THIS->objectValue->owner, 0x8F) == 0)) {
+#else
+                     TAIUAIMD_THIS->objectValue->owner->strategicNumber(0x8F) == 0)) {
+#endif
                     return 5;
                 }
 
-                if (this->currentActionValue != 0x2BD &&
-                    this->currentActionValue != 0x2D5) {
-                    int targetID2 = this->closestObject(-1, -1, -1, -1, 0);
+                if (TAIUAIMD_THIS->currentActionValue != 0x2BD &&
+                    TAIUAIMD_THIS->currentActionValue != 0x2D5) {
+                    int targetID2 = TAIUAIMD_THIS->closestObject(-1, -1, -1, -1, 0);
                     if (targetID2 != -1) {
                         RGE_Static_Object* target =
-                            this->objectValue->owner->world->object(targetID2);
+                            TAIUAIMD_THIS->objectValue->owner->world->object(targetID2);
                         if (target != 0) {
                             float speed =
-                                this->objectValue->maximumSpeed() * SPEED_3;
-                            float xDiff = target->world_x - this->objectValue->world_x;
-                            float yDiff = target->world_y - this->objectValue->world_y;
+                                TAIUAIMD_THIS->objectValue->maximumSpeed() * SPEED_3;
+                            float xDiff = target->world_x - TAIUAIMD_THIS->objectValue->world_x;
+                            float yDiff = target->world_y - TAIUAIMD_THIS->objectValue->world_y;
                             float distance =
                                 sqrt(xDiff * xDiff + yDiff * yDiff);
                             float x =
                                 (float)(-((xDiff / distance) * speed)) +
-                                this->objectValue->world_x;
+                                TAIUAIMD_THIS->objectValue->world_x;
                             float y =
                                 (float)(-((yDiff / distance) * speed)) +
-                                this->objectValue->world_y;
-                            this->evasiveMoveTo(
-                                x, y, this->objectValue->world_z, 1);
+                                TAIUAIMD_THIS->objectValue->world_y;
+                            TAIUAIMD_THIS->evasiveMoveTo(
+                                x, y, TAIUAIMD_THIS->objectValue->world_z, 1);
                             return 6;
                         }
                     }
@@ -245,3 +266,5 @@ int TribeSoldierUnitAIModule::processIdle(int param_1)
 
     return 5;
 }
+
+#undef TAIUAIMD_THIS

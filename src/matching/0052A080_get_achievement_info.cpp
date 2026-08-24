@@ -1,3 +1,4 @@
+#ifndef TRIBEGAM_TU_CONTEXT
 class TRIBE_World {
 public:
     long get_achievement(unsigned char param_1, char** param_2);
@@ -10,6 +11,7 @@ public:
 
     long get_achievement_info(unsigned char param_1, char** param_2);
 };
+#endif
 
 long TRIBE_Game::get_achievement_info(unsigned char param_1, char** param_2) {
     if (!this->world)

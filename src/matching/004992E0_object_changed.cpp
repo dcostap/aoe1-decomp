@@ -5,6 +5,7 @@
 // Exact finish: natural player-state publication, mode guards, and reset cleanup
 // produce 60 instructions, 7 ordered calls, and the protected IAEXXZ symbol.
 
+#if !defined(SCR_GAME_TU_CONTEXT)
 class TRIBE_Main_View {
 public:
     virtual void vf00() = 0;
@@ -112,6 +113,7 @@ public:
 protected:
     void object_changed(void);
 };
+#endif
 
 void TRIBE_Screen_Game::object_changed(void) {
     int changed = this->game_obj != rge_base_game->get_player()->selected_obj;

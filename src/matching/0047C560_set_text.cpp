@@ -27,6 +27,7 @@
 extern "C" char* __cdecl _mbschr(const char* s, int c);
 extern "C" char* __cdecl strncpy(char* dst, const char* src, unsigned int n);
 
+#ifndef PNL_TXT_TU_CONTEXT
 class TTextPanel {
 public:
     char gap_00[0x114];
@@ -40,6 +41,7 @@ public:
     int word_wrap_append(char* text);
     void set_text(char* text);
 };
+#endif
 
 void TTextPanel::set_text(char* text) {
     char temp_text[256];

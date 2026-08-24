@@ -17,6 +17,7 @@ extern "C" void __cdecl debug_srand(char* file, int line, int seed);
 extern int debug_random_on;
 extern char STR_STAT_OBJ[];
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Static_Object;
 class RGE_Object_Node;
 class RGE_Game_World { public: char gap[0x7C]; short curr_player; char gap2[6]; float attr_rate; RGE_Static_Object* object(int id); };
@@ -237,6 +238,7 @@ public:
     uchar underAttackValue;
     uchar gap_87;
 };
+#endif
 
 uchar RGE_Static_Object::update()
 {

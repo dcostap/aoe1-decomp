@@ -1,3 +1,4 @@
+#ifndef ACT_GATH_CONTEXT_H
 class RGE_Sprite;
 class RGE_Action_Object;
 
@@ -58,6 +59,7 @@ public:
 
     short targetType;
 };
+#endif
 
 RGE_Action_Gather::RGE_Action_Gather(int param_1, RGE_Action_Object* param_2) : RGE_Action(param_1, param_2, 1) {
     this->action_type = 5;

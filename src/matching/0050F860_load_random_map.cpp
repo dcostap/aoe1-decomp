@@ -7,17 +7,22 @@
 
 #include "..\..\include\game_globals.h"
 
+#ifndef TMAP_GROUP_CONTEXT
 class RGE_Random_Map_Module {
 public:
     virtual ~RGE_Random_Map_Module();
 };
+#endif
 
+#ifndef TMAP_GROUP_CONTEXT
 class TRIBE_RMM_Database_Controller : public RGE_Random_Map_Module {
 public:
     char _size_pad[0x4F5C - 4];
     TRIBE_RMM_Database_Controller(char* param_2, char* param_3, char* param_4, char* param_1);
 };
+#endif
 
+#ifndef TMAP_GROUP_CONTEXT
 class TRIBE_Map {
 public:
     char _gap_00[0x8DBC];
@@ -25,6 +30,7 @@ public:
 
     void load_random_map(char* param_1, char* param_2, char* param_3, char* param_4);
 };
+#endif
 
 void TRIBE_Map::load_random_map(char* param_1, char* param_2, char* param_3, char* param_4)
 {

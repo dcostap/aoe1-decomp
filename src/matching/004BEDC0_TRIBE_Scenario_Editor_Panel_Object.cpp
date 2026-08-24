@@ -1,3 +1,4 @@
+#ifndef SPNL_OBJ_TU
 class TDrawArea;
 class TPanel;
 class TShape;
@@ -18,6 +19,7 @@ public:
 
     TRIBE_Scenario_Editor_Panel_Object(TDrawArea* draw_area, TPanel* panel, void* unk, long a4, long a5, TShape* shape, TShape** shape_list, TRIBE_Player* player);
 };
+#endif
 
 TRIBE_Scenario_Editor_Panel_Object::TRIBE_Scenario_Editor_Panel_Object(TDrawArea* draw_area, TPanel* panel, void* unk, long a4, long a5, TShape* shape, TShape** shape_list, TRIBE_Player* player)
     : TRIBE_Panel_Object(draw_area, panel, unk, a4, a5, shape, shape_list, player) {

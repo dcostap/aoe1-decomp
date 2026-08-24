@@ -77,15 +77,21 @@
 // +4, +8, +0C, and +10. Validation is 255B/266B, 80.90% shape, 0xC frame,
 // and 3/3 ordered calls. No codegen hypothesis was run.
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TDebuggingLog {
 public:
     void Log(const char* fmt, ...);
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 extern TDebuggingLog* L;
+#endif // COM_HAND_TU_CONTEXT
 
 void operator_delete(void* ptr);
 
+#if !defined(COM_HAND_TU_CONTEXT)
 struct RESENDER {
     unsigned int TimeSent;
     unsigned int Serial;
@@ -93,7 +99,10 @@ struct RESENDER {
     unsigned int Length;
     unsigned int DestMap[10];
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_00[0x12D8];
@@ -105,6 +114,8 @@ public:
     int IsPlayerHuman(unsigned int player);
     int PurgeAcknowledgedStoredMessages();
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 int TCommunications_Handler::PurgeAcknowledgedStoredMessages()
 {

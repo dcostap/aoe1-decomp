@@ -1,6 +1,7 @@
 // VA: 00513C50 TRIBE_Player::pay_obj_cost
 // tplayer.cpp:1410-1445
 
+#ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
 struct ObjectType { char gap_000[0x14C]; unsigned char first_paid; };
 class TRIBE_Player {
 public:
@@ -8,12 +9,13 @@ public:
     unsigned char check_obj_cost(short obj_id, short* out, float factor, int skip_farm);
     unsigned char pay_obj_cost(short obj_id, float factor, int skip_farm);
 };
+#endif
 
 unsigned char TRIBE_Player::pay_obj_cost(short obj_id, float factor, int skip_farm)
 {
     int save_skip = skip_farm;
     if (check_obj_cost(obj_id, 0, factor, skip_farm)) {
-        ObjectType* object_type = object_types[obj_id];
+        ObjectType* object_type = ((ObjectType**)object_types)[obj_id];
         for (int i = 0; i < 3; ++i) {
             unsigned char* cost = &object_type->first_paid + i * 6;
             int type = *(short*)(cost - 4);

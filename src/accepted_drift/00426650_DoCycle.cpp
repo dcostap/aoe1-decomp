@@ -105,13 +105,20 @@ typedef unsigned long ulong;
 typedef unsigned char uchar;
 
 #if 0
+#if !defined(COM_HAND_TU_CONTEXT)
 struct TDebuggingLog { void Log(char*, ...); };
+#endif // COM_HAND_TU_CONTEXT
+
+#if !defined(COM_HAND_TU_CONTEXT)
 extern "C" ulong debug_timeGetTime(char* file, int line);
+#endif // COM_HAND_TU_CONTEXT
 #endif
 extern "C" int sprintf(char* dest, const char* fmt, ...);
 
 #define S(x) ((char*)(x))
+#if !defined(COM_HAND_TU_CONTEXT)
 extern "C" TDebuggingLog* L;
+#endif // COM_HAND_TU_CONTEXT
 #define LAST_COMM_DUMP (*(ulong*)0x0062CF10)
 #define LAST_SENT_TIME (*(ulong*)0x008884D4)
 
@@ -125,14 +132,18 @@ extern "C" TDebuggingLog* L;
 #if 0
 struct TRIBE_World { void send_zone_score_info(); };
 
+#if !defined(COM_HAND_TU_CONTEXT)
 struct RGE_Base_Game {
     char gap[0x3F0]; TRIBE_World* world;
     virtual void vf0(); virtual void vf4(); virtual void vf8(); virtual void vfC();
     virtual void vf10(); virtual void vf14(); virtual void vf18(); virtual void vf1C();
     virtual void language(int, char*, int);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 #define rge_base_game (*(RGE_Base_Game**)0x0062C574)
 
+#if !defined(COM_HAND_TU_CONTEXT)
 struct RGE_Communications_Speed {
     unsigned char GetHighLatencyCenti();
     uint GetAvgFrameRate();
@@ -145,11 +156,17 @@ struct RGE_Communications_Speed {
     uint GetBufferGranularityAdjusted();
     void Skip();
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 struct RGE_Communications_Synchronize { ulong DoChecksum(uint turn); };
+#endif // COM_HAND_TU_CONTEXT
+
 #endif
 
 #if 0
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap1[0x8];
@@ -203,6 +220,8 @@ public:
 
     int DoCycle(ulong param_1);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 #endif
 
 #define rge_base_game (*(RGE_Base_Game**)0x0062C574)

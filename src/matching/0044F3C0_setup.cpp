@@ -15,6 +15,7 @@
 
 #include <stdio.h>
 
+#ifndef RGE_MAC_OBJ_SHARED_CONTEXT
 class RGE_Sprite;
 class RGE_Sound;
 class RGE_Static_Object;
@@ -100,6 +101,7 @@ public:
     virtual RGE_Task_List* create_task_list();
     int setup(FILE* file, RGE_Sprite** sprites, RGE_Sound** sounds, short count);
 };
+#endif
 
 int RGE_Master_Action_Object::setup(FILE* file, RGE_Sprite** sprites,
                                     RGE_Sound** sounds, short count)

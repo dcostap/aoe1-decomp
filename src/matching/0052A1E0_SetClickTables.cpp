@@ -1,3 +1,4 @@
+#ifndef TRIBEGAM_TU_CONTEXT
 class TRIBE_Game {
 public:
     char gap_0[0xA24];
@@ -7,10 +8,11 @@ public:
     int field_A30;
     void SetClickTables(int a, int b, int c, int d);
 };
+#endif
 
-void TRIBE_Game::SetClickTables(int a, int b, int c, int d) {
-    this->field_A24 = a;
-    this->field_A28 = b;
-    this->field_A2C = c;
-    this->field_A30 = d;
+void TRIBE_Game::SetClickTables(void* a, int b, void* c, int d) {
+    *(int*)((char*)this + 0xA24) = (int)a;
+    *(int*)((char*)this + 0xA28) = b;
+    *(int*)((char*)this + 0xA2C) = (int)c;
+    *(int*)((char*)this + 0xA30) = d;
 }

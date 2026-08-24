@@ -23,6 +23,7 @@
 // - v8: integer array indexing didn't prevent reordering
 // FLAGS: /nologo /c /O2 /Oy
 
+#ifndef ACT_GATH_CONTEXT_H
 #include <stddef.h>
 
 typedef unsigned char uchar;
@@ -58,8 +59,10 @@ public:
 
     int work(void* param_1, float param_2, float param_3, float param_4);
 };
+#endif
 
 // Helper struct with 24 virtual slots for vtable dispatch
+#ifndef ACT_GATH_CONTEXT_H
 struct RGE_Action_VTable {
     virtual void s00();
     virtual void s04();
@@ -86,8 +89,13 @@ struct RGE_Action_VTable {
     virtual void func58(int arg);   // slot 22 -> vtable[0x58]
     virtual void func5C(int arg);   // slot 23 -> vtable[0x5C]
 };
+#endif
 
+#ifdef ACT_GATH_CONTEXT_H
+int RGE_Action_Gather::work(RGE_Static_Object* param_1, float param_2, float param_3, float param_4)
+#else
 int RGE_Action_Gather::work(void* param_1, float param_2, float param_3, float param_4)
+#endif
 {
     if (param_1) {
         if (param_1 == target_obj && (state == 4 || state == 6 || state == 7)) {

@@ -1,6 +1,7 @@
 // VA: 0049C920 TRIBE_Screen_Game::command_outline (56 B)
 // PDB source: scr_game.cpp lines 5333-5355
 
+#if !defined(SCR_GAME_TU_CONTEXT)
 class RGE_Base_Game {
 public:
     char gap_00[0x50];
@@ -15,6 +16,7 @@ class TRIBE_Screen_Game {
 public:
     void command_outline();
 };
+#endif
 
 void TRIBE_Screen_Game::command_outline() {
     RGE_Base_Game* game;

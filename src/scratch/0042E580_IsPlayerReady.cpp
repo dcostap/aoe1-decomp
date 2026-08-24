@@ -7,6 +7,7 @@ public:
     int ready[1];
 };
 
+
 int TCommunications_Handler_ipr::IsPlayerReady(unsigned int player) {
     if (player >= 1u && player <= this->max_players)
         return this->ready[player];

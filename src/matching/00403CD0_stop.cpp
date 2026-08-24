@@ -1,3 +1,4 @@
+#ifndef ACT_GATH_CONTEXT_H
 class RGE_Action_Gather {
 public:
     virtual ~RGE_Action_Gather();
@@ -26,6 +27,7 @@ public:
     virtual int vf5C(int);
     int stop();
 };
+#endif
 
 int RGE_Action_Gather::stop() {
     this->vf5C(2);

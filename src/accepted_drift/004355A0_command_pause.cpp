@@ -31,10 +31,12 @@
 
 void __cdecl TDebuggingLog_Log(void* log_obj, const char* str);
 
+#ifndef COMMAND_TU_CONTEXT
 struct RGE_Command {
     void submit(void* buf, int size);
     void command_pause(int param_1, int* data, int count);
 };
+#endif
 
 #define g_pLog (*(void**)0x62C4FC)
 

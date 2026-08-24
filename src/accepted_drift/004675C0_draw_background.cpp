@@ -66,6 +66,7 @@ class RGE_Color_Table;
 class TShape;
 class TPanel;
 
+#ifndef AOE1_PANEL_EZ_CONTEXT_H
 class TDrawArea {
 public:
     TDrawSystem* DrawSystem;
@@ -252,6 +253,7 @@ public:
 
     void draw_background(int use_alt);
 };
+#endif
 
 void TEasy_Panel::draw_background(int use_alt)
 {

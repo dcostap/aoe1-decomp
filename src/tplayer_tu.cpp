@@ -1,101 +1,111 @@
-// Canonical tplayer.cpp owner prefix from the original PDB module.
-//
-// The order follows the PDB source lines and virtual addresses.  Each included
-// file owns one VA.  The source files are normal or reviewed accepted-drift
-// owners only; generated, padding, assembly, and parent fragments stay out.
-//
-// Proposed module flags: config/flags/default.rsp.  This wrapper is not yet
-// registered in config/translation_units.json.
-//
-// Evidence anchors retained in the owners:
-// - 00513000 keeps the tech count, table ownership, and original pointer-fault
-//   order as a reviewed blocker.
-// - 005153D0 keeps the save-random order, enemy-before-ally checks, two
-//   diplomacy loops, and the 42-call AI load sequence.
-// - 00515E00 keeps the literal rule IDs, selected counters, seven reduction
-//   passes, and the cold final rule branch.
-// - 005182E0 keeps the civilization table slots and accepted drift note.
-//
-// The civilization setup run below is one PDB-ordered block.  It starts at
-// 00517B90 and ends at 00518DD0.  The next tplayer owner, 00518F00, is also
-// included after the source gap.  Accepted drift owners retain their review
-// notes.  00517B90, 00517E10, 005181C0, 005188F0, 00518B50, 00518DD0,
-// 00518F00, 005192F0, and 00519320 remain exact in isolated checks.
-// 005188F0 now uses the real TRIBE_Player owner instead of a synthetic
-// TRIBE_Player3 owner.
-// Reviewed accepted-drift owners in this run are 00517CD0, 00518090,
-// 005182E0, 00518400, 00518540, 00518670, 005187A0, 00518A20, and 00518C90.
-// 00517F30 remains scratch because its store order changes partial output and
-// fault order.  Safe exact owners continue through 00519320.  The wrapper
-// stops before the reviewed padding-only block at 00519465.
-
+// Authentic complete tplayer.cpp translation-unit wrapper.
+// Include order follows PDB source lines. Each normal owner is included once.
+// Compiler-generated deleting destructors are checked separately.
+#define AOE1_TPLAYER_TU_SHARED_CONTEXT
 #include "../include/tplayer_context.h"
 
-// tplayer.cpp:930-975
+#include "accepted_drift/00511BD0_TRIBE_Player.cpp"
+#include "matching/00511E20_TRIBE_Player.cpp"
+#include "matching/005120F0_TRIBE_Player.cpp"
+#include "matching/005121A0_make_scenario_obj.cpp"
+#include "scratch/00512250_save.cpp"
+#undef rge_base_game
+#include "matching/005123B0_update.cpp"
+#undef rge_base_game
+#include "matching/00512620_update_dopplegangers.cpp"
+#include "matching/00512630_scenario_save.cpp"
+#include "matching/00512690_scenario_load.cpp"
+#include "matching/005128A0_load.cpp"
+#include "scratch/00512A90_load_master_object.cpp"
+#include "scratch/00512BF0_tech_cost.cpp"
+#include "matching/00512C30_obj_cost.cpp"
+#include "matching/00512EC0_find_obj.cpp"
+#include "accepted_drift/00512F60_make_new_object.cpp"
 #include "matching/00513000_interface_tech_avail.cpp"
-
-// tplayer.cpp:2145-2302
+#include "accepted_drift/005131C0_interface_item_avail.cpp"
+#include "matching/005134F0_interface_trade_avail.cpp"
+#include "matching/00513600_command_make_building.cpp"
+#include "matching/00513690_command_make_wall.cpp"
+#include "scratch/00513720_command_building_make_tech.cpp"
+#include "matching/00513750_command_building_cancel.cpp"
+#include "matching/00513790_command_delete_object.cpp"
+#include "matching/005137D0_command_trade_attribute.cpp"
+#include "scratch/00513840_command_trade_attribute.cpp"
+#include "matching/00513860_command_attack_ground.cpp"
+#include "matching/005138D0_command_give_attribute.cpp"
+#include "scratch/00513920_command_building_make_obj.cpp"
+#include "accepted_drift/00513950_command_make_repair.cpp"
+#include "matching/00513A80_command_make_unload.cpp"
+#include "matching/00513AF0_check_obj_cost.cpp"
+#include "matching/00513C50_pay_obj_cost.cpp"
+#include "matching/00513D00_reimburse_obj_cost.cpp"
+#include "scratch/00513D60_check_tech_cost.cpp"
+#include "scratch/00513D80_pay_tech_cost.cpp"
+#include "scratch/00513DA0_tech_abling.cpp"
+#include "matching/00513DD0_rev_tech.cpp"
+#include "matching/00513FD0_add_population_entry.cpp"
+#include "matching/00514010_random_start.cpp"
+#include "matching/00514510_objectCost.cpp"
+#include "matching/00514590_objectCostByType.cpp"
+#include "matching/005145E0_researchCost.cpp"
+#include "scratch/00514660_objectAvailable.cpp"
+#include "matching/00514690_researchAvailable.cpp"
+#include "scratch/005146B0_researchEverAvailable.cpp"
+#include "scratch/005146E0_researchState.cpp"
+#include "matching/00514700_changeToHumanPlayer.cpp"
+#include "matching/00514710_changeToComputerPlayer.cpp"
+#include "matching/00514720_aiStatus.cpp"
+#include "scratch/00514F90_kickAI.cpp"
+#include "scratch/00514FB0_strategicNumber.cpp"
+#include "matching/00514FE0_logMessage.cpp"
+#include "scratch/00515040_sendAICommand.cpp"
+#include "matching/00515070_addObject.cpp"
+#include "matching/005150E0_removeObject.cpp"
+#include "matching/00515130_buildObject.cpp"
+#include "matching/00515180_cancelBuild.cpp"
+#include "scratch/005151C0_registerBuild.cpp"
+#include "scratch/005151F0_trainUnit.cpp"
+#include "scratch/00515220_cancelTrain.cpp"
+#include "scratch/00515250_registerTrain.cpp"
+#include "scratch/00515280_research.cpp"
+#include "scratch/005152B0_cancelResearch.cpp"
+#include "scratch/005152E0_registerResearch.cpp"
+#include "matching/00515310_taskTrader.cpp"
+#include "matching/00515360_taskResourceGatherer.cpp"
+#include "matching/005153B0_setDiplomaticStance.cpp"
 #include "matching/005153D0_loadAIInformation.cpp"
-
-// tplayer.cpp:2550-3937
+#include "scratch/005159D0_notify.cpp"
+#include "matching/00515BB0_notifyAI.cpp"
+#include "matching/00515DF0_intelligentCivSelection.cpp"
 #include "matching/00515E00_intelligentBuildListAndRulesSelection.cpp"
-
-// tplayer.cpp:3943-3987
 #include "matching/00517B90_setupEgyptian.cpp"
-
-// tplayer.cpp:3992-4041
 #include "accepted_drift/00517CD0_setupGreek.cpp"
-
-// tplayer.cpp:4046-4084
 #include "matching/00517E10_setupBabylonian.cpp"
-
-// tplayer.cpp:4089-4142
 #include "scratch/00517F30_setupAssyrian.cpp"
-
-// tplayer.cpp:4147-4195
 #include "accepted_drift/00518090_setupMinoan.cpp"
-
-// tplayer.cpp:4200-4243
 #include "matching/005181C0_setupHittite.cpp"
-
-// tplayer.cpp:4248-4287
 #include "accepted_drift/005182E0_setupPhoenician.cpp"
-
-// tplayer.cpp:4292-4340
 #include "accepted_drift/00518400_setupSumerian.cpp"
-
-// tplayer.cpp:4345-4390
 #include "accepted_drift/00518540_setupPersian.cpp"
-
-// tplayer.cpp:4395-4435
 #include "accepted_drift/00518670_setupShang.cpp"
-
-// tplayer.cpp:4440-4490
 #include "accepted_drift/005187A0_setupYamato.cpp"
-
-// tplayer.cpp:4495-4540
 #include "matching/005188F0_setupChoson.cpp"
-
-// tplayer.cpp:4545-4589
 #include "accepted_drift/00518A20_setupRoman.cpp"
-
-// tplayer.cpp:4594-4640
 #include "matching/00518B50_setupCarthaginian.cpp"
-
-// tplayer.cpp:4645-4691
 #include "accepted_drift/00518C90_setupPalmyran.cpp"
-
-// tplayer.cpp:4696-4739
 #include "matching/00518DD0_setupMacedonian.cpp"
-
-// tplayer.cpp:4744-4805
 #include "matching/00518F00_logStatus.cpp"
-
-// tplayer.cpp:4810-4815
 #include "matching/005192F0_trackUnitGather.cpp"
-
-// tplayer.cpp:4819-4855
 #include "matching/00519320_get_achievement.cpp"
-
-// The post-padding owners use their own /GX segment in
-// src/tplayer_postpad_tu.cpp.  This keeps the default prefix flag set stable.
+#include "accepted_drift/00519490_load_victory.cpp"
+#include "matching/00519500_new_victory.cpp"
+#include "accepted_drift/00519570_add_attribute_num.cpp"
+#include "matching/005195D0_analyize_selected_objects.cpp"
+#include "scratch/005196E0_get_mouse_pointer_action_vars.cpp"
+#include "matching/00519AF0_TRIBE_Gaia.cpp"
+#include "matching/00519BD0_TRIBE_Gaia.cpp"
+#include "matching/00519C40_save.cpp"
+#include "matching/00519CA0_update.cpp"
+#include "scratch/00519D10_load_master_object.cpp"
+#include "matching/00519D40_random_start.cpp"
+#include "matching/00519D50_scenario_postload.cpp"

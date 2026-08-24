@@ -5,6 +5,7 @@
 // v3: explicit result temp with cast -> same
 // Remaining: register allocation diff, behavior identical
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Object_List {
 public:
     char gap_00[8];
@@ -26,6 +27,7 @@ public:
 
     unsigned char more_room();
 };
+#endif
 
 unsigned char RGE_Static_Object::more_room() {
     return objects->number_of_objects < (short)(unsigned short)master_obj->obj_max;

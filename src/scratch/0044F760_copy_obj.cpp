@@ -3,6 +3,9 @@
 
 #include <stdlib.h>
 
+#ifndef RGE_MAC_OBJ_SHARED_CONTEXT
+class RGE_Master_Static_Object;
+
 struct RGE_Master_Moving_Object_copy {
     char base[0xD8];
     void copy_obj(void* src);
@@ -15,12 +18,13 @@ struct CopyRefHelper {
 
 struct RGE_Master_Action_Object {
     char pad[0xD8];
-    void copy_obj(void* src);
+    void copy_obj(RGE_Master_Static_Object* src);
 };
+#endif
 
-void RGE_Master_Action_Object::copy_obj(void* src)
+void RGE_Master_Action_Object::copy_obj(RGE_Master_Static_Object* src)
 {
-    ((RGE_Master_Moving_Object_copy*)this)->copy_obj(src);
+    ((RGE_Master_Moving_Object_copy*)this)->copy_obj((void*)src);
     *(short*)((char*)this + 0xDC) = *(short*)((char*)src + 0xDC);
     *(int*)((char*)this + 0xE0) = *(int*)((char*)src + 0xE0);
     *(int*)((char*)this + 0xE4) = *(int*)((char*)src + 0xE4);

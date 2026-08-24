@@ -7,25 +7,7 @@
 
 #include <new.h>
 
-class TPanel {
-public:
-    virtual ~TPanel();
-
-    char gap_04[0xD4];
-    int error_code; // +0xD8
-    char gap_DC[0x18];
-};
-
-class TEasy_Panel : public TPanel {
-public:
-    virtual ~TEasy_Panel();
-    char gap_F4[0x384];
-};
-
-class TScreenPanel : public TEasy_Panel {
-public:
-    virtual ~TScreenPanel();
-};
+#include "../../include/tribegam_context.h"
 
 class TTextPanel;
 class TButtonPanel;
@@ -43,38 +25,6 @@ public:
     TPicturePanel* circle_p_pic; // +0x4AC
 
     TRIBE_Screen_Main_Menu();
-};
-
-class TPanelSystem {
-public:
-    int setCurrentPanel(char* name, int mode);
-};
-
-class TMusic_System {
-public:
-    char gap_00[0x104];
-    unsigned char music_type; // +0x104
-
-    int play_track(int track, int loop, unsigned long pos);
-    int play_file(const char* name, int loop, unsigned long pos);
-};
-
-class TRIBE_Game {
-public:
-    virtual ~TRIBE_Game();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void set_prog_mode(int mode);
-
-    char gap_04[0x60];
-    TMusic_System* music_system; // +0x64
-    char gap_68[0xB98];
-    int video_setup; // +0xC00
-    char gap_C04[0x18];
-    int started_menu_music; // +0xC1C
-
-    void shutdown_video_system();
-    int start_menu();
 };
 
 extern TPanelSystem panel_system;

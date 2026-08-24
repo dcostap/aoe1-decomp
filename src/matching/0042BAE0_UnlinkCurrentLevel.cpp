@@ -26,6 +26,7 @@
 
 #include <string.h>
 
+#if !defined(COM_HAND_TU_CONTEXT)
 enum COMMSTATUS {
     UNINITIALIZED = 0,
     INITIALIZED = 1,
@@ -44,45 +45,70 @@ enum COMMSTATUS {
     GAME_IS_RUNNING = 14,
     GAME_IS_PAUSED = 15
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 enum { COMM_STATE_JOINNOW = 3 };
 enum { ME_HUMAN = 2 };
+#endif // COM_HAND_TU_CONTEXT
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TDebuggingLog {
 public:
     void Log(char* format, ...);
     void Time();
 };
-extern TDebuggingLog* L;
+#endif // COM_HAND_TU_CONTEXT
 
+#if !defined(COM_HAND_TU_CONTEXT)
+extern TDebuggingLog* L;
+#endif // COM_HAND_TU_CONTEXT
+
+#if !defined(COM_HAND_TU_CONTEXT)
 extern unsigned long debug_timeGetTime(const char* file, int line);
+#endif // COM_HAND_TU_CONTEXT
+#if !defined(COM_HAND_TU_CONTEXT)
 extern unsigned int DAT_0062cf04;
+#endif // COM_HAND_TU_CONTEXT
 
 class TCommunications_Handler;
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class RGE_Communications_Speed {
 public:
     RGE_Communications_Speed(TCommunications_Handler* handler);
     ~RGE_Communications_Speed();
     char gap_00[0x240];
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class RGE_Communications_Synchronize {
 public:
     RGE_Communications_Synchronize(TCommunications_Handler* handler);
     ~RGE_Communications_Synchronize();
     char gap_00[0x7EC];
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class RGE_Communications_Queue {
 public:
     void FlushAll();
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class TChat {
 public:
     void ClearChat();
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 struct GUID16 {
     unsigned long a;
@@ -91,6 +117,7 @@ struct GUID16 {
     unsigned long d;
 };
 
+#if !defined(COM_HAND_TU_CONTEXT)
 struct COMMPLAYEROPTIONS {
     unsigned char NeedsToBeSent;
     unsigned char _pad0[3];
@@ -122,10 +149,13 @@ struct COMMPLAYEROPTIONS {
     int GameHasStarted;
     unsigned long DataSizeToFollow;
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 void operator_delete(void* ptr);
 void* __cdecl operator new(unsigned int size);
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_0000[0x0008];
@@ -218,6 +248,8 @@ public:
     COMMSTATUS AnalyzeCommunicationsStatus();
     COMMSTATUS UnlinkCurrentLevel();
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 COMMSTATUS TCommunications_Handler::UnlinkCurrentLevel() {
     L->Log((char*)0x582750, this->CommunicationsStatus);
@@ -287,7 +319,7 @@ COMMSTATUS TCommunications_Handler::UnlinkCurrentLevel() {
         this->PlayerOptions.LastSentTime = 0;
         this->ClearAllSerialNumbers();
         this->ClearRXandTX();
-        int* q = this->clear_13c0;
+        int* q = (int*)&this->PlayerStopTurn[1];
         for (int k = 9; k != 0; k--) *q++ = 0;
         this->Steps = 1;
         this->ResetLastCommunicationTimes();
@@ -366,7 +398,7 @@ COMMSTATUS TCommunications_Handler::UnlinkCurrentLevel() {
         this->PlayerOptions.LastSentTime = 0;
         this->ClearAllSerialNumbers();
         this->ClearRXandTX();
-        int* q = this->clear_13c0;
+        int* q = (int*)&this->PlayerStopTurn[1];
         for (int k = 9; k != 0; k--) *q++ = 0;
         this->Steps = 1;
         this->ResetLastCommunicationTimes();

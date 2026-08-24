@@ -128,6 +128,60 @@
 
 #include <string.h>
 
+#ifdef TRIBEGAM_TU_CONTEXT
+typedef void* TRIBE_HWND;
+typedef void* TRIBE_HANDLE;
+struct TRIBE_PALETTEENTRY { unsigned char peRed, peGreen, peBlue, peFlags; };
+struct TRIBE_FILETIME { unsigned long dwLowDateTime, dwHighDateTime; };
+struct TRIBE_SYSTEMTIME {
+    unsigned short wYear, wMonth, wDayOfWeek, wDay,
+                   wHour, wMinute, wSecond, wMilliseconds;
+};
+struct TRIBE_FIND_DATA {
+    unsigned long dwFileAttributes;
+    TRIBE_FILETIME ftCreationTime, ftLastAccessTime, ftLastWriteTime;
+    unsigned long nFileSizeHigh, nFileSizeLow, dwReserved0, dwReserved1;
+    char cFileName[260];
+    char cAlternateFileName[14];
+    unsigned char pad_end[2];
+};
+struct TRIBE_ICINFO {
+    unsigned long dwSize, fccType, fccHandler, dwFlags, dwVersion, dwVersionICM;
+    unsigned short szName[16], szDescription[128], szDriver[128];
+};
+#define HWND TRIBE_HWND
+#define HANDLE TRIBE_HANDLE
+#define PALETTEENTRY TRIBE_PALETTEENTRY
+#define FILETIME TRIBE_FILETIME
+#define SYSTEMTIME TRIBE_SYSTEMTIME
+#define WIN32_FIND_DATAA TRIBE_FIND_DATA
+#define ICINFO TRIBE_ICINFO
+extern "C" char* __stdcall TRIBE_CharUpperA(char* value);
+extern "C" void* __stdcall TRIBE_LoadLibraryA(const char* value);
+extern "C" int __stdcall TRIBE_SetPaletteEntries(HWND, unsigned, unsigned, PALETTEENTRY*);
+extern "C" HWND __stdcall TRIBE_CreateWindowExA(unsigned, const char*, const char*, unsigned,
+                                                   int, int, int, int, HWND, void*, void*, void*);
+extern "C" HANDLE __stdcall TRIBE_FindFirstFileA(const char*, WIN32_FIND_DATAA*);
+extern "C" int __stdcall TRIBE_FileTimeToSystemTime(const FILETIME*, SYSTEMTIME*);
+extern "C" int __stdcall TRIBE_FindClose(HANDLE);
+extern "C" char* __cdecl TRIBE_mbsstr(const char*, const char*);
+extern "C" char* __cdecl TRIBE_mbsninc(const char*, unsigned int);
+extern "C" int __cdecl TRIBE_ismbcspace(unsigned int);
+extern "C" char* __cdecl TRIBE_mbsncat(char*, const char*, unsigned int);
+#define CharUpperA TRIBE_CharUpperA
+#define LoadLibraryA TRIBE_LoadLibraryA
+#define SetPaletteEntries TRIBE_SetPaletteEntries
+#define CreateWindowExA TRIBE_CreateWindowExA
+#define FindFirstFileA TRIBE_FindFirstFileA
+#define FileTimeToSystemTime TRIBE_FileTimeToSystemTime
+#define FindClose TRIBE_FindClose
+#define _mbsstr TRIBE_mbsstr
+#define _mbsninc TRIBE_mbsninc
+#define _ismbcspace TRIBE_ismbcspace
+#define _mbsncat TRIBE_mbsncat
+#endif
+
+#ifndef TRIBEGAM_TU_CONTEXT
 typedef void* HWND;
 typedef void* HANDLE;
 
@@ -184,9 +238,12 @@ extern "C" void __cdecl RESFILE_open_new_resource_file(const char* name, const c
 extern "C" void __cdecl run_log(const char* s, int flag);
 extern "C" int __stdcall ICInfo(unsigned int fccType, unsigned int dwHandler, ICINFO* pICI);
 
+#endif
+
 extern char* __pgmptr;
 
 // RGE_Prog_Info exact period layout (generated type dump)
+#ifndef TRIBEGAM_TU_CONTEXT
 class RGE_Prog_Info {
 public:
     char prog_name[101];
@@ -642,6 +699,8 @@ public:
 
 extern void* StringTableX;           // 0x86BDE0
 extern int video_codec_available;    // 0x86BDF0
+
+#endif
 
 int TRIBE_Game::setup()
 {

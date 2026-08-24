@@ -1,6 +1,7 @@
 class RGE_Player;
 class RGE_Static_Object;
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Master_Static_Object {
 public:
     virtual void vf00(void);
@@ -35,6 +36,7 @@ public:
     char gap_00[0x24];
     RGE_Master_Static_Object** master_objects;
 };
+#endif
 
 RGE_Static_Object* RGE_Static_Object::spawn_death_obj(void) {
     short id = this->master_obj->death_spawn_obj_id;

@@ -2,6 +2,7 @@
 
 #include <string.h>
 
+#ifndef AOE1_PANEL_EZ_CONTEXT_H
 class TPanel {};
 class TEasy_Panel;
 
@@ -29,6 +30,7 @@ public:
 
     void popupOKDialog(char* title, char* panel_name, int a, int b);
 };
+#endif
 
 void TEasy_Panel::popupOKDialog(char* title, char* panel_name, int a, int b) {
     char temp_title[256];

@@ -53,6 +53,7 @@
 // function-scope found, split found initialization, receiver/player aliases,
 // candidate pointers, explicit initial guard inversion, and chained assignment.
 
+#ifndef TMAP_GROUP_CONTEXT
 struct TRIBE_Cliff_Info {
     long info[4];
 };
@@ -99,6 +100,7 @@ public:
     RGE_Static_Object* make_new_cliff(long x, long y, TRIBE_Cliff_Info info);
     long add_cliff_edge(long x, long y, long facing, long existing, long other_facing);
 };
+#endif
 
 long TRIBE_Map::add_cliff_edge(long x, long y, long facing, long existing, long other_facing)
 {

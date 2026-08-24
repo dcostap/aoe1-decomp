@@ -1,6 +1,7 @@
 // VA: 0050F410 TRIBE_Map::TRIBE_Map
 // FLAGS: config/flags/0050F410_TRIBE_Map.rsp (/nologo /c /O2 /Oy /GX)
 
+#ifndef TMAP_GROUP_CONTEXT
 class RGE_Sound;
 class RGE_Map {
 public:
@@ -15,6 +16,7 @@ public:
     void data_load_random_map(int);
     void setup_cliff_type(long,long,long,long,long,long,long,long,float,float);
 };
+#endif
 
 TRIBE_Map::TRIBE_Map(int p1, RGE_Sound** p2, unsigned char load)
     : RGE_Map(p1, p2, 0)

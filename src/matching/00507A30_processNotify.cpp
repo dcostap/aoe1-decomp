@@ -8,13 +8,18 @@
 // try 6: expanded each logging prefix while sharing the fprintf tail; exact size and calls returned, but the temporary line-local/goto source was 328 bytes off.
 // try 7: restored ordinary duplicated LOGSTOP plus stop/notify statements; VC5 tail-merged the observed common suffix and produced an exact 848-byte match.
 
+#ifdef TAIUAIMD_COMPLETE_TU
+extern FILE* actionFile;
+#else
 extern void* actionFile;
+#endif
 extern int fprintf(void*, const char*, ...);
 extern const char str_taiuaimd_path[];
 extern const char str_fmt_stopObject[];
 extern void* operator new(unsigned int);
 extern void operator delete(void*);
 
+#ifndef TAIUAIMD_COMPLETE_TU
 class RGE_Visible_Map;
 class RGE_Static_Object;
 class RGE_Game_World {
@@ -106,6 +111,7 @@ public:
 
     int processNotify(NotifyEvent* event, unsigned long flags);
 };
+#endif
 
 #define LOGSTOP(line) do { \
         if (actionFile != 0) { \
@@ -123,8 +129,13 @@ int TribeArtifactUnitAIModule::processNotify(NotifyEvent* event, unsigned long f
     case 0x1fc: {
         RGE_Static_Object* obj = this->objectValue->owner->world->object(this->targetId);
         if (obj != 0) {
+#ifdef TAIUAIMD_COMPLETE_TU
+            if (taiuaimd_player_visible_map(this->objectValue->owner)->get_visible(
+                    (int)obj->world_x, (int)obj->world_y) == 0x0f)
+#else
             if (this->objectValue->owner->visible_map->get_visible(
                     (int)obj->x, (int)obj->y) == 0x0f)
+#endif
                 return 2;
         }
         this->removeCurrentTarget();
@@ -145,7 +156,11 @@ int TribeArtifactUnitAIModule::processNotify(NotifyEvent* event, unsigned long f
             }
         }
         if (this->field_28 != -1) return 2;
+#ifdef TAIUAIMD_COMPLETE_TU
+        if (this->field_30 != *(int*)((char*)event + 0x0C)) return 2;
+#else
         if (this->field_30 != event->value) return 2;
+#endif
         this->removeCurrentTarget();
         LOGSTOP(0xab7);
         this->stopObject(1);
@@ -163,7 +178,11 @@ int TribeArtifactUnitAIModule::processNotify(NotifyEvent* event, unsigned long f
             }
         }
         if (this->field_28 != -1) return 2;
+#ifdef TAIUAIMD_COMPLETE_TU
+        if (this->field_30 != *(int*)((char*)event + 0x0C)) return 2;
+#else
         if (this->field_30 != event->value) return 2;
+#endif
         this->removeCurrentTarget();
         LOGSTOP(0xacf);
         this->stopObject(1);
@@ -181,7 +200,11 @@ int TribeArtifactUnitAIModule::processNotify(NotifyEvent* event, unsigned long f
             }
         }
         if (this->field_28 != -1) return 2;
+#ifdef TAIUAIMD_COMPLETE_TU
+        if (this->field_30 != *(int*)((char*)event + 0x0C)) return 2;
+#else
         if (this->field_30 != event->value) return 2;
+#endif
         this->removeCurrentTarget();
         LOGSTOP(0xae7);
         this->stopObject(1);
@@ -189,7 +212,11 @@ int TribeArtifactUnitAIModule::processNotify(NotifyEvent* event, unsigned long f
         return 2;
 
     case 600: {
+#ifdef TAIUAIMD_COMPLETE_TU
+        int id = *(int*)((char*)event + 0x00);
+#else
         int id = event->objectId;
+#endif
         int i = 0;
         while (i < this->count && i < this->capacity) {
             if (this->ids[i] == id) goto already;

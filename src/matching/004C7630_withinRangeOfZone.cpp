@@ -4,6 +4,7 @@
 // - Previous scratch stub only returned/cached field_7C and produced 48-byte too-short body.
 // - 2026-05-10 StarryZephyr pass: implemented packet behavior with local typed layout and zone-map calls.
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Zone_Map {
 public:
     int withinRange(unsigned char type, int x, int y, float range);
@@ -58,18 +59,20 @@ public:
 
 extern "C" long __cdecl _ftol(void);
 
+#endif
+
 int RGE_Static_Object::withinRangeOfZone(unsigned char type, float range)
 {
-    int ix = (int)this->x;
-    int iy = (int)this->y;
+    int ix = (int)this->world_x;
+    int iy = (int)this->world_y;
     RGE_Zone_Map* zone;
 
     if (this->zoneMapIndex == -1) {
-        RGE_World_Info* world = this->owner->world;
-        int terrain_id = world->terrains[this->master_obj->terrain];
+        RGE_Game_World* world = this->owner->world;
+        void* terrain_id = world->terrains[this->master_obj->terrain];
         zone = world->map->map_zones->get_zone_map(terrain_id, world->terrain_size, &this->zoneMapIndex);
     } else {
-        RGE_World_Info* world = this->owner->world;
+        RGE_Game_World* world = this->owner->world;
         zone = world->map->map_zones->get_zone_map(this->zoneMapIndex);
     }
 

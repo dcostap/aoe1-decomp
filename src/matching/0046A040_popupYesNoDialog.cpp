@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_EZ_CONTEXT_H
 class TPanel {
 public:
     int get_string(int string_id, char* buffer, int length);
@@ -8,6 +9,7 @@ public:
     void popupYesNoDialog(char* text, char* param_2, int param_3, int param_4);
     void popupYesNoDialog(long string_id, char* param_2, int param_3, int param_4);
 };
+#endif
 
 void TEasy_Panel::popupYesNoDialog(long string_id, char* param_2, int param_3, int param_4) {
     char text[256];

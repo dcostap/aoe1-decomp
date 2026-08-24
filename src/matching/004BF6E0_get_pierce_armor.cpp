@@ -1,3 +1,4 @@
+#ifndef SPNL_OBJ_TU
 class RGE_Master_Static_Object {
 public:
     char gap_00[0x4];
@@ -16,6 +17,7 @@ public:
 
     long get_pierce_armor(void);
 };
+#endif
 
 long TRIBE_Scenario_Editor_Panel_Object::get_pierce_armor(void) {
     RGE_Master_Static_Object* master = this->master_game_obj;

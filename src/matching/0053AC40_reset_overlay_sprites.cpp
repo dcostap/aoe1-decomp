@@ -1,3 +1,4 @@
+#ifndef RGE_VIEW_SHARED_CONTEXT
 struct Ov_Sprite_Draw_Rec {
     Ov_Sprite_Draw_Rec* next;
 };
@@ -11,6 +12,7 @@ public:
 
     void reset_overlay_sprites(void);
 };
+#endif
 
 void RGE_View::reset_overlay_sprites(void) {
     Ov_Sprite_Draw_Rec* sprite;

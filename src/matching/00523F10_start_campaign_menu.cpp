@@ -10,21 +10,7 @@
 //   music_system/video_setup/started_menu_music at +0x64/+0xC00/+0xC1C;
 //   this produced an exact 274-byte match under the default flags.
 
-class TMusic_System {
-public:
-    char gap_00[0x104];
-    unsigned char music_type;
-
-    int play_track(int track, int position, unsigned long loop);
-    int play_file(char* file, int position, unsigned long loop);
-};
-
-class TPanelSystem {
-public:
-    int setCurrentPanel(char* name, int mode);
-};
-
-extern TPanelSystem panel_system;
+#include "../../include/tribegam_context.h"
 
 class TRIBE_Screen_Campaign_Selection {
 public:
@@ -34,25 +20,6 @@ public:
     char gap_DC[0x3F0];
 
     TRIBE_Screen_Campaign_Selection();
-};
-
-class TRIBE_Game {
-public:
-    virtual ~TRIBE_Game();
-    virtual int run();
-    virtual long wnd_proc(void* window, unsigned int message,
-                          unsigned int wparam, long lparam);
-    virtual void set_prog_mode(int mode);
-
-    char gap_04[0x60];       // +0x04 through +0x63
-    TMusic_System* music_system;       // +0x64
-    char gap_68[0xB98];
-    int video_setup;                   // +0xC00
-    char gap_C04[0x18];
-    int started_menu_music;            // +0xC1C
-
-    void shutdown_video_system();
-    int start_campaign_menu();
 };
 
 int TRIBE_Game::start_campaign_menu()

@@ -1,5 +1,6 @@
 class RGE_Sprite;
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Active_Sprite_List {
 public:
     void add_sprite(RGE_Sprite* sprite, unsigned char mode, int a4, int a5);
@@ -12,6 +13,7 @@ public:
 
     virtual void add_overlay_sprite(RGE_Sprite* sprite, unsigned char mode);
 };
+#endif
 
 void RGE_Static_Object::add_overlay_sprite(RGE_Sprite* sprite, unsigned char mode) {
     sprite_list->add_sprite(sprite, mode, 0, 0);

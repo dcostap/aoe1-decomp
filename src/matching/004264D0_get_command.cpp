@@ -1,9 +1,13 @@
+#if !defined(COM_HAND_TU_CONTEXT)
 class RGE_Communications_Queue {
 public:
     void* GetNextItemSingle(void);
     void* GetNextItemOrdered(int current_turn);
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_00[0x10C8];
@@ -17,13 +21,15 @@ public:
 
     void* get_command(void);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 void* TCommunications_Handler::get_command(void) {
-    if (Multiplayer == 0) {
-        return InQ->GetNextItemSingle();
+    if (this->Multiplayer == 0) {
+        return this->InQ->GetNextItemSingle();
     }
-    if (ProgramState == 3) {
-        return InQ->GetNextItemSingle();
+    if (this->PlayerOptions.ProgramState == 3) {
+        return this->InQ->GetNextItemSingle();
     }
-    return InQ->GetNextItemOrdered(current_turn);
+    return this->InQ->GetNextItemOrdered(this->current_turn);
 }

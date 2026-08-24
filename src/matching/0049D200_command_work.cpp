@@ -1,5 +1,6 @@
 // VA: 0049D200 TRIBE_Screen_Game::command_work
 
+#if !defined(SCR_GAME_TU_CONTEXT)
 void __cdecl free(void* ptr);
 
 class RGE_Player {
@@ -34,6 +35,7 @@ public:
 };
 
 extern RGE_Base_Game* rge_base_game;
+#endif
 
 void TRIBE_Screen_Game::command_work() {
     void** list;

@@ -4,13 +4,20 @@
 // 142 bytes
 
 #include <string.h>
+#if !defined(COM_HAND_TU_CONTEXT)
 #include "../../include/game_globals.h"
+#endif // COM_HAND_TU_CONTEXT
 
 void* __cdecl operator_new(unsigned int size);
 
+#if !defined(COM_HAND_TU_CONTEXT)
 extern void* L;
+#endif // COM_HAND_TU_CONTEXT
+#if !defined(COM_HAND_TU_CONTEXT)
 extern "C" void __cdecl Log(void* log, char* fmt, ...);
+#endif // COM_HAND_TU_CONTEXT
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_00[0x04];
@@ -25,6 +32,8 @@ public:
     int SetMyGameOptions(char* param_1, unsigned long param_2);
     void FreeOptions(void);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 int TCommunications_Handler::SetMyGameOptions(char* param_1, unsigned long param_2) {
     if (param_2 > 2000)
@@ -39,11 +48,11 @@ int TCommunications_Handler::SetMyGameOptions(char* param_1, unsigned long param
             return 0;
 
         memcpy(buf, param_1, param_2);
-        this->DataSizeToFollow = param_2;
+        this->PlayerOptions.DataSizeToFollow = param_2;
     }
 
     if (this->MeHost != 0) {
-        this->NeedsToBeSent = 1;
+        this->PlayerOptions.NeedsToBeSent = 1;
     }
 
     Log(L, "Host Set Options to size %d", param_2);

@@ -3,6 +3,7 @@
 // tried: original function-pointer vtable call used __fastcall and inserted xor edx,edx before call.
 // fixed by using a padded virtual helper surface for vtable slot +0x38 (thiscall, no EDX setup).
 
+#ifndef RGE_MAC_OBJ_SHARED_CONTEXT
 struct RGE_Master_Moving_Object_copy_setup {
     char base[0xD8];
     void copy_setup(void* src);
@@ -34,11 +35,12 @@ public:
 
 struct RGE_Master_Action_Object {
     char pad[0xD8];
-    int setup(void* src);
+    int setup(RGE_Master_Action_Object* src);
 };
+#endif
 
-int RGE_Master_Action_Object::setup(void* src) {
-    ((RGE_Master_Moving_Object_copy_setup*)this)->copy_setup(src);
+int RGE_Master_Action_Object::setup(RGE_Master_Action_Object* src) {
+    ((RGE_Master_Moving_Object_copy_setup*)this)->copy_setup((void*)src);
     *(unsigned char*)((char*)this + 4) = 0x28;
     *(short*)((char*)this + 0xDC) = *(short*)((char*)src + 0xDC);
     *(int*)((char*)this + 0xE0) = *(int*)((char*)src + 0xE0);

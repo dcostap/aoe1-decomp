@@ -17,6 +17,7 @@ class RGE_Object_List;
 class RGE_Object_Node;
 class UnitAIModule;
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Object_List {
 public:
     virtual void load(unsigned char, int, RGE_Game_World*);
@@ -195,6 +196,7 @@ public:
     void take_attribute_from_owner();
     int removeFromObstructionMap(int mode);
 };
+#endif
 
 void RGE_Static_Object::recycle_out_of_game() {
     if (this->master_obj->recyclable != 0 &&

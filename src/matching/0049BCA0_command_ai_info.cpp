@@ -8,6 +8,7 @@
 // register for the last store, using `8b 0d` (mov ecx,[addr32], 6 bytes)
 // which changes function size and breaks the match.
 
+#if !defined(SCR_GAME_TU_CONTEXT)
 class TMessagePanel {
 public:
     void remove_message();
@@ -35,6 +36,7 @@ public:
 
     void command_ai_info();
 };
+#endif
 
 void TRIBE_Screen_Game::command_ai_info() {
     message_panel->remove_message();

@@ -1,3 +1,4 @@
+#ifndef RGE_MAC_OBJ_SHARED_CONTEXT
 class RGE_Task;
 
 class TaskArray {
@@ -14,6 +15,7 @@ public:
 
     RGE_Task* get_task(short task_id);
 };
+#endif
 
 RGE_Task* RGE_Master_Action_Object::get_task(short task_id) {
     if ((task_id != -1) && (task_id < this->tasks->list_num)) {

@@ -30,6 +30,7 @@ extern int player_dropped[9];
 extern void debug_random_write();
 extern void dump_vismap_log();
 
+#ifndef TRIBEGAM_TU_CONTEXT
 class TDebuggingLog {
 public:
     void __cdecl Log(char*, ...);
@@ -155,13 +156,14 @@ public:
     int save_game(char*);
     void do_game_over();
 };
+#endif
 
 int TRIBE_Game::action_user_command(unsigned long param_1,
                                     unsigned long param_2)
 {
     char msg[256];
     char temp_str[260];
-    TEasy_Panel* panel;
+    TPanel* panel;
     int player;
 
     if (this->prog_mode == 3) {
@@ -203,7 +205,7 @@ int TRIBE_Game::action_user_command(unsigned long param_1,
             if (this->game_screen == 0) {
                 break;
             }
-            this->world->players[this->world->player_number]
+            this->world->players[this->world->player_num]
                 ->loss_if_game_on();
             this->do_game_over();
             panel = panel_system.currentPanel();
@@ -222,7 +224,7 @@ int TRIBE_Game::action_user_command(unsigned long param_1,
                 if (out_of_sync == 0) {
                     out_of_sync = 1;
                     if (this->comm_handler->IsHost() != 0) {
-                        this->world->commands->command_save_game();
+                        this->world->command->command_save_game();
                     }
                 }
             } else if (out_of_sync == 0) {
@@ -241,7 +243,7 @@ int TRIBE_Game::action_user_command(unsigned long param_1,
                     player = this->comm_handler->WhoAmI();
                     sprintf(msg, "syncerr%d.gam", player);
                     this->save_game(msg);
-                    this->world->players[this->world->player_number]
+                    this->world->players[this->world->player_num]
                         ->loss_if_game_on();
                     this->do_game_over();
                     panel = panel_system.currentPanel();
@@ -275,7 +277,7 @@ int TRIBE_Game::action_user_command(unsigned long param_1,
         case 0x17bd:
         {
             player = this->playerID(param_2);
-            if (player != this->world->player_number &&
+            if (player != this->world->player_num &&
                 this->game_screen != 0 &&
                 this->playerID(param_2) > 0 && player_dropped[param_2] == 0) {
                 this->play_sound(2);

@@ -21,6 +21,7 @@
 // BINARY NOTE: action calls this owner at 0049877D.  The dispatch has no
 // writes; each arm preserves the shipped call and pop/ret 0xC cleanup.
 
+#if !defined(SCR_GAME_TU_CONTEXT)
 extern int allow_user_commands;
 
 class TEasy_Panel {
@@ -82,6 +83,7 @@ public:
 protected:
     void do_button_action(int action, int value, int flag);
 };
+#endif
 
 void TRIBE_Screen_Game::do_button_action(int action, int value, int flag) {
     if (allow_user_commands != 0) {

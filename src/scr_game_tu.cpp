@@ -1,30 +1,107 @@
-// Canonical scr_game.cpp context slice for the active recovery owners.
-//
-// PDB source-line order is retained.  The four reviewed padding-only symbols
-// in this address band are not owners and are not included.
-//
-// The 00493D60 constructor remains a standalone owner. Its local ABI surface
-// conflicts with the shared scr_game_context used by this grouped prefix.
-// Safe grouped owner proposal for this recovery set:
-//   004954A0 [878-1151]     ??1TRIBE_Screen_Game@@UAE@XZ
-//   00496800 [1589-1996]    ?handle_game_update@TRIBE_Screen_Game@@QAEXXZ
-//   00497440 [2163-2820]    ?key_down_action@TRIBE_Screen_Game@@UAEJJFHHH@Z
-//   004982E0 [2847-2962]    ?action@TRIBE_Screen_Game@@UAEJPAVTPanel@@JKK@Z
-//   004996C0 [3395-4017]    ?setup_buttons@TRIBE_Screen_Game@@QAEXXZ
-//   0049B000 [4282-4307]    ?scr_game_score_compare@@YAHPBX0@Z
-//   0049B080 [4310-4486]    ?reset_score_display@TRIBE_Screen_Game@@QAEXXZ
-//   0049B560 [4492-4575]    ?draw@TRIBE_Screen_Game@@UAEXXZ
-//   0049B830 [4581-4615]    ?handle_anim_pal@TRIBE_Screen_Game@@QAEXXZ
-// Use config/flags/004982E0_action.rsp for this set.  It is the one /GX set.
-// Stop before 0049B910. Its accepted-drift owner differs by seven bytes.
-// Do not add later owners until the 0049B910 boundary is resolved.
+// Authentic complete owner wrapper for C:\\msdev\\work\\age1_x1\\scr_game.cpp.
+// Owner includes follow PDB source-line order.  The shared context is enabled
+// before the first owner.  Standalone declarations in owner files are guarded
+// by SCR_GAME_TU_CONTEXT; their bodies remain the compiler-facing owners.
+// Compile with config/flags/004982E0_action.rsp (/O2 /Oy /GX).
+#include <windows.h>
+#include "../include/scr_game_context.h"
+#define SCR_GAME_TU_CONTEXT 1
+
+#include "scratch/00493D60_TRIBE_Screen_Game.cpp"
 #include "matching/004954A0_TRIBE_Screen_Game.cpp"
+#include "scratch/004959A0_set_redraw.cpp"
+#include "matching/004959B0_set_overlapped_redraw.cpp"
+#include "matching/00495A90_set_map_buttons_redraw.cpp"
+#include "accepted_drift/00495AE0_handle_size.cpp"
+#include "accepted_drift/00496550_handle_paint.cpp"
+#include "matching/00496700_handle_idle.cpp"
 #include "scratch/00496800_handle_game_update.cpp"
-// 00497440 is exact in isolation. Its local class surface conflicts with the
-// current sparse shared context, so it remains outside this wrapper.
+#include "matching/004970A0_wnd_proc.cpp"
+#include "matching/00497210_handle_mouse_down.cpp"
+#include "scratch/00497280_handle_user_command.cpp"
+#include "matching/004972A0_handle_pause.cpp"
+#include "matching/004972F0_handle_resume.cpp"
+#include "matching/00497330_handleChatReceived.cpp"
+#include "matching/004973F0_display_system_message.cpp"
+#include "matching/00497440_key_down_action.cpp"
+#include "matching/00498290_char_action.cpp"
 #include "scratch/004982E0_action.cpp"
+#include "matching/004987A0_do_button_action.cpp"
+#include "matching/00498A10_game_mode_changed.cpp"
+#include "matching/00498A50_player_changed.cpp"
+#include "matching/004992E0_object_changed.cpp"
+#include "matching/004993B0_age_changed.cpp"
+#include "matching/004994B0_show_timings.cpp"
+#include "matching/00499520_show_comm.cpp"
+#include "matching/004995D0_show_ai.cpp"
+#include "matching/00499680_show_message.cpp"
+#include "scratch/004996B0_reset_buttons.cpp"
 #include "scratch/004996C0_setup_buttons.cpp"
+#include "matching/0049A8A0_disable_unused_buttons.cpp"
+#include "matching/0049A8F0_calc_text_msg.cpp"
+#include "matching/0049AB10_calc_button_loc.cpp"
+#include "matching/0049AB60_set_button.cpp"
+#include "accepted_drift/0049ADA0_reset_clocks.cpp"
 #include "matching/0049B000_scr_game_score_compare.cpp"
 #include "scratch/0049B080_reset_score_display.cpp"
 #include "matching/0049B560_draw.cpp"
 #include "matching/0049B830_handle_anim_pal.cpp"
+#include "accepted_drift/0049B910_handle_terrain_sound.cpp"
+#include "matching/0049BAF0_handle_mouse_pointing_at.cpp"
+#include "scratch/0049BC60_command_add_attribute.cpp"
+#include "matching/0049BCA0_command_ai_info.cpp"
+#include "matching/0049BD20_command_attack.cpp"
+#include "matching/0049BD70_command_build.cpp"
+#include "matching/0049BDB0_command_building.cpp"
+#include "matching/0049BEA0_command_cancel.cpp"
+#include "matching/0049BF20_command_cancel_building.cpp"
+#include "matching/0049BF50_command_chat.cpp"
+#include "matching/0049C010_command_quick_chat.cpp"
+#include "accepted_drift/0049C0B0_command_comm_info.cpp"
+#include "matching/0049C160_command_convert.cpp"
+#include "matching/0049C1B0_command_diplomacy.cpp"
+#include "matching/0049C230_command_fog_of_war.cpp"
+#include "matching/0049C280_command_fps.cpp"
+#include "matching/0049C300_command_game_speed.cpp"
+#include "matching/0049C540_command_group.cpp"
+#include "matching/0049C570_command_group_by_number.cpp"
+#include "matching/0049C5B0_command_heal.cpp"
+#include "matching/0049C600_command_repair.cpp"
+#include "matching/0049C650_command_score.cpp"
+#include "matching/0049C710_command_select_group.cpp"
+#include "matching/0049C770_command_menu.cpp"
+#include "matching/0049C800_command_more.cpp"
+#include "matching/0049C890_command_move.cpp"
+#include "matching/0049C920_command_outline.cpp"
+#include "matching/0049C970_command_pause.cpp"
+#include "matching/0049CA10_command_player.cpp"
+#include "matching/0049CA80_command_quick_build.cpp"
+#include "scratch/0049CAC0_command_quit.cpp"
+#include "matching/0049CAF0_command_research.cpp"
+#include "matching/0049CB90_command_save_game.cpp"
+#include "matching/0049CC20_command_save_scenario.cpp"
+#include "matching/0049CCB0_command_select_building.cpp"
+#include "scratch/0049CE10_command_stop.cpp"
+#include "matching/0049CE40_command_tool_box.cpp"
+#include "matching/0049CEA0_command_trade.cpp"
+#include "matching/0049CEB0_command_trade_with.cpp"
+#include "matching/0049CEC0_command_train.cpp"
+#include "matching/0049CFB0_command_ungroup.cpp"
+#include "matching/0049CFF0_command_unload.cpp"
+#include "matching/0049D040_command_unselect.cpp"
+#include "matching/0049D090_command_view_selected.cpp"
+#include "matching/0049D100_command_view_tribe.cpp"
+#include "matching/0049D1B0_command_visibility.cpp"
+#include "matching/0049D200_command_work.cpp"
+#include "matching/0049D290_command_formation.cpp"
+#include "matching/0049D2C0_command_stand_ground.cpp"
+#include "matching/0049D2F0_command_attack_ground.cpp"
+#include "matching/0049D340_command_trade_attribute.cpp"
+#include "matching/0049D370_command_tab_selected.cpp"
+#include "matching/0049D440_any_selected_have_action.cpp"
+#include "scratch/0049D4B0_set_focus.cpp"
+#include "matching/0049D4F0_stop_sound_system.cpp"
+#include "matching/0049D530_restart_sound_system.cpp"
+#include "matching/0049D540_add_log.cpp"
+
+#undef SCR_GAME_TU_CONTEXT

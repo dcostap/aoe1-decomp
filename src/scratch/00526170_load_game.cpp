@@ -48,10 +48,11 @@
 #include <stdio.h>
 #include <string.h>
 
-extern "C" char* __cdecl _mbschr(const char* text, int character);
+extern "C" char* __cdecl TRIBE_mbschr(const char* text, int character);
 extern "C" int numberPathingIterations;
 extern int ENABLE_COMPRESSION;
 
+#ifndef TRIBEGAM_TU_CONTEXT
 class TPanel {
 public:
     char* panelName();
@@ -79,6 +80,8 @@ public:
     char gap_00;
     unsigned char game_loading;
 };
+
+#endif
 
 class RGE_Victory_Conditions {
 public:
@@ -170,6 +173,7 @@ public:
     char gap_0A[2];
 };
 
+#ifndef TRIBEGAM_TU_CONTEXT
 class RGE_Static_Object {
 public:
     virtual ~RGE_Static_Object();
@@ -215,6 +219,7 @@ public:
     unsigned char worker_num; // +4F
     char gap_50[0x38];
 };
+#endif
 
 class RGE_Moving_Object : public RGE_Static_Object {
 public:
@@ -266,6 +271,7 @@ public:
     RGE_Action_List* action_list; // +184
 };
 
+#ifndef TRIBEGAM_TU_CONTEXT
 class RGE_Player {
 public:
     virtual ~RGE_Player();
@@ -289,7 +295,9 @@ public:
     unsigned char fog_of_war; // +8DB9
     char* player_name();
 };
+#endif
 
+#ifndef TRIBEGAM_TU_CONTEXT
 class RGE_Game_World {
 public:
     virtual ~RGE_Game_World();
@@ -361,7 +369,9 @@ public:
     char gap_3E[2];
     RGE_Player** players; // +40
 };
+#endif
 
+#ifndef TRIBEGAM_TU_CONTEXT
 class RGE_Base_Game {
 public:
     virtual ~RGE_Base_Game();
@@ -387,7 +397,9 @@ public:
     void setPlayerID(int player, int id);
     void reset_countdown_timer(int player);
 };
+#endif
 
+#ifndef TRIBEGAM_TU_CONTEXT
 class TRIBE_Game : public RGE_Base_Game {
 public:
     char gap_A24[0x200];
@@ -405,6 +417,7 @@ public:
     int playerColor(int player);
     int load_game(char* file_name);
 };
+#endif
 
 int TRIBE_Game::load_game(char* file_name)
 {
@@ -528,7 +541,7 @@ load_game_success:
         }
 
         strcpy(fn, file_name);
-        char* dot = _mbschr(fn, '.');
+        char* dot = TRIBE_mbschr(fn, '.');
         if (dot != 0)
             *dot = 0;
         this->set_save_game_name(fn);

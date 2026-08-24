@@ -1,3 +1,4 @@
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class ManagedArray_int {
 public:
     int* value;
@@ -13,6 +14,7 @@ public:
 
     int unitIsInGroup(int value);
 };
+#endif
 
 int RGE_Static_Object::unitIsInGroup(int value) {
     int count = this->groupMembers.numberValue;

@@ -10,8 +10,11 @@
 // Exact-finish: the typed MapInfo field and natural signed float comparisons
 // reproduce the complete 119-byte body. No calls, frame, or cleanup differ.
 
+#ifndef RGE_MAIN_VIEW_SHARED_CONTEXT
 #include "../../include/game_globals.h"
+#endif
 
+#ifndef RGE_MAIN_VIEW_SHARED_CONTEXT
 struct RGE_Pick_Info {
     float x;  // +0x00
     float y;  // +0x04
@@ -31,6 +34,7 @@ public:
 protected:
     void fixup_pick_info(RGE_Pick_Info* info);
 };
+#endif
 
 void RGE_Main_View::fixup_pick_info(RGE_Pick_Info* info) {
     if (info->x < 0.0f) {

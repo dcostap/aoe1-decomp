@@ -33,12 +33,15 @@
 
 #include <stdlib.h>
 
+#ifndef AOE1_SCENINFO_TU_CONTEXT
 extern "C" {
     int rge_open(char* filename, int mode, int share);
     void rge_write_uncompressed(int fd, void* buf, int size);
     void rge_close(int fd);
 }
+#endif
 
+#ifndef AOE1_SCENINFO_TU_CONTEXT
 struct RGE_Scenario_Header {
     virtual void dummy() {}
     virtual void save(int fd) {}
@@ -52,6 +55,7 @@ public:
 
     void save();
 };
+#endif
 
 void RGE_Scenario_File_Info::save()
 {

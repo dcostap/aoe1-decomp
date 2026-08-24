@@ -82,6 +82,7 @@
 //     through full period view.cpp context. Do not add register-steering forms.
 // FLAGS: none (default /O2 /Oy). Inline asm forbidden.
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 struct tagRECT { long left; long top; long right; long bottom; };
 
 extern "C" void* __cdecl memcpy(void*, const void*, unsigned int);
@@ -206,6 +207,14 @@ public:
     void draw_view(unsigned char p1, TDrawArea* p2);
     void draw();
 };
+#endif
+
+#ifdef RGE_VIEW_SHARED_CONTEXT
+#define clear_rect clip_rect
+#define field_8C render_rect_left
+#define field_90 render_rect_top
+#define clear_color color
+#endif
 
 void RGE_View::draw()
 {
@@ -330,7 +339,7 @@ void RGE_View::draw()
         if (fxd >= this->save_area1->Width) {
             if (this->save_area1->Lock("view::draw", 1) != 0) {
                 memcpy((void*)this->save_area1->DisplayOffsets[0],
-                       (const void*)(this->save_area1->DisplayOffsets[this->save_area1->Height - 1] + this->save_area1->Width),
+                       (const void*)((int*)this->save_area1->DisplayOffsets[this->save_area1->Height - 1] + this->save_area1->Width),
                        this->Float_X_Delta - xd);
                 this->Float_X_Delta -= this->save_area1->Width;
                 this->Float_Y_Delta += 1;
@@ -343,7 +352,7 @@ void RGE_View::draw()
                 this->Float_Y_Delta -= 1;
                 if (this->Float_Y_Delta < 0) this->Float_Y_Delta = this->save_area1->Height - 1;
                 memcpy((void*)this->save_area1->DisplayOffsets[0],
-                       (const void*)(this->save_area1->DisplayOffsets[this->save_area1->Height - 1] + this->save_area1->Width),
+                       (const void*)((int*)this->save_area1->DisplayOffsets[this->save_area1->Height - 1] + this->save_area1->Width),
                        this->Float_X_Delta);
                 this->save_area1->Unlock("view::draw3");
             }
@@ -448,3 +457,10 @@ label_done:
     this->draw_finish();
     frame_count++;
 }
+
+#ifdef RGE_VIEW_SHARED_CONTEXT
+#undef clear_rect
+#undef field_8C
+#undef field_90
+#undef clear_color
+#endif

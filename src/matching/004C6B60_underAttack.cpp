@@ -4,6 +4,7 @@
 // BINARY NOTE: The owned body is [004C6B60, 004C6B67); 004C6B67 begins padding.
 // BINARY NOTE: The body is one narrow byte read at this + 0x86 followed by ret.
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Static_Object {
 public:
     virtual ~RGE_Static_Object();
@@ -11,5 +12,6 @@ public:
     unsigned char field_86;
     virtual unsigned char underAttack() const;
 };
+#endif
 
 unsigned char RGE_Static_Object::underAttack() const { return this->field_86; }

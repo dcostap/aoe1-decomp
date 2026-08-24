@@ -25,6 +25,7 @@ extern "C" void __cdecl rge_write(int file, void* data, int size);
 void* __cdecl operator new(unsigned int size);
 void __cdecl operator delete(void* value);
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Master_Static_Object {
 public:
     char gap_00[0x10];
@@ -119,6 +120,7 @@ public:
 
     void save(int file);
 };
+#endif
 
 void RGE_Static_Object::save(int file)
 {

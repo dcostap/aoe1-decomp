@@ -1,10 +1,12 @@
+#ifndef PNL_TXT_TU_CONTEXT
 class TTextPanel {
 public:
     int get_string(int string_id, char* buffer, int length);
-    int insert_line(long line, char* text, long value);
+    int insert_line(long line, long text, long value);
 };
+#endif
 
-int TTextPanel::insert_line(long line, char* text, long value)
+int TTextPanel::insert_line(long line, long text, long value)
 {
     char str[256];
 

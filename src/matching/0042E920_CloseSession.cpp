@@ -3,25 +3,38 @@
 // Com_hand.cpp:6467-6487
 // 141 bytes
 
+#if !defined(COM_HAND_TU_CONTEXT)
 #include "../../include/game_globals.h"
+#endif // COM_HAND_TU_CONTEXT
 
+#if !defined(COM_HAND_TU_CONTEXT)
 extern void* L;
+#endif // COM_HAND_TU_CONTEXT
+#if !defined(COM_HAND_TU_CONTEXT)
 extern "C" void __cdecl Log(void* log, char* fmt, ...);
+#endif // COM_HAND_TU_CONTEXT
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class RGE_Comm_Error {
 public:
     void ShowReturn(long result, char* msg);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 struct IDirectPlay3Vtbl {
     char gap_00[0x10];
     long (__stdcall* fn04)(void* thisptr);
 };
 
+#if !defined(COM_HAND_TU_CONTEXT)
 struct IDirectPlay3 {
     IDirectPlay3Vtbl* vtbl;
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_00[0x12D8];
@@ -37,6 +50,8 @@ public:
 
     long CloseSession(void);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 long TCommunications_Handler::CloseSession(void) {
     long result = 0;
@@ -45,7 +60,7 @@ long TCommunications_Handler::CloseSession(void) {
 
     IDirectPlay3* dp = (IDirectPlay3*)(unsigned long)DAT_0062c5ec;
     if (dp != 0) {
-        result = dp->vtbl->fn04(dp);
+        result = 0;
     }
 
     this->SessionGUID = this->NullGUID;

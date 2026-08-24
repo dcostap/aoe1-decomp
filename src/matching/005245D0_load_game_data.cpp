@@ -8,6 +8,7 @@
 #include "..\..\include\game_globals.h"
 
 // RGE_Game_World — with virtual methods at slots 40 (0xA0) and 44 (0xB0)
+#ifndef TRIBEGAM_TU_CONTEXT
 class RGE_Game_World {
 public:
     // 40 dummy virtual methods (slots 0-39)
@@ -66,15 +67,16 @@ public:
 
     int load_game_data();
 };
+#endif
 
 int TRIBE_Game::load_game_data()
 {
     if (this->world == 0) {
-        this->world = this->createGameWorld();
+        this->world = (TRIBE_World*)this->createGameWorld();
         if (this->world == 0)
             return 0;
 
-        if (!this->world->loadGameData(this->prog_info->game_data_file,
+        if (!this->world->loadGameData((char*)this->prog_info + 0x1F8,
                                          this->sound_system, this->comm_handler)) {
             if (this->world != 0)
                 this->world->destroyGameData(1);

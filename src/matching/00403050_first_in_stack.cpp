@@ -8,6 +8,7 @@
 // explicit target-nonnull/target-null else plus separate param1-false tail restored the two original state-3 blocks and exact size.
 // typed object/master fields replaced raw proven offsets without changing exact codegen; retained as the cleaner source reconstruction.
 
+#ifndef ACT_GATH_CONTEXT_H
 extern float DAT_0056e278;
 
 // Binary-proven object surface used by the action's attribute/ownership checks.
@@ -100,6 +101,7 @@ public:
 
     void first_in_stack(unsigned char param1);
 };
+#endif
 
 void RGE_Action_Gather::first_in_stack(unsigned char param1) {
     short attr = this->task->attribute_type;
@@ -108,7 +110,11 @@ void RGE_Action_Gather::first_in_stack(unsigned char param1) {
     }
 
     if (param1 != 0) {
+#ifdef ACT_GATH_CONTEXT_H
+        RGE_Static_Object* target = this->target_obj;
+#else
         RGE_Action_Object* target = this->target_obj;
+#endif
         if (target != 0) {
             if (target->owner == this->obj->owner) {
                 RGE_Master_Static_Object* targ_master = target->master_obj;

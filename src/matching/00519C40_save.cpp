@@ -1,5 +1,6 @@
 // Variant lab for 00519C40_save (TRIBE_Gaia::save, tplayer.cpp, 91 bytes)
 
+#ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
 class TRIBE_Player {
 public:
     virtual void save(int);
@@ -17,6 +18,7 @@ public:
 
     void save(int param_1);
 };
+#endif
 
 void TRIBE_Gaia::save(int param_1) {
     TRIBE_Player::save(param_1);

@@ -11,14 +11,18 @@
 
 #include <stdlib.h>
 
+#ifndef COMMAND_TU_CONTEXT
 class RGE_Command {
 public:
     void submit(void* command, int size);
     void command_resign(int player, int drop, int reason);
 };
+#endif
 
+#ifndef COMMAND_TU_CONTEXT
 extern void* L;
 extern void Log(void* log, const char* text, int a, int b);
+#endif
 
 void RGE_Command::command_resign(int player, int drop, int reason) {
     unsigned char* packet = (unsigned char*)calloc(1, 4);

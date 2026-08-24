@@ -1,3 +1,4 @@
+#ifndef COMMAND_TU_CONTEXT
 class RGE_Player;
 
 class RGE_Master_Static_Object {
@@ -20,7 +21,9 @@ struct RGE_Game_World {
     char gap_00[0x40];
     RGE_Player** players;
 };
+#endif
 
+#ifndef COMMAND_TU_CONTEXT
 struct RGE_Command_Create {
     unsigned char command;
     unsigned char _pad_0[0x1];
@@ -31,7 +34,9 @@ struct RGE_Command_Create {
     float location_y;
     float location_z;
 };
+#endif
 
+#ifndef COMMAND_TU_CONTEXT
 class RGE_Command {
 public:
     char gap_00[0x4];
@@ -39,6 +44,7 @@ public:
 
     void do_command_create(RGE_Command_Create* param_1);
 };
+#endif
 
 void RGE_Command::do_command_create(RGE_Command_Create* param_1) {
     RGE_Player* player = this->world->players[param_1->player_id];

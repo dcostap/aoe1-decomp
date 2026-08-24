@@ -1,3 +1,4 @@
+#ifndef TRIBEGAM_TU_CONTEXT
 class TRIBE_Game {
 public:
     virtual ~TRIBE_Game();
@@ -6,4 +7,5 @@ public:
 
     int startingAge() const;
 };
-int TRIBE_Game::startingAge() const { return this->startingAge_; }
+#endif
+int TRIBE_Game::startingAge() const { return this->tribe_game_options.startingAgeValue; }

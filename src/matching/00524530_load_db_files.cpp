@@ -4,6 +4,7 @@
 // initial: packet-modeled local TRIBE_Game/RGE_Game_World layout and natural source.
 // fixed: avoid non-polymorphic base subobject (+4 this adjustment); declare input methods on local TRIBE_Game.
 
+#ifndef TRIBEGAM_TU_CONTEXT
 class RGE_Game_World {
 public:
     virtual void _d0();  virtual void _d1();  virtual void _d2();  virtual void _d3();
@@ -55,6 +56,7 @@ public:
     void close_status_message();
     int load_db_files();
 };
+#endif
 
 int TRIBE_Game::load_db_files()
 {
@@ -67,10 +69,10 @@ int TRIBE_Game::load_db_files()
         this->world = 0;
     }
 
-    this->world = this->createGameWorld();
+    this->world = (TRIBE_World*)this->createGameWorld();
     if (this->world != 0) {
-        if (this->world->load_db_files(this->prog_info->game_data_file,
-                                       this->prog_info->db_path)) {
+        if (this->world->load_db_files((char*)this->prog_info + 0x1F8,
+                                       (char*)this->prog_info + 0xF3)) {
             result = 1;
         }
         if (this->world != 0) {

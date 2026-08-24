@@ -28,6 +28,7 @@
 // worker pass: parameter-left upper viewport checks improve strict diff to 952
 // bytes; coordinate aliases, scalar-home reuse, and ambient TU samples did not.
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 struct Shape_Info;
 
 struct RGE_SPick_Info {
@@ -96,6 +97,7 @@ public:
     int pick_objects(int x, int y, int min_level, int max_level,
                      int radius, int priority, int skip_negative);
 };
+#endif
 
 int RGE_View::pick_objects(int x, int y, int min_level, int max_level,
                            int radius, int priority, int skip_negative)

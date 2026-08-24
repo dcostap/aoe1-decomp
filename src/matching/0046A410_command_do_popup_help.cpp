@@ -1,5 +1,6 @@
 // attempt 2: natural popup-help command: exit help mode, restore cursor, resolve help text, show help dialog
 
+#ifndef AOE1_PANEL_EZ_CONTEXT_H
 extern "C" __declspec(dllimport) void* __stdcall LoadCursorA(void* instance, unsigned int cursor);
 
 class TMousePointer {
@@ -82,6 +83,7 @@ public:
     void command_help(char* title, char* text, long page, long x, long y);
     long command_do_popup_help(unsigned char clicked, long x, long y);
 };
+#endif
 
 long TEasy_Panel::command_do_popup_help(unsigned char clicked, long x, long y) {
     long help_page;
@@ -91,7 +93,7 @@ long TEasy_Panel::command_do_popup_help(unsigned char clicked, long x, long y) {
     temp = help_string2;
     if (this->help_mode == 1) {
         this->help_mode = 0;
-        rge_base_game->set_mouse_cursor(LoadCursorA(0, 0x7F00));
+        rge_base_game->set_mouse_cursor(LoadCursorA(0, (const char*)0x7F00));
         rge_base_game->set_mouse_facet(0);
         rge_base_game->mouse_pointer->set_game_enable(this->saved_mouse_mode);
         if (clicked == 1) {

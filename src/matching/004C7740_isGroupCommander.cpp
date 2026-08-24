@@ -1,3 +1,4 @@
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Static_Object {
 public:
     char gap_00[0x04];
@@ -7,6 +8,7 @@ public:
 
     int isGroupCommander(void);
 };
+#endif
 
 int RGE_Static_Object::isGroupCommander(void) {
     return id == groupCommanderValue;

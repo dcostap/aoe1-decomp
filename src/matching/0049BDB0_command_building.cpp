@@ -76,6 +76,7 @@
 // - Removed the stale per-function /GX override; the exact source remains exact
 //   under the pinned default /O2 /Oy flags.
 
+#if !defined(SCR_GAME_TU_CONTEXT)
 struct RGE_Base_Game;
 struct TRIBE_Player;
 struct TMessagePanel;
@@ -131,6 +132,7 @@ public:
 
     void command_building(int obj_id);
 };
+#endif
 
 void TRIBE_Screen_Game::command_building(int obj_id) {
     short attr;

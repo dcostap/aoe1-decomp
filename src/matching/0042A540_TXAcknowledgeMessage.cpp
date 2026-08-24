@@ -3,15 +3,21 @@
 
 typedef unsigned int uint;
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TDebuggingLog {
 public:
     static void Log(TDebuggingLog* log, const char* format, ...);
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class RGE_Comm_Error {
 public:
     void ShowReturn(long result, const char* name);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 struct IDirectPlayLike {
     void* vtbl;
@@ -19,12 +25,21 @@ struct IDirectPlayLike {
 
 extern void* operator new(unsigned int size);
 extern void operator delete(void* ptr);
+#if !defined(COM_HAND_TU_CONTEXT)
 extern unsigned long debug_timeGetTime(const char* file, int line);
+#endif // COM_HAND_TU_CONTEXT
+#if !defined(COM_HAND_TU_CONTEXT)
 extern TDebuggingLog* L;
+#endif // COM_HAND_TU_CONTEXT
+#if !defined(COM_HAND_TU_CONTEXT)
 extern unsigned int DAT_0062cf04;
+#endif // COM_HAND_TU_CONTEXT
+#if !defined(COM_HAND_TU_CONTEXT)
 extern IDirectPlayLike* DAT_0062c5ec;
+#endif // COM_HAND_TU_CONTEXT
 extern const char s_Com_hand_cpp[];
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_0000[0x12C0];
@@ -38,6 +53,8 @@ public:
 
     int TXAcknowledgeMessage(uint param_1, uint param_2);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 int TCommunications_Handler::TXAcknowledgeMessage(uint param_1, uint param_2)
 {
@@ -57,9 +74,8 @@ int TCommunications_Handler::TXAcknowledgeMessage(uint param_1, uint param_2)
 
     unsigned long start = debug_timeGetTime(s_Com_hand_cpp, 0xD53);
 
-    unsigned int dco = this->dcoID[param_2];
-    long result = (*(long (__stdcall **)(IDirectPlayLike*, unsigned int, unsigned int, int, void*, int))((char*)DAT_0062c5ec->vtbl + 0x68))(
-        DAT_0062c5ec, DAT_0062cf04, dco, 0, buf, 8);
+    unsigned int dco = this->PlayerOptions.dcoID[param_2];
+    long result = DAT_0062c5ec->Send(DAT_0062cf04, dco, 0, buf, 8);
 
     unsigned long elapsed = debug_timeGetTime(s_Com_hand_cpp, 0xD5E) - start;
     if (elapsed > 0x32) {
@@ -77,5 +93,9 @@ int TCommunications_Handler::TXAcknowledgeMessage(uint param_1, uint param_2)
     return 0;
 }
 
+#if !defined(COM_HAND_TU_CONTEXT)
 void TDebuggingLog::Log(TDebuggingLog* log, const char* format, ...) {}
+#endif // COM_HAND_TU_CONTEXT
+#if !defined(COM_HAND_TU_CONTEXT)
 void RGE_Comm_Error::ShowReturn(long result, const char* name) {}
+#endif // COM_HAND_TU_CONTEXT

@@ -1,3 +1,4 @@
+#ifndef TRIBEGAM_TU_CONTEXT
 class RGE_Base_Game;
 class TRIBE_Game;
 
@@ -5,7 +6,6 @@ class TCommunications_Handler {
 public:
     void* GetMyGameOptions(unsigned long* size);
 };
-
 class RGE_Base_Game {
 public:
     void set_game_options(void* options);
@@ -19,6 +19,7 @@ public:
     void set_tribe_options(void* options);
     void receive_game_options(void);
 };
+#endif
 
 void TRIBE_Game::receive_game_options(void) {
     if (this->comm_handler != 0) {

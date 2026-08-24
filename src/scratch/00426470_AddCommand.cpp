@@ -10,6 +10,7 @@ public:
     RGE_Communications_Queue_ac* inQ;
 };
 
+
 void TCommunications_Handler_ac::AddCommand(int a, int b, int c, int d, int e, int f) {
     this->inQ->AddItem(a, b, c, d, e, f);
 }

@@ -12,6 +12,7 @@
 //     (0048BC00), world kept in eax across the loop, reloaded after the call
 //   - panel_system global 0x62E870 setCurrentPanel/destroyPanel string calls
 
+#ifndef TRIBEGAM_TU_CONTEXT
 class RGE_Scenario {
 public:
     void Set_player_Active(int player, int active);
@@ -59,6 +60,7 @@ public:
 };
 
 extern TPanelSystem panel_system;
+#endif
 
 int TRIBE_Game::save_scenario(char* filename)
 {

@@ -1,3 +1,4 @@
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Player;
 
 class RGE_Static_Object {
@@ -17,6 +18,7 @@ class RGE_Player {
 public:
     void unselect_one_object(RGE_Static_Object* object);
 };
+#endif
 
 void RGE_Static_Object::die_die_die(void) {
     if ((this->selected & 1) != 0) {

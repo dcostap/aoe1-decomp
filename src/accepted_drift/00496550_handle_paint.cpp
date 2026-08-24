@@ -63,6 +63,7 @@
 #include <windows.h>
 #include <stdio.h>
 
+#if !defined(SCR_GAME_TU_CONTEXT)
 extern unsigned long debug_timeGetTime(const char* file, int line);
 
 class TDrawArea {
@@ -167,6 +168,7 @@ public:
 
     virtual long handle_paint();
 };
+#endif
 
 long TRIBE_Screen_Game::handle_paint() {
     if (this->render_area == 0) {

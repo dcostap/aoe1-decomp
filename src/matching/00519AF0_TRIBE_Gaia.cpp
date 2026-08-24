@@ -6,6 +6,7 @@ class TRIBE_World;
 
 extern void __cdecl rge_read(int file, void* buf, int size);
 
+#ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
 class TRIBE_Player {
 public:
     char gap_004[0x844];
@@ -23,6 +24,7 @@ public:
     TRIBE_Gaia(int file, TRIBE_World* world, unsigned char player_id);
     virtual ~TRIBE_Gaia();
 };
+#endif
 
 TRIBE_Gaia::TRIBE_Gaia(int file, TRIBE_World* world, unsigned char player_id)
     : TRIBE_Player(file, world, player_id)

@@ -1,3 +1,4 @@
+#ifndef TAIUAIMD_COMPLETE_TU
 class RGE_Static_Object {
 public:
     void* vfptr;
@@ -58,6 +59,7 @@ public:
     virtual int canAttackById(int id);
     int canAttackUnit(RGE_Static_Object* obj);
 };
+#endif
 
 int TribePriestUnitAIModule::canAttackUnit(RGE_Static_Object* obj) {
     if (obj != 0) {

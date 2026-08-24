@@ -9,6 +9,7 @@
 // FLAGS: config/flags/0049BF50_command_chat.rsp retains /GX for the observed
 // exception-registration frame.
 
+#if !defined(SCR_GAME_TU_CONTEXT)
 class TMessagePanel {
 public:
     void show_message(int kind, const char* msg);
@@ -53,6 +54,7 @@ public:
     void command_quick_chat();
     void command_chat();
 };
+#endif
 
 void TRIBE_Screen_Game::command_chat() {
     if (rge_base_game->singlePlayerGame()) {

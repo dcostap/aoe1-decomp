@@ -32,9 +32,15 @@
 
 typedef unsigned short ushort;
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TDebuggingLog { public: void Log(char* fmt, ...); };
-extern TDebuggingLog* L;
+#endif // COM_HAND_TU_CONTEXT
 
+#if !defined(COM_HAND_TU_CONTEXT)
+extern TDebuggingLog* L;
+#endif // COM_HAND_TU_CONTEXT
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_0000[0x12C8];
@@ -66,6 +72,8 @@ public:
     void SetSelfPlayer();
     void PackPlayersDown();
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 void TCommunications_Handler::PackPlayersDown()
 {
@@ -96,8 +104,8 @@ void TCommunications_Handler::PackPlayersDown()
 
 move_found:
             {
-                strcpy(this->names1 + offset, this->names1 + src * 0x80);
-                strcpy(this->names2 + offset, this->names2 + src * 0x80);
+                strcpy((char*)this->FriendlyName + offset, (char*)this->FriendlyName + src * 0x80);
+                strcpy((char*)this->FormalName + offset, (char*)this->FormalName + src * 0x80);
 
                 dst[0x30 / 4] = this->f1594[src];
                 dst[0] = this->f1564[src];

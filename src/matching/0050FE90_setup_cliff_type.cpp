@@ -1,6 +1,7 @@
 // 0050FE90 setup_cliff_type (137 bytes) — MATCHED
 // PDB: tmap.cpp (TRIBE_Map::setup_cliff_type)
 
+#ifndef TMAP_GROUP_CONTEXT
 struct CliffMasterEntry {
     int id;
     int facet;
@@ -16,15 +17,16 @@ public:
     char gap_8DF8[0x8DF8];
     CliffMasterEntry cliff_master_table[1];
 
-    void setup_cliff_type(int param_1, int param_2, int param_3,
-                          int param_4, int param_5, int param_6,
-                          int param_7, int param_8, float param_9,
+    void setup_cliff_type(long param_1, long param_2, long param_3,
+                          long param_4, long param_5, long param_6,
+                          long param_7, long param_8, float param_9,
                           float param_10);
 };
+#endif
 
-void TRIBE_Map::setup_cliff_type(int param_1, int param_2, int param_3,
-                                  int param_4, int param_5, int param_6,
-                                  int param_7, int param_8, float param_9,
+void TRIBE_Map::setup_cliff_type(long param_1, long param_2, long param_3,
+                                 long param_4, long param_5, long param_6,
+                                 long param_7, long param_8, float param_9,
                                   float param_10)
 {
     int iVar1;

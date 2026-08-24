@@ -11,6 +11,7 @@
 //   stores while preserving the original prologue/fill scheduling and ECX loop-bottom reload.
 // Result: MATCH locally with `python tools/check_function.py --va 00429760`.
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TChat {
 public:
     char gap_00[0x04];
@@ -18,7 +19,10 @@ public:
 
     int inChatGroup(int index);
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_00[0x18];
@@ -31,6 +35,8 @@ public:
     long TXChat(unsigned int me, char* destMap, char* msg);
     void SendGroupChatMsg(char* param_1);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 void TCommunications_Handler::SendGroupChatMsg(char* param_1) {
     unsigned char DestMap[10];

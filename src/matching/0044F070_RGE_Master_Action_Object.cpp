@@ -2,6 +2,7 @@
 // /GX was needed to land the exact EH ctor/body basin for this constructor overload
 #include "..\..\include\game_types.h"
 
+#ifndef RGE_MAC_OBJ_SHARED_CONTEXT
 class RGE_Master_Static_Object {
 public:
     virtual ~RGE_Master_Static_Object();
@@ -45,6 +46,7 @@ public:
     virtual ~RGE_Master_Action_Object();
     int setup(RGE_Master_Action_Object* source);
 };
+#endif
 
 RGE_Master_Action_Object::RGE_Master_Action_Object(RGE_Master_Action_Object* source, int do_setup)
     : RGE_Master_Moving_Object((RGE_Master_Moving_Object*)source, 0) {

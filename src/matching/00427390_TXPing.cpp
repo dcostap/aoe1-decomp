@@ -5,20 +5,28 @@ struct PingTxBuf {
     unsigned long turn;
 };
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TDebuggingLog {
 public:
     static void Log(TDebuggingLog* log, const char* format, ...);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 class TCommunications_Handler;
 
+#if !defined(COM_HAND_TU_CONTEXT)
 extern unsigned long debug_timeGetTime(const char* file, int line);
+#endif // COM_HAND_TU_CONTEXT
+#if !defined(COM_HAND_TU_CONTEXT)
 extern TDebuggingLog* L;
+#endif // COM_HAND_TU_CONTEXT
 extern const char s_Com_hand_cpp[];
 
 // Global TX ping buffer at 62CEF8
 extern PingTxBuf g_PingTxBuf;
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_00[0x10C8];
@@ -34,6 +42,8 @@ public:
 
     int TXPing(unsigned int param_1);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 int TCommunications_Handler::TXPing(unsigned int param_1) {
     unsigned long t = debug_timeGetTime(s_Com_hand_cpp, 0x470);
@@ -55,7 +65,7 @@ int TCommunications_Handler::TXPing(unsigned int param_1) {
         dco = 0;
     } else {
         this->LastTXPing[id] = t;
-        dco = this->dcoID[id];
+        dco = this->PlayerOptions.dcoID[id];
     }
 
     TDebuggingLog::Log(L, "  >TX PING #%d (%d)", id, 0x0C);
@@ -65,6 +75,10 @@ int TCommunications_Handler::TXPing(unsigned int param_1) {
     return (result == 0) ? 1 : 0;
 }
 
-// Stubs
+#if !defined(COM_HAND_TU_CONTEXT)
+// Standalone stubs
+#if !defined(COM_HAND_TU_CONTEXT)
 void TDebuggingLog::Log(TDebuggingLog* log, const char* format, ...) {}
+#endif // COM_HAND_TU_CONTEXT
 long TCommunications_Handler::FastSend(long dcoID, void* buf, long size, long a, long b) { return 0; }
+#endif // COM_HAND_TU_CONTEXT

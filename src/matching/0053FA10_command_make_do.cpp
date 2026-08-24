@@ -11,6 +11,7 @@
 
 #include <stdlib.h>
 
+#ifndef RGE_MAIN_VIEW_SHARED_CONTEXT
 class RGE_Player;
 class RGE_Static_Object;
 class RGE_Tile;
@@ -207,6 +208,7 @@ public:
     void fixup_pick_info(RGE_Pick_Info*);
     void reset_display_object_selection(int);
 };
+#endif
 
 extern int allow_user_commands;
 extern RGE_Base_Game* rge_base_game;

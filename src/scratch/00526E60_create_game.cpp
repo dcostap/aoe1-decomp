@@ -36,10 +36,13 @@
 //   80.58% shape, 45.08% exact-block coverage, and 100/100 ordered calls.
 //   No exact result.
 
-#include <io.h>
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+struct _finddata_t { char bytes[0x118]; };
+extern "C" long __cdecl _findfirst(const char* filespec, void* fileinfo);
 
 extern "C" int debug_rand(const char*, int);
 extern "C" void debug_srand(const char*, int, int);
@@ -97,6 +100,7 @@ struct RGE_Player_Info {
     unsigned char pad_end[3];
 };
 
+#ifndef TRIBEGAM_TU_CONTEXT
 class RGE_Game_Info {
 public:
     char* get_current_player_name();
@@ -113,11 +117,14 @@ public:
     void SetPlayerName(unsigned int player, char* name);
 };
 
+#endif
+
 class RGE_Visible_Map {
 public:
     void explore_all();
 };
 
+ #ifndef TRIBEGAM_TU_CONTEXT
 class RGE_Player {
 public:
     void* vtable_ptr;
@@ -126,7 +133,9 @@ public:
 
     int computerPlayer() const;
 };
+#endif
 
+#ifndef TRIBEGAM_TU_CONTEXT
 class RGE_Scenario {
 public:
     virtual void v0();
@@ -134,7 +143,9 @@ public:
     int Get_player_Civ(int player);
     char* GetPlayerName(int player);
 };
+#endif
 
+#ifndef TRIBEGAM_TU_CONTEXT
 class RGE_Game_World {
 public:
     virtual void v0();
@@ -198,7 +209,9 @@ public:
 
     void update_mutual_allies();
 };
+#endif
 
+#ifndef TRIBEGAM_TU_CONTEXT
 class TSound_Driver {
 public:
     unsigned char pad_00;
@@ -266,7 +279,9 @@ public:
     unsigned char mpPathFinding();
     unsigned char pathFinding();
 };
+#endif
 
+#ifndef TRIBEGAM_TU_CONTEXT
 class TRIBE_Game : public RGE_Base_Game {
 public:
     char gap_A24[0x10];
@@ -298,8 +313,11 @@ public:
 
     int create_game(int param_1);
 };
+#endif
 
+#ifndef TRIBEGAM_TU_CONTEXT
 typedef RGE_Scenario T_Scenario;
+#endif
 
 int TRIBE_Game::create_game(int param_1)
 {

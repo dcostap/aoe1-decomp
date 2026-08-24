@@ -8,6 +8,7 @@
 // liveness: int new_hp = master->hp preserved the observed dword parameter-home
 // temporary and produced an exact match.
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Sprite;
 class RGE_Player;
 
@@ -94,6 +95,7 @@ public:
 
     void copy_obj(RGE_Master_Static_Object* master);
 };
+#endif
 
 void RGE_Static_Object::copy_obj(RGE_Master_Static_Object* master)
 {

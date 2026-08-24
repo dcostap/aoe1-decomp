@@ -47,6 +47,7 @@
 
 extern float DAT_00576828;
 
+#ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
 class RGE_Master_Static_Object {
 public:
     virtual ~RGE_Master_Static_Object();
@@ -152,6 +153,7 @@ public:
     void obj_cost(short, char**, short&, short&, short&, short&, short&, short&, float);
     void interface_item_avail(Item_Avail**, short*, short);
 };
+#endif
 
 void TRIBE_Player::interface_item_avail(Item_Avail** out, short* count_out, short group)
 {

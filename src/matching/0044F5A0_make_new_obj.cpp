@@ -7,11 +7,12 @@
 // - natural source under default flags emitted the right four calls and CFG but omitted the 75-byte EH setup.
 // - adding /GX, as used by same-TU EH-framed factory donors, produced an exact 201-byte match.
 
+#ifndef RGE_MAC_OBJ_SHARED_CONTEXT
 class RGE_Master_Static_Object;
 class RGE_Master_Action_Object;
 class RGE_Player;
 class RGE_Game_World;
-class RGE_Action_Object;
+#endif
 
 class RGE_Static_Object {
 public:
@@ -38,6 +39,7 @@ public:
                       float x, float y, float z, int do_setup);
 };
 
+#ifndef RGE_MAC_OBJ_SHARED_CONTEXT
 class RGE_Master_Static_Object {
 public:
     virtual ~RGE_Master_Static_Object();
@@ -62,6 +64,7 @@ public:
     char gap_D8[0x24];
     RGE_Static_Object* make_new_obj(RGE_Player* player, float x, float y, float z);
 };
+#endif
 
 class RGE_Player {
 public:

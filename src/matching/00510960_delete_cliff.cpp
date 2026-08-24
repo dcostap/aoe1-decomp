@@ -28,6 +28,7 @@
 //     add_node(param_2 + (long)y, inner + (long)z) right-to-left evaluation.
 //   - Tail is delete cliff (push 1; call [vtable+0] = scalar deleting dtor).
 
+#ifndef TMAP_GROUP_CONTEXT
 struct TRIBE_Cliff_Info {
     int info[4];
 };
@@ -70,6 +71,7 @@ public:
     void remove_cliff_edge(long x, long y, long dir);
     void delete_cliff(long x, long y);
 };
+#endif
 
 void TRIBE_Map::delete_cliff(long param_1, long param_2)
 {

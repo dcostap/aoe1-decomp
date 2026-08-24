@@ -10,6 +10,7 @@
 #define VPAD16(n) VPAD8(n) VPAD8(n##_8)
 #define VPAD32(n) VPAD16(n) VPAD16(n##_16)
 
+#if !defined(SCR_GAME_TU_CONTEXT)
 class TRIBE_Main_View {
 public:
     VPAD32(0)
@@ -47,6 +48,7 @@ public:
     void command_unselect();
     void command_cancel();
 };
+#endif
 
 void TRIBE_Screen_Game::command_cancel() {
     if (this->popup_help_flag) {

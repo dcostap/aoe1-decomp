@@ -1,6 +1,7 @@
 // VA: 0047CD40 set_bevel_info
 // Pnl_txt.cpp:705-738
 
+#ifndef PNL_TXT_TU_CONTEXT
 class TPanel { public: virtual ~TPanel(); };
 class TTextPanel : public TPanel {
 public:
@@ -12,6 +13,7 @@ public:
     virtual void set_bevel_info(int type, int c1, int c2, int c3, int c4, int c5, int c6);
     void calc_draw_info(int flag);
 };
+#endif
 
 void TTextPanel::set_bevel_info(int type, int c1, int c2, int c3, int c4, int c5, int c6)
 {

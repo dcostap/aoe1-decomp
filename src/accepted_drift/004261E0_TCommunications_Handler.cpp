@@ -60,17 +60,26 @@ class RESENDER;
 class HOLDER;
 class NAME;
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TDebuggingLog {
 public:
     void __cdecl Log(char* fmt, int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k);
 };
-extern TDebuggingLog* L;
+#endif // COM_HAND_TU_CONTEXT
 
+#if !defined(COM_HAND_TU_CONTEXT)
+extern TDebuggingLog* L;
+#endif // COM_HAND_TU_CONTEXT
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class NAME {
 public:
     char Text[128];
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class RESENDER {
 public:
     unsigned int TimeSent;
@@ -80,7 +89,10 @@ public:
     unsigned int DestMap[10];
     ~RESENDER();
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class HOLDER {
 public:
     char* HoldMsg;
@@ -91,13 +103,31 @@ public:
     unsigned int fromPlayer;
     ~HOLDER();
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class RGE_Communications_Queue { public: ~RGE_Communications_Queue(); };
-class RGE_Lobby { public: ~RGE_Lobby(); };
-class RGE_Communications_Speed { public: ~RGE_Communications_Speed(); };
-class RGE_Communications_Synchronize { public: ~RGE_Communications_Synchronize(); };
-class RGE_Comm_Error { public: ~RGE_Comm_Error(); };
+#endif // COM_HAND_TU_CONTEXT
 
+#if !defined(COM_HAND_TU_CONTEXT)
+class RGE_Lobby { public: ~RGE_Lobby(); };
+#endif // COM_HAND_TU_CONTEXT
+
+#if !defined(COM_HAND_TU_CONTEXT)
+class RGE_Communications_Speed { public: ~RGE_Communications_Speed(); };
+#endif // COM_HAND_TU_CONTEXT
+
+#if !defined(COM_HAND_TU_CONTEXT)
+class RGE_Communications_Synchronize { public: ~RGE_Communications_Synchronize(); };
+#endif // COM_HAND_TU_CONTEXT
+
+#if !defined(COM_HAND_TU_CONTEXT)
+class RGE_Comm_Error { public: ~RGE_Comm_Error(); };
+#endif // COM_HAND_TU_CONTEXT
+
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_0000[0x12C8];
@@ -122,6 +152,8 @@ public:
     void FreeOptions();
     ~TCommunications_Handler();
 };
+#endif // COM_HAND_TU_CONTEXT
+
 #endif
 
 TCommunications_Handler::~TCommunications_Handler() {

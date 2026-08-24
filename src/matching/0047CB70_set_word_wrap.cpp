@@ -1,3 +1,4 @@
+#ifndef PNL_TXT_TU_CONTEXT
 class TTextPanel {
 public:
     virtual void vf00();
@@ -14,6 +15,7 @@ public:
 
     void set_word_wrap(int value);
 };
+#endif
 
 void TTextPanel::set_word_wrap(int value) {
     this->field_118 = value;

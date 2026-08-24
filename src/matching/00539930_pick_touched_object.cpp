@@ -15,6 +15,7 @@
 // Removing the x2 local changed 202 bytes and reduced the body to 353 bytes.
 // The x2 local is required for the original load and register schedule.
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 struct Shape_Info;
 
 struct DClipInfo_Node {
@@ -57,6 +58,7 @@ public:
     int sprite_check(unsigned char* shape_base, Shape_Info* shape, int x, int y);
     int pick_touched_object(DClipInfo_List* list, int x, int y, int min_level, int max_level, int* out_object_id);
 };
+#endif
 
 int RGE_View::pick_touched_object(DClipInfo_List* list, int x, int y, int min_level, int max_level, int* out_object_id)
 {

@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_EZ_CONTEXT_H
 class TEasy_Panel {
 public:
     char gap_00[0x320];
@@ -10,6 +11,7 @@ public:
 
     void get_bevel_colors(unsigned char* c1, unsigned char* c2, unsigned char* c3, unsigned char* c4, unsigned char* c5, unsigned char* c6);
 };
+#endif
 
 void TEasy_Panel::get_bevel_colors(unsigned char* c1, unsigned char* c2, unsigned char* c3, unsigned char* c4, unsigned char* c5, unsigned char* c6) {
     *c1 = this->bevel_color1;

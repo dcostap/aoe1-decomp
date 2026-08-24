@@ -17,6 +17,7 @@
 //   event's zero is a real stack argument, not a temporary scheduling aid.
 // Result: exact 210-byte match under config/flags/default.rsp.
 
+#ifndef COMMAND_TU_CONTEXT
 class RGE_Player {
 public:
     virtual void v00();  virtual void v04();  virtual void v08();
@@ -53,7 +54,9 @@ public:
     char gap_00[0x40];
     RGE_Player** players;
 };
+#endif
 
+#ifndef COMMAND_TU_CONTEXT
 struct RGE_Command_Give_Attribute {
     unsigned char command;
     unsigned char player_id;
@@ -61,7 +64,9 @@ struct RGE_Command_Give_Attribute {
     unsigned char attr_id;
     float attr_amount;
 };
+#endif
 
+#ifndef COMMAND_TU_CONTEXT
 class RGE_Base_Game {
 public:
     virtual void v00();  virtual void v04();  virtual void v08();
@@ -75,7 +80,9 @@ public:
 };
 
 extern RGE_Base_Game* rge_base_game;
+#endif
 
+#ifndef COMMAND_TU_CONTEXT
 class RGE_Command {
 public:
     virtual void do_command_give_attribute(RGE_Command_Give_Attribute* cmd);
@@ -85,6 +92,7 @@ public:
                                         float value);
     RGE_Game_World* world;
 };
+#endif
 
 void RGE_Command::do_command_give_attribute(RGE_Command_Give_Attribute* cmd)
 {

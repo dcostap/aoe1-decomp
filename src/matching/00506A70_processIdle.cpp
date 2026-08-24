@@ -15,6 +15,7 @@
 
 #include <math.h>
 
+#ifndef TAIUAIMD_COMPLETE_TU
 class RGE_Game_World;
 
 class RGE_Player {
@@ -161,6 +162,7 @@ public:
 
     int processIdle(int param_1);
 };
+#endif
 
 int TribeTransportShipUnitAIModule::processIdle(int param_1)
 {

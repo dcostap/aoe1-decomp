@@ -30,6 +30,7 @@
 
 typedef unsigned char uchar;
 
+#ifndef TAIUAIMD_COMPLETE_TU
 struct VISIBLE_UNIT_REC {
     int object_id;
     uchar distance;
@@ -135,6 +136,7 @@ class TribePriestUnitAIModule : public UnitAIModule {
 public:
     int bestUnitToConvert(float* param_1);
 };
+#endif
 
 int TribePriestUnitAIModule::bestUnitToConvert(float* param_1)
 {
@@ -146,7 +148,11 @@ int TribePriestUnitAIModule::bestUnitToConvert(float* param_1)
 
     if ((int)DAT_0087d7d8 > 0) {
         do {
+#ifdef TAIUAIMD_COMPLETE_TU
+            if (taiuaimd_player_is_enemy(this->objectValue->owner,
+#else
             if (this->objectValue->owner->isEnemy(
+#endif
                     (int)((VISIBLE_UNIT_REC*)DAT_0087d7f0)[i].player) != 0) {
                 RGE_Static_Object* found = this->lookupObject(
                     ((VISIBLE_UNIT_REC*)DAT_0087d7f0)[i].object_id);
@@ -158,7 +164,11 @@ int TribePriestUnitAIModule::bestUnitToConvert(float* param_1)
                         if (priority < 1.0f)
                             priority = 1.0f;
 
+#ifdef TAIUAIMD_COMPLETE_TU
+                        short hp_short = found->master_obj->hp;
+#else
                         short hp_short = found->master->hp;
+#endif
                         float hp_float = (float)hp_short;
                         float score = hp_float / priority;
 

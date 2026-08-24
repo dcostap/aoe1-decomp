@@ -1,3 +1,4 @@
+#ifndef PNL_TXT_TU_CONTEXT
 class TTextPanel {
 public:
     virtual void vf00();
@@ -15,6 +16,7 @@ public:
 
     void set_alignment(int a, int b);
 };
+#endif
 
 void TTextPanel::set_alignment(int a, int b) {
     this->field_110 = a;

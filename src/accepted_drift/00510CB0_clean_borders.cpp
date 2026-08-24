@@ -59,6 +59,7 @@
 // The map rows are arrays of 0x18-byte RGE_Tile records. The byte used by
 // clean_borders is terrain at +5, distinct from the passability byte at +4.
 
+#ifndef TMAP_GROUP_CONTEXT
 struct RGE_Tile {
     short screen_xpos;
     short screen_ypos;
@@ -88,6 +89,7 @@ public:
     unsigned char water(unsigned char value);
     void clean_borders(long x1, long y1, long x2, long y2, unsigned char terrain);
 };
+#endif
 
 #define TERRAIN_AT(tile) ((tile)->terrain_type)
 

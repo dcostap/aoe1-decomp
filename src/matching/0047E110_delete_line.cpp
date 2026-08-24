@@ -37,6 +37,7 @@
 
 extern "C" void __cdecl free(void* block);
 
+#ifndef PNL_TXT_TU_CONTEXT
 struct PanelNode;
 
 class TDrawArea {
@@ -167,6 +168,7 @@ public:
     void calc_draw_info(int);
     int delete_line(long line);
 };
+#endif
 
 int TTextPanel::delete_line(long line)
 {

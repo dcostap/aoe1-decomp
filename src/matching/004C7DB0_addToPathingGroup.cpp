@@ -17,6 +17,7 @@
 void* operator new(unsigned int size);
 void operator delete(void* ptr);
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Static_Object {
 public:
     char gap_00[0x54];
@@ -27,6 +28,7 @@ public:
 
     void addToPathingGroup(int groupIndex);
 };
+#endif
 
 void RGE_Static_Object::addToPathingGroup(int groupIndex)
 {

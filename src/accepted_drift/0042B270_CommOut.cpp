@@ -58,25 +58,34 @@ class RGE_Comm_Error;
 class RGE_Communications_Queue;
 class IDirectPlay2;
 
+#if !defined(COM_HAND_TU_CONTEXT)
 extern unsigned long debug_timeGetTime(const char* file, int line);
+#endif // COM_HAND_TU_CONTEXT
 extern void* operator new(unsigned int size);
 extern void operator delete(void* ptr);
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TDebuggingLog {
 public:
     void Log(char* format, ...);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 #define L (*(TDebuggingLog**)0x0062C4FC)
 #define DIRECT_PLAY (*(IDirectPlay2**)0x0062C5EC)
 #define DCO_SELF (*(ulong*)0x0062CF04)
 #define COM_HAND_CPP ((const char*)0x00580BF4)
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class RGE_Comm_Error {
 public:
     void ShowReturn(long result, char* name);
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class IDirectPlay2 {
 public:
     virtual long __stdcall QueryInterface(void*, void**) = 0;
@@ -108,6 +117,8 @@ public:
     virtual long __stdcall Send(ulong from, ulong to, ulong flags,
                                 void* data, ulong size) = 0;
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 struct MSGFORMAT_HEADER_GUARANTEED {
     uchar Command;
@@ -117,6 +128,7 @@ struct MSGFORMAT_HEADER_GUARANTEED {
     ulong Serialno;
 };
 
+#if !defined(COM_HAND_TU_CONTEXT)
 struct COMMPLAYEROPTIONS {
     char gap_00[8];
     int ProgramState;
@@ -124,7 +136,10 @@ struct COMMPLAYEROPTIONS {
     uchar CommandTurnIncrement;
     char gap_41[0x1D0 - 0x41];
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_00[0x10C8];
@@ -158,6 +173,8 @@ public:
 protected:
     long CommOut(ulong to, uchar type, void* data, int length, uchar flags);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 long TCommunications_Handler::CommOut(ulong to, uchar type, void* data,
                                       int length, uchar flags)

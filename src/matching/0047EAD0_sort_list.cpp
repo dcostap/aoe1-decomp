@@ -1,3 +1,4 @@
+#ifndef RDLG_LST_TU_CONTEXT
 extern "C" void __cdecl qsort(void* base, unsigned int num, unsigned int width, int (__cdecl* compare)(const void*, const void*));
 extern "C" int __cdecl rdlg_list_compare(const void* a, const void* b);
 
@@ -10,6 +11,9 @@ public:
 
     void sort_list();
 };
+#else
+int __cdecl rdlg_list_compare(const void* a, const void* b);
+#endif
 
 void RGE_Dialog_List::sort_list() {
     qsort(this->list_info, (int)this->list_size, 0x66, rdlg_list_compare);

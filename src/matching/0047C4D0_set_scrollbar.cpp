@@ -1,3 +1,4 @@
+#ifndef PNL_TXT_TU_CONTEXT
 struct PanelNode;
 struct TDrawArea;
 struct HRGN__;
@@ -120,6 +121,7 @@ public:
 
     void set_scrollbar(TScrollBarPanel* panel, int auto_scbar_value);
 };
+#endif
 
 void TTextPanel::set_scrollbar(TScrollBarPanel* panel, int auto_scbar_value) {
     this->scbar_panel = panel;

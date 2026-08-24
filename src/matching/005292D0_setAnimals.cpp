@@ -1,3 +1,4 @@
+#ifndef TRIBEGAM_TU_CONTEXT
 class TRIBE_Game {
 public:
     virtual ~TRIBE_Game();
@@ -6,4 +7,5 @@ public:
 
     void setAnimals(int);
 };
-void TRIBE_Game::setAnimals(int val) { this->animals_ = val; }
+#endif
+void TRIBE_Game::setAnimals(int val) { this->tribe_game_options.animalsValue = val; }

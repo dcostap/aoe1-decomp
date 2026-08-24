@@ -3,6 +3,7 @@
 
 extern unsigned long DAT_0062C5E8;
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     unsigned char gap_00[0x1710];
@@ -14,6 +15,8 @@ public:
     int IsPlayerHuman(int player_id);
     unsigned long HiTurnAcknowledged();
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 unsigned long TCommunications_Handler::HiTurnAcknowledged() {
     unsigned long* ack;

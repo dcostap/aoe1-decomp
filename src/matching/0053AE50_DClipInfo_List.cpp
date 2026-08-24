@@ -1,5 +1,6 @@
 extern "C" void __cdecl free(void* block);
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 struct DClipInfo_Node {
     DClipInfo_Node* Next;
     char gap_04[0x3C];
@@ -18,6 +19,7 @@ public:
 
     ~DClipInfo_List(void);
 };
+#endif
 
 DClipInfo_List::~DClipInfo_List(void) {
     int i;

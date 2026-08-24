@@ -6,16 +6,23 @@
 #if 0
 void Log(void* log, const char* format, ...);
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class RGE_Communications_Queue {
 public:
     unsigned char GetNextSequence(unsigned long value);
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class RGE_Comm_Error {
 public:
     void ShowReturn(long code, const char* context);
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_00[0x10C8];
@@ -34,6 +41,8 @@ public:
     int AddCommand(int a, int b, int c, int d, unsigned char e, int f);
     int NewCommand(void* command, int size, int ordered);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 #endif
 
 int TCommunications_Handler::NewCommand(void* command, int size, int ordered) {

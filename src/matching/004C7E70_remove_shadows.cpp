@@ -1,3 +1,4 @@
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Map {
 public:
     void request_redraw(int col0, int row0, int col1, int row1, unsigned char attr);
@@ -25,6 +26,7 @@ public:
 
     void remove_shadows(void);
 };
+#endif
 
 void RGE_Static_Object::remove_shadows(void) {
     int x0 = (int)this->world_x;

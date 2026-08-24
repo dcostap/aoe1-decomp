@@ -1,3 +1,4 @@
+#if !defined(SCR_GAME_TU_CONTEXT)
 class TRIBE_World_FogState {
 public:
     char gap_00[0x8DB9];
@@ -43,6 +44,7 @@ public:
 
     void command_fog_of_war();
 };
+#endif
 
 void TRIBE_Screen_Game::command_fog_of_war() {
     if (rge_base_game->allowCheatCodes()) {

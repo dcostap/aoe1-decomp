@@ -1,3 +1,4 @@
+#if !defined(COM_HAND_TU_CONTEXT)
 struct COMMPLAYEROPTIONS {
     unsigned char NeedsToBeSent;
     unsigned char _pad0[3];
@@ -29,7 +30,10 @@ struct COMMPLAYEROPTIONS {
     int GameHasStarted;
     unsigned long DataSizeToFollow;
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_00[0x1550];
@@ -38,6 +42,8 @@ public:
     void InitPlayerInformation(unsigned int player, unsigned long player_id, char* name, char* formal_name);
     void UpdatePlayerInformation(unsigned long player_id, char* name, char* formal_name);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 void TCommunications_Handler::UpdatePlayerInformation(unsigned long player_id, char* name, char* formal_name) {
     int player;

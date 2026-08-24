@@ -2,11 +2,15 @@
 // narrowed the local to a 4-byte speed-change packet and kept the logging/send split
 #include <stdlib.h>
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TDebuggingLog {
 public:
     static void Log(void* log, const char* text, int value);
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     int OptionsChanged;
@@ -32,8 +36,12 @@ public:
     long CommOut(unsigned char, unsigned long, void*, unsigned long, unsigned long);
     void SendSpeedChange(unsigned int, unsigned int);
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 extern void* L;
+#endif // COM_HAND_TU_CONTEXT
 
 void TCommunications_Handler::SendSpeedChange(unsigned int param_1, unsigned int param_2) {
     if (this->MeHost != 0 && this->Multiplayer != 0) {

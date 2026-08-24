@@ -1,3 +1,4 @@
+#ifndef PNL_TXT_TU_CONTEXT
 struct TextNode {
     char gap_00[8];
     long id;
@@ -11,6 +12,7 @@ public:
 
     long get_line(long index);
 };
+#endif
 
 long TTextPanel::get_line(long index) {
     TextNode* node = this->list;

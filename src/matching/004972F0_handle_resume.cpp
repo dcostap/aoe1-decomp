@@ -1,3 +1,4 @@
+#if !defined(SCR_GAME_TU_CONTEXT)
 class PausePanel {
 public:
     virtual void vf00(void);
@@ -36,6 +37,7 @@ public:
 
     void handle_resume(void);
 };
+#endif
 
 void TRIBE_Screen_Game::handle_resume(void) {
     if (this->pause_text->field_6C != 0) {

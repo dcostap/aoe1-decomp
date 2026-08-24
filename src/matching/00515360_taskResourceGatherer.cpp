@@ -1,5 +1,6 @@
 #include <stdlib.h>
 
+#ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
 class RGE_Command {
 public:
     void* vtable_ptr;
@@ -26,6 +27,7 @@ class TRIBE_Player : public RGE_Player {
 public:
     void taskResourceGatherer(int param_1, int param_2, int param_3, float param_4, float param_5);
 };
+#endif
 
 void TRIBE_Player::taskResourceGatherer(int param_1, int param_2, int param_3, float param_4, float param_5) {
     int* piVar1 = (int*)calloc(1, 4);

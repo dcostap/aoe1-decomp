@@ -16,6 +16,7 @@
 
 #include <stdlib.h>
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class TDrawArea {
 public:
     void DrawRect(long x1, long y1, long x2, long y2, unsigned char color);
@@ -119,6 +120,7 @@ public:
 
     int get_frame(short& min_x, short& min_y, short& max_x, short& max_y);
 };
+#endif
 
 void RGE_Static_Object::draw_frame(TDrawArea* area, short x, short y)
 {

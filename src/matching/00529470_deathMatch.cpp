@@ -1,3 +1,4 @@
+#ifndef TRIBEGAM_TU_CONTEXT
 class TRIBE_Game {
 public:
     virtual ~TRIBE_Game();
@@ -6,4 +7,5 @@ public:
 
     unsigned char deathMatch() const;
 };
-unsigned char TRIBE_Game::deathMatch() const { return this->deathMatch_; }
+#endif
+unsigned char TRIBE_Game::deathMatch() const { return this->tribe_game_options.deathMatchValue; }

@@ -1,18 +1,18 @@
-class MemberType {
+#ifndef RGE_MAC_OBJ_SHARED_CONTEXT
+class RGE_Sound {
 public:
-    void target_method(int param);
+    void play(int mode);
 };
 
-class RGE_Master_Combat_Object {
+class RGE_Master_Action_Object {
 public:
-    char gap_0[0xF0];
-    MemberType* member_F0;
-
+    RGE_Sound* command_sound;
     void play_command_sound();
 };
+#endif
 
-void RGE_Master_Combat_Object::play_command_sound() {
-    if (this->member_F0) {
-        this->member_F0->target_method(1);
+void RGE_Master_Action_Object::play_command_sound() {
+    if (this->command_sound) {
+        this->command_sound->play(1);
     }
 }

@@ -5,6 +5,7 @@
 
 #include "..\..\include\game_globals.h"
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 struct XYPoint {
     int x;
     int y;
@@ -32,6 +33,8 @@ public:
 
     int withinRangeOfZoneAtPoint(unsigned char param_1, float param_2, void* param_3);
 };
+
+#endif
 
 int RGE_Static_Object::withinRangeOfZoneAtPoint(unsigned char param_1, float param_2, void* param_3) {
     RGE_Zone_Map* zone_map;

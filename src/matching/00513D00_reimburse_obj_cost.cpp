@@ -1,3 +1,4 @@
+#ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
 class TRIBE_Player {
 public:
     char gap_00[0x24];
@@ -21,6 +22,7 @@ struct ObjInfo {
     char gap_05[0x143];
     CostInfo cost[3];
 };
+#endif
 
 void TRIBE_Player::reimburse_obj_cost(short obj_idx) {
     ObjInfo* obj = ((ObjInfo**)obj_table)[obj_idx];

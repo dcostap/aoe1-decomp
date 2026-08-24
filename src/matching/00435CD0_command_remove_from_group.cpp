@@ -8,6 +8,7 @@
 
 #include <stdlib.h>
 
+#ifndef COMMAND_TU_CONTEXT
 class RGE_Command;
 class RGE_Game_World;
 class RGE_Master_Static_Object;
@@ -43,6 +44,7 @@ public:
 class TDebuggingLog;
 extern TDebuggingLog* L;
 extern void Log(TDebuggingLog* log, const char* fmt, int a, const char* b);
+#endif
 
 void RGE_Command::command_remove_from_group(int param_1, int param_2, int param_3) {
     unsigned char* cmd = (unsigned char*)calloc(1, 0xC);

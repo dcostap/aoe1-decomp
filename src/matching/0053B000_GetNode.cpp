@@ -1,3 +1,4 @@
+#ifndef RGE_VIEW_SHARED_CONTEXT
 struct DClipInfo_Node {
     DClipInfo_Node* Next;
     char gap_04[0x3C];
@@ -19,6 +20,7 @@ public:
     void InitNewZone(int zone_size);
     DClipInfo_Node* GetNode(void);
 };
+#endif
 
 DClipInfo_Node* DClipInfo_List::GetNode(void) {
     DClipInfo_Node* node;

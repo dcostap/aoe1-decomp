@@ -1,3 +1,4 @@
+#ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
 class TRIBE_History_Info {
 public:
     void add_history_entry(unsigned char param_1, int param_2);
@@ -18,6 +19,7 @@ public:
 
     void add_population_entry(void);
 };
+#endif
 
 void TRIBE_Player::add_population_entry(void) {
     if (this->population_source->population_value < 0.0f) {

@@ -70,6 +70,7 @@ extern "C" int __cdecl debug_rand(char*, int);
 
 static char s_tact_mob_cpp[] = "C:\\msdev\\work\\age1_x1\\tact_mob.cpp";
 
+#ifndef TACT_MOB_SHARED_CONTEXT
 class RGE_Player;
 class RGE_Static_Object;
 
@@ -133,6 +134,7 @@ public:
 protected:
     unsigned char place_obj(RGE_Static_Object** out);
 };
+#endif
 
 unsigned char TRIBE_Action_Make_Obj::place_obj(RGE_Static_Object** out)
 {

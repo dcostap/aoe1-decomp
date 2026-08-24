@@ -26,6 +26,7 @@
 // duplicated the ordinary hit arm was structurally poor; rolled back.
 // retained the binary-backed ordinary-hit label join for mode '+' and non-special modes; exact 517B match.
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 struct tagPOINT { long x; long y; };
 
 struct RGE_Master_Object {
@@ -83,6 +84,7 @@ public:
                                   tagPOINT* p1, tagPOINT* p2, short* out_x, short* out_y,
                                   RGE_Static_Object* skip, unsigned char through_fog);
 };
+#endif
 
 extern "C" void __cdecl free(void*);
 
@@ -97,7 +99,11 @@ RGE_Static_Object* RGE_View::hit_object(RGE_Tile* tile, short x, short y, short 
     short max_y;
     RGE_Static_Object* picked = 0;
     if (&tile->objects != 0) {
+#ifdef RGE_VIEW_SHARED_CONTEXT
+        first = tile->objects->sort();
+#else
         first = tile->objects.sort();
+#endif
         RGE_Object_Node* cur = first;
         short sx = x;
         short sy = y;

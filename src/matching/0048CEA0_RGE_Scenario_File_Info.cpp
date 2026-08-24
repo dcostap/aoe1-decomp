@@ -21,12 +21,15 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifndef AOE1_SCENINFO_TU_CONTEXT
 extern "C" {
     int rge_open(char* filename, int mode);
     void rge_read_uncompressed(int fd, void* buf, int size);
     void rge_close(int fd);
 }
+#endif
 
+#ifndef AOE1_SCENINFO_TU_CONTEXT
 class RGE_Scenario_Header;
 
 class RGE_Base_Game {
@@ -69,6 +72,7 @@ public:
     char* get_scenario_name(long index);
     RGE_Scenario_Header* get_scenario_info(long index);
 };
+#endif
 
 RGE_Scenario_File_Info::RGE_Scenario_File_Info(char* path)
 {

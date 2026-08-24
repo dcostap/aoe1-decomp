@@ -11,6 +11,7 @@ public:
     int game_mode;
 };
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 class RGE_Map {
 public:
     void request_redraw(int col1, int row1, int col2, int row2, unsigned char flags);
@@ -38,6 +39,7 @@ public:
 
     void set_selection_area(int col1, int row1, int col2, int row2);
 };
+#endif
 
 void RGE_View::set_selection_area(int col1, int row1, int col2, int row2)
 {

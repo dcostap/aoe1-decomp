@@ -11,7 +11,9 @@ struct IDirectPlay_obj {
     IDirectPlay_vtbl* vtbl;
 };
 
+#if !defined(COM_HAND_TU_CONTEXT)
 extern IDirectPlay_obj* DAT_0062c5ec;
+#endif // COM_HAND_TU_CONTEXT
 
 void __stdcall EnumPlayersCallback(void);
 
@@ -20,8 +22,9 @@ public:
     void ForcePlayerEnumeration(void);
 };
 
+
 void TCommunications_Handler_fpe::ForcePlayerEnumeration(void) {
     debug_log_fpe(DAT_0062c4fc, DAT_0058325c);
-    IDirectPlay_obj* dp = DAT_0062c5ec;
+    IDirectPlay_obj* dp = (IDirectPlay_obj*)DAT_0062c5ec;
     dp->vtbl->EnumPlayers(dp, 0, (void*)EnumPlayersCallback, this, 0);
 }

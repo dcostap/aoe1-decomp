@@ -2,6 +2,7 @@
 // PDB: scr_game.cpp lines 5286-5307 (131 bytes, 38 asm lines)
 // Default flags. No inline asm/hacks.
 
+#if !defined(SCR_GAME_TU_CONTEXT)
 class RGE_Base_Game {
 public:
     char gap_00[0x1B4];
@@ -24,6 +25,7 @@ public:
     void setup_buttons();
     void command_more();
 };
+#endif
 
 void TRIBE_Screen_Game::command_more() {
     if (rge_base_game->get_paused())

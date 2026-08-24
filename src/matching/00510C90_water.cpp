@@ -1,7 +1,9 @@
+#ifndef TMAP_GROUP_CONTEXT
 class TRIBE_Map {
 public:
     unsigned char water(unsigned char value);
 };
+#endif
 
 unsigned char TRIBE_Map::water(unsigned char value) {
     if (value == 1) {

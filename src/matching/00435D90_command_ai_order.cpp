@@ -11,6 +11,7 @@
 #define STR_SEND_CMD_AI_ORDER "      >SEND CMD AI ORD (PLR=%d, TYP=%d, ISS=%d, REC=%d-%s, TAR=%d-%s, TXY=%d,%d)"
 #define STR_X                 "X"
 
+#ifndef COMMAND_TU_CONTEXT
 class RGE_Master_Static_Object {
 public:
     virtual ~RGE_Master_Static_Object();
@@ -71,6 +72,7 @@ public:
                           unsigned char order_priority);
     void submit(void* buf, long size);
 };
+#endif
 
 void RGE_Command::command_ai_order(int player, int issuer, int recipient,
                                    int order_type, int target, int target_owner,

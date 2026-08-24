@@ -1,3 +1,4 @@
+#ifndef SPNL_OBJ_TU
 class RGE_Master_Static_Object;
 
 class TRIBE_Player {
@@ -16,6 +17,7 @@ public:
 
     void set_master_info(RGE_Master_Static_Object* master, TRIBE_Player* player);
 };
+#endif
 
 void TRIBE_Scenario_Editor_Panel_Object::set_master_info(RGE_Master_Static_Object* master, TRIBE_Player* player) {
     this->master_game_obj = master;

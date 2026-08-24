@@ -64,6 +64,7 @@
 
 typedef unsigned char uchar;
 
+#ifndef TACT_MOB_SHARED_CONTEXT
 struct RGE_Master_Static_Object;
 
 struct RGE_Static_Object {
@@ -166,6 +167,7 @@ struct TRIBE_Action_Make_Obj {
 
     void first_in_stack(uchar param_1);
 };
+#endif
 
 void TRIBE_Action_Make_Obj::first_in_stack(uchar param_1)
 {

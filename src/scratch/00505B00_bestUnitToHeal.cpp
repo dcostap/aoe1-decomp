@@ -80,6 +80,12 @@
 
 #include <stdlib.h>
 
+#ifdef TAIUAIMD_COMPLETE_TU
+#define DAT_0087d7cc taiuaimd_heal_counts
+#define DAT_0087d7e4 taiuaimd_heal_records
+#endif
+
+#ifndef TAIUAIMD_COMPLETE_TU
 struct RGE_Master_Static_Object {
     char gap_00[0x14];
     short object_group;
@@ -286,6 +292,7 @@ public:
 protected:
     virtual int bestUnitToHeal(int param_1, float* param_2);
 };
+#endif
 
 int TribePriestUnitAIModule::bestUnitToHeal(int param_1, float* param_2)
 {
@@ -317,7 +324,11 @@ int TribePriestUnitAIModule::bestUnitToHeal(int param_1, float* param_2)
                                         (*listPtr)[i].priority <= 4) {
                                         if (this->objectValue->owner->id != 0 ||
                                             (*listPtr)[i].priority <= 2) {
+#ifdef TAIUAIMD_COMPLETE_TU
+                                            if (taiuaimd_object_can_see(this->objectValue,
+#else
                                             if (this->objectValue->canSeeObject(
+#endif
                                                     (*listPtr)[i].object_id,
                                                     1.0f, 0, 0, -1, -1)) {
                                                 float need = (float)(int)unit->master_obj->hp -
@@ -347,3 +358,8 @@ int TribePriestUnitAIModule::bestUnitToHeal(int param_1, float* param_2)
 
     return allyToHealID;
 }
+
+#ifdef TAIUAIMD_COMPLETE_TU
+#undef DAT_0087d7cc
+#undef DAT_0087d7e4
+#endif

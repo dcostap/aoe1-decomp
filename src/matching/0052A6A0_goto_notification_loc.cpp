@@ -10,13 +10,13 @@
 // - probe 2: flat class + separate get_player/set_view_loc → 13.2% diff (scheduling)
 // - probe 3: nested chained call → 0% diff
 
+#ifndef TRIBEGAM_TU_CONTEXT
 class RGE_Player;
 
 class RGE_Base_Game {
 public:
     RGE_Player* get_player();
 };
-
 class RGE_Player {
 public:
     void set_view_loc(float x, float y);
@@ -32,6 +32,7 @@ public:
 
     void goto_notification_loc();
 };
+#endif
 
 void TRIBE_Game::goto_notification_loc() {
     if (this->current_notification_recalled == -1)

@@ -1,6 +1,7 @@
 // tried the direct pause check, then the message text / panel call, then the trailing base-game virtual
 // remaining mismatch would be in the exact wrapper-vs-virtual call basin, not the visible control flow
 
+#if !defined(SCR_GAME_TU_CONTEXT)
 class RGE_Base_Game {
 public:
     int get_paused();
@@ -30,6 +31,7 @@ public:
 
     void command_heal(void);
 };
+#endif
 
 void TRIBE_Screen_Game::command_heal(void) {
     if (rge_base_game->get_paused() != 0) {

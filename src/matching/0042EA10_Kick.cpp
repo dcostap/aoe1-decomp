@@ -2,19 +2,28 @@
 
 extern "C" int g_DirectPlayConversation;  // 62C5ECh
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TDebuggingLog {
 public:
     static void __cdecl Log(TDebuggingLog* log, const char* format, ...);
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 extern TDebuggingLog* L;  // 62C4FCh
+#endif // COM_HAND_TU_CONTEXT
 
+#if !defined(COM_HAND_TU_CONTEXT)
 struct MSGFORMAT_KILL_PLAYER {
     int dcoID;
     int CurrentTurn;
     int current_turn;
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_00[0x1C];
@@ -36,24 +45,26 @@ public:
 
     int Kick(unsigned int param_1);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 int TCommunications_Handler::Kick(unsigned int param_1)
 {
     if (param_1 >= 1 && param_1 <= this->MaxGamePlayers && g_DirectPlayConversation) {
         if (this->IsPlayerHuman(param_1)) {
-            if (this->dcoID[param_1] != 0) {
+            if (this->PlayerOptions.dcoID[param_1] != 0) {
                 MSGFORMAT_KILL_PLAYER kp;
                 kp.dcoID = param_1;
-                kp.CurrentTurn = this->dcoID[param_1];
+                kp.CurrentTurn = this->PlayerOptions.dcoID[param_1];
                 kp.current_turn = this->current_turn;
 
-                TDebuggingLog::Log(L, "Sent to all - drop player %d ID=%d ", param_1, this->dcoID[param_1]);
+                TDebuggingLog::Log(L, "Sent to all - drop player %d ID=%d ", param_1, this->PlayerOptions.dcoID[param_1]);
                 TDebuggingLog::Log(L, "  >TX KP3 #d (%d)", param_1, 0x0C);
 
                 this->CommOut(0, 'K', &kp, 0x0C, 0);
 
                 if (this->PlayerStopTurn[param_1] == 0) {
-                    this->DropDeadPlayer(param_1, this->dcoID[param_1]);
+                    this->DropDeadPlayer(param_1, this->PlayerOptions.dcoID[param_1]);
                 }
             }
 

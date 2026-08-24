@@ -4,7 +4,7 @@
 // === ACCEPTED_DRIFT ===
 // Positional drift is a stable 2-byte schedule swap
 // in the new-turn path: original does `mov byte [g],1; mov al,1; ret 4`
-// (immediate store first, then return-value load), rebuilt does 
+// (immediate store first, then return-value load), rebuilt does
 // `mov al,1; mov [g],al; ret 4` (return-value load first, then store through al).
 // This shifts all subsequent labels by 2 bytes, padded with 2 NOPs at the end.
 // Same size (108/108), behavior-identical, localized schedule difference.
@@ -28,6 +28,7 @@ extern unsigned char byte_62CF2C;
 class TDebuggingLog;
 extern void __cdecl TDebuggingLog_Log(TDebuggingLog* log, const char* msg, unsigned int value);
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_00[0x1558];
@@ -35,6 +36,8 @@ public:
 
     unsigned char GetNextSequence(unsigned long value);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 unsigned char TCommunications_Handler::GetNextSequence(unsigned long value) {
     if (value != dword_62CF30) {

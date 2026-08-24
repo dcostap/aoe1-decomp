@@ -3,8 +3,9 @@
 // MATCHED: this virtual varargs method is a cdecl member function with `this` passed on the stack.
 // Original uses plain `textOut`, not `textOut + 4`; the stack-based vararg pack is `(&format) + 1`.
 
-extern "C" int __cdecl vsprintf(char* buffer, const char* format, void* argptr);
+#include <stdio.h>
 
+#ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
 class AIModule {
 public:
     void __cdecl logCommonHistory(char* message);
@@ -17,12 +18,13 @@ public:
 
     void __cdecl logMessage(char* format, ...);
 };
+#endif
 
 void __cdecl TRIBE_Player::logMessage(char* format, ...) {
     char textOut[1024];
 
     if (this->playerAI != 0) {
-        vsprintf(textOut, format, (&format) + 1);
+        vsprintf(textOut, format, (char*)((&format) + 1));
         this->playerAI->logCommonHistory(textOut);
     }
 }

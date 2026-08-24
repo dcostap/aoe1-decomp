@@ -8,6 +8,7 @@
 // RGE_Base_Game::handle_query_new_palette(...) which generates direct call
 // with correct __thiscall param staging (interleaved push/reload pattern).
 // Padding recalculated: sizeof(RGE_Base_Game)=0x50, pad to game_mode=0x1B0.
+#ifndef TRIBEGAM_TU_CONTEXT
 class RGE_Base_Game {
 public:
     char gap_00[0x4C];
@@ -25,18 +26,17 @@ public:
 
     int handle_query_new_palette(void* param_1, unsigned int param_2, unsigned int param_3, long param_4);
 };
-
-extern long (__stdcall *SendMessageA)(void* hWnd, unsigned int Msg, unsigned long wParam, long lParam);
+#endif
 
 int TRIBE_Game::handle_query_new_palette(void* param_1, unsigned int param_2, unsigned int param_3, long param_4) {
     int result;
     int mode;
 
     result = 1;
-    mode = this->game_mode;
+    mode = this->prog_mode;
     if (mode == result) {
         if (this->video_window != 0 && this->video_hi_color == 0) {
-            (*SendMessageA)(this->video_window, 0x476, 0, 0);
+            SendMessageA(this->video_window, 0x476, 0, 0);
         }
     }
     else {

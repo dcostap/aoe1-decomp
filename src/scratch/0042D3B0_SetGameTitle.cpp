@@ -8,6 +8,7 @@ public:
     char player_name[1];
 };
 
+
 int TCommunications_Handler_sgt::SetGameTitle(const char* title) {
     sprintf(this->player_name, "%s [%s]", title, this->game_name);
     return 1;

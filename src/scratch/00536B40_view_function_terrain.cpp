@@ -198,6 +198,7 @@
 #include <windows.h>
 #include <string.h>
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 struct RGE_Tile {
     short screen_xpos;              // +0x00
     short screen_ypos;              // +0x02
@@ -649,21 +650,31 @@ public:
     void remove_message();
 };
 
+#endif
+
 extern TMousePointer* MouseSystem;
 extern void* SDI_List;
 extern long SDI_Capture_Info;
+#ifndef RGE_VIEW_SHARED_CONTEXT
 extern long fog_next_shape;
+#endif
 extern long view_debug_Objects;
 extern long SDI_Draw_Level;
 extern long SDI_Object_ID;
 extern long view_debug_spans;
+#ifndef RGE_VIEW_SHARED_CONTEXT
 extern long view_debug_palette;
 extern long frame_count;
+#endif
 extern long Clip_draw;
 extern long Clip_remove;
+#ifndef RGE_VIEW_SHARED_CONTEXT
 extern RGE_Base_Game_Prefix* rge_base_game;
 extern unsigned long unified_map_offsets[][1];
+#endif
+#ifndef RGE_VIEW_SHARED_CONTEXT
 extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, long line);
+#endif
 extern const char s_C__msdev_work_age1_x1_view_cpp[];
 extern const char s_view__view_function_terrain[];
 extern "C" void __cdecl _ASMSet_Surface_Info(void* offsets, void* heads, void* tails,
@@ -822,7 +833,7 @@ long RGE_View::view_function_terrain(unsigned char mode, tagRECT rect) {
                         }
 
                         Tile_FogEdge_Table* edge_table = this->Tile_Edge_Tables[tile->tile_type];
-                        long* black_edges = this->Black_Edge_Tables[tile->tile_type];
+                        long* black_edges = (long*)this->Black_Edge_Tables[tile->tile_type];
                         if (this->map->fog_flag == 0) {
                             fog_mask_num = 0;
                         }
@@ -1365,7 +1376,11 @@ TileOffScreen:
     this->render_area->Unlock(s_view__view_function_terrain);
     this->render_area->CurrentMask = this->render_area->SavedMask;
     {
+#ifdef RGE_VIEW_SHARED_CONTEXT
+        DClipInfo_List* tmp = this->futur_objs;
+#else
         void* tmp = this->futur_objs;
+#endif
         this->futur_objs = this->prior_objs;
         this->prior_objs = tmp;
     }

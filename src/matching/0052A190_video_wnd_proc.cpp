@@ -1,5 +1,6 @@
 typedef long (__stdcall *TRIBE_Game_WndProc)(void* hwnd, unsigned int msg, unsigned int wparam, long lparam);
 
+#ifndef TRIBEGAM_TU_CONTEXT
 class TRIBE_Game {
 public:
     char gap_00[0xBF4];
@@ -8,9 +9,10 @@ public:
 
     long video_wnd_proc(void* hwnd, unsigned int msg, unsigned int wparam, long lparam);
 };
+#endif
 
 extern "C" __declspec(dllimport) void* __stdcall SetCursor(void* cursor);
-extern "C" __declspec(dllimport) long __stdcall CallWindowProcA(TRIBE_Game_WndProc wndproc, void* hwnd, unsigned int msg, unsigned int wparam, long lparam);
+extern "C" __declspec(dllimport) long __stdcall CallWindowProcA_tribe(TRIBE_Game_WndProc wndproc, void* hwnd, unsigned int msg, unsigned int wparam, long lparam);
 
 long TRIBE_Game::video_wnd_proc(void* hwnd, unsigned int msg, unsigned int wparam, long lparam) {
     switch (msg) {
@@ -23,5 +25,6 @@ long TRIBE_Game::video_wnd_proc(void* hwnd, unsigned int msg, unsigned int wpara
         return 0;
     }
 
-    return CallWindowProcA(this->old_video_wnd_proc, hwnd, msg, wparam, lparam);
+    return CallWindowProcA_tribe((TRIBE_Game_WndProc)this->old_video_wnd_proc,
+                           hwnd, msg, wparam, lparam);
 }

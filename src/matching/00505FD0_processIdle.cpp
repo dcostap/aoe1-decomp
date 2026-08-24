@@ -30,6 +30,7 @@
 
 extern int __cdecl debug_rand(const char* file, int line);
 
+#ifndef TAIUAIMD_COMPLETE_TU
 class RGE_Game_World;
 class RGE_Static_Object;
 
@@ -139,6 +140,7 @@ class TribePriestUnitAIModule : public UnitAIModule {
 public:
     int processIdle(int param_1);
 };
+#endif
 
 int TribePriestUnitAIModule::processIdle(int param_1)
 {

@@ -6,6 +6,7 @@
 // attempt 5: 28.8%, same
 // BEST: 28.8%. BLOCKER: stack offsets off by 4 in command_unload
 //   call params. Core logic (vfunc at 0xAC, command_unload, free) correct.
+#ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
 class RGE_Static_Object;
 class TRIBE_Command { public: char gap_00[0x58]; void* command_obj; };
 class TRIBE_Command_Unload { public: void command_unload(RGE_Static_Object** list, short list_num, float param_1, float param_2); };
@@ -68,6 +69,7 @@ public:
     unsigned char get_selected_objects_to_command(RGE_Static_Object*** list, void* local_4, int a, int b, int c, int d);
     unsigned char command_make_unload(float, float);
 };
+#endif
 
 unsigned char TRIBE_Player::command_make_unload(float param_1, float param_2) {
     RGE_Static_Object** list;

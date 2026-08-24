@@ -141,18 +141,27 @@
 
 int __cdecl sprintf(char* buffer, const char* format, ...);
 
+#if !defined(COM_HAND_TU_CONTEXT)
 enum COMMSTATUS {
     COMMSTATUS_UNINITIALIZED = 0,
     INITIALIZED = 1
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class TDebuggingLog {
 public:
     void __cdecl Log(char* format, ...);
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 extern TDebuggingLog* L;
+#endif // COM_HAND_TU_CONTEXT
 
+#if !defined(COM_HAND_TU_CONTEXT)
 struct TCommunications_Handler {
     char gap_00[0xFC5];         // +0x00 to +0xFC4
     char TBuff[257];            // +0xFC5, size 0x101
@@ -164,6 +173,8 @@ struct TCommunications_Handler {
     COMMSTATUS GetCommunicationsStatus();
     COMMSTATUS UnlinkToLevel(COMMSTATUS param_1);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 COMMSTATUS TCommunications_Handler::UnlinkToLevel(COMMSTATUS param_1) {
     COMMSTATUS original_status;
@@ -174,7 +185,7 @@ COMMSTATUS TCommunications_Handler::UnlinkToLevel(COMMSTATUS param_1) {
 
     // line 4669
     CommunicationsStatus = original_status;
-    L->Log("Unlink to level %d desired, currently at level %d",
+    TDebuggingLog::Log(com_hand_global_log, "Unlink to level %d desired, currently at level %d",
         param_1, original_status);
 
     // lines 4671-4672: clamp param_1 to minimum 1
@@ -189,7 +200,7 @@ COMMSTATUS TCommunications_Handler::UnlinkToLevel(COMMSTATUS param_1) {
     // lines 4675-4678: unlink loop with the level check at the top
     do {
         if (new_status <= param_1) {
-            L->Log("AFTER UNLINKING...Status=%d   Reported=%d",
+            TDebuggingLog::Log(com_hand_global_log, "AFTER UNLINKING...Status=%d   Reported=%d",
                 this->GetCommunicationsStatus(), this->CommunicationsStatus);
             return AnalyzeCommunicationsStatus();
         }
@@ -200,6 +211,6 @@ COMMSTATUS TCommunications_Handler::UnlinkToLevel(COMMSTATUS param_1) {
 
     sprintf(TBuff, "Unlink from level [ %d ] Failed.\n Stopping connections",
             original_status);
-    L->Log(TBuff);
+    TDebuggingLog::Log(com_hand_global_log, TBuff);
     return AnalyzeCommunicationsStatus();
 }

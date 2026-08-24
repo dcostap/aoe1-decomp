@@ -54,6 +54,7 @@
 // 005356D6; no exact claim is made.
 
 #ifndef RGE_VIEW_SHARED_CONTEXT
+#ifndef RGE_VIEW_SHARED_CONTEXT
 struct tagPOINT {
     long x;
     long y;
@@ -192,6 +193,7 @@ public:
     unsigned char facet;                    // +0x35
     char gap_36[0x96];
 };
+#endif
 #endif
 
 void RGE_View::draw_object_outline() {

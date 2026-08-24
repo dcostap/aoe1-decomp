@@ -42,10 +42,18 @@
 // left in scratch: behavior and layout modeled, but logging argument order/register allocation and copy-loop lowering remain broad; not accepted-drift-safe.
 
 #include <string.h>
+#if !defined(COM_HAND_TU_CONTEXT)
 class TDebuggingLog { public: void Log(char* fmt, ...); };
-extern TDebuggingLog* L;
-extern unsigned long __cdecl debug_timeGetTime(char* file, int line);
+#endif // COM_HAND_TU_CONTEXT
 
+#if !defined(COM_HAND_TU_CONTEXT)
+extern TDebuggingLog* L;
+#endif // COM_HAND_TU_CONTEXT
+#if !defined(COM_HAND_TU_CONTEXT)
+extern unsigned long __cdecl debug_timeGetTime(char* file, int line);
+#endif // COM_HAND_TU_CONTEXT
+
+#if !defined(COM_HAND_TU_CONTEXT)
 struct RESENDER {
     unsigned long TimeSent;
     unsigned int Serial;
@@ -53,7 +61,10 @@ struct RESENDER {
     unsigned int Length;
     unsigned int DestMap[10];
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_0000[0x10E4];
@@ -67,6 +78,8 @@ public:
 
     int StoreForResend(unsigned int param_1, char* param_2, unsigned int param_3, unsigned int* param_4);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 int TCommunications_Handler::StoreForResend(unsigned int param_1, char* param_2, unsigned int param_3, unsigned int* param_4)
 {

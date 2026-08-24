@@ -12,6 +12,7 @@
 // throwing call and before the branch target, and all else (EH frame, vtable store,
 // task destructor/delete/null store, base destructor, epilogue) matches.
 
+#ifndef RGE_MAC_OBJ_SHARED_CONTEXT
 class RGE_Task_List {
 public:
     ~RGE_Task_List();
@@ -32,6 +33,7 @@ public:
 
     ~RGE_Master_Action_Object();
 };
+#endif
 
 RGE_Master_Action_Object::~RGE_Master_Action_Object() {
     *(void* volatile*)this = (void*)0x00570448;

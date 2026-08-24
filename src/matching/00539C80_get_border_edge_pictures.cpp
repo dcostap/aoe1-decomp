@@ -6,11 +6,13 @@
 // BINARY NOTE: The four calls keep the protected get_border_picture ABI.
 // int get_border_edge_pictures(uchar terrain_type, uchar row_idx, uchar edge_mask, short param_4, short param_5, int& out1, int& out2, int& out3, int& out4)
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 struct RGE_TOB_Picts { short count; short animations; short shape_index; };
 struct RGE_Border_Type { unsigned char gap_00[0x20]; void* shape; unsigned char gap_24[0x42 - 0x24]; RGE_TOB_Picts borders[19][12]; unsigned char gap_59A[4]; short border_style; };
 struct RGE_Map { unsigned char gap_00[0x8C]; unsigned char terrain_types[32][0x198]; RGE_Border_Type border_types[32]; };
 class TPanel { public: unsigned char gap_00[0xF4]; };
 class RGE_View : public TPanel { public: unsigned char gap_F4[0x10]; RGE_Map* map; protected: short get_border_picture(unsigned char, unsigned char, unsigned char, short, short); int get_border_edge_pictures(unsigned char param_1, unsigned char param_2, unsigned char param_3, short param_4, short param_5, int& param_6, int& param_7, int& param_8, int& param_9); };
+#endif
 
 int RGE_View::get_border_edge_pictures(unsigned char param_1, unsigned char param_2, unsigned char param_3, short param_4, short param_5, int& param_6, int& param_7, int& param_8, int& param_9) {
     param_6 = -1;

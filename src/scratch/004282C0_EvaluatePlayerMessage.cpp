@@ -68,20 +68,29 @@
 //   register topology, and the isolated switch-table relocation context.
 //   No fake volatility, raw cursor, dummy context, or inline assembly retained.
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TDebuggingLog {
 public:
     void Log(char*, ...);
 };
+#endif // COM_HAND_TU_CONTEXT
+
+#if !defined(COM_HAND_TU_CONTEXT)
 extern TDebuggingLog* L;
+#endif // COM_HAND_TU_CONTEXT
 
 #define S(address) ((char*)(address))
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class RGE_Communications_Speed {
 public:
     void SetPlayerTurnSpeed(unsigned int, unsigned char, unsigned char);
     void SetFutureSpeedChange(unsigned int, unsigned int, unsigned long);
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class RGE_Communications_Synchronize {
 public:
     int Add(unsigned int, unsigned long, unsigned long, unsigned long,
@@ -89,19 +98,31 @@ public:
     void LogChecksums(unsigned int, unsigned long, unsigned long,
                       long, long, long, long, long, unsigned long);
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 enum COMMMESSAGES {
     COMM_PLAYER_KICKED = 0x17AA,
     COMM_OTHER_PLAYER_DROPPED = 0x17B3
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class TChat { public: int AddChatMsg(char*, char*, unsigned char); };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 struct MSGFORMAT_KILL_PLAYER {
     unsigned long player;
     unsigned long dco_id;
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 struct COMMPLAYEROPTIONS {
     unsigned char NeedsToBeSent;
     unsigned char gap_01[3];
@@ -133,7 +154,10 @@ struct COMMPLAYEROPTIONS {
     int GameHasStarted;
     unsigned long DataSizeToFollow;
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_0000[0x18];
@@ -170,6 +194,8 @@ public:
     void NotifyWindow(COMMMESSAGES message);
     void NotifyWindowParam(COMMMESSAGES message, long player);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 int TCommunications_Handler::EvaluatePlayerMessage(unsigned long a1, unsigned int player,
                                                    unsigned long a3, unsigned char opcode,

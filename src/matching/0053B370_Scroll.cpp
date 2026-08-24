@@ -76,6 +76,7 @@
 // Policy audit: default VC5 /O2 /Oy, natural typed arrays and loops, no inline
 // assembly, register hints, volatility, raw cursors, or metric-only aliases.
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 struct DClipInfo_Node {
     DClipInfo_Node* Next;        // +0x00
     DClipInfo_Node* NextOnLevel; // +0x04
@@ -117,6 +118,7 @@ public:
 
     void Scroll(int scroll_x, int scroll_y);
 };
+#endif
 
 void DClipInfo_List::Scroll(int scroll_x, int scroll_y)
 {

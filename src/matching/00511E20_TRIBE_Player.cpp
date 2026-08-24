@@ -24,6 +24,7 @@ class TRIBE_History_Info;
 class TCommunications_Handler;
 extern TCommunications_Handler* comm;
 
+#ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
 class RGE_Game_World {
 public:
     void* vtable_ptr;                     // +0x00
@@ -173,6 +174,7 @@ public:
                  unsigned char, unsigned char, char*, char*, char*);
     void new_victory();
 };
+#endif
 
 TRIBE_Player::TRIBE_Player(TRIBE_World* world, RGE_Master_Player* master,
                            unsigned char player_id, char* name_arg,

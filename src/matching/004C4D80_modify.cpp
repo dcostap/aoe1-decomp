@@ -1,5 +1,6 @@
 // VA: 004C4D80 RGE_Static_Object::modify
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Static_Object {
 public:
     virtual void vf0();
@@ -78,6 +79,7 @@ public:
 
     void modify(volatile float value, unsigned char type);
 };
+#endif
 
 void RGE_Static_Object::modify(volatile float value, unsigned char type) {
     switch (type) {

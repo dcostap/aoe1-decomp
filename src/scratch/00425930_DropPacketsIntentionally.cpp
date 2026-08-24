@@ -9,6 +9,7 @@ public:
     int intentional_drop;
 };
 
+
 void TCommunications_Handler_dp::DropPacketsIntentionally(int flag) {
     this->intentional_drop = flag;
     if (flag) {

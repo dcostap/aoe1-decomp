@@ -5,6 +5,7 @@
 
 #include "../../include/game_types.h"
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Game_World {
 public:
     RGE_Static_Object* object(int id);
@@ -24,6 +25,7 @@ public:
     int commanderCreateGroup(int* list, int count, int param3, float param4);
     int createGroup(int* list, int count, int param3, float param4); // at 004C77B0
 };
+#endif
 
 int RGE_Static_Object::commanderCreateGroup(int* list, int count, int param3, float param4) {
     if (list == 0 || count == 0) {

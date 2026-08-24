@@ -38,6 +38,7 @@
 //   checker still reports the same strict diff because the first prologue hunk
 //   shifts all later bytes; resynchronized structural similarity improved.
 
+#if !defined(SCR_GAME_TU_CONTEXT)
 extern "C" void __cdecl free(void*);
 extern "C" void* __cdecl calloc(unsigned int, unsigned int);
 
@@ -650,6 +651,8 @@ extern uchar production_queues_is_use;
     (screen)->set_button((screen)->button_cmd_pic, (index), (frame), \
                          (type), 0, (string_id), -1, 0, (uchar*)0, \
                          (char*)0, (char*)0, 0)
+
+#endif
 
 #endif
 

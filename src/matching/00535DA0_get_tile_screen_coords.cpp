@@ -9,6 +9,7 @@
 //   main-agent audit: restored canonical RGE_Map/TPanel polymorphic ownership;
 //     emitted code remains exact.
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 struct TileSize { short width; short height; short y_delta; };
 struct RGE_Tile { short screen_xpos; short screen_ypos; unsigned char tile_type; unsigned char gap_05[19]; };
 struct RGE_Map {
@@ -36,6 +37,7 @@ public:
 
     int get_tile_screen_coords(short col, short row, short* out_x, short* out_y, int adjust);
 };
+#endif
 
 int RGE_View::get_tile_screen_coords(short col, short row, short* out_x, short* out_y, int adjust) {
     if (out_x != 0) *out_x = 0;

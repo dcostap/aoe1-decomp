@@ -1,3 +1,4 @@
+#ifndef TRIBEGAM_TU_CONTEXT
 class TRIBE_Game {
 public:
     virtual ~TRIBE_Game();
@@ -6,4 +7,5 @@ public:
 
     int victoryType() const;
 };
-int TRIBE_Game::victoryType() const { return this->victoryType_; }
+#endif
+int TRIBE_Game::victoryType() const { return this->tribe_game_options.victoryTypeValue; }

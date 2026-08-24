@@ -6,6 +6,7 @@
 extern "C" void __cdecl color_log(unsigned char, unsigned char, unsigned char);
 extern "C" void __cdecl rge_write(int file, void* data, int size);
 
+#ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
 class RGE_Player {
 public:
     virtual void vf00();
@@ -56,6 +57,9 @@ public:
 
     void save(int file);
 };
+#endif
+
+extern TCommunications_Handler* communications_handler;
 
 void TRIBE_Player::save(int file) {
     int save_file;

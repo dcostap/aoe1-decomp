@@ -10,8 +10,7 @@
 //    - Else if param_3 != 1 && !video_paused: SendMessage(WM_SYS...=0x809), video_paused=1
 // 3. Return 1
 
-__declspec(dllimport) long __stdcall SendMessageA(void*, unsigned int, unsigned int, long);
-
+#ifndef TRIBEGAM_TU_CONTEXT
 struct RGE_Base_Game {
     int handle_activate(void* param_1, unsigned int param_2, unsigned int param_3, long param_4);
 };
@@ -26,11 +25,12 @@ struct TRIBE_Game : RGE_Base_Game {
 
     int handle_activate(void* param_1, unsigned int param_2, unsigned int param_3, long param_4);
 };
+#endif
 
 int TRIBE_Game::handle_activate(void* param_1, unsigned int param_2, unsigned int param_3, long param_4) {
     RGE_Base_Game::handle_activate(param_1, param_2, param_3, param_4);
 
-    if (this->field_1B0 == 1 && this->video_window != 0) {
+    if (this->prog_mode == 1 && this->video_window != 0) {
         if (param_3 == 1) {
             if (this->video_paused != 0) {
                 SendMessageA(this->video_window, 0x855, 0, 0);

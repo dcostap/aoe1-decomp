@@ -20,6 +20,7 @@
 
 #include <math.h>
 
+#ifndef TAIUAIMD_COMPLETE_TU
 class RGE_Static_Object;
 
 class RGE_Game_World {
@@ -159,6 +160,7 @@ public:
 
     int processIdle(int param_1);
 };
+#endif
 
 int TribeTradeShipUnitAIModule::processIdle(int param_1)
 {
@@ -175,7 +177,11 @@ int TribeTradeShipUnitAIModule::processIdle(int param_1)
                 this->moveTo(
                     (float)(-(xDiff / distance * speed)) + this->obj->world_x,
                     (float)(-(yDiff / distance * speed)) + this->obj->world_y,
+#ifdef TAIUAIMD_COMPLETE_TU
+                    this->obj->world_z, 1);
+#else
                     this->obj->field_40, 1);
+#endif
                 return 6;
             }
         }

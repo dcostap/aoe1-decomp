@@ -27,6 +27,7 @@
 
 #include <stdlib.h>
 
+#ifndef RGE_MAIN_VIEW_SHARED_CONTEXT
 class RGE_Static_Object;
 class RGE_Tile;
 class RGE_Map;
@@ -294,6 +295,7 @@ public:
     virtual void v74();
     virtual void do_right_action(int);
 };
+#endif
 
 extern RGE_Base_Game* rge_base_game;
 extern int allow_user_commands;

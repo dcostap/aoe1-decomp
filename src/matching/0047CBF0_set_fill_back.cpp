@@ -1,3 +1,4 @@
+#ifndef PNL_TXT_TU_CONTEXT
 class TTextPanel {
 public:
     char gap_0[0x14C];
@@ -6,6 +7,7 @@ public:
 
     void set_fill_back(int a, unsigned char b);
 };
+#endif
 
 void TTextPanel::set_fill_back(int a, unsigned char b) {
     this->field_14C = a;

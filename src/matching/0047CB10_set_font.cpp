@@ -1,6 +1,7 @@
 // VA: 0047CB10 TTextPanel::set_font (55B)
 // PDB source: Pnl_txt.cpp lines 598-604
 
+#ifndef PNL_TXT_TU_CONTEXT
 class TTextPanel {
 public:
     virtual void vf00(void);
@@ -21,6 +22,7 @@ public:
     void calc_draw_info(int param_1);
     void set_font(void* param_1, long param_2, long param_3);
 };
+#endif
 
 void TTextPanel::set_font(void* param_1, long param_2, long param_3) {
     this->font = param_1;

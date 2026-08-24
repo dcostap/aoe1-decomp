@@ -1,8 +1,10 @@
+#ifndef TAIUAIMD_COMPLETE_TU
 class TribeCivilianUnitAIModule {
 public:
     virtual ~TribeCivilianUnitAIModule();
     int convertToLOSResourceType(int value);
 };
+#endif
 
 int TribeCivilianUnitAIModule::convertToLOSResourceType(int value) {
     switch (value) {

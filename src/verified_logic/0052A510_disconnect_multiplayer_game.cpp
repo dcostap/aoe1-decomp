@@ -31,6 +31,7 @@
 // A 36-case variant lab covering those axes plus derived virtual-surface sizes
 // found no alternate register basin; clean source remains authoritative.
 
+#ifndef TRIBEGAM_TU_CONTEXT
 enum COMMSTATUS {
     COMMSTATUS_UNINITIALIZED = 0,
     INITIALIZED = 1,
@@ -120,6 +121,7 @@ public:
     void show_status_message(int message, char* parameter, long value);
     void disconnect_multiplayer_game();
 };
+#endif
 
 void TRIBE_Game::disconnect_multiplayer_game()
 {

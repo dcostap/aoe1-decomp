@@ -7,6 +7,7 @@ public:
     int humanity[1];
 };
 
+
 int TCommunications_Handler_gph::GetPlayerHumanity(unsigned int player) {
     if (player >= 1u && player <= this->max_players)
         return this->humanity[player];

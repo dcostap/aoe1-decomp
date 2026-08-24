@@ -1,3 +1,4 @@
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_00[0x10E0];
@@ -12,13 +13,15 @@ public:
 
     char* GetPlayerName(unsigned int player);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 char* TCommunications_Handler::GetPlayerName(unsigned int player) {
-    if (player > MaxGamePlayers) {
+    if (player > this->MaxGamePlayers) {
         return 0;
     }
-    if ((int)player == Me) {
-        return MyFriendlyName;
+    if ((int)player == this->Me) {
+        return this->MyFriendlyName;
     }
-    return FriendlyName + (player << 7);
+    return this->FriendlyName[player].Text;
 }

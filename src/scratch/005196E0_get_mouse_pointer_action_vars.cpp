@@ -54,8 +54,8 @@
 // Moving the shared action-5 label into the switch improved block coverage but
 // did not remove the case-2 duplicate. It was also restored.
 
-extern int DAT_0086bc88;
-extern int DAT_0086bc8c;
+extern unsigned int DAT_0086bc88;
+extern unsigned int DAT_0086bc8c;
 extern float DAT_00576828;
 
 class RGE_Static_Object;
@@ -63,6 +63,7 @@ class RGE_Master_Static_Object;
 class RGE_Player;
 class RGE_Base_Game;
 
+#ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
 class RGE_Game_World {
 public:
     RGE_Static_Object* object(int id);
@@ -159,6 +160,7 @@ public:
     short current_target;
     short gap_19e;
 };
+#endif
 
 int TRIBE_Player::get_mouse_pointer_action_vars(int id, int& action, int& var)
 {
@@ -181,7 +183,7 @@ int TRIBE_Player::get_mouse_pointer_action_vars(int id, int& action, int& var)
     var = 0;
     current = 0;
     if (object != 0) {
-    if (object->type == 0x19) {
+    if ((int)(long)object->type == 0x19) {
         master = object->special_master;
         object_type = object->special_owner;
         object_player = (short)master->object_group;

@@ -33,6 +33,7 @@ extern double DAT_00576830;
 extern double DAT_00576838;
 extern float DAT_00576840;
 
+#ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
 class RGE_Base_Game { public: int fullVisibility(); };
 class RGE_Visible_Map { public: float percentExplored(); };
 class TCommunications_Handler { public: int ComputerPlayerGameStart(); };
@@ -57,6 +58,7 @@ public:
     char pad54[0x228-0x54]; int update_count; int update_history_count; int updateCountNeedHelp; float update_time; AI* playerAI; char pad23c[0x83c-0x23c]; TRIBE_History_Info* history;
     virtual void update();
 };
+#endif
 
 void TRIBE_Player::update()
 {

@@ -4,6 +4,7 @@
 // Pure virtual class (implicit vptr) + fdivr pattern
 
 class RGE_Master_Static_Object;
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Static_Object {
 public:
     virtual void dummy_v00();
@@ -85,6 +86,7 @@ struct RGE_Master_Static_Object {
     char pad_1C[0x26 - 0x1C];
     short hp;                 // +0x26
 };
+#endif
 
 void RGE_Static_Object::transform(RGE_Master_Static_Object* param_1) {
     float ratio = (float)(signed short)(master_obj->hp);

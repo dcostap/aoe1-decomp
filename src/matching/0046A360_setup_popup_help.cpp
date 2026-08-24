@@ -1,5 +1,6 @@
 // first pass: natural UI setup shape with the cursor/mouse-mode calls in packet order
 // if this stays sticky, the likely issue is codegen shape around the imported cursor call or the mouse-pointer load chain
+#ifndef AOE1_PANEL_EZ_CONTEXT_H
 class TMousePointer {
 public:
     char pad_00[0x138];
@@ -31,6 +32,7 @@ public:
 
     void setup_popup_help(void);
 };
+#endif
 
 void TEasy_Panel::setup_popup_help(void) {
     this->help_mode = 1;

@@ -1,3 +1,4 @@
+#ifndef RGE_VIEW_SHARED_CONTEXT
 class RGE_Map {
 public:
     char gap_00[0x8D96];
@@ -31,6 +32,7 @@ public:
     void calc_draw_vars(void);
     void set_world(RGE_Game_World* world);
 };
+#endif
 
 void RGE_View::set_world(RGE_Game_World* world) {
     this->world = world;

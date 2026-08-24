@@ -70,6 +70,7 @@
 
 // Fresh pass probe 2 uses the proven concrete RGE_View/TPanel and
 // RGE_Static_Object data surfaces rather than the prior minimal helper shells.
+#ifndef RGE_VIEW_SHARED_CONTEXT
 struct RGE_Master_Static_Object {
     virtual ~RGE_Master_Static_Object();
     char _gap_04[0x89];
@@ -154,6 +155,7 @@ public:
     virtual int pick_through_fog(RGE_Static_Object*);
     virtual int pick_weight(RGE_Static_Object* param_1, int param_2);
 };
+#endif
 
 int RGE_View::pick_weight(RGE_Static_Object* param_1, int param_2) {
     unsigned char select_level = param_1->master_obj->select_level;

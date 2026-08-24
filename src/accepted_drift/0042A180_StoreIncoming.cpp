@@ -61,9 +61,15 @@
 typedef unsigned int uint;
 typedef unsigned long ulong;
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TDebuggingLog { public: void Log(char* fmt, ...); };
-extern TDebuggingLog* L;
+#endif // COM_HAND_TU_CONTEXT
 
+#if !defined(COM_HAND_TU_CONTEXT)
+extern TDebuggingLog* L;
+#endif // COM_HAND_TU_CONTEXT
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class HOLDER {
 public:
     char* HoldMsg;
@@ -77,7 +83,10 @@ public:
     void Store(char*, uint);
     void Clear();
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_00[0x1524];
@@ -85,6 +94,8 @@ public:
 
     int StoreIncoming(uint SerialNumber, char* InBuff, uint Length, ulong dcoFromID, ulong dcoReceiveID);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 int TCommunications_Handler::StoreIncoming(uint SerialNumber, char* InBuff, uint Length, ulong dcoFromID, ulong dcoReceiveID)
 {

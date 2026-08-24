@@ -11,6 +11,7 @@
 //   function-level compound screen/error guard; this preserves both distinct
 //   deleting-destructor paths and the original wait-failure store order.
 
+#ifndef TRIBEGAM_TU_CONTEXT
 class TCommunications_Handler {
 public:
     int MultiplayerGameStart();
@@ -132,6 +133,7 @@ public:
     void close_status_message();
     void let_game_begin();
 };
+#endif
 
 int TRIBE_Game::create_game_screen()
 {

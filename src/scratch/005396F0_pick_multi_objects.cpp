@@ -43,6 +43,7 @@
 // 417 strict diff; no accepted-drift proposal. Remaining register/block drift
 // is broad and not policy-safe to call localized equivalent behavior.
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 class RGE_Pick_Obj_Info {
 public:
     int object_id;
@@ -112,6 +113,7 @@ public:
 protected:
     int pick_multi_objects(int x1, int y1, int x2, int y2, int min_level, int max_level, int player_id, unsigned char select_level, int flag);
 };
+#endif
 
 int RGE_View::pick_multi_objects(int x1, int y1, int x2, int y2, int min_level, int max_level, int player_id, unsigned char select_level, int flag)
 {

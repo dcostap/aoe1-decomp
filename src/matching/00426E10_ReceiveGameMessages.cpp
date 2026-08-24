@@ -34,20 +34,40 @@
 
 typedef unsigned long ulong;
 
+#if !defined(COM_HAND_TU_CONTEXT)
 extern ulong __cdecl debug_timeGetTime(char* file, int line);
+#endif // COM_HAND_TU_CONTEXT
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TDebuggingLog { public: void Log(char* fmt, ...); };
+#endif // COM_HAND_TU_CONTEXT
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class RGE_Comm_Error { public: void ShowReturn(long result, char* msg); };
+#endif // COM_HAND_TU_CONTEXT
+
 class IDirectPlay4A;
 
 extern unsigned char DAT_0062c5d0;
 #define debug_once DAT_0062c5d0
+#if !defined(COM_HAND_TU_CONTEXT)
 extern ulong DAT_0062cef0;
+#endif // COM_HAND_TU_CONTEXT
+#if !defined(COM_HAND_TU_CONTEXT)
 extern ulong DAT_0062cf14;
+#endif // COM_HAND_TU_CONTEXT
+#if !defined(COM_HAND_TU_CONTEXT)
 extern ulong DAT_0062cf18;
+#endif // COM_HAND_TU_CONTEXT
+#if !defined(COM_HAND_TU_CONTEXT)
 extern unsigned int DAT_0062cf04;
+#endif // COM_HAND_TU_CONTEXT
+#if !defined(COM_HAND_TU_CONTEXT)
 extern IDirectPlay4A* DAT_0062c5ec;
+#endif // COM_HAND_TU_CONTEXT
+#if !defined(COM_HAND_TU_CONTEXT)
 extern TDebuggingLog* L;
+#endif // COM_HAND_TU_CONTEXT
 #define last_time DAT_0062cef0
 #define last_rx DAT_0062cf14
 #define last_tx DAT_0062cf18
@@ -55,6 +75,7 @@ extern TDebuggingLog* L;
 #define dplay DAT_0062c5ec
 #define log_obj L
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class IDirectPlay4A {
 public:
     virtual void v00(); virtual void v04(); virtual void v08(); virtual void v0C();
@@ -64,7 +85,10 @@ public:
     virtual void v40();
     virtual long __stdcall v44(int id, int* out);
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_0000[0x10E4];
@@ -87,6 +111,8 @@ public:
     void CheckPingTime(int arg);
     void ReceiveGameMessages();
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 void TCommunications_Handler::ReceiveGameMessages()
 {

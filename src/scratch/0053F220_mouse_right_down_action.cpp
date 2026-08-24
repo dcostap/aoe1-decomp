@@ -4,6 +4,7 @@
 
 extern "C" void __cdecl color_log(unsigned char a, unsigned char b, int c);
 
+#ifndef RGE_MAIN_VIEW_SHARED_CONTEXT
 class RGE_Base_Game {
 public:
     // vtable slots 0-3
@@ -122,9 +123,12 @@ public:
 };
 
 class RGE_Main_View : public RGE_View {
+public:
+    virtual long mouse_right_down_action(long, long, int, int);
 };
+#endif
 
-long RGE_View::mouse_right_down_action(long param_1, long param_2, int param_3, int param_4)
+long RGE_Main_View::mouse_right_down_action(long param_1, long param_2, int param_3, int param_4)
 {
     if (!rge_base_game->get_paused()) {
         int mode = rge_base_game->prog_mode;

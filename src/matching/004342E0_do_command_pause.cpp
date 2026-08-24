@@ -3,6 +3,7 @@
 // Declare counter inside if block for conditional ebx save;
 // id pointer before the if for unconditional esi setup
 
+#ifndef COMMAND_TU_CONTEXT
 class RGE_Static_Object;
 class RGE_Command_Pause;
 
@@ -54,6 +55,7 @@ public:
     virtual void vf180() = 0; virtual void vf184() = 0; virtual void vf188() = 0; virtual void vf18C() = 0;
     virtual void pause_callback() = 0;
 };
+#endif
 
 void RGE_Command::do_command_pause(RGE_Command_Pause* pause) {
     int count = pause->unit_num;

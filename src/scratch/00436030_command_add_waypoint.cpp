@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#ifndef COMMAND_TU_CONTEXT
 struct XYZBYTEPoint {
     unsigned char x;
     unsigned char y;
@@ -39,9 +40,12 @@ public:
     void command_add_waypoint(int player, int obj_id, XYZBYTEPoint* pts, int count);
     void submit(void* buf, int size);
 };
+#endif
 
+#ifndef COMMAND_TU_CONTEXT
 extern void __cdecl TDebuggingLog_Log(void* log, const char* fmt, int, const char*);
 extern void* L;                     // 0x62C4FC
+#endif
 
 void RGE_Command::command_add_waypoint(int player, int obj_id, XYZBYTEPoint* pts, int count)
 {

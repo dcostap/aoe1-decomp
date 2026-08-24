@@ -12,6 +12,7 @@
 // Remaining: 2 bytes at offsets 0x6E/0x72 - eax vs ecx for group pointer after game->prog_mode check.
 // Benign register choice; proposed accepted_drift.
 
+#ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
 struct VirtualTarget {
     virtual void vf00() = 0;
     virtual void vf04() = 0;
@@ -72,6 +73,7 @@ public:
 
     RGE_Static_Object* make_new_object(long id, float x, float y, float z, int unused);
 };
+#endif
 
 RGE_Static_Object* TRIBE_Player::make_new_object(long id, float x, float y, float z, int unused)
 {

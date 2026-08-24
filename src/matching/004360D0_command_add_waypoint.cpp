@@ -16,6 +16,7 @@
 // Retry 2026-05-20 assigned pass: tried #define L absolute, pre-byte locals before calloc, volatile byte stores/params/slot writes, raw uchar buffer, int/char parameter width variants, player/rec dependency expressions, include <stdlib.h>, string literals, and several packet store orders. Exact came from writing the packet header stores first (`cmd/player/rec/one`) followed by waypoint bytes (`p3/p4/p5`); VC5 rescheduled these into the original pre-add-esp byte/dword load order and matched fully.
 
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
+#ifndef COMMAND_TU_CONTEXT
 class RGE_Static_Object_Type { public: char gap_00[8]; char* name; };
 class RGE_Static_Object { public: char gap_00[8]; RGE_Static_Object_Type* master_obj; };
 class RGE_Game_World { public: RGE_Static_Object* object(int id); };
@@ -23,6 +24,7 @@ class TDebuggingLog { public: void Log(const char* fmt, ...); };
 extern TDebuggingLog* L;
 struct WayPacket { unsigned char cmd; unsigned char player; char pad2[2]; int rec; unsigned char one; unsigned char p3; unsigned char p4; unsigned char p5; char rest[12]; };
 class RGE_Command { public: char gap_00[4]; RGE_Game_World* world; void submit(void* buf, int size); void command_add_waypoint(int player, int rec, unsigned char p3, unsigned char p4, unsigned char p5); };
+#endif
 
 void RGE_Command::command_add_waypoint(int player, int rec, unsigned char p3, unsigned char p4, unsigned char p5) {
     WayPacket* buf = (WayPacket*)calloc(1, 0x18);

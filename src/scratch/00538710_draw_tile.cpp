@@ -55,6 +55,7 @@
 // Current clean unresolved source: 1108B effective code, 0x28 frame, 3 returns,
 // 11 aligned calls, 1049 strict diff bytes, and 80.85% shape similarity.
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 struct TShape;
 
 struct RGE_Tile {
@@ -145,6 +146,7 @@ public:
                   short x, short y, short map_x, short map_y,
                   unsigned char draw_attribute, int draw1, int draw2);
 };
+#endif
 
 extern int View_Grid_Mode;
 extern int view_debug_ObstructionMap;

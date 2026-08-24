@@ -101,6 +101,7 @@
 // This supersedes the previous 28-byte best; the old round-3 residual (EDI push
 // before the last count, p2 home before p1) is fully resolved.
 
+#ifndef COMMAND_TU_CONTEXT
 struct RGE_Command_Order {
     long unknown_00;    // +0x00
     long target_id;     // +0x04
@@ -125,14 +126,15 @@ public:
 protected:
     unsigned char duplicate_check_command_order(RGE_Command_Order* param_1);
 };
+#endif
 
 unsigned char RGE_Command::duplicate_check_command_order(RGE_Command_Order* param_1)
 {
     unsigned int n = (unsigned char)param_1->unit_num;
-    long* p1 = param_1->units;
+    long* p1 = (long*)param_1->units;
     RGE_Command_Order* last_order = (RGE_Command_Order*)this->last_order;
     unsigned int last_n = (unsigned char)last_order->unit_num;
-    long* p2 = last_order->units;
+    long* p2 = (long*)last_order->units;
 
     if (n == last_n) {
         // The executable converts the incoming order first. Equality is

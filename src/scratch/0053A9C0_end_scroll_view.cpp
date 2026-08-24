@@ -7,12 +7,14 @@
 extern "C" __declspec(dllimport) int __stdcall ClientToScreen(void* hWnd, tagPOINT* point);
 extern "C" __declspec(dllimport) int __stdcall SetCursorPos(int x, int y);
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 class RGE_Base_Game {
 public:
     void mouse_on();
 };
 
 extern RGE_Base_Game* rge_base_game;
+#endif
 
 // TPanel virtual methods (first 9, set_redraw at vtable slot 8 = offset 0x20)
 class TPanel_Base {

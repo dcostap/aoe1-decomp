@@ -53,6 +53,7 @@
 
 #include <stdio.h>
 
+#ifndef TRIBEGAM_TU_CONTEXT
 class TPanel;
 class TDrawArea;
 class TDrawSystem;
@@ -420,6 +421,7 @@ public:
 
     void add_notification_loc(long x, long y);
 };
+#endif
 
 extern int player_dropped[9];
 

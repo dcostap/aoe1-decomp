@@ -1,4 +1,5 @@
 // scr_game.cpp:2051-2073, 105 bytes
+#if !defined(SCR_GAME_TU_CONTEXT)
 // attempt 1: wrapper calls remove_message on 6 panels, forwards to base
 class TMessagePanel {
 public:
@@ -22,6 +23,7 @@ public:
 
     long handle_mouse_down(unsigned char param1, long param2, long param3, int param4, int param5);
 };
+#endif
 
 long TRIBE_Screen_Game::handle_mouse_down(unsigned char param1, long param2, long param3, int param4, int param5) {
     msg_panel_0->remove_message();

@@ -8,8 +8,11 @@
 
 class TDebuggingLog;
 extern TDebuggingLog* DAT_0062C4FC;
+#if !defined(COM_HAND_TU_CONTEXT)
 extern void Log(TDebuggingLog* log, char* text);
+#endif // COM_HAND_TU_CONTEXT
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_00[0x1C];
@@ -23,6 +26,8 @@ public:
     long CommOut(int, int, int, int, int);
     void RequestResumeGame(int value);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 void TCommunications_Handler::RequestResumeGame(int) {
     if (this->Multiplayer == 0) {

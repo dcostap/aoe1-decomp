@@ -31,6 +31,7 @@
 // Rejected probes tested case order, switch exits, aliases, class call surfaces,
 // arithmetic order, local scope, conditional assignment, and timer constants.
 
+#ifndef ACT_GATH_CONTEXT_H
 class RGE_Action_Object;
 class RGE_Static_Object;
 class RGE_Task;
@@ -343,6 +344,7 @@ class RGE_Action_Gather : public RGE_Action {
 public:
     unsigned char update();
 };
+#endif
 
 extern float DAT_0056e278;
 extern double DAT_0056e280;

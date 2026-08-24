@@ -1,3 +1,4 @@
+#ifndef COMMAND_TU_CONTEXT
 struct RGE_Command_Destroy_Group {
     char gap_00[1];
     unsigned char player_id;
@@ -31,6 +32,7 @@ public:
 
     void do_command_destroy_group(RGE_Command_Destroy_Group* cmd);
 };
+#endif
 
 void RGE_Command::do_command_destroy_group(RGE_Command_Destroy_Group* cmd) {
     RGE_Static_Object* obj = (RGE_Static_Object*)this->world->object(cmd->groupCommander);

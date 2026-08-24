@@ -89,6 +89,7 @@
 
 #include <string.h>
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 struct tagPOINT {
     long x;
     long y;
@@ -115,6 +116,7 @@ struct RGE_View {
                        long x, long y,
                        RGE_Pick_Info* param_5, RGE_Static_Object* param_6);
 };
+#endif
 
 unsigned char RGE_View::pick(unsigned char param_1, unsigned char param_2,
                               long x, long y,

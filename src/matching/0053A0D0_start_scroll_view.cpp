@@ -49,6 +49,7 @@
 //     in the final success arm, and return it once. This gives an exact 437 B
 //     MATCH with the canonical TPanel/RGE_View ABI and no codegen-only tricks.
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 struct RGE_Static_Object;
 struct RGE_Tile;
 struct RGE_Game_World;
@@ -189,6 +190,7 @@ public:
     void set_selection_area(long x1, long y1, long x2, long y2);
 
 };
+#endif
 
 int RGE_View::start_scroll_view(unsigned char action, long x, long y,
                                 int p4, int p5)

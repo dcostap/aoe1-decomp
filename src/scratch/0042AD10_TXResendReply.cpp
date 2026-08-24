@@ -53,16 +53,23 @@
 
 typedef unsigned int uint;
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TDebuggingLog {
 public:
     void Log(char* fmt, ...);
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class RGE_Comm_Error {
 public:
     void ShowReturn(long result, char* text);
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class IDirectPlay3 {
 public:
     virtual long __stdcall QueryInterface(void*, void**) = 0;
@@ -94,15 +101,26 @@ public:
     virtual int __stdcall Send(unsigned int from, unsigned int to,
                                int flags, void* data, unsigned int size) = 0;
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 extern unsigned long debug_timeGetTime(const char* file, int line);
+#endif // COM_HAND_TU_CONTEXT
 extern "C" int sprintf(char* buffer, const char* format, ...);
 extern void* operator new(unsigned int size);
 extern void operator delete(void* ptr);
+#if !defined(COM_HAND_TU_CONTEXT)
 extern TDebuggingLog* L;
+#endif // COM_HAND_TU_CONTEXT
+#if !defined(COM_HAND_TU_CONTEXT)
 extern unsigned int DAT_0062cf04;
+#endif // COM_HAND_TU_CONTEXT
+#if !defined(COM_HAND_TU_CONTEXT)
 extern IDirectPlay3* DAT_0062c5ec;
+#endif // COM_HAND_TU_CONTEXT
 
+#if !defined(COM_HAND_TU_CONTEXT)
 struct RESENDER {
     unsigned long TimeSent;
     unsigned int Serial;
@@ -110,6 +128,8 @@ struct RESENDER {
     unsigned int Length;
     unsigned int DestMap[10];
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 struct MSGFORMAT_RESEND {
     unsigned char Command;
@@ -117,6 +137,7 @@ struct MSGFORMAT_RESEND {
     unsigned int Serialno;
 };
 
+#if !defined(COM_HAND_TU_CONTEXT)
 struct COMMPLAYEROPTIONS {
     char pad_00[8];
     int ProgramState;
@@ -124,7 +145,10 @@ struct COMMPLAYEROPTIONS {
     unsigned int dcoID[10];
     char tail[0x1D0 - 0x3C];
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_0000[0xFC5];
@@ -151,6 +175,8 @@ public:
     void ClearTXForPlayer(uint player);
     int PurgeAcknowledgedStoredMessages();
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 int TCommunications_Handler::TXResendReply(uint serial, uint player)
 {

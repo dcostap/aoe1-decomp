@@ -8,6 +8,7 @@ public:
     int multiplayer_flag;
 };
 
+
 int TCommunications_Handler_mpgs::MultiplayerGameStart(void) {
     if (!this->multiplayer_flag)
         return 1;

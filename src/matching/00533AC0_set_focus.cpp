@@ -1,3 +1,4 @@
+#ifndef RGE_VIEW_SHARED_CONTEXT
 class TMousePointer {
 public:
     void set_game_enable(int enabled);
@@ -17,6 +18,7 @@ public:
 
     virtual void set_focus(int focus);
 };
+#endif
 
 void RGE_View::set_focus(int focus) {
     ((TPanel*)this)->set_focus(focus);

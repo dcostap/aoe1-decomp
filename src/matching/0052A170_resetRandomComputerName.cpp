@@ -1,3 +1,4 @@
+#ifndef TRIBEGAM_TU_CONTEXT
 class TRIBE_Game {
 public:
     char gap_00[0x1198];
@@ -5,11 +6,12 @@ public:
 
     void resetRandomComputerName();
 };
+#endif
 
 void TRIBE_Game::resetRandomComputerName() {
     int i;
 
     for (i = 0; i < 0x28; i++) {
-        this->computerNameUsed[i] = 0;
+        ((unsigned long*)this->computerNameUsed)[i] = 0;
     }
 }

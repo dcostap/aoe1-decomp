@@ -1,3 +1,4 @@
+#ifndef PNL_TXT_TU_CONTEXT
 class TTextPanel {
 public:
     unsigned char gap_00[0xF8];
@@ -7,6 +8,7 @@ public:
 
     long get_line();
 };
+#endif
 
 long TTextPanel::get_line() {
     if (num_lines == 0) {

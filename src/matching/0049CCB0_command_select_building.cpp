@@ -15,6 +15,7 @@
 // - Main-agent audit restored canonical polymorphic object/player/game/view
 //   ownership; exact bytes were revalidated after promotion.
 
+#if !defined(SCR_GAME_TU_CONTEXT)
 class RGE_Master_Static_Object {
 public:
     virtual ~RGE_Master_Static_Object();
@@ -78,6 +79,7 @@ public:
 
     void command_select_building(int value);
 };
+#endif
 
 void TRIBE_Screen_Game::command_select_building(int value) {
     int object_id;

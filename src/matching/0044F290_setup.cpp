@@ -21,6 +21,7 @@ extern "C" {
 extern float save_game_version;
 extern float DAT_00570484;
 
+#ifndef RGE_MAC_OBJ_SHARED_CONTEXT
 class RGE_Sprite;
 class RGE_Sound;
 class RGE_Static_Object;
@@ -92,6 +93,7 @@ public:
     virtual RGE_Task_List* create_task_list();
     int setup(int fd, RGE_Sprite** sprites, RGE_Sound** sounds);
 };
+#endif
 
 int RGE_Master_Action_Object::setup(int fd, RGE_Sprite** sprites,
                                     RGE_Sound** sounds)

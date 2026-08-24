@@ -6,6 +6,7 @@
 
 extern "C" long __cdecl _ftol();
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 struct RGE_Object_Info {
     char gap_00[0x26];
     short field_26;
@@ -43,6 +44,7 @@ public:
 
     void modify_delta(float delta, unsigned int type);
 };
+#endif
 
 void RGE_Static_Object::modify_delta(float delta, unsigned int type)
 {
@@ -50,7 +52,7 @@ void RGE_Static_Object::modify_delta(float delta, unsigned int type)
     switch (op) {
     case 1:
         if (this->tile != 0 && this->object_state == 2) {
-            int owner = this->owner;
+            RGE_Player* owner = this->owner;
             this->vfDC(owner, 0, -1);
             RGE_Object_Info* info = this->object_info;
             this->vfD8(this->owner, 0, (int)(info->screen_x_offset + delta));

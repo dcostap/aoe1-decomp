@@ -2,6 +2,7 @@
 // result: the stable basin needed the local SelectObjectFn temp so VC5 would load the function pointer into EBX
 // attempt 2: keep the TPanel base size at 0xF4 and the TTextPanel font at +0x104
 
+#ifndef PNL_TXT_TU_CONTEXT
 typedef struct tagRECT {
     long left;
     long top;
@@ -9,10 +10,14 @@ typedef struct tagRECT {
     long bottom;
 } RECT;
 
+#endif
 typedef void* (__stdcall *SelectObjectFn)(void* hdc, void* obj);
+#ifndef PNL_TXT_TU_CONTEXT
 extern SelectObjectFn SelectObject;
+#endif
 extern char s_pnl_txt__get_text_rect[];
 
+#ifndef PNL_TXT_TU_CONTEXT
 class TDrawArea {
 public:
     void* GetDc(char* unused);
@@ -34,6 +39,7 @@ public:
     int calc_line_pos(void* dc, int a, int b, RECT* rect, long* out);
     int get_text_rect(RECT* rect);
 };
+#endif
 
 int TTextPanel::get_text_rect(RECT* rect) {
     void* dc = this->render_area->GetDc(s_pnl_txt__get_text_rect);

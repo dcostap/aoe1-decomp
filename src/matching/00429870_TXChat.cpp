@@ -16,19 +16,29 @@
 
 extern "C" char* __cdecl strncpy(char*, const char*, unsigned int);
 extern "C" unsigned int __cdecl strlen(const char*);
+#if !defined(COM_HAND_TU_CONTEXT)
 extern void* L;
+#endif // COM_HAND_TU_CONTEXT
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TChat {
 public:
     int AddChatMsg(char* name, char* text, int flag);
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class RGE_Comm_Error {
 public:
     void ShowReturn(long code, const char* where);
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 extern "C" void __cdecl Log(void* obj, const char* fmt, ...);
+#endif // COM_HAND_TU_CONTEXT
 
 struct MSGFORMAT_CHAT_LOCAL {
     unsigned char from;       // +0
@@ -38,6 +48,7 @@ struct MSGFORMAT_CHAT_LOCAL {
     char msg[256];            // +0x11
 };
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char pad_0000[0x18];
@@ -58,6 +69,8 @@ public:
     int IsPlayerHuman(unsigned int player);
     long CommOut(int a, int type, void* data, int len, int flag);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 long TCommunications_Handler::TXChat(unsigned int player, unsigned char* destMap, char* text)
 {
@@ -100,7 +113,7 @@ long TCommunications_Handler::TXChat(unsigned int player, unsigned char* destMap
     cht.len = len;
     strncpy(cht.msg, text, len + 1);
     cht.msg[255] = 0;
-    if (this->ProgramState == 3) {
+    if (this->PlayerOptions.ProgramState == 3) {
         cht.joinNow = 1;
     } else {
         cht.joinNow = 0;

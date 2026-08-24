@@ -2,6 +2,7 @@
 // VA: 00433E20
 // Retry 2026-05-24 Boss pass in progress.
 
+#ifndef COMMAND_TU_CONTEXT
 class RGE_Command {
 public:
     virtual void do_command(void* cmd);
@@ -22,6 +23,7 @@ public:
     void do_command_add_to_group(void* cmd);
     void do_command_remove_from_group(void* cmd);
 };
+#endif
 
 void RGE_Command::do_command(void* cmd)
 {

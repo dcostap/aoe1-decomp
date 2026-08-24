@@ -48,26 +48,41 @@
 
 #include <string.h>
 
+#if !defined(COM_HAND_TU_CONTEXT)
 extern "C" void __cdecl Log(void* log, char* fmt, ...);
+#endif // COM_HAND_TU_CONTEXT
 
+#if !defined(COM_HAND_TU_CONTEXT)
 extern void* L;                    // TDebuggingLog* at [0x62C4FC]
+#endif // COM_HAND_TU_CONTEXT
+#if !defined(COM_HAND_TU_CONTEXT)
 extern unsigned int DAT_0062c5ec;  // DirectPlay interface pointer [0x62C5EC]
+#endif // COM_HAND_TU_CONTEXT
+#if !defined(COM_HAND_TU_CONTEXT)
 extern unsigned int DAT_0062cf04;  // self DPID [0x62CF04]
+#endif // COM_HAND_TU_CONTEXT
 
 #define COMM_STATE_ERROR 1
 
+#if !defined(COM_HAND_TU_CONTEXT)
 struct DPNAME {
     unsigned long dwSize;        // +0x00
     unsigned long dwFlags;       // +0x04
     char* lpszShortName;         // +0x08 (ANSI)
     char* lpszLongName;          // +0x0C
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class RGE_Comm_Error {
 public:
     void ShowReturn(long result, char* msg);
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 struct IDirectPlayVtbl {
     char gap_00[0x18];
     long (__stdcall* CreatePlayer)(void* self, unsigned long* dpid,
@@ -75,18 +90,27 @@ struct IDirectPlayVtbl {
                                    unsigned long dataSize, unsigned long flags,
                                    void* playerData);
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 struct IDirectPlay {
     IDirectPlayVtbl* vtbl;
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 struct COMMPLAYEROPTIONS {
     unsigned char NeedsToBeSent;
     unsigned char _pad_0[3];
     unsigned long LastSentTime;
     int ProgramState;            // +0x1558
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_00[0x10F8];
@@ -102,6 +126,8 @@ public:
     void ReleaseComm();
     void GetMyMultiPlayerCaps();
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 int TCommunications_Handler::AddSelfPlayer()
 {
@@ -109,9 +135,9 @@ int TCommunications_Handler::AddSelfPlayer()
 
     DPNAME dpid;
     memset(&dpid, 0, sizeof(dpid));
-    dpid.lpszShortName = this->MyFriendlyName;
+    dpid.lpszShortName = (unsigned short*)this->MyFriendlyName;
     dpid.dwSize = sizeof(dpid);
-    dpid.lpszLongName = this->MyFormalName;
+    dpid.lpszLongName = (unsigned short*)this->MyFormalName;
 
     Log(L, "Adding player [%s]", this->MyFriendlyName);
 

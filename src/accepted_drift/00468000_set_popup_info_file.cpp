@@ -10,6 +10,7 @@
 
 #include <string.h>
 
+#ifndef AOE1_PANEL_EZ_CONTEXT_H
 class TEasy_Panel {
 public:
     char gap_00[0x340];
@@ -19,6 +20,7 @@ public:
 
     void set_popup_info_file(const char* filename, long id);
 };
+#endif
 
 void TEasy_Panel::set_popup_info_file(const char* filename, long id) {
     if (filename) {

@@ -24,6 +24,7 @@ class RGE_Player;
 class RGE_Object_Node;
 class RGE_Object_List;
 class RGE_Active_Sprite_List;
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Sound { public: void play(int); };
 
 extern int __cdecl debug_rand(char* file, int line);
@@ -142,6 +143,7 @@ public:
     void give_attribute_to_owner();
     int setup(RGE_Master_Static_Object* master, RGE_Player* player, float x, float y, float z);
 };
+#endif
 
 int RGE_Static_Object::setup(RGE_Master_Static_Object* master, RGE_Player* player, float x, float y, float z)
 {

@@ -38,6 +38,7 @@
 // expressions in the checks; named tile_up/tile_down locals perturbed VC5
 // register allocation (see attempt log).
 
+#ifndef TMAP_GROUP_CONTEXT
 struct RGE_Tile {
     short screen_xpos;         // +0x00
     short screen_ypos;         // +0x02
@@ -61,6 +62,7 @@ class TRIBE_Map : public RGE_Map {
 public:
     unsigned char do_terrain_brush_check(long x, long y);
 };
+#endif
 
 unsigned char TRIBE_Map::do_terrain_brush_check(long x, long y)
 {

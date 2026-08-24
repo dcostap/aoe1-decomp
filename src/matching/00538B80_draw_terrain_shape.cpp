@@ -13,9 +13,12 @@
 // 11: Declared draw_x before draw_y. VC5 then assigned EDI/EBP like the original; exact 472-byte match.
 // Exact: the source uses named shape hotspots, map fog state, and terrain/fog span-list ownership.
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 extern int fog_next_shape;
 extern "C" void __cdecl _ASMSet_Shadowing(int a, int b, int c, int d);
+#endif
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 class TSpan_List_Manager;
 
 class TDrawArea {
@@ -59,6 +62,7 @@ public:
 
     void draw_terrain_shape(int x, int y, TShape* shape, int frame, unsigned char vis, unsigned char fog_flag, int draw1, int draw2);
 };
+#endif
 
 void RGE_View::draw_terrain_shape(int x, int y, TShape* shape, int frame, unsigned char vis, unsigned char fog_flag, int draw1, int draw2)
 {

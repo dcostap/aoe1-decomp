@@ -25,6 +25,7 @@
 #define STR_SEND_CMD_WORK "      >SEND CMD WORK (CNT=%d,OWN=%d,UNIT=%s,TAR=%s)"
 #define STR_X             "X"
 
+#ifndef COMMAND_TU_CONTEXT
 class RGE_Master_Static_Object {
 public:
     virtual ~RGE_Master_Static_Object();
@@ -70,6 +71,7 @@ class TDebuggingLog {
 public:
     void Log(const char* fmt, ...);
 };
+#endif
 
 extern TDebuggingLog* L;
 

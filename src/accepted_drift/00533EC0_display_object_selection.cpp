@@ -13,6 +13,7 @@
 
 extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 class RGE_View {
 public:
     virtual void vf00();
@@ -32,6 +33,7 @@ public:
 
     void display_object_selection(int param_1, int param_2, int param_3, int param_4);
 };
+#endif
 
 void RGE_View::display_object_selection(int param_1, int param_2, int param_3, int param_4)
 {

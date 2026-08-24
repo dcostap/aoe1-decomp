@@ -41,6 +41,7 @@
 // zero assignment with one common return; this recovers the target block shape
 // and exact stack homes. The declaration initializer is unnecessary.
 
+#ifndef TMAP_GROUP_CONTEXT
 struct TRIBE_Cliff_Info {
     long info[4];
 };
@@ -166,6 +167,9 @@ public:
 };
 
 extern int __cdecl debug_rand(char* file, int line);
+#else
+extern int __cdecl debug_rand(char* file, int line);
+#endif
 
 RGE_Static_Object* TRIBE_Map::make_new_cliff(long x, long y,
                                               TRIBE_Cliff_Info info)

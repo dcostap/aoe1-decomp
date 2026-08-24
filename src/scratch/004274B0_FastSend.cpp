@@ -16,18 +16,23 @@ extern void* direct_play;
 
 extern "C" void __cdecl debug_log_write(void* log, const char* msg);
 extern "C" void __cdecl debug_log_write_int(void* log, const char* msg, int value);
+#if !defined(COM_HAND_TU_CONTEXT)
 extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
+#endif // COM_HAND_TU_CONTEXT
 
+#if !defined(COM_HAND_TU_CONTEXT)
 struct DirectPlayVtbl {
     char pad_00[0x68];
     long (__stdcall* Send)(void* self, unsigned long from, unsigned long to, unsigned long flags, void* data, unsigned long size);
 };
+#endif // COM_HAND_TU_CONTEXT
 
 class ErrorLogger {
 public:
     void log(long hr, const char* msg);
 };
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char pad_00[0x10E0];
@@ -42,6 +47,8 @@ public:
     int player_connected(int player);
     long FastSend(unsigned long to, void* data, unsigned long size, int param_4, int param_5);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 long TCommunications_Handler::FastSend(unsigned long to, void* data, unsigned long size, int param_4, int param_5) {
     unsigned long start;

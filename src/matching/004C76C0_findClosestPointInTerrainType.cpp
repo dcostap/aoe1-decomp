@@ -1,6 +1,7 @@
 // VA: 004C76C0 RGE_Static_Object::findClosestPointInTerrainType
 // stat_obj.cpp
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 struct XYPoint {
     int x;
     int y;
@@ -53,10 +54,12 @@ public:
     int findClosestPointInTerrainType(XYPoint point, XYPoint* out, int a, int b, int c);
 };
 
+#endif
+
 int RGE_Static_Object::findClosestPointInTerrainType(XYPoint point, XYPoint* out, int a, int b, int c) {
     RGE_Zone_Map* zone_map;
     if (this->zoneMapIndex == -1) {
-        RGE_World* world = this->owner->world;
+        RGE_Game_World* world = this->owner->world;
         zone_map = world->map->map_zones->get_zone_map(world->terrains[this->master_obj->terrain], world->terrain_size, &this->zoneMapIndex);
     } else {
         zone_map = this->owner->world->map->map_zones->get_zone_map(this->zoneMapIndex);

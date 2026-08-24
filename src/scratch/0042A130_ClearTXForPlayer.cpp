@@ -5,6 +5,7 @@ public:
     int* tx_data;
 };
 
+
 void TCommunications_Handler_ctx::ClearTXForPlayer(int player) {
     int index = player + 4;
     int count = 0x1F6;

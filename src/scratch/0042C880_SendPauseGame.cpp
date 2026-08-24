@@ -5,6 +5,7 @@ class TDebuggingLog;
 
 void TDebuggingLog_Log(TDebuggingLog* log, const char* msg);
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_00[0x1C];
@@ -15,6 +16,8 @@ public:
     long CommOut(int, int, int, int, int);
     void SendPauseGame(int param_1);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 void TCommunications_Handler::SendPauseGame(int param_1) {
     if (this->Multiplayer == 0) {

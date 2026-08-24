@@ -31,6 +31,7 @@
 //   makes VC5 move the cursor into EBP before storing the reused count home,
 //   producing an exact 239-byte match with the canonical typed surfaces.
 
+#ifndef COMMAND_TU_CONTEXT
 struct RGE_Obj_Info {
     int id;
 };
@@ -95,6 +96,7 @@ public:
     RGE_Static_Object* get_obj(RGE_Obj_Info info);
     void do_command_group_ai_order(RGE_Command_Group_AI_Order* command);
 };
+#endif
 
 void RGE_Command::do_command_group_ai_order(RGE_Command_Group_AI_Order* command)
 {

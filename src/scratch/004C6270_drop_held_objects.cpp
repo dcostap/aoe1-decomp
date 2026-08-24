@@ -75,6 +75,7 @@
 //   separate typed source and do not claim the pointer-overlap candidate.
 
 class RGE_Static_Object;
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Master_Static_Object {
 public:
     virtual ~RGE_Master_Static_Object();
@@ -194,6 +195,7 @@ public:
     unsigned char find_drop_location(int mode, float* x, float* y, RGE_Master_Static_Object* master, RGE_Static_Object* obj, float drop_x, float drop_y, float radius_x, float radius_y);
     unsigned char drop_held_objects(int mode);
 };
+#endif
 
 unsigned char RGE_Static_Object::drop_held_objects(int mode)
 {

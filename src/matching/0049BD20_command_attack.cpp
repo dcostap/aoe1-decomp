@@ -1,3 +1,4 @@
+#if !defined(SCR_GAME_TU_CONTEXT)
 class TMessagePanel {
 public:
     void show_message(int type, char* text, unsigned char a3, unsigned char a4, void* user, int x, int y);
@@ -31,6 +32,7 @@ public:
 
     void command_attack(void);
 };
+#endif
 
 void TRIBE_Screen_Game::command_attack(void) {
     if (rge_base_game->get_paused() != 0) {

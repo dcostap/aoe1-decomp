@@ -16,6 +16,7 @@ class RGE_Static_Object;
 class RGE_Master_Static_Object;
 class RGE_Player;
 class RGE_Object_Node;
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Sound { public: void play(int); };
 class RGE_Game_World {
 public:
@@ -145,6 +146,7 @@ public:
     void give_attribute_to_owner();
     void recycle_in_to_game(RGE_Master_Static_Object* master, RGE_Player* player, float x, float y, float z);
 };
+#endif
 
 void RGE_Static_Object::recycle_in_to_game(RGE_Master_Static_Object* master, RGE_Player* player, float x, float y, float z)
 {

@@ -1,3 +1,4 @@
+#ifndef RDLG_LST_TU_CONTEXT
 struct RGE_Dialog_List_Info {
     char gap_00[0x64];
     short id;
@@ -12,6 +13,7 @@ public:
 
     virtual short get_list_id(void);
 };
+#endif
 
 short RGE_Dialog_List::get_list_id(void) {
     short index = this->selected_index;

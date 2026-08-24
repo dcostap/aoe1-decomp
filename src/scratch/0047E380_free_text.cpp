@@ -5,6 +5,9 @@
 
 extern "C" void __cdecl free(void* block);
 
+#ifdef PNL_TXT_TU_CONTEXT
+#define TTTextPanel TTTextPanel_0047E380
+#endif
 class TTTextPanel {
 public:
     virtual void vf00();
@@ -52,3 +55,6 @@ void TTTextPanel::free_text(void) {
     this->calc_draw_info(1);
     this->vf20(1);
 }
+#ifdef PNL_TXT_TU_CONTEXT
+#undef TTTextPanel
+#endif

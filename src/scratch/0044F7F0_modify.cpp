@@ -1,3 +1,5 @@
+#ifndef RGE_MAC_OBJ_SHARED_CONTEXT
+class RGE_Sprite;
 class RGE_Master_Static_Object {
 public:
     virtual void modify(float value, unsigned char attribute);
@@ -27,6 +29,7 @@ public:
 
     void modify(float value, unsigned char attribute);
 };
+#endif
 
 void RGE_Master_Action_Object::modify(float value, unsigned char attribute) {
     if (attribute != 0x0D) {

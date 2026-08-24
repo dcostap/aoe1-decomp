@@ -22,6 +22,7 @@
 #define STR_X                 ((const char*)0x00583B74)
 #define PTR_L                 ((void*)0x0062C4FC)
 
+#ifndef COMMAND_TU_CONTEXT
 class RGE_Game_World;
 class RGE_Static_Object;
 
@@ -44,6 +45,7 @@ public:
     char pad_00[0x08];
     void* field_08;
 };
+#endif
 
 void __cdecl RGE_Log(void* log, const char* fmt, int count, int player, const char* name);
 

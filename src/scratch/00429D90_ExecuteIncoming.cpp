@@ -67,21 +67,33 @@ typedef unsigned int uint;
 
 #include <stdio.h>
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TDebuggingLog {
 public:
     void Log(char* fmt, ...);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 void operator delete(void* p);
+#if !defined(COM_HAND_TU_CONTEXT)
 extern TDebuggingLog* L;
+#endif // COM_HAND_TU_CONTEXT
 
 static char s_clear_past[] = "+++Clearing PAST OnHold Slot=%d  Serial#%d Len=%d  From=%d  To=%d  HumanSerial#%d";
 static char s_cached[] = "Cached Execute #%d  Slot#%d ";
 static char s_clearing[] = "Clearing OnHold Slot=%d  Len=%d  From=%d  To=%d";
 
+#if !defined(COM_HAND_TU_CONTEXT)
 struct HOLDER { char* HoldMsg; uint Serial; uint Length; uint dcoFromID; uint dcoReceiveID; uint fromPlayer; };
-struct COMMPLAYEROPTIONS { char gap_00[0x14]; uint dcoID[10]; };
+#endif // COM_HAND_TU_CONTEXT
 
+#if !defined(COM_HAND_TU_CONTEXT)
+struct COMMPLAYEROPTIONS { char gap_00[0x14]; uint dcoID[10]; };
+#endif // COM_HAND_TU_CONTEXT
+
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_0000[0x0fc5]; char TBuff[0x101];
@@ -95,6 +107,8 @@ public:
     int PreprocessMessages(uint len, void* msg, uint from, uint to, int cached);
     uint ExecuteIncoming();
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 uint TCommunications_Handler::ExecuteIncoming()
 {

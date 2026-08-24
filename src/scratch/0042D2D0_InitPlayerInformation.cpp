@@ -3,6 +3,7 @@
 // Size: 217 bytes
 // void __thiscall InitPlayerInformation(uint param_1, ulong param_2, char* param_3, char* param_4)
 
+#if !defined(COM_HAND_TU_CONTEXT)
 struct COMMPLAYEROPTIONS {
     unsigned char NeedsToBeSent;
     unsigned char _pad0[3];
@@ -34,11 +35,17 @@ struct COMMPLAYEROPTIONS {
     int GameHasStarted;
     unsigned long DataSizeToFollow;
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 struct RGE_Communications_Queue {
     void FlushForPlayer(int player);
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 struct TCommunications_Handler {
     unsigned char gap_00[0x12D8];
     unsigned short MaxGamePlayers;          // +0x12D8
@@ -58,6 +65,8 @@ struct TCommunications_Handler {
 
     void InitPlayerInformation(unsigned int param_1, unsigned long param_2, char* param_3, char* param_4);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 void __cdecl TDebuggingLog_Log(void* log, const char* fmt, ...);
 

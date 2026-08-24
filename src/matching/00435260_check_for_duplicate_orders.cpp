@@ -1,3 +1,4 @@
+#ifndef COMMAND_TU_CONTEXT
 class RGE_Command {
 public:
     char gap_00[0x8];
@@ -8,6 +9,7 @@ public:
     unsigned char check_for_duplicate_orders(unsigned char* order, long size);
     unsigned char close_check_for_duplicate_orders(unsigned char* order);
 };
+#endif
 
 unsigned long debug_timeGetTime(const char* file, int line);
 

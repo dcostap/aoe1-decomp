@@ -1,5 +1,6 @@
 // attempt 2: string-id wrapper that resolves text then delegates to the real virtual create_text slot
 
+#ifndef AOE1_PANEL_EZ_CONTEXT_H
 class TPanel {};
 class TTextPanel {};
 
@@ -73,8 +74,9 @@ public:
     virtual int create_text(TPanel* parent, TTextPanel** out, char* text, long p4, long p5, long p6, long p7, long p8, long p9, long p10, long p11);
     int create_text(TPanel* parent, TTextPanel** out, long string_id, long p4, long p5, long p6, long p7, long p8, long p9, long p10, long p11);
 };
+#endif
 
-int TEasy_Panel::create_text(TPanel* parent, TTextPanel** out, long string_id, long p4, long p5, long p6, long p7, long p8, long p9, long p10, long p11) {
+int TEasy_Panel::create_text(TPanel* parent, TTextPanel** out, int string_id, long p4, long p5, long p6, long p7, long p8, int p9, int p10, int p11) {
     char text[256];
 
     this->get_string(string_id, text, 0x100);

@@ -108,6 +108,7 @@
 #include "../../include/game_types.h"
 #include "../../include/game_globals.h"
 
+#if !defined(SCR_GAME_TU_CONTEXT)
 extern "C" unsigned long __cdecl debug_timeGetTime(char*, int);
 extern "C" void* __cdecl memset(void*, int, unsigned int);
 extern "C" int __cdecl sprintf(char*, const char*, ...);
@@ -338,6 +339,11 @@ extern TCommunications_Handler* comm;
 #define OFF8(o) (*(unsigned char*)((char*)this + (o)))
 #define MAIN_VIEW ((TRIBE_Main_View*)OFF32(0x4b8))
 #define MAP_VIEW ((TRIBE_Diamond_Map_View*)OFF32(0x4bc))
+#endif
+
+#if defined(SCR_GAME_TU_CONTEXT)
+TRIBE_Main_View::~TRIBE_Main_View() {}
+#endif
 
 TRIBE_Screen_Game::TRIBE_Screen_Game()
     : TScreenPanel(s_Game_Screen)

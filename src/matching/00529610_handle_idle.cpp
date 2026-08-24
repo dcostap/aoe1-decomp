@@ -22,15 +22,13 @@ extern "C" __declspec(dllimport) long __stdcall SendMessageA(
     void* hwnd, unsigned int message, unsigned int wparam, long lparam);
 
 #define last_wait_time (*(unsigned long*)0x0086BE04)
-#define out_of_sync2   (*(int*)0x0062C564)
+#define tribegam_out_of_sync2   (*(int*)0x0062C564)
 
+#ifndef TRIBEGAM_TU_CONTEXT
 class TDebuggingLog {
 public:
     void __cdecl Log(char* format, ...);
 };
-
-#define L (*(TDebuggingLog**)0x0062C4FC)
-
 class TCommunications_Handler {
 public:
     int MultiplayerGameStart();
@@ -172,6 +170,9 @@ public:
     void let_game_begin();
     int handle_idle();
 };
+#endif
+
+#define L (*(TDebuggingLog**)0x0062C4FC)
 
 int TRIBE_Game::handle_idle()
 {
@@ -243,7 +244,7 @@ int TRIBE_Game::handle_idle()
     } else if (this->prog_mode == 4 || this->prog_mode == 6 ||
                this->prog_mode == 5) {
         color_log(0x4C, 0x32, 5);
-        if (out_of_sync2 == 0 && this->game_screen != 0) {
+        if (tribegam_out_of_sync2 == 0 && this->game_screen != 0) {
             this->game_screen->handle_game_update();
         }
     }

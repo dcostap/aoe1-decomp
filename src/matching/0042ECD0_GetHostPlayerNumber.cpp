@@ -1,3 +1,4 @@
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     virtual ~TCommunications_Handler();
@@ -5,5 +6,7 @@ public:
     int field_1714;
     int GetHostPlayerNumber();
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 int TCommunications_Handler::GetHostPlayerNumber() { return this->field_1714; }

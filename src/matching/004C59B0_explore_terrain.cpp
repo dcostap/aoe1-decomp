@@ -10,6 +10,7 @@
 
 extern "C" long __cdecl _ftol(void);
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Master_Static_Object {
 public:
     virtual ~RGE_Master_Static_Object();
@@ -56,6 +57,7 @@ public:
 
     int explore_terrain(RGE_Player* player, unsigned char mode, int range);
 };
+#endif
 
 int RGE_Static_Object::explore_terrain(RGE_Player* player, unsigned char mode, int range)
 {

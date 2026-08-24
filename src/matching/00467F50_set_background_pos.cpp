@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_EZ_CONTEXT_H
 class TEasy_Panel {
 public:
     virtual ~TEasy_Panel();
@@ -5,5 +6,6 @@ public:
     int field_318;
     void set_background_pos(int v);
 };
+#endif
 
 void TEasy_Panel::set_background_pos(int v) { this->field_318 = v; }

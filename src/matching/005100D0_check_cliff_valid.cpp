@@ -1,6 +1,7 @@
 // VA: 005100D0 check_cliff_valid (49B)
 // tmap.cpp
 
+#ifndef TMAP_GROUP_CONTEXT
 struct TRIBE_Cliff_Info {
     int info[4];
 };
@@ -11,6 +12,7 @@ public:
 
     unsigned char check_cliff_valid(TRIBE_Cliff_Info param_1);
 };
+#endif
 
 unsigned char TRIBE_Map::check_cliff_valid(TRIBE_Cliff_Info param_1) {
     int temp = param_1.info[0] * 4 + param_1.info[1];

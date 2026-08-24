@@ -1,6 +1,7 @@
 // 004D1550 TRIBE_Action_Make_Obj::stop
 // Size: 150 bytes
 
+#ifndef TACT_MOB_SHARED_CONTEXT
 extern void* rge_base_game;
 
 class TRIBE_Player {
@@ -99,6 +100,7 @@ public:
     int unique_id;           // +0x48
     char pre_paid;           // +0x4C
 };
+#endif
 
 int TRIBE_Action_Make_Obj::stop() {
     void* obj_field_0C = *(void**)((char*)this->obj + 0x0C);
@@ -117,7 +119,11 @@ int TRIBE_Action_Make_Obj::stop() {
         }
     }
 
+#ifdef TACT_MOB_SHARED_CONTEXT
+    ((RGE_Base_Game_Hack*)rge_base_game)->display_message(0x67,
+#else
     ((RGE_Base_Game_Hack*)rge_base_game)->slot16(0x67,
+#endif
         *(short*)(*(int*)((char*)this->obj + 0x0C) + 0x4A),
         (int)this->obj_id, 0, 0);
 

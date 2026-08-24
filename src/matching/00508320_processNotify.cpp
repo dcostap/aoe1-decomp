@@ -46,6 +46,7 @@
 
 // This function uses the period UnitAIModule layout and the same-TU virtual surfaces as
 // the exact transport/fishing processNotify donors.  The target class adds no fields.
+#ifndef TAIUAIMD_COMPLETE_TU
 typedef unsigned long ulong;
 typedef unsigned char uchar;
 
@@ -207,6 +208,7 @@ class TribeBuildingUnitAIModule : public UnitAIModule {
 public:
     int processNotify(NotifyEvent* event, ulong param_2);
 };
+#endif
 
 int TribeBuildingUnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
 {
@@ -215,7 +217,11 @@ int TribeBuildingUnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
     {
         if (event->p2 <= 0) {
             RGE_Static_Object* obj = this->obj;
+#ifdef TAIUAIMD_COMPLETE_TU
+            taiuaimd_player_notify(obj->owner, obj->id, obj->id, 0x209, event->caller, 0, 0);
+#else
             obj->owner->notifyCommander(obj->id, obj->id, 0x209, event->caller, 0, 0);
+#endif
             this->purgeNotifyQueue(param_2);
             return 4;
         }
@@ -223,10 +229,18 @@ int TribeBuildingUnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
         if (this->attackingUnitsValue.numberValue == 0 ||
             this->obj->owner->computerPlayer() == 1) {
             RGE_Static_Object* obj = this->obj;
+#ifdef TAIUAIMD_COMPLETE_TU
+            taiuaimd_player_notify(obj->owner, obj->id, obj->id, 0x201, event->caller, 0, 0);
+#else
             obj->owner->notifyCommander(obj->id, obj->id, 0x201, event->caller, 0, 0);
+#endif
         }
 
+#ifdef TAIUAIMD_COMPLETE_TU
+        ManagedArray_int* array = (ManagedArray_int*)&this->attackingUnitsValue;
+#else
         ManagedArray_int* array = &this->attackingUnitsValue;
+#endif
         int count = array->numberValue;
         int i = 0;
         for (; i < count && i < array->maximumSizeValue; ++i) {
@@ -298,7 +312,11 @@ changed_258:
         return 2;
 
 found_2bb:
+#ifdef TAIUAIMD_COMPLETE_TU
+        ManagedArray_int* array = (ManagedArray_int*)&this->attackingUnitsValue;
+#else
         ManagedArray_int* array = &this->attackingUnitsValue;
+#endif
         int max = array->maximumSizeValue;
         int caller = event->caller;
         i = 0;

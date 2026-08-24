@@ -6,6 +6,7 @@
 // - counter inside the if block for conditional ebp save
 // - object local inside the loop for conditional esi save
 
+#ifndef COMMAND_TU_CONTEXT
 class RGE_Static_Object;
 class RGE_Command_Stop;
 
@@ -44,6 +45,7 @@ public:
 
     void removeAllFromPathingGroup();
 };
+#endif
 
 void RGE_Command::do_command_stop(RGE_Command_Stop* stop) {
     int count = stop->unit_num;

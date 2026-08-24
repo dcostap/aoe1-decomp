@@ -17,6 +17,7 @@
 typedef unsigned long ulong;
 
 #pragma pack(push, 4)
+#if !defined(COM_HAND_TU_CONTEXT)
 struct DPCAPS {
     ulong dwSize;
     ulong dwFlags;
@@ -29,35 +30,47 @@ struct DPCAPS {
     ulong dwMinThroughput;
     ulong dwMaxThroughput;
 };
+#endif // COM_HAND_TU_CONTEXT
 #pragma pack(pop)
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class RGE_Comm_Error {
 public:
     void* HostHWND;
     long LastReportedError;
     long ShowReturn(long result, const char* msg);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 // TDebuggingLog::Log is a __thiscall member function per PDB
 // But the call site pushes this on the stack AND sets ecx
+#if !defined(COM_HAND_TU_CONTEXT)
 class TDebuggingLog {
 public:
     void Log(const char* fmt, ...);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 extern void* g_pDirectPlay;
 extern void* g_pDirectPlayPlayer;
+#if !defined(COM_HAND_TU_CONTEXT)
 extern TDebuggingLog* g_pDebugLog;
+#endif // COM_HAND_TU_CONTEXT
 
 typedef long (__stdcall* GetCapsFn)(void* obj, void* player, DPCAPS* caps, ulong flags);
 
 #define OFF(offset) (*(unsigned long*)((char*)this + (offset)))
 #define OFF_BYTE(offset) (*(unsigned char*)((char*)this + (offset)))
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     long GetMyMultiPlayerCaps();
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 long TCommunications_Handler::GetMyMultiPlayerCaps()
 {

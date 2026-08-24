@@ -1,3 +1,4 @@
+#ifndef TRIBEGAM_TU_CONTEXT
 class TRIBE_Game {
 public:
     virtual ~TRIBE_Game();
@@ -6,4 +7,5 @@ public:
 
     void setAllowTrading(int);
 };
-void TRIBE_Game::setAllowTrading(int val) { this->allowTrading_ = val; }
+#endif
+void TRIBE_Game::setAllowTrading(int val) { this->tribe_game_options.allowTradingValue = (unsigned char)val; }

@@ -115,10 +115,15 @@ protected:
 
 public:
     unsigned long DoChecksum(unsigned long turn);
+    void SetLastWorldRandom(int value);
     void LogChecksums(unsigned int playerNo, unsigned long worldTime,
                       unsigned long commTurn, long unifiedVisible,
                       long checksumNew, long position, long action,
                       long obstruction, unsigned long random);
+    void EnableSyncChecking(int value);
+    void SetStopOnFail(int value);
+    void SetDialogOnFail(int value);
+    void SendChatMsgsAtChecksum(int value);
     int IsPlayerOutOfSync(unsigned int playerNo, unsigned long commTurn);
 };
 

@@ -87,31 +87,51 @@ class RGE_Lobby;
 class RGE_Communications_Speed;
 class RGE_Communications_Synchronize;
 
+#if !defined(COM_HAND_TU_CONTEXT)
 extern TDebuggingLog* L;
+#endif // COM_HAND_TU_CONTEXT
 void Log(TDebuggingLog* log, const char* format, ...);
+#if !defined(COM_HAND_TU_CONTEXT)
 extern "C" unsigned long debug_timeGetTime(char* file, int line);
+#endif // COM_HAND_TU_CONTEXT
 
+#if !defined(COM_HAND_TU_CONTEXT)
 struct GUID {
     unsigned long Data1;
     unsigned short Data2;
     unsigned short Data3;
     unsigned char Data4[8];
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 enum COMMSTATUS { UNINITIALIZED = 0, INITIALIZED = 1 };
-enum COMMSTATES { COMM_STATE_JOINNOW = 3 };
+#endif // COM_HAND_TU_CONTEXT
 
+#if !defined(COM_HAND_TU_CONTEXT)
+enum COMMSTATES { COMM_STATE_JOINNOW = 3 };
+#endif // COM_HAND_TU_CONTEXT
+
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class TDebuggingLog {
 public:
     void FlushToDisk(int param_1);
     void Time();
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class NAME {
 public:
     char Text[128];
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class RESENDER {
 public:
     unsigned long TimeSent;
@@ -122,7 +142,10 @@ public:
     RESENDER();
     ~RESENDER();
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class HOLDER {
 public:
     char* HoldMsg;
@@ -134,10 +157,13 @@ public:
     HOLDER();
     ~HOLDER();
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 class RGE_Communications_Addresses;
 class RGE_TimeSinceLastCall;
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class RGE_Communications_Queue {
 public:
     unsigned int QueueDepth;
@@ -153,7 +179,10 @@ public:
     ~RGE_Communications_Queue();
     void FlushAll();
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class RGE_Comm_Error {
 public:
     void* HostHWND;
@@ -161,7 +190,10 @@ public:
     RGE_Comm_Error(void* hwnd);
     ~RGE_Comm_Error();
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class RGE_Lobby {
 public:
     void* HostHWND;
@@ -175,7 +207,10 @@ public:
     RGE_Lobby(void* hwnd);
     ~RGE_Lobby();
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class RGE_Communications_Speed {
 public:
     char TBuff[255];
@@ -219,7 +254,10 @@ public:
     RGE_Communications_Speed(TCommunications_Handler* comm);
     ~RGE_Communications_Speed();
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class RGE_Communications_Synchronize {
 public:
     TCommunications_Handler* Comm;
@@ -238,7 +276,10 @@ public:
     RGE_Communications_Synchronize(TCommunications_Handler* comm);
     ~RGE_Communications_Synchronize();
 };
+#endif // COM_HAND_TU_CONTEXT
+
 #pragma pack(push, 1)
+#if !defined(COM_HAND_TU_CONTEXT)
 class COMMPLAYEROPTIONS {
 public:
     unsigned char NeedsToBeSent;      // +0x00
@@ -271,9 +312,12 @@ public:
     int GameHasStarted;               // +0x1C8
     unsigned long DataSizeToFollow;   // +0x1CC
 };
+#endif // COM_HAND_TU_CONTEXT
+
 #pragma pack(pop)
 
 #pragma pack(push, 4)
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     int OptionsChanged;                 // +0x00
@@ -388,6 +432,8 @@ public:
     void ClearRXandTX();
     void ResetLastCommunicationTimes();
 };
+#endif // COM_HAND_TU_CONTEXT
+
 #pragma pack(pop)
 
 #endif

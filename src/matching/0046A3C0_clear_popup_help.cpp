@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_EZ_CONTEXT_H
 class TMousePointer {
 public:
     void set_game_enable(int v);
@@ -21,6 +22,7 @@ public:
 
     void clear_popup_help(void);
 };
+#endif
 
 extern RGE_Base_Game* rge_base_game;
 extern "C" __declspec(dllimport) void* __stdcall LoadCursorA(void*, const char*);

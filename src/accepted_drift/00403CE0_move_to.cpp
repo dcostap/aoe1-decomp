@@ -5,6 +5,7 @@
 // All three fields written correctly, behavior identical.
 // ACCEPTED_DRIFT: register allocation only, behavioral equivalence.
 
+#ifndef ACT_GATH_CONTEXT_H
 struct ActionGatherVtable {
     virtual void _v00();
     virtual void _v04();
@@ -57,6 +58,7 @@ struct RGE_Action_Gather {
 
     virtual int move_to(RGE_Static_Object* target, float x, float y, float z);
 };
+#endif
 
 int RGE_Action_Gather::move_to(RGE_Static_Object* target, float x, float y, float z) {
     if (target != 0) {

@@ -3,11 +3,16 @@
 // 1: Direct reconstruction from packet: switch on event->mType, stop/log tails, special 0x25c/0x25b virtual flows, target-visible branch.
 // 2: Inlined repeated logging instead of helper; got to 1-byte diff. Fixed RGE_Player::visible_map offset from +34 to +38.
 
+#ifdef TAIUAIMD_COMPLETE_TU
+extern FILE* actionFile;
+#else
 extern void* actionFile;
+#endif
 extern int fprintf(void*, const char*, ...);
 extern const char str_taiuaimd_path[];
 extern const char str_fmt_stopObject[];
 
+#ifndef TAIUAIMD_COMPLETE_TU
 class RGE_Visible_Map;
 class RGE_Player { public: int computerPlayer(); char gap_00[0x38]; RGE_Visible_Map* visible_map; };
 class RGE_Static_Object { public: virtual void v00(); int id; char gap_08[4]; RGE_Player* owner; char gap_10[0x28]; float x; float y; };
@@ -54,6 +59,7 @@ public:
 
     int processNotify(NotifyEvent* event, unsigned long param_2);
 };
+#endif
 
 int TribePriestUnitAIModule::processNotify(NotifyEvent* event, unsigned long param_2)
 {
@@ -105,7 +111,12 @@ int TribePriestUnitAIModule::processNotify(NotifyEvent* event, unsigned long par
     {
         RGE_Static_Object* obj = this->lookupObject(this->field_34);
         if (obj != 0) {
+#ifdef TAIUAIMD_COMPLETE_TU
+            if (this->visibleStatus(taiuaimd_player_visible_map(this->objectValue->owner),
+                                    (int)obj->world_x, (int)obj->world_y) == 0x0f) {
+#else
             if (this->visibleStatus(this->objectValue->owner->visible_map, (int)obj->x, (int)obj->y) == 0x0f) {
+#endif
                 return 2;
             }
         }

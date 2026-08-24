@@ -1,5 +1,6 @@
 #include <stdlib.h>
 
+#ifndef COMMAND_TU_CONTEXT
 class TCommunications_Handler {
 public:
     void new_command(void* data, long size);
@@ -18,6 +19,7 @@ public:
     unsigned char check_for_duplicate_orders(unsigned char* order, long size);
     void submit(unsigned char* order, long size);
 };
+#endif
 
 void RGE_Command::submit(unsigned char* order, long size) {
     unsigned char dup = check_for_duplicate_orders(order, size);

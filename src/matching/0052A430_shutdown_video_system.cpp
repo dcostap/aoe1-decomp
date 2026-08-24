@@ -1,11 +1,12 @@
 // 0052A430 TRIBE_Game::shutdown_video_system (tribegam.cpp:5575-5605)
 // Attempt 3: declare virtual methods at correct vtable slots
 
-__declspec(dllimport) int __stdcall InvalidateRect(void* hWnd, void* lpRect, int bErase);
+__declspec(dllimport) int __stdcall InvalidateRect_tribe(void* hWnd, void* lpRect, int bErase);
 __declspec(dllimport) void* __stdcall LoadCursorA(void* hInstance, int lpCursorName);
 
 extern "C" int restore_mouse_after_paint;  // 62C55Ch
 
+#ifndef TRIBEGAM_TU_CONTEXT
 struct TDrawSystem {
     void SetDisplaySize(long wid, long hgt, int bits);
     void ClearPrimarySurface();
@@ -87,6 +88,7 @@ public:
 
     void shutdown_video_system();
 };
+#endif
 
 void TRIBE_Game::shutdown_video_system()
 {
@@ -107,7 +109,7 @@ void TRIBE_Game::shutdown_video_system()
     draw_system->SetPalette(video_save_palette);
     set_render_all();
 
-    InvalidateRect(this->window_handle, 0, 1);
+    InvalidateRect_tribe(this->prog_window, 0, 1);
 
     set_prog_mode(2);
     restart_sound_system();

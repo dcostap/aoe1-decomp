@@ -1,7 +1,9 @@
+#ifndef TAIUAIMD_COMPLETE_TU
 class TribeCivilianUnitAIModule {
 public:
     int importantWhenDead(int);
 };
+#endif
 
 int TribeCivilianUnitAIModule::importantWhenDead(int value) {
     if (value == 0x7 || value == 0x9 || value == 0xA || value == 0xF || value == 0x8 || value == 0x20)

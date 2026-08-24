@@ -2,6 +2,7 @@
 // tplayer.cpp lines 356-380
 // Fresh 2026-05-19: replace stub with packet-derived virtual factory logic.
 
+#ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
 class RGE_Static_Object_Type;
 class RGE_Static_Object;
 class TRIBE_Building_Object;
@@ -87,6 +88,7 @@ class TRIBE_Player : public RGE_Player {
 public:
     RGE_Static_Object* make_scenario_obj(float x, float y, float z, short type_id, unsigned char mode, float amount);
 };
+#endif
 
 extern "C" long __cdecl _ftol();
 

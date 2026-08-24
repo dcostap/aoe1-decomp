@@ -2,6 +2,7 @@
 // first pass: natural save/clear/restore spelling around the insert/delete helpers
 // target shape: save sorted at 0x15C, zero it, call insert_line with four longs, restore on both exits
 
+#ifndef PNL_TXT_TU_CONTEXT
 class TTextPanel {
 public:
     char gap_00[0x15C];
@@ -12,6 +13,7 @@ public:
 
     int change_line(long a1, long a2, long a3, long a4);
 };
+#endif
 
 int TTextPanel::change_line(long a1, long a2, long a3, long a4) {
     int saved_sorted = this->sorted;

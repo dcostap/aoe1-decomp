@@ -16,6 +16,7 @@
 
 extern "C" void __cdecl free(void*);
 
+#ifndef RGE_MAIN_VIEW_SHARED_CONTEXT
 class TShape;
 class RGE_Static_Object;
 class RGE_Player;
@@ -140,6 +141,7 @@ public:
 
     virtual int command_make_work(long, long);
 };
+#endif
 
 int RGE_Main_View::command_make_work(long param_1, long param_2)
 {

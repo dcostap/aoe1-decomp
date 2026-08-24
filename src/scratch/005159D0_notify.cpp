@@ -2,8 +2,6 @@
 // PDB: tplayer.cpp lines 2308-2395 (440 bytes, 129 asm lines)
 // Default flags. No inline asm/hacks.
 
-extern int* rge_base_game;
-
 extern "C" int __cdecl debug_rand(char* file, int line);
 extern "C" void __cdecl debug_srand(char* file, int line, int seed);
 
@@ -144,6 +142,8 @@ public:
 
     void notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6);
 };
+
+#pragma pack(pop)
 
 void TRIBE_Player_N::notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6)
 {

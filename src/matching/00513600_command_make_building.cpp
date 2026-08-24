@@ -13,6 +13,7 @@
 
 extern "C" void __cdecl free(void*);
 
+#ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
 class RGE_Static_Object {};
 
 class ObjectInfo {
@@ -49,6 +50,7 @@ public:
     unsigned char get_selected_objects_to_command(RGE_Static_Object*** list, short* listNum, int, int, int, int);
     unsigned char command_make_building(short type, float x, float y);
 };
+#endif
 
 unsigned char TRIBE_Player::command_make_building(short type, float x, float y) {
     short local_4;

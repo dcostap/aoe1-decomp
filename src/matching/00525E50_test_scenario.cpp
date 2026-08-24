@@ -4,6 +4,7 @@
 
 #include <string.h>
 
+#ifndef TRIBEGAM_TU_CONTEXT
 class TPanelSystem {
 public:
     int destroyPanel(char* name);
@@ -28,6 +29,7 @@ public:
 
     int test_scenario(char* name);
 };
+#endif
 
 int TRIBE_Game::test_scenario(char* name)
 {

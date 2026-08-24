@@ -24,6 +24,7 @@
 extern char ReadyPlayerBuffer[];
 extern const char ReadyPlayerTemplate[];
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_10C8[0x10C8];
@@ -33,6 +34,8 @@ public:
 
     char* GetReadyPlayerStr();
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 char* TCommunications_Handler::GetReadyPlayerStr() {
     strcpy(ReadyPlayerBuffer, ReadyPlayerTemplate);

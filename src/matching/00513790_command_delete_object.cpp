@@ -1,3 +1,4 @@
+#ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
 class TRIBE_Command {
 public:
     void command_cancel_build(void* object);
@@ -29,6 +30,7 @@ public:
 
     unsigned char command_delete_object(RGE_Static_Object* object);
 };
+#endif
 
 unsigned char TRIBE_Player::command_delete_object(RGE_Static_Object* object) {
     unsigned char type;

@@ -1,5 +1,6 @@
 // attempt 2: natural message dialog allocation with fallback resource name, then setup
 
+#ifndef AOE1_PANEL_EZ_CONTEXT_H
 class TEasy_Panel;
 
 class TMessageDialog {
@@ -17,6 +18,7 @@ public:
 
     void popupYesNoCancelDialog(char* title, char* message, int a, int b);
 };
+#endif
 
 void TEasy_Panel::popupYesNoCancelDialog(char* title, char* message, int a, int b) {
     TMessageDialog* dialog;

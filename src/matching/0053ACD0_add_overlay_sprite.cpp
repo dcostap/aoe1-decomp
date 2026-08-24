@@ -1,3 +1,4 @@
+#ifndef RGE_VIEW_SHARED_CONTEXT
 class TShape;
 
 struct Ov_Sprite_Draw_Rec {
@@ -24,6 +25,7 @@ public:
 
     void add_overlay_sprite(TShape* shape, int facet, int world_x, int world_y, int flags, int draw_level, unsigned char* color_table, int displayfunction, unsigned long draw_time_interval);
 };
+#endif
 
 void RGE_View::add_overlay_sprite(TShape* shape, int facet, int world_x, int world_y, int flags, int draw_level, unsigned char* color_table, int displayfunction, unsigned long draw_time_interval) {
     Ov_Sprite_Draw_Rec* sprite;

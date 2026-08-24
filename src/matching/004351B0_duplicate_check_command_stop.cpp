@@ -31,7 +31,7 @@ public:
 unsigned char RGE_Command::duplicate_check_command_stop(RGE_Command_Stop* param1) {
     int n = *(unsigned char*)((char*)param1 + 1);
     long* p = (long*)((char*)param1 + 2);
-    RGE_Command_Stop* last = this->last_order;
+    RGE_Command_Stop* last = (RGE_Command_Stop*)this->last_order;
     long* l = (long*)((char*)last + 2);
 
     if (n != *(unsigned char*)((char*)last + 1)) {

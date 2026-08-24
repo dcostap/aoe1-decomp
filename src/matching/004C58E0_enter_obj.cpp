@@ -7,6 +7,7 @@
 
 #include "../../include/game_types.h"
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 struct ObjVTableProxy {
     virtual void _d00(); virtual void _d01(); virtual void _d02(); virtual void _d03();
     virtual void _d04(); virtual void _d05(); virtual void _d06(); virtual void _d07();
@@ -56,6 +57,7 @@ public:
     void enter_obj(RGE_Static_Object* target);
     void removeFromObstructionMap(int state);
 };
+#endif
 
 void RGE_Static_Object::enter_obj(RGE_Static_Object* target) {
     if (!target->more_room()) {
@@ -63,11 +65,11 @@ void RGE_Static_Object::enter_obj(RGE_Static_Object* target) {
     }
 
     if (inside_obj != 0) {
-        ((ObjVTableProxy*)inside_obj)->funcD4();
+        inside_obj->funcD4();
     }
 
     if (tile != 0) {
-        ((ObjVTableProxy*)this)->funcDC(owner, 0, -1);
+        this->funcDC(owner, 0, -1);
 
         tile->objects.remove_node(this, 0);
         tile = 0;

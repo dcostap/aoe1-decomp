@@ -1,3 +1,4 @@
+#ifndef COMMAND_TU_CONTEXT
 class RGE_Command {
 public:
     virtual ~RGE_Command();
@@ -5,5 +6,6 @@ public:
     int field_14;
     void reset_communications(int v);
 };
+#endif
 
 void RGE_Command::reset_communications(int v) { this->field_14 = v; }

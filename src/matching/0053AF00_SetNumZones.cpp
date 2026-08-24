@@ -1,6 +1,7 @@
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 extern "C" void __cdecl free(void* block);
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 struct DClipInfo_Node;
 
 class DClipInfo_List {
@@ -12,6 +13,7 @@ public:
 
     void SetNumZones(int num_zones);
 };
+#endif
 
 void DClipInfo_List::SetNumZones(int num_zones) {
     DClipInfo_Node** new_zone_ptrs;

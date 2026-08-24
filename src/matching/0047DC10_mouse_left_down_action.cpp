@@ -1,3 +1,4 @@
+#ifndef PNL_TXT_TU_CONTEXT
 class TTextPanel;
 
 class TTextPanelHandler {
@@ -49,7 +50,9 @@ public:
     virtual void v44();
     virtual void mouse_left_down_action(TTextPanel* panel, int a2, int a3, int a4);
 };
+#endif
 
+#ifndef PNL_TXT_TU_CONTEXT
 class TTextPanel {
 public:
     virtual long mouse_left_down_action(long x, long y, int buttons, int keys);
@@ -57,6 +60,7 @@ public:
     unsigned char gap_04[0x3C];
     TTextPanelHandler* handler;
 };
+#endif
 
 long TTextPanel::mouse_left_down_action(long x, long y, int buttons, int keys) {
     if (handler != 0) {

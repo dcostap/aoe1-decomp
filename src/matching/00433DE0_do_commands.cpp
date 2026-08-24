@@ -1,3 +1,4 @@
+#ifndef COMMAND_TU_CONTEXT
 class RGE_Command_Give_Attribute;
 class RGE_Game_World;
 class TCommunications_Handler {
@@ -18,6 +19,7 @@ public:
 
     void do_commands(void);
 };
+#endif
 
 extern void __cdecl operator delete(void*);
 

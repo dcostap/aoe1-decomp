@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 
+#if !defined(SCR_GAME_TU_CONTEXT)
 extern unsigned long debug_timeGetTime(const char* file, int line);
 
 class RGE_Base_Game {
@@ -32,6 +33,7 @@ public:
     void command_pause();
     const char* get_string(int id);
 };
+#endif
 
 void TRIBE_Screen_Game::command_pause() {
     char msg[256];

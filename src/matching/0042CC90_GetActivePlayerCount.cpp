@@ -7,6 +7,7 @@
 //    Remaining: prologue order (xor esi before mov edi,ecx) + missing initial guard.
 // 7. for-loop with int player: testing if signed comparison preserves the guard.
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_00[0x12D8];
@@ -16,6 +17,8 @@ public:
     int IsPlayerComputer(unsigned int player);
     int GetActivePlayerCount();
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 int TCommunications_Handler::GetActivePlayerCount() {
     int count = 0;

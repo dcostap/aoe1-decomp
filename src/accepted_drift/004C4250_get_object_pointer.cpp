@@ -129,6 +129,7 @@
 // calls, pointer-read order, comparisons, branches, return, and fault behavior
 // match.
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Static_Object;
 class RGE_Master_Static_Object;
 class RGE_Player;
@@ -174,6 +175,7 @@ public:
 
     RGE_Static_Object* get_object_pointer(long id);
 };
+#endif
 
 RGE_Static_Object* RGE_Static_Object::get_object_pointer(long id)
 {

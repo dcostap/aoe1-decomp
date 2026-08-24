@@ -4,11 +4,16 @@
 // attempt 2: fill scenario-editor timing branch/logging/stopObject path from original asm.
 // attempt 3: put 0x1FC branch inline and 0x1FA case out-of-line like original's subtract dispatch.
 
+#ifdef TAIUAIMD_COMPLETE_TU
+extern FILE* actionFile;
+#else
 extern void* actionFile;
+#endif
 extern int fprintf(void*, const char*, ...);
 extern const char str_taiuaimd_path[];
 extern const char str_fmt_stopObject[];
 
+#ifndef TAIUAIMD_COMPLETE_TU
 class RGE_Static_Object;
 
 class RGE_Game_World {
@@ -81,6 +86,7 @@ public:
 
     int processNotify(NotifyEvent* event, unsigned long param_2);
 };
+#endif
 
 int TribeLionUnitAIModule::processNotify(NotifyEvent* event, unsigned long param_2)
 {
@@ -90,7 +96,11 @@ int TribeLionUnitAIModule::processNotify(NotifyEvent* event, unsigned long param
         RGE_Static_Object* obj = this->objectValue->owner->world->object(this->field_34);
         if (obj != 0) {
             float dist = this->objectValue->distance_to_object(obj);
+#ifdef TAIUAIMD_COMPLETE_TU
+            if (!(dist > *(float*)((char*)this->objectValue->master_obj + 0x28))) {
+#else
             if (!(dist > this->objectValue->master_obj->range)) {
+#endif
                 this->doAction(this->field_34, 1);
                 return 3;
             }
@@ -112,11 +122,19 @@ int TribeLionUnitAIModule::processNotify(NotifyEvent* event, unsigned long param
     break;
 
     case 0x1FA:
+#ifdef TAIUAIMD_COMPLETE_TU
+        if (*(int*)((char*)event + 0x0C) != 0x258) {
+#else
         if (event->param_c != 0x258) {
+#endif
             break;
         }
         if (rge_base_game->singlePlayerGame() == 1 && rge_base_game->inScenarioEditor() == 1) {
+#ifdef TAIUAIMD_COMPLETE_TU
+            int value = taiuaimd_world_next_object_id(this->objectValue->owner->world) + 3;
+#else
             int value = this->objectValue->owner->world->get_next_object_id() + 3;
+#endif
             value = value + value * 4;
             value = value + value * 4;
             value = value + value * 4;

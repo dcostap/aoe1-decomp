@@ -24,6 +24,7 @@
 
 #include <stdio.h>
 
+#if !defined(SCR_GAME_TU_CONTEXT)
 class Item_Avail {
 public:
     char* name;
@@ -64,6 +65,7 @@ public:
     char* calc_text_msg(char* text, Item_Avail* item, long unused,
                         long command_id);
 };
+#endif
 
 char* TRIBE_Screen_Game::calc_text_msg(char* text, Item_Avail* item,
                                        long unused, long command_id) {

@@ -1,6 +1,7 @@
 // target: VA 004C74B0 RGE_Static_Object::lookupZone(int,int)
 // first pass: direct zone-map lookup with the negative coordinate gate and cached zone index path
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Zone_Map {
 public:
     char gap_00[0x408];
@@ -53,6 +54,8 @@ public:
 
     unsigned char lookupZone(int x, int y);
 };
+
+#endif
 
 unsigned char RGE_Static_Object::lookupZone(int x, int y) {
     RGE_Game_World* world;

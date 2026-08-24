@@ -7,10 +7,11 @@
 // - Original: je→fadd (branch to IF block); call_other as fall-through
 // - Rebuilt:  jne→call_other (branch to ELSE block); fadd as fall-through
 // - VC5 inverts condition when shorter block can be fall-through
-// - Using `if (attr != 0x0D) { call_other } else { fadd }` 
+// - Using `if (attr != 0x0D) { call_other } else { fadd }`
 //   still puts fadd as fall-through (inverted from original)
 // - Can't prevent VC5 from inverting; likely flags/codegen-version dependent
 
+#ifndef RGE_MAC_OBJ_SHARED_CONTEXT
 class RGE_Master_Moving_Object {
 public:
     virtual void modify_delta(float value, unsigned char attribute);
@@ -23,6 +24,7 @@ public:
 
     void modify_delta(float value, unsigned char attribute);
 };
+#endif
 
 void RGE_Master_Action_Object::modify_delta(float value, unsigned char attribute) {
     if (attribute != 0x0D) {

@@ -1,6 +1,7 @@
 // attempt 1: dialog-name action filter; natural strcmp predicates inline under VC5
 #include <string.h>
 
+#ifndef AOE1_PANEL_EZ_CONTEXT_H
 class TPanel { public: char* panelName(); };
 class TPanelSystem { public: int destroyPanel(char* name); };
 extern TPanelSystem panel_system;
@@ -10,6 +11,7 @@ public:
     int action(TPanel* panel, long p2, long p3, long p4);
     int base_action(TPanel* panel, long p2, long p3, long p4);
 };
+#endif
 
 int TEasy_Panel::action(TPanel* panel, long p2, long p3, long p4) {
     if (panel) {

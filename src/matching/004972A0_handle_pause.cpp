@@ -1,3 +1,4 @@
+#if !defined(SCR_GAME_TU_CONTEXT)
 // VA: 004972A0 TRIBE_Screen_Game::handle_pause (70B)
 // PDB source: scr_game.cpp lines 2090-2107
 
@@ -88,6 +89,7 @@ public:
 
     void handle_pause(void);
 };
+#endif
 
 void TRIBE_Screen_Game::handle_pause(void) {
     this->pause_text->vfE4(0x2329);

@@ -1,3 +1,4 @@
+#ifndef TRIBEGAM_TU_CONTEXT
 class TRIBE_Game {
 public:
     virtual ~TRIBE_Game();
@@ -6,4 +7,5 @@ public:
 
     int randomStartValue() const;
 };
-int TRIBE_Game::randomStartValue() const { return this->randomStartValue_; }
+#endif
+int TRIBE_Game::randomStartValue() const { return this->random_start_value; }

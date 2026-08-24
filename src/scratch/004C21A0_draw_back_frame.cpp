@@ -7,6 +7,7 @@
 
 class TDrawArea;
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Base_Game {
 public:
     char pad_00[0x50];
@@ -24,6 +25,7 @@ public:
     void draw_frame_3d_square_back(TDrawArea* area, short x, short y);
     void draw_back_frame(TDrawArea* area, short x, short y);
 };
+#endif
 
 void RGE_Static_Object::draw_back_frame(TDrawArea* area, short x, short y) {
     if (rge_base_game->game_mode == 1) {

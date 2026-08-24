@@ -34,6 +34,7 @@
 
 #include "../../include/game_globals.h"
 
+#ifndef COMMAND_TU_CONTEXT
 struct RGE_Obj_Info {
     int id;
 };
@@ -132,6 +133,7 @@ public:
     RGE_Static_Object* get_obj(RGE_Obj_Info info);
     void do_command_order(RGE_Command_Order* command);
 };
+#endif
 
 void RGE_Command::do_command_order(RGE_Command_Order* command)
 {

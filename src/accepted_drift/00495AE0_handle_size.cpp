@@ -66,6 +66,7 @@
 // save/restore effects, and player_changed arguments match. Remaining drift is
 // private row/counter homes and the equivalent button-tail placement.
 
+#if !defined(SCR_GAME_TU_CONTEXT)
 struct tagRECT {
     long left;
     long top;
@@ -320,6 +321,11 @@ public:
     virtual long handle_size(long width, long height);
     void player_changed(int old_player, int new_player);
 };
+#endif
+
+#if defined(SCR_GAME_TU_CONTEXT)
+#define message_panel message_panels_at_544
+#endif
 
 long TRIBE_Screen_Game::handle_size(long width, long height) {
     TPanel::handle_size(width, height);
@@ -329,7 +335,7 @@ long TRIBE_Screen_Game::handle_size(long width, long height) {
     }
 
     int save_score_active[8];
-    TButtonPanel** buttons;
+    TRIBE_Panel_Button** buttons;
     int panel_cols;
     long panel_y;
     int panel_rows;
@@ -589,7 +595,7 @@ long TRIBE_Screen_Game::handle_size(long width, long height) {
     this->message_panel[4]->set_active(0);
     this->message_panel[5]->set_active(0);
 
-    TPanel** panels = this->score_panel;
+    TPanel** panels = (TPanel**)this->score_panel;
     int* saved = save_score_active;
     for (int score_restore_index = 0; score_restore_index < 8; ++score_restore_index) {
         if (*panels != 0) {
@@ -603,3 +609,7 @@ long TRIBE_Screen_Game::handle_size(long width, long height) {
                          (short)rge_base_game->get_player()->id);
     return 0;
 }
+
+#if defined(SCR_GAME_TU_CONTEXT)
+#undef message_panel
+#endif

@@ -39,6 +39,7 @@
 
 typedef unsigned char uchar;
 class TRIBE_Player;
+#ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
 class ObjectInfo {
 public:
     char pad0[4]; unsigned char type; char pad5[3]; char* name;
@@ -53,6 +54,7 @@ public:
     uchar check_obj_cost(short, short*, float, int);
     void obj_cost(short, char**, short*, short*, short*, short*, short*, short*, float);
 };
+#endif
 extern "C" long __cdecl _ftol(void);
 
 void TRIBE_Player::obj_cost(short obj, char** nameOut, short* t1, short* a1, short* t2, short* a2, short* t3, short* a3, float factor)
@@ -62,7 +64,7 @@ void TRIBE_Player::obj_cost(short obj, char** nameOut, short* t1, short* a1, sho
     short total = 0;
     *t1 = -1; *a1 = total; *t2 = -1; *a2 = total; *t3 = -1; *a3 = total;
     uchar can = this->check_obj_cost(obj, 0, 1.0f, 0);
-    ObjectInfo* info = this->objects[obj];
+    ObjectInfo* info = ((ObjectInfo**)this->objects)[obj];
     if (info == 0 || info->type < 0x46) return;
     if (nameOut) *nameOut = info->name;
 

@@ -75,6 +75,7 @@
 #include <stdio.h>
 #include "../../include/rge_base_game_global.h"
 
+#if !defined(SCR_GAME_TU_CONTEXT)
 extern "C" int sprintf(char*, const char*, ...);
 extern "C" void qsort(void*, unsigned int, unsigned int,
                       int (*)(const void*, const void*));
@@ -217,6 +218,15 @@ static __inline TCommunications_Handler* communications_at_storage()
 {
     return *(TCommunications_Handler**)0x0062C4C0;
 }
+#endif
+
+#if defined(SCR_GAME_TU_CONTEXT)
+#define score_format "%s: %d/%d"
+static __inline TCommunications_Handler* communications_at_storage()
+{
+    return comm;
+}
+#endif
 
 void TRIBE_Screen_Game::reset_score_display()
 {

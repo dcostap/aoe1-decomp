@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 
+#ifndef TACT_MOB_SHARED_CONTEXT
 class RGE_Action_Object;
 
 class RGE_Action {
@@ -30,6 +31,7 @@ public:
     virtual ~TRIBE_Action_Make_Obj();
     char gap_4C[0x300];
 };
+#endif
 
 TRIBE_Action_Make_Obj::~TRIBE_Action_Make_Obj() {
     void* obj_field_0C = *(void**)((char*)this->obj + 0x0C);

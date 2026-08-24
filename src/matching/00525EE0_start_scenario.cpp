@@ -18,6 +18,7 @@
 extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
 extern "C" long __cdecl _findfirst(const char* filespec, void* fileinfo);
 
+#ifndef TRIBEGAM_TU_CONTEXT
 class RGE_Prog_Info {
 public:
     char gap_00[0xC17];
@@ -93,6 +94,7 @@ public:
 
     int start_scenario(char* scenario);
 };
+#endif
 
 int TRIBE_Game::start_scenario(char* scenario)
 {

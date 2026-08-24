@@ -13,6 +13,7 @@
 //   final: the complete inherited TPanel/RGE_View surface with that corrected
 //     source call is exact under the default VC5 flags.
 
+#ifndef RGE_MAIN_VIEW_SHARED_CONTEXT
 class RGE_Base_Game {
 public:
     virtual ~RGE_Base_Game();
@@ -132,6 +133,7 @@ class RGE_Main_View : public RGE_View {
 public:
     long mouse_left_move_action(long, long, int, int);
 };
+#endif
 
 long RGE_Main_View::mouse_left_move_action(long param_1, long param_2,
                                            int param_3, int param_4) {

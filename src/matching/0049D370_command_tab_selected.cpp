@@ -27,6 +27,7 @@
 // condition); the found-arm direct sel_list[slot] reload is binary-proven.
 // Field sel_object_properties named from exact donor 004992E0.
 
+#if !defined(SCR_GAME_TU_CONTEXT)
 class RGE_Static_Object;
 
 class RGE_Player {
@@ -50,6 +51,7 @@ class TRIBE_Screen_Game {
 public:
     void command_tab_selected(int value);
 };
+#endif
 
 void TRIBE_Screen_Game::command_tab_selected(int value) {
     RGE_Player* player = rge_base_game->get_player();

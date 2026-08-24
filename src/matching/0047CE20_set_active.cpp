@@ -1,5 +1,6 @@
 // tried the naive local layout first; mismatch was the member offsets for auto_scbar/scbar_panel/scbar_active
 // second pass will force the TPanel base to 0xF4 bytes so the derived offsets land on 0x130/0x134/0x16C
+#ifndef PNL_TXT_TU_CONTEXT
 class TPanel {
 public:
     char gap_00[0x6C];
@@ -8,7 +9,9 @@ public:
 
     void set_active(int active);
 };
+#endif
 
+#ifndef PNL_TXT_TU_CONTEXT
 class TScrollBarPanel {
 public:
     virtual void vf00(void);
@@ -29,6 +32,7 @@ public:
 
     void set_active(int active);
 };
+#endif
 
 void TTextPanel::set_active(int active) {
     TPanel::set_active(active);

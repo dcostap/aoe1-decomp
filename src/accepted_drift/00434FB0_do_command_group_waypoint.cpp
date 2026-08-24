@@ -21,6 +21,7 @@
 
 typedef unsigned char uchar;
 
+#ifndef COMMAND_TU_CONTEXT
 class RGE_Command_Group_Waypoint {
 public:
     uchar command;
@@ -57,6 +58,7 @@ public:
     RGE_Static_Object* get_obj(int id);
     void do_command_group_waypoint(RGE_Command_Group_Waypoint* packet);
 };
+#endif
 
 void RGE_Command::do_command_group_waypoint(RGE_Command_Group_Waypoint* packet) {
     int c;

@@ -10,6 +10,7 @@
 // - A saved-global alias was incidental. The disabled local declarations were incidental.
 // - Final validation: Result: MATCH, 0.0000%.
 
+#include <string.h>
 #include "../../include/tplayer_context.h"
 
 // BINARY NOTE: Object declarations preserve the original local-store and global-store order.
@@ -43,8 +44,8 @@ void TRIBE_Player::loadAIInformation(char* aiFile, char* ruleFile, char* persona
         base_game->get_string(0x2775, noneString, 0x100);
         base_game->get_string(0x277B, randomString, 0x100);
 
-        strcpy(buildListName, (const void*)0x592A40);
-        strcpy(ruleSetName, (const void*)0x592A40);
+        strcpy(buildListName, (const char*)0x592A40);
+        strcpy(ruleSetName, (const char*)0x592A40);
 
         if (aiFile) {
             if (strcmp(aiFile, randomString) == 0) {

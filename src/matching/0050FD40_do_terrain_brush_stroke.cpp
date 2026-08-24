@@ -12,18 +12,20 @@
 // 4. The conditional swap uses the brush size (p5 = ESI) to adjust min and max coords
 //    before the final call to tribe_clean_terrain.
 
+#ifndef TMAP_GROUP_CONTEXT
 class RGE_Map {
 public:
-    unsigned char do_terrain_brush_stroke(int p1, int p2, int p3, int p4, int p5, unsigned char p6);
+    unsigned char do_terrain_brush_stroke(long p1, long p2, long p3, long p4, long p5, unsigned char p6);
 };
 
 class TRIBE_Map : public RGE_Map {
 public:
-    unsigned char do_terrain_brush_stroke(int p1, int p2, int p3, int p4, int p5, unsigned char p6);
+    unsigned char do_terrain_brush_stroke(long p1, long p2, long p3, long p4, long p5, unsigned char p6);
     void tribe_clean_terrain(int x1, int y1, int x2, int y2, int flag, unsigned char terrain);
 };
+#endif
 
-unsigned char TRIBE_Map::do_terrain_brush_stroke(int p1, int p2, int p3, int p4, int p5, unsigned char p6) {
+unsigned char TRIBE_Map::do_terrain_brush_stroke(long p1, long p2, long p3, long p4, long p5, unsigned char p6) {
     RGE_Map::do_terrain_brush_stroke(p1, p2, p3, p4, p5, p6);
 
     if (p1 < p3) {

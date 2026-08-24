@@ -9,15 +9,21 @@
 //   004330A0 Add 44-62
 //   00433180 ValidateChecksums 74-125
 //   00433290 DoChecksum 129-195
+//   00433450 SetLastWorldRandom 200-202
 //   00433460 LogChecksums 207-322
+//   00433A90 EnableSyncChecking 325-327
+//   00433AA0 SetStopOnFail 330-332
+//   00433AB0 SetDialogOnFail 335-337
+//   00433AC0 SendChatMsgsAtChecksum 340-342
+//   00433AD0 IsPlayerOutOfSync 345-435
 //
-// The omitted line 200 SetLastWorldRandom owner is already an independent
-// exact owner.  The next owner, 00433AD0 IsPlayerOutOfSync, is included for
-// authentic context validation but remains a scratch owner.
+// The first eleven owners are exact.  IsPlayerOutOfSync remains a scratch
+// owner and is included to preserve the complete module source sequence.
 //
 // Exact anchors for the included owners are their original qualified symbols,
-// body ranges, source bands, and positional checker matches.  All six use the
-// default /nologo /c /O2 /Oy flags.  No EH frame occurs in these ranges.
+// body ranges, source bands, and positional checker matches.  The eleven exact
+// owners use default /nologo /c /O2 /Oy flags.  No EH frame occurs in these
+// ranges.
 
 #define COM_SYNC_TU_CONTEXT 1
 #include "../include/com_sync_context.h"
@@ -27,7 +33,12 @@
 #include "matching/004330A0_Add.cpp"
 #include "matching/00433180_ValidateChecksums.cpp"
 #include "matching/00433290_DoChecksum.cpp"
+#include "matching/00433450_SetLastWorldRandom.cpp"
 #include "matching/00433460_LogChecksums.cpp"
+#include "matching/00433A90_EnableSyncChecking.cpp"
+#include "matching/00433AA0_SetStopOnFail.cpp"
+#include "matching/00433AB0_SetDialogOnFail.cpp"
+#include "matching/00433AC0_SendChatMsgsAtChecksum.cpp"
 #include "scratch/00433AD0_IsPlayerOutOfSync.cpp"
 
 #undef g_debuggingLog

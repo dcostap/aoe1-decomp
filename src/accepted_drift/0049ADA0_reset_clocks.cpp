@@ -48,6 +48,7 @@
 // destinations. No instruction, call, or memory access lies between the two
 // jumps. Both relation loops therefore have equal behavior and fault order.
 
+#if !defined(SCR_GAME_TU_CONTEXT)
 class TRIBE_Panel_Time {
 public:
     void set_clock_type(int clock_type, int player_id);
@@ -112,6 +113,7 @@ public:
 
     void reset_clocks();
 };
+#endif
 
 void TRIBE_Screen_Game::reset_clocks() {
     if (this->world->victory_type == 2) {

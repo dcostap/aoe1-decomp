@@ -1,6 +1,7 @@
 // compact button-disable loop first
 // expected basin: iterate the 12 drop-down buttons, toggle each button's active state, and clear ids/help on unused ones
 
+#if !defined(SCR_GAME_TU_CONTEXT)
 class TPanel {
 public:
     char gap_00[0xE4];
@@ -36,6 +37,7 @@ public:
 
     void disable_unused_buttons(void);
 };
+#endif
 
 void TRIBE_Screen_Game::disable_unused_buttons(void) {
     TRIBE_Panel_Button** p = this->button_panel;

@@ -14,6 +14,7 @@
 // - Main-agent audit restored canonical game/draw-area ownership and replaced
 //   the raw dialog-text address with a named symbol; exact bytes were revalidated.
 
+#if !defined(SCR_GAME_TU_CONTEXT)
 extern "C" short (__stdcall* GetKeyState)(int);
 extern "C" __declspec(dllimport) int __stdcall IsIconic(void* hWnd);
 extern int confirmed_close;
@@ -75,6 +76,7 @@ public:
     virtual long wnd_proc(void* window, unsigned int message,
                           unsigned int wparam, long lparam);
 };
+#endif
 
 extern char close_confirmation_text[];
 

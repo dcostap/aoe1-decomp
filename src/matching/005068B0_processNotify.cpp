@@ -24,6 +24,7 @@
 // - v14: expressed both scans as natural combined `i < count && i < helpMax`
 //   bounds. Exact 444-byte match with all 13 calls and 9/9 relocations aligned.
 
+#ifndef TAIUAIMD_COMPLETE_TU
 typedef unsigned long ulong;
 
 typedef unsigned char uchar;
@@ -179,6 +180,7 @@ class TribeTransportShipUnitAIModule : public UnitAIModule {
 public:
     int processNotify(NotifyEvent* event, ulong param_2);
 };
+#endif
 
 int TribeTransportShipUnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
 {
@@ -192,14 +194,22 @@ int TribeTransportShipUnitAIModule::processNotify(NotifyEvent* event, ulong para
 
     if (event->p2 <= 0) {
         RGE_Static_Object* o = this->obj;
+#ifdef TAIUAIMD_COMPLETE_TU
+        taiuaimd_player_notify(o->owner, o->id, o->id, 0x209, event->caller, 0, 0);
+#else
         o->owner->notifyCommander(o->id, o->id, 0x209, event->caller, 0, 0);
+#endif
         this->purgeNotifyQueue(param_2);
         return 4;
     }
 
     if (this->helpCount == 0 || ((RGE_Player*)this->obj->owner)->computerPlayer() == 1) {
         RGE_Static_Object* o = this->obj;
+#ifdef TAIUAIMD_COMPLETE_TU
+        taiuaimd_player_notify(o->owner, o->id, o->id, 0x201, event->caller, 0, 0);
+#else
         o->owner->notifyCommander(o->id, o->id, 0x201, event->caller, 0, 0);
+#endif
     }
 
     int count = this->helpCount;
@@ -239,7 +249,11 @@ already_in_list:
         return 2;
     }
 
+#ifdef TAIUAIMD_COMPLETE_TU
+    RGE_Action_Object* obj2 = (RGE_Action_Object*)this->obj;
+#else
     RGE_Static_Object* obj2 = this->obj;
+#endif
     if (!obj2->action_list->have_action() || obj2->action_list->get_action()->state == 2) {
         this->runAwayFromAttackers(1);
     }

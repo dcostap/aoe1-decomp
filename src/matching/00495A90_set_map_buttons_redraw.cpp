@@ -1,3 +1,4 @@
+#if !defined(SCR_GAME_TU_CONTEXT)
 class TPanel {
 public:
     virtual void vf00(void);
@@ -23,6 +24,7 @@ public:
 
     void set_map_buttons_redraw(int mode);
 };
+#endif
 
 void TRIBE_Screen_Game::set_map_buttons_redraw(int mode) {
     if (this->field_14 < 0x320) {

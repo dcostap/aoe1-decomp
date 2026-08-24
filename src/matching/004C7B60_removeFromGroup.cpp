@@ -8,6 +8,7 @@
 // simple `cmp [edx],edi; je found; inc/add; cmp index,count; jl loop` search loop
 // and the not-found `xor eax,eax; jmp shared_epilogue` shape.
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class ManagedArray_int {
 public:
     int* value;
@@ -25,6 +26,7 @@ public:
 
     int removeFromGroup(int param_1);
 };
+#endif
 
 int RGE_Static_Object::removeFromGroup(int param_1) {
     int count = groupMembers.maximumSizeValue;

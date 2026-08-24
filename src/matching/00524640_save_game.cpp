@@ -15,6 +15,7 @@ extern "C" char* __cdecl strchr(const char* source, int character);
 
 extern int ENABLE_COMPRESSION; // 00585A6C
 
+#ifndef TRIBEGAM_TU_CONTEXT
 enum SaveMode {
     SaveModeA = 4,
     SaveModeB = 6,
@@ -71,6 +72,7 @@ public:
     void set_save_game_name(char* name);
     int save_game(char* filename);
 };
+#endif
 
 int TRIBE_Game::save_game(char* filename)
 {

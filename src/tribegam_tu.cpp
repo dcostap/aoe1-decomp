@@ -1,9 +1,11 @@
-// Authentic tribegam.cpp prefix for the repaired grouped owners.
+// Authentic compiling owner wrapper for the canonical tribegam.cpp owners.
 //
-// The include order follows the PDB source-line order, not VA order. Each
-// included file remains the sole compiler-facing owner of its canonical VA.
-// This prefix skips unresolved owners whose local class surfaces are not yet
-// canonical. It is not a manifest edit.
+// The include order follows PDB source-line order, not VA order. Each included
+// file remains the sole compiler-facing owner of its canonical VA. The wrapper
+// uses one module-local context and TU guards for all 118 normal owners.
+
+#include "tribegam_context_local.h"
+#define TRIBEGAM_TU_CONTEXT 1
 
 #include "matching/00520FC0_encrypt_codes.cpp"
 #include "matching/00521020_run_log.cpp"
@@ -11,7 +13,25 @@
 #include "matching/00521120_TRIBE_Game.cpp"
 #include "matching/005213A0_TRIBE_Game.cpp"
 #include "matching/00521620_close_game_screens.cpp"
-// 00521790 setup (453-685) remains a nonexact owner and is omitted.
+#include "scratch/00521790_setup.cpp"
+#undef ICINFO
+#undef WIN32_FIND_DATAA
+#undef SYSTEMTIME
+#undef FILETIME
+#undef PALETTEENTRY
+#undef HANDLE
+#undef HWND
+#undef _mbsncat
+#undef _ismbcspace
+#undef _mbsninc
+#undef _mbsstr
+#undef FindClose
+#undef FileTimeToSystemTime
+#undef FindFirstFileA
+#undef CreateWindowExA
+#undef SetPaletteEntries
+#undef LoadLibraryA
+#undef CharUpperA
 #include "matching/00521FA0_setup_cmd_options.cpp"
 #include "matching/00522200_setup_palette.cpp"
 #include "matching/005222C0_setup_sounds.cpp"
@@ -35,4 +55,93 @@
 #include "matching/005237A0_close_status_message.cpp"
 #include "matching/005237B0_start_video.cpp"
 #include "matching/00523B10_stop_video.cpp"
+#include "matching/00523F10_start_campaign_menu.cpp"
+#include "matching/00524030_start_menu.cpp"
 #include "accepted_drift/00524150_quit_game.cpp"
+#include "matching/005243A0_restart_game.cpp"
+#include "matching/00524530_load_db_files.cpp"
+#include "matching/005245D0_load_game_data.cpp"
+#include "matching/00524640_save_game.cpp"
+#include "matching/00524790_save_scenario.cpp"
+#include "matching/00524880_calc_timing_text.cpp"
+#include "matching/00524A60_show_timings.cpp"
+#include "matching/00524A80_show_comm.cpp"
+#include "matching/00524AF0_show_ai.cpp"
+#include "scratch/00524D70_notification.cpp"
+#include "matching/00525D20_start_game.cpp"
+#include "matching/00525E50_test_scenario.cpp"
+#include "matching/00525EE0_start_scenario.cpp"
+#include "scratch/00526170_load_game.cpp"
+#include "matching/00526DC0_do_game_over.cpp"
+#include "scratch/00526E60_create_game.cpp"
+#include "matching/00527830_create_game_screen.cpp"
+#include "matching/00527A70_processCheatCode.cpp"
+#include "matching/00528670_let_game_begin.cpp"
+#include "matching/00528DE0_start_scenario_editor.cpp"
+#include "matching/00528F60_send_game_options.cpp"
+#include "matching/00528FB0_receive_game_options.cpp"
+#include "matching/00529000_set_tribe_options.cpp"
+#include "matching/00529100_get_tribe_options.cpp"
+#include "matching/005291F0_mapSize.cpp"
+#include "matching/00529200_setMapSize.cpp"
+#include "matching/005292A0_mapType.cpp"
+#include "matching/005292B0_setMapType.cpp"
+#include "matching/005292C0_animals.cpp"
+#include "matching/005292D0_setAnimals.cpp"
+#include "matching/005292E0_predators.cpp"
+#include "matching/005292F0_setPredators.cpp"
+#include "matching/00529300_victoryType.cpp"
+#include "matching/00529310_victoryAmount.cpp"
+#include "matching/00529320_setVictoryType.cpp"
+#include "matching/00529340_civilization.cpp"
+#include "matching/00529350_setCivilization.cpp"
+#include "matching/00529370_scenarioPlayer.cpp"
+#include "matching/00529380_setScenarioPlayer.cpp"
+#include "matching/005293A0_playerColor.cpp"
+#include "matching/005293B0_setPlayerColor.cpp"
+#include "matching/005293D0_computerName.cpp"
+#include "matching/005293E0_setComputerName.cpp"
+#include "matching/00529400_allowTrading.cpp"
+#include "matching/00529410_longCombat.cpp"
+#include "matching/00529420_randomizePositions.cpp"
+#include "matching/00529430_fullTechTree.cpp"
+#include "matching/00529440_resourceLevel.cpp"
+#include "matching/00529450_startingAge.cpp"
+#include "matching/00529460_startingUnits.cpp"
+#include "matching/00529470_deathMatch.cpp"
+#include "scratch/00529480_popLimit.cpp"
+#include "matching/005294A0_quickStartGame.cpp"
+#include "matching/005294B0_randomStartValue.cpp"
+#include "matching/005294C0_setAllowTrading.cpp"
+#include "matching/005294D0_setLongCombat.cpp"
+#include "matching/005294E0_setRandomizePositions.cpp"
+#include "matching/005294F0_setFullTechTree.cpp"
+#include "matching/00529500_setResourceLevel.cpp"
+#include "matching/00529510_setStartingAge.cpp"
+#include "matching/00529520_setStartingUnits.cpp"
+#include "matching/00529530_setDeathMatch.cpp"
+#include "matching/00529540_setPopLimit.cpp"
+#include "matching/00529550_setQuickStartGame.cpp"
+#include "matching/00529560_setRandomStartValue.cpp"
+#include "matching/00529570_gameSummary.cpp"
+#include "scratch/00529580_wnd_proc.cpp"
+#include "matching/00529610_handle_idle.cpp"
+#include "matching/00529980_handle_query_new_palette.cpp"
+#include "matching/005299E0_handle_activate.cpp"
+#include "matching/00529A70_action_user_command.cpp"
+#include "matching/00529F60_action_key_down.cpp"
+#include "matching/0052A000_action_close.cpp"
+#include "matching/0052A030_game_over_msg.cpp"
+#include "matching/0052A080_get_achievement_info.cpp"
+#include "accepted_drift/0052A0B0_randomComputerName.cpp"
+#include "matching/0052A170_resetRandomComputerName.cpp"
+#include "matching/0052A190_video_wnd_proc.cpp"
+#include "matching/0052A1E0_SetClickTables.cpp"
+#include "matching/0052A210_set_interface_messages.cpp"
+#include "matching/0052A260_setup_video_system.cpp"
+#include "matching/0052A430_shutdown_video_system.cpp"
+#include "verified_logic/0052A510_disconnect_multiplayer_game.cpp"
+#include "matching/0052A630_add_notification_loc.cpp"
+#include "matching/0052A6A0_goto_notification_loc.cpp"
+
+#undef TRIBEGAM_TU_CONTEXT

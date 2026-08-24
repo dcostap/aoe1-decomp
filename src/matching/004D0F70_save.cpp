@@ -1,5 +1,6 @@
 extern "C" void __cdecl rge_write(int handle, void* buffer, int size);
 
+#ifndef TACT_MOB_SHARED_CONTEXT
 class RGE_Action {
 public:
     virtual void save(int handle);
@@ -17,6 +18,7 @@ public:
 
     void save(int handle);
 };
+#endif
 
 void TRIBE_Action_Make_Obj::save(int handle) {
     RGE_Action::save(handle);

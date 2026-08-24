@@ -12,6 +12,7 @@
 //   redraw call, preserving the exact output while better reflecting the
 //   period-plausible source shape.
 
+#if !defined(SCR_GAME_TU_CONTEXT)
 struct tagRECT {
     long left;
     long top;
@@ -46,6 +47,7 @@ class TRIBE_Screen_Game {
 public:
     void set_overlapped_redraw(TPanel* param_1, TPanel* param_2, int param_3);
 };
+#endif
 
 void TRIBE_Screen_Game::set_overlapped_redraw(TPanel* param_1, TPanel* param_2, int param_3)
 {

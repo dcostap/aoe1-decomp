@@ -54,6 +54,7 @@
 // - Final clean validation for this pass remains 1087 bytes, 618 differing
 //   bytes, 88.25% shape, and 37 rebuilt calls versus 39 original calls.
 
+#ifndef ACT_GATH_CONTEXT_H
 #include <stdlib.h>
 
 extern float DAT_0056e278;
@@ -296,6 +297,7 @@ public:
     RGE_Sprite* get_wait_sprite(void);
     RGE_Sprite* get_move_sprite(void);
 };
+#endif
 
 void RGE_Action_Gather::set_state(unsigned char param_1)
 {

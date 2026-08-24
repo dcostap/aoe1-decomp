@@ -46,6 +46,7 @@
 
 class RGE_Player;
 class RGE_Game_World;
+#ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
 class RGE_Visible_Map {
 public:
     unsigned char get_visible(int x, int y);
@@ -117,6 +118,7 @@ class TRIBE_Player : public RGE_Player {
 public:
     void interface_trade_avail(Trade_Avail** out_trade, short* out_count);
 };
+#endif
 
 void TRIBE_Player::interface_trade_avail(Trade_Avail** out_trade,
                                           short* out_count)

@@ -1,3 +1,4 @@
+#ifndef RGE_VIEW_SHARED_CONTEXT
 class RGE_Player;
 
 class RGE_View {
@@ -20,6 +21,7 @@ public:
 
     void set_player(RGE_Player* player);
 };
+#endif
 
 void RGE_View::set_player(RGE_Player* player) {
     this->player = player;

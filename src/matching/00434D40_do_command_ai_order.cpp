@@ -13,6 +13,7 @@
 //   narrow field while preserving the virtual member call through [edx+34h].
 // Result: MATCH locally with `python tools/check_function.py --va 00434D40`.
 
+#ifndef COMMAND_TU_CONTEXT
 class RGE_Static_Object {
 public:
     void removeAllFromPathingGroup();
@@ -64,6 +65,7 @@ public:
 
     void do_command_ai_order(RGE_Command_AI_Order* cmd);
 };
+#endif
 
 void RGE_Command::do_command_ai_order(RGE_Command_AI_Order* cmd) {
     RGE_Static_Object* obj = this->world->object(cmd->recipient);

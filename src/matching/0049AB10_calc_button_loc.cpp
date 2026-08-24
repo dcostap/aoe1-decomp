@@ -1,7 +1,9 @@
+#if !defined(SCR_GAME_TU_CONTEXT)
 class TRIBE_Screen_Game {
 public:
     short calc_button_loc(unsigned char param_1);
 };
+#endif
 
 short TRIBE_Screen_Game::calc_button_loc(unsigned char param_1) {
     if (param_1 >= 1 && param_1 <= 5) {

@@ -1,3 +1,4 @@
+#if !defined(SCR_GAME_TU_CONTEXT)
 extern int allow_user_commands;
 
 class TRIBE_Screen_Game {
@@ -5,6 +6,7 @@ public:
     void command_game_speed(int value);
     long char_action(long action, short param_2);
 };
+#endif
 
 long TRIBE_Screen_Game::char_action(long action, short param_2) {
     (void)param_2;

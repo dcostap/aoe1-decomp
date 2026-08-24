@@ -6,8 +6,11 @@
 
 #define G_LOG_PTR (*(int*)0x62C4FC)
 
+#if !defined(COM_HAND_TU_CONTEXT)
 void Log(int log_obj, const char* fmt, ...);
+#endif // COM_HAND_TU_CONTEXT
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_00[0x1514];
@@ -18,6 +21,8 @@ public:
 
     int RXAcknowledgeStoredMessage(unsigned int param_1, unsigned int param_2);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 int TCommunications_Handler::RXAcknowledgeStoredMessage(unsigned int param_1, unsigned int param_2) {
     unsigned int loop_idx;

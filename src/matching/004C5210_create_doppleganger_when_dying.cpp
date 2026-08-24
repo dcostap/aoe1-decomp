@@ -48,6 +48,7 @@ typedef unsigned long ulong;
 
 #define unified_map_offsets ((ulong**)0x00886808)
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Game_World;
 class RGE_Player;
 class RGE_Static_Object;
@@ -107,6 +108,7 @@ public:
 
     virtual void create_doppleganger_when_dying();
 };
+#endif
 
 void RGE_Static_Object::create_doppleganger_when_dying() {
     if (this->id >= 0 && this->owner != 0 && this->master_obj != 0 &&

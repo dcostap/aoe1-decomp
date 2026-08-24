@@ -40,6 +40,7 @@
 // Replacing the raw cursor offset with &cliff_master_table[0].facet and removing the unused
 // string header were both codegen-neutral. Final default-flags check: 172/172 bytes, MATCH.
 
+#ifndef TMAP_GROUP_CONTEXT
 struct TRIBE_Cliff_Info {
     int info[4];
 };
@@ -84,6 +85,7 @@ public:
 
     TRIBE_Cliff_Info get_cliff_info(RGE_Static_Object* obj);
 };
+#endif
 
 TRIBE_Cliff_Info TRIBE_Map::get_cliff_info(RGE_Static_Object* obj) {
     TRIBE_Cliff_Info ret = {0, 0, 0, 0};

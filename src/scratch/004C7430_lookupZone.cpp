@@ -6,6 +6,7 @@
 #include "../../include/game_types.h"
 
 // XYPoint struct (x, y as ints)
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 struct XYPoint {
     int x;
     int y;
@@ -60,6 +61,8 @@ public:
 
     unsigned char lookupZone(XYPoint pt);
 };
+
+#endif
 
 unsigned char RGE_Static_Object::lookupZone(XYPoint pt) {
     if (pt.x < 0 || pt.y < 0) {

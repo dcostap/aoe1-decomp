@@ -22,6 +22,7 @@
 // and epilogue are identical; remaining byte differences are the moved instruction
 // and one short-branch displacement adjustment. No inline asm/hacks.
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 struct DClipInfo_Node {
     DClipInfo_Node* field_0;
     DClipInfo_Node* NextOnLevel;
@@ -39,6 +40,7 @@ public:
 
     DClipInfo_Node* LocateIDbyDrawLevel(int object_id, int level_a, int level_b, int node_type);
 };
+#endif
 
 DClipInfo_Node* DClipInfo_List::LocateIDbyDrawLevel(int object_id, int level_a, int level_b, int node_type)
 {

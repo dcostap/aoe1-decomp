@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 
+#ifndef COMMAND_TU_CONTEXT
 class TDebuggingLog { public: void Log(const char* msg, ...); };
 extern TDebuggingLog* L;
 
@@ -33,6 +34,7 @@ public:
     void command_add_to_group(int plr, int rec, int target, int angle);
     void submit(void* buf, int size);
 };
+#endif
 
 void RGE_Command::command_add_to_group(int plr, int rec, int target, int angle) {
     char* buf = (char*)calloc(1, 0x10);

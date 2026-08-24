@@ -15,6 +15,7 @@
 // - Declared count/base before the target lookup.  This preserves VC5's original
 //   load/save order and produces an exact 216-byte match under default.rsp.
 
+#ifndef COMMAND_TU_CONTEXT
 struct RGE_Obj_Info {
     int id;
 };
@@ -67,6 +68,7 @@ public:
     RGE_Static_Object* get_obj(RGE_Obj_Info info);
     void do_command_work(RGE_Command_Order* order);
 };
+#endif
 
 void RGE_Command::do_command_work(RGE_Command_Order* order)
 {

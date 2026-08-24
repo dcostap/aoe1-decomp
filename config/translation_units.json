@@ -672,16 +672,6 @@
       }
     },
     {
-      "name": "com_hand_prefix",
-      "source": "src/com_hand_tu.cpp",
-      "flags": "config/flags/00425A40_TCommunications_Handler.rsp",
-      "owners": {
-        "00426350": "src/matching/00426350_KillAnyMissingPlayers.cpp",
-        "00426530": "src/matching/00426530_NewCommand.cpp",
-        "00426FC0": "src/matching/00426FC0_GetDPLAYMessages.cpp"
-      }
-    },
-    {
       "name": "m_s_obj",
       "source": "src/m_s_obj_tu.cpp",
       "flags": "config/flags/00452FE0_make_new_obj.rsp",
@@ -1004,31 +994,6 @@
       }
     },
     {
-      "name": "misl_obj_prefix",
-      "source": "src/misl_obj_tu.cpp",
-      "flags": "config/flags/0045A740_RGE_Missile_Object.rsp",
-      "owners": {
-        "0045A740": "src/matching/0045A740_RGE_Missile_Object.cpp",
-        "0045A800": "src/matching/0045A800_RGE_Missile_Object.cpp",
-        "0045A870": "src/matching/0045A870_setup.cpp",
-        "0045A8A0": "src/matching/0045A8A0_setup.cpp",
-        "0045A900": "src/matching/0045A900_rehook.cpp",
-        "0045A910": "src/matching/0045A910_save.cpp",
-        "0045A940": "src/matching/0045A940_update.cpp",
-        "0045A950": "src/matching/0045A950_init_missile.cpp",
-        "0045A9E0": "src/matching/0045A9E0_init_missile.cpp",
-        "0045AA70": "src/matching/0045AA70_missile_move.cpp"
-      },
-      "symbols": {
-        "0045A740": "??0RGE_Missile_Object@@QAE@PAX0MMMH@Z",
-        "0045A800": "??0RGE_Missile_Object@@QAE@HPAVRGE_Game_World@@H@Z",
-        "0045A870": "?setup@RGE_Missile_Object@@QAEHPAX0MMM@Z",
-        "0045A8A0": "?setup@RGE_Missile_Object@@QAEHHPAX@Z",
-        "0045A950": "?init_missile@RGE_Missile_Object@@QAEXPAVRGE_Combat_Object@@PAVRGE_Static_Object@@M@Z",
-        "0045A9E0": "?init_missile@RGE_Missile_Object@@QAEXPAVRGE_Combat_Object@@MMMM@Z"
-      }
-    },
-    {
       "name": "victory_prefix",
       "source": "src/victory_tu.cpp",
       "flags": "config/flags/default.rsp",
@@ -1044,23 +1009,6 @@
         "00531AF0": "??0RGE_Victory_Conditions@@QAE@PAVRGE_Player@@@Z",
         "00531B20": "??1RGE_Victory_Conditions@@QAE@XZ",
         "00531E90": "?update@RGE_Victory_Conditions@@QAEEXZ"
-      }
-    },
-    {
-      "name": "scr_save",
-      "source": "src/scr_save_tu.cpp",
-      "flags": "config/flags/scr_save.rsp",
-      "owners": {
-        "004A71F0": "src/matching/004A71F0_TribeSaveGameScreen.cpp",
-        "004A75C0": "src/matching/004A75C0_TribeSaveGameScreen.cpp",
-        "004A7670": "src/matching/004A7670_fillList.cpp",
-        "004A8060": "src/matching/004A8060_save_for_scenario_editor.cpp"
-      },
-      "symbols": {
-        "004A71F0": "??0TribeSaveGameScreen@@QAE@W4Mode@0@PADH@Z",
-        "004A75C0": "??1TribeSaveGameScreen@@UAE@XZ",
-        "004A7670": "?fillList@TribeSaveGameScreen@@IAEXXZ",
-        "004A8060": "?save_for_scenario_editor@TribeSaveGameScreen@@IAEXXZ"
       }
     },
     {
@@ -1222,22 +1170,28 @@
       "source": "src/view_tu.cpp",
       "flags": "config/flags/00533510_RGE_View.rsp",
       "owners": {
+        "00533760": "src/matching/00533760_RGE_View.cpp",
+        "00533AC0": "src/matching/00533AC0_set_focus.cpp",
         "00534100": "src/matching/00534100_delete_surfaces.cpp",
-        "00534130": "src/matching/00534130_create_surfaces.cpp",
+        "00534420": "src/matching/00534420_set_redraw.cpp",
         "00535480": "src/matching/00535480_draw_view.cpp",
+        "005358B0": "src/matching/005358B0_draw_paint_brush.cpp",
+        "00535C70": "src/matching/00535C70_pick.cpp",
+        "00535CB0": "src/matching/00535CB0_pick_through_fog.cpp",
         "00535EB0": "src/matching/00535EB0_get_center_screen_pos.cpp",
         "00535ED0": "src/matching/00535ED0_get_start_coords.cpp",
         "00535F20": "src/matching/00535F20_get_center_coords.cpp",
         "00535F70": "src/matching/00535F70_get_tile_sizes.cpp",
         "00535FC0": "src/matching/00535FC0_get_max_size.cpp",
         "005381C0": "src/matching/005381C0_Update_Render_Pointers.cpp",
-        "00538280": "src/matching/00538280_Add_GDI_Clip_Mask.cpp",
         "00538410": "src/matching/00538410_draw_multi_object_outline.cpp",
-        "00538420": "src/matching/00538420_Draw_GDI_Object.cpp",
-        "00538590": "src/matching/00538590_get_tile_mask_num.cpp"
+        "00538590": "src/matching/00538590_get_tile_mask_num.cpp",
+        "0053AC40": "src/matching/0053AC40_reset_overlay_sprites.cpp",
+        "0053AD50": "src/matching/0053AD50_Object_Was_Displayed.cpp"
       },
       "symbols": {
-        "00538590": "?get_tile_mask_num@RGE_View@@IAEHHHHHK@Z"
+        "00538590": "?get_tile_mask_num@RGE_View@@IAEHHHHHK@Z",
+        "00535C70": "?pick@RGE_View@@QAEEEEPAUtagPOINT@@0PAPAXPAM2PAF3@Z"
       }
     },
     {
@@ -1300,10 +1254,21 @@
       "source": "src/stat_obj_tu.cpp",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "004C5E50": "src/matching/004C5E50_distance_to_object.cpp"
+        "004C2220": "src/matching/004C2220_capture_frame.cpp",
+        "004C23F0": "src/matching/004C23F0_capture_frame_3d_cube.cpp",
+        "004C5850": "src/matching/004C5850_is_moving.cpp",
+        "004C5BE0": "src/matching/004C5BE0_calculateDamage.cpp",
+        "004C5D10": "src/matching/004C5D10_notify_of_relation.cpp",
+        "004C6260": "src/matching/004C6260_new_angle.cpp",
+        "004C66C0": "src/matching/004C66C0_RGE_Check_List.cpp",
+        "004C66D0": "src/matching/004C66D0_RGE_Check_List.cpp",
+        "004C6700": "src/matching/004C6700_add_node.cpp",
+        "004C78B0": "src/matching/004C78B0_commanderCreateGroup.cpp",
+        "004C7F30": "src/matching/004C7F30_get_action_checksum.cpp",
+        "004C7F40": "src/matching/004C7F40_get_waypoint_checksum.cpp"
       },
       "symbols": {
-        "004C5E50": "?distance_to_object@RGE_Static_Object@@QAEMPAV1@@Z"
+        "004C2220": "?capture_frame@RGE_Static_Object@@QAEXPAVTDrawArea@@FF@Z"
       }
     },
     {
@@ -1333,37 +1298,21 @@
         "00520FC0": "src/matching/00520FC0_encrypt_codes.cpp",
         "00521020": "src/matching/00521020_run_log.cpp",
         "00523AE0": "src/matching/00523AE0_video_sub_wnd_proc.cpp",
-        "00521120": "src/matching/00521120_TRIBE_Game.cpp",
-        "005213A0": "src/matching/005213A0_TRIBE_Game.cpp",
-        "00521620": "src/matching/00521620_close_game_screens.cpp",
-        "00521FA0": "src/matching/00521FA0_setup_cmd_options.cpp",
-        "00522200": "src/matching/00522200_setup_palette.cpp",
-        "005222C0": "src/matching/005222C0_setup_sounds.cpp",
-        "00522770": "src/matching/00522770_create_world.cpp",
-        "005227D0": "src/matching/005227D0_set_game_mode.cpp",
-        "00522810": "src/matching/00522810_set_player.cpp",
-        "00522860": "src/matching/00522860_set_save_game_name.cpp",
-        "005228A0": "src/matching/005228A0_set_load_game_name.cpp",
         "005228E0": "src/matching/005228E0_get_string.cpp",
         "00522930": "src/matching/00522930_get_string2.cpp",
-        "00523450": "src/matching/00523450_get_view_panel.cpp",
-        "005234A0": "src/matching/005234A0_get_map_panel.cpp",
-        "005234F0": "src/matching/005234F0_get_save_game_name.cpp",
-        "00523500": "src/matching/00523500_get_load_game_name.cpp",
         "00523510": "src/matching/00523510_new_scenario_header.cpp",
         "00523570": "src/matching/00523570_new_scenario_header.cpp",
         "005235D0": "src/matching/005235D0_new_scenario_info.cpp",
-        "005236A0": "src/matching/005236A0_show_status_message.cpp",
         "00523750": "src/matching/00523750_show_status_message.cpp",
         "005237A0": "src/matching/005237A0_close_status_message.cpp",
-        "005237B0": "src/matching/005237B0_start_video.cpp",
-        "00523B10": "src/matching/00523B10_stop_video.cpp"
+        "00529100": "src/matching/00529100_get_tribe_options.cpp",
+        "00529570": "src/matching/00529570_gameSummary.cpp",
+        "0052A1E0": "src/matching/0052A1E0_SetClickTables.cpp"
       },
       "symbols": {
         "005228E0": "?get_string@TRIBE_Game@@UAEPADJPADH@Z",
         "00523510": "?new_scenario_header@TRIBE_Game@@UAEPAVRGE_Scenario_Header@@H@Z",
         "00523570": "?new_scenario_header@TRIBE_Game@@UAEPAVRGE_Scenario_Header@@PAVRGE_Scenario@@@Z",
-        "005236A0": "?show_status_message@TRIBE_Game@@QAEXPAD0J@Z",
         "00523750": "?show_status_message@TRIBE_Game@@QAEXHPADJ@Z"
       }
     },
@@ -1372,41 +1321,16 @@
       "source": "src/tplayer_tu.cpp",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "00513000": "src/matching/00513000_interface_tech_avail.cpp",
-        "005153D0": "src/matching/005153D0_loadAIInformation.cpp",
-        "00517B90": "src/matching/00517B90_setupEgyptian.cpp",
-        "00517E10": "src/matching/00517E10_setupBabylonian.cpp",
-        "005181C0": "src/matching/005181C0_setupHittite.cpp",
-        "005188F0": "src/matching/005188F0_setupChoson.cpp",
-        "00518DD0": "src/matching/00518DD0_setupMacedonian.cpp",
-        "00518F00": "src/matching/00518F00_logStatus.cpp",
-        "005192F0": "src/matching/005192F0_trackUnitGather.cpp",
-        "00519320": "src/matching/00519320_get_achievement.cpp"
-      }
-    },
-    {
-      "name": "tplayer_postpad",
-      "source": "src/tplayer_postpad_tu.cpp",
-      "flags": "config/flags/00519490_load_victory.rsp",
-      "owners": {
-        "00519500": "src/matching/00519500_new_victory.cpp",
-        "005195D0": "src/matching/005195D0_analyize_selected_objects.cpp"
-      }
-    },
-    {
-      "name": "vw_main_prefix",
-      "source": "src/vw_main_tu.cpp",
-      "flags": "config/flags/default.rsp",
-      "owners": {
-        "0053DAB0": "src/matching/0053DAB0_RGE_Main_View.cpp",
-        "0053DB40": "src/matching/0053DB40_handle_idle.cpp",
-        "0053DBA0": "src/matching/0053DBA0_do_auto_scroll.cpp",
-        "0053E280": "src/matching/0053E280_handle_mouse_up.cpp",
-        "0053E2F0": "src/matching/0053E2F0_mouse_move_action.cpp",
-        "0053E340": "src/matching/0053E340_mouse_left_down_action.cpp",
-        "0053F660": "src/matching/0053F660_start_scroll_view.cpp",
-        "0053F6B0": "src/matching/0053F6B0_handle_scroll_view.cpp",
-        "0053F800": "src/matching/0053F800_draw_multi_object_outline.cpp"
+        "00512620": "src/matching/00512620_update_dopplegangers.cpp",
+        "00514510": "src/matching/00514510_objectCost.cpp",
+        "00514700": "src/matching/00514700_changeToHumanPlayer.cpp",
+        "00514710": "src/matching/00514710_changeToComputerPlayer.cpp",
+        "00515DF0": "src/matching/00515DF0_intelligentCivSelection.cpp",
+        "00519D40": "src/matching/00519D40_random_start.cpp"
+      },
+      "symbols": {
+        "00514510": "?objectCost@TRIBE_Player@@QAEXHHPAVResourceItem@@H@Z",
+        "00519D40": "?random_start@TRIBE_Gaia@@UAEXXZ"
       }
     },
     {
@@ -1415,9 +1339,31 @@
       "flags": "config/flags/004982E0_action.rsp",
       "owners": {
         "004954A0": "src/matching/004954A0_TRIBE_Screen_Game.cpp",
+        "004959B0": "src/matching/004959B0_set_overlapped_redraw.cpp",
+        "00497210": "src/matching/00497210_handle_mouse_down.cpp",
+        "00497330": "src/matching/00497330_handleChatReceived.cpp",
+        "004973F0": "src/matching/004973F0_display_system_message.cpp",
+        "00498290": "src/matching/00498290_char_action.cpp",
+        "004987A0": "src/matching/004987A0_do_button_action.cpp",
+        "004994B0": "src/matching/004994B0_show_timings.cpp",
+        "00499520": "src/matching/00499520_show_comm.cpp",
+        "004995D0": "src/matching/004995D0_show_ai.cpp",
+        "0049A8F0": "src/matching/0049A8F0_calc_text_msg.cpp",
+        "0049AB10": "src/matching/0049AB10_calc_button_loc.cpp",
         "0049B000": "src/matching/0049B000_scr_game_score_compare.cpp",
         "0049B560": "src/matching/0049B560_draw.cpp",
-        "0049B830": "src/matching/0049B830_handle_anim_pal.cpp"
+        "0049B830": "src/matching/0049B830_handle_anim_pal.cpp",
+        "0049BF20": "src/matching/0049BF20_command_cancel_building.cpp",
+        "0049C570": "src/matching/0049C570_command_group_by_number.cpp",
+        "0049CEB0": "src/matching/0049CEB0_command_trade_with.cpp",
+        "0049D040": "src/matching/0049D040_command_unselect.cpp",
+        "0049D340": "src/matching/0049D340_command_trade_attribute.cpp",
+        "0049D440": "src/matching/0049D440_any_selected_have_action.cpp",
+        "0049D530": "src/matching/0049D530_restart_sound_system.cpp",
+        "0049D540": "src/matching/0049D540_add_log.cpp"
+      },
+      "symbols": {
+        "0049B560": "?draw@TRIBE_Screen_Game@@UAEXXZ"
       }
     },
     {
@@ -1623,7 +1569,12 @@
         "004330A0": "src/matching/004330A0_Add.cpp",
         "00433180": "src/matching/00433180_ValidateChecksums.cpp",
         "00433290": "src/matching/00433290_DoChecksum.cpp",
-        "00433460": "src/matching/00433460_LogChecksums.cpp"
+        "00433450": "src/matching/00433450_SetLastWorldRandom.cpp",
+        "00433460": "src/matching/00433460_LogChecksums.cpp",
+        "00433A90": "src/matching/00433A90_EnableSyncChecking.cpp",
+        "00433AA0": "src/matching/00433AA0_SetStopOnFail.cpp",
+        "00433AB0": "src/matching/00433AB0_SetDialogOnFail.cpp",
+        "00433AC0": "src/matching/00433AC0_SendChatMsgsAtChecksum.cpp"
       }
     },
     {
@@ -4382,6 +4333,255 @@
         "00543540": "?save@RGE_Game_World@@UAEXH@Z",
         "00543850": "?base_save@RGE_Game_World@@UAEXH@Z",
         "005439C0": "?base_save@RGE_Game_World@@UAEXPAD@Z"
+      }
+    },
+    {
+      "name": "panel_ez",
+      "source": "src/panel_ez_tu.cpp",
+      "flags": "config/flags/00467380_setup_shadow_area.rsp",
+      "owners": {
+        "00466A20": "src/matching/00466A20_TEasy_Panel.cpp",
+        "00467100": "src/matching/00467100_TEasy_Panel.cpp",
+        "00467150": "src/matching/00467150_init_vars.cpp",
+        "00467250": "src/matching/00467250_TEasy_Panel.cpp",
+        "004679A0": "src/matching/004679A0_handle_mouse_down.cpp",
+        "004679F0": "src/matching/004679F0_set_info_file.cpp",
+        "00467DA0": "src/matching/00467DA0_set_palette.cpp",
+        "00467EF0": "src/matching/00467EF0_set_cursor.cpp",
+        "00467F40": "src/matching/00467F40_set_use_bevels.cpp",
+        "00467F50": "src/matching/00467F50_set_background_pos.cpp",
+        "00467F60": "src/matching/00467F60_set_bevel_colors.cpp",
+        "00467FA0": "src/matching/00467FA0_set_text_colors.cpp",
+        "00467FC0": "src/matching/00467FC0_set_focus_colors.cpp",
+        "00467FE0": "src/matching/00467FE0_set_state_colors.cpp",
+        "00468060": "src/matching/00468060_set_button_pics.cpp",
+        "004682D0": "src/matching/004682D0_set_enable_ime.cpp",
+        "00468300": "src/matching/00468300_get_info_file.cpp",
+        "00468310": "src/matching/00468310_get_info_id.cpp",
+        "00468330": "src/matching/00468330_get_background2.cpp",
+        "00468340": "src/matching/00468340_get_palette.cpp",
+        "00468350": "src/matching/00468350_get_cursor.cpp",
+        "00468360": "src/matching/00468360_get_use_bevels.cpp",
+        "00468370": "src/matching/00468370_get_background_pos.cpp",
+        "00468380": "src/matching/00468380_get_bevel_colors.cpp",
+        "004683D0": "src/matching/004683D0_get_text_colors.cpp",
+        "004683F0": "src/matching/004683F0_get_focus_colors.cpp",
+        "00468410": "src/matching/00468410_get_shadow_amount.cpp",
+        "00468420": "src/matching/00468420_get_state_colors.cpp",
+        "00468440": "src/matching/00468440_get_popup_info_file.cpp",
+        "00468450": "src/matching/00468450_get_popup_info_id.cpp",
+        "00468460": "src/matching/00468460_get_button_pics.cpp",
+        "00468470": "src/matching/00468470_get_shadow_color_table.cpp",
+        "00468480": "src/matching/00468480_get_enable_ime.cpp",
+        "00469F30": "src/matching/00469F30_popupOKDialog.cpp",
+        "0046A040": "src/matching/0046A040_popupYesNoDialog.cpp",
+        "0046A090": "src/matching/0046A090_popupYesNoDialog.cpp",
+        "0046A150": "src/matching/0046A150_popupYesNoCancelDialog.cpp",
+        "0046A1A0": "src/matching/0046A1A0_popupYesNoCancelDialog.cpp",
+        "0046A360": "src/matching/0046A360_setup_popup_help.cpp",
+        "0046A3C0": "src/matching/0046A3C0_clear_popup_help.cpp",
+        "0046A670": "src/matching/0046A670_set_system_colors.cpp"
+      },
+      "symbols": {
+        "00466A20": "??0TEasy_Panel@@QAE@PAD@Z",
+        "00467100": "??0TEasy_Panel@@QAE@XZ",
+        "00469F30": "?popupOKDialog@TEasy_Panel@@QAEXPAD0HH@Z",
+        "0046A040": "?popupYesNoDialog@TEasy_Panel@@QAEXJPADHH@Z",
+        "0046A090": "?popupYesNoDialog@TEasy_Panel@@QAEXPAD0HH@Z",
+        "0046A150": "?popupYesNoCancelDialog@TEasy_Panel@@QAEXJPADHH@Z",
+        "0046A1A0": "?popupYesNoCancelDialog@TEasy_Panel@@QAEXPAD0HH@Z"
+      }
+    },
+    {
+      "name": "taiuaimd_cpp_complete",
+      "source": "src/taiuaimd_complete_tu.cpp",
+      "flags": "config/flags/00503BB0_TribeHuntedAnimalUnitAIModule.rsp",
+      "owners": {
+        "00504170": "src/matching/00504170_TribeElephantUnitAIModule.cpp",
+        "005042E0": "src/matching/005042E0_TribeLionUnitAIModule.cpp",
+        "00504470": "src/matching/00504470_canAttackUnitAtNeutrality.cpp",
+        "00504700": "src/matching/00504700_TribeRangedUnitAIModule.cpp",
+        "00504880": "src/matching/00504880_TribeRangedUnitAIModule2.cpp",
+        "00504B60": "src/matching/00504B60_TribeCivilianUnitAIModule.cpp",
+        "00504C90": "src/matching/00504C90_importantWhenDead.cpp",
+        "00504CC0": "src/matching/00504CC0_attackObject.cpp",
+        "00504D40": "src/matching/00504D40_canAttackUnitAtNeutrality.cpp",
+        "00504D50": "src/matching/00504D50_retryableOrder.cpp",
+        "00504D80": "src/matching/00504D80_convertToLOSResourceType.cpp",
+        "00505A10": "src/matching/00505A10_retryableOrder.cpp",
+        "00506240": "src/matching/00506240_TribeTradeShipUnitAIModule.cpp",
+        "005067D0": "src/matching/005067D0_TribeTransportShipUnitAIModule.cpp",
+        "00506B70": "src/matching/00506B70_TribeFishingShipUnitAIModule.cpp",
+        "00506C70": "src/matching/00506C70_importantWhenDead.cpp",
+        "00507880": "src/matching/00507880_TribeArtifactUnitAIModule.cpp",
+        "00507F60": "src/matching/00507F60_TribeTowerUnitAIModule.cpp",
+        "00508170": "src/matching/00508170_TribeBuildingUnitAIModule.cpp"
+      },
+      "symbols": {
+        "00504470": "?canAttackUnitAtNeutrality@TribeLionUnitAIModule@@UAEHH@Z",
+        "00504C90": "?importantWhenDead@TribeCivilianUnitAIModule@@UAEHH@Z",
+        "00504CC0": "?attackObject@TribeCivilianUnitAIModule@@UAEHHH@Z",
+        "00504D40": "?canAttackUnitAtNeutrality@TribeCivilianUnitAIModule@@UAEHH@Z",
+        "00504D50": "?retryableOrder@TribeCivilianUnitAIModule@@UAEHH@Z",
+        "00504D80": "?convertToLOSResourceType@TribeCivilianUnitAIModule@@UAEHH@Z",
+        "00505A10": "?retryableOrder@TribePriestUnitAIModule@@UAEHH@Z",
+        "00506C70": "?importantWhenDead@TribeFishingShipUnitAIModule@@UAEHH@Z"
+      }
+    },
+    {
+      "name": "Pnl_txt_cpp",
+      "source": "src/Pnl_txt_tu.cpp",
+      "flags": "config/flags/default.rsp",
+      "owners": {
+        "0047BF40": "src/matching/0047BF40_TTextPanel.cpp",
+        "0047C3B0": "src/matching/0047C3B0_set_rect.cpp",
+        "0047C520": "src/matching/0047C520_char_type.cpp",
+        "0047C560": "src/matching/0047C560_set_text.cpp",
+        "0047CAB0": "src/matching/0047CAB0_set_text.cpp",
+        "0047CBF0": "src/matching/0047CBF0_set_fill_back.cpp",
+        "0047CD40": "src/matching/0047CD40_set_bevel_info.cpp",
+        "0047CE00": "src/matching/0047CE00_set_spacer_size.cpp",
+        "0047CE20": "src/matching/0047CE20_set_active.cpp",
+        "0047D120": "src/matching/0047D120_key_down_action.cpp",
+        "0047D200": "src/matching/0047D200_action.cpp",
+        "0047D570": "src/matching/0047D570_draw_border.cpp",
+        "0047DC10": "src/matching/0047DC10_mouse_left_down_action.cpp",
+        "0047DC80": "src/matching/0047DC80_set_line.cpp",
+        "0047DCA0": "src/matching/0047DCA0_set_line_by_id.cpp",
+        "0047DCF0": "src/matching/0047DCF0_append_line.cpp",
+        "0047DD10": "src/matching/0047DD10_append_line.cpp",
+        "0047DD30": "src/matching/0047DD30_append_line.cpp",
+        "0047DD50": "src/matching/0047DD50_insert_line.cpp",
+        "0047DF90": "src/matching/0047DF90_insert_line.cpp",
+        "0047DFE0": "src/matching/0047DFE0_insert_line.cpp",
+        "0047E050": "src/matching/0047E050_change_line.cpp",
+        "0047E0B0": "src/matching/0047E0B0_change_line.cpp",
+        "0047E2F0": "src/matching/0047E2F0_get_text2.cpp",
+        "0047E370": "src/matching/0047E370_empty_list.cpp",
+        "0047E410": "src/matching/0047E410_get_text_rect.cpp"
+      },
+      "symbols": {
+        "0047C560": "?set_text@TTextPanel@@UAEXPAD@Z",
+        "0047CAB0": "?set_text@TTextPanel@@UAEXPAPADF@Z",
+        "0047D200": "?action@TTextPanel@@UAEJPAVTPanel@@JKK@Z",
+        "0047DC80": "?set_line@TTextPanel@@QAEXJ@Z",
+        "0047DCF0": "?append_line@TTextPanel@@QAEHPAD0J@Z",
+        "0047DD10": "?append_line@TTextPanel@@QAEHJJ@Z",
+        "0047DD30": "?append_line@TTextPanel@@QAEHJJJ@Z",
+        "0047DD50": "?insert_line@TTextPanel@@QAEHJPADJ@Z",
+        "0047DF90": "?insert_line@TTextPanel@@QAEHJJJ@Z",
+        "0047DFE0": "?insert_line@TTextPanel@@QAEHJJJJ@Z",
+        "0047E050": "?change_line@TTextPanel@@QAEHJPAD0J@Z",
+        "0047E0B0": "?change_line@TTextPanel@@QAEHJJJJ@Z",
+        "0047E2F0": "?get_text2@TTextPanel@@QAEPADJ@Z"
+      }
+    },
+    {
+      "name": "rdlg_lst_cpp",
+      "source": "src/rdlg_lst_tu.cpp",
+      "flags": "config/flags/default.rsp",
+      "owners": {
+        "0047E6B0": "src/matching/0047E6B0_setup.cpp",
+        "0047E830": "src/matching/0047E830_RGE_Dialog_List.cpp",
+        "0047E8C0": "src/matching/0047E8C0_get_list_id.cpp",
+        "0047EAA0": "src/matching/0047EAA0_rdlg_list_compare.cpp",
+        "0047EAD0": "src/matching/0047EAD0_sort_list.cpp",
+        "0047EAF0": "src/matching/0047EAF0_calc_list_line.cpp",
+        "0047EB60": "src/matching/0047EB60_get_cur_id.cpp"
+      }
+    },
+    {
+      "name": "ACT_GATH_cpp",
+      "source": "src/act_gath_tu.cpp",
+      "flags": "config/flags/default.rsp",
+      "owners": {
+        "00403020": "src/matching/00403020_save.cpp",
+        "00403C60": "src/matching/00403C60_get_move_sprite.cpp",
+        "00403C90": "src/matching/00403C90_get_wait_sprite.cpp",
+        "00403CD0": "src/matching/00403CD0_stop.cpp"
+      }
+    },
+    {
+      "name": "tact_mob_cpp",
+      "source": "src/tact_mob_tu.cpp",
+      "flags": "config/flags/004D0DD0_TRIBE_Action_Make_Obj.rsp",
+      "owners": {
+        "004D0DD0": "src/matching/004D0DD0_TRIBE_Action_Make_Obj.cpp",
+        "004D0EF0": "src/matching/004D0EF0_TRIBE_Action_Make_Obj.cpp",
+        "004D0F70": "src/matching/004D0F70_save.cpp",
+        "004D10E0": "src/matching/004D10E0_set_state.cpp",
+        "004D1550": "src/matching/004D1550_stop.cpp"
+      },
+      "symbols": {
+        "004D0DD0": "??0TRIBE_Action_Make_Obj@@QAE@HPAVRGE_Action_Object@@@Z"
+      }
+    },
+    {
+      "name": "tmap_cpp",
+      "source": "src/tmap_tu.cpp",
+      "flags": "config/flags/0050F410_TRIBE_Map.rsp",
+      "owners": {
+        "0050F410": "src/matching/0050F410_TRIBE_Map.cpp",
+        "0050F760": "src/matching/0050F760_TRIBE_Map.cpp",
+        "0050F7B0": "src/matching/0050F7B0_save.cpp",
+        "0050F7F0": "src/matching/0050F7F0_map_generate.cpp",
+        "0050F800": "src/matching/0050F800_data_load_random_map.cpp",
+        "0050F860": "src/matching/0050F860_load_random_map.cpp",
+        "0050FD40": "src/matching/0050FD40_do_terrain_brush_stroke.cpp",
+        "0050FDD0": "src/matching/0050FDD0_do_elevation_brush_stroke.cpp",
+        "0050FE90": "src/matching/0050FE90_setup_cliff_type.cpp",
+        "0050FF20": "src/matching/0050FF20_find_cliff.cpp",
+        "00510020": "src/matching/00510020_get_cliff_info.cpp",
+        "005100D0": "src/matching/005100D0_check_cliff_valid.cpp",
+        "00510110": "src/matching/00510110_make_new_cliff.cpp",
+        "00510A50": "src/matching/00510A50_do_cliff_brush.cpp",
+        "00510C10": "src/matching/00510C10_do_cliff_brush_stroke.cpp",
+        "00510C90": "src/matching/00510C90_water.cpp",
+        "00511000": "src/matching/00511000_do_terrain_brush_check.cpp"
+      },
+      "symbols": {
+        "0050F410": "??0TRIBE_Map@@QAE@HPAPAVRGE_Sound@@E@Z",
+        "0050F760": "??0TRIBE_Map@@QAE@PAD000FFFPAPAVRGE_Sound@@@Z",
+        "0050F7F0": "?map_generate@TRIBE_Map@@QAEXPAURGE_Player_Info@@@Z",
+        "0050F860": "?load_random_map@TRIBE_Map@@UAEXPAD000@Z",
+        "00510A50": "?do_cliff_brush@TRIBE_Map@@UAEEJJEE@Z"
+      }
+    },
+    {
+      "name": "spnl_obj_cpp",
+      "source": "src/spnl_obj_tu.cpp",
+      "flags": "config/flags/default.rsp",
+      "owners": {
+        "004BEDC0": "src/matching/004BEDC0_TRIBE_Scenario_Editor_Panel_Object.cpp",
+        "004BEE40": "src/matching/004BEE40_set_master_info.cpp",
+        "004BF4D0": "src/matching/004BF4D0_draw_item.cpp",
+        "004BF6E0": "src/matching/004BF6E0_get_pierce_armor.cpp"
+      }
+    },
+    {
+      "name": "m_ac_obj_cpp_proposal",
+      "source": "src/m_ac_obj_tu.cpp",
+      "flags": "config/flags/0044F070_RGE_Master_Action_Object.rsp",
+      "owners": {
+        "0044F070": "src/matching/0044F070_RGE_Master_Action_Object.cpp",
+        "0044F540": "src/matching/0044F540_create_task_list.cpp",
+        "0044F5A0": "src/matching/0044F5A0_make_new_obj.cpp",
+        "0044F670": "src/matching/0044F670_make_new_master.cpp",
+        "0044F6E0": "src/matching/0044F6E0_get_task.cpp",
+        "0044F710": "src/matching/0044F710_getTaskByTaskID.cpp",
+        "0044F880": "src/matching/0044F880_save.cpp"
+      },
+      "symbols": {
+        "0044F070": "??0RGE_Master_Action_Object@@QAE@PAV0@H@Z"
+      }
+    },
+    {
+      "name": "sceninfo_cpp",
+      "source": "src/sceninfo_tu.cpp",
+      "flags": "config/flags/default.rsp",
+      "owners": {
+        "0048CFD0": "src/matching/0048CFD0_RGE_Scenario_File_Info.cpp",
+        "0048D4D0": "src/matching/0048D4D0_get_scenario_name.cpp"
       }
     }
   ]

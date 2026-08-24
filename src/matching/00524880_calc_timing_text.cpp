@@ -16,6 +16,7 @@ extern unsigned char DAT_0086bcd0;
 extern unsigned long DAT_0086bcd8;
 extern int show_timing_max;
 
+#ifndef TRIBEGAM_TU_CONTEXT
 class RGE_Timing_Info {
 public:
     unsigned long accum_time; // +0x00
@@ -56,6 +57,7 @@ public:
 
     virtual void calc_timing_text();
 };
+#endif
 
 void TRIBE_Game::calc_timing_text()
 {

@@ -19,6 +19,7 @@
 //     RGE_Player::world->world_time_delta_seconds; this fixed the remaining register-color
 //     permutation while preserving the natural direct-member source. Exact 446/446 match.
 
+#ifndef TACT_MOB_SHARED_CONTEXT
 extern void* rge_base_game;
 
 class TRIBE_Player;
@@ -138,6 +139,7 @@ public:
 
     unsigned char place_obj(RGE_Static_Object** obj);
 };
+#endif
 
 unsigned char TRIBE_Action_Make_Obj::update()
 {

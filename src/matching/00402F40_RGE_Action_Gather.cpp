@@ -2,6 +2,7 @@
 // Existing tries: /GX/ordering/layout/parent param probes; blocker was constructor/register ordering.
 // try 11: fix parent ctor surface to observed two args (param_1, 1) and make targetType int at +0x40.
 
+#ifndef ACT_GATH_CONTEXT_H
 class RGE_Sprite;
 class RGE_Action_Object;
 class RGE_Task;
@@ -69,6 +70,7 @@ public:
     RGE_Action_Gather(RGE_Action_Object* param_1, RGE_Task* param_2, RGE_Static_Object* param_3);
     int targetType;
 };
+#endif
 
 RGE_Action_Gather::RGE_Action_Gather(RGE_Action_Object* param_1, RGE_Task* param_2, RGE_Static_Object* param_3)
     : RGE_Action(param_1, 1) {

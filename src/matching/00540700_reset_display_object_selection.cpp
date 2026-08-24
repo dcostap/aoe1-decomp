@@ -12,6 +12,7 @@
 // reproduce the complete body. The proven +0x354 and +0x35C members stay in
 // this narrow owner view; no unsupported class surface is added.
 
+#ifndef RGE_MAIN_VIEW_SHARED_CONTEXT
 class DisplaySelectedObjRec {
 public:
     int active;
@@ -30,6 +31,7 @@ public:
 
     void reset_display_object_selection(int select_type);
 };
+#endif
 
 void RGE_Main_View::reset_display_object_selection(int select_type) {
     int iVar3 = 0;

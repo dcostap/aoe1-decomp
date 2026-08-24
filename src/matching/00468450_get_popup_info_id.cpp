@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_EZ_CONTEXT_H
 class TEasy_Panel {
 public:
     virtual ~TEasy_Panel();
@@ -5,5 +6,6 @@ public:
     int field_444;
     int get_popup_info_id();
 };
+#endif
 
 int TEasy_Panel::get_popup_info_id() { return this->field_444; }

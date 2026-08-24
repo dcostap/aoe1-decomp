@@ -39,6 +39,7 @@
 
 #include <stdio.h>
 
+#if !defined(SCR_GAME_TU_CONTEXT)
 class RGE_Player;
 class TShape;
 class TButtonPanel;
@@ -271,6 +272,7 @@ public:
     void setup_buttons();
     void player_changed(int old_player, int new_player);
 };
+#endif
 
 void TRIBE_Screen_Game::player_changed(int old_player, int new_player) {
     char str[512];

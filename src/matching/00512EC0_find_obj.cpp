@@ -1,6 +1,7 @@
 // 00512EC0 TRIBE_Player::find_obj
 // PDB source: tplayer.cpp lines 871-901
 
+#ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
 class RGE_Static_Object {
 public:
     char gap_00[8];
@@ -26,6 +27,7 @@ public:
 
     RGE_Static_Object* find_obj(short id, RGE_Static_Object* after);
 };
+#endif
 
 RGE_Static_Object* TRIBE_Player::find_obj(short id, RGE_Static_Object* after)
 {

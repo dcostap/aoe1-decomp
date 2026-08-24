@@ -1,3 +1,4 @@
+#ifndef RGE_VIEW_SHARED_CONTEXT
 struct DClipInfo_Node {
     char gap_00[0x1C];
     unsigned char Draw_Flag;
@@ -15,6 +16,7 @@ public:
 
     bool Object_Was_Displayed(int id, bool allow_flagged);
 };
+#endif
 
 bool RGE_View::Object_Was_Displayed(int id, bool allow_flagged) {
     DClipInfo_Node* node;

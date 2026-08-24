@@ -7,6 +7,7 @@
 typedef unsigned long DWORD;
 typedef unsigned char BYTE;
 
+#ifndef AOE1_PANEL_EZ_CONTEXT_H
 struct tagPALETTEENTRY {
     BYTE peRed;
     BYTE peGreen;
@@ -17,6 +18,7 @@ struct tagPALETTEENTRY {
 extern "C" int __cdecl stricmp(const char* str1, const char* str2);
 extern "C" __declspec(dllimport) DWORD __stdcall GetPaletteEntries(
     void* hpal, DWORD iStartIndex, DWORD nEntries, tagPALETTEENTRY* lppe);
+#endif
 
 // TDrawArea forward declaration
 struct TDrawArea;
@@ -25,12 +27,13 @@ struct TDrawArea;
 // Type dump shows vtable_ptr at +0x00, total 0x128.
 // With virtual declared, VC5 adds its own vtable (4 bytes).
 // So explicit data = 0x128 - 4 = 0x124.
+#ifndef AOE1_PANEL_EZ_CONTEXT_H
 class RGE_Color_Table {
 public:
     virtual ~RGE_Color_Table();
-    
+
     RGE_Color_Table(TDrawArea* draw_area, long shadow_amount, void* flag, tagPALETTEENTRY* palette_entries);
-    
+
 private:
     char pad_000[0x124];
 };
@@ -54,6 +57,7 @@ public:
 
     int set_palette(char* param_1, long param_2);
 };
+#endif
 
 int TEasy_Panel::set_palette(char* param_1, long param_2)
 {

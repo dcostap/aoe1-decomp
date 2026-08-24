@@ -1,5 +1,6 @@
 // attempt 2: natural allocating THelpDialog overload after resolving string id
 
+#ifndef AOE1_PANEL_EZ_CONTEXT_H
 class THelpDialog {
 public:
     char data[0x5A4];
@@ -11,6 +12,7 @@ public:
     char* get_string(long id);
     void command_help(char* title, long string_id, long a, long b, long c);
 };
+#endif
 
 void TEasy_Panel::command_help(char* title, long string_id, long a, long b, long c) {
     if (string_id >= 0) {

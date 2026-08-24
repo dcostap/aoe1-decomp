@@ -2,6 +2,7 @@
 // Source: tribegam.cpp lines 5653-5667
 // Attempt 2: use direct field access instead of slot temp to force double reload
 
+#ifndef TRIBEGAM_TU_CONTEXT
 class TRIBE_Game {
 public:
     char gap_00[0xC28];
@@ -12,6 +13,7 @@ public:
 
     void add_notification_loc(long x, long y);
 };
+#endif
 
 void TRIBE_Game::add_notification_loc(long x, long y) {
     long current;

@@ -15,6 +15,7 @@
 //   a two-byte post-call subtraction-order drift, so the minimal exact ABI stub
 //   below is retained as the smallest exact source surface.
 
+#ifndef RGE_MAIN_VIEW_SHARED_CONTEXT
 struct tagRECT {
     long left;
     long top;
@@ -74,6 +75,7 @@ struct RGE_Base_Game {
     void add_to_timing(int index, unsigned long value);
     void increment_view_update_count();
 };
+#endif
 
 extern RGE_Base_Game* rge_base_game;
 extern int do_draw_log;

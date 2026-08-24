@@ -16,6 +16,7 @@ extern "C" void __cdecl rge_read(int file, void* dst, int size);
 class TRIBE_Player;
 class TRIBE_Tech;
 
+#ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
 class RGE_Player {
 public:
     char gap_000[0x1E];
@@ -82,6 +83,7 @@ public:
 
     virtual void scenario_load(int file, long* pos, float version);
 };
+#endif
 
 void TRIBE_Player::scenario_load(int file, long* pos, float version)
 {
@@ -100,7 +102,7 @@ void TRIBE_Player::scenario_load(int file, long* pos, float version)
     i = 0;
     if (this->objectCount > 0) {
         do {
-            obj = (RGE_Master_Static_Object*)this->objects[i];
+            obj = (RGE_Master_Static_Object*)((void**)this->objects)[i];
             if (obj != 0) {
                 obj->make_available(0);
             }

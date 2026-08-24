@@ -1,3 +1,4 @@
+#if !defined(SCR_GAME_TU_CONTEXT)
 class RGE_Player {
 public:
     virtual void v0();
@@ -56,6 +57,7 @@ public:
 };
 
 extern RGE_Base_Game* rge_base_game;
+#endif
 
 void __stdcall command_add_attribute(int param_1) {
     if (rge_base_game->get_paused() == 0) {

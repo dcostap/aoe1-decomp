@@ -76,6 +76,7 @@
 class TDrawArea;
 class RGE_Sprite;
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class DClipInfo_Node;
 class DClipInfo_List {
 public:
@@ -140,6 +141,7 @@ public:
     int get_frame(short& min_x, short& min_y, short& max_x, short& max_y);
     void capture_square_frame(TDrawArea* render_area, short x, short y);
 };
+#endif
 
 void RGE_Static_Object::capture_square_frame(TDrawArea* render_area,
                                              short x, short y)

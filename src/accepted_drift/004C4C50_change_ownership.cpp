@@ -70,6 +70,7 @@
 // No tested authentic nearest-one or cumulative multi-owner prefix compiled
 // with this standalone class surface. No context change is validated.
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Sprite;
 class RGE_Active_Sprite_List;
 class RGE_Tile;
@@ -312,6 +313,7 @@ public:
     void take_attribute_from_owner();
     void give_attribute_to_owner();
 };
+#endif
 
 void RGE_Static_Object::change_ownership(RGE_Player* player)
 {

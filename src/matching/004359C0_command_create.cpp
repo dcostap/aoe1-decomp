@@ -2,11 +2,13 @@
 // tried to keep the source natural so VC5 can stay in the same small packet-construction basin
 #include <stdlib.h>
 
+#ifndef COMMAND_TU_CONTEXT
 class RGE_Command {
 public:
     void submit(unsigned char* order, long size);
     void command_create(short param_1, short param_2, float param_3, float param_4, float param_5);
 };
+#endif
 
 extern void* __cdecl calloc(size_t count, size_t size);
 extern void* g_debug_log;

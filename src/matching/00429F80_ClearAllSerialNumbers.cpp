@@ -4,8 +4,11 @@
 // hoisted before the zero stores; variant_lab showed the exact basin is the
 // natural direct-index form over LastSerialRequestedTX with an unsigned loop index.
 
+#if !defined(COM_HAND_TU_CONTEXT)
 void Log(void* log, char* text);
+#endif // COM_HAND_TU_CONTEXT
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_00[0x12D8];
@@ -16,6 +19,8 @@ public:
 
     void ClearAllSerialNumbers();
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 void TCommunications_Handler::ClearAllSerialNumbers() {
     unsigned int i;

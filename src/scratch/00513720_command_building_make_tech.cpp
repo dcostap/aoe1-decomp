@@ -1,3 +1,4 @@
+#ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
 struct InnerType2 {
     char gap_00[0x04];
     unsigned char field_04;
@@ -17,6 +18,7 @@ public:
     char gap_40[0xF0];
     InnerType1* field_130;
 };
+#endif
 unsigned char CommandBuildingHost::command_building_make_tech(int arg) {
     InnerType1* item = this->field_130;
     if (item && item->field_08->field_04 == 0x50) {

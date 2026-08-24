@@ -1,5 +1,7 @@
+#ifndef RGE_VIEW_SHARED_CONTEXT
 struct DClipInfo_Node { DClipInfo_Node* Next; };
 class DClipInfo_List { public: char gap_00[0x10]; DClipInfo_Node* Free_Head; char gap_14[0x0C]; int Free_Blocks; int FreeThread(DClipInfo_Node* head, DClipInfo_Node* tail); };
+#endif
 int DClipInfo_List::FreeThread(DClipInfo_Node* head, DClipInfo_Node* tail) {
     int count = 0;
     DClipInfo_Node* cur = head;

@@ -20,6 +20,7 @@
 // - control-flow: inverted the draw-level test to match both redraw tails;
 //   exact 512 bytes under default.rsp.
 
+#ifndef RGE_MAIN_VIEW_SHARED_CONTEXT
 class RGE_Game_World;
 class RGE_Map;
 class RGE_Player;
@@ -164,6 +165,7 @@ public:
                          RGE_Pick_Info*, RGE_Static_Object*, int);
     void fixup_pick_info(RGE_Pick_Info*);
 };
+#endif
 
 extern int allow_user_commands;
 extern RGE_Base_Game* rge_base_game;

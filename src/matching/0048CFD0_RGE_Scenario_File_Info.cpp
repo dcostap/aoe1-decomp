@@ -8,6 +8,7 @@
 //   base pointer reloaded each iteration, register allocation differs.
 //   No EH frame needed. Core logic (save call, loop with dtor+delete,
 //   free+null) all correct.
+#ifndef AOE1_SCENINFO_TU_CONTEXT
 class RGE_Scenario_Header {
 public:
     ~RGE_Scenario_Header();
@@ -26,6 +27,7 @@ public:
 
     ~RGE_Scenario_File_Info();
 };
+#endif
 
 RGE_Scenario_File_Info::~RGE_Scenario_File_Info() {
     save();

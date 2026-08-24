@@ -1,5 +1,6 @@
 // attempt 2: derive COLORREFs from palette entries and install system color slots 5 and 8
 
+#ifndef AOE1_PANEL_EZ_CONTEXT_H
 struct PALETTEENTRY {
     unsigned char peRed;
     unsigned char peGreen;
@@ -9,7 +10,9 @@ struct PALETTEENTRY {
 
 extern "C" __declspec(dllimport) unsigned int __stdcall GetPaletteEntries(void* palette, unsigned int start, unsigned int count, PALETTEENTRY* entries);
 extern "C" __declspec(dllimport) int __stdcall SetSysColors(int count, const int* elements, const unsigned long* colors);
+#endif
 
+#ifndef AOE1_PANEL_EZ_CONTEXT_H
 class TEasy_Panel {
 public:
     char gap_000[0xEF];
@@ -21,6 +24,7 @@ public:
 
     void set_system_colors();
 };
+#endif
 
 void TEasy_Panel::set_system_colors() {
     unsigned long color;

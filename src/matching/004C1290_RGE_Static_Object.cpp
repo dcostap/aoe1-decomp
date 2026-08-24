@@ -15,6 +15,7 @@
 
 #include <stdlib.h>
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Static_Object;
 class RGE_Master_Static_Object {
 public:
@@ -159,6 +160,7 @@ struct RGE_Static_Object {
     void take_attribute_from_owner();
     int removeFromObstructionMap(int param);
 };
+#endif
 
 RGE_Static_Object::~RGE_Static_Object() {
     this->remove_visible_resource();

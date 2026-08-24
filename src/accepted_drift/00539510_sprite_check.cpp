@@ -63,6 +63,7 @@
 
 #include <memory.h>
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 typedef unsigned char uchar;
 
 struct Shape_Info {
@@ -77,6 +78,7 @@ class RGE_View {
 protected:
     int sprite_check(uchar* shape, Shape_Info* info, int x, int y);
 };
+#endif
 
 int RGE_View::sprite_check(uchar* shape, Shape_Info* info, int x, int y)
 {

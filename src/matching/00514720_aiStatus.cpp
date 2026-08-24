@@ -28,6 +28,7 @@ class RGE_Game_World;
 class RGE_Player;
 class TRIBE_Player;
 
+#ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
 class BuildAIModule {
 public:
     virtual ~BuildAIModule();
@@ -140,6 +141,7 @@ class TRIBE_Player : public RGE_Player {
 public:
     char* aiStatus(int param_1);
 };
+#endif
 
 char* TRIBE_Player::aiStatus(int param_1)
 {

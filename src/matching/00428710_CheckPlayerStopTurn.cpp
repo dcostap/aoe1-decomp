@@ -6,13 +6,17 @@
 // 1: Initial period-plausible reconstruction: named MaxGamePlayers,
 //    PlayerStopTurn, current-turn guard, and the two natural player scans.
 
+#if !defined(COM_HAND_TU_CONTEXT)
 struct TDebuggingLog {
     void Log(char* format, ...);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 #define L (*(TDebuggingLog**)0x0062C4FC)
 #define S(address) ((char*)(address))
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_0000[0x10C8];
@@ -33,6 +37,8 @@ public:
     void NotifyWindow(int message);
     void CheckPlayerStopTurn(unsigned long turn);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 void TCommunications_Handler::CheckPlayerStopTurn(unsigned long turn)
 {

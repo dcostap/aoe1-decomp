@@ -11,12 +11,11 @@
 
 extern "C" void __cdecl rge_read(int, void*, int);
 extern "C" void* __cdecl operator_new(unsigned int);
+#ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
 class TRIBE_World;
 class RGE_Game_World;
 class RGE_Player;
 class TCommunications_Handler { public: int IsHost(); };
-extern TCommunications_Handler* comm;
-extern float save_game_version;
 
 class TRIBE_Player_Tech { public: char pad[0x10]; TRIBE_Player_Tech(int, void*, RGE_Player*, int); };
 class TRIBE_History_Info { public: char pad[0x14]; TRIBE_History_Info(int); };
@@ -50,6 +49,10 @@ public:
 
     TRIBE_Player(int fd, TRIBE_World* world, unsigned char mode);
 };
+#endif
+
+extern TCommunications_Handler* comm;
+extern float save_game_version;
 
 TRIBE_Player::TRIBE_Player(int fd, TRIBE_World* world, unsigned char mode)
     : RGE_Player(fd, (RGE_Game_World*)world, mode), playerAI(0)

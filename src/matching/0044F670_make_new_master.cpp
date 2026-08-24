@@ -2,6 +2,7 @@
 // if this is sticky, the only real follow-up is whether /GX is required to keep the ctor/new basin
 #include "..\..\include\game_types.h"
 
+#ifndef RGE_MAC_OBJ_SHARED_CONTEXT
 class RGE_Master_Static_Object {
 public:
     void* vtable_ptr;
@@ -24,6 +25,7 @@ public:
     RGE_Master_Action_Object(RGE_Master_Action_Object* source, int do_setup);
     RGE_Master_Static_Object* make_new_master(void);
 };
+#endif
 
 RGE_Master_Static_Object* RGE_Master_Action_Object::make_new_master(void) {
     return new RGE_Master_Action_Object(this, 1);

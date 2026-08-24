@@ -1,5 +1,6 @@
 // TTextPanel::set_line_by_id - walk linked list, find node with matching id
 
+#ifndef PNL_TXT_TU_CONTEXT
 class TTextPanel {
 public:
     char gap_00[0xF4];
@@ -10,6 +11,7 @@ public:
 
     void set_line_by_id(long id);
 };
+#endif
 
 void TTextPanel::set_line_by_id(long id) {
     int index = 0;

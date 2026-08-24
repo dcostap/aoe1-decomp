@@ -13,6 +13,7 @@
 
 #include <string.h>
 
+#ifndef RGE_MAIN_VIEW_SHARED_CONTEXT
 class RGE_Static_Object;
 class RGE_Master_Static_Object;
 class RGE_Tile;
@@ -106,6 +107,7 @@ protected:
     virtual unsigned char get_help_info(char*& str_out, long& page_out,
                                         long param_3, long param_4);
 };
+#endif
 
 unsigned char RGE_Main_View::get_help_info(char*& str_out, long& page_out, long param_3, long param_4) {
     RGE_Pick_Info pickInfo;

@@ -3,8 +3,7 @@
 // tplayer.cpp:2003-2013
 // MATCH: 0.0000% diff, 0 relocations masked
 
-#include "../../include/game_globals.h"
-
+#ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
 class RGE_Static_Object {
 public:
     char gap_00[4];
@@ -47,6 +46,7 @@ public:
 
     void removeObject(RGE_Static_Object* obj, int param_2, int param_3, void* param_4);
 };
+#endif
 
 void TRIBE_Player::removeObject(RGE_Static_Object* obj, int param_2, int param_3, void* param_4) {
     RGE_Player::removeObject(obj, param_2, param_3, param_4);

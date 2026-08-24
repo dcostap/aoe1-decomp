@@ -9,6 +9,7 @@
 //   drive the /GX allocation/ctor state sequence.
 // Result: MATCH locally with `python tools/check_function.py --va 0049CC20`.
 
+#if !defined(SCR_GAME_TU_CONTEXT)
 class RGE_Command {
 public:
     void do_commands();
@@ -49,6 +50,7 @@ public:
 
     void command_save_scenario();
 };
+#endif
 
 void TRIBE_Screen_Game::command_save_scenario() {
     if (rge_base_game->prog_mode == 6) {

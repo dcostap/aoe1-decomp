@@ -12,6 +12,7 @@
 
 #include "../../include/game_types.h"
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 struct PlayerVTableProxy {
     virtual void _d00(); virtual void _d01(); virtual void _d02(); virtual void _d03();
     virtual void _d04(); virtual void _d05(); virtual void _d06(); virtual void _d07();
@@ -45,6 +46,7 @@ public:
 
     void set_sleep_flag(unsigned char newFlag);
 };
+#endif
 
 void RGE_Static_Object::set_sleep_flag(unsigned char newFlag) {
     if (sleep_flag == newFlag) return;
@@ -56,13 +58,12 @@ void RGE_Static_Object::set_sleep_flag(unsigned char newFlag) {
             return;
         }
 
-        int oldField = player_object_node;
-        PlayerVTableProxy* p = (PlayerVTableProxy*)owner;
-        p->funcE0(this, (int)(unsigned char)sleep_flag, (int)dopple_flag, oldField);
+        RGE_Object_Node* oldField = player_object_node;
+        owner->removeObject(this, (int)(unsigned char)sleep_flag,
+                            (int)dopple_flag, oldField);
 
         sleep_flag = 0;
-        PlayerVTableProxy* p2 = (PlayerVTableProxy*)owner;
-        player_object_node = p2->funcDC(this, 0, (int)dopple_flag);
+        player_object_node = owner->addObject(this, 0, (int)dopple_flag);
         return;
     }
 

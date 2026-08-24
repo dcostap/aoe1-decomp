@@ -1,5 +1,6 @@
 class RGE_Sprite;
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 struct SpriteWorld {
     char gap_00[0x34];
     short sprite_num;
@@ -11,7 +12,9 @@ struct OwnerInfo {
     char gap_00[0x3C];
     SpriteWorld* world;
 };
+#endif
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Static_Object {
 public:
     char gap_00[0x0C];
@@ -19,9 +22,10 @@ public:
 
     RGE_Sprite* get_sprite_pointer(short index);
 };
+#endif
 
 RGE_Sprite* RGE_Static_Object::get_sprite_pointer(short index) {
-    SpriteWorld* world;
+    RGE_Game_World* world;
 
     if (index >= 0) {
         world = this->owner->world;

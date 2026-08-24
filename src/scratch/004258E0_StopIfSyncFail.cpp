@@ -11,6 +11,7 @@ public:
     RGE_Communications_Synchronize_sf* sync;
 };
 
+
 void TCommunications_Handler_sf::StopIfSyncFail(int flag) {
     this->sync->SetDialogOnFail(flag);
     this->sync->SetStopOnFail(flag);

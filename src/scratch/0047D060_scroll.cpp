@@ -5,6 +5,7 @@
 //
 // Attempt 1: Switch-based scroll function.
 
+#ifndef PNL_TXT_TU_CONTEXT
 class TPanel {
 public:
     virtual ~TPanel();
@@ -29,6 +30,7 @@ public:
     void scroll_set(int);  // @ 0047CE70, __thiscall
     void scroll(int scroll_type, short amount, int param_3);
 };
+#endif
 
 void TTextPanel::scroll(int scroll_type, short amount, int param_3)
 {

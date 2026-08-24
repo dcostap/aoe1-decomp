@@ -2,6 +2,7 @@
 // Pnl_txt.cpp:102-120
 // Retry 2026-05-24: replace stale stub with packet-derived TTextPanel setup.
 
+#ifndef PNL_TXT_TU_CONTEXT
 class TDrawArea;
 class TPanel {
 public:
@@ -89,6 +90,7 @@ public:
                char* fill, int backColor, int outline, unsigned char outlineColor,
                short fixedLen, char* text);
 };
+#endif
 
 long TTextPanel::setup(TDrawArea* draw, TPanel* parent, long x, long y, long w, long h,
                        void* font, long font_arg2, long font_arg3, char* back_pic,

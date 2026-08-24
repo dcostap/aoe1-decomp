@@ -26,6 +26,7 @@
 // - The cleanest current source is 800-byte strict diff, 72.04% shape, and 46.72%
 //   exact-block coverage. Calls remain 12/12 and frame remains 0x10.
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Static_Object;
 class RGE_Master_Static_Object;
 class RGE_Player;
@@ -164,6 +165,7 @@ public:
     int removeFromObstructionMap(int mode);
     int addToObstructionMap(int mode);
 };
+#endif
 
 float RGE_Static_Object::teleport(float param_1, float param_2, float param_3) {
     float result;

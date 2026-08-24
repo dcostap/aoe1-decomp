@@ -39,11 +39,18 @@
 // - `extern const int selfDcoID` and removing <stdlib.h>: no meaningful scheduling change; const rolled back, include removal kept as neutral.
 // GIVEUP: current best remains exact size but first mismatch at offset 0 from selfDcoID hoisted before prologue; remaining drift is non-local scheduling/topology, not accepted_drift.
 
+#if !defined(COM_HAND_TU_CONTEXT)
 extern void* L;
+#endif // COM_HAND_TU_CONTEXT
 extern int selfDcoID;
 
+#if !defined(COM_HAND_TU_CONTEXT)
+#if !defined(COM_HAND_TU_CONTEXT)
 extern void __cdecl Log(void* log, const char* fmt, ...);
+#endif // COM_HAND_TU_CONTEXT
+#endif // COM_HAND_TU_CONTEXT
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_00[0x10E0];
@@ -56,17 +63,19 @@ public:
     void SetSelfPlayer();
     void NotifyWindowParam(int msg, int param);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 void TCommunications_Handler::SetSelfPlayer()
 {
-    for (unsigned int i = 1; i <= this->maxGamePlayers; ++i) {
-        int* p = &this->dcoID[i - 1];
+    for (unsigned int i = 1; i <= this->MaxGamePlayers; ++i) {
+        int* p = (int*)&this->PlayerOptions.dcoID[i - 1];
         Log(L, "Check dcoID %d to Me %d ?", *p, selfDcoID);
 
         if (*p == selfDcoID) {
             Log(L, "Match! - ID set.");
-            this->mePlayerNum = i;
-            NotifyWindowParam(0x17B8, i);
+            this->Me = i;
+            this->NotifyWindowParam(0x17B8, i);
             return;
         }
     }

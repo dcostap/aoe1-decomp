@@ -2,6 +2,7 @@
 // first pass: natural guard/store/call form with the player humanity table and the host-only follow-up
 // target shape: bounds check, store humanity at +0x16D4, UpdatePlayer(player,1), NotifyWindow(0x17A6), optional send-shared-data path
 
+#if !defined(COM_HAND_TU_CONTEXT)
 struct COMMPLAYEROPTIONS {
     unsigned char NeedsToBeSent;
     unsigned char _pad_0[3];
@@ -24,7 +25,10 @@ struct COMMPLAYEROPTIONS {
     unsigned long User7[10];
     int Humanity[10];
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_00[0x1C];
@@ -40,6 +44,8 @@ public:
 
     void SetPlayerHumanity(unsigned int player, int humanity);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 void TCommunications_Handler::SetPlayerHumanity(unsigned int player, int humanity) {
     if (player < 1) {

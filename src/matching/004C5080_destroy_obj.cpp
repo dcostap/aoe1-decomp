@@ -1,5 +1,6 @@
 class RGE_Static_Object;
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Player {
 public:
     void unselect_one_object(RGE_Static_Object* object);
@@ -76,6 +77,7 @@ public:
     void set_sleep_flag(unsigned char sleep_flag);
     void destroy_obj(void);
 };
+#endif
 
 void RGE_Static_Object::destroy_obj(void) {
     if (this->object_state < 7) {

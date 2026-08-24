@@ -10,6 +10,7 @@
 // Remaining drift is only vtable scratch register selection for two adjacent calls: rebuilt uses EDX then EAX;
 // original uses EAX then EDX. Same ECX this pointers, pushed args (0/1), vslot +0x14, calls, and all later bytes exact.
 
+#if !defined(SCR_GAME_TU_CONTEXT)
 class TPanel {
 public:
     virtual void vf00();
@@ -50,6 +51,7 @@ public:
 };
 
 #define rge_base_game (*(RGE_Base_Game**)0x62C574)
+#endif
 
 void TRIBE_Screen_Game::command_comm_info() {
     rge_base_game->do_show_timings = 0;

@@ -7,6 +7,7 @@ public:
     int multiplayer_flag;
 };
 
+
 int TCommunications_Handler_cpgs::ComputerPlayerGameStart(void) {
     if (!this->multiplayer_flag)
         return 1;

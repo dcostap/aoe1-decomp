@@ -1,9 +1,12 @@
-class SomeClass {
+#ifndef TMAP_GROUP_CONTEXT
+class TRIBE_Map {
 public:
-    int reverse_cliff_direction(int dir);
+    long reverse_cliff_direction(long dir);
 };
-int SomeClass::reverse_cliff_direction(int dir) {
-    int result = dir + 2;
+#endif
+
+long TRIBE_Map::reverse_cliff_direction(long dir) {
+    long result = dir + 2;
     if (result >= 4) result -= 4;
     return result;
 }

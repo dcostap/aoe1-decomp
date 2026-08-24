@@ -14,9 +14,9 @@
 // - Main-agent audit confirmed canonical editor/game/music/mouse ownership and
 //   natural fallback flow; exact bytes were revalidated after promotion.
 
+#ifndef TRIBEGAM_TU_CONTEXT
 class TPanel {
 };
-
 class TPanelSystem {
 public:
     TPanel* panel(char* name);
@@ -67,6 +67,7 @@ class TRIBE_Game : public RGE_Base_Game {
 public:
     int start_scenario_editor(char* scenario_filename, int mode);
 };
+#endif
 
 int TRIBE_Game::start_scenario_editor(char* scenario_filename, int mode)
 {
@@ -76,8 +77,8 @@ int TRIBE_Game::start_scenario_editor(char* scenario_filename, int mode)
     TRIBE_Screen_Sed* editor =
         new TRIBE_Screen_Sed(scenario_filename, mode);
     if (editor != 0 && editor->need_to_save_flag == 0) {
-        if (this->music != 0) {
-            this->music->stop_track();
+        if (this->music_system != 0) {
+            this->music_system->stop_track();
             this->started_menu_music = 0;
         }
 

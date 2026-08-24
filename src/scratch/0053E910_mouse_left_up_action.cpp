@@ -54,6 +54,7 @@ class TShape;
 class RGE_Base_Game;
 extern RGE_Base_Game* rge_base_game;   // 0x0062C574
 
+#ifndef RGE_MAIN_VIEW_SHARED_CONTEXT
 class RGE_Tile;
 class RGE_Static_Object;
 class RGE_Player;
@@ -422,6 +423,7 @@ public:
 
     virtual long mouse_left_up_action(long x, long y, int key, int flags);
 };
+#endif
 
 long RGE_Main_View::mouse_left_up_action(long x, long y, int key, int flags)
 {

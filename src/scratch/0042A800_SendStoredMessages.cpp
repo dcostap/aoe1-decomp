@@ -53,17 +53,28 @@ struct RGE_Comm_Error;
 struct RGE_Communications_Speed;
 struct IDirectPlay3;
 
+#if !defined(COM_HAND_TU_CONTEXT)
 extern unsigned long debug_timeGetTime(char* file, int line);
+#endif // COM_HAND_TU_CONTEXT
 extern "C" int sprintf(char* buffer, const char* format, ...);
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TDebuggingLog {
 public:
     void Log(char* format, ...);
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 extern TDebuggingLog* L;
+#endif // COM_HAND_TU_CONTEXT
+#if !defined(COM_HAND_TU_CONTEXT)
 extern IDirectPlay3* DAT_0062c5ec;
+#endif // COM_HAND_TU_CONTEXT
+#if !defined(COM_HAND_TU_CONTEXT)
 extern unsigned int DAT_0062cf04;
+#endif // COM_HAND_TU_CONTEXT
 extern int DAT_0062cf08;
 extern int DAT_0062cf0c;
 extern unsigned int DAT_0062cf28;
@@ -74,10 +85,13 @@ extern const char s_Com_hand_cpp[];
 extern const char s_RGEGTD_SendStore[];
 extern const char s_BAD_DCOID_0_NO_TX[];
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class RGE_Comm_Error {
 public:
     void ShowReturn(long result, char* text);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 class IDirectPlay3 {
 public:
@@ -112,6 +126,7 @@ public:
                                 unsigned int size) = 0;
 };
 
+#if !defined(COM_HAND_TU_CONTEXT)
 struct RESENDER {
     unsigned int TimeSent;
     unsigned int Serial;
@@ -119,18 +134,26 @@ struct RESENDER {
     unsigned int Length;
     unsigned int DestMap[10];
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 struct COMMPLAYEROPTIONS {
     char gap_00[0x14];
     unsigned int dcoID[10];
     char gap_3C[0x1D0 - 0x3C];
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class RGE_Communications_Speed {
 public:
     char gap_00[0x20C];
     unsigned int HighestLatencyMsec;
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 struct MSGFORMAT_MISSING_PLAYER {
     unsigned char Command;
@@ -138,6 +161,7 @@ struct MSGFORMAT_MISSING_PLAYER {
     unsigned int PlayerID;
 };
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_00[0x1C];
@@ -182,6 +206,8 @@ public:
 
     int SendStoredMessages();
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 int TCommunications_Handler::SendStoredMessages()
 {
@@ -266,7 +292,7 @@ int TCommunications_Handler::SendStoredMessages()
         return 0;
     }
 
-    if (this->CurrentTurn <= 6) {
+    if (this->PlayerOptions.CurrentTurn <= 6) {
         if (oldest_message_slot < 2000) {
             return 0;
         }
@@ -294,7 +320,7 @@ int TCommunications_Handler::SendStoredMessages()
 
     selected = (RESENDER*)((char*)this->Resend + offset);
     dest = selected->DestMap + 1;
-    dco = this->PlayerOptions.dcoID + 1;
+    dco = (unsigned int*)(this->PlayerOptions.dcoID + 1);
     player = 1;
 
     do {

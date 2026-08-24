@@ -1,3 +1,4 @@
+#ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
 class RGE_Player;
 class RGE_Command;
 class RGE_Static_Object;
@@ -42,6 +43,7 @@ class TRIBE_Player : public RGE_Player {
 public:
     unsigned char command_building_cancel(void);
 };
+#endif
 
 unsigned char TRIBE_Player::command_building_cancel(void) {
     RGE_Static_Object* selected_obj;

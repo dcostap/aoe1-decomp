@@ -3,6 +3,7 @@
 // Match: 102/102 bytes, 0.0000%
 // Key: explicit assignment (= a + b not +=), 1.0f literal (not const float variable)
 
+#ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
 class RGE_Game_World {
 public:
     char pad_00[0x84];
@@ -24,6 +25,7 @@ class TRIBE_Gaia : public RGE_Player {
 public:
     void update();
 };
+#endif
 
 void TRIBE_Gaia::update() {
     this->update_time = this->update_time + this->world->update_period;

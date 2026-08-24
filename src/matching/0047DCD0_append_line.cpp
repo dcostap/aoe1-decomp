@@ -1,3 +1,4 @@
+#ifndef PNL_TXT_TU_CONTEXT
 class TTextPanel {
 public:
     unsigned char gap_00[0xF8];
@@ -6,6 +7,7 @@ public:
     int append_line(char* text, long value);
     int insert_line(long line, char* text, long value);
 };
+#endif
 
 int TTextPanel::append_line(char* text, long value) {
     return insert_line((int)num_lines, text, value);

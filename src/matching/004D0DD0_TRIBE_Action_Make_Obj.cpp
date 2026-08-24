@@ -4,6 +4,7 @@
 
 #include "../../include/game_globals.h"
 
+#ifndef TACT_MOB_SHARED_CONTEXT
 class RGE_Action_Object;
 
 void rge_read(int handle, void* buffer, int size);
@@ -27,6 +28,7 @@ public:
 
     TRIBE_Action_Make_Obj(int param_1, RGE_Action_Object* param_2);
 };
+#endif
 
 TRIBE_Action_Make_Obj::TRIBE_Action_Make_Obj(int param_1, RGE_Action_Object* param_2)
     : RGE_Action(param_1, param_2, 1)

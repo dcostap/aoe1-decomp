@@ -74,6 +74,7 @@ extern float DAT_005776c4;   // 0.0625f (edge scroll factor)
 class RGE_Tile;
 class RGE_Static_Object;
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 class RGE_Sprite {
 public:
     unsigned char get_lowest_draw_level();
@@ -187,6 +188,7 @@ public:
     void set_selection_area(long x1, long y1, long x2, long y2);
     int handle_scroll_view(long param_1, long param_2);
 };
+#endif
 
 int RGE_View::handle_scroll_view(long param_1, long param_2)
 {

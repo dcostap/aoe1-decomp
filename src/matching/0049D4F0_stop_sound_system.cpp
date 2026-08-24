@@ -1,5 +1,6 @@
 void __cdecl operator delete(void* ptr);
 
+#if !defined(SCR_GAME_TU_CONTEXT)
 class TDigital {
 public:
     ~TDigital();
@@ -17,6 +18,7 @@ public:
 
     void stop_sound_system(void);
 };
+#endif
 
 void TRIBE_Screen_Game::stop_sound_system(void) {
     TDigital* sound_system = this->sound_system;

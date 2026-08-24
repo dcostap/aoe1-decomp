@@ -28,6 +28,9 @@
 // canonical RGE_Action/TRIBE_Action_Hunt owners here.  004CF860 remains a
 // scratch structural reconstruction.  004CFFD0 remains accepted drift for
 // the localized false-path parameter scheduling difference.
+// The compiler-generated scalar deleting destructor at 004CF100 is emitted
+// by this virtual class surface and has no standalone source owner.  The
+// candidate proposal records its exact decorated symbol.
 //
 // tact_hnt_context.h imports only the reviewed declaration surface from the
 // set_state owner.  It does not import the body.  Each VA below remains owned

@@ -1,5 +1,9 @@
 extern int __stdcall strTableGet_0047E2E0(int id);
 
+#ifdef PNL_TXT_TU_CONTEXT
+#define PNL_TXT_PNL_DROP_0047E2E0 Pnl_drop_0047E2E0
+#define Pnl_drop PNL_TXT_PNL_DROP_0047E2E0
+#endif
 class Pnl_drop {
 public:
     char gap_0[0x100];
@@ -10,3 +14,7 @@ public:
 int Pnl_drop::get_text2() {
     return strTableGet_0047E2E0((int)this->field_100);
 }
+#ifdef PNL_TXT_TU_CONTEXT
+#undef Pnl_drop
+#undef PNL_TXT_PNL_DROP_0047E2E0
+#endif

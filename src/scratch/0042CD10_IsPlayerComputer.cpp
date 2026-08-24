@@ -7,6 +7,7 @@ public:
     int humanity[1];
 };
 
+
 int TCommunications_Handler_ipc::IsPlayerComputer(unsigned int player) {
     int humanity;
 

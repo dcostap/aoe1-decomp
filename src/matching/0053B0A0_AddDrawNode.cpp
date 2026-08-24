@@ -41,6 +41,7 @@
 // Exact validation: 379/379 bytes, 100% shape, one aligned GetNode call, and the
 // original owning symbol and boundary. No volatile access or compiler steering remains.
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 struct Shape_Info {
     unsigned long Shape_Data_Offsets; // +0x00
     unsigned long Shape_Outline_Offset; // +0x04
@@ -111,6 +112,7 @@ public:
                      int draw_flag, unsigned char* color_table, int xform_mask,
                      int draw_level, int object_id);
 };
+#endif
 
 void DClipInfo_List::AddDrawNode(void* shape_base, Shape_Info* shape, int yline, int draw_x, int draw_y,
                                  int draw_flag, unsigned char* color_table, int xform_mask,
@@ -153,9 +155,17 @@ void DClipInfo_List::AddDrawNode(void* shape_base, Shape_Info* shape, int yline,
     node->NextOnLevel = 0;
     node->Object_ID = object_id;
     node->Draw_Flag = draw_flag;
+#ifdef RGE_VIEW_SHARED_CONTEXT
+    node->Shape_Base = (long)shape_base;
+#else
     node->Shape_Base = shape_base;
+#endif
     node->Color_Table = color_table;
+#ifdef RGE_VIEW_SHARED_CONTEXT
+    node->Xform_Mask = (void*)xform_mask;
+#else
     node->Xform_Mask = xform_mask;
+#endif
     node->Shape = shp;
     node->Draw_X = draw_x;
     node->Draw_Y = draw_y;

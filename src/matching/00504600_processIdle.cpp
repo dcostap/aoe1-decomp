@@ -2,6 +2,7 @@
 // taiuaimd.cpp:441-515, 251 bytes
 // __thiscall: ecx=this, 1 stack param, ret 4
 
+#ifndef TAIUAIMD_COMPLETE_TU
 class RGE_Static_Object;
 class RGE_Game_World;
 
@@ -90,10 +91,15 @@ class TribeLionUnitAIModule : public UnitAIModule {
 public:
     int processIdle(int param_1);
 };
+#endif
 
 int TribeLionUnitAIModule::processIdle(int param_1)
 {
+#ifdef TAIUAIMD_COMPLETE_TU
+    idleTimeoutValue = 6000;
+#else
     idleTimeout = 6000;
+#endif
     setAdjustedIdleTimeout();
 
     int targetId = findEnemy(-1, -1, -1, -1, 0);
@@ -103,20 +109,36 @@ int TribeLionUnitAIModule::processIdle(int param_1)
         return 5;
     }
 
+#ifdef TAIUAIMD_COMPLETE_TU
+    int difficulty = taiuaimd_world_difficulty(objectValue->owner->world);
+#else
     int difficulty = ((RGE_Player*)obj->owner)->world->difficultyLevel();
+#endif
 
     float los;
     if (rge_base_game->scenarioGame() == 1 && rge_base_game->singlePlayerGame() == 1 && difficulty >= 3) {
         float factor = (difficulty == 3) ? 0.75f : 0.5f;
+#ifdef TAIUAIMD_COMPLETE_TU
+        los = factor * objectValue->master_obj->los;
+#else
         los = factor * obj->master->los;
+#endif
         if (los < 1.0f) {
             los = 1.0f;
         }
     } else {
+#ifdef TAIUAIMD_COMPLETE_TU
+        los = objectValue->master_obj->los * 2.0f;
+#else
         los = obj->master->los * 2.0f;
+#endif
     }
 
+#ifdef TAIUAIMD_COMPLETE_TU
+    float dist = objectValue->distance_to_object(newTarget);
+#else
     float dist = obj->distance_to_object(newTarget);
+#endif
     if (dist > los) {
         return 5;
     }

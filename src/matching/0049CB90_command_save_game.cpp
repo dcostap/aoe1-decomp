@@ -4,6 +4,7 @@
 // - Previous scratch was incomplete (only lazy new), producing a 64-byte too-short text window.
 // - 2026-05-10 StarryZephyr pass: rewrote with natural typed /GX new-expression and setCurrentPanel call.
 
+#if !defined(SCR_GAME_TU_CONTEXT)
 class RGE_Command {
 public:
     void do_commands();
@@ -43,6 +44,7 @@ public:
 
     void command_save_game();
 };
+#endif
 
 void TRIBE_Screen_Game::command_save_game() {
     if (rge_base_game->prog_mode == 6) {

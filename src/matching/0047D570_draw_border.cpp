@@ -11,6 +11,7 @@
 //   shape as the exact same-TU Time_Line_Panel::draw_border donor.  Target
 //   color fields are +0x174..+0x179 and outline_color is +0x158.
 
+#ifndef PNL_TXT_TU_CONTEXT
 class TDrawArea {
 public:
     unsigned char* Lock(char* name, int mode);
@@ -26,7 +27,9 @@ public:
                     unsigned char c3, unsigned char c4,
                     unsigned char c5, unsigned char c6);
 };
+#endif
 
+#ifndef PNL_TXT_TU_CONTEXT
 class TPanel {
 public:
     virtual ~TPanel();
@@ -56,6 +59,7 @@ public:
 
     void draw_border();
 };
+#endif
 
 void TTextPanel::draw_border()
 {

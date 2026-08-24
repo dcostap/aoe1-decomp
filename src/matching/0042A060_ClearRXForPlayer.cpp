@@ -1,5 +1,6 @@
 extern "C" void __cdecl operator_delete(void*);
 
+#if !defined(COM_HAND_TU_CONTEXT)
 struct HOLDER {
     void* HoldMsg;
     int Serial;
@@ -8,7 +9,10 @@ struct HOLDER {
     unsigned int dcoReceiveID;
     char pad_14[4];
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_00[0x1524];
@@ -18,6 +22,8 @@ public:
 
     void ClearRXForPlayer(unsigned int player);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 void TCommunications_Handler::ClearRXForPlayer(unsigned int player) {
     unsigned int off;
@@ -28,7 +34,7 @@ void TCommunications_Handler::ClearRXForPlayer(unsigned int player) {
     off = 0;
     do {
         pu = (void**)((int)&this->OnHold->HoldMsg + off);
-        if (*(unsigned int*)((int)&this->OnHold->dcoFromID + off) == this->dcoID[player]) {
+        if (*(unsigned int*)((int)&this->OnHold->dcoFromID + off) == this->PlayerOptions.dcoID[player]) {
             if ((void*)*pu != 0) {
                 operator_delete((void*)*pu);
             }

@@ -1,5 +1,6 @@
 class RGE_Sprite;
 class RGE_Active_Sprite_List;
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Master_Static_Object {
 public:
     char gap_00[0x18];
@@ -26,6 +27,7 @@ public:
     void remove_sprite(RGE_Sprite* sprite);
     void add_sprite(RGE_Sprite* sprite, int a3, int a4, int a5);
 };
+#endif
 
 void RGE_Static_Object::new_sprite(RGE_Sprite* sprite) {
     if (sprite == 0) {

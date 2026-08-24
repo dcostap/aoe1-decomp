@@ -63,6 +63,7 @@
 //     This preserves partial update state and fault order; exactness remains
 //     blocked by the frame/register/FPU basin.
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 struct RGE_Player { unsigned char pad_000[0x114]; float view_x; float view_y; };
 struct RGE_Tile { short screen_xpos; short screen_ypos; unsigned char field_4; unsigned char flags; unsigned char pad[0x12]; };
 struct RGE_Map { unsigned char pad_000[0x8d8c]; RGE_Tile** map_row_offset; };
@@ -95,6 +96,7 @@ public:
     int map_scr_x_offset; int map_scr_y_offset; float last_view_x; float last_view_y;
     void update();
 };
+#endif
 
 void RGE_View::update()
 {

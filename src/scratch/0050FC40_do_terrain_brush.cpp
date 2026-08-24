@@ -12,6 +12,7 @@
 // - Probe 2: inline game_world access, same order → 88.3% pos_diff, esi=this correct but extra y load
 // - Probe 3: local rad = r, adjusted decl order → MATCH (0.0000%)
 
+#ifndef TMAP_GROUP_CONTEXT
 class RGE_Map {
 public:
     void* vtable;        // +0x00
@@ -29,6 +30,7 @@ public:
     void set_terrain(void* game_world, short x, short y, unsigned char type, int a, int b);
     unsigned char do_terrain_brush(long x, long y, long r, unsigned char type);
 };
+#endif
 
 unsigned char TRIBE_Map::do_terrain_brush(long x, long y, long r, unsigned char type)
 {
@@ -66,7 +68,9 @@ unsigned char TRIBE_Map::do_terrain_brush(long x, long y, long r, unsigned char 
     return 1;
 }
 
+#ifndef TMAP_GROUP_CONTEXT
 // Stubs
 unsigned char TRIBE_Map::water(unsigned char type) { return 0; }
 unsigned char TRIBE_Map::do_terrain_brush_check(long x, long y) { return 1; }
+#endif
 void TRIBE_Map::set_terrain(void* game_world, short x, short y, unsigned char type, int a, int b) { }

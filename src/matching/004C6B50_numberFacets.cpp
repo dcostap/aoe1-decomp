@@ -4,6 +4,7 @@
 // BINARY NOTE: The owned body is [004C6B50, 004C6B5F); the next byte is padding.
 // BINARY NOTE: Keep the narrow sprite facet-count read at sprite + 0x60.
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 struct FacetObj {
     char gap_0[0x60];
     short nFacets;
@@ -15,6 +16,7 @@ public:
     FacetObj *sprite;
     int numberFacets();
 };
+#endif
 
 int RGE_Static_Object::numberFacets() {
     if (this->sprite)

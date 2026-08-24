@@ -6,19 +6,32 @@
 #include <string.h>
 #include <stdlib.h>
 
+#if !defined(COM_HAND_TU_CONTEXT)
 extern unsigned int DAT_0062c5ec; // DirectPlay interface
+#endif // COM_HAND_TU_CONTEXT
+#if !defined(COM_HAND_TU_CONTEXT)
 extern unsigned int DAT_0062cf04; // self DPID
+#endif // COM_HAND_TU_CONTEXT
+#if !defined(COM_HAND_TU_CONTEXT)
 extern void* L;
+#endif // COM_HAND_TU_CONTEXT
 
+#if !defined(COM_HAND_TU_CONTEXT)
 extern unsigned long __cdecl debug_timeGetTime(const char* file, int line);
+#endif // COM_HAND_TU_CONTEXT
+#if !defined(COM_HAND_TU_CONTEXT)
 extern void __cdecl Log(void* log, const char* fmt, ...);
+#endif // COM_HAND_TU_CONTEXT
 extern void* __cdecl malloc(unsigned int size);
 extern void __cdecl free(void* ptr);
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class RGE_Comm_Error {
 public:
     void ShowReturn(long hr, const char* msg);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 class DirectPlayLike {
 public:
@@ -37,6 +50,7 @@ struct SharedDataPacketPrefix {
     char bytes[0x1D0];
 };
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_00[0x04];
@@ -58,6 +72,8 @@ public:
     void NotifyWindow(int msg);
     long SendSharedData(int force);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 long TCommunications_Handler::SendSharedData(int force)
 {
@@ -71,14 +87,14 @@ long TCommunications_Handler::SendSharedData(int force)
     unsigned long now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Com_hand.cpp", 0x895);
 
     if (force != 0) {
-        this->NeedsToBeSent = 1;
+        this->PlayerOptions.NeedsToBeSent = 1;
     } else {
-        if (now - this->LastSharedDataSendTime < 2000) {
+        if (now - this->PlayerOptions.LastSentTime < 2000) {
             return 0;
         }
     }
 
-    if (this->NeedsToBeSent == 0) {
+    if (this->PlayerOptions.NeedsToBeSent == 0) {
         return 0;
     }
 
@@ -89,24 +105,24 @@ long TCommunications_Handler::SendSharedData(int force)
 
     Log(L, "Sending Shared Data");
 
-    unsigned int packet_size = this->DataSizeToFollow + 0x1D0;
-    this->LastSharedDataSendTime = now;
+    unsigned int packet_size = this->PlayerOptions.DataSizeToFollow + 0x1D0;
+    this->PlayerOptions.LastSentTime = now;
     char* packet = (char*)malloc(packet_size);
 
-    *(SharedDataPacketPrefix*)packet = *(SharedDataPacketPrefix*)&this->NeedsToBeSent;
-    memcpy(packet + 0x1D0, this->OptionsData, this->DataSizeToFollow);
+    *(SharedDataPacketPrefix*)packet = *(SharedDataPacketPrefix*)&this->PlayerOptions.NeedsToBeSent;
+    memcpy(packet + 0x1D0, this->OptionsData, this->PlayerOptions.DataSizeToFollow);
 
     long hr = ((DirectPlayLike*)DAT_0062c5ec)->SendEx(DAT_0062cf04, packet, packet_size, 2);
-    this->CommError->ShowReturn(hr, "Send Shared Data");
+    this->Err->ShowReturn(hr, "Send Shared Data");
     free(packet);
 
-    this->NeedsToBeSent = 0;
+    this->PlayerOptions.NeedsToBeSent = 0;
     this->NotifyWindow(0x17BB);
 
     unsigned int i = 1;
     if (this->MaxGamePlayers >= 1) {
         do {
-            this->SentFlag[i] = 0;
+            this->PlayerOptions.InvalidPlayer[i] = 0;
             i++;
         } while (i <= this->MaxGamePlayers);
     }

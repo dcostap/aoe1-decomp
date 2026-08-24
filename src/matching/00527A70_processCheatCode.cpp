@@ -11,11 +11,13 @@ extern "C" unsigned char* __cdecl __mbsupr(unsigned char*);
 
 extern void __cdecl encrypt_codes(char* src, char* dst, int max_len);
 
+#ifndef TRIBEGAM_TU_CONTEXT
 class RGE_Static_Object {
 public:
     char gap_00[0x36];
     char selected;
 };
+#endif
 
 #define VPAD1(n) virtual void vpad##n() = 0;
 #define VPAD2(n) VPAD1(n) VPAD1(n##_1)
@@ -24,13 +26,16 @@ public:
 #define VPAD16(n) VPAD8(n) VPAD8(n##_8)
 #define VPAD32(n) VPAD16(n) VPAD16(n##_16)
 
+#ifndef TRIBEGAM_TU_CONTEXT
 class RGE_Player {
 public:
     VPAD16(0) VPAD16(16) VPAD4(32) VPAD2(36) VPAD1(38) VPAD1(39) VPAD1(40) VPAD1(41) VPAD1(42) VPAD1(43) VPAD1(44)
     virtual void set_attribute(short attr, float value) = 0; // vt[45] +0xb4
     void unselect_object();
 };
+#endif
 
+#ifndef TRIBEGAM_TU_CONTEXT
 class AIPlayBook {
 public:
     int playNumber(char* name);
@@ -41,6 +46,7 @@ public:
     void command_quick_build(short value);
 };
 
+#ifndef TRIBEGAM_TU_CONTEXT
 class TRIBE_World {
 public:
     char gap_00[0x3c];
@@ -55,7 +61,10 @@ public:
     RGE_Static_Object* object(int id);
     void send_cheat(short code);
 };
+#endif
+#endif
 
+#ifndef TRIBEGAM_TU_CONTEXT
 class TRIBE_Game {
 public:
     virtual void v0() = 0;
@@ -78,6 +87,7 @@ public:
     RGE_Player* get_player();
     int processCheatCode(int player_id, char* cheat);
 };
+#endif
 
 class TRIBE_Player_Command {
 public:

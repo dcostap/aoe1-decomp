@@ -37,6 +37,7 @@
 
 #include <windows.h>
 
+#ifndef PNL_TXT_TU_CONTEXT
 class TPanel {
 public:
     virtual ~TPanel();
@@ -133,6 +134,7 @@ public:
     virtual void set_rect(long left, long top, long width, long height);
     void calc_draw_info(int redraw);
 };
+#endif
 
 void TTextPanel::set_rect(long left, long top, long width, long height) {
     int x;

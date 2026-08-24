@@ -125,17 +125,21 @@
 // original VC5 reverse-arm scheduling. The function body does not need it.
 #include <stdlib.h>
 
+#ifndef TMAP_GROUP_CONTEXT
 class RGE_Map {
 public:
     virtual unsigned char do_elevation_brush_stroke(long x1, long y1, long x2, long y2, long r, unsigned char c);
 };
+#endif
 
+#ifndef TMAP_GROUP_CONTEXT
 class TRIBE_Map : public RGE_Map {
 public:
     virtual unsigned char do_elevation_brush_stroke(long x1, long y1, long x2, long y2, long r, unsigned char c);
     void tribe_clean_elevation(long x1, long y1, long x2, long y2);
     void tribe_clean_terrain(long x1, long y1, long x2, long y2, unsigned char a, unsigned char b);
 };
+#endif
 
 unsigned char TRIBE_Map::do_elevation_brush_stroke(long x1, long y1, long x2, long y2, long r, unsigned char c) {
     RGE_Map::do_elevation_brush_stroke(x1, y1, x2, y2, r, c);

@@ -1,3 +1,4 @@
+#if !defined(SCR_GAME_TU_CONTEXT)
 class RGE_Base_Game {
 public:
     char gap_0[0x3F4];
@@ -44,6 +45,7 @@ public:
 
     void command_visibility();
 };
+#endif
 
 void TRIBE_Screen_Game::command_visibility() {
     if (!rge_base_game->allowCheatCodes())

@@ -10,6 +10,7 @@
 // STATUS: exact under default /O2 /Oy; the duplicated arms are retained because the
 // original has one joined virtual call with branch-specific push 1/0 topology.
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 struct RGE_Static_Object;
 struct RGE_Pick_Info { float f0; float y; float scr_x; char pad[8]; };
 
@@ -54,6 +55,7 @@ struct RGE_View {
     unsigned char pick(unsigned char type, unsigned char p2, long x, long y, RGE_Pick_Info* info, RGE_Static_Object* obj);
     int do_paint(long param_1, long param_2, long param_3, long param_4, int param_5);
 };
+#endif
 
 int RGE_View::do_paint(long param_1, long param_2, long param_3, long param_4, int param_5)
 {

@@ -4,6 +4,7 @@
 // real parameter. Chained call get_player()->group_objects(-1) prevents VC5 tail-call
 // optimization (E8 call vs E9 jmp) compared to get_player(-1)->group_objects().
 
+#if !defined(SCR_GAME_TU_CONTEXT)
 class RGE_Base_Game {
 public:
     int get_paused(void);
@@ -21,6 +22,7 @@ class TRIBE_Screen_Game {
 public:
     void command_group(void);
 };
+#endif
 
 void TRIBE_Screen_Game::command_group(void) {
     if (rge_base_game->get_paused() == 0) {

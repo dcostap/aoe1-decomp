@@ -1,5 +1,6 @@
 // first pass: cheat-code gate, unselect current player object, view-panel callback, then game dispatch
 // if this is sticky, the remaining lead is likely just the exact virtual-slot declarations on the two game callbacks
+#if !defined(SCR_GAME_TU_CONTEXT)
 class RGE_Player;
 class TRIBE_Main_View;
 
@@ -47,6 +48,7 @@ public:
 
     void command_player(int param_1);
 };
+#endif
 
 void TRIBE_Screen_Game::command_player(int param_1) {
     if (!rge_base_game->allowCheatCodes()) {

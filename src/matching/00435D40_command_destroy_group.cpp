@@ -1,13 +1,17 @@
 #include <stdlib.h>
 
+#ifndef COMMAND_TU_CONTEXT
 class RGE_Command {
 public:
     void submit(void* command, int size);
     void command_destroy_group(int player_id, int group_id);
 };
+#endif
 
+#ifndef COMMAND_TU_CONTEXT
 extern void* L;
 extern void Log(void* log, const char* text, int player_id);
+#endif
 
 struct CommandDestroyGroupPacket {
     unsigned char type;

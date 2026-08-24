@@ -24,9 +24,10 @@
 #include <stdio.h>
 #include <string.h>
 
-extern "C" void __cdecl run_log(char* text, int level);
+extern void __cdecl run_log(char* text, int level);
 extern "C" __declspec(dllimport) int __stdcall IsIconic(void* window);
 
+#ifndef TRIBEGAM_TU_CONTEXT
 class TMusic_System {
 public:
     char path[260];
@@ -39,7 +40,6 @@ public:
                     int unknown2);
     int stop_track();
 };
-
 class TPanelSystem {
 public:
     int setCurrentPanel(char* name, int mode);
@@ -126,6 +126,7 @@ public:
 
     void let_game_begin();
 };
+#endif
 
 extern TPanelSystem panel_system;
 extern TChat* chat;

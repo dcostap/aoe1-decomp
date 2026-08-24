@@ -19,6 +19,7 @@
 
 #include <stdio.h>
 
+#ifndef TAIUAIMD_COMPLETE_TU
 typedef unsigned long ulong;
 
 extern void* operator new(unsigned int size);
@@ -179,6 +180,7 @@ class TribeTradeShipUnitAIModule : public UnitAIModule {
 public:
     int processNotify(NotifyEvent* event, ulong param_2);
 };
+#endif
 
 int TribeTradeShipUnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
 {
@@ -256,14 +258,22 @@ int TribeTradeShipUnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
 
     if (event->p2 <= 0) {
         RGE_Static_Object* obj = this->objectValue;
+#ifdef TAIUAIMD_COMPLETE_TU
+        taiuaimd_player_notify(obj->owner, obj->id, obj->id, 0x209, event->caller, 0, 0);
+#else
         obj->owner->notifyCommander(obj->id, obj->id, 0x209, event->caller, 0, 0);
+#endif
         this->purgeNotifyQueue(param_2);
         return 4;
     }
 
     if (this->helpCount == 0 || this->objectValue->owner->computerPlayer() == 1) {
         RGE_Static_Object* obj = this->objectValue;
+#ifdef TAIUAIMD_COMPLETE_TU
+        taiuaimd_player_notify(obj->owner, obj->id, obj->id, 0x201, event->caller, 0, 0);
+#else
         obj->owner->notifyCommander(obj->id, obj->id, 0x201, event->caller, 0, 0);
+#endif
     }
 
     int count = this->helpCount;

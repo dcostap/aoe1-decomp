@@ -1,3 +1,4 @@
+#ifndef TAIUAIMD_COMPLETE_TU
 class RGE_Static_Object;
 class RGE_Game_World;
 
@@ -78,17 +79,26 @@ class TribeArtifactUnitAIModule : public UnitAIModule {
 public:
     int processIdle(int);
 };
+#endif
 
 int TribeArtifactUnitAIModule::processIdle(int param_1) {
     int iVar1;
     RGE_Static_Object *pRVar2;
 
+#ifdef TAIUAIMD_COMPLETE_TU
+    iVar1 = this->closestObject(-1, -1, -1, -1, 0);
+#else
     iVar1 = ((UnitAIModuleCallShim*)this)->closestObject(-1, -1, -1, -1, 0);
+#endif
     if ((numberDifferentPlayerObjectsVisible <= 1) && (iVar1 != -1)) {
         pRVar2 = this->objectValue->owner->world->object(iVar1);
         if (pRVar2 != 0) {
             if (this->objectValue->owner != pRVar2->owner) {
+#ifdef TAIUAIMD_COMPLETE_TU
+                this->objectValue->change_ownership(pRVar2->owner);
+#else
                 ((RGE_Static_ObjectCallShim*)this->objectValue)->change_ownership(pRVar2->owner);
+#endif
                 return 6;
             }
         }

@@ -4,6 +4,7 @@
 
 extern "C" void* __cdecl calloc(unsigned int, unsigned int);
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 class TPanel { public: TPanel(); virtual ~TPanel(); };
 
 class RGE_View : public TPanel {
@@ -91,6 +92,7 @@ public:
     RGE_View();
     void set_selection_area(int,int,int,int);
 };
+#endif
 
 RGE_View::RGE_View()
 {
@@ -165,5 +167,9 @@ RGE_View::RGE_View()
     this->extra_sprites = 0;
     this->DispSel_List_Size = 0;
     this->DispSel_List_Max = 8;
+#ifdef RGE_VIEW_SHARED_CONTEXT
+    this->DispSel_List_void = calloc(8, 0x14);
+#else
     this->DispSel_List = calloc(8, 0x14);
+#endif
 }

@@ -1,3 +1,4 @@
+#if !defined(SCR_GAME_TU_CONTEXT)
 class RGE_Base_Game {
 public:
     int allowCheatCodes(void);
@@ -26,6 +27,7 @@ public:
 
     void command_quick_build(void);
 };
+#endif
 
 void TRIBE_Screen_Game::command_quick_build(void) {
     if (rge_base_game->allowCheatCodes() != 0) {

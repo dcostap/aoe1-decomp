@@ -24,6 +24,7 @@
 
 extern float DAT_005758d8; // 7.0f
 
+#ifndef TAIUAIMD_COMPLETE_TU
 class RGE_Game_World;
 class RGE_Static_Object;
 
@@ -86,6 +87,7 @@ class TribeFishingShipUnitAIModule : public UnitAIModule {
 public:
     int processIdle(int param_1);
 };
+#endif
 
 int TribeFishingShipUnitAIModule::processIdle(int param_1)
 {
@@ -103,7 +105,11 @@ int TribeFishingShipUnitAIModule::processIdle(int param_1)
 
                 moveTo((0.0f - ((xDiff / distance) * speed)) + objectValue->world_x,
                        (0.0f - ((yDiff / distance) * speed)) + objectValue->world_y,
+#ifdef TAIUAIMD_COMPLETE_TU
+                       objectValue->facet, 1);
+#else
                        objectValue->facing, 1);
+#endif
                 return 6;
             }
         }

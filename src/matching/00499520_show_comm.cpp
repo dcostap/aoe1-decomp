@@ -1,6 +1,7 @@
 // VA: 00499520 show_comm (175B)
 // scr_game.cpp
 
+#if !defined(SCR_GAME_TU_CONTEXT)
 class TMessagePanel {
 public:
     void show_message(int type, char* text, int a, int b, void* c, int d, int e);
@@ -18,6 +19,7 @@ public:
 
     void show_comm(char* p1, char* p2, char* p3, char* p4, char* p5, char* p6);
 };
+#endif
 
 void TRIBE_Screen_Game::show_comm(char* p1, char* p2, char* p3, char* p4, char* p5, char* p6) {
     message_panel1->show_message(2, p1, 0x56, 0, 0, 0, 0);

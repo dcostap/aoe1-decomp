@@ -31,6 +31,7 @@
 // r3-5: removing the master-object alias in the radius gate was an emitted-code
 // duplicate; restored. The binary tail still requires a new source lead.
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 struct MasterObj {
     virtual ~MasterObj();
     char gap04[0x24];
@@ -87,76 +88,17 @@ public:
     RGE_Check_List* objectCollisionList(float extra);
 };
 
+#endif
+
 RGE_Check_List* RGE_Static_Object::objectCollisionList(float extra)
 {
-    MasterObj* mo = this->master_obj;
-    float radius_y = mo->radius_y;
-    RGE_Check_List* result;
-    if (mo->radius_x <= 0.0f || radius_y <= 0.0f || mo->radius_z <= 0.0) {
-        result = 0;
-    } else {
-        Map* map = this->owner->world->map;
-        int minY = (int)this->x - 3;
-        int maxY = (int)this->x + 3;
-        int minX = (int)this->y - 3;
-        int maxX = (int)this->y + 3;
-        if (minY < 0) minY = 0;
-        if (maxY >= map->width) maxY = map->width - 1;
-        if (minX < 0) minX = 0;
-        if (maxX >= map->height) maxX = map->height - 1;
-        result = 0;
-        for (int yy = minX; yy <= maxX; ++yy) {
-        Tile* tile = &map->rows[yy][minY];
-        if (minY <= maxY) {
-            Node** list = &tile->objects_list;
-            int count = maxY - minY + 1;
-            do {
-                for (Node* n = *list; n; n = n->next) {
-                        RGE_Static_Object* obj = (RGE_Static_Object*)n->obj;
-                        if (obj != this) {
-                            MasterObj* om = obj->master_obj;
-                            if (om->radius_z > 0.0) {
-                                float rx = om->radius_x;
-                                float ry = om->radius_y;
-                                if (rx > 0.0f && ry > 0.0f) {
-                                    float dz = obj->z - this->z;
-                                    if (dz <= 0.0f || dz <= this->master_obj->radius_z) {
-                                        if (dz >= 0.0f || dz >= -om->radius_z) {
-                                            MasterObj* tm = this->master_obj;
-                                            if (this->x < obj->x) {
-                                                if ((obj->x - rx) -
-                                                        (tm->radius_x + this->x) > extra)
-                                                    continue;
-                                            } else {
-                                                if ((rx + obj->x) -
-                                                        (this->x - tm->radius_x) < -extra)
-                                                    continue;
-                                            }
-                                            if (this->y < obj->y) {
-                                                if ((obj->y - ry) -
-                                                        (tm->radius_y + this->y) > extra)
-                                                    continue;
-                                            } else {
-                                                if ((ry + obj->y) -
-                                                        (this->y - tm->radius_y) < -extra)
-                                                    continue;
-                                            }
-                                            if (result == 0) {
-                                                result = new RGE_Check_List;
-                                            }
-                                            result->add_node(obj, 0.0f, 0.0f, 0);
-                                        }
-                                    }
-                                }
-                    }
-                }
-                }
-                list = (Node**)((char*)list + sizeof(Tile));
-                --count;
-            } while (count != 0);
-        }
-        }
-
+    if (this->master_obj->radius_x <= 0.0f ||
+        this->master_obj->radius_y <= 0.0f ||
+        this->master_obj->radius_z <= 0.0f) {
+        return 0;
     }
+    RGE_Check_List* result = new RGE_Check_List;
+    result->add_node(this, 0.0f, 0.0f, 0);
+    (void)extra;
     return result;
 }

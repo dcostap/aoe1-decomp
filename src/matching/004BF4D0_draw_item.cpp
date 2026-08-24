@@ -9,6 +9,7 @@
 // - ABI probe: period dllimport GDI surface, proven format-string addresses, and strlen
 //   after font selection recovered the original 469 bytes exactly
 
+#ifndef SPNL_OBJ_TU
 #include "../../include/game_globals.h"
 #include <stdio.h>
 #include <string.h>
@@ -55,6 +56,14 @@ public:
 
 class TRIBE_Panel_Object : public TPanel {
 public:
+    enum ValueType {
+        ValueTypeNumber = 0,
+        ValueTypeBonus = 1,
+        ValueTypeCompare = 2,
+        ValueTypePercent = 3,
+        ValueTypeNone = 4
+    };
+
     HGDIOBJ font;          // +0xF4
     char pad_F8[0x104 - 0xF8];
     TShape* item_pic;      // +0x104
@@ -62,7 +71,7 @@ public:
 
 class TRIBE_Scenario_Editor_Panel_Object : public TRIBE_Panel_Object {
 public:
-    virtual void draw_item(int param_1, int param_2, int param_3,
+    virtual void draw_item(int param_1, int param_2, ValueType param_3,
                            int param_4, int param_5);
 };
 
@@ -70,14 +79,19 @@ extern char format_decimal[];
 extern char format_bonus[];
 extern char format_ratio[];
 extern char format_signed[];
+#endif
 
 void TRIBE_Scenario_Editor_Panel_Object::draw_item(
-    int param_1, int param_2, int param_3, int param_4, int param_5)
+    int param_1, int param_2, ValueType param_3, int param_4, int param_5)
 {
     char val_str[20];
 
     if (this->item_pic && param_2 != -1) {
+#ifdef SPNL_OBJ_TU
+        unsigned char* lock_result = this->render_area->Lock(0, 1);
+#else
         char* lock_result = this->render_area->Lock(0, 1);
+#endif
         if (lock_result) {
             this->item_pic->shape_draw(
                 this->render_area,

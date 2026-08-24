@@ -10,6 +10,7 @@ extern float g_576858;
 
 class RGE_Sprite;
 class RGE_Sound;
+#ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
 class RGE_Game_World { public: char pad_00[0x30]; RGE_Sprite** pad_30; char pad_34[4]; RGE_Sound** pad_38; };
 
 class RGE_Player {
@@ -60,13 +61,14 @@ public:
     void load_master_object(int file, short index, unsigned char type, RGE_Sprite** sprites, RGE_Sound** sounds);
     void load(int file);
 };
+#endif
 
 void TRIBE_Player::load(int file)
 {
     rge_read(file, &this->master_object_count, 2);
     short count = this->master_object_count;
     if (count > 0) {
-        this->master_objects = (void**)calloc(count, 4);
+        this->master_objects = (RGE_Master_Static_Object**)calloc(count, 4);
         rge_read(file, this->master_objects, this->master_object_count * 4);
         for (short i = 0; i < this->master_object_count; ++i) {
             if (this->master_objects[i] != 0) {

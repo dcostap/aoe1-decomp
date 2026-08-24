@@ -1,3 +1,4 @@
+#if !defined(SCR_GAME_TU_CONTEXT)
 class RGE_Base_Game {
 public:
     int get_paused(void);
@@ -31,6 +32,7 @@ public:
 
     void command_ungroup(void);
 };
+#endif
 
 void TRIBE_Screen_Game::command_ungroup(void) {
     if (rge_base_game->get_paused() == 0) {

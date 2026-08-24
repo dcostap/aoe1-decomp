@@ -7,6 +7,7 @@
 
 void __cdecl free(void*);
 
+#ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
 class RGE_Static_Object;
 
 class SelectedObject {
@@ -80,6 +81,7 @@ class TRIBE_Player : public RGE_Player {
 public:
     unsigned char command_attack_ground(float x, float y);
 };
+#endif
 
 unsigned char TRIBE_Player::command_attack_ground(float x, float y) {
     RGE_Static_Object** list;

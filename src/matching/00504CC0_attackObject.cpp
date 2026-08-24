@@ -10,6 +10,7 @@
 
 #include "../../include/game_types.h"
 
+#ifndef TAIUAIMD_COMPLETE_TU
 class RGE_Master_Static_Object {
 public:
     char _gap_00[0x14];
@@ -54,6 +55,7 @@ public:
     int attackObject(int, int);           // override vt[24]
     virtual int huntObject(int, int);     // vt[25]
 };
+#endif
 
 int TribeCivilianUnitAIModule::attackObject(int targetId, int param2) {
     RGE_Static_Object* obj = objectValue->owner->world->object(targetId);

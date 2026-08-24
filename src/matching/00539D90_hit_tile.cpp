@@ -22,6 +22,7 @@
 //   outer-success, and shared-failure tails; this source now matches exactly.
 // FLAGS: /nologo /c /O2 /Oy
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 struct tagPOINT { long x, y; };
 
 struct RGE_Tile {
@@ -109,6 +110,7 @@ public:
     int hit_tile(RGE_Tile* tile, short sx, short sy,
                  short a, short b, tagPOINT* pt);
 };
+#endif
 
 int RGE_View::hit_tile(RGE_Tile* tile, short sx, short sy,
                         short a, short b, tagPOINT* pt)

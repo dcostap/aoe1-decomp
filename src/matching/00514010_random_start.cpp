@@ -44,6 +44,7 @@ class RGE_Player;
 class RGE_Game_World;
 class RGE_Static_Object;
 
+#ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
 class RGE_Master_Static_Object {
 public:
     virtual ~RGE_Master_Static_Object();
@@ -210,6 +211,7 @@ class TChat {
 public:
     void setInChatGroup(int, int);
 };
+#endif
 
 extern "C" int __cdecl debug_rand(char*, int);
 extern float DAT_00576828;

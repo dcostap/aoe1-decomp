@@ -6,6 +6,7 @@
 
 extern "C" double __cdecl atan2(double, double);
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Static_Object {
 public:
     char gap_00[0x10];
@@ -15,6 +16,7 @@ public:
     float world_y;
     int boundToFacet(float x, float y, int facet_num);
 };
+#endif
 
 int RGE_Static_Object::boundToFacet(float x, float y, int facet_num)
 {

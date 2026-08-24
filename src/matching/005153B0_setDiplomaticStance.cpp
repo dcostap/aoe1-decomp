@@ -1,3 +1,4 @@
+#ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
 class TRIBE_Command {
 public:
     void command_relation(short player_id, short target_id, short stance);
@@ -18,6 +19,7 @@ public:
 
     void setDiplomaticStance(int target_id, int stance);
 };
+#endif
 
 void TRIBE_Player::setDiplomaticStance(int target_id, int stance) {
     this->world->commands->command_relation(this->id, (short)target_id, (short)stance);

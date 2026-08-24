@@ -12,6 +12,7 @@
 extern float DAT_00574720;
 extern float DAT_00574768;
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class PathingSystem {
 public:
     void incrementObstruction(int x, int y);
@@ -45,6 +46,7 @@ public:
 
     int addToObstructionMap(int mode);
 };
+#endif
 
 int RGE_Static_Object::addToObstructionMap(int mode)
 {

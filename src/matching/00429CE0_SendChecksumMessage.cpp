@@ -10,16 +10,23 @@ struct MSGFORMAT_CHECKSUM {
     unsigned long PingInitiated;  // +0x20
 };
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TDebuggingLog {
 public:
     static void Log(TDebuggingLog* log, const char* format, int size);
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class RGE_Comm_Error {
 public:
     void ShowReturn(long result, const char* name);
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_00[0x10C8];
@@ -33,12 +40,18 @@ public:
                              long param_3, long param_4, long param_5,
                              long param_6, long param_7);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 // Constants from EXE
+#if !defined(COM_HAND_TU_CONTEXT)
 extern unsigned long debug_timeGetTime(const char* file, int line);
+#endif // COM_HAND_TU_CONTEXT
 
 // Pointer to the global debug log (at 0x62C4FCh)
+#if !defined(COM_HAND_TU_CONTEXT)
 extern TDebuggingLog* L;
+#endif // COM_HAND_TU_CONTEXT
 
 // String constants from the EXE binary
 extern const char s_Com_hand_cpp[];
@@ -73,8 +86,12 @@ long TCommunications_Handler::SendChecksumMessage(
 }
 
 // Stub for TDebuggingLog::Log
+#if !defined(COM_HAND_TU_CONTEXT)
 void TDebuggingLog::Log(TDebuggingLog* log, const char* format, int size) {}
+#endif // COM_HAND_TU_CONTEXT
 
 // Stubs for member functions used as extern
+#if !defined(COM_HAND_TU_CONTEXT)
 long TCommunications_Handler::CommOut(long a, long b, void* buf, long size, long flags) { return 0; }
 void RGE_Comm_Error::ShowReturn(long result, const char* name) {}
+#endif // COM_HAND_TU_CONTEXT

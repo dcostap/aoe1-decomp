@@ -64,6 +64,7 @@
 // the original 8-byte frame or its BP/BX exclude-screen register pair.
 // Open: source-level cause of the remaining local-home rotation is unknown.
 
+#ifndef RGE_MAIN_VIEW_SHARED_CONTEXT
 typedef unsigned char byte;
 
 struct tagRECT {
@@ -110,7 +111,7 @@ public:
     float x;
     float y;
     char gap40[8];
-    byte owner;
+    union { byte owner; byte owner_id; };
 };
 
 class RGE_Visible_Map {
@@ -219,6 +220,11 @@ class RGE_Main_View : public RGE_View {
 public:
     byte pick1(byte cmd, byte small, long x, long y, PickInfo* out, RGE_Static_Object* exclude, int alt);
 };
+#endif
+
+#ifdef RGE_MAIN_VIEW_SHARED_CONTEXT
+typedef RGE_Pick_Info PickInfo;
+#endif
 
 byte RGE_Main_View::pick1(byte cmd, byte small, long x, long y, PickInfo* out, RGE_Static_Object* exclude, int alt)
 {
@@ -237,7 +243,7 @@ byte RGE_Main_View::pick1(byte cmd, byte small, long x, long y, PickInfo* out, R
             for (int i = 0; i < y; ++i, ++p) {
                 if (p->id >= 0) {
                     RGE_Static_Object* obj = this->world->objects[p->id];
-                    if (obj && obj->owner < 7 && obj->master_obj->select_level >= small) {
+                    if (obj && obj->owner_id < 7 && obj->master_obj->select_level >= small) {
                         if (alt || this->map->flag || this->pick_through_fog(obj) ||
                             this->player->visible->get_visible((int)obj->x, (int)obj->y) == 0x0f) {
                             int s = this->pick_weight(obj, p->confidence);
@@ -269,7 +275,7 @@ byte RGE_Main_View::pick1(byte cmd, byte small, long x, long y, PickInfo* out, R
             for (int j = 0; j < y; ++j, ++p) {
                 if (p->id >= 0) {
                     RGE_Static_Object* obj = this->world->objects[p->id];
-                    if (obj && obj->owner < 7 && obj->master_obj->select_level >= small) {
+                    if (obj && obj->owner_id < 7 && obj->master_obj->select_level >= small) {
                         int s = this->pick_weight(obj, p->confidence);
                         if (s > 0 && (alt || this->map->flag || this->pick_through_fog(obj) ||
                                       this->player->visible->get_visible((int)obj->x, (int)obj->y) == 0x0f)) {

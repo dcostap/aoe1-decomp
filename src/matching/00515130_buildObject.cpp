@@ -1,5 +1,6 @@
 #include <stdlib.h>
 
+#ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
 class TRIBE_Command {
 public:
     void command_build(int param_1, int* param_2, int param_3, int param_4, float param_5, float param_6, int param_7);
@@ -20,6 +21,7 @@ public:
 
     void buildObject(int param_1, int param_2, float param_3, float param_4, int param_5);
 };
+#endif
 
 void TRIBE_Player::buildObject(int param_1, int param_2, float param_3, float param_4, int param_5)
 {

@@ -2,6 +2,7 @@
 // PDB source: tplayer.cpp lines 5275-5282
 // Match: 101/101 bytes, 0.0000%
 
+#ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
 class RGE_Master_Player;
 class RGE_Game_World { char gap[4]; };
 
@@ -30,6 +31,7 @@ public:
     TRIBE_Gaia(TRIBE_World* world, RGE_Master_Player* player,
                unsigned char param_3, char* param_4, unsigned char param_5);
 };
+#endif
 
 TRIBE_Gaia::TRIBE_Gaia(TRIBE_World* world, RGE_Master_Player* player,
                         unsigned char param_3, char* param_4, unsigned char param_5)

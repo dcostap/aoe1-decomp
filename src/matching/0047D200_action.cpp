@@ -3,6 +3,7 @@
 // Probe 1: structural stub emitted only 16 bytes.
 // Fresh 2026-05-19 try 2: packet-derived TTextPanel layout, natural switch, direct base action.
 
+#ifndef PNL_TXT_TU_CONTEXT
 class TPanel {
 public:
     long action(TPanel* panel, long msg, unsigned long p1, unsigned long p2);
@@ -16,6 +17,7 @@ public:
     void scroll(unsigned char code, unsigned long pos, unsigned long flag);
     long action(TPanel* panel, long msg, unsigned long p1, unsigned long p2);
 };
+#endif
 
 long TTextPanel::action(TPanel* panel, long msg, unsigned long p1, unsigned long p2)
 {

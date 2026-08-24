@@ -3,6 +3,7 @@
 
 extern long __stdcall RGE_Base_Game_wnd_proc(void* this_ptr, void* hWnd, unsigned int msg, unsigned int wParam, long lParam);
 
+#ifndef TRIBEGAM_TU_CONTEXT
 class RGE_Base_Game {
 public:
     char gap_1B0[0x1B0];
@@ -19,22 +20,21 @@ public:
     long __stdcall wnd_proc(void* hWnd, unsigned int msg, unsigned int wParam, long lParam);
     void stop_video(unsigned char param);
 };
+#endif
 
-extern void (__stdcall *SetCursor)(int);
-
-long __stdcall TRIBE_Game::wnd_proc(void* hWnd, unsigned int msg, unsigned int wParam, long lParam)
+long TRIBE_Game::wnd_proc(void* hWnd, unsigned int msg, unsigned int wParam, long lParam)
 {
     if (msg <= 0x200) {
         if (msg != 0x200) {
             if (msg == 7) {
-                if (this->field_1D8 == 0) {
+                if (this->is_mouse_on == 0) {
                     this->disable_input();
                 } else {
                     this->enable_input();
                 }
             }
         } else {
-            if (this->field_1B0 == 1) {
+            if (this->prog_mode == 1) {
                 SetCursor(0);
             }
         }
@@ -42,7 +42,7 @@ long __stdcall TRIBE_Game::wnd_proc(void* hWnd, unsigned int msg, unsigned int w
         switch (msg) {
         case 0x201:
         case 0x204:
-            if (this->field_1B0 == 1) {
+            if (this->prog_mode == 1) {
                 this->stop_video(1);
                 return 0;
             }

@@ -1,3 +1,4 @@
+#if !defined(SCR_GAME_TU_CONTEXT)
 class RGE_Player {
 public:
     virtual void vf00(void);
@@ -57,6 +58,7 @@ class TRIBE_Screen_Game {
 public:
     void command_stop(void);
 };
+#endif
 
 void TRIBE_Screen_Game::command_stop(void) {
     if (rge_base_game->get_paused() == 0) {

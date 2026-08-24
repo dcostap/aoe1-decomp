@@ -1,3 +1,4 @@
+#ifndef TRIBEGAM_TU_CONTEXT
 class TRIBE_Game {
 public:
     virtual ~TRIBE_Game();
@@ -5,5 +6,6 @@ public:
     unsigned char field_AE4;
     int startingUnits();
 };
+#endif
 
-int TRIBE_Game::startingUnits() { return this->field_AE4; }
+int TRIBE_Game::startingUnits() { return this->tribe_game_options.startingUnitsValue; }

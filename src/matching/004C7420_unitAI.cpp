@@ -1,3 +1,4 @@
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Static_Object {
 public:
     virtual ~RGE_Static_Object();
@@ -5,5 +6,6 @@ public:
     int field_74;
     int unitAI();
 };
+#endif
 
-int RGE_Static_Object::unitAI() { return this->field_74; }
+UnitAIModule* RGE_Static_Object::unitAI() { return this->unitAIValue; }

@@ -1,5 +1,6 @@
 #include <stdlib.h>
 
+#ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
 class RGE_Command {
 public:
     void* vtable_ptr;
@@ -32,6 +33,7 @@ public:
 
     void taskTrader(int param_1, int param_2, int param_3, float param_4, float param_5);
 };
+#endif
 
 void TRIBE_Player::taskTrader(int param_1, int param_2, int param_3, float param_4, float param_5) {
     int* task = (int*)calloc(1, 4);

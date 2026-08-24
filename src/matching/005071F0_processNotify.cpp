@@ -55,11 +55,19 @@ extern void operator delete(void* ptr);
 
 extern "C" int debug_rand(char*, int);
 #define taskedThisUpdate (*(int*)0x592A48)
+#ifdef TAIUAIMD_COMPLETE_TU
+extern float DAT_005758bc;
+extern float DAT_005758c0;
+extern float DAT_005758dc;
+extern float DAT_005758e0;
+extern float DAT_005758e4;
+#else
 extern const float DAT_005758bc;
 extern const float DAT_005758c0;
 extern const float DAT_005758dc;
 extern const float DAT_005758e0;
 extern const float DAT_005758e4;
+#endif
 
 int TribeSoldierUnitAIModule::processNotify(NotifyEvent* param_1, ulong param_2)
 {

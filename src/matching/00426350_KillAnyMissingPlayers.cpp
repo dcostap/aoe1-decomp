@@ -19,12 +19,17 @@ extern "C" void* __cdecl operator_new(unsigned int size);
 extern "C" void __cdecl operator_delete(void* ptr);
 
 #if 0
+#if !defined(COM_HAND_TU_CONTEXT)
 class TDebuggingLog {
 public:
     static void __cdecl Log(TDebuggingLog* log, const char* format, ...);
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 extern TDebuggingLog* L;
+#endif // COM_HAND_TU_CONTEXT
 #endif
 
 struct MSGFORMAT_KILL_PLAYER {
@@ -32,8 +37,11 @@ struct MSGFORMAT_KILL_PLAYER {
     unsigned long dcoID;
     unsigned long CurrentTurn;
     unsigned long current_turn;
+    unsigned long player;
+    unsigned long dco_id;
 };
 
+#if !defined(COM_HAND_TU_CONTEXT)
 struct IDirectPlay;
 
 struct IDirectPlayVtbl {
@@ -47,15 +55,20 @@ struct IDirectPlayVtbl {
 struct IDirectPlay {
     IDirectPlayVtbl* vtbl;
 };
+#endif // COM_HAND_TU_CONTEXT
 
 #define g_pDirectPlay (*(IDirectPlay**)0x0062C5EC)
 
 #if 0
+#if !defined(COM_HAND_TU_CONTEXT)
 struct COMMPLAYEROPTIONS {
     char gap_00[0x14];
     unsigned long dcoID[10];
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_0000[0x10C8];
@@ -73,6 +86,8 @@ public:
 
     void KillAnyMissingPlayers();
 };
+#endif // COM_HAND_TU_CONTEXT
+
 #endif
 
 void TCommunications_Handler::KillAnyMissingPlayers()

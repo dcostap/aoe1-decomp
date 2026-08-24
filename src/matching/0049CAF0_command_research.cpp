@@ -2,6 +2,7 @@
 // scr_game.cpp
 // Retry 2026-05-19: replace placeholder with natural member-call surface.
 
+#if !defined(SCR_GAME_TU_CONTEXT)
 struct RGE_Base_Game;
 struct TRIBE_Player;
 struct TMessagePanel;
@@ -40,6 +41,7 @@ public:
     TMessagePanel* message_panel;
     void command_research(int player_id);
 };
+#endif
 
 void TRIBE_Screen_Game::command_research(int player_id) {
     register TRIBE_Screen_Game* self = this;

@@ -7,6 +7,7 @@
 
 void __cdecl free(void*);
 
+#ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
 class RGE_Static_Object;
 
 class SelectedObject {
@@ -82,6 +83,7 @@ class TRIBE_Player : public RGE_Player {
 public:
     unsigned char command_trade_attribute(long param);
 };
+#endif
 
 unsigned char TRIBE_Player::command_trade_attribute(long param) {
     RGE_Static_Object** list;

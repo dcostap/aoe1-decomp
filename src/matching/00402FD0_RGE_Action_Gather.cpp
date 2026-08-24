@@ -1,3 +1,4 @@
+#ifndef ACT_GATH_CONTEXT_H
 class RGE_Task;
 
 class RGE_Action {
@@ -21,6 +22,7 @@ public:
 
     RGE_Action_Gather(int file, RGE_Task* task, float x, float y, float z);
 };
+#endif
 
 RGE_Action_Gather::RGE_Action_Gather(int file, RGE_Task* task, float x, float y, float z)
     : RGE_Action(file, 1) {

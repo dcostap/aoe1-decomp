@@ -9,6 +9,7 @@ public:
     int data_size;
 };
 
+
 void TCommunications_Handler_fo::FreeOptions(void) {
     if (this->options_data) {
         this->data_size = 0;

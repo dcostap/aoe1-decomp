@@ -8,6 +8,7 @@
 #include "../../include/game_types.h"
 #include <stdlib.h>
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Master_Static_Object {
 public:
     char _gap_00[0x28];
@@ -49,6 +50,7 @@ public:
 
     void modify_percent(float percent, unsigned char mode);
 };
+#endif
 
 void RGE_Static_Object::modify_percent(float percent, unsigned char mode) {
     switch (mode) {
@@ -59,11 +61,10 @@ void RGE_Static_Object::modify_percent(float percent, unsigned char mode) {
     }
     case 1:
         if (tile != 0 && object_state == 2) {
-            VTableProxy* p = (VTableProxy*)this;
-            p->funcAtDC(owner, 0, -1);
+            this->vfDC(this->owner, 0, -1);
 
             int val = (int)(master_obj->los * percent);
-            p->funcAtD8(owner, 0, val);
+            this->vfD8(this->owner, 0, val);
         }
         break;
     }

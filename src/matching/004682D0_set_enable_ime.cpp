@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_EZ_CONTEXT_H
 class TPanelSystem {
 public:
     void EnableIME(void);
@@ -15,6 +16,7 @@ public:
 
     void set_enable_ime(int value);
 };
+#endif
 
 void TEasy_Panel::set_enable_ime(int value) {
     this->enable_ime = value;

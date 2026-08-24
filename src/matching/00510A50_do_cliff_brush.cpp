@@ -11,6 +11,7 @@
 // probe 4: reversed the x-direction comparison operands; reduced drift to 2.
 // probe 5: wrote the equal-x y comparison as old_cliff_y >= cliff_y; MATCH.
 
+#ifndef TMAP_GROUP_CONTEXT
 class RGE_Player;
 class RGE_Game_World;
 class RGE_Player_Info;
@@ -63,6 +64,7 @@ public:
     unsigned char do_cliff_brush(long x, long y, unsigned char a,
                                  unsigned char b);
 };
+#endif
 
 unsigned char TRIBE_Map::do_cliff_brush(long x, long y, unsigned char a,
                                         unsigned char b)

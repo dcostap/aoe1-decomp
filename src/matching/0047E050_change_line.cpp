@@ -4,6 +4,7 @@
 // result: same code family; the real blocker is still the class layout
 // attempt 3: move sorted to 0x15c so the member load/store lands on the observed offset
 
+#ifndef PNL_TXT_TU_CONTEXT
 class TTextPanel {
 public:
     char gap_0[0x15C];
@@ -13,6 +14,7 @@ public:
     int delete_line(long line);
     int change_line(long param_1, char* param_2, char* param_3, long param_4);
 };
+#endif
 
 int TTextPanel::change_line(long param_1, char* param_2, char* param_3, long param_4) {
     int iVar1;

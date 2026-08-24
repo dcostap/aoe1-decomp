@@ -1,3 +1,4 @@
+#ifndef TRIBEGAM_TU_CONTEXT
 class TRIBE_Game {
 public:
     virtual ~TRIBE_Game();
@@ -6,4 +7,5 @@ public:
 
     unsigned char quickStartGame() const;
 };
-unsigned char TRIBE_Game::quickStartGame() const { return this->quickStartGame_; }
+#endif
+unsigned char TRIBE_Game::quickStartGame() const { return this->quick_start_game; }

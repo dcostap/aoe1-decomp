@@ -44,6 +44,7 @@
 // - Accepted-drift audit: do not promote. The remaining drift is the local
 //   switch relocation pair, the first guard's register basin, and tail colors.
 
+#ifndef SPNL_OBJ_TU
 #include "../../include/game_globals.h"
 #include <windows.h>
 #include <stdio.h>
@@ -503,6 +504,7 @@ public:
 
     long get_pierce_armor();
 };
+#endif
 
 void TRIBE_Scenario_Editor_Panel_Object::draw()
 {

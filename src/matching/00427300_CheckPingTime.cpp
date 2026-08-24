@@ -3,8 +3,11 @@
 // Com_hand.cpp:1116-1129
 // MATCH: 0.0000% diff, 4 relocations masked
 
+#if !defined(COM_HAND_TU_CONTEXT)
 #include "../../include/game_globals.h"
+#endif // COM_HAND_TU_CONTEXT
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_00[0x10E0];
@@ -19,8 +22,12 @@ public:
     void TXPing(int playerIndex);
     void CheckPingTime(int param_1);
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 extern "C" unsigned long debug_timeGetTime(char* file, int line);
+#endif // COM_HAND_TU_CONTEXT
 
 void TCommunications_Handler::CheckPingTime(int param_1) {
     if (!this->Multiplayer)

@@ -1,5 +1,6 @@
 // attempt 2: direct TEasy_Panel default initialization in source-line order
 
+#ifndef AOE1_PANEL_EZ_CONTEXT_H
 class TEasy_Panel {
 public:
     char gap_000[0xF4];
@@ -47,6 +48,7 @@ public:
 
     void init_vars();
 };
+#endif
 
 void TEasy_Panel::init_vars() {
     this->ideal_width = 0x280;

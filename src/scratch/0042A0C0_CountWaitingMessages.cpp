@@ -6,6 +6,7 @@
 
 class RESENDER;
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_00[0x1520];
@@ -13,6 +14,8 @@ public:
 
     int CountWaitingMessages();
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 class TDebuggingLog;
 

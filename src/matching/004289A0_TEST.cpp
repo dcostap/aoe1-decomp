@@ -24,17 +24,25 @@ extern "C" void __cdecl operator_delete(void* p);
 
 extern "C" int __cdecl debug_rand(char* file, int line);
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TDebuggingLog {
 public:
     void Log(char* fmt, ...);  // variadic → __cdecl, this pushed on stack
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 extern "C" TDebuggingLog* L_global;
+#endif // COM_HAND_TU_CONTEXT
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     int TEST();
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 int TCommunications_Handler::TEST()
 {

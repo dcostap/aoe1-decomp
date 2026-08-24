@@ -17,23 +17,34 @@
 extern "C" void* g_prev_dp;             // [62C5ECh]
 extern "C" void* g_log_obj;             // [62C4FCh]
 extern "C" int g_dco_id;                // [62CF04h]
+#if !defined(COM_HAND_TU_CONTEXT)
+#if !defined(COM_HAND_TU_CONTEXT)
 extern "C" void __cdecl Log(void* L, const char* fmt, int val);
+#endif // COM_HAND_TU_CONTEXT
+#endif // COM_HAND_TU_CONTEXT
 
+#if !defined(COM_HAND_TU_CONTEXT)
 struct RGE_Base_Game {
     virtual ~RGE_Base_Game();
     char gap_04[0x24];
     int random_game_seed;                // +0x28
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 extern "C" RGE_Base_Game* rge_base_game; // [62C574h]
 
+#if !defined(COM_HAND_TU_CONTEXT)
 struct RGE_Lobby {
     unsigned char CheckForLobbyLaunch(void** pp);
     unsigned char GetSessionInfo(void* p);
     unsigned char GetPlayerInfo(char** pp);
     unsigned char IsThisHost();
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 struct COMMPLAYEROPTIONS {
     char gap_00[0x08];
     int ProgramState;                 // +0x08
@@ -43,16 +54,25 @@ struct COMMPLAYEROPTIONS {
     int Humanity[10];                 // +0x184
     char gap_1AC[0x1D0 - 0x1AC];
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 struct IUnknown {
     virtual long __stdcall QueryInterface(void*, void**) = 0;
     virtual unsigned long __stdcall AddRef() = 0;
     virtual unsigned long __stdcall Release() = 0;
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 struct IDirectPlay3 : IUnknown {
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 struct TCommunications_Handler {
     int opt;
     char* optd;
@@ -82,6 +102,8 @@ struct TCommunications_Handler {
 
     int LaunchLobbyGame();
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 int TCommunications_Handler::LaunchLobbyGame()
 {
@@ -114,7 +136,7 @@ int TCommunications_Handler::LaunchLobbyGame()
         // Preserve the executable's reload of Me after the adjacent option
         // store; a member reference is ordinary C++ and records that proven
         // source-level lifetime without raw offsets or volatility.
-        int& me = this->Me;
+        unsigned int& me = this->Me;
         PlayerOptions.Humanity[me] = 2;
         HaveHostInit = 1;
         PlayerOptions.ProgramState = 3;

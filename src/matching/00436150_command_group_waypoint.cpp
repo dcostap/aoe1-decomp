@@ -11,6 +11,7 @@
 
 #define STR_X "X"
 
+#ifndef COMMAND_TU_CONTEXT
 class RGE_Master_Static_Object {
 public:
     char gap_00[8];
@@ -44,6 +45,7 @@ class TDebuggingLog {
 public:
     void Log(const char* fmt, ...);
 };
+#endif
 
 extern TDebuggingLog* L;
 

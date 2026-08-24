@@ -1,3 +1,4 @@
+#ifndef TRIBEGAM_TU_CONTEXT
 class TRIBE_Game {
 public:
     virtual ~TRIBE_Game();
@@ -6,4 +7,5 @@ public:
 
     void setQuickStartGame(unsigned char);
 };
-void TRIBE_Game::setQuickStartGame(unsigned char val) { this->quickStartGame_ = val; }
+#endif
+void TRIBE_Game::setQuickStartGame(unsigned char val) { this->quick_start_game = val; }

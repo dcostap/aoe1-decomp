@@ -15,6 +15,7 @@
 // - Removing either marker also reproduces the bytes, but the retained form
 //   states the PDB owner and the proven vtable slot.
 
+#ifndef RGE_MAIN_VIEW_SHARED_CONTEXT
 class RGE_Main_View {
 public:
     virtual void vf00(void);
@@ -30,6 +31,7 @@ public:
     void set_selection_area(long x0, long y0, long x1, long y1);
     virtual int command_place_multi_object(long a, long b, long c, long d, int mode);
 };
+#endif
 
 int RGE_Main_View::command_place_multi_object(long a, long b, long c, long d, int mode) {
     set_selection_area(-1, -1, -1, -1);

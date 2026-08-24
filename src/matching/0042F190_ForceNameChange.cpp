@@ -91,15 +91,23 @@
 // - Main-agent audit restored typed variadic `L->Log(...)` syntax and the SDK DPNAME
 //   ANSI union members; both are codegen-identical and preserve the exact result.
 
+#if !defined(COM_HAND_TU_CONTEXT)
 #include "../../include/game_globals.h"
+#endif // COM_HAND_TU_CONTEXT
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TDebuggingLog {
 public:
     void Log(char* text, ...);
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 extern TDebuggingLog* L;
+#endif // COM_HAND_TU_CONTEXT
 
+#if !defined(COM_HAND_TU_CONTEXT)
 struct DPNAME {
     unsigned long dwSize;
     unsigned long dwFlags;
@@ -112,7 +120,10 @@ struct DPNAME {
         char* lpszLongNameA;
     };
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class IDirectPlay2 {
 public:
     virtual long __stdcall QueryInterface(void* riid, void** object) = 0;
@@ -147,11 +158,16 @@ public:
     virtual long __stdcall SetPlayerData(unsigned long player, void* data, unsigned long size, unsigned long flags) = 0;
     virtual long __stdcall SetPlayerName(unsigned long player, DPNAME* name, unsigned long flags) = 0;
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     void ForceNameChange(void);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 void TCommunications_Handler::ForceNameChange(void) {
     DPNAME dpn;

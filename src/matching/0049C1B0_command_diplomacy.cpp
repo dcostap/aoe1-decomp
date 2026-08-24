@@ -1,6 +1,7 @@
 // 0049C1B0 command_diplomacy
 // 122 bytes, __thiscall, TRIBE_Screen_Game method
 
+#if !defined(SCR_GAME_TU_CONTEXT)
 class TScreenPanel {};
 
 class TribeDiplomacyDialog {
@@ -23,6 +24,7 @@ class TRIBE_Screen_Game : public TScreenPanel {
 public:
     void command_diplomacy();
 };
+#endif
 
 void TRIBE_Screen_Game::command_diplomacy() {
     if (rge_base_game->get_paused() == 0) {

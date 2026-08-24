@@ -1,3 +1,4 @@
+#ifndef ACT_GATH_CONTEXT_H
 struct RGE_Sprite;
 
 struct SomeObj {
@@ -25,15 +26,16 @@ public:
     char pad_0C[0x24];
     SubObj* field_30;
 };
+#endif
 
 extern "C" int __cdecl _ftol(void);
 
 RGE_Sprite* RGE_Action_Gather::get_wait_sprite(void) {
     SubObj* obj = this->field_30;
     short val = obj->field_14;
-    if (val != (short)0xFFFF 
-        && val == this->field_08->field_4C 
-        && (int)this->field_08->field_44 > 0 
+    if (val != (short)0xFFFF
+        && val == this->field_08->field_4C
+        && (int)this->field_08->field_44 > 0
         && obj->field_40 != 0) {
         return obj->field_40;
     }

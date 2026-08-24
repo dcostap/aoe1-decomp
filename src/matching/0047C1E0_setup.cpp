@@ -26,6 +26,7 @@
 //   __chkstk at the same offset for the same 0x2F-byte helper. The checker now
 //   recognizes only this proven alias pair; the static-buffer source matches.
 
+#ifndef PNL_TXT_TU_CONTEXT
 class TDrawArea;
 class TPanel {
 public:
@@ -116,6 +117,7 @@ public:
                int fill, unsigned char backColor, int outlineValue,
                unsigned char outlineColor, short fixedLen, long text_id);
 };
+#endif
 
 long TTextPanel::setup(TDrawArea* draw, TPanel* parent, long x, long y, long w,
                        long h, void* font, long font_width, long font_height,

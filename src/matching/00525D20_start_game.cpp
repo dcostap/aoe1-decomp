@@ -15,6 +15,7 @@
 #include <string.h>
 #include <stdio.h>
 
+#ifndef TRIBEGAM_TU_CONTEXT
 class RGE_Static_Object;
 
 class RGE_Scenario {
@@ -57,6 +58,7 @@ public:
 
     int start_game(int param_1);
 };
+#endif
 
 int TRIBE_Game::start_game(int param_1)
 {
@@ -89,7 +91,7 @@ int TRIBE_Game::start_game(int param_1)
     if (param_1 != 0)
         return this->create_game_screen();
 
-    this->start_video(3, this->world->scenario->Cine_PreGame);
+    this->start_video(3, (char*)this->world->scenario + 0x1508);
     return 1;
 
 start_game_failed:

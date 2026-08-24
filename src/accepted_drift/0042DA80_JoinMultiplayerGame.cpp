@@ -32,7 +32,11 @@ struct DPSESSIONDESC2_LOCAL {
 };
 #pragma pack(pop)
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class RGE_Comm_Error { public: void ShowReturn(long result, const char* msg); };
+#endif // COM_HAND_TU_CONTEXT
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class IDirectPlay4A {
 public:
     virtual void v00(); virtual void v04(); virtual void v08(); virtual void v0C();
@@ -43,8 +47,12 @@ public:
     virtual void v50(); virtual void v54(); virtual void v58(); virtual void v5C();
     virtual long __stdcall Open(DPSESSIONDESC2_LOCAL* desc, unsigned long flags); // +60
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 extern "C" void __cdecl TDebuggingLog_Log(void* log, char* fmt, ...);
+#endif // COM_HAND_TU_CONTEXT
 
 #define g_pDirectPlay (*(IDirectPlay4A**)0x0062C5EC)
 #define g_pDebugLog (*(void**)0x0062C4FC)
@@ -52,12 +60,15 @@ extern "C" void __cdecl TDebuggingLog_Log(void* log, char* fmt, ...);
 #define STR_OPEN_JOIN ((char*)0x00582A98)
 #define STR_JOIN_MP ((const char*)0x00582A88)
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     int AddSelfPlayer();
     void NotifyWindow(int msg);
     int JoinMultiplayerGame(GUID_LOCAL* guid);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 #define FIELD_DWORD(off) (*(long*)((char*)this + (off)))
 #define FIELD_GUID(off) (*(GUID_LOCAL*)((char*)this + (off)))

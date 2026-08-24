@@ -3,6 +3,7 @@
 
 extern "C" __declspec(dllimport) void* __stdcall GetStockObject(int index);
 
+#ifndef AOE1_PANEL_EZ_CONTEXT_H
 class TEasy_Panel {
 public:
     virtual ~TEasy_Panel();
@@ -21,6 +22,7 @@ public:
 
     void set_background_colors(unsigned char color1, unsigned char color2);
 };
+#endif
 
 void TEasy_Panel::set_background_colors(unsigned char color1, unsigned char color2) {
     this->notify_background_color(color1);

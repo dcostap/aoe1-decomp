@@ -2,8 +2,11 @@
 // Initial source from packet/decompiler; exact-match in progress.
 
 #include <string.h>
+#if !defined(COM_HAND_TU_CONTEXT)
 #include "../../include/game_globals.h"
+#endif // COM_HAND_TU_CONTEXT
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_0000[0x001C];
@@ -27,18 +30,20 @@ public:
     int IsPaused(void);
     int AnalyzeCommunicationsStatus(void);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 int TCommunications_Handler::AnalyzeCommunicationsStatus(void) {
     if (this->IsPaused() && this->current_turn >= 6) {
         return 15;
     }
-    if (this->ProgramState == 5 && this->current_turn >= 6) {
+    if (this->PlayerOptions.ProgramState == 5 && this->current_turn >= 6) {
         return 14;
     }
-    if (this->ProgramState == 5 && this->current_turn < 6) {
+    if (this->PlayerOptions.ProgramState == 5 && this->current_turn < 6) {
         return 13;
     }
-    if (this->NeedsToBeSent) {
+    if (this->PlayerOptions.NeedsToBeSent) {
         return 12;
     }
     if (DAT_0062cf04 != 0) {
@@ -47,10 +52,10 @@ int TCommunications_Handler::AnalyzeCommunicationsStatus(void) {
     if (this->MeHost != 0) {
         return 7;
     }
-    if (memcmp(this->NullGUID, this->SessionGUID, 16) != 0) {
+    if (memcmp(&this->NullGUID, &this->SessionGUID, 16) != 0) {
         return 6;
     }
-    if (memcmp(this->ServiceGUID, this->SessionGUID, 16) != 0) {
+    if (memcmp(&this->ServiceGUID, &this->SessionGUID, 16) != 0) {
         return 5;
     }
     if (DAT_0062c5ec != 0) {

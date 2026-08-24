@@ -63,6 +63,7 @@
 extern "C" void* __cdecl calloc(unsigned int, unsigned int);
 extern "C" void __cdecl free(void*);
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 struct tagRECT { long left; long top; long right; long bottom; };
 struct Blit_Queue_Entry { tagRECT src; tagRECT dest; };
 
@@ -102,6 +103,7 @@ public:
     int Blit_Offset_Y;
     void CreateBlitQueue(tagRECT& src, tagRECT& dst, int xd, int yd);
 };
+#endif
 
 void RGE_View::CreateBlitQueue(tagRECT& param_1, tagRECT& param_2, int param_3, int param_4)
 {

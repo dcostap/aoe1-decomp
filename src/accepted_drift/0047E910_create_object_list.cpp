@@ -64,6 +64,7 @@
 //   source form tested here restores its XOR-before-MOVSX order.
 // - Adding the canonical setup declarations kept the same emitted basin.
 
+#ifndef RDLG_LST_TU_CONTEXT
 #include <stdlib.h>
 #include <string.h>
 #include "..\..\include\game_globals.h"
@@ -224,6 +225,7 @@ public:
     int setup(TScreenPanel* screen, char* popup_file, long popup_id,
               int list_type, char* title);
 };
+#endif
 
 int RGE_Dialog_List::create_object_list()
 {

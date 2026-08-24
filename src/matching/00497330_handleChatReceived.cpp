@@ -4,6 +4,7 @@
 
 #include <string.h>
 
+#if !defined(SCR_GAME_TU_CONTEXT)
 class TChat {
 public:
     char* GetChatMsg(int index);
@@ -40,6 +41,7 @@ public:
 
     void handleChatReceived(int chatIndex);
 };
+#endif
 
 void TRIBE_Screen_Game::handleChatReceived(int chatIndex)
 {

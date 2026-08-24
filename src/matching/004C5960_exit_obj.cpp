@@ -1,3 +1,4 @@
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Object_Node;
 
 class RGE_Object_List {
@@ -13,6 +14,7 @@ public:
 
     virtual void exit_obj(void);
 };
+#endif
 
 void RGE_Static_Object::exit_obj(void) {
     if (inside_obj != 0) {

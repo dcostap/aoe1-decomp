@@ -1,5 +1,6 @@
 // attempt 2: natural focus handling: load cursor, switch draw palette, redraw, and toggle IME
 
+#ifndef AOE1_PANEL_EZ_CONTEXT_H
 class TPanel {
 public:
     virtual void vf00();
@@ -67,6 +68,7 @@ public:
 
     virtual void set_focus(int focus);
 };
+#endif
 
 void TEasy_Panel::set_focus(int focus) {
     TPanel::set_focus(focus);

@@ -5,11 +5,13 @@
 // This source reuses those parameters for modulo remainders and preserves fault order.
 // Exact-finish note: public access kept bytes exact but lost the PDB access qualifier.
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 struct RGE_TOB_Picts { short count; short animations; short shape_index; };
 struct RGE_Tile_Set { unsigned char gap_00[0x20]; void* shape; unsigned char gap_24[0x22]; RGE_TOB_Picts tiles[19]; short terrain_to_draw; short rows; short cols; unsigned char gap_BE[0x198 - 0xBE]; };
 struct RGE_Map { unsigned char gap_00[0x8C]; RGE_Tile_Set terrain_types[32]; };
 class TPanel { public: unsigned char gap_00[0xF4]; };
 class RGE_View : public TPanel { public: unsigned char gap_F4[0x10]; RGE_Map* map; protected: short get_tile_picture(unsigned char param_1, unsigned char param_2, short param_3, short param_4); };
+#endif
 
 short RGE_View::get_tile_picture(unsigned char param_1, unsigned char param_2, short param_3, short param_4) {
     RGE_Tile_Set* ts = &this->map->terrain_types[param_1];

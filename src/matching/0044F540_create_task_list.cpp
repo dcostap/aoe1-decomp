@@ -3,6 +3,7 @@
 // the EH/new-expression basin; next probe will keep the target lexically first and
 // move the helper ctor/dtor definitions after it so the extractor still sees the right body
 
+#ifndef RGE_MAC_OBJ_SHARED_CONTEXT
 class RGE_Task_List {
 public:
     int list;
@@ -18,6 +19,7 @@ public:
 
     virtual RGE_Task_List* create_task_list(void);
 };
+#endif
 
 RGE_Task_List* RGE_Master_Action_Object::create_task_list(void) {
     return new RGE_Task_List();

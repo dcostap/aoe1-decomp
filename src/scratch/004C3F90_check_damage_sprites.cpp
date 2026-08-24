@@ -43,6 +43,7 @@
 extern "C" int __cdecl debug_rand(char* file, int line);
 static char s_stat_obj_cpp[] = "C:\\msdev\\work\\age1_x1\\stat_obj.cpp";
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Static_Object;
 class RGE_Sprite;
 class RGE_Map {
@@ -90,6 +91,7 @@ public:
     float world_z; // +40
     virtual void check_damage_sprites();
 };
+#endif
 
 void RGE_Static_Object::check_damage_sprites()
 {

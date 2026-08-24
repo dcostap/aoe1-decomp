@@ -17,23 +17,36 @@
 
 typedef unsigned long ulong;
 
+#if !defined(COM_HAND_TU_CONTEXT)
 struct GUID {
     ulong Data1;
     unsigned short Data2;
     unsigned short Data3;
     unsigned char Data4[8];
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class TChat { public: void ClearChat(void); };
+#endif // COM_HAND_TU_CONTEXT
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class RGE_Comm_Error { public: void ShowReturn(long result, char* msg); };
+#endif // COM_HAND_TU_CONTEXT
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class RGE_Base_Game {
 public:
     virtual ~RGE_Base_Game();
     char gap_04[0x24];
     long random_game_seed;
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 #pragma pack(push, 1)
+#if !defined(COM_HAND_TU_CONTEXT)
 struct DPSESSIONDESC2 {
     ulong dwSize;              // +00
     ulong guidInstance_Data1;  // +04
@@ -44,14 +57,19 @@ struct DPSESSIONDESC2 {
     const unsigned short* title;// +30
     unsigned char pad_34[0x50 - 0x34];
 };
+#endif // COM_HAND_TU_CONTEXT
 #pragma pack(pop)
 
+#if !defined(COM_HAND_TU_CONTEXT)
 struct IUnknown {
     virtual long __stdcall QueryInterface(void*, void**) = 0;
     virtual unsigned long __stdcall AddRef() = 0;
     virtual unsigned long __stdcall Release() = 0;
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 struct IDirectPlay3 : IUnknown {
     virtual long __stdcall AddPlayerToGroup() = 0;
     virtual long __stdcall Close() = 0;
@@ -76,11 +94,16 @@ struct IDirectPlay3 : IUnknown {
     virtual long __stdcall Initialize() = 0;
     virtual long __stdcall Open(DPSESSIONDESC2*, unsigned long) = 0;
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 extern IDirectPlay3* DAT_0062c5ec;
+#endif // COM_HAND_TU_CONTEXT
 extern RGE_Base_Game* rge_base_game;
 extern long DAT_0062CF04;
 
+#if !defined(COM_HAND_TU_CONTEXT)
 struct COMMPLAYEROPTIONS {
     char gap_00[8];
     int ProgramState;
@@ -95,7 +118,10 @@ struct COMMPLAYEROPTIONS {
     int HostPlayerNumber;
     char gap_1C8[8];
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_0000[0x18];
@@ -128,6 +154,8 @@ public:
     void NotifyWindow(int msg);
     int CreateMultiplayerGame(void);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 int TCommunications_Handler::CreateMultiplayerGame(void)
 {
@@ -152,7 +180,7 @@ int TCommunications_Handler::CreateMultiplayerGame(void)
     dSess2.one = one;
     dSess2.guidApplication = this->ApplicationGUID;
     dSess2.guidInstance_Data1 = 0x44;
-    dSess2.title = this->session_title;
+    dSess2.title = (unsigned short*)this->MyGameTitle;
 
     this->DebugSessionInformation(&dSess2);
 

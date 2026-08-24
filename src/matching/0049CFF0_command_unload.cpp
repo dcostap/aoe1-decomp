@@ -1,3 +1,4 @@
+#if !defined(SCR_GAME_TU_CONTEXT)
 class RGE_Base_Game {
 public:
     virtual void vf00();
@@ -28,6 +29,7 @@ public:
 
     void command_unload(void);
 };
+#endif
 
 void TRIBE_Screen_Game::command_unload(void) {
     if (!rge_base_game->get_paused()) {

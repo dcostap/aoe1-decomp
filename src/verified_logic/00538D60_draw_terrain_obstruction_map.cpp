@@ -47,6 +47,7 @@
 // separately all emitted the same 250-byte basin.  ABI evidence supports the
 // long shape_draw declaration; the only open drift remains two SIB bytes.
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 class TDrawArea {
 public:
     virtual ~TDrawArea();
@@ -87,6 +88,7 @@ public:
 
     void draw_terrain_obstruction_map(int, int, TShape*, int, int, int);
 };
+#endif
 
 void RGE_View::draw_terrain_obstruction_map(
     int x, int y, TShape* shape, int frame, int tile_x, int tile_y)

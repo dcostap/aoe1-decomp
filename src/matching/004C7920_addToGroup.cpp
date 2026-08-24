@@ -22,6 +22,7 @@
 void* __cdecl operator_new(unsigned int size);
 void __cdecl operator_delete(void* p);
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Static_Object {
 public:
     char gap_00[0x64];
@@ -32,6 +33,7 @@ public:
 
     int addToGroup(int groupIndex, float unused);
 };
+#endif
 
 int RGE_Static_Object::addToGroup(int groupIndex, float unused)
 {

@@ -24,6 +24,7 @@
 
 #include <string.h>
 
+#ifndef TACT_MOB_SHARED_CONTEXT
 struct ObjInfo {
     char gap_00[8];
     char* name;
@@ -76,6 +77,7 @@ struct TRIBE_Action_Make_Obj : RGE_Action {
 
     void get_info(short& param_1, short& param_2, char* param_3, short param_4);
 };
+#endif
 
 void TRIBE_Action_Make_Obj::get_info(short& param_1, short& param_2, char* param_3, short param_4) {
     param_1 = this->obj_id;

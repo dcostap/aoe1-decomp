@@ -28,6 +28,7 @@
 // Stack effects, call target slot (+0x10C), FPU result handling, branches, return values,
 // size, and epilogues are byte-identical otherwise. No inline asm/hacks.
 
+#ifndef TAIUAIMD_COMPLETE_TU
 class RGE_Player {
 public:
     int computerPlayer();
@@ -84,6 +85,7 @@ public:
 
     int attackObject(int param_1, int param_2);
 };
+#endif
 
 int TribePriestUnitAIModule::attackObject(int param_1, int param_2) {
     if (this->vfC4(param_1) == 0) {

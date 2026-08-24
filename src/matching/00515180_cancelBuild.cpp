@@ -1,3 +1,4 @@
+#ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
 class TribeBuildAIModule {
 public:
     void cancelBuildItem(int param_1, int param_2, int param_3, float param_4, float param_5, int param_6, int param_7);
@@ -16,6 +17,7 @@ public:
 
     void cancelBuild(int param_1, int param_2, int param_3, float param_4, float param_5, int param_6, int param_7);
 };
+#endif
 
 void TRIBE_Player::cancelBuild(int param_1, int param_2, int param_3, float param_4, float param_5, int param_6, int param_7) {
     if (this->playerAI != 0) {

@@ -8,6 +8,7 @@
 extern "C" void __cdecl operator_delete(void* ptr);
 extern "C" void* __cdecl operator_new(unsigned int size);
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 class TMousePointer {
 public:
     void set_game_window(long a, long b, long c, long d);
@@ -51,28 +52,29 @@ public:
     virtual void v07();
     virtual void target08(int a);
 };
+#endif
 
 void RGE_View::set_rect(long a, long b, long c, long d)
 {
     ((TPanel*)this)->set_rect(a, b, c, d);
     this->calc_draw_vars();
     this->create_surfaces();
-    
+
     this->last_view_x = -9999.0f;
     this->last_view_y = -9999.0f;
-    
+
     delete this->tm;
     delete this->tfm;
     delete this->mcm;
-    
+
     this->tm = new TSpan_List_Manager(c, d);
     this->tfm = new TSpan_List_Manager(c, d);
     this->mcm = new TSpan_List_Manager(c, d);
-    
+
     if (MouseSystem != 0 && c > 0 && d > 0) {
         MouseSystem->set_game_window(a, b, a + c, b + d);
         MouseSystem->set_game_mode(1);
     }
-    
+
     this->target08(2);
 }

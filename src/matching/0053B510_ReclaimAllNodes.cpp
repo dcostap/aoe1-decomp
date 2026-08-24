@@ -1,5 +1,6 @@
 extern "C" void* __cdecl memset(void* dest, int value, unsigned int count);
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 class DClipInfo_Node;
 
 class DClipInfo_List {
@@ -23,6 +24,7 @@ public:
 
     void ReclaimAllNodes(void);
 };
+#endif
 
 void DClipInfo_List::ReclaimAllNodes(void) {
     memset(Draw_Clip_Nodes, 0, YLine_Size * 4);

@@ -7,6 +7,7 @@
 #include "../../include/game_types.h"
 #include <stdlib.h>
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Zone_Map {
 public:
     unsigned char get_zone_info(int x, int y); // at 00546EB0
@@ -59,6 +60,8 @@ public:
 
     unsigned char currentZone();
 };
+
+#endif
 
 unsigned char RGE_Static_Object::currentZone() {
     RGE_Zone_Map* zoneMap;

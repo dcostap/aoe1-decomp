@@ -5,6 +5,7 @@
 
 extern "C" int __cdecl stricmp(const char* a, const char* b);
 
+#ifndef AOE1_PANEL_EZ_CONTEXT_H
 class TShape {
 public:
     char data[0x20];
@@ -20,6 +21,7 @@ public:
 
     void set_button_pics(char* filename, long id);
 };
+#endif
 
 void TEasy_Panel::set_button_pics(char* filename, long id) {
     char file_name2[260];

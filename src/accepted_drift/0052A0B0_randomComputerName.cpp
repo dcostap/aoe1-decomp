@@ -21,6 +21,7 @@ struct TRIBE_Game_V20 {
 };
 
 // TRIBE_Game with computerNameUsed array at +0x1198
+#ifndef TRIBEGAM_TU_CONTEXT
 struct TRIBE_Game {
     virtual void _d0();  virtual void _d1();  virtual void _d2();  virtual void _d3();
     virtual void _d4();  virtual void _d5();  virtual void _d6();  virtual void _d7();
@@ -45,6 +46,7 @@ struct TRIBE_Game {
 
     int randomComputerName(int param1);
 };
+#endif
 
 static char debugFilename[] = "C:\\msdev\\work\\age1_x1\\tribegam.cpp";
 

@@ -6,6 +6,7 @@
 #define STR_SEND_CMD_WORK2 "      >SEND CMD WORK2 (CNT=%d,OWN=%d,UNIT=%s,TAR=%s)"
 #define STR_X              "X"
 
+#ifndef COMMAND_TU_CONTEXT
 class RGE_Game_World;
 class RGE_Static_Object;
 class RGE_Command {
@@ -19,6 +20,7 @@ class RGE_Game_World { public: RGE_Static_Object* object(int id); };
 class RGE_Static_Object { public: char pad_00[8]; void* master_obj; };
 class TDebuggingLog { public: void Log(const char* fmt, ...); };
 extern TDebuggingLog* L;
+#endif
 
 void RGE_Command::command_work(int player, int* arr, int count, int target, int unused, float x, float y)
 {

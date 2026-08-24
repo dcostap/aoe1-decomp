@@ -1,3 +1,4 @@
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Player {
 public:
     int computerPlayer(void);
@@ -12,6 +13,7 @@ public:
 
     void removeAllFromPathingGroup(void);
 };
+#endif
 
 void RGE_Static_Object::removeAllFromPathingGroup(void) {
     if (owner->computerPlayer() == 1) {

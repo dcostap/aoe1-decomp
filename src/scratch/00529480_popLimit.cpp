@@ -1,13 +1,7 @@
-class SomeClass {
-public:
-    int someMethod();
-    unsigned char popLimit();
-    char pad[0xAE6];
-    unsigned char field_AE6;
-};
-unsigned char SomeClass::popLimit() {
-    if (this->someMethod()) {
-        return this->field_AE6;
-    }
-    return 50;
+// VA: 00529480 TRIBE_Game::popLimit (24 B)
+// PDB source: tribegam.cpp:4754-4759
+// TU context owner: use the canonical TRIBE_Game options surface.
+
+unsigned char TRIBE_Game::popLimit() const {
+    return this->tribe_game_options.popLimitValue;
 }

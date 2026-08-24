@@ -80,6 +80,7 @@
 //   that basin. Both changes are required. Short length, helper, pointer-scope,
 //   and pointer-reassignment probes were incidental or worse.
 
+#ifndef RDLG_LST_TU_CONTEXT
 #include <stdlib.h>
 #include <string.h>
 
@@ -203,6 +204,7 @@ public:
     int setup(TScreenPanel* screen, char* popup_file, long popup_id,
               int list_type, char* title);
 };
+#endif
 
 void* __cdecl calloc(unsigned int count, unsigned int size);
 

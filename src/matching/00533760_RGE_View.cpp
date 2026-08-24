@@ -6,9 +6,14 @@
 
 extern "C" void __cdecl free(void*);
 extern "C" void __cdecl operator_delete(void*);
+#ifndef RGE_VIEW_SHARED_CONTEXT
 extern "C" int (__stdcall* const DeleteObject)(void*);
+#endif
+ #ifndef RGE_VIEW_SHARED_CONTEXT
 extern void* MouseSystem;
+ #endif
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 class TShape { public: ~TShape(); };
 class TSpan_List_Manager { public: ~TSpan_List_Manager(); };
 class DClipInfo_List { public: ~DClipInfo_List(); };
@@ -45,6 +50,7 @@ public:
     void delete_surfaces();
     void reset_overlay_sprites();
 };
+#endif
 
 RGE_View::~RGE_View()
 {
@@ -98,7 +104,11 @@ RGE_View::~RGE_View()
         operator_delete(clip);
     }
 
+ #ifdef RGE_VIEW_SHARED_CONTEXT
+    void** p = (void**)this->pick_lists;
+ #else
     void** p = this->pick_lists;
+ #endif
     int i = 5;
     do {
         if (*p != 0) free(*p);

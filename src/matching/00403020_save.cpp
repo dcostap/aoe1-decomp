@@ -1,3 +1,4 @@
+#ifndef ACT_GATH_CONTEXT_H
 class RGE_Action {
 public:
     virtual void save(int outfile);
@@ -12,6 +13,7 @@ public:
 };
 
 void __cdecl rge_write(int outfile, void* data, int size);
+#endif
 
 void RGE_Action_Gather::save(int outfile) {
     RGE_Action::save(outfile);

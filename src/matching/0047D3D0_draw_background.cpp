@@ -36,6 +36,7 @@
 
 #include <windows.h>
 
+#ifndef PNL_TXT_TU_CONTEXT
 class TDrawArea {
 public:
     unsigned char* Lock(char* tag, int flag);
@@ -112,6 +113,7 @@ public:
 
     void draw_background();
 };
+#endif
 
 void TTextPanel::draw_background()
 {

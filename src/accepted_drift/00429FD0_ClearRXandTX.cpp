@@ -35,6 +35,7 @@
 
 extern "C" void __cdecl operator_delete(void* p);
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_1520[0x1520];
@@ -43,13 +44,15 @@ public:
 
     void ClearRXandTX();
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 void TCommunications_Handler::ClearRXandTX()
 {
     unsigned int offset = 0;
 
     do {
-        char* entry = &this->rx_array[offset];
+        char* entry = (char*)this->OnHold + offset;
 
         if (*(void**)entry) {
             operator_delete(*(void**)entry);
@@ -65,7 +68,7 @@ void TCommunications_Handler::ClearRXandTX()
     offset = 0;
 
     do {
-        char* tx_base = this->tx_array;
+        char* tx_base = (char*)this->Resend;
         *(void**)(tx_base + offset) = 0;
         char* entry = tx_base + offset;
 

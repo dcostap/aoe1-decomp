@@ -8,6 +8,7 @@ public:
     int local_player;
 };
 
+
 void TCommunications_Handler_chat::SendChatMsgAll(const char* msg) {
     char dest[10];
 

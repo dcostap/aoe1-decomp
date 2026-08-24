@@ -1,3 +1,4 @@
+#ifndef TRIBEGAM_TU_CONTEXT
 class TRIBE_Game {
 public:
     virtual ~TRIBE_Game();
@@ -6,4 +7,5 @@ public:
 
     void setLongCombat(int);
 };
-void TRIBE_Game::setLongCombat(int val) { this->longCombat_ = val; }
+#endif
+void TRIBE_Game::setLongCombat(int val) { this->tribe_game_options.longCombatValue = (unsigned char)val; }

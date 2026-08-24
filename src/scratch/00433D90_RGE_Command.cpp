@@ -1,3 +1,4 @@
+#ifndef COMMAND_TU_CONTEXT
 void __cdecl operator_delete(void* p);
 
 class RGE_Command {
@@ -10,6 +11,7 @@ public:
 
     ~RGE_Command();
 };
+#endif
 
 RGE_Command::~RGE_Command() {
     *(int*)this = 0x56F4C0;

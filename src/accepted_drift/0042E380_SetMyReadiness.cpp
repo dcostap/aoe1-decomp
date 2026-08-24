@@ -11,16 +11,20 @@
 
 typedef unsigned long ulong;
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TDebuggingLog {
 public:
     void Log(const char* fmt, ...);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 #define L (*(TDebuggingLog**)0x0062C4FC)
 #define STR_SET_MY_READINESS ((const char*)0x00582CDC)
 #define STR_TX_RDY           ((const char*)0x00582CCC)
 
 #pragma pack(push, 1)
+#if !defined(COM_HAND_TU_CONTEXT)
 struct MSGFORMAT_SETREADYOPTIONS {
     unsigned char User1;
     unsigned char Ready;
@@ -36,14 +40,19 @@ struct MSGFORMAT_SETREADYOPTIONS {
     unsigned char GuaranteedDeliveryByte;
     unsigned char pad_25[3];
 };
+#endif // COM_HAND_TU_CONTEXT
+
 #pragma pack(pop)
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     int FastSend(int p1, void* data, int size, int p4, int p5);
     void NotifyWindow(int msg);
     int SetMyReadiness(int ready, ulong user1, ulong user2, ulong user3, ulong user4, ulong user5, ulong user6, ulong user7);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 #define FIELD_DWORD(off) (*(ulong*)((char*)this + (off)))
 #define FIELD_BYTE(off) (*(unsigned char*)((char*)this + (off)))

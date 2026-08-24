@@ -1,3 +1,4 @@
+#ifndef COMMAND_TU_CONTEXT
 class XYZBYTEPoint {
 public:
     unsigned char x;
@@ -52,6 +53,7 @@ public:
     RGE_Game_World* world;
     void do_command_add_waypoint(RGE_Command_Add_Waypoint* param_1);
 };
+#endif
 
 void RGE_Command::do_command_add_waypoint(RGE_Command_Add_Waypoint* param_1) {
     if (this->world->object(param_1->recipient) != 0) {

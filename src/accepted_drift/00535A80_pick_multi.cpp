@@ -95,6 +95,7 @@
 // stack reads. Calls, used flags, memory effects, returns, and fault behavior
 // match.
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 struct RGE_Pick_Obj_Info {
     int object_id;
     short confidence;
@@ -231,6 +232,7 @@ protected:
                            int a, int b, int player, unsigned char p1, int flag);
     int pick_objects(int x, int y, int a, int b, int radius, int c, int d);
 };
+#endif
 
 unsigned char RGE_View::pick_multi(unsigned char p1, long x1, long y1, long x2, long y2)
 {

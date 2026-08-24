@@ -3,6 +3,7 @@
 // Size: 219 bytes
 // NC: no custom flags (default /O2 /Oy)
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 struct DClipInfo_Node {
     DClipInfo_Node* Next;        // +0x00
     DClipInfo_Node* NextOnLevel; // +0x04
@@ -44,6 +45,7 @@ public:
     DClipInfo_Node* GetNode();
     DClipInfo_Node* AddGDINode(int param_1, int param_2, short param_3, short param_4, short param_5, short param_6, short param_7, short param_8, short param_9, short param_10, int param_11, int param_12, int param_13);
 };
+#endif
 
 DClipInfo_Node* DClipInfo_List::AddGDINode(int param_1, int param_2, short param_3, short param_4, short param_5, short param_6, short param_7, short param_8, short param_9, short param_10, int param_11, int param_12, int param_13)
 {

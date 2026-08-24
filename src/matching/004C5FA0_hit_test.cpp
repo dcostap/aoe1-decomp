@@ -9,6 +9,7 @@
 //   CFG parity; swapping the loop axes to outer-x/inner-y reproduced the
 //   original accumulator/register topology and exact bytes.
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Sprite;
 
 class RGE_Active_Sprite_List {
@@ -38,6 +39,7 @@ public:
 
     unsigned char hit_test(short x, short y, short x2, short y2, short range);
 };
+#endif
 
 unsigned char RGE_Static_Object::hit_test(
     short x, short y, short x2, short y2, short range)

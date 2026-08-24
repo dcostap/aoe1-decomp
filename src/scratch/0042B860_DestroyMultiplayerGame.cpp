@@ -3,22 +3,28 @@
 // initial direct source from original asm: explicit field stores and natural empty-string assignments.
 
 class TDebuggingLog;
+#if !defined(COM_HAND_TU_CONTEXT)
 extern "C" unsigned long debug_timeGetTime(char*, int);
+#endif // COM_HAND_TU_CONTEXT
 extern "C" int target_0042B860();
 extern "C" void* memset(void*, int, unsigned int);
 extern "C" char* strcpy(char*, const char*);
 extern "C" void target_00436610(TDebuggingLog*, char*);
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TDebuggingLog {
 public:
     void Time();
 };
+#endif // COM_HAND_TU_CONTEXT
+
 extern TDebuggingLog* debugging_log;
 
 static char* const empty_string = (char*)0x580460;
 static char* const log_string = (char*)0x580C4C;
 static char* const com_hand_h = (char*)0x580C64;
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_0000[0x0008];
@@ -106,6 +112,8 @@ public:
     void sub_00429FD0();
     void sub_0042C7A0();
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 class Releasable { public: void Release(); };
 
@@ -148,7 +156,7 @@ void TCommunications_Handler::DestroyMultiplayerGame()
     this->field_1712 = 1;
     this->field_1710 = cx;
     this->field_1718 = zero;
-    this->field_1558 = 3;
+    this->PlayerOptions.ProgramState = 3;
     this->field_001c = zero;
     this->field_0020 = zero;
     this->field_1590 = 2;
@@ -172,7 +180,7 @@ void TCommunications_Handler::DestroyMultiplayerGame()
     this->field_1554 = zero;
     this->sub_00429F80();
     this->sub_00429FD0();
-    int* q = this->clear_13c0;
+    int* q = (int*)&this->PlayerStopTurn[1];
     for (int k = 9; k != 0; k--) *q++ = zero;
     this->field_0008 = 1;
     this->sub_0042C7A0();

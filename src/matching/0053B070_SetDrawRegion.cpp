@@ -1,3 +1,4 @@
+#ifndef RGE_VIEW_SHARED_CONTEXT
 class DClipInfo_List {
 public:
     char gap_00[0x3C];
@@ -8,6 +9,7 @@ public:
 
     void SetDrawRegion(int xmin, int ymin, int xmax, int ymax);
 };
+#endif
 
 void DClipInfo_List::SetDrawRegion(int xmin, int ymin, int xmax, int ymax) {
     if (xmin <= xmax) {

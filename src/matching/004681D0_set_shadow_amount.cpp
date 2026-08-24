@@ -1,5 +1,6 @@
 // attempt 2: natural shadow amount setter with virtual delete of old color table and palette-derived replacement
 
+#ifndef AOE1_PANEL_EZ_CONTEXT_H
 struct PALETTEENTRY {
     unsigned char peRed;
     unsigned char peGreen;
@@ -8,7 +9,9 @@ struct PALETTEENTRY {
 };
 
 extern "C" __declspec(dllimport) unsigned int __stdcall GetPaletteEntries(void* palette, unsigned int start, unsigned int count, PALETTEENTRY* entries);
+#endif
 
+#ifndef AOE1_PANEL_EZ_CONTEXT_H
 class RGE_Color_Table {
 public:
     virtual ~RGE_Color_Table();
@@ -39,6 +42,7 @@ public:
 
     void set_shadow_amount(long amount);
 };
+#endif
 
 void TEasy_Panel::set_shadow_amount(long amount) {
     PALETTEENTRY palette_entries[256];

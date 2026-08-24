@@ -7,6 +7,7 @@
 // - for(; i <= High; i++): gives jbe at loop bottom + memory reload of High + separate return-1 epilogues
 // - no unsigned int high local: avoids push ebp (3-register save matches original)
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_00[0x10C8];
@@ -26,6 +27,8 @@ public:
     int IsPlayerHuman(int player);
     int AllPlayersAcknowledged(void);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 int TCommunications_Handler::AllPlayersAcknowledged(void)
 {
@@ -35,15 +38,15 @@ int TCommunications_Handler::AllPlayersAcknowledged(void)
     if (this->ShuttingDown != 0)
         return 0;
 
-    if (this->ProgramState == 4)
+    if (this->PlayerOptions.ProgramState == 4)
         return 0;
 
-    unsigned int i = this->LowPlayerNumber;
+    unsigned int i = this->PlayerOptions.LowPlayerNumber;
 
-    if (i > this->HighPlayerNumber)
+    if (i > this->PlayerOptions.HighPlayerNumber)
         return 1;
 
-    for (; i <= this->HighPlayerNumber; i++) {
+    for (; i <= this->PlayerOptions.HighPlayerNumber; i++) {
         if (IsPlayerHuman(i)) {
             if ((unsigned int)this->LastTurnAck[i] < (unsigned int)this->current_turn)
                 return 0;

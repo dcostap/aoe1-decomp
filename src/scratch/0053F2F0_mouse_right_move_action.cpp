@@ -65,7 +65,11 @@ struct RGE_Main_View_Layout {
     unsigned char scroll_action;
 };
 
+#ifdef RGE_MAIN_VIEW_SHARED_CONTEXT
+extern RGE_Base_Game* rge_base_game;
+#else
 extern RGE_Base_Game_Helper* rge_base_game;
+#endif
 
 long __fastcall mouse_right_move_action(RGE_Main_View_Layout* this_ptr, int,
     long param_1, long param_2, int param_3, int param_4)

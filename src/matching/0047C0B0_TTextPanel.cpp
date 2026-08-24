@@ -8,6 +8,7 @@
 
 extern "C" __declspec(dllimport) int __stdcall DeleteObject(void* object);
 
+#ifndef PNL_TXT_TU_CONTEXT
 class TPanel {
 public:
     virtual ~TPanel();
@@ -24,6 +25,7 @@ public:
 
     void free_text();
 };
+#endif
 
 TTextPanel::~TTextPanel()
 {

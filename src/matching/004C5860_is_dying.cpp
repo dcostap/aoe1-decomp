@@ -1,3 +1,4 @@
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Static_Object {
 public:
     char gap_00[0x48];
@@ -5,6 +6,7 @@ public:
 
     unsigned char is_dying(void);
 };
+#endif
 
 unsigned char RGE_Static_Object::is_dying(void) {
     if (object_state >= 3 && object_state != 6) {

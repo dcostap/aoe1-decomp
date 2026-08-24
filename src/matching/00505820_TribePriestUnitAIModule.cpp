@@ -2,6 +2,7 @@
 // PDB source: taiuaimd.cpp
 // Attempt log:
 
+#ifndef TAIUAIMD_COMPLETE_TU
 class UnitAIModule {
 public:
     UnitAIModule(void* param_1, int param_2);
@@ -22,10 +23,19 @@ public:
 };
 
 extern void* __cdecl operator_new(unsigned int size);
+#endif
 
 TribePriestUnitAIModule::TribePriestUnitAIModule(void* param_1, int param_2)
+#ifdef TAIUAIMD_COMPLETE_TU
+    : UnitAIModule((RGE_Static_Object*)param_1, param_2)
+#else
     : UnitAIModule(param_1, param_2)
+#endif
 {
+#ifdef TAIUAIMD_COMPLETE_TU
+    this->field_128 = 0x11;
+    this->field_124 = (int)operator_new(0x44);
+#else
     *(void**)this = (void*)0x575E28;
     this->field_128 = 0x11;
 
@@ -50,4 +60,5 @@ TribePriestUnitAIModule::TribePriestUnitAIModule(void* param_1, int param_2)
         *((int*)this->field_124 + 15) = 0xD;
         *((int*)this->field_124 + 16) = 0x27;
     }
+#endif
 }

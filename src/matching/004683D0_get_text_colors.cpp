@@ -1,3 +1,4 @@
+#ifndef AOE1_PANEL_EZ_CONTEXT_H
 class TEasy_Panel {
 public:
     char gap_0[0x328];
@@ -6,6 +7,7 @@ public:
 
     void get_text_colors(int* out1, int* out2);
 };
+#endif
 
 void TEasy_Panel::get_text_colors(int* out1, int* out2) {
     *out1 = this->field_328;

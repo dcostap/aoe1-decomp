@@ -1,3 +1,4 @@
+#if !defined(SCR_GAME_TU_CONTEXT)
 class RGE_Static_Object {
 public:
     char gap0[0x38];
@@ -47,6 +48,7 @@ public:
 
     void command_view_tribe();
 };
+#endif
 
 void TRIBE_Screen_Game::command_view_tribe()
 {

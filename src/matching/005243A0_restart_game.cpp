@@ -15,6 +15,7 @@
 extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
 extern "C" long __cdecl _findfirst(const char* filespec, void* fileinfo);
 
+#ifndef TRIBEGAM_TU_CONTEXT
 class RGE_Prog_Info {
 public:
     char gap_00[0xB12];
@@ -133,6 +134,7 @@ public:
     int start_menu();
     void restart_game();
 };
+#endif
 
 void TRIBE_Game::restart_game()
 {
@@ -180,7 +182,7 @@ void TRIBE_Game::restart_game()
             return;
         }
 
-        TEasy_Panel* panel = panel_system.panel("Main Menu");
+        TEasy_Panel* panel = (TEasy_Panel*)panel_system.panel("Main Menu");
         if (panel != 0) {
             panel->popupOKDialog(0x961, 0, 0x1C2, 100);
         }

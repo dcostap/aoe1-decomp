@@ -1,3 +1,4 @@
+#ifndef TRIBEGAM_TU_CONTEXT
 class TRIBE_Game {
 public:
     char gap_0[0x18C];
@@ -8,11 +9,12 @@ public:
     void disconnect_multiplayer_game();
     int action_close();
 };
+#endif
 
 int TRIBE_Game::action_close() {
-    if (this->field_18C) {
+    if (this->comm_handler) {
         this->disconnect_multiplayer_game();
-        this->field_1B0 = 0;
+        this->prog_mode = 0;
     }
     return 1;
 }

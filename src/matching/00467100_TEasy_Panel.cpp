@@ -1,5 +1,6 @@
 // probe 3: natural virtual class ctor surface like the matched TDialogPanel path
 
+#ifndef AOE1_PANEL_EZ_CONTEXT_H
 class TPanel {
 public:
     virtual ~TPanel();
@@ -14,6 +15,7 @@ public:
     TEasy_Panel();
     void init_vars();
 };
+#endif
 
 TEasy_Panel::TEasy_Panel()
     : TPanel()

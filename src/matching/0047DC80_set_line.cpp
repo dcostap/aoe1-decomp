@@ -1,3 +1,4 @@
+#ifndef PNL_TXT_TU_CONTEXT
 class TTextPanel {
 public:
     unsigned char gap_00[0x100];
@@ -6,6 +7,7 @@ public:
     void set_line(long line);
     void calc_draw_info(int recalc_scrollbar);
 };
+#endif
 
 void TTextPanel::set_line(long line) {
     cur_line = (short)line;

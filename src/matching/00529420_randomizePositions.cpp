@@ -1,3 +1,4 @@
+#ifndef TRIBEGAM_TU_CONTEXT
 class TRIBE_Game {
 public:
     virtual ~TRIBE_Game();
@@ -5,5 +6,6 @@ public:
     unsigned char field_AD8;
     int randomizePositions();
 };
+#endif
 
-int TRIBE_Game::randomizePositions() { return this->field_AD8; }
+int TRIBE_Game::randomizePositions() { return this->tribe_game_options.randomizePositionsValue; }

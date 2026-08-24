@@ -4,6 +4,7 @@
 class RGE_Master_Static_Object;
 class RGE_Player;
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class ManagedArrayInt {
 public:
     int* value;
@@ -13,7 +14,9 @@ public:
     ManagedArrayInt() : value(0), numberValue(0), desiredNumberValue(0), maximumSizeValue(0) {}
     ~ManagedArrayInt();
 };
+#endif
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class __declspec(novtable) RGE_Static_Object {
 public:
     virtual ~RGE_Static_Object();
@@ -35,6 +38,7 @@ public:
     RGE_Static_Object(RGE_Master_Static_Object* master, RGE_Player* player, float x, float y, float z, int do_setup);
     void setup(RGE_Master_Static_Object* master, RGE_Player* player, float x, float y, float z);
 };
+#endif
 
 RGE_Static_Object::RGE_Static_Object(RGE_Master_Static_Object* master, RGE_Player* player, float x, float y, float z, int do_setup)
     : sprite(0), old_sprite(0)

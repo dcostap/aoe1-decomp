@@ -7,9 +7,9 @@
 extern "C" int __cdecl sprintf(char*, const char*, ...);
 extern "C" void* __cdecl calloc(unsigned int, unsigned int);
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 extern "C" __declspec(dllimport) void* __stdcall GetStockObject(int);
 extern "C" __declspec(dllimport) void* __stdcall CreatePen(int, int, unsigned int);
-
 class TDrawArea;
 class TPanel {
 public:
@@ -57,6 +57,7 @@ public:
     long setup(TDrawArea* draw, TPanel* parent, long x, long y, long w, long h, unsigned char flag, int calc_count, char* shape_name);
     void Init_Tile_Edge_Tables();
 };
+#endif
 
 long RGE_View::setup(TDrawArea* draw, TPanel* parent, long x, long y, long w, long h, unsigned char flag, int calc_count, char* shape_name)
 {

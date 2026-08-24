@@ -13,6 +13,7 @@
 extern "C" double __cdecl floor(double);
 extern "C" double __cdecl ceil(double);
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 struct RGE_Master_Static_Object {
     virtual ~RGE_Master_Static_Object();
     char gap_04[0x24];
@@ -38,6 +39,7 @@ public:
     float world_y;
     void changeInfluenceMap(InfluenceMap* map, int mode, int gradient, int useRadius);
 };
+#endif
 
 void RGE_Static_Object::changeInfluenceMap(InfluenceMap* map, int mode, int gradient, int useRadius)
 {

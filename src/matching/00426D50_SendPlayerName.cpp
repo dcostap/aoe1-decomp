@@ -60,6 +60,7 @@ struct DPNAME {
     };
 };
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class IDirectPlay2 {
 public:
     virtual long __stdcall QueryInterface(void* riid, void** object) = 0;
@@ -94,9 +95,11 @@ public:
     virtual long __stdcall SetPlayerData(unsigned long player, void* data, unsigned long size, unsigned long flags) = 0;
     virtual long __stdcall SetPlayerName(unsigned long player, DPNAME* name, unsigned long flags) = 0;
 };
+#endif // COM_HAND_TU_CONTEXT
 
 class RGE_Comm_Error;
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char pad_000[0x10F8];
@@ -107,14 +110,23 @@ public:
 
     long SendPlayerName();
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class RGE_Comm_Error {
 public:
     void ShowReturn(long result, char* msg);
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 extern unsigned int DAT_0062c5ec;
+#endif // COM_HAND_TU_CONTEXT
+#if !defined(COM_HAND_TU_CONTEXT)
 extern unsigned int DAT_0062cf04;
+#endif // COM_HAND_TU_CONTEXT
 
 long TCommunications_Handler::SendPlayerName()
 {

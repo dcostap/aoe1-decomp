@@ -1,3 +1,4 @@
+#ifndef ACT_GATH_CONTEXT_H
 class RGE_Sprite;
 
 struct GatherUnit {
@@ -26,6 +27,7 @@ public:
 
     RGE_Sprite* get_move_sprite(void);
 };
+#endif
 
 RGE_Sprite* RGE_Action_Gather::get_move_sprite(void) {
     RGE_Task* task = this->task;

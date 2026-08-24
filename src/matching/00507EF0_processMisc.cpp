@@ -9,6 +9,7 @@
 
 extern FILE* actionFile;
 
+#ifndef TAIUAIMD_COMPLETE_TU
 // UnitAIModule — base class with virtual methods at correct slots
 class UnitAIModule {
 public:
@@ -18,7 +19,7 @@ public:
     virtual void _d8() {} virtual void _d9() {} virtual void _d10() {} virtual void _d11() {}
     virtual void _d12() {} virtual void _d13() {} virtual void _d14() {} virtual void _d15() {}
     virtual void _d16() {} virtual void _d17() {} virtual void _d18() {} virtual void _d19() {}
-    virtual void _d20() {} virtual void _d21() {} 
+    virtual void _d20() {} virtual void _d21() {}
 
     virtual void stopObject(int flag);  // Slot 22 (offset 0x58)
 
@@ -30,7 +31,7 @@ public:
     virtual void _d39() {} virtual void _d40() {} virtual void _d41() {} virtual void _d42() {}
     virtual void _d43() {} virtual void _d44() {} virtual void _d45() {} virtual void _d46() {}
     virtual void _d47() {} virtual void _d48() {} virtual void _d49() {} virtual void _d50() {}
-    virtual void _d51() {} virtual void _d52() {} 
+    virtual void _d51() {} virtual void _d52() {}
 
     virtual int getActionState(int flag);  // Slot 53 (offset 0xD4)
 
@@ -46,6 +47,7 @@ public:
 
     int processMisc();
 };
+#endif
 
 int TribeArtifactUnitAIModule::processMisc()
 {

@@ -4,6 +4,7 @@
 // 2. Natural strcmp spelling emitted the exact inline strcmp kernel; initial virtual surface had wrong +0x120 notify offset.
 // 3. Use a real virtual method at vtable slot 58 (+0xE8).
 
+#if !defined(SCR_GAME_TU_CONTEXT)
 extern "C" int __cdecl strcmp(const char* a, const char* b);
 
 class TTextPanel {
@@ -78,6 +79,7 @@ public:
 
     void show_timings(char* param_1, char* param_2);
 };
+#endif
 
 void TRIBE_Screen_Game::show_timings(char* param_1, char* param_2) {
     char* current = this->fps_panel->get_text();

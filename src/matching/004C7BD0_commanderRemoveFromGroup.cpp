@@ -13,6 +13,7 @@
 // - Main-agent audit restored canonical object/player/world polymorphism and
 //   natural new[]/delete[] ownership; emitted code remains exact.
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Static_Object;
 
 class RGE_Game_World {
@@ -51,6 +52,7 @@ public:
     int removeFromGroup(int id);
     int commanderRemoveFromGroup(int id);
 };
+#endif
 
 int RGE_Static_Object::commanderRemoveFromGroup(int id)
 {

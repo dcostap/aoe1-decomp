@@ -17,6 +17,7 @@ public:
     int dp_option;
 };
 
+
 long TCommunications_Handler_ijg::InitJoinGame(void) {
     this->chat->ClearChat();
     this->multiplayer_flag = 1;

@@ -9,6 +9,7 @@
 // original codegen. Avoiding per-loop temp variables (obj, master) and
 // computing grid rows inline (y1 + 1) instead of a y2 local was critical.
 
+#ifndef TMAP_GROUP_CONTEXT
 struct RGE_Static_Object;
 
 struct RGE_Tile {
@@ -30,6 +31,7 @@ class TRIBE_Map : public RGE_Map {
 public:
     RGE_Static_Object* find_cliff(long param_1, long param_2);
 };
+#endif
 
 RGE_Static_Object* TRIBE_Map::find_cliff(long param_1, long param_2) {
     long x1 = param_1 * 3 + 1;

@@ -4,6 +4,7 @@
 
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 struct DClipInfo_Node;
 
 class DClipInfo_List {
@@ -40,6 +41,7 @@ public:
     void SetNumZones(int num_zones);
     void InitNewZone(int zone_size);
 };
+#endif
 
 DClipInfo_List::DClipInfo_List(int init_zone_size, int element_size, int default_grow_size, int ymin, int ymax, int max_draw_levels) {
     int yline_offset;

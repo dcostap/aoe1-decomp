@@ -1,7 +1,10 @@
 class TDebuggingLog;
 extern TDebuggingLog* g_debug_log;
+#if !defined(COM_HAND_TU_CONTEXT)
 extern void Log(TDebuggingLog* this_, char* fmt, ...);
+#endif // COM_HAND_TU_CONTEXT
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_00[0x10C8];
@@ -12,6 +15,8 @@ public:
 
     void LogRXMsg(unsigned int param_1, unsigned int param_2, unsigned long param_3, unsigned char param_4, unsigned char param_5);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 void TCommunications_Handler::LogRXMsg(unsigned int param_1, unsigned int param_2, unsigned long param_3, unsigned char param_4, unsigned char param_5)
 {

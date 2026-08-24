@@ -2,6 +2,7 @@
 // Source: scr_game.cpp:5698-5711
 // EXACT MATCH: 3x inline get_player() instead of cached local forces reloads
 
+#if !defined(SCR_GAME_TU_CONTEXT)
 class RGE_Base_Game {
 public:
     int get_paused();
@@ -24,6 +25,7 @@ class TRIBE_Screen_Game {
 public:
     void command_view_selected();
 };
+#endif
 
 void TRIBE_Screen_Game::command_view_selected() {
     if (rge_base_game->get_paused()) return;

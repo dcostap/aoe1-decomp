@@ -1,3 +1,4 @@
+#ifndef TAIUAIMD_COMPLETE_TU
 class RGE_Master_Static_Object {
 public:
     char gap_00[0x10];
@@ -28,6 +29,7 @@ class TribePriestUnitAIModule : public UnitAIModule {
 public:
     int canConvert(int id);
 };
+#endif
 
 int TribePriestUnitAIModule::canConvert(int id) {
     char* base = (char*)this->some_ptr;

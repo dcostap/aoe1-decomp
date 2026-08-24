@@ -1,3 +1,4 @@
+#ifndef PNL_TXT_TU_CONTEXT
 class TTextPanel {
 public:
     virtual void vf00(void);
@@ -18,6 +19,7 @@ public:
 
     void set_outline(int outline, unsigned char color);
 };
+#endif
 
 void TTextPanel::set_outline(int outline, unsigned char color) {
     this->outline = outline;

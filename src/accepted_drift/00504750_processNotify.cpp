@@ -63,6 +63,7 @@
 
 typedef unsigned long ulong;
 
+#ifndef TAIUAIMD_COMPLETE_TU
 struct RGE_Static_Object {
     void* vtable;         // +0x00
     int id;               // +0x04
@@ -153,6 +154,7 @@ struct UnitAIModule {
 struct TribeRangedUnitAIModule : public UnitAIModule {
     int processNotify(NotifyEvent* event, ulong param_2);
 };
+#endif
 
 int TribeRangedUnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
 {
@@ -161,20 +163,20 @@ int TribeRangedUnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
     }
 
     if (this->currentActionValue == 600) {
-        RGE_Game_World* gameWorld = *(RGE_Game_World**)((char*)this->obj->owner + 0x3C);
+        RGE_Game_World* gameWorld = *(RGE_Game_World**)((char*)this->objectValue->owner + 0x3C);
         RGE_Static_Object* targetObj = gameWorld->object(this->currentTargetValue);
 
         if (targetObj) {
             float fVal = ((ObjVtbl*)targetObj)->funcF4();
             if (fVal != 0.0f) {
                 ((ThisVtbl*)this)->func10(
-                    this->obj->id, 0x2BC, this->currentTargetValue, -1,
+                    this->objectValue->id, 0x2BC, this->currentTargetValue, -1,
                     this->currentTargetXValue, this->currentTargetYValue,
                     this->currentTargetZValue, this->desiredTargetDistanceValue,
                     0, 1, this->currentOrderPriorityValue
                 );
 
-                RGE_Static_Object* thisObj = this->obj;
+                RGE_Static_Object* thisObj = this->objectValue;
 
                 // Get speed from obj's vtable[64] (+0x100) then [63] (+0xFC)
                 float speed2 = ((ObjVtbl*)thisObj)->func100();

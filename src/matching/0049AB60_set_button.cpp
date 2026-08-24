@@ -16,6 +16,7 @@
 // - PDB line order, rather than numeric decompiler case order, restored the
 //   original hotkey handler layout; the default flags now match exactly.
 
+#if !defined(SCR_GAME_TU_CONTEXT)
 class TShape;
 class TDrawArea;
 class TDigital;
@@ -103,6 +104,7 @@ public:
                     long hotkey_id, unsigned char* color_table,
                     char* name, char* text, int disabled_value);
 };
+#endif
 
 void TRIBE_Screen_Game::set_button(
     TShape* picture, short index, short frame,

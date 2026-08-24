@@ -19,6 +19,7 @@
 
 #include "../../include/game_globals.h"
 
+#ifndef COMMAND_TU_CONTEXT
 struct RGE_Obj_Info { int id; };
 class UnitAIModule { public: void setCurrentOrder(int); void setCurrentAction(int); void setCurrentTarget(int,int,float,float,float); };
 class RGE_Master_Static_Object {
@@ -104,6 +105,7 @@ protected:
     RGE_Static_Object* get_obj(RGE_Obj_Info);
     void do_command_move(RGE_Command_Order*);
 };
+#endif
 
 void RGE_Command::do_command_move(RGE_Command_Order* order) {
     int n = order->unit_num;

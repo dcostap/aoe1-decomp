@@ -3,6 +3,7 @@
 // Sends resign message, ends game, triggers game over
 #include "..\..\include\game_globals.h"
 
+#if !defined(SCR_GAME_TU_CONTEXT)
 struct TCommunications_Handler {
     void SendIResignMsg();
     void GameOver();
@@ -17,6 +18,7 @@ extern TCommunications_Handler* comm;
 struct TRIBE_Screen_Game {
     void command_quit();
 };
+#endif
 
 void TRIBE_Screen_Game::command_quit() {
     comm->SendIResignMsg();

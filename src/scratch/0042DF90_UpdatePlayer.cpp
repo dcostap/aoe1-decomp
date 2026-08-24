@@ -67,40 +67,61 @@ extern "C" char* __cdecl strcpy(char*, const char*);
 extern "C" void* __cdecl calloc(unsigned int, unsigned int);
 extern "C" void __cdecl free(void*);
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TDebuggingLog {
 public:
     static void __cdecl Log(TDebuggingLog*, char*, ...);
 };
-extern TDebuggingLog* L;
+#endif // COM_HAND_TU_CONTEXT
 
+#if !defined(COM_HAND_TU_CONTEXT)
+extern TDebuggingLog* L;
+#endif // COM_HAND_TU_CONTEXT
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class RGE_Comm_Error {
 public:
     void ShowReturn(long, char*);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 struct IDirectPlay;
+#if !defined(COM_HAND_TU_CONTEXT)
 struct IDirectPlayVtbl {
     char gap_00[0x54];
     long (__stdcall* GetPlayerName)(IDirectPlay*, unsigned long, void*, unsigned int*);
 };
+#endif // COM_HAND_TU_CONTEXT
+
+#if !defined(COM_HAND_TU_CONTEXT)
 struct IDirectPlay {
     IDirectPlayVtbl* vtbl;
 };
+#endif // COM_HAND_TU_CONTEXT
+
 #define g_pDirectPlay (*(IDirectPlay**)0x0062C5EC)
 
+#if !defined(COM_HAND_TU_CONTEXT)
 struct DPNAME {
     unsigned long dwSize;
     unsigned long dwFlags;
     char* lpszShortName;
     char* lpszLongName;
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 struct MSGFORMAT_MISSING_PLAYER {
     unsigned char Command;
     unsigned char gap_01[3];
     unsigned int PlayerID;
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 enum PLAYERHUMANITY {
     ME_ABSENT = 0,
     ME_CLOSED = 1,
@@ -110,7 +131,10 @@ enum PLAYERHUMANITY {
     ME_CYBORG = 5,
     ME_VIEWONLY = 6
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 struct COMMPLAYEROPTIONS {
     unsigned char NeedsToBeSent;
     unsigned char gap_01[3];
@@ -142,11 +166,17 @@ struct COMMPLAYEROPTIONS {
     int GameHasStarted;
     unsigned long DataSizeToFollow;
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 struct NAME {
     char Text[128];
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_0000[0x12C8];
@@ -162,6 +192,8 @@ public:
     void NotifyWindow(unsigned long);
     void UpdatePlayer(unsigned int, int);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 void TCommunications_Handler::UpdatePlayer(unsigned int player, int do_update)
 {
@@ -253,9 +285,9 @@ get_name_log:
             goto release_data;
         } else if (result == 0) {
             strcpy(this->FriendlyName[player].Text,
-                   ((DPNAME*)lpData)->lpszShortName);
+                   (char*)((DPNAME*)lpData)->lpszShortName);
             strcpy(this->FormalName[player].Text,
-                   ((DPNAME*)lpData)->lpszLongName);
+                   (char*)((DPNAME*)lpData)->lpszLongName);
             this->PlayerOptions.Humanity[player] = ME_HUMAN;
             goto release_data;
         } else {

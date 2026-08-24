@@ -14,6 +14,7 @@
 
 #include <new.h>
 
+#ifndef PNL_TXT_TU_CONTEXT
 struct TShape {
     unsigned char* shape;
     int load_type;
@@ -30,7 +31,9 @@ struct TShape {
                                long* out_maxx, long* out_maxy,
                                long facet);
 };
+#endif
 
+#ifndef PNL_TXT_TU_CONTEXT
 struct TPanel {
     virtual ~TPanel();
     char gap_04[0xF0];          // TPanel size 0xF4
@@ -44,6 +47,7 @@ struct TTextPanel : public TPanel {
 
     void set_back_pic(char* name);
 };
+#endif
 
 void TTextPanel::set_back_pic(char* name) {
     long x_max;

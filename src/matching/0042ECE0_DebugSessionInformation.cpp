@@ -5,13 +5,17 @@
 
 typedef unsigned short ushort;
 
-typedef struct _GUID {
+#if !defined(COM_HAND_TU_CONTEXT)
+typedef
+struct _GUID {
     unsigned long Data1;
     unsigned short Data2;
     unsigned short Data3;
     unsigned char Data4[8];
 } GUID;
+#endif // COM_HAND_TU_CONTEXT
 
+#if !defined(COM_HAND_TU_CONTEXT)
 struct DPSESSIONDESC2 {
     unsigned long dwSize;
     unsigned long dwFlags;
@@ -28,19 +32,29 @@ struct DPSESSIONDESC2 {
     void* lpUser3;
     void* lpUser4;
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class TDebuggingLog {
 public:
     void Log(char* fmt, ...);
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     void DebugSessionInformation(DPSESSIONDESC2* desc);
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 extern TDebuggingLog* L;
-extern "C" int __cdecl StringFromGUID(GUID* guid, ushort* out);
+#endif // COM_HAND_TU_CONTEXT
+extern "C" int __cdecl StringFromGUID_ECE0(GUID* guid, ushort* out);
 
 void TCommunications_Handler::DebugSessionInformation(DPSESSIONDESC2* desc)
 {
@@ -53,7 +67,7 @@ void TCommunications_Handler::DebugSessionInformation(DPSESSIONDESC2* desc)
     L->Log((char*)"               DATA2=%d", desc->guidInstance.Data2);
     L->Log((char*)"               DATA3=%d", desc->guidInstance.Data3);
     L->Log((char*)"               DATA4=%u", desc->guidInstance.Data4);
-    StringFromGUID(&desc->guidInstance, wszSPGuid);
+    StringFromGUID_ECE0(&desc->guidInstance, wszSPGuid);
     L->Log((char*)"Instance GUID  str  =%s", wszSPGuid);
     L->Log((char*)"Applicatn guid DATA1=%u", desc->guidApplication.Data1);
     L->Log((char*)"               DATA2=%d", desc->guidApplication.Data2);

@@ -1,9 +1,13 @@
 // VA: 00427440 TCommunications_Handler::TXDebugPing (99 B)
 // PDB source: Com_hand.cpp lines 1169-1187
 
+#if !defined(COM_HAND_TU_CONTEXT)
 extern "C" unsigned long __cdecl debug_timeGetTime(char* path, int line);
+#endif // COM_HAND_TU_CONTEXT
 
+#if !defined(COM_HAND_TU_CONTEXT)
 extern void* DAT_0062c4fc;  // TDebuggingLog* L
+#endif // COM_HAND_TU_CONTEXT
 void __cdecl debug_log(void* log, const char* fmt, ...);
 
 extern char _str_path[];    // "C:\msdev\work\age1_x1\Com_hand.cpp" at 0x580BF4
@@ -13,6 +17,7 @@ extern unsigned char DAT_0062c5d8;  // packet type byte
 extern unsigned long DAT_0062c5dc;  // timestamp dword
 extern unsigned long DAT_0062c5e0;  // turn dword
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_00[0x10C8];
@@ -21,6 +26,8 @@ public:
     long FastSend(int a, void* data, int len, int b, int c);
     int TXDebugPing(void);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 int TCommunications_Handler::TXDebugPing(void) {
     DAT_0062c5d8 = 0x33;

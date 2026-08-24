@@ -10,6 +10,7 @@
 // attempt 9: (i*16+i)*6 expression, same 50.9%
 // attempt 10: use real rdlg_list_info type with natural member access
 
+#ifndef RDLG_LST_TU_CONTEXT
 struct rdlg_list_info {
     char text[100];
     short id;
@@ -106,10 +107,15 @@ public:
 
     void calc_list_line();
 };
+#endif
 
 void RGE_Dialog_List::calc_list_line() {
     list_line = -1;
+#ifdef RDLG_LST_TU_CONTEXT
+    short sel_id = get_cur_id();
+#else
     short sel_id = vf13C();
+#endif
     if (sel_id != -1) {
         for (short i = 0; i < list_size; i++) {
             if (list_info[i].id == sel_id) {

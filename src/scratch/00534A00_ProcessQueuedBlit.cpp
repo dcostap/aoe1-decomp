@@ -192,6 +192,7 @@
 #include <windows.h>
 #include <ddraw.h>
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 struct Blit_Queue_Entry {
     RECT src;   // +0x0
     RECT dest;  // +0x10
@@ -326,6 +327,7 @@ public:
 protected:
     void ProcessQueuedBlit(int force);
 };
+#endif
 
 void RGE_View::ProcessQueuedBlit(int force)
 {

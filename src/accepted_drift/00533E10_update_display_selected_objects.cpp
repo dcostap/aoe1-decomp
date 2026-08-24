@@ -44,6 +44,7 @@
 
 extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 class RGE_Static_Object {
 public:
     unsigned char gap_00[0x36];
@@ -77,6 +78,7 @@ public:
 
     void update_display_selected_objects(void);
 };
+#endif
 
 void RGE_View::update_display_selected_objects(void) {
     unsigned long curTime = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\view.cpp", 0x2CB);

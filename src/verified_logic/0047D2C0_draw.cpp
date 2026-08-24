@@ -53,6 +53,7 @@
 
 extern char s_pnl_txt__draw[];
 
+#ifndef PNL_TXT_TU_CONTEXT
 struct PanelNode;
 
 class TDrawArea {
@@ -172,6 +173,7 @@ public:
                    unsigned long color1, unsigned long color2);
     void draw_border();
 };
+#endif
 
 void TTextPanel::draw()
 {

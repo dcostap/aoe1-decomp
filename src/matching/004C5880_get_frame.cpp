@@ -1,3 +1,4 @@
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Sprite;
 
 class RGE_Active_Sprite_List {
@@ -17,6 +18,7 @@ public:
 
     int get_frame(short* param_1, short* param_2, short* param_3, short* param_4);
 };
+#endif
 
 int RGE_Static_Object::get_frame(short* param_1, short* param_2, short* param_3, short* param_4) {
     if (this->sprite != 0 && this->sprite_list != 0) {

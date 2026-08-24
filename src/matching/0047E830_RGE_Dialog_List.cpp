@@ -2,6 +2,7 @@
 // VA: 0047E830
 // PDB: rdlg_lst.cpp:97-116
 
+#ifndef RDLG_LST_TU_CONTEXT
 #include "..\..\include\game_globals.h"
 
 class TListDialog {
@@ -22,6 +23,7 @@ public:
 
     virtual ~RGE_Dialog_List();
 };
+#endif
 
 RGE_Dialog_List::~RGE_Dialog_List()
 {

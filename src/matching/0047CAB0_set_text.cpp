@@ -1,3 +1,4 @@
+#ifndef PNL_TXT_TU_CONTEXT
 class TTextPanel {
 public:
     char gap_00[0x138];
@@ -7,6 +8,7 @@ public:
     void append_line(const char* text, int p2);
     void set_text(char** texts, short count);
 };
+#endif
 
 void TTextPanel::set_text(char** texts, short count) {
     free_text();

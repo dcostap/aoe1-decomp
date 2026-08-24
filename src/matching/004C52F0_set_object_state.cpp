@@ -18,6 +18,7 @@
 void* __cdecl operator_new(unsigned int size);
 void __cdecl operator_delete(void* ptr);
 
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Static_Object;
 class RGE_Game_World;
 class RGE_Player;
@@ -189,6 +190,7 @@ public:
     void set_sleep_flag(unsigned char sleep_flag);
 
 };
+#endif
 
 void RGE_Static_Object::set_object_state(unsigned char state)
 {

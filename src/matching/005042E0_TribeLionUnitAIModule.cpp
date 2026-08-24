@@ -3,6 +3,7 @@
 // FLAGS: config/flags/005042E0_TribeLionUnitAIModule.rsp
 
 #include <stddef.h>
+#ifndef TAIUAIMD_COMPLETE_TU
 
 void* operator new(size_t size);
 struct RGE_Static_Object;
@@ -25,6 +26,7 @@ class TribeLionUnitAIModule : public UnitAIModule {
 public:
     TribeLionUnitAIModule(RGE_Static_Object* obj, int param);
 };
+#endif
 
 TribeLionUnitAIModule::TribeLionUnitAIModule(RGE_Static_Object* obj, int param)
     : UnitAIModule(obj, param)

@@ -1,3 +1,4 @@
+#ifndef RGE_VIEW_SHARED_CONTEXT
 class TPanel {
 public:
     void set_redraw(int mode);
@@ -10,6 +11,7 @@ public:
 
     virtual void set_redraw(int mode);
 };
+#endif
 
 void RGE_View::set_redraw(int mode) {
     ((TPanel*)this)->set_redraw(mode);

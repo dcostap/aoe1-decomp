@@ -2,6 +2,7 @@
 // scr_game.cpp:3365-3372
 // Retry 2026-05-24: replaced stale stub with packet-derived six-panel show_message wrapper.
 
+#if !defined(SCR_GAME_TU_CONTEXT)
 class TMessagePanel {
 public:
     void show_message(int type, char* text, int color, int a4, int a5, int a6, int a7);
@@ -19,6 +20,7 @@ public:
 
     void show_ai(char* a1, char* a2, char* a3, char* a4, char* a5, char* a6);
 };
+#endif
 
 void TRIBE_Screen_Game::show_ai(char* a1, char* a2, char* a3, char* a4, char* a5, char* a6)
 {

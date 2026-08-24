@@ -1,6 +1,7 @@
 // 00510C10 TRIBE_Map::do_cliff_brush_stroke
 // first pass: direct offsets, signed /3 tests, base delegation.
 
+#ifndef TMAP_GROUP_CONTEXT
 class RGE_Map {
 public:
     unsigned char do_cliff_brush_stroke(long a, long b, long c, long d, unsigned char e, unsigned char f);
@@ -17,6 +18,7 @@ public:
 
     unsigned char do_cliff_brush_stroke(long a, long b, long c, long d, unsigned char e, unsigned char f);
 };
+#endif
 
 unsigned char TRIBE_Map::do_cliff_brush_stroke(long a, long b, long c, long d, unsigned char e, unsigned char f)
 {

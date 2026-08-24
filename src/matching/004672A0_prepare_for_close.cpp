@@ -1,5 +1,6 @@
 // attempt 2: natural cleanup of owned draw area, GDI brush, shapes, palette, and shadow color table
 
+#ifndef AOE1_PANEL_EZ_CONTEXT_H
 extern "C" __declspec(dllimport) int __stdcall DeleteObject(void* object);
 
 class TDrawArea {
@@ -42,6 +43,9 @@ public:
 
     void prepare_for_close();
 };
+#else
+extern "C" __declspec(dllimport) int __stdcall DeleteObject(void* object);
+#endif
 
 void TEasy_Panel::prepare_for_close() {
     if (this->shadow_area != 0) {

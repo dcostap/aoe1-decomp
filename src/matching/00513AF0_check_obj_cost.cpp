@@ -12,6 +12,7 @@
 //   is explicitly left-associated with a folded zero; both +/- zero forms emit the
 //   oracle's fld st0/fadd-resource pair. Keep the simpler population + 0.0f anchor.
 
+#ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
 struct ObjectCost {
     short type;
     short amount;
@@ -36,6 +37,7 @@ public:
 
     unsigned char check_obj_cost(short obj_id, short* out, float factor, int skip_farm);
 };
+#endif
 
 unsigned char TRIBE_Player::check_obj_cost(short obj_id, short* out, float factor, int skip_farm)
 {
@@ -52,7 +54,7 @@ unsigned char TRIBE_Player::check_obj_cost(short obj_id, short* out, float facto
         population_available = true;
     }
 
-    ObjectType* object = this->object_types[obj_id];
+    ObjectType* object = ((ObjectType**)this->object_types)[obj_id];
     if (object == 0 || object->status < 0x46) {
         if (out != 0) {
             *out = -1;

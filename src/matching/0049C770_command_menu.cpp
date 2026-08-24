@@ -4,6 +4,7 @@
 // - Previous scratch was incomplete/raw and used wrong dialog size (0x2C8), producing an 80-byte too-short text window.
 // - 2026-05-10 StarryZephyr pass: rewrote with natural typed /GX source, following the same command_save_game EH pattern.
 
+#if !defined(SCR_GAME_TU_CONTEXT)
 class RGE_Command {
 public:
     void do_commands();
@@ -38,6 +39,7 @@ public:
 
     void command_menu();
 };
+#endif
 
 void TRIBE_Screen_Game::command_menu() {
     if (rge_base_game->prog_mode == 6) {

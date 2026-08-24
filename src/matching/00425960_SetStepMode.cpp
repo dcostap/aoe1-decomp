@@ -1,3 +1,4 @@
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     virtual ~TCommunications_Handler();
@@ -5,5 +6,7 @@ public:
     int field_1288;
     void SetStepMode(int v);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 void TCommunications_Handler::SetStepMode(int v) { this->field_1288 = v; }

@@ -9,6 +9,7 @@
 typedef unsigned long DWORD;
 typedef long HRESULT;
 
+#if !defined(COM_HAND_TU_CONTEXT)
 struct DPCAPS {
     DWORD dwSize;
     DWORD dwFlags;
@@ -21,23 +22,35 @@ struct DPCAPS {
     DWORD dwHeaderLength;
     DWORD dwTimeout;
 };
+#endif // COM_HAND_TU_CONTEXT
 
+
+#if !defined(COM_HAND_TU_CONTEXT)
 struct IDirectPlay3 {
     void** vtbl;
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 typedef HRESULT (__stdcall *GetCapsProc)(IDirectPlay3* self, DPCAPS* caps, DWORD flags);
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class RGE_Comm_Error {
 public:
     void ShowReturn(HRESULT hr, char* text);
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 class TDebuggingLog;
+#if !defined(COM_HAND_TU_CONTEXT)
 void __cdecl Log(TDebuggingLog* log, char* text, ...);
+#endif // COM_HAND_TU_CONTEXT
 
 extern IDirectPlay3* g_pDP;
+#if !defined(COM_HAND_TU_CONTEXT)
 extern TDebuggingLog* L;
+#endif // COM_HAND_TU_CONTEXT
 
 static char s_get_caps[] = "Get Caps";
 static char s_get_guaranteed_caps[] = "Get guaranteed Caps";
@@ -51,13 +64,14 @@ static char s_header_len[] = "Header Length   = %d";
 static char s_timeout[] = "Timeout         = %d";
 static char s_guar_opt[] = "Guaranteed Optimized.";
 static char s_not_guar_opt[] = "NOT Guaranteed Optimized.";
-static char s_host[] = "This player is the Session Host.";
-static char s_not_host[] = "Not the host.";
+static char s_session_host_msg[] = "This player is the Session Host.";
+static char s_not_session_host_msg[] = "Not the host.";
 static char s_keepalive[] = "Optimized keepalive detection.";
 static char s_not_keepalive[] = "Not optimized for keepalive.";
 static char s_guar_delivery[] = "Guaranteed delivery is Supported";
 static char s_not_guar_service[] = "NOT Guaranteed Service!";
 
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_0000[0x1340];
@@ -69,6 +83,8 @@ public:
 
     HRESULT CommGetCaps();
 };
+#endif // COM_HAND_TU_CONTEXT
+
 
 HRESULT TCommunications_Handler::CommGetCaps()
 {
@@ -80,13 +96,13 @@ HRESULT TCommunications_Handler::CommGetCaps()
         return 0x80004005;
     }
 
-    void** vtbl = dp->vtbl;
+    void** vtbl = *(void***)dp;
     caps.dwSize = sizeof(DPCAPS);
     hr = ((GetCapsProc)vtbl[14])(dp, &caps, 0);
     this->Err->ShowReturn(hr, s_get_caps);
 
     dp = g_pDP;
-    hr = ((GetCapsProc)dp->vtbl[14])(dp, &caps, 1);
+    hr = ((GetCapsProc)(*(void***)dp)[14])(dp, &caps, 1);
     this->Err->ShowReturn(hr, s_get_guaranteed_caps);
 
     Log(L, s_header);
@@ -107,9 +123,9 @@ HRESULT TCommunications_Handler::CommGetCaps()
     }
 
     if (caps.dwFlags & 2) {
-        Log(L, s_host);
+        Log(L, s_session_host_msg);
     } else {
-        Log(L, s_not_host);
+        Log(L, s_not_session_host_msg);
     }
 
     if (caps.dwFlags & 0x10) {

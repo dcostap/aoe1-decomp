@@ -1,6 +1,7 @@
 // VA: 0047CA70 TTextPanel::set_text (63 B)
 // PDB source: Pnl_txt.cpp lines 566-570
 
+#ifndef PNL_TXT_TU_CONTEXT
 class TTextPanel {
 public:
     virtual void vf00();
@@ -64,6 +65,7 @@ public:
     virtual void set_text2(char* str);
     int get_string(int string_id, char* buffer, int length);
 };
+#endif
 
 void TTextPanel::set_text(long id) {
     char buffer[0x1000];

@@ -5,6 +5,7 @@
 // - v2: local TRIBE_Player layout: object at +0x50 with float tech ids at +0x5c/+0x60/+0x64, tech_tree at +0x220.
 // - v3: direct member calls to TRIBE_Player_Tech disable/rev_tech/enable/do_tech, using (short)(long)float casts for __ftol.
 
+#ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
 struct TechIdSource {
     char gap_00[0x5c];
     float tech_a; // +5c
@@ -29,6 +30,7 @@ public:
 
     void rev_tech(long param_1);
 };
+#endif
 
 void TRIBE_Player::rev_tech(long param_1)
 {

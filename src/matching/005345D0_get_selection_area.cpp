@@ -5,6 +5,7 @@
 
 #include "../../include/game_globals.h"
 
+#ifndef RGE_VIEW_SHARED_CONTEXT
 class RGE_Map {
 public:
     virtual ~RGE_Map();
@@ -35,6 +36,7 @@ public:
 
     int get_selection_area(long* col1, long* row1, long* col2, long* row2, int normalize);
 };
+#endif
 
 int RGE_View::get_selection_area(long* col1, long* row1, long* col2, long* row2, int normalize)
 {

@@ -18,6 +18,7 @@
 // - Jump table lands at the original position once the grouping matches;
 //   relocation identity of the table base is preserved (5/5 masked).
 
+#ifndef PNL_TXT_TU_CONTEXT
 class TPanel {
 public:
     virtual void vf00();
@@ -78,6 +79,7 @@ public:
     virtual long key_down_action(long param_1, short param_2, int param_3,
                                  int param_4, int param_5);
 };
+#endif
 
 long TTextPanel::key_down_action(long param_1, short param_2, int param_3,
                                  int param_4, int param_5)

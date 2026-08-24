@@ -16,7 +16,7 @@
 //
 // Remaining drift (prologue register allocation):
 // 1. Original saves esi first, loads obj into esi ([esp+10h]), saves edi second,
-//    moves this into edi (ecx). 
+//    moves this into edi (ecx).
 //    Mine saves both esi and edi up front, then loads obj into edi and this into esi.
 // 2. This cascading register swap affects all field accesses and vtable calls
 //    throughout the function — [esi+XX] vs [edi+XX] for every obj vs this access.
@@ -41,6 +41,7 @@
 
 typedef unsigned char uchar;
 
+#ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
 struct MasterObj {
     char _pad_00[4];
     char master_type;   // +0x04
@@ -104,6 +105,7 @@ struct TRIBE_Player {
 
     uchar command_make_repair(RGE_Static_Object* obj);
 };
+#endif
 
 uchar TRIBE_Player::command_make_repair(RGE_Static_Object* obj)
 {

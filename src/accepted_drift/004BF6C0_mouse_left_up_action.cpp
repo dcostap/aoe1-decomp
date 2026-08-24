@@ -1,3 +1,4 @@
+#ifndef SPNL_OBJ_TU
 // ACCEPTED_DRIFT: unused fault-preserving member load goes to eax in original and volatile ecx in rebuilt before eax is set to 1; same call, read address, return, and stack cleanup.
 // Attempt log:
 // - Baseline is exact in size, call set, boundary, and cleanup. It differs only in the load destination byte.
@@ -21,6 +22,7 @@ class TRIBE_Scenario_Editor_Panel_Object : public TPanel {
 public:
     long mouse_left_up_action(long x, long y, int ctrl, int shift);
 };
+#endif
 
 long TRIBE_Scenario_Editor_Panel_Object::mouse_left_up_action(long x, long y, int ctrl, int shift) {
     release_mouse();
