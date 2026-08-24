@@ -5,7 +5,7 @@ class RGE_Map;
 class RGE_Game_World;
 class RGE_Random_Map_Module {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Random_Map_Module();
     RGE_Random_Map_Module* parent;
     void* list;
     RGE_Map* map;

@@ -1,7 +1,7 @@
 #ifndef MAP_CONTEXT_H
 class RGE_Map {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Map();
     int field_4;
     int map_width;
     int map_height;

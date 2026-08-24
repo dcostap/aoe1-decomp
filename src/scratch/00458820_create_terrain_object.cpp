@@ -72,7 +72,7 @@ public:
 
 class RGE_Object_List {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Object_List();
     RGE_Object_Node* list;
     short number_of_objects;
     char gap_0A[2];
@@ -86,15 +86,18 @@ public:
 
 class RGE_Master_Static_Object {
 public:
-    virtual void vf00();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
+    virtual ~RGE_Master_Static_Object();
+    virtual void copy_obj(RGE_Master_Static_Object* other);
+    virtual void modify(float value, unsigned char flag);
+    virtual void modify_delta(float value, unsigned char flag);
+    virtual void modify_percent(float value, unsigned char flag);
+    virtual void save(int file);
     virtual void place(RGE_Player*, float, float, int);
-    virtual void vf1C();
-    virtual unsigned char can_place(RGE_Player*, float, float, int, int, int, int, int, int, int);
+    virtual int check_placement(RGE_Player*, float, float, int*,
+                                 unsigned char, unsigned char, unsigned char,
+                                 unsigned char, unsigned char, unsigned char);
+    virtual unsigned char can_place(RGE_Player*, float, float, int, int, int,
+                                    int, int, int, int);
 
     char gap_04[0x0C];
     short id;
@@ -103,31 +106,32 @@ public:
 class RGE_Static_Object {
 public:
     virtual ~RGE_Static_Object();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
-    virtual void vf20();
-    virtual void vf24();
-    virtual void vf28();
-    virtual void vf2C();
-    virtual void vf30();
-    virtual void vf34();
-    virtual void vf38();
-    virtual void vf3C();
-    virtual void vf40();
-    virtual void vf44();
-    virtual void vf48();
-    virtual void vf4C();
-    virtual void vf50();
-    virtual void vf54();
-    virtual void vf58();
-    virtual void vf5C();
-    virtual void vf60();
-    virtual void vf64();
+    virtual void recycle_in_to_game(RGE_Master_Static_Object*, RGE_Player*,
+                                     float, float, float);
+    virtual void recycle_out_of_game();
+    virtual void draw(void*, short, short, void*);
+    virtual void shadow_draw(void*, short, short, unsigned char);
+    virtual void normal_draw(void*, short, short);
+    virtual void draw_front_frame(void*, short, short);
+    virtual void draw_back_frame(void*, short, short);
+    virtual void draw_frame(void*, short, short);
+    virtual unsigned char update();
+    virtual void check_damage_sprites();
+    virtual void rehook();
+    virtual void save(int);
+    virtual float teleport(float, float, float);
+    virtual void new_sprite(void*);
+    virtual void add_overlay_sprite(void*, unsigned char);
+    virtual void remove_overlay_sprite(void*);
+    virtual void change_ownership(RGE_Player*);
+    virtual void modify(float, unsigned char);
+    virtual void modify_delta(float, unsigned char);
+    virtual void modify_percent(float, unsigned char);
+    virtual void transform(RGE_Master_Static_Object*);
+    virtual void copy_obj(RGE_Master_Static_Object*);
+    virtual void set_object_state(unsigned char);
+    virtual void remove_visible_resource();
+    virtual void create_doppleganger_when_dying();
     virtual void destroy_obj();
 
     long id;

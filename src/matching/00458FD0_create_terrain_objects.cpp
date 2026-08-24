@@ -10,7 +10,7 @@ class RGE_Game_World;
 // RGE_Map stub with needed members (from inventory)
 class RGE_Map {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Map();
     void* map;           // RGE_Tile*
     long map_width;      // offset +0x8
     long map_height;     // offset +0xC

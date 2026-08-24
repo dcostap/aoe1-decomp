@@ -127,14 +127,16 @@ public:
     float outline_radius_x;
     float outline_radius_y;
     float outline_radius_z;
-    virtual void vf00();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
+    virtual void copy_obj(RGE_Master_Static_Object* other);
+    virtual void modify(float value, unsigned char flag);
+    virtual void modify_delta(float value, unsigned char flag);
+    virtual void modify_percent(float value, unsigned char flag);
+    virtual void save(int file);
     virtual void place(RGE_Player* player, float x, float y, int a);
-    virtual void vf1C();
+    virtual void check_placement(RGE_Player* player, float x, float y,
+                                 int* value, unsigned char a, unsigned char b,
+                                 unsigned char c, unsigned char d,
+                                 unsigned char e, unsigned char f);
     virtual unsigned char can_place(RGE_Player* player, float x, float y,
                                      int a, int b, int c, int d, int e,
                                      int f, int g);

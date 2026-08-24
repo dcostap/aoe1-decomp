@@ -3,7 +3,7 @@ class RGE_Tile;
 
 class RGE_Map {
 public:
-    void* vtable_ptr; // +0x0
+    virtual ~RGE_Map();
     RGE_Tile* map; // +0x4
     long map_width; // +0x8
     long map_height; // +0xC

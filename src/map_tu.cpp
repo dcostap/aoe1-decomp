@@ -5,12 +5,10 @@
 // build/tu_plans/map_cpp/packet.json.  The vector-deleting destructor at
 // 00455080 is compiler generated and is listed in the proposal manifest.
 //
-// The normal path uses the pinned default response file (/O2 /Oy).  Exact
-// owners remain in src/matching; accepted-drift and scratch owners are
-// reported as observed functions in the candidate proposal.
-// No map.cpp owner is blocked; the generated vector-deleting destructor is
-// recorded separately in the proposal.
-// Packet accounting: 49 exact owners, 15 observed owners, and one generated
+// The normal path uses the pinned default response file (/O2 /Oy). Exact
+// owners remain in src/matching; accepted-drift, scratch, and matching-source
+// owners with incompatible per-function flags remain observed in the proposal.
+// Packet accounting: 35 exact owners, 29 observed owners, and one generated
 // entry. The candidate compiles under config/flags/default.rsp. Mismatches
 // remain recorded as observed results; this captain pass does not tune them.
 
