@@ -1,6 +1,9 @@
 #ifndef ACT_LIST_SHARED_CONTEXT
 class RGE_Action;
-class RGE_Action_Node;
+class RGE_Action_Node {
+public:
+    RGE_Action* action;
+};
 class RGE_Action_List {
 public:
     char gap_0[8];

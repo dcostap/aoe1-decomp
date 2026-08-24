@@ -10,8 +10,8 @@
 #define SOUNDDRV_CANONICAL_TU 1
 #include "../include/sounddrv_context.h"
 
-#include "scratch/004BC590_TSound_Driver.cpp"
-#include "scratch/004BC5A0_TSound_Driver.cpp"
+#include "matching/004BC590_TSound_Driver.cpp"
+#include "matching/004BC5A0_TSound_Driver.cpp"
 #include "scratch/004BC5C0_TSound_Driver.cpp"
 #include "matching/004BC5D0_init_vars.cpp"
 #include "matching/004BC610_init.cpp"

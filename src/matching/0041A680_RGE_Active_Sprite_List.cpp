@@ -15,5 +15,5 @@ public:
 #endif
 
 RGE_Active_Sprite_List::~RGE_Active_Sprite_List() {
-    this->delete_list();
+    delete_list();
 }

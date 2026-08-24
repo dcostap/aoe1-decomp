@@ -113,7 +113,7 @@ public:
     unsigned char get_visible(int x, int y);
     void set_all(unsigned char value);
     void explore_all(void);
-    float percentExplored(void);
+    float percentExplored(void) const;
     void recomputeExplored(void);
     LOSTBL* get_los_table(int distance, int diagonal);
     int explore_terrain(int x, int y, int radius, int square,
@@ -143,6 +143,7 @@ public:
     void save(int handle);
     void reset(void);
     void Set_Map_Offsets(void);
+    void suppress_updates(int);
 };
 
 extern float save_game_version;

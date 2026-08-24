@@ -32,7 +32,7 @@
 #include "matching/004047C0_action_work.cpp"
 #include "matching/004047F0_attack_response.cpp"
 #include "matching/00404810_relation_response.cpp"
-#include "scratch/00404840_get_action.cpp"
+#include "matching/00404840_get_action.cpp"
 #include "matching/00404850_get_task.cpp"
 #include "matching/00404860_copy_obj.cpp"
 #include "matching/00404890_copy_obj_sprites.cpp"

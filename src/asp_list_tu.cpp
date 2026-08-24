@@ -127,7 +127,7 @@ public:
 };
 
 #include "matching/0041A640_RGE_Active_Sprite_List.cpp"
-#include "scratch/0041A680_RGE_Active_Sprite_List.cpp"
+#include "matching/0041A680_RGE_Active_Sprite_List.cpp"
 #include "matching/0041A690_load.cpp"
 #include "matching/0041A6F0_load_node.cpp"
 #include "matching/0041A820_save.cpp"

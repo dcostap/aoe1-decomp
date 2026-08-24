@@ -11,6 +11,6 @@ public:
 };
 #endif
 void TCommunications_Sessions::EraseInformation() {
-    this->SessionCount = 0;
-    memset(this->Session, 0, sizeof(this->Session));
+    SessionCount = 0;
+    memset(Session, 0, sizeof(Session));
 }

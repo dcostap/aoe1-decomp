@@ -9,7 +9,7 @@
 #include "matching/0053C490_get_visible.cpp"
 #include "matching/0053C4D0_set_all.cpp"
 #include "accepted_drift/0053C5D0_explore_all.cpp"
-#include "scratch/0053C670_percentExplored.cpp"
+#include "matching/0053C670_percentExplored.cpp"
 #include "accepted_drift/0053C680_recomputeExplored.cpp"
 #include "matching/0053C6C0_get_los_table.cpp"
 #include <stdlib.h>
@@ -27,7 +27,7 @@
 #include "matching/0053CFF0_save.cpp"
 #include "matching/0053D040_reset.cpp"
 #include "matching/0053D070_Set_Map_Offsets.cpp"
-#include "scratch/0053D0C0_suppress_updates.cpp"
+#include "matching/0053D0C0_suppress_updates.cpp"
 #include "accepted_drift/0053D0D0_checksumVisible.cpp"
 #include "matching/0053D110_checksumUnifiedVisible.cpp"
 #include "matching/0053D150_log_map_call.cpp"

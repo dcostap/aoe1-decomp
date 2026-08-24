@@ -14,6 +14,6 @@
 #include "matching/0040CD90_InformationAIModule.cpp"
 
 // aiinfmod.cpp:29
-#include "scratch/0040CDE0_InformationAIModule.cpp"
+#include "matching/0040CDE0_InformationAIModule.cpp"
 
 #undef AIINFMOD_SHARED_CONTEXT

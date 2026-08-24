@@ -312,7 +312,9 @@ public:
     long get_line(long);
     char* get_text();
     char* get_text(long);
+    char* get_text2();
     char* get_text2(long);
+    long get_id();
     long get_id(long);
     void empty_list();
     void set_line(long);
@@ -428,7 +430,7 @@ public:
 #include "scratch/0047DC30_numberLines.cpp"
 #include "scratch/0047DC40_numberDrawLines.cpp"
 #include "scratch/0047DC50_currentLineNumber.cpp"
-#include "scratch/0047DC60_setCurrentLineNumber.cpp"
+#include "matching/0047DC60_setCurrentLineNumber.cpp"
 #include "matching/0047DC70_currentLine.cpp"
 #include "matching/0047DC80_set_line.cpp"
 #include "matching/0047DCA0_set_line_by_id.cpp"
@@ -446,11 +448,11 @@ public:
 #include "matching/0047E1E0_get_line.cpp"
 #include "scratch/0047E200_get_line.cpp"
 #include "scratch/0047E230_get_line.cpp"
-#include "scratch/0047E290_get_text.cpp"
+#include "matching/0047E290_get_text.cpp"
 #include "accepted_drift/0047E2A0_get_text.cpp"
-#include "scratch/0047E2E0_get_text2.cpp"
+#include "matching/0047E2E0_get_text2.cpp"
 #include "matching/0047E2F0_get_text2.cpp"
-#include "scratch/0047E330_get_id.cpp"
+#include "matching/0047E330_get_id.cpp"
 #include "scratch/0047E340_get_id.cpp"
 #include "matching/0047E370_empty_list.cpp"
 #include "scratch/0047E380_free_text.cpp"
