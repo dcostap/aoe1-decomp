@@ -78,5 +78,5 @@ long THelpDialog::handle_mouse_down(uchar button, long x, long y, int flags, int
         return 1;
     }
 
-    return ((TEasy_Panel*)this)->handle_mouse_down(button, x, y, flags, area);
+    return ((TEasy_Panel*)this)->TEasy_Panel::handle_mouse_down(button, x, y, flags, area);
 }

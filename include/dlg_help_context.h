@@ -219,6 +219,7 @@ public:
     virtual long action(TPanel*, long, unsigned long, unsigned long);
     virtual long handle_mouse_down(unsigned char, long, long, int, int);
 
+protected:
     void setup_help(TEasy_Panel*, char*, char*, long, long, long);
 };
 
