@@ -1,12 +1,13 @@
-extern float g_attack_modifier;
+extern "C" float g_attack_modifier;
 
 #ifndef RGE_COM_OBJ_SHARED_CONTEXT
-class RGE_Base_Game {
+class RGE_Static_Object;
+class RGE_Combat_Object {
 public:
-    float calc_attack_modifier(int unused);
+    virtual float calc_attack_modifier(RGE_Static_Object*);
 };
 #endif
 
-float RGE_Base_Game::calc_attack_modifier(int unused) {
+float RGE_Combat_Object::calc_attack_modifier(RGE_Static_Object* unused) {
     return g_attack_modifier;
 }

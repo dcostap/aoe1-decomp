@@ -117,23 +117,41 @@ public:
     int orig_armor;
     int orig_weapon;
     RGE_Sprite* fight_sprite;
-    char pad_06C[0xAC];
+    char pad_06C[0xA0];
+    union {
+        float weapon_range;
+        float field_114;
+    };
+    char pad_118[8];
     float speed_of_attack;
-    float weapon_range;
-    float field_114;
-    float field_138;
-    short field_124;
-    short field_12A;
-    short field_12a;
-    unsigned char defense_terrain_bonus;
-    float range_30;
-    float range_34;
-    char pad_118[0x0C];
-    short missile_id;
-    char pad_126[6];
+    union {
+        short missile_id;
+        short field_124;
+    };
+    union {
+        short base_hit_chance_combat;
+        unsigned char defense_terrain_bonus;
+    };
+    unsigned char break_off_combat;
+    unsigned char pad_129;
+    union {
+        short fire_missile_at_frame;
+        short field_12A;
+        short field_12a;
+    };
     float weapon_offset_x;
     float weapon_offset_y;
     float weapon_offset_z;
+    union {
+        float minimum_weapon_range;
+        float field_138;
+        float range_30;
+    };
+    short orig_armor_combat;
+    short orig_weapon_combat;
+    float orig_weapon_range;
+    float orig_speed_of_attack;
+    float range_34;
 };
 
 class RGE_Master_Animated_Object : public RGE_Master_Static_Object {
@@ -204,8 +222,10 @@ public:
     virtual void stop();
     virtual void copy_obj(RGE_Master_Combat_Object*);
 
-    int id;
-    int object_id;
+    union {
+        int id;
+        int object_id;
+    };
     RGE_Master_Combat_Object* master_obj;
     RGE_Master_Combat_Object* master;
     RGE_Player* owner;
@@ -348,11 +368,14 @@ public:
     virtual int pause();
     virtual float damageCapability();
     virtual float damageCapability(RGE_Static_Object*);
+    virtual float rateOfFire();
     virtual int inAttackRange(RGE_Static_Object*);
     virtual int currentTargetID() const;
     virtual float currentTargetX() const;
     virtual float currentTargetY() const;
     virtual float currentTargetZ() const;
+    virtual float weaponRange();
+    virtual float minimumWeaponRange();
     virtual float teleport(float, float, float);
     virtual float base_teleport(float, float, float);
     virtual float calc_attack_modifier(RGE_Static_Object*);
