@@ -4534,6 +4534,7 @@
         "00510020": "src/matching/00510020_get_cliff_info.cpp",
         "005100D0": "src/matching/005100D0_check_cliff_valid.cpp",
         "00510110": "src/matching/00510110_make_new_cliff.cpp",
+        "00510410": "src/matching/00510410_reverse_cliff_direction.cpp",
         "00510A50": "src/matching/00510A50_do_cliff_brush.cpp",
         "00510C10": "src/matching/00510C10_do_cliff_brush_stroke.cpp",
         "00510C90": "src/matching/00510C90_water.cpp",

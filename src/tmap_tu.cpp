@@ -32,7 +32,7 @@
 #include "matching/005100D0_check_cliff_valid.cpp"
 #include "matching/00510110_make_new_cliff.cpp"
 #include "scratch/005102A0_remove_cliff_edge.cpp"
-#include "scratch/00510410_reverse_cliff_direction.cpp"
+#include "matching/00510410_reverse_cliff_direction.cpp"
 #include "scratch/00510430_add_cliff_edge.cpp"
 #include "matching/00510960_delete_cliff.cpp"
 #include "matching/00510A50_do_cliff_brush.cpp"
