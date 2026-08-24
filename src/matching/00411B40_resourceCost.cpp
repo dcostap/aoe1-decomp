@@ -1,15 +1,4 @@
-class ResourceItem;
-
-class TechnologyItem {
-public:
-    ResourceItem* resourceCost();
-};
-
-class ResearchAIModule {
-public:
-    TechnologyItem* item(int id);
-    ResourceItem* resourceCost(int id);
-};
+#include "../../include/airchmod_context.h"
 
 ResourceItem* ResearchAIModule::resourceCost(int id) {
     TechnologyItem* tech = this->item(id);

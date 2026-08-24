@@ -5,7 +5,7 @@
 // try 4: use name[64] plus address-taken pad after name; optimized out, back to 0x1CC.
 // try 5: make temp[260] with name[64] to force frame growth; worse offsets/diff than name[68], rolled back.
 // try 6: restore best name[68]/temp[256] layout.
-// try 7: use explicit tail local for list insertion to preserve prev pointer through EH-state store; improved to 2.04% positional, remaining name/temp copy offsets 4 low around ctor.
+// try 7: use explicit tail local for list insertion to preserve prev pointer through EH-state store; improved to 2.04% positional, remaining name/temp copy offsets 4 low.
 // try 8: enlarge name to 72; worsened to 4.55% and early branch displacement, rolled back.
 // try 9: restore name[68] best layout.
 // try 10: split allocation result into alloc local; no codegen change.
@@ -20,35 +20,16 @@
 // try 19: modeling the fifth sscanf integer as rc[4] kept its proven output slot live and restored the plain 64-byte name; exact match.
 // Exact result: rc[5] is the natural source model for the five integer destinations, including the formerly apparent rc+4 overflow; it also reproduces the original local reuse in the allocation/constructor EH staging.
 
+#include "../../include/airchmod_context.h"
+
 #include <stdio.h>
-#include <string.h>
 #include <io.h>
 
-class ResourceItem {
-public:
-    char data[0x70];
-    ResourceItem(int, int*);
-    ResourceItem(ResourceItem const&);
-    ~ResourceItem();
-};
-class TechnologyItem {
-public:
-    int pad0;
-    TechnologyItem* next;
-    TechnologyItem* prev;
-    char rest[0x48];
-    TechnologyItem(int, char*, ResourceItem);
-};
-class ResearchAIModule {
-public:
-    char pad0[0xF4];
-    TechnologyItem techTree;
-    int techTreeLengthValue;
-    char techTreeNameValue[260];
-    void removeOldTechTree();
-    void logCommonHistory(char*, ...);
-    int loadTechnologyTree(char*);
-};
+extern "C" int __cdecl rge_read(int file, void* dst, int size);
+extern "C" char* __cdecl strcpy(char*, const char*);
+extern "C" int __cdecl strcmp(const char*, const char*);
+extern "C" int __cdecl sprintf(char*, const char*, ...);
+extern "C" char* __cdecl strstr(const char*, const char*);
 
 int ResearchAIModule::loadTechnologyTree(char* filename)
 {

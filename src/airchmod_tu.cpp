@@ -1,0 +1,15 @@
+// Authentic airchmod.cpp translation unit in PDB source order.
+// The module uses /GX because both constructors and the destructor carry C++ EH.
+#include "matching/00411670_ResearchAIModule.cpp"
+#include "matching/00411740_ResearchAIModule.cpp"
+#include "matching/00411940_ResearchAIModule.cpp"
+#include "matching/004119B0_setMainDecisionAI.cpp"
+#include "matching/004119C0_save.cpp"
+#include "matching/00411B40_resourceCost.cpp"
+#include "matching/00411B60_buildable.cpp"
+#include "matching/00411B70_research.cpp"
+#include "matching/00411B80_loadTechnologyTree.cpp"
+#include "matching/00411E00_numberTechnologyItems.cpp"
+#include "matching/00411E10_technologyTreeName.cpp"
+#include "matching/00411E20_removeOldTechTree.cpp"
+#include "matching/00411E70_item.cpp"

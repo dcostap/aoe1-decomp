@@ -1,10 +1,4 @@
-class CCDAudio {
-public:
-    int m_Wnd;
-    int m_bOpened;
-
-    CCDAudio();
-};
+#include "../../include/cdaudio_context.h"
 
 CCDAudio::CCDAudio() {
     m_Wnd = 0;

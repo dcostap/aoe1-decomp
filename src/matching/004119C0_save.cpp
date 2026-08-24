@@ -7,36 +7,11 @@
 // attempt 5: integer sentinel compare did not change the combined bottom guard.
 // attempt 6: try ordinary while loop spelling.
 
-extern "C" int __cdecl strlen(const char*);
+#include "../../include/airchmod_context.h"
+
+// VC5's grouped <stdio.h>/<io.h> context declares strlen's 32-bit size result unsigned.
+extern "C" unsigned int __cdecl strlen(const char*);
 extern "C" char* __cdecl strcpy(char*, const char*);
-
-void rge_write(int file, void* data, int size);
-
-class ResourceItem {
-public:
-    int value(int index);
-};
-
-class TechnologyItem {
-public:
-    TechnologyItem* prev; // +0
-    TechnologyItem* next; // +4
-    int id();
-    char* name();
-    ResourceItem* resourceCost();
-};
-
-class ResearchAIModule {
-public:
-    void* vptr;
-    char gap_004[0xF0];
-    TechnologyItem sentinel;      // +0xF4 (next at +0xF8)
-    char gap_FC[0x4C];
-    int techTreeLengthValue;      // +0x148
-    char techTreeNameValue[260];  // +0x14C
-
-    int save(int file);
-};
 
 int ResearchAIModule::save(int file)
 {
@@ -50,8 +25,8 @@ int ResearchAIModule::save(int file)
     rge_write(file, &tempInt, 4);
     rge_write(file, tempString, strlen(tempString));
 
-    TechnologyItem* item = this->sentinel.next;
-    TechnologyItem* end = &this->sentinel;
+    TechnologyItem* item = this->techTree.next;
+    TechnologyItem* end = &this->techTree;
     while (item != end) {
         if (item == 0) {
             return 1;

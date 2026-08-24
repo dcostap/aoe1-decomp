@@ -1,9 +1,3 @@
-class ResearchAIModule {
-public:
-    virtual ~ResearchAIModule();
-    char gap_0[0x144];
-    int field_148;
-    int numberTechnologyItems();
-};
+#include "../../include/airchmod_context.h"
 
-int ResearchAIModule::numberTechnologyItems() { return this->field_148; }
+int ResearchAIModule::numberTechnologyItems() const { return this->techTreeLengthValue; }

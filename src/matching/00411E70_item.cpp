@@ -1,20 +1,4 @@
-class TechnologyItem {
-public:
-    void* vtable_ptr;
-    TechnologyItem* next;
-    TechnologyItem* prev;
-    int idValue;
-
-    int id();
-};
-
-class ResearchAIModule {
-public:
-    char gap_00[0xF4];
-    TechnologyItem techTree;
-
-    TechnologyItem* item(int tech_id);
-};
+#include "../../include/airchmod_context.h"
 
 TechnologyItem* ResearchAIModule::item(int tech_id)
 {

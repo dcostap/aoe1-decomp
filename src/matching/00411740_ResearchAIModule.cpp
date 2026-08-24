@@ -25,7 +25,7 @@
 //     period source shape; this replaces the prior raw-link diagnostic for one codegen check.
 // 22: changed oldTail to a named reference to techHead.prev; diff improved to 322 bytes, but vptr and
 //     sentinel initialization moved earlier, so the reference form was not kept as the natural source.
-// 23: direct named this->techHead.next/prev initialization restored the original register schedule
+// 23: direct named this->techTree.next/prev initialization restored the original register schedule
 //     and exact bytes while retaining typed ownership; the redundant self alias was then removed.
 // 24: removed the register hint from the named head pointer; emitted bytes stayed exact.
 // Final source uses the proven 0xF0 AIModule base, 0x54 TechnologyItem, 0x70 ResourceItem, 0x19C
@@ -33,75 +33,36 @@
 // before the counter increment. List links use named typed fields. The raw +4/+8 and +F8/+FC stores
 // were diagnostic evidence only and are not retained.
 
+#include "../../include/airchmod_context.h"
+
+#include <stdio.h>
+#include <string.h>
+#include <io.h>
+
 extern "C" int __cdecl rge_read(int file, void* dst, int size);
-
-class AIModule {
-public:
-    virtual ~AIModule();
-    char gap[0xEC];
-    AIModule(char* name, int line, int arg, int zero);
-};
-
-class ResourceItem {
-public:
-    void* vtable_ptr;             // +0x00
-    ResourceItem* next;           // +0x04
-    ResourceItem* prev;           // +0x08
-    int valueValue[8];            // +0x0C
-    int sortedValue[8];           // +0x2C
-    int sortedIndexValue[8];      // +0x4C
-    int numberValue;              // +0x6C
-    ResourceItem(int count, int* vals);
-    ResourceItem(const ResourceItem& other);
-    ~ResourceItem();
-};
-
-class TechnologyItem {
-public:
-    void* vtable_ptr;             // +0x00
-    TechnologyItem* next;         // +0x04
-    TechnologyItem* prev;         // +0x08
-    int idValue;                  // +0x0C
-    char nameValue[0x40];         // +0x10
-    ResourceItem* resourceCostValue; // +0x50
-    TechnologyItem();
-    TechnologyItem(int id, char* name, ResourceItem cost);
-    ~TechnologyItem();
-};
-
-class ResearchAIModule : public AIModule {
-public:
-    virtual ~ResearchAIModule();
-    int mainDecisionAI;          // +0xF0
-    TechnologyItem techHead;     // +0xF4
-    int numTechs;                // +0x148
-    char techTreeNames[0x100];   // +0x14C
-
-    ResearchAIModule(int file, int arg2);
-};
 
 ResearchAIModule::ResearchAIModule(int file, int arg2)
     : AIModule((char*)"Research AI", 0x3ee, file, 0),
-      mainDecisionAI(0),
-      techHead(),
-      numTechs(0)
+      md(0),
+      techTree(),
+      techTreeLengthValue(0)
 {
-    TechnologyItem* head = &this->techHead;
+    TechnologyItem* head = &this->techTree;
     int i;
     int tempInt;
     int typeID;
     int rc[4];
     char name[0x104];
 
-    this->techHead.next = &this->techHead;
-    this->techHead.prev = &this->techHead;
-    rge_read(arg2, &this->numTechs, 4);
+    this->techTree.next = head;
+    this->techTree.prev = head;
+    rge_read(arg2, &this->techTreeLengthValue, 4);
 
     rge_read(arg2, &i, 4);
-    rge_read(arg2, &this->techTreeNames[0], i);
-    this->techTreeNames[i] = 0;
+    rge_read(arg2, &this->techTreeNameValue[0], i);
+    this->techTreeNameValue[i] = 0;
 
-    for (typeID = 0; typeID < this->numTechs; ++typeID) {
+    for (typeID = 0; typeID < this->techTreeLengthValue; ++typeID) {
             rge_read(arg2, &i, 4);
             rge_read(arg2, name, i);
             name[i] = 0;
@@ -118,10 +79,10 @@ ResearchAIModule::ResearchAIModule(int file, int arg2)
             TechnologyItem* item = new TechnologyItem(tempInt, name, newRCost);
 
             item->next = head;
-            TechnologyItem* oldTail = this->techHead.prev;
+            TechnologyItem* oldTail = this->techTree.prev;
             item->prev = oldTail;
             oldTail->next = item;
-            this->techHead.prev = item;
+            this->techTree.prev = item;
 
     }
 }

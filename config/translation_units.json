@@ -1938,6 +1938,82 @@
         "0045C970": "?setup@RGE_Moving_Object@@QAEHPAVRGE_Master_Moving_Object@@PAVRGE_Player@@MMM@Z",
         "0045CAA0": "?setup@RGE_Moving_Object@@QAEHHPAX@Z"
       }
+    },
+    {
+      "name": "airchmod",
+      "source": "src/airchmod_tu.cpp",
+      "flags": "config/flags/00411670_ResearchAIModule.rsp",
+      "owners": {
+        "00411670": "src/matching/00411670_ResearchAIModule.cpp",
+        "00411740": "src/matching/00411740_ResearchAIModule.cpp",
+        "00411940": "src/matching/00411940_ResearchAIModule.cpp",
+        "004119B0": "src/matching/004119B0_setMainDecisionAI.cpp",
+        "004119C0": "src/matching/004119C0_save.cpp",
+        "00411B40": "src/matching/00411B40_resourceCost.cpp",
+        "00411B60": "src/matching/00411B60_buildable.cpp",
+        "00411B70": "src/matching/00411B70_research.cpp",
+        "00411B80": "src/matching/00411B80_loadTechnologyTree.cpp",
+        "00411E00": "src/matching/00411E00_numberTechnologyItems.cpp",
+        "00411E10": "src/matching/00411E10_technologyTreeName.cpp",
+        "00411E20": "src/matching/00411E20_removeOldTechTree.cpp",
+        "00411E70": "src/matching/00411E70_item.cpp"
+      },
+      "symbols": {
+        "00411670": "??0ResearchAIModule@@QAE@PAXH@Z",
+        "00411740": "??0ResearchAIModule@@QAE@HH@Z",
+        "00411940": "??1ResearchAIModule@@UAE@XZ",
+        "004119B0": "?setMainDecisionAI@ResearchAIModule@@QAEXPAVMainDecisionAIModule@@@Z",
+        "004119C0": "?save@ResearchAIModule@@UAEHH@Z",
+        "00411B40": "?resourceCost@ResearchAIModule@@QAEPAVResourceItem@@H@Z",
+        "00411B60": "?buildable@ResearchAIModule@@UAEHPAVBuildItem@@@Z",
+        "00411B70": "?research@ResearchAIModule@@UAEXPAVBuildItem@@@Z",
+        "00411B80": "?loadTechnologyTree@ResearchAIModule@@QAEHPAD@Z",
+        "00411E00": "?numberTechnologyItems@ResearchAIModule@@QBEHXZ",
+        "00411E10": "?technologyTreeName@ResearchAIModule@@QAEPADXZ",
+        "00411E20": "?removeOldTechTree@ResearchAIModule@@IAEXXZ",
+        "00411E70": "?item@ResearchAIModule@@IAEPAVTechnologyItem@@H@Z"
+      }
+    },
+    {
+      "name": "cdaudio",
+      "source": "src/cdaudio_tu.cpp",
+      "flags": "config/flags/default.rsp",
+      "owners": {
+        "004237C0": "src/matching/004237C0_CCDAudio.cpp",
+        "004237D0": "src/matching/004237D0_CCDAudio.cpp",
+        "00423800": "src/matching/00423800_Open.cpp",
+        "00423880": "src/matching/00423880_Close.cpp",
+        "004238C0": "src/matching/004238C0_Stop.cpp",
+        "004238E0": "src/matching/004238E0_Play.cpp",
+        "00423930": "src/matching/00423930_Pause.cpp",
+        "00423950": "src/matching/00423950_ResumePlay.cpp",
+        "00423980": "src/matching/00423980_Eject.cpp",
+        "004239B0": "src/matching/004239B0_GetNumberOfTracks.cpp",
+        "004239F0": "src/matching/004239F0_IsMediaPresent.cpp",
+        "00423A40": "src/matching/00423A40_IsPlaying.cpp",
+        "00423AC0": "src/matching/00423AC0_GetLength.cpp",
+        "00423B10": "src/matching/00423B10_GetTrackLength.cpp",
+        "00423B70": "src/matching/00423B70_GetPosition.cpp",
+        "00423BD0": "src/matching/00423BD0_DisplayErrorMsg.cpp"
+      },
+      "symbols": {
+        "004237C0": "??0CCDAudio@@QAE@XZ",
+        "004237D0": "??1CCDAudio@@QAE@XZ",
+        "00423800": "?Open@CCDAudio@@QAEKPAX@Z",
+        "00423880": "?Close@CCDAudio@@QAEKXZ",
+        "004238C0": "?Stop@CCDAudio@@QAEKXZ",
+        "004238E0": "?Play@CCDAudio@@QAEKE@Z",
+        "00423930": "?Pause@CCDAudio@@QAEKXZ",
+        "00423950": "?ResumePlay@CCDAudio@@QAEKXZ",
+        "00423980": "?Eject@CCDAudio@@QAEKXZ",
+        "004239B0": "?GetNumberOfTracks@CCDAudio@@QAEKAAE@Z",
+        "004239F0": "?IsMediaPresent@CCDAudio@@QAEKAAH@Z",
+        "00423A40": "?IsPlaying@CCDAudio@@QAEKAAH@Z",
+        "00423AC0": "?GetLength@CCDAudio@@QAEKAAE0@Z",
+        "00423B10": "?GetTrackLength@CCDAudio@@QAEKEAAE0@Z",
+        "00423B70": "?GetPosition@CCDAudio@@QAEKAAE00@Z",
+        "00423BD0": "?DisplayErrorMsg@CCDAudio@@AAEKK@Z"
+      }
     }
   ]
 }

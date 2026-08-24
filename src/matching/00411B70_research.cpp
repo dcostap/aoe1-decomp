@@ -1,7 +1,3 @@
-class ResearchAIModule {
-public:
-    virtual ~ResearchAIModule();
-    void research(int p0);
-};
+#include "../../include/airchmod_context.h"
 
-void ResearchAIModule::research(int p0) {}
+void ResearchAIModule::research(BuildItem* item) {}

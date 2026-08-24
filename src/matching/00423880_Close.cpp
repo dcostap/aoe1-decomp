@@ -1,14 +1,4 @@
-extern "C" __declspec(dllimport) unsigned long __stdcall mciSendCommandA(unsigned int device_id, unsigned int message, unsigned long flags, unsigned long param);
-
-class CCDAudio {
-public:
-    int m_Wnd;
-    int m_bOpened;
-    unsigned int m_nDeviceID;
-
-    unsigned long DisplayErrorMsg(unsigned long error);
-    unsigned long Close(void);
-};
+#include "../../include/cdaudio_context.h"
 
 unsigned long CCDAudio::Close(void) {
     unsigned long error;

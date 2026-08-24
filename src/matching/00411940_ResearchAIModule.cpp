@@ -10,56 +10,7 @@
 // virtual ~AIModule() add it implicitly), giving AIModule size 0xF0 and techTree
 // at +0xF4.
 
-class ResourceItem {};
-class MainDecisionAIModule {};
-
-class AIModuleID {
-public:
-    void* vtable_ptr;
-    int id;
-    char name[64];
-};
-
-class AIModule {
-public:
-    AIModuleID idValue;
-    int playerNumberValue;
-    char playerNameValue[64];
-    int runningValue;
-    int pausedValue;
-    int logHistoryValue;
-    int logCommonHistoryValue;
-    void* historyLogFile;
-    char historyLogFilename[64];
-    int intelligenceLevelValue;
-    int priorityValue;
-    int processFrameValue;
-
-    virtual ~AIModule();
-};
-
-class TechnologyItem {
-public:
-    void* vtable_ptr;
-    TechnologyItem* next;
-    TechnologyItem* prev;
-    int idValue;
-    char nameValue[64];
-    ResourceItem* resourceCostValue;
-
-    ~TechnologyItem();
-};
-
-class ResearchAIModule : public AIModule {
-public:
-    MainDecisionAIModule* md;
-    TechnologyItem techTree;
-    int techTreeLengthValue;
-    char techTreeNameValue[257];
-
-    ~ResearchAIModule();
-    void removeOldTechTree();
-};
+#include "../../include/airchmod_context.h"
 
 ResearchAIModule::~ResearchAIModule() {
     if (this->techTreeLengthValue > 0) {

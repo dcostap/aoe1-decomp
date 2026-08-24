@@ -1,7 +1,3 @@
-class ResearchAIModule {
-public:
-    virtual ~ResearchAIModule();
-    int buildable(int p0);
-};
+#include "../../include/airchmod_context.h"
 
-int ResearchAIModule::buildable(int p0) { return 1; }
+int ResearchAIModule::buildable(BuildItem* item) { return 1; }
