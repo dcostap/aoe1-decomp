@@ -30,6 +30,9 @@ class TRIBE_Owner;
 class TRIBE_Player_Tech;
 class RGE_Armor_Weapon_Info;
 class RGE_Sound;
+class RGE_Sprite;
+class TDrawArea;
+class RGE_Color_Table;
 
 class Attribute_Cost {
 public:
@@ -112,20 +115,64 @@ typedef TRIBE_Doppleganger_Creator RGE_Doppleganger_Creator;
 class RGE_Static_Object {
 public:
     virtual ~RGE_Static_Object();
-    virtual void set_master_field(int);
-    virtual void set_selected(int);
-    virtual void set_object_state(uchar);
-    virtual void play_animation();
-    virtual void action_finished(RGE_Player*, int, int);
-    virtual void action_started(RGE_Player*, int, int);
-    virtual void remove_from_world();
-    virtual void finish_build();
-    virtual uchar update();
-    virtual int explore_terrain(RGE_Player*, uchar, int);
+    virtual void recycle_in_to_game(RGE_Master_Static_Object*, RGE_Player*,
+                                    float, float, float);
     virtual void recycle_out_of_game();
+    virtual void draw(TDrawArea*, short, short, RGE_Color_Table*);
+    virtual void shadow_draw(TDrawArea*, short, short, uchar);
+    virtual void normal_draw(TDrawArea*, short, short);
+    virtual void draw_front_frame(TDrawArea*, short, short);
+    virtual void draw_back_frame(TDrawArea*, short, short);
+    virtual void draw_frame(TDrawArea*, short, short);
+    virtual uchar update();
+    virtual void check_damage_sprites();
+    virtual void rehook();
     virtual void save(int);
+    virtual float teleport(float, float, float);
+    virtual void new_sprite(RGE_Sprite*);
+    virtual void add_overlay_sprite(RGE_Sprite*, uchar);
+    virtual void remove_overlay_sprite(RGE_Sprite*);
+    virtual void change_ownership(RGE_Player*);
     virtual void modify(float, uchar);
+    virtual void modify_delta(float, uchar);
+    virtual void modify_percent(float, uchar);
+    virtual void transform(RGE_Master_Static_Object*);
+    virtual void copy_obj(RGE_Master_Static_Object*);
+    virtual void set_object_state(uchar);
+    virtual void remove_visible_resource();
+    virtual void create_doppleganger_when_dying();
+    virtual void destroy_obj();
+    virtual void die_die_die();
     virtual void damage(int, RGE_Armor_Weapon_Info*, float, RGE_Player*, RGE_Static_Object*);
+    virtual float calculateDamage(int, RGE_Armor_Weapon_Info*, float,
+                                  RGE_Player*, RGE_Static_Object*);
+    virtual void rotate(long);
+    virtual uchar can_attack();
+    virtual void set_attribute(short, float);
+    virtual void set_attribute_amount(float, uchar, uchar);
+    virtual int heal(int, int);
+    virtual uchar heal(float);
+    virtual int canRepair();
+    virtual void notify_of_relation(int, int);
+    virtual void do_command(RGE_Static_Object*, float, float, float);
+    virtual void move_to(RGE_Static_Object*, float, float, float);
+    virtual void work(RGE_Static_Object*, float, float, float);
+    virtual void stop();
+    virtual void set_attack(int);
+    virtual void play_command_sound();
+    virtual void play_move_sound();
+    virtual void new_angle(float);
+    virtual RGE_Static_Object* spawn_death_obj();
+    virtual RGE_Master_Static_Object* get_command_master(
+        RGE_Static_Object*, float, float, float);
+    virtual void set_being_worked_on(RGE_Action_Object*, short, uchar);
+    virtual void release_being_worked_on(RGE_Static_Object*);
+    virtual uchar is_moving();
+    virtual RGE_Static_Object* get_target_obj();
+    virtual void enter_obj(RGE_Static_Object*);
+    virtual void exit_obj();
+    virtual int explore_terrain(RGE_Player*, uchar, int);
+    virtual void unexplore_terrain(RGE_Player*, uchar, int);
 
     union {
         long id;                               // +0x04
@@ -183,6 +230,7 @@ public:
     char pad_181[3];
     RGE_Action_List* actions;                   // +0x184
     virtual ~RGE_Action_Object();
+    virtual void rehook();
     virtual void set_task(short);
     virtual void recycle_out_of_game();
     virtual void destroy_obj();
@@ -218,6 +266,7 @@ public:
     void save(int);
     uchar heal(float);
     uchar update();
+    virtual void cancel_object();
     void empty_production_queue();
     void update_production_queue();
 };
@@ -337,9 +386,9 @@ public:
     void action_stop();
     void add_action(RGE_Action*);
     void remove_action();
+    void rehook();
     void load(int);
     void save(int);
-    void target_method2();
 };
 
 class TRIBE_Action_Make_Obj : public RGE_Action {
@@ -456,8 +505,8 @@ public:
     virtual int setup(TRIBE_Master_Building_Object*, RGE_Player*, float, float, float);
     int setup(int, RGE_Game_World*);
     void recycle_out_of_game();
-    void take_building_attribute_from_owner();
-    void give_building_attribute_to_owner();
+    virtual void take_building_attribute_from_owner();
+    virtual void give_building_attribute_to_owner();
     void destroy_obj();
     uchar heal(float);
     void set_object_state(uchar);
@@ -489,17 +538,8 @@ public:
     void update_production_queue();
     int production_queue_status(short*, short*);
     void stop();
-    void slot_258();
-    void method_a();
-    void method_b();
-    void target_method1();
-    void setConstructionSprite(void*);
     void set_status(int);
-    void vf38(RGE_Master_Static_Object*);
-    void vf38(int);
     RGE_Action_List* create_action_list();
-    void before_owner(RGE_Player*, int, int);
-    void after_owner(RGE_Player*, int, int);
 };
 
 #endif

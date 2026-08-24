@@ -18,60 +18,7 @@
 // - char* base pointer version: 56% diff (worse structure).
 // - do-while with explicit offset variables: 79% diff.
 
-#ifndef T_B_OBJ_CONTEXT_H
-class RGE_Player {
-public:
-    virtual void s00();
-    virtual void s04();
-    virtual void s08();
-    virtual void s0C();
-    virtual void s10();
-    virtual void s14();
-    virtual void s18();
-    virtual void s1C();
-    virtual void s20();
-    virtual void s24();
-    virtual void s28();
-    virtual void s2C();
-    virtual void s30();
-    virtual void s34();
-    virtual void s38();
-    virtual void s3C();
-    virtual void s40();
-    virtual void s44();
-    virtual void s48();
-    virtual void s4C();
-    virtual void s50();
-    virtual void s54();
-    virtual void s58();
-    virtual void s5C();
-    virtual void s60();
-    virtual void s64();
-    virtual void s68();
-    virtual void s6C();
-    virtual void s70();
-    virtual void s74();
-    virtual void add_attribute(short, float, int);
-};
-
-class Master {
-public:
-    char gap_00[0x6A];
-    short attrs[3];
-    float amts[3];
-    char gap_7C[0x88 - 0x7C];
-    unsigned char modes[3];
-};
-
-class TRIBE_Building_Object {
-public:
-    char gap_00[8];
-    Master* master_obj;
-    RGE_Player* owner;
-
-    void take_building_attribute_from_owner();
-};
-#endif
+#include "../../include/t_b_obj_context.h"
 
 void TRIBE_Building_Object::take_building_attribute_from_owner() {
     for (int i = 0; i < 3; i++) {

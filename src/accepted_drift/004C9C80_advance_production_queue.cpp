@@ -40,50 +40,7 @@
 // uses cmp word vs mov+test encoding. Loop body, field offsets, vtable call, and
 // all predicates/memory effects are identical.
 
-#ifndef T_B_OBJ_CONTEXT_H
-class __declspec(novtable) RGE_Base_Game {
-public:
-    virtual void v0() = 0;
-    virtual void v1() = 0;
-    virtual void v2() = 0;
-    virtual void v3() = 0;
-    virtual void v4() = 0;
-    virtual void v5() = 0;
-    virtual void v6() = 0;
-    virtual void v7() = 0;
-    virtual void v8() = 0;
-    virtual void v9() = 0;
-    virtual void v10() = 0;
-    virtual void v11() = 0;
-    virtual void v12() = 0;
-    virtual void v13() = 0;
-    virtual void v14() = 0;
-    virtual void v15() = 0;
-    virtual void v16(int a, int b, int c, int d, int e) = 0;
-    char gap_04[0x3F4 - 4];
-};
-
-extern RGE_Base_Game* rge_base_game;
-
-struct ProdQueueEntry {
-    short master_id;
-    short unit_count;
-};
-
-class TRIBE_Building_Object {
-public:
-    char gap_00[0x0C];
-    void* some_ptr;                     // +0x0C
-    char gap_10[0x1C8 - 0x10];
-    ProdQueueEntry* production_queue;   // +0x1C8
-    short gap_1CC[1];                   // +0x1CC (padding to +0x1CE)
-    short production_queue_count;       // +0x1CE
-    char gap_1D0[0x1D8 - 0x1D0];
-    unsigned char production_queue_change_flag;  // +0x1D8
-
-    void advance_production_queue();
-};
-#endif
+#include "../../include/t_b_obj_context.h"
 
 void TRIBE_Building_Object::advance_production_queue()
 {

@@ -15,57 +15,7 @@
 //   byte-offset row cursor remains because the binary proves that exact access
 //   schedule; emitted code remains exact.
 
-#ifndef T_B_OBJ_CONTEXT_H
-extern "C" long __ftol();
-
-struct RGE_Tile {
-    unsigned char gap_00[5];
-    unsigned char terrain;
-    unsigned char gap_06[18];
-};
-
-struct GameMap {
-    virtual ~GameMap();
-    char gap_04[4];
-    int width;          // +0x08
-    int height;         // +0x0C
-    char gap_10[0x8D8C - 0x10];
-    RGE_Tile** tile_data;  // +0x8D8C
-};
-
-struct RGE_Game_World {
-    virtual ~RGE_Game_World();
-    char gap_04[0x24];
-    GameMap* map;
-};
-
-struct RGE_Player {
-    virtual ~RGE_Player();
-    char gap_04[0x38];
-    RGE_Game_World* world;
-};
-
-struct TRIBE_Master_Building_Object {
-    virtual ~TRIBE_Master_Building_Object();
-    char gap_04[0x2C];
-    float footprint_x;
-    float footprint_y;
-    char gap_38[0x13C];
-    short passable_terrain;
-};
-
-struct TRIBE_Building_Object {
-    virtual ~TRIBE_Building_Object();
-    char gap_04[4];
-    TRIBE_Master_Building_Object* master_obj; // +0x08
-    RGE_Player* owner;                        // +0x0C
-    char gap_10[0x38 - 0x10];
-    float x;            // +0x38
-    float y;            // +0x3C
-
-    void lay_down_passable_terrain();
-};
-#endif
+#include "../../include/t_b_obj_context.h"
 
 void TRIBE_Building_Object::lay_down_passable_terrain() {
     GameMap* map = this->owner->world->map;

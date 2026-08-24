@@ -47,65 +47,11 @@
 // Main-agent audit restored canonical polymorphic player/game/building ownership
 // and retained the natural indexed queue search/copy.
 
-#ifndef T_B_OBJ_CONTEXT_H
-struct ProductionEntry {
-    short master_id;
-    short unit_count;
-};
-
-struct TRIBE_Player {
-    virtual ~TRIBE_Player();
-    char gap_04[0x46];
-    short player_id;
-    void reimburse_obj_cost(short master_id);
-};
-
-struct RGE_Action_List {
-    void action_stop();
-    void delete_list();
-};
-
-class RGE_Base_Game {
-public:
-    virtual ~RGE_Base_Game();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
-    virtual void vf20();
-    virtual void vf24();
-    virtual void vf28();
-    virtual void vf2C();
-    virtual void vf30();
-    virtual void vf34();
-    virtual void vf38();
-    virtual void vf3C();
-    virtual void notification(int a, long b, long c, long d, long e);
-    char gap_44[0xA30];
-    long queue_is_waiting_on_pop_counter[9]; // +0xA34
-};
-
-struct TRIBE_Building_Object {
-    virtual ~TRIBE_Building_Object();
-    char gap_04[0x08];
-    TRIBE_Player* owner_player;
-    char gap_10[0x1C8 - 0x10];
-    ProductionEntry* production_queue;
-    short production_queue_gap;
-    short production_queue_count;
-    char gap_1D0[4];
-    RGE_Action_List* production_queue_actions;
-    unsigned char production_queue_change_flag;
-    short production_queue_need_attr;
-
-    void remove_from_production_queue(short master_id, short max_remove);
-};
-#endif
+#include "../../include/t_b_obj_context.h"
 
 extern RGE_Base_Game* rge_base_game;
+
+typedef Production_Queue_Record ProductionEntry;
 
 void TRIBE_Building_Object::remove_from_production_queue(short master_id, short max_remove) {
     int remove_count;

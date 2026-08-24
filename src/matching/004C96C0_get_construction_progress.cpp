@@ -1,16 +1,4 @@
-#ifndef T_B_OBJ_CONTEXT_H
-class RGE_Static_Object;
-
-class TRIBE_Building_Object {
-public:
-    char gap_00[0x48];
-    unsigned char built;
-    char gap_49[0x193];
-    float build_pts;
-
-    short get_construction_progress();
-};
-#endif
+#include "../../include/t_b_obj_context.h"
 
 short TRIBE_Building_Object::get_construction_progress() {
     short points;

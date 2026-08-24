@@ -10,26 +10,7 @@
 // - A combined if/else spelling was 4 bytes off from alias load order; the
 //   nested branches and explicit shared continuation below are retained.
 
-#ifndef T_B_OBJ_CONTEXT_H
-class RGE_Moving_Object {
-public:
-    virtual ~RGE_Moving_Object();
-    char gap_04[0x0C];
-    void* object_info; // +0x10
-    char gap_14[0x21];
-    unsigned char facet; // +0x35
-
-    void set_angle();
-    void rotate(int amount);
-};
-
-class TRIBE_Building_Object : public RGE_Moving_Object {
-public:
-    void check(TRIBE_Building_Object** checks);
-    void connect2();
-    void connect();
-};
-#endif
+#include "../../include/t_b_obj_context.h"
 
 void TRIBE_Building_Object::connect()
 {

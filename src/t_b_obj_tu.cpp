@@ -4,8 +4,8 @@
 // Source order follows the PDB line bands in build/tu_plans/t_b_obj_cpp.
 // The compiler-generated scalar deleting destructor at 004C8090 is listed in
 // the proposal manifest and is not a source include.
-// The complete module uses the existing /O2 /Oy /GX response file because the
-// constructor and production-queue owners carry the original EH surface.
+// The current grouped exact owners use the module's default /O2 /Oy response
+// file. Constructor and production-queue owners remain observed in this pass.
 
 #include "../include/t_b_obj_context.h"
 
@@ -33,7 +33,7 @@
 #include "matching/004C9180_connect2.cpp"
 #include "matching/004C9230_lay_down_impassable_terrain.cpp"
 #include "matching/004C9360_lay_down_passable_terrain.cpp"
-#include "scratch/004C9480_cancel_object.cpp"
+#include "matching/004C9480_cancel_object.cpp"
 #include "matching/004C9490_cancel_build.cpp"
 #include "matching/004C9560_build.cpp"
 #include "matching/004C9620_work_status.cpp"

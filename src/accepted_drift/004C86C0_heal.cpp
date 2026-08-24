@@ -32,38 +32,7 @@
 
 #include <string.h>
 
-#ifndef T_B_OBJ_CONTEXT_H
-class TRIBE_Player {
-public:
-    unsigned char pay_obj_cost(short type, float amount, int flag);
-};
-
-class TRIBE_Combat_Object {
-public:
-    unsigned char heal(float amount);
-};
-
-class TRIBE_Building_Object : public TRIBE_Combat_Object {
-public:
-    void* vtable;
-    int id;
-    void* master_obj;
-    TRIBE_Player* owner;
-    void* sprite;
-    void* old_sprite;
-    void* sprite_list;
-    void* tile;
-    void* inside_obj;
-    void* objects;
-    short screen_x_offset;
-    short screen_y_offset;
-    short shadow_x_offset;
-    short shadow_y_offset;
-    float hp;
-
-    unsigned char heal(float amount);
-};
-#endif
+#include "../../include/t_b_obj_context.h"
 
 unsigned char TRIBE_Building_Object::heal(float amount)
 {

@@ -1,16 +1,4 @@
-#ifndef T_B_OBJ_CONTEXT_H
-class TRIBE_Building_Object {
-public:
-    char gap0[0x10];
-    void* object_info;
-    char gap14[0x21];
-    unsigned char facet;
-
-    void check(TRIBE_Building_Object** checks);
-    void rotate(long amount);
-    void connect2();
-};
-#endif
+#include "../../include/t_b_obj_context.h"
 
 void TRIBE_Building_Object::connect2()
 {

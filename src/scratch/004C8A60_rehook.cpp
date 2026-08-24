@@ -1,20 +1,6 @@
-#ifndef T_B_OBJ_CONTEXT_H
-class MemberType {
-public:
-    void target_method2();
-};
-
-class TRIBE_Building_Object {
-public:
-    char gap_0[0x1D4];
-    MemberType* member_1D4;
-
-    void target_method1();
-    void rehook();
-};
-#endif
+#include "../../include/t_b_obj_context.h"
 
 void TRIBE_Building_Object::rehook() {
-    this->target_method1();
-    this->member_1D4->target_method2();
+    RGE_Action_Object::rehook();
+    this->production_queue_actions->rehook();
 }

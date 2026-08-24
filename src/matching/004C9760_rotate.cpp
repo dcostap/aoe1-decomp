@@ -1,9 +1,3 @@
-#ifndef T_B_OBJ_CONTEXT_H
-class TRIBE_Building_Object {
-public:
-    virtual ~TRIBE_Building_Object();
-    void rotate(int p0);
-};
-#endif
+#include "../../include/t_b_obj_context.h"
 
 void TRIBE_Building_Object::rotate(int p0) {}

@@ -23,30 +23,7 @@
 //   natural guard retains one branch-byte mismatch at +001C; the commuted
 //   copy form is kept as the smallest readable source that matches the copy.
 
-#ifndef T_B_OBJ_CONTEXT_H
-void* __cdecl calloc(unsigned int n, unsigned int size);
-void __cdecl free(void* p);
-
-struct RGE_Base_Game { virtual void v0(); virtual void v4(); virtual void v8(); virtual void vC(); virtual void v10(); virtual void v14(); virtual void v18(); virtual void v1C(); virtual void v20(); virtual void v24(); virtual void v28(); virtual void v2C(); virtual void v30(); virtual void v34(); virtual void v38(); virtual void v3C(); virtual void notify(int, int, int, int, int); };
-extern RGE_Base_Game* rge_base_game;
-
-class TRIBE_Player { public: char gap[0x4A]; short player_id; unsigned char check_obj_cost(short, short*, float, int); unsigned char pay_obj_cost(short, float, int); };
-struct Production_Queue_Record { short master_id; short unit_count; };
-
-class TRIBE_Building_Object {
-public:
-    char gap0[0x0C];
-    TRIBE_Player* owner;
-    char gap10[0x1C8-0x10];
-    Production_Queue_Record* production_queue;
-    short production_queue_size;
-    short production_queue_count;
-    char gap1D0[8];
-    unsigned char production_queue_change_flag;
-    void remove_from_production_queue(short, int);
-    void add_to_production_queue(short master_id, short count);
-};
-#endif
+#include "../../include/t_b_obj_context.h"
 
 void TRIBE_Building_Object::add_to_production_queue(short master_id, short count)
 {

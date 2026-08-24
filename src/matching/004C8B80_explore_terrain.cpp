@@ -1,19 +1,4 @@
-#ifndef T_B_OBJ_CONTEXT_H
-class RGE_Player;
-
-class RGE_Static_Object {
-public:
-    int explore_terrain(RGE_Player* player, unsigned char value, int param);
-};
-
-class TRIBE_Building_Object : public RGE_Static_Object {
-public:
-    char gap_00[0x1E5];
-    unsigned char built;
-
-    int explore_terrain(RGE_Player* player, unsigned char value, int param);
-};
-#endif
+#include "../../include/t_b_obj_context.h"
 
 int TRIBE_Building_Object::explore_terrain(RGE_Player* player, unsigned char value, int param) {
     if (this->built != 0) {
