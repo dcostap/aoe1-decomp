@@ -20,13 +20,16 @@ class RGE_Task;
 // fillers.  Only the fields read by tact_trd.cpp are materialized here.
 class RGE_Master_Static_Object {
 public:
-    char gap_00[0x10];
+    virtual ~RGE_Master_Static_Object();
+    char gap_04[0x0C];
     short id;
+    char gap_12[0x06];
+    RGE_Sprite* sprite;
 };
 
 class RGE_Master_Action_Object : public RGE_Master_Static_Object {
 public:
-    char gap_12[0x6A];
+    char gap_1C[0x60];
     short capacity;
     char gap_7E[0x6A];
     union {

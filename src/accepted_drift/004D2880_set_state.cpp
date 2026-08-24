@@ -121,88 +121,88 @@ public:
 // consumes the target master id as a promoted short.
 class RGE_Action_Object {
 public:
-    virtual void vf00();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
-    virtual void vf20();
-    virtual void vf24();
-    virtual void vf28();
-    virtual void vf2C();
-    virtual void vf30();
-    virtual void vf34();
+    virtual ~RGE_Action_Object();
+    virtual void recycle_in_to_game(RGE_Master_Static_Object*, RGE_Player*, float, float, float);
+    virtual void recycle_out_of_game();
+    virtual void draw(void*, short, short, void*);
+    virtual void shadow_draw(void*, short, short, unsigned char);
+    virtual void normal_draw(void*, short, short);
+    virtual void draw_front_frame(void*, short, short);
+    virtual void draw_back_frame(void*, short, short);
+    virtual void draw_frame(void*, short, short);
+    virtual unsigned char update();
+    virtual void check_damage_sprites();
+    virtual void rehook();
+    virtual void save(int);
+    virtual float teleport(float, float, float);
     virtual void new_sprite(RGE_Sprite*); // +0x38
-    virtual void vf3C();
-    virtual void vf40();
-    virtual void vf44();
-    virtual void vf48();
-    virtual void vf4C();
-    virtual void vf50();
-    virtual void vf54();
-    virtual void vf58();
-    virtual void vf5C();
-    virtual void vf60();
-    virtual void vf64();
-    virtual void vf68();
-    virtual void vf6C();
-    virtual void vf70();
-    virtual void vf74();
-    virtual void vf78();
-    virtual void vf7C();
-    virtual void vf80();
-    virtual void vf84();
-    virtual void vf88();
-    virtual void vf8C();
-    virtual void vf90();
-    virtual void vf94();
-    virtual void vf98();
-    virtual void vf9C();
-    virtual void vfA0();
-    virtual void vfA4();
-    virtual void vfA8();
-    virtual void vfAC();
-    virtual void vfB0();
-    virtual void vfB4();
-    virtual void vfB8();
-    virtual void vfBC();
-    virtual void vfC0();
-    virtual void vfC4();
-    virtual void vfC8();
-    virtual void vfCC();
-    virtual void vfD0();
-    virtual void vfD4();
-    virtual void vfD8();
-    virtual void vfDC();
-    virtual void vfE0();
-    virtual void vfE4();
-    virtual void vfE8();
-    virtual void vfEC();
-    virtual void vfF0();
-    virtual void vfF4();
-    virtual void vfF8();
-    virtual void vfFC();
-    virtual void vf100();
-    virtual void vf104();
-    virtual void vf108();
-    virtual void vf10C();
-    virtual void vf110();
-    virtual void vf114();
-    virtual void vf118();
-    virtual void vf11C();
-    virtual void vf120();
-    virtual void vf124();
-    virtual void vf128();
-    virtual void vf12C();
-    virtual void vf130();
-    virtual void vf134();
-    virtual unsigned char vf138(int master_id); // +0x138
-    virtual void vf13C();
-    virtual void vf140();
-    virtual void vf144();
+    virtual void add_overlay_sprite(RGE_Sprite*, unsigned char);
+    virtual void remove_overlay_sprite(RGE_Sprite*);
+    virtual void change_ownership(RGE_Player*);
+    virtual void modify(float, unsigned char);
+    virtual void modify_delta(float, unsigned char);
+    virtual void modify_percent(float, unsigned char);
+    virtual void transform(RGE_Master_Static_Object*);
+    virtual void copy_obj(RGE_Master_Static_Object*);
+    virtual void set_object_state(unsigned char);
+    virtual void remove_visible_resource();
+    virtual void create_doppleganger_when_dying();
+    virtual void destroy_obj();
+    virtual void die_die_die();
+    virtual void damage(int, void*, float, RGE_Player*, RGE_Static_Object* = 0);
+    virtual float calculateDamage(int, void*, float, RGE_Player*, RGE_Static_Object* = 0);
+    virtual void rotate(long);
+    virtual unsigned char can_attack();
+    virtual void set_attribute(short, float);
+    virtual void set_attribute_amount(float, unsigned char, unsigned char);
+    virtual int heal(int, int);
+    virtual unsigned char heal(float);
+    virtual int canRepair();
+    virtual void notify_of_relation(long, unsigned char);
+    virtual void do_command(RGE_Static_Object*, float, float, float);
+    virtual void move_to(RGE_Static_Object*, float, float, float);
+    virtual void work(RGE_Static_Object*, float, float, float);
+    virtual void stop();
+    virtual void set_attack(RGE_Static_Object*);
+    virtual void play_command_sound();
+    virtual void play_move_sound();
+    virtual void new_angle(float);
+    virtual RGE_Static_Object* spawn_death_obj();
+    virtual RGE_Master_Static_Object* get_command_master(RGE_Static_Object*, float, float, float);
+    virtual void set_being_worked_on(RGE_Action_Object*, short, unsigned char);
+    virtual void release_being_worked_on(RGE_Static_Object*);
+    virtual unsigned char is_moving();
+    virtual RGE_Static_Object* get_target_obj();
+    virtual void enter_obj(RGE_Static_Object*);
+    virtual void exit_obj();
+    virtual int explore_terrain(RGE_Player*, unsigned char, int);
+    virtual void unexplore_terrain(RGE_Player*, unsigned char, int);
+    virtual void* get_los_table();
+    virtual int inAttackRange(RGE_Static_Object*);
+    virtual unsigned char underAttack();
+    virtual void setUnderAttack(unsigned char);
+    virtual float calc_attack_modifier(RGE_Static_Object*);
+    virtual float getSpeed();
+    virtual float getAngle();
+    virtual float maximumSpeed();
+    virtual float rateOfFire();
+    virtual float damageCapability(RGE_Static_Object*);
+    virtual float damageCapability();
+    virtual float weaponRange();
+    virtual float minimumWeaponRange();
+    virtual int passableTile(float, float, int);
+    virtual unsigned char facetToNextWaypoint();
+    virtual int currentTargetID();
+    virtual float currentTargetX();
+    virtual float currentTargetY();
+    virtual float currentTargetZ();
+    virtual void setWaitingToMove(unsigned char);
+    virtual unsigned char waitingToMove();
+    virtual unsigned char actionState();
+    virtual unsigned char keepGatheringWhenObjectIsOut(int master_id); // +0x138
+    virtual unsigned char produceWhenKilledBy(int);
+    virtual unsigned char useSameZoneDropsite();
+    virtual void logDebug(const char*, ...);
     virtual void notify(int, int, int, int, int, int); // +0x148
 
     int id;                            // +0x04
@@ -223,27 +223,27 @@ public:
 
 class RGE_Action {
 public:
-    virtual void vf00();
-    virtual int vf04(RGE_Action_Object*);
-    virtual int vf08(int, RGE_Action_Object*);
-    virtual RGE_Action_List* vf0C(RGE_Action_Object*);
-    virtual void vf10();
-    virtual void vf14(int);
-    virtual short vf18();
-    virtual void vf1C(unsigned char);
-    virtual unsigned char vf20();
-    virtual unsigned char vf24();
-    virtual unsigned char vf28();
-    virtual int vf2C();
-    virtual int vf30(RGE_Static_Object*, float, float, float);
-    virtual int vf34(RGE_Static_Object*, float, float, float);
-    virtual unsigned char vf38(RGE_Static_Object*);
-    virtual unsigned char vf3C(long, unsigned char);
-    virtual void vf40(void*);
-    virtual void vf44(void*, void*, void*);
-    virtual void vf48(char*);
-    virtual RGE_Static_Object* vf4C();
-    virtual RGE_Static_Object* vf50();
+    virtual ~RGE_Action();
+    virtual int setup(RGE_Action_Object*);
+    virtual int setup(int, RGE_Action_Object*);
+    virtual RGE_Action_List* create_action_list(RGE_Action_Object*);
+    virtual void rehook();
+    virtual void save(int);
+    virtual short type();
+    virtual void first_in_stack(unsigned char);
+    virtual unsigned char inside_obj_update();
+    virtual unsigned char idle_update();
+    virtual unsigned char update();
+    virtual int stop();
+    virtual int move_to(RGE_Static_Object*, float, float, float);
+    virtual int work(RGE_Static_Object*, float, float, float);
+    virtual unsigned char attack_response(RGE_Static_Object*);
+    virtual unsigned char relation_response(long, unsigned char);
+    virtual void copy_obj(void*);
+    virtual void copy_obj_sprites(void*, void*, void*);
+    virtual void get_state_name(char*);
+    virtual RGE_Static_Object* get_target_obj();
+    virtual RGE_Static_Object* get_target_obj2();
     virtual void set_target_obj(RGE_Static_Object*);  // +0x54
     virtual void set_target_obj2(RGE_Static_Object*); // +0x58
     virtual void set_state(unsigned char);            // +0x5C
@@ -412,11 +412,7 @@ void TRIBE_Action_Trade::set_state(unsigned char param_1)
 
         if (this->target_obj != 0 &&
             this->target_obj->attribute_amount_held <= DAT_00575348 &&
-            #ifdef TACT_TRD_SHARED_CONTEXT
             this->obj->keepGatheringWhenObjectIsOut(this->target_obj->master_obj->id) == 0) {
-            #else
-            this->obj->vf138(this->target_obj->master_obj->id) == 0) {
-            #endif
             this->set_target_obj(0);
             this->set_state(3);
         }
