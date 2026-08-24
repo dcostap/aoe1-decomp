@@ -678,7 +678,7 @@ tribute_chat_done:
             if (numberNeutralCPs < newEnemy) {
                 newEnemy = numberNeutralCPs;
             }
-            if (rge_base_game->deathMatch() == 1) {
+            if (((TRIBE_Game*)rge_base_game)->deathMatch() == 1) {
                 newEnemy = 0;
             }
 

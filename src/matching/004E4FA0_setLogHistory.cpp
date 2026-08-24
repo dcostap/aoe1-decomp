@@ -1,8 +1,8 @@
 #ifndef AOE1_TAIMDMD_CONTEXT_H
 class AIModuleSub {
 public:
-    virtual void vf00();
-    virtual void vf04();
+    virtual ~AIModuleSub();
+    virtual int loggingHistory();
     virtual void setLogHistory(int value);
 };
 

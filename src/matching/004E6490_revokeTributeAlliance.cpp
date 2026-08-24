@@ -98,15 +98,17 @@ public:
 
 class RGE_Base_Game {
 public:
-    virtual void vf00();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
-    virtual char* get_string(int string_id, char* buffer, int length);
+    virtual ~RGE_Base_Game();
+    virtual int run();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual void set_prog_mode(int);
+    virtual void set_game_mode(int, int);
+    virtual void set_player(short);
+    virtual int get_error_code();
+    virtual char* get_string(int, long, char*, int);
+    virtual char* get_string(long, char*, int);
+    virtual char* get_string(long);
+    virtual char* get_string2(int, long, long, char*, int);
 };
 
 #define rge_base_game (*(RGE_Base_Game**)0x62C574)

@@ -4,31 +4,31 @@
 #ifndef AOE1_TAIMDMD_CONTEXT_H
 void logCommonHistory(char* this_as_str, const char* format, ...);
 
-class TribeBuildAIModuleBase {
+class BuildAIModule {
 public:
-    virtual void vf00();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
-    virtual void vf20();
-    virtual void vf24();
-    virtual void vf28();
-    virtual void vf2C();
-    virtual void vf30();
-    virtual void vf34();
-    virtual void vf38();
-    virtual void vf3C();
+    virtual ~BuildAIModule();
+    virtual int loggingHistory();
+    virtual void setLogHistory(int);
+    virtual void toggleLogHistory();
+    virtual void setHistoryFilename(char*);
+    virtual int loggingCommonHistory();
+    virtual void setLogCommonHistory(int);
+    virtual void toggleLogCommonHistory();
+    virtual int loadState(char*);
+    virtual int saveState(char*);
+    virtual int gleanState(int);
+    virtual int processMessage(void*);
+    virtual int update(int);
+    virtual void setCallbackMessage(void*);
+    virtual int filterOutMessage(void*);
+    virtual int save(int);
+    virtual void displayBuildList();
 };
 
-class TribeBuildAIModule : public TribeBuildAIModuleBase {
+class TribeBuildAIModule : public BuildAIModule {
 public:
     void skipNextBuildListItem();
     int insert(int a, int b, int c);
-    virtual void vf40();
 };
 
 class TribeMainDecisionAIModule {
@@ -51,6 +51,6 @@ void TribeMainDecisionAIModule::kick(int param_1)
     }
     if (param_1 == 3) {
         logCommonHistory((char*)this, "Current Build list is:");
-        this->buildAI.vf40();
+        this->buildAI.displayBuildList();
     }
 }

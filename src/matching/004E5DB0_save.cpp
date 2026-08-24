@@ -18,21 +18,21 @@ void rge_write(int file, void* data, int size);
 
 class MainDecisionAIModule {
 public:
-    virtual void vf00();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
-    virtual void vf20();
-    virtual void vf24();
-    virtual void vf28();
-    virtual void vf2C();
-    virtual void vf30();
-    virtual void vf34();
-    virtual void vf38();
+    virtual ~MainDecisionAIModule();
+    virtual int loggingHistory();
+    virtual void setLogHistory(int);
+    virtual void toggleLogHistory();
+    virtual void setHistoryFilename(char*);
+    virtual int loggingCommonHistory();
+    virtual void setLogCommonHistory(int);
+    virtual void toggleLogCommonHistory();
+    virtual int loadState(char*);
+    virtual int saveState(char*);
+    virtual int gleanState(int);
+    virtual int processMessage(void*);
+    virtual int update(int);
+    virtual void setCallbackMessage(void*);
+    virtual int filterOutMessage(void*);
     virtual int save(int file);
 
     char bytes[0x100];
@@ -40,21 +40,21 @@ public:
 
 class TribeBuildAIModule {
 public:
-    virtual void vf00();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
-    virtual void vf20();
-    virtual void vf24();
-    virtual void vf28();
-    virtual void vf2C();
-    virtual void vf30();
-    virtual void vf34();
-    virtual void vf38();
+    virtual ~TribeBuildAIModule();
+    virtual int loggingHistory();
+    virtual void setLogHistory(int);
+    virtual void toggleLogHistory();
+    virtual void setHistoryFilename(char*);
+    virtual int loggingCommonHistory();
+    virtual void setLogCommonHistory(int);
+    virtual void toggleLogCommonHistory();
+    virtual int loadState(char*);
+    virtual int saveState(char*);
+    virtual int gleanState(int);
+    virtual int processMessage(void*);
+    virtual int update(int);
+    virtual void setCallbackMessage(void*);
+    virtual int filterOutMessage(void*);
     virtual int save(int file);
 
     char bytes[0x5BC];
@@ -62,21 +62,21 @@ public:
 
 class TribeConstructionAIModule {
 public:
-    virtual void vf00();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
-    virtual void vf20();
-    virtual void vf24();
-    virtual void vf28();
-    virtual void vf2C();
-    virtual void vf30();
-    virtual void vf34();
-    virtual void vf38();
+    virtual ~TribeConstructionAIModule();
+    virtual int loggingHistory();
+    virtual void setLogHistory(int);
+    virtual void toggleLogHistory();
+    virtual void setHistoryFilename(char*);
+    virtual int loggingCommonHistory();
+    virtual void setLogCommonHistory(int);
+    virtual void toggleLogCommonHistory();
+    virtual int loadState(char*);
+    virtual int saveState(char*);
+    virtual int gleanState(int);
+    virtual int processMessage(void*);
+    virtual int update(int);
+    virtual void setCallbackMessage(void*);
+    virtual int filterOutMessage(void*);
     virtual int save(int file);
 
     char bytes[0x314];
@@ -84,21 +84,21 @@ public:
 
 class DiplomacyAIModule {
 public:
-    virtual void vf00();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
-    virtual void vf20();
-    virtual void vf24();
-    virtual void vf28();
-    virtual void vf2C();
-    virtual void vf30();
-    virtual void vf34();
-    virtual void vf38();
+    virtual ~DiplomacyAIModule();
+    virtual int loggingHistory();
+    virtual void setLogHistory(int);
+    virtual void toggleLogHistory();
+    virtual void setHistoryFilename(char*);
+    virtual int loggingCommonHistory();
+    virtual void setLogCommonHistory(int);
+    virtual void toggleLogCommonHistory();
+    virtual int loadState(char*);
+    virtual int saveState(char*);
+    virtual int gleanState(int);
+    virtual int processMessage(void*);
+    virtual int update(int);
+    virtual void setCallbackMessage(void*);
+    virtual int filterOutMessage(void*);
     virtual int save(int file);
 
     char bytes[0x14C];
@@ -106,21 +106,21 @@ public:
 
 class EmotionalAIModule {
 public:
-    virtual void vf00();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
-    virtual void vf20();
-    virtual void vf24();
-    virtual void vf28();
-    virtual void vf2C();
-    virtual void vf30();
-    virtual void vf34();
-    virtual void vf38();
+    virtual ~EmotionalAIModule();
+    virtual int loggingHistory();
+    virtual void setLogHistory(int);
+    virtual void toggleLogHistory();
+    virtual void setHistoryFilename(char*);
+    virtual int loggingCommonHistory();
+    virtual void setLogCommonHistory(int);
+    virtual void toggleLogCommonHistory();
+    virtual int loadState(char*);
+    virtual int saveState(char*);
+    virtual int gleanState(int);
+    virtual int processMessage(void*);
+    virtual int update(int);
+    virtual void setCallbackMessage(void*);
+    virtual int filterOutMessage(void*);
     virtual int save(int file);
 
     char bytes[0x1BC];
@@ -128,28 +128,42 @@ public:
 
 class TribeInformationAIModule {
 public:
-    void* vtable;
+    virtual ~TribeInformationAIModule();
+    virtual int loggingHistory();
+    virtual void setLogHistory(int);
+    virtual void toggleLogHistory();
+    virtual void setHistoryFilename(char*);
+    virtual int loggingCommonHistory();
+    virtual void setLogCommonHistory(int);
+    virtual void toggleLogCommonHistory();
+    virtual int loadState(char*);
+    virtual int saveState(char*);
+    virtual int gleanState(int);
+    virtual int processMessage(void*);
+    virtual int update(int);
+    virtual void setCallbackMessage(void*);
+    virtual int filterOutMessage(void*);
     char bytes[0x1008C];
     int save(int file);
 };
 
 class TribeResourceAIModule {
 public:
-    virtual void vf00();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
-    virtual void vf20();
-    virtual void vf24();
-    virtual void vf28();
-    virtual void vf2C();
-    virtual void vf30();
-    virtual void vf34();
-    virtual void vf38();
+    virtual ~TribeResourceAIModule();
+    virtual int loggingHistory();
+    virtual void setLogHistory(int);
+    virtual void toggleLogHistory();
+    virtual void setHistoryFilename(char*);
+    virtual int loggingCommonHistory();
+    virtual void setLogCommonHistory(int);
+    virtual void toggleLogCommonHistory();
+    virtual int loadState(char*);
+    virtual int saveState(char*);
+    virtual int gleanState(int);
+    virtual int processMessage(void*);
+    virtual int update(int);
+    virtual void setCallbackMessage(void*);
+    virtual int filterOutMessage(void*);
     virtual int save(int file);
 
     char bytes[0xF4];
@@ -157,21 +171,21 @@ public:
 
 class TribeStrategyAIModule {
 public:
-    virtual void vf00();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
-    virtual void vf20();
-    virtual void vf24();
-    virtual void vf28();
-    virtual void vf2C();
-    virtual void vf30();
-    virtual void vf34();
-    virtual void vf38();
+    virtual ~TribeStrategyAIModule();
+    virtual int loggingHistory();
+    virtual void setLogHistory(int);
+    virtual void toggleLogHistory();
+    virtual void setHistoryFilename(char*);
+    virtual int loggingCommonHistory();
+    virtual void setLogCommonHistory(int);
+    virtual void toggleLogCommonHistory();
+    virtual int loadState(char*);
+    virtual int saveState(char*);
+    virtual int gleanState(int);
+    virtual int processMessage(void*);
+    virtual int update(int);
+    virtual void setCallbackMessage(void*);
+    virtual int filterOutMessage(void*);
     virtual int save(int file);
 
     char bytes[0x5F4];
@@ -179,21 +193,21 @@ public:
 
 class TribeTacticalAIModule {
 public:
-    virtual void vf00();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
-    virtual void vf20();
-    virtual void vf24();
-    virtual void vf28();
-    virtual void vf2C();
-    virtual void vf30();
-    virtual void vf34();
-    virtual void vf38();
+    virtual ~TribeTacticalAIModule();
+    virtual int loggingHistory();
+    virtual void setLogHistory(int);
+    virtual void toggleLogHistory();
+    virtual void setHistoryFilename(char*);
+    virtual int loggingCommonHistory();
+    virtual void setLogCommonHistory(int);
+    virtual void toggleLogCommonHistory();
+    virtual int loadState(char*);
+    virtual int saveState(char*);
+    virtual int gleanState(int);
+    virtual int processMessage(void*);
+    virtual int update(int);
+    virtual void setCallbackMessage(void*);
+    virtual int filterOutMessage(void*);
     virtual int save(int file);
 
     char bytes[0x1008];
@@ -201,21 +215,21 @@ public:
 
 class TradeAIModule {
 public:
-    virtual void vf00();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
-    virtual void vf20();
-    virtual void vf24();
-    virtual void vf28();
-    virtual void vf2C();
-    virtual void vf30();
-    virtual void vf34();
-    virtual void vf38();
+    virtual ~TradeAIModule();
+    virtual int loggingHistory();
+    virtual void setLogHistory(int);
+    virtual void toggleLogHistory();
+    virtual void setHistoryFilename(char*);
+    virtual int loggingCommonHistory();
+    virtual void setLogCommonHistory(int);
+    virtual void toggleLogCommonHistory();
+    virtual int loadState(char*);
+    virtual int saveState(char*);
+    virtual int gleanState(int);
+    virtual int processMessage(void*);
+    virtual int update(int);
+    virtual void setCallbackMessage(void*);
+    virtual int filterOutMessage(void*);
     virtual int save(int file);
 
     char bytes[0xF0];

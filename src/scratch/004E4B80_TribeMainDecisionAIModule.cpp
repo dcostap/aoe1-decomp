@@ -92,8 +92,6 @@ TribeMainDecisionAIModule::TribeMainDecisionAIModule(int p1, char* p2, TRIBE_Pla
     this->field_12580 = 0;
     this->field_1259C = 0;
     this->field_125A0 = 0;
-    *(void**)this = (void*)0x005755C8;
-
     this->setPlayer(p1, p2);
     if (rgeLog != 0) {
         this->setLogCommonHistory(1);

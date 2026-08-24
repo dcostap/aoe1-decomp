@@ -20,16 +20,12 @@ class RGE_Map;
 class RGE_Master_Static_Object;
 class TRIBE_Command;
 class TRIBE_Player;
+class XYZBYTEPoint;
 class TribeMainDecisionAIModule;
 class DecisionModuleInfo;
 
 void* operator new(unsigned int);
 void operator delete(void*);
-
-class StrategyAIModule {
-public:
-    virtual int update(int);
-};
 
 template <class T>
 class ManagedArray {
@@ -131,39 +127,112 @@ public:
 typedef char taimdmd_main_decision_size[
     (sizeof(MainDecisionAIModule) == 0x104) ? 1 : -1];
 
-class TribeBuildAIModule {
+class BuildAIModule : public AIModule {
 public:
-    virtual ~TribeBuildAIModule();
-    char bytes[0x5BC];
+    virtual int save(int);
+    virtual void displayBuildList();
+};
+
+class ConstructionAIModule : public AIModule {
+public:
+    virtual int save(int);
+};
+
+class DiplomacyAIModule : public AIModule {
+public:
+    char bytes[0x150 - sizeof(AIModule)];
+    DiplomacyAIModule(void*, int);
+    DiplomacyAIModule(int, int);
+    void setMainDecisionAI(TribeMainDecisionAIModule*);
+    void setPlayer(int, char*);
+    void setLogHistory(int);
+    void setup(MainDecisionAIModule*);
+    int stance(int, int);
+    void setStance(int, int, int);
+    void changeStance(int, int, int);
+    void setChangeable(int, uchar);
+    void setRelation(int, int);
+    virtual int save(int);
+    virtual int update(int);
+};
+
+class EmotionalAIModule : public AIModule {
+public:
+    char bytes[0x1C0 - sizeof(AIModule)];
+    EmotionalAIModule(void*, int);
+    EmotionalAIModule(int, int);
+    void setMainDecisionAI(TribeMainDecisionAIModule*);
+    void setPlayer(int, char*);
+    void setLogHistory(int);
+    void setup(MainDecisionAIModule*);
+    void setOverallState(int);
+    virtual int save(int);
+};
+
+class InformationAIModule : public AIModule {
+public:
+    virtual int update(int);
+};
+
+class ResourceAIModule : public AIModule {
+public:
+    virtual int save(int);
+};
+
+class StrategyAIModule : public AIModule {
+public:
+    virtual int save(int);
+    virtual int update(int);
+};
+
+class TacticalAIModule : public AIModule {
+public:
+    virtual int save(int);
+    virtual int update(int);
+};
+
+class TradeAIModule : public AIModule {
+public:
+    char bytes[0xF4 - sizeof(AIModule)];
+    TradeAIModule(void*, int);
+    TradeAIModule(int, int);
+    void setMainDecisionAI(TribeMainDecisionAIModule*);
+    void setPlayer(int, char*);
+    void setLogHistory(int);
+    void setup(MainDecisionAIModule*);
+    virtual int save(int);
+};
+
+typedef char taimdmd_trade_size[(sizeof(TradeAIModule) == 0xF4) ? 1 : -1];
+
+class TribeBuildAIModule : public BuildAIModule {
+public:
+    char bytes[0x5C0 - sizeof(BuildAIModule)];
 
     TribeBuildAIModule(void*, int);
     TribeBuildAIModule(int, int);
     void setMainDecisionAI(TribeMainDecisionAIModule*);
     void setPlayer(int, char*);
     void setLogHistory(int);
-    int save(int);
     void setup(MainDecisionAIModule*);
     void initialize();
     void skipNextBuildListItem();
     void removeBuiltItem(int);
     int insert(int, int, int);
-    void* vf40();
     int addItem(RGE_Static_Object*, int);
 };
 
 typedef char taimdmd_build_size[(sizeof(TribeBuildAIModule) == 0x5C0) ? 1 : -1];
 
-class TribeConstructionAIModule {
+class TribeConstructionAIModule : public ConstructionAIModule {
 public:
-    virtual ~TribeConstructionAIModule();
-    char bytes[0x314];
+    char bytes[0x318 - sizeof(ConstructionAIModule)];
 
     TribeConstructionAIModule(void*, int);
     TribeConstructionAIModule(int, int);
     void setMainDecisionAI(TribeMainDecisionAIModule*);
     void setPlayer(int, char*);
     void setLogHistory(int);
-    int save(int);
     void setup(MainDecisionAIModule*);
     void setReferencePoint(int, int, float, float, float);
 };
@@ -171,49 +240,9 @@ public:
 typedef char taimdmd_construction_size[
     (sizeof(TribeConstructionAIModule) == 0x318) ? 1 : -1];
 
-class DiplomacyAIModule {
+class TribeInformationAIModule : public InformationAIModule {
 public:
-    virtual ~DiplomacyAIModule();
-    char bytes[0x14C];
-
-    DiplomacyAIModule(void*, int);
-    DiplomacyAIModule(int, int);
-    void setMainDecisionAI(TribeMainDecisionAIModule*);
-    void setPlayer(int, char*);
-    void setLogHistory(int);
-    int save(int);
-    void setup(MainDecisionAIModule*);
-    int stance(int, int);
-    void setStance(int, int, int);
-    void changeStance(int, int, int);
-    void setChangeable(int, uchar);
-    void setRelation(int, int);
-    void update(int);
-};
-
-typedef char taimdmd_diplomacy_size[(sizeof(DiplomacyAIModule) == 0x150) ? 1 : -1];
-
-class EmotionalAIModule {
-public:
-    virtual ~EmotionalAIModule();
-    char bytes[0x1BC];
-
-    EmotionalAIModule(void*, int);
-    EmotionalAIModule(int, int);
-    void setMainDecisionAI(TribeMainDecisionAIModule*);
-    void setPlayer(int, char*);
-    void setLogHistory(int);
-    int save(int);
-    void setup(MainDecisionAIModule*);
-    void setOverallState(int);
-};
-
-typedef char taimdmd_emotional_size[(sizeof(EmotionalAIModule) == 0x1C0) ? 1 : -1];
-
-class TribeInformationAIModule {
-public:
-    virtual ~TribeInformationAIModule();
-    char bytes[0x1008C];
+    char bytes[0x10090 - sizeof(InformationAIModule)];
 
     TribeInformationAIModule(void*, int);
     TribeInformationAIModule(int, int);
@@ -233,50 +262,44 @@ public:
 typedef char taimdmd_information_size[
     (sizeof(TribeInformationAIModule) == 0x10090) ? 1 : -1];
 
-class TribeResourceAIModule {
+class TribeResourceAIModule : public ResourceAIModule {
 public:
-    virtual ~TribeResourceAIModule();
-    char bytes[0xF4];
+    char bytes[0xF8 - sizeof(ResourceAIModule)];
 
     TribeResourceAIModule(void*, int, int, int, int, int);
     TribeResourceAIModule(int, int);
     void setMainDecisionAI(TribeMainDecisionAIModule*);
     void setPlayer(int, char*);
     void setLogHistory(int);
-    int save(int);
     void setup(MainDecisionAIModule*);
 };
 
 typedef char taimdmd_resource_size[(sizeof(TribeResourceAIModule) == 0xF8) ? 1 : -1];
 
-class TribeStrategyAIModule {
+class TribeStrategyAIModule : public StrategyAIModule {
 public:
-    virtual ~TribeStrategyAIModule();
-    char bytes[0x5F4];
+    char bytes[0x5F8 - sizeof(StrategyAIModule)];
 
     TribeStrategyAIModule(void*, int);
     TribeStrategyAIModule(int, int);
     void setMainDecisionAI(TribeMainDecisionAIModule*);
     void setPlayer(int, char*);
     void setLogHistory(int);
-    int save(int);
     void setup(MainDecisionAIModule*);
     int update(int);
 };
 
 typedef char taimdmd_strategy_size[(sizeof(TribeStrategyAIModule) == 0x5F8) ? 1 : -1];
 
-class TribeTacticalAIModule {
+class TribeTacticalAIModule : public TacticalAIModule {
 public:
-    virtual ~TribeTacticalAIModule();
-    char bytes[0x1008];
+    char bytes[0x100C - sizeof(TacticalAIModule)];
 
     TribeTacticalAIModule(void*, int);
     TribeTacticalAIModule(int, int);
     void setMainDecisionAI(TribeMainDecisionAIModule*);
     void setPlayer(int, char*);
     void setLogHistory(int);
-    int save(int);
     void setup(MainDecisionAIModule*);
     int strategicNumber(int);
     void setStrategicNumber(int, int);
@@ -288,22 +311,6 @@ public:
 };
 
 typedef char taimdmd_tactical_size[(sizeof(TribeTacticalAIModule) == 0x100C) ? 1 : -1];
-
-class TradeAIModule {
-public:
-    virtual ~TradeAIModule();
-    char bytes[0xF0];
-
-    TradeAIModule(void*, int);
-    TradeAIModule(int, int);
-    void setMainDecisionAI(TribeMainDecisionAIModule*);
-    void setPlayer(int, char*);
-    void setLogHistory(int);
-    int save(int);
-    void setup(MainDecisionAIModule*);
-};
-
-typedef char taimdmd_trade_size[(sizeof(TradeAIModule) == 0xF4) ? 1 : -1];
 
 class RGE_Map {
 public:
@@ -356,8 +363,61 @@ public:
     virtual int isNeutral(int);
     virtual int isAllNeutral();
     virtual void setDiplomaticStance(int, int);
-    virtual void command_add_attribute(int, float);
+    virtual void loadAIInformation(char*, char*, char*, int, int);
+    virtual void sendUnitAIOrder(int, int, int, int, int, float, float, float,
+                                 float, int, int, int);
+    virtual void processAIOrder(int, int, int, int, int, float, float, float,
+                                float, int, int, int);
+    virtual void kickAI(int);
+    virtual int strategicNumber(int);
+    virtual void sendGameOrder(RGE_Static_Object*, RGE_Static_Object*, float,
+                                float);
+    virtual void sendAddWaypointCommand(int, XYZBYTEPoint*, int);
+    virtual void processAddWaypointCommand(int, XYZBYTEPoint*, int);
+    virtual void sendPlayCommand(int, int*, int, int, int);
+    virtual void sendPlayCommand(int, int, int);
     virtual int sendAICommand(int, int, int, int, int);
+    virtual int objectCostByType(int);
+    virtual void trackUnitGather(int, int, int);
+    virtual RGE_Static_Object* make_scenario_obj(float, float, float, short,
+                                                   uchar, float);
+    virtual void scenario_save(int);
+    virtual void scenario_load(int, long*, float);
+    virtual void scenario_postsave(int);
+    virtual void scenario_postload(int, long*, float);
+    virtual void load(int);
+    virtual void add_attribute_num(short, float, uchar);
+    virtual void update();
+    virtual void update_dopplegangers();
+    virtual void save(int);
+    virtual void save2(int);
+    virtual void save_info(int);
+    virtual void random_start();
+    virtual RGE_Static_Object* make_new_object(long, float, float, float, int);
+    virtual void analyize_selected_objects();
+    virtual int get_mouse_pointer_action_vars(int, int*, int*);
+    virtual uchar command_make_move(RGE_Static_Object*, float, float);
+    virtual uchar command_make_work(RGE_Static_Object*, float, float);
+    virtual uchar command_make_do(RGE_Static_Object*, float, float);
+    virtual uchar command_stop();
+    virtual uchar command_place_object(short, float, float, float);
+    virtual uchar command_add_attribute(int, float);
+    virtual uchar command_give_attribute(int, int, float);
+    virtual void command_formation(int);
+    virtual void command_stand_ground();
+    virtual void command_create_group();
+    virtual void command_add_to_group();
+    virtual void command_remove_from_group();
+    virtual void command_destroy_group();
+    virtual void command_resign();
+    virtual void command_add_waypoint();
+    virtual void addObject(RGE_Static_Object*);
+    virtual void removeObject(int);
+    virtual void logMessage();
+    virtual void notify();
+    virtual void logStatus();
+    virtual void load_victory();
+    virtual void new_victory();
 
     int computerPlayerValue;
     char gap_08[0x20];
@@ -410,19 +470,17 @@ public:
 class RGE_Base_Game {
 public:
     virtual ~RGE_Base_Game();
-    virtual void vf00();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
-    virtual char* get_string(int, char*, int);
+    virtual int run();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual void set_prog_mode(int);
+    virtual void set_game_mode(int, int);
+    virtual void set_player(short);
+    virtual int get_error_code();
+    virtual char* get_string(int, long, char*, int);
     virtual char* get_string(long, char*, int);
     virtual char* get_string(long);
+    virtual char* get_string2(int, long, long, char*, int);
     int difficulty();
-    int deathMatch();
 };
 
 class TRIBE_Game : public RGE_Base_Game {
@@ -482,7 +540,7 @@ public:
     union { int requiredDiplomacyTributeAmount; int field_125A0; };
     union { int tributeGiven[9]; int array_125A4[9]; };
 
-    TribeMainDecisionAIModule(void*, int, char*, void*, char*, char*, char*);
+    TribeMainDecisionAIModule(void*, int, char*, TRIBE_Player*, char*, char*, char*);
     TribeMainDecisionAIModule(int, char*, TRIBE_Player*, int);
     virtual ~TribeMainDecisionAIModule();
     virtual void setLogHistory(int);
@@ -497,7 +555,9 @@ public:
     void updateBuildAIWithObjects();
     void tributeNotify(int, int, int);
     void revokeTributeAlliance();
+protected:
     void setTributeChat();
+public:
     int processAICommand(int, int, int, int, int);
     int currentScore(int);
     void detask(int);

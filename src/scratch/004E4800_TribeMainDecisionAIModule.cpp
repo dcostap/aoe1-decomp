@@ -25,7 +25,7 @@ class TribeStrategyAIModule : public AIModule { public: char pad[0x5F8 - sizeof(
 class TribeTacticalAIModule : public AIModule { public: char pad[0x100C - sizeof(AIModule)]; TribeTacticalAIModule(void*, int); void setMainDecisionAI(void*); };
 class TradeAIModule : public AIModule { public: char pad[0x0F4 - sizeof(AIModule)]; TradeAIModule(void*, int); void setMainDecisionAI(void*); };
 
-class __declspec(novtable) TribeMainDecisionAIModule : public AIModule {
+class TribeMainDecisionAIModule : public AIModule {
 public:
     char gap_base[0x104 - sizeof(AIModule)];
     TribeBuildAIModule buildAI; // +104
@@ -53,11 +53,11 @@ public:
     int requiredDiplomacyTributeAmount;
     int tributeGiven[9];
 
-    TribeMainDecisionAIModule(void* p1, int p2, char* p3, void* player, char* p5, char* p6, char* p7);
+    TribeMainDecisionAIModule(void* p1, int p2, char* p3, TRIBE_Player* player, char* p5, char* p6, char* p7);
 };
 #endif
 
-TribeMainDecisionAIModule::TribeMainDecisionAIModule(void* p1, int p2, char* p3, void* player, char* p5, char* p6, char* p7)
+TribeMainDecisionAIModule::TribeMainDecisionAIModule(void* p1, int p2, char* p3, TRIBE_Player* player, char* p5, char* p6, char* p7)
 #ifdef AOE1_TAIMDMD_CONTEXT_H
     : MainDecisionAIModule(p1, p2, player),
 #else
@@ -87,8 +87,6 @@ TribeMainDecisionAIModule::TribeMainDecisionAIModule(void* p1, int p2, char* p3,
     this->tributeAmount = 0;
     this->decidedInitialDiplomacy = 0;
     this->requiredDiplomacyTributeAmount = 0;
-    *(int*)this = 0x5755C8;
-
     this->setPlayer(p2, p3);
     if (startLoggingAI != 0) {
         this->setLogCommonHistory(1);
