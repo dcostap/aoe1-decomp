@@ -1,15 +1,15 @@
 // ResourceItem::ResourceItem(int)
 // VA: 00411F10 | airesitm.cpp:40-51
+//
+// BINARY NOTE: the shipped member stores follow the constructor vptr store
+// only when these fields use the initializer list in the grouped TU.
 
-ResourceItem::ResourceItem(int count) {
+ResourceItem::ResourceItem(int count)
+    : next(0), prev(0), numberValue(count) {
     int i;
     int* p;
 
     i = 0;
-    this->next = 0;
-    this->prev = 0;
-    this->numberValue = count;
-
     if (count > 0) {
         p = this->sortedValue;
         while (1) {
