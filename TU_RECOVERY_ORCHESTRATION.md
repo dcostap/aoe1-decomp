@@ -594,7 +594,7 @@ Every exception must have a reviewed non-normal corpus classification.
 
 ---
 
-# Phase 6: Consolidation and closeout
+# Phase 6: Translation-unit campaign closeout
 
 ## Goal
 
@@ -618,7 +618,7 @@ Produce a reproducible, audited translation-unit recovery state.
 14. Confirm no registered wrapper depends on ignored files.
 15. Commit generated tracked metrics only after review.
 
-## Final acceptance state
+## Translation-unit acceptance state
 
 - 224 original PDB C/C++ modules have authentic wrappers.
 - Every normal C/C++ function appears in its owning wrapper.
@@ -629,6 +629,422 @@ Produce a reproducible, audited translation-unit recovery state.
 - Registered flag errors equal zero.
 - The full test suite passes.
 - The worktree is clean.
+
+---
+
+# Post-integration project campaign
+
+Phases 0 through 6 complete authentic translation-unit integration.
+
+They do not complete all normal source, global data, linking, or executable reproduction.
+
+Use Phases 7 through 15 after the translation-unit acceptance gate passes.
+
+## Campaign overview
+
+| Phase | Goal | Primary owner | Parallel work |
+|---|---|---|---|
+| 7 | Recheck all observed functions in authentic modules | Main agent | Grouped build sweeps |
+| 8 | Close remaining normal-function recovery | Matching workers | Independent module-ready targets |
+| 9 | Consolidate natural source files | Module captains | Independent modules |
+| 10 | Recover canonical global program structure | Main agent and ABI captains | Independent data domains |
+| 11 | Account for the non-normal corpus | Main agent and auditors | Corpus-specific audits |
+| 12 | Build and link the complete executable | Main agent | Narrow linker investigations |
+| 13 | Compare the complete executable | Main agent | Difference classification |
+| 14 | Run differential behavior tests | Test captains | Independent behavior domains |
+| 15 | Complete reproducibility and cleanup | Main agent | No overlapping writers |
+
+---
+
+# Phase 7: Recheck all observed functions
+
+## Goal
+
+Recompile every observed normal function inside its complete authentic module.
+
+Complete wrappers can change declarations, inlining, EH, virtual dispatch, and generated ownership.
+
+## Current upper bound
+
+These values come from the baseline before completion of Phases 0 through 6.
+
+| State | Functions |
+|---|---:|
+| Scratch | 638 |
+| Accepted drift | 349 |
+| Verified logic | 21 |
+| Total currently nonexact | 1,008 |
+
+Refresh these values before Phase 7 starts.
+
+## Method
+
+1. Group all observed functions by authentic wrapper.
+2. Compile each wrapper once.
+3. Compare every emitted observed symbol from that grouped object.
+4. Recheck boundary, relocation, call, and symbol ownership.
+5. Promote natural grouped matches.
+6. Register promoted owners in module-sized waves.
+7. Rank all remaining mismatches from fresh grouped evidence.
+
+An authentic context change is valid new evidence for an accepted-drift recheck.
+
+Do not reopen accepted drift without such specific new evidence.
+
+## Exit gate
+
+Phase 7 is complete when every observed normal function has a fresh complete-wrapper result.
+
+No observed function can retain a result from an incomplete wrapper as its current evidence.
+
+---
+
+# Phase 8: Close remaining normal-function recovery
+
+## Goal
+
+Recover the remaining nonexact normal functions with complete module context.
+
+## Priority order
+
+1. Wrong calls, relocations, or ownership
+2. Wrong boundaries, cleanup, or exception handling
+3. Small structural differences
+4. Large behavior-complete functions
+5. Hard semantic reconstructions
+
+## Worker method
+
+Assign one VA per matching worker.
+
+Every packet must include:
+
+- complete authentic wrapper;
+- module flags;
+- latest grouped result;
+- exact original boundary;
+- relocation and direct-call differences;
+- source ownership;
+- prior attempts and blockers;
+- exact donors and nearby functions.
+
+Workers continue while useful evidence-led approaches remain.
+
+Workers must not preserve codegen machinery after finding a natural exact form.
+
+## Main-agent integration
+
+1. Review source behavior and ABI.
+2. Require a retrospective for exact finishes.
+3. Revalidate inside the complete wrapper.
+4. Promote and register in reviewed module waves.
+5. Record unresolved semantic conclusions in assigned ledgers.
+
+## Two acceptance levels
+
+### Source-recovery acceptance
+
+Every normal function is exact or has reviewed semantic status and explicit evidence.
+
+### Binary-exact acceptance
+
+Every normal function is exact at its authentic boundary and owner.
+
+A byte-identical executable requires binary-exact acceptance.
+
+---
+
+# Phase 9: Consolidate natural source files
+
+## Goal
+
+Replace temporary wrappers and per-function includes with natural source files.
+
+The target is approximately one compiler-facing source file per original PDB translation unit.
+
+## Method
+
+Process one module at a time.
+
+1. Freeze the grouped object and owner report.
+2. Merge bodies into authentic PDB source order.
+3. Replace wrapper-only context with canonical includes.
+4. Remove fallback class surfaces and alias macros.
+5. Remove duplicate declarations and local ABI copies.
+6. Preserve binary-supported comments and original bugs.
+7. Compile the consolidated module with the same flags.
+8. Compare every exact and generated entry.
+9. Replace the wrapper only after complete grouped proof.
+10. Remove obsolete per-function files in the same reviewed commit.
+
+Git history remains the source for removed recovery experiments.
+
+Do not retain thousands of files only to preserve investigation history.
+
+## Parallel work
+
+Run independent module consolidations in parallel.
+
+Serialize modules that share headers or global declarations.
+
+## Exit gate
+
+Phase 9 is complete when all 224 original modules use natural tracked source files.
+
+No compiler-facing module can depend on wrapper-only or ignored context.
+
+---
+
+# Phase 10: Recover canonical global program structure
+
+## Goal
+
+Recover one coherent cross-module ABI and global data model.
+
+Function bytes alone do not define the complete program.
+
+## Required domains
+
+- global variables;
+- static data;
+- string literals;
+- vtables;
+- RTTI;
+- static constructors and destructors;
+- callback tables;
+- imported APIs;
+- resources;
+- cross-module class declarations.
+
+## Method
+
+1. Generate a complete non-function symbol inventory.
+2. Assign one canonical source owner to each writable global.
+3. Assign one canonical declaration to each shared symbol.
+4. Recover array widths, field widths, alignment, and initialization order.
+5. Recover class inheritance and virtual surfaces from grouped evidence.
+6. Replace target-local ABI copies with reviewed shared declarations.
+7. Validate every affected translation unit after each shared change.
+8. Recover static initialization and shutdown order.
+
+Avoid one large universal header.
+
+Use small headers for proven shared domains.
+
+## Exit gate
+
+Phase 10 is complete when every linked data symbol has reviewed ownership and layout.
+
+All 224 modules must compile against one coherent ABI surface.
+
+---
+
+# Phase 11: Account for the non-normal corpus
+
+## Goal
+
+Reproduce or supply every executable function outside the normal C/C++ corpus.
+
+## Current classified corpus
+
+| Corpus | Functions |
+|---|---:|
+| Padding-only | 185 |
+| Compiler-generated | 193 |
+| Parent-owned fragments | 15 |
+| Toolchain-supplied | 1,519 |
+| Named assembly | 13 |
+| Assembly regions | 575 |
+| Total | 2,500 |
+
+Refresh these values before Phase 11 starts.
+
+## Corpus rules
+
+### Padding-only
+
+Preserve reviewed bytes only where the complete body has no behavior.
+
+### Compiler-generated
+
+Require natural VC5 emission from authentic source and use context.
+
+### Parent-owned fragments
+
+Validate them as ranges within their owning normal function.
+
+### Toolchain-supplied
+
+Require the pinned VC5 toolchain, libraries, and linker inputs.
+
+### Named assembly
+
+Preserve reviewed original assembly ownership without converting it to ordinary source.
+
+### Assembly regions
+
+Recover region boundaries, codelets, dispatch data, and owning source or binary input.
+
+## Exit gate
+
+Phase 11 is complete when every executable function has one reproducible source category.
+
+No ordinary source body can own a reviewed non-normal entry.
+
+---
+
+# Phase 12: Build and link the complete executable
+
+## Goal
+
+Produce one clean complete executable from tracked source and pinned inputs.
+
+Exact function objects do not guarantee an exact executable.
+
+## Required link evidence
+
+- authentic object order;
+- section order and alignment;
+- COMDAT selection;
+- linker flags;
+- import layout;
+- data layout;
+- relocation layout;
+- resources;
+- executable headers;
+- entry point and startup code.
+
+## Method
+
+1. Build all original modules from a clean directory.
+2. Recover the authentic linker response and library order.
+3. Produce a deterministic link map.
+4. Link required resources and version data.
+5. Record every non-source binary input.
+6. Compare section layout before tuning metadata.
+7. Resolve object-order and COMDAT differences from evidence.
+8. Add one documented complete-build command.
+
+## Exit gate
+
+Phase 12 is complete when a clean tracked build produces a runnable complete executable.
+
+The build must not depend on session artifacts or ignored recovery files.
+
+---
+
+# Phase 13: Whole-executable comparison
+
+## Goal
+
+Compare the rebuilt executable against the original at every important layer.
+
+## Comparison layers
+
+1. Executable headers and entry point
+2. Section order, addresses, sizes, and hashes
+3. Function addresses and bytes
+4. Global data addresses and bytes
+5. Imports and exports
+6. Base relocations
+7. Resources
+8. Debug and build metadata
+
+## Difference classes
+
+Classify every difference as:
+
+- source;
+- compiler;
+- linker;
+- data;
+- resource;
+- toolchain;
+- metadata.
+
+Do not hide differences with broad masks.
+
+Use relocation-aware views only for diagnosis.
+
+## Exit gate
+
+Binary-exact completion requires positional equality for the complete required executable image.
+
+Any accepted metadata drift must have a narrow reviewed reason.
+
+---
+
+# Phase 14: Runtime differential validation
+
+## Goal
+
+Compare original and rebuilt behavior under the same controlled inputs.
+
+## Behavior domains
+
+- startup and shutdown;
+- save and load;
+- scenarios;
+- AI;
+- networking;
+- rendering;
+- sound;
+- user interface;
+- malformed input;
+- original bugs and failure order.
+
+## Method
+
+1. Build deterministic test inputs.
+2. Record original outputs and side effects.
+3. Run the rebuilt executable with the same environment.
+4. Compare files, logs, state, packets, images, and failures.
+5. Minimize each difference before source changes.
+6. Preserve original faults and malformed-input behavior.
+
+Runtime tests supplement binary evidence. They do not replace it.
+
+## Exit gate
+
+All supported behavior domains must pass their differential suites.
+
+Every remaining difference needs a reviewed limitation.
+
+---
+
+# Phase 15: Final reproducibility and cleanup
+
+## Goal
+
+Deliver a clean, understandable, and reproducible source-recovery project.
+
+## Final requirements
+
+- one-command clean build;
+- pinned compiler, linker, libraries, and flags;
+- no ignored build dependencies;
+- no duplicate source owners;
+- natural module source files;
+- canonical shared headers;
+- current metrics and inventories;
+- complete ownership reports;
+- passing tests;
+- clean worktree;
+- documented remaining differences.
+
+## Cleanup rules
+
+Remove obsolete recovery scaffolding after its replacement passes complete validation.
+
+Send untracked cleanup artifacts to the Windows Recycle Bin.
+
+Keep durable evidence in source notes, ledgers, manifests, and commits.
+
+## Final project acceptance
+
+The project is complete when its declared source-recovery and executable-reproduction goals both pass.
+
+If binary identity remains incomplete, state the exact remaining difference classes.
 
 ---
 
