@@ -2,8 +2,10 @@
 class TribeMPStartupScreen {
 public:
     virtual ~TribeMPStartupScreen();
-    int handle_user_command(int p0, int p1);
+    virtual long handle_user_command(unsigned int p0, long p1);
 };
 #endif
 
-int TribeMPStartupScreen::handle_user_command(int p0, int p1) { return 1; }
+long TribeMPStartupScreen::handle_user_command(unsigned int p0, long p1) {
+    return 1;
+}

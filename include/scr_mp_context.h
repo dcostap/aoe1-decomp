@@ -30,58 +30,65 @@ public:
                                  long a9, TPanel* a10, TPanel* a11,
                                  TPanel* a12, TPanel* a13);
 
-    virtual void vf07();
-    virtual void vf08();
-    virtual void vf09();
-    virtual void vf10();
-    virtual void vf11();
-    virtual void vf12();
-    virtual void vf13();
-    virtual void vf14();
-    virtual void vf15();
-    virtual void vf16();
-    virtual void vf17();
-    virtual void vf18();
-    virtual void vf19();
-    virtual void vf20();
-    virtual void vf21();
-    virtual void vf22();
-    virtual void vf23();
-    virtual void vf24();
-    virtual void vf25();
-    virtual void vf26();
-    virtual void vf27();
-    virtual void vf28();
-    virtual void vf29();
-    virtual void vf30();
-    virtual void vf31();
-    virtual void vf32();
-    virtual void vf33();
-    virtual void vf34();
-    virtual void vf35();
-    virtual void vf36();
-    virtual void vf37();
-    virtual void vf38();
-    virtual void vf39();
-    virtual void vf40();
-    virtual void vf41();
-    virtual void vf42();
-    virtual void vf43();
-    virtual void vf44();
-    virtual long action(TPanel*, long, unsigned long, unsigned long);
-    virtual void vf46();
-    virtual void vf47();
-    virtual void vf48();
-    virtual void vf49();
-    virtual void vf50();
-    virtual void vf51();
-    virtual void vf52();
-    virtual void vf53();
-    virtual void vf54();
-    virtual void vf55();
-    virtual void vf56();
-    virtual void set_string_id(long id);
+    virtual void set_fixed_position(long left, long top, long right,
+                                    long bottom);
+    virtual void set_redraw(int mode);
+    virtual void set_overlapped_redraw(TPanel* first, TPanel* second,
+                                       int mode);
+    virtual void draw_setup(int force_rebuild);
+    virtual void draw_finish();
+    virtual void draw();
+    virtual void draw_rect(tagRECT* rect);
+    virtual void draw_offset(long x, long y, tagRECT* rect);
+    virtual void draw_rect2(tagRECT* rect);
+    virtual void draw_offset2(long x, long y, tagRECT* rect);
+    virtual void paint();
+    virtual long wnd_proc(void* message, unsigned int message_id,
+                          unsigned int wparam, long lparam);
     virtual long handle_idle();
+    virtual long handle_size(long width, long height);
+    virtual long handle_paint();
+    virtual long handle_key_down(long key, short scan_code, int a3, int a4,
+                                 int a5);
+    virtual long handle_char(long key, short scan_code);
+    virtual long handle_command(unsigned int command, long value);
+    virtual long handle_user_command(unsigned int command, long value);
+    virtual long handle_timer_command(unsigned int command, long value);
+    virtual long handle_scroll(long value, long direction);
+    virtual long handle_mouse_down(unsigned char button, long x, long y,
+                                   int a4, int a5);
+    virtual long handle_mouse_move(long x, long y, int a3, int a4);
+    virtual long handle_mouse_up(unsigned char button, long x, long y,
+                                 int a4, int a5);
+    virtual long handle_mouse_dbl_click(unsigned char button, long x, long y,
+                                        int a4, int a5);
+    virtual long mouse_move_action(long x, long y, int a3, int a4);
+    virtual long mouse_left_down_action(long x, long y, int a3, int a4);
+    virtual long mouse_left_hold_action(long x, long y, int a3, int a4);
+    virtual long mouse_left_move_action(long x, long y, int a3, int a4);
+    virtual long mouse_left_up_action(long x, long y, int a3, int a4);
+    virtual long mouse_left_dbl_click_action(long x, long y, int a3, int a4);
+    virtual long mouse_right_down_action(long x, long y, int a3, int a4);
+    virtual long mouse_right_hold_action(long x, long y, int a3, int a4);
+    virtual long mouse_right_move_action(long x, long y, int a3, int a4);
+    virtual long mouse_right_up_action(long x, long y, int a3, int a4);
+    virtual long mouse_right_dbl_click_action(long x, long y, int a3, int a4);
+    virtual long key_down_action(long key, short scan_code, int a3, int a4,
+                                 int a5);
+    virtual long char_action(long key, short scan_code);
+    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    virtual void get_true_render_rect(tagRECT* rect);
+    virtual int is_inside(long x, long y);
+    virtual void set_focus(int focus);
+    virtual void set_tab_order(TPanel* first, TPanel* second);
+    virtual void set_tab_order(TPanel** panels, short count);
+    virtual unsigned char get_help_info(char** text, long* page,
+                                        long a3, long a4);
+    virtual void stop_sound_system();
+    virtual int restart_sound_system();
+    virtual void take_snapshot();
+    virtual void handle_reactivate();
+    virtual void draw_background(int force_rebuild);
 
     char gap_04[0xD4];
     int setup_error;
@@ -90,7 +97,6 @@ public:
     char* panelName();
     void set_help_info(long id, long value);
     void set_curr_child(TPanel* child);
-    void set_tab_order(TPanel** panels, short count);
     void delete_panel(TPanel** panel);
 };
 
@@ -131,20 +137,54 @@ public:
 
     virtual long action(TPanel*, long, unsigned long, unsigned long);
     void setup_shadow_area(int force_rebuild);
-    void set_ideal_size(long width, long height);
-    int create_text(TPanel* parent, TTextPanel** output, long string_id,
+    virtual void set_ideal_size(long width, long height);
+    virtual int create_button(TPanel* parent, TButtonPanel** output,
+                              long string_id, long text2, long x, long y,
+                              long width, long height, long p9, long p10,
+                              long p11);
+    virtual int create_button(TPanel* parent, TButtonPanel** output,
+                              char* string_id, char* text2, long x, long y,
+                              long width, long height, long p9, long p10,
+                              long p11);
+    virtual int create_check_box(TPanel* parent, TButtonPanel** output,
+                                 long string_id, long x, long y, long width,
+                                 long height, long p8);
+    virtual int create_radio_button(TPanel* parent, TButtonPanel** output,
+                                    long string_id, long x, long y, long width,
+                                    long height, long p8);
+    virtual int create_text(TPanel* parent, TTextPanel** output, long string_id,
                     long x, long y, long width, long height,
                     long font, long align, long center, long wrap);
-    int create_edit(TPanel* parent, TEditPanel** output, char* text,
+    virtual int create_text(TPanel* parent, TTextPanel** output, char** text,
+                            long x, long y, long width, long height,
+                            long font, long align, int center, int wrap);
+    virtual int create_text(TPanel* parent, TTextPanel** output, char* text,
+                            long x, long y, long width, long height,
+                            long font, int align, int center, int wrap);
+    virtual int create_input(TPanel* parent, TPanel** output, char* text,
+                             short width, int format, long a6, long a7,
+                             long a8, long a9, long a10);
+    virtual int create_edit(TPanel* parent, TEditPanel** output, char* text,
                     short width, int format, int a6, int a7, int a8,
                     int a9, int a10, int a11, int a12);
-    int create_list(TPanel* parent, TListPanel** output,
+    virtual int create_drop_down(TPanel* parent, TPanel** output, long a3,
+                                 long a4, long a5, long a6, long a7, long a8,
+                                 long a9);
+    virtual int create_list(TPanel* parent, TListPanel** output,
                     long x, long y, long width, long height, long lines);
-    int create_auto_scrollbar(TScrollBarPanel** output,
+    virtual int create_scrollbar(TPanel* parent, TScrollBarPanel** output,
+                                 TTextPanel* text, long a4, long a5, long a6,
+                                 long a7, long a8);
+    virtual int create_auto_scrollbar(TScrollBarPanel** output,
                               TTextPanel* text, long width);
-    int create_button(TPanel* parent, TButtonPanel** output, long string_id,
-                      long text2, long x, long y, long width, long height,
-                      long p9, long p10, long p11);
+    virtual int create_vert_slider(TPanel* parent, TPanel** output, long a3,
+                                   long a4, long a5, long a6, long a7, long a8,
+                                   long a9);
+    virtual int create_horz_slider(TPanel* parent, TPanel** output, long a3,
+                                   long a4, long a5, long a6, long a7, long a8,
+                                   long a9);
+    virtual void position_panel(TPanel* panel, long a2, long a3, long a4,
+                                long a5);
     void popupOKDialog(long text_id, char* panel_name, int width, int height);
     void popupYesNoDialog(long text_id, char* panel_name, int width, int height);
     void setup_popup_help();
@@ -209,8 +249,8 @@ public:
     virtual ~TribeMPStartupScreen();
     TribeMPStartupScreen();
     virtual long action(TPanel*, long, unsigned long, unsigned long);
-    long handle_idle();
-    int handle_user_command(int p0, int p1);
+    virtual long handle_idle();
+    virtual long handle_user_command(unsigned int p0, long p1);
     void fillList();
 };
 
