@@ -74,11 +74,3 @@ int TCommunications_Handler::TXPing(unsigned int param_1) {
 
     return (result == 0) ? 1 : 0;
 }
-
-#if !defined(COM_HAND_TU_CONTEXT)
-// Standalone stubs
-#if !defined(COM_HAND_TU_CONTEXT)
-void TDebuggingLog::Log(TDebuggingLog* log, const char* format, ...) {}
-#endif // COM_HAND_TU_CONTEXT
-long TCommunications_Handler::FastSend(long dcoID, void* buf, long size, long a, long b) { return 0; }
-#endif // COM_HAND_TU_CONTEXT

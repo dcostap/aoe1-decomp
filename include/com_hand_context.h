@@ -178,18 +178,21 @@ struct RGE_Base_Game {
     int field_1558;
     void* ptr;
     RGE_Prog_Info* prog_info;
-    virtual void vf0();
-    virtual void vf4();
-    virtual void vf8();
-    virtual void vfC();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
-    virtual void language(int id, char* text, int length);
-    virtual void target();
+    // RGE_Base_Game's first virtual slots are known from its reviewed class
+    // layout.  Keep the real names and signatures so calls use the canonical
+    // get_string slot instead of a synthetic vtable surface.
+    virtual ~RGE_Base_Game();
+    virtual int run();
+    virtual long wnd_proc(void* param_1, unsigned int param_2,
+                          unsigned int param_3, long param_4);
+    virtual void set_prog_mode(int param_1);
+    virtual void set_game_mode(int param_1, int param_2);
+    virtual void set_player(short param_1);
+    virtual int get_error_code();
+    virtual char* get_string(long param_1, char* param_2, int param_3);
+    virtual char* get_string(int param_1, long param_2, char* param_3,
+                             int param_4);
     void ShutdownGameMessages();
-    char* get_string(long param_1, char* param_2, int param_3);
     int IsPaused();
     int IsLobbyLaunched();
 };
@@ -567,6 +570,7 @@ public:
     void FreeOptions();
     char* GetCommInfo(unsigned char index);
     void ReceiveGameMessages();
+    void ShutdownGameMessages();
     void GetDPLAYMessages();
     char* GetPlayerName(unsigned int player);
     int AllPlayersAcknowledged();

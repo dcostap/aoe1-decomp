@@ -84,14 +84,3 @@ long TCommunications_Handler::SendChecksumMessage(
 
     return result;
 }
-
-// Stub for TDebuggingLog::Log
-#if !defined(COM_HAND_TU_CONTEXT)
-void TDebuggingLog::Log(TDebuggingLog* log, const char* format, int size) {}
-#endif // COM_HAND_TU_CONTEXT
-
-// Stubs for member functions used as extern
-#if !defined(COM_HAND_TU_CONTEXT)
-long TCommunications_Handler::CommOut(long a, long b, void* buf, long size, long flags) { return 0; }
-void RGE_Comm_Error::ShowReturn(long result, const char* name) {}
-#endif // COM_HAND_TU_CONTEXT

@@ -20,7 +20,7 @@
 // Direct repeated field accesses destroy the earlier CFG, so the simple HOLDER
 // entry form remains. Do not reintroduce byte-offset cursors for the cold report.
 // Readiness audit found that each cold-report iteration must reload OnHold after
-// Log returns. This preserves replacement or invalidation by the callback.
+// Log returns. This preserves reuse or invalidation by the callback.
 // Follow-up: packet-backed `this->OnHold + i` assignment matched the original
 // pHVar9 form but emitted duplicate code; restored the indexed spelling.
 // Assigned pass sa-e4d2a8b8, 2026-08-16: baseline retained at 415 bytes, 144

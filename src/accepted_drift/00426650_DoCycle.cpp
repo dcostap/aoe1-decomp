@@ -135,9 +135,15 @@ struct TRIBE_World { void send_zone_score_info(); };
 #if !defined(COM_HAND_TU_CONTEXT)
 struct RGE_Base_Game {
     char gap[0x3F0]; TRIBE_World* world;
-    virtual void vf0(); virtual void vf4(); virtual void vf8(); virtual void vfC();
-    virtual void vf10(); virtual void vf14(); virtual void vf18(); virtual void vf1C();
-    virtual void language(int, char*, int);
+    virtual ~RGE_Base_Game();
+    virtual int run();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual void set_prog_mode(int);
+    virtual void set_game_mode(int, int);
+    virtual void set_player(short);
+    virtual int get_error_code();
+    virtual char* get_string(long, char*, int);
+    virtual char* get_string(int, long, char*, int);
 };
 #endif // COM_HAND_TU_CONTEXT
 
@@ -347,7 +353,7 @@ int TCommunications_Handler::DoCycle(ulong param_1)
                         if (this->MeHost != 0) {
                             L->Log(S(0x580DB4), i, this->current_turn, elapsed);
                             RGE_Base_Game* base_game = rge_base_game;
-                            base_game->language(0x4BA, msg_str, 0x64);
+                            base_game->get_string(0x4BA, msg_str, 0x64);
                             sprintf(this->TBuff, msg_str, this->GetPlayerName(i), i);
                             if (this->current_turn > 6) {
                                 this->SendChatMsgAll(this->TBuff);

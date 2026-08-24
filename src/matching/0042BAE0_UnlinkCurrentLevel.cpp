@@ -13,7 +13,7 @@
 //    (ecx for test + eax for delete) adding 18B in the case-6/7 region; +84B total incl.
 //    trailing jump-table data. Fix: explicit `RGE_Communications_Speed* speed = this->Speed`
 //    temps (per 00406010 lesson) keep the pointer in one callee-saved register. -> 19B diff.
-// 2. class sizes: RGE_Communications_Speed/Synchronize have no vptr, so gaps must be full
+// 2. class sizes: RGE_Communications_Speed/Synchronize have no virtual base, so gaps must be full
 //    0x240 / 0x7EC (the -4 was wrong) to emit operator new(0x240)/new(0x7EC). -> 0 diff.
 // 3. case SESSION_HOSTED: Chat->ClearChat() must come AFTER NeedsToBeSent/LastSentTime
 //    stores (source order; VC5 hoists the Chat load) to match the binary store/call order.

@@ -116,10 +116,14 @@
 #include "matching/00426350_KillAnyMissingPlayers.cpp"
 #undef g_pDirectPlay
 #include "scratch/00426470_AddCommand.cpp"
+#include "../include/com_hand_resender_ctor_context.h"
 #include "matching/004264D0_get_command.cpp"
 #include "matching/00426510_new_command.cpp"
 #include "matching/00426530_NewCommand.cpp"
+#include "../include/com_hand_resender_dtor_context.h"
+#include "../include/com_hand_holder_ctor_context.h"
 #include "scratch/00426630_LastWorldRandom.cpp"
+#include "../include/com_hand_holder_dtor_context.h"
 #include "accepted_drift/00426650_DoCycle.cpp"
 #undef S
 #undef LAST_COMM_DUMP

@@ -1,17 +1,14 @@
 #if !defined(COM_HAND_TU_CONTEXT)
-struct Fwd_6FB0 {
-    void target();
-};
-
-class RGE_Base_Game : public Fwd_6FB0 {
+class TCommunications_Handler {
 public:
     char gap_0[0x12A8];
-    int field_12A8;
+    int ShuttingDown;
     void ShutdownGameMessages();
+    void ReceiveGameMessages();
 };
 #endif // COM_HAND_TU_CONTEXT
 
-void RGE_Base_Game::ShutdownGameMessages() {
-    this->field_12A8 = 1;
-    this->target();
+void TCommunications_Handler::ShutdownGameMessages() {
+    this->ShuttingDown = 1;
+    this->ReceiveGameMessages();
 }
