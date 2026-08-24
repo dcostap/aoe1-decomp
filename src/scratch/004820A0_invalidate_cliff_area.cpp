@@ -115,6 +115,9 @@
 //   evidence gap is early ESI/EBP/EBX/EAX allocation and one missing `mov ebx,
 //   eax` after the inner scan. No natural source lead recovered these bytes.
 
+#ifdef RMM_CLIF_SHARED_CONTEXT
+#include "../../include/rmm_clif_context.h"
+#else
 #include "../../include/rmm_base_context.h"
 
 struct RGE_Cliffs_Hot_Spots {
@@ -144,6 +147,7 @@ public:
 protected:
     void invalidate_cliff_area(long x, long y, long spacing);
 };
+#endif
 
 void RGE_RMM_Cliffs_Generator::invalidate_cliff_area(long x, long y, long spacing) {
     long cliff_width2 = this->map_width / 3 - 1;

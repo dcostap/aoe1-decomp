@@ -12,6 +12,7 @@
 
 void __cdecl operator delete(void* ptr);
 
+#ifndef TAISTRMD_TU_CONTEXT
 class AIModule {
 public:
     virtual ~AIModule();
@@ -67,6 +68,7 @@ public:
 
     virtual ~TribeStrategyAIModule();
 };
+#endif
 
 TribeStrategyAIModule::~TribeStrategyAIModule() {
     // vptr restored, members and base destroyed automatically by VC5

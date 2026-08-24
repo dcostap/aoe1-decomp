@@ -7,6 +7,7 @@
 typedef unsigned char uchar;
 typedef unsigned short ushort;
 
+#ifndef RGE_COM_OBJ_SHARED_CONTEXT
 class RGE_Static_Object;
 
 class RGE_Game_World {
@@ -222,8 +223,10 @@ public:
     char gap_10[0x184 - 0x10];
     RGE_Action_List* actions;   // +0x184
 
+    void set_action(RGE_Action* action);
     int moveTo(int param_1, float param_2, int param_3);
 };
+#endif
 
 int RGE_Combat_Object::moveTo(int param_1, float param_2, int param_3)
 {
@@ -264,7 +267,7 @@ int RGE_Combat_Object::moveTo(int param_1, float param_2, int param_3)
         return 0;
 
     this->actions->delete_list();
-    ((VTable208Proxy*)this)->call208(moveAction);
+    this->set_action(moveAction);
 
 success:
     return 1;

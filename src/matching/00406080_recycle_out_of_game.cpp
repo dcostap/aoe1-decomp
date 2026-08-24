@@ -1,3 +1,4 @@
+#ifndef ACT_OBJ_CONTEXT_H
 class RGE_Action_List {
 public:
     void delete_list();
@@ -15,6 +16,7 @@ public:
 
     virtual void recycle_out_of_game();
 };
+#endif
 
 void RGE_Action_Object::recycle_out_of_game() {
     if (this->actions) {

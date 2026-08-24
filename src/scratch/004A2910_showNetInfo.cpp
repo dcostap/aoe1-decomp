@@ -4,6 +4,8 @@
 // 2: /GX required for original EH frame; class size padded to 0x224 to match operator new size.
 // 3: OKDialog prototype/call order is (message,title,line,height), not decompiler-looking title,line,message,height.
 
+#ifndef SCR_MPS_TU_CONTEXT
+
 extern "C" int __cdecl sprintf(char*, const char*, ...);
 extern "C" char* __cdecl strcat(char*, const char*);
 extern "C" char* __cdecl strcpy(char*, const char*);
@@ -28,6 +30,8 @@ public:
     void ErrorDialog(int, int, int, int);
     void showNetInfo();
 };
+
+#endif
 
 void TribeMPSetupScreen::showNetInfo()
 {

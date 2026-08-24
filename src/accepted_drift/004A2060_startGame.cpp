@@ -311,7 +311,7 @@ int TribeMPSetupScreen::startGame()
         int u12;
         if (rge_base_game->scenarioGame()) {
             int i3;
-            long* pl;
+            int* pl;
             for (i3 = 0, u12 = 1, pl = this->scenarioCheckSum; u12 < 9; i3++, pl++, u12++) {
                 if (u12 != comm->WhoAmI() &&
                     comm->GetPlayerHumanity(u12) == 2) {

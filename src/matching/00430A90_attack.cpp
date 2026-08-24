@@ -4,6 +4,7 @@
 // attempt 2: action type virtual lives at +0x18 and attack ctor wants master short +0x12A, not +0x13E.
 // attempt 3: object add_action virtual is at vtable +0x208, not +0x204.
 
+#ifndef RGE_COM_OBJ_SHARED_CONTEXT
 class RGE_Action {
 public:
     virtual void v00();
@@ -85,6 +86,7 @@ public:
 
     virtual int attack(float x, float y, float z, int force);
 };
+#endif
 
 int RGE_Combat_Object::attack(float x, float y, float z, int force)
 {

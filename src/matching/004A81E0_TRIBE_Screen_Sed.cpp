@@ -35,6 +35,7 @@
 // 18: separate short-lived pointer pairs with reversed declaration order for
 // each store reproduce the original ecx/eax schedule; exact match validated.
 
+#ifndef SCR_SED_TU_CONTEXT
 extern "C" int __cdecl sprintf(char*, const char*, ...);
 extern "C" int __cdecl strcmp(const char*, const char*);
 extern "C" char* __cdecl strstr(const char*, const char*);
@@ -254,6 +255,7 @@ public:
     void set_scenario_mode(int);
     void set_unit(short);
 };
+#endif
 
 TRIBE_Screen_Sed::TRIBE_Screen_Sed(char* file, int mode) : TScreenPanel("Scenario Editor Screen")
 {

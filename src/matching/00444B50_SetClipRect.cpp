@@ -8,6 +8,7 @@
 // Inverted the null guard so the non-null path stays inline and the default
 // rectangle is the late near-JE target; this produced an exact match.
 
+#ifndef DRAWAREA_CANONICAL_TU
 struct tagRECT {
     long left;
     long top;
@@ -26,6 +27,7 @@ public:
     void SetClipRect(tagRECT* rect);
     void SetClipRect(long left, long top, long right, long bottom);
 };
+#endif
 
 void TDrawArea::SetClipRect(tagRECT* rect)
 {

@@ -11,6 +11,7 @@
 typedef unsigned char uchar;
 
 // RGE_Action_List (direct calls)
+#ifndef RGE_COM_OBJ_SHARED_CONTEXT
 class RGE_Action_List {
 public:
     uchar have_action();
@@ -75,6 +76,7 @@ public:
 
     int unload(int param_1, float param_2, float param_3, float param_4);
 };
+#endif
 
 // Virtual table call helper for vtable[0x208] (slot 0x82)
 // Declare a struct with enough virtual slots and cast 'this' to it

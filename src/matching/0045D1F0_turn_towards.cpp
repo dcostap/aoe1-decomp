@@ -22,6 +22,7 @@ extern float DAT_00570b4c;
 extern float DAT_00570b50;
 extern float DAT_00570b84;
 
+#ifndef MOVE_OBJ_CANONICAL_TU
 class RGE_Game_World {
 public:
     virtual ~RGE_Game_World();
@@ -88,6 +89,7 @@ public:
     virtual unsigned char turn_towards(RGE_Static_Object* object,
                                        float x, float y);
 };
+#endif
 
 unsigned char RGE_Moving_Object::turn_towards(RGE_Static_Object* object,
                                                float x, float y) {

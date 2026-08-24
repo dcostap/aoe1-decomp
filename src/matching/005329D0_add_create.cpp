@@ -1,3 +1,4 @@
+#ifndef VICTORY_CONTEXT_H
 class RGE_Victory_Entry {
 public:
     unsigned char command; // 0x0
@@ -16,6 +17,7 @@ public:
     RGE_Victory_Entry* add(unsigned char param_1, unsigned char param_2);
     unsigned char add_create(unsigned char param_1, long param_2, long param_3, float param_4, float param_5, float param_6, float param_7, unsigned char param_8);
 };
+#endif
 
 unsigned char RGE_Victory_Conditions::add_create(unsigned char param_1, long param_2, long param_3, float param_4, float param_5, float param_6, float param_7, unsigned char param_8) {
     RGE_Victory_Entry* entry = this->add(param_1, param_8);

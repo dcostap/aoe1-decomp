@@ -1,3 +1,4 @@
+#ifndef VICTORY_CONTEXT_H
 class RGE_Victory_Conditions {
 public:
     char gap_0[0x10];
@@ -5,6 +6,7 @@ public:
 
     unsigned char victory_achieved(void);
 };
+#endif
 
 unsigned char RGE_Victory_Conditions::victory_achieved(void) {
     if (this->field_10 == 2) {

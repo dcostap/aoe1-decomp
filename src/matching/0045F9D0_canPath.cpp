@@ -13,6 +13,7 @@
 // Source audit: named world, map, zone-map, object, and path-system ownership;
 // no inline assembly or codegen-only scaffolding.
 
+#ifndef MOVE_OBJ_CANONICAL_TU
 struct XYPoint {
     int x;
     int y;
@@ -112,6 +113,7 @@ public:
 
 extern PathingSystem aiPathSystem;
 extern PathingSystem pathSystem;
+#endif
 
 int RGE_Moving_Object::canPath(int targetID, float tolerance, float* costOut,
                                int useAI, int unobPlayerID, int unobGroupID) {

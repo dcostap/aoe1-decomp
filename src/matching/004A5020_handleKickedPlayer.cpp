@@ -1,6 +1,8 @@
 // VA: 004A5020 handleKickedPlayer (55B)
 // Match the neg/sbb/add trick for conditional decrement
 
+#ifndef SCR_MPS_TU_CONTEXT
+
 class TEasy_Panel {
 public:
     void popupOKDialog(int text_id, char* panel_name, int param_4, int param_5);
@@ -18,6 +20,8 @@ public:
     void cancelScreen(int timed_out);
     void handleKickedPlayer(int player_index);
 };
+
+#endif
 
 void TribeMPSetupScreen::handleKickedPlayer(int player_index) {
     this->cancelScreen(0);

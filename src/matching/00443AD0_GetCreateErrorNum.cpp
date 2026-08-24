@@ -2,10 +2,12 @@
 // Drawarea.cpp:1509-1538
 // Natural sparse HRESULT switch, following the same-TU error-number helpers.
 
+#ifndef DRAWAREA_CANONICAL_TU
 class TDrawSystem {
 public:
     int GetCreateErrorNum(long hr);
 };
+#endif
 
 int TDrawSystem::GetCreateErrorNum(long hr)
 {

@@ -17,6 +17,7 @@
 //   bounds block while preserving the FPU compare sequence.
 // Result: MATCH locally with `python tools/check_function.py --va 005325A0`.
 
+#ifndef VICTORY_CONTEXT_H
 class RGE_Static_Object {
 public:
     char gap_00[0x38];
@@ -45,6 +46,7 @@ public:
 
     void handle_bring_area(RGE_Victory_Entry* entry);
 };
+#endif
 
 void RGE_Victory_Conditions::handle_bring_area(RGE_Victory_Entry* entry) {
     RGE_Static_Object* obj = entry->this_obj;

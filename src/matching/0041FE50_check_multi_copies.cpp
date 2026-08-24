@@ -10,6 +10,7 @@
 // try 3: express ERROR_ALREADY_EXISTS as the positive guarded body; this keeps
 //         the late failure release block and produces an exact 208-byte match.
 
+#ifndef BASEGAME_GROUPED_TU
 extern "C" __declspec(dllimport) void* __stdcall CreateMutexA(
     void* attr, int initial_owner, const char* name);
 extern "C" __declspec(dllimport) unsigned long __stdcall GetLastError(void);
@@ -45,6 +46,11 @@ public:
     unsigned char check_prog_argument(char* argument);
     int check_multi_copies();
 };
+#endif
+
+#ifndef s_LOBBY
+#define s_LOBBY ((char*)0x58025C)
+#endif
 
 int RGE_Base_Game::check_multi_copies()
 {

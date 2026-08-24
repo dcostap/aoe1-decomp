@@ -1,3 +1,4 @@
+#ifndef ACT_BIRD_CONTEXT_H
 class RGE_Sprite;
 class RGE_Static_Object;
 class RGE_Action;
@@ -125,6 +126,7 @@ class RGE_Action_Bird : public RGE_Action {
 public:
     unsigned char update(void);
 };
+#endif
 
 extern int __cdecl debug_rand(char* param_1, int param_2);
 

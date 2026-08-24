@@ -14,6 +14,10 @@
 
 #include <string.h>
 
+#ifdef RMM_CLIF_SHARED_CONTEXT
+#include "../../include/rmm_clif_context.h"
+#else
+
 struct Map_Stack {
     long x;
     long y;
@@ -82,6 +86,7 @@ public:
     void invalidate_cliff_area(long x, long y, long spacing);
     void setup_cliff_maps(void);
 };
+#endif
 
 void RGE_RMM_Cliffs_Generator::setup_cliff_maps(void) {
     long cliff_width = this->map_width / 3;

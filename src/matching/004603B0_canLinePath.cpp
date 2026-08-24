@@ -41,6 +41,7 @@
 
 #include <math.h>
 
+#ifndef MOVE_OBJ_CANONICAL_TU
 struct XYPoint {
     int x;
     int y;
@@ -123,6 +124,7 @@ public:
 
     virtual int canLinePath(const XYPoint&, const XYPoint&, float, XYPoint&, int);
 };
+#endif
 
 int RGE_Moving_Object::canLinePath(const XYPoint& a, const XYPoint& b,
                                    float maxDistance, XYPoint& result,

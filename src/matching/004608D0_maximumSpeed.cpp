@@ -1,3 +1,4 @@
+#ifndef MOVE_OBJ_CANONICAL_TU
 class RGE_Moving_Object_Master {
 public:
     char gap_00[0x64];
@@ -19,6 +20,14 @@ public:
 
     virtual float maximumSpeed(void);
 };
+#endif
+
+#ifdef MOVE_OBJ_CANONICAL_TU
+#define type master_obj
+#define master master_obj
+#define speed_multiplier radius_x
+#define maximum_speed radius_y
+#endif
 
 float RGE_Moving_Object::maximumSpeed(void) {
     if (this->master != 0 && this->master->speed_multiplier > 0.0) {
@@ -26,3 +35,10 @@ float RGE_Moving_Object::maximumSpeed(void) {
     }
     return this->type->maximum_speed;
 }
+
+#ifdef MOVE_OBJ_CANONICAL_TU
+#undef type
+#undef master
+#undef speed_multiplier
+#undef maximum_speed
+#endif

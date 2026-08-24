@@ -1,5 +1,6 @@
 // VA: 004A8A00 TRIBE_Screen_Sed::create_edit | scr_sed.cpp:580-588
 
+#ifndef SCR_SED_TU_CONTEXT
 class TPanel {
 public:
     virtual void v0();
@@ -32,6 +33,7 @@ public:
     int create_edit(TPanel* panel, TEditPanel** out_edit, char* text, short width,
                     int format, int a6, int a7);
 };
+#endif
 
 int TRIBE_Screen_Sed::create_edit(TPanel* panel, TEditPanel** out_edit, char* text, short width,
                                 int format, int a6, int a7) {

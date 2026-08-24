@@ -2,6 +2,7 @@
 // PDB source: Drawarea.cpp
 // Unlocks the DirectDraw surface and sets Bits to NULL
 
+#ifndef DRAWAREA_CANONICAL_TU
 class TDrawSystem {
 public:
     char gap_00[0x478];
@@ -55,6 +56,7 @@ public:
 
     void Unlock(char* name);
 };
+#endif
 
 void TDrawArea::Unlock(char* name)
 {

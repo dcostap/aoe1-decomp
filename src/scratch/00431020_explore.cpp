@@ -7,6 +7,7 @@
 typedef unsigned char uchar;
 typedef unsigned short ushort;
 
+#ifndef RGE_COM_OBJ_SHARED_CONTEXT
 class RGE_Action_List {
 public:
     char gap_00[8];
@@ -212,8 +213,10 @@ public:
     char gap_44[0x140];         // +0x44 to +0x183
     RGE_Action_List* actions;   // +0x184
 
+    void set_action(RGE_Action* action);
     int explore(int param_1, int param_2, int param_3);
 };
+#endif
 
 int RGE_Combat_Object::explore(int param_1, int param_2, int param_3)
 {
@@ -240,7 +243,7 @@ int RGE_Combat_Object::explore(int param_1, int param_2, int param_3)
             return 0;
 
         actions->delete_list();
-        ((VTable208Proxy*)this)->call208(explore_action);
+        this->set_action(explore_action);
     }
 
 done:

@@ -47,7 +47,9 @@
 //   forms were tested. They were worse or duplicate. The clean source is
 //   restored; the first mismatch remains the header scheduling hunk.
 
+#ifndef DRAWAREA_CANONICAL_TU
 #include <windows.h>
+#endif
 #include <stdio.h>
 
 extern "C" int __cdecl __open(const char* path, int flags, ...);
@@ -56,6 +58,7 @@ extern "C" int __cdecl close(int file);
 extern "C" void* __cdecl malloc(unsigned int size);
 extern "C" void __cdecl free(void* p);
 
+#ifndef DRAWAREA_CANONICAL_TU
 class TDrawArea {
 public:
     char gap_00[0x18];
@@ -69,6 +72,7 @@ public:
     void Unlock(char* name);
     void take_snapshot(char* name, int& number);
 };
+#endif
 
 void TDrawArea::take_snapshot(char* name, int& number)
 {
@@ -144,7 +148,8 @@ void TDrawArea::take_snapshot(char* name, int& number)
         if (this->Lock("take_snapshot", 1) != 0) {
             int y = bmHeight - 1;
             while (y >= 0) {
-                unsigned char* source = this->CurDisplayOffsets[y];
+                unsigned char* source =
+                    (unsigned char*)this->CurDisplayOffsets[y];
                 int x = 0;
                 if (this->Width > 0) {
                     do {

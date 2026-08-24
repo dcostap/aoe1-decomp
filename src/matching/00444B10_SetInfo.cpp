@@ -1,3 +1,4 @@
+#ifndef DRAWAREA_CANONICAL_TU
 struct BitmapInfoHeader {
     int unused0;
     int biWidth;
@@ -22,11 +23,12 @@ public:
 
     void SetInfo(void);
 };
+#endif
 
 void TDrawArea::SetInfo(void) {
-    this->Pitch = this->field_50;
-    this->BitmapInfo->bmiHeader.biWidth = this->field_50;
-    if ((this->caps & 0x800) != 0) {
+    this->Pitch = this->SurfaceDesc.lPitch;
+    this->BitmapInfo->bmiHeader.biWidth = this->SurfaceDesc.lPitch;
+    if ((this->SurfaceDesc.ddsCaps.dwCaps & 0x800) != 0) {
         this->UsingVidMem = 0;
         return;
     }

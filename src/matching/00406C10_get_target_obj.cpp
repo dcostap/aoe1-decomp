@@ -1,3 +1,4 @@
+#ifndef ACT_OBJ_CONTEXT_H
 class RGE_Static_Object;
 
 class RGE_Action {
@@ -36,6 +37,7 @@ public:
 
     RGE_Static_Object* get_target_obj(void);
 };
+#endif
 
 RGE_Static_Object* RGE_Action_Object::get_target_obj(void) {
     RGE_Action* action;

@@ -17,6 +17,9 @@
 // Best current reconstruction: exact 248/248 bytes, 8/8 ordered calls, natural named field ownership and
 // the proven +0xB4 parent action slot.
 
+#ifdef DLG_LIST_SHARED_CONTEXT
+#include "../../include/dlg_list_context.h"
+#else
 class TPanel {
 public:
     virtual ~TPanel();
@@ -95,6 +98,7 @@ public:
     virtual short get_list_id();
     virtual char* get_list_name();
 };
+#endif
 
 long TListDialog::action(TPanel* param_1, long param_2, unsigned long param_3, unsigned long param_4) {
     if (param_1 != 0) {

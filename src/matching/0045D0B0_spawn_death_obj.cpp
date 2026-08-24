@@ -1,3 +1,4 @@
+#ifndef MOVE_OBJ_CANONICAL_TU
 class RGE_Static_Master_Object {
 public:
     char gap_00[4];
@@ -18,6 +19,7 @@ public:
 
     virtual RGE_Static_Object* spawn_death_obj(void);
 };
+#endif
 
 class DeathObject : public RGE_Static_Object {
 public:

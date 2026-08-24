@@ -4,6 +4,7 @@
 
 extern "C" void* __cdecl memset(void* dest, int val, unsigned int count);
 
+#ifndef DRAWAREA_CANONICAL_TU
 struct tagRECT {
     long left;
     long top;
@@ -23,6 +24,7 @@ public:
 
     void DrawHorzLine(long x, long y, long w, unsigned char color);
 };
+#endif
 
 extern void* __cdecl memset2(void*, int, unsigned int);
 

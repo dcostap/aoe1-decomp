@@ -1,3 +1,4 @@
+#ifndef SCR_SED_TU_CONTEXT
 class TListPanel {
 public:
     void scroll_cur_line(unsigned char mode, short line, unsigned char redraw);
@@ -18,6 +19,7 @@ public:
 
     void set_elevation(short value);
 };
+#endif
 
 void TRIBE_Screen_Sed::set_elevation(short value) {
     RGE_Base_Game* base_game;

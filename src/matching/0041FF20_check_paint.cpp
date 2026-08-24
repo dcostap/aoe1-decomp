@@ -5,6 +5,7 @@
 // - Baseline reconstruction: real RGE_Base_Game/TDrawSystem member surface,
 //   dllimport Win32 IAT calls, RECT local, switch dispatch on CheckSurfaces().
 
+#ifndef BASEGAME_GROUPED_TU
 extern "C" __declspec(dllimport) int __stdcall ValidateRect(void* hwnd, const void* rect);
 extern "C" __declspec(dllimport) int __stdcall IsIconic(void* window);
 extern "C" __declspec(dllimport) int __stdcall GetUpdateRect(void* hwnd, void* rect, int erase);
@@ -38,6 +39,7 @@ public:
     void set_render_all();
     int check_paint();
 };
+#endif
 
 int RGE_Base_Game::check_paint()
 {

@@ -12,6 +12,7 @@
 // removeAllUserDefinedWaypoints slot; the surrounding ABI declarations retain
 // the proven inherited slot order without manual vtable stores.
 
+#ifndef MOVE_OBJ_CANONICAL_TU
 struct XYZBYTEPoint {
     unsigned char x;
     unsigned char y;
@@ -161,6 +162,7 @@ public:
     unsigned char gap_175[3];
 
 };
+#endif
 
 int RGE_Moving_Object::addUserDefinedWaypoint(XYZBYTEPoint* point, int param_2) {
     if (this->finalUserDefinedWaypoint == 1) {

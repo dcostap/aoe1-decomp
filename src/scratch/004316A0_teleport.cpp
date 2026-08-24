@@ -1,3 +1,4 @@
+#ifndef RGE_COM_OBJ_SHARED_CONTEXT
 class VISIBLE_UNIT_REC {
 public:
     unsigned char gap_00[0x6];
@@ -19,6 +20,7 @@ public:
     float base_teleport(float x, float y, float z);
     virtual float teleport(float x, float y, float z);
 };
+#endif
 
 float RGE_Combat_Object::teleport(float x, float y, float z) {
     VISIBLE_UNIT_REC** vur;

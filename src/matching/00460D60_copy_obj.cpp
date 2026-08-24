@@ -2,6 +2,7 @@
 // tried collapsing the class to only obj/master pointers and then adding the 0x10 gap, but the entry load order still drifted
 // tried the real inheritance/layout surface from the type dumps; this should drive sprite/master accesses from the correct base offsets
 
+#ifndef MOVE_OBJ_CANONICAL_TU
 class RGE_Master_Static_Object;
 class RGE_Sprite;
 
@@ -65,6 +66,7 @@ class RGE_Moving_Object : public RGE_Animated_Object {
 public:
     void copy_obj(RGE_Master_Static_Object* master_obj);
 };
+#endif
 
 void RGE_Moving_Object::copy_obj(RGE_Master_Static_Object* master_obj) {
     RGE_Sprite* sprite = 0;

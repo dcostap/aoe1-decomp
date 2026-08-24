@@ -17,6 +17,8 @@
 // - MATCH: 429/429 bytes, 18/18 calls, 100% shape and relocation identity.
 // FLAGS: config/flags/004A2BA0_cancelScreen.rsp (/GX)
 
+#ifndef SCR_MPS_TU_CONTEXT
+
 class RGE_Base_Game {
 public:
     virtual ~RGE_Base_Game();
@@ -83,6 +85,8 @@ public:
 extern RGE_Base_Game* rge_base_game;
 extern TCommunications_Handler* comm;
 extern TPanelSystem panel_system;
+
+#endif
 
 void TribeMPSetupScreen::cancelScreen(int timed_out) {
     if (rge_base_game->singlePlayerGame() != 0) {

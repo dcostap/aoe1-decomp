@@ -26,6 +26,7 @@
 //   raw extents and recovered the exact first prologue hunk and full 341-byte
 //   function.  This source remains ordinary typed Drawarea code.
 
+#ifndef DRAWAREA_CANONICAL_TU
 class TDrawArea {
 public:
     void DrawHorzLine(long x, long y, long width, unsigned char color);
@@ -35,6 +36,7 @@ public:
                      unsigned char c3, unsigned char c4,
                      unsigned char c5, unsigned char c6);
 };
+#endif
 
 void TDrawArea::DrawBevel32(long x1, long y1, long x2, long y2,
                             unsigned char c1, unsigned char c2,

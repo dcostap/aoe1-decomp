@@ -50,14 +50,32 @@ public:
 
 class AIPlayPhaseTrigger {
 public:
-    unsigned char typeValue;            // +0x00
+    union {
+        unsigned char typeValue;        // +0x00
+        unsigned char field_0;
+    };
     unsigned char pad_01[3];            // +0x01
-    int value1Value;                    // +0x04
-    int value2Value;                    // +0x08
-    unsigned char phaseValue;           // +0x0C
-    unsigned char nextPhaseValue;       // +0x0D
+    union {
+        int value1Value;                // +0x04
+        int field_4;
+    };
+    union {
+        int value2Value;                // +0x08
+        int field_8;
+    };
+    union {
+        unsigned char phaseValue;       // +0x0C
+        unsigned char field_C;
+    };
+    union {
+        unsigned char nextPhaseValue;   // +0x0D
+        unsigned char field_D;
+    };
     unsigned char pad_0E[2];            // +0x0E
-    int randomnessValue;                // +0x10
+    union {
+        int randomnessValue;            // +0x10
+        int field_10;
+    };
 
     AIPlayPhaseTrigger();
     AIPlayPhaseTrigger(unsigned char type, int value1, int value2,
@@ -152,21 +170,30 @@ public:
         union {
             unsigned char groupID;
             unsigned char groupType;
+            unsigned char group_type;
+            unsigned char group;
             unsigned char field1;
         };                              // +0x04
         union {
             unsigned char type;
             unsigned char unitType;
+            unsigned char unit_type;
             unsigned char field2;
         };                              // +0x05
         unsigned char pad_06[2];        // +0x06
     };
 
-    GroupingStruct groupings[50];       // +0x000
+    union {
+        GroupingStruct groupings[50];   // +0x000
+        GroupingStruct entries[50];
+    };
     int playNumberValue;                // +0x190
     int targetValue;                    // +0x194
     XYZ originalPointValue;             // +0x198
-    int originalHitPointsValue[5];      // +0x1A4
+    union {
+        int originalHitPointsValue[5];  // +0x1A4
+        int arr_[5];
+    };
     unsigned char currentPhaseValue;    // +0x1B8
     unsigned char pad_1B9[3];           // +0x1B9
     int savedAttackerValue;             // +0x1BC

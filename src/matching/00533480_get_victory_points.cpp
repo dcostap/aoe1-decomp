@@ -1,3 +1,4 @@
+#ifndef VICTORY_CONTEXT_H
 class RGE_Victory_Conditions {
 public:
     virtual ~RGE_Victory_Conditions();
@@ -5,5 +6,6 @@ public:
     int field_1C;
     int get_victory_points();
 };
+#endif
 
 int RGE_Victory_Conditions::get_victory_points() { return this->field_1C; }

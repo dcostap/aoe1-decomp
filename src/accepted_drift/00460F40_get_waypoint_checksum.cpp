@@ -22,6 +22,7 @@
 //   saved index and EBX for waypoint pointer; FPU add order is now otherwise original-equivalent.
 // ACCEPTED_DRIFT: reviewed by Boss. Same size, same call sequence/control flow/stack cleanup and same arithmetic result. Remaining byte drift is benign EBX/EBP allocation swap for saved waypoint index vs loop waypoint pointer, with corresponding push/pop and addressing-register encodings only; no predicate, memory-effect, or FPU semantic change.
 
+#ifndef MOVE_OBJ_CANONICAL_TU
 struct Waypoint {
     float x, y, z;
     unsigned char facet;
@@ -54,7 +55,12 @@ public:
     
     int get_waypoint_checksum();
 };
+#endif
 
 extern "C" long __cdecl _ftol(void);
 
+#ifdef MOVE_OBJ_CANONICAL_TU
+long RGE_Moving_Object::get_waypoint_checksum(){ float sum=0.0f; register int savedIndex; Path* path=&this->pathValue; savedIndex=path->currentWaypointNumber(); path->initToStart(); int i=0; if(path->numberOfWaypoints()>0){ do{ Waypoint* wp1=path->currentWaypoint(); Waypoint* wp2=path->currentWaypoint(); sum += wp1->y + wp2->x; i++; path->moveToNextWaypoint(); }while(i<path->numberOfWaypoints()); } path->setCurrentWaypointNumber(savedIndex); return (long)(int)sum;}
+#else
 int RGE_Moving_Object::get_waypoint_checksum(){ float sum=0.0f; register int savedIndex; Path* path=&this->pathValue; savedIndex=path->currentWaypointNumber(); path->initToStart(); int i=0; if(path->numberOfWaypoints()>0){ do{ Waypoint* wp1=path->currentWaypoint(); Waypoint* wp2=path->currentWaypoint(); sum += wp1->y + wp2->x; i++; path->moveToNextWaypoint(); }while(i<path->numberOfWaypoints()); } path->setCurrentWaypointNumber(savedIndex); return (int)sum;}
+#endif

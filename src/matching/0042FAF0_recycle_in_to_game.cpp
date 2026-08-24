@@ -1,3 +1,4 @@
+#ifndef RGE_COM_OBJ_SHARED_CONTEXT
 class RGE_Player;
 
 class RGE_Master_Combat_Object {
@@ -24,6 +25,7 @@ public:
 
     virtual void recycle_in_to_game(RGE_Master_Combat_Object* master_obj, RGE_Player* player, float x, float y, float z);
 };
+#endif
 
 void RGE_Combat_Object::recycle_in_to_game(RGE_Master_Combat_Object* master_obj, RGE_Player* player, float x, float y, float z) {
     int i;

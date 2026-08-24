@@ -1,3 +1,4 @@
+#ifndef AOE1_SCR_MP_CONTEXT_H
 class RGE_Base_Game {
 public:
     char gap_0[0x1D8];
@@ -16,6 +17,7 @@ class TribeMPStartupScreen : public TPanel {
 public:
     long handle_idle();
 };
+#endif
 
 long TribeMPStartupScreen::handle_idle() {
     if (!rge_base_game->input_enabled)

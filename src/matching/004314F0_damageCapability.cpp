@@ -1,3 +1,4 @@
+#ifndef RGE_COM_OBJ_SHARED_CONTEXT
 class RGE_Armor_Weapon_Info;
 
 class RGE_Master_Combat_Object {
@@ -111,6 +112,7 @@ public:
     virtual float vf074(int weapon_num, RGE_Armor_Weapon_Info* weapon, float base_damage, void* owner, RGE_Static_Object* target);
     virtual float damageCapability(RGE_Static_Object* target);
 };
+#endif
 
 float RGE_Combat_Object::damageCapability(RGE_Static_Object* target) {
     float base_damage;

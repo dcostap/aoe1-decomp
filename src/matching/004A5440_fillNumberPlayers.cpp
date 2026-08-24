@@ -8,6 +8,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#ifndef SCR_MPS_TU_CONTEXT
+
 class TDropDownPanel {
 public:
     void empty_list();
@@ -33,6 +35,8 @@ public:
 
     void fillNumberPlayers();
 };
+
+#endif
 
 void TribeMPSetupScreen::fillNumberPlayers() {
     this->numberPlayersDrop->empty_list();

@@ -1,3 +1,4 @@
+#ifndef AIPBOOK_CANONICAL_TU
 class AIPlayStatus {
 public:
     class GroupingStruct {
@@ -11,6 +12,7 @@ public:
     GroupingStruct groupings[50];
     unsigned char numberOfTypeInGroup(int param_1, int param_2) const;
 };
+#endif
 
 unsigned char AIPlayStatus::numberOfTypeInGroup(int param_1, int param_2) const {
     unsigned char count = 0;

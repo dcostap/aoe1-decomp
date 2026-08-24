@@ -45,6 +45,7 @@
 //   branch-local results and duplicated cleanup because the recorded bytes
 //   prove this source shape is required.
 
+#ifndef MOVE_OBJ_CANONICAL_TU
 struct XYPoint {
     int x;
     int y;
@@ -162,10 +163,17 @@ public:
 
 extern PathingSystem aiPathSystem;
 extern PathingSystem pathSystem;
+#endif
 
+#ifdef MOVE_OBJ_CANONICAL_TU
+int RGE_Moving_Object::canPathWithObstructions(
+    int targetID, float range, float* costOut, int useAI,
+    int unobPlayerID, int unobGroupID, ManagedArrayInt* unobstructibles) {
+#else
 int RGE_Moving_Object::canPathWithObstructions(
     int targetID, float range, float* costOut, int useAI,
     int unobPlayerID, int unobGroupID, ManagedArray<int>* unobstructibles) {
+#endif
     RGE_Static_Object* target = this->owner->world->object(targetID);
     if (target == 0) {
         return 0;

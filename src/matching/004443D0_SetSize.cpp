@@ -17,6 +17,7 @@
 #include <string.h>
 #pragma function(memset)
 
+#ifndef DRAWAREA_CANONICAL_TU
 struct DDCOLORKEY {
     unsigned long dwColorSpaceLowValue;
     unsigned long dwColorSpaceHighValue;
@@ -215,6 +216,7 @@ public:
     void Clear(tagRECT*, int);
     void SetSize(long width, long height, int flags);
 };
+#endif
 
 void TDrawArea::SetSize(long width, long height, int flags)
 {

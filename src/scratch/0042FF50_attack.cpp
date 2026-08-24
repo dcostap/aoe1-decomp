@@ -39,6 +39,7 @@ class RGE_Combat_Object;
 class RGE_Missile_Object;
 class RGE_Player;
 
+#ifndef RGE_COM_OBJ_SHARED_CONTEXT
 class RGE_Master_Static_Object {
 public:
     virtual ~RGE_Master_Static_Object();
@@ -161,6 +162,7 @@ public:
     virtual unsigned char attack(RGE_Static_Object* target, float x, RGE_Combat_Object* other, float y, float z); // +0x228
     unsigned char attack(RGE_Static_Object* target, RGE_Combat_Object* other);
 };
+#endif
 
 #include <math.h>
 #pragma intrinsic(cos)

@@ -412,7 +412,11 @@ void TRIBE_Action_Trade::set_state(unsigned char param_1)
 
         if (this->target_obj != 0 &&
             this->target_obj->attribute_amount_held <= DAT_00575348 &&
+            #ifdef TACT_TRD_SHARED_CONTEXT
+            this->obj->keepGatheringWhenObjectIsOut(this->target_obj->master_obj->id) == 0) {
+            #else
             this->obj->vf138(this->target_obj->master_obj->id) == 0) {
+            #endif
             this->set_target_obj(0);
             this->set_state(3);
         }

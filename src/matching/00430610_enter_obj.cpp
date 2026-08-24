@@ -4,6 +4,7 @@ class Visible_Unit_Manager;
 
 extern "C" Visible_Unit_Manager* VisibleUnitManager;
 
+#ifndef RGE_COM_OBJ_SHARED_CONTEXT
 class RGE_Master_Static_Object {
 public:
     unsigned char gap_00[0x14];
@@ -42,6 +43,7 @@ public:
 
     virtual void enter_obj(RGE_Static_Object* obj);
 };
+#endif
 
 void RGE_Combat_Object::enter_obj(RGE_Static_Object* obj) {
     RGE_Base_Object::enter_obj(obj);

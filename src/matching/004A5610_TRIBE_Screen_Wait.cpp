@@ -19,6 +19,8 @@
 // FLAGS: /GX (original has the fs:[0] EH registration frame; all sibling
 // scr_mps/scr_save screen ctors match only with /GX)
 
+#ifndef SCR_MPS_TU_CONTEXT
+
 #include <stdio.h>
 #include <string.h>
 
@@ -164,6 +166,8 @@ public:
 
     TRIBE_Screen_Wait();
 };
+
+#endif
 
 TRIBE_Screen_Wait::TRIBE_Screen_Wait() : TScreenPanel("Multiplayer Wait Screen")
 {

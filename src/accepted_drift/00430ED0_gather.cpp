@@ -48,6 +48,7 @@
 // All 16 calls, predicates, external accesses, stores, and fault order match.
 // The only net growth is the two-byte `mov eax, esi` in the shared epilogue.
 
+#ifndef RGE_COM_OBJ_SHARED_CONTEXT
 class RGE_Static_Object {
 public:
     virtual ~RGE_Static_Object();
@@ -280,6 +281,7 @@ public:
 
     virtual int gather(int object_id, int force);
 };
+#endif
 
 int RGE_Combat_Object::gather(int object_id, int force) {
     RGE_Static_Object* target = this->player->world->object(object_id);

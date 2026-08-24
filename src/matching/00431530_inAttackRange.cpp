@@ -1,6 +1,7 @@
 extern "C" double __cdecl sqrt(double value);
 #pragma intrinsic(sqrt)
 
+#ifndef RGE_COM_OBJ_SHARED_CONTEXT
 class RGE_Static_Object;
 
 class RGE_Master_Combat_Object {
@@ -87,6 +88,7 @@ public:
     float distance_to_object(RGE_Static_Object* obj);
     int inAttackRange(RGE_Static_Object* obj);
 };
+#endif
 
 int RGE_Combat_Object::inAttackRange(RGE_Static_Object* obj) {
     float radius_distance;

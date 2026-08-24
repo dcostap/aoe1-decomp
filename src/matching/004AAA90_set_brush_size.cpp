@@ -1,5 +1,6 @@
 // VA: 004AAA90 TRIBE_Screen_Sed::set_brush_size | scr_sed.cpp:1725-1749
 
+#ifndef SCR_SED_TU_CONTEXT
 class TButtonPanel {
 public:
     void set_radio_button(void);
@@ -36,6 +37,7 @@ public:
 
     void set_brush_size(int size);
 };
+#endif
 
 void TRIBE_Screen_Sed::set_brush_size(int size) {
     if (!size) return;

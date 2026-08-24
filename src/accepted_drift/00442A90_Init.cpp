@@ -51,9 +51,11 @@
 #include "../../include/drawarea_context.h"
 #pragma function(memset)
 
+#ifndef DRAWAREA_CANONICAL_TU
 extern "C" __declspec(dllimport) unsigned int __stdcall GetPaletteEntries(
     void*, unsigned int, unsigned int, PALETTEENTRY*);
 extern "C" __declspec(dllimport) int __stdcall GetClientRect(void*, RECT*);
+#endif
 
 int TDrawSystem::Init(void* inst, void* wnd, void* pal,
                       unsigned char draw_type, unsigned char screen_mode,
@@ -138,7 +140,8 @@ int TDrawSystem::Init(void* inst, void* wnd, void* pal,
         this->ErrorCode = 1;
         return 0;
     }
-    this->DirDrawPal->SetEntries(0, 0, 0x100, this->palette);
+    this->DirDrawPal->lpVtbl->setEntries(this->DirDrawPal, 0, 0, 0x100,
+                                         this->palette);
 
     if ((*direct_draw)->CreateClipper(0, &this->Clipper, 0) != 0) {
         this->ErrorCode = 1;

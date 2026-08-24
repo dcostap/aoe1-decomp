@@ -1,3 +1,4 @@
+#ifndef RGE_COM_OBJ_SHARED_CONTEXT
 class Visible_Unit_Manager;
 extern "C" Visible_Unit_Manager* VisibleUnitManager;
 
@@ -37,6 +38,7 @@ public:
 
     virtual ~RGE_Combat_Object();
 };
+#endif
 
 RGE_Combat_Object::~RGE_Combat_Object() {
     if (id >= 0) {

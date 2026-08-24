@@ -9,6 +9,7 @@
 
 #include <stdlib.h>
 
+#ifndef DRAWAREA_CANONICAL_TU
 class TDrawArea;
 class TSpan_List_Manager;
 
@@ -89,6 +90,7 @@ public:
 
     ~TDrawArea();
 };
+#endif
 
 TDrawArea::~TDrawArea()
 {

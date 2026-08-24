@@ -1,11 +1,7 @@
-extern "C" char* __cdecl strncpy(char* dst, const char* src, unsigned int count);
-class SomeClass {
-public:
-    void setName(char* name);
-    char data[64];
-};
-void SomeClass::setName(char* name) {
+// 0040F360 AIPlay::setName
+
+void AIPlay::setName(char* name) {
     if (name) {
-        strncpy(this->data, name, 64);
+        strncpy(this->nameValue, name, 64);
     }
 }

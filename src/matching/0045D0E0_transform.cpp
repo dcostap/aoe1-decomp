@@ -1,3 +1,4 @@
+#ifndef MOVE_OBJ_CANONICAL_TU
 class RGE_Master_Static_Object;
 
 class RGE_Animated_Object {
@@ -24,6 +25,7 @@ public:
 
     void transform(RGE_Master_Static_Object* master);
 };
+#endif
 
 void RGE_Moving_Object::transform(RGE_Master_Static_Object* master) {
     this->RGE_Animated_Object::transform(master);

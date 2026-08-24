@@ -5,10 +5,12 @@
 // Main-agent audit confirmed the natural HRESULT switch and same-TU draw-system
 // surface; exact bytes were revalidated after promotion.
 
+#ifndef DRAWAREA_CANONICAL_TU
 class TDrawSystem {
 public:
     int GetBlitErrorNum(long hr);
 };
+#endif
 
 int TDrawSystem::GetBlitErrorNum(long hr)
 {

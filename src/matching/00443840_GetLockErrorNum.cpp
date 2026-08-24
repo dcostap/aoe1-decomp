@@ -1,7 +1,9 @@
 // VA: 00443840 TDrawSystem::GetLockErrorNum
 // Drawarea.cpp:1414-1436
 
+#ifndef DRAWAREA_CANONICAL_TU
 class TDrawSystem { public: int GetLockErrorNum(long hr); };
+#endif
 
 int TDrawSystem::GetLockErrorNum(long hr)
 {

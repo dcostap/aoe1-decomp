@@ -2,6 +2,7 @@
 // PDB source: Drawarea.cpp
 // Sets the palette — loads entries from HPALETTE or zeroes them, then calls ModifyPalette
 
+#ifndef DRAWAREA_CANONICAL_TU
 #pragma pack(push, 1)
 struct tagPALETTEENTRY {
     unsigned char peRed;
@@ -21,6 +22,7 @@ public:
 
     void ModifyPalette(int start, int count, void* entries);
 };
+#endif
 
 void __fastcall SetPalette(void* _this, int _, void* hPal)
 {

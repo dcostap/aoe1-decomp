@@ -19,6 +19,8 @@ class RGE_Static_Object;
 class RGE_Object_List;
 class RGE_Victory_Entry;
 class RGE_Victory_Point_Entry;
+class RGE_Visible_Map;
+class RGE_Victory_Condition;
 
 class RGE_Object_List {
 public:
@@ -42,28 +44,49 @@ public:
     RGE_Player** players; // +0x40
 };
 
+typedef RGE_Game_World RGE_World;
+
 class RGE_Player {
 public:
     virtual ~RGE_Player();
-    char gap_04[0x24];
+    char gap_04[0x20];
+    RGE_Master_Static_Object** master_objects; // +0x24
     RGE_Object_List* objects; // +0x28
-    char gap_2C[0x10];
+    char gap_2C[8];
+    RGE_Victory_Condition* victory_condition; // +0x34
+    RGE_Visible_Map* visible; // +0x38
     RGE_Game_World* world; // +0x3C
     char gap_40[0x0A];
-    short id; // +0x4A
+    union {
+        short id; // +0x4A
+        short self_id; // declaration-only compatibility alias
+    };
     char gap_4C[4];
     float* attributes; // +0x50
-    char gap_54[0x30];
-    unsigned char* relations; // +0x84
+    char gap_54[0x2C];
+    unsigned char game_status; // +0x80
+    char gap_81[3];
+    union {
+        unsigned char* relations; // +0x84
+        unsigned char* diplomacy; // declaration-only compatibility alias
+    };
     char gap_88[0x7C];
-    unsigned char allied_victory; // +0x104
+    union {
+        unsigned char allied_victory; // +0x104
+        unsigned char active; // declaration-only compatibility alias
+    };
 };
 
 class RGE_Master_Static_Object {
 public:
     virtual ~RGE_Master_Static_Object();
-    char gap_04[0x0E];
+    char gap_04[4];
+    char* name; // +0x08
+    char gap_0C[6];
     short copy_id; // +0x12
+    char gap_14[0x1C];
+    float radius_x; // +0x30
+    float radius_y; // +0x34
 };
 
 class RGE_Static_Object {
@@ -71,31 +94,64 @@ public:
     virtual ~RGE_Static_Object();
     long id; // +0x04
     RGE_Master_Static_Object* master_obj; // +0x08
-    RGE_Player* owner; // +0x0C
+    union {
+        RGE_Player* owner; // +0x0C
+        long field_C; // declaration-only compatibility alias
+    };
     char gap_10[0x28];
     float world_x; // +0x38
     float world_y; // +0x3C
     char gap_40[8];
-    unsigned char object_state; // +0x48
+    union {
+        unsigned char object_state; // +0x48
+        unsigned char state; // declaration-only compatibility alias
+    };
 };
 
 class RGE_Victory_Entry {
 public:
-    unsigned char command; // +0x00
+    union {
+        unsigned char command; // +0x00
+        unsigned char type; // declaration-only compatibility alias
+    };
     char gap_01[3];
-    long obj_type; // +0x04
-    RGE_Player* target_player; // +0x08
+    union {
+        long obj_type; // +0x04
+        long field_4; // declaration-only compatibility alias
+    };
+    union {
+        RGE_Player* target_player; // +0x08
+        long field_8; // declaration-only compatibility alias
+    };
     float x0; // +0x0C
     float y0; // +0x10
-    float x1; // +0x14
-    float y1; // +0x18
-    long number; // +0x1C
-    long count; // +0x20
-    RGE_Static_Object* this_obj; // +0x24
+    union {
+        float x1; // +0x14
+        long y1; // declaration-only compatibility alias
+    };
+    union {
+        float y1; // +0x18
+        long y2; // declaration-only compatibility alias
+    };
+    union {
+        long number; // +0x1C
+        long field_1C; // declaration-only compatibility alias
+    };
+    union {
+        long count; // +0x20
+        long field_20; // declaration-only compatibility alias
+    };
+    union {
+        RGE_Static_Object* this_obj; // +0x24
+        long field_24; // declaration-only compatibility alias
+    };
     RGE_Static_Object* target_obj; // +0x28
     unsigned char victory_group; // +0x2C
     unsigned char ally_flag; // +0x2D
-    unsigned char state; // +0x2E
+    union {
+        unsigned char state; // +0x2E
+        unsigned char field_2E; // declaration-only compatibility alias
+    };
     unsigned char checked_flag; // +0x2F
     RGE_Victory_Entry* next; // +0x30
 };
@@ -103,14 +159,20 @@ public:
 class RGE_Victory_Point_Entry {
 public:
     unsigned char command; // +0x00
-    unsigned char state; // +0x01
+    union {
+        unsigned char state; // +0x01
+        unsigned char pad1; // declaration-only compatibility alias
+    };
     unsigned char id; // +0x02
     unsigned char group; // +0x03
     long attribute; // +0x04
     long amount; // +0x08
     long points; // +0x0C
     long curr_points; // +0x10
-    float curr_attribute_amount; // +0x14
+    union {
+        float curr_attribute_amount; // +0x14
+        float float_field; // declaration-only compatibility alias
+    };
     RGE_Victory_Point_Entry* next; // +0x18
 };
 
@@ -120,6 +182,7 @@ public:
     virtual void handle_condition(RGE_Victory_Entry* entry);
     virtual char* condition_description(RGE_Victory_Entry* entry);
     virtual void save(int handle);
+    void handle_victory_points(void* entry);
 
     RGE_Victory_Conditions(RGE_Player* player);
     RGE_Victory_Conditions(RGE_Player* player, int handle, long* version_map,
@@ -127,6 +190,7 @@ public:
     ~RGE_Victory_Conditions();
 
     RGE_Victory_Entry* add(unsigned char group, unsigned char id);
+    void remove_entry(RGE_Victory_Entry* entry);
     unsigned char add_attributes(unsigned char group, long attribute, long amount,
                                  unsigned char state);
     unsigned char add_bring(unsigned char group, RGE_Static_Object* this_obj,
@@ -163,15 +227,15 @@ public:
                                      unsigned char id);
 
     void check_for_victory();
-    unsigned char condition_info(long index, char** out_entry,
+    char condition_info(int index, char** out_entry,
                                  unsigned char* out_command);
-    long condition_number(long index);
+    int condition_number(int index);
     RGE_Victory_Entry* condition_raw_info(long index);
     void destroy_all();
-    long get_attribute_id(unsigned char id);
-    long get_victory_points();
-    long get_victory_points_group(unsigned char group);
-    long get_victory_points_id(unsigned char id);
+    int get_attribute_id(unsigned char id);
+    int get_victory_points();
+    int get_victory_points_group(unsigned char group);
+    int get_victory_points_id(unsigned char id);
     void handle_attribute(RGE_Victory_Entry* entry);
     void handle_bring_area(RGE_Victory_Entry* entry);
     void handle_bring_object(RGE_Victory_Entry* entry);
@@ -188,7 +252,7 @@ public:
     void handle_points_high_attribute_amount(RGE_Victory_Point_Entry* entry);
     void handle_points_high_attribute_once(RGE_Victory_Point_Entry* entry);
     void handle_victory_points(RGE_Victory_Entry* entry);
-    unsigned char remove_condition(long index);
+    unsigned char remove_condition(int index);
     void sub(RGE_Victory_Entry* entry);
     void sub_point(RGE_Victory_Point_Entry* entry);
     unsigned char update();
@@ -199,14 +263,41 @@ protected:
     void handle_points_highest_attribute(RGE_Victory_Point_Entry* entry);
 
 public:
-    RGE_Victory_Entry* victory_list; // +0x04
-    long list_num; // +0x08
+    union {
+        RGE_Victory_Entry* victory_list; // +0x04
+        RGE_Victory_Entry* field_4; // declaration-only compatibility alias
+    };
+    union {
+        long list_num; // +0x08
+        long field_8; // declaration-only compatibility alias
+    };
     RGE_Player* player; // +0x0C
-    unsigned char victory; // +0x10
+    union {
+        unsigned char victory; // +0x10
+        unsigned char field_10; // declaration-only compatibility alias
+    };
     char gap_11[3];
-    RGE_Victory_Point_Entry* victory_point_list; // +0x14
+    union {
+        RGE_Victory_Point_Entry* victory_point_list; // +0x14
+        RGE_Victory_Point_Entry* field_14; // declaration-only compatibility alias
+    };
     long point_list_num; // +0x18
-    long tot_victory_points; // +0x1C
+    union {
+        long tot_victory_points; // +0x1C
+        long field_1C; // declaration-only compatibility alias
+    };
 };
+
+class RGE_Visible_Map {
+public:
+    float percentExplored();
+};
+
+class RGE_Victory_Condition {
+public:
+    long get_victory_points();
+};
+
+typedef RGE_Victory_Point_Entry VP_Entry;
 
 #endif

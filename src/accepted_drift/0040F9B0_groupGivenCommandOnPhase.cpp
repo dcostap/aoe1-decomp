@@ -18,8 +18,11 @@
 // cleanup, loop bounds, predicates, unsigned byte handling, memory effects, and
 // returns match.
 
-// AIPlayPhase::command() defined elsewhere (0040F110 already matching)
+// AIPlayPhase::command() defined elsewhere (0040F110 already matching).
+// The local declarations are standalone-only. The canonical wrapper uses the
+// reviewed aipbook_context.h declarations without changing accepted behavior.
 
+#ifndef AIPBOOK_CANONICAL_TU
 class AIPlayPhase_Entry_0040F110 {
 public:
     unsigned char data[16];
@@ -40,6 +43,7 @@ public:
 
     int groupGivenCommandOnPhase(int groupValue, int typeValue, int phaseIndex);
 };
+#endif
 
 int AIPlay::groupGivenCommandOnPhase(int groupValue, int typeValue, int phaseIndex)
 {
@@ -51,10 +55,10 @@ int AIPlay::groupGivenCommandOnPhase(int groupValue, int typeValue, int phaseInd
 
     AIPlayPhase* phase = &this->phases[phaseIndex];
     for (int i = 0; i < 5; i++) {
-        AIPlayPhase_Entry_0040F110* cmd = phase->command(i);
-        if ((unsigned int)cmd->data[0] == (unsigned int)groupValue) {
-            AIPlayPhase_Entry_0040F110* cmd2 = phase->command(i);
-            *(unsigned char*)&groupValue = cmd2->data[1];
+        AIPlayPhaseCommand* cmd = phase->command(i);
+        if ((unsigned int)cmd->groupValue == (unsigned int)groupValue) {
+            AIPlayPhaseCommand* cmd2 = phase->command(i);
+            *(unsigned char*)&groupValue = cmd2->typeValue;
             if ((groupValue & 0xff) == type) {
                 return i;
             }

@@ -4,6 +4,7 @@
 // Bytes 00545D17-00545D1F are alignment data before this body.
 // Bytes 00545D27-00545D2F are alignment data before object().
 // BINARY NOTE: This nonvirtual __thiscall getter reads the +0x98 field directly.
+#ifndef WORLD_TU
 class RGE_Game_World {
 public:
     virtual ~RGE_Game_World();
@@ -11,6 +12,7 @@ public:
     int numberNegativeObjectsValue;
     int numberNegativeObjects();
 };
+#endif
 
 int RGE_Game_World::numberNegativeObjects() {
     return this->numberNegativeObjectsValue;

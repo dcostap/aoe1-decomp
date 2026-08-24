@@ -9,6 +9,7 @@ extern int PalSetRes;
 extern int FullPalSets;
 extern int AniPalSets;
 
+#ifndef DRAWAREA_CANONICAL_TU
 #pragma pack(push, 1)
 struct PALETTEENTRY {
     unsigned char peRed;
@@ -44,6 +45,7 @@ public:
 
     void ModifyPalette(int start, int count, PALETTEENTRY* entries);
 };
+#endif
 
 void TDrawSystem::ModifyPalette(int start, int count, PALETTEENTRY* entries) {
     PalSetRes = -99;

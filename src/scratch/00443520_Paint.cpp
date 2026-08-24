@@ -64,6 +64,7 @@
 // Const IAT declarations, typed Blt null parameters, function-scope bounds,
 // and cached ClientToScreen forms did not produce an exact or better source.
 
+#ifndef DRAWAREA_CANONICAL_TU
 struct tagRECT {
     long left;
     long top;
@@ -117,6 +118,7 @@ public:
 
     void Paint(tagRECT* param_1);
 };
+#endif
 
 void TDrawSystem::Paint(tagRECT* param_1)
 {

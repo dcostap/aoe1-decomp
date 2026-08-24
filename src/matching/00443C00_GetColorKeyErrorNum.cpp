@@ -3,10 +3,12 @@
 // Maps DirectDraw HRESULT to color-key error code constant.
 // Fresh 2026-05-19: use sparse signed switch, matching sibling GetRestoreErrorNum pattern.
 
+#ifndef DRAWAREA_CANONICAL_TU
 class TDrawSystem {
 public:
     int GetColorKeyErrorNum(long hr);
 };
+#endif
 
 int TDrawSystem::GetColorKeyErrorNum(long hr)
 {

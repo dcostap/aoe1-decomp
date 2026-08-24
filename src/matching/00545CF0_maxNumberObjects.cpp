@@ -5,6 +5,7 @@
 // bytes 00545CEC-00545CEF continue that padding before this body. It is not
 // part of this function.
 // BINARY NOTE: This nonvirtual __thiscall getter reads the +0x90 field directly.
+#ifndef WORLD_TU
 class RGE_Game_World {
 public:
     virtual ~RGE_Game_World();
@@ -12,5 +13,6 @@ public:
     int maxNumberObjectsValue;
     int maxNumberObjects();
 };
+#endif
 
 int RGE_Game_World::maxNumberObjects() { return this->maxNumberObjectsValue; }

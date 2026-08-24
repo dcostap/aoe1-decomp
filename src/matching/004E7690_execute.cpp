@@ -5,6 +5,7 @@
 
 #include "../../include/taistrmd_context.h"
 
+#ifndef TAISTRMD_TU_CONTEXT
 class MainDecisionAIModule : public AIModule {
 public:
     void* player;
@@ -101,6 +102,7 @@ public:
     TribeMainDecisionAIModule* playerAI;        // +0x238
     virtual ~TRIBE_Player();
 };
+#endif
 
 int VictoryConditionRuleSystem::execute(TRIBE_Player* player, int state, int command)
 {

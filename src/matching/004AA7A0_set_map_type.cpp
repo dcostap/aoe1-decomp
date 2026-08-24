@@ -1,6 +1,7 @@
 // VA: 004AA7A0 TRIBE_Screen_Sed::set_map_type | scr_sed.cpp:1566-1634
 // First natural pass from Ghidra/asm.
 
+#ifndef SCR_SED_TU_CONTEXT
 struct TPanel {
     virtual void v00();
     virtual void v04();
@@ -44,6 +45,7 @@ struct TRIBE_Screen_Sed {
 
     void set_map_type(int type, int redraw);
 };
+#endif
 
 void TRIBE_Screen_Sed::set_map_type(int type, int redraw)
 {

@@ -8,6 +8,70 @@ class AIModuleMessage;
 class TribeMainDecisionAIModule;
 class TRIBE_Player;
 
+class RGE_Master_Static_Object {
+public:
+    char gap_00[0x10];
+    short id;
+};
+
+class RGE_Static_Object {
+public:
+    char gap_00[0x4];
+    int id;
+    RGE_Master_Static_Object* master_obj;
+};
+
+class RGE_Victory_Entry {
+public:
+    unsigned char command;
+    char gap_01[0x3];
+    int obj_type;
+    class RGE_Player* target_player;
+    float x0;
+    float y0;
+    float x1;
+    float y1;
+    int number;
+    int count;
+    RGE_Static_Object* this_obj;
+    RGE_Static_Object* target_obj;
+};
+
+class RGE_Victory_Conditions {
+public:
+    RGE_Victory_Entry* condition_raw_info(int index);
+};
+
+class RGE_Player {
+public:
+    virtual ~RGE_Player();
+    char gap_04[0x30];
+    RGE_Victory_Conditions* victory_conditions;
+};
+
+class TribeTacticalAIModule {
+public:
+    virtual ~TribeTacticalAIModule();
+    char gap_04[0x1008];
+    void setStrategicNumber(int index, int value);
+};
+
+class TribeMainDecisionAIModule {
+public:
+    char gap_00[0xF0];
+    TRIBE_Player* player;
+    char gap_F4[0x11378];
+    TribeTacticalAIModule tacticalAI;
+    char gap_12478[0xF4];
+    TRIBE_Player* aiPlayer;
+};
+
+class TRIBE_Player : public RGE_Player {
+public:
+    char gap_38[0x200];
+    TribeMainDecisionAIModule* playerAI;
+};
+
 void* __cdecl operator new(unsigned int size);
 void __cdecl operator delete(void* pointer);
 
@@ -47,6 +111,10 @@ public:
     int numberValue;
     int desiredNumberValue;
     int maximumSizeValue;
+
+    int contains(const T& valueToFind);
+    int resize(int newSize);
+    T& operator[](int index);
 
     ManagedArray()
         : value(0), numberValue(0), desiredNumberValue(0), maximumSizeValue(0)
@@ -122,30 +190,83 @@ struct Waypoint {
 
 class TribeStrategyAIModule : public StrategyAIModule {
 public:
-    TribeMainDecisionAIModule* md;
-    int currentVictoryConditionValue;
-    char ruleSetNameValue[0x101];
-    unsigned char ruleSetNamePadding[3];
-    int targetIDValue;
-    int targetTypeValue;
-    int secondTargetIDValue;
-    int secondTargetTypeValue;
-    Waypoint targetPoint1Value;
-    Waypoint targetPoint2Value;
-    int targetAttributeValue;
-    int targetNumberValue;
+    union {
+        TribeMainDecisionAIModule* md;
+        int mainDecisionAI_;
+    };
+    union {
+        int currentVictoryConditionValue;
+        int currentVictoryCondition_;
+    };
+    union {
+        char ruleSetNameValue[0x104];
+        char ruleSetName_[0x104];
+    };
+    union {
+        int targetIDValue;
+        int targetID_;
+    };
+    union {
+        int targetTypeValue;
+        int targetType_;
+    };
+    union {
+        int secondTargetIDValue;
+        int secondTargetID_;
+    };
+    union {
+        int secondTargetTypeValue;
+        int secondTargetType_;
+    };
+    union {
+        Waypoint targetPoint1Value;
+        Waypoint targetPoint1_;
+    };
+    union {
+        Waypoint targetPoint2Value;
+        Waypoint targetPoint2_;
+    };
+    union {
+        int targetAttributeValue;
+        int targetAttribute_;
+    };
+    union {
+        int targetNumberValue;
+        int targetNumber_;
+    };
     int victoryConditionChangeTimeout;
     ManagedArray<int> vcRuleSet;
     ManagedArray<int> executingRules;
     ManagedArray<int> idleRules;
     VictoryConditionRuleSystem vcRules;
-    int difficultyLevel;
+    union {
+        int difficultyLevel;
+        int difficultyLevel_;
+    };
 
     virtual ~TribeStrategyAIModule();
+    virtual int update(int parameter);
+    virtual int save(int fileHandle);
     TribeStrategyAIModule(void* object, int parameter);
     TribeStrategyAIModule(int playerID, int infile);
+    void setMainDecisionAI(int value);
     int loadRules(char* name);
     void setDifficultyLevel(int level);
+    void setRule(int rule, int value);
+    int rule(int index);
+    char* ruleSetName();
+    int currentVictoryCondition();
+    int targetID();
+    int targetType();
+    int secondTargetID();
+    int secondTargetType();
+    Waypoint* targetPoint1();
+    Waypoint* targetPoint2();
+    int targetAttribute();
+    int targetNumber();
+    void setVictoryCondition(int value);
+    int isRuleExecuting(int ruleID);
+    int isRuleIdle(int ruleID);
 };
 
 #endif

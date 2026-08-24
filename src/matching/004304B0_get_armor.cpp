@@ -1,3 +1,4 @@
+#ifndef RGE_COM_OBJ_SHARED_CONTEXT
 class RGE_Armor_Weapon_Info {
 public:
     short type;
@@ -22,6 +23,7 @@ public:
 
     virtual void get_armor(short* armor, short* original_armor);
 };
+#endif
 
 void RGE_Combat_Object::get_armor(short* armor, short* original_armor) {
     int i;

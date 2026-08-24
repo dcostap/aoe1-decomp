@@ -1,5 +1,6 @@
 extern "C" void rge_write(int handle, void* buffer, int size);
 
+#ifndef RGE_COM_OBJ_SHARED_CONTEXT
 class RGE_Action_Object {
 public:
     virtual void save(int handle);
@@ -13,6 +14,7 @@ public:
 
     virtual void save(int handle);
 };
+#endif
 
 void RGE_Combat_Object::save(int handle) {
     RGE_Action_Object::save(handle);

@@ -1,6 +1,7 @@
 // VA: 00405F90 RGE_Action_Object::RGE_Action_Object (3-param ctor, EH-framed)
 // PDB source: act_obj.cpp
 
+#ifndef ACT_OBJ_CONTEXT_H
 class RGE_Moving_Object {
 public:
     virtual ~RGE_Moving_Object();
@@ -12,6 +13,7 @@ public:
     RGE_Action_Object(int id, void* world, int flag);
     int setup(int id, void* world);
 };
+#endif
 
 RGE_Action_Object::RGE_Action_Object(int id, void* world, int flag)
     : RGE_Moving_Object(id, world, 0)

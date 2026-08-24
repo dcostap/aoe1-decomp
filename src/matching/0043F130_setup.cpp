@@ -6,6 +6,9 @@
 
 #include <string.h>
 
+#ifdef DLG_LIST_SHARED_CONTEXT
+#include "../../include/dlg_list_context.h"
+#else
 class TPanel {
 public:
     virtual ~TPanel();
@@ -51,15 +54,16 @@ public:
     virtual ~TListDialog();
     long setup(TPanel* param_1, char* param_2, long param_3, long param_4,
         long param_5, long param_6, long param_7, long param_8, long param_9,
-        char* param_10, long param_11, long param_12, long param_13, long param_14,
+        int param_10, long param_11, long param_12, long param_13, long param_14,
         char** param_15, short param_16, short param_17, long param_18, long param_19,
         long param_20, long param_21, long param_22);
     long action(TPanel* param_1, long param_2, unsigned long param_3, unsigned long param_4);
 };
+#endif
 
 long TListDialog::setup(TPanel* param_1, char* param_2, long param_3, long param_4,
     long param_5, long param_6, long param_7, long param_8, long param_9,
-    char* param_10, long param_11, long param_12, long param_13, long param_14,
+    int param_10, long param_11, long param_12, long param_13, long param_14,
     char** param_15, short param_16, short param_17, long param_18, long param_19,
     long param_20, long param_21, long param_22) {
     

@@ -96,7 +96,11 @@ int TRIBE_Action_Trade::move_to(RGE_Static_Object* obj, float x, float y, float 
                 if (obj == this->target_ptr && this->state == 8) {
                     return 1;
                 }
+                #ifdef TACT_TRD_SHARED_CONTEXT
+                this->set_target_obj2(obj);
+                #else
                 this->vt22(obj);
+                #endif
                 this->set_state(8);
                 return 1;
             }
@@ -107,7 +111,11 @@ int TRIBE_Action_Trade::move_to(RGE_Static_Object* obj, float x, float y, float 
     this->coord_x = x;
     this->coord_y = y;
     this->coord_z = z;
+    #ifdef TACT_TRD_SHARED_CONTEXT
+    this->set_target_obj(0);
+    #else
     this->vt21(0);
+    #endif
     this->set_state(0xB);
     return 1;
 }

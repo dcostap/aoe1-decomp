@@ -1,3 +1,4 @@
+#ifndef ACT_OBJ_CONTEXT_H
 class RGE_Action {
 };
 
@@ -13,6 +14,7 @@ public:
 
     void set_action(RGE_Action* action);
 };
+#endif
 
 void RGE_Action_Object::set_action(RGE_Action* action) {
     if (action != 0) {

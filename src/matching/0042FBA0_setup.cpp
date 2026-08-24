@@ -1,3 +1,4 @@
+#ifndef RGE_COM_OBJ_SHARED_CONTEXT
 class RGE_Game_World;
 
 extern "C" void rge_read(int handle, void* buffer, int size);
@@ -22,6 +23,7 @@ public:
 
     virtual int setup(int handle, RGE_Game_World* world);
 };
+#endif
 
 int RGE_Combat_Object::setup(int handle, RGE_Game_World* world) {
     int i;

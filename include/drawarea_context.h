@@ -1,10 +1,9 @@
 #ifndef AOE1_DRAWAREA_CONTEXT_H
 #define AOE1_DRAWAREA_CONTEXT_H
 
-// Canonical Drawarea.cpp surface for the ordered early owners.
-// PDB layout proves TDrawSystem size 0x47C and TDrawArea method ownership.
-// Keep this header free of SDK includes. The period source used only the
-// records and COM slots declared below for these owners.
+// Canonical Drawarea.cpp surface for the complete ordered owner wrapper.
+// PDB layout proves TDrawSystem size 0x47C and TDrawArea size 0x100.
+// Standalone owner checks retain their small local declaration surfaces.
 
 typedef unsigned char uchar;
 
@@ -23,6 +22,51 @@ struct tagPALETTEENTRY {
     unsigned char peFlags;
 };
 typedef tagPALETTEENTRY PALETTEENTRY;
+
+typedef unsigned short WORD;
+typedef unsigned long DWORD;
+typedef long LONG;
+
+#pragma pack(push, 2)
+struct BITMAPFILEHEADER {
+    WORD bfType;
+    DWORD bfSize;
+    WORD bfReserved1;
+    WORD bfReserved2;
+    DWORD bfOffBits;
+};
+#pragma pack(pop)
+
+struct BITMAPINFOHEADER {
+    DWORD biSize;
+    LONG biWidth;
+    LONG biHeight;
+    WORD biPlanes;
+    WORD biBitCount;
+    DWORD biCompression;
+    DWORD biSizeImage;
+    LONG biXPelsPerMeter;
+    LONG biYPelsPerMeter;
+    DWORD biClrUsed;
+    DWORD biClrImportant;
+};
+
+struct RGBQUAD {
+    unsigned char rgbBlue;
+    unsigned char rgbGreen;
+    unsigned char rgbRed;
+    unsigned char rgbReserved;
+};
+
+extern "C" int (__stdcall * const GetClientRect)(void*, tagRECT*);
+extern "C" int (__stdcall * ClientToScreen)(void*, void*);
+extern "C" unsigned int __stdcall GetPaletteEntries(
+    void*, unsigned int, unsigned int, PALETTEENTRY*);
+extern "C" void* __stdcall SelectObject(void*, void*);
+extern "C" __declspec(dllimport) int __stdcall DeleteObject(void*);
+extern "C" __declspec(dllimport) int __stdcall DeleteDC(void*);
+extern "C" int __stdcall SetRect(RECT*, long, long, long, long);
+extern "C" int __cdecl sprintf(char*, const char*, ...);
 
 struct _DDCOLORKEY {
     unsigned long dwColorSpaceLowValue;
@@ -89,6 +133,35 @@ struct _DDBLTFX {
     unsigned long dwFillColor;
     _DDCOLORKEY ddckDestColorkey;
     _DDCOLORKEY ddckSrcColorkey;
+};
+
+typedef _DDCOLORKEY DDCOLORKEY;
+typedef _DDPIXELFORMAT DDPIXELFORMAT;
+typedef _DDSCAPS DDSCAPS;
+typedef _DDSURFACEDESC DDSURFACEDESC;
+typedef _DDBLTFX DDBLTFX;
+
+struct DrawBitmapInfoHeader {
+    unsigned long biSize;
+    long biWidth;
+    long biHeight;
+};
+
+struct BITMAPINFO256 {
+    DrawBitmapInfoHeader bmiHeader;
+};
+
+typedef BITMAPINFO256 BitmapInfo;
+
+class RGE_Color_Table {
+public:
+    virtual ~RGE_Color_Table();
+    char color_table_name[30];
+    short resource_id;
+    unsigned char type;
+    unsigned char map_color;
+    short id;
+    unsigned char table[256];
 };
 
 struct _DDCAPS {
@@ -164,34 +237,40 @@ public:
     virtual long __stdcall GetCaps();
     virtual long __stdcall GetClipper();
     virtual long __stdcall GetColorKey();
-    virtual long __stdcall GetDC();
+    virtual long __stdcall GetDC(void**);
     virtual long __stdcall GetFlipStatus();
     virtual long __stdcall GetOverlayPosition();
     virtual long __stdcall GetPalette();
     virtual long __stdcall GetPixelFormat();
-    virtual long __stdcall GetSurfaceDesc();
+    virtual long __stdcall GetSurfaceDesc(_DDSURFACEDESC*);
     virtual long __stdcall Initialize();
     virtual long __stdcall IsLost();
-    virtual long __stdcall Lock();
-    virtual long __stdcall ReleaseDC();
+    virtual long __stdcall Lock(void*, void*, int, void*);
+    virtual long __stdcall ReleaseDC(void*);
     virtual long __stdcall Restore();
     virtual long __stdcall SetClipper(void*);
-    virtual long __stdcall SetColorKey();
+    virtual long __stdcall SetColorKey(unsigned long, void*);
     virtual long __stdcall SetOverlayPosition();
     virtual long __stdcall SetPalette(void*);
-    virtual long __stdcall Unlock();
+    virtual long __stdcall Unlock(void*);
+};
+
+class IDirectDrawPalette;
+
+struct IDirectDrawPaletteVtbl {
+    void* queryInterface;
+    void* addRef;
+    void* release;
+    void* getCaps;
+    void* getEntries;
+    void* initialize;
+    long (__stdcall *setEntries)(IDirectDrawPalette*, unsigned long,
+                                 unsigned long, unsigned long, PALETTEENTRY*);
 };
 
 class IDirectDrawPalette {
 public:
-    virtual long __stdcall QueryInterface();
-    virtual unsigned long __stdcall AddRef();
-    virtual unsigned long __stdcall Release();
-    virtual long __stdcall GetCaps();
-    virtual long __stdcall GetEntries();
-    virtual long __stdcall Initialize();
-    virtual long __stdcall SetEntries(unsigned long, unsigned long,
-                                      unsigned long, PALETTEENTRY*);
+    IDirectDrawPaletteVtbl* lpVtbl;
 };
 
 class IDirectDrawClipper {
@@ -236,10 +315,52 @@ public:
 };
 
 class TDrawSystem;
-class BITMAPINFO256;
 class TDrawArea;
-class RGE_Color_Table;
-class TSpan_List_Manager;
+
+class VSpan_Node;
+
+class TSpan_Node_List {
+public:
+    VSpan_Node** Zone_Ptrs;
+    int* Zone_Size_Ptrs;
+    int Used_Zones;
+    int Max_Zones;
+    VSpan_Node* Free_Head;
+    int Free_Pool_Zone;
+    int Free_Pool_Index;
+    int Total_Blocks;
+    int Free_Blocks;
+    int Default_Grow_Size;
+    int Element_Size;
+    int Alloc_Count;
+    int Dealloc_Count;
+    int NewZone_Count;
+    int Reset_Count;
+
+    ~TSpan_Node_List();
+};
+
+class TSpan_List_Manager {
+public:
+    TSpan_Node_List VSList;
+    VSpan_Node** Line_Head_Ptrs;
+    VSpan_Node** Line_Tail_Ptrs;
+    long* LeftMostPx;
+    long* RightMostPx;
+    long* Span_Count;
+    int Num_Lines;
+    int Num_Pixels;
+    int Min_Span_Px;
+    int Max_Span_Px;
+    int Min_Line;
+    int Max_Line;
+
+    TSpan_List_Manager(int, int);
+    ~TSpan_List_Manager();
+    void ResetAll();
+    void SetSpanRegions(int, int, int, int);
+    void AddSpan(int, int, int);
+};
 
 struct DrawAreaNode {
     TDrawArea* DrawArea;
@@ -252,7 +373,7 @@ public:
     TDrawSystem* DrawSystem;              // +0x00
     void* Wnd;                            // +0x04
     unsigned char* Bits;                  // +0x08
-    BITMAPINFO256* BitmapInfo;            // +0x0C
+    BitmapInfo* BitmapInfo;               // +0x0C
     void* Bitmap;                         // +0x10
     void* OldBitmap;                      // +0x14
     int Width;                            // +0x18
@@ -270,7 +391,10 @@ public:
     void** DisplayOffsets;                // +0xBC
     void** CurDisplayOffsets;             // +0xC0
     void** FloatOffsets;                  // +0xC4
-    RGE_Color_Table* shadow_color_table;  // +0xC8
+    union {
+        RGE_Color_Table* shadow_color_table; // +0xC8
+        RGE_Color_Table* ShadowTable;        // +0xC8
+    };
     TSpan_List_Manager* SpanList;         // +0xCC
     TSpan_List_Manager* CurSpanList;      // +0xD0
     int Float_X_Delta;                    // +0xD4
@@ -288,9 +412,45 @@ public:
 
     TDrawArea(char*, int);
     ~TDrawArea();
-    int Init(class TDrawSystem*, long, long, int, int);
+    int Init(TDrawSystem*, long, long, int, int);
     void SetSize(long, long, int);
     unsigned char CheckSurface();
+    unsigned char* Lock(char*, int);
+    void Unlock(char*);
+    void* GetDc(char*);
+    void ReleaseDc(char*);
+    void SetInfo();
+    void SetAccessOffsets();
+    void SetFloatOffsets(int, int);
+    void SetClipRect(tagRECT*);
+    void SetClipRect(long, long, long, long);
+    void Clear(tagRECT*, int);
+    void PtrClear(tagRECT*, int);
+    long AlignedWidth();
+    void Copy(TDrawArea*, long, long, RECT*, int);
+    void SetTrans(int, unsigned char);
+    void SetOverlayTrans(int, unsigned char);
+    void SetPixel(long, long, unsigned char);
+    void DrawLine(int, int, int, int, unsigned char);
+    void DrawRect(long, long, long, long, unsigned char);
+    void DrawRect(tagRECT*, unsigned char);
+    void DrawHorzLine(long, long, long, unsigned char);
+    void DrawVertLine(long, long, long, unsigned char);
+    void FillRect(long, long, long, long, unsigned char);
+    void DrawBevel(long, long, long, long, unsigned char, unsigned char);
+    void DrawBevel2(long, long, long, long, unsigned char, unsigned char,
+                    unsigned char, unsigned char);
+    void DrawBevel3(long, long, long, long, unsigned char, unsigned char,
+                    unsigned char, unsigned char, unsigned char, unsigned char);
+    void DrawBevel21(long, long, long, long, unsigned char, unsigned char,
+                     unsigned char, unsigned char);
+    void DrawBevel32(long, long, long, long, unsigned char, unsigned char,
+                     unsigned char, unsigned char, unsigned char, unsigned char);
+    void DrawShadowBox(long, long, long, long);
+    void SetShadowTable(RGE_Color_Table*);
+    void GetPalette(PALETTEENTRY*);
+    void SetPalette(PALETTEENTRY*);
+    void take_snapshot(char*, int&);
 };
 
 extern "C" long __stdcall DirectDrawCreate(void*, IDirectDraw**, void*);
@@ -327,7 +487,10 @@ public:
     long ModeAvail640_16;                // +0x6C
     long ModeAvail800_16;                // +0x70
     long ModeAvail1024_16;               // +0x74
-    PALETTEENTRY palette[256];           // +0x78
+    union {
+        PALETTEENTRY palette[256];       // +0x78
+        PALETTEENTRY Palette[256];       // +0x78
+    };
     unsigned char DrawType;              // +0x478
     unsigned char ScreenMode;            // +0x479
 
@@ -348,8 +511,14 @@ public:
     void ModifyPalette(int, int, tagPALETTEENTRY*);
     int GetIsLostErrorNum(long);
     int GetRestoreErrorNum(long);
+    int GetSetDispModeErrorNum(long);
+    int GetLockErrorNum(long);
+    int GetBlitErrorNum(long);
+    int GetCreateErrorNum(long);
+    int GetColorKeyErrorNum(long);
     unsigned char CheckSurfaces();
     void ClearRestored();
+    void Paint(tagRECT*);
 };
 
 #endif

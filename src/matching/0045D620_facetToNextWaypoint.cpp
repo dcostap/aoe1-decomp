@@ -1,3 +1,4 @@
+#ifndef MOVE_OBJ_CANONICAL_TU
 class Waypoint {
 public:
     char gap_00[0x0C];
@@ -16,6 +17,7 @@ public:
 
     unsigned char facetToNextWaypoint() const;
 };
+#endif
 
 unsigned char RGE_Moving_Object::facetToNextWaypoint() const {
     Waypoint* waypoint;

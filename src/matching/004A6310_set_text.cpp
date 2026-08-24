@@ -1,3 +1,4 @@
+#ifndef SCR_MPS_TU_CONTEXT
 class MemberType {
 public:
     virtual void vf00();
@@ -67,7 +68,8 @@ public:
 
     void set_text(int param);
 };
+#endif
 
-void TRIBE_Screen_Disconnect::set_text(int param) {
+void TRIBE_Screen_Disconnect::set_text(long param) {
     this->member_47C->set_text(param);
 }

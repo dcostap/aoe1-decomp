@@ -3,10 +3,12 @@
 // Maps DirectDraw HRESULT to error code constant
 // Fresh 2026-05-19: signed sparse switch is the natural VC5 binary-search tree.
 
+#ifndef DRAWAREA_CANONICAL_TU
 class TDrawSystem {
 public:
     int GetRestoreErrorNum(long hr);
 };
+#endif
 
 int TDrawSystem::GetRestoreErrorNum(long hr)
 {

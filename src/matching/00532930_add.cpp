@@ -4,6 +4,7 @@
 
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 
+#ifndef VICTORY_CONTEXT_H
 class RGE_Victory_Entry {
 public:
     char gap_00[0x20];
@@ -24,6 +25,7 @@ public:
 
     RGE_Victory_Entry* add(unsigned char param_1, unsigned char param_2);
 };
+#endif
 
 RGE_Victory_Entry* RGE_Victory_Conditions::add(unsigned char param_1, unsigned char param_2) {
     RGE_Victory_Entry* entry = (RGE_Victory_Entry*)calloc(1, 0x34);

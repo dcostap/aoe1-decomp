@@ -359,9 +359,17 @@ unsigned char TRIBE_Action_Trade::update()
             this->set_state(3);
             return 0;
         }
+        #ifdef TACT_TRD_SHARED_CONTEXT
+        if (this->obj->turn_towards(this->target_obj, 0.0f, 0.0f) != 0) {
+        #else
         if (this->obj->can_trade_object(this->target_obj, 0, 0) != 0) {
+        #endif
             if (this->target_obj->trade_value > DAT_00575348 ||
+                #ifdef TACT_TRD_SHARED_CONTEXT
+                this->obj->keepGatheringWhenObjectIsOut(this->target_obj->master_obj->id) != 0) {
+                #else
                 this->obj->can_trade(this->target_obj->master_obj->id) != 0) {
+                #endif
                 this->set_state(7);
                 return 0;
             }
@@ -391,14 +399,22 @@ unsigned char TRIBE_Action_Trade::update()
             if (this->target_obj->owner->resource_store->amount < max_hold) {
                 max_hold = this->target_obj->owner->resource_store->amount;
             }
+            #ifdef TACT_TRD_SHARED_CONTEXT
+            this->target_obj->owner->add_attribute_num(this->obj->facet, -max_hold, 1);
+            #else
             this->target_obj->owner->trade_action(this->obj->facet, -max_hold, 1);
+            #endif
             this->target_obj->owner->resource_store->amount -= max_hold;
             this->obj->amount += max_hold;
             if (this->obj->amount >= capacity) {
                 goto update_state_8;
             }
             if (this->target_obj->owner->resource_store->amount <= DAT_00575348 &&
+                #ifdef TACT_TRD_SHARED_CONTEXT
+                this->obj->keepGatheringWhenObjectIsOut(this->target_obj->master_obj->id) == 0) {
+                #else
                 this->obj->can_trade(this->target_obj->master_obj->id) == 0) {
+                #endif
                 this->set_state(8);
                 return 0;
             }
@@ -423,8 +439,13 @@ unsigned char TRIBE_Action_Trade::update()
             }
             if (this->pick_up_y > DAT_00575350) {
                 RGE_Task* trade_task = (RGE_Task*)this->task;
+                #ifdef TACT_TRD_SHARED_CONTEXT
+                if (trade_task->work_sound != 0) {
+                    trade_task->work_sound->play(1);
+                #else
                 if (trade_task->sound != 0) {
                     trade_task->sound->play(1);
+                #endif
                 }
                 if (this->pick_up_x < DAT_00575350 || this->pick_up_y < DAT_00575350) {
                     take_amount = DAT_00575360;
@@ -443,8 +464,13 @@ unsigned char TRIBE_Action_Trade::update()
                 if (take_amount > DAT_00575370) {
                     take_amount = DAT_00575370;
                 }
+                #ifdef TACT_TRD_SHARED_CONTEXT
+                this->obj->owner->add_attribute_num(3, take_amount, 1);
+                this->obj->set_attribute(this->obj->facet, 0.0f);
+                #else
                 this->obj->owner->trade_action(3, take_amount, 1);
                 this->obj->set_trade_facet(this->obj->facet, 0);
+                #endif
             }
             if (this->target_obj != 0) {
                 this->set_state(4);

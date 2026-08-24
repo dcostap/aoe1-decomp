@@ -242,7 +242,7 @@ void TribeMPSetupScreen::init_vars() {
     this->myScenarioChecksum = 0;
     this->saveScenarioName[0] = 0;
     this->saveRandomGame = rge_base_game->randomGame();
-    long* zero_block = this->scenarioCheckSum;
+    int* zero_block = this->scenarioCheckSum;
     this->saveScenarioChecksum = 0;
     this->scenarioInfo = 0;
     this->numberAnyPlayers = 8;

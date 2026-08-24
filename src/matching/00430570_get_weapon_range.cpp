@@ -1,3 +1,4 @@
+#ifndef RGE_COM_OBJ_SHARED_CONTEXT
 class InnerObj {
 public:
     char gap_0[0x114];
@@ -12,6 +13,7 @@ public:
     InnerObj* field_8;
     void get_weapon_range(int* a, int* b);
 };
+#endif
 
 void RGE_Combat_Object::get_weapon_range(int* a, int* b) {
     *a = this->field_8->field_114;

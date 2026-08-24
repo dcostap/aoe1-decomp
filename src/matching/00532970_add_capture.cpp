@@ -1,3 +1,4 @@
+#ifndef VICTORY_CONTEXT_H
 struct RGE_Static_Object {
     char gap_0[0x0C];
     int field_C;
@@ -24,6 +25,7 @@ public:
     RGE_Victory_Entry* add(unsigned char param_1, unsigned char param_2);
     unsigned char add_capture(unsigned char param_1, RGE_Static_Object* param_2, unsigned char param_3);
 };
+#endif
 
 unsigned char RGE_Victory_Conditions::add_capture(unsigned char param_1, RGE_Static_Object* param_2, unsigned char param_3) {
     RGE_Victory_Entry* entry = this->add(param_1, param_3);

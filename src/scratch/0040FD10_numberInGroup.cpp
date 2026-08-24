@@ -1,23 +1,12 @@
-#pragma pack(push, 1)
-struct AIPlayStatusEntry {
-    int id;
-    unsigned char group;
-    unsigned char slot;
-    char pad[2];
-};
-#pragma pack(pop)
+// 0040FD10 AIPlayStatus::numberInGroup
 
-struct AIPlayStatus {
-    AIPlayStatusEntry entries[50];
-};
-
-unsigned char __fastcall numberInGroup(AIPlayStatus* self, int, int groupIndex) {
+unsigned char AIPlayStatus::numberInGroup(int groupIndex) {
     unsigned char count = 0;
-    AIPlayStatusEntry* entry = self->entries;
+    AIPlayStatus::GroupingStruct* entry = this->groupings;
     int remaining = 50;
     do {
         if (entry->id != -1) {
-            if (entry->group == groupIndex)
+            if (entry->groupID == groupIndex)
                 count++;
         }
         entry++;

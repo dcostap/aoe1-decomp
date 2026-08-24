@@ -1,3 +1,4 @@
+#ifndef AIPBOOK_CANONICAL_TU
 struct AIPlayGrouping {
     int id;
     int state;
@@ -6,12 +7,12 @@ struct AIPlayGrouping {
 class AIPlayStatus {
 public:
     AIPlayGrouping groupings[0x32];
-
     void copyUnits(int* units, int& count);
 };
+#endif
 
 void AIPlayStatus::copyUnits(int* units, int& count) {
-    AIPlayGrouping* grouping = this->groupings;
+    AIPlayStatus::GroupingStruct* grouping = this->groupings;
     int i = 0x32;
 
     count = 0;

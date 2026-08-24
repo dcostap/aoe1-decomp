@@ -18,10 +18,12 @@
 // Probe 14: register-qualified loop index; no codegen change.
 // ACCEPTED_DRIFT 2026-05-21 (Boss approved): remaining mismatch is register allocation/addressing only after exact prologue/epilogue/branches/FPU compare tail. Rebuilt uses ECX for entry and EDX for loop index where original uses ESI for entry and ECX for loop index, plus equivalent relation/attribute address encodings. Behavior, stack cleanup, memory effects, and final state stores match.
 
+#ifndef VICTORY_CONTEXT_H
 class RGE_Victory_Entry { public: char gap_00[0x1C]; long number; long count; char gap_24[0x09]; unsigned char ally_flag; unsigned char state; };
-class RGE_World { public: char gap_00[0x3C]; short player_num; char gap_3E[2]; void** players; };
+class RGE_World { public: char gap_00[0x3C]; short player_num; char gap_3E[2]; RGE_Player** players; };
 class RGE_Player { public: char gap_00[0x3C]; RGE_World* world; char gap_40[0x0A]; short id; char gap_4C[4]; float* attributes; char gap_54[0x30]; unsigned char* relations; char gap_88[0x7C]; unsigned char allied_victory; };
 class RGE_Victory_Conditions { public: char gap_00[0x0C]; RGE_Player* player; void handle_attribute(RGE_Victory_Entry* entry); };
+#endif
 
 void RGE_Victory_Conditions::handle_attribute(RGE_Victory_Entry* entry)
 {
@@ -41,10 +43,10 @@ void RGE_Victory_Conditions::handle_attribute(RGE_Victory_Entry* entry)
         RGE_World* world = p->world;
         register int i = world->player_num - 1;
         if (i >= 0) {
-            void** pp = world->players + i;
+            RGE_Player** pp = world->players + i;
             do {
                 if (p->relations[i] == 0) {
-                    RGE_Player* other = (RGE_Player*)*pp;
+                    RGE_Player* other = *pp;
                     int my_id = p->id;
                     if (other->relations[my_id] == 0 && i != my_id && other->allied_victory) {
                         total += *(float*)((char*)other->attributes + attr_idx_scaled);

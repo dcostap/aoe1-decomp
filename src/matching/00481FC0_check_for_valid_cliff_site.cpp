@@ -4,6 +4,9 @@
 // - the exact VC5 basin retains reference-address aliases, reads width before height, and stores width before height.
 // - variant lab confirmed the final source shape as an exact default-flag match.
 
+#ifdef RMM_CLIF_SHARED_CONTEXT
+#include "../../include/rmm_clif_context.h"
+#else
 class RGE_Random_Map_Module {
 public:
     virtual unsigned char generate(void);
@@ -28,6 +31,7 @@ public:
     unsigned char check_for_valid_cliff_site(long direction, long& y,
                                               long& valid_height, long index);
 };
+#endif
 
 unsigned char RGE_RMM_Cliffs_Generator::check_for_valid_cliff_site(
     long direction, long& y, long& valid_height, long index) {

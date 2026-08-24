@@ -1,3 +1,4 @@
+#ifndef ACT_OBJ_CONTEXT_H
 void* __cdecl operator new(unsigned int size);
 
 class RGE_Action_Object;
@@ -16,6 +17,7 @@ class RGE_Action_Object {
 public:
     RGE_Action_List* create_action_list(void);
 };
+#endif
 
 RGE_Action_List* RGE_Action_Object::create_action_list(void) {
     return new RGE_Action_List(this);

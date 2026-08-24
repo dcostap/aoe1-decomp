@@ -16,6 +16,7 @@
 
 void* __cdecl calloc(unsigned int count, unsigned int size);
 
+#ifndef DRAWAREA_CANONICAL_TU
 class TDrawArea;
 
 struct DrawAreaNode {
@@ -47,6 +48,7 @@ public:
     int Init(TDrawSystem* draw_system, long width, long height, int flags,
              int is_primary);
 };
+#endif
 
 int TDrawArea::Init(TDrawSystem* draw_system, long width, long height,
                     int flags, int is_primary)

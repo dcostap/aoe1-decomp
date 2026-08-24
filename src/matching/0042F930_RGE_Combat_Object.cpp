@@ -1,3 +1,4 @@
+#ifndef RGE_COM_OBJ_SHARED_CONTEXT
 class RGE_Player;
 class RGE_Master_Combat_Object;
 
@@ -13,6 +14,7 @@ public:
     virtual ~RGE_Combat_Object();
     virtual int setup(RGE_Master_Combat_Object* master_obj, RGE_Player* player, float x, float y, float z);
 };
+#endif
 
 RGE_Combat_Object::RGE_Combat_Object(RGE_Master_Combat_Object* master_obj, RGE_Player* player, float x, float y, float z, int do_setup)
     : RGE_Action_Object(master_obj, player, x, y, z, 0) {

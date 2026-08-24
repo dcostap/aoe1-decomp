@@ -3,10 +3,12 @@
 // Maps DirectDraw HRESULT to error code constant.
 // attempt: use natural sparse signed switch; sibling GetDCErrorNum matched this VC5 basin.
 
+#ifndef DRAWAREA_CANONICAL_TU
 class TDrawSystem {
 public:
     int GetSetDispModeErrorNum(long hr);
 };
+#endif
 
 int TDrawSystem::GetSetDispModeErrorNum(long hr)
 {

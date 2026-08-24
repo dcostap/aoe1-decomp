@@ -4,6 +4,7 @@
 extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
 extern "C" void __cdecl getstring(char** destination, char* source);
 
+#ifndef VICTORY_CONTEXT_H
 class RGE_Master_Static_Object {
 public:
     virtual ~RGE_Master_Static_Object();
@@ -59,5 +60,6 @@ public:
     RGE_Victory_Entry* victory_list;
     long list_num;
 };
+#endif
 
 #endif

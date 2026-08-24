@@ -1,5 +1,6 @@
 // probe 2: mirror the matched executingRules pattern with the idleRules offsets
 
+#ifndef TAISTRMD_TU_CONTEXT
 class TribeStrategyAIModule {
 public:
     char gap_000[0x258];
@@ -10,15 +11,16 @@ public:
 
     int isRuleIdle(int rule_id);
 };
+#endif
 
 int TribeStrategyAIModule::isRuleIdle(int rule_id) {
     int i;
 
-    for (i = 0; i < this->idleRules_count; i = i + 1) {
-        if (i >= this->idleRules_max) {
+    for (i = 0; i < this->idleRules.numberValue; i = i + 1) {
+        if (i >= this->idleRules.maximumSizeValue) {
             return 0;
         }
-        if (this->idleRules_value[i] == rule_id) {
+        if (this->idleRules.value[i] == rule_id) {
             return 1;
         }
     }

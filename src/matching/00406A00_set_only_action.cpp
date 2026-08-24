@@ -1,3 +1,4 @@
+#ifndef ACT_OBJ_CONTEXT_H
 class RGE_Action;
 
 class RGE_Action_List {
@@ -13,6 +14,7 @@ public:
 
     void set_only_action(RGE_Action* action);
 };
+#endif
 
 void RGE_Action_Object::set_only_action(RGE_Action* action) {
     this->actions->delete_list();

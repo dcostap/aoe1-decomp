@@ -1,3 +1,4 @@
+#ifndef ACT_OBJ_CONTEXT_H
 struct SoundMember {
     virtual void vf00();
     virtual void vf04();
@@ -20,7 +21,8 @@ public:
     SoundMember *sound;
     void play_move_sound();
 };
+#endif
 
 void RGE_Action_Object::play_move_sound() {
-    this->sound->vf30();
+    this->master_obj->play_move_sound();
 }

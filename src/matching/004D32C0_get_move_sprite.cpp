@@ -30,6 +30,21 @@ public:
 #endif
 
 RGE_Sprite* TRIBE_Action_Trade::get_move_sprite(void) {
+#ifdef TACT_TRD_SHARED_CONTEXT
+    RGE_Task* task = this->task;
+    short task_facet = task->attribute_type;
+
+    if (task_facet != -1) {
+        if (this->obj->facet == task_facet) {
+            if (this->obj->attribute_amount_held > 0) {
+                if (task->carry_sprite != 0) {
+                    return task->carry_sprite;
+                }
+            }
+        }
+    }
+    return task->work_sprite;
+#else
     RGE_Task* task = this->task;
     short task_facet = task->field_14;
 
@@ -43,4 +58,5 @@ RGE_Sprite* TRIBE_Action_Trade::get_move_sprite(void) {
         }
     }
     return task->field_34;
+#endif
 }

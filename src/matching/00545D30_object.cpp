@@ -8,6 +8,7 @@
 // BINARY NOTE: Direct fields are objectsValue +0x88, numberObjectsValue +0x8C,
 // maxNumberObjectsValue +0x90, negativeObjectsValue +0x94,
 // numberNegativeObjectsValue +0x98, and maxNumberNegativeObjectsValue +0x9C.
+#ifndef WORLD_TU
 class RGE_Static_Object;
 
 class RGE_Game_World {
@@ -22,6 +23,7 @@ public:
 
     RGE_Static_Object* object(int index);
 };
+#endif
 
 RGE_Static_Object* RGE_Game_World::object(int index) {
     int neg_index;

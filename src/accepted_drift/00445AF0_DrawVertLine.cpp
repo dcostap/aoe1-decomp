@@ -32,6 +32,7 @@
 // Retry 2026-05-21 Boss pass: revalidated best baseline (143B, 22.3776% positional, first mismatch +31). Tried top/bottom local reshapes, direct parameter-mutation, yy/hh locals, while count local, register x/y/h parameters, volatile y reread, explicit parameter-slot mutation, pitch-local ordering, flags /Ob0 /Oa /G5 /Gr /O1 /O2-no-/Oy, and offset/address-expression rewrites that mutate y or name `off`. None improved; most fell back to the old 60% register basin or worse. Best remains this exact-size behavioral source; no accepted_drift proposal because 32 bytes of register-coloring/address-order drift is still moderate and not a tiny localized swap.
 // Retry 2026-05-24 assigned pass: 12 further probes. Duplicated per-orientation loops, Ghidra-style iVar2/iVar3 source, yy/register yy locals, reversed compare/do-while shape, count/color locals, do-count loop, volatile step, and step-before-dest/off expression variants all either stayed at the same 32-byte hunk or regressed to the old 60%-98% broad register basin. PROPOSED_ACCEPTED_DRIFT: current source is exact size with identical clipping predicates, no calls, same stack cleanup, and the remaining diff is equivalent register coloring/address-add order in the y/top/step/dest setup and draw loop (EDX/ESI/ECX choices), not changed memory effects.
 
+#ifndef DRAWAREA_CANONICAL_TU
 struct tagRECT {
     long left;
     long top;
@@ -51,6 +52,7 @@ public:
 
     void DrawVertLine(long x, long y, long h, unsigned char color);
 };
+#endif
 
 void TDrawArea::DrawVertLine(long x, long y, long h, unsigned char color)
 {

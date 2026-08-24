@@ -17,6 +17,7 @@
 
 #include <stdlib.h>
 
+#ifndef DRAWAREA_CANONICAL_TU
 struct tagRECT {
     long left;
     long top;
@@ -122,6 +123,7 @@ public:
     long AlignedWidth();
     void DrawShadowBox(long x1, long y1, long x2, long y2);
 };
+#endif
 
 void TDrawArea::DrawShadowBox(long x1, long y1, long x2, long y2)
 {

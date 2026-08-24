@@ -47,6 +47,7 @@ extern "C" void* __cdecl memset(void* s, int c, unsigned int n);
 
 #pragma function(memset)
 
+#ifndef DRAWAREA_CANONICAL_TU
 struct tagRECT {
     long left;
     long top;
@@ -95,6 +96,7 @@ public:
 
     void FillRect(long x1, long y1, long x2, long y2, unsigned char color);
 };
+#endif
 
 void TDrawArea::FillRect(long x1, long y1, long x2, long y2,
                          unsigned char color)

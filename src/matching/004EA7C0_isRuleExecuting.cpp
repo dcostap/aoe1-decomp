@@ -1,5 +1,6 @@
 // probe 5: loop bounded by numberValue, inner guard on maximumSizeValue
 
+#ifndef TAISTRMD_TU_CONTEXT
 class ManagedRuleArray {
 public:
     int* value;
@@ -15,6 +16,7 @@ public:
 
     int isRuleExecuting(int ruleId);
 };
+#endif
 
 int TribeStrategyAIModule::isRuleExecuting(int ruleId) {
     int i;

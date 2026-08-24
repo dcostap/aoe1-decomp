@@ -45,6 +45,7 @@
 
 #include <string.h>
 
+#ifndef AOE1_SCR_MP_CONTEXT_H
 struct tagRECT;
 class TDrawArea;
 class TTextPanel;
@@ -222,6 +223,7 @@ public:
 
 extern TRegistry* Regs;
 extern RGE_Base_Game* rge_base_game;
+#endif
 
 TribeMPStartupScreen::TribeMPStartupScreen()
     : TScreenPanel("MP Startup Screen")

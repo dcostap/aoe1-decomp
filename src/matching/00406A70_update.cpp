@@ -8,6 +8,7 @@
 
 #include <stdio.h>
 
+#ifndef ACT_OBJ_CONTEXT_H
 class RGE_Action;
 class RGE_Action_List;
 class RGE_Action_Object;
@@ -162,6 +163,7 @@ public:
     void delete_list();
     void remove_action();
 };
+#endif
 
 unsigned char RGE_Action_Object::update()
 {
@@ -201,8 +203,9 @@ unsigned char RGE_Action_Object::update()
         }
     } else {
         if (this->actions->list == 0) {
-            if (state == 2 && this->master_obj->default_task != -1) {
-                this->set_task(this->master_obj->default_task);
+            if (state == 2 &&
+                ((RGE_Master_Action_Object*)this->master_obj)->default_task != -1) {
+                this->set_task(((RGE_Master_Action_Object*)this->master_obj)->default_task);
                 return result;
             }
         } else {

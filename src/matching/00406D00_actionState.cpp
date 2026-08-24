@@ -1,3 +1,4 @@
+#ifndef ACT_OBJ_CONTEXT_H
 class RGE_Action {
 public:
     char gap_00[0x0C];
@@ -17,6 +18,7 @@ public:
 
     unsigned char actionState(void) const;
 };
+#endif
 
 unsigned char RGE_Action_Object::actionState(void) const {
     if (this->actions->have_action() == 1) {

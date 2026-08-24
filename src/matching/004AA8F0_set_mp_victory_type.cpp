@@ -1,6 +1,7 @@
 // VA: 004AA8F0 TRIBE_Screen_Sed::set_mp_victory_type | scr_sed.cpp:1640-1719
 // First natural pass from Ghidra/asm.
 
+#ifndef SCR_SED_TU_CONTEXT
 struct TPanel {
     virtual void v00();
     virtual void v04();
@@ -51,6 +52,7 @@ struct TRIBE_Screen_Sed {
 
     void set_mp_victory_type(int type, int redraw);
 };
+#endif
 
 void TRIBE_Screen_Sed::set_mp_victory_type(int type, int redraw)
 {

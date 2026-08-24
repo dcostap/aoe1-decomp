@@ -8,6 +8,7 @@
 // - Inclusive width/height locals with the observed -1..-6 line spans produced
 //   the exact 404-byte function; source remains ordinary typed Drawarea code.
 
+#ifndef DRAWAREA_CANONICAL_TU
 class TDrawArea {
 public:
     void DrawHorzLine(long x, long y, long width, unsigned char color);
@@ -17,6 +18,7 @@ public:
                     unsigned char c3, unsigned char c4,
                     unsigned char c5, unsigned char c6);
 };
+#endif
 
 void TDrawArea::DrawBevel3(long x1, long y1, long x2, long y2,
                            unsigned char c1, unsigned char c2,

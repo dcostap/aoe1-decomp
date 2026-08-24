@@ -10,6 +10,7 @@
 //   `jl` backedge directly instead of `jge` + `jmp`.
 // Result: MATCH locally with `python tools/check_function.py --va 0040FBB0`.
 
+#ifndef AIPBOOK_CANONICAL_TU
 struct AIPlayPhaseCommand {
     unsigned char field_0;
     unsigned char field_1;
@@ -43,6 +44,7 @@ public:
     AIPlayPhase phases[10];
     int locationsOnMap(int x1, int y1, int x2, int y2);
 };
+#endif
 
 int AIPlay::locationsOnMap(int x1, int y1, int x2, int y2) {
     int phaseIdx = 0;

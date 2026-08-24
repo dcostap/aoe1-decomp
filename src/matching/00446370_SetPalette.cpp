@@ -2,6 +2,7 @@
 // PDB source: Drawarea.cpp
 // Sets entry 0 to black, entry 255 to white, then calls ModifyPalette
 
+#ifndef DRAWAREA_CANONICAL_TU
 struct tagPALETTEENTRY {
     unsigned char peRed;
     unsigned char peGreen;
@@ -20,6 +21,7 @@ public:
 
     void SetPalette(tagPALETTEENTRY* entries);
 };
+#endif
 
 void TDrawArea::SetPalette(tagPALETTEENTRY* entries)
 {

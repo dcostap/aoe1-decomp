@@ -2,6 +2,7 @@
 // keep this compact: one add call, one command store, and the same 1..100 clamp
 // if it stays non-exact, the remaining difference is likely the return/branch basin rather than behavior
 
+#ifndef VICTORY_CONTEXT_H
 class RGE_Victory_Entry;
 
 class RGE_Victory_Conditions {
@@ -23,6 +24,7 @@ public:
     long number;
     long count;
 };
+#endif
 
 unsigned char RGE_Victory_Conditions::add_explore(unsigned char param_1, long param_2, unsigned char param_3) {
     RGE_Victory_Entry* entry = this->add(param_1, param_3);

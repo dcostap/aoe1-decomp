@@ -1,5 +1,6 @@
 #include <stdlib.h>
 
+#ifndef VICTORY_CONTEXT_H
 struct RGE_Victory_Point_Entry {
     unsigned char command;
     unsigned char pad1;
@@ -21,6 +22,7 @@ public:
 
     RGE_Victory_Point_Entry* add_point(unsigned char p1, unsigned char p2);
 };
+#endif
 
 RGE_Victory_Point_Entry* RGE_Victory_Conditions::add_point(unsigned char p1, unsigned char p2) {
     RGE_Victory_Point_Entry* entry = (RGE_Victory_Point_Entry*)calloc(1, 0x1c);

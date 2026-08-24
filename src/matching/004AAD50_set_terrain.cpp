@@ -1,5 +1,6 @@
 // VA: 004AAD50 TRIBE_Screen_Sed::set_terrain | scr_sed.cpp:1844-1862
 
+#ifndef SCR_SED_TU_CONTEXT
 class TListPanel {
 public:
     void scroll_cur_line(unsigned char mode, short line, unsigned char redraw);
@@ -34,6 +35,7 @@ public:
 
     void set_terrain(short terrain);
 };
+#endif
 
 void TRIBE_Screen_Sed::set_terrain(short terrain) {
     short v;

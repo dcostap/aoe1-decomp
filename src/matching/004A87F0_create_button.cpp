@@ -1,5 +1,6 @@
 // VA: 004A87F0 TRIBE_Screen_Sed::create_button(TPanel*, TButtonPanel**, long, int) | scr_sed.cpp:498-512
 
+#ifndef SCR_SED_TU_CONTEXT
 class TPanel {
 public:
     virtual void v0();
@@ -33,6 +34,7 @@ class TRIBE_Screen_Sed : public TScreenPanel {
 public:
     int create_button(TPanel* panel, TButtonPanel** button, long string_id, int param_4);
 };
+#endif
 
 int TRIBE_Screen_Sed::create_button(TPanel* panel, TButtonPanel** button, long string_id, int param_4) {
     char buffer[0x78];

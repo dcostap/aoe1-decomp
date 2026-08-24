@@ -2,6 +2,7 @@
 // rpnl_tbx.cpp lines 166-174
 // Has EH frame (fs:[0]), needs /GX
 
+#ifndef RPNL_TBX_TU_CONTEXT
 class TPanel {
 public:
     virtual ~TPanel();
@@ -25,6 +26,7 @@ public:
     
     virtual ~RGE_Panel_Tool_Box();
 };
+#endif
 
 RGE_Panel_Tool_Box::~RGE_Panel_Tool_Box() {
     delete field_100;

@@ -95,6 +95,10 @@ public:
 };
 #endif
 
+#ifdef MOVE_OBJ_CANONICAL_TU
+#define waitingToMove waitingToMoveValue
+#endif
+
 RGE_Moving_Object::RGE_Moving_Object(RGE_Master_Moving_Object* master,
                                      RGE_Player* player,
                                      float x, float y, float z,
@@ -132,3 +136,7 @@ RGE_Moving_Object::RGE_Moving_Object(RGE_Master_Moving_Object* master,
         this->setup(master, player, x, y, z);
     }
 }
+
+#ifdef MOVE_OBJ_CANONICAL_TU
+#undef waitingToMove
+#endif

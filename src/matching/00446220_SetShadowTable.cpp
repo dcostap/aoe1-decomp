@@ -2,6 +2,7 @@
 // PDB source: Drawarea.cpp
 // Stores the shadow color table pointer
 
+#ifndef DRAWAREA_CANONICAL_TU
 struct RGE_Color_Table;
 
 class TDrawArea {
@@ -10,6 +11,7 @@ public:
     RGE_Color_Table* ShadowTable;  // +0xC8
     void SetShadowTable(RGE_Color_Table* table);
 };
+#endif
 
 void TDrawArea::SetShadowTable(RGE_Color_Table* table)
 {

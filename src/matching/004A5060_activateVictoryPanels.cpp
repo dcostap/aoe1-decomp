@@ -2,6 +2,8 @@
 // 181 bytes, __thiscall, TribeMPSetupScreen method
 // Retry 2026-05-26: rebuilt local layout/vtable slot surfaces; current exact-size near match.
 
+#ifndef SCR_MPS_TU_CONTEXT
+
 class TDropDownPanel {
 public:
     int get_id();
@@ -40,6 +42,8 @@ public:
 
     void activateVictoryPanels();
 };
+
+#endif
 
 void TribeMPSetupScreen::activateVictoryPanels() {
     int id = victoryTypeDrop->get_id();

@@ -1,3 +1,4 @@
+#ifndef VICTORY_CONTEXT_H
 struct VP_Entry {
     char gap_0[2];
     unsigned char id;
@@ -15,6 +16,7 @@ public:
 
     int get_victory_points_group(unsigned char group);
 };
+#endif
 
 int RGE_Victory_Conditions::get_victory_points_group(unsigned char group) {
     int total = 0;

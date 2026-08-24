@@ -6,6 +6,7 @@
 
 #include <stdlib.h>
 
+#ifndef DRAWAREA_CANONICAL_TU
 class TDrawArea {
 public:
     char gap_00[0x08];
@@ -31,6 +32,7 @@ public:
     void SetFloatOffsets(int x, int y);
     void SetAccessOffsets();
 };
+#endif
 
 void TDrawArea::SetAccessOffsets()
 {

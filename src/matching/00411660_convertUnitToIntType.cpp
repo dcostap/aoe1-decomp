@@ -1,7 +1,5 @@
-class AIPlayBook {
-public:
-    virtual ~AIPlayBook();
-    int convertUnitToIntType(int p0);
-};
+// 00411660 AIPlayBook::convertUnitToIntType
 
-int AIPlayBook::convertUnitToIntType(int p0) { return -1; }
+int AIPlayBook::convertUnitToIntType(RGE_Static_Object* object) const {
+    return -1;
+}

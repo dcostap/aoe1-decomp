@@ -1,3 +1,4 @@
+#ifndef TAISTRMD_TU_CONTEXT
 struct Waypoint {
     char data[12];
 };
@@ -22,6 +23,7 @@ public:
 
     int targetID();
 };
+#endif
 
 int TribeStrategyAIModule::targetID() {
     return this->targetID_;

@@ -1,3 +1,4 @@
+#ifndef VICTORY_CONTEXT_H
 class RGE_Static_Object;
 
 class RGE_Victory_Entry {
@@ -26,6 +27,7 @@ public:
     RGE_Victory_Entry* add(unsigned char param_1, unsigned char param_2);
     unsigned char add_bring(unsigned char param_1, RGE_Static_Object* param_2, float param_3, float param_4, float param_5, float param_6);
 };
+#endif
 
 unsigned char RGE_Victory_Conditions::add_bring(unsigned char param_1, RGE_Static_Object* param_2, float param_3, float param_4, float param_5, float param_6) {
     RGE_Victory_Entry* entry = this->add(param_1, 0);

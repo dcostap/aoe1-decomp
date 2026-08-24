@@ -46,8 +46,11 @@ extern "C" int __cdecl rge_close(int);
 extern "C" void* __cdecl malloc(unsigned int);
 extern "C" void __cdecl free(void*);
 
+#ifndef WORLD_TU
 extern long world_update_counter;
+#endif
 
+#ifndef WORLD_TU
 class RGE_Scenario { public: int GetPlayerPosture(int); char* Get_player_AI(int,int); char* Get_CityPlan(int,int); char* Get_BuildList(int,int); };
 struct RGE_Static_Object;
 class RGE_Player {
@@ -170,6 +173,7 @@ public:
     int scenario_object_id;
     unsigned char scenario_object_flag;
 };
+#endif
 
 void RGE_Game_World::load_scenario8(int handle, RGE_Player_Info& info)
 {

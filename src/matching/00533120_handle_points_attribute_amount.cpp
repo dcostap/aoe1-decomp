@@ -1,3 +1,4 @@
+#ifndef VICTORY_CONTEXT_H
 class RGE_Victory_Point_Entry {
 public:
     unsigned char command;
@@ -31,6 +32,7 @@ public:
 
     void handle_points_attribute_amount(RGE_Victory_Point_Entry*);
 };
+#endif
 
 void RGE_Victory_Conditions::handle_points_attribute_amount(RGE_Victory_Point_Entry* param_1) {
     if (param_1->state == 0) {

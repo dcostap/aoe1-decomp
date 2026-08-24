@@ -2,6 +2,7 @@
 // PDB source: Drawarea.cpp
 // Releases the DC obtained from GetDc
 
+#ifndef DRAWAREA_CANONICAL_TU
 class TDrawSystem {
 public:
     char gap_00[0x478];
@@ -49,6 +50,7 @@ public:
 
     void ReleaseDc(char* name);
 };
+#endif
 
 void TDrawArea::ReleaseDc(char* name)
 {

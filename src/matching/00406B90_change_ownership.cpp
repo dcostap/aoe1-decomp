@@ -1,3 +1,4 @@
+#ifndef ACT_OBJ_CONTEXT_H
 class RGE_Player;
 
 class RGE_Static_Object {
@@ -141,9 +142,10 @@ class RGE_Action_Object : public RGE_Static_Object {
 public:
     void change_ownership(RGE_Player* player);
 };
+#endif
 
 void RGE_Action_Object::change_ownership(RGE_Player* player) {
-    this->vf0A4();
+    this->stop();
     RGE_Static_Object::change_ownership(player);
-    this->vf208(0);
+    this->set_action(0);
 }

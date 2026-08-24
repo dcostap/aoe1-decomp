@@ -18,6 +18,7 @@
 
 class TRIBE_Player;
 
+#ifndef TAISTRMD_TU_CONTEXT
 class TribeMainDecisionAIModule {
 public:
     char gap_00[0x1256C];
@@ -59,6 +60,7 @@ public:
 
     void setVictoryCondition(int v);
 };
+#endif
 
 #define ADD_REQUIRED(valueToAdd) do { \
     v = (valueToAdd); \

@@ -34,6 +34,8 @@
 //   in both arms so ecx=[drop] stays live across the if-arm and VC5 tail-merges
 //   at `call get_line` (if-arm: push eax; jmp join).
 
+#ifndef SCR_MPS_TU_CONTEXT
+
 #define VP(n) virtual void v##n();
 
 class TPanel {
@@ -184,8 +186,10 @@ public:
 
     virtual ~TribeMPSetupScreen();
     void fillPlayers();
-    void fillPlayerColors();
+void fillPlayerColors();
 };
+
+#endif
 
 void TribeMPSetupScreen::fillPlayers()
 {

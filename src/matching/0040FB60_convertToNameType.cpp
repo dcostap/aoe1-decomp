@@ -1,7 +1,9 @@
+#ifndef AIPBOOK_CANONICAL_TU
 class AIPlay {
 public:
     char *convertToNameType(unsigned char value) const;
 };
+#endif
 
 char *AIPlay::convertToNameType(unsigned char value) const {
     switch (value) {

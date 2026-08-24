@@ -1,5 +1,7 @@
 // first pass: straight stack-buffer helper with the comm/name/string calls in packet order
 // if this sticks, the remaining work is likely just the exact local-buffer and call-site shape
+#ifndef SCR_MPS_TU_CONTEXT
+
 class TCommunications_Handler {
 public:
     char* GetPlayerName(unsigned int player);
@@ -21,6 +23,8 @@ public:
 
     void kickPlayer(int param_1);
 };
+
+#endif
 
 void TribeMPSetupScreen::kickPlayer(int param_1) {
     char text[256];

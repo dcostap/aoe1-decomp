@@ -1,3 +1,4 @@
+#ifndef RGE_COM_OBJ_SHARED_CONTEXT
 class RGE_Sound;
 
 class RGE_Master_Combat_Object {
@@ -35,6 +36,7 @@ public:
     virtual void vf38(RGE_Sound* sound);
     virtual void copy_obj(RGE_Master_Combat_Object* master_obj);
 };
+#endif
 
 void RGE_Combat_Object::copy_obj(RGE_Master_Combat_Object* master_obj) {
     RGE_Sound* sound;

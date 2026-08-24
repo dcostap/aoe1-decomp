@@ -13,6 +13,7 @@
 // - Main-agent audit restored canonical map/world/player destructor ownership;
 //   emitted code remains exact.
 
+#ifndef MOVE_OBJ_CANONICAL_TU
 struct XYZPoint {
     int x;
     int y;
@@ -83,6 +84,7 @@ public:
 
 extern PathingSystem aiPathSystem;
 extern PathingSystem pathSystem;
+#endif
 
 int RGE_Moving_Object::canPathWithAdditionalPassability(
     XYZPoint point, float tolerance, int targetID, float* costOut,

@@ -1,3 +1,4 @@
+#ifndef VICTORY_CONTEXT_H
 struct VP_Entry {
     char gap_0[2];
     unsigned char id;
@@ -15,6 +16,7 @@ public:
 
     int get_attribute_id(unsigned char id);
 };
+#endif
 
 int RGE_Victory_Conditions::get_attribute_id(unsigned char id) {
     int result = 0;

@@ -1,3 +1,4 @@
+#ifndef RGE_COM_OBJ_SHARED_CONTEXT
 class RGE_Combat_Object_State {
 public:
     unsigned char gap_00[0x18];
@@ -27,6 +28,7 @@ public:
 
     virtual int pause();
 };
+#endif
 
 int RGE_Combat_Object::pause() {
     vf38(state->value_18);

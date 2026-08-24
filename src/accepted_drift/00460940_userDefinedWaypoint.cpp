@@ -4,6 +4,7 @@
 // (LEA EDX,[EAX+EAX*2]/MOV EAX,[ECX+0x168] vs MOV EDX,[ECX+0x168]/LEA EAX,[EAX+EAX*2])
 // Both sequences are semantically identical with same register pressure.
 
+#ifndef MOVE_OBJ_CANONICAL_TU
 class RGE_Moving_Object {
 public:
     char gap_00[0x168];
@@ -12,8 +13,17 @@ public:
 
     void* userDefinedWaypoint(int param_1);
 };
+#endif
 
+#ifdef MOVE_OBJ_CANONICAL_TU
+XYZBYTEPoint* RGE_Moving_Object::userDefinedWaypoint(int param_1) {
+#else
 void* RGE_Moving_Object::userDefinedWaypoint(int param_1) {
+#endif
     if (param_1 < 0 || param_1 >= numberUserDefinedWaypointsValue) return 0;
+#ifdef MOVE_OBJ_CANONICAL_TU
+    return (XYZBYTEPoint*)((char*)userDefinedWaypoints + param_1 * 3);
+#else
     return (char*)userDefinedWaypoints + param_1 * 3;
+#endif
 }

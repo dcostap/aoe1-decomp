@@ -11,6 +11,7 @@
 // - Replacing the proven target-player object-list offset cast with the typed objects member
 //   was codegen-neutral; final source uses named ownership and default flags.
 
+#ifndef VICTORY_CONTEXT_H
 struct RGE_Master_Object {
     char gap_00[0x12];
     short copy_id;           // +0x12
@@ -69,6 +70,7 @@ public:
 
     void handle_destroy_multiple(struct RGE_Victory_Entry* entry);
 };
+#endif
 
 void RGE_Victory_Conditions::handle_destroy_multiple(RGE_Victory_Entry* entry) {
     if (entry->state) return;

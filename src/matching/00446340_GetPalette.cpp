@@ -4,6 +4,7 @@
 
 #include <string.h>
 
+#ifndef DRAWAREA_CANONICAL_TU
 struct tagPALETTEENTRY {
     unsigned char peRed;
     unsigned char peGreen;
@@ -23,6 +24,7 @@ public:
 
     void GetPalette(tagPALETTEENTRY* entries);
 };
+#endif
 
 void TDrawArea::GetPalette(tagPALETTEENTRY* entries)
 {

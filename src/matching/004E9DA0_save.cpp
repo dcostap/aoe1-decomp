@@ -9,6 +9,7 @@ void __cdecl rge_write(int fd, const void* data, int size);
 void* __cdecl operator new(unsigned int size);
 void __cdecl operator delete(void* p);
 
+#ifndef TAISTRMD_TU_CONTEXT
 struct Waypoint { char data[16]; };
 
 class TribeStrategyAIModule {
@@ -41,6 +42,7 @@ public:
     char gap_268[0x5f4 - 0x268];
     int difficultyLevel_;           // +5f4
 };
+#endif
 
 int TribeStrategyAIModule::save(int fd)
 {
@@ -48,79 +50,79 @@ int TribeStrategyAIModule::save(int fd)
     char tempString[260];
     int i;
 
-    rge_write(fd, &this->mainDecisionAI_, 4);
-    rge_write(fd, &this->currentVictoryCondition_, 4);
-    rge_write(fd, &this->targetID_, 4);
-    rge_write(fd, &this->targetType_, 4);
-    rge_write(fd, &this->targetPoint1_, 16);
-    rge_write(fd, &this->targetPoint2_, 16);
-    rge_write(fd, &this->targetAttribute_, 4);
-    rge_write(fd, &this->targetNumber_, 4);
-    rge_write(fd, &this->secondTargetID_, 4);
-    rge_write(fd, &this->difficultyLevel_, 4);
+    rge_write(fd, &this->md, 4);
+    rge_write(fd, &this->currentVictoryConditionValue, 4);
+    rge_write(fd, &this->targetIDValue, 4);
+    rge_write(fd, &this->targetTypeValue, 4);
+    rge_write(fd, &this->targetPoint1Value, 16);
+    rge_write(fd, &this->targetPoint2Value, 16);
+    rge_write(fd, &this->targetAttributeValue, 4);
+    rge_write(fd, &this->targetNumberValue, 4);
+    rge_write(fd, &this->secondTargetIDValue, 4);
+    rge_write(fd, &this->difficultyLevel, 4);
 
-    strcpy(tempString, this->ruleSetName_);
+    strcpy(tempString, this->ruleSetNameValue);
     temp = strlen(tempString);
     rge_write(fd, &temp, 4);
     rge_write(fd, tempString, strlen(tempString));
 
-    temp = this->list1Count_;
+    temp = this->vcRuleSet.numberValue;
     rge_write(fd, &temp, 4);
-    for (i = 0; i < this->list1Count_; i++) {
-        if (i > this->list1Max_ - 1) {
+    for (i = 0; i < this->vcRuleSet.numberValue; i++) {
+        if (i > this->vcRuleSet.maximumSizeValue - 1) {
             int newMax = i + 1;
             int* newArr = (int*)operator new(i * 4 + 4);
             if (newArr) {
                 int j;
-                for (j = 0; j < this->list1Max_ && j < newMax; j++) {
-                    newArr[j] = this->list1_[j];
+                for (j = 0; j < this->vcRuleSet.maximumSizeValue && j < newMax; j++) {
+                    newArr[j] = this->vcRuleSet.value[j];
                 }
-                operator delete(this->list1_);
-                this->list1_ = newArr;
-                this->list1Max_ = newMax;
+                operator delete(this->vcRuleSet.value);
+                this->vcRuleSet.value = newArr;
+                this->vcRuleSet.maximumSizeValue = newMax;
             }
         }
-        temp = this->list1_[i];
+        temp = this->vcRuleSet.value[i];
         rge_write(fd, &temp, 4);
     }
 
-    temp = this->list2Count_;
+    temp = this->executingRules.numberValue;
     rge_write(fd, &temp, 4);
-    for (i = 0; i < this->list2Count_; i++) {
-        if (i > this->list2Max_ - 1) {
+    for (i = 0; i < this->executingRules.numberValue; i++) {
+        if (i > this->executingRules.maximumSizeValue - 1) {
             int newMax = i + 1;
             int* newArr = (int*)operator new(i * 4 + 4);
             if (newArr) {
                 int j;
-                for (j = 0; j < this->list2Max_ && j < newMax; j++) {
-                    newArr[j] = this->list2_[j];
+                for (j = 0; j < this->executingRules.maximumSizeValue && j < newMax; j++) {
+                    newArr[j] = this->executingRules.value[j];
                 }
-                operator delete(this->list2_);
-                this->list2_ = newArr;
-                this->list2Max_ = newMax;
+                operator delete(this->executingRules.value);
+                this->executingRules.value = newArr;
+                this->executingRules.maximumSizeValue = newMax;
             }
         }
-        temp = this->list2_[i];
+        temp = this->executingRules.value[i];
         rge_write(fd, &temp, 4);
     }
 
-    temp = this->list3Count_;
+    temp = this->idleRules.numberValue;
     rge_write(fd, &temp, 4);
-    for (i = 0; i < this->list3Count_; i++) {
-        if (i > this->list3Max_ - 1) {
+    for (i = 0; i < this->idleRules.numberValue; i++) {
+        if (i > this->idleRules.maximumSizeValue - 1) {
             int newMax = i + 1;
             int* newArr = (int*)operator new(i * 4 + 4);
             if (newArr) {
                 int j;
-                for (j = 0; j < this->list3Max_ && j < newMax; j++) {
-                    newArr[j] = this->list3_[j];
+                for (j = 0; j < this->idleRules.maximumSizeValue && j < newMax; j++) {
+                    newArr[j] = this->idleRules.value[j];
                 }
-                operator delete(this->list3_);
-                this->list3_ = newArr;
-                this->list3Max_ = newMax;
+                operator delete(this->idleRules.value);
+                this->idleRules.value = newArr;
+                this->idleRules.maximumSizeValue = newMax;
             }
         }
-        temp = this->list3_[i];
+        temp = this->idleRules.value[i];
         rge_write(fd, &temp, 4);
     }
 

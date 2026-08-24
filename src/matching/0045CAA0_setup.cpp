@@ -79,6 +79,10 @@ public:
 };
 #endif
 
+#ifdef MOVE_OBJ_CANONICAL_TU
+#define waitingToMove waitingToMoveValue
+#endif
+
 int RGE_Moving_Object::setup(int fd, void* world)
 {
     RGE_Animated_Object::setup(fd, world);
@@ -154,3 +158,7 @@ int RGE_Moving_Object::setup(int fd, void* world)
     this->lastFacet2 = 0xff;
     return 1;
 }
+
+#ifdef MOVE_OBJ_CANONICAL_TU
+#undef waitingToMove
+#endif

@@ -35,21 +35,3 @@ public:
 AIPlayPhase::AIPlayPhase() {
     initialize();
 }
-
-void AIPlayPhase::initialize() {
-    unsigned char* p = &this->commands[0].field_1;
-    int i = 5;
-    do {
-        *p = 0;
-        p += 0x10;
-        i--;
-    } while (i != 0);
-
-    p = &this->triggers[0].typeValue;
-    i = 3;
-    do {
-        *p = 0;
-        p += 0x14;
-        i--;
-    } while (i != 0);
-}

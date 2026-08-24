@@ -1,3 +1,4 @@
+#ifndef RPNL_TBX_TU_CONTEXT
 struct RectStub { int a,b,c,d; };
 
 class TDrawArea {
@@ -29,6 +30,7 @@ public:
 
     void draw(void);
 };
+#endif
 
 void RGE_Panel_Tool_Box::draw(void) {
     if ((this->draw_area != 0) && (this->field_70 != 0) && (this->field_6C != 0)) {

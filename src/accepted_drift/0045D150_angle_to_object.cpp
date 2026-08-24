@@ -14,6 +14,7 @@ extern double DAT_00570b68;
 extern double DAT_00570b70;
 extern float DAT_00570b78;
 
+#ifndef MOVE_OBJ_CANONICAL_TU
 class RGE_Moving_Object {
 public:
     char gap0[0x10];
@@ -26,10 +27,18 @@ public:
 
     float angle_to_object(void* target, float tx, float ty);
 };
+#endif
 
 extern "C" double __cdecl atan2(double, double);
 
+#ifdef MOVE_OBJ_CANONICAL_TU
+#define gameObj sprite
+#define x world_x
+#define y world_y
+float RGE_Moving_Object::angle_to_object(RGE_Static_Object* target, float tx, float ty)
+#else
 float RGE_Moving_Object::angle_to_object(void* target, float tx, float ty)
+#endif
 {
     void* g = gameObj;
     if (g && (*(unsigned char*)((char*)g + 0x70) & 2) && *(short*)((char*)g + 0x60) > 0) {
@@ -56,3 +65,9 @@ float RGE_Moving_Object::angle_to_object(void* target, float tx, float ty)
     }
     return DAT_00570b48;
 }
+
+#ifdef MOVE_OBJ_CANONICAL_TU
+#undef gameObj
+#undef x
+#undef y
+#endif

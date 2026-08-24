@@ -86,7 +86,11 @@ public:
 int TRIBE_Action_Trade::work(RGE_Static_Object* obj, float x, float y, float z)
 {
     if (obj != 0) {
+        #ifdef TACT_TRD_SHARED_CONTEXT
+        if (obj == this->target_obj) {
+        #else
         if (obj == this->field_10) {
+        #endif
             if (this->state == 4 || this->state == 6 || this->state == 7) {
                 return 1;
             }
@@ -97,13 +101,21 @@ int TRIBE_Action_Trade::work(RGE_Static_Object* obj, float x, float y, float z)
             RGE_Master_Object* objM = (RGE_Master_Object*)obj->master_obj;
             RGE_Master_Object* actM = (RGE_Master_Object*)((RGE_Static_Object*)this->action_obj)->master_obj;
             if (objM->id == actM->id2) {
+                #ifdef TACT_TRD_SHARED_CONTEXT
+                this->set_target_obj2(obj);
+                #else
                 this->vt22(obj);
+                #endif
                 this->set_state(8);
                 return 1;
             }
         }
 
+        #ifdef TACT_TRD_SHARED_CONTEXT
+        this->set_target_obj(obj);
+        #else
         this->vt21(obj);
+        #endif
         this->set_state(4);
         return 1;
     }
@@ -111,7 +123,11 @@ int TRIBE_Action_Trade::work(RGE_Static_Object* obj, float x, float y, float z)
     this->coord_x = x;
     this->coord_y = y;
     this->coord_z = z;
+    #ifdef TACT_TRD_SHARED_CONTEXT
+    this->set_target_obj(0);
+    #else
     this->vt21(0);
+    #endif
     this->set_state(0xB);
     return 1;
 }

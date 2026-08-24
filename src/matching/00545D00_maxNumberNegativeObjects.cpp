@@ -4,6 +4,7 @@
 // maxNumberObjects() is 00545CF0-00545CF6.
 // Alignment data fills 00545CE5-00545CEF and 00545D07-00545D0F.
 // BINARY NOTE: This nonvirtual __thiscall getter reads the +0x9C field directly.
+#ifndef WORLD_TU
 class RGE_Game_World {
 public:
     virtual ~RGE_Game_World();
@@ -11,6 +12,7 @@ public:
     int maxNumberNegativeObjectsValue;
     int maxNumberNegativeObjects();
 };
+#endif
 
 int RGE_Game_World::maxNumberNegativeObjects() {
     return this->maxNumberNegativeObjectsValue;

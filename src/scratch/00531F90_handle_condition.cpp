@@ -5,6 +5,7 @@
 
 #include "../../include/game_globals.h"
 
+#ifndef VICTORY_CONTEXT_H
 struct RGE_Victory_Entry {
     unsigned char command; // +0x00
 };
@@ -26,6 +27,7 @@ public:
 
     void handle_condition(RGE_Victory_Entry* entry);
 };
+#endif
 
 void RGE_Victory_Conditions::handle_condition(RGE_Victory_Entry* entry) {
     switch (entry->command) {

@@ -34,6 +34,7 @@
 #define VPAD8(n) VPAD4(n) VPAD4(n##_4)
 #define VPAD16(n) VPAD8(n) VPAD8(n##_8)
 
+#ifndef BASEGAME_GROUPED_TU
 class TSound_Driver {
 public:
     char gap_0[0x69C];
@@ -73,6 +74,7 @@ public:
     virtual int setup_music_system();  // slot 22 = vtable+0x58
     int setup_sound_system();
 };
+#endif
 
 int RGE_Base_Game::setup_sound_system()
 {

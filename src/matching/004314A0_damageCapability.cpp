@@ -1,3 +1,4 @@
+#ifndef RGE_COM_OBJ_SHARED_CONTEXT
 class RGE_Armor_Weapon_Info {
 public:
     short type;
@@ -19,6 +20,7 @@ public:
 
     virtual float damageCapability();
 };
+#endif
 
 float RGE_Combat_Object::damageCapability() {
     float total;

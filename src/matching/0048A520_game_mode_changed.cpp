@@ -7,6 +7,7 @@
 // - Corrected constructor-proven button ownership: delete is +0x108 and move is
 //   +0x10C; exact match.
 
+#ifndef RPNL_TBX_TU_CONTEXT
 class TPanel {
 public:
     virtual ~TPanel();
@@ -52,6 +53,7 @@ public:
 
     void game_mode_changed(int mode, int new_mode);
 };
+#endif
 
 void RGE_Panel_Tool_Box::game_mode_changed(int mode, int new_mode) {
     TButtonPanel* button;

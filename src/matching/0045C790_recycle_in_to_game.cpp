@@ -151,6 +151,10 @@ extern float DAT_00570b4c;
 extern float DAT_00570b50;
 #endif
 
+#ifdef MOVE_OBJ_CANONICAL_TU
+#define waitingToMove waitingToMoveValue
+#endif
+
 void RGE_Moving_Object::recycle_in_to_game(
     RGE_Master_Static_Object* master,
     RGE_Player* player,
@@ -205,8 +209,12 @@ void RGE_Moving_Object::recycle_in_to_game(
                     this->angle = this->angle - DAT_00570b4c;
                 } else if (this->angle > DAT_00570b50) {
                     this->angle = this->angle - DAT_00570b50;
-                }
-            }
+    }
+}
+
+#ifdef MOVE_OBJ_CANONICAL_TU
+#undef waitingToMove
+#endif
         }
     }
 

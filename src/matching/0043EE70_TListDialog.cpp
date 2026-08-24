@@ -1,3 +1,6 @@
+#ifdef DLG_LIST_SHARED_CONTEXT
+#include "../../include/dlg_list_context.h"
+#else
 class TDialogPanel {
 public:
     void* vftable;
@@ -20,6 +23,7 @@ public:
 
     TListDialog(char* param_1);
 };
+#endif
 
 TListDialog::TListDialog(char* param_1) : TDialogPanel(param_1) {
     this->list_id = -1;
@@ -29,5 +33,4 @@ TListDialog::TListDialog(char* param_1) : TDialogPanel(param_1) {
     this->ok_btn = 0;
     this->cancel_btn = 0;
     this->list_name = 0;
-    this->vftable = (void*)0x0056FAF8;
 }

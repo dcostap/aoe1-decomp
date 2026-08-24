@@ -5,6 +5,7 @@
 //   from the packet/decompiler. First baseline uses real member calls, RGE_Action_Move_To
 //   size 0x44, and vtable padding to slot +0x208 for the final action enqueue.
 
+#ifndef ACT_OBJ_CONTEXT_H
 class RGE_Static_Object;
 class RGE_Action_Object;
 class RGE_Action_Move_To;
@@ -67,6 +68,7 @@ public:
 
     void move_to(RGE_Static_Object* target, float x, float y, float z);
 };
+#endif
 
 void RGE_Action_Object::move_to(RGE_Static_Object* target, float x, float y, float z)
 {
@@ -80,15 +82,15 @@ void RGE_Action_Object::move_to(RGE_Static_Object* target, float x, float y, flo
                 action = new RGE_Action_Move_To(this, x, y, z, 0.4f, 0);
             }
 
-            if (this->unit_ai != 0) {
-                this->unit_ai->setCurrentOrder(0x2C6);
-                this->unit_ai->setCurrentAction(0x262);
+            if (this->unitAIValue != 0) {
+                this->unitAIValue->setCurrentOrder(0x2C6);
+                this->unitAIValue->setCurrentAction(0x262);
                 if (target != 0) {
-                    this->unit_ai->setCurrentTarget(target->id,
+                    this->unitAIValue->setCurrentTarget(target->id,
                         ((RGE_Master_Static_Object*)target->master_obj)->object_group,
                         x, y, z);
                 } else {
-                    this->unit_ai->setCurrentTarget(-1, -1, x, y, z);
+                    this->unitAIValue->setCurrentTarget(-1, -1, x, y, z);
                 }
             }
 

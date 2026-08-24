@@ -5,6 +5,7 @@
 // A single conditional-argument expression (`waitFlag ? 1 : 0` / `waitFlag != 0`) instead
 // makes VC5 materialize the boolean in EDX and save EDI.
 
+#ifndef DRAWAREA_CANONICAL_TU
 class TDrawSystem {
 public:
     char gap_00[0x478];
@@ -29,6 +30,7 @@ public:
     void __fastcall SetAccessOffsets();
     unsigned char* Lock(char* name, int waitFlag);
 };
+#endif
 
 typedef int (__stdcall* LockFunc)(void* surface, void* rect, void* desc, int flags, void* hdc);
 
@@ -59,7 +61,7 @@ unsigned char* TDrawArea::Lock(char* name, int waitFlag)
     if (hr != 0)
         return 0;
 
-    this->Bits = (unsigned char*)this->lpSurface;
+    this->Bits = (unsigned char*)this->SurfaceDesc.lpSurface;
     this->SetInfo();
 
     if (this->Bits != this->LastBits)

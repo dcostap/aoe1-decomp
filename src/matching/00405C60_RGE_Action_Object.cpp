@@ -1,6 +1,7 @@
 // VA: 00405C60 RGE_Action_Object::RGE_Action_Object (7-param ctor, EH-framed)
 // PDB source: act_obj.cpp
 
+#ifndef ACT_OBJ_CONTEXT_H
 class RGE_Moving_Object {
 public:
     virtual ~RGE_Moving_Object();
@@ -12,6 +13,7 @@ public:
     RGE_Action_Object(void* master, void* player, float x, float y, float z, int flag);
     int setup(void* master, void* player, float x, float y, float z);
 };
+#endif
 
 RGE_Action_Object::RGE_Action_Object(void* master, void* player, float x, float y, float z, int flag)
     : RGE_Moving_Object(master, player, x, y, z, 0)

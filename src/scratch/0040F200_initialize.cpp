@@ -1,18 +1,16 @@
-struct AIPlayPhase {
-    char data[0x100];
-};
+// 0040F200 AIPlayPhase::initialize
 
-void __fastcall initialize(AIPlayPhase* self, int) {
+void AIPlayPhase::initialize() {
     int i;
     char* p;
 
-    p = ((char*)self) + 1;
+    p = ((char*)this) + 1;
     for (i = 0; i < 5; i++) {
         *p = 0;
         p += 0x10;
     }
 
-    p = ((char*)self) + 0x50;
+    p = ((char*)this) + 0x50;
     for (i = 0; i < 3; i++) {
         *p = 0;
         p += 0x14;

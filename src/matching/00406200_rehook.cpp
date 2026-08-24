@@ -1,3 +1,4 @@
+#ifndef ACT_OBJ_CONTEXT_H
 class RGE_Action_List {
 public:
     void rehook();
@@ -15,6 +16,7 @@ public:
 
     virtual void rehook();
 };
+#endif
 
 void RGE_Action_Object::rehook() {
     RGE_Static_Object::rehook();

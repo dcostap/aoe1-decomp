@@ -13,6 +13,7 @@
 
 extern "C" void __cdecl rge_write(int handle, const void* buffer, int size);
 
+#ifndef MOVE_OBJ_CANONICAL_TU
 struct Waypoint {
     float x;
     float y;
@@ -88,6 +89,12 @@ public:
 
     virtual void save(int handle);
 };
+#endif
+
+#ifdef MOVE_OBJ_CANONICAL_TU
+#define minInitialPointValue minInitialPointX
+#define maxInitialPointValue maxInitialPointX
+#endif
 
 void RGE_Moving_Object::save(int handle) {
     RGE_Animated_Object::save(handle);
@@ -137,3 +144,8 @@ void RGE_Moving_Object::save(int handle) {
     rge_write(handle, &this->lastFacet, 1);
     rge_write(handle, &this->lastFacet2, 1);
 }
+
+#ifdef MOVE_OBJ_CANONICAL_TU
+#undef minInitialPointValue
+#undef maxInitialPointValue
+#endif

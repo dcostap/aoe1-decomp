@@ -7,6 +7,8 @@
 //   from `lines > 0 && bot_line == lines - 1`; VC5 uses EDI and preserves the expected reloads of `chatBox`.
 // Result: MATCH locally with `python tools/check_function.py --va 004A4100`.
 
+#ifndef SCR_MPS_TU_CONTEXT
+
 class RGE_Base_Game {
 public:
     int singlePlayerGame();
@@ -38,6 +40,8 @@ public:
 
     void fillChat(int n);
 };
+
+#endif
 
 void TribeMPSetupScreen::fillChat(int n) {
     if (!rge_base_game->singlePlayerGame()) {

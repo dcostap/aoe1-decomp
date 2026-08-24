@@ -3,6 +3,7 @@
 // The next World.cpp sibling starts at 00545CE0; bytes 00545CD5-00545CDF are padding.
 // BINARY NOTE: The cache is RGE_Game_World::difficultyLevelValue at +0x100.
 
+#ifndef WORLD_TU
 class RGE_Base_Game {
 public:
     int difficulty(void);
@@ -17,6 +18,7 @@ public:
 
     int difficultyLevel(void);
 };
+#endif
 
 int RGE_Game_World::difficultyLevel(void) {
     if (this->difficultyLevelValue == -1) {

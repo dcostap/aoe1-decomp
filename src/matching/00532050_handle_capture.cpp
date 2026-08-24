@@ -2,6 +2,7 @@
 // VA: 00532050
 // victory.cpp
 
+#ifndef VICTORY_CONTEXT_H
 struct RGE_Player {
     char gap_00[0x4A];
     short id;                // +0x4A
@@ -32,6 +33,7 @@ public:
     RGE_Player* player;      // +0x0C
     void handle_capture(RGE_Victory_Entry* entry);
 };
+#endif
 
 void RGE_Victory_Conditions::handle_capture(RGE_Victory_Entry* entry) {
     RGE_Static_Object* obj = (RGE_Static_Object*)entry->target_obj;

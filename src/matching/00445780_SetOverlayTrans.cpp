@@ -2,6 +2,7 @@
 // PDB source: Drawarea.cpp
 // Sets overlay transparency color key
 
+#ifndef DRAWAREA_CANONICAL_TU
 struct IDirectDrawSurface {
     virtual void __stdcall QueryInterface();
     virtual void __stdcall AddRef();
@@ -53,6 +54,7 @@ public:
 
     void SetOverlayTrans(int useTrans, unsigned char transColor);
 };
+#endif
 
 void TDrawArea::SetOverlayTrans(int useTrans, unsigned char transColor)
 {

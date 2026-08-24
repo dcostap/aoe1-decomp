@@ -18,6 +18,7 @@
 
 #include <string.h>
 
+#ifndef AOE1_SCR_MP_CONTEXT_H
 #define VPAD1(n) virtual void vpad##n();
 #define VPAD2(n) VPAD1(n) VPAD1(n##_1)
 #define VPAD4(n) VPAD2(n) VPAD2(n##_2)
@@ -150,6 +151,7 @@ extern TPanelSystem panel_system;
 extern "C" int (__stdcall* const WinExec)(char*, int);
 
 void* __cdecl operator new(unsigned int size);
+#endif
 
 long TribeMPStartupScreen::action(TPanel* panel, long event,
                                   unsigned long param3, unsigned long param4)

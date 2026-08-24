@@ -65,6 +65,7 @@
 
 typedef unsigned char uchar;
 
+#ifndef RPNL_TBX_TU_CONTEXT
 class RGE_Map;
 class RGE_Game_World;
 class RGE_Player;
@@ -185,6 +186,7 @@ public:
 };
 
 extern RGE_Base_Game* rge_base_game;
+#endif
 
 long RGE_Panel_Tool_Box::key_down_action(long key, short ch, int a3, int a4,
                                          int a5)

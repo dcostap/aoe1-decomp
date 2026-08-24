@@ -30,6 +30,10 @@ public:
 #endif
 
 int TRIBE_Action_Trade::stop() {
+#ifdef TACT_TRD_SHARED_CONTEXT
+    this->set_state(2);
+#else
     this->vf5C(2);
+#endif
     return 1;
 }

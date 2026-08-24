@@ -27,6 +27,7 @@
 
 #include <math.h>
 
+#ifndef MOVE_OBJ_CANONICAL_TU
 struct XYPoint {
     int x;
     int y;
@@ -137,6 +138,7 @@ public:
 };
 
 extern float DAT_00570B48;
+#endif
 
 int RGE_Moving_Object::firstTileAlongLine(const XYPoint& a,
                                            const XYPoint& b,

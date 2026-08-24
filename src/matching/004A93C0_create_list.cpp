@@ -8,6 +8,7 @@
 // set_string(004A87D0), sprintf(0054BBC0), TTextPanel::append_line(0047DCD0),
 // SetupListOfTerrain(004A9320).
 #include <stdio.h>
+#ifndef SCR_SED_TU_CONTEXT
 
 class TPanel {
 public:
@@ -63,6 +64,7 @@ public:
     int SetupListOfTerrain(TTextPanel* list);
     int create_list(TPanel* panel, TListPanel** out, TScrollBarPanel** scroll);
 };
+#endif
 
 int TRIBE_Screen_Sed::create_list(TPanel* panel, TListPanel** out, TScrollBarPanel** scroll)
 {

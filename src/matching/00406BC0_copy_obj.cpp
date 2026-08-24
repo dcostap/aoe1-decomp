@@ -1,3 +1,4 @@
+#ifndef ACT_OBJ_CONTEXT_H
 class RGE_Master_Static_Object;
 
 class RGE_Action_List {
@@ -22,6 +23,7 @@ public:
 
     void copy_obj(RGE_Master_Static_Object* master_obj);
 };
+#endif
 
 void RGE_Action_Object::copy_obj(RGE_Master_Static_Object* master_obj) {
     this->actions->copy_obj(master_obj);

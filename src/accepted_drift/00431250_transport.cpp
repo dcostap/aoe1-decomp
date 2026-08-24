@@ -184,6 +184,7 @@ struct XYZBYTEPoint;
 template<class T> class ManagedArray;
 
 // RGE_Action_List (direct calls)
+#ifndef RGE_COM_OBJ_SHARED_CONTEXT
 class RGE_Action_List {
 public:
     uchar have_action();
@@ -427,6 +428,7 @@ public:
 
     int transport(float x, float y, float z, int w);
 };
+#endif
 
 int RGE_Combat_Object::transport(float x, float y, float z, int w)
 {

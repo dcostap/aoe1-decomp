@@ -3,6 +3,7 @@
 // Attempt log:
 // - 2026-05-31: Replaced placeholder stub with natural master/candidate task lookup.
 
+#ifndef ACT_OBJ_CONTEXT_H
 class RGE_Static_Object;
 class RGE_Action_Object;
 class RGE_Master_Static_Object;
@@ -53,31 +54,37 @@ public:
 
     RGE_Task* getTask(RGE_Static_Object* target, float x, float y, float z);
 };
+#endif
 
 RGE_Task* RGE_Action_Object::getTask(RGE_Static_Object* target, float x, float y, float z)
 {
-    RGE_Task* task = this->master->command->getTask(this, target, x, y, z);
-    if (task == 0 && this->master->commandable != 0) {
+    RGE_Task* task = ((RGE_Master_Command*)
+        ((RGE_Master_Action_Object*)this->master_obj)->tasks)->getTask(
+            this, target, x, y, z);
+    if (task == 0 && ((RGE_Master_Action_Object*)this->master_obj)->task_by_group != 0) {
         int i = 0;
-        if (this->master_list->master_count > 0) {
+        if (this->owner->master_object_num > 0) {
             RGE_Master_Static_Object* obj;
             while (1) {
-                obj = this->master_list->masters[i];
+                obj = this->owner->master_objects[i];
                 if (obj != 0 &&
-                    obj->object_group == this->master->object_group &&
-                    obj->master_type == this->master->master_type &&
-                    obj->commandable == this->master->commandable) {
-                    task = obj->command->getTask(this, target, x, y, z);
+                    obj->object_group == this->master_obj->object_group &&
+                    obj->master_type == this->master_obj->master_type &&
+                    ((RGE_Master_Action_Object*)obj)->task_by_group ==
+                        ((RGE_Master_Action_Object*)this->master_obj)->task_by_group) {
+                    task = ((RGE_Master_Command*)
+                        ((RGE_Master_Action_Object*)obj)->tasks)->getTask(
+                            this, target, x, y, z);
                     if (task != 0) {
                         goto found;
                     }
                 }
                 i++;
-                if (i < this->master_list->master_count) continue;
+                if (i < this->owner->master_object_num) continue;
                 return task;
             }
 found:
-            this->set_command_master(obj);
+            this->transform(obj);
         }
     }
     return task;

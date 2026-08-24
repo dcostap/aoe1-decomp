@@ -1,3 +1,4 @@
+#ifndef VICTORY_CONTEXT_H
 struct RGE_Player {
     char gap_0[0x80];
     char game_status;
@@ -18,6 +19,7 @@ class RGE_Victory_Conditions {
 public:
     void handle_destroy_player(RGE_Victory_Entry* entry);
 };
+#endif
 
 void RGE_Victory_Conditions::handle_destroy_player(RGE_Victory_Entry* entry) {
     if (entry->target_player) {

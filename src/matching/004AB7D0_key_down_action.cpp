@@ -98,7 +98,11 @@ long TRIBE_Screen_Sed::key_down_action(long param_1, short param_2,
         case 0x37:
         case 0x38:
             {
+#ifdef SCR_SED_TU_CONTEXT
+                int mode = this->scenario_mode;
+#else
                 ScenarioMode mode = this->scenario_mode;
+#endif
                 int i = param_1 - 0x30;
                 short selected = (short)i;
 

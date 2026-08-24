@@ -2,6 +2,7 @@
 // PDB source: act_obj.cpp lines 76-82
 // Flags: config/flags/00406010_RGE_Action_Object.rsp (default + /GX)
 
+#ifndef ACT_OBJ_CONTEXT_H
 extern void operator_delete(void* ptr);
 
 class RGE_Moving_Object {
@@ -27,6 +28,7 @@ public:
     int lastActionValue;        // +0x18C
     int lastActionStateValue;   // +0x190
 };
+#endif
 
 RGE_Action_Object::~RGE_Action_Object()
 {

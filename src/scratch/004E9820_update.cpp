@@ -93,6 +93,7 @@
 extern void* __cdecl operator new(unsigned int size);
 extern void __cdecl operator delete(void* pointer);
 
+#ifndef TAISTRMD_TU_CONTEXT
 class RGE_Master_Static_Object {
 public:
     char gap_00[0x10];
@@ -242,6 +243,7 @@ public:
     virtual int update(int parameter);
     void setVictoryCondition(int value);
 };
+#endif
 
 int TribeStrategyAIModule::update(int parameter)
 {
@@ -268,12 +270,12 @@ int TribeStrategyAIModule::update(int parameter)
                 this->secondTargetIDValue = victoryEntry->this_obj->id;
                 this->secondTargetTypeValue = victoryEntry->this_obj->master_obj->id;
             }
-            this->targetPoint1_x = victoryEntry->x0;
-            this->targetPoint1_y = victoryEntry->y0;
-            this->targetPoint1_z = 1.0f;
-            this->targetPoint2_x = victoryEntry->x1;
-            this->targetPoint2_y = victoryEntry->y1;
-            this->targetPoint2_z = 1.0f;
+            this->targetPoint1Value.x = victoryEntry->x0;
+            this->targetPoint1Value.y = victoryEntry->y0;
+            this->targetPoint1Value.z = 1.0f;
+            this->targetPoint2Value.x = victoryEntry->x1;
+            this->targetPoint2Value.y = victoryEntry->y1;
+            this->targetPoint2Value.z = 1.0f;
             this->targetAttributeValue = victoryEntry->number;
             this->targetNumberValue = victoryEntry->count;
         }

@@ -14,6 +14,7 @@
 // - ABI walkback: the nonvirtual spelling also matched body bytes but emitted
 //   QAE; it is not retained because the PDB symbol is virtual (UAE).
 
+#ifndef MOVE_OBJ_CANONICAL_TU
 struct XYPoint {
     int x;
     int y;
@@ -137,6 +138,7 @@ public:
 
 extern PathingSystem aiPathSystem;
 extern PathingSystem pathSystem;
+#endif
 
 int RGE_Moving_Object::canBidirectionPath(
     int sourceID, int goalID, float tolerance, float* costOut, int useAI,

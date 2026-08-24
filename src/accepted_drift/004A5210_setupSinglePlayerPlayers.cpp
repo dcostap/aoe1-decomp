@@ -21,6 +21,8 @@
 // - Fresh exact check: 556 bytes, 27 ordered calls, correct owner, and 0 bytes
 //   differ. The checker reported MATCH and 0.0000%.
 
+#ifndef SCR_MPS_TU_CONTEXT
+
 class RGE_Scenario {
 public:
     virtual ~RGE_Scenario();
@@ -137,6 +139,8 @@ public:
 extern TRIBE_Game* rge_base_game;
 extern TCommunications_Handler* comm;
 extern "C" int __cdecl debug_rand(char* file, int line);
+
+#endif
 
 void TribeMPSetupScreen::setupSinglePlayerPlayers() {
     int first_any_civ;

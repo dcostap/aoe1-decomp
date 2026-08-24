@@ -91,6 +91,7 @@ extern float DAT_0056f49c;
 extern float DAT_0056f4a8;
 extern double DAT_0056f4a0;
 
+#ifndef RGE_COM_OBJ_SHARED_CONTEXT
 struct RGE_Armor_Weapon_Info {
     short type;
     short value;
@@ -249,6 +250,7 @@ struct RGE_Combat_Object : RGE_Static_Object {
     virtual float calculateDamage(int param_1, RGE_Armor_Weapon_Info* param_2,
                                   float param_3, RGE_Player* param_4, RGE_Static_Object* param_5);
 };
+#endif
 
 float RGE_Combat_Object::calculateDamage(int param_1, RGE_Armor_Weapon_Info* param_2,
                                          float param_3, RGE_Player* param_4, RGE_Static_Object* param_5)

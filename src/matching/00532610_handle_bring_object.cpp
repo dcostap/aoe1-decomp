@@ -3,6 +3,7 @@
 // victory.cpp
 // 8.48% positional diff - register swap EDX<->ECX for this_obj/target_obj
 
+#ifndef VICTORY_CONTEXT_H
 struct RGE_Master_Object {
     char gap_00[0x30];
     float radius_x;          // +0x30
@@ -32,6 +33,7 @@ class RGE_Victory_Conditions {
 public:
     void handle_bring_object(RGE_Victory_Entry* entry);
 };
+#endif
 
 void RGE_Victory_Conditions::handle_bring_object(RGE_Victory_Entry* entry) {
     if (entry->this_obj == 0 || entry->target_obj == 0) {

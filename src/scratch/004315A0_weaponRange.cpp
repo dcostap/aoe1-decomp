@@ -1,3 +1,4 @@
+#ifndef RGE_COM_OBJ_SHARED_CONTEXT
 struct InnerObj_004315A0 {
     char gap_0[0x114];
     float weaponRange;
@@ -9,6 +10,7 @@ public:
     InnerObj_004315A0 *ptr;
     float weaponRange();
 };
+#endif
 
 float RGE_Static_Object::weaponRange() {
     return this->ptr->weaponRange;

@@ -1,3 +1,4 @@
+#ifndef VICTORY_CONTEXT_H
 struct SomeObj {
     char gap_0[0x48];
     char state;
@@ -23,6 +24,7 @@ class RGE_Victory_Conditions {
 public:
     void handle_destroy(RGE_Victory_Entry* entry);
 };
+#endif
 
 void RGE_Victory_Conditions::handle_destroy(RGE_Victory_Entry* entry) {
     if (entry->target_obj && entry->target_obj->state == 7) {

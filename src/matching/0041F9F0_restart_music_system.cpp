@@ -47,6 +47,7 @@
 // pushes and a broad 143-byte mismatch, so the helper-backed source is retained as the
 // smallest exact-friendly TU context. No inline asm or custom flags.
 
+#ifndef BASEGAME_GROUPED_TU
 class TMusic_System {
 public:
     int play_track(int track_from, int loop, unsigned long pos);
@@ -73,6 +74,7 @@ public:
 
     virtual int restart_music_system();
 };
+#endif
 
 static inline int restart_music_system_body(RGE_Base_Game* self)
 {

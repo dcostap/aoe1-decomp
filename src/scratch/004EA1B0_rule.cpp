@@ -1,16 +1,5 @@
-class SubType {
-public:
-    void target_method(int param);
-};
+#include "../../include/taistrmd_context.h"
 
-class TribeStrategyAIModule {
-public:
-    char gap_0[0x268];
-    SubType sub_268;
-
-    void rule(int param);
-};
-
-void TribeStrategyAIModule::rule(int param) {
-    this->sub_268.target_method(param);
+int TribeStrategyAIModule::rule(int param) {
+    return this->vcRules.rule(param);
 }

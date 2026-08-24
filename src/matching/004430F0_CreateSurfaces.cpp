@@ -28,7 +28,9 @@ extern void* __cdecl operator new(unsigned int);
 
 typedef _DDBLTFX DDBLTFX;
 
+#ifndef DRAWAREA_CANONICAL_TU
 extern "C" __declspec(dllimport) int __stdcall GetClientRect(void*, RECT*);
+#endif
 
 int TDrawSystem::CreateSurfaces()
 {

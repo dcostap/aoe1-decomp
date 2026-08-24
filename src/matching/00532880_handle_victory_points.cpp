@@ -2,6 +2,7 @@
 // VA: 00532880
 // victory.cpp
 
+#ifndef VICTORY_CONTEXT_H
 class RGE_Victory_Condition {
 public:
     long get_victory_points();
@@ -30,6 +31,7 @@ public:
 
     void handle_victory_points(void* entry);
 };
+#endif
 
 void RGE_Victory_Conditions::handle_victory_points(void* entry) {
     RGE_Victory_Conditions* self = this;

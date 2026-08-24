@@ -23,6 +23,7 @@
 
 extern float DAT_00570B80;
 
+#ifndef MOVE_OBJ_CANONICAL_TU
 struct Waypoint {
     float x;
     float y;
@@ -163,6 +164,7 @@ public:
 
     int findFirstTerrainAlongExceptionPath(int, float*, float*);
 };
+#endif
 
 int RGE_Moving_Object::findFirstTerrainAlongExceptionPath(
     int terrain, float* result_x, float* result_y) {

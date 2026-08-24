@@ -1,3 +1,4 @@
+#ifndef RGE_COM_OBJ_SHARED_CONTEXT
 class RGE_Master_Static_Object {
 public:
     unsigned char gap_00[0x14];
@@ -104,6 +105,7 @@ public:
     virtual void vf148(int target_id, int self_value_4, int command_id, int object_group, int zero1, int zero2);
     virtual void release_being_worked_on(RGE_Static_Object* target);
 };
+#endif
 
 void RGE_Combat_Object::release_being_worked_on(RGE_Static_Object* target) {
     RGE_Animated_Object::release_being_worked_on(target);

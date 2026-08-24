@@ -33,6 +33,7 @@
 // Main-agent audit confirmed the natural draw-area line ownership and retained
 // the ordinary clipped bevel construction.
 
+#ifndef DRAWAREA_CANONICAL_TU
 class TDrawArea {
 public:
     void DrawHorzLine(long x, long y, long width, unsigned char color);
@@ -41,6 +42,7 @@ public:
                     unsigned char c1, unsigned char c2,
                     unsigned char c3, unsigned char c4);
 };
+#endif
 
 void TDrawArea::DrawBevel2(long x1, long y1, long x2, long y2,
                            unsigned char c1, unsigned char c2,

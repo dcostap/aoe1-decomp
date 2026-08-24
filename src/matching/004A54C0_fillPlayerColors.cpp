@@ -9,6 +9,8 @@
 
 #include <stdio.h>
 
+#ifndef SCR_MPS_TU_CONTEXT
+
 class RGE_Scenario {
 public:
     virtual ~RGE_Scenario();
@@ -44,6 +46,8 @@ public:
 
     void fillPlayerColors();
 };
+
+#endif
 
 void TribeMPSetupScreen::fillPlayerColors() {
     TButtonPanel** buttons = this->playerColor;

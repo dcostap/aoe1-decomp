@@ -3,6 +3,7 @@
 // Exact anchor: maxNumberNegativeObjects() owns 00545D00-00545D06.
 // Bytes 00545D07-00545D0F are alignment data before this body.
 // BINARY NOTE: This nonvirtual __thiscall getter reads numberObjectsValue at +0x8C.
+#ifndef WORLD_TU
 class RGE_Game_World {
 public:
     virtual ~RGE_Game_World();
@@ -10,5 +11,6 @@ public:
     int numberObjectsValue;
     int numberObjects();
 };
+#endif
 
 int RGE_Game_World::numberObjects() { return this->numberObjectsValue; }

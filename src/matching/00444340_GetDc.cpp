@@ -6,6 +6,7 @@
 // not __thiscall. Without __stdcall, VC5 emits mov ecx,edx pushing
 // this via ECX instead of push edx passing this on stack.
 
+#ifndef DRAWAREA_CANONICAL_TU
 class TDrawSystem {
 public:
     char gap_00[0x478];
@@ -44,6 +45,7 @@ public:
 
     void* GetDc(char* unused);
 };
+#endif
 
 void* TDrawArea::GetDc(char* unused)
 {

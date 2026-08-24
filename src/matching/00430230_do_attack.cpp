@@ -19,11 +19,14 @@
 // exact TRIBE_Combat_Object::do_attack donor; this removed the post-vf0F0
 // push-edi drift and produced an exact 234-byte match.
 
+#ifndef RGE_COM_OBJ_SHARED_CONTEXT
 extern "C" int __cdecl debug_rand(const char* file, int line);
+#endif
 
 class RGE_Static_Object;
 class RGE_Combat_Object;
 
+#ifndef RGE_COM_OBJ_SHARED_CONTEXT
 class RGE_Static_Object {
 public:
     virtual void vf000(void);
@@ -204,6 +207,7 @@ public:
 
     unsigned char do_attack(RGE_Static_Object* target, RGE_Combat_Object* attacker, float p3, float p4, float p5);
 };
+#endif
 
 unsigned char RGE_Combat_Object::do_attack(RGE_Static_Object* target, RGE_Combat_Object* attacker, float p3, float p4, float p5)
 {

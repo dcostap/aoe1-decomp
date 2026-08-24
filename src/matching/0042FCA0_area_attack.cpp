@@ -19,11 +19,14 @@
 // session probe: initialized owner/map before master/radius; exact 683B match and expected entry register colors.
 
 extern "C" long __cdecl _ftol();
+#ifndef RGE_COM_OBJ_SHARED_CONTEXT
 extern "C" int __cdecl debug_rand(char*, int);
+#endif
 extern double DAT_0056f4a0;
 extern float DAT_0056f4a8;
 
 struct Link { void* object; Link* next; };
+#ifndef RGE_COM_OBJ_SHARED_CONTEXT
 struct MapCell { char gap[0x10]; Link* objects; char gap_end[4]; };
 struct MapRow { MapCell cell[1]; };
 struct RGE_Map { char gap0[8]; short width; char gapA[2]; short height; char gapE[0x8D7E]; MapRow** rows; };
@@ -111,6 +114,7 @@ public:
 
     unsigned char area_attack(float x, float y, float z, RGE_Combat_Object* attacker, RGE_Static_Object* ignored);
 };
+#endif
 #undef VPAD
 
 unsigned char RGE_Combat_Object::area_attack(float x, float y, float z, RGE_Combat_Object* attacker, RGE_Static_Object* ignored)

@@ -1,4 +1,5 @@
 // attempt 3: natural destructor with helper on screen-panel base and exact field offsets
+#ifndef SCR_MPS_TU_CONTEXT
 class TScreenPanel { public: virtual ~TScreenPanel(); void delete_panel(void** p); };
 class TRIBE_Screen_Wait : public TScreenPanel {
 public:
@@ -10,6 +11,7 @@ public:
     void* settingText[20];
     virtual ~TRIBE_Screen_Wait();
 };
+#endif
 TRIBE_Screen_Wait::~TRIBE_Screen_Wait() {
     this->delete_panel(&this->message);
     this->delete_panel(&this->close_button);

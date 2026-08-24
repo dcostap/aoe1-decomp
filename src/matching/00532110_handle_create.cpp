@@ -23,6 +23,7 @@
 //   object-list, player, and world surfaces. That declaration context changed
 //   VC5's final SIB choice and produced an exact match.
 
+#ifndef VICTORY_CONTEXT_H
 struct RGE_Master_Static_Object {
     virtual ~RGE_Master_Static_Object();
     char gap_04[0x0E];
@@ -88,6 +89,7 @@ public:
 
     void handle_create(RGE_Victory_Entry* entry);
 };
+#endif
 
 void RGE_Victory_Conditions::handle_create(RGE_Victory_Entry* entry) {
     RGE_Player* self = this->player;

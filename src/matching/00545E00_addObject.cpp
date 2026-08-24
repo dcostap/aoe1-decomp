@@ -25,8 +25,11 @@
 
 extern "C" void* __cdecl operator_new(unsigned int);
 extern "C" void __cdecl operator_delete(void*);
+#ifndef WORLD_TU
 extern void* VIS_UNIT_objectsValue;
+#endif
 
+#ifndef WORLD_TU
 class RGE_Static_Object {
 public:
     virtual ~RGE_Static_Object();
@@ -49,6 +52,7 @@ public:
 
     int addObject(RGE_Static_Object* obj);
 };
+#endif
 
 int RGE_Game_World::addObject(RGE_Static_Object* obj)
 {

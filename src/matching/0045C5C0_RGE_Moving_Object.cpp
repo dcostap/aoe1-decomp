@@ -84,6 +84,10 @@ public:
 };
 #endif
 
+#ifdef MOVE_OBJ_CANONICAL_TU
+#define waitingToMove waitingToMoveValue
+#endif
+
 RGE_Moving_Object::RGE_Moving_Object(int mode,
                                      RGE_Game_World* world,
                                      int doSetup)
@@ -120,3 +124,7 @@ RGE_Moving_Object::RGE_Moving_Object(int mode,
         this->setup(mode, world);
     }
 }
+
+#ifdef MOVE_OBJ_CANONICAL_TU
+#undef waitingToMove
+#endif

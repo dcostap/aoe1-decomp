@@ -1,3 +1,4 @@
+#ifndef ACT_OBJ_CONTEXT_H
 class RGE_Static_Object;
 
 class RGE_Action_Object {
@@ -140,10 +141,11 @@ class RGE_Static_Object {
 public:
     char gap_00[0x00];
 };
+#endif
 
 void RGE_Action_Object::do_command(RGE_Static_Object* target, float x, float y, float z) {
     if ((void*)target != (void*)this) {
-        this->vf1F8(target, x, y, z, 0);
+        this->work2(target, x, y, z, 0);
         this->command_flag = this->command_flag + 1;
     }
 }

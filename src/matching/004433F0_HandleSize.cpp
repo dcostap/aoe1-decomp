@@ -8,7 +8,9 @@
 #include "../../include/drawarea_context.h"
 
 // IAT-resolved GetClientRect via the period Win32 import declaration.
+#ifndef DRAWAREA_CANONICAL_TU
 extern "C" __declspec(dllimport) int __stdcall GetClientRect(void* hWnd, RECT* rect);
+#endif
 
 // BINARY NOTE: the canonical Drawarea context preserves this exact owner.
 

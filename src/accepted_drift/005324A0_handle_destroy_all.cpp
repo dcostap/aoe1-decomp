@@ -69,6 +69,7 @@
 // return behavior changes. The canonical typed source is promoted rather than
 // any register-qualified or alias-steering variant.
 
+#ifndef VICTORY_CONTEXT_H
 struct RGE_Player;
 
 struct RGE_World {
@@ -154,6 +155,7 @@ public:
 
     void handle_destroy_all(RGE_Victory_Entry* entry);
 };
+#endif
 
 void RGE_Victory_Conditions::handle_destroy_all(RGE_Victory_Entry* entry) {
     if (entry->target_player != 0) {

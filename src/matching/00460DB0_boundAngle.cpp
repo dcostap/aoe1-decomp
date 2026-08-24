@@ -10,6 +10,7 @@
 // 9: Replaced generated DAT_00570B50 references with the period literal 6.2831855f; this restored fcom/fstp ordering and matched exactly.
 // Math-header/constness/context probes were unchanged; keep the literal source as the binary-supported reconstruction.
 
+#ifndef MOVE_OBJ_CANONICAL_TU
 class RGE_Moving_Object {
 public:
     virtual ~RGE_Moving_Object();
@@ -17,6 +18,7 @@ public:
 
     void boundAngle(float* angle, int numberFacets);
 };
+#endif
 
 extern float DAT_00570b48;
 extern float DAT_00570b4c;

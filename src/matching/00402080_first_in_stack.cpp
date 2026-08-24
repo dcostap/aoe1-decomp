@@ -1,3 +1,4 @@
+#ifndef ACT_BIRD_CONTEXT_H
 class RGE_Action_Object {
 public:
     virtual void vf00(void);
@@ -13,11 +14,11 @@ public:
     virtual void vf28(void);
     virtual void vf2C(void);
     virtual void vf30(void);
-    virtual float vf34(float param_1, float param_2, float param_3);
+    virtual float teleport(float param_1, float param_2, float param_3);
 
     char gap_04[0x34];
-    float field_38;
-    float field_3C;
+    float world_x;
+    float world_y;
 };
 
 class RGE_Action {
@@ -56,13 +57,14 @@ class RGE_Action_Bird : public RGE_Action {
 public:
     virtual void first_in_stack(unsigned char param_1);
 };
+#endif
 
 void RGE_Action_Bird::first_in_stack(unsigned char param_1) {
     if (param_1) {
         RGE_Action_Object* obj;
 
         obj = this->obj;
-        obj->vf34(obj->field_38, obj->field_3C, 6.0f);
+        obj->teleport(obj->world_x, obj->world_y, 6.0f);
         this->set_state(3);
         return;
     }

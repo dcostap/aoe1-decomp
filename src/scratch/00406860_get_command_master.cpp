@@ -158,6 +158,7 @@
 //   source model. The exact owner is RGE_Action_Object::get_command_master in
 //   act_obj.cpp. The unresolved difference is register and block allocation.
 
+#ifndef ACT_OBJ_CONTEXT_H
 class RGE_Static_Object;
 class RGE_Action_Object;
 class RGE_Task;
@@ -330,27 +331,28 @@ public:
     virtual RGE_Master_Static_Object* get_command_master(RGE_Static_Object* target,
                                                           float x, float y, float z);
 };
+#endif
 
 RGE_Master_Static_Object* RGE_Action_Object::get_command_master(RGE_Static_Object* target,
                                                                 float x, float y, float z)
 {
-    if (target == this || ((RGE_Master_Action_Object*)this->master_obj)->commandable == 0) {
+    if (target == this || ((RGE_Master_Action_Object*)this->master_obj)->task_by_group == 0) {
         return this->master_obj;
     }
-    if (((RGE_Master_Action_Object*)this->master_obj)->command->getTask(
+    if (((RGE_Master_Command*)((RGE_Master_Action_Object*)this->master_obj)->tasks)->getTask(
             this, target, x, y, z) != 0) {
         return this->master_obj;
     }
-    if (((RGE_Master_Action_Object*)this->master_obj)->commandable != 0) {
+    if (((RGE_Master_Action_Object*)this->master_obj)->task_by_group != 0) {
         RGE_Master_Static_Object* obj;
         for (int i = 0; i < this->owner->master_object_num; i++) {
             obj = this->owner->master_objects[i];
             if (obj != 0 &&
                 obj->object_group == this->master_obj->object_group &&
                 obj->master_type == this->master_obj->master_type &&
-                ((RGE_Master_Action_Object*)obj)->commandable ==
-                    ((RGE_Master_Action_Object*)this->master_obj)->commandable) {
-                if (((RGE_Master_Action_Object*)obj)->command->getTask(
+                ((RGE_Master_Action_Object*)obj)->task_by_group ==
+                    ((RGE_Master_Action_Object*)this->master_obj)->task_by_group) {
+                if (((RGE_Master_Command*)((RGE_Master_Action_Object*)obj)->tasks)->getTask(
                         this, target, x, y, z) != 0) {
                     return obj;
                 }

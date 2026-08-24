@@ -3,6 +3,7 @@
 #pragma warning(disable:4234)
 extern FILE* actionFile;
 
+#ifndef MOVE_OBJ_CANONICAL_TU
 class RGE_Moving_Object_Stop {
 public:
     virtual void v0();
@@ -41,6 +42,12 @@ public:
 
     void removeAllUserDefinedWaypoints(int param_1);
 };
+#endif
+
+#ifdef MOVE_OBJ_CANONICAL_TU
+#define field_4 id
+#define stop_object inside_obj
+#endif
 
 void RGE_Moving_Object::removeAllUserDefinedWaypoints(int param_1) {
     this->numberUserDefinedWaypointsValue = 0;
@@ -51,3 +58,8 @@ void RGE_Moving_Object::removeAllUserDefinedWaypoints(int param_1) {
         this->stop_object->stopObject(0);
     }
 }
+
+#ifdef MOVE_OBJ_CANONICAL_TU
+#undef field_4
+#undef stop_object
+#endif

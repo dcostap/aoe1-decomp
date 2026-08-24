@@ -1,3 +1,4 @@
+#ifndef AIPBOOK_CANONICAL_TU
 struct GroupingStruct {
     int id;
     unsigned char group_type;
@@ -11,6 +12,7 @@ public:
 
     void zeroAllGroupings();
 };
+#endif
 
 void AIPlayStatus::zeroAllGroupings() {
     int i;

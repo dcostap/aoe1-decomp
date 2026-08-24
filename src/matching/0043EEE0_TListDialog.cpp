@@ -5,6 +5,9 @@
 // fixed: use delete child pointers, not explicit destructor calls; original uses scalar deleting destructors. MATCH.
 // FLAGS: /GX required; default flags emit 144 bytes and no matching EH shape.
 
+#ifdef DLG_LIST_SHARED_CONTEXT
+#include "../../include/dlg_list_context.h"
+#else
 class TPanel {
 public:
     virtual ~TPanel();
@@ -56,6 +59,7 @@ public:
         long param_20, long param_21, long param_22);
     virtual long action(TPanel* param_1, long param_2, unsigned long param_3, unsigned long param_4);
 };
+#endif
 
 TListDialog::~TListDialog() {
     // vtable set by compiler

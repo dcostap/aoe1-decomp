@@ -5,6 +5,7 @@
 
 extern "C" void __cdecl free(void* block);
 
+#ifndef VICTORY_CONTEXT_H
 class RGE_Victory_Point_Entry {
 public:
     char gap_00[0x18];
@@ -19,6 +20,7 @@ public:
 
     void sub_point(RGE_Victory_Point_Entry* entry);
 };
+#endif
 
 void RGE_Victory_Conditions::sub_point(RGE_Victory_Point_Entry* entry) {
     RGE_Victory_Point_Entry* node = this->victory_point_list;

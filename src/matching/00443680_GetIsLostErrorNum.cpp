@@ -1,9 +1,13 @@
 // VA: 00443680 GetIsLostErrorNum (68B)
 
+#ifndef DRAWAREA_CANONICAL_TU
+#ifndef DRAWAREA_CANONICAL_TU
 class TDrawSystem {
 public:
     int GetIsLostErrorNum(long error_num);
 };
+#endif
+#endif
 
 int TDrawSystem::GetIsLostErrorNum(long error_num) {
     switch (error_num) {

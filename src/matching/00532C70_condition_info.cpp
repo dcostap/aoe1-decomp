@@ -1,3 +1,4 @@
+#ifndef VICTORY_CONTEXT_H
 class RGE_Victory_Entry {
 public:
     unsigned char command;
@@ -15,6 +16,7 @@ public:
 
     char condition_info(int index, char** outEntry, unsigned char* outCommand);
 };
+#endif
 
 char RGE_Victory_Conditions::condition_info(int index, char** outEntry, unsigned char* outCommand) {
     RGE_Victory_Entry* entry = this->victory_list;

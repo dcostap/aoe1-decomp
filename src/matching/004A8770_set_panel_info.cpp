@@ -1,3 +1,4 @@
+#ifndef SCR_SED_TU_CONTEXT
 class RGE_Player;
 class RGE_Game_World;
 class RGE_Base_Game;
@@ -37,6 +38,7 @@ public:
 
     void set_panel_info(void);
 };
+#endif
 
 void TRIBE_Screen_Sed::set_panel_info(void) {
     this->main_view->set_world(this->world);

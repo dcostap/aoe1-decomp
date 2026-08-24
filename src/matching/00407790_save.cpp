@@ -3,44 +3,14 @@
 // PDB: action.cpp:172-213
 // No EH framing
 
+#include "../../include/action_context.h"
 #include "../../include/game_globals.h"
-
-class RGE_Action_List;
-class RGE_Action {
-public:
-    void* vtable_ptr;
-    short action_type;
-    char gap_06[2];
-    void* obj;
-    unsigned char state;
-    char gap_0D[3];
-    void* target_obj;
-    void* target_obj2;
-    int targetID;
-    int target2ID;
-    float target_x;
-    float target_y;
-    float target_z;
-    float timer;
-    void* task;
-    RGE_Action_List* sub_actions;
-    void* sprite;
-    unsigned char subActionValue;
-    char gap_3D[3];
-
-    void save(int param_1);
-};
-
-class RGE_Action_List {
-public:
-    void save(int handle);
-};
 
 void rge_write(int handle, void* buf, int size);
 
 void RGE_Action::save(int param_1)
 {
-    // Two locals to force 8 bytes stack frame like orig push ecx + reused param slot
+    // Two locals preserve the original 8-byte local window.
     int id_write;
     short short_write;
 

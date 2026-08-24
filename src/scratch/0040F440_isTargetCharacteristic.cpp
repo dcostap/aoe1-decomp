@@ -1,11 +1,8 @@
-struct AIPlayPhaseCommand {
-    char gap_0[0x49];
-    unsigned char targetCharacteristics[5];
-};
+// 0040F440 AIPlay::isTargetCharacteristic
 
-int __fastcall isTargetCharacteristic(AIPlayPhaseCommand* self, int, unsigned char characteristic) {
+int AIPlay::isTargetCharacteristic(unsigned char characteristic) const {
     for (int i = 0; i < 5; i++) {
-        if (self->targetCharacteristics[i] == characteristic)
+        if (this->targetCharacteristicValue[i] == characteristic)
             return 1;
     }
     return 0;

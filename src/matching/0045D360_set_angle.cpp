@@ -2,6 +2,7 @@
 // result: exact match after keeping the original FPU basin and the late byte store to +0x35
 // moved to src\matching\0045D360_set_angle.cpp after local validation
 
+#ifndef MOVE_OBJ_CANONICAL_TU
 class RGE_Master_Object {
 public:
     char gap_00[0x60];
@@ -21,6 +22,15 @@ public:
 
     void set_angle();
 };
+#endif
+
+#ifdef MOVE_OBJ_CANONICAL_TU
+typedef RGE_Sprite RGE_Master_Object;
+#define master sprite
+#define field_35 facet
+#define flags flag
+#define facings facet_num
+#endif
 
 extern float DAT_00570b88;
 extern float DAT_00570b78;
@@ -44,3 +54,10 @@ void RGE_Moving_Object::set_angle() {
     }
     this->field_35 = (unsigned char)((int)temp);
 }
+
+#ifdef MOVE_OBJ_CANONICAL_TU
+#undef master
+#undef field_35
+#undef flags
+#undef facings
+#endif

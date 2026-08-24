@@ -1,14 +1,6 @@
-class AIPlayBook {
-public:
-    int vfptr;
-    int field_4;
-    char gap_8[0x44];
-    int field_4C;
-    AIPlayBook();
-};
+// 004101B0 AIPlayBook::AIPlayBook
 
-AIPlayBook::AIPlayBook() {
-    this->field_4 = 0;
-    this->field_4C = 0;
-    this->vfptr = 0x56E970;
+AIPlayBook::AIPlayBook()
+    : numberPlaysValue(0),
+      plays(0) {
 }

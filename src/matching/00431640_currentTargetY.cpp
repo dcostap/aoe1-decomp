@@ -1,3 +1,4 @@
+#ifndef RGE_COM_OBJ_SHARED_CONTEXT
 class RGE_Action {
 public:
     float targetY();
@@ -16,6 +17,7 @@ public:
 
     virtual float currentTargetY() const;
 };
+#endif
 
 float RGE_Combat_Object::currentTargetY() const {
     if (action_list->have_action() == 1) {

@@ -58,9 +58,11 @@
 
 extern "C" void __cdecl _ASMDraw_HLine(int x0, int x1, int y, unsigned int color);
 
+#ifndef DRAWAREA_CANONICAL_TU
 struct TDrawArea {
     void DrawLine(int x1, int y1, int x2, int y2, unsigned char color);
 };
+#endif
 
 void TDrawArea::DrawLine(int x1, int y1, int x2, int y2, unsigned char color) {
     if (x1 == x2) {

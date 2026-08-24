@@ -27,6 +27,7 @@
 // - Main-agent audit restored canonical polymorphic world/player/victory
 //   ownership; exact bytes were revalidated after promotion.
 
+#ifndef VICTORY_CONTEXT_H
 class RGE_Visible_Map {
 public:
     float percentExplored();
@@ -72,6 +73,7 @@ public:
 
     void handle_explore(RGE_Victory_Entry* entry);
 };
+#endif
 
 void RGE_Victory_Conditions::handle_explore(RGE_Victory_Entry* entry) {
     RGE_Victory_Conditions* self = this;

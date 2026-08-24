@@ -42,6 +42,20 @@ public:
 #endif
 
 void TRIBE_Action_Trade::first_in_stack(unsigned char param_1) {
+#ifdef TACT_TRD_SHARED_CONTEXT
+    if (this->obj->facet != 0 && this->obj->facet != 2 && this->obj->facet != 1) {
+        this->obj->facet = 1;
+    }
+    if (param_1 != 0) {
+        if (this->obj != 0) {
+            this->set_state(4);
+            return;
+        }
+        this->set_state(2);
+        return;
+    }
+    this->set_state(3);
+#else
     if (this->child->field_4C != 0 && this->child->field_4C != 2 && this->child->field_4C != 1) {
         this->child->field_4C = 1;
     }
@@ -54,4 +68,5 @@ void TRIBE_Action_Trade::first_in_stack(unsigned char param_1) {
         return;
     }
     this->vf5C(3);
+#endif
 }

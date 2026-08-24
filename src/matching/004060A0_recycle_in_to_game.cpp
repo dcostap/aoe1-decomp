@@ -1,3 +1,4 @@
+#ifndef ACT_OBJ_CONTEXT_H
 class RGE_Master_Static_Object;
 class RGE_Player;
 
@@ -13,6 +14,7 @@ public:
 
     void recycle_in_to_game(RGE_Master_Static_Object* master_obj, RGE_Player* player, float x, float y, float z);
 };
+#endif
 
 void RGE_Action_Object::recycle_in_to_game(RGE_Master_Static_Object* master_obj, RGE_Player* player, float x, float y, float z) {
     ((RGE_Moving_Object*)this)->RGE_Moving_Object::recycle_in_to_game(master_obj, player, x, y, z);

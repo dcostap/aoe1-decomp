@@ -2,6 +2,7 @@
 // if this is sticky, the remaining gap should be only VC5 code-shape around the branch split or address math
 #include "..\..\include\game_types.h"
 
+#ifndef DRAWAREA_CANONICAL_TU
 class TDrawArea {
 public:
     void* vtable_ptr;
@@ -18,17 +19,18 @@ public:
 
     void SetPixel(long x, long y, unsigned char color);
 };
+#endif
 
 void TDrawArea::SetPixel(long x, long y, unsigned char color) {
     if (Bits == 0) {
         return;
     }
 
-    if (x < left || x > right) {
+    if (x < ClipRect.left || x > ClipRect.right) {
         return;
     }
 
-    if (y < top || y > bottom) {
+    if (y < ClipRect.top || y > ClipRect.bottom) {
         return;
     }
 

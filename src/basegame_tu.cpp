@@ -1,0 +1,77 @@
+// Authentic basegame.cpp eligible-owner wrapper in PDB source order.
+// Incompatible standalone declarations remain blocked in the proposal.
+#include <windows.h>
+#include <stdio.h>
+#include <io.h>
+#include <new.h>
+#include <string.h>
+#define BASEGAME_GROUPED_TU
+class RGE_Base_Game;
+extern FILE* draw_log;
+extern char draw_log_name[260];
+
+#include "matching/0041B620_write_draw_log.cpp"
+#include "matching/0041B650_write_draw_log2.cpp"
+#include "matching/0041E7A0_rge_base_game_wnd_proc.cpp"
+#include "matching/0041B6A0_RGE_Base_Game.cpp"
+#include "accepted_drift/0041BAA0_setup.cpp"
+#include "scratch/0041C270_RGE_Base_Game.cpp"
+#include "matching/0041C7D0_reset_timings.cpp"
+#include "matching/0041C830_add_to_timing.cpp"
+#include "matching/0041c870_increment_world_update_count.cpp"
+#include "matching/0041c880_increment_view_update_count.cpp"
+#include "matching/0041C890_set_last_single_time.cpp"
+#include "matching/0041C8B0_get_last_time.cpp"
+#include "matching/0041C8D0_get_last_single_time.cpp"
+#include "matching/0041C8F0_get_accum_time.cpp"
+#include "matching/0041C910_get_max_time.cpp"
+#include "matching/0041C930_get_last_max_time.cpp"
+#include "matching/0041c950_get_last_world_update_count.cpp"
+#include "matching/0041c960_get_last_view_update_count.cpp"
+#include "matching/0041c970_get_world_update_count.cpp"
+#include "matching/0041c980_get_view_update_count.cpp"
+#include "matching/0041c990_get_error_code.cpp"
+#include "matching/0041C9A0_get_string.cpp"
+#include "matching/0041C9C0_get_string.cpp"
+#include "matching/0041C9F0_get_string.cpp"
+#include "matching/0041CA10_get_string2.cpp"
+#include "matching/0041CB80_get_scenario_info.cpp"
+#include "matching/0041CCA0_get_scenario_header.cpp"
+#include "matching/0041CDA0_write_scenario_header.cpp"
+#include "matching/0041CE00_new_scenario_header.cpp"
+#include "matching/0041CE60_new_scenario_header.cpp"
+#include "matching/0041CEC0_new_scenario_info.cpp"
+#include "matching/0041CF30_get_campaign_info.cpp"
+#include "matching/0041CF70_set_campaign_info.cpp"
+#include "matching/0041CFC0_set_campaign_win.cpp"
+#include "matching/0041CFD0_run.cpp"
+#include "matching/0041D0A0_setup_cmd_options.cpp"
+#include "matching/0041E700_setup_class.cpp"
+#include "verified_logic/0041E7D0_setup_main_window.cpp"
+#include "accepted_drift/0041E920_setup_graphics_system.cpp"
+#include "matching/0041EBC0_setup_palette.cpp"
+#include "matching/0041EBF0_setup_mouse.cpp"
+#include "matching/0041ED00_setup_chat.cpp"
+#include "matching/0041ED70_setup_registry.cpp"
+#include "matching/0041EDE0_setup_debugging_log.cpp"
+#include "matching/0041EE90_setup_comm.cpp"
+#include "matching/0041EFF0_reset_comm.cpp"
+#include "matching/0041F030_setup_sound_system.cpp"
+#include "matching/0041F110_setup_music_system.cpp"
+#include "matching/0041F2D0_setup_shapes.cpp"
+#include "matching/0041F400_setup_sounds.cpp"
+#include "verified_logic/0041F560_setup_fonts.cpp"
+#include "matching/0041F730_setup_blank_screen.cpp"
+#include "matching/0041F830_stop_sound_system.cpp"
+#include "matching/0041F920_restart_sound_system.cpp"
+#include "matching/0041F9B0_stop_music_system.cpp"
+#include "matching/0041F9F0_restart_music_system.cpp"
+#include "matching/0041FA90_shutdown_music_system.cpp"
+#include "matching/0041FAF0_make_font.cpp"
+#include "matching/0041FBC0_make_font.cpp"
+#include "matching/0041FC90_check_for_cd.cpp"
+#include "matching/0041FDE0_check_expiration.cpp"
+#include "matching/0041FE50_check_multi_copies.cpp"
+#include "matching/0041FF20_check_paint.cpp"
+
+#undef BASEGAME_GROUPED_TU

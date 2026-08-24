@@ -3,6 +3,7 @@
 // control flow and byte count match, but VC5 still assigns the running counter to ecx and the wanted index to edx instead of the original edx/ecx split
 // explicit wanted/count locals did not change that register family, so the remaining gap is localized to the counter/index register choice in the loop header
 
+#ifndef VICTORY_CONTEXT_H
 class RGE_Victory_Entry {
 public:
     char gap_00[0x30];
@@ -16,6 +17,7 @@ public:
 
     RGE_Victory_Entry* condition_raw_info(long index);
 };
+#endif
 
 RGE_Victory_Entry* RGE_Victory_Conditions::condition_raw_info(long index) {
     RGE_Victory_Entry* entry;

@@ -1,5 +1,6 @@
 // VA: 004A8960 TRIBE_Screen_Sed::create_text(TPanel*, TTextPanel**, char*) | scr_sed.cpp:552-560
 
+#ifndef SCR_SED_TU_CONTEXT
 class TPanel {
 public:
     virtual void v0();
@@ -32,6 +33,7 @@ class TRIBE_Screen_Sed : public TScreenPanel {
 public:
     int create_text(TPanel* panel, TTextPanel** text_panel, char* text);
 };
+#endif
 
 int TRIBE_Screen_Sed::create_text(TPanel* panel, TTextPanel** text_panel, char* text) {
     int ok = ((TEasy_Panel*)this)->create_text(panel, text_panel, text, 0, 0, 0, 0, 10, 0, 0, 0);

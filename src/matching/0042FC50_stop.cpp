@@ -1,6 +1,7 @@
 extern "C" void* actionFile;
 extern "C" int fprintf(void* stream, const char* format, ...);
 
+#ifndef RGE_COM_OBJ_SHARED_CONTEXT
 class UnitAIModule {
 public:
     virtual void slot_00();
@@ -41,6 +42,7 @@ public:
 
     virtual void stop();
 };
+#endif
 
 void RGE_Combat_Object::stop() {
     RGE_Action_Object::stop();

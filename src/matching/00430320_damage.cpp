@@ -1,5 +1,6 @@
 class RGE_Armor_Weapon_Info;
 class RGE_Player;
+#ifndef RGE_COM_OBJ_SHARED_CONTEXT
 class RGE_Static_Object {
 public:
     void* vftable;
@@ -104,6 +105,7 @@ public:
     unsigned char gap_10[0x20];
     float hp;
 };
+#endif
 
 void RGE_Combat_Object::damage(int param_1, RGE_Armor_Weapon_Info* armor, float value, RGE_Player* player, RGE_Static_Object* target) {
     hp -= calculateDamage(param_1, armor, value, player, target);

@@ -13,6 +13,7 @@ struct tm_like {
     int tm_gmtoff;
 };
 
+#ifndef BASEGAME_GROUPED_TU
 struct RGE_Prog_Info {
     char gap_000[0x880];
     short expire_year;
@@ -26,6 +27,7 @@ struct RGE_Base_Game {
 
     int check_expiration();
 };
+#endif
 
 extern "C" void* memset(void* dst, int value, unsigned int size);
 extern "C" long mktime(tm_like* tm);

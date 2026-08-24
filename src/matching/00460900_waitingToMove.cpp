@@ -1,3 +1,4 @@
+#ifndef MOVE_OBJ_CANONICAL_TU
 class RGE_Moving_Object {
 public:
     virtual void vf00(void) const;
@@ -84,6 +85,7 @@ public:
 
     virtual unsigned char waitingToMove(void) const;
 };
+#endif
 
 unsigned char RGE_Moving_Object::waitingToMove(void) const {
     unsigned int state = (unsigned char)this->movement_state();

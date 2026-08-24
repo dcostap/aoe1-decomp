@@ -1,11 +1,8 @@
-struct AIPlayPhaseCommand {
-    char gap_0[0x44];
-    unsigned char targetTypes[5];
-};
+// 0040F3D0 AIPlay::isTargetType
 
-int __fastcall isTargetType(AIPlayPhaseCommand* self, int, unsigned char type) {
+int AIPlay::isTargetType(unsigned char type) const {
     for (int i = 0; i < 5; i++) {
-        if (self->targetTypes[i] == type)
+        if (this->targetTypeValue[i] == type)
             return 1;
     }
     return 0;

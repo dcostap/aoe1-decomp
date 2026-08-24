@@ -1,3 +1,4 @@
+#ifndef ACT_OBJ_CONTEXT_H
 class RGE_Action {
 public:
     char gap_00[0x04];
@@ -18,6 +19,7 @@ public:
 
     long get_action_checksum(void);
 };
+#endif
 
 long RGE_Action_Object::get_action_checksum(void) {
     RGE_Action* action;

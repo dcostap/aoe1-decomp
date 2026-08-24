@@ -30,6 +30,7 @@
 
 extern char s_basegame_setup_fonts[];
 
+#ifndef BASEGAME_GROUPED_TU
 struct RGE_Font {
     void* font;
     long font_wid;
@@ -66,6 +67,7 @@ public:
 
     void* make_font(void* dc, long id, int italic);
 };
+#endif
 
 int RGE_Base_Game::setup_fonts()
 {

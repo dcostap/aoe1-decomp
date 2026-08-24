@@ -88,6 +88,7 @@ class RGE_Static_Object;
 class RGE_Player;
 class RGE_Object_List;
 
+#ifndef RGE_COM_OBJ_SHARED_CONTEXT
 class RGE_Master_Static_Object {
 public:
     virtual ~RGE_Master_Static_Object();
@@ -198,6 +199,7 @@ public:
 
     virtual unsigned char attack(float x, float y, float z, RGE_Combat_Object* target);
 };
+#endif
 #undef VPAD
 
 #include <math.h>

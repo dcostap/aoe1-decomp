@@ -1,3 +1,4 @@
+#ifndef ACT_OBJ_CONTEXT_H
 extern "C" void __cdecl rge_write(int handle, void* buffer, int size);
 
 class RGE_Action_List {
@@ -20,6 +21,7 @@ public:
 
     void save(int handle);
 };
+#endif
 
 void RGE_Action_Object::save(int handle) {
     ((RGE_Moving_Object*)this)->RGE_Moving_Object::save(handle);

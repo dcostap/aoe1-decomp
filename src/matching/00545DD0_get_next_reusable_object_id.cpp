@@ -1,5 +1,6 @@
 // RGE_Game_World::get_next_reusable_object_id - manage reusable object ID counter
 
+#ifndef WORLD_TU
 class RGE_Game_World {
 public:
     char gap_00[0x6C];
@@ -9,6 +10,7 @@ public:
 
     long get_next_reusable_object_id();
 };
+#endif
 
 long RGE_Game_World::get_next_reusable_object_id() {
     if (this->scenario_object_flag) {

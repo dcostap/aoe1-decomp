@@ -11,6 +11,7 @@
 // Unused world, entry, and method surfaces were also incidental.
 // The retained surface is the smallest tested canonical context.
 
+#ifndef VICTORY_CONTEXT_H
 class RGE_Victory_Entry;
 
 class RGE_Player {
@@ -53,6 +54,7 @@ protected:
 public:
     virtual void save(int handle);
 };
+#endif
 
 void RGE_Victory_Conditions::handle_points_high_attribute_amount(RGE_Victory_Point_Entry* node) {
     if (node->state == 0) {

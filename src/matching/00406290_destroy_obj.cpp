@@ -1,3 +1,4 @@
+#ifndef ACT_OBJ_CONTEXT_H
 class RGE_Action_List {
 public:
     void delete_list(void);
@@ -17,6 +18,7 @@ public:
 
     void destroy_obj(void);
 };
+#endif
 
 void RGE_Action_Object::destroy_obj(void) {
     this->actions->delete_list();

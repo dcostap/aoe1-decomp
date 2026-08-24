@@ -4,6 +4,7 @@
 // the three panel-system dialog removals in source order.
 // FLAGS: config/flags/0049F890_TribeMPStartupScreen.rsp
 
+#ifndef AOE1_SCR_MP_CONTEXT_H
 class TPanel {
 public:
     char pad_panel[0xF0];
@@ -52,6 +53,7 @@ public:
 
     virtual ~TribeMPStartupScreen();
 };
+#endif
 
 TribeMPStartupScreen::~TribeMPStartupScreen() {
     this->delete_panel((TPanel**)&this->title);

@@ -35,6 +35,7 @@
 
 extern float DAT_00570B48;
 
+#ifndef MOVE_OBJ_CANONICAL_TU
 class RGE_Moving_Object {
 public:
     virtual void vf0();
@@ -110,6 +111,7 @@ public:
 
     virtual int canLinePath(int, int, int, int, float, int);
 };
+#endif
 
 int RGE_Moving_Object::canLinePath(int x1, int y1, int x2, int y2,
                                    float maxDistance, int terrain) {

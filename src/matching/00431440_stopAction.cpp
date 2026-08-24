@@ -1,3 +1,4 @@
+#ifndef RGE_COM_OBJ_SHARED_CONTEXT
 class RGE_Action_List {
 public:
     void delete_list();
@@ -34,6 +35,7 @@ public:
 
     virtual int stopAction();
 };
+#endif
 
 int RGE_Combat_Object::stopAction() {
     action_list->delete_list();

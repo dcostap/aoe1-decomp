@@ -40,6 +40,7 @@ extern int displayPathingFlags;
 extern int displayPathObjectID;
 extern float DAT_00570B80;
 
+#ifndef MOVE_OBJ_CANONICAL_TU
 struct Waypoint {
     float x;
     float y;
@@ -321,6 +322,7 @@ public:
         }
     }
 };
+#endif
 
 RGE_Moving_Object::PathResult RGE_Moving_Object::findPath()
 {

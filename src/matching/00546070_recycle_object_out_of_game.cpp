@@ -1,3 +1,4 @@
+#ifndef WORLD_TU
 class RGE_Object_List {
 public:
     void add_node(void* obj);
@@ -17,6 +18,7 @@ public:
 
     unsigned char recycle_object_out_of_game(unsigned char param_1, void* param_2);
 };
+#endif
 
 unsigned char RGE_Game_World::recycle_object_out_of_game(unsigned char param_1, void* param_2) {
     switch (param_1) {

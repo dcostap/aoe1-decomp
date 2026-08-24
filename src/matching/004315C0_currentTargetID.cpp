@@ -1,3 +1,4 @@
+#ifndef RGE_COM_OBJ_SHARED_CONTEXT
 class RGE_Static_Object {
 public:
     void* vtable;
@@ -41,6 +42,7 @@ public:
 
     virtual int currentTargetID() const;
 };
+#endif
 
 int RGE_Combat_Object::currentTargetID() const {
     if (action_list->have_action() == 1) {

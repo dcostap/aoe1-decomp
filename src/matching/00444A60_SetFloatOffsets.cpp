@@ -5,6 +5,7 @@
 // Probe 2 typed member natural indexed loop.
 #include <stdlib.h>
 
+#ifndef DRAWAREA_CANONICAL_TU
 class TDrawArea {
 public:
     char gap_00[0x1C];
@@ -23,6 +24,7 @@ public:
 
     void SetFloatOffsets(int x, int y);
 };
+#endif
 
 void TDrawArea::SetFloatOffsets(int x, int y)
 {
@@ -31,7 +33,7 @@ void TDrawArea::SetFloatOffsets(int x, int y)
         if (size != this->FloatOffsetsSz) {
             if (this->FloatOffsets != 0)
                 free(this->FloatOffsets);
-            this->FloatOffsets = (int*)malloc(size);
+            this->FloatOffsets = (void**)malloc(size);
             this->FloatOffsetsSz = size;
         }
 
@@ -39,7 +41,8 @@ void TDrawArea::SetFloatOffsets(int x, int y)
         int cur = y;
         if (this->Height > 0) {
             do {
-                this->FloatOffsets[out] = this->DisplayOffsets[cur] + x;
+                this->FloatOffsets[out] =
+                    (void*)((unsigned char*)this->DisplayOffsets[cur] + x);
                 cur++;
                 if (cur >= this->Height)
                     cur = 0;

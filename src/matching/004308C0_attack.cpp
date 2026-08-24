@@ -4,6 +4,7 @@
 // 2: Model +0x0c as owner/player with world at +0x3c, matching original first call and special group branch.
 // FLAGS: config/flags/004308C0_attack.rsp uses /GX for original EH frame.
 
+#ifndef RGE_COM_OBJ_SHARED_CONTEXT
 class RGE_Static_Object {
 public:
     virtual void v00(); virtual void v04(); virtual void v08(); virtual void v0C();
@@ -114,6 +115,7 @@ public:
 
     int attack(int target_id, int force);
 };
+#endif
 
 int RGE_Combat_Object::attack(int target_id, int force)
 {

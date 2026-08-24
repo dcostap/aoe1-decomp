@@ -8,6 +8,7 @@
 //   This gives the original thiscall call sequence and fallback argument passing.
 // Result: MATCH locally with `python tools/check_function.py --va 004A6330`.
 
+#ifndef SCR_MPS_TU_CONTEXT
 class TPanel;
 
 class RGE_Base_Game {
@@ -44,6 +45,7 @@ public:
 
     long action(TPanel* p1, long p2, unsigned long p3, unsigned long p4);
 };
+#endif
 
 long TRIBE_Screen_Disconnect::action(TPanel* p1, long p2, unsigned long p3, unsigned long p4) {
     if (p1 != 0) {

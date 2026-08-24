@@ -24,6 +24,7 @@
 
 #include <string.h>
 
+#ifndef RPNL_TBX_TU_CONTEXT
 class TPanel {
 public:
     virtual ~TPanel();
@@ -230,6 +231,7 @@ public:
 };
 
 extern RGE_Base_Game* rge_base_game;
+#endif
 
 long RGE_Panel_Tool_Box::action(TPanel* panel, long code,
                                 unsigned long param_3, unsigned long param_4)

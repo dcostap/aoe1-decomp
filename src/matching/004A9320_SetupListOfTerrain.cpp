@@ -1,5 +1,6 @@
 // VA: 004A9320 TRIBE_Screen_Sed::SetupListOfTerrain | scr_sed.cpp:836-848
 
+#ifndef SCR_SED_TU_CONTEXT
 class TTextPanel {
 public:
     char gap_00[4];
@@ -11,6 +12,7 @@ class TRIBE_Screen_Sed {
 public:
     int SetupListOfTerrain(TTextPanel* list);
 };
+#endif
 
 int TRIBE_Screen_Sed::SetupListOfTerrain(TTextPanel* list) {
     list->empty_list();

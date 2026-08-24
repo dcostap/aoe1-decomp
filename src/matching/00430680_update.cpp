@@ -16,6 +16,7 @@ class Visible_Unit_Manager;
 
 extern "C" Visible_Unit_Manager* VisibleUnitManager;
 
+#ifndef RGE_COM_OBJ_SHARED_CONTEXT
 class RGE_Game_World {
 public:
     char gap_00[0x3C];
@@ -99,6 +100,7 @@ public:
 
     unsigned char update(void);
 };
+#endif
 
 unsigned char RGE_Combat_Object::update(void)
 {

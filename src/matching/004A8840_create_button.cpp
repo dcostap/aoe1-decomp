@@ -11,6 +11,7 @@
 // the TEasy_Panel/TPanel surface typed so the direct base call, TPanel z-order
 // call, and TButtonPanel virtual slot are expressed as ordinary C++ calls.
 
+#ifndef SCR_SED_TU_CONTEXT
 class TPanel {
 public:
     virtual void v0();
@@ -56,6 +57,7 @@ public:
     int create_button(TPanel* parent, TButtonPanel** out,
                       char* text1, char* text2, char* text3, char* text4);
 };
+#endif
 
 int TRIBE_Screen_Sed::create_button(TPanel* parent, TButtonPanel** out,
                                     char* text1, char* text2,

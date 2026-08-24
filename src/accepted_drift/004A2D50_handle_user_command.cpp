@@ -51,6 +51,8 @@
 // and every later instruction are identical; only the private stack-home
 // permutation differs.
 
+#ifndef SCR_MPS_TU_CONTEXT
+
 #include <string.h>
 
 extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
@@ -238,6 +240,8 @@ extern TChat* chat;                         // 62C4B8
 extern void* AppWnd;                        // 5B236C
 
 extern int __cdecl debug_rand(char* file, int line);  // 004230A0
+
+#endif
 
 long TribeMPSetupScreen::handle_user_command(unsigned int command, long param)
 {

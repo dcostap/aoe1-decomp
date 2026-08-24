@@ -53,6 +53,8 @@
 // before numberPlayers. That call preserves ESI. Both compares therefore use
 // the same value and set identical flags. No memory or call effect differs.
 
+#ifndef SCR_MPS_TU_CONTEXT
+
 #include <stdio.h>
 
 class TPanel {
@@ -101,6 +103,8 @@ public:
 extern RGE_Base_Game* rge_base_game;
 extern TCommunications_Handler* comm;
 extern "C" int __cdecl debug_rand(char* file, int line);
+
+#endif
 
 void TribeMPSetupScreen::calcRandomPositions() {
     int selected_position;

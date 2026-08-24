@@ -5,6 +5,7 @@
 
 extern "C" void __cdecl free(void* block);
 
+#ifndef VICTORY_CONTEXT_H
 class RGE_Victory_Entry {
 public:
     unsigned char command;
@@ -34,6 +35,7 @@ public:
 
     void sub(RGE_Victory_Entry* entry);
 };
+#endif
 
 void RGE_Victory_Conditions::sub(RGE_Victory_Entry* entry) {
     RGE_Victory_Entry* node = this->victory_list;

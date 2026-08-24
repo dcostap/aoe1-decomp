@@ -1,3 +1,4 @@
+#ifndef VICTORY_CONTEXT_H
 struct RGE_Victory_Entry {
     char type;
     char gap_1[3];
@@ -21,6 +22,7 @@ public:
     RGE_Victory_Entry* add(unsigned char param_1, unsigned char param_2);
     unsigned char add_destroy(unsigned char param_1, long param_2, long param_3, RGE_Player* param_4);
 };
+#endif
 
 unsigned char RGE_Victory_Conditions::add_destroy(unsigned char param_1, long param_2, long param_3, RGE_Player* param_4) {
     RGE_Victory_Entry* entry = this->add(param_1, 0);

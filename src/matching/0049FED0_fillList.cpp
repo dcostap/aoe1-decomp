@@ -2,6 +2,7 @@
 
 #include <string.h>
 
+#ifndef AOE1_SCR_MP_CONTEXT_H
 class TTextPanel {
 public:
     void empty_list();
@@ -44,6 +45,7 @@ public:
 
     void fillList();
 };
+#endif
 
 void TribeMPStartupScreen::fillList() {
     int lastServiceNumber;

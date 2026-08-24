@@ -1,3 +1,6 @@
+#ifdef RMM_CLIF_SHARED_CONTEXT
+#include "../../include/rmm_clif_context.h"
+#else
 #include "../../include/rmm_obj_base_context.h"
 
 // BINARY NOTE: PDB passes RGE_Cliffs_Info by value. Its 0x4C0-byte layout
@@ -25,6 +28,7 @@ public:
 
     RGE_RMM_Cliffs_Generator(RGE_Map* map, RGE_Random_Map_Module* module, RGE_Cliffs_Info cliffs_info);
 };
+#endif
 
 RGE_RMM_Cliffs_Generator::RGE_RMM_Cliffs_Generator(RGE_Map* map, RGE_Random_Map_Module* module, RGE_Cliffs_Info cliffs_info)
     : RGE_Random_Map_Module(map, module, 1) {

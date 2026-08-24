@@ -1,5 +1,6 @@
 char* strncpy(char* dest, const char* src, unsigned int count);
 
+#ifndef TAISTRMD_TU_CONTEXT
 class VictoryConditionRuleSystem {
 public:
     int loadRules(char* name);
@@ -12,6 +13,7 @@ public:
 
     int loadRules(char* name);
 };
+#endif
 
 int TribeStrategyAIModule::loadRules(char* name) {
     if (name == 0) {

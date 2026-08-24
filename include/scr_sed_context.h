@@ -86,6 +86,7 @@ class Shape_Info;
 class TShape;
 class TTextPanel;
 class TButtonPanel;
+class TInputPanel;
 class TDropDownPanel;
 class TEditPanel;
 class TListPanel;
@@ -178,7 +179,10 @@ public:
     char gap_7C[0x8C - 0x7C];
     tagRECT stored_rect;
     char gap_9C[0xD8 - 0x9C];
-    int error_code;
+    union {
+        int error_code;
+        int setup_error;
+    };
     char gap_DC[0x8];
     long help_string_id;
     long help_page_id;
@@ -187,9 +191,12 @@ public:
     void set_help_info(long, long);
     void set_z_order(unsigned char, int);
     void set_curr_child(TPanel*);
+    void redraw(int);
     char* panelName();
     int width();
     int height();
+    int get_string(int, char*, int);
+    template<class T> void delete_panel(T**);
 };
 
 class TButtonPanel : public TPanel {
@@ -199,6 +206,7 @@ public:
     void set_radio_info(TButtonPanel**, short);
     void set_radio_button();
     void set_bevel_info(int, int, int, int, int, int, int);
+    void set_text(short, char*);
 };
 
 class TTextPanel : public TPanel {
@@ -212,6 +220,9 @@ public:
     int currentLineNumber();
     int numberLines();
     int numberDrawLines();
+    void empty_list();
+    int append_line(long, int);
+    int append_line(char*, long);
 };
 
 class TEditPanel : public TPanel {
@@ -219,6 +230,8 @@ public:
     char* currentLine();
     char* get_input_buffer();
     void set_text(char*);
+};
+class TInputPanel : public TPanel {
 };
 class TListPanel : public TTextPanel {
 public:
@@ -264,6 +277,7 @@ class TRIBE_Panel_Object : public TPanel {
 public:
     char gap_F4[0x120];
     virtual ~TRIBE_Panel_Object();
+    virtual void slot0(int);
 };
 
 class TRIBE_Scenario_Editor_Panel_Object : public TRIBE_Panel_Object {
@@ -286,25 +300,43 @@ public:
 class TMessagePanel : public TPanel {
 public:
     char gap_F4[0x28C];
+    TMessagePanel(void*, long, long);
 };
 
 class RGE_View : public TPanel {
 public:
     char gap_F4[0x26C];
+    long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char,
+               int, char*);
     void get_selection_area(long*, long*, long*, long*, int);
     void set_selection_area(long, long, long, long);
     void set_world(RGE_Game_World*);
     void set_player(RGE_Player*);
 };
 
-class RGE_Main_View : public RGE_View {};
+class RGE_Diamond_Map_View;
+class RGE_Main_View : public RGE_View {
+public:
+    RGE_Diamond_Map_View* map_view;
+    RGE_Main_View();
+    virtual ~RGE_Main_View();
+};
 class TRIBE_Main_View : public RGE_Main_View {};
 class RGE_Diamond_Map : public TPanel {
 public:
+    char gap_F4[0x150 - 0xF4];
+    RGE_View* main_view;
     void set_world(RGE_Game_World*);
     void set_player(RGE_Player*);
+    long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char,
+               int, TDrawArea*);
+    int set_bitmap(char*, long);
 };
-class RGE_Diamond_Map_View : public RGE_Diamond_Map {};
+class RGE_Diamond_Map_View : public RGE_Diamond_Map {
+public:
+    RGE_Diamond_Map_View();
+    virtual ~RGE_Diamond_Map_View();
+};
 
 class RGE_Base_Game {
 public:
@@ -313,6 +345,7 @@ public:
     virtual long wnd_proc(void*, unsigned int, unsigned int, long);
     virtual void set_prog_mode(int);
     virtual void set_game_mode(int, int);
+    virtual void set_game_mode(int);
     virtual void set_player(short);
     virtual int get_error_code();
     virtual char* get_string_extended(int, long, char*, int);
@@ -326,7 +359,8 @@ public:
     int random_map_seed;
     int save_random_game_seed;
     int save_random_map_seed;
-    char gap_3C[0x50 - 0x3C];
+    char gap_3C[0x4C - 0x3C];
+    TDrawArea* draw_area;
     unsigned char outline_type;
     char gap_51[0x60 - 0x51];
     void* sound_system;
@@ -342,11 +376,14 @@ public:
     short terrain_id;
     short elevation_height;
     short brush_size;
+    char gap_408[0xA20 - 0x408];
+    TDrawArea* map_save_area;
     RGE_Font* get_font(int);
     RGE_Player* get_player();
     int gameDeveloperMode();
     void draw_window();
     void redraw(int);
+    void redraw(long, long);
     void close();
     void set_windows_mouse(int);
 };
@@ -390,6 +427,20 @@ public:
 
     virtual ~TEasy_Panel();
     virtual void draw();
+    void setup_shadow_area(int);
+    int create_button(TPanel*, TButtonPanel**, char*, long, long, long);
+    int create_button(TPanel*, TButtonPanel**, char*, char*, long, long, long,
+                      long, long, long, long);
+    int create_text(TPanel*, TTextPanel**, long, int, int, int, int, int, int,
+                    int, int);
+    int create_text(TPanel*, TTextPanel**, char*, int, int, int, int, int, int,
+                    int, int);
+    int create_input(TPanel*, TInputPanel**, char*, short, int, int, int, int,
+                     int, int);
+    int create_edit(TPanel*, TEditPanel**, char*, short, int, int, int, int,
+                    int, int, int, int);
+    int create_list(TPanel*, TListPanel**, long, long, long, long, long);
+    int create_auto_scrollbar(TScrollBarPanel**, TTextPanel*, long);
     virtual int create_drop_down(TPanel*, TDropDownPanel**, long, long, long,
                                  long, long, long, long);
     void popupOKDialog(long, char*, int, int);
@@ -400,8 +451,10 @@ public:
 
 class TScreenPanel : public TEasy_Panel {
 public:
+    TScreenPanel(char*);
     virtual ~TScreenPanel();
     virtual void set_focus(int);
+    long setup(TDrawArea*, char*, long, int);
 };
 
 class RGE_Scenario {
@@ -689,6 +742,7 @@ struct FindDataLocal {
 
 class TRIBE_Screen_Sed : public TScreenPanel {
 public:
+    TRIBE_Screen_Sed(char*, int);
     enum ScenarioMode {
         ScenarioModeNone = 0,
         ScenarioModeMap = 1,
@@ -726,7 +780,7 @@ public:
     int CurrentVictory;
     int CurrentPlayer;
     int SelectRegionFlag;
-    ScenarioMode scenario_mode;
+    int scenario_mode;
     int map_type;
     int mp_victory_type;
     int brush_size;
@@ -855,7 +909,10 @@ public:
     TTextPanel* Diplomacy_player_text[8];
     TDropDownPanel* Diplomacy_player_list;
     TTextPanel* Diplomacy_status_label[4];
-    TButtonPanel* Diplomacy_friend_box[8][3];
+    union {
+        TButtonPanel* Diplomacy_friend_box[8][3];
+        TButtonPanel* Diplomacy_friend_box_flat[24];
+    };
     TButtonPanel* Diplomacy_AlliedVictory[8];
     TRIBE_World* world;
     unsigned long update_interval;
@@ -873,12 +930,14 @@ public:
     virtual long key_down_action(long, short, int, int, int);
     virtual long action(TPanel*, long, unsigned long, unsigned long);
     virtual void set_focus(int);
+    void get_string(long, char*, int);
     int create_button(TPanel*, TButtonPanel**, long, int);
     int create_button(TPanel*, TButtonPanel**, char*, char*, char*, char*);
     int create_text(TPanel*, TTextPanel**, long);
     int create_text(TPanel*, TTextPanel**, char*);
     int create_text(TPanel*, TTextPanel**, int, int, int, int, int, int, int, int, int);
     int create_drop_down(TPanel*, TDropDownPanel**);
+    int create_input(TPanel*, TInputPanel**, char*, short, int);
     int create_edit(TPanel*, TEditPanel**, char*, short, int, int, int);
     int create_list(TPanel*, TListPanel**, TScrollBarPanel**);
     int create_radio_button(TPanel*, TButtonPanel**);
@@ -898,12 +957,14 @@ public:
     void activate_victory_proper_fields(int, int);
     void init_module_variables();
     void create_all_buttons_etc();
+    int SetupListOfTerrain(TTextPanel*);
     void position_panels();
     void activate_victory_panel(int);
     int MakeFileList(TDropDownPanel*, char*, char*, unsigned char, unsigned char);
     void SavePlayerActiveStatus();
     void set_player(short, unsigned char, unsigned char);
     void set_scenario_mode(ScenarioMode);
+    void set_scenario_mode(int);
     void set_panel_info();
     void set_string(char*, long, int);
     void set_map_type(int, int);

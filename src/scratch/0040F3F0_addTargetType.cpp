@@ -1,12 +1,10 @@
-struct AIPlayPhaseCommand {
-    char gap_0[0x44];
-    unsigned char targetTypes[5];
-};
+// 0040F3F0 AIPlay::addTargetType
 
-int __fastcall addTargetType(AIPlayPhaseCommand* self, int, unsigned char type) {
+int AIPlay::addTargetType(unsigned char type) {
     for (int i = 0; i < 5; i++) {
-        if (self->targetTypes[i] == 0 || self->targetTypes[i] == 5) {
-            self->targetTypes[i] = type;
+        if (this->targetTypeValue[i] == 0 ||
+            this->targetTypeValue[i] == 5) {
+            this->targetTypeValue[i] = type;
             return 1;
         }
     }

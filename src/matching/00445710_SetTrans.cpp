@@ -2,6 +2,7 @@
 // PDB source: Drawarea.cpp
 // Sets source transparency color key
 
+#ifndef DRAWAREA_CANONICAL_TU
 struct IDirectDrawSurface {
     virtual void __stdcall QueryInterface();
     virtual void __stdcall AddRef();
@@ -53,6 +54,7 @@ public:
 
     void SetTrans(int useTrans, unsigned char transColor);
 };
+#endif
 
 void TDrawArea::SetTrans(int useTrans, unsigned char transColor)
 {

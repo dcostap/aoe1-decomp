@@ -2,6 +2,7 @@
 // exact match landed with /GX and the donor-style TChat context; target function stays lexically first so the bytes still belong to 0041ED00
 #include "..\..\include\game_types.h"
 
+#ifndef BASEGAME_GROUPED_TU
 class SoundDriver;
 class TDigital;
 
@@ -26,7 +27,9 @@ public:
     char gap_00[0x60];
     SoundDriver* sound_system;
 };
+#endif
 
+#ifndef BASEGAME_GROUPED_TU
 class TChat {
 public:
     void* HostWnd;
@@ -39,9 +42,12 @@ public:
     ~TChat();
     void setInChatGroup(int player, int enabled);
 };
+#endif
 
 TChat* chat;
+#ifndef BASEGAME_GROUPED_TU
 extern RGE_Base_Game_Sound* rge_base_game;
+#endif
 
 int RGE_Base_Game::setup_chat() {
     TChat* new_chat;

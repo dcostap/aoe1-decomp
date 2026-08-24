@@ -6,6 +6,7 @@
 // Main-agent plausibility audit: replaced explicit destructor/operator_delete
 // plumbing with ordinary `delete p`; emitted bytes remained exactly identical.
 
+#ifndef SCR_SED_TU_CONTEXT
 extern "C" void __cdecl free(void*);
 
 class TPanel {
@@ -217,6 +218,7 @@ public:
 
     virtual ~TRIBE_Screen_Sed();
 };
+#endif
 
 TRIBE_Screen_Sed::~TRIBE_Screen_Sed()
 {
@@ -228,7 +230,7 @@ TRIBE_Screen_Sed::~TRIBE_Screen_Sed()
 
     this->delete_panel(&this->p520);
     {
-        TPanel** pp = this->arrB;
+        TPanel** pp = (TPanel**)this->arrB;
         int count = 3;
         do {
             this->delete_panel(pp - 3);
@@ -251,7 +253,7 @@ TRIBE_Screen_Sed::~TRIBE_Screen_Sed()
     this->delete_panel(&this->p54C);
     this->delete_panel(&this->p554);
     {
-        TPanel** pp = this->arrC2;
+        TPanel** pp = (TPanel**)this->arrC2;
         int count = 5;
         do {
             this->delete_panel(pp - 5);
@@ -262,7 +264,7 @@ TRIBE_Screen_Sed::~TRIBE_Screen_Sed()
     }
     this->delete_panel(&this->p580);
     {
-        TPanel** pp = this->arrD2;
+        TPanel** pp = (TPanel**)this->arrD2;
         int count = 3;
         do {
             this->delete_panel(pp - 3);
@@ -285,7 +287,7 @@ TRIBE_Screen_Sed::~TRIBE_Screen_Sed()
     this->delete_panel(&this->p5B4);
     this->delete_panel(&this->p5B8);
     {
-        TPanel** pp = this->arrE2;
+        TPanel** pp = (TPanel**)this->arrE2;
         int count = 5;
         do {
             this->delete_panel(pp - 5);
@@ -295,7 +297,7 @@ TRIBE_Screen_Sed::~TRIBE_Screen_Sed()
         } while (count != 0);
     }
     {
-        TPanel** pp = this->arrF2;
+        TPanel** pp = (TPanel**)this->arrF2;
         int count = 2;
         do {
             this->delete_panel(pp - 3);
@@ -309,7 +311,7 @@ TRIBE_Screen_Sed::~TRIBE_Screen_Sed()
     this->delete_panel(&this->p608);
     this->delete_panel(&this->p618);
     {
-        TPanel** pp = this->arrG2;
+        TPanel** pp = (TPanel**)this->arrG2;
         int count = 4;
         do {
             this->delete_panel(pp - 4);
@@ -347,7 +349,7 @@ TRIBE_Screen_Sed::~TRIBE_Screen_Sed()
         } while (count != 0);
     }
     {
-        TPanel** pp = this->victory_cond_on;
+        TPanel** pp = (TPanel**)this->victory_cond_on;
         int count = 6;
         do {
             this->delete_panel(pp);
@@ -356,7 +358,7 @@ TRIBE_Screen_Sed::~TRIBE_Screen_Sed()
         } while (count != 0);
     }
     {
-        TPanel** pp = this->arrH2;
+        TPanel** pp = (TPanel**)this->arrH2;
         int count = 2;
         do {
             this->delete_panel(pp - 5);
@@ -381,7 +383,7 @@ TRIBE_Screen_Sed::~TRIBE_Screen_Sed()
     this->delete_panel(&this->p6C4);
     this->delete_panel(&this->p6C8);
     {
-        TPanel** pp = this->arrI2;
+        TPanel** pp = (TPanel**)this->arrI2;
         int count = 5;
         do {
             this->delete_panel(pp - 5);
@@ -395,7 +397,7 @@ TRIBE_Screen_Sed::~TRIBE_Screen_Sed()
     this->delete_panel(&this->p6FC);
     this->delete_panel(&this->p700);
     {
-        TPanel** pp = this->victory_button;
+        TPanel** pp = (TPanel**)this->victory_button;
         int count = 12;
         do {
             this->delete_panel(pp);
@@ -420,7 +422,7 @@ TRIBE_Screen_Sed::~TRIBE_Screen_Sed()
     this->delete_panel(&this->p768);
     this->delete_panel(&this->p770);
     {
-        TPanel** pp = this->arrJ2;
+        TPanel** pp = (TPanel**)this->arrJ2;
         int count = 5;
         do {
             this->delete_panel(pp - 5);
@@ -431,7 +433,7 @@ TRIBE_Screen_Sed::~TRIBE_Screen_Sed()
     }
     this->delete_panel(&this->p774);
     {
-        TPanel** pp = this->arrK2;
+        TPanel** pp = (TPanel**)this->arrK2;
         int count = 4;
         do {
             this->delete_panel(pp - 4);
@@ -441,7 +443,7 @@ TRIBE_Screen_Sed::~TRIBE_Screen_Sed()
         } while (count != 0);
     }
     {
-        TPanel** pp = this->arrL2;
+        TPanel** pp = (TPanel**)this->arrL2;
         int count = 1;
         do {
             this->delete_panel(pp - 1);
@@ -453,7 +455,7 @@ TRIBE_Screen_Sed::~TRIBE_Screen_Sed()
     this->delete_panel(&this->p7CC);
     this->delete_panel(&this->p7D0);
     {
-        TPanel** pp = this->arrM2;
+        TPanel** pp = (TPanel**)this->arrM2;
         int count = 16;
         do {
             this->delete_panel(pp - 16);
@@ -479,7 +481,7 @@ TRIBE_Screen_Sed::~TRIBE_Screen_Sed()
     this->delete_panel(&this->p500);
     this->delete_panel(&this->p504);
     {
-        TPanel** pp = this->scenario_mode_button;
+        TPanel** pp = (TPanel**)this->scenario_mode_button;
         int count = 10;
         do {
             this->delete_panel(pp);

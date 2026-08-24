@@ -19,6 +19,7 @@
 extern "C" void* __cdecl memset(void* s, int c, unsigned int n);
 #pragma function(memset)
 
+#ifndef DRAWAREA_CANONICAL_TU
 class TDrawSystem;
 class DrawAreaNode;
 class IDirectDrawSurface;
@@ -68,6 +69,7 @@ public:
 
     TDrawArea(char* name, int system_mem_only);
 };
+#endif
 
 TDrawArea::TDrawArea(char* name, int system_mem_only)
 {
@@ -89,10 +91,10 @@ TDrawArea::TDrawArea(char* name, int system_mem_only)
     this->Restored = 0;
     this->IsPrimarySurface = 0;
     this->SystemMemOnly = system_mem_only;
-    this->ClipLeft = 0;
-    this->ClipTop = 0;
-    this->ClipRight = 0;
-    this->ClipBottom = 0;
+    this->ClipRect.left = 0;
+    this->ClipRect.top = 0;
+    this->ClipRect.right = 0;
+    this->ClipRect.bottom = 0;
     this->LastBits = 0;
     this->DisplayOffsets = 0;
     this->CurDisplayOffsets = 0;
@@ -103,8 +105,8 @@ TDrawArea::TDrawArea(char* name, int system_mem_only)
     this->Float_Y_Delta = 0;
     this->FloatOffsetsSz = 0;
 
-    memset(this->SurfaceDesc, 0, 0x6C);
-    this->BitmapInfo = calloc(1, 0x428);
+    memset(&this->SurfaceDesc, 0, 0x6C);
+    this->BitmapInfo = (BITMAPINFO256*)calloc(1, 0x428);
     this->Orien = 1;
     this->SpanList = 0;
     this->CurSpanList = 0;

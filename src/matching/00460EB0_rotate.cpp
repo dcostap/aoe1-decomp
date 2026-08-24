@@ -9,6 +9,7 @@
 // 5: Tried explicit else `rotation = val`; compiler optimized size-short 128, rolled back.
 // 2026-05-19: MATCH breakthrough: add one missing virtual pad so set_rotation is really vt+0xB4; remove the extra `val` temp so ST0 stays live across both range checks; use double 2*pi constants for multiply and upper-bound compares while keeping float subtract constants. Result: MATCH.
 
+#ifndef MOVE_OBJ_CANONICAL_TU
 class RGE_Moving_Object {
 public:
     virtual ~RGE_Moving_Object();
@@ -31,6 +32,12 @@ public:
     virtual void vpad41(); virtual void vpad42(); virtual void vpad43(); virtual void vpad44(); virtual void set_rotation(float rotation);
     void rotate(int angleDeg);
 };
+#endif
+
+#ifdef MOVE_OBJ_CANONICAL_TU
+#define gameObj sprite
+#define rotOffset angle
+#endif
 
 void RGE_Moving_Object::rotate(int angleDeg) {
     void* obj;
@@ -52,3 +59,8 @@ void RGE_Moving_Object::rotate(int angleDeg) {
 
     this->set_rotation(rotation);
 }
+
+#ifdef MOVE_OBJ_CANONICAL_TU
+#undef gameObj
+#undef rotOffset
+#endif

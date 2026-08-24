@@ -35,6 +35,44 @@ struct ManagedArrayInt {
     int numberValue;
     int desiredNumberValue;
     int maximumSizeValue;
+
+    void zeroNumber() { this->numberValue = 0; }
+};
+
+struct XYPoint {
+    int x;
+    int y;
+};
+
+struct XYZPoint {
+    int x;
+    int y;
+    int z;
+};
+
+class RGE_Zone_Map;
+
+class RGE_Zone_Map_List {
+public:
+    RGE_Zone_Map* get_zone_map(float*, long, int&);
+    RGE_Zone_Map* get_zone_map(long);
+};
+
+class RGE_Zone_Map {
+public:
+    unsigned char get_zone_info(long, long);
+    int withinRange(XYPoint, XYPoint, float);
+};
+
+class RGE_Map {
+public:
+    virtual ~RGE_Map();
+    char gap_04[4];
+    int map_width;
+    int map_height;
+    char gap_10[0x8DB4];
+    RGE_Zone_Map_List* map_zones;
+    unsigned char get_terrain(short, short);
 };
 
 class Path {
@@ -57,15 +95,18 @@ public:
     void add_default();
     void inittostart();
     void movetonextwaypoint();
-    void setTimeStamp(int);
+    void setTimeStamp(unsigned long);
     void killPath();
     int insertAtCurrent(Waypoint*);
+    int insertAtCurrent(const Waypoint&);
     void initToStart();
     int moveToNextWaypoint();
     int numberOfWaypoints();
     Waypoint* currentWaypoint();
+    Waypoint* lastWaypoint();
     const Waypoint* waypoint(int) const;
     int currentWaypointNumber();
+    void setCurrentWaypointNumber(int);
 };
 
 class RGE_Master_Static_Object {
@@ -88,10 +129,12 @@ public:
     short copy_id;
     short object_group;
     unsigned char pad_16[2];
-    char gap_18[0x18];
+    RGE_Sprite* default_sprite;
+    char gap_1C[0x14];
     float radius_x;
     float radius_y;
     float radius_z;
+    short terrain;
     char gap_3C[0x7C];
 };
 
@@ -131,7 +174,7 @@ public:
     virtual void rehook();
     virtual void save(int);
     virtual float teleport(float, float, float);
-    virtual void new_sprite(void*);
+    virtual void new_sprite(RGE_Sprite*);
     virtual void add_overlay_sprite(void*, unsigned char);
     virtual void remove_overlay_sprite(void*);
     virtual void change_ownership(RGE_Player*);
@@ -159,6 +202,7 @@ public:
     virtual void move_to(RGE_Static_Object*, float, float, float);
     virtual void work(RGE_Static_Object*, float, float, float);
     virtual void stop();
+    virtual void stopObject(int);
     virtual void set_attack(RGE_Static_Object*);
     virtual void play_command_sound();
     virtual void play_move_sound();
@@ -318,7 +362,7 @@ public:
     int currentTerrainException1;
     int currentTerrainException2;
     unsigned char storePathInExceptionPath;
-    unsigned char waitingToMove;
+    unsigned char waitingToMoveValue;
     unsigned char numberWaitDelays;
     unsigned char pad_157;
     int minInitialPointX;
@@ -338,6 +382,7 @@ public:
     enum PathResult {
         PathFound = 0,
         PathNoPath = 1,
+        NoPathFound = 1,
         WaitingOnPathingCap = 2
     };
 
@@ -352,11 +397,13 @@ public:
     int setup(RGE_Master_Moving_Object*, RGE_Player*, float, float, float);
     void recycle_in_to_game(RGE_Master_Static_Object*, RGE_Player*, float, float, float);
     void save(int);
-    void new_sprite(void*);
+    void new_sprite(RGE_Sprite*);
     RGE_Static_Object* spawn_death_obj();
     void transform(RGE_Master_Static_Object*);
     unsigned char is_moving();
     void stop_moving();
+    int movement_state() const;
+    virtual unsigned char waitingToMove() const;
     float angle_to_object(RGE_Static_Object*, float, float);
     virtual unsigned char turn_towards(RGE_Static_Object*, float, float);
     void set_velocity(float, float, float);
@@ -367,11 +414,39 @@ public:
     void setActionRange(float);
     void setTargetID(int);
     void setTargetRadius(float, float);
+    virtual void setWaitingToMove(unsigned char);
+    virtual XYZBYTEPoint* userDefinedWaypoint(int);
+    virtual int addUserDefinedWaypoint(XYZBYTEPoint*, int);
+    virtual void removeAllUserDefinedWaypoints(int);
+    virtual void removeUserDefinedWaypoint(int);
+    virtual void setFinalUserDefinedWaypoint();
+    void setInitialPoints(XYPoint&, XYPoint&);
+    void copy_obj(RGE_Master_Static_Object*);
+    void rotate(int);
+    virtual void set_rotation(float);
+    virtual long get_waypoint_checksum();
     void boundAngle(float*, int);
     void set_angle();
     int doTrivialMove(float, float);
     int doMove();
     PathResult findPath();
+    virtual Path* findAvoidancePath(XYZPoint&, float, int);
+    virtual int passableTile(float, float, int);
+    virtual float maximumSpeed();
+    virtual int canPath(XYZPoint, float, int, float*, int, int, int);
+    virtual int canPath(int, float, float*, int, int, int);
+    virtual int canBidirectionPath(int, int, float, float*, int, int, int);
+    virtual int canPathWithObstructions(int, float, float*, int, int, int, void*);
+    virtual int canPathWithObstructions(int, float, float*, int, int, int, ManagedArrayInt*);
+    virtual int canPathWithAdditionalPassability(void*, float, int, float*, int, int, int, int, int);
+    virtual int canPathWithAdditionalPassability(XYZPoint, float, int, float*, int, int, int, int, int);
+    virtual int findFirstTerrainAlongExceptionPath(int, float*, float*);
+    virtual int canLinePath(int, int, int, int, float, int);
+    virtual int canLinePath(const XYPoint&, const XYPoint&, float, XYPoint&, int);
+    virtual int firstTileAlongLine(const XYPoint&, const XYPoint&, XYPoint&, int, int, int);
+    virtual int firstTileAlongLine(XYPoint*, XYPoint*, XYPoint*, int, int, int);
+    void setStart(float, float, float);
+    void displayPath(int);
 };
 
 class RGE_Sprite {
@@ -402,6 +477,11 @@ public:
     unsigned long old_time;
     char gap_18[0x6C];
     float world_time_delta_seconds;
+    RGE_Map* map;
+    char gap_2C[0x24];
+    short terrain_num;
+    short terrain_size;
+    float** terrains;
 
     RGE_Static_Object* object(int);
 };
@@ -428,11 +508,15 @@ class PathingSystem {
 public:
     void incrementInitialPaths();
     void incrementContinuePaths();
+    void incrementCanPaths();
+    void copyUnobstructibles(ManagedArrayInt&);
+    void initMisc(unsigned char);
     int findTilePath(int, int, int, int, RGE_Moving_Object*, float, int,
                      int, float*, int, int, int, int, int, int);
     int passable(RGE_Moving_Object*, float, float, int);
 };
 
+extern PathingSystem aiPathSystem;
 extern PathingSystem pathSystem;
 extern FILE* actionFile;
 extern int displayPathingFlags;
@@ -448,6 +532,7 @@ extern double DAT_00570B68;
 extern double DAT_00570B70;
 extern float DAT_00570B78;
 extern float DAT_00570B80;
+extern float DAT_00570B84;
 extern double DAT_00570B90;
 extern double DAT_00570B98;
 extern float DAT_00570BA0;

@@ -41,6 +41,9 @@
 //   check preserve the target assignment block and byte-flag store. This is
 //   the exact source shape: 751 bytes, 263 instructions, and 15 aligned calls.
 
+#ifdef RMM_CLIF_SHARED_CONTEXT
+#include "../../include/rmm_clif_context.h"
+#else
 extern "C" int __cdecl debug_rand(char* file, int line);
 
 struct Map_Stack {
@@ -121,6 +124,7 @@ public:
     void invalidate_cliff_area(long x, long y, long spacing);
     void generate_cliff(void);
 };
+#endif
 
 void RGE_RMM_Cliffs_Generator::generate_cliff(void) {
     long start_x = -1;

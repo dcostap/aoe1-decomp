@@ -1,3 +1,4 @@
+#ifndef RGE_COM_OBJ_SHARED_CONTEXT
 class UnitAIModule {
 public:
     virtual void slot_00();
@@ -83,6 +84,7 @@ public:
 
     virtual void notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6);
 };
+#endif
 
 void RGE_Combat_Object::notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6) {
     if (object_state == 2) {

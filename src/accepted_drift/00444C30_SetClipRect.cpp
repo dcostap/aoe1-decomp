@@ -85,6 +85,7 @@
 // object, with no call or store between reordered loads. Used flags, memory
 // effects, EH state, cleanup, and fault behavior match.
 
+#ifndef DRAWAREA_CANONICAL_TU
 class VSpan_Node;
 
 class TSpan_Node_List {
@@ -178,6 +179,7 @@ public:
 
     void SetClipRect(long left, long top, long right, long bottom);
 };
+#endif
 
 void TDrawArea::SetClipRect(long left, long top, long right, long bottom)
 {

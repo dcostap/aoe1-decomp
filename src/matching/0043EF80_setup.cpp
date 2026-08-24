@@ -21,6 +21,9 @@
 // attempt 9: removing the create_list result temporary and guarding its call directly restored the
 // original vslot +0x110 register color and produced an exact 420-byte match.
 
+#ifdef DLG_LIST_SHARED_CONTEXT
+#include "../../include/dlg_list_context.h"
+#else
 class TDrawArea;
 
 #define VPAD1(n) virtual void vpad##n();
@@ -148,6 +151,7 @@ public:
     virtual short get_list_id();
     virtual char* get_list_name();
 };
+#endif
 
 long TListDialog::setup(TPanel* param_1, char* param_2, long param_3, long param_4,
     long param_5, long param_6, long param_7, long param_8, long param_9,

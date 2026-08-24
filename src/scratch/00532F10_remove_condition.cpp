@@ -1,3 +1,4 @@
+#ifndef VICTORY_CONTEXT_H
 struct RGE_Victory_Entry {
     char type;
     char gap_1[3];
@@ -22,6 +23,7 @@ public:
     void remove_entry(RGE_Victory_Entry* entry);
     unsigned char remove_condition(int index);
 };
+#endif
 
 unsigned char RGE_Victory_Conditions::remove_condition(int index) {
     int i = 0;

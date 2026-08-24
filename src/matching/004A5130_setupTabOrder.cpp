@@ -9,6 +9,8 @@
 //   gameSettingsButton +0x620, startButton +0x700, cancelButton +0x70C,
 //   ready_button +0x714.
 
+#ifndef SCR_MPS_TU_CONTEXT
+
 class TPanel;
 
 #define VPAD1(n) virtual void vpad##n();
@@ -47,6 +49,8 @@ public:
     void set_curr_child(TPanel* child);
     void setupTabOrder();
 };
+
+#endif
 
 void TribeMPSetupScreen::setupTabOrder()
 {

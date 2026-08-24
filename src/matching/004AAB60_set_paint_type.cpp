@@ -1,5 +1,6 @@
 // VA: 004AAB60 TRIBE_Screen_Sed::set_paint_type | scr_sed.cpp:1755-1838
 
+#ifndef SCR_SED_TU_CONTEXT
 struct TPanel {
     virtual void v00(); virtual void v04(); virtual void v08(); virtual void v0C(); virtual void v10();
     virtual void set_active(int active); virtual void v18(); virtual void v1C(); virtual void redraw(int flags);
@@ -33,6 +34,7 @@ struct TRIBE_Screen_Sed {
     void set_terrain(short terrain);
     void set_elevation(short elevation);
 };
+#endif
 
 void TRIBE_Screen_Sed::set_paint_type(int type, int redraw)
 {

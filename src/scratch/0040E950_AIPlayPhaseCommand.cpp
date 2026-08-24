@@ -1,17 +1,13 @@
-struct AIPlayPhaseCommand {
-    unsigned char field_0;
-    unsigned char field_1;
-    char gap_2[2];
-    int field_4;
-    int field_8;
-    int field_C;
-};
+// 0040E950 AIPlayPhaseCommand(unsigned char, unsigned char, int, int, int)
 
-AIPlayPhaseCommand* __fastcall AIPlayPhaseCommand_ctor(AIPlayPhaseCommand* self, int, unsigned char p1, unsigned char p2, int p3, int p4, int p5) {
-    self->field_0 = p1;
-    self->field_1 = p2;
-    self->field_4 = p3;
-    self->field_8 = p4;
-    self->field_C = p5;
-    return self;
+AIPlayPhaseCommand::AIPlayPhaseCommand(unsigned char group,
+                                       unsigned char type,
+                                       int value1,
+                                       int value2,
+                                       int value3) {
+    this->groupValue = group;
+    this->typeValue = type;
+    this->value1Value = value1;
+    this->value2Value = value2;
+    this->value3Value = value3;
 }

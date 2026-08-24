@@ -1,5 +1,6 @@
 extern int log_output;
 
+#ifndef BASEGAME_GROUPED_TU
 class TDebuggingLog {
 public:
     char bytes[0x7B0];
@@ -16,6 +17,7 @@ public:
     TDebuggingLog* debugLog;
     int log_comm;
 };
+#endif
 
 int RGE_Base_Game::setup_debugging_log()
 {

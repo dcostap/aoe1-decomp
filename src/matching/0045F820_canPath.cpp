@@ -12,6 +12,7 @@
 //   move_obj.cpp:2208-2256. The body ends at ret 24h, 0045F9C2; padding starts
 //   at 0045F9C3. The virtual qualifier keeps the rebuilt owner symbol exact.
 
+#ifndef MOVE_OBJ_CANONICAL_TU
 struct XYPoint {
     int x;
     int y;
@@ -112,6 +113,7 @@ public:
 
 extern PathingSystem aiPathSystem;
 extern PathingSystem pathSystem;
+#endif
 
 int RGE_Moving_Object::canPath(XYZPoint point, float tolerance, int targetID,
                                float* costOut, int useAI, int unobPlayerID,

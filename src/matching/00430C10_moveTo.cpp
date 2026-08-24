@@ -1,3 +1,4 @@
+#ifndef RGE_COM_OBJ_SHARED_CONTEXT
 class RGE_Combat_Object {
 public:
     virtual void slot_00();
@@ -89,6 +90,7 @@ public:
     virtual int moveTo(int x, float speed, int y);
     virtual int moveTo(int x, int y);
 };
+#endif
 
 int RGE_Combat_Object::moveTo(int x, int y) {
     return moveTo(x, 1.0f, y);

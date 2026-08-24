@@ -19,6 +19,7 @@
 #define VPAD64(n) VPAD32(n) VPAD32(n##_32)
 #define VPAD15(n) VPAD8(n) VPAD4(n##_8) VPAD2(n##_12) VPAD1(n##_14)
 
+#ifndef ACT_OBJ_CONTEXT_H
 class RGE_Action_Object;
 class RGE_Static_Object;
 class RGE_Master_Static_Object;
@@ -145,6 +146,7 @@ public:
     void work2(RGE_Static_Object* target, float x, float y, float z,
                unsigned char flag);
 };
+#endif
 
 void RGE_Action_Object::work2(RGE_Static_Object* target,
                               float x, float y, float z,
@@ -161,8 +163,9 @@ void RGE_Action_Object::work2(RGE_Static_Object* target,
     int current_action;
 
     if ((RGE_Action_Object*)target != this) {
-        task = this->master_obj->tasks->get_target_task(this, target, x, y, z);
-        if (task == 0 && this->master_obj->task_by_group != 0) {
+        task = ((RGE_Master_Action_Object*)this->master_obj)->tasks->get_target_task(
+            this, target, x, y, z);
+        if (task == 0 && ((RGE_Master_Action_Object*)this->master_obj)->task_by_group != 0) {
             i = 0;
             for (; i < this->owner->master_object_num; i++) {
                 other = this->owner->master_objects[i];
@@ -170,7 +173,7 @@ void RGE_Action_Object::work2(RGE_Static_Object* target,
                     other->object_group == this->master_obj->object_group &&
                     other->master_type == this->master_obj->master_type &&
                     ((RGE_Master_Action_Object*)other)->task_by_group ==
-                        this->master_obj->task_by_group) {
+                        ((RGE_Master_Action_Object*)this->master_obj)->task_by_group) {
                     task = ((RGE_Master_Action_Object*)other)->tasks->get_target_task(
                         this, target, x, y, z);
                     if (task != 0) {
@@ -186,15 +189,15 @@ void RGE_Action_Object::work2(RGE_Static_Object* target,
         action_id = -1;
         if (current_task != 0 && task == current_task &&
             this->actions->action_work(target, x, y, z) != 0) {
-            action_id = this->actions->get_action()->action_id();
+            action_id = this->actions->get_action()->type();
             skip = 1;
         }
 
         if (this->actions->have_action() == 1) {
             if (this->actions->get_action()->get_target_obj() == target &&
-                this->actions->get_action()->action_id() == 9) {
-                if (this->actions->get_action()->can_work(target, x, y, z) != 0) {
-                    action_id = this->actions->get_action()->action_id();
+                this->actions->get_action()->type() == 9) {
+                if (this->actions->get_action()->work(target, x, y, z) != 0) {
+                    action_id = this->actions->get_action()->type();
                     skip = 1;
                 }
             }
@@ -215,7 +218,7 @@ void RGE_Action_Object::work2(RGE_Static_Object* target,
             }
         }
 
-        if (this->unit_ai != 0) {
+        if (this->unitAIValue != 0) {
             order = -1;
             current_action = -1;
             switch (action_id) {
@@ -269,17 +272,17 @@ void RGE_Action_Object::work2(RGE_Static_Object* target,
                 break;
             }
 
-            this->unit_ai->setCurrentOrder(order);
-            this->unit_ai->setCurrentAction(current_action);
+            this->unitAIValue->setCurrentOrder(order);
+            this->unitAIValue->setCurrentAction(current_action);
             if (target != 0) {
-                this->unit_ai->setCurrentTarget(
+                this->unitAIValue->setCurrentTarget(
                     target->id,
                     target->master_obj->object_group,
                     x, y, z);
             } else {
-                this->unit_ai->setCurrentTarget(-1, -1, x, y, z);
+                this->unitAIValue->setCurrentTarget(-1, -1, x, y, z);
             }
-            this->unit_ai->setTaskedByPlayer();
+            this->unitAIValue->setTaskedByPlayer();
         }
     }
 }

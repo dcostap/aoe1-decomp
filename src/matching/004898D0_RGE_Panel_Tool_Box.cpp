@@ -6,6 +6,7 @@
 // - Kept a named base-game pointer for the final mode update.
 // - Aggregate initialization of the six-button group matched the original load/store schedule.
 
+#ifndef RPNL_TBX_TU_CONTEXT
 typedef unsigned char uchar;
 
 class TDrawArea;
@@ -53,6 +54,7 @@ public:
 };
 
 extern RGE_Base_Game* rge_base_game;
+#endif
 
 static char text_game[] = "Game";
 static char text_game_label[] = "<Game>";
@@ -69,6 +71,7 @@ static char text_elevation_label[] = "<Elev>";
 static char text_command[] = "Cmd";
 static char text_command_label[] = "<Cmd>";
 
+#ifndef RPNL_TBX_TU_CONTEXT
 class RGE_Panel_Tool_Box : public TPanel {
 public:
     TScreenPanel* screen_panel;
@@ -88,6 +91,7 @@ public:
     virtual ~RGE_Panel_Tool_Box();
     void game_mode_changed(int, int);
 };
+#endif
 
 RGE_Panel_Tool_Box::RGE_Panel_Tool_Box(
     TDrawArea* draw_area,

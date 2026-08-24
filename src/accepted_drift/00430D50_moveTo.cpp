@@ -68,6 +68,7 @@
 
 typedef unsigned char uchar;
 
+#ifndef RGE_COM_OBJ_SHARED_CONTEXT
 class RGE_Sprite;
 class RGE_Action_Object;
 
@@ -179,6 +180,7 @@ class RGE_Combat_Object : public RGE_Action_Object {
 public:
     int moveTo(float x, float y, float z, float range, int force);
 };
+#endif
 
 int RGE_Combat_Object::moveTo(float x, float y, float z, float range, int force)
 {
