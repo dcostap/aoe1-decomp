@@ -11,7 +11,6 @@
 
 class TChat;
 
-#ifndef BASEGAME_GROUPED_TU
 class RGE_Prog_Info {
 public:
     char gap_000[0x878];
@@ -61,7 +60,6 @@ public:
 
     int setup_comm();
 };
-#endif
 
 extern TChat* chat;
 extern TCommunications_Handler* comm;

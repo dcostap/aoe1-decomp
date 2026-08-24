@@ -2,9 +2,23 @@
 // PDB: basegame.cpp lines 2815-2858 (138 bytes, 54 asm lines)
 // Default flags.
 
-#ifndef BASEGAME_GROUPED_TU
 extern int panel_system;
 extern void* chat;
+
+class RGE_Sound_RS {
+public:
+    void restart_sound(void* driver);
+};
+
+class TPanelSystem_RS {
+public:
+    int restart_sound_system();
+};
+
+class TChat_RS {
+public:
+    int RestartSoundSystem(void* driver);
+};
 
 class RGE_Base_Game {
 public:
@@ -60,22 +74,6 @@ public:
     void* rge_world;             // +0x3F4
 
     int restart_sound_system();
-};
-#endif
-
-class RGE_Sound_RS {
-public:
-    void restart_sound(void* driver);
-};
-
-class TPanelSystem_RS {
-public:
-    int restart_sound_system();
-};
-
-class TChat_RS {
-public:
-    int RestartSoundSystem(void* driver);
 };
 
 int RGE_Base_Game::restart_sound_system()

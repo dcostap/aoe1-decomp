@@ -1,4 +1,3 @@
-#ifndef BASEGAME_GROUPED_TU
 class TCommunications_Handler {
 public:
     ~TCommunications_Handler();
@@ -47,7 +46,6 @@ public:
 
     int reset_comm();
 };
-#endif
 
 extern TCommunications_Handler* comm;
 

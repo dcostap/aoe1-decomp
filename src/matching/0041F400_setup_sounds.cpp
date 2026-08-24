@@ -15,7 +15,6 @@ extern char s_chatrcvd_wav[];
 
 class TSound_Driver;
 
-#ifndef BASEGAME_GROUPED_TU
 class TDigital {
 public:
     TSound_Driver* sound_system;
@@ -51,7 +50,6 @@ public:
 
     int setup_sounds();
 };
-#endif
 
 int RGE_Base_Game::setup_sounds()
 {

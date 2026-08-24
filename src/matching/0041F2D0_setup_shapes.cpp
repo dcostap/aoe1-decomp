@@ -15,11 +15,8 @@
 
 #include <new.h>
 
-#ifndef BASEGAME_GROUPED_TU
 extern "C" void* calloc(int num, int size);
-#endif
 
-#ifndef BASEGAME_GROUPED_TU
 class TShape {
 public:
     char gap_00[0x20];
@@ -46,7 +43,6 @@ public:
     char gap_5A[2];
     TShape** shapes;
 };
-#endif
 
 int RGE_Base_Game::setup_shapes()
 {

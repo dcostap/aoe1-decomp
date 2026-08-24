@@ -11,7 +11,6 @@
 #include <new.h>
 
 // TRegistry size 0x110 (from inventory types dump)
-#ifndef BASEGAME_GROUPED_TU
 class TRegistry {
 public:
     void* ghMachineKey;       // +0x0 (4)
@@ -45,7 +44,6 @@ public:
 
     int setup_registry();
 };
-#endif
 
 int RGE_Base_Game::setup_registry()
 {

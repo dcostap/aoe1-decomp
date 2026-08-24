@@ -14,7 +14,6 @@
 extern int force_cd;
 extern "C" int __cdecl stricmp(const char* left, const char* right);
 
-#ifndef BASEGAME_GROUPED_TU
 class RGE_Prog_Info {
 public:
     char prog_name[101];
@@ -53,7 +52,6 @@ public:
     int playerHasCD(int player);
     int check_for_cd(int value);
 };
-#endif
 
 int RGE_Base_Game::check_for_cd(int value)
 {

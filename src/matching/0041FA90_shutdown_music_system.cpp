@@ -5,7 +5,6 @@
 // attempt 6: virtual method at 0 offset, still 80 bytes
 // attempt 7: try with padding virtuals
 
-#ifndef BASEGAME_GROUPED_TU
 class TRegistry;
 
 class TMusic_System {
@@ -77,7 +76,6 @@ public:
     virtual void virtual_ac();
     void shutdown_music_system();
 };
-#endif
 
 void RGE_Base_Game::shutdown_music_system() {
     if (music_system == 0) return;

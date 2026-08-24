@@ -16,7 +16,6 @@
 class TDrawArea;
 class TPanel;
 
-#ifndef BASEGAME_GROUPED_TU
 class TPanel {
 public:
     virtual ~TPanel();
@@ -53,14 +52,11 @@ public:
 
     void set_render_all();
 };
-#endif
 
 extern TPanelSystem panel_system;
 
-#ifndef BASEGAME_GROUPED_TU
 extern "C" long (__stdcall* const SendMessageA)(
     void*, unsigned int, unsigned int, long);
-#endif
 
 int RGE_Base_Game::setup_blank_screen()
 {

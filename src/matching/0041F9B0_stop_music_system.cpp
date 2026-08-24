@@ -1,4 +1,3 @@
-#ifndef BASEGAME_GROUPED_TU
 class TMusic_System {
 public:
     int get_play_info(unsigned char* music_type, int* start_track, int* end_track, int* current_track, char* file_name, int* loop, unsigned long* set_pos);
@@ -21,7 +20,6 @@ public:
 
     void stop_music_system(void);
 };
-#endif
 
 void RGE_Base_Game::stop_music_system(void) {
     if (this->music_system != 0) {

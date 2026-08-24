@@ -12,7 +12,6 @@
 // - Virtual call at vtable+0x5C modeled via padded declared-only virtuals.
 // - sound_driver global at 62C4B0 zeroed last.
 
-#ifndef BASEGAME_GROUPED_TU
 extern void* chat;            // 62C4B8
 extern int panel_system;      // 62E870
 extern int sound_driver;      // 62C4B0
@@ -28,6 +27,11 @@ public:
 class TPanelSystem {
 public:
     void stop_sound_system(void);
+};
+
+class RGE_Sound {
+public:
+    void restart_sound(void* driver);
 };
 
 class TDigital {
@@ -85,12 +89,6 @@ public:
     void* world;                 // +0x3F4
 
     void stop_sound_system(void);
-};
-#endif
-
-class RGE_Sound {
-public:
-    void restart_sound(void* driver);
 };
 
 void RGE_Base_Game::stop_sound_system(void) {

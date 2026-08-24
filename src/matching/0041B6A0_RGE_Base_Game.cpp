@@ -114,7 +114,7 @@ public:
     unsigned char gap_8DE[2];
     int main_wid;
     int main_hgt;
-    _GUID game_guid;
+    unsigned char game_guid[0x10];
     unsigned char zone_guid[0x10];
     char data_dir[261];
     char graphics_dir[261];
@@ -175,80 +175,27 @@ public:
              unsigned char draw_type, unsigned char screen_mode,
              long width, long height, unsigned long flags);
     void Paint(void* rect);
-    unsigned char CheckSurfaces();
-    void ClearRestored();
 };
 class TDrawArea {
 public:
     unsigned char data_[0x100];
     ~TDrawArea();
     void Clear(void* rect, int color);
-    void* GetDc(char* name);
-    void ReleaseDc(char* name);
 };
 class TShape {
 public:
-    char gap_00[0x20];
-    TShape(char* filename, long file_id);
     ~TShape();
 };
-class TSound_Driver {
-public:
-    char gap_00[0x69C];
-    TSound_Driver(void* hwnd, char* sounds_dir);
-    ~TSound_Driver();
-    int driver_active();
-    void set_volume(long volume, int param_2);
-    long get_volume();
-};
-class TChat;
-class TMusic_System {
-public:
-    char gap_000[0x104];
-    unsigned char music_type;
-    char gap_105[3];
-    TSound_Driver* sound_system;
-    void* instance;
-    void* window;
-    int device_open;
-    char gap_118[0x248 - 0x118];
-    int track_count;
-    char gap_24C[0x3F8 - 0x24C];
-    TMusic_System(unsigned char type, void* instance, void* window,
-                  TSound_Driver* sound, char* path);
-    ~TMusic_System();
-    int set_music_type(unsigned char type);
-    void set_volume(long volume, int flag);
-    int get_play_info(unsigned char* music_type, int* start_track,
-                      int* end_track, int* current_track, char* file_name,
-                      int* loop, unsigned long* set_pos);
-    int stop_track();
-    int play_track(int track_from, int loop, unsigned long pos);
-    int play_tracks(int track_from, int track_to, int loop, int cur_track,
-                    unsigned long pos);
-    int play_file(char* filename, int loop, unsigned long pos);
-    int volume;
-};
+class TSound_Driver;
+class TMusic_System;
 class TDigital;
 class TCommunications_Handler {
 public:
-    char gap_000[0x1774];
-    TCommunications_Handler(void* host_hwnd, unsigned char max_game_players,
-                            TChat* chat, _GUID application_guid);
     ~TCommunications_Handler();
     int IsPaused();
-    void StopIfSyncFail(int flag);
-    void ShowSyncChatMsgs(int param);
-    void SetStepMode(int value);
-    void SetSpeedControl(int value);
-    void DropPacketsIntentionally(int flag);
-    void SetSpeedV1(int value);
-    int GetPlayerHumanity(int player);
 };
 class TDebuggingLog {
 public:
-    char bytes[0x7B0];
-    TDebuggingLog();
     ~TDebuggingLog();
     void LogFile(int value);
     void LogTimestamp(int value);
@@ -262,10 +209,8 @@ public:
     unsigned long gdwDisp;
     char Data[255];
     unsigned char gap_10F[1];
-    TRegistry(char* key);
     int RegGetInt(int use_user, const char* name);
     int RegSetInt(int use_user, const char* name, int value);
-    char* RegGetAscii(int use_user, const char* name);
     ~TRegistry();
 };
 class TMousePointer {
@@ -333,27 +278,6 @@ public:
     int font_wid;
     int font_hgt;
 };
-class TDigital {
-public:
-    TSound_Driver* sound_system;
-    TDigital* owner;
-    unsigned char loaded;
-    unsigned char failed;
-    char sound_file[13];
-    unsigned char gap_17;
-    long resource_id;
-    long volume;
-    unsigned long pitch;
-    long pan;
-    int loop;
-    unsigned char* wave_data;
-    void* wave_info;
-    void* sound_buffer;
-    unsigned long data_size;
-    TDigital(TSound_Driver* driver, char* file, long resource_id);
-    ~TDigital();
-    int load(char* name, long param);
-};
 class RGE_Game_World {
 public:
     virtual void vf00(); virtual void vf04(); virtual void vf08();
@@ -370,28 +294,12 @@ public:
     virtual void vf84(); virtual void vf88(); virtual void vf8C();
     virtual void vf90(); virtual void vf94(); virtual void vf98();
     virtual void vf9C(); virtual void vfA0(int value);
-    void reset_communications(TCommunications_Handler* handler);
     char gap_04[0x58];
     int header_info;
 };
-class TTaunt;
 class TChat {
 public:
-    void* HostWnd;
-    int chatGroupPlayers[10];
-    char* Chat[51];
-    int CurrentMsgNo;
-    TTaunt* taunt;
-    TChat(void* host_wnd);
     ~TChat();
-    void setInChatGroup(int player, int enabled);
-    void StopSoundSystem();
-    int RestartSoundSystem(void* driver);
-};
-class TTaunt {
-public:
-    TTaunt(TSound_Driver* sound_driver);
-    ~TTaunt();
 };
 class DriveInformation {
 public:
@@ -405,25 +313,6 @@ public:
     void release_palette(void* palette);
     void* get_palette(char* name, long id);
     void DisableIME();
-    int setCurrentPanel(char* name, int mode);
-    void stop_sound_system();
-    void restart_sound_system();
-};
-class TPanel {
-public:
-    virtual ~TPanel();
-    char gap_04[0xF0];
-};
-class TEasy_Panel : public TPanel {
-public:
-    virtual ~TEasy_Panel();
-    char gap_F4[0x384];
-};
-class TScreenPanel : public TEasy_Panel {
-public:
-    virtual ~TScreenPanel();
-    TScreenPanel(char* name);
-    long setup(TDrawArea* draw_area, char* parent, long id, int value);
 };
 struct _iobuf;
 
@@ -484,7 +373,6 @@ extern int g_5B215Ch; // driveInfo
 extern int g_5B2160; // AppWnd
 extern int g_5B236C; // comm/global window state
 extern int g_62C574; // rge_base_game storage
-extern TSound_Driver* sound_driver;
 
 #ifndef IDC_ARROW
 #define IDC_ARROW ((const char*)32512)
@@ -505,7 +393,7 @@ public:
     virtual char* get_string2(int, long, long, char*, int);
     virtual TPanel* get_view_panel();
     virtual TPanel* get_map_panel();
-    virtual RGE_Scenario_Header* new_scenario_header(RGE_Scenario*);
+    virtual RGE_Scenario_Header* new_scenario_header(void*);
     virtual RGE_Scenario_Header* new_scenario_header(int);
     virtual RGE_Scenario* new_scenario_info(int);
     virtual void notification(int, long, long, long, long);
@@ -641,10 +529,7 @@ public:
     char work_dir[261];
     char string_dll_name[261];
     unsigned char pad_3F2[2];
-    union {
-        RGE_Game_World* world;
-        void* rge_world;
-    };
+    RGE_Game_World* world;
     int render_all;
     short master_obj_id;
     short terrain_id;
@@ -686,6 +571,8 @@ public:
     unsigned char resigned[9];
     unsigned char pad_A1E[2];
     TDrawArea* map_save_area;
+
+    RGE_Scenario_Header* new_scenario_header(RGE_Scenario* scenario);
 
     RGE_Base_Game(RGE_Prog_Info* info, int do_setup);
 
@@ -739,19 +626,6 @@ public:
     unsigned char pathFinding();
     unsigned char mpPathFinding();
     void mouse_off();
-    RGE_Scenario_Header* new_scenario_header(void*);
-    void vf5C();
-    int vf8C();
-    int vf94();
-    void vfB0();
-    void virtual_ac();
-    int reset_comm_tail();
-    void* make_font(void* param1, long id, int italic);
-    void* make_font(void* param1, char* name, int size, int weight, int italic);
-    void set_render_all();
-    int playerHasCD(int player);
-    void clear_window();
-    int check_paint();
 };
 
 RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* info, int do_setup)

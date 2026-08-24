@@ -10,7 +10,6 @@
 
 #include <string.h>
 
-#ifndef BASEGAME_GROUPED_TU
 extern "C" int __cdecl atoi(const char*);
 extern "C" __declspec(dllimport) int __stdcall MulDiv(int, int, int);
 extern "C" __declspec(dllimport) void* __stdcall CreateFontIndirectA(void*);
@@ -46,7 +45,6 @@ struct LOGFONTA {
     char lfPitchAndFamily;
     char lfFaceName[32];
 };
-#endif
 
 void* RGE_Base_Game::make_font(void* dc, char* name, int size, int weight, int strikeout)
 {

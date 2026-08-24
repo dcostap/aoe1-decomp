@@ -8,7 +8,6 @@
 extern "C" int __cdecl atoi(const char*);
 extern "C" char* __cdecl strstr(const char*, const char*);
 
-#ifndef BASEGAME_GROUPED_TU
 class RGE_Base_Game {
 public:
     virtual ~RGE_Base_Game();
@@ -24,7 +23,6 @@ public:
     void* make_font(void* param1, char* name, int size, int weight, int italic);
     void* make_font(void* param1, long id, int italic);
 };
-#endif
 
 void* RGE_Base_Game::make_font(void* param1, long id, int italic)
 {
