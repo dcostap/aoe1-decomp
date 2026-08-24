@@ -15,25 +15,33 @@ public:
     unsigned int ExecTurn;
     unsigned char SeqNo;
     char gap_09[3];
-    union {
-        char* msgptr;
-        void* Data;
-    };
-    union {
-        unsigned int From;
-        unsigned int field_10;
-    };
-    union {
-        unsigned int Size;
-        unsigned int field_14;
-    };
-    union {
-        int ControlCommand;
-        unsigned int field_18;
-    };
+    char* msgptr;
+    unsigned int From;
+    unsigned int Size;
+    int ControlCommand;
 
-    MsgQueue();
-    ~MsgQueue();
+    MsgQueue() {
+        this->Code = 0;
+        this->ExecTurn = 0;
+        this->SeqNo = 0;
+        this->From = 0;
+        this->Size = 0;
+        this->ControlCommand = 0;
+        this->msgptr = 0;
+    }
+
+    ~MsgQueue() {
+        this->Code = 0;
+        this->ExecTurn = 0;
+        this->SeqNo = 0;
+        this->From = 0;
+        this->Size = 0;
+        this->ControlCommand = 0;
+        if (this->msgptr != 0) {
+            operator delete(this->msgptr);
+        }
+        this->msgptr = 0;
+    }
 };
 
 typedef MsgQueue MsgQueueEntry;

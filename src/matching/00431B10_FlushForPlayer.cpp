@@ -47,8 +47,34 @@ void RGE_Communications_Queue::FlushForPlayer(unsigned int param_1) {
     unsigned int i = 0;
     int off = 0;
     do {
+#ifdef COM_Q_CONTEXT
+        // BINARY NOTE: Keep a reference to Queue. VC5 then uses Queue as the SIB base.
+        MsgQueue*& queue = th->Queue;
+        unsigned int from = *(unsigned int*)((char*)queue + off + 0x10);
+        MsgQueue* q = (MsgQueue*)((char*)queue + off);
+#else
         unsigned int from = *(unsigned int*)((char*)th->Queue + off + 0x10);
         MsgQueue* q = (MsgQueue*)((char*)th->Queue + off);
+#endif
+#ifdef COM_Q_CONTEXT
+        if (from == param_1 && q->Size > 0) {
+            L->Log("Remove Q #%d Seq=%d ToExecute %ld From P#%d Size=%d CtrlCmd=%d",
+                i, q->SeqNo, q->ExecTurn, from, q->Size, q->ControlCommand, q->Code);
+
+            MsgQueue* clear = (MsgQueue*)((char*)queue + off);
+            void* data = clear->msgptr;
+            clear->Code = 0;
+            clear->ExecTurn = 0;
+            clear->SeqNo = 0;
+            clear->From = 0;
+            clear->Size = 0;
+            clear->ControlCommand = 0;
+            if (data != 0) {
+                operator delete(data);
+            }
+            clear->msgptr = 0;
+        }
+#else
         if (from == param_1 && q->field_14 > 0) {
             L->Log("Remove Q #%d Seq=%d ToExecute %ld From P#%d Size=%d CtrlCmd=%d",
                 i, q->Code, q->ExecTurn, from, q->field_14, q->field_18, q->ControlCommand);
@@ -66,6 +92,7 @@ void RGE_Communications_Queue::FlushForPlayer(unsigned int param_1) {
             }
             q->Data = 0;
         }
+#endif
         i++;
         off += 0x1c;
     } while (i <= th->HighQueueDepth);

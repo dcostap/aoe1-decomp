@@ -39,8 +39,15 @@ unsigned int RGE_Communications_Queue::FlushTurnRange(unsigned long param_1, uns
     unsigned int local_4 = 0;
 
     for (int edi = 0; local_4 <= HighQueueDepth; local_4++, edi += 0x1C) {
+#ifdef COM_Q_CONTEXT
+        // BINARY NOTE: Keep a reference to Queue. VC5 then uses Queue as the SIB base.
+        MsgQueue*& queue = Queue;
+        unsigned int execTurn = *(unsigned int*)((char*)queue + edi + 4);
+        MsgQueue* mq = (MsgQueue*)((char*)queue + edi);
+#else
         unsigned int execTurn = *(unsigned int*)((char*)Queue + edi + 4);
         MsgQueue* mq = (MsgQueue*)((char*)Queue + edi);
+#endif
 
         if (((execTurn < param_1) || (execTurn > param_2)) &&
             !((param_1 == 0) && (param_2 == 0))) {
@@ -48,6 +55,21 @@ unsigned int RGE_Communications_Queue::FlushTurnRange(unsigned long param_1, uns
         }
 
         i++;
+#ifdef COM_Q_CONTEXT
+        if (mq->Size <= 0) continue;
+
+        mq->Code = 0;
+        mq->ExecTurn = 0;
+        mq->SeqNo = 0;
+        mq->From = 0;
+        mq->Size = 0;
+        mq->ControlCommand = 0;
+
+        if (mq->msgptr != 0) {
+            operator delete(mq->msgptr);
+        }
+        mq->msgptr = 0;
+#else
         if (mq->field_14 <= 0) continue;
 
         mq->ControlCommand = 0;
@@ -61,6 +83,7 @@ unsigned int RGE_Communications_Queue::FlushTurnRange(unsigned long param_1, uns
             operator delete(mq->Data);
         }
         mq->Data = 0;
+#endif
     }
 
     return i;

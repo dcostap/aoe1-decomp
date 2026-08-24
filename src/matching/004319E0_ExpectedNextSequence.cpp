@@ -47,8 +47,14 @@ unsigned char RGE_Communications_Queue::ExpectedNextSequence(unsigned long turn,
     *(unsigned char*)&DAT_0062cf40 = seq;
     off = 0;
     do {
+#ifdef COM_Q_CONTEXT
+        if (this->Queue[i].ExecTurn == turn &&
+            this->Queue[i].From == from &&
+            this->Queue[i].Size != 0) {
+#else
         MsgQueueEntry* e = (MsgQueueEntry*)((char*)this->Queue + off);
         if (e->ExecTurn == turn && e->From == from && e->Size != 0) {
+#endif
             seq++;
             *(unsigned char*)&DAT_0062cf40 = seq;
         }
