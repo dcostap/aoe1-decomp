@@ -8,18 +8,20 @@ public:
 
 class RGE_Panel_Tool_Box {
 public:
-    virtual void vf00(void);
-    virtual void vf04(void);
-    virtual void vf08(void);
-    virtual void vf0C(void);
-    virtual void vf10(void);
-    virtual void vf14(void);
-    virtual void vf18(void);
-    virtual void vf1C(void);
-    virtual void vf20(void);
-    virtual void vf24(void);
-    virtual void pre_draw(int value);
-    virtual void post_draw(void);
+    virtual ~RGE_Panel_Tool_Box();
+    virtual long setup(TDrawArea*, RGE_Panel_Tool_Box*, long, long, long, long, unsigned char);
+    virtual void set_rect(void*);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_color(unsigned char);
+    virtual void set_active(int);
+    virtual void set_positioning(int, long, long, long, long, long, long,
+                                 long, long, RGE_Panel_Tool_Box*, RGE_Panel_Tool_Box*,
+                                 RGE_Panel_Tool_Box*, RGE_Panel_Tool_Box*);
+    virtual void set_fixed_position(long, long, long, long);
+    virtual void set_redraw(int);
+    virtual void set_overlapped_redraw();
+    virtual void draw_setup(int value);
+    virtual void draw_finish(void);
 
     char gap_04[0x1C];
     TDrawArea* draw_area;
@@ -34,8 +36,8 @@ public:
 
 void RGE_Panel_Tool_Box::draw(void) {
     if ((this->draw_area != 0) && (this->field_70 != 0) && (this->field_6C != 0)) {
-        this->pre_draw(0);
+        this->draw_setup(0);
         this->draw_area->Clear(&this->rect, 0);
-        this->post_draw();
+        this->draw_finish();
     }
 }

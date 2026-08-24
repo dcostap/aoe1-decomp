@@ -13,6 +13,7 @@ public:
 class TDigital;
 class TPanel;
 class TScreenPanel;
+struct RectStub;
 class RGE_View;
 class RGE_Diamond_Map;
 class RGE_Map;
@@ -41,8 +42,8 @@ public:
     virtual void set_fixed_position(long, long, long, long);
     virtual void set_redraw(int);
     virtual void set_overlapped_redraw();
-    virtual void pre_draw(int);
-    virtual void post_draw();
+    virtual void draw_setup(int);
+    virtual void draw_finish();
     virtual void draw();
     virtual void draw_rect();
     virtual void draw_offset();
@@ -77,16 +78,16 @@ public:
     virtual long key_down_action(long, short, int, int, int);
     virtual void char_action();
     virtual long action(TPanel*, long, unsigned long, unsigned long);
-    virtual void vfB8();
-    virtual void vfBC();
-    virtual void vfC0();
-    virtual void vfC4();
-    virtual void vfC8();
-    virtual void vfCC();
-    virtual void vfD0();
-    virtual void vfD4();
-    virtual void vfD8();
-    virtual void vfDC();
+    virtual void get_true_render_rect(RectStub*);
+    virtual int is_inside(long, long);
+    virtual void set_focus(int);
+    virtual void set_tab_order(TPanel**, short);
+    virtual void set_tab_order(TPanel*, TPanel*);
+    virtual unsigned char get_help_info(unsigned char&, char*, long&, long&, long&);
+    virtual void stop_sound_system();
+    virtual int restart_sound_system();
+    virtual void take_snapshot();
+    virtual void handle_reactivate();
 
     char gap_04[0x1C];
     union {
@@ -169,18 +170,17 @@ public:
 
 class RGE_Game_World {
 public:
-    void* vtable_ptr;
-    char gap_04[0x1C];
+    char gap_00[0x1C];
     uchar temp_pause;
-    char gap_21[7];
+    char gap_1D[0xB];
     RGE_Map* map;
 };
 
 class RGE_Base_Game {
 public:
     virtual ~RGE_Base_Game();
-    virtual void vf04();
-    virtual void vf08();
+    virtual int run();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
     virtual void set_prog_mode(int);
     virtual void set_game_mode(int, int);
 

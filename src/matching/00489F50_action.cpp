@@ -73,16 +73,16 @@ public:
     virtual void key_down_action();
     virtual void char_action();
     virtual long action(TPanel*, long, unsigned long, unsigned long);
-    virtual void vfB8();
-    virtual void vfBC();
-    virtual void vfC0();
-    virtual void vfC4();
-    virtual void vfC8();
-    virtual void vfCC();
-    virtual void vfD0();
-    virtual void vfD4();
-    virtual void vfD8();
-    virtual void vfDC();
+    virtual void get_true_render_rect(void*);
+    virtual int is_inside(long, long);
+    virtual void set_focus(int);
+    virtual void set_tab_order(TPanel**, short);
+    virtual void set_tab_order(TPanel*, TPanel*);
+    virtual unsigned char get_help_info(unsigned char&, char*, long&, long&, long&);
+    virtual void stop_sound_system();
+    virtual int restart_sound_system();
+    virtual void take_snapshot();
+    virtual void handle_reactivate();
 
     char gap_04[0xF0];
 
@@ -126,8 +126,7 @@ class TButtonPanel : public TPanel {
 
 class RGE_Game_World {
 public:
-    void* vtable_ptr;
-    char gap_04[0x18];
+    char gap_00[0x1C];
     unsigned char temp_pause;
 };
 
@@ -139,8 +138,8 @@ public:
 class RGE_Base_Game {
 public:
     virtual ~RGE_Base_Game();
-    virtual void vf04();
-    virtual void vf08();
+    virtual int run();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
     virtual void set_prog_mode(int mode);
     virtual void set_game_mode(int mode, int sub_mode);
 

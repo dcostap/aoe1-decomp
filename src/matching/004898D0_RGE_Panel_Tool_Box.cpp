@@ -19,8 +19,8 @@ class TPanel {
 public:
     virtual ~TPanel();
     virtual long setup(TDrawArea*, TPanel*, long, long, long, long, int);
-    virtual void vf08(void);
-    virtual void vf0C(void);
+    virtual void set_rect(void*);
+    virtual void set_rect(long, long, long, long);
     virtual void set_color(uchar);
     virtual void set_active(int);
 
