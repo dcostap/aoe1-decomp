@@ -1,24 +1,18 @@
 // Authentic t_c_obj.cpp translation-unit wrapper.
 //
 // PDB source module: C:\\msdev\\work\\age1_x1\\t_c_obj.cpp
-// Owner order follows the packet's PDB line and address order.  The nearby
-// compiler-generated deleting destructor is intentionally not an owner.
-// Build context for this compile proposal: /nologo /c /O2 /Oy /GX.
+// Owner order follows the packet's PDB line order.  The nearby
+// compiler-generated scalar deleting destructor is not a source owner.
+// Build context for the candidate: /nologo /c /O2 /Oy /GX.
 //
 // Packet accounting:
-// - exact owners: 004CA510 and 004CBD30, both grouped matches;
-// - observed owners: the other 37 bodies, including 26 former grouped exact
-//   candidates and the 11 original scratch or accepted-drift bodies;
-// - generated: 004CA180 vector-deleting destructor, registration-policy-blocked;
-// - exact decorated overrides select the ambiguous constructors, setup,
-//   attack, repair, build, and heal symbols.
+// - 4 normal owners are exact-source candidates;
+// - 35 normal owners remain observed matching, scratch, or accepted-drift bodies;
+// - 004CA180 is the compiler-generated scalar deleting destructor;
+// - decorated symbol entries in the candidate select overloaded owners.
 //
-// Compilation validation: the complete include set compiles under the pinned
-// VC5 host and /GX.  The validation report is
-// build/tu_plans/t_c_obj_cpp/validation_reclassified/report.json.  It records
-// 2 exact comparison matches, 37 observed comparisons, and no selection
-// errors.  The generated companion is recorded in the blocked proposal entry.
-// This pass stops at compilation.  It does not claim grouped exactness.
+// The generated destructor is modeled in the candidate proposal.  This wrapper
+// does not add a destructor body or a synthetic virtual slot surface.
 
 #include "../include/t_c_obj_context.h"
 

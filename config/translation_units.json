@@ -4259,6 +4259,42 @@
       "owners": {
         "0052C8D0": "src/matching/0052C8D0_is_attack_task.cpp"
       }
+    },
+    {
+      "name": "aiuaimod_complete_fresh",
+      "source": "src/aiuaimod.cpp",
+      "flags": "config/flags/00412F00_UnitAIModule.rsp",
+      "owners": {
+        "00419510": "src/matching/00419510_processGroupNotify.cpp",
+        "00419C70": "src/matching/00419C70_addToOrderQueue.cpp",
+        "00419ED0": "src/matching/00419ED0_addToNotifyQueue.cpp",
+        "00419F00": "src/matching/00419F00_addToNotifyQueue.cpp",
+        "0041A0D0": "src/matching/0041A0D0_lookupObject.cpp"
+      },
+      "symbols": {
+        "00419510": "?processGroupNotify@UnitAIModule@@MAEXPAUNotifyEvent@@@Z",
+        "00419C70": "?addToOrderQueue@UnitAIModule@@QAEHHHHHMMMMHH@Z",
+        "00419ED0": "?addToNotifyQueue@UnitAIModule@@QAEHPAUNotifyEvent@@@Z",
+        "00419F00": "?addToNotifyQueue@UnitAIModule@@QAEHHHHJJJ@Z",
+        "0041A0D0": "?lookupObject@UnitAIModule@@QAEPAVRGE_Static_Object@@H@Z"
+      }
+    },
+    {
+      "name": "t_c_obj_complete_fresh",
+      "source": "src/t_c_obj.cpp",
+      "flags": "config/flags/004CA0F0_TRIBE_Combat_Object.rsp",
+      "owners": {
+        "004CA0F0": "src/matching/004CA0F0_TRIBE_Combat_Object.cpp",
+        "004CA1A0": "src/matching/004CA1A0_TRIBE_Combat_Object.cpp",
+        "004CA510": "src/matching/004CA510_create_action_list.cpp",
+        "004CBD30": "src/matching/004CBD30_lines_intersect.cpp"
+      },
+      "symbols": {
+        "004CA0F0": "??0TRIBE_Combat_Object@@QAE@PAX0MMMH@Z",
+        "004CA1A0": "??0TRIBE_Combat_Object@@QAE@HPAVRGE_World@@H@Z",
+        "004CA510": "?create_action_list@TRIBE_Combat_Object@@UAEPAVRGE_Action_List@@XZ",
+        "004CBD30": "_lines_intersect"
+      }
     }
   ]
 }
