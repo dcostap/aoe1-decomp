@@ -35,12 +35,9 @@
 // respectively.  0051ACA0 has the original 13-call sequence.  Generated
 // scalar/vector deleting destructors and padding remain excluded.
 //
-// BINARY NOTE: The shared context currently declares save_info public, so VC5
-// emits ?save_info@TRIBE_Panel_Inven@@QAEXXZ in this wrapper.  The PDB owner is
-// protected (?save_info@TRIBE_Panel_Inven@@IAEXXZ).  The body is byte-exact,
-// but this access-level symbol difference blocks a policy-valid exact claim
-// until an authorized shared-context correction is available.  No alias or
-// assembly workaround is used.
+// BINARY NOTE: The PDB owner is protected
+// (?save_info@TRIBE_Panel_Inven@@IAEXXZ).  The reviewed shared context
+// preserves that access.  No alias or assembly workaround is used.
 
 #include <windows.h>
 #include "../include/tpnl_inv_context.h"

@@ -243,7 +243,9 @@ public:
     void set_text_color(unsigned long color1, unsigned long color2);
     virtual void draw();
     virtual long handle_idle();
+protected:
     void save_info();
+public:
     void set_player(TRIBE_Player*);
 };
 

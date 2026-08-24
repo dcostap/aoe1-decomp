@@ -4243,6 +4243,22 @@
         "0050EC90": "?setup@TRIBE_Master_Combat_Object@@IAEHPAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@F@Z",
         "0050EE80": "?modify@TRIBE_Master_Combat_Object@@UAEXME@Z"
       }
+    },
+    {
+      "name": "main",
+      "source": "src/main_tu.cpp",
+      "flags": "config/flags/004549E0_WinMain_16.rsp",
+      "owners": {
+        "004549E0": "src/matching/004549E0_WinMain_16.cpp"
+      }
+    },
+    {
+      "name": "ttsk_lst",
+      "source": "src/ttsk_lst_tu.cpp",
+      "flags": "config/flags/default.rsp",
+      "owners": {
+        "0052C8D0": "src/matching/0052C8D0_is_attack_task.cpp"
+      }
     }
   ]
 }

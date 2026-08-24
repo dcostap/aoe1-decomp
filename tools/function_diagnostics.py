@@ -224,6 +224,19 @@ def owning_function_symbol_validation(
         "rebuilt_owner": "",
         "status": "unverified",
     }
+    stdcall = re.fullmatch(r"_([A-Za-z_][A-Za-z0-9_]*)@(\d+)", expected)
+    if stdcall is not None:
+        pdb_name = expected_qualified_name.strip()
+        result["expected_normalized"] = stdcall.group(1)
+        result["rebuilt_normalized"] = clean_symbol_name(rebuilt)
+        if not rebuilt or not pdb_name:
+            return result
+        result["status"] = (
+            "match"
+            if rebuilt == expected and pdb_name == stdcall.group(1)
+            else "mismatch"
+        )
+        return result
     if not rebuilt or _SIMPLE_OWNER_NAME_RE.fullmatch(expected) is None:
         return result
     result["expected_normalized"] = clean_symbol_name(expected)

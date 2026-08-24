@@ -294,6 +294,16 @@ class CoffAndDiagnosticTests(unittest.TestCase):
         self.assertEqual(wrong_class["status"], "mismatch")
         self.assertEqual(free_function["status"], "mismatch")
 
+    def test_owning_symbol_validation_accepts_pdb_stdcall_name(self) -> None:
+        valid = owning_function_symbol_validation(
+            "_WinMain@16", "_WinMain@16", "WinMain"
+        )
+        wrong_pdb_name = owning_function_symbol_validation(
+            "_WinMain@16", "_WinMain@16", "OtherMain"
+        )
+        self.assertEqual(valid["status"], "match")
+        self.assertEqual(wrong_pdb_name["status"], "mismatch")
+
     def test_mismatch_classifier_reports_owner_symbol_difference(self) -> None:
         result = self._classify(
             "E9 00 00 00 00",

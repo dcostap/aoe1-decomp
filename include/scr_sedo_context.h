@@ -260,6 +260,7 @@ public:
 
     TRIBE_Screen_Sed_Open();
     virtual ~TRIBE_Screen_Sed_Open();
+protected:
     void fillList();
     virtual long action(TPanel* param_1, long param_2,
                         unsigned long param_3, unsigned long param_4);
