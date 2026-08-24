@@ -1,11 +1,11 @@
-// VA: 0047FD90 rge_open (2-param)
-// rge_fio.cpp lines 69-92
-// 132 bytes
+// VA: 0047FE20 rge_open (3-param)
+// rge_fio.cpp lines 96-119
+// 137 bytes
 
-int __cdecl __open(char* path, int access, ...);
+int __cdecl open(char* path, int access, ...);
 void* __cdecl calloc(int count, int size);
 int __cdecl lseek(int fd, int offset, int whence);
-int __cdecl __tell(int fd);
+int __cdecl tell(int fd);
 
 extern unsigned char DAT_0086b264;  // mode flag
 extern int DAT_0086b268;            // buffer offset
@@ -17,8 +17,8 @@ extern int DAT_0086b280;            // compressed data buffer
 extern int DAT_0086b26c;            // deflate buffer
 extern int DAT_0086b260;            // current file handle
 
-int __cdecl rge_open(char* path, int access) {
-    int handle = __open(path, access);
+int __cdecl rge_open(char* path, int access, int attr) {
+    int handle = open(path, access, attr);
     if (handle >= 0) {
         DAT_0086b264 = 2;
         DAT_0086b268 = 0;
@@ -28,7 +28,7 @@ int __cdecl rge_open(char* path, int access) {
         DAT_0086b26c = 0;
         DAT_0086b260 = handle;
         lseek(handle, 0, 2);
-        DAT_0086b27c = __tell(handle);
+        DAT_0086b27c = tell(handle);
         DAT_0086b274 = 0;
         lseek(handle, 0, 0);
     }
