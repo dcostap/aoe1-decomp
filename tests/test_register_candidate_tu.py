@@ -14,6 +14,7 @@ from register_candidate_tu import (  # noqa: E402
     candidate_group,
     candidate_flag_errors,
     merge_candidate_group,
+    run_registered_checks,
 )
 
 
@@ -113,6 +114,20 @@ class RegisterCandidateTranslationUnitTests(unittest.TestCase):
             issues = candidate_flag_errors(candidate)
 
         self.assertEqual([issue["message"] for issue in issues], ["blocked"])
+
+    def test_registered_checks_keep_owner_order(self) -> None:
+        from unittest.mock import patch
+
+        with patch(
+            "register_candidate_tu._registered_check",
+            side_effect=lambda va: (va, True, "MATCH"),
+        ):
+            results = run_registered_checks(
+                {"00401020": "second", "00401010": "first"},
+                jobs=2,
+            )
+
+        self.assertEqual([result[0] for result in results], ["00401020", "00401010"])
 
 
 if __name__ == "__main__":

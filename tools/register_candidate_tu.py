@@ -3,6 +3,7 @@ from __future__ import annotations
 """Register one validated candidate translation unit."""
 
 import argparse
+from concurrent.futures import ThreadPoolExecutor
 import json
 import os
 import subprocess
@@ -35,6 +36,12 @@ def parse_args() -> argparse.Namespace:
         "--apply",
         action="store_true",
         help="Write config/translation_units.json. Without this option, show the plan only.",
+    )
+    parser.add_argument(
+        "--jobs",
+        type=int,
+        default=4,
+        help="Parallel registered owner checks after --apply. The default is 4.",
     )
     return parser.parse_args()
 
@@ -169,6 +176,38 @@ def _write_config(groups: list[dict[str, object]]) -> None:
     os.replace(temporary, TRANSLATION_UNITS_PATH)
 
 
+def _registered_check(va: str) -> tuple[str, bool, str]:
+    completed = subprocess.run(
+        [
+            sys.executable,
+            str(REPO_ROOT / "tools" / "check_function.py"),
+            "--va",
+            va,
+            "--detail",
+            "concise",
+        ],
+        cwd=REPO_ROOT,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    output = completed.stdout + completed.stderr
+    exact = (
+        completed.returncode == 0
+        and "Result: MATCH" in completed.stdout
+        and "0.0000%" in completed.stdout
+    )
+    return va, exact, output
+
+
+def run_registered_checks(
+    owners: dict[str, object], jobs: int
+) -> list[tuple[str, bool, str]]:
+    vas = list(owners)
+    with ThreadPoolExecutor(max_workers=max(1, jobs)) as executor:
+        return list(executor.map(_registered_check, vas))
+
+
 def main() -> int:
     args = parse_args()
     try:
@@ -227,7 +266,21 @@ def main() -> int:
         print("Dry run. Use --apply to write config/translation_units.json.")
         return 0
 
+    if args.jobs < 1:
+        print("Cannot register candidate: --jobs must be at least 1", file=sys.stderr)
+        return 2
+    old_config = TRANSLATION_UNITS_PATH.read_text(encoding="utf-8")
     _write_config(groups)
+    results = run_registered_checks(owners, args.jobs)
+    failures = [result for result in results if not result[1]]
+    if failures:
+        TRANSLATION_UNITS_PATH.write_text(old_config, encoding="utf-8")
+        for va, _, output in failures:
+            print(f"Registered owner {va} failed after apply:", file=sys.stderr)
+            print(output, file=sys.stderr)
+        print("Restored config/translation_units.json.", file=sys.stderr)
+        return 1
+    print(f"Registered checks: {len(results)}/{len(results)} MATCH, 0.0000%.")
     print("Updated config/translation_units.json.")
     return 0
 

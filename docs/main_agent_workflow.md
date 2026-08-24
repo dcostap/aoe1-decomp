@@ -76,7 +76,8 @@ python tools/register_candidate_tu.py --proposal <proposal.json> --name <group> 
 The first command is a dry run. Both commands run fresh candidate validation.
 The command rejects unsafe flags, prohibited source forms, duplicate ownership,
 and invalid wrapper structure. It registers exact owners only. It does not
-promote observed owners.
+promote observed owners. After `--apply`, it checks each registered owner. It
+restores the config when any owner fails.
 
 ### Matching worker
 
