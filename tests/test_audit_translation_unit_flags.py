@@ -153,6 +153,10 @@ class TranslationUnitFlagAuditTests(unittest.TestCase):
         self.assertIn("language_mismatch", codes)
         self.assertIn("eh_flag_missing", codes)
         self.assertIn("frame_flag_conflict", codes)
+        frame_issue = next(
+            issue for issue in report["issues"] if issue["code"] == "frame_flag_conflict"
+        )
+        self.assertEqual("warning", frame_issue["severity"])
 
 
 if __name__ == "__main__":

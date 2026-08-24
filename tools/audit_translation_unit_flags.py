@@ -478,9 +478,9 @@ def _module_summary(
         issues.append(
             _issue(
                 "mixed_frame_need",
-                "error",
+                "warning",
                 f"{kind}:{module_name}",
-                f"{module_name} has both frame-pointer and FPO original prologues.",
+                f"{module_name} has both frame-pointer and FPO original prologues; verify one grouped flag set.",
                 vas=[owner["va"] for owner in owners],
             )
         )
@@ -626,9 +626,9 @@ def audit_translation_units(
             unit_issues.append(
                 _issue(
                     "mixed_frame_need",
-                    "error",
+                    "warning",
                     f"current:{name}",
-                    "configured translation unit has both frame-pointer and FPO original prologues.",
+                    "configured translation unit has both frame-pointer and FPO original prologues; grouped output is authoritative.",
                     vas=[owner["va"] for owner in owners],
                 )
             )
@@ -668,9 +668,9 @@ def audit_translation_units(
                 unit_issues.append(
                     _issue(
                         "frame_flag_conflict",
-                        "error",
+                        "warning",
                         f"current:{name}",
-                        f"owner {owner['va']} has an original EBP frame but the TU requests /Oy.",
+                        f"owner {owner['va']} has an original EBP frame while the TU requests /Oy; the compiler can retain EBP when required.",
                         vas=[owner["va"]],
                     )
                 )

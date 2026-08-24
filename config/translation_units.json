@@ -2768,15 +2768,6 @@
       }
     },
     {
-      "name": "pnl_lst_prefix",
-      "source": "src/pnl_lst_tu.cpp",
-      "flags": "config/flags/default.rsp",
-      "owners": {
-        "004782A0": "src/matching/004782A0_TListPanel.cpp",
-        "00478330": "src/matching/00478330_TListPanel.cpp"
-      }
-    },
-    {
       "name": "act_list",
       "source": "src/act_list_tu.cpp",
       "flags": "config/flags/00404200_create_task_action.rsp",
