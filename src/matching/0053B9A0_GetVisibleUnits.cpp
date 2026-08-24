@@ -4,6 +4,9 @@
 // scan. The output record is eight bytes: an object id and four byte fields.
 // This source keeps those layouts as typed records and uses the observed
 // bounds and distance-table tests.
+// BLOCKER: Fresh TU validation emits 431 bytes versus the 387-byte target.
+// The last exact checkpoint used forbidden inline assembly, so this owner
+// remains observed until a natural exact recovery is found.
 
 #if !defined(VIS_UNIT_TU_CONTEXT)
 struct VisibleUnitRec {
