@@ -36,7 +36,7 @@
 // and 585-587, in the same order as the owners above.
 //
 // No padding-only, compiler-generated, parent-owned, or assembly-region
-// entries are in this module packet. The five observed owners are authentic
+// entries are in this module packet. The two observed owners are authentic
 // compiling sources, but they remain observed until their own body recovery
 // work proves exactness. The accepted-drift owner remains accepted drift; this
 // wrapper does not promote or retune it.
