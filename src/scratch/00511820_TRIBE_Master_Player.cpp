@@ -1,12 +1,8 @@
-class Base_TRIBE_Master_Player {
-public:
-    virtual ~Base_TRIBE_Master_Player();
-};
+// 00511820 TRIBE_Master_Player::~TRIBE_Master_Player
+// Source: tmplayer.cpp line 36
 
-class TRIBE_Master_Player : public Base_TRIBE_Master_Player {
-public:
-    virtual ~TRIBE_Master_Player();
-};
+#include "../../include/tmplayer_context.h"
 
-TRIBE_Master_Player::~TRIBE_Master_Player() {
+TRIBE_Master_Player::~TRIBE_Master_Player()
+{
 }

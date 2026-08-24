@@ -1,6 +1,7 @@
 // Preserve the donor-file EH/object-lifetime context here: this by-value return helper
 // exact-matches under `/GX`, and the visible nontrivial `DString::~DString()` declaration
 // is part of the working VC5 source model for this dstring.cpp cluster.
+#ifndef DSTRING_TU_CONTEXT
 class DString {
 public:
     char* stringValue;
@@ -15,6 +16,7 @@ public:
     void lowercase(void);
     DString asLowercase(void);
 };
+#endif
 
 DString DString::asLowercase(void) {
     DString result(this->stringValue);

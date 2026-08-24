@@ -30,6 +30,7 @@
 // incoming target home.  Keep the original undefined-path behavior because
 // the binary proves this reload.
 
+#ifndef T_C_OBJ_CONTEXT_H
 class RGE_Master_Static_Object;
 class RGE_Player;
 class RGE_Static_Object;
@@ -193,6 +194,7 @@ class TRIBE_Combat_Object : public RGE_Action_Object {
 public:
     void do_repair(RGE_Static_Object* target);
 };
+#endif
 
 void TRIBE_Combat_Object::do_repair(RGE_Static_Object* target)
 {

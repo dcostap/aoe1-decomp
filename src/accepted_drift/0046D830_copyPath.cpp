@@ -47,6 +47,7 @@
 
 #include <stddef.h>
 
+#ifndef PATHSYS_TU_CONTEXT
 typedef unsigned char uchar;
 
 extern "C" void* __cdecl operator_new(unsigned int size);
@@ -272,6 +273,7 @@ public:
 
     int copyPath(int step);
 };
+#endif
 
 int PathingSystem::copyPath(int step)
 {

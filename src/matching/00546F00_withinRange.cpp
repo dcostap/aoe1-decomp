@@ -12,6 +12,7 @@
 //   for all bounds selects a different register map.
 // - The reduced source matches the 247-byte target exactly.
 
+#ifndef ZONE_MAP_TU_BUILD
 typedef unsigned char uchar;
 
 struct XYPoint {
@@ -42,6 +43,7 @@ public:
 
     int withinRange(uchar zone, XYPoint from, float range);
 };
+#endif
 
 int RGE_Zone_Map::withinRange(uchar zone, XYPoint from, float range)
 {

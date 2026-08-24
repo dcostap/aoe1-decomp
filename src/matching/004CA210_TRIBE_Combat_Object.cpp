@@ -28,6 +28,7 @@
 
 extern float DAT_00574c78;
 
+#ifndef T_C_OBJ_CONTEXT_H
 class RGE_Master_Static_Object {
 public:
     virtual ~RGE_Master_Static_Object();
@@ -60,6 +61,7 @@ public:
     unsigned char own_master; // +0x1C4
     virtual ~TRIBE_Combat_Object();
 };
+#endif
 
 TRIBE_Combat_Object::~TRIBE_Combat_Object()
 {

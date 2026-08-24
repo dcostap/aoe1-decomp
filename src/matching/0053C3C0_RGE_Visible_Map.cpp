@@ -1,5 +1,6 @@
 extern "C" void __cdecl free(void* block);
 
+#ifndef AOE1_VISIBLE_TU_CONTEXT_H
 class RGE_Game_World;
 class RGE_Player;
 class RGE_Map;
@@ -14,6 +15,7 @@ public:
 
     ~RGE_Visible_Map();
 };
+#endif
 
 RGE_Visible_Map::~RGE_Visible_Map() {
     if (this->visible_map != 0) {

@@ -1,6 +1,7 @@
 // attempt 1: unit_type at +8 instead of +C, virtual at vtable slot 0 instead of 3
 // attempt 2: fix offsets and vtable layout
 
+#ifndef T_C_OBJ_CONTEXT_H
 class RGE_Action;
 class RGE_Action_List;
 class TRIBE_Action_Convert;
@@ -48,6 +49,7 @@ class RGE_Action_List {
 public:
     RGE_Action* get_action();
 };
+#endif
 
 void TRIBE_Combat_Object::die_die_die() {
     if (field_48 == 2) {

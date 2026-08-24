@@ -1,11 +1,13 @@
-extern double __cdecl stringToDouble(const char *s);
+extern "C" double __cdecl atof(const char *s);
 
-class TString {
+#ifndef DSTRING_TU_CONTEXT
+class DString {
 public:
-    const char *str;
-    double asDouble();
+    char *stringValue;
+    double asDouble() const;
 };
+#endif
 
-double TString::asDouble() {
-    return stringToDouble(this->str);
+double DString::asDouble() const {
+    return atof(this->stringValue);
 }

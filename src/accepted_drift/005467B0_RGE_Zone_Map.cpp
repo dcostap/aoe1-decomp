@@ -34,6 +34,7 @@
 
 #include <stdlib.h>
 
+#ifndef ZONE_MAP_TU_BUILD
 typedef unsigned char uchar;
 
 void* calloc(size_t num, size_t size);
@@ -57,6 +58,7 @@ public:
 
     RGE_Zone_Map(int param_1, RGE_Map* param_2);
 };
+#endif
 
 void rge_read(int handle, void* buf, int count);
 

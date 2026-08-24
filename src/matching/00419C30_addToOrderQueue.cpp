@@ -10,6 +10,7 @@
 // - BINARY NOTE: param2 is reread from its incoming home after the first push.
 // - BINARY NOTE: the call is direct to 00419C70 and ret 8 cleans both parameters.
 
+#ifndef AOE1_AIUAIMOD_COMPLETE_TU
 struct OrderEvent {
     int issuer;
     int orderType;
@@ -29,6 +30,7 @@ public:
 protected:
     int addToOrderQueue(OrderEvent* order, int param2);
 };
+#endif
 
 int UnitAIModule::addToOrderQueue(OrderEvent* order, int param2) {
     return this->addToOrderQueue(order->issuer, order->orderType, order->range, order->targetZ, order->targetY, order->targetX, order->targetOwner, order->target, param2, order->priority);

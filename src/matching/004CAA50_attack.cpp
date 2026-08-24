@@ -1,6 +1,7 @@
 // compact combat attack wrapper first
 // expected basin: a pre-attack owner/permission check, optional owner-side callback, then base combat attack
 
+#ifndef T_C_OBJ_CONTEXT_H
 class RGE_Combat_Object;
 class RGE_Static_Object;
 class RGE_Player;
@@ -82,6 +83,7 @@ class TRIBE_Combat_Object : public RGE_Combat_Object {
 public:
     unsigned char attack(RGE_Static_Object* target, RGE_Combat_Object* other);
 };
+#endif
 
 unsigned char TRIBE_Combat_Object::attack(RGE_Static_Object* target, RGE_Combat_Object* other) {
     if (this->context->field_124 >= 0 && target != 0 && target->owner->id > 0) {

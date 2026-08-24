@@ -4,6 +4,7 @@
 // v3: ternary operator - try to get null case at end with je
 #include <string.h>
 
+#ifndef SOUNDDRV_CANONICAL_TU
 class TSound_Driver {
 public:
     char gap_00[0x1C];
@@ -11,6 +12,7 @@ public:
 
     void set_path(char* param_1);
 };
+#endif
 
 void TSound_Driver::set_path(char* param_1) {
     if (param_1 != 0) {

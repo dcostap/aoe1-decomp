@@ -7,6 +7,7 @@
 #include <mmsystem.h>
 #include <string.h>
 
+#ifndef SOUNDDRV_CANONICAL_TU
 class TSound_Driver {
 public:
     unsigned char ready;
@@ -29,6 +30,7 @@ public:
 
     int open_mixer();
 };
+#endif
 
 int TSound_Driver::open_mixer()
 {

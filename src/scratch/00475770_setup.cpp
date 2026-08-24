@@ -68,6 +68,7 @@
 // remain MATCH. No exact lead was found; retain the canonical source in
 // scratch and preserve the fault-order blocker above.
 
+#ifndef PNL_EDIT_TU_CONTEXT
 #include <windows.h>
 #include <stdlib.h>
 #include "../../include/panel_context.h"
@@ -124,6 +125,19 @@ public:
     void set_text(char* txt);
     virtual long wnd_proc(void*, unsigned int, unsigned int, long);
 };
+#else
+#include <stdlib.h>
+typedef int FormatType;
+enum { FormatMultiLine = 7 };
+extern "C" __declspec(dllimport) HWND __stdcall CreateWindowExA(
+    unsigned long, const char*, const char*, unsigned long, int, int, int, int,
+    HWND, HMENU, HINSTANCE, void*);
+extern "C" __declspec(dllimport) long __stdcall SetWindowLongA(HWND, int, long);
+extern "C" __declspec(dllimport) long __stdcall GetWindowLongA(HWND, int);
+extern "C" __declspec(dllimport) HGDIOBJ __stdcall GetStockObject(int);
+extern "C" __declspec(dllimport) long __stdcall SendMessageA(
+    HWND, unsigned int, unsigned int, long);
+#endif
 
 long TEditPanel::setup(
     TDrawArea* param_1,

@@ -68,6 +68,7 @@
 //   parameter-home, and row-tail allocation. Behavior and call identity are
 //   otherwise broad. No inline assembly or policy-unsafe form was used.
 
+#ifndef AOE1_SHAPE_CONTEXT_H
 typedef unsigned char byte;
 #include <string.h>
 #pragma function(memset)
@@ -97,6 +98,7 @@ public:
                                            long clip_y0, long clip_x1,
                                            long clip_y1, byte* table);
 };
+#endif
 
 byte TShape::shape_mirror_color_trans_clipped(TDrawArea* draw_area,
                                                long shape_x1, long shape_y1,

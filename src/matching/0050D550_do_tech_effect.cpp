@@ -11,22 +11,11 @@
 // 33 positional / 13 edit diff basin or regressed. Blocker remains VC5's redundant post-dec
 // `test ecx,ecx` plus `push ecx` instead of original flag-preserving `dec ecx; jne` and `push 0`.
 
-class TRIBE_Player {
-public:
-    void tech_abling(long tech_value, int enable);
-};
+#include "../../include/teffects_context.h"
 
-class TRIBE_Effects {
-public:
-    void* vtable;
-    unsigned char* records;
-
-    void do_tech_effect(short tech_id, TRIBE_Player* player);
-};
-
-void TRIBE_Effects::do_tech_effect(short tech_id, TRIBE_Player* player) {
+void TRIBE_Effects::do_tech_effect(short tech_id, RGE_Player* player) {
     int index = tech_id;
-    unsigned char* base = this->records;
+    unsigned char* base = (unsigned char*)this->effects;
     int scaled = index + index * 4;
     int recIndex = index + scaled * 2;
     unsigned char* record = base + recIndex * 4;
@@ -41,7 +30,7 @@ void TRIBE_Effects::do_tech_effect(short tech_id, TRIBE_Player* player) {
             case 0x65:
                 break;
             case 0x66:
-                player->tech_abling((long)*(float*)(effect + 8), 0);
+                ((TRIBE_Player*)player)->tech_abling((long)*(float*)(effect + 8), 0);
                 break;
             }
             i++;

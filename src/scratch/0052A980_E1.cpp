@@ -1,10 +1,10 @@
+#ifndef AOE1_TRIG_TU_CONTEXT
 class TRIGONOMETRY {
 public:
-    void ctor();
+    TRIGONOMETRY();
 };
+#endif
 
-extern TRIGONOMETRY trig;
-
-void E1(void) {
-    trig.ctor();
-}
+// BINARY NOTE: The global definition lets VC5 emit the shipped _$E1
+// constructor tail. Do not replace it with a hand-written ABI shim.
+TRIGONOMETRY trig;

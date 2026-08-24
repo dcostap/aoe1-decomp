@@ -1,3 +1,4 @@
+#ifndef RMM_TDBC_SHARED_CONTEXT
 extern float DAT_00571f48;
 extern float DAT_00571f4c;
 extern float DAT_00571f50;
@@ -23,6 +24,7 @@ public:
 
     void add_elevation_module();
 };
+#endif
 
 void TRIBE_RMM_Database_Controller::add_elevation_module()
 {
@@ -34,13 +36,13 @@ void TRIBE_RMM_Database_Controller::add_elevation_module()
         f *= DAT_00571f54;
 
     int i = 0;
-    if (count > 0) {
-        int* p = (int*)((char*)this + 0x3FD4);
+    if (this->elevation_info.count > 0) {
+    int* p = (int*)((char*)this + 0x3FD4);
         do {
             *p = (int)((float)*p * f);
             ++i;
             p = (int*)((char*)p + 0x18);
-        } while (i < count);
+        } while (i < this->elevation_info.count);
     }
 
     int r2 = debug_rand("C:\\msdev\\work\\age1_x1\\rmm_tdbc.cpp", 0x24b);

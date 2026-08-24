@@ -30,8 +30,11 @@
 extern double DAT_00574CA8;
 extern float DAT_00574C98;
 extern float DAT_00574C78;
+#ifndef T_C_OBJ_CONTEXT_H
 extern "C" int __cdecl debug_rand(char*, int);
+#endif
 
+#ifndef T_C_OBJ_CONTEXT_H
 class RGE_Player;
 class RGE_Combat_Object;
 class RGE_Armor_Weapon_Info;
@@ -148,6 +151,7 @@ class TRIBE_Combat_Object : public RGE_Combat_Object {
 public:
     unsigned char area_attack(float, float, float, RGE_Combat_Object*, RGE_Static_Object*);
 };
+#endif
 
 unsigned char TRIBE_Combat_Object::area_attack(float x, float y, float attack_modifier,
                                                 RGE_Combat_Object* attacker,

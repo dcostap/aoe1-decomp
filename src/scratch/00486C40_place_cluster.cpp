@@ -50,6 +50,7 @@
 extern "C" int __cdecl debug_rand(char* file, int line);
 extern "C" long __cdecl ftol(float);
 
+#if !defined(RMM_OBJ_TU_COMBINED_CONTEXT)
 struct Map_Stack {
     long x;
     long y;
@@ -167,6 +168,29 @@ public:
     void place_cluster(RGE_Object_Info_Line& info, long x, long y,
         RGE_Player* player);
 };
+#endif
+
+#if defined(RMM_OBJ_TU_COMBINED_CONTEXT)
+class RGE_RMM_Cluster_Master_View {
+public:
+    virtual void v0();
+    virtual void v1();
+    virtual void v2();
+    virtual void v3();
+    virtual void v4();
+    virtual void v5();
+    virtual void v6();
+    virtual void v7();
+    virtual unsigned char check_placement(RGE_Player*, float, float, int*,
+        unsigned char, unsigned char, unsigned char, unsigned char,
+        unsigned char, unsigned char);
+    virtual unsigned char alignment(float&, float&, RGE_Game_World*,
+        unsigned char);
+    char gap_04[0x30 - 0x04];
+    float radius_x;
+    float radius_y;
+};
+#endif
 
 void RGE_RMM_Object_Generator::place_cluster(RGE_Object_Info_Line& info,
     long x, long y, RGE_Player* player)
@@ -184,8 +208,13 @@ void RGE_RMM_Object_Generator::place_cluster(RGE_Object_Info_Line& info,
     Map_Stack* node;
 
     Map_Stack obj_stack;
+#if defined(RMM_OBJ_TU_COMBINED_CONTEXT)
+    this->init_stack(&obj_stack);
+    this->add_stack_node(&obj_stack, &this->stack_offsets[y][x]);
+#else
     this->init_stack(obj_stack);
     this->add_stack_node(obj_stack, this->stack_offsets[y][x]);
+#endif
 
     y1 = y - info.group_area;
     y0 = x + info.group_area;
@@ -208,10 +237,19 @@ void RGE_RMM_Object_Generator::place_cluster(RGE_Object_Info_Line& info,
         (variance << 1)) / 0x7fff - variance;
     if (count < 1) count = 1;
 
+#if defined(RMM_OBJ_TU_COMBINED_CONTEXT)
+    node = this->pop_stack(&obj_stack, &tile_y, &x1, &cost);
+#else
     node = this->pop_stack(obj_stack, tile_y, x1, cost);
+#endif
     while (node != 0 && count > 0) {
+#if defined(RMM_OBJ_TU_COMBINED_CONTEXT)
+            RGE_RMM_Cluster_Master_View* master =
+                (RGE_RMM_Cluster_Master_View*)player->master_objects[info.obj_id];
+#else
             RGE_Master_Static_Object* master =
                 player->master_objects[info.obj_id];
+#endif
             tile_y_float = (float)tile_y;
             tile_x = (float)x1;
             if (master->radius_x - (float)(short)(int)master->radius_x > 0.0f) {
@@ -230,31 +268,55 @@ void RGE_RMM_Object_Generator::place_cluster(RGE_Object_Info_Line& info,
 
                 if (tile_y > x_start &&
                     this->search_map_rows[x1][tile_y - 1] != 0) {
+#if defined(RMM_OBJ_TU_COMBINED_CONTEXT)
+                    this->push_stack(&obj_stack, tile_y - 1, x1, 0.0f,
+#else
                     this->push_stack(obj_stack, tile_y - 1, x1, 0.0f,
+#endif
                         (float)debug_rand(
                             "C:\\msdev\\work\\age1_x1\\rmm_obj.cpp", 0x270));
                 }
                 if (tile_y < y0 &&
                     this->search_map_rows[x1][tile_y + 1] != 0) {
+#if defined(RMM_OBJ_TU_COMBINED_CONTEXT)
+                    this->push_stack(&obj_stack, tile_y + 1, x1, 0.0f,
+#else
                     this->push_stack(obj_stack, tile_y + 1, x1, 0.0f,
+#endif
                         (float)debug_rand(
                             "C:\\msdev\\work\\age1_x1\\rmm_obj.cpp", 0x273));
                 }
                 if (x1 > y1 &&
                     this->search_map_rows[x1 - 1][tile_y] != 0) {
+#if defined(RMM_OBJ_TU_COMBINED_CONTEXT)
+                    this->push_stack(&obj_stack, tile_y, x1 - 1, 0.0f,
+#else
                     this->push_stack(obj_stack, tile_y, x1 - 1, 0.0f,
+#endif
                         (float)debug_rand(
                             "C:\\msdev\\work\\age1_x1\\rmm_obj.cpp", 0x276));
                 }
                 if (x1 < zone &&
                     this->search_map_rows[x1 + 1][tile_y] != 0) {
+#if defined(RMM_OBJ_TU_COMBINED_CONTEXT)
+                    this->push_stack(&obj_stack, tile_y, x1 + 1, 0.0f,
+#else
                     this->push_stack(obj_stack, tile_y, x1 + 1, 0.0f,
+#endif
                         (float)debug_rand(
                             "C:\\msdev\\work\\age1_x1\\rmm_obj.cpp", 0x279));
                 }
             }
+#if defined(RMM_OBJ_TU_COMBINED_CONTEXT)
+        node = this->pop_stack(&obj_stack, &tile_y, &x1, &cost);
+#else
         node = this->pop_stack(obj_stack, tile_y, x1, cost);
+#endif
     }
 
+#if defined(RMM_OBJ_TU_COMBINED_CONTEXT)
+    this->deinit_stack(&obj_stack);
+#else
     this->deinit_stack(obj_stack);
+#endif
 }

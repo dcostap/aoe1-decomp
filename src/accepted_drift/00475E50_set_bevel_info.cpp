@@ -22,6 +22,7 @@
 // early byte parameters AL/CL/DL are permuted vs original DL/CL/DL, and set_rect argument loads use
 // EDX/EAX/ECX instead of EAX/ECX/EDX. No predicates, call slots, field offsets, or stack effects differ.
 
+#ifndef PNL_EDIT_TU_CONTEXT
 class TPanel {
 public:
     virtual ~TPanel();
@@ -53,6 +54,8 @@ public:
     int bevel_size;
     void set_bevel_info(int type, int c1, int c2, int c3, int c4, int c5, int c6);
 };
+#endif
+
 void TEditPanel::set_bevel_info(int type, int c1, int c2, int c3, int c4, int c5, int c6) {
     this->bevel_color1 = (unsigned char)c1;
     this->bevel_color2 = (unsigned char)c2;
@@ -79,10 +82,17 @@ void TEditPanel::set_bevel_info(int type, int c1, int c2, int c3, int c4, int c5
         this->bevel_size = 0;
         break;
     }
+#ifndef PNL_EDIT_TU_CONTEXT
     int btm = this->bottom;
     int rgt = this->right;
     int tp = this->top;
     int lft = this->left;
+#else
+    long btm = this->pnl_hgt;
+    long rgt = this->pnl_wid;
+    long tp = this->pnl_y;
+    long lft = this->pnl_x;
+#endif
     this->set_rect(lft, tp, rgt, btm);
     this->set_redraw(1);
 }

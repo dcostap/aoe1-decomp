@@ -1,3 +1,4 @@
+#ifndef SOUNDDRV_CANONICAL_TU
 class TSound_Driver {
 public:
     unsigned char ready;
@@ -17,6 +18,7 @@ public:
 
     void init_vars(void);
 };
+#endif
 
 void TSound_Driver::init_vars(void) {
     this->start_volume = 1;

@@ -6,6 +6,7 @@ public:
     istream& get(char* buffer, int size, int delimiter);
 };
 
+#ifndef DSTRING_TU_CONTEXT
 class DString {
 public:
     char* stringValue;
@@ -16,6 +17,7 @@ public:
 
     DString& operator=(const char* value);
 };
+#endif
 
 istream& __cdecl operator>>(istream& stream, DString& value) {
     char buffer[256];

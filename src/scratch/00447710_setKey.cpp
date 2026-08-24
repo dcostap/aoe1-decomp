@@ -1,6 +1,7 @@
 // Preserve the donor-file EH/object-lifetime context here: this setter exact-matches
 // under `/GX`, and the visible nontrivial `DString::~DString()` declaration is part of the
 // working VC5 source model for this dstring.cpp cluster.
+#ifndef DSTRING_TU_CONTEXT
 class DString {
 public:
     char* stringValue;
@@ -14,7 +15,9 @@ public:
     ~DString();
     DString& operator=(const DString& other);
 };
+#endif
 
+#ifndef DSTRING_TU_CONTEXT
 class DKeyString {
 public:
     DString keyValue;
@@ -22,5 +25,6 @@ public:
 
     void setKey(DString key);
 };
+#endif
 
 void DKeyString::setKey(DString key) { this->keyValue = key; }

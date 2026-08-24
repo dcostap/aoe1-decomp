@@ -3,6 +3,7 @@
 // and it also preserves the original byte-load addressing family in the copy loop.
 #include <stdlib.h>
 
+#ifndef DSTRING_TU_CONTEXT
 class DString {
 public:
     char* stringValue;
@@ -16,6 +17,7 @@ public:
     ~DString();
     DString subString(int start, int count);
 };
+#endif
 
 DString DString::subString(int start, int count) {
     char* text;

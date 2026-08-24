@@ -106,7 +106,7 @@
 //   This change raises shape and exact-block coverage across the cold restores.
 // - deltaMin and scanMin use proven X/Y ownership.  Maximum bounds stay scalar;
 //   their aggregate forms grow the frame or lose alignment.
-// - A narrow volatile startY alias retains the target loop estimator table read
+// - A narrow startY alias retains the target loop estimator table read
 //   and store.  The ordered form matches its local control flow.
 // - Final fifth-pass validation has exact size, a 0x7C frame, and 75 call
 //   targets.  It has 6366 differing bytes, 44.92% shape, 50.79% resync, and
@@ -192,6 +192,7 @@ class RGE_View;
     (out) = DiagionalDistance[_edo_diag & 0xff] + (_edo_straight << 4); \
 } while (0)
 
+#ifndef PATHSYS_TU_CONTEXT
 struct XYPoint {
     int x;
     int y;
@@ -489,6 +490,7 @@ public:
                      int checkTerrain, int checkObstructions, int step, int unobPlayerID,
                      int unobGroupID);
 };
+#endif
 
 #define ACTIVE_PATH(o) ((o)->storePathInExceptionPath ? &(o)->exceptionPathValue : &(o)->pathValue)
 
@@ -519,7 +521,6 @@ public:
     } \
 } while (0)
 
-#pragma optimize("y", off)
 int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RGE_Moving_Object* obj,
                                 float tolerance, int targetID, int mode, float* costOut,
                                 int useIterationCap, int checkTerrain, int checkObstructions,
@@ -527,7 +528,7 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
 {
     int dist;
     int currentEstimate;
-    volatile int& loopEstimate = startY;
+    int& loopEstimate = startY;
     int bestLimit;
     int iterationCap;
     int iterations;
@@ -1220,4 +1221,3 @@ path_exhausted:
     }
     return 0;
 }
-#pragma optimize("y", on)

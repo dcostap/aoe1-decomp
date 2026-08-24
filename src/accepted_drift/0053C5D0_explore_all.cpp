@@ -35,6 +35,7 @@
 extern unsigned long* unified_map_offsets[256];
 extern void __cdecl log_map_call(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6, int param_7, int param_8, int param_9);
 
+#ifndef AOE1_VISIBLE_TU_CONTEXT_H
 class RGE_Game_World {
 public:
     void* vtable_ptr;
@@ -74,6 +75,7 @@ public:
     unsigned long PlayerExploredMaskValue;
     void explore_all(void);
 };
+#endif
 
 void RGE_Visible_Map::explore_all(void) {
     log_map_call(this->world->world_time, (int)this->player->id, 6, 0, 0, 0, 0, 0, 0);

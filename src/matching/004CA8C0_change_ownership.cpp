@@ -6,6 +6,7 @@
 //   records, old-owner removal/new-owner insertion, master cloning, and the
 //   natural typed virtual notification calls.
 
+#ifndef T_C_OBJ_CONTEXT_H
 class RGE_Static_Object;
 class RGE_Player;
 class RGE_Master_Static_Object;
@@ -301,6 +302,7 @@ public:
 
     void change_ownership(RGE_Player* player);
 };
+#endif
 
 void TRIBE_Combat_Object::change_ownership(RGE_Player* player)
 {

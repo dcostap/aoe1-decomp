@@ -12,6 +12,7 @@
 // Main-agent audit restored canonical player/world/combat destructor ownership
 // and renamed the persistent file handle; emitted code remains exact.
 
+#ifndef T_C_OBJ_CONTEXT_H
 class RGE_Game_World;
 class RGE_Sprite;
 class RGE_Sound;
@@ -107,6 +108,7 @@ public:
 
     unsigned char own_master;
 };
+#endif
 
 int TRIBE_Combat_Object::setup(int param_1, RGE_Game_World* param_2)
 {

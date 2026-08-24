@@ -4,7 +4,9 @@
 // No EH framing
 
 #include "../../include/game_globals.h"
+#include "../../include/tact_tek_context.h"
 
+#ifndef AOE1_TACT_TEK_CONTEXT_H
 // Compact macro for dummy virtual declarations
 #define V_DUMMY(N) virtual void d##N()
 
@@ -80,6 +82,7 @@ class TRIBE_Action_Make_Tech : public RGE_Action {
 public:
     void first_in_stack(unsigned char param_1);
 };
+#endif
 
 void TRIBE_Action_Make_Tech::first_in_stack(unsigned char param_1)
 {
@@ -90,21 +93,21 @@ void TRIBE_Action_Make_Tech::first_in_stack(unsigned char param_1)
 
     unsigned char result = pt->start_research(this->tech_id, 1, &param_1);
     if (result == 1) {
-        this->vfn23(6);
+        this->set_state(6);
         return;
     }
 
     // Vtable calls for non-match path
-    ((RGE_Scenario*)this->action_obj->obj_ptr)->vfn70(
+    ((TRIBE_Player*)this->action_obj->obj_ptr)->cancelResearch(
         (int)*(short*)&param_1,
         (int)this->tech_id,
         this->action_obj->player_id,
         this->unique_id);
 
-    this->action_obj->vfn82(
+    this->action_obj->notify(
         this->action_obj->player_id,
         this->action_obj->player_id,
         0x1F9, 0x26C, 0, 0);
 
-    this->vfn23(1);
+    this->set_state(1);
 }

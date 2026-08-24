@@ -47,6 +47,7 @@
 
 #include <new.h>
 
+#ifndef RMM_TDBC_SHARED_CONTEXT
 class RGE_Map;
 
 class RGE_Random_Map_Module {
@@ -147,6 +148,7 @@ class TRIBE_RMM_Database_Controller : public RGE_RMM_Database_Controller {
 public:
     void add_shallows_module();
 };
+#endif
 
 void TRIBE_RMM_Database_Controller::add_shallows_module()
 {

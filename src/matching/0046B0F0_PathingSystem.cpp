@@ -18,6 +18,7 @@
 
 #include "../../include/game_globals.h"
 
+#ifndef PATHSYS_TU_CONTEXT
 struct RGE_Map;
 class RGE_Game_World;
 class RGE_Moving_Object;
@@ -115,6 +116,7 @@ public:
     void initMisc(unsigned char value);
     void zeroObstructionMap();
 };
+#endif
 
 PathingSystem::PathingSystem(int xSize, int ySize, int aiPS,
                              RGE_Map* map, RGE_Game_World* world)

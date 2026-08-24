@@ -53,6 +53,7 @@
 // - Final result: 578 bytes, 0 differing bytes, 0 calls, 0x8 frame, and the
 //   original function boundary.
 
+#ifndef RMM_DBCT_TU_CONTEXT_H
 struct RGE_Map;
 struct RGE_Tile;
 struct RGE_Random_Map_Module_List;
@@ -205,6 +206,7 @@ public:
 protected:
     virtual void add_elevation_module();
 };
+#endif
 
 void RGE_RMM_Database_Controller::add_elevation_module()
 {

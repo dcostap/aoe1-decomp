@@ -5,6 +5,7 @@
 
 extern "C" int __cdecl isspace(int c);
 
+#ifndef DSTRING_TU_CONTEXT
 class DString {
 public:
     char* stringValue;
@@ -15,6 +16,7 @@ public:
 
     int numWords(void);
 };
+#endif
 
 int DString::numWords(void) {
     int cached;

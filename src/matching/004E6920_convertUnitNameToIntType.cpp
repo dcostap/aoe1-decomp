@@ -2,6 +2,9 @@
 // VA: 004E6920
 // PDB: taipbook.cpp:43-57
 
+#ifdef TAIPBOOK_CANONICAL_TU
+#include "../../include/taipbook_context.h"
+#else
 #include "..\..\include\game_globals.h"
 #include <string.h>
 
@@ -14,6 +17,7 @@ class TribeAIPlayBook : public AIPlayBook {
 public:
     int convertUnitNameToIntType(char* name) const;
 };
+#endif
 
 int TribeAIPlayBook::convertUnitNameToIntType(char* name) const
 {
@@ -30,5 +34,9 @@ int TribeAIPlayBook::convertUnitNameToIntType(char* name) const
     if (strcmp(name, "Legion") == 0)
         return 3;
 
+#ifdef TAIPBOOK_CANONICAL_TU
+    return AIPlayBook::convertUnitNameToIntType(name);
+#else
     return ((AIPlayBook*)this)->convertUnitNameToIntType(name);
+#endif
 }

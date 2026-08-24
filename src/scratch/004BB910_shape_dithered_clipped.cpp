@@ -68,6 +68,7 @@
 // - The current source has one ordered AlignedWidth call and no ABI or
 //   ownership uncertainty. The remaining gap is the prologue and local homes.
 
+#ifndef AOE1_SHAPE_CONTEXT_H
 typedef unsigned char uchar;
 struct Shape_Header { long bounds; long origin; long xmin; long ymin; long xmax; long ymax; };
 class TDrawArea { public: char gap_00[8]; uchar* Bits; char gap_0C[0x10]; long Height; char gap_20[4]; long Orien; long AlignedWidth(); };
@@ -87,6 +88,7 @@ public:
                                  long clip_right, long clip_bottom,
                                  long p8, long p9);
 };
+#endif
 
 uchar TShape::shape_dithered_clipped(TDrawArea* area, long x, long y, long clip_left, long clip_top, long clip_right, long clip_bottom, long p8, long p9)
 {

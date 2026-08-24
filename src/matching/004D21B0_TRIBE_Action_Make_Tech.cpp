@@ -6,7 +6,9 @@
 // FLAGS: config/flags/004D21B0_TRIBE_Action_Make_Tech.rsp uses /GX for the original EH frame
 
 #include "../../include/game_globals.h"
+#include "../../include/tact_tek_context.h"
 
+#ifndef AOE1_TACT_TEK_CONTEXT_H
 class RGE_Action_Object;
 
 void rge_read(int handle, void* buffer, int size);
@@ -28,6 +30,7 @@ public:
 
     TRIBE_Action_Make_Tech(int param_1, RGE_Action_Object* param_2);
 };
+#endif
 
 TRIBE_Action_Make_Tech::TRIBE_Action_Make_Tech(int param_1, RGE_Action_Object* param_2)
     : RGE_Action(param_1, param_2, 1)

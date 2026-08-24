@@ -1,9 +1,12 @@
+#ifndef DSTRING_TU_CONTEXT
 class DString {
 public:
-    virtual ~DString();
-    char gap_0[0x8];
-    int field_C;
-    int index();
+    char* stringValue;
+    int lengthValue;
+    int numWordsValue;
+    int indexValue;
+    int index() const;
 };
+#endif
 
-int DString::index() { return this->field_C; }
+int DString::index() const { return this->indexValue; }

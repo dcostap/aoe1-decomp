@@ -16,6 +16,7 @@
 // - A fresh public-ABI check also matched bytes, but emitted QAE rather than
 //   the PDB-qualified protected IAE owner. Keep the protected declaration.
 
+#ifndef AOE1_AIUAIMOD_COMPLETE_TU
 struct NotifyEvent {
     int caller;
     int recipient;
@@ -47,6 +48,7 @@ protected:
     int addToNotifyQueue(int caller, int recipient, int mType,
                          long p1, long p2, long p3);
 };
+#endif
 
 int UnitAIModule::addToNotifyQueue(int caller, int recipient, int mType,
                                    long p1, long p2, long p3)

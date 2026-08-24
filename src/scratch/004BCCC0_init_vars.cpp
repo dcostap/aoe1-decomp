@@ -1,3 +1,4 @@
+#ifndef SOUNDDRV_CANONICAL_TU
 class TDigital_iv {
 public:
     void init_vars(void);
@@ -32,3 +33,20 @@ void TDigital_iv::init_vars(void) {
     this->field_24 = 0;
     this->field_28 = 0;
 }
+#else
+void TDigital::init_vars(void) {
+    this->sound_system = 0;
+    this->owner = 0;
+    this->loaded = 0;
+    this->failed = 0;
+    this->sound_file[0] = 0;
+    this->wave_data = 0;
+    this->wave_info = 0;
+    this->sound_buffer = 0;
+    this->data_size = 0;
+    this->volume = 0;
+    this->pitch = 0;
+    this->pan = 0;
+    this->loop = 0;
+}
+#endif

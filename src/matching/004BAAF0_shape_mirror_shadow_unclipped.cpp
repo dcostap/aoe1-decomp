@@ -71,6 +71,7 @@
 
 typedef unsigned char byte;
 
+#ifndef AOE1_SHAPE_CONTEXT_H
 struct Shape_Header { long bounds, origin, xmin, ymin, xmax, ymax; };
 
 struct TDrawArea {
@@ -108,6 +109,7 @@ public:
     void* shape_info;
     byte shape_mirror_shadow_unclipped(TDrawArea* draw_area, long x, long y, byte* table);
 };
+#endif
 
 byte TShape::shape_mirror_shadow_unclipped(TDrawArea* draw_area, long x, long y, byte* table)
 {

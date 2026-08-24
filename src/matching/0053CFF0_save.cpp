@@ -1,5 +1,6 @@
 extern "C" void __cdecl rge_write(int handle, void* buffer, int count);
 
+#ifndef AOE1_VISIBLE_TU_CONTEXT_H
 class RGE_Unified_Visible_Map {
 public:
     int mapWidth;
@@ -8,6 +9,7 @@ public:
 
     void save(int handle);
 };
+#endif
 
 void RGE_Unified_Visible_Map::save(int handle) {
     rge_write(handle, this, 4);

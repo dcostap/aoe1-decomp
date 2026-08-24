@@ -1,3 +1,4 @@
+#ifndef T_C_OBJ_CONTEXT_H
 class RGE_Static_Object {
 public:
     char gap_00[0x40];
@@ -168,6 +169,7 @@ public:
 
     float calc_attack_modifier(RGE_Static_Object* param_1);
 };
+#endif
 
 float TRIBE_Building_Object::calc_attack_modifier(RGE_Static_Object* param_1)
 {

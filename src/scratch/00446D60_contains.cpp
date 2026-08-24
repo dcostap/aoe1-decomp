@@ -3,6 +3,7 @@
 // working VC5 source model for this dstring.cpp cluster.
 extern "C" char* __cdecl strstr(const char* string, const char* substring);
 
+#ifndef DSTRING_TU_CONTEXT
 class DString {
 public:
     char* stringValue;
@@ -16,6 +17,7 @@ public:
     operator char*();
     int contains(DString value) const;
 };
+#endif
 
 int DString::contains(DString value) const {
     if (strstr(this->stringValue, value) != 0) {

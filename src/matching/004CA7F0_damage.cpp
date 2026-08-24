@@ -16,6 +16,7 @@
 extern double DAT_00574c88;
 extern float DAT_00574c78;
 
+#ifndef T_C_OBJ_CONTEXT_H
 class RGE_Armor_Weapon_Info;
 class RGE_Player;
 class RGE_Static_Object;
@@ -168,6 +169,7 @@ class TRIBE_Combat_Object : public RGE_Combat_Object {
 public:
     virtual void damage(int param_1, RGE_Armor_Weapon_Info* armor, float value, RGE_Player* player, RGE_Static_Object* target);
 };
+#endif
 
 void TRIBE_Combat_Object::damage(int param_1, RGE_Armor_Weapon_Info* armor, float value, RGE_Player* player, RGE_Static_Object* target)
 {

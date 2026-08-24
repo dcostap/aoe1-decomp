@@ -53,6 +53,7 @@
 // Canonical stat-object, map, tile, list, and node fields are retained from
 // exact stat_obj donors. They preserve proven offsets but are codegen-neutral.
 
+#ifndef T_C_OBJ_CONTEXT_H
 extern "C" double __cdecl atan2(double, double);
 extern float DAT_00574c98;
 extern float DAT_00574ca4;
@@ -155,6 +156,7 @@ public:
                                        RGE_Map* map, RGE_Static_Object* old_obj,
                                        float& angle, int& dir);
 };
+#endif
 
 int TRIBE_Combat_Object::higher_check_for_cliff(RGE_Static_Object* obj, int col, int row,
                                                 float x1, float y1, float x2, float y2,

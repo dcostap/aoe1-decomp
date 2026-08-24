@@ -78,6 +78,7 @@
 // registers are caller-saved. Every instruction shape and basic block matches;
 // no write, cleanup action, or fault order changes.
 
+#ifndef RMM_TDBC_SHARED_CONTEXT
 typedef unsigned char uchar;
 
 extern "C" int __cdecl debug_rand(char* file, int line);
@@ -158,6 +159,7 @@ public:
 
     virtual void add_terrain_module();
 };
+#endif
 
 void TRIBE_RMM_Database_Controller::add_terrain_module()
 {
@@ -183,12 +185,12 @@ void TRIBE_RMM_Database_Controller::add_terrain_module()
     if (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_tdbc.cpp", 0x154) < 0x1fff) {
         int adjust_index = 0;
         if (this->terrain_info.terrain_num > 0) {
-            int* clumps = &this->terrain_info.terrain[0].clumps;
+                long* clumps = &this->terrain_info.terrain[0].clumps;
             do {
                 int type = clumps[-1];
-                int* terrain_size = clumps - 3;
-                int* clump_count = clumps;
-                int* avoid = clumps + 4;
+                long* terrain_size = clumps - 3;
+                long* clump_count = clumps;
+                long* avoid = clumps + 4;
                 if (type == 0x0d) {
                     *terrain_size *= 3;
                     *clump_count *= 3;
@@ -215,7 +217,7 @@ void TRIBE_RMM_Database_Controller::add_terrain_module()
         int fallback_index = 0;
         if (this->terrain_info.terrain_num > 0) {
             RGE_Terrain_Info_Line* line = this->terrain_info.terrain;
-            int* avoid_hot_spots =
+            long* avoid_hot_spots =
                 &line->avoid_hot_spots;
             do {
                 int type = avoid_hot_spots[-5];
@@ -231,5 +233,9 @@ void TRIBE_RMM_Database_Controller::add_terrain_module()
     }
 
     int final_rand = debug_rand("C:\\msdev\\work\\age1_x1\\rmm_tdbc.cpp", 0x180);
+#ifdef RMM_TDBC_SHARED_CONTEXT
+    L->Log("Random Map terrain initilization, rand: %d", final_rand);
+#else
     TDebuggingLog::Log(L, "Random Map terrain initilization, rand: %d", final_rand);
+#endif
 }

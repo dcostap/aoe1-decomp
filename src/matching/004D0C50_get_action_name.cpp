@@ -1,34 +1,10 @@
 // 004D0C50 TRIBE_Action_List::get_action_name
 // PDB source: tact_lst.cpp:160-183
-// Attempt log:
-// - Baseline: natural sparse switch with direct strcpy/return arms, matching the
-//   exact RGE_Action_List donor; list/action_type ownership is modeled by the
-//   real inherited list and action-node fields.
+// BINARY NOTE: The list node and action type are read through the canonical
+// RGE_Action_List and RGE_Action layouts before the inherited fallback.
 
+#include "../../include/tact_lst_context.h"
 #include <string.h>
-
-class RGE_Action {
-public:
-    virtual ~RGE_Action();
-    short action_type;
-};
-
-class RGE_Action_Node {
-public:
-    RGE_Action* action;
-};
-
-class RGE_Action_List {
-public:
-    virtual void get_action_name(char* dest);
-    char gap_04[4];
-    RGE_Action_Node* list;
-};
-
-class TRIBE_Action_List : public RGE_Action_List {
-public:
-    virtual void get_action_name(char* dest);
-};
 
 void TRIBE_Action_List::get_action_name(char* dest)
 {

@@ -1,3 +1,4 @@
+#ifndef PATHSYS_TU_CONTEXT
 class PathingSystem {
 public:
     char gap_00[0xCE624];
@@ -5,6 +6,7 @@ public:
 
     long checksum(void);
 };
+#endif
 
 long PathingSystem::checksum(void) {
     unsigned int value = 0;

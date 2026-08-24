@@ -2,6 +2,7 @@
 // if this is sticky, the remaining gap is likely just the exact unsigned-multiply basin for the division by 10000
 extern "C" long (__stdcall *__imp__mixerSetControlDetails)(void* mixer_handle, void* mixer_volume_details, unsigned long flags);
 
+#ifndef SOUNDDRV_CANONICAL_TU
 class TSound_Driver {
 public:
     unsigned char ready;
@@ -22,6 +23,7 @@ public:
 
     void set_volume(long param_1, int param_2);
 };
+#endif
 
 void TSound_Driver::set_volume(long param_1, int param_2) {
     unsigned long delta;
@@ -34,8 +36,22 @@ void TSound_Driver::set_volume(long param_1, int param_2) {
         return;
     }
 
+#ifdef SOUNDDRV_CANONICAL_TU
+    delta = (unsigned long)(this->mixer_volume_control.Bounds.lMaximum -
+                            this->mixer_volume_control.Bounds.lMinimum);
+#else
     delta = (unsigned long)(this->mixer_volume_control_max - this->mixer_volume_control_min);
+#endif
     scaled = (unsigned long)((delta * (param_1 + 10000)) / 10000);
+#ifdef SOUNDDRV_CANONICAL_TU
+    this->mixer_volume_value.dwValue = scaled;
+#else
     this->mixer_volume_value = scaled;
+#endif
+#ifdef SOUNDDRV_CANONICAL_TU
+    this->dsrval = __imp__mixerSetControlDetails(
+        this->mixer_handle, &this->mixer_volume_details, 0);
+#else
     this->dsrval = __imp__mixerSetControlDetails(this->mixer_handle, this->mixer_volume_details, 0);
+#endif
 }

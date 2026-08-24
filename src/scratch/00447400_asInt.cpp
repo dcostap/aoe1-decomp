@@ -1,11 +1,13 @@
-extern int __cdecl stringToInt(const char *s);
+extern "C" int __cdecl atoi(const char *s);
 
-class TString {
+#ifndef DSTRING_TU_CONTEXT
+class DString {
 public:
-    const char *str;
-    int asInt();
+    char *stringValue;
+    int asInt() const;
 };
+#endif
 
-int TString::asInt() {
-    return stringToInt(this->str);
+int DString::asInt() const {
+    return atoi(this->stringValue);
 }

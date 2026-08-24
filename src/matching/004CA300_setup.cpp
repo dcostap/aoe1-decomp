@@ -9,6 +9,7 @@
 
 extern float DAT_00574c7c;
 
+#ifndef T_C_OBJ_CONTEXT_H
 class RGE_Master_Combat_Object {
 public:
     void* vtable_ptr;
@@ -79,6 +80,7 @@ public:
 
     unsigned char own_master;
 };
+#endif
 
 int TRIBE_Combat_Object::setup(TRIBE_Master_Combat_Object* master_obj,
                                RGE_Player* player, float x, float y, float z)

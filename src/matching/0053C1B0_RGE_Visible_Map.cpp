@@ -18,6 +18,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifndef AOE1_VISIBLE_TU_CONTEXT_H
 class RGE_Game_World;
 class RGE_Player {
 public:
@@ -65,6 +66,7 @@ public:
 
     RGE_Visible_Map(RGE_Map* map, RGE_Player* player);
 };
+#endif
 
 RGE_Visible_Map::RGE_Visible_Map(RGE_Map* param_1, RGE_Player* param_2) {
     int row;

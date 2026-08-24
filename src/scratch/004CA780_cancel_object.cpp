@@ -1,3 +1,4 @@
+#ifndef T_C_OBJ_CONTEXT_H
 class RGE_Static_Object {
 public:
     virtual void vf00();
@@ -30,6 +31,7 @@ public:
     virtual void vf6C();
     void cancel_object();
 };
+#endif
 
 void RGE_Static_Object::cancel_object() {
     this->vf6C();

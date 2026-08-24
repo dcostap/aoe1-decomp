@@ -61,6 +61,7 @@
 // rebuild first diverges at +0x2A and has five returns. No tested natural
 // source topology changed this EH-tail basin.
 
+#ifndef SCR_CJ_GROUPED_TU
 #include <string.h>
 
 struct tagRECT {
@@ -267,6 +268,7 @@ extern "C" const _GUID DPSPGUID_TCPIP;
 extern "C" int (__stdcall* const WinExec)(char*, int);
 extern "C" void* (__stdcall* const FindWindowA)(char*, char*);
 extern "C" int (__stdcall* const SendMessageA)(void*, int, int, int);
+#endif
 
 long TribeMPCreateDialog::action(TPanel* panel, long command,
                                  unsigned long param3, unsigned long param4)

@@ -49,6 +49,7 @@
 //   order and the return value at every restore point match the executable.
 // FLAGS: config/flags/004CB5C0_build.rsp (/GX)
 
+#ifndef T_C_OBJ_CONTEXT_H
 class RGE_Action;
 class RGE_Action_List;
 class RGE_Action_Object;
@@ -191,6 +192,7 @@ public:
 
     int build(int id, int flag);
 };
+#endif
 
 int TRIBE_Combat_Object::build(int id, int flag) {
     RGE_Static_Object* result;

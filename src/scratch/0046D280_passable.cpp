@@ -60,6 +60,7 @@ extern double DAT_00570e80;
 extern const unsigned long ObstructionMasks[];
 extern const unsigned char ObstructionValueShift[];
 
+#ifndef PATHSYS_TU_CONTEXT
 typedef unsigned char uchar;
 
 typedef unsigned int uint;
@@ -230,6 +231,7 @@ public:
 
     int passable(RGE_Moving_Object* object, float x, float y, int checkObjects);
 };
+#endif
 
 int PathingSystem::passable(RGE_Moving_Object* object, float x, float y,
                             int checkObjects)

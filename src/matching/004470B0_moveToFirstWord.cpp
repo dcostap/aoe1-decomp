@@ -1,3 +1,4 @@
+#ifndef DSTRING_TU_CONTEXT
 class DString {
 public:
     char* stringValue;
@@ -8,6 +9,7 @@ public:
 
     void moveToFirstWord();
 };
+#endif
 
 void DString::moveToFirstWord() {
     this->indexValue = 0;

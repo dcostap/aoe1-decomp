@@ -1,5 +1,6 @@
 class RGE_Static_Object;
 
+#ifndef AOE1_AIUAIMOD_COMPLETE_TU
 class RGE_Game_World {
 public:
     RGE_Static_Object* object(int id);
@@ -24,6 +25,7 @@ public:
 
     RGE_Static_Object* lookupObject(int objectId);
 };
+#endif
 
 RGE_Static_Object* UnitAIModule::lookupObject(int objectId) {
     if (this->objectValue && this->objectValue->owner &&

@@ -1,3 +1,4 @@
+#ifndef SOUNDDRV_CANONICAL_TU
 struct IDirectSoundBuffer_vtbl_pan {
     char gap_00[0x40];
     int (__stdcall *SetPan)(void* thisptr, int pan);
@@ -26,3 +27,12 @@ void TDigital_pan::set_pan(int pan) {
     if (!p->loaded) return;
     p->buffer->vtbl->SetPan(p->buffer, pan);
 }
+#else
+void TDigital::set_pan(long pan) {
+    TDigital* p = this->owner;
+    this->pan = pan;
+    if (!p) p = this;
+    if (!p->loaded) return;
+    p->sound_buffer->SetPan(pan);
+}
+#endif

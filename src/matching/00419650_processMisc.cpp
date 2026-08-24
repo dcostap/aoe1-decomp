@@ -28,6 +28,7 @@
 
 // BINARY NOTE: shared headers do not provide the called RGE_* vtable surfaces.
 // Keep these local ABI surfaces. Their fields and called slots are proven here.
+#ifndef AOE1_AIUAIMOD_COMPLETE_TU
 class RGE_Master_Static_Object {
 public:
     virtual ~RGE_Master_Static_Object();
@@ -283,6 +284,7 @@ public:
     RGE_Static_Object* lookupObject(int id);
     void removeCurrentTarget();
 };
+#endif
 
 extern int taskedThisUpdate;                     // 00592A48
 extern FILE* actionFile;                         // 0062C4CC

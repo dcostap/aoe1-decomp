@@ -1,15 +1,12 @@
-class PaddingActionStateHost {
-public:
-    void set_state(unsigned char v);
-    char gap_00[0x0C];
-    unsigned char field_0C;
-    char gap_0D[0x1F];
-    float field_2C;
-};
+// TRIBE_Action_Discovery_Artifact::set_state: 004CE720, tact_dar.cpp:80-92
 
-void PaddingActionStateHost::set_state(unsigned char v) {
-    this->field_0C = v;
+#ifndef TACT_DAR_SHARED_CONTEXT
+#include "../../include/tact_dar_context.h"
+#endif
+
+void TRIBE_Action_Discovery_Artifact::set_state(unsigned char v) {
+    this->state = v;
     if (v == 10) {
-        this->field_2C = 3.0f;
+        this->timer = 3.0f;
     }
 }

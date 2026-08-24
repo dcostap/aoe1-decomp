@@ -10,6 +10,7 @@
 // set_object_state (004CA740) - TRIBE_Combat_Object::set_object_state
 // t_c_obj.cpp:289-303
 
+#ifndef T_C_OBJ_CONTEXT_H
 typedef unsigned char uchar;
 
 class RGE_Game_World {
@@ -49,6 +50,7 @@ public:
     virtual void set_object_state(uchar);
     void reposition_artifact();
 };
+#endif
 
 void TRIBE_Combat_Object::set_object_state(uchar state)
 {

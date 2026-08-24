@@ -23,16 +23,26 @@
 
 #include <stddef.h>
 
+#ifndef PNL_EDIT_TU_CONTEXT
 struct tagRECT {
     long left;
     long top;
     long right;
     long bottom;
 };
+#endif
 
+#ifndef PNL_EDIT_TU_CONTEXT
 extern "C" __declspec(dllimport) void __stdcall MoveWindow(void* hWnd, int X, int Y, int nWidth, int nHeight, int bRepaint);
 extern "C" __declspec(dllimport) int __stdcall GetSystemMetrics(int nIndex);
+#else
+extern "C" __declspec(dllimport) void __stdcall MoveWindow(HWND hWnd, int X, int Y,
+                                                              int nWidth, int nHeight,
+                                                              int bRepaint);
+extern "C" __declspec(dllimport) int __stdcall GetSystemMetrics(int nIndex);
+#endif
 
+#ifndef PNL_EDIT_TU_CONTEXT
 class TPanel {
 public:
     virtual ~TPanel();
@@ -65,8 +75,13 @@ public:
 
     void set_rect(int param_1, int param_2, int param_3, int param_4);
 };
+#endif
 
+#ifndef PNL_EDIT_TU_CONTEXT
 void TEditPanel::set_rect(int param_1, int param_2, int param_3, int param_4)
+#else
+void TEditPanel::set_rect(long param_1, long param_2, long param_3, long param_4)
+#endif
 {
     TPanel::set_rect(param_1, param_2, param_3, param_4);
 

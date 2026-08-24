@@ -1,15 +1,16 @@
-// Canonical rmm_dbct.cpp owner sequence for the reviewed database prefix.
+// Canonical rmm_dbct.cpp owner sequence in complete PDB order.
 //
 // PDB order is preserved across the included owners.  The unresolved
-// The 00482B70 constructor remains a scratch reconstruction with an open
-// register/CFG frontier.  It is included here to test the complete prefix, but
-// its mismatch does not support an exactness claim for the module.
+// 00482B70 constructor, 00483600 calc_land_start, and 00483A20
+// add_land_module remain scratch reconstructions.  00484470 is an
+// accepted-drift owner.  These owners are included as observed sources so the
+// wrapper is complete; exact tuning stops at wrapper compilation.
 //
-// The module uses one response-file flag set.  The /GX set is required by the
-// exact constructor and generator anchors; it is not a per-function mixture.
-// Boundary status: 00482B70 remains unresolved through 00483010. The complete
-// wrapper preserves the later exact anchors 00483020, 00483200, 00483430,
-// 00483540, and 004835A0.
+// The local context supplies one complete declaration surface for the owner
+// sources.  It preserves the full aggregate layouts while avoiding duplicate
+// per-function class declarations in this authentic single translation unit.
+#include "rmm_dbct_tu_context.h"
+
 #include "scratch/00482B70_RGE_RMM_Database_Controller.cpp"
 #include "matching/00483020_RGE_RMM_Database_Controller.cpp"
 #include "matching/00483200_RGE_RMM_Database_Controller.cpp"
@@ -18,3 +19,7 @@
 #include "matching/00483540_init.cpp"
 #include "matching/004835A0_de_init.cpp"
 #include "scratch/00483600_calc_land_start.cpp"
+#include "scratch/00483A20_add_land_module.cpp"
+#include "matching/00484160_add_terrain_module.cpp"
+#include "matching/00484320_add_object_module.cpp"
+#include "accepted_drift/00484470_add_elevation_module.cpp"

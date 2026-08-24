@@ -16,6 +16,7 @@
 
 #include <stdio.h>
 
+#ifndef AOE1_AIUAIMOD_COMPLETE_TU
 class RGE_Static_Object { public: int gap_00; int id; };
 
 struct NotifyEntry {
@@ -49,13 +50,18 @@ public:
     void removeCurrentTarget();
     void purgeNotifyQueue(unsigned long time);
 };
+#endif
 
 void UnitAIModule::purgeNotifyQueue(unsigned long time)
 {
     int i = 0;
     int count = this->notifyQueueSizeValue;
     if (count > 0) {
+#ifdef AOE1_AIUAIMOD_COMPLETE_TU
+        int* p = (int*)&this->notifyQueueValue->p1;
+#else
         int* p = &this->notifyQueueValue->action;
+#endif
         for (;;) {
             if (p[-1] == 0x1FA) {
                 int action = *p;

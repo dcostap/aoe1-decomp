@@ -85,6 +85,7 @@
 extern "C" void* __cdecl memcpy(void* dest, const void* src, unsigned int count);
 extern "C" void* __cdecl memset(void* dest, int c, unsigned int count);
 
+#ifndef AOE1_SHAPE_CONTEXT_H
 typedef unsigned char uchar;
 
 struct Shape_Header {
@@ -145,6 +146,7 @@ public:
 
     uchar shape_draw_clipped(TDrawArea*, long, long, long, long, long, long);
 };
+#endif
 
 uchar TShape::shape_draw_clipped(TDrawArea* area, long shape_x, long shape_y,
                                   long clip_left, long clip_top,

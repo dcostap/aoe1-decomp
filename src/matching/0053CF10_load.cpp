@@ -5,6 +5,7 @@ extern "C" void __cdecl rge_read(int handle, void* buffer, int count);
 extern "C" void __cdecl free(void* block);
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 
+#ifndef AOE1_VISIBLE_TU_CONTEXT_H
 class RGE_Unified_Visible_Map {
 public:
     int mapWidth;              // +0x00
@@ -13,6 +14,7 @@ public:
 
     void load(int handle);
 };
+#endif
 
 void RGE_Unified_Visible_Map::load(int handle) {
     int oldH = this->mapHeight;

@@ -6,6 +6,7 @@
 
 extern "C" int __cdecl debug_rand(const char* file, int line);
 
+#ifndef T_C_OBJ_CONTEXT_H
 class RGE_Static_Object;
 class RGE_Combat_Object;
 
@@ -202,6 +203,11 @@ class TRIBE_Combat_Object : public RGE_Combat_Object {
 public:
     unsigned char do_attack(RGE_Static_Object* target, RGE_Combat_Object* attacker, float p3, float p4, float p5);
 };
+#endif
+
+#ifdef T_C_OBJ_CONTEXT_H
+#define field_0C field_0C_value
+#endif
 
 unsigned char TRIBE_Combat_Object::do_attack(RGE_Static_Object* target, RGE_Combat_Object* attacker, float p3, float p4, float p5)
 {
@@ -237,3 +243,7 @@ unsigned char TRIBE_Combat_Object::do_attack(RGE_Static_Object* target, RGE_Comb
 
     return RGE_Combat_Object::do_attack(target, attacker, p3, p4, p5);
 }
+
+#ifdef T_C_OBJ_CONTEXT_H
+#undef field_0C
+#endif

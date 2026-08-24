@@ -1,3 +1,4 @@
+#ifndef T_C_OBJ_CONTEXT_H
 class RGE_Master_Static_Object;
 
 class RGE_Action_Object {
@@ -19,6 +20,7 @@ public:
 
     void transform(RGE_Master_Static_Object* master);
 };
+#endif
 
 void TRIBE_Combat_Object::transform(RGE_Master_Static_Object* master) {
     OwnedMaster* owned_master = this->owned_master_ptr;

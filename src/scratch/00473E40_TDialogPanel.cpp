@@ -1,59 +1,55 @@
-// ~TDialogPanel
-// VA: 00473E40
-// PDB: pnl_dlg.cpp:130-144
-// EH-framed destructor, needs /GX
-
+// 00473E40 TDialogPanel::~TDialogPanel
+// Source: pnl_dlg.cpp lines 130-144
+// Size: 128 bytes
+//
+// BINARY NOTE: The shipped destructor restores the modal panel, asks the
+// parent to redraw with mode 2, restores the saved child, and then destroys
+// the TEasy_Panel base. The /GX flag is part of this function's source context.
+#ifndef PNL_DLG_TU_CONTEXT
 #include "..\..\include\game_globals.h"
 
 class TPanel {
 public:
     char gap_00[0x3C];
-    int curr_child; // +0x3C
-
-    void set_curr_child(TPanel* child);
+    TPanel* curr_child;
+    TPanel* parent_panel;
+    virtual void set_redraw(int);
+    void set_curr_child(TPanel*);
 };
 
 class TPanelSystem {
 public:
     int restorePreviousModalPanel();
-    void setModalPanel(TPanel* panel);
+    void setModalPanel(TPanel*);
 };
 
-TPanelSystem panel_system;
+extern TPanelSystem panel_system;
 
-class TEasy_Panel {
+class TEasy_Panel : public TPanel {
 public:
+    char gap_F4[0x384];
     virtual ~TEasy_Panel();
-    virtual void dummy1();
-    virtual void dummy2();
-    virtual void dummy3();
-    virtual void setTitle(unsigned char);
-    char gap_04[0x474];
 };
 
 class TDialogPanel : public TEasy_Panel {
 public:
-    char gap_478[0x18];
+    char gap_478[4];
+    TPanel* save_parent_child;
+    char gap_480[0x10];
     virtual ~TDialogPanel();
 };
+#endif
 
 TDialogPanel::~TDialogPanel()
 {
-    *(void**)this = (void*)0x005710B0;
-
-    if (!panel_system.restorePreviousModalPanel())
+    if (panel_system.restorePreviousModalPanel() == 0) {
         panel_system.setModalPanel(0);
-
-    TPanel* parent = *(TPanel**)((char*)this + 0x40);
-    if (parent) {
-        // virtual call at parent->vtable[8], with integer param 2
-        // This is parent->removeChild(2) or similar
-        typedef void (__thiscall *RemoveFunc)(void*, int);
-        ((RemoveFunc)(*(void***)parent)[8])(parent, 2);
-
-        int old_child = *(int*)((char*)this + 0x47C);
-        parent->set_curr_child((TPanel*)old_child);
     }
 
-    ((TEasy_Panel*)this)->TEasy_Panel::~TEasy_Panel();
+    TPanel* parent = this->parent_panel;
+    if (parent) {
+        parent->set_redraw(2);
+        parent->set_curr_child(this->save_parent_child);
+    }
+
 }

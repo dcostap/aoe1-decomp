@@ -4,6 +4,7 @@
 #include <stdlib.h>
 extern "C" int __cdecl isspace(int c);
 
+#ifndef DSTRING_TU_CONTEXT
 class DString {
 public:
     char* stringValue;
@@ -18,6 +19,7 @@ public:
     DString subString(int start, int count);
     DString nextWord(int updateIndex);
 };
+#endif
 
 DString DString::nextWord(int updateIndex) {
     int i;

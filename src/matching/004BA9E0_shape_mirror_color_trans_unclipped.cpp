@@ -66,6 +66,7 @@
 #pragma function(memset)
 extern "C" void* __cdecl memset(void* dest, int c, unsigned int count);
 
+#ifndef AOE1_SHAPE_CONTEXT_H
 struct TDrawArea {
     char gap_00[0x08];
     /* +0x08 */ unsigned char* Bits;
@@ -107,6 +108,7 @@ struct TShape {
         TDrawArea* draw_area, long x, long y, long shape_idx,
         unsigned char* table);
 };
+#endif
 
 unsigned char TShape::shape_mirror_color_trans_unclipped(
     TDrawArea* draw_area, long x, long y, long shape_idx,

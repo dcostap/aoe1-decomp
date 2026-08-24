@@ -1,5 +1,6 @@
 // first pass: mirror the sibling armor helper with direct reloads and the max-by-type-4 scan
 // if this sticks, the remaining work is likely just the precise local/register shape around the loop reloads
+#ifndef T_C_OBJ_CONTEXT_H
 class RGE_Master_Combat_Object;
 
 class TRIBE_Combat_Object {
@@ -20,6 +21,7 @@ public:
     char pad_108[0x34];
     short orig_armor;
 };
+#endif
 
 void TRIBE_Combat_Object::get_armor(short& out_armor, short& out_other) {
     int index = 0;

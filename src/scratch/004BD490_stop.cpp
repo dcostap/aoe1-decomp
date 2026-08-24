@@ -1,3 +1,4 @@
+#ifndef SOUNDDRV_CANONICAL_TU
 struct IDirectSoundBuffer_vtbl_st {
     char gap_00[0x48];
     int (__stdcall *Stop)(void* thisptr);
@@ -29,3 +30,15 @@ void TDigital_stop::stop(void) {
     if (!p->buffer) return;
     p->buffer->vtbl->Stop(p->buffer);
 }
+#else
+void TDigital::stop(void) {
+    TDigital* p = this;
+    while (p->owner != 0)
+        p = p->owner;
+    if (p->sound_system == 0) return;
+    if (p->sound_system->ready == 0) return;
+    if (p->loaded == 0) return;
+    if (p->sound_buffer == 0) return;
+    p->sound_buffer->Stop();
+}
+#endif

@@ -17,6 +17,7 @@
 // - get_action() calls must be chained (not saved to local) to match original's
 //   repeated call pattern.
 
+#ifndef T_C_OBJ_CONTEXT_H
 typedef unsigned char uchar;
 
 class RGE_Game_World;
@@ -248,6 +249,7 @@ public:
 
     int trade(int param_1, int param_2);
 };
+#endif
 
 int CombatObject::trade(int param_1, int param_2)
 {

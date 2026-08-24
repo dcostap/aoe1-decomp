@@ -1,4 +1,5 @@
 extern int Map_Update_Suppresion;
+#ifndef AOE1_VISIBLE_TU_CONTEXT_H
 class RGE_Game_World;
 
 class RGE_Unified_Visible_Map {
@@ -11,6 +12,7 @@ public:
     void load(int map);
     void Set_Map_Offsets(void);
 };
+#endif
 
 RGE_Unified_Visible_Map::RGE_Unified_Visible_Map(int map, RGE_Game_World* world) {
     this->UnifiedVisibleMap = 0;

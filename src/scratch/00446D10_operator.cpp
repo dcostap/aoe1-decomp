@@ -1,5 +1,6 @@
 #include <stdlib.h>
 
+#ifndef DSTRING_TU_CONTEXT
 class DString {
 public:
     char* stringValue;
@@ -19,6 +20,7 @@ public:
     char* word(int wordIndex);
     char* nextWord(void);
 };
+#endif
 
 char& DString::operator[](int param_1) {
     if (param_1 < 0 || this->lengthValue < param_1 + 1)

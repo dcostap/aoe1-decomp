@@ -30,6 +30,7 @@
 
 extern "C" int __cdecl debug_rand(char*, int);
 
+#if !defined(RMM_OBJ_TU_COMBINED_CONTEXT)
 struct Map_Stack { char data[0x18]; };
 struct RGE_Tile { char gap[5]; unsigned char terrain; char rest[18]; };
 struct RGE_Object_Info_Line {
@@ -81,6 +82,7 @@ public:
     Map_Stack* pop_stack(Map_Stack* s, long* out_col, long* out_x, float* out_cost);
     void place_group(RGE_Object_Info_Line& info, long x, long y, RGE_Player* player);
 };
+#endif
 
 void RGE_RMM_Object_Generator::place_group(RGE_Object_Info_Line& info, long px, long py, RGE_Player* player)
 {
@@ -95,7 +97,11 @@ void RGE_RMM_Object_Generator::place_group(RGE_Object_Info_Line& info, long px, 
 
     self = this;
     init_stack(&obj_stack);
+#if defined(RMM_OBJ_TU_COMBINED_CONTEXT)
+    make_placement_stack(obj_stack, px, py, 0, info.group_area);
+#else
     make_placement_stack(&obj_stack, px, py, 0, info.group_area);
+#endif
 
     int count = info.object_number_per_group;
     register int var = info.object_number_varience;
@@ -105,7 +111,11 @@ void RGE_RMM_Object_Generator::place_group(RGE_Object_Info_Line& info, long px, 
     if (count < 1) count = 1;
 
     while (pop_stack(&obj_stack, &col, &x, &cost) && count > 0) {
+#if defined(RMM_OBJ_TU_COMBINED_CONTEXT)
+            if (info.terrain < 0 || ((this->map_row_offset[x][col].terrain & 0x1f) == (unsigned int)info.terrain)) {
+#else
             if (info.terrain < 0 || ((this->map[x][col].terrain & 0x1f) == (unsigned int)info.terrain)) {
+#endif
                 fx = (float)col;
                 fy = (float)x;
                 RGE_Master_Static_Object* master = player->master_objects[info.obj_id];

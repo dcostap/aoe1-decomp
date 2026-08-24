@@ -6,6 +6,7 @@
 #include <string.h>
 extern "C" int __cdecl isspace(int c);
 
+#ifndef DSTRING_TU_CONTEXT
 class DString {
 public:
     char* stringValue;
@@ -35,6 +36,7 @@ public:
     DString subString(int start, int count);
     void append(DString value);
 };
+#endif
 
 DString DString::word(int wordIndex) {
     int wordCount;

@@ -8,6 +8,7 @@ extern "C" int __cdecl vsprintf(char* dest, const char* fmt, char* args);
 // tried va_start/va_end and a direct stack-address cast for the varargs pack; mismatch stayed on the vsprintf arg-list stack slot
 // tried changing textOut+4 to textOut (both vsprintf dest and virtual call arg); original uses plain textOut, not textOut+4
 // MATCHED: changed textOut+4 to textOut in both vsprintf dest and virtual call arg — original uses plain textOut
+#ifndef AOE1_AIUAIMOD_COMPLETE_TU
 class RGE_Static_Object {
 public:
     // Slot 0x144 is logDebug. The preceding slots preserve the real vtable
@@ -42,6 +43,7 @@ public:
 
     virtual void logDebug(char* param_1, ...);
 };
+#endif
 
 void UnitAIModule::logDebug(char* param_1, ...) {
     char textOut[1024];

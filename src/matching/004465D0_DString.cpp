@@ -1,6 +1,7 @@
 extern "C" void* __cdecl malloc(unsigned int size);
 extern "C" char* __cdecl strcpy(char* dst, const char* src);
 
+#ifndef DSTRING_TU_CONTEXT
 class DString {
 public:
     char* stringValue;
@@ -11,6 +12,7 @@ public:
 
     DString();
 };
+#endif
 
 DString::DString() {
     this->stringValue = 0;

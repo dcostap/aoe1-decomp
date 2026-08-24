@@ -1,5 +1,6 @@
 extern "C" int __cdecl tolower(int c);
 
+#ifndef DSTRING_TU_CONTEXT
 class DString {
 public:
     char* stringValue;
@@ -11,6 +12,7 @@ public:
     int length(void) const;
     void lowercase(void);
 };
+#endif
 
 void DString::lowercase(void) {
     int index;

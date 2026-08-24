@@ -15,6 +15,7 @@
 //   Correcting TEasy_Panel's gap to 0x384 restored the proven +0x490 base end
 //   and the exact 485-byte output.
 
+#ifndef DLG_CONF_TU_CONTEXT
 class TDrawArea;
 
 class TPanel {
@@ -74,6 +75,7 @@ public:
 
     virtual ~TribeConfigDialog();
 };
+#endif
 
 TribeConfigDialog::~TribeConfigDialog()
 {

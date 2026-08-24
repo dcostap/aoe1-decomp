@@ -1,11 +1,4 @@
-class XYZ {
-public:
-    int xValue;
-    int yValue;
-    int zValue;
-
-    XYZ(int x, int y, int z);
-};
+#include "../../include/point_context.h"
 
 XYZ::XYZ(int x, int y, int z) {
     xValue = x;

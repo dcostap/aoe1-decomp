@@ -1,5 +1,6 @@
 extern "C" void __cdecl free(void* block);
 
+#ifndef AOE1_VISIBLE_TU_CONTEXT_H
 class RGE_Unified_Visible_Map {
 public:
     void* gap_00;
@@ -9,6 +10,7 @@ public:
     void Set_Map_Offsets();
     ~RGE_Unified_Visible_Map();
 };
+#endif
 
 RGE_Unified_Visible_Map::~RGE_Unified_Visible_Map() {
     this->mapHeight = 0;

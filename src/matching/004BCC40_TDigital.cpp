@@ -1,7 +1,7 @@
 char* strncpy(char* dest, const char* src, unsigned int count);
 
+#ifndef SOUNDDRV_CANONICAL_TU
 class TSound_Driver;
-
 class TDigital {
 public:
     TSound_Driver* sound_system;
@@ -13,6 +13,7 @@ public:
     void init_vars(void);
     TDigital(TSound_Driver* driver, char* file, long resource_id);
 };
+#endif
 
 TDigital::TDigital(TSound_Driver* driver, char* file, long resource_id) {
     this->init_vars();

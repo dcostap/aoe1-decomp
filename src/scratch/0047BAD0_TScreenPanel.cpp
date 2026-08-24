@@ -1,12 +1,4 @@
-class Base_TScreenPanel {
-public:
-    virtual ~Base_TScreenPanel();
-};
-
-class TScreenPanel : public Base_TScreenPanel {
-public:
-    virtual ~TScreenPanel();
-};
+#include "../../include/pnl_scr_context.h"
 
 TScreenPanel::~TScreenPanel() {
 }

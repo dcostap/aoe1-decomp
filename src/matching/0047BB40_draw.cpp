@@ -1,11 +1,3 @@
-class TEasy_Panel {
-public:
-    virtual void draw();
-};
-
-class TScreenPanel : public TEasy_Panel {
-public:
-    void draw();
-};
+#include "../../include/pnl_scr_context.h"
 
 void TScreenPanel::draw() { TEasy_Panel::draw(); }

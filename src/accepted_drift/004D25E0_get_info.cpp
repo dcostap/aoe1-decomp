@@ -9,7 +9,9 @@
 // ACCEPTED_DRIFT: remaining diff is only SIB base/index order for `dest[max_len - 1] = 0`; EBX and ESI are added symmetrically with scale 1, so the memory address and all calls/stack/return behavior are equivalent
 
 #include "../../include/game_globals.h"
+#include "../../include/tact_tek_context.h"
 
+#ifndef AOE1_TACT_TEK_CONTEXT_H
 extern "C" char* __cdecl strncpy(char* dest, const char* src, unsigned int maxlen);
 
 class RGE_Action_Object {
@@ -41,20 +43,21 @@ class TRIBE_Action_Make_Tech : public RGE_Action {
 public:
     void get_info(short* param_1, short* param_2, char* param_3, short param_4);
 };
+#endif
 
-void TRIBE_Action_Make_Tech::get_info(short* param_1, short* param_2, char* param_3, short param_4)
+void TRIBE_Action_Make_Tech::get_info(short& param_1, short& param_2, char* param_3, short param_4)
 {
     register TRIBE_Action_Make_Tech* self = this;
     char* dest = param_3;
 
-    *param_1 = self->tech_id;
+    param_1 = self->tech_id;
 
     if (self->status == 1) {
-        *param_2 = 100;
+        param_2 = 100;
     } else {
         void* scenario = self->action_obj->obj_ptr;
         TRIBE_Player_Tech* player_tech = *(TRIBE_Player_Tech**)((char*)scenario + 0x220);
-        *param_2 = player_tech->get_progress(self->tech_id);
+        param_2 = player_tech->get_progress(self->tech_id);
     }
 
     if (dest) {

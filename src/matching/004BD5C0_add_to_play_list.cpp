@@ -1,3 +1,4 @@
+#ifndef SOUNDDRV_CANONICAL_TU
 class TDigital;
 
 class TSound_Driver {
@@ -14,6 +15,7 @@ public:
 
     int add_to_play_list();
 };
+#endif
 
 int TDigital::add_to_play_list() {
     TSound_Driver* sound_system;

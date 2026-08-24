@@ -3,6 +3,7 @@
 // check 1: compiled smaller than expected; VC5 preferred a tighter loop and fewer reloads than the original
 // check 2 candidate: switch to direct member accesses and recompute the table base each trip to mirror the asm reloads
 
+#ifndef T_C_OBJ_CONTEXT_H
 class RGE_Master_Combat_Object {
 public:
     char gap_00[0x102];
@@ -19,6 +20,7 @@ public:
 
     void get_pierce_armor(short& out_armor, short& out_other);
 };
+#endif
 
 void TRIBE_Combat_Object::get_pierce_armor(short& out_armor, short& out_other) {
     out_armor = 0;

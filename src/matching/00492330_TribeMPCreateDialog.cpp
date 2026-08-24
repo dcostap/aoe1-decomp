@@ -1,8 +1,8 @@
+#ifndef SCR_CJ_GROUPED_TU
 struct tagRECT;
 
 class TPanel {
 public:
-    void* vftable;
     char pad[0xF0];
 
     virtual ~TPanel();
@@ -11,7 +11,7 @@ public:
 
 class TEasy_Panel : public TPanel {
 public:
-    char pad_easy[0x380];
+    char pad_easy[0x384];
 };
 
 class TDialogPanel : public TEasy_Panel {
@@ -36,11 +36,20 @@ public:
 
     virtual ~TribeMPCreateDialog();
 };
+#endif
 
 TribeMPCreateDialog::~TribeMPCreateDialog() {
+#ifdef SCR_CJ_GROUPED_TU
+    this->delete_panel((TPanel**)&this->title);
+    this->delete_panel((TPanel**)&this->input_title);
+    this->delete_panel((TPanel**)&this->inputGamename);
+    this->delete_panel((TPanel**)&this->okButton);
+    this->delete_panel((TPanel**)&this->cancelButton);
+#else
     this->delete_panel(&this->title);
     this->delete_panel(&this->input_title);
     this->delete_panel(&this->inputGamename);
     this->delete_panel(&this->okButton);
     this->delete_panel(&this->cancelButton);
+#endif
 }

@@ -97,6 +97,7 @@
 //   AlignedWidth call, and 32.88% exact-block coverage. The blocker remains
 //   early VC5 register/home allocation and parity/destination spill placement.
 
+#ifndef AOE1_SHAPE_CONTEXT_H
 typedef unsigned char uchar;
 struct Shape_Header { long bounds; long origin; long xmin; long ymin; long xmax; long ymax; };
 class TDrawArea {
@@ -126,6 +127,7 @@ public:
     void* shape_info;
     uchar shape_dithered_unclipped(TDrawArea* area, long x, long y, long param_5, long param_6);
 };
+#endif
 
 uchar TShape::shape_dithered_unclipped(TDrawArea* area, long x, long y, long param_5, long param_6)
 {

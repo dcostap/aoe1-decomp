@@ -43,6 +43,7 @@
 // header alias were codegen duplicates. The remaining mismatch starts at the
 // coordinate-add schedule; this source keeps the best natural binary basin.
 
+#ifndef AOE1_SHAPE_CONTEXT_H
 typedef unsigned char uchar;
 
 struct tagRECT { long left; long top; long right; long bottom; };
@@ -76,6 +77,7 @@ public:
     uchar shape_dithered_clipped(TDrawArea* area, long shape_x1, long shape_y1, long clip_x1, long clip_y1, long clip_x2, long clip_y2, long param_5, long param_6);
     uchar shape_dither(TDrawArea* area, long x, long y, long shape_num, long param_5, long param_6);
 };
+#endif
 
 extern char s_RGL_shape_draw[];
 

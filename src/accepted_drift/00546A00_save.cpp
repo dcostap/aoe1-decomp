@@ -1,13 +1,13 @@
 // VA: 00546A00 RGE_Zone_Map::save (129 B)
 // PDB source: zone_map.cpp
 
-extern int rge_write(void* file, void* data, int size);
+extern "C" void rge_write(int file, void* data, int size);
 #include "../../include/rge_zone_map_context.h"
 
 // Helper to access fields at specific offsets
 #define AT(type, base, offset) (*(type*)((char*)(base) + (offset)))
 
-void RGE_Zone_Map::save(void* file)
+void RGE_Zone_Map::save(int file)
 {
     char* self = (char*)this;
     

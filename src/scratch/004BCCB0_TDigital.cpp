@@ -1,3 +1,4 @@
+#ifndef SOUNDDRV_CANONICAL_TU
 class Base_TDigital {
 public:
     virtual ~Base_TDigital();
@@ -11,3 +12,8 @@ extern "C" void probe_TDigital(TDigital* p);
 extern "C" void probe_TDigital(TDigital* p) {
     p->TDigital::~TDigital();
 }
+#else
+TDigital::~TDigital() {
+    this->exit();
+}
+#endif

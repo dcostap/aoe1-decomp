@@ -1,3 +1,4 @@
+#ifndef PNL_DLG_TU_CONTEXT
 class TEasy_Panel {
 public:
     virtual ~TEasy_Panel();
@@ -18,6 +19,7 @@ public:
     virtual ~TDialogPanel();
     TDialogPanel(char* name);
 };
+#endif
 
 TDialogPanel::TDialogPanel(char* name)
     : TEasy_Panel(name)

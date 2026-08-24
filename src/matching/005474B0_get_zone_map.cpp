@@ -1,3 +1,4 @@
+#ifndef ZONE_MAP_TU_BUILD
 class RGE_Zone_Map;
 
 class RGE_Zone_Map_List {
@@ -7,6 +8,7 @@ public:
 
     RGE_Zone_Map* get_zone_map(long index);
 };
+#endif
 
 RGE_Zone_Map* RGE_Zone_Map_List::get_zone_map(long index) {
     if (index < this->zone_map_num) {

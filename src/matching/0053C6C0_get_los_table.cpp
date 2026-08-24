@@ -1,5 +1,6 @@
 struct LOSTBL;
 
+#ifndef AOE1_VISIBLE_TU_CONTEXT_H
 extern LOSTBL* Edge_Offsets_T16[17];
 extern LOSTBL* Edge_Offsets_N16[17];
 
@@ -7,6 +8,7 @@ class RGE_Visible_Map {
 public:
     LOSTBL* get_los_table(int distance, int diagonal);
 };
+#endif
 
 LOSTBL* RGE_Visible_Map::get_los_table(int distance, int diagonal) {
     if (distance > 0x10) {

@@ -1,3 +1,4 @@
+#ifndef T_C_OBJ_CONTEXT_H
 class RGE_Master_Static_Object {
 public:
     char gap_00[0x10];
@@ -23,6 +24,7 @@ public:
 
     int canRepair();
 };
+#endif
 
 int TRIBE_Combat_Object::canRepair() {
     float fVar1 = (float)(int)this->master_obj->hp;

@@ -1,3 +1,4 @@
+#ifndef SOUNDDRV_CANONICAL_TU
 struct IDirectSoundBuffer_vtbl_sv {
     char gap_00[0x3C];
     int (__stdcall *SetVolume)(void* thisptr, int volume);
@@ -26,3 +27,12 @@ void TDigital_sv::set_volume(int volume) {
     if (!p->loaded) return;
     p->buffer->vtbl->SetVolume(p->buffer, volume);
 }
+#else
+void TDigital::set_volume(long volume) {
+    TDigital* p = this->owner;
+    this->volume = volume;
+    if (!p) p = this;
+    if (!p->loaded) return;
+    p->sound_buffer->SetVolume(volume);
+}
+#endif

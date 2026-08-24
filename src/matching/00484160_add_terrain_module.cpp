@@ -45,6 +45,7 @@
 
 #include "../../include/game_globals.h"
 
+#ifndef RMM_DBCT_TU_CONTEXT_H
 class RGE_Map;
 class RGE_Game_World;
 
@@ -209,6 +210,7 @@ public:
 
     virtual void add_terrain_module();
 };
+#endif
 
 void RGE_RMM_Database_Controller::add_terrain_module()
 {

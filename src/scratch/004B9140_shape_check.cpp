@@ -39,6 +39,7 @@
 
 #include <memory.h>
 
+#ifndef AOE1_SHAPE_CONTEXT_H
 struct Shape_Info {
     long Shape_Data_Offsets;
     long Shape_Outline_Offset;
@@ -88,6 +89,7 @@ public:
     unsigned char Check_shape(long, char*);
     unsigned char shape_check(long x, long y, long frame);
 };
+#endif
 
 unsigned char TShape::shape_check(long x, long y, long frame)
 {

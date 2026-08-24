@@ -25,6 +25,7 @@
 #include "..\..\include\rge_base_game_global.h"
 #include <stdio.h>
 
+#ifndef DLG_CONF_TU_CONTEXT
 #define VPAD1(n) virtual void vpad##n();
 #define VPAD2(n) VPAD1(n) VPAD1(n##_1)
 #define VPAD4(n) VPAD2(n) VPAD2(n##_2)
@@ -197,6 +198,7 @@ extern TPanelSystem panel_system;
 extern int allow_user_commands;
 extern unsigned char do_color_log;
 extern "C" int numberPathingIterations;
+#endif
 
 long TribeConfigDialog::action(TPanel* panel, register long event,
     register unsigned long param_3, unsigned long param_4)

@@ -38,11 +38,53 @@
 // - unresolved: jump-index register, selection-local placement, and remaining
 //   forwarding/final-tail scheduling.
 
+#ifndef PNL_EDIT_TU_CONTEXT
 #include <windows.h>
+#else
+typedef unsigned long DWORD;
+typedef unsigned int UINT;
+typedef unsigned int WPARAM;
+typedef long LPARAM;
+typedef void* FARPROC;
+enum {
+    WM_PAINT = 0x000F,
+    WM_ERASEBKGND = 0x0014,
+    WM_KEYDOWN = 0x0100,
+    WM_KEYUP = 0x0101,
+    WM_CHAR = 0x0102,
+    WM_SYSKEYDOWN = 0x0104,
+    WM_MOUSEMOVE = 0x0200,
+    WM_LBUTTONDOWN = 0x0201,
+    WM_LBUTTONUP = 0x0202,
+    WM_RBUTTONDOWN = 0x0204,
+    WM_RBUTTONUP = 0x0205,
+    WM_PASTE = 0x0302,
+    EM_GETSEL = 0x00B0,
+    EM_UNDO = 0x00C7,
+    VK_TAB = 0x09,
+    VK_RETURN = 0x0D,
+    VK_SHIFT = 0x10,
+    VK_CONTROL = 0x11,
+    VK_MENU = 0x12,
+    VK_ESCAPE = 0x1B,
+    TRUE = 1
+};
+extern "C" __declspec(dllimport) HGDIOBJ __stdcall SelectObject(HDC, HGDIOBJ);
+extern "C" __declspec(dllimport) int __stdcall GetClientRect(HWND, RECT*);
+extern "C" __declspec(dllimport) int __stdcall FillRect(HDC, const RECT*, HBRUSH);
+extern "C" __declspec(dllimport) int __stdcall InvalidateRect(HWND, const RECT*, int);
+extern "C" __declspec(dllimport) long __stdcall SendMessageA(HWND, UINT, WPARAM, LPARAM);
+extern "C" __declspec(dllimport) short __stdcall GetKeyState(int);
+extern "C" __declspec(dllimport) HWND __stdcall SetFocus(HWND);
+extern "C" __declspec(dllimport) int __stdcall PostMessageA(HWND, UINT, WPARAM, LPARAM);
+extern "C" __declspec(dllimport) long __stdcall CallWindowProcA(FARPROC, HWND, UINT, WPARAM, LPARAM);
+extern "C" __declspec(dllimport) int __stdcall UpdateWindow(HWND);
+#endif
 
 extern int DAT_0086b240;
 extern int DAT_0062c4c4;
 
+#ifndef PNL_EDIT_TU_CONTEXT
 class RGE_Base_Game {
 public:
     char gap_00[0x1D0];
@@ -124,6 +166,7 @@ public:
     TPanel* currentPanel();
 };
 extern TPanelSystem panel_system;
+#endif
 
 long TEditPanel::sub_wnd_proc(void* hwnd, unsigned int msg,
                               unsigned int wparam, long lparam)

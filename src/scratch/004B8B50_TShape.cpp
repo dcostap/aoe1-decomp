@@ -83,6 +83,7 @@ extern unsigned char shape_file_first;
 extern int Shape_Loads;
 extern int shape_version_110;
 
+#ifndef AOE1_SHAPE_CONTEXT_H
 typedef unsigned char uchar;
 
 struct Shape_Header {
@@ -125,6 +126,7 @@ public:
 
     TShape(char* filename, long resource_id);
 };
+#endif
 
 TShape::TShape(char* filename, long resource_file_id)
 {

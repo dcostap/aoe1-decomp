@@ -24,6 +24,7 @@ extern "C" {
     void operator_delete(void* ptr);
 }
 
+#ifndef PATHSYS_TU_CONTEXT
 template <class T>
 class ManagedArray {
 public:
@@ -87,6 +88,7 @@ public:
 
     void copyUnobstructibles(ManagedArray<int>& out);
 };
+#endif
 
 void PathingSystem::copyUnobstructibles(ManagedArray<int>& out)
 {

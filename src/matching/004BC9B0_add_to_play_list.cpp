@@ -1,3 +1,4 @@
+#ifndef SOUNDDRV_CANONICAL_TU
 class TDigital;
 
 class TSound_Driver {
@@ -10,6 +11,7 @@ public:
 
     int add_to_play_list(TDigital* param_1);
 };
+#endif
 
 int TSound_Driver::add_to_play_list(TDigital* param_1) {
     if ((this->play_list_count != 0xFF) && (this->mute == 0)) {

@@ -12,6 +12,7 @@
 //   its live EDI compare value, triggered the original delayed callee-save layout,
 //   and produced an exact 209-byte match under the default flags.
 
+#ifndef AOE1_AIUAIMOD_COMPLETE_TU
 struct NotifyEvent {
     int caller;                    // +0x00
     int recipient;                 // +0x04
@@ -134,6 +135,7 @@ public:
 
     int selectNewPlayPhase(int phase, int param_2);
 };
+#endif
 
 void UnitAIModule::processGroupNotify(NotifyEvent* param_1)
 {

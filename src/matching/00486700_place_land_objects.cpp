@@ -17,6 +17,7 @@
 
 extern "C" void* __cdecl memset(void*, int, unsigned int);
 
+#if !defined(RMM_OBJ_TU_COMBINED_CONTEXT)
 struct Map_Stack {
     long x;
     long y;
@@ -170,6 +171,7 @@ public:
 
     void place_land_objects(RGE_Object_Info_Line&, long, long, long, long, long);
 };
+#endif
 
 void RGE_RMM_Object_Generator::place_land_objects(
     RGE_Object_Info_Line& line, long x, long y, long inner_radius,
@@ -205,7 +207,11 @@ void RGE_RMM_Object_Generator::place_land_objects(
         } while (i < this->info.land_num);
     }
 
+#if defined(RMM_OBJ_TU_COMBINED_CONTEXT)
+    this->init_stack(&obj_stack);
+#else
     this->init_stack(obj_stack);
+#endif
     this->make_placement_stack(obj_stack, x, y, radius, outer_radius);
 
     RGE_Object_Info_Line* object = &line;
@@ -225,7 +231,11 @@ void RGE_RMM_Object_Generator::place_land_objects(
         zone = zone_map->get_zone_info(x, y);
 
         long count = object->number_of_groups;
-        while (this->pop_stack(obj_stack, y1, min_x0, cost) != 0 &&
+#if defined(RMM_OBJ_TU_COMBINED_CONTEXT)
+    while (this->pop_stack(&obj_stack, &y1, &min_x0, &cost) != 0 &&
+#else
+    while (this->pop_stack(obj_stack, y1, min_x0, cost) != 0 &&
+#endif
                count > 0) {
                 if ((unsigned char)zone ==
                         zone_map->get_zone_info(y1, min_x0) &&
@@ -271,6 +281,10 @@ void RGE_RMM_Object_Generator::place_land_objects(
                     }
                 }
         }
+#if defined(RMM_OBJ_TU_COMBINED_CONTEXT)
+        this->deinit_stack(&obj_stack);
+#else
         this->deinit_stack(obj_stack);
+#endif
     }
 }

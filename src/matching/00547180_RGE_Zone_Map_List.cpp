@@ -4,6 +4,7 @@
 
 #include <stdlib.h>
 
+#ifndef ZONE_MAP_TU_BUILD
 class RGE_Map;
 
 class RGE_Zone_Map {
@@ -23,6 +24,7 @@ public:
 
     RGE_Zone_Map_List(int file, RGE_Map* map);
 };
+#endif
 
 RGE_Zone_Map_List::RGE_Zone_Map_List(int file, RGE_Map* map)
 {

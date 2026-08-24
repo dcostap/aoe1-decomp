@@ -17,6 +17,7 @@
 //   orders; the two recognized orders return 8 only when the final call returns
 //   1, and return 7 otherwise.
 
+#ifndef AOE1_AIUAIMOD_COMPLETE_TU
 class UnitAIModule {
 public:
     char gap_04[0x2C];
@@ -57,6 +58,7 @@ public:
 protected:
     virtual int processRetryableOrder();
 };
+#endif
 
 int UnitAIModule::processRetryableOrder() {
     int result;

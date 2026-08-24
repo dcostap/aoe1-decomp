@@ -1,6 +1,7 @@
 // first pass: walk to the owner-chain tail, stop if not loaded, then release/free the tail resources
 extern "C" void __cdecl free(void* block);
 
+#ifndef SOUNDDRV_CANONICAL_TU
 struct IDirectSoundBuffer_vtbl {
     char gap_00[8];
     int (__stdcall *Release)(void* thisptr);
@@ -24,6 +25,7 @@ public:
     void stop();
     void unload();
 };
+#endif
 
 void TDigital::unload() {
     TDigital* p = this;
@@ -39,7 +41,11 @@ void TDigital::unload() {
     p->stop();
 
     if (p->sound_buffer != 0) {
+#ifdef SOUNDDRV_CANONICAL_TU
+        p->sound_buffer->Release();
+#else
         p->sound_buffer->vtbl->Release(p->sound_buffer);
+#endif
         p->sound_buffer = 0;
     }
 

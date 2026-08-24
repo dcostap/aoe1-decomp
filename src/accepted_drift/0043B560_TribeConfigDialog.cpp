@@ -52,6 +52,7 @@
 
 #include <string.h>
 
+#ifndef DLG_CONF_TU_CONTEXT
 class TDrawSystem;
 class TDrawArea;
 class TPanel;
@@ -238,6 +239,7 @@ public:
     virtual ~TribeConfigDialog();
     TribeConfigDialog(Mode mode, TScreenPanel* parent);
 };
+#endif
 
 TribeConfigDialog::TribeConfigDialog(Mode mode, TScreenPanel* parent)
     : TDialogPanel("Config Dialog"), modeValue(mode)

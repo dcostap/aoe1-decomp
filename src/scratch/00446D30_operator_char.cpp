@@ -1,7 +1,9 @@
+#ifndef DSTRING_TU_CONTEXT
 class DString {
 public:
-    char* field_0;
-    operator char*();
+    char* stringValue;
+    operator char*() const;
 };
+#endif
 
-DString::operator char*() { return this->field_0; }
+DString::operator char*() const { return this->stringValue; }

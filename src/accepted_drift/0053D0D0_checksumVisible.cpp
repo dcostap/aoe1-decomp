@@ -1,4 +1,5 @@
 // ACCEPTED_DRIFT: 1-byte SIB addressing-order drift only: mov bl,[edx+esi] vs [esi+edx]; same byte is read before the same xor/checksum loop.
+#ifndef AOE1_VISIBLE_TU_CONTEXT_H
 class RGE_Visible_Map {
 public:
     unsigned char** map_offsets;
@@ -8,6 +9,7 @@ public:
 
     long checksumVisible(void);
 };
+#endif
 
 long RGE_Visible_Map::checksumVisible(void) {
     unsigned int value = 0;

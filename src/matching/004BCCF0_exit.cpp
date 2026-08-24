@@ -1,3 +1,4 @@
+#ifndef SOUNDDRV_CANONICAL_TU
 class TDigital {
 public:
     char gap_00[0x04];
@@ -9,6 +10,7 @@ public:
     void unload(void);
     void exit(void);
 };
+#endif
 
 void TDigital::exit(void) {
     if (this->owner != 0) {

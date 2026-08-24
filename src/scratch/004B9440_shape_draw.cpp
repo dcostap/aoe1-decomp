@@ -46,6 +46,7 @@
 // and rect were restored in declaration order. Bound-local order variants did
 // not improve code. The ret_num stack home and 0x1c frame remain unresolved.
 
+#ifndef AOE1_SHAPE_CONTEXT_H
 typedef unsigned char byte;
 
 struct tagRECT {
@@ -159,6 +160,7 @@ public:
     byte shape_shadow_clipped(TDrawArea*, long, long, long, long, long, long, byte*);
     byte shape_draw(TDrawArea*, long, long, long, byte, byte*);
 };
+#endif
 
 extern int SDI_Capture_Info;
 extern int SDI_Draw_Level;

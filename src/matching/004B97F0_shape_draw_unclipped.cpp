@@ -92,6 +92,7 @@
 extern "C" void* __cdecl memcpy(void* dest, const void* src, unsigned int count);
 extern "C" void* __cdecl memset(void* dest, int c, unsigned int count);
 
+#ifndef AOE1_SHAPE_CONTEXT_H
 struct Shape_Header {
     long bounds;    // +0x00
     long origin;    // +0x04
@@ -132,6 +133,7 @@ public:
 
     unsigned char shape_draw_unclipped(TDrawArea*, long, long, long);
 };
+#endif
 
 unsigned char TShape::shape_draw_unclipped(TDrawArea* da, long y, long x, long table)
 {

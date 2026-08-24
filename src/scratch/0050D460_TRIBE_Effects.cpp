@@ -1,14 +1,4 @@
-class BaseClass {
-public:
-    virtual ~BaseClass();
-    BaseClass(int param);
-};
+#include "../../include/teffects_context.h"
 
-class TRIBE_Effects : public BaseClass {
-public:
-    virtual ~TRIBE_Effects();
-    TRIBE_Effects(int param);
-};
-
-TRIBE_Effects::TRIBE_Effects(int param) : BaseClass(param) {
+TRIBE_Effects::TRIBE_Effects(int param) : RGE_Effects(param) {
 }

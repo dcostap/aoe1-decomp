@@ -3,6 +3,7 @@ extern "C" void* __cdecl malloc(unsigned int size);
 extern "C" unsigned int __cdecl strlen(const char* s);
 extern "C" char* __cdecl strcpy(char* dst, const char* src);
 
+#ifndef DSTRING_TU_CONTEXT
 class DString {
 public:
     char* stringValue;
@@ -13,6 +14,7 @@ public:
 
     DString& operator=(const char* value);
 };
+#endif
 
 DString& DString::operator=(const char* value) {
     if (this->stringValue != 0) {

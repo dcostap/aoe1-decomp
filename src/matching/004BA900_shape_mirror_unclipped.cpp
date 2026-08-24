@@ -181,6 +181,7 @@
 #pragma function(memset)
 extern "C" void* __cdecl memset(void* dest, int c, unsigned int count);
 
+#ifndef AOE1_SHAPE_CONTEXT_H
 struct Shape_Header {
     long bounds;
     long origin;
@@ -237,6 +238,7 @@ struct TShape {
     Shape_Info* shape_info;
     unsigned char shape_mirror_unclipped(TDrawArea*, long, long);
 };
+#endif
 
 unsigned char TShape::shape_mirror_unclipped(TDrawArea* da, long x, long y)
 {

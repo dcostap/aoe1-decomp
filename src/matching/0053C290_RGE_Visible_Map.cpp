@@ -18,6 +18,7 @@ extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 class RGE_Map;
 class RGE_Player;
 
+#ifndef AOE1_VISIBLE_TU_CONTEXT_H
 class RGE_Game_World {
 public:
     virtual ~RGE_Game_World();
@@ -65,6 +66,7 @@ public:
 
     RGE_Visible_Map(int file, RGE_Game_World* world);
 };
+#endif
 
 RGE_Visible_Map::RGE_Visible_Map(int file, RGE_Game_World* world) {
     int player_id;

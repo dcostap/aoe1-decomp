@@ -1,10 +1,6 @@
-class TPanel {
-public:
-    void drawSelf();
-    int handle_paint();
-};
+#include "../../include/pnl_scr_context.h"
 
-int TPanel::handle_paint() {
-    this->drawSelf();
+long TScreenPanel::handle_paint() {
+    TPanel::handle_paint();
     return 0;
 }

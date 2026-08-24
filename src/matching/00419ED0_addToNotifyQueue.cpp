@@ -6,6 +6,7 @@
 // Direct target: protected ?addToNotifyQueue@UnitAIModule@@IAEHHHHJJJ@Z at 00419F00.
 // The callee uses ret 18h, while this wrapper uses ret 4 for its event pointer.
 
+#ifndef AOE1_AIUAIMOD_COMPLETE_TU
 struct NotifyEvent {
     int caller;
     int recipient;
@@ -20,6 +21,7 @@ protected:
     int addToNotifyQueue(NotifyEvent* event);
     int addToNotifyQueue(int caller, int recipient, int mType, long p1, long p2, long p3);
 };
+#endif
 
 int UnitAIModule::addToNotifyQueue(NotifyEvent* event) {
     return this->addToNotifyQueue(

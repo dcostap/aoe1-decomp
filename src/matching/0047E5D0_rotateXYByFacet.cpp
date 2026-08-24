@@ -4,33 +4,24 @@
 // before fmul st3 order after __ftol). Without the temp, VC5 evaluates s*dx
 // first, producing wrong FPU fxch/fmul ordering.
 
-#include "..\..\include\game_globals.h"
+#include "..\..\include\point_context.h"
 #include <math.h>
-
-class XYZ {
-public:
-    int x;
-    int y;
-    int z;
-
-    void rotateXYByFacet(const XYZ& facet, XYZ& output, unsigned char facet_idx);
-};
 
 void XYZ::rotateXYByFacet(const XYZ& facet, XYZ& output, unsigned char facet_idx)
 {
-    output.x = this->x;
-    output.y = this->y;
-    output.z = this->z;
+    output.xValue = this->xValue;
+    output.yValue = this->yValue;
+    output.zValue = this->zValue;
 
     if (facet_idx)
     {
-        int dx = this->x - facet.x;
-        int dy = this->y - facet.y;
+        int dx = this->xValue - facet.xValue;
+        int dy = this->yValue - facet.yValue;
         float angle = (float)(facet_idx & 0xFF) * 0.7853981852531433f;
         float s = sin(angle);
         float c = cos(angle);
-        output.x = (int)(c * dx - s * dy);
+        output.xValue = (int)(c * dx - s * dy);
         float y1 = c * dy;
-        output.y = (int)(y1 + s * dx);
+        output.yValue = (int)(y1 + s * dx);
     }
 }

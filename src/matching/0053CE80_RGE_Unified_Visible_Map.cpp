@@ -1,6 +1,7 @@
 extern int Map_Update_Suppresion;
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 
+#ifndef AOE1_VISIBLE_TU_CONTEXT_H
 class RGE_Unified_Visible_Map {
 public:
     int mapWidth;
@@ -10,6 +11,7 @@ public:
     RGE_Unified_Visible_Map(int mapWidth, int mapHeight);
     void Set_Map_Offsets(void);
 };
+#endif
 
 RGE_Unified_Visible_Map::RGE_Unified_Visible_Map(int mapWidth, int mapHeight) {
     this->mapWidth = mapWidth;

@@ -1,3 +1,4 @@
+#ifndef PATHSYS_TU_CONTEXT
 class PathingSystem {
 public:
     unsigned char gap_00[0x10DE28];
@@ -5,6 +6,7 @@ public:
 
     void initMisc(unsigned char value);
 };
+#endif
 
 void PathingSystem::initMisc(unsigned char value) {
     unsigned int packed = (unsigned int)value | ((unsigned int)value << 8);

@@ -44,6 +44,7 @@
 // rewrite changed ordered calls, so the reverse switch remains required. A base_y copy and a
 // nonvolatile result-byte pointer alias were codegen duplicates. Restored the pinned clean source.
 
+#ifndef AOE1_SHAPE_CONTEXT_H
 typedef unsigned char byte;
 class TDrawArea;
 struct Shape_Info {
@@ -101,7 +102,7 @@ public:
 class TShape {
 public:
     byte* shape; int load_type; int load_size; Shape_Header* shape_header;
-    ShapeFile* head; Shape_Offsets* offsets; SLhape_File_Header* fshape; Shape_Info* shape_info;
+    ShapeFile* head; Shape_Offsets* offsets; SLhape_File_Header* FShape; Shape_Info* shape_info;
     byte Check_shape(long,char*);
     byte shape_mirror_unclipped(TDrawArea*,long,long);
     byte shape_mirror_color_trans_unclipped(TDrawArea*,long,long,long,byte*);
@@ -111,6 +112,7 @@ public:
     byte shape_mirror_shadow_clipped(TDrawArea*,long,long,long,long,long,long,byte*);
     byte shape_mirror(TDrawArea*, long x, long y, long shape_num, byte mode, byte* table);
 };
+#endif
 
 byte TShape::shape_mirror(TDrawArea* td, long x, long y, long shape_num, byte mode, byte* table)
 {
@@ -120,11 +122,11 @@ byte TShape::shape_mirror(TDrawArea* td, long x, long y, long shape_num, byte mo
     Rect rect;
 
     if (shape_num >= 0 && this->Check_shape(shape_num, (char*)0x00587058) == 0) {
-        if (this->fshape != 0) {
+        if (this->FShape != 0) {
             TDrawArea* draw_area = td;
             if (SDI_Capture_Info != 0) {
-                Shape_Info* info = (Shape_Info*)(this->fshape + shape_num + 1);
-                SDI_List->AddDrawNode(this->fshape, info, SDI_Draw_Line,
+                Shape_Info* info = (Shape_Info*)(this->FShape + shape_num + 1);
+                SDI_List->AddDrawNode(this->FShape, info, SDI_Draw_Line,
                     (info->Hotspot_X - info->Width) + x, y - info->Hotspot_Y,
                     fog_next_shape + 2, table, (int)ASMGet_Color_Xform(),
                     SDI_Draw_Level, SDI_Object_ID);
@@ -146,8 +148,8 @@ byte TShape::shape_mirror(TDrawArea* td, long x, long y, long shape_num, byte mo
             if (table != 0)
                 ASMSet_Xlate_Table(table);
 
-            Shape_Info* info = (Shape_Info*)(this->fshape + shape_num + 1);
-            ASMDraw_Sprite(this->fshape,
+            Shape_Info* info = (Shape_Info*)(this->FShape + shape_num + 1);
+            ASMDraw_Sprite(this->FShape,
                 (info->Hotspot_X + x) - info->Width,
                 y - info->Hotspot_Y, info->Width, info->Height,
                 info->Shape_Data_Offsets, info->Shape_Outline_Offset,

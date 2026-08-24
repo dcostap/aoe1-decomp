@@ -1,5 +1,6 @@
 // TDigital::play
 
+#ifndef SOUNDDRV_CANONICAL_TU
 struct IDirectSoundBuffer_vtbl {
     char gap_00[0x24];
     int (__stdcall *GetStatus)(void* thisptr, unsigned long* status);
@@ -36,6 +37,23 @@ public:
     int load(char* name, long param);
     int play();
 };
+#endif
+
+#ifdef SOUNDDRV_CANONICAL_TU
+#define SOUNDDRV_GET_STATUS(buffer, status) ((buffer)->GetStatus(status))
+#define SOUNDDRV_SET_VOLUME(buffer, value) ((buffer)->SetVolume(value))
+#define SOUNDDRV_SET_FREQUENCY(buffer, value) ((buffer)->SetFrequency(value))
+#define SOUNDDRV_SET_PAN(buffer, value) ((buffer)->SetPan(value))
+#define SOUNDDRV_SET_POSITION(buffer, value) ((buffer)->SetCurrentPosition(value))
+#define SOUNDDRV_PLAY(buffer, a, b, flags) ((buffer)->Play(a, b, flags))
+#else
+#define SOUNDDRV_GET_STATUS(buffer, status) ((buffer)->vtbl->GetStatus(buffer, status))
+#define SOUNDDRV_SET_VOLUME(buffer, value) ((buffer)->vtbl->SetVolume(buffer, value))
+#define SOUNDDRV_SET_FREQUENCY(buffer, value) ((buffer)->vtbl->SetFrequency(buffer, value))
+#define SOUNDDRV_SET_PAN(buffer, value) ((buffer)->vtbl->SetPan(buffer, value))
+#define SOUNDDRV_SET_POSITION(buffer, value) ((buffer)->vtbl->SetCurrentPosition(buffer, value))
+#define SOUNDDRV_PLAY(buffer, a, b, flags) ((buffer)->vtbl->Play(buffer, a, b, flags))
+#endif
 
 int TDigital::play() {
     unsigned long status;
@@ -65,25 +83,25 @@ int TDigital::play() {
         return 0;
     }
 
-    target->sound_buffer->vtbl->GetStatus(target->sound_buffer, &status);
+    SOUNDDRV_GET_STATUS(target->sound_buffer, &status);
 
     loop_flag = (target->loop != 0);
-    target->sound_buffer->vtbl->SetVolume(target->sound_buffer, original->volume);
-    target->sound_buffer->vtbl->SetFrequency(target->sound_buffer, original->pitch);
-    target->sound_buffer->vtbl->SetPan(target->sound_buffer, original->pan);
-    target->sound_buffer->vtbl->SetCurrentPosition(target->sound_buffer, 0);
+    SOUNDDRV_SET_VOLUME(target->sound_buffer, original->volume);
+    SOUNDDRV_SET_FREQUENCY(target->sound_buffer, original->pitch);
+    SOUNDDRV_SET_PAN(target->sound_buffer, original->pan);
+    SOUNDDRV_SET_POSITION(target->sound_buffer, 0);
 
-    hr = target->sound_buffer->vtbl->Play(target->sound_buffer, 0, 0, loop_flag);
+    hr = SOUNDDRV_PLAY(target->sound_buffer, 0, 0, loop_flag);
 
     if (hr == 0x88780096) {
         int result = target->load(0, -1);
         if (result == 0) return 0;
 
-        target->sound_buffer->vtbl->SetVolume(target->sound_buffer, original->volume);
-        target->sound_buffer->vtbl->SetFrequency(target->sound_buffer, original->pitch);
-        target->sound_buffer->vtbl->SetPan(target->sound_buffer, original->pan);
-        target->sound_buffer->vtbl->SetCurrentPosition(target->sound_buffer, 0);
-        target->sound_buffer->vtbl->Play(target->sound_buffer, 0, 0, loop_flag);
+        SOUNDDRV_SET_VOLUME(target->sound_buffer, original->volume);
+        SOUNDDRV_SET_FREQUENCY(target->sound_buffer, original->pitch);
+        SOUNDDRV_SET_PAN(target->sound_buffer, original->pan);
+        SOUNDDRV_SET_POSITION(target->sound_buffer, 0);
+        SOUNDDRV_PLAY(target->sound_buffer, 0, 0, loop_flag);
     }
 
 done:

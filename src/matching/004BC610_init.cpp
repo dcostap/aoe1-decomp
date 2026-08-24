@@ -11,11 +11,14 @@
 //   Nesting the CreateSoundBuffer success body lost one Release call and no
 //   longer matched. The separate Create failure return is required.
 #include <string.h>
+#ifndef SOUNDDRV_CANONICAL_TU
 #include <dsound.h>
+#endif
 
 extern "C" void __cdecl ds_stream_init(void* main_wnd, void* direct_sound, void* primary_buffer);
 extern void __cdecl TSound_Driver_set_path(void*, char*);
 
+#ifndef SOUNDDRV_CANONICAL_TU
 class TSound_Driver {
 public:
     unsigned char ready;
@@ -34,6 +37,7 @@ public:
     int init(void* hwnd, char* path);
     int open_mixer(void);
 };
+#endif
 
 int TSound_Driver::init(void* hwnd, char* path) {
     int has_secondary;

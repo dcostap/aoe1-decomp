@@ -5,6 +5,9 @@
 // Attempt log:
 // Probe 1: natural if-else chain + virtual weaponRange() call, default flags
 
+#ifdef TAIPBOOK_CANONICAL_TU
+#include "../../include/taipbook_context.h"
+#else
 #include "..\..\include\game_globals.h"
 
 // RGE_Master_Static_Object — only object_group at +0x14 needed
@@ -43,11 +46,14 @@ public:
 
     virtual float weaponRange(); // slot 67 = offset 0x10C
 };
+#endif
 
+#ifndef TAIPBOOK_CANONICAL_TU
 class TribeAIPlayBook {
 public:
     int convertUnitToIntType(RGE_Static_Object* obj) const;
 };
+#endif
 
 int TribeAIPlayBook::convertUnitToIntType(RGE_Static_Object* obj) const
 {

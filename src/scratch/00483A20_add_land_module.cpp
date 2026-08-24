@@ -73,6 +73,7 @@
 // [esp+10h] and a few slot permutations); phase B is correct and close but
 // not exact. Probe 4's miscompile is documented negative evidence.
 
+#ifndef RMM_DBCT_TU_CONTEXT_H
 typedef unsigned char uchar;
 
 class RGE_Player;
@@ -190,6 +191,7 @@ public:
     virtual uchar init();
     virtual uchar de_init();
 };
+#endif
 
 void RGE_RMM_Database_Controller::add_land_module(uchar param_1)
 {

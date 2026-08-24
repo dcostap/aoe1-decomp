@@ -1,5 +1,6 @@
 // probe 4: separate +8 master-object surface from +0C stats surface; compare directly on the stored member
 
+#ifndef T_C_OBJ_CONTEXT_H
 class TRIBE_Combat_Object_Master {
 public:
     char gap_00[0x14];
@@ -44,6 +45,7 @@ public:
 
     unsigned char update();
 };
+#endif
 
 unsigned char TRIBE_Combat_Object::update(void) {
     if (this->field_08->field_14 == 0x12 && this->field_48 == 2) {

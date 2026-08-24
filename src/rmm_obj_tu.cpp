@@ -1,4 +1,5 @@
-// Authentic rmm_obj.cpp owner sequence from PDB lines 28-392.
+// Authentic rmm_obj.cpp owner sequence from PDB lines 28-638.
+#define RMM_OBJ_TU_COMBINED_CONTEXT
 #include "matching/00485C50_RGE_RMM_Object_Generator.cpp"
 #include "matching/00485CB0_add_quick_obj.cpp"
 #include "matching/00485DC0_generate.cpp"
@@ -9,3 +10,6 @@
 #include "matching/00486210_remove_area_from_lists.cpp"
 #include "accepted_drift/004862B0_place_avoid_objects.cpp"
 #include "scratch/004864F0_place_objects.cpp"
+#include "matching/00486700_place_land_objects.cpp"
+#include "matching/00486A60_place_group.cpp"
+#include "scratch/00486C40_place_cluster.cpp"

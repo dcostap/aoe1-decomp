@@ -11,18 +11,7 @@
 //   all ctor_temp variants stayed in same 36% group without include context.
 // Added game_globals include context: scheduling matched exactly. MATCH.
 
-#include "../../include/game_globals.h"
-
-class XYZ {
-public:
-    int xValue;
-    int yValue;
-    int zValue;
-
-    XYZ();
-    XYZ(int x, int y, int z);
-    XYZ operator+(const XYZ& other) const;
-};
+#include "../../include/point_context.h"
 
 XYZ XYZ::operator+(const XYZ& other) const {
     XYZ tmp(xValue + other.xValue, yValue + other.yValue, zValue + other.zValue);

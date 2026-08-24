@@ -10,7 +10,9 @@
 // tried top-declared locals plus gotos to force original shared fail/success tails; it moved fail tail later but VC5 still emits add/test for state-5 and success block remains shifted
 
 #include "../../include/game_globals.h"
+#include "../../include/tact_tek_context.h"
 
+#ifndef AOE1_TACT_TEK_CONTEXT_H
 #define V_DUMMY(N) virtual void d##N()
 
 class RGE_Action_Object {
@@ -94,6 +96,7 @@ class TRIBE_Action_Make_Tech : public RGE_Action {
 public:
     unsigned char update();
 };
+#endif
 
 unsigned char TRIBE_Action_Make_Tech::update()
 {
@@ -115,21 +118,21 @@ unsigned char TRIBE_Action_Make_Tech::update()
 
             TRIBE_Player_Tech* pt = *(TRIBE_Player_Tech**)((char*)this->action_obj->obj_ptr + 0x220);
             if (!pt->research(this->tech_id, val)) {
-                this->vfn23(1);
+                this->set_state(1);
 
                 RGE_Action_Object* action_obj = this->action_obj;
                 RGE_Base_Game* base_game = (RGE_Base_Game*)rge_base_game;
                 float f1 = *(float*)((char*)action_obj + 0x3C);
                 float f2 = *(float*)((char*)action_obj + 0x38);
 
-                base_game->vfn16(
+                base_game->notification(
                     0x64,
                     *(short*)((char*)action_obj->obj_ptr + 0x4A), this->tech_id,
                     (int)f2, (int)f1);
 
-                ((RGE_Scenario*)this->action_obj->obj_ptr)->vfn71((int)this->tech_id, this->action_obj->player_id, this->unique_id);
+                ((TRIBE_Player*)this->action_obj->obj_ptr)->registerResearch((int)this->tech_id, this->action_obj->player_id, this->unique_id);
 
-                this->action_obj->vfn82(
+                this->action_obj->notify(
                     this->action_obj->player_id, this->action_obj->player_id,
                     0x1FA, 0x26C, 0, 0);
 

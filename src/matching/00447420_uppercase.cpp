@@ -1,5 +1,6 @@
 extern "C" int __cdecl toupper(int c);
 
+#ifndef DSTRING_TU_CONTEXT
 class DString {
 public:
     char* stringValue;
@@ -11,6 +12,7 @@ public:
     int length(void) const;
     void uppercase(void);
 };
+#endif
 
 void DString::uppercase(void) {
     int index;

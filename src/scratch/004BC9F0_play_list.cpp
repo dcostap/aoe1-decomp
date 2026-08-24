@@ -1,3 +1,4 @@
+#ifndef SOUNDDRV_CANONICAL_TU
 class TDigital_pl {
 public:
     void play(void);
@@ -25,3 +26,19 @@ void TSound_Driver_pl::play_list(void) {
         } while (i < this->num_sounds);
     }
 }
+#else
+void TSound_Driver::play_list(void) {
+    int i;
+    TDigital** sound;
+
+    i = 0;
+    if (0 < this->play_list_count) {
+        sound = this->sound_play_list;
+        do {
+            (*sound)->play();
+            i = i + 1;
+            sound = sound + 1;
+        } while (i < this->play_list_count);
+    }
+}
+#endif

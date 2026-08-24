@@ -1,5 +1,6 @@
 #include <windows.h>
 
+#ifndef SOUNDDRV_CANONICAL_TU
 class TSound_Driver {
 public:
     unsigned char ready;
@@ -18,6 +19,7 @@ public:
     void set_volume(long param_1, int param_2);
     void close_mixer(void);
 };
+#endif
 
 void TSound_Driver::close_mixer(void) {
     if (this->mixer_open != 0) {

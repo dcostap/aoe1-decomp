@@ -7,9 +7,11 @@
 // - draft 2: void-cast xPosition/yPosition → same register allocation issue
 // - draft 3: no locals, inline math in each branch → 84.5% diff, wrong structure (TEasy_Panel::setup called twice)
 // - draft 4: restored single-call form, still ~79% diff
-// Remaining: VC5 register allocation fundamentally differs from original.
-// Left in scratch until TU-context can unlock the right codegen family.
+// The authentic pnl_dlg.cpp wrapper restores the exact codegen family.
+// BINARY NOTE: The reviewed +0x40 parent and +0x47C saved-child accesses
+// preserve the exact ordered stores in this module's VC5 context.
 
+#ifndef PNL_DLG_TU_CONTEXT
 #include "..\..\include\game_globals.h"
 
 class TDrawArea {
@@ -21,8 +23,11 @@ public:
 
 class TPanel {
 public:
-    char gap_00[0x3C];
-    int curr_child; // +0x3C
+    virtual ~TPanel();
+    char gap_04[0x38];
+    TPanel* curr_child; // +0x3C
+    TPanel* parent_panel; // +0x40
+    char gap_44[0xB0];
 
     long width();
     long height();
@@ -39,22 +44,19 @@ public:
 
 TPanelSystem panel_system;
 
-class TEasy_Panel {
+class TEasy_Panel : public TPanel {
 public:
-    virtual ~TEasy_Panel();
-    virtual void dummy1();
-    virtual void dummy2();
-    virtual void dummy3();
-    virtual void setTitle(unsigned char);
-    char gap_04[0x474];
+    char gap_F4[0x384];
     int setup(TDrawArea* param_1, TPanel* param_2, char* param_5, long param_6, int zero, long center_x, long center_y, long param_3, long param_4, int param_7);
 };
 
 class TDialogPanel : public TEasy_Panel {
 public:
-    char gap[0x18];
+    void* dlg_wnd;
+    TPanel* save_parent_child;
     virtual int setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, char* param_5, long param_6, int param_7);
 };
+#endif
 
 int TDialogPanel::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, char* param_5, long param_6, int param_7)
 {
@@ -76,9 +78,9 @@ int TDialogPanel::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long 
         return 0;
     }
 
-    TPanel* p = *(TPanel**)((char*)this + 0x40);
+    TPanel* p = this->parent_panel;
     if (p) {
-        *(int*)((char*)this + 0x47C) = p->curr_child;
+        this->save_parent_child = p->curr_child;
         p->set_curr_child((TPanel*)this);
     }
 

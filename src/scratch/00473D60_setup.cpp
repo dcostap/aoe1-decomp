@@ -2,77 +2,82 @@
 // Source: pnl_dlg.cpp lines 87-124
 // Size: 211 bytes
 //
-// Attempt log:
-// Probe 1: quick try
-
+// BINARY NOTE: This overload uses a byte parameter and calls the inherited
+// set_color virtual at vtable offset 0x10 before z-order and modal setup.
+#ifndef PNL_DLG_TU_CONTEXT
 #include "..\..\include\game_globals.h"
+
+class TDrawArea {
+public:
+    char gap_00[0x18];
+    long Width;
+    long Height;
+};
 
 class TPanel {
 public:
-    char _gap_04[0x3C];
-    int child_panel;
-    char _gap_44[0x10];
-    virtual ~TPanel();
-    void set_curr_child(TPanel* child);
-    void set_z_order(int p1, int p2);
+    char gap_00[0x3C];
+    TPanel* curr_child;
+    TPanel* parent_panel;
+    long width();
+    long height();
+    void set_curr_child(TPanel*);
+    void set_z_order(char, int);
+    virtual void set_color(unsigned char);
 };
 
 class TEasy_Panel : public TPanel {
 public:
-    char _gap_54[0x424];
-    TEasy_Panel(char* param);
-    virtual ~TEasy_Panel();
+    char gap_F4[0x384];
+    long setup(TDrawArea*, TPanel*, char*, long, int, long, long, long, long, int);
 };
 
 class TDialogPanel : public TEasy_Panel {
 public:
-    int dlg_wnd;           // +0x478
-    int save_parent_child; // +0x47C
-    int text_font_id;      // +0x480
-    int input_font_id;     // +0x484
-    int button_font_id;    // +0x488
-    int button_sound_id;   // +0x48C
-
-    TDialogPanel(char* param);
-    virtual ~TDialogPanel();
-    virtual int setup(void* p1, TPanel* p2, int p3, int p4, int p5, int p6);
+    int error_code;
+    int gap_DC[0x27];
+    TPanel* save_parent_child;
+    virtual int setup(TDrawArea*, TPanel*, long, long, unsigned char, int);
 };
 
-// panel_system extern
-extern struct TPanelSystem {
-    char _gap_00[4];
-    void setModalPanel(TPanel* panel);
-} panel_system;
+class TPanelSystem {
+public:
+    void setModalPanel(TPanel*);
+};
 
-int TDialogPanel::setup(void* draw_area, TPanel* parent, int p3, int p4, int p5, int p6)
+extern TPanelSystem panel_system;
+#endif
+
+int TDialogPanel::setup(TDrawArea* draw_area, TPanel* parent, long width, long height,
+                        unsigned char color, int panel_type)
 {
-    int w, h;
+    int panel_width;
+    int panel_height;
+
     if (parent) {
-        w = parent->width();
-        h = parent->height();
+        panel_width = parent->width();
+        panel_height = parent->height();
     } else {
-        w = *(int*)((char*)draw_area + 0x18);  // draw_area->Width
-        h = *(int*)((char*)draw_area + 0x1C);  // draw_area->Height
+        panel_width = draw_area->Width;
+        panel_height = draw_area->Height;
     }
 
-    int cx = w / 2 - p3 / 2;
-    int cy = h / 2 - p4 / 2;
-
-    int result = ((TEasy_Panel*)this)->setup(draw_area, parent, (char*)0, -1, 0, cx, cy, p3, p4, p6);
-    if (result == 0) {
-        *(int*)((char*)this + 0xD8) = 1;
+    if (((TEasy_Panel*)this)->setup(draw_area, parent, (char*)0, -1, 0,
+                                    panel_width / 2 - width / 2,
+                                    panel_height / 2 - height / 2,
+                                    width, height, panel_type) == 0) {
+        this->error_code = 1;
         return 0;
     }
 
-    // Virtual call at slot 0x10 with p5 as arg
-    ((void (*)(int))(*(void***)this)[4])(p5);
-
+    this->set_color(color);
     this->set_z_order(1, 0);
     panel_system.setModalPanel((TPanel*)this);
 
-    if (this->child_panel) {
-        this->save_parent_child = *(int*)(this->child_panel + 0x3C);
-        ((TPanel*)this->child_panel)->set_curr_child((TPanel*)this);
+    TPanel* old_parent = this->parent_panel;
+    if (old_parent) {
+        this->save_parent_child = old_parent->curr_child;
+        old_parent->set_curr_child((TPanel*)this);
     }
 
     return 1;

@@ -1,7 +1,7 @@
 // scr_cred.cpp owners in PDB source order.
-// 00492FB0 retains its reviewed x87 drift. 00493160 remains standalone:
-// grouped VC5 merges one TextOutA tail and loses an oracle call site.
-// All other listed owners are exact anchors.
+// 00492FB0 retains its reviewed x87 drift. 00493160 is included as the
+// observed scratch owner: grouped VC5 merges one TextOutA tail and loses an
+// oracle call site. The other listed normal owners are exact anchors.
 // The scalar deleting destructor at 00492950 has no source-line owner and is
 // intentionally excluded.
 #include "../include/scr_cred_context.h"
@@ -18,5 +18,6 @@
 #include "matching/00492F80_set_text.cpp"
 #include "accepted_drift/00492FB0_handle_idle.cpp"
 #include "matching/00493070_draw.cpp"
+#include "scratch/00493160_draw_scrolled_line.cpp"
 #include "matching/00493420_RGE_fade_palette_start.cpp"
 #include "matching/00493540_RGE_fade_palette_step.cpp"

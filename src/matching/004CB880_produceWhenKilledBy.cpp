@@ -1,3 +1,4 @@
+#ifndef T_C_OBJ_CONTEXT_H
 class TRIBE_Combat_Object_Type {
 public:
     char gap_00[0x14];
@@ -12,6 +13,11 @@ public:
 
     unsigned char produceWhenKilledBy(int cause) const;
 };
+#endif
+
+#ifdef T_C_OBJ_CONTEXT_H
+#define type type_info
+#endif
 
 unsigned char TRIBE_Combat_Object::produceWhenKilledBy(int cause) const {
     int object_class;
@@ -25,3 +31,7 @@ unsigned char TRIBE_Combat_Object::produceWhenKilledBy(int cause) const {
     }
     return 1;
 }
+
+#ifdef T_C_OBJ_CONTEXT_H
+#undef type
+#endif

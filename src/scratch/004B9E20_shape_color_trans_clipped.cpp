@@ -46,6 +46,7 @@
 // align; the first structural gap remains the saved row-base allocation at
 // +005E. No inline asm or compiler-steering form was retained.
 
+#ifndef AOE1_SHAPE_CONTEXT_H
 typedef unsigned char byte;
 #include <string.h>
 #include <memory.h>
@@ -72,6 +73,7 @@ public:
     Shape_Header* shape_header;
     byte shape_color_trans_clipped(TDrawArea* draw_area, long shape_x1, long shape_y1, long shape_idx, long clip_x0, long clip_y0, long clip_x1, long clip_y1, byte* table);
 };
+#endif
 
 byte TShape::shape_color_trans_clipped(TDrawArea* draw_area, long shape_x1, long shape_y1, long shape_idx, long clip_x0, long clip_y0, long clip_x1, long clip_y1, byte* table)
 {

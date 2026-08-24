@@ -4,6 +4,7 @@
 // rsp used: config/flags/004CA510_create_action_list.rsp = /nologo /c /O2 /Oy /GX
 // target shape: return new TRIBE_Action_List(this);
 
+#ifndef T_C_OBJ_CONTEXT_H
 class RGE_Action_Object;
 
 class RGE_Action_List {
@@ -29,6 +30,7 @@ class TRIBE_Combat_Object : public RGE_Action_Object {
 public:
     RGE_Action_List* create_action_list(void);
 };
+#endif
 
 RGE_Action_List* TRIBE_Combat_Object::create_action_list(void) {
     return new TRIBE_Action_List(this);

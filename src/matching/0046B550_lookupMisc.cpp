@@ -1,3 +1,4 @@
+#ifndef PATHSYS_TU_CONTEXT
 class PathingSystem {
 public:
     char gap_00[0x10DE28];
@@ -5,6 +6,7 @@ public:
 
     unsigned char lookupMisc(int row, int column);
 };
+#endif
 
 unsigned char PathingSystem::lookupMisc(int row, int column) {
     return this->miscValue[row][column];

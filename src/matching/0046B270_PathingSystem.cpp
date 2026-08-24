@@ -2,6 +2,7 @@
 // pathsys.cpp lines 142-144
 // EH frame (/GX)
 
+#ifndef PATHSYS_TU_CONTEXT
 void operator delete(void* ptr);
 
 class IntList {
@@ -30,6 +31,7 @@ public:
     char gap_11DC74[0x70];
     IntList currentUnobstructibles;  // +0x11DCE4
 };
+#endif
 
 PathingSystem::~PathingSystem()
 {

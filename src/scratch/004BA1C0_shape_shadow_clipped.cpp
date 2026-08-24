@@ -38,6 +38,7 @@
 //   the open lead is a natural source form that gives p the draw-area home and
 //   table EBP without raw aliases or compiler-steering constructs.
 
+#ifndef AOE1_SHAPE_CONTEXT_H
 typedef unsigned char byte;
 
 struct TDrawArea {
@@ -68,8 +69,9 @@ public:
 
     byte shape_shadow_clipped(TDrawArea* draw_area, long shape_x1, long shape_y1,
                               long clip_x0, long clip_y0, long clip_x1, long clip_y1,
-                              byte* table);
+                                     byte* table);
 };
+#endif
 
 #define SHADOW_COPY(dst_, end_, table_) \
     while ((dst_) < (end_)) { \

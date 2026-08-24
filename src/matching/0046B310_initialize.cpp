@@ -1,3 +1,4 @@
+#ifndef PATHSYS_TU_CONTEXT
 class RGE_Map {
 public:
     void* vtable_ptr;
@@ -21,6 +22,7 @@ public:
 
     int initialize(int xSize, int ySize, RGE_Map* map, RGE_Game_World* world);
 };
+#endif
 
 int PathingSystem::initialize(int xSize, int ySize, RGE_Map* map, RGE_Game_World* world) {
     mapValue = map;

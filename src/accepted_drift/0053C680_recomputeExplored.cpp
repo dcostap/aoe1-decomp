@@ -13,6 +13,7 @@
 //   Without the reference (plain pointer), VC5 optimizes away the two-step
 //   LEA+MOV and produces direct mov, losing push ebp and cmp ebx,edi.
 
+#ifndef AOE1_VISIBLE_TU_CONTEXT_H
 class RGE_Visible_Map {
 public:
     unsigned char** map_offsets;
@@ -26,6 +27,7 @@ public:
 
     void recomputeExplored(void);
 };
+#endif
 
 void RGE_Visible_Map::recomputeExplored(void) {
     int y;

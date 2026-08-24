@@ -33,6 +33,7 @@
 // Current exact natural candidate: source, flags, owner symbol, ordered calls, frame, and positional bytes all match without synthetic temporaries, volatility, or assembly.
 // FLAGS: config/flags/00487710_init.rsp (/nologo /c /O2 /Oy /GX)
 
+#ifndef RMM_TDBC_SHARED_CONTEXT
 class RGE_Map;
 class RGE_Game_World;
 class RGE_Random_Map_Module;
@@ -93,6 +94,7 @@ public:
     RGE_Controller_Hot_Spots hot_spot_data[99];
     long hot_spot_count;
 };
+#endif
 
 unsigned char TRIBE_RMM_Database_Controller::init(RGE_Map* p1, RGE_Game_World* p2, unsigned char p3, long p4, unsigned char p5)
 {
@@ -104,7 +106,7 @@ unsigned char TRIBE_RMM_Database_Controller::init(RGE_Map* p1, RGE_Game_World* p
     if (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_tdbc.cpp", 0x40) > 0x1fff) {
         long base_cliff_size;
         long cliff_size_variance;
-        long size = this->map_size;
+        long size = this->map_width;
         if (size <= 0x48) { base_cliff_size = 3; cliff_size_variance = 10; }
         else if (size <= 0x60) { base_cliff_size = 4; cliff_size_variance = 12; }
         else if (size <= 0x78) { base_cliff_size = 6; cliff_size_variance = 14; }
@@ -130,11 +132,11 @@ unsigned char TRIBE_RMM_Database_Controller::init(RGE_Map* p1, RGE_Game_World* p
         else cliff_info.cliff_terrain_spacing = (cliff_size_variance - 3) / 2;
         cliff_info.cliff_size_variance = cliff_size_variance - cliff_info.cliff_terrain_spacing;
 
-        long n = this->hot_spot_count;
+        long n = this->terrain_info.hot_spot_num;
         cliff_info.hot_spot_num = n;
         if (n > 0) {
             long* dst = &cliff_info.hot_spots[0].radius;
-            long* src = &this->hot_spot_data[0].y;
+            long* src = &this->terrain_info.hot_spots[0].y;
             do {
                 dst[-1] = src[-1];
                 dst[0] = src[0];

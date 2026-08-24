@@ -8,7 +8,9 @@
 // applied sibling object layout and typed RGE_Base_Game notify; edit diff improved, but EH prolog still has extra EDI save and destructor tail/register topology remains broad
 
 #include "../../include/game_globals.h"
+#include "../../include/tact_tek_context.h"
 
+#ifndef AOE1_TACT_TEK_CONTEXT_H
 #define V_DUMMY(N) virtual void d##N()
 
 class RGE_Action_Object {
@@ -94,6 +96,7 @@ class TRIBE_Action_Make_Tech : public RGE_Action {
 public:
     ~TRIBE_Action_Make_Tech();
 };
+#endif
 
 TRIBE_Action_Make_Tech::~TRIBE_Action_Make_Tech()
 {
@@ -104,13 +107,13 @@ TRIBE_Action_Make_Tech::~TRIBE_Action_Make_Tech()
         // Check game state
         unsigned char game_state = *(unsigned char*)(*(int*)((char*)rge_base_game + 0x3F4) + 0x1D);
         if (game_state == 0) {
-            ((RGE_Base_Game*)rge_base_game)->vfn16(
+            ((RGE_Base_Game*)rge_base_game)->notification(
                 0x65, *(short*)((char*)this->action_obj->obj_ptr + 0x4A),
                 this->tech_id, 0, 0);
 
-            ((RGE_Scenario*)this->action_obj->obj_ptr)->vfn70((int)this->tech_id, this->action_obj->player_id, -1, this->unique_id);
+            ((TRIBE_Player*)this->action_obj->obj_ptr)->cancelResearch((int)this->tech_id, this->action_obj->player_id, -1, this->unique_id);
 
-            this->action_obj->vfn82(
+            this->action_obj->notify(
                 this->action_obj->player_id, this->action_obj->player_id,
                 0x1F9, 0x26C, 0, 0);
         }

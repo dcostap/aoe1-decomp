@@ -7,6 +7,7 @@
 //     Diff: 90.3%. Issues: redundant double tests from `if`+`for`, instruction reordering.
 // [3] Remove outer/inner `if` guards, just use `for` loops to match original single-test pattern.
 
+#ifndef RMM_TDBC_SHARED_CONTEXT
 #include "../../include/game_types.h"
 
 // Local class stubs for this function.
@@ -28,6 +29,7 @@ class TRIBE_RMM_Database_Controller : public RGE_RMM_Database_Controller {
 public:
     unsigned char generate();
 };
+#endif
 
 unsigned char TRIBE_RMM_Database_Controller::generate() {
     unsigned char result = RGE_RMM_Database_Controller::generate();

@@ -7,6 +7,7 @@ extern "C" {
     void rge_write(int fd, void* buf, int size);
 }
 
+#ifndef T_C_OBJ_CONTEXT_H
 struct RGE_Combat_Object_base {
     char base[0x1C4];
     void save(int fd);
@@ -36,6 +37,7 @@ struct TRIBE_Combat_Object {
     
     void save(int fd);
 };
+#endif
 
 void TRIBE_Combat_Object::save(int fd)
 {

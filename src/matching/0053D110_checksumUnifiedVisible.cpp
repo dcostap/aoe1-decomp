@@ -1,5 +1,6 @@
 extern unsigned long* unified_map_offsets[256];
 
+#ifndef AOE1_VISIBLE_TU_CONTEXT_H
 class RGE_Visible_Map {
 public:
     char gap_00[0x14];
@@ -8,6 +9,7 @@ public:
 
     unsigned long checksumUnifiedVisible(void);
 };
+#endif
 
 unsigned long RGE_Visible_Map::checksumUnifiedVisible(void) {
     unsigned long value;

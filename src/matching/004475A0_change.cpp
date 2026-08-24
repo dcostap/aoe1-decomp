@@ -1,3 +1,4 @@
+#ifndef DSTRING_TU_CONTEXT
 class DString {
 public:
     char* stringValue;
@@ -8,6 +9,7 @@ public:
 
     void change(char from, char to);
 };
+#endif
 
 void DString::change(char from, char to) {
     long i;

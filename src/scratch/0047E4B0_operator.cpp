@@ -1,9 +1,4 @@
-class XYZ {
-public:
-    int xValue;
-    int yValue;
-    int zValue;
-};
+#include "../../include/point_context.h"
 
 int __cdecl operator==(const XYZ& a, const XYZ& b) {
     if (a.xValue == b.xValue) {

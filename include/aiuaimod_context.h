@@ -495,8 +495,11 @@ public:
     // VC5 reverses these overload entries. The no-argument method is +0x108.
     virtual float damageCapability();
     virtual float damageCapability(RGE_Static_Object*);
-#ifdef AOE1_AIUAIMOD_PROCESS_NOTIFY_CONTEXT
+#if defined(AOE1_AIUAIMOD_PROCESS_NOTIFY_CONTEXT) || defined(AOE1_AIUAIMOD_COMPLETE_TU)
     virtual float weaponRange();
+#if defined(AOE1_AIUAIMOD_COMPLETE_TU)
+    virtual float weaponRange(int);
+#endif
 #else
     virtual float weaponRange(int);
 #endif
@@ -535,8 +538,11 @@ public:
     virtual int vpad_190();
     // VC5 reverses these overload entries. The integer form stays at +0x194.
     virtual int canPath(XYZPoint, float, int, float*, int, int, int);
-#ifdef AOE1_AIUAIMOD_PROCESS_NOTIFY_CONTEXT
+#if defined(AOE1_AIUAIMOD_PROCESS_NOTIFY_CONTEXT) || defined(AOE1_AIUAIMOD_COMPLETE_TU)
     virtual int canPath(int, float, float*, int, int, int);
+#if defined(AOE1_AIUAIMOD_COMPLETE_TU)
+    virtual int canPath(int, float);
+#endif
 #else
     virtual int canPath(int, float);
 #endif
@@ -583,7 +589,7 @@ public:
     unsigned char lookupZone(int, int);
     float distance_to_object(RGE_Static_Object* object);
     float distance_to_position(float x, float y, float z);
-#ifdef AOE1_AIUAIMOD_PROCESS_NOTIFY_CONTEXT
+#if defined(AOE1_AIUAIMOD_PROCESS_NOTIFY_CONTEXT) || defined(AOE1_AIUAIMOD_COMPLETE_TU)
     int commanderRemoveFromGroup(int objectID);
 #endif
 };
@@ -612,7 +618,7 @@ public:
     virtual int closestObject(int, int, int, int, int*);
     virtual int closestResourceObject(int, int*);
     virtual int closestUndiscoveredTile(int*, int*, int);
-    virtual void logDebug(char*);
+    virtual void logDebug(char*, ...);
     virtual int canAttackUnit(RGE_Static_Object*);
     virtual int canAttackUnitAtNeutrality(int);
     virtual int stopObject(int);
@@ -652,6 +658,15 @@ protected:
     virtual int processRetryableOrder();
     virtual int bestUnitToHeal(int, float*);
     virtual int bestUnitToConvert(float*);
+#if defined(AOE1_AIUAIMOD_COMPLETE_TU)
+    int get_type();
+    int find_unit(int, int, int);
+    int do_stuff(int, int);
+    int call28(int);
+    int call40(int, int, int, int, int);
+    int call64(int, int);
+    int call68(int, int);
+#endif
 
 public:
     RGE_Static_Object* objectValue;

@@ -16,6 +16,7 @@
 
 extern float DAT_00574ca0;
 
+#ifndef T_C_OBJ_CONTEXT_H
 class RGE_Player;
 class RGE_Game_World;
 class RGE_Map;
@@ -146,6 +147,7 @@ class TRIBE_Combat_Object : public RGE_Combat_Object {
 public:
     void reposition_artifact();
 };
+#endif
 
 void TRIBE_Combat_Object::reposition_artifact()
 {

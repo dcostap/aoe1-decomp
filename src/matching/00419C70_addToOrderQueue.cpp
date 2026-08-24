@@ -13,6 +13,7 @@
 //   preserving the exact boundary, direct allocation calls, ret 28h cleanup,
 //   queue rereads, publication order, and null-fault order.
 
+#ifndef AOE1_AIUAIMOD_COMPLETE_TU
 struct OrderEvent {
     int issuer;
     int orderType;
@@ -43,6 +44,7 @@ protected:
                         float p5, float p6, float p7, float p8,
                         int p9, int p10);
 };
+#endif
 
 int UnitAIModule::addToOrderQueue(int p1, int p2, int p3, int p4,
                                   float p5, float p6, float p7, float p8,

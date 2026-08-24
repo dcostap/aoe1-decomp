@@ -54,6 +54,7 @@
 
 extern float DAT_00574C98;
 
+#ifndef T_C_OBJ_CONTEXT_H
 class RGE_Map;
 
 class RGE_World {
@@ -256,6 +257,7 @@ public:
     virtual void give_building_attribute(short, short);
     virtual void setup(unsigned short);
 };
+#endif
 
 int TRIBE_Combat_Object::higher_than_target(RGE_Static_Object* target)
 {

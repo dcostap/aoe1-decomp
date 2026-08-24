@@ -4,8 +4,13 @@
 // Having both explicit vtable_ptr AND virtual functions creates
 // a double-vtable shift (+4 on all derived field offsets).
 
+#ifndef PNL_EDIT_TU_CONTEXT
 extern "C" __declspec(dllimport) int __stdcall InvalidateRect(void* hwnd, const void* rect, int erase);
+#else
+extern "C" __declspec(dllimport) int __stdcall InvalidateRect(HWND hwnd, const tagRECT* rect, int erase);
+#endif
 
+#ifndef PNL_EDIT_TU_CONTEXT
 struct tagRECT {
     long left;
     long top;
@@ -90,6 +95,7 @@ public:
 
     virtual void set_redraw(int mode);
 };
+#endif
 
 void TEditPanel::set_redraw(int mode) {
     TPanel::set_redraw(1);

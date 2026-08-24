@@ -4,6 +4,7 @@
 
 extern unsigned long* unified_map_offsets[256];
 
+#ifndef AOE1_VISIBLE_TU_CONTEXT_H
 class RGE_Unified_Visible_Map {
 public:
     int mapWidth;
@@ -12,6 +13,7 @@ public:
 
     void Set_Map_Offsets(void);
 };
+#endif
 
 void RGE_Unified_Visible_Map::Set_Map_Offsets(void) {
     int y = 0;

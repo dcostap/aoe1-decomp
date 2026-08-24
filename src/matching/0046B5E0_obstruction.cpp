@@ -1,5 +1,6 @@
-extern unsigned char ObstructionValueShift[4];
+extern const unsigned char ObstructionValueShift[4];
 
+#ifndef PATHSYS_TU_CONTEXT
 class PathingSystem {
 public:
     char gap_00[0xCE624];
@@ -7,6 +8,7 @@ public:
 
     unsigned char obstruction(int x, int y);
 };
+#endif
 
 unsigned char PathingSystem::obstruction(int x, int y) {
     return (unsigned char)(this->obstructionValue[(y >> 2) + x * 0xFF] >> ObstructionValueShift[y & 3]) & 3;

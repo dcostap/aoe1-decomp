@@ -88,6 +88,7 @@
 // localized behavior-equivalent FPU-instruction drift; promotion to accepted_drift
 // or further flag/context work is the orchestrator's call.
 
+#ifndef T_C_OBJ_CONTEXT_H
 struct TRIBE_Player;
 
 struct TRIBE_Master_Combat_Object {
@@ -118,6 +119,12 @@ struct TRIBE_Player {
 struct TRIBE_Combat_Object : RGE_Static_Object {
     unsigned char heal(float amount);
 };
+#endif
+
+#ifdef T_C_OBJ_CONTEXT_H
+#define hit_points hp
+#define player owner
+#endif
 
 unsigned char TRIBE_Combat_Object::heal(float amount)
 {
@@ -139,3 +146,8 @@ unsigned char TRIBE_Combat_Object::heal(float amount)
     }
     return 2;
 }
+
+#ifdef T_C_OBJ_CONTEXT_H
+#undef player
+#undef hit_points
+#endif

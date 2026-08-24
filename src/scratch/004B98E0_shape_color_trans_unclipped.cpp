@@ -227,6 +227,7 @@ extern "C" void* __cdecl memset(void*, int, unsigned int);
 
 #pragma function(memset)
 
+#ifndef AOE1_SHAPE_CONTEXT_H
 typedef unsigned char uchar;
 
 class Shape_Header {
@@ -306,6 +307,7 @@ public:
 private:
     uchar shape_color_trans_unclipped(TDrawArea* td, long p2, long p3, long p4, uchar* pal);
 };
+#endif
 
 uchar TShape::shape_color_trans_unclipped(TDrawArea* td, long p2, long p3, long p4, uchar* pal)
 {

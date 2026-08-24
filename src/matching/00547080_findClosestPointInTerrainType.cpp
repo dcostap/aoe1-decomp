@@ -20,6 +20,7 @@
 //   block topology. Reversed best-distance operands then closed the final
 //   cmp/jcc byte pair. Exact under default flags.
 
+#ifndef ZONE_MAP_TU_BUILD
 struct XYPoint {
     int x;
     int y;
@@ -49,6 +50,7 @@ public:
 
     int findClosestPointInTerrainType(XYPoint point, XYPoint* out, int a, int b, int c);
 };
+#endif
 
 int RGE_Zone_Map::findClosestPointInTerrainType(XYPoint point, XYPoint* out, int a, int b, int c)
 {

@@ -88,6 +88,7 @@
 //   No credible exact-matching lead remains after this bounded assignment; any further route
 //   would require genuinely new whole-TU/compiler-IR evidence rather than another spelling lab.
 
+#ifndef RMM_TDBC_SHARED_CONTEXT
 typedef unsigned char uchar;
 
 extern "C" int __cdecl debug_rand(char* file, int line);
@@ -227,6 +228,12 @@ public:
     virtual uchar init(RGE_Map*, RGE_Game_World*, uchar, long, uchar);
     virtual uchar de_init();
 };
+#endif
+
+#ifdef RMM_TDBC_SHARED_CONTEXT
+#define rge_base_game (*(TRIBE_Game**)0x62C574)
+#define debug_log (*(TDebuggingLog**)0x62C4FC)
+#endif
 
 void TRIBE_RMM_Database_Controller::add_object_module()
 {
@@ -425,5 +432,9 @@ object_exclusion_done:
     }
 
     int r = debug_rand((char*)0x585E04, 0x236);
+#ifdef RMM_TDBC_SHARED_CONTEXT
+    debug_log->Log((char*)0x585E7C, r);
+#else
     TDebuggingLog::Log(debug_log, (char*)0x585E7C, r);
+#endif
 }

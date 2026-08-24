@@ -1,12 +1,11 @@
-#ifndef SCR_CJ_CONTEXT_H
-#define SCR_CJ_CONTEXT_H
+#ifndef SCR_CJ_GROUP_CONTEXT_H
+#define SCR_CJ_GROUP_CONTEXT_H
 
-// PDB and binary-supported scr_cj.cpp context.
-// TPanel is 0xF4; TEasy_Panel is 0x478; TScreenPanel is 0x478; and
-// TDialogPanel is 0x490. TribeJoinScreen owns fields at +0x478..+0x4AC.
-// The virtual declarations retain the proven action (+0xB4) and string
-// (+0xE4) slots. Unknown slots use period class declarations, not a manual
-// vtable or an absolute function pointer.
+// Complete scr_cj.cpp translation-unit context.
+// It overlays the proven +0x20 render-area
+// and +0x40 parent fields with the shared TPanel +0xD8 error layout. The
+// source owners use the same class and vtable surfaces in the grouped build.
+#define SCR_CJ_CONTEXT_H 1
 
 #include <stdio.h>
 #include <string.h>
@@ -31,6 +30,7 @@ class TEditPanel;
 class TRegistry {
 public:
     char* RegGetAscii(int, char*);
+    int RegSetAscii(int, const char*, unsigned char*, unsigned long);
 };
 
 class TPanel {
@@ -95,9 +95,20 @@ public:
     virtual void set_string(long id);
     virtual void set_string(char* text);
 
-    char gap_04[0xD4];
-    int setup_error;
-    char gap_DC[0x18];
+    union {
+        struct {
+            char panel_gap_04[0x1C];
+            TDrawArea* render_area;
+            char panel_gap_24[0x1C];
+            TPanel* parent_panel;
+            char panel_gap_44[0xB0];
+        };
+        struct {
+            char gap_04[0xD4];
+            int setup_error;
+            char gap_DC[0x18];
+        };
+    };
 
     TDrawArea* renderArea();
     void delete_panel(TPanel** panel);
@@ -120,7 +131,11 @@ class TListPanel : public TTextPanel {
 class TScrollBarPanel : public TPanel {
 };
 
-class TEditPanel : public TTextPanel {
+// The candidate constructor source proves a direct TPanel edit child.
+class TEditPanel : public TPanel {
+public:
+    int is_blank();
+    char* currentLine();
 };
 
 class TButtonPanel : public TPanel {
@@ -177,13 +192,25 @@ public:
               char* file, long id, int flag);
 };
 
-struct _GUID;
+struct _GUID {
+    unsigned long Data1;
+    unsigned short Data2;
+    unsigned short Data3;
+    unsigned char Data4[8];
+};
 
 class TCommunications_Handler {
 public:
+    char gap_000[0x12DC];
+    _GUID ServiceGUID;
+    char gap_12EC[0xD0];
+    unsigned long PlayerStopTurn[10];
+
     void SetPlayerHumanity(unsigned int player, int humanity);
     int JoinMultiplayerGame(_GUID* guid);
     void UnlinkToLevel(int param);
+    int SetGameTitle(char*);
+    int CreateMultiplayerGame();
 };
 
 class TCommunications_Sessions {
@@ -210,6 +237,10 @@ public:
     void enable_input();
     void draw_window();
     void close();
+    void show_status_message(int, char*, long);
+};
+
+class TRIBE_Game : public RGE_Base_Game {
 };
 
 class TPanelSystem {
@@ -218,14 +249,24 @@ public:
     int destroyPanel(char* name);
 };
 
+class TDebuggingLog {
+public:
+    void Log(char*, ...);
+};
+
 extern TCommunications_Handler* comm;
 extern TCommunications_Sessions* Sess;
-extern RGE_Base_Game* rge_base_game;
+extern TRIBE_Game* rge_base_game;
 extern TPanelSystem panel_system;
 extern TRegistry* Regs;
+extern TDebuggingLog* L;
 
 extern "C" void* __cdecl operator_delete(void* ptr);
 extern "C" unsigned long __cdecl debug_timeGetTime(char* file, int line);
+extern "C" const _GUID DPSPGUID_TCPIP;
+extern "C" int (__stdcall* const WinExec)(char*, int);
+extern "C" void* (__stdcall* const FindWindowA)(char*, char*);
+extern "C" int (__stdcall* const SendMessageA)(void*, int, int, int);
 
 class TribeJoinScreen : public TScreenPanel {
 public:
@@ -261,20 +302,6 @@ public:
 
 class TribeMPStartupScreen : public TScreenPanel {
 public:
-    TTextPanel* title;
-    TTextPanel* inputTitle;
-    TEditPanel* input;
-    TTextPanel* connectionTitle;
-    TButtonPanel* okButton;
-    TButtonPanel* cancelButton;
-    TButtonPanel* help_button;
-    TButtonPanel* close_button;
-    TListPanel* list;
-    TScrollBarPanel* scrollbar;
-    char zone_exec[255];
-    char browser_exec[255];
-    unsigned char pad_end[2];
-
     virtual ~TribeMPStartupScreen();
     TribeMPStartupScreen();
 };
@@ -288,6 +315,38 @@ public:
     TButtonPanel* cancelButton;
     virtual ~TribeMPCreateDialog();
     TribeMPCreateDialog(TPanel* parent);
+protected:
+    virtual long action(TPanel*, long, unsigned long, unsigned long);
+};
+
+class IDirectDraw {
+public:
+    virtual long __stdcall QueryInterface();
+    virtual unsigned long __stdcall AddRef();
+    virtual unsigned long __stdcall Release();
+    virtual long __stdcall Compact();
+    virtual long __stdcall CreateClipper(unsigned long, void**, void*);
+    virtual long __stdcall CreatePalette(unsigned long, void*, void**, void*);
+    virtual long __stdcall CreateSurface();
+    virtual long __stdcall DuplicateSurface();
+    virtual long __stdcall EnumDisplayModes();
+    virtual long __stdcall EnumSurfaces();
+    virtual long __stdcall FlipToGDISurface();
+};
+
+class TDrawSystem {
+public:
+    IDirectDraw* gap_00;
+    char gap_04[0x14];
+    IDirectDraw* DirDraw;
+    char gap_1C[0x45C];
+    unsigned char DrawType;
+    unsigned char ScreenMode;
+};
+
+class TDrawArea {
+public:
+    TDrawSystem* DrawSystem;
 };
 
 #endif

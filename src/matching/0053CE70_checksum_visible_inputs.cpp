@@ -1,3 +1,4 @@
+#ifndef AOE1_VISIBLE_TU_CONTEXT_H
 class RGE_Visible_Map {
 public:
     virtual ~RGE_Visible_Map();
@@ -5,6 +6,7 @@ public:
     int field_34;
     int checksum_visible_inputs();
 };
+#endif
 
 int RGE_Visible_Map::checksum_visible_inputs() {
     int v = this->field_34;

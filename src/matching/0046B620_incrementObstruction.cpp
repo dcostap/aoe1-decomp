@@ -7,6 +7,7 @@
 extern const unsigned char ObstructionValueShift[];
 extern const unsigned char ObstructionValueMask[];
 
+#ifndef PATHSYS_TU_CONTEXT
 class PathingSystem {
 public:
     char gap_00[0xCE624];
@@ -14,6 +15,7 @@ public:
 
     void incrementObstruction(int x, int y);
 };
+#endif
 
 void PathingSystem::incrementObstruction(int x, int y) {
     unsigned char* ptr = &obstructionValue[x * 255 + (y >> 2)];

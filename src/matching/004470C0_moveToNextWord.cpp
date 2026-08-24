@@ -1,5 +1,6 @@
 extern "C" int __cdecl isspace(int c);
 
+#ifndef DSTRING_TU_CONTEXT
 class DString {
 public:
     char* stringValue;
@@ -10,6 +11,7 @@ public:
 
     void moveToNextWord(void);
 };
+#endif
 
 void DString::moveToNextWord(void) {
     while ((isspace((int)this->stringValue[this->indexValue]) != 0) && (this->indexValue < this->lengthValue)) {

@@ -1,4 +1,7 @@
 // ACCEPTED_DRIFT: constructor tail store-order drift only; the same vptr/type/tech/player fields are written after the same base-constructor call and before the same this return.
+#include "../../include/tact_tek_context.h"
+
+#ifndef AOE1_TACT_TEK_CONTEXT_H
 class RGE_Action_Object;
 
 class RGE_Action {
@@ -19,6 +22,7 @@ public:
 
     TRIBE_Action_Make_Tech(RGE_Action_Object* object, short tech_id, int unique_id);
 };
+#endif
 
 TRIBE_Action_Make_Tech::TRIBE_Action_Make_Tech(RGE_Action_Object* object, short tech_id, int unique_id)
     : RGE_Action(object, 1) {

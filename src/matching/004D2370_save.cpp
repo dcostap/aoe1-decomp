@@ -1,3 +1,6 @@
+#include "../../include/tact_tek_context.h"
+
+#ifndef AOE1_TACT_TEK_CONTEXT_H
 void rge_write(int file, void* data, int size);
 
 class RGE_Action {
@@ -15,6 +18,7 @@ public:
 
     void save(int file);
 };
+#endif
 
 void TRIBE_Action_Make_Tech::save(int file) {
     RGE_Action::save(file);

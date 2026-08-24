@@ -63,6 +63,7 @@
 // shared success tail. Each clone performs the same FS unlink and register/stack
 // cleanup, with no additional observable access.
 
+#ifndef T_C_OBJ_CONTEXT_H
 class RGE_Action;
 class RGE_Action_List;
 class RGE_Game_World;
@@ -207,6 +208,7 @@ public:
 
     virtual int repair(int id, int flag);
 };
+#endif
 
 int TRIBE_Combat_Object::repair(int id, int flag) {
     void* task;

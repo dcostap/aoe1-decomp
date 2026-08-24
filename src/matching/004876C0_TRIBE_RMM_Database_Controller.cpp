@@ -1,3 +1,4 @@
+#ifndef RMM_TDBC_SHARED_CONTEXT
 class RGE_RMM_Database_Controller {
 public:
     virtual ~RGE_RMM_Database_Controller();
@@ -12,3 +13,8 @@ public:
 TRIBE_RMM_Database_Controller::TRIBE_RMM_Database_Controller(char* a, char* b, char* c, char* d)
     : RGE_RMM_Database_Controller(a, b, c, d) {
 }
+#else
+TRIBE_RMM_Database_Controller::TRIBE_RMM_Database_Controller(char* a, char* b, char* c, char* d)
+    : RGE_RMM_Database_Controller(a, b, c, d) {
+}
+#endif

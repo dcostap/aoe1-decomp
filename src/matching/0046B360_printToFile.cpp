@@ -32,6 +32,7 @@
 //   PDB line 197 covers the row init/increment and line 203 starts the inner
 //   loop.  This matched the target exactly at 486 bytes.
 
+#ifndef PATHSYS_TU_CONTEXT
 struct FILE;
 extern "C" FILE* __cdecl fopen(const char* filename, const char* mode);
 extern "C" int __cdecl fprintf(FILE* file, const char* format, ...);
@@ -47,6 +48,7 @@ public:
     unsigned char obstruction(int x, int y);
     void printToFile(char* filename);
 };
+#endif
 
 void PathingSystem::printToFile(char* filename)
 {

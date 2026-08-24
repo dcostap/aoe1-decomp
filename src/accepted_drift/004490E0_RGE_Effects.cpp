@@ -99,31 +99,9 @@
 //   and vptr publication. World-level new/constructor EH owners are unchanged.
 
 #include <stdlib.h>
+#include "../../include/effects_context.h"
 
 void __cdecl rge_read(int fd, void* buf, int size);
-
-struct RGE_Effect_Command {
-    unsigned char command; unsigned char _pad_0;
-    short change_num1; short change_num2; short change_num3; float change_amount;
-};
-
-struct RGE_Effect {
-    short id; char name[31]; unsigned char _pad_0;
-    short string_table_id; short effect_list_num;
-    unsigned char _pad_1[2]; RGE_Effect_Command* effect_list;
-};
-
-class RGE_Player;
-
-class RGE_Effects {
-public:
-    RGE_Effect* effects;
-    long effect_num;
-    virtual ~RGE_Effects();
-    virtual void save(int fd);
-    virtual void do_effect(short effect_id, RGE_Player* player);
-    RGE_Effects(int fd);
-};
 
 RGE_Effects::RGE_Effects(int fd) {
     int file = fd;

@@ -36,18 +36,10 @@
 // read the full change_num3 short before narrowing it for the byte parameter.
 // Case 1 reads both shorts and the float before it tests change_num1.
 
-struct RGE_Effect_Command {
-    unsigned char command; unsigned char _pad_0;
-    short change_num1; short change_num2; short change_num3; float change_amount;
-};
+#include "../../include/effects_context.h"
 
-struct RGE_Effect {
-    short id; char name[31]; unsigned char _pad_0;
-    short string_table_id; short effect_list_num;
-    unsigned char _pad_1[2]; RGE_Effect_Command* effect_list;
-};
-
-struct RGE_Player {
+class RGE_Player {
+public:
     virtual ~RGE_Player();
     virtual void v04();  virtual void v08();
     virtual void v0C();  virtual void v10();  virtual void v14();
@@ -67,13 +59,6 @@ struct RGE_Player {
     void copy_obj(short a, short b);
     void modify_tobj_delta(short a, short b, float c, unsigned char d);
     void modify_tobj_percent(short a, short b, float c, unsigned char d);
-};
-
-struct RGE_Effects {
-    virtual ~RGE_Effects();
-    virtual void save(int fd);
-    virtual void do_effect(short effect_id, RGE_Player* player);
-    RGE_Effect* effects; long effect_num;
 };
 
 void RGE_Effects::do_effect(short effect_id, RGE_Player* player) {

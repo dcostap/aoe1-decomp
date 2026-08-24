@@ -8,6 +8,7 @@
 
 extern "C" void __cdecl rge_write(int handle, void* buffer, int count);
 
+#ifndef ZONE_MAP_TU_BUILD
 class RGE_Map;
 class RGE_Zone_Map {
 public:
@@ -22,6 +23,7 @@ public:
 
     void save(int param);
 };
+#endif
 
 void RGE_Zone_Map_List::save(int param) {
     int i;

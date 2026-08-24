@@ -1,6 +1,7 @@
 // VA: 004CA640 TRIBE_Combat_Object::modify
 // PDB source: t_c_obj.cpp
 
+#ifndef T_C_OBJ_CONTEXT_H
 class RGE_Static_Object {
 public:
     virtual void modify(float value, unsigned char attribute);
@@ -30,6 +31,7 @@ public:
 
     virtual void modify(float value, unsigned char attribute);
 };
+#endif
 
 void TRIBE_Combat_Object::modify(float value, unsigned char attribute)
 {

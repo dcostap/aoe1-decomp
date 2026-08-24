@@ -74,6 +74,7 @@
 #include <string.h>
 #pragma function(memset)
 
+#ifndef AOE1_SHAPE_CONTEXT_H
 typedef unsigned char uchar;
 extern "C" void* __cdecl memset(void*, int, unsigned int);
 
@@ -114,6 +115,7 @@ public:
     void* shape_info;
     unsigned char shape_mirror_clipped(TDrawArea*,long,long,long,long,long,long);
 };
+#endif
 
 unsigned char TShape::shape_mirror_clipped(TDrawArea* area,long clip_right,long clip_top,long clip_left,long y,long x,long clip_bottom)
 {

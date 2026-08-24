@@ -1,8 +1,10 @@
+#ifndef DSTRING_TU_CONTEXT
 class DString {
 public:
-    virtual ~DString();
-    int field_4;
-    int length();
+    char* stringValue;
+    int lengthValue;
+    int length() const;
 };
+#endif
 
-int DString::length() { return this->field_4; }
+int DString::length() const { return this->lengthValue; }

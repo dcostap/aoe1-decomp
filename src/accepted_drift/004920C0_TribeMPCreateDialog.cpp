@@ -49,6 +49,7 @@
 //   134-instruction body after the initial constructor block. The remaining
 //   31 bytes are the EH/derived-vtable/field-initialization schedule.
 
+#ifndef SCR_CJ_GROUPED_TU
 #include <string.h>
 
 class TDrawArea;
@@ -108,6 +109,7 @@ public:
     virtual long action(TPanel*, long, unsigned long, unsigned long);
     TribeMPCreateDialog(TPanel* parent);
 };
+#endif
 
 TribeMPCreateDialog::TribeMPCreateDialog(TPanel* parent)
     : TDialogPanel((char*)0x586208)

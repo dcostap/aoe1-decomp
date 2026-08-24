@@ -24,6 +24,7 @@
 #include <string.h>
 #include <stdlib.h>
 
+#ifndef SOUNDDRV_CANONICAL_TU
 typedef unsigned char uchar;
 
 typedef int (__stdcall *DSCreateSoundBufferFn)(void*, void*, void**, void*);
@@ -87,6 +88,7 @@ struct WAVHEADER {
     unsigned char szDATA[4];
     unsigned long dwDataLength;
 };
+#endif
 
 extern "C" int __cdecl __open(const char* path, int flags, int mode);
 extern "C" int __cdecl close(int fd);
@@ -97,6 +99,7 @@ extern "C" void __cdecl color_log(unsigned char a, unsigned char b, int c);
 extern "C" uchar* __cdecl RESFILE_load(unsigned long type, int id, int* load_type, int* data_size);
 extern uchar sound_file_first;
 
+#ifndef SOUNDDRV_CANONICAL_TU
 class TSound_Driver {
 public:
     uchar ready;
@@ -132,6 +135,7 @@ public:
     int load(char* name, long param);
     void unload(void);
 };
+#endif
 
 int TDigital::load(char* name, long param) {
     unsigned long size1;
@@ -239,9 +243,20 @@ int TDigital::load(char* name, long param) {
             buffer_desc.dwReserved = 0;
             buffer_desc.lpwfxFormat = this->wave_info;
             direct_sound = this->sound_system->direct_sound;
+#ifdef SOUNDDRV_CANONICAL_TU
+            result = direct_sound->CreateSoundBuffer(
+#else
             result = direct_sound->vtable->CreateSoundBuffer(
-                direct_sound, &buffer_desc,
+#endif
+#ifndef SOUNDDRV_CANONICAL_TU
+                direct_sound,
+#endif
+                &buffer_desc,
+#ifdef SOUNDDRV_CANONICAL_TU
+                (LPDIRECTSOUNDBUFFER*)buffer_slot, 0);
+#else
                 (void**)buffer_slot, 0);
+#endif
             if (result != 0) {
                 this->failed = 1;
                 this->sound_buffer = 0;
@@ -253,16 +268,30 @@ int TDigital::load(char* name, long param) {
             }
 
             buffer = *buffer_slot;
+#ifdef SOUNDDRV_CANONICAL_TU
+            result = buffer->Lock(
+#else
             result = buffer->vtable->Lock(
-                buffer, 0, this->data_size, &mem1, &size1,
+#endif
+#ifndef SOUNDDRV_CANONICAL_TU
+                buffer,
+#endif
+                0, this->data_size, &mem1, &size1,
                 &mem2, &size2, 0);
             if (result == 0) {
                 memcpy(mem1, this->wave_data, size1);
                 if (size2 != 0) {
                     memcpy(mem2, this->wave_data + size1, size2);
                 }
+#ifdef SOUNDDRV_CANONICAL_TU
+                buffer->Unlock(
+#else
                 buffer->vtable->Unlock(
-                    buffer, mem1, size1, mem2, size2);
+#endif
+#ifndef SOUNDDRV_CANONICAL_TU
+                    buffer,
+#endif
+                    mem1, size1, mem2, size2);
                 free(this->wave_info);
                 this->wave_info = 0;
                 free(this->wave_data);
@@ -270,7 +299,11 @@ int TDigital::load(char* name, long param) {
                 goto success_return;
             }
             this->failed = 1;
+#ifdef SOUNDDRV_CANONICAL_TU
+            buffer->Release();
+#else
             buffer->vtable->Release(buffer);
+#endif
             *buffer_slot = 0;
             free(this->wave_info);
             this->wave_info = 0;
@@ -321,27 +354,56 @@ int TDigital::load(char* name, long param) {
                 buffer_desc.dwReserved = 0;
                 buffer_desc.lpwfxFormat = this->wave_info;
                 direct_sound = this->sound_system->direct_sound;
+#ifdef SOUNDDRV_CANONICAL_TU
+                result = direct_sound->CreateSoundBuffer(
+#else
                 result = direct_sound->vtable->CreateSoundBuffer(
-                    direct_sound, &buffer_desc,
+#endif
+#ifndef SOUNDDRV_CANONICAL_TU
+                    direct_sound,
+#endif
+                    &buffer_desc,
+#ifdef SOUNDDRV_CANONICAL_TU
+                    (LPDIRECTSOUNDBUFFER*)buffer_slot, 0);
+#else
                     (void**)buffer_slot, 0);
+#endif
                 if (result == 0) {
                     buffer = *buffer_slot;
+#ifdef SOUNDDRV_CANONICAL_TU
+                    result = buffer->Lock(
+#else
                     result = buffer->vtable->Lock(
-                        buffer, 0, this->data_size, &mem1, &size1,
+#endif
+#ifndef SOUNDDRV_CANONICAL_TU
+                        buffer,
+#endif
+                        0, this->data_size, &mem1, &size1,
                         &mem2, &size2, 0);
                     if (result == 0) {
                         memcpy(mem1, this->wave_data, size1);
                         if (size2 != 0) {
                             memcpy(mem2, this->wave_data + size1, size2);
                         }
+#ifdef SOUNDDRV_CANONICAL_TU
+                        buffer->Unlock(
+#else
                         buffer->vtable->Unlock(
-                            buffer, mem1, size1, mem2, size2);
+#endif
+#ifndef SOUNDDRV_CANONICAL_TU
+                            buffer,
+#endif
+                            mem1, size1, mem2, size2);
                         free(this->wave_info);
                         this->wave_info = 0;
                         goto success_return;
                     }
                     this->failed = 1;
+#ifdef SOUNDDRV_CANONICAL_TU
+                    buffer->Release();
+#else
                     buffer->vtable->Release(buffer);
+#endif
                 } else {
                     this->failed = 1;
                 }

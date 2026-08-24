@@ -54,10 +54,6 @@
 
 typedef unsigned char byte;
 
-struct Byte_Table {
-    byte value[256];
-};
-
 #define SHADOW_BACK(dst_, table_, count_) do { \
     transform_count_ = (unsigned int)(count_); \
     if (transform_count_ > 0) { \
@@ -67,6 +63,11 @@ struct Byte_Table {
         } while (--transform_count_); \
     } \
 } while (0)
+
+#ifndef AOE1_SHAPE_CONTEXT_H
+struct Byte_Table {
+    byte value[256];
+};
 
 struct Shape_Header {
     long bounds;
@@ -127,6 +128,7 @@ public:
     byte shape_mirror_shadow_clipped(TDrawArea*, long, long, long, long,
                                      long, long, byte*);
 };
+#endif
 
 byte TShape::shape_mirror_shadow_clipped(TDrawArea* draw_area,
                                          long shape_x1, long shape_y1,

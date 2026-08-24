@@ -1,3 +1,4 @@
+#ifndef SOUNDDRV_CANONICAL_TU
 class TSound_Driver_td;
 
 class TDigital_ctor {
@@ -22,3 +23,13 @@ TDigital_ctor* TDigital_ctor::ctor(TSound_Driver_td* owner) {
     this->loop_flag = *(int*)((char*)owner + 0x28);
     return this;
 }
+#else
+TDigital::TDigital(TDigital* owner) {
+    this->init_vars();
+    this->owner = owner;
+    this->volume = owner->volume;
+    this->pitch = owner->pitch;
+    this->pan = owner->pan;
+    this->loop = owner->loop;
+}
+#endif

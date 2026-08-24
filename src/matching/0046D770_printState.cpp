@@ -16,6 +16,7 @@
 // - Probe 3: anchored the cursor at `MGP_openPaths[1].y` with proven byte/dword
 //   offsets; exact 190-byte match.
 
+#ifndef PATHSYS_TU_CONTEXT
 typedef unsigned char uchar;
 
 #define VPAD1(n) virtual void __cdecl vpad_##n();
@@ -72,6 +73,7 @@ public:
 
     void printState(RGE_Moving_Object* obj);
 };
+#endif
 
 void PathingSystem::printState(RGE_Moving_Object* obj)
 {

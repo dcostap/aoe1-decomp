@@ -7,6 +7,7 @@
 //         out-of-range/default constructor.
 // FLAGS: config/flags/004CB8D0_initUnitAI.rsp (/GX required by original EH)
 
+#ifndef T_C_OBJ_CONTEXT_H
 class RGE_Static_Object {
 public:
     virtual ~RGE_Static_Object();
@@ -72,6 +73,7 @@ class TRIBE_Combat_Object : public RGE_Combat_Object {
 public:
     void initUnitAI();
 };
+#endif
 
 void TRIBE_Combat_Object::initUnitAI()
 {

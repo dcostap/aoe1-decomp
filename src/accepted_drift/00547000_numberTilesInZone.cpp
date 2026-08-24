@@ -13,6 +13,7 @@
 // ACCEPTED_DRIFT: behavior, frame, registers, stack slots, loops, and all other
 // bytes match. Both SIB forms address the same byte and have the same effects.
 
+#ifndef ZONE_MAP_TU_BUILD
 class RGE_Map {
 public:
     virtual ~RGE_Map();
@@ -34,6 +35,7 @@ public:
 
     int numberTilesInZone(unsigned char zone);
 };
+#endif
 
 int RGE_Zone_Map::numberTilesInZone(unsigned char zone) {
     int* cached;

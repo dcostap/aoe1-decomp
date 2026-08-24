@@ -1,7 +1,9 @@
+#ifndef AOE1_TRIG_TU_CONTEXT
 class TRIGONOMETRY {
-public:
+private:
     int RestrictAngle(int param_1);
 };
+#endif
 
 int TRIGONOMETRY::RestrictAngle(int param_1) {
     int sign = param_1 >> 31;

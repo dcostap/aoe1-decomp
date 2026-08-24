@@ -1,3 +1,4 @@
+#ifndef SOUNDDRV_CANONICAL_TU
 class IDirectSoundBuffer;
 typedef long (__stdcall *IDirectSoundBuffer_GetStatusFn)(IDirectSoundBuffer* self, unsigned long* status);
 
@@ -22,6 +23,7 @@ public:
 
     int is_playing();
 };
+#endif
 
 int TDigital::is_playing() {
     TDigital* target = this->owner;
@@ -31,7 +33,11 @@ int TDigital::is_playing() {
         target = this;
     }
     if (this->sound_system != 0 && target->loaded != 0 && target->sound_buffer != 0) {
+#ifdef SOUNDDRV_CANONICAL_TU
+        if (target->sound_buffer->GetStatus(&status) == 0) {
+#else
         if (((IDirectSoundBuffer_GetStatusFn)((*(void***)target->sound_buffer)[9]))(target->sound_buffer, &status) == 0) {
+#endif
             if (status == 1 || status == 4) {
                 return 1;
             }

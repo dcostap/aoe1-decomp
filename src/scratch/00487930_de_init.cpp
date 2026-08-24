@@ -1,10 +1,16 @@
-class T_Scenario {
+#ifndef RMM_TDBC_SHARED_CONTEXT
+class RGE_RMM_Database_Controller {
 public:
-    void deInitHelper();
-    unsigned char de_init();
+    virtual unsigned char de_init();
 };
 
-unsigned char T_Scenario::de_init() {
-    this->deInitHelper();
+class TRIBE_RMM_Database_Controller : public RGE_RMM_Database_Controller {
+public:
+    virtual unsigned char de_init();
+};
+#endif
+
+unsigned char TRIBE_RMM_Database_Controller::de_init() {
+    this->RGE_RMM_Database_Controller::de_init();
     return 1;
 }
