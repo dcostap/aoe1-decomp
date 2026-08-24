@@ -1,6 +1,7 @@
 // VA: 0044CB20 RGE_Campaign_Info::get_scenario_list(char***, long&)
 // gameinfo.cpp lines 218-232, 131 bytes
 
+ #ifndef GAMEINFO_SHARED_CONTEXT
 void* __cdecl calloc(int count, int size);
 
 struct RGE_Campaign {
@@ -19,6 +20,7 @@ struct RGE_Campaign_Info {
 };
 
 void __cdecl getstring(char** dest, char* src);
+#endif
 
 long RGE_Campaign_Info::get_scenario_list(char*** list, long& current) {
     if (campaign) {

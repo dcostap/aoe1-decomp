@@ -3,6 +3,7 @@
 // Attempt log:
 // 1: natural switch reconstruction from packet.
 
+#ifndef PNL_SCBR_CANONICAL_TU
 class TDrawArea {
 public:
     void DrawRect(long left, long top, long right, long bottom, unsigned char color);
@@ -28,6 +29,7 @@ public:
 
     void draw_border(int raised, int flag, long left, long top, long right, long bottom);
 };
+#endif
 
 void TScrollBarPanel::draw_border(int raised, int flag, long left, long top, long right, long bottom)
 {

@@ -2,6 +2,7 @@
 // Original: map.cpp:2249-2256
 // __thiscall, size: 80 bytes
 
+#ifndef MAP_CONTEXT_H
 // Local class stubs for matching
 class RGE_Player;
 class RGE_Game_World;
@@ -20,6 +21,8 @@ public:
     void create_terrain_object(RGE_Player* player, RGE_Game_World* world,
         short row, short col, short old_terrain, int remove_now, int min_obj_id, int max_obj_id);
 };
+
+#endif
 
 // Attempt log:
 // Try 1: Simple nested loops based on Ghidra decompilation

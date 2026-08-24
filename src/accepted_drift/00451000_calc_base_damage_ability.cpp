@@ -99,6 +99,7 @@
 // or FPU event. The readable natural do-while source is the promoted candidate;
 // register hints and allocator scaffolding were not retained.
 
+#ifndef RGE_MCO_OBJ_SHARED_CONTEXT
 #include "..\..\include\game_globals.h"
 
 class RGE_Armor_Weapon_Info {
@@ -201,6 +202,7 @@ public:
     float orig_weapon_range; // +0x140
     float orig_speed_of_attack; // +0x144
 };
+#endif
 
 long RGE_Master_Combat_Object::calc_base_damage_ability(RGE_Master_Combat_Object* target)
 {

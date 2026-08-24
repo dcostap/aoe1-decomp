@@ -1,3 +1,4 @@
+#ifndef GAMEINFO_SHARED_CONTEXT
 class RGE_Campaign_Info {
 public:
     int open_scenario(void);
@@ -12,6 +13,7 @@ public:
 
     int open_scenario(void);
 };
+#endif
 
 int RGE_Person_Info::open_scenario(void) {
     long current_campaign;

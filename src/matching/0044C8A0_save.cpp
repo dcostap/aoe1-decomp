@@ -1,6 +1,7 @@
 // VA: 0044C8A0 RGE_Campaign_Info::save(int fd)
 // gameinfo.cpp lines 142-152, 138 bytes
 
+#ifndef GAMEINFO_SHARED_CONTEXT
 void __cdecl rge_write(int fd, void* buf, int size);
 
 struct TDebuggingLog {
@@ -21,6 +22,7 @@ struct RGE_Campaign_Info {
 };
 
 extern int L;
+#endif
 
 void RGE_Campaign_Info::save(int fd) {
     TDebuggingLog::Log((void*)L, "  (PIF)Saving campaign - (%d) %s", last_scenario, this);

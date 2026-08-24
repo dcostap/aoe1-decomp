@@ -1,24 +1,5 @@
-// attempt log:
-// first pass: natural constructor shape with vptr init, next/prev zero, count save, and the two fill phases
-// second pass: switch to the decompiler-shaped do/while form because the first loop basin was slightly too small
-// third pass: use sortedValue as the moving pointer base so the three writes land on the observed +/-0x20, 0, +0x20 addresses
-// fourth pass: switching back to a top-tested loop changed the register basin too far and blew the diff up
-// exact: first fill phase needs a `while (1)` with top `if (i >= 8) return;`
-// and bottom `if (i < this->numberValue) continue; break;` so VC5 keeps the
-// binary's top capacity guard before stores and falls through to the second fill.
-
-class ResourceItem {
-public:
-    void* vtable_ptr;
-    ResourceItem* next;
-    ResourceItem* prev;
-    int valueValue[8];
-    int sortedValue[8];
-    int sortedIndexValue[8];
-    int numberValue;
-
-    ResourceItem(int count);
-};
+// ResourceItem::ResourceItem(int)
+// VA: 00411F10 | airesitm.cpp:40-51
 
 ResourceItem::ResourceItem(int count) {
     int i;
@@ -28,7 +9,6 @@ ResourceItem::ResourceItem(int count) {
     this->next = 0;
     this->prev = 0;
     this->numberValue = count;
-    this->vtable_ptr = (void*)0x56E9D0;
 
     if (count > 0) {
         p = this->sortedValue;

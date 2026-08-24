@@ -9,6 +9,7 @@
 // - Exact under the default /O2 /Oy flags; no custom flags or compiler-only
 //   scaffolding retained.
 
+#ifndef RGE_MCO_OBJ_SHARED_CONTEXT
 #include <stdlib.h>
 #include <string.h>
 
@@ -77,6 +78,7 @@ public:
 
     void copy_obj(RGE_Master_Static_Object* source);
 };
+#endif
 
 void RGE_Master_Combat_Object::copy_obj(RGE_Master_Static_Object* source) {
     RGE_Master_Action_Object::copy_obj(source);

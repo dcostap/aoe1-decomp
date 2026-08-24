@@ -11,6 +11,7 @@
 // Main-agent audit restored canonical polymorphic object/item/AI ownership;
 // emitted code remains exact.
 
+#ifndef TAIBLDMD_SHARED_CONTEXT
 extern "C" char* __cdecl strncpy(char* dst, const char* src, unsigned int count);
 
 class RGE_Master_Static_Object {
@@ -78,6 +79,7 @@ public:
 
     int addBuiltItem(RGE_Static_Object* object, int id);
 };
+#endif
 
 int TribeBuildAIModule::addBuiltItem(RGE_Static_Object* object, int id)
 {

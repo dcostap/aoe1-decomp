@@ -14,6 +14,7 @@
 // - control-flow probe: reversed the first sender/strategic-number comparison;
 //   this restored the final cmp encoding and produced an exact 568-byte match.
 
+#ifndef AOE1_TAIMDMD_CONTEXT_H
 class TribeTacticalAIModule {
 public:
     char gap_00[0x1008];
@@ -109,6 +110,7 @@ public:
 
     void tributeNotify(int player, int notification, int amount);
 };
+#endif
 
 void TribeMainDecisionAIModule::tributeNotify(int player, int notification,
                                                int amount)

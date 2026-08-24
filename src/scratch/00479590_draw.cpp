@@ -1,4 +1,7 @@
 // Attempt log:
+// module captain: the authentic Pnl_msg_cpp wrapper compiles with the shared
+// context and /GX. It preserves the 633-byte observed mismatch; stop tuning
+// at the module compile boundary.
 // baseline: restored the full image-copy and GDI draw paths; frame 0x40, diff 866.
 // layout: added inherited panel width and height ownership; diff 858.
 // control-flow: computed panel bounds before text extent; exact size, frame 0x44, diff 833.

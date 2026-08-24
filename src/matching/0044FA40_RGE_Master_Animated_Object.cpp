@@ -7,6 +7,7 @@
 
 #include "..\..\include\game_globals.h"
 
+#ifndef RGE_MAN_OBJ_SHARED_CONTEXT
 // RGE_Master_Static_Object — base class, needs virtual dtor for vtable
 class RGE_Master_Static_Object {
 public:
@@ -19,10 +20,11 @@ public:
 // Size: 0xBC, adds float speed at +0xB8
 class RGE_Master_Animated_Object : public RGE_Master_Static_Object {
 public:
-    void setup(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3);
-
     RGE_Master_Animated_Object(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3, int param_4);
+protected:
+    void setup(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3);
 };
+#endif
 
 RGE_Master_Animated_Object::RGE_Master_Animated_Object(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3, int param_4)
     : RGE_Master_Static_Object(param_1, param_2, param_3, 0)

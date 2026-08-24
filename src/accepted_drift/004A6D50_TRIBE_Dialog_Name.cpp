@@ -65,6 +65,9 @@
 // and the tail stack-window boundary. The 0x10 frame, all 12 calls, EH state,
 // early exits, member initialization, cleanup, return, and fault order match.
 
+#ifdef SCR_NAME_TU_CONTEXT
+#include "../../include/scr_name_context.h"
+#else
 class TDrawArea;
 class TScreenPanel;
 class TTextPanel;
@@ -148,6 +151,7 @@ public:
                           unsigned int wparam, long lparam);
     TRIBE_Dialog_Name(TScreenPanel* screen);
 };
+#endif
 
 TRIBE_Dialog_Name::TRIBE_Dialog_Name(TScreenPanel* screen)
     : TDialogPanel("New Name Dialog")

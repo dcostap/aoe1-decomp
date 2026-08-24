@@ -1,3 +1,4 @@
+#ifndef ACT_ENTR_CONTEXT_H
 class RGE_Sprite;
 class RGE_Static_Object;
 
@@ -100,6 +101,7 @@ class RGE_Action_Enter : public RGE_Action {
 public:
     void set_state(unsigned char param_1);
 };
+#endif
 
 void RGE_Action_Enter::set_state(unsigned char param_1) {
     RGE_Action_Move_To* move_to;

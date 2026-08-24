@@ -11,6 +11,7 @@
 
 extern "C" void rge_write(int fd, void* buf, int len);
 
+#ifndef PICTURE_CONTEXT_H
 class TPicture {
 public:
     char gap_00[0x20];
@@ -18,6 +19,7 @@ public:
     long AlignedWidth();
     void Save(int fd);
 };
+#endif
 
 void TPicture::Save(int fd) {
     rge_write(fd, (char*)this + 0x10, 4);     // OwnMemory

@@ -1,3 +1,5 @@
+#include "../../include/task_context.h"
+
 // VA: 005087C0 RGE_Task::load
 // PDB source: task.cpp, lines 103-149
 // Attempt log:
@@ -5,49 +7,6 @@
 //   loads, and sprite/sound ID resolution from the supplied tables.
 // - Probe 2: kept one selected pointer per sprite/sound table and stored the
 //   selected value after each ID branch, matching the binary's common stores.
-
-extern "C" void rge_read(int fd, void* buffer, int size);
-
-class RGE_Sprite;
-class RGE_Sound;
-
-class RGE_Task {
-public:
-    short task_type;
-    short id;
-    unsigned char is_default;
-    char gap_05[1];
-    short action_type;
-    short object_group;
-    short object_id;
-    unsigned char combat_level;
-    unsigned char combat_level_flag;
-    short terrain_id;
-    unsigned char owner_type;
-    unsigned char holding_attr;
-    unsigned char state_building;
-    char gap_13[1];
-    short attribute_type;
-    short attribute_type2;
-    short attribute_type3;
-    short attribute_type4;
-    float work_val1;
-    float work_val2;
-    float work_range;
-    unsigned char search_flag;
-    char gap_29[3];
-    float search_wait_time;
-    short work_flag;
-    short work_flag2;
-    RGE_Sprite* move_sprite;
-    RGE_Sprite* work_sprite;
-    RGE_Sprite* work_sprite2;
-    RGE_Sprite* carry_sprite;
-    RGE_Sound* work_sound;
-    RGE_Sound* work_sound2;
-
-    void load(int fd, RGE_Sprite** sprites, RGE_Sound** sounds);
-};
 
 void RGE_Task::load(int fd, RGE_Sprite** sprites, RGE_Sound** sounds)
 {

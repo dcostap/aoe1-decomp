@@ -1,3 +1,4 @@
+#ifndef GAMEINFO_SHARED_CONTEXT
 class RGE_Person_Info {
 public:
     char* get_name(void);
@@ -11,6 +12,7 @@ public:
 
     char* get_current_player_name(void);
 };
+#endif
 
 char* RGE_Game_Info::get_current_player_name(void) {
     long current_person;

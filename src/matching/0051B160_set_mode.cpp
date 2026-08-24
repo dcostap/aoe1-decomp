@@ -1,3 +1,4 @@
+#ifndef AOE1_TPNL_OBJ_CONTEXT_H
 class TRIBE_Panel_Object {
 public:
     virtual void vf00(void);
@@ -15,9 +16,14 @@ public:
     void save_object_info();
     void set_mode(unsigned char mode);
 };
+#endif
 
 void TRIBE_Panel_Object::set_mode(unsigned char mode) {
     this->mode = mode;
     save_object_info();
+#ifdef AOE1_TPNL_OBJ_CONTEXT_H
+    this->set_redraw(1);
+#else
     vf20(1);
+#endif
 }

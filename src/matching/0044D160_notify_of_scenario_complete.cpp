@@ -1,3 +1,4 @@
+#ifndef GAMEINFO_SHARED_CONTEXT
 class RGE_Campaign_Info {
 public:
     void notify_of_scenario_complete(void);
@@ -12,6 +13,7 @@ public:
 
     void notify_of_scenario_complete(void);
 };
+#endif
 
 void RGE_Person_Info::notify_of_scenario_complete(void) {
     long current_campaign;

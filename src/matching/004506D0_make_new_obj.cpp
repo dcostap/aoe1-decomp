@@ -5,6 +5,7 @@
 // - Natural typed recycle_in_to_game path and direct RGE_Combat_Object new-expression matched.
 // - Proven master/object base sizes and fields were restored without changing emitted bytes.
 
+#ifndef RGE_MCO_OBJ_SHARED_CONTEXT
 class RGE_Master_Combat_Object;
 class RGE_Master_Static_Object;
 class RGE_Player;
@@ -62,6 +63,7 @@ class RGE_Game_World {
 public:
     RGE_Static_Object* recycle_object_in_to_game(unsigned char master_type);
 };
+#endif
 
 RGE_Static_Object* RGE_Master_Combat_Object::make_new_obj(
     RGE_Player* player, float x, float y, float z) {

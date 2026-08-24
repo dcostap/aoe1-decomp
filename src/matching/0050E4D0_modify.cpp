@@ -1,3 +1,6 @@
+#include "..\..\include\tm_b_obj_context.h"
+
+#ifndef TM_B_OBJ_SHARED_CONTEXT
 class TRIBE_Master_Combat_Object {
 public:
     virtual void modify(float value, unsigned char attribute);
@@ -10,6 +13,7 @@ public:
 
     virtual void modify(float value, unsigned char attribute);
 };
+#endif
 
 void TRIBE_Master_Building_Object::modify(float value, unsigned char attribute) {
     if (attribute != 0x11) {

@@ -7,6 +7,7 @@
 //    mismatch at the object game-id load.
 // 2: corrected RGE_Static_Object field order (id +4, master_obj +8); exact.
 
+#ifndef TAIBLDMD_SHARED_CONTEXT
 class RGE_Master_Static_Object {
 public:
     char gap_00[0x10];
@@ -93,6 +94,7 @@ public:
 
     int addItem(RGE_Static_Object*, int);
 };
+#endif
 
 int TribeBuildAIModule::addItem(RGE_Static_Object* object, int flag)
 {

@@ -17,6 +17,7 @@
 
 #include "../../include/game_globals.h"
 
+#ifndef TACT_WND_CONTEXT_H
 class RGE_Player;
 class RGE_Game_World;
 
@@ -125,8 +126,8 @@ public:
     virtual void vfCC(void);
     virtual void vfD0(void);
     virtual void vfD4(void);
-    virtual void vfD8(RGE_Player* player, unsigned char mode, int value);
-    virtual void vfDC(RGE_Player* player, unsigned char mode, int value);
+    virtual void explore_terrain(RGE_Player* player, unsigned char mode, int value);
+    virtual void unexplore_terrain(RGE_Player* player, unsigned char mode, int value);
 
     long id;
     void* master_obj;
@@ -169,6 +170,7 @@ public:
     RGE_Action_Object* object;
     unsigned char state;
 };
+#endif
 
 void TRIBE_Action_Wonder::set_state(unsigned char param_1)
 {
@@ -184,8 +186,8 @@ void TRIBE_Action_Wonder::set_state(unsigned char param_1)
             ++players;
             do {
                 if (i != this->object->owner->id) {
-                    this->object->vfDC(players[0], 1, -1);
-                    this->object->vfD8(players[0], 0, -1);
+                    this->object->unexplore_terrain(players[0], 1, -1);
+                    this->object->explore_terrain(players[0], 0, -1);
                 }
                 ++i;
                 ++players;
@@ -214,7 +216,7 @@ void TRIBE_Action_Wonder::set_state(unsigned char param_1)
             ++players;
             do {
                 if (i != this->object->owner->id) {
-                    this->object->vfD8(players[0], 1, -1);
+                    this->object->explore_terrain(players[0], 1, -1);
                 }
                 ++i;
                 ++players;

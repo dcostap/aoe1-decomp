@@ -1,3 +1,4 @@
+#ifndef MAP_CONTEXT_H
 struct TileSizeEntry {
     short width;
     short height;
@@ -11,6 +12,8 @@ public:
 
     void set_tile_size(unsigned char index, short width, short height, short y_delta);
 };
+
+#endif
 
 void RGE_Map::set_tile_size(unsigned char index, short width, short height, short y_delta) {
     this->tilesizes[index].width = width;

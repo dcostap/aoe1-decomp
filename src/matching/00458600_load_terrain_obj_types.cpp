@@ -23,6 +23,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#ifndef MAP_CONTEXT_H
 struct RGE_TOB_Picts {
     short count;
     short animations;
@@ -94,6 +95,8 @@ public:
 
     void load_terrain_obj_types(char* filename);
 };
+
+#endif
 
 void RGE_Map::load_terrain_obj_types(char* filename)
 {

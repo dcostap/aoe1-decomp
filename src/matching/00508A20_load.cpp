@@ -1,3 +1,5 @@
+#include "../../include/task_context.h"
+
 // VA: 00508A20 RGE_Task::load (FILE* overload)
 // PDB source: task.cpp, lines 154-218
 // Attempt log:
@@ -14,49 +16,7 @@
 // - Removed two unused decompiler-only combat temporaries. The natural source
 //   still emits the same exact code.
 
-struct FILE;
-class RGE_Sprite;
-class RGE_Sound;
-
 extern int __cdecl fscanf(FILE* file, const char* format, ...);
-
-class RGE_Task {
-public:
-    short task_type;
-    short id;
-    unsigned char is_default;
-    char gap_05[1];
-    short action_type;
-    short object_group;
-    short object_id;
-    unsigned char combat_level;
-    unsigned char combat_level_flag;
-    short terrain_id;
-    unsigned char owner_type;
-    unsigned char holding_attr;
-    unsigned char state_building;
-    char gap_13[1];
-    short attribute_type;
-    short attribute_type2;
-    short attribute_type3;
-    short attribute_type4;
-    float work_val1;
-    float work_val2;
-    float work_range;
-    unsigned char search_flag;
-    char gap_29[3];
-    float search_wait_time;
-    short work_flag;
-    short work_flag2;
-    RGE_Sprite* move_sprite;
-    RGE_Sprite* work_sprite;
-    RGE_Sprite* work_sprite2;
-    RGE_Sprite* carry_sprite;
-    RGE_Sound* work_sound;
-    RGE_Sound* work_sound2;
-
-    void load(FILE* file, RGE_Sprite** sprites, RGE_Sound** sounds);
-};
 
 void RGE_Task::load(FILE* file, RGE_Sprite** sprites, RGE_Sound** sounds)
 {

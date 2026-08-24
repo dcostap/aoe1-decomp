@@ -1,7 +1,9 @@
 // first pass: call the combat-object base ctor with 0, then conditionally run the building-object setup helper
 // /GX was required to land the exact EH ctor/body basin for this constructor overload
 #include "..\..\include\game_types.h"
+#include "..\..\include\tm_b_obj_context.h"
 
+#ifndef TM_B_OBJ_SHARED_CONTEXT
 class TRIBE_Sound;
 class TRIBE_Sprite;
 class TRIBE_Master_Building_Object;
@@ -28,6 +30,7 @@ public:
     virtual ~TRIBE_Master_Building_Object();
     int setup(TRIBE_Master_Building_Object* source);
 };
+#endif
 
 TRIBE_Master_Building_Object::TRIBE_Master_Building_Object(TRIBE_Master_Building_Object* source, int do_setup)
     : TRIBE_Master_Combat_Object((TRIBE_Master_Combat_Object*)source, 0) {

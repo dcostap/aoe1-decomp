@@ -1,3 +1,4 @@
+#ifndef ACT_ENTR_CONTEXT_H
 class RGE_Sprite;
 class RGE_Task;
 class RGE_Action_List;
@@ -210,6 +211,7 @@ public:
     virtual ~RGE_Action_Enter();
     RGE_Action_Enter(RGE_Action_Object* param_1, RGE_Task* param_2, RGE_Action_Object* param_3);
 };
+#endif
 
 RGE_Action_Enter::RGE_Action_Enter(RGE_Action_Object* param_1, RGE_Task* param_2, RGE_Action_Object* param_3)
     : RGE_Action(param_1, 1) {

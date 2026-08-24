@@ -3,6 +3,7 @@
 // second pass: add a per-function /GX rsp because this ctor family is clearly EH-framed
 // target shape: base RGE_Master_Action_Object(param_1, 0), set vtable to 0x5704C0, optionally call setup(param_1), return this
 
+#ifndef RGE_MCO_OBJ_SHARED_CONTEXT
 class RGE_Master_Action_Object {
 public:
     virtual ~RGE_Master_Action_Object();
@@ -15,6 +16,7 @@ public:
     RGE_Master_Combat_Object(RGE_Master_Combat_Object* source, int do_setup);
     int setup(RGE_Master_Combat_Object* source);
 };
+#endif
 
 RGE_Master_Combat_Object::RGE_Master_Combat_Object(RGE_Master_Combat_Object* source, int do_setup)
     : RGE_Master_Action_Object(source, 0) {

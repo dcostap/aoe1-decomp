@@ -1,3 +1,4 @@
+#ifndef MAP_CONTEXT_H
 class RGE_Player;
 class RGE_Game_World;
 
@@ -13,6 +14,8 @@ public:
     void set_terrain(RGE_Player* player, RGE_Game_World* world, int a3, int a4, long x, long y, unsigned char a7, unsigned char a8, int a9);
     void clear_map(RGE_Player* param_1, RGE_Game_World* param_2, unsigned char param_3, long param_4, long param_5);
 };
+
+#endif
 
 void RGE_Map::clear_map(RGE_Player* param_1, RGE_Game_World* param_2, unsigned char param_3, long param_4, long param_5) {
     new_map(param_4, param_5);

@@ -58,6 +58,7 @@
 
 extern "C" int __cdecl debug_rand(char*, int);
 
+#ifndef MAP_CONTEXT_H
 class RGE_Player;
 class RGE_Game_World;
 class RGE_Master_Static_Object;
@@ -164,6 +165,8 @@ public:
     void create_terrain_object(RGE_Player*, RGE_Game_World*, short, short,
                                short, int, int, int);
 };
+
+#endif
 
 void RGE_Map::create_terrain_object(RGE_Player* player, RGE_Game_World* /*world*/,
                                     short row, short col, short new_terrain,

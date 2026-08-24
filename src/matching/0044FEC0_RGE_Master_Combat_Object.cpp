@@ -5,6 +5,7 @@
 // Attempt log:
 // Probe 1: natural ctor with base init + conditional setup, default flags
 
+#ifndef RGE_MCO_OBJ_SHARED_CONTEXT
 #include "..\..\include\game_globals.h"
 
 // RGE_Master_Static_Object — root of the master object chain, virtual dtor for vtable
@@ -27,6 +28,7 @@ public:
 
     RGE_Master_Combat_Object(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3, int param_4);
 };
+#endif
 
 RGE_Master_Combat_Object::RGE_Master_Combat_Object(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3, int param_4)
     : RGE_Master_Action_Object(param_1, param_2, param_3, 0)

@@ -2,6 +2,7 @@
 // if this is sticky, the remaining work is likely just the exact loop/index spill shape around the copy helper
 #include <stdlib.h>
 
+#ifndef GAMEINFO_SHARED_CONTEXT
 class RGE_Person_Info {
 public:
     char* get_name(void);
@@ -20,6 +21,7 @@ public:
 };
 
 extern void getstring(char** param_1, char* param_2);
+#endif
 
 long RGE_Game_Info::get_people_list(char*** out_list, long& out_current) {
     char* name;

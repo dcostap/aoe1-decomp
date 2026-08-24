@@ -1,3 +1,4 @@
+#ifndef T_B_OBJ_CONTEXT_H
 class RGE_Player;
 
 class RGE_Static_Object {
@@ -12,6 +13,7 @@ public:
 
     int explore_terrain(RGE_Player* player, unsigned char value, int param);
 };
+#endif
 
 int TRIBE_Building_Object::explore_terrain(RGE_Player* player, unsigned char value, int param) {
     if (this->built != 0) {

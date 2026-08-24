@@ -19,6 +19,7 @@
 
 #include "../../include/game_globals.h"
 
+#ifndef TACT_WND_CONTEXT_H
 class RGE_Action {
 public:
     virtual ~RGE_Action();
@@ -79,10 +80,11 @@ public:
     RGE_Action_Object* object;
     unsigned char state;
     char gap_0D[0x2C - 0x0D];
-    float timer;
+    float field_2C;
 
     unsigned char update();
 };
+#endif
 
 static const float LIMIT = 2000.0f;
 
@@ -90,20 +92,20 @@ unsigned char TRIBE_Action_Wonder::update()
 {
     switch (this->state) {
     case 6:
-        if (this->timer >= LIMIT) return 0;
+        if (this->field_2C >= LIMIT) return 0;
 
         {
             float f = this->object->owner->world->world_time_delta_seconds;
-            this->timer = (f + f) + this->timer;
+            this->field_2C = (f + f) + this->field_2C;
 
             if (rge_base_game->world->countdown_active != 0) {
                 goto cleanup;
             }
 
             int pid = this->object->owner->id;
-            rge_base_game->set_countdown_timer(pid, (int)(LIMIT - this->timer));
+            rge_base_game->set_countdown_timer(pid, (int)(LIMIT - this->field_2C));
 
-            if (this->timer >= LIMIT) {
+            if (this->field_2C >= LIMIT) {
                 RGE_Player* pl = this->object->owner;
                 pl->win_game_now();
                 rge_base_game->world->wonder_state = 100;

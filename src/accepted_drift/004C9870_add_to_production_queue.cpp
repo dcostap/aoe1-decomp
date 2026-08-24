@@ -23,6 +23,7 @@
 //   natural guard retains one branch-byte mismatch at +001C; the commuted
 //   copy form is kept as the smallest readable source that matches the copy.
 
+#ifndef T_B_OBJ_CONTEXT_H
 void* __cdecl calloc(unsigned int n, unsigned int size);
 void __cdecl free(void* p);
 
@@ -45,6 +46,7 @@ public:
     void remove_from_production_queue(short, int);
     void add_to_production_queue(short master_id, short count);
 };
+#endif
 
 void TRIBE_Building_Object::add_to_production_queue(short master_id, short count)
 {

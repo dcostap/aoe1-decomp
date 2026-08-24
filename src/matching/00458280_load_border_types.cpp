@@ -19,6 +19,7 @@
 
 extern "C" void addstring(char** dst, char* left, char* right);
 
+#ifndef MAP_CONTEXT_H
 class RGE_Sound;
 
 class TShape {
@@ -48,6 +49,8 @@ public:
 
     void load_border_types(RGE_Sound** sounds);
 };
+
+#endif
 
 void RGE_Map::load_border_types(RGE_Sound** sounds)
 {

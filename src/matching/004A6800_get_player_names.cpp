@@ -20,6 +20,9 @@
 // aggregate-output, extern-global, /GX, source-order, and decompiler-curr_player probes were all
 // unchanged or worse. Final normalized source remains the natural char** player-list form.
 
+#ifdef SCR_NAME_TU_CONTEXT
+#include "../../include/scr_name_context.h"
+#else
 extern "C" void __cdecl free(void*);
 
 class TPanel {
@@ -85,6 +88,7 @@ public:
     int started_input;
     void get_player_names();
 };
+#endif
 
 void TRIBE_Screen_Name::get_player_names()
 {

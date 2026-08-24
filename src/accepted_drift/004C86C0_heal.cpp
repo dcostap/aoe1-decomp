@@ -32,6 +32,7 @@
 
 #include <string.h>
 
+#ifndef T_B_OBJ_CONTEXT_H
 class TRIBE_Player {
 public:
     unsigned char pay_obj_cost(short type, float amount, int flag);
@@ -62,6 +63,7 @@ public:
 
     unsigned char heal(float amount);
 };
+#endif
 
 unsigned char TRIBE_Building_Object::heal(float amount)
 {

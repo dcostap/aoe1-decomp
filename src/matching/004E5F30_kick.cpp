@@ -1,6 +1,7 @@
 // VA: 004E5F30 TribeMainDecisionAIModule::kick (100 B)
 // PDB source: taimdmd.cpp lines 821-832
 
+#ifndef AOE1_TAIMDMD_CONTEXT_H
 void logCommonHistory(char* this_as_str, const char* format, ...);
 
 class TribeBuildAIModuleBase {
@@ -37,6 +38,7 @@ public:
 
     void kick(int param_1);
 };
+#endif
 
 void TribeMainDecisionAIModule::kick(int param_1)
 {

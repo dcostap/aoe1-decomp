@@ -55,6 +55,7 @@ extern "C" void __cdecl rge_write(int file, void* data, int size);
 extern float save_game_version;
 extern float DAT_005706a8;
 
+#ifndef MAP_CONTEXT_H
 class RGE_Tile {
 public:
     short screen_xpos;
@@ -93,6 +94,8 @@ public:
 
     void save_map(int file);
 };
+
+#endif
 
 void RGE_Map::save_map(int file)
 {

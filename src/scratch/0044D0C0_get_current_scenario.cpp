@@ -1,3 +1,4 @@
+#ifndef GAMEINFO_SHARED_CONTEXT
 class RGE_Campaign_Info_gcs {
 public:
     int get_current_scenario(void);
@@ -13,8 +14,9 @@ public:
     char gap_10C[0x04];
     void** campaigns;
 };
+#endif
 
-int RGE_Person_Info_gcs::get_current_scenario(void) {
+int RGE_Person_Info::get_current_scenario(void) {
     int i;
 
     i = this->current_campaign;

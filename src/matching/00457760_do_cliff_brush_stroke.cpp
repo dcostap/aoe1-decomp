@@ -26,6 +26,7 @@
 
 #include <math.h>
 
+#ifndef MAP_CONTEXT_H
 class RGE_Map {
 public:
     virtual ~RGE_Map();
@@ -51,6 +52,8 @@ public:
     long map_width;
     long map_height;
 };
+
+#endif
 
 unsigned char RGE_Map::do_cliff_brush_stroke(long x0, long y0, long x1,
                                               long y1, unsigned char a,

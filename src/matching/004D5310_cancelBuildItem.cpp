@@ -21,6 +21,7 @@
 // 11: the caller passes the unique build ID as the sixth argument; using that
 //     typed parameter at the lookup matches the original [esp+2c] home.
 
+#ifndef TAIBLDMD_SHARED_CONTEXT
 typedef unsigned char uchar;
 class RGE_Static_Object;
 class ConstructionItem { public: float x(); float y(); float xSize(); float ySize(); int typeID(); };
@@ -62,6 +63,7 @@ public:
     TribeMainDecisionAIModule* md;
     int cancelBuildItem(int,int,int,float,float,int,int);
 };
+#endif
 
 int TribeBuildAIModule::cancelBuildItem(int action, int objId, int objectTypeId, float x, float y, int uniqueBuildId, int taskId)
 {

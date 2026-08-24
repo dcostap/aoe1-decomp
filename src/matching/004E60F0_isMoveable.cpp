@@ -7,6 +7,7 @@
 //   -> Wrong field offsets: missing padding in RGE_Static_Object and RGE_Master_Static_Object stubs
 // Probe 2: added correct padding for skipped fields before master_obj and object_group
 
+#ifndef AOE1_TAIMDMD_CONTEXT_H
 #include "..\..\include\game_globals.h"
 
 // Minimal stubs — only fields accessed, with correct padding for preceding fields
@@ -32,6 +33,7 @@ class TribeMainDecisionAIModule : public MainDecisionAIModule {
 public:
     int isMoveable(int id);
 };
+#endif
 
 int TribeMainDecisionAIModule::isMoveable(int id)
 {

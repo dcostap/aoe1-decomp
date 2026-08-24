@@ -25,6 +25,8 @@
 
 #include "..\..\include\game_globals.h"
 
+#ifndef MAP_CONTEXT_H
+
 struct RGE_Tile {
     short screen_xpos;              // +0x00
     short screen_ypos;              // +0x02
@@ -50,6 +52,8 @@ struct RGE_Map {
     void clear_map(unsigned char param_1, unsigned char param_2);
     void set_map_screen_pos(int arg1, int arg2, int arg3, int arg4);
 };
+
+#endif
 
 void RGE_Map::clear_map(unsigned char param_1, unsigned char param_2)
 {

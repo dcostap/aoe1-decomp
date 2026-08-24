@@ -85,6 +85,7 @@
 extern "C" void __cdecl convert_us(char* str);
 extern float DAT_005706ac;
 
+#ifndef MAP_CONTEXT_H
 class RGE_Sound;
 class RGE_Tile;
 class RGE_Player;
@@ -166,6 +167,8 @@ public:
 
     void load_border_types(char*, RGE_Sound**);
 };
+
+#endif
 
 void RGE_Map::load_border_types(char* filename, RGE_Sound** sounds)
 {

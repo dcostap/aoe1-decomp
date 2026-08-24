@@ -1,9 +1,3 @@
-class TribeResourceAIModule {
-public:
-    virtual ~TribeResourceAIModule();
-    char gap_0[0xF0];
-    int field_F4;
-    int numberResources();
-};
+#include "../../include/tairesmd_context.h"
 
-int TribeResourceAIModule::numberResources() { return this->field_F4; }
+int TribeResourceAIModule::numberResources() { return this->numberResourcesValue; }

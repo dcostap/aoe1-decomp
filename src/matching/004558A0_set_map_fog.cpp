@@ -1,3 +1,4 @@
+#ifndef MAP_CONTEXT_H
 class RGE_Map {
 public:
     virtual ~RGE_Map();
@@ -5,5 +6,7 @@ public:
     unsigned char field_8DB9;
     void set_map_fog(unsigned char v);
 };
+
+#endif
 
 void RGE_Map::set_map_fog(unsigned char v) { this->field_8DB9 = v; }

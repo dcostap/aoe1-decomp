@@ -1,9 +1,4 @@
-class ResourceItem {
-public:
-    virtual ~ResourceItem();
-    char gap_0[0x68];
-    int field_6C;
-    int number();
-};
+// ResourceItem::number() const
+// VA: 00412200 | airesitm.cpp:181-183
 
-int ResourceItem::number() { return this->field_6C; }
+int ResourceItem::number() const { return this->numberValue; }

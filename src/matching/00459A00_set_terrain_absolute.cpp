@@ -14,6 +14,7 @@
 
 #include <string.h>
 
+#ifndef MAP_CONTEXT_H
 class RGE_Game_World {
 public:
     char gap_40[0x40];
@@ -32,6 +33,8 @@ public:
     void place_terrain_object(RGE_Player* player, RGE_Game_World* gw, short col, short row, int val, int flag);
     void get_border_type(short row, short col);
 };
+
+#endif
 
 void RGE_Map::set_terrain_absolute(RGE_Game_World* gw, short row, short col, unsigned char terrain, int param5, int param6)
 {

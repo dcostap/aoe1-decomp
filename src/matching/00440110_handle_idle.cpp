@@ -1,3 +1,4 @@
+#ifndef DLG_MSG_CANONICAL_TU
 class RGE_Base_Game {
 public:
     char gap_0[0x1D8];
@@ -16,6 +17,8 @@ class TMessageDialog : public TPanel {
 public:
     long handle_idle();
 };
+
+#endif
 
 long TMessageDialog::handle_idle() {
     if (!rge_base_game->input_enabled)

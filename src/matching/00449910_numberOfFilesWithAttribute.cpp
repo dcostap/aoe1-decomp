@@ -2,10 +2,12 @@
 // attempt 1: similar to 004498A0, with attribute filter check
 #include <io.h>
 
+#ifndef FILE_STF_SHARED_CONTEXT
 class DriveInformation {
 public:
     int numberOfFilesWithAttribute(int param1);
 };
+#endif
 
 int DriveInformation::numberOfFilesWithAttribute(int param1) {
     long handle;

@@ -33,6 +33,7 @@
 // Main-agent audit restored canonical polymorphic master/static/map/world/player
 // ownership and retained typed neighboring-tile searches.
 
+#ifndef T_B_OBJ_CONTEXT_H
 class RGE_Player;
 class RGE_Object_List;
 class RGE_Game_World;
@@ -106,6 +107,7 @@ class TRIBE_Building_Object : public RGE_Static_Object {
 public:
     long check(TRIBE_Building_Object** out);
 };
+#endif
 
 long TRIBE_Building_Object::check(TRIBE_Building_Object** out)
 {

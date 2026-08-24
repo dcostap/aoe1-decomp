@@ -12,6 +12,7 @@
 //   (`(int*)(rge_base_game + pid * 4 + 0xA34)`). This makes VC5 load the global into EDX and materialize
 //   the LEA + load + dec + store sequence exactly instead of the shorter/shifted forms.
 
+#ifndef T_B_OBJ_CONTEXT_H
 struct TRIBE_Player {
     char gap_4A[0x4A];
     short player_id;
@@ -35,8 +36,11 @@ struct TRIBE_Building_Object {
 
     void empty_production_queue();
 };
+#endif
 
+#ifndef T_B_OBJ_CONTEXT_H
 extern char* rge_base_game;  // 0x62C574
+#endif
 
 void TRIBE_Building_Object::empty_production_queue() {
     short need_attr = this->production_queue_need_attr;

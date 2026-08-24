@@ -11,16 +11,26 @@
 //      Variant V000000 (representative). Remaining diff: lea edi scheduling
 //      (lea edi after mov ecx/mov eax for memset). Irreducible VC5 heuristic.
 // STATUS: unresolved, best at 3.1%. All real codegen diffs (relocs already masked).
+//
+// Translation-unit context pass: taicrule.cpp owns five normal functions in
+// PDB order 004D68D0, 004D6900, 004D6910, 004D6AA0, and 004D6AB0.  The local
+// CombatRuleSystem declaration in include/taicrule_context.h proves the
+// 0x9C8 object and +0x04 rating table.  The complete wrapper in
+// src/taicrule_tu.cpp compiles with config/flags/default.rsp.  Its four exact
+// owners and the generated scalar deleting destructor match.  loadRules stays
+// observed accepted drift: 12 positional bytes differ at the memset setup.
 
 #include "../../include/game_globals.h"
 #include <string.h>
 #include <stdio.h>
 
+#ifndef AOE1_TAICRULE_CONTEXT_H
 class CombatRuleSystem {
 public:
     virtual ~CombatRuleSystem();
     int loadRules(char* filename);
 };
+#endif
 
 int CombatRuleSystem::loadRules(char* filename)
 {

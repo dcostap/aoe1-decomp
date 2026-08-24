@@ -14,6 +14,9 @@
 #include "../../include/game_globals.h"
 #include <stdio.h>
 
+#ifdef DLG_HELP_SHARED_CONTEXT
+#include "../../include/dlg_help_context.h"
+#else
 // IAT extern for WinHelpA
 typedef int (__stdcall *GDI_WinHelpA)(int, char*, unsigned int, char*);
 extern GDI_WinHelpA _WinHelpA;
@@ -72,6 +75,7 @@ public:
 
     virtual long action(TPanel* param_1, long param_2, unsigned long param_3, unsigned long param_4);
 };
+#endif
 
 long THelpDialog::action(TPanel* param_1, long param_2, unsigned long param_3, unsigned long param_4)
 {

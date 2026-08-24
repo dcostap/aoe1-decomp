@@ -29,6 +29,7 @@
 
 #include <windows.h>
 
+#ifndef MAP_CONTEXT_H
 class RGE_Tile;
 class RGE_Static_Object;
 
@@ -134,6 +135,8 @@ public:
                   unsigned char elevation, short delta,
                   unsigned char relative);
 };
+
+#endif
 
 void RGE_Map::set_elev(short col0, short row0, short col1, short row1,
                        unsigned char elevation, short delta,

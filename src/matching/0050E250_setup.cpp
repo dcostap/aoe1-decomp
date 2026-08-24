@@ -2,7 +2,9 @@
 // PDB source: tm_b_obj.cpp lines 73-95
 // Loads building-specific fields from file using rge_read, resolves sprite/sound IDs
 #include "..\..\include\game_globals.h"
+#include "..\..\include\tm_b_obj_context.h"
 
+#ifndef TM_B_OBJ_SHARED_CONTEXT
 struct RGE_Sprite;
 struct RGE_Sound;
 
@@ -25,6 +27,7 @@ struct TRIBE_Master_Building_Object {
     
     int setup(int file, RGE_Sprite** sprites, RGE_Sound** sounds);
 };
+#endif
 
 void rge_read(int file, void* data, int size);
 

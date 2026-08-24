@@ -38,6 +38,7 @@
 // - `progress` is a natural intermediate numerator, not compiler-only
 //   scheduling scaffolding; it preserves the observed FPU evaluation order.
 
+#ifndef T_B_OBJ_CONTEXT_H
 extern unsigned long world_update_counter;
 
 struct UpdateObjectInfo {
@@ -91,6 +92,7 @@ struct TRIBE_Building_Object : public TRIBE_Combat_Object {
 
     unsigned char update();
 };
+#endif
 
 unsigned char TRIBE_Building_Object::update()
 {

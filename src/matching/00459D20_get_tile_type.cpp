@@ -16,6 +16,7 @@
 
 typedef unsigned char uchar;
 
+#ifndef MAP_CONTEXT_H
 struct RGE_Tile {
     char gap0[5];
     uchar terrain_type;
@@ -31,6 +32,8 @@ public:
     RGE_Tile** map_rows;
     uchar get_tile_type(short x, short y);
 };
+
+#endif
 
 uchar RGE_Map::get_tile_type(short x, short y)
 {

@@ -1,5 +1,6 @@
 // probe: tile stores objects.list directly at +0x10 and object count at +0x14
 
+#ifndef MAP_CONTEXT_H
 class RGE_Static_Object {
 public:
     virtual void delete_object(int flag);
@@ -30,6 +31,8 @@ public:
 
     void delete_all_objects_on_tile(int x, int y);
 };
+
+#endif
 
 void RGE_Map::delete_all_objects_on_tile(int x, int y) {
     if (x < 0 || x >= this->map_width) {

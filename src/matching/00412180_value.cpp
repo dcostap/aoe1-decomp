@@ -1,15 +1,9 @@
-class ResourceItem {
-public:
-    char gap_0[0xC];
-    int arr[24];
-    int count;
+// ResourceItem::value(int) const
+// VA: 00412180 | airesitm.cpp:146-150
 
-    int value(int index);
-};
-
-int ResourceItem::value(int index) {
-    if (index < 0 || index >= this->count) {
+int ResourceItem::value(int index) const {
+    if (index < 0 || index >= this->numberValue) {
         return -1;
     }
-    return this->arr[index];
+    return this->valueValue[index];
 }

@@ -1,3 +1,4 @@
+#ifndef GAMEINFO_SHARED_CONTEXT
 class RGE_Game_Info {
 public:
     long current_person;
@@ -5,6 +6,7 @@ public:
 
     unsigned char set_current_person(long person);
 };
+#endif
 
 unsigned char RGE_Game_Info::set_current_person(long person) {
     if (person < this->people_num) {

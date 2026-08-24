@@ -2,6 +2,7 @@
 // tried direct row/table access, then explicit tile_x/tile_y locals; the remaining mismatch stayed at the opening load order (asm wants y->x with push ebx/push esi)
 // tried the typed tile + border-entry surface so VC5 can synthesize the x*24 row access and the 0x5A0-sized border table scale directly
 
+#ifndef MAP_CONTEXT_H
 struct RGE_Map_Tile {
     char gap_00[6];
     unsigned char border;
@@ -21,6 +22,8 @@ public:
 
     unsigned char get_border(short x, short y);
 };
+
+#endif
 
 unsigned char RGE_Map::get_border(short x, short y) {
     unsigned char border = this->map_row_offset[y][x].border & 0x0F;

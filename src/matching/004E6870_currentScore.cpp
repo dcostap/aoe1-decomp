@@ -1,3 +1,4 @@
+#ifndef AOE1_TAIMDMD_CONTEXT_H
 class RGE_Victory_Conditions {
 public:
     int get_victory_points(void);
@@ -27,6 +28,7 @@ public:
 
     int currentScore(int index);
 };
+#endif
 
 int TribeMainDecisionAIModule::currentScore(int index) {
     if (index >= 1) {

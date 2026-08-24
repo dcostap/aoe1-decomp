@@ -5,6 +5,7 @@
 
 #include <string.h>
 
+#ifndef GAMEINFO_SHARED_CONTEXT
 int __cdecl rge_open(char* path, int mode);
 int __cdecl rge_close(int fd);
 int __cdecl rge_read(int fd, void* buf, int size);
@@ -37,6 +38,7 @@ struct RGE_Game_Info {
 };
 
 extern int version_marker;
+#endif
 
 RGE_Game_Info::RGE_Game_Info(char* path) {
     int ver;

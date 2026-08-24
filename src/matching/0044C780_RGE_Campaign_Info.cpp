@@ -10,6 +10,7 @@
 
 #include <string.h>
 
+#ifndef GAMEINFO_SHARED_CONTEXT
 void* __cdecl calloc(int count, int size);
 
 struct RGE_Campaign {
@@ -31,6 +32,7 @@ struct RGE_Campaign_Info {
 
     RGE_Campaign_Info(RGE_Campaign* camp);
 };
+#endif
 
 RGE_Campaign_Info::RGE_Campaign_Info(RGE_Campaign* camp) {
     if (camp) {

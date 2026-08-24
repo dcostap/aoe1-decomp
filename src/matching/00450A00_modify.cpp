@@ -27,6 +27,7 @@
 //   char)value` conversion before storing into missile_id. With both source
 //   shapes, default /O2 /Oy emits an exact 265-byte match; no custom flags.
 
+#ifndef RGE_MCO_OBJ_SHARED_CONTEXT
 class RGE_Sprite;
 
 class RGE_Armor_Weapon_Info {
@@ -81,6 +82,7 @@ public:
 
     virtual void modify(float value, unsigned char attribute);
 };
+#endif
 
 void RGE_Master_Combat_Object::modify(float value, unsigned char attribute) {
     switch (attribute) {

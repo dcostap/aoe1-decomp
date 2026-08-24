@@ -2,6 +2,7 @@
 // first pass: direct new-expression for the EH-framed factory helper
 // target shape: return new RGE_Master_Animated_Object(this, 1); with 0xBC allocation size
 
+#ifndef RGE_MAN_OBJ_SHARED_CONTEXT
 class RGE_Master_Static_Object {
 public:
     virtual ~RGE_Master_Static_Object();
@@ -18,7 +19,12 @@ class TRIBE_Master_Combat_Object {
 public:
     RGE_Master_Static_Object* make_new_master(void);
 };
+#endif
 
+#ifdef RGE_MAN_OBJ_SHARED_CONTEXT
+RGE_Master_Static_Object* RGE_Master_Animated_Object::make_new_master(void) {
+#else
 RGE_Master_Static_Object* TRIBE_Master_Combat_Object::make_new_master(void) {
+#endif
     return new RGE_Master_Animated_Object((RGE_Master_Animated_Object*)this, 1);
 }

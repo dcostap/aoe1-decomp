@@ -1,17 +1,4 @@
-class RGE_TimeSinceLastCall {
-public:
-    unsigned long GetAvg(int param_1);
-};
-
-class RGE_Communications_Speed {
-public:
-    char gap_00[0x104];
-    RGE_TimeSinceLastCall* FrameTSLC;
-    char gap_108[0x110];
-    unsigned int OptimalBufferGranularity;
-
-    unsigned int GetRecommendedBufferGranularity(void);
-};
+#include "../../include/com_spd_context.h"
 
 unsigned int RGE_Communications_Speed::GetRecommendedBufferGranularity(void) {
     unsigned int granularity;

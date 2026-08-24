@@ -3,6 +3,7 @@
 // Retry 2026-05-26 Boss pass: implemented full behavior from packet; reached exact size but broad FPU/return-tail drift.
 // MATCH 2026-05-31: inline volatile reads of the float parameter for both build_pts sums forced the original fld-param/fadd-member order; spelling the status gate as a positive outer `if (status == 0)` kept the late return-1 tail; spelling completion as a positive `>=` branch preserved the call/fail/late-success tail order.
 
+#ifndef T_B_OBJ_CONTEXT_H
 class BuildingMaster {
 public:
     char gap_00[0x26];
@@ -32,6 +33,7 @@ public:
 
     unsigned char build(float amount);
 };
+#endif
 
 unsigned char TRIBE_Building_Object::build(float amount)
 {

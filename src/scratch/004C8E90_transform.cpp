@@ -1,3 +1,4 @@
+#ifndef T_B_OBJ_CONTEXT_H
 class RGE_Sprite;
 class RGE_Master_Static_Object;
 
@@ -41,6 +42,7 @@ public:
 
     void transform(TRIBE_Master_Building_Object* master);
 };
+#endif
 
 void TRIBE_Building_Object::transform(TRIBE_Master_Building_Object* master) {
     RGE_Master_Static_Object* master_obj;

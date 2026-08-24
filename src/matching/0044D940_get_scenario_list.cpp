@@ -1,3 +1,4 @@
+#ifndef GAMEINFO_SHARED_CONTEXT
 class RGE_Person_Info;
 
 class RGE_Game_Info {
@@ -14,6 +15,7 @@ public:
     long get_current_scenario();
     long get_scenario_list(char*** param_1, long* param_2);
 };
+#endif
 
 long RGE_Game_Info::get_scenario_list(char*** param_1, long* param_2) {
     if (this->current_person < this->people_num) {

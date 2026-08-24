@@ -11,9 +11,10 @@
 //    emitted code unchanged and retained.
 // FLAGS: config/flags/00457EB0_load_terrain_types.rsp (/GX required by TShape new)
 
-extern void __cdecl addstring(char** dst, char* base, char* ext);
+extern "C" void __cdecl addstring(char** dst, char* base, char* ext);
 extern void __cdecl free(void* block);
 
+#ifndef MAP_CONTEXT_H
 class RGE_Sound;
 
 class TShape {
@@ -43,6 +44,8 @@ public:
 
     void load_terrain_types(RGE_Sound** sounds);
 };
+
+#endif
 
 void RGE_Map::load_terrain_types(RGE_Sound** sounds)
 {

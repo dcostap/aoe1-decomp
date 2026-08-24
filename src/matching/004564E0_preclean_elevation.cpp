@@ -37,6 +37,7 @@
 // BINARY NOTE: windows.h changes VC5's ambient declarations and is required
 // for exact code generation even though this function calls no Windows API.
 
+#ifndef MAP_CONTEXT_H
 struct RGE_Tile {
     char gap_00[5];
     unsigned char screen_xpos; // high 3 bits hold elevation; low 5 stay intact
@@ -54,6 +55,8 @@ public:
     void preclean_elevation(long x1, long y1, long x2, long y2,
                             unsigned char max_elevation);
 };
+
+#endif
 
 void RGE_Map::preclean_elevation(long x1, long y1, long x2, long y2,
                                   unsigned char max_elevation)

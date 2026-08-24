@@ -45,6 +45,7 @@
 #include <string.h>
 #include <windows.h>
 
+#ifndef AOE1_TPNL_OBJ_CONTEXT_H
 extern "C" {
 __declspec(dllimport) int __stdcall SetBkMode(HDC, int);
 __declspec(dllimport) COLORREF __stdcall SetTextColor(HDC, COLORREF);
@@ -151,6 +152,7 @@ public:
 protected:
     void draw_score();
 };
+#endif
 
 void TRIBE_Panel_Object::draw_score()
 {

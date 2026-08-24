@@ -6,6 +6,9 @@
 #include "../../include/game_globals.h"
 #include <stdio.h>
 
+#ifdef DLG_HELP_SHARED_CONTEXT
+#include "../../include/dlg_help_context.h"
+#else
 class TPanel {
 public:
     char gap_00[0x3C];
@@ -52,6 +55,7 @@ public:
         long param_3, long param_4, long param_5, long param_6);
     void setup_help(TEasy_Panel*, char*, char*, long, long, long);
 };
+#endif
 
 // THelpDialog(param_1, param_2, param_3, param_4, param_5, param_6)
 THelpDialog::THelpDialog(TEasy_Panel* param_1, char* param_2,

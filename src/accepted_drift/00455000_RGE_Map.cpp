@@ -11,6 +11,8 @@
 
 extern "C" void __cdecl rge_read(int fd, void* buf, int size);
 
+#ifndef MAP_CONTEXT_H
+
 class RGE_Sound;
 class RGE_Game_World;
 
@@ -42,8 +44,9 @@ public:
     RGE_Map(int fd, RGE_Sound** sounds, unsigned char load_random);
 };
 
+#endif
+
 RGE_Map::RGE_Map(int fd, RGE_Sound** sounds, unsigned char load_random) {
-    this->vptr = (void*)0x570678;
     this->map_zones = 0;
     rge_read(fd, this, 0x8DD0);
     RGE_Base_Game* game = rge_base_game;

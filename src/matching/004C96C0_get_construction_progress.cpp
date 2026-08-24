@@ -1,3 +1,4 @@
+#ifndef T_B_OBJ_CONTEXT_H
 class RGE_Static_Object;
 
 class TRIBE_Building_Object {
@@ -9,6 +10,7 @@ public:
 
     short get_construction_progress();
 };
+#endif
 
 short TRIBE_Building_Object::get_construction_progress() {
     short points;

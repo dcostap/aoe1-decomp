@@ -44,6 +44,8 @@ extern "C" void __cdecl free(void* block);
 extern void* __cdecl operator new(unsigned int size);
 extern void __cdecl operator delete(void* block);
 
+#ifndef MAP_CONTEXT_H
+
 class RGE_Tile;
 class RGE_Player;
 class RGE_Game_World;
@@ -176,6 +178,8 @@ public:
     void set_map_screen_pos(int col0, int row0, int col1, int row1);
     void new_map(long width, long height);
 };
+
+#endif
 
 void RGE_Map::new_map(long width, long height)
 {

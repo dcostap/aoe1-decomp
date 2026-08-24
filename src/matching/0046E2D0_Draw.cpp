@@ -4,6 +4,7 @@
 // attempt 1: old scratch had wrong signature/layout; size 144 vs 157.
 // fresh 2026-05-19 try 2: local TPicture/TDrawArea layout from packet and natural DibBlt/TransDibBlt calls.
 
+#ifndef PICTURE_CONTEXT_H
 class TDrawArea {
 public:
     char gap_00[8];
@@ -12,7 +13,9 @@ public:
     char gap_10[0x18];
     char ClipRect;       // +0x28
 };
+#endif
 
+#ifndef PICTURE_CONTEXT_H
 class TPicture {
 public:
     char gap_00[4];
@@ -25,6 +28,7 @@ public:
 
     void Draw(TDrawArea* draw_area, long x, long y, int dst_x, int dst_y);
 };
+#endif
 
 extern void __cdecl TransDibBlt(void* dst_info, void* dst_bits, void* clip, long x, long y,
     int width, int height, void* src_info, void* src_bits, void* trans_info,

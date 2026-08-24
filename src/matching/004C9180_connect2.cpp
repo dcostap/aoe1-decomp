@@ -1,3 +1,4 @@
+#ifndef T_B_OBJ_CONTEXT_H
 class TRIBE_Building_Object {
 public:
     char gap0[0x10];
@@ -9,6 +10,7 @@ public:
     void rotate(long amount);
     void connect2();
 };
+#endif
 
 void TRIBE_Building_Object::connect2()
 {

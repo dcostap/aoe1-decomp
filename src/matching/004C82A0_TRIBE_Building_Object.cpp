@@ -7,6 +7,7 @@
 //   qualified derived destructor call below preserves the observed direct
 //   RGE_Action_List::~RGE_Action_List call at 00403EC0.
 
+#ifndef T_B_OBJ_CONTEXT_H
 extern "C" void free(void*);
 void operator delete(void*);
 
@@ -63,6 +64,7 @@ public:
 
     virtual ~TRIBE_Building_Object();
 };
+#endif
 
 TRIBE_Building_Object::~TRIBE_Building_Object()
 {

@@ -10,6 +10,7 @@
 // - A combined if/else spelling was 4 bytes off from alias load order; the
 //   nested branches and explicit shared continuation below are retained.
 
+#ifndef T_B_OBJ_CONTEXT_H
 class RGE_Moving_Object {
 public:
     virtual ~RGE_Moving_Object();
@@ -28,6 +29,7 @@ public:
     void connect2();
     void connect();
 };
+#endif
 
 void TRIBE_Building_Object::connect()
 {

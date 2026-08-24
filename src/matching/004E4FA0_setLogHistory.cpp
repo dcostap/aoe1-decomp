@@ -1,3 +1,4 @@
+#ifndef AOE1_TAIMDMD_CONTEXT_H
 class AIModuleSub {
 public:
     virtual void vf00();
@@ -33,6 +34,7 @@ public:
 
     void setLogHistory(int value);
 };
+#endif
 
 void TribeMainDecisionAIModule::setLogHistory(int value)
 {

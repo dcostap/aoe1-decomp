@@ -12,6 +12,7 @@ extern "C" {
 
 extern float save_game_version;
 
+#ifndef T_B_OBJ_CONTEXT_H
 struct RGE_Game_World;
 
 struct TRIBE_Combat_Object_Base {
@@ -179,6 +180,7 @@ struct TRIBE_Building_Object {
 
     int setup(int fd, RGE_Game_World* world);
 };
+#endif
 
 int TRIBE_Building_Object::setup(int fd, RGE_Game_World* world)
 {
@@ -194,7 +196,7 @@ int TRIBE_Building_Object::setup(int fd, RGE_Game_World* world)
         short* psize = &this->production_queue_size;
         rge_read(fd, psize, 2);
         if (*psize > 0) {
-            short* queue = (short*)calloc(*psize, 4);
+            Production_Queue_Record* queue = (Production_Queue_Record*)calloc(*psize, 4);
             short i = 0;
             if (i < *psize) {
                 this->production_queue = queue;

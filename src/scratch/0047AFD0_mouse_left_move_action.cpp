@@ -57,6 +57,7 @@
 // addition were duplicate codegen or worse. The first paired blocker remains
 // minimum-read order and the EDX/EDI liveness through the clamp.
 
+#ifndef PNL_SCBR_CANONICAL_TU
 extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
 
 struct tagRECT {
@@ -116,6 +117,7 @@ public:
     void calc_item_rects();
     virtual long mouse_left_move_action(long x, long y, int key, int flags);
 };
+#endif
 
 long TScrollBarPanel::mouse_left_move_action(long x, long y, int key, int flags)
 {

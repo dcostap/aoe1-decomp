@@ -1,6 +1,7 @@
 // VA: 0044D8C0 RGE_Game_Info::get_campaign_list(char***, long&)
 // gameinfo.cpp lines 700-713, 121 bytes
 
+#ifndef GAMEINFO_SHARED_CONTEXT
 void* __cdecl calloc(int count, int size);
 
 struct RGE_Campaign {
@@ -22,6 +23,7 @@ struct RGE_Game_Info {
 };
 
 void __cdecl getstring(char** dest, char* src);
+#endif
 
 long RGE_Game_Info::get_campaign_list(char*** list, long& current) {
     if (campaign_num > 0) {

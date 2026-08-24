@@ -1,6 +1,7 @@
 // VA: 004C8BC0 TRIBE_Building_Object::save (234 B)
 // PDB source: t_b_obj.cpp
 
+#ifndef T_B_OBJ_CONTEXT_H
 extern "C" {
     void rge_write(int fd, void* buf, int size);
 }
@@ -32,6 +33,7 @@ struct TRIBE_Building_Object {
     
     void save(int fd);
 };
+#endif
 
 void TRIBE_Building_Object::save(int fd)
 {

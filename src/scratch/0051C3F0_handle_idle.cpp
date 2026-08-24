@@ -42,6 +42,7 @@
 // Final unresolved source is natural and typed, with 25/25 ordered calls.
 // Structural reconstruction remains incomplete.
 
+#ifndef AOE1_TPNL_OBJ_CONTEXT_H
 extern unsigned long __cdecl debug_timeGetTime(char* file, int line);
 extern "C" int __cdecl strcmp(const char* left, const char* right);
 #pragma intrinsic(strcmp)
@@ -355,6 +356,7 @@ public:
     void set_object(RGE_Static_Object*);
     void save_object_info();
 };
+#endif
 
 long TRIBE_Panel_Object::handle_idle()
 {

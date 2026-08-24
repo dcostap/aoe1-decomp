@@ -1,15 +1,5 @@
-class ResourceItem {
-public:
-    void* vtable_ptr;
-    ResourceItem* next;
-    ResourceItem* prev;
-    int valueValue[8];
-    int sortedValue[8];
-    int sortedIndexValue[8];
-    int numberValue;
-
-    void setValue(int index, int value);
-};
+// ResourceItem::setValue(int, int)
+// VA: 004121A0 | airesitm.cpp:155-159
 
 void ResourceItem::setValue(int index, int value) {
     if (index >= 0 && index < numberValue) {

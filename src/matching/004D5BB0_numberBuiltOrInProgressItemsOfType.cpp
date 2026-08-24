@@ -7,6 +7,7 @@
 // Probe 2: added local for fallback — same diff
 // Probe 3: unified return path with count variable
 
+#ifndef TAIBLDMD_SHARED_CONTEXT
 #include "..\..\include\game_globals.h"
 
 class TribeMainDecisionAIModule;
@@ -36,6 +37,7 @@ public:
 
     int numberBuiltOrInProgressItemsOfType(int type, int flag);
 };
+#endif
 
 int TribeBuildAIModule::numberBuiltOrInProgressItemsOfType(int type, int flag)
 {

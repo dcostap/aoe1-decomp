@@ -6,6 +6,9 @@
 #include "../../include/game_globals.h"
 #include <stdio.h>
 
+#ifdef DLG_HELP_SHARED_CONTEXT
+#include "../../include/dlg_help_context.h"
+#else
 class TPanel {
 public:
     char gap_00[0x3C];
@@ -47,6 +50,7 @@ public:
 
     virtual ~THelpDialog();
 };
+#endif
 
 THelpDialog::~THelpDialog()
 {

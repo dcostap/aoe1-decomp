@@ -7,6 +7,9 @@
 
 #include "..\..\include\game_globals.h"
 
+#ifdef SCR_NAME_TU_CONTEXT
+#include "..\..\include\scr_name_context.h"
+#else
 class TPanel {
 public:
     char _gap_04[0x1C];
@@ -48,6 +51,7 @@ public:
 
     virtual ~TRIBE_Dialog_Name();
 };
+#endif
 
 TRIBE_Dialog_Name::~TRIBE_Dialog_Name()
 {

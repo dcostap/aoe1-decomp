@@ -86,6 +86,7 @@
 // evidence-backed in this pass. Strong verified-logic-tier candidate for
 // orchestrator semantic review.
 
+#ifndef TAIBLDMD_SHARED_CONTEXT
 class ResourceItem;
 
 class TRIBE_Player {
@@ -165,6 +166,7 @@ public:
     int insertGathererPercentage(int index, int percentage, int bronzeAgeIndex);
     void initialize();
 };
+#endif
 
 void TribeBuildAIModule::initialize()
 {

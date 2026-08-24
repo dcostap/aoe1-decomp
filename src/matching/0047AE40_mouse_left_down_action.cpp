@@ -6,6 +6,7 @@
 // Probe 2: virtual call via cast -> wrong register allocation
 // Probe 3: proper virtual function declaration
 
+#ifndef PNL_SCBR_CANONICAL_TU
 extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
 
 struct tagRECT {
@@ -69,6 +70,7 @@ public:
     tagRECT bottom_rect;
     long orientationValue;
 };
+#endif
 
 long TScrollBarPanel::mouse_left_down_action(long param_1, long param_2, int param_3, int param_4)
 {
@@ -112,7 +114,11 @@ long TScrollBarPanel::mouse_left_down_action(long param_1, long param_2, int par
         this->item_y = param_2;
         this->item_mode = 1;
         this->item_last_time = debug_timeGetTime("Pnl_scbr.cpp", 0x185);
+#ifdef PNL_SCBR_CANONICAL_TU
+        this->redraw(1);
+#else
         this->after_mouse_down(1);
+#endif
     }
 
     return 0;

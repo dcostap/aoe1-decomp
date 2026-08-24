@@ -38,6 +38,9 @@
 
 extern "C" char* strcpy(char*, const char*);
 
+#ifdef DLG_HELP_SHARED_CONTEXT
+#include "../../include/dlg_help_context.h"
+#else
 class TDrawArea;
 class TPanel;
 
@@ -65,7 +68,7 @@ public:
     virtual void v10();
     virtual void v14();
     virtual void v18();
-    virtual void set_rect(long x, long y, long w, long h); // +0x1c
+    virtual void set_fixed_position(long x, long y, long w, long h); // +0x1c
     char gap_04[0xB0 - 4];
     int field_B0;
     char gap_B4[4];
@@ -110,18 +113,19 @@ public:
     virtual void pad0a0(); virtual void pad0a4(); virtual void pad0a8(); virtual void pad0ac();
     virtual void pad0b0(); virtual void pad0b4(); virtual void pad0b8(); virtual void pad0bc();
     virtual void pad0c0(); virtual void pad0c4();
-    virtual void set_child_list(TPanel** list, long count); // +0xc8
+    virtual void set_tab_order(TPanel** list, short count); // +0xc8
     virtual void pad0cc(); virtual void pad0d0(); virtual void pad0d4(); virtual void pad0d8(); virtual void pad0dc(); virtual void pad0e0();
-    virtual void set_something2(long a, long b); // +0xe4
-    virtual TPanel* create_button(THelpDialog* parent, TPanel** out, long id, long zero, long x, long y, long w, long h, long a, long b, long c); // +0xe8
+    virtual void set_ideal_size(long a, long b); // +0xe4
+    virtual int create_button(THelpDialog* parent, TPanel** out, long id, long zero, long x, long y, long w, long h, long a, long b, long c); // +0xe8
     virtual void pad0ec(); virtual void pad0f0(); virtual void pad0f4(); virtual void pad0f8(); virtual void pad0fc();
-    virtual int create_list(THelpDialog* parent, TPanel** out, char* text, long x, long y, long w, long h, long line_h, long flags, long a, long b); // +0x100
+    virtual int create_text(THelpDialog* parent, TPanel** out, char* text, long x, long y, long w, long h, long line_h, long flags, long a, long b); // +0x100
     virtual void pad104(); virtual void pad108(); virtual void pad10c(); virtual void pad110(); virtual void pad114(); virtual void pad118(); virtual void pad11c(); virtual void pad120(); virtual void pad124(); virtual void pad128();
     virtual int setup(TDrawArea* area, TPanel* parent, long w, long h, char* info_file, long info_id, long flag); // +0x12c
 
 protected:
     void setup_help(TEasy_Panel* parent, char* text, char* more_text, long page_id, long x_limit, long y_limit);
 };
+#endif
 
 void THelpDialog::setup_help(TEasy_Panel* parent, char* text, char* more_text, long page_id, long x_limit, long y_limit)
 {
@@ -136,7 +140,7 @@ void THelpDialog::setup_help(TEasy_Panel* parent, char* text, char* more_text, l
     rge_text_font = ((RGE_Base_Game*)rge_base_game)->get_font(11);
 
     if (this->setup(parent->renderArea(), parent, 0x154, 0x190, parent->get_popup_info_file(), parent->get_popup_info_id(), 1)) {
-        this->create_list(this, &this->list, more_text, 10, 10, 0x14a, 0x186, 11, 0, 0, 1);
+        this->create_text(this, &this->list, more_text, 10, 10, 0x14a, 0x186, 11, 0, 0, 1);
         long line_count = *(short*)((char*)this->list + 0xfe) + 2;
         long dialog_x;
         long panel_height;
@@ -165,9 +169,9 @@ void THelpDialog::setup_help(TEasy_Panel* parent, char* text, char* more_text, l
         }
         if (y < 0) y = 0;
 
-        this->set_rect(dialog_x, y, 0x154, panel_height);
-        this->set_something2(this->field_B0, this->field_B8);
-        this->list->set_rect(10, 10, 0x14a, line_count * rge_text_font->font_hgt);
+        this->set_fixed_position(dialog_x, y, 0x154, panel_height);
+        this->set_ideal_size(this->field_B0, this->field_B8);
+        this->list->set_fixed_position(10, 10, 0x14a, line_count * rge_text_font->font_hgt);
 
         if (((RGE_Base_Game*)rge_base_game)->singlePlayerGame() && page_id >= 0) {
             char* s = this->get_string((int)page_id);
@@ -196,6 +200,6 @@ void THelpDialog::setup_help(TEasy_Panel* parent, char* text, char* more_text, l
             tabList[1] = this->encyclopedia_button;
             count = 2;
         }
-        this->set_child_list(tabList, count);
+        this->set_tab_order(tabList, (short)count);
     }
 }

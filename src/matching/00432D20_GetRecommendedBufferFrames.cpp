@@ -1,42 +1,4 @@
-class TCommunications_Handler {
-public:
-    int IsPlayerHuman(unsigned int player);
-};
-
-class RGE_Communications_Speed {
-public:
-    char TBuff[255];
-    unsigned char gap_0FF;
-    void* TurnTSLC;
-    void* FrameTSLC;
-    TCommunications_Handler* Comm;
-    char gap_10C[0x04];
-    double AccumDiff;
-    int SpeedControlEnabled;
-    unsigned int CurrentBufferFrames;
-    unsigned int FutureBufferFrames;
-    unsigned int TotalBufferFramesRemaining;
-    unsigned int TargetTurnLengthMsec;
-    unsigned int CurrentBufferGranularity;
-    unsigned int FutureBufferGranularity;
-    unsigned int OverheadFactor;
-    unsigned long TimeSinceLastBuffer;
-    unsigned long FutureSpeedChangeTurn;
-    unsigned long NextLatencyChangeTurn;
-    unsigned int ActualLatency[10];
-    unsigned int AverageTSLC[10];
-    unsigned char PlayerOptimalFrames[10];
-    unsigned char PlayerOptimalGranularity[10];
-    unsigned short RequestFasterOrSlower[10];
-    unsigned long PlayerAvgFramesMsec[10];
-    unsigned long PlayerHighLatencyMsec[10];
-    unsigned long HighestLatencyMsec;
-    unsigned int SkipFrames;
-    unsigned int OptimalBufferFrames;
-    unsigned int OptimalBufferGranularity;
-
-    unsigned int GetRecommendedBufferFrames(void);
-};
+#include "../../include/com_spd_context.h"
 
 unsigned int RGE_Communications_Speed::GetRecommendedBufferFrames(void) {
     unsigned int high_latency;

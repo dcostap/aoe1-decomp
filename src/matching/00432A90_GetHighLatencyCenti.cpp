@@ -1,19 +1,4 @@
-class TCommunications_Handler {
-public:
-    int IsPlayerHuman(unsigned int player);
-};
-
-class RGE_Communications_Speed {
-public:
-    char gap_00[0x108];
-    TCommunications_Handler* Comm;
-    char gap_10C[0x38];
-    unsigned int ActualLatency[10];
-    char gap_16C[0xA0];
-    unsigned long HighestLatencyMsec;
-
-    unsigned char GetHighLatencyCenti(void);
-};
+#include "../../include/com_spd_context.h"
 
 unsigned char RGE_Communications_Speed::GetHighLatencyCenti(void) {
     unsigned int high_latency;

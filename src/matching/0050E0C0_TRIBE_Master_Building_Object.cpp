@@ -6,7 +6,9 @@
 // Probe 1: natural ctor with base init + conditional setup, default flags
 
 #include "..\..\include\game_globals.h"
+#include "..\..\include\tm_b_obj_context.h"
 
+#ifndef TM_B_OBJ_SHARED_CONTEXT
 // RGE_Master_Static_Object — root of the master object virtual chain
 class RGE_Master_Static_Object {
 public:
@@ -36,6 +38,7 @@ public:
 
     TRIBE_Master_Building_Object(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3, int param_4);
 };
+#endif
 
 TRIBE_Master_Building_Object::TRIBE_Master_Building_Object(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3, int param_4)
     : TRIBE_Master_Combat_Object(param_1, param_2, param_3, 0)

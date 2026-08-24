@@ -1,3 +1,4 @@
+#ifndef AOE1_TAIMDMD_CONTEXT_H
 class RGE_Static_Object;
 class MainDecisionAIModule {
 public:
@@ -39,6 +40,7 @@ public:
     char gap_00[0x8];
     RGE_Master_Static_Object* master_obj;
 };
+#endif
 
 int TribeMainDecisionAIModule::canPerformAction(int param_1, int param_2) {
     RGE_Static_Object* object = this->object(param_1);

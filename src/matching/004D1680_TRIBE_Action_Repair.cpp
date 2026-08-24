@@ -9,6 +9,7 @@
 
 #include "..\..\include\game_globals.h"
 
+#ifndef TACT_REP_CONTEXT_H
 class RGE_Action_Object;
 
 // RGE_Action — base class with virtual dtor so vtable is generated
@@ -27,6 +28,7 @@ public:
 
     TRIBE_Action_Repair(int param_1, RGE_Action_Object* param_2, int param_3);
 };
+#endif
 
 TRIBE_Action_Repair::TRIBE_Action_Repair(int param_1, RGE_Action_Object* param_2, int param_3)
     : RGE_Action(param_1, param_2, 0)

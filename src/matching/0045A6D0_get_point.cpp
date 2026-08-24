@@ -6,6 +6,7 @@
 // tile_half_width at +0x8D9C, tile_half_height at +0x8D9A.
 // Constant 0.5f used as half-tile offset.
 
+#ifndef MAP_CONTEXT_H
 class RGE_Map {
 public:
     char pad_00[0x8D9A];
@@ -16,6 +17,8 @@ public:
                    float param_3, float param_4, float param_5,
                    int param_6, int param_7);
 };
+
+#endif
 
 void RGE_Map::get_point(short* out_x, short* out_y,
                          float param_3, float param_4, float param_5,

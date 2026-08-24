@@ -1,8 +1,10 @@
+#ifndef FILE_STF_SHARED_CONTEXT
 class DriveInformation {
 public:
     virtual ~DriveInformation();
-    char field_4[1];
+    char initialDirectoryValue[1];
     char* initialDirectory();
 };
+#endif
 
-char* DriveInformation::initialDirectory() { return this->field_4; }
+char* DriveInformation::initialDirectory() { return this->initialDirectoryValue; }

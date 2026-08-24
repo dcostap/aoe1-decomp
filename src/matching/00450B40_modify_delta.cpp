@@ -22,6 +22,7 @@
 //   natural packed-attribute source shape and recovers the original VC5 AH,
 //   redundant ffff-mask, scan, and handler scheduling exactly.
 
+#ifndef RGE_MCO_OBJ_SHARED_CONTEXT
 class RGE_Sprite;
 
 class RGE_Armor_Weapon_Info {
@@ -67,6 +68,7 @@ public:
 
     void modify_delta(float value, unsigned char attribute);
 };
+#endif
 
 void RGE_Master_Combat_Object::modify_delta(float value,
                                              unsigned char attribute) {

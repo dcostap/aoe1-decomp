@@ -6,6 +6,7 @@
 // 2: Added TPanel vtable padding so action lands at vt[45] / +0xB4; natural source then matched exactly.
 // MATCH: python tools/check_function.py --va 00440070 => Result: MATCH / 0.0000%.
 
+#ifndef DLG_MSG_CANONICAL_TU
 #define VPAD1(n) virtual void vpad##n();
 #define VPAD2(n) VPAD1(n) VPAD1(n##_1)
 #define VPAD4(n) VPAD2(n) VPAD2(n##_2)
@@ -36,27 +37,26 @@ public:
     TPanel* parent;          // +0x40
     char gap_44[0x450];      // +0x44 to +0x493
     TPanel* text;            // +0x494
-    TPanel* button0;         // +0x498
-    TPanel* button1;         // +0x49C
-    TPanel* button2;         // +0x4A0
+    TPanel* button[3];        // +0x498, +0x49C, +0x4A0
 
     virtual ~TMessageDialog();
-    virtual long setup(TPanel* p1, char* p2, long p3, long p4, long p5,
+    long setup(TPanel* p1, char* p2, long p3, long p4, long p5,
         unsigned char p6, int p7, long p8, long p9);
     virtual long action(TPanel* param_1, long param_2, unsigned long param_3, unsigned long param_4);
 };
+#endif
 
 long TMessageDialog::action(TPanel* param_1, long param_2, unsigned long param_3, unsigned long param_4) {
     if (parent != 0 && param_2 == 1) {
-        if (param_1 == button0) {
+        if (param_1 == button[0]) {
             parent->action(this, 0, 0, 0);
             return param_2;
         }
-        if (param_1 == button1) {
+        if (param_1 == button[1]) {
             parent->action(this, 1, 0, 0);
             return 1;
         }
-        if (param_1 == button2) {
+        if (param_1 == button[2]) {
             parent->action(this, 2, 0, 0);
             return 1;
         }

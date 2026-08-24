@@ -1,3 +1,4 @@
+#ifndef TACT_REP_CONTEXT_H
 class TRIBE_Action_Repair {
 public:
     virtual void vf00(void);
@@ -7,7 +8,7 @@ public:
     virtual void vf10(void);
     virtual void vf14(void);
     virtual void vf18(void);
-    virtual void vf1C(void);
+    virtual void first_in_stack(unsigned char value);
     virtual void vf20(void);
     virtual void vf24(void);
     virtual void vf28(void);
@@ -23,16 +24,17 @@ public:
     virtual void vf50(void);
     virtual void vf54(void);
     virtual void vf58(void);
-    virtual void first_in_stack(unsigned char value);
+    virtual void set_state(unsigned char value);
 
     char gap_04[0xC];
-    void* field_10;
+    void* target_obj;
 };
+#endif
 
 void TRIBE_Action_Repair::first_in_stack(unsigned char value) {
-    if (value != 0 && this->field_10 != 0) {
-        (*(void (__stdcall **)(void*, int))(*(void**)this->field_10 + 0x5C))(this->field_10, 4);
+    if (value != 0 && this->target_obj != 0) {
+        this->set_state(4);
         return;
     }
-    (*(void (__stdcall **)(void*, int))(*(void**)this->field_10 + 0x5C))(this->field_10, 3);
+    this->set_state(3);
 }

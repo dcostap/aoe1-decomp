@@ -2,7 +2,9 @@
 // and calls TRIBE_Building_Object::TRIBE_Building_Object(master, player, x, y, z, param_5, 1)
 // /GX required for exact EH frame
 #include "..\..\include\game_globals.h"
+#include "..\..\include\tm_b_obj_context.h"
 
+#ifndef TM_B_OBJ_SHARED_CONTEXT
 // Local surface for the master object class chain (sizeof = 0x17C)
 class RGE_Master_Static_Object {
 public:
@@ -35,6 +37,7 @@ class TRIBE_Building_Object : public RGE_Static_Object {
 public:
     TRIBE_Building_Object(TRIBE_Master_Building_Object* master, RGE_Player* player, float x, float y, float z, int param_6, int param_7);
 };
+#endif
 
 RGE_Static_Object* TRIBE_Master_Building_Object::make_new_obj(RGE_Player* param_1, float param_2, float param_3, float param_4, int param_5) {
     return new TRIBE_Building_Object(this, param_1, param_2, param_3, param_4, param_5, 1);

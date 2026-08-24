@@ -14,6 +14,7 @@
 #include <string.h>
 #include <stdio.h>
 
+#ifndef T_B_OBJ_CONTEXT_H
 extern float DAT_005749f4;
 extern double DAT_00574a00;
 extern float DAT_00574a08;
@@ -94,6 +95,7 @@ class TRIBE_Building_Object : public RGE_Combat_Object {
 public:
     void damage(int param_1, RGE_Armor_Weapon_Info* param_2, float param_3, RGE_Player* param_4, RGE_Static_Object* param_5);
 };
+#endif
 
 void TRIBE_Building_Object::damage(int param_1, RGE_Armor_Weapon_Info* param_2, float param_3, RGE_Player* param_4, RGE_Static_Object* param_5)
 {

@@ -60,6 +60,7 @@ extern double DAT_00575270;
 extern float DAT_00575278;
 extern float DAT_0086bc08;
 
+#ifndef TACT_REP_CONTEXT_H
 typedef unsigned char uchar;
 
 class RGE_Static_Object;
@@ -231,6 +232,7 @@ class TRIBE_Action_Repair : public RGE_Action {
 public:
     virtual uchar update();
 };
+#endif
 
 uchar TRIBE_Action_Repair::update()
 {

@@ -1,5 +1,6 @@
 // first pass: direct build-list lookup, status helper calls, then the AI cleanup/update tail
 // if this is sticky, the remaining gap is probably just the exact member-call order around the md/tacticalAI tail
+#ifndef TAIBLDMD_SHARED_CONTEXT
 class BuildItem {
 public:
     virtual ~BuildItem();
@@ -35,6 +36,7 @@ public:
 
     int addTrainedUnit(int param_1, int param_2, int param_3, int param_4);
 };
+#endif
 
 int TribeBuildAIModule::addTrainedUnit(int param_1, int param_2, int param_3, int param_4) {
     BuildItem* item;

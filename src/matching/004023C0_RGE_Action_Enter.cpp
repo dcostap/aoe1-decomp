@@ -1,3 +1,4 @@
+#ifndef ACT_ENTR_CONTEXT_H
 class RGE_Action_Object;
 
 class RGE_Action {
@@ -12,6 +13,7 @@ class RGE_Action_Enter : public RGE_Action {
 public:
     RGE_Action_Enter(int param_1, RGE_Action_Object* param_2);
 };
+#endif
 
 RGE_Action_Enter::RGE_Action_Enter(int param_1, RGE_Action_Object* param_2)
     : RGE_Action(param_1, param_2, 1) {

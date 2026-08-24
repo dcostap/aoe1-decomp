@@ -13,6 +13,7 @@
 // 5. variant_lab over split/nested guards and countlocal/reload_do/reload_for/ptrloop shapes with vc5-small flags: no exact. Best edit family was reload_for (edit 26), best positional among no-EBX families was reload_do (pos 47.5) but with peeled first iteration and larger body.
 // 6. Removed explicit empty check and used only the for-loop condition; exact match.
 
+#ifndef GAMEINFO_SHARED_CONTEXT
 class RGE_Campaign { public: char* get_name(void); };
 class RGE_Campaign_Info { public: unsigned char verify_campaign_name(char* campaign_name); };
 
@@ -26,6 +27,7 @@ public:
     RGE_Campaign** campaigns;
     long get_current_campaign(void);
 };
+#endif
 
 long RGE_Person_Info::get_current_campaign(void) {
     if (this->current_campaign < 0 || this->current_campaign >= this->campaign_info_num) {

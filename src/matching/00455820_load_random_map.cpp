@@ -8,6 +8,8 @@
 
 #include "..\..\include\game_globals.h"
 
+#ifndef MAP_CONTEXT_H
+
 // RGE_Random_Map_Module — virtual base for vtable
 class RGE_Random_Map_Module {
 public:
@@ -30,6 +32,8 @@ public:
 
     void load_random_map(char* param_1, char* param_2, char* param_3, char* param_4);
 };
+
+#endif
 
 void RGE_Map::load_random_map(char* param_1, char* param_2, char* param_3, char* param_4)
 {

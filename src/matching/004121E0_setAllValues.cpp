@@ -1,15 +1,5 @@
-class ResourceItem {
-public:
-    void* vtable_ptr;
-    ResourceItem* next;
-    ResourceItem* prev;
-    int valueValue[8];
-    int sortedValue[8];
-    int sortedIndexValue[8];
-    int numberValue;
-
-    void setAllValues(int value);
-};
+// ResourceItem::setAllValues(int)
+// VA: 004121E0 | airesitm.cpp:173-176
 
 void ResourceItem::setAllValues(int value) {
     for (int i = 0; i < 8; ++i) {

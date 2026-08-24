@@ -14,6 +14,7 @@
 // self alias, volatile orientation) either stayed 144B or entered wrong broad basins. A volatile read of the
 // down_rect field forces the original 146B saved-ESI size while leaving only the localized scheduling drift above.
 
+#ifndef PNL_SCBR_CANONICAL_TU
 class TScrollBarPanel {
 public:
     char gap_00[0x14];
@@ -45,9 +46,47 @@ public:
 
     void calc_item_rects();
 };
+#endif
 
 void TScrollBarPanel::calc_item_rects()
 {
+#ifdef PNL_SCBR_CANONICAL_TU
+    int x, w, r, dl;
+
+    if (this->orientationValue == 1) {
+        x = this->tab_x;
+        w = this->field_18;
+        r = this->up_rect.right;
+        this->tab_rect.left = x;
+        w = w + x - 5;
+        x--;
+        this->tab_rect.right = w;
+        this->top_rect.right = x;
+        dl = *(volatile int*)&this->down_rect.left;
+        r++;
+        w++;
+        dl--;
+        this->top_rect.left = r;
+        this->bottom_rect.left = w;
+        this->bottom_rect.right = dl;
+    } else {
+        x = this->tab_y;
+        w = this->field_14;
+        r = this->up_rect.bottom;
+        this->tab_rect.top = x;
+        w = w + x - 5;
+        x--;
+        this->tab_rect.bottom = w;
+        this->top_rect.bottom = x;
+        dl = *(volatile int*)&this->down_rect.top;
+        r++;
+        w++;
+        dl--;
+        this->top_rect.top = r;
+        this->bottom_rect.top = w;
+        this->bottom_rect.bottom = dl;
+    }
+#else
     int x, w, r, dl;
 
     if (this->orientation == 1) {
@@ -83,4 +122,5 @@ void TScrollBarPanel::calc_item_rects()
         this->bottom_rect_top = w;
         this->bottom_rect_bottom = dl;
     }
+#endif
 }

@@ -50,10 +50,13 @@
 //   restored.  Keep the natural source below; do not trade publication or
 //   cleanup order for a closer metric.
 
+#ifndef AOE1_TPNL_OBJ_CONTEXT_H
 #include "../../include/game_globals.h"
+#endif
 #include <stdio.h>
 #include <string.h>
 
+#ifndef AOE1_TPNL_OBJ_CONTEXT_H
 extern float DAT_00576d80;
 extern float DAT_00576d84;
 extern const char s_tpnl_obj_draw[];
@@ -623,6 +626,7 @@ extern "C" __declspec(dllimport) int __stdcall SetBkMode(HDC, int);
 extern "C" __declspec(dllimport) COLORREF __stdcall SetTextColor(HDC, COLORREF);
 extern "C" __declspec(dllimport) BOOL __stdcall SelectClipRgn(HDC, HRGN);
 extern "C" __declspec(dllimport) BOOL __stdcall TextOutA(HDC, int, int, LPCSTR, int);
+#endif
 
 void TRIBE_Panel_Object::draw()
 {

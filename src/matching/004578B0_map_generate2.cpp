@@ -14,9 +14,10 @@ class RGE_RMM_Database_Controller;
 class RGE_Player;
 class TDebuggingLog;
 
-int debug_rand(char* file, int line);
+extern "C" int debug_rand(char* file, int line);
 void debug_srand(char* file, int line, unsigned int seed);
 
+#ifndef MAP_CONTEXT_H
 class RGE_Random_Map_Module {
 public:
     virtual unsigned char generate();
@@ -80,6 +81,8 @@ public:
     void clear_map(RGE_Player* player, RGE_Game_World* world,
                    unsigned char value, long width, long height);
 };
+
+#endif
 
 void RGE_Map::map_generate2(RGE_Game_World* param_1, long param_2,
                             long param_3, unsigned char param_4, long param_5)

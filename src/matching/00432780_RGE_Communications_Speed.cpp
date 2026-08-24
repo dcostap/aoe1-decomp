@@ -1,18 +1,6 @@
-class RGE_TimeSinceLastCall {
-public:
-    ~RGE_TimeSinceLastCall(void);
-};
+#include "../../include/com_spd_context.h"
 
 void operator_delete(void* ptr);
-
-class RGE_Communications_Speed {
-public:
-    char gap_00[0x100];
-    RGE_TimeSinceLastCall* TurnTSLC;
-    RGE_TimeSinceLastCall* FrameTSLC;
-
-    ~RGE_Communications_Speed(void);
-};
 
 RGE_Communications_Speed::~RGE_Communications_Speed(void) {
     RGE_TimeSinceLastCall* tslc;

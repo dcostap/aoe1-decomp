@@ -5,6 +5,7 @@
 
 #include "../../include/game_globals.h"
 
+#ifndef PNL_SCBR_CANONICAL_TU
 class TPanel {
 public:
     virtual void vf00(void);
@@ -57,6 +58,8 @@ public:
 
 class TScrollBarPanel {
 public:
+    enum ActionType { ActionUp = 0, ActionDown = 1, ActionPrior = 2,
+                      ActionNext = 3, ActionPosition = 4 };
     char gap_00[0x40];
     TPanel* panel;                 // +0x40
     char gap_44[0xF4 - 0x44];
@@ -66,13 +69,18 @@ public:
     int page_step;                 // +0x100
     int list_num;                  // +0x104
 
-    void scroll(int action, long param);
+    void scroll(ActionType action, long param);
     void set_tab_pos(long param);
 };
+#endif
 
-void TScrollBarPanel::scroll(int action, long param) {
+void TScrollBarPanel::scroll(TScrollBarPanel::ActionType action, long param) {
     if (this->list_panel != 0) {
+#ifdef PNL_SCBR_CANONICAL_TU
+        this->list_panel->action(this, action, param, 0);
+#else
         this->list_panel->scroll_notify(this, action, param, 0);
+#endif
         return;
     }
 
@@ -109,7 +117,11 @@ void TScrollBarPanel::scroll(int action, long param) {
     if (val != this->list_num) {
         set_tab_pos(val);
         if (this->panel != 0) {
+#ifdef PNL_SCBR_CANONICAL_TU
+            this->panel->action(this, 4, val, 0);
+#else
             this->panel->scroll_notify(this, 4, val, 0);
+#endif
         }
     }
 }

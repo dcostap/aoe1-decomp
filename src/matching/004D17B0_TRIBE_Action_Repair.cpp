@@ -1,3 +1,4 @@
+#ifndef TACT_REP_CONTEXT_H
 class RGE_Task;
 
 class RGE_Action {
@@ -21,6 +22,7 @@ public:
 
     TRIBE_Action_Repair(int file, RGE_Task* task, float x, float y, float z);
 };
+#endif
 
 TRIBE_Action_Repair::TRIBE_Action_Repair(int file, RGE_Task* task, float x, float y, float z)
     : RGE_Action(file, 1) {

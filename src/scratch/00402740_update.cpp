@@ -44,6 +44,7 @@
 //   clean source remains pinned; the unresolved facts are the second lookup's
 //   push-first schedule and one merged vslot+D0 enter_obj call.
 
+#ifndef ACT_ENTR_CONTEXT_H
 class RGE_Sprite;
 class RGE_Task;
 class RGE_Action_List;
@@ -292,6 +293,7 @@ public:
 extern float DAT_0056e1a0;
 extern float DAT_0056e1a4;
 extern float DAT_0056e1a8;
+#endif
 
 unsigned char RGE_Action_Enter::update(void) {
     RGE_Action* action;

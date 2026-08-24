@@ -4,6 +4,8 @@
 // Canonical local declarations for the original taibldmd.cpp source module.
 // PDB lines 62-1773 prove one TribeBuildAIModule owner sequence.
 // The original EH frames in initialize and nextBuildableItem require /GX.
+// BINARY NOTE: the grouped wrapper uses these layouts for all owner bodies.
+// It does not change global registration or shared ABI evidence.
 
 typedef unsigned char uchar;
 typedef unsigned int uint;
@@ -16,8 +18,11 @@ class AIModuleMessage;
 class BuildItem;
 class ResourceItem;
 class RGE_Player;
+class RGE_Master_Static_Object;
 class RGE_Static_Object;
 class TribeMainDecisionAIModule;
+class TribeBuildAIModule;
+class ConstructionItem;
 
 class AIModule {
 public:
@@ -41,6 +46,7 @@ protected:
 
 public:
     char gap_004[0xEC];
+    void __cdecl logCommonHistory(char* format, ...);
 };
 
 class BaseItem {
@@ -49,8 +55,10 @@ public:
     char gap_004[0x68];
 
     int typeID() const;
+    int gameID() const;
     int skip() const;
     void setSkip(int value);
+    void setGameID(int value);
     char* name();
     int uniqueID() const;
 };
@@ -87,6 +95,8 @@ public:
     void setInProgress(int value);
     void setBuilt(int value);
     void setBuildAttempts(int value);
+    void incrementNumberBuilds();
+    void setSkipCycles(int value);
     void incrementBuildAttempts();
     void decrementBuildAttempts();
     void incrementSkipCycles();
@@ -160,14 +170,24 @@ public:
         int buildListLength;
     };                                           // +0x1A0
     char buildListNameValue[0x101];              // +0x1A4
-    char lastBuildItemRequestedValue[0x101];     // +0x2A5
+    union {
+        char lastBuildItemRequestedValue[0x101]; // +0x2A5
+        char builtName[0x101];
+    };
     char currentBuildItemRequestedValue[0x101];  // +0x3A6
     char nextBuildItemRequestedValue[0x101];     // +0x4A7
-    int numberItemsIntoBuildListValue;           // +0x5A8
+    union {
+        int numberItemsIntoBuildListValue;       // +0x5A8
+        int builtID;
+    };
     ManagedArray<int> typesToIgnore;             // +0x5AC
 
     BuildAIModule(void* owner, int player);
     BuildAIModule(int file, int player);
+    int insertItem(RGE_Player* player, int objectType, int count,
+                   int itemType, int p5, int buildCap, int index);
+    int numberInProgressItemsOfType(int type, int flag);
+    BuildItem* specificBuildListItem(int uniqueID);
 };
 
 class RGE_Player {
@@ -200,6 +220,13 @@ public:
     float* attributes;
 };
 
+class RGE_Master_Static_Object {
+public:
+    virtual ~RGE_Master_Static_Object();
+    char gap_004[0x0C];
+    short id;
+};
+
 class TRIBE_Player : public RGE_Player {
 public:
     uchar researchState(int type);
@@ -210,7 +237,12 @@ public:
     void objectCost(int type, int amount, ResourceItem* item, int flag);
 };
 
-class RGE_Static_Object {};
+class RGE_Static_Object {
+public:
+    virtual ~RGE_Static_Object();
+    int id;
+    RGE_Master_Static_Object* master_obj;
+};
 
 class MainDecisionAIModule : public AIModule {
 public:
@@ -219,12 +251,37 @@ public:
 
     RGE_Static_Object* object(int p1, int p2, int p3, int p4, int p5,
                               int p6, int p7, int p8, int p9, int p10);
+    RGE_Static_Object* object(int id);
+    void detask(int id);
+    int isMoveable(int id);
+};
+
+class ConstructionItem {
+public:
+    float x();
+    float y();
+    float xSize();
+    float ySize();
+    int typeID();
 };
 
 class TribeConstructionAIModule {
 public:
     char gap_000[0x318];
     int canPlace(BuildItem* item);
+    void setBuilt(RGE_Static_Object* object, int value);
+    ConstructionItem* lot(float x, float y);
+    void cancel(float x, float y, int number);
+    void removeLot(float x, float y, int status);
+};
+
+class TribeInformationAIModule {
+public:
+    char gap_000[0x10090];
+    int isBuilding(RGE_Static_Object* object);
+    int numberStoragePits();
+    int numberGranaries();
+    void removeLot(int type, int x, int y, uchar status);
 };
 
 class TribeResourceAIModule {
@@ -237,17 +294,23 @@ public:
 
 class TribeTacticalAIModule {
 public:
-    char gap_000[0x100C];
+    char gap_000[0xE40];
+    int wonderInProgressValue;
+    int wonderBuiltValue;
+    char gap_0E4C[0x100C - 0xE4C];
     int strategicNumber(int number);
     void enableAttack(int value);
     void setStrategicNumber(int number, int value);
+    void updateNeededResources();
+    void clearArea(int objectID, float x1, float y1, float x2, float y2);
 };
 
 class TribeMainDecisionAIModule : public MainDecisionAIModule {
 public:
     char buildAI[0x5C0];                         // +0x00104
     TribeConstructionAIModule constructionAI;    // +0x006C4
-    char gap_009DC[0x103A0];                     // through +0x10D7C
+    char gap_009DC[0xCEC - 0x9DC];               // diplomacy/emotional AI
+    TribeInformationAIModule informationAI;      // +0x00CEC
     TribeResourceAIModule resourceAI;            // +0x10D7C
     char gap_10E74[0x5F8];                       // through +0x1146C
     TribeTacticalAIModule tacticalAI;            // +0x1146C
@@ -276,7 +339,22 @@ public:
     int insert(int type, int count, int index);
     int insertResearch(int research, int index);
     int insertGathererPercentage(int index, int percentage, int bronzeAgeIndex);
+    int addItem(RGE_Static_Object* object, int flag);
+    int addBuiltItem(RGE_Static_Object* object, int id);
+    int removeBuiltItem(int id);
+    int cancelBuildItem(int action, int objId, int objectTypeId,
+                        float x, float y, int uniqueBuildId, int taskId);
+    int addTrainedUnit(int param1, int param2, int param3, int param4);
+    int cancelTrainUnit(int param1, int param2, int param3, int param4);
+    int addResearch(int param1, int param2, int param3);
+    int cancelResearch(int param1, int param2, int param3, int param4);
+    int readyToResearch(int param1, int param2);
+    void unskipBuildList(int limit67, int limit44);
+    BuildItem* buildItem(int type, int category1, int category2);
+    int allBuilt(int param1, int param2);
 };
+
+void logCommonHistory(TribeBuildAIModule* module, const char* format, ...);
 
 typedef char taibldmd_build_item_size[(sizeof(BuildItem) == 0xB0) ? 1 : -1];
 typedef char taibldmd_resource_item_size[(sizeof(ResourceItem) == 0x70) ? 1 : -1];

@@ -1,3 +1,4 @@
+#ifndef PNL_SCBR_CANONICAL_TU
 class TScrollBarPanel {
 public:
     char gap_00[0x1B8];
@@ -11,6 +12,7 @@ public:
 
     void set_bevel_info(int type, int c1, int c2, int c3, int c4, int c5, int c6);
 };
+#endif
 
 void TScrollBarPanel::set_bevel_info(int type, int c1, int c2, int c3, int c4, int c5, int c6) {
     bevel_type = type;

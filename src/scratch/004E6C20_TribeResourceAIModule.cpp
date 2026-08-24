@@ -1,12 +1,4 @@
-class Base_TribeResourceAIModule {
-public:
-    virtual ~Base_TribeResourceAIModule();
-};
-
-class TribeResourceAIModule : public Base_TribeResourceAIModule {
-public:
-    virtual ~TribeResourceAIModule();
-};
+#include "../../include/tairesmd_context.h"
 
 TribeResourceAIModule::~TribeResourceAIModule() {
 }

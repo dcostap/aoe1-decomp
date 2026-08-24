@@ -3,6 +3,7 @@
 // Baseline: natural three-argument constructor with the proven production
 // queue layout, base constructor, setup gate, and doppleganger registration.
 
+#ifndef T_B_OBJ_CONTEXT_H
 class RGE_Game_World;
 class RGE_Player;
 class TRIBE_Building_Object;
@@ -52,6 +53,7 @@ public:
     TRIBE_Building_Object(int mode, RGE_Game_World* world, int do_setup);
     int setup(int mode, RGE_Game_World* world);
 };
+#endif
 
 TRIBE_Building_Object::TRIBE_Building_Object(int mode, RGE_Game_World* world,
                                              int do_setup)

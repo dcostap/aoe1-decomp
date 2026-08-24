@@ -1,4 +1,4 @@
-// 004D5D40 TribeBuildAIModule::readyToTrain / unskipBuildList (155B)
+// 004D5D40 TribeBuildAIModule::unskipBuildList (155B)
 // taibldmd.cpp:1721-1753
 // STATUS: PAUSED — proposed accepted_drift
 // Remaining drift: 11 bytes positional / 10 bytes edit (6.5%)
@@ -8,7 +8,10 @@
 // Attempts: 12+ across all loop forms (for, do-while, while, for(;;), goto-based)
 // All register allocation and instruction sequences match except bottom-of-loop structure.
 // Default flags
+// BINARY NOTE: the PDB and decorated owner symbol are unskipBuildList.  The
+// old readyToTrain spelling was a source-owner error and is not retained.
 
+#ifndef TAIBLDMD_SHARED_CONTEXT
 class BuildItem {
 public:
     char gap_00[0x6C];
@@ -50,15 +53,25 @@ public:
     char sentinel_pad[0x6C];           // this+0xF0 to this+0x15C
     BuildItem* first;                   // +0x15C
 
-    void readyToTrain(int limit67, int limit44);
+    void unskipBuildList(int limit67, int limit44);
 };
+#endif
 
-void TribeBuildAIModule::readyToTrain(int limit67, int limit44)
+void TribeBuildAIModule::unskipBuildList(int limit67, int limit44)
 {
+#ifdef TAIBLDMD_SHARED_CONTEXT
+    int lim67 = this->numberBuiltOrInProgressItemsOfType(0x67, 0);
+    int lim44 = this->numberBuiltOrInProgressItemsOfType(0x44, 0);
+#else
     int lim67 = getUnitLimit(0x67, 0);
     int lim44 = getUnitLimit(0x44, 0);
+#endif
 
+#ifdef TAIBLDMD_SHARED_CONTEXT
+    BuildItem* item = this->buildList.next;
+#else
     BuildItem* item = first;
+#endif
     BuildItem* sentinel = (BuildItem*)((char*)this + 0x0F0);
 
     if (item == sentinel) return;

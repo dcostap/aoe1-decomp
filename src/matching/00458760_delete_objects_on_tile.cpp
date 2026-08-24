@@ -5,6 +5,7 @@
 
 #include "..\..\include\game_globals.h"
 
+#ifndef MAP_CONTEXT_H
 class RGE_Master_Static_Object {
 public:
     char _gap_00[0x10];
@@ -48,6 +49,8 @@ public:
 
     void delete_objects_on_tile(class RGE_Player* player, class RGE_Game_World* world, int x, int y, int min_id, int max_id);
 };
+
+#endif
 
 void RGE_Map::delete_objects_on_tile(RGE_Player* player, RGE_Game_World* /*world*/, int x, int y, int min_id, int max_id)
 {

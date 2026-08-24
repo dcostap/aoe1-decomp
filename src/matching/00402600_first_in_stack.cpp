@@ -1,3 +1,4 @@
+#ifndef ACT_ENTR_CONTEXT_H
 class RGE_Action_Enter {
 public:
     virtual void vf00(void);
@@ -26,6 +27,7 @@ public:
     virtual void set_state(unsigned char value);
     virtual void first_in_stack(unsigned char param_1);
 };
+#endif
 
 void RGE_Action_Enter::first_in_stack(unsigned char param_1) {
     this->set_state(4);

@@ -12,6 +12,7 @@ extern "C" void* __cdecl calloc(unsigned int n, unsigned int size);
 extern "C" void __cdecl free(void* p);
 extern "C" void __cdecl rge_write(int file, void* data, int size);
 
+#ifndef MAP_CONTEXT_H
 class RGE_RMM_Database_Controller {
 public:
     unsigned char save(int file);
@@ -31,6 +32,8 @@ public:
     char bytes[0x8dc0];
     void save(int file);
 };
+
+#endif
 
 void RGE_Map::save(int file)
 {

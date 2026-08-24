@@ -25,6 +25,7 @@
 // Main-agent audit restored canonical master/player destructor ownership and
 // retained natural compiler-managed vptr lowering.
 
+#ifndef T_B_OBJ_CONTEXT_H
 class RGE_Player;
 class RGE_Master_Static_Object;
 class RGE_Doppleganger_Creator;
@@ -129,6 +130,7 @@ public:
     virtual int setup(TRIBE_Master_Building_Object* master, RGE_Player* player,
                       float x, float y, float z);
 };
+#endif
 
 TRIBE_Building_Object::TRIBE_Building_Object(
     TRIBE_Master_Building_Object* master, RGE_Player* player,

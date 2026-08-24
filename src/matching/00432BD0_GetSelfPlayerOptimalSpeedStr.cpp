@@ -1,9 +1,4 @@
-class RGE_Communications_Speed {
-public:
-    unsigned int GetRecommendedBufferFrames(void);
-    unsigned int GetRecommendedBufferGranularity(void);
-    char* GetSelfPlayerOptimalSpeedStr(void);
-};
+#include "../../include/com_spd_context.h"
 
 extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
 extern char g_self_player_optimal_speed_str[152];

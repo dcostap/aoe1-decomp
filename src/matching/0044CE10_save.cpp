@@ -1,6 +1,7 @@
 // VA: 0044CE10 RGE_Person_Info::save(int fd)
 // gameinfo.cpp lines 329-340, 120 bytes
 
+#ifndef GAMEINFO_SHARED_CONTEXT
 void __cdecl rge_write(int fd, void* buf, int size);
 
 struct TDebuggingLog {
@@ -21,6 +22,7 @@ struct RGE_Person_Info {
 };
 
 extern int L;
+#endif
 
 void RGE_Person_Info::save(int fd) {
     TDebuggingLog::Log((void*)L, "(PIF)Saving player - %s", this);

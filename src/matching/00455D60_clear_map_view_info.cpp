@@ -1,3 +1,4 @@
+#ifndef MAP_CONTEXT_H
 class RGE_Tile;
 
 class RGE_Map {
@@ -30,6 +31,8 @@ public:
     unsigned char draw_attribute;
     unsigned char last_drawn_shape2;
 };
+
+#endif
 
 void RGE_Map::clear_map_view_info() {
     unsigned char* puVar1;

@@ -10,6 +10,7 @@
 // - Exact: 713/713 bytes under the pinned VC5 /O2 /Oy /GX toolchain. No inline
 //   asm or compiler-only source scaffolding.
 
+#ifndef TACT_REP_CONTEXT_H
 class RGE_Sprite;
 class RGE_Static_Object;
 class RGE_Action_Object;
@@ -66,13 +67,13 @@ public:
     virtual void vf13C(); virtual void vf140(); virtual void vf144();
     virtual void notify(int,int,int,int,int,int); // +0x148
     virtual void vf14C(); virtual void vf150();
-    virtual void move_to(float, float, float, int, int); // +0x154
+    virtual void moveTo(float, float, float, float, int); // +0x154
     int id; // +4
     RGE_Action_Object_Data* object_data; // +8
     char gap_0C[0x2C];
-    float x; // +38
-    float y; // +3c
-    float z; // +40
+    float world_x; // +38
+    float world_y; // +3c
+    float world_z; // +40
     char gap_44[0x144];
     unsigned char command_flag; // +188
 };
@@ -149,11 +150,11 @@ public:
     virtual void vf12C(); virtual void vf130(); virtual void vf134(); virtual void vf138();
     virtual void vf13C(); virtual void vf140(); virtual void vf144(); virtual void vf148();
     virtual void vf14C(); virtual void vf150();
-    virtual void move_to(float,float,float,int,int); // +154
+    virtual void moveTo(float,float,float,float,int); // +154
     char gap_04[4];
     RGE_Static_Object_Data* object_data; // +8
     char gap_0C[0x2C];
-    float x; float y; float z;
+    float world_x; float world_y; float world_z;
     char gap_44[0x144];
     unsigned char command_flag;
 };
@@ -172,6 +173,7 @@ public:
     virtual void set_state(unsigned char);
     unsigned char save_target_command_flag; // +40
 };
+#endif
 
 void TRIBE_Action_Repair::set_state(unsigned char param_1)
 {
@@ -196,9 +198,9 @@ void TRIBE_Action_Repair::set_state(unsigned char param_1)
 
     case 4: {
         if (this->target_obj != 0) {
-            this->target_x = this->target_obj->x;
-            this->target_y = this->target_obj->y;
-            this->target_z = this->target_obj->z;
+            this->target_x = this->target_obj->world_x;
+            this->target_y = this->target_obj->world_y;
+            this->target_z = this->target_obj->world_z;
         }
         RGE_Action_Move_To* action = new RGE_Action_Move_To(this->obj, this->target_obj, this->obj->object_data->work_range, this->task->move_sprite);
         if (action == 0) {
@@ -218,14 +220,14 @@ void TRIBE_Action_Repair::set_state(unsigned char param_1)
         short id = target->object_data->object_type;
         if (id != 2 && id != 0x14 && id != 0x15 && id != 0x16) return;
         if (target->command_flag != this->save_target_command_flag) return;
-        target->move_to(this->obj->x, this->obj->y, this->obj->z, 0, 1);
+        target->moveTo(this->obj->world_x, this->obj->world_y, this->obj->world_z, 0, 1);
         return;
     }
 
     case 6:
-        this->target_x = this->target_obj->x;
-        this->target_y = this->target_obj->y;
-        this->target_z = this->target_obj->z;
+        this->target_x = this->target_obj->world_x;
+        this->target_y = this->target_obj->world_y;
+        this->target_z = this->target_obj->world_z;
         this->obj->new_sprite(this->task->move_sprite);
         return;
 

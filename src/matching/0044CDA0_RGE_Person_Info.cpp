@@ -1,5 +1,6 @@
 // gameinfo.cpp:313-324, 106 bytes
 // attempt 1: destructor with campaign_info array cleanup
+#ifndef GAMEINFO_SHARED_CONTEXT
 extern void __cdecl operator_delete(void*);
 extern void __cdecl free(void*);
 
@@ -17,6 +18,7 @@ public:
 
     ~RGE_Person_Info();
 };
+#endif
 
 RGE_Person_Info::~RGE_Person_Info() {
     if (campaign_info != 0) {

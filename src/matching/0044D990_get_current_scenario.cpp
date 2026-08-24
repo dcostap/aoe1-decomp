@@ -1,3 +1,4 @@
+#ifndef GAMEINFO_SHARED_CONTEXT
 class RGE_Person_Info {
 public:
     long get_current_scenario(void);
@@ -11,6 +12,7 @@ public:
 
     long get_current_scenario(void);
 };
+#endif
 
 long RGE_Game_Info::get_current_scenario(void) {
     long current_person;

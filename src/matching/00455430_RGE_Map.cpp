@@ -15,6 +15,8 @@
 
 #include <stdlib.h>
 
+#ifndef MAP_CONTEXT_H
+
 class RGE_Map;
 class RGE_Tile;
 class RGE_Game_World;
@@ -111,6 +113,8 @@ public:
     RGE_Unified_Visible_Map* unified_vis_map;
     Visible_Unit_Manager* unit_manager;
 };
+
+#endif
 
 RGE_Map::~RGE_Map()
 {

@@ -1,4 +1,7 @@
 // Attempt log:
+// module captain: the authentic Pnl_msg_cpp wrapper compiles with the shared
+// context and /GX. It preserves the 1305-byte observed mismatch and two
+// boundary escapes; stop tuning at the module compile boundary.
 // baseline: natural render path with local typed Win32 and draw-area stubs; frame 0x44, diff 1552.
 // layout: restored TPanel ownership for width, height, and draw origin; frame 0x48, diff 1526.
 // control-flow: used panel dimensions and original justification enum values; frame 0x40, diff 1506.

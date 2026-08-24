@@ -12,6 +12,7 @@
 // GIVEUP: behavior/calls/offsets now match the packet, but remaining mismatch is broad control-flow/register topology (original push edi before sentinel lea, EDI=found from entry, EBX=this; rebuilt delays push edi and carries a separate EAX found state). Not accepted drift.
 
 
+#ifndef TAIBLDMD_SHARED_CONTEXT
 class BaseItem {
 public:
     char gap_00[0x6C];
@@ -49,6 +50,7 @@ public:
 
     int removeBuiltItem(int id);
 };
+#endif
 
 int TribeBuildAIModule::removeBuiltItem(int id)
 {
@@ -63,7 +65,11 @@ int TribeBuildAIModule::removeBuiltItem(int id)
             item->setGameID(-1);
             item->setBuildAttempts(found);
             if (item->typeID() == 0x114) {
+#ifdef TAIBLDMD_SHARED_CONTEXT
+                this->md->tacticalAI.wonderBuiltValue = found;
+#else
                 this->md->wonderBuiltValue = found;
+#endif
             }
             found = 1;
         } else {

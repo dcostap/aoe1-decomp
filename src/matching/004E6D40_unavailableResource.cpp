@@ -5,26 +5,7 @@
 // - Previous file had only notes, producing no .text section.
 // - 2026-05-10 StarryZephyr pass: implemented natural typed source matching packet behavior.
 
-class ResourceItem {
-public:
-    int number();
-    int value(int index);
-};
-
-class MainDecisionAIModule {
-public:
-    char gap_00[0xF0];
-    void* player;
-};
-
-class TribeResourceAIModule {
-public:
-    char gap_00[0xF0];
-    MainDecisionAIModule* md;
-    int numberResourcesValue;
-
-    int unavailableResource(ResourceItem* item);
-};
+#include "../../include/tairesmd_context.h"
 
 int TribeResourceAIModule::unavailableResource(ResourceItem* item)
 {

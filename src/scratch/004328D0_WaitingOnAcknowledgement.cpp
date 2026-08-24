@@ -1,10 +1,5 @@
-class TCommunications_Handler {
-public:
-    char gap_0[0x210];
-    volatile int field_210;
-    void WaitingOnAcknowledgement();
-};
+#include "../../include/com_spd_context.h"
 
-void TCommunications_Handler::WaitingOnAcknowledgement() {
-    this->field_210 = this->field_210 + 1;
+void RGE_Communications_Speed::WaitingOnAcknowledgement() {
+    this->SkipFrames = this->SkipFrames + 1;
 }

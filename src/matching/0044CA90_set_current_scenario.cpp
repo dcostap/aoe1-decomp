@@ -1,3 +1,4 @@
+#ifndef GAMEINFO_SHARED_CONTEXT
 class RGE_Scenario_Info {
 public:
     unsigned char scenario_status;
@@ -13,6 +14,7 @@ public:
 
     unsigned char set_current_scenario(long param_1);
 };
+#endif
 
 unsigned char RGE_Campaign_Info::set_current_scenario(long param_1) {
     if (param_1 < scenario_num && scenario_info[param_1].scenario_status != 0) {

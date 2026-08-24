@@ -1,19 +1,7 @@
-class RGE_Game_World;
+#include "../../include/Timeline_context.h"
 
-class RGE_Timeline {
-public:
-    virtual ~RGE_Timeline();
-    RGE_Game_World* world;
-    void* time_list;
-    short list_num;
-    short avail_id;
-    float old_time;
-
-    RGE_Timeline(RGE_Game_World* world);
-};
-
-RGE_Timeline::RGE_Timeline(RGE_Game_World* world) {
-    this->world = world;
+RGE_Timeline::RGE_Timeline(RGE_Game_World* world_arg) {
+    this->world = world_arg;
     this->time_list = 0;
     this->list_num = 0;
     this->avail_id = 0;

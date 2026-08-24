@@ -4,6 +4,7 @@
 // Attempt log:
 // initial natural constructor reconstruction using known subobject offsets and /GX EH context.
 
+#ifndef AOE1_TAIMDMD_CONTEXT_H
 extern "C" void __cdecl rge_read(int, void*, int);
 extern "C" void* __cdecl memset(void*, int, unsigned int);
 
@@ -42,16 +43,16 @@ class TradeAIModule { public: virtual ~TradeAIModule(); char bytes[0xF0]; TradeA
 
 class TribeMainDecisionAIModule : public MainDecisionAIModule {
 public:
-    TribeBuildAIModule build;
-    TribeConstructionAIModule construction;
-    DiplomacyAIModule diplomacy;
-    EmotionalAIModule emotional;
-    TribeInformationAIModule information;
-    TribeResourceAIModule resource;
-    TribeStrategyAIModule strategy;
-    TribeTacticalAIModule tactical;
-    TradeAIModule trade;
-    TRIBE_Player* tribe_player;
+    TribeBuildAIModule buildAI;
+    TribeConstructionAIModule constructionAI;
+    DiplomacyAIModule diplomacyAI;
+    EmotionalAIModule emotionalAI;
+    TribeInformationAIModule informationAI;
+    TribeResourceAIModule resourceAI;
+    TribeStrategyAIModule strategyAI;
+    TribeTacticalAIModule tacticalAI;
+    TradeAIModule tradeAI;
+    TRIBE_Player* aiPlayer;
     int field_12570;
     int field_12574;
     char* name;
@@ -69,20 +70,21 @@ public:
 
     TribeMainDecisionAIModule(int p1, char* p2, TRIBE_Player* p3, int file);
 };
+#endif
 
 TribeMainDecisionAIModule::TribeMainDecisionAIModule(int p1, char* p2, TRIBE_Player* p3, int file)
     : MainDecisionAIModule(p1, p3, file),
-      build(p1, file),
-      construction(p1, file),
-      diplomacy(p1, file),
-      emotional(p1, file),
-      information(p1, file),
-      resource(p1, file),
-      strategy(p1, file),
-      tactical(p1, file),
-      trade(p1, file)
+      buildAI(p1, file),
+      constructionAI(p1, file),
+      diplomacyAI(p1, file),
+      emotionalAI(p1, file),
+      informationAI(p1, file),
+      resourceAI(p1, file),
+      strategyAI(p1, file),
+      tacticalAI(p1, file),
+      tradeAI(p1, file)
 {
-    this->tribe_player = p3;
+    this->aiPlayer = p3;
     this->field_12570 = 0;
     this->field_12574 = 0;
     this->name = (char*)p1;
@@ -99,25 +101,25 @@ TribeMainDecisionAIModule::TribeMainDecisionAIModule(int p1, char* p2, TRIBE_Pla
         this->setLogCommonHistory(0);
     }
 
-    this->build.setup(this);
-    this->construction.setup(this);
-    this->diplomacy.setup(this);
-    this->emotional.setup(this);
-    this->information.setup(this);
-    this->resource.setup(this);
-    this->strategy.setup(this);
-    this->tactical.setup(this);
-    this->trade.setup(this);
+    this->buildAI.setup(this);
+    this->constructionAI.setup(this);
+    this->diplomacyAI.setup(this);
+    this->emotionalAI.setup(this);
+    this->informationAI.setup(this);
+    this->resourceAI.setup(this);
+    this->strategyAI.setup(this);
+    this->tacticalAI.setup(this);
+    this->tradeAI.setup(this);
 
-    this->build.setPlayer(p1, p2);
-    this->construction.setPlayer(p1, p2);
-    this->diplomacy.setPlayer(p1, p2);
-    this->emotional.setPlayer(p1, p2);
-    this->information.setPlayer(p1, p2);
-    this->resource.setPlayer(p1, p2);
-    this->strategy.setPlayer(p1, p2);
-    this->tactical.setPlayer(p1, p2);
-    this->trade.setPlayer(p1, p2);
+    this->buildAI.setPlayer(p1, p2);
+    this->constructionAI.setPlayer(p1, p2);
+    this->diplomacyAI.setPlayer(p1, p2);
+    this->emotionalAI.setPlayer(p1, p2);
+    this->informationAI.setPlayer(p1, p2);
+    this->resourceAI.setPlayer(p1, p2);
+    this->strategyAI.setPlayer(p1, p2);
+    this->tacticalAI.setPlayer(p1, p2);
+    this->tradeAI.setPlayer(p1, p2);
 
     rge_read(file, &this->name, 4);
     rge_read(file, &this->field_1257C, 4);

@@ -77,6 +77,7 @@
 //   direct calls, and field ownership remain established.  Accepted drift remains prohibited because publication
 //   order differs before calc_item_rects on both orientation paths.
 
+#ifndef PNL_SCBR_CANONICAL_TU
 struct tagRECT {
     long left;
     long top;
@@ -115,6 +116,7 @@ struct TScrollBarPanel : public TPanel {
     virtual void set_rect(long param_1, long param_2, long param_3, long param_4);
     void calc_item_rects();
 };
+#endif
 
 void TScrollBarPanel::set_rect(long param_1, long param_2, long param_3, long param_4) {
     TPanel::set_rect(param_1, param_2, param_3, param_4);

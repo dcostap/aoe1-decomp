@@ -4,6 +4,7 @@
 // 1: natural reconstruction from packet; use real helper calls and direct field offsets: first mismatch at rect check order/boolean temp shape.
 // 2: check top/bottom before left/right and pass pressed predicate directly to avoid byte temp.
 
+#ifndef PNL_SCBR_CANONICAL_TU
 struct tagRECT {
     long left;
     long top;
@@ -72,6 +73,7 @@ public:
     void draw_border(int x, int y, tagRECT* rect);
     void draw_button_pic(int frame, int pressed, tagRECT* rect);
 };
+#endif
 
 void TScrollBarPanel::draw()
 {

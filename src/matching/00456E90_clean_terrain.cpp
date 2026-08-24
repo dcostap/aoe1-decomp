@@ -18,6 +18,7 @@
 // 15: Ordered neighbor declarations NW,N,NE,E,SE,S,SW,W to match the original zero-store order; positional diff fell to 4 bytes.
 // 16: Reversed the inner loop increments to advance tile before col; exact 1127-byte match.
 
+#ifndef MAP_CONTEXT_H
 struct RGE_Tile {
     char gap_00[5];
     unsigned char terrain_type;
@@ -37,6 +38,8 @@ public:
     void set_terrain(void* world, int x, int y, unsigned char terrain, int a, int b);
     void clean_terrain(int x1, int y1, int x2, int y2, unsigned char terrain);
 };
+
+#endif
 
 void RGE_Map::clean_terrain(int x1, int y1, int x2, int y2, unsigned char terrain)
 {

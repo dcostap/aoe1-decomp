@@ -34,6 +34,7 @@
 
 #include <string.h>
 
+#ifndef GAMEINFO_SHARED_CONTEXT
 void* __cdecl calloc(int count, int size);
 void __cdecl free(void*);
 
@@ -67,13 +68,16 @@ struct RGE_Person_Info {
 
     unsigned char set_current_campaign(long index);
 };
+#endif
 
+#ifndef GAMEINFO_SHARED_CONTEXT
 RGE_Campaign_Info::~RGE_Campaign_Info() {
     if (scenario_info != 0) {
         free(scenario_info);
         scenario_info = 0;
     }
 }
+#endif
 
 unsigned char RGE_Person_Info::set_current_campaign(long index) {
     // Bounds check

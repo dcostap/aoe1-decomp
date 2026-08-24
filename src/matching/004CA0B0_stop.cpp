@@ -1,3 +1,4 @@
+#ifndef T_B_OBJ_CONTEXT_H
 class RGE_Combat_Object {
 public:
     virtual void vf00(void);
@@ -18,6 +19,7 @@ public:
     void remove_from_production_queue(short master_id, int value);
     void stop(void);
 };
+#endif
 
 void TRIBE_Building_Object::stop(void) {
     RGE_Combat_Object::stop();

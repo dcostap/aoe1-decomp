@@ -13,6 +13,7 @@
 extern unsigned int DAT_0062e65c;
 extern float DAT_005706e8;
 
+#ifndef MAP_CONTEXT_H
 class TShape;
 class RGE_Sound;
 class RGE_Tile;
@@ -156,6 +157,8 @@ public:
 
     void update(unsigned long time);
 };
+
+#endif
 
 void RGE_Map::update(unsigned long time)
 {

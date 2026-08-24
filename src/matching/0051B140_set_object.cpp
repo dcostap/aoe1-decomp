@@ -1,3 +1,4 @@
+#ifndef AOE1_TPNL_OBJ_CONTEXT_H
 class RGE_Static_Object;
 
 class TRIBE_Panel_Object {
@@ -17,9 +18,18 @@ public:
     void save_object_info();
     void set_object(RGE_Static_Object* object);
 };
+#endif
 
 void TRIBE_Panel_Object::set_object(RGE_Static_Object* object) {
+#ifdef AOE1_TPNL_OBJ_CONTEXT_H
+    this->game_obj = (TRIBE_Building_Object*)object;
+#else
     this->game_obj = object;
+#endif
     save_object_info();
+#ifdef AOE1_TPNL_OBJ_CONTEXT_H
+    this->set_redraw(1);
+#else
     vf20(1);
+#endif
 }

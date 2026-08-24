@@ -27,6 +27,7 @@
 //   a four-byte tail gap; this restores the 0x220 frame and exact output.
 // - exact: the final local check is a positional byte match with zero drift.
 
+#ifndef GAMEINFO_SHARED_CONTEXT
 extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
 extern "C" long __cdecl _findfirst(const char* filespec, void* file_info);
 extern "C" int __cdecl _findnext(long handle, void* file_info);
@@ -89,6 +90,7 @@ public:
 
     void find_campaigns();
 };
+#endif
 
 void RGE_Game_Info::find_campaigns() {
     FindCampaignWork work;

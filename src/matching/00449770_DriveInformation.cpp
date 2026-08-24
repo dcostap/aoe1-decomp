@@ -1,6 +1,7 @@
 extern "C" int __cdecl _getdrive(void);
 extern "C" char* __cdecl strcpy(char* dst, const char* src);
 
+#ifndef FILE_STF_SHARED_CONTEXT
 class DriveInformation {
 public:
     int initialDriveValue;
@@ -12,6 +13,7 @@ public:
     DriveInformation();
     void updateDirectory();
 };
+#endif
 
 DriveInformation::DriveInformation()
 {

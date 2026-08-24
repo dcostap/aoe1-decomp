@@ -15,6 +15,7 @@
 // - Main-agent audit replaced explicit allocation helpers with natural
 //   `new int[limit]` / `delete[]`; VC5 emits identical exact code.
 
+#ifndef AOE1_TAIMDMD_CONTEXT_H
 #include <stdlib.h>
 
 class RGE_Map {
@@ -83,6 +84,7 @@ public:
 
     void updateBuildAIWithObjects();
 };
+#endif
 
 void TribeMainDecisionAIModule::updateBuildAIWithObjects()
 {

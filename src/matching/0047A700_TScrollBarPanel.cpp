@@ -4,6 +4,7 @@
 // 1: natural constructor without virtual base surface built only 336 bytes/no EH.
 // 2: make TPanel/TScrollBarPanel virtual-destructor classes to trigger original constructor EH frame.
 
+#ifndef PNL_SCBR_CANONICAL_TU
 struct tagRECT {
     long left;
     long top;
@@ -84,6 +85,7 @@ public:
     virtual ~TScrollBarPanel();
     TScrollBarPanel();
 };
+#endif
 
 TScrollBarPanel::TScrollBarPanel() : TPanel()
 {

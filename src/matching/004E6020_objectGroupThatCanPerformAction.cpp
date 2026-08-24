@@ -1,3 +1,4 @@
+#ifndef AOE1_TAIMDMD_CONTEXT_H
 class MainDecisionAIModule {
 public:
     virtual int objectGroupThatCanPerformAction(int action);
@@ -7,6 +8,7 @@ class TribeMainDecisionAIModule : public MainDecisionAIModule {
 public:
     int objectGroupThatCanPerformAction(int action);
 };
+#endif
 
 int TribeMainDecisionAIModule::objectGroupThatCanPerformAction(int action) {
     switch (action) {

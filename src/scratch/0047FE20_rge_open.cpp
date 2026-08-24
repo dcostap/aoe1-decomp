@@ -2,7 +2,7 @@
 // rge_fio.cpp lines 96-119
 // 137 bytes
 
-int __cdecl __open(const char* path, int access, ...);
+int __cdecl __open(char* path, int access, ...);
 void* __cdecl calloc(int count, int size);
 int __cdecl lseek(int fd, int offset, int whence);
 int __cdecl __tell(int fd);
@@ -17,7 +17,7 @@ extern int DAT_0086b280;            // compressed data buffer
 extern int DAT_0086b26c;            // deflate buffer
 extern int DAT_0086b260;            // current file handle
 
-int __cdecl rge_open(const char* path, int access, int attr) {
+int __cdecl rge_open(char* path, int access, int attr) {
     int handle = __open(path, access, attr);
     if (handle >= 0) {
         DAT_0086b264 = 2;

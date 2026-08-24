@@ -49,6 +49,7 @@
 
 #include <stddef.h>
 
+#ifndef T_B_OBJ_CONTEXT_H
 typedef unsigned char uchar;
 
 struct RGE_Doppleganger_Creator;
@@ -126,6 +127,7 @@ public:
     virtual int setup(TRIBE_Master_Building_Object* mb, RGE_Player* player,
                       float f1, float f2, float f3);
 };
+#endif
 
 TRIBE_Building_Object::TRIBE_Building_Object(TRIBE_Master_Building_Object* mb, RGE_Player* player,
                                               float f1, float f2, float f3, int flag)

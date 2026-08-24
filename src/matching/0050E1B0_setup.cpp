@@ -2,7 +2,9 @@
 // PDB source: tm_b_obj.cpp lines 53-69
 // Copies fields from source master building object, sets a padding flag, returns 1
 #include "..\..\include\game_globals.h"
+#include "..\..\include\tm_b_obj_context.h"
 
+#ifndef TM_B_OBJ_SHARED_CONTEXT
 struct TRIBE_Master_Combat_Object_Base {
     char base[0x164];
     void setup(TRIBE_Master_Combat_Object_Base* src);
@@ -22,6 +24,7 @@ struct TRIBE_Master_Building_Object {
     
     int setup(TRIBE_Master_Building_Object* source);
 };
+#endif
 
 int TRIBE_Master_Building_Object::setup(TRIBE_Master_Building_Object* source) {
     ((TRIBE_Master_Combat_Object_Base*)this)->setup((TRIBE_Master_Combat_Object_Base*)source);

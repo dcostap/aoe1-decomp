@@ -13,6 +13,7 @@
 // allocation. The compiler still emits one list_len load and all 239 bytes
 // match. This is the smallest natural source that preserves the exact body.
 
+#ifndef PNL_SCBR_CANONICAL_TU
 class TScrollBarPanel;
 
 class TScrollBarVirtual {
@@ -49,6 +50,7 @@ public:
     void calc_item_rects();
     void set_tab_pos(long pos);
 };
+#endif
 
 void TScrollBarPanel::set_tab_pos(long pos) {
     this->list_num = (int)pos;
@@ -86,5 +88,9 @@ void TScrollBarPanel::set_tab_pos(long pos) {
     }
 
     this->calc_item_rects();
+#ifdef PNL_SCBR_CANONICAL_TU
+    this->redraw(1);
+#else
     ((TScrollBarVirtual*)this)->notify(1);
+#endif
 }

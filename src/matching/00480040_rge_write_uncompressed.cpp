@@ -1,4 +1,4 @@
-extern "C" int __cdecl write(int handle, void* buffer, int count);
+extern "C" int __cdecl write(int handle, const void* buffer, unsigned int count);
 
 extern int DAT_0086b260;
 extern int rge_write_error;

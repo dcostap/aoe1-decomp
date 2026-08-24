@@ -7,10 +7,13 @@
 // - bonus arm: spelling the comparison as `value2 > value` preserves the
 //   original value2-first load/compare order; exact match.
 
+#ifndef AOE1_TPNL_OBJ_CONTEXT_H
 #include "../../include/game_globals.h"
+#endif
 #include <stdio.h>
 #include <string.h>
 
+#ifndef AOE1_TPNL_OBJ_CONTEXT_H
 extern "C" int __cdecl sprintf(char*, const char*, ...);
 
 extern const char s_tpnl_obj_draw_item[];
@@ -75,6 +78,7 @@ public:
 protected:
     virtual void draw_item(int, int, ValueType, int, int);
 };
+#endif
 
 void TRIBE_Panel_Object::draw_item(int index, int frame, ValueType type,
                                    int value, int value2)

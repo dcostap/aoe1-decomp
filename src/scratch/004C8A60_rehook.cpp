@@ -1,3 +1,4 @@
+#ifndef T_B_OBJ_CONTEXT_H
 class MemberType {
 public:
     void target_method2();
@@ -11,6 +12,7 @@ public:
     void target_method1();
     void rehook();
 };
+#endif
 
 void TRIBE_Building_Object::rehook() {
     this->target_method1();

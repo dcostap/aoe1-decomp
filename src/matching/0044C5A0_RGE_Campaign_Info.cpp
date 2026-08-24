@@ -12,6 +12,7 @@
 
 #include <string.h>
 
+ #ifndef GAMEINFO_SHARED_CONTEXT
 int __cdecl rge_read(int fd, void* buf, int size);
 void* __cdecl calloc(int count, int size);
 void __cdecl free(void*);
@@ -37,6 +38,7 @@ public:
 
     RGE_Campaign_Info(int fd, RGE_Campaign** camps, int cnum);
 };
+#endif
 
 RGE_Campaign_Info::RGE_Campaign_Info(int fd, RGE_Campaign** camps, int cnum) {
     rge_read(fd, this, 0xFF);

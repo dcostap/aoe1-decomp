@@ -3,10 +3,12 @@
 // attempt 1: natural _findfirst/_findnext loop with count starting at 1
 #include <io.h>
 
+#ifndef FILE_STF_SHARED_CONTEXT
 class DriveInformation {
 public:
     int numberOfFilesWithFilename(char* filename);
 };
+#endif
 
 int DriveInformation::numberOfFilesWithFilename(char* filename) {
     long handle;

@@ -41,6 +41,7 @@
 // by the map.cpp 2575 line band. The canonical [row_i][col_i] tile expression
 // then reproduces the target EBX/EDI coloring, local homes, and all 255 bytes.
 
+#ifndef MAP_CONTEXT_H
 class RGE_Tile_List {
 public:
     char gap_00[0x6C];
@@ -89,6 +90,8 @@ public:
         short col, short row, int value, int flag);
     void get_border_type(short row, short col);
 };
+
+#endif
 
 void RGE_Map::set_terrain(RGE_Game_World* gw, short col, short row,
     unsigned char terrain, int param5, int param6)

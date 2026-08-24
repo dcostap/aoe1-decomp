@@ -57,6 +57,7 @@
 
 extern "C" void __cdecl convert_us(char*);
 
+#ifndef MAP_CONTEXT_H
 class RGE_Sound;
 
 struct RGE_TOB_Picts {
@@ -128,6 +129,8 @@ public:
 
     void load_terrain_types(char*, RGE_Sound**);
 };
+
+#endif
 
 void RGE_Map::load_terrain_types(char* filename, RGE_Sound** sounds)
 {

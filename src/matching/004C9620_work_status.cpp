@@ -2,6 +2,7 @@
 // PDB source: t_b_obj.cpp lines 872-898 (150 B, 48 asm)
 // Attempt log:
 
+#ifndef T_B_OBJ_CONTEXT_H
 class RGE_Action {
 public:
     char gap_00[4];
@@ -39,6 +40,7 @@ class TRIBE_Action_Make_Tech : public RGE_Action {
 public:
     void get_info(short* p2, short* p3, char* p4, short p5);
 };
+#endif
 
 int TRIBE_Building_Object::work_status(short* p1, short* p2, short* p3, char* p4, short p5)
 {

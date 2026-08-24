@@ -1,3 +1,4 @@
+#ifndef ACT_MAKE_CONTEXT_H
 class RGE_Action_Make_Node {
 public:
     char gap_00[0x14];
@@ -87,3 +88,14 @@ void RGE_Action_Make::first_in_stack(unsigned char value) {
         this->target->notify_value(node_value, 0);
     }
 }
+#else
+void RGE_Action_Make::first_in_stack(unsigned char) {
+    short attribute_type;
+
+    this->set_state(6);
+    attribute_type = this->task->attribute_type;
+    if (attribute_type >= 0 && this->obj->attribute_type_held != attribute_type) {
+        this->obj->set_attribute(attribute_type, 0);
+    }
+}
+#endif

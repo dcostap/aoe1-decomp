@@ -60,6 +60,7 @@
 
 #include <windows.h>
 
+#ifndef MAP_CONTEXT_H
 class RGE_Player;
 class RGE_Game_World;
 class TShape;
@@ -188,6 +189,8 @@ public:
                      short x1, short y1, short x2, short y2,
                      unsigned char terrain, unsigned char blend, int arg9);
 };
+
+#endif
 
 void RGE_Map::set_terrain(RGE_Player* player, RGE_Game_World* world,
                           short x1, short y1, short x2, short y2,

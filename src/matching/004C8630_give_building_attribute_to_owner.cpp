@@ -1,6 +1,7 @@
 // attempt 9: keep the decompiler-style int locals that produced the right SIB/base order,
 // but restore the original predicate spellings (>= 4 and >= 0)
 
+#ifndef T_B_OBJ_CONTEXT_H
 class TRIBE_Resource_Manager {
 public:
     char gap_00[0x88];
@@ -49,6 +50,7 @@ public:
 
     virtual void give_building_attribute_to_owner();
 };
+#endif
 
 void TRIBE_Building_Object::give_building_attribute_to_owner() {
     int iVar1;

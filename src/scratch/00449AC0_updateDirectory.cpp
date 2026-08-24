@@ -7,13 +7,15 @@
 extern char* _getcwd(char*, int);
 extern void _splitpath(const char*, char*, char*, char*, char*);
 
+#ifndef FILE_STF_SHARED_CONTEXT
 class DriveInformation {
 public:
     char gap_00[0x108];
-    char currentDirectory[0x200];  // +0x108
+    char currentDirectoryValue[0x200];  // +0x108
 
     void updateDirectory();
 };
+#endif
 
 void DriveInformation::updateDirectory() {
     char cDrive[3];
@@ -22,6 +24,6 @@ void DriveInformation::updateDirectory() {
     char fullPath[260];
 
     _getcwd(fullPath, 0x104);
-    _splitpath(fullPath, cDrive, currentDirectory, filename, extension);
-    sprintf(currentDirectory, "%s%s%s", currentDirectory, filename, extension);
+    _splitpath(fullPath, cDrive, currentDirectoryValue, filename, extension);
+    sprintf(currentDirectoryValue, "%s%s%s", currentDirectoryValue, filename, extension);
 }

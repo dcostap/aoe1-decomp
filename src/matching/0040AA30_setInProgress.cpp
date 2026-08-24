@@ -1,9 +1,5 @@
-class ConstructionItem {
-public:
-    virtual ~ConstructionItem();
-    char gap_0[0x70];
-    int field_74;
-    void setInProgress(int v);
-};
+#include "../../include/aiconitm_context.h"
 
-void ConstructionItem::setInProgress(int v) { this->field_74 = v; }
+void ConstructionItem::setInProgress(int value) {
+    this->inProgressValue = value;
+}

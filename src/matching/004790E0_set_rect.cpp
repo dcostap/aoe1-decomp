@@ -1,3 +1,6 @@
+// MODULE NOTE: the standalone /GX owner is exact. The complete Pnl_msg.cpp
+// wrapper uses the reviewed shared context and observes a 228-byte mismatch;
+// keep this owner natural and do not tune it for the wrapper metric.
 // first pass: typed local reconstruction of image-buffer recreate path
 // FLAGS: config/flags/004790E0_set_rect.rsp uses /GX for new/delete EH state around TDrawArea construction
 #ifndef AOE1_PNL_MSG_CONTEXT_H

@@ -1,3 +1,6 @@
+#ifdef SCR_NAME_TU_CONTEXT
+#include "../../include/scr_name_context.h"
+#else
 class RGE_Base_Game {
 public:
     char gap_0[0x1D8];
@@ -16,6 +19,7 @@ class TRIBE_Screen_Name : public TPanel {
 public:
     long handle_idle();
 };
+#endif
 
 long TRIBE_Screen_Name::handle_idle() {
     if (!rge_base_game->input_enabled)

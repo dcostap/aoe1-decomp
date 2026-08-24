@@ -3,6 +3,7 @@
 // tried plain function-pointer casts, then __thiscall typedefs with warning 4234 disabled; remaining mismatch is still the virtual-call basin, not the branch logic
 // tried real thiscall virtual dispatch through padded slots so VC5 keeps ecx as parent/this and avoids caller cleanup after the two virtual calls
 
+#ifndef PNL_SCBR_CANONICAL_TU
 class TPanel {
 public:
     virtual ~TPanel();             // vt[0]
@@ -76,6 +77,7 @@ public:
 
     virtual long mouse_left_up_action(long param_1, long param_2, int param_3, int param_4);
 };
+#endif
 
 long TScrollBarPanel::mouse_left_up_action(long param_1, long param_2, int param_3, int param_4) {
     if (this->parent_panel != 0) {

@@ -2,6 +2,7 @@
 // VA: 004D5AD0
 // Fresh 2026-05-19: replace placeholder with packet-derived natural member call.
 
+#ifndef TAIBLDMD_SHARED_CONTEXT
 class RGE_Player;
 
 class BuildItem {
@@ -31,6 +32,7 @@ public:
     int insertItem(RGE_Player* player, int objType, int count, int itemType, int p5, int buildCap, int index);
     int insertResearch(int research, int index);
 };
+#endif
 
 int TribeBuildAIModule::insertResearch(int research, int index)
 {

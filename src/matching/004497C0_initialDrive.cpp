@@ -3,6 +3,7 @@
 // 3 bytes: mov eax,[ecx]; ret
 
 // Use class tag to match forward decl in game_types.h
+#ifndef FILE_STF_SHARED_CONTEXT
 class DriveInformation {
 public:
     int initialDriveValue;
@@ -10,9 +11,10 @@ public:
     int currentDriveValue;
     char currentDirectoryValue[256];
     int driveValues[27];
-    int initialDrive();
+    int initialDrive() const;
 };
+#endif
 
-int DriveInformation::initialDrive() {
+int DriveInformation::initialDrive() const {
     return initialDriveValue;
 }

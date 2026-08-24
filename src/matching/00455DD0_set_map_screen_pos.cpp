@@ -11,6 +11,8 @@
 
 #include "../../include/game_globals.h"
 
+#ifndef MAP_CONTEXT_H
+
 class RGE_Tile {
 public:
     short screen_xpos;
@@ -41,6 +43,8 @@ public:
 
     void set_map_screen_pos(int col0, int row0, int col1, int row1);
 };
+
+#endif
 
 void RGE_Map::set_map_screen_pos(int col0, int row0, int col1, int row1)
 {

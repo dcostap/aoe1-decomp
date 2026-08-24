@@ -1,18 +1,4 @@
-class AIModule {
-public:
-    char gap_00[0xF0];
-    AIModule(void*, int, int, void*);
-};
-
-class TribeMainDecisionAIModule;
-
-class TribeResourceAIModule : public AIModule {
-public:
-    TribeMainDecisionAIModule* md;
-    int numberResourcesValue;
-
-    TribeResourceAIModule(void* param_1, int param_2, int param_3, int param_4, int param_5, int param_6);
-};
+#include "../../include/tairesmd_context.h"
 
 extern const char s_Resource_AI[];
 

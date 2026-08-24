@@ -1,16 +1,5 @@
-class ResourceItem {
-public:
-    void* vtable_ptr;
-    ResourceItem* next;
-    ResourceItem* prev;
-    int valueValue[8];
-    int sortedValue[8];
-    int sortedIndexValue[8];
-    int numberValue;
-
-    int largestValueIndex(int index);
-    int sortLarge();
-};
+// ResourceItem::largestValueIndex(int)
+// VA: 00412210 | airesitm.cpp:188-195
 
 int ResourceItem::largestValueIndex(int index) {
     if (numberValue < index) {

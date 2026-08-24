@@ -3,6 +3,7 @@
 
 #include <string.h>
 
+#ifndef GAMEINFO_SHARED_CONTEXT
 void* __cdecl calloc(int count, int size);
 void __cdecl free(void*);
 
@@ -29,6 +30,7 @@ struct RGE_Game_Info {
 
     unsigned char add_new_person(int fd);
 };
+#endif
 
 unsigned char RGE_Game_Info::add_new_person(int fd) {
     RGE_Person_Info** newlist = (RGE_Person_Info**)calloc(people_num + 1, 4);

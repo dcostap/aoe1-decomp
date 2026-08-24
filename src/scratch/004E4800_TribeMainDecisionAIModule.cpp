@@ -2,6 +2,8 @@
 // Attempt log:
 // 1: natural constructor with member subobject ctors and initialization from packet.
 
+#ifndef AOE1_TAIMDMD_CONTEXT_H
+class TRIBE_Player;
 extern int startLoggingAI;
 extern "C" void* memset(void*, int, unsigned int);
 
@@ -53,9 +55,14 @@ public:
 
     TribeMainDecisionAIModule(void* p1, int p2, char* p3, void* player, char* p5, char* p6, char* p7);
 };
+#endif
 
 TribeMainDecisionAIModule::TribeMainDecisionAIModule(void* p1, int p2, char* p3, void* player, char* p5, char* p6, char* p7)
+#ifdef AOE1_TAIMDMD_CONTEXT_H
+    : MainDecisionAIModule(p1, p2, player),
+#else
     : AIModule(p1, p2, player),
+#endif
       buildAI(p1, p2),
       constructionAI(p1, p2),
       diplomacyAI(p1, p2),
@@ -68,7 +75,7 @@ TribeMainDecisionAIModule::TribeMainDecisionAIModule(void* p1, int p2, char* p3,
 {
     this->firstUpdate = 1;
     this->veryFirstUpdate = 1;
-    this->aiPlayer = player;
+    this->aiPlayer = (TRIBE_Player*)player;
     this->updateDelay = p2;
     this->lastDiplomacyUpdateTime = 0;
     this->lastTacticalUpdateTime = 0;

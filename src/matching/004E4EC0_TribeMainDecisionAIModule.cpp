@@ -4,6 +4,7 @@
 // FLAGS: /GX
 // Attempt log: baseline matches exactly; /GX is retained for the binary-observed EH frame.
 
+#ifndef AOE1_TAIMDMD_CONTEXT_H
 class AIModule {
 public:
     virtual ~AIModule();
@@ -100,6 +101,7 @@ public:
 
     virtual ~TribeMainDecisionAIModule();
 };
+#endif
 
 TribeMainDecisionAIModule::~TribeMainDecisionAIModule()
 {

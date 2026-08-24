@@ -1,3 +1,4 @@
+#ifndef MAP_CONTEXT_H
 struct MapTile {
     char gap_00[0x05];
     unsigned char elev_and_terrain;
@@ -11,6 +12,8 @@ public:
 
     unsigned char get_elev(short x, short y);
 };
+
+#endif
 
 unsigned char RGE_Map::get_elev(short x, short y) {
     unsigned char elev;

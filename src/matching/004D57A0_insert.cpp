@@ -10,6 +10,7 @@
 //   saved this register into the sentinel address, as in the original.
 // Exact check: 446 bytes, 3 calls, frame 0x8, MATCH 0.0000%.
 
+#ifndef TAIBLDMD_SHARED_CONTEXT
 #include <stdlib.h>
 
 class RGE_Player;
@@ -43,6 +44,7 @@ public:
 
     int insert(int p1, int p2, int p3);
 };
+#endif
 
 int TribeBuildAIModule::insert(int p1, int p2, int p3)
 {

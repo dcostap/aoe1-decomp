@@ -1,3 +1,4 @@
+#ifndef TACT_REP_CONTEXT_H
 extern "C" void __cdecl rge_write(int handle, void* buffer, int size);
 
 class RGE_Action {
@@ -12,6 +13,7 @@ public:
 
     void save(int handle);
 };
+#endif
 
 void TRIBE_Action_Repair::save(int handle) {
     RGE_Action::save(handle);

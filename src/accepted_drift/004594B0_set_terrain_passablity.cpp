@@ -65,6 +65,7 @@
 //   exact or size-eligible result. No calls, terrain writes, or map anchors
 //   were changed.
 
+#ifndef MAP_CONTEXT_H
 class RGE_Tile {
 public:
     char gap_00[5];
@@ -94,6 +95,8 @@ public:
     void set_terrain_passablity(short x1, short y1, short x2, short y2,
                                 unsigned char passable);
 };
+
+#endif
 
 void RGE_Map::set_terrain_passablity(short x1, short y1, short x2, short y2,
                                      unsigned char passable)

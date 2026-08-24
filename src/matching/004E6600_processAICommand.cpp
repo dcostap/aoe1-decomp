@@ -14,6 +14,7 @@
 //   the virtual give-attribute call; this recovered the oracle's fld/fstp
 //   argument schedule and produced an exact 577-byte match.
 
+#ifndef AOE1_TAIMDMD_CONTEXT_H
 class RGE_Static_Object;
 class RGE_Object_List;
 class RGE_Game_World;
@@ -237,6 +238,7 @@ public:
     int processAICommand(int player, int command, int value, int amount,
                          int extra);
 };
+#endif
 
 int TribeMainDecisionAIModule::processAICommand(int player, int command,
                                                 int value, int amount,

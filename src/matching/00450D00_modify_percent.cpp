@@ -5,6 +5,7 @@
 // Jump-table switch over attributes 6..18; unmatched attributes forward to the
 // base implementation RGE_Master_Action_Object::modify_percent (0044F850).
 
+#ifndef RGE_MCO_OBJ_SHARED_CONTEXT
 class RGE_Master_Moving_Object {
 public:
     char gap_00[0xC4];
@@ -35,6 +36,7 @@ public:
 
     void modify_percent(float value, unsigned char attribute);
 };
+#endif
 
 void RGE_Master_Combat_Object::modify_percent(float value, unsigned char attribute) {
     switch (attribute) {

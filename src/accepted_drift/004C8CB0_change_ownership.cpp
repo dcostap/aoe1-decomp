@@ -13,6 +13,7 @@
 // 10: flags /O2 no-/Oy, /Ox unchanged; /O1 too short.
 // Accepted-drift suggestion: final mismatch is 21/432 positional, 20/432 edit. Remaining drift is localized equivalent addressing/register allocation: commuted base+index encodings in the two sound loops, a few ecx/edx/eax choices in the queue-count and master-object blocks, and paired branch displacement shifts. Calls, vtable slots, field offsets, predicates, stores, stack cleanup, and side effects match.
 
+#ifndef T_B_OBJ_CONTEXT_H
 class RGE_Player {
 public:
 #define PPAD(n) virtual void p##n();
@@ -84,6 +85,7 @@ public:
 
     void change_ownership(RGE_Player* player);
 };
+#endif
 
 void TRIBE_Building_Object::change_ownership(RGE_Player* player)
 {

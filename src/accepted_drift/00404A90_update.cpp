@@ -34,6 +34,7 @@
 // Default and /GX module builds kept the same 41-byte mismatch. /Ob0, /Ob2,
 // /G5, and /GX with /Ob2 also kept it. /O1, /Os, and /G6 changed body code.
 
+#if !defined(ACT_MAKE_CONTEXT_H) || defined(ACT_MAKE_CONTEXT_DECLARE)
 class RGE_Master_Moving_Object {
 public:
     virtual ~RGE_Master_Moving_Object();
@@ -355,14 +356,25 @@ public:
     RGE_Sprite* sprite;
     unsigned char subActionValue;
     char gap_3D[0x03];
+
+    RGE_Action(RGE_Action_Object*, int);
+    RGE_Action(int, RGE_Action_Object*, int);
 };
 
 class RGE_Action_Make : public RGE_Action {
 public:
     virtual ~RGE_Action_Make();
+    RGE_Action_Make(int, RGE_Action_Object*);
+    RGE_Action_Make(RGE_Action_Object*, RGE_Task*);
+    virtual void first_in_stack(unsigned char);
+protected:
+    virtual void set_state(unsigned char);
+public:
     virtual unsigned char update();
 };
+#endif
 
+#ifndef ACT_MAKE_CONTEXT_DECLARATIONS_ONLY
 unsigned char RGE_Action_Make::update() {
     float work;
     float old_attribute_amount;
@@ -401,3 +413,4 @@ unsigned char RGE_Action_Make::update() {
     }
     return 0;
 }
+#endif

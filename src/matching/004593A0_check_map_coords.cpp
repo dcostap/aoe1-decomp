@@ -1,3 +1,4 @@
+#ifndef MAP_CONTEXT_H
 class RGE_Map {
 public:
     char gap_00[0x08];
@@ -6,6 +7,8 @@ public:
 
     unsigned char check_map_coords(short x, short y);
 };
+
+#endif
 
 unsigned char RGE_Map::check_map_coords(short x, short y) {
     if (((x >= 0) && ((int)x < this->map_width)) && ((y >= 0) && ((int)y < this->map_height))) {

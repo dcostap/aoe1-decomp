@@ -1,3 +1,6 @@
+#ifdef SCR_NAME_TU_CONTEXT
+#include "../../include/scr_name_context.h"
+#else
 class TRIBE_Screen_Name {
 public:
     char gap_00[0x478];
@@ -13,6 +16,7 @@ public:
 
     void init_vars(void);
 };
+#endif
 
 void TRIBE_Screen_Name::init_vars(void) {
     this->title = 0;

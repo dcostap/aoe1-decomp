@@ -2,6 +2,9 @@
 // PDB source: scr_name.cpp
 // 2026-05-31: Replaced raw fastcall wrappers with natural member/virtual surface.
 
+#ifdef SCR_NAME_TU_CONTEXT
+#include "../../include/scr_name_context.h"
+#else
 class TPanel {};
 
 class TTextPanel : public TPanel {
@@ -40,6 +43,7 @@ public:
     void set_curr_child(TPanel* child);
     void setup_tab_order();
 };
+#endif
 
 void TRIBE_Screen_Name::setup_tab_order()
 {

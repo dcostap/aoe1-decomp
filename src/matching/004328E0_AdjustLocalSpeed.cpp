@@ -1,31 +1,4 @@
-class TCommunications_Handler {
-public:
-    char gap_00[0x10C8];
-    unsigned long current_turn;
-};
-
-class RGE_Communications_Speed {
-public:
-    char gap_00[0x108];
-    TCommunications_Handler* Comm;
-    char gap_10C[0x10];
-    unsigned int CurrentBufferFrames;
-    unsigned int FutureBufferFrames;
-    unsigned int TotalBufferFramesRemaining;
-    unsigned int TargetTurnLengthMsec;
-    unsigned int CurrentBufferGranularity;
-    unsigned int FutureBufferGranularity;
-    unsigned int OverheadFactor;
-    unsigned long TimeSinceLastBuffer;
-    unsigned long FutureSpeedChangeTurn;
-    unsigned long NextLatencyChangeTurn;
-    char gap_144[0xE0];
-    unsigned int LastAdjusted;
-    char gap_228[0x10];
-    unsigned long AdjustmentCount;
-
-    void AdjustLocalSpeed(void);
-};
+#include "../../include/com_spd_context.h"
 
 void RGE_Communications_Speed::AdjustLocalSpeed(void) {
     unsigned long next_latency_change_turn;

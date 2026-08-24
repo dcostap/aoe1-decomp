@@ -1,5 +1,6 @@
 // first pass: keep the allocation/ctor as a natural direct new-expression and preserve the single assignment
 // with /GX this should be the right EH/new basin if the constructor shape is the same as the packet
+#ifndef MAP_CONTEXT_H
 class RGE_Map;
 class RGE_Game_World;
 class RGE_Random_Map_Module {
@@ -39,6 +40,8 @@ public:
 
     void data_load_random_map(int param_1);
 };
+
+#endif
 
 void RGE_Map::data_load_random_map(int param_1) {
     this->random_map_controller = new RGE_RMM_Database_Controller(param_1);

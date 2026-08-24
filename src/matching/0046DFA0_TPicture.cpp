@@ -1,3 +1,4 @@
+#ifndef PICTURE_CONTEXT_H
 class TPicture {
 public:
     void* Dib;
@@ -11,6 +12,7 @@ public:
 
     TPicture();
 };
+#endif
 
 TPicture::TPicture() {
     Dib = 0;

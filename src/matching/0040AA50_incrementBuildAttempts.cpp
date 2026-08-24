@@ -1,9 +1,5 @@
-class ConstructionItem {
-public:
-    virtual ~ConstructionItem();
-    char gap_0[0x78];
-    int field_7C;
-    void incrementBuildAttempts();
-};
+#include "../../include/aiconitm_context.h"
 
-void ConstructionItem::incrementBuildAttempts() { this->field_7C++; }
+void ConstructionItem::incrementBuildAttempts() {
+    this->buildAttemptsValue++;
+}

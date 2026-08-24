@@ -2,7 +2,9 @@
 // PDB source: tm_b_obj.cpp lines 189-207
 // Saves building-specific fields: sprite_id, sound_id, building flags, facet, etc.
 #include "..\..\include\game_globals.h"
+#include "..\..\include\tm_b_obj_context.h"
 
+#ifndef TM_B_OBJ_SHARED_CONTEXT
 struct RGE_Sprite {
     char gap_00[0x72];
     short id;  // +0x72
@@ -32,6 +34,7 @@ struct TRIBE_Master_Building_Object {
     
     void save(int param_1);
 };
+#endif
 
 void rge_write(int file, void* data, int size);
 

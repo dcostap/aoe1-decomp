@@ -1,6 +1,7 @@
 // VA: 004CA030 TRIBE_Building_Object::production_queue_status (115 B)
 // PDB source: t_b_obj.cpp
 
+#ifndef T_B_OBJ_CONTEXT_H
 struct RGE_Action_List {
     char base[4];
     void* get_action();
@@ -29,6 +30,7 @@ struct TRIBE_Building_Object {
     
     int production_queue_status(short* type_out, short* count_out);
 };
+#endif
 
 int TRIBE_Building_Object::production_queue_status(short* type_out, short* count_out)
 {

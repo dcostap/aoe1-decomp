@@ -15,6 +15,7 @@
 //   the binary pushes world_z, world_y, world_x, so the natural call is
 //   create(owner, world_x, world_y, world_z). Exact after validation.
 
+#ifndef T_B_OBJ_CONTEXT_H
 typedef unsigned char uchar;
 
 class RGE_Player;
@@ -236,6 +237,7 @@ public:
     void connect();
     void set_object_state(uchar);
 };
+#endif
 
 void TRIBE_Building_Object::set_object_state(uchar state)
 {

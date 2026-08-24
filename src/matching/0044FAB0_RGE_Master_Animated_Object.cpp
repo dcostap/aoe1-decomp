@@ -4,23 +4,31 @@
 //
 // Attempt log:
 // Probe 1: natural ctor with base init + conditional setup, /GX
-// Probe 2: changed short index to int index to avoid movsx
+// The PDB signature keeps the file index as short.  The earlier int probe was
+// compiler steering and is not part of the shared source model.
 
 #include "..\..\include\game_globals.h"
 
+#ifndef RGE_MAN_OBJ_SHARED_CONTEXT
 class RGE_Master_Static_Object {
 public:
     virtual ~RGE_Master_Static_Object();
-    RGE_Master_Static_Object(void* stream, void** sprites, void** sounds, int index, int flag);
+    RGE_Master_Static_Object(FILE* stream, RGE_Sprite** sprites,
+                             RGE_Sound** sounds, short index, int flag);
 };
 
 class RGE_Master_Animated_Object : public RGE_Master_Static_Object {
 public:
-    void setup(void* stream, void** sprites, void** sounds, int index);
-    RGE_Master_Animated_Object(void* stream, void** sprites, void** sounds, int index, int flag);
+    RGE_Master_Animated_Object(FILE* stream, RGE_Sprite** sprites,
+                               RGE_Sound** sounds, short index, int flag);
+protected:
+    void setup(FILE* stream, RGE_Sprite** sprites, RGE_Sound** sounds,
+               short index);
 };
+#endif
 
-RGE_Master_Animated_Object::RGE_Master_Animated_Object(void* stream, void** sprites, void** sounds, int index, int flag)
+RGE_Master_Animated_Object::RGE_Master_Animated_Object(FILE* stream,
+    RGE_Sprite** sprites, RGE_Sound** sounds, short index, int flag)
     : RGE_Master_Static_Object(stream, sprites, sounds, index, 0)
 {
     if (flag != 0) {

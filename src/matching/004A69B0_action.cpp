@@ -17,6 +17,9 @@
 #include <string.h>
 #include <stdio.h>
 
+#ifdef SCR_NAME_TU_CONTEXT
+#include "../../include/scr_name_context.h"
+#else
 #define VPAD1(n) virtual void vpad##n();
 #define VPAD2(n) VPAD1(n) VPAD1(n##_1)
 #define VPAD4(n) VPAD2(n) VPAD2(n##_2)
@@ -133,6 +136,7 @@ public:
     void get_player_names();
     void setup_tab_order();
 };
+#endif
 
 long TRIBE_Screen_Name::action(TPanel* panel, long event, unsigned long p3,
                                unsigned long p4)

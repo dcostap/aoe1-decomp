@@ -1,3 +1,4 @@
+#ifndef RGE_MAN_OBJ_SHARED_CONTEXT
 class RGE_Master_Static_Object {
 public:
     virtual void modify(float value, unsigned char attribute);
@@ -10,6 +11,7 @@ public:
 
     void modify(float value, unsigned char attribute);
 };
+#endif
 
 void RGE_Master_Animated_Object::modify(float value, unsigned char attribute) {
     if (attribute != 5) {

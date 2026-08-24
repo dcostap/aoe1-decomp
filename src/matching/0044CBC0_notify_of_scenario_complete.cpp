@@ -1,5 +1,6 @@
 // first pass: preserve the exact scenario-status update order and the follow-up cap
 // tried the direct <= cap form; the remaining gap collapsed to the compare operand order in the cap check
+#ifndef GAMEINFO_SHARED_CONTEXT
 #include "..\..\include\game_types.h"
 
 class RGE_Scenario_Info {
@@ -18,6 +19,7 @@ public:
     void set_current_scenario(long scenario_index);
     void notify_of_scenario_complete(void);
 };
+#endif
 
 void RGE_Campaign_Info::notify_of_scenario_complete(void) {
     if (this->current_scenario > -1) {

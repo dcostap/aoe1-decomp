@@ -1,3 +1,4 @@
+#ifndef TAIBLDMD_SHARED_CONTEXT
 struct TribeBuildMD {
     char gap_00[0xF0];
     void* player;
@@ -15,6 +16,7 @@ public:
 
     int insertGathererPercentage(int a, int b, int c);
 };
+#endif
 
 int TribeBuildAIModule::insertGathererPercentage(int a, int b, int c) {
     return insertItem(this->md->player, a, 1, 6, b, 1, c);

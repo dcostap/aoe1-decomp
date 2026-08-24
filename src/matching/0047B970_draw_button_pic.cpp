@@ -66,6 +66,7 @@
 #include <windows.h>
 #include <new.h>
 
+#ifndef PNL_SCBR_CANONICAL_TU
 class TDrawArea;
 
 class TShape {
@@ -152,6 +153,7 @@ public:
 
     void draw_button_pic(int param_1, int param_2, tagRECT* param_3);
 };
+#endif
 
 void TScrollBarPanel::draw_button_pic(int param_1, int param_2, tagRECT* param_3)
 {

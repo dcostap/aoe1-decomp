@@ -1,3 +1,4 @@
+#ifndef RGE_MAN_OBJ_SHARED_CONTEXT
 extern "C" void __cdecl rge_write(int handle, void* buffer, int size);
 
 class RGE_Master_Static_Object {
@@ -12,6 +13,7 @@ public:
 
     void save(int handle);
 };
+#endif
 
 void RGE_Master_Animated_Object::save(int handle) {
     RGE_Master_Static_Object::save(handle);

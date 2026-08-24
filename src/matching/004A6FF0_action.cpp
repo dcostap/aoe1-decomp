@@ -9,6 +9,13 @@
 
 typedef unsigned long ulong;
 
+#ifdef SCR_NAME_TU_CONTEXT
+#include "../../include/scr_name_context.h"
+static char s_campaign[] = "Campaign Selection Screen";
+static char s_new_name[] = "New Name Dialog";
+static char s_name[] = "Name Selection Screen";
+static char s_single[] = "Single Player Menu";
+#else
 void* operator new(unsigned int size);
 
 class TPanel;
@@ -81,6 +88,7 @@ public:
 
     long action(TPanel* panel, long p2, ulong p3, ulong p4);
 };
+#endif
 
 long TRIBE_Dialog_Name::action(TPanel* panel, long p2, ulong p3, ulong p4)
 {

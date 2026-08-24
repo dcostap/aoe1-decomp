@@ -47,6 +47,7 @@
 
 extern "C" int __cdecl debug_rand(char* file, int line);
 
+#ifndef MAP_CONTEXT_H
 class RGE_Player;
 class RGE_Game_World;
 
@@ -353,6 +354,8 @@ public:
                               short row, short col, int object_id,
                               int single_placement);
 };
+
+#endif
 
 void RGE_Map::place_terrain_object(RGE_Player* player, RGE_Game_World* world,
                                    short row, short col, int object_id,

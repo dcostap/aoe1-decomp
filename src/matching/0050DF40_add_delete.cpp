@@ -1,59 +1,19 @@
-// 0050DF40 RGE_Timeline::add_delete
-// Source: Timeline.cpp
-// Size: 144 bytes
-//
-// Attempt log:
-// Probe 1: structural stub — calls add() then fills deletion data
+// VA: 0050DF40 RGE_Timeline::add_delete (144 B)
+// Timeline.cpp lines 459-494.
+// The final call is a slot-zero, one-argument object operation.  The narrow
+// Delete_View declaration preserves that observed caller ABI.
 
-#include "..\..\include\game_globals.h"
+#include "../../include/Timeline_context.h"
 
-class RGE_Static_Object {
-public:
-    virtual void v0(int);
-    char gap_04[4];
-    void* master_obj;       // +0x08
-    void* owner;            // +0x0C
-    char gap_10[0x38 - 0x10];
-    int world_x;            // +0x38
-    int world_y;            // +0x3C
-};
-
-struct TimeNode {
-    float time;             // +0x00
-    unsigned char command;  // +0x04
-    short obj_type;         // +0x06
-    unsigned char player;   // +0x08
-    char gap_09[3];
-    int x;                  // +0x0C
-    int y;                  // +0x10
-    char gap_14[0x1C - 0x14];
-    RGE_Static_Object* this_obj;   // +0x1C
-    short this_obj_id;      // +0x20
-    char gap_22[2];
-    RGE_Static_Object* target_obj; // +0x24
-    char gap_28[4];
-    TimeNode* next;         // +0x2C
-};
-
-class RGE_Timeline {
-public:
-    char _gap_00[4];
-    void* world;
-    TimeNode* head;
-    short count;
-
-    TimeNode* add(float time);
-    TimeNode* add_delete(float time, RGE_Static_Object* obj);
-};
-
-TimeNode* RGE_Timeline::add_delete(float time, RGE_Static_Object* obj)
+RGE_Time_Entry* RGE_Timeline::add_delete(float time,
+                                          RGE_Static_Object* obj)
 {
     if (obj == 0)
         return 0;
 
-    TimeNode* node = this->add(time);
+    RGE_Time_Entry* node = this->add(time);
     if (node != 0) {
-        TimeNode* cur = this->head;
+        RGE_Time_Entry* cur = this->time_list;
         while (cur != 0) {
             if (obj == cur->this_obj) {
                 unsigned char cmd = cur->command;
@@ -71,7 +31,7 @@ TimeNode* RGE_Timeline::add_delete(float time, RGE_Static_Object* obj)
         node->command = 4;
         node->x = obj->world_x;
         node->y = obj->world_y;
-        obj->v0(1);
+        ((RGE_Static_Object_Delete_View*)obj)->delete_from_timeline(1);
     }
     return node;
 }

@@ -1,5 +1,8 @@
 // first pass: dialog hit-test on slot +0xBC, then help-button action on slot +0xB4, otherwise fall through to the base helper
 // using the real THelpDialog slot order is the key; the remaining risk is only the forwarding call shape
+#ifdef DLG_HELP_SHARED_CONTEXT
+#include "../../include/dlg_help_context.h"
+#else
 class TPanel {};
 class TButtonPanel : public TPanel {};
 class TDrawArea;
@@ -67,6 +70,7 @@ class TEasy_Panel {
 public:
     long handle_mouse_down(uchar button, long x, long y, int flags, int area);
 };
+#endif
 
 long THelpDialog::handle_mouse_down(uchar button, long x, long y, int flags, int area) {
     if (this->is_inside(x, y) == 0) {

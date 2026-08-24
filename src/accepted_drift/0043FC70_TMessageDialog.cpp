@@ -7,6 +7,7 @@
 // dlg_type/text and button groups; merges second zero register (xor ecx)
 // into eax. Semantically identical — same fields zeroed, same vtable set.
 
+#ifndef DLG_MSG_CANONICAL_TU
 class TPanel {
 public:
     virtual ~TPanel();
@@ -45,10 +46,11 @@ public:
 
     TMessageDialog(char* param_1);
     virtual ~TMessageDialog();
-    virtual long setup(TPanel* p1, char* p2, long p3, long p4, long p5,
+    long setup(TPanel* p1, char* p2, long p3, long p4, long p5,
         unsigned char p6, int p7, long p8, long p9);
     virtual long action(TPanel* param_1, long param_2, unsigned long param_3, unsigned long param_4);
 };
+#endif
 
 TMessageDialog::TMessageDialog(char* param_1) : TDialogPanel(param_1) {
     this->dlg_type = 0;

@@ -2,6 +2,7 @@
 // next probe is the direct array-index form so the loop can stay in the packet's EBX/ESI/EDI basin
 extern "C" int __cdecl __chdrive(int drive);
 
+#ifndef FILE_STF_SHARED_CONTEXT
 class DriveInformation {
 public:
     int initialDriveValue;
@@ -12,6 +13,7 @@ public:
 
     void checkDrives(void);
 };
+#endif
 
 void DriveInformation::checkDrives(void) {
     int drive;

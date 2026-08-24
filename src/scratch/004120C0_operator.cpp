@@ -1,15 +1,5 @@
-class ResourceItem {
-public:
-    void* vtable_ptr;
-    ResourceItem* next;
-    ResourceItem* prev;
-    int valueValue[8];
-    int sortedValue[8];
-    int sortedIndexValue[8];
-    int numberValue;
-
-    ResourceItem& operator+=(const ResourceItem& other);
-};
+// ResourceItem::operator+=(const ResourceItem&)
+// VA: 004120C0 | airesitm.cpp:109-115
 
 ResourceItem& ResourceItem::operator+=(const ResourceItem& other) {
     if (numberValue == other.numberValue) {

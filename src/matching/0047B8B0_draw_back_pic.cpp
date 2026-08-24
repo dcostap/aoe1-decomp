@@ -87,6 +87,7 @@
 
 #include <windows.h>
 
+#ifndef PNL_SCBR_CANONICAL_TU
 class TDrawArea;
 
 struct TShape {
@@ -194,6 +195,7 @@ protected:
     virtual void draw();
     void draw_back_pic();
 };
+#endif
 
 void TScrollBarPanel::draw_back_pic() {
     if (this->button_pics != 0 && this->back_frame != -1) {

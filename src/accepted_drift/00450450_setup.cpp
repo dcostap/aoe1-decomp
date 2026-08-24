@@ -83,6 +83,7 @@
 // their documented row, filter, edge, count, and malformed-input behavior is
 // not imported or changed by this source.
 
+#ifndef RGE_MCO_OBJ_SHARED_CONTEXT
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -288,6 +289,7 @@ public:
     int setup(FILE* file, RGE_Sprite** sprites, RGE_Sound** sounds,
               short count);
 };
+#endif
 
 int RGE_Master_Combat_Object::setup(FILE* file, RGE_Sprite** sprites,
                                     RGE_Sound** sounds, short count) {

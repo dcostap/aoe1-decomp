@@ -118,6 +118,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#ifndef MAP_CONTEXT_H
 class RGE_Game_World;
 class RGE_Player;
 class RGE_Tile;
@@ -353,6 +354,8 @@ public:
                              short old_terrain, int remove_now,
                              int min_id, int max_id);
 };
+
+#endif
 
 int RGE_Map::clear_terrain_object(RGE_Game_World* world, short col,
                                   short row, short old_terrain,

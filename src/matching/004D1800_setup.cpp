@@ -1,3 +1,4 @@
+#ifndef TACT_REP_CONTEXT_H
 class RGE_Task;
 class RGE_Action_Object;
 class RGE_Action {
@@ -23,6 +24,7 @@ public:
 
     virtual int setup(int param_1, RGE_Action_Object* param_2);
 };
+#endif
 
 extern float save_game_version;
 extern void rge_read(int param_1, void* param_2, int param_3);

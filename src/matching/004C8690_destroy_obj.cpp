@@ -1,3 +1,4 @@
+#ifndef T_B_OBJ_CONTEXT_H
 class TRIBE_Building_Object;
 
 class RGE_Action_Object {
@@ -176,6 +177,7 @@ public:
 
     void destroy_obj();
 };
+#endif
 
 void TRIBE_Building_Object::destroy_obj() {
     this->slot_258();

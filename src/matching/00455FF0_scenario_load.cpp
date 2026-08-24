@@ -22,6 +22,7 @@
 //   334/334 bytes, all eight calls and all CFG blocks aligned. No volatile,
 //   inline asm, or codegen-only source scaffolding is retained.
 
+#ifndef MAP_CONTEXT_H
 class RGE_Player;
 class RGE_Game_World;
 
@@ -50,7 +51,9 @@ public:
     void scenario_load(int file, unsigned char* param2);
 };
 
-void rge_read(int file, void* data, int size);
+#endif
+
+extern "C" void __cdecl rge_read(int file, void* data, int size);
 
 void RGE_Map::scenario_load(int file, unsigned char* param2)
 {

@@ -2,6 +2,7 @@
 // PDB source: gameinfo.cpp lines 777-792 (97 bytes, 44 asm lines)
 // Default flags
 
+#ifndef GAMEINFO_SHARED_CONTEXT
 class RGE_Person_Info {
 public:
     ~RGE_Person_Info();
@@ -17,6 +18,7 @@ public:
 };
 
 extern void __cdecl operator_delete(void* p);
+#endif
 
 void RGE_Game_Info::remove_player(long person_index) {
     if (person_index < 0) return;

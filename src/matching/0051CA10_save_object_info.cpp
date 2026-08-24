@@ -14,6 +14,7 @@
 //   raw offset or register-forcing plumbing.
 // - exact: 620/620 bytes, 15/15 ordered calls, frame 0xC, 171 instructions.
 
+#ifndef AOE1_TPNL_OBJ_CONTEXT_H
 class RGE_Master_Static_Object;
 class RGE_Player;
 class RGE_Object_Node;
@@ -367,6 +368,7 @@ public:
 protected:
     void save_object_info();
 };
+#endif
 
 void TRIBE_Panel_Object::save_object_info()
 {

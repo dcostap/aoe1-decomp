@@ -4,6 +4,7 @@
 // Attempt log:
 // try 1: natural typed destructor with two owned shape deletes and base TPanel dtor.
 
+#ifndef AOE1_TPNL_OBJ_CONTEXT_H
 void operator delete(void* p);
 
 class TPanel {
@@ -24,6 +25,7 @@ public:
 
     virtual ~TRIBE_Panel_Object();
 };
+#endif
 
 TRIBE_Panel_Object::~TRIBE_Panel_Object()
 {

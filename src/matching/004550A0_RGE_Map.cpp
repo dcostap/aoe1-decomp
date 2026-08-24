@@ -3,6 +3,7 @@
 // baseline reconstruction: canonical map.cpp class/terrain/border ownership,
 // natural tile-size calls, and the observed zero-initialization loops.
 
+#ifndef MAP_CONTEXT_H
 class RGE_Sound;
 class RGE_Tile;
 class RGE_Player;
@@ -159,6 +160,8 @@ public:
     void load_terrain_types(char*, RGE_Sound**);
     void load_border_types(char*, RGE_Sound**);
 };
+
+#endif
 
 RGE_Map::RGE_Map(char* border_file, char* terrain_file, char* unused_file,
                  short tile_width_arg, short tile_height_arg,

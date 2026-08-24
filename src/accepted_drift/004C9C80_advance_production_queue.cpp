@@ -40,6 +40,7 @@
 // uses cmp word vs mov+test encoding. Loop body, field offsets, vtable call, and
 // all predicates/memory effects are identical.
 
+#ifndef T_B_OBJ_CONTEXT_H
 class __declspec(novtable) RGE_Base_Game {
 public:
     virtual void v0() = 0;
@@ -82,6 +83,7 @@ public:
 
     void advance_production_queue();
 };
+#endif
 
 void TRIBE_Building_Object::advance_production_queue()
 {

@@ -56,6 +56,7 @@
 // changed reload order, constructor CFG, or size without a strict gain.
 // final pass: 16 fresh structural probes; current clean validation is pending.
 
+#ifndef AOE1_TAIMDMD_CONTEXT_H
 #include <stdlib.h>
 
 typedef unsigned char uchar;
@@ -434,6 +435,7 @@ public:
 
 extern "C" int __cdecl debug_rand(char* file, int line);
 extern TRIBE_Game* rge_base_game;
+#endif
 
 int TribeMainDecisionAIModule::update(int param_1)
 {

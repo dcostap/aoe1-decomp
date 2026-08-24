@@ -5,8 +5,9 @@
 // 2 layout: repeated direct map_row_offset[y][x] accesses restored the separate
 //   row-pointer and 24-byte offset computations; exact 218-byte match.
 
-void rge_write(int file, void* data, int size);
+extern "C" void __cdecl rge_write(int file, void* data, int size);
 
+#ifndef MAP_CONTEXT_H
 struct RGE_Tile {
     char gap_00[5];
     unsigned char terrain_info;
@@ -23,6 +24,8 @@ public:
 
     void scenario_save(int file);
 };
+
+#endif
 
 void RGE_Map::scenario_save(int file)
 {

@@ -1,3 +1,4 @@
+#ifndef ACT_MAKE_CONTEXT_H
 struct TypeC {
     char gap_00[0x90];
     int field_90;
@@ -28,3 +29,9 @@ void RGE_Action_Make::set_state(unsigned char param) {
     field_0C = param;
     field_2C = field_08->field_0C->field_50->field_90;
 }
+#else
+void RGE_Action_Make::set_state(unsigned char param) {
+    this->state = param;
+    this->timer = this->obj->owner->attributes[0x24];
+}
+#endif

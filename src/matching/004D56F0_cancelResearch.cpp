@@ -9,6 +9,7 @@
 // __declspec(novtable) on both base and derived prevents spurious vtable codegen
 // uniqueID/setInProgress are direct member functions (not virtual)
 
+#ifndef TAIBLDMD_SHARED_CONTEXT
 class BuildItem {
 public:
     int uniqueID();
@@ -47,21 +48,39 @@ public:
 };
 
 void logCommonHistory(TribeBuildAIModule* module, const char* fmt, ...);
+#endif
 
 int TribeBuildAIModule::cancelResearch(int p1, int p2, int p3, int p4)
 {
+#ifdef TAIBLDMD_SHARED_CONTEXT
+    int val = *(int*)(*(int*)(*(int*)((char*)this->md + 0xF0) + 0x3C) + 4);
+    ::logCommonHistory(this, "Canceling research (WT=%ld) for item of type %d, %d", val, p2, p3);
+#else
     int val = *(int*)(*(int*)(*(int*)((char*)this->field_5BC + 0xF0) + 0x3C) + 4);
     logCommonHistory(this, "Canceling research (WT=%ld) for item of type %d, %d", val, p2, p3);
+#endif
 
     BuildItem* item = (BuildItem*)this->specificBuildListItem(p4);
 
     if (item) {
+#ifdef TAIBLDMD_SHARED_CONTEXT
+        ::logCommonHistory(this, "  Setting build item #%d in progress to FALSE", item->uniqueID());
+#else
         logCommonHistory(this, "  Setting build item #%d in progress to FALSE", item->uniqueID());
+#endif
         item->setInProgress(0);
     } else {
+#ifdef TAIBLDMD_SHARED_CONTEXT
+        ::logCommonHistory(this, "  ERROR!  Invalid build item.");
+#else
         logCommonHistory(this, "  ERROR!  Invalid build item.");
+#endif
     }
 
+#ifdef TAIBLDMD_SHARED_CONTEXT
+    this->displayBuildList();
+#else
     this->vfn_40();
+#endif
     return 1;
 }

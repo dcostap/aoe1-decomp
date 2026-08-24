@@ -2,6 +2,7 @@
 // first pass: direct member cleanup plus final base recycle call
 // target shape: delete action-list if present, free production queue if present, reset queue fields, then call base recycle_out_of_game
 
+#ifndef T_B_OBJ_CONTEXT_H
 void __cdecl free(void*);
 
 class RGE_Action_List {
@@ -31,6 +32,7 @@ public:
 
     void recycle_out_of_game();
 };
+#endif
 
 void TRIBE_Building_Object::recycle_out_of_game() {
     RGE_Action_List* list = this->action_list_1d4;

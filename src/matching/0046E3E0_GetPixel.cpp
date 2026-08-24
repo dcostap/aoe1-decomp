@@ -38,6 +38,7 @@
 // - the cast is limited to the 32-bit pixel-address expression; no absolute
 //   addresses, asm, volatility, or fabricated calls are used.
 //
+#ifndef PICTURE_CONTEXT_H
 class TPicture {
 public:
     void* Dib;
@@ -52,6 +53,7 @@ public:
     long AlignedWidth();
     unsigned char GetPixel(long x, long y, int param_3, int param_4);
 };
+#endif
 
 unsigned char TPicture::GetPixel(long x, long y, int param_3, int param_4) {
     char orientation = (char)this->Orien;

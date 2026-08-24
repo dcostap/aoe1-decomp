@@ -1,5 +1,6 @@
 // first pass: direct field stores followed by a straightforward base setup call with trailing zero
 // if this stays sticky, the remaining mismatch is likely just the exact parameter load order into the base call
+#ifndef PNL_SCBR_CANONICAL_TU
 class TDrawArea;
 class TPanel {
 public:
@@ -22,6 +23,7 @@ public:
                char* param_7, char* param_8, char* param_9, char* param_10,
                long param_11, long param_12, TPanel* param_13, long param_14, long param_15);
 };
+#endif
 
 long TScrollBarPanel::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6,
                             char* param_7, char* param_8, char* param_9, char* param_10,

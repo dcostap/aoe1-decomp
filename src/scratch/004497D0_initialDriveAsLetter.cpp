@@ -1,9 +1,11 @@
-class TDrive_System {
+#ifndef FILE_STF_SHARED_CONTEXT
+class DriveInformation {
 public:
-    int initialDrive;
-    int initialDriveAsLetter();
+    int initialDriveValue;
+    char initialDriveAsLetter() const;
 };
+#endif
 
-int TDrive_System::initialDriveAsLetter() {
-    return this->initialDrive + 0x40;
+char DriveInformation::initialDriveAsLetter() const {
+    return (char)(this->initialDriveValue + 0x40);
 }

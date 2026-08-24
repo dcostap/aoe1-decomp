@@ -3,6 +3,7 @@
 // BINARY NOTE: The two rectangle tests call the inherited TPanel
 // is_inside_rect helper. A canonical TPanel base recovers both direct symbols
 // without changing the idle state machine or its fault order.
+#ifndef PNL_SCBR_CANONICAL_TU
 unsigned long debug_timeGetTime(char* file, int line);
 
 struct tagRECT { long left, top, right, bottom; };
@@ -33,6 +34,7 @@ public:
     void scroll(int action, int pos);
     long handle_idle();
 };
+#endif
 
 long TScrollBarPanel::handle_idle() {
     switch (this->state) {
@@ -48,14 +50,26 @@ long TScrollBarPanel::handle_idle() {
             this->scroll(1,0); return 0;
         case 3:
             if (!this->is_inside_rect(this->mouse_x, this->mouse_y, &this->rect1)) {
-                this->active = 0; this->state = 0; this->vf20(1); return 0;
+                this->active = 0; this->state = 0;
+#ifdef PNL_SCBR_CANONICAL_TU
+                this->redraw(1);
+#else
+                this->vf20(1);
+#endif
+                return 0;
             }
             this->scroll(2,0); return 0;
         case 4:
             this->scroll(2,0); return 0;
         case 5:
             if (!this->is_inside_rect(this->mouse_x, this->mouse_y, &this->rect2)) {
-                this->active = 0; this->state = 0; this->vf20(1); return 0;
+                this->active = 0; this->state = 0;
+#ifdef PNL_SCBR_CANONICAL_TU
+                this->redraw(1);
+#else
+                this->vf20(1);
+#endif
+                return 0;
             }
             this->scroll(3,0); return 0;
         }

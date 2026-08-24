@@ -6,6 +6,7 @@
 // and emits the original bottom `next != sentinel` back-edge without a second
 // bottom null test.
 
+#ifndef TAIBLDMD_SHARED_CONTEXT
 class BuildItem {
 public:
     char gap_00[0x6C];
@@ -24,10 +25,15 @@ public:
 
     int allBuilt(int param_1, int param_2);
 };
+#endif
 
 int TribeBuildAIModule::allBuilt(int param_1, int param_2)
 {
+#ifdef TAIBLDMD_SHARED_CONTEXT
+    BuildItem* item = this->buildList.next;
+#else
     BuildItem* item = this->first;
+#endif
     BuildItem* sentinel = (BuildItem*)((char*)this + 0x0F0);
 
     if (item != sentinel) {

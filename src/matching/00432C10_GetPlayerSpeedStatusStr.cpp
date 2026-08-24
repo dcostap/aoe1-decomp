@@ -1,21 +1,4 @@
-class RGE_TimeSinceLastCall {
-public:
-    char* GetHiLoInfo(int param_1);
-};
-
-class RGE_Communications_Speed {
-public:
-    char gap_00[0x104];
-    RGE_TimeSinceLastCall* FrameTSLC;
-    char gap_108[0x14];
-    unsigned int CurrentBufferFrames;
-    unsigned int FutureBufferFrames;
-    unsigned int TotalBufferFramesRemaining;
-    unsigned int TargetTurnLengthMsec;
-    unsigned int CurrentBufferGranularity;
-
-    char* GetPlayerSpeedStatusStr(int player);
-};
+#include "../../include/com_spd_context.h"
 
 extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
 extern char g_player_speed_status_str[256];

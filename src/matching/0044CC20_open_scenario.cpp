@@ -1,3 +1,4 @@
+#ifndef GAMEINFO_SHARED_CONTEXT
 class RGE_Campaign {
 public:
     int open_scenario(int index);
@@ -12,6 +13,7 @@ public:
 
     int open_scenario();
 };
+#endif
 
 int RGE_Campaign_Info::open_scenario() {
     if (this->current_scenario > -1) {

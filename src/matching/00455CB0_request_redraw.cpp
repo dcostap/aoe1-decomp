@@ -57,6 +57,7 @@
 //    basin: this->ebx, x0->esi, x1->edi, y0->eax, y1->ecx+slot, row->ebp, with `cmp eax,ecx; mov ebp,eax`
 //    entry test and `xor eax,eax` y0 clamp. Guard-on-y0 + clamps-on-y0 (original semantics).
 
+#ifndef MAP_CONTEXT_H
 class RGE_Tile {
 public:
     short screen_xpos;
@@ -81,6 +82,8 @@ public:
     RGE_Tile** map_row_offset;
     void request_redraw(int x0, int y0, int x1, int y1, unsigned char val);
 };
+
+#endif
 
 void RGE_Map::request_redraw(int x0, int y0, int x1, int y1, unsigned char val)
 {

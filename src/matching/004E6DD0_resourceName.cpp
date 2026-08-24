@@ -1,7 +1,4 @@
-class TribeResourceAIModule {
-public:
-    char* resourceName(int param_1);
-};
+#include "../../include/tairesmd_context.h"
 
 char* TribeResourceAIModule::resourceName(int param_1) {
     if (param_1 == 0) {

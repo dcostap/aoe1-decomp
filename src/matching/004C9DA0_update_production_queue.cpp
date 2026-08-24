@@ -23,6 +23,7 @@
 // Main-agent audit restored canonical player/base-game destructor ownership and
 // retained the natural typed queue/resource flow; exact bytes were revalidated.
 
+#ifndef T_B_OBJ_CONTEXT_H
 void* __cdecl operator new(unsigned int);
 
 class RGE_Game_World;
@@ -144,6 +145,7 @@ public:
     unsigned char gap_4D[3];
     TRIBE_Action_Make_Obj(RGE_Action_Object*, short, int, unsigned char);
 };
+#endif
 
 void TRIBE_Building_Object::update_production_queue()
 {

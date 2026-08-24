@@ -6,6 +6,7 @@
 // player pointers are the period class's base `player` and derived
 // `aiPlayer` members at +0xF0 and +0x1256C respectively.
 
+#ifndef AOE1_TAIMDMD_CONTEXT_H
 class RGE_Player {
 public:
     virtual ~RGE_Player();
@@ -135,6 +136,7 @@ public:
 
     void revokeTributeAlliance();
 };
+#endif
 
 void TribeMainDecisionAIModule::revokeTributeAlliance()
 {

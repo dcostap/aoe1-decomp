@@ -14,6 +14,12 @@
 
 #include <windows.h>
 
+#ifdef SCR_NAME_TU_CONTEXT
+#include "../../include/scr_name_context.h"
+static char name_selection_screen[] = "Name Selection Screen";
+static char setup_info_file[] = "scr2";
+#else
+
 class TDrawArea;
 
 class TPanel {
@@ -109,6 +115,7 @@ public:
     void setup_tab_order();
     void get_player_names();
 };
+#endif
 
 TRIBE_Screen_Name::TRIBE_Screen_Name()
     : TScreenPanel(name_selection_screen)

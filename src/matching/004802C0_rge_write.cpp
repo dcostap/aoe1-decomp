@@ -3,11 +3,11 @@
 // 195 bytes
 
 void* __cdecl calloc(int count, int size);
-int __cdecl write(int fd, void* buf, int size);
+extern "C" int __cdecl write(int fd, const void* buf, unsigned int size);
 int __cdecl deflate_buf_size();
-int __cdecl deflate_init(void* buffer, int param_2, int param_3, int param_4, void* buf, int size, void* callback);
+int __cdecl rge_buffer_full(unsigned char* buffer, int count);
+int __cdecl deflate_init(void* buffer, int param_2, int param_3, int param_4, void* buf, int size, int (__cdecl *callback)(unsigned char*, int));
 int __cdecl deflate_data(void* buffer, void* src, int size, int flag);
-void __cdecl rge_buffer_full(void* buffer, void* data, int size);
 
 extern int DAT_0086b260;            // current file handle
 extern unsigned char DAT_0086b264;  // mode flag

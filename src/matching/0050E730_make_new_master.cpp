@@ -1,7 +1,9 @@
 // first pass: direct `return new TRIBE_Master_Building_Object(this, 1);` shape for the EH-framed factory helper
 // /GX was required to land the exact ctor/new basin for the 0x17C allocation
 #include "..\..\include\game_types.h"
+#include "..\..\include\tm_b_obj_context.h"
 
+#ifndef TM_B_OBJ_SHARED_CONTEXT
 class RGE_Master_Static_Object {
 public:
     void* vtable_ptr;
@@ -19,6 +21,7 @@ public:
     TRIBE_Master_Building_Object(TRIBE_Master_Building_Object* source, int do_setup);
     RGE_Master_Static_Object* make_new_master(void);
 };
+#endif
 
 RGE_Master_Static_Object* TRIBE_Master_Building_Object::make_new_master(void) {
     return new TRIBE_Master_Building_Object(this, 1);

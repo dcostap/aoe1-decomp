@@ -1,3 +1,4 @@
+#ifndef AOE1_TAIMDMD_CONTEXT_H
 class RGE_Static_Object;
 
 class TribeTacticalAIModule {
@@ -27,6 +28,7 @@ public:
 
     int addObject(RGE_Static_Object* object);
 };
+#endif
 
 int TribeMainDecisionAIModule::addObject(RGE_Static_Object* object) {
     if (object == 0) {

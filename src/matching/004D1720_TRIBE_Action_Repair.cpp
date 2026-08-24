@@ -5,6 +5,7 @@
 // - Previous file was only a stub and produced a 16-byte body.
 // - 2026-05-10 StarryZephyr pass: implemented natural /GX constructor with base ctor, vptr/type stores, target object, and meet_target.
 
+#ifndef TACT_REP_CONTEXT_H
 class RGE_Action_Object;
 class RGE_Task;
 
@@ -25,7 +26,8 @@ public:
 
 class TRIBE_Action_Repair : public RGE_Action {
 public:
-    char gap_04[0x20 - 0x04];
+    short action_type;
+    char gap_06[0x20 - 0x06];
     int target_x;
     int target_y;
     int target_z;
@@ -38,14 +40,13 @@ public:
     void meet_target();
 };
 
-extern void* const TRIBE_Action_Repair_vftable;
+#endif
 
 TRIBE_Action_Repair::TRIBE_Action_Repair(RGE_Action_Object* obj, RGE_Task* task_arg, RGE_Static_Object* target)
     : RGE_Action(obj, 1)
 {
     this->task = task_arg;
-    *(void**)this = (void*)&TRIBE_Action_Repair_vftable;
-    *(short*)((char*)this + 4) = 0x6A;
+    this->action_type = 0x6A;
     this->save_target_command_flag = 0;
     this->set_target_obj(target);
     if (target != 0) {

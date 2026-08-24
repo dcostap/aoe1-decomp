@@ -2,10 +2,15 @@
 // exact basin: manual 0x14 LineInfo offset, plus the final ownership split must really be free-vs-DibFree.
 
 #include <stddef.h>
+#ifndef PICTURE_CONTEXT_H
 class LINEINFO;
+#endif
 extern "C" void __cdecl free(void*);
+#ifndef PICTURE_CONTEXT_H
 extern "C" void __cdecl DibFree(void*);
+#endif
 
+#ifndef PICTURE_CONTEXT_H
 struct TRANSINFO; // incomplete, accessed via manual offsets only
 
 class TPicture {
@@ -17,6 +22,7 @@ public:
     int         OwnMemory;
     ~TPicture();
 };
+#endif
 
 TPicture::~TPicture() {
     if (this->OwnMemory == 0) return;

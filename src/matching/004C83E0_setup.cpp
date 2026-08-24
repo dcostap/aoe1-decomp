@@ -2,6 +2,7 @@
 // t_b_obj.cpp:176-199
 // Retry 2026-05-24: replaced stale stub with packet-derived building setup body.
 
+#ifndef T_B_OBJ_CONTEXT_H
 class TRIBE_Master_Building_Object {
 public:
     char gap_000[0x10];
@@ -199,6 +200,7 @@ class TRIBE_Building_Object : public TRIBE_Combat_Object {
 public:
     int setup(TRIBE_Master_Building_Object* master, RGE_Player* player, float x, float y, float z);
 };
+#endif
 
 int TRIBE_Building_Object::setup(TRIBE_Master_Building_Object* master, RGE_Player* player, float x, float y, float z)
 {

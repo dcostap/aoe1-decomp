@@ -32,6 +32,7 @@
 // Final 2026-05-19 validation remains default flags, exact 117B, 35.0427% positional / 24.7863% edit, first mismatch offset 0.
 // Retry 2026-05-20 assigned pass: tried top-declared result/tactical, self aliases before/after tactical, branch-local tactical, inverted guard/goto fail, explicit return, and out-pointer local; all stayed EBX=this/EDI=result or worsened. Single full expression for the final store (`debug_rand(...) % strategicNumber(...) - strategicNumber(...)/2 + strategicNumber(...)`) flipped VC5 to original EDI=this/EBX=result and MATCHED.
 
+#ifndef AOE1_TAIMDMD_CONTEXT_H
 class TribeTacticalAIModule {
 public:
     int strategicNumber(int id);
@@ -48,6 +49,7 @@ public:
 
     void setTributeChat();
 };
+#endif
 
 void TribeMainDecisionAIModule::setTributeChat() {
     TribeTacticalAIModule* tactical = &this->tacticalAI;

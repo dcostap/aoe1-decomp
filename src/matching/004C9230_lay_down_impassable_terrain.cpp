@@ -15,6 +15,7 @@
 //   row cursor remains byte-offset-shaped because the binary proves this exact
 //   access schedule; emitted code remains exact.
 
+#ifndef T_B_OBJ_CONTEXT_H
 extern "C" long __ftol();
 
 struct RGE_Tile {
@@ -64,6 +65,7 @@ struct TRIBE_Building_Object {
 
     void lay_down_impassable_terrain();
 };
+#endif
 
 void TRIBE_Building_Object::lay_down_impassable_terrain() {
     GameMap* map = this->owner->world->map;

@@ -10,6 +10,7 @@
 // - Moved proven master/owner/hp/selected/state fields into the local
 //   RGE_Static_Object base; code remained exact and ownership is canonical.
 
+#ifndef T_B_OBJ_CONTEXT_H
 extern float DAT_005749f4;
 extern double DAT_005749f8;
 extern double DAT_00574a00;
@@ -91,6 +92,7 @@ public:
 
     void cancel_build();
 };
+#endif
 
 void TRIBE_Building_Object::cancel_build()
 {

@@ -6,6 +6,7 @@
 
 #include <string.h>
 
+#ifndef GAMEINFO_SHARED_CONTEXT
 class RGE_Campaign_Info;
 class RGE_Campaign;
 
@@ -20,6 +21,7 @@ public:
 
     RGE_Person_Info(char* name, RGE_Campaign** campaigns, long campaign_num);
 };
+#endif
 
 RGE_Person_Info::RGE_Person_Info(char* name, RGE_Campaign** campaigns, long campaign_num) {
     strcpy(this->name, name);

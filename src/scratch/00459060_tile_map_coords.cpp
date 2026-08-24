@@ -76,6 +76,7 @@
 // and comparison forms. These can change unordered predicates and
 // extended-precision rounding before the two output stores. Keep in scratch.
 
+#ifndef MAP_CONTEXT_H
 struct RGE_Tile { int pad0; unsigned char tile_type; };
 
 extern double DAT_005706c0;
@@ -89,6 +90,8 @@ public:
     short tile_height;
     void tile_map_coords(short x, short y, RGE_Tile* tile, float* out1, float* out2);
 };
+
+#endif
 
 void RGE_Map::tile_map_coords(short x, short y, RGE_Tile* tile, float* out1, float* out2) {
     double fx = (double)(int)x / (double)(int)this->tile_width;

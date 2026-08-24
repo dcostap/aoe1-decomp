@@ -3,6 +3,7 @@
 // baseline reconstruction: canonical map geometry and the map.cpp tile-size
 // table initialization sequence.
 
+#ifndef MAP_CONTEXT_H
 class RGE_Tile;
 class RGE_Game_World;
 class RGE_Player;
@@ -72,6 +73,8 @@ public:
     void init_tile_sizes();
     void set_tile_size(unsigned char, short, short, short);
 };
+
+#endif
 
 void RGE_Map::init_tile_sizes()
 {

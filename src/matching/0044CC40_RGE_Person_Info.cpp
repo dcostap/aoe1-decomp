@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 
+#ifndef GAMEINFO_SHARED_CONTEXT
 int __cdecl rge_read(int fd, void* buf, int size);
 void* __cdecl calloc(int count, int size);
 
@@ -32,6 +33,7 @@ struct RGE_Person_Info {
 
     RGE_Person_Info(int fd, RGE_Campaign** camps, int cnum);
 };
+#endif
 
 RGE_Person_Info::RGE_Person_Info(int fd, RGE_Campaign** camps, int cnum) {
     // Store params
@@ -44,16 +46,16 @@ RGE_Person_Info::RGE_Person_Info(int fd, RGE_Campaign** camps, int cnum) {
     // Read current_campaign
     rge_read(fd, &current_campaign, 4);
     
-    // Read scenario_num
-    rge_read(fd, &scenario_num, 4);
+    // Read campaign_info_num
+    rge_read(fd, &campaign_info_num, 4);
     
     // Allocate campaign_info array and populate it only on the positive path.
     // Keeping the loop in this arm preserves the original cold zero path.
-    if (scenario_num > 0) {
-        campaign_info = (RGE_Campaign_Info**)calloc(scenario_num, 4);
+    if (campaign_info_num > 0) {
+        campaign_info = (RGE_Campaign_Info**)calloc(campaign_info_num, 4);
 
         // Loop to create campaign info entries
-        for (int i = 0; i < scenario_num; i++) {
+        for (int i = 0; i < campaign_info_num; i++) {
             // The serialized person owns the canonical campaign context used
             // by each child, rather than forwarding the constructor homes.
             campaign_info[i] = new RGE_Campaign_Info(fd, campaigns, campaign_num);

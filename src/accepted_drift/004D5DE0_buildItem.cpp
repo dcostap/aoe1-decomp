@@ -7,6 +7,7 @@
 // equivalent two-test tail. Calls, comparisons, return values, stack cleanup, and
 // memory effects are identical.
 
+#ifndef TAIBLDMD_SHARED_CONTEXT
 class BuildItem {
 public:
     char gap_00[0x6C];
@@ -26,9 +27,14 @@ public:
 
     BuildItem* buildItem(int type, int category1, int category2);
 };
+#endif
 
 BuildItem* TribeBuildAIModule::buildItem(int type, int category1, int category2) {
+#ifdef TAIBLDMD_SHARED_CONTEXT
+    BuildItem* item = this->buildList.next;
+#else
     BuildItem* item = this->first;
+#endif
     BuildItem* sentinel = (BuildItem*)((char*)this + 0xF0);
 
     if (item == sentinel)

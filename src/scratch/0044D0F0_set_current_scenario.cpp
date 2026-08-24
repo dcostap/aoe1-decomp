@@ -1,3 +1,4 @@
+#ifndef GAMEINFO_SHARED_CONTEXT
 class RGE_Campaign_Info {
 public:
     virtual ~RGE_Campaign_Info();
@@ -18,6 +19,7 @@ public:
 
     unsigned char set_current_scenario(long scenario);
 };
+#endif
 
 unsigned char RGE_Person_Info::set_current_scenario(long scenario) {
     int current_campaign = this->current_campaign;

@@ -20,20 +20,7 @@
 // - Best variant is exact-sized with only 8.1633% edit diff: original EBX=self/EBP=available vs rebuilt EBP=self/EBX=available. One-byte shorter fcomp encoding for EBX base is padded by final NOP; control flow/calls/stack cleanup/memory effects match.
 // ACCEPTED_DRIFT_CANDIDATE: remaining mismatch is register-allocation-only EBX/EBP swap for self vs available pointer, plus equivalent fcomp addressing length/padding. Behavior, calls, FPU predicate (`test ah,41h`), branches, and return values match.
 
-class ResourceItem {
-public:
-    int number();
-    int value(int i);
-};
-
-class TribeResourceAIModule {
-public:
-    char gap_00[0xF0];
-    void* md;                 // +0xF0, md+0xF0 -> ?, +0x50 -> float resources
-    int numberResourcesValue; // +0xF4
-
-    int resourcesAvailable(ResourceItem* item);
-};
+#include "../../include/tairesmd_context.h"
 
 int TribeResourceAIModule::resourcesAvailable(ResourceItem* item)
 {

@@ -9,6 +9,7 @@
 // - Exact under the default /O2 /Oy flags; no custom flags or compiler-only
 //   scaffolding retained.
 
+#ifndef RGE_MCO_OBJ_SHARED_CONTEXT
 class RGE_Sprite {
 public:
     char gap_00[0x72];
@@ -84,6 +85,7 @@ public:
 
     void save(int file);
 };
+#endif
 
 void RGE_Master_Combat_Object::save(int file) {
     RGE_Master_Action_Object::save(file);

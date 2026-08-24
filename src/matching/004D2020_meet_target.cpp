@@ -9,6 +9,7 @@
 // - Restored RGE_Static_Object size through +88; command_flag then landed at +188.
 // - Corrected moveTo and command_flag receivers to target_obj; exact match followed.
 
+#ifndef TACT_REP_CONTEXT_H
 class RGE_Master_Static_Object {
 public:
     char gap_00[0x10];
@@ -217,6 +218,7 @@ public:
 
     void meet_target();
 };
+#endif
 
 void TRIBE_Action_Repair::meet_target() {
     XYPoint rVal;

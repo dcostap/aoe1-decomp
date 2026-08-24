@@ -1,12 +1,4 @@
-class Base_ConstructionItem {
-public:
-    virtual ~Base_ConstructionItem();
-};
-
-class ConstructionItem : public Base_ConstructionItem {
-public:
-    virtual ~ConstructionItem();
-};
+#include "../../include/aiconitm_context.h"
 
 ConstructionItem::~ConstructionItem() {
 }

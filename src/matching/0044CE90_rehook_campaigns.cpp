@@ -1,3 +1,4 @@
+#ifndef GAMEINFO_SHARED_CONTEXT
 class RGE_Campaign;
 class RGE_Campaign_Info {
 public:
@@ -15,6 +16,7 @@ public:
 
     void rehook_campaigns(RGE_Campaign** campaigns, long campaign_num);
 };
+#endif
 
 void RGE_Person_Info::rehook_campaigns(RGE_Campaign** campaigns, long campaign_num) {
     int i;

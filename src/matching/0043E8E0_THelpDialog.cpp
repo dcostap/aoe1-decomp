@@ -7,6 +7,9 @@
 
 #include "..\..\include\game_globals.h"
 
+#ifdef DLG_HELP_SHARED_CONTEXT
+#include "../../include/dlg_help_context.h"
+#else
 class TEasy_Panel;
 
 // TDialogPanel — base class
@@ -23,6 +26,7 @@ public:
 
     THelpDialog(TEasy_Panel* panel, char* s1, char* s2, long l1, long l2, long l3);
 };
+#endif
 
 THelpDialog::THelpDialog(TEasy_Panel* panel, char* s1, char* s2, long l1, long l2, long l3)
     : TDialogPanel("Help Dialog")

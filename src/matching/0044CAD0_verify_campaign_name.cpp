@@ -11,13 +11,15 @@
 
 #include <string.h>
 
+#ifndef GAMEINFO_SHARED_CONTEXT
 class RGE_Campaign_Info {
 public:
     char campaign_name[256];
 
     unsigned char verify_campaign_name(char* campaign);
 };
+#endif
 
 unsigned char RGE_Campaign_Info::verify_campaign_name(char* campaign) {
-    return strcmp(this->campaign_name, campaign) ? (unsigned char)0 : (unsigned char)1;
+    return strcmp(this->name, campaign) ? (unsigned char)0 : (unsigned char)1;
 }

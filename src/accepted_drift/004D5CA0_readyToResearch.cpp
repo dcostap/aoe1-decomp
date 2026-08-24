@@ -12,9 +12,11 @@
 // Additional 20 return/else variants (result local, ternary, if-return, md/player locals, volatile param in else) did not improve; most stayed the same 10-byte drift, some regressed to 30%+.
 // ACCEPTED_DRIFT_CANDIDATE: remaining diff is register allocation only. Calls, constants, branch targets, stack cleanup, return values, memory effects, and control flow match; ECX vs EDX boolean zero/sete/mov is equivalent, and non-mode-1 path loads the same md/param and calls the same researchState with same argument/this.
 
+#ifndef TAIBLDMD_SHARED_CONTEXT
 class TRIBE_Player { public: unsigned char researchState(int); };
 class MasterAI { public: char gap[0x1256C]; TRIBE_Player* aiPlayer; };
 class TribeBuildAIModule { public: char gap[0x5BC]; MasterAI* md; int readyToResearch(int,int); };
+#endif
 
 int TribeBuildAIModule::readyToResearch(int param_1,int param_2){
     unsigned char state;
@@ -35,6 +37,3 @@ int TribeBuildAIModule::readyToResearch(int param_1,int param_2){
     }
     return state == 1;
 }
-
-// PSEUDO-FUNCTION: one-byte padding included in configured range.
-__declspec(naked) void padding_pseudo_function(void){ __asm _emit 0x90 }

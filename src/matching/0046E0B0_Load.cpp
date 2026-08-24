@@ -37,6 +37,7 @@
 #include <stdlib.h>
 #include <io.h>
 
+#ifndef PICTURE_CONTEXT_H
 struct tagBITMAPINFOHEADER {
     unsigned long biSize;
     long biWidth;
@@ -64,6 +65,7 @@ struct BITMAPINFO256 {
 };
 
 struct TRANSINFO;
+#endif
 
 extern unsigned char shape_file_first;
 extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
@@ -74,8 +76,11 @@ void __cdecl DibMapToPalette(tagBITMAPINFOHEADER* dib, void* palette,
     int palette_id, int palette_flags);
 void __cdecl DibCheckTrans(BITMAPINFO256* dib, TRANSINFO* info,
     unsigned char* bits);
+#ifndef PICTURE_CONTEXT_H
 void __cdecl DibFree(tagBITMAPINFOHEADER* dib);
+#endif
 
+#ifndef PICTURE_CONTEXT_H
 class TPicture {
 public:
     tagBITMAPINFOHEADER* Dib;
@@ -90,6 +95,7 @@ public:
     void Load(char* file_name, long resource_id, int palette_id,
         void* palette, int palette_flags);
 };
+#endif
 
 void TPicture::Load(char* file_name, long resource_id, int palette_id,
     void* palette, int palette_flags) {

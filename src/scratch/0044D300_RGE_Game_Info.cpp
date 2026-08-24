@@ -1,6 +1,7 @@
 // VA: 0044D300 ~RGE_Game_Info destructor
 // 165 bytes
 
+#ifndef GAMEINFO_SHARED_CONTEXT
 void __cdecl free(void*);
 void __cdecl operator_delete(void* p);
 
@@ -23,6 +24,7 @@ struct RGE_Game_Info {
     void save(char* path);
     ~RGE_Game_Info();
 };
+#endif
 
 RGE_Game_Info::~RGE_Game_Info() {
     if (save_filename[0]) {

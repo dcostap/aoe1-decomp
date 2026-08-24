@@ -47,12 +47,13 @@
 // declarations, the global empty string, and a named button height were
 // tested. The reduced clean source remains the natural local-staging form.
 // Accepted-drift review: button members clear before the first call; base setup
-// arguments and failure publication match; msg_type publishes before text
+// arguments and failure publication match; dlg_type publishes before text
 // creation; text and button geometry, member output addresses, labels, hotkey,
 // tab order, current-child publication, call faults, and returns match.
 // Residual drift is parameter preload order, private loop homes, division
 // lowering, vtable-pointer scheduling, and equivalent switch tails.
 
+#ifndef DLG_MSG_CANONICAL_TU
 #define VPAD1(n) virtual void vpad##n();
 #define VPAD2(n) VPAD1(n) VPAD1(n##_1)
 #define VPAD4(n) VPAD2(n) VPAD2(n##_2)
@@ -127,7 +128,7 @@ public:
 class TMessageDialog : public TDialogPanel {
 public:
     char gap_40[0x450];    // +0x40 to +0x48F; inherited parent is in TPanel
-    unsigned char msg_type; // +0x490
+    unsigned char dlg_type; // +0x490
     char gap_491[3];
     TTextPanel* text;      // +0x494
     TButtonPanel* button[3]; // +0x498
@@ -137,6 +138,7 @@ public:
         long width, long unused, unsigned char dlg_type,
         char* text, long button_width, long button_height);
 };
+#endif
 
 long TMessageDialog::setup(TPanel* p1, char* p2, long p3, long p4,
     long p5, unsigned char p6, char* p7, long p8, long p9) {
@@ -154,13 +156,13 @@ long TMessageDialog::setup(TPanel* p1, char* p2, long p3, long p4,
         return 0;
     }
 
-    msg_type = p6;
+    dlg_type = p6;
     if (create_text((TPanel*)this, &text, p7, 3, 3,
             width - 3, height - p9 - 6, 0x0B, 1, 1, 1) == 0) {
         return 0;
     }
 
-    switch (msg_type) {
+    switch (dlg_type) {
     case 0:
         num_buttons = 1;
         break;
@@ -195,7 +197,7 @@ long TMessageDialog::setup(TPanel* p1, char* p2, long p3, long p4,
         ++next;
     }
 
-    switch (msg_type) {
+    switch (dlg_type) {
     case 0:
         button[0]->set_text(0, 0xFA1);
         goto set_tab_order;

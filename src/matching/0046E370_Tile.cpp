@@ -1,7 +1,9 @@
 // first pass: wrapper around TileDibBlt; the main basin is the push order and cdecl cleanup
 // trans flag is the this->TransInfo non-null test, with two trailing zero args preserved
+#ifndef PICTURE_CONTEXT_H
 class TDrawArea;
 class BITMAPINFO256;
+#endif
 
 extern "C" long __cdecl TileDibBlt(
     BITMAPINFO256* bitmapInfo,
@@ -24,6 +26,7 @@ extern "C" long __cdecl TileDibBlt(
     int zero1,
     int zero2);
 
+#ifndef PICTURE_CONTEXT_H
 class TPicture {
 public:
     void* Dib;
@@ -33,7 +36,9 @@ public:
 
     long Tile(TDrawArea* param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, long param_10, long param_11);
 };
+#endif
 
+#ifndef PICTURE_CONTEXT_H
 class TDrawArea {
 public:
     void* DrawSystem;
@@ -48,7 +53,8 @@ public:
     int Orien;
     char ClipRect[0x10];
 };
+#endif
 
 long TPicture::Tile(TDrawArea* param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, long param_10, long param_11) {
-    return TileDibBlt(param_1->BitmapInfo, param_1->Bits, &param_1->ClipRect, param_2, param_3, param_4, param_5, param_6, param_7, this->BitmapInfo, this->Bits, this->TransInfo, param_8, param_9, param_10, param_11, (this->TransInfo != 0), 0, 0);
+    return TileDibBlt(param_1->BitmapInfo, param_1->Bits, &param_1->ClipRect, param_2, param_3, param_4, param_5, param_6, param_7, (BITMAPINFO256*)this->BitmapInfo, this->Bits, this->TransInfo, param_8, param_9, param_10, param_11, (this->TransInfo != 0), 0, 0);
 }

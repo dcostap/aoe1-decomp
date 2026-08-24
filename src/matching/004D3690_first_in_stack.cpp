@@ -1,4 +1,5 @@
-class FirstInStackHost {
+#ifndef TACT_WND_CONTEXT_H
+class TRIBE_Action_Wonder {
 public:
     virtual void vf00(void);
     virtual void vf01(void);
@@ -23,12 +24,13 @@ public:
     virtual void vf20(void);
     virtual void vf21(void);
     virtual void vf22(void);
-    virtual void vf23(int arg);
-    void first_in_stack(unsigned char v);
+    virtual void set_state(int arg);
+    virtual void first_in_stack(unsigned char v);
 };
+#endif
 
-void FirstInStackHost::first_in_stack(unsigned char v) {
+void TRIBE_Action_Wonder::first_in_stack(unsigned char v) {
     if (v) {
-        this->vf23(2);
+        this->set_state(2);
     }
 }

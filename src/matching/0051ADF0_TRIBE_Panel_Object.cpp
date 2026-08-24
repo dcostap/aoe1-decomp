@@ -10,6 +10,7 @@
 // - binary-proven constructor ownership leaves save_number_of_objects,
 //   save_world_x/y, and save_age uninitialized here.
 
+#ifndef AOE1_TPNL_OBJ_CONTEXT_H
 class TDrawArea;
 class TShape;
 class TRIBE_Player;
@@ -169,6 +170,7 @@ public:
                        TShape**, TRIBE_Player*);
     void set_player(TRIBE_Player*);
 };
+#endif
 
 TRIBE_Panel_Object::TRIBE_Panel_Object(
     TDrawArea* draw_area, TPanel* parent, void* font_, long font_wid_,

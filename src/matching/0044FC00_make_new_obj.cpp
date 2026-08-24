@@ -7,6 +7,7 @@
 // fields and calls are modeled through the period class surfaces.
 // layout: gave RGE_Animated_Object its proven 0x8C size; exact 201-byte match.
 
+#ifndef RGE_MAN_OBJ_SHARED_CONTEXT
 class RGE_Master_Static_Object;
 class RGE_Master_Animated_Object;
 class RGE_Player;
@@ -51,6 +52,7 @@ class RGE_Game_World {
 public:
     RGE_Static_Object* recycle_object_in_to_game(unsigned char master_type);
 };
+#endif
 
 RGE_Static_Object* RGE_Master_Animated_Object::make_new_obj(
     RGE_Player* player, float x, float y, float z) {

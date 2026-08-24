@@ -9,6 +9,7 @@
 
 #include <string.h>
 
+#ifndef GAMEINFO_SHARED_CONTEXT
 struct RGE_Campaign {
     char* get_name();
     long scenario_number();
@@ -31,6 +32,7 @@ struct RGE_Campaign_Info {
 
 void __cdecl free(void*);
 void* __cdecl calloc(int count, int size);
+#endif
 
 void RGE_Campaign_Info::rehook_campaigns(RGE_Campaign** list, long count) {
     campaign = 0;

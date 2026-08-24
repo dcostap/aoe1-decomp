@@ -1,3 +1,4 @@
+#ifndef AOE1_TAIMDMD_CONTEXT_H
 class TribeBuildAIModule {
 public:
     char gap_0[0x5C0];
@@ -66,6 +67,7 @@ public:
 
     int removeObject(int object_id);
 };
+#endif
 
 int TribeMainDecisionAIModule::removeObject(int object_id) {
     this->tacticalAI.removeObject(object_id);

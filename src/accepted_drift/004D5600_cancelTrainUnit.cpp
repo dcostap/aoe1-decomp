@@ -12,6 +12,7 @@
 // [eax+40h]. Same object, ECX=this, virtual slot, calls, stack cleanup, return,
 // and memory effects; all other bytes match after relocation masking.
 
+#ifndef TAIBLDMD_SHARED_CONTEXT
 #include "../../include/game_globals.h"
 
 class BuildItem {
@@ -47,6 +48,7 @@ public:
     BuildItem* specificBuildListItem(int id);
     int cancelTrainUnit(int param_1, int param_2, int param_3, int param_4);
 };
+#endif
 
 int TribeBuildAIModule::cancelTrainUnit(int param_1, int param_2, int param_3, int param_4)
 {
@@ -57,12 +59,20 @@ int TribeBuildAIModule::cancelTrainUnit(int param_1, int param_2, int param_3, i
     if (item) {
         this->logCommonHistory("  Setting build item #%d in progress to FALSE", item->uniqueID());
         item->setInProgress(0);
+#ifdef TAIBLDMD_SHARED_CONTEXT
+        this->displayBuildList();
+#else
         this->v40();
+#endif
         return 1;
     }
 
     this->logCommonHistory("  ERROR!  Invalid build item.");
     TribeBuildAIModule* self = this;
+#ifdef TAIBLDMD_SHARED_CONTEXT
+    self->displayBuildList();
+#else
     self->v40();
+#endif
     return 1;
 }

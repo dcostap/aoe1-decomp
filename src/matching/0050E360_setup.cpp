@@ -8,8 +8,10 @@
 //   - `mov dword [esi+164h],0` vs `xor eax;pop edi;store 0`
 // VC5 scheduling artifact. Behavior correct.
 #include "..\..\include\game_globals.h"
+#include "..\..\include\tm_b_obj_context.h"
 #include <stdio.h>
 
+#ifndef TM_B_OBJ_SHARED_CONTEXT
 struct RGE_Sprite;
 struct RGE_Sound;
 
@@ -32,6 +34,7 @@ struct TRIBE_Master_Building_Object {
     
     int setup(FILE* file, RGE_Sprite** sprites, RGE_Sound** sounds, short param_4);
 };
+#endif
 
 int TRIBE_Master_Building_Object::setup(FILE* file, RGE_Sprite** sprites, RGE_Sound** sounds, short param_4) {
     short sprite_id;

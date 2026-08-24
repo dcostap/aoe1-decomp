@@ -64,7 +64,9 @@
 //   That raw-home form is not retained as canonical source.
 
 #include "..\..\include\game_globals.h"
+#include "..\..\include\tm_b_obj_context.h"
 
+#ifndef TM_B_OBJ_SHARED_CONTEXT
 class RGE_Color_Table;
 class TDrawArea;
 class RGE_Sprite;
@@ -158,6 +160,7 @@ public:
                       RGE_Color_Table* color_table, long param_5,
                       long param_6, int param_7, unsigned char param_8);
 };
+#endif
 
 void TRIBE_Master_Building_Object::draw(TDrawArea* area, short x, short y,
                                         RGE_Color_Table* color_table,

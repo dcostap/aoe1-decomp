@@ -13,6 +13,7 @@
 // - ABI probe: modeled informationAI's proven direct save as a nonvirtual
 //   member with its own vptr and payload; emitted bytes remained exact.
 
+#ifndef AOE1_TAIMDMD_CONTEXT_H
 void rge_write(int file, void* data, int size);
 
 class MainDecisionAIModule {
@@ -250,6 +251,7 @@ public:
 
     int save(int file);
 };
+#endif
 
 int TribeMainDecisionAIModule::save(int file)
 {

@@ -1,3 +1,4 @@
+#ifndef T_B_OBJ_CONTEXT_H
 class RGE_Master_Static_Object {
 public:
     char gap_00[0x168];
@@ -35,6 +36,7 @@ public:
     void connect();
     void copy_obj(RGE_Master_Static_Object* master_obj);
 };
+#endif
 
 void TRIBE_Building_Object::copy_obj(RGE_Master_Static_Object* master_obj) {
     if (this->field_10 == this->master_obj->field_168) {

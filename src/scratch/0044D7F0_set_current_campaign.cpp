@@ -1,3 +1,4 @@
+#ifndef GAMEINFO_SHARED_CONTEXT
 class RGE_Campaign_scc {
 public:
     unsigned char set_current_campaign(int campaign);
@@ -10,9 +11,10 @@ public:
     int people_count;
     void** campaigns;
 };
+#endif
 
-unsigned char RGE_Campaign_Info_scc::set_current_campaign(int campaign) {
-    if (this->person_index < this->people_count && this->person_index >= 0)
-        return ((RGE_Campaign_scc*)this->campaigns[this->person_index])->set_current_campaign(campaign);
+unsigned char RGE_Game_Info::set_current_campaign(int campaign) {
+    if (this->current_person < this->people_num && this->current_person >= 0)
+        return this->people_info[this->current_person]->set_current_campaign(campaign);
     return 0;
 }

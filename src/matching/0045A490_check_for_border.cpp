@@ -1,5 +1,6 @@
 // 0045A490 RGE_Map::check_for_border (map.cpp:3018-3030, 102B)
 
+#ifndef MAP_CONTEXT_H
 class RGE_Tile_Set {
 public:
     short borders[32];              // 64 bytes
@@ -29,6 +30,8 @@ public:
 
     void check_for_border(unsigned char param_1, unsigned char* param_2);
 };
+
+#endif
 
 void RGE_Map::check_for_border(unsigned char param_1, unsigned char* param_2)
 {

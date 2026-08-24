@@ -47,6 +47,7 @@
 // Main-agent audit restored canonical polymorphic player/game/building ownership
 // and retained the natural indexed queue search/copy.
 
+#ifndef T_B_OBJ_CONTEXT_H
 struct ProductionEntry {
     short master_id;
     short unit_count;
@@ -102,6 +103,7 @@ struct TRIBE_Building_Object {
 
     void remove_from_production_queue(short master_id, short max_remove);
 };
+#endif
 
 extern RGE_Base_Game* rge_base_game;
 

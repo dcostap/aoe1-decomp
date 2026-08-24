@@ -18,6 +18,7 @@
 // - char* base pointer version: 56% diff (worse structure).
 // - do-while with explicit offset variables: 79% diff.
 
+#ifndef T_B_OBJ_CONTEXT_H
 class RGE_Player {
 public:
     virtual void s00();
@@ -70,6 +71,7 @@ public:
 
     void take_building_attribute_from_owner();
 };
+#endif
 
 void TRIBE_Building_Object::take_building_attribute_from_owner() {
     for (int i = 0; i < 3; i++) {

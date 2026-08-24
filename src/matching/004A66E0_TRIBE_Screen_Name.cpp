@@ -5,6 +5,9 @@
 
 #include "../../include/game_globals.h"
 
+#ifdef SCR_NAME_TU_CONTEXT
+#include "../../include/scr_name_context.h"
+#else
 class TPanel {
 public:
     char _gap_04[0x1C];
@@ -52,6 +55,7 @@ public:
 
     virtual ~TRIBE_Screen_Name();
 };
+#endif
 
 TRIBE_Screen_Name::~TRIBE_Screen_Name()
 {

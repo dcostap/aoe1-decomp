@@ -1,15 +1,5 @@
-class ResourceItem {
-public:
-    void* vtable_ptr;
-    ResourceItem* next;
-    ResourceItem* prev;
-    int valueValue[8];
-    int sortedValue[8];
-    int sortedIndexValue[8];
-    int numberValue;
-
-    ResourceItem(ResourceItem* src);
-};
+// ResourceItem::ResourceItem(ResourceItem*)
+// VA: 00412050 | airesitm.cpp:92-98
 
 ResourceItem::ResourceItem(ResourceItem* src) {
     int i;
@@ -20,7 +10,6 @@ ResourceItem::ResourceItem(ResourceItem* src) {
     this->next = 0;
     this->prev = 0;
     this->numberValue = src->numberValue;
-    this->vtable_ptr = (void*)0x56E9D0;
     if (this->numberValue > 0) {
         idx = src->sortedIndexValue;
         dst = this->valueValue;

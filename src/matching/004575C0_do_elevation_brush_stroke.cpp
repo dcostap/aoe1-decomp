@@ -12,6 +12,7 @@
 
 #include <math.h>
 
+#ifndef MAP_CONTEXT_H
 class RGE_Map {
 public:
     virtual ~RGE_Map();
@@ -40,6 +41,8 @@ public:
     void clean_elevation(long x1, long y1, long x2, long y2,
                          unsigned char elevation);
 };
+
+#endif
 
 unsigned char RGE_Map::do_elevation_brush_stroke(long x0, long y0, long x1,
                                                   long y1, long radius,

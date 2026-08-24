@@ -3,6 +3,7 @@
 // tried decompiler-style iVar1 height temp and &info->bmiHeader; same first-byte mismatch, compiler still loads bits into eax first
 // leaving in scratch: behavior is right, remaining gap is register/load ordering at function entry
 
+#ifndef PICTURE_CONTEXT_H
 struct BITMAPINFOHEADER {
     unsigned int biSize;
     int biWidth;
@@ -28,6 +29,7 @@ public:
 
     void Init(BITMAPINFO256* info, unsigned char* bits, TRANSINFO* trans);
 };
+#endif
 
 void TPicture::Init(BITMAPINFO256* info, unsigned char* bits, TRANSINFO* trans) {
     int iVar1;

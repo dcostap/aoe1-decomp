@@ -30,6 +30,7 @@
 // occupies the upper three bits of tile byte five.  A tile moves one level
 // toward the requested elevation when a surrounding tile blocks its slope.
 
+#ifndef MAP_CONTEXT_H
 struct RGE_Tile {
     char gap_00[5];
     unsigned char terrain_elev;
@@ -47,6 +48,8 @@ public:
     unsigned char postclean_elevation(long x0, long y0, long x1, long y1,
                                       unsigned char elevation);
 };
+
+#endif
 
 unsigned char RGE_Map::postclean_elevation(long x0, long y0, long x1, long y1,
                                             unsigned char elevation)

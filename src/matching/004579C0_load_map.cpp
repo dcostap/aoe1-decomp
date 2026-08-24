@@ -38,6 +38,7 @@ extern "C" void __cdecl rge_read(int, void*, int);
 extern float save_game_version;
 extern float old_map_cutoff;
 
+#ifndef MAP_CONTEXT_H
 class RGE_Map;
 
 class RGE_Zone_Map_List {
@@ -97,6 +98,8 @@ public:
     void new_map(long, long);
     void load_map(int);
 };
+
+#endif
 
 void RGE_Map::load_map(int file)
 {

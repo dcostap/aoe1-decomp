@@ -7,6 +7,7 @@
 
 #include "../../include/game_globals.h"
 
+#ifndef MAP_CONTEXT_H
 class RGE_Map {
 public:
     char gap_00[8];
@@ -18,6 +19,8 @@ public:
     void set_terrain(void* world, int x, int y, unsigned char terrain, int a, int b);
     unsigned char do_terrain_brush(long x, long y, long radius, unsigned char terrain);
 };
+
+#endif
 
 unsigned char RGE_Map::do_terrain_brush(long x, long y, long radius, unsigned char terrain)
 {

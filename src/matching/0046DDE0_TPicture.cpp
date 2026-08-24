@@ -1,3 +1,4 @@
+#ifndef PICTURE_CONTEXT_H
 class TPicture {
 public:
     void* Dib;
@@ -12,6 +13,7 @@ public:
     TPicture(char* param_1, long param_2, int param_3, void* param_4, int param_5);
     void Load(char* param_1, long param_2, int param_3, void* param_4, int param_5);
 };
+#endif
 
 TPicture::TPicture(char* param_1, long param_2, int param_3, void* param_4, int param_5) {
     this->Dib = 0;

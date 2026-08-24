@@ -9,6 +9,7 @@
 //   scans.  This natural value-field ownership reproduces the original
 //   movzx/store-before-count reload and ECX/EAX pointer coloring exactly.
 
+#ifndef RGE_MCO_OBJ_SHARED_CONTEXT
 #include <stdlib.h>
 
 extern "C" {
@@ -129,6 +130,7 @@ public:
 
     int setup(int fd, RGE_Sprite** sprites, RGE_Sound** sounds);
 };
+#endif
 
 int RGE_Master_Combat_Object::setup(int fd, RGE_Sprite** sprites,
                                     RGE_Sound** sounds) {
