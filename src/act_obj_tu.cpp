@@ -1,7 +1,11 @@
-// Authentic act_obj.cpp owner wrapper.
-// Source module: C:\\msdev\\work\\age1_x1\\act_obj.cpp.
-// Owner order follows the PDB source-line bands in act_obj.cpp.
-// The EH-framed constructors and destructor require the module's /GX flags.
+// Authentic PDB-ordered owner wrapper for act_obj.cpp.
+//
+// Source module: C:\\msdev\\work\\age1_x1\\act_obj.cpp
+// The owner sequence follows the source-line bands and address order in the
+// original PDB.  This wrapper uses the reviewed act_obj context and keeps the
+// unresolved get_command_master source as observed codegen evidence.
+// The compiler emits the deleting destructor at 00405F70 from the virtual
+// RGE_Action_Object destructor.
 
 #include "../include/act_obj_context.h"
 

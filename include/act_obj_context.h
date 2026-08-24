@@ -29,8 +29,8 @@ class TDrawArea;
 class UnitAIModule;
 class LOSTBL;
 
-void rge_read(int handle, void* buffer, int count);
-void rge_write(int handle, void* buffer, int count);
+extern "C" void __cdecl rge_read(int handle, void* buffer, int count);
+extern "C" void __cdecl rge_write(int handle, void* buffer, int count);
 extern float save_game_version;
 extern FILE* actionFile;
 extern void operator_delete(void* ptr);
@@ -81,9 +81,15 @@ public:
     char gap_D5[3];
 };
 
-class RGE_Master_Command {
+// The command surface inherits the target-task slot before getTask.
+class RGE_Task_List {
 public:
-    virtual void vf00(void);
+    virtual RGE_Task* get_target_task(RGE_Action_Object*, RGE_Static_Object*,
+                                      float, float, float);
+};
+
+class RGE_Master_Command : public RGE_Task_List {
+public:
     virtual RGE_Task* getTask(RGE_Action_Object* action, RGE_Static_Object* target,
                               float x, float y, float z);
 };
@@ -323,11 +329,9 @@ public:
     virtual ~RGE_Moving_Object();
     virtual int setup(RGE_Master_Moving_Object*, RGE_Player*, float, float, float);
     RGE_Moving_Object(void* master, void* player, float x, float y, float z, int flag);
-    RGE_Moving_Object(int id, void* world, int flag);
+    RGE_Moving_Object(int id, RGE_Game_World* world, int flag);
     virtual int setup(RGE_Master_Action_Object*, RGE_Player*, float, float, float);
     int setup(int, RGE_Game_World*);
-    int setup(void*, void*, float, float, float);
-    int setup(int, void*);
     void recycle_in_to_game(RGE_Master_Static_Object*, RGE_Player*, float, float, float);
     void save(int);
     void transform(RGE_Master_Static_Object*);
@@ -338,14 +342,15 @@ class RGE_Action_Object : public RGE_Moving_Object {
 public:
     virtual ~RGE_Action_Object();
     RGE_Action_Object(void* master, void* player, float x, float y, float z, int flag);
-    RGE_Action_Object(int id, void* world, int flag);
+    RGE_Action_Object(int id, RGE_Game_World* world, int flag);
     virtual void recycle_in_to_game(RGE_Master_Static_Object*, RGE_Player*, float, float, float);
     virtual void recycle_out_of_game();
+protected:
     virtual int setup(RGE_Master_Action_Object*, RGE_Player*, float, float, float);
     virtual int setup(int, RGE_Game_World*);
-    int setup(void*, void*, float, float, float);
-    int setup(int, void*);
     virtual RGE_Action_List* create_action_list();
+
+public:
     virtual void rehook();
     virtual void save(int);
     virtual void transform(RGE_Master_Static_Object*);
@@ -450,11 +455,6 @@ public:
     void copy_obj(RGE_Master_Static_Object*);
     void load(int);
     RGE_Action* create_task_action_at(RGE_Task*, RGE_Static_Object*, float, float, float);
-};
-
-class RGE_Task_List {
-public:
-    virtual RGE_Task* get_target_task(RGE_Action_Object*, RGE_Static_Object*, float, float, float);
 };
 
 class RGE_Task {
