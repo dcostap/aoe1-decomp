@@ -5,6 +5,8 @@
 // The shared context is a period panel/game declaration surface for this module.
 // It joins the existing owner bodies without adding a synthetic function.
 // Module flags: config/flags/004A63D0_TRIBE_Screen_Name.rsp (/nologo /c /O2 /Oy /GX).
+// BINARY NOTE: VC5 emits ??_GTRIBE_Dialog_Name@@UAEPAXI@Z here, but the PDB
+// requires ??_ETRIBE_Dialog_Name@@UAEPAXI@Z at 004A6F40. This blocks registration.
 #define SCR_NAME_TU_CONTEXT 1
 #include "../include/scr_name_context.h"
 
