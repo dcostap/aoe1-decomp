@@ -5,7 +5,7 @@
 //   00432620 matching       RGE_Communications_Speed::RGE_Communications_Speed
 //   00432780 matching       RGE_Communications_Speed::~RGE_Communications_Speed
 //   004327C0 matching       SetPlayerTurnSpeed
-//   00432800 observed       SetActualLatency
+//   00432800 matching       SetActualLatency
 //   00432840 observed       SetFutureSpeedChange
 //   00432870 matching       EnableSpeedControl
 //   00432880 matching       GetBufferGranularity
@@ -14,7 +14,7 @@
 //   004328C0 matching       BufferFramesRemaining
 //   004328D0 observed       WaitingOnAcknowledgement
 //   004328E0 matching       AdjustLocalSpeed
-//   00432940 observed       ReloadBufferFrames
+//   00432940 matching       ReloadBufferFrames
 //   00432970 matching       BufferTimeToUse
 //   00432A70 matching       Skip
 //   00432A90 matching       GetHighLatencyCenti
@@ -24,7 +24,7 @@
 //   00432C10 matching       GetPlayerSpeedStatusStr
 //   00432C70 matching       GetMachineSpeedInfo
 //   00432D20 matching       GetRecommendedBufferFrames
-//   00432D90 observed       GetAvgFrameRate
+//   00432D90 matching       GetAvgFrameRate
 //   00432DA0 matching       GetRecommendedBufferGranularity
 //   00432DE0 accepted_drift AnalyzeGameSpeed
 //   00432FB0 matching       SetV1
@@ -51,7 +51,7 @@
 #include "matching/00432620_RGE_Communications_Speed.cpp"
 #include "matching/00432780_RGE_Communications_Speed.cpp"
 #include "matching/004327C0_SetPlayerTurnSpeed.cpp"
-#include "scratch/00432800_SetActualLatency.cpp"
+#include "matching/00432800_SetActualLatency.cpp"
 #include "scratch/00432840_SetFutureSpeedChange.cpp"
 #include "matching/00432870_EnableSpeedControl.cpp"
 #include "matching/00432880_GetBufferGranularity.cpp"
@@ -60,7 +60,7 @@
 #include "matching/004328C0_BufferFramesRemaining.cpp"
 #include "scratch/004328D0_WaitingOnAcknowledgement.cpp"
 #include "matching/004328E0_AdjustLocalSpeed.cpp"
-#include "scratch/00432940_ReloadBufferFrames.cpp"
+#include "matching/00432940_ReloadBufferFrames.cpp"
 #include "matching/00432970_BufferTimeToUse.cpp"
 #include "matching/00432A70_Skip.cpp"
 #include "matching/00432A90_GetHighLatencyCenti.cpp"
@@ -70,7 +70,7 @@
 #include "matching/00432C10_GetPlayerSpeedStatusStr.cpp"
 #include "matching/00432C70_GetMachineSpeedInfo.cpp"
 #include "matching/00432D20_GetRecommendedBufferFrames.cpp"
-#include "scratch/00432D90_GetAvgFrameRate.cpp"
+#include "matching/00432D90_GetAvgFrameRate.cpp"
 #include "matching/00432DA0_GetRecommendedBufferGranularity.cpp"
 #include "accepted_drift/00432DE0_AnalyzeGameSpeed.cpp"
 #include "matching/00432FB0_SetV1.cpp"
