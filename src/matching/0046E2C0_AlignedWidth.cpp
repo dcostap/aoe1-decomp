@@ -3,11 +3,11 @@ class TPicture {
 public:
     char gap_0[0x14];
     int width;
-    int AlignedWidth();
+    long AlignedWidth();
 };
 #endif
 
-int TPicture::AlignedWidth() {
+long TPicture::AlignedWidth() {
 #ifdef PICTURE_CONTEXT_H
     return (this->Width + 3) & ~3;
 #else

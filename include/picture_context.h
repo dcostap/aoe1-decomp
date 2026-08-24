@@ -4,7 +4,7 @@
 // Authentic Picture.cpp type surface shared by the owner bodies.  The
 // individual recovery files keep their stand-alone declarations when this
 // header is not present.
-class TRANSINFO;
+struct TRANSINFO;
 class LINEINFO;
 class TPicture;
 struct BITMAPINFO256;
@@ -78,7 +78,7 @@ public:
     void Load(char* file_name, long resource_id, int palette_id,
         void* palette, int palette_flags);
     void Init(BITMAPINFO256* info, unsigned char* bits, TRANSINFO* trans);
-    int AlignedWidth();
+    long AlignedWidth();
     void Draw(TDrawArea* draw_area, long x, long y, int dst_x, int dst_y);
     long Tile(TDrawArea* draw_area, long param_2, long param_3, long param_4,
         long param_5, long param_6, long param_7, long param_8, long param_9,
