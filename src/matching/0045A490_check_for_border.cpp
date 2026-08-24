@@ -15,7 +15,7 @@ public:
 
 class RGE_Map {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Map();
     void* map;
     long map_width;
     long map_height;

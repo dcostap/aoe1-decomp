@@ -25,7 +25,7 @@ extern RGE_Base_Game* rge_base_game;
 
 class RGE_Map {
 public:
-    void* vptr;
+    virtual ~RGE_Map();
     void* map;
     char gap_08[0x8D8C - 0x08];
     void* map_row_offset;
