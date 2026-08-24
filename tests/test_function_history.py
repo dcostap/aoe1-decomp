@@ -214,9 +214,9 @@ class FunctionHistoryTests(unittest.TestCase):
             "source": group["source"],
             "response_file": group["flags"],
             "compiler": {"path": "cl.exe", "size": 1, "mtime_ns": 2},
+            "translation_unit": group,
             "inputs": [
                 {"path": "config/flags/demo.rsp", "sha256": "flags"},
-                {"path": "config/translation_units.json", "sha256": "mapping"},
                 {"path": "include/declaration_context.h", "sha256": "declarations"},
                 {"path": "src/demo_unit_tu.cpp", "sha256": "wrapper"},
                 {"path": "src/matching/00001000_demo.cpp", "sha256": "owner"},

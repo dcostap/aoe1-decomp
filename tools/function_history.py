@@ -298,9 +298,14 @@ def _build_context(record: dict[str, str], metrics: dict | None = None) -> dict 
     required = {
         _normalized_context_path(str(group["source"])),
         _normalized_context_path(str(group.get("flags") or manifest.get("response_file") or "")),
-        "config/translation_units.json",
         *(_normalized_context_path(str(owner)) for owner in (group.get("owners") or {}).values()),
     }
+    manifest_group = manifest.get("translation_unit")
+    if manifest_group is None:
+        # Legacy manifests hashed the complete mapping file.
+        required.add("config/translation_units.json")
+    elif manifest_group != group:
+        raise ValueError("Complete grouped build manifest contains a different translation-unit entry")
     missing = sorted(path for path in required if path and path not in input_paths)
     if missing:
         raise ValueError(
