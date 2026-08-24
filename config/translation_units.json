@@ -3169,15 +3169,6 @@
       }
     },
     {
-      "name": "pnl_lst_prefix",
-      "source": "src/pnl_lst_tu.cpp",
-      "flags": "config/flags/default.rsp",
-      "owners": {
-        "004782A0": "src/matching/004782A0_TListPanel.cpp",
-        "00478330": "src/matching/00478330_TListPanel.cpp"
-      }
-    },
-    {
       "name": "rmm_tdbc",
       "source": "src/rmm_tdbc_tu.cpp",
       "flags": "config/flags/00487710_init.rsp",
