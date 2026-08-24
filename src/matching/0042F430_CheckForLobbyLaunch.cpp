@@ -12,6 +12,7 @@
 // - Final ABI audit used IDirectPlay3*& and the SDK DPNAME union surface.
 //   The natural source matched all bytes with default flags.
 
+#ifndef COM_LOBY_CONTEXT
 struct GUID {
     unsigned long Data1;
     unsigned short Data2;
@@ -166,6 +167,7 @@ public:
     void ClearLobbyInfo(void);
     unsigned char CheckForLobbyLaunch(IDirectPlay3*& param_1);
 };
+#endif
 
 unsigned char RGE_Lobby::CheckForLobbyLaunch(IDirectPlay3*& param_1) {
     unsigned long dwSize = 0x29;

@@ -1,7 +1,10 @@
+#ifndef PNL_DROP_CONTEXT
+#ifndef PNL_DROP_CONTEXT
 class MemberType {
 public:
     int currentLine();
 };
+#endif
 
 class TDropDownPanel {
 public:
@@ -10,6 +13,7 @@ public:
 
     int currentLine();
 };
+#endif
 
 int TDropDownPanel::currentLine() {
     if (this->member_FC) {

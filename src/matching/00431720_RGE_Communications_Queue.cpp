@@ -1,5 +1,5 @@
+#ifndef COM_Q_CONTEXT
 class MsgQueue;
-
 class RGE_Communications_Queue {
 public:
     unsigned int QueueDepth;
@@ -15,6 +15,7 @@ public:
     RGE_Communications_Queue(int param_1);
     int AllocateQueue(int param_1);
 };
+#endif
 
 RGE_Communications_Queue::RGE_Communications_Queue(int param_1) {
     if (param_1 < 0x14) {

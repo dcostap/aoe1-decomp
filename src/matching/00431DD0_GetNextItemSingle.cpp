@@ -9,6 +9,7 @@
 //   scan and exact clear/reload sequence.
 // Result: MATCH locally with `python tools/check_function.py --va 00431DD0`.
 
+#ifndef COM_Q_CONTEXT
 class MsgQueue {
 public:
     unsigned long Code;
@@ -35,6 +36,7 @@ public:
 
     void* GetNextItemSingle();
 };
+#endif
 
 extern void* DAT_0062cf34;
 

@@ -1,18 +1,20 @@
 void __cdecl operator_delete(void*);
 
+#ifndef INFMAP_SHARED_CONTEXT
 struct InfluenceMap {
     int vfptr;      // 0x00
     char gap_4[0x10];
-    int field_14;   // 0x14
-    int field_18;   // 0x18
+    unsigned char* valueValue; // 0x14
+    unsigned char** rowValue;  // 0x18
+    ~InfluenceMap();
 };
+#endif
 
-void __fastcall InfluenceMap_dtor(InfluenceMap* self, int) {
-    self->vfptr = 0x00570444;
-    if (self->field_14) {
-        operator_delete((void*)self->field_14);
+InfluenceMap::~InfluenceMap() {
+    if (this->valueValue) {
+        operator_delete((void*)this->valueValue);
     }
-    if (self->field_18) {
-        operator_delete((void*)self->field_18);
+    if (this->rowValue) {
+        operator_delete((void*)this->rowValue);
     }
 }

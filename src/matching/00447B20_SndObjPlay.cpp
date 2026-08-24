@@ -1,6 +1,9 @@
-extern "C" int __cdecl _SndObjGetFreeBuffer(void* sndobj);
+int __cdecl _SndObjGetFreeBuffer(void* sndobj);
 
-struct IDirectSoundBufferVtbl {
+typedef struct SndObjPlayBuffer SndObjPlayBuffer;
+typedef struct SndObjPlayBufferVtbl SndObjPlayBufferVtbl;
+
+struct SndObjPlayBufferVtbl {
     void* fn00;
     void* fn04;
     void* fn08;
@@ -13,24 +16,25 @@ struct IDirectSoundBufferVtbl {
     void* fn24;
     void* fn28;
     void* fn2C;
-    int (__stdcall *Play)(void* self, unsigned long, unsigned long, unsigned long);
+    int (__stdcall *Play)(SndObjPlayBuffer* self, unsigned long, unsigned long, unsigned long);
 };
 
-struct IDirectSoundBuffer {
-    IDirectSoundBufferVtbl* lpVtbl;
+struct SndObjPlayBuffer {
+    SndObjPlayBufferVtbl* lpVtbl;
 };
 
-struct SNDOBJ {
+typedef struct SNDOBJ SNDOBJ;
+struct SndObjPlayObject {
     unsigned char* pbWaveData;
     unsigned long cbWaveSize;
     int iAlloc;
     int iCurrent;
-    IDirectSoundBuffer* Buffers[1];
+    SndObjPlayBuffer* Buffers[1];
 };
 
-extern "C" unsigned int __cdecl _SndObjPlay(SNDOBJ* sndobj, unsigned long flags) {
+unsigned int __cdecl _SndObjPlay(struct SndObjPlayObject* sndobj, unsigned long flags) {
     unsigned int result;
-    IDirectSoundBuffer* buffer;
+    SndObjPlayBuffer* buffer;
     int hr;
 
     result = 0;
@@ -38,7 +42,7 @@ extern "C" unsigned int __cdecl _SndObjPlay(SNDOBJ* sndobj, unsigned long flags)
         return result;
     }
     if (((flags & 1) == 0) || (sndobj->iAlloc == 1)) {
-        buffer = (IDirectSoundBuffer*)_SndObjGetFreeBuffer(sndobj);
+        buffer = (SndObjPlayBuffer*)_SndObjGetFreeBuffer(sndobj);
         if (buffer != 0) {
             hr = buffer->lpVtbl->Play(buffer, 0, 0, flags);
             result = (unsigned int)(hr >= 0);

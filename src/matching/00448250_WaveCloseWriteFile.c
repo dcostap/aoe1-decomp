@@ -36,17 +36,15 @@
 typedef unsigned int UINT;
 typedef unsigned long DWORD;
 typedef long LONG;
-typedef void* HMMIO;
-
-typedef struct MMCKINFO_LOCAL {
+typedef struct DSUTIL_WAVECLOSEWRITE_MMCKINFO {
     DWORD ckid;
     DWORD cksize;
     DWORD fccType;
     DWORD dwDataOffset;
     DWORD dwFlags;
-} MMCKINFO_LOCAL;
+} DSUTIL_WAVECLOSEWRITE_MMCKINFO;
 
-typedef struct MMIOINFO_LOCAL {
+typedef struct DSUTIL_WAVECLOSEWRITE_MMIOINFO {
     DWORD dwFlags;
     DWORD fccIOProc;
     LONG (__stdcall *pIOProc)(char*, UINT, LONG, LONG);
@@ -63,17 +61,14 @@ typedef struct MMIOINFO_LOCAL {
     DWORD dwReserved1;
     DWORD dwReserved2;
     HMMIO hmmio;
-} MMIOINFO_LOCAL;
+} DSUTIL_WAVECLOSEWRITE_MMIOINFO;
 
-typedef int (__stdcall *MMIOSETINFO)(HMMIO, MMIOINFO_LOCAL*, UINT);
+typedef int (__stdcall *MMIOSETINFO)(HMMIO, DSUTIL_WAVECLOSEWRITE_MMIOINFO*, UINT);
 typedef LONG (__stdcall *MMIOSEEK)(HMMIO, LONG, int);
-typedef int (__stdcall *MMIODESCEND)(HMMIO, MMCKINFO_LOCAL*, const MMCKINFO_LOCAL*, UINT);
-typedef int (__stdcall *MMIOASCEND)(HMMIO, MMCKINFO_LOCAL*, UINT);
+typedef int (__stdcall *MMIODESCEND)(HMMIO, DSUTIL_WAVECLOSEWRITE_MMCKINFO*, const DSUTIL_WAVECLOSEWRITE_MMCKINFO*, UINT);
+typedef int (__stdcall *MMIOASCEND)(HMMIO, DSUTIL_WAVECLOSEWRITE_MMCKINFO*, UINT);
 typedef LONG (__stdcall *MMIOWRITE)(HMMIO, const char*, LONG);
 typedef int (__stdcall *MMIOCLOSE)(HMMIO, UINT);
-
-/* The final adjacent pair retains the original SDK import-call surface. */
-__declspec(dllimport) int __stdcall mmioAscend(HMMIO, MMCKINFO_LOCAL*, UINT);
 
 #define mmioSetInfo_abs (*(MMIOSETINFO*)0x88A924)
 #define mmioSeek_abs (*(MMIOSEEK*)0x88A928)
@@ -82,7 +77,7 @@ __declspec(dllimport) int __stdcall mmioAscend(HMMIO, MMCKINFO_LOCAL*, UINT);
 #define mmioWrite_abs (*(MMIOWRITE*)0x88A948)
 #define mmioClose_abs (*(MMIOCLOSE*)0x88A94C)
 
-int __cdecl _WaveCloseWriteFile(HMMIO* phmmioOut, MMCKINFO_LOCAL* pckOut, MMCKINFO_LOCAL* pckOutRIFF, MMIOINFO_LOCAL* pmmioinfoOut, DWORD cSamples)
+int __cdecl _WaveCloseWriteFile(HMMIO* phmmioOut, DSUTIL_WAVECLOSEWRITE_MMCKINFO* pckOut, DSUTIL_WAVECLOSEWRITE_MMCKINFO* pckOutRIFF, DSUTIL_WAVECLOSEWRITE_MMIOINFO* pmmioinfoOut, DWORD cSamples)
 {
     int result;
 

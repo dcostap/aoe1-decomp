@@ -1,11 +1,3 @@
-class TScrollBarPanel {
-public:
-    virtual void draw();
-};
-
-class TVerticalSliderPanel : public TScrollBarPanel {
-public:
-    void draw();
-};
+#include "../../include/pnl_sld_context.h"
 
 void TVerticalSliderPanel::draw() { TScrollBarPanel::draw(); }

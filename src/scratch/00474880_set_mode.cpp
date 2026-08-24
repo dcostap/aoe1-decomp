@@ -93,6 +93,7 @@
 //   numberLines result locals preserve the observed numberLines-before-
 //   numberDrawLines order without reusing a panel result across checks.
 
+#ifndef PNL_DROP_CONTEXT
 #include "../../include/panel_context.h"
 
 class TTextPanel : public TPanel {
@@ -151,6 +152,7 @@ public:
 
     void set_mode(DropdownMode mode);
 };
+#endif
 
 void TDropDownPanel::set_mode(DropdownMode mode) {
     if (mode == this->mode) {
@@ -174,8 +176,8 @@ void TDropDownPanel::set_mode(DropdownMode mode) {
         parent_h = this->render_area->Height;
     }
 
-    old_mode = this->mode;
-    this->mode = ModeNone;
+    old_mode = (DropdownMode)this->mode;
+    this->mode = (DropdownMode)ModeNone;
 
     if (mode == ModeValue) {
         if (old_mode == ModeList && this->parent_panel != 0 && this->parent_panel->parent_panel != 0) {

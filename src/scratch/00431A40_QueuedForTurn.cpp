@@ -1,3 +1,4 @@
+#ifndef COM_Q_CONTEXT
 class RGE_Communications_Queue_node {
 public:
     unsigned long ExecTurn;
@@ -12,17 +13,16 @@ public:
 
     unsigned int QueuedForTurn(unsigned long turn);
 };
+#endif
 
 unsigned int RGE_Communications_Queue::QueuedForTurn(unsigned long turn) {
     unsigned int count = 0;
-    RGE_Communications_Queue_node* node = &this->Queue->ExecTurn;
-    int depth = this->HighQueueDepth + 1;
+    unsigned int i = 0;
     do {
-        if (node->ExecTurn == turn) {
+        if (this->Queue[i].ExecTurn == turn) {
             ++count;
         }
-        node = (RGE_Communications_Queue_node*)((char*)node + 0x1C);
-        --depth;
-    } while (depth != 0);
+        ++i;
+    } while (i <= this->HighQueueDepth);
     return count;
 }

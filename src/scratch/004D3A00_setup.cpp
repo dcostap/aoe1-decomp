@@ -1,7 +1,5 @@
-class TRIBE_Action {
-public:
-    void target_func(int p0);
-    void setup(int p);
-};
+#include "../../include/taction_context.h"
 
-void TRIBE_Action::setup(int p) { this->target_func(p); }
+int TRIBE_Action::setup(RGE_Action_Object* object) {
+    return RGE_Action::setup(object);
+}

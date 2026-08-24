@@ -5,6 +5,7 @@
 // VC5 loads vftable fresh just before set_text call (different pattern, ~6 bytes shorter)
 // set_text belongs at vtable slot 0xE8; adding the real slot position made VC5 save that slot table in edi across get_text.
 
+#ifndef PNL_DROP_CONTEXT
 class TTextPanel {
 public:
     virtual void vf00(); virtual void vf04(); virtual void vf08(); virtual void vf0C();
@@ -42,6 +43,7 @@ public:
 
     void setCurrentLineId(int id);
 };
+#endif
 
 void TDropDownPanel::setCurrentLineId(int id) {
     if (list_panel) {

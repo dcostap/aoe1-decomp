@@ -1,16 +1,20 @@
-extern void* DAT_0062c4fc;
-void __cdecl debug_log_ill(void* log, const char* fmt, ...);
-extern char DAT_005832e8[];
+#ifndef COM_LOBY_CONTEXT
+class TDebuggingLog {
+public:
+    void Log(char* format, ...);
+};
+extern TDebuggingLog* L;
 
-class RGE_Lobby_ill {
+class RGE_Lobby {
 public:
     int IsLobbyLaunched(void);
     char gap_00[0x14];
     unsigned char lobby_game;
 };
+#endif
 
-int RGE_Lobby_ill::IsLobbyLaunched(void) {
-    debug_log_ill(DAT_0062c4fc, DAT_005832e8, (unsigned int)this->lobby_game);
-    int launched = (unsigned int)this->lobby_game;
-    return launched;
+int RGE_Lobby::IsLobbyLaunched(void) {
+    L->Log((char*)"LOBBY GAME LAUNCH STATUS = %d",
+           (unsigned int)this->lobby_game);
+    return (unsigned int)this->lobby_game;
 }

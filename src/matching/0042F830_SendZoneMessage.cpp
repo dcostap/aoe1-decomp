@@ -12,6 +12,7 @@
 
 #include <string.h>
 
+#ifndef COM_LOBY_CONTEXT
 class TDebuggingLog {
 public:
     void Log(char* format, ...);
@@ -78,6 +79,7 @@ public:
 
     long SendZoneMessage(char* data, unsigned long dataSize, _GUID guid);
 };
+#endif
 
 long RGE_Lobby::SendZoneMessage(char* data, unsigned long dataSize, _GUID guid) {
     if (lobby_game == 0) return 0;

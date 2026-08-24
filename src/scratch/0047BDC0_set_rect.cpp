@@ -1,10 +1,5 @@
-class TVerticalSliderPanel {
-public:
-    void target_method(int a, int b, int c, int d);
+#include "../../include/pnl_sld_context.h"
 
-    void set_rect(int a, int b, int c, int d);
-};
-
-void TVerticalSliderPanel::set_rect(int a, int b, int c, int d) {
-    this->target_method(a, b, c, d);
+void TVerticalSliderPanel::set_rect(long a, long b, long c, long d) {
+    TScrollBarPanel::set_rect(a, b, c, d);
 }

@@ -26,6 +26,7 @@
 
 #include "../../include/game_globals.h"
 
+#ifndef DLG_SEDM_SHARED_CONTEXT
 class TPanel {
 public:
     char _gap_04[0x1C];
@@ -75,22 +76,23 @@ public:
     virtual ~TDialogPanel();
     int setup(void* renderArea, void* param1, int width, int height,
               char* file, int info_id, int modal);
-    int create_button(TPanel* parent, TPanel** button_ptr, int string_id,
+    int create_button(TPanel* parent, TButtonPanel** button_ptr, int string_id,
                       int x, int y, int w, int h, int a, int b, int c, int d);
 };
 
 class TRIBE_Dialog_Sed_Menu : public TDialogPanel {
 public:
-    TPanel* parent_field;   // +0x490
+    TRIBE_Screen_Sed* scenario_editor; // +0x490
     TPanel* title;          // +0x494
-    TPanel* buttons[7];     // +0x498 to +0x4B0
+    TButtonPanel* buttons[7]; // +0x498 to +0x4B0
 
     TRIBE_Dialog_Sed_Menu(TRIBE_Screen_Sed* param_1);
     virtual ~TRIBE_Dialog_Sed_Menu();
 };
+#endif
 
 TRIBE_Dialog_Sed_Menu::TRIBE_Dialog_Sed_Menu(TRIBE_Screen_Sed* param_1)
-    : TDialogPanel("Scenario Menu Dialog"), parent_field(param_1), title(0)
+    : TDialogPanel("Scenario Menu Dialog"), scenario_editor(param_1), title(0)
 {
     int i;
 

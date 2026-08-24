@@ -30,60 +30,7 @@
 // store-order note is retained as historical evidence and superseded by the exact
 // candidate above.
 
-#include <string.h>
-
-class RGE_Scenario_Offset {
-public:
-    long size;
-    long offset;
-    char name[255];
-    char file_name[255];
-    unsigned char _pad_end[2];
-};
-
-struct RGE_Campaign_Header {
-    long version;
-    char name[255];
-    unsigned char _pad_103;
-    long scenario_num;
-};
-
-class RGE_Campaign {
-public:
-    RGE_Campaign_Header campaign_header;
-    RGE_Scenario_Offset* scenario_offsets;
-    char filename[255];
-    unsigned char _pad_end;
-
-    RGE_Campaign(char* param1, char* param2, long count, char** names, char** filenames);
-    void create_file();
-};
-
-class RGE_Prog_Info {
-public:
-    char _gap_00[0xC17];
-    char scenario_dir[256];
-    char campaign_dir[256];
-};
-
-class RGE_Base_Game {
-public:
-    virtual ~RGE_Base_Game();
-    char _gap_04[0x08];
-    RGE_Prog_Info* prog_info;
-};
-
-extern RGE_Base_Game* rge_base_game;
-
-extern "C" int __cdecl sprintf(char*, const char*, ...);
-extern "C" int __cdecl __open(const char*, int, ...);
-extern "C" int __cdecl write(int, void*, int);
-extern "C" int __cdecl lseek(int, int, int);
-extern "C" int __cdecl __tell(int);
-extern "C" int __cdecl read(int, void*, int);
-extern "C" void* __cdecl calloc(int, int);
-extern "C" void __cdecl free(void*);
-extern "C" int __cdecl close(int);
+#include "../../include/campaign_context.h"
 
 void RGE_Campaign::create_file()
 {

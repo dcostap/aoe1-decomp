@@ -1,6 +1,7 @@
-struct IDirectSoundBuffer;
+typedef struct DsStreamVolumeBuffer DsStreamVolumeBuffer;
+typedef struct DsStreamVolumeBufferVtbl DsStreamVolumeBufferVtbl;
 
-struct IDirectSoundBufferVtbl {
+struct DsStreamVolumeBufferVtbl {
     void* vf00;
     void* vf04;
     void* vf08;
@@ -16,20 +17,20 @@ struct IDirectSoundBufferVtbl {
     void* vf30;
     void* vf34;
     void* vf38;
-    int (__stdcall *SetVolume)(IDirectSoundBuffer* self, int volume);
+    int (__stdcall *SetVolume)(DsStreamVolumeBuffer* self, int volume);
 };
 
-struct IDirectSoundBuffer {
-    IDirectSoundBufferVtbl* lpVtbl;
+struct DsStreamVolumeBuffer {
+    DsStreamVolumeBufferVtbl* lpVtbl;
 };
 
-extern IDirectSoundBuffer* _lpDSBStreamBuffer;
+extern void* _lpDSBStreamBuffer;
 
 int __cdecl ds_stream_volume(int volume) {
-    IDirectSoundBuffer* stream;
+    DsStreamVolumeBuffer* stream;
     int result;
 
-    stream = _lpDSBStreamBuffer;
+    stream = (DsStreamVolumeBuffer*)_lpDSBStreamBuffer;
     if (stream == 0) {
         return 0;
     }

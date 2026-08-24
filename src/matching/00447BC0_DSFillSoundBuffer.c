@@ -10,11 +10,11 @@
 
 #include <string.h>
 
-struct IDirectSoundBuffer {
+struct DSFillSoundBuffer {
     int* lpVtbl;
 };
 
-int __cdecl _DSFillSoundBuffer(struct IDirectSoundBuffer* dsb, void* data, int size)
+int __cdecl _DSFillSoundBuffer(struct DSFillSoundBuffer* dsb, void* data, int size)
 {
     int hr;
     void* ptr1;
@@ -25,7 +25,7 @@ int __cdecl _DSFillSoundBuffer(struct IDirectSoundBuffer* dsb, void* data, int s
     if (!dsb || !data || !size)
         return 0;
 
-    hr = ((int (__stdcall *)(struct IDirectSoundBuffer*,int,int,void**,int*,void**,int*,int))
+    hr = ((int (__stdcall *)(struct DSFillSoundBuffer*,int,int,void**,int*,void**,int*,int))
           dsb->lpVtbl[11])(dsb, 0, size, &ptr1, &size1, &ptr2, &size2, 0);
     if (hr < 0)
         return 0;
@@ -34,7 +34,7 @@ int __cdecl _DSFillSoundBuffer(struct IDirectSoundBuffer* dsb, void* data, int s
     if (size2)
         memcpy((char*)ptr2, (char*)data + size1, size2);
 
-    ((int (__stdcall *)(struct IDirectSoundBuffer*,void*,int,void*,int))
+    ((int (__stdcall *)(struct DSFillSoundBuffer*,void*,int,void*,int))
      dsb->lpVtbl[19])(dsb, ptr1, size1, ptr2, size2);
     return 1;
 }

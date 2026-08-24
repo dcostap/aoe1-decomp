@@ -1,3 +1,5 @@
+#ifndef PNL_DROP_CONTEXT
+#ifndef PNL_DROP_CONTEXT
 class TPanel {
 public:
     virtual int vf00(void);
@@ -53,6 +55,7 @@ public:
 
     virtual void set_tab_order(TPanel* a, TPanel* b);
 };
+#endif
 
 class TDropDownPanel : public TPanel {
 public:
@@ -61,6 +64,7 @@ public:
 
     virtual void set_tab_order(TPanel* a, TPanel* b);
 };
+#endif
 
 void TDropDownPanel::set_tab_order(TPanel* a, TPanel* b) {
     TPanel::set_tab_order(a, b);

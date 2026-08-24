@@ -1,9 +1,3 @@
-class TechnologyItem {
-public:
-    virtual ~TechnologyItem();
-    char gap_0[0x8];
-    int field_C;
-    int id();
-};
+#include "../../include/aitchitm_context.h"
 
-int TechnologyItem::id() { return this->field_C; }
+int TechnologyItem::id() const { return this->idValue; }

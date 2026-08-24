@@ -2,6 +2,9 @@
 // result: exact match landed after modeling the base field at +4 and the missile tail fields at +0x148..+0x150
 // moved to src\matching\004515B0_setup.cpp after local validation
 
+#include "../../include/m_mi_obj_context.h"
+
+#ifndef M_MI_OBJ_SHARED_CONTEXT
 class RGE_Master_Missile_Object;
 class RGE_Master_Combat_Object {
 public:
@@ -24,6 +27,7 @@ public:
 
     int setup(RGE_Master_Missile_Object* other);
 };
+#endif
 
 int RGE_Master_Missile_Object::setup(RGE_Master_Missile_Object* other) {
     RGE_Master_Combat_Object::setup(other);

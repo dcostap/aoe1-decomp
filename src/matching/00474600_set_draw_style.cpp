@@ -1,3 +1,4 @@
+#ifndef PNL_DROP_CONTEXT
 class TTextPanel;
 
 class TDropDownPanel {
@@ -13,6 +14,7 @@ public:
     void set_draw_style(int param_1);
     void set_mode(int mode);
 };
+#endif
 
 void TDropDownPanel::set_draw_style(int param_1) {
     this->draw_style = param_1;

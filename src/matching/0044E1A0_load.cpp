@@ -1,5 +1,6 @@
 void __cdecl rge_read(int fd, void* buf, int count);
 
+#ifndef INFMAP_SHARED_CONTEXT
 class InfluenceMap {
 public:
     char gap_00[0x04];           // +0x00: vtable
@@ -14,6 +15,7 @@ public:
 
     void load(int fd);
 };
+#endif
 
 void InfluenceMap::load(int fd) {
     rge_read(fd, &xSizeValue, 4);

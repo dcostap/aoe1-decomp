@@ -1,22 +1,15 @@
 /* VA: 00447D50 _WaveOpenFile */
 /* Dsutil.c lines 496-619, 414 bytes */
-typedef unsigned int UINT; typedef unsigned long DWORD; typedef long LONG; typedef unsigned short WORD; typedef void* HMMIO; typedef void* HGLOBAL;
-typedef struct MMCKINFO_LOCAL { DWORD ckid; DWORD cksize; DWORD fccType; DWORD dwDataOffset; DWORD dwFlags; } MMCKINFO_LOCAL;
+typedef unsigned int UINT; typedef unsigned long DWORD; typedef long LONG; typedef unsigned short WORD;
+typedef struct DSUTIL_WAVEOPEN_MMCKINFO { DWORD ckid; DWORD cksize; DWORD fccType; DWORD dwDataOffset; DWORD dwFlags; } DSUTIL_WAVEOPEN_MMCKINFO;
 typedef struct PCMWAVEFORMAT_LOCAL { WORD wFormatTag; WORD nChannels; DWORD nSamplesPerSec; DWORD nAvgBytesPerSec; WORD nBlockAlign; WORD wBitsPerSample; } PCMWAVEFORMAT_LOCAL;
 typedef struct WAVEFORMATEX_LOCAL { WORD wFormatTag; WORD nChannels; DWORD nSamplesPerSec; DWORD nAvgBytesPerSec; WORD nBlockAlign; WORD wBitsPerSample; WORD cbSize; } WAVEFORMATEX_LOCAL;
-__declspec(dllimport) HMMIO __stdcall mmioOpenA(char*, void*, DWORD);
-__declspec(dllimport) int __stdcall mmioDescend(HMMIO, MMCKINFO_LOCAL*, const MMCKINFO_LOCAL*, UINT);
-__declspec(dllimport) LONG __stdcall mmioRead(HMMIO, char*, LONG);
-__declspec(dllimport) HGLOBAL __stdcall GlobalAlloc(UINT, DWORD);
-__declspec(dllimport) HGLOBAL __stdcall GlobalFree(HGLOBAL);
-__declspec(dllimport) int __stdcall mmioAscend(HMMIO, MMCKINFO_LOCAL*, UINT);
-__declspec(dllimport) int __stdcall mmioClose(HMMIO, UINT);
 /* Alias avoids VC5 treating the CRT copy as an intrinsic; original emits a direct call. */
 void* __cdecl memcpy2(void*, const void*, UINT);
-int __cdecl _WaveOpenFile(char* pszFileName, HMMIO* phmmioIn, void** ppwfxInfo, MMCKINFO_LOCAL* pckInRIFF)
+int __cdecl _WaveOpenFile(char* pszFileName, HMMIO* phmmioIn, void** ppwfxInfo, DSUTIL_WAVEOPEN_MMCKINFO* pckInRIFF)
 {
     HMMIO hmmioIn;
-    MMCKINFO_LOCAL ckIn;
+    DSUTIL_WAVEOPEN_MMCKINFO ckIn;
     PCMWAVEFORMAT_LOCAL pcmWaveFormat;
     WORD cbExtraAlloc;
     int err;

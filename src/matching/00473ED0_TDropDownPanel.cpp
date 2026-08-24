@@ -1,3 +1,4 @@
+#ifndef PNL_DROP_CONTEXT
 struct PanelNode;
 struct TDrawArea;
 struct HRGN__;
@@ -109,12 +110,9 @@ public:
 
     TDropDownPanel();
 };
+#endif
 
 TDropDownPanel::TDropDownPanel() : TPanel() {
-    // TPanel constructor sets vtable to 570C38h
-    // Override to TDropDownPanel vtable 5711E0h
-    *(int*)this = 0x5711E0;
-    
     // Zero out TDropDownPanel-specific fields
     this->val_panel = 0;
     this->btn_panel = 0;
@@ -130,4 +128,3 @@ TDropDownPanel::TDropDownPanel() : TPanel() {
     
     this->draw_val_rect = 1;
 }
-

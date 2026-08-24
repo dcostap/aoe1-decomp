@@ -18,6 +18,7 @@
 //   virtual receiver reloads, loop cleanup, and final result publication.
 // Result: MATCH with `python tools/check_function.py --va 0043E650`.
 
+#ifndef DLG_DIP_SHARED_CONTEXT
 class RGE_Player {
 public:
     char gap_00[0x50];
@@ -57,6 +58,7 @@ protected:
 
     int check_food();
 };
+#endif
 
 int TribeDiplomacyDialog::check_food() {
     register int hasFood;

@@ -39,8 +39,8 @@
 
 #include <string.h>
 
+#ifndef COM_Q_CONTEXT
 void __cdecl operator delete(void* ptr);
-
 class MsgQueue {
 public:
     unsigned int Code;
@@ -93,6 +93,7 @@ public:
 
     int AllocateQueue(unsigned int param_1);
 };
+#endif
 
 int RGE_Communications_Queue::AllocateQueue(unsigned int param_1) {
     int result;

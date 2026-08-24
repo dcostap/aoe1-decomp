@@ -1,28 +1,30 @@
 // VA: 0044DF80 InfluenceMap::InfluenceMap(int,int,unsigned char)
-// Exact MATCH. Key fixes: use natural memset (VC5 inlines to original rep stosd/stosb)
+// Binary anchor. Use natural memset (VC5 inlines to the original rep stosd/stosb)
 // and spell row setup as guarded do/while with i++ before offset += xSize.
+// The grouped TU supplies the canonical virtual InfluenceMap surface.
 #include <string.h>
 void* __cdecl operator_new(unsigned int size);
-struct InfluenceMap { int vfptr,xSize,ySize,xRef,yRef; unsigned char* value; unsigned char** row; InfluenceMap(int,int,unsigned char); };
+#ifndef INFMAP_SHARED_CONTEXT
+struct InfluenceMap { int vfptr,xSizeValue,ySizeValue,xReferencePointValue,yReferencePointValue; unsigned char* valueValue; unsigned char** rowValue; InfluenceMap(int,int,unsigned char); };
+#endif
 InfluenceMap::InfluenceMap(int xSize, int ySize, unsigned char fillValue) {
-    this->ySize = ySize;
+    this->ySizeValue = ySize;
     int total = ySize * xSize;
-    this->xSize = xSize;
-    this->xRef = 0;
-    this->yRef = 0;
-    this->vfptr = 0x00570444;
-    this->value = (unsigned char*)operator_new(total);
-    memset(this->value, fillValue, total);
-    this->row = (unsigned char**)operator_new(this->ySize * 4);
-    if (this->row) {
+    this->xSizeValue = xSize;
+    this->xReferencePointValue = 0;
+    this->yReferencePointValue = 0;
+    this->valueValue = (unsigned char*)operator_new(total);
+    memset(this->valueValue, fillValue, total);
+    this->rowValue = (unsigned char**)operator_new(this->ySizeValue * 4);
+    if (this->rowValue) {
         int i = 0;
         int offset = 0;
-        if (i < this->ySize) {
+        if (i < this->ySizeValue) {
             do {
-                this->row[i] = this->value + offset;
+                this->rowValue[i] = this->valueValue + offset;
                 i++;
-                offset += this->xSize;
-            } while (i < this->ySize);
+                offset += this->xSizeValue;
+            } while (i < this->ySizeValue);
         }
     }
 }

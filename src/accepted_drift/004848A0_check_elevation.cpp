@@ -118,74 +118,7 @@
 //   rotation. The typed map fields, clipped bounds, parameter homes, cleanup,
 //   and early-failure order remain unchanged.
 
-typedef unsigned char uchar;
-
-// Main-agent audit confirmed canonical elevation-map ownership and retained the
-// natural two-scan bounds check; padding remains non-target scaffolding only.
-struct Map_Stack {
-    long x;
-    long y;
-    float cost;
-    float tot_cost;
-    Map_Stack* next;
-    Map_Stack* prev;
-};
-
-class RGE_Object_Node;
-
-class RGE_Object_List {
-public:
-    virtual ~RGE_Object_List();
-
-    RGE_Object_Node* list;
-    short number_of_objects;
-    unsigned char pad_0A[2];
-};
-
-struct RGE_Tile {
-    short screen_xpos;
-    short screen_ypos;
-    unsigned char tile_type;
-    unsigned char terrain_type : 5;
-    unsigned char elevation : 3;
-    unsigned char border_type : 4;
-    unsigned char border_shape : 4;
-    unsigned char last_drawn_as;
-    unsigned char last_drawn_shape;
-    unsigned char draw_as;
-    unsigned char draw_attribute;
-    unsigned char last_drawn_shape2;
-    RGE_Object_List objects;
-};
-
-class RGE_Map;
-class RGE_Random_Map_Module_List;
-
-class RGE_Random_Map_Module {
-public:
-    virtual ~RGE_Random_Map_Module();
-    virtual uchar generate() = 0;
-
-    RGE_Random_Map_Module* parent;
-    RGE_Random_Map_Module_List* list;
-    RGE_Map* map;
-    RGE_Tile** map_row_offset;
-    long map_width;
-    long map_height;
-    float schedule;
-    uchar* search_map;
-    uchar** search_map_rows;
-    Map_Stack* stack_array;
-    Map_Stack** stack_offsets;
-};
-
-class RGE_RMM_Elevation_Generator : public RGE_Random_Map_Module {
-public:
-    virtual uchar generate();
-
-protected:
-    uchar check_elevation(uchar elev, long x, long y, long radius, uchar terrain, uchar min_elev);
-};
+#include "..\\..\\include\\rmm_elev_context.h"
 
 uchar RGE_RMM_Elevation_Generator::check_elevation(uchar elev, long x, long y, long radius, uchar terrain, uchar min_elev)
 {

@@ -20,6 +20,7 @@
 // declaration/order model moved all three homes to the original offsets.
 // The lobby system message type is the first DWORD in data. Exact at 334/334.
 
+#ifndef COM_LOBY_CONTEXT
 class TDebuggingLog {
 public:
     void Log(char* format, ...);
@@ -70,6 +71,7 @@ public:
 
     long ReceiveZoneMessages();
 };
+#endif
 
 long RGE_Lobby::ReceiveZoneMessages() {
     if (lobby_game == 0) return 0;

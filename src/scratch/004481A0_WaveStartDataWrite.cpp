@@ -5,9 +5,7 @@
 // Fixed: removed spurious `unsigned long unused` first param — the original
 // takes 3 params (void* hmmioPtr, _MMCKINFO* ckOut, _MMIOINFO* mmioinfoOut).
 // The extra 4-byte param shifted all stack offsets by 8/0x8.
-typedef unsigned long MMRESULT;
-
-struct _MMCKINFO {
+struct DSUTIL_MMCKINFO {
     unsigned long ckid;
     unsigned long cksize;
     unsigned long fccType;
@@ -15,7 +13,7 @@ struct _MMCKINFO {
     unsigned long dwFlags;
 };
 
-struct _MMIOINFO {
+struct DSUTIL_MMIOINFO {
     unsigned long dwFlags;
     unsigned long fccIOProc;
     long (__stdcall *pIOProc)(char*, unsigned int, long, long);
@@ -34,10 +32,10 @@ struct _MMIOINFO {
     void* hmmio;
 };
 
-extern "C" __declspec(dllimport) MMRESULT __stdcall mmioCreateChunk(void* hmmio, void* ckInfo, unsigned long flags);
-extern "C" __declspec(dllimport) MMRESULT __stdcall mmioGetInfo(void* hmmio, void* info, unsigned long flags);
+__declspec(dllimport) MMRESULT __stdcall mmioCreateChunk(void* hmmio, void* ckInfo, unsigned long flags);
+__declspec(dllimport) MMRESULT __stdcall mmioGetInfo(void* hmmio, void* info, unsigned long flags);
 
-MMRESULT __cdecl _WaveStartDataWrite(void* hmmioPtr, _MMCKINFO* ckOut, _MMIOINFO* mmioinfoOut) {
+MMRESULT __cdecl _WaveStartDataWrite(void* hmmioPtr, struct DSUTIL_MMCKINFO* ckOut, struct DSUTIL_MMIOINFO* mmioinfoOut) {
     MMRESULT result;
 
     ckOut->ckid = 0x61746164;

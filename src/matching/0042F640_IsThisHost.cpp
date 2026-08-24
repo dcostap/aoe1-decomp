@@ -1,3 +1,4 @@
+#ifndef COM_LOBY_CONTEXT
 struct LobbyConnection {
     int unknown_00;
     unsigned int dwFlags;
@@ -11,6 +12,7 @@ public:
 
     unsigned char IsThisHost();
 };
+#endif
 
 unsigned char RGE_Lobby::IsThisHost() {
     if (!this->lobby_game) {

@@ -2,6 +2,7 @@
 // tried widening the local panel surface; that only made the object bigger, so I’m shrinking to the exact touched fields/methods
 // leaving in scratch unless this smaller surface lands under the extractor limit
 // direct TTextPanel set_line/get_text are nonvirtual; set_text dispatch is vtable slot 0xE8.
+#ifndef PNL_DROP_CONTEXT
 class TTextPanel {
 public:
     virtual void vf00(); virtual void vf04(); virtual void vf08(); virtual void vf0C();
@@ -24,7 +25,6 @@ public:
     void set_line(long line);
     char* get_text(long line);
 };
-
 class TListPanel : public TTextPanel {
 };
 
@@ -40,6 +40,7 @@ public:
 
     void set_line(long line);
 };
+#endif
 
 void TDropDownPanel::set_line(long line) {
     this->val_num = (short)line;

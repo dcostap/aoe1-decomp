@@ -8,7 +8,9 @@
 
 #include "..\..\include\game_globals.h"
 #include <stdio.h>
+#include "../../include/m_mi_obj_context.h"
 
+#ifndef M_MI_OBJ_SHARED_CONTEXT
 class RGE_Master_Static_Object {
 public:
     virtual ~RGE_Master_Static_Object();
@@ -24,6 +26,7 @@ public:
     RGE_Master_Missile_Object(FILE* param_1, RGE_Sprite** param_2, RGE_Sound** param_3, short param_4, int do_setup);
     void setup(FILE* param_1, RGE_Sprite** param_2, RGE_Sound** param_3, short param_4);
 };
+#endif
 
 RGE_Master_Missile_Object::RGE_Master_Missile_Object(FILE* param_1, RGE_Sprite** param_2, RGE_Sound** param_3, short param_4, int do_setup)
     : RGE_Master_Combat_Object(param_1, param_2, param_3, param_4, 0)

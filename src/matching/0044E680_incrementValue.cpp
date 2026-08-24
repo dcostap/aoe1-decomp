@@ -9,59 +9,61 @@
 
 #include "../../include/game_types.h"
 
+#ifndef INFMAP_SHARED_CONTEXT
 class InfluenceMap {
 public:
     virtual ~InfluenceMap();
-    int xSize;                         // +0x04
-    int ySize;                         // +0x08
-    int xReferencePoint;               // +0x0C
-    int yReferencePoint;               // +0x10
+    int xSizeValue;                    // +0x04
+    int ySizeValue;                    // +0x08
+    int xReferencePointValue;          // +0x0C
+    int yReferencePointValue;          // +0x10
     char _gap_14[0x04];
-    unsigned char** rowPointers;       // +0x18
+    unsigned char** rowValue;          // +0x18
     char _gap_1C[0x08];
-    unsigned char threshold;            // +0x24
+    unsigned char unchangeableLimitValue;// +0x24
 
     int incrementValue(int x1, int y1, int x2, int y2,
                        unsigned char amount);
 };
+#endif
 
 int InfluenceMap::incrementValue(int x1, int y1, int x2, int y2,
                                  unsigned char amount)
 {
-    x1 -= this->xReferencePoint;
-    x2 -= this->xReferencePoint;
-    y1 -= this->yReferencePoint;
-    y2 -= this->yReferencePoint;
+    x1 -= this->xReferencePointValue;
+    x2 -= this->xReferencePointValue;
+    y1 -= this->yReferencePointValue;
+    y2 -= this->yReferencePointValue;
 
     if (x1 < 0)
         x1 = 0;
-    else if (x1 >= this->xSize)
-        x1 = this->xSize - 1;
+    else if (x1 >= this->xSizeValue)
+        x1 = this->xSizeValue - 1;
 
     if (y1 < 0)
         y1 = 0;
-    else if (y1 >= this->xSize)
-        y1 = this->xSize - 1;
+    else if (y1 >= this->xSizeValue)
+        y1 = this->xSizeValue - 1;
 
     if (x2 < 0)
         x2 = 0;
-    else if (x2 >= this->xSize)
-        x2 = this->xSize - 1;
+    else if (x2 >= this->xSizeValue)
+        x2 = this->xSizeValue - 1;
 
     if (y2 < 0)
         y2 = 0;
-    else if (y2 >= this->xSize)
-        y2 = this->xSize - 1;
+    else if (y2 >= this->xSizeValue)
+        y2 = this->xSizeValue - 1;
 
     if (y1 <= y2) {
         for (int y = y1; y <= y2; y++) {
             for (int x = x1; x <= x2; x++) {
-                if (this->rowPointers[y][x] < this->threshold) {
-                    int value = (int)this->rowPointers[y][x] + (int)amount;
-                    if (value >= this->threshold)
-                        this->rowPointers[y][x] = this->threshold - 1;
+                if (this->rowValue[y][x] < this->unchangeableLimitValue) {
+                    int value = (int)this->rowValue[y][x] + (int)amount;
+                    if (value >= this->unchangeableLimitValue)
+                        this->rowValue[y][x] = this->unchangeableLimitValue - 1;
                     else
-                        this->rowPointers[y][x] = (unsigned char)value;
+                        this->rowValue[y][x] = (unsigned char)value;
                 }
             }
         }

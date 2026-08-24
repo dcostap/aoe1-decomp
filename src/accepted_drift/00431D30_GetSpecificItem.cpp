@@ -2,6 +2,7 @@
 // com_q.cpp:298-323
 // Default flags
 
+#ifndef COM_Q_CONTEXT
 #include "../../include/game_globals.h"
 
 struct MsgQueueEntry {
@@ -24,6 +25,7 @@ public:
 
     void* GetSpecificItem(unsigned int param_1, unsigned long param_2, unsigned char param_3, unsigned int* param_4);
 };
+#endif
 
 void* RGE_Communications_Queue::GetSpecificItem(unsigned int param_1, unsigned long param_2, unsigned char param_3, unsigned int* param_4)
 {

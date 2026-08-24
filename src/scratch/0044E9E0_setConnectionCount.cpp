@@ -77,11 +77,14 @@
 
 typedef unsigned char uchar;
 
+#ifndef INFMAP_SHARED_CONTEXT
 struct XYPoint {
     int x;
     int y;
 };
+#endif
 
+#ifndef INFMAP_SHARED_CONTEXT
 class InfluenceMap {
 public:
     virtual ~InfluenceMap();                  // +0x00 virtual surface
@@ -99,6 +102,7 @@ public:
                            int minimum, int edgeHorizontal, int edgeVertical,
                            int allDirections);
 };
+#endif
 
 int InfluenceMap::setConnectionCount(const XYPoint& from, const XYPoint& to,
                                      int minimum, int edgeHorizontal,

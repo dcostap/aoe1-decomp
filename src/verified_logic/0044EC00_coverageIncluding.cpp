@@ -56,11 +56,14 @@
 
 typedef unsigned char uchar;
 
+#ifndef INFMAP_SHARED_CONTEXT
 struct XYPoint {
     int x;
     int y;
 };
+#endif
 
+#ifndef INFMAP_SHARED_CONTEXT
 class InfluenceMap {
 public:
     virtual ~InfluenceMap();             // +0x00
@@ -77,6 +80,7 @@ public:
     int coverageIncluding(const XYPoint& from, const XYPoint& to,
                           uchar minimum, uchar amount);
 };
+#endif
 
 int InfluenceMap::coverageIncluding(const XYPoint& from, const XYPoint& to,
                                     uchar minimum, uchar amount)

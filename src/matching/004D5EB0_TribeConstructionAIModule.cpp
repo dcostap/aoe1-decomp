@@ -1,3 +1,4 @@
+#ifndef TAICONMD_SHARED_CONTEXT
 class ConstructionAIModule {
 public:
     virtual ~ConstructionAIModule();
@@ -10,6 +11,7 @@ public:
     int mainDecisionAI;
     TribeConstructionAIModule(int p1, int p2);
 };
+#endif
 
 TribeConstructionAIModule::TribeConstructionAIModule(int p1, int p2)
     : ConstructionAIModule(p1, p2), mainDecisionAI(0)

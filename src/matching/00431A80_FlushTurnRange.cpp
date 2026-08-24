@@ -5,8 +5,8 @@
 // Use direct Queue byte-offset expressions for execTurn/mq to get load-base/lea shape,
 // and spell range miss as `execTurn < param_1 || execTurn > param_2` for cmp/jb.
 
+#ifndef COM_Q_CONTEXT
 void __cdecl operator delete(void* ptr);
-
 struct MsgQueue {
     unsigned int ControlCommand;
     unsigned int ExecTurn;
@@ -32,6 +32,7 @@ public:
 
     unsigned int FlushTurnRange(unsigned long param_1, unsigned long param_2);
 };
+#endif
 
 unsigned int RGE_Communications_Queue::FlushTurnRange(unsigned long param_1, unsigned long param_2) {
     unsigned int i = 0;

@@ -4,8 +4,10 @@
 int __cdecl _DSGetWaveResource(int a, int b, int c, void* d, void* e);
 int __cdecl _DSFillSoundBuffer(void* a, void* b, int c);
 
-struct IDSBuffer {
-    struct IDSVTable {
+typedef struct IDSBuffer IDSBuffer;
+typedef struct IDSVTable IDSVTable;
+
+struct IDSVTable {
         int (__stdcall* QueryInterface)(IDSBuffer*, void*);         // +0x00
         int (__stdcall* AddRef)(IDSBuffer*);                        // +0x04
         int (__stdcall* Release)(IDSBuffer*);                       // +0x08
@@ -27,7 +29,9 @@ struct IDSBuffer {
         int (__stdcall* pad48)(IDSBuffer*);                         // +0x48
         int (__stdcall* pad4C)(IDSBuffer*);                         // +0x4C
         int (__stdcall* func0x50)(IDSBuffer*);                      // +0x50
-    };
+};
+
+struct IDSBuffer {
     IDSVTable* lpVtbl;
 };
 

@@ -1,32 +1,7 @@
 // attempt 1: direct scenario table walk with calloc(count, 4), out-param store, and per-entry getstring copies
 // attempt 2: switch to the decompiler-style iVar shape and direct *param_1 access; the first exact-match clue was a 4-byte code-size overshoot, so this is a small basin probe
 // attempt 3 rolled back: a local source pointer pulled the whole function into the wrong register basin, so keep the decompiler-style shape and only track the remaining LEA-byte drift
-#include <stdlib.h>
-
-class RGE_Scenario_Offset {
-public:
-    char gap_00[8];
-    char name[255];
-};
-
-class RGE_Campaign_Header {
-public:
-    long version;
-    char name[255];
-    unsigned char _pad_0[1];
-    long scenario_num;
-};
-
-class RGE_Campaign {
-public:
-    RGE_Campaign_Header campaign_header;
-    RGE_Scenario_Offset* scenario_offsets;
-
-    long scenario_info(char*** param_1);
-};
-
-extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
-extern "C" void __cdecl getstring(char** param_1, char* param_2);
+#include "../../include/campaign_context.h"
 
 long RGE_Campaign::scenario_info(char*** param_1) {
     char** ppcVar1;

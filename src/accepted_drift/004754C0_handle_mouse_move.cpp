@@ -91,6 +91,7 @@
 // flags, observable memory effects, nine calls, branches, cleanup, and fault
 // order are equivalent.
 
+#ifndef PNL_DROP_CONTEXT
 struct tagRECT {
     long left;
     long top;
@@ -429,6 +430,7 @@ public:
 
     virtual long handle_mouse_move(long, long, int, int);
 };
+#endif
 
 long TDropDownButtonPanel::handle_mouse_move(long x, long y, int ctrl_key, int shift_key)
 {

@@ -35,6 +35,7 @@
 //   changes, duplicate initialization, period-header context, and computed-zero forms did
 //   not recover CMP; the reduced natural source remains 193/195 bytes exact.
 
+#ifndef DLG_DIP_SHARED_CONTEXT
 extern "C" int __cdecl _ASMSet_Color_Xform(int param_1);
 
 class TDrawArea;
@@ -108,6 +109,7 @@ protected:
     TShape* backgroundPics;
     virtual void draw();
 };
+#endif
 
 void TribeDiplomacyDialog::draw()
 {
@@ -117,7 +119,11 @@ void TribeDiplomacyDialog::draw()
     if (backgroundPics != 0)
     {
         RGE_Game_World* w = rge_base_game->world;
+#ifdef DLG_DIP_SHARED_CONTEXT
+        this->draw_setup(0);
+#else
         ((DipVTable*)this)->draw_setup(0);
+#endif
         if (w->player_num - 1 > 0)
         {
             int i = 0;
@@ -144,6 +150,10 @@ void TribeDiplomacyDialog::draw()
                 ++i;
             } while (i < w->player_num - 1);
         }
+#ifdef DLG_DIP_SHARED_CONTEXT
+        this->draw_finish();
+#else
         ((DipVTable*)this)->draw_finish();
+#endif
     }
 }

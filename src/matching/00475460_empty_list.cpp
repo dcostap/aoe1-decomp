@@ -1,8 +1,8 @@
+#ifndef PNL_DROP_CONTEXT
 class MemberType {
 public:
     void empty_list();
 };
-
 class TDropDownPanel {
 public:
     char gap_0[0xFC];
@@ -10,6 +10,7 @@ public:
 
     void empty_list();
 };
+#endif
 
 void TDropDownPanel::empty_list() {
     if (this->member_FC) {

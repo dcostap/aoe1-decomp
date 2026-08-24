@@ -61,7 +61,7 @@ extern int __cdecl WaveReadFile(HMMIO, DWORD, unsigned char*, MMCKINFO*, DWORD*)
 extern int __cdecl WaveStartDataRead(HMMIO*, MMCKINFO*, MMCKINFO*);
 
 extern int DAT_0062e658;
-extern LPDIRECTSOUNDBUFFER DAT_00888490;
+extern void* DAT_00888490;
 extern unsigned int DAT_00888494;
 extern unsigned int DAT_00888498;
 extern unsigned int DAT_0088849c;
@@ -72,14 +72,14 @@ extern int DAT_008884ac;
 extern int DAT_008884b0;
 extern int DAT_008884b4;
 extern int _stream_paused;
-extern HWND _main_wnd;
-extern HMMIO DAT_00888464;
+extern void* _main_wnd;
+extern void* DAT_00888464;
 extern MMCKINFO DAT_00888468;
 extern MMCKINFO DAT_0088847c;
-extern LPWAVEFORMATEX _wiWave;
+extern void* _wiWave;
 
 #define CLEAR_AUDIO(P,N) do { \
-    LPWAVEFORMATEX wf_ = _wiWave; \
+    LPWAVEFORMATEX wf_ = (LPWAVEFORMATEX)_wiWave; \
     if (wf_ && (P)) { \
         if (wf_->wBitsPerSample == 8) memset((P), 0x80, (N)); \
         else if (wf_->wBitsPerSample == 16) memset((P), 0, (N)); \
@@ -87,7 +87,7 @@ extern LPWAVEFORMATEX _wiWave;
 } while (0)
 
 #define CLEAR_AUDIO_OFFSET(P,O,N) do { \
-    LPWAVEFORMATEX wf_ = _wiWave; \
+    LPWAVEFORMATEX wf_ = (LPWAVEFORMATEX)_wiWave; \
     if (wf_ && (P)) { \
         if (wf_->wBitsPerSample == 8) memset((BYTE*)(P) + (O), 0x80, (N)); \
         else if (wf_->wBitsPerSample == 16) memset((BYTE*)(P) + (O), 0, (N)); \
@@ -95,7 +95,7 @@ extern LPWAVEFORMATEX _wiWave;
 } while (0)
 
 #define CLEAR_AUDIO_LENGTH(P,N) do { \
-    LPWAVEFORMATEX wf_ = _wiWave; \
+    LPWAVEFORMATEX wf_ = (LPWAVEFORMATEX)_wiWave; \
     if (wf_ && (N)) { \
         if (wf_->wBitsPerSample == 8) memset((P), 0x80, (N)); \
         else if (wf_->wBitsPerSample == 16) memset((P), 0, (N)); \
@@ -120,12 +120,12 @@ void __stdcall ds_stream_time_func(HWND hwnd, UINT msg, UINT id, DWORD time, DWO
         DAT_0062e658 = 0;
         return;
     }
-    if (DAT_00888490 == (LPDIRECTSOUNDBUFFER)0) {
+    if (DAT_00888490 == (void*)0) {
         DAT_0062e658 = 0;
         return;
     }
 
-    IDirectSoundBuffer_GetCurrentPosition(DAT_00888490, &local_4, &dwWrite);
+    IDirectSoundBuffer_GetCurrentPosition((LPDIRECTSOUNDBUFFER)DAT_00888490, &local_4, &dwWrite);
     if (DAT_0088849c < dwWrite) {
         DWORD t = DAT_0088849c + DAT_00888498;
         if (t > dwWrite) goto done;
@@ -134,7 +134,7 @@ void __stdcall ds_stream_time_func(HWND hwnd, UINT msg, UINT id, DWORD time, DWO
     if (DAT_008884b0 && DAT_008884b4 == 0) {
         if (DAT_008884a8 != 0) goto done;
         DAT_008884a8 = 1;
-        PostMessageA(_main_wnd, 0x500, 0, 0);
+        PostMessageA((HWND)_main_wnd, 0x500, 0, 0);
         DAT_0062e658 = 0;
         return;
     }
@@ -146,24 +146,25 @@ void __stdcall ds_stream_time_func(HWND hwnd, UINT msg, UINT id, DWORD time, DWO
         diff -= DAT_008884a0;
         DAT_008884a0 = dwWrite;
         DAT_008884a4 += diff;
-        PostMessageA(_main_wnd, 0x502, 0, 0);
+        PostMessageA((HWND)_main_wnd, 0x502, 0, 0);
     }
 
     if (DAT_008884b0 && DAT_008884b4) {
         --DAT_008884b4;
         if (DAT_008884b4 <= 1) goto done;
-        if (DAT_00888490 == (LPDIRECTSOUNDBUFFER)0) goto done;
-        if (IDirectSoundBuffer_Lock(DAT_00888490, DAT_0088849c, DAT_00888498,
+        if (DAT_00888490 == (void*)0) goto done;
+        if (IDirectSoundBuffer_Lock((LPDIRECTSOUNDBUFFER)DAT_00888490, DAT_0088849c, DAT_00888498,
             (void**)&lpWrite1, &dwLen1, (void**)&lpWrite2, &dwLen2, 0)) goto done;
         CLEAR_AUDIO(lpWrite1, dwLen1);
-        IDirectSoundBuffer_Unlock(DAT_00888490, lpWrite1, dwLen1, lpWrite2, dwLen2);
+        IDirectSoundBuffer_Unlock((LPDIRECTSOUNDBUFFER)DAT_00888490,
+            lpWrite1, dwLen1, lpWrite2, dwLen2);
         DAT_0088849c += DAT_00888498;
         if (DAT_0088849c < DAT_00888494) goto done;
         goto wrap_play;
     }
 
-    if (DAT_00888490 == (LPDIRECTSOUNDBUFFER)0) goto done;
-    if (IDirectSoundBuffer_Lock(DAT_00888490, DAT_0088849c, DAT_00888498,
+    if (DAT_00888490 == (void*)0) goto done;
+    if (IDirectSoundBuffer_Lock((LPDIRECTSOUNDBUFFER)DAT_00888490, DAT_0088849c, DAT_00888498,
         (void**)&lpWrite1, &dwLen1, (void**)&lpWrite2, &dwLen2, 0)) goto done;
 
     if (lpWrite1) {
@@ -222,7 +223,8 @@ void __stdcall ds_stream_time_func(HWND hwnd, UINT msg, UINT id, DWORD time, DWO
         }
     }
 
-    if (DAT_00888490) IDirectSoundBuffer_Unlock(DAT_00888490, lpWrite1, dwLen1, lpWrite2, dwLen2);
+    if (DAT_00888490) IDirectSoundBuffer_Unlock((LPDIRECTSOUNDBUFFER)DAT_00888490,
+        lpWrite1, dwLen1, lpWrite2, dwLen2);
     DAT_0088849c += DAT_00888498;
     if (DAT_0088849c < DAT_00888494) goto done;
 

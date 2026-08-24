@@ -1,7 +1,11 @@
+#ifndef COM_Q_CONTEXT
 class RGE_Communications_Queue {
 public:
-    void target_func(int p0, int p1);
-    void FlushThruTurn(int p);
+    unsigned int FlushTurnRange(unsigned long p0, unsigned long p1);
+    unsigned int FlushThruTurn(unsigned long p);
 };
+#endif
 
-void RGE_Communications_Queue::FlushThruTurn(int p) { this->target_func(0, p); }
+unsigned int RGE_Communications_Queue::FlushThruTurn(unsigned long p) {
+    return this->FlushTurnRange(0, p);
+}

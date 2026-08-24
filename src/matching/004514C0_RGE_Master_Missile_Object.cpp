@@ -6,7 +6,9 @@
 // Probe 1: natural ctor with base init + conditional setup, default flags
 
 #include "..\..\include\game_globals.h"
+#include "../../include/m_mi_obj_context.h"
 
+#ifndef M_MI_OBJ_SHARED_CONTEXT
 // RGE_Master_Static_Object — base of the chain, virtual dtor for vtable
 class RGE_Master_Static_Object {
 public:
@@ -27,6 +29,7 @@ public:
 
     RGE_Master_Missile_Object(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3, int param_4);
 };
+#endif
 
 RGE_Master_Missile_Object::RGE_Master_Missile_Object(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3, int param_4)
     : RGE_Master_Combat_Object(param_1, param_2, param_3, 0)

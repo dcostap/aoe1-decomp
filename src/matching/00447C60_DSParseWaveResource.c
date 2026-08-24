@@ -4,13 +4,13 @@
 typedef unsigned long DWORD;
 typedef unsigned char BYTE;
 
-typedef struct WAVEFORMAT {
+typedef struct DSUTIL_WAVEFORMAT {
     unsigned short wFormatTag;
     unsigned short nChannels;
     DWORD nSamplesPerSec;
     DWORD nAvgBytesPerSec;
     unsigned short nBlockAlign;
-} WAVEFORMAT;
+} DSUTIL_WAVEFORMAT;
 
 int __cdecl _DSParseWaveResource(void* pvRes, void** ppWaveHeader, BYTE** ppbData, DWORD* pdwDataSize)
 {

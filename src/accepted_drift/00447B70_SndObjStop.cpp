@@ -1,9 +1,10 @@
 // VA: 00447B70 _SndObjStop (65 B)
 // PDB source: Dsutil.c lines 293-306
 
-struct IDirectSoundBuffer;
+typedef struct SndObjStopBuffer SndObjStopBuffer;
+typedef struct SndObjStopBufferVtbl SndObjStopBufferVtbl;
 
-struct IDSBVtbl {
+struct SndObjStopBufferVtbl {
     long (__stdcall* QueryInterface)(void*, void**);
     unsigned long (__stdcall* AddRef)(void*);
     unsigned long (__stdcall* Release)(void*);
@@ -25,8 +26,8 @@ struct IDSBVtbl {
     long (__stdcall* Stop)(void*);
 };
 
-struct IDirectSoundBuffer {
-    IDSBVtbl* lpVtbl;
+struct SndObjStopBuffer {
+    SndObjStopBufferVtbl* lpVtbl;
 };
 
 int __cdecl _SndObjStop(void* obj) {
@@ -39,7 +40,7 @@ int __cdecl _SndObjStop(void* obj) {
         if (*(int*)((char*)obj + 8) > 0) {
             do {
                 void** pp = (void**)((char*)obj + 0x10);
-                IDirectSoundBuffer* buf = (IDirectSoundBuffer*)(pp[i]);
+                SndObjStopBuffer* buf = (SndObjStopBuffer*)(pp[i]);
                 buf->lpVtbl->Stop(buf);
                 buf->lpVtbl->SetCurrentPosition(buf, 0);
                 ++i;

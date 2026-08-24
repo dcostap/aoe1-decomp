@@ -7,6 +7,8 @@
 
 #include "..\..\include\game_globals.h"
 
+#ifndef DLG_SEDM_SHARED_CONTEXT
+class TRIBE_Screen_Sed;
 class TPanel {
 public:
     char _gap_04[0x1C];
@@ -46,12 +48,13 @@ extern TPanelSystem panel_system;
 
 class TRIBE_Dialog_Sed_Menu : public TDialogPanel {
 public:
-    TPanel* parent_field;   // +0x490
+    TRIBE_Screen_Sed* scenario_editor; // +0x490
     TPanel* title;          // +0x494
-    TPanel* buttons[7];     // +0x498 to +0x4B0
+    TButtonPanel* buttons[7]; // +0x498 to +0x4B0
 
     virtual ~TRIBE_Dialog_Sed_Menu();
 };
+#endif
 
 TRIBE_Dialog_Sed_Menu::~TRIBE_Dialog_Sed_Menu()
 {
@@ -61,9 +64,9 @@ TRIBE_Dialog_Sed_Menu::~TRIBE_Dialog_Sed_Menu()
     delete_panel(&this->title);
 
     int count = 7;
-    TPanel** pp = this->buttons;
+    TButtonPanel** pp = this->buttons;
     do {
-        delete_panel(pp);
+        delete_panel((TPanel**)pp);
         pp++;
         count--;
     } while (count != 0);

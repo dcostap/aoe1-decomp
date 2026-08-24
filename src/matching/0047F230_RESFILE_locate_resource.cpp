@@ -20,6 +20,8 @@
 
 struct resfile_header;
 
+#ifndef RESFILE_MODULE_RESFILE_HDR_DEFINED
+#define RESFILE_MODULE_RESFILE_HDR_DEFINED
 struct ResFileHdr {
     unsigned char* mapped_file; // +0x00: mapped data pointer
     int handle;                 // +0x04: file descriptor (-1 if none)
@@ -27,7 +29,10 @@ struct ResFileHdr {
     ResFileHdr* next;           // +0x0C: linked list next
     char res_name[260];         // +0x10: name
 };
+#endif
 
+#ifndef RESFILE_MODULE_RESFILE_HEADER_DEFINED
+#define RESFILE_MODULE_RESFILE_HEADER_DEFINED
 struct resfile_header {   // 0x40
     char banner_msg[40];  // +0x00
     char version[4];      // +0x28
@@ -35,18 +40,25 @@ struct resfile_header {   // 0x40
     int num_res_types;    // +0x38
     int directory_size;   // +0x3C
 };
+#endif
 
+#ifndef RESFILE_MODULE_RESFILE_TYPE_DIR_DEFINED
+#define RESFILE_MODULE_RESFILE_TYPE_DIR_DEFINED
 struct resfile_type_dir_node {  // 0xC
     unsigned long type;         // +0x00
     long dirOffset;             // +0x04
     long numID;                 // +0x08
 };
+#endif
 
+#ifndef RESFILE_MODULE_RESFILE_ID_DIR_DEFINED
+#define RESFILE_MODULE_RESFILE_ID_DIR_DEFINED
 struct resfile_id_dir_node {    // 0xC
     unsigned long id;           // +0x00
     long itemOffset;            // +0x04
     long itemSize;              // +0x08
 };
+#endif
 
 extern ResFileHdr* g_resFileList;
 

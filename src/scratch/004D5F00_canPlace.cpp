@@ -9,6 +9,13 @@
 
 extern int useInfluencePlacement;
 
+#ifndef TAICONMD_SHARED_CONTEXT
+class BuildItem;
+class TribeInformationAIModule {
+public:
+    int influenceCanPlaceStructure(BuildItem*);
+};
+
 class BaseItem {
 public:
     virtual ~BaseItem();
@@ -55,11 +62,12 @@ public:
 
     int canPlace(BuildItem* item);
 };
+#endif
 
 int TribeConstructionAIModule::canPlace(BuildItem* item)
 {
     if (this->x <= 0.0 || this->y <= 0.0 || (float)this->max_x <= this->x || (float)this->max_y <= this->y) {
-        return ((PlacementHelper*)((char*)this->helper + 0xcec))->canPlace(item);
+        return ((TribeInformationAIModule*)((char*)this->md + 0xcec))->influenceCanPlaceStructure(item);
     }
 
     if (item->typeID() == 0x2d) {
@@ -67,7 +75,7 @@ int TribeConstructionAIModule::canPlace(BuildItem* item)
     }
 
     if (useInfluencePlacement == 1 || this->field_f0 == 0) {
-        return ((PlacementHelper*)((char*)this->helper + 0xcec))->canPlace(item);
+        return ((TribeInformationAIModule*)((char*)this->md + 0xcec))->influenceCanPlaceStructure(item);
     }
 
     ConstructionItem tempLots;

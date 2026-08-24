@@ -1,14 +1,6 @@
-class BaseClass {
-public:
-    virtual ~BaseClass();
-    BaseClass();
-};
+#include "../../include/pnl_sld_context.h"
 
-class THorizontalSliderPanel : public BaseClass {
-public:
-    virtual ~THorizontalSliderPanel();
-    THorizontalSliderPanel();
-};
-
-THorizontalSliderPanel::THorizontalSliderPanel() : BaseClass() {
+THorizontalSliderPanel::THorizontalSliderPanel()
+    : TVerticalSliderPanel()
+{
 }

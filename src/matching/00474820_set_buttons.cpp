@@ -1,3 +1,4 @@
+#ifndef PNL_DROP_CONTEXT
 class TShape;
 
 class TButtonPanel {
@@ -19,6 +20,7 @@ public:
 
     void set_buttons(TShape* shape, int p2, int p3, int p4, int p5, int p6);
 };
+#endif
 
 void TDropDownPanel::set_buttons(TShape* shape, int p2, int p3, int p4, int p5, int p6) {
     if (btn_panel != 0) {

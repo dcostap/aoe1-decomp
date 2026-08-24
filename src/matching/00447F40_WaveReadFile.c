@@ -26,15 +26,15 @@ typedef unsigned long DWORD;
 typedef unsigned char BYTE;
 typedef unsigned int MMRESULT;
 
-typedef struct _MMCKINFO {
+typedef struct DSUTIL_WAVE_READ_MMCKINFO {
     DWORD ckid;
     DWORD cksize;
     DWORD fccType;
     DWORD dwDataOffset;
     DWORD dwFlags;
-} MMCKINFO;
+} DSUTIL_WAVE_READ_MMCKINFO;
 
-typedef struct _MMIOINFO {
+typedef struct DSUTIL_WAVE_READ_MMIOINFO {
     DWORD dwFlags;
     DWORD fccIOProc;
     long (__stdcall *pIOProc)(char*, UINT, long, long);
@@ -51,17 +51,11 @@ typedef struct _MMIOINFO {
     DWORD dwReserved1;
     DWORD dwReserved2;
     void* hmmio;
-} MMIOINFO;
+} DSUTIL_WAVE_READ_MMIOINFO;
 
-__declspec(dllimport) MMRESULT __stdcall mmioGetInfo(void* hmmio, MMIOINFO* info, UINT flags);
-__declspec(dllimport) MMRESULT __stdcall mmioAdvance(void* hmmio, MMIOINFO* info, UINT flags);
-__declspec(dllimport) MMRESULT __stdcall mmioSetInfo(void* hmmio, MMIOINFO* info, UINT flags);
-
-void* __cdecl memcpy(void* dst, const void* src, unsigned int count);
-
-int __cdecl _WaveReadFile(void* hmmio, UINT cbRead, BYTE* pbDest, MMCKINFO* pckIn, UINT* cbActualRead)
+int __cdecl _WaveReadFile(void* hmmio, UINT cbRead, BYTE* pbDest, DSUTIL_WAVE_READ_MMCKINFO* pckIn, UINT* cbActualRead)
 {
-    MMIOINFO mmioinfoIn;
+    DSUTIL_WAVE_READ_MMIOINFO mmioinfoIn;
     int nError = 0;
     UINT cT;
     UINT cbDataIn;

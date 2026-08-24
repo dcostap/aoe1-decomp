@@ -1,3 +1,4 @@
+#ifndef PNL_DROP_CONTEXT
 class TTextPanel {
 public:
     void set_text_color(unsigned long fg, unsigned long bg);
@@ -10,6 +11,7 @@ public:
 
     void set_val_text_color(unsigned long fg, unsigned long bg);
 };
+#endif
 
 void TDropDownPanel::set_val_text_color(unsigned long fg, unsigned long bg) {
     if (this->val_panel != 0) {

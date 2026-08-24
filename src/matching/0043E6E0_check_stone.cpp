@@ -8,6 +8,7 @@
 // EXACT FINISH: A public reversion kept the bytes but emitted QAEH. The
 // protected source emits IAEHXZ and remains an exact match.
 
+#ifndef DLG_DIP_SHARED_CONTEXT
 class RGE_Player;
 
 class RGE_Base_Game {
@@ -48,6 +49,7 @@ protected:
 
     int check_stone();
 };
+#endif
 
 int TribeDiplomacyDialog::check_stone() {
     int result;

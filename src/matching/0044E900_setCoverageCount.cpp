@@ -30,11 +30,14 @@
 // - lab sweep (validation form x xr placement x access shape x class surface)
 //   found exact match with xr as first statement of the inner loop body.
 
+#ifndef INFMAP_SHARED_CONTEXT
 struct XYPoint {
     int x;
     int y;
 };
+#endif
 
+#ifndef INFMAP_SHARED_CONTEXT
 class InfluenceMap {
 public:
     void* vfptr;                    // +0x00
@@ -50,6 +53,7 @@ public:
 
     int setCoverageCount(const XYPoint& from, const XYPoint& to, int threshold);
 };
+#endif
 
 int InfluenceMap::setCoverageCount(const XYPoint& from, const XYPoint& to, int threshold)
 {

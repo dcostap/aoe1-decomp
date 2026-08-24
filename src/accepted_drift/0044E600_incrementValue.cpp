@@ -32,37 +32,39 @@
 // EDX/EAX; shifted branch displacements/tails follow from the two-byte body-size difference).
 // No calls, stack cleanup, memory offsets, predicates, or stores differ semantically.
 
+#ifndef INFMAP_SHARED_CONTEXT
 struct InfluenceMap {
     int vtable;                  // +0x00
-    int xSize;                   // +0x04
-    int ySize;                   // +0x08
-    int xReferencePoint;         // +0x0C
-    int yReferencePoint;         // +0x10
+    int xSizeValue;              // +0x04
+    int ySizeValue;              // +0x08
+    int xReferencePointValue;    // +0x0C
+    int yReferencePointValue;    // +0x10
     unsigned char* valueValue;   // +0x14
-    unsigned char** rowData;     // +0x18
+    unsigned char** rowValue;    // +0x18
     int coverageCount;           // +0x1C
     int connectionCount;         // +0x20
-    unsigned char maxLimit;      // +0x24
+    unsigned char unchangeableLimitValue; // +0x24
 
     int incrementValue(int x, int y, unsigned char value);
 };
+#endif
 
 int InfluenceMap::incrementValue(int x, int y, unsigned char value) {
-    int rx = x - this->xReferencePoint;
-    int ry = y - this->yReferencePoint;
+    int rx = x - this->xReferencePointValue;
+    int ry = y - this->yReferencePointValue;
 
-    if (rx < 0 || ry < 0 || rx >= this->xSize || ry >= this->ySize)
+    if (rx < 0 || ry < 0 || rx >= this->xSizeValue || ry >= this->ySizeValue)
         return 0;
 
-    unsigned char** rows = this->rowData;
+    unsigned char** rows = this->rowValue;
     unsigned char* cell = &rows[ry][rx];
 
-    if (*cell >= this->maxLimit)
+    if (*cell >= this->unchangeableLimitValue)
         return 1;
 
     int sum = (int)(unsigned char)*cell + (int)(unsigned char)value;
-    if (sum >= (int)(unsigned char)this->maxLimit) {
-        *cell = (unsigned char)((int)(unsigned char)this->maxLimit - 1);
+    if (sum >= (int)(unsigned char)this->unchangeableLimitValue) {
+        *cell = (unsigned char)((int)(unsigned char)this->unchangeableLimitValue - 1);
         return 1;
     }
     *cell = (unsigned char)sum;

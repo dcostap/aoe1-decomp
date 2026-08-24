@@ -3,9 +3,10 @@
 
 int __cdecl _DSFillSoundBuffer(void* buf, void* data, int size);
 
-struct IDirectSoundBuffer;
+typedef struct SndObjFreeBuffer SndObjFreeBuffer;
+typedef struct SndObjFreeBufferVtbl SndObjFreeBufferVtbl;
 
-struct IDirectSoundBufferVtbl {
+struct SndObjFreeBufferVtbl {
     void* slot00;
     void* slot04;
     void* slot08;
@@ -15,22 +16,22 @@ struct IDirectSoundBufferVtbl {
     void* slot18;
     void* slot1C;
     void* slot20;
-    int (__stdcall *GetStatus)(struct IDirectSoundBuffer* self, int* status);
+    int (__stdcall *GetStatus)(SndObjFreeBuffer* self, int* status);
     void* slot28;
     void* slot2C;
     void* slot30;
-    int (__stdcall *Func34)(struct IDirectSoundBuffer* self, int value);
+    int (__stdcall *Func34)(SndObjFreeBuffer* self, int value);
     void* slot38;
     void* slot3C;
     void* slot40;
     void* slot44;
-    int (__stdcall *Func48)(struct IDirectSoundBuffer* self);
+    int (__stdcall *Func48)(SndObjFreeBuffer* self);
     void* slot4C;
-    int (__stdcall *Func50)(struct IDirectSoundBuffer* self);
+    int (__stdcall *Func50)(SndObjFreeBuffer* self);
 };
 
-struct IDirectSoundBuffer {
-    struct IDirectSoundBufferVtbl* lpVtbl;
+struct SndObjFreeBuffer {
+    SndObjFreeBufferVtbl* lpVtbl;
 };
 
 struct SndObj {
@@ -38,11 +39,11 @@ struct SndObj {
     int waveSize;
     int count;
     int index;
-    struct IDirectSoundBuffer* buffers[1];
+    SndObjFreeBuffer* buffers[1];
 };
 
 int __cdecl _SndObjGetFreeBuffer(struct SndObj* obj) {
-    struct IDirectSoundBuffer* buf;
+    SndObjFreeBuffer* buf;
     int status;
     int hr;
 

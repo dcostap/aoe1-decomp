@@ -5,6 +5,9 @@
 // the RGE_Static_Object slot-4 recycle call, and a 0x1C8 RGE_Missile_Object.
 // FLAGS: /GX retained because the original has VC5 EH registration and ctor state.
 
+#include "../../include/m_mi_obj_context.h"
+
+#ifndef M_MI_OBJ_SHARED_CONTEXT
 class RGE_Master_Static_Object;
 class RGE_Master_Combat_Object;
 class RGE_Player;
@@ -62,6 +65,7 @@ public:
     RGE_Missile_Object(RGE_Master_Missile_Object* master, RGE_Player* player,
                       float x, float y, float z, int do_setup);
 };
+#endif
 
 RGE_Static_Object* RGE_Master_Missile_Object::make_new_obj(
     RGE_Player* player, float x, float y, float z)

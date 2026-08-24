@@ -28,11 +28,11 @@ extern unsigned int _bFileOpen;
 extern unsigned int _bPlaying;
 extern unsigned int _bTimerInstalled;
 extern unsigned int _stream_paused;
-extern LPWAVEFORMATEX _wiWave;
-extern HMMIO DAT_00888464;
+extern void* _wiWave;
+extern void* DAT_00888464;
 extern MMCKINFO DAT_00888468;
 extern MMCKINFO DAT_0088847c;
-extern LPDIRECTSOUNDBUFFER DAT_00888490;
+extern void* DAT_00888490;
 extern unsigned int DAT_00888494;
 extern unsigned int DAT_00888498;
 extern unsigned int DAT_0088849c;
@@ -42,12 +42,12 @@ extern unsigned int DAT_008884a8;
 extern unsigned int DAT_008884ac;
 extern unsigned int DAT_008884b0;
 extern unsigned int DAT_008884b4;
-extern LPDIRECTSOUND _lpDS;
-extern LPDIRECTSOUNDBUFFER _lpDSBStreamBuffer;
-extern HWND _main_wnd;
+extern void* _lpDS;
+extern void* _lpDSBStreamBuffer;
+extern void* _main_wnd;
 extern unsigned int _uTimerID;
 
-void ds_stream_stop(void);
+int ds_stream_stop(void);
 int _WaveOpenFile(char* file, HMMIO* h, LPWAVEFORMATEX* wi, MMCKINFO* data);
 int _WaveCloseReadFile(HMMIO* h, LPWAVEFORMATEX* wi);
 int _WaveStartDataRead(HMMIO* h, MMCKINFO* data, MMCKINFO* wi);
@@ -91,7 +91,7 @@ int ds_stream_file(char* filename, int param_2, long param_3)
         return 0;
     }
 
-    DAT_00888498 = (((_wiWave->nAvgBytesPerSec * 120) / 100) / 6);
+    DAT_00888498 = ((((LPWAVEFORMATEX)_wiWave)->nAvgBytesPerSec * 120) / 100) / 6;
     DAT_00888494 = DAT_00888498 * 6;
     memset(&dsbd, 0, sizeof(dsbd));
 
@@ -99,7 +99,8 @@ int ds_stream_file(char* filename, int param_2, long param_3)
     dsbd.dwFlags = 0xE0;
     dsbd.dwBufferBytes = DAT_00888494;
     dsbd.lpwfxFormat = (void*)_wiWave;
-    result = IDirectSound_CreateSoundBuffer(_lpDS, &dsbd, &_lpDSBStreamBuffer, 0);
+    result = IDirectSound_CreateSoundBuffer((LPDIRECTSOUND)_lpDS, &dsbd,
+        (LPLPDIRECTSOUNDBUFFER)&_lpDSBStreamBuffer, 0);
     if (result != 0) {
         return 0;
     }
@@ -107,7 +108,7 @@ int ds_stream_file(char* filename, int param_2, long param_3)
     DAT_00888490 = _lpDSBStreamBuffer;
     DAT_008884b0 = 0;
     DAT_008884b4 = 0;
-    result = IDirectSoundBuffer_Lock(_lpDSBStreamBuffer, 0, DAT_00888494,
+    result = IDirectSoundBuffer_Lock((LPDIRECTSOUNDBUFFER)_lpDSBStreamBuffer, 0, DAT_00888494,
         (void**)&lpWrite1, &dwLen1, (void**)&lpWrite2, &dwLen2, 0);
     if (result != 0) {
         return 0;
@@ -127,12 +128,15 @@ int ds_stream_file(char* filename, int param_2, long param_3)
             } else {
                 DAT_008884b4 = uChkErr / DAT_00888498;
                 DAT_008884b0 = 1;
-                memset((unsigned char*)lpWrite1 + uChkErr, ((_wiWave->wBitsPerSample != 8) - 1) & 0x80, dwLen1 - uChkErr);
+        memset((unsigned char*)lpWrite1 + uChkErr,
+            ((((LPWAVEFORMATEX)_wiWave)->wBitsPerSample != 8) - 1) & 0x80,
+            dwLen1 - uChkErr);
             }
         }
     }
 
-    IDirectSoundBuffer_Unlock(_lpDSBStreamBuffer, lpWrite1, dwLen1, lpWrite2, 0);
+    IDirectSoundBuffer_Unlock((LPDIRECTSOUNDBUFFER)_lpDSBStreamBuffer,
+        lpWrite1, dwLen1, lpWrite2, 0);
 
     DAT_008884a4 = 0;
     DAT_008884a0 = 0;
@@ -140,14 +144,14 @@ int ds_stream_file(char* filename, int param_2, long param_3)
     DAT_008884a8 = 0;
     DAT_008884ac = param_2 & 0xff;
     _bFileOpen = 1;
-    SendMessageA(_main_wnd, 0x502, 0, 0);
+    SendMessageA((HWND)_main_wnd, 0x502, 0, 0);
 
-    IDirectSoundBuffer_SetCurrentPosition(_lpDSBStreamBuffer, 0);
-    IDirectSoundBuffer_SetVolume(_lpDSBStreamBuffer, param_3);
-    IDirectSoundBuffer_Play(_lpDSBStreamBuffer, 0, 0, 1);
+    IDirectSoundBuffer_SetCurrentPosition((LPDIRECTSOUNDBUFFER)_lpDSBStreamBuffer, 0);
+    IDirectSoundBuffer_SetVolume((LPDIRECTSOUNDBUFFER)_lpDSBStreamBuffer, param_3);
+    IDirectSoundBuffer_Play((LPDIRECTSOUNDBUFFER)_lpDSBStreamBuffer, 0, 0, 1);
 
     if (timeBeginPeriod(0x32) != 0) {
-        IDirectSoundBuffer_Stop(_lpDSBStreamBuffer);
+        IDirectSoundBuffer_Stop((LPDIRECTSOUNDBUFFER)_lpDSBStreamBuffer);
         _bTimerInstalled = 0;
         _bPlaying = 0;
         return 0;

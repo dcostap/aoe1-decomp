@@ -34,7 +34,9 @@ extern int __cdecl RESFILE_locate_resource(unsigned long type, unsigned long id,
     int& file_handle, int& data_offset, uchar*& mapped_data, int& data_size);
 extern "C" __declspec(dllimport) int __stdcall MessageBoxA(
     void* hWnd, const char* text, const char* caption, unsigned int type);
+#ifndef _INC_IO
 extern "C" int __cdecl lseek(int fd, int offset, int whence);
+#endif
 extern "C" int __cdecl read(int fd, void* buffer, unsigned int count);
 
 extern int DAT_0086B258;

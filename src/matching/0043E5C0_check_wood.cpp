@@ -7,6 +7,7 @@
 // set_disabled before the virtual call. Keep this fault order and receiver.
 // BINARY NOTE: Keep result live through the button loop for final publication.
 
+#ifndef DLG_DIP_SHARED_CONTEXT
 class RGE_Base_Game {
 public:
     char gap_00[0x1B0];
@@ -55,6 +56,7 @@ protected:
 
     int check_wood();
 };
+#endif
 
 int TribeDiplomacyDialog::check_wood()
 {
@@ -74,22 +76,38 @@ int TribeDiplomacyDialog::check_wood()
     }
 
     int i = 0;
+#ifdef DLG_DIP_SHARED_CONTEXT
+    TButtonPanel** pp = this->woodTributeButton;
+#else
     TButtonPanel** pp = this->woodTributeButtons;
+#endif
     do {
         TButtonPanel* btn = *pp;
         if (btn != 0) {
+#ifdef DLG_DIP_SHARED_CONTEXT
+            if (i == this->cur_player_row) {
+#else
             if (i == this->curPlayerRow) {
+#endif
                 btn->set_disabled(1);
             } else {
                 btn->set_disabled(result);
             }
 
             btn = *pp;
+#ifdef DLG_DIP_SHARED_CONTEXT
+            if (this->tribute_flag != 0) {
+                btn->set_fn(1);
+            } else {
+                btn->set_fn(0);
+            }
+#else
             if (this->tributeFlag != 0) {
                 btn->vf14(1);
             } else {
                 btn->vf14(0);
             }
+#endif
         }
         ++i;
         ++pp;

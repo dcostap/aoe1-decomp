@@ -4,7 +4,7 @@
 extern unsigned long ds_stream_position;
 extern unsigned long ds_buffer_bytes;
 extern long ds_last_percent;
-void ds_stream_stop(void);
+int ds_stream_stop(void);
 
 int ds_stream_messages(int a1, int a2)
 {

@@ -7,20 +7,7 @@
 // Probe 3: member initializer list (drawBox(1), spineWidth(0)) + empty body
 //   → VC5 puts vtable AFTER member initialization → EXACT MATCH
 
-class TScrollBarPanel {
-public:
-    virtual void vf00(void);
-    TScrollBarPanel();
-};
-
-class TVerticalSliderPanel : public TScrollBarPanel {
-public:
-    char gap_04[0x1C0];
-    int drawBox;
-    int spineWidth;
-
-    TVerticalSliderPanel();
-};
+#include "../../include/pnl_sld_context.h"
 
 TVerticalSliderPanel::TVerticalSliderPanel()
     : TScrollBarPanel(), drawBox(1), spineWidth(0)

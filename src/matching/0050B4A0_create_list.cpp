@@ -1,23 +1,10 @@
-// TRIBE_Dialog_List::create_list - dispatch to create_*_list based on field value
+// VA: 0050B4A0 TRIBE_Dialog_List::create_list
+// tdlg_lst.cpp lines 33-46
 
-class RGE_Dialog_List {
-public:
-    int create_list();
-    char pad_00[0x4AC];
-};
-
-class TRIBE_Dialog_List : public RGE_Dialog_List {
-public:
-    int field_4AC;
-
-    int create_build_list();
-    int create_train_list();
-    int create_research_list();
-    int create_list();
-};
+#include "../../include/tdlg_lst_context.h"
 
 int TRIBE_Dialog_List::create_list() {
-    switch (this->field_4AC) {
+    switch (this->list_type) {
     case 100:
         return this->create_build_list();
     case 101:

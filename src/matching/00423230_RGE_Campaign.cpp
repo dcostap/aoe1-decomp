@@ -52,47 +52,7 @@
 //   spelling it in both arms. VC5 tail-duplicated that natural common statement,
 //   restoring the branch-local EDI save and exact 251-byte output.
 
-#include <string.h>
-
-struct RGE_Campaign_Header {
-    long version;               // +0x00
-    char name[255];             // +0x04
-    unsigned char _pad_103;
-    long scenario_num;          // +0x104
-};
-
-class RGE_Scenario_Offset;
-
-class RGE_Campaign {
-public:
-    RGE_Campaign_Header campaign_header; // +0x00
-    RGE_Scenario_Offset* scenario_offsets; // +0x108
-    char filename[255];         // +0x10C
-    unsigned char _pad_end;
-
-    RGE_Campaign(char* param1);
-};
-
-class RGE_Prog_Info {
-public:
-    char _gap_00[0xD1C];
-    char campaign_dir[256];
-};
-
-class RGE_Base_Game {
-public:
-    virtual ~RGE_Base_Game();
-    char _gap_04[0x08];
-    RGE_Prog_Info* prog_info;
-};
-
-extern RGE_Base_Game* rge_base_game;
-
-extern "C" int __cdecl sprintf(char*, const char*, ...);
-extern "C" int __cdecl open(const char*, int);
-extern "C" int __cdecl read(int, void*, int);
-extern "C" int __cdecl close(int);
-extern "C" void* __cdecl calloc(int, int);
+#include "../../include/campaign_context.h"
 
 RGE_Campaign::RGE_Campaign(char* param1)
 {

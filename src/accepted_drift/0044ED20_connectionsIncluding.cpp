@@ -76,11 +76,14 @@
 
 typedef unsigned char uchar;
 
+#ifndef INFMAP_SHARED_CONTEXT
 struct XYPoint {
     int x;
     int y;
 };
+#endif
 
+#ifndef INFMAP_SHARED_CONTEXT
 class InfluenceMap {
 public:
     virtual ~InfluenceMap();
@@ -98,6 +101,7 @@ public:
                              uchar minimum, uchar amount,
                              int mode1, int mode2, int allDirections);
 };
+#endif
 
 int InfluenceMap::connectionsIncluding(const XYPoint& from, const XYPoint& to,
                                        uchar minimum, uchar amount,

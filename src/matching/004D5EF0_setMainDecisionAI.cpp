@@ -1,9 +1,12 @@
+#ifndef TAICONMD_SHARED_CONTEXT
+class TribeMainDecisionAIModule;
 class TribeConstructionAIModule {
 public:
     virtual ~TribeConstructionAIModule();
     char gap_0[0x310];
-    int field_314;
-    void setMainDecisionAI(int v);
+    TribeMainDecisionAIModule* md;
+    void setMainDecisionAI(TribeMainDecisionAIModule* v);
 };
+#endif
 
-void TribeConstructionAIModule::setMainDecisionAI(int v) { this->field_314 = v; }
+void TribeConstructionAIModule::setMainDecisionAI(TribeMainDecisionAIModule* v) { this->md = v; }

@@ -16,10 +16,7 @@
 // convention, parameter layout, and behavior are identical. Only which register
 // holds which value differs — a compiler-internal heuristic.
 
-typedef void* HMMIO;
-typedef int MMRESULT;
-
-struct MMIOINFO {
+struct DSUTIL_WAVEWRITE_MMIOINFO {
     unsigned int dwFlags;        // +0x00
     unsigned int pad04[6];       // +0x04 to +0x1B
     unsigned char* pchNext;      // +0x1C
@@ -27,9 +24,7 @@ struct MMIOINFO {
     unsigned char* pchEndWrite;  // +0x24
 };
 
-extern MMRESULT __cdecl mmioAdvance(HMMIO, struct MMIOINFO*, unsigned int);
-
-void __cdecl WaveWriteFile(HMMIO hmmio, unsigned int cBytes, const unsigned char* lpSrc, unsigned int pad, unsigned int* pdwWritten, struct MMIOINFO* lpmmio) {
+void __cdecl WaveWriteFile(HMMIO hmmio, unsigned int cBytes, const unsigned char* lpSrc, unsigned int pad, unsigned int* pdwWritten, struct DSUTIL_WAVEWRITE_MMIOINFO* lpmmio) {
     unsigned int i = 0;
     *pdwWritten = 0;
     if (cBytes <= 0) return;

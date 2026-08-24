@@ -1,9 +1,5 @@
-class TRIBE_Action {
-public:
-    void target_004D39E0(int a, int b);
-    void setup(int a, int b);
-};
+#include "../../include/taction_context.h"
 
-void TRIBE_Action::setup(int a, int b) {
-    this->target_004D39E0(a, b);
+int TRIBE_Action::setup(int mode, RGE_Action_Object* object) {
+    return RGE_Action::setup(mode, object);
 }

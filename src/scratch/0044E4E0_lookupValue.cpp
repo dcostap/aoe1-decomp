@@ -1,3 +1,4 @@
+#ifndef INFMAP_SHARED_CONTEXT
 struct InfluenceMap {
     int vfptr;
     int xSizeValue;
@@ -6,12 +7,14 @@ struct InfluenceMap {
     int yReferencePointValue;
     int valueValue;
     int** rowValue;
+    int lookupValue(int, int);
 };
+#endif
 
-int __fastcall lookupValue(InfluenceMap* self, int, int x, int y) {
-    if (x < 0 || x >= self->xSizeValue)
+int InfluenceMap::lookupValue(int x, int y) {
+    if (x < 0 || x >= this->xSizeValue)
         return -1;
-    if (y < 0 || y >= self->ySizeValue)
+    if (y < 0 || y >= this->ySizeValue)
         return -1;
-    return self->rowValue[y][x];
+    return this->rowValue[y][x];
 }

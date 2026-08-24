@@ -1,9 +1,12 @@
+#ifndef COM_LOBY_CONTEXT
 class RGE_Lobby {
 public:
-    virtual ~RGE_Lobby();
-    char gap_0[0x10];
-    unsigned char field_14;
-    int SendZoneHandshakeResponse();
+    char gap_0[0x14];
+    unsigned char lobby_game;
+    long SendZoneHandshakeResponse(void);
 };
+#endif
 
-int RGE_Lobby::SendZoneHandshakeResponse() { return this->field_14 != 0; }
+long RGE_Lobby::SendZoneHandshakeResponse(void) {
+    return this->lobby_game != 0;
+}

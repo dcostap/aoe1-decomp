@@ -246,69 +246,7 @@
 // - Anchor 00484470 was independently checked and remains an exact 578-byte
 //   match. Keep the pinned typed source; no policy-valid exact lead remains.
 
-class RGE_Map;
-class RGE_Object_Node;
-
-class Map_Stack {
-public:
-    long x;
-    long y;
-    float cost;
-    float tot_cost;
-    Map_Stack* next;
-    Map_Stack* prev;
-};
-
-class RGE_Object_List {
-public:
-    virtual ~RGE_Object_List();
-
-    RGE_Object_Node* list;
-    short number_of_objects;
-    unsigned char pad_0A[2];
-};
-
-class RGE_Tile {
-public:
-    short screen_xpos;
-    short screen_ypos;
-    unsigned char tile_type;
-    unsigned char terrain_type : 5;
-    unsigned char elevation : 3;
-    unsigned char border_type : 4;
-    unsigned char border_shape : 4;
-    unsigned char last_drawn_as;
-    unsigned char last_drawn_shape;
-    unsigned char draw_as;
-    unsigned char draw_attribute;
-    unsigned char last_drawn_shape2;
-    RGE_Object_List objects;
-};
-
-class RGE_Random_Map_Module_List;
-
-class RGE_Random_Map_Module {
-public:
-    virtual unsigned char generate() = 0;
-
-    RGE_Random_Map_Module* parent;
-    RGE_Random_Map_Module_List* list;
-    RGE_Map* map;
-    RGE_Tile** map_row_offset;
-    long map_width;
-    long map_height;
-    float schedule;
-    unsigned char* search_map;
-    unsigned char** search_map_rows;
-    Map_Stack* stack_array;
-    Map_Stack** stack_offsets;
-};
-
-class RGE_RMM_Elevation_Generator : public RGE_Random_Map_Module {
-protected:
-
-    unsigned char check_start_elevation(long x, long y, unsigned char terrain, unsigned char elevation, unsigned char range);
-};
+#include "..\\..\\include\\rmm_elev_context.h"
 
 unsigned char RGE_RMM_Elevation_Generator::check_start_elevation(long x, long y, unsigned char terrain, unsigned char elevation, unsigned char range)
 {

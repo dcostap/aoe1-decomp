@@ -1,18 +1,16 @@
 /* VA: 00448A80 ds_stream_stop */
 /* Dsutil.c lines 1638-1678, 162 bytes */
 
-extern int _bTimerInstalled;
-extern int _uTimerID;
-extern int _bPlaying;
+extern unsigned int _bTimerInstalled;
+extern unsigned int _uTimerID;
+extern unsigned int _bPlaying;
 extern void* _lpDSBStreamBuffer;
-extern int _bFileOpen;
-extern int _wiWave;
+extern unsigned int _bFileOpen;
+extern void* _wiWave;
 extern int DAT_008884a8;
-extern int DAT_00888464;
-extern int DAT_00888490;
+extern void* DAT_00888464;
+extern void* DAT_00888490;
 
-extern void (__stdcall *timeKillEvent)(int id);
-extern void (__stdcall *timeEndPeriod)(int period);
 extern int __cdecl _WaveCloseReadFile(void* a, void* b);
 
 int __cdecl ds_stream_stop(void)

@@ -101,6 +101,8 @@ struct BuildRes_type_node {
     BuildRes_type_node* next;   // +0x10
 };
 
+#ifndef RESFILE_MODULE_RESFILE_HEADER_DEFINED
+#define RESFILE_MODULE_RESFILE_HEADER_DEFINED
 struct resfile_header {         // 0x40
     char banner_msg[40];        // +0x00
     char version[4];            // +0x28
@@ -108,18 +110,25 @@ struct resfile_header {         // 0x40
     int num_res_types;          // +0x38
     int directory_size;         // +0x3C
 };
+#endif
 
+#ifndef RESFILE_MODULE_RESFILE_ID_DIR_DEFINED
+#define RESFILE_MODULE_RESFILE_ID_DIR_DEFINED
 struct resfile_id_dir_node {    // 0xC
     unsigned long id;
     long itemOffset;
     long itemSize;
 };
+#endif
 
+#ifndef RESFILE_MODULE_RESFILE_TYPE_DIR_DEFINED
+#define RESFILE_MODULE_RESFILE_TYPE_DIR_DEFINED
 struct resfile_type_dir_node {  // 0xC
     unsigned long type;
     long dirOffset;
     long numID;
 };
+#endif
 
 class TDebuggingLog;
 extern TDebuggingLog* L;

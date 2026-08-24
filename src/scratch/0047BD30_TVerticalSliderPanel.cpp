@@ -1,12 +1,4 @@
-class Base_TVerticalSliderPanel {
-public:
-    virtual ~Base_TVerticalSliderPanel();
-};
-
-class TVerticalSliderPanel : public Base_TVerticalSliderPanel {
-public:
-    virtual ~TVerticalSliderPanel();
-};
+#include "../../include/pnl_sld_context.h"
 
 TVerticalSliderPanel::~TVerticalSliderPanel() {
 }

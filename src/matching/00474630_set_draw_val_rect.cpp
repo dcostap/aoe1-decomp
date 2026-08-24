@@ -1,3 +1,4 @@
+#ifndef PNL_DROP_CONTEXT
 class TTextPanel {
 public:
     void set_outline(int rect, unsigned char color);
@@ -24,6 +25,7 @@ public:
 
     void set_draw_val_rect(int value);
 };
+#endif
 
 void TDropDownPanel::set_draw_val_rect(int value) {
     this->draw_val_rect = value;

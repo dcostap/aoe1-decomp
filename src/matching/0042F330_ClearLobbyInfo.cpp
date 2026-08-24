@@ -1,6 +1,7 @@
 // VA: 0042F330 RGE_Lobby::ClearLobbyInfo (64 B)
 // PDB source: com_loby.cpp lines 53-77
 
+#ifndef COM_LOBY_CONTEXT
 extern "C" void __cdecl operator_delete(void*);
 
 struct IDirectPlayLobby2Vtbl {
@@ -31,6 +32,7 @@ public:
     char gap_15[0x03];
     RGE_Comm_Error* Err;            // +0x18
 };
+#endif
 
 void RGE_Lobby::ClearLobbyInfo(void) {
     if (this->glpdplConnection != 0) {
@@ -39,7 +41,11 @@ void RGE_Lobby::ClearLobbyInfo(void) {
     }
     if (this->glpDPL2 != 0) {
         IDirectPlayLobby2* pLobby = this->glpDPL2;
+#ifdef COM_LOBY_CONTEXT
+        long result = pLobby->Release();
+#else
         long result = pLobby->lpVtbl->Release(pLobby);
+#endif
         this->Err->ShowReturn(result, _s_Release);
         this->glpDPL2 = 0;
     }

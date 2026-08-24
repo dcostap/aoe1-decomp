@@ -3,30 +3,27 @@
 
 typedef unsigned int UINT;
 typedef unsigned long DWORD;
-typedef void* HMMIO;
-typedef void* HGLOBAL;
-
-typedef struct MMCKINFO_LOCAL {
+typedef struct DSUTIL_WAVELOAD_MMCKINFO {
     DWORD ckid;
     DWORD cksize;
     DWORD fccType;
     DWORD dwDataOffset;
     DWORD dwFlags;
-} MMCKINFO_LOCAL;
+} DSUTIL_WAVELOAD_MMCKINFO;
 
 __declspec(dllimport) HGLOBAL __stdcall GlobalAlloc(UINT flags, DWORD bytes);
 __declspec(dllimport) HGLOBAL __stdcall GlobalFree(HGLOBAL hMem);
 __declspec(dllimport) int __stdcall mmioClose(HMMIO hmmio, UINT flags);
 
-int __cdecl _WaveOpenFile(char* pszFileName, HMMIO* phmmioIn, void** ppWaveHeader, MMCKINFO_LOCAL* pckInRIFF);
-int __cdecl _WaveStartDataRead(HMMIO* phmmioIn, MMCKINFO_LOCAL* pckIn, MMCKINFO_LOCAL* pckInRIFF);
-int __cdecl _WaveReadFile(HMMIO hmmioIn, DWORD cbRead, unsigned char* pbDest, MMCKINFO_LOCAL* pckIn, DWORD* pcbActualRead);
+int __cdecl _WaveOpenFile(char* pszFileName, HMMIO* phmmioIn, void** ppWaveHeader, DSUTIL_WAVELOAD_MMCKINFO* pckInRIFF);
+int __cdecl _WaveStartDataRead(HMMIO* phmmioIn, DSUTIL_WAVELOAD_MMCKINFO* pckIn, DSUTIL_WAVELOAD_MMCKINFO* pckInRIFF);
+int __cdecl _WaveReadFile(HMMIO hmmioIn, DWORD cbRead, unsigned char* pbDest, DSUTIL_WAVELOAD_MMCKINFO* pckIn, DWORD* pcbActualRead);
 
 int __cdecl _WaveLoadFile(char* pszFileName, DWORD* pcbWaveSize, DWORD* pcbHeaderSize, void** ppWaveHeader, unsigned char** ppbWaveData)
 {
     HMMIO hmmio;
-    MMCKINFO_LOCAL ckInRiff;
-    MMCKINFO_LOCAL ckIn;
+    DSUTIL_WAVELOAD_MMCKINFO ckInRiff;
+    DSUTIL_WAVELOAD_MMCKINFO ckIn;
     int err;
     DWORD cbActualRead;
 

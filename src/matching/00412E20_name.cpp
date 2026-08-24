@@ -1,9 +1,3 @@
-class TechnologyItem {
-public:
-    virtual ~TechnologyItem();
-    char gap_0[0xC];
-    char field_10[1];
-    char* name();
-};
+#include "../../include/aitchitm_context.h"
 
-char* TechnologyItem::name() { return this->field_10; }
+char* TechnologyItem::name() { return this->nameValue; }

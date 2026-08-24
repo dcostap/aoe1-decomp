@@ -7,30 +7,27 @@
 typedef unsigned int UINT;
 typedef unsigned int DWORD;
 typedef long LONG;
-typedef void* HGLOBAL;
-typedef void* HMMIO;
-
-typedef struct MMCKINFO_LOCAL {
+typedef struct DSUTIL_RIFFCOPY_MMCKINFO {
     DWORD ckid;
     DWORD cksize;
     DWORD fccType;
     DWORD dwDataOffset;
     DWORD dwFlags;
-} MMCKINFO_LOCAL;
+} DSUTIL_RIFFCOPY_MMCKINFO;
 
 typedef HGLOBAL (__stdcall *GLOBALALLOC)(UINT flags, DWORD bytes);
 typedef void* (__stdcall *GLOBALLOCK)(HGLOBAL hMem);
-typedef HGLOBAL (__stdcall *GLOBALHANDLE)(const void* pMem);
+typedef HGLOBAL (__stdcall *DSUTIL_GLOBALHANDLE)(const void* pMem);
 typedef int (__stdcall *GLOBALUNLOCK)(HGLOBAL hMem);
 typedef HGLOBAL (__stdcall *GLOBALFREE)(HGLOBAL hMem);
-typedef int (__stdcall *MMIOCREATECHUNK)(HMMIO hmmio, MMCKINFO_LOCAL* ck, UINT flags);
+typedef int (__stdcall *MMIOCREATECHUNK)(HMMIO hmmio, DSUTIL_RIFFCOPY_MMCKINFO* ck, UINT flags);
 typedef LONG (__stdcall *MMIOREAD)(HMMIO hmmio, char* pch, LONG cch);
 typedef LONG (__stdcall *MMIOWRITE)(HMMIO hmmio, const char* pch, LONG cch);
-typedef int (__stdcall *MMIOASCEND)(HMMIO hmmio, MMCKINFO_LOCAL* ck, UINT flags);
+typedef int (__stdcall *MMIOASCEND)(HMMIO hmmio, DSUTIL_RIFFCOPY_MMCKINFO* ck, UINT flags);
 
 #define GlobalAlloc_abs (*(GLOBALALLOC*)0x88A668)
 #define GlobalLock_abs (*(GLOBALLOCK*)0x88A698)
-#define GlobalHandle_abs (*(GLOBALHANDLE*)0x88A68C)
+#define GlobalHandle_abs (*(DSUTIL_GLOBALHANDLE*)0x88A68C)
 #define GlobalUnlock_abs (*(GLOBALUNLOCK*)0x88A690)
 #define GlobalFree_abs (*(GLOBALFREE*)0x88A69C)
 #define mmioCreateChunk_abs (*(MMIOCREATECHUNK*)0x88A944)
@@ -40,13 +37,13 @@ typedef int (__stdcall *MMIOASCEND)(HMMIO hmmio, MMCKINFO_LOCAL* ck, UINT flags)
 
 #define CLEANUP_DATA() do { \
     void* handle_func = (void*)GlobalHandle_abs; \
-    GlobalUnlock_abs(((GLOBALHANDLE)handle_func)(data)); \
-    GlobalFree_abs(((GLOBALHANDLE)handle_func)(data)); \
+    GlobalUnlock_abs(((DSUTIL_GLOBALHANDLE)handle_func)(data)); \
+    GlobalFree_abs(((DSUTIL_GLOBALHANDLE)handle_func)(data)); \
 } while (0)
 
-int __cdecl riffCopyChunk(HMMIO hmmioSrc, HMMIO hmmioDst, MMCKINFO_LOCAL* pckIn)
+int __cdecl riffCopyChunk(HMMIO hmmioSrc, HMMIO hmmioDst, DSUTIL_RIFFCOPY_MMCKINFO* pckIn)
 {
-    MMCKINFO_LOCAL ck;
+    DSUTIL_RIFFCOPY_MMCKINFO ck;
     char* data;
 
     data = (char*)GlobalLock_abs(GlobalAlloc_abs(0x42, pckIn->cksize));

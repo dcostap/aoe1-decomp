@@ -1,3 +1,4 @@
+#ifndef INFMAP_SHARED_CONTEXT
 struct InfluenceMap {
     void* vfptr;              // 0x00
     int xSizeValue;           // 0x04
@@ -9,6 +10,7 @@ struct InfluenceMap {
 
     int setValue(int x, int y, unsigned char value);
 };
+#endif
 
 int InfluenceMap::setValue(int x, int y, unsigned char value) {
     x -= this->xReferencePointValue;

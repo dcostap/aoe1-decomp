@@ -7,39 +7,13 @@
 
 #include <string.h>
 
-class ResourceItem {
-public:
-    virtual ~ResourceItem();
-    ResourceItem();
-    ResourceItem(const ResourceItem& src);
-    ResourceItem(ResourceItem* src);
-
-    ResourceItem* next;
-    ResourceItem* prev;
-    int field_0C[8];
-    int sortedValue[8];
-    int field_4C[8];
-    int field_6C;
-};
-
-class TechnologyItem {
-public:
-    void* vftable;
-    TechnologyItem* next;
-    TechnologyItem* prev;
-    int idValue;
-    char nameValue[0x40];
-    ResourceItem* resourceCostValue;
-
-    TechnologyItem(int id, char* name, ResourceItem cost);
-};
+#include "../../include/aitchitm_context.h"
 
 // 00412C20 - 168 bytes
 TechnologyItem::TechnologyItem(int id, char* name, ResourceItem cost) {
     this->next = 0;
     this->prev = 0;
     this->idValue = id;
-    this->vftable = (void*)0x0056EA94;
     this->resourceCostValue = new ResourceItem(cost);
     strcpy(this->nameValue, name);
 }

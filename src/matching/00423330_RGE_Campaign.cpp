@@ -25,53 +25,7 @@
 // calls and relocations identical. The prior two-byte SIB note is retained as
 // historical compiler-context evidence, not a current blocker.
 
-#include <string.h>
-
-class RGE_Scenario_Offset {
-public:
-    long size;
-    long offset;
-    char name[255];
-    char file_name[255];
-    unsigned char _pad_end[2];
-};
-
-struct RGE_Campaign_Header {
-    long version;
-    char name[255];
-    unsigned char _pad_103;
-    long scenario_num;
-};
-
-class RGE_Campaign {
-public:
-    RGE_Campaign_Header campaign_header;
-    RGE_Scenario_Offset* scenario_offsets;
-    char filename[255];
-    unsigned char _pad_end;
-
-    RGE_Campaign(char* param1, char* param2, long count, char** names, char** filenames);
-    void create_file();
-};
-
-class RGE_Prog_Info {
-public:
-    char _gap_00[0xD1C];
-    char campaign_dir[256];
-};
-
-class RGE_Base_Game {
-public:
-    virtual ~RGE_Base_Game();
-    char _gap_04[0x08];
-    RGE_Prog_Info* prog_info;
-};
-
-extern RGE_Base_Game* rge_base_game;
-extern long campaign_version;
-
-extern "C" int __cdecl sprintf(char*, const char*, ...);
-extern "C" void* __cdecl calloc(int, int);
+#include "../../include/campaign_context.h"
 
 RGE_Campaign::RGE_Campaign(char* param1, char* param2, long count, char** names, char** filenames)
 {

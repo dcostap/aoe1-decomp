@@ -1,9 +1,5 @@
-class TechnologyItem {
-public:
-    char gap_00[0xC];
-    int value;
-};
+#include "../../include/aitchitm_context.h"
 
 int __cdecl operator>(TechnologyItem const& lhs, TechnologyItem const& rhs) {
-    return lhs.value > rhs.value;
+    return lhs.idValue > rhs.idValue;
 }

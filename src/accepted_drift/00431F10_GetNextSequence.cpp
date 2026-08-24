@@ -8,6 +8,7 @@
 //     Semantically equivalent: (tmp < 0xFF) ? tmp : 0.
 //   Total: 51/58 bytes match. Remaining 7 bytes are documented sbb width drift.
 
+#ifndef COM_Q_CONTEXT
 class RGE_Communications_Queue {
 public:
     unsigned int QueueDepth;              // +0x00
@@ -22,6 +23,7 @@ public:
 
     unsigned char GetNextSequence(unsigned long param_1);
 };
+#endif
 
 unsigned char RGE_Communications_Queue::GetNextSequence(unsigned long param_1) {
     if (param_1 != this->LastCurrentTurn) {

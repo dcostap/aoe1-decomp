@@ -1,19 +1,19 @@
-void __stdcall init_map(int);
-
+#ifndef INFMAP_SHARED_CONTEXT
 struct InfluenceMap {
     int vfptr;      // 0x00
-    int field_4;    // 0x04
-    int field_8;    // 0x08
-    int field_C;    // 0x0C
-    int field_10;   // 0x10
+    int xSizeValue;  // 0x04
+    int ySizeValue;  // 0x08
+    int xReferencePointValue; // 0x0C
+    int yReferencePointValue; // 0x10
+    InfluenceMap(int);
+    void load(int);
 };
+#endif
 
-InfluenceMap* __fastcall InfluenceMap_ctor(InfluenceMap* self, int, int param) {
-    self->field_4 = -1;
-    self->field_8 = -1;
-    self->vfptr = 0x00570444;
-    self->field_C = 0;
-    self->field_10 = 0;
-    init_map(param);
-    return self;
+InfluenceMap::InfluenceMap(int fd) {
+    this->xSizeValue = -1;
+    this->ySizeValue = -1;
+    this->xReferencePointValue = 0;
+    this->yReferencePointValue = 0;
+    this->load(fd);
 }

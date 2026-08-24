@@ -42,7 +42,9 @@
 // overlapping lea destinations, and post-read byte reload/store family exactly. diff 114 -> 0. Moved to matching.
 
 #include <stdio.h>
+#include "../../include/m_mi_obj_context.h"
 
+#ifndef M_MI_OBJ_SHARED_CONTEXT
 struct RGE_Master_Missile_Object {
     char gap_000[0x148];
     unsigned char missile_type;
@@ -59,6 +61,7 @@ struct RGE_Master_Combat_Object {
     char base[0x148];
     int setup(FILE* file, void** sprites, void** sounds, short target_type);
 };
+#endif
 
 int RGE_Master_Missile_Object::setup(FILE* file, void** sprites, void** sounds, short target_type)
 {
@@ -68,10 +71,17 @@ int RGE_Master_Missile_Object::setup(FILE* file, void** sprites, void** sounds, 
     short die_info_out;
     short area_specials_out;
 
+#ifdef M_MI_OBJ_SHARED_CONTEXT
+    RGE_Master_Combat_Object::setup(file, sprites, sounds, target_type);
+
+    field_a4 = 1;
+    field_4 = 0x3C;
+#else
     ((RGE_Master_Combat_Object*)this)->setup(file, sprites, sounds, target_type);
 
     *(unsigned char*)((char*)this + 0xA4) = 1;
     *(unsigned char*)((char*)this + 4) = 0x3C;
+#endif
 
     fscanf(file, "%hd %hd %hd %hd %hd %f",
            &temp_missile_type,

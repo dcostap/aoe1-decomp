@@ -1,9 +1,11 @@
-class MsgQueue {
+#ifndef COM_Q_CONTEXT
+class RGE_Communications_Queue {
 public:
-    void Flush(int a, int b);
+    void FlushTurnRange(unsigned long first, unsigned long last);
     void FlushAll();
 };
+#endif
 
-void MsgQueue::FlushAll() {
-    this->Flush(0, 0);
+void RGE_Communications_Queue::FlushAll() {
+    this->FlushTurnRange(0, 0);
 }

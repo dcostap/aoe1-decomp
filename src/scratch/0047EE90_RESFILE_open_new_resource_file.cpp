@@ -84,11 +84,15 @@ extern "C" __declspec(dllimport) int __stdcall MessageBoxA(
 
 extern "C" int __cdecl __open(const char* path, int flags, ...);
 extern "C" int __cdecl sprintf(char* buf, const char* fmt, ...);
+#ifndef _INC_IO
 extern "C" int __cdecl lseek(int fd, int offset, int whence);
+#endif
 extern "C" int __cdecl read(int fd, void* buf, unsigned size);
 
 struct resfile_header;
 
+#ifndef RESFILE_MODULE_RESFILE_HDR_DEFINED
+#define RESFILE_MODULE_RESFILE_HDR_DEFINED
 struct ResFileHdr {
     unsigned char* mapped_file;
     int handle;
@@ -96,7 +100,10 @@ struct ResFileHdr {
     ResFileHdr* next;
     char res_name[260];
 };
+#endif
 
+#ifndef RESFILE_MODULE_RESFILE_HEADER_DEFINED
+#define RESFILE_MODULE_RESFILE_HEADER_DEFINED
 struct resfile_header {
     char banner_msg[40];
     char version[4];
@@ -104,6 +111,7 @@ struct resfile_header {
     int num_res_types;
     int directory_size;
 };
+#endif
 
 extern ResFileHdr* g_resFileList;
 

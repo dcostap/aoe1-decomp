@@ -1,6 +1,7 @@
 // Pnl_drop.cpp target: TDropDownPanel::action
 // natural button/list action forwarding; set_text is vtable slot 0xE8 and parent action notification is slot 0xB4.
 
+#ifndef PNL_DROP_CONTEXT
 class TPanel {
 public:
     virtual void vf00();
@@ -62,6 +63,7 @@ public:
     virtual long action(TPanel* panel, long action, unsigned long param3, unsigned long param4);
     void set_mode(int mode);
 };
+#endif
 
 long TDropDownPanel::action(TPanel* panel, long action_code, unsigned long line, unsigned long param4) {
     if (panel == this->btn_panel) {

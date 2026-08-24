@@ -1,6 +1,7 @@
 // 004D6780 TribeConstructionAIModule::placeDock
 // Size: 117 bytes
 
+#ifndef TAICONMD_SHARED_CONTEXT
 class ConstructionItem {
 public:
     char gap_00[0x6C];
@@ -31,6 +32,7 @@ public:
 
     ConstructionItem* placeDock(BuildItem* item);
 };
+#endif
 
 ConstructionItem* TribeConstructionAIModule::placeDock(BuildItem* item) {
     ConstructionItem* result;

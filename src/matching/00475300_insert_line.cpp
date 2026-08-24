@@ -1,8 +1,8 @@
+#ifndef PNL_DROP_CONTEXT
 class TTextPanel {
 public:
     int insert_line(long param_1, char* param_2, long param_3);
 };
-
 class TDropDownPanel {
 public:
     virtual void dummy_vf();
@@ -11,6 +11,7 @@ public:
 
     int insert_line(long param_1, char* param_2, long param_3);
 };
+#endif
 
 int TDropDownPanel::insert_line(long param_1, char* param_2, long param_3) {
     if (this->list_panel) {

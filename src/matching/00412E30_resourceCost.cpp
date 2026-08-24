@@ -1,9 +1,3 @@
-class TechnologyItem {
-public:
-    virtual ~TechnologyItem();
-    char gap_0[0x4C];
-    int field_50;
-    int resourceCost();
-};
+#include "../../include/aitchitm_context.h"
 
-int TechnologyItem::resourceCost() { return this->field_50; }
+ResourceItem* TechnologyItem::resourceCost() { return this->resourceCostValue; }

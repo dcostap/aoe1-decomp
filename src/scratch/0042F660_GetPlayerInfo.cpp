@@ -1,25 +1,22 @@
+#ifndef COM_LOBY_CONTEXT
 struct DPLCONNECTION_gpi {
-    char gap_00[0x08];
-    void* player_name_ptr;
-};
-
-struct ConnectionInfo_gpi {
     char gap_00[0x0C];
-    DPLCONNECTION_gpi* conn_settings;
+    void* lpPlayerName;
 };
 
-class RGE_Lobby_gpi {
+class RGE_Lobby {
 public:
     unsigned char GetPlayerInfo(char** out);
     char gap_00[0x10];
-    ConnectionInfo_gpi* lobby_data;
+    DPLCONNECTION_gpi* glpdplConnection;
     unsigned char lobby_game;
 };
+#endif
 
-unsigned char RGE_Lobby_gpi::GetPlayerInfo(char** out) {
-    if (!this->lobby_game) {
+unsigned char RGE_Lobby::GetPlayerInfo(char** out) {
+    if (this->lobby_game == 0) {
         return 0;
     }
-    *out = (char*)this->lobby_data->conn_settings->player_name_ptr;
+    *out = (char*)this->glpdplConnection->lpPlayerName;
     return 1;
 }

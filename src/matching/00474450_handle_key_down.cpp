@@ -1,6 +1,7 @@
 // compact dropdown-key handler first
 // expected basin: early open-state/key filter, then set_mode(2), else fall back to base panel handling
 
+#ifndef PNL_DROP_CONTEXT
 class TPanel {
 public:
     long handle_key_down(long key, short ch, int a3, int a4, int a5);
@@ -16,6 +17,7 @@ public:
     long handle_key_down(long key, short ch, int a3, int a4, int a5);
     void set_mode(int mode);
 };
+#endif
 
 long TDropDownPanel::handle_key_down(long key, short ch, int a3, int a4, int a5) {
     if (this->open_state != 0 && (key == 0x28 || key == 0x26) && this->mode == 1) {

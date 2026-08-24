@@ -83,6 +83,7 @@
 //   width loads and the opposite ECX/EDX map for scrollbar list and line.
 // No natural source form tested in this claim resolves that register basin.
 
+#ifndef PNL_DROP_CONTEXT
 #include "../../include/panel_context.h"
 
 class TTextPanel;
@@ -178,6 +179,7 @@ public:
               long scbar_arrow_hgt, long scbar_tab_hgt);
     void set_mode(int mode);
 };
+#endif
 
 long TDropDownPanel::setup(TDrawArea* area, TPanel* parent, void* p3, long p4, long p5, int p6, unsigned char p7,
               int p8, unsigned char outline, long left, long top, long panel_width, long panel_height,

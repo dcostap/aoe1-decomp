@@ -57,6 +57,7 @@
 
 #include <stdio.h>
 
+#ifndef DLG_DIP_SHARED_CONTEXT
 struct tagRECT {
     long left;
     long top;
@@ -427,6 +428,7 @@ public:
 
     TribeDiplomacyDialog(TScreenPanel*);
 };
+#endif
 
 TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parent)
     : TDialogPanel("Diplomacy Dialog")

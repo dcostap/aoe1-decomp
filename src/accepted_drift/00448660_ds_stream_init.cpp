@@ -9,14 +9,14 @@
 // 10 relocations masked.
 
 extern unsigned int _uLastPercent;
-extern unsigned int _lpDSBStreamBuffer;
+extern void* _lpDSBStreamBuffer;
 extern unsigned int _bFileOpen;
 extern unsigned int _bPlaying;
 extern unsigned int _bTimerInstalled;
 extern unsigned int _uTimerID;
-extern unsigned int _main_wnd;
+extern void* _main_wnd;
 extern unsigned int _lpBuffer;
-extern unsigned int _lpDS;
+extern void* _lpDS;
 extern unsigned int _ds_ready;
 
 void __cdecl ds_stream_init(unsigned int main_wnd, unsigned int lpDS, unsigned int lpBuffer) {

@@ -1,8 +1,8 @@
+#ifndef PNL_DROP_CONTEXT
 class MemberType {
 public:
     int get_line();
 };
-
 class TDropDownPanel {
 public:
     char gap_0[0xFC];
@@ -10,6 +10,7 @@ public:
 
     int get_line();
 };
+#endif
 
 int TDropDownPanel::get_line() {
     if (this->member_FC) {

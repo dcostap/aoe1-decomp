@@ -1,11 +1,13 @@
-class TShape_Header_Info {
+#ifndef INFMAP_SHARED_CONTEXT
+class InfluenceMap {
 public:
     char gap_0[0x24];
-    unsigned char unchangeableLimit;
+    unsigned char unchangeableLimitValue;
     void setUnchangeableLimit(unsigned char val);
 };
+#endif
 
-void TShape_Header_Info::setUnchangeableLimit(unsigned char val) {
-    if (val > 0)
-        this->unchangeableLimit = val;
+void InfluenceMap::setUnchangeableLimit(unsigned char value) {
+    if (value > 0)
+        this->unchangeableLimitValue = value;
 }

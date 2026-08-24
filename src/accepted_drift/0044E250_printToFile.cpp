@@ -6,11 +6,16 @@
 // 4: current best same-size 611 B, equal until offset 0x1A0 and after 0x1A7; only drift is `mov ebp,edi` scheduled before vs after `add esp,0Ch` following one fprintf in row footer, plus resulting branch displacement byte. Behavior/calls/stack cleanup/memory effects unchanged.
 // accepted_drift proposal: localized instruction scheduling drift around independent row-index assignment after fprintf.
 
+#ifdef INFMAP_SHARED_CONTEXT
+#include <stdio.h>
+#else
 struct FILE;
+#endif
 extern "C" FILE* __cdecl fopen(const char*, const char*);
 extern "C" int __cdecl fprintf(FILE*, const char*, ...);
 extern "C" int __cdecl fclose(FILE*);
 
+#ifndef INFMAP_SHARED_CONTEXT
 class InfluenceMap {
 public:
     void* vtable;
@@ -22,6 +27,7 @@ public:
     unsigned char** rowValue;
     void printToFile(char* filename);
 };
+#endif
 
 void InfluenceMap::printToFile(char* filename)
 {

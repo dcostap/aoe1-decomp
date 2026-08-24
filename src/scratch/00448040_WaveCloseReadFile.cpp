@@ -1,8 +1,3 @@
-typedef void* HGLOBAL;
-typedef void* HMMIO;
-extern "C" __declspec(dllimport) HGLOBAL __stdcall GlobalFree(HGLOBAL hMem);
-extern "C" __declspec(dllimport) int __stdcall mmioClose(HMMIO hmmio, unsigned int flags);
-
 int _WaveCloseReadFile(HMMIO* hmmio, HGLOBAL* pwav) {
     if (*pwav != 0) {
         GlobalFree(*pwav);

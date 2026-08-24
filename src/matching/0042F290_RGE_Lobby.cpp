@@ -7,6 +7,7 @@
 // then switched to C++ new + declared ~RGE_Comm_Error() dtor + properly named /GX rsp -> EXACT MATCH
 // FLAGS: /GX (needed for EH prolog basin; RGE_Comm_Error's declared dtor in different TU forces frame)
 
+#ifndef COM_LOBY_CONTEXT
 void* __cdecl operator_new(unsigned int size);
 
 class RGE_Comm_Error {
@@ -31,6 +32,7 @@ public:
 
     RGE_Lobby(void* hwnd);
 };
+#endif
 
 RGE_Lobby::RGE_Lobby(void* hwnd) {
     this->HostHWND = hwnd;

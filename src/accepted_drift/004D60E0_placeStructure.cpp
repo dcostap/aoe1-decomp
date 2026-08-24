@@ -79,6 +79,7 @@
 
 extern int useInfluencePlacement;
 
+#ifndef TAICONMD_SHARED_CONTEXT
 class BaseItem {
 public:
     virtual ~BaseItem();
@@ -184,6 +185,7 @@ public:
     ConstructionItem* influencePlaceStructure(BuildItem* item, int x, int a, int b, int c,
             int d, int e, int f, int g, PlacementState& state, unsigned long flags);
 };
+#endif
 
 ConstructionItem* TribeConstructionAIModule::placeStructure(BuildItem* item, int x, PlacementState& state, unsigned long flags)
 {

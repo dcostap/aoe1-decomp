@@ -8,32 +8,34 @@
 
 #include "../../include/game_types.h"
 
+#ifndef INFMAP_SHARED_CONTEXT
 class InfluenceMap {
 public:
     char _gap_00[0x04];
-    int xSize;              // +0x04
-    int ySize;              // +0x08
-    int xReferencePoint;    // +0x0C
-    int yReferencePoint;    // +0x10
+    int xSizeValue;         // +0x04
+    int ySizeValue;         // +0x08
+    int xReferencePointValue; // +0x0C
+    int yReferencePointValue; // +0x10
     char _gap_14[0x04];
-    unsigned char** rowPointers; // +0x18
+    unsigned char** rowValue; // +0x18
     char _gap_1C[0x08];
-    unsigned char threshold;     // +0x24
+    unsigned char unchangeableLimitValue; // +0x24
 
     int decrementValue(int x, int y, unsigned char amount);
 };
+#endif
 
 int InfluenceMap::decrementValue(int x, int y, unsigned char amount) {
-    int tx = x - xReferencePoint;
-    int ty = y - yReferencePoint;
+    int tx = x - xReferencePointValue;
+    int ty = y - yReferencePointValue;
 
-    if (tx < 0 || ty < 0 || tx >= xSize || ty >= ySize) {
+    if (tx < 0 || ty < 0 || tx >= xSizeValue || ty >= ySizeValue) {
         return 0;
     }
 
-    unsigned char* cell = &rowPointers[ty][tx];
+    unsigned char* cell = &rowValue[ty][tx];
 
-    if (*cell >= threshold) {
+    if (*cell >= unchangeableLimitValue) {
         return 1;
     }
 

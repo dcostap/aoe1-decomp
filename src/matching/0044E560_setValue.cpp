@@ -6,9 +6,12 @@
 // Probe 1: natural nested for-loops with bounds check, default flags
 //   EXACT MATCH (0.0000%). No EH, no special flags needed.
 
+#ifndef INFMAP_SHARED_CONTEXT
 #include "..\..\include\game_globals.h"
+#endif
 
 // InfluenceMap size 0x28 — only fields we need
+#ifndef INFMAP_SHARED_CONTEXT
 class InfluenceMap {
 public:
     void* vfptr;                    // +0x0 (4)
@@ -21,6 +24,7 @@ public:
 
     int setValue(int x1, int y1, int x2, int y2, unsigned char value);
 };
+#endif
 
 int InfluenceMap::setValue(int x1, int y1, int x2, int y2, unsigned char value)
 {

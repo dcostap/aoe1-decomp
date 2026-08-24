@@ -14,9 +14,9 @@
 
 #include <string.h>
 
+#ifndef COM_Q_CONTEXT
 void __cdecl operator delete(void* ptr);
 void* __cdecl operator new(unsigned int size);
-
 struct MsgQueue {
     unsigned int Code;
     unsigned int ExecTurn;
@@ -44,6 +44,7 @@ public:
 
     int AddItem(unsigned long param_1, void* param_2, unsigned long param_3, unsigned int param_4, unsigned char param_5, int param_6);
 };
+#endif
 
 int RGE_Communications_Queue::AddItem(unsigned long param_1, void* param_2, unsigned long param_3, unsigned int param_4, unsigned char param_5, int param_6) {
     unsigned int i = 0;

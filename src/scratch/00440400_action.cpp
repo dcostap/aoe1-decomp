@@ -56,6 +56,7 @@
 
 typedef unsigned long ulong;
 
+#ifndef DLG_SEDM_SHARED_CONTEXT
 class TPanel {
 public:
     virtual ~TPanel();
@@ -120,6 +121,7 @@ public:
 
     virtual long action(TPanel* panel, long event, ulong param_3, ulong param_4);
 };
+#endif
 
 long TRIBE_Dialog_Sed_Menu::action(
     TPanel* panel, long event, ulong param_3, ulong param_4)

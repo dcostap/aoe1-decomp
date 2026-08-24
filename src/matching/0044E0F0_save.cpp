@@ -1,5 +1,6 @@
 void __cdecl rge_write(int fd, const void* data, int count);
 
+#ifndef INFMAP_SHARED_CONTEXT
 class InfluenceMap {
 public:
     char gap_00[0x04];
@@ -14,6 +15,7 @@ public:
 
     void save(int fd);
 };
+#endif
 
 void InfluenceMap::save(int fd) {
     rge_write(fd, &xSizeValue, 4);

@@ -3,6 +3,7 @@
 // BINARY NOTE: PDB/Ghidra qualifies this owner as protected __thiscall;
 // the owned body is 0043E530-0043E5B7.
 
+#ifndef DLG_DIP_SHARED_CONTEXT
 class TButtonPanel {
 public:
     virtual void _virt0();
@@ -41,6 +42,7 @@ protected:
 
     int check_gold();
 };
+#endif
 
 int TribeDiplomacyDialog::check_gold()
 {

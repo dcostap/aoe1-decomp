@@ -1,14 +1,8 @@
-class BaseClass {
-public:
-    virtual ~BaseClass();
-    BaseClass(int param);
-};
+// VA: 0050B450 TRIBE_Dialog_List::TRIBE_Dialog_List
+// tdlg_lst.cpp lines 26-27
 
-class TRIBE_Dialog_List : public BaseClass {
-public:
-    virtual ~TRIBE_Dialog_List();
-    TRIBE_Dialog_List(int param);
-};
+#include "../../include/tdlg_lst_context.h"
 
-TRIBE_Dialog_List::TRIBE_Dialog_List(int param) : BaseClass(param) {
+TRIBE_Dialog_List::TRIBE_Dialog_List(char* name)
+    : RGE_Dialog_List(name) {
 }

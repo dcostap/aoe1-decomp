@@ -2,6 +2,7 @@
 // FLAGS: default
 // MATCH: 0.0000% (144/144 bytes exact)
 
+#ifndef PNL_DROP_CONTEXT
 class TPanel {
 public:
     char gap_00[0x14];
@@ -25,6 +26,7 @@ public:
     void set_rect(long p1, long p2, long p3, long p4);
     void set_mode(int mode);
 };
+#endif
 
 void TDropDownPanel::set_rect(long p1, long p2, long p3, long p4)
 {

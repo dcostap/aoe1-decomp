@@ -4,6 +4,7 @@
 // - baseline typed MsgQueue for-loop was 176 bytes: kept param in EBP and entry pointer in ESI, too short.
 // - current mirrors decompiler topology with stack i and byte offset; local this alias intended to keep this in EBP.
 
+#ifndef COM_Q_CONTEXT
 class TDebuggingLog {
 public:
     void Log(const char* format, ...);
@@ -37,6 +38,7 @@ public:
 
     void FlushForPlayer(unsigned int param_1);
 };
+#endif
 
 void RGE_Communications_Queue::FlushForPlayer(unsigned int param_1) {
     RGE_Communications_Queue* th = this;

@@ -3,27 +3,25 @@
 
 typedef unsigned int UINT;
 typedef long LONG;
-typedef void* HMMIO;
-
-typedef struct MMCKINFO_LOCAL {
+typedef struct DSUTIL_WAVECOPY_MMCKINFO {
     unsigned int ckid;
     unsigned int cksize;
     unsigned int fccType;
     unsigned int dwDataOffset;
     unsigned int dwFlags;
-} MMCKINFO_LOCAL;
+} DSUTIL_WAVECOPY_MMCKINFO;
 
 typedef LONG (__stdcall *MMIOSEEK)(HMMIO, LONG, int);
-typedef int (__stdcall *MMIODESCEND)(HMMIO, MMCKINFO_LOCAL*, const MMCKINFO_LOCAL*, UINT);
-typedef int (__stdcall *MMIOASCEND)(HMMIO, MMCKINFO_LOCAL*, UINT);
+typedef int (__stdcall *MMIODESCEND)(HMMIO, DSUTIL_WAVECOPY_MMCKINFO*, const DSUTIL_WAVECOPY_MMCKINFO*, UINT);
+typedef int (__stdcall *MMIOASCEND)(HMMIO, DSUTIL_WAVECOPY_MMCKINFO*, UINT);
 
 #define mmioSeek_abs (*(MMIOSEEK*)0x88A928)
 #define mmioDescend_abs (*(MMIODESCEND*)0x88A92C)
 #define mmioAscend_abs (*(MMIOASCEND*)0x88A934)
 
-int __cdecl riffCopyChunk(HMMIO dst, HMMIO src, MMCKINFO_LOCAL* ck);
+int __cdecl riffCopyChunk(HMMIO dst, HMMIO src, DSUTIL_WAVECOPY_MMCKINFO* ck);
 
-int __cdecl _WaveCopyUselessChunks(HMMIO* hmmio, MMCKINFO_LOCAL* ck, MMCKINFO_LOCAL* parent, HMMIO* src)
+int __cdecl _WaveCopyUselessChunks(HMMIO* hmmio, DSUTIL_WAVECOPY_MMCKINFO* ck, DSUTIL_WAVECOPY_MMCKINFO* parent, HMMIO* src)
 {
     int result;
     MMIODESCEND descend;

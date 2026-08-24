@@ -4,17 +4,15 @@
 typedef unsigned int UINT;
 typedef unsigned long DWORD;
 typedef long LONG;
-typedef void* HMMIO;
-
-typedef struct MMCKINFO_LOCAL {
+typedef struct DSUTIL_WAVECREATE_MMCKINFO {
     DWORD ckid;
     DWORD cksize;
     DWORD fccType;
     DWORD dwDataOffset;
     DWORD dwFlags;
-} MMCKINFO_LOCAL;
+} DSUTIL_WAVECREATE_MMCKINFO;
 
-typedef struct WAVEFORMATEX_LOCAL {
+typedef struct DSUTIL_WAVECREATE_WAVEFORMATEX {
     unsigned short wFormatTag;
     unsigned short nChannels;
     DWORD nSamplesPerSec;
@@ -22,18 +20,13 @@ typedef struct WAVEFORMATEX_LOCAL {
     unsigned short nBlockAlign;
     unsigned short wBitsPerSample;
     unsigned short cbSize;
-} WAVEFORMATEX_LOCAL;
+} DSUTIL_WAVECREATE_WAVEFORMATEX;
 
-__declspec(dllimport) HMMIO __stdcall mmioOpenA(char* filename, void* mmioinfo, DWORD flags);
-__declspec(dllimport) int __stdcall mmioCreateChunk(HMMIO hmmio, MMCKINFO_LOCAL* ck, UINT flags);
-__declspec(dllimport) LONG __stdcall mmioWrite(HMMIO hmmio, const char* buffer, LONG bytes);
-__declspec(dllimport) int __stdcall mmioAscend(HMMIO hmmio, MMCKINFO_LOCAL* ck, UINT flags);
-
-int __cdecl _WaveCreateFile(char* pszFileName, HMMIO* phmmioOut, WAVEFORMATEX_LOCAL* pwfxDest, MMCKINFO_LOCAL* pckOut, MMCKINFO_LOCAL* pckOutRIFF)
+int __cdecl _WaveCreateFile(char* pszFileName, HMMIO* phmmioOut, DSUTIL_WAVECREATE_WAVEFORMATEX* pwfxDest, DSUTIL_WAVECREATE_MMCKINFO* pckOut, DSUTIL_WAVECREATE_MMCKINFO* pckOutRIFF)
 {
     int err;
     DWORD dwFactChunk;
-    MMCKINFO_LOCAL ckOut1;
+    DSUTIL_WAVECREATE_MMCKINFO ckOut1;
 
     dwFactChunk = (DWORD)-1;
     err = 0;

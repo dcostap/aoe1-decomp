@@ -1,12 +1,14 @@
 // VA: 004519A0 RGE_Master_Missile_Object::save
 // PDB source: m_mi_obj.cpp
 
+#include "../../include/m_mi_obj_context.h"
 #include <stdlib.h>
 
 extern "C" {
     void rge_write(int fd, void* buf, int size);
 }
 
+#ifndef M_MI_OBJ_SHARED_CONTEXT
 struct RGE_Master_Missile_Object {
     char gap_000[0x148];
     unsigned char missile_type;
@@ -23,6 +25,7 @@ struct RGE_Master_Combat_Object {
     char base[0x148];
     void save(int fd);
 };
+#endif
 
 void RGE_Master_Missile_Object::save(int fd)
 {

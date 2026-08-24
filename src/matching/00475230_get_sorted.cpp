@@ -1,9 +1,9 @@
+#ifndef PNL_DROP_CONTEXT
 class InnerType {
 public:
     char gap_0[0x15C];
     int field_15C;
 };
-
 class TDropDownPanel {
 public:
     char gap_0[0xFC];
@@ -11,6 +11,7 @@ public:
 
     int get_sorted();
 };
+#endif
 
 int TDropDownPanel::get_sorted() {
     if (this->member_FC) {

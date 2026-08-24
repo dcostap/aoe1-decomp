@@ -5,6 +5,7 @@
 // Baseline reconstruction: direct parameter mutation, the observed xSize
 // clamp for all four coordinates, and natural nested row/column loops.
 
+#ifndef INFMAP_SHARED_CONTEXT
 class InfluenceMap {
 public:
     virtual ~InfluenceMap();
@@ -20,6 +21,7 @@ public:
     int decrementValue(int x1, int y1, int x2, int y2,
                        unsigned char amount);
 };
+#endif
 
 int InfluenceMap::decrementValue(int x1, int y1, int x2, int y2,
                                   unsigned char amount)

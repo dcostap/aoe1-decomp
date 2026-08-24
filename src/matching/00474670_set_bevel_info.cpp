@@ -3,6 +3,7 @@
 // Attempt log:
 // 1: natural four-panel forwarding with switches; virtual helper padded to slot 0xEC and direct scrollbar/button calls.
 
+#ifndef PNL_DROP_CONTEXT
 class BevelVirtualPanel {
 public:
     virtual void d00();
@@ -87,6 +88,7 @@ public:
 
     void set_bevel_info(int type, int c1, int c2, int c3, int c4, int c5, int c6);
 };
+#endif
 
 void TDropDownPanel::set_bevel_info(int type, int c1, int c2, int c3, int c4, int c5, int c6)
 {

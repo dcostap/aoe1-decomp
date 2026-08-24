@@ -1,21 +1,8 @@
-class RGE_Sprite;
-class RGE_Sound;
+#include "../../include/m_dg_obj_context.h"
 
-class RGE_Master_Animated_Object {
-public:
-    virtual ~RGE_Master_Animated_Object();
-    int setup(int count, RGE_Sprite** sprites, RGE_Sound** sounds);
-};
-
-class RGE_Master_Doppleganger_Object : public RGE_Master_Animated_Object {
-public:
-    unsigned char field_04;
-
-    int setup(int count, RGE_Sprite** sprites, RGE_Sound** sounds);
-};
-
-int RGE_Master_Doppleganger_Object::setup(int count, RGE_Sprite** sprites, RGE_Sound** sounds) {
-    RGE_Master_Animated_Object::setup(count, sprites, sounds);
-    this->field_04 = 0x19;
+int RGE_Master_Doppleganger_Object::setup(
+    int param_1, RGE_Sprite** param_2, RGE_Sound** param_3) {
+    RGE_Master_Animated_Object::setup(param_1, param_2, param_3);
+    this->master_type = 0x19;
     return 1;
 }

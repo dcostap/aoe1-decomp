@@ -1,5 +1,6 @@
 #include <string.h>
 
+#ifndef INFMAP_SHARED_CONTEXT
 struct InfluenceMap {
     void* vfptr;               // 0x00
     int xSizeValue;            // 0x04
@@ -10,6 +11,7 @@ struct InfluenceMap {
 
     int initialize(unsigned char value);
 };
+#endif
 
 int InfluenceMap::initialize(unsigned char value) {
     memset(this->valueValue, value, this->xSizeValue * this->ySizeValue);

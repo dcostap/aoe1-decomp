@@ -19,8 +19,8 @@
 // probe 9: keeping the cursor live across TestShowQueue changed the prologue;
 // reverted. Probe 10: a narrow volatile reread was also a codegen duplicate.
 
+#ifndef COM_Q_CONTEXT
 void __cdecl operator delete(void* ptr);
-
 struct MsgQueue {
     unsigned int Code;
     unsigned int ExecTurn;
@@ -49,6 +49,7 @@ public:
 
     void* GetNextItemOrdered(unsigned long param_1);
 };
+#endif
 
 extern void* DAT_0062cf38;
 

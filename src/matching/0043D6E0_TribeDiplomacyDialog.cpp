@@ -14,6 +14,7 @@
 //   named the fields from the class dump, and used the real TShape destructor
 //   and external operator_delete surfaces.
 
+#ifndef DLG_DIP_SHARED_CONTEXT
 extern void __cdecl operator_delete(void*);
 
 class TPanel {
@@ -85,6 +86,7 @@ public:
 
     virtual ~TribeDiplomacyDialog();
 };
+#endif
 
 TribeDiplomacyDialog::~TribeDiplomacyDialog()
 {

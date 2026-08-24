@@ -3,6 +3,7 @@
 // removed the explicit vftable data member once virtual destructors were declared; that fixed +4 member offset drift.
 // FLAGS: config\flags\00473F50_TDropDownPanel.rsp
 
+#ifndef PNL_DROP_CONTEXT
 struct PanelNode;
 struct TDrawArea;
 struct HRGN__;
@@ -112,6 +113,7 @@ public:
 
     virtual ~TDropDownPanel();
 };
+#endif
 
 TDropDownPanel::~TDropDownPanel() {
     this->delete_panel((TPanel**)&this->btn_panel);

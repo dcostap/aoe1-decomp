@@ -78,6 +78,7 @@ class TScrollBarPanel;
 class TVerticalSliderPanel;
 class THorizontalSliderPanel;
 
+#ifndef DLG_DIP_SHARED_CONTEXT
 struct tagRECT {
     long left;
     long top;
@@ -538,6 +539,7 @@ public:
     int check_stone();
     virtual long action(TPanel* panel, long event, unsigned long param_3, unsigned long param_4);
 };
+#endif
 
 long TribeDiplomacyDialog::action(TPanel* panel, long event,
                                   unsigned long param_3, unsigned long param_4)

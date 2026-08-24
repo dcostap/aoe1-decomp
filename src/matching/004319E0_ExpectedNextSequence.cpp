@@ -13,8 +13,8 @@
 //   then comparing `(unsigned char)c` against seq. Keeping c as `unsigned char` collapsed to AL/global-load-first;
 //   the wider int temp keeps the original `or cl,0xff; pop edi; cmp cl,bl; mov ecx,[global]` tail.
 
+#ifndef COM_Q_CONTEXT
 extern int DAT_0062cf40;
-
 class MsgQueueEntry {
 public:
     unsigned long unk0;
@@ -35,6 +35,7 @@ public:
 
     unsigned char ExpectedNextSequence(unsigned long turn, unsigned int from);
 };
+#endif
 
 unsigned char RGE_Communications_Queue::ExpectedNextSequence(unsigned long turn, unsigned int from) {
     unsigned char seq;

@@ -2,6 +2,7 @@
 // natural dropdown mouse-down path; child hit-test is virtual slot 0xBC.
 // first compile had derived fields/base this adjusted by +4 and wrong derived offset; model TPanel as a virtual class with size 0xF4.
 
+#ifndef PNL_DROP_CONTEXT
 class TPanel {
 public:
     virtual void vf00();
@@ -45,6 +46,7 @@ public:
     void set_mode(int mode);
     void set_line(long line);
 };
+#endif
 
 long TDropDownPanel::handle_mouse_down(unsigned char buttons, long x, long y, int param4, int param5) {
     if (this->have_focus && this->parent_panel) {

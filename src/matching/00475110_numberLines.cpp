@@ -1,3 +1,4 @@
+#ifndef PNL_DROP_CONTEXT
 class MemberType {
 public:
     int numberLines();
@@ -10,6 +11,7 @@ public:
 
     int numberLines();
 };
+#endif
 
 int TDropDownPanel::numberLines() {
     if (this->member_FC) {

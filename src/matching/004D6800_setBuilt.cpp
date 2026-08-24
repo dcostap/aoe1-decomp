@@ -1,6 +1,7 @@
 // VA: 004D6800 TribeConstructionAIModule::setBuilt
 // taiconmd.cpp:363-379
 
+#ifndef TAICONMD_SHARED_CONTEXT
 class BaseItem {
 public:
     virtual ~BaseItem();
@@ -57,6 +58,7 @@ public:
 
     void setBuilt(RGE_Static_Object* obj, int built);
 };
+#endif
 
 void TribeConstructionAIModule::setBuilt(RGE_Static_Object* obj, int built) {
     ConstructionItem* item;

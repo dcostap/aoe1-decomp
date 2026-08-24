@@ -1,3 +1,4 @@
+#ifndef INFMAP_SHARED_CONTEXT
 class InfluenceMap {
 public:
     int vfptr;
@@ -9,6 +10,7 @@ public:
 
     int maxValue(void);
 };
+#endif
 
 int InfluenceMap::maxValue(void) {
     int total = this->xSizeValue * this->ySizeValue;
