@@ -13,8 +13,8 @@
 // Candidate validation reports 5 exact owners, 2 observed owners, and 1 exact
 // compiler-generated scalar deleting destructor for this complete wrapper.
 // No exact-codegen tuning was done in this pass.
-// Registration remains blocked by unresolved inherited virtual slots in the
-// pre-existing tactical-action context.
+// The module context now uses the reviewed tactical hierarchy and named virtual
+// surfaces.  Candidate validation and dry-run registration pass.
 
 #include "../include/tact_hea_context.h"
 

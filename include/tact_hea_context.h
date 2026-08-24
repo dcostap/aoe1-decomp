@@ -5,6 +5,32 @@
 
 typedef unsigned char uchar;
 
+struct XYPoint {
+    int x;
+    int y;
+};
+
+struct XYZPoint {
+    int x;
+    int y;
+    int z;
+};
+
+struct XYZBYTEPoint {
+    uchar x;
+    uchar y;
+    uchar z;
+};
+
+class TDrawArea;
+class RGE_Color_Table;
+class RGE_Armor_Weapon_Info;
+class LOSTBL;
+class RGE_Object_List;
+class RGE_Active_Sprite_List;
+class Path;
+template <class T> class ManagedArray;
+
 class RGE_Action;
 class RGE_Action_List;
 class RGE_Action_Object;
@@ -216,60 +242,60 @@ public:
     virtual float getSpeed();
     virtual float getAngle();
     virtual float maximumSpeed();
-    virtual void vpad100();
-    virtual void vpad104();
-    virtual void vpad108();
-    virtual void vpad10C();
-    virtual void vpad110();
-    virtual void vpad114();
-    virtual void vpad118();
-    virtual void vpad11C();
-    virtual void vpad120();
-    virtual void vpad124();
-    virtual void vpad128();
+    virtual float rateOfFire();
+    virtual float damageCapability(RGE_Static_Object*);
+    virtual float damageCapability();
+    virtual float weaponRange();
+    virtual float minimumWeaponRange();
+    virtual int passableTile(float, float, int);
+    virtual uchar facetToNextWaypoint();
+    virtual int currentTargetID();
+    virtual float currentTargetX();
+    virtual float currentTargetY();
+    virtual float currentTargetZ();
     virtual void setWaitingToMove(uchar);
-    virtual void vpad130();
-    virtual void vpad134();
-    virtual void vpad138();
-    virtual void vpad13C();
-    virtual void vpad140();
-    virtual void vpad144();
+    virtual uchar waitingToMove();
+    virtual uchar actionState();
+    virtual uchar keepGatheringWhenObjectIsOut(int);
+    virtual uchar produceWhenKilledBy(int);
+    virtual uchar useSameZoneDropsite();
+    virtual void logDebug(const char*, ...);
     virtual void notify(int, int, int, long, long, long);
-    virtual void vpad14C();
-    virtual void vpad150();
-    virtual void vpad154();
-    virtual void vpad158();
-    virtual void vpad15C();
-    virtual void vpad160();
-    virtual void vpad164();
-    virtual void vpad168();
-    virtual void vpad16C();
-    virtual void vpad170();
-    virtual void vpad174();
-    virtual void vpad178();
-    virtual void vpad17C();
-    virtual void vpad180();
-    virtual void vpad184();
-    virtual void vpad188();
-    virtual void vpad18C();
-    virtual void vpad190();
-    virtual void vpad194();
-    virtual void vpad198();
-    virtual void vpad19C();
-    virtual void vpad1A0();
-    virtual void vpad1A4();
-    virtual void vpad1A8();
-    virtual void vpad1AC();
-    virtual void vpad1B0();
-    virtual void vpad1B4();
-    virtual void vpad1B8();
-    virtual void vpad1BC();
-    virtual void vpad1C0();
-    virtual void vpad1C4();
-    virtual void vpad1C8();
-    virtual void vpad1CC();
-    virtual void vpad1D0();
-    virtual void vpad1D4();
+    virtual int attack(float, float, float, int);
+    virtual int attack(int, int);
+    virtual int moveTo(float, float, float, float, int);
+    virtual int moveTo(int, float, int);
+    virtual int moveTo(int, int);
+    virtual int moveAwayFrom(int, int);
+    virtual int hunt(int, int);
+    virtual int gather(int, int);
+    virtual int convert(int, int);
+    virtual int repair(int, int);
+    virtual int build(int, int);
+    virtual int trade(int, int);
+    virtual int explore(int, int, int);
+    virtual int enter(int, int);
+    virtual int unload(int, float, float, float);
+    virtual int transport(float, float, float, int);
+    virtual int stopAction();
+    virtual int pause();
+    virtual int canPath(int, float, float*, int, int, int);
+    virtual int canPath(XYZPoint, float, int, float*, int, int, int);
+    virtual int canBidirectionPath(int, int, float, float*, int, int, int);
+    virtual int canPathWithObstructions(int, float, float*, int, int, int, ManagedArray<int>*);
+    virtual int canPathWithAdditionalPassability(XYZPoint, float, int, float*, int, int, int, int, int);
+    virtual int findFirstTerrainAlongExceptionPath(int, float*, float*);
+    virtual int canLinePath(int, int, int, int, float, int);
+    virtual int canLinePath(XYPoint*, XYPoint*, float, XYPoint*, int);
+    virtual int firstTileAlongLine(XYPoint*, XYPoint*, XYPoint*, int, int, int);
+    virtual XYZBYTEPoint* userDefinedWaypoint(int);
+    virtual int addUserDefinedWaypoint(XYZBYTEPoint*, int);
+    virtual void removeAllUserDefinedWaypoints(int);
+    virtual void removeUserDefinedWaypoint(int);
+    virtual int numberUserDefinedWaypoints();
+    virtual Path* findAvoidancePath(XYZPoint*, float, int);
+    virtual long get_action_checksum();
+    virtual long get_waypoint_checksum();
     virtual int setup(int, RGE_Game_World*);
     virtual int setup(RGE_Master_Static_Object*, RGE_Player*, float, float, float);
     virtual void* create_object_list();
@@ -405,10 +431,14 @@ public:
 
 class RGE_Action_List {
 public:
-    virtual void vf00();
-    virtual void vf04();
-    virtual void vf08();
+    virtual RGE_Action* create_action(int, short);
+    virtual RGE_Action* create_task_action(RGE_Task*, RGE_Static_Object*, float, float, float);
+    virtual uchar inside_obj_update();
     virtual uchar update();
+    virtual void get_action_name(char*);
+    virtual void copy_obj(RGE_Master_Action_Object*);
+    virtual void copy_obj_sprites(RGE_Master_Action_Object*, RGE_Task*, RGE_Task*);
+    virtual ~RGE_Action_List();
 
     void delete_list();
     void add_action(RGE_Action*);
