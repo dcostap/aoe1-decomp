@@ -75,10 +75,10 @@ public:
 class RGE_Master_Player {
 public:
     virtual ~RGE_Master_Player();
-    virtual void init(int, RGE_Sprite**, RGE_Sound**);
-    virtual void master_player_slot_2();
-    virtual void add_object(short);
-    virtual void add_object_data(FILE*, short, RGE_Sprite**, RGE_Sound**, short);
+    virtual void finish_init(int, RGE_Sprite**, RGE_Sound**);
+    virtual void load_master_object(int, unsigned char, RGE_Sprite**, RGE_Sound**, short);
+    virtual void create_master_object_space(short);
+    virtual void load_object(FILE*, unsigned char, RGE_Sprite**, RGE_Sound**, short);
     virtual void save(int);
     unsigned char gap_04[0x28];
     RGE_Master_Player(int);
