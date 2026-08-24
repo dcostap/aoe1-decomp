@@ -19,30 +19,94 @@ class RGE_Game_Info;
 class TPanel {
 public:
     virtual ~TPanel();
-    long setup(TDrawArea*, TPanel*, long, long, char*, long, int);
-    long setup(TDrawArea*, TPanel*, char*, long, int, long, long, long,
-               long, int);
+    virtual long setup(TDrawArea*, TPanel*, long, long, long, long,
+                       unsigned char);
+    virtual void set_rect(RECT);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_color(unsigned char);
+    virtual void set_active(int);
+    virtual void set_positioning(long, long, long, long, long, long, long,
+                                 long, long, TPanel*, TPanel*, TPanel*, TPanel*);
+    virtual void set_fixed_position(long, long, long, long);
+    virtual void set_redraw(int);
+    virtual void set_overlapped_redraw(TPanel*, TPanel*, int);
+    virtual void draw_setup(int);
+    virtual void draw_finish();
+    virtual void draw();
+    virtual void draw_rect(RECT*);
+    virtual void draw_offset(long, long, RECT*);
+    virtual void draw_rect2(RECT*);
+    virtual void draw_offset2(long, long, RECT*);
+    virtual void paint();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual long handle_idle();
+    virtual long handle_size(long, long);
+    virtual long handle_paint();
+    virtual long handle_key_down(long, short, int, int, int);
+    virtual long handle_char(long, short);
+    virtual long handle_command(unsigned int, long);
+    virtual long handle_user_command(unsigned int, long);
+    virtual long handle_timer_command(unsigned int, long);
+    virtual long handle_scroll(long, long);
+    virtual long handle_mouse_down(unsigned char, long, long, int, int);
+    virtual long handle_mouse_move(long, long, int, int);
+    virtual long handle_mouse_up(unsigned char, long, long, int, int);
+    virtual long handle_mouse_dbl_click(unsigned char, long, long, int, int);
+    virtual long mouse_move_action(long, long, int, int);
+    virtual long mouse_left_down_action(long, long, int, int);
+    virtual long mouse_left_hold_action(long, long, int, int);
+    virtual long mouse_left_move_action(long, long, int, int);
+    virtual long mouse_left_up_action(long, long, int, int);
+    virtual long mouse_left_dbl_click_action(long, long, int, int);
+    virtual long mouse_right_down_action(long, long, int, int);
+    virtual long mouse_right_hold_action(long, long, int, int);
+    virtual long mouse_right_move_action(long, long, int, int);
+    virtual long mouse_right_up_action(long, long, int, int);
+    virtual long mouse_right_dbl_click_action(long, long, int, int);
+    virtual long key_down_action(long, short, int, int, int);
+    virtual long char_action(long, short);
+    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    virtual void get_true_render_rect(RECT*);
+    virtual int is_inside(long, long);
+    virtual void set_focus(int);
+    // VC5 places the array overload at +0xC8 with this declaration order.
     virtual void set_tab_order(TPanel**, short);
     virtual void set_tab_order(TPanel*, TPanel*);
-    virtual void set_positioning(long, long, long, long, long, long, long, long,
-                                 long, TPanel*, TPanel*, TPanel*, TPanel*);
-    virtual long handle_idle();
-    virtual long action(TPanel*, long, unsigned long, unsigned long);
-    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual unsigned char get_help_info(char**, long*, long, long);
+    virtual void stop_sound_system();
+    virtual int restart_sound_system();
+    virtual void take_snapshot();
+    virtual void handle_reactivate();
+    virtual void draw_background(int);
 
-    void set_help_info(long, long);
-    void set_curr_child(TPanel*);
+    union {
+        struct {
+            char panel_gap_04[0x1C];
+            TDrawArea* render_area;
+            char panel_gap_24[0x1C];
+            TPanel* parent_panel;
+            char panel_gap_44[0xB0];
+        };
+        struct {
+            char gap_04[0xD4];
+            int setup_error;
+            char gap_DC[0x18];
+        };
+    };
+
+    TDrawArea* renderArea() const;
+    char* panelName();
+    char* get_string(int);
+    void delete_panel(TPanel**);
     void delete_panel(TTextPanel**);
     void delete_panel(TEditPanel**);
     void delete_panel(TListPanel**);
     void delete_panel(TScrollBarPanel**);
     void delete_panel(TButtonPanel**);
+    void set_help_info(long, long);
+    void set_curr_child(TPanel*);
     void setup_shadow_area(int);
     void set_ideal_size(long, long);
-    TDrawArea* renderArea() const;
-    char* panelName();
-    char* get_string(int);
-    int setup_error;
 };
 
 class TTextPanel : public TPanel {
@@ -99,7 +163,7 @@ public:
     char gap_F4[0x384];
 
     virtual ~TEasy_Panel();
-    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    long action(TPanel*, long, unsigned long, unsigned long);
     long setup(TDrawArea*, TPanel*, char*, long, int, long, long, long, long, int);
     long setup(TDrawArea*, TPanel*, long, long, char*, long, int);
     void setup_shadow_area(int);
@@ -140,7 +204,7 @@ public:
 
 class RGE_Base_Game {
 public:
-    char gap_00[4];
+    virtual ~RGE_Base_Game();
     RGE_Game_Info* player_game_info;
     char gap_08[0x44];
     TDrawArea* draw_area;
@@ -208,7 +272,7 @@ public:
 
     TRIBE_Dialog_Name(TScreenPanel*);
     virtual ~TRIBE_Dialog_Name();
-    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    long action(TPanel*, long, unsigned long, unsigned long);
     virtual long wnd_proc(void*, unsigned int, unsigned int, long);
 };
 

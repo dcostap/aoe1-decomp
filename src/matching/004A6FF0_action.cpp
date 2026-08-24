@@ -26,7 +26,7 @@ class TribeSPMenuScreen;
 
 class TPanel {
 public:
-    void* vptr;
+    virtual ~TPanel();
     void set_curr_child(TPanel* child);
 };
 
