@@ -177,13 +177,13 @@ extern void rge_write(int handle, void* buffer, int size);
 
 #define VIS_UNIT_TU_CONTEXT 1
 #include "matching/0053B5A0_Visible_Unit_Manager.cpp"
-#include "scratch/0053B670_Visible_Unit_Manager.cpp"
+#include "matching/0053B670_Visible_Unit_Manager.cpp"
 #include "accepted_drift/0053B730_Build_Distance_Table.cpp"
 #include "scratch/0053B7E0_Update_Unit_Info.cpp"
 #include "matching/0053B9A0_GetVisibleUnits.cpp"
 #include "matching/0053BB30_Visible_Resource_Manager.cpp"
 #include "matching/0053BBE0_Visible_Resource_Manager.cpp"
-#include "scratch/0053BD10_Visible_Resource_Manager.cpp"
+#include "matching/0053BD10_Visible_Resource_Manager.cpp"
 #include "matching/0053BD70_save.cpp"
 #include "matching/0053BE00_Process_New_Tiles.cpp"
 #include "matching/0053BED0_AddResource.cpp"

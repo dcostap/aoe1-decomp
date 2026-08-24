@@ -6,6 +6,8 @@
 // One SIB byte differs at the maximum-element compare.  Both encodings address
 // sortedValue[max_idx].
 
+#include "../../include/airesitm_context.h"
+
 int ResourceItem::sortLarge()
 {
     int i;
