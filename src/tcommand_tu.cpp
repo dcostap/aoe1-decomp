@@ -1,8 +1,8 @@
 // Authentic PDB-ordered wrapper for C:\\msdev\\work\\age1_x1\\tcommand.cpp.
 //
 // The PDB owner order runs from 00509720 through 0050B3E0. The reviewed
-// tcommand context can compile the later command packet owners below. Earlier
-// owners still carry incompatible standalone class surfaces. They stay
+// tcommand context can compile the nine later command packet owners below.
+// Earlier owners still carry incompatible standalone class surfaces. They stay
 // blocked instead of using aliases, namespaces, dummy bodies, or manual
 // vtables.
 //

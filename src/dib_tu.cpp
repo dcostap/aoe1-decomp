@@ -37,4 +37,4 @@
 // Blocked in the complete context: these standalone owners redeclare symbols
 // already established by the earlier Dib.cpp sources or by windows.h.
 // 0043AB80 CreateIdentityPalette, 0043ACB0 CopyPalette, and 0043AD40 DibFree
-// remain preserved exact-source observations in the proposal.
+// remain preserved exact-source references in the proposal's blocked list.
