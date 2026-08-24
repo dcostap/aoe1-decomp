@@ -1,5 +1,6 @@
 extern "C" void free(void*);
 
+#ifndef AOE1_CHAT_CONTEXT_H
 class TTaunt;
 
 class TChat {
@@ -12,6 +13,7 @@ public:
 
     void ClearChat();
 };
+#endif
 
 void TChat::ClearChat() {
     for (int i = 0; i < 0x33; ++i) {

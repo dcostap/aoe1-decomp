@@ -1,3 +1,4 @@
+#ifndef AOE1_CHAT_CONTEXT_H
 class TTaunt {
 public:
     ~TTaunt();
@@ -14,6 +15,7 @@ public:
     ~TChat();
     void ClearChat();
 };
+#endif
 
 TChat::~TChat() {
     ClearChat();

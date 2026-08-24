@@ -4,6 +4,7 @@ extern "C" unsigned int strlen(const char* text);
 extern "C" int sprintf(char* buffer, const char* format, ...);
 extern "C" __declspec(dllimport) int __stdcall PostMessageA(void* hwnd, unsigned int msg, unsigned int wparam, long lparam);
 
+#ifndef AOE1_CHAT_CONTEXT_H
 class TTaunt {
 public:
     int PlayTauntStr(char* text, unsigned char taunt_id);
@@ -19,6 +20,7 @@ public:
 
     int AddChatMsg(char* speaker, char* text, unsigned char taunt_id);
 };
+#endif
 
 int TChat::AddChatMsg(char* speaker, char* text, unsigned char taunt_id) {
     if (speaker == 0) {

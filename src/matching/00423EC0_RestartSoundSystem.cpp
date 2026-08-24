@@ -1,10 +1,13 @@
+#ifndef AOE1_CHAT_CONTEXT_H
 class TSound_Driver;
 
 class TTaunt {
 public:
     int RestartSoundSystem(TSound_Driver* sound_driver);
 };
+#endif
 
+#ifndef AOE1_CHAT_CONTEXT_H
 class TChat {
 public:
     char gap_00[0xFC];
@@ -12,6 +15,7 @@ public:
 
     int RestartSoundSystem(TSound_Driver* sound_driver);
 };
+#endif
 
 int TChat::RestartSoundSystem(TSound_Driver* sound_driver) {
     if (taunt != 0) {

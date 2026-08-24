@@ -1,3 +1,4 @@
+#ifndef AOE1_CHAT_CONTEXT_H
 class TChat {
 public:
     char gap_00[0x04];
@@ -5,6 +6,7 @@ public:
 
     int inChatGroup(int index);
 };
+#endif
 
 int TChat::inChatGroup(int index) {
     if (index >= 0) {

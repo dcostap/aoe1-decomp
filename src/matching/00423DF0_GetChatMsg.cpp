@@ -1,3 +1,4 @@
+#ifndef AOE1_CHAT_CONTEXT_H
 class TTaunt;
 
 class TChat {
@@ -10,6 +11,7 @@ public:
 
     char* GetChatMsg(int index);
 };
+#endif
 
 char* TChat::GetChatMsg(int index) {
     if (index >= 0 && index <= 0x32) {
