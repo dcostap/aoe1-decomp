@@ -3,7 +3,7 @@
 // Source module: C:\\msdev\\work\\age1_x1\\airesitm.cpp.
 // PDB order follows the original definition bands from lines 26 through 327.
 // The nearby scalar deleting destructor at 00411EF0 is compiler-generated.
-// Build with config/flags/00411F10_ResourceItem.rsp: /nologo /c /O2 /Oy /GX.
+// Build with config/flags/airesitm.rsp: /nologo /c /O2 /Oy /GX.
 #include "../include/airesitm_context.h"
 
 #include "matching/00411EC0_ResourceItem.cpp"

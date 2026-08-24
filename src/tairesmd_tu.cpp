@@ -1,7 +1,7 @@
 // Authentic tairesmd.cpp reconstruction TU.
 // PDB module: C:\\msdev\\work\\age1_x1\\tairesmd.cpp.
 // Owner includes follow PDB source-line and address order.
-// Module flags: config/flags/004E6BA0_TribeResourceAIModule.rsp (/GX).
+// Module flags: config/flags/tairesmd.rsp (/GX).
 #define TAIRESMD_TU_CONTEXT 1
 #include "../include/tairesmd_context.h"
 

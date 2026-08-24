@@ -1,5 +1,5 @@
 // VA: 004D18B0 TRIBE_Action_Repair::set_state
-// FLAGS: config/flags/004D18B0_set_state.rsp (/nologo /c /O2 /Oy /GX)
+// FLAGS: config/flags/004CD210_TRIBE_Action_Build.rsp (/nologo /c /O2 /Oy /GX)
 // Attempt log:
 // - Baseline natural /GX switch preserved the EH frame and broad action paths,
 //   but used the wrong state-1 call and duplicated the notify site.

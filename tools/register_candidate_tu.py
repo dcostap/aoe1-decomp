@@ -172,8 +172,14 @@ def _write_config(groups: list[dict[str, object]]) -> None:
     payload = {"translation_units": groups}
     text = json.dumps(payload, indent=2) + "\n"
     temporary = TRANSLATION_UNITS_PATH.with_suffix(".json.tmp")
-    temporary.write_text(text, encoding="utf-8")
+    with temporary.open("w", encoding="utf-8", newline="\n") as stream:
+        stream.write(text)
     os.replace(temporary, TRANSLATION_UNITS_PATH)
+
+
+def _restore_config(text: str) -> None:
+    with TRANSLATION_UNITS_PATH.open("w", encoding="utf-8", newline="\n") as stream:
+        stream.write(text)
 
 
 def _registered_check(va: str) -> tuple[str, bool, str]:
@@ -274,7 +280,7 @@ def main() -> int:
     results = run_registered_checks(owners, args.jobs)
     failures = [result for result in results if not result[1]]
     if failures:
-        TRANSLATION_UNITS_PATH.write_text(old_config, encoding="utf-8")
+        _restore_config(old_config)
         for va, _, output in failures:
             print(f"Registered owner {va} failed after apply:", file=sys.stderr)
             print(output, file=sys.stderr)

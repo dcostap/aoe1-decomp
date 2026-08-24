@@ -7,7 +7,8 @@
       "owners": {
         "004304A0": "src/matching/004304A0_reset_attack_timer.cpp",
         "00431150": "src/matching/00431150_enter.cpp"
-      }
+      },
+      "symbols": {}
     },
     {
       "name": "zone_map",
@@ -31,7 +32,8 @@
       "owners": {
         "004AD680": "src/matching/004AD680_command_player.cpp",
         "004AD960": "src/matching/004AD960_command_save_as.cpp"
-      }
+      },
+      "symbols": {}
     },
     {
       "name": "t_c_obj_heal",
@@ -42,7 +44,8 @@
         "004CB060": "src/matching/004CB060_hunt.cpp",
         "004CB1B0": "src/matching/004CB1B0_convert.cpp",
         "004CB300": "src/matching/004CB300_heal.cpp"
-      }
+      },
+      "symbols": {}
     },
     {
       "name": "tscenaro",
@@ -146,7 +149,8 @@
       "owners": {
         "00532C50": "src/matching/00532C50_destroy_all.cpp",
         "00532CC0": "src/matching/00532CC0_condition_description.cpp"
-      }
+      },
+      "symbols": {}
     },
     {
       "name": "information_dropsites",
@@ -191,7 +195,8 @@
       "owners": {
         "004A16D0": "src/matching/004A16D0_key_down_action.cpp",
         "004A61A0": "src/matching/004A61A0_TRIBE_Screen_Disconnect.cpp"
-      }
+      },
+      "symbols": {}
     },
     {
       "name": "command_context",
@@ -201,7 +206,8 @@
         "004348F0": "src/matching/004348F0_do_command_add_attribute.cpp",
         "00434A00": "src/matching/00434A00_do_command_formation.cpp",
         "004351B0": "src/matching/004351B0_duplicate_check_command_stop.cpp"
-      }
+      },
+      "symbols": {}
     },
     {
       "name": "panel_create_button",
@@ -237,7 +243,8 @@
       "owners": {
         "0044B210": "src/matching/0044B210_ClearArrays.cpp",
         "0044B270": "src/matching/0044B270_DeleteArrays.cpp"
-      }
+      },
+      "symbols": {}
     },
     {
       "name": "act_move",
@@ -398,7 +405,8 @@
         "004936D0": "src/matching/004936D0_TribeEndScreen.cpp",
         "00493C00": "src/matching/00493C00_TribeEndScreen.cpp",
         "00493C90": "src/matching/00493C90_action.cpp"
-      }
+      },
+      "symbols": {}
     },
     {
       "name": "scr_info",
@@ -449,7 +457,8 @@
         "00541240": "src/matching/00541240_data_load_players_type.cpp",
         "00544E70": "src/matching/00544E70_load_scenario5.cpp",
         "005451A0": "src/matching/005451A0_load_scenario6.cpp"
-      }
+      },
+      "symbols": {}
     },
     {
       "name": "scr_cam",
@@ -469,7 +478,8 @@
         "00490480": "src/matching/00490480_move_scenario_up.cpp",
         "00490520": "src/matching/00490520_move_scenario_down.cpp",
         "004905D0": "src/matching/004905D0_action.cpp"
-      }
+      },
+      "symbols": {}
     },
     {
       "name": "diam_map_prefix",
@@ -479,7 +489,8 @@
         "00436830": "src/matching/00436830_RGE_Diamond_Map.cpp",
         "00436930": "src/matching/00436930_RGE_Diamond_Map.cpp",
         "004369C0": "src/matching/004369C0_setup.cpp"
-      }
+      },
+      "symbols": {}
     },
     {
       "name": "dib_prefix",
@@ -712,7 +723,8 @@
       "owners": {
         "004B36A0": "src/matching/004B36A0_TRIBE_Screen_Sed_Open.cpp",
         "004B3740": "src/matching/004B3740_fillList.cpp"
-      }
+      },
+      "symbols": {}
     },
     {
       "name": "act_atak_prefix",
@@ -1019,7 +1031,8 @@
         "00532220": "src/matching/00532220_handle_create_in_area.cpp",
         "00533180": "src/matching/00533180_handle_points_attribute_first.cpp",
         "00533330": "src/matching/00533330_handle_points_high_attribute_once.cpp"
-      }
+      },
+      "symbols": {}
     },
     {
       "name": "scr_load",
@@ -1031,7 +1044,8 @@
         "0049E150": "src/matching/0049E150_fillList.cpp",
         "0049E2B0": "src/matching/0049E2B0_handle_idle.cpp",
         "0049E2E0": "src/matching/0049E2E0_action.cpp"
-      }
+      },
+      "symbols": {}
     },
     {
       "name": "m_mo_obj",
@@ -1379,7 +1393,8 @@
         "0048F280": "src/matching/0048F280_action.cpp",
         "0048F500": "src/matching/0048F500_handle_idle.cpp",
         "0048F530": "src/matching/0048F530_wnd_proc.cpp"
-      }
+      },
+      "symbols": {}
     },
     {
       "name": "scr_sed_prefix",
@@ -1421,7 +1436,8 @@
       "owners": {
         "00487010": "src/matching/00487010_RGE_RMM_Shallows_Generator.cpp",
         "00487050": "src/matching/00487050_generate.cpp"
-      }
+      },
+      "symbols": {}
     },
     {
       "name": "tpnl_inv_prefix",
@@ -1500,7 +1516,8 @@
       "owners": {
         "0044DAC0": "src/matching/0044DAC0_GetDXVersion.cpp",
         "0044DEE0": "src/matching/0044DEE0_IsDPlay501a.cpp"
-      }
+      },
+      "symbols": {}
     },
     {
       "name": "basegame_late",
@@ -1559,7 +1576,8 @@
       "flags": "config/flags/default.rsp",
       "owners": {
         "00481980": "src/matching/00481980_RGE_RMM_Cliffs_Generator.cpp"
-      }
+      },
+      "symbols": {}
     },
     {
       "name": "com_sync_prefix",
@@ -1577,7 +1595,8 @@
         "00433AA0": "src/matching/00433AA0_SetStopOnFail.cpp",
         "00433AB0": "src/matching/00433AB0_SetDialogOnFail.cpp",
         "00433AC0": "src/matching/00433AC0_SendChatMsgsAtChecksum.cpp"
-      }
+      },
+      "symbols": {}
     },
     {
       "name": "aipbook_prefix",
@@ -1611,7 +1630,8 @@
       "flags": "config/flags/default.rsp",
       "owners": {
         "004C6B50": "src/matching/004C6B50_numberFacets.cpp"
-      }
+      },
+      "symbols": {}
     },
     {
       "name": "stat_obj_under_attack",
@@ -1619,7 +1639,8 @@
       "flags": "config/flags/default.rsp",
       "owners": {
         "004C6B60": "src/matching/004C6B60_underAttack.cpp"
-      }
+      },
+      "symbols": {}
     },
     {
       "name": "stat_obj_set_under_attack",
@@ -1627,7 +1648,8 @@
       "flags": "config/flags/default.rsp",
       "owners": {
         "004C6B70": "src/matching/004C6B70_setUnderAttack.cpp"
-      }
+      },
+      "symbols": {}
     },
     {
       "name": "stat_obj_obstruction_map",
@@ -1635,7 +1657,8 @@
       "flags": "config/flags/default.rsp",
       "owners": {
         "004C6B80": "src/matching/004C6B80_addToObstructionMap.cpp"
-      }
+      },
+      "symbols": {}
     },
     {
       "name": "taiuaimd_soldier_segment",
@@ -1926,7 +1949,8 @@
         "0043AD70": "src/matching/0043AD70_TribeAboutDialog.cpp",
         "0043B400": "src/matching/0043B400_action.cpp",
         "0043B550": "src/matching/0043B550_draw.cpp"
-      }
+      },
+      "symbols": {}
     },
     {
       "name": "ani_obj",
@@ -1964,7 +1988,8 @@
         "004B44F0": "src/matching/004B44F0_fillScenarios.cpp",
         "004B4770": "src/matching/004B4770_getSettings.cpp",
         "004B47D0": "src/matching/004B47D0_sendSettings.cpp"
-      }
+      },
+      "symbols": {}
     },
     {
       "name": "com_addr_prefix",
@@ -1978,7 +2003,8 @@
         "00424C20": "src/matching/00424C20_GetAddress.cpp",
         "00424C80": "src/matching/00424C80_SetIPAddresses.cpp",
         "00424D90": "src/matching/00424D90_EraseInformation.cpp"
-      }
+      },
+      "symbols": {}
     },
     {
       "name": "act_expl",
@@ -2005,7 +2031,8 @@
         "004B87D0": "src/matching/004B87D0_TRIBE_Mission_Screen.cpp",
         "004B88B0": "src/matching/004B88B0_handle_idle.cpp",
         "004B8AE0": "src/matching/004B8AE0_key_down_action.cpp"
-      }
+      },
+      "symbols": {}
     },
     {
       "name": "scr_stms_prefix",
@@ -2031,7 +2058,8 @@
         "004B2EF0": "src/matching/004B2EF0_TRIBE_Screen_Sed_Menu.cpp",
         "004B3110": "src/matching/004B3110_TRIBE_Screen_Sed_Menu.cpp",
         "004B31D0": "src/matching/004B31D0_action.cpp"
-      }
+      },
+      "symbols": {}
     },
     {
       "name": "colorlog",
@@ -2039,7 +2067,8 @@
       "flags": "config/flags/default.rsp",
       "owners": {
         "00424810": "src/matching/00424810_color_log.cpp"
-      }
+      },
+      "symbols": {}
     },
     {
       "name": "tobj_lst",
@@ -2047,7 +2076,8 @@
       "flags": "config/flags/00511B00_load.rsp",
       "owners": {
         "00511B00": "src/matching/00511B00_load.cpp"
-      }
+      },
+      "symbols": {}
     },
     {
       "name": "pnl_pic_prefix",
@@ -2072,7 +2102,8 @@
         "0043F340": "src/matching/0043F340_TribeMenuDialog.cpp",
         "0043F6B0": "src/matching/0043F6B0_TribeMenuDialog.cpp",
         "0043F720": "src/matching/0043F720_action.cpp"
-      }
+      },
+      "symbols": {}
     },
     {
       "name": "rpnl_tim",
@@ -2263,7 +2294,8 @@
       "owners": {
         "0040CD90": "src/matching/0040CD90_InformationAIModule.cpp",
         "0040CDE0": "src/matching/0040CDE0_InformationAIModule.cpp"
-      }
+      },
+      "symbols": {}
     },
     {
       "name": "aistrmod",
@@ -2271,7 +2303,8 @@
       "flags": "config/flags/default.rsp",
       "owners": {
         "00412AF0": "src/matching/00412AF0_StrategyAIModule.cpp"
-      }
+      },
+      "symbols": {}
     },
     {
       "name": "aitacmod",
@@ -2279,7 +2312,8 @@
       "flags": "config/flags/default.rsp",
       "owners": {
         "00412B50": "src/matching/00412B50_TacticalAIModule.cpp"
-      }
+      },
+      "symbols": {}
     },
     {
       "name": "aitchitm",
@@ -2290,7 +2324,8 @@
         "00412E10": "src/matching/00412E10_id.cpp",
         "00412E20": "src/matching/00412E20_name.cpp",
         "00412E30": "src/matching/00412E30_resourceCost.cpp"
-      }
+      },
+      "symbols": {}
     },
     {
       "name": "campaign",
@@ -2324,7 +2359,8 @@
         "0042F6C0": "src/matching/0042F6C0_GameIsOver.cpp",
         "0042F6D0": "src/matching/0042F6D0_ReceiveZoneMessages.cpp",
         "0042F830": "src/matching/0042F830_SendZoneMessage.cpp"
-      }
+      },
+      "symbols": {}
     },
     {
       "name": "dlg_dip",
@@ -2332,7 +2368,8 @@
       "flags": "config/flags/0043C930_TribeDiplomacyDialog.rsp",
       "owners": {
         "0043D6E0": "src/matching/0043D6E0_TribeDiplomacyDialog.cpp"
-      }
+      },
+      "symbols": {}
     },
     {
       "name": "dlg_sedm",
@@ -2341,7 +2378,8 @@
       "owners": {
         "00440140": "src/matching/00440140_TRIBE_Dialog_Sed_Menu.cpp",
         "00440360": "src/matching/00440360_TRIBE_Dialog_Sed_Menu.cpp"
-      }
+      },
+      "symbols": {}
     },
     {
       "name": "infmap",
@@ -2488,7 +2526,8 @@
         "0050B4D0": "src/matching/0050B4D0_create_build_list.cpp",
         "0050B5E0": "src/matching/0050B5E0_create_train_list.cpp",
         "0050B700": "src/matching/0050B700_create_research_list.cpp"
-      }
+      },
+      "symbols": {}
     },
     {
       "name": "dsutil_prefix",
@@ -2515,7 +2554,8 @@
         "00448A70": "src/matching/00448A70_ds_stream_resume.c",
         "00448A80": "src/matching/00448A80_ds_stream_stop.c",
         "00448B30": "src/matching/00448B30_ds_stream_messages.c"
-      }
+      },
+      "symbols": {}
     },
     {
       "name": "pnl_lst",
@@ -2774,7 +2814,8 @@
         "00432120": "src/matching/00432120_GetServiceActive.cpp",
         "00432150": "src/matching/00432150_SetServiceActive.cpp",
         "00432180": "src/matching/00432180_DPEnumCallback.cpp"
-      }
+      },
+      "symbols": {}
     },
     {
       "name": "com_sess",
@@ -2794,7 +2835,8 @@
         "004324F0": "src/matching/004324F0_Refresh.cpp",
         "00432560": "src/matching/00432560_EnumSessionCallback.cpp",
         "004325E0": "src/matching/004325E0_IsEqualGuid.cpp"
-      }
+      },
+      "symbols": {}
     },
     {
       "name": "dpl_obj",
@@ -3088,7 +3130,8 @@
         "00509640": "src/matching/00509640_GetTauntText.cpp",
         "00509670": "src/matching/00509670_StopSoundSystem.cpp",
         "005096A0": "src/matching/005096A0_RestartSoundSystem.cpp"
-      }
+      },
+      "symbols": {}
     },
     {
       "name": "tpnl_btn",
@@ -3101,7 +3144,8 @@
         "0051A570": "src/matching/0051A570_set_display_garrison.cpp",
         "0051A590": "src/matching/0051A590_set_garrison_number.cpp",
         "0051A5B0": "src/matching/0051A5B0_get_garrison_number.cpp"
-      }
+      },
+      "symbols": {}
     },
     {
       "name": "tpnl_pop",
@@ -3182,7 +3226,8 @@
       "owners": {
         "004821A0": "src/matching/004821A0_RGE_RMM_Controller.cpp",
         "00482260": "src/matching/00482260_generate.cpp"
-      }
+      },
+      "symbols": {}
     },
     {
       "name": "pnl_scr",
@@ -3656,7 +3701,8 @@
         "004B7EE0": "src/matching/004B7EE0_action.cpp",
         "004B7F70": "src/matching/004B7F70_fillTribeText.cpp",
         "004B8070": "src/matching/004B8070_tribeName.cpp"
-      }
+      },
+      "symbols": {}
     },
     {
       "name": "tm_tre_o",
@@ -4239,7 +4285,8 @@
       "flags": "config/flags/004549E0_WinMain_16.rsp",
       "owners": {
         "004549E0": "src/matching/004549E0_WinMain_16.cpp"
-      }
+      },
+      "symbols": {}
     },
     {
       "name": "ttsk_lst",
@@ -4247,7 +4294,8 @@
       "flags": "config/flags/default.rsp",
       "owners": {
         "0052C8D0": "src/matching/0052C8D0_is_attack_task.cpp"
-      }
+      },
+      "symbols": {}
     },
     {
       "name": "aiuaimod_complete_fresh",
@@ -4318,7 +4366,8 @@
         "00420610": "src/matching/00420610_close_thread_windows.cpp",
         "00423010": "src/matching/00423010_debug_random_reset.cpp",
         "004231E0": "src/matching/004231E0_debug_timeGetTime.cpp"
-      }
+      },
+      "symbols": {}
     },
     {
       "name": "world_policy_safe_candidate",
@@ -4546,7 +4595,8 @@
         "0047EAD0": "src/matching/0047EAD0_sort_list.cpp",
         "0047EAF0": "src/matching/0047EAF0_calc_list_line.cpp",
         "0047EB60": "src/matching/0047EB60_get_cur_id.cpp"
-      }
+      },
+      "symbols": {}
     },
     {
       "name": "ACT_GATH_cpp",
@@ -4557,7 +4607,8 @@
         "00403C60": "src/matching/00403C60_get_move_sprite.cpp",
         "00403C90": "src/matching/00403C90_get_wait_sprite.cpp",
         "00403CD0": "src/matching/00403CD0_stop.cpp"
-      }
+      },
+      "symbols": {}
     },
     {
       "name": "tact_mob_cpp",
@@ -4615,7 +4666,8 @@
         "004BEE40": "src/matching/004BEE40_set_master_info.cpp",
         "004BF4D0": "src/matching/004BF4D0_draw_item.cpp",
         "004BF6E0": "src/matching/004BF6E0_get_pierce_armor.cpp"
-      }
+      },
+      "symbols": {}
     },
     {
       "name": "m_ac_obj_cpp_proposal",
@@ -4641,6 +4693,1212 @@
       "owners": {
         "0048CFD0": "src/matching/0048CFD0_RGE_Scenario_File_Info.cpp",
         "0048D4D0": "src/matching/0048D4D0_get_scenario_name.cpp"
+      },
+      "symbols": {}
+    },
+    {
+      "name": "color_cpp",
+      "source": "src/color_tu.cpp",
+      "flags": "config/flags/default.rsp",
+      "owners": {
+        "00424350": "src/matching/00424350_RGE_Color_Table.cpp",
+        "00424440": "src/matching/00424440_RGE_Color_Table.cpp",
+        "004244F0": "src/matching/004244F0_RGE_Color_Table.cpp",
+        "004245F0": "src/matching/004245F0_RGE_Color_Table.cpp",
+        "004247A0": "src/matching/004247A0_RGE_Color_Table.cpp",
+        "004247B0": "src/matching/004247B0_save.cpp"
+      },
+      "symbols": {
+        "00424350": "??0RGE_Color_Table@@QAE@H@Z",
+        "00424440": "??0RGE_Color_Table@@QAE@PAU_iobuf@@F@Z",
+        "004244F0": "??0RGE_Color_Table@@QAE@PAD@Z",
+        "004245F0": "??0RGE_Color_Table@@QAE@PAVTDrawArea@@JPAUtagPALETTEENTRY@@1@Z"
+      }
+    },
+    {
+      "name": "act_make_cpp",
+      "source": "src/act_make_tu.cpp",
+      "flags": "config/flags/default.rsp",
+      "owners": {
+        "004049B0": "src/matching/004049B0_RGE_Action_Make.cpp",
+        "00404A10": "src/matching/00404A10_RGE_Action_Make.cpp",
+        "00404A40": "src/matching/00404A40_first_in_stack.cpp",
+        "00404A70": "src/matching/00404A70_set_state.cpp"
+      },
+      "symbols": {
+        "004049B0": "??0RGE_Action_Make@@QAE@HPAVRGE_Action_Object@@@Z",
+        "00404A10": "??0RGE_Action_Make@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@@Z",
+        "00404A40": "?first_in_stack@RGE_Action_Make@@UAEXE@Z",
+        "00404A70": "?set_state@RGE_Action_Make@@MAEXE@Z"
+      }
+    },
+    {
+      "name": "taicrule_cpp",
+      "source": "src/taicrule_tu.cpp",
+      "flags": "config/flags/default.rsp",
+      "owners": {
+        "004D68D0": "src/matching/004D68D0_CombatRuleSystem.cpp",
+        "004D6900": "src/matching/004D6900_CombatRuleSystem.cpp",
+        "004D6AA0": "src/matching/004D6AA0_bestUnitTypeToAttack.cpp",
+        "004D6AB0": "src/matching/004D6AB0_bestUnitTypeToDefendAgainst.cpp"
+      },
+      "symbols": {
+        "004D68D0": "??0CombatRuleSystem@@QAE@XZ",
+        "004D6900": "??1CombatRuleSystem@@UAE@XZ",
+        "004D6AA0": "?bestUnitTypeToAttack@CombatRuleSystem@@QAEHH@Z",
+        "004D6AB0": "?bestUnitTypeToDefendAgainst@CombatRuleSystem@@QAEHH@Z"
+      }
+    },
+    {
+      "name": "com_spd_cpp",
+      "source": "src/com_spd_tu.cpp",
+      "flags": "config/flags/00432620_RGE_Communications_Speed.rsp",
+      "owners": {
+        "00432620": "src/matching/00432620_RGE_Communications_Speed.cpp",
+        "00432780": "src/matching/00432780_RGE_Communications_Speed.cpp",
+        "004327C0": "src/matching/004327C0_SetPlayerTurnSpeed.cpp",
+        "00432800": "src/matching/00432800_SetActualLatency.cpp",
+        "00432870": "src/matching/00432870_EnableSpeedControl.cpp",
+        "00432880": "src/matching/00432880_GetBufferGranularity.cpp",
+        "00432890": "src/matching/00432890_GetAdjustmentCount.cpp",
+        "004328A0": "src/matching/004328A0_GetBufferGranularityAdjusted.cpp",
+        "004328C0": "src/matching/004328C0_BufferFramesRemaining.cpp",
+        "004328E0": "src/matching/004328E0_AdjustLocalSpeed.cpp",
+        "00432940": "src/matching/00432940_ReloadBufferFrames.cpp",
+        "00432970": "src/matching/00432970_BufferTimeToUse.cpp",
+        "00432A70": "src/matching/00432A70_Skip.cpp",
+        "00432A90": "src/matching/00432A90_GetHighLatencyCenti.cpp",
+        "00432B00": "src/matching/00432B00_GetPlayerLatency.cpp",
+        "00432B20": "src/matching/00432B20_GetLatencyInfo.cpp",
+        "00432BD0": "src/matching/00432BD0_GetSelfPlayerOptimalSpeedStr.cpp",
+        "00432C10": "src/matching/00432C10_GetPlayerSpeedStatusStr.cpp",
+        "00432C70": "src/matching/00432C70_GetMachineSpeedInfo.cpp",
+        "00432D20": "src/matching/00432D20_GetRecommendedBufferFrames.cpp",
+        "00432D90": "src/matching/00432D90_GetAvgFrameRate.cpp",
+        "00432DA0": "src/matching/00432DA0_GetRecommendedBufferGranularity.cpp",
+        "00432FB0": "src/matching/00432FB0_SetV1.cpp",
+        "00432FD0": "src/matching/00432FD0_SetV2.cpp"
+      },
+      "symbols": {
+        "00432880": "?GetBufferGranularity@RGE_Communications_Speed@@QAEHXZ"
+      }
+    },
+    {
+      "name": "dlg_msg_cpp",
+      "source": "src/dlg_msg_tu.cpp",
+      "flags": "config/flags/0043FCD0_TMessageDialog.rsp",
+      "owners": {
+        "0043FCD0": "src/matching/0043FCD0_TMessageDialog.cpp",
+        "0043FFF0": "src/matching/0043FFF0_setup.cpp",
+        "00440070": "src/matching/00440070_action.cpp",
+        "00440100": "src/matching/00440100_key_down_action.cpp",
+        "00440110": "src/matching/00440110_handle_idle.cpp"
+      },
+      "symbols": {
+        "0043FCD0": "??1TMessageDialog@@UAE@XZ",
+        "0043FFF0": "?setup@TMessageDialog@@QAEJPAVTPanel@@PADJJJEHJJ@Z",
+        "00440070": "?action@TMessageDialog@@UAEJPAVTPanel@@JKK@Z",
+        "00440100": "?key_down_action@TMessageDialog@@UAEJJFHHH@Z",
+        "00440110": "?handle_idle@TMessageDialog@@UAEJXZ"
+      }
+    },
+    {
+      "name": "scr_mp_cpp",
+      "source": "src/scr_mp_tu.cpp",
+      "flags": "config/flags/0049F370_TribeMPStartupScreen.rsp",
+      "owners": {
+        "0049F890": "src/matching/0049F890_TribeMPStartupScreen.cpp",
+        "0049F9A0": "src/matching/0049F9A0_handle_idle.cpp",
+        "0049F9D0": "src/matching/0049F9D0_action.cpp",
+        "0049FED0": "src/matching/0049FED0_fillList.cpp",
+        "004A00A0": "src/matching/004A00A0_handle_user_command.cpp"
+      },
+      "symbols": {
+        "0049F890": "??1TribeMPStartupScreen@@UAE@XZ",
+        "0049F9A0": "?handle_idle@TribeMPStartupScreen@@UAEJXZ",
+        "0049F9D0": "?action@TribeMPStartupScreen@@UAEJPAVTPanel@@JKK@Z",
+        "0049FED0": "?fillList@TribeMPStartupScreen@@QAEXXZ",
+        "004A00A0": "?handle_user_command@TribeMPStartupScreen@@UAEJIJ@Z"
+      }
+    },
+    {
+      "name": "rpnl_tbx_cpp",
+      "source": "src/rpnl_tbx_tu.cpp",
+      "flags": "config/flags/004898D0_RGE_Panel_Tool_Box.rsp",
+      "owners": {
+        "004898D0": "src/matching/004898D0_RGE_Panel_Tool_Box.cpp",
+        "00489E90": "src/matching/00489E90_RGE_Panel_Tool_Box.cpp",
+        "00489F50": "src/matching/00489F50_action.cpp",
+        "0048A520": "src/matching/0048A520_game_mode_changed.cpp",
+        "0048A640": "src/matching/0048A640_draw.cpp"
+      },
+      "symbols": {
+        "004898D0": "??0RGE_Panel_Tool_Box@@QAE@PAVTDrawArea@@PAVTPanel@@JJJJPAXJJPAVTDigital@@PAVTScreenPanel@@PAVRGE_View@@PAVRGE_Diamond_Map@@@Z",
+        "00489E90": "??1RGE_Panel_Tool_Box@@UAE@XZ",
+        "00489F50": "?action@RGE_Panel_Tool_Box@@UAEJPAVTPanel@@JKK@Z",
+        "0048A520": "?game_mode_changed@RGE_Panel_Tool_Box@@QAEXHH@Z",
+        "0048A640": "?draw@RGE_Panel_Tool_Box@@UAEXXZ"
+      }
+    },
+    {
+      "name": "act_entr_cpp",
+      "source": "src/act_entr_tu.cpp",
+      "flags": "config/flags/00402410_RGE_Action_Enter.rsp",
+      "owners": {
+        "004023C0": "src/matching/004023C0_RGE_Action_Enter.cpp",
+        "00402410": "src/matching/00402410_RGE_Action_Enter.cpp",
+        "004025F0": "src/matching/004025F0_RGE_Action_Enter.cpp",
+        "00402600": "src/matching/00402600_first_in_stack.cpp",
+        "00402610": "src/matching/00402610_set_state.cpp"
+      },
+      "symbols": {
+        "004023C0": "??0RGE_Action_Enter@@QAE@HPAVRGE_Action_Object@@@Z",
+        "00402410": "??0RGE_Action_Enter@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@PAVRGE_Static_Object@@@Z",
+        "004025F0": "??1RGE_Action_Enter@@UAE@XZ",
+        "00402600": "?first_in_stack@RGE_Action_Enter@@UAEXE@Z",
+        "00402610": "?set_state@RGE_Action_Enter@@MAEXE@Z"
+      }
+    },
+    {
+      "name": "file_stf",
+      "source": "src/file_stf_tu.cpp",
+      "flags": "config/flags/default.rsp",
+      "owners": {
+        "00449750": "src/matching/00449750_driveAsLetter.cpp",
+        "00449760": "src/matching/00449760_driveAsInt.cpp",
+        "00449770": "src/matching/00449770_DriveInformation.cpp",
+        "004497C0": "src/matching/004497C0_initialDrive.cpp",
+        "004497D0": "src/matching/004497D0_initialDriveAsLetter.cpp",
+        "004497E0": "src/matching/004497E0_initialDirectory.cpp",
+        "004497F0": "src/matching/004497F0_currentDrive.cpp",
+        "00449800": "src/matching/00449800_currentDriveAsLetter.cpp",
+        "00449810": "src/matching/00449810_currentDirectory.cpp",
+        "00449820": "src/matching/00449820_numberDrives.cpp",
+        "00449830": "src/matching/00449830_validDrive.cpp",
+        "00449840": "src/matching/00449840_checkDrives.cpp",
+        "004498A0": "src/matching/004498A0_numberOfFilesWithFilename.cpp",
+        "00449910": "src/matching/00449910_numberOfFilesWithAttribute.cpp",
+        "00449990": "src/matching/00449990_numberOfFilesWithFilenameOrAttribute.cpp",
+        "00449A20": "src/matching/00449A20_resetCurrentDriveAndDirectory.cpp",
+        "00449A40": "src/matching/00449A40_resetCurrentDrive.cpp",
+        "00449A50": "src/matching/00449A50_resetCurrentDirectory.cpp",
+        "00449A60": "src/matching/00449A60_changeDrive.cpp",
+        "00449A90": "src/matching/00449A90_changeDirectory.cpp",
+        "00449AC0": "src/matching/00449AC0_updateDirectory.cpp"
+      },
+      "symbols": {
+        "00449750": "?driveAsLetter@@YADH@Z",
+        "00449760": "?driveAsInt@@YAHD@Z",
+        "00449770": "??0DriveInformation@@QAE@XZ",
+        "004497C0": "?initialDrive@DriveInformation@@QBEHXZ",
+        "004497D0": "?initialDriveAsLetter@DriveInformation@@QBEDXZ",
+        "004497E0": "?initialDirectory@DriveInformation@@QAEPADXZ",
+        "004497F0": "?currentDrive@DriveInformation@@QBEHXZ",
+        "00449800": "?currentDriveAsLetter@DriveInformation@@QBEDXZ",
+        "00449810": "?currentDirectory@DriveInformation@@QAEPADXZ",
+        "00449820": "?numberDrives@DriveInformation@@QBEHXZ",
+        "00449830": "?validDrive@DriveInformation@@QBEHH@Z",
+        "00449840": "?checkDrives@DriveInformation@@QAEXXZ",
+        "004498A0": "?numberOfFilesWithFilename@DriveInformation@@QAEHPAD@Z",
+        "00449910": "?numberOfFilesWithAttribute@DriveInformation@@QAEHH@Z",
+        "00449990": "?numberOfFilesWithFilenameOrAttribute@DriveInformation@@QAEHPADH@Z",
+        "00449A20": "?resetCurrentDriveAndDirectory@DriveInformation@@QAEHXZ",
+        "00449A40": "?resetCurrentDrive@DriveInformation@@QAEHXZ",
+        "00449A50": "?resetCurrentDirectory@DriveInformation@@QAEHXZ",
+        "00449A60": "?changeDrive@DriveInformation@@QAEHH@Z",
+        "00449A90": "?changeDirectory@DriveInformation@@QAEHPAD@Z",
+        "00449AC0": "?updateDirectory@DriveInformation@@IAEXXZ"
+      }
+    },
+    {
+      "name": "tm_b_obj",
+      "source": "src/tm_b_obj_tu.cpp",
+      "flags": "config/flags/0050E040_TRIBE_Master_Building_Object.rsp",
+      "owners": {
+        "0050E040": "src/matching/0050E040_TRIBE_Master_Building_Object.cpp",
+        "0050E0C0": "src/matching/0050E0C0_TRIBE_Master_Building_Object.cpp",
+        "0050E130": "src/matching/0050E130_TRIBE_Master_Building_Object.cpp",
+        "0050E1B0": "src/matching/0050E1B0_setup.cpp",
+        "0050E250": "src/matching/0050E250_setup.cpp",
+        "0050E360": "src/matching/0050E360_setup.cpp",
+        "0050E430": "src/matching/0050E430_TRIBE_Master_Building_Object.cpp",
+        "0050E440": "src/matching/0050E440_copy_obj.cpp",
+        "0050E4D0": "src/matching/0050E4D0_modify.cpp",
+        "0050E500": "src/matching/0050E500_modify_delta.cpp",
+        "0050E530": "src/matching/0050E530_modify_percent.cpp",
+        "0050E550": "src/matching/0050E550_save.cpp",
+        "0050E630": "src/matching/0050E630_make_new_obj.cpp",
+        "0050E6B0": "src/matching/0050E6B0_make_new_obj.cpp",
+        "0050E730": "src/matching/0050E730_make_new_master.cpp",
+        "0050E950": "src/matching/0050E950_alignment.cpp"
+      },
+      "symbols": {
+        "0050E040": "??0TRIBE_Master_Building_Object@@QAE@PAV0@H@Z",
+        "0050E0C0": "??0TRIBE_Master_Building_Object@@QAE@HPAPAVRGE_Sprite@@PAPAVRGE_Sound@@H@Z",
+        "0050E130": "??0TRIBE_Master_Building_Object@@QAE@PAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@FH@Z",
+        "0050E1B0": "?setup@TRIBE_Master_Building_Object@@QAEHPAV1@@Z",
+        "0050E250": "?setup@TRIBE_Master_Building_Object@@QAEHHPAPAVRGE_Sprite@@PAPAVRGE_Sound@@@Z",
+        "0050E360": "?setup@TRIBE_Master_Building_Object@@QAEHPAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@F@Z",
+        "0050E440": "?copy_obj@TRIBE_Master_Building_Object@@QAEXPAVRGE_Master_Static_Object@@@Z",
+        "0050E4D0": "?modify@TRIBE_Master_Building_Object@@UAEXME@Z",
+        "0050E500": "?modify_delta@TRIBE_Master_Building_Object@@UAEXME@Z",
+        "0050E550": "?save@TRIBE_Master_Building_Object@@UAEXH@Z",
+        "0050E630": "?make_new_obj@TRIBE_Master_Building_Object@@UAEPAVRGE_Static_Object@@PAVRGE_Player@@MMMH@Z",
+        "0050E6B0": "?make_new_obj@TRIBE_Master_Building_Object@@UAEPAVRGE_Static_Object@@PAVRGE_Player@@MMM@Z",
+        "0050E730": "?make_new_master@TRIBE_Master_Building_Object@@UAEPAVRGE_Master_Static_Object@@XZ",
+        "0050E950": "?alignment@TRIBE_Master_Building_Object@@UAEEPAM0PAVRGE_Game_World@@E@Z"
+      }
+    },
+    {
+      "name": "rge_fio",
+      "source": "src/rge_fio_tu.cpp",
+      "flags": "config/flags/default.rsp",
+      "owners": {
+        "0047FD30": "src/matching/0047FD30_rge_fake_open.cpp",
+        "0047FD90": "src/matching/0047FD90_rge_open.cpp",
+        "0047FE20": "src/matching/0047FE20_rge_open.cpp",
+        "0047FEB0": "src/matching/0047FEB0_rge_fake_close.cpp",
+        "0047FF30": "src/matching/0047FF30_rge_close.cpp",
+        "00480000": "src/matching/00480000_rge_read_uncompressed.cpp",
+        "00480040": "src/matching/00480040_rge_write_uncompressed.cpp",
+        "00480080": "src/matching/00480080_rge_read.cpp",
+        "00480290": "src/matching/00480290_rge_buffer_full.cpp",
+        "004802C0": "src/matching/004802C0_rge_write.cpp"
+      },
+      "symbols": {
+        "0047FD30": "?rge_fake_open@@YAHHH@Z",
+        "0047FD90": "?rge_open@@YAHPADH@Z",
+        "0047FE20": "?rge_open@@YAHPADHH@Z",
+        "0047FEB0": "?rge_fake_close@@YAHH@Z",
+        "0047FF30": "?rge_close@@YAHH@Z",
+        "00480000": "?rge_read_uncompressed@@YAXHPAXH@Z",
+        "00480040": "?rge_write_uncompressed@@YAXHPAXH@Z",
+        "00480080": "?rge_read@@YAXHPAXH@Z",
+        "00480290": "?rge_buffer_full@@YAHPAEH@Z",
+        "004802C0": "?rge_write@@YAXHPAXH@Z"
+      }
+    },
+    {
+      "name": "tact_hea",
+      "source": "src/tact_hea_tu.cpp",
+      "flags": "config/flags/004CE990_TRIBE_Action_Heal.rsp",
+      "owners": {
+        "004CE930": "src/matching/004CE930_TRIBE_Action_Heal.cpp",
+        "004CE990": "src/matching/004CE990_TRIBE_Action_Heal.cpp",
+        "004CEA90": "src/matching/004CEA90_set_state.cpp",
+        "004CECF0": "src/matching/004CECF0_update.cpp",
+        "004CF030": "src/matching/004CF030_work.cpp"
+      },
+      "symbols": {
+        "004CE930": "??0TRIBE_Action_Heal@@QAE@HPAVRGE_Action_Object@@@Z",
+        "004CE990": "??0TRIBE_Action_Heal@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@PAVRGE_Static_Object@@@Z",
+        "004CEA90": "?set_state@TRIBE_Action_Heal@@MAEXE@Z",
+        "004CECF0": "?update@TRIBE_Action_Heal@@UAEEXZ",
+        "004CF030": "?work@TRIBE_Action_Heal@@UAEHPAVRGE_Static_Object@@MMM@Z"
+      }
+    },
+    {
+      "name": "picture",
+      "source": "src/picture_tu.cpp",
+      "flags": "config/flags/default.rsp",
+      "owners": {
+        "0046DDE0": "src/matching/0046DDE0_TPicture.cpp",
+        "0046DFA0": "src/matching/0046DFA0_TPicture.cpp",
+        "0046DFC0": "src/matching/0046DFC0_TPicture.cpp",
+        "0046E020": "src/matching/0046E020_Save.cpp",
+        "0046E0B0": "src/matching/0046E0B0_Load.cpp",
+        "0046E2C0": "src/matching/0046E2C0_AlignedWidth.cpp",
+        "0046E2D0": "src/matching/0046E2D0_Draw.cpp",
+        "0046E370": "src/matching/0046E370_Tile.cpp",
+        "0046E3E0": "src/matching/0046E3E0_GetPixel.cpp"
+      },
+      "symbols": {
+        "0046DDE0": "??0TPicture@@QAE@PADJHPAXH@Z",
+        "0046DFA0": "??0TPicture@@QAE@XZ",
+        "0046DFC0": "??1TPicture@@QAE@XZ",
+        "0046E020": "?Save@TPicture@@QAEXH@Z",
+        "0046E0B0": "?Load@TPicture@@QAEXPADJHPAXH@Z",
+        "0046E2C0": "?AlignedWidth@TPicture@@QAEJXZ",
+        "0046E2D0": "?Draw@TPicture@@QAEXPAVTDrawArea@@JJHH@Z",
+        "0046E370": "?Tile@TPicture@@QAEJPAVTDrawArea@@JJJJJJJJJJ@Z",
+        "0046E3E0": "?GetPixel@TPicture@@QAEEJJHH@Z"
+      }
+    },
+    {
+      "name": "scr_main",
+      "source": "src/scr_main_tu.cpp",
+      "flags": "config/flags/default.rsp",
+      "owners": {
+        "0049ECD0": "src/matching/0049ECD0_handle_idle.cpp",
+        "0049F2B0": "src/matching/0049F2B0_set_text.cpp",
+        "0049F2D0": "src/matching/0049F2D0_set_text.cpp",
+        "0049F2F0": "src/matching/0049F2F0_action.cpp",
+        "0049F340": "src/matching/0049F340_handle_idle.cpp"
+      },
+      "symbols": {
+        "0049ECD0": "?handle_idle@TRIBE_Screen_Main_Menu@@UAEJXZ",
+        "0049F2B0": "?set_text@TRIBE_Screen_Main_Error@@QAEXPAD@Z",
+        "0049F2D0": "?set_text@TRIBE_Screen_Main_Error@@QAEXJ@Z",
+        "0049F2F0": "?action@TRIBE_Screen_Main_Error@@UAEJPAVTPanel@@JKK@Z",
+        "0049F340": "?handle_idle@TRIBE_Screen_Main_Error@@UAEJXZ"
+      }
+    },
+    {
+      "name": "m_co_obj",
+      "source": "src/m_co_obj_tu.cpp",
+      "flags": "config/flags/0044FE40_RGE_Master_Combat_Object.rsp",
+      "owners": {
+        "0044FE40": "src/matching/0044FE40_RGE_Master_Combat_Object.cpp",
+        "0044FEC0": "src/matching/0044FEC0_RGE_Master_Combat_Object.cpp",
+        "0044FF30": "src/matching/0044FF30_RGE_Master_Combat_Object.cpp",
+        "0044FFB0": "src/matching/0044FFB0_setup.cpp",
+        "00450170": "src/matching/00450170_setup.cpp",
+        "00450680": "src/matching/00450680_RGE_Master_Combat_Object.cpp",
+        "004506D0": "src/matching/004506D0_make_new_obj.cpp",
+        "004507A0": "src/matching/004507A0_make_new_master.cpp",
+        "00450810": "src/matching/00450810_copy_obj.cpp",
+        "00450A00": "src/matching/00450A00_modify.cpp",
+        "00450B40": "src/matching/00450B40_modify_delta.cpp",
+        "00450D00": "src/matching/00450D00_modify_percent.cpp",
+        "00450E20": "src/matching/00450E20_save.cpp"
+      },
+      "symbols": {
+        "0044FE40": "??0RGE_Master_Combat_Object@@QAE@PAV0@H@Z",
+        "0044FEC0": "??0RGE_Master_Combat_Object@@QAE@HPAPAVRGE_Sprite@@PAPAVRGE_Sound@@H@Z",
+        "0044FF30": "??0RGE_Master_Combat_Object@@QAE@PAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@FH@Z",
+        "0044FFB0": "?setup@RGE_Master_Combat_Object@@IAEHPAV1@@Z",
+        "00450170": "?setup@RGE_Master_Combat_Object@@IAEHHPAPAVRGE_Sprite@@PAPAVRGE_Sound@@@Z",
+        "00450680": "??1RGE_Master_Combat_Object@@UAE@XZ",
+        "004506D0": "?make_new_obj@RGE_Master_Combat_Object@@UAEPAVRGE_Static_Object@@PAVRGE_Player@@MMM@Z",
+        "004507A0": "?make_new_master@RGE_Master_Combat_Object@@UAEPAVRGE_Master_Static_Object@@XZ",
+        "00450810": "?copy_obj@RGE_Master_Combat_Object@@UAEXPAVRGE_Master_Static_Object@@@Z",
+        "00450A00": "?modify@RGE_Master_Combat_Object@@UAEXME@Z",
+        "00450B40": "?modify_delta@RGE_Master_Combat_Object@@UAEXME@Z",
+        "00450D00": "?modify_percent@RGE_Master_Combat_Object@@UAEXME@Z",
+        "00450E20": "?save@RGE_Master_Combat_Object@@UAEXH@Z"
+      }
+    },
+    {
+      "name": "vw_main",
+      "source": "src/vw_main_tu.cpp",
+      "flags": "config/flags/default.rsp",
+      "owners": {
+        "0053DAB0": "src/matching/0053DAB0_RGE_Main_View.cpp",
+        "0053DB40": "src/matching/0053DB40_handle_idle.cpp",
+        "0053E280": "src/matching/0053E280_handle_mouse_up.cpp",
+        "0053E2F0": "src/matching/0053E2F0_mouse_move_action.cpp",
+        "0053E7F0": "src/matching/0053E7F0_mouse_left_move_action.cpp",
+        "0053F220": "src/matching/0053F220_mouse_right_down_action.cpp",
+        "0053F660": "src/matching/0053F660_start_scroll_view.cpp",
+        "0053F6B0": "src/matching/0053F6B0_handle_scroll_view.cpp",
+        "0053F800": "src/matching/0053F800_draw_multi_object_outline.cpp",
+        "0053FA10": "src/matching/0053FA10_command_make_do.cpp",
+        "0053FFB0": "src/matching/0053FFB0_pick_objects1.cpp",
+        "00540420": "src/matching/00540420_command_make_work.cpp",
+        "005405C0": "src/matching/005405C0_command_place_multi_object.cpp",
+        "005405E0": "src/matching/005405E0_get_help_info.cpp",
+        "00540680": "src/matching/00540680_fixup_pick_info.cpp"
+      },
+      "symbols": {}
+    },
+    {
+      "name": "taibldmd",
+      "source": "src/taibldmd_tu.cpp",
+      "flags": "config/flags/004D5690_addResearch.rsp",
+      "owners": {
+        "004D3A80": "src/matching/004D3A80_TribeBuildAIModule.cpp",
+        "004D3AD0": "src/matching/004D3AD0_TribeBuildAIModule.cpp",
+        "004D3B00": "src/matching/004D3B00_TribeBuildAIModule.cpp",
+        "004D3B10": "src/matching/004D3B10_setMainDecisionAI.cpp",
+        "004D3B20": "src/matching/004D3B20_loadBuildList.cpp",
+        "004D4460": "src/matching/004D4460_skipNextBuildListItem.cpp",
+        "004D4DB0": "src/matching/004D4DB0_nextBuildListItemCategory.cpp",
+        "004D5590": "src/matching/004D5590_addTrainedUnit.cpp",
+        "004D5690": "src/matching/004D5690_addResearch.cpp",
+        "004D56F0": "src/matching/004D56F0_cancelResearch.cpp",
+        "004D5780": "src/matching/004D5780_isAgeResearch.cpp",
+        "004D57A0": "src/matching/004D57A0_insert.cpp",
+        "004D5AD0": "src/matching/004D5AD0_insertResearch.cpp",
+        "004D5B80": "src/matching/004D5B80_insertGathererPercentage.cpp",
+        "004D5BB0": "src/matching/004D5BB0_numberBuiltOrInProgressItemsOfType.cpp",
+        "004D5C20": "src/matching/004D5C20_allBuilt.cpp"
+      },
+      "symbols": {
+        "004D3A80": "??0TribeBuildAIModule@@QAE@PAXH@Z",
+        "004D3AD0": "??0TribeBuildAIModule@@QAE@HH@Z",
+        "004D57A0": "?insert@TribeBuildAIModule@@QAEHHHH@Z"
+      }
+    },
+    {
+      "name": "action",
+      "source": "src/action_tu.cpp",
+      "flags": "config/flags/004076D0_create_action_list.rsp",
+      "owners": {
+        "00407460": "src/matching/00407460_RGE_Action.cpp",
+        "004074C0": "src/matching/004074C0_RGE_Action.cpp",
+        "004074F0": "src/matching/004074F0_RGE_Action.cpp",
+        "00407530": "src/matching/00407530_setup.cpp",
+        "00407680": "src/matching/00407680_setup.cpp",
+        "004076D0": "src/matching/004076D0_create_action_list.cpp",
+        "00407740": "src/matching/00407740_rehook.cpp",
+        "00407790": "src/matching/00407790_save.cpp",
+        "004078D0": "src/matching/004078D0_type.cpp",
+        "004078E0": "src/matching/004078E0_first_in_stack.cpp",
+        "004078F0": "src/matching/004078F0_stop.cpp",
+        "00407900": "src/matching/00407900_move_to.cpp",
+        "00407910": "src/matching/00407910_work.cpp",
+        "00407920": "src/matching/00407920_attack_response.cpp",
+        "00407930": "src/matching/00407930_relation_response.cpp",
+        "00407940": "src/matching/00407940_set_state.cpp",
+        "00407950": "src/matching/00407950_inside_obj_update.cpp",
+        "00407990": "src/matching/00407990_idle_update.cpp",
+        "004079D0": "src/matching/004079D0_update.cpp",
+        "00407A20": "src/matching/00407A20_set_target_obj.cpp",
+        "00407A90": "src/matching/00407A90_set_target_obj2.cpp",
+        "00407B00": "src/matching/00407B00_copy_obj.cpp",
+        "00407C00": "src/matching/00407C00_copy_obj_sprites.cpp",
+        "00407D30": "src/matching/00407D30_targetX.cpp",
+        "00407D40": "src/matching/00407D40_targetY.cpp",
+        "00407D50": "src/matching/00407D50_targetZ.cpp",
+        "00407D60": "src/matching/00407D60_subAction.cpp",
+        "00407D70": "src/matching/00407D70_setSubAction.cpp"
+      },
+      "symbols": {
+        "00407460": "??0RGE_Action@@QAE@HPAVRGE_Action_Object@@H@Z",
+        "004074C0": "??0RGE_Action@@QAE@PAVRGE_Action_Object@@H@Z",
+        "004074F0": "??1RGE_Action@@UAE@XZ",
+        "00407530": "?setup@RGE_Action@@UAEHHPAVRGE_Action_Object@@@Z",
+        "00407680": "?setup@RGE_Action@@UAEHPAVRGE_Action_Object@@@Z",
+        "004076D0": "?create_action_list@RGE_Action@@UAEPAVRGE_Action_List@@PAVRGE_Action_Object@@@Z",
+        "00407740": "?rehook@RGE_Action@@UAEXXZ",
+        "00407790": "?save@RGE_Action@@UAEXH@Z",
+        "004078D0": "?type@RGE_Action@@UAEFXZ",
+        "004078E0": "?first_in_stack@RGE_Action@@UAEXE@Z",
+        "004078F0": "?stop@RGE_Action@@UAEHXZ",
+        "00407900": "?move_to@RGE_Action@@UAEHPAVRGE_Static_Object@@MMM@Z",
+        "00407910": "?work@RGE_Action@@UAEHPAVRGE_Static_Object@@MMM@Z",
+        "00407920": "?attack_response@RGE_Action@@UAEEPAVRGE_Static_Object@@@Z",
+        "00407930": "?relation_response@RGE_Action@@UAEEJE@Z",
+        "00407940": "?set_state@RGE_Action@@UAEXE@Z",
+        "00407950": "?inside_obj_update@RGE_Action@@UAEEXZ",
+        "00407990": "?idle_update@RGE_Action@@UAEEXZ",
+        "004079D0": "?update@RGE_Action@@UAEEXZ",
+        "00407A20": "?set_target_obj@RGE_Action@@UAEXPAVRGE_Static_Object@@@Z",
+        "00407A90": "?set_target_obj2@RGE_Action@@UAEXPAVRGE_Static_Object@@@Z",
+        "00407B00": "?copy_obj@RGE_Action@@UAEXPAVRGE_Master_Action_Object@@@Z",
+        "00407C00": "?copy_obj_sprites@RGE_Action@@UAEXPAVRGE_Master_Action_Object@@PAVRGE_Task@@1@Z",
+        "00407D30": "?targetX@RGE_Action@@QBEMXZ",
+        "00407D40": "?targetY@RGE_Action@@QBEMXZ",
+        "00407D50": "?targetZ@RGE_Action@@QBEMXZ",
+        "00407D60": "?subAction@RGE_Action@@QBEEXZ",
+        "00407D70": "?setSubAction@RGE_Action@@QAEXE@Z"
+      }
+    },
+    {
+      "name": "dlg_help",
+      "source": "src/dlg_help_tu.cpp",
+      "flags": "config/flags/0043E840_THelpDialog.rsp",
+      "owners": {
+        "0043E840": "src/matching/0043E840_THelpDialog.cpp",
+        "0043E8E0": "src/matching/0043E8E0_THelpDialog.cpp",
+        "0043E950": "src/matching/0043E950_THelpDialog.cpp",
+        "0043ED40": "src/matching/0043ED40_action.cpp",
+        "0043EE10": "src/matching/0043EE10_handle_mouse_down.cpp"
+      },
+      "symbols": {
+        "0043E840": "??0THelpDialog@@QAE@PAVTEasy_Panel@@PADJJJJ@Z",
+        "0043E8E0": "??0THelpDialog@@QAE@PAVTEasy_Panel@@PAD1JJJ@Z",
+        "0043E950": "??1THelpDialog@@UAE@XZ",
+        "0043ED40": "?action@THelpDialog@@UAEJPAVTPanel@@JKK@Z",
+        "0043EE10": "?handle_mouse_down@THelpDialog@@UAEJEJJHH@Z"
+      }
+    },
+    {
+      "name": "gameinfo",
+      "source": "src/gameinfo_tu.cpp",
+      "flags": "config/flags/0044CC40_RGE_Person_Info.rsp",
+      "owners": {
+        "0044C5A0": "src/matching/0044C5A0_RGE_Campaign_Info.cpp",
+        "0044C780": "src/matching/0044C780_RGE_Campaign_Info.cpp",
+        "0044C870": "src/matching/0044C870_RGE_Campaign_Info.cpp",
+        "0044C8A0": "src/matching/0044C8A0_save.cpp",
+        "0044C930": "src/matching/0044C930_rehook_campaigns.cpp",
+        "0044CA90": "src/matching/0044CA90_set_current_scenario.cpp",
+        "0044CAD0": "src/matching/0044CAD0_verify_campaign_name.cpp",
+        "0044CB20": "src/matching/0044CB20_get_scenario_list.cpp",
+        "0044CBB0": "src/matching/0044CBB0_get_current_scenario.cpp",
+        "0044CBC0": "src/matching/0044CBC0_notify_of_scenario_complete.cpp",
+        "0044CC20": "src/matching/0044CC20_open_scenario.cpp",
+        "0044CC40": "src/matching/0044CC40_RGE_Person_Info.cpp",
+        "0044CD40": "src/matching/0044CD40_RGE_Person_Info.cpp",
+        "0044CDA0": "src/matching/0044CDA0_RGE_Person_Info.cpp",
+        "0044CE10": "src/matching/0044CE10_save.cpp",
+        "0044CE90": "src/matching/0044CE90_rehook_campaigns.cpp",
+        "0044CEE0": "src/matching/0044CEE0_get_name.cpp",
+        "0044CEF0": "src/matching/0044CEF0_set_current_campaign.cpp",
+        "0044D050": "src/matching/0044D050_get_current_campaign.cpp",
+        "0044D0C0": "src/matching/0044D0C0_get_current_scenario.cpp",
+        "0044D130": "src/matching/0044D130_get_scenario_list.cpp",
+        "0044D160": "src/matching/0044D160_notify_of_scenario_complete.cpp",
+        "0044D180": "src/matching/0044D180_open_scenario.cpp",
+        "0044D1A0": "src/matching/0044D1A0_RGE_Game_Info.cpp",
+        "0044D3B0": "src/matching/0044D3B0_save.cpp",
+        "0044D470": "src/matching/0044D470_find_campaigns.cpp",
+        "0044D710": "src/matching/0044D710_add_new_person.cpp",
+        "0044D7D0": "src/matching/0044D7D0_set_current_person.cpp",
+        "0044D7F0": "src/matching/0044D7F0_set_current_campaign.cpp",
+        "0044D820": "src/matching/0044D820_set_current_scenario.cpp",
+        "0044D850": "src/matching/0044D850_get_people_list.cpp",
+        "0044D8C0": "src/matching/0044D8C0_get_campaign_list.cpp",
+        "0044D940": "src/matching/0044D940_get_scenario_list.cpp",
+        "0044D990": "src/matching/0044D990_get_current_scenario.cpp",
+        "0044D9B0": "src/matching/0044D9B0_get_current_campaign.cpp",
+        "0044D9D0": "src/matching/0044D9D0_get_current_player.cpp",
+        "0044D9E0": "src/matching/0044D9E0_get_current_player_name.cpp",
+        "0044DA00": "src/matching/0044DA00_notify_of_scenario_complete.cpp",
+        "0044DA30": "src/matching/0044DA30_open_scenario.cpp",
+        "0044DA50": "src/matching/0044DA50_remove_player.cpp"
+      },
+      "symbols": {
+        "0044C5A0": "??0RGE_Campaign_Info@@QAE@HPAPAVRGE_Campaign@@H@Z",
+        "0044C780": "??0RGE_Campaign_Info@@QAE@PAVRGE_Campaign@@@Z",
+        "0044C8A0": "?save@RGE_Campaign_Info@@QAEXH@Z",
+        "0044C930": "?rehook_campaigns@RGE_Campaign_Info@@QAEXPAPAVRGE_Campaign@@J@Z",
+        "0044CA90": "?set_current_scenario@RGE_Campaign_Info@@QAEEJ@Z",
+        "0044CAD0": "?verify_campaign_name@RGE_Campaign_Info@@QAEEPAD@Z",
+        "0044CB20": "?get_scenario_list@RGE_Campaign_Info@@QAEJPAPAPADAAJ@Z",
+        "0044CBB0": "?get_current_scenario@RGE_Campaign_Info@@QAEHXZ",
+        "0044CBC0": "?notify_of_scenario_complete@RGE_Campaign_Info@@QAEXXZ",
+        "0044CC20": "?open_scenario@RGE_Campaign_Info@@QAEHXZ",
+        "0044CC40": "??0RGE_Person_Info@@QAE@HPAPAVRGE_Campaign@@H@Z",
+        "0044CD40": "??0RGE_Person_Info@@QAE@PADPAPAVRGE_Campaign@@J@Z",
+        "0044CDA0": "??1RGE_Person_Info@@QAE@XZ",
+        "0044CE10": "?save@RGE_Person_Info@@QAEXH@Z",
+        "0044CE90": "?rehook_campaigns@RGE_Person_Info@@QAEXPAPAVRGE_Campaign@@J@Z",
+        "0044CEE0": "?get_name@RGE_Person_Info@@QAEPADXZ",
+        "0044CEF0": "?set_current_campaign@RGE_Person_Info@@QAEEJ@Z",
+        "0044D050": "?get_current_campaign@RGE_Person_Info@@QAEJXZ",
+        "0044D0C0": "?get_current_scenario@RGE_Person_Info@@QAEHXZ",
+        "0044D130": "?get_scenario_list@RGE_Person_Info@@QAEHPAPAPADPAJ@Z",
+        "0044D160": "?notify_of_scenario_complete@RGE_Person_Info@@QAEXXZ",
+        "0044D180": "?open_scenario@RGE_Person_Info@@QAEHXZ",
+        "0044D1A0": "??0RGE_Game_Info@@QAE@PAD@Z",
+        "0044D3B0": "?save@RGE_Game_Info@@QAEXPAD@Z",
+        "0044D470": "?find_campaigns@RGE_Game_Info@@QAEXXZ",
+        "0044D710": "?add_new_person@RGE_Game_Info@@QAEEH@Z",
+        "0044D7D0": "?set_current_person@RGE_Game_Info@@QAEEJ@Z",
+        "0044D7F0": "?set_current_campaign@RGE_Game_Info@@QAEEH@Z",
+        "0044D820": "?set_current_scenario@RGE_Game_Info@@QAEEH@Z",
+        "0044D850": "?get_people_list@RGE_Game_Info@@QAEJPAPAPADAAJ@Z",
+        "0044D8C0": "?get_campaign_list@RGE_Game_Info@@QAEJPAPAPADAAJ@Z",
+        "0044D940": "?get_scenario_list@RGE_Game_Info@@QAEJPAPAPADPAJ@Z",
+        "0044D990": "?get_current_scenario@RGE_Game_Info@@QAEJXZ",
+        "0044D9B0": "?get_current_campaign@RGE_Game_Info@@QAEJXZ",
+        "0044D9D0": "?get_current_player@RGE_Game_Info@@QAEHXZ",
+        "0044D9E0": "?get_current_player_name@RGE_Game_Info@@QAEPADXZ",
+        "0044DA00": "?notify_of_scenario_complete@RGE_Game_Info@@QAEXXZ",
+        "0044DA30": "?open_scenario@RGE_Game_Info@@QAEHXZ",
+        "0044DA50": "?remove_player@RGE_Game_Info@@QAEXJ@Z"
+      }
+    },
+    {
+      "name": "tact_trd",
+      "source": "src/tact_trd_tu.cpp",
+      "flags": "config/flags/004D2660_TRIBE_Action_Trade.rsp",
+      "owners": {
+        "004D2660": "src/matching/004D2660_TRIBE_Action_Trade.cpp",
+        "004D2710": "src/matching/004D2710_TRIBE_Action_Trade.cpp",
+        "004D27A0": "src/matching/004D27A0_TRIBE_Action_Trade.cpp",
+        "004D27F0": "src/matching/004D27F0_save.cpp",
+        "004D2830": "src/matching/004D2830_first_in_stack.cpp",
+        "004D32C0": "src/matching/004D32C0_get_move_sprite.cpp",
+        "004D32F0": "src/matching/004D32F0_get_wait_sprite.cpp",
+        "004D3330": "src/matching/004D3330_stop.cpp",
+        "004D3340": "src/matching/004D3340_move_to.cpp",
+        "004D33C0": "src/matching/004D33C0_work.cpp"
+      },
+      "symbols": {
+        "004D2660": "??0TRIBE_Action_Trade@@QAE@HPAVRGE_Action_Object@@@Z",
+        "004D2710": "??0TRIBE_Action_Trade@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@PAVRGE_Static_Object@@@Z",
+        "004D27A0": "??0TRIBE_Action_Trade@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@MMM@Z",
+        "004D27F0": "?save@TRIBE_Action_Trade@@UAEXH@Z",
+        "004D2830": "?first_in_stack@TRIBE_Action_Trade@@UAEXE@Z",
+        "004D32C0": "?get_move_sprite@TRIBE_Action_Trade@@QAEPAVRGE_Sprite@@XZ",
+        "004D32F0": "?get_wait_sprite@TRIBE_Action_Trade@@QAEPAVRGE_Sprite@@XZ",
+        "004D3330": "?stop@TRIBE_Action_Trade@@UAEHXZ",
+        "004D3340": "?move_to@TRIBE_Action_Trade@@UAEHPAVRGE_Static_Object@@MMM@Z",
+        "004D33C0": "?work@TRIBE_Action_Trade@@UAEHPAVRGE_Static_Object@@MMM@Z"
+      }
+    },
+    {
+      "name": "aiconitm",
+      "source": "src/aiconitm_tu.cpp",
+      "flags": "config/flags/default.rsp",
+      "owners": {
+        "0040A820": "src/matching/0040A820_ConstructionItem.cpp",
+        "0040A870": "src/matching/0040A870_ConstructionItem.cpp",
+        "0040A950": "src/matching/0040A950_ConstructionItem.cpp",
+        "0040AA00": "src/matching/0040AA00_inProgress.cpp",
+        "0040AA10": "src/matching/0040AA10_built.cpp",
+        "0040AA20": "src/matching/0040AA20_buildAttempts.cpp",
+        "0040AA30": "src/matching/0040AA30_setInProgress.cpp",
+        "0040AA40": "src/matching/0040AA40_setBuilt.cpp",
+        "0040AA50": "src/matching/0040AA50_incrementBuildAttempts.cpp",
+        "0040AA60": "src/matching/0040AA60_decrementBuildAttempts.cpp",
+        "0040AA80": "src/matching/0040AA80_setBuildAttempts.cpp"
+      },
+      "symbols": {
+        "0040A820": "??0ConstructionItem@@QAE@XZ",
+        "0040A870": "??0ConstructionItem@@QAE@MMMMMMHPAD@Z",
+        "0040A950": "??1ConstructionItem@@UAE@XZ",
+        "0040AA00": "?inProgress@ConstructionItem@@QBEHXZ",
+        "0040AA10": "?built@ConstructionItem@@QBEHXZ",
+        "0040AA20": "?buildAttempts@ConstructionItem@@QBEHXZ",
+        "0040AA30": "?setInProgress@ConstructionItem@@QAEXH@Z",
+        "0040AA40": "?setBuilt@ConstructionItem@@QAEXH@Z",
+        "0040AA50": "?incrementBuildAttempts@ConstructionItem@@QAEXXZ",
+        "0040AA60": "?decrementBuildAttempts@ConstructionItem@@QAEXXZ",
+        "0040AA80": "?setBuildAttempts@ConstructionItem@@QAEXH@Z"
+      }
+    },
+    {
+      "name": "tvictory",
+      "source": "src/tvictory_tu.cpp",
+      "flags": "config/flags/default.rsp",
+      "owners": {
+        "0052C8F0": "src/matching/0052C8F0_TRIBE_Victory_Conditions.cpp",
+        "0052C920": "src/matching/0052C920_TRIBE_Victory_Conditions.cpp",
+        "0052C940": "src/matching/0052C940_TRIBE_Victory_Conditions.cpp",
+        "0052C950": "src/matching/0052C950_handle_condition.cpp",
+        "0052C970": "src/matching/0052C970_handle_tech.cpp",
+        "0052C9B0": "src/matching/0052C9B0_add_tech.cpp"
+      },
+      "symbols": {
+        "0052C8F0": "??0TRIBE_Victory_Conditions@@QAE@PAVRGE_Player@@HPAJE@Z",
+        "0052C920": "??0TRIBE_Victory_Conditions@@QAE@PAVRGE_Player@@@Z",
+        "0052C940": "??1TRIBE_Victory_Conditions@@UAE@XZ",
+        "0052C950": "?handle_condition@TRIBE_Victory_Conditions@@UAEXPAVRGE_Victory_Entry@@@Z",
+        "0052C970": "?handle_tech@TRIBE_Victory_Conditions@@IAEXPAVRGE_Victory_Entry@@@Z",
+        "0052C9B0": "?add_tech@TRIBE_Victory_Conditions@@QAEEEJ@Z"
+      }
+    },
+    {
+      "name": "scr_save",
+      "source": "src/scr_save_tu.cpp",
+      "flags": "config/flags/scr_save.rsp",
+      "owners": {
+        "004A71F0": "src/matching/004A71F0_TribeSaveGameScreen.cpp",
+        "004A75C0": "src/matching/004A75C0_TribeSaveGameScreen.cpp",
+        "004A7670": "src/matching/004A7670_fillList.cpp",
+        "004A8060": "src/matching/004A8060_save_for_scenario_editor.cpp"
+      },
+      "symbols": {
+        "004A71F0": "??0TribeSaveGameScreen@@QAE@W4Mode@0@PADH@Z",
+        "004A75C0": "??1TribeSaveGameScreen@@UAE@XZ",
+        "004A7670": "?fillList@TribeSaveGameScreen@@IAEXXZ",
+        "004A8060": "?save_for_scenario_editor@TribeSaveGameScreen@@IAEXXZ"
+      }
+    },
+    {
+      "name": "pnl_msg",
+      "source": "src/pnl_msg_tu.cpp",
+      "flags": "config/flags/default.rsp",
+      "owners": {
+        "00479270": "src/matching/00479270_set_justification.cpp",
+        "004792A0": "src/matching/004792A0_show_message.cpp",
+        "004793C0": "src/matching/004793C0_show_message2.cpp",
+        "00479540": "src/matching/00479540_remove_message.cpp",
+        "00479A10": "src/matching/00479A10_get_true_render_rect.cpp",
+        "00479A80": "src/matching/00479A80_handle_idle.cpp",
+        "0047A190": "src/matching/0047A190_set_font.cpp"
+      },
+      "symbols": {
+        "00479270": "?set_justification@TMessagePanel@@QAEXW4JustType@1@0H@Z",
+        "004792A0": "?show_message@TMessagePanel@@QAEXW4MessageType@1@PADEEPAXJJ@Z",
+        "004793C0": "?show_message2@TMessagePanel@@QAEXW4MessageType@1@PADKKPAXJJPAVTShape@@H3H@Z",
+        "00479540": "?remove_message@TMessagePanel@@QAEXXZ",
+        "00479A10": "?get_true_render_rect@TMessagePanel@@UAEXAAUtagRECT@@@Z",
+        "00479A80": "?handle_idle@TMessagePanel@@UAEJXZ",
+        "0047A190": "?set_font@TMessagePanel@@QAEXPAXJJ@Z"
+      }
+    },
+    {
+      "name": "Timeline",
+      "source": "src/Timeline_tu.cpp",
+      "flags": "config/flags/default.rsp",
+      "owners": {
+        "0050D7B0": "src/matching/0050D7B0_RGE_Timeline.cpp",
+        "0050D830": "src/matching/0050D830_save.cpp",
+        "0050D9A0": "src/matching/0050D9A0_update.cpp",
+        "0050DD30": "src/matching/0050DD30_find_id.cpp",
+        "0050DE00": "src/matching/0050DE00_add_attack.cpp",
+        "0050DEF0": "src/matching/0050DEF0_add_move.cpp",
+        "0050DF40": "src/matching/0050DF40_add_delete.cpp"
+      },
+      "symbols": {
+        "0050D7B0": "??0RGE_Timeline@@QAE@PAVRGE_Game_World@@@Z",
+        "0050D830": "?save@RGE_Timeline@@QAEXH@Z",
+        "0050D9A0": "?update@RGE_Timeline@@QAEXXZ",
+        "0050DD30": "?find_id@RGE_Timeline@@AAEFPAVRGE_Static_Object@@@Z",
+        "0050DE00": "?add_attack@RGE_Timeline@@QAEPAURGE_Time_Entry@@MPAVRGE_Static_Object@@0@Z",
+        "0050DEF0": "?add_move@RGE_Timeline@@QAEPAURGE_Time_Entry@@MPAVRGE_Static_Object@@MMM@Z",
+        "0050DF40": "?add_delete@RGE_Timeline@@QAEPAURGE_Time_Entry@@MPAVRGE_Static_Object@@@Z"
+      }
+    },
+    {
+      "name": "Res_file",
+      "source": "src/res_file_tu.cpp",
+      "flags": "config/flags/default.rsp",
+      "owners": {
+        "0047F180": "src/matching/0047F180_RESFILE_close_new_resource_file.cpp",
+        "0047F230": "src/matching/0047F230_RESFILE_locate_resource.cpp",
+        "0047F480": "src/matching/0047F480_RESFILE_Extract_to_File.cpp",
+        "0047F580": "src/matching/0047F580_RESFILE_Set_Missing_Flag.cpp",
+        "0047F590": "src/matching/0047F590_RESFILE_Decommit_Mapped_Memory.cpp",
+        "0047FC50": "src/matching/0047FC50_BUILDRES_get_files_resource_type.cpp"
+      },
+      "symbols": {
+        "0047F180": "?RESFILE_close_new_resource_file@@YAXPBD@Z",
+        "0047F230": "?RESFILE_locate_resource@@YAHKKAAH0AAPAE0@Z",
+        "0047F480": "?RESFILE_Extract_to_File@@YAHKKPADAAPAU_iobuf@@@Z",
+        "0047F580": "?RESFILE_Set_Missing_Flag@@YAXH@Z",
+        "0047F590": "?RESFILE_Decommit_Mapped_Memory@@YAHPAEH@Z",
+        "0047FC50": "?BUILDRES_get_files_resource_type@@YAHPBD@Z"
+      }
+    },
+    {
+      "name": "vw_dimap",
+      "source": "src/vw_dimap_tu.cpp",
+      "flags": "config/flags/default.rsp",
+      "owners": {
+        "0053D3B0": "src/matching/0053D3B0_handle_mouse_down.cpp",
+        "0053D400": "src/matching/0053D400_mouse_left_down_action.cpp",
+        "0053D480": "src/matching/0053D480_mouse_left_move_action.cpp",
+        "0053D620": "src/matching/0053D620_mouse_right_down_action.cpp",
+        "0053D6A0": "src/matching/0053D6A0_mouse_right_move_action.cpp",
+        "0053D890": "src/matching/0053D890_draw.cpp"
+      },
+      "symbols": {
+        "0053D3B0": "?handle_mouse_down@RGE_Diamond_Map_View@@QAEJEJJHH@Z",
+        "0053D400": "?mouse_left_down_action@RGE_Diamond_Map_View@@QAEJJJHH@Z",
+        "0053D480": "?mouse_left_move_action@RGE_Diamond_Map_View@@QAEJJJHH@Z",
+        "0053D620": "?mouse_right_down_action@RGE_Diamond_Map_View@@QAEJJJHH@Z",
+        "0053D6A0": "?mouse_right_move_action@RGE_Diamond_Map_View@@QAEJJJHH@Z",
+        "0053D890": "?draw@RGE_Diamond_Map_View@@QAEXXZ"
+      }
+    },
+    {
+      "name": "tact_cnv",
+      "source": "src/tact_cnv_tu.cpp",
+      "flags": "config/flags/default_gx.rsp",
+      "owners": {
+        "004CD9E0": "src/matching/004CD9E0_TRIBE_Action_Convert.cpp",
+        "004CDB20": "src/matching/004CDB20_TRIBE_Action_Convert.cpp",
+        "004CDB70": "src/matching/004CDB70_save.cpp",
+        "004CDE10": "src/matching/004CDE10_set_state.cpp",
+        "004CE070": "src/matching/004CE070_update.cpp",
+        "004CE4B0": "src/matching/004CE4B0_martyrdom.cpp"
+      },
+      "symbols": {
+        "004CD9E0": "??0TRIBE_Action_Convert@@QAE@HPAVRGE_Action_Object@@@Z",
+        "004CDB20": "??0TRIBE_Action_Convert@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@MMM@Z",
+        "004CDB70": "?save@TRIBE_Action_Convert@@UAEXH@Z",
+        "004CDE10": "?set_state@TRIBE_Action_Convert@@MAEXE@Z",
+        "004CE070": "?update@TRIBE_Action_Convert@@UAEEXZ",
+        "004CE4B0": "?martyrdom@TRIBE_Action_Convert@@QAEXXZ"
+      }
+    },
+    {
+      "name": "taimdmd",
+      "source": "src/taimdmd_tu.cpp",
+      "flags": "config/flags/004E4800_TribeMainDecisionAIModule.rsp",
+      "owners": {
+        "004E4FA0": "src/matching/004E4FA0_setLogHistory.cpp",
+        "004E5DB0": "src/matching/004E5DB0_save.cpp",
+        "004E5FA0": "src/matching/004E5FA0_addObject.cpp",
+        "004E5FE0": "src/matching/004E5FE0_removeObject.cpp",
+        "004E6020": "src/matching/004E6020_objectGroupThatCanPerformAction.cpp",
+        "004E6090": "src/matching/004E6090_canPerformAction.cpp",
+        "004E60F0": "src/matching/004E60F0_isMoveable.cpp",
+        "004E6250": "src/matching/004E6250_tributeNotify.cpp",
+        "004E6490": "src/matching/004E6490_revokeTributeAlliance.cpp",
+        "004E6600": "src/matching/004E6600_processAICommand.cpp",
+        "004E6870": "src/matching/004E6870_currentScore.cpp"
+      },
+      "symbols": {
+        "004E4FA0": "?setLogHistory@TribeMainDecisionAIModule@@UAEXH@Z",
+        "004E5DB0": "?save@TribeMainDecisionAIModule@@UAEHH@Z",
+        "004E5FA0": "?addObject@TribeMainDecisionAIModule@@UAEHPAVRGE_Static_Object@@@Z",
+        "004E5FE0": "?removeObject@TribeMainDecisionAIModule@@UAEHH@Z",
+        "004E6020": "?objectGroupThatCanPerformAction@TribeMainDecisionAIModule@@UAEHH@Z",
+        "004E6090": "?canPerformAction@TribeMainDecisionAIModule@@UAEHHH@Z",
+        "004E60F0": "?isMoveable@TribeMainDecisionAIModule@@QAEHH@Z",
+        "004E6250": "?tributeNotify@TribeMainDecisionAIModule@@QAEXHHH@Z",
+        "004E6490": "?revokeTributeAlliance@TribeMainDecisionAIModule@@QAEXXZ",
+        "004E6600": "?processAICommand@TribeMainDecisionAIModule@@QAEHHHHHH@Z",
+        "004E6870": "?currentScore@TribeMainDecisionAIModule@@QAEHH@Z"
+      }
+    },
+    {
+      "name": "vis_unit",
+      "source": "src/vis_unit_tu.cpp",
+      "flags": "config/flags/default.rsp",
+      "owners": {
+        "0053B5A0": "src/matching/0053B5A0_Visible_Unit_Manager.cpp",
+        "0053B670": "src/matching/0053B670_Visible_Unit_Manager.cpp",
+        "0053BB30": "src/matching/0053BB30_Visible_Resource_Manager.cpp",
+        "0053BBE0": "src/matching/0053BBE0_Visible_Resource_Manager.cpp",
+        "0053BD10": "src/matching/0053BD10_Visible_Resource_Manager.cpp",
+        "0053BD70": "src/matching/0053BD70_save.cpp",
+        "0053BE00": "src/matching/0053BE00_Process_New_Tiles.cpp",
+        "0053BED0": "src/matching/0053BED0_AddResource.cpp",
+        "0053BFD0": "src/matching/0053BFD0_Remove_Resource.cpp"
+      },
+      "symbols": {
+        "0053B5A0": "??0Visible_Unit_Manager@@QAE@HH@Z",
+        "0053B670": "??1Visible_Unit_Manager@@QAE@XZ",
+        "0053BB30": "??0Visible_Resource_Manager@@QAE@PAVRGE_Player@@H@Z",
+        "0053BBE0": "??0Visible_Resource_Manager@@QAE@HPAVRGE_Player@@@Z",
+        "0053BD10": "??1Visible_Resource_Manager@@QAE@XZ",
+        "0053BD70": "?save@Visible_Resource_Manager@@QAEXH@Z",
+        "0053BE00": "?Process_New_Tiles@Visible_Resource_Manager@@QAEXPAVRGE_Tile_List@@@Z",
+        "0053BED0": "?AddResource@Visible_Resource_Manager@@QAEXHH@Z",
+        "0053BFD0": "?Remove_Resource@Visible_Resource_Manager@@QAEHHH@Z"
+      }
+    },
+    {
+      "name": "dlg_list",
+      "source": "src/dlg_list_tu.cpp",
+      "flags": "config/flags/dlg_list.rsp",
+      "owners": {
+        "0043EEE0": "src/matching/0043EEE0_TListDialog.cpp",
+        "0043EF80": "src/matching/0043EF80_setup.cpp",
+        "0043F130": "src/matching/0043F130_setup.cpp",
+        "0043F210": "src/matching/0043F210_key_down_action.cpp",
+        "0043F220": "src/matching/0043F220_action.cpp"
+      },
+      "symbols": {
+        "0043EEE0": "??1TListDialog@@UAE@XZ",
+        "0043EF80": "?setup@TListDialog@@UAEJPAVTPanel@@PADJJJJJJJ1JJJJPAPADFFJJJJJ@Z",
+        "0043F130": "?setup@TListDialog@@QAEJPAVTPanel@@PADJJJJJJJHJJJJPAPADFFJJJJJ@Z",
+        "0043F210": "?key_down_action@TListDialog@@UAEJJFHHH@Z",
+        "0043F220": "?action@TListDialog@@UAEJPAVTPanel@@JKK@Z"
+      }
+    },
+    {
+      "name": "pnl_scbr",
+      "source": "src/pnl_scbr_tu.cpp",
+      "flags": "config/flags/0047A700_TScrollBarPanel.rsp",
+      "owners": {
+        "0047A8A0": "src/matching/0047A8A0_TScrollBarPanel.cpp",
+        "0047A8B0": "src/matching/0047A8B0_setup.cpp",
+        "0047AC10": "src/matching/0047AC10_set_list_len.cpp",
+        "0047AC30": "src/matching/0047AC30_set_buttons.cpp",
+        "0047AC70": "src/matching/0047AC70_set_bevel_info.cpp",
+        "0047AE40": "src/matching/0047AE40_mouse_left_down_action.cpp",
+        "0047B3D0": "src/matching/0047B3D0_mouse_left_up_action.cpp",
+        "0047B420": "src/matching/0047B420_scroll.cpp",
+        "0047B4E0": "src/matching/0047B4E0_draw.cpp",
+        "0047B660": "src/matching/0047B660_draw_border.cpp",
+        "0047B690": "src/matching/0047B690_draw_border.cpp",
+        "0047B8B0": "src/matching/0047B8B0_draw_back_pic.cpp",
+        "0047B970": "src/matching/0047B970_draw_button_pic.cpp"
+      },
+      "symbols": {
+        "0047A8A0": "??1TScrollBarPanel@@UAE@XZ",
+        "0047A8B0": "?setup@TScrollBarPanel@@UAEJPAVTDrawArea@@PAVTPanel@@JJJJPAD222JJ1JJ@Z",
+        "0047AC10": "?set_list_len@TScrollBarPanel@@QAEXJJ@Z",
+        "0047AC30": "?set_buttons@TScrollBarPanel@@QAEXPAVTShape@@HHHH@Z",
+        "0047AC70": "?set_bevel_info@TScrollBarPanel@@QAEXHHHHHHH@Z",
+        "0047AE40": "?mouse_left_down_action@TScrollBarPanel@@UAEJJJHH@Z",
+        "0047B3D0": "?mouse_left_up_action@TScrollBarPanel@@UAEJJJHH@Z",
+        "0047B420": "?scroll@TScrollBarPanel@@QAEXW4ActionType@1@J@Z",
+        "0047B4E0": "?draw@TScrollBarPanel@@UAEXXZ",
+        "0047B660": "?draw_border@TScrollBarPanel@@IAEXHHPAUtagRECT@@@Z",
+        "0047B690": "?draw_border@TScrollBarPanel@@IAEXHHJJJJ@Z",
+        "0047B8B0": "?draw_back_pic@TScrollBarPanel@@IAEXXZ",
+        "0047B970": "?draw_button_pic@TScrollBarPanel@@IAEXHHPAUtagRECT@@@Z"
+      }
+    },
+    {
+      "name": "airesitm",
+      "source": "src/airesitm_tu.cpp",
+      "flags": "config/flags/airesitm.rsp",
+      "owners": {
+        "00411EC0": "src/matching/00411EC0_ResourceItem.cpp",
+        "00411F10": "src/matching/00411F10_ResourceItem.cpp",
+        "00411FF0": "src/matching/00411FF0_ResourceItem.cpp",
+        "004120B0": "src/matching/004120B0_ResourceItem.cpp",
+        "00412180": "src/matching/00412180_value.cpp",
+        "004121A0": "src/matching/004121A0_setValue.cpp",
+        "004121C0": "src/matching/004121C0_incrementValue.cpp",
+        "004121E0": "src/matching/004121E0_setAllValues.cpp",
+        "00412200": "src/matching/00412200_number.cpp",
+        "00412210": "src/matching/00412210_largestValueIndex.cpp",
+        "00412240": "src/matching/00412240_sortLarge.cpp"
+      },
+      "symbols": {
+        "00411EC0": "??0ResourceItem@@QAE@XZ",
+        "00411F10": "??0ResourceItem@@QAE@H@Z",
+        "00411FF0": "??0ResourceItem@@QAE@ABV0@@Z",
+        "004120B0": "??1ResourceItem@@UAE@XZ",
+        "00412180": "?value@ResourceItem@@QBEHH@Z",
+        "004121A0": "?setValue@ResourceItem@@QAEXHH@Z",
+        "004121C0": "?incrementValue@ResourceItem@@QAEXHH@Z",
+        "004121E0": "?setAllValues@ResourceItem@@QAEXH@Z",
+        "00412200": "?number@ResourceItem@@QBEHXZ",
+        "00412210": "?largestValueIndex@ResourceItem@@QAEHH@Z",
+        "00412240": "?sortLarge@ResourceItem@@IAEHXZ"
+      }
+    },
+    {
+      "name": "tact_rep",
+      "source": "src/tact_rep_tu.cpp",
+      "flags": "config/flags/004CD210_TRIBE_Action_Build.rsp",
+      "owners": {
+        "004D1680": "src/matching/004D1680_TRIBE_Action_Repair.cpp",
+        "004D1720": "src/matching/004D1720_TRIBE_Action_Repair.cpp",
+        "004D17B0": "src/matching/004D17B0_TRIBE_Action_Repair.cpp",
+        "004D1800": "src/matching/004D1800_setup.cpp",
+        "004D1850": "src/matching/004D1850_save.cpp",
+        "004D1880": "src/matching/004D1880_first_in_stack.cpp",
+        "004D18B0": "src/matching/004D18B0_set_state.cpp",
+        "004D1F50": "src/matching/004D1F50_stop.cpp",
+        "004D1F60": "src/matching/004D1F60_move_to.cpp",
+        "004D1FA0": "src/matching/004D1FA0_work.cpp",
+        "004D2020": "src/matching/004D2020_meet_target.cpp"
+      },
+      "symbols": {
+        "004D1680": "??0TRIBE_Action_Repair@@QAE@HPAVRGE_Action_Object@@H@Z",
+        "004D1720": "??0TRIBE_Action_Repair@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@PAVRGE_Static_Object@@@Z",
+        "004D17B0": "??0TRIBE_Action_Repair@@QAE@HPAVRGE_Task@@MMM@Z",
+        "004D1800": "?setup@TRIBE_Action_Repair@@UAEHHPAVRGE_Action_Object@@@Z",
+        "004D1850": "?save@TRIBE_Action_Repair@@UAEXH@Z",
+        "004D1880": "?first_in_stack@TRIBE_Action_Repair@@UAEXE@Z",
+        "004D18B0": "?set_state@TRIBE_Action_Repair@@UAEXE@Z",
+        "004D1F50": "?stop@TRIBE_Action_Repair@@UAEHXZ",
+        "004D1F60": "?move_to@TRIBE_Action_Repair@@UAEHPAVRGE_Static_Object@@MMM@Z",
+        "004D1FA0": "?work@TRIBE_Action_Repair@@UAEHPAVRGE_Static_Object@@MMM@Z",
+        "004D2020": "?meet_target@TRIBE_Action_Repair@@QAEXXZ"
+      }
+    },
+    {
+      "name": "tairesmd",
+      "source": "src/tairesmd_tu.cpp",
+      "flags": "config/flags/tairesmd.rsp",
+      "owners": {
+        "004E6BA0": "src/matching/004E6BA0_TribeResourceAIModule.cpp",
+        "004E6C20": "src/matching/004E6C20_TribeResourceAIModule.cpp",
+        "004E6C30": "src/matching/004E6C30_setMainDecisionAI.cpp",
+        "004E6C40": "src/matching/004E6C40_save.cpp",
+        "004E6C60": "src/matching/004E6C60_numberResources.cpp",
+        "004E6C70": "src/matching/004E6C70_resource.cpp",
+        "004E6D40": "src/matching/004E6D40_unavailableResource.cpp",
+        "004E6DD0": "src/matching/004E6DD0_resourceName.cpp"
+      },
+      "symbols": {
+        "004E6BA0": "??0TribeResourceAIModule@@QAE@HH@Z",
+        "004E6C20": "??1TribeResourceAIModule@@UAE@XZ",
+        "004E6C30": "?setMainDecisionAI@TribeResourceAIModule@@QAEXPAVTribeMainDecisionAIModule@@@Z",
+        "004E6C40": "?save@TribeResourceAIModule@@UAEHH@Z",
+        "004E6C60": "?numberResources@TribeResourceAIModule@@QBEHXZ",
+        "004E6C70": "?resource@TribeResourceAIModule@@QBEHH@Z",
+        "004E6D40": "?unavailableResource@TribeResourceAIModule@@QAEHPAVResourceItem@@@Z",
+        "004E6DD0": "?resourceName@TribeResourceAIModule@@QAEPADH@Z"
+      }
+    },
+    {
+      "name": "tpnl_obj",
+      "source": "src/tpnl_obj_tu.cpp",
+      "flags": "config/flags/tpnl_obj.rsp",
+      "owners": {
+        "0051ADF0": "src/matching/0051ADF0_TRIBE_Panel_Object.cpp",
+        "0051B070": "src/matching/0051B070_TRIBE_Panel_Object.cpp",
+        "0051B110": "src/matching/0051B110_set_player.cpp",
+        "0051B140": "src/matching/0051B140_set_object.cpp",
+        "0051B160": "src/matching/0051B160_set_mode.cpp",
+        "0051B180": "src/matching/0051B180_get_mode.cpp",
+        "0051C220": "src/matching/0051C220_draw_item.cpp",
+        "0051CA10": "src/matching/0051CA10_save_object_info.cpp",
+        "0051CC80": "src/matching/0051CC80_mouse_left_down_action.cpp",
+        "0051CC90": "src/matching/0051CC90_mouse_left_up_action.cpp"
+      },
+      "symbols": {
+        "0051ADF0": "??0TRIBE_Panel_Object@@QAE@PAVTDrawArea@@PAVTPanel@@PAXJJPAVTShape@@PAPAV3@PAVTRIBE_Player@@@Z",
+        "0051B070": "??1TRIBE_Panel_Object@@UAE@XZ",
+        "0051B110": "?set_player@TRIBE_Panel_Object@@QAEXPAVTRIBE_Player@@@Z",
+        "0051B140": "?set_object@TRIBE_Panel_Object@@QAEXPAVRGE_Static_Object@@@Z",
+        "0051B160": "?set_mode@TRIBE_Panel_Object@@QAEXE@Z",
+        "0051B180": "?get_mode@TRIBE_Panel_Object@@QAEEXZ",
+        "0051C220": "?draw_item@TRIBE_Panel_Object@@UAEXHHHHH@Z",
+        "0051CA10": "?save_object_info@TRIBE_Panel_Object@@QAEXXZ",
+        "0051CC80": "?mouse_left_down_action@TRIBE_Panel_Object@@UAEJJJHH@Z",
+        "0051CC90": "?mouse_left_up_action@TRIBE_Panel_Object@@UAEJJJHH@Z"
+      }
+    },
+    {
+      "name": "misl_obj",
+      "source": "src/misl_obj_tu.cpp",
+      "flags": "config/flags/0045AB20_make_object_collision_list.rsp",
+      "owners": {
+        "0045A740": "src/matching/0045A740_RGE_Missile_Object.cpp",
+        "0045A800": "src/matching/0045A800_RGE_Missile_Object.cpp",
+        "0045A870": "src/matching/0045A870_setup.cpp",
+        "0045A8A0": "src/matching/0045A8A0_setup.cpp",
+        "0045A900": "src/matching/0045A900_rehook.cpp",
+        "0045A910": "src/matching/0045A910_save.cpp",
+        "0045A940": "src/matching/0045A940_update.cpp",
+        "0045A950": "src/matching/0045A950_init_missile.cpp",
+        "0045A9E0": "src/matching/0045A9E0_init_missile.cpp",
+        "0045AA70": "src/matching/0045AA70_missile_move.cpp"
+      },
+      "symbols": {
+        "0045A740": "??0RGE_Missile_Object@@QAE@PAX0MMMH@Z",
+        "0045A800": "??0RGE_Missile_Object@@QAE@HPAVRGE_Game_World@@H@Z",
+        "0045A870": "?setup@RGE_Missile_Object@@QAEHPAX0MMM@Z",
+        "0045A8A0": "?setup@RGE_Missile_Object@@QAEHHPAX@Z",
+        "0045A900": "?rehook@RGE_Missile_Object@@UAEXXZ",
+        "0045A910": "?save@RGE_Missile_Object@@QAEXH@Z",
+        "0045A940": "?update@RGE_Missile_Object@@QAEEXZ",
+        "0045A950": "?init_missile@RGE_Missile_Object@@QAEXPAVRGE_Combat_Object@@PAVRGE_Static_Object@@M@Z",
+        "0045A9E0": "?init_missile@RGE_Missile_Object@@QAEXPAVRGE_Combat_Object@@MMMM@Z",
+        "0045AA70": "?missile_move@RGE_Missile_Object@@QAEHXZ"
+      }
+    },
+    {
+      "name": "map",
+      "source": "src/map_tu.cpp",
+      "flags": "config/flags/default.rsp",
+      "owners": {
+        "004550A0": "src/matching/004550A0_RGE_Map.cpp",
+        "00455570": "src/matching/00455570_init_tile_sizes.cpp",
+        "00455890": "src/matching/00455890_set_map_visible.cpp",
+        "004558A0": "src/matching/004558A0_set_map_fog.cpp",
+        "00455CB0": "src/matching/00455CB0_request_redraw.cpp",
+        "00455D60": "src/matching/00455D60_clear_map_view_info.cpp",
+        "00455DB0": "src/matching/00455DB0_coordinate_map.cpp",
+        "00455DD0": "src/matching/00455DD0_set_map_screen_pos.cpp",
+        "00455F10": "src/matching/00455F10_scenario_save.cpp",
+        "00456140": "src/matching/00456140_give_up_map_offsets.cpp",
+        "00456150": "src/matching/00456150_get_map_width.cpp",
+        "00456160": "src/matching/00456160_get_map_height.cpp",
+        "004568C0": "src/matching/004568C0_clean_elevation.cpp",
+        "00456E90": "src/matching/00456E90_clean_terrain.cpp",
+        "00457300": "src/matching/00457300_clean_borders.cpp",
+        "00457310": "src/matching/00457310_clean_border_tile.cpp",
+        "00457320": "src/matching/00457320_do_terrain_brush.cpp",
+        "004573C0": "src/matching/004573C0_do_terrain_brush_stroke.cpp",
+        "00457510": "src/matching/00457510_do_elevation_brush.cpp",
+        "004575C0": "src/matching/004575C0_do_elevation_brush_stroke.cpp",
+        "00457750": "src/matching/00457750_do_cliff_brush.cpp",
+        "00457760": "src/matching/00457760_do_cliff_brush_stroke.cpp",
+        "004578A0": "src/matching/004578A0_map_generate.cpp",
+        "00458600": "src/matching/00458600_load_terrain_obj_types.cpp",
+        "00458FD0": "src/matching/00458FD0_create_terrain_objects.cpp",
+        "00459020": "src/matching/00459020_set_tile_size.cpp",
+        "004593A0": "src/matching/004593A0_check_map_coords.cpp",
+        "004593D0": "src/matching/004593D0_get_elev.cpp",
+        "00459400": "src/matching/00459400_get_terrain.cpp",
+        "00459460": "src/matching/00459460_get_border.cpp",
+        "00459A00": "src/matching/00459A00_set_terrain_absolute.cpp",
+        "00459D20": "src/matching/00459D20_get_tile_type.cpp",
+        "0045A490": "src/matching/0045A490_check_for_border.cpp",
+        "0045A500": "src/matching/0045A500_update.cpp",
+        "0045A6D0": "src/matching/0045A6D0_get_point.cpp"
+      },
+      "symbols": {
+        "004550A0": "??0RGE_Map@@QAE@PAD00FFFPAPAVRGE_Sound@@@Z",
+        "004568C0": "?clean_elevation@RGE_Map@@QAEXJJJJE@Z",
+        "00457320": "?do_terrain_brush@RGE_Map@@UAEEJJJE@Z",
+        "00457510": "?do_elevation_brush@RGE_Map@@UAEEJJJE@Z",
+        "00457750": "?do_cliff_brush@RGE_Map@@QAEEHHHH@Z",
+        "004578A0": "?map_generate@RGE_Map@@UAEXHHHH@Z",
+        "00459460": "?get_border@RGE_Map@@QAEEFF@Z"
+      }
+    },
+    {
+      "name": "tvw_main",
+      "source": "src/tvw_main_tu.cpp",
+      "flags": "config/flags/default.rsp",
+      "owners": {
+        "0052D060": "src/matching/0052D060_draw_wall_outline.cpp",
+        "0052D1F0": "src/matching/0052D1F0_command_place_object.cpp",
+        "0052D320": "src/matching/0052D320_command_place_multi_object.cpp",
+        "0052D4F0": "src/matching/0052D4F0_place_line_of_walls.cpp",
+        "0052DCE0": "src/matching/0052DCE0_pick_through_fog.cpp",
+        "0052DD10": "src/matching/0052DD10_pick_weight.cpp",
+        "0052DE20": "src/matching/0052DE20_command_make_do.cpp",
+        "0052DE40": "src/matching/0052DE40_mouse_left_dbl_click_action.cpp"
+      }
+    },
+    {
+      "name": "act_obj",
+      "source": "src/act_obj_tu.cpp",
+      "flags": "config/flags/act_obj.rsp",
+      "owners": {
+        "00405C60": "src/matching/00405C60_RGE_Action_Object.cpp",
+        "00405F90": "src/matching/00405F90_RGE_Action_Object.cpp",
+        "00406010": "src/matching/00406010_RGE_Action_Object.cpp",
+        "00406080": "src/matching/00406080_recycle_out_of_game.cpp",
+        "004060A0": "src/matching/004060A0_recycle_in_to_game.cpp",
+        "004060D0": "src/matching/004060D0_setup.cpp",
+        "00406120": "src/matching/00406120_setup.cpp",
+        "004061A0": "src/matching/004061A0_create_action_list.cpp",
+        "00406200": "src/matching/00406200_rehook.cpp",
+        "00406220": "src/matching/00406220_save.cpp",
+        "00406270": "src/matching/00406270_transform.cpp",
+        "00406290": "src/matching/00406290_destroy_obj.cpp",
+        "004062B0": "src/matching/004062B0_notify_of_relation.cpp",
+        "00406830": "src/matching/00406830_set_attack.cpp",
+        "00406840": "src/matching/00406840_play_command_sound.cpp",
+        "00406850": "src/matching/00406850_play_move_sound.cpp",
+        "004069E0": "src/matching/004069E0_set_action.cpp",
+        "00406A00": "src/matching/00406A00_set_only_action.cpp",
+        "00406A30": "src/matching/00406A30_set_end_action.cpp",
+        "00406A50": "src/matching/00406A50_stop.cpp",
+        "00406BF0": "src/matching/00406BF0_have_action.cpp",
+        "00406C30": "src/matching/00406C30_getTask.cpp",
+        "00406D00": "src/matching/00406D00_actionState.cpp",
+        "00406D30": "src/matching/00406D30_get_action_checksum.cpp"
+      },
+      "symbols": {
+        "00405C60": "??0RGE_Action_Object@@QAE@PAX0MMMH@Z",
+        "00405F90": "??0RGE_Action_Object@@QAE@HPAVRGE_Game_World@@H@Z",
+        "004060D0": "?setup@RGE_Action_Object@@MAEHPAVRGE_Master_Action_Object@@PAVRGE_Player@@MMM@Z",
+        "00406120": "?setup@RGE_Action_Object@@MAEHHPAVRGE_Game_World@@@Z",
+        "004061A0": "?create_action_list@RGE_Action_Object@@MAEPAVRGE_Action_List@@XZ"
+      }
+    },
+    {
+      "name": "com_q",
+      "source": "src/com_q_tu.cpp",
+      "flags": "config/flags/com_q.rsp",
+      "owners": {
+        "00431720": "src/matching/00431720_RGE_Communications_Queue.cpp",
+        "00431760": "src/matching/00431760_RGE_Communications_Queue.cpp",
+        "00431810": "src/matching/00431810_AllocateQueue.cpp",
+        "004319E0": "src/matching/004319E0_ExpectedNextSequence.cpp",
+        "00431A70": "src/matching/00431A70_FlushAll.cpp",
+        "00431A80": "src/matching/00431A80_FlushTurnRange.cpp",
+        "00431B10": "src/matching/00431B10_FlushForPlayer.cpp",
+        "00431BD0": "src/matching/00431BD0_FlushForTurn.cpp",
+        "00431BE0": "src/matching/00431BE0_FlushThruTurn.cpp",
+        "00431BF0": "src/matching/00431BF0_AddItem.cpp",
+        "00431D10": "src/matching/00431D10_GetQueueDepth.cpp",
+        "00431D20": "src/matching/00431D20_GetHighQueueDepth.cpp",
+        "00431DD0": "src/matching/00431DD0_GetNextItemSingle.cpp",
+        "00431E40": "src/matching/00431E40_GetNextItemOrdered.cpp",
+        "00431F50": "src/matching/00431F50_TestShowQueue.cpp"
+      }
+    },
+    {
+      "name": "t_b_obj",
+      "source": "src/t_b_obj_tu.cpp",
+      "flags": "config/flags/default.rsp",
+      "owners": {
+        "004C8E60": "src/matching/004C8E60_modify.cpp",
+        "004C9480": "src/matching/004C9480_cancel_object.cpp",
+        "004C9760": "src/matching/004C9760_rotate.cpp"
       }
     }
   ]

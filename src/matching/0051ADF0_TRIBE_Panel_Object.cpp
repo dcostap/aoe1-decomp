@@ -1,6 +1,6 @@
 // VA: 0051ADF0 TRIBE_Panel_Object::TRIBE_Panel_Object (596B)
 // PDB: tpnl_obj.cpp:49-116
-// FLAGS: config/flags/0051ADF0_TRIBE_Panel_Object.rsp (/GX; constructor EH is
+// FLAGS: config/flags/tpnl_obj.rsp (/GX; constructor EH is
 // present in the original around the two TShape allocations)
 //
 // Attempt log:

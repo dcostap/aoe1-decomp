@@ -1,6 +1,6 @@
 // VA: 00406010 RGE_Action_Object::~RGE_Action_Object (112 B)
 // PDB source: act_obj.cpp lines 76-82
-// Flags: config/flags/00406010_RGE_Action_Object.rsp (default + /GX)
+// Flags: config/flags/act_obj.rsp (default + /GX)
 
 #include "../../include/act_obj_context.h"
 
