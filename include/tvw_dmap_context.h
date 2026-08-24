@@ -53,6 +53,7 @@ public:
 class TRIBE_Diamond_Map_View : public RGE_Diamond_Map_View {
 public:
     TRIBE_Diamond_Map_View();
+    virtual ~TRIBE_Diamond_Map_View();
     unsigned long last_attack_time;
     int flash_on;
 

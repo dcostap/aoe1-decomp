@@ -1,3 +1,5 @@
+#include "../../include/tvw_dmap_context.h"
+
 // VA: 0052CAB0 draw_object
 // tvw_dmap.cpp lines 79-95
 
@@ -12,26 +14,6 @@
 // variant lab r1: 22 variants, 10 groups, best=G0000 (not_int, offset 9)
 // variant lab r2: 22 variants, 19 groups, EXACT MATCH in neg_equals2!
 //   winning shape: if/else with explicit (unsigned char) casts on literals
-
-#ifndef TVW_DMAP_SHARED_CONTEXT
-class RGE_Static_Object;
-
-class RGE_Diamond_Map {
-protected:
-    virtual void draw_object(short param_1, short param_2, unsigned char param_3, short param_4, RGE_Static_Object* param_5);
-};
-
-class TRIBE_Diamond_Map_View : public RGE_Diamond_Map {
-public:
-    char gap_000[0x15C];
-    int draw_objects_mode;
-    char gap_160[0x10];
-    int flash_on;                   // +0x170
-
-protected:
-    virtual void draw_object(short param_1, short param_2, unsigned char param_3, short param_4, RGE_Static_Object* param_5);
-};
-#endif
 
 void TRIBE_Diamond_Map_View::draw_object(short param_1, short param_2, unsigned char param_3, short param_4, RGE_Static_Object* param_5) {
     if (this->draw_objects_mode == 4) {

@@ -4,7 +4,9 @@
 // FLAGS: /GX (EH)
 
 #include <windows.h>
+#include "../../include/scr_main_context.h"
 
+#if 0
 class TPanel {
 public:
     char __gap[0x1C];
@@ -44,6 +46,7 @@ public:
 
     virtual ~TRIBE_Screen_Main_Menu();
 };
+#endif
 
 TRIBE_Screen_Main_Menu::~TRIBE_Screen_Main_Menu() {
     this->delete_panel((TPanel**)&this->title1);

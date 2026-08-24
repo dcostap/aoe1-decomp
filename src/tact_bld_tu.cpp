@@ -16,8 +16,10 @@
 // Exact anchors are 004CD1B0, 004CD210, 004CD2A0, 004CD2E0, 004CD310,
 // 004CD910, and 004CD920.  The two constructors and set_state retain their
 // EH-aware period surfaces.  update and work keep their reviewed accepted-drift
-// owners.  004CD5A5 is a two-byte switch-table padding entry, not a body owner,
-// so it is not included in this C++ wrapper.
+// owners.  004CD1E0 is the compiler-generated deleting destructor selected in
+// the candidate proposal.  Its no-PDB 004CD200 destructor body also emits and
+// independently matches.  004CD1FE and 004CD5A5 are no-PDB padding or boundary
+// entries, not source body owners, so they are not included in this wrapper.
 //
 // The wrapper uses one canonical RGE_Action/TRIBE_Action_Build surface.  This
 // preserves target IDs, target coordinates, task ownership, sub-action list

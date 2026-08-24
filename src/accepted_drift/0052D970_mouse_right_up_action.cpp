@@ -74,6 +74,7 @@
 
 #include <stdlib.h>
 
+#ifndef TVW_MAIN_SHARED_CONTEXT
 class TShape;
 class RGE_Tile;
 class RGE_Static_Object;
@@ -244,6 +245,7 @@ public:
     virtual int command_make_do(long, long, int, short);
     virtual long mouse_right_up_action(long, long, int, int);
 };
+#endif
 
 long TRIBE_Main_View::mouse_right_up_action(long param_1, long param_2,
                                             int param_3, int param_4) {

@@ -31,22 +31,27 @@
 
 #include <string.h>
 
+#ifndef COLOR_TU_CONTEXT
 struct tagPALETTEENTRY {
     unsigned char peRed;
     unsigned char peGreen;
     unsigned char peBlue;
     unsigned char peFlags;
 };
+#endif
 
+#ifndef COLOR_TU_CONTEXT
 class TDrawArea {
 public:
     void GetPalette(tagPALETTEENTRY* entries);
 };
+#endif
 
 void RGE_translate_palette(tagPALETTEENTRY* source, tagPALETTEENTRY* target,
                            tagPALETTEENTRY color, long amount,
                            int first, int last);
 
+#ifndef COLOR_TU_CONTEXT
 class RGE_Color_Table {
 public:
     virtual ~RGE_Color_Table();
@@ -61,6 +66,7 @@ public:
                    tagPALETTEENTRY* base_color,
                    tagPALETTEENTRY* palette);
 };
+#endif
 
 RGE_Color_Table::RGE_Color_Table(TDrawArea* area, long amount,
                                  tagPALETTEENTRY* base_color,

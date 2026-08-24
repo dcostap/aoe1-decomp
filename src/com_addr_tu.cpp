@@ -12,6 +12,9 @@
 //
 // The nearby compiler-generated entry 00424AC0 is IPAD's vector-deleting
 // destructor.  It is retained as a generated comparison in the proposal.
+// GetAlias stays in this authentic owner order.  The complete-TU build differs
+// from its standalone exact source by one SIB byte, so the proposal records it
+// as observed rather than forcing a policy-invalid context change.
 // The original module uses the /GX EH context required by the constructor and
 // destructor, so the existing constructor response file supplies this TU's
 // flags without changing global configuration.

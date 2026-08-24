@@ -27,12 +27,12 @@
 // sources preserve shipped behavior.  They are not exact owners.  The other
 // entries are exact or exact-owner candidates in src/matching.
 //
-// Fresh captain_sound full-TU checkpoint: config/flags/004BBF30_RGE_Sound.rsp
-// compiles all 14 owners.  Positional bytes, original boundaries, and owner
-// symbols are exact for 004BBE40, 004BC070, 004BC080, 004BC0F0, 004BC190,
-// 004BC2D0, 004BC2E0, 004BC2F0, 004BC470, 004BC4F0, and 004BC540.  The
-// verified-logic owners emit 320/306 bytes at 004BBF30 and 352/346 bytes at
-// 004BC310.  The accepted-drift owner emits 112/95 bytes at 004BC270; its
+// Candidate validation with config/flags/004BBF30_RGE_Sound.rsp compiles all
+// 14 owners.  Positional bytes, original boundaries, and owner symbols are
+// exact for 004BBE40, 004BC070, 004BC080, 004BC0F0, 004BC190, 004BC2D0,
+// 004BC2E0, 004BC2F0, 004BC470, 004BC4F0, and 004BC540.  The observed
+// verified-logic owners emit 309/306 bytes at 004BBF30 and 346/346 bytes at
+// 004BC310.  The accepted-drift owner emits 97/95 bytes at 004BC270; its
 // reviewed early-save-register movement remains the only difference in the
 // meaningful loop after resynchronization.  The object has no defined
 // compiler-generated Sound owner; VC5 emits the expected EH and helper

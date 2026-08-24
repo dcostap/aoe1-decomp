@@ -285,5 +285,6 @@ TribeSelectTribeScreen::TribeSelectTribeScreen()
     // BINARY NOTE: Nine button pointers are copied by one REP MOVSD block.
     memcpy(tabList, this->tribeButton, 9 * sizeof(this->tribeButton[0]));
     tabList[9] = this->okButton;
-    this->set_tab_order(tabList, 10);
+    // BINARY NOTE: The shipped call targets TPanel::set_tab_order directly.
+    this->TPanel::set_tab_order(tabList, 10);
 }

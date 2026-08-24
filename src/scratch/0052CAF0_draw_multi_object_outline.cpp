@@ -62,6 +62,7 @@
 #include <stdlib.h>
 #include "../../include/rge_base_game_global.h"
 
+#ifndef TVW_MAIN_SHARED_CONTEXT
 struct tagPOINT {
     long x;
     long y;
@@ -206,6 +207,7 @@ public:
         long endpoint);
     virtual void draw_multi_object_outline();
 };
+#endif
 
 void TRIBE_Main_View::draw_multi_object_outline() {
     short master_id;

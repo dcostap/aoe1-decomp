@@ -7,9 +7,9 @@
 // - Hoisting the new-list/old-list pointers was diagnostic only and was rolled back.
 // - This session tested a named mask delta, ordered object-base arithmetic,
 //   top-tested versus guarded do-loop control flow, and function-scope offset
-//   locals; none improved the canonical 306-byte frontier. Volatile pointer
-//   diagnostics matched the original frame locally but were rolled back as
-//   compiler-steering scaffolding.
+//   locals; none improved the canonical 306-byte frontier. Pointer scheduling
+//   diagnostics matched the original frame locally but were rolled back because
+//   they did not describe source behavior.
 // - Typed VUR_Ptrs[9] owner storage is required by the caller object layout;
 //   the direct typed form recovers the 0x10 frame.
 // - Same-TU AddResource uses the period stdlib/string header context; retaining
@@ -27,11 +27,15 @@
 // - The original repair stores use the moving refs pointer plus a local offset;
 //   the typed alias improves the owner schedule but does not recover that
 //   source form. Raw offset forms are rejected as compiler-steering scaffolding.
-// Left in scratch: prologue register coloring and owner repair scheduling remain.
+// Left in scratch: prologue allocation and owner repair scheduling remain.
 
 #include <stdlib.h>
 #include <string.h>
 
+#if !defined(VIS_UNIT_TU_CONTEXT)
+#define RGE_MCO_OBJ_SHARED_CONTEXT 1
+#include "../../include/m_co_obj_context.h"
+#undef RGE_MCO_OBJ_SHARED_CONTEXT
 struct VisibleUnitRec {
     int object_id;
     unsigned char distance;
@@ -46,12 +50,6 @@ struct VisibleUnitPtr {
     short used;
 };
 
-struct RGE_Static_Object {
-    virtual ~RGE_Static_Object();
-    char gap_04[0x190];
-    VisibleUnitRec* VUR_Ptrs[9];
-};
-
 extern RGE_Static_Object** VIS_UNIT_objectsValue;
 
 class Visible_Unit_Manager {
@@ -64,6 +62,7 @@ public:
 
     void Update_Unit_Info(int object_id, int player, int x, int y, int category, unsigned long old_mask, unsigned long new_mask, VisibleUnitRec** refs);
 };
+#endif
 
 void Visible_Unit_Manager::Update_Unit_Info(int object_id, int player, int x, int y, int category, unsigned long old_mask, unsigned long new_mask, VisibleUnitRec** refs) {
     unsigned long mask = (new_mask ^ old_mask) & 0xffff;
@@ -89,7 +88,8 @@ void Visible_Unit_Manager::Update_Unit_Info(int object_id, int player, int x, in
                             if (bucket->used > 0) {
                                 VisibleUnitRec* r = newList;
                                 do {
-                                    RGE_Static_Object* obj = VIS_UNIT_objectsValue[r->object_id];
+                                    RGE_Combat_Object* obj =
+                                        (RGE_Combat_Object*)VIS_UNIT_objectsValue[r->object_id];
                                     if (obj != 0) {
                                         obj->VUR_Ptrs[p] = r;
                                     }
@@ -112,7 +112,8 @@ void Visible_Unit_Manager::Update_Unit_Info(int object_id, int player, int x, in
                         VisibleUnitRec* last = bucket->unit_list + bucket->used - 1;
                         if (last != rec) {
                             *rec = *last;
-                            RGE_Static_Object* obj = VIS_UNIT_objectsValue[rec->object_id];
+                            RGE_Combat_Object* obj =
+                                (RGE_Combat_Object*)VIS_UNIT_objectsValue[rec->object_id];
                             if (obj != 0) {
                                 obj->VUR_Ptrs[p] = rec;
                             }

@@ -5,6 +5,7 @@
 
 void rge_write(int param1, void* data, int size);
 
+#ifndef COLOR_TU_CONTEXT
 class RGE_Color_Table {
 public:
     virtual ~RGE_Color_Table();
@@ -16,6 +17,7 @@ public:
 
     void save(int param1);
 };
+#endif
 
 void RGE_Color_Table::save(int param1) {
     rge_write(param1, this->color_table_name, 0x1E);

@@ -11,6 +11,7 @@
 // Main-agent audit confirmed canonical game/player/view/master ownership and
 // the binary-backed pick flag and object-id widths; emitted code remains exact.
 
+#ifndef TVW_MAIN_SHARED_CONTEXT
 class RGE_Static_Object;
 class RGE_Player;
 class RGE_Game_World;
@@ -91,6 +92,7 @@ class TRIBE_Main_View : public RGE_Main_View {
 public:
     virtual int command_place_object(long, long, int);
 };
+#endif
 
 int TRIBE_Main_View::command_place_object(long x, long y, int param_3) {
     int object_id;

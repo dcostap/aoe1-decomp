@@ -1,3 +1,6 @@
+#include "../../include/scr_main_context.h"
+
+#if 0
 class TPanel;
 class TButtonPanel;
 
@@ -26,6 +29,7 @@ public:
 
     long action(TPanel* param_1, long param_2, unsigned long param_3, unsigned long param_4);
 };
+#endif
 
 long TRIBE_Screen_Main_Error::action(TPanel* param_1, long param_2, unsigned long param_3, unsigned long param_4) {
     TPanel* panel;

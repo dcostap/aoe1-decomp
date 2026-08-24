@@ -3663,6 +3663,51 @@
         "0053C400": "?save@RGE_Visible_Map@@QAEXH@Z",
         "0053C490": "?get_visible@RGE_Visible_Map@@QAEEHH@Z"
       }
+    },
+    {
+      "name": "scr_trb",
+      "source": "src/scr_trb_tu.cpp",
+      "flags": "config/flags/004B75A0_TribeSelectTribeScreen.rsp",
+      "owners": {
+        "004B75A0": "src/matching/004B75A0_TribeSelectTribeScreen.cpp",
+        "004B7DF0": "src/matching/004B7DF0_TribeSelectTribeScreen.cpp",
+        "004B7EE0": "src/matching/004B7EE0_action.cpp",
+        "004B7F70": "src/matching/004B7F70_fillTribeText.cpp",
+        "004B8070": "src/matching/004B8070_tribeName.cpp"
+      }
+    },
+    {
+      "name": "tm_tre_o",
+      "source": "src/tm_tre_o_tu.cpp",
+      "flags": "config/flags/0050F3A0_make_new_master.rsp",
+      "owners": {
+        "0050F180": "src/matching/0050F180_TRIBE_Master_Tree_Object.cpp",
+        "0050F220": "src/matching/0050F220_TRIBE_Master_Tree_Object.cpp",
+        "0050F2A0": "src/matching/0050F2A0_TRIBE_Master_Tree_Object.cpp",
+        "0050F320": "src/matching/0050F320_make_new_obj.cpp",
+        "0050F3A0": "src/matching/0050F3A0_make_new_master.cpp"
+      },
+      "symbols": {
+        "0050F180": "??0TRIBE_Master_Tree_Object@@QAE@PAV0@H@Z",
+        "0050F220": "??0TRIBE_Master_Tree_Object@@QAE@HPAPAVRGE_Sprite@@PAPAVRGE_Sound@@H@Z",
+        "0050F2A0": "??0TRIBE_Master_Tree_Object@@QAE@PAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@FH@Z",
+        "0050F320": "?make_new_obj@TRIBE_Master_Tree_Object@@UAEPAVRGE_Static_Object@@PAVRGE_Player@@MMM@Z",
+        "0050F3A0": "?make_new_master@TRIBE_Master_Tree_Object@@UAEPAVRGE_Master_Static_Object@@XZ"
+      }
+    },
+    {
+      "name": "tvw_dmap",
+      "source": "src/tvw_dmap_tu.cpp",
+      "flags": "config/flags/default.rsp",
+      "owners": {
+        "0052C9E0": "src/matching/0052C9E0_TRIBE_Diamond_Map_View.cpp",
+        "0052CA30": "src/matching/0052CA30_set_redraw.cpp",
+        "0052CA60": "src/matching/0052CA60_draw_objects.cpp",
+        "0052CAB0": "src/matching/0052CAB0_draw_object.cpp"
+      },
+      "symbols": {
+        "0052CAB0": "?draw_object@TRIBE_Diamond_Map_View@@MAEXFFEFPAVRGE_Static_Object@@@Z"
+      }
     }
   ]
 }

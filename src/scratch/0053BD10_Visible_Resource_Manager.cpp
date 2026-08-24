@@ -1,25 +1,29 @@
-// From vis_unit.cpp
+// vis_unit.cpp target: Visible_Resource_Manager::~Visible_Resource_Manager
 
-void __cdecl operator_delete(void* ptr);
+#include <stdlib.h>
+
+#if !defined(VIS_UNIT_TU_CONTEXT)
+struct VisibleResourceRecord;
 
 class Visible_Resource_Manager {
 public:
-    void** vtable;
-    void* field_04;
-    void* field_08;
-    char gap_0C[4];
-    int count;
+    VisibleResourceRecord** VR_List;
+    int* VR_ListSize;
+    int* VR_ListUsed;
+    void* owner;
+    int num_visible_resource_lists;
 
     ~Visible_Resource_Manager();
 };
+#endif
 
 Visible_Resource_Manager::~Visible_Resource_Manager() {
     int i;
-    for (i = 0; i < this->count; i++) {
-        void* ptr = this->vtable[i];
-        if (ptr) operator_delete(ptr);
+    for (i = 0; i < this->num_visible_resource_lists; i++) {
+        VisibleResourceRecord* list = this->VR_List[i];
+        if (list) free(list);
     }
-    if (this->vtable) operator_delete(this->vtable);
-    if (this->field_04) operator_delete(this->field_04);
-    if (this->field_08) operator_delete(this->field_08);
+    if (this->VR_List) free(this->VR_List);
+    if (this->VR_ListSize) free(this->VR_ListSize);
+    if (this->VR_ListUsed) free(this->VR_ListUsed);
 }

@@ -9,6 +9,7 @@ void rge_read(int handle, void* buffer, int size);
 extern float save_game_version;
 extern float DAT_005776c8;
 
+#if !defined(VIS_UNIT_TU_CONTEXT)
 class RGE_Player;
 
 class Visible_Resource_Manager {
@@ -21,6 +22,7 @@ public:
 
     Visible_Resource_Manager(int handle, RGE_Player* owner);
 };
+#endif
 
 Visible_Resource_Manager::Visible_Resource_Manager(int handle, RGE_Player* owner) {
     if (save_game_version >= DAT_005776c8) {
@@ -30,7 +32,11 @@ Visible_Resource_Manager::Visible_Resource_Manager(int handle, RGE_Player* owner
     }
 
     if (this->num_visible_resource_lists > 0) {
+#if defined(VIS_UNIT_TU_CONTEXT)
+        this->VR_List = (VisibleResourceRec**)calloc(this->num_visible_resource_lists, 4);
+#else
         this->VR_List = (void**)calloc(this->num_visible_resource_lists, 4);
+#endif
         this->VR_ListSize = (int*)calloc(this->num_visible_resource_lists, 4);
         this->VR_ListUsed = (int*)calloc(this->num_visible_resource_lists, 4);
         int i = 0;
@@ -38,7 +44,11 @@ Visible_Resource_Manager::Visible_Resource_Manager(int handle, RGE_Player* owner
             do {
                 rge_read(handle, this->VR_ListSize + i, 4);
                 rge_read(handle, this->VR_ListUsed + i, 4);
-                this->VR_List[i] = malloc(this->VR_ListSize[i] << 3);
+#if defined(VIS_UNIT_TU_CONTEXT)
+        this->VR_List[i] = (VisibleResourceRec*)malloc(this->VR_ListSize[i] << 3);
+#else
+        this->VR_List[i] = malloc(this->VR_ListSize[i] << 3);
+#endif
                 i++;
             } while (i < this->num_visible_resource_lists);
         }

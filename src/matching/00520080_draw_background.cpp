@@ -38,6 +38,7 @@
 
 #include <windows.h>
 
+#ifndef TPNL_TML_WRAPPER
 class TDrawArea {
 public:
     unsigned char* Lock(char* tag, int flag);
@@ -79,13 +80,13 @@ class Time_Line_Panel {
 public:
     void* vtbl;                 // +0
     char gap_04[8];
-    long x;                     // +0x0C
-    long y;                     // +0x10
-    long width;                 // +0x14
-    long height;                // +0x18
+    union { long x; long pnl_x; };       // +0x0C
+    union { long y; long pnl_y; };       // +0x10
+    union { long width; long pnl_wid; }; // +0x14
+    union { long height; long pnl_hgt; }; // +0x18
     char gap_1C[4];
     TDrawArea* render_area;      // +0x20
-    Rect4 rect;                  // +0x24
+    union { Rect4 rect; Rect4 clip_rect; }; // +0x24
     char gap_34[0x0C];
     TBevelLike* bevel;           // +0x40
     char gap_44[0x468];
@@ -99,6 +100,7 @@ public:
 
     void draw_background();
 };
+#endif
 
 void Time_Line_Panel::draw_background()
 {
@@ -110,18 +112,18 @@ void Time_Line_Panel::draw_background()
             return;
         }
 
-        if (this->background_pic_wid >= this->width) {
+        if (this->background_pic_wid >= this->pnl_wid) {
             pic_rows = 1;
         } else {
-            pic_rows = this->width / this->background_pic_wid;
-            if ((short)pic_rows * this->background_pic_wid < this->width) {
+            pic_rows = this->pnl_wid / this->background_pic_wid;
+            if ((short)pic_rows * this->background_pic_wid < this->pnl_wid) {
                 pic_rows++;
             }
         }
 
-        if (this->background_pic_hgt >= this->height) {
-            tile_rows = this->height / this->background_pic_hgt;
-            if ((short)tile_rows * this->background_pic_hgt < this->height) {
+        if (this->background_pic_hgt >= this->pnl_hgt) {
+            tile_rows = this->pnl_hgt / this->background_pic_hgt;
+            if ((short)tile_rows * this->background_pic_hgt < this->pnl_hgt) {
                 tile_rows++;
             }
         }
@@ -135,8 +137,8 @@ void Time_Line_Panel::draw_background()
                     int count = (short)pic_rows;
                     do {
                         this->background_pic->shape_draw(this->render_area,
-                            col * this->background_pic_wid + this->x,
-                            row * this->background_pic_hgt + this->y,
+                            col * this->background_pic_wid + this->pnl_x,
+                            row * this->background_pic_hgt + this->pnl_y,
                             0, 0, 0);
                         col++;
                         count--;
@@ -155,9 +157,9 @@ void Time_Line_Panel::draw_background()
         if (this->render_area->Lock("tpnl_tml::draw_background2", 1) == 0) {
             return;
         }
-        this->render_area->FillRect(this->x, this->y,
-            this->x + this->width - 1,
-            this->y + this->height - 1,
+        this->render_area->FillRect(this->pnl_x, this->pnl_y,
+            this->pnl_x + this->pnl_wid - 1,
+            this->pnl_y + this->pnl_hgt - 1,
             this->back_color);
         this->render_area->Unlock("tpnl_tml::draw_background2");
         return;
@@ -165,11 +167,11 @@ void Time_Line_Panel::draw_background()
 
     if (this->bevel != 0) {
         if (this->bevel_type >= 2 && this->bevel_type <= 7) {
-            this->bevel->draw_high(&this->rect);
+            this->bevel->draw_high(&this->clip_rect);
             return;
         }
         if (this->bevel->flag_84 == 0) {
-            this->bevel->draw_low(&this->rect);
+            this->bevel->draw_low(&this->clip_rect);
         }
     }
 }

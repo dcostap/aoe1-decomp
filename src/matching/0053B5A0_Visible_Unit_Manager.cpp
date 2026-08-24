@@ -1,15 +1,11 @@
 // vis_unit.cpp target: Visible_Unit_Manager::Visible_Unit_Manager
-// natural constructor allocation loops from packet.
-// first compile was behaviorally right but used indexed inner stores; switch to a running short* cursor to mirror original esi-based category initialization.
-// current cursor form is very close but retained calloc result; reload PlayerDataPtrs[i] for original's extra load sequence.
-// declare the cursor before the positive Category_Count gate so VC5 computes it before the test like the original.
-// row local plus cursor inside gate should match original row reload, Category_Count reload, test, then lea cursor.
-// tried comma-expression arg side effects; they did not produce original push8/store/push20/store scheduling.
-// probing volatile short cursor for store scheduling.
+// Natural constructor allocation loops from the packet. The category record is
+// eight bytes: a list pointer and two 16-bit counters.
 
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 extern "C" void* __cdecl malloc(unsigned int size);
 
+#if !defined(VIS_UNIT_TU_CONTEXT)
 struct VisibleUnitPtr {
     void* unit_list;
     short allocated;
@@ -31,6 +27,7 @@ public:
     Visible_Unit_Manager(int player_count, int category_count);
     void Build_Distance_Table();
 };
+#endif
 
 Visible_Unit_Manager::Visible_Unit_Manager(int player_count, int category_count) {
     int i;
@@ -41,22 +38,24 @@ Visible_Unit_Manager::Visible_Unit_Manager(int player_count, int category_count)
 
     for (i = 0; i < this->Player_Count; i++) {
         this->PlayerDataPtrs[i] = (VisibleUnitPtr*)calloc(this->Category_Count, 8);
-        int j = 0;
         VisibleUnitPtr* row = this->PlayerDataPtrs[i];
-        if (this->Category_Count > 0) {
-            volatile short* cursor = &row[0].used;
-            do {
-                cursor[-1] = 0x20;
-                *cursor = 0;
-                ((VisibleUnitPtr*)((short*)cursor - 3))->unit_list = calloc(0x20, 8);
-                j++;
-                cursor += 4;
-            } while (j < this->Category_Count);
+        for (int j = 0; j < this->Category_Count; j++) {
+            row[j].allocated = 0x20;
+            row[j].used = 0;
+#if defined(VIS_UNIT_TU_CONTEXT)
+            row[j].unit_list = (VisibleUnitRec*)calloc(0x20, 8);
+#else
+            row[j].unit_list = calloc(0x20, 8);
+#endif
         }
     }
 
     for (i = 0; i < 5; i++) {
+#if defined(VIS_UNIT_TU_CONTEXT)
+        this->Return_Buffer[i] = (VisibleUnitRec*)malloc(0x800);
+#else
         this->Return_Buffer[i] = malloc(0x800);
+#endif
         VisibleUnitList[i] = this->Return_Buffer[i];
         VisibleUnitList_Size[i] = 0;
     }

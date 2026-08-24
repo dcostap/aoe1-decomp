@@ -64,6 +64,7 @@
 // field reaches the same display argument. Calls then kill the temporary maps.
 // Instruction order, memory access, predicates, writes, cleanup, and faults match.
 
+#ifndef TVW_MAIN_SHARED_CONTEXT
 class TShape;
 class RGE_Tile;
 class RGE_Static_Object;
@@ -233,6 +234,7 @@ class TRIBE_Main_View : public RGE_Main_View {
 public:
     virtual long mouse_left_up_action(long, long, int, int);
 };
+#endif
 
 long TRIBE_Main_View::mouse_left_up_action(long param_1, long param_2,
                                            int param_3, int param_4) {

@@ -14,8 +14,8 @@
 // The canonical inventory panel/game declarations are in
 // tpnl_inv_context.h.  One module flag set is required for this grouped
 // context: /nologo /c /O2 /Oy /GX.  The /GX evidence is the exact destructor
-// owner at 0051A6D0.  This wrapper is not registered in
-// config/translation_units.json by this assignment.
+// owner at 0051A6D0.  The existing tpnl_inv_prefix registration is preserved;
+// this assignment does not modify config/translation_units.json.
 //
 // Safe exact manifest under that one flag set.  Each symbol was selected from
 // the wrapper COFF object and its body was compared with the original range.
@@ -28,12 +28,19 @@
 //   0051A770 ?draw@TRIBE_Panel_Inven@@UAEXXZ
 //   0051AAD0 ?handle_idle@TRIBE_Panel_Inven@@UAEJXZ
 //   0051ABF0 ?set_player@TRIBE_Panel_Inven@@QAEXPAVTRIBE_Player@@@Z
-//   0051AC10 ?save_info@TRIBE_Panel_Inven@@QAEXXZ
+//   0051AC10 PDB owner ?save_info@TRIBE_Panel_Inven@@IAEXXZ
 //   0051ACA0 ?get_help_info@TRIBE_Panel_Inven@@UAEEAAPADAAJJJ@Z
 //
 // The grouped check produced 201, 30, 148, 859, 277, 31, 143, and 326 bytes
 // respectively.  0051ACA0 has the original 13-call sequence.  Generated
 // scalar/vector deleting destructors and padding remain excluded.
+//
+// BINARY NOTE: The shared context currently declares save_info public, so VC5
+// emits ?save_info@TRIBE_Panel_Inven@@QAEXXZ in this wrapper.  The PDB owner is
+// protected (?save_info@TRIBE_Panel_Inven@@IAEXXZ).  The body is byte-exact,
+// but this access-level symbol difference blocks a policy-valid exact claim
+// until an authorized shared-context correction is available.  No alias or
+// assembly workaround is used.
 
 #include <windows.h>
 #include "../include/tpnl_inv_context.h"

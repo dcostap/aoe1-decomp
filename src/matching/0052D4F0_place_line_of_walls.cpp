@@ -22,6 +22,7 @@
 //   x1 and y at y1; the original endpoint-home writes then match the typed
 //   traversal instead of the decompiler's apparent parameter swap.
 
+#ifndef TVW_MAIN_SHARED_CONTEXT
 class RGE_Player;
 class RGE_Static_Object;
 
@@ -119,6 +120,7 @@ protected:
         int x2,
         int y2);
 };
+#endif
 
 void TRIBE_Main_View::place_line_of_walls(
     TRIBE_Player* player,

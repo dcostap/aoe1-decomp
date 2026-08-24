@@ -1,5 +1,7 @@
 // VA: 004CD210 TRIBE_Action_Build::TRIBE_Action_Build (EH-framed, ret 0Ch)
 // PDB source: tact_bld.cpp
+// BINARY NOTE: The canonical action and object members reproduce the delayed
+// derived-vtable store, task store, owner check, and coordinate loads.
 
 class RGE_Action_Object;
 class RGE_Task;
@@ -22,14 +24,13 @@ public:
 TRIBE_Action_Build::TRIBE_Action_Build(RGE_Action_Object* action_obj, RGE_Task* task, RGE_Static_Object* target)
     : RGE_Action(action_obj, 1)
 {
-    *(void**)this = (void*)0x574F18;
-    *(short*)((char*)this + 4) = 0x65;
-    *(void**)((char*)this + 0x30) = task;
-    
-    if (!target || (*(short*)(*(char**)((char*)action_obj + 0xC) + 0x4A) == *(short*)(*(char**)((char*)target + 0xC) + 0x4A))) {
-        set_target_obj(target);
-        *(float*)((char*)this + 0x20) = *(float*)((char*)target + 0x38);
-        *(float*)((char*)this + 0x24) = *(float*)((char*)target + 0x3C);
-        *(float*)((char*)this + 0x28) = *(float*)((char*)target + 0x40);
+    this->action_type = 0x65;
+    this->task = task;
+
+    if (!target || action_obj->owner->id == target->owner->id) {
+        this->set_target_obj(target);
+        this->target_x = target->world_x;
+        this->target_y = target->world_y;
+        this->target_z = target->world_z;
     }
 }

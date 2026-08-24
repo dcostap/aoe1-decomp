@@ -10,6 +10,7 @@
 extern "C" void __cdecl addstring(char** dst, char* base, char* ext);
 extern "C" void __cdecl free(void* ptr);
 
+#ifndef COLOR_TU_CONTEXT
 class RGE_Color_Table {
 public:
     virtual ~RGE_Color_Table() {}
@@ -22,6 +23,7 @@ public:
 
     RGE_Color_Table(FILE* file, short id_val);
 };
+#endif
 
 RGE_Color_Table::RGE_Color_Table(FILE* file, short id_val)
 {

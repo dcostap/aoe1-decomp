@@ -28,6 +28,7 @@
 // probe 11: made cases 2/3 assign a natural result local and fall through to
 // one shared return, matching the original line-723 zero tail and exact bytes.
 
+#ifndef TVW_MAIN_SHARED_CONTEXT
 class RGE_Master_Static_Object {
 public:
     virtual ~RGE_Master_Static_Object();
@@ -58,6 +59,7 @@ class TRIBE_Main_View : public RGE_View {
 public:
     int pick_weight(RGE_Static_Object* param_1, int param_2);
 };
+#endif
 
 int TRIBE_Main_View::pick_weight(RGE_Static_Object* param_1, int param_2) {
     unsigned char select_level = param_1->master_obj->select_level;

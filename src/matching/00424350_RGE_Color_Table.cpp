@@ -15,6 +15,7 @@
 #include "..\..\include\game_globals.h"
 #include <stdio.h>
 
+#ifndef COLOR_TU_CONTEXT
 class RGE_Color_Table {
 public:
     virtual ~RGE_Color_Table();
@@ -27,6 +28,7 @@ public:
 
     RGE_Color_Table(int fd);
 };
+#endif
 
 extern void __cdecl rge_read(int fd, void* buf, int size);
 

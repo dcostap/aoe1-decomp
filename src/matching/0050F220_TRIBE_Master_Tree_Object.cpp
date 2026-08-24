@@ -8,7 +8,7 @@
 #include "..\..\include\game_globals.h"
 #include "..\..\include\tm_tre_o_context.h"
 
-TRIBE_Master_Tree_Object::TRIBE_Master_Tree_Object(int param_1, void** sprites, void** sounds, int flag)
+TRIBE_Master_Tree_Object::TRIBE_Master_Tree_Object(int param_1, RGE_Sprite** sprites, RGE_Sound** sounds, int flag)
     : RGE_Master_Static_Object(param_1, sprites, sounds, 0)
 {
     if (flag != 0) {

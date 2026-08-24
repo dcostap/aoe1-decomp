@@ -9,7 +9,9 @@
 //   explicit per-case returns and the invalid return after the switch.
 
 #include <windows.h>
+#include "../../include/scr_main_context.h"
 
+#if 0
 class TPanel {
 public:
     char __gap[0x1C];
@@ -83,6 +85,7 @@ public:
     virtual long key_down_action(long key, short param_2, int param_3, int param_4, int param_5);
     virtual long action(TPanel* param_1, long param_2, unsigned long param_3, unsigned long param_4);
 };
+#endif
 
 long TRIBE_Screen_Main_Menu::key_down_action(long key, short param_2, int param_3, int param_4, int param_5) {
     if (param_4 != 0) {

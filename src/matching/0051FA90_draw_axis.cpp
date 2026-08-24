@@ -21,6 +21,7 @@ typedef unsigned char uchar;
 
 extern char s_tpnl_tml_draw_axis[];
 
+#ifndef TPNL_TML_WRAPPER
 struct TDrawSystem {
     char gap_00[8];
     void* Pal;
@@ -63,6 +64,7 @@ public:
     int get_string(int, char*, int);
     void draw_axis();
 };
+#endif
 
 void Time_Line_Panel::draw_axis()
 {

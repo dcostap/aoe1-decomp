@@ -58,6 +58,7 @@
 
 typedef unsigned char uchar;
 
+#ifndef TPNL_TML_WRAPPER
 class TShape {
 public:
     long shape_count();
@@ -134,6 +135,7 @@ public:
 
     int calculate_icon_location(Special_Events*, short, uchar);
 };
+#endif
 
 int Time_Line_Panel::calculate_icon_location(
     Special_Events* param_1, short param_2, uchar param_3)

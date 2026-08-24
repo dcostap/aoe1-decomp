@@ -41,8 +41,11 @@
 // follow-up claim b: moving the fade-time square before the start-time call widened the localized drift to 68 bytes; rolled back.
 // follow-up claim b: no source-backed form changed the final two reloads; the remaining blocker is mov done before/after mov draw_area.
 
+#ifndef COLOR_TU_CONTEXT
 #include <windows.h>
+#endif
 
+#ifndef COLOR_TU_CONTEXT
 class TDrawSystem;
 
 class TDrawArea {
@@ -51,9 +54,14 @@ public:
     void GetPalette(tagPALETTEENTRY* entries);
     void SetPalette(tagPALETTEENTRY* entries);
 };
+#endif
 
 extern "C" unsigned long __cdecl debug_timeGetTime(char*, int);
+#ifdef COLOR_TU_CONTEXT
+extern void __cdecl RGE_translate_palette(tagPALETTEENTRY*, tagPALETTEENTRY*, tagPALETTEENTRY, long, int, int);
+#else
 extern "C" void __cdecl RGE_translate_palette(tagPALETTEENTRY*, tagPALETTEENTRY*, tagPALETTEENTRY, long, int, int);
+#endif
 extern "C" long __cdecl _ftol();
 
 void __cdecl RGE_fade_palette(TDrawArea* draw_area, tagPALETTEENTRY fade_color, float fade_time,

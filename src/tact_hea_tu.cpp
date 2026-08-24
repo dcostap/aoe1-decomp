@@ -10,6 +10,8 @@
 // Baseline validation: 004CE930, 004CE990, 004CEA90, 004CECF0, and 004CF030
 // match.  004CEA10 matches bytes but keeps its source-compatible int ABI view;
 // 004CEA50 differs by one byte in the shared context.  Both remain observed.
+// Candidate validation reports 5 exact owners, 2 observed owners, and 1 exact
+// compiler-generated scalar deleting destructor for this complete wrapper.
 // No exact-codegen tuning was done in this pass.
 // Registration remains blocked by unresolved inherited virtual slots in the
 // pre-existing tactical-action context.

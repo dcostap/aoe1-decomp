@@ -47,7 +47,9 @@
 // FLAGS: /GX (EH)
 
 #include <string.h>
+#include "../../include/scr_main_context.h"
 
+#if 0
 struct tagRECT {
     long left;
     long top;
@@ -178,6 +180,7 @@ public:
     TRIBE_Screen_Main_Menu();
     virtual ~TRIBE_Screen_Main_Menu();
 };
+#endif
 
 TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu()
     : TScreenPanel(s_Main_Menu) {
@@ -199,7 +202,7 @@ TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu()
     memset(this->button, 0, sizeof(this->button));
 
     if (this->setup(rge_base_game->draw_area, s_scr1, 0xC383, 1) == 0) {
-        this->field_D8 = 1;
+        this->setup_error = 1;
         return;
     }
 

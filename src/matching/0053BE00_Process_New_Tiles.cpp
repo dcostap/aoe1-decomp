@@ -16,6 +16,7 @@
 //   (`i++` before `tileList++`) restored the early callee-save/guard layout and
 //   the final increment order. Exact match: 195/195 bytes.
 
+#if !defined(VIS_UNIT_TU_CONTEXT)
 struct RGE_Object_Master {
     char gap_00[0xA5];
     unsigned char track_as_resource;
@@ -73,6 +74,7 @@ public:
     void Process_New_Tiles(RGE_Tile_List* list);
     void AddResource(int id, int type);
 };
+#endif
 
 void Visible_Resource_Manager::Process_New_Tiles(RGE_Tile_List* list) {
     int size;

@@ -29,8 +29,11 @@
 #include <string.h>
 
 typedef unsigned char uchar;
+#ifndef TPNL_TML_WRAPPER
 extern "C" unsigned int (__stdcall* const GetNearestPaletteIndex)(void*, unsigned int);
+#endif
 
+#ifndef TPNL_TML_WRAPPER
 class TDrawSystem {
 public:
     void* instance;
@@ -222,6 +225,7 @@ public:
     int calculate_icon_location(Special_Events*, short, uchar);
     void draw_icon(Special_Events*, short, uchar);
 };
+#endif
 
 void Time_Line_Panel::draw_icon(Special_Events* ev, short param_2, uchar param_3)
 {
@@ -229,7 +233,13 @@ void Time_Line_Panel::draw_icon(Special_Events* ev, short param_2, uchar param_3
     long total;
     long hi_top;
     long q_top;
-    unsigned int (__stdcall* getNearest)(void*, unsigned int) = GetNearestPaletteIndex;
+    unsigned int (__stdcall* getNearest)(void*,
+#ifdef TPNL_TML_WRAPPER
+                                         unsigned long) =
+#else
+                                         unsigned int) =
+#endif
+        GetNearestPaletteIndex;
     getNearest(this->render_area->DrawSystem->palette, 0xffffff);
     temp_str[0] = (char)getNearest(this->render_area->DrawSystem->palette, 0);
 

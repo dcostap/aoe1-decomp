@@ -48,7 +48,9 @@
 
 #include <string.h>
 #include <windows.h>
+#include "../../include/scr_main_context.h"
 
+#if 0
 class TPanel {
 public:
     char gap_04[0x18];
@@ -139,6 +141,7 @@ public:
     virtual long action(TPanel* panel, long event,
                         unsigned long p3, unsigned long p4);
 };
+#endif
 
 long TRIBE_Screen_Main_Menu::action(TPanel* panel, long event,
                                     unsigned long p3, unsigned long p4) {

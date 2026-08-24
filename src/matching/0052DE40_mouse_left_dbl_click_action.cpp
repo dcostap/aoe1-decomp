@@ -12,6 +12,7 @@
 //   main-agent audit: restored canonical master/object/player/view destructor
 //     ownership; emitted code remains exact.
 
+#ifndef TVW_MAIN_SHARED_CONTEXT
 class RGE_Player;
 class RGE_Tile;
 
@@ -85,6 +86,7 @@ class TRIBE_Main_View : public RGE_Main_View {
 public:
     long mouse_left_dbl_click_action(long x, long y, int key, int flags);
 };
+#endif
 
 long TRIBE_Main_View::mouse_left_dbl_click_action(long x, long y,
                                                    int key, int flags) {

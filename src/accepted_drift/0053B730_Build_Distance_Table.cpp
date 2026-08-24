@@ -4,29 +4,35 @@
 // Drift is confined to the distance-table byte test/store in the innermost loop: original materializes
 // `table + index` in ECX (`mov ecx,[ebp+20]; add ecx,eax; cmp byte [ecx],ff; mov [ecx],bl`), while
 // rebuilt keeps the same base and index separate (`mov ecx,[ebp+20]; cmp byte [ecx+eax],ff; mov [ecx+eax],bl`).
-// The allocation/free, memset-to-FF, outer offset-table walk, clipping, counts, loop exits, and register/stack cleanup
-// otherwise resync. Tried pointer-temp, unsigned/signed table surfaces, register entry, entry-loop do/while, fill-loop
+// The allocation/free, memset-to-FF, outer offset-table walk, clipping, counts, and loop exits
+// otherwise resync. Tried pointer-temp, unsigned/signed table surfaces, entry-loop do/while, fill-loop
 // spelling, unsigned row predicate, inner pointer lvalue/cast variants, count while/do variants, and flags /Ob0,
 // /O2-no-/Oy, /Oa, /O1, /G5. Pointer-temp variants force worse ESI/EDI allocation; this is the tightest basin.
 
-void operator_delete(void* ptr);
+#include <stdlib.h>
+
 extern "C" void* __cdecl malloc(unsigned int size);
 
 extern int* NormalLOS;
 extern int* PTR_Edge_Offsets_N16;
 
+#if !defined(VIS_UNIT_TU_CONTEXT)
 class Visible_Unit_Manager {
 public:
-    char gap_00[0x20];
+    void* PlayerDataPtrs;
+    void* Return_Buffer[5];
+    int Player_Count;
+    int Category_Count;
     unsigned char* distanceTable;
 
     void Build_Distance_Table();
 };
+#endif
 
 void Visible_Unit_Manager::Build_Distance_Table()
 {
     if (this->distanceTable != 0) {
-        operator_delete(this->distanceTable);
+        free(this->distanceTable);
     }
 
     unsigned char* table = (unsigned char*)malloc(0x100);
@@ -38,7 +44,7 @@ void Visible_Unit_Manager::Build_Distance_Table()
     int distance = 0;
     int** offsets = &NormalLOS;
     do {
-        register int* entry = *offsets;
+        int* entry = *offsets;
         int row = entry[0];
         while (row != 999) {
             int first = entry[1];

@@ -3,26 +3,19 @@
 // Attempt log:
 // - Baseline manual byte-copy source was 14 bytes short, had no local frame, and
 //   used operator_delete instead of the binary's free call.
-// - Switched to memcpy, cdecl free, and one doubled-size local: size/frame/CFG,
-//   all four calls, and every block through the growth path became exact; 8
-//   bytes remain in the append-pointer register/load ordering.
-// - Split/indexed/reversed append-address forms, array/count locals, and a
-//   function-scope record pointer all emitted the same 8-byte drift.
-// - Left in scratch: canonical typed growth/append source is best; remaining
-//   drift is a localized VR_List versus VR_ListUsed scheduling/register basin.
+// - Switched to memcpy, cdecl free, and one doubled-size local. Size, frame,
+//   calls, and every growth-path block became exact.
+// - The canonical typed growth and append source is retained.
 // - Main-agent audit restored the canonical polymorphic static-object surface;
 //   emitted code and the eight-byte residual are unchanged.
-// - New context lead after the visible-resource record pass: explicit typed
-//   list/used locals, a pointer-to-list slot, a record reference, register
-//   qualifiers, an ordered comma expression, and the same-TU void* list donor
-//   spelling all duplicated the residual. The original BF74 hunk still loads
-//   VR_List before VR_ListUsed; no clean source form recovered that order.
+// - The period CRT header context and typed resource record are retained.
 // - Restoring the period CRT header context with <stdlib.h> and <string.h>
 //   changed only that localized append schedule and recovered an exact match.
 
 #include <stdlib.h>
 #include <string.h>
 
+#if !defined(VIS_UNIT_TU_CONTEXT)
 struct RGE_Static_Object {
     virtual ~RGE_Static_Object();
     char gap_04[0x34];
@@ -50,6 +43,7 @@ public:
 
     void AddResource(int object_id, int type);
 };
+#endif
 
 void Visible_Resource_Manager::AddResource(int object_id, int type) {
     RGE_Static_Object* object;

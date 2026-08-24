@@ -57,6 +57,7 @@
 #include <string.h>
 
 typedef unsigned char uchar;
+#ifndef TPNL_TML_WRAPPER
 typedef void* HDC;
 typedef void* HGDIOBJ;
 typedef unsigned int COLORREF;
@@ -68,7 +69,9 @@ extern int (__stdcall* const SetBkMode)(HDC, int);
 extern HGDIOBJ (__stdcall* const SelectObject)(HDC, HGDIOBJ);
 extern int (__stdcall* const TextOutA)(HDC, int, int, const char*, int);
 }
+#endif
 
+#ifndef TPNL_TML_WRAPPER
 class TDrawSystem {
 public:
     void* inst;
@@ -134,6 +137,7 @@ public:
     void draw_icon(Special_Events*, short, uchar);
     void draw_special_events();
 };
+#endif
 
 void Time_Line_Panel::draw_special_events()
 {
@@ -142,7 +146,12 @@ void Time_Line_Panel::draw_special_events()
 
     if (this->timeline_flag != 0) {
         {
-            unsigned int (__stdcall* nearest)(void*, unsigned int) =
+            unsigned int (__stdcall* nearest)(void*,
+#ifdef TPNL_TML_WRAPPER
+                                              unsigned long) =
+#else
+                                              unsigned int) =
+#endif
                 GetNearestPaletteIndex;
             nearest(this->render_area->DrawSystem->palette, 0xFFFFFF);
             nearest(this->render_area->DrawSystem->palette, 0);

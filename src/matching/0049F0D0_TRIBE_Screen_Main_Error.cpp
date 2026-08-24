@@ -12,7 +12,9 @@
 // FLAGS: /GX (EH)
 
 #include <windows.h>
+#include "../../include/scr_main_context.h"
 
+#if 0
 class TTextPanel;
 class TButtonPanel;
 
@@ -87,6 +89,7 @@ public:
     TRIBE_Screen_Main_Error();
     virtual ~TRIBE_Screen_Main_Error();
 };
+#endif
 
 TRIBE_Screen_Main_Error::TRIBE_Screen_Main_Error()
     : TScreenPanel("Main Error Screen") {

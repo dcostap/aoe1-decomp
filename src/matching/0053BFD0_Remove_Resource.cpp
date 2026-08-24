@@ -10,6 +10,7 @@
 //   last-record copy plus used-count decrement sequence.
 // Result: MATCH locally with `python tools/check_function.py --va 0053BFD0`.
 
+#if !defined(VIS_UNIT_TU_CONTEXT)
 struct VisibleResourceRec {
     int object_id;
     unsigned char distance;
@@ -28,6 +29,7 @@ public:
 
     int Remove_Resource(int object_id, int type);
 };
+#endif
 
 int Visible_Resource_Manager::Remove_Resource(int object_id, int type) {
     if (this->num_visible_resource_lists == 0) {

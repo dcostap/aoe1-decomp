@@ -3,6 +3,9 @@
 // EH-framed destructor: delete_panel for message and cancel_button, then base dtor
 // FLAGS: /GX (EH)
 
+#include "../../include/scr_main_context.h"
+
+#if 0
 class TPanel {
 public:
     char gap_00[0xF0];
@@ -24,6 +27,7 @@ public:
 
     virtual ~TRIBE_Screen_Main_Error();
 };
+#endif
 
 TRIBE_Screen_Main_Error::~TRIBE_Screen_Main_Error() {
     this->delete_panel((TPanel**)&this->message);

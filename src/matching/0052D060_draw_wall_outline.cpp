@@ -29,6 +29,7 @@
 // - The binary center block uses the tile x3 home plus (x4 - y4) / 2 + y4;
 //   using those named alignment outputs produces an exact 391-byte match.
 
+#ifndef TVW_MAIN_SHARED_CONTEXT
 class RGE_Game_World;
 class RGE_Player;
 class RGE_Static_Object;
@@ -132,6 +133,7 @@ public:
     int draw_wall_outline(
         long x, long y, TRIBE_Master_Building_Object* master, long mode);
 };
+#endif
 
 int TRIBE_Main_View::draw_wall_outline(
     long x, long y, TRIBE_Master_Building_Object* master, long mode) {

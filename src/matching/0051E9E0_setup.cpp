@@ -4,7 +4,9 @@
 
 #include "../../include/tpnl_tml_context.h"
 
+#ifndef TPNL_TML_WRAPPER
 __declspec(dllimport) int __stdcall GetNearestPaletteIndex(void*, unsigned int);
+#endif
 
 long Time_Line_Panel::setup(
     TDrawArea* param_1,

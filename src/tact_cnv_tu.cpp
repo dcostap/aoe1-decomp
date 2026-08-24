@@ -15,6 +15,14 @@
 // The body owners are existing exact matching sources.  This wrapper keeps
 // their PDB order and leaves the nearby compiler-generated deleting destructor
 // to the compiler.
+//
+// Candidate TU validation (default_gx.rsp): seven body owners are exact and
+// the vector-deleting destructor is exact.  004CDA90 and 004CDBB0 compile in
+// this authentic context with observed TU-local drift.  The first_in_stack
+// standalone owner is exact; 004CDA90 retains a separate 10-byte standalone
+// scheduling mismatch.  The two exact claims are blocked by source views that
+// conflict with the shared RGE_Base_Game ABI at +0040/+0044 and with the
+// first_in_stack master-object view; do not claim full-TU exactness for them.
 
 #define TACT_CNV_SHARED_CONTEXT 1
 #include "../include/tact_cnv_context.h"

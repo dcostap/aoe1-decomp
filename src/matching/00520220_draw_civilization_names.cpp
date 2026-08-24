@@ -28,6 +28,7 @@ __declspec(dllimport) HGDIOBJ __stdcall SelectObject(HDC, HGDIOBJ);
 __declspec(dllimport) int __stdcall TextOutA(HDC, int, int, LPCSTR, int);
 }
 
+#ifndef TPNL_TML_WRAPPER
 class TRIBE_History_Info {
 public:
     unsigned char get_history_entry(unsigned char mode, long index);
@@ -105,6 +106,7 @@ public:
 
     void draw_civilization_names();
 };
+#endif
 
 void Time_Line_Panel::draw_civilization_names()
 {

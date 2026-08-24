@@ -1,3 +1,4 @@
+#ifndef TPNL_TML_WRAPPER
 class TShape {
 public:
     long shape_count();
@@ -11,6 +12,7 @@ public:
     long width();
     void draw_legend();
 };
+#endif
 
 void Time_Line_Panel::draw_legend() {
     if (this->special_events_pic != 0) {

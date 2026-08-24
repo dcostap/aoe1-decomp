@@ -3,6 +3,7 @@
 
 void rge_write(int handle, void* buffer, int size);
 
+#if !defined(VIS_UNIT_TU_CONTEXT)
 class Visible_Resource_Manager {
 public:
     void** VR_List;
@@ -13,6 +14,7 @@ public:
 
     void save(int handle);
 };
+#endif
 
 void Visible_Resource_Manager::save(int handle) {
     rge_write(handle, &this->num_visible_resource_lists, 4);

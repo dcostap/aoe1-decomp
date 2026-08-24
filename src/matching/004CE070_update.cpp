@@ -178,10 +178,21 @@ public:
     virtual void play_move_sound();
     virtual void draw(void*, short, short, void*, long, long, int, uchar);
 
-    char gap_04[0x10];
+    // BINARY NOTE: tact_cnv.cpp uses the static-master view at +10/+14/+18
+    // while update also reads work_rate at +E4 and weapon_range at +114.
+    char gap_04[0x0C];
+    short id;
+    short copy_id;
     short object_group;                             // +0x14
-    char gap_16[0x10];
+    void* sprite;                                   // +0x18
+    char gap_1C[0x0A];
     short hp;                                        // +0x26
+    char gap_28[0xBC];
+    float work_rate;                                // +0xE4
+    char gap_E8[4];
+    float action_weapon_range;                      // +0xEC
+    char gap_F0[0x24];
+    float weapon_range;                             // +0x114
 };
 
 class RGE_Master_Animated_Object : public RGE_Master_Static_Object {
@@ -341,7 +352,7 @@ public:
     virtual void* create_object_list();
 
     long id;                                        // +0x04
-    RGE_Master_Action_Object* master_obj;           // +0x08
+    RGE_Master_Static_Object* master_obj;            // +0x08
     RGE_Player* owner;                              // +0x0c
     char gap_10[0x20];
     float hp;                                       // +0x30

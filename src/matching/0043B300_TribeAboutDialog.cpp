@@ -5,6 +5,15 @@
 // Probe 1: wrong inheritance — TDialogPanel from TPanel (fields at 0xF4 instead of 0x490)
 //   Also vtable not set (0 instead of 56F610h)
 // Probe 2: fix inheritance chain, proper gap size
+//
+// Exact-finish retrospective:
+// - The first complete dlg_abt.cpp wrapper matched the constructor, action, draw,
+//   and generated deleting destructor, but this destructor differed by 2 bytes.
+// - Binary evidence at lines 164-167 proves cleanup order +0x4C0, then +0x4B4.
+// - Required changes: name the +0x4B4 and +0x4C0 fields correctly and delete
+//   circle_p_pic before background.
+// - The complete wrapper now matches all four normal owners and the generated
+//   deleting destructor. The checker reports MATCH and 0.0000%.
 
 #ifndef DLG_ABT_CANONICAL_TU
 #include "..\..\include\game_globals.h"
@@ -55,10 +64,10 @@ public:
     TPanel* pid_label_text;   // +0x4A8
     TPanel* pid_text;         // +0x4AC
     TPanel* warning_text;     // +0x4B0
-    TPanel* bg_display;       // +0x4B4 (circle_p_pic)
+    TPanel* background;       // +0x4B4
     TPanel* credits_button;   // +0x4B8
     TPanel* close_button;     // +0x4BC
-    TPanel* background;       // +0x4C0
+    TPanel* circle_p_pic;     // +0x4C0
 
     virtual ~TribeAboutDialog();
 };
@@ -77,6 +86,6 @@ TribeAboutDialog::~TribeAboutDialog()
     this->delete_panel((TPanel**)&this->warning_text);
     this->delete_panel((TPanel**)&this->credits_button);
     this->delete_panel((TPanel**)&this->close_button);
-    this->delete_panel((TPanel**)&this->background);
     this->delete_panel((TPanel**)&this->circle_p_pic);
+    this->delete_panel((TPanel**)&this->background);
 }

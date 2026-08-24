@@ -2,6 +2,9 @@
 // Owners follow PDB source-line order. The scalar-deleting destructor is
 // compiler-generated and listed in the proposal, but has no source include.
 // This initial TU pass uses one reviewed context header for all module owners.
+// Candidate audit: all ten PDB owners are included in order. Eight owners and
+// the generated destructor match; fillMissionText and activatePanels remain
+// observed positional drift with matching size, relocations, and boundaries.
 #include "matching/004B3C90_TribeSelectScenarioScreen.cpp"
 #include "matching/004B4120_init_vars.cpp"
 #include "matching/004B4190_TribeSelectScenarioScreen.cpp"

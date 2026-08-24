@@ -1,12 +1,9 @@
 // VA: 004B7F70 fillTribeText (210B)
 // scr_trb.cpp lines 202-233
-// Baseline reconstruction: TribeSelectTribeScreen::tribeText is +0x480;
-// the text setter is the TTextPanel virtual at +0xE8 and scroll is a direct
-// TTextPanel member call.
-// Probe 1: replaced raw vtable/helper calls and the explicit range guard with
-// the natural virtual switch and direct scroll member surface.
-// BLOCKER: the complete TTextPanel inherited virtual surface is not proved in
-// this module pass, so this owner stays observed and does not use slot padding.
+// TribeSelectTribeScreen::tribeText is +0x480. The text setter is the proved
+// TTextPanel virtual at +0xE8. Scroll is a direct TTextPanel member call.
+// The complete inherited surface is in scr_trb_context.h; it uses no slot
+// padding or raw vtable access.
 
 #include "../../include/scr_trb_context.h"
 

@@ -16,6 +16,7 @@
 
 #include <stdlib.h>
 
+#ifndef TVW_MAIN_SHARED_CONTEXT
 class RGE_Master_Static_Object;
 class TRIBE_Master_Building_Object;
 
@@ -76,6 +77,7 @@ public:
         TRIBE_Player* player, TRIBE_Master_Building_Object* master,
         int x1, int y1, int x2, int y2);
 };
+#endif
 
 int TRIBE_Main_View::command_place_multi_object(
     long param_1, long param_2, long param_3, long param_4, int mode) {
@@ -153,6 +155,10 @@ int TRIBE_Main_View::command_place_multi_object(
     }
 
     this->set_selection_area(-1, -1, -1, -1);
+#ifdef TVW_MAIN_SHARED_CONTEXT
+    this->set_redraw(1);
+#else
     this->vf20(1);
+#endif
     return result;
 }

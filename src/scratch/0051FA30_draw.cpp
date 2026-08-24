@@ -1,6 +1,7 @@
 // attempt 1: direct Time_Line_Panel draw path using the panel dump offsets and the known helper sequence
 // target shape: base draw, clear +0x38, gate on +0x20/+0x70/+0x6C, then vcall +0x28, helpers, and vcall +0x2C
 
+#ifndef TPNL_TML_WRAPPER
 struct tagRECT {
     long left;
     long top;
@@ -77,6 +78,7 @@ public:
     void draw_special_events(void);
     void draw_civilization_names(void);
 };
+#endif
 
 void Time_Line_Panel::draw(void) {
     TPanel::draw();

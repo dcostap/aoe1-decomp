@@ -36,8 +36,11 @@
 // - Final clean result: 1620 emitted bytes versus 1565, 0x54 frame, 19 ordered calls, 70.04% shape,
 //   and 1310 strict-drift bytes. Keep the simplest two-counter source until new binary evidence appears.
 
+#ifndef TPNL_TML_WRAPPER
 extern "C" unsigned char (__stdcall* const GetNearestPaletteIndex)(void*, unsigned long);
+#endif
 
+#ifndef TPNL_TML_WRAPPER
 struct RGE_Game_World;
 struct RGE_Base_Game {
     char gap_000[0x3f4];
@@ -151,6 +154,7 @@ public:
                               long Y_line_pos, long segment_length);
     void draw_timeline();
 };
+#endif
 
 void Time_Line_Panel::draw_timeline()
 {

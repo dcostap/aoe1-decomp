@@ -4,26 +4,27 @@
 // - Baseline has exact size/frame and both __ftol calls, but VC5 keeps this in ECX through the guards instead of the original ESI save.
 // - Split versus combined guards and direct versus manager-alias spelling did not change the prologue basin.
 // - Replaced guessed distance constants with the binary-proven DAT_005776D0/DAT_005776D8 double globals; fmul/fsubr sites and several body blocks moved closer.
-// - Named used/list array pointers and register-qualified manager were diagnostic only; both worsened or duplicated codegen, so the clean typed direct-member form is retained.
-// - A top-tested reject-list while loop plus a branch-local cursor recovered the
-//   original single compare/backedge topology, stack homes, and persistent
-//   reject_count register; mutating the incoming reject_list did not.
+// - Named used/list array pointers and manager aliases were diagnostic only;
+//   the clean typed direct-member form is retained.
+// - A top-tested reject-list loop plus a branch-local cursor recovered the
+//   original compare/backedge topology and stack homes; mutating the incoming
+//   reject_list did not.
 // - Explicit typed used/resource-list locals recovered the original list-before-
-//   used load order and improved the localized diff to 321 bytes; a register hint
-//   on the list pointer was unchanged and was removed from the living source.
+//   used load order and improved the localized diff to 321 bytes; an allocation
+//   hint on the list pointer was unchanged and was removed from the source.
 // - Retry session: an explicit manager pointer, same-TU RGE_Static_Object context,
 //   and the canonical RGE_Player owner type were codegen duplicates.
 // - A diagnostic pointer-typed alias for VR_ListUsed preserved the index LEA and
 //   raised shape coverage to 96%, but worsened positional diff by 5 bytes and did
 //   not restore the original early ESI=this save; it was rolled back as opaque.
-// - Member-slot, volatile-manager, function-scope-local, and delayed-count variants
+// - Member-slot, manager-alias, function-scope-local, and delayed-count variants
 //   likewise did not move the receiver-save basin; all were restored.
 // - Direct member indexing worsened the positional diff by 6 bytes and emitted
 //   a shifted count/list block; a named VR_ListUsed element pointer duplicated
 //   that result. Both natural typed probes were restored.
 // - This pass tested the packet's pointer/index reject-loop coloring with the
 //   natural indexed form `reject_list[i]`; it preserved the exact inner loop
-//   register/CFG topology and improved edit similarity, but positional bytes
+//   CFG topology and improved edit similarity, but positional bytes
 //   stayed at 321. It is retained as the cleanest source spelling.
 // - Reusing the incoming type parameter for the distance bound emitted the
 //   same 321-byte code and was rolled back. Three explicit early returns grew
@@ -60,7 +61,7 @@
 //   edit was retained. Fresh grouped view anchors, including 0053DBA0, remain
 //   exact and were not changed by this pass.
 // Left in scratch: remaining drift is the early receiver-save/index LEA basin
-//   and associated register coloring; behavior, size/frame, calls, and inner
+//   and associated allocation; behavior, size/frame, calls, and inner
 //   reject-loop CFG are established. The current source uses the stronger
 //   top-tested scan shape but retains the member-read-order blocker below.
 // BLOCKER: the executable reads VR_ListUsed[type] and rejects a zero count
@@ -71,6 +72,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#if !defined(VIS_UNIT_TU_CONTEXT)
 struct VisibleResourceRec {
     int object_id;
     unsigned char distance;
@@ -94,6 +96,7 @@ public:
 
     VisibleResourceRec* Get_Closest_Resource(int x, int y, int param3, int type, int* reject_list, int reject_count);
 };
+#endif
 
 VisibleResourceRec* Visible_Resource_Manager::Get_Closest_Resource(int x, int y, int param3, int type, int* reject_list, int reject_count) {
     if (type >= 0 && this->num_visible_resource_lists != 0 && type < this->num_visible_resource_lists) {
