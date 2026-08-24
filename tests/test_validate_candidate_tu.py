@@ -12,10 +12,15 @@ TOOLS_DIR = REPO_ROOT / "tools"
 if str(TOOLS_DIR) not in sys.path:
     sys.path.insert(0, str(TOOLS_DIR))
 
-from validate_candidate_tu import _render, load_proposal  # noqa: E402
+from validate_candidate_tu import _newline_style, _render, load_proposal  # noqa: E402
 
 
 class CandidateTranslationUnitTests(unittest.TestCase):
+    def test_newline_style_detects_mixed_files(self) -> None:
+        self.assertEqual(_newline_style(b"one\r\ntwo\r\n"), "CRLF")
+        self.assertEqual(_newline_style(b"one\ntwo\n"), "LF")
+        self.assertEqual(_newline_style(b"one\r\ntwo\n"), "mixed")
+
     def test_load_proposal_normalizes_sections(self) -> None:
         payload = {
             "schema": 1,

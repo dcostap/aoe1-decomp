@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -155,6 +156,47 @@ def _source_includes(wrapper: Path) -> list[tuple[int, Path]]:
     return result
 
 
+def _newline_style(data: bytes) -> str:
+    line_feeds = data.count(b"\n")
+    if line_feeds == 0:
+        return "none"
+    crlf = data.count(b"\r\n")
+    if crlf == line_feeds:
+        return "CRLF"
+    if crlf == 0:
+        return "LF"
+    return "mixed"
+
+
+def _line_ending_warnings(payload: dict[str, object]) -> list[str]:
+    owners = payload["owners"]
+    observed = payload["observed"]
+    assert isinstance(owners, dict)
+    assert isinstance(observed, dict)
+    checks: dict[str, str] = dict(owners)
+    checks.update({va: entry["source"] for va, entry in observed.items()})
+    warnings: list[str] = []
+    for va, source_value in checks.items():
+        source = _resolve(source_value)
+        try:
+            relative = source.resolve().relative_to(REPO_ROOT.resolve())
+        except ValueError:
+            continue
+        completed = subprocess.run(
+            ["git", "show", f"HEAD:{relative.as_posix()}"],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            check=False,
+        )
+        if completed.returncode != 0 or not source.is_file():
+            continue
+        old_style = _newline_style(completed.stdout)
+        new_style = _newline_style(source.read_bytes())
+        if old_style != new_style:
+            warnings.append(f"{va} line endings changed: {old_style} -> {new_style}")
+    return warnings
+
+
 def validate_proposal(payload: dict[str, object]) -> list[str]:
     issues: list[str] = []
     wrapper = _resolve(payload["source"])
@@ -291,6 +333,9 @@ def main() -> int:
         for issue in issues:
             print(f"proposal: {issue}", file=sys.stderr)
         return 2
+    warnings = _line_ending_warnings(payload)
+    for warning in warnings:
+        print(f"warning: {warning}", file=sys.stderr)
 
     name = slugify_name(str(payload["name"]))
     output_dir = args.output_dir or REPO_ROOT / "build" / "candidate_tus" / name
@@ -359,7 +404,10 @@ def main() -> int:
         "generated_total": len(generated),
         "generated_matches": sum(row["kind"] == "generated" and row["result"] == "MATCH" for row in rows),
         "comparison_errors": sum(row["result"] == "ERROR" for row in rows),
+        "compiled_total": len(rows),
+        "compiled_matches": sum(row["result"] == "MATCH" for row in rows),
     }
+    summary["full_module_exact"] = summary["compiled_matches"] == summary["compiled_total"]
     success = (
         summary["exact_matches"] == summary["exact_total"]
         and summary["generated_matches"] == summary["generated_total"]
@@ -373,6 +421,8 @@ def main() -> int:
         "source": payload["source"],
         "flags": payload["flags"],
         "success": success,
+        "proposal_valid": success,
+        "warnings": warnings,
         "summary": summary,
         "rows": rows,
     }
