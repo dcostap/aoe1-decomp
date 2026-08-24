@@ -12,7 +12,7 @@ from typing import Iterator
 from common import CONFIG_DIR, REPO_ROOT, repo_path, translation_unit_for_source
 
 
-CACHE_SCHEMA = 2
+CACHE_SCHEMA = 3
 _INCLUDE_RE = re.compile(r'^\s*#\s*include\s*[<"]([^>"]+)[>"]', re.MULTILINE)
 _SOURCE_SUFFIXES = {".c", ".cc", ".cpp", ".cxx", ".h", ".hh", ".hpp", ".hxx", ".inl"}
 
@@ -140,10 +140,6 @@ def build_input_manifest(source_path: Path, rsp_path: Path, toolchain: dict) -> 
         if resolved not in input_paths:
             input_paths.append(resolved)
     translation_unit = translation_unit_for_source(source_path)
-    if translation_unit is not None:
-        manifest_path = CONFIG_DIR / "translation_units.json"
-        if manifest_path.is_file() and manifest_path.resolve() not in input_paths:
-            input_paths.append(manifest_path.resolve())
     input_paths.sort(key=_display_path)
     inputs = [
         {
@@ -163,6 +159,10 @@ def build_input_manifest(source_path: Path, rsp_path: Path, toolchain: dict) -> 
         },
         "source": _display_path(source_path),
         "response_file": _display_path(rsp_path),
+        # Only this entry can change compilation or grouped extraction for the
+        # source. Unrelated additions to the monolithic TU file must not flush
+        # every cached object in the repository.
+        "translation_unit": translation_unit,
         "inputs": inputs,
     }
     encoded = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")

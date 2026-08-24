@@ -6,6 +6,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT / "tools"))
@@ -48,6 +49,28 @@ class BuildCacheTests(unittest.TestCase):
             header.write_text("#define VALUE 2\n", encoding="utf-8")
             second = build_cache.build_input_manifest(source, rsp, toolchain)
             self.assertNotEqual(first["fingerprint"], second["fingerprint"])
+
+    def test_manifest_hashes_only_the_relevant_translation_unit_entry(self) -> None:
+        with tempfile.TemporaryDirectory(dir=REPO_ROOT / "build") as temp:
+            root = Path(temp)
+            source = root / "unit.cpp"
+            rsp = root / "flags.rsp"
+            source.write_text("int x;\n", encoding="utf-8")
+            rsp.write_text("/O2\n", encoding="utf-8")
+            toolchain = {"compiler": {"cl": str(Path(sys.executable))}}
+            group = {
+                "name": "unit",
+                "source": str(source),
+                "flags": str(rsp),
+                "owners": {"00100000": "src/matching/00100000_x.cpp"},
+            }
+
+            with patch("build_cache.translation_unit_for_source", return_value=group):
+                manifest = build_cache.build_input_manifest(source, rsp, toolchain)
+
+            input_paths = {row["path"] for row in manifest["inputs"]}
+            self.assertNotIn("config/translation_units.json", input_paths)
+            self.assertEqual(group, manifest["translation_unit"])
 
     def test_artifact_lock_serializes_processes(self) -> None:
         context = multiprocessing.get_context("spawn")

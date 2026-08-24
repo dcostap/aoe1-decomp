@@ -138,6 +138,44 @@ Use `wait_mode: "all"` only when the selected agents are the only remaining work
 and no unrelated result can require integration. A cancelled wait leaves agents
 running; do not launch replacements.
 
+## Validation cost and cache behavior
+
+Use the narrowest authoritative validation during active work. Check assigned or
+changed owners first. Run grouped TU validation, the flag audit, and all tests
+before integration.
+
+Do not run `expensive_full_sweep_validation.py` as a routine group completion
+step. It checks every source in one bank. Use it only for an explicit full-bank
+audit.
+
+Full sweeps run up to four independent checks at once by default:
+
+```text
+python tools/expensive_full_sweep_validation.py --matching-only
+```
+
+Use `--jobs 1` for a serial reference run. Use `--jobs N` to select another
+bounded worker count. Parallel execution preserves input result order. It does
+not change byte, boundary, symbol, relocation, or control-target checks.
+
+The compiler cache fingerprint includes:
+
+- the compiler identity;
+- the response file;
+- the source and all resolved textual includes;
+- `config/toolchain.json`; and
+- the applicable translation-unit entry.
+
+The fingerprint does not hash unrelated entries in
+`config/translation_units.json`. Adding one TU must not invalidate every cached
+object. A change to the applicable entry still invalidates its object and
+extraction evidence.
+
+Build locks use the compiler artifact name. Concurrent checks for owners in one
+TU compile that TU once. Waiting checks reuse the completed object. Each
+worktree keeps its own local build cache, so a new isolated worktree starts with
+no reusable local artifacts.
+
 When no blind cohort is due, keep the normal live set small. A blind cohort uses
 four read-only slots. Reserve all four slots before launch.
 
