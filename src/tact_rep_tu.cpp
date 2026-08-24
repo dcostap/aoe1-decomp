@@ -21,8 +21,7 @@
 // by the force-delete use below.  It is not a standalone source owner.
 //
 // Canonical field ownership comes from the RGE_Action and tactical action
-// hierarchy.  The named virtual slots in tact_rep_context.h are the slots
-// reached by these owners; declaration-only slots preserve the inherited ABI.
+// hierarchy.  tact_rep_context.h supplies the inherited ABI declarations.
 // Build with the module's period VC5 flags: /nologo /c /O2 /Oy /GX.
 // Candidate validation records 10 exact owners, 2 observed scratch owners,
 // and 1 compiler-generated owner.  first_in_stack is observed exact.  update
@@ -36,7 +35,7 @@
 #include "matching/004D17B0_TRIBE_Action_Repair.cpp"
 #include "matching/004D1800_setup.cpp"
 #include "matching/004D1850_save.cpp"
-#include "scratch/004D1880_first_in_stack.cpp"
+#include "matching/004D1880_first_in_stack.cpp"
 #include "matching/004D18B0_set_state.cpp"
 #include "scratch/004D1BB0_update.cpp"
 #include "matching/004D1F50_stop.cpp"

@@ -71,7 +71,7 @@ public:
     TribeResourceAIModule(void*, int, int, int, int, int);
     TribeResourceAIModule(int, int);
 
-    int numberResources();
+    int numberResources() const;
     int resource(int) const;
     char* resourceName(int);
     int resourcesAvailable(ResourceItem*);

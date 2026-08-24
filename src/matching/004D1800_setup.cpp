@@ -1,30 +1,4 @@
-#ifndef TACT_REP_CONTEXT_H
-class RGE_Task;
-class RGE_Action_Object;
-class RGE_Action {
-public:
-    virtual void vf00(void);
-    RGE_Action(int file, int flag);
-
-    unsigned short action_type;
-    char gap_06[0x1A];
-
-    virtual int setup(int param_1, RGE_Action_Object* param_2);
-};
-
-class TRIBE_Action_Repair : public RGE_Action {
-public:
-    float target_x;
-    float target_y;
-    float target_z;
-    char gap_2C[0x04];
-    RGE_Task* task;
-    char gap_34[0x0C];
-    unsigned char repair_field_40;
-
-    virtual int setup(int param_1, RGE_Action_Object* param_2);
-};
-#endif
+#include "../../include/tact_rep_context.h"
 
 extern float save_game_version;
 extern void rge_read(int param_1, void* param_2, int param_3);

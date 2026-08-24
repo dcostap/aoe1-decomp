@@ -3,10 +3,9 @@
 
 // Canonical declarations for the tact_rep.cpp source module.
 //
-// The action hierarchy and the virtual slots below follow the reviewed
-// tact_hea/tact_bld surfaces.  The named slots are the slots used by the
-// tact_rep owners.  Other slots are declaration-only padding slots; they do
-// not create function bodies or source owners.
+// The action hierarchy and the virtual methods below follow the reviewed
+// tactical-action surfaces.  These declarations supply the inherited ABI for
+// the tact_rep owners.  They do not create function bodies or source owners.
 
 typedef unsigned char uchar;
 
@@ -17,7 +16,9 @@ class RGE_Action_Object;
 class RGE_Action_Object_Data;
 class RGE_Game_World;
 class RGE_Master_Action_Object;
+class RGE_Master_Static_Object;
 class RGE_Object_List;
+class RGE_Active_Sprite_List;
 class RGE_Player;
 class RGE_Sound;
 class RGE_Sprite;
@@ -61,127 +62,127 @@ public:
 class RGE_Static_Object {
 public:
     virtual ~RGE_Static_Object();                    // +00
-    virtual void vpad04();                           // +04
-    virtual void vpad08();                           // +08
-    virtual void vpad0C();                           // +0C
-    virtual void vpad10();                           // +10
-    virtual void vpad14();                           // +14
-    virtual void vpad18();                           // +18
-    virtual void vpad1C();                           // +1C
-    virtual void vpad20();                           // +20
-    virtual void vpad24();                           // +24
-    virtual void vpad28();                           // +28
-    virtual void vpad2C();                           // +2C
-    virtual void vpad30();                           // +30
-    virtual void vpad34();                           // +34
+    virtual void recycle_in_to_game(void*, RGE_Player*, float, float, float); // +04
+    virtual void recycle_out_of_game();              // +08
+    virtual void draw(void*, short, short, void*);   // +0C
+    virtual void shadow_draw(void*, short, short, uchar); // +10
+    virtual void normal_draw(short, short, short);   // +14
+    virtual void draw_front_frame(short, short, short); // +18
+    virtual void draw_back_frame(short, short, short); // +1C
+    virtual void draw_frame(short, short, short);    // +20
+    virtual uchar update();                           // +24
+    virtual void check_damage_sprites();              // +28
+    virtual void rehook();                            // +2C
+    virtual void save(int);                           // +30
+    virtual float teleport(float, float, float);      // +34
     virtual void new_sprite(RGE_Sprite*);             // +38
-    virtual void vpad3C();                            // +3C
-    virtual void vpad40();                            // +40
-    virtual void vpad44();                            // +44
-    virtual void vpad48();                            // +48
-    virtual void vpad4C();                            // +4C
-    virtual void vpad50();                            // +50
-    virtual void vpad54();                            // +54
-    virtual void vpad58();                            // +58
-    virtual void vpad5C();                            // +5C
-    virtual void vpad60();                            // +60
-    virtual void vpad64();                            // +64
-    virtual void vpad68();                            // +68
-    virtual void vpad6C();                            // +6C
-    virtual void vpad70();                            // +70
-    virtual void vpad74();                            // +74
-    virtual void vpad78();                            // +78
-    virtual void vpad7C();                            // +7C
-    virtual void vpad80();                            // +80
-    virtual void vpad84();                            // +84
+    virtual void add_overlay_sprite(RGE_Sprite*, uchar); // +3C
+    virtual void remove_overlay_sprite(RGE_Sprite*);  // +40
+    virtual void change_ownership(RGE_Player*);       // +44
+    virtual void modify(float, uchar);                // +48
+    virtual void modify_delta(float, uchar);          // +4C
+    virtual void modify_percent(float, uchar);        // +50
+    virtual void transform(RGE_Master_Action_Object*); // +54
+    virtual void copy_obj(RGE_Master_Action_Object*); // +58
+    virtual void set_object_state(uchar);             // +5C
+    virtual void remove_visible_resource();           // +60
+    virtual void create_doppleganger_when_dying();    // +64
+    virtual void destroy_obj();                       // +68
+    virtual void die_die_die();                       // +6C
+    virtual void damage(int, void*, float, RGE_Player*, RGE_Static_Object*); // +70
+    virtual float calculateDamage(int, void*, float, RGE_Player*, RGE_Static_Object*); // +74
+    virtual void rotate(long);                        // +78
+    virtual uchar can_attack();                       // +7C
+    virtual void set_attribute(short, float);         // +80
+    virtual void set_attribute_amount(float, uchar, uchar); // +84
     virtual uchar heal(float);                        // +88
     virtual int heal(int, int);                       // +8C
-    virtual void vpad90();                            // +90
-    virtual void vpad94();                            // +94
-    virtual void vpad98();                            // +98
-    virtual void vpad9C();                            // +9C
-    virtual void vpadA0();                            // +A0
-    virtual void vpadA4();                            // +A4
-    virtual void vpadA8();                            // +A8
-    virtual void vpadAC();                            // +AC
-    virtual void vpadB0();                            // +B0
-    virtual void vpadB4();                            // +B4
-    virtual void vpadB8();                            // +B8
-    virtual void vpadBC();                            // +BC
-    virtual void vpadC0();                            // +C0
-    virtual void vpadC4();                            // +C4
-    virtual void vpadC8();                            // +C8
+    virtual int canRepair();                          // +90
+    virtual void notify_of_relation(long, uchar);     // +94
+    virtual void do_command(RGE_Static_Object*, float, float, float); // +98
+    virtual void move_to(RGE_Static_Object*, float, float, float); // +9C
+    virtual void work(RGE_Static_Object*, float, float, float); // +A0
+    virtual void stop();                              // +A4
+    virtual void set_attack(RGE_Static_Object*);      // +A8
+    virtual void play_command_sound();                // +AC
+    virtual void play_move_sound();                   // +B0
+    virtual void new_angle(float);                    // +B4
+    virtual RGE_Static_Object* spawn_death_obj();     // +B8
+    virtual RGE_Master_Action_Object* get_command_master(RGE_Static_Object*, float, float, float); // +BC
+    virtual void set_being_worked_on(RGE_Action_Object*, short, uchar); // +C0
+    virtual void release_being_worked_on(RGE_Static_Object*); // +C4
+    virtual uchar is_moving();                        // +C8
     virtual RGE_Static_Object* get_target_obj();      // +CC
-    virtual void vpadD0();                            // +D0
-    virtual void vpadD4();                            // +D4
-    virtual void vpadD8();                            // +D8
-    virtual void vpadDC();                            // +DC
-    virtual void vpadE0();                            // +E0
-    virtual void vpadE4();                            // +E4
-    virtual void vpadE8();                            // +E8
-    virtual void vpadEC();                            // +EC
-    virtual void vpadF0();                            // +F0
-    virtual void vpadF4();                            // +F4
-    virtual void vpadF8();                            // +F8
-    virtual void vpadFC();                            // +FC
-    virtual void vpad100();                           // +100
-    virtual void vpad104();                           // +104
-    virtual void vpad108();                           // +108
-    virtual void vpad10C();                           // +10C
-    virtual void vpad110();                           // +110
-    virtual void vpad114();                           // +114
-    virtual void vpad118();                           // +118
-    virtual void vpad11C();                           // +11C
-    virtual void vpad120();                           // +120
-    virtual void vpad124();                           // +124
-    virtual void vpad128();                           // +128
-    virtual void vpad12C();                           // +12C
-    virtual void vpad130();                           // +130
+    virtual void enter_obj(RGE_Static_Object*);        // +D0
+    virtual void exit_obj();                           // +D4
+    virtual int explore_terrain(RGE_Player*, uchar, int); // +D8
+    virtual void unexplore_terrain(RGE_Player*, uchar, int); // +DC
+    virtual void* get_los_table();                     // +E0
+    virtual int inAttackRange(RGE_Static_Object*);     // +E4
+    virtual uchar underAttack();                       // +E8
+    virtual void setUnderAttack(uchar);                // +EC
+    virtual float calc_attack_modifier(RGE_Static_Object*); // +F0
+    virtual float getSpeed();                          // +F4
+    virtual float getAngle();                          // +F8
+    virtual float maximumSpeed();                      // +FC
+    virtual float rateOfFire();                        // +100
+    virtual float damageCapability(RGE_Static_Object*); // +104
+    virtual float damageCapability();                  // +108
+    virtual float weaponRange();                       // +10C
+    virtual float minimumWeaponRange();                // +110
+    virtual int passableTile(float, float, int);       // +114
+    virtual uchar facetToNextWaypoint();               // +118
+    virtual int currentTargetID();                     // +11C
+    virtual float currentTargetX();                    // +120
+    virtual float currentTargetY();                    // +124
+    virtual float currentTargetZ();                    // +128
+    virtual void setWaitingToMove(uchar);              // +12C
+    virtual uchar waitingToMove();                     // +130
     virtual uchar actionState();                      // +134
-    virtual void vpad138();                           // +138
-    virtual void vpad13C();                           // +13C
-    virtual void vpad140();                           // +140
-    virtual void vpad144();                           // +144
+    virtual uchar keepGatheringWhenObjectIsOut(int);   // +138
+    virtual uchar produceWhenKilledBy(int);            // +13C
+    virtual uchar useSameZoneDropsite();              // +140
+    virtual void logDebug(const char*, ...);           // +144
     virtual void notify(int, int, int, long, long, long); // +148
-    virtual void vpad14C();                           // +14C
-    virtual void vpad150();                           // +150
+    virtual int attack(float, float, float, int);      // +14C
+    virtual int attack(int, int);                      // +150
     virtual int moveTo(float, float, float, float, int);  // +154
-    virtual void vpad158();                           // +158
-    virtual void vpad15C();                           // +15C
-    virtual void vpad160();                           // +160
-    virtual void vpad164();                           // +164
-    virtual void vpad168();                           // +168
-    virtual void vpad16C();                           // +16C
-    virtual void vpad170();                           // +170
-    virtual void vpad174();                           // +174
-    virtual void vpad178();                           // +178
-    virtual void vpad17C();                           // +17C
-    virtual void vpad180();                           // +180
-    virtual void vpad184();                           // +184
-    virtual void vpad188();                           // +188
-    virtual void vpad18C();                           // +18C
-    virtual void vpad190();                           // +190
-    virtual void vpad194();                           // +194
-    virtual void vpad198();                           // +198
-    virtual void vpad19C();                           // +19C
-    virtual void vpad1A0();                           // +1A0
-    virtual void vpad1A4();                           // +1A4
-    virtual void vpad1A8();                           // +1A8
-    virtual void vpad1AC();                           // +1AC
-    virtual void vpad1B0();                           // +1B0
+    virtual void moveTo_int_float_int();               // +158
+    virtual void moveTo_int_int();                     // +15C
+    virtual void moveAwayFrom();                       // +160
+    virtual void hunt();                                // +164
+    virtual void gather();                              // +168
+    virtual void convert();                             // +16C
+    virtual void repair();                              // +170
+    virtual void build();                               // +174
+    virtual void trade();                               // +178
+    virtual void explore();                             // +17C
+    virtual void enter();                               // +180
+    virtual void unload();                              // +184
+    virtual void transport();                          // +188
+    virtual void stopAction();                         // +18C
+    virtual void pause();                              // +190
+    virtual void canPath();                            // +194
+    virtual void canPath_extended();                   // +198
+    virtual void canBidirectionPath();                 // +19C
+    virtual void canPathWithObstructions();            // +1A0
+    virtual void canPathWithAdditionalPassability();   // +1A4
+    virtual void findFirstTerrainAlongExceptionPath(); // +1A8
+    virtual void canLinePath();                        // +1AC
+    virtual void canLinePath_extended();               // +1B0
     virtual int firstTileAlongLine(XYPoint*, XYPoint*, XYPoint*, int, int, int); // +1B4
-    virtual void vpad1B8();                           // +1B8
-    virtual void vpad1BC();                           // +1BC
-    virtual void vpad1C0();                           // +1C0
-    virtual void vpad1C4();                           // +1C4
-    virtual void vpad1C8();                           // +1C8
-    virtual void vpad1CC();                           // +1CC
-    virtual void vpad1D0();                           // +1D0
-    virtual void vpad1D4();                           // +1D4
-    virtual void vpad1D8();                           // +1D8
-    virtual void vpad1DC();                           // +1DC
-    virtual void vpad1E0();                           // +1E0
-    virtual void vpad1E4();                           // +1E4
+    virtual void userDefinedWaypoint();               // +1B8
+    virtual void addUserDefinedWaypoint();             // +1BC
+    virtual void removeAllUserDefinedWaypoints();      // +1C0
+    virtual void removeUserDefinedWaypoint();          // +1C4
+    virtual void numberUserDefinedWaypoints();         // +1C8
+    virtual void findAvoidancePath();                  // +1CC
+    virtual void get_action_checksum();                // +1D0
+    virtual void get_waypoint_checksum();              // +1D4
+    virtual void setup_world();                        // +1D8
+    virtual void setup_static_object();                // +1DC
+    virtual void create_object_list_tail();            // +1E0
+    virtual void create_sprite_list_tail();            // +1E4
 
     long id;                                           // +04
     union {
@@ -225,12 +226,12 @@ public:
 class RGE_Player {
 public:
     virtual ~RGE_Player();
-    virtual void vpad04();
-    virtual void vpad08();
-    virtual void vpad0C();
-    virtual void vpad10();
-    virtual void vpad14();
-    virtual void vpad18();
+    virtual void set_game_status(uchar);
+    virtual void do_resign(int);
+    virtual void changeToHumanPlayer();
+    virtual void changeToComputerPlayer();
+    virtual char* aiStatus(int);
+    virtual int isEnemy(int);
     virtual int isAlly(int);                             // +1C
 
     char gap_04[0x24];
@@ -258,9 +259,9 @@ public:
 
 class RGE_Action_List {
 public:
-    virtual void vpad00();
-    virtual void vpad04();
-    virtual void vpad08();
+    virtual RGE_Action* create_action(int, short);
+    virtual RGE_Action* create_task_action(RGE_Task*, RGE_Static_Object*, float, float, float);
+    virtual uchar inside_obj_update();
     virtual uchar update();                              // +0C
     void delete_list();
     void add_action(RGE_Action*);
@@ -347,28 +348,28 @@ public:
 
 class RGE_Object_List {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Object_List();
     RGE_Object_Node* list;
 };
 
 class RGE_Base_Game {
 public:
     virtual ~RGE_Base_Game();
-    virtual void vpad04();
-    virtual void vpad08();
-    virtual void vpad0C();
-    virtual void vpad10();
-    virtual void vpad14();
-    virtual void vpad18();
-    virtual void vpad1C();
-    virtual void vpad20();
-    virtual void vpad24();
-    virtual void vpad28();
-    virtual void vpad2C();
-    virtual void vpad30();
-    virtual void vpad34();
-    virtual void vpad38();
-    virtual void vpad3C();
+    virtual int run();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual void set_prog_mode(int);
+    virtual void set_game_mode(int, int);
+    virtual void set_player(short);
+    virtual int get_error_code();
+    virtual char* get_string(int, long, char*, int);
+    virtual char* get_string(long, char*, int);
+    virtual char* get_string(long);
+    virtual char* get_string2(int, long, long, char*, int);
+    virtual void* get_view_panel();
+    virtual void* get_map_panel();
+    virtual void* new_scenario_header(void*);
+    virtual void* new_scenario_header(int);
+    virtual void* new_scenario_info(int);
     virtual void notification(int, long, long, long, long); // +40
 };
 

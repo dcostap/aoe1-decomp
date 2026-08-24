@@ -6,5 +6,4 @@ TribeResourceAIModule::TribeResourceAIModule(void* param_1, int param_2, int par
     : AIModule((void*)s_Resource_AI, 0x3EF, param_2, param_1) {
     md = 0;
     numberResourcesValue = param_3;
-    *(void**)this = (void*)0x00575638;
 }

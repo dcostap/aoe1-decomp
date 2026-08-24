@@ -14,7 +14,7 @@
 #include "matching/004E6BA0_TribeResourceAIModule.cpp"
 
 // tairesmd.cpp:45
-#include "scratch/004E6C20_TribeResourceAIModule.cpp"
+#include "matching/004E6C20_TribeResourceAIModule.cpp"
 
 // tairesmd.cpp:51-53
 #include "matching/004E6C30_setMainDecisionAI.cpp"

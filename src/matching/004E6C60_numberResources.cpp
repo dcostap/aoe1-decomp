@@ -1,3 +1,3 @@
 #include "../../include/tairesmd_context.h"
 
-int TribeResourceAIModule::numberResources() { return this->numberResourcesValue; }
+int TribeResourceAIModule::numberResources() const { return this->numberResourcesValue; }
