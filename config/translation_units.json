@@ -5216,7 +5216,7 @@
     {
       "name": "gameinfo",
       "source": "src/gameinfo_tu.cpp",
-      "flags": "config/flags/0044CC40_RGE_Person_Info.rsp",
+      "flags": "config/flags/gameinfo.rsp",
       "owners": {
         "0044C5A0": "src/matching/0044C5A0_RGE_Campaign_Info.cpp",
         "0044C780": "src/matching/0044C780_RGE_Campaign_Info.cpp",
