@@ -1,3 +1,4 @@
+#ifndef AOE1_CHAT_CONTEXT_H
 class SoundDriver;
 class TDigital;
 
@@ -34,6 +35,7 @@ public:
     TChat(void* host_wnd);
     void setInChatGroup(int player, int enabled);
 };
+#endif
 
 TChat::TChat(void* host_wnd) {
     int i;
