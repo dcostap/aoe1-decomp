@@ -1,9 +1,13 @@
 from __future__ import annotations
 
 import argparse
+import os
 import subprocess
 import sys
+import threading
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
+from typing import Callable, Sequence
 
 from common import (
     REPO_ROOT,
@@ -35,6 +39,13 @@ def parse_args() -> argparse.Namespace:
         "--verified-logic",
         action="store_true",
         help="Validate verified-logic bank under src\\verified_logic\\; mismatches are expected and reported.",
+    )
+    parser.add_argument(
+        "--jobs",
+        type=int,
+        default=min(4, os.cpu_count() or 1),
+        metavar="N",
+        help="Run N independent checks in parallel (default: up to 4).",
     )
     return parser.parse_args()
 
@@ -81,8 +92,43 @@ def run_check(va: str) -> subprocess.CompletedProcess[str]:
     return subprocess.run(command, capture_output=True, text=True)
 
 
+def run_checks(
+    vas: Sequence[str],
+    jobs: int,
+    *,
+    checker: Callable[[str], subprocess.CompletedProcess[str]] | None = None,
+    progress: Callable[[int, int], None] | None = None,
+) -> list[subprocess.CompletedProcess[str]]:
+    """Run independent checks concurrently and preserve input result order."""
+    if jobs < 1:
+        raise ValueError("jobs must be at least 1")
+    check = checker or run_check
+    total = len(vas)
+    if total == 0:
+        return []
+
+    completed = 0
+    progress_lock = threading.Lock()
+
+    def run_one(va: str) -> subprocess.CompletedProcess[str]:
+        nonlocal completed
+        result = check(va)
+        if progress is not None:
+            with progress_lock:
+                completed += 1
+                progress(completed, total)
+        return result
+
+    if jobs == 1:
+        return [run_one(va) for va in vas]
+    with ThreadPoolExecutor(max_workers=jobs) as executor:
+        return list(executor.map(run_one, vas))
+
+
 def main() -> None:
     args = parse_args()
+    if args.jobs < 1:
+        raise SystemExit("--jobs must be at least 1")
     if args.matching_only:
         bank = "matching"
         mode_label = "matching-only"
@@ -117,21 +163,14 @@ def main() -> None:
         lines.append(f"Non-canonical source files not scanned: {len(orphan_sources)}")
         lines.extend(f"ORPHAN  {path.relative_to(REPO_ROOT)}" for path in orphan_sources)
         lines.append("")
-    passed = 0
-    failed = 0
-    missing_inventory = 0
-    skipped_non_normal = 0
-
+    planned_rows: list[tuple[Path, dict[str, str] | None, str, str]] = []
+    check_vas: list[str] = []
     for source in sources:
         slug = source.stem
         source_key = slug.upper()
         record = slug_map.get(source_key)
         if record is None:
-            missing_inventory += 1
-            failed += 1
-            message = f"FAIL  <unknown-va>  {slug}  missing inventory record"
-            print(message)
-            lines.append(message)
+            planned_rows.append((source, None, "missing", ""))
             continue
 
         corpus_bucket, corpus_reason = classify_corpus_bucket(
@@ -143,15 +182,42 @@ def main() -> None:
             padding_only_functions=padding_only_functions,
         )
         if corpus_bucket != "normal":
+            planned_rows.append((source, record, "skip", f"{corpus_bucket}\t{corpus_reason}"))
+            continue
+        planned_rows.append((source, record, "check", ""))
+        check_vas.append(record["va"])
+
+    def report_progress(completed: int, total: int) -> None:
+        if completed == total or completed % 25 == 0:
+            print(f"Checks complete: {completed}/{total}", flush=True)
+
+    results = iter(run_checks(check_vas, args.jobs, progress=report_progress))
+    passed = 0
+    failed = 0
+    missing_inventory = 0
+    skipped_non_normal = 0
+
+    for source, record, action, detail in planned_rows:
+        slug = source.stem
+        if action == "missing":
+            missing_inventory += 1
+            failed += 1
+            message = f"FAIL  <unknown-va>  {slug}  missing inventory record"
+            print(message)
+            lines.append(message)
+            continue
+        assert record is not None
+        va = record["va"]
+        if action == "skip":
             skipped_non_normal += 1
+            corpus_bucket, corpus_reason = detail.split("\t", 1)
             extra = f" ({corpus_reason})" if corpus_reason else ""
-            message = f"SKIP  {record['va']}  {slug}  non-normal corpus bucket={corpus_bucket}{extra}"
+            message = f"SKIP  {va}  {slug}  non-normal corpus bucket={corpus_bucket}{extra}"
             print(message)
             lines.append(message)
             continue
 
-        va = record["va"]
-        result = run_check(va)
+        result = next(results)
         if result.returncode == 0:
             if nonexact_bank:
                 failed += 1
