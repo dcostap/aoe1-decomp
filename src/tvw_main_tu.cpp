@@ -143,7 +143,8 @@ public:
 
 class RGE_Game_World {
 public:
-    void* vtable_ptr;
+    // BINARY NOTE: The PDB type is polymorphic and world_time is at +4.
+    virtual ~RGE_Game_World();
     int world_time;
 };
 
@@ -332,7 +333,8 @@ public:
     long id;
     RGE_Master_Static_Object* master_obj;
     RGE_Player* owner;
-    unsigned char gap_10[0x3C];
+    // BINARY NOTE: object_state is at +0x48 after the owner at +0x0C.
+    unsigned char gap_10[0x38];
     uchar object_state;
 };
 
@@ -366,7 +368,7 @@ public:
     void display_object_selection(int, int, int, int);
     int get_tile_screen_coords(short col, short row, short* out_x,
                                short* out_y, int adjust);
-    int Object_Was_Displayed(int id, bool allow_flagged);
+    bool Object_Was_Displayed(int id, bool allow_flagged);
 };
 
 class RGE_Main_View : public RGE_View {
@@ -413,5 +415,5 @@ public:
 #include "accepted_drift/0052D970_mouse_right_up_action.cpp"
 #include "matching/0052DCE0_pick_through_fog.cpp"
 #include "matching/0052DD10_pick_weight.cpp"
-#include "scratch/0052DE20_command_make_do.cpp"
+#include "matching/0052DE20_command_make_do.cpp"
 #include "matching/0052DE40_mouse_left_dbl_click_action.cpp"

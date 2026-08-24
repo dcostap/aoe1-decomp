@@ -96,14 +96,14 @@ struct RGE_Pick_Info {
 
 class RGE_Player {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Player();
     char gap_04[0x20];
     RGE_Master_Static_Object** master_objects;
 };
 
 class RGE_Base_Game {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Base_Game();
     char gap_04[0x1AC];
     int prog_mode;
     int game_mode;

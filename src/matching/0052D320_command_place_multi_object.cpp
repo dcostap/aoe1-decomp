@@ -50,17 +50,23 @@ public:
 extern int allow_user_commands;
 extern RGE_Base_Game* rge_base_game;
 
+class TDrawArea;
+class TPanel;
+struct tagRECT;
+
 class RGE_Main_View {
 public:
-    virtual void vf00(void);
-    virtual void vf04(void);
-    virtual void vf08(void);
-    virtual void vf0C(void);
-    virtual void vf10(void);
-    virtual void vf14(void);
-    virtual void vf18(void);
-    virtual void vf1C(void);
-    virtual void vf20(int mode);
+    virtual ~RGE_Main_View();
+    virtual long setup(TDrawArea*, TPanel*, long, long, long, long,
+                       unsigned char);
+    virtual void set_rect(tagRECT);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_color(unsigned char);
+    virtual void set_active(int);
+    virtual void set_positioning(int, long, long, long, long, long, long,
+                                 long, long, TPanel*, TPanel*, TPanel*, TPanel*);
+    virtual void set_fixed_position(long, long, long, long);
+    virtual void set_redraw(int mode);
 
     char gap_04[0xFC];
     RGE_Player* player;
@@ -155,10 +161,6 @@ int TRIBE_Main_View::command_place_multi_object(
     }
 
     this->set_selection_area(-1, -1, -1, -1);
-#ifdef TVW_MAIN_SHARED_CONTEXT
     this->set_redraw(1);
-#else
-    this->vf20(1);
-#endif
     return result;
 }
