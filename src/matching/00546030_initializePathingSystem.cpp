@@ -1,4 +1,3 @@
-#ifndef WORLD_TU
 class RGE_Map {
 public:
     char gap_00[0x8];
@@ -23,7 +22,6 @@ public:
 
     int initializePathingSystem(void);
 };
-#endif
 
 int RGE_Game_World::initializePathingSystem(void) {
     RGE_Map* pRVar1 = this->map;

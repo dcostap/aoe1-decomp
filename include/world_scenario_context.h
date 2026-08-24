@@ -9,7 +9,6 @@ class RGE_Game_World;
 class RGE_Player;
 struct RGE_Player_Info;
 class RGE_Static_Object;
-class RGE_Object_Owner_Info;
 class RGE_Sprite;
 class RGE_Sound;
 class TSound_Driver;
@@ -35,25 +34,6 @@ class RGE_Tile;
 class TMousePointer;
 class RGE_Game_Info;
 class RGE_Command_Give_Attribute;
-class TDrawArea;
-struct tagRECT;
-typedef int PositionMode;
-typedef int RedrawMode;
-
-class TPanel {
-public:
-    virtual ~TPanel();
-    virtual long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char);
-    virtual void set_rect(tagRECT);
-    virtual void set_rect(long, long, long, long);
-    virtual void set_color(unsigned char);
-    virtual void set_active(int);
-    virtual void set_positioning(PositionMode, long, long, long, long,
-                                 long, long, long, long, TPanel*, TPanel*,
-                                 TPanel*, TPanel*);
-    virtual void set_fixed_position(long, long, long, long);
-    virtual void set_redraw(RedrawMode);
-};
 
 class TCommunications_Handler {
 public:
@@ -154,12 +134,7 @@ public:
     virtual void map_generate(RGE_Player*, RGE_Game_World*, RGE_Player_Info*, unsigned char*);
     virtual void map_generate2(RGE_Game_World*, long, long, unsigned char, long);
     virtual void save(int);
-    char gap_04[4];
-    int map_width;
-    int map_height;
-    char gap_10[0x8D7C];
-    char** row_data;
-    char gap_8D90[0x38];
+    char gap_04[0x8DC4];
     RGE_Unified_Visible_Map* unified_vis_map;
     unsigned char gap_8DCC[4];
     RGE_Map(int, RGE_Sound**, int);
@@ -186,10 +161,7 @@ struct RGE_Player_Info {
     unsigned char gap_25B;
     short color[9];
     unsigned char gap_26E[2];
-    union {
-        long player_id_hash[9];
-        long player_id[9];
-    };
+    long player_id_hash[9];
     union {
         short player_num;
         short player_num_minus1;
@@ -214,14 +186,6 @@ public:
     unsigned char master_type;
     char gap_05[0x0B];
     short id;
-    char gap_12[2];
-    short object_group;
-};
-
-class RGE_Object_Owner_Info {
-public:
-    char gap_00[0x4A];
-    short id;
 };
 
 class RGE_Static_Object {
@@ -229,8 +193,7 @@ public:
     virtual ~RGE_Static_Object();
     long id;
     RGE_Master_Static_Object* master_obj;
-    RGE_Object_Owner_Info* owner_info;
-    char gap_10[0x25];
+    char gap_0C[0x29];
     unsigned char facet;
     char gap_36[2];
     float world_x;
@@ -240,17 +203,12 @@ public:
     unsigned char object_state;
     char gap_49[0x53];
     float angle;
-    void change_unique_id();
 };
 
 class RGE_Object_Node {
 public:
-    union {
-        RGE_Static_Object* object;
-        RGE_Static_Object* node;
-    };
+    RGE_Static_Object* object;
     RGE_Object_Node* next;
-    RGE_Object_Node* prev;
 };
 
 class RGE_Object_List {
@@ -260,19 +218,11 @@ public:
         int count;
         RGE_Object_Node* list;
     };
-    union {
-        void* nodes;
-        struct {
-            short number_of_objects;
-            short number_of_objects_pad;
-        };
-    };
+    void* nodes;
     RGE_Object_List();
     ~RGE_Object_List();
     void removeAllObjects();
     void update();
-    void add_node(void*);
-    void remove_node(RGE_Static_Object*, RGE_Object_Node*);
 };
 
 class RGE_Tile_List {
@@ -373,25 +323,12 @@ public:
     RGE_Object_List* doppleganger_objects;
     char gap_34[0x0C];
     RGE_Doppleganger_Creator* doppleganger_creator;
-    char gap_44[4];
-    unsigned char type;
-    char gap_49[0x0F];
+    char gap_44[0x14];
     RGE_Tile_List tile_list;
     char gap_6C[0x14];
     unsigned char game_status;
-    unsigned char gap_81[3];
-    unsigned char* relations;
-    int unit_diplomacy[9];
-    int mutualAlly[9];
-    int mutualExploredMask;
-    int mutualVisibleMask;
-    int nonMutualVisibleMask;
-    int removeVisibleBits[9];
-    int allied_LOS_Enable;
-    union {
-        unsigned char allied_victory;
-        unsigned char civ;
-    };
+    char gap_81[0x83];
+    unsigned char allied_victory;
     char gap_105[0x11B];
 };
 
@@ -430,8 +367,6 @@ public:
     virtual char* get_string(int, long, char*, int);
     virtual char* get_string(long, char*, int);
     virtual char* get_string(long);
-    virtual TPanel* get_view_panel();
-    virtual TPanel* get_map_panel();
     RGE_Game_Info* player_game_info;
     char gap_08[0x04];
     RGE_Prog_Info* save_prog_info;
@@ -541,23 +476,6 @@ public:
     void set_map_fog(unsigned char);
     void set_game_speed(int);
     void update_mutual_allies();
-    void selectNextComputerPlayer(int);
-    void useComputerPlayerUpdateTime(unsigned long);
-    int computerPlayerUpdateTimeAvailable();
-    int objectGroupOnTile(int, int, int, int, int&);
-    int difficultyLevel();
-    int maxNumberObjects();
-    int maxNumberNegativeObjects();
-    int numberObjects();
-    int numberNegativeObjects();
-    RGE_Static_Object* object(int);
-    RGE_Static_Object* object_ptr(int);
-    long get_next_object_id();
-    long get_next_reusable_object_id();
-    int addObject(RGE_Static_Object*);
-    int removeObject(int);
-    unsigned char recycle_object_out_of_game(unsigned char, void*);
-    RGE_Static_Object* recycle_object_in_to_game(unsigned char);
 
     unsigned long world_time;
     unsigned long old_world_time;
@@ -659,7 +577,6 @@ public:
 
 class PathingSystem {
 public:
-    int initialize(int, int, RGE_Map*, RGE_Game_World*);
     void zeroObstructionMap();
 };
 

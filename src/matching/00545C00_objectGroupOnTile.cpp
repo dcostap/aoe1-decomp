@@ -8,7 +8,6 @@
 // time field; do not merge that anchor or assign this body to another class.
 // Direct map reads, output publication, and failure order remain explicit.
 
-#ifndef WORLD_TU
 struct RGE_Object_Node {
     void* object;            // +0x00
     RGE_Object_Node* next;   // +0x04
@@ -45,7 +44,6 @@ struct RGE_Game_World {
 
     int objectGroupOnTile(int owner_id, int object_group, int tile_x, int tile_y, int& output);
 };
-#endif
 
 int RGE_Game_World::objectGroupOnTile(int owner_id, int object_group, int tile_x, int tile_y, int& output)
 {

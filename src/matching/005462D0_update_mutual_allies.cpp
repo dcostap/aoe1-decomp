@@ -74,7 +74,6 @@ static const char s_decimal[] = "%d";
 static const char s_separator[] = ", ";
 static const char s_list_end[] = "]\n";
 
-#ifndef WORLD_TU
 struct tagRECT;
 class TDrawArea;
 typedef int PositionMode;
@@ -127,7 +126,6 @@ public:
     char gap0[4]; int world_time; char gap08[0x3c-0x08]; short player_num; Player** players;
     void update_mutual_allies();
 };
-#endif
 
 void RGE_Game_World::update_mutual_allies() {
     int one = 1;

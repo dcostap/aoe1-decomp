@@ -8,7 +8,6 @@
 // shared handler basin (224 bytes).  The binary's first six cases return from
 // their own bodies; only the final case falls through to the common return.
 
-#ifndef WORLD_TU
 struct RGE_Static_Object;
 
 struct RGE_Object_Node {
@@ -39,7 +38,6 @@ public:
 
     RGE_Static_Object* recycle_object_in_to_game(unsigned char param_1);
 };
-#endif
 
 RGE_Static_Object* RGE_Game_World::recycle_object_in_to_game(unsigned char param_1) {
     RGE_Static_Object* result = 0;

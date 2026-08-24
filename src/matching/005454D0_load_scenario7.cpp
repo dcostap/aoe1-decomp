@@ -41,7 +41,6 @@
 
 extern "C" int world_update_counter;
 
-#ifndef WORLD_TU
 typedef unsigned char uchar;
 
 extern "C" void __cdecl rge_read_uncompressed(int, void*, int);
@@ -176,7 +175,6 @@ public:
 
     void load_scenario7(int, RGE_Player_Info&);
 };
-#endif
 
 void RGE_Game_World::load_scenario7(int file, RGE_Player_Info& info)
 {

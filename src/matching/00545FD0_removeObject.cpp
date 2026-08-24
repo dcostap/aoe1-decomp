@@ -1,4 +1,3 @@
-#ifndef WORLD_TU
 class RGE_Static_Object;
 
 class RGE_Game_World {
@@ -14,7 +13,6 @@ public:
 
     int removeObject(int);
 };
-#endif
 
 int RGE_Game_World::removeObject(int param_1) {
     int edx = param_1;

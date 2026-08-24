@@ -11,7 +11,6 @@
 // Exact-finish: the direct member bound expression is required; a named bound
 // local emits the same behavior but not the original bytes.
 
-#ifndef WORLD_TU
 class RGE_Static_Object;
 
 class RGE_Game_World {
@@ -28,7 +27,6 @@ public:
 
     long get_next_object_id();
 };
-#endif
 
 long RGE_Game_World::get_next_object_id() {
     if (!this->scenario_object_flag) {

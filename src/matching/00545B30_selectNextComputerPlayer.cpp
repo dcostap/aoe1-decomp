@@ -34,7 +34,6 @@
 // Retry 2026-05-24 Boss pass: MATCH. Key final probe used a normal for-loop in the first-pass scan and explicitly named the loaded player pointer and widened type local inside the loop (`RGE_Player* p = *ptr; int t = p->type;`). That made VC5 keep the clean `jl` backedge, place `mov ecx,[edx]` before `xor ebx,ebx`, and also stopped hoisting `player_num` before the current-player compare while preserving the matched second-loop direct reload of currentUpdateComputerPlayer.
 // Exact-finish walkback: removing those first-pass aliases preserved the same bytes.
 
-#ifndef WORLD_TU
 class RGE_Player;
 
 class RGE_Game_World {
@@ -54,7 +53,6 @@ public:
     char gap_00[0x48];
     unsigned char type;              // +0x48
 };
-#endif
 
 void RGE_Game_World::selectNextComputerPlayer(int param_1) {
     int current = this->currentUpdateComputerPlayer;
