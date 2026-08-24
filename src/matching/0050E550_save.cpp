@@ -42,7 +42,11 @@ void TRIBE_Master_Building_Object::save(int param_1) {
     short sprite_id;
     short sound_id;
     
+#ifdef TM_B_OBJ_SHARED_CONTEXT
+    this->TRIBE_Master_Combat_Object::save(param_1);
+#else
     ((TRIBE_Master_Combat_Object_Base*)this)->save(param_1);
+#endif
     
     if (this->construction_sprite != 0) {
         sprite_id = this->construction_sprite->id;

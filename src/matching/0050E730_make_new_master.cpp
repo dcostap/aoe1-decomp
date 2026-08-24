@@ -6,7 +6,7 @@
 #ifndef TM_B_OBJ_SHARED_CONTEXT
 class RGE_Master_Static_Object {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Master_Static_Object();
     char pad_04[0xB8 - 0x4];
 };
 
