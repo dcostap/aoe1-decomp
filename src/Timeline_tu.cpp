@@ -4,7 +4,14 @@
 // Source line bands are 25-74, 79-85, 90-103, 108-148, 155-221,
 // 227-320, 326-335, 340-378, 383-399, 404-431, 436-454, 459-494,
 // and 499-530.  0050D790 is the compiler-generated vector deleting
-// destructor and has no ordinary source owner.
+// destructor and has no ordinary source owner.  Its decorated symbol is
+// ??_GRGE_Timeline@@UAEPAXI@Z.
+//
+// Grouped exact owners under this context: 0050D7B0, 0050D830, 0050D9A0,
+// 0050DD30, 0050DE00, 0050DEF0, and 0050DF40.  0050DB10 and 0050DE50 stay
+// observed because their canonical make_new_obj declarations recolor local
+// register allocation in the grouped build.  The four accepted-drift owners
+// remain observed.
 //
 // Build with config/flags/default.rsp: /nologo /c /O2 /Oy.
 

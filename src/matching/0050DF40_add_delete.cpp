@@ -1,7 +1,6 @@
 // VA: 0050DF40 RGE_Timeline::add_delete (144 B)
 // Timeline.cpp lines 459-494.
-// The final call is a slot-zero, one-argument object operation.  The narrow
-// Delete_View declaration preserves that observed caller ABI.
+// The final operation is the ordinary virtual deleting-destructor call.
 
 #include "../../include/Timeline_context.h"
 
@@ -31,7 +30,7 @@ RGE_Time_Entry* RGE_Timeline::add_delete(float time,
         node->command = 4;
         node->x = obj->world_x;
         node->y = obj->world_y;
-        ((RGE_Static_Object_Delete_View*)obj)->delete_from_timeline(1);
+        delete obj;
     }
     return node;
 }

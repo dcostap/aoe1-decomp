@@ -29,14 +29,14 @@ void RGE_Timeline::update() {
             switch (event->command) {
             case 0:
                 if (event->this_obj != 0 && event->target_obj != 0)
-                    event->this_obj->attack(event->target_obj);
+                    event->this_obj->set_attack(event->target_obj);
                 break;
 
             case 1: {
                 player = this->world->players[event->player];
                 master = player->master_objects[event->obj_type];
                 if (master != 0) {
-                    object = master->create(player, event->x, event->y, 0);
+                    object = master->make_new_obj(player, event->x, event->y, 0);
                     for (scan = this->time_list; scan != 0; scan = scan->next) {
                         if (event->this_obj_id == scan->this_obj_id)
                             scan->this_obj = object;
@@ -49,7 +49,7 @@ void RGE_Timeline::update() {
 
             case 2:
                 if (event->this_obj != 0)
-                    event->this_obj->move(0, event->x, event->y, event->z);
+                    event->this_obj->move_to(0, event->x, event->y, event->z);
                 break;
 
             case 4:

@@ -43,7 +43,7 @@ void RGE_Timeline::mock_update(float t)
                             RGE_Player* p = world->players[e->player];
                             RGE_Master_Static_Object* mo = p->master_objects[e->obj_type];
                             if (mo != 0) {
-                                obj = mo->create(p, e->x, e->y, 0);
+                                obj = mo->make_new_obj(p, e->x, e->y, 0);
                                 for (n = time_list; n != 0; n = n->next) {
                                     if (e->this_obj_id == n->this_obj_id) n->this_obj = obj;
                                     if (e->this_obj_id == n->target_obj_id) n->target_obj = obj;
@@ -76,7 +76,7 @@ void RGE_Timeline::mock_update(float t)
                         RGE_Player* p = world->players[e->player];
                         RGE_Master_Static_Object* mo = p->master_objects[e->obj_type];
                         if (mo != 0) {
-                            obj = mo->create(p, e->x, e->y, 0);
+                            obj = mo->make_new_obj(p, e->x, e->y, 0);
                             for (n = time_list; n != 0; n = n->next) {
                                 if (e->this_obj_id == n->this_obj_id) n->this_obj = obj;
                                 if (e->this_obj_id == n->target_obj_id) n->target_obj = obj;

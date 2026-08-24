@@ -12,7 +12,7 @@ RGE_Time_Entry* RGE_Timeline::add_create(float time, short type,
     RGE_Player* p = this->world->players[player];
     RGE_Master_Static_Object* master = p->master_objects[type];
     if (master != 0)
-        obj = master->create(p, x, y, 0);
+        obj = master->make_new_obj(p, x, y, 0);
 
     if (node != 0 && master != 0) {
         node->player = player;
