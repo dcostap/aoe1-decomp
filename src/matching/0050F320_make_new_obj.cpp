@@ -6,8 +6,7 @@
 // Probe 1: simple alloc+ctor with new expression, /GX
 
 #include "..\..\include\game_globals.h"
-
-class RGE_Player;
+#include "..\..\include\tm_tre_o_context.h"
 
 class RGE_Static_Object {
 public:
@@ -18,12 +17,6 @@ class TRIBE_Tree_Object : public RGE_Static_Object {
 public:
     char _gap_04[0x84];
     TRIBE_Tree_Object(void* master, void* player, float x, float y, float z, int flag);
-};
-
-class TRIBE_Master_Tree_Object {
-public:
-    virtual ~TRIBE_Master_Tree_Object();
-    virtual RGE_Static_Object* make_new_obj(RGE_Player* player, float x, float y, float z);
 };
 
 RGE_Static_Object* TRIBE_Master_Tree_Object::make_new_obj(RGE_Player* player, float x, float y, float z)

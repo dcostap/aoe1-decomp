@@ -8,15 +8,7 @@
 // attempt 8: unsigned char temp -> edx basin, but test al,al instead of test eax,eax
 // attempt 9: unsigned long temp to get test eax,eax
 
-extern "C" __declspec(dllimport) unsigned long __stdcall RegSetValueExA(void* key, const char* valueName, unsigned long reserved, unsigned long type, const unsigned char* data, unsigned long dataSize);
-
-class TRegistry {
-public:
-    void* ghMachineKey;
-    void* ghUserKey;
-
-    int RegSetInt(int useUserKey, const char* valueName, int value);
-};
+#include "../../include/registry_context.h"
 
 int TRegistry::RegSetInt(int useUserKey, const char* valueName, int value) {
     unsigned long ret;

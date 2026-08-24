@@ -85,11 +85,13 @@
 extern float DAT_005750e0;
 extern double DAT_005750e8;
 
+#ifndef TACT_HEA_CONTEXT_H
 class TRIBE_Action_Heal : public RGE_Action {
 public:
     virtual void set_state(uchar);
     virtual uchar update();
 };
+#endif
 
 uchar TRIBE_Action_Heal::update()
 {

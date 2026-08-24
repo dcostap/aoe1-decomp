@@ -1,9 +1,5 @@
-class TRIBE_History_Info {
-public:
-    virtual ~TRIBE_History_Info();
-    char gap_0[0x4];
-    int field_8;
-    int get_history_event_num();
-};
+#include "../../include/t_histry_context.h"
 
-int TRIBE_History_Info::get_history_event_num() { return this->field_8; }
+long TRIBE_History_Info::get_history_event_num() {
+    return this->number_of_events;
+}

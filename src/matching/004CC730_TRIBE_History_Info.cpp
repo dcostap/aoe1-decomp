@@ -1,14 +1,4 @@
-class TRIBE_History_Info {
-public:
-    void* history;
-    void* events;
-    int number_of_events;
-    int number_of_entries;
-    int max_number_of_entries;
-
-    TRIBE_History_Info(int index);
-    void load(int index);
-};
+#include "../../include/t_histry_context.h"
 
 TRIBE_History_Info::TRIBE_History_Info(int index) {
     this->history = 0;

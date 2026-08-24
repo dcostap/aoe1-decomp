@@ -2,40 +2,28 @@
 
 // attempt 1: natural load with rge_read/calloc
 
+#include <stdlib.h>
+
 extern "C" void rge_read(int file, void* data, int size);
-extern "C" void* calloc(int count, int size);
 
-class TRIBE_History_Step {
-public:
-    char gap_000[0x0C];
-    TRIBE_History_Step* next;
-};
-
-class TRIBE_History_Info {
-public:
-    char* buffer;                // +0x00
-    TRIBE_History_Step* first_step; // +0x04
-    int field_08;                // +0x08
-    int field_0C;                // +0x0C
-    int buffer_size;             // +0x10
-
-    void load(int file);
-};
+#include "../../include/t_histry_context.h"
 
 void TRIBE_History_Info::load(int file) {
-    rge_read(file, &this->field_0C, 4);
-    rge_read(file, &this->field_08, 4);
-    rge_read(file, &this->buffer_size, 4);
+    rge_read(file, &this->number_of_entries, 4);
+    rge_read(file, &this->number_of_events, 4);
+    rge_read(file, &this->max_number_of_entries, 4);
 
-    this->buffer = (char*)calloc(this->buffer_size, 1);
-    rge_read(file, this->buffer, this->buffer_size);
+    this->history = (TRIBE_History_Entry*)calloc(
+        this->max_number_of_entries, 1);
+    rge_read(file, this->history, this->max_number_of_entries);
 
     int step_count;
-    TRIBE_History_Step** prev_ptr = &this->first_step;
+    TRIBE_History_Events** prev_ptr = &this->events;
     rge_read(file, &step_count, 4);
 
     while (step_count > 0) {
-        TRIBE_History_Step* step = (TRIBE_History_Step*)calloc(1, 0x10);
+        TRIBE_History_Events* step =
+            (TRIBE_History_Events*)calloc(1, 0x10);
         rge_read(file, step, 0x10);
         *prev_ptr = step;
         prev_ptr = &step->next;

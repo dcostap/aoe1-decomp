@@ -4,34 +4,19 @@
 
 extern "C" void rge_write(int file, void* data, int size);
 
-class TRIBE_History_Step {
-public:
-    char gap_000[0x0C];
-    TRIBE_History_Step* next;
-};
-
-class TRIBE_History_Info {
-public:
-    char* buffer;                // +0x00
-    TRIBE_History_Step* first_step; // +0x04
-    int field_08;                // +0x08
-    int field_0C;                // +0x0C
-    int buffer_size;             // +0x10
-
-    void save(int file);
-};
+#include "../../include/t_histry_context.h"
 
 void TRIBE_History_Info::save(int file) {
-    TRIBE_History_Step* step;
+    TRIBE_History_Events* step;
 
-    rge_write(file, &this->field_0C, 4);
-    rge_write(file, &this->field_08, 4);
-    rge_write(file, &this->buffer_size, 4);
-    rge_write(file, this->buffer, this->buffer_size);
+    rge_write(file, &this->number_of_entries, 4);
+    rge_write(file, &this->number_of_events, 4);
+    rge_write(file, &this->max_number_of_entries, 4);
+    rge_write(file, this->history, this->max_number_of_entries);
 
     // Count steps in linked list
     int step_count = 0;
-    step = this->first_step;
+    step = this->events;
     while (step) {
         step_count++;
         step = step->next;
@@ -40,7 +25,7 @@ void TRIBE_History_Info::save(int file) {
     rge_write(file, &step_count, 4);
 
     // Write each step
-    step = this->first_step;
+    step = this->events;
     while (step) {
         rge_write(file, step, 0x10);
         step = step->next;

@@ -2052,6 +2052,58 @@
       "symbols": {
         "00423E90": "?inChatGroup@TChat@@QAEHH@Z"
       }
+    },
+    {
+      "name": "t_histry",
+      "source": "src/t_histry_tu.cpp",
+      "flags": "config/flags/default.rsp",
+      "owners": {
+        "004CC730": "src/matching/004CC730_TRIBE_History_Info.cpp",
+        "004CC760": "src/matching/004CC760_TRIBE_History_Info.cpp",
+        "004CC7A0": "src/matching/004CC7A0_save.cpp",
+        "004CC840": "src/matching/004CC840_load.cpp",
+        "004CC8E0": "src/matching/004CC8E0_add_history_entry.cpp",
+        "004CC950": "src/matching/004CC950_get_history_entry_num.cpp",
+        "004CC960": "src/matching/004CC960_get_history_entry.cpp",
+        "004CC990": "src/matching/004CC990_add_history_event.cpp",
+        "004CC9E0": "src/matching/004CC9E0_get_history_event_num.cpp",
+        "004CC9F0": "src/matching/004CC9F0_get_history_event.cpp",
+        "004CCA30": "src/matching/004CCA30_get_history_event.cpp"
+      },
+      "symbols": {
+        "004CC960": "?get_history_entry@TRIBE_History_Info@@QAEEEJ@Z",
+        "004CC9F0": "?get_history_event@TRIBE_History_Info@@QAEEJAAEAAJ@Z",
+        "004CCA30": "?get_history_event@TRIBE_History_Info@@QAEEJAAE@Z"
+      }
+    },
+    {
+      "name": "registry",
+      "source": "src/registry_tu.cpp",
+      "flags": "config/flags/default.rsp",
+      "owners": {
+        "0047EB80": "src/matching/0047EB80_TRegistry.cpp",
+        "0047EC00": "src/matching/0047EC00_TRegistry.cpp",
+        "0047EC40": "src/matching/0047EC40_RegSet.cpp",
+        "0047ECA0": "src/matching/0047ECA0_RegSetInt.cpp",
+        "0047ED00": "src/matching/0047ED00_RegSetAscii.cpp",
+        "0047ED60": "src/matching/0047ED60_RegGetAscii.cpp",
+        "0047EDD0": "src/matching/0047EDD0_RegGet.cpp",
+        "0047EE20": "src/matching/0047EE20_RegGetInt.cpp"
+      },
+      "symbols": {
+        "0047EC40": "?RegSet@TRegistry@@QAEHHPBDPAEK@Z",
+        "0047EDD0": "?RegGet@TRegistry@@QAEJHPBDPAEPAK@Z"
+      }
+    },
+    {
+      "name": "dlg_abt_prefix",
+      "source": "src/dlg_abt_tu.cpp",
+      "flags": "config/flags/0043AD70_TribeAboutDialog.rsp",
+      "owners": {
+        "0043AD70": "src/matching/0043AD70_TribeAboutDialog.cpp",
+        "0043B400": "src/matching/0043B400_action.cpp",
+        "0043B550": "src/matching/0043B550_draw.cpp"
+      }
     }
   ]
 }

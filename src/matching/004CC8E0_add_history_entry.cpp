@@ -9,31 +9,24 @@
 
 #pragma intrinsic(memcpy)
 
-class TRIBE_History_Info {
-public:
-    unsigned char* buffer;  // +0x00
-    char _gap_04[0x08];
-    int count;              // +0x0C
-    int capacity;           // +0x10
-
-    void add_history_entry(unsigned char flag, unsigned char value);
-};
+#include "../../include/t_histry_context.h"
 
 void TRIBE_History_Info::add_history_entry(unsigned char flag, unsigned char value) {
-    if (count >= capacity) {
-        int oldCapacity = capacity;
-        capacity += 0x3C;
-        unsigned char* newBuf = (unsigned char*)calloc(capacity, 1);
+    if (this->number_of_entries >= this->max_number_of_entries) {
+        int oldCapacity = this->max_number_of_entries;
+        this->max_number_of_entries += 0x3C;
+        TRIBE_History_Entry* newBuf = (TRIBE_History_Entry*)calloc(
+            this->max_number_of_entries, 1);
         if (oldCapacity > 0) {
-            memcpy(newBuf, buffer, oldCapacity);
-            free(buffer);
+            memcpy(newBuf, this->history, oldCapacity);
+            free(this->history);
         }
-        buffer = newBuf;
+        this->history = newBuf;
     }
 
     if (flag == 0) {
-        buffer[count] = value;
+        this->history[this->number_of_entries].population = value;
     }
 
-    count++;
+    this->number_of_entries++;
 }

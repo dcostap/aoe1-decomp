@@ -1,19 +1,7 @@
-extern "C" __declspec(dllimport) long __stdcall RegCloseKey(void* key);
-
-
-class TRegistry {
-public:
-    void* ghMachineKey;
-    void* ghUserKey;
-    void* ghMachineKeyRead;
-    unsigned long gdwDisp;
-    char Data[255];
-
-    ~TRegistry();
-};
+#include "../../include/registry_context.h"
 
 TRegistry::~TRegistry() {
-    long (__stdcall *closeKey)(void*) = RegCloseKey;
+    LONG (WINAPI *closeKey)(HKEY) = RegCloseKey;
 
     if (this->ghUserKey != 0) {
         closeKey(this->ghUserKey);

@@ -1,21 +1,7 @@
 // TRegistry::TRegistry (0047EB80, 124 bytes, registry.cpp)
 // Attempt 1
 
-typedef struct HKEY__ *HKEY;
-
-typedef long (__stdcall *RegCreateKeyExA_t)(HKEY, const char*, unsigned long, const char*, unsigned long, unsigned long, void*, HKEY*, unsigned long*);
-
-extern RegCreateKeyExA_t RegCreateKeyExA_ptr;
-
-class TRegistry {
-public:
-    HKEY ghMachineKey;
-    HKEY ghUserKey;
-    HKEY ghMachineKeyRead;
-    unsigned long gdwDisp;
-
-    TRegistry(const char* name);
-};
+#include "../../include/registry_context.h"
 
 TRegistry::TRegistry(const char* name) {
     this->ghMachineKey = 0;

@@ -180,6 +180,7 @@ public:
     char* get_string(int id);
     long xPosition();
     long width();
+    void delete_panel(TPanel** panel_ptr);
     void set_curr_child(TPanel* child);
 };
 
@@ -249,6 +250,7 @@ public:
 
     long get_popup_info_id();
     char* get_popup_info_file();
+    long action(TPanel*, long, unsigned long, unsigned long);
 };
 
 class TDialogPanel : public TEasy_Panel {
@@ -321,7 +323,11 @@ public:
     TPicturePanel* circle_p_pic;
 
     TribeAboutDialog(TScreenPanel* param_1);
-    long action(TPanel* param_1, long param_2, unsigned long param_3, unsigned long param_4);
+    virtual ~TribeAboutDialog();
+protected:
+    virtual long action(TPanel* param_1, long param_2, unsigned long param_3, unsigned long param_4);
+public:
+    void draw();
 };
 
 TribeAboutDialog::TribeAboutDialog(TScreenPanel* param_1) : TDialogPanel("About Dialog") {

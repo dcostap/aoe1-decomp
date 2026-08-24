@@ -1,19 +1,6 @@
 // From registry.cpp
 
-typedef struct HKEY__ *HKEY;
-
-typedef long (__stdcall *RegQueryValueExA_t)(HKEY, const char*, unsigned long*, unsigned long*, unsigned char*, unsigned long*);
-
-extern RegQueryValueExA_t RegQueryValueExA_ptr;
-
-class TRegistry {
-public:
-    HKEY ghDefaultKey;
-    HKEY ghUserKey;
-    HKEY ghMachineKeyRead;
-
-    int RegGetInt(int use_user, const char* name);
-};
+#include "../../include/registry_context.h"
 
 int TRegistry::RegGetInt(int use_user, const char* name) {
     unsigned long dwSize = 4;

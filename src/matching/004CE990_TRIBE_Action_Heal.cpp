@@ -7,6 +7,7 @@
 
 #include "..\..\include\game_globals.h"
 
+#ifndef TACT_HEA_CONTEXT_H
 class RGE_Action_Object;
 class RGE_Task;
 class RGE_Action_List;
@@ -73,6 +74,7 @@ public:
 
     TRIBE_Action_Heal(RGE_Action_Object* obj, RGE_Task* task, RGE_Static_Object* target);
 };
+#endif
 
 TRIBE_Action_Heal::TRIBE_Action_Heal(RGE_Action_Object* obj, RGE_Task* task, RGE_Static_Object* target)
     : RGE_Action(obj, 1)

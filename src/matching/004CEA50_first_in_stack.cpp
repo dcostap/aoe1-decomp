@@ -1,3 +1,4 @@
+#ifndef TACT_HEA_CONTEXT_H
 class RGE_Action {
 public:
     virtual void vf00(void);
@@ -34,6 +35,7 @@ public:
 
     void first_in_stack(unsigned char param_1);
 };
+#endif
 
 void TRIBE_Action_Heal::first_in_stack(unsigned char) {
     if (this->actionObject != 0) {

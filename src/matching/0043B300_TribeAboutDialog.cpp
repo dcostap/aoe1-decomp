@@ -6,8 +6,11 @@
 //   Also vtable not set (0 instead of 56F610h)
 // Probe 2: fix inheritance chain, proper gap size
 
+#ifndef DLG_ABT_CANONICAL_TU
 #include "..\..\include\game_globals.h"
+#endif
 
+#ifndef DLG_ABT_CANONICAL_TU
 class TPanel {
 public:
     char _gap_04[0x1C];
@@ -59,20 +62,21 @@ public:
 
     virtual ~TribeAboutDialog();
 };
+#endif
 
 TribeAboutDialog::~TribeAboutDialog()
 {
-    this->delete_panel(&this->title_text);
-    this->delete_panel(&this->version_text);
-    this->delete_panel(&this->ms_copy_text1);
-    this->delete_panel(&this->ms_copy_text2);
-    this->delete_panel(&this->ens_copy_text);
-    this->delete_panel(&this->genie_copy_text);
-    this->delete_panel(&this->pid_label_text);
-    this->delete_panel(&this->pid_text);
-    this->delete_panel(&this->warning_text);
-    this->delete_panel(&this->credits_button);
-    this->delete_panel(&this->close_button);
-    this->delete_panel(&this->background);
-    this->delete_panel(&this->bg_display);
+    this->delete_panel((TPanel**)&this->title_text);
+    this->delete_panel((TPanel**)&this->version_text);
+    this->delete_panel((TPanel**)&this->ms_copy_text1);
+    this->delete_panel((TPanel**)&this->ms_copy_text2);
+    this->delete_panel((TPanel**)&this->ens_copy_text);
+    this->delete_panel((TPanel**)&this->genie_copy_text);
+    this->delete_panel((TPanel**)&this->pid_label_text);
+    this->delete_panel((TPanel**)&this->pid_text);
+    this->delete_panel((TPanel**)&this->warning_text);
+    this->delete_panel((TPanel**)&this->credits_button);
+    this->delete_panel((TPanel**)&this->close_button);
+    this->delete_panel((TPanel**)&this->background);
+    this->delete_panel((TPanel**)&this->circle_p_pic);
 }

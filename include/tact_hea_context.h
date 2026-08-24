@@ -447,16 +447,28 @@ public:
         short field_04;
     };
     uchar pad_06[2];
-    RGE_Action_Object* obj;
+    union {
+        RGE_Action_Object* obj;
+        RGE_Action_Object* actionObject;
+    };
     uchar state;
     uchar pad_0D[3];
     RGE_Static_Object* target_obj;
     RGE_Static_Object* target_obj2;
     int targetID;
     int target2ID;
-    float target_x;
-    float target_y;
-    float target_z;
+    union {
+        float target_x;
+        float world_x;
+    };
+    union {
+        float target_y;
+        float world_y;
+    };
+    union {
+        float target_z;
+        float world_z;
+    };
     float timer;
     RGE_Task* task;
     RGE_Action_List* sub_actions;
@@ -465,6 +477,7 @@ public:
     uchar pad_3D[3];
 
     RGE_Action(RGE_Action_Object*, int);
+    RGE_Action(int, int);
     RGE_Action(int, RGE_Action_Object*, int);
     void setSubAction(uchar);
 };
@@ -504,6 +517,20 @@ public:
     virtual int stop();
     virtual int move_to(RGE_Static_Object*, float, float, float);
     virtual int work(RGE_Static_Object*, float, float, float);
+};
+
+class TRIBE_Action_Heal : public RGE_Action {
+public:
+    TRIBE_Action_Heal(int, RGE_Action_Object*);
+    TRIBE_Action_Heal(RGE_Action_Object*, RGE_Task*, RGE_Static_Object*);
+    TRIBE_Action_Heal(int, RGE_Task*, float, float, float);
+
+    virtual void first_in_stack(uchar);
+    virtual uchar update();
+    virtual int work(RGE_Static_Object*, float, float, float);
+
+protected:
+    virtual void set_state(uchar);
 };
 
 typedef char tact_hea_action_size[(sizeof(RGE_Action) == 0x40) ? 1 : -1];

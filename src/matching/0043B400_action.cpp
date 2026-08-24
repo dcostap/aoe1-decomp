@@ -19,6 +19,7 @@
 // - Fresh control-flow probe: wrap both button arms in a positive param2 == 1
 //   guard. This restores the original fallthrough layout and matches 325 bytes.
 
+#ifndef DLG_ABT_CANONICAL_TU
 class TPanelSystem;
 class TRIBE_Credits_Screen;
 
@@ -103,6 +104,32 @@ public:
     char gap_000[0x8B8];   // sizeof = 0x8B8 for operator_new
     TRIBE_Credits_Screen();
 };
+#else
+class TPanelSystem {
+public:
+    TPanel* panel(char* name);
+    int setCurrentPanel(char* name, int flag);
+    int destroyPanel(char* name);
+};
+
+extern TPanelSystem panel_system;
+
+class RGE_Base_Game {
+public:
+    int singlePlayerGame();
+    void set_paused(int a, int b);
+    char gap_000[0xA00];
+    int field_A00;
+};
+
+extern RGE_Base_Game* rge_base_game;
+
+class TRIBE_Credits_Screen {
+public:
+    char gap_000[0x8B8];
+    TRIBE_Credits_Screen();
+};
+#endif
 
 long TribeAboutDialog::action(TPanel* param_1, long param_2, unsigned long param_3, unsigned long param_4) {
     if (param_2 == 1) {

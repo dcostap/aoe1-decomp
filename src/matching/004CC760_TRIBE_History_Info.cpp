@@ -1,17 +1,6 @@
 extern "C" void free(void* ptr);
 
-struct TRIBE_History_Events {
-    char gap_00[0x0C];
-    TRIBE_History_Events* next;
-};
-
-class TRIBE_History_Info {
-public:
-    void* history;
-    TRIBE_History_Events* events;
-
-    ~TRIBE_History_Info();
-};
+#include "../../include/t_histry_context.h"
 
 TRIBE_History_Info::~TRIBE_History_Info() {
     TRIBE_History_Events* events;

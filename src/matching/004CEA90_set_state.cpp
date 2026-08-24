@@ -12,6 +12,7 @@
 // constructors; exact 566/566-byte match under the pinned VC5 toolchain.
 // FLAGS: /nologo /c /O2 /Oy /GX
 
+#ifndef TACT_HEA_CONTEXT_H
 class RGE_Sprite;
 class RGE_Static_Object;
 class RGE_Action;
@@ -206,6 +207,7 @@ class TRIBE_Action_Heal : public RGE_Action {
 public:
     virtual void set_state(unsigned char);
 };
+#endif
 
 void TRIBE_Action_Heal::set_state(unsigned char param_1)
 {

@@ -1,3 +1,4 @@
+#ifndef TACT_HEA_CONTEXT_H
 class RGE_Action_Object;
 
 class RGE_Action {
@@ -12,6 +13,7 @@ public:
 
     TRIBE_Action_Heal(int id, RGE_Action_Object* object);
 };
+#endif
 
 TRIBE_Action_Heal::TRIBE_Action_Heal(int id, RGE_Action_Object* object)
     : RGE_Action(id, object, 1) {

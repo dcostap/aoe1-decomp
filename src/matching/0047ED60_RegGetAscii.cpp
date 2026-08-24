@@ -8,19 +8,7 @@
 // - probe 2: swapped local declaration order (dwSize first, dwType second) to match VC5's init-store order.
 //            EXACT MATCH at 0.0000% diff.
 
-typedef long (__stdcall *RegQueryValueExA_t)(void*, const char*, unsigned long*, unsigned long*, unsigned char*, unsigned long*);
-extern RegQueryValueExA_t RegQueryValueExA_ptr;
-
-class TRegistry {
-public:
-    void* ghMachineKey;       // offset 0x00
-    void* ghUserKey;          // offset 0x04
-    void* ghMachineKeyRead;   // offset 0x08
-    unsigned long gdwDisp;    // offset 0x0C
-    char Data[256];           // offset 0x10
-
-    char* RegGetAscii(int userKey, const char* name);
-};
+#include "../../include/registry_context.h"
 
 char* TRegistry::RegGetAscii(int userKey, const char* name) {
     unsigned long dwSize = 1;

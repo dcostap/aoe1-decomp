@@ -6,23 +6,7 @@
 // Probe 1: natural ctor with base init + conditional setup + field_04 = 'Z', /GX
 
 #include "..\..\include\game_globals.h"
-
-class RGE_Master_Static_Object {
-public:
-    char field_04;             // +0x04 (byte type marker)
-    char _gap_05[0xB7];        // padding
-    virtual ~RGE_Master_Static_Object();
-    RGE_Master_Static_Object(int param_1, void** sprites, void** sounds, int flag);
-    RGE_Master_Static_Object(void* stream, void** sprites, void** sounds, int index, int flag);
-    void setup(int param_1, void** sprites, void** sounds);
-    void setup(void* stream, void** sprites, void** sounds, int index);
-};
-
-class TRIBE_Master_Tree_Object : public RGE_Master_Static_Object {
-public:
-    virtual ~TRIBE_Master_Tree_Object();
-    TRIBE_Master_Tree_Object(int param_1, void** sprites, void** sounds, int flag);
-};
+#include "..\..\include\tm_tre_o_context.h"
 
 TRIBE_Master_Tree_Object::TRIBE_Master_Tree_Object(int param_1, void** sprites, void** sounds, int flag)
     : RGE_Master_Static_Object(param_1, sprites, sounds, 0)
