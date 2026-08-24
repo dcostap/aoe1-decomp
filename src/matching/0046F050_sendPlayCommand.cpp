@@ -83,6 +83,7 @@
 //   proven long object-id type; all emitted the same 7-byte drift. Restored
 //   the pinned natural source. The EBP/EBX coloring blocker remains.
 
+#ifndef PLAYER_GROUPED_TU
 class AIPlay;
 class AIPlayBook { public: AIPlay* play(int id); };
 class RGE_Game_World { public: char gap_00[0xA0]; AIPlayBook* playbook; };
@@ -183,6 +184,7 @@ public:
     RGE_Static_Object* sel_list[25]; // +0x134
 
 };
+#endif
 
 void RGE_Player::sendPlayCommand(int param_1, int param_2, int param_3)
 {

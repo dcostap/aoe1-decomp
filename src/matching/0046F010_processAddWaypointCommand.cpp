@@ -1,6 +1,7 @@
 // VA: 0046F010 processAddWaypointCommand (63B)
 // PDB source: player.cpp lines 550-556
 
+#ifndef PLAYER_GROUPED_TU
 struct XYZBYTEPoint {
     unsigned char x;
     unsigned char y;
@@ -130,11 +131,11 @@ public:
 
 class RGE_Player {
 public:
-    char gap_00[0x3C];
+    virtual void processAddWaypointCommand(int object_id, XYZBYTEPoint* waypoints, int count);
+    char gap_00[0x38];
     RGE_Game_World* world;
-
-    void processAddWaypointCommand(int object_id, XYZBYTEPoint* waypoints, int count);
 };
+#endif
 
 void RGE_Player::processAddWaypointCommand(int object_id, XYZBYTEPoint* waypoints, int count) {
     RGE_Static_Object* object;

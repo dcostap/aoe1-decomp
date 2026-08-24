@@ -3,6 +3,7 @@
 // remaining drift is the opening register load plus the base-game dispatch register order
 // attempt 3: natural early-return style, inline rge_base_game, explicit local for this
 
+#ifndef PLAYER_GROUPED_TU
 class RGE_Base_Game {
 public:
     virtual ~RGE_Base_Game();
@@ -41,6 +42,7 @@ public:
 
     void do_resign(int value);
 };
+#endif
 
 void RGE_Player::set_game_status(unsigned char status) {
     RGE_Player* p = this;

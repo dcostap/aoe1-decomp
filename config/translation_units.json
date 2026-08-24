@@ -1830,6 +1830,93 @@
         "005071C0": "?canAttackUnitAtNeutrality@TribeSoldierUnitAIModule@@UAEHH@Z",
         "005071F0": "?processNotify@TribeSoldierUnitAIModule@@MAEHPAUNotifyEvent@@K@Z"
       }
+    },
+    {
+      "name": "player_prefix",
+      "source": "src/player_tu.cpp",
+      "flags": "config/flags/0046E4B0_RGE_Player.rsp",
+      "owners": {
+        "0046E4B0": "src/matching/0046E4B0_RGE_Player.cpp",
+        "0046EB00": "src/matching/0046EB00_RGE_Player.cpp",
+        "0046ECE0": "src/matching/0046ECE0_set_game_status.cpp",
+        "0046ED50": "src/matching/0046ED50_do_resign.cpp",
+        "0046ED90": "src/matching/0046ed90_get_resigned.cpp",
+        "0046EDA0": "src/matching/0046eda0_aiStatus.cpp",
+        "0046EDB0": "src/matching/0046edb0_computerPlayer.cpp",
+        "0046EDC0": "src/matching/0046EDC0_isEnemy.cpp",
+        "0046EE00": "src/matching/0046EE00_isAlly.cpp",
+        "0046EE40": "src/matching/0046EE40_isNeutral.cpp",
+        "0046EE80": "src/matching/0046EE80_isAllNeutral.cpp",
+        "0046EED0": "src/matching/0046eed0_setDiplomaticStance.cpp",
+        "0046EEE0": "src/matching/0046eee0_loadAIInformation.cpp",
+        "0046EEF0": "src/matching/0046EEF0_sendUnitAIOrder.cpp",
+        "0046EF40": "src/matching/0046EF40_processAIOrder.cpp",
+        "0046EFB0": "src/matching/0046EFB0_sendGameOrder.cpp",
+        "0046EFE0": "src/matching/0046EFE0_sendAddWaypointCommand.cpp",
+        "0046F010": "src/matching/0046F010_processAddWaypointCommand.cpp",
+        "0046F050": "src/matching/0046F050_sendPlayCommand.cpp",
+        "0046F140": "src/matching/0046F140_sendPlayCommand.cpp",
+        "0046F200": "src/matching/0046f200_pathingAttemptCap.cpp",
+        "0046F210": "src/matching/0046f210_setPathingAttemptCap.cpp",
+        "0046F220": "src/matching/0046f220_pathingDelayCap.cpp",
+        "0046F230": "src/matching/0046f230_setPathingDelayCap.cpp",
+        "0046F240": "src/matching/0046f240_currentUpdatePathingAttempts.cpp",
+        "0046F250": "src/matching/0046F250_availablePathingAttempts.cpp",
+        "0046F290": "src/matching/0046f290_incrementPathingAttempts.cpp",
+        "0046F2A0": "src/matching/0046F2A0_sendChatMessage.cpp",
+        "0046F3A0": "src/matching/0046F3A0_make_scenario_obj.cpp",
+        "0046F410": "src/matching/0046f410_scenario_save.cpp"
+      },
+      "symbols": {
+        "0046E4B0": "??0RGE_Player@@QAE@HPAVRGE_Game_World@@E@Z",
+        "0046F050": "?sendPlayCommand@RGE_Player@@UAEXHHH@Z",
+        "0046F140": "?sendPlayCommand@RGE_Player@@UAEXHPAHHHH@Z"
+      }
+    },
+    {
+      "name": "sound",
+      "source": "src/sound_tu.cpp",
+      "flags": "config/flags/004BBF30_RGE_Sound.rsp",
+      "owners": {
+        "004BBE40": "src/matching/004BBE40_RGE_Sound.cpp",
+        "004BC070": "src/matching/004BC070_RGE_Sound.cpp",
+        "004BC080": "src/matching/004BC080_RGE_Sound.cpp",
+        "004BC0F0": "src/matching/004BC0F0_save.cpp",
+        "004BC190": "src/matching/004BC190_restart_sound.cpp",
+        "004BC2D0": "src/matching/004BC2D0_set_cache_time.cpp",
+        "004BC2E0": "src/matching/004BC2E0_play_at_update.cpp",
+        "004BC2F0": "src/matching/004BC2F0_update_play.cpp",
+        "004BC470": "src/matching/004BC470_get_file_name.cpp",
+        "004BC4F0": "src/matching/004BC4F0_stop.cpp",
+        "004BC540": "src/matching/004BC540_is_playing.cpp"
+      },
+      "symbols": {
+        "004BBE40": "??0RGE_Sound@@QAE@PAU_iobuf@@F@Z",
+        "004BC070": "??0RGE_Sound@@QAE@XZ"
+      }
+    },
+    {
+      "name": "scr_set",
+      "source": "src/scr_set_tu.cpp",
+      "flags": "config/flags/scr_set.rsp",
+      "owners": {
+        "004B4880": "src/matching/004B4880_TribeGameSettingsScreen.cpp",
+        "004B5810": "src/matching/004B5810_init_vars.cpp",
+        "004B5920": "src/matching/004B5920_TribeGameSettingsScreen.cpp",
+        "004B5BB0": "src/matching/004B5BB0_handle_idle.cpp",
+        "004B5C70": "src/matching/004B5C70_handle_user_command.cpp",
+        "004B5CB0": "src/matching/004B5CB0_action.cpp",
+        "004B5E00": "src/matching/004B5E00_fillScenarios.cpp",
+        "004B6160": "src/matching/004B6160_fillMissionText.cpp",
+        "004B6230": "src/matching/004B6230_getSettings.cpp",
+        "004B6500": "src/matching/004B6500_sendSettings.cpp",
+        "004B6740": "src/matching/004B6740_activatePanels.cpp",
+        "004B6870": "src/matching/004B6870_activateVictoryPanels.cpp"
+      },
+      "symbols": {
+        "004B4880": "??0TribeGameSettingsScreen@@QAE@XZ",
+        "004B5920": "??1TribeGameSettingsScreen@@UAE@XZ"
+      }
     }
   ]
 }

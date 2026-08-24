@@ -5,7 +5,7 @@
 // The Sound.cpp EH owners require one common flag set:
 //   /nologo /c /O2 /Oy /GX
 // Use config/flags/004BBF30_RGE_Sound.rsp as the checked flag source.
-// This wrapper is an owner context.  It is not a config registration.
+// This wrapper is the canonical registered Sound.cpp translation unit.
 //
 // Exact anchors from the original PDB and image:
 //   004BBE40  RGE_Sound(FILE*,short)       lines 35-58   230 bytes
@@ -26,6 +26,17 @@
 // 004BBF30, 004BC270, and 004BC310 are included because their reviewed
 // sources preserve shipped behavior.  They are not exact owners.  The other
 // entries are exact or exact-owner candidates in src/matching.
+//
+// Fresh captain_sound full-TU checkpoint: config/flags/004BBF30_RGE_Sound.rsp
+// compiles all 14 owners.  Positional bytes, original boundaries, and owner
+// symbols are exact for 004BBE40, 004BC070, 004BC080, 004BC0F0, 004BC190,
+// 004BC2D0, 004BC2E0, 004BC2F0, 004BC470, 004BC4F0, and 004BC540.  The
+// verified-logic owners emit 320/306 bytes at 004BBF30 and 352/346 bytes at
+// 004BC310.  The accepted-drift owner emits 112/95 bytes at 004BC270; its
+// reviewed early-save-register movement remains the only difference in the
+// meaningful loop after resynchronization.  The object has no defined
+// compiler-generated Sound owner; VC5 emits the expected EH and helper
+// references from the owning methods.
 
 #define SOUND_CANONICAL_TU 1
 #include "../include/sound_context.h"

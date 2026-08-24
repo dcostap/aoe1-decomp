@@ -15,6 +15,7 @@
 
 extern "C" int __cdecl vsprintf(char* buffer, const char* format, void* argptr);
 
+#ifndef PLAYER_GROUPED_TU
 class TCommunications_Handler {
 public:
     void SendChatMsg(unsigned int player, unsigned int to, char* text);
@@ -31,7 +32,7 @@ class RGE_Game_World {
 public:
     virtual ~RGE_Game_World();
     char gap_04[0x54];
-    RGE_Command* commands;
+    RGE_Command* command;
 };
 
 class RGE_Base_Game {
@@ -40,8 +41,6 @@ public:
     int numberPlayers();
     int playerID(int player);
 };
-
-#define rge_base_game (*(RGE_Base_Game**)0x62C574)
 
 class RGE_Player {
 public:
@@ -71,6 +70,9 @@ public:
 
     void __cdecl sendChatMessage(int player, int mode, char* message, ...);
 };
+#endif
+
+#define rge_base_game (*(RGE_Base_Game**)0x62C574)
 
 void __cdecl RGE_Player::sendChatMessage(int player, int mode, char* message, ...)
 {
@@ -84,7 +86,7 @@ void __cdecl RGE_Player::sendChatMessage(int player, int mode, char* message, ..
         for (i = 1; i <= rge_base_game->numberPlayers(); ++i) {
             int playerID = rge_base_game->playerID(i);
             if (playerID == player) {
-                this->world->commands->com_hand->SendChatMsg(
+                this->world->command->com_hand->SendChatMsg(
                     this->id, i, textOut);
             }
         }
@@ -93,7 +95,7 @@ void __cdecl RGE_Player::sendChatMessage(int player, int mode, char* message, ..
             for (i = 1; i <= rge_base_game->numberPlayers(); ++i) {
                 int playerID = rge_base_game->playerID(i);
                 if (playerID == this->id) {
-                    this->world->commands->com_hand->SendChatMsg(
+                    this->world->command->com_hand->SendChatMsg(
                         this->id, i, textOut);
                 }
             }

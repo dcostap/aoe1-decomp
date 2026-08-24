@@ -1,10 +1,11 @@
+#ifndef PLAYER_GROUPED_TU
 class RGE_Player {
 public:
     virtual ~RGE_Player();
-    int computerPlayer_;
-    int pathingAttemptCap_;
-    int pathingDelayCap_;
-    int currentUpdatePathingAttempts_;
+    int computerPlayerValue;
+    int pathingAttemptCapValue;
+    int pathingDelayCapValue;
+    int currentUpdatePathingAttemptsValue;
     char gap_14[0x6D];
     unsigned char resigned_;
     char gap_82[0x82];
@@ -12,7 +13,8 @@ public:
 
     void setPathingDelayCap(int v);
 };
+#endif
 
 void RGE_Player::setPathingDelayCap(int v) {
-    this->pathingDelayCap_ = v;
+    this->pathingDelayCapValue = v;
 }

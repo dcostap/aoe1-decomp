@@ -1,6 +1,13 @@
 // Authentic move_obj.cpp owner wrapper.
-// PDB order follows the reviewed anchors and priority owners from 0045C450
-// through 0045E970. Other module owners remain standalone until review.
+// PDB order follows the reviewed owners from 0045C450 through 0045CAA0.
+// PDB lines are move_obj.cpp:96-305. The next owner is save at 0045CE00.
+//
+// PREFIX CHECKPOINT: this wrapper compiles with the 0045C450 /GX flag set.
+// The six grouped bodies are not exact under the current canonical header:
+// their fresh sizes are 336, 320, 144, 480, 304, and 864 bytes versus 333,
+// 308, 135, 471, 291, and 862. Keep this boundary until the authentic header
+// context is recovered. Later owners remain standalone until declaration
+// recovery.
 // The canonical moving-object surface is declared once in move_obj_context.h.
 // This wrapper is intentionally not added to translation_units.json.
 
@@ -29,35 +36,16 @@
 #define DAT_00570be0 DAT_00570BE0
 #define DAT_00570bf0 DAT_00570BF0
 
-// Exact anchors.
+// PDB-ordered prefix owners.
 #include "matching/0045C450_RGE_Moving_Object.cpp"
 #include "matching/0045C5C0_RGE_Moving_Object.cpp"
 #include "matching/0045C700_RGE_Moving_Object.cpp"
 #include "matching/0045C790_recycle_in_to_game.cpp"
 #include "matching/0045C970_setup.cpp"
 #include "matching/0045CAA0_setup.cpp"
-#include "matching/0045CE00_save.cpp"
-#include "matching/0045D080_new_sprite.cpp"
-#include "matching/0045D0B0_spawn_death_obj.cpp"
-#include "matching/0045D0E0_transform.cpp"
-#include "matching/0045D120_is_moving.cpp"
-#include "matching/0045D140_stop_moving.cpp"
-#include "matching/0045D1F0_turn_towards.cpp"
-#include "matching/0045D360_set_angle.cpp"
-#include "matching/0045D5C0_set_velocity.cpp"
-#include "matching/0045D5F0_new_angle.cpp"
-#include "matching/0045D610_getPath.cpp"
-#include "matching/0045D620_facetToNextWaypoint.cpp"
-#include "matching/0045D650_setGoal.cpp"
-#include "matching/0045D680_setActionRange.cpp"
-#include "matching/0045D690_setTargetID.cpp"
-#include "matching/0045D6A0_setTargetRadius.cpp"
 
-// Priority behavior owners.
-#include "scratch/0045D3D0_teleport.cpp"
-#include "matching/0045D6C0_findPath.cpp"
-#include "scratch/0045DB90_doMove.cpp"
-#include "scratch/0045E970_doTrivialMove.cpp"
+// Proven PDB-ordered prefix ends at 0045CAA0. Later owners need canonical
+// declaration recovery before they can enter this authentic wrapper.
 
 #undef DAT_00570b40
 #undef DAT_00570b48

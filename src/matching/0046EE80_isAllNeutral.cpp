@@ -1,8 +1,8 @@
-// tried world/player layout with the slot-0x20 virtual and the decompiler-style 1..player_num scan
-// tried signed-short compare variants and a dummy local for the early player-count gate; mismatch stayed at the first compare/branch basin
-// leaving in scratch: body shape is close, remaining gap is early branch distance / compare spelling
-// attempt 2: natural for-loop with esi-stored this
+// The binary calls the slot-0x20 RGE_Player virtual for each non-self player.
+// The canonical name is isNeutral; the old relation_to_player name was a
+// decompiler artifact.
 
+#ifndef PLAYER_GROUPED_TU
 class RGE_World {
 public:
     char gap_00[0x3C];
@@ -19,7 +19,7 @@ public:
     virtual int vf14(void);
     virtual int vf18(void);
     virtual int vf1C(void);
-    virtual int relation_to_player(int player_id);
+    virtual int isNeutral(int player_id);
 
     char gap_04[0x38];
     RGE_World* world;
@@ -29,12 +29,13 @@ public:
 
     int isAllNeutral(void);
 };
+#endif
 
 int RGE_Player::isAllNeutral(void) {
     RGE_Player* p = this;
     for (int i = 1; i < p->world->player_num; i++) {
         if (i != p->id) {
-            if (p->relation_to_player(i) == 0) {
+            if (p->isNeutral(i) == 0) {
                 return 0;
             }
         }

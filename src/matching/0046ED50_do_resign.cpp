@@ -1,3 +1,4 @@
+#ifndef PLAYER_GROUPED_TU
 class RGE_Base_Game {
 public:
     virtual ~RGE_Base_Game();
@@ -24,22 +25,23 @@ extern RGE_Base_Game* rge_base_game;
 class RGE_Player {
 public:
     virtual ~RGE_Player();
-    virtual void vf04(int);
+    virtual void set_game_status(unsigned char);
 
     char gap_04[0x46];
-    short id_;
+    short id;
     short attribute_num_;
     char gap_4E[0x33];
-    unsigned char resigned_;
+    unsigned char resigned;
 
     void do_resign(int value);
 };
+#endif
 
 void RGE_Player::do_resign(int value) {
-    unsigned char resigned = this->resigned_;
-    this->resigned_ = 1;
-    this->vf04(2);
+    unsigned char resigned = this->resigned;
+    this->resigned = 1;
+    this->set_game_status(2);
     if (!resigned) {
-        rge_base_game->vf40(5, this->id_, value, 0, 0);
+        rge_base_game->vf40(5, this->id, value, 0, 0);
     }
 }

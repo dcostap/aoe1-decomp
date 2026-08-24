@@ -52,8 +52,11 @@ public:
     ~Path();
     Path& operator=(const Path&);
     void append(Waypoint);
+    void insertAtEnd(Waypoint);
     void reset();
     void add_default();
+    void inittostart();
+    void movetonextwaypoint();
     void setTimeStamp(int);
     void killPath();
     int insertAtCurrent(Waypoint*);
@@ -288,6 +291,7 @@ public:
     RGE_Animated_Object(RGE_Master_Animated_Object*, RGE_Player*, float, float, float, int);
     RGE_Animated_Object(int, RGE_Game_World*, int);
     int setup(int, void*);
+    int setup(RGE_Master_Animated_Object*, RGE_Player*, float, float, float);
     float speed;
 };
 
@@ -346,7 +350,7 @@ public:
     int setup(int, void*);
     int setup(int, RGE_Game_World*);
     int setup(RGE_Master_Moving_Object*, RGE_Player*, float, float, float);
-    void recycle_in_to_game(RGE_Master_Moving_Object*, RGE_Player*, float, float, float);
+    void recycle_in_to_game(RGE_Master_Static_Object*, RGE_Player*, float, float, float);
     void save(int);
     void new_sprite(void*);
     RGE_Static_Object* spawn_death_obj();
@@ -376,6 +380,8 @@ public:
     short facet_num;
     char gap_62[2];
     float base_speed;
+    char gap_68[8];
+    unsigned char flag;
 };
 
 class RGE_Tile {

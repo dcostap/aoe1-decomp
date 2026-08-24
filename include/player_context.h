@@ -1,17 +1,85 @@
 #ifndef AOE1_PLAYER_CONTEXT_H
 #define AOE1_PLAYER_CONTEXT_H
 
-// Canonical declarations for the reviewed player.cpp owner span.
-//
-// This surface comes from the constructor/load audit in
-// build/audit_player_full_context.cpp.  Keep the member offsets and virtual
-// order stable.  The owner files supply the function bodies.
+// Canonical declarations for the reviewed player.cpp prefix.
+// Keep the proven member offsets, virtual order, and helper ABI stable. The
+// owner files supply the function bodies.
 
 class RGE_Player;
 class RGE_Sprite;
 class RGE_Sound;
 class RGE_Master_Player;
 class RGE_Static_Object;
+
+class TCommunications_Handler {
+public:
+    void SendChatMsg(unsigned int player, unsigned int to, char* text);
+    int GetPlayerHumanity(int player);
+};
+
+extern TCommunications_Handler* comm;
+
+class AIPlay;
+class AIPlayBook {
+public:
+    AIPlay* play(int id);
+};
+
+struct XYZBYTEPoint {
+    unsigned char x;
+    unsigned char y;
+    unsigned char z;
+};
+
+class RGE_Command {
+public:
+    virtual ~RGE_Command();
+    char gap_04[0x10];
+    TCommunications_Handler* com_hand;
+    void command_order(RGE_Static_Object**, int, RGE_Static_Object*, float,
+                       float);
+    void command_add_waypoint(int, int, int, int);
+    void command_ai_order(int, int, int, int, int, int, int, int, int,
+                          int, int, int, int);
+};
+
+class UnitAIModule {
+public:
+    virtual void vf00();
+    virtual void vf04();
+    virtual void vf08();
+    virtual void vf0C();
+    virtual void processAIOrder(int, int, int, int, float, float, float,
+                                float, int, int, int);
+};
+
+class RGE_Base_Game {
+public:
+    virtual ~RGE_Base_Game();
+    virtual void vf04(int);
+    virtual void vf08(int);
+    virtual void vf0C(int);
+    virtual void vf10(int);
+    virtual void vf14(int);
+    virtual void vf18(int);
+    virtual void vf1C(int);
+    virtual void vf20(int);
+    virtual void vf24(int);
+    virtual void vf28(int);
+    virtual void vf2C(int);
+    virtual void vf30(int);
+    virtual void vf34(int);
+    virtual void vf38(int);
+    virtual void vf3C(int);
+    virtual void vf40(int, int, int, int, int);
+    int numberPlayers();
+    int playerID(int player);
+    int playerTeam(int player);
+    char gap_04[0x1AC];
+    int prog_mode;
+};
+
+extern RGE_Base_Game* rge_base_game;
 
 class RGE_Map {
 public:
@@ -40,6 +108,11 @@ public:
     short player_num;
     char gap_3E[0x0E];
     RGE_Effects* effects;
+    char gap_50[0x08];
+    RGE_Command* command;
+    char gap_5C[0x44];
+    AIPlayBook* playbook;
+    RGE_Static_Object* object(int id);
 };
 
 class RGE_Static_Object {
@@ -90,6 +163,10 @@ public:
     virtual void vf00_37();
     virtual void vf00_38();
     virtual void vfB4(float value);
+    int id;
+    char gap_08[0x6C];
+    UnitAIModule* field_74;
+    UnitAIModule* unitAI();
 };
 
 class RGE_Master_Static_Object {
@@ -215,9 +292,10 @@ public:
                                 float, float, int, int, int);
     virtual void kickAI(int value);
     virtual int strategicNumber(int value);
-    virtual void sendGameOrder(void*, void*, float, float);
+    virtual void sendGameOrder(RGE_Static_Object*, RGE_Static_Object*, float,
+                               float);
     virtual void sendAddWaypointCommand(int, void*, int);
-    virtual void processAddWaypointCommand(int, void*, int);
+    virtual void processAddWaypointCommand(int, XYZBYTEPoint*, int);
     virtual void sendPlayCommand(int, int*, int, int, int);
     virtual void sendPlayCommand(int, int, int);
     virtual int sendAICommand(int, int, int, int, int);
@@ -261,6 +339,9 @@ public:
     virtual void logStatus(void*, int);
     virtual void load_victory(int file, long* data, unsigned char flag);
     virtual void vfF4();
+
+    unsigned char get_resigned();
+    int computerPlayer();
 
     int computerPlayerValue;
     int pathingAttemptCapValue;
@@ -312,7 +393,9 @@ public:
     float view_y;
     short map_x;
     short map_y;
-    char gap_120[0x100];
+    char gap_120[0x14];
+    RGE_Static_Object* sel_list[25];
+    char gap_198[0x88];
 
     RGE_Player(int file, RGE_Game_World* world_arg, unsigned char player_id);
     RGE_Player(RGE_Game_World* world, RGE_Master_Player* master,
@@ -328,6 +411,14 @@ public:
     RGE_Static_Object* make_scenario_obj(float x, float y, float z,
                                          short typeID, unsigned char objType,
                                          float param6);
+    int pathingAttemptCap();
+    void setPathingAttemptCap(int value);
+    int pathingDelayCap();
+    void setPathingDelayCap(int value);
+    int currentUpdatePathingAttempts();
+    int availablePathingAttempts(int value);
+    void incrementPathingAttempts();
+    void __cdecl sendChatMessage(int player, int mode, char* message, ...);
 };
 
 #endif

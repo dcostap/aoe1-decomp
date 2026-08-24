@@ -1,7 +1,8 @@
+#ifndef PLAYER_GROUPED_TU
 class RGE_Player {
 public:
     virtual ~RGE_Player();
-    int computerPlayer_;
+    int computerPlayerValue;
     int pathingAttemptCap_;
     int pathingDelayCap_;
     int currentUpdatePathingAttempts_;
@@ -12,7 +13,8 @@ public:
 
     int computerPlayer();
 };
+#endif
 
 int RGE_Player::computerPlayer() {
-    return this->computerPlayer_;
+    return this->computerPlayerValue;
 }

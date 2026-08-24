@@ -1,3 +1,4 @@
+#ifndef PLAYER_GROUPED_TU
 class RGE_Player {
 public:
     virtual ~RGE_Player();
@@ -10,8 +11,9 @@ public:
     char gap_82[0x82];
     unsigned char allied_victory_;
 
-    void scenario_save(int);
+    virtual void scenario_save(int);
 };
+#endif
 
 void RGE_Player::scenario_save(int) {
 }

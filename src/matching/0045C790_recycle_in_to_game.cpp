@@ -47,6 +47,7 @@
 //   original ECX sign-adjust register. The natural direct-member source is an
 //   exact 471-byte match; keep it for promotion.
 
+#ifndef MOVE_OBJ_CANONICAL_TU
 class RGE_Master_Static_Object;
 class RGE_Player;
 
@@ -148,6 +149,7 @@ extern double DAT_00570b40;
 extern float DAT_00570b48;
 extern float DAT_00570b4c;
 extern float DAT_00570b50;
+#endif
 
 void RGE_Moving_Object::recycle_in_to_game(
     RGE_Master_Static_Object* master,

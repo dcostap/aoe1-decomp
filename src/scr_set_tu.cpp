@@ -2,13 +2,13 @@
 // Owners follow PDB source order, not generated or vector-destructor order.
 // The vector-deleting fragment at 004B57F0 has no PDB source owner.
 // The shared scr_set_context.h surface preserves all exact anchors and
-// reduces constructor 004B4880 to a 42-byte local codegen difference.
+// makes constructor 004B4880 exact with the natural source-order recovery.
 #define SCR_SET_CONTEXT_GROUP 1
 #include "../include/scr_set_context.h"
-#include "scratch/004B4880_TribeGameSettingsScreen.cpp"
+#include "matching/004B4880_TribeGameSettingsScreen.cpp"
 #include "matching/004B5810_init_vars.cpp"
 #include "matching/004B5920_TribeGameSettingsScreen.cpp"
-#include "accepted_drift/004B5BB0_handle_idle.cpp"
+#include "matching/004B5BB0_handle_idle.cpp"
 #include "matching/004B5C70_handle_user_command.cpp"
 #include "matching/004B5CB0_action.cpp"
 #include "matching/004B5E00_fillScenarios.cpp"

@@ -1,3 +1,4 @@
+#ifndef PLAYER_GROUPED_TU
 class RGE_Player {
 public:
     virtual ~RGE_Player();
@@ -10,8 +11,9 @@ public:
     char gap_82[0x82];
     unsigned char allied_victory_;
 
-    void loadAIInformation(int, int, int, int, int);
+    void loadAIInformation(char*, char*, char*, int, int);
 };
+#endif
 
-void RGE_Player::loadAIInformation(int, int, int, int, int) {
+void RGE_Player::loadAIInformation(char*, char*, char*, int, int) {
 }

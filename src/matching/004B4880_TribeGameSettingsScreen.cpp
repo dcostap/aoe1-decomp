@@ -9,29 +9,17 @@
 // setup-file branch; caching draw_area reproduced the setup argument order.
 // scenario victory if/else reproduced the binary's branch-owned append sites.
 // num_str base and <= 200 reproduced the sprintf loop buffer and bound.
-// Remaining nonexact drift is localized at scenario-list column arithmetic:
-// VC5 keeps the receiver load/operand order different despite equivalent
-// natural spellings; later branch displacements shift by two bytes.
-// continuation: declaring a receiver local after the arithmetic, naming both
-// width operands, using int temporaries, and calling through the proven
-// TTextPanel base view all emitted the same 779-byte result.
-// A focused /GX arithmetic lab covered inline, sequential, and temporary
-// natural forms; all six variants kept size/frame/call-set parity but retained
-// the localized hunk. The analogous 004B3C90 constructor proves the desired
-// delayed receiver order in the same VC5 family; no natural local/source axis
-// found here reproduces it. Clean source restored; leave the register-order
-// barrier for a later donor/context investigation.
-// probe pass: 20 additional natural ABI, type, declaration, lifetime, class-
-// surface, and expression-shape variants all retained the same 779-byte drift.
-// Narrow volatile forced a wrong frame and was discarded. The clean source is
-// pinned below as the best supported reconstruction.
 // Module-context pass: the authentic scr_set.cpp wrapper and shared
-// scr_set_context.h surface reduce the constructor to 42 differing bytes.
-// All other scr_set owners compile with one canonical screen surface.
-// BLOCKER: The executable completes the scenario-column multiplication and
-// signed division before it loads scenarioList. The rebuild loads scenarioList
-// before the width read and division. A bad list pointer or zero ideal_width
-// therefore faults in a different order.
+// scr_set_context.h surface reduce the fresh constructor result to 42 differing
+// bytes. All other scr_set owners compile with one canonical screen surface.
+// Exact finish: the 004B3C90 scenario-screen donor stores missionTextX before
+// missionTextY and missionTextWidth. The same natural order changes the
+// remaining 42 bytes to MATCH without inline assembly or codegen flags.
+// Walkbacks from that exact source were nonexact: X, width, Y gave 20 bytes;
+// Y, X, width gave 32 bytes; the prior Y, width, X order gave 42 bytes.
+// BINARY NOTE: Original bytes at 004B55CC load height, Y, then X before the
+// mission setup block. The retained assignment order reproduces that schedule.
+// Fresh exact result: 3949/3949 bytes, 154/154 calls, and 0.0000% difference.
 
 #include <stdio.h>
 #define SCR_SET_CONTEXT_GROUP 1
@@ -804,9 +792,9 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
         return;
     this->scenarioPlayersTitle->set_alignment(3, 2);
 
+    this->missionTextX = this->scenarioListX;
     this->missionTextY = this->scenarioListHeight + this->scenarioListY + 0x18;
     this->missionTextWidth = this->scenarioListWidth;
-    this->missionTextX = this->scenarioListX;
     this->missionTextHeight = 0x104 - this->missionTextY;
 
     if (!this->create_text(this, &this->missionTitle, 0x2600,

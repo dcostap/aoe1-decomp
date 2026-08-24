@@ -49,6 +49,7 @@
 // - Exact recovery: nested direct sprite guards, an inline debug_rand product,
 //   and a double denominator term without an outer float cast reproduce 291B.
 
+#ifndef MOVE_OBJ_CANONICAL_TU
 extern "C" int __cdecl debug_rand(char* file, int line);
 
 extern double DAT_00570b40;
@@ -140,6 +141,8 @@ public:
               float x, float y, float z);
     void set_angle();
 };
+
+#endif
 
 int RGE_Moving_Object::setup(RGE_Master_Moving_Object* master_obj,
                              RGE_Player* player, float x, float y, float z) {

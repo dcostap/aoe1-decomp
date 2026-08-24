@@ -1,6 +1,7 @@
 // attempt 1: player AI-order wrapper that resolves the object, checks unitAI twice, then forwards the packet to the unit AI vcall
 // target shape: world->object(param_2); if object or unitAI is null return; call unitAI again and vcall +0x10 with the original push order
 
+#ifndef PLAYER_GROUPED_TU
 class UnitAIModule {
 public:
     virtual void vf00(void);
@@ -31,6 +32,7 @@ public:
 
     void processAIOrder(int param_1, int param_2, int param_3, int param_4, int param_5, float param_6, float param_7, float param_8, float param_9, int param_10, int param_11, int param_12);
 };
+#endif
 
 void RGE_Player::processAIOrder(int param_1, int param_2, int param_3, int param_4, int param_5, float param_6, float param_7, float param_8, float param_9, int param_10, int param_11, int param_12) {
     RGE_Static_Object* obj;

@@ -1,3 +1,4 @@
+#ifndef PLAYER_GROUPED_TU
 class RGE_Player {
 public:
     char gap_00[0x8];
@@ -7,6 +8,7 @@ public:
 
     int availablePathingAttempts(int value);
 };
+#endif
 
 int RGE_Player::availablePathingAttempts(int value) {
     if (pathingDelayCapValue != -1 && value > pathingDelayCapValue) {

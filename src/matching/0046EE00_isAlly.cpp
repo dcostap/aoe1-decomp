@@ -1,3 +1,4 @@
+#ifndef PLAYER_GROUPED_TU
 struct PlayerWorld {
     char gap_00[0x3C];
     short player_num;
@@ -14,6 +15,7 @@ public:
 
     int isAlly(int player);
 };
+#endif
 
 int RGE_Player::isAlly(int player) {
     if (player == this->id) {
