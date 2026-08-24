@@ -2,6 +2,7 @@
 // PDB: Pnl_scbr.cpp:805-836, 245 bytes
 // void __thiscall draw_button_pic(int param_1, int param_2, tagRECT* param_3)
 // ret 0Ch (3 params)
+// BINARY NOTE: The fallback branch uses TPanel::draw_rect2 at vtable slot +3C.
 // Attempt log:
 // 1: baseline used separate fallback returns, a decompiler-shaped parameter
 //    alias, and a seven-argument shape_draw declaration; it emitted two panel
@@ -67,92 +68,7 @@
 #include <new.h>
 
 #ifndef PNL_SCBR_CANONICAL_TU
-class TDrawArea;
-
-class TShape {
-public:
-    unsigned char shape_minmax(long& out_minx, long& out_miny,
-                               long& out_maxx, long& out_maxy, long frame);
-    unsigned char shape_draw(TDrawArea* draw_area, long x, long y, long frame,
-                             unsigned char color_flag, unsigned char* color_table);
-};
-
-class TDrawArea {
-public:
-    void SetClipRect(tagRECT* rect);
-};
-
-class TPanel {
-public:
-    virtual ~TPanel();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
-    virtual void vf20();
-    virtual void vf24();
-    virtual void enterCS(int unk);
-    virtual void leaveCS();
-    virtual void vf30();
-    virtual void vf34();
-    virtual void vf38();
-    virtual void draw_rect(tagRECT* rect);
-
-    char _gap_04[0x1C];
-    TDrawArea* draw_area;
-    char _gap_24[0x1C];
-    TPanel* panel;
-    char _gap_44[0xB0];
-};
-
-class TScrollBarPanel : public TPanel {
-public:
-    char _gap_F4[0x14];
-    TShape* button_pics;
-    int back_frame;          // +0x10C
-    int up_frame;            // +0x110
-    int down_frame;          // +0x114
-    int tab_frame;           // +0x118
-    long arrowSize;          // +0x11C
-    long tabSize;            // +0x120
-    long tab_y;              // +0x124
-    long tab_min_y;          // +0x128
-    long tab_max_y;          // +0x12C
-    long tab_mouse_y;        // +0x130
-    long tab_x;              // +0x134
-    long tab_min_x;          // +0x138
-    long tab_max_x;          // +0x13C
-    long tab_mouse_x;        // +0x140
-    unsigned char item_down; // +0x144
-    char _pad_145[3];
-    int item_is_down;        // +0x148
-    long item_x;             // +0x14C
-    long item_y;             // +0x150
-    unsigned char item_mode; // +0x154
-    char _pad_155[3];
-    unsigned long item_last_time;     // +0x158
-    unsigned long item_hold_interval; // +0x15C
-    unsigned long item_down_interval; // +0x160
-    tagRECT up_rect;          // +0x164
-    tagRECT down_rect;        // +0x174
-    tagRECT tab_rect;         // +0x184
-    tagRECT top_rect;         // +0x194
-    tagRECT bottom_rect;      // +0x1A4
-    long orientationValue;    // +0x1B4
-    int bevel_type;           // +0x1B8
-    unsigned char bevel_color1; // +0x1BC
-    unsigned char bevel_color2;
-    unsigned char bevel_color3;
-    unsigned char bevel_color4;
-    unsigned char bevel_color5;
-    unsigned char bevel_color6;
-    char _pad_1C2[2];
-
-    void draw_button_pic(int param_1, int param_2, tagRECT* param_3);
-};
+#include "../../include/pnl_scbr_context.h"
 #endif
 
 void TScrollBarPanel::draw_button_pic(int param_1, int param_2, tagRECT* param_3)
@@ -186,6 +102,6 @@ void TScrollBarPanel::draw_button_pic(int param_1, int param_2, tagRECT* param_3
         this->button_pics->shape_draw(this->draw_area, x, y,
                                       param_1 + (param_2 != 0), 0, 0);
     } else {
-        this->panel->draw_rect(param_3);
+        this->panel->draw_rect2(param_3);
     }
 }
