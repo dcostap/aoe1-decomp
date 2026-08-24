@@ -14,7 +14,7 @@
 #include "matching/0040A870_ConstructionItem.cpp"
 #include "matching/0040A8D0_ConstructionItem.cpp"
 #include "matching/0040A910_ConstructionItem.cpp"
-#include "scratch/0040A950_ConstructionItem.cpp"
+#include "matching/0040A950_ConstructionItem.cpp"
 #include "matching/0040A960_operator.cpp"
 #include "scratch/0040A990_operator.cpp"
 #include "scratch/0040A9C0_operator.cpp"

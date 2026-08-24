@@ -18,7 +18,7 @@
 #include "matching/0044FFB0_setup.cpp"
 #include "matching/00450170_setup.cpp"
 #include "accepted_drift/00450450_setup.cpp"
-#include "scratch/00450680_RGE_Master_Combat_Object.cpp"
+#include "matching/00450680_RGE_Master_Combat_Object.cpp"
 #include "matching/004506D0_make_new_obj.cpp"
 #include "matching/004507A0_make_new_master.cpp"
 #include "matching/00450810_copy_obj.cpp"

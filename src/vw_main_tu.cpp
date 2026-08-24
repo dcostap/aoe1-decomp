@@ -15,7 +15,7 @@
 #include "matching/0053E340_mouse_left_down_action.cpp"
 #include "matching/0053E7F0_mouse_left_move_action.cpp"
 #include "scratch/0053E910_mouse_left_up_action.cpp"
-#include "scratch/0053F220_mouse_right_down_action.cpp"
+#include "matching/0053F220_mouse_right_down_action.cpp"
 #include "scratch/0053F2F0_mouse_right_move_action.cpp"
 #include "matching/0053F3D0_mouse_right_up_action.cpp"
 #include "matching/0053F660_start_scroll_view.cpp"
