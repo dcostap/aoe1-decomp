@@ -20,6 +20,7 @@
 #include "..\..\include\game_globals.h"
 #include <string.h>
 
+#ifndef PNL_PIC_CANONICAL_TU
 class TDrawArea {
 public:
     char gap_00[0x4];
@@ -65,6 +66,7 @@ public:
     void free_pic();
     void draw();
 };
+#endif
 
 long TPicturePanel::setup(TDrawArea* p1, TPanel* p2, long p3, long p4, long p5, long p6, char* p7, long p8, int p9, int p10)
 {

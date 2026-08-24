@@ -1,11 +1,21 @@
+#ifndef TVW_DMAP_SHARED_CONTEXT
+class TPanel {
+public:
+    enum RedrawMode {
+        redraw_none = 0,
+        redraw_local = 1,
+        redraw_all = 2
+    };
+};
+
 class RGE_Diamond_Map {
 public:
-    void set_redraw(int mode);
+    virtual void set_redraw(TPanel::RedrawMode mode);
 };
 
 class TRIBE_Screen_Game {
 public:
-    void set_map_buttons_redraw(int mode);
+    void set_map_buttons_redraw(TPanel::RedrawMode mode);
 };
 
 class TRIBE_Diamond_Map_View {
@@ -16,11 +26,12 @@ public:
     int field_6C;
     int field_70;
 
-    virtual void set_redraw(int mode);
+    virtual void set_redraw(TPanel::RedrawMode mode);
 };
+#endif
 
-void TRIBE_Diamond_Map_View::set_redraw(int mode) {
-    ((RGE_Diamond_Map*)this)->set_redraw(mode);
+void TRIBE_Diamond_Map_View::set_redraw(TPanel::RedrawMode mode) {
+    RGE_Diamond_Map::set_redraw(mode);
     if (mode != 0 && this->field_70 != 0 && this->field_6C != 0) {
         this->screen_game->set_map_buttons_redraw(mode);
     }

@@ -33,6 +33,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#ifndef PNL_PIC_CANONICAL_TU
 class TShape {
 public:
     char gap_00[0x20];
@@ -68,6 +69,7 @@ public:
     int load_pic();
     void free_pic();
 };
+#endif
 
 int TPicturePanel::load_pic()
 {

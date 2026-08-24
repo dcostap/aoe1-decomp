@@ -17,6 +17,7 @@
 
 extern void __cdecl operator_delete(void*);
 
+#ifndef PNL_PIC_CANONICAL_TU
 class TPicture {
 public:
     ~TPicture();
@@ -37,6 +38,7 @@ public:
 
     void free_pic();
 };
+#endif
 
 void TPicturePanel::free_pic() {
     TPicture* p = this->pic;

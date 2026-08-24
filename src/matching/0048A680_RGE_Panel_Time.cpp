@@ -8,6 +8,7 @@
 
 #include "..\..\include\game_globals.h"
 
+#ifndef AOE1_RPNL_TIM_CONTEXT_H
 class TDrawArea;
 class TPanel;
 
@@ -44,6 +45,7 @@ public:
 
     RGE_Panel_Time(TDrawArea* draw_area, TPanel* parent, void* font_arg);
 };
+#endif
 
 RGE_Panel_Time::RGE_Panel_Time(TDrawArea* draw_area, TPanel* parent, void* font_arg) : TPanel() {
     this->font = font_arg;

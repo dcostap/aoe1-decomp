@@ -1,3 +1,4 @@
+#ifndef AOE1_RPNL_TIM_CONTEXT_H
 class RGE_Game_World {
 public:
     char gap_00[4];
@@ -40,9 +41,14 @@ class TPanel {
 public:
     long handle_idle();
 };
+#endif
 
 long RGE_Panel_Time::handle_idle() {
+#ifdef AOE1_RPNL_TIM_CONTEXT_H
+    this->TPanel::handle_idle();
+#else
     ((TPanel*)this)->handle_idle();
+#endif
 
     this->game_time = rge_base_game->world->world_time / 1000;
 

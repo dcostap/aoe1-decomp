@@ -18,6 +18,7 @@
 // Final: exact 1349-byte match. FLAGS: config/flags/0043F720_action.rsp (/GX).
 
 #include "..\..\include\game_globals.h"
+#ifndef DLG_MENU_SHARED_CONTEXT
 class TPanelSystem {
 public:
     int setCurrentPanel(char* name, int param);
@@ -142,6 +143,7 @@ public:
     int singlePlayerGame();
     void set_paused(int param1, int param2);
 };
+#endif
 
 long TribeMenuDialog::action(TPanel* panel, long id, unsigned long param3, unsigned long param4)
 {

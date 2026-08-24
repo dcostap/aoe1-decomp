@@ -6,6 +6,7 @@
 
 #include "..\..\include\game_globals.h"
 
+#ifndef DLG_MENU_SHARED_CONTEXT
 class TPanel {
 public:
     char _gap_04[0x1C];
@@ -45,6 +46,7 @@ public:
 
     virtual ~TribeMenuDialog();
 };
+#endif
 
 TribeMenuDialog::~TribeMenuDialog()
 {

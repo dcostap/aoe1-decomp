@@ -2225,6 +2225,44 @@
       "owners": {
         "00511B00": "src/matching/00511B00_load.cpp"
       }
+    },
+    {
+      "name": "pnl_pic_prefix",
+      "source": "src/pnl_pic_tu.cpp",
+      "flags": "config/flags/0047A250_TPicturePanel.rsp",
+      "owners": {
+        "0047A250": "src/matching/0047A250_TPicturePanel.cpp",
+        "0047A2A0": "src/matching/0047A2A0_setup.cpp",
+        "0047A3A0": "src/matching/0047A3A0_set_picture.cpp",
+        "0047A5B0": "src/matching/0047A5B0_free_pic.cpp",
+        "0047A630": "src/matching/0047A630_draw.cpp"
+      },
+      "symbols": {
+        "0047A630": "?draw@TPicturePanel@@UAEXXZ"
+      }
+    },
+    {
+      "name": "dlg_menu",
+      "source": "src/dlg_menu_tu.cpp",
+      "flags": "config/flags/0043F340_TribeMenuDialog.rsp",
+      "owners": {
+        "0043F340": "src/matching/0043F340_TribeMenuDialog.cpp",
+        "0043F6B0": "src/matching/0043F6B0_TribeMenuDialog.cpp",
+        "0043F720": "src/matching/0043F720_action.cpp"
+      }
+    },
+    {
+      "name": "rpnl_tim",
+      "source": "src/rpnl_tim_tu.cpp",
+      "flags": "config/flags/0048A680_RGE_Panel_Time.rsp",
+      "owners": {
+        "0048A680": "src/matching/0048A680_RGE_Panel_Time.cpp",
+        "0048A740": "src/matching/0048A740_draw.cpp",
+        "0048AA70": "src/matching/0048AA70_handle_idle.cpp"
+      },
+      "symbols": {
+        "0048A740": "?draw@RGE_Panel_Time@@UAEXXZ"
+      }
     }
   ]
 }

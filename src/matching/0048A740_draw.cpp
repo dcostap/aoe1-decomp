@@ -27,6 +27,7 @@ extern "C" __declspec(dllimport) COLORREF __stdcall SetTextColor(HDC, COLORREF);
 extern "C" __declspec(dllimport) BOOL __stdcall TextOutA(HDC, int, int, LPCSTR, int);
 extern "C" __declspec(dllimport) UINT __stdcall GetPaletteEntries(HPALETTE, UINT, UINT, LPPALETTEENTRY);
 
+#ifndef AOE1_RPNL_TIM_CONTEXT_H
 class RGE_Base_Game;
 extern RGE_Base_Game* rge_base_game;
 
@@ -101,6 +102,7 @@ public:
     virtual void draw();
     virtual long handle_idle();
 };
+#endif
 
 void RGE_Panel_Time::draw()
 {

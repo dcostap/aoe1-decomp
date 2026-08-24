@@ -16,6 +16,7 @@
 
 #include "..\..\include\game_globals.h"
 
+#ifndef DLG_MENU_SHARED_CONTEXT
 class TPanelSystem {
 public:
     int setCurrentPanel(char* name, int param);
@@ -107,6 +108,7 @@ public:
     RGE_Player* get_player();
     int singlePlayerGame();
 };
+#endif
 
 TribeMenuDialog::TribeMenuDialog(TScreenPanel* parent) : TDialogPanel("Menu Dialog")
 {
