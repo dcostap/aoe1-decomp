@@ -140,13 +140,15 @@ public:
 class RGE_View {
 public:
     virtual ~RGE_View();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
+    virtual void setup(void*, RGE_View*, long, long, long, long,
+                       unsigned char);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_color(unsigned char);
+    virtual void set_active(int);
+    virtual void set_positioning(int, long, long, long, long, long, long,
+                                 long, long, RGE_View*, RGE_View*, RGE_View*,
+                                 RGE_View*);
+    virtual void set_fixed_position(long, long, long, long);
     virtual void set_redraw(int);
 
     char gap_04[0xF8];

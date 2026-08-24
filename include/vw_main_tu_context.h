@@ -452,7 +452,7 @@ public:
 
 class RGE_Game_World {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Game_World();
     unsigned char gap_04[0x3C];
     RGE_Player** players;
     unsigned char gap_40[0x44];
@@ -499,6 +499,7 @@ public:
     int DispSel_List_Max;
 
     RGE_View();
+    virtual ~RGE_View();
     virtual long handle_mouse_up(uchar, long, long, int, int);
     virtual int pick_through_fog(RGE_Static_Object*);
     virtual int pick_weight(RGE_Static_Object*, int);
@@ -528,6 +529,7 @@ public:
     RGE_Player* save_player;
 
     RGE_Main_View();
+    virtual ~RGE_Main_View();
     virtual void draw();
     virtual long handle_idle();
     virtual long handle_mouse_up(uchar, long, long, int, int);

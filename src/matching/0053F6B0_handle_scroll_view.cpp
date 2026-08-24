@@ -76,13 +76,15 @@ public:
     unsigned char need_restore;
 
     virtual ~TPanel();
-    virtual void vf04(void);
-    virtual void vf08(void);
-    virtual void vf0C(void);
-    virtual void vf10(void);
-    virtual void vf14(void);
-    virtual void vf18(void);
-    virtual void vf1C(void);
+    virtual void setup(void*, TPanel*, long, long, long, long,
+                       unsigned char);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_color(unsigned char);
+    virtual void set_active(int);
+    virtual void set_positioning(int, long, long, long, long, long, long,
+                                 long, long, TPanel*, TPanel*, TPanel*,
+                                 TPanel*);
+    virtual void set_fixed_position(long, long, long, long);
     virtual void set_redraw(int param_1);
 };
 

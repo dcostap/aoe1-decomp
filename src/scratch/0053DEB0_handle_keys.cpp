@@ -98,9 +98,15 @@ class RGE_Static_Object;
 
 class RGE_Player {
 public:
-    virtual void vf00(); virtual void vf04(); virtual void vf08(); virtual void vf0C();
-    virtual void vf10(); virtual void vf14(); virtual void vf18(); virtual void vf1C();
-    virtual void repaint(int);
+    virtual ~RGE_Player();
+    virtual void set_game_status(uchar);
+    virtual void do_resign(int);
+    virtual void changeToHumanPlayer();
+    virtual void changeToComputerPlayer();
+    virtual char* aiStatus(int);
+    virtual int isEnemy(int);
+    virtual int isAlly(int);
+    virtual int isNeutral(int);
     char gap_04[0x110];
     float view_x;
     float view_y;
@@ -111,11 +117,20 @@ public:
 
 class RGE_Static_Object {
 public:
-    virtual void vf00(); virtual void vf04(); virtual void vf08(); virtual void vf0C();
-    virtual void vf10(); virtual void vf14(); virtual void vf18(); virtual void vf1C();
-    virtual void vf20(); virtual void vf24(); virtual void vf28(); virtual void vf2C();
-    virtual void vf30();
-    virtual float teleport(float x, float y, int zero);
+    virtual ~RGE_Static_Object();
+    virtual void recycle_in_to_game(void*, RGE_Player*, float, float, float);
+    virtual void recycle_out_of_game();
+    virtual void draw(void*, short, short, void*);
+    virtual void shadow_draw(void*, short, short, uchar);
+    virtual void normal_draw(void*, short, short);
+    virtual void draw_front_frame(void*, short, short);
+    virtual void draw_back_frame(void*, short, short);
+    virtual void draw_frame(void*, short, short);
+    virtual uchar update();
+    virtual void check_damage_sprites();
+    virtual void rehook();
+    virtual void save(int);
+    virtual float teleport(float x, float y, float zero);
     char gap_04[0x34];
     float x;
     float y;
@@ -129,8 +144,16 @@ public:
 
 class RGE_Main_View {
 public:
-    virtual void vf00(); virtual void vf04(); virtual void vf08(); virtual void vf0C();
-    virtual void vf10(); virtual void vf14(); virtual void vf18(); virtual void vf1C();
+    virtual ~RGE_Main_View();
+    virtual void setup(void*, RGE_Main_View*, long, long, long, long,
+                       uchar);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_color(uchar);
+    virtual void set_active(int);
+    virtual void set_positioning(int, long, long, long, long, long, long,
+                                 long, long, RGE_Main_View*, RGE_Main_View*,
+                                 RGE_Main_View*, RGE_Main_View*);
+    virtual void set_fixed_position(long, long, long, long);
     virtual void set_redraw(int);
     char gap_04[0x1C];
     TDrawArea* render_area;

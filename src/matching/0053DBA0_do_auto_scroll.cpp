@@ -127,7 +127,7 @@ public:
 
 class RGE_Player {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Player();
     char gap_04[0x110];
     float view_x;
     float view_y;
