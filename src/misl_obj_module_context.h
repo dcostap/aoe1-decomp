@@ -75,7 +75,6 @@ class RGE_Check_List;
 
 class RGE_Missile_Object : public RGE_Combat_Object {
 public:
-    virtual ~RGE_Missile_Object();
     virtual float move_to(float, float, float);
     virtual void missile_pad_14();
     virtual void missile_pad_15();

@@ -3,16 +3,14 @@
 // A740, A800, A870, A8A0, A900, A910, A940, A950, A9E0, AA70, and AB20.
 // The padding-only block stays outside this wrapper.
 // A7D0 and A7F0 are compiler-generated destructor COMDATs without PDB owners.
-// The class destructor emits them. They have no separate source include.
+// The inherited virtual destructor surface emits them. They have no separate
+// source include. VC5 publishes the A7D0 body as the ??_G decorated symbol;
+// the original vftable also records its ??_E alias.
 // The shared surface keeps one compiler-facing missile-object declaration.
 // This wrapper is intentionally not added to translation_units.json.
 
 #define RGE_MISL_OBJ_SHARED_CONTEXT 1
 #include "misl_obj_module_context.h"
-
-// The original module emits the class destructor COMDAT between the two
-// constructors. Keep the declaration in this module-local context.
-RGE_Missile_Object::~RGE_Missile_Object() {}
 
 #include "matching/0045A740_RGE_Missile_Object.cpp"
 #include "matching/0045A800_RGE_Missile_Object.cpp"
