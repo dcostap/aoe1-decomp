@@ -12,7 +12,12 @@ TOOLS_DIR = REPO_ROOT / "tools"
 if str(TOOLS_DIR) not in sys.path:
     sys.path.insert(0, str(TOOLS_DIR))
 
-from validate_candidate_tu import _newline_style, _render, load_proposal  # noqa: E402
+from validate_candidate_tu import (  # noqa: E402
+    _newline_style,
+    _render,
+    _source_policy_issues,
+    load_proposal,
+)
 
 
 class CandidateTranslationUnitTests(unittest.TestCase):
@@ -80,6 +85,22 @@ class CandidateTranslationUnitTests(unittest.TestCase):
         )
         self.assertIn("00401010", text)
         self.assertIn("MATCH", text)
+
+    def test_source_policy_rejects_fake_virtual_slots(self) -> None:
+        with tempfile.TemporaryDirectory(dir=REPO_ROOT / "build") as temporary:
+            root = Path(temporary)
+            wrapper = root / "demo.cpp"
+            context = root / "context.h"
+            wrapper.write_text('#include "context.h"\n', encoding="utf-8")
+            context.write_text(
+                "class Demo { public: virtual void vf10(); void* vptr; };\n",
+                encoding="utf-8",
+            )
+
+            issues = _source_policy_issues(wrapper)
+
+        self.assertTrue(any("placeholder virtual slots" in issue for issue in issues))
+        self.assertTrue(any("raw vtable fields" in issue for issue in issues))
 
 
 if __name__ == "__main__":

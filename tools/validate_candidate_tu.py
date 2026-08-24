@@ -23,6 +23,11 @@ from translation_unit_prefixes import _compile_wrapper, compare_object_owner
 
 _INCLUDE = re.compile(r'^\s*#\s*include\s*"([^"]+)"(?:\s*//.*)?\s*$')
 _SOURCE_BANKS = {"matching", "accepted_drift", "verified_logic", "scratch"}
+_INLINE_ASM = re.compile(r"\b(?:__asm|_asm)\b")
+_FAKE_VIRTUAL_SLOT = re.compile(
+    r"\bvirtual\b[^;{]*(?:\bvf[0-9A-Fa-f]{2,}\b|\bvpad[0-9A-Fa-f]{2,}\b)"
+)
+_RAW_VTABLE_FIELD = re.compile(r"\bvoid\s*\*\s*(?:vtable_ptr|vptr)\s*;")
 
 
 def parse_args() -> argparse.Namespace:
@@ -156,6 +161,70 @@ def _source_includes(wrapper: Path) -> list[tuple[int, Path]]:
     return result
 
 
+def _source_closure(source: Path) -> list[Path]:
+    result: list[Path] = []
+    pending = [source.resolve()]
+    seen: set[Path] = set()
+    while pending:
+        current = pending.pop()
+        if current in seen or not current.is_file():
+            continue
+        seen.add(current)
+        result.append(current)
+        try:
+            lines = current.read_text(encoding="utf-8").splitlines()
+        except OSError:
+            continue
+        for line in lines:
+            match = _INCLUDE.match(line)
+            if match is None:
+                continue
+            included = (current.parent / match.group(1).replace("\\", "/")).resolve()
+            try:
+                included.relative_to(REPO_ROOT.resolve())
+            except ValueError:
+                continue
+            pending.append(included)
+    return result
+
+
+def _source_policy_issues(wrapper: Path) -> list[str]:
+    findings: dict[tuple[Path, str], list[int]] = {}
+    for source in _source_closure(wrapper):
+        in_block_comment = False
+        for line_number, raw_line in enumerate(
+            source.read_text(encoding="utf-8").splitlines(), start=1
+        ):
+            line = raw_line
+            if in_block_comment:
+                if "*/" not in line:
+                    continue
+                line = line.split("*/", 1)[1]
+                in_block_comment = False
+            while "/*" in line:
+                before, after = line.split("/*", 1)
+                if "*/" in after:
+                    line = before + after.split("*/", 1)[1]
+                else:
+                    line = before
+                    in_block_comment = True
+                    break
+            line = line.split("//", 1)[0]
+            if _INLINE_ASM.search(line):
+                findings.setdefault((source, "inline assembly"), []).append(line_number)
+            if _FAKE_VIRTUAL_SLOT.search(line):
+                findings.setdefault((source, "placeholder virtual slots"), []).append(line_number)
+            if _RAW_VTABLE_FIELD.search(line):
+                findings.setdefault((source, "raw vtable fields"), []).append(line_number)
+    issues: list[str] = []
+    for (source, kind), lines in sorted(
+        findings.items(), key=lambda item: (str(item[0][0]).casefold(), item[0][1])
+    ):
+        suffix = f"line {lines[0]}" if len(lines) == 1 else f"{len(lines)} lines; first {lines[0]}"
+        issues.append(f"source policy forbids {kind} in {source} ({suffix})")
+    return issues
+
+
 def _newline_style(data: bytes) -> str:
     line_feeds = data.count(b"\n")
     if line_feeds == 0:
@@ -207,6 +276,7 @@ def validate_proposal(payload: dict[str, object]) -> list[str]:
         issues.append(f"missing flags: {flags}")
     if issues:
         return issues
+    issues.extend(_source_policy_issues(wrapper))
 
     owners = payload["owners"]
     observed = payload["observed"]

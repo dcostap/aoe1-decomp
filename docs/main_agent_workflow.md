@@ -60,6 +60,24 @@ and exact decorated symbols. Candidate artifacts stay under
 The main agent reviews the proposal, applies source-bank moves, updates global
 config, reruns registered checks, and commits the result.
 
+List every PDB module without registered exact context:
+
+```text
+python tools/plan_translation_unit.py --rank --unregistered-only --limit 0
+```
+
+Register reviewed exact owners from one candidate proposal:
+
+```text
+python tools/register_candidate_tu.py --proposal <proposal.json> --name <group>
+python tools/register_candidate_tu.py --proposal <proposal.json> --name <group> --apply
+```
+
+The first command is a dry run. Both commands run fresh candidate validation.
+The command rejects unsafe flags, prohibited source forms, duplicate ownership,
+and invalid wrapper structure. It registers exact owners only. It does not
+promote observed owners.
+
 ### Matching worker
 
 Assign one VA, one lease owner, and a compact evidence card. Include known prior

@@ -82,6 +82,24 @@ class TranslationUnitPlannerTests(unittest.TestCase):
         self.assertEqual(ranking[0]["module"], "demo.cpp")
         self.assertGreater(ranking[0]["readiness_score"], ranking[1]["readiness_score"])
 
+    def test_ranking_can_show_all_unregistered_modules(self) -> None:
+        rows = [
+            row("00401010", "matching", 10),
+            {**row("00402010", "matching", 10), "pdb_source_path": "C:\\src\\other.cpp", "pdb_source_file": "other.cpp"},
+        ]
+        pdb = {
+            "00401010": {"primary_source_path": "C:\\src\\demo.cpp"},
+            "00402010": {"primary_source_path": "C:\\src\\other.cpp"},
+        }
+        with patch(
+            "plan_translation_unit._registered_owner_map",
+            return_value={"00401010": "demo_tu"},
+        ):
+            ranking = rank_modules(rows, pdb, 0, unregistered_only=True)
+
+        self.assertEqual([item["module"] for item in ranking], ["other.cpp"])
+        self.assertEqual(ranking[0]["registration_status"], "missing")
+
 
 if __name__ == "__main__":
     unittest.main()

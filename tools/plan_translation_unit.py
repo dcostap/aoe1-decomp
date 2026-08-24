@@ -32,6 +32,11 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--limit", type=int, default=30, help="Maximum ranked modules to show.")
     parser.add_argument(
+        "--unregistered-only",
+        action="store_true",
+        help="With --rank, show only PDB modules without a registered exact owner.",
+    )
+    parser.add_argument(
         "--output-dir",
         type=Path,
         default=REPO_ROOT / "build" / "tu_plans",
@@ -76,7 +81,11 @@ def _module_groups(
 
 
 def rank_modules(
-    rows: list[dict[str, str]], pdb_map: dict[str, dict[str, str]], limit: int
+    rows: list[dict[str, str]],
+    pdb_map: dict[str, dict[str, str]],
+    limit: int,
+    *,
+    unregistered_only: bool = False,
 ) -> list[dict[str, object]]:
     ranked: list[dict[str, object]] = []
     registered = _registered_owner_map()
@@ -96,6 +105,11 @@ def rank_modules(
         }:
             continue
         registered_exact = sum(row["va"].upper() in registered for row in module_rows)
+        registered_groups = sorted(
+            {registered[row["va"].upper()] for row in module_rows if row["va"].upper() in registered}
+        )
+        if unregistered_only and registered_groups:
+            continue
         unregistered_matching = matching - registered_exact
         ranked.append(
             {
@@ -109,6 +123,8 @@ def rank_modules(
                 "scratch": scratch,
                 "unclaimed": banks["unclaimed"],
                 "registered_exact": registered_exact,
+                "registered_groups": registered_groups,
+                "registration_status": "registered" if registered_groups else "missing",
                 "unregistered_matching": unregistered_matching,
                 "matching_ratio": round(matching / normal_count, 4),
                 "readiness_score": round(1000 * unregistered_matching / normal_count)
@@ -126,7 +142,7 @@ def rank_modules(
             str(item["pdb_source_path"]).casefold(),
         )
     )
-    return ranked[: max(0, limit)]
+    return ranked if limit == 0 else ranked[: max(0, limit)]
 
 
 def build_packet(
@@ -270,7 +286,12 @@ def main() -> int:
     args.output_dir.mkdir(parents=True, exist_ok=True)
 
     if args.rank:
-        ranking = rank_modules(rows, pdb_map, args.limit)
+        ranking = rank_modules(
+            rows,
+            pdb_map,
+            args.limit,
+            unregistered_only=args.unregistered_only,
+        )
         json_path = args.output_dir / "ranking.json"
         text_path = args.output_dir / "ranking.txt"
         json_path.write_text(json.dumps(ranking, indent=2) + "\n", encoding="utf-8")
