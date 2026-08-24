@@ -24,6 +24,7 @@ extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
 extern "C" char* __cdecl strcat(char* dest, const char* src);
 extern "C" char* __cdecl strcpy(char* dest, const char* src);
 
+#ifndef COM_ADDR_TU_CONTEXT
 struct IPAD {
     char DottedIPAddress[0x20];
     char Alias[0x80];
@@ -41,8 +42,10 @@ public:
     unsigned int AliasesAvailable;   // +0x21C
     IPAD* pIPAD;
 
+protected:
     int SetIPAddresses(char* out_buffer);
 };
+#endif
 
 int RGE_Communications_Addresses::SetIPAddresses(char* out_buffer)
 {

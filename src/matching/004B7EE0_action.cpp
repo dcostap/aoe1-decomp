@@ -4,6 +4,9 @@
 // rewrite 2026-05-19: replaced cdecl helper stubs with real thiscall member surfaces for TEasy_Panel, TPanelSystem, and fillTribeText.
 // retry: corrected layout by restoring field_47C/field_480 before tribeButton so tribeButton begins at +0x484, and used a normal for-loop. This removed the EBX save and matched the original loop/fallback layout. check_function: MATCH / 0.0000%.
 
+#include "../../include/scr_trb_context.h"
+
+#if 0
 class TPanel { public: virtual ~TPanel(); };
 class TTextPanel { public: virtual ~TTextPanel(); };
 class TButtonPanel { public: virtual ~TButtonPanel(); };
@@ -19,9 +22,11 @@ public:
     int setCurrentPanel(char* name, int a);
     int destroyPanel(char* name);
 };
+#endif
 
 #define panel_system (*(TPanelSystem*)0x62E870)
 
+#if 0
 class TribeSelectTribeScreen : public TEasy_Panel {
 public:
     char gap4[0x478];
@@ -36,6 +41,7 @@ public:
     void fillTribeText(int idx);
     long action(TPanel* sender, long actionType, unsigned param3, unsigned param4);
 };
+#endif
 
 long TribeSelectTribeScreen::action(TPanel* sender, long actionType, unsigned param3, unsigned param4)
 {

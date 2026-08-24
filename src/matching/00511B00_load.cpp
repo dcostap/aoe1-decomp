@@ -32,7 +32,7 @@ public:
 };
 
 class TRIBE_Object_List : public RGE_Object_List {
-public:
+protected:
     void load(unsigned char type, int mode, RGE_Game_World* world);
 };
 

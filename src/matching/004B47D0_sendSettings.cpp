@@ -1,28 +1,5 @@
-class TTextPanel {
-public:
-    char* get_text(void);
-};
-
-class RGE_Base_Game {
-public:
-    void setScenarioGame(int value);
-    void setScenarioName(char* name);
-};
-
-class TRIBE_Game : public RGE_Base_Game {
-public:
-    void setDeathMatch(unsigned char value);
-};
-
-extern TRIBE_Game* rge_base_game;
-
-class TribeSelectScenarioScreen {
-public:
-    char gap_00[0x494];
-    TTextPanel* scenarioList;
-
-    void sendSettings(void);
-};
+// VA: 004B47D0 | TribeSelectScenarioScreen::sendSettings()
+#include "../../include/scr_sels_context.h"
 
 void TribeSelectScenarioScreen::sendSettings(void) {
     rge_base_game->setScenarioGame(1);

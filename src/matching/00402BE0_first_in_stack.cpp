@@ -1,3 +1,4 @@
+#ifndef ACT_EXPL_CONTEXT_H
 class RGE_Action_Explore {
 public:
     virtual void vf00(void);
@@ -29,11 +30,12 @@ public:
 
     void first_in_stack(unsigned char value);
 };
+#endif
 
 void RGE_Action_Explore::first_in_stack(unsigned char value) {
-    if (*(int*)&this->field_20 == 0xBF800000) {
-        vf5C(3);
+    if (*(int*)&this->target_x == 0xBF800000) {
+        set_state(3);
         return;
     }
-    vf5C(0x0B);
+    set_state(0x0B);
 }

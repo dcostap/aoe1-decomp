@@ -8,6 +8,7 @@
 // BINARY NOTE: State 3 reads master_obj->death_sprite before the state call.
 // State 4 publishes state 5 and clears speed only after is_animating returns 0.
 
+#ifndef ANI_OBJ_SHARED_CONTEXT
 class RGE_Sprite;
 class RGE_Master_Static_Object;
 class RGE_Player;
@@ -91,6 +92,7 @@ public:
 
     virtual unsigned char update();
 };
+#endif
 
 // 0041A350 - 119 bytes
 unsigned char RGE_Animated_Object::update() {

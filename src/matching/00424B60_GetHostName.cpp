@@ -10,6 +10,7 @@
 
 extern "C" int __stdcall gethostname(char* name, int namelen);
 
+#ifndef COM_ADDR_TU_CONTEXT
 class TCommunications_Handler;
 
 class IPAD {
@@ -30,6 +31,7 @@ public:
 
     char* GetHostName();
 };
+#endif
 
 char* RGE_Communications_Addresses::GetHostName()
 {

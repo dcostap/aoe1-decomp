@@ -1,10 +1,14 @@
 // attempt 1: direct switch returning the observed string literal addresses
 // goal: keep the simple jump-table basin and the default 0x586F18 path intact
 
+#include "../../include/scr_trb_context.h"
+
+#if 0
 class TribeSelectTribeScreen {
 public:
     char* tribeName(int param_1);
 };
+#endif
 
 char* TribeSelectTribeScreen::tribeName(int param_1) {
     switch (param_1) {

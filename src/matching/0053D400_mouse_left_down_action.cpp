@@ -1,6 +1,7 @@
 // VA: 0053D400 RGE_Diamond_Map_View::mouse_left_down_action
 // first pass: mirror 0053D6A0 style with real member calls and direct game fields.
 
+#ifndef VW_DIMAP_SHARED_CONTEXT
 class RGE_Prog_Info {
 public:
     char gap_00[0x8DC];
@@ -23,6 +24,7 @@ public:
     int capture_mouse();
     long mouse_left_down_action(long x, long y, int key, int flags);
 };
+#endif
 
 long RGE_Diamond_Map_View::mouse_left_down_action(long x, long y, int key, int flags) {
     if (rge_base_game->get_paused() == 0) {

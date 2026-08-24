@@ -14,6 +14,7 @@
 #include <winsock.h>
 #include <stdio.h>
 
+#ifndef COM_ADDR_TU_CONTEXT
 class IPAD {
 public:
     char DottedIPAddress[0x20];
@@ -34,6 +35,7 @@ public:
 
     char* GetAlias(unsigned int index);
 };
+#endif
 
 char* RGE_Communications_Addresses::GetAlias(unsigned int index) {
     char* alias;

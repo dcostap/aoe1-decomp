@@ -7,6 +7,9 @@
 // TEasy_Panel base action.  Text-button actions fall through to the base
 // handler.  Their message result goes directly to list->setText().
 
+#ifdef SCR_VC_CONTEXT_GROUP
+#include "../../include/scr_vc_context.h"
+#else
 class TPanel {
 public:
     virtual ~TPanel();
@@ -147,6 +150,7 @@ public:
     long action(TPanel* sender, long actionType,
                 unsigned long param3, unsigned long param4);
 };
+#endif
 
 long TRIBE_Mission_Screen::action(TPanel* sender, long actionType,
                                   unsigned long param3, unsigned long param4)

@@ -19,6 +19,7 @@
 
 #include "..\..\include\game_globals.h"
 
+#ifndef COM_ADDR_TU_CONTEXT
 class IPAD {
 public:
     char DottedIPAddress[0x20];
@@ -37,6 +38,7 @@ public:
 
     char* GetAddress(unsigned int index);
 };
+#endif
 
 char* RGE_Communications_Addresses::GetAddress(unsigned int index) {
     if (this->pIPAD + index != 0 &&

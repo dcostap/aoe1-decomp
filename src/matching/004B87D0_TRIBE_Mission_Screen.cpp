@@ -14,6 +14,9 @@
 // TScreenPanel-derived screen.  The owned panel pointers are polymorphic and
 // are destroyed with ordinary delete; the three text buttons are an array.
 
+#ifdef SCR_VC_CONTEXT_GROUP
+#include "../../include/scr_vc_context.h"
+#else
 class TPanel {
 public:
     virtual ~TPanel();
@@ -81,6 +84,7 @@ public:
 
     virtual ~TRIBE_Mission_Screen();
 };
+#endif
 
 TRIBE_Mission_Screen::~TRIBE_Mission_Screen()
 {

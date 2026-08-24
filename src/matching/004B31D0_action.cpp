@@ -16,6 +16,7 @@
 // - renamed the local game surface to the period TRIBE_Game pointer shape;
 //   emitted code stayed exact and the source is now less speculative.
 
+#ifndef SCR_SEDM_TU
 #include "..\..\include\game_globals.h"
 #include <new.h>
 
@@ -96,6 +97,7 @@ public:
     virtual long handle_idle();
     virtual long action(TPanel* p1, long p2, unsigned long p3, unsigned long p4);
 };
+#endif
 
 long TRIBE_Screen_Sed_Menu::action(
     TPanel* param_1, long param_2, unsigned long param_3, unsigned long param_4)

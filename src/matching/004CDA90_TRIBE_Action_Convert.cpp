@@ -2,15 +2,12 @@
 // tact_cnv.cpp lines 61-81
 // FLAGS: config/flags/004CDA90_TRIBE_Action_Convert.rsp (/GX)
 //
-// Attempt log:
-// - Prior scratch used a helper destructor and a base layout without the vptr, causing shifted offsets and EH prologue
-//   mismatch.
-// - Natural ctor with correct virtual RGE_Action base got down to the known 8-byte vptr ordering drift.
-// - SpruceGlow MATCH: keep the real virtual base layout and explicitly restore the derived vptr after `required_range = 1.0f`
-//   but before `field_04 = 0x68` and `set_target_obj`. This matches the original VC5 constructor ordering.
-// Result: MATCH locally with `python tools/check_function.py --va 004CDA90`.
+// Policy recovery keeps the typed base and removes the former raw vtable
+// store.  The resulting body is observed in the authentic module baseline.
 
+#ifndef TACT_CNV_SHARED_CONTEXT
 class RGE_Action_Object;
+class RGE_Task;
 
 class RGE_Static_Object {
 public:
@@ -41,14 +38,15 @@ public:
 
 class TRIBE_Action_Convert : public RGE_Action {
 public:
-    TRIBE_Action_Convert(RGE_Action_Object* obj, void* task, RGE_Static_Object* static_obj);
+    TRIBE_Action_Convert(RGE_Action_Object* obj, RGE_Task* task, RGE_Static_Object* static_obj);
 };
 
-TRIBE_Action_Convert::TRIBE_Action_Convert(RGE_Action_Object* obj, void* task, RGE_Static_Object* static_obj)
+#endif
+
+TRIBE_Action_Convert::TRIBE_Action_Convert(RGE_Action_Object* obj, RGE_Task* task, RGE_Static_Object* static_obj)
     : RGE_Action(obj, 1) {
     this->task_ptr = task;
     this->required_range = 1.0f;
-    *(int*)this = 0x574F90;
     this->field_04 = 0x68;
     RGE_Action::set_target_obj(static_obj);
     if (static_obj != 0) {

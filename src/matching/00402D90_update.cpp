@@ -1,3 +1,4 @@
+#ifndef ACT_EXPL_CONTEXT_H
 class RGE_Sprite;
 class RGE_Master_Moving_Object;
 class RGE_Static_Object;
@@ -142,6 +143,7 @@ class RGE_Action_Explore : public RGE_Action {
 public:
     unsigned char update(void);
 };
+#endif
 
 unsigned char RGE_Action_Explore::update(void) {
     switch (this->state) {

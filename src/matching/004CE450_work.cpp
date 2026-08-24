@@ -1,3 +1,4 @@
+#ifndef TACT_CNV_SHARED_CONTEXT
 typedef unsigned char uchar;
 class RGE_Static_Object { public: void* vtable_ptr; long id; char pad_08[0x30]; float world_x; float world_y; float world_z; };
 class RGE_Action { public:
@@ -6,6 +7,8 @@ class RGE_Action { public:
     short action_type; uchar pad_06[2]; void* obj; uchar state; uchar pad_0D[3]; RGE_Static_Object* target_obj; RGE_Static_Object* target_obj2; int targetID; int target2ID; float target_x; float target_y; float target_z;
 };
 class TRIBE_Action_Convert : public RGE_Action { public: uchar was_same_owner; char gap_41[3]; float requiredRange; int work(RGE_Static_Object* target, float, float, float); };
+#endif
+
 int TRIBE_Action_Convert::work(RGE_Static_Object* target, float, float, float) {
     if (target != 0) {
         if (target == this->target_obj) {

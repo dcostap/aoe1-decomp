@@ -4,6 +4,7 @@
 // FLAGS: /GX (EH frame)
 // Reads action data from saved game file
 
+#ifndef TACT_CNV_SHARED_CONTEXT
 struct RGE_Action_Object;
 struct RGE_Task;
 
@@ -40,6 +41,8 @@ struct TRIBE_Action_Convert : RGE_Action {
 };
 
 void __cdecl rge_read(int, void*, unsigned int);
+
+#endif
 
 TRIBE_Action_Convert::TRIBE_Action_Convert(int param_1, RGE_Action_Object* param_2)
     : RGE_Action(param_1, param_2, 1), requiredRange(1.0f)

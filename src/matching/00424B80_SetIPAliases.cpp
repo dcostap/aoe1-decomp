@@ -22,6 +22,7 @@
 extern "C" struct hostent* __stdcall gethostbyname(const char* name);
 extern "C" char* __cdecl strcpy(char* dest, const char* src);
 
+#ifndef COM_ADDR_TU_CONTEXT
 struct IPAD {
     char DottedIPAddress[0x20];
     char Alias[0x80];
@@ -37,8 +38,10 @@ public:
     unsigned int AliasesAvailable;   // +0x21C
     IPAD* pIPAD;                      // +0x220
 
+protected:
     int SetIPAliases(char* out_buffer);
 };
+#endif
 
 int RGE_Communications_Addresses::SetIPAliases(char* out_buffer)
 {

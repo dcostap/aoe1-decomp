@@ -1,3 +1,4 @@
+#ifndef ANI_OBJ_SHARED_CONTEXT
 class RGE_Static_Object {
 public:
     virtual void release_being_worked_on(RGE_Static_Object* object);
@@ -13,6 +14,7 @@ class RGE_Animated_Object : public RGE_Static_Object {
 public:
     void release_being_worked_on(RGE_Static_Object* object);
 };
+#endif
 
 void RGE_Animated_Object::release_being_worked_on(RGE_Static_Object* object) {
     RGE_Static_Object::release_being_worked_on(object);

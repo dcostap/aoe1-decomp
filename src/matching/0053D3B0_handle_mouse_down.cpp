@@ -1,3 +1,4 @@
+#ifndef VW_DIMAP_SHARED_CONTEXT
 class RGE_Tile;
 class TPanel {
 public:
@@ -14,6 +15,7 @@ class RGE_Diamond_Map_View : public RGE_Diamond_Map {
 public:
     long handle_mouse_down(unsigned char button, long x, long y, int ctrl, int shift);
 };
+#endif
 
 long RGE_Diamond_Map_View::handle_mouse_down(unsigned char button, long x, long y, int ctrl, int shift) {
     short tile_x;

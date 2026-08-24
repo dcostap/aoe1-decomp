@@ -1,3 +1,4 @@
+#ifndef SCR_SEDM_TU
 class RGE_Base_Game {
 public:
     char gap_0[0x1D8];
@@ -16,6 +17,7 @@ class TRIBE_Screen_Sed_Menu : public TPanel {
 public:
     long handle_idle();
 };
+#endif
 
 long TRIBE_Screen_Sed_Menu::handle_idle() {
     if (!rge_base_game->input_enabled)

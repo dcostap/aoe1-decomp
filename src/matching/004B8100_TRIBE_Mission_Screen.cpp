@@ -60,6 +60,9 @@
 
 #include <string.h>
 
+#ifdef SCR_VC_CONTEXT_GROUP
+#include "../../include/scr_vc_context.h"
+#else
 class TPanel;
 class TTextPanel;
 class TButtonPanel;
@@ -250,6 +253,7 @@ public:
 
     TRIBE_Mission_Screen(char* info_file, unsigned char game_flag, TPicture* vc_back_bmp);
 };
+#endif
 
 TRIBE_Mission_Screen::TRIBE_Mission_Screen(char* info_file, unsigned char game_flag,
                                            TPicture* vc_back_bmp)

@@ -9,6 +9,7 @@
 // - dtor declared in class + out-of-class body, explicit ~TScreenPanel call: double call
 // - current: implicit base destructor call (remove explicit ~TScreenPanel)
 
+#ifndef SCR_SEDM_TU
 #include "..\..\include\game_globals.h"
 
 // TPanel: 4-byte implicit vtable ptr + 0x54 bytes data = 0x58 total
@@ -51,6 +52,7 @@ public:
 
     ~TRIBE_Screen_Sed_Menu();
 };
+#endif
 
 // NOTE: ~TScreenPanel() is NOT explicitly called body - VC5 generates the
 // implicit base destructor call at the end automatically.

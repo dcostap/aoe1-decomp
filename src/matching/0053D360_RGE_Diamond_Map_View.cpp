@@ -1,3 +1,4 @@
+#ifndef VW_DIMAP_SHARED_CONTEXT
 class RGE_Diamond_Map {
 public:
     virtual ~RGE_Diamond_Map();
@@ -11,6 +12,7 @@ public:
 
     RGE_Diamond_Map_View();
 };
+#endif
 
 RGE_Diamond_Map_View::RGE_Diamond_Map_View() : RGE_Diamond_Map() {
     this->field_C0 = 0;

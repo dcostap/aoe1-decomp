@@ -2104,6 +2104,127 @@
         "0043B400": "src/matching/0043B400_action.cpp",
         "0043B550": "src/matching/0043B550_draw.cpp"
       }
+    },
+    {
+      "name": "ani_obj",
+      "source": "src/ani_obj_tu.cpp",
+      "flags": "config/flags/0041A150_RGE_Animated_Object.rsp",
+      "owners": {
+        "0041A150": "src/matching/0041A150_RGE_Animated_Object.cpp",
+        "0041A210": "src/matching/0041A210_RGE_Animated_Object.cpp",
+        "0041A280": "src/matching/0041A280_recycle_in_to_game.cpp",
+        "0041A2C0": "src/matching/0041A2C0_setup.cpp",
+        "0041A310": "src/matching/0041A310_setup.cpp",
+        "0041A350": "src/matching/0041A350_update.cpp",
+        "0041A3D0": "src/matching/0041A3D0_save.cpp",
+        "0041A400": "src/matching/0041A400_transform.cpp",
+        "0041A410": "src/matching/0041A410_set_being_worked_on.cpp",
+        "0041A430": "src/matching/0041A430_release_being_worked_on.cpp"
+      },
+      "symbols": {
+        "0041A150": "??0RGE_Animated_Object@@QAE@PAVRGE_Master_Animated_Object@@PAVRGE_Player@@MMMH@Z",
+        "0041A210": "??0RGE_Animated_Object@@QAE@HPAVRGE_Game_World@@H@Z",
+        "0041A2C0": "?setup@RGE_Animated_Object@@MAEHPAVRGE_Master_Animated_Object@@PAVRGE_Player@@MMM@Z",
+        "0041A310": "?setup@RGE_Animated_Object@@MAEHHPAVRGE_Game_World@@@Z"
+      }
+    },
+    {
+      "name": "scr_sels_prefix",
+      "source": "src/scr_sels_tu.cpp",
+      "flags": "config/flags/004B3C90_TribeSelectScenarioScreen.rsp",
+      "owners": {
+        "004B3C90": "src/matching/004B3C90_TribeSelectScenarioScreen.cpp",
+        "004B4120": "src/matching/004B4120_init_vars.cpp",
+        "004B4190": "src/matching/004B4190_TribeSelectScenarioScreen.cpp",
+        "004B4280": "src/matching/004B4280_handle_idle.cpp",
+        "004B42E0": "src/matching/004B42E0_action.cpp",
+        "004B44F0": "src/matching/004B44F0_fillScenarios.cpp",
+        "004B4770": "src/matching/004B4770_getSettings.cpp",
+        "004B47D0": "src/matching/004B47D0_sendSettings.cpp"
+      }
+    },
+    {
+      "name": "com_addr_prefix",
+      "source": "src/com_addr_tu.cpp",
+      "flags": "config/flags/004249D0_RGE_Communications_Addresses.rsp",
+      "owners": {
+        "004249D0": "src/matching/004249D0_RGE_Communications_Addresses.cpp",
+        "00424B10": "src/matching/00424B10_RGE_Communications_Addresses.cpp",
+        "00424B60": "src/matching/00424B60_GetHostName.cpp",
+        "00424B80": "src/matching/00424B80_SetIPAliases.cpp",
+        "00424C20": "src/matching/00424C20_GetAddress.cpp",
+        "00424C80": "src/matching/00424C80_SetIPAddresses.cpp",
+        "00424D90": "src/matching/00424D90_EraseInformation.cpp"
+      }
+    },
+    {
+      "name": "act_expl",
+      "source": "src/act_expl_tu.cpp",
+      "flags": "config/flags/00402C00_set_state.rsp",
+      "owners": {
+        "00402B40": "src/matching/00402B40_RGE_Action_Explore.cpp",
+        "00402BA0": "src/matching/00402BA0_RGE_Action_Explore.cpp",
+        "00402BE0": "src/matching/00402BE0_first_in_stack.cpp",
+        "00402C00": "src/matching/00402C00_set_state.cpp",
+        "00402D90": "src/matching/00402D90_update.cpp",
+        "00402E40": "src/matching/00402E40_work.cpp"
+      },
+      "symbols": {
+        "00402B40": "??0RGE_Action_Explore@@QAE@HPAVRGE_Action_Object@@@Z",
+        "00402BA0": "??0RGE_Action_Explore@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@MMM@Z"
+      }
+    },
+    {
+      "name": "scr_vc_prefix",
+      "source": "src/scr_vc_tu.cpp",
+      "flags": "config/flags/004B8100_TRIBE_Mission_Screen.rsp",
+      "owners": {
+        "004B87D0": "src/matching/004B87D0_TRIBE_Mission_Screen.cpp",
+        "004B88B0": "src/matching/004B88B0_handle_idle.cpp",
+        "004B8AE0": "src/matching/004B8AE0_key_down_action.cpp"
+      }
+    },
+    {
+      "name": "scr_stms_prefix",
+      "source": "src/scr_stms_tu.cpp",
+      "flags": "config/flags/004B7140_TRIBE_Screen_Status_Message.rsp",
+      "owners": {
+        "004B7140": "src/matching/004B7140_TRIBE_Screen_Status_Message.cpp",
+        "004B7330": "src/matching/004B7330_TRIBE_Screen_Status_Message.cpp",
+        "004B7500": "src/matching/004B7500_TRIBE_Screen_Status_Message.cpp",
+        "004B7580": "src/matching/004B7580_set_text.cpp"
+      },
+      "symbols": {
+        "004B7140": "??0TRIBE_Screen_Status_Message@@QAE@PAD00J@Z",
+        "004B7330": "??0TRIBE_Screen_Status_Message@@QAE@PADJ0J@Z",
+        "004B7580": "?set_text@TRIBE_Screen_Status_Message@@QAEXJ@Z"
+      }
+    },
+    {
+      "name": "scr_sedm_prefix",
+      "source": "src/scr_sedm_tu.cpp",
+      "flags": "config/flags/004B2EF0_TRIBE_Screen_Sed_Menu.rsp",
+      "owners": {
+        "004B2EF0": "src/matching/004B2EF0_TRIBE_Screen_Sed_Menu.cpp",
+        "004B3110": "src/matching/004B3110_TRIBE_Screen_Sed_Menu.cpp",
+        "004B31D0": "src/matching/004B31D0_action.cpp"
+      }
+    },
+    {
+      "name": "colorlog",
+      "source": "src/colorlog_tu.cpp",
+      "flags": "config/flags/default.rsp",
+      "owners": {
+        "00424810": "src/matching/00424810_color_log.cpp"
+      }
+    },
+    {
+      "name": "tobj_lst",
+      "source": "src/tobj_lst_tu.cpp",
+      "flags": "config/flags/00511B00_load.rsp",
+      "owners": {
+        "00511B00": "src/matching/00511B00_load.cpp"
+      }
     }
   ]
 }

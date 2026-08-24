@@ -14,64 +14,7 @@
 // FLAGS: /nologo /c /O2 /Oy /GX (EH)
 
 #include <string.h>
-
-extern void* rge_base_game;
-
-class TPanel {
-public:
-    virtual void d00(); virtual void d04();
-    virtual void d08(); virtual void d0C(); virtual void d10();
-    virtual void addRef(int val);
-    virtual void setMargins(int a1, int a2, int a3, int a4, int a5, int a6, int a7, int a8, int a9, int a10, int a11, int a12, int a13);
-    virtual void d1C(); virtual void d20(); virtual void d24();
-    virtual void d28(); virtual void d2C(); virtual void d30();
-    virtual void d34(); virtual void d38(); virtual void d3C();
-    virtual void d40(); virtual void d44(); virtual void d48();
-    virtual void d4C();
-    char pad_TPanel[0x40];
-};
-
-class TEasy_Panel : public TPanel {
-public:
-    void set_ideal_size(int width, int height);
-    long create_text(TPanel* panel, TPanel** text_field, const char* text,
-                     int x, int y, int width, int height,
-                     int a8, int a9, int a10, int a11);
-    char* get_info_file();
-    long get_info_id();
-    char gap_44[0x94];
-    int setup_failed;
-    char gap_DC[0x39C];
-};
-
-class TScreenPanel : public TEasy_Panel {
-public:
-    TScreenPanel(const char* name);
-    virtual ~TScreenPanel();
-    long setup(void* draw_area, char* info, long param, int zero);
-};
-
-class TPanelSystem {
-public:
-    TPanel* currentPanel();
-    TPanel* panel(const char* name);
-};
-
-extern TPanelSystem panel_system;
-
-class RGE_Base_Game {
-public:
-    char gap_00[0x4C];
-    void* draw_area;
-    int multiplayerGame();
-};
-
-class TRIBE_Screen_Status_Message : public TScreenPanel {
-public:
-    TPanel* message;      // +0x478
-
-    TRIBE_Screen_Status_Message(char* param_1, char* param_2, char* param_3, long param_4);
-};
+#include "../../include/scr_stms_context.h"
 
 TRIBE_Screen_Status_Message::TRIBE_Screen_Status_Message(
     char* param_1, char* param_2, char* param_3, long param_4)

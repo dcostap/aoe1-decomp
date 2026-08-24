@@ -4,7 +4,9 @@
 // constructor's new expressions. The fixed tab-list copy is a REP MOVSD block.
 
 #include <string.h>
+#include "../../include/scr_trb_context.h"
 
+#if 0
 class TDrawArea {
 public:
     char gap_00[0x18];
@@ -127,6 +129,7 @@ public:
     char* tribeName(int index);
     void fillTribeText(int index);
 };
+#endif
 
 TribeSelectTribeScreen::TribeSelectTribeScreen()
     : TScreenPanel("Select Tribe Screen")

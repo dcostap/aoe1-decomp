@@ -1,3 +1,4 @@
+#ifndef ACT_EXPL_CONTEXT_H
 class RGE_Task;
 class RGE_Action_Object;
 
@@ -20,6 +21,7 @@ public:
 
     RGE_Action_Explore(RGE_Action_Object* obj, RGE_Task* task, float x, float y, float z);
 };
+#endif
 
 RGE_Action_Explore::RGE_Action_Explore(RGE_Action_Object* obj, RGE_Task* task, float x, float y, float z)
     : RGE_Action(obj, 1) {

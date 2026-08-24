@@ -1,6 +1,7 @@
 // VA: 0053D480 mouse_left_move_action (114B)
 // vw_dimap.cpp
 
+#ifndef VW_DIMAP_SHARED_CONTEXT
 class RGE_Base_Game {
 public:
     char gap_00[0x1B0];
@@ -21,19 +22,28 @@ public:
     void handle_scroll_view(long x, long y);
     long mouse_left_move_action(long x, long y, int key, int flags);
 };
+#endif
 
 long RGE_Diamond_Map_View::mouse_left_move_action(long x, long y, int key, int flags) {
     int prog_mode = rge_base_game->prog_mode;
     if (prog_mode == 4 || prog_mode == 6 || prog_mode == 7 || prog_mode == 5) {
         if (rge_base_game->get_paused()) {
+#ifdef VW_DIMAP_SHARED_CONTEXT
+            if (this->scrolling) {
+#else
             if (this->field_154) {
+#endif
                 this->end_scroll_view();
             } else {
                 this->release_mouse();
             }
             return 0;
         }
+#ifdef VW_DIMAP_SHARED_CONTEXT
+        if (this->scrolling) {
+#else
         if (this->field_154) {
+#endif
             this->handle_scroll_view(x, y);
             return 1;
         }

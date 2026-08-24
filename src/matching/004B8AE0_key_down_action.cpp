@@ -1,6 +1,9 @@
 // compact mission-screen key handler first
 // expected basin: reject when no key or wrong key, play voice.wav only when sound is enabled and the screen is idle
 
+#ifdef SCR_VC_CONTEXT_GROUP
+#include "../../include/scr_vc_context.h"
+#else
 class RGE_Prog_Info {
 public:
     char pad_00[0x8A8];
@@ -29,6 +32,7 @@ public:
 
     long key_down_action(long param_1, short param_2, int param_3, int param_4, int param_5);
 };
+#endif
 
 long TRIBE_Mission_Screen::key_down_action(long param_1, short param_2, int param_3, int param_4, int param_5) {
     if (param_4 == 0 || param_1 != 0x56) {

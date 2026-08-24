@@ -9,6 +9,7 @@
 
 extern char s_[];
 
+#ifndef COM_ADDR_TU_CONTEXT
 class TCommunications_Handler;
 
 struct IPAD {
@@ -26,8 +27,10 @@ public:
     unsigned int AliasesAvailable;   // +0x21C
     IPAD* pIPAD;                     // +0x220
 
+protected:
     void EraseInformation(void);
 };
+#endif
 
 void RGE_Communications_Addresses::EraseInformation(void) {
     strcpy(this->hostname, s_);

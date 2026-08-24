@@ -1,6 +1,7 @@
 extern int allow_user_commands;
 extern float FLOAT_005777e8;
 extern void* base_game;
+#ifndef VW_DIMAP_SHARED_CONTEXT
 class RGE_Base_Game { public: virtual void vf00(); virtual void vf04(); virtual void vf08(); virtual void vf0C(); virtual void vf10(int,int); };
 class RGE_Game { public:
     virtual void vf00(); virtual void vf04(); virtual void vf08(); virtual void vf0C(); virtual void vf10(); virtual void vf14(); virtual void vf18(); virtual void vf1C();
@@ -18,6 +19,7 @@ public:
     int pick_tile(long a1, long a2, long* out1, long* out2, void* out3);
     int command_make_work(long a1, long a2);
 };
+#endif
 int RGE_Diamond_Map_View::command_make_work(long a1, long a2) {
     int result;
     long tile;
@@ -30,8 +32,16 @@ int RGE_Diamond_Map_View::command_make_work(long a1, long a2) {
         float x = (float)tile - FLOAT_005777e8;
         out2 = (short)a1;
         float y = (float)out2 - FLOAT_005777e8;
+#ifdef VW_DIMAP_SHARED_CONTEXT
+        result = this->player->command_make_work(0, y, x) & 0xff;
+#else
         result = this->gameObj->vfA4(0, y, x) & 0xff;
+#endif
     }
+#ifdef VW_DIMAP_SHARED_CONTEXT
+    ((RGE_Base_Game*)base_game)->set_game_mode(0, 0);
+#else
     ((RGE_Base_Game*)base_game)->vf10(0, 0);
+#endif
     return result;
 }

@@ -16,6 +16,7 @@
 
 #include "..\..\include\game_globals.h"
 
+#ifndef COM_ADDR_TU_CONTEXT
 class TCommunications_Handler;
 
 class IPAD {
@@ -38,12 +39,20 @@ public:
     int AliasesAvailable;            // +0x21C
     IPAD* pIPAD;                     // +0x220
 
+protected:
     void EraseInformation();
+
+public:
     char* GetHostName();
+
+protected:
     int SetIPAddresses(char* buffer);
     int SetIPAliases(char* buffer);
+
+public:
     RGE_Communications_Addresses(TCommunications_Handler* handler);
 };
+#endif
 
 RGE_Communications_Addresses::RGE_Communications_Addresses(TCommunications_Handler* handler)
 {

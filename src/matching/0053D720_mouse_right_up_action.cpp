@@ -4,6 +4,7 @@
 // attempt 2: RGE_Diamond_Map must not derive from local TPanel stub (release_mouse this was +4); swap set_view_loc args.
 // attempt 3: force right_click failure to jump to the common final fail epilogue instead of booleanizing the call result.
 
+#ifndef VW_DIMAP_SHARED_CONTEXT
 class RGE_Tile;
 
 class RGE_Player {
@@ -77,6 +78,7 @@ class RGE_Diamond_Map_View : public RGE_Diamond_Map {
 public:
     long mouse_right_up_action(long x, long y, int param_3, int param_4);
 };
+#endif
 
 long RGE_Diamond_Map_View::mouse_right_up_action(long x, long y, int param_3, int param_4)
 {
@@ -86,7 +88,11 @@ long RGE_Diamond_Map_View::mouse_right_up_action(long x, long y, int param_3, in
         return 0;
     }
 
+#ifdef VW_DIMAP_SHARED_CONTEXT
+    if (this->scrolling != 0) {
+#else
     if (this->scroll_view != 0) {
+#endif
         this->end_scroll_view();
         return 1;
     }

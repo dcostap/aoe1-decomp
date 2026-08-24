@@ -1,3 +1,4 @@
+#ifndef VW_DIMAP_SHARED_CONTEXT
 class RGE_Base_Game {
 public:
     void add_to_timing(int index, unsigned long value);
@@ -16,6 +17,7 @@ class RGE_Diamond_Map_View : public RGE_Diamond_Map {
 public:
     void draw();
 };
+#endif
 
 void RGE_Diamond_Map_View::draw()
 {

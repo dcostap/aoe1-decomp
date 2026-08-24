@@ -19,6 +19,7 @@
 // - Exact result: 504 bytes, 158 instructions, 14/14 ordered calls, and
 //   22/22 compatible relocations masked. Strict diff is 0 bytes.
 
+#ifndef SCR_SEDM_TU
 #include "..\..\include\game_globals.h"
 #include <string.h>
 
@@ -297,6 +298,7 @@ public:
     TRIBE_Screen_Sed_Menu();
     virtual ~TRIBE_Screen_Sed_Menu();
 };
+#endif
 
 TRIBE_Screen_Sed_Menu::TRIBE_Screen_Sed_Menu()
     : TScreenPanel(s_Scenario_Editor_Menu)

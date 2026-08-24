@@ -13,6 +13,9 @@
 //   output was preserved. Current source is the canonical candidate.
 // FLAGS: default.rsp (/nologo /c /O2 /Oy)
 
+#ifdef SCR_VC_CONTEXT_GROUP
+#include "../../include/scr_vc_context.h"
+#else
 struct tagRECT {
     long left;
     long top;
@@ -86,6 +89,7 @@ public:
 
     virtual void draw();
 };
+#endif
 
 void TRIBE_Mission_Screen::draw()
 {

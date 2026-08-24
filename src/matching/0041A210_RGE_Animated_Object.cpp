@@ -6,6 +6,7 @@
 // BINARY NOTE: The constructor publishes the inherited virtual ABI after its
 // base call. Keep that publication, cleanup, and setup order natural.
 
+#ifndef ANI_OBJ_SHARED_CONTEXT
 class RGE_Game_World;
 
 class RGE_Static_Object {
@@ -20,6 +21,7 @@ public:
     RGE_Animated_Object(int mode, RGE_Game_World* world, int doSetup);
     int setup(int mode, RGE_Game_World* world);
 };
+#endif
 
 RGE_Animated_Object::RGE_Animated_Object(int mode, RGE_Game_World* world, int doSetup)
     : RGE_Static_Object(mode, world, 0) {

@@ -42,6 +42,7 @@
 //   RGE_Task::work_val2, and RGE_Player::make_new_object. Full rebuild remains
 //   an exact, policy-valid 541-byte match.
 
+#ifndef TACT_CNV_SHARED_CONTEXT
 class RGE_Sprite;
 class RGE_Sound;
 class RGE_Task;
@@ -332,6 +333,8 @@ public:
     char gap_41[3];
     float requiredRange;
 };
+
+#endif
 
 void TRIBE_Action_Convert::set_state(unsigned char param_1)
 {

@@ -1,3 +1,4 @@
+#ifndef ANI_OBJ_SHARED_CONTEXT
 class RGE_Master_Static_Object;
 class RGE_Player;
 
@@ -14,6 +15,7 @@ public:
 
     void recycle_in_to_game(RGE_Master_Static_Object* master, RGE_Player* player, float x, float y, float z);
 };
+#endif
 
 void RGE_Animated_Object::recycle_in_to_game(RGE_Master_Static_Object* master, RGE_Player* player, float x, float y, float z) {
     RGE_Static_Object::recycle_in_to_game(master, player, x, y, z);

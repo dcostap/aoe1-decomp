@@ -1,3 +1,4 @@
+#ifndef TACT_CNV_SHARED_CONTEXT
 // VA: 004CDBB0 TRIBE_Action_Convert::first_in_stack
 // Attempt log:
 // 1: natural reconstruction from packet/decompiler: text 560 B, wrong field offsets because virtual declarations shifted data members; notify helper emitted out-of-line.
@@ -121,6 +122,8 @@ public:
 
     void first_in_stack(uchar param_1);
 };
+
+#endif
 
 void TRIBE_Action_Convert::first_in_stack(uchar param_1)
 {

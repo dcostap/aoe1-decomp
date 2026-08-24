@@ -19,6 +19,7 @@
 extern void* operator new(unsigned int size);
 extern void operator delete(void* p);
 
+#ifndef COM_ADDR_TU_CONTEXT
 class IPAD {
 public:
     char DottedIPAddress[32];
@@ -39,9 +40,13 @@ public:
     unsigned int AliasesAvailable;
     IPAD* pIPAD;
 
+protected:
     void EraseInformation(void);
+
+public:
     ~RGE_Communications_Addresses(void);
 };
+#endif
 
 RGE_Communications_Addresses::~RGE_Communications_Addresses() {
     this->EraseInformation();

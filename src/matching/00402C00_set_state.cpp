@@ -1,3 +1,4 @@
+#ifndef ACT_EXPL_CONTEXT_H
 // 00402C00 RGE_Action_Explore::set_state
 // Source: act_expl.cpp lines 73-133
 //
@@ -197,6 +198,7 @@ class RGE_Action_Explore : public RGE_Action {
 public:
     void set_state(unsigned char);
 };
+#endif
 
 void RGE_Action_Explore::set_state(unsigned char param_1)
 {
@@ -235,7 +237,7 @@ void RGE_Action_Explore::set_state(unsigned char param_1)
     if ((this->task != 0) && (this->task->move_sprite != 0))
         ms = this->task->move_sprite;
     else
-        ms = this->obj->master_obj->move_sprite;
+        ms = ((RGE_Master_Moving_Object*)this->obj->master_obj)->move_sprite;
 
     {
         RGE_Action_Move_To* action = new RGE_Action_Move_To(

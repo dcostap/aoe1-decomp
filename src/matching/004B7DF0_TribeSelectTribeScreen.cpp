@@ -2,6 +2,9 @@
 // scr_trb.cpp lines 162-172
 // Has EH frame (fs:[0]), needs /GX
 
+#include "../../include/scr_trb_context.h"
+
+#if 0
 class TScreenPanel {
 public:
     virtual ~TScreenPanel();
@@ -30,6 +33,7 @@ public:
     
     ~TribeSelectTribeScreen();
 };
+#endif
 
 extern void __cdecl free(void* ptr);
 

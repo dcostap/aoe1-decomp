@@ -1,3 +1,4 @@
+#ifndef ANI_OBJ_SHARED_CONTEXT
 class RGE_Action_Object;
 
 class RGE_Static_Object {
@@ -11,6 +12,7 @@ public:
     void set_being_worked_on(RGE_Action_Object* action, short mode,
                              unsigned char flag);
 };
+#endif
 
 void RGE_Animated_Object::set_being_worked_on(RGE_Action_Object* action,
                                                short mode,

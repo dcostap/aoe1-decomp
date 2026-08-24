@@ -3,6 +3,7 @@
 // Attempt log:
 //   attempt 1: padded vtable to 61 base entries, natural source with switch/if chains
 
+#ifndef VW_DIMAP_SHARED_CONTEXT
 class RGE_Tile;
 
 class RGE_Prog_Info {
@@ -113,6 +114,7 @@ public:
 
     long mouse_left_up_action(long x, long y, int key, int flags);
 };
+#endif
 
 long RGE_Diamond_Map_View::mouse_left_up_action(long x, long y, int key, int flags)
 {

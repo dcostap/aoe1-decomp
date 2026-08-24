@@ -58,6 +58,7 @@
 // Exact finish pass 2: direct field ownership, canonical call slots, 906 bytes,
 // 32/32 calls, and MATCH at 0.0000%.
 
+#ifndef TACT_CNV_SHARED_CONTEXT
 typedef unsigned char uchar;
 
 extern "C" int __cdecl debug_rand(char* file, int line);
@@ -77,6 +78,7 @@ class RGE_Action;
 class RGE_Action_Object;
 class RGE_Action_List;
 class RGE_Task;
+class RGE_Sound;
 
 class RGE_Base_Game {
 public:
@@ -97,6 +99,7 @@ public:
     virtual void* new_scenario_header(int);
     virtual void* new_scenario_info(int);
     virtual void notification(int msg, long p1, long p2, long zero1, long zero2);
+    virtual void notify(int, int, int, int, int);
 };
 extern RGE_Base_Game* rge_base_game;
 
@@ -147,6 +150,8 @@ public:
     short id;                                       // +0x4a
     char gap_4C[0xB9];
     uchar master_player_id;                         // +0x105
+    float* attributes;
+    int computerPlayer();
 };
 
 class RGE_Game_World {
@@ -205,6 +210,10 @@ public:
 
     char gap_28[0xBC];
     float work_rate;                                 // +0xe4
+    short id;
+    short _pad_id;
+    float weapon_range;
+    void* sprite;
 };
 
 class RGE_Static_Object {
@@ -366,6 +375,13 @@ public:
     virtual RGE_Action* create_task_action(RGE_Task*, RGE_Static_Object*, float, float, float);
     virtual uchar inside_obj_update();
     virtual uchar update();
+    void delete_list();
+    void add_action(RGE_Action*);
+};
+
+class RGE_Sound {
+public:
+    void play(int);
 };
 
 class RGE_Task {
@@ -400,7 +416,7 @@ public:
     void* work_sprite;
     void* work_sprite2;
     void* carry_sprite;
-    void* work_sound;
+    RGE_Sound* work_sound;
     void* work_sound2;
 };
 
@@ -431,34 +447,80 @@ public:
     virtual void set_target_obj2(RGE_Static_Object*);
     virtual void set_state(uchar);
 
-    short action_type;                              // +0x04
+    RGE_Action(int, RGE_Action_Object*, int);
+    RGE_Action(RGE_Action_Object*, int);
+
+    union {
+        short action_type;                          // +0x04
+        short field_04;
+    };
     char gap_06[2];
     RGE_Action_Object* obj;                         // +0x08
     uchar state;                                     // +0x0c
     char gap_0D[3];
     RGE_Static_Object* target_obj;                  // +0x10
     RGE_Static_Object* target_obj2;                 // +0x14
-    int target_id;                                   // +0x18
-    int target2_id;                                  // +0x1c
+    union {
+        int target_id;                              // +0x18
+        int targetID;
+    };
+    union {
+        int target2_id;                             // +0x1c
+        int target2ID;
+    };
     float target_x;                                  // +0x20
     float target_y;                                  // +0x24
     float target_z;                                  // +0x28
     float timer;                                     // +0x2c
-    RGE_Task* task;                                  // +0x30
+    union {
+        RGE_Task* task;                             // +0x30
+        void* task_ptr;
+    };
     RGE_Action_List* sub_actions;                   // +0x34
     void* sprite;                                    // +0x38
     uchar subActionValue;                            // +0x3c
     char gap_3D[3];
+
+    void setSubAction(uchar);
+};
+
+class RGE_Action_Move_To : public RGE_Action {
+public:
+    RGE_Action_Move_To(RGE_Action_Object*, float, float, float, float, void*);
+    RGE_Action_Move_To(RGE_Action_Object*, RGE_Static_Object*, float, void*);
+    float range;
 };
 
 class TRIBE_Action_Convert : public RGE_Action {
 public:
+    virtual ~TRIBE_Action_Convert();
+    TRIBE_Action_Convert(int, RGE_Action_Object*);
+    TRIBE_Action_Convert(RGE_Action_Object*, RGE_Task*, RGE_Static_Object*);
+    TRIBE_Action_Convert(RGE_Action_Object*, RGE_Task*, float, float, float);
+    virtual void save(int);
+    virtual void first_in_stack(uchar);
     virtual uchar update();
-    uchar was_same_owner;                            // +0x40
+    virtual int stop();
+    virtual int move_to(RGE_Static_Object*, float, float, float);
+    virtual int work(RGE_Static_Object*, float, float, float);
+protected:
+    virtual void set_state(uchar);
+public:
+    union {
+        uchar was_same_owner;                        // +0x40
+        uchar field_40;
+    };
     char gap_41[3];
-    float required_range;                            // +0x44
+    union {
+        float required_range;                        // +0x44
+        float requiredRange;
+    };
+    void martyrdom();
 };
 
+#endif
+
+#ifndef TACT_CNV_CONTEXT_ONLY
 uchar TRIBE_Action_Convert::update()
 {
     if (this->target_id != -1) {
@@ -591,3 +653,4 @@ uchar TRIBE_Action_Convert::update()
 
     return 0;
 }
+#endif

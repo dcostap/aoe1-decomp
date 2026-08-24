@@ -4,6 +4,7 @@
 // The next normal PDB-owned function starts at 0041A150 in ani_obj.cpp.
 // The inherited virtual surface naturally publishes the derived vtable.
 
+#ifndef ANI_OBJ_SHARED_CONTEXT
 class RGE_Game_World;
 class RGE_Master_Static_Object;
 class RGE_Master_Animated_Object;
@@ -23,6 +24,7 @@ public:
     int setup(RGE_Master_Animated_Object* master, RGE_Player* player,
               float a, float b, float c);
 };
+#endif
 
 // 0041A150 - 131 bytes
 RGE_Animated_Object::RGE_Animated_Object(RGE_Master_Animated_Object* master,

@@ -5,6 +5,7 @@
 // tried reduced-base body order variants, duplicate x stores, comma-expression chaining, and saved_x/saved_y locals.
 // exact basin: keep `requiredRange(1.0f)` in the init list and use body order `task, action_type, target_x, target_y, target_z, field_40`.
 
+#ifndef TACT_CNV_SHARED_CONTEXT
 class RGE_Action_Object;
 class RGE_Task;
 
@@ -31,6 +32,8 @@ public:
 
     TRIBE_Action_Convert(RGE_Action_Object* obj, RGE_Task* task, float x, float y, float z);
 };
+
+#endif
 
 TRIBE_Action_Convert::TRIBE_Action_Convert(RGE_Action_Object* obj, RGE_Task* task, float x, float y, float z)
     : RGE_Action(obj, 1), requiredRange(1.0f) {

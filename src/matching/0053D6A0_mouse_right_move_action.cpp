@@ -1,6 +1,7 @@
 // VA: 0053D6A0 RGE_Diamond_Map_View::mouse_right_move_action
 // first pass: use real member calls and direct global game surface.
 
+#ifndef VW_DIMAP_SHARED_CONTEXT
 class RGE_Base_Game {
 public:
     char gap_00[0x1B0];
@@ -19,19 +20,28 @@ public:
     void handle_scroll_view(long x, long y);
     long mouse_right_move_action(long x, long y, int key, int flags);
 };
+#endif
 
 long RGE_Diamond_Map_View::mouse_right_move_action(long x, long y, int key, int flags) {
     int mode = rge_base_game->prog_mode;
     if (mode == 4 || mode == 6 || mode == 7 || mode == 5) {
         if (rge_base_game->get_paused()) {
+#ifdef VW_DIMAP_SHARED_CONTEXT
+            if (this->scrolling) {
+#else
             if (this->scroll_active) {
+#endif
                 this->end_scroll_view();
             } else {
                 this->release_mouse();
             }
             return 0;
         }
+#ifdef VW_DIMAP_SHARED_CONTEXT
+        if (this->scrolling) {
+#else
         if (this->scroll_active) {
+#endif
             this->handle_scroll_view(x, y);
             return 1;
         }
