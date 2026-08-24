@@ -2014,6 +2014,23 @@
         "00423B70": "?GetPosition@CCDAudio@@QAEKAAE00@Z",
         "00423BD0": "?DisplayErrorMsg@CCDAudio@@AAEKK@Z"
       }
+    },
+    {
+      "name": "mystring",
+      "source": "src/mystring_tu.cpp",
+      "flags": "config/flags/default.rsp",
+      "owners": {
+        "00462D70": "src/matching/00462D70_convert_us.cpp",
+        "00462D90": "src/matching/00462D90_unconvert_us.cpp",
+        "00462DB0": "src/matching/00462DB0_addstring.cpp",
+        "00462E30": "src/matching/00462E30_getstring.cpp"
+      },
+      "symbols": {
+        "00462D70": "?convert_us@@YAXPAD@Z",
+        "00462D90": "?unconvert_us@@YAXPAD@Z",
+        "00462DB0": "?addstring@@YAXPAPADPAD1@Z",
+        "00462E30": "?getstring@@YAXPAPADPAD@Z"
+      }
     }
   ]
 }
