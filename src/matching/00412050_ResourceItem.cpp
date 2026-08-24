@@ -1,15 +1,13 @@
 // ResourceItem::ResourceItem(ResourceItem*)
 // VA: 00412050 | airesitm.cpp:92-98
 
-ResourceItem::ResourceItem(ResourceItem* src) {
+ResourceItem::ResourceItem(ResourceItem* src)
+    : next(0), prev(0), numberValue(src->numberValue) {
     int i;
     int* dst;
     int* idx;
 
     i = 0;
-    this->next = 0;
-    this->prev = 0;
-    this->numberValue = src->numberValue;
     if (this->numberValue > 0) {
         idx = src->sortedIndexValue;
         dst = this->valueValue;
