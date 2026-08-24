@@ -4,9 +4,12 @@
 //
 // The shared context is a period panel/game declaration surface for this module.
 // It joins the existing owner bodies without adding a synthetic function.
-// Module flags: config/flags/004A63D0_TRIBE_Screen_Name.rsp (/nologo /c /O2 /Oy /GX).
-// BINARY NOTE: VC5 emits ??_GTRIBE_Dialog_Name@@UAEPAXI@Z here, but the PDB
-// requires ??_ETRIBE_Dialog_Name@@UAEPAXI@Z at 004A6F40. This blocks registration.
+// Module flags: config/flags/scr_name.rsp (/nologo /c /O2 /Oy /GX).
+// BINARY NOTE: VC5 emits ??_GTRIBE_Dialog_Name@@UAEPAXI@Z here.  The original
+// image's FPO symbol table names 004A6F40 as the same scalar deleting
+// destructor, while the PDB public stream also lists ??_ETRIBE_Dialog_Name@@
+// UAEPAXI@Z at that address.  The two PDB public names are an extraction alias;
+// this class has scalar new/delete ownership, not an authentic new[] owner.
 #define SCR_NAME_TU_CONTEXT 1
 #include "../include/scr_name_context.h"
 
@@ -41,4 +44,4 @@
 #include "matching/004A6FF0_action.cpp"
 
 // scr_name.cpp:429-440
-#include "scratch/004A71D0_wnd_proc.cpp"
+#include "matching/004A71D0_wnd_proc.cpp"

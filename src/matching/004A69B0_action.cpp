@@ -1,5 +1,5 @@
 // VA: 004A69B0 TRIBE_Screen_Name::action
-// FLAGS: config/flags/004A69B0_action.rsp (/GX for the original new/constructor EH frame)
+// FLAGS: config/flags/scr_name.rsp (/GX for the original new/constructor EH frame)
 // Attempt log:
 // prior attempts used guessed save-options/message-box APIs and a flattened
 // TEasy_Panel base; they were broad mismatches despite the nominal 914-byte size.

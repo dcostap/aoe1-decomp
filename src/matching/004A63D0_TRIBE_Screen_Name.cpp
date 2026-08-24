@@ -10,7 +10,7 @@
 // probe 2: carried cancel_button in a natural local across its two hotkey
 // stores; this preserved the oracle's one load, contiguous stores, and exact
 // close-button setup schedule.  Result: 737B exact match.
-// FLAGS: config/flags/004A63D0_TRIBE_Screen_Name.rsp (/GX)
+// FLAGS: config/flags/scr_name.rsp (/GX)
 
 #include <windows.h>
 

@@ -34,7 +34,7 @@
 // - Filled the third observed tab-order stack slot with cancel_button using a
 //   natural one-based four-entry array.  VC5 enlarged the frame to 0x14 and
 //   worsened the diff to 176 bytes; restored the clean three-slot source.
-// FLAGS: config/flags/004A6D50_TRIBE_Dialog_Name.rsp uses /GX; required for
+// FLAGS: config/flags/scr_name.rsp uses /GX; required for
 // the observed EH registration frame.
 // Left in scratch after the bounded pass: natural typed source is retained;
 // no compiler-only aliases, manual vtable store, raw pointer arithmetic, or

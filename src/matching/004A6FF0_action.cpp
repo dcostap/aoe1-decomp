@@ -1,6 +1,6 @@
 // VA: 004A6FF0, TRIBE_Dialog_Name::action, 469 bytes
 // Source: scr_name.cpp lines 379-423
-// FLAGS: config/flags/004A6FF0_action.rsp (/GX for original EH frame around new+ctor)
+// FLAGS: config/flags/scr_name.rsp (/GX for original EH frame around new+ctor)
 // Attempt log:
 // - v1: natural reconstruction from packet/decompiler with local UI classes/globals.
 // - v2: added /GX to get original EH registration prologue.

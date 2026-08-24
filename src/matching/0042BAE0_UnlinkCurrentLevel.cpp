@@ -1,6 +1,6 @@
 // TCommunications_Handler::UnlinkCurrentLevel
 // VA: 0042BAE0, Com_hand.cpp:4474-4661 (2736 bytes, /GX EH frame)
-// FLAGS: config/flags/0042BAE0_UnlinkCurrentLevel.rsp (/GX for the two new expressions)
+// FLAGS: config/flags/com_hand.rsp (/GX for the two new expressions)
 // Status: MATCH (exact, 0.0000% diff, 71/71 ordered calls) — ready for promotion.
 //
 // Attempt log (sa-f1926d8e, 2026-08-06):

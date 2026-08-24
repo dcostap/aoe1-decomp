@@ -14,7 +14,7 @@
 // use signed JG after zero-extension, unlike the current unsigned JA branches.
 // follow-up: removing the pre-guard dcoFromID zero-init shrank code by 4 bytes,
 // but positional diff worsened from 792 to 807; rolled back to the clean source.
-// FLAGS: config/flags/00426FC0_GetDPLAYMessages.rsp (/nologo /c /O2 /Oy)
+// FLAGS: config/flags/com_hand.rsp (/nologo /c /O2 /Oy /GX)
 // left in scratch: the remaining drift is the initial timer-call cleanup and
 // the duplicated player-ID scan register shape; calls and frame are aligned.
 // fresh pass: model the binary's separate peek-size and receive-size homes; the

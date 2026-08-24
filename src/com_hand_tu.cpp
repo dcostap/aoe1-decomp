@@ -111,7 +111,7 @@
 #include "scratch/00425970_SetSpeedControl.cpp"
 #include "matching/00425990_CalculatePlayerRange.cpp"
 #include "matching/00425A20_Step.cpp"
-#include "scratch/00425A40_TCommunications_Handler.cpp"
+#include "matching/00425A40_TCommunications_Handler.cpp"
 #include "accepted_drift/004261E0_TCommunications_Handler.cpp"
 #include "matching/00426350_KillAnyMissingPlayers.cpp"
 #undef g_pDirectPlay
@@ -146,7 +146,7 @@
 #undef dplay_id
 #undef dplay
 #undef log_obj
-#include "scratch/00426FB0_ShutdownGameMessages.cpp"
+#include "matching/00426FB0_ShutdownGameMessages.cpp"
 #define GetMessageCount v44
 #include "matching/00426FC0_GetDPLAYMessages.cpp"
 #undef GetMessageCount
@@ -309,7 +309,7 @@
 #include "matching/0042EB60_SetMyGameOptions.cpp"
 #include "matching/0042EBF0_GetMyGameOptions.cpp"
 #include "scratch/0042EC10_FreeOptions.cpp"
-#include "accepted_drift/0042EC40_StringFromGUID.cpp"
+#include "matching/0042EC40_StringFromGUID.cpp"
 #include "matching/0042ECC0_SetHostPlayerNumber.cpp"
 #include "matching/0042ECD0_GetHostPlayerNumber.cpp"
 #include "matching/0042ECE0_DebugSessionInformation.cpp"
