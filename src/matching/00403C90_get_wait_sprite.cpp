@@ -1,43 +1,18 @@
+// VA: 00403C90 RGE_Action_Gather::get_wait_sprite
+// PDB source: ACT_GATH.cpp.  The task, master, and action-object fields are canonical.
+
 #ifndef ACT_GATH_CONTEXT_H
-struct RGE_Sprite;
-
-struct SomeObj {
-    char pad[0x08];
-    int* field_08;  // -> sub-object with field at 0x18
-    char pad2[0x38];
-    float field_44;
-    char pad3[0x04];
-    short field_4C;
-};
-
-struct SubObj {
-    char pad[0x14];
-    short field_14;
-    char pad2[0x28];
-    RGE_Sprite* field_40;
-};
-
-class RGE_Action_Gather {
-public:
-    RGE_Sprite* get_wait_sprite(void);
-
-    char pad_00[0x08];
-    SomeObj* field_08;
-    char pad_0C[0x24];
-    SubObj* field_30;
-};
+#include "../../include/act_gath_context.h"
 #endif
 
-extern "C" int __cdecl _ftol(void);
-
-RGE_Sprite* RGE_Action_Gather::get_wait_sprite(void) {
-    SubObj* obj = this->field_30;
-    short val = obj->field_14;
-    if (val != (short)0xFFFF
-        && val == this->field_08->field_4C
-        && (int)this->field_08->field_44 > 0
-        && obj->field_40 != 0) {
-        return obj->field_40;
+RGE_Sprite* RGE_Action_Gather::get_wait_sprite() {
+    RGE_Task* task = this->task;
+    short value = task->attribute_type;
+    if (value != (short)0xFFFF &&
+        value == this->obj->attribute_type_held &&
+        (int)this->obj->attribute_amount_held > 0 &&
+        task->carry_sprite != 0) {
+        return task->carry_sprite;
     }
-    return (RGE_Sprite*)*(int*)((char*)this->field_08->field_08 + 0x18);
+    return this->obj->master_obj->sprite;
 }

@@ -13,10 +13,6 @@
 
 #include "../include/act_gath_context.h"
 
-#define target_relation keepGatheringWhenObjectIsOut
-#define check_attribute keepGatheringWhenObjectIsOut
-#define has_drop_site useSameZoneDropsite
-
 #include "matching/00402EA0_RGE_Action_Gather.cpp"
 #include "matching/00402F40_RGE_Action_Gather.cpp"
 #include "matching/00402FD0_RGE_Action_Gather.cpp"
@@ -27,13 +23,7 @@
 #include "matching/00403C60_get_move_sprite.cpp"
 #include "matching/00403C90_get_wait_sprite.cpp"
 
-#define vf5C set_state
 #include "matching/00403CD0_stop.cpp"
-#undef vf5C
 
 #include "accepted_drift/00403CE0_move_to.cpp"
 #include "accepted_drift/00403D90_work.cpp"
-
-#undef has_drop_site
-#undef check_attribute
-#undef target_relation

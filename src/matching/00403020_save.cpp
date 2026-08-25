@@ -1,21 +1,11 @@
+// VA: 00403020 RGE_Action_Gather::save
+// PDB source: ACT_GATH.cpp.  The shared module context owns the class ABI.
+
 #ifndef ACT_GATH_CONTEXT_H
-class RGE_Action {
-public:
-    virtual void save(int outfile);
-};
-
-class RGE_Action_Gather : public RGE_Action {
-public:
-    void save(int outfile);
-
-    char gap_04[0x3C];
-    int field_40;
-};
-
-void __cdecl rge_write(int outfile, void* data, int size);
+#include "../../include/act_gath_context.h"
 #endif
 
 void RGE_Action_Gather::save(int outfile) {
     RGE_Action::save(outfile);
-    rge_write(outfile, &this->field_40, 4);
+    rge_write(outfile, &this->targetType, 4);
 }
