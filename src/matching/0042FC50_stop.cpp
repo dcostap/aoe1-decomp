@@ -2,31 +2,33 @@ extern "C" void* actionFile;
 extern "C" int fprintf(void* stream, const char* format, ...);
 
 #ifndef RGE_COM_OBJ_SHARED_CONTEXT
+class RGE_Static_Object;
+
 class UnitAIModule {
 public:
-    virtual void slot_00();
-    virtual void slot_04();
-    virtual void slot_08();
-    virtual void slot_0C();
-    virtual void slot_10();
-    virtual void slot_14();
-    virtual void slot_18();
-    virtual void slot_1C();
-    virtual void slot_20();
-    virtual void slot_24();
-    virtual void slot_28();
-    virtual void slot_2C();
-    virtual void slot_30();
-    virtual void slot_34();
-    virtual void slot_38();
-    virtual void slot_3C();
-    virtual void slot_40();
-    virtual void slot_44();
-    virtual void slot_48();
-    virtual void slot_4C();
-    virtual void slot_50();
-    virtual void slot_54();
-    virtual void stop(int force);
+    virtual ~UnitAIModule();
+    virtual void save(int);
+    virtual void load(int);
+    virtual void owner();
+    virtual void order();
+    virtual int notify(int, int, int, long, long, long);
+    virtual int notifyCommander(void*);
+    virtual int notifyCommander(int, int, int, long, long, long);
+    virtual void search();
+    virtual int importantWhenDead(int);
+    virtual int retryableOrder(int);
+    virtual int actionRequiresLiveTarget(int);
+    virtual int bestUnitToAttack(int, int, float*);
+    virtual int mostDangerousEnemy(float*);
+    virtual int weakestEnemy(float*);
+    virtual int closestAttacker(float*);
+    virtual int closestObject(int, int, int, int, int*);
+    virtual int closestResourceObject(int, int*);
+    virtual int closestUndiscoveredTile(int*, int*, int);
+    virtual void logDebug(char*);
+    virtual int canAttackUnit(RGE_Static_Object*);
+    virtual int canAttackUnitAtNeutrality(int);
+    virtual int stopObject(int force);
 };
 
 class RGE_Action_Object {
@@ -50,6 +52,6 @@ void RGE_Combat_Object::stop() {
         if (actionFile != 0) {
             fprintf(actionFile, "#%d call stopObject %s %d\n", id, "C:\\msdev\\work\\age1_x1\\com_obj.cpp", 0xAB);
         }
-        unitAIValue->stop(1);
+        unitAIValue->stopObject(1);
     }
 }

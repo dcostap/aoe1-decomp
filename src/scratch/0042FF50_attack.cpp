@@ -43,11 +43,11 @@ class RGE_Player;
 class RGE_Master_Static_Object {
 public:
     virtual ~RGE_Master_Static_Object();
-    virtual void pad04();
-    virtual void pad08();
-    virtual void pad0C();
-    virtual void pad10();
-    virtual void pad14();
+    virtual void copy_obj();
+    virtual void modify();
+    virtual void modify_delta();
+    virtual void modify_percent();
+    virtual void save();
     virtual RGE_Static_Object* make_new_obj(RGE_Player* owner, float x, float y, float z);
 
     char pad_004[0x22];
@@ -95,21 +95,90 @@ public:
     float weapon_offset_z; // +0x134
 };
 
-#define SPAD(n) virtual void spad##n();
 class RGE_Static_Object {
 public:
     virtual ~RGE_Static_Object();
-    SPAD(001) SPAD(002) SPAD(003) SPAD(004) SPAD(005) SPAD(006) SPAD(007)
-    SPAD(008) SPAD(009) SPAD(010) SPAD(011) SPAD(012) SPAD(013) SPAD(014) SPAD(015)
-    SPAD(016) SPAD(017) SPAD(018) SPAD(019) SPAD(020) SPAD(021) SPAD(022) SPAD(023)
-    SPAD(024) SPAD(025) SPAD(026) SPAD(027) SPAD(028) SPAD(029) SPAD(030) SPAD(031)
-    SPAD(032) SPAD(033) SPAD(034) SPAD(035) SPAD(036) SPAD(037) SPAD(038) SPAD(039)
-    SPAD(040) SPAD(041) SPAD(042) SPAD(043) SPAD(044) SPAD(045) SPAD(046) SPAD(047)
-    SPAD(048) SPAD(049) SPAD(050) SPAD(051) SPAD(052) SPAD(053) SPAD(054) SPAD(055)
-    SPAD(056) SPAD(057) SPAD(058) SPAD(059) SPAD(060) SPAD(061) SPAD(062) SPAD(063)
-    SPAD(064) SPAD(065) SPAD(066) SPAD(067) SPAD(068) SPAD(069) SPAD(070) SPAD(071)
-    SPAD(072) SPAD(073) SPAD(074) SPAD(075) SPAD(076) SPAD(077) SPAD(078) SPAD(079)
-    SPAD(080) SPAD(081)
+    virtual void recycle_in_to_game();
+    virtual void recycle_out_of_game();
+    virtual void draw();
+    virtual void shadow_draw();
+    virtual void normal_draw();
+    virtual void draw_front_frame();
+    virtual void draw_back_frame();
+    virtual void draw_frame();
+    virtual void update();
+    virtual void check_damage_sprites();
+    virtual void rehook();
+    virtual void save();
+    virtual void teleport();
+    virtual void new_sprite();
+    virtual void add_overlay_sprite();
+    virtual void remove_overlay_sprite();
+    virtual void change_ownership();
+    virtual void modify();
+    virtual void modify_delta();
+    virtual void modify_percent();
+    virtual void transform();
+    virtual void copy_obj();
+    virtual void set_object_state();
+    virtual void remove_visible_resource();
+    virtual void create_doppleganger_when_dying();
+    virtual void destroy_obj();
+    virtual void die_die_die();
+    virtual void damage();
+    virtual void calculateDamage();
+    virtual void rotate();
+    virtual void can_attack();
+    virtual void set_attribute();
+    virtual void set_attribute_amount();
+    virtual void heal(int, int);
+    virtual void heal(float);
+    virtual void canRepair();
+    virtual void notify_of_relation();
+    virtual void do_command();
+    virtual void move_to();
+    virtual void work();
+    virtual void stop();
+    virtual void set_attack();
+    virtual void play_command_sound();
+    virtual void play_move_sound();
+    virtual void new_angle();
+    virtual void spawn_death_obj();
+    virtual void get_command_master();
+    virtual void set_being_worked_on();
+    virtual void release_being_worked_on();
+    virtual void is_moving();
+    virtual void get_target_obj();
+    virtual void enter_obj();
+    virtual void exit_obj();
+    virtual void explore_terrain();
+    virtual void unexplore_terrain();
+    virtual void get_los_table();
+    virtual void inAttackRange();
+    virtual void underAttack();
+    virtual void setUnderAttack();
+    virtual void calc_attack_modifier();
+    virtual void getSpeed();
+    virtual void getAngle();
+    virtual void maximumSpeed();
+    virtual void rateOfFire();
+    virtual void damageCapability(RGE_Static_Object*);
+    virtual void damageCapability();
+    virtual void weaponRange();
+    virtual void minimumWeaponRange();
+    virtual void passableTile();
+    virtual void facetToNextWaypoint();
+    virtual void currentTargetID();
+    virtual void currentTargetX();
+    virtual void currentTargetY();
+    virtual void currentTargetZ();
+    virtual void setWaitingToMove();
+    virtual void waitingToMove();
+    virtual void actionState();
+    virtual void keepGatheringWhenObjectIsOut();
+    virtual void produceWhenKilledBy();
+    virtual void useSameZoneDropsite();
+    virtual void logDebug();
     virtual void notify(int id1, int id2, int a, int b, int c, int d);
 
     int id;
@@ -123,7 +192,6 @@ public:
     float world_z;                  // +0x40
     char pad_44[0x44];
 };
-#undef SPAD
 
 class RGE_Animated_Object : public RGE_Static_Object {
 public:
@@ -137,19 +205,65 @@ public:
     char pad_0A0[0xE0];
 };
 
-#define APAD(n) virtual void apad##n();
 class RGE_Action_Object : public RGE_Moving_Object {
 public:
-    APAD(083) APAD(084) APAD(085) APAD(086) APAD(087) APAD(088) APAD(089) APAD(090)
-    APAD(091) APAD(092) APAD(093) APAD(094) APAD(095) APAD(096) APAD(097) APAD(098)
-    APAD(099) APAD(100) APAD(101) APAD(102) APAD(103) APAD(104) APAD(105) APAD(106)
-    APAD(107) APAD(108) APAD(109) APAD(110) APAD(111) APAD(112) APAD(113) APAD(114)
-    APAD(115) APAD(116) APAD(117) APAD(118) APAD(119) APAD(120) APAD(121) APAD(122)
-    APAD(123) APAD(124) APAD(125) APAD(126) APAD(127) APAD(128) APAD(129) APAD(130)
-    APAD(131) APAD(132) APAD(133) APAD(134) APAD(135) APAD(136) APAD(137)
+    virtual int attack(float, float, float, int);
+    virtual int attack(int, int);
+    virtual int moveTo(float, float, float, float, int);
+    virtual int moveTo(int, float, int);
+    virtual int moveTo(int, int);
+    virtual int moveAwayFrom(int, int);
+    virtual int hunt(int, int);
+    virtual int gather(int, int);
+    virtual int convert(int, int);
+    virtual int repair(int, int);
+    virtual int build(int, int);
+    virtual int trade(int, int);
+    virtual int explore(int, int, int);
+    virtual int enter(int, int);
+    virtual int unload(int, float, float, float);
+    virtual int transport(float, float, float, int);
+    virtual int stopAction();
+    virtual int pause();
+    virtual int canPath(int, float, float*, int, int, int);
+    virtual int canPath(int, int, int, float*, int, int, int);
+    virtual int canBidirectionPath();
+    virtual int canPathWithObstructions();
+    virtual int canPathWithAdditionalPassability();
+    virtual int findFirstTerrainAlongExceptionPath();
+    virtual int canLinePath(int, int, int, int, float, int);
+    virtual int canLinePath(void*, void*, float, void*, int);
+    virtual int firstTileAlongLine();
+    virtual void* userDefinedWaypoint(int);
+    virtual int addUserDefinedWaypoint(void*, int);
+    virtual void removeAllUserDefinedWaypoints(int);
+    virtual void removeUserDefinedWaypoint(int);
+    virtual int numberUserDefinedWaypoints();
+    virtual void* findAvoidancePath();
+    virtual long get_action_checksum();
+    virtual long get_waypoint_checksum();
+    virtual int setup(int, void*);
+    virtual int setup(RGE_Master_Static_Object*, RGE_Player*, float, float, float);
+    virtual void* create_object_list();
+    virtual void* create_sprite_list();
+    virtual int setup(RGE_Master_Animated_Object*, RGE_Player*, float, float, float);
+    virtual void stop_moving();
+    virtual unsigned char turn_towards(RGE_Static_Object*, float, float);
+    virtual int setup(RGE_Master_Moving_Object*, RGE_Player*, float, float, float);
+    virtual void work2();
+    virtual void set_task();
+    virtual void setTaskByTaskID();
+    virtual void set_action();
+    virtual void set_only_action();
+    virtual void set_end_action();
+    virtual void* getTask();
+    virtual void setup();
+    virtual void create_action_list();
+    virtual unsigned char area_attack();
+    virtual void do_attack();
+    virtual void get_armor();
     char pad_180[0x14];
 };
-#undef APAD
 
 class RGE_Missile_Object {
 public:

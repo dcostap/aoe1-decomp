@@ -9,11 +9,11 @@
 //   (same TU com_obj.cpp, same class surface, same /GX EH frame). Baseline 82 diff.
 // Probes (source-shape, all same emitted tail except noted):
 //   - if/else, goto-exit result, result+if/else: VC5 canonicalizes -> inline ret0 epilogue (82 diff, 249B)
-//   - comma-return func34,1: worse (175 diff, 276B)
+//   - comma-return work,1: worse (175 diff, 276B)
 //   - goto fail at end: 82 diff (249B)
 //   - result=0; if (transport!=0) {body; result=1;} return result;  => BEST 67 diff,
 //     230/230 bytes, shape 93.9%, exact-blocks 93.8%, edit-diff 14.
-// Left in scratch: single-return shape shares the epilogue exactly like the original
+// Left in scratch: single-return shape shares the epilogue exactly with the original
 //   (tail [call;mov eax,1] + [epilogue] blocks match byte-for-byte; mov eax,1 not hoisted
 //   into epilogue; original fs-restore interleave reproduced), but the ret0 head differs:
 //   rebuilt emits [xor eax,eax; try=-1; test edi,edi; je epilogue] (xor hoisted before
@@ -42,7 +42,7 @@
 // two-return basin, while a switch diagnostic grew to 276 bytes; both were rolled
 // back to the natural single-result guard.
 // Fresh session probes: returning the allocation pointer as the final boolean
-// duplicated the shared func34 call; positive guard with an explicit else did
+// duplicated the shared work call; positive guard with an explicit else did
 // the same and expanded the EH exits.  A base-typed transport pointer was
 // codegen-neutral.  Preserve the derived action ownership and clean guard.
 // Main-agent audit retained direct inherited virtual calls and canonical action

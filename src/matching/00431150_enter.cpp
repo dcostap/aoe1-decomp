@@ -6,7 +6,7 @@
 // - v1: initial __stdcall function pointers. vtable calls use 5 pushes (stdcall) instead of
 //   4 pushes+ecx (thiscall). Returns generate inline EH epilogues. Function too large (320+ bytes).
 // - v2: static helper wrappers (matching unload pattern). No improvement.
-// - v3: VTableProxy with 130+ dummy virtuals to align vtable offsets. Fixes thiscall for vtable
+// - v3: old cast approach with 130+ declarations to align the call offsets. It fixes thiscall
 //   calls (4 pushes+ecx for vf210, 1 push+ecx for vf208). Still inline epilogues, 320 bytes.
 // - v4: single return variable pattern. Changed stack layout (push ecx for local).
 // - v5: && combined conditions. Same as v1.
@@ -29,7 +29,7 @@
 //   FS-first epilogue at 0043123A and only emits `xor eax,eax; jmp` for constructor failure; VC5 keeps a
 //   duplicated zero-return epilogue before the success body (+19B). Calls, relocation targets, and field
 //   ownership are otherwise aligned. Keep this clean, typed reconstruction in scratch.
-// - Main-agent audit replaced the raw VTableProxy cast with a canonical narrow
+// - Main-agent audit replaced the old cast with a canonical narrow
 //   RGE_Moving_Object base and named virtual calls; emitted code is unchanged.
 // Fresh worker: typed shared-result pointer and integer-result forms were tested
 // against the gather/transport EH-tail pattern; they worsened prologue/layout
@@ -102,7 +102,7 @@
 // branch and register basin. The EH-tail blocker remains.
 // Final bounded pass: restored the reviewed Static -> Animated -> Moving ->
 // Action -> Combat ownership chain and placed the Combat enter override at the
-// inventory-proven +0x180 virtual slot. Correct object(), get_action(),
+// inventory-proven +0x180 vtable entry. Correct object(), get_action(),
 // add_action(), make_enter_task(), and RGE_Action_Enter target declarations
 // are codegen-neutral and retained. The closest one-return typed result form
 // is 263 bytes/33 differing bytes, but it returns an uninitialized result when
@@ -111,6 +111,9 @@
 // behavior-defined goto-fail source remains 274 bytes/65 differing bytes.
 // The final ABI cleanup changed task, action, target, and object pointer
 // declarations to their reviewed types without changing emitted bytes.
+// The complete module now uses RGE_Action fields for target and action type.
+// This removes the isolated context-only call surface. The old isolated exact
+// result is therefore stale and remains observed in the complete proposal.
 // Reopened the 263-byte one-return carrier. The original object-failure edge
 // at 0043117F branches directly after TEST EDI. EAX still holds the zero
 // returned by object(); the common tail does not read the allocation home at
@@ -137,7 +140,7 @@
 //    cleanup. Original has single cleanup at 0043123A shared by all paths. Shared tail saves
 //    ~60 bytes (3x20 - 20 = 40 bytes of cleanup, plus jumps).
 // 2. The reviewed Static -> Animated -> Moving -> Action -> Combat chain
-//    declares the inherited virtual surface needed for the late slots.
+//    declares the inherited virtual surface needed for the late entries.
 // 3. SEH handler address (55CE7Bh) vs 0 placeholder - masked by relocation system.
 // 4. Register allocation differs from original (original: eax=world_z, ecx=world_y, edx=world_x;
 //    rebuilt varies by version).
@@ -148,7 +151,7 @@
 // control-flow structure (nested ifs vs &&) that caused VC5 to merge epilogues into a shared
 // tail. The matching unload also has inline epilogues (which is fine at 254 bytes), but the
 // enter function must fit in 255 bytes, requiring the shared tail or ~65 fewer code bytes.
-// The VTableProxy approach works for thiscall calling convention but adds code size.
+// The old cast approach works for thiscall calling convention but adds code size.
 // The function-ptr approach fails to generate thiscall for vtable[0x210] in this function.
 
 #include <stddef.h>
@@ -169,10 +172,10 @@ int RGE_Combat_Object::enter(int param_1, int param_2)
     if (param_2 == 0) {
         if (this->actions->have_action() == 1) {
             RGE_Action* action = this->actions->get_action();
-            RGE_Static_Object* target = action->func4C();
+            RGE_Static_Object* target = (RGE_Static_Object*)action->target_obj;
             if (target == obj) {
                 RGE_Action* action2 = this->actions->get_action();
-                short action_val = action2->func18();
+                short action_val = action2->action_type;
                 if (action_val == 3)
                     goto success;
             }

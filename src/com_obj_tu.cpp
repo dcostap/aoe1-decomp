@@ -1,7 +1,7 @@
 // Authentic PDB-ordered owner wrapper for com_obj.cpp.
 //
 // The source module has 50 normal owners in PDB order.  One compiler-generated
-// vector deleting destructor at 0042F9C0 is listed in the proposal only.
+// scalar deleting destructor at 0042F9C0 is listed in the proposal only.
 // Matching owners are included from src/matching.  Scratch owners remain
 // observed.  Accepted-drift owners remain observed and are not promoted.
 //
@@ -9,11 +9,13 @@
 // Included owner files keep their isolated declarations behind
 // RGE_COM_OBJ_SHARED_CONTEXT.  No grouped-only body fork, namespace alias,
 // inline assembly, dummy owner, or metric-only wrapper is used.
-// Final grouped result: 3 exact owners, 47 observed owners, 1 generated
-// destructor, and no blocked normal owner.
+// Phase 2 proposal classification: one exact owner, 49 observed owners, and
+// one generated destructor.  Candidate validation passes source policy.  The
+// four scratch owners that match remain observed because scratch files cannot
+// be exact owners.
 
 #define RGE_COM_OBJ_SHARED_CONTEXT 1
-#include "../include/com_obj_context.h"
+#include "com_obj_phase2_context.h"
 
 #include "matching/0042F930_RGE_Combat_Object.cpp"
 #include "matching/0042F9E0_RGE_Combat_Object.cpp"
@@ -23,7 +25,7 @@
 #include "matching/0042FBA0_setup.cpp"
 #include "matching/0042FC10_save.cpp"
 #include "matching/0042FC50_stop.cpp"
-#include "scratch/0042FC90_calc_attack_modifier.cpp"
+#include "matching/0042FC90_calc_attack_modifier.cpp"
 #include "matching/0042FCA0_area_attack.cpp"
 #include "scratch/0042FF50_attack.cpp"
 #include "scratch/004300F0_attack.cpp"
@@ -54,12 +56,12 @@
 #include "matching/00431340_unload.cpp"
 #include "matching/00431440_stopAction.cpp"
 #include "matching/00431470_pause.cpp"
-#include "scratch/00431490_rateOfFire.cpp"
+#include "matching/00431490_rateOfFire.cpp"
 #include "matching/004314A0_damageCapability.cpp"
 #include "matching/004314F0_damageCapability.cpp"
 #include "matching/00431530_inAttackRange.cpp"
-#include "scratch/004315A0_weaponRange.cpp"
-#include "scratch/004315B0_minimumWeaponRange.cpp"
+#include "matching/004315A0_weaponRange.cpp"
+#include "matching/004315B0_minimumWeaponRange.cpp"
 #include "matching/004315C0_currentTargetID.cpp"
 #include "matching/00431610_currentTargetX.cpp"
 #include "matching/00431640_currentTargetY.cpp"
