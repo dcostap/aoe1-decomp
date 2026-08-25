@@ -1528,7 +1528,9 @@
         "0049B560": "src/matching/0049B560_draw.cpp",
         "0049B830": "src/matching/0049B830_handle_anim_pal.cpp",
         "0049BF20": "src/matching/0049BF20_command_cancel_building.cpp",
+        "0049C540": "src/matching/0049C540_command_group.cpp",
         "0049C570": "src/matching/0049C570_command_group_by_number.cpp",
+        "0049CEA0": "src/matching/0049CEA0_command_trade.cpp",
         "0049CEB0": "src/matching/0049CEB0_command_trade_with.cpp",
         "0049D040": "src/matching/0049D040_command_unselect.cpp",
         "0049D340": "src/matching/0049D340_command_trade_attribute.cpp",
@@ -1537,7 +1539,9 @@
         "0049D540": "src/matching/0049D540_add_log.cpp"
       },
       "symbols": {
-        "0049B560": "?draw@TRIBE_Screen_Game@@UAEXXZ"
+        "0049B560": "?draw@TRIBE_Screen_Game@@UAEXXZ",
+        "0049C540": "?command_group@TRIBE_Screen_Game@@QAEXXZ",
+        "0049CEA0": "?command_trade@TRIBE_Screen_Game@@QAEXXZ"
       }
     },
     {
