@@ -21,11 +21,33 @@
         "005469C0": "src/matching/005469C0_RGE_Zone_Map.cpp",
         "00546A00": "src/matching/00546A00_save.cpp",
         "00546E50": "src/matching/00546E50_check_info.cpp",
+        "00546EB0": "src/matching/00546EB0_get_zone_info.cpp",
+        "00546ED0": "src/matching/00546ED0_withinRange.cpp",
+        "00546F00": "src/matching/00546F00_withinRange.cpp",
+        "00547000": "src/matching/00547000_numberTilesInZone.cpp",
+        "00547080": "src/matching/00547080_findClosestPointInTerrainType.cpp",
+        "00547180": "src/matching/00547180_RGE_Zone_Map_List.cpp",
+        "00547240": "src/matching/00547240_RGE_Zone_Map_List.cpp",
+        "00547260": "src/matching/00547260_RGE_Zone_Map_List.cpp",
+        "00547270": "src/matching/00547270_save.cpp",
         "005472B0": "src/matching/005472B0_create_zone_map.cpp",
-        "005473B0": "src/matching/005473B0_get_zone_map.cpp"
+        "005473B0": "src/matching/005473B0_get_zone_map.cpp",
+        "005474B0": "src/matching/005474B0_get_zone_map.cpp",
+        "005474D0": "src/matching/005474D0_delete_zone_maps.cpp"
       },
       "symbols": {
-        "00546A00": "?save@RGE_Zone_Map@@QAEXH@Z"
+        "00546A00": "?save@RGE_Zone_Map@@QAEXH@Z",
+        "00546ED0": "?withinRange@RGE_Zone_Map@@QAEHUXYPoint@@0M@Z",
+        "00546F00": "?withinRange@RGE_Zone_Map@@QAEHEUXYPoint@@M@Z",
+        "00547000": "?numberTilesInZone@RGE_Zone_Map@@QAEHE@Z",
+        "00547180": "??0RGE_Zone_Map_List@@QAE@HPAVRGE_Map@@@Z",
+        "00547240": "??0RGE_Zone_Map_List@@QAE@PAVRGE_Map@@@Z",
+        "00547260": "??1RGE_Zone_Map_List@@QAE@XZ",
+        "00547270": "?save@RGE_Zone_Map_List@@QAEXH@Z",
+        "005473B0": "?get_zone_map@RGE_Zone_Map_List@@QAEPAVRGE_Zone_Map@@PAMJAAH@Z",
+        "005474B0": "?get_zone_map@RGE_Zone_Map_List@@QAEPAVRGE_Zone_Map@@J@Z",
+        "005474D0": "?delete_zone_maps@RGE_Zone_Map_List@@QAEXXZ",
+        "005468C0": "??0RGE_Zone_Map@@QAE@PAVRGE_Map@@PAMJ@Z"
       }
     },
     {
@@ -4727,6 +4749,10 @@
       "source": "src/sprite.cpp",
       "flags": "config/flags/004C0960_get_frame.rsp",
       "owners": {
+        "004BF720": "src/matching/004BF720_RGE_Sprite.cpp",
+        "004BFCE0": "src/matching/004BFCE0_RGE_Sprite.cpp",
+        "004BFD40": "src/matching/004BFD40_rehook.cpp",
+        "004BFDA0": "src/matching/004BFDA0_save.cpp",
         "004BFFE0": "src/matching/004BFFE0_load_facets.cpp",
         "004BFFF0": "src/matching/004BFFF0_play_sound.cpp",
         "004C04F0": "src/matching/004C04F0_draw.cpp",
@@ -4738,7 +4764,19 @@
         "004C1030": "src/matching/004C1030_check_for_shadows.cpp"
       },
       "symbols": {
-        "004C04F0": "?draw@RGE_Sprite@@QAEEJJJJJJPAVRGE_Color_Table@@PAVTDrawArea@@E@Z"
+        "004BF720": "??0RGE_Sprite@@QAE@F@Z",
+        "004BFCE0": "??1RGE_Sprite@@QAE@XZ",
+        "004BFD40": "?rehook@RGE_Sprite@@QAEXPAPAV1@@Z",
+        "004BFDA0": "?save@RGE_Sprite@@QAEXH@Z",
+        "004C04F0": "?draw@RGE_Sprite@@QAEEJJJJJJPAVRGE_Color_Table@@PAVTDrawArea@@E@Z",
+        "004BFFE0": "?load_facets@RGE_Sprite@@QAEXPAPAV1@@Z",
+        "004BFFF0": "?play_sound@RGE_Sprite@@QAEXFFF@Z",
+        "004C0620": "?normal_draw@RGE_Sprite@@QAEEJJJJPAVRGE_Color_Table@@PAVTDrawArea@@@Z",
+        "004C0840": "?get_size@RGE_Sprite@@QAEHAAJ000J@Z",
+        "004C0960": "?get_frame@RGE_Sprite@@QAEHAAF000JJ@Z",
+        "004C0C50": "?get_lowest_draw_level@RGE_Sprite@@QAEEXZ",
+        "004C0F90": "?make_active_sprite@RGE_Sprite@@QAEPAVRGE_Active_Sprite@@XZ",
+        "004C1030": "?check_for_shadows@RGE_Sprite@@QAEHXZ"
       }
     },
     {
