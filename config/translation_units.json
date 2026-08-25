@@ -328,7 +328,12 @@
         "0051F100": "src/matching/0051F100_set_back_color.cpp",
         "0051F120": "src/matching/0051F120_draw_border.cpp",
         "0051F310": "src/matching/0051F310_init_timeline.cpp",
-        "0051F4E0": "src/matching/0051F4E0_add_pop_total_special_event.cpp"
+        "0051F4E0": "src/matching/0051F4E0_add_pop_total_special_event.cpp",
+        "0051FA90": "src/matching/0051FA90_draw_axis.cpp",
+        "00520080": "src/matching/00520080_draw_background.cpp",
+        "00520220": "src/matching/00520220_draw_civilization_names.cpp",
+        "00520AE0": "src/matching/00520AE0_draw_icon.cpp",
+        "00520D50": "src/matching/00520D50_draw_legend.cpp"
       },
       "symbols": {
         "0051E790": "??1Time_Line_Panel@@UAE@XZ",
@@ -337,7 +342,12 @@
         "0051EC10": "?set_background@Time_Line_Panel@@QAEHPADJ@Z",
         "0051EDD0": "?set_special_events@Time_Line_Panel@@QAEHPAD@Z",
         "0051EEE0": "?set_special_events@Time_Line_Panel@@QAEHPADJ@Z",
-        "0051F4E0": "?add_pop_total_special_event@Time_Line_Panel@@QAEXJJJH@Z"
+        "0051F4E0": "?add_pop_total_special_event@Time_Line_Panel@@QAEXJJJH@Z",
+        "0051FA90": "?draw_axis@Time_Line_Panel@@QAEXXZ",
+        "00520080": "?draw_background@Time_Line_Panel@@QAEXXZ",
+        "00520220": "?draw_civilization_names@Time_Line_Panel@@QAEXXZ",
+        "00520AE0": "?draw_icon@Time_Line_Panel@@QAEXPAUSpecial_Events@@FE@Z",
+        "00520D50": "?draw_legend@Time_Line_Panel@@QAEXXZ"
       }
     },
     {
@@ -4790,6 +4800,7 @@
         "004682D0": "src/matching/004682D0_set_enable_ime.cpp",
         "00468300": "src/matching/00468300_get_info_file.cpp",
         "00468310": "src/matching/00468310_get_info_id.cpp",
+        "00468320": "src/matching/00468320_get_background.cpp",
         "00468330": "src/matching/00468330_get_background2.cpp",
         "00468340": "src/matching/00468340_get_palette.cpp",
         "00468350": "src/matching/00468350_get_cursor.cpp",
@@ -4805,11 +4816,14 @@
         "00468460": "src/matching/00468460_get_button_pics.cpp",
         "00468470": "src/matching/00468470_get_shadow_color_table.cpp",
         "00468480": "src/matching/00468480_get_enable_ime.cpp",
+        "00469EE0": "src/matching/00469EE0_popupOKDialog.cpp",
         "00469F30": "src/matching/00469F30_popupOKDialog.cpp",
         "0046A040": "src/matching/0046A040_popupYesNoDialog.cpp",
         "0046A090": "src/matching/0046A090_popupYesNoDialog.cpp",
         "0046A150": "src/matching/0046A150_popupYesNoCancelDialog.cpp",
         "0046A1A0": "src/matching/0046A1A0_popupYesNoCancelDialog.cpp",
+        "0046A260": "src/matching/0046A260_command_help.cpp",
+        "0046A2E0": "src/matching/0046A2E0_command_help.cpp",
         "0046A360": "src/matching/0046A360_setup_popup_help.cpp",
         "0046A3C0": "src/matching/0046A3C0_clear_popup_help.cpp",
         "0046A670": "src/matching/0046A670_set_system_colors.cpp"
@@ -4821,7 +4835,11 @@
         "0046A040": "?popupYesNoDialog@TEasy_Panel@@QAEXJPADHH@Z",
         "0046A090": "?popupYesNoDialog@TEasy_Panel@@QAEXPAD0HH@Z",
         "0046A150": "?popupYesNoCancelDialog@TEasy_Panel@@QAEXJPADHH@Z",
-        "0046A1A0": "?popupYesNoCancelDialog@TEasy_Panel@@QAEXPAD0HH@Z"
+        "0046A1A0": "?popupYesNoCancelDialog@TEasy_Panel@@QAEXPAD0HH@Z",
+        "00468320": "?get_background@TEasy_Panel@@QAEHXZ",
+        "00469EE0": "?popupOKDialog@TEasy_Panel@@QAEXHPADHH@Z",
+        "0046A260": "?command_help@TEasy_Panel@@QAEXPADJJJJ@Z",
+        "0046A2E0": "?command_help@TEasy_Panel@@QAEXPAD0JJJ@Z"
       }
     },
     {
