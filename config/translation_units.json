@@ -608,8 +608,14 @@
         "00439D80": "src/matching/00439D80_DibCreatePalette.cpp",
         "00439E50": "src/matching/00439E50_DibReadBitmapInfo.cpp",
         "0043A330": "src/matching/0043A330_DibSetUsage.cpp",
+        "0043A420": "src/matching/0043A420_DibDraw.cpp",
+        "0043A4B0": "src/matching/0043A4B0_DibCopy.cpp",
         "0043A500": "src/matching/0043A500_DibCreate.cpp",
-        "0043AB40": "src/matching/0043AB40_xlatRle4.cpp"
+        "0043AA60": "src/matching/0043AA60_xlatClut8.cpp",
+        "0043AB40": "src/matching/0043AB40_xlatRle4.cpp",
+        "0043AB80": "src/matching/0043AB80_CreateIdentityPalette.cpp",
+        "0043ACB0": "src/matching/0043ACB0_CopyPalette.cpp",
+        "0043AD40": "src/matching/0043AD40_DibFree.cpp"
       },
       "symbols": {
         "00439750": "?ReadPalette@@YAPAXPADJH@Z",
@@ -620,8 +626,17 @@
         "00439D80": "?DibCreatePalette@@YAPAXPAUtagBITMAPINFOHEADER@@@Z",
         "00439E50": "?DibReadBitmapInfo@@YAPAUtagBITMAPINFOHEADER@@H@Z",
         "0043A330": "?DibSetUsage@@YAHPAUtagBITMAPINFOHEADER@@PAXI@Z",
+        "0043A420": "?DibDraw@@YAHPAXHHHHPAUtagBITMAPINFOHEADER@@HHHHJI@Z",
+        "0043A4B0": "?DibCopy@@YAPAUtagBITMAPINFOHEADER@@PAU1@@Z",
         "0043A500": "?DibCreate@@YAPAUtagBITMAPINFOHEADER@@HHH@Z",
-        "0043AB40": "?xlatRle4@@YAXPAEI0@Z"
+        "0043AA60": "?xlatClut8@@YAXPAEI0@Z",
+        "0043AB40": "?xlatRle4@@YAXPAEI0@Z",
+        "0043AB80": "?CreateIdentityPalette@@YAXPAX@Z",
+        "0043ACB0": "?CopyPalette@@YAPAXPAX@Z",
+        "0043AD40": "?DibFree@@YAXPAX@Z",
+        "00438E80": "?ClipDibBlt@@YAHPAUBITMAPINFO256@@PAUtagRECT@@AAJ2222222HH@Z",
+        "00439060": "?GetDibDim@@YAXPAUBITMAPINFO256@@PAJ11@Z",
+        "00439700": "?GetPaletteFromDib@@YAPAXPADH@Z"
       }
     },
     {
