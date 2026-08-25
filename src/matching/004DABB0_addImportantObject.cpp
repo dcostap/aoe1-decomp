@@ -4,7 +4,7 @@
 // try 1: broad reconstruction from packet: validation, allied recursion, add to important/object subtype lists, final notification.
 // try 2: modeled object validation exactly from packet: null object, negative id, object type via obj->type+0x14, validType(type) helper.
 // try 3: modeled owner/game/player chain at this+0x100, game+0xF0, player+0x3C/+0x4A/+0x40 observed in alliance recursion path.
-// try 4: modeled no-recurse allied propagation path: player isAlly(vtable+0x18), player count > 3, strategy.check(0xC2)==1, loop players 1..count-1.
+// try 4: modeled no-recurse allied propagation path: player isAlly(dispatch table+0x18), player count > 3, strategy.check(0xC2)==1, loop players 1..count-1.
 // try 5: modeled recursive call into other AI module at other->ai+0xCEC with recurse=1 when visibility/active checks pass.
 // try 6: modeled markObject(obj) at 004DE600 and stored marked result for final notify condition.
 // try 7: modeled first important-id list at +0x118/+0x11C/+0x124: duplicate scan, grow with malloc/free, append id.
@@ -28,9 +28,11 @@
 extern void* operator new(unsigned int);
 extern void operator delete(void*);
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class RGE_Master_Static_Object {
 public:
-    void* vtable;
+    virtual ~RGE_Master_Static_Object();
     char gap04[0x10];
     short objectGroup;
 };
@@ -40,14 +42,15 @@ class TribeMainDecisionAIModule;
 
 class RGE_Player {
 public:
-    virtual void v00();
-    virtual void v04();
-    virtual void v08();
-    virtual void v0c();
-    virtual void v10();
-    virtual void v14();
+    virtual ~RGE_Player();
+    virtual void set_game_status(unsigned char);
+    virtual void do_resign(int);
+    virtual void changeToHumanPlayer();
+    virtual void changeToComputerPlayer();
+    virtual char* aiStatus(int);
+    virtual int isEnemy(int);
     virtual int isAlly(int);
-    virtual int isActive(int);
+    int isActive(int);
     int computerPlayer();
     char gap04[0x38];
     RGE_Game_World* world;
@@ -59,7 +62,7 @@ public:
 
 class RGE_Static_Object {
 public:
-    virtual void v00();
+    virtual ~RGE_Static_Object();
     int id;
     RGE_Master_Static_Object* master_obj;
     RGE_Player* owner;
@@ -85,6 +88,7 @@ struct ManagedArray_int {
     int maximumSizeValue;
 };
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class TribeInformationAIModule {
 public:
     char gap000[0x100];
@@ -104,6 +108,7 @@ public:
     int addResourceObject(RGE_Static_Object* obj);
     void* addObjectMemory(RGE_Static_Object* obj);
 };
+#endif
 
 class TribeMainDecisionAIModule {
 public:
@@ -115,6 +120,9 @@ public:
     AIStrategy tacticalAI;
 };
 
+#endif
+
+#endif
 int TribeInformationAIModule::addImportantObject(RGE_Static_Object* obj, int recurse) {
     int oType;
     int marked;

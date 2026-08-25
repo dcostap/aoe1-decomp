@@ -12,6 +12,8 @@
 // - Winning try: direct indexed array access (`this->buildingLots[i].field`) instead of carried pointer local.
 //   VC5 keeps the loaded array base in eax, counter in edx, emits the single top guard and original bottom `jl`.
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class BuildingLot {
 public:
     int typeID;
@@ -29,7 +31,9 @@ public:
 
     int invalidLot(int typeID, unsigned char x, unsigned char y);
 };
+#endif
 
+#endif
 int TribeInformationAIModule::invalidLot(int typeID, unsigned char x, unsigned char y) {
     int count = this->maxBuildingLots;
     int i = 0;

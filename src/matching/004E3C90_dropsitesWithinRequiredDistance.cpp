@@ -51,6 +51,8 @@
 // ManagedArray source then matches all 509 bytes and five calls. Target-only
 // compilation emits the reviewed duplicated-tail drift.
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class ManagedArray_int {
 public:
     int* value;
@@ -58,6 +60,7 @@ public:
     int desiredNumberValue;
     int maximumSizeValue;
 
+#endif
     ManagedArray_int()
         : value(0), numberValue(0), desiredNumberValue(0), maximumSizeValue(0) {}
 
@@ -118,6 +121,7 @@ public:
     }
 };
 
+#endif
 int TribeInformationAIModule::dropsitesWithinRequiredDistance(
     int& numApplicableResources, int resourceType, int requiredDistance)
 {

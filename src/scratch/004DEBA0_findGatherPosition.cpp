@@ -1,17 +1,17 @@
 // 004DEBA0 TribeInformationAIModule::findGatherPosition
 // Attempt log:
 // 1: natural decompiler reconstruction using local XYPoint layout and raw virtual calls for object collision/line collision.
-// 2: __thiscall function-pointer casts failed under VC5 C4234, replaced with cdecl raw vtable calls (asm pushes object explicitly).
+// 2: __thiscall function-pointer casts failed under VC5 C4234, replaced with cdecl raw dispatch table calls (asm pushes object explicitly).
 // 3: first compiling attempt had the correct high-level call set and many matching arithmetic islands, but frame 0x50 vs original 0x54.
 // 4: parameter order/registers mostly aligned after prologue except the min/max comparison polarity.
 // 5: setupInfluenceMap/mapBound/groupInfluenceDimension were initially represented as member calls with pointer stubs.
 // 6: stack-slot placement for XYPoint locals differed; early mapBound locals landed at [esp+30]/[esp+20] instead of original [esp+3C]/[esp+2C].
 // 7: exclusion-box predicate compiled behaviorally but used register-left comparisons instead of the original memory-left form.
-// 8: object virtual collision and line collision calls use observed vtable slots +0x114/+0x1B0 and float push order.
+// 8: object virtual collision and line collision calls use observed dispatch table slots +0x114/+0x1B0 and float push order.
 // 9: no inline asm or custom flags tried.
 // 10: retained in scratch; the remaining mismatch is source/layout/codegen, not accepted drift.
 // Session sa24955f58r1:
-// - typed the two object vtable calls as __thiscall virtual methods; this removed caller cleanup and matched the observed indirect-call ABI.
+// - typed the two object dispatch table calls as __thiscall virtual methods; this removed caller cleanup and matched the observed indirect-call ABI.
 // - changed mapBound/setupInfluenceMap to XYPoint-reference declarations, restoring the original decorated direct-call identities.
 // - `maxDistance >= minDistance` reproduces the initial cmp edi,esi/jl guard; memory-left exclusion predicates reproduce two oracle blocks.
 // - XYPoint y,x layout, scalar/point declaration reorderings, and same-TU nonvirtual object declarations did not resolve the frame/local basin.
@@ -36,7 +36,7 @@
 //   bytes and restored the 745-byte size and all 11 ordered calls.
 // - VC5 selected slot 0x1AC when both old canLinePath overloads had that name.
 //   The local six-argument slot name canLinePathByInts keeps the proven 0x1B0
-//   XYPoint call without a cast or manual vtable. The same-name and void*
+//   XYPoint call without a cast or manual dispatch table. The same-name and void*
 //   overload variants returned to slot 0x1AC.
 // - A named collision-distance local, bool blocked, assignment-order changes,
 //   and group-sentinel order did not improve the 406-byte canonical basin.
@@ -58,6 +58,8 @@
 // - The remaining 0x50 versus 0x54 gap remains a real address-taken local
 //   topology blocker, not padding or private local-home drift.
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 typedef unsigned char uchar;
 struct XYPoint { int x; int y; };
 class InfluenceMap { public: int lookupValue(int x, int y); };
@@ -134,7 +136,7 @@ public:
     virtual float damageCapability();
     virtual float weaponRange();
     virtual float minimumWeaponRange();
-    virtual int passableTile(float y, float x, int one); // vtable slot +0x114
+    virtual int passableTile(float y, float x, int one); // dispatch table slot +0x114
     virtual uchar facetToNextWaypoint();
     virtual int currentTargetID();
     virtual float currentTargetX();
@@ -174,11 +176,12 @@ public:
     virtual int findFirstTerrainAlongExceptionPath(int, float*, float*);
     virtual int canLinePathByInts(int, int, int, int, float, int);
     virtual int canLinePath(XYPoint* cPosition, XYPoint* from, float distance,
-                            XYPoint* linePoint, int one); // vtable slot +0x1B0
+                            XYPoint* linePoint, int one); // dispatch table slot +0x1B0
     unsigned char currentZone();
     unsigned char lookupZone(int x, int y);
 };
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class TribeInformationAIModule {
 public:
     int mapBound(XYPoint& p);
@@ -186,7 +189,10 @@ public:
     int groupInfluenceDimension(int v);
     int findGatherPosition(XYPoint& p, int group, int clearDistance, int minDistance, int maxDistance, RGE_Static_Object* obj, XYPoint& out);
 };
+#endif
+#endif
 
+#endif
 int TribeInformationAIModule::findGatherPosition(XYPoint& p, int group, int clearDistance, int minDistance, int maxDistance, RGE_Static_Object* obj, XYPoint& out)
 {
     XYPoint max;
@@ -249,7 +255,7 @@ int TribeInformationAIModule::findGatherPosition(XYPoint& p, int group, int clea
                                                  &lineCollisionPoint, 1) == 0) val = 0x40;
                             for (yy2 = minClear.y; yy2 <= maxClear.y && !blocked; yy2++) {
                                 for (xx2 = min.x; xx2 <= max.x && !blocked; xx2++) {
-                                    int v = iMap.lookupValue(yy2, xx2);
+                                    int v = iMap->lookupValue(yy2, xx2);
                                     if (v == 0xff) blocked = 1; else val += v;
                                 }
                             }

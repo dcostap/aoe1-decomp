@@ -30,7 +30,7 @@
 //     bytes. Calls align 31/31, frame is 0x40, and exact-block coverage is 28.53%.
 // Remaining drift is mainly VC5 register and local-home allocation around the
 // initial zero, coordinate scratch, and score locals.
-// Main-agent audit: replaced the generated VPAD padding with the named
+// Main-agent audit: replaced the generated generated padding padding with the named
 // UnitAIModule ABI surface through the binary-proven +0xC4 can_attack_mem
 // override. No codegen-only volatility or inline assembly is retained.
 // Structural probe: the original nonzero wonderToAttack branch returns its
@@ -45,6 +45,8 @@ extern int debug_rand(char* file, int line);
 void* operator new(unsigned int size);
 void operator delete(void* ptr);
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class RGE_Master_Static_Object;
 class RGE_Static_Object;
 class RGE_Visible_Map;
@@ -53,6 +55,8 @@ class UnitAIModule;
 class MainDecisionAIModule;
 class TribeTacticalAIModule;
 
+#endif
+#ifndef TAIINFMD_PREFIX_CONTEXT
 struct ObjectMemory {
     int id;
     short type;
@@ -194,6 +198,7 @@ public:
     TribeTacticalAIModule tacticalAI; // +0x1146C
 };
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class TribeInformationAIModule {
 public:
     char gap_00[0x100];
@@ -208,7 +213,10 @@ public:
 
     ObjectMemory* objectToAttackByGroup2(int group, int* ids, int count);
 };
+#endif
+#endif
 
+#endif
 ObjectMemory* TribeInformationAIModule::objectToAttackByGroup2(int group, int* ids, int count)
 {
     ObjectMemory* bestObject;

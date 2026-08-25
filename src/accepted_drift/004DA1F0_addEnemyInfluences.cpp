@@ -23,6 +23,8 @@
 // fields both restores canonical ownership and reduces the drift to seven
 // bytes. The remaining minRange x/y FPU-store schedule is localized.
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 struct XYPoint { int x; int y; };
 
 struct RGE_Master_Static_Object {
@@ -73,6 +75,7 @@ public:
 
 extern PathingSystem aiPathSystem;
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class TribeInformationAIModule {
 public:
     virtual ~TribeInformationAIModule();
@@ -84,9 +87,13 @@ public:
     void mapBound(XYPoint* p);
     void addEnemyInfluences(int player, int excludeId);
 };
+#endif
 
 extern float DAT_00575564;
 
+#endif
+
+#endif
 void TribeInformationAIModule::addEnemyInfluences(int player, int excludeId)
 {
     XYPoint maxLOS;

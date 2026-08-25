@@ -2,7 +2,7 @@
 // PDB source: taiinfmd.cpp
 // Attempt log:
 // - Baseline used the canonical 0x24-byte ObjectMemory and a positive
-//   indexed scan, but retained a record pointer and a cdecl vtable proxy
+//   indexed scan, but retained a record pointer and a cdecl dispatch table proxy
 //   (360 bytes, 349 differing bytes).
 // - Replaced the persistent record pointer with direct
 //   importantObjectMemory[i] expressions and modeled md->player as the typed
@@ -50,6 +50,8 @@
 
 #include <stdlib.h>
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 struct ObjectMemory {
     int id;                             // +0x00
     short type;                         // +0x04
@@ -68,6 +70,7 @@ struct ObjectMemory {
     float range;                        // +0x20
 };
 
+#endif
 class RGE_Player {
 public:
     virtual void vt00();
@@ -97,6 +100,7 @@ public:
     RGE_Static_Object* object(int id);
 };
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class TribeInformationAIModule {
 public:
     char gap_00[0x100];
@@ -108,7 +112,9 @@ public:
     int numberUnitsWithinXTiles(int playerFilter, int x, int y, int range);
     ObjectMemory* ruinToCapture(int playerFilter);
 };
+#endif
 
+#endif
 ObjectMemory* TribeInformationAIModule::ruinToCapture(int playerFilter)
 {
     RGE_Static_Object* townCenter;

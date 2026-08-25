@@ -1,3 +1,5 @@
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 struct ObjectMemory {
     int id;
     char gap_04[0x20];
@@ -11,7 +13,9 @@ public:
 
     ObjectMemory* objectMemory(int param_1);
 };
+#endif
 
+#endif
 ObjectMemory* TribeInformationAIModule::objectMemory(int param_1) {
     int iVar1;
     ObjectMemory* pOVar2;

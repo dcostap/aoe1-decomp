@@ -30,6 +30,8 @@
 //   RGE_Static_Object, RGE_Player, and XYPoint ownership. Check: MATCH,
 //   731/731 bytes, 224/224 instructions, 0.0000%.
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 typedef unsigned char uchar;
 
 struct XYPoint {
@@ -177,6 +179,7 @@ struct RGE_Static_Object {
     float distance_to_position(float x, float y, float z);
 };
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
 struct TribeInformationAIModule {
     virtual ~TribeInformationAIModule();
     char pad004[0xFC];
@@ -186,7 +189,10 @@ struct TribeInformationAIModule {
     ObjectMemory* importantObjectMemory;
     ObjectMemory findObjectMemoryLimits(int owner, int object_id, int& a, int& b);
 };
+#endif
+#endif
 
+#endif
 ObjectMemory TribeInformationAIModule::findObjectMemoryLimits(int owner, int object_id, int& c1, int& c2)
 {
     ObjectMemory rVal;

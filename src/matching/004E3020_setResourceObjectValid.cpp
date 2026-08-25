@@ -1,3 +1,5 @@
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class ResourceMemory {
 public:
     int id;
@@ -14,7 +16,9 @@ public:
 
     int setResourceObjectValid(int resourceType, int resourceId, int valid);
 };
+#endif
 
+#endif
 int TribeInformationAIModule::setResourceObjectValid(int resourceType, int resourceId, int valid) {
     for (int i = 0; i < this->numResources[resourceType]; i++) {
         if (this->resourcePtrs[resourceType][i].id == resourceId) {

@@ -79,7 +79,11 @@
 // same translation unit.  Its desired-size member is real, even though this
 // function does not read it; maximumSizeValue is therefore at +0x0C.
 #include <stddef.h>
-#include "../../include/information_dropsites_context.h"
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#define TAIINFMD_INFO_CONTEXT "../../include/information_dropsites_context.h"
+#include TAIINFMD_INFO_CONTEXT
+#undef TAIINFMD_INFO_CONTEXT
+#endif
 
 int TribeInformationAIModule::gameIDsOfObjectType(int objectType, int** ids, int** owners, int playerFilter)
 {

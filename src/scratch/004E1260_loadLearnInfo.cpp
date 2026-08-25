@@ -48,18 +48,20 @@
 #include <stdio.h>
 
 extern "C" int __cdecl sprintf(char*, const char*, ...);
-extern "C" int __cdecl rge_open(char*, int);
 extern "C" void __cdecl rge_read(int, void*, int);
 extern "C" int __cdecl rge_close(int);
 
 void* operator new(unsigned int size);
 void operator delete(void* ptr);
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class RGE_Game_Info {
 public:
     char* get_current_player_name();
 };
 
+#endif
 class RGE_Base_Game {
 public:
     virtual ~RGE_Base_Game();
@@ -152,6 +154,7 @@ public:
     }
 };
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class TribeInformationAIModule {
 public:
     char gap_000[0x100];
@@ -182,7 +185,9 @@ public:
 
     void loadLearnInfo(char* suffix);
 };
+#endif
 
+#endif
 void TribeInformationAIModule::loadLearnInfo(char* suffix)
 {
     int numMemoriesToLoad;

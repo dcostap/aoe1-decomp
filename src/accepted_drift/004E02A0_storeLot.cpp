@@ -60,7 +60,11 @@
 //   VC5 lowering keeps the status handler before allocation and emits jge+jmp.
 
 #include <stddef.h>
-#include "../../include/information_dropsites_context.h"
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#define TAIINFMD_INFO_CONTEXT "../../include/information_dropsites_context.h"
+#include TAIINFMD_INFO_CONTEXT
+#undef TAIINFMD_INFO_CONTEXT
+#endif
 
 void TribeInformationAIModule::storeLot(int typeID, unsigned char x,
                                         unsigned char y, unsigned char built)

@@ -1,3 +1,5 @@
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class RGE_Master_Static_Object {
 public:
     char gap_00[0x10];
@@ -25,7 +27,9 @@ public:
 
     int isBoatAccessible(RGE_Static_Object* param_1, int param_2);
 };
+#endif
 
+#endif
 int TribeInformationAIModule::isBoatAccessible(RGE_Static_Object* param_1, int param_2) {
     RGE_Static_Object* obj = this->md->object(param_2);
     if (obj == 0) {

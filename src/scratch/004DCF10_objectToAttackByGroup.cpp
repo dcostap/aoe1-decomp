@@ -9,7 +9,7 @@
 // Attempt log:
 // - baseline candidate pending: period-plausible typed reconstruction with the
 //   observed group/object/path/score call order; no compiler steering or asm.
-// - probe 2: named the ID-path vtable surface separately from the point-path
+// - probe 2: named the ID-path dispatch table surface separately from the point-path
 //   overload and restored the observed default path argument (vslot +0x194).
 // - probe 3: kept separate coordinate conversions for zone, visibility, and
 //   score distance; added the observed visibility gate and unit scan.
@@ -59,6 +59,9 @@
 void* operator new(unsigned int size);
 void __cdecl operator delete(void* ptr);
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class RGE_Static_Object;
 class RGE_Master_Static_Object;
 class RGE_Player;
@@ -89,9 +92,10 @@ class TribeMainDecisionAIModule;
 class TribeTacticalAIModule;
 class TacticalAIGroup;
 
+#endif
 class RGE_Master_Static_Object {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Master_Static_Object();
     unsigned char master_type;
     unsigned char _pad_0[3];
     char* name;
@@ -113,7 +117,7 @@ public:
 
 // This is the period ManagedArray<int> surface used by the original local
 // obstruction lists.  Its inline indexer is intentionally the ordinary
-// resizing implementation, not a hand-written vtable/offset scaffold.
+// resizing implementation, not a hand-written dispatch table/offset scaffold.
 template <class T>
 class ManagedArray {
 public:
@@ -238,7 +242,7 @@ public:
 
 class RGE_Game_World {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Game_World();
     unsigned long world_time;
     unsigned long old_world_time;
     unsigned long world_time_delta;
@@ -666,6 +670,7 @@ public:
     TribeTacticalAIModule tacticalAI;
 };
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class TribeInformationAIModule : public InformationAIModule {
 public:
     ManagedArray<int> farmsTaskedThisUpdate;
@@ -691,11 +696,15 @@ public:
 
     ObjectMemory* objectToAttackByGroup(int owner, TacticalAIGroup* group, AttackState* state, unsigned long currentTime);
 };
+#endif
 
 extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
 extern "C" int __cdecl debug_rand(const char* file, int line);
 extern float DAT_00575564;
 
+#endif
+
+#endif
 ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
     int owner, TacticalAIGroup* group, AttackState* state, unsigned long currentTime)
 {

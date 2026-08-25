@@ -11,6 +11,8 @@
 // Probe 4: naming the converted town-center distance before multiplication
 // produced an exact 428-byte match.  No custom flags or inline asm are used.
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 typedef unsigned char uchar;
 
 class RGE_Static_Object {
@@ -31,17 +33,18 @@ public:
 
 class RGE_Player {
 public:
-    virtual void vf00();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
+    virtual ~RGE_Player();
+    virtual void set_game_status(unsigned char);
+    virtual void do_resign(int);
+    virtual void changeToHumanPlayer();
+    virtual void changeToComputerPlayer();
+    virtual char* aiStatus(int);
     virtual int playerVisible(int player_id); // vt+18
     char gap_04[0x34];
     RGE_Visible_Map* visible; // +38
 };
 
+#endif
 class MainDecisionAIModule {
 public:
     char gap_00[0xF0];
@@ -61,6 +64,7 @@ struct ObjectMemory {
     char gap_0C[0x18];
 };
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class TribeInformationAIModule {
 public:
     char gap_00[0x100];
@@ -72,7 +76,9 @@ public:
     int numberUnitsWithinXTiles(int player, int x, int y, int tiles);
     ObjectMemory* artifactToCapture(int player);
 };
+#endif
 
+#endif
 ObjectMemory* TribeInformationAIModule::artifactToCapture(int player)
 {
     RGE_Static_Object* townCenter;

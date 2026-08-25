@@ -43,7 +43,7 @@
 // AIModule surface, and the registered TribeMainDecisionAIModule type owns
 // md at +0x100. The exact source keeps direct attackMemories[i] traversal,
 // the id == -1 sentinel guard, the player reread, four mapBound calls, and
-// both ordered setMisc loops. No volatile access, inline assembly, raw vtable,
+// both ordered setMisc loops. No volatile access, inline assembly, raw dispatch table,
 // dummy function, or changed call surface is used.
 // Exact transition: the pinned natural source was 281 bytes different. The
 // full period information context plus the registered derived md type reached
@@ -58,6 +58,8 @@
 // before target-owner and player-owner predicates. The second int parameter is
 // not read. Keep this fault and object-ID behavior.
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 struct XYPoint {
     int x;
     int y;
@@ -126,6 +128,7 @@ public:
     virtual ~InformationAIModule();
 };
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class TribeInformationAIModule : public InformationAIModule {
 public:
     char gap_0F0[0x10];
@@ -140,7 +143,11 @@ public:
     virtual ~TribeInformationAIModule();
     void addPriorAttackInfluences(int targetOwner, int unused);
 };
+#endif
 
+#endif
+
+#endif
 void TribeInformationAIModule::addPriorAttackInfluences(int targetOwner, int unused)
 {
     XYPoint max;

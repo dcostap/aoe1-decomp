@@ -60,6 +60,8 @@
 
 extern int debug_rand(char* file, int line);
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 struct ObjectMemory {
     int id;
     short type;
@@ -190,6 +192,7 @@ public:
     RGE_Player* aiPlayer;
 };
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class TribeInformationAIModule : public InformationAIModule {
 public:
     virtual ~TribeInformationAIModule();
@@ -218,7 +221,10 @@ public:
         int group, int* unitIds, int count, int& playNumber,
         int* outputUnits, int& outputCount, int& outputUnit);
 };
+#endif
+#endif
 
+#endif
 ObjectMemory* TribeInformationAIModule::objectToAttackWithPlay(
     int group, int* unitIds, int count, int& playNumber,
     int* outputUnits, int& outputCount, int& outputUnit)

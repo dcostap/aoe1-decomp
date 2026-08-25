@@ -30,6 +30,8 @@
 
 #include <stdlib.h>
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 struct RGE_Tile_List_Node {
     int x;      // +0x00
     int y;      // +0x04
@@ -48,7 +50,7 @@ public:
 
 class InfluenceMap {
 public:
-    void* vtable;
+    virtual ~InfluenceMap();
     int xSizeValue;
     int ySizeValue;
     int xReferencePointValue;
@@ -69,7 +71,7 @@ struct TileObjNode {
 };
 
 struct RGE_Object_List {
-    void* vtable;       // +0x00
+    virtual ~RGE_Object_List();
     TileObjNode* list;  // +0x04
 };
 
@@ -125,6 +127,7 @@ public:
     RGE_Player* player; // +0xF0
 };
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class TribeInformationAIModule {
 public:
     char gap_00[0x100];
@@ -146,7 +149,10 @@ public:
     int importantObject(int objGroup);
     int addImportantObject(void* obj, int param);
 };
+#endif
+#endif
 
+#endif
 int TribeInformationAIModule::update(int param_1)
 {
     RGE_Visible_Map* vismap;
@@ -184,9 +190,9 @@ int TribeInformationAIModule::update(int param_1)
                 
                 // Quadrant update
                 {
-                    if (this->mapXSize != -1) {
-                        int qx = (col * 4) / this->mapXSize;
-                        int qy = (row * 4) / this->mapYSize;
+                    if (this->mapXSizeValue != -1) {
+                        int qx = (col * 4) / this->mapXSizeValue;
+                        int qy = (row * 4) / this->mapYSizeValue;
                         this->quadrantLog[qx][qy].numberExploredTiles++;
                     }
                 }

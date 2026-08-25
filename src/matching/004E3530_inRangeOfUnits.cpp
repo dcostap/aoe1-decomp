@@ -18,6 +18,8 @@
 //   guard, and places `found` before the outer zero return.  This restores the
 //   oracle's direct `jl` backedge and separate late epilogues: MATCH, 271/271.
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 struct ObjectMemory {
     int id;                         // +0x00
     short type;                     // +0x04
@@ -36,6 +38,7 @@ struct ObjectMemory {
     float range;                    // +0x20
 };
 
+#endif
 class RGE_Player {
 public:
     virtual void vt00();
@@ -142,6 +145,7 @@ public:
     RGE_Static_Object* object(int object_id);
 };
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class TribeInformationAIModule {
 public:
     char gap_00[0x100];
@@ -152,7 +156,9 @@ public:
 
     int inRangeOfUnits(int playerFilter, int x, int y, int mapRange);
 };
+#endif
 
+#endif
 int TribeInformationAIModule::inRangeOfUnits(
     int playerFilter, int x, int y, int mapRange)
 {

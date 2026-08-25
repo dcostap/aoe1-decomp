@@ -65,6 +65,8 @@
 // zero or negative count, the rebuild performs an extra pointer read. Fault
 // order and concurrent-mutation behavior therefore differ.
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 typedef unsigned char uchar;
 
 struct ObjectMemory {
@@ -105,6 +107,7 @@ void __cdecl operator delete(void*);
 class TribeTacticalAIModule { public: int strategicNumber(int n); };
 class MainDecisionAIModule { public: char gap0[0xf0]; RGE_Player* player; char gapf4[0x11378]; TribeTacticalAIModule tacticalAI; };
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class TribeInformationAIModule {
 public:
     char gap0[0x100];
@@ -119,6 +122,8 @@ public:
     int convertUnitToIntType(RGE_Static_Object* obj);
     ObjectMemory* addObjectMemory(int id, short type, short group, uchar x, uchar y, uchar z, uchar owner, short hp, int attempts, uchar kills, float dmg, float rof, float range, RGE_Static_Object* obj);
 };
+#endif
+#endif
 
 #define STORE(ARR, IDX) do { \
     (ARR)[(IDX)].id = id; \
@@ -152,6 +157,18 @@ public:
     (DSTARR)[(IDX)].range = (SRCARR)[(IDX)].range; \
 } while (0)
 
+#endif
+#define STORE(ARR, IDX) do { \
+    (ARR)[(IDX)].id = id; (ARR)[(IDX)].type = type; \
+    (ARR)[(IDX)].group = group; (ARR)[(IDX)].x = x; \
+    (ARR)[(IDX)].y = y; (ARR)[(IDX)].z = z; \
+    (ARR)[(IDX)].owner = owner; (ARR)[(IDX)].hitPoints = hp; \
+    (ARR)[(IDX)].attackAttempts = attempts; \
+    (ARR)[(IDX)].kills = kills; \
+    (ARR)[(IDX)].damageCapability = dmg; \
+    (ARR)[(IDX)].rateOfFire = rof; (ARR)[(IDX)].range = range; \
+} while (0)
+#define COPY_ONE(DSTARR, SRCARR, IDX) ((DSTARR)[(IDX)] = (SRCARR)[(IDX)])
 ObjectMemory* TribeInformationAIModule::addObjectMemory(int id, short type, short group, uchar x, uchar y, uchar z, uchar owner, short hp, int attempts, uchar kills, float dmg, float rof, float range, RGE_Static_Object* obj)
 {
     int maxMemory = this->maxImportantObjectMemory;

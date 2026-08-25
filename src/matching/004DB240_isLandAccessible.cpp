@@ -1,3 +1,5 @@
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class RGE_Master_Object {
 public:
     char gap_00[0x14];
@@ -23,7 +25,9 @@ public:
 
     int isLandAccessible(RGE_Static_Object* param_1, int param_2);
 };
+#endif
 
+#endif
 int TribeInformationAIModule::isLandAccessible(RGE_Static_Object* param_1, int param_2) {
     RGE_Static_Object* object = md->object(param_2);
     if (object != 0) {

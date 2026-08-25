@@ -14,10 +14,13 @@
 // - v11: modeled the ignored canPath output as a local float. VC5 reused the dead parameter home and produced an exact 499-byte match.
 // EXACT: canonical ObjectMemory ownership, typed player/master ABI, 0x24 scan stride, parameter-home zone reuse, and canPath output lifetime are reconstructed. Original uses ESI=this, EBX=obj, EDI=byte cursor, EBP=best entry, and the dead parameter home for the canPath result.
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 typedef unsigned char uchar;
 struct XYPoint { int x; int y; };
 struct XYZPoint { int x; int y; int z; };
 
+#endif
 struct ObjectMemory {
     int id; short type; short group; uchar x; uchar y; uchar z; uchar owner;
     short hp; uchar pad0e[2]; int attackAttempts; uchar kills; uchar pad15[3];
@@ -34,20 +37,9 @@ class InfluenceMap { public: int setValue(int x, int y, int v); };
 
 class RGE_Master_Static_Object { public: char gap[0x28]; float los; };
 
-#define LOS_VPAD1(n) virtual void los_vpad##n();
-#define LOS_VPAD2(n) LOS_VPAD1(n) LOS_VPAD1(n##_1)
-#define LOS_VPAD4(n) LOS_VPAD2(n) LOS_VPAD2(n##_2)
-#define LOS_VPAD8(n) LOS_VPAD4(n) LOS_VPAD4(n##_4)
-#define LOS_VPAD16(n) LOS_VPAD8(n) LOS_VPAD8(n##_8)
-#define LOS_VPAD32(n) LOS_VPAD16(n) LOS_VPAD16(n##_16)
-#define LOS_VPAD64(n) LOS_VPAD32(n) LOS_VPAD32(n##_32)
-
 class RGE_Static_Object {
 public:
-    LOS_VPAD64(0)
-    LOS_VPAD32(64)
-    LOS_VPAD4(96)
-    LOS_VPAD2(100)
+    virtual ~RGE_Static_Object();
     virtual int canPath(XYZPoint, float, int, float*, int, int, int);
 
     char gap04[4]; class RGE_Master_Static_Object* master_obj; char gap0c[0x34]; float z;
@@ -56,14 +48,7 @@ public:
     float distance_to_position(float x, float y, float z);
 };
 
-#undef LOS_VPAD64
-#undef LOS_VPAD32
-#undef LOS_VPAD16
-#undef LOS_VPAD8
-#undef LOS_VPAD4
-#undef LOS_VPAD2
-#undef LOS_VPAD1
-
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class TribeInformationAIModule {
 public:
     char gap_000[0x100];
@@ -79,7 +64,9 @@ public:
     int tileUncovered(int x, int y);
     int unexploredPlayerLocation(int objectId, XYPoint& out);
 };
+#endif
 
+#endif
 int TribeInformationAIModule::unexploredPlayerLocation(int objectId, XYPoint& out)
 {
     RGE_Static_Object* obj = (RGE_Static_Object*)this->md->object(objectId);

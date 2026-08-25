@@ -3,6 +3,8 @@
 // Size: 209 bytes
 // Probe 6: No caching, direct member access only
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 struct ObjMem {
     int id;
     short type;
@@ -21,24 +23,8 @@ struct ObjMem {
     float range;
 };
 
-struct RGE_Player_VT {
-    virtual void d0() = 0; virtual void d1() = 0;
-    virtual void d2() = 0; virtual void d3() = 0;
-    virtual void d4() = 0; virtual void d5() = 0;
-    virtual int vf18(int) = 0;
-};
-
-struct RGE_Obj {
-    unsigned char g0[0x38];
-    float x_pos;
-    float y_pos;
-};
-
-struct TMainDM {
-    unsigned char g0[0xF0];
-    RGE_Player_VT* player;
-};
-
+#endif
+#ifndef TAIINFMD_PREFIX_CONTEXT
 struct TribeInformationAIModule {
     unsigned char g0[0x100];
     TMainDM* md;
@@ -48,7 +34,9 @@ struct TribeInformationAIModule {
 
     int withinXTilesOfEnemyTowncenter(RGE_Obj* obj, int tiles);
 };
+#endif
 
+#endif
 int TribeInformationAIModule::withinXTilesOfEnemyTowncenter(RGE_Obj* obj, int tiles)
 {
     int dsq = tiles * tiles;
@@ -59,7 +47,7 @@ int TribeInformationAIModule::withinXTilesOfEnemyTowncenter(RGE_Obj* obj, int ti
     {
         if (mems[i].type != 109)
             continue;
-        if (!md->player->vf18(mems[i].owner))
+        if (!md->player->query18(mems[i].owner))
             continue;
         int dx = (unsigned char)mems[i].x - ox;
         int dy = (unsigned char)mems[i].y - oy;

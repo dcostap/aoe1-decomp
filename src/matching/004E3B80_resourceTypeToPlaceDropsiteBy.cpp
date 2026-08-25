@@ -1,31 +1,34 @@
 // 004E3B80 TribeInformationAIModule::resourceTypeToPlaceDropsiteBy (taiinfmd.cpp:7981-8013, 260B)
 // Determines which resource type needs a dropsite placed for it.
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 struct TribeTacticalAIModule {
     char gap_00[0x194];
     int strategicNumbers[226];
     int strategicNumber(int index);
 };
 
+#endif
 struct BuildAIModule {
-    virtual void d0();
-    virtual void d1();
-    virtual void d2();
-    virtual void d3();
-    virtual void d4();
-    virtual void d5();
-    virtual void d6();
-    virtual void d7();
-    virtual void d8();
-    virtual void d9();
-    virtual void d10();
-    virtual void d11();
-    virtual void d12();
-    virtual void d13();
-    virtual void d14();
-    virtual void d15();
-    virtual void d16();
-    virtual void d17();
+    virtual ~BuildAIModule();
+    virtual int loggingHistory();
+    virtual void setLogHistory(int);
+    virtual void toggleLogHistory();
+    virtual void setHistoryFilename(char*);
+    virtual int loggingCommonHistory();
+    virtual void setLogCommonHistory(int);
+    virtual void toggleLogCommonHistory();
+    virtual int loadState(char*);
+    virtual int saveState(char*);
+    virtual int gleanState(int);
+    virtual int processMessage(void*);
+    virtual int update(int);
+    virtual void setCallbackMessage(void*);
+    virtual int filterOutMessage(void*);
+    virtual int save(int);
+    virtual void displayBuildList();
+    virtual int loadBuildList(char*, RGE_Player*);
     virtual int numberBuiltOrInProgressItemsOfType(int a, int b);
     char gap_04[0x5BC - 4];
 };
@@ -45,6 +48,7 @@ struct InformationAIModule {
     char gap_00[0xF0];
 };
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
 struct TribeInformationAIModule : InformationAIModule {
     char gap_F0[0x10];
     /* +0x100 */ TribeMainDecisionAIModule* md;
@@ -53,7 +57,9 @@ struct TribeInformationAIModule : InformationAIModule {
 
     int resourceTypeToPlaceDropsiteBy(int param_1);
 };
+#endif
 
+#endif
 int TribeInformationAIModule::resourceTypeToPlaceDropsiteBy(int param_1) {
     if (param_1 == 2) return 0;
 

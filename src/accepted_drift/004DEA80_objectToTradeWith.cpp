@@ -34,6 +34,9 @@
 
 extern float DAT_00575580;
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class RGE_Player {
 public:
     virtual ~RGE_Player();
@@ -43,6 +46,7 @@ public:
     float* attributes;                // +0x50
 };
 
+#endif
 class RGE_Static_Object {
 public:
     virtual ~RGE_Static_Object();
@@ -81,6 +85,7 @@ struct ObjectMemory {
     float range;                      // +0x20
 };
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class TribeInformationAIModule {
 public:
     virtual ~TribeInformationAIModule();
@@ -92,7 +97,10 @@ public:
 
     ObjectMemory* objectToTradeWith(int param_1);
 };
+#endif
+#endif
 
+#endif
 ObjectMemory* TribeInformationAIModule::objectToTradeWith(int param_1)
 {
     RGE_Static_Object* unit = this->md->object(param_1);

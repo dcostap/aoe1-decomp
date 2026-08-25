@@ -1,9 +1,12 @@
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class XYPoint {
 public:
     int x;
     int y;
 };
 
+#endif
 class InformationAIModule {
 public:
     char gap_00[0x1B0];
@@ -12,11 +15,14 @@ public:
     XYPoint maxGatePosition[4];
 };
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class TribeInformationAIModule : public InformationAIModule {
 public:
     int insideGate(int param_1, int param_2, int param_3);
 };
+#endif
 
+#endif
 int TribeInformationAIModule::insideGate(int param_1, int param_2, int param_3) {
     int* p;
     int i;

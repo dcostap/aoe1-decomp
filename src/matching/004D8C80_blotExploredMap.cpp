@@ -4,6 +4,8 @@
 // ret 10h (4 params)
 // FLAGS: default
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class InfluenceMap {
 public:
     int lookupValue(int y, int x);
@@ -23,7 +25,9 @@ public:
     int mapBound(XYPoint* pt);
     void blotExploredMap(int p1, int p2, int p3, int p4);
 };
+#endif
 
+#endif
 void TribeInformationAIModule::blotExploredMap(int p1, int p2, int p3, int p4)
 {
     XYPoint min;
@@ -31,11 +35,11 @@ void TribeInformationAIModule::blotExploredMap(int p1, int p2, int p3, int p4)
 
     max.y = p1;
     max.x = p2;
-    this->mapBound(&max);
+    this->mapBound((XYPoint*)&max);
 
     min.y = p3;
     min.x = p4;
-    this->mapBound(&min);
+    this->mapBound((XYPoint*)&min);
 
     for (int y = max.y; y <= min.y; y++) {
         for (int x = max.x; x <= min.x; x++) {

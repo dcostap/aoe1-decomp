@@ -1,33 +1,8 @@
-struct MapObj {
-    char gap_0[0x0C];
-    int ySize;   // 0x0C
-};
+// 004DA1C0 TribeInformationAIModule::mapYSize
 
-struct TerrainObj {
-    char gap_0[0x28];
-    MapObj* mapObj;  // 0x28
-};
-
-struct WorldObj {
-    char gap_0[0x3C];
-    TerrainObj* terrain;  // 0x3C
-};
-
-struct GameInfo {
-    char gap_0[0x1256C];
-    WorldObj* world;  // 0x1256C
-};
-
-struct TribeInformationAIModule {
-    char gap_0[0x100];
-    GameInfo* gameInfo;     // 0x100
-    char gap_104[0x04];
-    int cachedMapYSize;     // 0x108
-};
-
-int __fastcall mapYSize(TribeInformationAIModule* self, int) {
-    if (self->cachedMapYSize == -1) {
-        self->cachedMapYSize = self->gameInfo->world->terrain->mapObj->ySize;
+int TribeInformationAIModule::mapYSize() {
+    if (this->mapYSizeValue == -1) {
+        this->mapYSizeValue = this->md->player->world->map->mapHeight;
     }
-    return self->cachedMapYSize;
+    return this->mapYSizeValue;
 }

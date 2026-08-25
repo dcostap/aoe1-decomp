@@ -2,12 +2,15 @@
 // PDB: taiinfmd.cpp lines 7422-7466
 // updateAllResourceDropsites
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class RGE_Master_Static_Object {
 public:
     char gap_0[0x14];
     short object_group;
 };
 
+#endif
 class RGE_Static_Object {
 public:
     char gap_0[0x04];
@@ -50,6 +53,7 @@ struct ResourceTypeBlock {
     int closestResID;           // +0x80
 };
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class TribeInformationAIModule {
 public:
     char gap_0[0x100];
@@ -65,10 +69,12 @@ public:
     float findClosestDropsite(RGE_Static_Object* obj, int mode, int* dropsiteID);
     void updateAllResourceDropsites();
 };
+#endif
 
 extern float DAT_005755b8;
 extern float DAT_005755bc;
 
+#endif
 void TribeInformationAIModule::updateAllResourceDropsites()
 {
     int counter = 4;

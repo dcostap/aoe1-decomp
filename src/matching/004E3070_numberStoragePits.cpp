@@ -19,6 +19,8 @@
 void* operator new(size_t size);
 void operator delete(void* ptr);
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 struct ManagedIntArray {
     int* value;
     int numberValue;
@@ -67,7 +69,9 @@ struct TribeInformationAIModule {
 
     int numberStoragePits();
 };
+#endif
 
+#endif
 int TribeInformationAIModule::numberStoragePits() {
     int i = 0;
     int result = 0;

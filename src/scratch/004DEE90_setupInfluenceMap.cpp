@@ -39,6 +39,8 @@
 
 #include <stdlib.h>
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 typedef unsigned char uchar;
 
 extern "C" void* __cdecl operator_new(unsigned int size);
@@ -238,6 +240,7 @@ class InformationAIModule : public AIModule {
 public:
 };
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class TribeInformationAIModule : public InformationAIModule {
 public:
     ManagedArray<int> farmsTaskedThisUpdate;
@@ -280,6 +283,8 @@ public:
     void setupInfluenceMap(int mode, int objectType, XYPoint& unused,
                            XYPoint& from, XYPoint& to);
 };
+#endif
+#endif
 
 extern "C" void __cdecl logCommonHistory(void* self, const char* format, ...);
 extern float DAT_00575564;
@@ -293,6 +298,7 @@ extern double DAT_005755a8;
 extern float DAT_005755b0;
 extern float DAT_005755b4;
 
+#endif
 void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
                                                    XYPoint& unused,
                                                    XYPoint& from,

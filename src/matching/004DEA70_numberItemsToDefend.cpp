@@ -1,3 +1,5 @@
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class TribeInformationAIModule {
 public:
     virtual ~TribeInformationAIModule();
@@ -5,5 +7,9 @@ public:
     int field_14C;
     int numberItemsToDefend();
 };
+#endif
 
-int TribeInformationAIModule::numberItemsToDefend() { return this->field_14C; }
+#endif
+int TribeInformationAIModule::numberItemsToDefend() {
+    return this->itemsToDefend.numberValue;
+}

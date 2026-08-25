@@ -1,3 +1,5 @@
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class TribeInformationAIModule {
 public:
     int importantUnit(int param_1);
@@ -6,7 +8,9 @@ public:
 
     int importantObject(int param_1);
 };
+#endif
 
+#endif
 int TribeInformationAIModule::importantObject(int param_1) {
     if (importantUnit(param_1) == 0) {
         if (importantResource(param_1) == 0) {

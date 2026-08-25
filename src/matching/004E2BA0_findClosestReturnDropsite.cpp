@@ -3,7 +3,7 @@
 // Attempt log:
 // 1: initial natural ManagedIntArray growth + object/zone/distance scan: same size, 23.9% edit diff; FPU distance/id filter very close, but this/obj in EDI/ESI instead of original ESI/EDI.
 // 2: added local this alias: no register change.
-// 3: modeled TribeInformationAIModule as polymorphic with vptr-adjusted gap: no change.
+// 3: modeled TribeInformationAIModule as polymorphic with compiler pointer-adjusted gap: no change.
 // 4: combined copy-loop condition with preincrement store: shortened to 352 bytes, wrong copy-loop family.
 // 5: explicit while(1) copy loop with top newMax break/bottom cap continue: also 352 bytes, wrong family.
 // 6: named object id local before md->object call: no call-setup/register change.
@@ -19,12 +19,15 @@
 void* operator new(size_t size);
 void operator delete(void* ptr);
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 struct ManagedIntArray {
     int* value;
     int numberValue;
     int desiredNumberValue;
     int maximumSizeValue;
 
+#endif
     int& operator[](int index)
     {
         if (index > this->maximumSizeValue - 1) {
@@ -67,6 +70,7 @@ struct MainDecisionAIModule {
     RGE_Static_Object* object(int objId);
 };
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
 struct TribeInformationAIModule {
     char gap_00[0xF0];
     ManagedIntArray farmsTaskedThisUpdate;
@@ -76,7 +80,9 @@ struct TribeInformationAIModule {
 
     RGE_Static_Object* findClosestReturnDropsite(RGE_Static_Object* unit);
 };
+#endif
 
+#endif
 RGE_Static_Object* TribeInformationAIModule::findClosestReturnDropsite(RGE_Static_Object* unit)
 {
     RGE_Static_Object* result = 0;

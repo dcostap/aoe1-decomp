@@ -10,11 +10,15 @@
 //   into the original range-normalized two-level dispatch: `add eax,-0x2D`, unsigned `cmp eax,0xE7`, byte class
 //   table, and jump table, with one return block per grouped return value.
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class TribeInformationAIModule {
 public:
     int placementCode(int param_1);
 };
+#endif
 
+#endif
 int TribeInformationAIModule::placementCode(int param_1) {
     switch (param_1) {
     case 0x45:

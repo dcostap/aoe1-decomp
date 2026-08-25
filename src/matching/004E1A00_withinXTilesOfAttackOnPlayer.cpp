@@ -181,6 +181,8 @@
 // - Final exact result: 233 bytes, 94 instructions, two ordered __ftol calls,
 //   three returns, the original owner, and 0.0000% positional difference.
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class RGE_Player;
 class RGE_Master_Static_Object;
 class RGE_Static_Object;
@@ -194,6 +196,7 @@ class TDrawArea;
 class RGE_Armor_Weapon_Info;
 class LOSTBL;
 
+#endif
 class RGE_Master_Static_Object {
 public:
     virtual ~RGE_Master_Static_Object();
@@ -360,6 +363,7 @@ public:
 
 // Main-agent audit confirmed canonical typed attack-memory ownership and kept
 // the ordinary indexed proximity scan.
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class TribeInformationAIModule : public InformationAIModule {
 public:
     char gap_F0[0x1FC - 0xF0];
@@ -368,7 +372,9 @@ public:
 
     int withinXTilesOfAttackOnPlayer(RGE_Static_Object* target, int tiles, int playerId);
 };
+#endif
 
+#endif
 int TribeInformationAIModule::withinXTilesOfAttackOnPlayer(
     RGE_Static_Object* target, int tiles, int playerId)
 {

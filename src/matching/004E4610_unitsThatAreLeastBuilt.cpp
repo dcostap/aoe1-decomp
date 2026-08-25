@@ -1,7 +1,11 @@
 // attempt 1: two-pass min scan over the 11-entry history table with -1 carriers and a skip of the first winner
 // exact match landed with the two-pass -1-carrier min scan over the 11-entry table at +0xFF64
 
-#include "../../include/information_dropsites_context.h"
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#define TAIINFMD_INFO_CONTEXT "../../include/information_dropsites_context.h"
+#include TAIINFMD_INFO_CONTEXT
+#undef TAIINFMD_INFO_CONTEXT
+#endif
 
 void TribeInformationAIModule::unitsThatAreLeastBuilt(int& out1, int& out2) {
     int* history;

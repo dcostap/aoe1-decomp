@@ -12,6 +12,8 @@
 
 #include <math.h>
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 struct MasterObj {
     char gap_00[0x10];
     short id;                // +0x10
@@ -30,14 +32,16 @@ struct RGE_Static_Object {
 
 class MainDecisionAIModule {
 public:
-    virtual void _vf00();
+    virtual ~MainDecisionAIModule();
     char gap_04[0xEC];
     void* attackInfo;        // +0xF0
     RGE_Static_Object* object(int object_id);
 };
 
+#endif
+#ifndef TAIINFMD_PREFIX_CONTEXT
 struct TribeInformationAIModule {
-    virtual void _vf00();
+    virtual ~TribeInformationAIModule();
     char gap_04[0xFC];
     MainDecisionAIModule* md;      // +0x100
     char gap_104[0x3CC];           // +0x104 to +0x4CF
@@ -47,23 +51,25 @@ struct TribeInformationAIModule {
 
     int amountForageBushesInXTiles(int x, int y, int max_distance);
 };
+#endif
 
+#endif
 int TribeInformationAIModule::amountForageBushesInXTiles(int x, int y, int max_distance)
 {
     float total = 0.0f;
     int i = 0;
-    if (this->numResources > 0) {
+    if (this->numResources[0] > 0) {
         int offset = 0;
         do {
-            if (*(unsigned char*)((char*)this->resources + offset + 0x0D) != 1) {
-                RGE_Static_Object* obj = this->md->object(*(int*)((char*)this->resources + offset));
+            if (*(unsigned char*)((char*)this->resources[0] + offset + 0x0D) != 1) {
+                RGE_Static_Object* obj = this->md->object(*(int*)((char*)this->resources[0] + offset));
                 if (obj != 0 && obj->master_obj->id == 0x3B) {
                     float dx = obj->x - (float)x; float dy = obj->y - (float)y;
                     if ((int)(sqrt(dx * dx + dy * dy)) <= max_distance) total += obj->forageAmount;
                 }
             }
             i++; offset += 0x14;
-        } while (i < this->numResources);
+        } while (i < this->numResources[0]);
     }
     return (int)total;
 }

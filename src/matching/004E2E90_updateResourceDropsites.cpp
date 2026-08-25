@@ -8,15 +8,18 @@
 // probe 2: restore the same-TU direct-expression/do-while scan shape: keep the
 //   incoming index live through the loop condition, use one byte offset, and
 //   reread resources[idx] at each proven record access.
-// probe 3: model the proven RGE_Master_Static_Object vptr and +0x14
+// probe 3: model the proven RGE_Master_Static_Object compiler pointer and +0x14
 //   object_group field; this closed the final one-byte field-offset mismatch.
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 struct RGE_Master_Static_Object {
-    void* vtable;
+    virtual ~RGE_Master_Static_Object();
     char gap04[0x10];
     short object_group;
 };
 
+#endif
 struct RGE_Static_Object {
     char gap0[0x04];
     int id;
@@ -44,6 +47,7 @@ struct MainDecisionAIModule {
     RGE_Static_Object* object(int id);
 };
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
 struct TribeInformationAIModule {
     char gap0[0x100];
     MainDecisionAIModule* md;
@@ -57,7 +61,9 @@ struct TribeInformationAIModule {
     float findClosestDropsite(RGE_Static_Object* obj, int mode, int* outId);
     void updateResourceDropsites(int idx);
 };
+#endif
 
+#endif
 void TribeInformationAIModule::updateResourceDropsites(int idx) {
     this->bestdv[idx] = -1;
     this->bestid[idx] = -1;

@@ -32,7 +32,7 @@
 //   retained the same 238-byte/15-byte basin.
 // - Reference and const md aliases worsened to a 184-byte diff with a frame;
 //   both were restored. A 48-variant body/source-order lab and a 384-variant
-//   class-surface lab (base/vtable/object/local declaration combinations)
+//   class-surface lab (base/dispatch table/object/local declaration combinations)
 //   found no exact result; every invariant-eligible group remained 238 bytes
 //   with the same 15 register/address mismatches. The clean typed source is
 //   retained; the remaining blocker is a stable VC5 this/md/second-object
@@ -95,7 +95,11 @@
 //   is the smallest natural source that emits this=EDI and md=ESI without
 //   dummy liveness, volatility, register hints, or no-effect expressions.
 
-#include "../../include/information_dropsites_context.h"
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#define TAIINFMD_INFO_CONTEXT "../../include/information_dropsites_context.h"
+#include TAIINFMD_INFO_CONTEXT
+#undef TAIINFMD_INFO_CONTEXT
+#endif
 
 int TribeInformationAIModule::numberAvailableStoragePits(int param_1)
 {

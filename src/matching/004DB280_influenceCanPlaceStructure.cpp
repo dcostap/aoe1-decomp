@@ -1,7 +1,17 @@
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
+struct BuildItem;
+#endif
+
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class TribeInformationAIModule {
 public:
     virtual ~TribeInformationAIModule();
-    int influenceCanPlaceStructure(int p0);
+    int influenceCanPlaceStructure(BuildItem* p0);
 };
+#endif
 
-int TribeInformationAIModule::influenceCanPlaceStructure(int p0) { return 1; }
+#endif
+int TribeInformationAIModule::influenceCanPlaceStructure(BuildItem* p0) {
+    return 1;
+}

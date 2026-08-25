@@ -11,7 +11,7 @@
 //     hpRating/distanceRating/bestAttackValue/unitIsPriest defaults are 100.
 //   * final rating override is `rating = 1` when ((bestObject > boatWeapon && boatWeapon != -1.0f)
 //     || bestObject == -1.0f) -- branch topology verified against original.
-//   * slot 49 (0xC4) on unitAI() dispatch is mostDangerousEnemy per derived UnitAIModule vtable;
+//   * slot 49 (0xC4) on unitAI() dispatch is mostDangerousEnemy per derived UnitAIModule dispatch table;
 //     local declaration uses int arg (caller passes record->id); exact donor 00415A10 declares
 //     float* outThreat -- local stub only, slot/arity identical.
 // - probe 2: split into TWO distance blocks (candidate coords for the visibility check, unit coords
@@ -73,9 +73,7 @@
 
 extern "C" long __ftol();
 extern int debug_rand(char* file, int line);
-extern float const DAT_00575580;
-extern float const DAT_00575584;
-
+#ifndef TAIINFMD_PREFIX_CONTEXT
 typedef unsigned char uchar;
 
 struct ObjectMemory {
@@ -104,22 +102,15 @@ public:
     short object_group;      // +0x14
 };
 
-#define VPAD1(n) virtual void vpad##n();
-#define VPAD2(n) VPAD1(n) VPAD1(n##_a)
-#define VPAD4(n) VPAD2(n) VPAD2(n##_b)
-#define VPAD8(n) VPAD4(n) VPAD4(n##_c)
-#define VPAD16(n) VPAD8(n) VPAD8(n##_d)
-#define VPAD32(n) VPAD16(n) VPAD16(n##_e)
-
 class RGE_Static_Object;
 class UnitAIModule;
 class RGE_Visible_Map;
 
 class RGE_Static_Object {
 public:
-    VPAD32(a0) VPAD32(a32)                    // vtable slots 0..63
-    virtual float vf100();                    // slot 64 = +0x100 (attack rate)
-    virtual float vf104(RGE_Static_Object* obj); // slot 65 = +0x104 (damage vs obj)
+    virtual ~RGE_Static_Object();
+    virtual float get100();                    // slot 64 = +0x100 (attack rate)
+    virtual float get104(RGE_Static_Object* obj); // slot 65 = +0x104 (damage vs obj)
 
     int obj_id;                               // +0x04
     RGE_Master_Static_Object* master_obj;     // +0x08
@@ -138,7 +129,7 @@ public:
 
 class UnitAIModule {
 public:
-    VPAD32(a0) VPAD16(a32) VPAD1(a48)         // vtable slots 0..48
+    virtual ~UnitAIModule();
     virtual int mostDangerousEnemy(int id);   // slot 49 = +0xC4
 };
 
@@ -166,6 +157,7 @@ public:
     RGE_Static_Object* object(int id);
 };
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class TribeInformationAIModule {
 public:
     char gap_00[0x100];
@@ -180,7 +172,9 @@ public:
     ObjectMemory findObjectMemoryLimits(int player, int objnum, int* c1, int* c2);
     ObjectMemory* objectToAttack(int player, int siegeWeapons, int boats, int objnum, int* out);
 };
+#endif
 
+#endif
 ObjectMemory* TribeInformationAIModule::objectToAttack(int player, int siegeWeapons, int boats, int objnum, int* out)
 {
     RGE_Static_Object* candidate;
@@ -227,7 +221,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttack(int player, int siegeWeap
                     float damage = this->damagePerSecond(objnum,
                                                          (int)candidate->world_x,
                                                          (int)candidate->world_y);
-                    float fVar3 = candidate->vf104(unit) / unit->vf100();
+                    float fVar3 = candidate->get104(unit) / unit->get100();
                     float boatWeapon;
                     float bestObject;
                     if (damage > DAT_00575580) {
@@ -267,7 +261,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttack(int player, int siegeWeap
                     int dy1 = (int)*(uchar*)((char*)this->importantObjectMemory + i + 0x09) - iy;
                     if (dy1 < 0) dy1 = -dy1;
                     if (dx1 > 5 || dy1 > 5) {
-                        if (this->md->member_F0->map->get_visible(ix, iy) != 0x0F) {
+                        if (this->md->player->visible->get_visible(ix, iy) != 0x0F) {
                             continue;
                         }
                     }

@@ -6,12 +6,12 @@
 // Status: PARKED - VC5 dispatch structure / encoding drift
 //
 // Attempt log:
-// Probe 1: switch(case) + tactical local — CSE hoisted md load to top,
+// Probe 1: switch(case) + tactical local â€” CSE hoisted md load to top,
 //   shared call tail. 65.7% positional diff.
-// Probe 2: inline cast expression in each case — same CSE.
-// Probe 3: static helper fn — actually made external call (worse).
-// Probe 4: proper member access md->tacticalAI.strategicNumber() — same CSE.
-// Probe 5: if/else if chain — SELF-CONTAINED HANDLERS! Each handler has:
+// Probe 2: inline cast expression in each case â€” same CSE.
+// Probe 3: static helper fn â€” actually made external call (worse).
+// Probe 4: proper member access md->tacticalAI.strategicNumber() â€” same CSE.
+// Probe 5: if/else if chain â€” SELF-CONTAINED HANDLERS! Each handler has:
 //   mov ecx, [ecx+100h]; push val; add ecx, 0x1146C; call; ret 8
 //   (matching original handler pattern exactly)
 //   Remaining: if/else dispatch vs switch/jump-table, add vs sub encoding,
@@ -21,8 +21,8 @@
 // - `switch` causes CSE (shared tail), `if/else` keeps handlers independent
 // - md at +0x100, tacticalAI at +0x1146C in TribeMainDecisionAIModule
 // - strategicNumber is non-virtual, direct call
-// - param_1 cases: 0x2D→0x46, 0x6D→0x38, 0x9E/0xA3→0x36, 0x9F→0x37
-// - param_2: 7→0x34, 8→0x33, 0x20→0x32, else -1
+// - param_1 cases: 0x2Dâ†’0x46, 0x6Dâ†’0x38, 0x9E/0xA3â†’0x36, 0x9Fâ†’0x37
+// - param_2: 7â†’0x34, 8â†’0x33, 0x20â†’0x32, else -1
 //
 // Remaining drift (VC5 TU-context):
 // - if/else dispatch (cmp/jne chain) vs switch jump table (sub+byte+table)
@@ -63,12 +63,16 @@
 //   (0x6D, 0x2D, 0x9F, 0x9E/0xA3) fixed the remaining four literal bytes.
 // Exact: 204/204 bytes, seven ordered calls, and full byte equality.
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 struct AIModule {
-    virtual void dummy();
+    virtual ~AIModule();
 };
 
+#endif
 struct InformationAIModule : public AIModule {
-    char pad_EC[0xEC]; // 0xF0 - 4 (vptr)
+    char pad_EC[0xEC]; // 0xF0 - 4 (compiler pointer)
 };
 
 class TribeTacticalAIModule {
@@ -82,13 +86,17 @@ public:
     TribeTacticalAIModule tacticalAI;
 };
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
 struct TribeInformationAIModule : public InformationAIModule {
     char farmsPad[0x10]; // ManagedArray<int> farmsTaskedThisUpdate at +0xF0
     TribeMainDecisionAIModule* md; // +0x100
 
     int defendPriority(int param_1, int param_2);
 };
+#endif
+#endif
 
+#endif
 int TribeInformationAIModule::defendPriority(int param_1, int param_2)
 {
     switch (param_1) {

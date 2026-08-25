@@ -89,8 +89,11 @@
 //   owner at 00405D50/00405D60. Removing it is codegen-neutral but loses ABI
 //   ownership context.
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 typedef unsigned char uchar;
 
+#endif
 class RGE_Game_World;
 class RGE_Sprite;
 class RGE_Action_Object;
@@ -125,8 +128,6 @@ public:
     int incrementValue(int min_x, int min_y, int max_x, int max_y, int flag);
     int maxValue(void);
 };
-
-extern InfluenceMap losMap;
 
 struct RGE_Master_Static_Object {
     virtual ~RGE_Master_Static_Object();
@@ -343,6 +344,7 @@ struct ObjectMemory {
     float range;            // +0x20
 };
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class TribeInformationAIModule : public InformationAIModule {
 public:
     virtual ~TribeInformationAIModule();
@@ -354,11 +356,13 @@ public:
 
     int setupLOSMap(int owner, int refX, int refY);
 };
+#endif
 
+#endif
 int TribeInformationAIModule::setupLOSMap(int owner, int refX, int refY)
 {
-    losMap.initialize(0);
-    losMap.setReferencePoint(refX, refY);
+    losMap->initialize(0);
+    losMap->setReferencePoint(refX, refY);
 
     int i = 0;
     if (this->maxImportantObjectMemory > 0) {
@@ -379,11 +383,11 @@ int TribeInformationAIModule::setupLOSMap(int owner, int refX, int refY)
                     } else {
                         flag = 1;
                     }
-                    losMap.incrementValue(minX, minY, maxX, maxY, flag);
+                    losMap->incrementValue(minX, minY, maxX, maxY, flag);
                 }
             }
             i++;
         } while (i < this->maxImportantObjectMemory);
     }
-    return losMap.maxValue();
+    return losMap->maxValue();
 }

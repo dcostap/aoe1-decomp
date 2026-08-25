@@ -1,7 +1,7 @@
 // 004E22F0 TribeInformationAIModule::setupAttackMap
 // Source: taiinfmd.cpp lines 7081-7114
 // Attempt log:
-// initial: 74% diff — missing vtable pointer on all classes, wrong offsets.
+// initial: 74% diff â€” missing dispatch table pointer on all classes, wrong offsets.
 // added virtuals: offsets correct, 75% diff.
 // do-while + i at function scope: push edi/ebp now inside if body, 52% diff.
 // tried base+offset separation; direct field access via attackMemories[]: 14.5% diff.
@@ -11,6 +11,8 @@
 // First condition (targetOwner compare) and full prologue/loop are byte-identical.
 // Extern relocations masked (8).
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class InfluenceMap {
 public:
     int initialize(unsigned char param);
@@ -19,8 +21,7 @@ public:
     int maxValue();
 };
 
-extern InfluenceMap attackMap;
-
+#endif
 struct AttackMapStruct {
     char gap_00[0x4A];
     unsigned short compareOwner;  // +0x4A
@@ -28,14 +29,15 @@ struct AttackMapStruct {
 
 class MainDecisionAIModule {
 public:
-    virtual void _vf00();
+    virtual ~MainDecisionAIModule();
     char gap_04[0xEC];
     AttackMapStruct* attackInfo;   // +0xF0
 };
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class TribeInformationAIModule {
 public:
-    virtual void _vf00();
+    virtual ~TribeInformationAIModule();
     char gap_04[0xFC];
     MainDecisionAIModule* md;           // +0x100
     char gap_104[0x0C];
@@ -47,26 +49,28 @@ public:
 
     int setupAttackMap(int param_1, int param_2, int param_3);
 };
+#endif
 
+#endif
 int TribeInformationAIModule::setupAttackMap(int param_1, int param_2, int param_3)
 {
-    attackMap.initialize(0);
-    attackMap.setReferencePoint(param_2, param_3);
+    attackMap->initialize(0);
+    attackMap->setReferencePoint(param_2, param_3);
 
     int i = 0;
     if (this->maxAttackMemories > 0) {
         int offset = 0;
         do {
-            if ((unsigned char)this->attackMemories[offset + 0x0A] == (unsigned int)param_1) {
-                MainDecisionAIModule* md = this->md;
+            if ((unsigned char)((char*)this->attackMemories)[offset + 0x0A] == (unsigned int)param_1) {
+                MainDecisionAIModule* md = (MainDecisionAIModule*)this->md;
                 volatile AttackMapStruct* info = md->attackInfo;
-                unsigned short owner = (unsigned char)this->attackMemories[offset + 0x09];
+                unsigned short owner = (unsigned char)((char*)this->attackMemories)[offset + 0x09];
                 if (owner == info->compareOwner) {
-                    attackMap.incrementValue(
-                        (unsigned char)this->attackMemories[offset + 0x05],
-                        (unsigned char)this->attackMemories[offset + 0x06],
-                        (unsigned char)this->attackMemories[offset + 0x07],
-                        (unsigned char)this->attackMemories[offset + 0x08],
+                    attackMap->incrementValue(
+                        (unsigned char)((char*)this->attackMemories)[offset + 0x05],
+                        (unsigned char)((char*)this->attackMemories)[offset + 0x06],
+                        (unsigned char)((char*)this->attackMemories)[offset + 0x07],
+                        (unsigned char)((char*)this->attackMemories)[offset + 0x08],
                         1);
                 }
             }
@@ -75,5 +79,5 @@ int TribeInformationAIModule::setupAttackMap(int param_1, int param_2, int param
         } while (i < this->maxAttackMemories);
     }
 
-    return attackMap.maxValue();
+    return attackMap->maxValue();
 }

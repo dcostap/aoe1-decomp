@@ -22,7 +22,7 @@
 // seven calls, frame, size, and observed field/call topology are aligned.
 // r2 probe: direct typed importantObjectMemory[i] indexing followed exact
 // same-TU donors; it improved block shape but gave 397 differing bytes.
-// r2 probes: the proven InformationAIModule base, full RGE_Player vtable
+// r2 probes: the proven InformationAIModule base, full RGE_Player dispatch table
 // surface, hoisted locals, and a two-induction for loop were tested; the
 // ABI/liveness forms were codegen duplicates and the for loop regressed.
 // Current pass: raw 0x24-byte cursor expressions improved the broad diagnostic
@@ -30,7 +30,7 @@
 // typed ObjectMemory array owns the same proven fields. The typed indexed form
 // remains the clean source. The saved-register basin is still unresolved.
 // r3 worker probes: register player_id, MainDecisionAIModule field typing, and
-// removal of the unsupported TribeInformationAIModule vptr were codegen-neutral.
+// removal of the unsupported TribeInformationAIModule compiler pointer were codegen-neutral.
 // A typed memory alias changed the basin but fell to 439B and 481 differing
 // bytes. An independent late timer test added a 0x1C frame and 514B. A goto
 // form kept 505B and reached 393 differing bytes, but lost CFG shape and was
@@ -48,15 +48,21 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class ObjectMemory; class RGE_Static_Object; class RGE_Action; class RGE_Action_List;
-class RGE_Player { public: virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual int isEnemy(int owner); };
-class RGE_Action { public: virtual ~RGE_Action(); virtual void av0(); virtual void av1(); virtual void av2(); virtual void av3(); virtual void av4(); virtual short actionType(); char gap_04[8]; unsigned char state; char gap_0d[0x1f]; float timer; };
+class RGE_Player { public: virtual ~RGE_Player(); virtual void set_game_status(unsigned char); virtual void do_resign(int); virtual void changeToHumanPlayer(); virtual void changeToComputerPlayer(); virtual char* aiStatus(int); virtual int isEnemy(int owner); };
+class RGE_Action { public: virtual ~RGE_Action(); virtual int setup(void*); virtual int setup(int, void*); virtual RGE_Action_List* create_action_list(void*); virtual void rehook(); virtual void save(int); virtual short actionType(); char gap_04[8]; unsigned char state; char gap_0d[0x1f]; float timer; };
 class RGE_Action_List { public: char gap[0xc]; unsigned char have_action(); RGE_Action* get_action(); };
 class RGE_Static_Object { public: virtual ~RGE_Static_Object(); char gap_04[0x2c]; float hp; char gap_34[0x14]; unsigned char object_state; char gap_49[0x13b]; RGE_Action_List* action_list; };
 class MainDecisionAIModule { public: char gap_00[0xf0]; RGE_Player* player; RGE_Static_Object* object(int id); };
 class ObjectMemory { public: int id; short type; short group; unsigned char x; unsigned char y; unsigned char z; unsigned char owner; short hitPoints; char gap_0e[0x16]; };
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class TribeInformationAIModule { public: virtual ~TribeInformationAIModule(); char gap_04[0xfc]; MainDecisionAIModule* md; char gap_104[0x0c]; int maxImportantObjectMemory; ObjectMemory* importantObjectMemory; ObjectMemory* wonderToAttack(int player_id); };
+#endif
 
+#endif
+#endif
 ObjectMemory* TribeInformationAIModule::wonderToAttack(int player_id)
 {
     ObjectMemory* bestObject;

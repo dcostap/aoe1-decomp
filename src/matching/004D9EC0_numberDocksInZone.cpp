@@ -7,7 +7,7 @@
 // positional diff.  The binary supports the period-plausible inline
 // ManagedArray<int>::operator[] form used by the same-TU exact scanners.
 // Probe 2: natural operator[] growth plus a positive numberValue guard,
-// typed object/master/zone-map surfaces — exact 249/249 bytes.
+// typed object/master/zone-map surfaces â€” exact 249/249 bytes.
 // Probe 3: removed explicit unsigned casts from the zone comparison; output
 // remained exact, so ordinary integral promotion is retained.
 
@@ -16,6 +16,8 @@
 void* operator new(size_t size);
 void operator delete(void* ptr);
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 struct RGE_Master_Static_Object {
     virtual ~RGE_Master_Static_Object();
     char gap_04[0x0C];
@@ -74,7 +76,9 @@ struct TribeInformationAIModule {
 
     int numberDocksInZone(int param_1, RGE_Zone_Map* param_2);
 };
+#endif
 
+#endif
 int TribeInformationAIModule::numberDocksInZone(int param_1, RGE_Zone_Map* param_2)
 {
     int count = 0;

@@ -22,12 +22,15 @@
 //   initialization order.  The <=2 state threshold remains a natural spelling
 //   of the observed cmp 2/ja branch.
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 struct RGE_Master_Static_Object {
     virtual ~RGE_Master_Static_Object();
     char gap_04[0x0C];
     short id;                         // +0x10
 };
 
+#endif
 class RGE_Static_Object {
 public:
     virtual ~RGE_Static_Object();
@@ -82,6 +85,7 @@ struct ObjectMemory {
 
 // Main-agent audit confirmed canonical typed object-memory/player/object
 // ownership and retained the corrected squared-distance/state semantics.
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class TribeInformationAIModule {
 public:
     virtual ~TribeInformationAIModule();
@@ -94,7 +98,9 @@ public:
     int withinXTilesOfObject(RGE_Static_Object* obj, int tile_range,
                              int type1, int type2, int type3, int type4);
 };
+#endif
 
+#endif
 int TribeInformationAIModule::withinXTilesOfObject(
     RGE_Static_Object* obj, int tile_range,
     int type1, int type2, int type3, int type4)

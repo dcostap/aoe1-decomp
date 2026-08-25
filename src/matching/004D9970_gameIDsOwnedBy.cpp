@@ -3,7 +3,7 @@
 // __thiscall: ecx=this, 3 stack params, ret 0Ch
 // No SEH
 //
-// Status: EXACT — MATCH validated and promoted under the default VC5 flags.
+// Status: EXACT â€” MATCH validated and promoted under the default VC5 flags.
 //
 // Attempt log:
 // Baseline: canonical ObjectMemory stride/fields, typed world lookup, and a
@@ -40,6 +40,8 @@
 // - Main-agent audit restored canonical player/world/object/AI ownership while
 //   preserving the exact binary-backed ObjectMemory stride schedule.
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class RGE_Game_World;
 class RGE_Player;
 
@@ -99,10 +101,12 @@ public:
 
     int gameIDsOwnedBy(int owner_filter, int** out, int owner_id);
 };
+#endif
 
 extern "C" void* __cdecl operator_new(unsigned int size);
 extern "C" void __cdecl operator_delete(void* ptr);
 
+#endif
 int TribeInformationAIModule::gameIDsOwnedBy(int owner_filter, int** out, int owner_id)
 {
     int count = 0;

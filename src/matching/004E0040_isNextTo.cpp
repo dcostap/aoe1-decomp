@@ -1,3 +1,5 @@
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class XYPoint {
 public:
     int x;
@@ -8,7 +10,9 @@ class TribeInformationAIModule {
 public:
     int isNextTo(XYPoint* p1, XYPoint* p2, int mode);
 };
+#endif
 
+#endif
 int TribeInformationAIModule::isNextTo(XYPoint* p1, XYPoint* p2, int mode) {
     int dx = p2->x - p1->x;
     int dy = p2->y - p1->y;

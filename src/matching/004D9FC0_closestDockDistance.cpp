@@ -27,6 +27,8 @@
 void* operator new(size_t size);
 void operator delete(void* ptr);
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 struct RGE_Master_Static_Object {
     virtual ~RGE_Master_Static_Object();
     char gap_04[0x0C];
@@ -85,7 +87,9 @@ struct TribeInformationAIModule {
 
     int closestDockDistance(int x, int y);
 };
+#endif
 
+#endif
 int TribeInformationAIModule::closestDockDistance(int x, int y)
 {
     int i;

@@ -1,6 +1,8 @@
 // 004E1190 TribeInformationAIModule::removeAttackMemory
 // Size: 153 bytes
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 struct AttackMemory {
     int id;                 // +0x00
     char type;              // +0x04
@@ -24,7 +26,9 @@ public:
 
     void removeAttackMemory(int index);
 };
+#endif
 
+#endif
 void TribeInformationAIModule::removeAttackMemory(int index) {
     if (index < 0 || index >= this->maxAttackMemories) {
         return;

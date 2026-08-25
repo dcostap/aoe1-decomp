@@ -22,7 +22,11 @@
 // Exact-finish walkback: removing the initial val local stayed exact in this
 // TU, so the direct first guard is the reduced source form.
 
-#include "../../include/information_dropsites_context.h"
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#define TAIINFMD_INFO_CONTEXT "../../include/information_dropsites_context.h"
+#include TAIINFMD_INFO_CONTEXT
+#undef TAIINFMD_INFO_CONTEXT
+#endif
 
 int TribeInformationAIModule::numberAvailableGranaries() {
     if (this->closestDropsiteValue[0] == -1) {

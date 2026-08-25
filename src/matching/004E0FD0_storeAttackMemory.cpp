@@ -28,6 +28,8 @@
 
 #include <stdlib.h>
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 struct AttackMemory {
     int id;                     // +0x00
     unsigned char type;         // +0x04
@@ -45,6 +47,7 @@ struct AttackMemory {
     int play;                   // +0x14
 };
 
+#endif
 class RGE_Player {
 public:
     char gap_00[0x4A];
@@ -69,6 +72,7 @@ public:
     char gap_04[0xEC];
 };
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class TribeInformationAIModule : public InformationAIModule {
 public:
     char gap_F0[0x100 - 0xF0];
@@ -94,7 +98,9 @@ public:
         unsigned int param_10,
         int param_11);
 };
+#endif
 
+#endif
 int TribeInformationAIModule::storeAttackMemory(
     unsigned char param_1,
     unsigned char param_2,

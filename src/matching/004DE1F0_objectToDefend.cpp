@@ -2,7 +2,7 @@
 // Source: taiinfmd.cpp lines 4440-4521
 // FLAGS: default
 //
-// Status: EXACT — MATCH under the default VC5 flags.
+// Status: EXACT â€” MATCH under the default VC5 flags.
 //
 // Selects the best ObjectMemory entry that is in itemsToDefend, has no attack
 // attempts, and has no tactical group at its stored point.
@@ -29,7 +29,12 @@
 // Validation: 314 bytes, 97 instructions, 0.0000%, four ordered direct calls,
 // 0x10 frame, original boundary, and the TribeInformationAIModule owner.
 
-#include "../../include/information_dropsites_context.h"
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#define TAIINFMD_INFO_CONTEXT "../../include/information_dropsites_context.h"
+#include TAIINFMD_INFO_CONTEXT
+#undef TAIINFMD_INFO_CONTEXT
+#endif
 
 template <class T>
 int ManagedArray<T>::contains(const T& item) const
@@ -43,6 +48,7 @@ int ManagedArray<T>::contains(const T& item) const
     return 0;
 }
 
+#endif
 ObjectMemory* TribeInformationAIModule::objectToDefend(int target_obj_id)
 {
     ObjectMemory* bestEntry;

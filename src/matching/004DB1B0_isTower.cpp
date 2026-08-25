@@ -1,3 +1,5 @@
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class MasterObject {
 public:
     char gap_00[0x10];
@@ -14,7 +16,9 @@ class TribeInformationAIModule {
 public:
     int isTower(RGE_Static_Object* object);
 };
+#endif
 
+#endif
 int TribeInformationAIModule::isTower(RGE_Static_Object* object) {
     short id = object->master_obj->id;
 

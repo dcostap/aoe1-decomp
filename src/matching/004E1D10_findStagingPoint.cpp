@@ -15,6 +15,8 @@
 // Split pointer initializers, narrow point scopes, for-header indices, and typed tile indexing remained exact.
 // The retained form uses direct map roots, narrow scopes, and typed map traversal.
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 struct XYPoint { int x; int y; };
 struct ObjectMemory {
     int id;
@@ -34,6 +36,7 @@ struct ObjectMemory {
     float range;
 };
 
+#endif
 class RGE_Visible_Map { public: unsigned char get_visible(int x, int y); };
 struct RGE_Master_Static_Object;
 struct RGE_Player;
@@ -181,11 +184,10 @@ public:
     TRIBE_Player* aiPlayer;
 };
 class InfluenceMap { public: int lookupValue(int x, int y); };
-extern InfluenceMap losMap;
-extern InfluenceMap attackMap;
 extern int debug_rand(char*, int);
 extern "C" double sqrt(double);
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class TribeInformationAIModule {
 public:
     virtual ~TribeInformationAIModule();
@@ -197,7 +199,9 @@ public:
     int mapBound(XYPoint* p);
     int findStagingPoint(XYPoint p, XYPoint& out, int p3, int p4, int targetID, int radius, int objID);
 };
+#endif
 
+#endif
 int TribeInformationAIModule::findStagingPoint(XYPoint startPoint, XYPoint& rPoint,
                                                int useTransport,
                                                int landTerrainRequired,
@@ -270,11 +274,11 @@ int TribeInformationAIModule::findStagingPoint(XYPoint startPoint, XYPoint& rPoi
             int losPenalty;
             int attackPenalty;
             if (maxLOSValue > 0)
-                losPenalty = -(losMap.lookupValue(x, y) * stageDistance / maxLOSValue);
+                losPenalty = -(losMap->lookupValue(x, y) * stageDistance / maxLOSValue);
             else
                 losPenalty = 0;
             if (maxAttackValue > 0)
-                attackPenalty = -(attackMap.lookupValue(x, y) * stageDistance / maxAttackValue);
+                attackPenalty = -(attackMap->lookupValue(x, y) * stageDistance / maxAttackValue);
             else
                 attackPenalty = 0;
             int v = attackPenalty + losPenalty + pathPenalty + randomization + dist;

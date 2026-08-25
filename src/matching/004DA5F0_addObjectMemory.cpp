@@ -1,24 +1,18 @@
 // 004DA5F0 TribeInformationAIModule::addObjectMemory
-// try 1: model real virtual float getters at vtable slots and natural forwarding overload.
+// try 1: model real virtual float getters at dispatch table slots and natural forwarding overload.
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class ObjectMemory;
 class RGE_Master_Static_Object { public: char gap_00[0x10]; short master_id; char gap_12[2]; short object_group; };
 class RGE_Player { public: char gap_00[0x4A]; unsigned char id; };
 
-#define VPAD1(n) virtual void pad##n() {}
-#define VPAD2(n) VPAD1(n) VPAD1(n##_a)
-#define VPAD4(n) VPAD2(n) VPAD2(n##_b)
-#define VPAD8(n) VPAD4(n) VPAD4(n##_c)
-#define VPAD16(n) VPAD8(n) VPAD8(n##_d)
-#define VPAD32(n) VPAD16(n) VPAD16(n##_e)
-
 class RGE_Static_Object {
 public:
-    VPAD32(0) VPAD16(32) VPAD8(48) VPAD4(56) VPAD4(60)
-    virtual float vf100();
-    VPAD1(65)
-    virtual float vf108();
-    virtual float vf10C();
+    virtual ~RGE_Static_Object();
+    virtual float get100();
+    virtual float get108();
+    virtual float get10C();
 
     int obj_id;
     RGE_Master_Static_Object* master_obj;
@@ -31,12 +25,16 @@ public:
     float field_40;
 };
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class TribeInformationAIModule {
 public:
     ObjectMemory* addObjectMemory(int id, short mid, short grp, int a, int b, int c, unsigned char d, int e, int f, int g, float h, float i, float j, RGE_Static_Object* obj);
     ObjectMemory* addObjectMemory(RGE_Static_Object* obj);
 };
+#endif
+#endif
 
+#endif
 ObjectMemory* TribeInformationAIModule::addObjectMemory(RGE_Static_Object* obj) {
     if (obj == 0) return 0;
     return addObjectMemory(obj->obj_id,
@@ -49,8 +47,8 @@ ObjectMemory* TribeInformationAIModule::addObjectMemory(RGE_Static_Object* obj) 
                            (int)obj->field_30,
                            0,
                            0,
-                           obj->vf108(),
-                           obj->vf100(),
-                           obj->vf10C(),
+                           obj->get108(),
+                           obj->get100(),
+                           obj->get10C(),
                            obj);
 }

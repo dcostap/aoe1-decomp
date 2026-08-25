@@ -36,6 +36,8 @@ extern "C" int rge_close(int);
 void* operator new(unsigned int size);
 void operator delete(void* ptr);
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class AIModuleID {
 public:
     virtual ~AIModuleID();
@@ -214,6 +216,7 @@ public:
 class TribeMainDecisionAIModule : public MainDecisionAIModule {
 };
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class TribeInformationAIModule : public InformationAIModule {
 public:
     ManagedArray<int> farmsTaskedThisUpdate;
@@ -259,7 +262,10 @@ public:
 
     virtual ~TribeInformationAIModule();
 };
+#endif
+#endif
 
+#endif
 TribeInformationAIModule::~TribeInformationAIModule()
 {
     int count;

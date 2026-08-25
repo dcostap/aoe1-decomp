@@ -8,6 +8,8 @@
 extern void* operator new(unsigned int);
 extern void operator delete(void*);
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 struct ManagedArray_int {
     int* value;
     int numberValue;
@@ -21,12 +23,14 @@ class RGE_Player { public: unsigned char pad_00[0x4A]; unsigned char player_num;
 class RGE_Master_Static_Object { public: unsigned char pad_00[0x10]; short type; };
 class RGE_Static_Object {
 public:
-    virtual void v00();
+    virtual ~RGE_Static_Object();
     int id;
     RGE_Master_Static_Object* master_obj;
     RGE_Player* owner;
 };
 
+#endif
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class TribeInformationAIModule {
 public:
     unsigned char pad_000[0x180];
@@ -39,7 +43,9 @@ public:
     void addHouse(RGE_Static_Object* obj);
     void addObject(RGE_Static_Object* obj);
 };
+#endif
 
+#endif
 void TribeInformationAIModule::addObject(RGE_Static_Object* obj)
 {
     register RGE_Static_Object* object = obj;

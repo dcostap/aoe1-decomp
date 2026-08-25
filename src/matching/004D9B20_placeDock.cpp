@@ -90,6 +90,8 @@
 extern "C" int __cdecl debug_rand(char* file, int line);
 extern float DAT_00575570;
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class BaseItem {
 public:
     virtual ~BaseItem();
@@ -104,7 +106,6 @@ public:
     float ySizeValue;
     float zSizeValue;
     int skipValue;
-
     char* name();
     int typeID() const;
     float xSize() const;
@@ -152,6 +153,7 @@ class RGE_Visible_Map;
 class RGE_Player;
 class RGE_Static_Object;
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class RGE_Object_List {
 public:
     virtual ~RGE_Object_List();
@@ -595,6 +597,7 @@ struct ResourceMemory {
     int dropsiteID;
 };
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class TribeInformationAIModule : public InformationAIModule {
 public:
     ManagedArray<int> farmsTaskedThisUpdate; // +0xF0
@@ -643,6 +646,7 @@ public:
     ConstructionItem* placeDock(BuildItem* item, float x, float y,
                                  int terrain_type, int tile_type);
 };
+#endif
 
 class TribeResourceAIModule : public AIModule {
 public:
@@ -881,6 +885,11 @@ public:
     virtual ~TribeMainDecisionAIModule();
 };
 
+#endif
+
+#endif
+
+#endif
 ConstructionItem* TribeInformationAIModule::placeDock(
     BuildItem* item, float x, float targetY, int terrain_type, int tile_type)
 {

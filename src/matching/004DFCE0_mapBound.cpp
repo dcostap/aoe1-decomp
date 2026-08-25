@@ -1,3 +1,5 @@
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 struct XYPoint {
     int x;
     int y;
@@ -11,7 +13,9 @@ public:
 
     int mapBound(XYPoint* pt);
 };
+#endif
 
+#endif
 int TribeInformationAIModule::mapBound(XYPoint* pt) {
     int ret = 0;
 

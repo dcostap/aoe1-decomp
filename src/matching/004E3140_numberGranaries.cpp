@@ -15,6 +15,8 @@
 void* operator new(size_t size);
 void operator delete(void* ptr);
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class RGE_Master_Static_Object {
 public:
     char gap_00[0x10];
@@ -67,7 +69,9 @@ public:
 
     int numberGranaries();
 };
+#endif
 
+#endif
 int TribeInformationAIModule::numberGranaries() {
     int i = 0;
     int result = 0;

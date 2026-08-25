@@ -1,6 +1,8 @@
 // attempt 1: direct four-way axis/sign facet selection from the XY delta pair
 // exact match landed with the axis-first compare order and the algebraic branchless return forms for the 8-way facet code
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class XYPoint {
 public:
     int x;
@@ -11,7 +13,9 @@ class TribeInformationAIModule {
 public:
     int facetTo(XYPoint& from, XYPoint& to);
 };
+#endif
 
+#endif
 int TribeInformationAIModule::facetTo(XYPoint& from, XYPoint& to) {
     int dx;
     int dy;

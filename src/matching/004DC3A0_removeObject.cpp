@@ -5,8 +5,12 @@
 //
 // Probe 4: remove outer if guard, use direct member access in loops
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 struct RGE_Static_Object;
 
+#endif
+#ifndef TAIINFMD_PREFIX_CONTEXT
 struct ManagedArray_int {
     int* value;            // +0x00
     int numberValue;       // +0x04
@@ -24,6 +28,7 @@ public:
     RGE_Static_Object* object(int param_1);  // no body
 };
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class TribeInformationAIModule {
 public:
     unsigned char pad_000[0xF0];                // +0x000
@@ -36,7 +41,10 @@ public:
     void removeObject(int param_1);
     ObjectMemory* objectMemory(int id);  // no body
 };
+#endif
+#endif
 
+#endif
 void TribeInformationAIModule::removeObject(int param_1)
 {
     int idx;

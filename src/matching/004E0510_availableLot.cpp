@@ -1,3 +1,5 @@
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 struct BuildingLot {
     int typeID;
     unsigned char status;
@@ -14,7 +16,9 @@ public:
 
     BuildingLot* availableLot(int typeID);
 };
+#endif
 
+#endif
 BuildingLot* TribeInformationAIModule::availableLot(int typeID) {
     int i = 0;
     int max = this->maxBuildingLots;

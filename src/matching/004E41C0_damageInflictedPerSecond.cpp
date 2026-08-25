@@ -5,7 +5,11 @@
 // BINARY NOTE: Direct target and object member expressions preserve the virtual-call and fault order.
 // Match note: the direct damageCapability/rateOfFire expression emits the original x87 sequence.
 
-#include "../../include/information_dropsites_context.h"
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#define TAIINFMD_INFO_CONTEXT "../../include/information_dropsites_context.h"
+#include TAIINFMD_INFO_CONTEXT
+#undef TAIINFMD_INFO_CONTEXT
+#endif
 
 float TribeInformationAIModule::damageInflictedPerSecond(TacticalAIGroup* group, RGE_Static_Object* target) {
     float rVal = 0.0f;

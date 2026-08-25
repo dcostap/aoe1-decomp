@@ -1,3 +1,5 @@
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class RGE_Master_Object {
 public:
     char gap_00[0x10];
@@ -16,7 +18,9 @@ class TribeInformationAIModule {
 public:
     int isBoat(RGE_Static_Object* obj);
 };
+#endif
 
+#endif
 int TribeInformationAIModule::isBoat(RGE_Static_Object* obj) {
     unsigned short group = obj->master_obj->object_group;
     if (group == 0x15 || group == 2 || group == 0x14 || group == 0x16) {

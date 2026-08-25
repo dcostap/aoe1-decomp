@@ -1,3 +1,5 @@
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 struct AttackMemory {
     char data[24];
 };
@@ -10,7 +12,9 @@ public:
 
     AttackMemory* attackMemory(int index);
 };
+#endif
 
+#endif
 AttackMemory* TribeInformationAIModule::attackMemory(int index) {
     if (index >= 0 && index < this->maxAttackMemories)
         return this->attackMemories + index;

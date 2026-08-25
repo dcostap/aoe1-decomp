@@ -5,7 +5,7 @@
 // 2: added /GX and <string.h>; reached same 1182-byte size after forcing repeated member-pointer reloads in allocation fill loops.
 // 3: first mismatch remains early EH/member-constructor shape: original stores EH state [esp+1C]=0 after base ctor, later state 5 before InfluenceMap ctor and state 8 before first operator new; raw placement-new emits a null check and no EH state stores.
 // 4: likely needs a real typed class layout with scalar member initializers before an InfluenceMap member at +0x158 so VC5 emits constructor-unwind state transitions naturally; current raw-offset version is not accepted_drift (broad shifted diff, wrong EH bookkeeping/control around member ctor).
-// 5: Replaced the raw placement-new/vptr scaffold with the canonical AIModule/InformationAIModule/InfluenceMap class surface and a real pathMap member initializer; retained local raw fields only where ownership is not yet fully reconstructed.
+// 5: Replaced the raw placement-new/compiler pointer scaffold with the canonical AIModule/InformationAIModule/InfluenceMap class surface and a real pathMap member initializer; retained local raw fields only where ownership is not yet fully reconstructed.
 // 6: Added the real pre-path ManagedArray/scalar member sequence and initializer-list ownership; default constructors now emit the observed +0xF0/+0x118 zeroing before pathMap, while the remaining tail stays local pending proof.
 // 7: Added the canonical post-path fields and moved max-building/max-attack/save/forest values to their declared initialization sites, eliminating duplicate player-array and scalar stores.
 // 8: Mirrored the exact same-TU donor's typed unitHistory loop plus playHistory memset; this preserves LEA-before-count and REP fill scheduling rather than raw memset offset order.
@@ -32,8 +32,17 @@
 
 #include <string.h>
 
+#define I(off) (*(int*)((char*)this + (off)))
+#define S(off) (*(short*)((char*)this + (off)))
+#define B(off) (*(unsigned char*)((char*)this + (off)))
+#define P(off) (*(void**)((char*)this + (off)))
+
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 typedef unsigned char uchar;
 
+#endif
+#ifndef TAIINFMD_PREFIX_CONTEXT
 struct ObjectMemory {
     int id;
     short type;
@@ -142,6 +151,7 @@ struct AttackMemory {
 
 class TribeMainDecisionAIModule;
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class TribeInformationAIModule : public InformationAIModule {
 public:
     ManagedArray<int> farmsTaskedThisUpdate;
@@ -187,12 +197,10 @@ public:
     TribeInformationAIModule(void* p, int v);
     virtual ~TribeInformationAIModule();
 };
+#endif
+#endif
 
-#define I(off) (*(int*)((char*)this + (off)))
-#define S(off) (*(short*)((char*)this + (off)))
-#define B(off) (*(uchar*)((char*)this + (off)))
-#define P(off) (*(void**)((char*)this + (off)))
-
+#endif
 TribeInformationAIModule::TribeInformationAIModule(void* p, int v)
     : InformationAIModule(p, v),
       md(0),

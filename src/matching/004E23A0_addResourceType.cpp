@@ -5,6 +5,8 @@
 
 #include <stdlib.h>
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class TribeInformationAIModule {
 public:
     char gap_00[0x4C8];
@@ -13,10 +15,12 @@ public:
 
     void addResourceType(int resource_idx, int type_value);
 };
+#endif
 
 void* operator new(size_t size);
 void operator delete(void* ptr);
 
+#endif
 void TribeInformationAIModule::addResourceType(int resource_idx, int type_value)
 {
     int* new_types = (int*)operator new(

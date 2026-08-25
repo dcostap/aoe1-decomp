@@ -24,6 +24,8 @@
 
 #include <stdlib.h>
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 struct ObjectMemory {
     int id;                    // +0x00
     short type;                // +0x04
@@ -42,14 +44,10 @@ struct ObjectMemory {
     float range;              // +0x20
 };
 
+#endif
 class RGE_Player {
 public:
-    virtual void vt_pad_00();
-    virtual void vt_pad_01();
-    virtual void vt_pad_02();
-    virtual void vt_pad_03();
-    virtual void vt_pad_04();
-    virtual void vt_pad_05();
+    virtual ~RGE_Player();
     virtual int isEnemy(int playerNum);
 };
 
@@ -63,6 +61,7 @@ struct TribeInformationAIModule_base {
     char pad[0xF0];
 };
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class TribeInformationAIModule : public TribeInformationAIModule_base {
 public:
     char gap_F0[0x10];
@@ -75,7 +74,9 @@ public:
 
     int numberUnitsWithinXTiles(int playerFilter, int xCenter, int yCenter, int radius);
 };
+#endif
 
+#endif
 int TribeInformationAIModule::numberUnitsWithinXTiles(int playerFilter, int xCenter, int yCenter, int radius)
 {
     int radiusSquared = radius * radius;

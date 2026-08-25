@@ -7,9 +7,9 @@
 //   two post-map ManagedArray<int> subobjects.  The parameter-home reuse and
 //   inline ManagedArray::add shape are binary-supported by the packet.
 // - The class surface deliberately models the canonical module/data layout;
-//   vptrs and constructor EH state are compiler-generated.
+//   compiler pointers and constructor EH state are compiler-generated.
 // - md(0) and the two scalar member initializers preserve the original
-//   pre-map zeroing and delayed automatic derived-vptr store.
+//   pre-map zeroing and delayed automatic derived-compiler pointer store.
 // - The exact control-flow forms are the source-supported do/while resource
 //   scans, positive modern-version arms, and nonzero resource allocation arm.
 // - Exact under /GX: 3129 bytes, 63 calls, 933 instructions, 0.0000% diff.
@@ -28,6 +28,8 @@ extern float DAT_00575560;
 void* operator new(unsigned int size);
 void operator delete(void* ptr);
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class AIModuleID {
 public:
     virtual ~AIModuleID();
@@ -240,7 +242,9 @@ public:
 
     void addResourceType(int resourceIndex, int typeValue);
 };
+#endif
 
+#endif
 TribeInformationAIModule::TribeInformationAIModule(int param1, int param2)
     : InformationAIModule(0, param1),
       md(0),

@@ -8,7 +8,7 @@
 //
 // Current source recovery uses the registered information_dropsites TU and the
 // reviewed declarations shared with 004DE1F0. Do not replace these with raw
-// offsets, cached world reads, fake volatility, or hand-built vtables.
+// offsets, cached world reads, fake volatility, or hand-built dispatch tables.
 //
 // Fresh registered-context audit: the natural pointer form emits 362 bytes
 // against the 364-byte original. It keeps the 0x10 frame, 113 instructions,
@@ -19,7 +19,11 @@
 // pointer addition, entry references, declaration-order changes, register
 // qualifiers, and const entry ownership are duplicate codegen in this TU.
 
-#include "../../include/information_dropsites_context.h"
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#define TAIINFMD_INFO_CONTEXT "../../include/information_dropsites_context.h"
+#include TAIINFMD_INFO_CONTEXT
+#undef TAIINFMD_INFO_CONTEXT
+#endif
 
 ObjectMemory* TribeInformationAIModule::higherPriorityObjectToDefend(int objId, int type, int group)
 {

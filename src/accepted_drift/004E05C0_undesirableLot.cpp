@@ -23,6 +23,8 @@
 // versus original near jle + bottom jl), epilogue placement/merge, and equivalent LEA base/index encodings; memory reads/writes,
 // comparisons, loop bounds, and return values are unchanged. Candidate for accepted_drift if reviewer accepts localized layout/encoding drift.
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 struct BuildingLot {
     int typeID;            // +0
     unsigned char status;  // +4
@@ -30,6 +32,8 @@ struct BuildingLot {
     unsigned char y;       // +6
 };
 
+#endif
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class TribeInformationAIModule {
 public:
     char gap_1F4[0x1F4];
@@ -38,7 +42,9 @@ public:
 
     int undesirableLot(int typeID, unsigned char xRange, unsigned char yRange, int coordOffset);
 };
+#endif
 
+#endif
 int TribeInformationAIModule::undesirableLot(int typeID, unsigned char xRange, unsigned char yRange, int coordOffset) {
     int i = 0;
     int max = this->maxBuildingLots;

@@ -2,16 +2,17 @@
 // Source: taiinfmd.cpp lines 7342-7376
 // attempt 1: direct decompiler-shaped source with inline ManagedArray<int> resize.
 
-extern "C" void* __cdecl operator_new(unsigned long sz);
-extern "C" void __cdecl operator_delete(void* p);
 extern "C" long __cdecl _ftol();
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class RGE_Master_Static_Object {
 public:
     char gap_00[0x10];
     short id; // +0x10
 };
 
+#endif
 class RGE_Static_Object {
 public:
     char gap_00[4];
@@ -56,6 +57,7 @@ struct ManagedArray_int {
     }
 };
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class TribeInformationAIModule {
 public:
     char gap_000[0x100];
@@ -65,12 +67,14 @@ public:
 
     float findClosestDropsite(RGE_Static_Object* obj, int mode, int* dropsiteID);
 };
+#endif
 
 #include <math.h>
 #pragma intrinsic(sqrt)
 
 extern float DAT_00575588;
 
+#endif
 float TribeInformationAIModule::findClosestDropsite(RGE_Static_Object* obj, int mode, int* dropsiteID)
 {
     float best;

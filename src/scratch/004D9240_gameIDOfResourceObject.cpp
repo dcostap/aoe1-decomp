@@ -16,13 +16,13 @@
 // 13: Probed /Od: exact size but wrong basin from offset 0 (91.5044% positional); removed flag.
 // 14: Probed /O2 /Oy /Og-: exact size but wrong basin from offset 0 (91.5044% positional); removed flag.
 // 15: Replaced the out-of-line tactical() wrapper with direct +0x1146C typed calls and bound the threshold to DAT_00575568; this removes six extra wrapper call sites and restores the original global identity, while retaining the clean reconstruction.
-// 16: Restored canonical RGE_Static_Object/RGE_Master_Static_Object offsets and ResourceMemory/ManagedArray ownership names (vptr, id, gatherValue, farmsTaskedThisUpdate); this is a source/layout reconstruction probe, not a raw-offset workaround.
+// 16: Restored canonical RGE_Static_Object/RGE_Master_Static_Object offsets and ResourceMemory/ManagedArray ownership names (compiler pointer, id, gatherValue, farmsTaskedThisUpdate); this is a source/layout reconstruction probe, not a raw-offset workaround.
 // 17: Changed the gatherer gate to a positive outer guard with the shared -1 epilogue, matching the original far JE topology instead of an early negative return.
 // 18: Corrected two binary-proven farm/strategic rejection edges to the shared next-resource path (004D9642/004D9646); removed the decompiler-only skip_restore label.
 // GIVEUP: left in scratch. Behavior is broad but source/register topology is far from original; no accepted_drift because mismatch is broad and begins in prologue/register allocation.
 // Main-agent audit: a donor-backed virtual-destructor replacement for the
-// proven vptr fields was tested and rolled back because it changed the early
-// VC5 prologue/register basin. The typed vptr fields remain explicit binary
+// proven compiler pointer fields was tested and rolled back because it changed the early
+// VC5 prologue/register basin. The typed compiler pointer fields remain explicit binary
 // layout evidence in this unresolved scratch reconstruction.
 // 19: Same-TU taiinf donors and ABI evidence show md->object returns a typed
 // RGE_Static_Object*. Corrected that ownership surface and removed two casts;
@@ -65,7 +65,11 @@
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../../include/information_dropsites_context.h"
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#define TAIINFMD_INFO_CONTEXT "../../include/information_dropsites_context.h"
+#include TAIINFMD_INFO_CONTEXT
+#undef TAIINFMD_INFO_CONTEXT
+#endif
 
 extern double __cdecl floor(double);
 extern float DAT_00575568;

@@ -18,12 +18,15 @@
 extern void* operator new(unsigned int size);
 extern void operator delete(void* ptr);
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 struct RGE_Master_Static_Object {
     virtual ~RGE_Master_Static_Object();
     char gap04[0x10];
     short object_group;
 };
 
+#endif
 struct RGE_Static_Object {
     virtual ~RGE_Static_Object();
     int id;
@@ -50,6 +53,7 @@ struct ResourceMemory {
 extern float DAT_005755b8;
 extern float DAT_005755bc;
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
 struct TribeInformationAIModule {
     char gap000[0x100];
     void* md;
@@ -64,7 +68,9 @@ struct TribeInformationAIModule {
     float findClosestDropsite(RGE_Static_Object* obj, int mode, int* dropsiteID);
     int addResourceObject(RGE_Static_Object* obj);
 };
+#endif
 
+#endif
 int TribeInformationAIModule::addResourceObject(RGE_Static_Object* obj)
 {
     short group = obj->master_obj->object_group;

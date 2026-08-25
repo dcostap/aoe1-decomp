@@ -39,9 +39,12 @@
 
 #pragma intrinsic(sqrt)
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 typedef unsigned char uchar;
 typedef unsigned long ulong;
 
+#endif
 class AIModuleMessage;
 class BuildItem;
 class ConstructionItem;
@@ -60,6 +63,7 @@ class OrderEvent;
 class NotifyEvent;
 class LOSTBL;
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class AIModuleID {
 public:
     virtual ~AIModuleID();
@@ -266,6 +270,7 @@ struct PlacementState {
     BuildItem* buildItem;
 };
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class TribeInformationAIModule : public InformationAIModule {
 public:
     ManagedArray<int> farmsTaskedThisUpdate;
@@ -308,6 +313,8 @@ public:
         char* objectName, int minimumDistance, int centerX, int centerY,
         int maxClearX, PlacementState& state, ulong currentTime);
 };
+#endif
+#endif
 
 void* operator new(unsigned int size);
 void operator delete(void* ptr);
@@ -323,8 +330,13 @@ extern float DAT_00575574;
 extern float DAT_00575578;
 extern float DAT_0057557c;
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
 InfluenceMap* const iMap = (InfluenceMap*)0x86BC38;
+#else
+extern InfluenceMap* const iMap;
+#endif
 
+#endif
 ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
     BuildItem* item, int builderID, int objectType, float objectSize,
     char* objectName, int minimumDistance, int centerX, int centerY,

@@ -39,11 +39,15 @@
 // earlier 2253-byte y,x source; the original keeps param_1 in EBX and
 // param_4 in EDI.
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 struct XYPoint {
     int x;
     int y;
 };
 
+#endif
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class TribeInformationAIModule {
 public:
     char gap_000[0x1B0];
@@ -57,9 +61,11 @@ public:
     void setupWalls(int param_1, int param_2, int param_3, int param_4,
                     int param_5, int param_6, int param_7, int param_8);
 };
+#endif
 
 extern int debug_rand(char* file, int line);
 
+#endif
 void TribeInformationAIModule::setupWalls(int param_1, int param_2, int param_3, int param_4,
                                            int param_5, int param_6, int param_7, int param_8)
 {

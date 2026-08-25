@@ -31,6 +31,8 @@ void rge_write(int file, void* data, int size);
 
 // The binary identifies this +0x158 subobject as the path/InfluenceMap save
 // surface; keep the local ABI narrow until the shared class layout is proven.
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 struct SubObject {
     char gap[0x28];
     int save(int handle);
@@ -60,6 +62,7 @@ public:
     }
 };
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class TribeInformationAIModule {
 public:
     char gap_000[0x104];
@@ -101,10 +104,13 @@ public:
 
     int save(int handle);
 };
+#endif
+#endif
 
 void* operator new(unsigned int size);
 void operator delete(void* ptr);
 
+#endif
 int TribeInformationAIModule::save(int handle)
 {
     int tmp;
@@ -170,7 +176,7 @@ int TribeInformationAIModule::save(int handle)
         rge_write(saved_handle, &handle, 4);
     }
 
-    this->sub158.save(saved_handle);
+    this->pathMap.save(saved_handle);
 
     rge_write(saved_handle, &this->f1A0, 8);
     rge_write(saved_handle, &this->f1A8, 8);

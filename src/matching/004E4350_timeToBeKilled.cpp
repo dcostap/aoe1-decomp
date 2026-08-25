@@ -1,9 +1,11 @@
 // 004E4350 TribeInformationAIModule::timeToBeKilled
 // Size: 143 bytes
 
-extern "C" int __cdecl _ftol();
-
-#include "../../include/information_dropsites_context.h"
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#define TAIINFMD_INFO_CONTEXT "../../include/information_dropsites_context.h"
+#include TAIINFMD_INFO_CONTEXT
+#undef TAIINFMD_INFO_CONTEXT
+#endif
 
 float TribeInformationAIModule::timeToBeKilled(int* ids, int count, RGE_Static_Object* obj) {
     float total = 0.0f;

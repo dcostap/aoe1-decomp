@@ -1,7 +1,10 @@
-#include "../../include/information_dropsites_context.h"
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#define TAIINFMD_INFO_CONTEXT "../../include/information_dropsites_context.h"
+#include TAIINFMD_INFO_CONTEXT
+#undef TAIINFMD_INFO_CONTEXT
+#endif
 
 extern "C" long __cdecl __ftol(void);
-extern float const DAT_00575584;
 
 int TribeInformationAIModule::calculatePlayVariation(int param_1) {
     (void)param_1;

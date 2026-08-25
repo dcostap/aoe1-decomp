@@ -1,7 +1,7 @@
 // 004E0470 TribeInformationAIModule::removeLot (154B)
-// STAUS: PAUSED — proposed accepted_drift
+// STAUS: PAUSED â€” proposed accepted_drift
 // Remaining drift: 94 bytes positional / 19 bytes edit (12.3%)
-// VC5 loop reversal optimization: do { } while (idx < max) → jge exit; jmp loop
+// VC5 loop reversal optimization: do { } while (idx < max) â†’ jge exit; jmp loop
 // instead of jl loop; fallthrough. 2-byte expansion shifts all subsequent code.
 // All comparisons, stores, and control flow match logically.
 // Attempts: 15+ across all documented axes
@@ -14,6 +14,8 @@
 
 #include <windows.h>
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 struct BuildingLot {
     int typeID;         // +0
     unsigned char status;   // +4
@@ -21,6 +23,7 @@ struct BuildingLot {
     unsigned char y;        // +6
 };
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class TribeInformationAIModule {
 public:
     char pad_000[0x1F4];
@@ -29,7 +32,10 @@ public:
 
     void removeLot(int p1, unsigned char p2, unsigned char p3, unsigned char p4);
 };
+#endif
+#endif
 
+#endif
 void TribeInformationAIModule::removeLot(int p1, unsigned char p2, unsigned char p3, unsigned char p4)
 {
     int idx = 0;

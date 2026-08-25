@@ -4,9 +4,11 @@
 // FLAGS: default
 //
 // Attempt log:
-// probe 1: 93% — RGE_Game_World::object embedded
-// probe 2: 61% — prologue/register order wrong, extra local var
+// probe 1: 93% â€” RGE_Game_World::object embedded
+// probe 2: 61% â€” prologue/register order wrong, extra local var
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class RGE_Game_World;
 
 class RGE_Static_Object {
@@ -46,7 +48,9 @@ public:
 
     int numberGameIDsOwnedBy(int param1, int param2);
 };
+#endif
 
+#endif
 int TribeInformationAIModule::numberGameIDsOwnedBy(int param1, int param2) {
     int result = 0;
     int i = 0;

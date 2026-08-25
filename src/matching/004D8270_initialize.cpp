@@ -10,6 +10,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 struct RGE_Game_Info {
     char* get_current_player_name();
 };
@@ -29,7 +31,9 @@ struct TribeInformationAIModule {
 
     int initialize();
 };
+#endif
 
+#endif
 int TribeInformationAIModule::initialize() {
     // Pointer chain: md->field_F0->field_3C->field_28 = terrain
     void* terrain = *(void**)(*(char**)(*(char**)((char*)this->md + 0xF0) + 0x3C) + 0x28);

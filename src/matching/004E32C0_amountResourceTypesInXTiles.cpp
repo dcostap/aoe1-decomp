@@ -16,11 +16,14 @@
 
 #include <math.h>
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 struct MasterObj {
     char gap_00[0x10];
     short id;                // +0x10
 };
 
+#endif
 struct RGE_Static_Object {
     char gap_00[0x04];
     int id;                  // +0x04
@@ -48,14 +51,15 @@ struct ResourceMemory {
 
 class MainDecisionAIModule {
 public:
-    virtual void _vf00();
+    virtual ~MainDecisionAIModule();
     char gap_04[0xEC];
     void* attackInfo;        // +0xF0
     RGE_Static_Object* object(int object_id);
 };
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
 struct TribeInformationAIModule {
-    virtual void _vf00();
+    virtual ~TribeInformationAIModule();
     char gap_04[0xFC];
     MainDecisionAIModule* md;      // +0x100
     char gap_104[0x3CC];           // +0x104 to +0x4CF
@@ -64,7 +68,9 @@ struct TribeInformationAIModule {
 
     int amountResourceTypesInXTiles(int type_index, int x, int y, int distance);
 };
+#endif
 
+#endif
 int TribeInformationAIModule::amountResourceTypesInXTiles(int type_index, int x, int y, int distance)
 {
     float total = 0.0f;

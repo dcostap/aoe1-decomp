@@ -13,6 +13,8 @@
 //   and only then begins the y-quadrant division, exactly matching the original schedule.
 // Result: MATCH locally with `python tools/check_function.py --va 004E4790`.
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class QuadrantLog {
 public:
     int numberExploredTiles;
@@ -30,7 +32,9 @@ public:
 
     int percentTilesExploredInPositionQuadrant(int param_1, int param_2);
 };
+#endif
 
+#endif
 int TribeInformationAIModule::percentTilesExploredInPositionQuadrant(int param_1, int param_2) {
     if (mapX == -1) {
         return 0;

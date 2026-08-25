@@ -33,8 +33,12 @@
 // - Left in scratch: no exact match. The remaining drift starts in the
 //   prologue register allocation and continues through stack-home placement.
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
+#ifndef TAIINFMD_PREFIX_CONTEXT
 typedef unsigned char uchar;
 
+#endif
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class RGE_Visible_Map {
 public:
     uchar get_visible(int x, int y);
@@ -77,14 +81,6 @@ public:
     float los;
 };
 
-#define VPAD1(n) virtual void vf##n();
-#define VPAD2(n) VPAD1(n) VPAD1(n##_1)
-#define VPAD4(n) VPAD2(n) VPAD2(n##_2)
-#define VPAD8(n) VPAD4(n) VPAD4(n##_4)
-#define VPAD16(n) VPAD8(n) VPAD8(n##_8)
-#define VPAD32(n) VPAD16(n) VPAD16(n##_e)
-#define VPAD64(n) VPAD32(n) VPAD32(n##_f)
-
 struct XYZPoint {
     int x;
     int y;
@@ -98,11 +94,8 @@ struct XYPoint {
 
 class RGE_Static_Object {
 public:
-    VPAD64(0)
-    VPAD4(64)
-    VPAD1(68)
+    virtual ~RGE_Static_Object();
     virtual int passableTile(float x, float y, int mode);
-    VPAD32(70)
     virtual int canPath(XYZPoint point, float los, int mode, float* path,
                         int flag, int arg6, int arg7);
 
@@ -117,14 +110,6 @@ public:
     uchar lookupZone(int x, int y);
     uchar currentZone();
 };
-
-#undef VPAD64
-#undef VPAD32
-#undef VPAD16
-#undef VPAD8
-#undef VPAD4
-#undef VPAD2
-#undef VPAD1
 
 class InfluenceMap {
 public:
@@ -161,6 +146,7 @@ struct ManagedArray_int {
     int maximumSizeValue;
 };
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
 class TribeInformationAIModule {
 public:
     virtual ~TribeInformationAIModule();
@@ -177,7 +163,10 @@ public:
                               float* outX, float* outY);
     void setFullyExploredZone(int objectId, int value);
 };
+#endif
+#endif
 
+#endif
 int TribeInformationAIModule::closestUnexploredTile(
     int objectId, float x, float y, float* outX, float* outY)
 {
