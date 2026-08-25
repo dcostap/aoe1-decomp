@@ -15,81 +15,10 @@
 // the TSpan_List_Manager allocation/constructor.
 
 #include <string.h>
+#include <ddraw.h>
 #pragma function(memset)
 
 #ifndef DRAWAREA_CANONICAL_TU
-struct DDCOLORKEY {
-    unsigned long dwColorSpaceLowValue;
-    unsigned long dwColorSpaceHighValue;
-};
-
-struct DDPIXELFORMAT {
-    unsigned long dwSize;
-    unsigned long dwFlags;
-    unsigned long dwFourCC;
-    unsigned long dwRGBBitCount;
-    unsigned long dwRBitMask;
-    unsigned long dwGBitMask;
-    unsigned long dwBBitMask;
-    unsigned long dwRGBAlphaBitMask;
-};
-
-struct DDSCAPS {
-    unsigned long dwCaps;
-};
-
-struct DDSURFACEDESC {
-    unsigned long dwSize;
-    unsigned long dwFlags;
-    unsigned long dwHeight;
-    unsigned long dwWidth;
-    long lPitch;
-    unsigned long dwBackBufferCount;
-    unsigned long dwMipMapCount;
-    unsigned long dwAlphaBitDepth;
-    unsigned long dwReserved;
-    void* lpSurface;
-    DDCOLORKEY ddckCKDestOverlay;
-    DDCOLORKEY ddckCKDestBlt;
-    DDCOLORKEY ddckCKSrcOverlay;
-    DDCOLORKEY ddckCKSrcBlt;
-    DDPIXELFORMAT ddpfPixelFormat;
-    DDSCAPS ddsCaps;
-};
-
-struct DDBLTFX {
-    unsigned long dwSize;
-    unsigned long dwDDFX;
-    unsigned long dwROP;
-    unsigned long dwDDROP;
-    unsigned long dwRotationAngle;
-    unsigned long dwZBufferOpCode;
-    unsigned long dwZBufferLow;
-    unsigned long dwZBufferHigh;
-    unsigned long dwZBufferBaseDest;
-    unsigned long dwZDestConstBitDepth;
-    unsigned long dwZDestConst;
-    unsigned long dwZSrcConstBitDepth;
-    unsigned long dwZSrcConst;
-    unsigned long dwAlphaEdgeBlendBitDepth;
-    unsigned long dwAlphaEdgeBlend;
-    unsigned long dwReserved;
-    unsigned long dwAlphaDestConstBitDepth;
-    unsigned long dwAlphaDestConst;
-    unsigned long dwAlphaSrcConstBitDepth;
-    unsigned long dwAlphaSrcConst;
-    unsigned long dwFillColor;
-    DDCOLORKEY ddckDestColorkey;
-    DDCOLORKEY ddckSrcColorkey;
-};
-
-struct tagRECT {
-    long left;
-    long top;
-    long right;
-    long bottom;
-};
-
 struct BitmapInfoHeader {
     unsigned long biSize;
     long biWidth;
@@ -98,46 +27,6 @@ struct BitmapInfoHeader {
 
 struct BitmapInfo {
     BitmapInfoHeader bmiHeader;
-};
-
-class IDirectDrawSurface {
-public:
-    virtual long __stdcall QueryInterface();
-    virtual unsigned long __stdcall AddRef();
-    virtual unsigned long __stdcall Release();
-    virtual long __stdcall AddAttachedSurface();
-    virtual long __stdcall AddOverlayDirtyRect();
-    virtual long __stdcall Blt(void*, IDirectDrawSurface*, void*,
-                               unsigned long, DDBLTFX*);
-    virtual long __stdcall BltBatch();
-    virtual long __stdcall BltFast();
-    virtual long __stdcall DeleteAttachedSurface();
-    virtual long __stdcall EnumAttachedSurfaces();
-    virtual long __stdcall EnumOverlayZOrders();
-    virtual long __stdcall Flip();
-    virtual long __stdcall GetAttachedSurface();
-    virtual long __stdcall GetBltStatus();
-    virtual long __stdcall GetCaps();
-    virtual long __stdcall GetClipper();
-    virtual long __stdcall GetColorKey();
-    virtual long __stdcall GetDC();
-    virtual long __stdcall GetFlipStatus();
-    virtual long __stdcall GetOverlayPosition();
-    virtual long __stdcall GetPalette();
-    virtual long __stdcall GetPixelFormat();
-    virtual long __stdcall GetSurfaceDesc(DDSURFACEDESC*);
-};
-
-class IDirectDraw {
-public:
-    virtual long __stdcall QueryInterface();
-    virtual unsigned long __stdcall AddRef();
-    virtual unsigned long __stdcall Release();
-    virtual long __stdcall Compact();
-    virtual long __stdcall CreateClipper();
-    virtual long __stdcall CreatePalette();
-    virtual long __stdcall CreateSurface(DDSURFACEDESC*,
-                                         IDirectDrawSurface**, void*);
 };
 
 class TDrawArea;

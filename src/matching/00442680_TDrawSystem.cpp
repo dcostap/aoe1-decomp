@@ -5,7 +5,7 @@
 
 extern "C" void __cdecl _ASMSet_Shadowing(int, int, int, int);
 #define system_ignore_size_messages (*(int*)0x62E63C)
-#include "../../include/drawarea_context.h"
+#include "../drawarea_phase2_context.h"
 
 TDrawSystem::TDrawSystem()
 {

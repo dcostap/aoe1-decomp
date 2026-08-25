@@ -8,12 +8,12 @@ struct RGE_Color_Table;
 class TDrawArea {
 public:
     char gap_00[0xC8];
-    RGE_Color_Table* ShadowTable;  // +0xC8
+    RGE_Color_Table* shadow_color_table;  // +0xC8
     void SetShadowTable(RGE_Color_Table* table);
 };
 #endif
 
 void TDrawArea::SetShadowTable(RGE_Color_Table* table)
 {
-    this->ShadowTable = table;
+    this->shadow_color_table = table;
 }

@@ -3,19 +3,28 @@
 #include "..\..\include\game_types.h"
 
 #ifndef DRAWAREA_CANONICAL_TU
-class TDrawArea {
-public:
-    void* vtable_ptr;
-    char pad_04[0x4];
-    unsigned char* Bits;
-    char pad_0C[0x10];
-    long Height;
-    long Pitch;
-    long Orien;
+class TDrawSystem;
+
+struct tagRECT {
     long left;
     long top;
     long right;
     long bottom;
+};
+
+class TDrawArea {
+public:
+    TDrawSystem* DrawSystem;
+    void* Wnd;
+    unsigned char* Bits;
+    void* BitmapInfo;
+    void* Bitmap;
+    void* OldBitmap;
+    long Width;
+    long Height;
+    long Pitch;
+    long Orien;
+    tagRECT ClipRect;
 
     void SetPixel(long x, long y, unsigned char color);
 };

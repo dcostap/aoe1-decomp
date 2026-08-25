@@ -64,28 +64,9 @@
 // Const IAT declarations, typed Blt null parameters, function-scope bounds,
 // and cached ClientToScreen forms did not produce an exact or better source.
 
+#include <ddraw.h>
+
 #ifndef DRAWAREA_CANONICAL_TU
-struct tagRECT {
-    long left;
-    long top;
-    long right;
-    long bottom;
-};
-
-extern "C" int (__stdcall * const GetClientRect)(void* hWnd, tagRECT* rect);
-extern "C" int (__stdcall * ClientToScreen)(void* hWnd, void* point);
-
-class IDirectDrawSurface {
-public:
-    virtual long __stdcall QueryInterface();
-    virtual unsigned long __stdcall AddRef();
-    virtual unsigned long __stdcall Release();
-    virtual long __stdcall AddAttachedSurface();
-    virtual long __stdcall AddOverlayDirtyRect();
-    virtual long __stdcall Blt(tagRECT*, IDirectDrawSurface*, tagRECT*,
-                               unsigned long, void*);
-};
-
 class TDrawArea {
 public:
     char gap_00[0x04];
@@ -136,8 +117,8 @@ void TDrawSystem::Paint(tagRECT* param_1)
         dest.top = src.top;
         dest.right = src.right;
         dest.bottom = src.bottom;
-        ClientToScreen(this->Wnd, &dest.left);
-        ClientToScreen(this->Wnd, &dest.right);
+        ClientToScreen(this->Wnd, (POINT*)&dest.left);
+        ClientToScreen(this->Wnd, (POINT*)&dest.right);
         } else {
             int w = this->ScreenWidth;
             int h = this->ScreenHeight;

@@ -15,15 +15,11 @@
 // - Main-agent audit confirmed the non-polymorphic draw-system layout and
 //   period DirectDraw/MAKELONG surfaces; emitted code remains exact.
 
-#include "../../include/drawarea_context.h"
+#include "../drawarea_phase2_context.h"
 
 extern int system_ignore_size_messages;
 extern "C" __declspec(dllimport) long __stdcall SendMessageA(
     void* hwnd, unsigned int msg, unsigned int wparam, long lparam);
-
-#define MAKELONG(low, high) \
-    ((long)(((unsigned short)(low)) | \
-            ((unsigned long)((unsigned short)(high)) << 16)))
 
 int TDrawSystem::SetDisplaySize(long wid, long hgt, int bits)
 {

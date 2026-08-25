@@ -8,6 +8,7 @@
 //   natural COM/GDI lifetime source; emitted code remains exact.
 
 #include <stdlib.h>
+#include <ddraw.h>
 
 #ifndef DRAWAREA_CANONICAL_TU
 class TDrawArea;
@@ -29,13 +30,6 @@ public:
     DrawAreaNode* DrawAreaList;         // +0x14
     char gap_18[0x460];                 // +0x18 .. +0x477
     unsigned char DrawType;             // +0x478
-};
-
-class IDirectDrawSurface {
-public:
-    virtual void __stdcall QueryInterface();
-    virtual unsigned long __stdcall AddRef();
-    virtual unsigned long __stdcall Release();
 };
 
 extern "C" {

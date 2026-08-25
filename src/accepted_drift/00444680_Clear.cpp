@@ -55,6 +55,7 @@
 //   remain exact. No config, flag, ABI, or anchor source was changed.
 
 #include <string.h>
+#include <ddraw.h>
 
 extern int DDSys_CanColorFill;
 extern "C" void* __cdecl memset(void* s, int c, unsigned int n);
@@ -62,58 +63,10 @@ extern "C" void* __cdecl memset(void* s, int c, unsigned int n);
 #pragma function(memset)
 
 #ifndef DRAWAREA_CANONICAL_TU
-struct tagRECT {
-    long left;
-    long top;
-    long right;
-    long bottom;
-};
-
-struct _DDCOLORKEY {
-    unsigned long dwColorSpaceLowValue;
-    unsigned long dwColorSpaceHighValue;
-};
-
-struct _DDBLTFX {
-    unsigned long dwSize;
-    unsigned long dwDDFX;
-    unsigned long dwROP;
-    unsigned long dwDDROP;
-    unsigned long dwRotationAngle;
-    unsigned long dwZBufferOpCode;
-    unsigned long dwZBufferLow;
-    unsigned long dwZBufferHigh;
-    unsigned long dwZBufferBaseDest;
-    unsigned long dwZDestConstBitDepth;
-    unsigned long dwZDestConst;
-    unsigned long dwZSrcConstBitDepth;
-    unsigned long dwZSrcConst;
-    unsigned long dwAlphaEdgeBlendBitDepth;
-    unsigned long dwAlphaEdgeBlend;
-    unsigned long dwReserved;
-    unsigned long dwAlphaDestConstBitDepth;
-    unsigned long dwAlphaDestConst;
-    unsigned long dwAlphaSrcConstBitDepth;
-    unsigned long dwAlphaSrcConst;
-    unsigned long dwFillColor;
-    _DDCOLORKEY ddckDestColorkey;
-    _DDCOLORKEY ddckSrcColorkey;
-};
-
 class TDrawSystem {
 public:
     char gap_00[0x478];
     unsigned char DrawType;                 // +0x478
-};
-
-class IDirectDrawSurface {
-public:
-    virtual long __stdcall QueryInterface();
-    virtual unsigned long __stdcall AddRef();
-    virtual unsigned long __stdcall Release();
-    virtual long __stdcall AddAttachedSurface();
-    virtual long __stdcall AddOverlayDirtyRect();
-    virtual long __stdcall Blt(void*, void*, void*, unsigned long, void*);
 };
 
 class TDrawArea {

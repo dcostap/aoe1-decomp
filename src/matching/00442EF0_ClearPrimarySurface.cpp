@@ -1,7 +1,7 @@
 // VA: 00442EF0 TDrawSystem::ClearPrimarySurface (62 B)
 // Clears the primary surface using Blt.
 
-#include "../../include/drawarea_context.h"
+#include "../drawarea_phase2_context.h"
 
 void TDrawSystem::ClearPrimarySurface()
 {

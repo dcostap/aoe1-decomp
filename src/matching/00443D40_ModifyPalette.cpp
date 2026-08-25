@@ -9,31 +9,9 @@ extern int PalSetRes;
 extern int FullPalSets;
 extern int AniPalSets;
 
+#include <ddraw.h>
+
 #ifndef DRAWAREA_CANONICAL_TU
-#pragma pack(push, 1)
-struct PALETTEENTRY {
-    unsigned char peRed;
-    unsigned char peGreen;
-    unsigned char peBlue;
-    unsigned char peFlags;
-};
-#pragma pack(pop)
-
-struct IDirectDrawPaletteVtbl {
-    void* queryInterface;
-    void* addRef;
-    void* release;
-    void* getCaps;
-    void* getEntries;
-    void* initialize;
-    void* setEntries;   // index 6, vtable offset 0x18
-    void* reserve1;
-};
-
-struct IDirectDrawPalette {
-    IDirectDrawPaletteVtbl* lpVtbl;
-};
-
 class TDrawSystem {
 public:
     char gap_00[0x24];
@@ -62,7 +40,6 @@ void TDrawSystem::ModifyPalette(int start, int count, PALETTEENTRY* entries) {
         if (count == 7) {
             AniPalSets++;
         }
-        typedef void (__stdcall* SetEntriesFunc)(IDirectDrawPalette*, unsigned, unsigned, unsigned, PALETTEENTRY*);
-        ((SetEntriesFunc)DirDrawPal->lpVtbl->setEntries)(DirDrawPal, 0, start, count, entries);
+        DirDrawPal->SetEntries(0, start, count, entries);
     }
 }

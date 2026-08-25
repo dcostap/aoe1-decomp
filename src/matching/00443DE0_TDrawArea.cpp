@@ -15,6 +15,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <ddraw.h>
 
 extern "C" void* __cdecl memset(void* s, int c, unsigned int n);
 #pragma function(memset)
@@ -22,7 +23,6 @@ extern "C" void* __cdecl memset(void* s, int c, unsigned int n);
 #ifndef DRAWAREA_CANONICAL_TU
 class TDrawSystem;
 class DrawAreaNode;
-class IDirectDrawSurface;
 class TSpan_List_Manager;
 
 class TDrawArea {

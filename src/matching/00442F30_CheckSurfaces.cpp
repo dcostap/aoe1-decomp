@@ -13,7 +13,7 @@
 //   the original far failure tail; exact under the default flags.
 
 #include <string.h>
-#include "../../include/drawarea_context.h"
+#include "../drawarea_phase2_context.h"
 #pragma function(memset)
 
 unsigned char TDrawSystem::CheckSurfaces()

@@ -11,6 +11,9 @@
 
 #define DRAWAREA_CANONICAL_TU 1
 
+// The module-local context preserves the period GDI import declaration.
+#include "drawarea_phase2_context.h"
+
 #include "matching/00442680_TDrawSystem.cpp"
 #include "matching/00442710_TDrawSystem.cpp"
 #include "matching/004427A0_CheckAvailModes.cpp"
@@ -35,7 +38,7 @@
 #include "matching/00443AD0_GetCreateErrorNum.cpp"
 #include "matching/00443C00_GetColorKeyErrorNum.cpp"
 #include "accepted_drift/00443CB0_SetPalette.cpp"
-#include "accepted_drift/00443D40_ModifyPalette.cpp"
+#include "matching/00443D40_ModifyPalette.cpp"
 #include "matching/00443DE0_TDrawArea.cpp"
 #include "matching/00443F10_TDrawArea.cpp"
 #include "accepted_drift/00444040_Init.cpp"
@@ -49,7 +52,7 @@
 #include "matching/00444990_SetAccessOffsets.cpp"
 #include "matching/00444A60_SetFloatOffsets.cpp"
 #include "matching/00444B10_SetInfo.cpp"
-#include "scratch/00444B40_AlignedWidth.cpp"
+#include "matching/00444B40_AlignedWidth.cpp"
 #include "matching/00444B50_SetClipRect.cpp"
 #include "accepted_drift/00444C30_SetClipRect.cpp"
 #include "accepted_drift/00444D50_Copy.cpp"

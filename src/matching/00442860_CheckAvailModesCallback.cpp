@@ -4,7 +4,7 @@
 // - Replaced the initial offset-only callback scaffold with the period DirectDraw
 //   descriptor/mode-info ownership and the observed callback return value.
 
-#include "../../include/drawarea_context.h"
+#include "../drawarea_phase2_context.h"
 
 long __stdcall TDrawSystem::CheckAvailModesCallback(
     _DDSURFACEDESC* mode_desc, void* context)

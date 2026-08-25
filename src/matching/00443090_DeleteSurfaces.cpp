@@ -1,7 +1,7 @@
 // VA: 00443090 TDrawSystem::DeleteSurfaces
 // PDB source: Drawarea.cpp lines 1037-1056
 
-#include "../../include/drawarea_context.h"
+#include "../drawarea_phase2_context.h"
 
 void TDrawSystem::DeleteSurfaces()
 {

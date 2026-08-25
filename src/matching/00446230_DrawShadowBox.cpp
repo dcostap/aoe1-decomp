@@ -16,6 +16,7 @@
 // - No custom flags, aliases, fake volatility, or synthetic predecessor functions are present.
 
 #include <stdlib.h>
+#include <ddraw.h>
 
 #ifndef DRAWAREA_CANONICAL_TU
 struct tagRECT {
@@ -77,7 +78,6 @@ public:
 
 class TDrawSystem;
 class BITMAPINFO256;
-class IDirectDrawSurface;
 class DrawAreaNode;
 class TSpan_List_Manager;
 

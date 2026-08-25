@@ -47,9 +47,7 @@
 //   owner symbol. DrawShadowBox (00446230) and GetPalette (00446340) stayed
 //   exact at 271 and 40 bytes during fresh anchor checks.
 
-#ifndef DRAWAREA_CANONICAL_TU
-#include <windows.h>
-#endif
+#include <ddraw.h>
 
 typedef unsigned char uchar;
 
@@ -68,17 +66,6 @@ extern unsigned int DAT_0062e64c;
 extern unsigned int DAT_0062e650;
 
 #ifndef DRAWAREA_CANONICAL_TU
-class IDirectDrawSurface {
-public:
-    virtual long __stdcall QueryInterface();
-    virtual unsigned long __stdcall AddRef();
-    virtual unsigned long __stdcall Release();
-    virtual long __stdcall AddAttachedSurface();
-    virtual long __stdcall AddOverlayDirtyRect();
-    virtual long __stdcall Blt(RECT*, IDirectDrawSurface*, RECT*,
-                               unsigned long, void*);
-};
-
 class TDrawSystem {
 public:
     char gap_00[0x478];

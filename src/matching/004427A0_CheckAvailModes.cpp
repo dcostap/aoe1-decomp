@@ -6,12 +6,7 @@
 // probe 2: inclusive width thresholds (>= 800/1024/1280) restored the original
 //           cmp/jl forms and produced an exact 190-byte match under default flags.
 
-#include "../../include/drawarea_context.h"
-
-extern "C" __declspec(dllimport) void* __stdcall CreateICA(
-    const char* driver, const char* device, const char* output, const char* data);
-extern "C" __declspec(dllimport) int __stdcall GetDeviceCaps(void* dc, int index);
-extern "C" __declspec(dllimport) int __stdcall DeleteDC(void* dc);
+#include "../drawarea_phase2_context.h"
 
 void TDrawSystem::CheckAvailModes(int param_1)
 {

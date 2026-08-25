@@ -5,6 +5,8 @@
 // A single conditional-argument expression (`waitFlag ? 1 : 0` / `waitFlag != 0`) instead
 // makes VC5 materialize the boolean in EDX and save EDI.
 
+#include <ddraw.h>
+
 #ifndef DRAWAREA_CANONICAL_TU
 class TDrawSystem {
 public:
@@ -19,11 +21,9 @@ public:
     unsigned char* Bits;       // +0x08
     char gap_0C[0x2C];
     void* DrawDc;              // +0x38
-    void* DrawSurface;         // +0x3C
-    // +0x40: DDSURFACEDESC
-    char gap_40[0x24];
-    void* lpSurface;           // +0x64
-    char gap_68[0x4C];
+    IDirectDrawSurface* DrawSurface; // +0x3C
+    DDSURFACEDESC SurfaceDesc;      // +0x40
+    char gap_AC[0x08];
     void* LastBits;            // +0xB4
 
     void __fastcall SetInfo();
@@ -31,8 +31,6 @@ public:
     unsigned char* Lock(char* name, int waitFlag);
 };
 #endif
-
-typedef int (__stdcall* LockFunc)(void* surface, void* rect, void* desc, int flags, void* hdc);
 
 unsigned char* TDrawArea::Lock(char* name, int waitFlag)
 {
@@ -52,10 +50,10 @@ unsigned char* TDrawArea::Lock(char* name, int waitFlag)
 
     int hr;
     if (waitFlag) {
-        hr = ((LockFunc)(*(void***)this->DrawSurface)[0x64 / 4])(this->DrawSurface, 0, (char*)this + 0x40, 1, 0);
+        hr = this->DrawSurface->Lock(0, &this->SurfaceDesc, 1, 0);
     }
     else {
-        hr = ((LockFunc)(*(void***)this->DrawSurface)[0x64 / 4])(this->DrawSurface, 0, (char*)this + 0x40, 0, 0);
+        hr = this->DrawSurface->Lock(0, &this->SurfaceDesc, 0, 0);
     }
 
     if (hr != 0)

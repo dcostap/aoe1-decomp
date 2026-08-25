@@ -4,13 +4,7 @@
 
 // BINARY NOTE: the canonical Drawarea context preserves the palette owner and
 // the exact six-call Win32/Drawarea sequence.
-#include "../../include/drawarea_context.h"
-
-__declspec(dllimport) void* __stdcall GetDC(void* hwnd);
-__declspec(dllimport) void* __stdcall SelectPalette(void* hdc, void* hpal, int bForceBackground);
-__declspec(dllimport) int __stdcall RealizePalette(void* hdc);
-__declspec(dllimport) int __stdcall ReleaseDC(void* hwnd, void* hdc);
-__declspec(dllimport) int __stdcall InvalidateRect(void* hwnd, void* rect, int bErase);
+#include "../drawarea_phase2_context.h"
 
 int TDrawSystem::HandleQueryNewPalette(void* param1, unsigned int param2, unsigned int param3, long param4)
 {

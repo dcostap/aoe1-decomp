@@ -24,7 +24,7 @@
 #pragma function(memset)
 extern void* __cdecl operator new(unsigned int);
 
-#include "../../include/drawarea_context.h"
+#include "../drawarea_phase2_context.h"
 
 typedef _DDBLTFX DDBLTFX;
 

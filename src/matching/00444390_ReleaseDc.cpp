@@ -2,41 +2,13 @@
 // PDB source: Drawarea.cpp
 // Releases the DC obtained from GetDc
 
+#include <ddraw.h>
+
 #ifndef DRAWAREA_CANONICAL_TU
 class TDrawSystem {
 public:
     char gap_00[0x478];
     unsigned char DrawType;
-};
-
-struct IDirectDrawSurface {
-    virtual void __stdcall QueryInterface();
-    virtual void __stdcall AddRef();
-    virtual void __stdcall Release();
-    virtual void __stdcall AddAttachedSurface();
-    virtual void __stdcall AddOverlayDirtyRect();
-    virtual void __stdcall Blt();
-    virtual void __stdcall ColorFill();
-    virtual void __stdcall CreateAttachedSurface();
-    virtual void __stdcall DeleteAttachedSurface();
-    virtual void __stdcall EnumAttachedSurfaces();
-    virtual void __stdcall EnumOverlayZOrders();
-    virtual void __stdcall Flip();
-    virtual void __stdcall GetAttachedSurface();
-    virtual void __stdcall GetBltStatus();
-    virtual void __stdcall GetCaps();
-    virtual void __stdcall GetClipper();
-    virtual void __stdcall GetColorKey();
-    virtual void __stdcall GetDC(void** dc);       // +0x44 (index 17)
-    virtual void __stdcall GetDeviceSurface();
-    virtual void __stdcall GetDDInterface();
-    virtual void __stdcall GetPalette();
-    virtual void __stdcall GetPixelFormat();
-    virtual void __stdcall GetSurfaceDesc(void* desc);
-    virtual void __stdcall Initialize();
-    virtual void __stdcall IsLost();
-    virtual int __stdcall Lock(void* rect, void* desc, int flags, void* hdc);  // +0x64 (index 25)
-    virtual void __stdcall ReleaseDC(void* dc);     // +0x68 (index 26)
 };
 
 class TDrawArea {

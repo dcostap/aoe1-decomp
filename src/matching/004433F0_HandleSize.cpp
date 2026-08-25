@@ -5,7 +5,7 @@
 // attempt 1: natural if-else chain with GetClientRect + two SetSize calls -> EXACT MATCH (109/109, 0.0000%)
 // default flags; period import declaration for IAT-resolved GetClientRect
 
-#include "../../include/drawarea_context.h"
+#include "../drawarea_phase2_context.h"
 
 // IAT-resolved GetClientRect via the period Win32 import declaration.
 #ifndef DRAWAREA_CANONICAL_TU

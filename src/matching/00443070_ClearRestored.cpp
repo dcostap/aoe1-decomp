@@ -1,7 +1,7 @@
 // VA: 00443070 TDrawSystem::ClearRestored
 // PDB source: Drawarea.cpp lines 1018-1031
 
-#include "../../include/drawarea_context.h"
+#include "../drawarea_phase2_context.h"
 
 void TDrawSystem::ClearRestored()
 {

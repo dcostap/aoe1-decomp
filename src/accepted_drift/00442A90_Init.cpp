@@ -48,7 +48,7 @@
 // probe was blocked by duplicate definitions in the authentic Drawarea TU.
 
 #include <string.h>
-#include "../../include/drawarea_context.h"
+#include "../drawarea_phase2_context.h"
 #pragma function(memset)
 
 #ifndef DRAWAREA_CANONICAL_TU
@@ -140,8 +140,7 @@ int TDrawSystem::Init(void* inst, void* wnd, void* pal,
         this->ErrorCode = 1;
         return 0;
     }
-    this->DirDrawPal->lpVtbl->setEntries(this->DirDrawPal, 0, 0, 0x100,
-                                         this->palette);
+    this->DirDrawPal->SetEntries(0, 0, 0x100, this->palette);
 
     if ((*direct_draw)->CreateClipper(0, &this->Clipper, 0) != 0) {
         this->ErrorCode = 1;
