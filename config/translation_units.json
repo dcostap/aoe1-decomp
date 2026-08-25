@@ -2064,13 +2064,29 @@
         "0045C450": "src/matching/0045C450_RGE_Moving_Object.cpp",
         "0045C5C0": "src/matching/0045C5C0_RGE_Moving_Object.cpp",
         "0045C970": "src/matching/0045C970_setup.cpp",
-        "0045CAA0": "src/matching/0045CAA0_setup.cpp"
+        "0045CAA0": "src/matching/0045CAA0_setup.cpp",
+        "0045CE00": "src/matching/0045CE00_save.cpp",
+        "0045D140": "src/matching/0045D140_stop_moving.cpp",
+        "0045D360": "src/matching/0045D360_set_angle.cpp",
+        "0045D620": "src/matching/0045D620_facetToNextWaypoint.cpp",
+        "0045D690": "src/matching/0045D690_setTargetID.cpp",
+        "0045F7F0": "src/matching/0045F7F0_passableTile.cpp",
+        "00460D30": "src/matching/00460D30_setInitialPoints.cpp",
+        "00460DB0": "src/matching/00460DB0_boundAngle.cpp"
       },
       "symbols": {
         "0045C450": "??0RGE_Moving_Object@@QAE@PAVRGE_Master_Moving_Object@@PAVRGE_Player@@MMMH@Z",
         "0045C5C0": "??0RGE_Moving_Object@@QAE@HPAVRGE_Game_World@@H@Z",
         "0045C970": "?setup@RGE_Moving_Object@@QAEHPAVRGE_Master_Moving_Object@@PAVRGE_Player@@MMM@Z",
-        "0045CAA0": "?setup@RGE_Moving_Object@@QAEHHPAX@Z"
+        "0045CAA0": "?setup@RGE_Moving_Object@@QAEHHPAX@Z",
+        "0045CE00": "?save@RGE_Moving_Object@@UAEXH@Z",
+        "0045D140": "?stop_moving@RGE_Moving_Object@@QAEXXZ",
+        "0045D360": "?set_angle@RGE_Moving_Object@@QAEXXZ",
+        "0045D620": "?facetToNextWaypoint@RGE_Moving_Object@@QBEEXZ",
+        "0045D690": "?setTargetID@RGE_Moving_Object@@QAEXH@Z",
+        "0045F7F0": "?passableTile@RGE_Moving_Object@@UAEHMMH@Z",
+        "00460D30": "?setInitialPoints@RGE_Moving_Object@@QAEXAAUXYPoint@@0@Z",
+        "00460DB0": "?boundAngle@RGE_Moving_Object@@QAEXPAMH@Z"
       }
     },
     {
