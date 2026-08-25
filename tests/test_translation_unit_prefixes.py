@@ -46,7 +46,10 @@ class TranslationUnitPrefixTests(unittest.TestCase):
             module=target_row["primary_source_path"],
         )
         prefixes = _default_prefixes(target, group, source_map)
-        self.assertEqual([item.va for item in prefixes], [0x0044B210])
+        self.assertEqual(
+            [item.va for item in prefixes],
+            [0x0044AC50, 0x0044AC80, 0x0044B210],
+        )
 
     def test_prefix_owner_comparison_requires_pdb_qualified_class(self) -> None:
         from coff import load_coff_object
