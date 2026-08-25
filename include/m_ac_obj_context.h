@@ -129,6 +129,7 @@ public:
     virtual ~RGE_Task_List();
     virtual RGE_Task* create_task(short task_type, int index);
     void copy(RGE_Task_List* source);
+    void save(int file);
     void load(int file, RGE_Sprite** sprites, RGE_Sound** sounds);
     void load(FILE* file, RGE_Sprite** sprites, RGE_Sound** sounds);
 };
@@ -187,42 +188,6 @@ public:
 
 typedef char m_ac_obj_action_size[
     (sizeof(RGE_Master_Action_Object) == 0xFC) ? 1 : -1];
-
-// These small views belong to unresolved owner bodies. They keep the module
-// compiling without making their guessed layout part of the shared ABI.
-struct RGE_Master_Moving_Object_copy_setup {
-    char base[0xD8];
-    void copy_setup(void* source);
-};
-
-struct RGE_Master_Moving_Object_copy {
-    char base[0xD8];
-    void copy_obj(void* source);
-};
-
-struct CopyRefHelper {
-    char base[4];
-    void copy_obj(void* source);
-};
-
-class VTable38Helper {
-public:
-    virtual void v00();
-    virtual void v04();
-    virtual void v08();
-    virtual void v0C();
-    virtual void v10();
-    virtual void v14();
-    virtual void v18();
-    virtual void v1C();
-    virtual void v20();
-    virtual void v24();
-    virtual void v28();
-    virtual void v2C();
-    virtual void v30();
-    virtual void v34();
-    virtual void* make_task_list();
-};
 
 #endif  // RGE_MAC_OBJ_SHARED_CONTEXT
 #endif  // AOE1_M_AC_OBJ_CONTEXT_H

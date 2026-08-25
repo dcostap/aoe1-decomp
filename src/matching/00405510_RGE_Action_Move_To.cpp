@@ -5,25 +5,8 @@
 // In a /GX constructor after a nontrivial base ctor, the C++ call surface is treated as potentially throwing and VC5
 // emits the base-unwind state without adding fake cleanup locals/calls.
 
-#ifndef ACT_MOVE_CONTEXT_H
-class RGE_Action_Object;
-
-void rge_read(int handle, void* buffer, int count);
-
-class RGE_Action {
-public:
-    virtual ~RGE_Action();
-    char gap_04[0x3C];
-
-    RGE_Action(int mode, RGE_Action_Object* object, int doSetup);
-};
-
-class RGE_Action_Move_To : public RGE_Action {
-public:
-    float range; // +0x40
-
-    RGE_Action_Move_To(int param_1, RGE_Action_Object* param_2);
-};
+#ifndef ACT_MOVE_CANONICAL_TU
+#include "../../include/act_move_context.h"
 #endif
 
 RGE_Action_Move_To::RGE_Action_Move_To(int param_1, RGE_Action_Object* param_2)

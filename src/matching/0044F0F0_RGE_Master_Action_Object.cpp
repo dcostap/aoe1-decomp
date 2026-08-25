@@ -5,26 +5,6 @@
 // .text COMDAT should be the first code section emitted, so the checker
 // extracts it correctly from the concatenated .text.
 
-class RGE_Sprite;
-class RGE_Sound;
-
-#ifndef RGE_MAC_OBJ_SHARED_CONTEXT
-class RGE_Master_Moving_Object {
-public:
-    virtual void vf00();
-    virtual ~RGE_Master_Moving_Object();
-    RGE_Master_Moving_Object(int, RGE_Sprite**, RGE_Sound**, int);
-};
-
-class RGE_Master_Action_Object : public RGE_Master_Moving_Object {
-public:
-    void setup(int, RGE_Sprite**, RGE_Sound**);
-    void* member_ptr;
-
-    RGE_Master_Action_Object(int, RGE_Sprite**, RGE_Sound**, int);
-};
-#endif
-
 RGE_Master_Action_Object::RGE_Master_Action_Object(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3, int param_4)
     : RGE_Master_Moving_Object(param_1, param_2, param_3, 0) {
     if (param_4 != 0) {

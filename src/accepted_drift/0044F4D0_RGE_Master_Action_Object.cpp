@@ -12,31 +12,7 @@
 // throwing call and before the branch target, and all else (EH frame, vtable store,
 // task destructor/delete/null store, base destructor, epilogue) matches.
 
-#ifndef RGE_MAC_OBJ_SHARED_CONTEXT
-class RGE_Task_List {
-public:
-    ~RGE_Task_List();
-};
-
-extern void __cdecl operator_delete(void*);
-
-class RGE_Master_Moving_Object {
-public:
-    virtual void vf00();
-    virtual ~RGE_Master_Moving_Object();
-};
-
-class RGE_Master_Action_Object : public RGE_Master_Moving_Object {
-public:
-    char gap_04[0xD8 - 4];
-    RGE_Task_List* tasks;  // +0xD8
-
-    ~RGE_Master_Action_Object();
-};
-#endif
-
 RGE_Master_Action_Object::~RGE_Master_Action_Object() {
-    *(void* volatile*)this = (void*)0x00570448;
     RGE_Task_List* task_list = *(RGE_Task_List* volatile*)((char*)this + 0xD8);
     if (task_list == 0) {
     } else {

@@ -27,7 +27,6 @@ RGE_Master_Action_Object::RGE_Master_Action_Object(FILE* p1, RGE_Sprite** p2,
                                                    int p5)
     : RGE_Master_Moving_Object(p1, p2, p3, p4, 0)
 {
-    *(void**)this = (void*)0x570448;
     if (p5 != 0) {
         this->setup(p1, p2, p3, p4);
     }
