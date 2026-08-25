@@ -85,16 +85,17 @@ class TRIBE_World;
 
 class RGE_Base_Game {
 public:
-    virtual void vpad0();
-    virtual void vpad1();
-    virtual void vpad2();
-    virtual void vpad3();
-    virtual void vpad4();
-    virtual void vpad5();
-    virtual void vpad6();
-    virtual void vpad7();
-    virtual char* get_string(int id);
-    virtual char* get_string(int id, char* dst, int len);
+    virtual ~RGE_Base_Game();
+    virtual int run();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual void set_prog_mode(int);
+    virtual void set_game_mode(int, int);
+    virtual void set_player(short);
+    virtual int get_error_code();
+    virtual char* get_string(int, long, char*, int);
+    virtual char* get_string(long, char*, int);
+    virtual char* get_string(long);
+    virtual char* get_string2(int, long, long, char*, int);
 
     int scenarioGame();
     int randomGame();
@@ -138,90 +139,12 @@ public:
     void add_points_high_attribute_amount(int a, int b, int attrib, int value, int flag);
 };
 
-#if 0
-struct RGE_Object_Type_Info {
-    char pad_00[0x10];
-    short id;
-};
-
-struct RGE_Object_Info_Holder {
-    char pad_00[0x08];
-    RGE_Object_Type_Info* type;
-};
-
-struct RGE_Object_List_Node {
-    RGE_Object_Info_Holder* object;
-    RGE_Object_List_Node* next;
-};
-
-struct RGE_Object_List_Head {
-    char pad_00[0x04];
-    RGE_Object_List_Node* head;
-};
-#endif
-
-#if 0
-class TRIBE_Player {
-public:
-    char pad_00[0x28];
-    RGE_Object_List_Head* objects;
-    char pad_2C[0x08];
-    RGE_Victory_Conditions* victory;
-    char pad_38[0x18];
-    float* resources;
-    char pad_54[0xB8];
-    short civilization;
-
-    void rev_tech(short tech);
-    void new_attribute_num(short attrib, float value);
-    void add_population_entry();
-};
-#endif
-
 class RGE_Effects {
 public:
-    virtual void v0();
-    virtual void v1();
-    virtual void do_effect(short effect, TRIBE_Player* player);
+    virtual ~RGE_Effects();
+    virtual void save(int);
+    virtual void do_effect(short effect, RGE_Player* player);
 };
-
-#if 0
-class RGE_Game_World {
-public:
-    void* vtable_ptr;
-    char gap_04[0x24];
-    RGE_Map* map;
-    char gap_2C[0x10];
-    short player_num;
-    char gap_3E[0x02];
-    TRIBE_Player** players;
-    char gap_44[0x08];
-    RGE_Effects* effects;
-    char gap_50[0x0C];
-    T_Scenario* scenario;
-    char gap_60[0xA4];
-
-    uchar new_game(RGE_Player_Info& param_1, int param_2);
-};
-
-class TRIBE_Tech;
-class TRIBE_World : public RGE_Game_World {
-public:
-    TRIBE_Tech* tech;
-    int victory_type;
-    int artifact_count;
-    int ruin_count;
-    uchar countdown_victory;
-    uchar pad_115[3];
-    float countdown_clock;
-    uchar score_displayed;
-    uchar controllingComputerPlayer;
-    uchar pad_11E[2];
-    int sent_zone_score;
-
-    uchar new_game(RGE_Player_Info& param_1, int param_2);
-};
-#endif
 
 class RGE_Scenario {
 public:

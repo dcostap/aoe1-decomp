@@ -290,7 +290,8 @@ public:
 
 class RGE_Object_List {
 public:
-    void* vtable_ptr;
+    // The shipped list has one virtual load entry before its data fields.
+    virtual void load(uchar, int, RGE_Game_World*);
     union {
         RGE_Object_Node* list;
         RGE_Object_List_Node* head;
@@ -316,7 +317,7 @@ public:
 
 class RGE_Map {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Map();
     RGE_Tile* map;
     long map_width;
     long map_height;
@@ -328,7 +329,7 @@ public:
 
 class RGE_Master_Static_Object {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Master_Static_Object();
     uchar gap_04[0x0C];
     short id;
     uchar gap_12[0x1E];

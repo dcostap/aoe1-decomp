@@ -22,6 +22,7 @@
 #ifndef DLG_ABT_CANONICAL_TU
 class TPanelSystem;
 class TRIBE_Credits_Screen;
+class TDrawArea;
 
 class RGE_Base_Game {
 public:
@@ -51,10 +52,10 @@ public:
 
     virtual ~TPanel();
     void delete_panel(TPanel** panel_ptr);
-    virtual long vf04();
-    virtual long vf08();
-    virtual long vf0C();
-    virtual long vf10();
+    virtual long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char);
+    virtual void set_rect(RECT);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_color(unsigned char);
     virtual void set_active(int active);
 };
 
