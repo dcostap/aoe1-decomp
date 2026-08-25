@@ -18,30 +18,56 @@
 // Result: exact 210-byte match under config/flags/default.rsp.
 
 #ifndef COMMAND_TU_CONTEXT
+class RGE_Static_Object;
 class RGE_Player {
 public:
-    virtual void v00();  virtual void v04();  virtual void v08();
-    virtual void v0C();  virtual void v10();  virtual void v14();
-    virtual void v18();  virtual void v1C();  virtual void v20();
-    virtual void v24();  virtual void v28();  virtual void v2C();
-    virtual void v30();  virtual void v34();  virtual void v38();
-    virtual void v3C();  virtual void v40();  virtual void v44();
-    virtual void v48();  virtual void v4C();  virtual void v50();
-    virtual void v54();  virtual void v58();  virtual void v5C();
-    virtual void v60();  virtual void v64();  virtual void v68();
-    virtual void v6C();  virtual void v70();  virtual void v74();
+    virtual ~RGE_Player();
+    virtual void set_game_status(unsigned char); virtual void do_resign(int);
+    virtual void changeToHumanPlayer(); virtual void changeToComputerPlayer();
+    virtual char* aiStatus(int); virtual int isEnemy(int); virtual int isAlly(int);
+    virtual int isNeutral(int); virtual int isAllNeutral();
+    virtual void setDiplomaticStance(int, int);
+    virtual void loadAIInformation(char*, char*, char*, int, int);
+    virtual void sendUnitAIOrder(int, int, int, int, int, float, float,
+                                 float, float, int, int, int);
+    virtual void processAIOrder(int, int, int, int, int, float, float, float,
+                                float, int, int, int);
+    virtual void kickAI(int); virtual int strategicNumber(int);
+    virtual void sendGameOrder(RGE_Static_Object*, RGE_Static_Object*, float, float);
+    virtual void sendAddWaypointCommand(int, void*, int);
+    virtual void processAddWaypointCommand(int, void*, int);
+    virtual void sendPlayCommand(int, int*, int, int, int);
+    virtual void sendPlayCommand(int, int, int);
+    virtual int sendAICommand(int, int, int, int, int);
+    virtual int objectCostByType(int); virtual void trackUnitGather(int, int, int);
+    virtual void save(int); virtual void scenario_save(int);
+    virtual void scenario_load(int, long*, float); virtual void scenario_postsave(int);
+    virtual void scenario_postload(int, long*, float); virtual void load(int);
     virtual void add_attribute_num(short attr_id, float amount,
                                    unsigned char flag);
 
-    virtual void v7C();  virtual void v80();  virtual void v84();
-    virtual void v88();  virtual void v8C();  virtual void v90();
-    virtual void v94();  virtual void v98();  virtual void v9C();
-    virtual void vA0();  virtual void vA4();  virtual void vA8();
-    virtual void vAC();  virtual void vB0();  virtual void vB4();
-    virtual void vB8();  virtual void vBC();  virtual void vC0();
-    virtual void vC4();  virtual void vC8();  virtual void vCC();
-    virtual void vD0();  virtual void vD4();  virtual void vD8();
-    virtual void vDC();  virtual void vE0();  virtual void vE4();
+    virtual void update(); virtual void update_dopplegangers(); virtual void save2(int);
+    virtual void save_info(int); virtual void random_start();
+    virtual void* make_new_object(long, float, float, float, int);
+    virtual void analyize_selected_objects();
+    virtual int get_mouse_pointer_action_vars(int, int*, int*);
+    virtual unsigned char command_make_move(void*, float, float);
+    virtual unsigned char command_make_work(void*, float, float);
+    virtual unsigned char command_make_do(void*, float, float);
+    virtual unsigned char command_stop();
+    virtual unsigned char command_place_object(short, float, float, float);
+    virtual unsigned char command_add_attribute(int, float);
+    virtual unsigned char command_give_attribute(int, int, float);
+    virtual unsigned char command_formation(int);
+    virtual unsigned char command_stand_ground();
+    virtual unsigned char command_create_group(int, int*, int, float);
+    virtual unsigned char command_add_to_group(int, int, float);
+    virtual unsigned char command_remove_from_group(int, int);
+    virtual unsigned char command_destroy_group(int);
+    virtual unsigned char command_resign(int, int);
+    virtual unsigned char command_add_waypoint(float, float, float);
+    virtual void* addObject(void*, int, int); virtual void removeObject(void*, int, int, void*);
+    virtual void logMessage(char*);
     virtual void notify(int player_id, int to_player_id, int event_id,
                         long attr_id, long amount, long zero);
 
@@ -69,12 +95,14 @@ struct RGE_Command_Give_Attribute {
 #ifndef COMMAND_TU_CONTEXT
 class RGE_Base_Game {
 public:
-    virtual void v00();  virtual void v04();  virtual void v08();
-    virtual void v0C();  virtual void v10();  virtual void v14();
-    virtual void v18();  virtual void v1C();  virtual void v20();
-    virtual void v24();  virtual void v28();  virtual void v2C();
-    virtual void v30();  virtual void v34();  virtual void v38();
-    virtual void v3C();
+    virtual void set_prog_mode(); virtual void get_view_panel();
+    virtual void get_map_panel(); virtual void processCheatCode();
+    virtual void handle_message(); virtual void action_update();
+    virtual void action_mouse_move(); virtual void action_key_down();
+    virtual void action_user_command(); virtual void action_command();
+    virtual void action_music_done(); virtual void action_activate();
+    virtual void action_deactivate(); virtual void action_init_menu();
+    virtual void action_exit_menu(); virtual void action_size();
     virtual void notification(int command, long player_id, long to_player_id,
                               long attr_id, long amount);
 };

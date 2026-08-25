@@ -68,14 +68,20 @@ struct RGE_Command_Give_Attribute {
     unsigned char player_id;
     unsigned char to_player_id;
     unsigned char attr_id;
-    float attr_amount;
+    union {
+        int attr_amount;
+        float amount;
+    };
 };
 struct RGE_Command_Add_Attribute {
     unsigned char command;
     unsigned char player_id;
     unsigned char attr_id;
     unsigned char gap_03;
-    int attr_amount;
+    union {
+        int attr_amount;
+        float amount;
+    };
 };
 struct RGE_Command_Create {
     unsigned char command;
@@ -108,6 +114,7 @@ struct RGE_Command_Work {
 };
 
 class RGE_Game_World;
+class RGE_Static_Object;
 class UnitAIModule {
 public:
     void setCurrentOrder(int);
@@ -256,9 +263,12 @@ public:
 class RGE_Master_Static_Object {
 public:
     virtual ~RGE_Master_Static_Object();
-    virtual void vf04(); virtual void vf08(); virtual void vf0C();
-    virtual void vf10(); virtual void vf14(); virtual void vf18();
-    virtual void create(class RGE_Player*, float, float, float);
+    virtual void copy_obj(RGE_Master_Static_Object*);
+    virtual void modify(float, unsigned char);
+    virtual void modify_delta(float, unsigned char);
+    virtual void modify_percent(float, unsigned char);
+    virtual int computerPlayer();
+    virtual RGE_Static_Object* make_new_obj(class RGE_Player*, float, float, float);
     char gap_1C[0x14];
     short object_group;
     short gap_32;
@@ -269,32 +279,66 @@ public:
 
 class RGE_Player {
 public:
-    virtual void v00(); virtual void v04(); virtual void v08();
-    virtual void v0C(); virtual void v10(); virtual void v14();
-    virtual void v18(); virtual void v1C(); virtual void v20();
-    virtual void v24(); virtual void v28(); virtual void v2C();
-    virtual void v30(); virtual void v34(); virtual void v38();
-    virtual void v3C(); virtual void v40(); virtual void v44();
-    virtual void v48(); virtual void v4C(); virtual void v50();
-    virtual void v54(); virtual void v58(); virtual void v5C();
-    virtual void v60(); virtual void v64(); virtual void v68();
-    virtual void v6C(); virtual void v70(); virtual void v74();
-    virtual void add_attribute_num(short, float, unsigned char);
-    virtual void v7C(); virtual void v80(); virtual void v84();
-    virtual void v88(); virtual void v8C(); virtual void v90();
-    virtual void v94(); virtual void v98(); virtual void v9C();
-    virtual void vA0(); virtual void vA4(); virtual void vA8();
-    virtual void vAC(); virtual void vB0(); virtual void vB4();
-    virtual void vB8(); virtual void vBC(); virtual void vC0();
-    virtual void vC4(); virtual void vC8(); virtual void vCC();
-    virtual void vD0(); virtual void vD4(); virtual void vD8();
-    virtual void vDC(); virtual void vE0();
-    virtual void notify(int, int, int, long, long, long);
-    virtual void processAddWaypointCommand(int, void*, int);
+    virtual ~RGE_Player();
+    virtual void set_game_status();
+    virtual void do_resign(int);
+    virtual void changeToHumanPlayer();
+    virtual void changeToComputerPlayer();
+    virtual void aiStatus();
+    virtual void isEnemy();
+    virtual void isAlly();
+    virtual void isNeutral();
+    virtual void isAllNeutral();
+    virtual void setDiplomaticStance();
+    virtual void loadAIInformation();
+    virtual void sendUnitAIOrder();
     virtual void processAIOrder(int, int, int, int, int, float, float, float,
                                 float, unsigned int, unsigned int, unsigned int);
-    virtual void resign(int);
-    virtual void send_waypoint(int, unsigned char*, int);
+    virtual void kickAI();
+    virtual void strategicNumber();
+    virtual void sendGameOrder();
+    virtual void sendAddWaypointCommand();
+    virtual void processAddWaypointCommand(int, XYZBYTEPoint*, int);
+    virtual void sendPlayCommand();
+    virtual void sendPlayCommand2();
+    virtual void sendAICommand();
+    virtual void objectCostByType();
+    virtual void trackUnitGather();
+    virtual void computerPlayer();
+    virtual void scenario_save();
+    virtual void scenario_load();
+    virtual void scenario_postsave();
+    virtual void scenario_postload();
+    virtual void load();
+    virtual void add_attribute_num(short, float, unsigned char);
+    virtual void update();
+    virtual void update_dopplegangers();
+    virtual void save();
+    virtual void save2();
+    virtual void save_info();
+    virtual void random_start();
+    virtual void make_new_object();
+    virtual void analyize_selected_objects();
+    virtual void get_mouse_pointer_action_vars();
+    virtual void command_make_move();
+    virtual void command_make_work();
+    virtual void command_make_do();
+    virtual void command_stop();
+    virtual void command_place_object();
+    virtual void command_add_attribute();
+    virtual void command_give_attribute();
+    virtual void command_formation();
+    virtual void command_stand_ground();
+    virtual void command_create_group();
+    virtual void command_add_to_group();
+    virtual void command_remove_from_group();
+    virtual void command_destroy_group();
+    virtual void command_resign();
+    virtual void command_add_waypoint();
+    virtual void addObject();
+    virtual void removeObject();
+    virtual void logMessage();
+    virtual void notify(int, int, int, long, long, long);
 
     char gap_04[0x20];
     RGE_Master_Static_Object** master_objects;
@@ -344,7 +388,30 @@ public:
     virtual int passableTile(float, float, int); virtual unsigned char facetToNextWaypoint();
     virtual int currentTargetID(); virtual float currentTargetX(); virtual float currentTargetY();
     virtual float currentTargetZ(); virtual void setWaitingToMove(unsigned char);
-    virtual void pause_callback();
+    virtual unsigned char waitingToMove();
+    virtual unsigned char actionState();
+    virtual unsigned char keepGatheringWhenObjectIsOut(int);
+    virtual unsigned char produceWhenKilledBy(int);
+    virtual unsigned char useSameZoneDropsite();
+    virtual void notify(int, int, int, long, long, long);
+    virtual int attack(float, float, float, int);
+    virtual int attack(int, int);
+    virtual int moveTo(float, float, float, float, int);
+    virtual int moveTo(int, float, int);
+    virtual int moveTo(int, int);
+    virtual int moveAwayFrom(int, int);
+    virtual int hunt(int, int);
+    virtual int gather(int, int);
+    virtual int convert(int, int);
+    virtual int stopAction();
+    virtual int repair(int, int);
+    virtual int build(int, int);
+    virtual int trade(int, int);
+    virtual int explore(int, int, int);
+    virtual int enter(int, int);
+    virtual int unload(int, float, float, float);
+    virtual int transport(float, float, float, int);
+    virtual int pause();
 
     long id;
     union {
@@ -419,10 +486,14 @@ public:
 
 class RGE_Base_Game {
 public:
-    virtual void v00(); virtual void v04(); virtual void v08(); virtual void v0C();
-    virtual void v10(); virtual void v14(); virtual void v18(); virtual void v1C();
-    virtual void v20(); virtual void v24(); virtual void v28(); virtual void v2C();
-    virtual void v30(); virtual void v34(); virtual void v38(); virtual void v3C();
+    virtual void set_prog_mode(); virtual void get_view_panel();
+    virtual void get_map_panel(); virtual void processCheatCode();
+    virtual void handle_message(); virtual void action_update();
+    virtual void action_mouse_move(); virtual void action_key_down();
+    virtual void action_user_command(); virtual void action_command();
+    virtual void action_music_done(); virtual void action_activate();
+    virtual void action_deactivate(); virtual void action_init_menu();
+    virtual void action_exit_menu(); virtual void action_size();
     virtual void notification(int, long, long, long, long);
     char gap_44[0xA15 - 0x44];
     unsigned char resigned[16];
@@ -530,7 +601,6 @@ extern void Log(void*, const char*, int);
 extern void Log(void*, const char*, int, const char*);
 extern "C" void __cdecl TDebuggingLog_Log(void*, const char*, int, const char*);
 extern void __cdecl operator_delete(void*);
-extern void* RGE_Command_vftable;
 
 // Existing focused context files use this guard to omit their local class
 // declarations when they are part of the complete module sequence.

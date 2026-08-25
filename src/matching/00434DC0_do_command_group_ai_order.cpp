@@ -50,11 +50,20 @@ public:
 
 class RGE_Player {
 public:
-    virtual ~RGE_Player(); virtual void v04();  virtual void v08();
-    virtual void v0C();  virtual void v10();  virtual void v14();
-    virtual void v18();  virtual void v1C();  virtual void v20();
-    virtual void v24();  virtual void v28();  virtual void v2C();
-    virtual void v30();
+    virtual ~RGE_Player();
+    virtual void set_game_status(unsigned char);
+    virtual void do_resign(int);
+    virtual void changeToHumanPlayer();
+    virtual void changeToComputerPlayer();
+    virtual char* aiStatus(int);
+    virtual int isEnemy(int);
+    virtual int isAlly(int);
+    virtual int isNeutral(int);
+    virtual int isAllNeutral();
+    virtual void setDiplomaticStance(int, int);
+    virtual void loadAIInformation(char*, char*, char*, int, int);
+    virtual void sendUnitAIOrder(int, int, int, int, int, float, float,
+                                 float, float, int, int, int);
     virtual void processAIOrder(int issuer, int object_id, int order_type,
                                 int target, int target_owner, float target_x,
                                 float target_y, float target_z, float range,

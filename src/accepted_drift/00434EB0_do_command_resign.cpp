@@ -21,17 +21,17 @@ struct RGE_Command_Resign {
     unsigned char dropped;
 };
 
-class Player {
+class RGE_Player {
 public:
-    virtual void vf0();
-    virtual void vf4();
-    virtual void resign(int dropped);
+    virtual ~RGE_Player();
+    virtual void set_game_status(unsigned char);
+    virtual void do_resign(int dropped);
 };
 
 class RGE_Game_World {
 public:
     char gap_00[0x40];
-    Player** players;
+    RGE_Player** players;
 };
 
 class RGE_Command {
@@ -61,8 +61,8 @@ void RGE_Command::do_command_resign(RGE_Command_Resign* cmd)
         game->resigned[comm] = 1;
         do { if (rge_base_game->playerID(i) == cmd->player_id) { total++; if (rge_base_game->resigned[i]) resigned_count++; } i++; } while (i < 9);
         if (total != resigned_count) return;
-        this->world->players[cmd->player_id]->resign(cmd->dropped);
+        this->world->players[cmd->player_id]->do_resign(cmd->dropped);
         return;
     }
-    this->world->players[cmd->player_id]->resign(cmd->dropped);
+    this->world->players[cmd->player_id]->do_resign(cmd->dropped);
 }

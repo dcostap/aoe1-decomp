@@ -12,5 +12,9 @@
 
 void RGE_Command::do_command_add_attribute(RGE_Command_Add_Attribute* param_1) {
     RGE_Player* player = this->world->players[param_1->player_id];
+#ifdef COMMAND_TU_CONTEXT
+    player->add_attribute_num(param_1->attr_id, param_1->amount, 0);
+#else
     player->add_attribute_num(param_1->attr_id, param_1->attr_amount, 0);
+#endif
 }

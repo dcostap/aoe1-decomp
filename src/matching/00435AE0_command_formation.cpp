@@ -22,14 +22,14 @@ public:
 
 class RGE_Player {
 public:
-    virtual void v00();
+    virtual void set_game_status();
     char gap_04[0x46];
     short id;
 };
 
 class RGE_Static_Object {
 public:
-    virtual void v00();
+    virtual ~RGE_Static_Object();
     int id;
     RGE_Master_Static_Object* master_obj;
     RGE_Player* owner;

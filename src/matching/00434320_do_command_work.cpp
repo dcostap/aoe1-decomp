@@ -20,6 +20,8 @@ struct RGE_Obj_Info {
     int id;
 };
 
+class RGE_Player;
+
 class RGE_Command_Order {
 public:
     unsigned char command;
@@ -34,26 +36,42 @@ public:
 
 class RGE_Static_Object {
 public:
-    virtual void vf00(); virtual void vf04(); virtual void vf08(); virtual void vf0C();
-    virtual void vf10(); virtual void vf14(); virtual void vf18(); virtual void vf1C();
-    virtual void vf20(); virtual void vf24(); virtual void vf28(); virtual void vf2C();
-    virtual void vf30(); virtual void vf34(); virtual void vf38(); virtual void vf3C();
-    virtual void vf40(); virtual void vf44(); virtual void vf48(); virtual void vf4C();
-    virtual void vf50(); virtual void vf54(); virtual void vf58(); virtual void vf5C();
-    virtual void vf60(); virtual void vf64(); virtual void vf68(); virtual void vf6C();
-    virtual void vf70(); virtual void vf74(); virtual void vf78(); virtual void vf7C();
-    virtual void vf80(); virtual void vf84(); virtual void vf88(); virtual void vf8C();
-    virtual void vf90(); virtual void vf94(); virtual void vf98(); virtual void vf9C();
+    virtual ~RGE_Static_Object();
+    virtual void recycle_in_to_game(void*, RGE_Player*, float, float, float);
+    virtual void recycle_out_of_game(); virtual void draw(); virtual void shadow_draw();
+    virtual void normal_draw(); virtual void draw_front_frame(); virtual void draw_back_frame();
+    virtual void draw_frame(); virtual unsigned char update(); virtual void check_damage_sprites();
+    virtual void rehook(); virtual void save(int); virtual float teleport(float, float, float);
+    virtual void new_sprite(void*); virtual void add_overlay_sprite(void*, unsigned char);
+    virtual void remove_overlay_sprite(void*); virtual void change_ownership(RGE_Player*);
+    virtual void modify(float, unsigned char); virtual void modify_delta(float, unsigned char);
+    virtual void modify_percent(float, unsigned char); virtual void transform(void*);
+    virtual void copy_obj(void*); virtual void set_object_state(unsigned char);
+    virtual void remove_visible_resource(); virtual void create_doppleganger_when_dying();
+    virtual void destroy_obj(); virtual void die_die_die(); virtual void damage();
+    virtual float calculateDamage(); virtual void rotate(long); virtual unsigned char can_attack();
+    virtual void set_attribute(short, float); virtual void set_attribute_amount(float, unsigned char, unsigned char);
+    virtual int heal(int, int); virtual unsigned char heal(float); virtual int canRepair();
+    virtual void notify_of_relation(long, unsigned char);
+    virtual void do_command(RGE_Static_Object*, float, float, float);
+    virtual void move_to(RGE_Static_Object*, float, float, float);
     virtual void work(RGE_Static_Object* target, float x, float y, float z);
-    virtual void vfA4(); virtual void vfA8(); virtual void vfAC();
-    virtual void vfB0(); virtual void vfB4(); virtual void vfB8(); virtual void vfBC();
-    virtual void vfC0(); virtual void vfC4(); virtual void vfC8(); virtual void vfCC();
-    virtual void vfD0(); virtual void vfD4(); virtual void vfD8(); virtual void vfDC();
-    virtual void vfE0(); virtual void vfE4(); virtual void vfE8(); virtual void vfEC();
-    virtual void vfF0(); virtual void vfF4(); virtual void vfF8(); virtual void vfFC();
-    virtual void vf100(); virtual void vf104(); virtual void vf108(); virtual void vf10C();
-    virtual void vf110(); virtual void vf114(); virtual void vf118(); virtual void vf11C();
-    virtual void vf120(); virtual void vf124(); virtual void vf128();
+    virtual void stop(); virtual void set_attack(RGE_Static_Object*);
+    virtual void play_command_sound(); virtual void play_move_sound(); virtual void new_angle(float);
+    virtual RGE_Static_Object* spawn_death_obj(); virtual void* get_command_master();
+    virtual void set_being_worked_on(); virtual void release_being_worked_on(RGE_Static_Object*);
+    virtual unsigned char is_moving(); virtual RGE_Static_Object* get_target_obj();
+    virtual void enter_obj(RGE_Static_Object*); virtual void exit_obj();
+    virtual int explore_terrain(); virtual void unexplore_terrain();
+    virtual void* get_los_table(); virtual int inAttackRange(RGE_Static_Object*);
+    virtual unsigned char underAttack(); virtual void setUnderAttack(unsigned char);
+    virtual float calc_attack_modifier(RGE_Static_Object*); virtual float getSpeed();
+    virtual float getAngle(); virtual float maximumSpeed(); virtual float rateOfFire();
+    virtual float damageCapability(RGE_Static_Object*); virtual float damageCapability();
+    virtual float weaponRange(); virtual float minimumWeaponRange();
+    virtual int passableTile(float, float, int); virtual unsigned char facetToNextWaypoint();
+    virtual int currentTargetID(); virtual float currentTargetX(); virtual float currentTargetY();
+    virtual float currentTargetZ();
     virtual void setWaitingToMove(unsigned char waiting);
 
     void removeAllFromPathingGroup();

@@ -26,16 +26,24 @@ public:
     RGE_Static_Object* object(int id);
 };
 
-class PlayerLike {
+class RGE_Player {
 public:
-    virtual void vf00(); virtual void vf04(); virtual void vf08(); virtual void vf0C();
-    virtual void vf10(); virtual void vf14(); virtual void vf18(); virtual void vf1C();
-    virtual void vf20(); virtual void vf24(); virtual void vf28(); virtual void vf2C();
-    virtual void vf30();
-    virtual void ai_order(unsigned int issuer, int recipient, int orderType, int target,
-                          unsigned int targetOwner, int targetX, int targetY, int targetZ,
-                          int inFront, unsigned int immediate, unsigned int orderPriority,
-                          unsigned int flags);
+    virtual ~RGE_Player();
+    virtual void set_game_status(unsigned char);
+    virtual void do_resign(int);
+    virtual void changeToHumanPlayer();
+    virtual void changeToComputerPlayer();
+    virtual char* aiStatus(int);
+    virtual int isEnemy(int);
+    virtual int isAlly(int);
+    virtual int isNeutral(int);
+    virtual int isAllNeutral();
+    virtual void setDiplomaticStance(int, int);
+    virtual void loadAIInformation(char*, char*, char*, int, int);
+    virtual void sendUnitAIOrder(int, int, int, int, int, float, float,
+                                 float, float, int, int, int);
+    virtual void processAIOrder(int, int, int, int, int, float, float, float,
+                                float, unsigned int, unsigned int, unsigned int);
 };
 
 struct RGE_Command_AI_Order {
@@ -50,9 +58,9 @@ struct RGE_Command_AI_Order {
     int target;
     unsigned char targetOwner;
     unsigned char gap_11[3];
-    int targetX;
-    int targetY;
-    int targetZ;
+    union { int targetX; float target_x; };
+    union { int targetY; float target_y; };
+    union { int targetZ; float target_z; };
     int inFront;
     unsigned char immediate;
     unsigned char orderPriority;
@@ -72,9 +80,9 @@ void RGE_Command::do_command_ai_order(RGE_Command_AI_Order* cmd) {
     if (obj != 0) {
         obj->removeAllFromPathingGroup();
         RGE_Game_World* world = this->world;
-        PlayerLike* player = (PlayerLike*)world->players[cmd->player_id];
-        player->ai_order(cmd->issuer, cmd->recipient, cmd->orderType, cmd->target,
-                         cmd->targetOwner, cmd->targetX, cmd->targetY, cmd->targetZ,
+        RGE_Player* player = (RGE_Player*)world->players[cmd->player_id];
+        player->processAIOrder(cmd->issuer, cmd->recipient, cmd->orderType, cmd->target,
+                         cmd->targetOwner, cmd->target_x, cmd->target_y, cmd->target_z,
                          cmd->inFront, cmd->immediate, cmd->orderPriority, cmd->flags);
     }
 }

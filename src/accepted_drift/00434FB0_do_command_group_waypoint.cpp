@@ -30,16 +30,38 @@ public:
     uchar y;
 };
 
+struct XYZBYTEPoint {
+    uchar x;
+    uchar y;
+    uchar z;
+};
+
 class RGE_Command;
 class RGE_Static_Object;
 
-class RGE_Object_Owner {
+class RGE_Player {
 public:
-    virtual void vf00(void); virtual void vf04(void); virtual void vf08(void); virtual void vf0C(void);
-    virtual void vf10(void); virtual void vf14(void); virtual void vf18(void); virtual void vf1C(void);
-    virtual void vf20(void); virtual void vf24(void); virtual void vf28(void); virtual void vf2C(void);
-    virtual void vf30(void); virtual void vf34(void); virtual void vf38(void); virtual void vf3C(void);
-    virtual void vf40(void); virtual void vf44(void); virtual void send_waypoint(int id, unsigned char* waypoint, int push_order);
+    virtual ~RGE_Player();
+    virtual void set_game_status(unsigned char);
+    virtual void do_resign(int);
+    virtual void changeToHumanPlayer();
+    virtual void changeToComputerPlayer();
+    virtual char* aiStatus(int);
+    virtual int isEnemy(int);
+    virtual int isAlly(int);
+    virtual int isNeutral(int);
+    virtual int isAllNeutral();
+    virtual void setDiplomaticStance(int, int);
+    virtual void loadAIInformation(char*, char*, char*, int, int);
+    virtual void sendUnitAIOrder(int, int, int, int, int, float, float,
+                                 float, float, int, int, int);
+    virtual void processAIOrder(int, int, int, int, int, float, float, float,
+                                float, unsigned int, unsigned int, unsigned int);
+    virtual void kickAI(int);
+    virtual int strategicNumber(int);
+    virtual void sendGameOrder(RGE_Static_Object*, RGE_Static_Object*, float, float);
+    virtual void sendAddWaypointCommand(int, void*, int);
+    virtual void processAddWaypointCommand(int, XYZBYTEPoint*, int);
 };
 
 class RGE_Static_Object {
@@ -47,7 +69,7 @@ public:
     char gap_00[4];
     int id;
     char gap_08[4];
-    RGE_Object_Owner* owner;
+    RGE_Player* owner;
 };
 
 class RGE_Game_World;
@@ -63,7 +85,7 @@ public:
 void RGE_Command::do_command_group_waypoint(RGE_Command_Group_Waypoint* packet) {
     int c;
     int* ids;
-    unsigned char waypoint[3];
+    XYZBYTEPoint waypoint;
 
     c = packet->unit_num;
     ids = (int*)((char*)packet + 4);
@@ -72,10 +94,10 @@ void RGE_Command::do_command_group_waypoint(RGE_Command_Group_Waypoint* packet) 
         do {
             RGE_Static_Object* obj = this->get_obj(*ids);
             if (obj != 0) {
-                waypoint[0] = packet->x;
-                waypoint[1] = packet->y;
-                waypoint[2] = 0;
-                obj->owner->send_waypoint(obj->id, waypoint, 1);
+                waypoint.x = packet->x;
+                waypoint.y = packet->y;
+                waypoint.z = 0;
+                obj->owner->processAddWaypointCommand(obj->id, &waypoint, 1);
             }
             ++ids;
             --count;

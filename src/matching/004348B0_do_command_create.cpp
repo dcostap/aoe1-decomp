@@ -1,15 +1,17 @@
 #ifndef COMMAND_TU_CONTEXT
 class RGE_Player;
+class RGE_Static_Object;
 
 class RGE_Master_Static_Object {
 public:
-    virtual void vf00(void);
-    virtual void vf04(void);
-    virtual void vf08(void);
-    virtual void vf0C(void);
-    virtual void vf10(void);
-    virtual void vf14(void);
-    virtual void create(RGE_Player* player, float location_x, float location_y, float location_z);
+    virtual ~RGE_Master_Static_Object();
+    virtual void copy_obj(RGE_Master_Static_Object*);
+    virtual void modify(float, unsigned char);
+    virtual void modify_delta(float, unsigned char);
+    virtual void modify_percent(float, unsigned char);
+    virtual void save(int);
+    virtual RGE_Static_Object* make_new_obj(RGE_Player* player, float location_x,
+                                             float location_y, float location_z);
 };
 
 struct RGE_Player {
@@ -49,5 +51,6 @@ public:
 void RGE_Command::do_command_create(RGE_Command_Create* param_1) {
     RGE_Player* player = this->world->players[param_1->player_id];
     RGE_Master_Static_Object* master = player->master_objects[param_1->obj_catagory];
-    master->create(player, param_1->location_x, param_1->location_y, param_1->location_z);
+    master->make_new_obj(player, param_1->location_x, param_1->location_y,
+                         param_1->location_z);
 }
