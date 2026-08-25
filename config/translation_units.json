@@ -4920,12 +4920,15 @@
       "source": "src/act_gath_tu.cpp",
       "flags": "config/flags/default.rsp",
       "owners": {
+        "00402FD0": "src/matching/00402FD0_RGE_Action_Gather.cpp",
         "00403020": "src/matching/00403020_save.cpp",
         "00403C60": "src/matching/00403C60_get_move_sprite.cpp",
         "00403C90": "src/matching/00403C90_get_wait_sprite.cpp",
         "00403CD0": "src/matching/00403CD0_stop.cpp"
       },
-      "symbols": {}
+      "symbols": {
+        "00402FD0": "??0RGE_Action_Gather@@QAE@HPAVRGE_Task@@MMM@Z"
+      }
     },
     {
       "name": "tact_mob_cpp",
