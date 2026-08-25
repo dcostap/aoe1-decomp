@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // 004F4D90 TribeTacticalAIModule::taskBoats
 // Source: taitacmd.cpp lines 5570-6037
 // Attempt log:
@@ -62,6 +63,7 @@
 //   shape, 97.87% ordered calls, 2070 differing bytes. Result remains
 //   MISMATCH. Missing physical calls are one setAction and one setInUse.
 
+#ifndef TAITACMD_SHARED_CONTEXT
 struct XYZPoint {
     int x;
     int y;
@@ -658,6 +660,8 @@ public:
     void taskBoats();
 };
 
+#endif
+
 void TribeTacticalAIModule::taskBoats()
 {
     TacticalAIGroup* group;
@@ -955,8 +959,7 @@ first_pass_next:
                     else {
                         RGE_Static_Object* commander =
                             this->md->object(group->commander());
-                        RGE_Action_Object* actionObject =
-                            (RGE_Action_Object*)commander;
+                        RGE_Static_Object* actionObject = commander;
                         if (actionObject != 0 && actionObject->unitAI() != 0 &&
                             actionObject->unitAI()->currentAction() == -1) {
                             group->setInUse(0);
@@ -1012,3 +1015,6 @@ next_group:
         }
     }
 }
+#else
+void TribeTacticalAIModule::taskBoats() {}
+#endif

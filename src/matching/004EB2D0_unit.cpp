@@ -1,6 +1,7 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 class TacticalAIGroup {
 public:
-    void* vtable_ptr;
+    virtual ~TacticalAIGroup();
     TacticalAIGroup* next;
     TacticalAIGroup* prev;
     int idValue;
@@ -11,6 +12,7 @@ public:
 
     int unit(int index);
 };
+#endif
 
 int TacticalAIGroup::unit(int index) {
     int i = 0;

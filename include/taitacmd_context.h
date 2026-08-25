@@ -35,6 +35,10 @@ public:
     unsigned char pad_0D[3];
 };
 
+struct AttackWaypoint {
+    char data[16];
+};
+
 class Path;
 class BuildItem;
 class RGE_Static_Object;
@@ -49,6 +53,11 @@ class TribeStrategyAIModule;
 class UnitAIModule;
 class ObjectMemory;
 class AIModuleMessage;
+class InfluenceMap {
+public:
+    int setValue(int, int, int, int, unsigned char);
+    int decrementValue(int, int, int, int, unsigned char);
+};
 
 TacticalAIGroup* createGroup(void* self, int arg);
 
@@ -191,6 +200,7 @@ public:
 
 typedef ManagedArray<int> ManagedArray_int;
 typedef ManagedArray<int> ManagedIntArray;
+typedef ManagedArray<int> ManagedArrayInt;
 
 struct UnitData {
     int id;
@@ -215,6 +225,7 @@ public:
     char bytes[0x6C];
     ResourceItem(int count);
     int value(int index);
+    int value(int index) const;
     static void setValue(ResourceItem* self, int index, int value);
 };
 
@@ -265,82 +276,77 @@ public:
     void useComputerPlayerUpdateTime(unsigned int);
     void selectNextComputerPlayer(int);
     RGE_Static_Object* object(int);
-};
-
-#define TAITACMD_VPAD1(n) virtual void vpad##n();
-#define TAITACMD_VPAD2(n) TAITACMD_VPAD1(n) TAITACMD_VPAD1(n##_1)
-#define TAITACMD_VPAD4(n) TAITACMD_VPAD2(n) TAITACMD_VPAD2(n##_2)
-#define TAITACMD_VPAD8(n) TAITACMD_VPAD4(n) TAITACMD_VPAD4(n##_4)
-#define TAITACMD_VPAD16(n) TAITACMD_VPAD8(n) TAITACMD_VPAD8(n##_8)
-#define TAITACMD_VPAD32(n) TAITACMD_VPAD16(n) TAITACMD_VPAD16(n##_16)
-#define TAITACMD_VPAD64(n) TAITACMD_VPAD32(n) TAITACMD_VPAD32(n##_32)
-
-class VPlayerIsEnemy {
-public:
-    TAITACMD_VPAD4(0)
-    TAITACMD_VPAD2(4)
-    TAITACMD_VPAD1(6)
-    virtual int isEnemy(int player_id);
-};
-
-class VObjWeaponRange {
-public:
-    TAITACMD_VPAD64(0)
-    TAITACMD_VPAD2(64)
-    TAITACMD_VPAD1(66)
-    virtual float weaponRange();
-};
-class VObjCanMove {
-public:
-    TAITACMD_VPAD64(0)
-    TAITACMD_VPAD32(64)
-    TAITACMD_VPAD4(96)
-    TAITACMD_VPAD2(100)
-    virtual int canPath(XYZPoint, float, int, float*, int, int, int);
-};
-class VObjCanAttack {
-public:
-    TAITACMD_VPAD64(0)
-    TAITACMD_VPAD32(64)
-    TAITACMD_VPAD4(96)
-    TAITACMD_VPAD1(100)
-    virtual int canAttack(int, float, int, int, int, int);
-};
-class VObjCanPath {
-public:
-    TAITACMD_VPAD64(0)
-    TAITACMD_VPAD32(64)
-    TAITACMD_VPAD8(96)
-    TAITACMD_VPAD1(104)
-    virtual int canPathWithAdditionalPassability(XYZPoint, float, int,
-                                                  float*, int, int, int,
-                                                  int, int);
-};
-class VObjPathPoint {
-public:
-    TAITACMD_VPAD64(0)
-    TAITACMD_VPAD32(64)
-    TAITACMD_VPAD8(96)
-    TAITACMD_VPAD2(104)
-    virtual int findFirstTerrainAlongExceptionPath(int, float*, float*);
-};
-class VObjFindAvoidancePath {
-public:
-    TAITACMD_VPAD64(0)
-    TAITACMD_VPAD32(64)
-    TAITACMD_VPAD16(96)
-    TAITACMD_VPAD2(112)
-    TAITACMD_VPAD1(114)
-    virtual Path* findAvoidancePath(XYZPoint*, float, int);
+    RGE_Player* players[9];
 };
 
 class RGE_Player {
 public:
-    TAITACMD_VPAD32(0)
-    TAITACMD_VPAD16(32)
-    TAITACMD_VPAD2(48)
-    virtual void cmdC8(int commander, int unit, int amount);
-    virtual void cmdCC(int commander, int unit);
+    virtual ~RGE_Player();
+    virtual void set_game_status(unsigned char);
+    virtual void do_resign(int);
+    virtual void changeToHumanPlayer();
+    virtual void changeToComputerPlayer();
+    virtual char* aiStatus(int);
+    virtual int isEnemy(int);
+    virtual int isAlly(int);
+    virtual int isNeutral(int);
+    virtual int isAllNeutral();
+    virtual void setDiplomaticStance(int, int);
+    virtual void loadAIInformation(char*, char*, char*, int, int);
+    virtual void sendUnitAIOrder(int, int, int, int, int, float, float,
+                                 float, float, int, int, int);
+    virtual void processAIOrder(int, int, int, int, int, float, float,
+                                float, float, int, int, int);
+    virtual void kickAI(int);
+    virtual int strategicNumber(int);
+    virtual void sendGameOrder(RGE_Static_Object*, RGE_Static_Object*, float, float);
+    virtual void sendAddWaypointCommand(int, void*, int);
+    virtual void processAddWaypointCommand(int, void*, int);
+    virtual void sendPlayCommand(int, int*, int, int, int);
+    virtual void sendPlayCommand(int, int, int);
+    virtual int sendAICommand(int, int, int, int, int);
+    virtual int objectCostByType(int);
+    virtual void trackUnitGather(int, int, int);
+    virtual RGE_Static_Object* make_scenario_obj(float, float, float, short, unsigned char, float);
+    virtual void scenario_save(int);
+    virtual void scenario_load(int, long*, float);
+    virtual void scenario_postsave(int);
+    virtual void scenario_postload(int);
+    virtual void load(int);
+    virtual void add_attribute_num(short, float, unsigned char);
+    virtual void update();
+    virtual void update_dopplegangers();
+    virtual void save(int);
+    virtual void save2(int);
+    virtual void save_info(int);
+    virtual void random_start();
+    virtual RGE_Static_Object* make_new_object(long, float, float, float, int);
+    virtual void analyize_selected_objects();
+    virtual int get_mouse_pointer_action_vars(int, int*, int*);
+    virtual unsigned char command_make_move(RGE_Static_Object*, float, float);
+    virtual unsigned char command_make_work(RGE_Static_Object*, float, float);
+    virtual unsigned char command_make_do(RGE_Static_Object*, float, float);
+    virtual unsigned char command_stop();
+    virtual unsigned char command_place_object(short, float, float, float);
+    virtual unsigned char command_add_attribute(int, float);
+    virtual unsigned char command_give_attribute(int, int, float);
+    virtual unsigned char command_formation(int);
+    virtual unsigned char command_stand_ground();
+    virtual unsigned char command_create_group(int, int*, int, float);
+    virtual unsigned char command_add_to_group(int, int, float);
+    virtual unsigned char command_remove_from_group(int, int);
+    virtual unsigned char command_destroy_group(int);
+    virtual unsigned char command_resign(int, int);
+    virtual unsigned char command_add_waypoint(float, float, float);
+    virtual RGE_Static_Object* addObject(RGE_Static_Object*, int, int);
+    virtual void removeObject(RGE_Static_Object*, int, int, void*);
+    virtual void logMessage(char*);
+    virtual void notify(int, int, int, long, long, long);
+    virtual void logStatus(void*, int);
+    virtual void load_victory(int, long*, unsigned char);
+    virtual void new_victory();
+    void builderTask(int, int, float, float, int);
+    int computerPlayer();
 
     char gap_004[0x34];
     RGE_Visible_Map* visibleMap;
@@ -353,7 +359,10 @@ public:
     char gap_04C[4];
     float* attributes;
 
-    int isEnemy(int player_id);
+};
+
+struct TimeList {
+    unsigned long next;
 };
 
 class AIPlayStatus {};
@@ -361,6 +370,7 @@ class RGE_Action {
 public:
     char gap_00[0x0C];
     unsigned char state;
+    int target2ID;
 };
 class RGE_Action_List {
 public:
@@ -374,6 +384,8 @@ public:
     int currentAction();
     int currentOrder();
     int currentTarget();
+    int currentTargetType();
+    int currentOrderPriority();
 };
 class MasterObject {
 public:
@@ -400,9 +412,122 @@ public:
 class RGE_Static_Object {
 public:
     virtual ~RGE_Static_Object();
-    TAITACMD_VPAD64(obj)
-    TAITACMD_VPAD4(obj64)
+    virtual void recycle_in_to_game();
+    virtual void recycle_out_of_game();
+    virtual void draw();
+    virtual void shadow_draw();
+    virtual void normal_draw();
+    virtual void draw_front_frame();
+    virtual void draw_back_frame();
+    virtual void draw_frame();
+    virtual unsigned char update();
+    virtual void check_damage_sprites();
+    virtual void rehook();
+    virtual void save(int);
+    virtual float teleport(float, float, float);
+    virtual void new_sprite();
+    virtual void add_overlay_sprite();
+    virtual void remove_overlay_sprite();
+    virtual void change_ownership();
+    virtual void modify(float, unsigned char);
+    virtual void modify_delta(float, unsigned char);
+    virtual void modify_percent(float, unsigned char);
+    virtual void transform();
+    virtual void copy_obj();
+    virtual void set_object_state(unsigned char);
+    virtual void remove_visible_resource();
+    virtual void create_doppleganger_when_dying();
+    virtual void destroy_obj();
+    virtual void die_die_die();
+    virtual void damage();
+    virtual float calculateDamage();
+    virtual void rotate(long);
+    virtual unsigned char can_attack();
+    virtual void set_attribute(short, float);
+    virtual void set_attribute_amount(float, unsigned char, unsigned char);
+    virtual int heal(int, int);
+    virtual unsigned char heal(float);
+    virtual int canRepair();
+    virtual void notify_of_relation(long, unsigned char);
+    virtual void do_command();
+    virtual void move_to();
+    virtual void work();
+    virtual void stop();
+    virtual void set_attack();
+    virtual void play_command_sound();
+    virtual void play_move_sound();
+    virtual void new_angle(float);
+    virtual RGE_Static_Object* spawn_death_obj();
+    virtual RGE_Master_Static_Object* get_command_master(RGE_Static_Object*, float, float, float);
+    virtual void set_being_worked_on(void*, short, unsigned char);
+    virtual void release_being_worked_on(RGE_Static_Object*);
+    virtual unsigned char is_moving();
+    virtual RGE_Static_Object* get_target_obj();
+    virtual void enter_obj(RGE_Static_Object*);
+    virtual void exit_obj();
+    virtual int explore_terrain(RGE_Player*, unsigned char, int);
+    virtual void unexplore_terrain(RGE_Player*, unsigned char, int);
+    virtual void* get_los_table();
+    virtual int inAttackRange(RGE_Static_Object*);
+    virtual unsigned char underAttack();
+    virtual void setUnderAttack(unsigned char);
+    virtual float calc_attack_modifier(RGE_Static_Object*);
+    virtual float getSpeed();
+    virtual float getAngle();
+    virtual float maximumSpeed();
+    virtual float rateOfFire();
+    virtual float damageCapability(RGE_Static_Object*);
+    virtual float damageCapability();
+    virtual float weaponRange();
+    virtual float minimumWeaponRange();
     virtual int passableTile(float, float, int);
+    virtual unsigned char facetToNextWaypoint();
+    virtual int currentTargetID();
+    virtual float currentTargetX();
+    virtual float currentTargetY();
+    virtual float currentTargetZ();
+    virtual void setWaitingToMove(unsigned char);
+    virtual unsigned char waitingToMove();
+    virtual unsigned char actionState();
+    virtual unsigned char keepGatheringWhenObjectIsOut(int);
+    virtual unsigned char produceWhenKilledBy(int);
+    virtual unsigned char useSameZoneDropsite();
+    virtual void logDebug(const char*, ...);
+    virtual void notify(int, int, int, long, long, long);
+    virtual int attack(float, float, float, int);
+    virtual int attack(int, int);
+    virtual int moveTo(float, float, float, float, int);
+    virtual int moveTo(int, float, int);
+    virtual int moveTo(int, int);
+    virtual int moveAwayFrom(int, int);
+    virtual int hunt(int, int);
+    virtual int gather(int, int);
+    virtual int convert(int, int);
+    virtual int repair(int, int);
+    virtual int build(int, int);
+    virtual int trade(int, int);
+    virtual int explore(int, int, int);
+    virtual int enter(int, int);
+    virtual int unload(int, float, float, float);
+    virtual int transport(float, float, float, int);
+    virtual int stopAction();
+    virtual int pause();
+    virtual int canPath(int, float, float*, int, int, int);
+    virtual int canPath(XYZPoint, float, int, float*, int, int, int);
+    virtual int canBidirectionPath(int, int, float, float*, int, int, int);
+    virtual int canPathWithObstructions(int, float, float*, int, int, int, void*);
+    virtual int canPathWithAdditionalPassability(XYZPoint, float, int, float*, int, int, int, int, int);
+    virtual int findFirstTerrainAlongExceptionPath(int, float*, float*);
+    virtual int canLinePath(int, int, int, int, float, int);
+    virtual int canLinePath(XYPoint*, XYPoint*, float, XYPoint*, int);
+    virtual int firstTileAlongLine(XYPoint*, XYPoint*, XYPoint*, int, int, int);
+    virtual void* userDefinedWaypoint(int);
+    virtual int addUserDefinedWaypoint(void*, int);
+    virtual void removeAllUserDefinedWaypoints(int);
+    virtual void removeUserDefinedWaypoint(int);
+    virtual int numberUserDefinedWaypoints();
+    virtual Path* findAvoidancePath(XYZPoint*, float, int);
+    int canAttack(int, float, int, int, int, int);
     int id;
     RGE_Master_Static_Object* master_obj;
     RGE_Player* owner;
@@ -410,7 +535,7 @@ public:
     RGE_Static_Object* inside_obj;
     ObjectList* objects;
     char gap_28[0x08];
-    float hp;
+    union { float hp; float hit_points; };
     char gap_34[0x04];
     float world_x;
     float world_y;
@@ -423,15 +548,18 @@ public:
     RGE_Action_List* actions;
 
     UnitAIModule* unitAI();
+    unsigned char have_action();
     unsigned char currentZone();
     unsigned char lookupZone(int, int);
     unsigned char lookupZone(XYPoint point);
     float pathDistance(int, void*, int, int, int);
     float pathDistance2(int, void*, int, int, int, int, int);
+    int task(XYZPoint, int, int, int, int, int, int);
     int canMoveTo(int, int, int, float);
     int canPathTo(int, int, int, float, int, void*, int, int, int, int, int);
     int pathPoint(int, float*, void*);
     float distance_to_position(float, float, float);
+    float distance_to_object(RGE_Static_Object*);
 };
 
 class ObjectMemory {
@@ -467,6 +595,8 @@ class ConstructionItem;
 class TribeBuildAIModule : public BuildAIModule {
 public:
     TribeMainDecisionAIModule* md;
+    int haveBuildList();
+    int insert(int, int, int);
     BuildItem* nextBuildableItem(int);
     void unskipBuildList(int, int);
     int loadBuildList(char*, RGE_Player*);
@@ -500,6 +630,11 @@ public:
     int isAlly(int);
     int isNeutral(int);
     void setRelation(int, int);
+    void setChangeable(int, int);
+    void setStance(int, int);
+    void changeStance(int, int);
+    void setStance(int, int, int);
+    void changeStance(int, int, int);
 };
 
 class TribeInformationAIModule {
@@ -508,7 +643,16 @@ public:
     ManagedArray<int> farmsTaskedThisUpdate;
     char gap_00100[0x10090 - 0x100];
     int fullyExploredZone(int zone);
+    int groupInfluenceDimension(int);
+    int isBoat(int);
+    ObjectMemory* artifactToCapture(int);
+    ObjectMemory* ruinToCapture(int);
+    int isBoat(RGE_Static_Object*);
+    int findGatherPosition(XYPoint&, int, int, int, int, RGE_Static_Object*, XYPoint&);
     int numberGameIDsOwnedBy(int player, int gameID);
+    int gameIDOfResourceObject(int, int, float&, float&, int&, int*, int);
+    ObjectMemory* objectToTradeWith(int);
+    RGE_Static_Object* findClosestReturnDropsite(RGE_Static_Object*);
     ObjectMemory* objectToDefend(int commander_id);
     ObjectMemory* objectMemory(int id);
     ObjectMemory* objectToAttack(int, int, int, int, int&);
@@ -520,8 +664,16 @@ public:
     void addPriorAttackInfluences(int, int);
     int findStagingPoint(XYPoint, XYPoint*, int, int, int, int, int);
     int withinXTilesOfObject(RGE_Static_Object*, int, int, int, int, int);
+    void mapBound(XYPoint*);
+    void setSaveLearnInformation(int);
+    void storeAttackMemory(int, unsigned char, unsigned char, unsigned char, unsigned char,
+                           unsigned char, unsigned char, int, int, int, int);
+    void storeAttackMemory(int, unsigned char, unsigned char, unsigned char, unsigned char,
+                           unsigned char, unsigned char, int, unsigned char);
     int closestDropsiteResID(int);
     void updateResourceDropsites(int);
+    int closestDropsiteValue[4];
+    int numberFoundForestTilesValue;
 };
 
 class TribeStrategyAIModule {
@@ -556,6 +708,8 @@ public:
     int isEnemy(int player_id);
     int isMoveable(int id);
     void updateBuildAIWithObjects();
+    void revokeTributeAlliance(int);
+    void revokeTributeAlliance();
 };
 
 class TacticalAIGroup {
@@ -563,42 +717,63 @@ public:
     virtual ~TacticalAIGroup();
     TacticalAIGroup* next;
     TacticalAIGroup* prev;
-    union { int idValue; int id_; };
-    union { int inUseValue; int inUse_; };
-    union { int typeValue; int type_; };
-    union { int subTypeValue; int subType_; };
-    int unitsValue[40];
-    int unitsOriginalHitPointsValue[40];
-    union { int numberUnitsValue; int numberUnits_; };
-    union { int desiredNumberUnitsValue; int desiredNumberUnits_; };
-    union { int commanderValue; int commander_; };
-    union { int originalHitPointsValue; int originalHitPoints_; };
-    union { int originalUnitNumberValue; int originalUnitNumber_; };
-    union { Waypoint locationValue; Waypoint location_; };
-    union { int actionValue; int action_; };
-    union { int targetValue; int target_; };
-    union { int targetTypeValue; int targetType_; };
-    union { Waypoint targetLocationValue; Waypoint targetLocation_; };
-    union { Waypoint gatherLocationValue; Waypoint gatherLocation_; };
-    union { Waypoint retreatLocationValue; Waypoint retreatLocation_; };
-    union { int priorityValue; int priority_; };
-    union { int waitCodeValue; int waitCode_; };
-    union { int assistGroupIDValue; int assistGroupID_; };
-    union { int assistGroupTypeValue; int assistGroupType_; };
-    union { unsigned long consecutiveIdleUnitCountValue; unsigned long consecutiveIdleUnitCount_; };
-    int playNumberValue;
-    unsigned char numberAttackWaypointsValue;
-    unsigned char currentAttackWaypointValue;
+    union { int idValue; int id_; int field_0C; };
+    union { int inUseValue; int inUse_; int field_10; };
+    union { int typeValue; int type_; int field_14; };
+    union { int subTypeValue; int subType_; int field_18; };
+    union { int unitsValue[40]; int members[40]; };
+    union { int unitsOriginalHitPointsValue[40]; int companion[40]; };
+    union { int numberUnitsValue; int numberUnits_; int field_15C; };
+    union { int desiredNumberUnitsValue; int desiredNumberUnits_; int field_160; };
+    union { int commanderValue; int commander_; int field_164; };
+    union { int originalHitPointsValue; int originalHitPoints_; int field_168; };
+    union { int originalUnitNumberValue; int originalUnitNumber_; int field_16C; };
+    union {
+        Waypoint locationValue;
+        Waypoint location_;
+        char data_170[0x10];
+        struct { int field_170; int field_174; int field_178; };
+    };
+    union { int actionValue; int action_; int field_180; };
+    union { int targetValue; int target_; int field_184; };
+    union { int targetTypeValue; int targetType_; int field_188; };
+    union {
+        Waypoint targetLocationValue;
+        Waypoint targetLocation_;
+        char data_18C[0x10];
+        struct { int field_18C; int field_190; int field_194; };
+    };
+    union {
+        Waypoint gatherLocationValue;
+        Waypoint gatherLocation_;
+        char data_19C[0x10];
+        struct { int field_19C; int field_1A0; int field_1A4; };
+        struct { float gatherX; float gatherY; float gatherZ; };
+    };
+    union {
+        Waypoint retreatLocationValue;
+        Waypoint retreatLocation_;
+        char data_1AC[0x10];
+        struct { int field_1AC; int field_1B0; int field_1B4; };
+    };
+    union { int priorityValue; int priority_; int field_1BC; };
+    union { int waitCodeValue; int waitCode_; int field_1C0; };
+    union { int assistGroupIDValue; int assistGroupID_; int field_1C4; };
+    union { int assistGroupTypeValue; int assistGroupType_; int field_1C8; };
+    union { unsigned long consecutiveIdleUnitCountValue; unsigned long consecutiveIdleUnitCount_; int field_1CC; };
+    union { int playNumberValue; int field_1D0; };
+    union { unsigned char numberAttackWaypointsValue; unsigned char numberAttackWaypoints_; unsigned char byte_1D4; };
+    union { unsigned char currentAttackWaypointValue; unsigned char currentAttackWaypoint_; unsigned char byte_1D5; };
     unsigned char pad_1D6[2];
-    Waypoint attackWaypoints[15];
-    unsigned char consecutiveGatherAttemptsValue;
+    union { Waypoint attackWaypoints[15]; AttackWaypoint waypoints[15]; char data_1D8[0xF0]; };
+    union { unsigned char consecutiveGatherAttemptsValue; unsigned char byte_2C8; };
     unsigned char pad_2C9[3];
-    int numberObjectsToDestroyValue;
-    int objectsToDestroyValue[20];
-    int objectsToDestroyOwnerValue;
-    int objectsToDestroyCommanderZoneValue;
-    unsigned long lastAttackRoundupTime;
-    unsigned long lastAddedUnitTimeValue;
+    union { int numberObjectsToDestroyValue; int numberObjectsToDestroy; int field_2CC; };
+    union { int objectsToDestroyValue[20]; int objectsToDestroy[20]; int arr_[20]; char data_2D0[0x50]; };
+    union { int objectsToDestroyOwnerValue; int field_320; };
+    union { int objectsToDestroyCommanderZoneValue; int field_324; };
+    union { unsigned long lastAttackRoundupTime; int field_328; };
+    union { unsigned long lastAddedUnitTimeValue; int field_32C; };
 
     TacticalAIGroup();
     static void load(TacticalAIGroup* self, int file);
@@ -660,9 +835,18 @@ public:
     int assistGroupType() const;
     void setAssistGroupType(int);
     int isGathered(TribeTacticalAIModule*, TribeMainDecisionAIModule*);
+    int isTightGathered(TribeTacticalAIModule*, TribeMainDecisionAIModule*);
     int allUnitsIdle(TribeMainDecisionAIModule*, int);
     unsigned long consecutiveIdleUnitCount() const;
     void setConsecutiveIdleUnitCount(unsigned long);
+    void incrementConsecutiveIdleUnitCount(int);
+    unsigned char numberAttackWaypoints() const;
+    unsigned char currentAttackWaypoint() const;
+    void addAttackWaypoint(float, float);
+    AttackWaypoint* attackWaypoint(unsigned char);
+    int firstIdleUnit(TribeMainDecisionAIModule*);
+    int objectToDestroy(int);
+    int addObjectToDestroy(int);
     int task(TribeTacticalAIModule*, TribeMainDecisionAIModule*, int, int, int);
 };
 
@@ -679,10 +863,10 @@ public:
     ManagedArray<int> tradeBoats;
     ManagedArray<int> transportBoats;
     ManagedArray<int> artifacts;
-    int sn[226];
+    union { int sn[226]; int strategicNumbers[226]; };
     UnitData gatherers[50];
     int numberGatherersValue;
-    union { int desiredNumberGatherersValue; int desiredNumberGatherers; };
+    int desiredNumberGatherersValue;
     TacticalAIGroup groups;
     int groupIDValue;
     int numberGroupsValue;
@@ -699,7 +883,7 @@ public:
     ManagedArray<int> unitsTaskedThisUpdate;
     int actualGathererDistribution[4];
     int desiredGathererDistribution[4];
-    union { int neededResourceValue[4]; int resourceMappingValue[4]; };
+    union { int neededResourceValue[4]; int resourceMappingValue[4]; int arr_[4]; };
     int resourceDifferenceValue[4];
     ResourceItem neededResources;
     int attackEnabledValue;
@@ -741,10 +925,14 @@ public:
     void enableAttack(int);
     int doSomething();
     void logGroupDebug();
+    static void logGroupDebug(TribeTacticalAIModule*, int, char*, ...);
     int clearArea(int, float, float, float, float);
     void addObject(RGE_Static_Object*);
     void removeFromTaskLists(int);
     int removeFromGroup(int);
+    int removeFromGroup(int, int);
+    int setGatherLocation(TacticalAIGroup*);
+    void trackUnitGather(int, int, int);
     void removeObject(int);
     int busyWithAction(int, int);
     void setupSoldierGroups();
@@ -759,6 +947,7 @@ public:
     int taskTrain(BuildItem*);
     int initialExplorationSatisfied();
     int civilian(XYPoint*, int, int, int, int, int);
+    int civilian(XYPoint&, int, int, int, int, int);
     int taskBuilder(int, BuildItem*, ConstructionItem*, unsigned long);
     int taskBuilder(int, RGE_Static_Object*);
     int taskRepairer(int, RGE_Static_Object*);
@@ -771,17 +960,41 @@ public:
     void evaluateBuildListInsertions();
     void evaluateCivilianDistribution();
     int numberSoldierExplorers();
+    int numberCivilians() const;
+    int numberCivilianExplorers() const;
+    int numberGatherers() const;
+    int desiredNumberCivilianExplorers() const;
+    int desiredNumberGatherers() const;
+    int numberSoldiers() const;
+    int numberBoats() const;
+    int neededResource(int);
+    int neededResourceAmount(int) const;
+    void detask(int);
+    void setStrategicNumber(int, int);
+    int strategicNumber(int);
+    int calculatePriority(float);
+    int groupGatherUnit(int, int, float, float, float, float, int);
+    void resetAttackSeparationTime();
+    int importantGroupLeader(int);
+    int taskExplorer(int, int);
+    int taskExplorer(int, float, float);
+    int taskExplorer(int, float, float, int);
+    int taskPlay(int, int*, int, int, int, Waypoint*, int);
+    int taskWaterFisher(int, int, float, float);
+    int taskWaterTrader(int, int);
     void displayCivilianDistribution();
     void updateGathererDistribution();
     int taskCivilians(unsigned long, unsigned long);
+    void taskUngroupedSoldiers();
     void taskIdleSoldiers(unsigned long, unsigned long);
     void taskActiveSoldiers(unsigned long, unsigned long);
     int idleCivilian(int);
     int idleCivilian(int, XYPoint&, int);
-    void removeGatherer(int);
+    int removeGatherer(int);
     UnitData* addGatherer(int);
     int highLevelTaskGatherer(int, unsigned long);
     int highLevelTaskExplorer(int, int);
+    int unit(int, int, int);
     int stopUnit(int, int);
     int numberItemsToDefend();
     int numberItemsToAttack();
@@ -791,16 +1004,66 @@ public:
     unsigned long attackLimiterTime(int);
     void checkForCoopAttack(int, int, int);
     TacticalAIGroup* bestGroup(int, int, int, XYPoint*, int);
+    TacticalAIGroup* bestGroup(int, int, int, XYPoint&, int);
     TacticalAIGroup* group(int, int, int, int);
     int taskToEnter(int, int);
     int taskTransporter(int, float, float);
     int taskDefender(int, int, float, int);
+    int taskDefender(int, int);
+    int taskDefender(int, float, float);
     int taskAttacker(int, float, float, int, int, Waypoint*, int, int, int);
     int moveUnit(int, float, float, int);
     int numberGroups(int, int);
     void stuffAvoidancePath(TacticalAIGroup*, Path*);
     TacticalAIGroup* groupUnitIsIn(int);
     TacticalAIGroup* createGroup(int);
+    int numberIdleSoldiers();
+    int numberSoldiersWithPriority(int, int, int);
+    int numberWarshipsWithPriority(int, int);
+    int idleSoldier();
+    int taskGatherer(int, int, int, unsigned long, int*);
+    int taskFollower(int, int, float, int);
+    int taskWaterExplorer(int);
+    int numberUngroupedSoldiers();
+    int numberExtraGroupedSoldiers();
+    int numberUngroupedArtifacts();
+    void displaySoldierGroups();
+    int numberUngroupedWarBoats();
+    int numberExtraGroupedWarBoats();
+    int numberUngroupedFishingBoats();
+    int numberUngroupedTradeBoats();
+    int numberUngroupedTransportBoats();
+    void displayBoatGroups();
+    int removeGroup(int);
+    TacticalAIGroup* readyAndIdleGroup(int, int, XYPoint&);
+    TacticalAIGroup* readyAndIdleGroup(int, int, XYPoint*);
+    int addToGroup(int, int);
+    int setAllGroupLocations(TacticalAIGroup*);
+    void setGroupInfluences(InfluenceMap&);
+    int selectBestCommander(TacticalAIGroup*);
+    int selectBestCommander(ManagedArray<int>&);
+    int inAge(int);
+    int resourceDifference(int);
+    int actualGathererCount(int);
+    int desiredGathererCount(int);
+    int dealWithGAIAAttacker(RGE_Static_Object*, RGE_Static_Object*);
+    void addWaypoint(int, unsigned char, unsigned char);
+    int unexploredArea(int, XYPoint&);
+    UnitData* gatherer(int);
+    int isGatherer(int);
+    int requiredGatherAmount(int);
+    int deleteUnit(int);
+    int numberAvailableStoragePits(int&, int&, int);
+    int numberAvailableGranaries(int&, int&);
+    void checkForBuildInsertion(int, int, int);
+    int isFarmer(RGE_Static_Object*);
+    int numberFarmers();
+    void checkForAttackResponseBuildInsertions(int);
+    int processCoopAttack(int, int, int, int);
+    int actualGathererCountByRealResourceID(int);
+    void taskElephantGatherers(int, int, int);
+    int numberGatherersWithTarget(int);
+    int numberWaterExplorers();
 };
 
 typedef char taitacmd_verify_group_size[sizeof(TacticalAIGroup) == 0x330 ? 1 : -1];

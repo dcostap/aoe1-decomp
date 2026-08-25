@@ -1,3 +1,5 @@
+#ifndef TAITACMD_SHARED_CONTEXT
+#ifndef TAITACMD_SHARED_CONTEXT
 class TribeTacticalAIModule {
 public:
     char gap_00[0x21C];
@@ -6,6 +8,7 @@ public:
     int calculatePriority(float value);
 };
 
+#endif
 int TribeTacticalAIModule::calculatePriority(float value) {
     int priority;
 
@@ -15,3 +18,6 @@ int TribeTacticalAIModule::calculatePriority(float value) {
     }
     return priority;
 }
+#else
+int TribeTacticalAIModule::calculatePriority(float) { return 0; }
+#endif

@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // VA: 004FD4F0, TribeTacticalAIModule::numberExtraGroupedSoldiers, 473 bytes
 // Source: taitacmd.cpp lines 10154-10201
 // Attempt log:
@@ -44,6 +45,7 @@ extern "C" {
     void operator_delete(void* ptr);
 }
 
+#ifndef TAITACMD_SHARED_CONTEXT
 struct Waypoint {
     int x;
     int y;
@@ -150,6 +152,7 @@ public:
     int numberExtraGroupedSoldiers();
 };
 
+#endif
 int TribeTacticalAIModule::numberExtraGroupedSoldiers()
 {
     int result = 0;
@@ -190,3 +193,8 @@ int TribeTacticalAIModule::numberExtraGroupedSoldiers()
     }
     return result;
 }
+#else
+int TribeTacticalAIModule::numberExtraGroupedSoldiers() {
+    return 0;
+}
+#endif

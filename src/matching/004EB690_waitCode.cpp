@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 class TacticalAIGroup {
 public:
     virtual ~TacticalAIGroup();
@@ -6,4 +7,5 @@ public:
 
     int waitCode() const;
 };
+#endif
 int TacticalAIGroup::waitCode() const { return this->waitCode_; }

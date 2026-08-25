@@ -1,31 +1,29 @@
 // mirrored the matched stopUnit/groupGatherUnit sibling surface: direct virtual call through md->unit with owner-id at +0x4A
 
-class TribeMoveAI {
+#ifndef TAITACMD_SHARED_CONTEXT
+class RGE_Player {
 public:
-    virtual void vf00();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
-    virtual void vf20();
-    virtual void vf24();
-    virtual void vf28();
-    virtual void vf2C();
-    virtual int moveUnit(int owner, int param_1, int constant, int minus1_a, int minus1_b,
-                         float param_2, float param_3, float one_a, float one_b,
-                         int one, int zero, int param_4);
-
+    virtual ~RGE_Player();
+    virtual void set_game_status(unsigned char);
+    virtual void do_resign(int);
+    virtual void changeToHumanPlayer();
+    virtual void changeToComputerPlayer();
+    virtual char* aiStatus(int);
+    virtual int isEnemy(int);
+    virtual int isAlly(int);
+    virtual int isNeutral(int);
+    virtual int isAllNeutral();
+    virtual void setDiplomaticStance(int, int);
+    virtual void loadAIInformation(char*, char*, char*, int, int);
+    virtual void sendUnitAIOrder(int, int, int, int, int, float, float, float, float, int, int, int);
     char gap_04[0x46];
-    short owner_id;
+    short id;
 };
 
 class TribeMainDecisionAIModule {
 public:
     char gap_00[0xF0];
-    TribeMoveAI* unit;
+    RGE_Player* player;
 };
 
 class TribeTacticalAIModule {
@@ -36,8 +34,10 @@ public:
     int moveUnit(int param_1, float param_2, float param_3, int param_4);
 };
 
+#endif
 int TribeTacticalAIModule::moveUnit(int param_1, float param_2, float param_3, int param_4) {
-    TribeMoveAI* ai = this->md->unit;
-    ai->moveUnit((int)ai->owner_id, param_1, 0x2C6, -1, -1, param_2, param_3, 1.0f, 1.0f, 1, 0, param_4);
+    RGE_Player* player = this->md->player;
+    player->sendUnitAIOrder((int)player->id, param_1, 0x2C6, -1, -1,
+                            param_2, param_3, 1.0f, 1.0f, 1, 0, param_4);
     return 1;
 }

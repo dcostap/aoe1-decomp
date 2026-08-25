@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // VA: 004FB160 TribeTacticalAIModule::taskWaterFisher (355 B)
 // PDB source: taitacmd.cpp:9019-9049
 // __thiscall, returns 0/1
@@ -15,6 +16,7 @@
 // - Final: natural typed XYZPoint/canPath and taskResourceGatherer calls with
 //   the exact same-TU ManagedArray growth source; default flags, no inline asm.
 
+#ifndef TAITACMD_SHARED_CONTEXT
 struct XYZPoint {
     int x;
     int y;
@@ -294,6 +296,7 @@ public:
     int taskWaterFisher(int playerID, int targetID, float x, float y);
 };
 
+#endif
 int TribeTacticalAIModule::taskWaterFisher(int playerID, int targetID, float x, float y)
 {
     RGE_Static_Object* object = this->md->object(playerID);
@@ -339,3 +342,8 @@ dispatch:
     this->md->aiPlayer->taskResourceGatherer(playerID, targetID, 0, x, y);
     return 1;
 }
+#else
+int TribeTacticalAIModule::taskWaterFisher(int playerID, int targetID, float x, float y) {
+    return 0;
+}
+#endif

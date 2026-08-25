@@ -6,18 +6,23 @@
 // - Exact match with stored `self` local and explicit `goto next` for the
 //   ignore-build special case, preserving the original shared loop tail.
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class UnitAIModule {
 public:
     int currentOrder();
     int currentAction();
 };
+#endif
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class MasterObject {
 public:
     char gap_00[0x10];
     short id;
 };
+#endif
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class RGE_Static_Object {
 public:
     char gap_00[8];
@@ -25,12 +30,16 @@ public:
 
     UnitAIModule* unitAI();
 };
+#endif
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class TribeMainDecisionAIModule {
 public:
     RGE_Static_Object* object(int id);
 };
+#endif
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class TacticalAIGroup {
 public:
     char gap_00[0x14];
@@ -41,6 +50,7 @@ public:
     int removeUnitByIndex(int index, TribeMainDecisionAIModule* md);
     int allUnitsIdle(TribeMainDecisionAIModule* md, int ignoreBuild);
 };
+#endif
 
 int TacticalAIGroup::allUnitsIdle(TribeMainDecisionAIModule* md, int ignoreBuild)
 {

@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // 004F57C0 TribeTacticalAIModule::evaluateOpenTasks()
 // Source: taitacmd.cpp lines 6042-6189
 // Size: 2024 bytes. __thiscall. 62 calls.
@@ -106,6 +107,7 @@ void* operator_new(unsigned int size);
 void __cdecl operator_delete(void* ptr);
 
 
+#ifndef TAITACMD_SHARED_CONTEXT
 struct RGE_Static_Object;
 struct UnitAIModule;
 struct RGE_Game_World;
@@ -180,6 +182,9 @@ int ManagedArray<T>::add(T item) {
     return 1;
 }
 
+#endif
+
+#ifndef TAITACMD_SHARED_CONTEXT
 struct RGE_Game_World {
     RGE_Static_Object* object(int objectID);
 };
@@ -369,6 +374,8 @@ struct TribeTacticalAIModule : TacticalAIModule {
     void evaluateOpenTasks();
 };
 
+#endif
+
 void TribeTacticalAIModule::evaluateOpenTasks()
 {
     int i;
@@ -508,3 +515,6 @@ void TribeTacticalAIModule::evaluateOpenTasks()
             group = group->next;
     }
 }
+#else
+void TribeTacticalAIModule::evaluateOpenTasks() {}
+#endif

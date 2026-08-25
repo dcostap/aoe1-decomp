@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 class TacticalAIGroup {
 public:
     virtual ~TacticalAIGroup();
@@ -6,4 +7,5 @@ public:
 
     void setAction(int);
 };
+#endif
 void TacticalAIGroup::setAction(int val) { this->action_ = val; }

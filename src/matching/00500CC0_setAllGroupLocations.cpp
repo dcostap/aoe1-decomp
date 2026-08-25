@@ -1,6 +1,7 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // VA: 00500CC0, TribeTacticalAIModule::setAllGroupLocations, 277 bytes
 // Source: taitacmd.cpp lines 11628-11664
-// Status: EXACT candidate — clean typed reconstruction; final validation and
+// Status: EXACT candidate â€” clean typed reconstruction; final validation and
 // promotion are pending.
 //
 // Attempt log:
@@ -22,6 +23,7 @@
 
 #include <math.h>
 
+#ifndef TAITACMD_SHARED_CONTEXT
 struct RGE_Static_Object {
     virtual ~RGE_Static_Object();
     char _pad_04[0x34];
@@ -29,19 +31,16 @@ struct RGE_Static_Object {
     float world_y;       // +0x3C
     float world_z;       // +0x40
 };
-
 struct XYPoint {
     int x;
     int y;
 };
-
 struct TacticalAIGroup {
     int commander();
     int type();
     int desiredNumberUnits();
     void setAllLocations(float x, float y, float z);
 };
-
 class MainDecisionAIModule {
 public:
     virtual ~MainDecisionAIModule();
@@ -49,7 +48,6 @@ public:
     RGE_Static_Object* object(int commander);
     RGE_Static_Object* object(int a1, int a2, int a3, int a4, int a5, int a6, int a7, int a8, int a9, int a10);
 };
-
 class TribeInformationAIModule {
 public:
     virtual ~TribeInformationAIModule();
@@ -57,7 +55,6 @@ public:
                            int sn16, int sn48, RGE_Static_Object* object,
                            XYPoint& gather);
 };
-
 class TribeMainDecisionAIModule : public MainDecisionAIModule {
 public:
     char _pad_104[0xCEC - 0x104];
@@ -76,7 +73,7 @@ public:
 
     int setAllGroupLocations(TacticalAIGroup* group);
 };
-
+#endif
 int TribeTacticalAIModule::setAllGroupLocations(TacticalAIGroup* group)
 {
     int cmdr = group->commander();
@@ -120,3 +117,8 @@ int TribeTacticalAIModule::setAllGroupLocations(TacticalAIGroup* group)
     group->setAllLocations(obj->world_x, obj->world_y, obj->world_z);
     return 1;
 }
+#else
+int TribeTacticalAIModule::setAllGroupLocations(TacticalAIGroup* group) {
+    return 0;
+}
+#endif

@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // VA: 004FD6D0 TribeTacticalAIModule::numberUngroupedArtifacts
 // Source: taitacmd.cpp lines 10206-10220
 // Attempt log:
@@ -39,6 +40,7 @@
 extern void* operator_new(unsigned int size);
 extern void operator_delete(void* ptr);
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class TacticalAIGroup;
 class TribeMainDecisionAIModule;
 
@@ -123,6 +125,7 @@ public:
     int numberUngroupedArtifacts();
 };
 
+#endif
 int TribeTacticalAIModule::numberUngroupedArtifacts()
 {
     int rNum = 0;
@@ -142,3 +145,8 @@ int TribeTacticalAIModule::numberUngroupedArtifacts()
     }
     return rNum;
 }
+#else
+int TribeTacticalAIModule::numberUngroupedArtifacts() {
+    return 0;
+}
+#endif

@@ -1,6 +1,8 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // attempt 1: direct resource-delta check plus gatherer lookup/update in the same order as the asm
 // exact match landed once the resource AI was modeled as a real nested subobject and the +0x0d98 delta array was placed correctly
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class TribeResourceAIModule {
 public:
     int resource(int resource_id);
@@ -34,6 +36,7 @@ public:
     void trackUnitGather(int unit_id, int resource_id, int amount);
 };
 
+#endif
 void TribeTacticalAIModule::trackUnitGather(int unit_id, int resource_id, int amount) {
     UnitData* entry;
 
@@ -48,3 +51,6 @@ void TribeTacticalAIModule::trackUnitGather(int unit_id, int resource_id, int am
         entry->data3 += amount;
     }
 }
+#else
+void TribeTacticalAIModule::trackUnitGather(int, int, int) {}
+#endif

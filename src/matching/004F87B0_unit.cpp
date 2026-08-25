@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // 004F87B0 TribeTacticalCommand::unit
 // taitacmd.cpp: 7336-7374
 // Attempt log:
@@ -29,6 +30,7 @@
 
 #include <stdlib.h>
 
+#ifndef TAITACMD_SHARED_CONTEXT
 typedef unsigned long ulong;
 
 void* operator_new(unsigned int size);
@@ -116,6 +118,7 @@ struct TribeTacticalAIModule {
     int unit(int player, int currentAction, int currentTargetType);
 };
 
+#endif
 int TribeTacticalAIModule::unit(int player, int currentAction, int currentTargetType)
 {
     int i = 0;
@@ -196,3 +199,8 @@ found_civilian:
     return resultArray->value[i];
 
 }
+#else
+int TribeTacticalAIModule::unit(int player, int currentAction, int currentTargetType) {
+    return 0;
+}
+#endif

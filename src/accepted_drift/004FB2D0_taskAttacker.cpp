@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // VA: 004FB2D0 TribeTacticalAIModule::taskAttacker
 // Source: taitacmd.cpp lines 9056-9125
 // Attempt log:
@@ -40,6 +41,7 @@
 
 #include <stddef.h>
 
+#ifndef TAITACMD_SHARED_CONTEXT
 struct ManagedIntArray {
     int* value;
     int numberValue;
@@ -81,72 +83,29 @@ public:
 class RGE_Static_Object {
 public:
     virtual ~RGE_Static_Object();
-    virtual void v04();
-    virtual void v08();
-    virtual void v0C();
-    virtual void v10();
-    virtual void v14();
-    virtual void v18();
-    virtual void v1C();
-    virtual void v20();
-    virtual void v24();
-    virtual void v28();
-    virtual void v2C();
-    virtual void v30();
-    virtual void v34();
-    virtual void v38();
-    virtual void v3C();
-    virtual void v40();
-    virtual void v44();
-    virtual void v48();
-    virtual void v4C();
-    virtual void v50();
-    virtual void v54();
-    virtual void v58();
-    virtual void v5C();
-    virtual void v60();
-    virtual void v64();
-    virtual void v68();
-    virtual void v6C();
-    virtual void v70();
-    virtual void v74();
-    virtual void v78();
-    virtual void v7C();
-    virtual void v80();
-    virtual void v84();
-    virtual void v88();
-    virtual void v8C();
-    virtual void v90();
-    virtual void v94();
-    virtual void v98();
-    virtual void v9C();
-    virtual void vA0();
-    virtual void vA4();
-    virtual void vA8();
-    virtual void vAC();
-    virtual void vB0();
-    virtual void vB4();
-    virtual void vB8();
-    virtual void vBC();
-    virtual void vC0();
-    virtual void vC4();
-    virtual void vC8();
-    virtual void vCC();
-    virtual void vD0();
-    virtual void vD4();
-    virtual void vD8();
-    virtual void vDC();
-    virtual void vE0();
-    virtual void vE4();
-    virtual void vE8();
-    virtual void vEC();
-    virtual float vF0();
-    virtual float vF4();
-    virtual float vF8();
-    virtual float vFC();
-    virtual float v100(RGE_Static_Object*);
-    virtual float v104();
-    virtual float v108();
+    virtual void recycle_in_to_game(); virtual void recycle_out_of_game(); virtual void draw();
+    virtual void shadow_draw(); virtual void normal_draw(); virtual void draw_front_frame();
+    virtual void draw_back_frame(); virtual void draw_frame(); virtual void update();
+    virtual void check_damage_sprites(); virtual void rehook(); virtual void save(int);
+    virtual float teleport(float, float, float); virtual void new_sprite(); virtual void add_overlay_sprite();
+    virtual void remove_overlay_sprite(); virtual void change_ownership(); virtual void modify(float, unsigned char);
+    virtual void modify_delta(float, unsigned char); virtual void modify_percent(float, unsigned char);
+    virtual void transform(); virtual void copy_obj(); virtual void set_object_state(unsigned char);
+    virtual void remove_visible_resource(); virtual void create_doppleganger_when_dying();
+    virtual void destroy_obj(); virtual void die_die_die(); virtual void damage(); virtual float calculateDamage();
+    virtual void rotate(long); virtual unsigned char can_attack(); virtual void set_attribute(short, float);
+    virtual void set_attribute_amount(float, unsigned char, unsigned char); virtual int heal(int, int);
+    virtual unsigned char heal(float); virtual int canRepair(); virtual void notify_of_relation(long, unsigned char);
+    virtual void do_command(); virtual void move_to(); virtual void work(); virtual void stop();
+    virtual void set_attack(); virtual void play_command_sound(); virtual void play_move_sound();
+    virtual void new_angle(float); virtual RGE_Static_Object* spawn_death_obj(); virtual void* get_command_master();
+    virtual void set_being_worked_on(); virtual void release_being_worked_on(); virtual unsigned char is_moving();
+    virtual RGE_Static_Object* get_target_obj(); virtual void enter_obj(); virtual void exit_obj();
+    virtual int explore_terrain(); virtual void unexplore_terrain(); virtual void* get_los_table();
+    virtual int inAttackRange(); virtual unsigned char underAttack(); virtual void setUnderAttack(unsigned char);
+    virtual float calc_attack_modifier(); virtual float getSpeed(); virtual float getAngle();
+    virtual float maximumSpeed(); virtual float rateOfFire(); virtual float damageCapability();
+    virtual float damageCapability(int);
     virtual float weaponRange();
 
     UnitAIModule* unitAI();
@@ -187,6 +146,7 @@ public:
     int moveUnit(int id, float x, float y, int priority);
 };
 
+#endif
 int TribeTacticalAIModule::taskAttacker(int attackerID, float x, float y,
                                         int targetID, int arg5,
                                         Waypoint* waypoints, int waypointCount,
@@ -274,3 +234,11 @@ int TribeTacticalAIModule::taskAttacker(int attackerID, float x, float y,
     arr.numberValue++;
     return 1;
 }
+#else
+int TribeTacticalAIModule::taskAttacker(int attackerID, float x, float y,
+                                        int targetID, int arg5,
+                                        Waypoint* waypoints, int waypointCount,
+                                        int arg8, int commandFlag) {
+    return 0;
+}
+#endif

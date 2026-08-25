@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // VA: 004FB550 TribeTacticalAIModule::taskTrain (448 B)
 // PDB source: taitacmd.cpp:9185-9217
 // __thiscall, returns 0/1
@@ -19,6 +20,7 @@
 //   entry, assign it before the ManagedIntArray alias. This restored all four
 //   local-home bytes and produced MATCH (448/448). Default flags; no asm.
 
+#ifndef TAITACMD_SHARED_CONTEXT
 struct ManagedIntArray {
     int* value;
     int numberValue;
@@ -168,6 +170,7 @@ public:
     int taskTrain(BuildItem* item);
 };
 
+#endif
 int TribeTacticalAIModule::taskTrain(BuildItem* item)
 {
     int objectID;
@@ -220,3 +223,8 @@ dispatch:
                                   item->uniqueID());
     return 1;
 }
+#else
+int TribeTacticalAIModule::taskTrain(BuildItem* item) {
+    return 0;
+}
+#endif

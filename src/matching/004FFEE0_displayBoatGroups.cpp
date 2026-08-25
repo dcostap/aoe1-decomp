@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // VA: 004FFEE0 TribeTacticalAIModule::displayBoatGroups
 // taitacmd.cpp
 // Attempt log:
@@ -20,6 +21,7 @@
 // frameless push ebx/ebp/esi/edi prologue.  The readable typed source is kept
 // for promotion; no compiler-steering or inline assembly is used.
 
+#ifndef TAITACMD_SHARED_CONTEXT
 struct Waypoint {
     float x;
     float y;
@@ -90,6 +92,7 @@ public:
     void displayBoatGroups();
 };
 
+#endif
 void TribeTacticalAIModule::displayBoatGroups()
 {
     this->logCommonHistory("Boat Groups:");
@@ -172,3 +175,6 @@ void TribeTacticalAIModule::displayBoatGroups()
         group = group->next;
     }
 }
+#else
+void TribeTacticalAIModule::displayBoatGroups() {}
+#endif

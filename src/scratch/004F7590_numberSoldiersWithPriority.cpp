@@ -76,6 +76,7 @@ extern "C" {
     void __cdecl operator_delete(void* ptr);
 }
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class RGE_Game_World;
 class RGE_Static_Object;
 class UnitAIModule;
@@ -155,6 +156,7 @@ public:
     int numberSoldiersWithPriority(int threshold, int priority, int reset);
 };
 
+#endif
 int TribeTacticalAIModule::numberSoldiersWithPriority(int threshold, int priority, int reset)
 {
     TribeTacticalAIModule* self = this;

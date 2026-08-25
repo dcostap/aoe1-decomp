@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 class TacticalAIGroup {
 public:
     virtual ~TacticalAIGroup();
@@ -6,4 +7,5 @@ public:
 
     void setConsecutiveIdleUnitCount(unsigned long);
 };
+#endif
 void TacticalAIGroup::setConsecutiveIdleUnitCount(unsigned long val) { this->consecutiveIdleUnitCount_ = val; }

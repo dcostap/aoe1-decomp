@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // 00500670 TribeTacticalAIModule::readyAndIdleGroup
 // Source: taitacmd.cpp lines 11397-11422
 // Attempt log:
@@ -57,6 +58,7 @@
 
 #include <math.h>
 
+#ifndef TAITACMD_SHARED_CONTEXT
 struct XYPoint {
     int x;
     int y;
@@ -116,6 +118,7 @@ public:
                                        XYPoint& point);
 };
 
+#endif
 TacticalAIGroup* TribeTacticalAIModule::readyAndIdleGroup(
     int type, int maxDistance, XYPoint& point)
 {
@@ -161,3 +164,9 @@ TacticalAIGroup* TribeTacticalAIModule::readyAndIdleGroup(
     }
     return bestGroup;
 }
+#else
+TacticalAIGroup* TribeTacticalAIModule::readyAndIdleGroup(
+    int type, int maxDistance, XYPoint& point) {
+    return 0;
+}
+#endif

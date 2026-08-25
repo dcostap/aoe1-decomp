@@ -1,6 +1,7 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 class TacticalAIGroup {
 public:
-    void* vtable_ptr;
+    unsigned long storage_00;
     TacticalAIGroup* next;
     TacticalAIGroup* prev;
     int type() const;
@@ -18,6 +19,7 @@ public:
     int numberUnitsInGroups(int type);
 };
 
+#endif
 int TribeTacticalAIModule::numberUnitsInGroups(int type) {
     int total = 0;
     TacticalAIGroup* end = &this->groups;

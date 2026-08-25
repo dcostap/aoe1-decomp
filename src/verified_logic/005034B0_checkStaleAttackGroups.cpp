@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // 005034B0 TribeTacticalAIModule::checkStaleAttackGroups
 // Source: taitacmd.cpp lines 13274-13312
 // Attempt log:
@@ -84,6 +85,7 @@
 //   source ownership fact. The clean typed source remains authoritative; no
 //   natural, evidence-backed spill lead remains without compiler steering.
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class RGE_Game_World {
 public:
     char gap_00[4];
@@ -131,6 +133,7 @@ public:
     void checkStaleAttackGroups();
 };
 
+#endif
 void TribeTacticalAIModule::checkStaleAttackGroups()
 {
     int number;
@@ -160,3 +163,6 @@ void TribeTacticalAIModule::checkStaleAttackGroups()
         }
     }
 }
+#else
+void TribeTacticalAIModule::checkStaleAttackGroups() {}
+#endif

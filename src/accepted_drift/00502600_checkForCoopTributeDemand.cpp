@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // 00502600 TribeTacticalAIModule::checkForCoopTributeDemand
 // Attempt log:
 // - Baseline was a natural md->holder->world scaffold: 814 bytes, 0x14 frame,
@@ -44,6 +45,7 @@
 //   tempRand test and ended at 281 bytes (-4 size). The natural do-loop kept
 //   that test but stayed at 453 bytes (+4 size). Restored this clean source.
 
+#ifndef TAITACMD_SHARED_CONTEXT
 typedef unsigned char uchar;
 
 struct RGE_Player;
@@ -161,6 +163,7 @@ struct TribeTacticalAIModule {
 
 extern "C" int __cdecl debug_rand(char*, int);
 
+#endif
 void TribeTacticalAIModule::checkForCoopTributeDemand()
 {
     int tempRand;
@@ -251,3 +254,6 @@ next:
         i++;
     } while (i < 4);
 }
+#else
+void TribeTacticalAIModule::checkForCoopTributeDemand() {}
+#endif

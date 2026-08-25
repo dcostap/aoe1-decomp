@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // 005009A0 TribeTacticalAIModule::numberItemsToAttack()
 // Source: taitacmd.cpp lines 11507-11509
 // Attempt log:
@@ -10,6 +11,7 @@
 void* __cdecl operator new(unsigned int size);
 void __cdecl operator delete(void* ptr);
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class TribeInformationAIModule {
 public:
     int numberGameIDsOwnedBy(int player, int gameID);
@@ -33,6 +35,7 @@ public:
     int numberItemsToAttack();
 };
 
+#endif
 int TribeTacticalAIModule::numberItemsToAttack()
 {
     int* newValue;
@@ -62,3 +65,8 @@ int TribeTacticalAIModule::numberItemsToAttack()
     }
     return this->md->informationAI.numberGameIDsOwnedBy(-1, *this->playersToAttackValue);
 }
+#else
+int TribeTacticalAIModule::numberItemsToAttack() {
+    return 0;
+}
+#endif

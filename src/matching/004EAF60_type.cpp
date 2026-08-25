@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 class TacticalAIGroup {
 public:
     virtual ~TacticalAIGroup();
@@ -6,4 +7,5 @@ public:
 
     int type() const;
 };
+#endif
 int TacticalAIGroup::type() const { return this->type_; }

@@ -1,7 +1,9 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 struct AttackWaypoint {
     char data[16];
 };
-
+#endif
+#ifndef TAITACMD_SHARED_CONTEXT
 class TacticalAIGroup {
 public:
     char gap_00[0x1D4];
@@ -11,9 +13,13 @@ public:
 
     AttackWaypoint* attackWaypoint(unsigned char index);
 };
-
+#endif
 AttackWaypoint* TacticalAIGroup::attackWaypoint(unsigned char index) {
+#ifdef TAITACMD_SHARED_CONTEXT
+    if (index < this->numberAttackWaypointsValue)
+#else
     if (index < this->numberAttackWaypoints)
+#endif
         return this->waypoints + index;
     return 0;
 }

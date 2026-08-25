@@ -1,3 +1,5 @@
+#ifndef TAITACMD_SHARED_CONTEXT
+#ifndef TAITACMD_SHARED_CONTEXT
 class TacticalAIGroup {
 public:
     int removeUnit(int unit, int* md);
@@ -17,6 +19,7 @@ public:
     int removeFromGroup(int unit);
 };
 
+#endif
 int TribeTacticalAIModule::removeFromGroup(int unit) {
     TacticalAIGroup* group;
     int result;
@@ -31,3 +34,6 @@ int TribeTacticalAIModule::removeFromGroup(int unit) {
     }
     return result;
 }
+#else
+int TribeTacticalAIModule::removeFromGroup(int) { return 0; }
+#endif

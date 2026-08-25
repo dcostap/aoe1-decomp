@@ -5,6 +5,7 @@
 
 class TribeMainDecisionAIModule;
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class TacticalAIGroup {
 public:
     char gap_00[0x1C];
@@ -15,6 +16,7 @@ public:
     int removeUnitByIndex(int index, TribeMainDecisionAIModule* md);
     int removeExtraUnits(TribeMainDecisionAIModule* md);
 };
+#endif
 
 int TacticalAIGroup::removeExtraUnits(TribeMainDecisionAIModule* md)
 {

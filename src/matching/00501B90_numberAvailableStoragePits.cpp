@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // 00501B90 TribeTacticalAIModule::numberAvailableStoragePits
 // PDB: taitacmd.cpp:12296-12337, 222 bytes
 // __thiscall, int, ret 0Ch (3 params)
@@ -165,6 +166,7 @@
 
 #include <stdlib.h>
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class AIModule {
 public:
     virtual ~AIModule();
@@ -251,6 +253,7 @@ public:
     int numberAvailableStoragePits(int& param1, int& param2, int param3);
 };
 
+#endif
 int TribeTacticalAIModule::numberAvailableStoragePits(int& param1, int& param2, int param3) {
     int product;
     int value;
@@ -284,3 +287,8 @@ int TribeTacticalAIModule::numberAvailableStoragePits(int& param1, int& param2, 
         return this->md->informationAI.numberAvailableStoragePits(param3);
     }
 }
+#else
+int TribeTacticalAIModule::numberAvailableStoragePits(int& param1, int& param2, int param3) {
+    return 0;
+}
+#endif

@@ -1,10 +1,11 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // 00502100 TribeTacticalAIModule::numberFarmers()
 // Source: taitacmd.cpp lines 12516-12535
 // Size: 249 bytes
 // NC: no custom flags (default /O2 /Oy)
 //
 // Attempt log:
-// Probe 1: initial parked reconstruction — 92.3695% positional after rebuild;
+// Probe 1: initial parked reconstruction â€” 92.3695% positional after rebuild;
 //   manual _new/_delete declarations produced the wrong relocation identities
 //   and a register-held result, so this was not a useful source baseline.
 // Probe 2: use the period ManagedArray<int>::operator[] source shape inline,
@@ -60,19 +61,18 @@
 void* operator_new(unsigned int size);
 void __cdecl operator_delete(void* ptr);
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class UnitAIModule {
 public:
     virtual ~UnitAIModule();
     int currentAction();
 };
-
 class RGE_Master_Static_Object {
 public:
     virtual ~RGE_Master_Static_Object();
     char gap_04[0x0C];
     short id;
 };
-
 class RGE_Static_Object {
 public:
     virtual ~RGE_Static_Object();
@@ -81,13 +81,11 @@ public:
     char gap_0c[0x68];
     UnitAIModule* unitAI();
 };
-
 class MainDecisionAIModule {
 public:
     virtual ~MainDecisionAIModule();
     RGE_Static_Object* object(int objectID);
 };
-
 template <class T>
 class ManagedArray {
 public:
@@ -112,7 +110,6 @@ public:
         return this->value[index];
     }
 };
-
 // Main-agent audit confirmed canonical ManagedArray/AI ownership and retained
 // the natural farmer count/growth source.
 class TribeTacticalAIModule {
@@ -124,7 +121,7 @@ public:
 
     int numberFarmers();
 };
-
+#endif
 int TribeTacticalAIModule::numberFarmers()
 {
     int i;
@@ -149,3 +146,8 @@ int TribeTacticalAIModule::numberFarmers()
     }
     return rVal;
 }
+#else
+int TribeTacticalAIModule::numberFarmers() {
+    return 0;
+}
+#endif

@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 class TacticalAIGroup {
 public:
     char gap_00[0x2CC];
@@ -6,7 +7,7 @@ public:
 
     int addObjectToDestroy(int objectId);
 };
-
+#endif
 int TacticalAIGroup::addObjectToDestroy(int objectId) {
     if (this->numberObjectsToDestroy < 0x13) {
         this->objectsToDestroy[this->numberObjectsToDestroy] = objectId;

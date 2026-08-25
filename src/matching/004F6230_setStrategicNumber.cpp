@@ -5,17 +5,22 @@
 //   and informationAI notification for strategic number 0x69.
 // - Exact match with the literal `||` comparison order from original asm.
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class TribeInformationAIModule {
 public:
     void setSaveLearnInformation(int value);
 };
+#endif
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class TribeMainDecisionAIModule {
 public:
     char gap_000[0xCEC];
     TribeInformationAIModule informationAI;
 };
+#endif
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class TribeTacticalAIModule {
 public:
     char gap_000[0xF0];
@@ -25,6 +30,7 @@ public:
 
     void setStrategicNumber(int index, int value);
 };
+#endif
 
 void TribeTacticalAIModule::setStrategicNumber(int index, int value)
 {

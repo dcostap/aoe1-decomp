@@ -113,7 +113,7 @@ public:
 
 class TacticalAIGroup {
 public:
-    void* vtable_ptr;
+    virtual ~TacticalAIGroup();
     TacticalAIGroup* next;
     TacticalAIGroup* prev;
     char gap_0C[0x2BC];

@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // VA: 00501D70 TribeTacticalAIModule::checkForBuildInsertion(int,int,int)
 // PDB source: taitacmd.cpp:12391-12497
 // FLAGS: config/flags/00501D70_checkForBuildInsertion.rsp (/GX)
@@ -11,6 +12,7 @@
 // - The typed source is period-plausible and has no inline assembly or raw
 //   module-offset macros. Keep it in scratch for parent-agent promotion.
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class ResourceItem {
 public:
     virtual ~ResourceItem();
@@ -124,6 +126,7 @@ public:
     void checkForBuildInsertion(int type, int count, int priority);
 };
 
+#endif
 void TribeTacticalAIModule::checkForBuildInsertion(int type, int count, int priority)
 {
     switch (type) {
@@ -187,3 +190,6 @@ void TribeTacticalAIModule::checkForBuildInsertion(int type, int count, int prio
         break;
     }
 }
+#else
+void TribeTacticalAIModule::checkForBuildInsertion(int, int, int) {}
+#endif

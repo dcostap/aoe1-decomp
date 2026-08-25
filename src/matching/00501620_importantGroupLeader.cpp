@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 class RGE_Master_Static_Object {
 public:
     char gap_00[0x14];
@@ -37,6 +38,7 @@ public:
     int importantGroupLeader(int param);
 };
 
+#endif
 int TribeTacticalAIModule::importantGroupLeader(int param) {
     RGE_Static_Object* object = this->md->object(param);
     if (object == 0) {

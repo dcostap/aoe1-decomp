@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // 00502230 TribeTacticalAIModule::stuffAvoidancePath
 // PDB: taitacmd.cpp:12551-12604, 224 bytes
 // void __thiscall stuffAvoidancePath(TacticalAIGroup* group, Path* path)
@@ -21,6 +22,7 @@
 //   matching the original tail exactly. 0.0000% diff.
 // - switch(tooFew) case0/1/default fell into jump-table lowering (worse); not kept.
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class Waypoint {
 public:
     float x;      // +0x00
@@ -47,6 +49,7 @@ public:
     void stuffAvoidancePath(TacticalAIGroup* group, Path* path);
 };
 
+#endif
 void TribeTacticalAIModule::stuffAvoidancePath(TacticalAIGroup* group, Path* path)
 {
     float divisionLength = path->length() * 0.2f;
@@ -74,3 +77,6 @@ void TribeTacticalAIModule::stuffAvoidancePath(TacticalAIGroup* group, Path* pat
         path->moveToNextWaypoint();
     }
 }
+#else
+void TribeTacticalAIModule::stuffAvoidancePath(TacticalAIGroup*, Path*) {}
+#endif

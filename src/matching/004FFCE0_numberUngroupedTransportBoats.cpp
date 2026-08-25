@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // VA: 004FFCE0 TribeTacticalAIModule::numberUngroupedTransportBoats
 // Attempt log:
 // try 1: cloned decompiler-style dynamic-array logic from analogous soldiers function, changing source array offsets to transportBoats (+0x174/+0x178/+0x180).
@@ -19,6 +20,7 @@ extern "C" {
     void operator_delete(void* ptr);
 }
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class TacticalAIGroup;
 
 template <class T>
@@ -87,6 +89,7 @@ public:
     int numberUngroupedTransportBoats();
 };
 
+#endif
 int TribeTacticalAIModule::numberUngroupedTransportBoats()
 {
     int rNum = 0;
@@ -106,3 +109,8 @@ int TribeTacticalAIModule::numberUngroupedTransportBoats()
     }
     return rNum;
 }
+#else
+int TribeTacticalAIModule::numberUngroupedTransportBoats() {
+    return 0;
+}
+#endif

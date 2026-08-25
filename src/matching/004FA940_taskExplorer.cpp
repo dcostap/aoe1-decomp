@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // 004FA940 TribeTacticalAIModule::taskExplorer(int,float,float)
 // taitacmd.cpp:8870-8891, 337 bytes
 //
@@ -12,6 +13,7 @@
 // - Final: default /O2 /Oy, typed local layout, no inline asm or codegen-only
 //   scaffolding; exact bytes validated.
 
+#ifndef TAITACMD_SHARED_CONTEXT
 struct ManagedIntArray {
     int* value;
     int numberValue;
@@ -39,6 +41,7 @@ public:
     int unexploredArea(int param_1, XYPoint& point);
 };
 
+#endif
 int TribeTacticalAIModule::taskExplorer(int param_1, float param_2,
                                         float param_3)
 {
@@ -90,3 +93,9 @@ dispatch:
 
     return taskExplorer(param_1, param_2, param_3, 0);
 }
+#else
+int TribeTacticalAIModule::taskExplorer(int param_1, float param_2,
+                                        float param_3) {
+    return 0;
+}
+#endif

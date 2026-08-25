@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // 005003A0 TribeTacticalAIModule::removeAllGroups(int)
 // Source: taitacmd.cpp lines 11309-11325
 // Attempt log:
@@ -7,6 +8,7 @@
 //   explicit bottom sentinel break. A `while (group != 0)`/do-while condition
 //   makes VC5 add a bottom null test and shifts the epilogue.
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class TacticalAIGroup {
 public:
     virtual void destroy(int flags);
@@ -26,6 +28,7 @@ public:
     int removeAllGroups(int type);
 };
 
+#endif
 int TribeTacticalAIModule::removeAllGroups(int type)
 {
     int wanted;
@@ -60,3 +63,8 @@ int TribeTacticalAIModule::removeAllGroups(int type)
     }
     return 1;
 }
+#else
+int TribeTacticalAIModule::removeAllGroups(int type) {
+    return 0;
+}
+#endif

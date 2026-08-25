@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // 004FBB30 TribeTacticalAIModule::removeFromTaskLists
 // PDB: taitacmd.cpp:9318-9332, 215 bytes
 // __thiscall, void, ret 4
@@ -23,6 +24,7 @@
 
 #include <stdlib.h>
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class UnitAIModule;
 class RGE_Static_Object;
 
@@ -74,6 +76,7 @@ public:
     void removeFromTaskLists(int key);
 };
 
+#endif
 void TribeTacticalAIModule::removeFromTaskLists(int key) {
     int i = 0;
     int count = this->civilianExplorers.maximumSizeValue;
@@ -119,3 +122,6 @@ check:
 end:
     return;
 }
+#else
+void TribeTacticalAIModule::removeFromTaskLists(int) {}
+#endif

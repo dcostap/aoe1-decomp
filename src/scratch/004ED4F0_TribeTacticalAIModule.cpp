@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // 004ED4F0 TribeTacticalAIModule::TribeTacticalAIModule(int,int)
 // Source: taitacmd.cpp lines 1803-2027
 // Ghidra-body compileable baseline. Not exact yet; intended as a fuller journey
@@ -110,7 +111,9 @@
 
 #include "..\..\include\game_globals.h"
 
+#ifndef TAITACMD_SHARED_CONTEXT
 extern "C" int __cdecl rge_read(int file, void* dst, int size);
+#endif
 extern "C" void* __cdecl operator_new(unsigned int size);
 extern "C" void __cdecl operator_delete(void* p);
 extern float save_game_version;
@@ -965,3 +968,7 @@ LAB_004ee6c3:
     rge_read(file,this->hitsByPlayer,0x24);
   }
 }
+#else
+TribeTacticalAIModule::TribeTacticalAIModule(int, int)
+    : TacticalAIModule(0, 0), neededResources(0) {}
+#endif

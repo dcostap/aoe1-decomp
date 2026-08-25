@@ -1,6 +1,8 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // attempt 1: sibling-style sentinel/null list walk with the two optional filters and a local count
 // exact match landed with the natural filter order and the sentinel/list-node surface using the +4 next field
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class TacticalAIGroup {
 public:
     int gap_00;
@@ -18,6 +20,7 @@ public:
     int numberGroups(int param_1, int param_2);
 };
 
+#endif
 int TribeTacticalAIModule::numberGroups(int param_1, int param_2) {
     TacticalAIGroup* group = this->groups.next;
     TacticalAIGroup* sentinel = &this->groups;
@@ -32,3 +35,8 @@ int TribeTacticalAIModule::numberGroups(int param_1, int param_2) {
 
     return count;
 }
+#else
+int TribeTacticalAIModule::numberGroups(int param_1, int param_2) {
+    return 0;
+}
+#endif

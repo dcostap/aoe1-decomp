@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // VA: 00501430 TribeTacticalAIModule::dealWithGAIAAttacker (424 B)
 // PDB source: taitacmd.cpp:11854-11938
 // __thiscall
@@ -16,6 +17,7 @@
 //   sn[0x64] at +0x324 and reached MATCH. Direct target->id in the for loop
 //   was tested and worsened codegen; the hoisted local is retained.
 
+#ifndef TAITACMD_SHARED_CONTEXT
 struct XYPoint {
     int x;
     int y;
@@ -203,6 +205,7 @@ public:
                              RGE_Static_Object* target);
 };
 
+#endif
 int TribeTacticalAIModule::dealWithGAIAAttacker(
     RGE_Static_Object* attacker, RGE_Static_Object* target)
 {
@@ -247,3 +250,9 @@ int TribeTacticalAIModule::dealWithGAIAAttacker(
 
     return count > 0;
 }
+#else
+int TribeTacticalAIModule::dealWithGAIAAttacker(
+    RGE_Static_Object* attacker, RGE_Static_Object* target) {
+    return 0;
+}
+#endif

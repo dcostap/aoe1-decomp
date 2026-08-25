@@ -37,6 +37,7 @@ extern "C" {
     void operator_delete(void* ptr);
 }
 
+#ifndef TAITACMD_SHARED_CONTEXT
 template <class T>
 class ManagedArray {
 public:
@@ -148,6 +149,7 @@ public:
     int numberIdleSoldiers();
 };
 
+#endif
 int TribeTacticalAIModule::numberIdleSoldiers()
 {
     int count = 0;

@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 class TacticalAIGroup {
 public:
     virtual ~TacticalAIGroup();
@@ -6,4 +7,5 @@ public:
 
     void setWaitCode(int);
 };
+#endif
 void TacticalAIGroup::setWaitCode(int val) { this->waitCode_ = val; }

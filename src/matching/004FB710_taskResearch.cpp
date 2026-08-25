@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // VA: 004FB710 TribeTacticalAIModule::taskResearch (448 B)
 // PDB source: taitacmd.cpp:9222-9253
 // __thiscall, returns 0/1
@@ -25,6 +26,7 @@
 //   local-home assignment. The initializer is optimized away; output is exact.
 //   Best source keeps named ownership and natural bounded array growth.
 
+#ifndef TAITACMD_SHARED_CONTEXT
 struct ManagedIntArray {
     int* value;
     int numberValue;
@@ -196,6 +198,7 @@ public:
     int taskResearch(BuildItem*);
 };
 
+#endif
 int TribeTacticalAIModule::taskResearch(BuildItem* item)
 {
     int objectID = 0;
@@ -251,3 +254,8 @@ dispatch:
     this->md->aiPlayer->research(item->typeID(), object->id, item->uniqueID());
     return 1;
 }
+#else
+int TribeTacticalAIModule::taskResearch(BuildItem* item) {
+    return 0;
+}
+#endif

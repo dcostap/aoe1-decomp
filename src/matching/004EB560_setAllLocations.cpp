@@ -1,5 +1,6 @@
 // From taitacmd.cpp
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class TacticalAIGroup {
 public:
     char gap_00[0x170];
@@ -17,6 +18,7 @@ public:
 
     void setAllLocations(float p1, float p2, float p3);
 };
+#endif
 
 void TacticalAIGroup::setAllLocations(float p1, float p2, float p3) {
     this->field_170 = p1;

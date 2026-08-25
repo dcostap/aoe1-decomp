@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // 00501260 TribeTacticalAIModule::selectBestCommander
 // Attempt log:
 // 1: Reconstruct from packet with helper: too small due outlined helper.
@@ -10,7 +11,7 @@
 // 8: Reordered bestUnit/bestScore/i locals and probed result-initialized-to-minus-one form: best current is 1.51% positional/edit, first mismatch offset 10 from swapped `xor edi` / `or ebp,-1` and local home order.
 // BLOCKER: behavior and main body are close, but prologue/control topology differs. Original delays `push ebx` until after the empty-array check and uses the pre-EBX local slots (`result=-1`, `i=0`, saved this) exactly; current VC5 saves EBX immediately because the inlined array-growth blocks use EBX, causing stack-offset drift from offset 3 despite matching most loop bodies.
 // 4: Initialize selected unit to -1 and return it directly: improved to 1.08%; remaining store order and score-conversion jump.
-// 5: Reorder locals and make vf10c return float with named fscore worsened (extra stack/FPU drift); keep float return but use direct conditional conversion.
+// 5: Reorder locals and make weaponRange return float with named fscore worsened (extra stack/FPU drift); keep float return but use direct conditional conversion.
 // 6: Restore exact local order/value: bestScore=-1, bestUnit=-1, i=0; direct return bestUnit. Validates exact before promotion.
 
 extern void* operator new(unsigned int);
@@ -20,81 +21,83 @@ extern "C" int __cdecl _ftol();
 struct ManagedArray_int { int* value; int numberValue; int desiredNumberValue; int maximumSizeValue; };
 
 class MasterObject { public: char pad_00[0x10]; short type; };
+#ifndef TAITACMD_SHARED_CONTEXT
 class RGE_Static_Object {
 public:
-    virtual void v00();
-    virtual void v01();
-    virtual void v02();
-    virtual void v03();
-    virtual void v04();
-    virtual void v05();
-    virtual void v06();
-    virtual void v07();
-    virtual void v08();
-    virtual void v09();
-    virtual void v10();
-    virtual void v11();
-    virtual void v12();
-    virtual void v13();
-    virtual void v14();
-    virtual void v15();
-    virtual void v16();
-    virtual void v17();
-    virtual void v18();
-    virtual void v19();
-    virtual void v20();
-    virtual void v21();
-    virtual void v22();
-    virtual void v23();
-    virtual void v24();
-    virtual void v25();
-    virtual void v26();
-    virtual void v27();
-    virtual void v28();
-    virtual void v29();
-    virtual void v30();
-    virtual void v31();
-    virtual void v32();
-    virtual void v33();
-    virtual void v34();
-    virtual void v35();
-    virtual void v36();
-    virtual void v37();
-    virtual void v38();
-    virtual void v39();
-    virtual void v40();
-    virtual void v41();
-    virtual void v42();
-    virtual void v43();
-    virtual void v44();
-    virtual void v45();
-    virtual void v46();
-    virtual void v47();
-    virtual void v48();
-    virtual void v49();
-    virtual void v50();
-    virtual void v51();
-    virtual void v52();
-    virtual void v53();
-    virtual void v54();
-    virtual void v55();
-    virtual void v56();
-    virtual void v57();
-    virtual void v58();
-    virtual void v59();
-    virtual void v60();
-    virtual void v61();
-    virtual void v62();
-    virtual void v63();
-    virtual void v64();
-    virtual void v65();
-    virtual void v66();
-    virtual float vf10c();
+    virtual ~RGE_Static_Object();
+    virtual void recycle_in_to_game();
+    virtual void recycle_out_of_game();
+    virtual void draw();
+    virtual void shadow_draw();
+    virtual void normal_draw();
+    virtual void draw_front_frame();
+    virtual void draw_back_frame();
+    virtual void draw_frame();
+    virtual void update();
+    virtual void check_damage_sprites();
+    virtual void rehook();
+    virtual void save(int);
+    virtual float teleport(float, float, float);
+    virtual void new_sprite();
+    virtual void add_overlay_sprite();
+    virtual void remove_overlay_sprite();
+    virtual void change_ownership();
+    virtual void modify(float, unsigned char);
+    virtual void modify_delta(float, unsigned char);
+    virtual void modify_percent(float, unsigned char);
+    virtual void transform();
+    virtual void copy_obj();
+    virtual void set_object_state(unsigned char);
+    virtual void remove_visible_resource();
+    virtual void create_doppleganger_when_dying();
+    virtual void destroy_obj();
+    virtual void die_die_die();
+    virtual void damage();
+    virtual float calculateDamage();
+    virtual void rotate(long);
+    virtual unsigned char can_attack();
+    virtual void set_attribute(short, float);
+    virtual void set_attribute_amount(float, unsigned char, unsigned char);
+    virtual int heal(int, int);
+    virtual unsigned char heal(float);
+    virtual int canRepair();
+    virtual void notify_of_relation(long, unsigned char);
+    virtual void do_command();
+    virtual void move_to();
+    virtual void work();
+    virtual void stop();
+    virtual void set_attack();
+    virtual void play_command_sound();
+    virtual void play_move_sound();
+    virtual void new_angle(float);
+    virtual RGE_Static_Object* spawn_death_obj();
+    virtual void* get_command_master();
+    virtual void set_being_worked_on();
+    virtual void release_being_worked_on();
+    virtual unsigned char is_moving();
+    virtual RGE_Static_Object* get_target_obj();
+    virtual void enter_obj();
+    virtual void exit_obj();
+    virtual int explore_terrain();
+    virtual void unexplore_terrain();
+    virtual void* get_los_table();
+    virtual int inAttackRange();
+    virtual unsigned char underAttack();
+    virtual void setUnderAttack(unsigned char);
+    virtual float calc_attack_modifier();
+    virtual float getSpeed();
+    virtual float getAngle();
+    virtual float maximumSpeed();
+    virtual float rateOfFire();
+    virtual float damageCapability();
+    virtual float damageCapability(int);
+    virtual float weaponRange();
     char pad_04[4];
     MasterObject* master_obj;
     char pad_0c[0x24];
     float field_30;
 };
+#endif
 class MainDecisionAIModule { public: RGE_Static_Object* object(int id); };
 class TribeTacticalAIModule {
 public:
@@ -124,7 +127,7 @@ int TribeTacticalAIModule::selectBestCommander(ManagedArray_int* a)
             if (obj->master_obj->type != 0x7d) {
                 int score;
                 if (this->mode == 2) {
-                    score = (int)obj->vf10c();
+                    score = (int)obj->weaponRange();
                 } else {
                     score = (int)obj->field_30;
                 }
@@ -156,3 +159,6 @@ int TribeTacticalAIModule::selectBestCommander(ManagedArray_int* a)
     }
     return bestUnit;
 }
+#else
+int TribeTacticalAIModule::selectBestCommander(ManagedArray<int>&) { return 0; }
+#endif

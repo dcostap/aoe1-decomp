@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 class TacticalAIGroup {
 public:
     virtual ~TacticalAIGroup();
@@ -6,4 +7,5 @@ public:
 
     void setOriginalHitPoints(int);
 };
+#endif
 void TacticalAIGroup::setOriginalHitPoints(int val) { this->originalHitPoints_ = val; }

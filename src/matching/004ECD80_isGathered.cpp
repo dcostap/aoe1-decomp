@@ -49,11 +49,14 @@
 // - strategicNumber: mod1->strategicNumber(0x17/0x29) = 004F6210h
 // - removeUnitByIndex(idx, mod2) thiscall = 004EB0C0h
 //
+#ifndef TAITACMD_SHARED_CONTEXT
 class UnitAIModule {
 public:
     int currentAction();
 };
+#endif
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class RGE_Static_Object {
 public:
     virtual ~RGE_Static_Object();
@@ -63,19 +66,25 @@ public:
     UnitAIModule* unitAI();
     float distance_to_position(float x, float y, float z);
 };
+#endif
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class TribeMainDecisionAIModule {
 public:
     RGE_Static_Object* object(int id);
 };
+#endif
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class TribeTacticalAIModule {
 public:
     char gap_00[0x194];
     int strategicNumbers[226];
     int strategicNumber(int index);
 };
+#endif
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class TacticalAIGroup {
 public:
     virtual ~TacticalAIGroup();
@@ -91,6 +100,7 @@ public:
     int removeUnitByIndex(int index, TribeMainDecisionAIModule* md);
     int isGathered(TribeTacticalAIModule* tactical, TribeMainDecisionAIModule* md);
 };
+#endif
 
 int TacticalAIGroup::isGathered(TribeTacticalAIModule* tactical, TribeMainDecisionAIModule* md)
 {

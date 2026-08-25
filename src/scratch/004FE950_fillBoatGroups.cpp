@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // VA: 004FE950 TribeTacticalAIModule::fillBoatGroups
 // Attempt log:
 // baseline: natural period-plausible reconstruction using the real group list,
@@ -48,6 +49,7 @@
 extern void* operator new(unsigned int);
 extern void operator delete(void*);
 
+#ifndef TAITACMD_SHARED_CONTEXT
 struct ManagedArrayInt {
     int* value;
     int numberValue;
@@ -178,6 +180,7 @@ public:
     void fillBoatGroups();
 };
 
+#endif
 void TribeTacticalAIModule::fillBoatGroups() {
     int bestUnit;
 
@@ -469,3 +472,6 @@ void TribeTacticalAIModule::fillBoatGroups() {
         } while (i < this->workingArea.numberValue);
     }
 }
+#else
+void TribeTacticalAIModule::fillBoatGroups() {}
+#endif

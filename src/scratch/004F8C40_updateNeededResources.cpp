@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // 004F8C40 TribeTacticalAIModule::updateNeededResources
 // PDB: taitacmd.cpp:7453-7527, 478 bytes
 // Attempt log:
@@ -56,6 +57,7 @@
 // but no period-plausible source change has recovered the early colors. Leave
 // this source in scratch.
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class ResourceItem {
 public:
     virtual ~ResourceItem();
@@ -126,6 +128,7 @@ public:
     void updateNeededResources();
 };
 
+#endif
 void TribeTacticalAIModule::updateNeededResources()
 {
     int assignedResource[4];
@@ -223,3 +226,6 @@ next_resource:
         this->resourceDifferenceValue[resource] = difference;
     }
 }
+#else
+void TribeTacticalAIModule::updateNeededResources() {}
+#endif

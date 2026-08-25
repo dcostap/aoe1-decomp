@@ -3,9 +3,10 @@
 // Attempt log:
 // - Replaced stub with Ghidra list walk and real direct member-call surface.
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class TacticalAIGroup {
 public:
-    virtual void destroy(int flags);
+    virtual ~TacticalAIGroup();
     TacticalAIGroup* next;
     TacticalAIGroup* prev;
 
@@ -16,11 +17,12 @@ public:
 class TribeTacticalAIModule {
 public:
     char gap_000[0x9D4];
-    char groups[0x330];
+    TacticalAIGroup groups;
 
     int numberWaterExplorers();
 };
 
+#endif
 int TribeTacticalAIModule::numberWaterExplorers()
 {
     TacticalAIGroup* group;
@@ -28,8 +30,8 @@ int TribeTacticalAIModule::numberWaterExplorers()
     int count;
 
     count = 0;
-    group = ((TacticalAIGroup*)this->groups)->next;
-    sentinel = (TacticalAIGroup*)this->groups;
+    group = this->groups.next;
+    sentinel = &this->groups;
     while (group != sentinel && group != 0) {
         if ((group->type() == 0x67 || group->type() == 0x68 ||
              group->type() == 0x69 || group->type() == 0x6a ||

@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 class TacticalAIGroup {
 public:
     char gap_0[0x170];
@@ -6,6 +7,7 @@ public:
     int field_178;
     void setLocation(int a, int b, int c);
 };
+#endif
 
 void TacticalAIGroup::setLocation(int a, int b, int c) {
     this->field_170 = a;

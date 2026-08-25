@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // VA: 004F7E80 TribeTacticalAIModule::idleCivilian
 // PDB source: taitacmd.cpp lines 7075-7160
 // Attempt log:
@@ -34,6 +35,7 @@
 
 #include <stdlib.h>
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class UnitAIModule {
 public:
     int currentAction();
@@ -119,6 +121,7 @@ public:
     int idleCivilian(int mode);
 };
 
+#endif
 int TribeTacticalAIModule::idleCivilian(int mode)
 {
     RGE_Static_Object* firstObject;
@@ -195,3 +198,8 @@ second_next:
     }
     return -1;
 }
+#else
+int TribeTacticalAIModule::idleCivilian(int mode) {
+    return 0;
+}
+#endif

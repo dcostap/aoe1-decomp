@@ -1,3 +1,5 @@
+#ifndef TAITACMD_SHARED_CONTEXT
+#ifndef TAITACMD_SHARED_CONTEXT
 class TacticalAIGroup;
 
 class TribeStrategyAIModule {
@@ -15,6 +17,7 @@ public:
     int itemToCapture(void);
 };
 
+#endif
 int TribeTacticalAIModule::itemToCapture(void) {
     int targetId;
 
@@ -26,3 +29,6 @@ int TribeTacticalAIModule::itemToCapture(void) {
     }
     return -1;
 }
+#else
+int TribeTacticalAIModule::itemToCapture() { return 0; }
+#endif

@@ -1,11 +1,12 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // 004F7D90 TribeTacticalAIModule::idleSoldier()
 // Source: taitacmd.cpp lines 7061-7070
 // Size: 231 bytes
 // NC: no custom flags (default /O2 /Oy)
 //
 // Attempt log:
-// Probe 1 (prior session): clean for loop, hand-expanded grow — 83.1% positional, 231 bytes
-// Probes 2-3 (prior session): do-while with i=0 early, newSize var — prologue + expansion check matched
+// Probe 1 (prior session): clean for loop, hand-expanded grow â€” 83.1% positional, 231 bytes
+// Probes 2-3 (prior session): do-while with i=0 early, newSize var â€” prologue + expansion check matched
 //   but stuck at 224/231 bytes with copy-loop register allocation + loop branch encoding drift.
 //
 // New approach (this session): the grow/copy/delete path is the inline
@@ -29,6 +30,7 @@
 void* operator_new(unsigned int size);
 void __cdecl operator_delete(void* ptr);
 
+#ifndef TAITACMD_SHARED_CONTEXT
 struct RGE_Static_Object;
 struct UnitAIModule;
 struct RGE_Game_World;
@@ -38,26 +40,21 @@ struct RGE_Player {
     char pad_00[0x3C];
     RGE_Game_World* world;            // +0x3C
 };
-
 struct RGE_Game_World {
     RGE_Static_Object* object(int objectID);
 };
-
 struct RGE_Static_Object {
-    void* vtable;                     // +0x00
+    virtual ~RGE_Static_Object();
     int id;                           // +0x04
     UnitAIModule* unitAI();
 };
-
 struct UnitAIModule {
     int currentAction();
 };
-
 struct MainDecisionAIModule {
     char pad_F0[0xF0];
     RGE_Player* player;               // +0xF0
 };
-
 struct TribeMainDecisionAIModule : MainDecisionAIModule {};
 
 struct ManagedArray_int {
@@ -92,7 +89,7 @@ struct TribeTacticalAIModule {
 
     int idleSoldier();
 };
-
+#endif
 int TribeTacticalAIModule::idleSoldier()
 {
     for (int i = 0; i < soldiers.numberValue; i++) {
@@ -104,3 +101,8 @@ int TribeTacticalAIModule::idleSoldier()
     }
     return -1;
 }
+#else
+int TribeTacticalAIModule::idleSoldier() {
+    return 0;
+}
+#endif

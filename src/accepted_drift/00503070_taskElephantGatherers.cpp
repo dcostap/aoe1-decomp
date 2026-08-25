@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // 00503070 TribeTacticalAIModule::taskElephantGatherers(int,int,int)
 // Source: taitacmd.cpp lines 13148-13219
 // FLAGS: config/flags/00503070_taskElephantGatherers.rsp
@@ -75,6 +76,7 @@ void* operator new(unsigned int size);
 void operator delete(void* ptr);
 extern float DAT_00575758;
 
+#ifndef TAITACMD_SHARED_CONTEXT
 template <class T>
 class ManagedArray {
 public:
@@ -129,78 +131,78 @@ public:
 class TRIBE_Player {
 public:
     virtual ~TRIBE_Player();
-    virtual void vpad_01();
-    virtual void vpad_02();
-    virtual void vpad_03();
-    virtual void vpad_04();
-    virtual void vpad_05();
-    virtual void vpad_06();
-    virtual void vpad_07();
-    virtual void vpad_08();
-    virtual void vpad_09();
-    virtual void vpad_10();
-    virtual void vpad_11();
-    virtual void vpad_12();
-    virtual void vpad_13();
-    virtual void vpad_14();
-    virtual void vpad_15();
-    virtual void vpad_16();
-    virtual void vpad_17();
-    virtual void vpad_18();
-    virtual void vpad_19();
-    virtual void vpad_20();
-    virtual void vpad_21();
-    virtual void vpad_22();
-    virtual void vpad_23();
-    virtual void vpad_24();
-    virtual void vpad_25();
-    virtual void vpad_26();
-    virtual void vpad_27();
-    virtual void vpad_28();
-    virtual void vpad_29();
-    virtual void vpad_30();
-    virtual void vpad_31();
-    virtual void vpad_32();
-    virtual void vpad_33();
-    virtual void vpad_34();
-    virtual void vpad_35();
-    virtual void vpad_36();
-    virtual void vpad_37();
-    virtual void vpad_38();
-    virtual void vpad_39();
-    virtual void vpad_40();
-    virtual void vpad_41();
-    virtual void vpad_42();
-    virtual void vpad_43();
-    virtual void vpad_44();
-    virtual void vpad_45();
-    virtual void vpad_46();
-    virtual void vpad_47();
-    virtual void vpad_48();
-    virtual void vpad_49();
-    virtual void vpad_50();
-    virtual void vpad_51();
-    virtual void vpad_52();
-    virtual void vpad_53();
-    virtual void vpad_54();
-    virtual void vpad_55();
-    virtual void vpad_56();
-    virtual void vpad_57();
-    virtual void vpad_58();
-    virtual void vpad_59();
-    virtual void vpad_60();
-    virtual void vpad_61();
-    virtual void vpad_62();
-    virtual void vpad_63();
-    virtual void vpad_64();
-    virtual void vpad_65();
-    virtual void vpad_66();
-    virtual void vpad_67();
-    virtual void vpad_68();
-    virtual void vpad_69();
-    virtual void vpad_70();
-    virtual void vpad_71();
-    virtual void vpad_72();
+    virtual void set_game_status(unsigned char);
+    virtual void do_resign(int);
+    virtual void changeToHumanPlayer();
+    virtual void changeToComputerPlayer();
+    virtual char* aiStatus(int);
+    virtual int isEnemy(int);
+    virtual int isAlly(int);
+    virtual int isNeutral(int);
+    virtual int isAllNeutral();
+    virtual void setDiplomaticStance(int, int);
+    virtual void loadAIInformation(char*, char*, char*, int, int);
+    virtual void sendUnitAIOrder(int, int, int, int, int, float, float, float, float, int, int, int);
+    virtual void processAIOrder(int, int, int, int, int, float, float, float, float, int, int, int);
+    virtual void kickAI(int);
+    virtual int strategicNumber(int);
+    virtual void sendGameOrder(void*, void*, float, float);
+    virtual void sendAddWaypointCommand(int, void*, int);
+    virtual void processAddWaypointCommand(int, void*, int);
+    virtual void sendPlayCommand(int, int*, int, int, int);
+    virtual void sendPlayCommand(int, int, int);
+    virtual int sendAICommand(int, int, int, int, int);
+    virtual int objectCostByType(int);
+    virtual void trackUnitGather(int, int, int);
+    virtual void make_scenario_obj(float, float, float, short, unsigned char, float);
+    virtual void scenario_save(int);
+    virtual void scenario_load(int, long*, float);
+    virtual void scenario_postsave(int);
+    virtual void scenario_postload(int);
+    virtual void load(int);
+    virtual void add_attribute_num(short, float, unsigned char);
+    virtual void update();
+    virtual void update_dopplegangers();
+    virtual void save(int);
+    virtual void save2(int);
+    virtual void save_info(int);
+    virtual void random_start();
+    virtual void* make_new_object(long, float, float, float, int);
+    virtual void analyize_selected_objects();
+    virtual int get_mouse_pointer_action_vars(int, int*, int*);
+    virtual unsigned char command_make_move(void*, float, float);
+    virtual unsigned char command_make_work(void*, float, float);
+    virtual unsigned char command_make_do(void*, float, float);
+    virtual unsigned char command_stop();
+    virtual unsigned char command_place_object(short, float, float, float);
+    virtual unsigned char command_add_attribute(int, float);
+    virtual unsigned char command_give_attribute(int, int, float);
+    virtual unsigned char command_formation(int);
+    virtual unsigned char command_stand_ground();
+    virtual unsigned char command_create_group(int, int*, int, float);
+    virtual unsigned char command_add_to_group(int, int, float);
+    virtual unsigned char command_remove_from_group(int, int);
+    virtual unsigned char command_destroy_group(int);
+    virtual unsigned char command_resign(int, int);
+    virtual unsigned char command_add_waypoint(float, float, float);
+    virtual void* addObject(void*, int, int);
+    virtual void removeObject(void*, int, int, void*);
+    virtual void logMessage(char*);
+    virtual void notify(int, int, int, long, long, long);
+    virtual void logStatus(void*, int);
+    virtual void load_victory(int, long*, unsigned char);
+    virtual void new_victory();
+    virtual unsigned char command_give_attribute(int, int, float, float);
+    virtual void buildObject(int, int, float, float, int);
+    virtual void cancelBuild(int, int, int, float, float, int, int);
+    virtual void registerBuild(RGE_Static_Object*, int);
+    virtual void trainUnit(int, int, int);
+    virtual void cancelTrain(int, int, int, int);
+    virtual void registerTrain(int, int, int, int);
+    virtual void research(int, int, int);
+    virtual void cancelResearch(int, int, int, int);
+    virtual void registerResearch(int, int, int);
+    virtual void taskTrader(int, int, int, float, float);
     virtual void taskResourceGatherer(int unitID, int targetID, int ownerID,
                                       float x, float y);
 };
@@ -222,6 +224,7 @@ public:
     void taskElephantGatherers(int mainHunterID, int numberToTask, int targetID);
 };
 
+#endif
 void TribeTacticalAIModule::taskElephantGatherers(
     int mainHunterID, int numberToTask, int targetID)
 {
@@ -309,3 +312,6 @@ afterAdd:
         }
     }
 }
+#else
+void TribeTacticalAIModule::taskElephantGatherers(int, int, int) {}
+#endif

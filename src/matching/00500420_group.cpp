@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // 00500420 TribeTacticalAIModule::group(int,int,int,int)
 // Source: taitacmd.cpp lines 11331-11342
 // Attempt log:
@@ -5,6 +6,7 @@
 // - Exact match: keep target/action/type as locals loaded in that order and use
 //   explicit top null/bottom sentinel breaks for the list walk.
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class TacticalAIGroup {
 public:
     virtual void destroy(int flags);
@@ -25,6 +27,7 @@ public:
     TacticalAIGroup* group(int id, int type, int action, int target);
 };
 
+#endif
 TacticalAIGroup* TribeTacticalAIModule::group(int id, int type, int action, int target)
 {
     TacticalAIGroup* group;
@@ -60,3 +63,8 @@ TacticalAIGroup* TribeTacticalAIModule::group(int id, int type, int action, int 
     }
     return 0;
 }
+#else
+TacticalAIGroup* TribeTacticalAIModule::group(int id, int type, int action, int target) {
+    return 0;
+}
+#endif

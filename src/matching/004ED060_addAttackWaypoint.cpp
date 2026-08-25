@@ -13,6 +13,7 @@ struct Waypoint3D {
     float pad;
 };
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class TacticalAIGroup {
 public:
     char pad_00[0x1D4];
@@ -22,7 +23,7 @@ public:
 
     void addAttackWaypoint(float x, float y);
 };
-
+#endif
 void TacticalAIGroup::addAttackWaypoint(float x, float y)
 {
     if (this->numberAttackWaypointsValue < 14) {

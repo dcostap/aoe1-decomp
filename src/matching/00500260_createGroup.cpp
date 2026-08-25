@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // 00500260 TribeTacticalAIModule::createGroup(int)
 // Source: taitacmd.cpp lines 11261-11280
 // FLAGS: /GX required for VC5 C++ new/constructor EH registration.
@@ -9,6 +10,7 @@
 
 void* __cdecl operator new(unsigned int size);
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class TacticalAIGroup {
 public:
     virtual void destroy(int flags);
@@ -30,6 +32,7 @@ public:
     TacticalAIGroup* createGroup(int assignID);
 };
 
+#endif
 TacticalAIGroup* TribeTacticalAIModule::createGroup(int assignID)
 {
     TacticalAIGroup* group;
@@ -51,3 +54,8 @@ TacticalAIGroup* TribeTacticalAIModule::createGroup(int assignID)
     }
     return group;
 }
+#else
+TacticalAIGroup* TribeTacticalAIModule::createGroup(int assignID) {
+    return 0;
+}
+#endif

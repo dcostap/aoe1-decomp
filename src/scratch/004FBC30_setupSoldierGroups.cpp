@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // 004FBC30 TribeTacticalAIModule::setupSoldierGroups
 // Source: taitacmd.cpp lines 9347-9674
 //
@@ -77,6 +78,7 @@ void __cdecl operator_delete(void* ptr);
 extern "C" int __cdecl debug_rand(char* file, int line);
 extern "C" double __cdecl ceil(double value);
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class RGE_Static_Object;
 class RGE_Game_World;
 class RGE_Player;
@@ -167,7 +169,7 @@ public:
 
 class RGE_Game_World {
 public:
-    void* vtable_ptr;
+        unsigned long storage_00;
     unsigned long world_time;
     char gap_08[0x34];
 
@@ -182,7 +184,7 @@ public:
 
 class RGE_Static_Object {
 public:
-    void* vtable_ptr;
+        unsigned long storage_00;
     int id;
     char gap_08[0x30];
     float world_x;
@@ -215,7 +217,7 @@ public:
 
 class TacticalAIGroup {
 public:
-    void* vtable_ptr;
+        unsigned long storage_00;
     TacticalAIGroup* next;
     TacticalAIGroup* prev;
     char gap_0C[0x330 - 0x0C];
@@ -271,6 +273,7 @@ public:
     void setupSoldierGroups();
 };
 
+#endif
 void TribeTacticalAIModule::setupSoldierGroups()
 {
     ManagedArray_int groupsToRemove;
@@ -507,3 +510,6 @@ balance_groups:
     }
 
 }
+#else
+void TribeTacticalAIModule::setupSoldierGroups() {}
+#endif

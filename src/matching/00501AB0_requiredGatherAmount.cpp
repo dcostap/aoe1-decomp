@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 class TacticalAIModule {
 public:
     char gap_00[0xF0];
@@ -34,6 +35,7 @@ public:
     int requiredGatherAmount(int index);
 };
 
+#endif
 int TribeTacticalAIModule::requiredGatherAmount(int index) {
     if (this->desiredGathererDistribution[index] == 0) {
         return this->sn[0x94];

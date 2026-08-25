@@ -1,3 +1,5 @@
+#ifndef TAITACMD_SHARED_CONTEXT
+#ifndef TAITACMD_SHARED_CONTEXT
 class RGE_Static_Object;
 class TRIBE_Player;
 
@@ -26,6 +28,7 @@ public:
     unsigned char command_delete_object(RGE_Static_Object* object);
 };
 
+#endif
 int TribeTacticalAIModule::deleteUnit(int param_1) {
     RGE_Static_Object* object;
 
@@ -38,3 +41,6 @@ int TribeTacticalAIModule::deleteUnit(int param_1) {
 
     return 0;
 }
+#else
+int TribeTacticalAIModule::deleteUnit(int) { return 0; }
+#endif

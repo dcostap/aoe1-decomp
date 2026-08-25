@@ -192,6 +192,7 @@
 // - third pass: positive non-null target and positive play-number guards match the original fallthrough polarity. The play guard reduced the result to 2549/5679, with 100% ordered call alignment and 61.12% exact-block coverage.
 // - third pass: negative target guard, local declaration order, direct case4 distance assignment, and a corrected do/while scan were tested. The first three were duplicate or neutral; the do/while variant was rejected for size and call drift. Current source is the pinned 2549-byte result.
 
+#ifndef TAITACMD_SHARED_CONTEXT
 struct UnitAIModule;
 struct RGE_Master_Static_Object { char pad_00[0x28]; float los; char pad_2c[0x1e]; short owner_id; };
 struct RGE_Game_World { char pad_00[4]; unsigned long world_time; };
@@ -217,6 +218,8 @@ struct TribeMainDecisionAIModule {
     RGE_Static_Object* object(int id);
 };
 struct UnitAIModule { int currentAction(); int currentOrder(); int currentTargetType(); };
+
+#endif
 
 extern int __ftol();
 extern int debug_rand(char*, int);
@@ -319,6 +322,7 @@ static char s_log_87[] = "";
 static char s_log_88[] = "";
 static char s_log_89[] = "";
 
+#ifndef TAITACMD_SHARED_CONTEXT
 struct TribeTacticalAIModule {
     static void logGroupDebug(TribeTacticalAIModule*, int, char*, ...);
     int strategicNumber(int n);
@@ -338,7 +342,7 @@ struct TribeTacticalAIModule {
 
 class TacticalAIGroup {
 public:
-    void* vtable_ptr; TacticalAIGroup* next; TacticalAIGroup* prev; int idValue; int inUseValue;
+    unsigned long storage_00; TacticalAIGroup* next; TacticalAIGroup* prev; int idValue; int inUseValue;
     int typeValue; int subTypeValue; int unitsValue[40]; int unitsOriginalHitPointsValue[40];
     int numberUnitsValue; int desiredNumberUnitsValue; int commanderValue; int originalHitPointsValue; int originalUnitNumberValue;
     Waypoint locationValue; int actionValue; int targetValue; int targetTypeValue; Waypoint targetLocationValue;
@@ -353,6 +357,7 @@ public:
     void setGatherLocation(float x, float y, float z);
     int task(TribeTacticalAIModule* tactical, TribeMainDecisionAIModule* md, int taskID, int firstTime, int busyOK);
 };
+#endif
 
 int TacticalAIGroup::task(TribeTacticalAIModule* tactical, TribeMainDecisionAIModule* md, int taskID, int firstTime, int busyOK)
 {

@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 class TacticalAIGroup {
 public:
     char gap_0[0x1CC];
@@ -5,6 +6,7 @@ public:
 
     void incrementConsecutiveIdleUnitCount(int value);
 };
+#endif
 
 void TacticalAIGroup::incrementConsecutiveIdleUnitCount(int value) {
     this->field_1CC += value;

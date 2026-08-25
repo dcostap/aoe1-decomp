@@ -20,17 +20,20 @@
 
 extern "C" void __cdecl rge_write(int fd, void* data, int size); // 004802C0
 
+#ifndef TAITACMD_SHARED_CONTEXT
 struct Waypoint {
     int x;
     int y;
     int z;
     int unk;
 };
+#endif
 
 // TacticalAIGroup layout (partial, only serialized fields)
+#ifndef TAITACMD_SHARED_CONTEXT
 class TacticalAIGroup {
 public:
-    void* vtable_ptr;          // +0x00
+    virtual ~TacticalAIGroup(); // +0x00
     TacticalAIGroup* next;     // +0x04
     TacticalAIGroup* prev;     // +0x08
     int idValue;                         // +0x0C
@@ -72,6 +75,7 @@ public:
 
     int save(int fd);
 };
+#endif
 
 int TacticalAIGroup::save(int fd)
 {

@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // 00501690 TribeTacticalAIModule::unexploredArea
 // Attempt log:
 // 1: natural implementation from packet/decompiler, with typed member calls and switch offsets: compile failed due bad field_40 gap.
@@ -14,6 +15,7 @@
 // - Corrected distance_to_position to its observed three-float member ABI; this reduced the rebuilt drift to 6 bytes and restored the correct call relocation.
 // - Modeled the two saved coordinates as a natural XYPoint aggregate; this reproduced the proven adjacent stack homes and yielded MATCH (561/561 bytes).
 
+#ifndef TAITACMD_SHARED_CONTEXT
 struct XYPoint { int x; int y; };
 
 class RGE_Static_Object {
@@ -52,6 +54,7 @@ public:
     int unexploredArea(int player, XYPoint& out);
 };
 
+#endif
 int TribeTacticalAIModule::unexploredArea(int player, XYPoint& out)
 {
     RGE_Static_Object* unit = this->md->object(player);
@@ -98,3 +101,8 @@ int TribeTacticalAIModule::unexploredArea(int player, XYPoint& out)
     }
     return this->md->informationAI.unexploredPlayerLocation(player, &out) != 0;
 }
+#else
+int TribeTacticalAIModule::unexploredArea(int player, XYPoint& out) {
+    return 0;
+}
+#endif

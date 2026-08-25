@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // VA: 00502F30 TribeTacticalAIModule::processCoopAttack
 // PDB: taitacmd.cpp lines 13085-13106
 // Attempt log:
@@ -18,6 +19,7 @@
 // and uses EDI for current count. Calls, predicates, loop effects, stack cleanup, and
 // memory effects otherwise match exactly.
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class DiplomacyAIModule { public: void setStance(int player, int stance, int value); };
 class TacticalAIGroup {
 public:
@@ -28,7 +30,6 @@ public:
     int desiredNumberUnits();
     void setDesiredNumberUnits(int n);
 };
-class MasterAI { public: char gap_000[0x9DC]; DiplomacyAIModule diplomacyAI; };
 class TribeTacticalAIModule {
 public:
     char gap_000[0x0F0];
@@ -39,7 +40,7 @@ public:
     int attackEnabledValue;
     int processCoopAttack(int p1, int player, int p3, int p4);
 };
-
+#endif
 int TribeTacticalAIModule::processCoopAttack(int p1, int player, int p3, int p4) {
     if (attackEnabledValue == 0) {
         return 0;
@@ -62,3 +63,8 @@ int TribeTacticalAIModule::processCoopAttack(int p1, int player, int p3, int p4)
 
     return 1;
 }
+#else
+int TribeTacticalAIModule::processCoopAttack(int p1, int player, int p3, int p4) {
+    return 0;
+}
+#endif

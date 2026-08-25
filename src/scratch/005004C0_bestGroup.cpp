@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // VA: 005004C0 TribeTacticalAIModule::bestGroup (430 bytes)
 // PDB: taitacmd.cpp:11348-11391
 //
@@ -33,6 +34,7 @@
 
 #include <math.h>
 
+#ifndef TAITACMD_SHARED_CONTEXT
 struct XYPoint {
     int x;
     int y;
@@ -78,6 +80,7 @@ public:
                                XYPoint& point, int zone);
 };
 
+#endif
 TacticalAIGroup* TribeTacticalAIModule::bestGroup(
     int type, int action, int maxDistance, XYPoint& point, int zone)
 {
@@ -161,3 +164,9 @@ TacticalAIGroup* TribeTacticalAIModule::bestGroup(
 // - Tested id-first temporaries, direct and sentinel guards, loop forms,
 //   declaration order, point aliases, and label forms. None produced an exact
 //   result. The current source is restored to the pinned clean form.
+#else
+TacticalAIGroup* TribeTacticalAIModule::bestGroup(
+    int type, int action, int maxDistance, XYPoint& point, int zone) {
+    return 0;
+}
+#endif

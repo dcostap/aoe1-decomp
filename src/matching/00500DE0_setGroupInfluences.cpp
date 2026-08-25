@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // 00500DE0 TribeTacticalAIModule::setGroupInfluences
 // taitacmd.cpp
 // Attempt log:
@@ -52,6 +53,7 @@
 void* operator_new(unsigned int size);
 void __cdecl operator_delete(void* ptr);
 
+#ifndef TAITACMD_SHARED_CONTEXT
 struct Waypoint {
     float x;
     float y;
@@ -143,6 +145,7 @@ public:
     void setGroupInfluences(InfluenceMap& map);
 };
 
+#endif
 void TribeTacticalAIModule::setGroupInfluences(InfluenceMap& map)
 {
     int half;
@@ -215,3 +218,6 @@ void TribeTacticalAIModule::setGroupInfluences(InfluenceMap& map)
         } while (i < this->ungroupedSoldiers.numberValue);
     }
 }
+#else
+void TribeTacticalAIModule::setGroupInfluences(InfluenceMap&) {}
+#endif

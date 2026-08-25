@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // 004FDE00 TribeTacticalAIModule::setupBoatGroups
 // Source: taitacmd.cpp lines 10322-10681
 //
@@ -64,6 +65,7 @@ void* operator new(unsigned int size);
 void __cdecl operator_delete(void* ptr);
 extern "C" double __cdecl ceil(double value);
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class RGE_Static_Object;
 class RGE_Player;
 class MainDecisionAIModule;
@@ -240,6 +242,7 @@ public:
     void setupBoatGroups();
 };
 
+#endif
 void TribeTacticalAIModule::setupBoatGroups()
 {
     ManagedArray_int groupsToRemove;
@@ -482,3 +485,6 @@ balance_boat_groups:
         --numPotentialAGroups;
     }
 }
+#else
+void TribeTacticalAIModule::setupBoatGroups() {}
+#endif

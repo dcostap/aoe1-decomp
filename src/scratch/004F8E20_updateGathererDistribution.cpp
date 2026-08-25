@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // 004F8E20 TribeTacticalAIModule::updateGathererDistribution
 // Attempt log:
 // 1: broad reconstruction from packet: gatherer task counts, age/research special distribution, default weighted percentages, negative-share correction and final food/wood remainder split.
@@ -45,17 +46,16 @@
 // natural codegen was 1232 differing bytes but lost structural coverage; it
 // was restored. The tested scan and prologue variants were worse or duplicate.
 
+#ifndef TAITACMD_SHARED_CONTEXT
 typedef unsigned char uchar;
 
 class UnitAI { public: int currentAction(); int currentTarget(); };
 class ObjType { public: char gap[0x10]; short id; };
 class RGE_Static_Object { public: char gap0[4]; int gameID; ObjType* type; UnitAI* unitAI(); };
-class MainDecision { public: RGE_Static_Object* object(int); };
 class BuildAI { public: int readyToResearch(int,int); };
 class InfoAI { public: int numberGameIDsOwnedBy(int,int); };
 class ResourceAI { public: int resource(int) const; };
 struct UnitData { int id; int data1; int data2; int data3; int data4; int data5; };
-struct ManagedArrayInt { int* value; int numberValue; int desiredNumberValue; int maximumSizeValue; };
 
 class TribeTacticalAIModule {
 public:
@@ -76,12 +76,12 @@ public:
     int inAge(int);
     void updateGathererDistribution();
 };
-
 #define BUILD (*(BuildAI*)((char*)this->md + 0x104))
 #define INFO (*(InfoAI*)((char*)this->md + 0xCEC))
 #define RESOURCE (*(ResourceAI*)((char*)this->md + 0x10D7C))
 #define AGE_RES (*(int*)((char*)this->md + 0x122C))
 
+#endif
 void TribeTacticalAIModule::updateGathererDistribution()
 {
     int i;
@@ -210,3 +210,6 @@ void TribeTacticalAIModule::updateGathererDistribution()
         desiredGathererDistribution[0]+=other; desiredGathererDistribution[1]+=half;
     }
 }
+#else
+void TribeTacticalAIModule::updateGathererDistribution() {}
+#endif

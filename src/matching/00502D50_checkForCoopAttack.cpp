@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // 00502D50 TribeTacticalAIModule::checkForCoopAttack
 // Attempt log:
 // 1: Natural reconstruction from asm: timing gate, random coop-player choice, per-player attack-order checks; broad mismatch due extra locals and /100 divisor.
@@ -20,6 +21,7 @@ extern int debug_rand(const char* file, int line);
 static const char str_taitacmd_path[] =
     "C:\\msdev\\work\\age1_x1\\taitacmd.cpp";
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class RGE_Player;
 
 class RGE_Game_World {
@@ -106,6 +108,7 @@ public:
     void checkForCoopAttack(int p1, int p2, int p3);
 };
 
+#endif
 void TribeTacticalAIModule::checkForCoopAttack(int p1, int p2, int p3)
 {
     if (this->coopAttackEnabled != 1) return;
@@ -159,3 +162,6 @@ void TribeTacticalAIModule::checkForCoopAttack(int p1, int p2, int p3)
         ++idx;
     } while (idx < world->player_count);
 }
+#else
+void TribeTacticalAIModule::checkForCoopAttack(int, int, int) {}
+#endif

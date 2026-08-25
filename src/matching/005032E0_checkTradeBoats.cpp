@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // VA: 005032E0 TribeTacticalAIModule::checkTradeBoats (406 B)
 // PDB source: taitacmd.cpp:13224-13258
 // __thiscall, void
@@ -20,6 +21,7 @@
 void* operator new(unsigned int size);
 void operator delete(void* ptr);
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class RGE_Static_Object;
 class TribeMainDecisionAIModule;
 
@@ -116,6 +118,7 @@ public:
     void checkTradeBoats();
 };
 
+#endif
 void TribeTacticalAIModule::checkTradeBoats()
 {
     int i;
@@ -151,3 +154,6 @@ next_boat:
         } while (i < this->tradeBoats.numberValue);
     }
 }
+#else
+void TribeTacticalAIModule::checkTradeBoats() {}
+#endif

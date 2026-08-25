@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // VA: 004FD2F0 TribeTacticalAIModule::numberUngroupedSoldiers
 // Attempt log:
 // try 1: factored ensure helpers compiled out-of-line, text too small.
@@ -26,6 +27,7 @@ extern "C" {
     void operator_delete(void* ptr);
 }
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class TacticalAIGroup;
 
 template <class T>
@@ -94,6 +96,7 @@ public:
     int numberUngroupedSoldiers();
 };
 
+#endif
 int TribeTacticalAIModule::numberUngroupedSoldiers()
 {
     int rNum = 0;
@@ -113,3 +116,8 @@ int TribeTacticalAIModule::numberUngroupedSoldiers()
     }
     return rNum;
 }
+#else
+int TribeTacticalAIModule::numberUngroupedSoldiers() {
+    return 0;
+}
+#endif

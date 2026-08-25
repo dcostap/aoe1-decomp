@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // VA: 004EA860, TacticalAIGroup::TacticalAIGroup, 292 bytes
 // Source: taitacmd.cpp lines 128-139
 // MATCH: 292/292 bytes, 0% positional diff
@@ -5,6 +6,7 @@
 typedef unsigned char uchar;
 typedef unsigned long ulong;
 
+#ifndef TAITACMD_SHARED_CONTEXT
 struct Waypoint {
     int x, y, z;
     int unk;
@@ -12,7 +14,7 @@ struct Waypoint {
 
 class TacticalAIGroup {
 public:
-    void* vtable_ptr; // 0x00
+    unsigned long storage_00; // 0x00
     TacticalAIGroup* next; // 0x04
     TacticalAIGroup* prev; // 0x08
     int idValue; // 0x0C
@@ -59,6 +61,7 @@ public:
 
     TacticalAIGroup();
 };
+#endif
 
 TacticalAIGroup::TacticalAIGroup()
 {
@@ -89,8 +92,6 @@ TacticalAIGroup::TacticalAIGroup()
     lastAttackRoundupTime = 0;
     lastAddedUnitTimeValue = 0;
 
-    vtable_ptr = (void*)0x5756D8;
-
     setTargetLocation(-1.0f, -1.0f, -1.0f);
     setGatherLocation(-1.0f, -1.0f, -1.0f);
     setRetreatLocation(-1.0f, -1.0f, -1.0f);
@@ -107,3 +108,6 @@ TacticalAIGroup::TacticalAIGroup()
         objectsToDestroyValue[i] = -1;
     }
 }
+#else
+TacticalAIGroup::TacticalAIGroup() {}
+#endif

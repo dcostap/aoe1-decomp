@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // Attempt log for 004FFAE0 TribeTacticalAIModule::numberUngroupedTradeBoats
 // try 1: natural decompiler-shaped reconstruction with ManagedArray fields; exact size but 90.20% positional, compiler made 1-based loop and omitted EBP save.
 // try 2: write closer to decompiler/original using local_4 index and allocation size local_4*4+4 directly; first mismatch moved to offset 16, exact size.
@@ -19,6 +20,7 @@ extern "C" {
     void operator_delete(void* ptr);
 }
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class TacticalAIGroup;
 
 template <class T>
@@ -97,6 +99,7 @@ public:
     int numberUngroupedTradeBoats();
 };
 
+#endif
 int TribeTacticalAIModule::numberUngroupedTradeBoats()
 {
     int rNum = 0;
@@ -116,3 +119,8 @@ int TribeTacticalAIModule::numberUngroupedTradeBoats()
     }
     return rNum;
 }
+#else
+int TribeTacticalAIModule::numberUngroupedTradeBoats() {
+    return 0;
+}
+#endif

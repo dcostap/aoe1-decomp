@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // 004F62C0 TribeTacticalAIModule::notify
 // Source: taitacmd.cpp lines 6388-6886
 // Baseline reconstruction: direct-command notification, attack-response state,
@@ -62,6 +63,7 @@
 
 #include <math.h>
 
+#ifndef TAITACMD_SHARED_CONTEXT
 typedef unsigned char uchar;
 typedef unsigned long ulong;
 
@@ -72,7 +74,6 @@ extern "C" ulong __cdecl debug_timeGetTime(char* file, int line);
 struct XYZPoint { int x; int y; int z; };
 struct XYPoint { int x; int y; };
 struct Waypoint { int x; int y; int z; int unk; };
-struct XYZBYTEPoint;
 struct Path;
 struct RGE_Armor_Weapon_Info;
 struct RGE_Action_Object;
@@ -132,7 +133,6 @@ public:
     }
 
 };
-
 struct UnitData {
     int id;
     int data1;
@@ -141,7 +141,6 @@ struct UnitData {
     int data4;
     int data5;
 };
-
 class UnitAIModule {
 public:
     int currentOrder();
@@ -149,7 +148,6 @@ public:
     int currentTarget();
     int currentOrderPriority();
 };
-
 class RGE_Player {
 public:
     virtual ~RGE_Player();
@@ -242,7 +240,6 @@ public:
 
     int computerPlayer();
 };
-
 class RGE_Game_World {
 public:
     virtual ~RGE_Game_World();
@@ -262,13 +259,11 @@ public:
     RGE_Static_Object* object(int id);
     int difficultyLevel();
 };
-
 class RGE_Master_Static_Object {
 public:
     char gap_00[0x10];
     short id;
 };
-
 class RGE_Static_Object {
 public:
     virtual ~RGE_Static_Object();
@@ -437,7 +432,6 @@ public:
     UnitAIModule* unitAI();
     float distance_to_object(RGE_Static_Object* object);
 };
-
 class TacticalAIGroup {
 public:
     virtual ~TacticalAIGroup();
@@ -487,12 +481,10 @@ public:
     void setAction(int value);
     int task(TribeTacticalAIModule*, TribeMainDecisionAIModule*, int, int, int);
 };
-
 class ObjectMemory {
 public:
     int id;
 };
-
 class TribeInformationAIModule {
 public:
     ObjectMemory* artifactToCapture(int player);
@@ -502,7 +494,6 @@ public:
                            uchar player, short value, uchar value2,
                            ulong time, int object);
 };
-
 class DiplomacyAIModule {
 public:
     void changeStance(int player, int stance, int amount);
@@ -510,22 +501,18 @@ public:
     void setChangeable(int player, uchar value);
     void setRelation(int player, int relation);
 };
-
 class MainDecisionAIModule {
 public:
     char gap_00[0xF0];
     RGE_Static_Object* object(int, int, int, int, int, int, int, int, int, int);
 };
-
 class TacticalAIModule {
 public:
     char gap_00[0xF0];
 };
-
 struct PlacementState { char bytes[0x130]; };
 struct ResourceItem { char bytes[0x70]; };
 struct AttackState { char bytes[0x2C]; };
-
 class TribeTacticalAIModule : public TacticalAIModule {
 public:
     TribeMainDecisionAIModule* md;
@@ -621,6 +608,7 @@ public:
     void revokeTributeAlliance();
 };
 
+#endif
 void TribeTacticalAIModule::notify(int param_1, int param_2, int param_3,
                                    long param_4, long param_5, long param_6)
 {
@@ -984,3 +972,6 @@ notify_relic:
         if (this->workingArea.numberValue <= relicIndex) return;
     } while (1);
 }
+#else
+void TribeTacticalAIModule::notify(int, int, int, long, long, long) {}
+#endif

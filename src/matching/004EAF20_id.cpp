@@ -4,15 +4,18 @@
 
 #include <stddef.h>
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class Waypoint {
 public:
     int x;
     int y;
 };
+#endif
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class TacticalAIGroup {
 public:
-    void* vtable; // +0x0
+    virtual ~TacticalAIGroup();
     TacticalAIGroup* next; // +0x4
     TacticalAIGroup* prev; // +0x8
     int idValue; // +0xC
@@ -52,6 +55,7 @@ public:
     unsigned long lastAttackRoundupTime; // +0x328
     unsigned long lastAddedUnitTimeValue; // +0x32C
 };
+#endif
 
 int TacticalAIGroup::id() const
 {

@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // Function: TribeTacticalAIModule::isFarmer
 // VA: 005020A0
 // Source: taitacmd.cpp lines 12502-12511
@@ -7,6 +8,7 @@
 //   declaring RGE_Static_Object::unitAI() and UnitAIModule::currentAction() as
 //   non-virtual members gives the original ECX=this direct-call shape.
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class UnitAIModule {
 public:
     int currentAction();
@@ -31,6 +33,7 @@ public:
     int isFarmer(RGE_Static_Object* obj);
 };
 
+#endif
 int TribeTacticalAIModule::isFarmer(RGE_Static_Object* obj)
 {
     UnitAIModule* ai;
@@ -50,3 +53,8 @@ int TribeTacticalAIModule::isFarmer(RGE_Static_Object* obj)
     }
     return 0;
 }
+#else
+int TribeTacticalAIModule::isFarmer(RGE_Static_Object* obj) {
+    return 0;
+}
+#endif

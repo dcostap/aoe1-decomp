@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // 004F95B0 TribeTacticalAIModule::highLevelTaskGatherer
 // taitacmd.cpp: 7988-8225
 // Attempt log:
@@ -47,6 +48,7 @@
 
 extern float DAT_005756f0;
 
+#ifndef TAITACMD_SHARED_CONTEXT
 typedef unsigned char uchar;
 typedef unsigned long ulong;
 
@@ -134,6 +136,7 @@ struct TribeTacticalAIModule {
     int highLevelTaskGatherer(int id, ulong param);
 };
 
+#endif
 int TribeTacticalAIModule::highLevelTaskGatherer(int id, ulong param)
 {
     UnitData* gatherer;
@@ -269,3 +272,6 @@ success:
 fail:
     return 0;
 }
+#else
+int TribeTacticalAIModule::highLevelTaskGatherer(int, unsigned long) { return 0; }
+#endif

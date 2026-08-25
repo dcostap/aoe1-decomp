@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // VA: 004F9AD0 TribeTacticalAIModule::taskBuilder
 // PDB source: taitacmd.cpp lines 8257-8344
 // attempt log:
@@ -27,21 +28,52 @@ typedef unsigned long ulong;
 struct XYPoint { int x; int y; };
 struct XYZPoint { int x; int y; int z; };
 struct PlacementState { char gap[0x130]; };
-class BuildItem { public: virtual void vd(int); int typeID(); int uniqueID(); float x(); float y(); void setInProgress(int); void setBuilt(int); };
+class BuildItem { public: virtual ~BuildItem(); int typeID(); int uniqueID(); float x(); float y(); void setInProgress(int); void setBuilt(int); };
 class ConstructionItem { public: virtual ~ConstructionItem(); int typeID(); float x(); float y(); };
 class TribeBuildAIModule { public: char gap[0x104]; BuildItem* nextBuildableItem(int); };
 class TribeConstructionAIModule { public: char gap[0x6c4]; ConstructionItem* placeStructure(BuildItem*, int, PlacementState&, ulong); };
-#define VPAD1(n) virtual void vpad##n();
-#define VPAD2(n) VPAD1(n) VPAD1(n##_a)
-#define VPAD4(n) VPAD2(n) VPAD2(n##_b)
-#define VPAD8(n) VPAD4(n) VPAD4(n##_c)
-#define VPAD16(n) VPAD8(n) VPAD8(n##_d)
-#define VPAD32(n) VPAD16(n) VPAD16(n##_e)
-#define VPAD64(n) VPAD32(n) VPAD32(n##_f)
-class RGE_Static_Object { public: VPAD64(0) VPAD32(64) VPAD4(96) VPAD1(100) VPAD1(101) virtual int task(XYZPoint,int,int,int,int,int,int); char gap04[0x3c]; float z; void* unitAI(); };
+#ifndef TAITACMD_SHARED_CONTEXT
+class RGE_Static_Object {
+public:
+    virtual ~RGE_Static_Object();
+    virtual void recycle_in_to_game(); virtual void recycle_out_of_game();
+    virtual void draw(); virtual void shadow_draw(); virtual void normal_draw();
+    virtual void draw_front_frame(); virtual void draw_back_frame(); virtual void draw_frame();
+    virtual void update(); virtual void check_damage_sprites(); virtual void rehook();
+    virtual void save(int); virtual float teleport(float, float, float);
+    virtual void new_sprite(); virtual void add_overlay_sprite(); virtual void remove_overlay_sprite();
+    virtual void change_ownership(); virtual void modify(float, unsigned char);
+    virtual void modify_delta(float, unsigned char); virtual void modify_percent(float, unsigned char);
+    virtual void transform(); virtual void copy_obj(); virtual void set_object_state(unsigned char);
+    virtual void remove_visible_resource(); virtual void create_doppleganger_when_dying();
+    virtual void destroy_obj(); virtual void die_die_die(); virtual void damage();
+    virtual float calculateDamage(); virtual void rotate(long); virtual unsigned char can_attack();
+    virtual void set_attribute(short, float); virtual void set_attribute_amount(float, unsigned char, unsigned char);
+    virtual int heal(int, int); virtual unsigned char heal(float); virtual int canRepair();
+    virtual void notify_of_relation(long, unsigned char); virtual void do_command(); virtual void move_to();
+    virtual void work(); virtual void stop(); virtual void set_attack(); virtual void play_command_sound();
+    virtual void play_move_sound(); virtual void new_angle(float); virtual RGE_Static_Object* spawn_death_obj();
+    virtual void* get_command_master(); virtual void set_being_worked_on(); virtual void release_being_worked_on();
+    virtual unsigned char is_moving(); virtual RGE_Static_Object* get_target_obj(); virtual void enter_obj();
+    virtual void exit_obj(); virtual int explore_terrain(); virtual void unexplore_terrain();
+    virtual void* get_los_table(); virtual int inAttackRange(); virtual unsigned char underAttack();
+    virtual void setUnderAttack(unsigned char); virtual float calc_attack_modifier(); virtual float getSpeed();
+    virtual float getAngle(); virtual float maximumSpeed(); virtual float rateOfFire();
+    virtual float damageCapability(); virtual float damageCapability(int); virtual float weaponRange();
+    virtual float minimumWeaponRange(); virtual int passableTile(float, float, int);
+    virtual int currentTargetID(); virtual float currentTargetX(); virtual float currentTargetY();
+    virtual float currentTargetZ(); virtual void setWaitingToMove(unsigned char); virtual unsigned char waitingToMove();
+    virtual unsigned char actionState(); virtual unsigned char keepGatheringWhenObjectIsOut(int);
+    virtual unsigned char produceWhenKilledBy(int); virtual unsigned char useSameZoneDropsite();
+    virtual void logDebug(const char*, ...); virtual void notify(int, int, int, long, long, long);
+    virtual int task(XYZPoint, int, int, int, int, int, int);
+    char gap04[0x3c];
+    union { float z; float world_z; };
+    void* unitAI();
+};
+#endif
 class RGE_Game_World { public: RGE_Static_Object* object(int); };
 class RGE_Player { public: char gap0[0x3c]; RGE_Game_World* world; };
-class AiPlayer { public: VPAD32(a) VPAD16(b) VPAD8(c) VPAD4(d) VPAD2(e) VPAD1(f) virtual void builderTask(int,int,float,float,int); };
 struct ModuleData { char gap0[0xf0]; RGE_Player* player; char gapf4[0x10]; TribeBuildAIModule buildAI; char gap608[0x4bc]; TribeConstructionAIModule constructionAI; char gapD88[0x117e4]; AiPlayer* aiPlayer; };
 void* operator_new(unsigned int); void operator_delete(void*);
 
@@ -52,7 +84,6 @@ public:
     int civilian(XYPoint*, int, int, int, int, int);
     int taskBuilder(int id, BuildItem* item, ConstructionItem* con, ulong flags);
 };
-
 int TribeTacticalAIModule::taskBuilder(int id, BuildItem* item, ConstructionItem* con, ulong flags) {
     if (item == 0) {
         item = this->md->buildAI.nextBuildableItem(0);
@@ -75,7 +106,7 @@ int TribeTacticalAIModule::taskBuilder(int id, BuildItem* item, ConstructionItem
     }
     int tx = (int)con->x();
     int ty = (int)con->y();
-    int tz = (int)obj->z;
+    int tz = (int)obj->world_z;
     XYZPoint p; p.x = tx; p.y = ty; p.z = tz; if (obj->task(p, 0x40000000, -1, 0, 1, -1, -1) == 0) {
         if (con != 0) delete con;
         return 0;
@@ -119,3 +150,6 @@ have:
     if (con != 0) delete con;
     return 1;
 }
+#else
+int TribeTacticalAIModule::taskBuilder(int, BuildItem*, ConstructionItem*, unsigned long) { return 0; }
+#endif

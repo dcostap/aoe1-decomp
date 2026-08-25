@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 struct GathererEntry {
     int id;
     char data[20];
@@ -11,6 +12,7 @@ public:
     int isGatherer(int unitId);
 };
 
+#endif
 int TribeTacticalAIModule::isGatherer(int unitId) {
     int i;
 

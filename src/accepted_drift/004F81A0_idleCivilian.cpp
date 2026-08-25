@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // VA: 004F81A0 TribeTacticalAIModule::idleCivilian
 // Attempt log:
 // try 1: 004DF520 query returned no normal target, so selected next eligible unclaimed normal after assigned/prior targets: 004F81A0 idleCivilian.
@@ -57,6 +58,7 @@
 void* operator_new(unsigned int size);
 void operator_delete(void* ptr);
 
+#ifndef TAITACMD_SHARED_CONTEXT
 struct XYPoint {
     int x;
     int y;
@@ -157,6 +159,7 @@ public:
     int idleCivilian(int mode, XYPoint& position, int chooseMode);
 };
 
+#endif
 int TribeTacticalAIModule::idleCivilian(int mode, XYPoint& position, int chooseMode)
 {
     float bestUnitDistance;
@@ -241,3 +244,8 @@ second_next:
     }
     return bestUnitID;
 }
+#else
+int TribeTacticalAIModule::idleCivilian(int mode, XYPoint& position, int chooseMode) {
+    return 0;
+}
+#endif

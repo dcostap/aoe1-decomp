@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // 004F5FB0 TribeTacticalAIModule::evaluateBuildListInsertions
 // taitacmd.cpp:6194-6250, 327 bytes
 //
@@ -16,6 +17,7 @@
 // - The two gotos retain binary-proven shared granary/queue tails; all data and
 //   calls remain named typed members rather than raw-offset plumbing.
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class RGE_Game_World {
 public:
     virtual ~RGE_Game_World();
@@ -95,6 +97,7 @@ public:
     void evaluateBuildListInsertions();
 };
 
+#endif
 void TribeTacticalAIModule::evaluateBuildListInsertions()
 {
     int one = 1;
@@ -140,3 +143,6 @@ after_granary:
     this->checkForBuildInsertion(0x32, one, 0);
     this->checkForBuildInsertion(0x4F, one, 0);
 }
+#else
+void TribeTacticalAIModule::evaluateBuildListInsertions() {}
+#endif

@@ -1,10 +1,12 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // VA: 005008A0 TribeTacticalAIModule::groupUnitIsIn (71B)
 // PDB source: taitacmd.cpp lines 11465-11473
 // Probe 5: direct `while (group != end)` with an inner null guard.
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class TacticalAIGroup {
 public:
-    void* vtable_ptr;
+    unsigned long storage_00;
     TacticalAIGroup* next;
     TacticalAIGroup* prev;
     int idValue;
@@ -27,6 +29,7 @@ public:
     TacticalAIGroup* groupUnitIsIn(int unit);
 };
 
+#endif
 TacticalAIGroup* TribeTacticalAIModule::groupUnitIsIn(int unit) {
     TacticalAIGroup* group = this->groups.next;
     TacticalAIGroup* end = &this->groups;
@@ -43,3 +46,8 @@ TacticalAIGroup* TribeTacticalAIModule::groupUnitIsIn(int unit) {
 
     return 0;
 }
+#else
+TacticalAIGroup* TribeTacticalAIModule::groupUnitIsIn(int unit) {
+    return 0;
+}
+#endif

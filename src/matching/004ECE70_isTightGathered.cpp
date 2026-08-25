@@ -6,11 +6,14 @@
 // - Exact match with precondition `while (i < 40)` and natural float clamp
 //   `dist -= 2.0f; if (dist < 0.0f) dist = 0.0f; if (dist > 1.0) return 0;`.
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class UnitAIModule {
 public:
     int currentAction();
 };
+#endif
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class RGE_Static_Object {
 public:
     char gap_00[8];
@@ -19,14 +22,18 @@ public:
     UnitAIModule* unitAI();
     float distance_to_position(float x, float y, float z);
 };
+#endif
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class TribeMainDecisionAIModule {
 public:
     RGE_Static_Object* object(int id);
 };
+#endif
 
 class TribeTacticalAIModule;
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class TacticalAIGroup {
 public:
     char gap_00[0x1C];
@@ -39,6 +46,7 @@ public:
     int removeUnitByIndex(int index, TribeMainDecisionAIModule* md);
     int isTightGathered(TribeTacticalAIModule* tactical, TribeMainDecisionAIModule* md);
 };
+#endif
 
 int TacticalAIGroup::isTightGathered(TribeTacticalAIModule* tactical, TribeMainDecisionAIModule* md)
 {

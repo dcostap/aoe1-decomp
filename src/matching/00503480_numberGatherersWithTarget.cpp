@@ -1,3 +1,5 @@
+#ifndef TAITACMD_SHARED_CONTEXT
+#ifndef TAITACMD_SHARED_CONTEXT
 struct GathererEntry {
     char gap_00[0x10];
     int target;
@@ -13,6 +15,7 @@ public:
     int numberGatherersWithTarget(int targetId);
 };
 
+#endif
 int TribeTacticalAIModule::numberGatherersWithTarget(int targetId) {
     int count;
     int remaining;
@@ -31,3 +34,6 @@ int TribeTacticalAIModule::numberGatherersWithTarget(int targetId) {
     }
     return count;
 }
+#else
+int TribeTacticalAIModule::numberGatherersWithTarget(int) { return 0; }
+#endif

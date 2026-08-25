@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // 004F21F0 TribeTacticalAIModule::taskActiveSoldiers(unsigned long,unsigned long)
 // PDB: taitacmd.cpp:3769-5404
 // First pass: start from the full repo-local Ghidra approximation, kept below as
@@ -196,7 +197,7 @@ TribeTacticalAIModule::taskActiveSoldiers(TribeTacticalAIModule *this,ulong para
   float gatherX;
   float gatherY_fffffff8;
   undefined1 auStack_4 [4];
-  
+
   this_02 = (this->groups).next;
   if (this->nextActiveSoldierGroupToTaskValue != -1) {
     while (((this_02 != &this->groups && (this_02 != (TacticalAIGroup *)0x0)) &&
@@ -1529,57 +1530,6 @@ public:
     void logCommonHistory(char*, ...);
 };
 
-#define VPAD1(n) virtual void vpad##n();
-#define VPAD2(n) VPAD1(n) VPAD1(n##_1)
-#define VPAD4(n) VPAD2(n) VPAD2(n##_2)
-#define VPAD8(n) VPAD4(n) VPAD4(n##_4)
-#define VPAD16(n) VPAD8(n) VPAD8(n##_8)
-#define VPAD32(n) VPAD16(n) VPAD16(n##_16)
-#define VPAD64(n) VPAD32(n) VPAD32(n##_32)
-
-class VPlayerIsEnemy {
-public:
-    VPAD4(0) VPAD2(4) VPAD1(6)
-    virtual int isEnemy(int player_id); // +0x1c
-};
-
-// RGE_Static_Object virtual-call views.  Keep these separate from the flat data
-// layout below: the real object already owns the vptr at +0, while each view
-// exposes only the binary-observed slot needed by a particular call surface.
-class VObjWeaponRange {
-public:
-    VPAD64(0) VPAD2(64) VPAD1(66)
-    virtual float weaponRange(); // +0x10c
-};
-class VObjCanMove {
-public:
-    VPAD64(0) VPAD32(64) VPAD4(96) VPAD2(100)
-    virtual int canPath(XYZPoint point, float range, int target_id, float* out,
-                        int a, int b, int c); // +0x198
-};
-class VObjCanAttack {
-public:
-    VPAD64(0) VPAD32(64) VPAD4(96) VPAD1(100)
-    virtual int canAttack(int target_id, float range, int a, int b, int c, int d); // +0x194
-};
-class VObjCanPath {
-public:
-    VPAD64(0) VPAD32(64) VPAD8(96) VPAD1(104)
-    virtual int canPathWithAdditionalPassability(XYZPoint point, float range, int target_id,
-                                                  float* out, int a, int b, int c,
-                                                  int d, int e); // +0x1a4
-};
-class VObjPathPoint {
-public:
-    VPAD64(0) VPAD32(64) VPAD8(96) VPAD2(104)
-    virtual int findFirstTerrainAlongExceptionPath(int mode, float* out, float* aux); // +0x1a8
-};
-class VObjFindAvoidancePath {
-public:
-    VPAD64(0) VPAD32(64) VPAD16(96) VPAD2(112) VPAD1(114)
-    virtual Path* findAvoidancePath(XYZPoint* point, float range, int mode); // +0x1cc
-};
-
 class AIPlayStatus {};
 class RGE_Action { public: char gap_00[0x0C]; unsigned char state; };
 class RGE_Action_List { public: unsigned char have_action(); RGE_Action* get_action(); };
@@ -1619,7 +1569,7 @@ public:
 
 class RGE_Static_Object {
 public:
-    void* vtable_ptr;              // +0x00
+    unsigned long storage_00;      // +0x00
     int id;                        // +0x04
     MasterObject* master_obj;      // +0x08
     RGE_Player* owner;             // +0x0C
@@ -1646,6 +1596,7 @@ public:
     int canMoveTo(int x, int y, int z, float distance);
     int canPathTo(int x, int y, int z, float distance, int target_id, void* out, int a, int b, int c, int d, int e);
     int pathPoint(int mode, float* out, void* aux);
+    int canAttack(int target_id, float range, int a, int b, int c, int d);
 };
 
 class TribeInformationAIModule {
@@ -1784,6 +1735,14 @@ public:
     void taskActiveSoldiers(ulong param_1, ulong param_2);
 };
 #endif
+
+typedef RGE_Player VPlayerIsEnemy;
+typedef RGE_Static_Object VObjWeaponRange;
+typedef RGE_Static_Object VObjCanMove;
+typedef RGE_Static_Object VObjCanAttack;
+typedef RGE_Static_Object VObjCanPath;
+typedef RGE_Static_Object VObjPathPoint;
+typedef RGE_Static_Object VObjFindAvoidancePath;
 
 void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
 {
@@ -3180,3 +3139,6 @@ ContinueLoop:
     }
     this->nextActiveSoldierGroupToTaskValue = -1;
 }
+#else
+void TribeTacticalAIModule::taskActiveSoldiers(unsigned long, unsigned long) {}
+#endif

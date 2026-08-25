@@ -10,6 +10,7 @@
 //   scan/growth source and typed mission virtual surface.  Pending checker
 //   result.
 
+#ifndef TAITACMD_SHARED_CONTEXT
 struct Waypoint {
     float x;
     float y;
@@ -20,36 +21,40 @@ struct ManagedIntArray {
     int* value;
     int numberValue;
     int desiredNumberValue;
-    int maximumSize;
+    int maximumSizeValue;
 };
 
-struct MissionSubObject {
-    virtual ~MissionSubObject();
-    virtual void slot_04();
-    virtual void slot_08();
-    virtual void slot_0C();
-    virtual void slot_10();
-    virtual void slot_14();
-    virtual void slot_18();
-    virtual void slot_1C();
-    virtual void slot_20();
-    virtual void slot_24();
-    virtual void slot_28();
-    virtual void slot_2C();
-    virtual void slot_30();
-    virtual void slot_34();
-    virtual void slot_38();
-    virtual void slot_3C();
-    virtual void slot_40();
-    virtual void slot_44();
-    virtual void slot_48();
-    virtual void play(int id, int* object, int x, int y, int z) = 0;
+class RGE_Static_Object;
+
+struct RGE_Player {
+    virtual ~RGE_Player();
+    virtual void set_game_status(unsigned char);
+    virtual void do_resign(int);
+    virtual void changeToHumanPlayer();
+    virtual void changeToComputerPlayer();
+    virtual char* aiStatus(int);
+    virtual int isEnemy(int);
+    virtual int isAlly(int);
+    virtual int isNeutral(int);
+    virtual int isAllNeutral();
+    virtual void setDiplomaticStance(int, int);
+    virtual void loadAIInformation(char*, char*, char*, int, int);
+    virtual void sendUnitAIOrder(int, int, int, int, int, float, float, float, float, int, int, int);
+    virtual void processAIOrder(int, int, int, int, int, float, float, float, float, int, int, int);
+    virtual void kickAI(int);
+    virtual int strategicNumber(int);
+    virtual void sendGameOrder(RGE_Static_Object*, RGE_Static_Object*, float, float);
+    virtual void sendAddWaypointCommand(int, void*, int);
+    virtual void processAddWaypointCommand(int, void*, int);
+    virtual void sendPlayCommand(int, int*, int, int, int);
+    char gap_04[0x46];
+    short id;
 };
 
 struct TribeMainDecisionAIModule {
     virtual ~TribeMainDecisionAIModule();
     char gap_04[0xEC];
-    MissionSubObject* missionObj;
+    RGE_Player* player;
 };
 
 class TribeTacticalAIModule {
@@ -58,13 +63,14 @@ public:
     char gap_04[0xEC];
     TribeMainDecisionAIModule* md;
     char gap_F4[0xD58 - 0xF4];
-    ManagedIntArray unitsTasked;
+    ManagedIntArray unitsTaskedThisUpdate;
 
     int taskPlay(int param_1, int* param_2, int param_3, int param_4,
                  int param_5, Waypoint* waypoints, int waypointCount);
     void addWaypoint(int id, int x, int y);
 };
 
+#endif
 int TribeTacticalAIModule::taskPlay(int param_1, int* param_2, int param_3,
                                     int param_4, int param_5,
                                     Waypoint* waypoints, int waypointCount)
@@ -77,26 +83,26 @@ int TribeTacticalAIModule::taskPlay(int param_1, int* param_2, int param_3,
         } while (waypointCount != 0);
     }
 
-    ManagedIntArray& arr = unitsTasked;
+    ManagedIntArray& arr = unitsTaskedThisUpdate;
     int i;
     for (i = 0; i < arr.numberValue; i++) {
-        if (i >= arr.maximumSize)
+        if (i >= arr.maximumSizeValue)
             break;
         if (arr.value[i] == param_1)
             goto dispatch;
     }
 
-    if (arr.numberValue > arr.maximumSize - 1) {
+    if (arr.numberValue > arr.maximumSizeValue - 1) {
         int newSize = arr.numberValue + 1;
         int* newArray = new int[newSize];
         if (newArray != 0) {
             int j;
-            for (j = 0; j < arr.maximumSize && j < newSize; j++) {
+            for (j = 0; j < arr.maximumSizeValue && j < newSize; j++) {
                 newArray[j] = arr.value[j];
             }
             delete[] arr.value;
             arr.value = newArray;
-            arr.maximumSize = newSize;
+            arr.maximumSizeValue = newSize;
         }
     }
 
@@ -104,6 +110,6 @@ int TribeTacticalAIModule::taskPlay(int param_1, int* param_2, int param_3,
     arr.numberValue++;
 
 dispatch:
-    md->missionObj->play(param_1, param_2, param_3, param_4, param_5);
+    md->player->sendPlayCommand(param_1, param_2, param_3, param_4, param_5);
     return 1;
 }

@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // VA: 004FF8E0 TribeTacticalAIModule::numberUngroupedFishingBoats
 // Attempt log:
 // 1: adapted known numberUngroupedSoldiers source to fishingBoats offsets: correct size 510 but broad 90.4% positional diff; compiler omitted push ebp and used ebp as newMax.
@@ -23,6 +24,7 @@ extern "C" {
     void operator_delete(void* ptr);
 }
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class TacticalAIGroup;
 
 template <class T>
@@ -100,6 +102,7 @@ public:
     int numberUngroupedFishingBoats();
 };
 
+#endif
 int TribeTacticalAIModule::numberUngroupedFishingBoats()
 {
     int rNum = 0;
@@ -119,3 +122,8 @@ int TribeTacticalAIModule::numberUngroupedFishingBoats()
     }
     return rNum;
 }
+#else
+int TribeTacticalAIModule::numberUngroupedFishingBoats() {
+    return 0;
+}
+#endif

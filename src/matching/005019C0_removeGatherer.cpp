@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // VA: 005019C0 removeGatherer (192B)
 // taitacmd.cpp
 // Attempt log:
@@ -10,6 +11,7 @@
 
 extern "C" void __cdecl logCommonHistory(void* module, const char* text);
 
+#ifndef TAITACMD_SHARED_CONTEXT
 struct UnitData {
     int id;
     int data1;
@@ -28,6 +30,7 @@ public:
     int removeGatherer(int id);
 };
 
+#endif
 int TribeTacticalAIModule::removeGatherer(int id)
 {
     UnitData* pU;
@@ -69,3 +72,8 @@ int TribeTacticalAIModule::removeGatherer(int id)
     }
     return 0;
 }
+#else
+int TribeTacticalAIModule::removeGatherer(int id) {
+    return 0;
+}
+#endif

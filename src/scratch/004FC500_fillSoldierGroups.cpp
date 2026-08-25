@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // VA: 004FC500 TribeTacticalAIModule::fillSoldierGroups
 // Baseline reconstruction: the embedded TacticalAIGroup at +0x9D4 owns the
 // circular list sentinel; workingArea at +0xD48 is a ManagedArray<int> with
@@ -48,6 +49,7 @@
 extern void* operator new(unsigned int);
 extern void operator delete(void*);
 
+#ifndef TAITACMD_SHARED_CONTEXT
 struct ManagedArrayInt {
     int* value;
     int numberValue;
@@ -176,6 +178,7 @@ public:
     void fillSoldierGroups();
 };
 
+#endif
 void TribeTacticalAIModule::fillSoldierGroups() {
     int bestUnit;
     TacticalAIGroup* bestGroup;
@@ -518,3 +521,6 @@ void TribeTacticalAIModule::fillSoldierGroups() {
         } while (i < this->workingArea.numberValue);
     }
 }
+#else
+void TribeTacticalAIModule::fillSoldierGroups() {}
+#endif

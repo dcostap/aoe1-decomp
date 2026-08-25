@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 class TribeTacticalAIModule {
 public:
     virtual ~TribeTacticalAIModule();
@@ -6,4 +7,11 @@ public:
 
     int numberGatherers() const;
 };
-int TribeTacticalAIModule::numberGatherers() const { return this->numberGatherers_; }
+#endif
+int TribeTacticalAIModule::numberGatherers() const {
+#ifdef TAITACMD_SHARED_CONTEXT
+    return this->numberGatherersValue;
+#else
+    return this->numberGatherers_;
+#endif
+}

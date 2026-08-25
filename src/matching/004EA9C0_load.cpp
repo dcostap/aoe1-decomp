@@ -21,9 +21,10 @@ extern float DAT_005756e4;
 extern float DAT_005756e8;
 extern float DAT_005756ec;
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class TacticalAIGroup {
 public:
-    void* vtable_ptr;
+    virtual ~TacticalAIGroup();
     TacticalAIGroup* next;
     TacticalAIGroup* prev;
     int field_0C;
@@ -65,6 +66,7 @@ public:
 
     int load(int fd);
 };
+#endif
 
 int TacticalAIGroup::load(int fd)
 {

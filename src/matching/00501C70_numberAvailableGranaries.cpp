@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // 00501C70 TribeTacticalAIModule::numberAvailableGranaries(int&,int&)
 // Source: taitacmd.cpp lines 12343-12370
 // Attempt log:
@@ -5,6 +6,7 @@
 // - Exact match: spell the granary cap check as `value >= this->sn_97` so VC5
 //   emits `cmp eax,ecx; jl continue` rather than the reversed `cmp ecx,eax; jg`.
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class BuildAIModule {
 public:
     int numberItemsOfType(int type, int unk);
@@ -39,6 +41,7 @@ public:
     int numberAvailableGranaries(int& count, int& unbuilt);
 };
 
+#endif
 int TribeTacticalAIModule::numberAvailableGranaries(int& count, int& unbuilt)
 {
     int value;
@@ -63,3 +66,8 @@ int TribeTacticalAIModule::numberAvailableGranaries(int& count, int& unbuilt)
     count = value;
     return ((TribeInformationAIModule*)((char*)this->md + 0xCEC))->numberAvailableGranaries();
 }
+#else
+int TribeTacticalAIModule::numberAvailableGranaries(int& count, int& unbuilt) {
+    return 0;
+}
+#endif

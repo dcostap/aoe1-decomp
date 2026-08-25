@@ -72,6 +72,7 @@
 //   and 1295 strict differing bytes. No tested source/context axis recovered
 //   the target EBP/EBX topology or broad tail CFG.
 
+#ifndef TAITACMD_SHARED_CONTEXT
 struct RGE_Static_Object;
 struct UnitAIModule;
 
@@ -116,7 +117,7 @@ public:
     int contains(const int& value);
 };
 
-class TribeTacticalAIModule_4F7870 {
+class TribeTacticalAIModule {
 public:
     char gap_00[0xF0];
     TribeMainDecisionAIModule* md;
@@ -131,7 +132,8 @@ public:
     int numberWarshipsWithPriority(int priority, int compare);
 };
 
-int TribeTacticalAIModule_4F7870::numberWarshipsWithPriority(int priority, int compare)
+#endif
+int TribeTacticalAIModule::numberWarshipsWithPriority(int priority, int compare)
 {
     ManagedArrayInt* warships;
     ManagedArrayInt* result;
@@ -142,13 +144,13 @@ int TribeTacticalAIModule_4F7870::numberWarshipsWithPriority(int priority, int c
     int* values;
     int index;
     int scan;
-    TribeTacticalAIModule_4F7870* tactical;
-    TribeTacticalAIModule_4F7870* tactical2;
+    TribeTacticalAIModule* tactical;
+    TribeTacticalAIModule* tactical2;
     int count;
     int i;
     int local_c;
     int local_8;
-    TribeTacticalAIModule_4F7870* local_4;
+    TribeTacticalAIModule* local_4;
 
     i = 0;
     local_c = 0;

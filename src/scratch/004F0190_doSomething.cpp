@@ -323,18 +323,6 @@ extern "C" unsigned long debug_timeGetTime(char*, int);
 extern "C" int __cdecl sprintf(char*, const char*, ...);
 #endif
 
-#ifdef TAITACMD_SHARED_CONTEXT
-// The original call uses the BuildAIModule virtual slot at +0x44.  The
-// registered shared header keeps the derived loadBuildList declaration narrow
-// for its exact owner, so use the inherited virtual surface only at this site.
-class TaitacmdBuildAIModuleVirtualView : public AIModule {
-public:
-    virtual int save(int);
-    virtual void displayBuildList();
-    virtual int loadBuildList(char*, RGE_Player*);
-};
-#endif
-
 int TribeTacticalAIModule::doSomething()
 {
     unsigned long startTime;
@@ -471,14 +459,8 @@ int TribeTacticalAIModule::doSomething()
                     BuildItem* item = this->md->buildAI.nextBuildableItem(3);
                     if (item != 0) {
                         sprintf(tempName, s_build_file_format, item->name());
-#ifdef TAITACMD_SHARED_CONTEXT
-                        reinterpret_cast<TaitacmdBuildAIModuleVirtualView*>(
-                            &this->md->buildAI)->loadBuildList(
+                        this->md->buildAI.loadBuildList(
                             tempName, this->md->aiPlayer);
-#else
-                        static_cast<BuildAIModule*>(&this->md->buildAI)
-                            ->loadBuildList(tempName, this->md->aiPlayer);
-#endif
                         this->md->updateBuildAIWithObjects();
                         this->updateNeededResources();
                     }

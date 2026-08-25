@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // VA: 004F4AA0 TribeTacticalAIModule::taskUngroupedSoldiers
 // PDB source: taitacmd.cpp lines 5522-5565
 //
@@ -19,8 +20,11 @@
 // resize calls out of line and preserves the exact body. Using that surface in
 // the shared wrapper regresses earlier exact anchors, so this owner stays out.
 
+#ifndef TAITACMD_SHARED_CONTEXT
 #include "../../include/utmarray.h"
+#endif
 
+#ifndef TAITACMD_SHARED_CONTEXT
 struct XYPoint {
     int x;
     int y;
@@ -104,6 +108,7 @@ public:
     void moveUnit(int unit, float x, float y, int priority);
     void taskUngroupedSoldiers();
 };
+#endif
 
 void TribeTacticalAIModule::taskUngroupedSoldiers()
 {
@@ -146,3 +151,6 @@ void TribeTacticalAIModule::taskUngroupedSoldiers()
         }
     }
 }
+#else
+void TribeTacticalAIModule::taskUngroupedSoldiers() {}
+#endif

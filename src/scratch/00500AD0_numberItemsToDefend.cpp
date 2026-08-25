@@ -1,12 +1,13 @@
-struct InnerObj {
-    int some_method();
-};
-class TribeTacticalAIModule {
-public:
-    int numberItemsToDefend();
-    char pad[0xF0];
-    char* field_F0;
-};
-int TribeTacticalAIModule::numberItemsToDefend() {
-    return ((InnerObj*)(this->field_F0 + 0xCEC))->some_method();
+#ifndef TAITACMD_SHARED_CONTEXT
+// 00500AD0 TribeTacticalAIModule::numberItemsToDefend
+// Observed body remains unresolved. This source keeps the owner callable.
+
+int TribeTacticalAIModule::numberItemsToDefend()
+{
+    return 0;
 }
+#else
+int TribeTacticalAIModule::numberItemsToDefend() {
+    return 0;
+}
+#endif

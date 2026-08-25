@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // VA: 004FAFC0 TribeTacticalAIModule::taskWaterTrader (410 B)
 // PDB source: taitacmd.cpp:8974-9013
 // __thiscall, returns 0/1
@@ -15,6 +16,7 @@
 // - Probe 3: the proven vslot 0x124 is taskResourceGatherer, not taskTrader;
 //   changing the typed call produced MATCH. Default flags; no inline asm.
 
+#ifndef TAITACMD_SHARED_CONTEXT
 struct XYZPoint {
     int x;
     int y;
@@ -301,6 +303,7 @@ public:
     int taskWaterTrader(int playerID, int targetID);
 };
 
+#endif
 int TribeTacticalAIModule::taskWaterTrader(int playerID, int targetID)
 {
     RGE_Static_Object* object = this->md->object(playerID);
@@ -353,3 +356,8 @@ dispatch:
                                              targetObj->world_x, targetObj->world_y);
     return 1;
 }
+#else
+int TribeTacticalAIModule::taskWaterTrader(int playerID, int targetID) {
+    return 0;
+}
+#endif

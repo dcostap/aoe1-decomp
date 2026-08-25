@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // TribeTacticalAIModule::attackLimiterTime
 // VA: 00500AF0
 // taitacmd.cpp:11549-11562
@@ -5,6 +6,7 @@
 
 #include "../../include/game_globals.h"
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class TribeTacticalAIModule {
 public:
     char gap_00[0x254];
@@ -17,6 +19,7 @@ public:
     unsigned long attackLimiterTime(int param_1);
 };
 
+#endif
 unsigned long TribeTacticalAIModule::attackLimiterTime(int param_1) {
     if (this->attackLimiterMode == 1) {
         int val = this->randomizedAttackSeparationTime;
@@ -32,3 +35,8 @@ unsigned long TribeTacticalAIModule::attackLimiterTime(int param_1) {
         return this->attackSeparationTime;
     }
 }
+#else
+unsigned long TribeTacticalAIModule::attackLimiterTime(int param_1) {
+    return 0;
+}
+#endif

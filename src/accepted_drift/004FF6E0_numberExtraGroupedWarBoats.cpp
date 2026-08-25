@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // VA: 004FF6E0, TribeTacticalAIModule::numberExtraGroupedWarBoats, 509 bytes
 // Attempt log:
 // - Prior scratch work used raw working-area fields and reached 509 bytes, but
@@ -42,6 +43,7 @@
 // write, including the push-adjusted rNum update. No home's address escapes.
 // Register use, calls, values, writes, predicates, cleanup, and faults match.
 
+#ifndef TAITACMD_SHARED_CONTEXT
 template <class T>
 class ManagedArray {
 public:
@@ -111,6 +113,7 @@ public:
     int numberExtraGroupedWarBoats();
 };
 
+#endif
 int TribeTacticalAIModule::numberExtraGroupedWarBoats()
 {
     ManagedArray<int>& workingArea = this->workingArea;
@@ -154,3 +157,8 @@ int TribeTacticalAIModule::numberExtraGroupedWarBoats()
     }
     return result;
 }
+#else
+int TribeTacticalAIModule::numberExtraGroupedWarBoats() {
+    return 0;
+}
+#endif

@@ -8,6 +8,7 @@
 
 class TribeMainDecisionAIModule;
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class TacticalAIGroup {
 public:
     int gap_00[7];           // +0x00 to +0x1B (vtable, prev/next links, id, inUse, type, subType)
@@ -21,6 +22,7 @@ public:
     void setSpecificCommander(int value, TribeMainDecisionAIModule* md);
     void removeUnits(TribeMainDecisionAIModule* md);
 };
+#endif
 
 void TacticalAIGroup::removeUnits(TribeMainDecisionAIModule* md) {
     setSpecificCommander(-1, md);

@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 struct UnitData {
     int id;
     char data[0x14];
@@ -10,6 +11,7 @@ public:
     UnitData gatherers[50];
 };
 
+#endif
 UnitData* TribeTacticalAIModule::gatherer(int unitId) {
     int i;
 

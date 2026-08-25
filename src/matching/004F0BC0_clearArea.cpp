@@ -14,20 +14,77 @@
 //   exact match with the default VC5 flags.
 
 #ifndef TAITACMD_SHARED_CONTEXT
-#define VPAD(n) virtual void v##n();
-
 class RGE_Static_Object {
 public:
     virtual ~RGE_Static_Object();
-    VPAD(01) VPAD(02) VPAD(03) VPAD(04) VPAD(05) VPAD(06) VPAD(07) VPAD(08)
-    VPAD(09) VPAD(10) VPAD(11) VPAD(12) VPAD(13) VPAD(14) VPAD(15) VPAD(16)
-    VPAD(17) VPAD(18) VPAD(19) VPAD(20) VPAD(21) VPAD(22) VPAD(23) VPAD(24)
-    VPAD(25) VPAD(26) VPAD(27) VPAD(28) VPAD(29) VPAD(30) VPAD(31) VPAD(32)
-    VPAD(33) VPAD(34) VPAD(35) VPAD(36) VPAD(37) VPAD(38) VPAD(39) VPAD(40)
-    VPAD(41) VPAD(42) VPAD(43) VPAD(44) VPAD(45) VPAD(46) VPAD(47) VPAD(48)
-    VPAD(49) VPAD(50) VPAD(51) VPAD(52) VPAD(53) VPAD(54) VPAD(55) VPAD(56)
-    VPAD(57) VPAD(58) VPAD(59) VPAD(60) VPAD(61) VPAD(62) VPAD(63) VPAD(64)
-    VPAD(65) VPAD(66) VPAD(67) VPAD(68)
+    virtual void recycle_in_to_game();
+    virtual void recycle_out_of_game();
+    virtual void draw();
+    virtual void shadow_draw();
+    virtual void normal_draw();
+    virtual void draw_front_frame();
+    virtual void draw_back_frame();
+    virtual void draw_frame();
+    virtual void update();
+    virtual void check_damage_sprites();
+    virtual void rehook();
+    virtual void save(int);
+    virtual float teleport(float, float, float);
+    virtual void new_sprite();
+    virtual void add_overlay_sprite();
+    virtual void remove_overlay_sprite();
+    virtual void change_ownership();
+    virtual void modify(float, unsigned char);
+    virtual void modify_delta(float, unsigned char);
+    virtual void modify_percent(float, unsigned char);
+    virtual void transform();
+    virtual void copy_obj();
+    virtual void set_object_state(unsigned char);
+    virtual void remove_visible_resource();
+    virtual void create_doppleganger_when_dying();
+    virtual void destroy_obj();
+    virtual void die_die_die();
+    virtual void damage();
+    virtual float calculateDamage();
+    virtual void rotate(long);
+    virtual unsigned char can_attack();
+    virtual void set_attribute(short, float);
+    virtual void set_attribute_amount(float, unsigned char, unsigned char);
+    virtual int heal(int, int);
+    virtual unsigned char heal(float);
+    virtual int canRepair();
+    virtual void notify_of_relation(long, unsigned char);
+    virtual void do_command();
+    virtual void move_to();
+    virtual void work();
+    virtual void stop();
+    virtual void set_attack();
+    virtual void play_command_sound();
+    virtual void play_move_sound();
+    virtual void new_angle(float);
+    virtual RGE_Static_Object* spawn_death_obj();
+    virtual void* get_command_master();
+    virtual void set_being_worked_on();
+    virtual void release_being_worked_on();
+    virtual unsigned char is_moving();
+    virtual RGE_Static_Object* get_target_obj();
+    virtual void enter_obj();
+    virtual void exit_obj();
+    virtual int explore_terrain();
+    virtual void unexplore_terrain();
+    virtual void* get_los_table();
+    virtual int inAttackRange();
+    virtual unsigned char underAttack();
+    virtual void setUnderAttack(unsigned char);
+    virtual float calc_attack_modifier();
+    virtual float getSpeed();
+    virtual float getAngle();
+    virtual float maximumSpeed();
+    virtual float rateOfFire();
+    virtual float damageCapability();
+    virtual float damageCapability(int);
+    virtual float weaponRange();
+    virtual float minimumWeaponRange();
     virtual int passableTile(float x, float y, int flag);
 
     char gap_04[0x34];

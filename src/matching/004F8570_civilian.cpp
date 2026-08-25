@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // VA: 004F8570 TribeTacticalAIModule::civilian
 // Attempt log:
 // initial decompiler-style implementation with explicit expandable civilian array and tasked duplicate scan: same 573-byte size but broad mismatch from offset 2; rebuilt uses 0x0c frame, ESI this, EBX/EBP as byte-offset/count pair instead of original 0x08 frame with EBP as index.
@@ -27,9 +28,9 @@
 void* operator_new(unsigned int);
 void operator_delete(void*);
 
+#ifndef TAITACMD_SHARED_CONTEXT
 struct XYPoint { int x; int y; };
 class UnitAIModule { public: int currentOrder(); };
-struct MasterObj { char gap[0x10]; short id; };
 class RGE_Static_Object {
 public:
     char gap_00[4];
@@ -44,19 +45,16 @@ class RGE_Game_World {
 public:
     RGE_Static_Object* object(int id);
 };
-
 class RGE_Player {
 public:
     char gap_00[0x3c];
     RGE_Game_World* world;
 };
-
 class MainDecisionAIModule {
 public:
     char gap_00[0xf0];
     RGE_Player* player;
 };
-
 struct ManagedArray_int {
     int* value;
     int numberValue;
@@ -106,7 +104,7 @@ public:
 
     int civilian(XYPoint& pos, int chooseMode, int order1, int order2, int order3, int allow103);
 };
-
+#endif
 int TribeTacticalAIModule::civilian(XYPoint& pos, int chooseMode, int order1, int order2, int order3, int allow103)
 {
     float bestUnitDistance;
@@ -148,3 +146,8 @@ next:
     }
     return bestUnitID;
 }
+#else
+int TribeTacticalAIModule::civilian(XYPoint& pos, int chooseMode, int order1, int order2, int order3, int allow103) {
+    return 0;
+}
+#endif

@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // 00502310 TribeTacticalAIModule::checkForAttackResponseBuildInsertions
 // taitacmd.cpp:12609-12746, parent-owned switch fragments at 00502451-005025C9
 //
@@ -68,6 +69,7 @@
 //   context probes stayed in the same 748-byte basin. The pinned clean source
 //   was restored and passed unchanged final validation.
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class ResourceItem {
 public:
     virtual ~ResourceItem();
@@ -215,6 +217,7 @@ public:
     void checkForAttackResponseBuildInsertions(int playerID);
 };
 
+#endif
 void TribeTacticalAIModule::checkForAttackResponseBuildInsertions(int playerID)
 {
     long lastAttackTime = this->lastAttackResponseBuildInsertionTime;
@@ -329,3 +332,6 @@ void TribeTacticalAIModule::checkForAttackResponseBuildInsertions(int playerID)
         }
     }
 }
+#else
+void TribeTacticalAIModule::checkForAttackResponseBuildInsertions(int) {}
+#endif

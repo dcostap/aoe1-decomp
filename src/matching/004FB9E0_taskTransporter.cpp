@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // VA: 004FB9E0 TribeTacticalAIModule::taskTransporter (336 bytes)
 // PDB: taitacmd.cpp:9286-9313
 // __thiscall, int, ret 0Ch
@@ -10,6 +11,7 @@
 //   taskFollower/taskDefender donors, with sendUnitAIOrder's high-confidence
 //   RGE_Player slot-0x30 signature; generic proxy naming was removed.
 
+#ifndef TAITACMD_SHARED_CONTEXT
 struct ManagedIntArray {
     int* value;
     int numberValue;
@@ -75,6 +77,7 @@ public:
     int taskTransporter(int playerID, float x, float y);
 };
 
+#endif
 int TribeTacticalAIModule::taskTransporter(int playerID, float x, float y)
 {
     RGE_Static_Object* object = this->md->object(playerID);
@@ -118,3 +121,8 @@ dispatch:
                             1, 0, priority);
     return 1;
 }
+#else
+int TribeTacticalAIModule::taskTransporter(int playerID, float x, float y) {
+    return 0;
+}
+#endif

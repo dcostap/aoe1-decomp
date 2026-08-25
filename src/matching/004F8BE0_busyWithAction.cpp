@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 class RGE_Game_World;
 class UnitAIModule {
 public:
@@ -7,7 +8,6 @@ class RGE_Static_Object {
 public:
     UnitAIModule* unitAI();
 };
-class TribeTacAIPlayer {
 public:
     char gap_00[0x3C];
     RGE_Game_World* world;
@@ -24,12 +24,11 @@ public:
 
     int busyWithAction(int object_id, int action_id);
 };
-
 class RGE_Game_World {
 public:
     RGE_Static_Object* object(int object_id);
 };
-
+#endif
 int TribeTacticalAIModule::busyWithAction(int object_id, int action_id) {
     RGE_Static_Object* obj = this->md->aiPlayer->world->object(object_id);
     if (obj != 0) {

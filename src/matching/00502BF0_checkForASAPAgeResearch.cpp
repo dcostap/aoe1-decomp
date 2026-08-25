@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // VA: 00502BF0 TribeTacticalAIModule::checkForASAPAgeResearch (347 B)
 // PDB source: taitacmd.cpp
 // __thiscall, void
@@ -9,6 +10,7 @@
 //   branch-local taskResearch calls, as shown by the distinct call sites and
 //   PDB line bands.
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class BuildItem;
 class TribeMainDecisionAIModule;
 
@@ -66,6 +68,7 @@ public:
     void checkForASAPAgeResearch();
 };
 
+#endif
 void TribeTacticalAIModule::checkForASAPAgeResearch()
 {
     if (this->inAge(1) != 0 && this->sn[0xB5] == 1 &&
@@ -92,3 +95,6 @@ void TribeTacticalAIModule::checkForASAPAgeResearch()
             this->taskResearch(item);
     }
 }
+#else
+void TribeTacticalAIModule::checkForASAPAgeResearch() {}
+#endif

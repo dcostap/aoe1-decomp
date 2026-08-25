@@ -4,32 +4,35 @@ struct WaypointInfo {
     unsigned char flag;
 };
 
-class TacticalPlayer {
+#ifndef TAITACMD_SHARED_CONTEXT
+class RGE_Player {
 public:
-    virtual void vf00(void);
-    virtual void vf04(void);
-    virtual void vf08(void);
-    virtual void vf0C(void);
-    virtual void vf10(void);
-    virtual void vf14(void);
-    virtual void vf18(void);
-    virtual void vf1C(void);
-    virtual void vf20(void);
-    virtual void vf24(void);
-    virtual void vf28(void);
-    virtual void vf2C(void);
-    virtual void vf30(void);
-    virtual void vf34(void);
-    virtual void vf38(void);
-    virtual void vf3C(void);
-    virtual void vf40(void);
-    virtual void addWaypoint(int id, WaypointInfo* info, int one);
+    virtual ~RGE_Player();
+    virtual void set_game_status(unsigned char);
+    virtual void do_resign(int);
+    virtual void changeToHumanPlayer();
+    virtual void changeToComputerPlayer();
+    virtual char* aiStatus(int);
+    virtual int isEnemy(int);
+    virtual int isAlly(int);
+    virtual int isNeutral(int);
+    virtual int isAllNeutral();
+    virtual void setDiplomaticStance(int, int);
+    virtual void loadAIInformation(char*, char*, char*, int, int);
+    virtual void sendUnitAIOrder(int, int, int, int, int, float, float,
+                                 float, float, int, int, int);
+    virtual void processAIOrder(int, int, int, int, int, float, float,
+                                float, float, int, int, int);
+    virtual void kickAI(int);
+    virtual int strategicNumber(int);
+    virtual void sendGameOrder(void*, void*, float, float);
+    virtual void sendAddWaypointCommand(int, void*, int);
 };
 
 class MainDecisionAIModule {
 public:
     char gap_00[0xF0];
-    TacticalPlayer* player;
+    RGE_Player* player;
 };
 
 class TribeTacticalAIModule {
@@ -39,6 +42,7 @@ public:
 
     void addWaypoint(int id, unsigned char a, unsigned char b);
 };
+#endif
 
 void TribeTacticalAIModule::addWaypoint(int id, unsigned char a, unsigned char b) {
     WaypointInfo info;
@@ -46,5 +50,5 @@ void TribeTacticalAIModule::addWaypoint(int id, unsigned char a, unsigned char b
     info.a = a;
     info.b = b;
     info.flag = 1;
-    this->md->player->addWaypoint(id, &info, 1);
+    this->md->player->sendAddWaypointCommand(id, &info, 1);
 }

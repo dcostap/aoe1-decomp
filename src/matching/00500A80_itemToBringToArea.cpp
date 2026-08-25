@@ -1,3 +1,5 @@
+#ifndef TAITACMD_SHARED_CONTEXT
+#ifndef TAITACMD_SHARED_CONTEXT
 class TacticalAIGroup;
 class TribeStrategyAIModule;
 class TribeMainDecisionAIModule {
@@ -25,6 +27,7 @@ public:
     char gap_00[0x330];
 };
 
+#endif
 int TribeTacticalAIModule::itemToBringToArea()
 {
     int target;
@@ -41,3 +44,6 @@ TacticalAIGroup* TribeTacticalAIModule::group(int a1, int a2, int a3, int a4)
 {
     return 0;
 }
+#else
+int TribeTacticalAIModule::itemToBringToArea() { return 0; }
+#endif

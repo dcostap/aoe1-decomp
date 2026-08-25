@@ -25,26 +25,27 @@
 
 #include <stddef.h>
 
+#ifndef TAITACMD_SHARED_CONTEXT
 struct ManagedIntArray {
     int* value;
     int numberValue;
     int desiredNumberValue;
-    int maximumSize;
+    int maximumSizeValue;
 };
 
 struct RGE_Player {
     virtual ~RGE_Player();
-    virtual void d1() {}
-    virtual void d2() {}
-    virtual void d3() {}
-    virtual void d4() {}
-    virtual void d5() {}
-    virtual void d6() {}
-    virtual void d7() {}
-    virtual void d8() {}
-    virtual void d9() {}
-    virtual void d10() {}
-    virtual void d11() {}
+    virtual void set_game_status(unsigned char);
+    virtual void do_resign(int);
+    virtual void changeToHumanPlayer();
+    virtual void changeToComputerPlayer();
+    virtual char* aiStatus(int);
+    virtual int isEnemy(int);
+    virtual int isAlly(int);
+    virtual int isNeutral(int);
+    virtual int isAllNeutral();
+    virtual void setDiplomaticStance(int, int);
+    virtual void loadAIInformation(char*, char*, char*, int, int);
     virtual void sendUnitAIOrder(int short_field, int unit_id, int cmd,
                                  int a4, int a5, float x1, float y1,
                                  float z1, float w1, int a10, int a11,
@@ -73,25 +74,26 @@ public:
     int taskFollower(int param_1, int param_2, float param_3, int param_4);
 };
 
+#endif
 int TribeTacticalAIModule::taskFollower(int param_1, int param_2, float param_3, int param_4) {
     ManagedIntArray& arr = unitsTaskedThisUpdate;
     int i;
     for (i = 0; i < arr.numberValue; i++) {
-        if (i >= arr.maximumSize) break;
+        if (i >= arr.maximumSizeValue) break;
         if (arr.value[i] == param_1) goto done;
     }
 
-    if (arr.numberValue > arr.maximumSize - 1) {
+    if (arr.numberValue > arr.maximumSizeValue - 1) {
         int newSize = arr.numberValue + 1;
         int* newArray = new int[newSize];
         if (newArray != 0) {
             int j;
-            for (j = 0; j < arr.maximumSize && j < newSize; j++) {
+            for (j = 0; j < arr.maximumSizeValue && j < newSize; j++) {
                 newArray[j] = arr.value[j];
             }
             delete[] arr.value;
             arr.value = newArray;
-            arr.maximumSize = newSize;
+            arr.maximumSizeValue = newSize;
         }
     }
 

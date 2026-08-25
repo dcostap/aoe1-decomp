@@ -1,3 +1,5 @@
+#ifndef TAITACMD_SHARED_CONTEXT
+#ifndef TAITACMD_SHARED_CONTEXT
 class RGE_Visible_Map {
 public:
     float percentExplored();
@@ -25,6 +27,7 @@ public:
     int initialExplorationSatisfied();
 };
 
+#endif
 int TribeTacticalAIModule::initialExplorationSatisfied()
 {
     int iVar1;
@@ -35,3 +38,6 @@ int TribeTacticalAIModule::initialExplorationSatisfied()
     iVar1 = (int)(this->md->player->visible->percentExplored() * 100.0f);
     return iVar1 >= this->sn[0xA7];
 }
+#else
+int TribeTacticalAIModule::initialExplorationSatisfied() { return 0; }
+#endif

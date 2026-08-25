@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 class TacticalAIGroup {
 public:
     virtual ~TacticalAIGroup();
@@ -6,4 +7,5 @@ public:
 
     void setAssistGroupType(int);
 };
+#endif
 void TacticalAIGroup::setAssistGroupType(int val) { this->assistGroupType_ = val; }

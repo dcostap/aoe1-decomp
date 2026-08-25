@@ -2,9 +2,10 @@
 // Scans unitsValue array for the unit_index-th valid entry, returns corresponding HP
 // Note: uses single i=-1 counter matching original asm topology
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class TacticalAIGroup {
 public:
-    void* vtable_ptr;
+    virtual ~TacticalAIGroup();
     TacticalAIGroup* next;
     TacticalAIGroup* prev;
     int idValue;
@@ -16,6 +17,7 @@ public:
 
     int unitOriginalHitPoints(int unit_index);
 };
+#endif
 
 int TacticalAIGroup::unitOriginalHitPoints(int unit_index) {
     int idx = 0;

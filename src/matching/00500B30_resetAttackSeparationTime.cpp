@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // VA: 00500B30 TribeTacticalAIModule::resetAttackSeparationTime()
 // PDB source: taitacmd.cpp lines 11567-11583 (99 bytes, 32 asm lines)
 // Default flags
@@ -16,6 +17,7 @@
 
 extern int __cdecl debug_rand(char* file, int line);
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class TribeTacticalAIModule {
 public:
     char gap_000[0x194];
@@ -26,6 +28,7 @@ public:
     void resetAttackSeparationTime();
 };
 
+#endif
 void TribeTacticalAIModule::resetAttackSeparationTime() {
     if (this->sn[0x66] > 0) {
         this->randomizedAttackSeparationTime =
@@ -39,3 +42,6 @@ void TribeTacticalAIModule::resetAttackSeparationTime() {
         this->randomizedAttackSeparationTime = 0;
     }
 }
+#else
+void TribeTacticalAIModule::resetAttackSeparationTime() {}
+#endif

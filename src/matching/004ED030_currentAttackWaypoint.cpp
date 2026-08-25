@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 class TacticalAIGroup {
 public:
     virtual ~TacticalAIGroup();
@@ -6,4 +7,5 @@ public:
 
     unsigned char currentAttackWaypoint() const;
 };
+#endif
 unsigned char TacticalAIGroup::currentAttackWaypoint() const { return this->currentAttackWaypoint_; }

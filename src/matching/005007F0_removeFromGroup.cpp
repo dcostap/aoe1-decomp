@@ -1,6 +1,8 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // 005007F0 removeFromGroup: first pass follows the PDB shape directly.
 // Likely mismatch axis, if any, is call ordering or the local temp/register basin.
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class TribeMainDecisionAIModule;
 
 class TacticalAIGroup {
@@ -19,6 +21,7 @@ public:
     int removeFromGroup(int param_1, int param_2);
 };
 
+#endif
 int TribeTacticalAIModule::removeFromGroup(int param_1, int param_2) {
     TacticalAIGroup* group = this->group(param_2, -1, -1, -1);
     if (group == 0) {
@@ -32,3 +35,8 @@ int TribeTacticalAIModule::removeFromGroup(int param_1, int param_2) {
 
     return result;
 }
+#else
+int TribeTacticalAIModule::removeFromGroup(int param_1, int param_2) {
+    return 0;
+}
+#endif

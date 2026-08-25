@@ -1,3 +1,5 @@
+#ifndef TAITACMD_SHARED_CONTEXT
+#ifndef TAITACMD_SHARED_CONTEXT
 struct TribeTacticalAIModule {
     char gap_0[0xD68];
     int actualGathererCounts[4]; // 0xD68
@@ -6,8 +8,12 @@ struct TribeTacticalAIModule {
     int resourceDifferences[4];   // 0xD98
 };
 
-int __fastcall actualGathererCount(TribeTacticalAIModule* self, int, int index) {
+#endif
+int TribeTacticalAIModule::actualGathererCount(int) {
     if (index < 0 || index > 3)
         return -1;
     return self->actualGathererCounts[self->resourceMapping[index]];
 }
+#else
+int TribeTacticalAIModule::actualGathererCount(int) { return 0; }
+#endif

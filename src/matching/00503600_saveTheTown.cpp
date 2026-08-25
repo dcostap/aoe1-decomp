@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // VA: 00503600 TribeTacticalAIModule::saveTheTown
 // PDB source: taitacmd.cpp:13342-13444
 // __thiscall
@@ -31,6 +32,7 @@ extern int __ftol();
 extern void* operator_new(unsigned int size);
 extern void operator_delete(void* block);
 
+#ifndef TAITACMD_SHARED_CONTEXT
 struct XYPoint {
     int x;
     int y;
@@ -105,22 +107,38 @@ public:
     int currentTarget();
 };
 
-#define VPAD1(n) virtual void vpad##n();
-#define VPAD2(n) VPAD1(n) VPAD1(n##_1)
-#define VPAD4(n) VPAD2(n) VPAD2(n##_2)
-#define VPAD8(n) VPAD4(n) VPAD4(n##_4)
-#define VPAD16(n) VPAD8(n) VPAD8(n##_8)
-#define VPAD32(n) VPAD16(n) VPAD16(n##_16)
-#define VPAD64(n) VPAD32(n) VPAD32(n##_32)
-
 class RGE_Static_Object {
 public:
     virtual ~RGE_Static_Object();
-    VPAD64(0)
-    VPAD2(64)
-    virtual float weaponRange();
-    VPAD32(66)
-    VPAD2(98)
+    virtual void recycle_in_to_game(); virtual void recycle_out_of_game(); virtual void draw();
+    virtual void shadow_draw(); virtual void normal_draw(); virtual void draw_front_frame();
+    virtual void draw_back_frame(); virtual void draw_frame(); virtual void update();
+    virtual void check_damage_sprites(); virtual void rehook(); virtual void save(int);
+    virtual float teleport(float, float, float); virtual void new_sprite(); virtual void add_overlay_sprite();
+    virtual void remove_overlay_sprite(); virtual void change_ownership(); virtual void modify(float, unsigned char);
+    virtual void modify_delta(float, unsigned char); virtual void modify_percent(float, unsigned char);
+    virtual void transform(); virtual void copy_obj(); virtual void set_object_state(unsigned char);
+    virtual void remove_visible_resource(); virtual void create_doppleganger_when_dying();
+    virtual void destroy_obj(); virtual void die_die_die(); virtual void damage(); virtual float calculateDamage();
+    virtual void rotate(long); virtual unsigned char can_attack(); virtual void set_attribute(short, float);
+    virtual void set_attribute_amount(float, unsigned char, unsigned char); virtual int heal(int, int);
+    virtual unsigned char heal(float); virtual int canRepair(); virtual void notify_of_relation(long, unsigned char);
+    virtual void do_command(); virtual void move_to(); virtual void work(); virtual void stop();
+    virtual void set_attack(); virtual void play_command_sound(); virtual void play_move_sound();
+    virtual void new_angle(float); virtual RGE_Static_Object* spawn_death_obj(); virtual void* get_command_master();
+    virtual void set_being_worked_on(); virtual void release_being_worked_on(); virtual unsigned char is_moving();
+    virtual RGE_Static_Object* get_target_obj(); virtual void enter_obj(); virtual void exit_obj();
+    virtual int explore_terrain(); virtual void unexplore_terrain(); virtual void* get_los_table();
+    virtual int inAttackRange(); virtual unsigned char underAttack(); virtual void setUnderAttack(unsigned char);
+    virtual float calc_attack_modifier(); virtual float getSpeed(); virtual float getAngle();
+    virtual float maximumSpeed(); virtual float rateOfFire(); virtual float damageCapability();
+    virtual float damageCapability(int); virtual float weaponRange(); virtual float minimumWeaponRange();
+    virtual int currentTargetID(); virtual float currentTargetX(); virtual float currentTargetY();
+    virtual float currentTargetZ(); virtual void setWaitingToMove(unsigned char); virtual unsigned char waitingToMove();
+    virtual unsigned char actionState(); virtual unsigned char keepGatheringWhenObjectIsOut(int);
+    virtual unsigned char produceWhenKilledBy(int); virtual unsigned char useSameZoneDropsite();
+    virtual void logDebug(const char*, ...); virtual void notify(int, int, int, long, long, long);
+    virtual int currentPath(int, float, int, float*, int, int, int);
     virtual int canPath(XYZPoint, float, int, float*, int, int, int);
 
     int id;
@@ -191,6 +209,7 @@ public:
 
     void saveTheTown(int objectID);
 };
+#endif
 
 void TribeTacticalAIModule::saveTheTown(int objectID)
 {
@@ -318,3 +337,6 @@ countSoldier:
         }
     }
 }
+#else
+void TribeTacticalAIModule::saveTheTown(int) {}
+#endif

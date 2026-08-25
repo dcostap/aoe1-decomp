@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // VA: 004FF4E0 TribeTacticalAIModule::numberUngroupedWarBoats
 // Attempt log:
 // baseline: raw-offset expandable-array reconstruction had the right call set and
@@ -13,6 +14,7 @@ extern "C" {
     void operator_delete(void* ptr);
 }
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class TacticalAIGroup;
 
 template <class T>
@@ -81,6 +83,7 @@ public:
     int numberUngroupedWarBoats();
 };
 
+#endif
 int TribeTacticalAIModule::numberUngroupedWarBoats()
 {
     int rNum = 0;
@@ -100,3 +103,8 @@ int TribeTacticalAIModule::numberUngroupedWarBoats()
     }
     return rNum;
 }
+#else
+int TribeTacticalAIModule::numberUngroupedWarBoats() {
+    return 0;
+}
+#endif

@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // 004F9470 TribeTacticalAIModule::highLevelTaskExplorer
 // Source: taitacmd.cpp lines 7907-7983
 // Attempt log:
@@ -10,6 +11,7 @@
 // - Main-agent audit restored canonical polymorphic object/player/world/AI
 //   ownership; exact bytes were revalidated after promotion.
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class UnitAIModule {
 public:
     int currentOrder();
@@ -57,6 +59,7 @@ public:
     int highLevelTaskExplorer(int id, int mode);
 };
 
+#endif
 int TribeTacticalAIModule::highLevelTaskExplorer(int id, int mode)
 {
     RGE_Static_Object* object = this->md->player->world->object(id);
@@ -108,3 +111,6 @@ int TribeTacticalAIModule::highLevelTaskExplorer(int id, int mode)
     }
     return 1;
 }
+#else
+int TribeTacticalAIModule::highLevelTaskExplorer(int, int) { return 0; }
+#endif

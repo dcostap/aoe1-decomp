@@ -1,3 +1,5 @@
+#ifndef TAITACMD_SHARED_CONTEXT
+#ifndef TAITACMD_SHARED_CONTEXT
 struct Inner3 {
     char gap_0[0x18];
     float age;       // 0x18
@@ -18,7 +20,11 @@ struct TribeTacticalAIModule {
     Inner1* mainDecisionAI;  // 0xF0
 };
 
-int __fastcall inAge(TribeTacticalAIModule* self, int, int age) {
+#endif
+int TribeTacticalAIModule::inAge(int) {
     int currentAge = (int)self->mainDecisionAI->ptr_F0->ptr_50->age;
     return currentAge == age ? 1 : 0;
 }
+#else
+int TribeTacticalAIModule::inAge(int) { return 0; }
+#endif

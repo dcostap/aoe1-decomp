@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // 004FA170 TribeTacticalAIModule::taskGatherer (taitacmd.cpp:8444-8839, 1712B)
 // Attempt log:
 //  - Reconstructed the canonical neededResourceValue[4], sn[256], exclusions[6],
@@ -60,6 +61,7 @@
 
 #include <stdlib.h>
 
+#ifndef TAITACMD_SHARED_CONTEXT
 typedef unsigned char uchar;
 typedef unsigned long ulong;
 
@@ -76,7 +78,6 @@ struct XYPoint {
     int x;
     int y;
 };
-struct XYZBYTEPoint {
     unsigned char x;
     unsigned char y;
     unsigned char z;
@@ -220,7 +221,6 @@ public:
     float outline_radius_y;
     float outline_radius_z;
 };
-
 class RGE_Player {
 public:
     virtual ~RGE_Player();
@@ -289,7 +289,6 @@ public:
     unsigned char gap_04[0x46];
     short id;
 };
-
 class TRIBE_Player : public RGE_Player {
 public:
     virtual uchar command_give_attribute(int, int, float, float);
@@ -475,14 +474,12 @@ public:
     unsigned char underAttackValue;
     unsigned char gap_87;
 };
-
 struct UnitData {
     int id;
     int target;
     int data2;
     int data3;
 };
-
 class TribeInformationAIModule {
 public:
     int gameIDOfResourceObject(int resType, int gathererId, float* d1, float* d2,
@@ -495,13 +492,11 @@ public:
     char gap_100[0x340 - 0x100];
     int closestDropsiteValue[4];
 };
-
 class BuildAIModule {
 public:
     char gap_00[4];
     void insert(int a, int b, int c);
 };
-
 class MainDecisionAIModule {
 public:
     virtual ~MainDecisionAIModule();
@@ -511,7 +506,6 @@ public:
 
     RGE_Static_Object* object(int unit);
 };
-
 class TribeMainDecisionAIModule : public MainDecisionAIModule {
 public:
     BuildAIModule buildAI;
@@ -552,7 +546,7 @@ public:
     void taskElephantGatherers(int unit, int a, int b);
     int taskGatherer(int p1, int p2, int p3, ulong p4, int* p5);
 };
-
+#endif
 int TribeTacticalAIModule::taskGatherer(int p1, int p2, int p3, ulong p4, int* p5)
 {
     RGE_Static_Object* gathererObj = this->md->object(p1);
@@ -746,3 +740,8 @@ units_tasked:
     }
     return 1;
 }
+#else
+int TribeTacticalAIModule::taskGatherer(int p1, int p2, int p3, ulong p4, int* p5) {
+    return 0;
+}
+#endif

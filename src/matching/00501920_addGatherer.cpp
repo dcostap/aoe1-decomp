@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // 00501920 TribeTacticalAIModule::addGatherer(int)
 // Source: taitacmd.cpp lines 12119-12155
 // Attempt log:
@@ -7,6 +8,7 @@
 
 extern "C" void __cdecl logCommonHistory(void* module, const char* text);
 
+#ifndef TAITACMD_SHARED_CONTEXT
 struct UnitData {
     int id;
     char gap_04[0x10 - 0x04];
@@ -23,6 +25,7 @@ public:
     UnitData* addGatherer(int id);
 };
 
+#endif
 UnitData* TribeTacticalAIModule::addGatherer(int id)
 {
     int index;
@@ -61,3 +64,8 @@ next:
     this->numberGatherersValue = this->numberGatherersValue + 1;
     return &this->gatherers[freeIndex];
 }
+#else
+UnitData* TribeTacticalAIModule::addGatherer(int id) {
+    return 0;
+}
+#endif

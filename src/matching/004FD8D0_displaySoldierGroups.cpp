@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // 004FD8D0 TribeTacticalAIModule::displaySoldierGroups
 // Attempt log:
 // try 1: direct logging/control-flow reconstruction from packet with local method/type stubs; exact-size comparable under default /O2 but broad mismatch (70.1662% positional, 93.3535% edit). Prologue differs because VC5 emits EBP/8-byte stack alignment for double varargs in this local surface.
@@ -17,9 +18,9 @@
 // modeled the AIModule base plus object/player virtual surfaces.  This keeps
 // the direct cdecl member logger and proven field ownership period-plausible.
 
+#ifndef TAITACMD_SHARED_CONTEXT
 struct Waypoint { float x; float y; };
 class UnitAIModule { public: int currentAction(); int currentOrder(); int currentTarget(); int currentOrderPriority(); float currentTargetX(); float currentTargetY(); };
-class MasterObj {
 public:
     virtual ~MasterObj();
     char gap_04[4];
@@ -47,7 +48,6 @@ public:
     UnitAIModule* unitAI();
 };
 class MainDecisionAIModule { public: RGE_Static_Object* object(int id); };
-
 class TacticalAIGroup {
 public:
     TacticalAIGroup* prev;
@@ -61,14 +61,12 @@ public:
     int objectToDestroy(int i); int unit(int i);
     unsigned char numberAttackWaypoints(); Waypoint* attackWaypoint(int i); unsigned char currentAttackWaypoint();
 };
-
 class AIModule {
 public:
     virtual ~AIModule();
     char gap_04[0xEC];
     void __cdecl logCommonHistory(char* fmt, ...);
 };
-
 class TribeTacticalAIModule : public AIModule {
 public:
     MainDecisionAIModule* md;
@@ -76,6 +74,7 @@ public:
     void displaySoldierGroups();
 };
 
+#endif
 void TribeTacticalAIModule::displaySoldierGroups()
 {
     RGE_Static_Object* object;
@@ -138,3 +137,6 @@ void TribeTacticalAIModule::displaySoldierGroups()
         g = g->next;
     }
 }
+#else
+void TribeTacticalAIModule::displaySoldierGroups() {}
+#endif

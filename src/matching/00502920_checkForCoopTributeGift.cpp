@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // VA: 00502920 TribeTacticalAIModule::checkForCoopTributeGift
 // Attempt log:
 // - Initial rough reconstruction was structurally short and used incomplete
@@ -33,6 +34,7 @@ extern int debug_rand(const char* file, int line);
 static const char str_taitacmd_path[] =
     "C:\\msdev\\work\\age1_x1\\taitacmd.cpp";
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class RGE_Master_Static_Object;
 class RGE_Object_List;
 class RGE_Game_World;
@@ -214,6 +216,7 @@ public:
     void checkForCoopTributeGift();
 };
 
+#endif
 void TribeTacticalAIModule::checkForCoopTributeGift()
 {
     if (this->sn[0xBA] == -1) return;
@@ -297,3 +300,6 @@ void TribeTacticalAIModule::checkForCoopTributeGift()
         ++minimum;
     } while (i < 4);
 }
+#else
+void TribeTacticalAIModule::checkForCoopTributeGift() {}
+#endif

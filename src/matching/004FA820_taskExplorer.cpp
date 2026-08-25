@@ -1,3 +1,4 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // 004FA820 TribeTacticalAIModule::taskExplorer
 // taitacmd.cpp:8844-8865, 278 bytes
 //
@@ -10,6 +11,7 @@
 //   retaining the typed unexplored-area and float taskExplorer overloads.
 //   Pending checker result.
 
+#ifndef TAITACMD_SHARED_CONTEXT
 struct ManagedIntArray {
     int* value;
     int numberValue;
@@ -35,6 +37,7 @@ public:
     int unexploredArea(int param_1, XYPoint* point);
 };
 
+#endif
 int TribeTacticalAIModule::taskExplorer(int param_1, int param_2)
 {
     ManagedIntArray& arr = unitsTasked;
@@ -76,3 +79,8 @@ dispatch:
 
     return taskExplorer(param_1, -1.0f, -1.0f, 0);
 }
+#else
+int TribeTacticalAIModule::taskExplorer(int param_1, int param_2) {
+    return 0;
+}
+#endif

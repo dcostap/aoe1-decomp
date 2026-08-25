@@ -1,9 +1,11 @@
+#ifndef TAITACMD_SHARED_CONTEXT
 // VA: 00500320 TribeTacticalAIModule::removeGroup
 // MATCHED: use a natural `for (group = next; group != sentinel; group = group->next)` loop
 // with an inner `if (group == 0) break;` before the id check. This makes VC5 place
 // the sentinel compare at the bottom and jump back to a loop top that begins with
 // the null test, matching the original layout.
 
+#ifndef TAITACMD_SHARED_CONTEXT
 class TacticalAIGroup {
 public:
     virtual ~TacticalAIGroup();
@@ -23,6 +25,7 @@ public:
     int removeGroup(int id);
 };
 
+#endif
 int TribeTacticalAIModule::removeGroup(int id) {
     TacticalAIGroup* sentinel = &this->groups;
     int targetId = id;
@@ -42,3 +45,8 @@ int TribeTacticalAIModule::removeGroup(int id) {
     }
     return 0;
 }
+#else
+int TribeTacticalAIModule::removeGroup(int id) {
+    return 0;
+}
+#endif

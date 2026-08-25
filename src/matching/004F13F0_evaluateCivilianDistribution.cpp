@@ -95,16 +95,17 @@ public:
     int numberGameIDsOwnedBy(int player, int gameID);
 };
 
-class PlayerLike {
+class RGE_Player {
 public:
-    char gap_000[0x38];
+    virtual ~RGE_Player();
+    char gap_004[0x34];
     RGE_Visible_Map* visibleMap;
 };
 
 class TribeMainDecisionAIModule {
 public:
     char gap_000[0xF0];
-    PlayerLike* player;
+    RGE_Player* player;
     char gap_0F4[0xCEC - 0xF4];
     TribeInformationAIModule informationAI;
 };
@@ -242,25 +243,25 @@ void TribeTacticalAIModule::evaluateCivilianDistribution()
     }
 
     gatherers = this->civilians.numberValue - this->civilianExplorers.desiredNumberValue;
-    this->desiredNumberGatherers = gatherers;
+    this->desiredNumberGatherersValue = gatherers;
     if (this->sn[5] != -1 && gatherers > this->sn[5]) {
-        this->desiredNumberGatherers = this->sn[5];
+        this->desiredNumberGatherersValue = this->sn[5];
     }
     }
     else {
         desired = 1;
         if (this->civilians.numberValue == 1) {
-            this->desiredNumberGatherers = 0;
+            this->desiredNumberGatherersValue = 0;
         }
         else {
             desired = this->sn[5];
-            this->desiredNumberGatherers = 1;
+            this->desiredNumberGatherersValue = 1;
             if (desired != -1 && desired < 1) {
-                this->desiredNumberGatherers = desired;
+                this->desiredNumberGatherersValue = desired;
             }
             // BINARY NOTE: Reread the count before publishing explorer demand.
             gatherers = this->civilians.number() -
-                        this->desiredNumberGatherers;
+                        this->desiredNumberGatherersValue;
             this->civilianExplorers.setDesiredNumber(gatherers);
             desired = this->sn[3];
             if (desired == -1 || gatherers <= desired)
