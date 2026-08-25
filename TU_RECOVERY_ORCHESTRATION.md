@@ -10,35 +10,36 @@ The project remains function-first and exact-first. The original executable rema
 
 ## Current baseline
 
-Baseline commit: `0f5bb0fb Correct stale grouped owner claims`.
+Phase 1 baseline commit: `6dad5c81 Complete Phase 1 exact owner registration`.
 
 | Measure | Current value |
 |---|---:|
 | Original PDB C/C++ modules | 224 |
 | Modules with registered exact coverage | 224 |
+|  |  |
 | Registered groups | 239 |
-| Registered exact owners | 2,764 |
+| Registered exact owners | 2,980 |
 | Matching normal functions | 4,483 |
 | Scratch normal functions | 638 |
 | Accepted-drift functions | 348 |
 | Verified-logic functions | 21 |
 | Registered flag errors | 0 |
 
-The Phase 0 integration audit is current.
+The Phase 1 integration audit is current.
 
 ## Current integration backlog
 
 | Category | Functions |
 |---|---:|
-| Grouped exact, not registered | 193 |
+| Grouped exact, not registered | 0 |
 | Not included in a registered wrapper | 642 |
-| Included, but expected symbol not emitted | 187 |
-| Grouped-context mismatch | 526 |
+| Included, but expected symbol not emitted | 186 |
+| Grouped-context mismatch | 504 |
 | PDB source attributed to a header | 134 |
 | PDB source missing | 37 |
-| Total unregistered matching functions | 1,719 |
+| Total unregistered matching functions | 1,503 |
 
-Phase 0 is complete. Phase 1 is next.
+Phases 0 and 1 are complete. Phase 2 is next.
 
 ## Terms
 
