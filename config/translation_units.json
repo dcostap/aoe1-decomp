@@ -4863,6 +4863,7 @@
         "00504D50": "src/matching/00504D50_retryableOrder.cpp",
         "00504D80": "src/matching/00504D80_convertToLOSResourceType.cpp",
         "00505A10": "src/matching/00505A10_retryableOrder.cpp",
+        "00505FD0": "src/matching/00505FD0_processIdle.cpp",
         "00506240": "src/matching/00506240_TribeTradeShipUnitAIModule.cpp",
         "005067D0": "src/matching/005067D0_TribeTransportShipUnitAIModule.cpp",
         "00506B70": "src/matching/00506B70_TribeFishingShipUnitAIModule.cpp",
@@ -4879,7 +4880,8 @@
         "00504D50": "?retryableOrder@TribeCivilianUnitAIModule@@UAEHH@Z",
         "00504D80": "?convertToLOSResourceType@TribeCivilianUnitAIModule@@UAEHH@Z",
         "00505A10": "?retryableOrder@TribePriestUnitAIModule@@UAEHH@Z",
-        "00506C70": "?importantWhenDead@TribeFishingShipUnitAIModule@@UAEHH@Z"
+        "00506C70": "?importantWhenDead@TribeFishingShipUnitAIModule@@UAEHH@Z",
+        "00505FD0": "?processIdle@TribePriestUnitAIModule@@UAEHH@Z"
       }
     },
     {
