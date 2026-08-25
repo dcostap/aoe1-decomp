@@ -25,6 +25,7 @@ public:
     long map_height;
     char gap_10[0x8d7c];
     RGE_Tile** map_row_offset;
+    unsigned char get_terrain(short x, short y);
 };
 
 class RGE_Zone_Map {
@@ -40,7 +41,7 @@ public:
 
     RGE_Zone_Map(RGE_Map* map, float* terrain_info, long terrain_info_num);
     ~RGE_Zone_Map();
-    void save(void* file);
+    void save(int file);
     unsigned char do_zone_map();
     RGE_Zone_Map* check_info(float* terrain_info, long terrain_info_num);
 
