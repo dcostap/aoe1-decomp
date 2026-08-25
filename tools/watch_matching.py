@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Watches src/matching/ for new files and plays the configured match sound.
-Run from repo root:  python watch_matching.py
+Run from repo root:  python tools/watch_matching.py
 """
 
 import argparse
@@ -11,9 +11,10 @@ import wave
 from datetime import datetime
 from pathlib import Path
 
-MATCHING_DIR = Path(__file__).parent / "src" / "matching"
-MATCH_SOUND_WAV = Path(__file__).parent / "watch_matching_sound.wav"
-GENERATED_SOUND_DIR = Path(__file__).parent / "build" / "temp"
+REPO_ROOT = Path(__file__).resolve().parents[1]
+MATCHING_DIR = REPO_ROOT / "src" / "matching"
+MATCH_SOUND_WAV = Path(__file__).parent / "assets" / "watch_matching_sound.wav"
+GENERATED_SOUND_DIR = REPO_ROOT / "build" / "temp"
 BOOSTED_MATCH_SOUND_WAV_TEMPLATE = "watch_matching_sound_{percent}pct.wav"
 FALLBACK_WAV = Path(r"C:\Windows\Media\tada.wav")
 LOUDNESS_MULTIPLIER = 2.0
