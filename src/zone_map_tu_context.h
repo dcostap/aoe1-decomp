@@ -5,6 +5,8 @@
 
 typedef unsigned char uchar;
 
+void rge_read(int handle, void* buffer, int count);
+
 struct RGE_Tile {
     short sx;
     short sy;
