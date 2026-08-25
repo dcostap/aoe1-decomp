@@ -49,70 +49,8 @@
 // jumps. Both relation loops therefore have equal behavior and fault order.
 
 #if !defined(SCR_GAME_TU_CONTEXT)
-class TRIBE_Panel_Time {
-public:
-    void set_clock_type(int clock_type, int player_id);
-};
+ #include "../../include/scr_game_context.h"
 
-class RGE_Player {
-public:
-    virtual ~RGE_Player();
-    char gap_04[0x80];
-    unsigned char* relations;
-    char gap_88[0x7C];
-    unsigned char allied_victory;
-    char gap_105[0x11B];
-
-    unsigned char relation(long player_id);
-};
-
-class TRIBE_Player : public RGE_Player {
-public:
-    char gap_220[0x620];
-    float ruin_held_time;
-    float artifact_held_time;
-};
-
-class RGE_Game_World {
-public:
-    void* vtable_ptr;
-    char gap_04[0x24];
-    void* map;
-    char gap_2C[0x10];
-    short player_num;
-    char gap_3E[2];
-    RGE_Player** players;
-    char gap_44[0xC0];
-};
-
-class TRIBE_World : public RGE_Game_World {
-public:
-    char gap_104[4];
-    int victory_type;
-};
-
-class RGE_Base_Game {
-public:
-    void get_countdown_timer(int player_id, int* countdown_timer);
-};
-
-extern RGE_Base_Game* rge_base_game;
-
-class TScreenPanel {
-public:
-    virtual ~TScreenPanel();
-    char gap_04[0x474];
-};
-
-class TRIBE_Screen_Game : public TScreenPanel {
-public:
-    char gap_478[0xA0];
-    TRIBE_Panel_Time* countdown_clock[10];
-    char gap_540[0x74];
-    TRIBE_World* world;
-
-    void reset_clocks();
-};
 #endif
 
 void TRIBE_Screen_Game::reset_clocks() {

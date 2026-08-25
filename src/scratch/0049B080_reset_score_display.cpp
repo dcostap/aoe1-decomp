@@ -76,148 +76,8 @@
 #include "../../include/rge_base_game_global.h"
 
 #if !defined(SCR_GAME_TU_CONTEXT)
-extern "C" int sprintf(char*, const char*, ...);
-extern "C" void qsort(void*, unsigned int, unsigned int,
-                      int (*)(const void*, const void*));
+ #include "../../include/scr_game_context.h"
 
-int scr_game_score_compare(const void*, const void*);
-
-struct RGE_Color_Table {
-    char gap_00[0x26];
-    short id;
-};
-
-class RGE_Victory_Conditions {
-public:
-    virtual ~RGE_Victory_Conditions();
-    char gap_04[0x18];
-    long total_points;
-    long get_victory_points();
-};
-
-class RGE_Player {
-public:
-    void* vtable_ptr;
-    char gap_04[0x30];
-    RGE_Victory_Conditions* victory_conditions;
-    char gap_38[0x48];
-    unsigned char game_status;
-    unsigned char resigned;
-    char gap_82[2];
-    unsigned char* relations;
-    char gap_88[0x7C];
-    unsigned char allied_victory;
-    unsigned char master_player_id;
-    char gap_106[2];
-    RGE_Color_Table* color_table;
-
-    unsigned char relation(long player_id);
-};
-
-class RGE_Game_World {
-public:
-    void* vtable_ptr;
-    char gap_04[0x38];
-    short player_num;
-    char gap_3E[2];
-    RGE_Player** players;
-    char gap_44[0xC0];
-};
-
-class TRIBE_World : public RGE_Game_World {
-public:
-    char gap_104[0x18];
-    unsigned char score_displayed;
-};
-
-class RGE_Font {
-public:
-    void* font;
-    long font_wid;
-    long font_hgt;
-};
-
-class RGE_Communications_Speed {
-public:
-    char gap_00[0x1BC];
-    unsigned long player_avg_frames_msec[10];
-    unsigned long GetPlayerLatency(unsigned int player);
-};
-
-class TCommunications_Handler {
-public:
-    char gap_00[0x14D4];
-    RGE_Communications_Speed* Speed;
-
-    int GetPlayerHumanity(unsigned int player);
-    char* GetPlayerName(unsigned int player);
-};
-
-class RGE_Base_Game {
-public:
-    int numberPlayers();
-    int playerID(int player);
-    int multiplayerGame();
-    RGE_Font* get_font(int font_id);
-};
-
-class TPanel {
-public:
-    virtual void v00();
-    virtual void v04();
-    virtual void v08();
-    virtual void v0C();
-    virtual void v10();
-    virtual void set_visible(int visible);
-    char gap_04[0xF0];
-};
-
-class TMessagePanel : public TPanel {
-public:
-    void show_message2(int message_type, char* text,
-                       unsigned long font_color1, unsigned long font_color2,
-                       void* font, long font_wid, long font_hgt,
-                       void* icon1, int icon_frame1,
-                       void* icon2, int icon_frame2);
-};
-
-class TShape {
-};
-
-class TEasy_Panel : public TPanel {
-public:
-    char gap_F4[0x354];
-    TShape* button_pics;
-    char gap_44C[0x2C];
-};
-
-class TScreenPanel : public TEasy_Panel {
-};
-
-struct PLAYER_SCORE {
-    int comm_id;
-    int player_id;
-    int team_id;
-    long player_score;
-    long team_score;
-};
-
-class TRIBE_Screen_Game : public TScreenPanel {
-public:
-    char gap_478[0x114];
-    TMessagePanel* score_panel[8];
-    char gap_5AC[8];
-    TRIBE_World* world;
-
-    void reset_score_display();
-};
-
-#define score_format "%s: %d/%d"
-
-static __inline TCommunications_Handler* communications_at_storage()
-{
-    return *(TCommunications_Handler**)0x0062C4C0;
-}
 #endif
 
 #if defined(SCR_GAME_TU_CONTEXT)
@@ -225,6 +85,14 @@ static __inline TCommunications_Handler* communications_at_storage()
 static __inline TCommunications_Handler* communications_at_storage()
 {
     return comm;
+}
+#endif
+
+#if !defined(SCR_GAME_TU_CONTEXT)
+int scr_game_score_compare(const void*, const void*);
+static __inline TCommunications_Handler* communications_at_storage()
+{
+    return *(TCommunications_Handler**)0x0062C4C0;
 }
 #endif
 

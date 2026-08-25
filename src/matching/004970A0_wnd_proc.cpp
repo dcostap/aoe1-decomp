@@ -9,7 +9,7 @@
 //   TPanel field surface.
 // - corrected the canonical TPanel base padding, moving input_window to +0x78;
 //   this localized the remaining drift to the IsIconic receiver.
-// - modeled the DrawSurface vptr so its hwnd is at +4; the natural typed source
+// - modeled the DrawSurface base so its hwnd is at +4; the natural typed source
 //   now matches all 354 bytes, including GetKeyState IAT and base fallback.
 // - Main-agent audit restored canonical game/draw-area ownership and replaced
 //   the raw dialog-text address with a named symbol; exact bytes were revalidated.

@@ -16,69 +16,8 @@
 //   ownership; exact bytes were revalidated after promotion.
 
 #if !defined(SCR_GAME_TU_CONTEXT)
-class RGE_Master_Static_Object {
-public:
-    virtual ~RGE_Master_Static_Object();
-    char gap_04[0x0C];
-    short id;
-};
+ #include "../../include/scr_game_context.h"
 
-class RGE_Static_Object {
-public:
-    virtual ~RGE_Static_Object();
-    char gap_04[0x04];
-    RGE_Master_Static_Object* master_obj;
-    char gap_0C[0x2C];
-    float world_x;
-    float world_y;
-};
-
-class RGE_Player {
-public:
-    virtual ~RGE_Player();
-    char gap_04[0x12C];
-    RGE_Static_Object* selected_obj;
-
-    void unselect_object();
-    int select_object(RGE_Static_Object* obj);
-    void set_view_loc(float x, float y);
-    void set_map_loc(short x, short y);
-};
-
-class TRIBE_Player : public RGE_Player {
-public:
-    RGE_Static_Object* find_obj(short master_id, RGE_Static_Object* after);
-};
-
-class RGE_Base_Game {
-public:
-    virtual ~RGE_Base_Game();
-    int get_paused();
-    TRIBE_Player* get_player();
-};
-
-class RGE_ViewLike {
-public:
-    virtual ~RGE_ViewLike();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
-    virtual void vf20(int value);
-};
-
-extern RGE_Base_Game* rge_base_game;
-
-class TRIBE_Screen_Game {
-public:
-    char gap_00[0x4B8];
-    RGE_ViewLike* main_view;
-
-    void command_select_building(int value);
-};
 #endif
 
 void TRIBE_Screen_Game::command_select_building(int value) {
@@ -129,7 +68,7 @@ void TRIBE_Screen_Game::command_select_building(int value) {
             rge_base_game->get_player()->set_view_loc(obj->world_x, obj->world_y);
             rge_base_game->get_player()->set_map_loc(
                 (short)(int)obj->world_x, (short)(int)obj->world_y);
-            this->main_view->vf20(1);
+            this->main_view->set_redraw(1);
         }
     }
 }

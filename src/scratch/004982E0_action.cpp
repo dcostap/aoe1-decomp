@@ -78,7 +78,7 @@ long TRIBE_Screen_Game::action(TPanel* panel, long id,
         if (id == 0) {
             this->resign_flag = 1;
             RGE_Player* player = rge_base_game->get_player();
-            player->resign(comm->WhoAmI(), id);
+            player->command_resign(comm->WhoAmI(), id);
             return 1;
         }
         goto pause_cleanup;

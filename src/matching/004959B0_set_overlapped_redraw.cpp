@@ -13,40 +13,8 @@
 //   period-plausible source shape.
 
 #if !defined(SCR_GAME_TU_CONTEXT)
-struct tagRECT {
-    long left;
-    long top;
-    long right;
-    long bottom;
-};
+ #include "../../include/scr_game_context.h"
 
-class TPanel {
-public:
-    virtual void vf00();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
-    virtual void set_redraw(int mode);
-
-    char gap_04[0x20];
-    tagRECT clip_rect;
-};
-
-class TPanelSystem {
-public:
-    TPanel* modalPanel();
-};
-
-extern TPanelSystem panel_system;
-
-class TRIBE_Screen_Game {
-public:
-    void set_overlapped_redraw(TPanel* param_1, TPanel* param_2, int param_3);
-};
 #endif
 
 void TRIBE_Screen_Game::set_overlapped_redraw(TPanel* param_1, TPanel* param_2, int param_3)

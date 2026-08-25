@@ -22,7 +22,7 @@
 //   (3) `save_culture = player->culture;` (CSE with the guard load) selects the
 //       original EAX store instead of the EBX clamp copy.
 //   These reduced the diff from 1790 bytes to 0.
-// - surface: replaced vf00/manual-vtable scaffolding with the canonical
+// - surface: replaced unnamed slot scaffolding with the canonical
 //   TPanel/TButtonPanel surfaces (TPanel vt[0..8] = dtor/setup/set_rect/...
 //   /set_redraw per donor-slot evidence; TButtonPanel : TPanel with virtual
 //   ~TButtonPanel; RGE_Base_Game/RGE_Player virtual dtors; real TPanel fields

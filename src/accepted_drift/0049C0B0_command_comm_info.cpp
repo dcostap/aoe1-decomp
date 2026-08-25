@@ -2,7 +2,7 @@
 // scr_game.cpp
 // Fresh 2026-05-19: implement real command_comm_info panel toggle logic.
 // try 1: natural panel/global logic: exact size, only broad diffs from set_visible vslot at +0x10 and final global reload register choices.
-// try 2: add missing vf10 so set_visible is +0x14: reduced to 30/165 positional.
+// try 2: add the canonical set_active surface: reduced to 30/165 positional.
 // try 3: force final else-branch global reloads through a local `game`: reduced to 4/165 positional.
 // try 4: first-call temp local; no change.
 // try 5: second-call temp local; no change.
@@ -11,46 +11,8 @@
 // original uses EAX then EDX. Same ECX this pointers, pushed args (0/1), vslot +0x14, calls, and all later bytes exact.
 
 #if !defined(SCR_GAME_TU_CONTEXT)
-class TPanel {
-public:
-    virtual void vf00();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void set_visible(int visible); // +0x14
-};
+ #include "../../include/scr_game_context.h"
 
-class TMessagePanel {
-public:
-    void remove_message();
-};
-
-class RGE_Base_Game {
-public:
-    char gap_000[0x8e8];
-    int do_show_timings;
-    int do_show_comm;
-    int do_show_ai;
-};
-
-class TRIBE_Screen_Game {
-public:
-    char gap_000[0x4c0];
-    TPanel* inven_panel;     // +0x4c0
-    char gap_4c4[0x80];
-    TMessagePanel* message_panel1; // +0x544
-    TMessagePanel* message_panel2; // +0x548
-    TMessagePanel* message_panel3; // +0x54c
-    TMessagePanel* message_panel4; // +0x550
-    TMessagePanel* message_panel5; // +0x554
-    TMessagePanel* message_panel6; // +0x558
-    char gap_55c[0x2c];
-    TPanel* fps_panel;       // +0x588
-    void command_comm_info();
-};
-
-#define rge_base_game (*(RGE_Base_Game**)0x62C574)
 #endif
 
 void TRIBE_Screen_Game::command_comm_info() {

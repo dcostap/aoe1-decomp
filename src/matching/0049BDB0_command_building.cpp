@@ -77,61 +77,8 @@
 //   under the pinned default /O2 /Oy flags.
 
 #if !defined(SCR_GAME_TU_CONTEXT)
-struct RGE_Base_Game;
-struct TRIBE_Player;
-struct TMessagePanel;
-struct RGE_Master_Static_Object;
+ #include "../../include/scr_game_context.h"
 
-extern RGE_Base_Game* rge_base_game;
-
-struct RGE_Base_Game {
-    virtual ~RGE_Base_Game();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void set_game_mode(int mode, int value);            // vt[4] (0x10)
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
-    virtual void vf20();
-    virtual void vf24();
-    virtual char* get_string2(int id, int a, int attr, char* buf, int size); // vt[10] (0x28)
-    char gap_004[0x3F8];
-    short master_obj_id;                                        // +0x3FC
-    int get_paused();
-    TRIBE_Player* get_player();
-    TRIBE_Player* get_player(int id, short* attr, float factor, int x);
-};
-
-struct TRIBE_Player {
-    virtual ~TRIBE_Player();
-    char gap_004[0x20];
-    RGE_Master_Static_Object** master_objects;   // +0x24
-    unsigned char check_obj_cost(short obj_id, short* out, float factor, int skip_farm);
-};
-
-struct RGE_Master_Static_Object {
-    virtual ~RGE_Master_Static_Object();
-    char gap_004[0x168];
-    unsigned char building_connect_flag;                        // +0x16C
-};
-
-struct TMessagePanel {
-    void show_message(int a, char* msg, int code, int z1, int z2, int z3, int z4);
-};
-
-class TScreenPanel {
-public:
-    virtual ~TScreenPanel();
-    char gap_004[0x540];
-};
-
-class TRIBE_Screen_Game : public TScreenPanel {
-public:
-    TMessagePanel* message_panel;                               // +0x544
-
-    void command_building(int obj_id);
-};
 #endif
 
 void TRIBE_Screen_Game::command_building(int obj_id) {

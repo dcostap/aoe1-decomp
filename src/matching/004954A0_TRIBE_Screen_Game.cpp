@@ -7,7 +7,7 @@
 //   panel_system.destroyPanel, typed TDigital/TShape deletes, free, and
 //   virtual panel deletes. Exact match with /GX.
 // - The simple TScreenPanel size stub preserves the proven +0x478 derived
-//   layout and emits the expected vptr restore and base destructor call.
+//   layout and emits the expected base cleanup and destructor call.
 
 #include "../../include/scr_game_context.h"
 

@@ -39,6 +39,7 @@ class TListPanel;
 class TVerticalSliderPanel;
 class THorizontalSliderPanel;
 class RGE_Static_Object;
+class RGE_Object_Node;
 class RGE_Object_List;
 class RGE_Player;
 class TRIBE_Player;
@@ -89,6 +90,7 @@ class Item_Avail;
 class Trade_Avail;
 class TRIBE_Player_Tech;
 class TRIBE_Tech;
+class XYZBYTEPoint;
 
 extern "C" unsigned long __cdecl debug_timeGetTime(char*, int);
 extern "C" void __cdecl color_log(unsigned char, unsigned char, unsigned char);
@@ -606,15 +608,12 @@ class RGE_Main_View : public RGE_View {
 public:
     char gap_380[0x20];
     RGE_Main_View();
-    void vfF0();
     int message_active;
 };
 
 class TRIBE_Main_View : public RGE_Main_View {
 public:
     virtual ~TRIBE_Main_View();
-    void vf20(int);
-    void redraw(int);
     long width();
     void update();
     void update(int);
@@ -678,7 +677,6 @@ public:
     void set_text(char*);
     void set_bevel_info(int, int, int, int, int, int, int);
     void set_picture(short, TShape*, short);
-    void vf14(int);
     int button_action(long, long);
     char* help_text;
 };
@@ -718,6 +716,7 @@ public:
     void remove_message();
     void show_message2(int, char*, unsigned long, unsigned long, void*, long,
                        long, void*, int, void*, int);
+    void show_message(int, char*);
     void show_message(int, char*, int, int, int, int, int);
     void show_message(int, const char*);
 };
@@ -737,12 +736,7 @@ public:
     virtual void set_text(long);
     virtual void set_text(char**, short);
     void empty_list();
-    void vf14(int);
-    void vf20(int);
-    void vfE4(int);
     int pause_flag;
-    void set_state(int);
-    void redraw(int);
     char* get_text();
 };
 
@@ -773,7 +767,6 @@ public:
                        int, TDigital*, TScreenPanel*, RGE_View*,
                        RGE_Diamond_Map*);
     void game_mode_changed(int, int);
-    void vf14(int);
 };
 
 class RGE_Player {
@@ -822,7 +815,6 @@ public:
     unsigned char unit_level_selected();
     int is_group_selected(short);
     unsigned char get_selected_objects_to_command();
-    void command_add_attribute(int, float);
     unsigned char check_obj_cost(short, short*, float, int);
     void group_objects(int);
     void unselect_object(RGE_Static_Object*);
@@ -831,9 +823,6 @@ public:
     void select_object(RGE_Static_Object*);
     void set_view_loc(long, long);
     void set_map_loc(long, long);
-    void command_stop();
-    void command_formation(int);
-    void command_stand_ground();
     void ungroup_objects();
     RGE_Static_Object* find_obj(int);
     RGE_Static_Object* find_obj(int, int);
@@ -844,20 +833,56 @@ public:
     void command_building_make_obj(short);
     unsigned char relation(long);
     virtual void kickAI(int);
-    virtual void vp_3c(); virtual void vp_40(); virtual void vp_44();
-    virtual void vp_48(); virtual void vp_4c(); virtual void vp_50();
-    virtual void vp_54(); virtual void vp_58(); virtual void vp_5c();
-    virtual void vp_60(); virtual void vp_64(); virtual void vp_68();
-    virtual void vp_6c(); virtual void vp_70(); virtual void vp_74();
-    virtual void vp_78(); virtual void vp_7c(); virtual void vp_80();
-    virtual void vp_84(); virtual void vp_88(); virtual void vp_8c();
-    virtual void vp_90(); virtual void vp_94(); virtual void vp_98();
-    virtual void vp_9c(); virtual void vp_a0(); virtual void vp_a4();
-    virtual void vp_a8(); virtual void vp_ac(); virtual void vp_b0();
-    virtual void vp_b4(); virtual void vp_b8(); virtual void vp_bc();
-    virtual void vp_c0(); virtual void vp_c4(); virtual void vp_c8();
-    virtual void vp_cc(); virtual void vp_d0();
-    virtual void resign(int, long);
+    virtual int strategicNumber(int);
+    virtual void sendGameOrder(RGE_Static_Object*, RGE_Static_Object*,
+                               float, float);
+    virtual void sendAddWaypointCommand(int, XYZBYTEPoint*, int);
+    virtual void processAddWaypointCommand(int, XYZBYTEPoint*, int);
+    virtual void sendPlayCommand(int, int*, int, int, int);
+    virtual void sendPlayCommand(int, int, int);
+    virtual int sendAICommand(int, int, int, int, int);
+    virtual int objectCostByType(int);
+    virtual void trackUnitGather(int, int, int);
+    virtual RGE_Static_Object* make_scenario_obj(float, float, float, short,
+                                                   unsigned char, float);
+    virtual void scenario_save(int);
+    virtual void scenario_load(int, long*, float);
+    virtual void scenario_postsave(int);
+    virtual void scenario_postload(int, long*, float);
+    virtual void load(int);
+    virtual void add_attribute_num(short, float, unsigned char);
+    virtual void update();
+    virtual void update_dopplegangers();
+    virtual void save(int);
+    virtual void save2(int);
+    virtual void save_info(int);
+    virtual void random_start();
+    virtual RGE_Static_Object* make_new_object(long, float, float, float,
+                                                 int);
+    virtual void analyize_selected_objects();
+    virtual int get_mouse_pointer_action_vars(int, int*, int*);
+    virtual unsigned char command_make_move(RGE_Static_Object*, float, float);
+    virtual unsigned char command_make_work(RGE_Static_Object*, float, float);
+    virtual unsigned char command_make_do(RGE_Static_Object*, float, float);
+    virtual unsigned char command_stop();
+    virtual unsigned char command_place_object(short, float, float, float);
+    virtual unsigned char command_add_attribute(int, float);
+    virtual unsigned char command_give_attribute(int, int, float);
+    virtual unsigned char command_formation(int);
+    virtual unsigned char command_stand_ground();
+    virtual unsigned char command_create_group(int, int*, int, float);
+    virtual unsigned char command_add_to_group(int, int, float);
+    virtual unsigned char command_remove_from_group(int, int);
+    virtual unsigned char command_destroy_group(int);
+    virtual unsigned char command_resign(int, int);
+    virtual unsigned char command_add_waypoint(float, float, float);
+    virtual RGE_Object_Node* addObject(RGE_Static_Object*, int, int);
+    virtual void removeObject(RGE_Static_Object*, int, int, RGE_Object_Node*);
+    virtual void logMessage(char*);
+    virtual void notify(int, int, int, long, long, long);
+    virtual void logStatus(FILE*, int);
+    virtual void load_victory(int, long*, unsigned char);
+    virtual void new_victory();
     void interface_item_avail(Item_Avail**, short*, short);
     void interface_tech_avail(Item_Avail**, short*, short);
 };
@@ -986,7 +1011,6 @@ public:
     int multiplayerGame();
     int allowCheatCodes();
     void enable_input();
-    void set_game_action(int, int);
     void set_font(int, int);
     void request_pause(int);
     void request_pause();
@@ -994,9 +1018,6 @@ public:
     void build_mode(int, int);
     int language(int);
     char* language(int, int, int, char*, int);
-    void vf10(int, int);
-    void vf14(int, int);
-    void vf14(int);
     int singlePlayerGame();
     int numberPlayers();
     int playerID(int);
@@ -1568,8 +1589,6 @@ public:
     void set_focus(int);
     int field_14;
     int field_18;
-    void vf20(int);
-    void vf50(int, int);
 };
 
 extern RGE_Base_Game* rge_base_game;

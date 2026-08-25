@@ -3,44 +3,8 @@
 // Retry 2026-05-19: replace placeholder with natural member-call surface.
 
 #if !defined(SCR_GAME_TU_CONTEXT)
-struct RGE_Base_Game;
-struct TRIBE_Player;
-struct TMessagePanel;
+ #include "../../include/scr_game_context.h"
 
-extern RGE_Base_Game* rge_base_game;
-
-struct RGE_Base_Game {
-    virtual void vf00();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
-    virtual void vf20();
-    virtual void vf24();
-    virtual void language(int id, int a, int attr, char* buf, int size);
-    int get_paused();
-    TRIBE_Player* get_player(int id);
-    TRIBE_Player* get_player(int id, short* attr);
-};
-
-struct TRIBE_Player {
-    unsigned char check_tech_cost();
-    unsigned char command_building_make_tech();
-};
-
-struct TMessagePanel {
-    void show_message(int a, char* msg, int code, int z1, int z2, int z3, int z4);
-};
-
-class TRIBE_Screen_Game {
-public:
-    char gap_000[0x544];
-    TMessagePanel* message_panel;
-    void command_research(int player_id);
-};
 #endif
 
 void TRIBE_Screen_Game::command_research(int player_id) {

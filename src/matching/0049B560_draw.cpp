@@ -5,7 +5,7 @@
 // behavior model includes global mode gate, vtable draw_background/draw_foreground, optional panel fill, 1024/768 vs 800/600 vs small background shape draws, clip rect restore, and alternate non-global path.
 // tried natural virtual declarations and typed TDrawArea/TShape surfaces; calls and size are plausible but register/block topology remains broad (397 positional / 571 edit).
 // left in scratch: not accepted_drift-safe due broad scheduling/register/control drift despite same size.
-// bounded pass sa872fd63f: removed the duplicate explicit vptr and restored the
+// bounded pass sa872fd63f: removed the duplicate explicit base pointer and restored the
 // inherited +28/+2c draw_setup/draw_finish slots; this fixed all 21 ordered
 // calls, exact size/frame/CFG, and improved the first pass to 414 positional
 // differing bytes.
