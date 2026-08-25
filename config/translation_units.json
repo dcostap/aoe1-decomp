@@ -664,9 +664,15 @@
     },
     {
       "name": "tworld_prefix",
-      "source": "src/tworld_prefix_tu.cpp",
+      "source": "src/tworld_phase2_tu.cpp",
       "flags": "config/flags/0052E6B0_world_init.rsp",
       "owners": {
+        "0052DF60": "src/matching/0052DF60_TRIBE_World.cpp",
+        "0052E040": "src/matching/0052E040_TRIBE_World.cpp",
+        "0052E0B0": "src/matching/0052E0B0_logStatus.cpp",
+        "0052E2B0": "src/matching/0052E2B0_data_load_map.cpp",
+        "0052E350": "src/matching/0052E350_data_load_world.cpp",
+        "0052E400": "src/matching/0052E400_init_player_type.cpp",
         "0052E6B0": "src/matching/0052E6B0_world_init.cpp",
         "0052E750": "src/matching/0052E750_init.cpp",
         "0052E770": "src/matching/0052E770_base_save.cpp",
@@ -674,9 +680,21 @@
         "0052E830": "src/matching/0052E830_load_player.cpp",
         "0052E990": "src/matching/0052E990_setup_players.cpp",
         "0052ECF0": "src/matching/0052ECF0_scenario_make_player.cpp",
-        "0052EDF0": "src/matching/0052EDF0_load_world.cpp"
+        "0052EDF0": "src/matching/0052EDF0_load_world.cpp",
+        "00530370": "src/matching/00530370_new_scenario.cpp",
+        "00530A70": "src/matching/00530A70_get_achievement.cpp",
+        "00530AC0": "src/matching/00530AC0_send_cheat.cpp",
+        "00530AE0": "src/matching/00530AE0_cheat.cpp",
+        "00531240": "src/matching/00531240_fill_in_score.cpp",
+        "00531350": "src/matching/00531350_send_zone_score_info.cpp"
       },
       "symbols": {
+        "0052DF60": "??0TRIBE_World@@QAE@XZ",
+        "0052E040": "??1TRIBE_World@@UAE@XZ",
+        "0052E0B0": "?logStatus@TRIBE_World@@MAEXPAU_iobuf@@H@Z",
+        "0052E2B0": "?data_load_map@TRIBE_World@@UAEXPAD000FFFPAPAVRGE_Sound@@0@Z",
+        "0052E350": "?data_load_world@TRIBE_World@@UAEEPAU_iobuf@@@Z",
+        "0052E400": "?init_player_type@TRIBE_World@@UAEEHFE@Z",
         "0052E6B0": "?world_init@TRIBE_World@@UAEXHPAVTSound_Driver@@PAVTCommunications_Handler@@@Z",
         "0052E750": "?init@TRIBE_World@@UAEEPADPAVTSound_Driver@@PAVTCommunications_Handler@@@Z",
         "0052E770": "?base_save@TRIBE_World@@UAEXH@Z",
@@ -684,7 +702,13 @@
         "0052E830": "?load_player@TRIBE_World@@UAEXHEF@Z",
         "0052E990": "?setup_players@TRIBE_World@@UAEXAAURGE_Player_Info@@@Z",
         "0052ECF0": "?scenario_make_player@TRIBE_World@@UAEXFEEEPAD@Z",
-        "0052EDF0": "?load_world@TRIBE_World@@UAEEH@Z"
+        "0052EDF0": "?load_world@TRIBE_World@@UAEEH@Z",
+        "00530370": "?new_scenario@TRIBE_World@@UAEEAAURGE_Player_Info@@H@Z",
+        "00530A70": "?get_achievement@TRIBE_World@@QAEJEPAPAD@Z",
+        "00530AC0": "?send_cheat@TRIBE_World@@QAEXF@Z",
+        "00530AE0": "?cheat@TRIBE_World@@QAEXFF@Z",
+        "00531240": "?fill_in_score@TRIBE_World@@QAEXAAUTRIBE_Zone_High_Score_Info@@J@Z",
+        "00531350": "?send_zone_score_info@TRIBE_World@@QAEXXZ"
       }
     },
     {
