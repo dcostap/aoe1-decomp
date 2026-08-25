@@ -22,23 +22,14 @@ protected:
     char timing_string[1]; // offset 0x404
 };
 #else
-// The earlier grouped owner surface proves the two offsets but does not name
-// these fields. This narrow view accounts for its vptr and no other members.
-struct RGE_Base_Game_Show_Timings_Overlay {
-    void* vptr;
-    char gap_04[0x0C];
-    void* hwnd;
-    char gap_14[0x3F0];
-    char timing_string[1];
-};
+// The earlier grouped owner supplies the complete authentic class and names
+// both fields at their proven offsets.
 #endif
 
 void RGE_Base_Game::show_timings()
 {
 #ifdef BASEGAME_SEGMENT_CONTEXT
-    RGE_Base_Game_Show_Timings_Overlay* view =
-        (RGE_Base_Game_Show_Timings_Overlay*)this;
-    SetWindowTextA(view->hwnd, view->timing_string);
+    SetWindowTextA(this->hwnd, this->timing_text);
 #else
     SetWindowTextA(this->hwnd, this->timing_string);
 #endif

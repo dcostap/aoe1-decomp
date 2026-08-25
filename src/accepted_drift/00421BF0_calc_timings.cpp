@@ -235,7 +235,9 @@ protected:
     virtual int setup_map_save_area();
     virtual void set_interface_messages();
 
-    char gap_04[0x1B0 - 4];
+    char gap_04[0x0C];
+    void* hwnd;                            // +0x10
+    char gap_14[0x1B0 - 0x14];
     int prog_mode;                         // +0x1B0
     char gap_1B4[0x3F4 - 0x1B4];
     RGE_Game_World* world;                 // +0x3F4

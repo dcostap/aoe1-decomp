@@ -30,20 +30,12 @@ protected:
 #define BASEGAME_TIMING_FRAME_COUNT (this->frame_count)
 #define BASEGAME_TIMING_FPS (this->fps)
 #else
-// The grouped predecessor proves the complete owner class, but this method's
-// exact local basin uses only the two named counter fields below.
-struct RGE_Base_Game_Timing_Text_Overlay {
-    void* vptr;
-    char pad0[0x400];
-    char timing_text[0x100];
-    unsigned long frame_count;
-    char pad508[0x52C - 0x508];
-    unsigned long fps;
-};
-#define BASEGAME_TIMING_FRAME_COUNT \
-    (((RGE_Base_Game_Timing_Text_Overlay*)this)->frame_count)
-#define BASEGAME_TIMING_FPS \
-    (((RGE_Base_Game_Timing_Text_Overlay*)this)->fps)
+// The grouped predecessor supplies the complete authentic owner class and
+// its protected virtual surface. The final format argument reads the first
+// timing record's last-time field at +0x52C; the executable does not use fps
+// at that site.
+#define BASEGAME_TIMING_FRAME_COUNT (this->frame_count)
+#define BASEGAME_TIMING_FPS (this->timings[0].last_time)
 #endif
 
 void RGE_Base_Game::calc_timing_text()
