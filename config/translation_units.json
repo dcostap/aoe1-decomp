@@ -615,14 +615,20 @@
         "0052E750": "src/matching/0052E750_init.cpp",
         "0052E770": "src/matching/0052E770_base_save.cpp",
         "0052E790": "src/matching/0052E790_save.cpp",
-        "0052E830": "src/matching/0052E830_load_player.cpp"
+        "0052E830": "src/matching/0052E830_load_player.cpp",
+        "0052E990": "src/matching/0052E990_setup_players.cpp",
+        "0052ECF0": "src/matching/0052ECF0_scenario_make_player.cpp",
+        "0052EDF0": "src/matching/0052EDF0_load_world.cpp"
       },
       "symbols": {
         "0052E6B0": "?world_init@TRIBE_World@@UAEXHPAVTSound_Driver@@PAVTCommunications_Handler@@@Z",
         "0052E750": "?init@TRIBE_World@@UAEEPADPAVTSound_Driver@@PAVTCommunications_Handler@@@Z",
         "0052E770": "?base_save@TRIBE_World@@UAEXH@Z",
         "0052E790": "?save@TRIBE_World@@UAEXH@Z",
-        "0052E830": "?load_player@TRIBE_World@@UAEXHEF@Z"
+        "0052E830": "?load_player@TRIBE_World@@UAEXHEF@Z",
+        "0052E990": "?setup_players@TRIBE_World@@UAEXAAURGE_Player_Info@@@Z",
+        "0052ECF0": "?scenario_make_player@TRIBE_World@@UAEXFEEEPAD@Z",
+        "0052EDF0": "?load_world@TRIBE_World@@UAEEH@Z"
       }
     },
     {
@@ -2223,10 +2229,13 @@
       "flags": "config/flags/0043AD70_TribeAboutDialog.rsp",
       "owners": {
         "0043AD70": "src/matching/0043AD70_TribeAboutDialog.cpp",
+        "0043B300": "src/matching/0043B300_TribeAboutDialog.cpp",
         "0043B400": "src/matching/0043B400_action.cpp",
         "0043B550": "src/matching/0043B550_draw.cpp"
       },
-      "symbols": {}
+      "symbols": {
+        "0043B300": "??1TribeAboutDialog@@UAE@XZ"
+      }
     },
     {
       "name": "ani_obj",
