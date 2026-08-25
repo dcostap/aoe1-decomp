@@ -30,7 +30,6 @@
       "source": "src/scr_sed_save_as_tu.cpp",
       "flags": "config/flags/004AD960_command_save_as.rsp",
       "owners": {
-        "004AD680": "src/matching/004AD680_command_player.cpp",
         "004AD960": "src/matching/004AD960_command_save_as.cpp"
       },
       "symbols": {}
@@ -392,6 +391,8 @@
         "004E9260": "src/matching/004E9260_TribeStrategyAIModule.cpp"
       },
       "symbols": {
+        "004E7440": "?loadRules@VictoryConditionRuleSystem@@QAEHPAD@Z",
+        "004E75D0": "?setRule@VictoryConditionRuleSystem@@QAEXHH@Z",
         "004E75F0": "?rule@VictoryConditionRuleSystem@@QAEHH@Z",
         "004E9100": "??0TribeStrategyAIModule@@QAE@PAXH@Z",
         "004E9260": "??0TribeStrategyAIModule@@QAE@HH@Z"
@@ -606,9 +607,6 @@
         "0041C9F0": "src/matching/0041C9F0_get_string.cpp",
         "0041CA10": "src/matching/0041CA10_get_string2.cpp",
         "0041CB80": "src/matching/0041CB80_get_scenario_info.cpp",
-        "0041CCA0": "src/matching/0041CCA0_get_scenario_header.cpp",
-        "0041CE00": "src/matching/0041CE00_new_scenario_header.cpp",
-        "0041CE60": "src/matching/0041CE60_new_scenario_header.cpp",
         "0041CEC0": "src/matching/0041CEC0_new_scenario_info.cpp",
         "0041CF30": "src/matching/0041CF30_get_campaign_info.cpp",
         "0041CF70": "src/matching/0041CF70_set_campaign_info.cpp",
@@ -627,9 +625,7 @@
         "0041C9A0": "?get_string@RGE_Base_Game@@UAEPADJ@Z",
         "0041C9C0": "?get_string@RGE_Base_Game@@UAEPADJPADH@Z",
         "0041C9F0": "?get_string@RGE_Base_Game@@UAEPADHJPADH@Z",
-        "0041CA10": "?get_string2@RGE_Base_Game@@UAEPADHJJPADH@Z",
-        "0041CE00": "?new_scenario_header@RGE_Base_Game@@UAEPAVRGE_Scenario_Header@@H@Z",
-        "0041CE60": "?new_scenario_header@RGE_Base_Game@@QAEPAVRGE_Scenario_Header@@PAVRGE_Scenario@@@Z"
+        "0041CA10": "?get_string2@RGE_Base_Game@@UAEPADHJJPADH@Z"
       }
     },
     {
@@ -1012,7 +1008,6 @@
       "owners": {
         "00531AF0": "src/matching/00531AF0_RGE_Victory_Conditions.cpp",
         "00531B20": "src/matching/00531B20_RGE_Victory_Conditions.cpp",
-        "00531B70": "src/matching/00531B70_save.cpp",
         "00531E90": "src/matching/00531E90_update.cpp",
         "00531EF0": "src/matching/00531EF0_update_for_object.cpp",
         "00531F30": "src/matching/00531F30_handle_point_condition.cpp"
@@ -1028,7 +1023,6 @@
       "source": "src/victory_points_tu.cpp",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "00532220": "src/matching/00532220_handle_create_in_area.cpp",
         "00533180": "src/matching/00533180_handle_points_attribute_first.cpp",
         "00533330": "src/matching/00533330_handle_points_high_attribute_once.cpp"
       },
@@ -1401,10 +1395,8 @@
       "source": "src/scr_sed_tu.cpp",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "004AAE20": "src/matching/004AAE20_set_player.cpp",
         "004AB2B0": "src/matching/004AB2B0_set_player_active.cpp",
         "004AB2D0": "src/matching/004AB2D0_TRIBE_Screen_Sed_unit_list_compare.cpp",
-        "004AB300": "src/matching/004AB300_set_unit_player.cpp",
         "004AB6E0": "src/matching/004AB6E0_set_message_type.cpp",
         "004AB710": "src/matching/004AB710_handle_size.cpp",
         "004AB740": "src/matching/004AB740_handle_idle.cpp",
@@ -1413,7 +1405,6 @@
         "004AD340": "src/matching/004AD340_command_new_map.cpp"
       },
       "symbols": {
-        "004AAE20": "?set_player@TRIBE_Screen_Sed@@QAEXFEE@Z",
         "004AD300": "?command_new@TRIBE_Screen_Sed@@QAEXXZ"
       }
     },
@@ -3357,12 +3348,10 @@
       "source": "src/taipbook_tu.cpp",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "004E6920": "src/matching/004E6920_convertUnitNameToIntType.cpp",
-        "004E6AD0": "src/matching/004E6AD0_convertUnitToIntType.cpp"
+        "004E6920": "src/matching/004E6920_convertUnitNameToIntType.cpp"
       },
       "symbols": {
-        "004E6920": "?convertUnitNameToIntType@TribeAIPlayBook@@UBEHPAD@Z",
-        "004E6AD0": "?convertUnitToIntType@TribeAIPlayBook@@UBEHPAVRGE_Static_Object@@@Z"
+        "004E6920": "?convertUnitNameToIntType@TribeAIPlayBook@@UBEHPAD@Z"
       }
     },
     {
