@@ -1,18 +1,17 @@
 # Matching-worker workflow
 
-Read this file only when assigned one ordinary function. `AGENTS.md` owns all
-repository-wide rules. This file owns the matching procedure.
+Read `LESSONS.md` before work.
 
+This workflow applies to each assigned function that you are trying to match.
 ## Role limits
 
-- Work on one assigned `normal` function.
-- Claim it before editing.
+- Work on the assigned function.
+- Claim them before editing.
 - Do not force an active lease.
 - Do not promote to `accepted_drift` or `verified_logic`.
 - Do not commit.
 - Do not search the web or use web search tools.
-- Keep one compiler-facing source owner.
-- Establish authentic translation-unit context before broad source-shape tuning.
+- Complete the translation-unit context gate.
 - Never use a synthetic dummy function to support an exact claim.
 
 A claim is one pass, not the lifetime of the function. It does not select the
@@ -21,8 +20,7 @@ worker's methods or indicate exhaustion.
 ## Required effort
 
 Do honest work on the assigned function. Stop whenever you give up making
-progress. Do not use a pre-established effort limit, hypothesis count,
-checkpoint, budget, or stop condition.
+progress.
 
 Each hypothesis must test a distinct idea about source structure, types, layout,
 control flow, lifetimes, translation-unit context, or another supported cause.
@@ -45,18 +43,15 @@ assignment. Complete the exact-finish retrospective before you report.
 3. If it is paused, read its source attempt log and bounded session brief.
 4. Start a target session.
 5. Read the function packet and collect focused binary evidence.
-6. Establish the original translation-unit context before broad source-shape
-   tuning. Use only the PDB source module, source-line and source-order bands,
-   class ownership, address sequence, and exact anchors. Record what each item
-   proves. Mark unsupported context as unknown.
+6. Complete the translation-unit context gate below.
 7. Establish canonical field, array, class, global, and ABI ownership.
-8. Write the simplest period-plausible reconstruction.
+8. Write the simplest period-plausible human-written reconstruction.
 9. Record its first successful check as the baseline.
 10. Use evidence to prioritize source, type, layout, control-flow, context, and
    flag hypotheses. Bounded exploratory tests are valid when their result will
    teach you something.
 11. Keep the clean source model authoritative. Discard opaque metric-only forms.
-12. Stop whenever you give up making progress.
+12. Apply the required-effort stop rule.
 13. Finish the target using the exact or unresolved procedure below.
 
 ### Translation-unit context gate
@@ -105,11 +100,7 @@ main agent updates that file.
 Use local declarations for uncertain one-function facts. Change shared headers
 only when the assignment authorizes it and reusable binary evidence justifies it.
 
-Complete the translation-unit context gate before broad source-shape tuning.
-Restore period-plausible headers, declarations, and source order only when the
-PDB module, line or order bands, class ownership, address sequence, or exact
-anchors support them. Keep target behavior, ABI, ownership, and checker results
-as the authority.
+Follow the translation-unit context gate before broad source-shape tuning.
 
 ## Recorded checks
 
@@ -118,8 +109,7 @@ hypothesis. Record the hypothesis and what the emitted result means. A syntax
 repair or unchanged rerun is not a new hypothesis. Restore and validation checks
 are support actions, not hypotheses.
 
-The baseline check pins the clean source. Move that pin only after evidence
-improves the natural reconstruction.
+After the baseline check, pin the clean source with `target_session.py pin-clean`. Move that pin only after evidence improves the natural reconstruction.
 
 Treat duplicate codegen as negative evidence. Do not keep probing the same basin.
 Treat the checker's stage as the next emitted-code priority:
@@ -134,8 +124,8 @@ Equal call counts do not prove ordered call parity.
 
 ## Focused checker use
 
-Use `check_function.py` for focused call, block, range, and stack diagnostics.
-Read its report as evidence. A completed mismatch is not a tool failure.
+Run meaningful source checks through `target_session.py check`. Use `tools\check_function.py --no-build` for additional read-only diagnostics.
+Read the reports as evidence. A completed mismatch is not a tool failure.
 Its mismatch class names the observed emitted-code pattern. It does not prove
 equivalence, change status, or select the worker's method.
 

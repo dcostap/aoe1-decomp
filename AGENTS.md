@@ -1,19 +1,13 @@
 # Repository-wide agent contract
 
-This file contains rules that apply to every agent in this repository. Pi injects
-it into all local sessions. Do not put role-only procedures in this file.
+This file contains universal rules. Keep role-specific procedures in workflow documents.
+## Understand your role
 
-Do not read `README.md` as startup work. It is a short human introduction.
+The assigning prompt or assigned task(s) define your role and instructions. If not sure, ask the user or the agent that spawned you.
 
-Matching workers must read the complete compact `LESSONS.md` before target work.
-Other roles read it when their task needs VC5 matching knowledge.
-
-## Select the correct task document
-
-- For ordinary function matching, read `docs\agentic_matching_workflow.md`.
-- For project orchestration and logic review, read `docs\main_agent_workflow.md`.
-
-Do not load unrelated task documents. The assigning prompt defines your role.
+There are extra reusable documents that contain specific instructions. Read the documents if clearly related to your role:
+- For performing function matching, read `docs\agentic_matching_workflow.md`.
+- If you were assigned a main agent, or you have tasks that involve: project orchestration, subagent orchestration, logic review, semantic review: read `docs\main_agent_workflow.md`.
 
 ## Universal correctness rules
 
@@ -23,14 +17,16 @@ Do not load unrelated task documents. The assigning prompt defines your role.
 - Use the repo-local original files under
   `orig\original_full_game_files_rise_of_romes_beta_17_7_1998`.
 - Use the pinned VC5 host toolchain from `config\toolchain.json`.
-- Normal compiler flags come from `config\flags\default.rsp`.
+- Baseline compiler flags come from `config\flags\default.rsp`. Use the configured target or translation-unit response file when one exists
 - Exactness requires positional byte equality.
 - Exactness also requires the original boundary, provable owning symbol, and known direct call or tail-jump symbol identity.
 - Never infer exactness from folder placement, old metrics, or relocation masking.
-- Validate an exact claim with `check_function.py`.
+- Validate standalone exact claims with `tools\check_function.py`.
+- Validate grouped claims with the candidate or registered translation-unit checks.
+- Require `MATCH`, `0.0000%`, correct ownership, boundaries, relocations, and direct targets.
 - A valid exact result says `Result: MATCH` and `0.0000%`.
 
-Inline assembly is forbidden for real functions unless the user requests it.
+Inline assembly is forbidden for real functions unless explictly allowed.
 This includes `__asm`, `_asm`, naked functions, and handwritten wrappers.
 
 Padding-only pseudo-functions may use byte filler when the complete body has no
@@ -40,7 +36,7 @@ reviewed and listed in `config\padding_only_functions.txt`.
 ## Source-recovery standard
 
 Recover the simplest binary-supported, period-plausible source first. Reconstruct
-what the original developers probably wrote. Use exact bytes to test that model.
+what the original developers probably wrote.
 
 Establish canonical ownership before codegen tuning. Model proven fields, arrays,
 bases, widths, offsets, vptrs, lifetimes, API structs, and virtual slots.

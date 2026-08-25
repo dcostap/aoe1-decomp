@@ -1,13 +1,8 @@
 # Main-agent workflow
 
-Read this file only when coordinating project work. `AGENTS.md` owns universal
-rules. `docs\agentic_matching_workflow.md` owns worker procedure. This file owns
-scheduling, integration, and semantic review.
-
 ## Authority
 
-The user-designated main agent owns:
-
+You own:
 - queue and lease coordination;
 - participant assignment;
 - returned-work review;
@@ -21,8 +16,7 @@ order bands, class ownership, address sequence, and exact anchors. The main
 agent must review the evidence that links a target to this context. A folder,
 name, metric, or synthetic dummy function is not context evidence.
 
-Subagent output is a proposal. The main agent must inspect and validate it before
-integration.
+Any kinda of subagent output is a proposal. The main agent must inspect and validate all outputs before integration.
 
 Honor the user's exact model, thinking, concurrency, and launch limits. Do not
 infer a missing execution contract.
