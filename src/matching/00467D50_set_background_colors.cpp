@@ -3,27 +3,6 @@
 
 extern "C" __declspec(dllimport) void* __stdcall GetStockObject(int index);
 
-#ifndef AOE1_PANEL_EZ_CONTEXT_H
-class TEasy_Panel {
-public:
-    virtual ~TEasy_Panel();
-    virtual void vf00();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void notify_background_color(unsigned char color);
-
-    char gap_04[0x450];
-    unsigned char background_color1;
-    unsigned char background_color2;
-    char gap_456[0xA];
-    int fill_in_background;
-    void* background_brush;
-    int brush_color;
-
-    void set_background_colors(unsigned char color1, unsigned char color2);
-};
-#endif
-
 void TEasy_Panel::set_background_colors(unsigned char color1, unsigned char color2) {
     this->notify_background_color(color1);
     background_color1 = color1;

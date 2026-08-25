@@ -45,7 +45,6 @@ struct PanelNode;
 struct RGE_Color_Table;
 class TShape;
 class TTextPanel;
-class TBevelLike;
 
 #ifndef _WINDEF_
 struct tagRECT {
@@ -113,7 +112,7 @@ public:
     TPanel* curr_child;
     union {
         TPanel* parent_panel;
-        TBevelLike* bevel;
+        TPanel* bevel;
     };
     TPanel* left_panel;
     TPanel* top_panel;
@@ -163,6 +162,25 @@ public:
     unsigned char draw_rect2_flag;
     unsigned char need_restore;
 
+    // These are the reviewed TPanel slots used by the grouped owners.  Keep
+    // redraw at +0x20 and retain the natural parent-drawing surface after it.
+    virtual long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char);
+    virtual void set_rect(tagRECT*);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_color(unsigned char);
+    virtual void set_active(int);
+    virtual void set_positioning(int, long, long, long, long, long, long,
+                                 long, long, TPanel*, TPanel*, TPanel*, TPanel*);
+    virtual void set_fixed_position(long, long, long, long);
+    virtual void redraw(int);
+    virtual void set_overlapped_redraw(TPanel*, TPanel*, int);
+    virtual void draw_setup(int);
+    virtual void draw_finish();
+    virtual void draw();
+    virtual void draw_rect(tagRECT*);
+    virtual void draw_offset(long, long, tagRECT*);
+    virtual void draw_rect2(tagRECT*);
+
     long width();
     long height();
     long xPosition();
@@ -171,23 +189,6 @@ public:
     void delete_panel(TPanel** panel);
     int setup(TDrawArea* area, TPanel* parent, long left, long top,
               long width, long height, int value);
-    void draw();
-    void draw_rect(tagRECT* rect);
-    void draw_rect2(tagRECT* rect);
-};
-
-class TBevelLike {
-public:
-    virtual void v00(); virtual void v04(); virtual void v08();
-    virtual void v0C(); virtual void v10(); virtual void v14();
-    virtual void v18(); virtual void v1C(); virtual void v20();
-    virtual void v24(); virtual void v28(); virtual void v2C();
-    virtual void v30();
-    virtual void draw_low(tagRECT* rect);
-    virtual void v38();
-    virtual void draw_high(tagRECT* rect);
-    char gap_04[0x80];
-    int flag_84;
 };
 
 class TEasy_Panel : public TPanel {
@@ -336,10 +337,19 @@ public:
 class RGE_Base_Game {
 public:
     virtual ~RGE_Base_Game();
-    virtual void setup(); virtual void shutdown(); virtual void idle();
-    virtual void set_paused(); virtual void vf14(); virtual void vf18();
-    virtual void vf1C(); virtual void vf20(); virtual void vf24();
-    virtual void language(int, int, int, char*, int);
+    // RGE_Base_Game's reviewed period surface uses these slots for the
+    // application frame and string lookup.  Keep all preceding slots so the
+    // get_string2 call remains at +0x28 without synthetic names.
+    virtual int run();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual void set_prog_mode(int);
+    virtual void set_game_mode(int, int);
+    virtual void set_player(short);
+    virtual int get_error_code();
+    virtual char* get_string(int, long, char*, int);
+    virtual char* get_string(long, char*, int);
+    virtual char* get_string(long);
+    virtual char* get_string2(int, long, long, char*, int);
     char gap_004[0x3F0];
     RGE_Game_World* world;
     RGE_Font* get_font(int id);
@@ -412,12 +422,6 @@ public:
 
     virtual ~Time_Line_Panel();
     virtual void draw();
-    virtual void panel_v0C();
-    virtual void panel_v10();
-    virtual void panel_v14();
-    virtual void panel_v18();
-    virtual void panel_v1C();
-    virtual void panel_v20();
     virtual void redraw(int mode);
     Time_Line_Panel();
     long create_timeline(TPanel*, Time_Line_Panel**, long, long, long, long,
@@ -450,8 +454,6 @@ public:
     int yPosition();
     int width();
     int height();
-    void vf28(int);
-    void vf2C();
     int get_string(int, char*, int);
 };
 

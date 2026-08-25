@@ -3,6 +3,7 @@ struct PanelNode;
 struct TDrawArea;
 struct HRGN__;
 typedef HRGN__* HRGN;
+struct tagRECT;
 
 class TPanel {
 public:
@@ -68,8 +69,8 @@ public:
     unsigned char need_restore;
 
     virtual ~TPanel();
-    virtual void vf04();
-    virtual void vf08();
+    virtual long setup(void*, TPanel*, long, long, long, long, unsigned char);
+    virtual void set_rect(tagRECT);
     virtual void set_rect(long param_1, long param_2, long param_3, long param_4);
     int width();
 };

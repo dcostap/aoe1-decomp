@@ -60,6 +60,7 @@ extern "C" __declspec(dllimport) int __stdcall CompareStringA(
     const char* string2, int length2);
 
 #ifndef AOE1_PNL_TXT_CONTEXT_H
+struct tagRECT;
 struct TextNode {
     char* text;                         // +0x00
     char* text2;                        // +0x04
@@ -69,14 +70,15 @@ struct TextNode {
 
 class TPanel {
 public:
-    virtual void vf_00();
-    virtual void vf_04();
-    virtual void vf_08();
-    virtual void vf_0C();
-    virtual void vf_10();
-    virtual void vf_14();
-    virtual void vf_18();
-    virtual void vf_1C();
+    virtual ~TPanel();
+    virtual long setup(void*, TPanel*, long, long, long, long, unsigned char);
+    virtual void set_rect(tagRECT);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_color(unsigned char);
+    virtual void set_active(int);
+    virtual void set_positioning(int, long, long, long, long, long, long,
+                                  long, long, TPanel*, TPanel*, TPanel*, TPanel*);
+    virtual void set_fixed_position(long, long, long, long);
     virtual void set_redraw(int flags); // +0x20
 
     char gap_04[0xF0];                  // list begins at +0xF4

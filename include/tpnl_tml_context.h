@@ -34,6 +34,25 @@ public:
     virtual ~TPanel();
     TPanel();
 
+    // Period TPanel slots used by the timeline owners.  The redraw slot is
+    // at +0x20; the parent drawing methods follow the normal panel surface.
+    virtual long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char);
+    virtual void set_rect(tagRECT*);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_color(unsigned char);
+    virtual void set_active(int);
+    virtual void set_positioning(int, long, long, long, long, long, long,
+                                 long, long, TPanel*, TPanel*, TPanel*, TPanel*);
+    virtual void set_fixed_position(long, long, long, long);
+    virtual void redraw(int);
+    virtual void set_overlapped_redraw(TPanel*, TPanel*, int);
+    virtual void draw_setup(int);
+    virtual void draw_finish();
+    virtual void draw();
+    virtual void draw_rect(tagRECT*);
+    virtual void draw_offset(long, long, tagRECT*);
+    virtual void draw_rect2(tagRECT*);
+
     TPanel* previousPanelValue;
     TPanel* previousModalPanelValue;
     long pnl_x;
@@ -300,12 +319,6 @@ public:
 
     virtual ~Time_Line_Panel();
     virtual void draw();
-    virtual void panel_v0C();
-    virtual void panel_v10();
-    virtual void panel_v14();
-    virtual void panel_v18();
-    virtual void panel_v1C();
-    virtual void panel_v20();
     virtual void redraw(int mode);
     Time_Line_Panel();
     long create_timeline(TPanel* parent, Time_Line_Panel** out, long x1, long y1, long x2, long y2, long axis_font_id, long body_font_id, long xden, long yden);

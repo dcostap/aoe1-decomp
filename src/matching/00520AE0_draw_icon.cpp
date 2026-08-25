@@ -84,19 +84,22 @@ struct Special_Events {
 class TPanel {
 public:
     virtual ~TPanel();
-    virtual void setup();
-    virtual void set_rect_1();
-    virtual long set_rect_2();
-    virtual void set_color();
-    virtual void set_active();
-    virtual void set_positioning();
-    virtual void set_fixed_position();
-    virtual void set_redraw(int);
-    virtual long set_overlapped_redraw();
+    virtual long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char);
+    virtual void set_rect(RECT*);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_color(unsigned char);
+    virtual void set_active(int);
+    virtual void set_positioning(int, long, long, long, long, long, long,
+                                 long, long, TPanel*, TPanel*, TPanel*, TPanel*);
+    virtual void set_fixed_position(long, long, long, long);
+    virtual void redraw(int);
+    virtual void set_overlapped_redraw(TPanel*, TPanel*, int);
     virtual void draw_setup(int);
     virtual void draw_finish();
     virtual void draw();
-    virtual void get_clip_rect(RECT*);
+    virtual void draw_rect(RECT*);
+    virtual void draw_offset(long, long, RECT*);
+    virtual void draw_rect2(RECT*);
 
     TPanel* previous_panel;
     TPanel* previous_modal_panel;

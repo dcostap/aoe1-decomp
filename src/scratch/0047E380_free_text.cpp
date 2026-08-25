@@ -10,15 +10,17 @@ extern "C" void __cdecl free(void* block);
 #endif
 class TTTextPanel {
 public:
-    virtual void vf00();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
-    virtual void vf20(int arg);
+    virtual ~TTTextPanel();
+    virtual long setup(void*, TTTextPanel*, long, long, long, long, unsigned char);
+    virtual void set_rect(void*);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_color(unsigned char);
+    virtual void set_active(int);
+    virtual void set_positioning(int, long, long, long, long, long, long,
+                                  long, long, TTTextPanel*, TTTextPanel*,
+                                  TTTextPanel*, TTTextPanel*);
+    virtual void set_fixed_position(long, long, long, long);
+    virtual void set_redraw(int arg);
 
     struct TextNode {
         char* text;
@@ -53,7 +55,7 @@ void TTTextPanel::free_text(void) {
     }
     this->num_lines = 0;
     this->calc_draw_info(1);
-    this->vf20(1);
+    this->set_redraw(1);
 }
 #ifdef PNL_TXT_TU_CONTEXT
 #undef TTTextPanel

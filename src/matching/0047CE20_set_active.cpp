@@ -14,11 +14,11 @@ public:
 #ifndef PNL_TXT_TU_CONTEXT
 class TScrollBarPanel {
 public:
-    virtual void vf00(void);
-    virtual void vf04(void);
-    virtual void vf08(void);
-    virtual void vf0C(void);
-    virtual void vf10(void);
+    virtual ~TScrollBarPanel();
+    virtual long setup(void*, TPanel*, long, long, long, long, unsigned char);
+    virtual void set_rect(struct tagRECT);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_color(unsigned char);
     virtual void set_active(int active);
 };
 

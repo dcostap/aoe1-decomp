@@ -4,8 +4,8 @@
 // Canonical ownership follows the same panel/draw-area/background shape used
 // by the period TTextPanel siblings and by Time_Line_Panel::draw_background:
 // the panel owns the picture, fill flag/color, bevel selector, and its
-// position/size; the draw area owns Lock/FillRect/Unlock; and the bevel object
-// owns the two virtual fallback operations.
+// position/size; the draw area owns Lock/FillRect/Unlock; and the parent panel
+// owns the draw_rect and draw_rect2 fallback operations.
 //
 // Attempt log:
 // - Replaced the former field-only scaffold with the natural typed tiled
@@ -61,33 +61,35 @@ public:
                              unsigned char* table);
 };
 
-struct TextPanelRect {
+struct tagRECT {
     long left;
     long top;
     long right;
     long bottom;
 };
+typedef tagRECT TextPanelRect;
 
-class TBevel {
+class TPanel {
 public:
-    virtual void vf_00();
-    virtual void vf_04();
-    virtual void vf_08();
-    virtual void vf_0C();
-    virtual void vf_10();
-    virtual void vf_14();
-    virtual void vf_18();
-    virtual void vf_1C();
-    virtual void vf_20();
-    virtual void vf_24();
-    virtual void vf_28();
-    virtual void vf_2C();
-    virtual void vf_30();
-    virtual void draw_low(TextPanelRect* rect);   // +0x34
-    virtual void vf_38();
-    virtual void draw_high(TextPanelRect* rect);  // +0x3C
+    virtual ~TPanel();
+    virtual long setup(void*, TPanel*, long, long, long, long, unsigned char);
+    virtual void set_rect(tagRECT);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_color(unsigned char);
+    virtual void set_active(int);
+    virtual void set_positioning(int, long, long, long, long, long, long,
+                                  long, long, TPanel*, TPanel*, TPanel*, TPanel*);
+    virtual void set_fixed_position(long, long, long, long);
+    virtual void set_redraw(int);
+    virtual void set_overlapped_redraw(TPanel*, TPanel*, int);
+    virtual void draw_setup(int);
+    virtual void draw_finish();
+    virtual void draw();
+    virtual void draw_rect(tagRECT* rect);        // +0x34
+    virtual void draw_offset(long, long, tagRECT*);
+    virtual void draw_rect2(tagRECT* rect);       // +0x3C
     char gap_04[0x80];
-    int flag_84;
+    int just_drawn;                         // +0x84
 };
 
 class TTextPanel {
@@ -101,7 +103,7 @@ public:
     TDrawArea* render_area;              // +0x20
     TextPanelRect rect;                  // +0x24
     char gap_34[0x0C];
-    TBevel* bevel;                       // +0x40
+    TPanel* bevel;                        // +0x40
     char gap_44[0x100];
     TShape* back_pic;                    // +0x144
     short back_pic_wid;                  // +0x148
@@ -183,11 +185,11 @@ void TTextPanel::draw_background()
 
     if (this->bevel != 0) {
         if (this->bevel_type >= 2 && this->bevel_type <= 7) {
-            this->bevel->draw_high(&this->rect);
+            this->bevel->draw_rect2(&this->rect);
             return;
         }
-        if (this->bevel->flag_84 == 0) {
-            this->bevel->draw_low(&this->rect);
+        if (this->bevel->just_drawn == 0) {
+            this->bevel->draw_rect(&this->rect);
         }
     }
 }

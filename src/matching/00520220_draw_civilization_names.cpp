@@ -13,6 +13,7 @@
 // try 11: corrected get_history_entry to its unsigned-char/long ABI; bytes were unchanged.
 // try 12: added the period Windows/TPanel/TEasy_Panel surface and exact DrawDc ownership; size stayed 613B but the edit alignment improved.
 // try 13: removed the cached second-loop player alias and restored the binary-proven repeated player-array reloads; exact 626B match.
+// BINARY NOTE: the five-argument call at vtable +0x28 is RGE_Base_Game::get_string2.
 // Exact: 626/626 bytes, 0 strict diff, exact frame/call/CFG/relocation identity.  The two named byte cursors are retained because the
 // oracle has independent [players+offset] induction registers in both scans and the repeated player loads are observable; this is a
 // period-plausible pointer-array traversal rather than an opaque address or register-forcing alias.
@@ -38,9 +39,16 @@ class RGE_Game_World { public: virtual unsigned char data_load_world(void*); cha
 class RGE_Base_Game {
 public:
     virtual ~RGE_Base_Game();
-    virtual void setup(); virtual void shutdown(); virtual void idle(); virtual void set_paused();
-    virtual void vf14(); virtual void vf18(); virtual void vf1C(); virtual void vf20(); virtual void vf24();
-    virtual void language(int, int, int, char*, int);
+    virtual int run();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual void set_prog_mode(int);
+    virtual void set_game_mode(int, int);
+    virtual void set_player(short);
+    virtual int get_error_code();
+    virtual char* get_string(int, long, char*, int);
+    virtual char* get_string(long, char*, int);
+    virtual char* get_string(long);
+    virtual char* get_string2(int, long, long, char*, int);
     char gap_04[0x3F0];
     RGE_Game_World* world;
 };
@@ -57,19 +65,22 @@ public:
 class TPanel {
 public:
     virtual ~TPanel();
-    virtual void setup();
-    virtual void set_rect_1();
-    virtual long set_rect_2();
-    virtual void set_color();
-    virtual void set_active();
-    virtual void set_positioning();
-    virtual void set_fixed_position();
-    virtual void set_redraw(int);
-    virtual long set_overlapped_redraw();
+    virtual long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char);
+    virtual void set_rect(RECT*);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_color(unsigned char);
+    virtual void set_active(int);
+    virtual void set_positioning(int, long, long, long, long, long, long,
+                                 long, long, TPanel*, TPanel*, TPanel*, TPanel*);
+    virtual void set_fixed_position(long, long, long, long);
+    virtual void redraw(int);
+    virtual void set_overlapped_redraw(TPanel*, TPanel*, int);
     virtual void draw_setup(int);
     virtual void draw_finish();
     virtual void draw();
-    virtual void get_clip_rect(RECT*);
+    virtual void draw_rect(RECT*);
+    virtual void draw_offset(long, long, RECT*);
+    virtual void draw_rect2(RECT*);
 
     char gap_04[8];
     long pnl_x;
@@ -142,7 +153,7 @@ void Time_Line_Panel::draw_civilization_names()
                     int off2 = 4;
                     do {
                         int seg = (int)(((float)((*(RGE_Player**)((char*)rge_base_game->world->players + off2))->history->get_history_entry(0,0) & 0xff) / pop_total) * (float)this->y_line_hgt);
-                        rge_base_game->language(0x69, (*(RGE_Player**)((char*)rge_base_game->world->players + off2))->civilization, 0, civ_str, 100);
+                        rge_base_game->get_string2(0x69, (*(RGE_Player**)((char*)rge_base_game->world->players + off2))->civilization, 0, civ_str, 100);
                         strcpy(name_str, (*(RGE_Player**)((char*)rge_base_game->world->players + off2))->name);
                         sprintf(temp_str, "%s - %s", name_str, civ_str);
                 TextOutA(this->render_area->DrawDc, X_line_pos, Y_line_pos + (seg / 2 - this->body_font_hgt / 2), temp_str, strlen(temp_str));

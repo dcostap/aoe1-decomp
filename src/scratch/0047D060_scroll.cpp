@@ -6,17 +6,19 @@
 // Attempt 1: Switch-based scroll function.
 
 #ifndef PNL_TXT_TU_CONTEXT
+struct tagRECT;
 class TPanel {
 public:
     virtual ~TPanel();
-    virtual void dummy1();
-    virtual void dummy2();
-    virtual void dummy3();
-    virtual void dummy4();
-    virtual void dummy5();
-    virtual void dummy6();
-    virtual void dummy7();
-    virtual void redraw(int);  // vt[8] = +0x20
+    virtual long setup(void*, TPanel*, long, long, long, long, unsigned char);
+    virtual void set_rect(tagRECT);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_color(unsigned char);
+    virtual void set_active(int);
+    virtual void set_positioning(int, long, long, long, long, long, long,
+                                  long, long, TPanel*, TPanel*, TPanel*, TPanel*);
+    virtual void set_fixed_position(long, long, long, long);
+    virtual void set_redraw(int);  // vt[8] = +0x20
     char gap_04[0xF0];  // +0x04 to +0xF3
 };
 
@@ -73,5 +75,5 @@ void TTextPanel::scroll(int scroll_type, short amount, int param_3)
     }
 
     this->scroll_set(param_3);
-    this->redraw(1);
+    this->set_redraw(1);
 }

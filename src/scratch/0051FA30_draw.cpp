@@ -1,5 +1,6 @@
 // attempt 1: direct Time_Line_Panel draw path using the panel dump offsets and the known helper sequence
 // target shape: base draw, clear +0x38, gate on +0x20/+0x70/+0x6C, then vcall +0x28, helpers, and vcall +0x2C
+// BINARY NOTE: the panel setup and finish calls use the inherited draw_setup and draw_finish slots.
 
 #ifndef TPNL_TML_WRAPPER
 struct tagRECT {
@@ -14,42 +15,25 @@ public:
     void Clear(tagRECT* rect, unsigned int color);
 };
 
-class TPanelParent {
-public:
-    virtual void vf00(void);
-    virtual void vf04(void);
-    virtual void vf08(void);
-    virtual void vf0C(void);
-    virtual void vf10(void);
-    virtual void vf14(void);
-    virtual void vf18(void);
-    virtual void vf1C(void);
-    virtual void vf20(void);
-    virtual void vf24(void);
-    virtual void vf28(int param_1);
-    virtual void vf2C(void);
-    virtual void vf30(void);
-    virtual void draw_rect(tagRECT* rect);
-    virtual void draw_offset(long x, long y, tagRECT* rect);
-    virtual void draw_rect2(tagRECT* rect);
-};
-
 class TPanel {
 public:
-    virtual void vf00(void);
-    virtual void vf04(void);
-    virtual void vf08(void);
-    virtual void vf0C(void);
-    virtual void vf10(void);
-    virtual void vf14(void);
-    virtual void vf18(void);
-    virtual void vf1C(void);
-    virtual void vf20(void);
-    virtual void vf24(void);
-    virtual void vf28(int param_1);
-    virtual void vf2C(void);
+    virtual ~TPanel();
+    virtual long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char);
+    virtual void set_rect(tagRECT*);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_color(unsigned char);
+    virtual void set_active(int);
+    virtual void set_positioning(int, long, long, long, long, long, long,
+                                 long, long, TPanel*, TPanel*, TPanel*, TPanel*);
+    virtual void set_fixed_position(long, long, long, long);
+    virtual void redraw(int);
+    virtual void set_overlapped_redraw(TPanel*, TPanel*, int);
+    virtual void draw_setup(int);
+    virtual void draw_finish();
     virtual void draw(void);
-    virtual void draw_rect(tagRECT* rect);
+    virtual void draw_rect(tagRECT*);
+    virtual void draw_offset(long, long, tagRECT*);
+    virtual void draw_rect2(tagRECT*);
 
     char gap_04[0x1C];
     TDrawArea* render_area;
@@ -57,7 +41,7 @@ public:
     char gap_34[0x04];
     int need_redraw;
     char gap_3C[0x04];
-    TPanelParent* parent_panel;
+    TPanel* parent_panel;
     char gap_44[0x28];
     int active;
     int visible;
@@ -84,14 +68,14 @@ void Time_Line_Panel::draw(void) {
     TPanel::draw();
     this->need_redraw = 0;
     if (this->render_area != 0 && this->visible != 0 && this->active != 0) {
-        this->vf28(0);
+        this->draw_setup(0);
         this->draw_background();
         this->draw_border();
         this->draw_axis();
         this->draw_timeline();
         this->draw_special_events();
         this->draw_civilization_names();
-        this->vf2C();
+        this->draw_finish();
     }
 }
 

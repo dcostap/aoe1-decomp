@@ -63,17 +63,27 @@ public:
 
 struct Rect4 { long left; long top; long right; long bottom; };
 
-class TBevelLike {
+class TPanel {
 public:
-    virtual void v00(); virtual void v04(); virtual void v08(); virtual void v0C();
-    virtual void v10(); virtual void v14(); virtual void v18(); virtual void v1C();
-    virtual void v20(); virtual void v24(); virtual void v28(); virtual void v2C();
-    virtual void v30();
-    virtual void draw_low(Rect4* r);   // +34
-    virtual void v38();
-    virtual void draw_high(Rect4* r);  // +3C
+    virtual ~TPanel();
+    virtual long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char);
+    virtual void set_rect(Rect4*);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_color(unsigned char);
+    virtual void set_active(int);
+    virtual void set_positioning(int, long, long, long, long, long, long,
+                                 long, long, TPanel*, TPanel*, TPanel*, TPanel*);
+    virtual void set_fixed_position(long, long, long, long);
+    virtual void redraw(int);
+    virtual void set_overlapped_redraw(TPanel*, TPanel*, int);
+    virtual void draw_setup(int);
+    virtual void draw_finish();
+    virtual void draw();
+    virtual void draw_rect(Rect4*);     // +34
+    virtual void draw_offset(long, long, Rect4*);
+    virtual void draw_rect2(Rect4*);    // +3C
     char gap_04[0x80];
-    int flag_84;
+    int just_drawn;
 };
 
 class Time_Line_Panel {
@@ -88,7 +98,7 @@ public:
     TDrawArea* render_area;      // +0x20
     union { Rect4 rect; Rect4 clip_rect; }; // +0x24
     char gap_34[0x0C];
-    TBevelLike* bevel;           // +0x40
+    TPanel* bevel;                // +0x40
     char gap_44[0x468];
     TShape* background_pic;      // +0x4AC
     short background_pic_wid;    // +0x4B0
@@ -167,11 +177,11 @@ void Time_Line_Panel::draw_background()
 
     if (this->bevel != 0) {
         if (this->bevel_type >= 2 && this->bevel_type <= 7) {
-            this->bevel->draw_high(&this->clip_rect);
+            this->bevel->draw_rect2(&this->clip_rect);
             return;
         }
-        if (this->bevel->flag_84 == 0) {
-            this->bevel->draw_low(&this->clip_rect);
+        if (this->bevel->just_drawn == 0) {
+            this->bevel->draw_rect(&this->clip_rect);
         }
     }
 }

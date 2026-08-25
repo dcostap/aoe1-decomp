@@ -39,6 +39,7 @@ extern "C" void __cdecl free(void* block);
 
 #ifndef PNL_TXT_TU_CONTEXT
 struct PanelNode;
+struct tagRECT;
 
 class TDrawArea {
 public:
@@ -46,18 +47,19 @@ public:
     void ReleaseDc(char* unused);
 };
 
-#define VPAD1(n) virtual void vpad##n();
-#define VPAD2(n) VPAD1(n) VPAD1(n##_1)
-#define VPAD4(n) VPAD2(n) VPAD2(n##_2)
-
 class TPanel {
 public:
     virtual ~TPanel();
-    VPAD4(v1)
-    VPAD2(v5)
-    VPAD1(v7)
-    virtual void redraw(int);
-    virtual void vpad8_1();
+    virtual long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char);
+    virtual void set_rect(tagRECT);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_color(unsigned char);
+    virtual void set_active(int);
+    virtual void set_positioning(int, long, long, long, long, long, long,
+                                 long, long, TPanel*, TPanel*, TPanel*, TPanel*);
+    virtual void set_fixed_position(long, long, long, long);
+    virtual void set_redraw(int);
+    virtual void set_overlapped_redraw(TPanel*, TPanel*, int);
     virtual void draw_setup(int clear);
     virtual void draw_finish();
     virtual void draw();
@@ -211,7 +213,7 @@ int TTextPanel::delete_line(long line)
             }
 
             this->calc_draw_info(1);
-            this->redraw(1);
+            this->set_redraw(1);
             return 1;
         }
     }

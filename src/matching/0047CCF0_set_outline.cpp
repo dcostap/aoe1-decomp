@@ -1,15 +1,18 @@
 #ifndef PNL_TXT_TU_CONTEXT
+struct tagRECT;
+class TPanel;
 class TTextPanel {
 public:
-    virtual void vf00(void);
-    virtual void vf04(void);
-    virtual void vf08(void);
-    virtual void vf0C(void);
-    virtual void vf10(void);
-    virtual void vf14(void);
-    virtual void vf18(void);
-    virtual void vf1C(void);
-    virtual void redraw(int value);
+    virtual ~TTextPanel();
+    virtual long setup(void*, TPanel*, long, long, long, long, unsigned char);
+    virtual void set_rect(tagRECT);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_color(unsigned char);
+    virtual void set_active(int);
+    virtual void set_positioning(int, long, long, long, long, long, long,
+                                  long, long, TPanel*, TPanel*, TPanel*, TPanel*);
+    virtual void set_fixed_position(long, long, long, long);
+    virtual void set_redraw(int value);
 
     char gap_04[0x150];
     int outline;
@@ -29,5 +32,5 @@ void TTextPanel::set_outline(int outline, unsigned char color) {
         this->bevel_type = 0;
     }
     this->outline_color = color;
-    this->redraw(1);
+    this->set_redraw(1);
 }
