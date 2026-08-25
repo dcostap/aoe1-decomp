@@ -36,19 +36,24 @@
 extern "C" long __cdecl __ftol(void);
 #define DAT_0056F604 (*(float*)0x0056F604)
 
+#ifndef DIAM_MAP_CONTEXT_H
 struct tagRECT {
     long left;
     long top;
     long right;
     long bottom;
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class TDrawArea {
 public:
     void SetPixel(long x, long y, unsigned char color);
     void DrawHorzLine(long x, long y, long width, unsigned char color);
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class TPanel {
 public:
     virtual ~TPanel();
@@ -69,21 +74,27 @@ public:
     TDrawArea* render_area;
     char gap_24[0xD0];
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Player {
 public:
     char gap_00[0x114];
     float view_x;
     float view_y;
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Map {
 public:
     char gap_00[8];
     int map_width;
     int map_height;
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_View {
 public:
     char gap_00[0x116];
@@ -92,14 +103,18 @@ public:
 
     void get_max_size(short* cols, short* rows);
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Map_Image_Line {
 public:
     short tile_row;
     short start_x;
     short line_len;
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Map_Tile_Row {
 public:
     short image_line;
@@ -118,7 +133,9 @@ public:
     unsigned char pad_1E[2];
     float ratio;
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Diamond_Map : public TPanel {
 public:
     char gap_F4[4];
@@ -157,6 +174,7 @@ public:
 
     virtual void draw_view_rect();
 };
+#endif
 
 void RGE_Diamond_Map::draw_view_rect()
 {
@@ -203,7 +221,11 @@ void RGE_Diamond_Map::draw_view_rect()
 
         short vhgt;
         short map_row;
+#ifdef DIAM_MAP_CONTEXT_H
+        ((RGE_View*)this->main_view)->get_max_size(&vhgt, &map_row);
+#else
         this->main_view->get_max_size(&vhgt, &map_row);
+#endif
 
         int half_width = (int)vhgt / 2;
         this->view_rect.left =

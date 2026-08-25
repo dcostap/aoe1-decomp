@@ -3,23 +3,30 @@
 
 extern char s_draw_explored_tiles[];
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Tile_List {
 public:
     void get_list_info(void** list, int* count);
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class TDrawArea {
 public:
     void* Lock(char* debug_str, int flag);
     void Unlock(char* debug_str);
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Player {
 public:
     char gap_6C[0x6C];
     RGE_Tile_List diam_tile_list;
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Diamond_Map {
 public:
     char gap_F8[0xF8];
@@ -30,6 +37,7 @@ public:
     void draw_explored_tiles();
     void draw_tile(short x, short y, int param3, int param4);
 };
+#endif
 
 void RGE_Diamond_Map::draw_explored_tiles()
 {

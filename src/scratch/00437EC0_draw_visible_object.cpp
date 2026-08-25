@@ -81,6 +81,7 @@ class RGE_Visible_Map;
 class RGE_Tile;
 class RGE_Color_Table;
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Master_Static_Object {
 public:
     virtual ~RGE_Master_Static_Object();
@@ -92,7 +93,9 @@ public:
     unsigned char unit_level;
     unsigned char map_color;
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Player {
 public:
     virtual ~RGE_Player();
@@ -106,7 +109,9 @@ public:
     unsigned long mutualExploredMask;
     unsigned long mutualVisibleMask;
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Map {
 public:
     virtual ~RGE_Map();
@@ -115,7 +120,9 @@ public:
     unsigned char map_visible_flag;
     unsigned char fog_flag;
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Static_Object {
 public:
     virtual ~RGE_Static_Object();
@@ -164,7 +171,9 @@ public:
     unsigned char worker_num;
     char gap_50[0x38];
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Animated_Object : public RGE_Static_Object {
 public:
     char gap_88[4];
@@ -184,17 +193,21 @@ public:
     unsigned char gap_AA[2];
     int doppledObjectID;
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 struct tagRECT {
     long left;
     long top;
     long right;
     long bottom;
 };
+#endif
 
 class TDrawArea;
 class RGE_Game_World;
 
+#ifndef DIAM_MAP_CONTEXT_H
 class TPanel {
 public:
     virtual ~TPanel();
@@ -237,7 +250,9 @@ public:
     unsigned char draw_rect2_flag;
     unsigned char need_restore;
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Diamond_Map : public TPanel {
 public:
     virtual void draw_selected_area();
@@ -259,6 +274,7 @@ public:
     char gap_100[0x60];
     unsigned long cur_player_bit;
 };
+#endif
 
 void RGE_Diamond_Map::draw_visible_object(RGE_Static_Object* object,
                                           unsigned char color1,

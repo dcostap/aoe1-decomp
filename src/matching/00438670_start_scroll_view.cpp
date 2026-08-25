@@ -1,40 +1,49 @@
+#ifndef DIAM_MAP_CONTEXT_H
 struct RGE_Tile;
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class TPanel {
 public:
     virtual ~TPanel() {}
-    virtual void v04() {}
-    virtual void v08() {}
-    virtual void v0C() {}
-    virtual void v10() {}
-    virtual void v14() {}
-    virtual void v18() {}
-    virtual void v1C() {}
+    virtual void setup() {}
+    virtual void set_rect() {}
+    virtual void set_color() {}
+    virtual void set_active() {}
+    virtual void set_positioning() {}
+    virtual void set_fixed_position() {}
+    virtual void set_overlapped_redraw() {}
     virtual void set_redraw(int mode) {}
     char gap_00[0xF0];
 
     int capture_mouse();
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Player {
 public:
     char gap_00[4];
     void set_view_loc(float x, float y);
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_View {
 public:
     virtual ~RGE_View() {}
-    virtual void v04() {}
-    virtual void v08() {}
-    virtual void v0C() {}
-    virtual void v10() {}
-    virtual void v14() {}
-    virtual void v18() {}
-    virtual void v1C() {}
+    virtual void setup() {}
+    virtual void set_rect() {}
+    virtual void set_color() {}
+    virtual void set_active() {}
+    virtual void set_positioning() {}
+    virtual void set_fixed_position() {}
+    virtual void set_overlapped_redraw() {}
     virtual void set_redraw(int mode) {}
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Diamond_Map : public TPanel {
 public:
     char gap_F4[0x04];          // +0xF4: world (unused)
@@ -49,6 +58,7 @@ public:
     int pick_tile(long x, long y, short* xs, short* ys, RGE_Tile** tile);
     void start_scroll_view(long x, long y);
 };
+#endif
 
 void RGE_Diamond_Map::start_scroll_view(long x, long y) {
     short xs, ys;
@@ -60,10 +70,18 @@ void RGE_Diamond_Map::start_scroll_view(long x, long y) {
         this->scrolling = 1;
         this->player->set_view_loc((float)xs - 0.5f, (float)ys - 0.5f);
 
+#ifdef DIAM_MAP_CONTEXT_H
+        this->set_redraw(TPanel::redraw_local);
+#else
         this->set_redraw(1);
+#endif
 
         if (this->main_view) {
+#ifdef DIAM_MAP_CONTEXT_H
+            ((RGE_View*)this->main_view)->set_redraw(1);
+#else
             this->main_view->set_redraw(1);
+#endif
         }
 
         this->mouse_last_x = x;

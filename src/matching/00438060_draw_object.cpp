@@ -58,19 +58,23 @@
 //   and the VC5 small flag basin. Each preserved 365 bytes and 7/7 calls but stayed at diff 10.
 // - No evidence-backed source or flag lead remains. Keep the natural named row source; the
 //   unresolved bytes are the first row address (oracle folded -24 LEA versus VC5 dec-plus-scale).
-// ACCEPTED_DRIFT: main-agent adjudication confirmed both address forms produce
-// `row_base + 36 * row - 36`. DEC flags are replaced by the following CMP.
-// The address operations do not access memory. Calls, CFG, and later bytes match.
+// BINARY NOTE: The authentic diam_map.cpp context restores the original folded
+// row-stride LEA for this natural typed row access.
 
+#ifndef DIAM_MAP_CONTEXT_H
 extern float DAT_0056f604;
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 struct tagRECT {
     long left;
     long top;
     long right;
     long bottom;
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class TDrawArea {
 public:
     void* DrawSystem;
@@ -112,7 +116,9 @@ public:
 
     void FillRect(long x1, long y1, long x2, long y2, unsigned char color);
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class TPanel {
 public:
     virtual ~TPanel();
@@ -136,7 +142,9 @@ public:
     unsigned char draw_rect2_flag;
     unsigned char need_restore;
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 struct RGE_Map_Image_Line {
     short tile_row;
     short start_x;
@@ -160,7 +168,9 @@ struct RGE_Map_Tile_Row {
     unsigned char pad_1E[2];
     float ratio;
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Diamond_Map : public TPanel {
 public:
     void draw_object(short param_1, short param_2, unsigned char param_3,
@@ -200,6 +210,7 @@ public:
     int own_save_area;
     TDrawArea* save_area;
 };
+#endif
 
 void RGE_Diamond_Map::draw_object(short param_1, short param_2,
                                   unsigned char param_3, short param_4,

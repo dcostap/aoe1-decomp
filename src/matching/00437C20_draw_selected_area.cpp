@@ -5,9 +5,13 @@
 //
 // Fields: +0x20 render_area (TDrawArea*), +0x150 main_view (RGE_View*)
 
+#ifndef DIAM_MAP_CONTEXT_H
 #include "../../include/game_globals.h"
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class TDrawArea;
+#endif
 class RGE_View;
 
 // TDrawArea methods (__thiscall)
@@ -21,6 +25,7 @@ struct FakeRGEView {
     int get_selection_area(long* p1, long* p2, long* p3, long* p4, int flag);
 };
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Diamond_Map {
 public:
     char gap_00[0x20];
@@ -31,6 +36,7 @@ public:
     void draw_selected_area(void);
     void draw_tile(short x, short y, int param_3, unsigned char param_4);
 };
+#endif
 
 void RGE_Diamond_Map::draw_selected_area(void) {
     if (this->main_view == 0)

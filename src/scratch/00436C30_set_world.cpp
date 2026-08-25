@@ -25,18 +25,22 @@ extern const float DAT_0056f5fc;
 extern const float DAT_0056f600;
 extern const float DAT_0056f604;
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Map {
 public:
     char gap_00[8];
     long map_width;
     long map_height;
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Game_World {
 public:
     char gap_00[0x28];
     RGE_Map* map;
 };
+#endif
 
 void RGE_Diamond_Map::set_world(RGE_Game_World* world)
 {

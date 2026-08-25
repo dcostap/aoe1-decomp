@@ -1,17 +1,22 @@
 // 00437620 RGE_Diamond_Map::copy_image (diam_map.cpp:575-654)
 
+#ifndef DIAM_MAP_CONTEXT_H
 typedef struct tagRECT {
     long left;
     long top;
     long right;
     long bottom;
 } RECT;
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class TDrawArea {
 public:
     void Copy(TDrawArea* src, int src_x, int src_y, RECT* rect, int flags);
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Diamond_Map {
 public:
     void copy_image();
@@ -26,6 +31,7 @@ public:
     char gap_24[0x144];
     TDrawArea* save_area;    // +0x168
 };
+#endif
 
 void RGE_Diamond_Map::copy_image()
 {

@@ -11,14 +11,17 @@
 //   duplicate read to one byte load but retains both homes, reproducing the original 0xC
 //   frame and stack colors without opaque scheduling scaffolding.
 
+#ifndef DIAM_MAP_CONTEXT_H
 class TDrawArea {
 public:
     unsigned char* Lock(char*, int);
     void Unlock(char*);
 };
+#endif
 
 class RGE_Static_Object;
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Object_Node {
 public:
     RGE_Static_Object* node;
@@ -26,7 +29,9 @@ public:
     RGE_Object_Node* prev;
     unsigned char centered;
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Object_List {
 public:
     virtual ~RGE_Object_List();
@@ -34,14 +39,18 @@ public:
     short number_of_objects;
     unsigned char gap_0A[2];
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Color_Table {
 public:
     virtual ~RGE_Color_Table();
     char gap_04[0x21];
     unsigned char map_color;
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Player {
 public:
     char gap_00[0x28];
@@ -55,7 +64,9 @@ public:
     char gap_198[4];
     short sel_count;
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Game_World {
 public:
     char gap_00[0x3C];
@@ -63,7 +74,9 @@ public:
     char gap_3E[2];
     RGE_Player** players;
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Static_Object {
 public:
     virtual ~RGE_Static_Object();
@@ -96,7 +109,9 @@ public:
     char gap_10[0x26];
     unsigned char selected;
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class TPanel {
 public:
     virtual ~TPanel();
@@ -132,7 +147,9 @@ public:
     TDrawArea* render_area;
     char gap_24[0xD0];
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Diamond_Map : public TPanel {
 public:
     virtual void draw_selected_area();
@@ -146,6 +163,7 @@ public:
     char gap_FC[0x60];
     int draw_objects_mode;
 };
+#endif
 
 void RGE_Diamond_Map::draw_objects()
 {

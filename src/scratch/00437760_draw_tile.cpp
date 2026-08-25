@@ -50,11 +50,14 @@ extern "C" long __cdecl __ftol(void);
 #define DAT_0056f604 (*(float*)0x0056F604)
 #define unified_map_offsets ((unsigned long**)0x00886808)
 
+#ifndef DIAM_MAP_CONTEXT_H
 class TDrawArea {
 public:
     void SetPixel(long x, long y, unsigned char color);
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class TPanel {
 public:
     virtual ~TPanel();
@@ -68,26 +71,34 @@ public:
     TDrawArea* render_area;
     char gap_24[0xD0];
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Master_Static_Object {
 public:
     char gap_00[0x8E];
     unsigned char map_draw_level;
     unsigned char map_color;
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Static_Object {
 public:
     char gap_00[8];
     RGE_Master_Static_Object* master_obj;
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Object_Node {
 public:
     RGE_Static_Object* node;
     RGE_Object_Node* next;
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Object_List {
 public:
     virtual ~RGE_Object_List();
@@ -95,7 +106,9 @@ public:
     short number_of_objects;
     unsigned char gap_0A[2];
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Tile {
 public:
     char gap_00[4];
@@ -104,7 +117,9 @@ public:
     char gap_06[6];
     RGE_Object_List objects;
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Terrain_Set {
 public:
     char gap_00[0x28];
@@ -113,7 +128,9 @@ public:
     unsigned char map_low_color;
     char gap_2B[0x198 - 0x2B];
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Map {
 public:
     char gap_00[0x8C];
@@ -123,20 +140,26 @@ public:
     char gap_8D90[0x28];
     unsigned char map_visible_flag;  // +0x8DB8
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Player {
 public:
     char gap_00[0xD0];
     unsigned long mutualExploredMask;
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Map_Image_Line {
 public:
     short tile_row;
     short start_x;
     short line_len;
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Map_Tile_Row {
 public:
     short image_line;
@@ -155,7 +178,9 @@ public:
     unsigned char pad_1E[2];
     float ratio;
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Diamond_Map : public TPanel {
 public:
     char gap_F4[4];
@@ -190,6 +215,7 @@ public:
 
     void draw_tile(short x, short y, int param_3, unsigned char param_4);
 };
+#endif
 
 void RGE_Diamond_Map::draw_tile(short param_1, short param_2,
                                 int param_3, unsigned char param_4)
@@ -379,3 +405,6 @@ void RGE_Diamond_Map::draw_tile(short param_1, short param_2,
         return;
     }
 }
+
+#undef DAT_0056f604
+#undef unified_map_offsets

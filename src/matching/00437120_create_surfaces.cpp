@@ -3,6 +3,7 @@
 void* operator new(unsigned int);
 void operator delete(void*);
 
+#ifndef DIAM_MAP_CONTEXT_H
 class TDrawArea {
 public:
     char pad_00[0xFC]; // total sizeof = 4 (vtable) + 0xFC = 0x100
@@ -25,6 +26,7 @@ public:
     int own_save_area;       // +0x164
     TDrawArea* save_area;    // +0x168
 };
+#endif
 
 int RGE_Diamond_Map::create_surfaces()
 {
@@ -34,7 +36,11 @@ int RGE_Diamond_Map::create_surfaces()
         if (da == 0) {
             return 0;
         }
+#ifdef DIAM_MAP_CONTEXT_H
+        if (!da->Init(*(void**)this->render_area, this->pnl_wid, this->pnl_hgt, 0, 0)) {
+#else
         if (!da->Init(*(void**)this->field_20, this->field_14, this->field_18, 0, 0)) {
+#endif
             TDrawArea* to_delete = this->save_area;
             if (to_delete != 0) {
                 to_delete->TDrawArea::~TDrawArea();
@@ -45,7 +51,11 @@ int RGE_Diamond_Map::create_surfaces()
         }
         this->own_save_area = 1;
     } else if (this->own_save_area) {
+#ifdef DIAM_MAP_CONTEXT_H
+        this->save_area->SetSize(this->pnl_wid, this->pnl_hgt, 0);
+#else
         this->save_area->SetSize(this->field_14, this->field_18, 0);
+#endif
     }
     return 1;
 }

@@ -2,13 +2,16 @@
 // Baseline reconstruction: typed TPanel/RGE_Diamond_Map fields and the two natural
 // full/partial draw paths are kept local while call order and layout are validated.
 
+#ifndef DIAM_MAP_CONTEXT_H
 typedef struct tagRECT {
     long left;
     long top;
     long right;
     long bottom;
 } RECT;
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class TDrawArea {
 public:
     unsigned char* Lock(char*, int);
@@ -16,32 +19,42 @@ public:
     void Copy(TDrawArea*, int, int, RECT*, int);
     void Clear(RECT*, int);
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Tile_List {
 public:
     void del_list();
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Player {
 public:
     char gap_00[0x6C];
     RGE_Tile_List diam_tile_list;
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Game_World {
 public:
     char gap_00[0x7C];
     short curr_player;
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Base_Game {
 public:
     char gap_00[0x1B4];
     int game_mode;
 };
+#endif
 
 extern RGE_Base_Game* rge_base_game;
 
+#ifndef DIAM_MAP_CONTEXT_H
 class TPanel {
 public:
     virtual ~TPanel();
@@ -108,7 +121,9 @@ public:
     unsigned char draw_rect2_flag;
     unsigned char need_restore;
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Diamond_Map : public TPanel {
 public:
     virtual void draw();
@@ -139,6 +154,7 @@ public:
     void draw_all_tiles();
     void draw_explored_tiles();
 };
+#endif
 
 void RGE_Diamond_Map::draw()
 {

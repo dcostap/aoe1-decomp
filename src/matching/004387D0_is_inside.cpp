@@ -1,3 +1,4 @@
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Tile;
 class TPanel {
 public:
@@ -16,6 +17,7 @@ public:
     int pick_tile(long x, long y, short* out_x, short* out_y, RGE_Tile** out_tile);
     int is_inside(long x, long y);
 };
+#endif
 
 int RGE_Diamond_Map::is_inside(long x, long y) {
     short out_x;

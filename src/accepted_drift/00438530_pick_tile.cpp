@@ -11,6 +11,7 @@
 
 extern "C" long __cdecl __ftol(void);
 
+#ifndef DIAM_MAP_CONTEXT_H
 class TPanel {
 public:
     char gap_00[0x0C];
@@ -18,14 +19,18 @@ public:
     long pnl_y;                        // +0x10
     char gap_14[0xE0];
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Map_Image_Line {
 public:
     short tile_row;   // +0x00
     short start_x;    // +0x02
     short line_len;   // +0x04
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Map_Tile_Row {
 public:
     char gap_00[8];
@@ -35,13 +40,17 @@ public:
     short map_row;    // +0x12
     char gap_14[0x10];
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Map {
 public:
     char gap_00[0x8D8C];
     void** map_row_offset;  // +0x8D8C
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Diamond_Map : public TPanel {
 public:
     void* world;                         // +0xF4
@@ -59,8 +68,13 @@ public:
 
     int pick_tile(long param_1, long param_2, short* param_3, short* param_4, void** param_5);
 };
+#endif
 
+#ifdef DIAM_MAP_CONTEXT_H
+int RGE_Diamond_Map::pick_tile(long param_1, long param_2, short* param_3, short* param_4, RGE_Tile** param_5)
+#else
 int RGE_Diamond_Map::pick_tile(long param_1, long param_2, short* param_3, short* param_4, void** param_5)
+#endif
 {
     if (this->map == 0) {
         return 0;
@@ -93,7 +107,11 @@ int RGE_Diamond_Map::pick_tile(long param_1, long param_2, short* param_3, short
                 *param_4 = result_row;
             }
             if (param_5 != 0) {
+#ifdef DIAM_MAP_CONTEXT_H
+                *param_5 = (RGE_Tile*)((char*)this->map->map_row_offset[result_row] + result_col * 24);
+#else
                 *param_5 = (char*)this->map->map_row_offset[result_row] + result_col * 24;
+#endif
             }
             return 1;
         }

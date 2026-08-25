@@ -84,6 +84,7 @@
 extern "C" void* __cdecl memset(void* dst, int value, unsigned int count);
 #pragma function(memset)
 
+#ifndef DIAM_MAP_CONTEXT_H
 class TDrawArea {
 public:
     void* DrawSystem;
@@ -126,6 +127,7 @@ public:
     unsigned char* Lock(char* name, int flag);
     void Unlock(char* name);
 };
+#endif
 
 void RGE_Diamond_Map::clear_image()
 {

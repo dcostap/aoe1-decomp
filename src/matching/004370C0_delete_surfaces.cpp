@@ -1,3 +1,4 @@
+#ifndef DIAM_MAP_CONTEXT_H
 class TDrawArea {
 public:
     ~TDrawArea();
@@ -11,6 +12,7 @@ public:
 
     void delete_surfaces();
 };
+#endif
 
 void RGE_Diamond_Map::delete_surfaces() {
     if (this->save_area != 0 && this->own_save_area != 0) {

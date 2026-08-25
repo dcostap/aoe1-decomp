@@ -2,12 +2,15 @@
 // result: exact match after restoring the exact save_area offset and the short loop bounds
 // moved to src\matching\00437660_draw_all_tiles.cpp after local validation
 
+#ifndef DIAM_MAP_CONTEXT_H
 class TDrawArea {
 public:
     unsigned char* Lock(const char* name, int flag);
     void Unlock(const char* name);
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Diamond_Map {
 public:
     char gap_00[0x130];
@@ -19,6 +22,7 @@ public:
     void draw_tile(short x, short y, int, int);
     void draw_all_tiles();
 };
+#endif
 
 void RGE_Diamond_Map::draw_all_tiles() {
     if (this->save_area->Lock("diam_map::draw_all_tiles", 1) == 0) {

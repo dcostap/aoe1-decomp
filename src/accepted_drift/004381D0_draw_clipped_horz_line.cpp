@@ -10,9 +10,12 @@
 // the line pointer). Original: ESI=line, EDI=pnl_x. Rebuilt: EDI=line, ESI=clipped_left.
 // VC5 register heuristic. Cannot be forced from C++. Left in scratch.
 
+#ifndef DIAM_MAP_CONTEXT_H
 class TDrawArea;
+#endif
 class TPanel;
 
+#ifndef DIAM_MAP_CONTEXT_H
 class TDrawArea {
 public:
     char gap_00[0x3C];
@@ -22,7 +25,7 @@ public:
 
 class TPanel {
 public:
-    void* vtable_ptr;
+    virtual ~TPanel();
     TPanel* previousPanelValue;
     TPanel* previousModalPanelValue;
     long pnl_x;
@@ -32,14 +35,18 @@ public:
     char* panelNameValue;
     TDrawArea* render_area;
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Map_Image_Line {
 public:
     short gap_00;
     short start_x;
     short line_len;
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Diamond_Map : public TPanel {
 public:
     void draw_clipped_horz_line(
@@ -47,6 +54,7 @@ public:
         unsigned char p4, RGE_Map_Image_Line* line
     );
 };
+#endif
 
 void RGE_Diamond_Map::draw_clipped_horz_line(
     short p1, short p2, short p3,

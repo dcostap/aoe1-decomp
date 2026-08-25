@@ -33,40 +33,49 @@
 // Luna438720 breakthrough: modeled pick_tile's two short outputs as natural short locals while leaving the long parameters live for the final mouse stores; VC5 coalesced those output homes with the incoming parameter slots and reproduced the original save/LEA schedule.
 // Exact: 148B, 0.0000% positional/edit diff, all 50 instructions and 4 call sites aligned.
 
+#ifndef DIAM_MAP_CONTEXT_H
 struct RGE_Tile;
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Player {
 public:
     void set_view_loc(float x, float y);
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class TPanel {
 public:
     virtual ~TPanel();
-    virtual void v04();
-    virtual void v08();
-    virtual void v0C();
-    virtual void v10();
-    virtual void v14();
-    virtual void v18();
-    virtual void v1C();
+    virtual void setup();
+    virtual void set_rect();
+    virtual void set_color();
+    virtual void set_active();
+    virtual void set_positioning();
+    virtual void set_fixed_position();
+    virtual void set_overlapped_redraw();
     virtual void update_view(int mode);
     char gap_00[0xF0];
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_View {
 public:
     virtual ~RGE_View();
-    virtual void v04();
-    virtual void v08();
-    virtual void v0C();
-    virtual void v10();
-    virtual void v14();
-    virtual void v18();
-    virtual void v1C();
+    virtual void setup();
+    virtual void set_rect();
+    virtual void set_color();
+    virtual void set_active();
+    virtual void set_positioning();
+    virtual void set_fixed_position();
+    virtual void set_overlapped_redraw();
     virtual void update_view(int mode);
 };
+#endif
 
+#ifndef DIAM_MAP_CONTEXT_H
 class RGE_Diamond_Map : public TPanel {
 public:
     void handle_scroll_view(long param_1, long param_2);
@@ -81,6 +90,7 @@ public:
     RGE_View* main_view;          // +0x150
     int scrolling;               // +0x154 (unused)
 };
+#endif
 
 void RGE_Diamond_Map::handle_scroll_view(long param_1, long param_2)
 {
@@ -90,10 +100,18 @@ void RGE_Diamond_Map::handle_scroll_view(long param_1, long param_2)
     if (this->pick_tile(param_1, param_2, &out_1, &out_2, &tile) != 0) {
         this->player->set_view_loc((float)out_1 - 0.5f, (float)out_2 - 0.5f);
 
+#ifdef DIAM_MAP_CONTEXT_H
+        this->set_redraw(TPanel::redraw_local);
+#else
         this->update_view(1);
+#endif
 
         if (this->main_view != 0) {
+#ifdef DIAM_MAP_CONTEXT_H
+            ((RGE_View*)this->main_view)->set_redraw(1);
+#else
             this->main_view->update_view(1);
+#endif
         }
 
         this->mouse_last_x = param_1;
