@@ -1,6 +1,6 @@
-class RGE_Player { public: unsigned char get_checksums(long*, long*, long*); };
-class RGE_Game_World { public: char gap0[0x3C]; short player_num; char gap3E[2]; RGE_Player** players; };
-class RGE_Base_Game { public: char gap0[0x3F4]; RGE_Game_World* world; unsigned char GetWorldChecksums(long&, long&, long&); };
+
+
+
 
 struct GetWorldChecksums_Locals {
     long c1;

@@ -5,18 +5,6 @@
 
 class RGE_Scenario;
 
-#ifndef BASEGAME_GROUPED_TU
-class RGE_Base_Game {
-public:
-    RGE_Scenario* new_scenario_info(int param_1);
-};
-
-class RGE_Scenario {
-public:
-    char pad_0[0x1990];
-    RGE_Scenario(int param_1, int zero);
-};
-#endif
 
 RGE_Scenario* RGE_Base_Game::new_scenario_info(int param_1) {
     return new RGE_Scenario(param_1, 0);

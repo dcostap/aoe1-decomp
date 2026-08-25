@@ -5,43 +5,11 @@
 class SoundDriver;
 class TDigital;
 
-class TTaunt {
-public:
-    TTaunt(SoundDriver* sound_driver);
-    ~TTaunt();
-};
 
 class SoundDriver;
 
-class RGE_Base_Game {
-public:
-    char gap_00[0x10];
-    void* prog_window;
-
-    int setup_chat();
-};
-
-class RGE_Base_Game_Sound {
-public:
-    char gap_00[0x60];
-    SoundDriver* sound_system;
-};
-
-class TChat {
-public:
-    void* HostWnd;
-    int chatGroupPlayers[10];
-    char* Chat[51];
-    int CurrentMsgNo;
-    TTaunt* taunt;
-
-    TChat(void* host_wnd);
-    ~TChat();
-    void setInChatGroup(int player, int enabled);
-};
 
 TChat* chat;
-extern RGE_Base_Game_Sound* rge_base_game;
 
 int RGE_Base_Game::setup_chat() {
     TChat* new_chat;

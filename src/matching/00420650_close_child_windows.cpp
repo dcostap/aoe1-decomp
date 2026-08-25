@@ -8,8 +8,6 @@
 //   and EBX scratch.
 // Result: MATCH locally with `python tools/check_function.py --va 00420650`.
 
-extern "C" int (__stdcall* const GetWindowTextA)(void* hwnd, char* text, int max_count);
-extern "C" int (__stdcall* const SendMessageA)(void* hwnd, int msg, int wparam, int lparam);
 extern "C" int __cdecl strcmp(const char* a, const char* b);
 
 extern char s_Locate_Session[];

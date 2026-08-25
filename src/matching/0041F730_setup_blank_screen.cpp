@@ -16,47 +16,12 @@
 class TDrawArea;
 class TPanel;
 
-class TPanel {
-public:
-    virtual ~TPanel();
-    char gap_04[0xF0];
-};
 
-class TEasy_Panel : public TPanel {
-public:
-    virtual ~TEasy_Panel();
-    char gap_F4[0x384];
-};
 
-class TScreenPanel : public TEasy_Panel {
-public:
-    virtual ~TScreenPanel();
 
-    TScreenPanel(char* name);
-    long setup(TDrawArea* draw_area, char* parent, long id, int value);
-};
 
-class TPanelSystem {
-public:
-    int setCurrentPanel(char* name, int mode);
-};
-
-class RGE_Base_Game {
-public:
-    virtual int setup_blank_screen();
-
-    char gap_04[0x0C];
-    void* prog_window;       // +0x10
-    char gap_14[0x38];
-    TDrawArea* draw_area;    // +0x4C
-
-    void set_render_all();
-};
 
 extern TPanelSystem panel_system;
-
-extern "C" long (__stdcall* const SendMessageA)(
-    void*, unsigned int, unsigned int, long);
 
 int RGE_Base_Game::setup_blank_screen()
 {

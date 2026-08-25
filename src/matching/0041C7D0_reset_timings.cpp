@@ -1,37 +1,3 @@
-// From basegame.cpp
-// matched via variant lab: raw int* pointer with indices [-1],[0],[1],[4],[5],[6]
-// do-while(--i) with stride 8, not for-loop or struct access
-
-#ifndef BASEGAME_GROUPED_TU
-struct RGE_Timing_Info {
-    int last_time;
-    int accum_time;
-    int field_04;
-    char gap_08[8];
-    int field_10;
-    int field_14;
-    int field_18;
-};
-
-class RGE_Base_Game {
-public:
-    char gap_00[0x504];
-    int frame_count;
-    int world_update_count;
-    int view_update_count;
-    int last_frame_count;
-    int last_world_update_count;
-    int last_view_update_count;
-    int fps;
-    int world_update_fps;
-    int view_update_fps;
-    char gap_528[4];
-    RGE_Timing_Info timings[0x1E];
-
-    void reset_timings();
-};
-#endif
-
 void RGE_Base_Game::reset_timings() {
     this->frame_count = 0;
     this->world_update_count = 0;
@@ -43,19 +9,14 @@ void RGE_Base_Game::reset_timings() {
     this->world_update_fps = 0;
     this->view_update_fps = 0;
 
-    int i = 0x1E;
-#ifdef BASEGAME_GROUPED_TU
-    int* t = (int*)this->data_ + 1;
-#else
-    int* t = (int*)this->timings;
-#endif
-    do {
-        t[-1] = 0;
-        t[0] = 0;
-        t[1] = 0;
-        t[4] = 0;
-        t[5] = 0;
-        t[6] = 0;
-        t += 8;
-    } while (--i != 0);
+    for (int i = 0; i < 30; ++i) {
+        this->timings[i].accum_time = 0;
+        this->timings[i].last_time = 0;
+        this->timings[i].start_time = 0;
+        this->timings[i].last_single_time = 0;
+        this->timings[i].max_time = 0;
+        this->timings[i].last_max_time = 0;
+        this->timings[i].include_in_total = 0;
+        this->timings[i].is_summary = 0;
+    }
 }

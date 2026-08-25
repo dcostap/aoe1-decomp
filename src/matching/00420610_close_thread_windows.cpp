@@ -1,5 +1,3 @@
-extern "C" __declspec(dllimport) void* __stdcall GetParent(void* wnd);
-extern "C" __declspec(dllimport) long __stdcall SendMessageA(void* wnd, unsigned int msg, unsigned int wParam, long lParam);
 
 extern void* AppWnd;
 

@@ -3,7 +3,7 @@ extern "C" __declspec(dllimport) unsigned long __stdcall timeGetTime(void);
 extern int do_debug_timeGetTime;
 extern int debug_timeGetTime_on;
 extern unsigned long debug_timeGetTime_cnt;
-extern unsigned long debug_timeGetTime_interval;
+extern int debug_timeGetTime_interval;
 extern unsigned long debug_timeGetTime_time;
 
 unsigned long __cdecl debug_timeGetTime(char* param_1, int param_2) {

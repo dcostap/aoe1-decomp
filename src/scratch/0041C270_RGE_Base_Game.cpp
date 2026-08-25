@@ -47,38 +47,13 @@
 //   the file-scope alias also changed the extracted owner. Restored the
 //   smallest typed for-loop source as the clean reconstruction.
 
-#ifndef BASEGAME_GROUPED_TU
 #include <stdio.h>
 #include <windows.h>
 
 class RGE_Game_Info;
 class RGE_Scenario_File_Info;
-class RGE_Prog_Info {
-public:
-    char gap_00[0x410];
-    void* instance;
-    char gap_414[0x8C8 - 0x414];
-    int scroll_speed;
-    char gap_8CC[0x8DC - 0x8CC];
-    short interface_style;
-};
-class RGE_Game_World {
-public:
-    virtual void vf00(); virtual void vf04(); virtual void vf08();
-    virtual void vf0C(); virtual void vf10(); virtual void vf14();
-    virtual void vf18(); virtual void vf1C(); virtual void vf20();
-    virtual void vf24(); virtual void vf28(); virtual void vf2C();
-    virtual void vf30(); virtual void vf34(); virtual void vf38();
-    virtual void vf3C(); virtual void vf40(); virtual void vf44();
-    virtual void vf48(); virtual void vf4C(); virtual void vf50();
-    virtual void vf54(); virtual void vf58(); virtual void vf5C();
-    virtual void vf60(); virtual void vf64(); virtual void vf68();
-    virtual void vf6C(); virtual void vf70(); virtual void vf74();
-    virtual void vf78(); virtual void vf7C(); virtual void vf80();
-    virtual void vf84(); virtual void vf88(); virtual void vf8C();
-    virtual void vf90(); virtual void vf94(); virtual void vf98();
-    virtual void vf9C(); virtual void vfA0(int value);
-};
+
+
 class TDrawSystem;
 class TDrawArea;
 class TShape;
@@ -89,12 +64,7 @@ class TCommunications_Handler;
 class TDebuggingLog;
 class TRegistry;
 class TMousePointer;
-class RGE_Font {
-public:
-    HGDIOBJ font;
-    int font_wid;
-    int font_hgt;
-};
+
 class TChat;
 class TPanelSystem;
 class DriveInformation;
@@ -125,185 +95,18 @@ class RGE_Base_Game;
 extern RGE_Base_Game* rge_base_game;
 extern float DAT_0056f018;
 
-class RGE_Game_Info {
-public:
-    void save(char* filename);
-    ~RGE_Game_Info();
-};
 
-class RGE_Scenario_File_Info {
-public:
-    ~RGE_Scenario_File_Info();
-};
 
-class TDrawSystem {
-public:
-    char gap_00[0x2C];
-    int screen_size;
-    ~TDrawSystem();
-};
 
-class TDrawArea {
-public:
-    ~TDrawArea();
-};
 
-class TMousePointer {
-public:
-    ~TMousePointer();
-};
 
-class TCommunications_Handler {
-public:
-    ~TCommunications_Handler();
-};
 
-class TChat {
-public:
-    ~TChat();
-};
 
-class TRegistry {
-public:
-    int RegGetInt(int use_user_key, const char* value_name);
-    int RegSetInt(int use_user_key, const char* value_name, int value);
-    ~TRegistry();
-};
 
-class TDebuggingLog {
-public:
-    ~TDebuggingLog();
-};
 
-class TShape {
-public:
-    ~TShape();
-};
 
-class TPanelSystem {
-public:
-    void destroyPanel(char* name);
-    void release_palette(void* palette);
-};
 
 extern TPanelSystem panel_system;
-
-class RGE_Base_Game {
-public:
-    virtual ~RGE_Base_Game();
-
-    RGE_Game_Info* player_game_info;
-    RGE_Scenario_File_Info* scenario_info;
-    RGE_Prog_Info* prog_info;
-    void* prog_window;
-    int prog_ready;
-    int prog_active;
-    void* prog_palette;
-    void* prog_mutex;
-    long window_style;
-    int random_game_seed;
-    int random_map_seed;
-    int save_random_game_seed;
-    int save_random_map_seed;
-    int screen_saver_enabled;
-    int low_power_enabled;
-    int error_code;
-    int is_timer;
-    TDrawSystem* draw_system;
-    TDrawArea* draw_area;
-    unsigned char outline_type;
-    unsigned char pad_51[3];
-    int custom_mouse;
-    short shape_num;
-    unsigned char pad_5A[2];
-    TShape** shapes;
-    TSound_Driver* sound_system;
-    TMusic_System* music_system;
-    short sound_num;
-    unsigned char pad_6A[2];
-    TDigital** sounds;
-    unsigned char save_music_type;
-    unsigned char pad_71[3];
-    int save_music_track_from;
-    int save_music_track_to;
-    int save_music_cur_track;
-    char save_music_file[260];
-    int save_music_loop;
-    unsigned long save_music_pos;
-    TCommunications_Handler* comm_handler;
-    int comm_syncstop;
-    int comm_droppackets;
-    int comm_syncmsg;
-    int comm_stepmode;
-    int comm_speed;
-    TDebuggingLog* debugLog;
-    int log_comm;
-    TRegistry* registry;
-    int prog_mode;
-    int game_mode;
-    int sub_game_mode;
-    int paused;
-    TMousePointer* mouse_pointer;
-    int erase_mouse;
-    int mouse_blit_sync;
-    int is_mouse_on;
-    int windows_mouse;
-    void* mouse_cursor;
-    int input_enabled;
-    void* input_disabled_window;
-    short font_num;
-    unsigned char pad_1E2[2];
-    RGE_Font* fonts;
-    char work_dir[261];
-    char string_dll_name[261];
-    unsigned char pad_3F2[2];
-    RGE_Game_World* world;
-    int render_all;
-    short master_obj_id;
-    short terrain_id;
-    short elevation_height;
-    short brush_size;
-    char timing_text[256];
-    unsigned long frame_count;
-    unsigned long world_update_count;
-    unsigned long view_update_count;
-    unsigned long last_frame_count;
-    unsigned long last_world_update_count;
-    unsigned long last_view_update_count;
-    unsigned long fps;
-    unsigned long world_update_fps;
-    unsigned long view_update_fps;
-    char timings[0x3C0];
-    int do_show_timings;
-    int do_show_comm;
-    int do_show_ai;
-    unsigned long last_view_time;
-    char game_options[0xA8];
-    int campaignGameValue;
-    int savedGameValue;
-    int quick_build;
-    int save_check_for_cd;
-    int playerIDValue[9];
-    int display_selected_ids;
-    long countdown_timer[9];
-    int auto_paused;
-    int save_paused;
-    int non_user_pause;
-    int rollover;
-    float game_speed;
-    int single_player_difficulty;
-    unsigned char pathFindingValue;
-    unsigned char resigned[9];
-    unsigned char pad_A1E[2];
-    TDrawArea* map_save_area;
-
-    unsigned char pathFinding();
-    unsigned char mpPathFinding();
-    void stop_sound_system();
-    void get_string(int string_id, char* buffer, int buffer_size);
-};
-#endif
-
 RGE_Base_Game::~RGE_Base_Game()
 {
     int i;
@@ -370,7 +173,7 @@ RGE_Base_Game::~RGE_Base_Game()
 
     this->prog_mode = 0;
     if (this->world != 0) {
-        this->world->vfA0(1);
+        delete this->world;
         this->world = 0;
     }
 

@@ -22,47 +22,10 @@ extern int rge_close(int fd);
 extern void* malloc(int size);
 extern "C" void free(void* p);
 
-#ifndef BASEGAME_GROUPED_TU
-class RGE_Game_Info {
-public:
-    int open_scenario();
-};
 
-class RGE_Prog_Info {
-public:
-    char gap_00[0xC17];
-    char scenario_dir[256];
-};
+
 
 class RGE_Scenario;
-
-class RGE_Base_Game {
-public:
-    virtual ~RGE_Base_Game();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
-    virtual void vf20();
-    virtual void vf24();
-    virtual void vf28();
-    virtual void vf2C();
-    virtual void vf30();
-    virtual void vf34();
-    virtual void vf38();
-    virtual RGE_Scenario* new_scenario_info(int);
-
-    RGE_Game_Info* player_game_info;
-    char gap_08[4];
-    RGE_Prog_Info* prog_info;
-
-    RGE_Scenario* get_scenario_info(char* param1, int param2);
-};
-#endif
-
 RGE_Scenario* RGE_Base_Game::get_scenario_info(char* param1, int param2)
 {
     char temp_name[300];

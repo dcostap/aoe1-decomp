@@ -2,13 +2,6 @@
 // PDB source: basegame.cpp
 // PDB line span: 5200-5230
 
-class RGE_Base_Game {
-public:
-    char gap_0[0x98A];
-    unsigned char arr_[1];
-    unsigned char playerVersion(int i);
-    char* playerVersionString(int param);
-};
 
 char* RGE_Base_Game::playerVersionString(int param)
 {

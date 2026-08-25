@@ -19,45 +19,12 @@
 //   shared SelectPalette push-palette/push-dc/call with the split push 0 in each arm.
 // Result: MATCH locally with `python tools/check_function.py --va 00421A80`.
 
-__declspec(dllimport) void* __stdcall GetDC(void* hwnd);
-__declspec(dllimport) void* __stdcall SelectPalette(void* hdc, void* hpal, int bForceBackground);
-__declspec(dllimport) int __stdcall RealizePalette(void* hdc);
-__declspec(dllimport) int __stdcall ReleaseDC(void* hwnd, void* hdc);
-__declspec(dllimport) int __stdcall InvalidateRect(void* hwnd, void* rect, int bErase);
 
-class TDrawSystem {
-public:
-    char gap_00[0x04];
-    void* Wnd;                      // +0x04
-    void* Pal;                      // +0x08
-    char gap_0C[0x46C];
-    unsigned char DrawType;         // +0x478
-    unsigned char ScreenMode;       // +0x479
 
-    int HandleQueryNewPalette(void* param1, unsigned int param2, unsigned int param3, long param4);
-};
 
-class TPanel {
-public:
-    void* get_palette();
-};
-
-class TPanelSystem {
-public:
-    TPanel* currentPanel();
-};
 
 extern TPanelSystem panel_system;
 
-class RGE_Base_Game {
-public:
-    char gap_00[0x1C];              // +0x00..+0x1C (no vptr needed)
-    void* prog_palette;             // +0x1C
-    char gap_20[0x48 - 0x20];
-    TDrawSystem* draw_system;       // +0x48
-
-    int handle_query_new_palette(void* hwnd, unsigned int msg, unsigned int wparam, long lparam);
-};
 
 int RGE_Base_Game::handle_query_new_palette(void* hwnd, unsigned int msg, unsigned int wparam, long lparam)
 {

@@ -29,54 +29,6 @@
 
 #include <string.h>
 
-class RGE_Base_Game {
-public:
-    virtual ~RGE_Base_Game();
-    class RGE_Game_Options {
-    public:
-        float versionValue;
-        unsigned char scenarioGameValue;
-        char scenarioNameValue[128];
-        unsigned char singlePlayerGameValue;
-        unsigned char multiplayerGameValue;
-        unsigned char mapXSizeValue;
-        unsigned char mapYSizeValue;
-        unsigned char mapZSizeValue;
-        unsigned char allowCheatCodesValue;
-        unsigned char mpPathFindingValue;
-        unsigned char cheatNotificationValue;
-        unsigned char fullVisibilityValue;
-        unsigned char fogOfWarValue;
-        unsigned char coloredChatValue;
-        unsigned char numberPlayersValue;
-        unsigned char gameDeveloperModeValue;
-        unsigned char playerCDAndVersionValue[9];
-        unsigned char difficultyValue;
-        unsigned char playerTeamValue[9];
-    };
-
-    float version() const;
-    int scenarioGame() const;
-    char* scenarioName();
-    int singlePlayerGame() const;
-    int multiplayerGame() const;
-    int mapXSize() const;
-    int mapYSize() const;
-    int mapZSize() const;
-    int allowCheatCodes() const;
-    int cheatNotification() const;
-    int fullVisibility() const;
-    int fogOfWar() const;
-    int coloredChat() const;
-    int numberPlayers() const;
-    int gameDeveloperMode() const;
-    int difficulty();
-    unsigned char mpPathFinding();
-    unsigned char playerCDAndVersion(int index);
-    int playerTeam(int index);
-
-    void get_game_options(RGE_Game_Options* options);
-};
 
 void RGE_Base_Game::get_game_options(RGE_Game_Options* options)
 {

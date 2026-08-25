@@ -3,8 +3,8 @@
 //
 // attempt log:
 // v3: full function with all extern game function calls, trying to close the size gap
-// v2: Ghidra-like iVar2 pattern — 5568 bytes (too small)
-// v1: first-pass full body — 5664-5680 bytes
+// v2: Ghidra-like iVar2 pattern â€” 5568 bytes (too small)
+// v1: first-pass full body â€” 5664-5680 bytes
 // missing: game func calls 0047F580, 004362B0, 00436330, 004362F0, 004227F0
 // v4: fixed VC5-incompatible __thiscall extern declarations by modeling member calls.
 // v5: changed local buffers to 256+256; stack frame moved from 0x208 to target family.
@@ -32,9 +32,6 @@
 // progress 20260429: corrected the visible command-option string spelling to match the original string triplets (compact, spaced, underscored) and rewrote '=' scans with an explicit cVar1 like Ghidra/source; codegen is unchanged (still exact size 5726, first mismatch prologue sub esp 204/edi=this hidden-home). Tested strstr-as-int surface and /G5 flag as probes; both were codegen-identical, so not kept as special context.
 
 extern "C" {
-#ifndef BASEGAME_GROUPED_TU
-extern char* (__stdcall *CharUpperA)(char* lpString);
-#endif
 char* __cdecl strstr(const char* str, const char* substr);
 char* __cdecl strncpy(char* dest, const char* src, unsigned int count);
 long __cdecl atol(const char* str);
@@ -45,80 +42,12 @@ char* __cdecl _mbsncat(char* dst, const char* src, unsigned int count);
 }
 
 // Game function declarations matching original asm calls
-#ifndef BASEGAME_GROUPED_TU
-class TDebuggingLog {
-public:
-    void LogFile(int v);       // 004362B0
-    void LogTimestamp(int v);  // 00436330
-    void LogOutput(int v);     // 004362F0
-};
-#endif
-
 extern "C" {
 void __cdecl RESFILE_Set_Missing_Flag(int flag);          // 0047F580
-TDebuggingLog* g_L;                                       // 62C4FC — global debugLog pointer
+TDebuggingLog* g_L;                                       // 62C4FC â€” global debugLog pointer
 }
 
-// Local stub types
-#ifndef BASEGAME_GROUPED_TU
-class RGE_Prog_Info {
-public:
-    char gap_00[0xF3];
-    char world_db_file[261];
-    char game_data_file[261];
-    char gap_2FD[0x21B];
-    char cmd_line[256];
-    char gap_618[0x278];
-    int skip_startup;
-    int full_screen;
-    char gap_898[4];
-    int use_dir_draw;
-    int use_sys_mem;
-    int use_music;
-    int use_sound;
-    int use_cd_audio;
-    int use_ima;
-    int use_midi;
-    int use_wave_music;
-    int fast_view;
-    char gap_8C0[0x1C];
-    short interface_style;
-    char gap_8DE[2];
-    long main_wid;
-    long main_hgt;
-    char gap_8E8[0x32F];
-    char scenario_dir[261];
-};
-#endif
-
-#ifndef BASEGAME_GROUPED_TU
-class RGE_Base_Game {
-public:
-    char gap_00[0x0C];
-    RGE_Prog_Info* prog_info;
-    char gap_10[0x18];
-    int random_game_seed;
-    int random_map_seed;
-    char gap_30[0x20];
-    unsigned char outline_type;
-    char gap_51[3];
-    int custom_mouse;
-    char gap_58[0x138];
-    int comm_syncstop;
-    int comm_droppackets;
-    int comm_syncmsg;
-    int comm_stepmode;
-    int comm_speed;
-    void* debugLog;   // actually the global L at 62C4FC is used, not this->debugLog
-    int log_comm;
-    char gap_1AC[0x1C];
-    int mouse_blit_sync;
-
-    void setGameDeveloperMode(int v);   // 004227F0
-    int setup_cmd_options();
-};
-#endif
-
+// Module globals
 extern "C" {
 extern int all_cp;
 extern int do_run_log;

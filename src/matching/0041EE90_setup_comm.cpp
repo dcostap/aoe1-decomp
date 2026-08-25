@@ -11,55 +11,9 @@
 
 class TChat;
 
-class RGE_Prog_Info {
-public:
-    char gap_000[0x878];
-    int max_players;
-    char gap_87C[0x8E8 - 0x87C];
-    _GUID game_guid;
-};
 
-class TCommunications_Handler {
-public:
-    char gap_000[0x1774];
 
-    TCommunications_Handler(void* host_hwnd, unsigned char max_game_players,
-                            TChat* chat, _GUID application_guid);
-    ~TCommunications_Handler();
 
-    void StopIfSyncFail(int flag);
-    void ShowSyncChatMsgs(int param);
-    void SetStepMode(int value);
-    void SetSpeedControl(int value);
-    void DropPacketsIntentionally(int flag);
-    void SetSpeedV1(int value);
-};
-
-class RGE_Game_World {
-public:
-    virtual unsigned char data_load_world(void* file);
-    void reset_communications(TCommunications_Handler* handler);
-};
-
-class RGE_Base_Game {
-public:
-    virtual ~RGE_Base_Game();
-
-    char gap_004[0x08];
-    RGE_Prog_Info* prog_info;
-    void* prog_window;
-    char gap_014[0x18C - 0x14];
-    TCommunications_Handler* comm_handler;
-    int comm_syncstop;
-    int comm_droppackets;
-    int comm_syncmsg;
-    int comm_stepmode;
-    int comm_speed;
-    char gap_1A4[0x3F4 - 0x1A4];
-    RGE_Game_World* world;
-
-    int setup_comm();
-};
 
 extern TChat* chat;
 extern TCommunications_Handler* comm;

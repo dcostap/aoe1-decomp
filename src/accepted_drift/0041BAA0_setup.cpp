@@ -52,67 +52,12 @@
 // offsets for valid DirectX, memory-status, file, path, and OFSTRUCT buffers.
 // Each external call receives the same buffer content and object extent.
 
-#ifndef BASEGAME_GROUPED_TU
 #include <windows.h>
 #include <stdio.h>
 #include <new.h>
 
-struct _finddata_t {
-    unsigned attrib;
-    long time_create;
-    long time_access;
-    long time_write;
-    long size;
-    char name[260];
-};
-
-class RGE_Game_Info {
-public:
-    char gap_00[0x118];
-    RGE_Game_Info(char* filename);
-    ~RGE_Game_Info();
-};
-
-class RGE_Scenario_File_Info {
-public:
-    char gap_00[0x10C];
-    RGE_Scenario_File_Info(char* filename);
-    ~RGE_Scenario_File_Info();
-};
-
-class DriveInformation {
-public:
-    char gap_04[0x270];
-    DriveInformation();
-    virtual ~DriveInformation();
-};
-
-class RGE_Prog_Info {
-public:
-    char gap_00[0x410];
-    void* instance;
-    char gap_414[0x87C - 0x414];
-    int check_expiration;
-    char gap_880[0x88C - 0x880];
-    int check_multi_copies;
-    char gap_890[0x8DC - 0x890];
-    short interface_style;
-    unsigned char gap_8DE[2];
-    int main_wid;
-    int main_hgt;
-    char gap_8E8[0xC17 - 0x8E8];
-    char scenario_dir[1];
-};
-
-class TRegistry {
-public:
-    int RegGetInt(int use_user, const char* name);
-    int RegSetInt(int use_user, const char* name, int value);
-};
-
 extern "C" unsigned long __cdecl debug_timeGetTime(char* file, int line);
 extern "C" void __cdecl debug_srand(char* file, int line, unsigned int seed);
-extern "C" long __cdecl _findfirst(const char* filespec, void* fileinfo);
 extern "C" void __cdecl GetDXVersion(unsigned long* version, unsigned long* platform);
 extern float DAT_0056f014;
 
@@ -125,120 +70,6 @@ extern FILE* draw_log;
 extern int do_fps_log;
 extern FILE* fps_log;
 extern DriveInformation* driveInfo;
-
-class RGE_Base_Game {
-public:
-    virtual ~RGE_Base_Game();
-    virtual int run();
-    virtual long wnd_proc(void* hwnd, unsigned int msg, unsigned int wp, long lp);
-    virtual void set_prog_mode(int mode);
-    virtual void set_game_mode(int mode, int sub_mode);
-    virtual void set_player(short player);
-    virtual int get_error_code();
-    virtual char* get_string(int a, long b, char* out, int size);
-    virtual char* get_string(long a, char* out, int size);
-    virtual char* get_string(long a);
-    virtual char* get_string2(int a, long b, long c, char* out, int size);
-    virtual void* get_view_panel();
-    virtual void* get_map_panel();
-    virtual void* new_scenario_header(void* scenario);
-    virtual void* new_scenario_header(int value);
-    virtual void* new_scenario_info(int value);
-    virtual void notification(int a, long b, long c, long d, long e);
-    virtual int reset_comm();
-    virtual void send_game_options();
-    virtual void receive_game_options();
-    virtual char* gameSummary();
-    virtual int processCheatCode(int value, char* text);
-    virtual int setup_music_system();
-    virtual void shutdown_music_system();
-    virtual int setup();
-    virtual int setup_cmd_options();
-    virtual int setup_class();
-    virtual int setup_main_window();
-    virtual int setup_graphics_system();
-    virtual int setup_palette();
-    virtual int setup_mouse();
-    virtual int setup_registry();
-    virtual int setup_debugging_log();
-    virtual int setup_chat();
-    virtual int setup_comm();
-    virtual int setup_sound_system();
-    virtual int setup_fonts();
-    virtual int setup_sounds();
-    virtual int setup_shapes();
-    virtual int setup_blank_screen();
-    virtual void setup_timings();
-    virtual void stop_sound_system();
-    virtual int restart_sound_system();
-    virtual void stop_music_system();
-    virtual int restart_music_system();
-    virtual RGE_Game_Info* create_world();
-    virtual int handle_message(void* msg);
-    virtual int handle_idle();
-    virtual int handle_mouse_move(void* a, unsigned int b, unsigned int c, long d);
-    virtual int handle_key_down(void* a, unsigned int b, unsigned int c, long d);
-    virtual int handle_user_command(void* a, unsigned int b, unsigned int c, long d);
-    virtual int handle_command(void* a, unsigned int b, unsigned int c, long d);
-    virtual int handle_music_done(void* a, unsigned int b, unsigned int c, long d);
-    virtual int handle_paint(void* a, unsigned int b, unsigned int c, long d);
-    virtual int handle_activate(void* a, unsigned int b, unsigned int c, long d);
-    virtual int handle_init_menu(void* a, unsigned int b, unsigned int c, long d);
-    virtual int handle_exit_menu(void* a, unsigned int b, unsigned int c, long d);
-    virtual int handle_size(void* hwnd, unsigned int msg, unsigned int wp, long lp);
-    virtual int handle_palette_changed(void* a, unsigned int b, unsigned int c, long d);
-    virtual int handle_query_new_palette(void* a, unsigned int b, unsigned int c, long d);
-    virtual int handle_close(void* a, unsigned int b, unsigned int c, long d);
-    virtual int handle_destroy(void* a, unsigned int b, unsigned int c, long d);
-    virtual int action_update();
-    virtual int action_mouse_move(long a, long b, int c, int d, int e, int f);
-    virtual int action_key_down(unsigned long a, int b, int c, int d, int e);
-    virtual int action_user_command(unsigned long a, unsigned long b);
-    virtual int action_command(unsigned long a, unsigned long b);
-    virtual int action_music_done();
-    virtual int action_activate();
-    virtual int action_deactivate();
-    virtual int action_init_menu();
-    virtual int action_exit_menu();
-    virtual int action_size();
-    virtual int action_close();
-    virtual void calc_timings();
-    virtual void calc_timing_text();
-    virtual void show_timings();
-    virtual void show_comm();
-    virtual void show_ai();
-    virtual int setup_map_save_area();
-    virtual void set_interface_messages();
-
-    RGE_Game_Info* player_game_info;
-    void* scenario_info;
-    RGE_Prog_Info* prog_info;
-    void* prog_window;
-    int prog_ready;
-    char gap_18[0x38 - 0x18];
-    int screen_saver_enabled;
-    int low_power_enabled;
-    int error_code;
-    int is_timer;
-    char gap_48[0x1AC - 0x48];
-    TRegistry* registry;
-    char gap_1B0[0x9AC - 0x1B0];
-    int save_check_for_cd;
-    char gap_9B0[0xA08 - 0x9B0];
-    int rollover;
-    float game_speed;
-    int single_player_difficulty;
-
-    void setPathFinding(unsigned char value);
-    void setMpPathFinding(unsigned char value);
-    int check_expiration();
-    int check_multi_copies();
-    unsigned char check_prog_argument(const char* argument);
-    int check_for_cd(int value);
-    void mouse_on();
-};
-#endif
-
 int RGE_Base_Game::setup()
 {
     unsigned long DXVersion;

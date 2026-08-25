@@ -47,32 +47,7 @@
 // pushes and a broad 143-byte mismatch, so the helper-backed source is retained as the
 // smallest exact-friendly TU context. No inline asm or custom flags.
 
-class TMusic_System {
-public:
-    int play_track(int track_from, int loop, unsigned long pos);
-    int play_tracks(int track_from, int track_to, int loop, int cur_track, unsigned long pos);
-    int play_file(char* filename, int loop, unsigned long pos);
-};
 
-class RGE_Base_Game {
-public:
-    // vtable at +0x00 (implicit from virtual function)
-    char gap_04[0x60];
-    TMusic_System* music_system;   // +0x64
-    short sound_num;             // +0x68
-    char gap_6A[2];
-    void* sounds;                // +0x6C
-    unsigned char save_music_type; // +0x70
-    char gap_71[3];
-    int save_music_track_from;      // +0x74
-    int save_music_track_to;        // +0x78
-    int save_music_cur_track;       // +0x7C
-    char save_music_file[260];      // +0x80
-    int save_music_loop;             // +0x184
-    unsigned long save_music_pos;   // +0x188
-
-    virtual int restart_music_system();
-};
 
 static inline int restart_music_system_body(RGE_Base_Game* self)
 {

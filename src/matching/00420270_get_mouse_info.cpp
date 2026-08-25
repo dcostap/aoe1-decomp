@@ -1,12 +1,5 @@
-struct tagPOINT {
-    int x;
-    int y;
-};
 
-class RGE_Base_Game {
-public:
-    void get_mouse_info(unsigned int param_1, unsigned long param_2, tagPOINT* param_3, int* param_4, int* param_5, int* param_6, int* param_7);
-};
+
 
 void RGE_Base_Game::get_mouse_info(unsigned int flags, unsigned long lparam, tagPOINT* point, int* lbtn, int* rbtn, int* mbtn, int* wheel) {
     int x = lparam & 0xFFFF;

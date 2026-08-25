@@ -22,46 +22,10 @@ extern int rge_open(const char* path, int flags);
 extern int rge_read_uncompressed(int fd, void* buf, int len);
 extern int rge_close(int fd);
 
-#ifndef BASEGAME_GROUPED_TU
-class RGE_Game_Info {
-public:
-    int open_scenario();
-};
 
-class RGE_Prog_Info {
-public:
-    char gap_00[0xC17];
-    char scenario_dir[256];
-};
+
 
 class RGE_Scenario_Header;
-
-class RGE_Base_Game {
-public:
-    virtual ~RGE_Base_Game();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
-    virtual void vf20();
-    virtual void vf24();
-    virtual void vf28();
-    virtual void vf2C();
-    virtual void vf30();
-    virtual void vf34();
-    virtual RGE_Scenario_Header* new_scenario_header(int);
-
-    RGE_Game_Info* player_game_info;
-    char gap_08[4];
-    RGE_Prog_Info* prog_info;
-
-    RGE_Scenario_Header* get_scenario_header(char* param1, int param2);
-};
-#endif
-
 struct Scenario_Header_Work {
     char temp_name[300];
     int version;

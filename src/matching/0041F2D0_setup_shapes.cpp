@@ -15,35 +15,6 @@
 
 #include <new.h>
 
-extern "C" void* calloc(int num, int size);
-
-class TShape {
-public:
-    char gap_00[0x20];
-
-    TShape(char* filename, long file_id);
-};
-
-class RGE_Base_Game {
-public:
-#define BASE_PAD(n) virtual void base_pad##n();
-    virtual ~RGE_Base_Game();
-    BASE_PAD(1) BASE_PAD(2) BASE_PAD(3) BASE_PAD(4) BASE_PAD(5) BASE_PAD(6)
-    BASE_PAD(7) BASE_PAD(8) BASE_PAD(9) BASE_PAD(10) BASE_PAD(11) BASE_PAD(12)
-    BASE_PAD(13) BASE_PAD(14) BASE_PAD(15) BASE_PAD(16) BASE_PAD(17) BASE_PAD(18)
-    BASE_PAD(19) BASE_PAD(20) BASE_PAD(21) BASE_PAD(22) BASE_PAD(23) BASE_PAD(24)
-    BASE_PAD(25) BASE_PAD(26) BASE_PAD(27) BASE_PAD(28) BASE_PAD(29) BASE_PAD(30)
-    BASE_PAD(31) BASE_PAD(32) BASE_PAD(33) BASE_PAD(34) BASE_PAD(35) BASE_PAD(36)
-    BASE_PAD(37)
-    virtual int setup_shapes();
-#undef BASE_PAD
-
-    char gap_04[0x54];
-    short shape_num;
-    char gap_5A[2];
-    TShape** shapes;
-};
-
 int RGE_Base_Game::setup_shapes()
 {
     TShape* shape;

@@ -12,20 +12,9 @@
 extern int do_debug_random;
 extern int debug_random_on;
 extern int debug_random_index;
-extern void* rge_base_game;
-extern char debug_random_log[];
+extern char debug_random_log[25][100];
 
-class RGE_Game_World {
-public:
-    char gap[4];
-    int world_time;
-};
 
-class RGE_Base_Game {
-public:
-    char gap[0x3F4];
-    RGE_Game_World* world;
-};
 
 void __cdecl debug_srand(char* param_1, int param_2, unsigned int param_3)
 {
@@ -36,7 +25,7 @@ void __cdecl debug_srand(char* param_1, int param_2, unsigned int param_3)
         int idx = debug_random_index;
         if (idx < 4999) idx++; else idx = 0;
         debug_random_index = idx;
-        sprintf(debug_random_log + idx * 100, "t%d,%s,l%d,s%u", (*(RGE_Base_Game**)&rge_base_game)->world->world_time, buf, param_2, param_3);
+        sprintf(&debug_random_log[0][0] + idx * 100, "t%d,%s,l%d,s%u", rge_base_game->world->world_time, buf, param_2, param_3);
     }
     srand(param_3);
 }

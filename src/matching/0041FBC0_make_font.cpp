@@ -12,39 +12,8 @@
 
 extern "C" int __cdecl atoi(const char*);
 extern "C" __declspec(dllimport) int __stdcall MulDiv(int, int, int);
-extern "C" __declspec(dllimport) void* __stdcall CreateFontIndirectA(void*);
 
-class RGE_Base_Game {
-public:
-    virtual ~RGE_Base_Game();
-    virtual int vf04();
-    virtual int vf08();
-    virtual int vf0C();
-    virtual int vf10();
-    virtual int vf14();
-    virtual int vf18();
-    virtual int vf1C();
-    virtual char* get_string(long id, char* buf, int maxlen);
 
-    void* make_font(void* dc, char* name, int size, int weight, int strikeout);
-};
-
-struct LOGFONTA {
-    int lfHeight;
-    int lfWidth;
-    int lfEscapement;
-    int lfOrientation;
-    int lfWeight;
-    char lfItalic;
-    char lfUnderline;
-    char lfStrikeOut;
-    char lfCharSet;
-    char lfOutPrecision;
-    char lfClipPrecision;
-    char lfQuality;
-    char lfPitchAndFamily;
-    char lfFaceName[32];
-};
 
 void* RGE_Base_Game::make_font(void* dc, char* name, int size, int weight, int strikeout)
 {

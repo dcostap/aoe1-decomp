@@ -30,42 +30,8 @@
 
 extern char s_basegame_setup_fonts[];
 
-struct RGE_Font {
-    void* font;
-    long font_wid;
-    long font_hgt;
-};
 
-class TDrawArea {
-public:
-    void* GetDc(char* name);
-    void ReleaseDc(char* name);
-};
 
-class RGE_Base_Game {
-public:
-    virtual ~RGE_Base_Game();
-
-#define BASE_PAD(n) virtual void base_pad##n();
-    BASE_PAD(1) BASE_PAD(2) BASE_PAD(3) BASE_PAD(4) BASE_PAD(5)
-    BASE_PAD(6) BASE_PAD(7) BASE_PAD(8) BASE_PAD(9) BASE_PAD(10)
-    BASE_PAD(11) BASE_PAD(12) BASE_PAD(13) BASE_PAD(14) BASE_PAD(15)
-    BASE_PAD(16) BASE_PAD(17) BASE_PAD(18) BASE_PAD(19) BASE_PAD(20)
-    BASE_PAD(21) BASE_PAD(22) BASE_PAD(23) BASE_PAD(24) BASE_PAD(25)
-    BASE_PAD(26) BASE_PAD(27) BASE_PAD(28) BASE_PAD(29) BASE_PAD(30)
-    BASE_PAD(31) BASE_PAD(32) BASE_PAD(33) BASE_PAD(34) BASE_PAD(35)
-    virtual int setup_fonts();
-#undef BASE_PAD
-
-    char gap_04[0x4C - 0x04];
-    TDrawArea* draw_area;
-    char gap_50[0x1E0 - 0x50];
-    short font_num;
-    char gap_1E2[2];
-    RGE_Font* fonts;
-
-    void* make_font(void* dc, long id, int italic);
-};
 
 int RGE_Base_Game::setup_fonts()
 {

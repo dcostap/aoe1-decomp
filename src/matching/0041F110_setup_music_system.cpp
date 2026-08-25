@@ -30,72 +30,13 @@
 
 #include <stdio.h>
 
-#define VPAD1(n) virtual void vpad##n();
-#define VPAD2(n) VPAD1(n) VPAD1(n##_1)
-#define VPAD4(n) VPAD2(n) VPAD2(n##_2)
-#define VPAD8(n) VPAD4(n) VPAD4(n##_4)
-#define VPAD16(n) VPAD8(n) VPAD8(n##_8)
+
 
 class TSound_Driver;
 
-class TMusic_System {
-public:
-    char gap_000[0x104];
-    unsigned char music_type;             // +0x104
-    char gap_105[3];
-    TSound_Driver* sound_system;           // +0x108
-    void* instance;                        // +0x10C
-    void* window;                          // +0x110
-    int device_open;                       // +0x114
-    char gap_118[0x248 - 0x118];
-    int track_count;                       // +0x248
-    char gap_24C[0x3F8 - 0x24C];
 
-    TMusic_System(unsigned char type, void* instance, void* window,
-                  TSound_Driver* sound, char* path);
-    ~TMusic_System();
-    int set_music_type(unsigned char type);
-    void set_volume(long volume, int flag);
-};
 
-class TRegistry {
-public:
-    int RegGetInt(int use_user, const char* name);
-};
 
-class RGE_Prog_Info {
-public:
-    char gap_000[0x410];
-    void* instance;                         // +0x410
-    char gap_414[0x8A4 - 0x414];
-    int use_music;                          // +0x8A4
-    int use_sound;                          // +0x8A8
-    int use_cd_audio;                       // +0x8AC
-    int use_ima;                            // +0x8B0
-    int use_midi;                           // +0x8B4
-    int use_wave_music;                     // +0x8B8
-    char gap_8BC[0xE21 - 0x8BC];
-    char sounds_dir[0x105];                 // +0xE21
-};
-
-class RGE_Base_Game {
-public:
-    char gap_004[0x0C - 0x04];
-    RGE_Prog_Info* prog_info;               // +0x0C
-    void* prog_window;                       // +0x10
-    char gap_014[0x60 - 0x14];
-    TSound_Driver* sound_system;            // +0x60
-    TMusic_System* music_system;            // +0x64
-    char gap_068[0x1AC - 0x68];
-    TRegistry* registry;                     // +0x1AC
-    char gap_1B0[0x1E8 - 0x1B0];
-    char work_dir[0x105];                    // +0x1E8
-
-    VPAD16(a)
-    VPAD4(b)
-    VPAD2(c)
-    virtual int setup_music_system();        // slot 22, vtable +0x58
-};
 
 int RGE_Base_Game::setup_music_system()
 {

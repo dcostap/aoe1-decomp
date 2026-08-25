@@ -12,13 +12,7 @@
 // - The late timing expression keeps the panel delta on the left of the
 //   inline 115B elapsed subtraction; this preserves the original x86 order.
 
-#define VPAD1(n) virtual void vpad##n();
-#define VPAD2(n) VPAD1(n) VPAD1(n##_1)
-#define VPAD4(n) VPAD2(n) VPAD2(n##_2)
-#define VPAD8(n) VPAD4(n) VPAD4(n##_4)
-#define VPAD16(n) VPAD8(n) VPAD8(n##_8)
-#define VPAD32(n) VPAD16(n) VPAD16(n##_16)
-#define VPAD64(n) VPAD32(n) VPAD32(n##_32)
+
 
 typedef int PositionMode;
 typedef int RedrawMode;
@@ -26,222 +20,22 @@ typedef int RedrawMode;
 struct tagRECT;
 class TDrawArea;
 class TShape;
-class IDirectDrawSurface;
 
 extern void color_log(unsigned char a, unsigned char b, int c);
 extern "C" unsigned long __cdecl debug_timeGetTime(char* file, int line);
-extern "C" __declspec(dllimport) int __stdcall ValidateRect(void* hwnd,
-                                                               const void* rect);
-extern "C" __declspec(dllimport) int __stdcall InvalidateRect(void* hwnd,
-                                                                 const void* rect,
-                                                                 int erase);
 extern "C" __declspec(dllimport) void* __stdcall SetCursor(void* cursor);
-extern "C" __declspec(dllimport) long __stdcall SetClassLongA(void* hwnd,
-                                                                long index,
-                                                                long value);
 
-class IDirectDrawSurface {
-public:
-    virtual long __stdcall v0();
-    virtual long __stdcall v1();
-    virtual long __stdcall v2();
-    virtual long __stdcall v3();
-    virtual long __stdcall v4();
-    virtual long __stdcall v5();
-    virtual long __stdcall v6();
-    virtual long __stdcall v7();
-    virtual long __stdcall v8();
-    virtual long __stdcall v9();
-    virtual long __stdcall v10();
-    virtual long __stdcall v11();
-    virtual long __stdcall v12();
-    virtual long __stdcall GetBltStatus(unsigned long flags);
-};
 
-class TDrawSystem {
-public:
-    void* Inst;
-    void* Wnd;
-    void* Pal;
-    TDrawArea* DrawArea;
-    TDrawArea* PrimaryArea;
-    void* DrawAreaList;
-    void* DirDraw;
-    IDirectDrawSurface* PrimarySurface;
-    char gap_20[0x458];
-    unsigned char DrawType;
-    unsigned char ScreenMode;
 
-    void Paint(tagRECT* rect);
-};
 
-class TSound_Driver {
-public:
-    void play_list();
-    void reset_play_list();
-};
 
-class TMousePointer {
-public:
-    void on();
-    void draw(int forced);
-    void erase();
-    int Restore_Mouse(TDrawArea* area);
-};
 
-class TPanel {
-public:
-    virtual ~TPanel();
-    virtual long setup(TDrawArea*, TPanel*, long, long, long, long,
-                       unsigned char);
-    virtual void set_rect(tagRECT);
-    virtual void set_rect(long, long, long, long);
-    virtual void set_color(unsigned char);
-    virtual void set_active(int);
-    virtual void set_positioning(PositionMode, long, long, long, long,
-                                 long, long, long, long, TPanel*, TPanel*,
-                                 TPanel*, TPanel*);
-    virtual void set_fixed_position(long, long, long, long);
-    virtual void set_redraw(RedrawMode);
-    virtual void set_overlapped_redraw(TPanel*, TPanel*, RedrawMode);
-    virtual void draw_setup(int);
-    virtual void draw_finish();
-    virtual void draw();
-    virtual void draw_rect(tagRECT*);
-    virtual void draw_offset(long, long, tagRECT*);
-    virtual void draw_rect2(tagRECT*);
-    virtual void draw_offset2(long, long, tagRECT*);
-    virtual void paint();
-    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
-    virtual long handle_idle();
-    virtual long handle_size(long, long);
-    virtual long handle_paint();
-};
 
-class TPanelSystem {
-public:
-    TPanel* currentPanel();
-};
 
-#define panel_system (*(TPanelSystem*)0x62E870)
 
-class RGE_Base_Game {
-public:
-    virtual ~RGE_Base_Game();
-    virtual int run();
-    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
-    virtual void set_prog_mode(int);
-    virtual void set_game_mode(int, int);
-    virtual void set_player(short);
-    virtual int get_error_code();
-    virtual char* get_string(int, long, char*, int);
-    virtual char* get_string(long, char*, int);
-    virtual char* get_string(long);
-    virtual char* get_string2(int, long, long, char*, int);
-    virtual TPanel* get_view_panel();
-    virtual TPanel* get_map_panel();
-    virtual void* new_scenario_header(void*);
-    virtual void* new_scenario_header(int);
-    virtual void* new_scenario_info(int);
-    virtual void notification(int, long, long, long, long);
-    virtual int reset_comm();
-    virtual void send_game_options();
-    virtual void receive_game_options();
-    virtual char* gameSummary();
-    virtual int processCheatCode(int, char*);
-    virtual int setup_music_system();
-    virtual void shutdown_music_system();
-    virtual int setup();
-    virtual int setup_cmd_options();
-    virtual int setup_class();
-    virtual int setup_main_window();
-    virtual int setup_graphics_system();
-    virtual int setup_palette();
-    virtual int setup_mouse();
-    virtual int setup_registry();
-    virtual int setup_debugging_log();
-    virtual int setup_chat();
-    virtual int setup_comm();
-    virtual int setup_sound_system();
-    virtual int setup_fonts();
-    virtual int setup_sounds();
-    virtual int setup_shapes();
-    virtual int setup_blank_screen();
-    virtual void setup_timings();
-    virtual void stop_sound_system();
-    virtual int restart_sound_system();
-    virtual void stop_music_system();
-    virtual int restart_music_system();
-    virtual void* create_world();
-    virtual int handle_message(void*);
-    virtual int handle_idle();
-    virtual int handle_mouse_move(void*, unsigned int, unsigned int, long);
-    virtual int handle_key_down(void*, unsigned int, unsigned int, long);
-    virtual int handle_user_command(void*, unsigned int, unsigned int, long);
-    virtual int handle_command(void*, unsigned int, unsigned int, long);
-    virtual int handle_music_done(void*, unsigned int, unsigned int, long);
-    virtual int handle_paint(void*, unsigned int, unsigned int, long);
-    virtual int handle_activate(void*, unsigned int, unsigned int, long);
-    virtual int handle_init_menu(void*, unsigned int, unsigned int, long);
-    virtual int handle_exit_menu(void*, unsigned int, unsigned int, long);
-    virtual int handle_size(void*, unsigned int, unsigned int, long);
-    virtual int handle_palette_changed(void*, unsigned int, unsigned int, long);
-    virtual int handle_query_new_palette(void*, unsigned int, unsigned int, long);
-    virtual int handle_close(void*, unsigned int, unsigned int, long);
-    virtual int handle_destroy(void*, unsigned int, unsigned int, long);
-    virtual int action_update();
-    virtual int action_mouse_move(long, long, int, int, int, int);
-    virtual int action_key_down(unsigned long, int, int, int, int);
-    virtual int action_user_command(unsigned long, unsigned long);
-    virtual int action_command(unsigned long, unsigned long);
-    virtual int action_music_done();
-    virtual int action_activate();
-    virtual int action_deactivate();
-    virtual int action_init_menu();
-    virtual int action_exit_menu();
-    virtual int action_size();
-    virtual int action_close();
-    virtual void calc_timings();
-    virtual void calc_timing_text();
-    virtual void show_timings();
-    virtual void show_comm();
-    virtual void show_ai();
-
-    char gap_04[0x0C];
-    void* prog_window;                         // +0x10
-    char gap_14[0x48 - 0x14];
-    TDrawSystem* draw_system;                  // +0x48
-    TDrawArea* draw_area;                      // +0x4C
-    char gap_50[0x04];
-    int custom_mouse;                          // +0x54
-    char gap_58[0x08];
-    TSound_Driver* sound_system;               // +0x60
-    char gap_64[0x1B0 - 0x64];
-    int prog_mode;                             // +0x1B0
-    char gap_1B4[0x1C0 - 0x1B4];
-    TMousePointer* mouse_pointer;              // +0x1C0
-    int erase_mouse;                            // +0x1C4
-    int mouse_blit_sync;                        // +0x1C8
-    int is_mouse_on;                            // +0x1CC
-    int windows_mouse;                          // +0x1D0
-    void* mouse_cursor;                         // +0x1D4
-    char gap_1D8[0x3F8 - 0x1D8];
-    int render_all;                             // +0x3F8
-    char gap_3FC[0x504 - 0x3FC];
-    unsigned long frame_count;                 // +0x504
-    char gap_508[0x8E8 - 0x508];
-    int do_show_timings;                       // +0x8E8
-
-    int check_paint();
-    void add_to_timing(int index, unsigned long value);
-    void clear_window();
-};
 
 extern RGE_Base_Game* rge_base_game;
 extern int restore_mouse_after_paint;
-extern unsigned long DAT_0062c578;
-extern unsigned int DAT_0062c57c;
-
 int RGE_Base_Game::handle_paint(void* param_1, unsigned int param_2,
                                 unsigned int param_3, long param_4)
 {

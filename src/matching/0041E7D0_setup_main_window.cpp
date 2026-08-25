@@ -26,45 +26,9 @@
 
 #include <windows.h>
 
-#ifndef BASEGAME_GROUPED_TU
-class RGE_Prog_Info {
-public:
-    char prog_name[101];
-    char prog_version[21];
-    char prog_title[121];
-    char gap_F3[0x410 - 0xF3];
-    HINSTANCE instance;
-    char gap_414[0x618 - 0x414];
-    int show_wnd_flag;
-    char gap_61C[0x894 - 0x61C];
-    int full_screen;
-    char gap_898[0x8E0 - 0x898];
-    long main_wid;
-    long main_hgt;
-};
-
-class TPanelSystem {
-public:
-    void DisableIME();
-};
-#endif
 
 extern TPanelSystem panel_system;
 extern HWND AppWnd;
-
-#ifndef BASEGAME_GROUPED_TU
-class RGE_Base_Game {
-public:
-    virtual ~RGE_Base_Game();
-
-    char gap_04[0x08];
-    RGE_Prog_Info* prog_info;
-    HWND prog_window;
-
-protected:
-    virtual int setup_main_window();
-};
-#endif
 
 int RGE_Base_Game::setup_main_window()
 {

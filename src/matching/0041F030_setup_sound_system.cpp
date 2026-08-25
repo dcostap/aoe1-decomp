@@ -20,7 +20,7 @@
 //   is const-0 until its neg, so the destroy path reuses edi; no ebx save).
 // probes 2-8: long volume, delete w/o guard, member-only accesses, driver-variable reuse,
 //   sound_system=(TSound_Driver*)volume, explicit dtor+operator_delete temp, combined &&
-//   condition — all byte-identical (VC5 IR invariant to these shapes).
+//   condition â€” all byte-identical (VC5 IR invariant to these shapes).
 // probe 9 (match): move `int volume = 0;` AFTER the destroy block, right before the
 //   RegGetInt/set_volume region. VC5 then keeps edi as the function-wide zero register
 //   (xor hoisted to the use_sound check, exactly like the original's 2529 line record),
@@ -28,51 +28,13 @@
 //   edi. Exact match (0.0000%).
 // Left in matching: the late-declared volume is the binary-proven original shape.
 
-#define VPAD1(n) virtual void vpad##n();
-#define VPAD2(n) VPAD1(n) VPAD1(n##_1)
-#define VPAD4(n) VPAD2(n) VPAD2(n##_2)
-#define VPAD8(n) VPAD4(n) VPAD4(n##_4)
-#define VPAD16(n) VPAD8(n) VPAD8(n##_8)
 
-class TSound_Driver {
-public:
-    char gap_0[0x69C];
-    TSound_Driver(void* hwnd, char* sounds_dir);
-    ~TSound_Driver();
-    int driver_active();
-    void set_volume(long volume, int param_2);
-};
 
-class TRegistry {
-public:
-    int RegGetInt(int use_user, const char* name);
-};
 
-class RGE_Prog_Info {
-public:
-    char gap_0[0x8A8];
-    int use_sound;                     // +0x8A8
-    char gap_8AC[0xE21 - 0x8AC];
-    char sounds_dir[0x80];             // +0xE21
-};
+
 
 extern TSound_Driver* sound_driver;    // 0x62C4B0
 
-class RGE_Base_Game {
-public:
-    char gap_4[0x0C - 0x04];           // vptr +0
-    RGE_Prog_Info* prog_info;          // +0x0C
-    void* prog_window;                 // +0x10
-    char gap_14[0x60 - 0x14];
-    TSound_Driver* sound_system;       // +0x60
-    char gap_64[0x1AC - 0x64];
-    TRegistry* registry;               // +0x1AC
-    VPAD16(a)                          // vtable slots 0..15
-    VPAD4(b)                           // slots 16..19
-    VPAD2(c)                           // slots 20..21
-    virtual int setup_music_system();  // slot 22 = vtable+0x58
-    int setup_sound_system();
-};
 
 int RGE_Base_Game::setup_sound_system()
 {

@@ -5,19 +5,7 @@ extern "C" __declspec(dllimport) char* __stdcall CharUpperA(char* lpString);
 extern "C" char* __cdecl strstr(const char* str, const char* substr);
 extern "C" char* __cdecl strncpy(char* dest, const char* src, unsigned int count);
 
-class RGE_Prog_Info {
-public:
-    char gap_00[0x518];
-    char cmd_line[256];
-};
 
-class RGE_Base_Game {
-public:
-    char gap_00[0x0C];
-    RGE_Prog_Info* prog_info;
-
-    unsigned char check_prog_argument(char*);
-};
 
 unsigned char RGE_Base_Game::check_prog_argument(char* param_1) {
     char buffer[256];

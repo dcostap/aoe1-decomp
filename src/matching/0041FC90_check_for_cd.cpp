@@ -14,44 +14,9 @@
 extern int force_cd;
 extern "C" int __cdecl stricmp(const char* left, const char* right);
 
-class RGE_Prog_Info {
-public:
-    char prog_name[101];
-    char prog_version[21];
-    char prog_title[121];
-    char world_db_file[261];
-    char game_data_file[261];
-    char vol_name[261];
-    char gap_402[0x404 - 0x402];
-    unsigned long vol_ser_num;
-    int verify_cd;
-    int max_players_per_cd;
-};
 
-class TCommunications_Handler {
-public:
-    int GetPlayerHumanity(int player);
-};
 
-class TRegistry {
-public:
-    char* RegGetAscii(int use_user, const char* name);
-};
 
-class RGE_Base_Game {
-public:
-    virtual ~RGE_Base_Game();
-
-    char gap_04[0x08];
-    RGE_Prog_Info* prog_info;
-    char gap_010[0x18C - 0x10];
-    TCommunications_Handler* comm_handler;
-    char gap_190[0x1AC - 0x190];
-    TRegistry* registry;
-
-    int playerHasCD(int player);
-    int check_for_cd(int value);
-};
 
 int RGE_Base_Game::check_for_cd(int value)
 {

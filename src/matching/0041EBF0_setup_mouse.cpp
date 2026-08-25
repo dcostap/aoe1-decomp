@@ -19,48 +19,8 @@
 
 class TDrawArea;
 
-#ifndef BASEGAME_GROUPED_TU
-class RGE_Prog_Info {
-public:
-    char gap_000[0x773];
-    char cursor_file[0x105];
-};
 
-class TRegistry {
-public:
-    int RegGetInt(int use_user, const char* name);
-    int RegSetInt(int use_user, const char* name, int value);
-};
 
-class TMousePointer {
-public:
-    char gap_000[0x254];
-
-    TMousePointer(int mode);
-    int setup(int custom_draw, TDrawArea* draw_area, char* base,
-              int palette, int shape_number);
-};
-
-class RGE_Base_Game {
-public:
-    virtual ~RGE_Base_Game();
-    char gap_004[0x08];
-    RGE_Prog_Info* prog_info;
-    char gap_010[0x4C - 0x10];
-    TDrawArea* draw_area;
-    char gap_050[0x54 - 0x50];
-    int custom_mouse;
-    char gap_058[0x1AC - 0x58];
-    TRegistry* registry;
-    char gap_1B0[0x1C0 - 0x1B0];
-    TMousePointer* mouse_pointer;
-
-protected:
-    virtual int setup_mouse();
-public:
-    void mouse_off();
-};
-#endif
 
 int RGE_Base_Game::setup_mouse()
 {

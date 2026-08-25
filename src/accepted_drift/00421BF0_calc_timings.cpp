@@ -48,7 +48,7 @@
 //   PDB boundary.
 // - PDB type audit: canonical RGE_Object_List is 12 bytes with one virtual
 //   load slot and list at +4.  A local canonical test worsened the body to
-//   46 bytes by reversing two late logger loads, so the narrow +8 field stub
+//   46 bytes by reversing two late logger loads, so the narrow +8 field view
 //   remains.  This target proves only number_of_objects at +8.
 // - Current pass: a natural indexed timing scan with a per-iteration indexed
 //   member access reproduces the timer block and reduces the gap from 30 to 6.
@@ -106,159 +106,12 @@ extern unsigned long start_mem_high;
 extern unsigned long cur_mem_total;
 extern unsigned long cur_mem_high;
 
-class RGE_Object_List {
-public:
-    char gap_00[8];
-    short number_of_objects;
-};
 
 class RGE_Player;
 
-class RGE_Game_World {
-public:
-    virtual ~RGE_Game_World();
-    unsigned long world_time;
-    char gap_08[0x34];
-    short player_num;
-    char gap_3E[2];
-    RGE_Player** players;
-};
 
-class RGE_Player {
-public:
-    virtual ~RGE_Player();
-    char gap_04[0x24];
-    RGE_Object_List* objects;
-    RGE_Object_List* sleeping_objects;
-};
 
-class RGE_Timing_Info {
-public:
-    unsigned long accum_time;
-    unsigned long last_time;
-    unsigned long start_time;
-    int include_in_total;
-    int is_summary;
-    unsigned long last_single_time;
-    unsigned long max_time;
-    unsigned long last_max_time;
-};
 
-class RGE_Base_Game {
-public:
-    virtual ~RGE_Base_Game();
-    virtual int run();
-    virtual long wnd_proc(void* hwnd, unsigned int msg, unsigned int wp, long lp);
-    virtual void set_prog_mode(int mode);
-    virtual void set_game_mode(int mode, int sub_mode);
-    virtual void set_player(short player);
-    virtual int get_error_code();
-    virtual char* get_string(int a, long b, char* out, int size);
-    virtual char* get_string(long a, char* out, int size);
-    virtual char* get_string(long a);
-    virtual char* get_string2(int a, long b, long c, char* out, int size);
-    virtual void* get_view_panel();
-    virtual void* get_map_panel();
-    virtual void* new_scenario_header(void* scenario);
-    virtual void* new_scenario_header(int value);
-    virtual void* new_scenario_info(int value);
-    virtual void notification(int a, long b, long c, long d, long e);
-    virtual int reset_comm();
-    virtual void send_game_options();
-    virtual void receive_game_options();
-    virtual char* gameSummary();
-    virtual int processCheatCode(int value, char* text);
-    virtual int setup_music_system();
-    virtual void shutdown_music_system();
-    virtual int setup();
-    virtual int setup_cmd_options();
-    virtual int setup_class();
-    virtual int setup_main_window();
-    virtual int setup_graphics_system();
-    virtual int setup_palette();
-    virtual int setup_mouse();
-    virtual int setup_registry();
-    virtual int setup_debugging_log();
-    virtual int setup_chat();
-    virtual int setup_comm();
-    virtual int setup_sound_system();
-    virtual int setup_fonts();
-    virtual int setup_sounds();
-    virtual int setup_shapes();
-    virtual int setup_blank_screen();
-    virtual void setup_timings();
-    virtual void stop_sound_system();
-    virtual int restart_sound_system();
-    virtual void stop_music_system();
-    virtual int restart_music_system();
-    virtual RGE_Game_World* create_world();
-    virtual int handle_message(void* msg);
-    virtual int handle_idle();
-    virtual int handle_mouse_move(void* a, unsigned int b, unsigned int c, long d);
-    virtual int handle_key_down(void* a, unsigned int b, unsigned int c, long d);
-    virtual int handle_user_command(void* a, unsigned int b, unsigned int c, long d);
-    virtual int handle_command(void* a, unsigned int b, unsigned int c, long d);
-    virtual int handle_music_done(void* a, unsigned int b, unsigned int c, long d);
-    virtual int handle_paint(void* a, unsigned int b, unsigned int c, long d);
-    virtual int handle_activate(void* a, unsigned int b, unsigned int c, long d);
-    virtual int handle_init_menu(void* a, unsigned int b, unsigned int c, long d);
-    virtual int handle_exit_menu(void* a, unsigned int b, unsigned int c, long d);
-    virtual int handle_size(void* hwnd, unsigned int msg, unsigned int wp, long lp);
-    virtual int handle_palette_changed(void* a, unsigned int b, unsigned int c, long d);
-    virtual int handle_query_new_palette(void* a, unsigned int b, unsigned int c, long d);
-    virtual int handle_close(void* a, unsigned int b, unsigned int c, long d);
-    virtual int handle_destroy(void* a, unsigned int b, unsigned int c, long d);
-    virtual int action_update();
-    virtual int action_mouse_move(long a, long b, int c, int d, int e, int f);
-    virtual int action_key_down(unsigned long a, int b, int c, int d, int e);
-    virtual int action_user_command(unsigned long a, unsigned long b);
-    virtual int action_command(unsigned long a, unsigned long b);
-    virtual int action_music_done();
-    virtual int action_activate();
-    virtual int action_deactivate();
-    virtual int action_init_menu();
-    virtual int action_exit_menu();
-    virtual int action_size();
-    virtual int action_close();
-
-    // Context declaration for the next public basegame owner.  This is a
-    // nonvirtual call target and does not change the vtable surface.
-    struct RGE_Game_Options;
-    void set_game_options(RGE_Game_Options* options);
-
-protected:
-    virtual void calc_timings();
-    virtual void calc_timing_text();
-    virtual void show_timings();
-    virtual void show_comm();
-    virtual void show_ai();
-    virtual int setup_map_save_area();
-    virtual void set_interface_messages();
-
-    char gap_04[0x0C];
-    void* hwnd;                            // +0x10
-    char gap_14[0x1B0 - 0x14];
-    int prog_mode;                         // +0x1B0
-    char gap_1B4[0x3F4 - 0x1B4];
-    RGE_Game_World* world;                 // +0x3F4
-    int render_all;
-    short master_obj_id;
-    short terrain_id;
-    short elevation_height;
-    short brush_size;
-    char timing_text[0x100];               // +0x404
-    unsigned long frame_count;             // +0x504
-    unsigned long world_update_count;      // +0x508
-    unsigned long view_update_count;       // +0x50C
-    unsigned long last_frame_count;        // +0x510
-    unsigned long last_world_update_count; // +0x514
-    unsigned long last_view_update_count;  // +0x518
-    unsigned long fps;                     // +0x51C
-    unsigned long world_update_fps;         // +0x520
-    unsigned long view_update_fps;          // +0x524
-    RGE_Timing_Info timings[30];           // +0x528
-    char gap_8E8[0xA24 - 0x8E8];            // remaining RGE_Base_Game layout
-};
 
 void RGE_Base_Game::calc_timings()
 {

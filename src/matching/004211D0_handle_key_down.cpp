@@ -10,8 +10,6 @@
 // - Main-agent audit restored the canonical base-game destructor slot while
 //   preserving the proven +0xC4/+0x100 virtual positions; output remains exact.
 
-extern "C" short (__stdcall* GetKeyState)(int);
-extern "C" __declspec(dllimport) int __stdcall IsIconic(void* hWnd);
 extern int snapshot_number;
 
 extern unsigned int DAT_005b2164;
@@ -20,50 +18,11 @@ extern unsigned int DAT_005b2370;
 extern unsigned int DAT_0062c4b4;
 extern unsigned int DAT_0062c4bc;
 
-class TDrawArea {
-public:
-    void take_snapshot(char* name, int& number);
-};
 
-class TDrawSystem {
-public:
-    char gap_00[0x0C];
-    TDrawArea* DrawArea;
-};
 
-class RGE_Prog_Info {
-public:
-    char gap_00[0x894];
-    int full_screen;
-};
 
-#define VPAD1(n) virtual void vpad##n();
-#define VPAD2(n) VPAD1(n) VPAD1(n##_1)
-#define VPAD4(n) VPAD2(n) VPAD2(n##_2)
-#define VPAD8(n) VPAD4(n) VPAD4(n##_4)
-#define VPAD16(n) VPAD8(n) VPAD8(n##_8)
-#define VPAD32(n) VPAD16(n) VPAD16(n##_16)
 
-class RGE_Base_Game {
-public:
-    virtual ~RGE_Base_Game();
-    VPAD32(0)
-    VPAD16(32)
-    virtual int handle_key_down(void* param_1, unsigned int param_2,
-                                 unsigned int param_3, long param_4);
-    VPAD8(50)
-    VPAD4(58)
-    VPAD2(62)
-    virtual int action_key_down(unsigned long key, int ext, int ctrl,
-                                int alt, int shift);
 
-    char gap_04[0x08];
-    RGE_Prog_Info* prog_info;
-    void* prog_window;
-    int prog_ready;
-    char gap_18[0x30];
-    TDrawSystem* draw_system;
-};
 
 int RGE_Base_Game::handle_key_down(void* param_1, unsigned int param_2,
                                    unsigned int param_3, long param_4)

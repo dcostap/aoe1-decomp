@@ -15,59 +15,11 @@
 
 #include <windows.h>
 
-class TDrawArea {
-public:
-    char gap_00[0x18];
-    int Width;
-    int Height;
-};
 
-class TDrawSystem {
-public:
-    char gap_00[0x478];
-    unsigned char DrawType;
-    unsigned char ScreenMode;
 
-    int SetDisplaySize(long width, long height, int bits);
-    unsigned char CheckSurfaces();
-    void ClearRestored();
-};
-
-class TMousePointer {
-public:
-    int Shutdown_Mouse();
-};
 
 extern int restore_mouse_after_paint;
 
-class RGE_Base_Game {
-public:
-    virtual ~RGE_Base_Game();
-
-    char gap_04[0x08];
-    void* prog_info;
-    void* prog_window;
-    int prog_ready;
-    int prog_active;
-    void* prog_palette;
-    void* prog_mutex;
-    long window_style;
-    int random_game_seed;
-    int random_map_seed;
-    int save_random_game_seed;
-    int save_random_map_seed;
-    int screen_saver_enabled;
-    int low_power_enabled;
-    int error_code;
-    int is_timer;
-    TDrawSystem* draw_system;
-    TDrawArea* draw_area;
-    char gap_50[0x170];
-    TMousePointer* mouse_pointer;
-
-    void set_render_all();
-    void set_screen_size(long width, long height);
-};
 
 void RGE_Base_Game::set_screen_size(long width, long height)
 {

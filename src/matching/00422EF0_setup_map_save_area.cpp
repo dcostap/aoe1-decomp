@@ -9,25 +9,7 @@
 
 class TDrawSystem;
 
-class TDrawArea {
-public:
-    virtual void vf00();
-    char pad_00[0xFC]; // sizeof(TDrawArea) = 0x100
 
-    TDrawArea(char* name, int flags);
-    ~TDrawArea();
-    int Init(TDrawSystem* draw_system, long width, long height, int x, int y);
-};
-
-class RGE_Base_Game {
-public:
-    virtual int setup_map_save_area();
-
-    char gap_04[0x44];
-    TDrawSystem* draw_system; // +0x48
-    char gap_4C[0x9D4];
-    TDrawArea* map_save_area; // +0xA20
-};
 
 int RGE_Base_Game::setup_map_save_area()
 {

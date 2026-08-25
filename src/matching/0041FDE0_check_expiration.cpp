@@ -13,19 +13,7 @@ struct tm_like {
     int tm_gmtoff;
 };
 
-struct RGE_Prog_Info {
-    char gap_000[0x880];
-    short expire_year;
-    short expire_month;
-    short expire_day;
-};
 
-struct RGE_Base_Game {
-    char gap_00[0xC];
-    RGE_Prog_Info* prog_info;
-
-    int check_expiration();
-};
 
 extern "C" void* memset(void* dst, int value, unsigned int size);
 extern "C" long mktime(tm_like* tm);

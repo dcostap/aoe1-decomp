@@ -1,13 +1,4 @@
-class RGE_Base_Game {
-public:
-    char gap_00[0xA00];
-    int save_paused;
-    int non_user_pause;
 
-    int get_paused(void);
-    void request_pause(void);
-    void set_paused(int paused, int non_user_pause);
-};
 
 void RGE_Base_Game::set_paused(int paused, int non_user_pause) {
     this->save_paused = this->get_paused();

@@ -61,97 +61,9 @@
 
 class TDrawArea;
 
-#ifndef BASEGAME_GROUPED_TU
-class RGE_Prog_Info {
-public:
-    char gap_000[0x410];
-    void* instance;                         // +0x410
-    char gap_414[0x66E - 0x414];
-    char pal_file[0x100];                   // +0x66E
-    char gap_76E[0x894 - 0x76E];
-    long full_screen;                       // +0x894
-    long gap_898;
-    long use_dir_draw;                      // +0x89C
-    long use_sys_mem;                       // +0x8A0
-    char gap_8A4[0x8E0 - 0x8A4];
-    long main_wid;                          // +0x8E0
-    long main_hgt;                          // +0x8E4
-};
 
-class TDrawSystem {
-public:
-    char gap_000[0x0C];
-    TDrawArea* DrawArea;                    // +0x0C
-    char gap_010[0x468];
-    unsigned char DrawType;                 // +0x478
-    unsigned char ScreenMode;               // +0x479
-    char gap_47A[2];
 
-    TDrawSystem();
-    void CheckAvailModes(int full_screen);
-    int IsModeAvail(long width, long height, int bpp);
-    int Init(void* instance, void* window, void* palette,
-             unsigned char draw_type, unsigned char screen_mode,
-             long width, long height, unsigned long flags);
-    void Paint(RECT* rect);
-};
 
-class TDrawArea {
-public:
-    void Clear(RECT* rect, int color);
-};
-
-class TPanelSystem {
-public:
-    void release_palette(void* palette);
-    void* get_palette(char* name, long id);
-};
-
-class RGE_Base_Game {
-public:
-    virtual ~RGE_Base_Game();
-    virtual int run();
-    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
-    virtual void set_prog_mode(int);
-    virtual void set_game_mode(int, int);
-    virtual void set_player(short);
-    virtual int get_error_code();
-    virtual char* get_string(int, long, char*, int);
-    virtual char* get_string(long, char*, int);
-    virtual char* get_string(long);
-    virtual char* get_string2(int, long, long, char*, int);
-    virtual void* get_view_panel();
-    virtual void* get_map_panel();
-    virtual void* new_scenario_header(void*);
-    virtual void* new_scenario_header(int);
-    virtual void* new_scenario_info(int);
-    virtual void notification(int, long, long, long, long);
-    virtual int reset_comm();
-    virtual void send_game_options();
-    virtual void receive_game_options();
-    virtual char* gameSummary();
-    virtual int processCheatCode(int, char*);
-    virtual int setup_music_system();
-    virtual void shutdown_music_system();
-    virtual int setup();
-    virtual int setup_cmd_options();
-    virtual int setup_class();
-    virtual int setup_main_window();
-protected:
-    virtual int setup_graphics_system();
-
-    char gap_004[0x08];
-    RGE_Prog_Info* prog_info;              // +0x0C
-    void* prog_window;                     // +0x10
-    char gap_014[0x08];
-    void* prog_palette;                    // +0x1C
-    char gap_020[0x20];
-    int error_code;                        // +0x40
-    char gap_044[0x04];
-    TDrawSystem* draw_system;              // +0x48
-    TDrawArea* draw_area;                  // +0x4C
-};
-#endif
 
 extern TPanelSystem panel_system;
 

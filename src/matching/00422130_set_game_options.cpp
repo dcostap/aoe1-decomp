@@ -27,52 +27,6 @@
 
 #include <string.h>
 
-class RGE_Base_Game {
-public:
-    virtual ~RGE_Base_Game();
-
-    struct RGE_Game_Options {
-        float versionValue;
-        unsigned char scenarioGameValue;
-        char scenarioNameValue[0x80];
-        unsigned char singlePlayerGameValue;
-        unsigned char multiplayerGameValue;
-        unsigned char mapXSizeValue;
-        unsigned char mapYSizeValue;
-        unsigned char mapZSizeValue;
-        unsigned char allowCheatCodesValue;
-        unsigned char mpPathFindingValue;
-        unsigned char cheatNotificationValue;
-        unsigned char fullVisibilityValue;
-        unsigned char fogOfWarValue;
-        unsigned char coloredChatValue;
-        unsigned char numberPlayersValue;
-        unsigned char gameDeveloperModeValue;
-        unsigned char playerCDAndVersionValue[9];
-        unsigned char difficultyValue;
-        unsigned char playerTeamValue[9];
-    };
-
-    void setVersion(float v);
-    void setScenarioGame(int v);
-    void setScenarioName(const char* name);
-    void setSinglePlayerGame(int v);
-    void setMultiplayerGame(int v);
-    void setMapSize(int x, int y, int z);
-    void setAllowCheatCodes(int v);
-    void setCheatNotification(int v);
-    void setFullVisibility(int v);
-    void setFogOfWar(int v);
-    void setColoredChat(int v);
-    void setNumberPlayers(int v);
-    void setGameDeveloperMode(int v);
-    void setDifficulty(int v);
-    void setMpPathFinding(unsigned char v);
-    void setPlayerCDAndVersion(int idx, unsigned char v);
-    void setPlayerTeam(int idx, int v);
-
-    void set_game_options(RGE_Game_Options* opt);
-};
 
 void RGE_Base_Game::set_game_options(RGE_Game_Options* opt)
 {

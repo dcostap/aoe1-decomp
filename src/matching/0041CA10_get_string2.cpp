@@ -2,24 +2,6 @@
 // VA: 0041CA10
 // PDB: basegame.cpp:1265-1325
 
-#include "../../include/game_globals.h"
-
-#ifndef BASEGAME_GROUPED_TU
-class RGE_Base_Game {
-public:
-    virtual ~RGE_Base_Game();
-    virtual int vf04();
-    virtual int vf08();
-    virtual int vf0C();
-    virtual int vf10();
-    virtual int vf14();
-    virtual int vf18();
-    virtual int vf1C();
-    virtual char* get_string(long id, char* buf, int maxlen);
-    virtual char* get_string2(int param_1, long param_2, long param_3, char* param_4, int param_5);
-};
-#endif
-
 // Attempt log:
 // - Normal if/else and decrement-cascade forms preserved the call set but put
 //   the nested switch inline and produced the wrong first branch topology.
