@@ -2,8 +2,8 @@
 class TButtonPanel {
 public:
     virtual ~TButtonPanel();
-    int mouse_right_dbl_click_action(int p0, int p1, int p2, int p3);
+    virtual long mouse_right_dbl_click_action(long p0, long p1, int p2, int p3);
 };
 #endif /* PNL_BTN_SHARED_CONTEXT */
 
-int TButtonPanel::mouse_right_dbl_click_action(int p0, int p1, int p2, int p3) { return 0; }
+long TButtonPanel::mouse_right_dbl_click_action(long p0, long p1, int p2, int p3) { return 0; }

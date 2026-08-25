@@ -1,6 +1,6 @@
 // Authentic owner wrapper for C:\\msdev\\work\\age1_x1\\Pnl_btn.cpp.
 // Owners follow PDB source-line order. The candidate uses default VC5 /O2 /Oy flags.
-#include "../build/candidate_tus/pnl_btn_context.h"
+#include "../include/pnl_btn_context.h"
 #define PNL_BTN_SHARED_CONTEXT 1
 #define field_0C pnl_x
 #define field_10 pnl_y

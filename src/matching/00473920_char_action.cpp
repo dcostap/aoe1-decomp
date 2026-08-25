@@ -2,8 +2,8 @@
 class TButtonPanel {
 public:
     virtual ~TButtonPanel();
-    int char_action(int p0, int p1);
+    virtual long char_action(long p0, short p1);
 };
 #endif /* PNL_BTN_SHARED_CONTEXT */
 
-int TButtonPanel::char_action(int p0, int p1) { return 0; }
+long TButtonPanel::char_action(long p0, short p1) { return 0; }
