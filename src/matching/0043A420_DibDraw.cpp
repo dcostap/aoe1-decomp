@@ -1,9 +1,7 @@
 // VA: 0043A420 DibDraw
 // PDB: Dib.cpp lines 1546-1589 (136 bytes, 59 asm lines)
-// Default flags. No inline asm/hacks.
+// BINARY NOTE: The authentic Dib.cpp context restores exact VC5 codegen.
 #include <windows.h>
-
-// __cdecl, many params. IAT call to the canonical Win32 StretchDIBits.
 
 int __cdecl DibDraw(
     void* a1, int a2, int a3, int a4, int a5,

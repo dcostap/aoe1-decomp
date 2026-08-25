@@ -21,7 +21,11 @@
 
 #include <windows.h>
 
-extern int System_color_Table;
+// Dib.cpp's earlier ReadPalette owner declares this storage as an array of
+// 0x8-byte palette records.  This function only reads the first record's
+// index, so keep the scalar access without redeclaring the storage as int.
+struct PAL_TABLE;
+extern PAL_TABLE System_color_Table[];
 extern unsigned char DAT_005841e5;
 
 void __cdecl CreateIdentityPalette(void* palette)
@@ -57,8 +61,8 @@ void __cdecl CreateIdentityPalette(void* palette)
     }
 
     if ((system_palette_failed != 0 || source_palette_failed != 0) &&
-        System_color_Table >= 0) {
-        int index = System_color_Table;
+        *(int*)System_color_Table >= 0) {
+        int index = *(int*)System_color_Table;
         unsigned char* colors = &DAT_005841e5;
         do {
             palette_locals.new_pal[index + 1].peRed = colors[-1];

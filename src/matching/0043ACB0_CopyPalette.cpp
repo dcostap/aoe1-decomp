@@ -8,13 +8,14 @@
 typedef int (__stdcall *_GetObjectAT)(void* hgdiobj, int cb, void* lpvObj);
 typedef void* (__stdcall *_LocalAllocT)(int flags, int size);
 typedef int (__stdcall *_GetPaletteEntriesT)(void* hpal, int start, int count, void* entries);
-typedef void* (__stdcall *_CreatePaletteT)(void* logpal);
 typedef void* (__stdcall *_LocalFreeT)(void* mem);
+
+struct tagLOGPALETTE;
+extern "C" void* (__stdcall* const _CreatePalette)(const tagLOGPALETTE*);
 
 extern _GetObjectAT _GetObjectA;
 extern _LocalAllocT _LocalAlloc;
 extern _GetPaletteEntriesT _GetPaletteEntries;
-extern _CreatePaletteT _CreatePalette;
 extern _LocalFreeT _LocalFree;
 
 void* __cdecl CopyPalette(void* param_1)
@@ -33,7 +34,7 @@ void* __cdecl CopyPalette(void* param_1)
     *(short*)((char*)pal + 2) = (short)nNumEntries;  // palNumEntries
 
     _GetPaletteEntries(param_1, 0, nNumEntries, (char*)pal + 4);
-    void* result = _CreatePalette(pal);
+    void* result = _CreatePalette((const tagLOGPALETTE*)pal);
     _LocalFree(pal);
     return result;
 }

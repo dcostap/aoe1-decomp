@@ -2,10 +2,7 @@
 //
 // The owner order follows the source-line bands in the Dib.cpp packet. The
 // earlier matching and accepted-drift owners establish the Win32 and DIB
-// context used by the later owners. Three later matching owners remain
-// blocked because their standalone declarations conflict with that context;
-// they stay listed in the proposal and are not replaced by aliases or dummy
-// wrappers.
+// context used by the later owners.
 
 #include "../include/dib_context.h"
 #include "accepted_drift/00438820_DibBlt.cpp"
@@ -24,8 +21,8 @@
 #include "matching/00439E50_DibReadBitmapInfo.cpp"
 #include "matching/0043A070_DibFromBitmap.cpp"
 #include "matching/0043A330_DibSetUsage.cpp"
-#include "scratch/0043A420_DibDraw.cpp"
-#include "accepted_drift/0043A4B0_DibCopy.cpp"
+#include "matching/0043A420_DibDraw.cpp"
+#include "matching/0043A4B0_DibCopy.cpp"
 #include "matching/0043A500_DibCreate.cpp"
 #include "matching/0043AA60_xlatClut8.cpp"
 #include "accepted_drift/0043AA90_xlatClut4.cpp"
@@ -33,8 +30,6 @@
 #include "matching/0043AB40_xlatRle4.cpp"
 #include "scratch/0043AB50_memmove.cpp"
 #include "scratch/0043A660_DibMapToPalette.cpp"
-
-// Blocked in the complete context: these standalone owners redeclare symbols
-// already established by the earlier Dib.cpp sources or by windows.h.
-// 0043AB80 CreateIdentityPalette, 0043ACB0 CopyPalette, and 0043AD40 DibFree
-// remain preserved exact-source references in the proposal's blocked list.
+#include "matching/0043AB80_CreateIdentityPalette.cpp"
+#include "matching/0043ACB0_CopyPalette.cpp"
+#include "matching/0043AD40_DibFree.cpp"
