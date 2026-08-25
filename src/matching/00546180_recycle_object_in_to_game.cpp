@@ -2,42 +2,12 @@
 // PDB: World.cpp lines 3841-3898
 //
 // Status: active matching reconstruction
+#include "../world_phase2_context.h"
 //
 // Attempt log:
 // Prior parked attempts used a common break/result shape and produced a
 // shared handler basin (224 bytes).  The binary's first six cases return from
 // their own bodies; only the final case falls through to the common return.
-
-struct RGE_Static_Object;
-
-struct RGE_Object_Node {
-    RGE_Static_Object* node;
-    RGE_Object_Node* next;
-    RGE_Object_Node* prev;
-};
-
-struct RGE_Object_List {
-    virtual ~RGE_Object_List();
-    RGE_Object_Node* list;
-    short number_of_objects;
-
-    void remove_node(RGE_Static_Object* object, RGE_Object_Node* node);
-};
-
-class RGE_Game_World {
-public:
-    virtual ~RGE_Game_World();
-    char gap_04[0xD4];
-    RGE_Object_List* reusable_static_objects;
-    RGE_Object_List* reusable_animated_objects;
-    RGE_Object_List* reusable_moving_objects;
-    RGE_Object_List* reusable_action_objects;
-    RGE_Object_List* reusable_combat_objects;
-    RGE_Object_List* reusable_missile_objects;
-    RGE_Object_List* reusable_doppleganger_objects;
-
-    RGE_Static_Object* recycle_object_in_to_game(unsigned char param_1);
-};
 
 RGE_Static_Object* RGE_Game_World::recycle_object_in_to_game(unsigned char param_1) {
     RGE_Static_Object* result = 0;

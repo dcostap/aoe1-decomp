@@ -1,4 +1,5 @@
 // VA: 00545D90 RGE_Game_World::get_next_object_id (62B)
+#include "../world_phase2_context.h"
 // PDB owner: public: long __thiscall RGE_Game_World::get_next_object_id(void)
 // Decorated owner: ?get_next_object_id@RGE_Game_World@@QAEJXZ.
 // PDB source: C:\msdev\work\age1_x1\World.cpp lines 3636-3651.
@@ -10,23 +11,6 @@
 // expression preserves the original VC5 register and save order.
 // Exact-finish: the direct member bound expression is required; a named bound
 // local emits the same behavior but not the original bytes.
-
-class RGE_Static_Object;
-
-class RGE_Game_World {
-public:
-    char gap_00[0x68];
-    int next_object_id;                     // +0x68
-    char gap_6C[0x04];                      // +0x6C
-    int scenario_object_id;                 // +0x70
-    unsigned char scenario_object_flag;     // +0x74
-    char gap_75[0x13];                      // +0x75-0x87
-    RGE_Static_Object** objectsValue;       // +0x88
-    char gap_8C[0x04];                      // +0x8C-0x8F
-    int maxNumberObjectsValue;              // +0x90
-
-    long get_next_object_id();
-};
 
 long RGE_Game_World::get_next_object_id() {
     if (!this->scenario_object_flag) {

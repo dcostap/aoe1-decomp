@@ -1,4 +1,5 @@
 // 00545B30 RGE_Game_World::selectNextComputerPlayer
+#include "../world_phase2_context.h"
 // Source: World.cpp lines 3460-3487. 143 bytes. __thiscall, ret 4.
 //
 // Exact-finish audit: World.cpp lines 3460-3487 own boundary 00545B30-00545BBE.
@@ -33,26 +34,6 @@
 // Retry 2026-05-21 Boss pass: 17 more probes. Removed register current, original if/else/decompiler order, delayed n load, first-loop for form, param/type locals, second do/for forms, compare operand order, manual modulo, goto split, volatile current, indexed first loop, volatile/member-direct player_num. Best kept below improves to 27.2727% positional / 32.8671% edit, first mismatch +12, by reloading currentUpdateComputerPlayer directly in the second loop instead of preserving the first current local. Second-loop register topology now mostly matches; remaining mismatch is first-loop load order/topology (player_num hoisted before current compare, duplicated first-loop body) and not accepted_drift quality.
 // Retry 2026-05-24 Boss pass: MATCH. Key final probe used a normal for-loop in the first-pass scan and explicitly named the loaded player pointer and widened type local inside the loop (`RGE_Player* p = *ptr; int t = p->type;`). That made VC5 keep the clean `jl` backedge, place `mov ecx,[edx]` before `xor ebx,ebx`, and also stopped hoisting `player_num` before the current-player compare while preserving the matched second-loop direct reload of currentUpdateComputerPlayer.
 // Exact-finish walkback: removing those first-pass aliases preserved the same bytes.
-
-class RGE_Player;
-
-class RGE_Game_World {
-public:
-    char gap_00[0x3C];
-    short player_num;                // +0x3C (signed word)
-    char gap_3E[0x40 - 0x3E];
-    RGE_Player** players;            // +0x40
-    char gap_44[0xFC - 0x44];
-    int currentUpdateComputerPlayer; // +0xFC
-
-    void selectNextComputerPlayer(int param_1);
-};
-
-class RGE_Player {
-public:
-    char gap_00[0x48];
-    unsigned char type;              // +0x48
-};
 
 void RGE_Game_World::selectNextComputerPlayer(int param_1) {
     int current = this->currentUpdateComputerPlayer;

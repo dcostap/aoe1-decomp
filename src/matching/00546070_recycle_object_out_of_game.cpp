@@ -1,22 +1,4 @@
-class RGE_Object_List {
-public:
-    void add_node(void* obj);
-};
-
-class RGE_Game_World {
-public:
-    void* vtable_ptr;                              // +0x00
-    char gap_04[0xD4];                             // +0x04 to +0xD7
-    RGE_Object_List* reusable_static_objects;       // +0xD8
-    RGE_Object_List* reusable_animated_objects;      // +0xDC
-    RGE_Object_List* reusable_moving_objects;        // +0xE0
-    RGE_Object_List* reusable_action_objects;        // +0xE4
-    RGE_Object_List* reusable_combat_objects;        // +0xE8
-    RGE_Object_List* reusable_missile_objects;       // +0xEC
-    RGE_Object_List* reusable_doppleganger_objects;  // +0xF0
-
-    unsigned char recycle_object_out_of_game(unsigned char param_1, void* param_2);
-};
+#include "../world_phase2_context.h"
 
 unsigned char RGE_Game_World::recycle_object_out_of_game(unsigned char param_1, void* param_2) {
     switch (param_1) {
@@ -45,5 +27,3 @@ unsigned char RGE_Game_World::recycle_object_out_of_game(unsigned char param_1, 
         return 0;
     }
 }
-
-void RGE_Object_List::add_node(void* obj) { }

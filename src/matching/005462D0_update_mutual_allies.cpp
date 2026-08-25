@@ -42,7 +42,7 @@
 // diplomacy loops reduced the result to 53 differing bytes and 1095 bytes.
 // The reviewed extern rge_base_game was decisive: reverting it restored the
 // 53-byte panel-call mismatch.  The extern DVlogf form is also exact and avoids
-// an unsupported raw singleton macro.  Removing unused k and the fake vptr
+// an unsupported raw singleton macro. Removing unused k and the old ABI probe
 // was incidental; both grouped reversions stayed exact.  The direct-expression
 // and loop-shape changes remain an inseparable source-recovery group.
 // First exact checkpoint: first-exact. Reduced exact checkpoint: final-exact.
@@ -55,6 +55,7 @@
 // policy-invalid.  The canonical named surface is the reduced source kept.
 
 #include <stdio.h>
+#include "../world_phase2_context.h"
 
 extern FILE* DVlogf;
 
@@ -73,59 +74,6 @@ static const char s_removed_visible_bits[] = "  RemoveVisibleBits = [";
 static const char s_decimal[] = "%d";
 static const char s_separator[] = ", ";
 static const char s_list_end[] = "]\n";
-
-struct tagRECT;
-class TDrawArea;
-typedef int PositionMode;
-typedef int RedrawMode;
-
-class TPanel {
-public:
-    virtual ~TPanel();
-    virtual long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char);
-    virtual void set_rect(tagRECT);
-    virtual void set_rect(long, long, long, long);
-    virtual void set_color(unsigned char);
-    virtual void set_active(int);
-    virtual void set_positioning(PositionMode, long, long, long, long,
-                                 long, long, long, long, TPanel*, TPanel*,
-                                 TPanel*, TPanel*);
-    virtual void set_fixed_position(long, long, long, long);
-    virtual void set_redraw(RedrawMode);
-};
-class RGE_Base_Game {
-public:
-    virtual ~RGE_Base_Game();
-    virtual int run();
-    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
-    virtual void set_prog_mode(int);
-    virtual void set_game_mode(int, int);
-    virtual void set_player(short);
-    virtual int get_error_code();
-    virtual char* get_string(int, long, char*, int);
-    virtual char* get_string(long, char*, int);
-    virtual char* get_string(long);
-    virtual char* get_string2(int, long, long, char*, int);
-    virtual TPanel* get_view_panel();
-    virtual TPanel* get_map_panel();
-};
-extern RGE_Base_Game* rge_base_game;
-struct Player {
-    char gap0[0x84]; unsigned char* relations;
-    int unit_diplomacy[9];    // +88..+A8
-    int mutualAlly[9];        // +AC..+CC
-    int mutualExploredMask;   // +D0
-    int mutualVisibleMask;    // +D4
-    int nonMutualVisibleMask; // +D8
-    int removeVisibleBits[9]; // +DC..+FC
-    int allied_LOS_Enable;    // +100
-    unsigned char civ;        // +104
-};
-class RGE_Game_World {
-public:
-    char gap0[4]; int world_time; char gap08[0x3c-0x08]; short player_num; Player** players;
-    void update_mutual_allies();
-};
 
 void RGE_Game_World::update_mutual_allies() {
     int one = 1;
