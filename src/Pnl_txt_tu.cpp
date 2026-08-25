@@ -1,38 +1,22 @@
-// Authentic Pnl_txt.cpp candidate wrapper.
+// Authentic Pnl_txt.cpp translation-unit wrapper.
 //
 // The owner files remain standalone recovery units.  This wrapper supplies one
 // module-local panel surface, then includes every PDB owner in source order.
 // The source guard is enabled only here; focused owner checks keep their local
 // declarations when this file is not included.
+//
+// BINARY NOTE: TPanel owns 56 virtual slots.  The text panel appends the three
+// set_text overloads and set_bevel_info.  VC5 reverses adjacent overloads in
+// each vtable group, so their source declarations stay in reverse order.
+// BINARY NOTE: the +0x40 callback and bevel views use the named TPanel action,
+// draw_rect, and draw_rect2 slots.  They are not separate helper vtables.
 
 #include <windows.h>
 
 struct PanelNode;
 class TDrawArea;
 class TShape;
-class TBevel;
 class TTextPanel;
-class TTextPanelHandler;
-
-class TTextPanelHandler {
-public:
-    virtual void v00(); virtual void v01(); virtual void v02();
-    virtual void v03(); virtual void v04(); virtual void v05();
-    virtual void v06(); virtual void v07(); virtual void v08();
-    virtual void v09(); virtual void v10(); virtual void v11();
-    virtual void v12(); virtual void v13(); virtual void v14();
-    virtual void v15(); virtual void v16(); virtual void v17();
-    virtual void v18(); virtual void v19(); virtual void v20();
-    virtual void v21(); virtual void v22(); virtual void v23();
-    virtual void v24(); virtual void v25(); virtual void v26();
-    virtual void v27(); virtual void v28(); virtual void v29();
-    virtual void v30(); virtual void v31(); virtual void v32();
-    virtual void v33(); virtual void v34(); virtual void v35();
-    virtual void v36(); virtual void v37(); virtual void v38();
-    virtual void v39(); virtual void v40(); virtual void v41();
-    virtual void v42(); virtual void v43(); virtual void v44();
-    virtual void mouse_left_down_action(TTextPanel*, int, int, int);
-};
 
 struct TextNode {
     char* text;
@@ -64,35 +48,14 @@ public:
                     unsigned char color5, unsigned char color6);
 };
 
-class TBevel {
-public:
-    virtual void vf_00();
-    virtual void vf_04();
-    virtual void vf_08();
-    virtual void vf_0C();
-    virtual void vf_10();
-    virtual void vf_14();
-    virtual void vf_18();
-    virtual void vf_1C();
-    virtual void vf_20();
-    virtual void vf_24();
-    virtual void vf_28();
-    virtual void vf_2C();
-    virtual void draw_low(tagRECT* rect);
-    virtual void vf_38();
-    virtual void draw_high(tagRECT* rect);
-    char gap_04[0x80];
-    int flag_84;
-};
-
 class TPanel {
 public:
     virtual ~TPanel();
     TPanel();
     virtual long setup(TDrawArea*, TPanel*, long, long, long, long,
                        unsigned char);
-    virtual void set_rect(tagRECT);
     virtual void set_rect(long, long, long, long);
+    virtual void set_rect(tagRECT);
     virtual void set_color(unsigned char);
     virtual void set_active(int);
     virtual void set_positioning(int, long, long, long, long, long, long,
@@ -139,19 +102,17 @@ public:
     virtual void get_true_render_rect(tagRECT*);
     virtual int is_inside(long, long);
     virtual void set_focus(int);
-    virtual void set_tab_order(TPanel*, TPanel*);
     virtual void set_tab_order(TPanel**, short);
+    virtual void set_tab_order(TPanel*, TPanel*);
     virtual unsigned char get_help_info(char**, long*, long, long);
     virtual void stop_sound_system();
     virtual int restart_sound_system();
     virtual void take_snapshot();
     virtual void handle_reactivate();
-    virtual void ve0(char**, short);
 
     long xPosition();
     long yPosition();
     int get_string(long, char*, long);
-    virtual void redraw(int);
     int capture_mouse();
     void release_mouse();
 
@@ -167,7 +128,7 @@ public:
     int position_mode;
     int need_redraw;
     TPanel* curr_child;
-    union { TPanel* parent_panel; TBevel* bevel; TTextPanelHandler* handler; };
+    union { TPanel* parent_panel; TPanel* bevel; TPanel* handler; };
     TPanel* left_panel;
     TPanel* top_panel;
     TPanel* right_panel;
@@ -260,12 +221,11 @@ public:
     virtual long mouse_left_down_action(long, long, int, int);
     virtual long key_down_action(long, short, int, int, int);
     virtual long action(TPanel*, long, unsigned long, unsigned long);
-    virtual void set_text(char**, short);
-    virtual void set_text(long);
     virtual void set_text(char*);
+    virtual void set_text(long);
+    virtual void set_text(char**, short);
     virtual void set_bevel_info(int, int, int, int, int, int, int);
 
-    virtual void set_text2(char*);
     long setup(TDrawArea*, TPanel*, long, long, long, long, void*, long, long,
                char*, char*, int, int, unsigned char, short, char*);
     long setup(TDrawArea*, TPanel*, long, long, long, long, void*, long, long,
@@ -283,9 +243,6 @@ public:
     void set_outline(int, unsigned char);
     void set_spacer_size(int);
     void set_scrollbar(TScrollBarPanel*, int);
-    virtual void vf20(int);
-    virtual void notify(int);
-    virtual void redraw(int);
     void scroll_set(int);
     CharType char_type(unsigned char*);
     int word_wrap_append(char*);
