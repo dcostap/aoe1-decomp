@@ -39,7 +39,7 @@ public:
     virtual void* new_scenario_info(int);
     virtual void notification(int, long, long, long, long);
     virtual int reset_comm();
-    virtual void beginStart(); // slot 18, +0x48
+    virtual void send_game_options(); // slot 18, +0x48
 
     int randomGame();
     int multiplayerGame();
@@ -165,7 +165,7 @@ public:
     TPanel* netInfoButton;          // +0x858
     int i_am_ready;                 // +0x85C
     unsigned char defaultColor[8];  // +0x860
-    long scenarioCheckSum[8];       // +0x868
+    int scenarioCheckSum[8];        // +0x868
     int last_send_shared;           // +0x888
     int resend_game_options;        // +0x88C
 
@@ -304,7 +304,7 @@ void TribeMPSetupScreen::init_vars() {
 
         if (((TCommunications_Handler*)comm)->IsHost() != 0) {
             ((TRIBE_Game*)rge_base_game)->setPlayerVersion(0, 1);
-            rge_base_game->beginStart();
+            rge_base_game->send_game_options();
             this->resend_game_options = 0;
             return;
         }

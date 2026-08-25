@@ -37,6 +37,8 @@ public:
 extern TDebuggingLog* L;                 // 62C4FC
 
 class TPanel;
+class TDrawArea;
+struct tagRECT;
 class TButtonPanel;
 class TEditPanel;
 class TDropDownPanel;
@@ -44,21 +46,63 @@ class TDropDownPanel;
 class TPanel {
 public:
     virtual ~TPanel();                       // slot 0
-    // TPanel has 56 virtuals total (slots 0..55); TButtonPanel::set_state lands at slot 56 (0xE0).
-    virtual void vpad01(); virtual void vpad02(); virtual void vpad03(); virtual void vpad04();
-    virtual void vpad05(); virtual void vpad06(); virtual void vpad07(); virtual void vpad08();
-    virtual void vpad09(); virtual void vpad10(); virtual void vpad11(); virtual void vpad12();
-    virtual void vpad13(); virtual void vpad14(); virtual void vpad15(); virtual void vpad16();
-    virtual void vpad17(); virtual void vpad18(); virtual void vpad19(); virtual void vpad20();
-    virtual void vpad21(); virtual void vpad22(); virtual void vpad23(); virtual void vpad24();
-    virtual void vpad25(); virtual void vpad26(); virtual void vpad27(); virtual void vpad28();
-    virtual void vpad29(); virtual void vpad30(); virtual void vpad31(); virtual void vpad32();
-    virtual void vpad33(); virtual void vpad34(); virtual void vpad35(); virtual void vpad36();
-    virtual void vpad37(); virtual void vpad38(); virtual void vpad39(); virtual void vpad40();
-    virtual void vpad41(); virtual void vpad42(); virtual void vpad43(); virtual void vpad44();
-    virtual void vpad45(); virtual void vpad46(); virtual void vpad47(); virtual void vpad48();
-    virtual void vpad49(); virtual void vpad50(); virtual void vpad51(); virtual void vpad52();
-    virtual void vpad53(); virtual void vpad54(); virtual void vpad55();
+    // TPanel has 56 named virtuals; TButtonPanel::set_state is slot 56 (0xE0).
+    virtual long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char);
+    virtual void set_rect(tagRECT);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_color(unsigned char);
+    virtual void set_active(int);
+    virtual void set_positioning(int, long, long, long, long, long, long, long, long,
+                                 TPanel*, TPanel*, TPanel*, TPanel*);
+    virtual void set_fixed_position(long, long, long, long);
+    virtual void set_redraw(int);
+    virtual void set_overlapped_redraw(TPanel*, TPanel*, int);
+    virtual void draw_setup(int);
+    virtual void draw_finish();
+    virtual void draw();
+    virtual void draw_rect(tagRECT*);
+    virtual void draw_offset(long, long, tagRECT*);
+    virtual void draw_rect2(tagRECT*);
+    virtual void draw_offset2(long, long, tagRECT*);
+    virtual void paint();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual long handle_idle();
+    virtual long handle_size(long, long);
+    virtual long handle_paint();
+    virtual long handle_key_down(long, short, int, int, int);
+    virtual long handle_char(long, short);
+    virtual long handle_command(unsigned int, long);
+    virtual long handle_user_command(unsigned int, long);
+    virtual long handle_timer_command(unsigned int, long);
+    virtual long handle_scroll(long, long);
+    virtual long handle_mouse_down(unsigned char, long, long, int, int);
+    virtual long handle_mouse_move(long, long, int, int);
+    virtual long handle_mouse_up(unsigned char, long, long, int, int);
+    virtual long handle_mouse_dbl_click(unsigned char, long, long, int, int);
+    virtual long mouse_move_action(long, long, int, int);
+    virtual long mouse_left_down_action(long, long, int, int);
+    virtual long mouse_left_hold_action(long, long, int, int);
+    virtual long mouse_left_move_action(long, long, int, int);
+    virtual long mouse_left_up_action(long, long, int, int);
+    virtual long mouse_left_dbl_click_action(long, long, int, int);
+    virtual long mouse_right_down_action(long, long, int, int);
+    virtual long mouse_right_hold_action(long, long, int, int);
+    virtual long mouse_right_move_action(long, long, int, int);
+    virtual long mouse_right_up_action(long, long, int, int);
+    virtual long mouse_right_dbl_click_action(long, long, int, int);
+    virtual long key_down_action(long, short, int, int, int);
+    virtual long char_action(long, short);
+    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    virtual void get_true_render_rect(tagRECT*);
+    virtual int is_inside(long, long);
+    virtual void set_focus(int);
+    virtual void set_tab_order(TPanel*, TPanel*);
+    virtual void set_tab_order(TPanel**, short);
+    virtual unsigned char get_help_info(char**, long*, long, long);
+    virtual void stop_sound_system();
+    virtual int restart_sound_system();
+    virtual void take_snapshot();
+    virtual void handle_reactivate();
 
     char gap_04[0x68];
     int active;                              // +0x6C
@@ -130,12 +174,6 @@ public:
 
 extern TCommunications_Handler* comm;        // 62C4C0
 
-#define VPAD1(n) virtual void vpad##n();
-#define VPAD2(n) VPAD1(n) VPAD1(n##_1)
-#define VPAD4(n) VPAD2(n) VPAD2(n##_2)
-#define VPAD8(n) VPAD4(n) VPAD4(n##_4)
-#define VPAD16(n) VPAD8(n) VPAD8(n##_8)
-
 class RGE_Prog_Info {
 public:
     char gap_00[0xC17];
@@ -144,9 +182,25 @@ public:
 
 class TRIBE_Game {
 public:
-    VPAD16(0)
-    VPAD2(16)
-    virtual void beginStart();               // vtable slot 18 (offset 0x48)
+    virtual ~TRIBE_Game();
+    virtual int run();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual void set_prog_mode(int);
+    virtual void set_game_mode(int, int);
+    virtual void set_player(short);
+    virtual int get_error_code();
+    virtual char* get_string(int, long, char*, int);
+    virtual char* get_string(long, char*, int);
+    virtual char* get_string(long);
+    virtual char* get_string2(int, long, long, char*, int);
+    virtual TPanel* get_view_panel();
+    virtual TPanel* get_map_panel();
+    virtual void* new_scenario_header(void*);
+    virtual void* new_scenario_header(int);
+    virtual void* new_scenario_info(int);
+    virtual void notification(int, long, long, long, long);
+    virtual int reset_comm();
+    virtual void send_game_options();       // vtable slot 18 (offset 0x48)
     char gap_04[0x08];
     RGE_Prog_Info* prog_info;                // +0x0C
 
@@ -325,7 +379,7 @@ long TribeMPSetupScreen::action(TPanel* param_1, long param_2, unsigned long par
             if (comm->IsHost()) {
                 this->gameSettingsButton->set_disabled(this->i_am_ready);
                 this->startButton->set_disabled(this->i_am_ready == 0);
-                rge_base_game->beginStart();
+                rge_base_game->send_game_options();
                 this->resend_game_options = 0;
                 comm->SendSharedData(1);
                 return 1;
@@ -406,7 +460,7 @@ long TribeMPSetupScreen::action(TPanel* param_1, long param_2, unsigned long par
             if (param_2 != 0) {
                 this->updateSummary();
                 if (!rge_base_game->singlePlayerGame()) {
-                    rge_base_game->beginStart();
+                    rge_base_game->send_game_options();
                     this->resend_game_options = 0;
                 }
             }

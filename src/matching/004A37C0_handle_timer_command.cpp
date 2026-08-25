@@ -2,8 +2,8 @@
 class TribeMPSetupScreen {
 public:
     virtual ~TribeMPSetupScreen();
-    int handle_timer_command(int p0, int p1);
+    virtual long handle_timer_command(unsigned int p0, long p1);
 };
 #endif
 
-int TribeMPSetupScreen::handle_timer_command(int p0, int p1) { return 1; }
+long TribeMPSetupScreen::handle_timer_command(unsigned int p0, long p1) { return 1; }

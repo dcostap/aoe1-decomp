@@ -1,24 +1,12 @@
 // 004A5130 TribeMPSetupScreen::setupTabOrder
 // 223 bytes, __thiscall, scr_mps.cpp lines 2752-2787
-// Attempt log:
-// baseline: natural reconstruction modeled on exact sibling donor
-//   004A68C0 (TRIBE_Screen_Name::setup_tab_order): VPAD virtual slots to
-//   +0xC8 set_tab_order(TPanel**, int), non-virtual set_curr_child member,
-//   local TPanel* tabList[4], rge_base_game->singlePlayerGame() guard.
-//   Field offsets from exact destructor donor 004A1300: chatInput +0x610,
-//   gameSettingsButton +0x620, startButton +0x700, cancelButton +0x70C,
-//   ready_button +0x714.
+// The named panel surface preserves the proven +0xC8 tab-order slot.
 
 #ifndef SCR_MPS_TU_CONTEXT
 
 class TPanel;
-
-#define VPAD1(n) virtual void vpad##n();
-#define VPAD2(n) VPAD1(n) VPAD1(n##_1)
-#define VPAD4(n) VPAD2(n) VPAD2(n##_2)
-#define VPAD8(n) VPAD4(n) VPAD4(n##_4)
-#define VPAD16(n) VPAD8(n) VPAD8(n##_8)
-#define VPAD32(n) VPAD16(n) VPAD16(n##_16)
+class TDrawArea;
+struct tagRECT;
 
 class RGE_Base_Game {
 public:
@@ -29,22 +17,70 @@ extern RGE_Base_Game* rge_base_game;
 
 class TribeMPSetupScreen {
 public:
-    VPAD32(0)        // slots 0..31
-    VPAD16(32)       // slots 32..47
-    VPAD1(48)
-    VPAD1(49)
-    virtual void set_tab_order(TPanel** panels, int count); // slot 50 / +0xC8
+    virtual ~TribeMPSetupScreen();
+    virtual long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_rect(tagRECT);
+    virtual void set_color(unsigned char);
+    virtual void set_active(int);
+    virtual void set_positioning(int, long, long, long, long, long, long, long, long,
+                                 TPanel*, TPanel*, TPanel*, TPanel*);
+    virtual void set_fixed_position(long, long, long, long);
+    virtual void set_redraw(int);
+    virtual void set_overlapped_redraw(TPanel*, TPanel*, int);
+    virtual void draw_setup(int);
+    virtual void draw_finish();
+    virtual void draw();
+    virtual void draw_rect(tagRECT*);
+    virtual void draw_offset(long, long, tagRECT*);
+    virtual void draw_rect2(tagRECT*);
+    virtual void draw_offset2(long, long, tagRECT*);
+    virtual void paint();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual long handle_idle();
+    virtual long handle_size(long, long);
+    virtual long handle_paint();
+    virtual long handle_key_down(long, short, int, int, int);
+    virtual long handle_char(long, short);
+    virtual long handle_command(unsigned int, long);
+    virtual long handle_user_command(unsigned int, long);
+    virtual long handle_timer_command(unsigned int, long);
+    virtual long handle_scroll(long, long);
+    virtual long handle_mouse_down(unsigned char, long, long, int, int);
+    virtual long handle_mouse_move(long, long, int, int);
+    virtual long handle_mouse_up(unsigned char, long, long, int, int);
+    virtual long handle_mouse_dbl_click(unsigned char, long, long, int, int);
+    virtual long mouse_move_action(long, long, int, int);
+    virtual long mouse_left_down_action(long, long, int, int);
+    virtual long mouse_left_hold_action(long, long, int, int);
+    virtual long mouse_left_move_action(long, long, int, int);
+    virtual long mouse_left_up_action(long, long, int, int);
+    virtual long mouse_left_dbl_click_action(long, long, int, int);
+    virtual long mouse_right_down_action(long, long, int, int);
+    virtual long mouse_right_hold_action(long, long, int, int);
+    virtual long mouse_right_move_action(long, long, int, int);
+    virtual long mouse_right_up_action(long, long, int, int);
+    virtual long mouse_right_dbl_click_action(long, long, int, int);
+    virtual long key_down_action(long, short, int, int, int);
+    virtual long char_action(long, short);
+    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    virtual void get_true_render_rect(tagRECT*);
+    virtual int is_inside(long, long);
+    virtual void set_focus(int);
+    virtual void set_state(short);
+    virtual void set_tab_order(TPanel*, TPanel*);
+    virtual void set_tab_order(TPanel**, short);
 
-    char gap_04[0x610 - 0x04];
-    TPanel* chatInput;            // +0x610
-    char gap_614[0x620 - 0x614];
-    TPanel* gameSettingsButton;   // +0x620
-    char gap_624[0x700 - 0x624];
-    TPanel* startButton;          // +0x700
-    char gap_704[0x70C - 0x704];
-    TPanel* cancelButton;         // +0x70C
-    char gap_710[0x714 - 0x710];
-    TPanel* ready_button;         // +0x714
+    char gap_04[0x60C];
+    TPanel* chatInput;
+    char gap_614[0x0C];
+    TPanel* gameSettingsButton;
+    char gap_624[0xDC];
+    TPanel* startButton;
+    char gap_704[8];
+    TPanel* cancelButton;
+    char gap_710[4];
+    TPanel* ready_button;
 
     void set_curr_child(TPanel* child);
     void setupTabOrder();

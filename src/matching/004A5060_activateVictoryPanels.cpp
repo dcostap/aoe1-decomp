@@ -1,6 +1,6 @@
 // 004A5060 activateVictoryPanels
 // 181 bytes, __thiscall, TribeMPSetupScreen method
-// Retry 2026-05-26: rebuilt local layout/vtable slot surfaces; current exact-size near match.
+// The named TPanel surface preserves the proven +0x14 and +0xE4 slots.
 
 #ifndef SCR_MPS_TU_CONTEXT
 
@@ -9,28 +9,70 @@ public:
     int get_id();
 };
 
+class TDrawArea;
+struct tagRECT;
+
 class TPanel {
 public:
-    virtual void d0();
-    virtual void d1();
-    virtual void d2();
-    virtual void d3();
-    virtual void d4();
-    virtual void set_enabled(int enabled); // +0x14
-    virtual void d6(); virtual void d7(); virtual void d8(); virtual void d9();
-    virtual void d10(); virtual void d11(); virtual void d12(); virtual void d13();
-    virtual void d14(); virtual void d15(); virtual void d16(); virtual void d17();
-    virtual void d18(); virtual void d19(); virtual void d20(); virtual void d21();
-    virtual void d22(); virtual void d23(); virtual void d24(); virtual void d25();
-    virtual void d26(); virtual void d27(); virtual void d28(); virtual void d29();
-    virtual void d30(); virtual void d31(); virtual void d32(); virtual void d33();
-    virtual void d34(); virtual void d35(); virtual void d36(); virtual void d37();
-    virtual void d38(); virtual void d39(); virtual void d40(); virtual void d41();
-    virtual void d42(); virtual void d43(); virtual void d44(); virtual void d45();
-    virtual void d46(); virtual void d47(); virtual void d48(); virtual void d49();
-    virtual void d50(); virtual void d51(); virtual void d52(); virtual void d53();
-    virtual void d54(); virtual void d55(); virtual void d56();
-    virtual void set_text(int stringId); // +0xE4 slot 57
+    virtual ~TPanel();
+    virtual long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_rect(tagRECT);
+    virtual void set_color(unsigned char);
+    virtual void set_active(int);
+    virtual void set_positioning(int, long, long, long, long, long, long, long, long,
+                                 TPanel*, TPanel*, TPanel*, TPanel*);
+    virtual void set_fixed_position(long, long, long, long);
+    virtual void set_redraw(int);
+    virtual void set_overlapped_redraw(TPanel*, TPanel*, int);
+    virtual void draw_setup(int);
+    virtual void draw_finish();
+    virtual void draw();
+    virtual void draw_rect(tagRECT*);
+    virtual void draw_offset(long, long, tagRECT*);
+    virtual void draw_rect2(tagRECT*);
+    virtual void draw_offset2(long, long, tagRECT*);
+    virtual void paint();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual long handle_idle();
+    virtual long handle_size(long, long);
+    virtual long handle_paint();
+    virtual long handle_key_down(long, short, int, int, int);
+    virtual long handle_char(long, short);
+    virtual long handle_command(unsigned int, long);
+    virtual long handle_user_command(unsigned int, long);
+    virtual long handle_timer_command(unsigned int, long);
+    virtual long handle_scroll(long, long);
+    virtual long handle_mouse_down(unsigned char, long, long, int, int);
+    virtual long handle_mouse_move(long, long, int, int);
+    virtual long handle_mouse_up(unsigned char, long, long, int, int);
+    virtual long handle_mouse_dbl_click(unsigned char, long, long, int, int);
+    virtual long mouse_move_action(long, long, int, int);
+    virtual long mouse_left_down_action(long, long, int, int);
+    virtual long mouse_left_hold_action(long, long, int, int);
+    virtual long mouse_left_move_action(long, long, int, int);
+    virtual long mouse_left_up_action(long, long, int, int);
+    virtual long mouse_left_dbl_click_action(long, long, int, int);
+    virtual long mouse_right_down_action(long, long, int, int);
+    virtual long mouse_right_hold_action(long, long, int, int);
+    virtual long mouse_right_move_action(long, long, int, int);
+    virtual long mouse_right_up_action(long, long, int, int);
+    virtual long mouse_right_dbl_click_action(long, long, int, int);
+    virtual long key_down_action(long, short, int, int, int);
+    virtual long char_action(long, short);
+    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    virtual void get_true_render_rect(tagRECT*);
+    virtual int is_inside(long, long);
+    virtual void set_focus(int);
+    virtual void set_tab_order(TPanel**, short);
+    virtual void set_tab_order(TPanel*, TPanel*);
+    virtual unsigned char get_help_info(char**, long*, long, long);
+    virtual void stop_sound_system();
+    virtual int restart_sound_system();
+    virtual void take_snapshot();
+    virtual void handle_reactivate();
+    virtual void set_state(short state);
+    virtual void set_text(long string_id);
 };
 
 class TribeMPSetupScreen {
@@ -48,11 +90,11 @@ public:
 void TribeMPSetupScreen::activateVictoryPanels() {
     int id = victoryTypeDrop->get_id();
     if (id == 1 || victoryTypeDrop->get_id() == 0) {
-        victoryAmountLabel->set_enabled(0);
-        victoryAmountInput->set_enabled(0);
+        victoryAmountLabel->set_active(0);
+        victoryAmountInput->set_active(0);
     } else {
-        victoryAmountLabel->set_enabled(1);
-        victoryAmountInput->set_enabled(1);
+        victoryAmountLabel->set_active(1);
+        victoryAmountInput->set_active(1);
         switch (victoryTypeDrop->get_id()) {
         case 2:
             victoryAmountLabel->set_text(0x25CB);

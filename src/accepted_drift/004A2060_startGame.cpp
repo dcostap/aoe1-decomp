@@ -165,10 +165,13 @@ public:
     virtual ~TScreenPanel();
 };
 
+class RGE_Static_Object;
 class T_Scenario {
 public:
-    virtual void unknown();
+    virtual RGE_Static_Object* get_object_pointer(int);
     virtual ~T_Scenario();
+    virtual void rehook();
+    virtual void save(int);
 };
 
 class RGE_Scenario;
@@ -195,7 +198,7 @@ public:
     virtual RGE_Scenario* new_scenario_info(int);
     virtual void notification(int, long, long, long, long);
     virtual int reset_comm();
-    virtual void beginStart();   // vtable slot 18 (offset 0x48)
+    virtual void send_game_options();   // vtable slot 18 (offset 0x48)
     int multiplayerGame();
     int scenarioGame();
     int singlePlayerGame();
@@ -280,7 +283,7 @@ public:
     int sent_cd_status;             // +854
     TPanel* netInfoButton;          // +858
     int pad_85C[3];                 // +85C
-    long scenarioCheckSum[8];       // +868 .. +884
+    int scenarioCheckSum[8];        // +868 .. +884
     int pad_888;                    // +888
     int resend_game_options;        // +88C
 
@@ -503,7 +506,7 @@ int TribeMPSetupScreen::startGame()
 
     if (rge_base_game->multiplayerGame()) {
         if (send_options || this->resend_game_options != 0) {
-            rge_base_game->beginStart();
+            rge_base_game->send_game_options();
             this->resend_game_options = 0;
         }
         comm->LaunchMultiplayerGame();

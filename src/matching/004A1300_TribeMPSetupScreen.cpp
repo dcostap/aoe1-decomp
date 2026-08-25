@@ -34,7 +34,14 @@ public:
     virtual ~TScreenPanel();
 };
 
-class T_Scenario { public: virtual void unknown(); virtual ~T_Scenario(); };
+class RGE_Static_Object;
+class T_Scenario {
+public:
+    virtual RGE_Static_Object* get_object_pointer(int);
+    virtual ~T_Scenario();
+    virtual void rehook();
+    virtual void save(int);
+};
 
 class TPanelSystem {
 public:

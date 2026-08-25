@@ -53,8 +53,8 @@ public:
     };
     virtual ~TPanel();
     virtual long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char);
-    virtual void set_rect(tagRECT);
     virtual void set_rect(long, long, long, long);
+    virtual void set_rect(tagRECT);
     virtual void set_color(unsigned char);
     virtual void set_active(int);
     virtual void set_positioning(int, long, long, long, long, long, long, long, long,
@@ -101,8 +101,8 @@ public:
     virtual void get_true_render_rect(tagRECT*);
     virtual int is_inside(long, long);
     virtual void set_focus(int);
-    virtual void set_tab_order(TPanel*, TPanel*);
     virtual void set_tab_order(TPanel**, short);
+    virtual void set_tab_order(TPanel*, TPanel*);
     virtual unsigned char get_help_info(char**, long*, long, long);
     virtual void stop_sound_system();
     virtual int restart_sound_system();
@@ -126,30 +126,51 @@ public:
 
 class TTextPanel : public TPanel {
 public:
-    char gap_F4[0x2C];
-    unsigned long text_color1;
-    char gap_124[0x64];
-    virtual void set_text(char**, short);
-    virtual void set_text(long);
+    virtual ~TTextPanel();
+    virtual void set_rect(long, long, long, long);
+    virtual void set_active(int);
+    virtual void draw();
+    virtual long mouse_left_down_action(long, long, int, int);
+    virtual long key_down_action(long, short, int, int, int);
+    virtual long action(TPanel*, long, unsigned long, unsigned long);
     virtual void set_text(char*);
-    virtual void set_text_id(long);
-    virtual void set_text_string(char*);
+    virtual void set_text(long);
+    virtual void set_text(char**, short);
     virtual void set_bevel_info(int, int, int, int, int, int, int);
     virtual char* currentLine();
-    virtual int numberLines();
+    int numberLines();
     int delete_line(long index);
     int word_wrap_append(char* msg);
     void scroll(unsigned char, int, int);
-    short bot_line;
     void set_alignment(int vertical, int horizontal);
     void empty_list();
     void set_text_color(unsigned long, unsigned long);
     void set_text_color(int, unsigned long, unsigned long);
     void set_enabled(int);
+
+    void* list;
+    short num_lines;
+    short draw_lines;
+    short top_line;
+    short bot_line;
+    short cur_line;
+    short cur_col;
+    void* font;
+    long font_wid;
+    long font_hgt;
+    long vert_align;
+    long horz_align;
+    int word_wrap;
+    long text_style;
+    unsigned long text_color1;
+    unsigned long text_color2;
+    unsigned long highlight_text_color1;
+    unsigned long highlight_text_color2;
 };
 
 class TButtonPanel : public TPanel {
 public:
+    virtual void set_state(short state);
     char gap_F4[0x1A4];
     long hotkey;
     long hotkey_shift;
@@ -158,7 +179,6 @@ public:
     void set_id(short state, long id, long id2);
     long get_id();
     int get_state();
-    void set_state(short state);
     void set_state_by_id(long id);
     int get_text(short, char**, char**);
     void get_text_color(short, unsigned long*, unsigned long*);
@@ -236,8 +256,6 @@ public:
     long setup(void*, char*, long, int);
     char* get_string(int id);
     char* get_string(int id, char* buffer, int length);
-    void delete_panel(TPanel** panel_ptr);
-    void delete_panel(void* panel_ptr);
 };
 
 class TChat {
@@ -295,8 +313,8 @@ public:
 
 class TPanelSystem {
 public:
-    int destroyPanel(const char* name);
-    int setCurrentPanel(const char* name, int value);
+    int destroyPanel(char* name);
+    int setCurrentPanel(char* name, int value);
     TPanel* panel(char* name);
     TEasy_Panel* currentPanel();
 };
@@ -315,6 +333,7 @@ public:
 
 class TRIBE_Screen_Main_Error : public TScreenPanel {
 public:
+    char gap_478[0xC];
     TRIBE_Screen_Main_Error();
     void set_text(int string_id);
 };
@@ -345,11 +364,10 @@ public:
     virtual void* new_scenario_info(int);
     virtual void notification(int, long, long, long, long);
     virtual int reset_comm();
-    virtual void beginStart();
     virtual void send_game_options();
     virtual void receive_game_options();
 
-    char gap_00[0x0C];
+    char gap_04[8];
     RGE_Prog_Info* prog_info;
     char gap_10[0x3C];
     TDrawArea* draw_area;
@@ -531,19 +549,14 @@ public:
 
     virtual ~TribeMPSetupScreen();
     TribeMPSetupScreen();
+
+protected:
     void init_vars();
-    long handle_idle();
-    long key_down_action(long, short, int, int, int);
-    long action(TPanel*, long, unsigned long, unsigned long);
     int startGame();
     void calcRandomPositions();
     void showNetInfo();
     void cancelScreen(int);
-    long handle_user_command(unsigned int, long);
-    int handle_timer_command(int, int);
-    void fillPlayers();
     void fillChat(int);
-    void updateSummary();
     void kickPlayer(int);
     void handleKickedPlayer(int);
     void activateVictoryPanels();
@@ -551,6 +564,15 @@ public:
     void setupSinglePlayerPlayers();
     void fillNumberPlayers();
     void fillPlayerColors();
+
+public:
+    long handle_idle();
+    long key_down_action(long, short, int, int, int);
+    long action(TPanel*, long, unsigned long, unsigned long);
+    long handle_user_command(unsigned int, long);
+    long handle_timer_command(unsigned int, long);
+    void fillPlayers();
+    void updateSummary();
     char* get_string(int);
     char* get_string(int, char*, int);
     void setup_popup_help();
@@ -603,7 +625,7 @@ extern TPanelSystem panel_system;
 extern void* AppWnd;
 extern char s_Multiplayer_Disconnect_Screen[];
 extern char s_scr3[];
-extern const char s_Status_Screen[];
+extern char s_Status_Screen[];
 extern const char s_C__msdev_work_age1_x1_scr_mps_cp[];
 
 extern "C" int __cdecl sprintf(char*, const char*, ...);

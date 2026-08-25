@@ -36,26 +36,86 @@
 
 #ifndef SCR_MPS_TU_CONTEXT
 
-#define VP(n) virtual void v##n();
+class TDrawArea;
+struct tagRECT;
 
 class TPanel {
 public:
-    VP(0) VP(1) VP(2) VP(3) VP(4)
+    virtual ~TPanel();
+    virtual long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_rect(tagRECT);
+    virtual void set_color(unsigned char);
     virtual void set_active(int value);
-    VP(6) VP(7) VP(8) VP(9) VP(10) VP(11) VP(12) VP(13) VP(14) VP(15)
-    VP(16) VP(17) VP(18) VP(19) VP(20) VP(21) VP(22) VP(23) VP(24) VP(25)
-    VP(26) VP(27) VP(28) VP(29) VP(30) VP(31) VP(32) VP(33) VP(34) VP(35)
-    VP(36) VP(37) VP(38) VP(39) VP(40) VP(41) VP(42) VP(43) VP(44) VP(45)
-    VP(46) VP(47) VP(48) VP(49) VP(50) VP(51) VP(52) VP(53) VP(54) VP(55)
-    virtual void set_state(short state);
-    virtual void set_text_id(int string_id);
-    virtual void set_text_string(char* text);
+    virtual void set_positioning(int, long, long, long, long, long, long, long, long,
+                                 TPanel*, TPanel*, TPanel*, TPanel*);
+    virtual void set_fixed_position(long, long, long, long);
+    virtual void set_redraw(int);
+    virtual void set_overlapped_redraw(TPanel*, TPanel*, int);
+    virtual void draw_setup(int);
+    virtual void draw_finish();
+    virtual void draw();
+    virtual void draw_rect(tagRECT*);
+    virtual void draw_offset(long, long, tagRECT*);
+    virtual void draw_rect2(tagRECT*);
+    virtual void draw_offset2(long, long, tagRECT*);
+    virtual void paint();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual long handle_idle();
+    virtual long handle_size(long, long);
+    virtual long handle_paint();
+    virtual long handle_key_down(long, short, int, int, int);
+    virtual long handle_char(long, short);
+    virtual long handle_command(unsigned int, long);
+    virtual long handle_user_command(unsigned int, long);
+    virtual long handle_timer_command(unsigned int, long);
+    virtual long handle_scroll(long, long);
+    virtual long handle_mouse_down(unsigned char, long, long, int, int);
+    virtual long handle_mouse_move(long, long, int, int);
+    virtual long handle_mouse_up(unsigned char, long, long, int, int);
+    virtual long handle_mouse_dbl_click(unsigned char, long, long, int, int);
+    virtual long mouse_move_action(long, long, int, int);
+    virtual long mouse_left_down_action(long, long, int, int);
+    virtual long mouse_left_hold_action(long, long, int, int);
+    virtual long mouse_left_move_action(long, long, int, int);
+    virtual long mouse_left_up_action(long, long, int, int);
+    virtual long mouse_left_dbl_click_action(long, long, int, int);
+    virtual long mouse_right_down_action(long, long, int, int);
+    virtual long mouse_right_hold_action(long, long, int, int);
+    virtual long mouse_right_move_action(long, long, int, int);
+    virtual long mouse_right_up_action(long, long, int, int);
+    virtual long mouse_right_dbl_click_action(long, long, int, int);
+    virtual long key_down_action(long, short, int, int, int);
+    virtual long char_action(long, short);
+    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    virtual void get_true_render_rect(tagRECT*);
+    virtual int is_inside(long, long);
+    virtual void set_focus(int);
+    virtual void set_tab_order(TPanel**, short);
+    virtual void set_tab_order(TPanel*, TPanel*);
+    virtual unsigned char get_help_info(char**, long*, long, long);
+    virtual void stop_sound_system();
+    virtual int restart_sound_system();
+    virtual void take_snapshot();
+    virtual void handle_reactivate();
 
     char gap_04[0xF0];
 };
 
 class TTextPanel : public TPanel {
 public:
+    virtual ~TTextPanel();
+    virtual void set_rect(long, long, long, long);
+    virtual void set_active(int);
+    virtual void draw();
+    virtual long mouse_left_down_action(long, long, int, int);
+    virtual long key_down_action(long, short, int, int, int);
+    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    virtual void set_text(char*);
+    virtual void set_text(long);
+    virtual void set_text(char**, short);
+    virtual void set_bevel_info(int, int, int, int, int, int, int);
+
     char gap_F4[0x2C];
     unsigned long text_color1; // +0x120
 
@@ -64,6 +124,7 @@ public:
 
 class TButtonPanel : public TPanel {
 public:
+    virtual void set_state(short state);
     void set_state_by_id(long id);
     int get_state();
     int get_text(short state, char** text1, char** text2);
@@ -256,14 +317,14 @@ void TribeMPSetupScreen::fillPlayers()
             } else {
                 this->playerCDText[i]->set_active(rge_base_game->playerHasCD(i));
                 if (comm->IsHost() || rge_base_game->playerVersion(0) != 0) {
-                    this->playerVersionText[i]->set_text_string(rge_base_game->playerVersionString(i));
+                    this->playerVersionText[i]->set_text(rge_base_game->playerVersionString(i));
                     this->playerVersionText[i]->set_active(1);
                 } else if (i == 0) {
-                    this->playerVersionText[0]->set_text_string(rge_base_game->playerVersionString(0));
+                    this->playerVersionText[0]->set_text(rge_base_game->playerVersionString(0));
                     this->playerVersionText[0]->set_active(1);
                 } else if (is_me) {
                     rge_base_game->setPlayerVersion(i, 1);
-                    this->playerVersionText[i]->set_text_string(rge_base_game->playerVersionString(i));
+                    this->playerVersionText[i]->set_text(rge_base_game->playerVersionString(i));
                     this->playerVersionText[i]->set_active(1);
                 } else {
                     this->playerVersionText[i]->set_active(0);
@@ -284,7 +345,7 @@ void TribeMPSetupScreen::fillPlayers()
             unsigned long color2;
             this->playerColor[i]->get_text((short)state, &text1, &text2);
             this->playerColor[i]->get_text_color((short)state, &color1, &color2);
-            this->playerColorText[i]->set_text_string(text1);
+            this->playerColorText[i]->set_text(text1);
             this->playerColorText[i]->set_text_color(color1, color2);
             this->playerColor[i]->set_active(0);
             this->playerColorText[i]->set_active(0);
@@ -309,7 +370,7 @@ void TribeMPSetupScreen::fillPlayers()
 
             state = this->playerTeam[i]->get_state();
             this->playerTeam[i]->get_text((short)state, &text1, &text2);
-            this->playerTeamText[i]->set_text_string(text1);
+            this->playerTeamText[i]->set_text(text1);
             this->playerTeam[i]->set_active(0);
             this->playerTeamText[i]->set_active(0);
 
@@ -342,12 +403,12 @@ void TribeMPSetupScreen::fillPlayers()
                     this->playerNameDrop[i]->insert_line(0, comm->GetPlayerName(i + 1), humanity);
                 }
                 this->playerNameDrop[i]->set_line(this->playerNameDrop[i]->get_line(humanity));
-                this->playerNameText[i]->set_text_string(this->playerNameDrop[i]->get_text());
+                this->playerNameText[i]->set_text(this->playerNameDrop[i]->get_text());
             } else {
                 if (is_me == 1) {
-                    this->playerNameText[i]->set_text_id(0x25B3);
+                    this->playerNameText[i]->set_text((long)0x25B3);
                 } else {
-                    this->playerNameText[i]->set_text_string(this->playerNameDrop[i]->get_text());
+                    this->playerNameText[i]->set_text(this->playerNameDrop[i]->get_text());
                 }
             }
 
@@ -364,7 +425,7 @@ void TribeMPSetupScreen::fillPlayers()
                         this->playerCivDrop[i]->get_line(civ));
                 }
             }
-            this->playerCivText[i]->set_text_string(this->playerCivDrop[i]->get_text());
+            this->playerCivText[i]->set_text(this->playerCivDrop[i]->get_text());
 
             if (this->scenarioPlayerDrop[i]->mode != 2) {
                 if (is_me == 1 && this->myScenarioPlayer != -1) {
@@ -376,7 +437,7 @@ void TribeMPSetupScreen::fillPlayers()
                         this->scenarioPlayerDrop[i]->get_line(scenario_player));
                 }
             }
-            this->scenarioPlayerText[i]->set_text_string(this->scenarioPlayerDrop[i]->get_text());
+            this->scenarioPlayerText[i]->set_text(this->scenarioPlayerDrop[i]->get_text());
 
             if (rge_base_game->multiplayerGame() && comm->IsHost() && !is_me) {
                 this->playerNameDrop[i]->set_active(1);
