@@ -112,76 +112,7 @@ static const char s_sprite_format[] =
 static const char s_picture_format[] = " %hd %hd %hd %hd";
 static const char s_sound_format[] = "%hd %hd %hd";
 
-class RGE_Color_Table;
-class TShape;
-class RGE_Sprite;
-
-class RGE_Sound {
-public:
-    char gap_00[0x0C];
-    short id;
-};
-
-class RGE_Picture_List {
-public:
-    short picture_num;
-    short gap_02;
-    RGE_Sprite* sprite;
-    short offset_x;
-    short offset_y;
-    short facet;
-    short gap_0E;
-};
-
-class RGE_Sound_List {
-public:
-    RGE_Sound* sound[3];
-    short frame[3];
-    short gap_12;
-};
-
-class RGE_Sprite {
-public:
-    char pict_name[13];
-    char gap_0D[3];
-    long resource_id;
-    unsigned char loaded;
-    char gap_15[3];
-    RGE_Color_Table** color_tables;
-    TShape* shape;
-    long last_time;
-    long delta_time;
-    unsigned char color_flag;
-    unsigned char draw_level;
-    short color_table;
-    unsigned char transparent_picking_flag;
-    char gap_2D[1];
-    short box_x1;
-    short box_y1;
-    short box_x2;
-    short box_y2;
-    short draw_list_num;
-    RGE_Picture_List* draw_list;
-    RGE_Sound* main_sound;
-    unsigned char micro_man_sound;
-    char gap_41[3];
-    RGE_Sound_List* sound_list;
-    char name[21];
-    char gap_5D[1];
-    short frame_num;
-    short facet_num;
-    char gap_62[2];
-    float base_speed;
-    float duration;
-    float pause_between_loops;
-    unsigned char flag;
-    char gap_71[1];
-    short id;
-    unsigned char mirror_flag;
-    char gap_75[3];
-
-    RGE_Sprite(FILE* infile, short sprite_id, RGE_Sound** sounds);
-};
+#include "..\..\include\sprite_context.h"
 
 RGE_Sprite::RGE_Sprite(FILE* infile, short sprite_id, RGE_Sound** sounds)
 {
@@ -261,15 +192,15 @@ RGE_Sprite::RGE_Sprite(FILE* infile, short sprite_id, RGE_Sound** sounds)
     this->transparent_picking_flag = (unsigned char)temp_directional;
     this->micro_man_sound = (unsigned char)(0 < temp_micro_man_sound);
 
-    this->flag = (unsigned char)(0 < temp_randomize_on_start);
+    this->flags = (unsigned char)(0 < temp_randomize_on_start);
     if (temp_loop_once != 0) {
-        this->flag = (unsigned char)((0 < temp_randomize_on_start) + 2);
+        this->flags = (unsigned char)((0 < temp_randomize_on_start) + 2);
     }
     if (sound_id != 0) {
-        this->flag = (unsigned char)(this->flag + 4);
+        this->flags = (unsigned char)(this->flags + 4);
     }
     if (sound_frame != 0) {
-        this->flag = (unsigned char)(this->flag + 8);
+        this->flags = (unsigned char)(this->flags + 8);
     }
 
     if (*draw_count > 0) {

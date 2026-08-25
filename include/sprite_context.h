@@ -18,6 +18,7 @@ public:
                              unsigned char, unsigned char*);
     unsigned char shape_mirror(TDrawArea*, long, long, long,
                                unsigned char, unsigned char*);
+    unsigned char shape_check(long, long, long);
     unsigned char shape_minmax(long* out_minx, long* out_miny,
                                long* out_maxx, long* out_maxy,
                                long facet);
@@ -45,6 +46,8 @@ public:
     short frame[3];
     char gap_12[2];
 };
+
+struct _iobuf;
 
 class RGE_Picture_List {
 public:
@@ -97,6 +100,13 @@ public:
     unsigned char mirror_flag;
     char gap_75[3];
 
+    RGE_Sprite(short id);
+    RGE_Sprite(int handle, RGE_Sound** sounds,
+               RGE_Color_Table** color_tables);
+    RGE_Sprite(_iobuf* infile, short sprite_id, RGE_Sound** sounds);
+    ~RGE_Sprite();
+    void rehook(RGE_Sprite** sprites);
+    void save(int handle);
     void load_facets(RGE_Sprite** facets);
     void play_sound(short param_1, short param_2, short param_3);
     unsigned char get_facetindex(long facet, long frame, long& frame_out);
@@ -125,6 +135,7 @@ public:
     unsigned char shape_hit_test(short x, short y, long facet, long value);
     RGE_Active_Sprite* make_active_sprite();
     int check_for_shadows();
+    void update(unsigned long param_1);
 };
 
 #endif

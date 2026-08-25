@@ -122,30 +122,18 @@
 // (29.27%; bounded edit 14.63%), first mismatch +000C. No accepted_drift:
 // remaining mismatch is broad register/scheduling/block-shape drift, not local.
 
-struct TShape {
-    ~TShape();
-};
+// Candidate TU closure retains the natural parameter read. The volatile probe
+// was diagnostic only and is not part of the compiler-facing source.
+#include "..\..\include\sprite_context.h"
 
 void operator_delete(void* ptr);
-
-struct RGE_Sprite {
-    char field_00[0x14];
-    unsigned char loaded;
-    char field_15[0x07];
-    TShape* shape;
-    unsigned long last_time;
-    int delta_time;
-
-    void update(unsigned long param_1);
-};
 
 void RGE_Sprite::update(unsigned long param_1) {
     if (loaded) {
         TShape* pS = shape;
         if (pS) {
             int dt = delta_time;
-            volatile unsigned long* ptime = &param_1;
-            unsigned long time = *ptime;
+            unsigned long time = param_1;
             if ((double)dt == 0.0) {
                 this->last_time = time;
                 this->delta_time = 1;

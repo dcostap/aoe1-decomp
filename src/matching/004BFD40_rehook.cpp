@@ -7,22 +7,7 @@
 // attempt 7: cast draw_list_num to int, still 80
 // exact basin: keep the duplicated `draw_list_num > 0` guard and use a `goto loop_test / loop_body` form; that preserves the original early `mov ax`, repeated draw_list reload, and 16-byte scaling
 
-class RGE_Picture_List {
-public:
-    short picture_num;
-    void* sprite;
-    char gap_08[0x8];
-};
-
-class RGE_Sprite {
-public:
-    char gap_00[0x36];
-    short draw_list_num;
-    RGE_Picture_List* draw_list;
-
-    void rehook(RGE_Sprite** sprites);
-    void load_facets(RGE_Sprite** sprites);
-};
+#include "..\..\include\sprite_context.h"
 
 void RGE_Sprite::rehook(RGE_Sprite** sprites) {
     short i;

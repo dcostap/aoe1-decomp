@@ -9,16 +9,7 @@
 // Tried: unsigned-char mirror local (stack spill), unsigned-int/int/long mirror (xor eax or size miss), direct member tests (best), pointer-param and local output-pointer aliases, ref aliases, volatile output reloads (bad: changes AL/EDX mirror register from offset 1), split/combined arithmetic for (half-facet)+facet_num, self-assign/add-zero/never-if reload blockers, vc5-small flag preset and /Od. No exact.
 // Give-up: remaining best drift is localized to mirrored-transform block: VC5 optimizes away original store/reload through output reference (`mov esi,[edx]`) and computes in EAX, making the block 4 bytes shorter; subsequent mirrored/nonmirrored tails are behaviorally equivalent but shifted. Leaving in scratch, not proposing accepted_drift without review.
 
-class RGE_Sprite {
-public:
-    char gap_00[0x5E];
-    short frame_num;
-    short facet_num;
-    char gap_62[0x12];
-    unsigned char mirror_flag;
-
-    unsigned char get_facetindex(long facet, long frame, long& index);
-};
+#include "..\..\include\sprite_context.h"
 
 unsigned char RGE_Sprite::get_facetindex(long facet, long frame, long& index) {
     if (this->mirror_flag != 0 && this->facet_num == 2) {
