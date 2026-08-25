@@ -1716,10 +1716,14 @@
         "00421FA0": "src/matching/00421FA0_calc_timing_text.cpp",
         "00422030": "src/matching/00422030_show_timings.cpp",
         "00422050": "src/matching/00422050_show_comm.cpp",
-        "00422090": "src/matching/00422090_show_ai.cpp"
+        "00422090": "src/matching/00422090_show_ai.cpp",
+        "004220D0": "src/matching/004220D0_send_game_options.cpp",
+        "004220F0": "src/matching/004220F0_receive_game_options.cpp"
       },
       "symbols": {
-        "00422090": "?show_ai@RGE_Base_Game@@MAEXXZ"
+        "00422090": "?show_ai@RGE_Base_Game@@MAEXXZ",
+        "004220D0": "?send_game_options@RGE_Base_Game@@UAEXXZ",
+        "004220F0": "?receive_game_options@RGE_Base_Game@@UAEXXZ"
       }
     },
     {
