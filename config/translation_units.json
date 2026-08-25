@@ -2,13 +2,18 @@
   "translation_units": [
     {
       "name": "com_obj_enter",
-      "source": "src/com_obj_enter_tu.cpp",
-      "flags": "config/flags/00431150_enter.rsp",
+      "source": "src/com_obj_tu.cpp",
+      "flags": "config/flags/default.rsp",
       "owners": {
-        "004304A0": "src/matching/004304A0_reset_attack_timer.cpp",
-        "00431150": "src/matching/00431150_enter.cpp"
+        "0042FC90": "src/matching/0042FC90_calc_attack_modifier.cpp",
+        "00430EC0": "src/matching/00430EC0_moveAwayFrom.cpp",
+        "00431490": "src/matching/00431490_rateOfFire.cpp",
+        "004315A0": "src/matching/004315A0_weaponRange.cpp",
+        "004315B0": "src/matching/004315B0_minimumWeaponRange.cpp"
       },
-      "symbols": {}
+      "symbols": {
+        "004315A0": "?weaponRange@RGE_Combat_Object@@UAEMXZ"
+      }
     },
     {
       "name": "zone_map",
@@ -1450,18 +1455,56 @@
     {
       "name": "tcommand_context",
       "source": "src/tcommand_tu.cpp",
-      "flags": "config/flags/default.rsp",
+      "flags": "config/flags/00509AF0_do_command_research.rsp",
       "owners": {
+        "00509720": "src/matching/00509720_TRIBE_Command.cpp",
+        "00509770": "src/matching/00509770_do_command.cpp",
+        "00509910": "src/matching/00509910_do_command_tribe_create.cpp",
+        "00509980": "src/matching/00509980_do_command_make.cpp",
+        "00509AF0": "src/matching/00509AF0_do_command_research.cpp",
+        "00509C60": "src/matching/00509C60_do_command_build.cpp",
+        "0050A010": "src/matching/0050A010_place_line_of_walls.cpp",
+        "0050A490": "src/matching/0050A490_do_command_cancel_build.cpp",
+        "0050A510": "src/matching/0050A510_do_command_give_attribute.cpp",
+        "0050A730": "src/matching/0050A730_do_command_unload.cpp",
+        "0050A7B0": "src/matching/0050A7B0_do_command_queue.cpp",
+        "0050A7F0": "src/matching/0050A7F0_command_make.cpp",
+        "0050A860": "src/matching/0050A860_command_make.cpp",
+        "0050A8D0": "src/matching/0050A8D0_command_research.cpp",
+        "0050A940": "src/matching/0050A940_command_research.cpp",
+        "0050A9B0": "src/matching/0050A9B0_command_build.cpp",
+        "0050AB30": "src/matching/0050AB30_command_build_wall.cpp",
+        "0050AC70": "src/matching/0050AC70_command_explore.cpp",
+        "0050AD00": "src/matching/0050AD00_command_allied_victory.cpp",
+        "0050AEE0": "src/matching/0050AEE0_command_upgrade_town.cpp",
         "0050AF30": "src/matching/0050AF30_command_quick_build.cpp",
         "0050AF80": "src/matching/0050AF80_command_shared_los.cpp",
         "0050AFD0": "src/matching/0050AFD0_command_cancel_build.cpp",
         "0050B020": "src/matching/0050B020_command_attack_ground.cpp",
         "0050B0D0": "src/matching/0050B0D0_command_cheat.cpp",
+        "0050B130": "src/matching/0050B130_command_give_attribute.cpp",
         "0050B190": "src/matching/0050B190_command_trade_attribute.cpp",
         "0050B230": "src/matching/0050B230_command_trade_attribute.cpp",
-        "0050B290": "src/matching/0050B290_command_repair.cpp"
+        "0050B290": "src/matching/0050B290_command_repair.cpp",
+        "0050B330": "src/matching/0050B330_command_unload.cpp",
+        "0050B3E0": "src/matching/0050B3E0_command_queue.cpp"
       },
       "symbols": {
+        "00509770": "?do_command@TRIBE_Command@@UAEXPAX@Z",
+        "0050A7F0": "?command_make@TRIBE_Command@@QAEXPAVRGE_Static_Object@@F@Z",
+        "0050A860": "?command_make@TRIBE_Command@@QAEXHHHH@Z",
+        "0050A8D0": "?command_research@TRIBE_Command@@QAEXPAVRGE_Static_Object@@F@Z",
+        "0050A940": "?command_research@TRIBE_Command@@QAEXHHHH@Z",
+        "0050A9B0": "?command_build@TRIBE_Command@@QAEXPAPAVRGE_Static_Object@@FFMM@Z",
+        "00509C60": "?do_command_build@TRIBE_Command@@QAEXPAUTRIBE_Command_Build@@@Z",
+        "0050AB30": "?command_build_wall@TRIBE_Command@@QAEXPAPAVRGE_Static_Object@@FFJJJJ@Z",
+        "0050AC70": "?command_explore@TRIBE_Command@@QAEXHPAHHMM@Z",
+        "0050AFD0": "?command_cancel_build@TRIBE_Command@@QAEXPAVRGE_Static_Object@@@Z",
+        "0050B020": "?command_attack_ground@TRIBE_Command@@QAEXPAPAVRGE_Static_Object@@FMM@Z",
+        "0050B290": "?command_repair@TRIBE_Command@@QAEXPAPAVRGE_Static_Object@@FPAV2@@Z",
+        "0050B130": "?command_give_attribute@TRIBE_Command@@UAEXHHHMM@Z",
+        "0050B330": "?command_unload@TRIBE_Command@@QAEXPAPAVRGE_Static_Object@@FMM@Z",
+        "0050B3E0": "?command_queue@TRIBE_Command@@QAEXPAVRGE_Static_Object@@FF@Z",
         "0050B190": "?command_trade_attribute@TRIBE_Command@@QAEXPAPAVRGE_Static_Object@@FJ@Z",
         "0050B230": "?command_trade_attribute@TRIBE_Command@@QAEXHHJ@Z"
       }
