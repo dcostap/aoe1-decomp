@@ -7,6 +7,7 @@
 
 #include <new.h>
 
+#ifndef TWORLD_PHASE2_CONTEXT
 class TRIBE_Tech {
 public:
     virtual ~TRIBE_Tech();
@@ -26,6 +27,7 @@ public:
 
     virtual ~TRIBE_World();
 };
+#endif
 
 extern void __cdecl operator_delete(void* p);
 

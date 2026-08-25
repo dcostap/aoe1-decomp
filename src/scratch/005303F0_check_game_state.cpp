@@ -42,6 +42,7 @@
 // 1437 strict differing bytes, and 63.37% exact-block coverage.
 // Unresolved: the victory guard hoists i=1 and team-array cursor homes differ.
 
+#ifndef TWORLD_PHASE2_CONTEXT
 class RGE_Victory_Conditions {
 public:
     int get_victory_points();
@@ -54,7 +55,7 @@ extern float DAT_00577580;
 
 class RGE_Player {
 public:
-    virtual void v00();
+    virtual ~RGE_Player();
     char gap_04[0x30];
     RGE_Victory_Conditions* victory; // +34
     char gap_38[0x12];
@@ -87,7 +88,7 @@ public:
 
 class RGE_Game_World {
 public:
-    virtual void v00();
+    virtual unsigned char data_load_world(void* file);
     char gap_04[0x1d - 4];
     unsigned char game_state;     // +1d
     unsigned char game_end_condition; // +1e
@@ -112,11 +113,23 @@ public:
 
 class RGE_Base_Game {
 public:
-    virtual void v00(); virtual void v01(); virtual void v02(); virtual void v03();
-    virtual void v04(); virtual void v05(); virtual void v06(); virtual void v07();
-    virtual void v08(); virtual void v09(); virtual void v0a(); virtual void v0b();
-    virtual void v0c(); virtual void v0d(); virtual void v0e(); virtual void v0f();
-    virtual void send_message(int msg, int player, int zero1, int zero2, int zero3);
+    virtual ~RGE_Base_Game();
+    virtual int run();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual void set_prog_mode(int);
+    virtual void set_game_mode(int, int);
+    virtual void set_player(short);
+    virtual int get_error_code();
+    virtual char* get_string(long);
+    virtual char* get_string(long, char*, int);
+    virtual char* get_string(int, long, char*, int);
+    virtual char* get_string2(int, long, long, char*, int);
+    virtual void* get_view_panel();
+    virtual void* get_map_panel();
+    virtual void* new_scenario_header(int);
+    virtual void* new_scenario_header(void* scenario);
+    virtual void* new_scenario_info(int);
+    virtual void notification(int msg, int player, int zero1, int zero2, int zero3);
 };
 
 extern RGE_Base_Game* rge_base_game;
@@ -133,6 +146,7 @@ public:
 
     unsigned char check_game_state();
 };
+#endif
 
 unsigned char TRIBE_World::check_game_state()
 {
@@ -173,7 +187,11 @@ unsigned char TRIBE_World::check_game_state()
                 int best = -1;
                 for (i = 1; i < this->player_num; ++i) {
                     if (team_size[i] > best) {
-                        winner = this->players[i];
+#ifdef TWORLD_PHASE2_CONTEXT
+                    winner = (TRIBE_Player*)this->players[i];
+#else
+                    winner = this->players[i];
+#endif
                         best = team_size[i];
                     }
                 }
@@ -198,7 +216,11 @@ unsigned char TRIBE_World::check_game_state()
             for (i = 1; i < this->player_num; ++i) {
                 if (player_team[i] == -1) {
                     player_team[i] = local_198;
+#ifdef TWORLD_PHASE2_CONTEXT
+                    team_player[local_198][team_size[local_198]] = (TRIBE_Player*)this->players[i];
+#else
                     team_player[local_198][team_size[local_198]] = this->players[i];
+#endif
                     ++team_size[local_198];
                     if (this->players[i]->allied_victory != 0) {
                         local_1a0 = 1;
@@ -208,8 +230,13 @@ unsigned char TRIBE_World::check_game_state()
                                 this->players[i]->relation(local_1a0) == 0 &&
                                 this->players[local_1a0]->relation(i) == 0) {
                                 player_team[local_1a0] = local_198;
-                                team_player[local_198][team_size[local_198]] =
-                                    this->players[local_1a0];
+#ifdef TWORLD_PHASE2_CONTEXT
+                                    team_player[local_198][team_size[local_198]] =
+                                        (TRIBE_Player*)this->players[local_1a0];
+#else
+                                    team_player[local_198][team_size[local_198]] =
+                                        this->players[local_1a0];
+#endif
                                 ++team_size[local_198];
                             }
                         }
@@ -234,7 +261,7 @@ unsigned char TRIBE_World::check_game_state()
                             if (this->victory_type == 0) {
                                 for (int j = 0; j < count; ++j)
                                     team_player[i][j]->artifact_held_time = 2000.0f;
-                                rge_base_game->send_message(0x72,
+                                rge_base_game->notification(0x72,
                                     p->player_id, 0, 0, 0);
                             }
                         }
@@ -256,7 +283,7 @@ unsigned char TRIBE_World::check_game_state()
                             if (this->victory_type == 0) {
                                 for (int j = 0; j < count; ++j)
                                     team_player[i][j]->artifact_held_time = -1.0f;
-                                rge_base_game->send_message(0x73,
+                                rge_base_game->notification(0x73,
                                     p->player_id, 0, 0, 0);
                             }
                         }
@@ -280,7 +307,7 @@ unsigned char TRIBE_World::check_game_state()
                                 for (int j = 0; j < count; ++j)
                                     team_player[i][j]->ruin_held_time = 2000.0f;
                                 RGE_Base_Game* game = rge_base_game;
-                                game->send_message(0x74, p->player_id, 0, 0, 0);
+                                game->notification(0x74, p->player_id, 0, 0, 0);
                             }
                         }
                         else if (held >= DAT_00577578 && this->victory_type == 0) {
@@ -301,7 +328,7 @@ unsigned char TRIBE_World::check_game_state()
                             if (this->victory_type == 0) {
                                 for (int j = 0; j < count; ++j)
                                     team_player[i][j]->ruin_held_time = -1.0f;
-                                rge_base_game->send_message(0x75, p->player_id, 0, 0, 0);
+                                rge_base_game->notification(0x75, p->player_id, 0, 0, 0);
                             }
                         }
                     }

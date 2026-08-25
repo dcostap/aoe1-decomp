@@ -98,6 +98,7 @@ class RGE_Player;
 class RGE_Victory_Entry;
 class RGE_Victory_Point_Entry;
 
+#ifndef TWORLD_PHASE2_CONTEXT
 class RGE_Victory_Conditions {
 public:
     virtual ~RGE_Victory_Conditions();
@@ -110,6 +111,7 @@ public:
     long tot_victory_points;
     long get_victory_points();
 };
+#endif
 
 class RGE_Game_World;
 class RGE_Timeline;
@@ -138,6 +140,7 @@ public:
     RGE_Tile_List_Node* list;
 };
 
+#ifndef TWORLD_PHASE2_CONTEXT
 class RGE_Player {
 public:
     virtual ~RGE_Player();
@@ -200,6 +203,7 @@ public:
 
     int computerPlayer();
 };
+#endif
 
 class TRIBE_History_Events {
 public:
@@ -223,6 +227,7 @@ public:
     long max_number_of_entries;
 };
 
+#ifndef TWORLD_PHASE2_CONTEXT
 class TRIBE_Player : public RGE_Player {
 public:
     TRIBE_Player_Tech* tech_tree; // +0x220
@@ -242,13 +247,16 @@ public:
     float ruin_held_time; // +0x840
     float artifact_held_time; // +0x844
 };
+#endif
 
+#ifndef TWORLD_PHASE2_CONTEXT
 struct TRIBE_Zone_High_Score_Info {
     long score;
     unsigned char civ;
     char player_name[16];
     unsigned char num_allies;
 };
+#endif
 
 class TRIBE_Zone_Player_Info {
 public:
@@ -325,6 +333,7 @@ public:
     unsigned long last_max_time;
 };
 
+#ifndef TWORLD_PHASE2_CONTEXT
 class RGE_Base_Game {
 public:
     class RGE_Game_Options {
@@ -454,7 +463,9 @@ public:
     int fullVisibility();
     int playerTeam(int player);
 };
+#endif
 
+#ifndef TWORLD_PHASE2_CONTEXT
 class TRIBE_Game : public RGE_Base_Game {
 public:
     enum MapSize {
@@ -540,12 +551,14 @@ public:
     int playerColor(int player);
     void get_tribe_options(struct TRIBE_Game_Options* options);
 };
+#endif
 
 class PlayerName {
 public:
     char Name[256];
 };
 
+#ifndef TWORLD_PHASE2_CONTEXT
 class RGE_Scenario {
 public:
     virtual RGE_Static_Object* get_object_pointer(int object_id);
@@ -588,6 +601,7 @@ public:
 
     char* Get_scenario_name();
 };
+#endif
 
 class TChat;
 class NAME;
@@ -634,6 +648,7 @@ public:
     unsigned long DataSizeToFollow;
 };
 
+#ifndef TWORLD_PHASE2_CONTEXT
 class TCommunications_Handler {
 public:
     int OptionsChanged;
@@ -739,6 +754,7 @@ public:
 
     int SendZoneMessage(char* message, unsigned long length);
 };
+#endif
 
 class RGE_Command {
 public:
@@ -767,6 +783,7 @@ class RGE_Player_Info;
 class AIPlayBook;
 class TRIBE_Tech;
 
+#ifndef TWORLD_PHASE2_CONTEXT
 class RGE_Game_World {
 public:
     virtual unsigned char data_load_world(FILE* file);
@@ -902,7 +919,9 @@ public:
     int currentUpdateComputerPlayer; // +0xfc
     int difficultyLevelValue; // +0x100
 };
+#endif
 
+#ifndef TWORLD_PHASE2_CONTEXT
 class TRIBE_World : public RGE_Game_World {
 public:
     virtual unsigned char data_load_world(FILE* file);
@@ -919,6 +938,7 @@ public:
     void fill_in_score(struct TRIBE_Zone_High_Score_Info& info, long group);
     void send_zone_score_info();
 };
+#endif
 
 extern TRIBE_Game* rge_base_game;
 extern TCommunications_Handler* comm;

@@ -25,6 +25,7 @@
 
 void* operator new(unsigned int size);
 
+#ifndef TWORLD_PHASE2_CONTEXT
 class RGE_Effects {
 public:
     char gap_00[0x0C];
@@ -46,6 +47,7 @@ class TRIBE_World : public RGE_Game_World {
 public:
     void effects_init(int param_1);
 };
+#endif
 
 void TRIBE_World::effects_init(int param_1) {
     TRIBE_Effects* e = new TRIBE_Effects(param_1);

@@ -1,9 +1,10 @@
 // 00530370 TRIBE_World::new_scenario
 // PDB source: tworld.cpp
 
+#ifndef TWORLD_PHASE2_CONTEXT
 struct RGE_Player_Info;
 
-class PlayerLike {
+class RGE_Player {
 public:
     char gap_00[0x50];
     float* fields_50;
@@ -14,7 +15,7 @@ public:
     char gap_00[0x3C];
     short player_count;
     char gap_3E[2];
-    PlayerLike** players;
+    RGE_Player** players;
 
     unsigned char new_scenario(RGE_Player_Info& info, int flags);
 };
@@ -23,6 +24,7 @@ class TRIBE_World : public RGE_Game_World {
 public:
     unsigned char new_scenario(RGE_Player_Info& info, int flags);
 };
+#endif
 
 unsigned char TRIBE_World::new_scenario(RGE_Player_Info& info, int flags) {
     unsigned char result = RGE_Game_World::new_scenario(info, flags);

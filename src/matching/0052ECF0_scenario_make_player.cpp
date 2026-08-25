@@ -33,7 +33,9 @@
 // Prefix TU pass: moved world, player, and constructor ownership into the
 //   shared canonical context. The isolated owner remains exact.
 
+#ifndef TWORLD_PHASE2_CONTEXT
 #include "../../include/tworld_prefix_context.h"
+#endif
 
 void TRIBE_World::scenario_make_player(short player_id, unsigned char master_id,
     unsigned char type, unsigned char civ, char* player_info)

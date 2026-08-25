@@ -14,6 +14,7 @@
 //
 // Best source below. If accepted, promote to src/accepted_drift/.
 
+#ifndef TWORLD_PHASE2_CONTEXT
 class RGE_Game_World;
 void* __cdecl operator new(unsigned int size);
 
@@ -33,6 +34,7 @@ class TRIBE_World : public RGE_Game_World {
 public:
     void scenario_init(int param_1, RGE_Game_World* param_2);
 };
+#endif
 
 void TRIBE_World::scenario_init(int param_1, RGE_Game_World* param_2) {
     T_Scenario* s = new T_Scenario(param_1, param_2);

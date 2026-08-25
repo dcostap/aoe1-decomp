@@ -64,7 +64,9 @@
 #include <stdio.h>
 #include <string.h>
 
+#ifndef TWORLD_PHASE2_CONTEXT
 #include "../../include/tworld_prefix_context.h"
+#endif
 
 typedef unsigned char uchar;
 #define S_EMPTY ((const char*)0x592A40)
@@ -72,8 +74,11 @@ typedef unsigned char uchar;
 
 extern void* __cdecl operator_new(unsigned int size);
 extern void __cdecl operator_delete(void* ptr);
+#ifndef TWORLD_PHASE2_CONTEXT
 inline void* __cdecl operator new(unsigned int, void* place) { return place; }
+#endif
 
+#ifndef TWORLD_PHASE2_CONTEXT
 class RGE_Map;
 class RGE_Game_World;
 class RGE_Random_Map_Module;
@@ -183,6 +188,7 @@ public:
     RGE_RMM_Object_Generator(RGE_Map* map, void* module, RGE_Game_World* world, void* info, int flag);
     void add_quick_obj(short object_id, int count, int spacing);
 };
+#endif
 
 static __inline int count_objects(TRIBE_World* world, short id) {
     int count = 0;

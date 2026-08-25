@@ -34,7 +34,9 @@
 // Prefix TU pass: moved the proven player/info ownership into the shared
 // tworld_prefix context. Isolated and six-owner grouped checks remain exact.
 
+#ifndef TWORLD_PHASE2_CONTEXT
 #include "../../include/tworld_prefix_context.h"
+#endif
 
 extern "C" int useComputerPlayers;
 

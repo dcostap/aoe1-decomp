@@ -28,7 +28,9 @@
 // Prefix TU pass: moved world, field, base-load, and read ownership into the
 //   shared canonical context. The isolated owner remains exact.
 
+#ifndef TWORLD_PHASE2_CONTEXT
 #include "../../include/tworld_prefix_context.h"
+#endif
 
 void rge_read(int handle, void* buf, int size);
 

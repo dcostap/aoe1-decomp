@@ -17,6 +17,7 @@
 
 void* __cdecl operator new(unsigned int size);
 
+#ifndef TWORLD_PHASE2_CONTEXT
 class RGE_Game_World;
 
 class T_Scenario {
@@ -35,6 +36,7 @@ class TRIBE_World : public RGE_Game_World {
 public:
     void scenario_init(RGE_Game_World* param_1);
 };
+#endif
 
 void TRIBE_World::scenario_init(RGE_Game_World* param_1) {
     T_Scenario* s = new T_Scenario(param_1);

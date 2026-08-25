@@ -34,6 +34,7 @@
 //   map     @ +0x28 (TRIBE_Map*)
 //   field_30 @ +0x30 (void*, passed to TRIBE_Map ctor as 2nd arg)
 
+#ifndef TWORLD_PHASE2_CONTEXT
 class TRIBE_Map {
 public:
     char gap_00[0xB5F8 - 4];
@@ -50,11 +51,20 @@ public:
 
     void map_init(int param_1, void* param_2);
 };
+#endif
 
+#ifdef TWORLD_PHASE2_CONTEXT
+void TRIBE_World::map_init(int param_1, TSound_Driver* param_2) {
+#else
 void TRIBE_World::map_init(int param_1, void* param_2) {
+#endif
     TRIBE_Map* p = new TRIBE_Map(param_1, this->field_30, 1);
     if (p == 0) {
         p = 0;
     }
+#ifdef TWORLD_PHASE2_CONTEXT
+    this->map = (RGE_Map*)p;
+#else
     this->map = p;
+#endif
 }

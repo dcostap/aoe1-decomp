@@ -38,7 +38,9 @@
 // Shared-context check: the 560-byte boundary, 0x20 frame, six aligned calls,
 // and 306 strict-byte drift are unchanged.
 
+#ifndef TWORLD_PHASE2_CONTEXT
 #include "../../include/tworld_prefix_context.h"
+#endif
 
 void TRIBE_World::check_destructables(short player_id, short master_id,
                                       float x, float y, unsigned char flag)

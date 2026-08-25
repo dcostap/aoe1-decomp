@@ -30,9 +30,10 @@
 // reproduces the original dec/je dispatch and exact 180-byte output; switching a
 // decremented temporary was codegen-equivalent but hoisted the type load.
 
+#ifndef TWORLD_PHASE2_CONTEXT
 class RGE_Game_World {
 public:
-    virtual void v0();
+    virtual void data_load_world();
     unsigned char init_player_type(int player, short index, unsigned char type);
 };
 
@@ -60,14 +61,20 @@ public:
 
     virtual unsigned char init_player_type(int player, short index, unsigned char type);
 };
+#endif
 
 unsigned char TRIBE_World::init_player_type(int player, short index, unsigned char type)
 {
     switch (type) {
     case 1: {
         TRIBE_Master_Player* p = new TRIBE_Master_Player(player);
+#ifdef TWORLD_PHASE2_CONTEXT
+        this->master_players[index] = p;
+        this->master_players[index]->finish_init(player, this->field_38, this->field_30);
+#else
         this->players[index] = p;
         this->players[index]->finish_init(player, this->field_38, this->field_30);
+#endif
         break;
     }
     default:

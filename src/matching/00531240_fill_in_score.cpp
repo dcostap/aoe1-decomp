@@ -9,6 +9,7 @@
 
 #include <string.h>
 
+#ifndef TWORLD_PHASE2_CONTEXT
 class RGE_Victory_Conditions {
 public:
     int get_victory_points_group(unsigned char group);
@@ -45,6 +46,7 @@ public:
 
     void fill_in_score(TRIBE_Zone_High_Score_Info& info, long group);
 };
+#endif
 
 void TRIBE_World::fill_in_score(TRIBE_Zone_High_Score_Info& info, long group)
 {

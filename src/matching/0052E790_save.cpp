@@ -1,7 +1,9 @@
 // VA: 0052E790 TRIBE_World::save (145 B)
 // PDB source: tworld.cpp
 
+#ifndef TWORLD_PHASE2_CONTEXT
 #include "../../include/tworld_prefix_context.h"
+#endif
 
 void TRIBE_World::save(int fd)
 {

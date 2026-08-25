@@ -7,7 +7,9 @@
 // vtable slot 0x74.  The class sizes are the proven 0x848/0x858 allocation
 // sizes, rather than decompiler cursor arithmetic.
 
+#ifndef TWORLD_PHASE2_CONTEXT
 #include "../../include/tworld_prefix_context.h"
+#endif
 
 void TRIBE_World::load_player(int player, unsigned char type, short player_id)
 {

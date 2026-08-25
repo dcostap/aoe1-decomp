@@ -11,6 +11,7 @@
 // setup and equivalent base/index register swap in the final store. Calls, predicates, EH
 // cleanup, stack cleanup, allocation size, constructor call, and memory effects are identical.
 
+#ifndef TWORLD_PHASE2_CONTEXT
 struct FILE;
 
 void* operator new(unsigned int size);
@@ -41,6 +42,7 @@ public:
     char gap_104[0x124 - 0x4C];
     void data_load_players_type(short p1, short p2, FILE* f);
 };
+#endif
 
 void TRIBE_World::data_load_players_type(short p1, short p2, FILE* f)
 {

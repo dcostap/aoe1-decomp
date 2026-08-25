@@ -9,6 +9,7 @@
 // - Inlined the three object-list loops and restored effects 0xd8 and 0xd9;
 //   the result is an exact 1534-byte match with all 44 calls aligned.
 
+#ifndef TWORLD_PHASE2_CONTEXT
 class RGE_Base_Game;
 class RGE_Game_World;
 class RGE_Player;
@@ -18,7 +19,9 @@ class RGE_Object_List;
 class RGE_Object_Node;
 class RGE_Effects;
 class TRIBE_Command;
+class TDrawArea;
 class TPanel;
+struct tagRECT;
 
 class RGE_Base_Game {
 public:
@@ -46,15 +49,17 @@ extern unsigned char die_die_die;
 
 class TPanel {
 public:
+    enum RedrawMode { redraw_none = 0, redraw_local = 1, redraw_all = 2 };
+
     virtual ~TPanel();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
-    virtual void update(int value);
+    virtual long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char);
+    virtual void set_rect(tagRECT);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_color(unsigned char);
+    virtual void set_active(int);
+    virtual void set_positioning();
+    virtual void set_fixed_position(long, long, long, long);
+    virtual void set_redraw(RedrawMode value);
 };
 
 class RGE_Master_Static_Object {
@@ -165,6 +170,7 @@ class TRIBE_World : public RGE_Game_World {
 public:
     void cheat(short player, short cheat_code);
 };
+#endif
 
 void TRIBE_World::cheat(short player, short cheat_code)
 {
@@ -340,12 +346,12 @@ void TRIBE_World::cheat(short player, short cheat_code)
         }
         case 230:
             rge_base_game->set_map_visible(1);
-            rge_base_game->get_view_panel()->update(2);
-            rge_base_game->get_map_panel()->update(2);
+            rge_base_game->get_view_panel()->set_redraw(TPanel::redraw_all);
+            rge_base_game->get_map_panel()->set_redraw(TPanel::redraw_all);
             break;
         case 231:
             rge_base_game->set_map_fog(0);
-            rge_base_game->get_view_panel()->update(2);
+            rge_base_game->get_view_panel()->set_redraw(TPanel::redraw_all);
             break;
         }
     }

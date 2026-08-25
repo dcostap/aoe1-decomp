@@ -3,7 +3,9 @@
 // Attempt log:
 // try 1: natural member implementation with base world_init and TRIBE_Tech allocation.
 
+#ifndef TWORLD_PHASE2_CONTEXT
 #include "../../include/tworld_prefix_context.h"
+#endif
 
 void TRIBE_World::world_init(int param_1, TSound_Driver* sound, TCommunications_Handler* comm)
 {

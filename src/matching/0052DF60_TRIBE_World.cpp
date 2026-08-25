@@ -1,6 +1,9 @@
 // VA: 0052DF60 TRIBE_World ctor
 // tworld.cpp
 
+char data_aoe_ply[] = "data\\aoe.ply";
+
+#ifndef TWORLD_PHASE2_CONTEXT
 class RGE_Game_World {
 public:
     virtual ~RGE_Game_World();
@@ -18,9 +21,7 @@ public:
     TribeAIPlayBook();
 };
 
-char data_aoe_ply[] = "data\\aoe.ply";
-
-class __declspec(novtable) TRIBE_World : public RGE_Game_World {
+class TRIBE_World : public RGE_Game_World {
 public:
     char gap_004[0x9C];
     AIPlayBook* playBook;
@@ -36,14 +37,12 @@ public:
     char controllingComputerPlayer;
     char gap_11E[2];
     int sent_zone_score;
-
     virtual ~TRIBE_World();
     TRIBE_World();
 };
+#endif
 
-TRIBE_World::TRIBE_World() {
-    controllingComputerPlayer = -1;
-    *(int*)this = 0x577458;
+TRIBE_World::TRIBE_World() : controllingComputerPlayer(-1) {
     tech = 0;
     victory_type = 0;
     artifact_count = 0;

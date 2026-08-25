@@ -3,6 +3,7 @@
 // Keep the command owner and method name.  A generic InnerObj::method changes
 // relocation identity even when the instruction bytes stay aligned.
 
+#ifndef TWORLD_PHASE2_CONTEXT
 class TRIBE_Command {
 public:
     void command_cheat(short a, short b);
@@ -16,6 +17,7 @@ public:
     char pad2[0x20];
     short field_7C;
 };
+#endif
 
 void TRIBE_World::send_cheat(short code) {
     this->field_58->command_cheat(this->field_7C, code);

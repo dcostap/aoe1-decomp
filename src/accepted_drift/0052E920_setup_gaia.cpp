@@ -24,7 +24,9 @@
 // Prefix TU pass: migrated to the shared canonical tworld context without changing
 // the reviewed drift or the six exact anchors.
 
+#ifndef TWORLD_PHASE2_CONTEXT
 #include "../../include/tworld_prefix_context.h"
+#endif
 
 void TRIBE_World::setup_gaia() {
     TRIBE_Gaia* g;

@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#ifndef TWORLD_PHASE2_CONTEXT
 class RGE_Game_World {
 public:
     virtual unsigned char data_load_world(FILE* f);
@@ -30,6 +31,7 @@ public:
 
     virtual unsigned char data_load_world(FILE* f);
 };
+#endif
 
 unsigned char TRIBE_World::data_load_world(FILE* f)
 {

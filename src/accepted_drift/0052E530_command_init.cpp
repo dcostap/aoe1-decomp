@@ -21,6 +21,7 @@
 
 void* __cdecl operator new(unsigned int size);
 
+#ifndef TWORLD_PHASE2_CONTEXT
 class TCommunications_Handler;
 class TRIBE_Command;
 
@@ -40,6 +41,7 @@ public:
     char gap_00[0x18];
     TRIBE_Command(TRIBE_World* world, TCommunications_Handler* handler);
 };
+#endif
 
 void TRIBE_World::command_init(int unused, TCommunications_Handler* handler) {
     TRIBE_Command* cmd;
