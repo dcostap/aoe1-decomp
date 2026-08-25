@@ -11,8 +11,13 @@
 //   the binary's redundant loop-entry tests and matched all 261 bytes.
 
 extern "C" void __cdecl color_log(unsigned char, unsigned char, unsigned char);
+#ifndef PLAYER_GROUPED_TU
 extern "C" void __cdecl rge_write(int file, void* data, int size);
+#else
+void rge_write(int file, void* data, int size);
+#endif
 
+#ifndef PLAYER_GROUPED_TU
 class RGE_Master_Static_Object {
 public:
     virtual ~RGE_Master_Static_Object();
@@ -55,6 +60,7 @@ public:
 
     virtual void save2(int file);
 };
+#endif
 
 void RGE_Player::save2(int file) {
     int save_file;

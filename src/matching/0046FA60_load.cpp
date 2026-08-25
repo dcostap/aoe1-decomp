@@ -13,7 +13,7 @@
 //   load. This recovered the exact 475-byte body.
 
 #ifdef PLAYER_GROUPED_TU
-#include "../../include/player_context.h"
+#include "../player_tu_context.h"
 #endif
 
 #ifndef PLAYER_GROUPED_TU
@@ -45,7 +45,7 @@ public:
 
 class RGE_Object_List {
 public:
-    virtual void vf00();
+    virtual void destroy();
     char pad[0x08];
     RGE_Object_List();
     void load_list(int file, RGE_Game_World* world);

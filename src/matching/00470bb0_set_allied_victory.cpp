@@ -1,3 +1,4 @@
+#ifndef PLAYER_GROUPED_TU
 class RGE_Player {
 public:
     virtual ~RGE_Player();
@@ -12,7 +13,8 @@ public:
 
     void set_allied_victory(unsigned char v);
 };
+#endif
 
 void RGE_Player::set_allied_victory(unsigned char v) {
-    this->allied_victory_ = v;
+    this->allied_victory = v;
 }

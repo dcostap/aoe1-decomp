@@ -6,6 +6,8 @@
 // Minimal type stubs needed for this function only
 // ============================================================
 
+#ifndef PLAYER_GROUPED_TU
+
 // Forward declarations for pointer types
 class TMousePointer {
 public:
@@ -124,6 +126,8 @@ public:
     unsigned char groups_used[127];                // +0x19E
     unsigned char _pad_end[0x3];                   // gap at 0x21D
 };
+
+#endif
 
 // ============================================================
 // Function implementation

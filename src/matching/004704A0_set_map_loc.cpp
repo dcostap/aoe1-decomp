@@ -1,3 +1,4 @@
+#ifndef PLAYER_GROUPED_TU
 class RGE_Player {
 public:
     char gap_0[0x11C];
@@ -5,8 +6,9 @@ public:
     short field_11E;
     void set_map_loc(short a, short b);
 };
+#endif
 
 void RGE_Player::set_map_loc(short a, short b) {
-    this->field_11C = a;
-    this->field_11E = b;
+    this->map_x = a;
+    this->map_y = b;
 }

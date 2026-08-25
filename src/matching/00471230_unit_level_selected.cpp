@@ -4,15 +4,15 @@
 // attempt 4: same optimization issue
 // attempt 5: do-while with inner return, same test bx,bx optimization
 // exact basin: a counted `for (; i < 25; i++)` loop with the `j >= sel_count` guard at the top preserves the original `cmp di,bx; jge` instead of collapsing to `test bx,bx; jle`
+#ifndef PLAYER_GROUPED_TU
 class RGE_Master_Object {
 public:
     char gap_00[0x8F];
     unsigned char unit_level;
 };
-
 class RGE_Static_Object {
 public:
-    void* _vftable;
+    virtual ~RGE_Static_Object();
     char gap_04[0x4];
     RGE_Master_Object* master_obj;
 };
@@ -26,6 +26,7 @@ public:
 
     unsigned char unit_level_selected();
 };
+#endif
 
 unsigned char RGE_Player::unit_level_selected() {
     unsigned char u = 0;

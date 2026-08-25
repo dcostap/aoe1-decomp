@@ -1,6 +1,7 @@
 extern "C" void __cdecl free(void* ptr);
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 
+#ifndef PLAYER_GROUPED_TU
 class RGE_Tile_List {
 public:
     int list_size;
@@ -11,6 +12,7 @@ public:
 
     void del_list(void);
 };
+#endif
 
 void RGE_Tile_List::del_list(void) {
     this->num_active = 0;

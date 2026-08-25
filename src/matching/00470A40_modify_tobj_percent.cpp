@@ -9,6 +9,7 @@
 // - Reused the exact modify_tobj source shape and same-TU typed ABI; only the
 //   percentage virtual method at object/master slots 0x50/0x10 differs.
 
+#ifndef PLAYER_GROUPED_TU
 class RGE_Player;
 
 class RGE_Master_Static_Object {
@@ -74,6 +75,7 @@ public:
 
     void modify_tobj_percent(short, short, float, unsigned char);
 };
+#endif
 
 void RGE_Player::modify_tobj_percent(short object_num, short object_group,
                                      float amount, unsigned char amount_type)

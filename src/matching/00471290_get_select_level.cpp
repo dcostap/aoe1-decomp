@@ -4,11 +4,14 @@
 //   Initial: wrong sel_count offset (0x1A0 instead of 0x19C)
 // FLAGS: default.rsp (/O2 /Oy)
 
+#ifndef PLAYER_GROUPED_TU
+#ifndef PLAYER_GROUPED_TU
 class RGE_Static_Object {
 public:
     char gap_00[0x8D];
     unsigned char select_level;
 };
+#endif
 
 class SelectionEntry {
 public:
@@ -26,6 +29,9 @@ public:
 
     unsigned char get_select_level();
 };
+#else
+typedef RGE_Static_Object SelectionEntry;
+#endif
 
 unsigned char RGE_Player::get_select_level() {
     unsigned char select_level = 0xFF;

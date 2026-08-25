@@ -10,8 +10,11 @@
 // `cmp edi,ecx; jge done; jmp loop; xor bl,bl`. Same compare operands, targets,
 // BL state, count store, failure/final paths, calls, stack cleanup, and memory effects;
 // only branch polarity/layout encoding differs.
+#ifndef PLAYER_GROUPED_TU
 #include "..\..\include\game_globals.h"
+#endif
 
+#ifndef PLAYER_GROUPED_TU
 class RGE_Player;
 class RGE_Game_World {
 public:
@@ -37,6 +40,7 @@ public:
     unsigned char relation(long playerId);
     unsigned char check_ally_group(long& count);
 };
+#endif
 
 unsigned char RGE_Player::check_ally_group(long& count)
 {

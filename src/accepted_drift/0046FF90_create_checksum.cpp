@@ -148,6 +148,7 @@
 
 extern "C" long __cdecl __ftol(void);
 
+#ifndef PLAYER_GROUPED_TU
 class RGE_Static_Object;
 class RGE_Player;
 class RGE_Game_World;
@@ -190,24 +191,9 @@ public:
     short number_of_objects;
 };
 
-// The two checksum methods are slots 0x1D0 and 0x1D4 in RGE_Static_Object.
-// Keep the intervening virtual surface so these remain real typed calls.
-#define VPAD1(n) virtual void vf_##n();
-#define VPAD2(n) VPAD1(n) VPAD1(n##_1)
-#define VPAD4(n) VPAD2(n) VPAD2(n##_2)
-#define VPAD8(n) VPAD4(n) VPAD4(n##_4)
-#define VPAD16(n) VPAD8(n) VPAD8(n##_8)
-#define VPAD32(n) VPAD16(n) VPAD16(n##_16)
-#define VPAD64(n) VPAD32(n) VPAD32(n##_32)
-
 class RGE_Static_Object {
 public:
     virtual ~RGE_Static_Object();
-    VPAD64(1)
-    VPAD32(2)
-    VPAD16(3)
-    VPAD2(4)
-    VPAD1(5)
     virtual long get_action_checksum();
     virtual long get_waypoint_checksum();
 
@@ -220,14 +206,6 @@ public:
     float attribute_amount_held;
     unsigned char object_state;
 };
-
-#undef VPAD64
-#undef VPAD32
-#undef VPAD16
-#undef VPAD8
-#undef VPAD4
-#undef VPAD2
-#undef VPAD1
 
 class RGE_Player {
 public:
@@ -258,6 +236,7 @@ public:
 
     long create_checksum(void);
 };
+#endif
 
 long RGE_Player::create_checksum(void) {
     int attribute_checksum = 0;

@@ -5,7 +5,9 @@
 // Attempt log:
 // Probe 1: natural C++
 
+#ifndef PLAYER_GROUPED_TU
 #include "..\..\include\game_globals.h"
+#endif
 
 struct RGE_Terrain_Sub {
     char _gap_00[0x08];

@@ -34,6 +34,7 @@
 
 #include <string.h>
 
+#ifndef PLAYER_GROUPED_TU
 class RGE_Player;
 
 class RGE_Static_Object {
@@ -72,6 +73,8 @@ public:
 
     int group_objects(int);
 };
+
+#endif
 
 int RGE_Player::group_objects(int group)
 {

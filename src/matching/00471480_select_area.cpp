@@ -1,3 +1,4 @@
+#ifndef PLAYER_GROUPED_TU
 class RGE_Player {
 public:
     char gap_00[0x120];
@@ -8,6 +9,7 @@ public:
 
     void select_area(short start_col, short start_row, short end_col, short end_row);
 };
+#endif
 
 void RGE_Player::select_area(short start_col, short start_row, short end_col, short end_row) {
     this->selected_start_col = start_col;

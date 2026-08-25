@@ -1,3 +1,4 @@
+#ifndef PLAYER_GROUPED_TU
 class RGE_Player {
 public:
     virtual ~RGE_Player();
@@ -12,7 +13,8 @@ public:
 
     unsigned char get_allied_victory();
 };
+#endif
 
 unsigned char RGE_Player::get_allied_victory() {
-    return this->allied_victory_;
+    return this->allied_victory;
 }

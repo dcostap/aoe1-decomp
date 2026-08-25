@@ -12,7 +12,7 @@
 // Serialization idiom: write short strlen(name)+1 (includes NUL), then the name bytes.
 
 #ifdef PLAYER_GROUPED_TU
-#include "../../include/player_context.h"
+#include "../player_tu_context.h"
 #endif
 
 #ifndef PLAYER_GROUPED_TU
@@ -30,10 +30,7 @@ public:
 
 class RGE_Victory_Conditions {
 public:
-    virtual void vf0();
-    virtual void vf1();
-    virtual void vf2();
-    virtual void save(int file);    // vtable slot 3 (+0xC)
+    void save(int file);
 };
 
 class RGE_Player {

@@ -1,6 +1,7 @@
 // 00470600 RGE_Player::win_game_now
 // Working pass: natural player/world loop.
 
+#ifndef PLAYER_GROUPED_TU
 class RGE_World;
 
 class RGE_Player {
@@ -25,6 +26,7 @@ public:
     char gap_3E[0x40 - 0x3E];
     RGE_Player** players;
 };
+#endif
 
 void RGE_Player::win_game_now() {
     this->victory_if_game_on();

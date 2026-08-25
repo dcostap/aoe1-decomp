@@ -1,3 +1,4 @@
+#ifndef PLAYER_GROUPED_TU
 class RGE_Master_Static_Object {
 public:
     void make_available(unsigned char param_1);
@@ -7,7 +8,7 @@ class RGE_Victory_Conditions;
 
 class RGE_Player {
 public:
-    virtual void vf00(void);
+    virtual void changeToHumanPlayer(void);
     virtual void set_game_status(unsigned char param_1);
 
     char gap_04[0x10];
@@ -24,6 +25,8 @@ public:
 
     void make_available(short param_1, unsigned char param_2);
 };
+
+#endif
 
 void RGE_Player::make_available(short param_1, unsigned char param_2) {
     RGE_Master_Static_Object* master_object;

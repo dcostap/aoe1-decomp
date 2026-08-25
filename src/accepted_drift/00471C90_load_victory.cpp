@@ -39,11 +39,11 @@
 
 void* __cdecl operator new(unsigned int size);
 
+#ifndef PLAYER_GROUPED_TU
 class RGE_Player;
 
 class RGE_Victory_Conditions {
 public:
-    void* vtable_ptr;
     char pad_04[0x20 - 0x4];
 
     RGE_Victory_Conditions(RGE_Player* player, int param_1, long* param_2, unsigned char param_3);
@@ -56,6 +56,7 @@ public:
 
     void load_victory(int param_1, long* param_2, unsigned char param_3);
 };
+#endif
 
 void RGE_Player::load_victory(int param_1, long* param_2, unsigned char param_3) {
     RGE_Victory_Conditions* victory;

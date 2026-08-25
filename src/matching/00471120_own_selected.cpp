@@ -1,3 +1,4 @@
+#ifndef PLAYER_GROUPED_TU
 class RGE_Player;
 class RGE_Static_Object {
 public:
@@ -14,6 +15,7 @@ public:
 
     int own_selected();
 };
+#endif
 
 // tried the decompiler-style do/while; VC5 pulled the loop condition into the wrong basin
 // next probe: simple while loop with the count check first, matching the asm's compare order

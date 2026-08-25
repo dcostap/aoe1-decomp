@@ -1,3 +1,4 @@
+#ifndef PLAYER_GROUPED_TU
 class RGE_Master_Static_Object;
 class RGE_Object_List;
 class RGE_Victory_Conditions;
@@ -10,12 +11,11 @@ public:
 class RGE_Game_World {
 public:
     char gap_00[0x58];
-    RGE_Command* commands;
+    RGE_Command* command;
 };
 
 class RGE_Player {
 public:
-    void* vtable_ptr;
     int computerPlayerValue;
     int pathingAttemptCapValue;
     int pathingDelayCapValue;
@@ -38,10 +38,11 @@ public:
 
     unsigned char command_place_object(short object_id, float x, float y, float z);
 };
+#endif
 
 unsigned char RGE_Player::command_place_object(short object_id, float x, float y, float z) {
     if (object_id != -1 && this->master_objects[object_id] != 0) {
-        this->world->commands->command_create(object_id, this->id, x, y, z);
+        this->world->command->command_create(object_id, this->id, x, y, z);
         return 1;
     }
     return 0;

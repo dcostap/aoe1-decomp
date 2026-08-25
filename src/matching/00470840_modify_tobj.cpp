@@ -13,6 +13,7 @@
 // - A short positive index local (rather than an int alias) reproduced the
 //   original movsx/shl addressing while retaining the natural typed source.
 
+#ifndef PLAYER_GROUPED_TU
 class RGE_Player;
 
 class RGE_Master_Static_Object {
@@ -76,6 +77,7 @@ public:
 
     void modify_tobj(short, short, float, unsigned char);
 };
+#endif
 
 void RGE_Player::modify_tobj(short object_num, short object_group,
                              float amount, unsigned char amount_type)

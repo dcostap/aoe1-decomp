@@ -1,3 +1,4 @@
+#ifndef PLAYER_GROUPED_TU
 class RGE_Player {
 public:
     virtual ~RGE_Player();
@@ -12,6 +13,7 @@ public:
 
     void random_start();
 };
+#endif
 
 void RGE_Player::random_start() {
 }

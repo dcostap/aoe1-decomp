@@ -11,6 +11,7 @@
 // and pointer-before-size/source-order variants. All either stayed in the same 8-byte
 // setup-order drift or regressed into immediate stores/manual-loop basin. No inline asm/hacks.
 #include <string.h>
+#ifndef PLAYER_GROUPED_TU
 class RGE_Player {
 public:
     char gap_0[0x120];
@@ -29,6 +30,7 @@ public:
     unsigned char groups_used[127];
     void reset_selected();
 };
+#endif
 void RGE_Player::reset_selected() {
     this->selected_start_col = -1;
     this->selected_start_row = -1;

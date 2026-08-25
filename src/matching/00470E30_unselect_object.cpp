@@ -1,9 +1,12 @@
+#ifndef PLAYER_GROUPED_TU
 class RGE_Static_Object {
 public:
     char gap_00[0x36];
     unsigned char selected;
 };
+#endif
 
+#ifndef PLAYER_GROUPED_TU
 class RGE_Player {
 public:
     char gap_00[0x130];
@@ -14,6 +17,7 @@ public:
 
     void unselect_object();
 };
+#endif
 
 void RGE_Player::unselect_object() {
     short i;

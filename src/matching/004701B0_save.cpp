@@ -12,8 +12,13 @@
 #include <string.h>
 
 extern "C" void __cdecl color_log(unsigned char, unsigned char, unsigned char);
+#ifndef PLAYER_GROUPED_TU
 extern "C" void __cdecl rge_write(int file, void* data, int size);
+#else
+void rge_write(int file, void* data, int size);
+#endif
 
+#ifndef PLAYER_GROUPED_TU
 class RGE_Game_World {
 public:
     char gap_00[0x3C];
@@ -68,6 +73,7 @@ public:
 
     virtual void save(int file);
 };
+#endif
 
 void RGE_Player::save(int file)
 {

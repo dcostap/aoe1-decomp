@@ -8,6 +8,7 @@
 
 extern "C" void __cdecl free(void*);
 
+#ifndef PLAYER_GROUPED_TU
 class RGE_Player;
 class RGE_Static_Object;
 class RGE_Master_Static_Object;
@@ -125,6 +126,7 @@ public:
     unsigned char get_selected_objects_to_command(RGE_Static_Object***, void*, int, int, int, int);
     unsigned char command_make_work(RGE_Static_Object*, float, float);
 };
+#endif
 
 unsigned char RGE_Player::command_make_work(RGE_Static_Object* target, float x, float y) {
     RGE_Static_Object** list;
@@ -136,7 +138,7 @@ unsigned char RGE_Player::command_make_work(RGE_Static_Object* target, float x, 
         if (master != 0) {
             master->play_command_sound();
         }
-        this->world->commands->command_work(list, local_4[0], target, x, y);
+        this->world->command->command_work(list, local_4[0], target, x, y);
         if (target != 0) {
             i = 0;
             if (local_4[0] > 0) {

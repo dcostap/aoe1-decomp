@@ -36,13 +36,14 @@
 // same address. No predicate, call, control flow, stack, or memory effect
 // differs; all other 230 bytes are identical.
 
+#ifndef PLAYER_GROUPED_TU
 class RGE_Game_World;
 class RGE_Master_Static_Object;
 class RGE_Victory_Conditions;
 
 class RGE_Player {
 public:
-    virtual void vf00(void);
+    void base_method(void);
     virtual void set_game_status(unsigned char param_1);
 
     char gap_04[0x10];
@@ -84,6 +85,7 @@ class RGE_Victory_Conditions {
 public:
     unsigned char victory_achieved(void);
 };
+#endif
 
 unsigned char RGE_Player::check_victory(void)
 {

@@ -58,7 +58,7 @@
 #include <string.h>
 #include <memory.h>
 #ifdef PLAYER_GROUPED_TU
-#include "../../include/player_context.h"
+#include "../player_tu_context.h"
 #endif
 
 extern "C" void __cdecl getstring(char** destination, char* source);
@@ -98,13 +98,13 @@ public:
 class RGE_Master_Static_Object {
 public:
     virtual ~RGE_Master_Static_Object();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual RGE_Master_Static_Object* copy_obj();
+    virtual void copy_obj();
+    virtual void modify();
+    virtual void modify_delta();
+    virtual void modify_percent();
+    virtual void save();
+    virtual void make_new_obj();
+    virtual RGE_Master_Static_Object* make_new_master();
 };
 
 class RGE_Master_Player {
@@ -142,10 +142,23 @@ public:
     ~RGE_Object_List();
 };
 
+class RGE_Victory_Entry;
+class RGE_Victory_Point_Entry;
+
 class RGE_Victory_Conditions {
 public:
-    void* vtable_ptr;
-    char gap_04[0x1C];
+    virtual void handle_point_condition();
+    virtual void handle_condition();
+    virtual char* condition_description();
+    virtual void save(int file);
+    RGE_Victory_Entry* victory_list;
+    long list_num;
+    RGE_Player* player;
+    unsigned char victory;
+    unsigned char gap_11[3];
+    RGE_Victory_Point_Entry* victory_point_list;
+    long point_list_num;
+    long tot_victory_points;
 
     RGE_Victory_Conditions(RGE_Player* player);
 };
@@ -302,7 +315,7 @@ RGE_Player::RGE_Player(RGE_Game_World* world, RGE_Master_Player* master,
             do {
                 if (master->master_objects[master_index] != 0) {
                     this->master_objects[master_index] =
-                        master->master_objects[master_index]->copy_obj();
+                        master->master_objects[master_index]->make_new_master();
                 }
                 ++master_index;
             } while (master_index < this->master_object_num);

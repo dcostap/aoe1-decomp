@@ -94,16 +94,9 @@ struct XYZBYTEPoint;
 
 class RGE_Static_Object {
 public:
-    virtual void vf00();
+    virtual void recycle_in_to_game();
     int id;
 };
-
-#define VPAD1(n) virtual void vpad##n();
-#define VPAD2(n) VPAD1(n) VPAD1(n##_1)
-#define VPAD4(n) VPAD2(n) VPAD2(n##_2)
-#define VPAD8(n) VPAD4(n) VPAD4(n##_4)
-#define VPAD16(n) VPAD8(n) VPAD8(n##_8)
-#define VPAD32(n) VPAD16(n) VPAD16(n##_16)
 
 class RGE_Player {
 public:

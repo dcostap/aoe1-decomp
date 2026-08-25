@@ -11,6 +11,7 @@ struct RGE_Tile_List_Node {
     int row;
 };
 
+#ifndef PLAYER_GROUPED_TU
 class RGE_Tile_List {
 public:
     int list_size;
@@ -21,19 +22,22 @@ public:
 
     void add_node(int col, int row);
 };
+#endif
 
 void RGE_Tile_List::add_node(int col, int row) {
+    RGE_Tile_List_Node* tiles = (RGE_Tile_List_Node*)this->list;
     if (this->num_active >= this->list_size) {
         RGE_Tile_List_Node* new_list;
         new_list = (RGE_Tile_List_Node*)calloc(this->list_size * 2, sizeof(RGE_Tile_List_Node));
-        memcpy(new_list, this->list, this->list_size * sizeof(RGE_Tile_List_Node));
-        free(this->list);
+        memcpy(new_list, tiles, this->list_size * sizeof(RGE_Tile_List_Node));
+        free(tiles);
         this->list = new_list;
         this->list_size = this->list_size * 2;
     }
 
-    this->list[this->num_active].col = col;
-    this->list[this->num_active].row = row;
+    tiles = (RGE_Tile_List_Node*)this->list;
+    tiles[this->num_active].col = col;
+    tiles[this->num_active].row = row;
     this->num_active++;
     this->new_count++;
 }

@@ -19,6 +19,7 @@
 // - Register allocation: edi/ebp/ebx in original vs ebx/ebp/edi in rebuilt
 // - Vtable slot: original calls [edx+58h] (slot 22) vs [edx] (slot 0) without full class hierarchy
 
+#ifndef PLAYER_GROUPED_TU
 class RGE_Static_Object;
 class RGE_Object_Node {
 public:
@@ -28,18 +29,12 @@ public:
 
 class RGE_Master_Static_Object {
 public:
-    virtual void vf00();
-    virtual void vf04(RGE_Master_Static_Object*);
+    void copy_obj(RGE_Master_Static_Object*);
 };
 
 class RGE_Static_Object {
 public:
-    virtual void vf00(); virtual void vf04(); virtual void vf08(); virtual void vf0C();
-    virtual void vf10(); virtual void vf14(); virtual void vf18(); virtual void vf1C();
-    virtual void vf20(); virtual void vf24(); virtual void vf28(); virtual void vf2C();
-    virtual void vf30(); virtual void vf34(); virtual void vf38(); virtual void vf3C();
-    virtual void vf40(); virtual void vf44(); virtual void vf48(); virtual void vf4C();
-    virtual void vf50(); virtual void vf54(); virtual void vf58(RGE_Master_Static_Object*);
+    void copy_obj(RGE_Master_Static_Object*);
     char gap_00[4];
     RGE_Master_Static_Object* master;
 };
@@ -58,6 +53,7 @@ public:
 
     void copy_obj(short srcIndex, short destIndex);
 };
+#endif
 
 void RGE_Player::copy_obj(short srcIndex, short destIndex) {
     if (this->master_objects[srcIndex] == 0) return;
@@ -65,12 +61,12 @@ void RGE_Player::copy_obj(short srcIndex, short destIndex) {
     if (this->objects != 0) {
         RGE_Object_Node* node = this->objects->list;
         while (node != 0) {
-            RGE_Static_Object* obj = node->obj;
-            if (obj->master == this->master_objects[srcIndex]) {
-                obj->vf58(this->master_objects[destIndex]);
+            RGE_Static_Object* obj = node->node;
+            if (obj->master_obj == this->master_objects[srcIndex]) {
+                obj->copy_obj(this->master_objects[destIndex]);
             }
             node = node->next;
         }
     }
-    this->master_objects[srcIndex]->vf04(this->master_objects[destIndex]);
+    this->master_objects[srcIndex]->copy_obj(this->master_objects[destIndex]);
 }

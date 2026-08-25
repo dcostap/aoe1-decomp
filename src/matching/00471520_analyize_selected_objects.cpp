@@ -1,3 +1,4 @@
+#ifndef PLAYER_GROUPED_TU
 class RGE_Player {
 public:
     virtual ~RGE_Player();
@@ -12,6 +13,7 @@ public:
 
     void analyize_selected_objects();
 };
+#endif
 
 void RGE_Player::analyize_selected_objects() {
 }

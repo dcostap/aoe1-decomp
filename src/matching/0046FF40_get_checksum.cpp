@@ -1,9 +1,10 @@
 class RGE_Master_Static_Object;
 class RGE_Victory_Conditions;
 
+#ifndef PLAYER_GROUPED_TU
 class RGE_Player {
 public:
-    virtual void vf00(void);
+    virtual void changeToHumanPlayer(void);
     virtual void set_game_status(unsigned char param_1);
 
     char gap_04[0x10];
@@ -21,6 +22,7 @@ public:
     long create_checksum(void);
     long get_checksum(void);
 };
+#endif
 
 long RGE_Player::get_checksum(void) {
     if (this->checksum_created_this_update == 0) {

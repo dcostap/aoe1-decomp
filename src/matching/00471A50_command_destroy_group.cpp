@@ -1,3 +1,4 @@
+#ifndef PLAYER_GROUPED_TU
 class RGE_Command {
 public:
     void command_destroy_group(int player_id, int group_id);
@@ -18,8 +19,9 @@ public:
 
     unsigned char command_destroy_group(int group_id);
 };
+#endif
 
 unsigned char RGE_Player::command_destroy_group(int group_id) {
-    this->world->commands->command_destroy_group((int)this->id, group_id);
+    this->world->command->command_destroy_group((int)this->id, group_id);
     return 1;
 }

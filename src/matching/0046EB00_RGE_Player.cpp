@@ -20,7 +20,7 @@
 
 #include <stdlib.h>
 #ifdef PLAYER_GROUPED_TU
-#include "../../include/player_context.h"
+#include "../player_tu_context.h"
 #endif
 
 #ifndef PLAYER_GROUPED_TU

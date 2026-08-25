@@ -2,69 +2,68 @@
 // attempt 1: 61.8%, vtable offsets wrong (createObj at +0 vs +0x18, vfs at +0/+4/+8 vs +0x68/+0x6C/+0xB4)
 // attempt 2: pad vtables to match original slot offsets
 #ifdef PLAYER_GROUPED_TU
-#include "../../include/player_context.h"
+#include "../player_tu_context.h"
 #endif
 
 #ifndef PLAYER_GROUPED_TU
 class RGE_Static_Object {
 public:
-    virtual void vf00_0();
-    virtual void vf00_1();
-    virtual void vf00_2();
-    virtual void vf00_3();
-    virtual void vf00_4();
-    virtual void vf00_5();
-    virtual void vf00_6();
-    virtual void vf00_7();
-    virtual void vf00_8();
-    virtual void vf00_9();
-    virtual void vf00_A();
-    virtual void vf00_B();
-    virtual void vf00_C();
-    virtual void vf00_D();
-    virtual void vf00_E();
-    virtual void vf00_F();
-    virtual void vf00_10();
-    virtual void vf00_11();
-    virtual void vf00_12();
-    virtual void vf00_13();
-    virtual void vf00_14();
-    virtual void vf00_15();
-    virtual void vf00_16();
-    virtual void vf00_17();
-    virtual void vf00_18();
-    virtual void vf00_19();
-    virtual void vf68();          // +0x68 (slot 26)
-    virtual void vf6C();          // +0x6C (slot 27)
-    virtual void vf00_28();
-    virtual void vf00_29();
-    virtual void vf00_2A();
-    virtual void vf00_2B();
-    virtual void vf00_2C();
-    virtual void vf00_2D();
-    virtual void vf00_2E();
-    virtual void vf00_2F();
-    virtual void vf00_30();
-    virtual void vf00_31();
-    virtual void vf00_32();
-    virtual void vf00_33();
-    virtual void vf00_34();
-    virtual void vf00_35();
-    virtual void vf00_36();
-    virtual void vf00_37();
-    virtual void vf00_38();
-    virtual void vfB4(float);     // +0xB4 (slot 44)
+    virtual void recycle_in_to_game();
+    virtual void recycle_out_of_game();
+    virtual void draw();
+    virtual void shadow_draw();
+    virtual void normal_draw();
+    virtual void draw_front_frame();
+    virtual void draw_back_frame();
+    virtual void draw_frame();
+    virtual void update();
+    virtual void check_damage_sprites();
+    virtual void rehook();
+    virtual void save();
+    virtual float teleport();
+    virtual void new_sprite();
+    virtual void add_overlay_sprite();
+    virtual void remove_overlay_sprite();
+    virtual void change_ownership();
+    virtual void modify();
+    virtual void modify_delta();
+    virtual void modify_percent();
+    virtual void transform();
+    virtual void copy_obj();
+    virtual void set_object_state();
+    virtual void remove_visible_resource();
+    virtual void create_doppleganger_when_dying();
+    virtual void destroy_obj();
+    virtual void die_die_die();
+    virtual void damage();
+    virtual void calculateDamage();
+    virtual void rotate();
+    virtual void can_attack();
+    virtual void set_attribute();
+    virtual void set_attribute_amount();
+    virtual void heal();
+    virtual void heal_float();
+    virtual void canRepair();
+    virtual void notify_of_relation();
+    virtual void do_command();
+    virtual void move_to();
+    virtual void work();
+    virtual void stop();
+    virtual void set_attack();
+    virtual void play_command_sound();
+    virtual void play_move_sound();
+    virtual void new_angle(float);
 };
 
 class RGE_Master_Static_Object {
 public:
-    virtual void vf00_0();
-    virtual void vf00_1();
-    virtual void vf00_2();
-    virtual void vf00_3();
-    virtual void vf00_4();
-    virtual void vf00_5();
-    virtual void* vf18(void*, float, float, float); // +0x18 (slot 6)
+    virtual void destroy();
+    virtual void copy_obj();
+    virtual void modify();
+    virtual void modify_delta();
+    virtual void modify_percent();
+    virtual void save();
+    virtual void* make_new_obj(void*, float, float, float);
 };
 
 class RGE_Player {
@@ -80,13 +79,13 @@ RGE_Static_Object* RGE_Player::make_scenario_obj(float x, float y, float z, shor
     RGE_Static_Object* obj = 0;
     RGE_Master_Static_Object* master = this->master_objects[typeID];
     if (master != 0) {
-        obj = (RGE_Static_Object*)master->vf18(this, x, y, z);
+        obj = (RGE_Static_Object*)master->make_new_obj(this, x, y, z);
         if (objType >= 7) {
-            obj->vf68();
+            obj->destroy_obj();
         } else if (objType > 2) {
-            obj->vf6C();
+            obj->die_die_die();
         } else {
-            obj->vfB4(param6);
+            obj->new_angle(param6);
         }
     }
     return obj;

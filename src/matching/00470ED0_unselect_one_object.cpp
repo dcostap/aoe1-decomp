@@ -8,6 +8,7 @@
 // and prechecks the first selected slot, while original keeps a separate jl/fallthrough
 // remove branch and scans from xor eax/movsx. Not accepted-drift quality.
 
+#ifndef PLAYER_GROUPED_TU
 class RGE_Static_Object { public: char gap[0x36]; unsigned char selected; };
 class RGE_Player {
 public:
@@ -17,6 +18,7 @@ public:
     short sel_count;
     void unselect_one_object(short index);
 };
+#endif
 
 void RGE_Player::unselect_one_object(short index)
 {

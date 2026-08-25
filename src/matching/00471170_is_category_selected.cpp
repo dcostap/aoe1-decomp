@@ -1,3 +1,4 @@
+#ifndef PLAYER_GROUPED_TU
 class RGE_Master_Object {
 public:
     char gap_00[0x10];
@@ -19,6 +20,7 @@ public:
 
     int is_category_selected(short category);
 };
+#endif
 
 int RGE_Player::is_category_selected(short category)
 {

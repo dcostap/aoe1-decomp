@@ -10,19 +10,10 @@
 
 extern "C" void __cdecl free(void*);
 
+#ifndef PLAYER_GROUPED_TU
 class RGE_Static_Object {
 public:
-    virtual void v00(); virtual void v04(); virtual void v08(); virtual void v0c();
-    virtual void v10(); virtual void v14(); virtual void v18(); virtual void v1c();
-    virtual void v20(); virtual void v24(); virtual void v28(); virtual void v2c();
-    virtual void v30(); virtual void v34(); virtual void v38(); virtual void v3c();
-    virtual void v40(); virtual void v44(); virtual void v48(); virtual void v4c();
-    virtual void v50(); virtual void v54(); virtual void v58(); virtual void v5c();
-    virtual void v60(); virtual void v64(); virtual void v68(); virtual void v6c();
-    virtual void v70(); virtual void v74(); virtual void v78(); virtual void v7c();
-    virtual void v80(); virtual void v84(); virtual void v88(); virtual void v8c();
-    virtual void v90(); virtual void v94(); virtual void v98(); virtual void v9c();
-    virtual void va0(); virtual void va4(); virtual void va8(); virtual void vac();
+    void play_move_sound();
 };
 
 class RGE_Command {
@@ -46,6 +37,7 @@ public:
     unsigned char get_selected_objects_to_command(RGE_Static_Object*** list, int* listNum, int, int, int, int);
     unsigned char command_stand_ground();
 };
+#endif
 
 unsigned char RGE_Player::command_stand_ground() {
     RGE_Static_Object** list;
@@ -53,8 +45,8 @@ unsigned char RGE_Player::command_stand_ground() {
     int local_4;
 
     if (get_selected_objects_to_command(&list, &listNum, -1, -1, -1, -1)) {
-        list[0]->vac();
-        this->world->commands->command_group_ai_order(this->id, this->id, list, (short)local_4, 0x2d5, -1, -1, -1.0f, -1.0f, -1.0f, 1.0f, 1, 0, 100);
+        list[0]->play_move_sound();
+        this->world->command->command_group_ai_order(this->id, this->id, list, (short)local_4, 0x2d5, -1, -1, -1.0f, -1.0f, -1.0f, 1.0f, 1, 0, 100);
         free(list);
         return 1;
     }

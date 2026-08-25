@@ -1,6 +1,7 @@
 // 00471C00 RGE_Player::remake_visible_map
 // Working pass: natural delete/new visible map with /GX EH context.
 
+#ifndef PLAYER_GROUPED_TU
 class RGE_Player;
 
 class RGE_World {
@@ -25,10 +26,11 @@ public:
 
     void remake_visible_map();
 };
+#endif
 
 void RGE_Player::remake_visible_map() {
     if (this->visible != 0) {
         delete this->visible;
     }
-    this->visible = new RGE_Visible_Map(this->world->objects, this);
+    this->visible = new RGE_Visible_Map(this->world->map, this);
 }

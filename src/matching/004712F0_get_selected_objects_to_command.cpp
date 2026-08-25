@@ -37,6 +37,7 @@
 // - Declaration-initializing the accepted count (`short count = 0`) changed
 //   only the zero-register ownership. The result is an exact 313-byte match.
 
+#ifndef PLAYER_GROUPED_TU
 class RGE_Player;
 
 class RGE_Master_Static_Object {
@@ -53,7 +54,9 @@ public:
     char gap_8E[1];
     unsigned char unit_level;
 };
+#endif
 
+#ifndef PLAYER_GROUPED_TU
 class RGE_Static_Object {
 public:
     virtual ~RGE_Static_Object();
@@ -88,6 +91,14 @@ public:
     unsigned char get_selected_objects_to_command(
         RGE_Static_Object***, short*, short, short, short, short);
 };
+#endif
+
+#ifdef PLAYER_GROUPED_TU
+struct Selection_Locals {
+    int list_count;
+    RGE_Static_Object** list;
+};
+#endif
 
 unsigned char RGE_Player::get_selected_objects_to_command(
     RGE_Static_Object*** out_list, short* out_count,

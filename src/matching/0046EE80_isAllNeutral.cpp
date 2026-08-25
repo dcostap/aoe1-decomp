@@ -11,14 +11,14 @@ public:
 
 class RGE_Player {
 public:
-    virtual int vf00(void);
-    virtual int vf04(void);
-    virtual int vf08(void);
-    virtual int vf0C(void);
-    virtual int vf10(void);
-    virtual int vf14(void);
-    virtual int vf18(void);
-    virtual int vf1C(void);
+    virtual int set_game_status(void);
+    virtual int do_resign(void);
+    virtual int changeToHumanPlayer(void);
+    virtual int changeToComputerPlayer(void);
+    virtual int aiStatus(void);
+    virtual int isEnemy(void);
+    virtual int isAlly(void);
+    virtual int isNeutral(void);
     virtual int isNeutral(int player_id);
 
     char gap_04[0x38];

@@ -1,32 +1,32 @@
+#ifndef PLAYER_GROUPED_TU
 class RGE_Object {
 public:
-    virtual void vf00(void);
-    virtual void vf04(void);
-    virtual void vf08(void);
-    virtual void vf0C(void);
-    virtual void vf10(void);
-    virtual void vf14(void);
-    virtual void vf18(void);
-    virtual void vf1C(void);
-    virtual void vf20(void);
-    virtual void vf24(void);
-    virtual void vf28(void);
-    virtual void vf2C(void);
-    virtual void vf30(void);
-    virtual void vf34(void);
-    virtual void vf38(void);
-    virtual void vf3C(void);
-    virtual void vf40(void);
-    virtual void vf44(void);
-    virtual void vf48(void);
-    virtual void vf4C(void);
-    virtual void vf50(void);
-    virtual void vf54(void);
-    virtual void vf58(void);
-    virtual void vf5C(void);
-    virtual void vf60(void);
-    virtual void vf64(void);
-    virtual void destroy(void);
+    virtual ~RGE_Object();
+    virtual void recycle_in_to_game();
+    virtual void recycle_out_of_game();
+    virtual void draw();
+    virtual void shadow_draw();
+    virtual void normal_draw();
+    virtual void draw_front_frame();
+    virtual void draw_back_frame();
+    virtual void draw_frame();
+    virtual void update();
+    virtual void check_damage_sprites();
+    virtual void rehook();
+    virtual void save();
+    virtual void teleport();
+    virtual void new_sprite();
+    virtual void add_overlay_sprite();
+    virtual void remove_overlay_sprite();
+    virtual void change_ownership();
+    virtual void modify();
+    virtual void modify_delta();
+    virtual void modify_percent();
+    virtual void transform();
+    virtual void copy_obj();
+    virtual void set_object_state();
+    virtual void create_doppleganger_when_dying();
+    virtual void destroy_obj();
 };
 
 class RGE_Object_Node {
@@ -37,7 +37,6 @@ public:
 
 class RGE_Object_List {
 public:
-    void* vfptr;
     RGE_Object_Node* list;
 };
 
@@ -49,12 +48,14 @@ public:
     void destroy_objects();
 };
 
+#endif
+
 void RGE_Player::destroy_objects() {
     RGE_Object_Node* node;
 
     node = this->objects->list;
     while (node != 0) {
-        node->node->destroy();
+        node->node->destroy_obj();
         node = node->next;
     }
 }

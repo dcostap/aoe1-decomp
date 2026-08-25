@@ -1,5 +1,6 @@
 // attempt 12: outer early sel_count guard + own_selected-style inner count check
 
+#ifndef PLAYER_GROUPED_TU
 class RGE_Static_Object;
 
 class RGE_Player {
@@ -12,6 +13,7 @@ public:
     void unselect_one_object(short index);
     void unselect_one_object(RGE_Static_Object* object);
 };
+#endif
 
 void RGE_Player::unselect_one_object(RGE_Static_Object* object) {
     short slot;

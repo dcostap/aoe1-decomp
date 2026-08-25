@@ -8,6 +8,7 @@
 // Probe 5: explicit loop labels worsened into peeled loop.
 // Probe 6: for-loop scan form.
 
+#ifndef PLAYER_GROUPED_TU
 class RGE_Sound { public: void play(int); };
 class RGE_Static_Object { public: char gap_00[0x08]; void* master_obj; void* owner; char gap_10[0x26]; unsigned char selected; };
 class RGE_Player {
@@ -18,6 +19,7 @@ public:
     short sel_count;
     int select_one_object(RGE_Static_Object* obj, int play_sound);
 };
+#endif
 
 int RGE_Player::select_one_object(RGE_Static_Object* obj, int play_sound)
 {

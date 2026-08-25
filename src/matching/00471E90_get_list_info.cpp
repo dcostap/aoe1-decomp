@@ -1,3 +1,4 @@
+#ifndef PLAYER_GROUPED_TU
 class RGE_Tile_List {
 public:
     char gap_0[4];
@@ -7,8 +8,9 @@ public:
 
     void get_list_info(int* out1, int* out2);
 };
+#endif
 
 void RGE_Tile_List::get_list_info(int* out1, int* out2) {
-    *out1 = this->field_10;
-    *out2 = this->field_4;
+    *out1 = this->list_size;
+    *out2 = this->num_active;
 }

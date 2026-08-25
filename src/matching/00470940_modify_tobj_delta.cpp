@@ -9,6 +9,7 @@
 // - Reused the exact modify_tobj source shape and same-TU typed ABI; only the
 //   delta virtual method at object/master slots 0x4c/0x0c differs.
 
+#ifndef PLAYER_GROUPED_TU
 class RGE_Player;
 
 class RGE_Master_Static_Object {
@@ -73,6 +74,7 @@ public:
 
     void modify_tobj_delta(short, short, float, unsigned char);
 };
+#endif
 
 void RGE_Player::modify_tobj_delta(short object_num, short object_group,
                                    float amount, unsigned char amount_type)

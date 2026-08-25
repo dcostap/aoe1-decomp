@@ -1,9 +1,6 @@
 class MemberType {
 public:
-    virtual void vf00();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void save_info(int param);
+    void save_info(int param);
 };
 
 class TRIBE_Gaia {

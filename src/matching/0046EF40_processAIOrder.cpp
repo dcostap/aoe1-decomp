@@ -4,10 +4,10 @@
 #ifndef PLAYER_GROUPED_TU
 class UnitAIModule {
 public:
-    virtual void vf00(void);
-    virtual void vf04(void);
-    virtual void vf08(void);
-    virtual void vf0C(void);
+    virtual void save(void);
+    virtual void load(void);
+    virtual void owner(void);
+    virtual void object(void);
     virtual void processAIOrder(int param_1, int param_3, int param_4, int param_5, float param_6, float param_7, float param_8, float param_9, int param_10, int param_11, int param_12);
 };
 

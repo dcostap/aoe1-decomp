@@ -1,9 +1,10 @@
 class RGE_Master_Static_Object;
 class RGE_Victory_Conditions;
 
+#ifndef PLAYER_GROUPED_TU
 class RGE_Player {
 public:
-    virtual void vf00(void);
+    virtual void changeToHumanPlayer(void);
     virtual void set_game_status(unsigned char param_1);
 
     char gap_04[0x10];
@@ -20,6 +21,7 @@ public:
 
     void loss_if_game_on(void);
 };
+#endif
 
 void RGE_Player::loss_if_game_on(void) {
     if (this->game_status == 0) {

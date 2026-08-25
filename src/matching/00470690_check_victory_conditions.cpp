@@ -1,13 +1,16 @@
 class RGE_Master_Static_Object;
 
+#ifndef PLAYER_GROUPED_TU
 class RGE_Victory_Conditions {
 public:
     unsigned char victory_achieved(void);
 };
+#endif
 
+#ifndef PLAYER_GROUPED_TU
 class RGE_Player {
 public:
-    virtual void vf00(void);
+    virtual void changeToHumanPlayer(void);
     virtual void set_game_status(unsigned char param_1);
 
     char gap_04[0x10];
@@ -24,6 +27,7 @@ public:
 
     unsigned char check_victory_conditions(void);
 };
+#endif
 
 unsigned char RGE_Player::check_victory_conditions(void) {
     if (this->game_status != 2) {

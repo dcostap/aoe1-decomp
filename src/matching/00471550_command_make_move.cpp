@@ -1,13 +1,9 @@
+#ifndef PLAYER_GROUPED_TU
 class RGE_Static_Object;
 class RGE_Command_Move { public: void command_move(RGE_Static_Object** list, short list_num, RGE_Static_Object* target, float x, float y); };
 class RGE_Command { public: char gap_00[0x58]; RGE_Command_Move* command_obj; };
 class RGE_Static_Object { public:
-    virtual void vf00(); virtual void vf04(); virtual void vf08(); virtual void vf0C(); virtual void vf10(); virtual void vf14(); virtual void vf18(); virtual void vf1C();
-    virtual void vf20(); virtual void vf24(); virtual void vf28(); virtual void vf2C(); virtual void vf30(); virtual void vf34(); virtual void vf38(); virtual void vf3C();
-    virtual void vf40(); virtual void vf44(); virtual void vf48(); virtual void vf4C(); virtual void vf50(); virtual void vf54(); virtual void vf58(); virtual void vf5C();
-    virtual void vf60(); virtual void vf64(); virtual void vf68(); virtual void vf6C(); virtual void vf70(); virtual void vf74(); virtual void vf78(); virtual void vf7C();
-    virtual void vf80(); virtual void vf84(); virtual void vf88(); virtual void vf8C(); virtual void vf90(); virtual void vf94(); virtual void vf98(); virtual void vf9C();
-    virtual void vfA0(); virtual void vfA4(); virtual void vfA8(); virtual void vfAC(); virtual void vfB0();
+    void play_move_sound();
 };
 extern void __cdecl free(void*);
 class RGE_Player { public:
@@ -16,13 +12,15 @@ class RGE_Player { public:
     unsigned char get_selected_objects_to_command(RGE_Static_Object*** list, void* local_4, int a, int b, int c, int d);
     unsigned char command_make_move(RGE_Static_Object* target, float x, float y);
 };
+#endif
+extern void __cdecl free(void*);
 unsigned char RGE_Player::command_make_move(RGE_Static_Object* target, float x, float y) {
     RGE_Static_Object** list;
     short list_num;
     short local_4[2];
     if (get_selected_objects_to_command(&list, local_4, -1, -1, -1, -1)) {
-        list[0]->vfB0();
-        command->command_obj->command_move(list, local_4[0], target, x, y);
+        list[0]->play_move_sound();
+        this->world->command->command_order(list, local_4[0], target, x, y);
         free(list);
         return 1;
     }

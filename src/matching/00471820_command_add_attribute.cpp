@@ -1,3 +1,4 @@
+#ifndef PLAYER_GROUPED_TU
 class RGE_Command {
 public:
     void command_add_attribute(int param_1, int param_2, float param_3);
@@ -18,10 +19,11 @@ public:
 
     unsigned char command_add_attribute(int param_1, float param_2);
 };
+#endif
 
 unsigned char RGE_Player::command_add_attribute(int param_1, float param_2) {
     if ((param_1 != -1) && (param_2 != 0.0f)) {
-        this->world->commands->command_add_attribute((int)this->id, param_1, param_2);
+        this->world->command->command_add_attribute((int)this->id, param_1, param_2);
         return 1;
     }
     return 0;

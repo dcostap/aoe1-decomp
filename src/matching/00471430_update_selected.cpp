@@ -3,6 +3,8 @@
 // tried removing the temp object pointer and using the member call explicitly; prolog still drifted to mov edi,ecx before xor esi
 // attempt 2: natural for-loop with short counters
 
+#ifndef PLAYER_GROUPED_TU
+#ifndef PLAYER_GROUPED_TU
 class RGE_Static_Object;
 
 class RGE_Player {
@@ -15,6 +17,7 @@ public:
     void unselect_one_object(short index);
     void update_selected();
 };
+#endif
 
 class RGE_Static_Object {
 public:
@@ -23,6 +26,7 @@ public:
     char gap_24[0x24];
     unsigned char object_state;
 };
+#endif
 
 void RGE_Player::update_selected() {
     RGE_Player* p = this;

@@ -1,24 +1,18 @@
-// Authentic player.cpp prefix.
+// Authentic player.cpp closure.
 //
-// This is the largest currently compilable PDB-ordered prefix.  It stops at
-// scenario_load, whose scratch source still has 232 grouped bytes of drift.
-// Keep the prefix honest: later anchors are not inserted before that owner.
+// This wrapper follows the PDB source order through the final player.cpp
+// owner.  The included context uses PDB-supported class names and real
+// fields.  It has no placeholder virtual or raw-vtable declarations.
 //
-// PDB source order and retained evidence:
-//   0046E4B0  player.cpp:91-167   isolated exact load-constructor anchor
-//   0046E770  player.cpp:177-274  reviewed constructor drift
-//   0046EB00  player.cpp:279-325  isolated exact destructor anchor
-//   0046ECE0-0046F410             28 exact ordinary and recovered owners
+//   0046E4B0-00471EB0             117 normal owners
 //
-// The prefix has 31 normal owners: 30 exact and one accepted drift.  The
-// compiler also emits the exact scalar deleting destructor at 0046E750.
-// The first excluded normal owner is 0046F420 scenario_load.  The remaining
-// player.cpp owners are inventoried in the captain report.
+// The candidate proposal records 74 exact and 43 observed owners.  The
+// compiler also emits the scalar deleting destructor at 0046E750.
 //
 // Their source files retain sole ownership of their VAs.
 
 #define PLAYER_GROUPED_TU
-#include "../include/player_context.h"
+#include "player_tu_context.h"
 
 #include "matching/0046E4B0_RGE_Player.cpp"
 #include "accepted_drift/0046E770_RGE_Player.cpp"
@@ -51,5 +45,91 @@
 #include "matching/0046F2A0_sendChatMessage.cpp"
 #include "matching/0046F3A0_make_scenario_obj.cpp"
 #include "matching/0046f410_scenario_save.cpp"
+#include "scratch/0046F420_scenario_load.cpp"
+#include "matching/0046F6B0_scenario_postsave.cpp"
+#include "matching/0046F7A0_scenario_postload.cpp"
+#include "matching/0046FA60_load.cpp"
+#include "matching/0046FC40_load_master_object.cpp"
+#include "scratch/0046FF00_load_info.cpp"
+#include "matching/0046FF40_get_checksum.cpp"
+#include "scratch/0046FF60_get_checksums.cpp"
+#include "accepted_drift/0046FF90_create_checksum.cpp"
+#include "scratch/004700B0_new_attribute_num.cpp"
+#include "accepted_drift/004700D0_add_attribute_num.cpp"
+#include "matching/00470100_make_available.cpp"
+#include "matching/00470120_update.cpp"
+#include "scratch/00470180_update_dopplegangers.cpp"
+#include "matching/004701B0_save.cpp"
+#include "matching/00470380_save2.cpp"
+#include "scratch/00470490_save_info.cpp"
+#include "matching/004704A0_set_map_loc.cpp"
+#include "scratch/004704C0_set_view_loc.cpp"
+#include "matching/00470570_random_start.cpp"
+#include "matching/00470580_destroy_objects.cpp"
+#include "matching/004705A0_set_color_table.cpp"
+#include "matching/004705C0_victory_if_game_on.cpp"
+#include "matching/004705E0_loss_if_game_on.cpp"
+#include "matching/00470600_win_game_now.cpp"
+#include "matching/00470690_check_victory_conditions.cpp"
+#include "accepted_drift/004706B0_check_ally_group.cpp"
+#include "matching/00470750_check_victory.cpp"
+#include "matching/00470840_modify_tobj.cpp"
+#include "matching/00470940_modify_tobj_delta.cpp"
+#include "matching/00470A40_modify_tobj_percent.cpp"
+#include "matching/00470B40_copy_obj.cpp"
+#include "matching/00470BB0_set_allied_victory.cpp"
+#include "matching/00470BC0_get_allied_victory.cpp"
+#include "matching/00470BD0_relation.cpp"
+#include "scratch/00470BE0_set_relation.cpp"
+#include "matching/00470C70_make_new_object.cpp"
+#include "accepted_drift/00470CB0_reset_selected.cpp"
+#include "matching/00470D20_select_object.cpp"
+#include "matching/00470D80_select_one_object.cpp"
+#include "matching/00470E30_unselect_object.cpp"
+#include "matching/00470E80_unselect_one_object.cpp"
+#include "matching/00470ED0_unselect_one_object.cpp"
+#include "matching/00470F80_group_objects.cpp"
+#include "matching/004710C0_select_group.cpp"
+#include "matching/00471120_own_selected.cpp"
+#include "matching/00471170_is_category_selected.cpp"
+#include "matching/004711D0_is_group_selected.cpp"
+#include "matching/00471230_unit_level_selected.cpp"
+#include "matching/00471290_get_select_level.cpp"
+#include "matching/004712F0_get_selected_objects_to_command.cpp"
+#include "matching/00471430_update_selected.cpp"
+#include "matching/00471480_select_area.cpp"
+#include "scratch/004714C0_unselect_area.cpp"
+#include "scratch/004714E0_ungroup_objects.cpp"
+#include "matching/00471520_analyize_selected_objects.cpp"
+#include "matching/00471530_get_mouse_pointer_action_vars.cpp"
+#include "matching/00471550_command_make_move.cpp"
+#include "matching/004715D0_command_make_work.cpp"
+#include "scratch/004716D0_command_make_do.cpp"
+#include "matching/00471760_command_stop.cpp"
+#include "matching/004717D0_command_place_object.cpp"
+#include "matching/00471820_command_add_attribute.cpp"
+#include "matching/00471860_command_give_attribute.cpp"
+#include "matching/004718C0_command_formation.cpp"
+#include "matching/00471940_command_stand_ground.cpp"
+#include "scratch/004719D0_command_create_group.cpp"
+#include "scratch/00471A00_command_add_to_group.cpp"
+#include "scratch/00471A30_command_remove_from_group.cpp"
+#include "matching/00471A50_command_destroy_group.cpp"
+#include "scratch/00471A70_command_resign.cpp"
+#include "matching/00471AA0_command_add_waypoint.cpp"
+#include "matching/00471B20_addObject.cpp"
+#include "matching/00471B70_removeObject.cpp"
+#include "matching/00471bd0_logMessage.cpp"
+#include "matching/00471be0_notify.cpp"
+#include "scratch/00471BF0_set_map_visible.cpp"
+#include "matching/00471C00_remake_visible_map.cpp"
+#include "accepted_drift/00471C90_load_victory.cpp"
+#include "matching/00471D00_new_victory.cpp"
+#include "matching/00471D70_add_node.cpp"
+#include "matching/00471DF0_del_list.cpp"
+#include "matching/00471E40_RGE_Tile_List.cpp"
+#include "matching/00471E70_RGE_Tile_List.cpp"
+#include "matching/00471E90_get_list_info.cpp"
+#include "matching/00471eb0_get_new_count.cpp"
 
 #undef PLAYER_GROUPED_TU

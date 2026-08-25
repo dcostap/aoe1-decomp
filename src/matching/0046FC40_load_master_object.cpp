@@ -9,7 +9,7 @@
 //   constructor calls, shared null stores, and the 617-byte function.
 
 #ifdef PLAYER_GROUPED_TU
-#include "../../include/player_context.h"
+#include "../player_tu_context.h"
 #endif
 
 void* __cdecl operator new(unsigned int size);
