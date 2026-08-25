@@ -296,12 +296,18 @@
       "owners": {
         "00405510": "src/matching/00405510_RGE_Action_Move_To.cpp",
         "004055A0": "src/matching/004055A0_RGE_Action_Move_To.cpp",
-        "00405620": "src/matching/00405620_RGE_Action_Move_To.cpp"
+        "00405620": "src/matching/00405620_RGE_Action_Move_To.cpp",
+        "004056E0": "src/matching/004056E0_RGE_Action_Move_To.cpp",
+        "00405750": "src/matching/00405750_save.cpp",
+        "00405BF0": "src/matching/00405BF0_is_in_range.cpp"
       },
       "symbols": {
         "00405510": "??0RGE_Action_Move_To@@QAE@HPAVRGE_Action_Object@@@Z",
         "004055A0": "??0RGE_Action_Move_To@@QAE@PAVRGE_Action_Object@@MMMMPAVRGE_Sprite@@@Z",
-        "00405620": "??0RGE_Action_Move_To@@QAE@PAVRGE_Action_Object@@PAVRGE_Static_Object@@MPAVRGE_Sprite@@@Z"
+        "00405620": "??0RGE_Action_Move_To@@QAE@PAVRGE_Action_Object@@PAVRGE_Static_Object@@MPAVRGE_Sprite@@@Z",
+        "004056E0": "??1RGE_Action_Move_To@@UAE@XZ",
+        "00405750": "?save@RGE_Action_Move_To@@UAEXH@Z",
+        "00405BF0": "?is_in_range@RGE_Action_Move_To@@QAEEXZ"
       }
     },
     {
@@ -4986,6 +4992,7 @@
       "flags": "config/flags/0044F070_RGE_Master_Action_Object.rsp",
       "owners": {
         "0044F070": "src/matching/0044F070_RGE_Master_Action_Object.cpp",
+        "0044F0F0": "src/matching/0044F0F0_RGE_Master_Action_Object.cpp",
         "0044F540": "src/matching/0044F540_create_task_list.cpp",
         "0044F5A0": "src/matching/0044F5A0_make_new_obj.cpp",
         "0044F670": "src/matching/0044F670_make_new_master.cpp",
@@ -4994,7 +5001,8 @@
         "0044F880": "src/matching/0044F880_save.cpp"
       },
       "symbols": {
-        "0044F070": "??0RGE_Master_Action_Object@@QAE@PAV0@H@Z"
+        "0044F070": "??0RGE_Master_Action_Object@@QAE@PAV0@H@Z",
+        "0044F0F0": "??0RGE_Master_Action_Object@@QAE@HPAPAVRGE_Sprite@@PAPAVRGE_Sound@@H@Z"
       }
     },
     {
