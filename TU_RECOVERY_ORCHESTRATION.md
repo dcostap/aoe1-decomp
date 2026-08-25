@@ -10,23 +10,35 @@ The project remains function-first and exact-first. The original executable rema
 
 ## Current baseline
 
-Baseline commit: `d109cef1 Register final zero-coverage modules`.
+Baseline commit: `0f5bb0fb Correct stale grouped owner claims`.
 
 | Measure | Current value |
 |---|---:|
 | Original PDB C/C++ modules | 224 |
 | Modules with registered exact coverage | 224 |
 | Registered groups | 239 |
-| Registered exact owners | 2,773 |
-| Matching normal functions | 4,482 |
+| Registered exact owners | 2,764 |
+| Matching normal functions | 4,483 |
 | Scratch normal functions | 638 |
-| Accepted-drift functions | 349 |
+| Accepted-drift functions | 348 |
 | Verified-logic functions | 21 |
 | Registered flag errors | 0 |
 
-The last integration audit is now stale. It predates the final two module registrations.
+The Phase 0 integration audit is current.
 
-Refresh all audit counts after Phase 0.
+## Current integration backlog
+
+| Category | Functions |
+|---|---:|
+| Grouped exact, not registered | 193 |
+| Not included in a registered wrapper | 642 |
+| Included, but expected symbol not emitted | 187 |
+| Grouped-context mismatch | 526 |
+| PDB source attributed to a header | 134 |
+| PDB source missing | 37 |
+| Total unregistered matching functions | 1,719 |
+
+Phase 0 is complete. Phase 1 is next.
 
 ## Terms
 
@@ -122,10 +134,19 @@ A documented unresolved result is valid.
 
 Every registered wrapper must compile from tracked source with its registered module flags.
 
-## Current work
+## Completion evidence
 
-- `World.cpp`: captain returned a proposed context repair.
-- `Pnl_btn.cpp`: captain is repairing the ignored context dependency.
+- `World.cpp` uses a tracked authentic master-player surface.
+- `Pnl_btn.cpp` uses a tracked natural panel context.
+- `Drawarea.cpp` uses one authentic imported API surface.
+- `zone_map.cpp` uses authentic map and save declarations.
+- All 239 registered wrappers compile from tracked source.
+- All 2,764 registered exact owners match from fresh grouped objects.
+- Translation-unit structural validation passes.
+- Registered flag blockers equal zero.
+- The refreshed integration audit has no wrapper compile errors.
+- Nine stale exact-owner claims were removed after fresh grouped proof.
+- Two ambiguous strategy symbols now use PDB-qualified mappings.
 
 ## Tasks
 
@@ -162,9 +183,7 @@ Phase 0 is complete only when:
 
 Register every function that already matches in its current grouped object.
 
-The old audit found 187 such functions across 24 registered groups.
-
-Use only the refreshed Phase 0 count for execution.
+The current audit found 193 such functions across 27 registered groups.
 
 ## Method
 
@@ -325,9 +344,9 @@ A function can remain observed. It cannot remain outside its owning wrapper.
 
 Make VC5 naturally emit each expected function symbol from its authentic wrapper.
 
-The old audit found 185 included source files whose expected symbols were absent.
+The current audit found 187 included source files whose expected symbols were absent.
 
-These entries spanned 48 modules.
+These entries span 50 modules.
 
 ## Do not start with source tuning
 
@@ -432,22 +451,22 @@ Phase 3 is complete when every included normal source emits its expected symbol 
 
 Make isolated exact functions remain exact inside their authentic module context.
 
-The old audit found 493 grouped mismatches.
+The current audit found 526 grouped mismatches.
 
 ## Old mismatch distribution
 
 | Grouped difference | Functions |
 |---|---:|
-| 0–1 bytes | 74 |
-| 2–4 bytes | 84 |
-| 5–16 bytes | 71 |
-| 17–64 bytes | 86 |
-| 65+ bytes | 178 |
+| 0–1 bytes | 85 |
+| 2–4 bytes | 90 |
+| 5–16 bytes | 73 |
+| 17–64 bytes | 90 |
+| 65+ bytes | 188 |
 
 Structural evidence included:
 
-- 134 boundary failures;
-- 18 relocation failures;
+- 137 boundary failures;
+- 20 relocation failures;
 - 5 symbol-ownership failures.
 
 Refresh these counts before assignment.
@@ -1123,14 +1142,16 @@ Track these values after every phase and major wave.
 
 # Immediate execution schedule
 
-## Active Phase 0 work
+## Completed Phase 0 work
 
-1. Review the returned `World.cpp` repair.
-2. Wait for the `Pnl_btn.cpp` captain.
-3. Review and integrate both repairs.
-4. Force-build every registered wrapper.
-5. Rerun the integration audit.
-6. Update this document with refreshed counts.
+1. Integrated the `World.cpp` repair.
+2. Integrated the `Pnl_btn.cpp` repair.
+3. Integrated the `Drawarea.cpp` repair.
+4. Integrated the `zone_map.cpp` repair.
+5. Force-built all 239 registered wrappers.
+6. Validated all 2,764 registered exact owners.
+7. Corrected stale exact claims and ambiguous symbol mappings.
+8. Refreshed the integration audit and this plan.
 
 ## Next main-agent work
 
