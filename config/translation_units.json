@@ -4884,6 +4884,9 @@
       "flags": "config/flags/default.rsp",
       "owners": {
         "0047BF40": "src/matching/0047BF40_TTextPanel.cpp",
+        "0047C120": "src/matching/0047C120_setup.cpp",
+        "0047C1E0": "src/matching/0047C1E0_setup.cpp",
+        "0047C2F0": "src/matching/0047C2F0_setup.cpp",
         "0047C3B0": "src/matching/0047C3B0_set_rect.cpp",
         "0047C520": "src/matching/0047C520_char_type.cpp",
         "0047C560": "src/matching/0047C560_set_text.cpp",
@@ -4897,8 +4900,10 @@
         "0047D570": "src/matching/0047D570_draw_border.cpp",
         "0047DC10": "src/matching/0047DC10_mouse_left_down_action.cpp",
         "0047DC60": "src/matching/0047DC60_setCurrentLineNumber.cpp",
+        "0047DC70": "src/matching/0047DC70_currentLine.cpp",
         "0047DC80": "src/matching/0047DC80_set_line.cpp",
         "0047DCA0": "src/matching/0047DCA0_set_line_by_id.cpp",
+        "0047DCD0": "src/matching/0047DCD0_append_line.cpp",
         "0047DCF0": "src/matching/0047DCF0_append_line.cpp",
         "0047DD10": "src/matching/0047DD10_append_line.cpp",
         "0047DD30": "src/matching/0047DD30_append_line.cpp",
@@ -4907,6 +4912,7 @@
         "0047DFE0": "src/matching/0047DFE0_insert_line.cpp",
         "0047E050": "src/matching/0047E050_change_line.cpp",
         "0047E0B0": "src/matching/0047E0B0_change_line.cpp",
+        "0047E1E0": "src/matching/0047E1E0_get_line.cpp",
         "0047E290": "src/matching/0047E290_get_text.cpp",
         "0047E2E0": "src/matching/0047E2E0_get_text2.cpp",
         "0047E2F0": "src/matching/0047E2F0_get_text2.cpp",
@@ -4930,7 +4936,13 @@
         "0047E290": "?get_text@TTextPanel@@QAEPADXZ",
         "0047E2E0": "?get_text2@TTextPanel@@QAEPADXZ",
         "0047E2F0": "?get_text2@TTextPanel@@QAEPADJ@Z",
-        "0047E330": "?get_id@TTextPanel@@QAEJXZ"
+        "0047E330": "?get_id@TTextPanel@@QAEJXZ",
+        "0047C120": "?setup@TTextPanel@@QAEJPAVTDrawArea@@PAVTPanel@@JJJJPAXJJPAD3HHEF3@Z",
+        "0047C1E0": "?setup@TTextPanel@@QAEJPAVTDrawArea@@PAVTPanel@@JJJJPAXJJPADHEHEFJ@Z",
+        "0047C2F0": "?setup@TTextPanel@@QAEJPAVTDrawArea@@PAVTPanel@@JJJJPAXJJPADHEHEFPAPADF@Z",
+        "0047DC70": "?currentLine@TTextPanel@@QAEXXZ",
+        "0047DCD0": "?append_line@TTextPanel@@QAEHPADJ@Z",
+        "0047E1E0": "?get_line@TTextPanel@@QAEJXZ"
       }
     },
     {
