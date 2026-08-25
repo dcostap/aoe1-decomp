@@ -38,7 +38,7 @@ extern void __cdecl log_map_call(int param_1, int param_2, int param_3, int para
 #ifndef AOE1_VISIBLE_TU_CONTEXT_H
 class RGE_Game_World {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Game_World();
     unsigned long world_time;
 };
 
@@ -55,7 +55,10 @@ public:
 
 class RGE_Player {
 public:
-    char gap_00[0x4A];
+    virtual ~RGE_Player();
+    char gap_004_to_03C[0x38];
+    RGE_Game_World* world;
+    char gap_040_to_04A[0x0A];
     short id;
     char gap_4C[0x0C];
     RGE_Tile_List tile_list;

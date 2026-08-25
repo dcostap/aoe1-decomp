@@ -4,28 +4,7 @@
 
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 
-#ifndef VICTORY_CONTEXT_H
-class RGE_Victory_Entry {
-public:
-    char gap_00[0x20];
-    long count;
-    char gap_24[0x08];
-    unsigned char victory_group;
-    unsigned char ally_flag;
-    unsigned char state;
-    unsigned char checked_flag;
-    RGE_Victory_Entry* next;
-};
-
-class RGE_Victory_Conditions {
-public:
-    void* vtable_ptr;
-    RGE_Victory_Entry* victory_list;
-    long list_num;
-
-    RGE_Victory_Entry* add(unsigned char param_1, unsigned char param_2);
-};
-#endif
+#include "../../include/victory_context.h"
 
 RGE_Victory_Entry* RGE_Victory_Conditions::add(unsigned char param_1, unsigned char param_2) {
     RGE_Victory_Entry* entry = (RGE_Victory_Entry*)calloc(1, 0x34);

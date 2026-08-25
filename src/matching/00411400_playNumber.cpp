@@ -6,25 +6,11 @@
 // - SpruceGlow try 1 MATCH: use the natural `strcmp(this->plays[i].nameValue, name) == 0` in a simple for-loop.
 //   VC5 recognizes/inlines strcmp into the exact 2-byte unrolled compare loop and keeps plays/count/index in
 //   edx/eax/ebp with no stack frame.
+// BINARY NOTE: AIPlayBook is polymorphic. Use the canonical declaration for its
+// vptr and post-vptr fields at +04 (count) and +4C (plays).
 // Result: MATCH locally with `python tools/check_function.py --va 00411400`.
 
-extern "C" int __cdecl strcmp(const char*, const char*);
-
-#ifndef AIPBOOK_CANONICAL_TU
-struct AIPlay {
-    char nameValue[0x608];
-};
-
-class AIPlayBook {
-public:
-    void* vtable_ptr;
-    int numberPlaysValue;
-    char pad_08[0x44];
-    AIPlay* plays;
-
-    int playNumber(char* name);
-};
-#endif
+#include "../../include/aipbook_context.h"
 
 int AIPlayBook::playNumber(char* name) {
     if (this->plays == 0) {

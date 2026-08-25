@@ -34,6 +34,9 @@
 // reloads and caused a broad size mismatch, so it was rolled back.
 // 18: separate short-lived pointer pairs with reversed declaration order for
 // each store reproduce the original ecx/eax schedule; exact match validated.
+// 19: replaced the local placeholder base-game slots with the PDB-named
+// virtual surface.  The original one-argument call uses vtable slot +0xC,
+// which is RGE_Base_Game::set_prog_mode; the direct check remains exact.
 
 #ifndef SCR_SED_TU_CONTEXT
 extern "C" int __cdecl sprintf(char*, const char*, ...);
@@ -177,10 +180,12 @@ public:
 
 class RGE_Base_Game {
 public:
-    virtual void vf00();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void set_game_mode(int);
+    virtual ~RGE_Base_Game();
+    virtual int run();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual void set_prog_mode(int);
+    virtual void set_game_mode(int, int);
+    virtual void set_player(short);
     char gap_04[0x48];
     TDrawArea* draw_area;
     char gap_50[0x15C];
@@ -283,7 +288,7 @@ TRIBE_Screen_Sed::TRIBE_Screen_Sed(char* file, int mode) : TScreenPanel("Scenari
     this->save_window_color = 0;
     this->changed_system_colors = 0;
     this->CurrentVictory = 0;
-    rge_base_game->set_game_mode(7);
+    rge_base_game->set_prog_mode(7);
     if (!this->command_new_map(file, mode, 0, 0x90, 0x90, 1)) {
         this->setup_error = 1;
         return;
