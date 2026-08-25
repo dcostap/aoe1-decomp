@@ -7,6 +7,7 @@
 // file is module-wide for this probe.  Original EH evidence occurs at
 // 004430F0, 004443D0, and 00444C30.  Non-EH owners are flag-insensitive in
 // controlled VC5 probes, so a binary-only code-band claim is not possible.
+#define DRAWAREA_CANONICAL_TU
 #include "matching/00442680_TDrawSystem.cpp"
 #include "matching/00442710_TDrawSystem.cpp"
 #include "matching/004427A0_CheckAvailModes.cpp"

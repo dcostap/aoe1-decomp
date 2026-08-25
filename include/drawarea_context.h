@@ -58,9 +58,9 @@ struct RGBQUAD {
     unsigned char rgbReserved;
 };
 
-extern "C" int (__stdcall * const GetClientRect)(void*, tagRECT*);
+extern "C" __declspec(dllimport) int __stdcall GetClientRect(void*, RECT*);
 extern "C" int (__stdcall * ClientToScreen)(void*, void*);
-extern "C" unsigned int __stdcall GetPaletteEntries(
+extern "C" __declspec(dllimport) unsigned int __stdcall GetPaletteEntries(
     void*, unsigned int, unsigned int, PALETTEENTRY*);
 extern "C" void* __stdcall SelectObject(void*, void*);
 extern "C" __declspec(dllimport) int __stdcall DeleteObject(void*);
