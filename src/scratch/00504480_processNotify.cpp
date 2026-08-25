@@ -36,7 +36,7 @@ public:
 
 class RGE_Static_Object {
 public:
-    virtual void v00();
+    virtual ~RGE_Static_Object();
     int id;                         // +0x04
     RGE_Master_Static_Object* master_obj; // +0x08
     RGE_Player* owner;              // +0x0C
@@ -60,20 +60,28 @@ public:
 
 class UnitAIModule {
 public:
-    virtual void v00(); virtual void v04(); virtual void v08(); virtual void v0C();
-    virtual void v10(); virtual void v14(); virtual void v18();
-    virtual void vt07(NotifyEvent* event); // +0x1C
-    virtual void v20(); virtual void v24(); virtual void v28(); virtual void v2C();
-    virtual void v30(); virtual void v34(); virtual void v38(); virtual void v3C();
-    virtual void v40(); virtual void v44(); virtual void v48(); virtual void v4C();
-    virtual void v50(); virtual void v54();
+    virtual ~UnitAIModule();
+    virtual void save(int); virtual void load(int); virtual RGE_Player* owner();
+    virtual int order(int, int, int, int, float, float, float, float, int, int, int);
+    virtual int notify(int, int, int, long, long, long);
+    virtual int notifyCommander(int, int, int, long, long, long);
+    virtual int notifyCommander(NotifyEvent*);
+    virtual void search(); virtual int importantWhenDead(int);
+    virtual int retryableOrder(int); virtual int actionRequiresLiveTarget(int);
+    virtual int bestUnitToAttack(int, int, float*);
+    virtual int mostDangerousEnemy(float*); virtual int weakestEnemy(float*);
+    virtual int closestAttacker(float*); virtual int closestObject(int, int, int, int, int*);
+    virtual int closestResourceObject(int, int*);
+    virtual int closestUndiscoveredTile(int*, int*, int);
+    virtual void logDebug(char*); virtual int canAttackUnit(RGE_Static_Object*);
+    virtual int canAttackUnitAtNeutrality(int);
     virtual void stopObject(int a); // +0x58
-    virtual void doAction(int id, int flag); // +0x5C
+    virtual int attackObject(int id, int flag); // +0x5C
 
     RGE_Static_Object* objectValue; // +4
 
     void removeCurrentTarget();
-    void some_00417770();
+    void setAdjustedIdleTimeout();
     int processNotify(NotifyEvent* event, unsigned long param_2);
 };
 
@@ -101,7 +109,7 @@ int TribeLionUnitAIModule::processNotify(NotifyEvent* event, unsigned long param
 #else
             if (!(dist > this->objectValue->master_obj->range)) {
 #endif
-                this->doAction(this->field_34, 1);
+                this->attackObject(this->field_34, 1);
                 return 3;
             }
         }
@@ -117,7 +125,7 @@ int TribeLionUnitAIModule::processNotify(NotifyEvent* event, unsigned long param
             fprintf(actionFile, str_fmt_stopObject, id, str_taiuaimd_path, 0x1AC);
         }
         this->stopObject(1);
-        this->vt07(event);
+        this->notifyCommander(event);
     }
     break;
 
@@ -144,7 +152,7 @@ int TribeLionUnitAIModule::processNotify(NotifyEvent* event, unsigned long param
         } else {
             this->field_100 = 0x61A8;
         }
-        this->some_00417770();
+        this->setAdjustedIdleTimeout();
         this->removeCurrentTarget();
         if (actionFile != 0) {
             int id;

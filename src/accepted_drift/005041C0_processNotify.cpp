@@ -15,7 +15,7 @@
 // What matches (first 90 bytes): prologue, switch dispatch (sub/je chain), default
 // parent call, return-2 path, p2 check (jg short), purge/return-4 path.
 // Also matches: search loop structure (scaled-index access, capacity reload per
-// iteration), store-to-array, virtual call sequence (funcEC/func3C/func5C), epilogues.
+// iteration), store-to-array, virtual call sequence, and epilogues.
 //
 // Attempt log:
 // - v1: if-else chaining → cmp not sub for dispatch, wrong NotifyEvent layout
@@ -32,6 +32,9 @@
 #ifndef TAIUAIMD_COMPLETE_TU
 typedef unsigned char uchar;
 
+class RGE_Player;
+class RGE_Master_Static_Object;
+
 struct NotifyEvent {
     int caller;
     int field_04;
@@ -43,39 +46,65 @@ struct NotifyEvent {
 void* operator_new(unsigned int size);
 void operator_delete(void* ptr);
 
-struct CallECHelper {
-    virtual void s00();  virtual void s01();  virtual void s02();  virtual void s03();
-    virtual void s04();  virtual void s05();  virtual void s06();  virtual void s07();
-    virtual void s08();  virtual void s09();  virtual void s10();  virtual void s11();
-    virtual void s12();  virtual void s13();  virtual void s14();  virtual void s15();
-    virtual void s16();  virtual void s17();  virtual void s18();  virtual void s19();
-    virtual void s20();  virtual void s21();  virtual void s22();  virtual void s23();
-    virtual void s24();  virtual void s25();  virtual void s26();  virtual void s27();
-    virtual void s28();  virtual void s29();  virtual void s30();  virtual void s31();
-    virtual void s32();  virtual void s33();  virtual void s34();  virtual void s35();
-    virtual void s36();  virtual void s37();  virtual void s38();  virtual void s39();
-    virtual void s40();  virtual void s41();  virtual void s42();  virtual void s43();
-    virtual void s44();  virtual void s45();  virtual void s46();  virtual void s47();
-    virtual void s48();  virtual void s49();  virtual void s50();  virtual void s51();
-    virtual void s52();  virtual void s53();  virtual void s54();  virtual void s55();
-    virtual void s56();  virtual void s57();  virtual void s58();
-    virtual void funcEC(int arg);  // slot 59 -> vtable[0xEC]
+class RGE_Static_Object {
+public:
+    virtual ~RGE_Static_Object();
+    virtual void recycle_in_to_game(); virtual void recycle_out_of_game();
+    virtual void draw(); virtual void shadow_draw(); virtual void normal_draw();
+    virtual void draw_front_frame(); virtual void draw_back_frame(); virtual void draw_frame();
+    virtual unsigned char update(); virtual void check_damage_sprites(); virtual void rehook();
+    virtual void save(int); virtual float teleport(float, float, float);
+    virtual void new_sprite(); virtual void add_overlay_sprite(); virtual void remove_overlay_sprite();
+    virtual void change_ownership(RGE_Player*); virtual void modify(float, unsigned char);
+    virtual void modify_delta(float, unsigned char); virtual void modify_percent(float, unsigned char);
+    virtual void transform(); virtual void copy_obj(); virtual void set_object_state(unsigned char);
+    virtual void remove_visible_resource(); virtual void create_doppleganger_when_dying();
+    virtual void destroy_obj(); virtual void die_die_die();
+    virtual void damage(int, void*, float, RGE_Player*, RGE_Static_Object*);
+    virtual float calculateDamage(int, void*, float, RGE_Player*, RGE_Static_Object*);
+    virtual void rotate(long); virtual unsigned char can_attack();
+    virtual void set_attribute(short, float);
+    virtual void set_attribute_amount(float, unsigned char, unsigned char);
+    virtual int heal(int, int); virtual unsigned char heal(float); virtual int canRepair();
+    virtual void notify_of_relation(long, unsigned char);
+    virtual void do_command(RGE_Static_Object*, float, float, float);
+    virtual void move_to(RGE_Static_Object*, float, float, float);
+    virtual void work(RGE_Static_Object*, float, float, float); virtual void stop();
+    virtual void set_attack(RGE_Static_Object*); virtual void play_command_sound();
+    virtual void play_move_sound(); virtual void new_angle(float);
+    virtual RGE_Static_Object* spawn_death_obj();
+    virtual RGE_Master_Static_Object* get_command_master(RGE_Static_Object*, float, float, float);
+    virtual void set_being_worked_on(void*, short, unsigned char);
+    virtual void release_being_worked_on(RGE_Static_Object*);
+    virtual unsigned char is_moving(); virtual RGE_Static_Object* get_target_obj();
+    virtual void enter_obj(RGE_Static_Object*); virtual void exit_obj();
+    virtual int explore_terrain(RGE_Player*, unsigned char, int);
+    virtual void unexplore_terrain(RGE_Player*, unsigned char, int);
+    virtual void* get_los_table(); virtual int inAttackRange(RGE_Static_Object*);
+    virtual unsigned char underAttack(); virtual void setUnderAttack(unsigned char);
 };
 
 class UnitAIModule {
 public:
-    virtual void _v00(); virtual void _v01(); virtual void _v02();
-    virtual void _v03(); virtual void _v04(); virtual void _v05();
-    virtual void _v06(); virtual void _v07(); virtual void _v08();
-    virtual void _v09(); virtual void _v10(); virtual void _v11();
-    virtual void _v12(); virtual void _v13(); virtual void _v14();
-    virtual int func3C(int arg);   // vt[15]: +0x3C
-    virtual void _v16(); virtual void _v17(); virtual void _v18();
-    virtual void _v19(); virtual void _v20(); virtual void _v21();
-    virtual void _v22();
-    virtual void func5C(int arg1, int arg2);  // vt[23]: +0x5C
+    virtual ~UnitAIModule();
+    virtual void save(int); virtual void load(int); virtual RGE_Player* owner();
+    virtual int order(int, int, int, int, float, float, float, float, int, int, int);
+    virtual int notify(int, int, int, long, long, long);
+    virtual int notifyCommander(int, int, int, long, long, long);
+    virtual int notifyCommander(void*); virtual void search();
+    virtual int importantWhenDead(int); virtual int retryableOrder(int);
+    virtual int actionRequiresLiveTarget(int);
+    virtual int bestUnitToAttack(int, int, float*);
+    virtual int mostDangerousEnemy(float*); virtual int weakestEnemy(float*);
+    virtual int closestAttacker(float* arg);  // vt[15]: +0x3C
+    virtual int closestObject(int, int, int, int, int*);
+    virtual int closestResourceObject(int, int*);
+    virtual int closestUndiscoveredTile(int*, int*, int);
+    virtual void logDebug(char*); virtual int canAttackUnit(RGE_Static_Object*);
+    virtual int canAttackUnitAtNeutrality(int); virtual int stopObject(int);
+    virtual int attackObject(int arg1, int arg2);  // vt[23]: +0x5C
 
-    void* objectValue;  // +0x04
+    RGE_Static_Object* objectValue;  // +0x04
 
     int processNotify(NotifyEvent* event, unsigned long param_2);
     void purgeNotifyQueue(unsigned long param_2);
@@ -137,9 +166,9 @@ after_loop:;
             this->notifyArray[this->notifyCount] = caller;
             this->notifyCount++;
 found:
-            ((CallECHelper*)(this->objectValue))->funcEC(1);
-            int val = this->func3C(0);
-            this->func5C(val, 0);
+            this->objectValue->setUnderAttack(1);
+            int val = this->closestAttacker(0);
+            this->attackObject(val, 0);
             return 3;
         }
 

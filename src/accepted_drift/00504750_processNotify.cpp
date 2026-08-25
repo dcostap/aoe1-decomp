@@ -5,9 +5,8 @@
 // control flow, FPU math, and behavior identical.
 //
 // Key techniques:
-// - __declspec(novtable) interface classes for vtable dispatch (ObjVtbl for
-//   RGE_Static_Object slots 61/63/64, ThisVtbl for TribeRangedUnitAIModule
-//   slots 4/39)
+// - The period RGE_Static_Object and UnitAIModule declarations provide the
+//   named virtual methods at the observed slots.
 // - Branch polarity: `if (condition == expected) { body } else { return 2; }`
 //   generates `jne near ret2_block` matching original's shared return-2 pattern
 // - Separate negate-and-add: `float nty = -(dy / dist * speed); float resultY = nty + world_y;`
@@ -46,7 +45,7 @@
 //
 // Attempt log:
 // - v1: __thiscall keyword issue, compilation failed (C4234)
-// - v2: initial __declspec(novtable) approach, 35.4% edit diff. Issues: inline
+// - v2: initial interface approach, 35.4% edit diff. Issues: inline
 //   returns instead of shared return-2 block
 // - v3: fixed branch polarity with if/else structure → jne near to shared block.
 //   Issue: fsubr instead of fchs+fadd (6 bytes short, 288 vs 294)
@@ -64,96 +63,7 @@
 typedef unsigned long ulong;
 
 #ifndef TAIUAIMD_COMPLETE_TU
-struct RGE_Static_Object {
-    void* vtable;         // +0x00
-    int id;               // +0x04
-    void* master_obj;     // +0x08
-    void* owner;          // +0x0C (RGE_Player*)
-    char _pad_10[0x28];   // +0x10 to +0x37
-    float world_x;        // +0x38
-    float world_y;        // +0x3C
-    float world_z;        // +0x40
-};
-
-struct NotifyEvent {
-    char _pad_00[8];
-    int mType;  // +0x08
-};
-
-struct __declspec(novtable) ObjVtbl {
-    virtual void d0();  virtual void d1();  virtual void d2();  virtual void d3();
-    virtual void d4();  virtual void d5();  virtual void d6();  virtual void d7();
-    virtual void d8();  virtual void d9();  virtual void d10(); virtual void d11();
-    virtual void d12(); virtual void d13(); virtual void d14(); virtual void d15();
-    virtual void d16(); virtual void d17(); virtual void d18(); virtual void d19();
-    virtual void d20(); virtual void d21(); virtual void d22(); virtual void d23();
-    virtual void d24(); virtual void d25(); virtual void d26(); virtual void d27();
-    virtual void d28(); virtual void d29(); virtual void d30(); virtual void d31();
-    virtual void d32(); virtual void d33(); virtual void d34(); virtual void d35();
-    virtual void d36(); virtual void d37(); virtual void d38(); virtual void d39();
-    virtual void d40(); virtual void d41(); virtual void d42(); virtual void d43();
-    virtual void d44(); virtual void d45(); virtual void d46(); virtual void d47();
-    virtual void d48(); virtual void d49(); virtual void d50(); virtual void d51();
-    virtual void d52(); virtual void d53(); virtual void d54(); virtual void d55();
-    virtual void d56(); virtual void d57(); virtual void d58(); virtual void d59();
-    virtual void d60();
-    virtual float funcF4();   // slot 61: +0xF4
-    virtual float funcF8();   // slot 62: +0xF8
-    virtual float funcFC();   // slot 63: +0xFC
-    virtual float func100();  // slot 64: +0x100
-};
-
-struct __declspec(novtable) ThisVtbl {
-    virtual void d0();  virtual void d1();  virtual void d2();  virtual void d3();
-    virtual void func10(
-        int arg1, int arg2, int arg3, int arg4, float arg5,
-        float arg6, float arg7, float arg8,
-        int arg9, int arg10, int arg11);
-    virtual void e5();  virtual void e6();  virtual void e7();  virtual void e8();
-    virtual void e9();  virtual void e10(); virtual void e11(); virtual void e12();
-    virtual void e13(); virtual void e14(); virtual void e15(); virtual void e16();
-    virtual void e17(); virtual void e18(); virtual void e19(); virtual void e20();
-    virtual void e21(); virtual void e22(); virtual void e23(); virtual void e24();
-    virtual void e25(); virtual void e26(); virtual void e27(); virtual void e28();
-    virtual void e29(); virtual void e30(); virtual void e31(); virtual void e32();
-    virtual void e33(); virtual void e34(); virtual void e35(); virtual void e36();
-    virtual void e37(); virtual void e38();
-    virtual void func9C(float x, float y, float z, int w);  // slot 39: +0x9C
-};
-
-struct RGE_Game_World {
-    void* vtable;
-    char _pad_04[0x38];
-    RGE_Static_Object* object(int obj_id);
-};
-
-struct UnitAIModule {
-    void* vtable_ptr;                   // +0x00
-    RGE_Static_Object* obj;             // +0x04
-    int moodValue;                      // +0x08
-    int objectCategoryValue;            // +0x0C
-    int orderQueueSizeValue;            // +0x10
-    int orderQueueMaxSizeValue;         // +0x14
-    void* orderQueueValue;              // +0x18
-    int notifyQueueSizeValue;           // +0x1C
-    int notifyQueueMaxSizeValue;        // +0x20
-    void* notifyQueueValue;             // +0x24
-    int currentOrderValue;              // +0x28
-    int currentOrderPriorityValue;      // +0x2C
-    int currentActionValue;             // +0x30
-    int currentTargetValue;             // +0x34
-    int currentTargetTypeValue;         // +0x38
-    float currentTargetXValue;          // +0x3C
-    float currentTargetYValue;          // +0x40
-    float currentTargetZValue;          // +0x44
-    float desiredTargetDistanceValue;   // +0x48
-
-    int processNotify(NotifyEvent* event, ulong param_2);
-};
-
-struct TribeRangedUnitAIModule : public UnitAIModule {
-    int processNotify(NotifyEvent* event, ulong param_2);
-};
+#include "../../include/taiuaimd_context.h"
 #endif
 
 int TribeRangedUnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
@@ -163,13 +73,13 @@ int TribeRangedUnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
     }
 
     if (this->currentActionValue == 600) {
-        RGE_Game_World* gameWorld = *(RGE_Game_World**)((char*)this->objectValue->owner + 0x3C);
+        RGE_Game_World* gameWorld = this->objectValue->owner->world;
         RGE_Static_Object* targetObj = gameWorld->object(this->currentTargetValue);
 
         if (targetObj) {
-            float fVal = ((ObjVtbl*)targetObj)->funcF4();
+            float fVal = targetObj->getSpeed();
             if (fVal != 0.0f) {
-                ((ThisVtbl*)this)->func10(
+                this->order(
                     this->objectValue->id, 0x2BC, this->currentTargetValue, -1,
                     this->currentTargetXValue, this->currentTargetYValue,
                     this->currentTargetZValue, this->desiredTargetDistanceValue,
@@ -179,8 +89,8 @@ int TribeRangedUnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
                 RGE_Static_Object* thisObj = this->objectValue;
 
                 // Get speed from obj's vtable[64] (+0x100) then [63] (+0xFC)
-                float speed2 = ((ObjVtbl*)thisObj)->func100();
-                float speed1 = ((ObjVtbl*)thisObj)->funcFC();
+                float speed2 = thisObj->rateOfFire();
+                float speed1 = thisObj->maximumSpeed();
                 float speed = speed1 * speed2 * 3.0f;
                 float dx = targetObj->world_x - thisObj->world_x;
                 float dy = targetObj->world_y - thisObj->world_y;
@@ -190,7 +100,7 @@ int TribeRangedUnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
                 float ntx = -(dx / dist * speed);
                 float resultX = ntx + thisObj->world_x;
 
-                ((ThisVtbl*)this)->func9C(resultX, resultY, thisObj->world_z, 1);
+                this->evasiveMoveTo(resultX, resultY, thisObj->world_z, 1);
 
                 return 3;
             }

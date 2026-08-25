@@ -41,23 +41,7 @@ public:
 
 class RGE_Static_Object {
 public:
-    virtual ~RGE_Static_Object(); virtual void v04(); virtual void v08(); virtual void v0c();
-    virtual void v10(); virtual void v14(); virtual void v18(); virtual void v1c();
-    virtual void v20(); virtual void v24(); virtual void v28(); virtual void v2c();
-    virtual void v30(); virtual void v34(); virtual void v38(); virtual void v3c();
-    virtual void v40(); virtual void v44(); virtual void v48(); virtual void v4c();
-    virtual void v50(); virtual void v54(); virtual void v58(); virtual void v5c();
-    virtual void v60(); virtual void v64(); virtual void v68(); virtual void v6c();
-    virtual void v70(); virtual void v74(); virtual void v78(); virtual void v7c();
-    virtual void v80(); virtual void v84(); virtual void v88(); virtual void v8c();
-    virtual void v90(); virtual void v94(); virtual void v98(); virtual void v9c();
-    virtual void va0(); virtual void va4(); virtual void va8(); virtual void vac();
-    virtual void vb0(); virtual void vb4(); virtual void vb8(); virtual void vbc();
-    virtual void vc0(); virtual void vc4(); virtual void vc8(); virtual void vcc();
-    virtual void vd0(); virtual void vd4(); virtual void vd8(); virtual void vdc();
-    virtual void ve0(); virtual void ve4();
-    virtual unsigned char underAttack(); // +0xe8
-    virtual void setUnderAttack(int one); // +0xec
+    virtual ~RGE_Static_Object();
 
     int id;
     char gap08[4];
@@ -70,24 +54,43 @@ class NotifyEvent { public: int objectId; char gap04[4]; int mType; int value; }
 
 class UnitAIModule {
 public:
-    virtual void v00(); virtual void v04(); virtual void v08(); virtual void v0C();
-    virtual void v10(); virtual void v14(); virtual void v18();
-    virtual void vt1c(NotifyEvent* event);
-    virtual void v20(); virtual void v24(); virtual void v28(); virtual void v2C();
-    virtual void v30(); virtual void v34(); virtual void v38(); virtual void v3C();
-    virtual void v40(); virtual void v44(); virtual void v48(); virtual void v4C();
-    virtual void v50(); virtual void v54();
-    virtual void stopObject(int arg); // +58
-    virtual void v5c(); virtual void v60(); virtual void v64(); virtual void v68();
-    virtual void v6c(); virtual void v70(); virtual void v74(); virtual void v78();
-    virtual void v7c(); virtual void v80(); virtual void v84(); virtual void v88();
-    virtual void v8c(); virtual void v90(); virtual void v94(); virtual void v98();
-    virtual void v9c(); virtual void va0(); virtual void va4(); virtual void va8();
-    virtual void vac(); virtual void vb0(); virtual void vb4(); virtual void vb8();
-    virtual void vbc(); virtual void vc0(); virtual void vc4(); virtual void vc8();
-    virtual void vcc(); virtual void vd0(); virtual void vd4(); virtual void vd8();
-    virtual void vdc(); virtual void ve0(); virtual void ve4(); virtual int vte8(int);
-    virtual void vtec(int);
+    virtual ~UnitAIModule(); virtual void save(int); virtual void load(int);
+    virtual RGE_Player* owner();
+    virtual int order(int, int, int, int, float, float, float, float, int, int, int);
+    virtual int notify(int, int, int, long, long, long);
+    virtual int notifyCommander(int, int, int, long, long, long);
+    virtual int notifyCommander(NotifyEvent*);
+    virtual void search(); virtual int importantWhenDead(int);
+    virtual int retryableOrder(int); virtual int actionRequiresLiveTarget(int);
+    virtual int bestUnitToAttack(int, int, float*);
+    virtual int mostDangerousEnemy(float*); virtual int weakestEnemy(float*);
+    virtual int closestAttacker(float*);
+    virtual int closestObject(int, int, int, int, int*);
+    virtual int closestResourceObject(int, int*);
+    virtual int closestUndiscoveredTile(int*, int*, int);
+    virtual void logDebug(char*); virtual int canAttackUnit(RGE_Static_Object*);
+    virtual int canAttackUnitAtNeutrality(int); virtual int stopObject(int);
+    virtual int attackObject(int, int); virtual int attackRoundupObject(int);
+    virtual int huntObject(int, int); virtual int gatherObject(int, int);
+    virtual int convertObject(int, int); virtual int healObject(int, int);
+    virtual int repairObject(int, int); virtual int buildObject(int, int);
+    virtual int tradeWithObject(int, int); virtual int explore(int, int, int);
+    virtual int enterObject(int, int); virtual int unload(int, float, float);
+    virtual int transportObject(float, float, float, int);
+    virtual int moveTo(float, float, float, float, int);
+    virtual int moveTo(int, float, int); virtual int moveTo(int, int);
+    virtual int evasiveMoveTo(float, float, float, int);
+    virtual int intelligentEvasiveMoveTo(float, float, float, int, int);
+    virtual int runAwayFromAttackers(int); virtual int followObject(int, float, int);
+    virtual int defendObject(int, float, int);
+    virtual int defendPosition(float, float, float, int);
+    virtual int seekAndDestroy(int, int, int, int);
+    virtual int exploreAndDestroy(int, int, int);
+    virtual int importantObject(int); virtual int convertToLOSResourceType(int);
+    virtual int canConvert(int); virtual int processOrder(void*, int);
+    virtual void processGroupNotify(void*); virtual int processIdle(int);
+    virtual int processMisc(); virtual int processRetryableOrder();
+    virtual int bestUnitToHeal(int, float*); virtual int bestUnitToConvert(float*);
 
     RGE_Static_Object* objectValue; // +4
     void removeCurrentTarget();
@@ -141,7 +144,7 @@ int TribeArtifactUnitAIModule::processNotify(NotifyEvent* event, unsigned long f
         this->removeCurrentTarget();
         LOGSTOP(0xa9f);
         this->stopObject(1);
-        this->vt1c(event);
+        this->notifyCommander(event);
         return 2;
     }
 
@@ -151,7 +154,7 @@ int TribeArtifactUnitAIModule::processNotify(NotifyEvent* event, unsigned long f
                 this->removeCurrentTarget();
                 LOGSTOP(0xaae);
                 this->stopObject(1);
-                this->vt1c(event);
+                this->notifyCommander(event);
                 return 2;
             }
         }
@@ -164,7 +167,7 @@ int TribeArtifactUnitAIModule::processNotify(NotifyEvent* event, unsigned long f
         this->removeCurrentTarget();
         LOGSTOP(0xab7);
         this->stopObject(1);
-        this->vt1c(event);
+        this->notifyCommander(event);
         return 2;
 
     case 0x1f9:
@@ -173,7 +176,7 @@ int TribeArtifactUnitAIModule::processNotify(NotifyEvent* event, unsigned long f
                 this->removeCurrentTarget();
                 LOGSTOP(0xac6);
                 this->stopObject(1);
-                this->vt1c(event);
+                this->notifyCommander(event);
                 return 2;
             }
         }
@@ -186,7 +189,7 @@ int TribeArtifactUnitAIModule::processNotify(NotifyEvent* event, unsigned long f
         this->removeCurrentTarget();
         LOGSTOP(0xacf);
         this->stopObject(1);
-        this->vt1c(event);
+        this->notifyCommander(event);
         return 2;
 
     case 0x1fb:
@@ -195,7 +198,7 @@ int TribeArtifactUnitAIModule::processNotify(NotifyEvent* event, unsigned long f
                 this->removeCurrentTarget();
                 LOGSTOP(0xade);
                 this->stopObject(1);
-                this->vt1c(event);
+                this->notifyCommander(event);
                 return 2;
             }
         }
@@ -208,7 +211,7 @@ int TribeArtifactUnitAIModule::processNotify(NotifyEvent* event, unsigned long f
         this->removeCurrentTarget();
         LOGSTOP(0xae7);
         this->stopObject(1);
-        this->vt1c(event);
+        this->notifyCommander(event);
         return 2;
 
     case 600: {
@@ -442,7 +445,7 @@ already:
     this->removeCurrentTarget();
     LOGSTOP(0xb1f);
     this->stopObject(1);
-    this->vt1c(event);
+        this->notifyCommander(event);
     return 2;
 }
 

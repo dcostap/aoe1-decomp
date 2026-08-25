@@ -3,6 +3,8 @@
 // __thiscall: ecx=this, 1 stack param, ret 4
 
 #ifndef TAIUAIMD_COMPLETE_TU
+class NotifyEvent;
+class RGE_Player;
 class RGE_Static_Object;
 class RGE_Game_World;
 
@@ -16,7 +18,7 @@ public:
 
 extern RGE_Base_Game* rge_base_game;  // 0x62C574
 
-class RGE_Master_Obj {
+class RGE_Master_Static_Object {
 public:
     char gap_00[0x28];
     float los;
@@ -24,10 +26,10 @@ public:
 
 class RGE_Static_Object {
 public:
-    void* vtable;
-    int id_num;
-    RGE_Master_Obj* master;
-    void* owner;
+    virtual ~RGE_Static_Object();
+    long id;
+    RGE_Master_Static_Object* master_obj;
+    RGE_Player* owner;
     float distance_to_object(RGE_Static_Object* target);
 };
 
@@ -60,31 +62,23 @@ public:
     void setAdjustedIdleTimeout();
     RGE_Static_Object* lookupObject(int id);
 
-    // Dummy virtuals to pad vtable to match offsets
-    virtual void pad00() = 0;
-    virtual void pad01() = 0;
-    virtual void pad02() = 0;
-    virtual void pad03() = 0;
-    virtual void pad04() = 0;
-    virtual void pad05() = 0;
-    virtual void pad06() = 0;
-    virtual void pad07() = 0;
-    virtual void pad08() = 0;
-    virtual void pad09() = 0;
-    virtual void pad10() = 0;
-    virtual void pad11() = 0;
-    virtual void pad12() = 0;
-    virtual void pad13() = 0;
-    virtual void pad14() = 0;
-    virtual void pad15() = 0;
-    virtual int findEnemy(int, int, int, int, int) = 0;  // vt[16] = +0x40
-    virtual void pad17() = 0;
-    virtual void pad18() = 0;
-    virtual void pad19() = 0;
-    virtual void pad20() = 0;
-    virtual void pad21() = 0;
-    virtual void pad22() = 0;
-    virtual void setTarget(int, int) = 0;               // vt[23] = +0x5C
+    virtual ~UnitAIModule();
+    virtual void save(int); virtual void load(int); virtual RGE_Player* owner();
+    virtual int order(int, int, int, int, float, float, float, float, int, int, int);
+    virtual int notify(int, int, int, long, long, long);
+    virtual int notifyCommander(int, int, int, long, long, long);
+    virtual int notifyCommander(NotifyEvent*);
+    virtual void search(); virtual int importantWhenDead(int);
+    virtual int retryableOrder(int); virtual int actionRequiresLiveTarget(int);
+    virtual int bestUnitToAttack(int, int, float*);
+    virtual int mostDangerousEnemy(float*); virtual int weakestEnemy(float*);
+    virtual int closestAttacker(float*);
+    virtual int closestObject(int, int, int, int, int*); // vt[16] = +0x40
+    virtual int closestResourceObject(int, int*);
+    virtual int closestUndiscoveredTile(int*, int*, int);
+    virtual void logDebug(char*); virtual int canAttackUnit(RGE_Static_Object*);
+    virtual int canAttackUnitAtNeutrality(int); virtual int stopObject(int);
+    virtual int attackObject(int, int); // vt[23] = +0x5C
 };
 
 class TribeLionUnitAIModule : public UnitAIModule {
@@ -102,7 +96,7 @@ int TribeLionUnitAIModule::processIdle(int param_1)
 #endif
     setAdjustedIdleTimeout();
 
-    int targetId = findEnemy(-1, -1, -1, -1, 0);
+    int targetId = closestObject(-1, -1, -1, -1, 0);
     RGE_Static_Object* newTarget = lookupObject(targetId);
 
     if (targetId == -1 || newTarget == 0) {
@@ -121,7 +115,7 @@ int TribeLionUnitAIModule::processIdle(int param_1)
 #ifdef TAIUAIMD_COMPLETE_TU
         los = factor * objectValue->master_obj->los;
 #else
-        los = factor * obj->master->los;
+        los = factor * obj->master_obj->los;
 #endif
         if (los < 1.0f) {
             los = 1.0f;
@@ -130,7 +124,7 @@ int TribeLionUnitAIModule::processIdle(int param_1)
 #ifdef TAIUAIMD_COMPLETE_TU
         los = objectValue->master_obj->los * 2.0f;
 #else
-        los = obj->master->los * 2.0f;
+        los = obj->master_obj->los * 2.0f;
 #endif
     }
 
@@ -143,6 +137,6 @@ int TribeLionUnitAIModule::processIdle(int param_1)
         return 5;
     }
 
-    setTarget(targetId, 0);
+    attackObject(targetId, 0);
     return 6;
 }

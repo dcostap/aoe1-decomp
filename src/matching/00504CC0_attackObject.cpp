@@ -11,49 +11,12 @@
 #include "../../include/game_types.h"
 
 #ifndef TAIUAIMD_COMPLETE_TU
-class RGE_Master_Static_Object {
-public:
-    char _gap_00[0x14];
-    short object_group; // +0x14
-};
-
-class RGE_Static_Object {
-public:
-    char _gap_00[0x08];
-    RGE_Master_Static_Object* master_obj; // +0x08
-    class RGE_Player* owner;              // +0x0C
-};
-
-class RGE_Player {
-public:
-    char _gap_00[0x3C];
-    class RGE_Game_World* world;          // +0x3C
-};
-
-class RGE_Game_World {
-public:
-    RGE_Static_Object* object(int id);
-};
-
-// Base class with 24 padding virtual + attackObject to push vtable slots
-class UnitAIModule {
-public:
-    virtual void _pad00(); virtual void _pad01(); virtual void _pad02();
-    virtual void _pad03(); virtual void _pad04(); virtual void _pad05();
-    virtual void _pad06(); virtual void _pad07(); virtual void _pad08();
-    virtual void _pad09(); virtual void _pad10(); virtual void _pad11();
-    virtual void _pad12(); virtual void _pad13(); virtual void _pad14();
-    virtual void _pad15(); virtual void _pad16(); virtual void _pad17();
-    virtual void _pad18(); virtual void _pad19(); virtual void _pad20();
-    virtual void _pad21(); virtual void _pad22(); virtual void _pad23();
-    virtual int attackObject(int, int);   // vt[24]
-    RGE_Static_Object* objectValue;       // +0x04
-};
+#include "../../include/taiuaimd_context.h"
 
 class TribeCivilianUnitAIModule : public UnitAIModule {
 public:
-    int attackObject(int, int);           // override vt[24]
-    virtual int huntObject(int, int);     // vt[25]
+    virtual int attackObject(int, int);
+    virtual int huntObject(int, int);
 };
 #endif
 

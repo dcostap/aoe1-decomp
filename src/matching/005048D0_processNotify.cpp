@@ -1,7 +1,7 @@
 // VA: 005048D0 TribeRangedUnitAIModule2::processNotify
 // Attempt log:
 // 1: direct reconstruction from packet/decompiler, local offset stubs.
-// 2: added large virtual-slot stubs for target/object virtual calls at +F4/+FC/+100 and module calls at +10/+9C; fixed GameObj/World offsets.
+// 2: restored the period object and module call surfaces at the observed slots.
 // 3: converted failure cases to shared fail return, but VC5 still allocates a 0x0C frame instead of original 0x08 and loop topology is broad mismatch.
 // 4: tried defensive null/sentinel branches only as a diagnostic to force compare size; produced 643B but broad 92% mismatch from offset 0, rolled back because it was behavior-altering and not a valid source model.
 // 5-8: combined guard, object id, same-TU UnitAIModule ABI, float coordinate fields, and natural new[]/delete[] growth restored exact call order and frame size.
@@ -24,36 +24,68 @@ extern "C" double __cdecl sqrt(double);
 
 #ifndef TAIUAIMD_COMPLETE_TU
 struct NotifyEvent { char pad[8]; int type; };
-struct RGE_Static_Object {
-    virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
-    virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
-    virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19(); virtual void v20(); virtual void v21(); virtual void v22(); virtual void v23();
-    virtual void v24(); virtual void v25(); virtual void v26(); virtual void v27(); virtual void v28(); virtual void v29(); virtual void v30(); virtual void v31();
-    virtual void v32(); virtual void v33(); virtual void v34(); virtual void v35(); virtual void v36(); virtual void v37(); virtual void v38(); virtual void v39();
-    virtual void v40(); virtual void v41(); virtual void v42(); virtual void v43(); virtual void v44(); virtual void v45(); virtual void v46(); virtual void v47();
-    virtual void v48(); virtual void v49(); virtual void v50(); virtual void v51(); virtual void v52(); virtual void v53(); virtual void v54(); virtual void v55();
-    virtual void v56(); virtual void v57(); virtual void v58(); virtual void v59(); virtual void v60(); virtual float vf_F4();
-    char gap[0x34]; float x; float y;
+class RGE_Player;
+class RGE_Master_Static_Object;
+
+class RGE_Game_World {
+public:
+    virtual ~RGE_Game_World();
+    RGE_Static_Object* object(int);
 };
-struct ObjList { RGE_Static_Object* object(int); };
-struct WorldWrap { char gap0[0x3c]; ObjList* objects; };
-struct GameObj {
-    int id;
-    char gap08[4];
-    WorldWrap* world;
-    char pad10[0x28];
-    float x;
-    float y;
-    float field40;
-    virtual void g0(); virtual void g1(); virtual void g2(); virtual void g3(); virtual void g4(); virtual void g5(); virtual void g6(); virtual void g7();
-    virtual void g8(); virtual void g9(); virtual void g10(); virtual void g11(); virtual void g12(); virtual void g13(); virtual void g14(); virtual void g15();
-    virtual void g16(); virtual void g17(); virtual void g18(); virtual void g19(); virtual void g20(); virtual void g21(); virtual void g22(); virtual void g23();
-    virtual void g24(); virtual void g25(); virtual void g26(); virtual void g27(); virtual void g28(); virtual void g29(); virtual void g30(); virtual void g31();
-    virtual void g32(); virtual void g33(); virtual void g34(); virtual void g35(); virtual void g36(); virtual void g37(); virtual void g38(); virtual void g39();
-    virtual void g40(); virtual void g41(); virtual void g42(); virtual void g43(); virtual void g44(); virtual void g45(); virtual void g46(); virtual void g47();
-    virtual void g48(); virtual void g49(); virtual void g50(); virtual void g51(); virtual void g52(); virtual void g53(); virtual void g54(); virtual void g55();
-    virtual void g56(); virtual void g57(); virtual void g58(); virtual void g59(); virtual void g60(); virtual void g61(); virtual void g62(); virtual float vf_FC();
-    virtual float vf_100();
+
+class RGE_Player {
+public:
+    virtual ~RGE_Player();
+    char gap_04[0x38];
+    RGE_Game_World* world;
+};
+
+class RGE_Static_Object {
+public:
+    virtual ~RGE_Static_Object();
+    virtual void recycle_in_to_game(); virtual void recycle_out_of_game();
+    virtual void draw(); virtual void shadow_draw(); virtual void normal_draw();
+    virtual void draw_front_frame(); virtual void draw_back_frame(); virtual void draw_frame();
+    virtual unsigned char update(); virtual void check_damage_sprites(); virtual void rehook();
+    virtual void save(int); virtual float teleport(float, float, float);
+    virtual void new_sprite(); virtual void add_overlay_sprite(); virtual void remove_overlay_sprite();
+    virtual void change_ownership(RGE_Player*); virtual void modify(float, unsigned char);
+    virtual void modify_delta(float, unsigned char); virtual void modify_percent(float, unsigned char);
+    virtual void transform(); virtual void copy_obj(); virtual void set_object_state(unsigned char);
+    virtual void remove_visible_resource(); virtual void create_doppleganger_when_dying();
+    virtual void destroy_obj(); virtual void die_die_die();
+    virtual void damage(int, void*, float, RGE_Player*, RGE_Static_Object*);
+    virtual float calculateDamage(int, void*, float, RGE_Player*, RGE_Static_Object*);
+    virtual void rotate(long); virtual unsigned char can_attack();
+    virtual void set_attribute(short, float);
+    virtual void set_attribute_amount(float, unsigned char, unsigned char);
+    virtual int heal(int, int); virtual unsigned char heal(float); virtual int canRepair();
+    virtual void notify_of_relation(long, unsigned char);
+    virtual void do_command(RGE_Static_Object*, float, float, float);
+    virtual void move_to(RGE_Static_Object*, float, float, float);
+    virtual void work(RGE_Static_Object*, float, float, float); virtual void stop();
+    virtual void set_attack(RGE_Static_Object*); virtual void play_command_sound();
+    virtual void play_move_sound(); virtual void new_angle(float);
+    virtual RGE_Static_Object* spawn_death_obj();
+    virtual RGE_Master_Static_Object* get_command_master(RGE_Static_Object*, float, float, float);
+    virtual void set_being_worked_on(void*, short, unsigned char);
+    virtual void release_being_worked_on(RGE_Static_Object*);
+    virtual unsigned char is_moving(); virtual RGE_Static_Object* get_target_obj();
+    virtual void enter_obj(RGE_Static_Object*); virtual void exit_obj();
+    virtual int explore_terrain(RGE_Player*, unsigned char, int);
+    virtual void unexplore_terrain(RGE_Player*, unsigned char, int);
+    virtual void* get_los_table(); virtual int inAttackRange(RGE_Static_Object*);
+    virtual unsigned char underAttack(); virtual void setUnderAttack(unsigned char);
+    virtual float calc_attack_modifier(RGE_Static_Object*);
+    virtual float getSpeed(); virtual float getAngle(); virtual float maximumSpeed();
+    virtual float rateOfFire();
+    long id;
+    RGE_Master_Static_Object* master_obj;
+    RGE_Player* owner;
+    char gap_10[0x28];
+    float world_x;
+    float world_y;
+    float world_z;
 };
 
 class UnitAIModule {
@@ -110,7 +142,7 @@ public:
     virtual int processOrder(void*,int);
     int processNotify(NotifyEvent*,unsigned long);
 
-    GameObj* obj;
+    RGE_Static_Object* obj;
     char gap08[0x24];
     int p2c;
     int state;
@@ -150,25 +182,25 @@ int TribeRangedUnitAIModule2::processNotify(NotifyEvent* ev, unsigned long flags
     }
     target = 0;
     if (this->state != 0x258 ||
-        (target = this->obj->world->object(this->target_id)) == 0 ||
+        (target = this->obj->owner->world->object(this->target_id)) == 0 ||
 #ifdef TAIUAIMD_COMPLETE_TU
-        ((ObjVtbl*)target)->funcF4() == DAT_005758c4)
+        target->getSpeed() == DAT_005758c4)
 #else
-        target->vf_F4() == DAT_005758c4)
+        target->getSpeed() == DAT_005758c4)
 #endif
         return 2;
 
     this->order(this->obj->id, 0x2bc, this->target_id, -1, this->p3c, this->p40, this->p44, this->p48, 0, 1, this->p2c);
 
 #ifdef TAIUAIMD_COMPLETE_TU
-    evasiveMoveDistance = ((ObjVtbl*)this->obj)->funcFC() *
-                          ((ObjVtbl*)this->obj)->func100() * DAT_005758b0;
-    dx = target->world_x - this->obj->x;
-    dy = target->world_y - this->obj->y;
+    evasiveMoveDistance = this->obj->maximumSpeed() *
+                          this->obj->rateOfFire() * DAT_005758b0;
+    dx = target->world_x - this->obj->world_x;
+    dy = target->world_y - this->obj->world_y;
 #else
-    evasiveMoveDistance = this->obj->vf_FC() * this->obj->vf_100() * DAT_005758b0;
-    dx = target->x - this->obj->x;
-    dy = target->y - this->obj->y;
+    evasiveMoveDistance = this->obj->maximumSpeed() * this->obj->rateOfFire() * DAT_005758b0;
+    dx = target->world_x - this->obj->world_x;
+    dy = target->world_y - this->obj->world_y;
 #endif
 
     if (this->count > 0) {
@@ -215,15 +247,10 @@ int TribeRangedUnitAIModule2::processNotify(NotifyEvent* ev, unsigned long flags
                             this->capacity = newCount;
                         }
                     }
-                    RGE_Static_Object* obj2 = this->obj->world->object(this->ids[i]);
+                    RGE_Static_Object* obj2 = this->obj->owner->world->object(this->ids[i]);
                     if (obj2) {
-#ifdef TAIUAIMD_COMPLETE_TU
-                        dx += obj2->world_x - this->obj->x;
-                        dy += obj2->world_y - this->obj->y;
-#else
-                        dx += obj2->x - this->obj->x;
-                        dy += obj2->y - this->obj->y;
-#endif
+                        dx += obj2->world_x - this->obj->world_x;
+                        dy += obj2->world_y - this->obj->world_y;
                     }
                 }
             ++i;
@@ -231,8 +258,8 @@ int TribeRangedUnitAIModule2::processNotify(NotifyEvent* ev, unsigned long flags
     }
 
     len = (float)sqrt(dx*dx + dy*dy);
-    this->evasiveMoveTo(this->obj->x + (-(dx / len * evasiveMoveDistance)),
-                        this->obj->y + (-(dy / len * evasiveMoveDistance)),
-                        this->obj->field40, 1);
+    this->evasiveMoveTo(this->obj->world_x + (-(dx / len * evasiveMoveDistance)),
+                        this->obj->world_y + (-(dy / len * evasiveMoveDistance)),
+                        this->obj->world_z, 1);
     return 3;
 }

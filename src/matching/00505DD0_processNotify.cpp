@@ -15,33 +15,50 @@ extern const char str_fmt_stopObject[];
 #ifndef TAIUAIMD_COMPLETE_TU
 class RGE_Visible_Map;
 class RGE_Player { public: int computerPlayer(); char gap_00[0x38]; RGE_Visible_Map* visible_map; };
-class RGE_Static_Object { public: virtual void v00(); int id; char gap_08[4]; RGE_Player* owner; char gap_10[0x28]; float x; float y; };
+class RGE_Static_Object { public: virtual ~RGE_Static_Object(); int id; char gap_08[4]; RGE_Player* owner; char gap_10[0x28]; float x; float y; };
 class UnitAIModule;
 
 class NotifyEvent { public: char gap_00[8]; int mType; };
 
 class UnitAIModule {
 public:
-    virtual void v00(); virtual void v04(); virtual void v08(); virtual void v0C();
-    virtual void v10(); virtual void v14(); virtual void v18();
-    virtual void vt1c(NotifyEvent* event);
-    virtual void v20(); virtual void v24(); virtual void v28(); virtual void v2C();
-    virtual void v30(); virtual void v34(); virtual void v38(); virtual void v3C();
-    virtual void v40(); virtual void v44(); virtual void v48(); virtual void v4C();
-    virtual void v50(); virtual void v54();
-    virtual void stopObject(int arg); // +58
-    virtual void v5c(); virtual void v60(); virtual void v64(); virtual void v68();
-    virtual int vt6c(int id, int flag);
-    virtual int vt70(int id, int flag);
-    virtual void v74(); virtual void v78(); virtual void v7c(); virtual void v80();
-    virtual void v84(); virtual void v88(); virtual void v8c(); virtual void v90();
-    virtual void v94(); virtual void v98(); virtual void v9c(); virtual void va0();
-    virtual void va4(); virtual void va8(); virtual void vac(); virtual void vb0();
-    virtual void vb4(); virtual void vb8(); virtual void vbc(); virtual void vc0();
-    virtual void vc4(); virtual void vc8(); virtual void vcc(); virtual void vd0();
-    virtual void vd4(); virtual void vd8(); virtual void vdc();
-    virtual int vte0(int a, int b);
-    virtual int vte4(int a);
+    virtual ~UnitAIModule(); virtual void save(int); virtual void load(int);
+    virtual RGE_Player* owner();
+    virtual int order(int, int, int, int, float, float, float, float, int, int, int);
+    virtual int notify(int, int, int, long, long, long);
+    virtual int notifyCommander(int, int, int, long, long, long);
+    virtual int notifyCommander(NotifyEvent*);
+    virtual void search(); virtual int importantWhenDead(int);
+    virtual int retryableOrder(int); virtual int actionRequiresLiveTarget(int);
+    virtual int bestUnitToAttack(int, int, float*);
+    virtual int mostDangerousEnemy(float*); virtual int weakestEnemy(float*);
+    virtual int closestAttacker(float*);
+    virtual int closestObject(int, int, int, int, int*);
+    virtual int closestResourceObject(int, int*);
+    virtual int closestUndiscoveredTile(int*, int*, int);
+    virtual void logDebug(char*); virtual int canAttackUnit(RGE_Static_Object*);
+    virtual int canAttackUnitAtNeutrality(int); virtual int stopObject(int);
+    virtual int attackObject(int, int); virtual int attackRoundupObject(int);
+    virtual int huntObject(int, int); virtual int gatherObject(int, int);
+    virtual int convertObject(int, int); virtual int healObject(int, int);
+    virtual int repairObject(int, int); virtual int buildObject(int, int);
+    virtual int tradeWithObject(int, int); virtual int explore(int, int, int);
+    virtual int enterObject(int, int); virtual int unload(int, float, float);
+    virtual int transportObject(float, float, float, int);
+    virtual int moveTo(float, float, float, float, int);
+    virtual int moveTo(int, float, int); virtual int moveTo(int, int);
+    virtual int evasiveMoveTo(float, float, float, int);
+    virtual int intelligentEvasiveMoveTo(float, float, float, int, int);
+    virtual int runAwayFromAttackers(int); virtual int followObject(int, float, int);
+    virtual int defendObject(int, float, int);
+    virtual int defendPosition(float, float, float, int);
+    virtual int seekAndDestroy(int, int, int, int);
+    virtual int exploreAndDestroy(int, int, int);
+    virtual int importantObject(int); virtual int convertToLOSResourceType(int);
+    virtual int canConvert(int); virtual int processOrder(void*, int);
+    virtual void processGroupNotify(void*); virtual int processIdle(int);
+    virtual int processMisc(); virtual int processRetryableOrder();
+    virtual int bestUnitToHeal(int, float*); virtual int bestUnitToConvert(float*);
 
     RGE_Static_Object* objectValue; // +4
 
@@ -79,17 +96,17 @@ int TribePriestUnitAIModule::processNotify(NotifyEvent* event, unsigned long par
                 fprintf(actionFile, str_fmt_stopObject, objId, str_taiuaimd_path, 0x63b);
             }
             this->stopObject(1);
-            this->vt1c(event);
+            this->notifyCommander(event);
             return 2;
         }
         if (this->field_30 == 0x25c) {
-            int id = this->vte4(0);
-            if (id != -1 && this->vt6c(id, 1) == 1) {
+            int id = this->bestUnitToConvert(0);
+            if (id != -1 && this->convertObject(id, 1) == 1) {
                 return 3;
             }
         } else if (this->field_30 == 0x25b) {
-            int id = this->vte0(0, 0);
-            if (id != -1 && this->vt70(id, 1) == 1) {
+            int id = this->bestUnitToHeal(0, 0);
+            if (id != -1 && this->healObject(id, 1) == 1) {
                 return 3;
             }
         }
@@ -104,7 +121,7 @@ int TribePriestUnitAIModule::processNotify(NotifyEvent* event, unsigned long par
                 fprintf(actionFile, str_fmt_stopObject, objId, str_taiuaimd_path, 0x675);
             }
         this->stopObject(0);
-        this->vt1c(event);
+        this->notifyCommander(event);
         return 2;
 
     case 0x1fc:
@@ -131,7 +148,7 @@ int TribePriestUnitAIModule::processNotify(NotifyEvent* event, unsigned long par
                 fprintf(actionFile, str_fmt_stopObject, objId, str_taiuaimd_path, 0x68f);
             }
         this->stopObject(1);
-        this->vt1c(event);
+        this->notifyCommander(event);
         break;
     }
     }

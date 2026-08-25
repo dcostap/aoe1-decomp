@@ -16,7 +16,7 @@ public:
     char field_130;
 };
 
-class __declspec(novtable) TribePriestUnitAIModule : public UnitAIModule {
+class TribePriestUnitAIModule : public UnitAIModule {
 public:
     TribePriestUnitAIModule(void* param_1, int param_2);
     virtual ~TribePriestUnitAIModule();
@@ -36,7 +36,6 @@ TribePriestUnitAIModule::TribePriestUnitAIModule(void* param_1, int param_2)
     this->field_128 = 0x11;
     this->field_124 = (int)operator_new(0x44);
 #else
-    *(void**)this = (void*)0x575E28;
     this->field_128 = 0x11;
 
     this->field_124 = (int)operator_new(0x44);

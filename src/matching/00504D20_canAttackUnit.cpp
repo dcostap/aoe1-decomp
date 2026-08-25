@@ -15,7 +15,7 @@ public:
 int TribeCivilianUnitAIModule::canAttackUnit(RGE_Static_Object* obj) {
     if (!obj) return 0;
 #ifdef TAIUAIMD_COMPLETE_TU
-    return (*(TaiuaimdSubObj**)((char*)obj + 8))->field_14 != 1;
+    return obj->master_obj->id != 1;
 #else
     return obj->field_08->field_14 != 1;
 #endif
