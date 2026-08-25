@@ -6,7 +6,7 @@
 //
 //   0046E4B0-00471EB0             117 normal owners
 //
-// The candidate proposal records 74 exact and 43 observed owners.  The
+// The candidate proposal records 73 exact and 44 observed owners.  The
 // compiler also emits the scalar deleting destructor at 0046E750.
 //
 // Their source files retain sole ownership of their VAs.
@@ -43,7 +43,7 @@
 #include "matching/0046F250_availablePathingAttempts.cpp"
 #include "matching/0046f290_incrementPathingAttempts.cpp"
 #include "matching/0046F2A0_sendChatMessage.cpp"
-#include "matching/0046F3A0_make_scenario_obj.cpp"
+#include "scratch/0046F3A0_make_scenario_obj.cpp"
 #include "matching/0046f410_scenario_save.cpp"
 #include "scratch/0046F420_scenario_load.cpp"
 #include "matching/0046F6B0_scenario_postsave.cpp"

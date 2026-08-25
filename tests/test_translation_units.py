@@ -48,7 +48,13 @@ class TranslationUnitTests(unittest.TestCase):
         self.assertEqual(slugs, {"tu_zone_map"})
 
     def test_com_obj_owners_use_one_grouped_object(self) -> None:
-        expected_vas = (0x004304A0, 0x00431150)
+        expected_vas = (
+            0x0042FC90,
+            0x00430EC0,
+            0x00431490,
+            0x004315A0,
+            0x004315B0,
+        )
         paths = set()
         slugs = set()
 
@@ -61,7 +67,7 @@ class TranslationUnitTests(unittest.TestCase):
             paths.add(compiler_source_path(record))
             slugs.add(compiler_artifact_slug(record))
 
-        self.assertEqual(paths, {REPO_ROOT / "src" / "com_obj_enter_tu.cpp"})
+        self.assertEqual(paths, {REPO_ROOT / "src" / "com_obj_tu.cpp"})
         self.assertEqual(slugs, {"tu_com_obj_enter"})
 
     def test_each_group_has_unique_owner_vas(self) -> None:
@@ -106,8 +112,10 @@ class TranslationUnitTests(unittest.TestCase):
             validation_module,
             "_mapped_owner_symbols",
             return_value={
-                "004304A0": "?reset_attack_timer@Other_Combat_Object@@QAEXXZ",
-                "00431150": "?enter@Other_Combat_Object@@QAEHHH@Z",
+                "0042FC90": (
+                    "?calc_attack_modifier@Other_Combat_Object"
+                    "@@QAEMPAURGE_Armor_Weapon_Info@@H@Z"
+                ),
             },
         ):
             forced_issues = validate_translation_units([group], object_dir=object_path.parent)
@@ -116,7 +124,7 @@ class TranslationUnitTests(unittest.TestCase):
             for issue in forced_issues
             if issue.code == "pdb-owner-mismatch"
         }
-        self.assertIn("004304A0", forced_mismatch_vas)
+        self.assertIn("0042FC90", forced_mismatch_vas)
 
     def test_manifest_validation_rejects_duplicate_va(self) -> None:
         groups = load_translation_units()

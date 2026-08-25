@@ -2186,7 +2186,6 @@
         "0046F250": "src/matching/0046F250_availablePathingAttempts.cpp",
         "0046F290": "src/matching/0046f290_incrementPathingAttempts.cpp",
         "0046F2A0": "src/matching/0046F2A0_sendChatMessage.cpp",
-        "0046F3A0": "src/matching/0046F3A0_make_scenario_obj.cpp",
         "0046F410": "src/matching/0046f410_scenario_save.cpp",
         "0046F6B0": "src/matching/0046F6B0_scenario_postsave.cpp",
         "0046F7A0": "src/matching/0046F7A0_scenario_postload.cpp",

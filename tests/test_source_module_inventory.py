@@ -43,7 +43,10 @@ class SourceModuleInventoryTests(unittest.TestCase):
         module = self.modules["com_obj_enter"]
         self.assertEqual(module["module_name"], "com_obj.cpp")
         self.assertEqual(module["module_name_source"], "pdb_source_file")
-        self.assertEqual([owner["source_line"] for owner in module["owners"]], [483, 1097])
+        self.assertEqual(
+            [owner["source_line"] for owner in module["owners"]],
+            [179, 980, 1252, 1301, 1309],
+        )
         self.assertEqual({owner["class_owner"] for owner in module["owners"]}, {"RGE_Combat_Object"})
         self.assertIn("pdb_source_module", module["context"]["flags"])
         self.assertIn("source_line_order", module["context"]["flags"])

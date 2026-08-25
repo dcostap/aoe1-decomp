@@ -58,7 +58,7 @@ class TranslationUnitPrefixTests(unittest.TestCase):
         object_path = REPO_ROOT / "build" / "obj" / "tu_com_obj_enter.obj"
         if not object_path.is_file():
             self.skipTest("grouped object is not available in this checkout")
-        group = translation_unit_for_va(0x004304A0)
+        group = translation_unit_for_va(0x0042FC90)
         self.assertIsNotNone(group)
         assert group is not None
         obj = load_coff_object(object_path)
@@ -66,8 +66,8 @@ class TranslationUnitPrefixTests(unittest.TestCase):
         # Use a deliberately wrong qualified owner. The grouped object now
         # carries the canonical RGE_Combat_Object symbol, so the test must
         # exercise the PDB-owner rejection instead of relying on stale bytes.
-        wrong_pdb_symbol = "Other_Combat_Object::reset_attack_timer"
-        result = compare_object_owner(obj, 0x004304A0, group, wrong_pdb_symbol)
+        wrong_pdb_symbol = "Other_Combat_Object::calc_attack_modifier"
+        result = compare_object_owner(obj, 0x0042FC90, group, wrong_pdb_symbol)
 
         self.assertEqual("MISMATCH", result["result"])
         self.assertEqual("mismatch", result["owner_symbol"]["status"])
