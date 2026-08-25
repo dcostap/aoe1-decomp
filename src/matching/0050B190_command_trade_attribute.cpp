@@ -4,52 +4,7 @@
 
 #include <windows.h>
 #include <stdio.h>
-
-#ifndef TCOMMAND_CONTEXT_H
-class RGE_Game_World;
-class TCommunications_Handler;
-
-class RGE_Command {
-public:
-    virtual void vfunc0() = 0;
-    virtual ~RGE_Command() {}
-    virtual void vfunc8() = 0;
-    virtual void vfuncC() = 0;
-
-    RGE_Game_World* world;
-    void* last_order;
-    int last_order_size;
-    unsigned int last_order_time;
-    TCommunications_Handler* com_hand;
-
-    void submit(void* cmd, long size);
-};
-
-class RGE_Static_Object {
-public:
-    char gap_00[4];
-    int id;
-};
-
-class TRIBE_Command : public RGE_Command {
-public:
-    void command_trade_attribute(RGE_Static_Object** objs, short count, long attribute);
-};
-
-struct TDebuggingLog {
-    void __cdecl Log(char* format, ...);
-};
-
-extern TDebuggingLog* L;
-
-class TRIBE_Command_Trade_Attribute {
-public:
-    unsigned char command;
-    unsigned char unit_num;
-    char gap_02[2];
-    long attribute;
-};
-#endif
+#include "../tcommand_context.h"
 
 extern "C" void* __cdecl calloc(size_t num, size_t size);
 

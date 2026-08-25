@@ -1,16 +1,13 @@
-extern void* TRIBE_Command_vftable;
+// VA: 00509720 TRIBE_Command::TRIBE_Command
+// PDB: tcommand.cpp lines 56-57.
+// The constructor uses the reviewed RGE_Command base and the natural derived
+// vptr initialization. It does not write a vtable pointer by hand.
 
-class RGE_Command {
-public:
-    RGE_Command(void* world, void* com_hand);
-};
+#include "../tcommand_context.h"
 
-class TRIBE_Command : public RGE_Command {
-public:
-    void* vfptr;
-    TRIBE_Command(void* world, void* com_hand);
-};
-
-TRIBE_Command::TRIBE_Command(void* world, void* com_hand) : RGE_Command(world, com_hand) {
-    this->vfptr = &TRIBE_Command_vftable;
+TRIBE_Command::TRIBE_Command(
+    TRIBE_World* world,
+    TCommunications_Handler* com_hand)
+    : RGE_Command(world, com_hand)
+{
 }

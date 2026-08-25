@@ -2,34 +2,9 @@
 // PDB: tcommand.cpp lines 1632-1660.
 // Preserve the shipped redundant object-list pointer check.
 
+#include "../tcommand_context.h"
+
 extern void* __cdecl calloc(unsigned int, unsigned int);
-
-#ifndef TCOMMAND_CONTEXT_H
-class TDebuggingLog {
-public:
-    void __cdecl Log(char* format, ...);
-};
-
-extern TDebuggingLog* L;
-
-class RGE_Command {
-protected:
-    void submit(void* data, long size);
-};
-
-class TRIBE_Command : public RGE_Command {
-public:
-    void command_trade_attribute(int param_1, int param_2, long param_3);
-};
-
-class TRIBE_Command_Trade_Attribute {
-public:
-    unsigned char command;
-    unsigned char unit_num;
-    char gap_02[2];
-    long attribute;
-};
-#endif
 
 void TRIBE_Command::command_trade_attribute(int param_1, int param_2, long param_3) {
     TRIBE_Command_Trade_Attribute* buf =

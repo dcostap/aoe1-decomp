@@ -1,36 +1,16 @@
+// VA: 0050AB30 TRIBE_Command::command_build_wall
+// PDB: tcommand.cpp lines 1116-1176.
+
 #include <windows.h>
 #include <stdio.h>
+#include "../tcommand_context.h"
 
-class RGE_Game_World;
-class TCommunications_Handler;
-
-class RGE_Command {
-public:
-    virtual void vfunc0() = 0;
-    virtual ~RGE_Command() {}
-    virtual void vfunc8() = 0;
-    virtual void vfuncC() = 0;
-    RGE_Game_World* world;
-    void* last_order;
-    int last_order_size;
-    unsigned int last_order_time;
-    TCommunications_Handler* com_hand;
-    void submit(void* cmd, int size);
-};
-
-class RGE_Player { public: char gap_00[0x4A]; short id; };
-class RGE_Static_Object { public: char gap_00[4]; int id; char gap_08[4]; RGE_Player* owner; };
-
-class TRIBE_Command : public RGE_Command {
-public:
-    void command_build_wall(RGE_Static_Object** objs, short count, short build_id, long a, long b, long c, long d);
-};
-
-struct TDebuggingLog { void Log(const char* format, ...); };
 extern "C" TDebuggingLog* L;
 extern "C" void* __cdecl calloc(size_t num, size_t size);
 
-void TRIBE_Command::command_build_wall(RGE_Static_Object** objs, short count, short build_id, long a, long b, long c, long d)
+void TRIBE_Command::command_build_wall(
+    RGE_Static_Object** objs, short count, short build_id,
+    long a, long b, long c, long d)
 {
     if (objs && count >= 1) {
         int obj_count = (int)count;
@@ -69,7 +49,8 @@ void TRIBE_Command::command_build_wall(RGE_Static_Object** objs, short count, sh
             cmd[5] = (unsigned char)c;
             *(int*)(cmd + 12) = -1;
 
-            L->Log("      >SEND CMD WALL (CNT=%d,CAT=%d)", obj_count, (int)build_id);
+            L->Log((char*)"      >SEND CMD WALL (CNT=%d,CAT=%d)",
+                   obj_count, (int)build_id);
 
             this->submit(cmd, size);
         }

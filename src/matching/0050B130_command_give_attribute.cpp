@@ -3,43 +3,7 @@
 // Exact code needs declaration-order packet writes.
 
 #include <stdlib.h>
-
-#ifndef TCOMMAND_CONTEXT_H
-class TDebuggingLog {
-public:
-    void __cdecl Log(char* format, ...);
-};
-
-extern TDebuggingLog* L;
-
-class RGE_Command {
-public:
-    virtual ~RGE_Command();
-
-protected:
-    void submit(void* data, long size);
-};
-
-class TRIBE_Command : public RGE_Command {
-public:
-    virtual void command_give_attribute(
-        int player_id,
-        int to_player_id,
-        int attr,
-        float amount,
-        float amount2);
-};
-
-class TRIBE_Command_Give_Attribute {
-public:
-    unsigned char command;
-    unsigned char player_id;
-    unsigned char to_player_id;
-    unsigned char attr_id;
-    float attr_amount;
-    float attr_cost;
-};
-#endif
+#include "../tcommand_context.h"
 
 void TRIBE_Command::command_give_attribute(
     int player_id,

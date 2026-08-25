@@ -1,24 +1,51 @@
 // Authentic PDB-ordered wrapper for C:\\msdev\\work\\age1_x1\\tcommand.cpp.
-//
-// The PDB owner order runs from 00509720 through 0050B3E0. The reviewed
-// tcommand context can compile the nine later command packet owners below.
-// Earlier owners still carry incompatible standalone class surfaces. They stay
-// blocked instead of using aliases, namespaces, dummy bodies, or manual
-// vtables.
-//
-// The compiler-generated vector deleting destructor at 00509740 has no source
-// include. Accepted-drift and scratch owners remain observations in the
-// proposal. This wrapper does not reopen or promote them.
+// Every normal owner is included in source order. The candidate proposal keeps
+// exact, accepted-drift, and scratch classifications separate.
 
-#include "../include/tcommand_context.h"
+#include "tcommand_context.h"
 
-// PDB order: lines 1396-1716.
+// PDB order: lines 56-205.
+#include "matching/00509720_TRIBE_Command.cpp"
+#include "matching/00509770_do_command.cpp"
+#include "matching/00509910_do_command_tribe_create.cpp"
+#include "matching/00509980_do_command_make.cpp"
+#include "matching/00509AF0_do_command_research.cpp"
+#include "matching/00509C60_do_command_build.cpp"
+#include "accepted_drift/00509E10_do_command_build_wall.cpp"
+#include "matching/0050A010_place_line_of_walls.cpp"
+#include "accepted_drift/0050A140_do_command_explore.cpp"
+#include "matching/0050A1D0_do_command_game.cpp"
+#include "matching/0050A490_do_command_cancel_build.cpp"
+#include "accepted_drift/0050A4C0_do_command_attack_ground.cpp"
+#include "matching/0050A510_do_command_give_attribute.cpp"
+#include "accepted_drift/0050A6A0_do_command_trade_attribute.cpp"
+#include "accepted_drift/0050A6E0_do_command_repair.cpp"
+#include "matching/0050A730_do_command_unload.cpp"
+#include "matching/0050A7B0_do_command_queue.cpp"
+#include "matching/0050A7F0_command_make.cpp"
+#include "matching/0050A860_command_make.cpp"
+#include "matching/0050A8D0_command_research.cpp"
+#include "matching/0050A940_command_research.cpp"
+#include "matching/0050A9B0_command_build.cpp"
+#include "accepted_drift/0050AA90_command_build.cpp"
+#include "matching/0050AB30_command_build_wall.cpp"
+#include "matching/0050AC70_command_explore.cpp"
+#include "matching/0050AD00_command_allied_victory.cpp"
+#include "accepted_drift/0050AD70_command_relation.cpp"
+#include "scratch/0050ADF0_command_game_speed.cpp"
+#include "scratch/0050AE40_command_save_game.cpp"
+#include "accepted_drift/0050AE80_command_inventory.cpp"
+#include "matching/0050AEE0_command_upgrade_town.cpp"
 #include "matching/0050AF30_command_quick_build.cpp"
 #include "matching/0050AF80_command_shared_los.cpp"
 #include "matching/0050AFD0_command_cancel_build.cpp"
 #include "matching/0050B020_command_attack_ground.cpp"
 #include "matching/0050B0D0_command_cheat.cpp"
-#include "accepted_drift/0050B130_command_give_attribute.cpp"
+#include "matching/0050B130_command_give_attribute.cpp"
 #include "matching/0050B190_command_trade_attribute.cpp"
 #include "matching/0050B230_command_trade_attribute.cpp"
 #include "matching/0050B290_command_repair.cpp"
+#include "matching/0050B330_command_unload.cpp"
+#include "matching/0050B3E0_command_queue.cpp"
+
+// 00509740 is the compiler-generated vector deleting destructor.

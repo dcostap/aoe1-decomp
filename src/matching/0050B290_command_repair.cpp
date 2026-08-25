@@ -4,7 +4,7 @@
 
 #include <windows.h>
 #include <stdio.h>
-#include "../../include/tcommand_context.h"
+#include "../tcommand_context.h"
 
 extern "C" void* __cdecl calloc(size_t count, size_t size);
 
