@@ -34,13 +34,13 @@
 #include "matching/0044D050_get_current_campaign.cpp"
 
 #include "matching/0044D0C0_get_current_scenario.cpp"
-#include "scratch/0044D0F0_set_current_scenario.cpp"
+#include "matching/0044D0F0_set_current_scenario.cpp"
 #include "matching/0044D130_get_scenario_list.cpp"
 #include "matching/0044D160_notify_of_scenario_complete.cpp"
 #include "matching/0044D180_open_scenario.cpp"
 
 #include "matching/0044D1A0_RGE_Game_Info.cpp"
-#include "scratch/0044D300_RGE_Game_Info.cpp"
+#include "matching/0044D300_RGE_Game_Info.cpp"
 #include "matching/0044D3B0_save.cpp"
 #include "matching/0044D470_find_campaigns.cpp"
 #include "matching/0044D710_add_new_person.cpp"

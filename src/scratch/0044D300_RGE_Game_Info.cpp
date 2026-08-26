@@ -1,16 +1,22 @@
 // VA: 0044D300 ~RGE_Game_Info destructor
 // 165 bytes
+// BINARY NOTE: gameinfo.cpp lines 512-533 call the campaign and person
+// destructors before operator_delete, with seven ordered direct calls.
+// Attempt log: dtor calls preserved all bytes but changed two direct targets.
+// Explicit destructor declarations and calls restore both targets and give
+// MATCH, 0.0000%, with the original 165-byte boundary.  A delete expression
+// and undeclared fallback destructors omitted both child calls and failed.
 
 #ifndef GAMEINFO_SHARED_CONTEXT
 void __cdecl free(void*);
 void __cdecl operator_delete(void* p);
 
 struct RGE_Campaign {
-    void dtor();
+    ~RGE_Campaign();
 };
 
 struct RGE_Person_Info {
-    void dtor();
+    ~RGE_Person_Info();
 };
 
 struct RGE_Game_Info {
@@ -34,7 +40,7 @@ RGE_Game_Info::~RGE_Game_Info() {
         for (int i = 0; i < campaign_num; i++) {
             RGE_Campaign* cp = campaigns[i];
             if (cp) {
-                cp->dtor();
+                cp->~RGE_Campaign();
                 operator_delete(cp);
             }
         }
@@ -45,7 +51,7 @@ RGE_Game_Info::~RGE_Game_Info() {
         for (int i = 0; i < people_num; i++) {
             RGE_Person_Info* pi = people_info[i];
             if (pi) {
-                pi->dtor();
+                pi->~RGE_Person_Info();
                 operator_delete(pi);
             }
         }
