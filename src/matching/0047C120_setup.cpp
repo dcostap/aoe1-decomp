@@ -75,7 +75,7 @@ public:
     char gap_004[0x134];
     short fixed_len;           // +0x138
     char gap_13A[0x12];
-    char* fill_back;           // +0x14C
+    int fill_back;             // +0x14C
     unsigned char back_color;  // +0x150
     char gap_151[0x03];
     int outline;               // +0x154
@@ -84,19 +84,28 @@ public:
     int bevel_type;            // +0x170
 
     void set_font(void* font, long p2, long p3);
-    void set_alignment(int h, int v);
+    enum Alignment {
+        AlignCenter = 0,
+        AlignLeft = 1,
+        AlignRight = 2,
+        AlignTop = 3,
+        AlignBottom = 4,
+        AlignHorizontalScroll = 5,
+        AlignWordwrap = 6
+    };
+    void set_alignment(Alignment h, Alignment v);
     void set_back_pic(char* pic);
 
     long setup(TDrawArea* draw, TPanel* parent, long x, long y, long w, long h,
                void* font, long font_arg2, long font_arg3, char* back_pic,
-               char* fill, int backColor, int outline, unsigned char outlineColor,
+               int fill, unsigned char backColor, int outline, unsigned char outlineColor,
                short fixedLen, char* text);
 };
 #endif
 
 long TTextPanel::setup(TDrawArea* draw, TPanel* parent, long x, long y, long w, long h,
                        void* font, long font_arg2, long font_arg3, char* back_pic,
-                       char* fill, int backColor, int outlineValue, unsigned char outlineColor,
+                       int fill, unsigned char backColor, int outlineValue, unsigned char outlineColor,
                        short fixedLenValue, char* text)
 {
     TPanel::setup(draw, parent, x, y, w, h, 0);
@@ -110,7 +119,7 @@ long TTextPanel::setup(TDrawArea* draw, TPanel* parent, long x, long y, long w, 
     }
     set_text(text);
     set_font(font, font_arg2, font_arg3);
-    set_alignment(0, 0);
+    set_alignment(AlignCenter, AlignCenter);
     set_back_pic(back_pic);
     return 1;
 }

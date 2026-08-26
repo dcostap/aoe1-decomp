@@ -36,13 +36,6 @@ struct PanelNode {
 class TPanel {
 public:
     virtual ~TPanel();
-    virtual void vf04(void) = 0;
-    virtual void vf08(void) = 0;
-    virtual void vf0C(void) = 0;
-    virtual void vf10(void) = 0;
-    virtual void vf14(void) = 0;
-    virtual void vf18(void) = 0;
-    virtual void vf1C(void) = 0;
     virtual void set_redraw(int mode) = 0; // vtable slot 8 (+0x20)
 
     char gap_04[0x20];
@@ -54,7 +47,7 @@ public:
 };
 
 #endif
-void TPanel::set_any_overlapping_redraw(TPanel* param_1, int param_2)
+void TPanel::set_any_overlapping_redraw(TPanel* param_1, TPanel::RedrawMode param_2)
 {
     tagRECT this_rect = param_1->clip_rect;
     PanelNode* temp_node = this->first_child_node;

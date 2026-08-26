@@ -20,6 +20,6 @@ public:
 };
 
 #endif
-int TPanel::handle_scroll(int, int) {
+long TPanel::handle_scroll(long, long) {
     return 0;
 }

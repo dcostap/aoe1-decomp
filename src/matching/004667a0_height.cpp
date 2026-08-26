@@ -20,6 +20,6 @@ public:
 };
 
 #endif
-int TPanel::height() {
+long TPanel::height() const {
     return this->pnl_hgt_;
 }

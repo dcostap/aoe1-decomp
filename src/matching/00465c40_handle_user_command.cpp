@@ -20,6 +20,6 @@ public:
 };
 
 #endif
-int TPanel::handle_user_command(int, int) {
+long TPanel::handle_user_command(unsigned int, long) {
     return 0;
 }

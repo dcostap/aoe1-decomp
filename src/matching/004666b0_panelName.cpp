@@ -20,6 +20,6 @@ public:
 };
 
 #endif
-char* TPanel::panelName() {
+char* TPanel::panelName() const {
     return this->panel_name;
 }

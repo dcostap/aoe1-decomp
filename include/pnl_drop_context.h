@@ -334,10 +334,10 @@ public:
     void set_outline(int, unsigned char);
     void set_text_color(unsigned long, unsigned long);
     int currentLineNumber();
-    int currentLine();
+    char* currentLine();
     void refresh_values(int, int);
-    int get_id();
-    int get_id(long);
+    long get_id();
+    long get_id(long);
     char* get_text();
     int delete_line(long);
 };
@@ -421,6 +421,10 @@ public:
 
 class TDropDownPanel : public TPanel {
 public:
+    enum DrawStyle {
+        DrawStyleDefault = 0
+    };
+
     TTextPanel* val_panel;
     TButtonPanel* btn_panel;
     union { TListPanel* list_panel; TTextPanel* member_FC; void* field_FC; };
@@ -459,7 +463,7 @@ public:
                long, long, long, long, short, short, long, long, char*, long, long, char**, short,
                long, char*, char*, char*, char*, long, long);
     void set_val_text_color(unsigned long, unsigned long);
-    void set_draw_style(int);
+    void set_draw_style(DrawStyle);
     void set_draw_val_rect(int);
     void set_bevel_info(int, int, int, int, int, int, int);
     void set_buttons(TShape*, int, int, int, int, int);
@@ -469,7 +473,7 @@ public:
     int currentLineNumber();
     void setCurrentLineNumber(int);
     void setCurrentLineId(int);
-    int currentLine();
+    char* currentLine();
     void set_tab_order(TPanel*, TPanel*);
     void set_sorted(int);
     int get_sorted();
@@ -479,13 +483,13 @@ public:
     int insert_line(long, char*, long);
     int insert_line(long, long, long);
     int delete_line(long);
-    int get_line();
-    int get_line(long);
-    int get_line(char*);
+    long get_line();
+    long get_line(long);
+    long get_line(char*);
     char* get_text();
     char* get_text(long);
-    int get_id();
-    int get_id(long);
+    long get_id();
+    long get_id(long);
     void empty_list();
     void target_func(int);
 };

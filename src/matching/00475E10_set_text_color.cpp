@@ -6,5 +6,5 @@
 void TEditPanel::set_text_color(unsigned long a, unsigned long b) {
     text_color1 = a;
     text_color2 = b;
-    set_redraw(1);
+    set_redraw(TPanel::RedrawNormal);
 }

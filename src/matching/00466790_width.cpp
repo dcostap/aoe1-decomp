@@ -20,6 +20,6 @@ public:
 };
 
 #endif
-int TPanel::width() {
+long TPanel::width() const {
     return this->pnl_wid_;
 }

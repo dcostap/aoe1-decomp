@@ -20,6 +20,6 @@ public:
 };
 
 #endif
-int TPanel::get_help_message() {
+long TPanel::get_help_message() {
     return this->help_string_id_;
 }

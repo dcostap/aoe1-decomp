@@ -17,7 +17,8 @@ struct tagRECT {
 };
 #endif
 
-struct TDrawArea {
+class TDrawArea {
+public:
     TDrawSystem* DrawSystem;
     void* Wnd;
     char gap_08[0x10];
@@ -46,17 +47,6 @@ extern "C" __declspec(dllimport) int __stdcall DeleteObject(void* object);
 
 class TPanel;
 
-enum PositionMode {
-    PositionFixed = 0,
-    PositionLeft = 3,
-    PositionCentered = 2,
-    PositionTop = 4,
-    PositionLeftTop = 7,
-    PositionLeftBottom = 8,
-    PositionRightTop = 9,
-    PositionRightBottom = 10
-};
-
 class TPanelSystem {
 public:
     union { TPanel* mouseOwnerValue; int mouseOwner_; };
@@ -80,12 +70,16 @@ public:
 
     TPanelSystem();
     ~TPanelSystem();
+
+protected:
     int setup(void);
-    TPanel* currentPanel();
+
+public:
+    TPanel* currentPanel() const;
     TPanel* previousPanel();
-    TPanel* mouseOwner();
-    TPanel* keyboardOwner();
-    TPanel* modalPanel();
+    TPanel* mouseOwner() const;
+    TPanel* keyboardOwner() const;
+    TPanel* modalPanel() const;
     TPanel* panel(char* name);
     int numberActivePanels() const;
     int addPanel(TPanel* panel, int make_current, int mode);
@@ -100,8 +94,12 @@ public:
     int destroyPanel(char* name);
     int inSystem(char* name);
     int inSystem(TPanel* panel);
+
+protected:
     PanelNode* findPanelNode(char* name);
     void setCurrentPanel(TPanel* panel, int mode);
+
+public:
     void* get_palette(char* name, long mode);
     void release_palette(void* target_palette);
     void DisableIME(void);
@@ -129,17 +127,34 @@ struct PanelNode {
 
 class TPanel {
 public:
+    enum PositionMode {
+        PositionFixed = 0,
+        PositionLeft = 3,
+        PositionCentered = 2,
+        PositionTop = 4,
+        PositionLeftTop = 7,
+        PositionLeftBottom = 8,
+        PositionRightTop = 9,
+        PositionRightBottom = 10
+    };
+    enum RedrawMode {
+        RedrawNone = 0,
+        RedrawNormal = 1,
+        RedrawImmediate = 2
+    };
+
     virtual ~TPanel();
-    virtual int setup(TDrawArea*, TPanel*, long, long, long, long, int);
+    virtual long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char);
     virtual void set_rect(tagRECT);
-    virtual void set_rect(int, int, int, int);
+    virtual void set_rect(long, long, long, long);
     virtual void set_color(unsigned char);
     virtual void set_active(int);
-    virtual void set_positioning(int, int, int, int, int, int, int, int, int,
+    virtual void set_positioning(PositionMode, long, long, long, long, long, long,
+                                 long, long,
                                  TPanel*, TPanel*, TPanel*, TPanel*);
     virtual void set_fixed_position(long, long, long, long);
-    virtual void set_redraw(int);
-    virtual void set_overlapped_redraw(TPanel*, TPanel*, int);
+    virtual void set_redraw(RedrawMode);
+    virtual void set_overlapped_redraw(TPanel*, TPanel*, RedrawMode);
     virtual void draw_setup(int);
     virtual void draw_finish();
     virtual void draw();
@@ -154,10 +169,10 @@ public:
     virtual long handle_paint();
     virtual long handle_key_down(long, short, int, int, int);
     virtual long handle_char(long, short);
-    virtual int handle_command(int, int);
-    virtual int handle_user_command(int, int);
-    virtual int handle_timer_command(int, int);
-    virtual int handle_scroll(int, int);
+    virtual long handle_command(unsigned int, long);
+    virtual long handle_user_command(unsigned int, long);
+    virtual long handle_timer_command(unsigned int, long);
+    virtual long handle_scroll(long, long);
     virtual long handle_mouse_down(unsigned char, long, long, int, int);
     virtual long handle_mouse_move(long, long, int, int);
     virtual long handle_mouse_up(unsigned char, long, long, int, int);
@@ -181,7 +196,7 @@ public:
     virtual void set_focus(int);
     virtual void set_tab_order(TPanel*, TPanel*);
     virtual void set_tab_order(TPanel**, short);
-    virtual unsigned char get_help_info(char**, long*, long, long);
+    virtual unsigned char get_help_info(char*&, long&, long, long);
     virtual void stop_sound_system();
     virtual int restart_sound_system();
     virtual void take_snapshot();
@@ -191,22 +206,19 @@ public:
     TPanel();
     TPanel* previousPanel();
     void setPreviousPanel(TPanel* panel);
-    void setPreviousPanel(int value);
-    TPanel* previousModalPanel();
-    void setPreviousModalPanel(int value);
+    TPanel* previousModalPanel() const;
     void setPreviousModalPanel(TPanel* panel);
-    char* panelName();
-    int xPosition();
-    int yPosition();
-    int width();
-    int height();
-    int renderArea();
+    char* panelName() const;
+    long xPosition() const;
+    long yPosition() const;
+    long width() const;
+    long height() const;
+    TDrawArea* renderArea() const;
     tagRECT clipRectangle() const;
     void setClipRectangle(tagRECT rect);
-    void setPanelName(const char* name);
-    void set_tab_order(void* previous, void* next);
+    void setPanelName(char* name);
     void set_curr_child(TPanel* panel);
-    void set_any_overlapping_redraw(TPanel* panel, int mode);
+    void set_any_overlapping_redraw(TPanel* panel, RedrawMode mode);
     void set_child_z_order(TPanel* child, unsigned char mode, short order);
     int get_focus();
     long left_dbl_click_action(long, long, int, int);
@@ -225,9 +237,9 @@ public:
     void delete_panel(TPanel** panel);
     int get_string(int string_id, char* buffer, int length);
     char* get_string(int string_id);
-    int get_help_message();
-    int get_help_page();
-    void set_help_info(int a, int b);
+    long get_help_message();
+    long get_help_page();
+    void set_help_info(long a, long b);
 
     union { TPanel* previous_panel; TPanel* previousPanelValue; int previousPanel_; };
     union { TPanel* previous_modal_panel; TPanel* previousModalPanelValue; int previousModalPanel_; };

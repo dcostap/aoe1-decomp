@@ -16,11 +16,16 @@ public:
     char gap_4[0x116];
     int field_11C;
 
-    void set_style(int value);
+    enum Style {
+        NormalStyle = 0,
+        BeveledStyle = 1,
+        ChiseledStyle = 2
+    };
+    void set_style(Style value);
 };
 #endif
 
-void TTextPanel::set_style(int value) {
+void TTextPanel::set_style(TTextPanel::Style value) {
     this->field_11C = value;
     this->set_redraw(1);
 }

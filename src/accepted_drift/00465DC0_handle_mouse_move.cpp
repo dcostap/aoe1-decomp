@@ -27,30 +27,54 @@ struct PanelNode {
 
 class TPanel {
 public:
-#define VPAD(n) virtual void v##n();
-    VPAD(0) VPAD(1) VPAD(2) VPAD(3) VPAD(4) VPAD(5) VPAD(6) VPAD(7)
-    VPAD(8) VPAD(9) VPAD(10) VPAD(11) VPAD(12) VPAD(13) VPAD(14) VPAD(15)
-    VPAD(16) VPAD(17) VPAD(18) VPAD(19) VPAD(20) VPAD(21) VPAD(22) VPAD(23)
-    VPAD(24) VPAD(25) VPAD(26) VPAD(27) VPAD(28)
-#undef VPAD
-    virtual int child_mouse_move(long x, long y, int a, int b); // +0x74
-    virtual void v30();
-    virtual void v31();
-    virtual int on_mouse_move(long x, long y, int a, int b);     // +0x80
-    virtual void v33();
-    virtual void v34();
-    virtual int on_left_drag(long x, long y, int a, int b);      // +0x8C
-    virtual void v36();
-    virtual void v37();
-    virtual void v38();
-    virtual void v39();
-    virtual int on_right_drag(long x, long y, int a, int b);     // +0xA0
-    virtual void v41();
-    virtual void v42();
-    virtual void v43();
-    virtual void v44();
-    virtual void v45();
-    virtual void v46();
+    virtual ~TPanel();
+    virtual long setup(void*, TPanel*, long, long, long, long, unsigned char);
+    virtual void set_rect(void*);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_color(unsigned char);
+    virtual void set_active(int);
+    virtual void set_positioning(int, long, long, long, long, long, long, long, long,
+                                 TPanel*, TPanel*, TPanel*, TPanel*);
+    virtual void set_fixed_position(long, long, long, long);
+    virtual void set_redraw(int);
+    virtual void set_overlapped_redraw(TPanel*, TPanel*, int);
+    virtual void draw_setup(int);
+    virtual void draw_finish();
+    virtual void draw();
+    virtual void draw_rect(void*);
+    virtual void draw_offset(long, long, void*);
+    virtual void draw_rect2(void*);
+    virtual void draw_offset2(long, long, void*);
+    virtual void paint();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual long handle_idle();
+    virtual long handle_size(long, long);
+    virtual long handle_paint();
+    virtual long handle_key_down(long, short, int, int, int);
+    virtual long handle_char(long, short);
+    virtual long handle_command(unsigned int, long);
+    virtual long handle_user_command(unsigned int, long);
+    virtual long handle_timer_command(unsigned int, long);
+    virtual long handle_scroll(long, long);
+    virtual long handle_mouse_down(unsigned char, long, long, int, int);
+    virtual long handle_mouse_move(long, long, int, int); // +0x74
+    virtual long handle_mouse_up(unsigned char, long, long, int, int);
+    virtual long handle_mouse_dbl_click(unsigned char, long, long, int, int);
+    virtual long mouse_move_action(long, long, int, int); // +0x80
+    virtual long mouse_left_down_action(long, long, int, int);
+    virtual long mouse_left_hold_action(long, long, int, int);
+    virtual long mouse_left_move_action(long, long, int, int); // +0x8C
+    virtual long mouse_left_up_action(long, long, int, int);
+    virtual long mouse_left_dbl_click_action(long, long, int, int);
+    virtual long mouse_right_down_action(long, long, int, int);
+    virtual long mouse_right_hold_action(long, long, int, int);
+    virtual long mouse_right_move_action(long, long, int, int); // +0xA0
+    virtual long mouse_right_up_action(long, long, int, int);
+    virtual long mouse_right_dbl_click_action(long, long, int, int);
+    virtual long key_down_action(long, short, int, int, int);
+    virtual long char_action(long, short);
+    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    virtual void get_true_render_rect(void*);
     virtual int is_inside(long x, long y);                       // +0xBC
 
     char gap_04[0x58];
@@ -68,7 +92,6 @@ public:
     unsigned char mouse_action; // +0xEC
     unsigned char mouse_down_button; // +0xED
 
-    long handle_mouse_move(long x, long y, int a, int b);
 };
 
 #endif

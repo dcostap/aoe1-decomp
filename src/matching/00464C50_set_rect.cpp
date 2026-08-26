@@ -53,12 +53,12 @@ public:
 };
 
 #endif
-void TPanel::set_rect(int left, int top, int width, int height)
+void TPanel::set_rect(long left, long top, long width, long height)
 {
     pnl_wid = width;
     pnl_hgt = height;
-    int right = left + width - 1;
-    int bottom = top + height - 1;
+    long right = left + width - 1;
+    long bottom = top + height - 1;
 
     pnl_x = left;
     pnl_y = top;
@@ -119,6 +119,6 @@ void TPanel::set_rect(int left, int top, int width, int height)
     }
 
     if (active != 0) {
-        set_redraw(2);
+        set_redraw(TPanel::RedrawImmediate);
     }
 }

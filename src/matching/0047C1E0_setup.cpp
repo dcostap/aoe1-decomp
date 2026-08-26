@@ -111,7 +111,16 @@ public:
     int bevel_type;              // +0x170
 
     void set_font(void* font, long width, long height);
-    void set_alignment(int vertical, int horizontal);
+    enum Alignment {
+        AlignCenter = 0,
+        AlignLeft = 1,
+        AlignRight = 2,
+        AlignTop = 3,
+        AlignBottom = 4,
+        AlignHorizontalScroll = 5,
+        AlignWordwrap = 6
+    };
+    void set_alignment(Alignment vertical, Alignment horizontal);
     void set_back_pic(char* picture);
 
     long setup(TDrawArea* draw, TPanel* parent, long x, long y, long w, long h,
@@ -139,7 +148,7 @@ long TTextPanel::setup(TDrawArea* draw, TPanel* parent, long x, long y, long w,
         bevel_type = 1;
     }
     set_font(font, font_width, font_height);
-    set_alignment(0, 0);
+    set_alignment(AlignCenter, AlignCenter);
     set_back_pic(back_picture);
     TPanel::get_string(text_id, str, 0x1000);
     set_text(str);

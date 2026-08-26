@@ -8,9 +8,6 @@ struct tagRECT {
 
 class TPanel {
 public:
-    virtual void vf00(void);
-    virtual void vf04(void);
-    virtual void vf08(void);
     virtual void set_pos(long x, long y, long width, long height);
 
     virtual void set_rect(tagRECT rect);

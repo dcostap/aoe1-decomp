@@ -20,6 +20,6 @@ public:
 };
 
 #endif
-int TPanel::yPosition() {
+long TPanel::yPosition() const {
     return this->pnl_y_;
 }

@@ -18,7 +18,7 @@ public:
 };
 
 #endif
-void TPanel::setPanelName(const char* name) {
+void TPanel::setPanelName(char* name) {
     if (name != 0 && strlen(name) != 0) {
         char* old = panel_name;
         if (old == 0) goto alloc;

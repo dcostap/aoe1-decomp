@@ -15,7 +15,7 @@ public:
 };
 #endif
 
-int TDropDownPanel::get_line(char* param) {
+long TDropDownPanel::get_line(char* param) {
     if (this->member_FC) {
         return this->member_FC->get_line(param);
     }

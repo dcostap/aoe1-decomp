@@ -35,6 +35,12 @@ struct PanelNode {
 
 class TPanel {
 public:
+    enum RedrawMode {
+        RedrawNone = 0,
+        RedrawNormal = 1,
+        RedrawImmediate = 2
+    };
+
     char gap_00[0x20];
     tagRECT clip_rect;
     char gap_34[0x24];
@@ -42,21 +48,23 @@ public:
     char gap_5C[0x80];
     int z_order;
 
-    virtual void dummy00() = 0;
-    virtual void dummy01() = 0;
-    virtual void dummy02() = 0;
-    virtual void dummy03() = 0;
-    virtual void dummy04() = 0;
-    virtual void dummy05() = 0;
-    virtual void dummy06() = 0;
-    virtual void dummy07() = 0;
-    virtual void redraw(int mode) = 0;
+    virtual ~TPanel() = 0;
+    virtual void setup(void*, TPanel*, long, long, long, long, unsigned char) = 0;
+    virtual void set_rect(tagRECT) = 0;
+    virtual void set_rect(long, long, long, long) = 0;
+    virtual void set_color(unsigned char) = 0;
+    virtual void set_active(int) = 0;
+    virtual void set_positioning(int, long, long, long, long, long, long, long, long,
+                                 TPanel*, TPanel*, TPanel*, TPanel*) = 0;
+    virtual void set_fixed_position(long, long, long, long) = 0;
+    virtual void set_redraw(RedrawMode mode) = 0;
+    virtual void set_overlapped_redraw(TPanel*, TPanel*, RedrawMode) = 0;
 
     void set_overlapped_redraw(TPanel* param_1, TPanel* param_2, int param_3);
 };
 
 #endif
-void TPanel::set_overlapped_redraw(TPanel* param_1, TPanel* param_2, int param_3)
+void TPanel::set_overlapped_redraw(TPanel* param_1, TPanel* param_2, TPanel::RedrawMode param_3)
 {
     tagRECT p1_rect = param_1->clip_rect;
     int p1_left = p1_rect.left;

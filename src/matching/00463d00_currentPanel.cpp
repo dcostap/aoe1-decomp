@@ -16,6 +16,6 @@ public:
 };
 
 #endif
-TPanel* TPanelSystem::currentPanel() {
+TPanel* TPanelSystem::currentPanel() const {
     return this->currentPanelValue;
 }

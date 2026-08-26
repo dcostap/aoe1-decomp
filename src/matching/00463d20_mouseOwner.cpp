@@ -16,6 +16,6 @@ public:
 };
 
 #endif
-TPanel* TPanelSystem::mouseOwner() {
+TPanel* TPanelSystem::mouseOwner() const {
     return this->mouseOwnerValue;
 }

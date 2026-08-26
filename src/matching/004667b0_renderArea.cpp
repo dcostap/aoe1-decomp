@@ -20,6 +20,6 @@ public:
 };
 
 #endif
-int TPanel::renderArea() {
-    return this->render_area_;
+TDrawArea* TPanel::renderArea() const {
+    return this->render_area;
 }

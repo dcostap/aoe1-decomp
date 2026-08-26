@@ -20,6 +20,6 @@ public:
 };
 
 #endif
-TPanel* TPanel::previousModalPanel() {
+TPanel* TPanel::previousModalPanel() const {
     return this->previous_modal_panel;
 }

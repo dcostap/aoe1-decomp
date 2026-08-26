@@ -213,6 +213,22 @@ public:
         DoubleByteChar = 2
     };
 
+    enum Alignment {
+        AlignCenter = 0,
+        AlignLeft = 1,
+        AlignRight = 2,
+        AlignTop = 3,
+        AlignBottom = 4,
+        AlignHorizontalScroll = 5,
+        AlignWordwrap = 6
+    };
+
+    enum Style {
+        NormalStyle = 0,
+        BeveledStyle = 1,
+        ChiseledStyle = 2
+    };
+
     TTextPanel();
     virtual ~TTextPanel();
     virtual void set_rect(long, long, long, long);
@@ -227,17 +243,17 @@ public:
     virtual void set_bevel_info(int, int, int, int, int, int, int);
 
     long setup(TDrawArea*, TPanel*, long, long, long, long, void*, long, long,
-               char*, char*, int, int, unsigned char, short, char*);
+               char*, int, unsigned char, int, unsigned char, short, char*);
     long setup(TDrawArea*, TPanel*, long, long, long, long, void*, long, long,
                char*, int, unsigned char, int, unsigned char, short, long);
     long setup(TDrawArea*, TPanel*, long, long, long, long, void*, long, long,
                char*, int, unsigned char, int, unsigned char, short, char**, short);
     void set_font(void*, long, long);
-    void set_alignment(int, int);
+    void set_alignment(Alignment, Alignment);
     void set_word_wrap(int);
-    void set_style(int);
-    void set_text_color(int, int);
-    void set_highlight_text_color(int, int);
+    void set_style(Style);
+    void set_text_color(unsigned long, unsigned long);
+    void set_highlight_text_color(unsigned long, unsigned long);
     void set_fill_back(int, unsigned char);
     void set_back_pic(char*);
     void set_outline(int, unsigned char);
@@ -276,7 +292,7 @@ public:
     void empty_list();
     void set_line(long);
     void set_line_by_id(long);
-    void currentLine();
+    char* currentLine();
     int numberLines();
     int numberDrawLines();
     int currentLineNumber();
@@ -348,13 +364,9 @@ public:
 
 #include "matching/0047BF40_TTextPanel.cpp"
 #include "matching/0047C0B0_TTextPanel.cpp"
-#define fill_back fill_back_ptr
 #include "matching/0047C120_setup.cpp"
-#undef fill_back
 #include "matching/0047C1E0_setup.cpp"
-#define fill_back fill_back_ptr
 #include "matching/0047C2F0_setup.cpp"
-#undef fill_back
 #include "matching/0047C3B0_set_rect.cpp"
 #include "matching/0047C4D0_set_scrollbar.cpp"
 #include "matching/0047C520_char_type.cpp"

@@ -17,11 +17,11 @@ public:
     int field_120;
     int field_124;
 
-    void set_text_color(int a, int b);
+    void set_text_color(unsigned long a, unsigned long b);
 };
 #endif
 
-void TTextPanel::set_text_color(int a, int b) {
+void TTextPanel::set_text_color(unsigned long a, unsigned long b) {
     this->field_120 = a;
     this->field_124 = b;
     this->set_redraw(1);

@@ -14,7 +14,7 @@ public:
 };
 #endif
 
-int TDropDownPanel::get_id(long param) {
+long TDropDownPanel::get_id(long param) {
     if (this->member_FC) {
         return this->member_FC->get_id(param);
     }

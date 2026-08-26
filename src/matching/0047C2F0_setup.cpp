@@ -72,7 +72,7 @@ public:
     char gap_04[0x134];
     short fixed_len;      // +138
     char gap_13a[0x12];
-    char* fill_back;      // +14c
+    int fill_back;         // +14c
     unsigned char back_color; // +150
     char gap_151[3];
     int outline;          // +154
@@ -86,7 +86,16 @@ public:
                int param_13, unsigned char param_14, short param_15,
                char** param_16, short param_17);
     void set_font(void* param_7, long param_8, long param_9);
-    void set_alignment(int a, int b);
+    enum Alignment {
+        AlignCenter = 0,
+        AlignLeft = 1,
+        AlignRight = 2,
+        AlignTop = 3,
+        AlignBottom = 4,
+        AlignHorizontalScroll = 5,
+        AlignWordwrap = 6
+    };
+    void set_alignment(Alignment a, Alignment b);
     void set_back_pic(char* p);
 };
 #endif
@@ -98,7 +107,7 @@ long TTextPanel::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long p
                        char** param_16, short param_17)
 {
     TPanel::setup(param_1, param_2, param_3, param_4, param_5, param_6, 0);
-    this->fill_back = (char*)param_11;
+    this->fill_back = param_11;
     this->back_color = param_12;
     this->outline = param_13;
     this->outline_color = param_14;
@@ -108,7 +117,7 @@ long TTextPanel::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long p
     }
     this->set_text(param_16, param_17);
     this->set_font(param_7, param_8, param_9);
-    this->set_alignment(3, 1);
+    this->set_alignment(AlignTop, AlignLeft);
     this->set_back_pic(param_10);
     return 1;
 }

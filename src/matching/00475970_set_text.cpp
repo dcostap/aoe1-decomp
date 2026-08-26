@@ -22,5 +22,5 @@ void TEditPanel::set_text(char* text) {
         SetWindowTextA_ptr((int)edit_wnd, this->text);
         sel_len = 0;
     }
-    this->set_redraw(1);
+    this->set_redraw(TPanel::RedrawNormal);
 }

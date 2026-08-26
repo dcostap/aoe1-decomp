@@ -9,34 +9,6 @@ struct PanelNode;
 
 class TPanel {
 public:
-    virtual void vf00(void);
-    virtual void vf04(void);
-    virtual void vf08(void);
-    virtual void vf0C(void);
-    virtual void vf10(void);
-    virtual void vf14(void);
-    virtual void vf18(void);
-    virtual void vf1C(void);
-    virtual void vf20(void);
-    virtual void vf24(void);
-    virtual void vf28(void);
-    virtual void vf2C(void);
-    virtual void vf30(void);
-    virtual void vf34(void);
-    virtual void vf38(void);
-    virtual void vf3C(void);
-    virtual void vf40(void);
-    virtual void vf44(void);
-    virtual void vf48(void);
-    virtual void vf4C(void);
-    virtual void vf50(void);
-    virtual void vf54(void);
-    virtual void vf58(void);
-    virtual void vf5C(void);
-    virtual void vf60(void);
-    virtual void vf64(void);
-    virtual void vf68(void);
-    virtual void vf6C(void);
     virtual long handle_mouse_down(unsigned char param_1, long param_2, long param_3,
                                    int param_4, int param_5);
     virtual long handle_mouse_move(long param_1, long param_2, int param_3, int param_4);
@@ -44,7 +16,6 @@ public:
                                  int param_4, int param_5);
     virtual long handle_mouse_dbl_click(unsigned char param_1, long param_2, long param_3,
                                         int param_4, int param_5);
-    virtual void vf80(void);
     virtual long mouse_left_down_action(long param_1, long param_2, int param_3, int param_4);
     virtual long mouse_left_hold_action(long param_1, long param_2, int param_3, int param_4);
     virtual long mouse_left_move_action(long param_1, long param_2, int param_3, int param_4);
@@ -55,10 +26,6 @@ public:
     virtual long mouse_right_move_action(long param_1, long param_2, int param_3, int param_4);
     virtual long mouse_right_up_action(long param_1, long param_2, int param_3, int param_4);
     virtual long mouse_right_dbl_click_action(long param_1, long param_2, int param_3, int param_4);
-    virtual void vfAC(void);
-    virtual void vfB0(void);
-    virtual void vfB4(void);
-    virtual void vfB8(void);
     virtual int is_inside(long param_1, long param_2);
 
     char gap_04[0x38];

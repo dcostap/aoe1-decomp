@@ -12,7 +12,7 @@ public:
 };
 #endif
 
-int TDropDownPanel::get_line() {
+long TDropDownPanel::get_line() {
     if (this->member_FC) {
         return this->member_FC->get_line();
     }

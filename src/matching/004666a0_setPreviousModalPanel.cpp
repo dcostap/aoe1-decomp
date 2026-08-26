@@ -20,6 +20,6 @@ public:
 };
 
 #endif
-void TPanel::setPreviousModalPanel(int v) {
-    this->previousModalPanel_ = v;
+void TPanel::setPreviousModalPanel(TPanel* v) {
+    this->previous_modal_panel = v;
 }

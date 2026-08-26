@@ -62,7 +62,7 @@ void TEditPanel::set_focus(int focus)
 
     if (old_focus != 0 && this->have_focus == 0) {
         this->update_text();
-        this->set_redraw(1);
+        this->set_redraw(TPanel::RedrawNormal);
     }
     if (this->edit_wnd != 0 && this->have_focus != 0 && old_focus == 0 && this->auto_sel != 0) {
         SendMessageA(this->edit_wnd, 0xb1, 0, -1);

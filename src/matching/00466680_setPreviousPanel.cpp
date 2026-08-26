@@ -20,6 +20,6 @@ public:
 };
 
 #endif
-void TPanel::setPreviousPanel(int v) {
-    this->previousPanel_ = v;
+void TPanel::setPreviousPanel(TPanel* v) {
+    this->previous_panel = v;
 }

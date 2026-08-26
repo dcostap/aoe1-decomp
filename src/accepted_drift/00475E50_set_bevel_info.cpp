@@ -23,17 +23,31 @@
 // EDX/EAX/ECX instead of EAX/ECX/EDX. No predicates, call slots, field offsets, or stack effects differ.
 
 #ifndef PNL_EDIT_TU_CONTEXT
+struct tagRECT {
+    long left;
+    long top;
+    long right;
+    long bottom;
+};
+
 class TPanel {
 public:
+    enum RedrawMode {
+        RedrawNone = 0,
+        RedrawNormal = 1,
+        RedrawImmediate = 2
+    };
+
     virtual ~TPanel();
-    virtual void v1();
-    virtual void v2();
+    virtual void setup(void*, TPanel*, long, long, long, long, unsigned char);
+    virtual void set_rect(tagRECT);
     virtual void set_rect(int left, int top, int right, int bottom);
-    virtual void v4();
-    virtual void v5();
-    virtual void v6();
-    virtual void v7();
-    virtual void set_redraw(int redraw);
+    virtual void set_color(unsigned char);
+    virtual void set_active(int);
+    virtual void set_positioning(int, long, long, long, long, long, long, long, long,
+                                 TPanel*, TPanel*, TPanel*, TPanel*);
+    virtual void set_fixed_position(long, long, long, long);
+    virtual void set_redraw(RedrawMode redraw);
     char gap_04[8];
     int left;
     int top;
@@ -94,5 +108,5 @@ void TEditPanel::set_bevel_info(int type, int c1, int c2, int c3, int c4, int c5
     long lft = this->pnl_x;
 #endif
     this->set_rect(lft, tp, rgt, btm);
-    this->set_redraw(1);
+    this->set_redraw(TPanel::RedrawNormal);
 }

@@ -15,7 +15,7 @@ public:
 };
 #endif
 
-int TDropDownPanel::currentLine() {
+char* TDropDownPanel::currentLine() {
     if (this->member_FC) {
         return this->member_FC->currentLine();
     }

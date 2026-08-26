@@ -20,6 +20,6 @@ public:
 };
 
 #endif
-int TPanel::get_help_page() {
+long TPanel::get_help_page() {
     return this->help_page_id_;
 }

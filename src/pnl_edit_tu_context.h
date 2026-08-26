@@ -46,10 +46,15 @@ struct TDrawArea {
 };
 
 typedef int PositionMode;
-typedef int RedrawMode;
 
 class TPanel {
 public:
+    enum RedrawMode {
+        RedrawNone = 0,
+        RedrawNormal = 1,
+        RedrawImmediate = 2
+    };
+
     virtual ~TPanel();
     TPanel();
     virtual long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char);

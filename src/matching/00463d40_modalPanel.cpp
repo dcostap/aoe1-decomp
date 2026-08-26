@@ -16,6 +16,6 @@ public:
 };
 
 #endif
-TPanel* TPanelSystem::modalPanel() {
+TPanel* TPanelSystem::modalPanel() const {
     return this->modalPanelValue;
 }

@@ -29,14 +29,6 @@ struct tagRECT {
 class TPanel {
 public:
     virtual ~TPanel();
-    virtual void vf04(void);
-    virtual void vf08(void);
-    virtual void vf0C(void);
-    virtual void vf10(void);
-    virtual void vf14(void);
-    virtual void vf18(void);
-    virtual void vf1C(void);
-    virtual void vf20(int mode);
 
     TPanel* previousPanelValue;
     TPanel* previousModalPanelValue;
@@ -91,7 +83,7 @@ TPanel::~TPanel() {
         clip_rgn = 0;
     }
     if (parent_panel != 0) {
-        parent_panel->set_redraw(2);
+        parent_panel->set_redraw(TPanel::RedrawImmediate);
     }
     if (panelNameValue != 0) {
         free(panelNameValue);

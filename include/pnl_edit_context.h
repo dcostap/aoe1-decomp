@@ -56,7 +56,6 @@ struct TDrawArea {
 };
 
 typedef int PositionMode;
-typedef int RedrawMode;
 
 // PDB-supported pnl_edit.cpp panel surface. Keep this declaration shared by
 // the real pnl_edit.cpp owners. It preserves TPanel size 0xF4 and TEditPanel
@@ -66,6 +65,12 @@ typedef int RedrawMode;
 // 00476A60, 00476AB0, 00476BB0, and 00476BE0. This order follows PDB lines.
 class TPanel {
 public:
+    enum RedrawMode {
+        RedrawNone = 0,
+        RedrawNormal = 1,
+        RedrawImmediate = 2
+    };
+
     virtual ~TPanel();
     TPanel();
     virtual long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char);
@@ -246,7 +251,7 @@ public:
     virtual long handle_mouse_down(unsigned char, long, long, int, int);
     virtual void set_rect(tagRECT);
     virtual void set_rect(long, long, long, long);
-    virtual void set_redraw(int);
+    virtual void set_redraw(RedrawMode);
     void set_text_color(unsigned long, unsigned long);
     void set_highlight_text_color(unsigned long, unsigned long);
     void set_back_color(void*, unsigned long, unsigned char);

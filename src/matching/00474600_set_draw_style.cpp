@@ -16,7 +16,7 @@ public:
 };
 #endif
 
-void TDropDownPanel::set_draw_style(int param_1) {
+void TDropDownPanel::set_draw_style(TDropDownPanel::DrawStyle param_1) {
     this->draw_style = param_1;
     if (this->val_panel) {
         int old_mode = this->mode;

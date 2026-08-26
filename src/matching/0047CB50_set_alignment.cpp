@@ -17,11 +17,20 @@ public:
     int field_110;
     int field_114;
 
-    void set_alignment(int a, int b);
+    enum Alignment {
+        AlignCenter = 0,
+        AlignLeft = 1,
+        AlignRight = 2,
+        AlignTop = 3,
+        AlignBottom = 4,
+        AlignHorizontalScroll = 5,
+        AlignWordwrap = 6
+    };
+    void set_alignment(Alignment a, Alignment b);
 };
 #endif
 
-void TTextPanel::set_alignment(int a, int b) {
+void TTextPanel::set_alignment(TTextPanel::Alignment a, TTextPanel::Alignment b) {
     this->field_110 = a;
     this->field_114 = b;
     this->set_redraw(1);

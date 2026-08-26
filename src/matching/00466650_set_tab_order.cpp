@@ -11,8 +11,8 @@ public:
 };
 
 #endif
-void TPanel::set_tab_order(void* param1, void* param2) {
-    tab_prev_panel = (TPanel*)param1;
-    tab_next_panel = (TPanel*)param2;
+void TPanel::set_tab_order(TPanel* param1, TPanel* param2) {
+    tab_prev_panel = param1;
+    tab_next_panel = param2;
     tab_stop = 1;
 }

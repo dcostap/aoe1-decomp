@@ -20,6 +20,6 @@ public:
 };
 
 #endif
-int TPanel::handle_timer_command(int, int) {
+long TPanel::handle_timer_command(unsigned int, long) {
     return 0;
 }

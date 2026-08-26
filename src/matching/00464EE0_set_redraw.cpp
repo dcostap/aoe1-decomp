@@ -31,7 +31,7 @@ public:
 };
 
 #endif
-void TPanel::set_redraw(int mode) {
+void TPanel::set_redraw(TPanel::RedrawMode mode) {
     if (mode == 1 && need_redraw == 2) {
         return;
     }

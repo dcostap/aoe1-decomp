@@ -1,9 +1,9 @@
 #ifndef PNL_TXT_TU_CONTEXT
 class TTextPanel {
 public:
-    void get_text();
-    void currentLine();
+    char* get_text();
+    char* currentLine();
 };
 #endif
 
-void TTextPanel::currentLine() { this->get_text(); }
+char* TTextPanel::currentLine() { return this->get_text(); }

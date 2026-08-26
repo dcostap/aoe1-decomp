@@ -97,8 +97,8 @@ public:
 };
 #endif
 
-void TEditPanel::set_redraw(int mode) {
-    TPanel::set_redraw(1);
+void TEditPanel::set_redraw(TPanel::RedrawMode mode) {
+    TPanel::set_redraw(TPanel::RedrawNormal);
     if (this->active != 0) {
         if (mode != 0) {
             if (this->edit_wnd != 0) {

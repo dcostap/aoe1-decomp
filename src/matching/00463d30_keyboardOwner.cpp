@@ -16,6 +16,6 @@ public:
 };
 
 #endif
-TPanel* TPanelSystem::keyboardOwner() {
+TPanel* TPanelSystem::keyboardOwner() const {
     return this->keyboardOwnerValue;
 }

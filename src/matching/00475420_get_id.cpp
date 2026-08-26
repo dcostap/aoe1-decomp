@@ -12,7 +12,7 @@ public:
 };
 #endif
 
-int TDropDownPanel::get_id() {
+long TDropDownPanel::get_id() {
     if (this->member_FC) {
         return this->member_FC->get_id();
     }

@@ -82,9 +82,9 @@ public:
 };
 
 #endif
-void TPanel::set_positioning(int p1, int p2, int p3, int p4,
-                             int p5, int p6, int p7, int p8,
-                             int p9, TPanel* p10, TPanel* p11,
+void TPanel::set_positioning(TPanel::PositionMode p1, long p2, long p3, long p4,
+                             long p5, long p6, long p7, long p8,
+                             long p9, TPanel* p10, TPanel* p11,
                              TPanel* p12, TPanel* p13)
 {
     position_mode = p1;
@@ -108,6 +108,6 @@ void TPanel::set_positioning(int p1, int p2, int p3, int p4,
     }
 
     if (active != 0) {
-        set_redraw(2);
+        set_redraw(TPanel::RedrawImmediate);
     }
 }
