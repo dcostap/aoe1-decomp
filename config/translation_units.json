@@ -6309,12 +6309,12 @@
         "0053D890": "src/matching/0053D890_draw.cpp"
       },
       "symbols": {
-        "0053D3B0": "?handle_mouse_down@RGE_Diamond_Map_View@@QAEJEJJHH@Z",
-        "0053D400": "?mouse_left_down_action@RGE_Diamond_Map_View@@QAEJJJHH@Z",
-        "0053D480": "?mouse_left_move_action@RGE_Diamond_Map_View@@QAEJJJHH@Z",
-        "0053D620": "?mouse_right_down_action@RGE_Diamond_Map_View@@QAEJJJHH@Z",
-        "0053D6A0": "?mouse_right_move_action@RGE_Diamond_Map_View@@QAEJJJHH@Z",
-        "0053D890": "?draw@RGE_Diamond_Map_View@@QAEXXZ"
+        "0053D3B0": "?handle_mouse_down@RGE_Diamond_Map_View@@UAEJEJJHH@Z",
+        "0053D400": "?mouse_left_down_action@RGE_Diamond_Map_View@@UAEJJJHH@Z",
+        "0053D480": "?mouse_left_move_action@RGE_Diamond_Map_View@@UAEJJJHH@Z",
+        "0053D620": "?mouse_right_down_action@RGE_Diamond_Map_View@@UAEJJJHH@Z",
+        "0053D6A0": "?mouse_right_move_action@RGE_Diamond_Map_View@@UAEJJJHH@Z",
+        "0053D890": "?draw@RGE_Diamond_Map_View@@UAEXXZ"
       }
     },
     {

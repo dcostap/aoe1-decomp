@@ -73,15 +73,15 @@ public:
     virtual ~RGE_Diamond_Map_View();
     RGE_Diamond_Map_View();
 
-    long handle_mouse_down(unsigned char button, long x, long y, int ctrl,
-                           int shift);
-    long mouse_left_down_action(long x, long y, int key, int flags);
-    long mouse_left_move_action(long x, long y, int key, int flags);
+    virtual long handle_mouse_down(unsigned char button, long x, long y, int ctrl,
+                                   int shift);
+    virtual long mouse_left_down_action(long x, long y, int key, int flags);
+    virtual long mouse_left_move_action(long x, long y, int key, int flags);
     virtual long mouse_left_up_action(long x, long y, int key, int flags);
-    long mouse_right_down_action(long x, long y, int key, int flags);
-    long mouse_right_move_action(long x, long y, int key, int flags);
+    virtual long mouse_right_down_action(long x, long y, int key, int flags);
+    virtual long mouse_right_move_action(long x, long y, int key, int flags);
     virtual long mouse_right_up_action(long x, long y, int key, int flags);
-    void draw();
+    virtual void draw();
 
     virtual int command_make_do(long x, long y);
     virtual int command_make_move(long x, long y);
