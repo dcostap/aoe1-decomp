@@ -1,4 +1,6 @@
 #ifndef PLAYER_GROUPED_TU
+struct XYZBYTEPoint;
+
 class RGE_Command {
 public:
     void command_add_waypoint(int player, int a, int b, int c);
@@ -12,7 +14,7 @@ public:
 
 class RGE_Player {
 public:
-    virtual void sendAddWaypointCommand(int a, void* b, int c);
+    virtual void sendAddWaypointCommand(int a, XYZBYTEPoint* b, int c);
     char gap_00[0x38];
     RGE_Game_World* world;
     char gap_40[0x0A];
@@ -20,7 +22,7 @@ public:
 };
 #endif
 
-void RGE_Player::sendAddWaypointCommand(int a, void* b, int c) {
+void RGE_Player::sendAddWaypointCommand(int a, XYZBYTEPoint* b, int c) {
     int pid = (int)this->id;
     this->world->command->command_add_waypoint(pid, a, (int)b, c);
 }

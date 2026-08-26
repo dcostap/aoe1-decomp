@@ -68,8 +68,8 @@ public:
                               char* param_4, int param_5);
     virtual TPanel* get_view_panel();
     virtual TPanel* get_map_panel();
-    virtual RGE_Scenario_Header* new_scenario_header(RGE_Scenario* scenario);
     virtual RGE_Scenario_Header* new_scenario_header(int fd);
+    virtual RGE_Scenario_Header* new_scenario_header(RGE_Scenario* scenario);
 
     RGE_Game_Info* player_game_info;
     RGE_Scenario_File_Info* scenario_info;

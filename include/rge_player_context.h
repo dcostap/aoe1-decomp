@@ -75,7 +75,7 @@ public:
     virtual int strategicNumber(int);
     virtual void sendGameOrder(RGE_Static_Object*, RGE_Static_Object*, float,
                                float);
-    virtual void sendAddWaypointCommand(int, void*, int);
+    virtual void sendAddWaypointCommand(int, XYZBYTEPoint*, int);
     virtual void processAddWaypointCommand(int, XYZBYTEPoint*, int);
     virtual void sendPlayCommand(int, int, int);
     virtual void sendPlayCommand(int, int*, int, int, int);

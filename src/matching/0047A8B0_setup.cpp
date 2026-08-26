@@ -1,5 +1,5 @@
-// first pass: direct field stores followed by a straightforward base setup call with trailing zero
-// if this stays sticky, the remaining mismatch is likely just the exact parameter load order into the base call
+// BINARY NOTE: The PDB ABI makes setup public and nonvirtual. The final
+// parameter is TScrollBarPanel::Orientation, not a plain long.
 #ifndef PNL_SCBR_CANONICAL_TU
 class TDrawArea;
 class TPanel {
@@ -10,6 +10,8 @@ public:
 
 class TScrollBarPanel : public TPanel {
 public:
+    enum Orientation { Vertical = 0, Horizontal = 1 };
+
     TPanel* list_panel;      // +0xF4
     long list_len;           // +0xF8
     char pad_FC[0x20];       // +0xFC..+0x11B
@@ -21,13 +23,15 @@ public:
 
     long setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6,
                char* param_7, char* param_8, char* param_9, char* param_10,
-               long param_11, long param_12, TPanel* param_13, long param_14, long param_15);
+               long param_11, long param_12, TPanel* param_13, long param_14,
+               Orientation param_15);
 };
 #endif
 
 long TScrollBarPanel::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6,
                             char* param_7, char* param_8, char* param_9, char* param_10,
-                            long param_11, long param_12, TPanel* param_13, long param_14, long param_15) {
+                            long param_11, long param_12, TPanel* param_13, long param_14,
+                            TScrollBarPanel::Orientation param_15) {
     long result;
 
     this->orientationValue = param_15;

@@ -72,7 +72,7 @@ class RGE_Zone_Map_List;
 
 class RGE_Random_Map_Module {
 public:
-    void* vtable_ptr;
+    virtual unsigned char generate();
     RGE_Random_Map_Module* parent;
     void* list;
     RGE_Map* map;

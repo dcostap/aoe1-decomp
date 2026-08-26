@@ -179,6 +179,8 @@ extern "C" unsigned long __cdecl debug_timeGetTime(const char*, int);
 
 class TScrollBarPanel : public TPanel {
 public:
+    enum Orientation { Vertical = 0, Horizontal = 1 };
+
     TPanel* list_panel;
     long list_len;
     long one_step;
@@ -224,7 +226,6 @@ public:
     unsigned char bevel_color6;
     unsigned char bevel_pad_1c2[2];
 
-    enum Orientation { Vertical = 0, Horizontal = 1 };
     enum ActionType {
         ActionUp = 0,
         ActionDown = 1,
@@ -235,8 +236,10 @@ public:
 
     TScrollBarPanel();
     virtual ~TScrollBarPanel();
-    virtual long setup(TDrawArea*, TPanel*, long, long, long, long,
-                       char*, char*, char*, char*, long, long, TPanel*, long, long);
+    // BINARY NOTE: PDB declares this public member as nonvirtual. Its final
+    // parameter is the nested Orientation enum, which is part of its symbol.
+    long setup(TDrawArea*, TPanel*, long, long, long, long,
+               char*, char*, char*, char*, long, long, TPanel*, long, Orientation);
     virtual void set_rect(long, long, long, long);
     void calc_item_rects();
     void set_tab_pos(long);

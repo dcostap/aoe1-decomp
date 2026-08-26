@@ -6437,7 +6437,7 @@
       },
       "symbols": {
         "0047A8A0": "??1TScrollBarPanel@@UAE@XZ",
-        "0047A8B0": "?setup@TScrollBarPanel@@UAEJPAVTDrawArea@@PAVTPanel@@JJJJPAD222JJ1JJ@Z",
+        "0047A8B0": "?setup@TScrollBarPanel@@QAEJPAVTDrawArea@@PAVTPanel@@JJJJPAD222JJ1JW4Orientation@1@@Z",
         "0047AC10": "?set_list_len@TScrollBarPanel@@QAEXJJ@Z",
         "0047AC30": "?set_buttons@TScrollBarPanel@@QAEXPAVTShape@@HHHH@Z",
         "0047AC70": "?set_bevel_info@TScrollBarPanel@@QAEXHHHHHHH@Z",
