@@ -1060,7 +1060,7 @@
       "symbols": {
         "004CF090": "??0TRIBE_Action_Hunt@@QAE@HPAVRGE_Action_Object@@@Z",
         "004CF130": "??0TRIBE_Action_Hunt@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@PAVRGE_Static_Object@@@Z",
-        "004CF1C0": "??0TRIBE_Action_Hunt@@QAE@HPAVRGE_Task@@MMM@Z"
+        "004CF1C0": "??0TRIBE_Action_Hunt@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@MMM@Z"
       }
     },
     {
@@ -1625,13 +1625,13 @@
         "0050B3E0": "src/matching/0050B3E0_command_queue.cpp"
       },
       "symbols": {
-        "00509770": "?do_command@TRIBE_Command@@UAEXPAX@Z",
+        "00509770": "?do_command@TRIBE_Command@@EAEXPAX@Z",
         "0050A7F0": "?command_make@TRIBE_Command@@QAEXPAVRGE_Static_Object@@F@Z",
         "0050A860": "?command_make@TRIBE_Command@@QAEXHHHH@Z",
         "0050A8D0": "?command_research@TRIBE_Command@@QAEXPAVRGE_Static_Object@@F@Z",
         "0050A940": "?command_research@TRIBE_Command@@QAEXHHHH@Z",
         "0050A9B0": "?command_build@TRIBE_Command@@QAEXPAPAVRGE_Static_Object@@FFMM@Z",
-        "00509C60": "?do_command_build@TRIBE_Command@@QAEXPAUTRIBE_Command_Build@@@Z",
+        "00509C60": "?do_command_build@TRIBE_Command@@AAEXPAUTRIBE_Command_Build@@@Z",
         "0050AB30": "?command_build_wall@TRIBE_Command@@QAEXPAPAVRGE_Static_Object@@FFJJJJ@Z",
         "0050AC70": "?command_explore@TRIBE_Command@@QAEXHPAHHMM@Z",
         "0050AFD0": "?command_cancel_build@TRIBE_Command@@QAEXPAVRGE_Static_Object@@@Z",
@@ -2072,23 +2072,23 @@
         "0040E930": "??0AIPlayPhaseCommand@@QAE@XZ",
         "0040E980": "??0AIPlayPhaseCommand@@QAE@EPADHHH@Z",
         "0040E9C0": "?nameType@AIPlayPhaseCommand@@QBEPADXZ",
-        "0040E9D0": "?convertToIntType@AIPlayPhaseCommand@@QBEEPAD@Z",
-        "0040EBF0": "?convertToNameType@AIPlayPhaseCommand@@QBEPADE@Z",
+        "0040E9D0": "?convertToIntType@AIPlayPhaseCommand@@IBEEPAD@Z",
+        "0040EBF0": "?convertToNameType@AIPlayPhaseCommand@@IBEPADE@Z",
         "0040EC70": "??0AIPlayPhaseTrigger@@QAE@XZ",
         "0040ECC0": "??0AIPlayPhaseTrigger@@QAE@PADHHEEH@Z",
         "0040ED00": "?nameType@AIPlayPhaseTrigger@@QBEPADXZ",
-        "0040ED10": "?convertToIntType@AIPlayPhaseTrigger@@QBEEPAD@Z",
-        "0040EFF0": "?convertToNameType@AIPlayPhaseTrigger@@QBEPADE@Z",
+        "0040ED10": "?convertToIntType@AIPlayPhaseTrigger@@IBEEPAD@Z",
+        "0040EFF0": "?convertToNameType@AIPlayPhaseTrigger@@IBEPADE@Z",
         "0040F0A0": "??0AIPlayPhase@@QAE@XZ",
         "0040F130": "?trigger@AIPlayPhase@@QAEPAVAIPlayPhaseTrigger@@H@Z",
-        "0040F150": "?addCommand@AIPlayPhase@@QAEHPAVAIPlayPhaseCommand@@@Z",
-        "0040F1A0": "?addTrigger@AIPlayPhase@@QAEHPAVAIPlayPhaseTrigger@@@Z",
+        "0040F150": "?addCommand@AIPlayPhase@@QAEHAAVAIPlayPhaseCommand@@@Z",
+        "0040F1A0": "?addTrigger@AIPlayPhase@@QAEHAAVAIPlayPhaseTrigger@@@Z",
         "0040F230": "??0AIPlayGroup@@QAE@XZ",
-        "0040F240": "?minimum@AIPlayGroup@@QAEEH@Z",
-        "0040F260": "?setMinimum@AIPlayGroup@@QAEXHE@Z",
+        "0040F240": "?minimum@AIPlayGroup@@QBEEH@Z",
+        "0040F260": "?setMinimum@AIPlayGroup@@QAEXHH@Z",
         "0040F280": "?maximum@AIPlayGroup@@QBEEH@Z",
-        "0040F2A0": "?setMaximum@AIPlayGroup@@QAEXHE@Z",
-        "0040F2C0": "?initialize@AIPlayGroup@@QAEXXZ",
+        "0040F2A0": "?setMaximum@AIPlayGroup@@QAEXHH@Z",
+        "0040F2C0": "?initialize@AIPlayGroup@@IAEXXZ",
         "0040F2E0": "??0AIPlay@@QAE@XZ",
         "0040F380": "?humanPlay@AIPlay@@QBEHXZ",
         "0040F3A0": "?typeName@AIPlay@@QBEPADXZ",
@@ -2097,13 +2097,13 @@
         "0040F490": "?gatherTolerance@AIPlay@@QAEHHH@Z",
         "0040F4E0": "?group@AIPlay@@QAEPAVAIPlayGroup@@H@Z",
         "0040F500": "?phase@AIPlay@@QAEPAVAIPlayPhase@@H@Z",
-        "0040FA40": "?convertToIntType@AIPlay@@QBEEPAD@Z",
-        "0040FB60": "?convertToNameType@AIPlay@@QBEPADE@Z",
+        "0040FA40": "?convertToIntType@AIPlay@@IBEEPAD@Z",
+        "0040FB60": "?convertToNameType@AIPlay@@IBEPADE@Z",
         "0040FBB0": "?locationsOnMap@AIPlay@@QAEHHHHH@Z",
-        "0040FCB0": "?originalHitPoints@AIPlayStatus@@QAEHH@Z",
+        "0040FCB0": "?originalHitPoints@AIPlayStatus@@QBEHH@Z",
         "0040FCD0": "?setOriginalHitPoints@AIPlayStatus@@QAEXHH@Z",
-        "0040FCF0": "?numberInPlay@AIPlayStatus@@QAEEXZ",
-        "0040FD40": "?numberOfTypeInGroup@AIPlayStatus@@QBEEHH@Z",
+        "0040FCF0": "?numberInPlay@AIPlayStatus@@QBEEXZ",
+        "0040FD40": "?numberOfTypeInGroup@AIPlayStatus@@QAEEHH@Z",
         "0040FDB0": "?addGrouping@AIPlayStatus@@QAEHHEE@Z",
         "0040FE30": "?zeroAllGroupings@AIPlayStatus@@QAEXXZ",
         "0040FE50": "?copyUnits@AIPlayStatus@@QAEXPAHAAH@Z",
@@ -3280,7 +3280,7 @@
       },
       "symbols": {
         "00406D60": "??0RGE_Action_Transport@@QAE@HPAVRGE_Action_Object@@@Z",
-        "00406DC0": "??0RGE_Action_Transport@@QAE@HPAVRGE_Task@@MMM@Z"
+        "00406DC0": "??0RGE_Action_Transport@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@MMM@Z"
       }
     },
     {
@@ -4637,8 +4637,8 @@
         "0040E750": "?messageTimeout@AIModule@@QAEHXZ",
         "0040E770": "?purgeMessages@AIModule@@QAEHVAIModuleID@@@Z",
         "0040E7B0": "?purgeCallbacks@AIModule@@QAEHVAIModuleID@@@Z",
-        "0040E820": "?logHistory@AIModule@@IAAXPADZZ",
-        "0040E830": "?logCommonHistory@AIModule@@IAAXPADZZ",
+        "0040E820": "?logHistory@AIModule@@QAAXPADZZ",
+        "0040E830": "?logCommonHistory@AIModule@@QAAXPADZZ",
         "0040E8F0": "?processFrame@AIModule@@IAEHXZ"
       }
     },
@@ -4833,6 +4833,7 @@
         "00472580": "?set_text@TButtonPanel@@QAEXFJJ@Z",
         "00472110": "?buttonType@TButtonPanel@@QBE?AW4ButtonType@1@XZ",
         "00472120": "?drawType@TButtonPanel@@QBE?AW4DrawType@1@XZ",
+        "00472130": "?notifyType@TButtonPanel@@QBE?AW4NotifyType@1@XZ",
         "00472300": "?set_picture@TButtonPanel@@QAEXFPAVTShape@@F@Z",
         "00472680": "?set_sound@TButtonPanel@@QAEXPAVTDigital@@@Z",
         "00472700": "?set_state@TButtonPanel@@UAEXF@Z",
@@ -5764,17 +5765,17 @@
         "0050E040": "??0TRIBE_Master_Building_Object@@QAE@PAV0@H@Z",
         "0050E0C0": "??0TRIBE_Master_Building_Object@@QAE@HPAPAVRGE_Sprite@@PAPAVRGE_Sound@@H@Z",
         "0050E130": "??0TRIBE_Master_Building_Object@@QAE@PAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@FH@Z",
-        "0050E1B0": "?setup@TRIBE_Master_Building_Object@@QAEHPAV1@@Z",
-        "0050E250": "?setup@TRIBE_Master_Building_Object@@QAEHHPAPAVRGE_Sprite@@PAPAVRGE_Sound@@@Z",
-        "0050E360": "?setup@TRIBE_Master_Building_Object@@QAEHPAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@F@Z",
-        "0050E440": "?copy_obj@TRIBE_Master_Building_Object@@QAEXPAVRGE_Master_Static_Object@@@Z",
+        "0050E1B0": "?setup@TRIBE_Master_Building_Object@@IAEHPAV1@@Z",
+        "0050E250": "?setup@TRIBE_Master_Building_Object@@IAEHHPAPAVRGE_Sprite@@PAPAVRGE_Sound@@@Z",
+        "0050E360": "?setup@TRIBE_Master_Building_Object@@IAEHPAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@F@Z",
+        "0050E440": "?copy_obj@TRIBE_Master_Building_Object@@UAEXPAVRGE_Master_Static_Object@@@Z",
         "0050E4D0": "?modify@TRIBE_Master_Building_Object@@UAEXME@Z",
         "0050E500": "?modify_delta@TRIBE_Master_Building_Object@@UAEXME@Z",
         "0050E550": "?save@TRIBE_Master_Building_Object@@UAEXH@Z",
         "0050E630": "?make_new_obj@TRIBE_Master_Building_Object@@UAEPAVRGE_Static_Object@@PAVRGE_Player@@MMMH@Z",
         "0050E6B0": "?make_new_obj@TRIBE_Master_Building_Object@@UAEPAVRGE_Static_Object@@PAVRGE_Player@@MMM@Z",
         "0050E730": "?make_new_master@TRIBE_Master_Building_Object@@UAEPAVRGE_Master_Static_Object@@XZ",
-        "0050E950": "?alignment@TRIBE_Master_Building_Object@@UAEEPAM0PAVRGE_Game_World@@E@Z"
+        "0050E950": "?alignment@TRIBE_Master_Building_Object@@UAEEAAM0PAVRGE_Game_World@@E@Z"
       }
     },
     {
@@ -6699,7 +6700,7 @@
         "00406D30": "src/matching/00406D30_get_action_checksum.cpp"
       },
       "symbols": {
-        "00405C60": "??0RGE_Action_Object@@QAE@PAX0MMMH@Z",
+        "00405C60": "??0RGE_Action_Object@@QAE@PAVRGE_Master_Action_Object@@PAVRGE_Player@@MMMH@Z",
         "00405F90": "??0RGE_Action_Object@@QAE@HPAVRGE_Game_World@@H@Z",
         "004060D0": "?setup@RGE_Action_Object@@MAEHPAVRGE_Master_Action_Object@@PAVRGE_Player@@MMM@Z",
         "00406120": "?setup@RGE_Action_Object@@MAEHHPAVRGE_Game_World@@@Z",

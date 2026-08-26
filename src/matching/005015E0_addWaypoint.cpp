@@ -1,7 +1,8 @@
-struct WaypointInfo {
-    unsigned char a;
-    unsigned char b;
-    unsigned char flag;
+struct XYZBYTEPoint {
+public:
+    unsigned char x;
+    unsigned char y;
+    unsigned char z;
 };
 
 #ifndef TAITACMD_SHARED_CONTEXT
@@ -45,10 +46,10 @@ public:
 #endif
 
 void TribeTacticalAIModule::addWaypoint(int id, unsigned char a, unsigned char b) {
-    WaypointInfo info;
+    XYZBYTEPoint info;
 
-    info.a = a;
-    info.b = b;
-    info.flag = 1;
+    info.x = a;
+    info.y = b;
+    info.z = 1;
     this->md->player->sendAddWaypointCommand(id, &info, 1);
 }

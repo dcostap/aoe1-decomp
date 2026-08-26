@@ -532,7 +532,9 @@ protected:
     void activate_victory_proper_fields(int, int);
     void init_module_variables();
     void create_all_buttons_etc();
+public:
     void position_panels();
+protected:
     void activate_victory_panel(int);
     int MakeFileList(TDropDownPanel*, char*, char*, unsigned char, unsigned char);
     void SavePlayerActiveStatus();
