@@ -13,6 +13,7 @@ from plan_tu_orchestration import (  # noqa: E402
     build_state,
     captain_prompt,
     compare_reports,
+    migrate_state,
     queue_packets,
     record_drift_acceptances,
     resolve_prior_fingerprint,
@@ -191,6 +192,19 @@ def test_dependencies_find_shared_editable_files() -> None:
     assert dependencies["conflicts"]["gamma"] == []
 
 
+def test_dependencies_normalize_windows_paths() -> None:
+    queue = {
+        "packets": [
+            packet("alpha", ["src/shared.cpp"]),
+            packet("beta", ["SRC\\SHARED.CPP"]),
+        ]
+    }
+
+    dependencies = build_dependencies(queue)
+
+    assert dependencies["conflicts"]["alpha"] == ["beta"]
+
+
 def test_state_preserves_captain_and_blocks_shared_repair() -> None:
     queue = {"packets": [packet("alpha", ["src/alpha.cpp"])]}
     prior = {
@@ -329,6 +343,39 @@ def test_validation_must_name_pending_run() -> None:
         )
 
 
+def test_start_requires_assigned_captain() -> None:
+    prior = {"groups": {"alpha": {}}}
+
+    with pytest.raises(ValueError, match="unassigned group"):
+        apply_state_changes(prior, [], set(), [("alpha", "run-1")], [], [])
+
+    apply_state_changes(
+        prior,
+        [],
+        set(),
+        [("alpha", "run-1")],
+        [],
+        [],
+        {"alpha": "sa-alpha"},
+    )
+    assert prior["groups"]["alpha"]["active_run_id"] == "run-1"
+
+
+def test_legacy_pending_validation_uses_last_completed_run() -> None:
+    state = {
+        "groups": {
+            "alpha": {
+                "pending_validation": True,
+                "completed_runs": ["run-1"],
+            }
+        }
+    }
+
+    migrate_state(state)
+
+    assert state["groups"]["alpha"]["pending_validation_run_id"] == "run-1"
+
+
 def test_ready_wave_uses_priority_and_avoids_conflicts() -> None:
     alpha = packet("alpha", ["src/shared.cpp"])
     alpha["structural_repairs"] = [{"category": "boundary_problem"}]
@@ -410,6 +457,21 @@ def test_malformed_report_compile_errors_are_rejected() -> None:
         validate_report({"rows": [], "compile_errors": {}})
 
 
+def test_report_rejects_invalid_result_counts_and_duplicates() -> None:
+    invalid_result = report(row(result="error"))
+    with pytest.raises(ValueError, match="Invalid grouped result"):
+        validate_report(invalid_result)
+
+    invalid_count = row()
+    invalid_count["boundary_escape_count"] = "bad"
+    with pytest.raises(ValueError, match="boundary_escape_count"):
+        validate_report(report(invalid_count))
+
+    duplicate = row()
+    with pytest.raises(ValueError, match="Duplicate report row"):
+        validate_report(report(duplicate, dict(duplicate)))
+
+
 def test_malformed_prior_group_state_is_rejected() -> None:
     with pytest.raises(ValueError, match="must be an object"):
         validate_state({"groups": {"alpha": "lost"}})
@@ -433,6 +495,6 @@ def test_legacy_state_requires_its_stored_baseline() -> None:
         resolve_prior_fingerprint(legacy, "build/new/report.json", "old-hash")
 
     assert (
-        resolve_prior_fingerprint(legacy, "build/old/report.json", "old-hash")
+        resolve_prior_fingerprint(legacy, "build\\old\\report.json", "old-hash")
         == "old-hash"
     )

@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import posixpath
 import re
 from collections import defaultdict, deque
 from pathlib import Path
@@ -131,14 +132,34 @@ def validate_report(report: dict[str, object]) -> None:
         raise ValueError("Report rows must be a list.")
     if not isinstance(errors, list):
         raise ValueError("Report compile_errors must be a list.")
+    keys: set[tuple[str, str]] = set()
+    valid_results = {"MATCH", "MISMATCH", "ERROR", "NOT_EMITTED"}
     for index, row in enumerate(rows):
         if not isinstance(row, dict):
             raise ValueError(f"Report row {index} must be an object.")
         if not str(row.get("group") or "") or not str(row.get("va") or ""):
             raise ValueError(f"Report row {index} needs group and VA fields.")
+        key = row_key(row)
+        if key in keys:
+            raise ValueError(f"Duplicate report row: {key[0]} {key[1]}")
+        keys.add(key)
+        result = str(row.get("grouped_result") or "")
+        if result not in valid_results:
+            raise ValueError(f"Invalid grouped result at row {index}: {result}")
+        if result in {"MATCH", "MISMATCH"}:
+            for field in (
+                "grouped_diff_bytes",
+                "relocation_target_mismatches",
+                "boundary_escape_count",
+            ):
+                value = integer(row.get(field))
+                if value is None or value < 0:
+                    raise ValueError(f"Invalid {field} at report row {index}.")
     for index, error in enumerate(errors):
         if not isinstance(error, dict):
             raise ValueError(f"Compile error {index} must be an object.")
+        if not str(error.get("group") or "") or not str(error.get("error") or ""):
+            raise ValueError(f"Compile error {index} needs group and error fields.")
 
 
 def validate_state(state: dict[str, object]) -> None:
@@ -150,6 +171,23 @@ def validate_state(state: dict[str, object]) -> None:
             raise ValueError(f"State for group {group} must be an object.")
 
 
+def migrate_state(state: dict[str, object]) -> None:
+    validate_state(state)
+    groups = state.get("groups") or {}
+    assert isinstance(groups, dict)
+    for group, value in groups.items():
+        assert isinstance(value, dict)
+        if value.get("pending_validation") and not value.get(
+            "pending_validation_run_id"
+        ):
+            runs = value.get("completed_runs") or []
+            if not isinstance(runs, list) or not runs:
+                raise ValueError(
+                    f"Legacy pending validation for {group} has no completed run."
+                )
+            value["pending_validation_run_id"] = str(runs[-1])
+
+
 def file_sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
@@ -159,6 +197,11 @@ def display_path(path: Path) -> str:
         return path.relative_to(repo_path(".")).as_posix()
     except ValueError:
         return str(path)
+
+
+def normalized_path_key(value: object) -> str:
+    text = str(value).replace("\\", "/")
+    return posixpath.normpath(text).casefold()
 
 
 def validate_report_transition(
@@ -189,7 +232,7 @@ def resolve_prior_fingerprint(
             "Legacy state has no report fingerprint. Supply its baseline report."
         )
     stored_report = str(prior_state.get("report") or "")
-    if stored_report and baseline_display_path != stored_report:
+    if stored_report and normalized_path_key(baseline_display_path) != normalized_path_key(stored_report):
         raise ValueError(
             "The baseline report path does not match the legacy state report."
         )
@@ -370,8 +413,10 @@ def apply_state_changes(
     starts: list[tuple[str, str]],
     finishes: list[tuple[str, str]],
     validations: list[tuple[str, str]],
+    assignments: dict[str, str] | None = None,
 ) -> dict[str, object]:
     validate_state(prior)
+    assignments = assignments or {}
     groups = prior.setdefault("groups", {})
     if not isinstance(groups, dict):
         raise ValueError("State groups must be an object.")
@@ -395,6 +440,9 @@ def apply_state_changes(
         group_state(group)["shared_blockers"] = []
     for group, run_id in starts:
         state = group_state(group)
+        captain = str(assignments.get(group) or state.get("captain_id") or "")
+        if not captain:
+            raise ValueError(f"Cannot start run for unassigned group: {group}")
         active = str(state.get("active_run_id") or "")
         if active and active != run_id:
             raise ValueError(
@@ -620,6 +668,7 @@ def conflict_components(conflicts: dict[str, set[str]]) -> list[list[str]]:
 def build_dependencies(queue: dict[str, object]) -> dict[str, object]:
     packets = queue_packets(queue)
     owners: dict[str, list[str]] = defaultdict(list)
+    display_by_path: dict[str, str] = {}
     groups: list[str] = []
     for packet in packets:
         if not isinstance(packet, dict):
@@ -627,7 +676,9 @@ def build_dependencies(queue: dict[str, object]) -> dict[str, object]:
         group = str(packet["group"])
         groups.append(group)
         for source in packet.get("captain_editable_files") or []:
-            owners[str(source)].append(group)
+            key = normalized_path_key(source)
+            owners[key].append(group)
+            display_by_path.setdefault(key, str(source))
 
     conflicts: dict[str, set[str]] = {group: set() for group in groups}
     shared_files = []
@@ -635,7 +686,9 @@ def build_dependencies(queue: dict[str, object]) -> dict[str, object]:
         unique = sorted(set(source_groups))
         if len(unique) < 2:
             continue
-        shared_files.append({"source_path": source, "groups": unique})
+        shared_files.append(
+            {"source_path": display_by_path[source], "groups": unique}
+        )
         for group in unique:
             conflicts[group].update(set(unique) - {group})
 
@@ -786,7 +839,7 @@ def select_ready_wave(
         and group_state.get("status") in {"active", "pending_integration"}
     }
     occupied_files = {
-        str(source)
+        normalized_path_key(source)
         for group in occupied
         for source in (
             state_groups.get(group, {}).get("captain_editable_files", [])
@@ -806,7 +859,10 @@ def select_ready_wave(
     for packet in sorted(candidates, key=packet_priority):
         group = str(packet["group"])
         blocked_by = set(conflicts.get(group) or [])
-        editable = {str(source) for source in packet.get("captain_editable_files") or []}
+        editable = {
+            normalized_path_key(source)
+            for source in packet.get("captain_editable_files") or []
+        }
         if (selected_set | occupied) & blocked_by or editable & occupied_files:
             continue
         selected.append(group)
@@ -920,6 +976,7 @@ def main() -> int:
     baseline = load_json(baseline_path) if baseline_path else None
     validate_report(report)
     validate_state(prior_state)
+    migrate_state(prior_state)
     if baseline is not None:
         validate_report(baseline)
     packets = queue_packets(queue)
@@ -973,6 +1030,7 @@ def main() -> int:
         starts,
         finishes,
         validations,
+        assignments,
     )
     record_drift_acceptances(prior_state, drift_acceptances, report)
     delta = compare_reports(
