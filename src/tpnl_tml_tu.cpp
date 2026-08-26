@@ -459,7 +459,7 @@ public:
 #include "matching/0051F4E0_add_pop_total_special_event.cpp"
 #include "matching/0051F560_record_special_event.cpp"
 #include "scratch/0051F600_calculate_icon_location.cpp"
-#include "scratch/0051FA30_draw.cpp"
+#include "matching/0051FA30_draw.cpp"
 #include "matching/0051FA90_draw_axis.cpp"
 #include "scratch/0051FD90_draw_special_events.cpp"
 #include "matching/00520080_draw_background.cpp"
