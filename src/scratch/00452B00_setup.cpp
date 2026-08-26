@@ -114,6 +114,8 @@ public:
     unsigned char damage_sprite_num; RGE_Damage_Sprite_Info* damage_sprites; int help_string_id; int help_page_id; int hotkey_id;
     unsigned char recyclable; unsigned char track_as_resource; unsigned char create_doppleganger_on_death; unsigned char resource_group;
     unsigned char draw_flag; unsigned char draw_color; char padaa[2]; float outline_radius_x; float outline_radius_y; float outline_radius_z;
+
+protected:
     int setup(FILE* fp, RGE_Sprite** sprites, RGE_Sound** sounds, short object_id);
 };
 #endif

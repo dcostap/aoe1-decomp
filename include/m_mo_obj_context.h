@@ -16,7 +16,7 @@ public:
 
     RGE_Master_Animated_Object(RGE_Master_Animated_Object*, int);
     RGE_Master_Animated_Object(int, RGE_Sprite**, RGE_Sound**, int);
-    RGE_Master_Animated_Object(void*, void**, void**, int, int);
+    RGE_Master_Animated_Object(FILE*, RGE_Sprite**, RGE_Sound**, short, int);
 
     int setup(RGE_Master_Animated_Object*);
     int setup(RGE_Master_Static_Object*);
@@ -41,7 +41,7 @@ public:
 
     RGE_Master_Moving_Object(RGE_Master_Moving_Object*, int);
     RGE_Master_Moving_Object(int, RGE_Sprite**, RGE_Sound**, int);
-    RGE_Master_Moving_Object(void*, void**, void**, int, int);
+    RGE_Master_Moving_Object(FILE*, RGE_Sprite**, RGE_Sound**, short, int);
 
 protected:
     int setup(RGE_Master_Moving_Object*);

@@ -4,8 +4,8 @@ public:
     virtual ~RGE_Master_Static_Object();
     char gap_0[0x98];
     int help_page_id;
-    int get_help_page();
+    long get_help_page();
 };
 #endif
 
-int RGE_Master_Static_Object::get_help_page() { return this->help_page_id; }
+long RGE_Master_Static_Object::get_help_page() { return this->help_page_id; }

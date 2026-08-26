@@ -216,18 +216,21 @@ public:
     RGE_Master_Static_Object(RGE_Master_Static_Object*, int);
     RGE_Master_Static_Object(int, RGE_Sprite**, RGE_Sound**, int);
 
+protected:
     int setup(RGE_Master_Static_Object*);
     int setup(int, RGE_Sprite**, RGE_Sound**);
     int setup(_iobuf*, RGE_Sprite**, RGE_Sound**, short);
+
+public:
     void destroy();
     void* scalar_deleting_destructor(unsigned int);
     void make_available(unsigned char);
     unsigned char alignment_box(RGE_Game_World*, float, float,
                                 short&, short&, short&, short&, short&, short&,
                                 short&, short&);
-    int get_help_message();
-    int get_help_page();
-    int get_hotkey();
+    long get_help_message();
+    long get_help_page();
+    long get_hotkey();
 
     unsigned char master_type;
     char pad_05[3];

@@ -612,9 +612,9 @@
         "0043AB40": "?xlatRle4@@YAXPAEI0@Z",
         "0043AB80": "?CreateIdentityPalette@@YAXPAX@Z",
         "0043ACB0": "?CopyPalette@@YAPAXPAX@Z",
-        "0043AD40": "?DibFree@@YAXPAX@Z",
+        "0043AD40": "?DibFree@@YAXPAUtagBITMAPINFOHEADER@@@Z",
         "00438E80": "?ClipDibBlt@@YAHPAUBITMAPINFO256@@PAUtagRECT@@AAJ2222222HH@Z",
-        "00439060": "?GetDibDim@@YAXPAUBITMAPINFO256@@PAJ11@Z",
+        "00439060": "?GetDibDim@@YAXPAUBITMAPINFO256@@AAJ11@Z",
         "00439700": "?GetPaletteFromDib@@YAPAXPADH@Z"
       }
     },
@@ -769,8 +769,8 @@
         "00452120": "??0RGE_Master_Static_Object@@QAE@PAV0@H@Z",
         "00452170": "??0RGE_Master_Static_Object@@QAE@HPAPAVRGE_Sprite@@PAPAVRGE_Sound@@H@Z",
         "004521A0": "??0RGE_Master_Static_Object@@QAE@PAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@FH@Z",
-        "004521E0": "?setup@RGE_Master_Static_Object@@QAEHPAV1@@Z",
-        "004524E0": "?setup@RGE_Master_Static_Object@@QAEHHPAPAVRGE_Sprite@@PAPAVRGE_Sound@@@Z",
+        "004521E0": "?setup@RGE_Master_Static_Object@@IAEHPAV1@@Z",
+        "004524E0": "?setup@RGE_Master_Static_Object@@IAEHHPAPAVRGE_Sprite@@PAPAVRGE_Sound@@@Z",
         "004534A0": "?modify@RGE_Master_Static_Object@@UAEXME@Z"
       }
     },
@@ -1164,7 +1164,7 @@
       "symbols": {
         "00451A20": "??0RGE_Master_Moving_Object@@QAE@PAV0@H@Z",
         "00451AA0": "??0RGE_Master_Moving_Object@@QAE@HPAPAVRGE_Sprite@@PAPAVRGE_Sound@@H@Z",
-        "00451B10": "??0RGE_Master_Moving_Object@@QAE@PAXPAPAX1HH@Z",
+        "00451B10": "??0RGE_Master_Moving_Object@@QAE@PAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@FH@Z",
         "00451B90": "?setup@RGE_Master_Moving_Object@@IAEHPAV1@@Z",
         "00451C10": "?setup@RGE_Master_Moving_Object@@IAEHHPAPAVRGE_Sprite@@PAPAVRGE_Sound@@@Z",
         "00451D10": "?setup@RGE_Master_Moving_Object@@IAEHPAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@F@Z",

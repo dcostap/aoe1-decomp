@@ -4,7 +4,7 @@
 #ifndef RGE_MS_OBJ_SHARED_CONTEXT
 class RGE_Master_Static_Object {
 public:
-    void* vtable_ptr;   // +0x0
+    virtual ~RGE_Master_Static_Object();
     char gap_04[0x22];
     short hp;           // +0x26
     float los;          // +0x28

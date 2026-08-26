@@ -110,6 +110,7 @@ public:
     float outline_radius_y;
     float outline_radius_z;
 
+protected:
     int setup(int handle, RGE_Sprite** sprites, RGE_Sound** sounds);
 };
 #endif

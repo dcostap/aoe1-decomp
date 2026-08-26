@@ -5,7 +5,7 @@ class RGE_Sprite;
 class RGE_Sound;
 class RGE_Master_Static_Object {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Master_Static_Object();
     int setup(FILE* file, RGE_Sprite** sprites, RGE_Sound** sounds, short count);
 };
 

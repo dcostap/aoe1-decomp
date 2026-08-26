@@ -4,8 +4,8 @@ public:
     virtual ~RGE_Master_Static_Object();
     char gap_0[0x94];
     int help_string_id;
-    int get_help_message();
+    long get_help_message();
 };
 #endif
 
-int RGE_Master_Static_Object::get_help_message() { return this->help_string_id; }
+long RGE_Master_Static_Object::get_help_message() { return this->help_string_id; }

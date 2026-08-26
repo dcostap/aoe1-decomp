@@ -95,6 +95,7 @@ public:
     float outline_radius_y;   // +0xB0
     float outline_radius_z;   // +0xB4
 
+protected:
     int setup(RGE_Master_Static_Object* src);
 };
 #endif
