@@ -88,7 +88,7 @@ public:
     int last_scenario;              // +0x10C
     RGE_Campaign* campaign;         // +0x110
 
-    RGE_Campaign_Info(int fd, RGE_Campaign** camps, int count);
+    RGE_Campaign_Info(int fd, RGE_Campaign** camps, long count);
     RGE_Campaign_Info(RGE_Campaign* campaign);
     ~RGE_Campaign_Info();
 
@@ -97,7 +97,7 @@ public:
     unsigned char set_current_scenario(long scenario);
     unsigned char verify_campaign_name(char* campaign);
     long get_scenario_list(char*** list, long& current);
-    int get_current_scenario();
+    long get_current_scenario();
     void notify_of_scenario_complete();
     int open_scenario();
 };
@@ -111,7 +111,7 @@ public:
     int campaign_num;               // +0x10C
     RGE_Campaign** campaigns;       // +0x110
 
-    RGE_Person_Info(int fd, RGE_Campaign** camps, int count);
+    RGE_Person_Info(int fd, RGE_Campaign** camps, long count);
     RGE_Person_Info(char* name, RGE_Campaign** campaigns, long count);
     ~RGE_Person_Info();
     void dtor();
@@ -120,9 +120,9 @@ public:
     void rehook_campaigns(RGE_Campaign** campaigns, long count);
     unsigned char set_current_campaign(long campaign);
     long get_current_campaign();
-    int get_current_scenario();
+    long get_current_scenario();
     unsigned char set_current_scenario(long scenario);
-    int get_scenario_list(char*** list, long* count);
+    long get_scenario_list(char*** list, long& count);
     void notify_of_scenario_complete();
     int open_scenario();
     char* get_name();
@@ -145,16 +145,16 @@ public:
 
     void save(char* path);
     void find_campaigns();
-    unsigned char add_new_person(int fd);
+    unsigned char add_new_person(char* name);
     unsigned char set_current_person(long person);
-    unsigned char set_current_campaign(int campaign);
-    unsigned char set_current_scenario(int scenario);
+    unsigned char set_current_campaign(long campaign);
+    unsigned char set_current_scenario(long scenario);
     long get_people_list(char*** list, long& current);
     long get_campaign_list(char*** list, long& current);
-    long get_scenario_list(char*** list, long* current);
+    long get_scenario_list(char*** list, long& current);
     long get_current_scenario();
     long get_current_campaign();
-    int get_current_player();
+    long get_current_player();
     char* get_current_player_name();
     void notify_of_scenario_complete();
     int open_scenario();

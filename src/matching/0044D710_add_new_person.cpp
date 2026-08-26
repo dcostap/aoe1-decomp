@@ -1,4 +1,4 @@
-// VA: 0044D710 RGE_Game_Info::add_new_person(int fd)
+// VA: 0044D710 RGE_Game_Info::add_new_person(char* name)
 // 179 bytes
 
 #include <string.h>
@@ -28,16 +28,16 @@ struct RGE_Game_Info {
     RGE_Campaign** campaigns;
     char save_filename[256];
 
-    unsigned char add_new_person(int fd);
+    unsigned char add_new_person(char* name);
 };
 #endif
 
-unsigned char RGE_Game_Info::add_new_person(int fd) {
+unsigned char RGE_Game_Info::add_new_person(char* name) {
     RGE_Person_Info** newlist = (RGE_Person_Info**)calloc(people_num + 1, 4);
     memcpy(newlist, people_info, people_num * 4);
     free(people_info);
     people_info = newlist;
-    people_info[people_num] = new RGE_Person_Info(fd, campaigns, campaign_num);
+    people_info[people_num] = new RGE_Person_Info(name, campaigns, campaign_num);
     current_person = people_num;
     people_num++;
     return 1;

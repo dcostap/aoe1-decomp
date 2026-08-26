@@ -10,6 +10,7 @@ public:
     char gap_00[4];
     RGE_Object_Node* list;
 
+protected:
     void invert(void);
 };
 #endif

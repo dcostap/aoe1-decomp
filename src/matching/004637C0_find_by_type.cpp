@@ -21,7 +21,7 @@ struct RGE_Object_Node {
 };
 
 struct RGE_Static_Object {
-    void* vtable;
+    virtual ~RGE_Static_Object();
     long id;
     char pad_08[0x30];
     float world_x;
@@ -33,7 +33,7 @@ struct RGE_Static_Object {
 };
 
 struct RGE_Object_List {
-    void* vtable;
+    char gap_00[4];
     RGE_Object_Node* list;
     short number_of_objects;
 

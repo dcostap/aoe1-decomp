@@ -27,9 +27,9 @@ struct MasterObj {
 };
 
 struct ObjDrawVT {
-    virtual void d0() = 0;
-    virtual void d1() = 0;
-    virtual void d2() = 0;
+    virtual void destroy(int) = 0;
+    virtual void recycle_in_to_game(void*, void*, float, float, float) = 0;
+    virtual void recycle_out_of_game() = 0;
     virtual void draw(void*,short,short,void*) = 0; // vt[3] at +0x0C
 };
 
@@ -53,14 +53,14 @@ struct RGE_Object_Node {
 };
 
 struct RGE_Object_List {
-    void* vtable;                  // +0x00
+    char gap_00[4];                // +0x00
     RGE_Object_Node* list;         // +0x04
     short number_of_objects;       // +0x08
-    void draw(void* param_1, short param_2, short param_3, unsigned char param_4);
+    void draw(TDrawArea* param_1, short param_2, short param_3, unsigned char param_4);
 };
 #endif
 
-void RGE_Object_List::draw(void* param_1, short param_2, short param_3, unsigned char param_4)
+void RGE_Object_List::draw(TDrawArea* param_1, short param_2, short param_3, unsigned char param_4)
 {
     RGE_Object_Node* p = list;
     if (!p) return;

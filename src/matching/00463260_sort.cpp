@@ -12,7 +12,7 @@
 #ifndef OBJLIST_SHARED_CONTEXT
 class RGE_Master_Static_Object {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Master_Static_Object();
     unsigned char master_type;
     unsigned char _pad_0[3];
     char* name;
@@ -91,7 +91,7 @@ public:
 
 class RGE_Static_Object {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Static_Object();
     int id;
     RGE_Master_Static_Object* master_obj;
     void* owner;
@@ -117,7 +117,7 @@ struct RGE_Object_Node {
 
 class RGE_Object_List {
 public:
-    void* vtable;
+    char gap_00[4];
     RGE_Object_Node* list;
     short number_of_objects;
     unsigned char _pad_end[2];

@@ -36,11 +36,11 @@ public:
     int last_scenario;          // +0x10C
     RGE_Campaign* campaign;     // +0x110
 
-    RGE_Campaign_Info(int fd, RGE_Campaign** camps, int cnum);
+    RGE_Campaign_Info(int fd, RGE_Campaign** camps, long cnum);
 };
 #endif
 
-RGE_Campaign_Info::RGE_Campaign_Info(int fd, RGE_Campaign** camps, int cnum) {
+RGE_Campaign_Info::RGE_Campaign_Info(int fd, RGE_Campaign** camps, long cnum) {
     rge_read(fd, this, 0xFF);
     rge_read(fd, &current_scenario, 4);
     rge_read(fd, &scenario_num, 4);

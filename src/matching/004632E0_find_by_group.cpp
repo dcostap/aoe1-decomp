@@ -11,6 +11,8 @@ struct ObjectDetails {
     GroupInfo* info;
 };
 
+class RGE_Static_Object;
+
 #ifndef OBJLIST_SHARED_CONTEXT
 struct RGE_Object_Node {
     void* object;
@@ -27,14 +29,14 @@ public:
 };
 #endif
 
-void* RGE_Object_List::find_by_group(long group) {
+RGE_Static_Object* RGE_Object_List::find_by_group(long group) {
     RGE_Object_Node* node = this->list;
     if (node == 0) return 0;
     
     while (node != 0) {
         if (node->object != 0) {
             if (((ObjectDetails*)node->object)->info->group == group) {
-                return node->object;
+                return (RGE_Static_Object*)node->object;
             }
         }
         node = node->next;

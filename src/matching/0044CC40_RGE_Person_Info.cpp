@@ -20,7 +20,7 @@ struct RGE_Campaign_Info {
     int last_scenario;          // +0x10C
     RGE_Campaign* campaign;     // +0x110
 
-    RGE_Campaign_Info(int fd, RGE_Campaign** camps, int cnum);
+    RGE_Campaign_Info(int fd, RGE_Campaign** camps, long cnum);
 };
 
 struct RGE_Person_Info {
@@ -31,11 +31,11 @@ struct RGE_Person_Info {
     int campaign_num;                 // +0x10C
     RGE_Campaign** campaigns;         // +0x110
 
-    RGE_Person_Info(int fd, RGE_Campaign** camps, int cnum);
+    RGE_Person_Info(int fd, RGE_Campaign** camps, long cnum);
 };
 #endif
 
-RGE_Person_Info::RGE_Person_Info(int fd, RGE_Campaign** camps, int cnum) {
+RGE_Person_Info::RGE_Person_Info(int fd, RGE_Campaign** camps, long cnum) {
     // Store params
     campaign_num = cnum;
     campaigns = camps;

@@ -8,12 +8,12 @@ class RGE_Color_Table;
 class RGE_Game_World;
 class RGE_Player;
 class RGE_Object_List;
-class RGE_Object_Node;
+struct RGE_Object_Node;
 
 // Canonical obj_list.cpp master-object fields used by the list owners.
 class RGE_Master_Static_Object {
 public:
-    void* vtable;
+    virtual ~RGE_Master_Static_Object();
     unsigned char master_type;
     unsigned char gap_05[3];
     char* name;
@@ -34,16 +34,17 @@ public:
 class RGE_Static_Object {
 public:
     virtual void destroy(int);
-    virtual void vf04();
-    virtual void vf08();
-    virtual void draw(void*, short, short, void*);
+    virtual void recycle_in_to_game(RGE_Master_Static_Object*, RGE_Player*,
+                                    float, float, float);
+    virtual void recycle_out_of_game();
+    virtual void draw(TDrawArea*, short, short, RGE_Color_Table*);
     virtual void shadow_draw(TDrawArea*, short, short, unsigned char);
-    virtual void _normal_draw(TDrawArea*, short, short);
-    virtual void vf18();
-    virtual void vf1C();
-    virtual void vf20();
-    virtual char vf24();
-    virtual void vf28();
+    virtual void normal_draw(TDrawArea*, short, short);
+    virtual void draw_front_frame(TDrawArea*, short, short);
+    virtual void draw_back_frame(TDrawArea*, short, short);
+    virtual void draw_frame(TDrawArea*, short, short);
+    virtual unsigned char update();
+    virtual void check_damage_sprites();
     virtual void rehook();
     virtual void save(int);
     unsigned char lookupZone(int, int);
@@ -112,9 +113,10 @@ typedef RGE_Object_Node RGE_Object_List_Node;
 // normal object type remains the canonical 0x88-byte RGE_Static_Object.
 class RGE_Object_Draw_View {
 public:
-    virtual void slot_00();
-    virtual void slot_04();
-    virtual void slot_08();
+    virtual void destroy(int);
+    virtual void recycle_in_to_game(RGE_Master_Static_Object*, RGE_Player*,
+                                    float, float, float);
+    virtual void recycle_out_of_game();
     virtual void draw(void*, short, short, void*);
 
     long id;
@@ -150,7 +152,6 @@ public:
 
 class RGE_Object_List {
 public:
-    virtual void load(unsigned char, int, RGE_Game_World*);
     union {
         RGE_Object_Node* list;
         RGE_Object_Node* first;
@@ -158,18 +159,22 @@ public:
     short number_of_objects;
     unsigned char pad_0A[2];
 
+protected:
+    virtual void load(unsigned char, int, RGE_Game_World*);
+    void invert();
+
+public:
     RGE_Object_List();
     ~RGE_Object_List();
     void removeAllObjects();
     RGE_Object_Node* add_node(RGE_Static_Object*);
     void remove_node(RGE_Static_Object*, RGE_Object_Node*);
-    void invert();
-    void draw(void*, short, short, unsigned char);
+    void draw(TDrawArea*, short, short, unsigned char);
     void shadow_draw(TDrawArea*, short, short, unsigned char, unsigned char);
     void normal_draw(TDrawArea*, short, short, unsigned char);
     void update();
     RGE_Object_Node* sort();
-    void* find_by_group(long);
+    RGE_Static_Object* find_by_group(long);
     RGE_Static_Object* find_by_group(long, float, float, unsigned char,
                                      unsigned char, RGE_Static_Object*);
     RGE_Static_Object* find_by_id(long);

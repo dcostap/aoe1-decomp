@@ -1,29 +1,35 @@
 #ifndef OBJLIST_SHARED_CONTEXT
-class RGE_Object {
+class RGE_Master_Static_Object;
+class RGE_Player;
+class TDrawArea;
+class RGE_Color_Table;
+
+class RGE_Static_Object {
 public:
-    virtual void vf00(void);
-    virtual void vf04(void);
-    virtual void vf08(void);
-    virtual void vf0C(void);
-    virtual void vf10(void);
-    virtual void vf14(void);
-    virtual void vf18(void);
-    virtual void vf1C(void);
-    virtual void vf20(void);
-    virtual void vf24(void);
-    virtual void vf28(void);
+    virtual void destroy(int);
+    virtual void recycle_in_to_game(RGE_Master_Static_Object*, RGE_Player*,
+                                    float, float, float);
+    virtual void recycle_out_of_game();
+    virtual void draw(TDrawArea*, short, short, RGE_Color_Table*);
+    virtual void shadow_draw(TDrawArea*, short, short, unsigned char);
+    virtual void normal_draw(TDrawArea*, short, short);
+    virtual void draw_front_frame(TDrawArea*, short, short);
+    virtual void draw_back_frame(TDrawArea*, short, short);
+    virtual void draw_frame(TDrawArea*, short, short);
+    virtual unsigned char update();
+    virtual void check_damage_sprites();
     virtual void rehook(void);
 };
 
-class RGE_Object_Node {
+struct RGE_Object_Node {
 public:
-    RGE_Object* node;
+    RGE_Static_Object* node;
     RGE_Object_Node* next;
 };
 
 class RGE_Object_List {
 public:
-    void* vfptr;
+    char gap_00[4];
     RGE_Object_Node* list;
 
     void rehook_list();

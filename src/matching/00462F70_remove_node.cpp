@@ -1,8 +1,8 @@
 extern "C" void __cdecl free(void* block);
 #ifndef OBJLIST_SHARED_CONTEXT
 class RGE_Static_Object;
-class RGE_Object_Node { public: RGE_Static_Object* node; RGE_Object_Node* next; RGE_Object_Node* prev; };
-class RGE_Object_List { public: void* vtable_ptr; RGE_Object_Node* list; short number_of_objects; void remove_node(RGE_Static_Object* object, RGE_Object_Node* node); };
+struct RGE_Object_Node { public: RGE_Static_Object* node; RGE_Object_Node* next; RGE_Object_Node* prev; };
+class RGE_Object_List { public: char gap_00[4]; RGE_Object_Node* list; short number_of_objects; void remove_node(RGE_Static_Object* object, RGE_Object_Node* node); };
 #endif
 void RGE_Object_List::remove_node(RGE_Static_Object* object, RGE_Object_Node* node) {
     RGE_Object_Node* n = this->list;

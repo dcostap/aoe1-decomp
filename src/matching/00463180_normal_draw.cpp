@@ -6,10 +6,12 @@
 
 #ifndef OBJLIST_SHARED_CONTEXT
 class TDrawArea;
+class RGE_Color_Table;
+class RGE_Player;
 
 class RGE_Master_Static_Object {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Master_Static_Object();
     unsigned char master_type;
     unsigned char _pad_0[3];
     char* name;
@@ -88,12 +90,13 @@ public:
 
 class RGE_Static_Object {
 public:
-    virtual void _virt0();
-    virtual void _virt1();
-    virtual void _virt2();
-    virtual void _virt3();
-    virtual void _shadow_draw(TDrawArea*, short, short, unsigned char);
-    virtual void _normal_draw(TDrawArea* draw_area, short x, short y);
+    virtual void destroy(int);
+    virtual void recycle_in_to_game(RGE_Master_Static_Object*, RGE_Player*,
+                                    float, float, float);
+    virtual void recycle_out_of_game();
+    virtual void draw(TDrawArea*, short, short, RGE_Color_Table*);
+    virtual void shadow_draw(TDrawArea*, short, short, unsigned char);
+    virtual void normal_draw(TDrawArea* draw_area, short x, short y);
 
     int id;
     RGE_Master_Static_Object* master_obj;
@@ -129,7 +132,7 @@ void RGE_Object_List::normal_draw(TDrawArea* draw_area, short x, short y, unsign
         while (pRVar4) {
             RGE_Static_Object* obj = pRVar4->node;
             if (obj && obj->master_obj->fog_flag) {
-                obj->_normal_draw(draw_area, x, y);
+                obj->normal_draw(draw_area, x, y);
             }
             pRVar4 = pRVar4->next;
         }
@@ -137,7 +140,7 @@ void RGE_Object_List::normal_draw(TDrawArea* draw_area, short x, short y, unsign
         while (pRVar4) {
             RGE_Static_Object* obj = pRVar4->node;
             if (obj) {
-                obj->_normal_draw(draw_area, x, y);
+                obj->normal_draw(draw_area, x, y);
             }
             pRVar4 = pRVar4->next;
         }

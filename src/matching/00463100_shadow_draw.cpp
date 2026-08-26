@@ -2,16 +2,18 @@
 // PDB: obj_list.cpp (RGE_Object_List::shadow_draw)
 //
 // Key to match:
-// - RGE_Static_Object: 4 dummy virtuals before shadow_draw to get vtable slot 4 (0x10)
-// - RGE_Master_Static_Object: vtable_ptr at +0, fog_flag at +0x65
+// - RGE_Static_Object: shadow_draw is the fifth virtual at +0x10
+// - RGE_Master_Static_Object: the virtual destructor supplies the vptr at +0
 // - Fog logic: if(fog) check master_obj->fog_flag before calling node->shadow_draw
 
 #ifndef OBJLIST_SHARED_CONTEXT
 class TDrawArea;
+class RGE_Color_Table;
+class RGE_Player;
 
 class RGE_Master_Static_Object {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Master_Static_Object();
     unsigned char master_type;
     unsigned char _pad_0[3];
     char* name;
@@ -90,10 +92,11 @@ public:
 
 class RGE_Static_Object {
 public:
-    virtual void _virt0();
-    virtual void _virt1();
-    virtual void _virt2();
-    virtual void _virt3();
+    virtual void destroy(int);
+    virtual void recycle_in_to_game(RGE_Master_Static_Object*, RGE_Player*,
+                                    float, float, float);
+    virtual void recycle_out_of_game();
+    virtual void draw(TDrawArea*, short, short, RGE_Color_Table*);
     virtual void shadow_draw(TDrawArea* draw_area, short x, short y, unsigned char param_4);
 
     int id;
@@ -110,7 +113,7 @@ struct RGE_Object_Node {
 
 class RGE_Object_List {
 public:
-    void* vtable;
+    char gap_00[4];
     RGE_Object_Node* list;
     short number_of_objects;
     unsigned char _pad_end[2];

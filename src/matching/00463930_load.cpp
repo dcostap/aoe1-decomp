@@ -14,7 +14,7 @@ class RGE_Action_Object { public: char pad[0x194]; RGE_Action_Object(int, RGE_Ga
 class RGE_Combat_Object { public: char pad[0x1c4]; RGE_Combat_Object(int, RGE_Game_World*, int); };
 
 class RGE_Object_List {
-public:
+protected:
     virtual void load(unsigned char type, int mode, RGE_Game_World* world);
 };
 #endif
