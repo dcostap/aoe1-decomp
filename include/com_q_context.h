@@ -75,10 +75,10 @@ public:
 
 protected:
     int AllocateQueue(unsigned int param_1);
+    unsigned int QueuedForTurn(unsigned long turn);
 
 public:
     unsigned char ExpectedNextSequence(unsigned long turn, unsigned int from);
-    unsigned int QueuedForTurn(unsigned long turn);
     void FlushAll();
     unsigned int FlushTurnRange(unsigned long first, unsigned long last);
     void FlushForPlayer(unsigned int player);

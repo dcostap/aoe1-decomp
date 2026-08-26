@@ -1,28 +1,43 @@
 #ifndef COM_Q_CONTEXT
-class RGE_Communications_Queue_node {
+// BINARY NOTE: The PDB owner is protected, and the queue record starts with
+// Code before ExecTurn at offset 4.
+class MsgQueue {
 public:
+    unsigned int Code;
     unsigned long ExecTurn;
-    char gap_04[0x18];
+    char gap_08[0x14];
 };
 
 class RGE_Communications_Queue {
 public:
-    char gap_00[0x114];
-    RGE_Communications_Queue_node* Queue;
-    int HighQueueDepth;
+    unsigned int QueueDepth;
+    unsigned int HighQueueDepth;
+    unsigned int MaxQSize;
+    char TBuff[255];
+    unsigned char _pad_0[1];
+    unsigned long LastCurrentTurn;
+    unsigned char Sequence;
+    unsigned char _pad_1[3];
+    MsgQueue* Queue;
 
+protected:
     unsigned int QueuedForTurn(unsigned long turn);
 };
 #endif
 
 unsigned int RGE_Communications_Queue::QueuedForTurn(unsigned long turn) {
     unsigned int count = 0;
-    unsigned int i = 0;
+    // BINARY NOTE: The shipped loop walks ExecTurn pointers by seven words.
+    unsigned int* execTurn = &this->Queue->ExecTurn;
+    int i = this->HighQueueDepth + 1;
+
     do {
-        if (this->Queue[i].ExecTurn == turn) {
+        if (*execTurn == turn) {
             ++count;
         }
-        ++i;
-    } while (i <= this->HighQueueDepth);
+        execTurn += 7;
+        --i;
+    } while (i != 0);
+
     return count;
 }
