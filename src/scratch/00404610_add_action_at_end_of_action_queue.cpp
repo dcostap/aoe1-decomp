@@ -141,6 +141,13 @@
 // Natural source variants keep those values in registers until later use.
 // The oracle also loads each notify vtable from action at EBX. Node-tail source
 // variants reach 232B/156 but add a proven wrong node-action memory read.
+// shard_03 wave02 pass: the authentic wrapper baseline is 224B/179 with 9/9
+// ordered calls, four returns, and matching saved registers. Moving node's
+// declaration, splitting type locals, and hoisting the short declaration were
+// codegen duplicates. Naming the first list action and a natural while-next
+// loop added a frame or broadened drift. Restore the baseline after each test.
+// Final validation remains MISMATCH. The unresolved homes are structural, not
+// behavior or ABI differences. No exact or accepted-drift promotion is claimed.
 #include <stdlib.h>
 
 #ifndef ACT_LIST_SHARED_CONTEXT
