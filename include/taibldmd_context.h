@@ -265,14 +265,24 @@ public:
     int typeID();
 };
 
-class TribeConstructionAIModule {
+class TribeConstructionAIModule : public AIModule {
 public:
-    char gap_000[0x318];
+    virtual ~TribeConstructionAIModule();
+    virtual int save(int value);
+    virtual int loadConstructionPlan(char* name, int mapX, int mapY,
+                                     float xReference, float yReference,
+                                     float zReference);
+    virtual ConstructionItem* placeStructure(BuildItem* item);
+    virtual void setBuilt(ConstructionItem* item, int built);
+    virtual void removeLot(float x, float y, int status);
+    virtual int unplaceStructure(float x, float y, int decrement);
+    virtual void decrementBuildAttempts(float x, float y, int count);
+    virtual void cancel(float x, float y, int number);
+
+    char gap_0F0[0x318 - 0xF0];
     int canPlace(BuildItem* item);
     void setBuilt(RGE_Static_Object* object, int value);
     ConstructionItem* lot(float x, float y);
-    void cancel(float x, float y, int number);
-    void removeLot(float x, float y, int status);
 };
 
 class TribeInformationAIModule {
@@ -294,6 +304,7 @@ public:
 
 class TribeTacticalAIModule {
 public:
+    virtual ~TribeTacticalAIModule();
     char gap_000[0xE40];
     int wonderInProgressValue;
     int wonderBuiltValue;
@@ -359,6 +370,8 @@ void logCommonHistory(TribeBuildAIModule* module, const char* format, ...);
 typedef char taibldmd_build_item_size[(sizeof(BuildItem) == 0xB0) ? 1 : -1];
 typedef char taibldmd_resource_item_size[(sizeof(ResourceItem) == 0x70) ? 1 : -1];
 typedef char taibldmd_build_module_size[(sizeof(BuildAIModule) == 0x5BC) ? 1 : -1];
+typedef char taibldmd_construction_module_size[(sizeof(TribeConstructionAIModule) == 0x318) ? 1 : -1];
+typedef char taibldmd_tactical_module_size[(sizeof(TribeTacticalAIModule) == 0x100C) ? 1 : -1];
 typedef char taibldmd_tribe_build_module_size[(sizeof(TribeBuildAIModule) == 0x5C0) ? 1 : -1];
 
 #endif

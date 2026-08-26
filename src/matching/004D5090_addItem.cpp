@@ -6,6 +6,8 @@
 //    binary-proven BuildAIModule/BuildItem/MD ownership; reached a one-byte
 //    mismatch at the object game-id load.
 // 2: corrected RGE_Static_Object field order (id +4, master_obj +8); exact.
+// The local TU context now models the proved tactical virtual header.
+// Grouped validation is MATCH at the tactical wonder-field displacement.
 
 #ifndef TAIBLDMD_SHARED_CONTEXT
 class RGE_Master_Static_Object {

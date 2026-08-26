@@ -10,6 +10,8 @@
 // try 7: /Ob0 no improvement; flag removed.
 // try 8: prechecking sentinel with an empty if/else-for got EBX=this and EDI=zero, improving to 71.07% positional / 52.20% edit, but push edi and branch layout still differ; kept as best.
 // GIVEUP: behavior/calls/offsets now match the packet, but remaining mismatch is broad control-flow/register topology (original push edi before sentinel lea, EDI=found from entry, EBX=this; rebuilt delays push edi and carries a separate EAX found state). Not accepted drift.
+// The local TU context now models the proved tactical virtual header.
+// Grouped validation is MATCH at the tactical wonder-field displacement.
 
 
 #ifndef TAIBLDMD_SHARED_CONTEXT

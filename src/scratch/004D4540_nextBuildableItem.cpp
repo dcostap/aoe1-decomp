@@ -109,6 +109,20 @@
 //     table relocation at 004D4615, whose table starts at 004D4D98, outside
 //     the extracted function boundary.
 
+// Fresh wave1 context gate:
+// - PROVED PDB module: taibldmd.cpp, source band lines 464-891.
+// - PROVED owner and order: TribeBuildAIModule::nextBuildableItem at
+//   004D4540, after 004D4460 and before 004D4DB0.
+// - PROVED anchors: vslot+0x48 calls at 004D456B-004D4581, strategic
+//   calls at 004D45A3 and 004D48AF, and ResourceItem construction/destruction
+//   at 004D48D1/004D4992 and 004D4D8E.
+// - PROVED fields: this+0xF0, this+0x15C, this+0x3A6, this+0x4A7,
+//   this+0x5A8, and this+0x5BC.
+// - LIKELY source context: the real taibldmd.cpp class surface and /GX EH
+//   path. The grouped flag row omits /GX.
+// - UNKNOWN: whether a natural source form can recover the bottom branch
+//   polarity without the rejected proposal or unsupported steering.
+
 #ifndef TAIBLDMD_SHARED_CONTEXT
 #include "../../include/taibldmd_context.h"
 #define TAIBLDMD_CANONICAL_STANDALONE 1

@@ -21,6 +21,9 @@
 // 11: the caller passes the unique build ID as the sixth argument; using that
 //     typed parameter at the lookup matches the original [esp+2c] home.
 
+// The local TU context now models the proved constructionAI slots +0x4C and
+// +0x58. Grouped validation is MATCH without a relocation shim.
+
 #ifndef TAIBLDMD_SHARED_CONTEXT
 typedef unsigned char uchar;
 class RGE_Static_Object;

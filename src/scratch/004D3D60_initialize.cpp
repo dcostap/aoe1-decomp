@@ -86,6 +86,21 @@
 // evidence-backed in this pass. Strong verified-logic-tier candidate for
 // orchestrator semantic review.
 
+// Fresh wave1 context gate:
+// - PROVED PDB module: taibldmd.cpp, source band lines 100-434.
+// - PROVED owner and order: TribeBuildAIModule::initialize at 004D3D60,
+//   between the exact 004D3B20 owner and 004D4460 owner.
+// - PROVED anchors: buildCategory/typeID at 004D3DD4-004D3EFD, strategic
+//   calls at 004D3F2F-004D42DB, ResourceItem construction at 004D42FD and
+//   destruction at 004D4436, and final resource calls at 004D43B4-004D4436.
+// - PROVED fields: this+0xF0, this+0x15C, this+0x1A0, and this+0x5BC.
+// - LIKELY source context: the real taibldmd.cpp class surface and /GX EH
+//   path. The grouped flag row omits /GX, so the wrapper cannot reproduce
+//   the standalone EH-aware basin.
+// - UNKNOWN: the remaining counter-home permutation and loop topology cause.
+// Final validation: grouped no-GX output remains 1649 bytes nonexact; clean
+// source is retained and no unsupported codegen steering was added.
+
 #ifndef TAIBLDMD_SHARED_CONTEXT
 class ResourceItem;
 

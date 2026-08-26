@@ -10,6 +10,8 @@
 //    layout from the baseline.
 // Main-agent audit restored canonical polymorphic object/item/AI ownership;
 // emitted code remains exact.
+// The local TU context now models the proved tactical virtual header.
+// Grouped validation is MATCH at the tactical wonder-field displacement.
 
 #ifndef TAIBLDMD_SHARED_CONTEXT
 extern "C" char* __cdecl strncpy(char* dst, const char* src, unsigned int count);

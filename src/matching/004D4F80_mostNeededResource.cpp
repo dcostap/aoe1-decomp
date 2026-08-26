@@ -15,6 +15,8 @@
 //    original direct-call order and exact bytes in the authentic prefix.
 // Main-agent audit restored polymorphic player/main-AI ownership; emitted
 // code remains exact.
+// The local TU context now models the proved tactical virtual header.
+// Grouped validation is MATCH with the correct md+0x1256C displacement.
 
 #ifndef TAIBLDMD_SHARED_CONTEXT
 class ResourceItem {
