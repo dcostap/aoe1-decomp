@@ -1,4 +1,4 @@
-// VA: 0040E2D0 AIModule::AIModule(int, int, int, int) (137 B)
+// VA: 0040E2D0 AIModule::AIModule(char*, int, int, void*) (137 B)
 // PDB source: aimodule.cpp lines 188-202
 // Attempt log:
 // - Moving the scalar stores into the initializer list moved the vptr store to
