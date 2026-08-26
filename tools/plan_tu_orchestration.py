@@ -260,6 +260,29 @@ def row_key(row: dict[str, object]) -> tuple[str, str]:
     return str(row["group"]), str(row["va"]).upper()
 
 
+def report_group_names(report: dict[str, object]) -> set[str]:
+    groups = report.get("groups")
+    if isinstance(groups, list):
+        names = {
+            str(group.get("group"))
+            for group in groups
+            if isinstance(group, dict) and group.get("group")
+        }
+        if names:
+            return names
+    names = {
+        str(row.get("group"))
+        for row in report.get("rows") or []
+        if isinstance(row, dict) and row.get("group")
+    }
+    names.update(
+        str(error.get("group"))
+        for error in report.get("compile_errors") or []
+        if isinstance(error, dict) and error.get("group")
+    )
+    return names
+
+
 def row_signature(row: dict[str, object]) -> dict[str, object]:
     return {
         "result": row.get("grouped_result"),
@@ -471,11 +494,14 @@ def compare_reports(
         raise ValueError("Baseline report rows must be a list.")
     old = {row_key(row): row for row in before_rows if isinstance(row, dict)}
     new = {row_key(row): row for row in after_rows if isinstance(row, dict)}
+    current_groups = report_group_names(after)
 
     for key in sorted(set(old) | set(new)):
         prior = old.get(key)
         current = new.get(key)
         group, va = key
+        if group not in current_groups:
+            continue
         if prior is None:
             events.append({"kind": "new_row", "group": group, "va": va})
             continue

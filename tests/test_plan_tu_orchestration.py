@@ -80,6 +80,16 @@ def test_delta_reports_new_exact_without_blocking_it() -> None:
     assert [event["kind"] for event in delta["events"]] == ["new_exact"]
 
 
+def test_subset_delta_does_not_remove_untouched_groups() -> None:
+    before = report(row(group="alpha"), row(group="beta", va="00402000"))
+    current = report(row(group="alpha"))
+
+    delta = compare_reports(before, current)
+
+    assert delta["events"] == []
+    assert delta["gate"] == "PASS"
+
+
 def test_registered_exact_loss_blocks_integration() -> None:
     delta = compare_reports(
         report(row(result="MATCH", difference=0, registered=True)),
