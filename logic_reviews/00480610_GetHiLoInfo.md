@@ -4,7 +4,7 @@
 
 The main agent suspended ordinary exact matching after numerous independent passes, more than thirty meaningful source/type/control-flow/liveness hypotheses, a focused 48-case variant lab, and repeated convergence on stable VC5 parameter-home/register-allocation basins. An independent phase-readiness audit found no unresolved behavior, ABI, layout, call, or memory-effect fact, but required removal of codegen-only control-flow residue before ledger entry.
 
-The candidate remains `src/scratch/00480610_GetHiLoInfo.cpp`. Before entry, the main agent removed a redundant positive-count guard already implied by the `1..100` range and normalized an empty positive branch to `if (idx <= 0) idx = 100`. The previously pinned 11-byte diagnostic used fake volatile/home-read scaffolding and is not the review candidate.
+The reviewed candidate was `src/scratch/00480610_GetHiLoInfo.cpp`. Before entry, the main agent removed a redundant positive-count guard already implied by the `1..100` range and normalized an empty positive branch to `if (idx <= 0) idx = 100`. The previously pinned 11-byte diagnostic used fake volatile/home-read scaffolding and is not the review candidate.
 
 Current validated normalized checker state:
 
@@ -86,10 +86,12 @@ unreachable positive-count guard remains intentionally normalized away.
   `test/jle`, invalid-path register setup, and volatile residue were classified
   as codegen-only.
 
-## Final decision
+## Exact promotion
 
-Approved for `src/verified_logic`. Both fresh post-fix reviewers converged with
-no open behavioral uncertainty after the round-1 stack-home finding was fixed.
-The remaining 12-byte size deficit, unreachable redundant branch, register setup,
-and transient residue are nonsemantic compiler-shape differences. Exact matching
-remains suspended; this is not an exact-match or accepted-drift promotion.
+A later grouped recovery restored the natural inner positive-count branch and
+valid-path-only output assignments. The candidate passed fresh grouped validation:
+132 of 132 bytes, `MATCH`, `0.0000%`, correct owner, boundary, relocations,
+and direct `sprintf` target.
+
+The exact source now lives in `src/matching/00480610_GetHiLoInfo.cpp`.
+The prior verified-logic decision is historical only.

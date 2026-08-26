@@ -3946,6 +3946,7 @@
         "00480510": "src/matching/00480510_Skip.cpp",
         "00480540": "src/matching/00480540_GetAvgInfo.cpp",
         "00480570": "src/matching/00480570_GetHiLoMaxInfo.cpp",
+        "00480610": "src/matching/00480610_GetHiLoInfo.cpp",
         "004806A0": "src/matching/004806A0_CPS.cpp",
         "004806C0": "src/matching/004806C0_GetFirstCall.cpp",
         "004806D0": "src/matching/004806D0_GetElapsedFirstCall.cpp",
@@ -3953,7 +3954,8 @@
       },
       "symbols": {
         "00480400": "?GetAvg@RGE_TimeSinceLastCall@@QAEKH@Z",
-        "00480460": "?Get@RGE_TimeSinceLastCall@@QAEKXZ"
+        "00480460": "?Get@RGE_TimeSinceLastCall@@QAEKXZ",
+        "00480610": "?GetHiLoInfo@RGE_TimeSinceLastCall@@QAEPADH@Z"
       }
     },
     {

@@ -8,7 +8,7 @@
 #include "matching/00480510_Skip.cpp"
 #include "matching/00480540_GetAvgInfo.cpp"
 #include "matching/00480570_GetHiLoMaxInfo.cpp"
-#include "verified_logic/00480610_GetHiLoInfo.cpp"
+#include "matching/00480610_GetHiLoInfo.cpp"
 #include "matching/004806A0_CPS.cpp"
 #include "matching/004806C0_GetFirstCall.cpp"
 #include "matching/004806D0_GetElapsedFirstCall.cpp"
