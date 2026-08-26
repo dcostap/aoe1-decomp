@@ -11,7 +11,7 @@ public:
     virtual void _virt2();
     virtual void _virt3();
     virtual void _virt4();
-    virtual void set_fn(int enabled);
+    virtual void set_active(int enabled);
 
     void set_disabled(int enabled);
 };
@@ -73,9 +73,9 @@ int TribeDiplomacyDialog::check_gold()
             }
             btn = this->goldTributeButton[i];
             if (this->tribute_flag) {
-                btn->set_fn(1);
+                btn->set_active(1);
             } else {
-                btn->set_fn(0);
+                btn->set_active(0);
             }
         }
     }

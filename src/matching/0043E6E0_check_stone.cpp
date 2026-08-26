@@ -90,19 +90,11 @@ int TribeDiplomacyDialog::check_stone() {
                 (*ppButton)->set_disabled(result);
             }
 
-#ifdef DLG_DIP_SHARED_CONTEXT
-            if (this->tribute_flag != 0) {
-                (*ppButton)->slot5(1);
-            } else {
-                (*ppButton)->slot5(0);
-            }
-#else
             if (this->tribute_flag != 0) {
                 (*ppButton)->set_active(1);
             } else {
                 (*ppButton)->set_active(0);
             }
-#endif
         }
         i++;
         ppButton++;

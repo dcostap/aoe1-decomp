@@ -113,9 +113,9 @@ int TribeDiplomacyDialog::check_wood()
             btn = *pp;
 #ifdef DLG_DIP_SHARED_CONTEXT
             if (this->tribute_flag != 0) {
-                btn->set_fn(1);
+                btn->set_active(1);
             } else {
-                btn->set_fn(0);
+                btn->set_active(0);
             }
 #else
             if (this->tributeFlag != 0) {

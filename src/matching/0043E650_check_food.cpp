@@ -94,21 +94,12 @@ int TribeDiplomacyDialog::check_food() {
                 (*pp)->set_disabled(hasFood);
             }
 
-#ifdef DLG_DIP_SHARED_CONTEXT
-            if (this->tribute_flag) {
-                (*pp)->show(1);
-            }
-            else {
-                (*pp)->show(0);
-            }
-#else
             if (this->tribute_flag) {
                 (*pp)->set_active(1);
             }
             else {
                 (*pp)->set_active(0);
             }
-#endif
         }
         ++i;
         ++pp;

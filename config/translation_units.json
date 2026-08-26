@@ -3080,9 +3080,18 @@
       "source": "src/dlg_dip_tu.cpp",
       "flags": "config/flags/0043C930_TribeDiplomacyDialog.rsp",
       "owners": {
-        "0043D6E0": "src/matching/0043D6E0_TribeDiplomacyDialog.cpp"
+        "0043D6E0": "src/matching/0043D6E0_TribeDiplomacyDialog.cpp",
+        "0043E530": "src/matching/0043E530_check_gold.cpp",
+        "0043E5C0": "src/matching/0043E5C0_check_wood.cpp",
+        "0043E650": "src/matching/0043E650_check_food.cpp",
+        "0043E6E0": "src/matching/0043E6E0_check_stone.cpp"
       },
-      "symbols": {}
+      "symbols": {
+        "0043E530": "?check_gold@TribeDiplomacyDialog@@IAEHXZ",
+        "0043E5C0": "?check_wood@TribeDiplomacyDialog@@IAEHXZ",
+        "0043E650": "?check_food@TribeDiplomacyDialog@@IAEHXZ",
+        "0043E6E0": "?check_stone@TribeDiplomacyDialog@@IAEHXZ"
+      }
     },
     {
       "name": "dlg_sedm",
