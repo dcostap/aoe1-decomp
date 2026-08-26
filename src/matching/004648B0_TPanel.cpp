@@ -1,3 +1,9 @@
+// Context gate: Panel.cpp lines 872-879, TPanel default constructor. The
+// address sequence initializes fields through +0xF2, then sets help IDs.
+// BINARY NOTE: the executable writes the vptr at +0x0 only after initialization.
+// Grouped output writes the vptr first because the shared full virtual surface
+// is different from the recovered constructor context.
+
 #ifndef AOE1_PANEL_CONTEXT_H
 struct PanelNode;
 struct TDrawArea;

@@ -15,6 +15,12 @@ public:
 };
 
 #endif
+
+// Context gate: PDB module Panel.cpp, line 1118, TPanel owner, with the
+// wrapper's scalar call at original vslot +0x0C.
+// Attempt log: the natural tagRECT wrapper keeps size, frame, and calls, but
+// grouped context emits the scalar call at +0x08 due shared overload order.
+// BINARY NOTE: the executable uses the source rectangle's inclusive bounds.
 void TPanel::set_rect(tagRECT rect) {
     set_rect(rect.left, rect.top, (rect.right - rect.left) + 1, (rect.bottom - rect.top) + 1);
 }

@@ -3,8 +3,6 @@
 #include "../../include/game_globals.h"
 #include "../../include/game_types.h"
 #ifndef AOE1_PANEL_CONTEXT_H
-
-#ifndef AOE1_PANEL_CONTEXT_H
 class TPanel {
 public:
     void* vtable;
@@ -18,10 +16,13 @@ class TPanelSystem {
 public:
     unsigned char _pad[0xC];
     TPanel* currentPanelValue;  // +0xC
+    TPanel* previousPanel() const;
 };
 #endif
 
-#endif
+// Context gate: Panel.cpp lines 115-119, TPanelSystem owner. The source-line
+// order is load currentPanel at +0x0C, test it, then tail-call TPanel::previousPanel.
+// The const owner matches ?previousPanel@TPanelSystem@@QBEPAVTPanel@@XZ.
 TPanel* TPanelSystem::previousPanel() const {
     if (currentPanelValue)
         return currentPanelValue->previousPanel();

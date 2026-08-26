@@ -7,6 +7,7 @@ public:
 
 extern TPanelSystem panel_system;
 
-void __cdecl E1(void) {
+// PDB owner: Panel.cpp initializer named $E1.
+void $E1(void) {
     panel_system.TPanelSystem::TPanelSystem();
 }

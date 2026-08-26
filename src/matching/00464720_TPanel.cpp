@@ -1,3 +1,9 @@
+// Context gate: Panel.cpp lines 799-813, TPanel named constructor. The
+// address sequence initializes proven fields through +0xF3, then calls
+// setPanelName and conditionally calls panel_system.addPanel.
+// BINARY NOTE: the executable delays its vptr store until after field setup.
+// Grouped output stores the vptr first under the shared full virtual surface.
+
 #ifndef AOE1_PANEL_CONTEXT_H
 struct PanelNode;
 struct TDrawArea;

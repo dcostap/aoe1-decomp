@@ -3,6 +3,10 @@
 #include "../../include/game_globals.h"
 #include "../../include/game_types.h"
 
+// Context gate: Panel.cpp lines 2363-2365, TPanel owner. The exact anchor is
+// one load from this +0x04 followed by return.
+// The const owner matches ?previousPanel@TPanel@@QBEPAV1@XZ.
+
 #ifndef AOE1_PANEL_CONTEXT_H
 class TPanel {
 public:

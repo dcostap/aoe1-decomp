@@ -1,3 +1,9 @@
+// Context gate: Panel.cpp lines 2328-2347, TPanel owner. The loop uses a
+// signed short count and calls each panel's scalar tab-order overload.
+// BINARY NOTE: the original call reaches virtual slot +0xC4.
+// Blocker: grouped context places that overload at +0xC8 because of the
+// shared overload declaration order.
+
 #ifndef AOE1_PANEL_CONTEXT_H
 class TPanel {
 public:
