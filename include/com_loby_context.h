@@ -174,7 +174,7 @@ public:
     unsigned char CheckForLobbyLaunch(IDirectPlay3*& dplay);
     unsigned char IsThisHost(void);
     unsigned char GetPlayerInfo(char** out);
-    unsigned char GetSessionInfo(DPSESSIONDESC2* out);
+    unsigned char GetSessionInfo(DPSESSIONDESC2& out);
     long SendZoneHandshakeResponse(void);
     int GameIsOver(void);
     long ReceiveZoneMessages(void);

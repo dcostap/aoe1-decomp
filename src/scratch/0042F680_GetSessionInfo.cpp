@@ -11,17 +11,17 @@ struct DPLCONNECTION_gsi {
 
 class RGE_Lobby {
 public:
-    unsigned char GetSessionInfo(DPSESSIONDESC2* out);
+    unsigned char GetSessionInfo(DPSESSIONDESC2& out);
     char gap_00[0x10];
     DPLCONNECTION_gsi* glpdplConnection;
     unsigned char lobby_game;
 };
 #endif
 
-unsigned char RGE_Lobby::GetSessionInfo(DPSESSIONDESC2* out) {
+unsigned char RGE_Lobby::GetSessionInfo(DPSESSIONDESC2& out) {
     if (this->lobby_game == 0) {
         return 0;
     }
-    *out = *this->glpdplConnection->lpSessionDesc;
+    out = *this->glpdplConnection->lpSessionDesc;
     return 1;
 }
