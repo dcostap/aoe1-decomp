@@ -43,8 +43,8 @@ public:
     virtual unsigned char frame_passed(short param_1);
     virtual unsigned char looped();
     virtual short get_facetindex(short param_1);
-    virtual unsigned char get_frame(short* param_1, short* param_2,
-                                    short* param_3, short* param_4, long param_5);
+    virtual unsigned char get_frame(short& param_1, short& param_2,
+                                    short& param_3, short& param_4, long param_5);
     virtual void setToFirstFrame();
     RGE_Sprite* sprite;              // +0x04
     unsigned char type;              // +0x08

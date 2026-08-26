@@ -55,7 +55,11 @@ public:
 
     TCommunications_Sessions(TCommunications_Handler* handler);
     ~TCommunications_Sessions();
+
+private:
     void EraseInformation();
+
+public:
     int GetSessionCount();
     char* GetSessionName(int index);
     unsigned long GetSessionMaxPlayers(int index);

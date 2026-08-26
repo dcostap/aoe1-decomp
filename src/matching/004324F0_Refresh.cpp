@@ -34,8 +34,10 @@ struct DPSESSIONDESC2 {
 };
 
 class TCommunications_Sessions {
-public:
+private:
     void EraseInformation();
+
+public:
     int Refresh();
 };
 #endif

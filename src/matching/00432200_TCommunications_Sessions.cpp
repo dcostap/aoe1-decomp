@@ -29,7 +29,11 @@ public:
     int SessionCount;
 
     TCommunications_Sessions(TCommunications_Handler* handler);
+
+private:
     void EraseInformation();
+
+public:
     int Refresh();
 };
 #endif

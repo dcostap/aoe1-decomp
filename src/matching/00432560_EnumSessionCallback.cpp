@@ -32,8 +32,8 @@ public:
 };
 #endif
 
-extern "C" int __stdcall EnumSessionCallback(DPSESSIONDESC2* desc, unsigned long* timeout,
-                                              unsigned long flags, void* context) {
+int __stdcall EnumSessionCallback(DPSESSIONDESC2* desc, unsigned long* timeout,
+                                  unsigned long flags, void* context) {
     if (flags & 1) {
         return 0;
     }

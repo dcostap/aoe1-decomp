@@ -4,7 +4,7 @@ struct EraseSessionRecord {
     char bytes[0x238];
 };
 class TCommunications_Sessions {
-public:
+private:
     void EraseInformation();
     int SessionCount;
     EraseSessionRecord Session[501];

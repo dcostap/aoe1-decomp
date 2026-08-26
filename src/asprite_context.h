@@ -75,8 +75,8 @@ public:
     unsigned char shadow_draw(long param_1, long param_2, long param_3,
                               long param_4, RGE_Color_Table* color_table,
                               TDrawArea* draw_area, unsigned char color_index);
-    int get_frame(short* min_x, short* min_y, short* max_x, short* max_y,
-                  long frame, int facet);
+    int get_frame(short& min_x, short& min_y, short& max_x, short& max_y,
+                  long frame, long facet);
     unsigned char get_lowest_draw_level();
     int check_for_shadows();
 };
@@ -110,8 +110,8 @@ public:
     virtual unsigned char frame_passed(short param_1);
     virtual unsigned char looped();
     virtual short get_facetindex(short param_1);
-    virtual unsigned char get_frame(short* param_1, short* param_2,
-                                    short* param_3, short* param_4, long param_5);
+    virtual unsigned char get_frame(short& param_1, short& param_2,
+                                    short& param_3, short& param_4, long param_5);
     virtual void setToFirstFrame();
 
     unsigned char get_lowest_draw_level();
@@ -140,8 +140,8 @@ public:
     virtual unsigned char frame_passed(short param_1);
     virtual unsigned char looped();
     virtual short get_facetindex(short param_1);
-    virtual unsigned char get_frame(short* param_1, short* param_2,
-                                    short* param_3, short* param_4, long param_5);
+    virtual unsigned char get_frame(short& param_1, short& param_2,
+                                    short& param_3, short& param_4, long param_5);
     virtual void setToFirstFrame();
 
     union {
