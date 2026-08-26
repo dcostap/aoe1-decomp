@@ -8,14 +8,14 @@ public:
 
 class TribeInformationAIModule {
 public:
-    int isNextTo(XYPoint* p1, XYPoint* p2, int mode);
+    int isNextTo(XYPoint& p1, XYPoint& p2, int mode);
 };
 #endif
 
 #endif
-int TribeInformationAIModule::isNextTo(XYPoint* p1, XYPoint* p2, int mode) {
-    int dx = p2->x - p1->x;
-    int dy = p2->y - p1->y;
+int TribeInformationAIModule::isNextTo(XYPoint& p1, XYPoint& p2, int mode) {
+    int dx = p2.x - p1.x;
+    int dy = p2.y - p1.y;
     int dist = dx * dx + dy * dy;
     if (mode == 0) {
         if (dist > 1) {

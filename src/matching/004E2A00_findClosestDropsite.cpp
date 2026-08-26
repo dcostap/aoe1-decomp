@@ -5,6 +5,11 @@
 extern "C" long __cdecl _ftol();
 
 #ifndef TAIINFMD_PREFIX_CONTEXT
+void* operator_new(unsigned int size);
+void operator_delete(void* ptr);
+#endif
+
+#ifndef TAIINFMD_PREFIX_CONTEXT
 #ifndef TAIINFMD_PREFIX_CONTEXT
 class RGE_Master_Static_Object {
 public:
@@ -65,7 +70,7 @@ public:
     char gap_104[0x8C];
     ManagedArray_int playerBuildings; // +0x190
 
-    float findClosestDropsite(RGE_Static_Object* obj, int mode, int* dropsiteID);
+    float findClosestDropsite(RGE_Static_Object* obj, int mode, int& dropsiteID);
 };
 #endif
 
@@ -75,7 +80,7 @@ public:
 extern float DAT_00575588;
 
 #endif
-float TribeInformationAIModule::findClosestDropsite(RGE_Static_Object* obj, int mode, int* dropsiteID)
+float TribeInformationAIModule::findClosestDropsite(RGE_Static_Object* obj, int mode, int& dropsiteID)
 {
     float best;
     unsigned char resourceZone;
@@ -84,7 +89,7 @@ float TribeInformationAIModule::findClosestDropsite(RGE_Static_Object* obj, int 
 
     best = 1000.0f;
     resourceZone = obj->currentZone();
-    *dropsiteID = -1;
+    dropsiteID = -1;
 
     i = 0;
     if (this->playerBuildings.numberValue > 0) {
@@ -100,7 +105,7 @@ float TribeInformationAIModule::findClosestDropsite(RGE_Static_Object* obj, int 
                         float dy = dropsite->world_y - obj->world_y;
                         float dist = (float)sqrt(dx * dx + dy * dy);
                         if (best == DAT_00575588 || dist < best) {
-                            *dropsiteID = dropsite->id;
+                            dropsiteID = dropsite->id;
                             best = dist;
                         }
                     }

@@ -1,16 +1,15 @@
 #ifndef TAITACMD_SHARED_CONTEXT
+struct Waypoint { float x; float y; float z; };
 class TacticalAIGroup {
 public:
     char gap_0[0x1AC];
-    int field_1AC;
-    int field_1B0;
-    int field_1B4;
-    void setRetreatLocation(int a, int b, int c);
+    Waypoint retreatLocationValue;
+    void setRetreatLocation(float a, float b, float c);
 };
 #endif
 
-void TacticalAIGroup::setRetreatLocation(int a, int b, int c) {
-    this->field_1AC = a;
-    this->field_1B0 = b;
-    this->field_1B4 = c;
+void TacticalAIGroup::setRetreatLocation(float a, float b, float c) {
+    this->retreatLocationValue.x = a;
+    this->retreatLocationValue.y = b;
+    this->retreatLocationValue.z = c;
 }

@@ -99,7 +99,7 @@ class RGE_Player {
 public:
     virtual ~RGE_Player();
     char gap_004[0x34];
-    RGE_Visible_Map* visibleMap;
+    RGE_Visible_Map* visible;
 };
 
 class TribeMainDecisionAIModule {
@@ -188,7 +188,7 @@ void TribeTacticalAIModule::evaluateCivilianDistribution()
     ManagedArray<int>* list;
     int zero;
 
-    percentExplored = (int)(this->md->player->visibleMap->percentExplored() * 100.0f);
+    percentExplored = (int)(this->md->player->visible->percentExplored() * 100.0f);
 
     list = &this->playersToAttack;
 #ifdef TAITACMD_SHARED_CONTEXT

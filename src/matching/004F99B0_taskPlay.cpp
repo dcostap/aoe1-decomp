@@ -10,6 +10,8 @@
 //   scan/growth source and typed mission virtual surface.  Pending checker
 //   result.
 
+#include "../../include/rge_player_context.h"
+
 #ifndef TAITACMD_SHARED_CONTEXT
 struct Waypoint {
     float x;
@@ -25,31 +27,6 @@ struct ManagedIntArray {
 };
 
 class RGE_Static_Object;
-
-struct RGE_Player {
-    virtual ~RGE_Player();
-    virtual void set_game_status(unsigned char);
-    virtual void do_resign(int);
-    virtual void changeToHumanPlayer();
-    virtual void changeToComputerPlayer();
-    virtual char* aiStatus(int);
-    virtual int isEnemy(int);
-    virtual int isAlly(int);
-    virtual int isNeutral(int);
-    virtual int isAllNeutral();
-    virtual void setDiplomaticStance(int, int);
-    virtual void loadAIInformation(char*, char*, char*, int, int);
-    virtual void sendUnitAIOrder(int, int, int, int, int, float, float, float, float, int, int, int);
-    virtual void processAIOrder(int, int, int, int, int, float, float, float, float, int, int, int);
-    virtual void kickAI(int);
-    virtual int strategicNumber(int);
-    virtual void sendGameOrder(RGE_Static_Object*, RGE_Static_Object*, float, float);
-    virtual void sendAddWaypointCommand(int, void*, int);
-    virtual void processAddWaypointCommand(int, void*, int);
-    virtual void sendPlayCommand(int, int*, int, int, int);
-    char gap_04[0x46];
-    short id;
-};
 
 struct TribeMainDecisionAIModule {
     virtual ~TribeMainDecisionAIModule();
@@ -71,6 +48,7 @@ public:
 };
 
 #endif
+
 int TribeTacticalAIModule::taskPlay(int param_1, int* param_2, int param_3,
                                     int param_4, int param_5,
                                     Waypoint* waypoints, int waypointCount)

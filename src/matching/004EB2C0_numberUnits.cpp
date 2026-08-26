@@ -5,7 +5,7 @@ public:
     char gap_04[344];
     int numberUnits_;
 
-    int numberUnits() const;
+    int numberUnits();
 };
 #endif
-int TacticalAIGroup::numberUnits() const { return this->numberUnits_; }
+int TacticalAIGroup::numberUnits() { return this->numberUnits_; }

@@ -3,11 +3,11 @@ class TribeTacticalAIModule {
 public:
     char gap_0[0xD88];
     int arr_[4];
-    int neededResource(int index);
+    int neededResource(int index) const;
 };
 #endif
 
-int TribeTacticalAIModule::neededResource(int index) {
+int TribeTacticalAIModule::neededResource(int index) const {
     if (index < 0 || index >= 4) return -1;
     return this->arr_[index];
 }

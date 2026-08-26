@@ -3,15 +3,19 @@
 // Attempt log:
 // - Replaced old one-slot stub with full Ghidra logic and the canonical
 //   RGE_Player command surface.
-// - Exact match: using `while (i < 40)` for the scan (not do-while) prevents
+// - Using `while (i < 40)` for the scan (not do-while) prevents
 //   VC5 from peeling/preloading the first array element and matches the original
 //   push-edi, xor-index, memory-cmp loop top.
+// - The old `md->player->list->next` spelling was a reduced-context type view.
+//   PDB fields name RGE_Player +0x3C as `world`, and RGE_Game_World +0x04 as
+//   `world_time`. The original load is [player+3C], then [world+4]. Use that
+//   real field meaning as `md->player->world->world_time`.
 
 #ifndef TAITACMD_SHARED_CONTEXT
-class TimeList {
+class RGE_Game_World {
 public:
-    char gap_00[4];
-    unsigned long next;
+    virtual ~RGE_Game_World();
+    unsigned long world_time;
 };
 #endif
 
@@ -73,7 +77,7 @@ public:
     virtual unsigned char command_add_to_group(int, int, float);
 
     char gap_04[0x38];
-    TimeList* list;
+    RGE_Game_World* world;
 };
 #endif
 
@@ -114,9 +118,9 @@ int TacticalAIGroup::addUnit(int unit, TribeMainDecisionAIModule* md)
             this->unitsOriginalHitPointsValue[i] = -1;
             this->numberUnitsValue = this->numberUnitsValue + 1;
             if (this->commanderValue != -1) {
-                md->player->command_add_to_group(this->commanderValue, unit, 0x40800000);
+                md->player->command_add_to_group(this->commanderValue, unit, 4.0f);
             }
-            this->lastAddedUnitTimeValue = md->player->list->next;
+            this->lastAddedUnitTimeValue = md->player->world->world_time;
             return 1;
         }
         i = i + 1;

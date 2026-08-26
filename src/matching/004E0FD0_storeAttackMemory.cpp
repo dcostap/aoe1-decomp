@@ -95,7 +95,7 @@ public:
         unsigned char param_7,
         short param_8,
         unsigned char param_9,
-        unsigned int param_10,
+        unsigned long param_10,
         int param_11);
 };
 #endif
@@ -111,7 +111,7 @@ int TribeInformationAIModule::storeAttackMemory(
     unsigned char param_7,
     short param_8,
     unsigned char param_9,
-    unsigned int param_10,
+    unsigned long param_10,
     int param_11)
 {
     int bestIdx;

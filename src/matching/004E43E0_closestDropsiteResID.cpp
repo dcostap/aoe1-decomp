@@ -4,7 +4,7 @@
 #undef TAIINFMD_INFO_CONTEXT
 #endif
 
-int TribeInformationAIModule::closestDropsiteResID(int index) {
+int TribeInformationAIModule::closestDropsiteResID(int index) const {
     if (index < 0 || index > 3) {
         return -1;
     }

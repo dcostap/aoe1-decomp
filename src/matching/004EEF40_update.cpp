@@ -16,7 +16,7 @@
 //   player-list insertions. This recovered the original scan and growth CFG.
 // - Removed the cached md receiver. Direct this->md reloads recover 1421-byte
 //   size, 0x8 frame, 22 ordered calls, and 98.19% instruction shape.
-// - Corrected player_id ownership to RGE_Player +0x4A, with world +0x3C and
+// - Corrected id ownership to RGE_Player +0x4A, with world +0x3C and
 //   player_num +0x3C. The source now has 969 differing bytes and 107 edit
 //   bytes. Remaining drift is localized to the farms reset reload and benign
 //   register/block scheduling. No exact match; leave the clean typed source.
@@ -115,7 +115,7 @@ public:
 class RGE_Game_World {
 public:
     char gap_00[4];
-    int tick;
+    unsigned long world_time;
     char gap_08[0x34];
     short player_num;
     char gap_3E[0x0C];
@@ -127,7 +127,7 @@ public:
     char gap_04[0x38];
     RGE_Game_World* world;
     char gap_40[0x0A];
-    short player_id;
+    short id;
 };
 
 class InformationAIModule {
@@ -232,7 +232,7 @@ static inline int addTacticalPlayer(ManagedArray<int>& array, int valueToAdd)
 
 int TribeTacticalAIModule::update(int)
 {
-    if ((unsigned int)(this->md->player->world->tick -
+    if ((unsigned int)(this->md->player->world->world_time -
                        this->lastScalingUpdateValue) >
         (unsigned int)(this->sn[0x63] * 60000)) {
         this->sn[0x1A] += this->sn[0x5E];
@@ -281,14 +281,14 @@ int TribeTacticalAIModule::update(int)
             this->sn[0x5B] = 100;
         }
 
-        this->lastScalingUpdateValue = this->md->player->world->tick;
+        this->lastScalingUpdateValue = this->md->player->world->world_time;
     }
 
     // BINARY NOTE: This period array method preserves the md reread below.
     this->unitsTaskedThisUpdate.zeroNumber();
     this->md->informationAI.farmsTaskedThisUpdate.numberValue = 0;
 
-    if ((unsigned int)this->md->player->world->tick / 1000U >=
+    if ((unsigned int)this->md->player->world->world_time / 1000U >=
         (unsigned int)this->sn[0x68]) {
         this->enableAttack(2);
     }
@@ -302,7 +302,7 @@ int TribeTacticalAIModule::update(int)
     addTacticalPlayer(this->playersToAttack, mostHatedPlayer);
 
     this->playersToDefend.zeroNumber();
-    addTacticalPlayer(this->playersToDefend, this->md->player->player_id);
+    addTacticalPlayer(this->playersToDefend, this->md->player->id);
 
     if (mostHatedPlayer != mostLikedPlayer) {
         addTacticalPlayer(this->playersToDefend, mostLikedPlayer);
@@ -313,7 +313,7 @@ diplomacy:
         int player = 1;
         if (1 < this->md->player->world->player_num) {
             do {
-                if (player != this->md->player->player_id) {
+        if (player != this->md->player->id) {
                     if (player == mostHatedPlayer) {
                         if (this->md->diplomacyAI.isEnemy(player) == 0 &&
                             this->md->diplomacyAI.isChangeable(player) != 0 &&

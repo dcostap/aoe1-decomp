@@ -1,7 +1,7 @@
 #ifndef TAITACMD_SHARED_CONTEXT
 class TribeTacticalAIModule {
 public:
-    void logGroupDebug();
+    void __cdecl logGroupDebug(int, char*, ...);
 };
 #endif
-void TribeTacticalAIModule::logGroupDebug() {}
+void __cdecl TribeTacticalAIModule::logGroupDebug(int, char*, ...) {}
