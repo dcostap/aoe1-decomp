@@ -60,6 +60,13 @@
 // grouped evidence keeps the 23 ordered calls and the 0x24 frame, but not the
 // cold control-flow layout or local-slot colors. Prior grouped and walkback
 // reports were reviewed; their rejected guard and local forms are not reused.
+// sa-11e4b4c9-r1 captain validation: the fresh dossier confirms module tmap.cpp,
+// band 631-815, TRIBE_Map ownership, and the address sequence above. Wrapper
+// anchors remain exact. Baseline is 1308 rebuilt bytes versus 1317, with 890
+// strict differing bytes and 23 ordered calls. A positive early-body guard
+// was tested against the branch layout and worsened the result to 1194 bytes;
+// it was restored. The clean source remains unresolved for cold layout and
+// local colors.
 
 #ifndef TMAP_GROUP_CONTEXT
 struct TRIBE_Cliff_Info {

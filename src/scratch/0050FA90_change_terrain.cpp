@@ -69,6 +69,11 @@
 // The copied prior journal rejects equivalent int-coordinate alias forms, so
 // they were not repeated. The remaining drift is the original dword x load
 // versus VC5's short load and the later byte-store schedule.
+// sa-11e4b4c9-r1 captain validation: the fresh dossier confirms module tmap.cpp,
+// band 264-314, TRIBE_Map ownership, and the address sequence above. Wrapper
+// anchors remain exact. Baseline is 428 rebuilt bytes versus 427, with 392
+// strict differing bytes, 3 ordered calls, and one boundary escape. The clean
+// source is restored; the dword x load and byte-store schedule remain open.
 
 #include <stdlib.h>
 

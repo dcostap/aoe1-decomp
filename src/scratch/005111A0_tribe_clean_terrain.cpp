@@ -36,6 +36,12 @@
 // proves the 0x44 frame, 21 ordered calls, and tile row-slot sequence. The
 // current exact-size predicate source remains authoritative; no rejected row,
 // alias, or register-steering form was repeated in this pass.
+// sa-11e4b4c9-r1 captain validation: the fresh dossier confirms module tmap.cpp,
+// band 1091-1270, TRIBE_Map ownership, and the address sequence above. Wrapper
+// anchors remain exact. Baseline is 1558 rebuilt bytes versus 1562, with 1291
+// strict differing bytes and 21 ordered calls. The clean source is restored;
+// the EBX tile/end-bound allocation and predicate control-flow basin remain
+// unresolved.
 
 #ifndef TMAP_GROUP_CONTEXT
 typedef unsigned char uchar;

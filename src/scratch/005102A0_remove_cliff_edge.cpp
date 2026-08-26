@@ -88,6 +88,11 @@
 // journal rejects the executable-proven pre-switch cliff_info.info[0] = this
 // seed, so it was not repeated. The saved-this allocation and switch/loop
 // layout remain unresolved.
+// sa-11e4b4c9-r1 captain validation: the fresh dossier confirms module tmap.cpp,
+// band 577-618, TRIBE_Map ownership, and the address sequence above. Wrapper
+// anchors remain exact. Baseline is 360 rebuilt bytes versus 339, with 347
+// strict differing bytes, 8 ordered calls, and one boundary escape. The clean
+// source is restored; saved-this allocation and switch/loop layout remain open.
 
 #ifndef TMAP_GROUP_CONTEXT
 struct TRIBE_Cliff_Info {

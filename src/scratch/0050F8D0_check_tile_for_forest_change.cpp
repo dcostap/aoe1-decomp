@@ -71,6 +71,11 @@
 // fresh loop-local scope edit was attempted, then restored after its compile
 // error. The remaining drift is the forest row-slot lowering and the
 // diagnostic recursive-call identity.
+// sa-11e4b4c9-r1 captain validation: the fresh dossier confirms module tmap.cpp,
+// band 210-259, TRIBE_Map ownership, and the address sequence above. Wrapper
+// anchors remain exact. Baseline is 433 rebuilt bytes versus 434, with 76
+// strict differing bytes and 3 calls. The clean source is restored; the
+// remaining row-slot and diagnostic self-call differences are unresolved.
 
 #include <stdlib.h>
 
