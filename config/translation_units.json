@@ -6574,6 +6574,7 @@
         "004CE930": "src/matching/004CE930_TRIBE_Action_Heal.cpp",
         "004CE990": "src/matching/004CE990_TRIBE_Action_Heal.cpp",
         "004CEA10": "src/matching/004CEA10_TRIBE_Action_Heal.cpp",
+        "004CEA50": "src/matching/004CEA50_first_in_stack.cpp",
         "004CEA90": "src/matching/004CEA90_set_state.cpp",
         "004CECF0": "src/matching/004CECF0_update.cpp",
         "004CF030": "src/matching/004CF030_work.cpp"
