@@ -7,7 +7,7 @@ class RGE_Static_Object;
 
 class RGE_Action {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Action();
     short action_type;
     unsigned char _pad0[2];
     void* obj;
@@ -33,7 +33,7 @@ public:
 
 class RGE_Static_Object {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Static_Object();
     long id;
     RGE_Master_Static_Object* master_obj;
     unsigned char _gap_0C[0x2C];
