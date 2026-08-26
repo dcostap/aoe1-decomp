@@ -61,6 +61,16 @@
 //   with frame 0x28 and all 8 ordered direct calls present.
 // - BINARY NOTE: the second scan compares the record PlayerNo and WTurn from
 //   the moving checksum cursor. The operand order preserves the target loads.
+// - Fresh captain pass: the authentic TU baseline remains a 0x28 frame with
+//   8/8 ordered calls and a 480-byte mismatch. A block-local record reference,
+//   field cursor, selected cs4 cursor, pre-load found assignment, declaration
+//   reorders, and a staged mycs4 value were all non-improving or duplicate.
+// - The decompiler-indicated myRandom found flag gives the best fresh basin:
+//   479 differing bytes and 77.57% shape versus 480 and 77.10% baseline.
+//   Parameter-left second-scan spelling improves edit alignment but not the
+//   strict diff. No tested form closes the 22-byte size gap or CFG drift.
+// - Final validation: MATCH is not reached; owner, boundary, frame, and all
+//   direct call targets remain correct. This source is a documented clean hold.
 
 #ifndef COM_SYNC_TU_CONTEXT
 class TDebuggingLog {
@@ -113,24 +123,24 @@ int RGE_Communications_Synchronize::IsPlayerOutOfSync(
     unsigned long* puVar8 = &this->Check[1].WTurn;
     int NumPlayers;
     int NumDiff;
-    int bVar1;
     long lVar6;
     long mycs5;
     long mycs2;
     long mycs3;
     int NumSame;
+    int myRandom;
     unsigned int local_8;
     int foundMine;
 
     uVar5 = 0;
     NumPlayers = 0;
     NumDiff = 0;
-    bVar1 = 0;
     lVar6 = 0;
     mycs5 = 0;
     mycs2 = 0;
     mycs3 = 0;
     NumSame = 0;
+    myRandom = 0;
     local_8 = 0;
     foundMine = 0;
 
@@ -146,12 +156,12 @@ int RGE_Communications_Synchronize::IsPlayerOutOfSync(
             NumSame = this->Check[firstIndex].cs5;
             lVar6 = this->Check[firstIndex].cs1;
             local_8 = this->Check[firstIndex].Random;
-            bVar1 = 1;
+            myRandom = 1;
             break;
         }
     }
 
-    if (!bVar1) {
+    if (!myRandom) {
         L->Log("OUTOFSYNC: DIDN'T FIND MY VALUES");
         return 0;
     }

@@ -46,6 +46,16 @@
 // Retry 2026-08-02 Luna41A910b: baseline remained 158B/36 positional bytes; restored the inventory-proven Active_Sprite fields and full virtual surface, with no emitted change.
 // register-qualified new-node local, reused check-result local, typed raw list-slot view, and narrow volatile list-head rereads all emitted the same 158B basin; compile repair for the volatile cast was rerun as the same probe.
 // Scoped insertion cursor/allocation locals separately from duplicate scan; same 36-byte structural drift. Restored the natural typed member source; no accepted-drift proposal.
+// Retry 2026-08-27 captain: context pass confirms PDB module asp_list.cpp, lines 154-200,
+// RGE_Active_Sprite_List ownership, and linked address order 0041A640..0041ACF0.
+// Exact anchors are matching owners 0041A640, 0041A680, 0041A690, 0041A6F0,
+// 0041A820, 0041A860, 0041A8B0, 0041A8F0, 0041A9B0, 0041AA20, 0041AA50,
+// 0041AAA0, 0041AAE0, 0041AB20, 0041AB60, 0041AB90, 0041ABC0, 0041AC00,
+// 0041AC30, 0041AC70, 0041ACC0, and 0041ACF0 in the authentic wrapper.
+// Captain probes restored decompiler cursor identities, swapped cursor ownership,
+// CRT header context, top-scope locals, named shadow results, and combined register hints.
+// Separate cursors worsened to 43 bytes; all other variants stayed at 158B/36 bytes.
+// Final clean validation stays 158B/36 bytes with 5 aligned calls, no frame, and matching ownership.
 
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 

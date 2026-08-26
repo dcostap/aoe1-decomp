@@ -43,6 +43,12 @@
 //   These either worsened the CFG or emitted the same 36-call group. The
 //   clean source remains pinned; the unresolved facts are the second lookup's
 //   push-first schedule and one merged vslot+D0 enter_obj call.
+// - current captain probes: removing the target2 lookup temporary and caching
+//   target2ID were codegen-identical. A distance-first state-4 guard restored
+//   both enter_obj calls and reduced the positional diff to 446 bytes, but
+//   added 58 bytes and changed call/block order; it was rolled back. A
+//   redundant target guard and reversed comparison were worse. The final
+//   source is restored and validated at 663 differing bytes.
 
 #include "../../include/act_entr_context.h"
 

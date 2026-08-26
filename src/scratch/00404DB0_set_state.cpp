@@ -45,6 +45,14 @@
 // acceleration mutation, and PDB switch-case order did not change the 210 basin.
 // A double guided-distance local changed the frame to 0x2C and worsened 210 to 241.
 // All variants were restored to the pinned 210-byte clean source.
+// Captain pass: the authentic-TU baseline remains 805B, frame 0x28, 12 ordered
+// calls, and 210 positional diff bytes. H1/H2/H3 tested inline, grouped, and
+// denominator-local guided forms; results were 434/451/436 diff bytes.
+// H4/H7 tested vector declaration scope and order; both reproduced 210 bytes.
+// H5/H10 tested dead launch-speed-home reuse; both reproduced the 436-byte
+// denominator basin. H8/H9/H12 tested acceleration scope, rounding, and
+// initialization; all reproduced 210 bytes. H11 reversed ballistic stores and
+// worsened the result to 212 bytes. The clean source is restored.
 //
 // Authentic-TU probe: src/act_misl_tu.cpp includes the PDB-ordered ACT_misl.cpp
 // owners through include/act_misl_context.h.  The module flag evidence is
