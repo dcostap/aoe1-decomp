@@ -6,4 +6,4 @@ public:
 };
 #endif
 
-void RGE_Action_Object::set_attack(int p0) {}
+void RGE_Action_Object::set_attack(RGE_Static_Object* p0) {}

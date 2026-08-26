@@ -6,4 +6,4 @@ public:
 };
 #endif
 
-void RGE_Action_Object::notify_of_relation(int p0, int p1) {}
+void RGE_Action_Object::notify_of_relation(long p0, uchar p1) {}

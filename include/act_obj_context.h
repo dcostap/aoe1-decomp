@@ -328,7 +328,8 @@ class RGE_Moving_Object : public RGE_Animated_Object {
 public:
     virtual ~RGE_Moving_Object();
     virtual int setup(RGE_Master_Moving_Object*, RGE_Player*, float, float, float);
-    RGE_Moving_Object(void* master, void* player, float x, float y, float z, int flag);
+    RGE_Moving_Object(RGE_Master_Moving_Object* master, RGE_Player* player,
+                      float x, float y, float z, int flag);
     RGE_Moving_Object(int id, RGE_Game_World* world, int flag);
     virtual int setup(RGE_Master_Action_Object*, RGE_Player*, float, float, float);
     int setup(int, RGE_Game_World*);
@@ -341,7 +342,8 @@ public:
 class RGE_Action_Object : public RGE_Moving_Object {
 public:
     virtual ~RGE_Action_Object();
-    RGE_Action_Object(void* master, void* player, float x, float y, float z, int flag);
+    RGE_Action_Object(RGE_Master_Action_Object* master, RGE_Player* player,
+                      float x, float y, float z, int flag);
     RGE_Action_Object(int id, RGE_Game_World* world, int flag);
     virtual void recycle_in_to_game(RGE_Master_Static_Object*, RGE_Player*, float, float, float);
     virtual void recycle_out_of_game();
@@ -355,13 +357,13 @@ public:
     virtual void save(int);
     virtual void transform(RGE_Master_Static_Object*);
     virtual void destroy_obj();
-    virtual void notify_of_relation(int, int);
+    virtual void notify_of_relation(long, uchar);
     virtual void do_command(RGE_Static_Object*, float, float, float);
     virtual void move_to(RGE_Static_Object*, float, float, float);
     virtual void work(RGE_Static_Object*, float, float, float);
     virtual void work2(RGE_Static_Object*, float, float, float, uchar);
     virtual uchar update();
-    virtual void set_attack(int);
+    virtual void set_attack(RGE_Static_Object*);
     virtual void play_command_sound();
     virtual void play_move_sound();
     virtual RGE_Master_Static_Object* get_command_master(RGE_Static_Object*, float, float, float);
@@ -373,7 +375,7 @@ public:
     virtual void stop();
     virtual void change_ownership(RGE_Player*);
     virtual void copy_obj(RGE_Master_Static_Object*);
-    virtual uchar have_action();
+    uchar have_action();
     virtual RGE_Static_Object* get_target_obj();
     virtual RGE_Task* getTask(RGE_Static_Object*, float, float, float);
     virtual uchar actionState() const;
