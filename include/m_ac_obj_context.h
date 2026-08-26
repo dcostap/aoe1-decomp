@@ -126,7 +126,10 @@ public:
     short list_num;
 
     RGE_Task_List();
-    virtual ~RGE_Task_List();
+    // BINARY NOTE: exact owner 00508E20 and task_lst_context.h prove a
+    // nonvirtual destructor. Virtual dispatch changes 0044F4D0's target and
+    // escapes its original boundary.
+    ~RGE_Task_List();
     virtual RGE_Task* create_task(short task_type, int index);
     void copy(RGE_Task_List* source);
     void save(int file);
