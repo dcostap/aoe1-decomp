@@ -9,14 +9,15 @@ void operator delete(void* ptr);
 class TPanel {
 public:
     virtual ~TPanel();
-    virtual void vf04(void);
-    virtual void vf08(void);
-    virtual void vf0C(void);
-    virtual void vf10(void);
-    virtual void vf14(void);
-    virtual void vf18(void);
-    virtual void vf1C(void);
-    virtual void vf20(int mode);
+    virtual long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char);
+    virtual void set_color(unsigned char);
+    virtual void set_active(int);
+    virtual void set_positioning(int, long, long, long, long, long, long,
+                                 long, long, TPanel*, TPanel*, TPanel*, TPanel*);
+    virtual void set_fixed_position(long, long, long, long);
+    virtual void draw_setup(int);
+    virtual void draw_finish();
+    virtual void draw();
 
     char gap_00[0x10];
     long pnl_wid;

@@ -145,7 +145,7 @@ public:
     virtual long key_down_action(long, short, int, int, int);
     virtual long char_action(long, short);
     virtual long action(TPanel*, long, unsigned long, unsigned long);
-    virtual void get_true_render_rect(tagRECT*);
+    virtual void get_true_render_rect(tagRECT&);
     virtual int is_inside(long, long);
     virtual void set_focus(int);
     virtual void set_tab_order(TPanel*, TPanel*);
@@ -282,7 +282,7 @@ public:
     void set_clock_type(int, int);
     int get_clock_type();
     int get_player_id();
-    void get_true_render_rect(tagRECT&);
+    virtual void get_true_render_rect(tagRECT&);
 
 protected:
     int render_to_image_buffer();

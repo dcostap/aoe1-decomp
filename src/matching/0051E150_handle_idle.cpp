@@ -49,14 +49,14 @@ public:
     unsigned long current_display_value;
     unsigned long last_display_value;
 
-    virtual void vf00();
-    virtual void* vf04(unsigned int);
-    virtual void vf08();
-    virtual int vf0C();
-    virtual void vf10();
+    virtual void setup();
+    virtual void set_color();
+    virtual void set_active();
+    virtual void set_positioning();
+    virtual void set_fixed_position();
     virtual void set_visible(int);
-    virtual void vf18();
-    virtual void vf1C();
+    virtual void draw_setup();
+    virtual void draw_finish();
     virtual long set_redraw(int);
     virtual long handle_idle();
 
