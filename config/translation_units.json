@@ -3224,8 +3224,12 @@
         "004515B0": "src/matching/004515B0_setup.cpp",
         "00451620": "src/matching/00451620_setup.cpp",
         "004516C0": "src/matching/004516C0_setup.cpp",
+        "00451760": "src/matching/00451760_RGE_Master_Missile_Object.cpp",
         "00451770": "src/matching/00451770_make_new_obj.cpp",
-        "00451840": "src/matching/00451840_make_new_master.cpp"
+        "00451840": "src/matching/00451840_make_new_master.cpp",
+        "00451910": "src/matching/00451910_modify.cpp",
+        "00451940": "src/matching/00451940_modify_delta.cpp",
+        "00451970": "src/matching/00451970_modify_percent.cpp"
       },
       "symbols": {
         "00451440": "??0RGE_Master_Missile_Object@@QAE@PAV0@H@Z",
@@ -3233,7 +3237,11 @@
         "00451530": "??0RGE_Master_Missile_Object@@QAE@PAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@FH@Z",
         "004515B0": "?setup@RGE_Master_Missile_Object@@IAEHPAV1@@Z",
         "00451620": "?setup@RGE_Master_Missile_Object@@IAEHHPAPAVRGE_Sprite@@PAPAVRGE_Sound@@@Z",
-        "004516C0": "?setup@RGE_Master_Missile_Object@@IAEHPAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@F@Z"
+        "004516C0": "?setup@RGE_Master_Missile_Object@@IAEHPAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@F@Z",
+        "00451760": "??1RGE_Master_Missile_Object@@UAE@XZ",
+        "00451910": "?modify@RGE_Master_Missile_Object@@UAEXME@Z",
+        "00451940": "?modify_delta@RGE_Master_Missile_Object@@UAEXME@Z",
+        "00451970": "?modify_percent@RGE_Master_Missile_Object@@UAEXME@Z"
       }
     },
     {
@@ -4196,11 +4204,14 @@
       "source": "src/effects_tu.cpp",
       "flags": "config/flags/default.rsp",
       "owners": {
+        "00449440": "src/matching/00449440_RGE_Effects.cpp",
         "004494B0": "src/matching/004494B0_save.cpp",
         "004495C0": "src/matching/004495C0_do_effect.cpp"
       },
       "symbols": {
-        "004495C0": "?do_effect@RGE_Effects@@UAEXFPAVRGE_Player@@@Z"
+        "004495C0": "?do_effect@RGE_Effects@@UAEXFPAVRGE_Player@@@Z",
+        "00449440": "??1RGE_Effects@@UAE@XZ",
+        "004494B0": "?save@RGE_Effects@@UAEXH@Z"
       }
     },
     {
@@ -4221,11 +4232,13 @@
       "flags": "config/flags/00473E40_TDialogPanel.rsp",
       "owners": {
         "00473C10": "src/matching/00473C10_TDialogPanel.cpp",
-        "00473C80": "src/matching/00473C80_setup.cpp"
+        "00473C80": "src/matching/00473C80_setup.cpp",
+        "00473EC0": "src/matching/00473EC0_set_focus.cpp"
       },
       "symbols": {
         "00473C10": "??0TDialogPanel@@QAE@PAD@Z",
-        "00473C80": "?setup@TDialogPanel@@UAEHPAVTDrawArea@@PAVTPanel@@JJPADJH@Z"
+        "00473C80": "?setup@TDialogPanel@@UAEHPAVTDrawArea@@PAVTPanel@@JJPADJH@Z",
+        "00473EC0": "?set_focus@TDialogPanel@@UAEXH@Z"
       }
     },
     {
