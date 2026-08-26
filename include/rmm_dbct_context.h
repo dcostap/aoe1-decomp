@@ -160,10 +160,14 @@ public:
                                 char* terrain_type_file, char* map_file);
     ~RGE_RMM_Database_Controller();
     virtual uchar generate();
+
+protected:
     virtual void add_land_module(uchar value);
     virtual void add_terrain_module();
     virtual void add_object_module();
     virtual void add_elevation_module();
+
+public:
     virtual uchar init(RGE_Map* map, RGE_Game_World* world,
                        uchar map_type, long players, uchar value);
     virtual uchar de_init();

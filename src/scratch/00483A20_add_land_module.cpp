@@ -184,6 +184,7 @@ public:
 
     void calc_land_start(long start, long radius, long count, RGE_Land_Data_Entry* land);
 
+protected:
     virtual void add_land_module(uchar param_1);
     virtual void add_terrain_module();
     virtual void add_object_module();

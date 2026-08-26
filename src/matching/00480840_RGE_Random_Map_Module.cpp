@@ -2,9 +2,9 @@
 // Source: rmm_base.cpp lines 64-91. 113 bytes. __thiscall.
 //
 // MATCHED. Exact 113-byte match confirmed via local check_function.py.
-// Key fixes: (1) vtable address uses (void*)0x571E30 literal not extern
-// (avoids relocation placeholder). (2) if(this->parent == 0) places no-parent
-// path inline matching original branch order with else path at end.
+// The canonical virtual class surface supplies the compiler-managed dispatch state.
+// The if(this->parent == 0) form places the no-parent path inline, matching
+// the original branch order with the else path at the end.
 
 void operator_delete(void* ptr);
 
@@ -22,7 +22,7 @@ public:
 
 class RGE_Random_Map_Module {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Random_Map_Module();
     RGE_Random_Map_Module* parent;
     RGE_Random_Map_Module_List* list;
     RGE_Map* map;
@@ -35,17 +35,13 @@ public:
     Map_Stack* stack_array;
     Map_Stack** stack_offsets;
 
-    ~RGE_Random_Map_Module();
     void destroy_shared_resources();
     void remove_module(RGE_Random_Map_Module* child);
+    virtual unsigned char generate();
 };
 #endif
 
 RGE_Random_Map_Module::~RGE_Random_Map_Module() {
-#ifndef RMM_BASE_SHARED_CONTEXT
-    this->vtable_ptr = (void*)0x571E30;
-#endif
-
     while (this->list != 0) {
         RGE_Random_Map_Module* module = this->list->module;
         if (module != 0) {

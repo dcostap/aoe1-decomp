@@ -224,6 +224,7 @@ public:
     RGE_Elevation_Info elevation_info;
     RGE_Map_Data map_info;
 
+protected:
     virtual void add_object_module();
 };
 #endif

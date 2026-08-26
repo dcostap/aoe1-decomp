@@ -249,11 +249,12 @@ public:
         char* terrain_type_file, char* map_file);
     ~RGE_RMM_Database_Controller();
     virtual uchar generate();
+
+protected:
     virtual void add_land_module(uchar value);
     virtual void add_terrain_module();
     virtual void add_object_module();
 
-protected:
     virtual void add_elevation_module();
     void calc_land_start(long start, long radius, long count,
         RGE_Land_Data_Entry* land);

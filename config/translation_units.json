@@ -4221,8 +4221,8 @@
         "00483430": "?generate@RGE_RMM_Database_Controller@@UAEEXZ",
         "00483540": "?init@RGE_RMM_Database_Controller@@UAEEPAVRGE_Map@@PAVRGE_Game_World@@EJE@Z",
         "004835A0": "?de_init@RGE_RMM_Database_Controller@@UAEEXZ",
-        "00484160": "?add_terrain_module@RGE_RMM_Database_Controller@@UAEXXZ",
-        "00484320": "?add_object_module@RGE_RMM_Database_Controller@@UAEXXZ"
+        "00484160": "?add_terrain_module@RGE_RMM_Database_Controller@@MAEXXZ",
+        "00484320": "?add_object_module@RGE_RMM_Database_Controller@@MAEXXZ"
       }
     },
     {

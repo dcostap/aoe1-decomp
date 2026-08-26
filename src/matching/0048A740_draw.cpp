@@ -15,6 +15,7 @@
 // Exact under config/flags/default.rsp: 805/805 bytes, 0.0000% diff.
 
 #include "..\..\include\game_globals.h"
+#include "..\..\include\rpnl_tim_context.h"
 #include <windows.h>
 #include <stdio.h>
 #include <string.h>
@@ -26,83 +27,6 @@ extern "C" __declspec(dllimport) int __stdcall SetBkMode(HDC, int);
 extern "C" __declspec(dllimport) COLORREF __stdcall SetTextColor(HDC, COLORREF);
 extern "C" __declspec(dllimport) BOOL __stdcall TextOutA(HDC, int, int, LPCSTR, int);
 extern "C" __declspec(dllimport) UINT __stdcall GetPaletteEntries(HPALETTE, UINT, UINT, LPPALETTEENTRY);
-
-#ifndef AOE1_RPNL_TIM_CONTEXT_H
-class RGE_Base_Game;
-extern RGE_Base_Game* rge_base_game;
-
-class TDrawArea {
-public:
-    char _gap_00[0x38];
-    HDC DrawDc;
-    void* GetDc(const char* name);
-    void ReleaseDc(const char* name);
-};
-
-class RGE_Game_World {
-public:
-    char _gap_00[0x18];
-    float game_speed;
-    char _gap_1C[0x20];
-    short player_num;
-    char _pad_3E[2];
-    void** players;
-};
-
-class RGE_Base_Game {
-public:
-    char _gap_00[0x48];
-    void* draw_system;
-    char _gap_4C[0x170];
-    int paused;
-    char _gap_1C0[0x234];
-    RGE_Game_World* world;
-    int get_paused();
-    void get_countdown_timer(long player_index, long& result);
-};
-
-class TPanel {
-public:
-    virtual void vf00();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
-    virtual void vf20();
-    virtual void vf24();
-    virtual void draw_setup(int value);
-    virtual void draw_finish();
-    virtual void draw();
-
-    char _gap_04[0x1C];
-    TDrawArea* render_area;
-    char _gap24[0x48];
-    int active;
-    int visible;
-    char _gap74[0x14];
-    void* clip_rgn;
-    RECT render_rect;
-    char _gap9C[0x44];
-    int display_changed_count;
-    char _gapE4[0x10];
-    char* get_string(int id);
-};
-
-class RGE_Panel_Time : public TPanel {
-public:
-    void* font;
-    long game_time;
-    long last_game_time;
-    long old_time;
-    long real_time;
-
-    virtual void draw();
-    virtual long handle_idle();
-};
-#endif
 
 void RGE_Panel_Time::draw()
 {
