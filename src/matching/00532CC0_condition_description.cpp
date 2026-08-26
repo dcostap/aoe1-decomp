@@ -58,6 +58,9 @@
 // - Exact-finish reduction: removing these duplicate local declarations and
 //   using the reviewed shared victory header kept 479 bytes, the 0xCC frame,
 //   and all eight ordered calls. This is the retained source form.
+// - ABI repair: the PDB owner is protected and takes a struct-tagged entry;
+//   the shared description context now emits that decorated identity without
+//   changing the exact body bytes.
 
 #include "../../include/victory_description_context.h"
 

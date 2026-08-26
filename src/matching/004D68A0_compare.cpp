@@ -5,7 +5,7 @@ public:
 };
 
 class TribeConstructionAIModule {
-public:
+protected:
     ConstructionItem* compare(ConstructionItem* a, ConstructionItem* b);
 };
 #endif

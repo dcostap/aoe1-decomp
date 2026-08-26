@@ -28,7 +28,7 @@ public:
     RGE_Master_Static_Object* master_obj;
 };
 
-class RGE_Victory_Entry {
+struct RGE_Victory_Entry {
 public:
     unsigned char command;
     char gap_01[3];
@@ -49,12 +49,17 @@ public:
 class RGE_Victory_Conditions {
 public:
     virtual ~RGE_Victory_Conditions();
+
+protected:
     virtual void handle_point_condition(void* entry);
     virtual void handle_condition(RGE_Victory_Entry* entry);
     virtual char* condition_description(RGE_Victory_Entry* entry);
     virtual void save(int handle);
 
+protected:
     void sub(RGE_Victory_Entry* entry);
+
+public:
     void destroy_all();
 
     RGE_Victory_Entry* victory_list;

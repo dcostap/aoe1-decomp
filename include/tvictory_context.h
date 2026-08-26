@@ -27,7 +27,8 @@ public:
     TRIBE_Victory_Conditions(RGE_Player* player, int handle, long* version_map,
                              unsigned char version_flag);
     TRIBE_Victory_Conditions(RGE_Player* player);
-    virtual ~TRIBE_Victory_Conditions();
+    // BINARY NOTE: the PDB owner is the nonvirtual QAE destructor.
+    ~TRIBE_Victory_Conditions();
     virtual void handle_condition(RGE_Victory_Entry* entry);
 
 protected:

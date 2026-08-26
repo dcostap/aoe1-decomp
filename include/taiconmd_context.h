@@ -211,6 +211,8 @@ public:
     ConstructionItem* placeStructure(BuildItem*, int, PlacementState&, unsigned long);
     ConstructionItem* placeDock(BuildItem*);
     void setBuilt(RGE_Static_Object*, int);
+
+protected:
     ConstructionItem* compare(ConstructionItem*, ConstructionItem*);
 };
 

@@ -6206,7 +6206,7 @@
       "symbols": {
         "0052C8F0": "??0TRIBE_Victory_Conditions@@QAE@PAVRGE_Player@@HPAJE@Z",
         "0052C920": "??0TRIBE_Victory_Conditions@@QAE@PAVRGE_Player@@@Z",
-        "0052C940": "??1TRIBE_Victory_Conditions@@UAE@XZ",
+        "0052C940": "??1TRIBE_Victory_Conditions@@QAE@XZ",
         "0052C950": "?handle_condition@TRIBE_Victory_Conditions@@UAEXPAURGE_Victory_Entry@@@Z",
         "0052C970": "?handle_tech@TRIBE_Victory_Conditions@@IAEXPAURGE_Victory_Entry@@@Z",
         "0052C9B0": "?add_tech@TRIBE_Victory_Conditions@@QAEEEJ@Z"
