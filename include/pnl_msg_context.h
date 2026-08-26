@@ -40,6 +40,7 @@ public:
     tagRECT ClipRect;              // +0x28
     HDC DrawDc;                    // +0x38
     void* DrawSurface;             // +0x3C
+    char size_tail[0xC0];           // +0x40; complete allocation size is 0x100
 
     TDrawArea(char*, int);
     ~TDrawArea();
@@ -265,7 +266,9 @@ public:
     void show_message2(MessageType, char*, unsigned long, unsigned long,
                        void*, long, long, TShape*, int, TShape*, int);
     void remove_message();
+protected:
     int render_to_image_buffer();
+public:
     virtual void set_font(void*, long, long);
 };
 
