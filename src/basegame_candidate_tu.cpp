@@ -1,4 +1,8 @@
 // Candidate basegame.cpp module-local closure.
+//
+// GENERATED NOTE: VC5 emits the original ??_E identity as a weak external to
+// the same-class ??_G body. Strict validation proves the fallback, exact body,
+// boundary, and relocations without an array trigger, alias, or manual body.
 #include <windows.h>
 #include <io.h>
 #include <new.h>
@@ -59,7 +63,7 @@
 #include "matching/0041F400_setup_sounds.cpp"
 #include "verified_logic/0041F560_setup_fonts.cpp"
 #include "matching/0041F730_setup_blank_screen.cpp"
-#include "scratch/0041F800_setup_timings.cpp"
+#include "matching/0041F800_setup_timings.cpp"
 #include "matching/0041F830_stop_sound_system.cpp"
 #include "matching/0041F920_restart_sound_system.cpp"
 #include "matching/0041F9B0_stop_music_system.cpp"
@@ -153,7 +157,7 @@
 #include "matching/004226A0_find_campaigns.cpp"
 #include "matching/004226b0_setScenarioGame.cpp"
 #include "matching/004226c0_setVersion.cpp"
-#include "scratch/004226D0_setScenarioName.cpp"
+#include "matching/004226D0_setScenarioName.cpp"
 #include "matching/00422700_setCampaignGame.cpp"
 #include "matching/00422710_setSavedGame.cpp"
 #include "matching/00422720_setSinglePlayerGame.cpp"
@@ -166,8 +170,8 @@
 #include "matching/004227d0_setColoredChat.cpp"
 #include "matching/004227e0_setNumberPlayers.cpp"
 #include "matching/004227f0_setGameDeveloperMode.cpp"
-#include "scratch/00422800_setPlayerHasCD.cpp"
-#include "scratch/00422820_setPlayerVersion.cpp"
+#include "matching/00422800_setPlayerHasCD.cpp"
+#include "matching/00422820_setPlayerVersion.cpp"
 #include "matching/00422850_setPlayerCDAndVersion.cpp"
 #include "matching/00422870_setDifficulty.cpp"
 #include "matching/00422880_setPlayerTeam.cpp"
@@ -176,7 +180,7 @@
 #include "matching/004228C0_set_map_visible.cpp"
 #include "matching/004228E0_set_map_fog.cpp"
 #include "matching/00422900_turn_world_sound_off.cpp"
-#include "scratch/00422910_campaign_open_scenario.cpp"
+#include "matching/00422910_campaign_open_scenario.cpp"
 #include "matching/00422920_GetChecksum.cpp"
 #include "matching/00422960_GetWorldChecksums.cpp"
 #include "matching/00422A10_GetWorldChecksum.cpp"
@@ -185,12 +189,12 @@
 #include "matching/00422B10_set_screen_size.cpp"
 #include "matching/00422CC0_check_prog_argument.cpp"
 #include "scratch/00422D20_get_scenario_checksum.cpp"
-#include "scratch/00422D60_check_scenario_checksum.cpp"
+#include "matching/00422D60_check_scenario_checksum.cpp"
 #include "matching/00422d80_dump_memory_usage.cpp"
 #include "matching/00422d90_playerID.cpp"
 #include "matching/00422DA0_setPlayerID.cpp"
 #include "matching/00422DC0_reset_countdown_timer.cpp"
-#include "scratch/00422DE0_set_countdown_timer.cpp"
+#include "matching/00422DE0_set_countdown_timer.cpp"
 #include "matching/00422E10_get_countdown_timer.cpp"
 #include "matching/00422e30_play_video.cpp"
 #include "matching/00422e40_close_video.cpp"

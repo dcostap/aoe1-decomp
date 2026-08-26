@@ -8,8 +8,8 @@
 // Build with config/flags/00412F00_UnitAIModule.rsp (/O2 /Oy /GX).
 //
 // This wrapper is a context gate. Exact tuning stops after the complete owner
-// set compiles. The accounting is 80 exact owners and 34 observed normal
-// owners: 24 matching-bank rows, 7 scratch rows, and 3 accepted-drift rows.
+// set compiles. The accounting is 81 exact owners and 33 observed normal
+// owners: 23 matching-bank rows, 7 scratch rows, and 3 accepted-drift rows.
 // The only remaining blocker is generated VA 00413070: VC5 emits no defined
 // ??_GUnitAIModule@@UAEPAXI@Z section from this authentic owner set. Do not
 // force it with a synthetic use or body.

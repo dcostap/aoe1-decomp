@@ -58,10 +58,7 @@ struct tagRECT {
 struct TDrawSystem {
     void* instance;
     void* window;
-    union {
-        void* palette;
-        void* Pal;
-    };
+    void* Pal;
 };
 
 class TDrawArea {
@@ -102,18 +99,12 @@ public:
     long pnl_wid;
     long pnl_hgt;
     char* panelNameValue;
-    union {
-        TDrawArea* render_area;
-        TDrawArea* draw_area;
-    };
+    TDrawArea* render_area;
     tagRECT clip_rect;
     int position_mode;
     int need_redraw;
     TPanel* curr_child;
-    union {
-        TPanel* parent_panel;
-        TPanel* bevel;
-    };
+    TPanel* parent_panel;
     TPanel* left_panel;
     TPanel* top_panel;
     TPanel* right_panel;
@@ -249,8 +240,8 @@ struct Special_Events {
     uchar event;
     uchar gap_13;
     long pop_total;
-    union { long integer_value_1; long interger_value_1; };
-    union { long integer_value_2; long interger_value_2; };
+    long integer_value_1;
+    long integer_value_2;
     long start_x;
     long start_y;
     long start_txt_x1;
@@ -313,10 +304,7 @@ struct RGE_Player {
     char gap_106[2];
     struct RGE_Player_Details* details;
     char gap_10C[0x730];
-    union {
-        TRIBE_History_Info* history;
-        TRIBE_History_Info* history_info;
-    };
+    TRIBE_History_Info* history_info;
 };
 typedef RGE_Player TRIBE_Player;
 
@@ -401,10 +389,7 @@ public:
     long X_line_pos;
     long Y_line_pos;
     long X_line_max_width;
-    union {
-        long Y_line_max_length;
-        int y_line_hgt;
-    };
+    long Y_line_max_length;
     long X_axis_length;
     long Y_axis_length;
     float bar_thickness;

@@ -137,7 +137,7 @@ public:
     char gap_04[4];
     int map_width;
     int map_height;
-    char gap_10[0x8D7C];
+    char gap_10[0x8DB4];
     char** row_data;
     RGE_Unified_Visible_Map* unified_vis_map;
     unsigned char gap_8DCC[4];
@@ -454,7 +454,9 @@ protected:
     virtual void data_load_players_type(short, short, FILE*);
 public:
     virtual void data_load_effects(char*);
+protected:
     virtual void data_load_map(char*, char*, char*, char*, short, short, short, RGE_Sound**, char*);
+public:
     virtual void data_load_random_map(char*, char*, char*, char*);
 protected:
     virtual unsigned char init_player_type(int, short, unsigned char);
@@ -530,8 +532,8 @@ public:
     RGE_Static_Object* object_ptr(int);
     long get_next_object_id();
     long get_next_reusable_object_id();
-    int addObject(RGE_Static_Object*);
-    int removeObject(int);
+    virtual int addObject(RGE_Static_Object*);
+    virtual int removeObject(int);
     unsigned char recycle_object_out_of_game(unsigned char, void*);
     RGE_Static_Object* recycle_object_in_to_game(unsigned char);
     void update_mutual_allies();

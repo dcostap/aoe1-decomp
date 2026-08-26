@@ -12,7 +12,7 @@
 
 typedef unsigned char byte;
 
-struct RGE_Map;
+class RGE_Map;
 struct RGE_Tile;
 
 class RGE_Tile_List {
@@ -110,7 +110,7 @@ public:
     ~RGE_Visible_Map();
 
     void save(int handle);
-    unsigned char get_visible(int x, int y);
+    unsigned char get_visible(int x, int y) const;
     void set_all(unsigned char value);
     void explore_all(void);
     float percentExplored(void) const;
@@ -124,7 +124,7 @@ public:
                            int update_tiles, int p6);
     void unexplore_terrain_sq(int x1, int y1, int x2, int y2,
                               int update_tiles, int p6);
-    int checksum_visible_inputs(void);
+    unsigned long checksum_visible_inputs(void);
     long checksumVisible(void);
     unsigned long checksumUnifiedVisible(void);
 };
@@ -142,7 +142,10 @@ public:
     void load(int handle);
     void save(int handle);
     void reset(void);
+private:
     void Set_Map_Offsets(void);
+
+public:
     void suppress_updates(int);
 };
 

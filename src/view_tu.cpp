@@ -1,8 +1,10 @@
 // Authentic PDB-ordered view.cpp translation unit.
 //
 // This wrapper is the sole compiler-facing owner for every normal view.cpp
-// function.  The compiler-generated deleting destructor is recorded in the
-// candidate proposal and is not included here.
+// function.  The compiler-generated deleting helper at 00533740 is recorded
+// in the candidate proposal.  VC5 emits its 30-byte body under the scalar
+// helper symbol in this TU; the generated-entry report proves byte identity
+// with the original vector-deleting symbol and its direct targets.
 #define RGE_VIEW_SHARED_CONTEXT 1
 #include "../include/view_tu_context.h"
 

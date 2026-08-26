@@ -2,9 +2,10 @@
 #define AOE1_COM_OBJ_CONTEXT_H
 
 // Module-local declaration surface for com_obj.cpp.
-// Virtual names follow the shipped RGE_Static_Object and RGE_Combat_Object
-// vtable listings in orig/aoe1_ghidra_assembly_listing.txt.
-// Included owner files keep their isolated declarations behind a guard.
+// Virtual names and slots follow the shipped RGE_Static_Object,
+// RGE_Combat_Object, RGE_Player, and UnitAIModule listings in
+// orig/aoe1_ghidra_assembly_listing.txt.
+// All com_obj owners include this one declaration surface.
 
 typedef unsigned char uchar;
 typedef unsigned short ushort;
@@ -29,7 +30,7 @@ class RGE_Action_List;
 class RGE_Task;
 class RGE_Sprite;
 class RGE_Sound;
-class RGE_Armor_Weapon_Info;
+struct RGE_Armor_Weapon_Info;
 class RGE_Tile;
 class RGE_Map;
 struct Link;
@@ -59,12 +60,17 @@ extern "C" int __cdecl debug_rand(const char*, int);
 
 class RGE_Game_World {
 public:
-    virtual ~RGE_Game_World();
-    RGE_Static_Object* object(int index);
+    char gap_00[0x28];
     RGE_Map* map;
-    float frame_delta;
-    int player_num;
+    char gap_2C[0x10];
+    short player_num;
+    char gap_3E[2];
     RGE_Player** players;
+    char gap_44[0x10];
+    float** terrains;
+    char gap_58[0x2C];
+    float frame_delta;
+    RGE_Static_Object* object(int index);
     void** objectsValue;
     int numberObjectsValue;
     int maxNumberObjectsValue;
@@ -73,116 +79,145 @@ public:
     int maxNumberNegativeObjectsValue;
     short map_width;
     short map_height;
-    float** terrains;
     int is_player_turn(int);
-    float get_accum_time_delta(int);
+    unsigned long get_accum_time_delta(int);
 };
 
 class RGE_Player {
 public:
     virtual ~RGE_Player();
-    int id;
+    virtual void set_game_status();
+    virtual void do_resign();
+    virtual void changeToHumanPlayer();
+    virtual void changeToComputerPlayer();
+    virtual void aiStatus();
+    virtual void isEnemy();
+    virtual void isAlly();
+    virtual void isNeutral();
+    virtual void isAllNeutral();
+    virtual void setDiplomaticStance();
+    virtual void loadAIInformation();
+    virtual void sendUnitAIOrder();
+    virtual void processAIOrder();
+    virtual void kickAI();
+    virtual void strategicNumber();
+    virtual void sendGameOrder();
+    virtual void sendAddWaypointCommand();
+    virtual void processAddWaypointCommand();
+    virtual void sendPlayCommand(int, int*, int, int, int);
+    virtual void sendPlayCommand(int, int, int);
+    virtual void sendAICommand();
+    virtual void objectCostByType();
+    virtual void trackUnitGather();
+    virtual void make_scenario_obj();
+    virtual void scenario_save();
+    virtual void scenario_load();
+    virtual void scenario_postsave();
+    virtual void scenario_postload();
+    virtual void load();
+    virtual void add_attribute_num();
+    virtual void update();
+    virtual void update_dopplegangers();
+    virtual void save();
+    virtual void save2();
+    virtual void save_info();
+    virtual void random_start();
+    virtual void make_new_object();
+    virtual void analyize_selected_objects();
+    virtual void get_mouse_pointer_action_vars();
+    virtual void command_make_move();
+    virtual void command_make_work();
+    virtual void command_make_do();
+    virtual void command_stop();
+    virtual void command_place_object();
+    virtual void command_add_attribute();
+    virtual void command_give_attribute();
+    virtual void command_formation();
+    virtual void command_stand_ground();
+    virtual void command_create_group();
+    virtual void command_add_to_group();
+    virtual void command_remove_from_group();
+    virtual void command_destroy_group();
+    virtual void command_resign();
+    virtual void command_add_waypoint();
+    virtual void addObject();
+    virtual void removeObject();
+    virtual void logMessage();
+    virtual void notify(int, int, int, long, long, long);
     char gap_04[0x38];
     RGE_Game_World* world;
+    char gap_40[0x0A];
+    short id;
     RGE_Master_Static_Object** master_objects;
-    void** objects;
     int computerPlayer();
-    void notify(int, int, int, long, long, long);
 };
 
 class RGE_Master_Static_Object {
 public:
     virtual ~RGE_Master_Static_Object();
-    // These slots are named by the shipped RGE master vtable.
     virtual void copy_obj(RGE_Master_Static_Object*);
     virtual void modify(float, unsigned char);
     virtual void modify_delta(float, unsigned char);
     virtual void modify_percent(float, unsigned char);
     virtual void save(int);
     virtual RGE_Static_Object* make_new_obj(RGE_Player*, float, float, float);
-    char pad_004[0x22];
+    char gap_04[0x10];
     short object_group;
-    short hp_short;
-    float hp;
-    char pad_028[8];
-    float radius_x;
-    float radius_y;
-    float radius_z;
-    float area_effect_range;
-    int area_effect_level;
-    int area_effect_object_level;
-    float base_hit_chance;
-    int weapon_num;
-    RGE_Armor_Weapon_Info* weapon;
-    int base_armor;
-    int armor_num;
-    RGE_Armor_Weapon_Info* armor;
-    int orig_armor;
-    int orig_weapon;
+    char gap_16[0x10];
+    union { short hp_short; short hp; };
+    char gap_28[8];
+    union { float radius_x; float range_30; };
+    union { float radius_y; float range_34; };
+    char gap_38[0x53];
+    unsigned char area_effect_object_level;
+    char gap_8C[0x70];
     RGE_Sprite* fight_sprite;
-    char pad_06C[0xA0];
+};
+
+class RGE_Master_Animated_Object : public RGE_Master_Static_Object {};
+class RGE_Master_Moving_Object : public RGE_Master_Animated_Object {};
+class RGE_Master_Action_Object : public RGE_Master_Moving_Object {};
+class RGE_Master_Combat_Object : public RGE_Master_Action_Object {
+public:
+    // Binary layout note: com_obj reads the armor table at +0x100..+0x10C
+    // and the combat ranges at +0x114..+0x148.
+    unsigned char base_armor;
+    unsigned char gap_101;
+    short armor_num;
+    RGE_Armor_Weapon_Info* armor;
+    short weapon_num;
+    unsigned char gap_10A[2];
+    RGE_Armor_Weapon_Info* weapon;
+    union { char gap_110[4]; short defense_terrain_bonus; };
     union {
         float weapon_range;
         float field_114;
     };
-    char pad_118[8];
+    float area_effect_range;
+    unsigned char area_effect_level;
+    unsigned char gap_11E[2];
     float speed_of_attack;
-    union {
-        short missile_id;
-        short field_124;
-    };
-    union {
-        short base_hit_chance_combat;
-        unsigned char defense_terrain_bonus;
-    };
+    union { short missile_id; short field_124; };
+    short base_hit_chance;
     unsigned char break_off_combat;
     unsigned char pad_129;
     union {
-        short fire_missile_at_frame;
-        short field_12A;
-        short field_12a;
+        float weapon_offset_x;
+        struct { union { short field_12a; short field_12A; }; short gap_12c; };
     };
-    float weapon_offset_x;
     float weapon_offset_y;
     float weapon_offset_z;
-    union {
-        float minimum_weapon_range;
-        float field_138;
-        float range_30;
-    };
-    short orig_armor_combat;
-    short orig_weapon_combat;
+    union { float minimum_weapon_range; float field_138; };
+    union { char gap_13C[2]; short orig_armor; };
+    short orig_weapon;
     float orig_weapon_range;
     float orig_speed_of_attack;
-    float range_34;
-};
-
-class RGE_Master_Animated_Object : public RGE_Master_Static_Object {
-public:
-    float speed;
-};
-class RGE_Master_Moving_Object : public RGE_Master_Animated_Object {
-public:
-    char pad_D8[0x20];
-};
-class RGE_Master_Action_Object : public RGE_Master_Moving_Object {
-public:
-    char pad_F8[4];
-};
-class RGE_Master_Combat_Object : public RGE_Master_Action_Object {
-public:
-    char pad_FC[0x18];
-    RGE_Sprite* fight_sprite;
     RGE_Sprite* moving_sprite;
     RGE_Sprite* sprite;
 };
 
-class RGE_Armor_Weapon_Info {
+struct RGE_Armor_Weapon_Info {
 public:
-    short armor;
-    short original_armor;
-    short weapon;
-    short original_weapon;
     short type;
     short value;
 };
@@ -192,69 +227,182 @@ public:
     virtual ~RGE_Static_Object();
     virtual void recycle_in_to_game(RGE_Master_Static_Object*, RGE_Player*, float, float, float);
     virtual void recycle_out_of_game();
+    virtual void draw(TDrawArea*, short, short, RGE_Color_Table*);
+    virtual void shadow_draw(TDrawArea*, short, short, uchar);
+    virtual void normal_draw(TDrawArea*, short, short);
+    virtual void draw_front_frame(TDrawArea*, short, short);
+    virtual void draw_back_frame(TDrawArea*, short, short);
+    virtual void draw_frame(TDrawArea*, short, short);
     virtual uchar update();
+    virtual void check_damage_sprites();
+    virtual void rehook();
+    virtual void save(int);
     virtual float teleport(float, float, float);
-    virtual void notify(int, int, int, long, long, long);
+    virtual void new_sprite(RGE_Sprite*);
+    virtual void add_overlay_sprite(RGE_Sprite*, uchar);
+    virtual void remove_overlay_sprite(RGE_Sprite*);
+    virtual void change_ownership(RGE_Player*);
+    virtual void modify(float, uchar);
+    virtual void modify_delta(float, uchar);
+    virtual void modify_percent(float, uchar);
+    virtual void transform(RGE_Master_Static_Object*);
+    virtual void copy_obj(RGE_Master_Static_Object*);
+    virtual void set_object_state(uchar);
+    virtual void remove_visible_resource();
+    virtual void create_doppleganger_when_dying();
+    virtual void destroy_obj();
+    virtual void die_die_die();
+    virtual void damage(int, RGE_Armor_Weapon_Info*, float, RGE_Player*, RGE_Static_Object*);
     virtual float calculateDamage(int, RGE_Armor_Weapon_Info*, float, RGE_Player*, RGE_Static_Object*);
-    virtual int enter(int, int);
+    virtual void rotate(long);
+    virtual uchar can_attack();
+    virtual void set_attribute(short, float);
+    virtual void set_attribute_amount(float, uchar, uchar);
+    virtual int heal(int, int);
+    virtual uchar heal(float);
+    virtual int canRepair();
+    virtual void notify_of_relation(long, uchar);
+    virtual void do_command(RGE_Static_Object*, float, float, float);
+    virtual void move_to(RGE_Static_Object*, float, float, float);
+    virtual void work(RGE_Static_Object*, float, float, float);
+    virtual void stop();
+    virtual void set_attack(RGE_Static_Object*);
+    virtual void play_command_sound();
+    virtual void play_move_sound();
+    virtual void new_angle(float);
+    virtual RGE_Static_Object* spawn_death_obj();
+    virtual RGE_Master_Static_Object* get_command_master(RGE_Static_Object*, float, float, float);
+    virtual void set_being_worked_on(RGE_Action_Object*, short, uchar);
+    virtual void release_being_worked_on(RGE_Static_Object*);
+    virtual uchar is_moving();
+    virtual RGE_Static_Object* get_target_obj();
+    virtual void enter_obj(RGE_Static_Object*);
+    virtual void exit_obj();
+    virtual int explore_terrain(RGE_Player*, uchar, int);
+    virtual void unexplore_terrain(RGE_Player*, uchar, int);
+    virtual LOSTBL* get_los_table();
+    virtual int inAttackRange(RGE_Static_Object*);
+    virtual uchar underAttack();
+    virtual void setUnderAttack(uchar);
+    virtual float calc_attack_modifier(RGE_Static_Object*);
+    virtual float getSpeed();
+    virtual float getAngle();
+    virtual float maximumSpeed();
+    virtual float rateOfFire();
+    virtual float damageCapability(RGE_Static_Object*);
+    virtual float damageCapability();
+    virtual float weaponRange();
+    virtual float minimumWeaponRange();
+    virtual int passableTile(float, float, int);
+    virtual uchar facetToNextWaypoint();
+    virtual int currentTargetID() const;
+    virtual float currentTargetX() const;
+    virtual float currentTargetY() const;
+    virtual float currentTargetZ() const;
+    virtual void setWaitingToMove(uchar);
+    virtual uchar waitingToMove();
+    virtual uchar actionState();
+    virtual uchar keepGatheringWhenObjectIsOut(int);
+    virtual uchar produceWhenKilledBy(int);
+    virtual uchar useSameZoneDropsite();
+    virtual void logDebug(const char*, ...);
+    virtual void notify(int, int, int, long, long, long);
+    virtual int attack(float, float, float, int);
     virtual int attack(int, int);
     virtual int moveTo(float, float, float, float, int);
     virtual int moveTo(int, float, int);
     virtual int moveTo(int, int);
     virtual int moveAwayFrom(int, int);
+    virtual int hunt(int, int);
     virtual int gather(int, int);
+    virtual int convert(int, int);
+    virtual int repair(int, int);
+    virtual int build(int, int);
+    virtual int trade(int, int);
     virtual int explore(int, int, int);
-    virtual int transport(float, float, float, int);
+    virtual int enter(int, int);
     virtual int unload(int, float, float, float);
+    virtual int transport(float, float, float, int);
     virtual int stopAction();
     virtual int pause();
-    virtual int inAttackRange(RGE_Static_Object*);
-    virtual int currentTargetID() const;
-    virtual float currentTargetX() const;
-    virtual float currentTargetY() const;
-    virtual float currentTargetZ() const;
-    virtual float rateOfFire();
-    virtual float weaponRange();
-    virtual float minimumWeaponRange();
-    virtual void release_being_worked_on(RGE_Static_Object*);
-    virtual void damage(int, RGE_Armor_Weapon_Info*, float, RGE_Player*, RGE_Static_Object*);
-    virtual float calc_attack_modifier(RGE_Static_Object*);
-    virtual int canRepair();
-    virtual void enter_obj(RGE_Static_Object*);
-    virtual void save(int);
-    virtual void stop();
-    virtual void copy_obj(RGE_Master_Combat_Object*);
-
+    virtual int canPath(int, float, float*, int, int, int);
+    virtual int canPath(XYZPoint, float, int, float*, int, int, int);
+    virtual int canBidirectionPath(int, int, float, float*, int, int, int);
+    virtual int canPathWithObstructions(int, float, float*, int, int, int, ManagedArray<int>*);
+    virtual int canPathWithAdditionalPassability(XYZPoint, float, int, float*, int, int, int, int, int, int);
+    virtual int findFirstTerrainAlongExceptionPath(int, float*, float*);
+    virtual int canLinePath(int, int, int, int, float, int);
+    virtual int canLinePath(XYPoint*, XYPoint*, float, XYPoint*, int);
+    virtual int firstTileAlongLine(XYPoint*, XYPoint*, XYPoint*, int, int, int);
+    virtual XYZBYTEPoint* userDefinedWaypoint(int);
+    virtual int addUserDefinedWaypoint(XYZBYTEPoint*, int);
+    virtual void removeAllUserDefinedWaypoints(int);
+    virtual void removeUserDefinedWaypoint(int);
+    virtual int numberUserDefinedWaypoints();
+    virtual Path* findAvoidancePath(XYZPoint*, float, int);
+    virtual long get_action_checksum();
+    virtual long get_waypoint_checksum();
+    virtual int setup(int, RGE_Game_World*);
+    virtual int setup(RGE_Master_Static_Object*, RGE_Player*, float, float, float);
+    virtual RGE_Object_List* create_object_list();
+    virtual RGE_Active_Sprite_List* create_sprite_list();
+    // Binary layout note: these aliases are shared offsets, not owner views.
+    union { int id; int object_id; int field_04; int value_4; };
     union {
-        int id;
-        int object_id;
+        RGE_Master_Combat_Object* master_obj;
+        RGE_Master_Combat_Object* master;
+        void* object_info;
+        void* field_08;
+        RGE_Combat_Object_State* state;
     };
-    RGE_Master_Combat_Object* master_obj;
-    RGE_Master_Combat_Object* master;
-    RGE_Player* owner;
-    char gap_10[0x20];
+    union { RGE_Player* owner; RGE_Player* player; void* field_0C; };
+    RGE_Sprite* sprite;
+    char gap_14[8];
+    RGE_Tile* tile;
+    void* inside_obj;
+    void* objects;
+    short screen_x_offset;
+    short screen_y_offset;
+    short shadow_x_offset;
+    short shadow_y_offset;
     float hp;
-    float x;
-    float y;
-    float z;
-    float world_x;
-    float world_y;
-    float world_z;
-    char gap_44[0x44];
+    uchar curr_damage_percent;
+    uchar facet;
+    uchar selected;
+    uchar selected_group;
+    union { float x; float world_x; };
+    union { float y; float world_y; };
+    union { float z; float world_z; };
+    union { float attribute_amount_held; float field_40; };
+    uchar object_state;
+    uchar sleep_flag;
+    uchar dopple_flag;
+    uchar goto_sleep_flag;
+    short attribute_type_held;
+    uchar type;
+    uchar worker_num;
+    float angle;
+    RGE_Player* action_player;
+    char gap_58[0x1C];
+    union { UnitAIModule* aiModule; UnitAIModule* unitAIValue; };
+    char gap_78[0x10C];
+    union { RGE_Action_List* actions; RGE_Action_List* action_list; };
+    char gap_188[0x0C];
     VISIBLE_UNIT_REC* VUR_Ptrs[9];
     unsigned long Unified_Map_Value;
-    RGE_Tile* tile;
-    InnerObj_00431490* ptr;
+    float attack_timer;
+    uchar capture_flag;
 };
 
 class RGE_Animated_Object : public RGE_Static_Object {
 public:
-    float speed;
+    virtual int setup(RGE_Master_Animated_Object*, RGE_Player*, float, float, float);
 };
 class RGE_Moving_Object : public RGE_Animated_Object {
 public:
-    float angle;
-    char gap_0A0[0xE0];
+    virtual void stop_moving();
+    virtual uchar turn_towards(RGE_Static_Object*, float, float);
+    virtual int setup(RGE_Master_Moving_Object*, RGE_Player*, float, float, float);
 };
 
 class RGE_Action_List {
@@ -319,28 +467,20 @@ public:
     virtual ~RGE_Action_Object();
     RGE_Action_Object(RGE_Master_Combat_Object*, RGE_Player*, float, float, float, int);
     RGE_Action_Object(int, RGE_Game_World*, int);
-    virtual void recycle_in_to_game(RGE_Master_Combat_Object*, RGE_Player*, float, float, float);
     virtual int setup(int, RGE_Game_World*);
-    virtual int setup(RGE_Master_Combat_Object*, RGE_Player*, float, float, float);
-    virtual void save(int);
-    virtual void stop();
-    virtual void copy_obj(RGE_Master_Combat_Object*);
-    virtual uchar update();
-    virtual void add_action(RGE_Action*);
+    virtual void work2(RGE_Static_Object*, float, float, float, uchar);
+    virtual void set_task(short);
+    virtual void setTaskByTaskID(int);
     virtual void set_action(RGE_Action*);
     virtual void set_only_action(RGE_Action*);
     virtual void set_end_action(RGE_Action*);
-    virtual void play_move_sound(RGE_Sound*);
-    virtual RGE_Task* make_enter_task(RGE_Static_Object*, int, int, int);
-    virtual RGE_Task* create_gather_task(RGE_Static_Object*, int, int, int);
-    RGE_Player* player;
-    uchar waiting;
-    char gap_181[3];
-    RGE_Action_List* actions;
-    uchar command_flag;
-    char gap_189[3];
-    int lastActionValue;
-    int lastActionStateValue;
+    virtual RGE_Task* getTask(RGE_Static_Object*, float, float, float);
+    int setup(RGE_Master_Action_Object*, RGE_Player*, float, float, float);
+    virtual RGE_Action_List* create_action_list();
+    void add_action(RGE_Action*);
+    void play_move_sound();
+    RGE_Task* make_enter_task(RGE_Static_Object*, int, int, int);
+    RGE_Task* create_gather_task(RGE_Static_Object*, int, int, int);
 };
 
 class RGE_Combat_Object : public RGE_Action_Object {
@@ -348,26 +488,26 @@ public:
     RGE_Combat_Object(RGE_Master_Combat_Object*, RGE_Player*, float, float, float, int);
     RGE_Combat_Object(int, RGE_Game_World*, int);
     virtual ~RGE_Combat_Object();
-    virtual int setup(RGE_Master_Combat_Object*, RGE_Player*, float, float, float);
+protected:
     virtual int setup(int, RGE_Game_World*);
-    virtual void recycle_in_to_game(RGE_Master_Combat_Object*, RGE_Player*, float, float, float);
+public:
+    virtual void recycle_in_to_game(RGE_Master_Static_Object*, RGE_Player*, float, float, float);
     virtual void save(int);
     virtual void stop();
     virtual uchar area_attack(float, float, float, RGE_Combat_Object*, RGE_Static_Object*);
-    virtual uchar attack(RGE_Static_Object*, float, RGE_Combat_Object*, float, float);
-    uchar attack(RGE_Static_Object*, RGE_Combat_Object*);
-    uchar attack(float, float, float, RGE_Combat_Object*);
+    virtual uchar attack(float, float, float, RGE_Combat_Object*);
+    virtual uchar attack(RGE_Static_Object*, RGE_Combat_Object*);
     virtual uchar do_attack(RGE_Static_Object*, RGE_Combat_Object*, float, float, float);
     virtual void damage(int, RGE_Armor_Weapon_Info*, float, RGE_Player*, RGE_Static_Object*);
     virtual uchar can_attack();
-    virtual void get_armor(short*, short*);
-    virtual void get_weapon(short*, short*);
-    virtual void get_weapon_range(int*, int*);
-    virtual void get_speed_of_attack(int*, int*);
+    virtual void get_armor(short&, short&);
+    virtual void get_weapon(short&, short&);
+    virtual void get_weapon_range(float&, float&);
+    virtual void get_speed_of_attack(float&, float&);
     virtual void release_being_worked_on(RGE_Static_Object*);
     virtual void enter_obj(RGE_Static_Object*);
     virtual uchar update();
-    virtual void copy_obj(RGE_Master_Combat_Object*);
+    virtual void copy_obj(RGE_Master_Static_Object*);
     virtual void notify(int, int, int, long, long, long);
     virtual int attack(int, int);
     virtual int attack(float, float, float, int);
@@ -393,11 +533,8 @@ public:
     virtual float weaponRange();
     virtual float minimumWeaponRange();
     virtual float teleport(float, float, float);
-    virtual float base_teleport(float, float, float);
     virtual float calc_attack_modifier(RGE_Static_Object*);
     void reset_attack_timer();
-    void get_armor(short&, short&);
-    void get_weapon(short&, short&);
     void get_weapon_range(short&, short&);
     void calc_attack_modifier();
     virtual void change_ownership(RGE_Player*);
@@ -405,31 +542,11 @@ public:
     virtual void new_sprite(RGE_Sprite*);
     virtual void play_move_sound(RGE_Sound*);
     float distance_to_object(RGE_Static_Object*);
-    void get_target_obj();
     virtual float calculateDamage(int, RGE_Armor_Weapon_Info*, float, RGE_Player*, RGE_Static_Object*);
-    RGE_Action_List* action_list;
-    void* object_info;
-    int field_04;
-    int field_0C;
-    void* field_08;
-    RGE_Action_List* action_list_2;
-    RGE_Action* inside_action;
-    RGE_Static_Object* inside_obj;
-    UnitAIModule* aiModule;
-    int object_state;
-    int area_attack_value;
-    int value_4;
-    RGE_Sprite* sprite;
-    RGE_Sprite* sprite_ptr;
-    InnerObj* field_8;
-    RGE_Master_Static_Object* master_object;
-    int fight_state;
-    float field_40;
-    RGE_Combat_Object_State* state;
-    float attack_timer;
-    uchar capture_flag;
-    uchar type;
-    float area_effect_range;
+protected:
+    virtual int setup(RGE_Master_Combat_Object*, RGE_Player*, float, float, float);
+    float base_teleport(float, float, float);
+    unsigned char attack(RGE_Static_Object*, float, RGE_Combat_Object*, float, float);
 };
 
 class RGE_Action_Enter : public RGE_Action {
@@ -452,6 +569,7 @@ public:
 };
 class RGE_Action_Move_To : public RGE_Action {
 public:
+    int pad_40;
     RGE_Action_Move_To(RGE_Action_Object*, float, float, float, float, RGE_Sprite*);
     RGE_Action_Move_To(void*, RGE_Static_Object*, float, void*);
 };
@@ -493,23 +611,46 @@ public:
 };
 class RGE_Map {
 public:
+    char gap_00[8];
     short width;
+    char gap_0A[2];
     short height;
+    char gap_0E[0x8D7E];
     MapRow** rows;
 };
 class RGE_Tile {
 public:
-    int field_00;
-    int field_04;
-    int field_08;
-    unsigned char terrain_type;
+    short screen_xpos;
+    short screen_ypos;
+    unsigned char tile_type;
+    unsigned char terrain_type : 5;
 };
 class UnitAIModule {
 public:
-    void stop(int);
-    int stopObject(int);
-    int notify(int, int, int, long, long, long);
-    void update(float);
+    virtual ~UnitAIModule();
+    virtual void save(int);
+    virtual void load(int);
+    virtual void owner();
+    virtual void order();
+    virtual int notify(int, int, int, long, long, long);
+    virtual int notifyCommander(void*);
+    virtual int notifyCommander(int, int, int, long, long, long);
+    virtual void search();
+    virtual int importantWhenDead(int);
+    virtual int retryableOrder(int);
+    virtual int actionRequiresLiveTarget(int);
+    virtual int bestUnitToAttack(int, int, float*);
+    virtual int mostDangerousEnemy(float*);
+    virtual int weakestEnemy(float*);
+    virtual int closestAttacker(float*);
+    virtual int closestObject(int, int, int, int, int*);
+    virtual int closestResourceObject(int, int*);
+    virtual int closestUndiscoveredTile(int*, int*, int);
+    virtual void logDebug(char*);
+    virtual int canAttackUnit(RGE_Static_Object*);
+    virtual int canAttackUnitAtNeutrality(int);
+    virtual int stopObject(int);
+    void update(unsigned long);
 };
 class Visible_Unit_Manager {
 public:
@@ -522,7 +663,7 @@ class RGE_Active_Sprite_List {
 };
 class RGE_Combat_Object_State {
 public:
-    int state;
+    char gap_00[0x18];
     int value_18;
 };
 struct VISIBLE_UNIT_REC {

@@ -631,7 +631,9 @@ public:
     void do_command_build(TRIBE_Command_Build*);
     void do_command_build_wall(TRIBE_Command_Build_Wall*);
     void do_command_explore(TRIBE_Command_Explore*);
+private:
     void do_command_game(TRIBE_Command_Game*);
+public:
     void do_command_tribe_create(RGE_Command_Create*);
     void do_command_cancel_build(TRIBE_Command_Cancel_Build*);
     void do_command_attack_ground(TRIBE_Command_Attack_Ground*);

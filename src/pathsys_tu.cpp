@@ -39,13 +39,6 @@
 #undef FacetSkipMask
 #undef ObstructionValueShift
 #undef ObstructionMasks
-#undef VPAD1
-#undef VPAD2
-#undef VPAD4
-#undef VPAD8
-#undef VPAD16
-#undef VPAD32
-
 #include "matching/0046D250_incrementInitialPaths.cpp"
 #include "matching/0046D260_incrementContinuePaths.cpp"
 #include "matching/0046D270_incrementCanPaths.cpp"

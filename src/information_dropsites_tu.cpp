@@ -1,6 +1,7 @@
-#include "../include/information_dropsites_context.h"
-#include "matching/004D9110_fullyExploredZone.cpp"
-#include "matching/004D9160_setFullyExploredZone.cpp"
+#define TAIINFMD_PREFIX_CONTEXT 1
+#include "../include/taiinfmd_prefix_context.h"
+#include "scratch/004D9110_fullyExploredZone.cpp"
+#include "scratch/004D9160_setFullyExploredZone.cpp"
 #include "matching/004D91A0_tileUncovered.cpp"
 #include "matching/004D91F0_setTileExplored.cpp"
 #include "matching/004D9230_ownerOfGameID.cpp"
@@ -24,3 +25,4 @@
 #include "matching/004E4500_loadUnitHistory.cpp"
 #include "matching/004E45A0_unitsThatAreMostBuilt.cpp"
 #include "matching/004E4610_unitsThatAreLeastBuilt.cpp"
+#undef TAIINFMD_PREFIX_CONTEXT

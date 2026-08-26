@@ -29,7 +29,6 @@ class RGE_Unified_Visible_Map;
 class AIPlayBook;
 class TChat;
 class TTaunt;
-class RGE_Game_Options;
 
 class RGE_Timing_Info {
 public:
@@ -92,7 +91,7 @@ public:
     RGE_Scenario_File_Info(char* filename);
     ~RGE_Scenario_File_Info();
 };
-class RGE_Prog_Info {
+struct RGE_Prog_Info {
 public:
     char prog_name[101];
     char prog_version[21];
@@ -450,7 +449,7 @@ public:
     void erase();
     void Restore_Mouse(TDrawArea* area);
 };
-class RGE_Font {
+struct RGE_Font {
 public:
     void* font;
     int font_wid;
@@ -803,29 +802,6 @@ public:
     void restart_sound(TSound_Driver* driver);
 };
 
-class RGE_Game_Options {
-public:
-    float versionValue;
-    unsigned char scenarioGameValue;
-    char scenarioNameValue[128];
-    unsigned char singlePlayerGameValue;
-    unsigned char multiplayerGameValue;
-    unsigned char mapXSizeValue;
-    unsigned char mapYSizeValue;
-    unsigned char mapZSizeValue;
-    unsigned char allowCheatCodesValue;
-    unsigned char mpPathFindingValue;
-    unsigned char cheatNotificationValue;
-    unsigned char fullVisibilityValue;
-    unsigned char fogOfWarValue;
-    unsigned char coloredChatValue;
-    unsigned char numberPlayersValue;
-    unsigned char gameDeveloperModeValue;
-    unsigned char playerCDAndVersionValue[9];
-    unsigned char difficultyValue;
-    unsigned char playerTeamValue[9];
-};
-
 class TPanel {
 public:
     virtual ~TPanel();
@@ -858,9 +834,31 @@ struct VBase {
 };
 class RGE_Base_Game {
 public:
+    struct RGE_Game_Options {
+        float versionValue;
+        unsigned char scenarioGameValue;
+        char scenarioNameValue[128];
+        unsigned char singlePlayerGameValue;
+        unsigned char multiplayerGameValue;
+        unsigned char mapXSizeValue;
+        unsigned char mapYSizeValue;
+        unsigned char mapZSizeValue;
+        unsigned char allowCheatCodesValue;
+        unsigned char mpPathFindingValue;
+        unsigned char cheatNotificationValue;
+        unsigned char fullVisibilityValue;
+        unsigned char fogOfWarValue;
+        unsigned char coloredChatValue;
+        unsigned char numberPlayersValue;
+        unsigned char gameDeveloperModeValue;
+        unsigned char playerCDAndVersionValue[9];
+        unsigned char difficultyValue;
+        unsigned char playerTeamValue[9];
+    };
+
     virtual ~RGE_Base_Game();
     virtual int run();
-    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual long __stdcall wnd_proc(void*, unsigned int, unsigned int, long);
     virtual void set_prog_mode(int);
     virtual void set_game_mode(int, int);
     virtual void set_player(short);
@@ -871,7 +869,7 @@ public:
     virtual char* get_string2(int, long, long, char*, int);
     virtual TPanel* get_view_panel();
     virtual TPanel* get_map_panel();
-    virtual RGE_Scenario_Header* new_scenario_header(void*);
+    virtual RGE_Scenario_Header* new_scenario_header(RGE_Scenario*);
     virtual RGE_Scenario_Header* new_scenario_header(int);
     virtual RGE_Scenario* new_scenario_info(int);
     virtual void notification(int, long, long, long, long);
@@ -900,12 +898,12 @@ protected:
     virtual int setup_shapes();
     virtual int setup_blank_screen();
     virtual void setup_timings();
-public:
+protected:
     virtual void stop_sound_system();
     virtual int restart_sound_system();
     virtual void stop_music_system();
     virtual int restart_music_system();
-    virtual void* create_world();
+    virtual RGE_Game_World* create_world();
     virtual int handle_message(tagMSG*);
     virtual int handle_idle();
     virtual int handle_mouse_move(void*, unsigned int, unsigned int, long);
@@ -939,9 +937,12 @@ public:
     virtual void show_timings();
     virtual void show_comm();
     virtual void show_ai();
+
+protected:
     virtual int setup_map_save_area();
     virtual void set_interface_messages();
 
+public:
     RGE_Game_Info* player_game_info;
     RGE_Scenario_File_Info* scenario_info;
     RGE_Prog_Info* prog_info;
@@ -1125,40 +1126,40 @@ public:
     unsigned char pad_A1E[2];
     TDrawArea* map_save_area;
 
-    RGE_Scenario_Header* new_scenario_header(RGE_Scenario* scenario);
-
     RGE_Base_Game(RGE_Prog_Info* info, int do_setup);
 
     void setVersion(float v);
-    void setScenarioGame(unsigned char v);
+    void setScenarioGame(int v);
     void setCampaignGame(int v);
     void setSavedGame(int v);
     void setSinglePlayerGame(int v);
     void setMultiplayerGame(int v);
-    void setMapSize(char x, char y, char z);
-    void setAllowCheatCodes(unsigned char v);
-    void setCheatNotification(unsigned char v);
-    void setFullVisibility(unsigned char v);
-    void setFogOfWar(unsigned char v);
-    void setColoredChat(unsigned char v);
-    void setGameDeveloperMode(unsigned char v);
-    void setDifficulty(unsigned char v);
+    void setMapSize(int x, int y, int z);
+    void setAllowCheatCodes(int v);
+    void setCheatNotification(int v);
+    void setFullVisibility(int v);
+    void setFogOfWar(int v);
+    void setColoredChat(int v);
+    void setGameDeveloperMode(int v);
+    void setDifficulty(int v);
     void setPlayerCDAndVersion(int player, unsigned char v);
-    void setPlayerHasCD(int player, unsigned char v);
+    void setPlayerHasCD(int player, int v);
     void setPlayerVersion(int player, unsigned char v);
-    void setPlayerTeam(int player, unsigned char v);
+    void setPlayerTeam(int player, int v);
     void setPathFinding(unsigned char v);
     void setMpPathFinding(unsigned char v);
-    void setNumberPlayers(unsigned char v);
-    void setScenarioName(const char* name);
+    void setNumberPlayers(int v);
+    void setScenarioName(char* name);
+protected:
     int check_expiration();
     int check_multi_copies();
+public:
     unsigned char check_prog_argument(char* argument);
     int check_for_cd(int value);
     RGE_Scenario* get_scenario_info(char* name, int from_player_info);
     RGE_Scenario_Header* get_scenario_header(char* name, int from_player_info);
     void write_scenario_header(int file);
-    void get_campaign_info(int* campaign, int* player, int* scenario);
+    void get_campaign_info(long& campaign, long& player, long& scenario);
     unsigned char set_campaign_info(long campaign, long player, long scenario);
     void set_campaign_win();
     void reset_timings();
@@ -1171,30 +1172,34 @@ public:
     unsigned long get_accum_time(int index);
     unsigned long get_max_time(int index);
     unsigned long get_last_max_time(int index);
-    int get_last_world_update_count();
-    int get_last_view_update_count();
-    int get_world_update_count();
-    int get_view_update_count();
+    unsigned long get_last_world_update_count();
+    unsigned long get_last_view_update_count();
+    unsigned long get_world_update_count();
+    unsigned long get_view_update_count();
     void mouse_on();
     unsigned char pathFinding();
     unsigned char mpPathFinding();
     void mouse_off();
 
+protected:
     void* make_font(void* dc, long id, int italic);
     void* make_font(void* dc, char* face, int point_size, int weight, int italic);
+protected:
     int check_paint();
     void clear_window();
+public:
     void close();
     int create_dialog(TPanel** out, TPanel* panel);
-    void delete_dialog(VBase** panel);
+    void delete_dialog(TPanel** panel);
     int get_paused();
-    void* get_font(int index);
-    void* get_shape(int index);
-    void* get_sound(int index);
+    RGE_Player* get_player();
+    RGE_Font* get_font(int index);
+    TShape* get_shape(int index);
+    TDigital* get_sound(int index);
     void request_pause();
     void set_paused(int paused, int non_user_pause);
-    void get_mouse_info(unsigned int flags, unsigned long lparam, tagPOINT* point,
-                        int* lbtn, int* rbtn, int* mbtn, int* wheel);
+    void get_mouse_info(unsigned int flags, long lparam, tagPOINT& point,
+                        int& lbtn, int& rbtn, int& mbtn, int& wheel);
     void get_mouse_info(unsigned int flags, unsigned long lparam, long* y, long* x,
                         int* lbtn, int* rbtn, int* ctrl);
     void get_mouse_pos(tagPOINT& point);
@@ -1209,49 +1214,51 @@ public:
     int deactivate_dispatch();
     int endMethod();
     int base_handle_palette_changed(void* p1, unsigned int p2, unsigned int p3, long p4);
-    int scenarioGame();
-    float version();
-    int randomGame();
-    int campaignGame();
-    int savedGame();
+    int scenarioGame() const;
+    float version() const;
+    int randomGame() const;
+    int campaignGame() const;
+    int savedGame() const;
     char* scenarioName();
-    int singlePlayerGame();
-    int multiplayerGame();
-    int mapXSize();
-    int mapYSize();
-    int mapZSize();
-    int allowCheatCodes();
-    int cheatNotification();
-    int fullVisibility();
-    int fogOfWar();
-    int coloredChat();
-    int gameDeveloperMode();
+    int singlePlayerGame() const;
+    int multiplayerGame() const;
+    int mapXSize() const;
+    int mapYSize() const;
+    int mapZSize() const;
+    int allowCheatCodes() const;
+    int cheatNotification() const;
+    int fullVisibility() const;
+    int fogOfWar() const;
+    int coloredChat() const;
+    int gameDeveloperMode() const;
     int playerHasCD(int player);
     int playerID(int player);
-    int playerVersion(int player);
+    unsigned char playerVersion(int player);
     char* playerVersionString(int player);
     unsigned char playerCDAndVersion(int player);
     int difficulty();
-    int numberPlayers();
+    int numberPlayers() const;
     int playerTeam(int player);
     void find_campaigns();
-    void set_map_visible(int value);
-    void set_map_fog(int value);
+    void set_map_visible(unsigned char value);
+    void set_map_fog(unsigned char value);
     void turn_world_sound_off();
-    void campaign_open_scenario();
+    int campaign_open_scenario();
     long GetChecksum(long value);
     unsigned char GetWorldChecksums(long& a, long& b, long& c);
     long GetWorldChecksum();
     void disable_input();
     void enable_input();
     void set_screen_size(long width, long height);
-    unsigned char check_scenario_checksum(const char* filename, unsigned long expected);
+    unsigned char check_scenario_checksum(char* filename, long expected);
+    long get_scenario_checksum(char* filename);
     unsigned long get_checksum(const char* filename);
-    void dump_memory_usage(int value);
+    void dump_memory_usage(char* value);
     void setPlayerID(int player, int value);
-    void reset_countdown_timer(int player);
-    void get_countdown_timer(int player, int* output);
-    int play_video(int value);
+    void reset_countdown_timer(long player);
+    void set_countdown_timer(long player, long value);
+    void get_countdown_timer(long player, long& output);
+    int play_video(char* value);
     void close_video();
     void handle_video_notify();
     int play_sound(int value);

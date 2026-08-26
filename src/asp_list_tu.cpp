@@ -5,9 +5,12 @@
 // RGE_Active_Sprite (0x14 bytes).  Focused owner files keep their narrow
 // declarations when compiled alone.
 //
-// Evidence-backed flags: /nologo /c /O2 /Oy from config/flags/default.rsp.
+// Evidence-backed flags: /nologo /c /O2 /Oy /GX from config/flags/default_gx.rsp.
 // No manual vptr writes, fake slots, assembly, volatility, register steering,
-// synthetic padding, or generated-destructor mismatch are used.
+// synthetic padding, or generated-destructor source is used.
+// BINARY NOTE: FPO names 0041A660 as vector-deleting. Natural VC5 emits the
+// ??_E identity as a weak external to the byte-identical ??_G body. Strict
+// validation proves that compiler-generated fallback without array-new use.
 
 #define ASP_LIST_SHARED_CONTEXT 1
 
@@ -106,9 +109,14 @@ public:
     virtual unsigned char frame_passed(RGE_Sprite* param_1, short param_2);
     virtual unsigned char looped(RGE_Sprite* param_1);
     virtual short get_facetindex(RGE_Sprite* param_1, short param_2);
+
+// BINARY NOTE: FPO names load_node as the protected virtual owner (MAE), not
+// the public virtual form (UAE) used by its focused standalone declaration.
+protected:
     virtual unsigned char load_node(int param_1, unsigned char param_2,
                                     RGE_Sprite** param_3);
 
+public:
     RGE_Active_Sprite_Node* list;
     RGE_Static_Object* owner;
 

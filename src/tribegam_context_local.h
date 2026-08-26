@@ -9,9 +9,12 @@
 // anchors, and the repaired setup_palette/setup_sounds owners. This header is
 // only for the grouped module. It is not a complete game class declaration.
 
-class RGE_Prog_Info;
+struct RGE_Prog_Info;
 class RGE_Game_Info;
 class RGE_Game_World;
+struct RGE_Player_Info;
+struct XYZBYTEPoint;
+class RGE_Sound;
 class RGE_Static_Object;
 class RGE_Player;
 class RGE_Object_List;
@@ -32,7 +35,7 @@ class TScreenPanel;
 class TSound_Driver;
 class TMusic_System;
 class TDigital;
-class MouseClickInfo;
+struct MouseClickInfo;
 class RGE_Visible_Map;
 
 class TSound_Driver {
@@ -277,7 +280,9 @@ public:
     void set_text(int value);
 };
 
-class RGE_Prog_Info {
+// BINARY NOTE: the constructor FPO symbol uses the struct spelling for this
+// pointer parameter, so keep the tag kind in the grouped module context.
+struct RGE_Prog_Info {
 public:
     char gap_00[0x410];
     void* instance;
@@ -321,7 +326,72 @@ public:
 
 class RGE_Player {
 public:
-    char gap_00[0x80];
+    virtual ~RGE_Player();
+    virtual void set_game_status(unsigned char value);
+    virtual void do_resign(int value);
+    virtual void changeToHumanPlayer();
+    virtual void changeToComputerPlayer();
+    virtual char* aiStatus(int value);
+    virtual int isEnemy(int player);
+    virtual int isAlly(int player);
+    virtual int isNeutral(int player);
+    virtual int isAllNeutral();
+    virtual void setDiplomaticStance(int player, int stance);
+    virtual void loadAIInformation(char* ai1, char* ai2, char* ai3,
+                                   int value1, int value2);
+    virtual void sendUnitAIOrder(int a, int b, int c, int d, int e,
+                                 float f, float g, float h, float i,
+                                 int j, int k, int l);
+    virtual void processAIOrder(int a, int b, int c, int d, int e,
+                                float f, float g, float h, float i,
+                                int j, int k, int l);
+    virtual void kickAI(int value);
+    virtual int strategicNumber(int value);
+    virtual void sendGameOrder(RGE_Static_Object* first,
+                               RGE_Static_Object* second, float x, float y);
+    virtual void sendAddWaypointCommand(int value, XYZBYTEPoint* point,
+                                        int count);
+    virtual void processAddWaypointCommand(int value, XYZBYTEPoint* point,
+                                           int count);
+    virtual void sendPlayCommand(int value, int* data, int a, int b, int c);
+    virtual void sendPlayCommand(int value, int a, int b);
+    virtual int sendAICommand(int a, int b, int c, int d, int e);
+    virtual int objectCostByType(int value);
+    virtual void trackUnitGather(int a, int b, int c);
+    virtual RGE_Static_Object* make_scenario_obj(float x, float y, float z,
+                                                  short type,
+                                                  unsigned char active,
+                                                  float value);
+    virtual void scenario_save(int file);
+    virtual void scenario_load(int file, long* data, float value);
+    virtual void scenario_postsave(int file);
+    virtual void scenario_postload(int file, long* data, float value);
+    virtual void load(int file);
+    virtual void add_attribute_num(short attr, float value,
+                                   unsigned char active);
+    virtual void update();
+    virtual void update_dopplegangers();
+    virtual void save(int file);
+    virtual void save2(int file);
+    virtual void save_info(int file);
+    virtual void random_start();
+    virtual RGE_Static_Object* make_new_object(long id, float x, float y,
+                                                float z, int type);
+    virtual void analyize_selected_objects();
+    virtual int get_mouse_pointer_action_vars(int value, int* first,
+                                              int* second);
+    virtual unsigned char command_make_move(RGE_Static_Object* object,
+                                            float x, float y);
+    virtual unsigned char command_make_work(RGE_Static_Object* object,
+                                            float x, float y);
+    virtual unsigned char command_make_do(RGE_Static_Object* object,
+                                          float x, float y);
+    virtual unsigned char command_stop();
+    virtual unsigned char command_place_object(short type, float x, float y,
+                                               float z);
+    virtual void set_attribute(short attr, float value);
+
+    char gap_00[0x7C];
     unsigned char game_status;
     char gap_81[0x3];
     int computerPlayer() const;
@@ -342,7 +412,6 @@ public:
     unsigned char full_visibility;
     unsigned char fog_of_war;
     RGE_Visible_Map* visible;
-    void set_attribute(short attr, float value);
     void unselect_object();
     void loss_if_game_on();
     void set_view_loc(float x, float y);
@@ -379,53 +448,77 @@ public:
 // The virtual slot at +0xB8 is proved by quit_game's del_game_info call.
 class RGE_Game_World {
 public:
-    virtual void vf00();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
-    virtual void vf20();
-    virtual void vf24();
-    virtual void vf28();
-    virtual void vf2C();
-    virtual void vf30();
-    virtual void vf34();
-    virtual void vf38();
-    virtual void vf3C();
-    virtual void vf40();
-    virtual void vf44();
-    virtual void vf48();
-    virtual void vf4C();
-    virtual void vf50();
-    virtual void vf54();
-    virtual void vf58();
-    virtual void vf5C();
-    virtual void vf60();
-    virtual void vf64();
-    virtual void vf68();
-    virtual void vf6C();
-    virtual void vf70();
-    virtual void vf74();
-    virtual void vf78();
-    virtual void vf7C();
-    virtual void vf80();
-    virtual void vf84();
-    virtual void vf88();
-    virtual void vf8C();
-    virtual void vf90();
-    virtual void vf94();
-    virtual void vf98();
-    virtual void vf9C();
+    virtual unsigned char data_load_world(FILE* file);
+    virtual unsigned char data_load_terrain_tables(char* name);
+    virtual unsigned char data_load_players(char* name);
+    virtual unsigned char data_load_objects(char* name);
+    virtual unsigned char data_load_sounds(char* name);
+    virtual unsigned char data_load_color_tables(char* name);
+    virtual unsigned char data_load_sprites(char* name);
+    virtual void data_load_players_type(short player, short type, FILE* file);
+    virtual void data_load_effects(char* name);
+    virtual void data_load_map(char* map, char* terrain, char* effect,
+                               char* random, short width, short height,
+                               short tile_set, RGE_Sound** sounds,
+                               char* name);
+    virtual void data_load_random_map(char* map, char* terrain,
+                                      char* effect, char* random);
+    virtual unsigned char init_player_type(int player, short type,
+                                           unsigned char active);
+    virtual unsigned char init_player(int player);
+    virtual void load_player(int player, unsigned char type, short id);
+    virtual void color_table_init(int table);
+    virtual void terrain_tables_init(int table);
+    virtual void init_sounds(int count, TSound_Driver* driver);
+    virtual void init_sprites(int count);
+    virtual void map_init(int count, TSound_Driver* driver);
+    virtual void effects_init(int count);
+    virtual void master_player_init(int count);
+    virtual void command_init(int count, TCommunications_Handler* comm);
+    virtual void world_init(int count, TSound_Driver* driver,
+                            TCommunications_Handler* comm);
+    virtual void setup_gaia();
+    virtual void setup_players(RGE_Player_Info& info);
+    virtual unsigned char new_random_game(RGE_Player_Info& info);
+    virtual void save(int file);
+    virtual void scenario_make_player(short player, unsigned char active,
+                                      unsigned char type, unsigned char civ,
+                                      char* name);
+    virtual void scenario_make_map(int map);
+    virtual unsigned char load_scenario(char* name, RGE_Player_Info* info);
+    virtual unsigned char load_scenario(RGE_Player_Info& info);
+    virtual void load_scenario1(int player, RGE_Player_Info& info);
+    virtual void load_scenario2(int player, RGE_Player_Info& info);
+    virtual void load_scenario3(int player, RGE_Player_Info& info);
+    virtual void load_scenario4(int player, RGE_Player_Info& info);
+    virtual void load_scenario5(int player, RGE_Player_Info& info);
+    virtual void load_scenario6(int player, RGE_Player_Info& info);
+    virtual void load_scenario7(int player, RGE_Player_Info& info);
+    virtual void load_scenario8(int player, RGE_Player_Info& info);
+    virtual void logStatus(FILE* file, int verbose);
     virtual ~RGE_Game_World();
-    virtual void vfA4();
-    virtual void vfA8();
-    virtual void vfAC();
-    virtual void vfB0();
-    virtual void vfB4();
+    virtual void setup_player_colors();
+    virtual void setup_player_colors(RGE_Player_Info* info);
+    virtual unsigned char data_load(char* first, char* second);
+    virtual unsigned char init(char* name, TSound_Driver* driver,
+                               TCommunications_Handler* comm);
+    virtual void turn_sound_off();
     virtual void del_game_info();
+    virtual unsigned char update();
+    virtual unsigned char get_game_state();
+    virtual unsigned char check_game_state();
+    virtual unsigned char load_world(int file);
+    virtual unsigned char load_game(char* name);
+    virtual unsigned char new_game(RGE_Player_Info& info, int flags);
+    virtual unsigned char new_scenario(RGE_Player_Info& info, int flags);
+    virtual unsigned char save_game(char* name);
+    virtual void base_save(char* name);
+    virtual void base_save(int file);
+    virtual unsigned char save_scenario(char* name);
+    virtual RGE_Scenario* get_scenario_info(char* name);
+    virtual void pause(unsigned char value);
+    virtual void scenario_init(int file, RGE_Game_World* world);
+    virtual void scenario_init(RGE_Game_World* world);
 
     union {
         char gap_04[0x58];
@@ -451,28 +544,12 @@ public:
     void update_mutual_allies();
     void destroyGameData();
     void destroyGameData(int flag);
-    unsigned char data_load_world(void* file);
-    unsigned char data_load_terrain_tables(char* name);
-    unsigned char data_load_players(char* name);
-    unsigned char data_load_objects(char* name);
-    unsigned char data_load_sounds(char* name);
-    unsigned char data_load_color_tables(char* name);
-    unsigned char data_load_sprites(char* name);
-    unsigned char load_game(char* name);
     char load_db_files(char* file1, char* file2);
     char loadGameData(char* file, void* sound, void* comm);
-    unsigned char save_game(char* name);
-    unsigned char save_scenario(char* name);
-    void turn_sound_off();
-    unsigned char update();
-    int get_game_state();
-    unsigned char v52(char* name, int player);
 };
 
 class TRIBE_World : public RGE_Game_World {
 public:
-    short player_count;
-    RGE_Player** players;
     TRIBE_Command* command;
     AIPlayBook* playbook;
     void* tech;
@@ -491,7 +568,6 @@ public:
     TRIBE_World();
     void send_zone_score_info();
     unsigned char save_game(char* name);
-    void v46();
     long get_achievement(unsigned char param_1, char** param_2);
     RGE_Static_Object* object(int id);
     void send_cheat(short code);
@@ -499,22 +575,23 @@ public:
 
 class RGE_Scenario {
 public:
+    virtual RGE_Static_Object* get_object_pointer(int id);
+    virtual ~RGE_Scenario();
+    virtual void rehook();
+    virtual void save(int file);
     char pad_0[0x198C];
     TPicture* picture;
     char* Get_description();
-    RGE_Static_Object* get_object_pointer(int id);
     int Get_player_Active(int player);
     int Get_player_Civ(int player);
     int Get_player_Type(int player);
     char* GetPlayerName(int player);
     void Set_player_Active(int player, int value);
-    void release(int flags);
-    void destroy(int mode);
 };
 
 class T_Scenario : public RGE_Scenario {
 public:
-    char pad_0[0x514C - 0x1990];
+    char pad_0[0x514C - 0x1994];
     T_Scenario(int param_1, RGE_Game_World* zero);
 };
 
@@ -547,8 +624,8 @@ public:
 
     // The first four slots are proved by quit_game's set_prog_mode call.
     virtual int run();
-    virtual long wnd_proc(void* window, unsigned int message,
-                          unsigned int wparam, long lparam);
+    virtual long __stdcall wnd_proc(void* window, unsigned int message,
+                                    unsigned int wparam, long lparam);
     virtual void set_prog_mode(int mode);
     virtual void set_game_mode(int mode, int sub_mode);
     virtual void set_player(short player);
@@ -607,9 +684,20 @@ protected:
                                          unsigned int wparam, long lparam);
     virtual int handle_activate(void* window, unsigned int message,
                                 unsigned int wparam, long lparam);
+    // Original FPO marks the timing, AI, and user-command base entries as
+    // protected virtual members. These declarations pair with the public
+    // TRIBE_Game overrides below and preserve their decorated symbols.
+    virtual void calc_timing_text();
+    virtual void show_timings();
+    virtual void show_comm();
+    virtual void show_ai();
+    virtual int action_user_command(unsigned long param_1,
+                                    unsigned long param_2);
 
-    RGE_Game_Info* game_info;
-    RGE_Game_Info* player_game_info;
+    union {
+        RGE_Game_Info* game_info;
+        RGE_Game_Info* player_game_info;
+    };
     void* scenario_info;
     RGE_Prog_Info* prog_info;
     void* prog_window;
@@ -644,7 +732,7 @@ protected:
     short sound_num;
     unsigned char gap_6A[0x2];
     TDigital** sounds;
-    char gap_70[0x11C];
+    char gap_70[0x108];
     TCommunications_Handler* comm_handler;
     char gap_190[0x1C];
     TRegistry* registry;
@@ -750,7 +838,13 @@ class TRIBE_Game : public RGE_Base_Game {
 public:
     int game_state;
     int game_substate;
+    // BINARY NOTE: FPO records use these nested enum types in return and
+    // parameter symbols. Their storage remains the period four-byte ABI.
     enum MapSize { Tiny = 0, Small, Medium, Large, Huge, Humongous };
+    enum MapType { MapType_Unknown = 0 };
+    enum VictoryType { VictoryType_Unknown = 0 };
+    enum ResourceLevel { ResourceLevel_Unknown = 0 };
+    enum Age { Age_Unknown = 0 };
     struct TRIBE_Game_Options {
         int mapSizeValue;
         int mapTypeValue;
@@ -826,13 +920,16 @@ public:
     int inHandleIdle;
 
     virtual ~TRIBE_Game();
-    virtual long wnd_proc(void* window, unsigned int message,
-                          unsigned int wparam, long lparam);
+    virtual long __stdcall wnd_proc(void* window, unsigned int message,
+                                    unsigned int wparam, long lparam);
     TRIBE_Game(RGE_Prog_Info* prog_info, int setup_game);
     virtual int setup_cmd_options();
 
     void close_game_screens(int destroy_game_screen);
-    int setup();
+protected:
+    virtual int setup();
+
+public:
     void setup(int param);
 
 protected:
@@ -875,32 +972,41 @@ public:
     int load_game_data();
     int save_game(char* name);
     int save_scenario(char* name);
-    void calc_timing_text();
+    // FPO names these three TRIBE_Game overrides as public virtual members
+    // (UAEXXZ). Keep the virtual surface in the grouped TU, not only in the
+    // standalone owner stubs.
+    virtual void calc_timing_text();
     void show_timings();
     void show_comm();
-    void show_ai();
+    virtual void show_ai();
     int start_game(int mode);
     int test_scenario(char* name);
     int start_scenario(char* name);
     int load_game(char* name);
     RGE_Game_World* createGameWorld();
     void do_game_over();
+protected:
     int create_game(int mode);
+
+public:
     int create_game_screen();
     int processCheatCode(char* code);
+protected:
     void let_game_begin();
+
+public:
     int start_scenario_editor(char* scenario_filename, int mode);
     void send_game_options();
     void receive_game_options();
     void set_tribe_options(void* options);
     void get_tribe_options(void* options);
     int mapSize();
-    int mapSize() const;
+    MapSize mapSize() const;
     void setMapSize(int value);
     void setMapSize(MapSize value);
     int mapType();
-    int mapType() const;
-    void setMapType(int value);
+    MapType mapType() const;
+    void setMapType(MapType value);
     int animals();
     int animals() const;
     void setAnimals(int value);
@@ -908,10 +1014,10 @@ public:
     int predators() const;
     void setPredators(int value);
     int victoryType();
-    int victoryType() const;
+    VictoryType victoryType() const;
     int victoryAmount();
     int victoryAmount() const;
-    void setVictoryType(int type, int amount);
+    void setVictoryType(VictoryType type, int amount);
     int civilization(int player);
     int civilization(int player) const;
     int playerTeam(int player);
@@ -939,12 +1045,12 @@ public:
     int fullTechTree();
     int fullTechTree() const;
     void setFullTechTree(int value);
-    int resourceLevel();
+    ResourceLevel resourceLevel();
     int resourceLevel() const;
-    void setResourceLevel(int value);
-    int startingAge();
+    void setResourceLevel(ResourceLevel value);
+    Age startingAge();
     int startingAge() const;
-    void setStartingAge(int value);
+    void setStartingAge(Age value);
     int startingUnits();
     int startingUnits() const;
     void setStartingUnits(int value);
@@ -956,15 +1062,15 @@ public:
     void setPopLimit(unsigned char value);
     void setQuickStartGame(unsigned char value);
     int randomStartValue();
-    int randomStartValue() const;
     void setRandomStartValue(int value);
     void resetRandomComputerName();
-    void SetClickTables(void* right, int right_count, void* left, int left_count);
+    void SetClickTables(MouseClickInfo* right, int right_count,
+                        MouseClickInfo* left, int left_count);
     int action_close(void* window, unsigned int message, unsigned int wparam, long lparam);
-    int action_close();
-    int action_key_down(unsigned int key, int param_2, int param_3,
-                        int param_4, int param_5);
-    void set_interface_messages();
+    virtual int action_close();
+    virtual int action_key_down(unsigned long key, int param_2, int param_3,
+                                int param_4, int param_5);
+    virtual void set_interface_messages();
     void disconnect_multiplayer_game();
     void turn_world_sound_off();
     int handle_idle();
@@ -972,7 +1078,8 @@ public:
                                  unsigned int wparam, long lparam);
     int handle_activate(void* window, unsigned int message,
                         unsigned int wparam, long lparam);
-    int action_user_command(unsigned long param_1, unsigned long param_2);
+    virtual int action_user_command(unsigned long param_1,
+                                    unsigned long param_2);
     void add_notification_loc(long x, long y);
     void notification(int type, long a, long b, long c, long d);
     void play_sound(int sound_id);
@@ -993,8 +1100,6 @@ public:
     unsigned char quickStartGame() const;
     int randomComputerName(int civ);
     int allowCheatCodes();
-    void vf10(int a, int b);
-    void vf14(int a);
     int processCheatCode(int player_id, char* cheat);
     void set_tribe_options(TRIBE_Game_Options* options);
     void get_tribe_options(TRIBE_Game_Options* options);

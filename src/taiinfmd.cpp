@@ -2,6 +2,9 @@
 // All 123 normal owners are included. Exact and observed status is recorded in the proposal.
 
 #define TAIINFMD_PREFIX_CONTEXT 1
+// BINARY NOTE: The original module decorates these parameter types as classes.
+class BuildItem;
+class ConstructionItem;
 #include "../include/taiinfmd_prefix_context.h"
 
 // 004D6AD0: taiinfmd.cpp:103-103
@@ -38,10 +41,10 @@
 #include "scratch/004D8D20_closestUnexploredTile.cpp"
 
 // 004D9110: taiinfmd.cpp:1121-1133
-#include "matching/004D9110_fullyExploredZone.cpp"
+#include "scratch/004D9110_fullyExploredZone.cpp"
 
 // 004D9160: taiinfmd.cpp:1138-1144
-#include "matching/004D9160_setFullyExploredZone.cpp"
+#include "scratch/004D9160_setFullyExploredZone.cpp"
 
 // 004D91A0: taiinfmd.cpp:1149-1166
 #include "matching/004D91A0_tileUncovered.cpp"
@@ -170,7 +173,11 @@
 #include "matching/004DE4A0_defendPriority.cpp"
 
 // 004DE600: taiinfmd.cpp:4612-4721
+// BINARY NOTE: VC5 emits the natural ManagedArray COMDATs in this call band
+// only with inline expansion disabled. No synthetic call or instantiation is used.
+#pragma inline_depth(0)
 #include "accepted_drift/004DE600_checkDefend.cpp"
+#pragma inline_depth()
 
 // 004DEA70: taiinfmd.cpp:4726-4731
 #include "matching/004DEA70_numberItemsToDefend.cpp"

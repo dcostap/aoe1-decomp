@@ -1,20 +1,21 @@
 // Authentic PDB-ordered owner wrapper for com_obj.cpp.
 //
 // The source module has 50 normal owners in PDB order.  One compiler-generated
-// scalar deleting destructor at 0042F9C0 is listed in the proposal only.
+// vector deleting destructor at 0042F9C0 is listed in the proposal only.
+// VC5 defines the scalar deleting destructor here and leaves the vector form
+// as a weak external. Strict validation proves the same-class body.
 // Matching owners are included from src/matching.  Scratch owners remain
 // observed.  Accepted-drift owners remain observed and are not promoted.
 //
 // The shared header is the canonical declaration surface for this module.
-// Included owner files keep their isolated declarations behind
-// RGE_COM_OBJ_SHARED_CONTEXT.  No grouped-only body fork, namespace alias,
-// inline assembly, dummy owner, or metric-only wrapper is used.
+// Every owner includes that same declaration surface. No grouped-only body
+// fork, namespace alias, inline assembly, dummy owner, or metric-only wrapper
+// is used.
 // Phase 2 proposal classification: one exact owner, 49 observed owners, and
 // one generated destructor.  Candidate validation passes source policy.  The
 // four scratch owners that match remain observed because scratch files cannot
 // be exact owners.
 
-#define RGE_COM_OBJ_SHARED_CONTEXT 1
 #include "com_obj_phase2_context.h"
 
 #include "matching/0042F930_RGE_Combat_Object.cpp"
@@ -67,5 +68,3 @@
 #include "matching/00431640_currentTargetY.cpp"
 #include "matching/00431670_currentTargetZ.cpp"
 #include "scratch/004316A0_teleport.cpp"
-
-#undef RGE_COM_OBJ_SHARED_CONTEXT

@@ -91,6 +91,8 @@ int taiuaimd_object_in_group(RGE_Static_Object* object);
 class TribeElephantUnitAIModule : public UnitAIModule {
 public:
     TribeElephantUnitAIModule(RGE_Static_Object* object, int parameter);
+
+protected:
     virtual int processNotify(NotifyEvent*, unsigned long);
     virtual int processIdle(int);
     virtual int closestAttacker(float*);
@@ -110,6 +112,8 @@ class TribeLionUnitAIModule : public UnitAIModule {
 public:
     TribeLionUnitAIModule(RGE_Static_Object* object, int parameter);
     virtual int canAttackUnitAtNeutrality(int);
+
+protected:
     virtual int processNotify(NotifyEvent*, unsigned long);
     virtual int processIdle(int);
     virtual int attackObject(int, int);
@@ -123,13 +127,16 @@ public:
 class TribeRangedUnitAIModule : public UnitAIModule {
 public:
     TribeRangedUnitAIModule(RGE_Static_Object* object, int parameter);
-    virtual int canAttackUnitAtNeutrality(int);
+
+protected:
     virtual int processNotify(NotifyEvent*, unsigned long);
 };
 
 class TribeRangedUnitAIModule2 : public UnitAIModule {
 public:
     TribeRangedUnitAIModule2(RGE_Static_Object* object, int parameter);
+
+protected:
     virtual int processNotify(NotifyEvent*, unsigned long);
     virtual int baseProcessNotify(NotifyEvent*, unsigned long);
     RGE_Static_Object* obj;
@@ -159,9 +166,15 @@ public:
     virtual int canAttackUnitAtNeutrality(int);
     virtual int retryableOrder(int);
     virtual int convertToLOSResourceType(int);
+
+protected:
     virtual int processNotify(NotifyEvent*, unsigned long);
     virtual int processIdle(int);
+
+protected:
     virtual int processMisc();
+
+public:
     virtual RGE_Static_Object* lookupObject(int);
     virtual void askForHelp(int);
     virtual int addToWaypointQueue(int, int);
@@ -177,11 +190,15 @@ public:
     virtual int retryableOrder(int);
     virtual int canConvert(int);
     virtual int canAttackUnit(RGE_Static_Object*);
+
+protected:
     virtual int bestUnitToHeal(int, float*);
     virtual int bestUnitToConvert(float*);
     virtual int processNotify(NotifyEvent*, unsigned long);
     virtual int processIdle(int);
     virtual int processMisc();
+
+public:
     virtual RGE_Static_Object* lookupObject(int);
     RGE_Static_Object* unit;
     void* some_ptr;
@@ -203,8 +220,12 @@ public:
 class TribeTradeShipUnitAIModule : public UnitAIModule {
 public:
     TribeTradeShipUnitAIModule(RGE_Static_Object* object, int parameter);
+
+protected:
     virtual int processNotify(NotifyEvent*, unsigned long);
     virtual int processIdle(int);
+
+public:
     int* helpList;
     int helpCount;
     int helpDesired;
@@ -218,8 +239,12 @@ public:
 class TribeTransportShipUnitAIModule : public UnitAIModule {
 public:
     TribeTransportShipUnitAIModule(RGE_Static_Object* object, int parameter);
+
+protected:
     virtual int processNotify(NotifyEvent*, unsigned long);
     virtual int processIdle(int);
+
+public:
     RGE_Static_Object* obj;
     int currentTarget;
     int currentOrder;
@@ -236,8 +261,12 @@ public:
     TribeFishingShipUnitAIModule(RGE_Static_Object* object, int parameter);
     virtual int importantWhenDead(int);
     virtual int convertToLOSResourceType(int);
+
+protected:
     virtual int processNotify(NotifyEvent*, unsigned long);
     virtual int processIdle(int);
+
+public:
     int* helpList;
     int helpCount;
     int helpMax;
@@ -248,9 +277,13 @@ public:
 class TribeArtifactUnitAIModule : public UnitAIModule {
 public:
     TribeArtifactUnitAIModule(RGE_Static_Object* object, int parameter);
+
+protected:
     virtual int processNotify(NotifyEvent*, unsigned long);
     virtual int processIdle(int);
     virtual int processMisc();
+
+public:
     virtual int notifyCommander(NotifyEvent*);
     virtual int getActionState(int);
     void* obj;
@@ -274,8 +307,12 @@ public:
 class TribeBuildingUnitAIModule : public UnitAIModule {
 public:
     TribeBuildingUnitAIModule(RGE_Static_Object* object, int parameter);
+
+protected:
     virtual int processNotify(NotifyEvent*, unsigned long);
     virtual int processIdle(int);
+
+public:
     RGE_Static_Object* obj;
     int currentOrder;
     int currentTarget;

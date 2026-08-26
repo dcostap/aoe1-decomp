@@ -14,6 +14,7 @@
 #define PLAYER_GROUPED_TU
 #include "player_tu_context.h"
 
+#include "matching/0046ED40_logStatus.cpp"
 #include "matching/0046E4B0_RGE_Player.cpp"
 #include "accepted_drift/0046E770_RGE_Player.cpp"
 #include "matching/0046EB00_RGE_Player.cpp"
@@ -88,7 +89,7 @@
 #include "matching/00470E30_unselect_object.cpp"
 #include "matching/00470E80_unselect_one_object.cpp"
 #include "matching/00470ED0_unselect_one_object.cpp"
-#include "matching/00470F80_group_objects.cpp"
+#include "scratch/00470F80_group_objects.cpp"
 #include "matching/004710C0_select_group.cpp"
 #include "matching/00471120_own_selected.cpp"
 #include "matching/00471170_is_category_selected.cpp"

@@ -2,8 +2,10 @@
 //
 // Includes every normal World.cpp owner in PDB source order. The existing
 // source bodies remain the sole owners of their VAs.
-// Candidate result: 75 exact owners, 16 observed owners, and one generated
-// destructor. 00540750 is observed after natural constructor emission.
+// Candidate result: 77 registered exact owners and one generated destructor.
+// The protected data_load_map declaration and complete RGE_Map size emit
+// 00541500 with its original FPO symbol and exact bytes.
+// 00540750 remains observed after natural constructor emission.
 #include "world_phase2_context.h"
 
 #include "matching/00540750_RGE_Game_World.cpp"

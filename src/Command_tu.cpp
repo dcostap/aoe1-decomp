@@ -13,7 +13,7 @@
 #include "scratch/00433E20_do_command.cpp"
 #include "accepted_drift/00433F20_do_command_order.cpp"
 #include "matching/00434290_do_command_stop.cpp"
-#include "matching/004342E0_do_command_pause.cpp"
+#include "scratch/004342E0_do_command_pause.cpp"
 #include "matching/00434320_do_command_work.cpp"
 #include "matching/00434400_do_command_move.cpp"
 #include "matching/004348B0_do_command_create.cpp"
