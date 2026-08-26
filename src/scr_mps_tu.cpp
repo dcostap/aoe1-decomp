@@ -14,7 +14,7 @@
 #include "scratch/004A16E0_action.cpp"
 #include "accepted_drift/004A2060_startGame.cpp"
 #include "accepted_drift/004A27A0_calcRandomPositions.cpp"
-#include "scratch/004A2910_showNetInfo.cpp"
+#include "matching/004A2910_showNetInfo.cpp"
 #include "matching/004A2BA0_cancelScreen.cpp"
 #include "accepted_drift/004A2D50_handle_user_command.cpp"
 #include "matching/004A37C0_handle_timer_command.cpp"

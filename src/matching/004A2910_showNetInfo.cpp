@@ -2,7 +2,8 @@
 // Attempt log:
 // 1: natural reconstruction from packet using real new/ctor/delete and strcat/sprintf.
 // 2: /GX required for original EH frame; class size padded to 0x224 to match operator new size.
-// 3: OKDialog prototype/call order is (message,title,line,height), not decompiler-looking title,line,message,height.
+// 3: The two dialogs are inherited TEasy_Panel::popupOKDialog overloads. The
+// message overload takes (message,title,line,height), not the decompiler order.
 
 #ifndef SCR_MPS_TU_CONTEXT
 
@@ -23,11 +24,19 @@ struct RGE_Communications_Addresses {
     unsigned int num_addr;
 };
 
-class TribeMPSetupScreen {
+class TEasy_Panel {
+public:
+    void popupOKDialog(long, char*, int, int);
+    void popupOKDialog(char*, int, int, int);
+};
+
+class TScreenPanel : public TEasy_Panel {
 public:
     char* get_string(int);
-    void OKDialog(char*, int, int, int);
-    void ErrorDialog(int, int, int, int);
+};
+
+class TribeMPSetupScreen : public TScreenPanel {
+public:
     void showNetInfo();
 };
 
@@ -57,9 +66,9 @@ void TribeMPSetupScreen::showNetInfo()
                 }
                 strcat(message, (char*)0x00583994);
             }
-            this->OKDialog(message, 0x584eb4, 0x1c2, num_addr * 18 + 100);
+            this->TEasy_Panel::popupOKDialog(message, 0x584eb4, 0x1c2, num_addr * 18 + 100);
         } else {
-            this->ErrorDialog(0x238d, 0, 0x1c2, 100);
+            this->TEasy_Panel::popupOKDialog(0x238d, 0, 0x1c2, 100);
         }
         addresses->~RGE_Communications_Addresses();
         operator delete(addresses);
