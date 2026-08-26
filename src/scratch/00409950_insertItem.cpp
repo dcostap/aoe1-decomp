@@ -40,6 +40,55 @@
 // try 33: placing a valid-body label before the failure assignment reproduced the 554B/468-byte basin, not the original branch layout. Restored.
 // try 34: reusing index, sequence, and result values, reusing the index parameter, and lifting item/next locals produced duplicate 572B or 573B code. Restored.
 // CURRENT BLOCKER: fresh checks still show 573B versus 542B, 471 differing bytes, 16/16 ordered calls, and 56.29% exact-block coverage. The original has one shared late cleanup tail; these natural CFG variants do not recover it. Do not retain compiler-steering or opaque context forms.
+// Context gate: PDB module aibldmod.cpp lines 513-592 owns this
+// BuildAIModule::insertItem body at 00409950-00409B6D. Exact anchors are the
+// two strncpy calls, operator new 0054B6F0, BuildItem ctor 00408220, and the
+// setter sequence 004085C0..004086A0. Field anchors are +0x15C, +0xF0, and
+// +0x1A0. These facts are proved; source order remains a hypothesis.
+// try 35: direct string-copy statements selected a 572-byte branch basin in
+// standalone code, but worsened positional drift to 487 bytes. Restored.
+// try 36: inverted the itemType guard to match the original je polarity and
+// source arm order. Test branch layout without changing the text-pointer ABI.
+// try 37: moved the non-special strncpy after master selection so its count
+// push can hoist before the null test, while keeping two call sites.
+// try 37 result: standalone size 580 and diff 532; restored the prior source.
+// try 38: combine the inverted guard with direct literal strncpy calls. Test
+// whether both target polarity and literal push order can survive together.
+// try 39: naming the object type did not change grouped emission; restored
+// the clean parameter expression.
+// try 40: assigning a typed object index did not alter grouped bytes; the
+// alias was removed for the natural parameter expression.
+// try 41: spell the typed array access as pointer addition to test VC5's
+// operand scheduling while preserving the same indexed ownership.
+// try 41 result: grouped output stayed at 8 differing bytes; restored array
+// subscript syntax as the natural ownership form.
+// try 42: reorder declarations so the address-taken name buffer precedes list
+// locals. Test whether VC5 schedules the objType load before player.
+// try 42 result: grouped output stayed at 8 differing bytes; restored order.
+// try 43: express the special case as an explicit forward label while keeping
+// source semantics in Ghidra's itemType==6 order. Test target branch polarity.
+// try 43 result: grouped output returned to 428 differing bytes; restored the
+// inverted guard, which remains the best natural grouped basin.
+// try 44: bind the player's master-object table before indexing it. Test a
+// canonical member alias as an alternate load schedule for the final 8 bytes.
+// try 44 result: grouped diff rose to 425; restored direct member ownership.
+// try 45: use a two-arm switch to test a compiler-natural dispatch that may
+// retain the target je special-case polarity and parameter load order.
+// try 45 result: grouped output stayed at 8 differing bytes; restored the
+// equivalent inverted if form supported by the same emitted CFG.
+// try 46: reverse the typed pointer-plus-index operands to test whether VC5
+// follows source operand order for the two swapped parameter loads.
+// try 46 result: grouped output stayed at 8 differing bytes; restored the
+// canonical subscript spelling.
+// try 47: mark the read-only object type as a register parameter to test the
+// known VC5 register-color axis without changing ABI or field ownership.
+// try 47 result: grouped output stayed at 8 differing bytes; removed the
+// unsupported register qualifier.
+// GROUPED FRONTIER: inverted guard plus direct literal strncpy calls produce
+// 542-byte output with 8 differing bytes, 16/16 calls, zero relocation target
+// mismatches, and zero boundary escapes. The only mismatch is the order of
+// the objType and player parameter loads at the master-object arm.
+// The natural text-pointer source produced grouped diff 380. Do not restore it.
 
 #include <string.h>
 #include <stdlib.h>
@@ -130,7 +179,6 @@ int BuildAIModule::insertItem(RGE_Player* player, int objType, int count, int it
     char name[64];
     float sx;
     float sy;
-    const char* text;
 
     if (index > this->buildListLengthValue) return 0;
     pos = this->buildList.next;
@@ -139,9 +187,9 @@ int BuildAIModule::insertItem(RGE_Player* player, int objType, int count, int it
         pos = pos->next;
         i++;
     }
-    if (itemType == 6) {
-        text = s_SetGatherPercentage;
-    } else {
+    // BINARY NOTE: This guard and the direct calls preserve the original
+    // special-arm branch and shared strncpy tail in the canonical TU.
+    if (itemType != 6) {
         if (player->master_objects[objType] != 0) {
             strncpy(name + 4, player->master_objects[objType]->name, 0x3f);
             sx = player->master_objects[objType]->radius_x +
@@ -150,12 +198,15 @@ int BuildAIModule::insertItem(RGE_Player* player, int objType, int count, int it
                  player->master_objects[objType]->radius_y;
             goto name_done;
         } else {
-            text = s_AddedBuildListItem;
+            strncpy(name + 4, s_AddedBuildListItem, 0x3f);
+            sx = 3.0f;
+            sy = 3.0f;
         }
+    } else {
+        strncpy(name + 4, s_SetGatherPercentage, 0x3f);
+        sx = 3.0f;
+        sy = 3.0f;
     }
-    strncpy(name + 4, text, 0x3f);
-    sx = 3.0f;
-    sy = 3.0f;
 
 name_done:
     int seq = this->buildListLengthValue;
