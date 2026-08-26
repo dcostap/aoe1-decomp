@@ -8,15 +8,19 @@
         "0042FC90": "src/matching/0042FC90_calc_attack_modifier.cpp",
         "00430570": "src/matching/00430570_get_weapon_range.cpp",
         "004305A0": "src/matching/004305A0_get_speed_of_attack.cpp",
+        "00430610": "src/matching/00430610_enter_obj.cpp",
         "00430EC0": "src/matching/00430EC0_moveAwayFrom.cpp",
         "00431490": "src/matching/00431490_rateOfFire.cpp",
         "004315A0": "src/matching/004315A0_weaponRange.cpp",
-        "004315B0": "src/matching/004315B0_minimumWeaponRange.cpp"
+        "004315B0": "src/matching/004315B0_minimumWeaponRange.cpp",
+        "004316A0": "src/matching/004316A0_teleport.cpp"
       },
       "symbols": {
         "00430570": "?get_weapon_range@RGE_Combat_Object@@UAEXAAM0@Z",
         "004305A0": "?get_speed_of_attack@RGE_Combat_Object@@UAEXAAM0@Z",
-        "004315A0": "?weaponRange@RGE_Combat_Object@@UAEMXZ"
+        "00430610": "?enter_obj@RGE_Combat_Object@@UAEXPAVRGE_Static_Object@@@Z",
+        "004315A0": "?weaponRange@RGE_Combat_Object@@UAEMXZ",
+        "004316A0": "?teleport@RGE_Combat_Object@@UAEMMMM@Z"
       }
     },
     {
