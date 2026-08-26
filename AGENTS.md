@@ -93,6 +93,10 @@ the current reviewed status.
 Preserve unrelated changes. Never clean, reset, normalize, or overwrite another
 participant's work.
 
+Commit validated progress in small logical commits. Do not hold completed work
+for one final commit. After each module or wave passes its focused gates, stage
+the reviewed files explicitly and commit them. Use later commits for repairs.
+
 Send untracked cleanup files and directories to the Windows Recycle Bin. Do not
 use permanent filesystem deletion for cleanup. Tracked deletions stay recoverable
 through Git.
