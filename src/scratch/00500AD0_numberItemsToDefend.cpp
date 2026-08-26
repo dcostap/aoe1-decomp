@@ -7,6 +7,8 @@ int TribeTacticalAIModule::numberItemsToDefend()
     return 0;
 }
 #else
+// BLOCKER: The shared context omits TribeInformationAIModule::numberItemsToDefend.
+// A natural member call needs that shared declaration to preserve the direct tail target.
 int TribeTacticalAIModule::numberItemsToDefend() {
     return 0;
 }
