@@ -2,6 +2,8 @@
 // aimodule.cpp lines 103-105
 // FLAGS: /GX
 // retry: full copy-constructor surface with AIModuleID member ctors, visible dtors for EH, and setText(other->text).
+// BINARY NOTE: The executable copies data fields and links before its vptr.
+// The initializer list preserves that VC5 constructor order in the authentic TU.
 
 #ifndef AOE1_AIMODULE_TU_CONTEXT
 class AIModuleID {
@@ -39,14 +41,14 @@ AIModuleMessage::AIModuleMessage(AIModuleMessage* other)
     : id(other->id),
       priority(other->priority),
       sender(other->sender.name, other->sender.id),
-      recipient(other->recipient.name, other->recipient.id)
+      recipient(other->recipient.name, other->recipient.id),
+      data1(other->data1),
+      data2(other->data2),
+      data3(other->data3),
+      callbackMessage(other->callbackMessage),
+      timeStamp(other->timeStamp),
+      next(0),
+      prev(0)
 {
-    this->data1 = other->data1;
-    this->data2 = other->data2;
-    this->data3 = other->data3;
-    this->callbackMessage = other->callbackMessage;
-    this->timeStamp = other->timeStamp;
-    this->next = 0;
-    this->prev = 0;
     this->setText(other->text);
 }

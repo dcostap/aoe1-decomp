@@ -5,6 +5,9 @@
 // - Prior scratch only initialized scalar fields and compiled to 64 bytes, missing the original inline string copy.
 // - Use the real layout through processFrameValue and the natural string copy.
 //   The authentic TU context supplies the virtual class surface.
+// - Moving the scalar stores into the initializer list moved the vptr store to
+//   the proven late position. A body-assignment walkback returned a 35-byte TU diff.
+// BINARY NOTE: The fallback AIModuleID gap is 0x44 so the complete member is 0x48 bytes.
 
 extern "C" char* strcpy(char* dst, const char* src);
 
@@ -13,13 +16,13 @@ class AIModuleID {
 public:
     virtual ~AIModuleID();
     AIModuleID(char* str, int param);
-    char gap_00[0x48];
+    char gap_00[0x44];
 };
 
 class AIModule {
 public:
     virtual ~AIModule();
-    AIModuleID id;              // +0x04
+    AIModuleID idValue;         // +0x04
     int playerNumberValue;      // +0x4C
     char playerNameValue[64];   // +0x50
     int runningValue;           // +0x90
@@ -36,15 +39,16 @@ public:
 };
 #endif
 
-AIModule::AIModule() : idValue((char*)0x592A40, -1) {
-    this->playerNumberValue = -1;
-    this->runningValue = 0;
-    this->pausedValue = 0;
-    this->logHistoryValue = 0;
-    this->logCommonHistoryValue = 0;
-    this->historyLogFile = 0;
-    this->intelligenceLevelValue = 5;
-    this->priorityValue = 50;
-    this->processFrameValue = 0;
+AIModule::AIModule()
+    : idValue((char*)0x592A40, -1),
+      playerNumberValue(-1),
+      runningValue(0),
+      pausedValue(0),
+      logHistoryValue(0),
+      logCommonHistoryValue(0),
+      historyLogFile(0),
+      intelligenceLevelValue(5),
+      priorityValue(50),
+      processFrameValue(0) {
     strcpy(this->playerNameValue, (const char*)0x57F074);
 }

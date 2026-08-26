@@ -2,6 +2,8 @@
 // aimodule.cpp lines 85-87
 // FLAGS: /GX
 // retry: full nine-parameter constructor surface from packet; model two AIModuleID member ctors and trailing empty-string copy.
+// BINARY NOTE: The executable stores the scalar and pointer arguments before its vptr.
+// The initializer list preserves that VC5 constructor order in the authentic TU.
 
 #include <string.h>
 
@@ -37,12 +39,12 @@ AIModuleMessage::AIModuleMessage(int sender_id, int recipient_id, int msg_id, in
     : id(msg_id),
       priority(msg_priority),
       sender((char*)0x592A40, sender_id),
-      recipient((char*)0x592A40, recipient_id)
+      recipient((char*)0x592A40, recipient_id),
+      data1(p5),
+      data2(p6),
+      data3(p7),
+      callbackMessage(callback),
+      timeStamp(timestamp)
 {
-    this->data1 = p5;
-    this->data2 = p6;
-    this->data3 = p7;
-    this->callbackMessage = callback;
-    this->timeStamp = timestamp;
     strcpy(this->text, (char*)0x592A40);
 }
