@@ -1,16 +1,35 @@
 /* VA: 00447D50 _WaveOpenFile */
 /* Dsutil.c lines 496-619, 414 bytes */
-typedef unsigned int UINT; typedef unsigned long DWORD; typedef long LONG; typedef unsigned short WORD;
-typedef struct DSUTIL_WAVEOPEN_MMCKINFO { DWORD ckid; DWORD cksize; DWORD fccType; DWORD dwDataOffset; DWORD dwFlags; } DSUTIL_WAVEOPEN_MMCKINFO;
-typedef struct PCMWAVEFORMAT_LOCAL { WORD wFormatTag; WORD nChannels; DWORD nSamplesPerSec; DWORD nAvgBytesPerSec; WORD nBlockAlign; WORD wBitsPerSample; } PCMWAVEFORMAT_LOCAL;
-typedef struct WAVEFORMATEX_LOCAL { WORD wFormatTag; WORD nChannels; DWORD nSamplesPerSec; DWORD nAvgBytesPerSec; WORD nBlockAlign; WORD wBitsPerSample; WORD cbSize; } WAVEFORMATEX_LOCAL;
-/* Alias avoids VC5 treating the CRT copy as an intrinsic; original emits a direct call. */
-void* __cdecl memcpy2(void*, const void*, UINT);
-int __cdecl WaveOpenFile(char* pszFileName, HMMIO* phmmioIn, void** ppwfxInfo, DSUTIL_WAVEOPEN_MMCKINFO* pckInRIFF)
+/*
+ * Context gate: PDB source Dsutil.c, C function, lines 496-619. The address
+ * sequence and MMIO call anchors match the neighboring Dsutil.c functions.
+ *
+ * Exact-finish: the required source shape uses period WinMM declarations,
+ * the named six-field PCM record, and #pragma function(memcpy). The pragma
+ * preserves the shipped direct CRT call under /Oi-. A canonical PCMWAVEFORMAT
+ * declaration changed the later WaveCopyUselessChunks owner, so it was walked
+ * back. Raw FOURCC constants, a local WAVEFORMATEX overlay, an explicit
+ * GlobalAlloc cast, and a duplicate HMMIO typedef were also tested and
+ * removed or replaced without changing the exact result.
+ */
+#include <windows.h>
+#include <mmsystem.h>
+
+typedef struct DSUTIL_WAVEOPEN_PCM {
+    WORD wFormatTag;
+    WORD nChannels;
+    DWORD nSamplesPerSec;
+    DWORD nAvgBytesPerSec;
+    WORD nBlockAlign;
+    WORD wBitsPerSample;
+} DSUTIL_WAVEOPEN_PCM;
+/* Force the period CRT entry instead of VC5's aggregate-copy intrinsic. */
+#pragma function(memcpy)
+int __cdecl WaveOpenFile(char* pszFileName, HMMIO* phmmioIn, LPWAVEFORMATEX* ppwfxInfo, MMCKINFO* pckInRIFF)
 {
     HMMIO hmmioIn;
-    DSUTIL_WAVEOPEN_MMCKINFO ckIn;
-    PCMWAVEFORMAT_LOCAL pcmWaveFormat;
+    MMCKINFO ckIn;
+    DSUTIL_WAVEOPEN_PCM pcmWaveFormat;
     WORD cbExtraAlloc;
     int err;
 
@@ -27,27 +46,28 @@ int __cdecl WaveOpenFile(char* pszFileName, HMMIO* phmmioIn, void** ppwfxInfo, D
         goto error;
     }
 
-    if (pckInRIFF->ckid != 0x46464952 || pckInRIFF->fccType != 0x45564157) {
+    if (pckInRIFF->ckid != mmioFOURCC('R', 'I', 'F', 'F') ||
+        pckInRIFF->fccType != mmioFOURCC('W', 'A', 'V', 'E')) {
         err = 0xE101;
         goto error;
     }
 
-    ckIn.ckid = 0x20746D66;
+    ckIn.ckid = mmioFOURCC('f', 'm', 't', ' ');
     if ((err = mmioDescend(hmmioIn, &ckIn, pckInRIFF, 0x10)) != 0) {
         goto error;
     }
 
-    if (ckIn.cksize < sizeof(PCMWAVEFORMAT_LOCAL)) {
+    if (ckIn.cksize < sizeof(pcmWaveFormat)) {
         err = 0xE101;
         goto error;
     }
 
-    if (mmioRead(hmmioIn, (char*)&pcmWaveFormat, sizeof(PCMWAVEFORMAT_LOCAL)) != sizeof(PCMWAVEFORMAT_LOCAL)) {
+    if (mmioRead(hmmioIn, (char*)&pcmWaveFormat, sizeof(pcmWaveFormat)) != sizeof(pcmWaveFormat)) {
         err = 0xE102;
         goto error;
     }
 
-    if (pcmWaveFormat.wFormatTag == 1) {
+    if (pcmWaveFormat.wFormatTag == WAVE_FORMAT_PCM) {
         cbExtraAlloc = 0;
     } else {
         if (mmioRead(hmmioIn, (char*)&cbExtraAlloc, sizeof(cbExtraAlloc)) != sizeof(cbExtraAlloc)) {
@@ -56,16 +76,17 @@ int __cdecl WaveOpenFile(char* pszFileName, HMMIO* phmmioIn, void** ppwfxInfo, D
         }
     }
 
-    if ((*ppwfxInfo = GlobalAlloc(0, (DWORD)cbExtraAlloc + 18)) == 0) {
+    if ((*ppwfxInfo = GlobalAlloc(0,
+        (DWORD)cbExtraAlloc + 18)) == 0) {
         err = 0xE000;
         goto error;
     }
 
-    memcpy2(*ppwfxInfo, &pcmWaveFormat, sizeof(PCMWAVEFORMAT_LOCAL));
-    ((WAVEFORMATEX_LOCAL*)*ppwfxInfo)->cbSize = cbExtraAlloc;
+    memcpy(*ppwfxInfo, &pcmWaveFormat, sizeof(pcmWaveFormat));
+    (*ppwfxInfo)->cbSize = cbExtraAlloc;
 
     if (cbExtraAlloc != 0) {
-        if (mmioRead(hmmioIn, (char*)&((WAVEFORMATEX_LOCAL*)*ppwfxInfo)->cbSize + sizeof(cbExtraAlloc), cbExtraAlloc) != cbExtraAlloc) {
+        if (mmioRead(hmmioIn, (char*)&(*ppwfxInfo)->cbSize + sizeof(cbExtraAlloc), cbExtraAlloc) != cbExtraAlloc) {
             err = 0xE101;
             goto error;
         }
