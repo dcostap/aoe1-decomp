@@ -7079,6 +7079,10 @@
         "0040A8D0": "src/matching/0040A8D0_ConstructionItem.cpp",
         "0040A910": "src/matching/0040A910_ConstructionItem.cpp",
         "0040A950": "src/matching/0040A950_ConstructionItem.cpp",
+        "0040A960": "src/matching/0040A960_operator.cpp",
+        "0040A990": "src/matching/0040A990_operator.cpp",
+        "0040A9C0": "src/matching/0040A9C0_operator.cpp",
+        "0040A9E0": "src/matching/0040A9E0_operator.cpp",
         "0040AA00": "src/matching/0040AA00_inProgress.cpp",
         "0040AA10": "src/matching/0040AA10_built.cpp",
         "0040AA20": "src/matching/0040AA20_buildAttempts.cpp",
@@ -7101,7 +7105,11 @@
         "0040AA40": "?setBuilt@ConstructionItem@@QAEXH@Z",
         "0040AA50": "?incrementBuildAttempts@ConstructionItem@@QAEXXZ",
         "0040AA60": "?decrementBuildAttempts@ConstructionItem@@QAEXXZ",
-        "0040AA80": "?setBuildAttempts@ConstructionItem@@QAEXH@Z"
+        "0040AA80": "?setBuildAttempts@ConstructionItem@@QAEXH@Z",
+        "0040A960": "??8@YAHABVConstructionItem@@0@Z",
+        "0040A990": "??9@YAHABVConstructionItem@@0@Z",
+        "0040A9C0": "??M@YAHABVConstructionItem@@0@Z",
+        "0040A9E0": "??O@YAHABVConstructionItem@@0@Z"
       }
     },
     {
