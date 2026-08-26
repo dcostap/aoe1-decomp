@@ -27,6 +27,8 @@
 //   follows IsHost in source order, with the nonhost arm as the fallback.  This
 //   restored all 127 ordered calls, exact function size, and the original host
 //   and nonhost block placement; the row setup still differs locally.
+// - source recovery: removed an unused multiplayer declaration; emitted output
+//   stayed unchanged, and the natural source no longer carries dead machinery.
 // - unresolved pass: twenty source hypotheses were compiled and checked.  The
 //   clean baseline remains 3240 bytes, 0x10C frame, and 127 ordered calls.
 // - BINARY NOTE: the shipped row setup stores y at entry-relative [esp+10],
@@ -348,7 +350,6 @@ TribeMPSetupScreen::TribeMPSetupScreen()
     char str[256];
     int y;
     int button_id;
-    int multiplayer;
 
     Log(L, "$$$ CHAT SCREEN: CONSTRUCTOR BEGIN");
     init_vars();

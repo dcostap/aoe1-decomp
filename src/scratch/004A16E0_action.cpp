@@ -21,7 +21,13 @@
 // fallback tail size, the file_info stack home, and final-loop register coloring.
 // Authentic scr_mps.cpp context selected the PDB virtual symbol and reduced the
 // body to 2468 bytes. It kept 105 calls and reduced the strict diff to 1639 bytes.
-
+// BINARY NOTE: The ready-version dialog target is TEasy_Panel::popupOKDialog(long,
+// char*, int, int). Explicit base qualification preserves that target in the wrapper.
+// BINARY NOTE: Readiness payload arguments use the unsigned-long overload. Explicit
+// casts preserve the direct target when the wrapper has an extra int overload.
+// GROUPED BLOCKER: The shared wrapper TEditPanel surface places active at +0x130, but
+// the executable reads the inherited TPanel active field at +0x6C. Do not replace this
+// proven field with a raw local offset view; the shared context needs main-agent repair.
 #ifndef SCR_MPS_TU_CONTEXT
 
 #include <string.h>
@@ -147,6 +153,11 @@ public:
 };
 
 class T_Scenario {
+public:
+    int Get_player_Active(int index);        // 0048C3B0
+};
+
+class RGE_Scenario : public T_Scenario {
 public:
     int Get_player_Active(int index);        // 0048C3B0
 };
@@ -329,11 +340,13 @@ long TribeMPSetupScreen::action(TPanel* param_1, long param_2, unsigned long par
             if (this->ready_button->get_state() != 0) {
                 TDebuggingLog::Log(L, "$$$ SELECTED I'M READY");
                 if (comm->IsHost()) {
-                    comm->SetMyReadiness(1, 0, 0, 0, 0, 0, 0, 0);
+                    comm->SetMyReadiness(1, (unsigned long)0, (unsigned long)0,
+                        (unsigned long)0, (unsigned long)0, (unsigned long)0,
+                        (unsigned long)0, (unsigned long)0);
                 } else {
                     if (rge_base_game->playerVersion(0) != 1) {
                         this->ready_button->set_state(0);
-                        this->popupOKDialog(0x25E3, 0, 0x1C2, 100);
+                        this->TEasy_Panel::popupOKDialog(0x25E3, 0, 0x1C2, 100);
                         return 1;
                     }
                     int me = comm->WhoAmI() - 1;
@@ -355,9 +368,11 @@ long TribeMPSetupScreen::action(TPanel* param_1, long param_2, unsigned long par
                     } else {
                         this->myScenarioChecksum = 0;
                     }
-                    comm->SetMyReadiness(1, this->myCivilization, this->myScenarioPlayer + 1,
-                        rge_base_game->check_for_cd(0) + 1, this->myPlayerColor, this->myPlayerTeam,
-                        this->myScenarioChecksum, 1);
+                    comm->SetMyReadiness(1, (unsigned long)this->myCivilization,
+                        (unsigned long)(this->myScenarioPlayer + 1),
+                        (unsigned long)(rge_base_game->check_for_cd(0) + 1),
+                        (unsigned long)this->myPlayerColor, (unsigned long)this->myPlayerTeam,
+                        (unsigned long)this->myScenarioChecksum, (unsigned long)1);
                 }
                 if (this->chatInput != 0 && this->chatInput->active != 0) {
                     this->set_curr_child(this->chatInput);
@@ -369,7 +384,9 @@ long TribeMPSetupScreen::action(TPanel* param_1, long param_2, unsigned long par
                 if (!comm->IsHost()) {
                     cd = rge_base_game->check_for_cd(0) + 1;
                 }
-                comm->SetMyReadiness(0, 0, 0, cd, 0, 0, 0, 0);
+                comm->SetMyReadiness(0, (unsigned long)0, (unsigned long)0,
+                    (unsigned long)cd, (unsigned long)0, (unsigned long)0,
+                    (unsigned long)0, (unsigned long)0);
                 if (this->chatInput != 0 && this->chatInput->active != 0) {
                     this->set_curr_child(this->chatInput);
                 }
