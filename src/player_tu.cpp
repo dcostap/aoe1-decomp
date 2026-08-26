@@ -100,7 +100,7 @@
 #include "matching/00471430_update_selected.cpp"
 #include "matching/00471480_select_area.cpp"
 #include "scratch/004714C0_unselect_area.cpp"
-#include "scratch/004714E0_ungroup_objects.cpp"
+#include "matching/004714E0_ungroup_objects.cpp"
 #include "matching/00471520_analyize_selected_objects.cpp"
 #include "matching/00471530_get_mouse_pointer_action_vars.cpp"
 #include "matching/00471550_command_make_move.cpp"

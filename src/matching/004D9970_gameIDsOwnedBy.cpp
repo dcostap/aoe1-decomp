@@ -3,7 +3,7 @@
 // __thiscall: ecx=this, 3 stack params, ret 0Ch
 // No SEH
 //
-// Status: EXACT â€” MATCH validated and promoted under the default VC5 flags.
+// Status: grouped MATCH under the player-layout wrapper; not registered.
 //
 // Attempt log:
 // Baseline: canonical ObjectMemory stride/fields, typed world lookup, and a
@@ -22,6 +22,9 @@
 // reduced drift to 6 bytes by restoring the original pre-guard local stores.
 // Probe 11: a natural for-loop inside the old-buffer branch restored loop-init
 // scheduling; exact MATCH (279/279 bytes).
+// Probe 12: replaced the reduced ObjectMemory overlay and byte-offset scan
+// with the complete typed record and indexed access. Standalone and grouped
+// checks stayed exact, without raw field offsets or cursor arithmetic.
 //
 // Key findings:
 // - This->md at +0x100 = TribeMainDecisionAIModule* (size 0x125C8)
@@ -34,9 +37,8 @@
 // - Uses platform-appropriate new/delete (not C++ new[])
 // - The old output buffer is copied only in the positive-capacity branch, but
 //   freed in a separate branch; this preserves the original conditional CFG.
-// - The byte-offset declaration initializer plus guarded reset is intentionally
-//   retained: together they reproduce VC5's observed local-home schedule while
-//   remaining ordinary C++ with no asm, volatility, or raw cursor ownership.
+// - The complete ObjectMemory layout and indexed access preserve the proven
+//   0x24-byte stride while keeping the source as ordinary typed C++.
 // - Main-agent audit restored canonical player/world/object/AI ownership while
 //   preserving the exact binary-backed ObjectMemory stride schedule.
 
@@ -79,8 +81,20 @@ public:
 class ObjectMemory {
 public:
     int id;
-    char gap_04[0x7];
+    short type;
+    short group;
+    unsigned char x;
+    unsigned char y;
+    unsigned char z;
     unsigned char owner;
+    short hitPoints;
+    unsigned char pad_0E[2];
+    int attackAttempts;
+    unsigned char kills;
+    unsigned char pad_15[3];
+    float damageCapability;
+    float rateOfFire;
+    float range;
 };
 
 class TribeMainDecisionAIModule {
@@ -111,23 +125,21 @@ int TribeInformationAIModule::gameIDsOwnedBy(int owner_filter, int** out, int ow
 {
     int count = 0;
     int capacity = 10;
-    int byte_offset = 0;
     int i;
     *out = 0;
     i = 0;
 
     if (this->maxImportantObjectMemory > 0) {
-        byte_offset = 0;
         do {
-            if (*(int*)((char*)this->importantObjectMemory + byte_offset) != -1) {
+            if (this->importantObjectMemory[i].id != -1) {
                 RGE_Game_World* world = this->md->aiPlayer->world;
                 RGE_Static_Object* obj = world->object(
-                    *(int*)((char*)this->importantObjectMemory + byte_offset)
+                    this->importantObjectMemory[i].id
                 );
                 if (obj != 0) {
                     int ownerId = obj->owner->id;
                     if (ownerId == owner_id) {
-                        if (owner_filter == -1 || owner_filter == *(unsigned char*)((char*)this->importantObjectMemory + byte_offset + 0x0B)) {
+                        if (owner_filter == -1 || owner_filter == this->importantObjectMemory[i].owner) {
                             if (count == capacity || *out == 0) {
                                 int* new_arr = (int*)operator_new(capacity * 8);
                                 if (*out != 0) {
@@ -141,14 +153,13 @@ int TribeInformationAIModule::gameIDsOwnedBy(int owner_filter, int** out, int ow
                                 }
                                 *out = new_arr;
                             }
-                            (*out)[count] = *(int*)((char*)this->importantObjectMemory + byte_offset);
+                            (*out)[count] = this->importantObjectMemory[i].id;
                             count++;
                         }
                     }
                 }
             }
             i++;
-            byte_offset += 0x24;
         } while (i < this->maxImportantObjectMemory);
     }
 

@@ -3,6 +3,7 @@ class TPanel {
 public:
 
     void set_tab_order(TPanel** panels, short count);
+    void set_tab_order(TPanel* previous, TPanel* next);
 };
 
 #endif

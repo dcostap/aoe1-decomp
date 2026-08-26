@@ -10,16 +10,13 @@ ResourceItem::ResourceItem(int count, int* source)
     int i = 0;
 
     if (count > 0) {
-        int* dst = this->sortedValue;
         do {
             if (i < 8) {
-                int v = *source;
+                this->valueValue[i] = *source;
+                this->sortedValue[i] = -1;
+                this->sortedIndexValue[i] = -1;
                 ++i;
-                dst[-8] = v;
-                dst[0] = -1;
-                dst[8] = -1;
                 ++source;
-                ++dst;
             } else {
                 goto done;
             }

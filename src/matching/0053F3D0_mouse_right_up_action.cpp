@@ -24,6 +24,8 @@
 // - final codegen probe: a redraw after the overlay call is source-plausible,
 //   but the binary emits no extra redraw call.  The otherwise natural call
 //   restores the final 9-byte tail exactly.
+// - Canonical slot recovery: the +78 virtual call is RGE_Static_Object::rotate
+//   with a -1 direction. The prior do_right_action label used a later slot.
 
 #include <stdlib.h>
 
@@ -293,6 +295,7 @@ public:
     virtual void v6C();
     virtual void v70();
     virtual void v74();
+    virtual void rotate(long);
     virtual void do_right_action(int);
 };
 #endif
@@ -320,7 +323,7 @@ long RGE_Main_View::mouse_right_up_action(long param_1, long param_2,
                 if (this->pick1(0x29, 2, param_1, param_2,
                                 &pick_info, this->player->selected_obj,
                                 1) == 0x34) {
-                    pick_info.object->do_right_action(-1);
+                    pick_info.object->rotate(-1);
                 }
             } else {
                 if (rge_base_game->get_paused() != 0) {

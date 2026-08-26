@@ -13,6 +13,8 @@
 //   proven absolute globals restored the 0x1C frame and 98.63% shape.
 // Probe 3 liveness: removed the redundant explicit byte cast after using the
 //   accurately typed unsigned-char command_make_move return; exact 197 bytes.
+// Grouped ABI recovery: the final +10 virtual call is set_game_mode(0, 0),
+//   matching the shared RGE_Base_Game surface and the original call slot.
 // Frame layout is VC5 TU-context dependent.
 
 #include <stdlib.h>
@@ -37,7 +39,7 @@ struct RGE_Base_Game {
     virtual void vt_pad_01();
     virtual void vt_pad_02();
     virtual void vt_pad_03();
-    virtual void update(unsigned long a, unsigned long b);
+    virtual void set_game_mode(int mode, int sub_mode);
 };
 
 extern int allow_user_commands;
@@ -138,7 +140,7 @@ int RGE_Main_View::command_make_move(long param_1, long param_2)
                 this->set_redraw(1);
             }
 
-            rge_base_game->update(0, 0);
+            rge_base_game->set_game_mode(0, 0);
             return result;
         }
     }

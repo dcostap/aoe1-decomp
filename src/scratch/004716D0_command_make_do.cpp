@@ -1,34 +1,20 @@
 #ifndef PLAYER_GROUPED_TU
-class RGE_Static_Object {
-public:
-    void play_move_sound();
-};
-class RGE_Command {
-public:
-    void command_order(RGE_Static_Object**, short, RGE_Static_Object*, float, float);
-};
-class RGE_Game_World {
-public:
-    char gap_00[0x58];
-    RGE_Command* command;
-};
-class RGE_Player {
-public:
-    char gap_00[0x3C];
-    RGE_Game_World* world;
-    unsigned char get_selected_objects_to_command(RGE_Static_Object***, void*, int, int, int, int);
-    unsigned char command_make_do(RGE_Static_Object*, float, float);
-};
+#include "../player_tu_context.h"
 #endif
 
 extern void __cdecl free(void*);
 
 unsigned char RGE_Player::command_make_do(RGE_Static_Object* target, float x, float y) {
     RGE_Static_Object** list;
-    short local_4[2];
-    if (get_selected_objects_to_command(&list, local_4, -1, -1, -1, -1)) {
-        list[0]->play_move_sound();
-        this->world->command->command_order(list, local_4[0], target, x, y);
+    // BINARY NOTE: The helper writes a short count into a dword home.
+    // The command call forwards that complete home.
+    int local_count;
+    if (get_selected_objects_to_command(&list, (short*)&local_count, -1, -1, -1, -1)) {
+        RGE_Master_Static_Object* master = list[0]->get_command_master(target, x, y, 0);
+        if (master != 0) {
+            master->play_command_sound();
+        }
+        this->world->command->command_order(list, local_count, target, x, y);
         free(list);
         return 1;
     }

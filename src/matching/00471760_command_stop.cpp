@@ -8,33 +8,7 @@
 void __cdecl free(void*);
 
 #ifndef PLAYER_GROUPED_TU
-class RGE_Static_Object;
-class RGE_Command;
-
-class SelectedObject {
-public:
-    void play_move_sound(void);
-};
-
-class RGE_Command {
-public:
-    void command_stop(RGE_Static_Object** list, short list_num);
-};
-
-class PlayerWorld {
-public:
-    char gap_00[0x58];
-    RGE_Command* commands;
-};
-
-class RGE_Player {
-public:
-    char gap_00[0x3C];
-    PlayerWorld* world;
-
-    unsigned char get_selected_objects_to_command(RGE_Static_Object*** list, short* list_num, int a, int b, int c, int d);
-    unsigned char command_stop(void);
-};
+#include "../player_tu_context.h"
 #endif
 
 unsigned char RGE_Player::command_stop(void) {

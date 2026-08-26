@@ -11,6 +11,7 @@ public:
     virtual void set_pos(long x, long y, long width, long height);
 
     virtual void set_rect(tagRECT rect);
+    virtual void set_rect(long x, long y, long width, long height);
 };
 
 #endif

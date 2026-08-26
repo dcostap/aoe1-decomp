@@ -163,6 +163,11 @@ def direct_call_symbols_match(original: str, rebuilt: str) -> bool:
 
 
 _SIMPLE_OWNER_NAME_RE = re.compile(r"~?[A-Za-z_][A-Za-z0-9_]*$")
+_VC5_OPERATOR_CODES = {
+    "??8": "operator==",
+    "??9": "operator!=",
+    "??Y": "operator+=",
+}
 _VC5_TEMPLATE_TYPE_CODES = {
     "D": "char",
     "E": "unsigned char",
@@ -234,6 +239,29 @@ def owning_function_symbol_validation(
         result["status"] = (
             "match"
             if rebuilt == expected and pdb_name == stdcall.group(1)
+            else "mismatch"
+        )
+        return result
+    operator_name = _VC5_OPERATOR_CODES.get(rebuilt[:3])
+    if expected.startswith("operator"):
+        result["expected_normalized"] = expected
+        result["rebuilt_normalized"] = operator_name or ""
+        if not operator_name:
+            return result
+        suffix = rebuilt[3:]
+        if suffix.startswith("@"):
+            rebuilt_owner = ""
+        else:
+            scope = suffix.split("@@", 1)[0]
+            owner_parts = [part for part in scope.split("@") if part]
+            rebuilt_owner = "::".join(reversed(owner_parts))
+        qualified = expected_qualified_name.strip()
+        expected_owner = qualified.rsplit("::", 1)[0] if "::" in qualified else ""
+        result["expected_owner"] = expected_owner
+        result["rebuilt_owner"] = rebuilt_owner
+        result["status"] = (
+            "match"
+            if expected == operator_name and expected_owner == rebuilt_owner
             else "mismatch"
         )
         return result

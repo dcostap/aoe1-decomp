@@ -86,7 +86,7 @@
 #include "matching/00466280_release_mouse.cpp"
 #include "matching/004662C0_is_redraw_needed.cpp"
 #include "matching/004662E0_is_inside.cpp"
-#include "scratch/00466320_is_inside_rect.cpp"
+#include "matching/00466320_is_inside_rect.cpp"
 #include "matching/00466350_bound_point.cpp"
 #include "matching/004663A0_set_curr_child.cpp"
 #include "matching/004663F0_set_focus.cpp"

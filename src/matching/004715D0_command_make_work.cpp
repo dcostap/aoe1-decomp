@@ -99,7 +99,7 @@ public:
 class RGE_Game_World {
 public:
     char gap_00[0x58];
-    RGE_Command* commands;
+    RGE_Command* command;
 };
 
 class RGE_Player {

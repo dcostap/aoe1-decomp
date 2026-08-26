@@ -32,11 +32,12 @@ public:
     PanelNode* node;
     PanelNode* first_child_node;
     PanelNode* last_child_node;
-    TPanel* curr_child;
+    TPanel* tab_prev_panel;
     int field_64;
     int field_68;
     int active;
     int field_70;
+    int tab_stop;
     int have_focus;
     int field_78;
     int field_7C;
@@ -99,11 +100,12 @@ TPanel::TPanel(void) {
     node = 0;
     first_child_node = 0;
     last_child_node = 0;
-    curr_child = 0;
+    tab_prev_panel = 0;
     field_64 = 0;
     field_68 = 0;
     active = 1;
     field_70 = 0;
+    tab_stop = 0;
     have_focus = 0;
     field_78 = 0;
     field_7C = 1;

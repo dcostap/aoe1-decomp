@@ -55,6 +55,8 @@
 // - Exact grouped finish: PDB lines 209-212 place both threshold loads in the
 //   arms and one whole-unit addition after the join. In the wrapper context,
 //   this emits the original FLD/FLD/FADDP block.
+// - Grouped owner fix: qualify the inherited TPanel render_area. RGE_View also
+//   exposes a different cur_render_area name in the shared context.
 // - Walkback: branch-local additions stayed at 779 bytes with a 311-byte
 //   isolated diff. The guarded common addition is 773 bytes and matches all
 //   773 bytes in a fresh context extraction.
@@ -185,12 +187,12 @@ int RGE_Main_View::do_auto_scroll()
          rge_base_game->prog_mode == 7 || rge_base_game->prog_mode == 5) &&
         rge_base_game->get_paused() == 0 &&
         rge_base_game->prog_info->auto_scroll != 0 &&
-        GetForegroundWindow() == this->render_area->Wnd &&
+        GetForegroundWindow() == this->TPanel::render_area->Wnd &&
         panel_system.modalPanel() == 0 &&
         (panel_system.mouseOwner() == 0 || panel_system.mouseOwner() == this) &&
         this->key_scrolling == 0) {
 
-    GetWindowRect(this->render_area->Wnd, &rect);
+    GetWindowRect(this->TPanel::render_area->Wnd, &rect);
     GetCursorPos(&point);
 
     horz_scroll = 0;

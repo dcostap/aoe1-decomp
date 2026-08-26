@@ -8,11 +8,10 @@
 // size overrun and wrong resource-base coloring (146 bytes).
 // Probe 3: repeating direct resources[type_index] expressions, rather than naming
 // the row pointer, produced an exact 197-byte match.
-// Probe 4: promoted the proven 0x14-byte ResourceMemory array and named fields;
-// emitted code remained exact.
-// Probes 5-6: natural ResourceMemory* row/id locals changed only the object-call
-// argument scheduling (9 bytes); restored the exact direct-expression form.
-// Final: default flags, no inline asm/custom flags; 197/197 bytes match.
+// Probe 4: replaced the remaining raw cursor with indexed ResourceMemory fields.
+// Standalone MATCH; the grouped result stayed 3 bytes off because the shared
+// RGE_Static_Object object layout remains unresolved.
+// Final source remains default flags, no inline asm, and no raw cursor.
 
 #include <math.h>
 
@@ -77,11 +76,10 @@ int TribeInformationAIModule::amountResourceTypesInXTiles(int type_index, int x,
     int i = 0;
 
     if (this->numResources[type_index] > 0) {
-        int offset = 0;
         do {
-            if (((ResourceMemory*)((char*)this->resources[type_index] + offset))->gone != 1) {
+            if (this->resources[type_index][i].gone != 1) {
                 RGE_Static_Object* obj = this->md->object(
-                    ((ResourceMemory*)((char*)this->resources[type_index] + offset))->id);
+                    this->resources[type_index][i].id);
                 if (obj != 0 && (type_index != 0 || obj->master_obj->id != 0x3B)) {
                     float dx = obj->x - (float)x;
                     float dy = obj->y - (float)y;
@@ -91,7 +89,6 @@ int TribeInformationAIModule::amountResourceTypesInXTiles(int type_index, int x,
                 }
             }
             i++;
-            offset += 0x14;
         } while (i < this->numResources[type_index]);
     }
 

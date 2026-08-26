@@ -41,10 +41,10 @@ class ConstructionItem;
 #include "scratch/004D8D20_closestUnexploredTile.cpp"
 
 // 004D9110: taiinfmd.cpp:1121-1133
-#include "scratch/004D9110_fullyExploredZone.cpp"
+#include "matching/004D9110_fullyExploredZone.cpp"
 
 // 004D9160: taiinfmd.cpp:1138-1144
-#include "scratch/004D9160_setFullyExploredZone.cpp"
+#include "matching/004D9160_setFullyExploredZone.cpp"
 
 // 004D91A0: taiinfmd.cpp:1149-1166
 #include "matching/004D91A0_tileUncovered.cpp"
@@ -89,7 +89,7 @@ class ConstructionItem;
 #include "accepted_drift/004DA1F0_addEnemyInfluences.cpp"
 
 // 004DA420: taiinfmd.cpp:1973-2005
-#include "scratch/004DA420_addPriorAttackInfluences.cpp"
+#include "matching/004DA420_addPriorAttackInfluences.cpp"
 
 // 004DA5A0: taiinfmd.cpp:2010-2020
 #include "matching/004DA5A0_objectMemory.cpp"

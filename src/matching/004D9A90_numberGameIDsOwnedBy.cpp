@@ -6,16 +6,32 @@
 // Attempt log:
 // probe 1: 93% â€” RGE_Game_World::object embedded
 // probe 2: 61% â€” prologue/register order wrong, extra local var
+// probe 3: restored the complete ObjectMemory record, typed md->aiPlayer
+// ownership, and typed owner->id access. Standalone and grouped checks match.
 
 #ifndef TAIINFMD_PREFIX_CONTEXT
 #ifndef TAIINFMD_PREFIX_CONTEXT
 class RGE_Game_World;
+class RGE_Player {
+public:
+    char gap_00[0x3C];
+    RGE_Game_World* world;
+    char gap_40[0x0A];
+    short id;
+};
+
+class TribeMainDecisionAIModule {
+public:
+    virtual ~TribeMainDecisionAIModule();
+    char gap_04[0x12568];
+    RGE_Player* aiPlayer;
+};
 
 class RGE_Static_Object {
 public:
     char gap_00[0x8];
     void* master_obj;        // +0x8
-    void* owner;             // +0xC
+    RGE_Player* owner;       // +0xC
 };
 
 class RGE_Game_World {
@@ -34,14 +50,26 @@ public:
 class ObjectMemory {
 public:
     int id;                  // +0x00
-    char gap_04[0x7];
+    short type;              // +0x04
+    short group;             // +0x06
+    unsigned char x;         // +0x08
+    unsigned char y;         // +0x09
+    unsigned char z;         // +0x0A
     unsigned char owner;     // +0x0B
+    short hitPoints;         // +0x0C
+    unsigned char pad_0E[2]; // +0x0E
+    int attackAttempts;      // +0x10
+    unsigned char kills;     // +0x14
+    unsigned char pad_15[3]; // +0x15
+    float damageCapability;  // +0x18
+    float rateOfFire;        // +0x1C
+    float range;             // +0x20
 };
 
 class TribeInformationAIModule {
 public:
     char gap_00[0x100];
-    void* md;                // +0x100
+    TribeMainDecisionAIModule* md; // +0x100
     char gap_104[0xC];
     int maxImportantObjectMemory;  // +0x110
     ObjectMemory* importantObjectMemory;  // +0x114
@@ -54,23 +82,21 @@ public:
 int TribeInformationAIModule::numberGameIDsOwnedBy(int param1, int param2) {
     int result = 0;
     int i = 0;
-    int idx = 0;
 
     if (this->maxImportantObjectMemory > 0) {
         do {
-            int id = ((int*)((char*)this->importantObjectMemory + idx))[0];
+            int id = this->importantObjectMemory[i].id;
             if (id != -1) {
-                void* world = *(void**)((char*)*(void**)((char*)this->md + 0x1256C) + 0x3C);
-                RGE_Static_Object* obj = ((RGE_Game_World*)world)->object(id);
+                RGE_Game_World* world = this->md->aiPlayer->world;
+                RGE_Static_Object* obj = world->object(id);
                 if (obj != 0) {
-                    short owner_id = *(short*)((char*)obj->owner + 0x4A);
-                    if (owner_id == param2 && (param1 == -1 || param1 == *(unsigned char*)((char*)this->importantObjectMemory + idx + 0x0B))) {
+                    short owner_id = obj->owner->id;
+                    if (owner_id == param2 && (param1 == -1 || param1 == this->importantObjectMemory[i].owner)) {
                         result++;
                     }
                 }
             }
             i++;
-            idx += 0x24;
         } while (i < this->maxImportantObjectMemory);
     }
 

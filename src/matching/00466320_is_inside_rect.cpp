@@ -13,8 +13,8 @@ public:
 
 #endif
 int TPanel::is_inside_rect(long x, long y, tagRECT* rect) {
-    if (rect->left <= x && x <= rect->right && rect->top <= y && y <= rect->bottom) {
-        return 1;
+    if (x < rect->left || x > rect->right || y < rect->top || y > rect->bottom) {
+        return 0;
     }
-    return 0;
+    return 1;
 }

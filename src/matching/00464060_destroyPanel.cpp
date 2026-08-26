@@ -17,9 +17,9 @@ struct PanelNode {
 
 class TPanelSystem {
 public:
-    TPanel* field_00;
-    TPanel* field_04;
-    TPanel* field_08;
+    TPanel* mouseOwnerValue;
+    TPanel* keyboardOwnerValue;
+    TPanel* modalPanelValue;
     TPanel* currentPanelValue;
     PanelNode* panelListValue;
     int numberActivePanelsValue;
@@ -45,13 +45,13 @@ int TPanelSystem::destroyPanel(char* name) {
         currentPanelValue = 0;
     }
     if (mouseOwnerValue == node->panel) {
-        field_00 = 0;
+        mouseOwnerValue = 0;
     }
     if (keyboardOwnerValue == node->panel) {
-        field_04 = 0;
+        keyboardOwnerValue = 0;
     }
     if (modalPanelValue == node->panel) {
-        field_08 = 0;
+        modalPanelValue = 0;
     }
     node->prev_node->next_node = node->next_node;
     node->next_node->prev_node = node->prev_node;

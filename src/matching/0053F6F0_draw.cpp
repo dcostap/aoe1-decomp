@@ -11,6 +11,8 @@
 //   color and restoring the original `xor eax,eax; lea; mov al` sequence.
 // - The fallback calls use the period TPanel draw_setup/draw_finish slots; the
 //   remaining virtual declarations are padding for the proven ABI surface.
+// - Grouped owner fix: qualify the fallback render area and clip rectangle
+//   through TPanel. This keeps the panel-owned fields after shared inclusion.
 // - Natural full TPanel/RGE_View declarations were codegen-duplicate except for
 //   a two-byte post-call subtraction-order drift, so the minimal exact ABI stub
 //   below is retained as the smallest exact source surface.
@@ -104,7 +106,8 @@ void RGE_Main_View::draw() {
         }
     } else {
         draw_setup(0);
-        ((TDrawArea_Local*)render_area)->Clear(&clip_rect, color);
+        ((TDrawArea_Local*)this->TPanel::render_area)->Clear(
+            &this->TPanel::clip_rect, color);
         draw_finish();
     }
 

@@ -7,12 +7,11 @@ void* __cdecl operator_new(unsigned int size);
 #ifndef INFMAP_SHARED_CONTEXT
 struct InfluenceMap { int vfptr,xSizeValue,ySizeValue,xReferencePointValue,yReferencePointValue; unsigned char* valueValue; unsigned char** rowValue; InfluenceMap(int,int,unsigned char); };
 #endif
-InfluenceMap::InfluenceMap(int xSize, int ySize, unsigned char fillValue) {
+InfluenceMap::InfluenceMap(int xSize, int ySize, unsigned char fillValue)
+    : xSizeValue(xSize),
+      xReferencePointValue(0), yReferencePointValue(0) {
     this->ySizeValue = ySize;
     int total = ySize * xSize;
-    this->xSizeValue = xSize;
-    this->xReferencePointValue = 0;
-    this->yReferencePointValue = 0;
     this->valueValue = (unsigned char*)operator_new(total);
     memset(this->valueValue, fillValue, total);
     this->rowValue = (unsigned char**)operator_new(this->ySizeValue * 4);

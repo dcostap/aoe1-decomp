@@ -95,14 +95,13 @@ int InfluenceMap::coverageIncluding(const XYPoint& from, const XYPoint& to,
 
     for (int x = from.x; x <= to.x; x++) {
         if (from.y <= to.y) {
-            unsigned char** rowsMap = this->rowValue;
             int xOffset = x - this->xReferencePointValue;
             int y = from.y;
             int rows = (to.y - from.y) + 1;
 
             do {
-                if (rowsMap[y - this->yReferencePointValue][xOffset] < minimum &&
-                    rowsMap[y - this->yReferencePointValue][xOffset] + amount >= minimum) {
+                if (this->rowValue[y - this->yReferencePointValue][xOffset] < minimum &&
+                    this->rowValue[y - this->yReferencePointValue][xOffset] + amount >= minimum) {
                     rVal++;
                 }
                 y++;

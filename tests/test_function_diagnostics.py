@@ -304,6 +304,26 @@ class CoffAndDiagnosticTests(unittest.TestCase):
         self.assertEqual(valid["status"], "match")
         self.assertEqual(wrong_pdb_name["status"], "mismatch")
 
+    def test_owning_symbol_validation_accepts_vc5_operators(self) -> None:
+        member = owning_function_symbol_validation(
+            "operator+=",
+            "??YResourceItem@@QAEAAV0@ABV0@@Z",
+            "ResourceItem::operator+=",
+        )
+        free_equal = owning_function_symbol_validation(
+            "operator==",
+            "??8@YAHABVResourceItem@@0@Z",
+            "operator==",
+        )
+        wrong_owner = owning_function_symbol_validation(
+            "operator+=",
+            "??YOtherItem@@QAEAAV0@ABV0@@Z",
+            "ResourceItem::operator+=",
+        )
+        self.assertEqual(member["status"], "match")
+        self.assertEqual(free_equal["status"], "match")
+        self.assertEqual(wrong_owner["status"], "mismatch")
+
     def test_mismatch_classifier_reports_owner_symbol_difference(self) -> None:
         result = self._classify(
             "E9 00 00 00 00",

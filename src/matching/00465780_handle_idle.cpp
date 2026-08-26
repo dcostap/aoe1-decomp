@@ -47,6 +47,8 @@ public:
     unsigned char mouse_down_button;
 
     long handle_idle(void);
+    long mouse_left_hold_action(int, int, int, int);
+    long mouse_right_hold_action(int, int, int, int);
 };
 
 #endif
@@ -54,13 +56,14 @@ long TPanel::handle_idle(void) {
     PanelNode* node;
     long result;
 
+    // BINARY NOTE: hold actions receive x, y, control, then shift values.
     if (active != 0 && mouse_action == 1) {
         if ((int)(debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Panel.cpp", 0x5FD) - mouse_down_time) >= mouse_hold_interval) {
             mouse_action = 2;
             if (mouse_down_button == 1) {
-                mouse_left_hold_action(mouse_down_ctrl, mouse_down_x, mouse_down_y, mouse_down_shift);
+                mouse_left_hold_action(mouse_down_x, mouse_down_y, mouse_down_ctrl, mouse_down_shift);
             } else {
-                mouse_right_hold_action(mouse_down_ctrl, mouse_down_x, mouse_down_y, mouse_down_shift);
+                mouse_right_hold_action(mouse_down_x, mouse_down_y, mouse_down_ctrl, mouse_down_shift);
             }
         }
     }

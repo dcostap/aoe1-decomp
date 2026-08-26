@@ -54,6 +54,8 @@
 // - Grouped exact finish: direct period Win32 declarations preserve the VC5
 //   scheduling that the Windows header changed. The donor pointer form of
 //   get_frame remains exact in standalone and PDB-ordered grouped builds.
+// - Grouped owner fix: qualify TPanel::render_area. The shared RGE_View name
+//   otherwise selects cur_render_area at +0xF4 instead of the panel handle.
 
 #ifndef RGE_MAIN_VIEW_SHARED_CONTEXT
 extern "C" void __cdecl color_log(unsigned char, unsigned char, int);
@@ -474,11 +476,11 @@ long RGE_Main_View::mouse_left_down_action(long param_1, long param_2,
                         // origin from pick_info's screen coordinates.
                         point.x = pick_info.scr_x - min_x;
                         point.y = pick_info.scr_y - min_y;
-                        if (this->render_area->draw_system->screen_mode == 1) {
-                            ClientToScreen(this->render_area->wnd, &point);
+                        if (this->TPanel::render_area->draw_system->screen_mode == 1) {
+                            ClientToScreen(this->TPanel::render_area->wnd, &point);
                         }
-                        if (this->render_area->draw_system->screen_mode == 1) {
-                            ScreenToClient(this->render_area->wnd, &point);
+                        if (this->TPanel::render_area->draw_system->screen_mode == 1) {
+                            ScreenToClient(this->TPanel::render_area->wnd, &point);
                         }
                         this->start_scroll_view(
                             4, point.x, point.y, param_3, param_4);
@@ -572,8 +574,8 @@ long RGE_Main_View::mouse_left_down_action(long param_1, long param_2,
                             // frame origin from pick_info's screen coordinates.
                             point.x = pick_info.scr_x - min_x;
                             point.y = pick_info.scr_y - min_y;
-                            if (this->render_area->draw_system->screen_mode == 1) {
-                                ClientToScreen(this->render_area->wnd, &point);
+                            if (this->TPanel::render_area->draw_system->screen_mode == 1) {
+                                ClientToScreen(this->TPanel::render_area->wnd, &point);
                             }
                         }
                         this->start_scroll_view(
