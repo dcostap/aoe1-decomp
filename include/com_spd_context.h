@@ -142,7 +142,7 @@ public:
     unsigned long GetAdjustmentCount();
     unsigned int GetBufferGranularityAdjusted();
     unsigned int BufferFramesRemaining();
-    void WaitingOnAcknowledgement();
+    unsigned int WaitingOnAcknowledgement();
 
 protected:
     void AdjustLocalSpeed();
