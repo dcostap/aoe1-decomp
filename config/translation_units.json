@@ -3663,6 +3663,10 @@
         "00407E70": "src/matching/00407E70_BaseItem.cpp",
         "00407EF0": "src/matching/00407EF0_BaseItem.cpp",
         "00407F70": "src/matching/00407F70_BaseItem.cpp",
+        "00407F80": "src/matching/00407F80_operator.cpp",
+        "00407FC0": "src/matching/00407FC0_operator.cpp",
+        "00407FE0": "src/matching/00407FE0_operator.cpp",
+        "00408000": "src/matching/00408000_operator.cpp",
         "00408020": "src/matching/00408020_typeID.cpp",
         "00408030": "src/matching/00408030_gameID.cpp",
         "00408040": "src/matching/00408040_uniqueID.cpp",
@@ -3704,7 +3708,11 @@
         "004080C0": "?skip@BaseItem@@QBEHXZ",
         "00408120": "?setX@BaseItem@@QAEXM@Z",
         "00408130": "?setY@BaseItem@@QAEXM@Z",
-        "00408140": "?setZ@BaseItem@@QAEXM@Z"
+        "00408140": "?setZ@BaseItem@@QAEXM@Z",
+        "00407F80": "??8@YAHABVBaseItem@@0@Z",
+        "00407FC0": "??9@YAHABVBaseItem@@0@Z",
+        "00407FE0": "??M@YAHABVBaseItem@@0@Z",
+        "00408000": "??O@YAHABVBaseItem@@0@Z"
       }
     },
     {
