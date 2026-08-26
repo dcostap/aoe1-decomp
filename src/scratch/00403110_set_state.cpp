@@ -3,6 +3,12 @@
 //
 // BINARY NOTE: state 8 uses the two proven lookup arms and one shared
 // Move_To tail.  The natural source keeps those owners and call targets.
+// Probe H1: replacing the lookup convergence goto with a natural if/else
+// emitted the same 1087-byte, 37-call basin.  VC5 still merged one direct
+// find_by_master_ids and one virtual set_target_obj2 call.  The source is
+// restored to the binary-backed form.
+// BLOCKER: original instructions 004033B6 and 004033E7 load owner objects at
+// +0x28. Ground-truth types agree, but act_gath_context.h emits +0x54.
 
 #ifndef ACT_GATH_CONTEXT_H
 #include "../../include/act_gath_context.h"

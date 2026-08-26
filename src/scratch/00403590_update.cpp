@@ -3,6 +3,16 @@
 //
 // BINARY NOTE: both state-8 stop paths store -3.0f before the stop call.
 // Keep the natural typed action, object, player, and task surfaces here.
+// Probe H1: moving modifier and max_hold to function scope did not change the
+// 1620-byte, frame-0x8, 52-call basin.  Probe H2: a canonical moving-object
+// base cast on one stop path also emitted the same basin.  Both are restored.
+// Probe H3: an explicit int cast on the nested update switch also emitted the
+// same basin.  That syntax is restored.
+// Probes H4-H8: if-chain control flow, a nested break, reversed case order,
+// and a branch-local moving alias did not restore the second stop call.  All
+// variants are restored.
+// BLOCKER: act_gath_context.h places world_time_delta_seconds at +0x80, while
+// original ACT_GATH.cpp reads it at +0x84.  This needs a shared ABI repair.
 
 #ifndef ACT_GATH_CONTEXT_H
 #include "../../include/act_gath_context.h"
