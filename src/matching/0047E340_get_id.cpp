@@ -11,18 +11,17 @@ struct TextNode {
 };
 #endif
 
-#ifdef PNL_TXT_TU_CONTEXT
-#define TTTextPanel TTTextPanel_0047E340
-#endif
-class TTTextPanel {
+#ifndef PNL_TXT_TU_CONTEXT
+class TTextPanel {
 public:
     char gap_00[0xF4];
     TextNode* list;    // +0xF4
 
     long get_id(long index);
 };
+#endif
 
-long TTTextPanel::get_id(long index) {
+long TTextPanel::get_id(long index) {
     long count = 0;
     long target = index;
     TextNode* node = this->list;
@@ -38,6 +37,3 @@ long TTTextPanel::get_id(long index) {
     }
     return -1;
 }
-#ifdef PNL_TXT_TU_CONTEXT
-#undef TTTextPanel
-#endif

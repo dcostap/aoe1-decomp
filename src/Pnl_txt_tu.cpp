@@ -263,7 +263,7 @@ public:
     CharType char_type(unsigned char*);
     int word_wrap_append(char*);
     void calc_draw_info(int);
-    void scroll(int, short, int);
+    void scroll(unsigned char, short, int);
     void draw_background();
     void draw_border();
     void draw_line(void*, short, short, unsigned long, unsigned long);
@@ -283,19 +283,21 @@ public:
     int delete_line(long);
     long get_line();
     long get_line(long);
+    long get_line(char*);
     char* get_text();
     char* get_text(long);
     char* get_text2();
     char* get_text2(long);
     long get_id();
     long get_id(long);
+    void set_second_column_pos(long);
     void empty_list();
     void set_line(long);
     void set_line_by_id(long);
     char* currentLine();
-    int numberLines();
-    int numberDrawLines();
-    int currentLineNumber();
+    int numberLines() const;
+    int numberDrawLines() const;
+    int currentLineNumber() const;
     void setCurrentLineNumber(int);
     void target_func(int);
     int get_text_rect(RECT*);
@@ -387,7 +389,7 @@ public:
 #include "matching/0047CE00_set_spacer_size.cpp"
 #include "matching/0047CE20_set_active.cpp"
 #include "accepted_drift/0047CE70_calc_draw_info.cpp"
-#include "scratch/0047D060_scroll.cpp"
+#include "matching/0047D060_scroll.cpp"
 #include "matching/0047D120_key_down_action.cpp"
 #include "matching/0047D200_action.cpp"
 #include "verified_logic/0047D2C0_draw.cpp"
@@ -396,9 +398,9 @@ public:
 #include "accepted_drift/0047D760_draw_line.cpp"
 #include "accepted_drift/0047D9E0_calc_line_pos.cpp"
 #include "matching/0047DC10_mouse_left_down_action.cpp"
-#include "scratch/0047DC30_numberLines.cpp"
-#include "scratch/0047DC40_numberDrawLines.cpp"
-#include "scratch/0047DC50_currentLineNumber.cpp"
+#include "matching/0047DC30_numberLines.cpp"
+#include "matching/0047DC40_numberDrawLines.cpp"
+#include "matching/0047DC50_currentLineNumber.cpp"
 #include "matching/0047DC60_setCurrentLineNumber.cpp"
 #include "matching/0047DC70_currentLine.cpp"
 #include "matching/0047DC80_set_line.cpp"
@@ -415,17 +417,17 @@ public:
 #include "matching/0047E0B0_change_line.cpp"
 #include "matching/0047E110_delete_line.cpp"
 #include "matching/0047E1E0_get_line.cpp"
-#include "scratch/0047E200_get_line.cpp"
-#include "scratch/0047E230_get_line.cpp"
+#include "matching/0047E200_get_line.cpp"
+#include "matching/0047E230_get_line.cpp"
 #include "matching/0047E290_get_text.cpp"
 #include "accepted_drift/0047E2A0_get_text.cpp"
 #include "matching/0047E2E0_get_text2.cpp"
 #include "matching/0047E2F0_get_text2.cpp"
 #include "matching/0047E330_get_id.cpp"
-#include "scratch/0047E340_get_id.cpp"
+#include "matching/0047E340_get_id.cpp"
 #include "matching/0047E370_empty_list.cpp"
-#include "scratch/0047E380_free_text.cpp"
-#include "scratch/0047E3F0_set_second_column_pos.cpp"
+#include "matching/0047E380_free_text.cpp"
+#include "matching/0047E3F0_set_second_column_pos.cpp"
 #include "matching/0047E410_get_text_rect.cpp"
 
 #undef AOE1_PNL_TXT_CONTEXT_H

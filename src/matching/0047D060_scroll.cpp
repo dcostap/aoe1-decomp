@@ -29,16 +29,14 @@ public:
     short page_scroll;    // +0xFA
     short cur_scroll;     // +0xFC
 
-    void scroll_set(int);  // @ 0047CE70, __thiscall
-    void scroll(int scroll_type, short amount, int param_3);
+    void calc_draw_info(int);  // @ 0047CE70, __thiscall
+    void scroll(unsigned char scroll_type, short amount, int param_3);
 };
 #endif
 
-void TTextPanel::scroll(int scroll_type, short amount, int param_3)
+void TTextPanel::scroll(unsigned char scroll_type, short amount, int param_3)
 {
-    unsigned char type = (unsigned char)scroll_type;
-
-    switch (type) {
+    switch (scroll_type) {
     case 0:
         this->cur_scroll += amount;
         break;
@@ -74,6 +72,6 @@ void TTextPanel::scroll(int scroll_type, short amount, int param_3)
     }
     }
 
-    this->scroll_set(param_3);
+    this->calc_draw_info(param_3);
     this->set_redraw(1);
 }

@@ -5,29 +5,27 @@
 
 extern "C" void __cdecl free(void* block);
 
-#ifdef PNL_TXT_TU_CONTEXT
-#define TTTextPanel TTTextPanel_0047E380
-#endif
-class TTTextPanel {
+#ifndef PNL_TXT_TU_CONTEXT
+struct TextNode {
+    char* text;
+    char* text2;
+    long id;
+    TextNode* next;
+};
+
+class TTextPanel {
 public:
-    virtual ~TTTextPanel();
-    virtual long setup(void*, TTTextPanel*, long, long, long, long, unsigned char);
+    virtual ~TTextPanel();
+    virtual long setup(void*, TTextPanel*, long, long, long, long, unsigned char);
     virtual void set_rect(void*);
     virtual void set_rect(long, long, long, long);
     virtual void set_color(unsigned char);
     virtual void set_active(int);
     virtual void set_positioning(int, long, long, long, long, long, long,
-                                  long, long, TTTextPanel*, TTTextPanel*,
-                                  TTTextPanel*, TTTextPanel*);
+                                  long, long, TTextPanel*, TTextPanel*,
+                                  TTextPanel*, TTextPanel*);
     virtual void set_fixed_position(long, long, long, long);
     virtual void set_redraw(int arg);
-
-    struct TextNode {
-        char* text;
-        char* text2;
-        char* pad_08;
-        TextNode* next;
-    };
 
     char pad_04[0xF4 - 4];
     TextNode* list;
@@ -36,8 +34,9 @@ public:
     void calc_draw_info(int param_1);
     void free_text(void);
 };
+#endif
 
-void TTTextPanel::free_text(void) {
+void TTextPanel::free_text(void) {
     TextNode* node = this->list;
     if (node != 0) {
         do {
@@ -57,6 +56,3 @@ void TTTextPanel::free_text(void) {
     this->calc_draw_info(1);
     this->set_redraw(1);
 }
-#ifdef PNL_TXT_TU_CONTEXT
-#undef TTTextPanel
-#endif

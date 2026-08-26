@@ -1,3 +1,8 @@
+// Attempt log:
+// The original loads the index after the list test and uses one bottom-tested
+// loop.  The natural while(node) form with a direct success return reproduces
+// the 35-byte body exactly.  The while(true)/break form hoists the index load.
+
 #ifndef PNL_TXT_TU_CONTEXT
 struct TextNode {
     char gap_00[8];
@@ -17,15 +22,12 @@ public:
 long TTextPanel::get_line(long index) {
     TextNode* node = this->list;
     int i = 0;
-    while (true) {
-        if (node == 0) {
-            return -1;
-        }
+    while (node != 0) {
         if (node->id == index) {
-            break;
+            return i;
         }
         node = node->next_node;
         ++i;
     }
-    return i;
+    return -1;
 }

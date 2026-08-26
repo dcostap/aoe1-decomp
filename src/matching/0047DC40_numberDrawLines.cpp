@@ -8,9 +8,10 @@ class TTextPanel {
 public:
     unsigned char _pad[0xFA];
     short draw_lines; // +0xFA
+    int numberDrawLines() const;
 };
 #endif
 
-int TTextPanel::numberDrawLines() {
+int TTextPanel::numberDrawLines() const {
     return draw_lines;
 }

@@ -8,9 +8,10 @@ class TTextPanel {
 public:
     unsigned char _pad[0x100];
     short cur_line; // +0x100
+    int currentLineNumber() const;
 };
 #endif
 
-int TTextPanel::currentLineNumber() {
+int TTextPanel::currentLineNumber() const {
     return cur_line;
 }
