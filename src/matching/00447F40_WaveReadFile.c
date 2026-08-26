@@ -53,7 +53,7 @@ typedef struct DSUTIL_WAVE_READ_MMIOINFO {
     void* hmmio;
 } DSUTIL_WAVE_READ_MMIOINFO;
 
-int __cdecl _WaveReadFile(void* hmmio, UINT cbRead, BYTE* pbDest, DSUTIL_WAVE_READ_MMCKINFO* pckIn, UINT* cbActualRead)
+int __cdecl WaveReadFile(void* hmmio, UINT cbRead, BYTE* pbDest, DSUTIL_WAVE_READ_MMCKINFO* pckIn, UINT* cbActualRead)
 {
     DSUTIL_WAVE_READ_MMIOINFO mmioinfoIn;
     int nError = 0;

@@ -22,7 +22,7 @@ typedef struct DSUTIL_WAVECREATE_WAVEFORMATEX {
     unsigned short cbSize;
 } DSUTIL_WAVECREATE_WAVEFORMATEX;
 
-int __cdecl _WaveCreateFile(char* pszFileName, HMMIO* phmmioOut, DSUTIL_WAVECREATE_WAVEFORMATEX* pwfxDest, DSUTIL_WAVECREATE_MMCKINFO* pckOut, DSUTIL_WAVECREATE_MMCKINFO* pckOutRIFF)
+int __cdecl WaveCreateFile(char* pszFileName, HMMIO* phmmioOut, DSUTIL_WAVECREATE_WAVEFORMATEX* pwfxDest, DSUTIL_WAVECREATE_MMCKINFO* pckOut, DSUTIL_WAVECREATE_MMCKINFO* pckOutRIFF)
 {
     int err;
     DWORD dwFactChunk;

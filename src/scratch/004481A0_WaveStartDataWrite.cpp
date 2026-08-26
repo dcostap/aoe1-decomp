@@ -35,7 +35,7 @@ struct DSUTIL_MMIOINFO {
 __declspec(dllimport) MMRESULT __stdcall mmioCreateChunk(void* hmmio, void* ckInfo, unsigned long flags);
 __declspec(dllimport) MMRESULT __stdcall mmioGetInfo(void* hmmio, void* info, unsigned long flags);
 
-MMRESULT __cdecl _WaveStartDataWrite(void* hmmioPtr, struct DSUTIL_MMCKINFO* ckOut, struct DSUTIL_MMIOINFO* mmioinfoOut) {
+MMRESULT __cdecl WaveStartDataWrite(void* hmmioPtr, struct DSUTIL_MMCKINFO* ckOut, struct DSUTIL_MMIOINFO* mmioinfoOut) {
     MMRESULT result;
 
     ckOut->ckid = 0x61746164;

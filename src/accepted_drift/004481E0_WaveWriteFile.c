@@ -24,7 +24,7 @@ struct DSUTIL_WAVEWRITE_MMIOINFO {
     unsigned char* pchEndWrite;  // +0x24
 };
 
-void __cdecl WaveWriteFile(HMMIO hmmio, unsigned int cBytes, const unsigned char* lpSrc, unsigned int pad, unsigned int* pdwWritten, struct DSUTIL_WAVEWRITE_MMIOINFO* lpmmio) {
+int __cdecl WaveWriteFile(HMMIO hmmio, unsigned int cBytes, const unsigned char* lpSrc, unsigned int pad, unsigned int* pdwWritten, struct DSUTIL_WAVEWRITE_MMIOINFO* lpmmio) {
     unsigned int i = 0;
     *pdwWritten = 0;
     if (cBytes <= 0) return;

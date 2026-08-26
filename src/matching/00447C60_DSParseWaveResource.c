@@ -12,7 +12,7 @@ typedef struct DSUTIL_WAVEFORMAT {
     unsigned short nBlockAlign;
 } DSUTIL_WAVEFORMAT;
 
-int __cdecl _DSParseWaveResource(void* pvRes, void** ppWaveHeader, BYTE** ppbData, DWORD* pdwDataSize)
+int __cdecl DSParseWaveResource(void* pvRes, void** ppWaveHeader, BYTE** ppbData, DWORD* pdwDataSize)
 {
     DWORD* pdw;
     DWORD dwRiff;

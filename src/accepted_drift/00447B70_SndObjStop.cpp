@@ -30,7 +30,7 @@ struct SndObjStopBuffer {
     SndObjStopBufferVtbl* lpVtbl;
 };
 
-int __cdecl _SndObjStop(void* obj) {
+int __cdecl SndObjStop(void* obj) {
     if (obj == 0) {
         return 0;
     }

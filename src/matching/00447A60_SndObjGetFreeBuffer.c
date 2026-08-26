@@ -1,7 +1,7 @@
 /* VA: 00447A60 _SndObjGetFreeBuffer */
 /* Dsutil.c lines 217-266, 191 bytes */
 
-int __cdecl _DSFillSoundBuffer(void* buf, void* data, int size);
+int __cdecl DSFillSoundBuffer(void* buf, void* data, int size);
 
 typedef struct SndObjFreeBuffer SndObjFreeBuffer;
 typedef struct SndObjFreeBufferVtbl SndObjFreeBufferVtbl;
@@ -42,7 +42,7 @@ struct SndObj {
     SndObjFreeBuffer* buffers[1];
 };
 
-int __cdecl _SndObjGetFreeBuffer(struct SndObj* obj) {
+int __cdecl SndObjGetFreeBuffer(struct SndObj* obj) {
     SndObjFreeBuffer* buf;
     int status;
     int hr;
@@ -74,7 +74,7 @@ int __cdecl _SndObjGetFreeBuffer(struct SndObj* obj) {
 
         if (buf != 0 && (status & 2) != 0) {
             hr = buf->lpVtbl->Func50(buf);
-            if (hr < 0 || _DSFillSoundBuffer(buf, obj->waveData, obj->waveSize) == 0) {
+            if (hr < 0 || DSFillSoundBuffer(buf, obj->waveData, obj->waveSize) == 0) {
                 buf = 0;
             }
         }

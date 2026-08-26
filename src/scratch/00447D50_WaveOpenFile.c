@@ -6,7 +6,7 @@ typedef struct PCMWAVEFORMAT_LOCAL { WORD wFormatTag; WORD nChannels; DWORD nSam
 typedef struct WAVEFORMATEX_LOCAL { WORD wFormatTag; WORD nChannels; DWORD nSamplesPerSec; DWORD nAvgBytesPerSec; WORD nBlockAlign; WORD wBitsPerSample; WORD cbSize; } WAVEFORMATEX_LOCAL;
 /* Alias avoids VC5 treating the CRT copy as an intrinsic; original emits a direct call. */
 void* __cdecl memcpy2(void*, const void*, UINT);
-int __cdecl _WaveOpenFile(char* pszFileName, HMMIO* phmmioIn, void** ppwfxInfo, DSUTIL_WAVEOPEN_MMCKINFO* pckInRIFF)
+int __cdecl WaveOpenFile(char* pszFileName, HMMIO* phmmioIn, void** ppwfxInfo, DSUTIL_WAVEOPEN_MMCKINFO* pckInRIFF)
 {
     HMMIO hmmioIn;
     DSUTIL_WAVEOPEN_MMCKINFO ckIn;

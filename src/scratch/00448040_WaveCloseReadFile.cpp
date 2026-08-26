@@ -1,4 +1,4 @@
-int _WaveCloseReadFile(HMMIO* hmmio, HGLOBAL* pwav) {
+int WaveCloseReadFile(HMMIO* hmmio, HGLOBAL* pwav) {
     if (*pwav != 0) {
         GlobalFree(*pwav);
         *pwav = 0;

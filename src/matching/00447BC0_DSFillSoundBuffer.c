@@ -14,7 +14,7 @@ struct DSFillSoundBuffer {
     int* lpVtbl;
 };
 
-int __cdecl _DSFillSoundBuffer(struct DSFillSoundBuffer* dsb, void* data, int size)
+int __cdecl DSFillSoundBuffer(struct DSFillSoundBuffer* dsb, void* data, int size)
 {
     int hr;
     void* ptr1;

@@ -48,10 +48,10 @@ extern void* _main_wnd;
 extern unsigned int _uTimerID;
 
 int ds_stream_stop(void);
-int _WaveOpenFile(char* file, HMMIO* h, LPWAVEFORMATEX* wi, MMCKINFO* data);
-int _WaveCloseReadFile(HMMIO* h, LPWAVEFORMATEX* wi);
-int _WaveStartDataRead(HMMIO* h, MMCKINFO* data, MMCKINFO* wi);
-int _WaveReadFile(HMMIO h, unsigned int size, unsigned char* dest, MMCKINFO* data, unsigned int* read);
+int WaveOpenFile(char* file, HMMIO* h, LPWAVEFORMATEX* wi, MMCKINFO* data);
+int WaveCloseReadFile(HMMIO* h, LPWAVEFORMATEX* wi);
+int WaveStartDataRead(HMMIO* h, MMCKINFO* data, MMCKINFO* wi);
+int WaveReadFile(HMMIO h, unsigned int size, unsigned char* dest, MMCKINFO* data, unsigned int* read);
 void* memset(void* dst, int c, unsigned int n);
 void __stdcall ds_stream_time_func(unsigned int timer_id, unsigned int message,
     unsigned long user, unsigned long first, unsigned long second);
@@ -75,19 +75,19 @@ int ds_stream_file(char* filename, int param_2, long param_3)
     }
 
     _stream_paused = 0;
-    result = _WaveOpenFile(filename, &DAT_00888464, &_wiWave, &DAT_0088847c);
+    result = WaveOpenFile(filename, &DAT_00888464, &_wiWave, &DAT_0088847c);
     if (result != 0) {
         return 0;
     }
 
     if (*(short*)_wiWave != 1) {
-        _WaveCloseReadFile(&DAT_00888464, &_wiWave);
+        WaveCloseReadFile(&DAT_00888464, &_wiWave);
         return 0;
     }
 
-    result = _WaveStartDataRead(&DAT_00888464, &DAT_00888468, &DAT_0088847c);
+    result = WaveStartDataRead(&DAT_00888464, &DAT_00888468, &DAT_0088847c);
     if (result != 0) {
-        _WaveCloseReadFile(&DAT_00888464, &_wiWave);
+        WaveCloseReadFile(&DAT_00888464, &_wiWave);
         return 0;
     }
 
@@ -115,15 +115,15 @@ int ds_stream_file(char* filename, int param_2, long param_3)
     }
 
     if (dwLen1 != 0) {
-        _WaveReadFile(DAT_00888464, dwLen1, lpWrite1, &DAT_00888468, &uChkErr);
+        WaveReadFile(DAT_00888464, dwLen1, lpWrite1, &DAT_00888468, &uChkErr);
         if (uChkErr < dwLen1) {
             if (DAT_008884ac != 0) {
                 unsigned char* lpWriteCursor = lpWrite1;
                 do {
                     lpWriteCursor += uChkErr;
                     dwLen1 -= uChkErr;
-                    _WaveStartDataRead(&DAT_00888464, &DAT_00888468, &DAT_0088847c);
-                    _WaveReadFile(DAT_00888464, dwLen1, lpWriteCursor, &DAT_00888468, &uChkErr);
+                    WaveStartDataRead(&DAT_00888464, &DAT_00888468, &DAT_0088847c);
+                    WaveReadFile(DAT_00888464, dwLen1, lpWriteCursor, &DAT_00888468, &uChkErr);
                 } while (uChkErr < dwLen1);
             } else {
                 DAT_008884b4 = uChkErr / DAT_00888498;

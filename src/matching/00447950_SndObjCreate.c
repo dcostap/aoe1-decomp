@@ -36,13 +36,13 @@ struct SndObjCreateObject {
     SndObjCreateDirectSoundBuffer* buffers[1];
 };
 
-int __cdecl _DSGetWaveResource(void* hModule, void* lpName, void* out1, void* out2, void* out3);
+int __cdecl DSGetWaveResource(void* hModule, void* lpName, void* out1, void* out2, void* out3);
 typedef struct DSLoadDirectSound DSLoadDirectSound;
 typedef struct DSLoadDirectSoundBuffer DSLoadDirectSoundBuffer;
-DSLoadDirectSoundBuffer* __cdecl _DSLoadSoundBuffer(DSLoadDirectSound* pDS, void* lpName);
-void __cdecl _SndObjDestroy(void* obj);
+DSLoadDirectSoundBuffer* __cdecl DSLoadSoundBuffer(DSLoadDirectSound* pDS, void* lpName);
+void __cdecl SndObjDestroy(void* obj);
 
-SndObjCreateObject* __cdecl _SndObjCreate(SndObjCreateDirectSound* pDS, void* lpName, int count)
+SndObjCreateObject* __cdecl SndObjCreate(SndObjCreateDirectSound* pDS, void* lpName, int count)
 {
     BYTE* pbData;
     DWORD cbData;
@@ -52,7 +52,7 @@ SndObjCreateObject* __cdecl _SndObjCreate(SndObjCreateDirectSound* pDS, void* lp
     SndObjCreateDirectSoundBuffer** buf;
 
     obj = 0;
-    if (_DSGetWaveResource(0, lpName, &pWaveHeader, &pbData, &cbData) != 0) {
+    if (DSGetWaveResource(0, lpName, &pWaveHeader, &pbData, &cbData) != 0) {
         i = 1;
         if (count < i) {
             count = i;
@@ -63,13 +63,13 @@ SndObjCreateObject* __cdecl _SndObjCreate(SndObjCreateDirectSound* pDS, void* lp
             obj->pbData = pbData;
             obj->cbData = cbData;
             obj->buffers[0] = (SndObjCreateDirectSoundBuffer*)
-                _DSLoadSoundBuffer((DSLoadDirectSound*)pDS, lpName);
+                DSLoadSoundBuffer((DSLoadDirectSound*)pDS, lpName);
             if (i < obj->count) {
                 buf = &obj->buffers[1];
                 while (1) {
                     if (pDS->lpVtbl->DuplicateSoundBuffer(pDS, obj->buffers[0], buf) < 0) {
                         *buf = (SndObjCreateDirectSoundBuffer*)
-                            _DSLoadSoundBuffer((DSLoadDirectSound*)pDS, lpName);
+                            DSLoadSoundBuffer((DSLoadDirectSound*)pDS, lpName);
                         if (*buf == 0) {
                             goto destroy_obj;
                         }
@@ -83,7 +83,7 @@ SndObjCreateObject* __cdecl _SndObjCreate(SndObjCreateDirectSound* pDS, void* lp
                 }
 
 destroy_obj:
-                _SndObjDestroy(obj);
+                SndObjDestroy(obj);
                 obj = 0;
             }
         }

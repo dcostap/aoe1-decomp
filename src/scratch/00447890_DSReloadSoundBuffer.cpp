@@ -1,8 +1,8 @@
 // DSReloadSoundBuffer
 // VA: 00447890
 
-int __cdecl _DSGetWaveResource(int a, int b, int c, void* d, void* e);
-int __cdecl _DSFillSoundBuffer(void* a, void* b, int c);
+int __cdecl DSGetWaveResource(int a, int b, int c, void* d, void* e);
+int __cdecl DSFillSoundBuffer(void* a, void* b, int c);
 
 typedef struct IDSBuffer IDSBuffer;
 typedef struct IDSVTable IDSVTable;
@@ -35,13 +35,13 @@ struct IDSBuffer {
     IDSVTable* lpVtbl;
 };
 
-int __cdecl _DSReloadSoundBuffer(IDSBuffer* buffer, int param2, void* param3) {
+int __cdecl DSReloadSoundBuffer(IDSBuffer* buffer, int param2, void* param3) {
     int result = 0;
     int local_4;
 
-    if (_DSGetWaveResource(0, param2, 0, (void*)&local_4, &param2) != 0) {
+    if (DSGetWaveResource(0, param2, 0, (void*)&local_4, &param2) != 0) {
         if (buffer->lpVtbl->func0x50(buffer) >= 0) {
-            if (_DSFillSoundBuffer(buffer, (void*)local_4, param2) != 0) {
+            if (DSFillSoundBuffer(buffer, (void*)local_4, param2) != 0) {
                 result = 1;
             }
         }

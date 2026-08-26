@@ -1,4 +1,4 @@
-int __cdecl _SndObjGetFreeBuffer(void* sndobj);
+int __cdecl SndObjGetFreeBuffer(void* sndobj);
 
 typedef struct SndObjPlayBuffer SndObjPlayBuffer;
 typedef struct SndObjPlayBufferVtbl SndObjPlayBufferVtbl;
@@ -32,7 +32,7 @@ struct SndObjPlayObject {
     SndObjPlayBuffer* Buffers[1];
 };
 
-unsigned int __cdecl _SndObjPlay(struct SndObjPlayObject* sndobj, unsigned long flags) {
+unsigned int __cdecl SndObjPlay(struct SndObjPlayObject* sndobj, unsigned long flags) {
     unsigned int result;
     SndObjPlayBuffer* buffer;
     int hr;
@@ -42,7 +42,7 @@ unsigned int __cdecl _SndObjPlay(struct SndObjPlayObject* sndobj, unsigned long 
         return result;
     }
     if (((flags & 1) == 0) || (sndobj->iAlloc == 1)) {
-        buffer = (SndObjPlayBuffer*)_SndObjGetFreeBuffer(sndobj);
+        buffer = (SndObjPlayBuffer*)SndObjGetFreeBuffer(sndobj);
         if (buffer != 0) {
             hr = buffer->lpVtbl->Play(buffer, 0, 0, flags);
             result = (unsigned int)(hr >= 0);

@@ -21,20 +21,20 @@ typedef struct DSBUFFERDESC_LOCAL {
     void* lpwfxFormat;
 } DSBUFFERDESC_LOCAL;
 
-int __cdecl _DSGetWaveResource(void* hModule, char* name, void* out1, void* out2, void* out3);
-int __cdecl _DSFillSoundBuffer(void* dsb, void* data, int size);
+int __cdecl DSGetWaveResource(void* hModule, char* name, void* out1, void* out2, void* out3);
+int __cdecl DSFillSoundBuffer(void* dsb, void* data, int size);
 
-DSLoadDirectSoundBuffer* __cdecl _DSLoadSoundBuffer(DSLoadDirectSound* ds, char* name)
+DSLoadDirectSoundBuffer* __cdecl DSLoadSoundBuffer(DSLoadDirectSound* ds, char* name)
 {
     DSLoadDirectSoundBuffer* pDSB = 0;
     DSBUFFERDESC_LOCAL dsBD = {0};
     void* pbWaveData;
 
-    if (_DSGetWaveResource(0, name, &dsBD.lpwfxFormat, &pbWaveData, (void*)&dsBD.dwBufferBytes) != 0) {
+    if (DSGetWaveResource(0, name, &dsBD.lpwfxFormat, &pbWaveData, (void*)&dsBD.dwBufferBytes) != 0) {
         dsBD.dwSize = sizeof(dsBD);
         dsBD.dwFlags = 0xe2;
         if (((int (__stdcall *)(DSLoadDirectSound*, DSBUFFERDESC_LOCAL*, DSLoadDirectSoundBuffer**, void*))ds->lpVtbl[3])(ds, &dsBD, &pDSB, 0) >= 0) {
-            if (_DSFillSoundBuffer(pDSB, pbWaveData, dsBD.dwBufferBytes) == 0) {
+            if (DSFillSoundBuffer(pDSB, pbWaveData, dsBD.dwBufferBytes) == 0) {
                 ((int (__stdcall *)(DSLoadDirectSoundBuffer*))pDSB->lpVtbl[2])(pDSB);
                 return 0;
             }

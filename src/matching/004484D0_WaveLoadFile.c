@@ -15,11 +15,11 @@ __declspec(dllimport) HGLOBAL __stdcall GlobalAlloc(UINT flags, DWORD bytes);
 __declspec(dllimport) HGLOBAL __stdcall GlobalFree(HGLOBAL hMem);
 __declspec(dllimport) int __stdcall mmioClose(HMMIO hmmio, UINT flags);
 
-int __cdecl _WaveOpenFile(char* pszFileName, HMMIO* phmmioIn, void** ppWaveHeader, DSUTIL_WAVELOAD_MMCKINFO* pckInRIFF);
-int __cdecl _WaveStartDataRead(HMMIO* phmmioIn, DSUTIL_WAVELOAD_MMCKINFO* pckIn, DSUTIL_WAVELOAD_MMCKINFO* pckInRIFF);
-int __cdecl _WaveReadFile(HMMIO hmmioIn, DWORD cbRead, unsigned char* pbDest, DSUTIL_WAVELOAD_MMCKINFO* pckIn, DWORD* pcbActualRead);
+int __cdecl WaveOpenFile(char* pszFileName, HMMIO* phmmioIn, void** ppWaveHeader, DSUTIL_WAVELOAD_MMCKINFO* pckInRIFF);
+int __cdecl WaveStartDataRead(HMMIO* phmmioIn, DSUTIL_WAVELOAD_MMCKINFO* pckIn, DSUTIL_WAVELOAD_MMCKINFO* pckInRIFF);
+int __cdecl WaveReadFile(HMMIO hmmioIn, DWORD cbRead, unsigned char* pbDest, DSUTIL_WAVELOAD_MMCKINFO* pckIn, DWORD* pcbActualRead);
 
-int __cdecl _WaveLoadFile(char* pszFileName, DWORD* pcbWaveSize, DWORD* pcbHeaderSize, void** ppWaveHeader, unsigned char** ppbWaveData)
+int __cdecl WaveLoadFile(char* pszFileName, DWORD* pcbWaveSize, DWORD* pcbHeaderSize, void** ppWaveHeader, unsigned char** ppbWaveData)
 {
     HMMIO hmmio;
     DSUTIL_WAVELOAD_MMCKINFO ckInRiff;
@@ -31,12 +31,12 @@ int __cdecl _WaveLoadFile(char* pszFileName, DWORD* pcbWaveSize, DWORD* pcbHeade
     *ppWaveHeader = 0;
     *pcbWaveSize = 0;
 
-    err = _WaveOpenFile(pszFileName, &hmmio, ppWaveHeader, &ckInRiff);
+    err = WaveOpenFile(pszFileName, &hmmio, ppWaveHeader, &ckInRiff);
     if (err != 0) {
         goto error;
     }
 
-    err = _WaveStartDataRead(&hmmio, &ckIn, &ckInRiff);
+    err = WaveStartDataRead(&hmmio, &ckIn, &ckInRiff);
     if (err != 0) {
         goto error;
     }
@@ -47,7 +47,7 @@ int __cdecl _WaveLoadFile(char* pszFileName, DWORD* pcbWaveSize, DWORD* pcbHeade
         goto error;
     }
 
-    err = _WaveReadFile(hmmio, ckIn.cksize, *ppbWaveData, &ckIn, &cbActualRead);
+    err = WaveReadFile(hmmio, ckIn.cksize, *ppbWaveData, &ckIn, &cbActualRead);
     if (err != 0) {
         goto error;
     }

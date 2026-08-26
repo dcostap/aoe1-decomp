@@ -11,7 +11,7 @@ extern int DAT_008884a8;
 extern void* DAT_00888464;
 extern void* DAT_00888490;
 
-extern int __cdecl _WaveCloseReadFile(void* a, void* b);
+extern int __cdecl WaveCloseReadFile(void* a, void* b);
 
 int __cdecl ds_stream_stop(void)
 {
@@ -31,7 +31,7 @@ int __cdecl ds_stream_stop(void)
 
     if (_bFileOpen != 0) {
         if (_wiWave != 0) {
-            _WaveCloseReadFile(&DAT_00888464, &_wiWave);
+            WaveCloseReadFile(&DAT_00888464, &_wiWave);
             _wiWave = 0;
         }
         if (_lpDSBStreamBuffer != 0) {

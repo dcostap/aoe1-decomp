@@ -1,1 +1,1 @@
-void _ShowErrMsg(void) {}
+void ShowErrMsg(void) {}

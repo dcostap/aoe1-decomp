@@ -77,7 +77,7 @@ typedef int (__stdcall *MMIOCLOSE)(HMMIO, UINT);
 #define mmioWrite_abs (*(MMIOWRITE*)0x88A948)
 #define mmioClose_abs (*(MMIOCLOSE*)0x88A94C)
 
-int __cdecl _WaveCloseWriteFile(HMMIO* phmmioOut, DSUTIL_WAVECLOSEWRITE_MMCKINFO* pckOut, DSUTIL_WAVECLOSEWRITE_MMCKINFO* pckOutRIFF, DSUTIL_WAVECLOSEWRITE_MMIOINFO* pmmioinfoOut, DWORD cSamples)
+int __cdecl WaveCloseWriteFile(HMMIO* phmmioOut, DSUTIL_WAVECLOSEWRITE_MMCKINFO* pckOut, DSUTIL_WAVECLOSEWRITE_MMCKINFO* pckOutRIFF, DSUTIL_WAVECLOSEWRITE_MMIOINFO* pmmioinfoOut, DWORD cSamples)
 {
     int result;
 
