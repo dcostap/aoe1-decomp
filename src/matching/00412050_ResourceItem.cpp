@@ -1,5 +1,8 @@
 // ResourceItem::ResourceItem(ResourceItem*)
 // VA: 00412050 | airesitm.cpp:92-98
+// BINARY NOTE: The relative source-value load has one remaining SIB operand
+// order difference in the authentic TU: VC5 emits [edx+ecx], while the shipped
+// body uses [ecx+edx]. Natural pointer forms tested in this TU changed more.
 
 ResourceItem::ResourceItem(ResourceItem* src)
     : next(0), prev(0), numberValue(src->numberValue) {

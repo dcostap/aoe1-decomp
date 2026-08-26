@@ -4,6 +4,9 @@
 // BINARY NOTE: the first fill loop keeps its capacity guard before the three
 // stores and shares the final exit with the tail fill path.  The second loop
 // fills the remaining lanes with -1.
+// BINARY NOTE: In the authentic TU, VC5 emits the two independent induction
+// updates in reverse order at +0x3B and +0x3E. Natural update forms tested in
+// this TU changed other body bytes, so this source remains the clean baseline.
 
 ResourceItem::ResourceItem(int count, int* source)
     : next(0), prev(0), numberValue(count) {
