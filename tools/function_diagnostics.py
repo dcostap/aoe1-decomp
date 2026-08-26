@@ -166,6 +166,8 @@ _SIMPLE_OWNER_NAME_RE = re.compile(r"~?[A-Za-z_][A-Za-z0-9_]*$")
 _VC5_OPERATOR_CODES = {
     "??8": "operator==",
     "??9": "operator!=",
+    "??M": "operator<",
+    "??O": "operator>",
     "??Y": "operator+=",
 }
 _VC5_TEMPLATE_TYPE_CODES = {
