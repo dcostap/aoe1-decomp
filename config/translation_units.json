@@ -6530,6 +6530,7 @@
         "0053E340": "src/matching/0053E340_mouse_left_down_action.cpp",
         "0053E7F0": "src/matching/0053E7F0_mouse_left_move_action.cpp",
         "0053F220": "src/matching/0053F220_mouse_right_down_action.cpp",
+        "0053F2F0": "src/matching/0053F2F0_mouse_right_move_action.cpp",
         "0053F3D0": "src/matching/0053F3D0_mouse_right_up_action.cpp",
         "0053F660": "src/matching/0053F660_start_scroll_view.cpp",
         "0053F6B0": "src/matching/0053F6B0_handle_scroll_view.cpp",
@@ -6542,9 +6543,14 @@
         "00540420": "src/matching/00540420_command_make_work.cpp",
         "005405C0": "src/matching/005405C0_command_place_multi_object.cpp",
         "005405E0": "src/matching/005405E0_get_help_info.cpp",
-        "00540680": "src/matching/00540680_fixup_pick_info.cpp"
+        "00540680": "src/matching/00540680_fixup_pick_info.cpp",
+        "00540700": "src/matching/00540700_reset_display_object_selection.cpp"
       },
-      "symbols": {}
+      "symbols": {
+        "0053F2F0": "?mouse_right_move_action@RGE_Main_View@@UAEJJJHH@Z",
+        "0053F6F0": "?draw@RGE_Main_View@@UAEXXZ",
+        "00540700": "?reset_display_object_selection@RGE_Main_View@@QAEXH@Z"
+      }
     },
     {
       "name": "taibldmd",
