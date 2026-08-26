@@ -1,6 +1,8 @@
 // 0042A540 TCommunications_Handler::TXAcknowledgeMessage
 // Com_hand.cpp:3381-3438
 
+#include "../../include/directplay4a_context.h"
+
 typedef unsigned int uint;
 
 #if !defined(COM_HAND_TU_CONTEXT)
@@ -19,10 +21,6 @@ public:
 #endif // COM_HAND_TU_CONTEXT
 
 
-struct IDirectPlayLike {
-    void* vtbl;
-};
-
 extern void* operator new(unsigned int size);
 extern void operator delete(void* ptr);
 #if !defined(COM_HAND_TU_CONTEXT)
@@ -35,11 +33,16 @@ extern TDebuggingLog* L;
 extern unsigned int DAT_0062cf04;
 #endif // COM_HAND_TU_CONTEXT
 #if !defined(COM_HAND_TU_CONTEXT)
-extern IDirectPlayLike* DAT_0062c5ec;
+extern IDirectPlay4A* DAT_0062c5ec;
 #endif // COM_HAND_TU_CONTEXT
 extern const char s_Com_hand_cpp[];
 
 #if !defined(COM_HAND_TU_CONTEXT)
+struct COMMPLAYEROPTIONS {
+    char gap_00[0x14];
+    unsigned int dcoID[10];
+};
+
 class TCommunications_Handler {
 public:
     char gap_0000[0x12C0];
@@ -48,8 +51,8 @@ public:
     RGE_Comm_Error* Err;             // +0x14E0
     char gap_14E4[0x1514 - 0x14E4];
     unsigned char RGE_Guaranteed_Delivery; // +0x1514
-    char gap_1515[0x1564 - 0x1515];
-    unsigned int dcoID[1];           // +0x1564
+    char gap_1515[0x1550 - 0x1515];
+    COMMPLAYEROPTIONS PlayerOptions; // dcoID at +0x1564
 
     int TXAcknowledgeMessage(uint param_1, uint param_2);
 };

@@ -153,7 +153,7 @@
 #define debug_log com_hand_ping_debug_log
 #include "matching/00427440_TXDebugPing.cpp"
 #undef debug_log
-#include "scratch/004274B0_FastSend.cpp"
+#include "matching/004274B0_FastSend.cpp"
 #undef E_FAIL
 #undef E_INVALIDARG
 #undef S_SEND_SELF

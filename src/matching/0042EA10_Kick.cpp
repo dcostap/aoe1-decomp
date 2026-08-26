@@ -24,6 +24,11 @@ struct MSGFORMAT_KILL_PLAYER {
 
 
 #if !defined(COM_HAND_TU_CONTEXT)
+struct COMMPLAYEROPTIONS {
+    char gap_00[0x14];
+    unsigned long dcoID[10];
+};
+
 class TCommunications_Handler {
 public:
     char gap_00[0x1C];
@@ -34,8 +39,8 @@ public:
     unsigned short MaxGamePlayers;     // +0x12D8
     char gap_12DA[0xE2];
     unsigned long PlayerStopTurn[1];   // +0x13BC (array base, size 10)
-    char gap_13C0[0x1A4];
-    unsigned long dcoID[1];            // +0x1564 (PlayerOptions.dcoID array base)
+    char gap_13C0[0x190];
+    COMMPLAYEROPTIONS PlayerOptions;   // dcoID at +0x1564
 
     int IsPlayerHuman(unsigned int player);
     void DropDeadPlayer(unsigned int player, unsigned long dco);

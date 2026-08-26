@@ -76,7 +76,9 @@ public:
 void TCommunications_Handler::SetSelfPlayer()
 {
     for (unsigned int i = 1; i <= this->MaxGamePlayers; ++i) {
-        int* p = (int*)&this->PlayerOptions.dcoID[i - 1];
+        // BINARY NOTE: the shipped loop advances past dcoID[0] before its
+        // first comparison.  Keep that original off-by-one access.
+        int* p = (int*)&this->PlayerOptions.dcoID[i];
         Log(L, "Check dcoID %d to Me %d ?", *p, selfDcoID);
 
         if (*p == selfDcoID) {
