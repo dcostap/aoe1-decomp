@@ -2,12 +2,19 @@
 // PDB source: scr_sedo.cpp
 //
 // The shared surface uses the proven TScreenPanel and panel-member offsets.
-// Remaining constructor drift is register allocation and local-buffer layout.
 // BINARY NOTE: The PDB span is scr_sedo.cpp lines 45-99. The natural
 // constructor keeps the original EH frame, 19 ordered calls, and +0x478-
 // +0x48C member ownership without a handwritten vptr store.
-// BLOCKER: The current source emits EBX = this + 0x48C instead of the
-// executable's EBX = this + 0x47C and ends four bytes after the oracle.
+//
+// Attempt log:
+// - The first source had the right frame and calls, but used the wrong
+//   callee-saved register map. It emitted EBX = this + 0x48C and four extra
+//   bytes after the target boundary.
+// - Natural cancel and delete child aliases recover the target EBX/ESI/EDI
+//   map. The direct info_file setup pointer recovers the final one-byte LEA.
+// - A real from_panel local expands the frame to 0x120 and was rejected.
+// - Exact result: 683 bytes, 194 instructions, 19/19 ordered calls,
+//   27/27 compatible relocations, and 0.0000% strict difference.
 
 #include <string.h>
 #include "../../include/scr_sedo_context.h"
@@ -30,7 +37,7 @@ TRIBE_Screen_Sed_Open::TRIBE_Screen_Sed_Open()
 
     void* draw_area = rge_base_game->draw_area;
 
-    if (!setup(draw_area, info_file + 4,
+    if (!setup(draw_area, info_file,
                    ((TEasy_Panel*)tabList[0])->get_info_id(), 1)) {
         setup_error = 1;
         return;
@@ -48,8 +55,7 @@ TRIBE_Screen_Sed_Open::TRIBE_Screen_Sed_Open()
     if (!create_auto_scrollbar(&scrollbar, list, 0x14))
         return;
 
-    TButtonPanel** okPtr = &okButton;
-    if (!create_button(this, okPtr, 0xFA1, 0, 0x1E, 0x1B8, 0xB4, 0x1E, 0, 0, 0))
+    if (!create_button(this, &okButton, 0xFA1, 0, 0x1E, 0x1B8, 0xB4, 0x1E, 0, 0, 0))
         return;
 
     if (!create_button(this, &deleteButton, 0x24C9, 0, 0xE6, 0x1B8, 0xB4, 0x1E, 0, 0, 0))
@@ -58,10 +64,12 @@ TRIBE_Screen_Sed_Open::TRIBE_Screen_Sed_Open()
     if (!create_button(this, &cancelButton, 0xFA2, 0, 0x1AE, 0x1B8, 0xB4, 0x1E, 0, 0, 0))
         return;
 
-    cancelButton->hotkey = 0x1B;
-    cancelButton->hotkey_shift = 0;
-    deleteButton->hotkey_shift = 0;
-    deleteButton->hotkey = 0x2E;
+    TButtonPanel* cancel = cancelButton;
+    cancel->hotkey = 0x1B;
+    cancel->hotkey_shift = 0;
+    TButtonPanel* delete_button = deleteButton;
+    delete_button->hotkey_shift = 0;
+    delete_button->hotkey = 0x2E;
 
     fillList();
 

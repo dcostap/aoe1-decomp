@@ -6,8 +6,17 @@
 // BINARY NOTE: The PDB span is scr_sedo.cpp lines 155-245. The natural
 // source keeps all 38 ordered calls, file-path effects, panel transitions,
 // cleanup paths, and return values.
-// BLOCKER: The fallback OpenFile path has a different block layout and the
-// rebuilt body ends seven bytes after the executable.
+//
+// Attempt log:
+// - The first natural source used separate extension sprintf calls. It kept
+//   all 38 calls but emitted seven bytes after the target boundary.
+// - A branch-selected format pointer and one common sprintf tail recover the
+//   original 1003-byte boundary and 265-instruction count.
+// - Reversed OpenFile predicates and explicit labels were tested. They moved
+//   the hot block or restored the seven-byte size drift, so they were rejected.
+// - Current result: 1003 bytes, 265 instructions, 38/38 ordered calls,
+//   matching owner and boundary, and 126 strict differing bytes. The remaining
+//   drift is a local format-tail register and block-shape difference.
 
 #include <new.h>
 #include <string.h>
@@ -38,6 +47,7 @@ long TRIBE_Screen_Sed_Open::action(TPanel* param_1, long param_2,
     char* line;
     RGE_Prog_Info* prog_info;
     long curr_line;
+    char* file_format;
     int (__stdcall *open_file)(const char*, void*, unsigned int);
 
     if (param_1 != 0) {
@@ -98,8 +108,8 @@ long TRIBE_Screen_Sed_Open::action(TPanel* param_1, long param_2,
 
                     open_file = OpenFile;
                     if (open_file(fileName + 4, &of.Reserved1, 0x4000) != -1) {
-                        sprintf(fileName + 4, "%s.scn",
-                                ((TTextPanel*)list)->currentLine());
+                        line = ((TTextPanel*)list)->currentLine();
+                        file_format = "%s.scn";
                     }
                     else {
                         prog_info = rge_base_game->prog_info;
@@ -108,14 +118,14 @@ long TRIBE_Screen_Sed_Open::action(TPanel* param_1, long param_2,
                                 prog_info->scenario_dir, line);
                         if (open_file(fileName + 4, &of.Reserved1, 0x4000) != -1) {
                             line = ((TTextPanel*)list)->currentLine();
-                            sprintf(fileName + 4, "%s.scx", line);
+                            file_format = "%s.scx";
                         }
                         else {
                             popupOKDialog(0x24CF, 0, 0x1C2, 100);
                             return 1;
                         }
                     }
-
+                    sprintf(fileName + 4, file_format, line);
                     rge_base_game->start_scenario_editor(fileName + 4, 0);
                     return 1;
                 }
