@@ -20,7 +20,11 @@ from common import (
     slugify_name,
 )
 from validate_candidate_tu import _resolve, load_proposal, validate_proposal
-from validate_translation_units import validate_translation_units
+from validate_translation_units import (
+    _all_local_includes,
+    _owner_include_positions,
+    validate_translation_units,
+)
 
 
 def parse_args() -> argparse.Namespace:
@@ -64,7 +68,10 @@ def candidate_group(payload: dict[str, object]) -> dict[str, object]:
 
 
 def merge_candidate_group(
-    groups: list[dict[str, object]], candidate: dict[str, object]
+    groups: list[dict[str, object]],
+    candidate: dict[str, object],
+    *,
+    root: Path = REPO_ROOT,
 ) -> tuple[list[dict[str, object]], str]:
     result = [dict(group) for group in groups]
     candidate_name = str(candidate["name"])
@@ -108,6 +115,23 @@ def merge_candidate_group(
 
     owners = dict(current.get("owners") or {})
     owners.update(candidate_owners)
+    source_path = root / candidate_source
+    local_includes = _all_local_includes(source_path)
+    owner_positions: dict[str, int] = {}
+    fallback_position = 1 << 30
+    for owner_index, (va, owner) in enumerate(owners.items()):
+        owner_path = root / str(owner).replace("\\", "/")
+        positions = _owner_include_positions(source_path, owner_path)
+        if not positions:
+            positions = [
+                position
+                for position, included_path in local_includes
+                if included_path.name.casefold() == owner_path.name.casefold()
+            ]
+        owner_positions[va] = (
+            positions[0] if len(positions) == 1 else fallback_position + owner_index
+        )
+    owners = dict(sorted(owners.items(), key=lambda item: owner_positions[item[0]]))
     symbols = dict(current.get("symbols") or {})
     symbols.update(candidate_symbols)
     merged = dict(current)

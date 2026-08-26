@@ -2639,6 +2639,7 @@
       "symbols": {
         "004B7140": "??0TRIBE_Screen_Status_Message@@QAE@PAD00J@Z",
         "004B7330": "??0TRIBE_Screen_Status_Message@@QAE@PADJ0J@Z",
+        "004B7560": "?set_text@TRIBE_Screen_Status_Message@@QAEXPAD@Z",
         "004B7580": "?set_text@TRIBE_Screen_Status_Message@@QAEXJ@Z"
       }
     },
@@ -2881,7 +2882,9 @@
       },
       "symbols": {
         "004D38E0": "??0TRIBE_Action@@QAE@HPAVRGE_Action_Object@@H@Z",
-        "004D3980": "??0TRIBE_Action@@QAE@PAVRGE_Action_Object@@H@Z"
+        "004D3980": "??0TRIBE_Action@@QAE@PAVRGE_Action_Object@@H@Z",
+        "004D39E0": "?setup@TRIBE_Action@@UAEHHPAVRGE_Action_Object@@@Z",
+        "004D3A00": "?setup@TRIBE_Action@@UAEHPAVRGE_Action_Object@@@Z"
       }
     },
     {
@@ -2927,7 +2930,11 @@
         "00412E20": "src/matching/00412E20_name.cpp",
         "00412E30": "src/matching/00412E30_resourceCost.cpp"
       },
-      "symbols": {}
+      "symbols": {
+        "00412BB0": "??0TechnologyItem@@QAE@XZ",
+        "00412C20": "??0TechnologyItem@@QAE@HPADVResourceItem@@@Z",
+        "00412CD0": "??0TechnologyItem@@QAE@ABV0@@Z"
+      }
     },
     {
       "name": "campaign",
@@ -3007,6 +3014,8 @@
         "0044F040": "src/matching/0044F040_maxValue.cpp"
       },
       "symbols": {
+        "0044DF80": "??0InfluenceMap@@QAE@HHE@Z",
+        "0044E050": "??0InfluenceMap@@QAE@H@Z",
         "0044E510": "?setValue@InfluenceMap@@QAEHHHE@Z",
         "0044E560": "?setValue@InfluenceMap@@QAEHHHHHE@Z",
         "0044E680": "?incrementValue@InfluenceMap@@QAEHHHHHE@Z",
@@ -3081,6 +3090,7 @@
       },
       "symbols": {
         "0047BD40": "?setup@TVerticalSliderPanel@@QAEJPAVTDrawArea@@PAVTPanel@@JJJJPAD2JJJJHH@Z",
+        "0047BDC0": "?set_rect@TVerticalSliderPanel@@UAEXJJJJ@Z",
         "0047BDE0": "?draw@TVerticalSliderPanel@@UAEXXZ",
         "0047BE40": "?setup@THorizontalSliderPanel@@QAEJPAVTDrawArea@@PAVTPanel@@JJJJPAD2JJJJHH@Z",
         "0047BEC0": "?set_rect@THorizontalSliderPanel@@UAEXJJJJ@Z",
@@ -3388,6 +3398,9 @@
       },
       "symbols": {
         "00407D80": "??0BaseItem@@QAE@XZ",
+        "00407E00": "??0BaseItem@@QAE@HHHPADMMMMMM@Z",
+        "00407E70": "??0BaseItem@@QAE@PAV0@@Z",
+        "00407EF0": "??0BaseItem@@QAE@ABV0@@Z",
         "00408020": "?typeID@BaseItem@@QBEHXZ",
         "00408030": "?gameID@BaseItem@@QBEHXZ",
         "00408040": "?uniqueID@BaseItem@@QBEHXZ",
@@ -3887,6 +3900,8 @@
         "0047BB60": "src/matching/0047BB60_set_focus.cpp"
       },
       "symbols": {
+        "0047BA70": "??0TScreenPanel@@QAE@XZ",
+        "0047BAB0": "??0TScreenPanel@@QAE@PAD@Z",
         "0047BAE0": "?setup@TScreenPanel@@QAEJPAVTDrawArea@@PADJH@Z",
         "0047BB10": "?setup@TScreenPanel@@QAEJPAVTDrawArea@@PADJEH@Z",
         "0047BB40": "?draw@TScreenPanel@@UAEXXZ",
@@ -4023,6 +4038,8 @@
         "00511990": "src/matching/00511990_load_object.cpp"
       },
       "symbols": {
+        "005117C0": "??0TRIBE_Master_Player@@QAE@PAU_iobuf@@@Z",
+        "00511800": "??0TRIBE_Master_Player@@QAE@H@Z",
         "00511830": "?load_master_object@TRIBE_Master_Player@@UAEXHEPAPAVRGE_Sprite@@PAPAVRGE_Sound@@F@Z",
         "00511990": "?load_object@TRIBE_Master_Player@@UAEXPAU_iobuf@@EPAPAVRGE_Sprite@@PAPAVRGE_Sound@@F@Z"
       }
@@ -4205,6 +4222,8 @@
         "0050D550": "src/matching/0050D550_do_tech_effect.cpp"
       },
       "symbols": {
+        "0050D460": "??0TRIBE_Effects@@QAE@H@Z",
+        "0050D4B0": "??0TRIBE_Effects@@QAE@PAD@Z",
         "0050D4D0": "?do_effect@TRIBE_Effects@@UAEXFPAVRGE_Player@@@Z",
         "0050D550": "?do_tech_effect@TRIBE_Effects@@QAEXFPAVRGE_Player@@@Z"
       }
@@ -6262,6 +6281,7 @@
       "symbols": {
         "0040A820": "??0ConstructionItem@@QAE@XZ",
         "0040A870": "??0ConstructionItem@@QAE@MMMMMMHPAD@Z",
+        "0040A8D0": "??0ConstructionItem@@QAE@PAV0@@Z",
         "0040A950": "??1ConstructionItem@@UAE@XZ",
         "0040AA00": "?inProgress@ConstructionItem@@QBEHXZ",
         "0040AA10": "?built@ConstructionItem@@QBEHXZ",
@@ -7404,6 +7424,7 @@
         "004DB280": "?influenceCanPlaceStructure@TribeInformationAIModule@@QAEHPAVBuildItem@@@Z",
         "004DAF80": "?addImportantObject@TribeInformationAIModule@@QAEHH@Z",
         "004E0F90": "?storeAttackMemory@TribeInformationAIModule@@QAEHEEEEEFEKH@Z",
+        "004E0FD0": "?storeAttackMemory@TribeInformationAIModule@@QAEHEEEEEEEFEKH@Z",
         "004DAFB0": "?importantObject@TribeInformationAIModule@@QAEHH@Z"
       }
     }

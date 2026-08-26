@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -67,6 +68,37 @@ class RegisterCandidateTranslationUnitTests(unittest.TestCase):
         }
 
         merged, action = merge_candidate_group(groups, candidate)
+
+        self.assertEqual(action, "update")
+        self.assertEqual(list(merged[0]["owners"]), ["00401010", "00401020"])
+
+    def test_merge_uses_wrapper_owner_order(self) -> None:
+        groups = [
+            {
+                "name": "demo",
+                "source": "src/demo_tu.cpp",
+                "flags": "config/flags/default.rsp",
+                "owners": {"00401020": "src/matching/00401020_late.cpp"},
+            }
+        ]
+        candidate = {
+            "name": "demo",
+            "source": "src/demo_tu.cpp",
+            "flags": "config/flags/default.rsp",
+            "owners": {"00401010": "src/matching/00401010_early.cpp"},
+        }
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            wrapper = root / "src" / "demo_tu.cpp"
+            wrapper.parent.mkdir(parents=True)
+            wrapper.write_text(
+                '#include "scratch/00401010_early.cpp"\n'
+                '#include "matching/00401020_late.cpp"\n',
+                encoding="utf-8",
+            )
+
+            merged, action = merge_candidate_group(groups, candidate, root=root)
 
         self.assertEqual(action, "update")
         self.assertEqual(list(merged[0]["owners"]), ["00401010", "00401020"])
