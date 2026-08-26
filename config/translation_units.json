@@ -6442,7 +6442,8 @@
         "004D5AD0": "src/matching/004D5AD0_insertResearch.cpp",
         "004D5B80": "src/matching/004D5B80_insertGathererPercentage.cpp",
         "004D5BB0": "src/matching/004D5BB0_numberBuiltOrInProgressItemsOfType.cpp",
-        "004D5C20": "src/matching/004D5C20_allBuilt.cpp"
+        "004D5C20": "src/matching/004D5C20_allBuilt.cpp",
+        "004D5DE0": "src/matching/004D5DE0_buildItem.cpp"
       },
       "symbols": {
         "004D3A80": "??0TribeBuildAIModule@@QAE@PAXH@Z",
@@ -6465,7 +6466,8 @@
         "004D5AD0": "?insertResearch@TribeBuildAIModule@@QAEHHH@Z",
         "004D5B80": "?insertGathererPercentage@TribeBuildAIModule@@QAEHHHH@Z",
         "004D5BB0": "?numberBuiltOrInProgressItemsOfType@TribeBuildAIModule@@UAEHHH@Z",
-        "004D5C20": "?allBuilt@TribeBuildAIModule@@QAEHHH@Z"
+        "004D5C20": "?allBuilt@TribeBuildAIModule@@QAEHHH@Z",
+        "004D5DE0": "?buildItem@TribeBuildAIModule@@QAEPAVBuildItem@@HHH@Z"
       }
     },
     {
