@@ -623,17 +623,16 @@ public:
     TRIBE_Command(TRIBE_World*, TCommunications_Handler*);
     virtual void do_command_give_attribute(void*);
     virtual ~TRIBE_Command();
+    virtual void command_give_attribute(int, int, int, float, float);
+private:
     virtual void do_command(void*);
     virtual void do_command_give_attribute(TRIBE_Command_Give_Attribute*);
-    virtual void command_give_attribute(int, int, int, float, float);
     void do_command_make(TRIBE_Command_Make*);
     void do_command_research(TRIBE_Command_Research*);
     void do_command_build(TRIBE_Command_Build*);
     void do_command_build_wall(TRIBE_Command_Build_Wall*);
     void do_command_explore(TRIBE_Command_Explore*);
-private:
     void do_command_game(TRIBE_Command_Game*);
-public:
     void do_command_tribe_create(RGE_Command_Create*);
     void do_command_cancel_build(TRIBE_Command_Cancel_Build*);
     void do_command_attack_ground(TRIBE_Command_Attack_Ground*);
@@ -642,6 +641,7 @@ public:
     void do_command_unload(TRIBE_Command_Unload*);
     void do_command_queue(TRIBE_Command_Queue*);
     void place_line_of_walls(TRIBE_Player*, TRIBE_Master_Building_Object*, int, int, int, int, int, RGE_Static_Object**);
+public:
     void command_build(int, int*, int, int, float, float, int);
     void command_make(RGE_Static_Object*, short);
     void command_make(int, int, int, int);
