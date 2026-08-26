@@ -25,79 +25,7 @@ __declspec(dllimport) BOOL __stdcall TextOutA(HDC hdc, int x, int y,
                                                 LPCSTR text, int len);
 }
 
-#ifndef TPNL_INV_SHARED_CONTEXT
-class TDrawArea {
-public:
-    char gap_00[0x38];
-    HDC DrawDc;
-
-    void* GetDc(char* name);
-    void ReleaseDc(char* name);
-};
-
-class TPanel {
-public:
-    enum RedrawMode { NoRedraw = 0, Redraw = 1, RedrawFull = 2 };
-
-    virtual ~TPanel();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
-    virtual void set_redraw(int mode);
-    virtual long handle_idle();
-    virtual void draw_setup(int clear);
-    virtual void draw_finish();
-    virtual void draw();
-    virtual void draw_rect(RECT* rect);
-
-    char gap_04[8];
-    long pnl_x;
-    long pnl_y;
-    char gap_14[0x0C];
-    TDrawArea* render_area;
-    RECT clip_rect;
-    char gap_34[0x04];
-    RedrawMode need_redraw;
-    char gap_3C[0x04];
-    TPanel* parent_panel;
-    char gap_44[0x28];
-    int active;
-    int visible;
-    char gap_74[0x80];
-};
-
-class RGE_Player {
-public:
-    virtual ~RGE_Player();
-    char gap_04[0x4C];
-    float* attributes;
-};
-
-class TRIBE_Player : public RGE_Player {
-};
-
-class TRIBE_Panel_Inven : public TPanel {
-public:
-    virtual void draw();
-
-    char gap_F4[0x04];
-    TRIBE_Player* player;
-    short save_attr_num;
-    short gap_FE;
-    short* save_attr;
-    int idle_time;
-    int idle_interval;
-    void* font;
-    unsigned long font_color;
-    unsigned long back_color;
-};
-#else
 #include "../../include/tpnl_inv_context.h"
-#endif
 
 void TRIBE_Panel_Inven::draw() {
     char str[20];

@@ -4,42 +4,7 @@
 extern "C" void __cdecl free(void* block);
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 
-#ifndef TPNL_INV_SHARED_CONTEXT
-extern int TRIBE_Panel_Inven_vftable;
-#endif
-
-#ifndef TPNL_INV_SHARED_CONTEXT
-class TRIBE_Player {
-public:
-    char gap_00[0x4C];
-    short field_4C;
-    char gap_4E[0x02];
-    float* field_50;
-};
-
-class TRIBE_Panel_Inven {
-public:
-    virtual void vf00(void);
-    virtual void vf04(void);
-    virtual void vf08(void);
-    virtual void vf0C(void);
-    virtual void vf10(void);
-    virtual void vf14(void);
-    virtual void vf18(void);
-    virtual void vf1C(void);
-    virtual void vf20(int mode);
-    char gap_04[0xF0];
-    void* pics;
-    TRIBE_Player* player;
-    short save_attr_num;
-    short gap_FE;
-    short* save_attr;
-
-    void save_info();
-};
-#else
 #include "../../include/tpnl_inv_context.h"
-#endif
 
 void TRIBE_Panel_Inven::save_info() {
     int iVar3 = 0;

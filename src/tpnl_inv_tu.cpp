@@ -42,8 +42,6 @@
 #include <windows.h>
 #include "../include/tpnl_inv_context.h"
 
-#define TPNL_INV_SHARED_CONTEXT 1
-
 // tpnl_inv.cpp:33-61
 #include "matching/0051A5C0_TRIBE_Panel_Inven.cpp"
 
@@ -67,5 +65,3 @@
 
 // tpnl_inv.cpp:236-265
 #include "matching/0051ACA0_get_help_info.cpp"
-
-#undef TPNL_INV_SHARED_CONTEXT
