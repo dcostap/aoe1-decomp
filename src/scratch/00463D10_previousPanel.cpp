@@ -22,7 +22,8 @@ public:
 
 // Context gate: Panel.cpp lines 115-119, TPanelSystem owner. The source-line
 // order is load currentPanel at +0x0C, test it, then tail-call TPanel::previousPanel.
-// The const owner matches ?previousPanel@TPanelSystem@@QBEPAVTPanel@@XZ.
+// BINARY NOTE: the PDB owner record proves the const symbol
+// ?previousPanel@TPanelSystem@@QBEPAVTPanel@@XZ.
 TPanel* TPanelSystem::previousPanel() const {
     if (currentPanelValue)
         return currentPanelValue->previousPanel();
