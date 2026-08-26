@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 from collections import defaultdict, deque
 from pathlib import Path
 from typing import Iterable
@@ -52,13 +53,6 @@ def parse_args() -> argparse.Namespace:
         default=[],
         metavar="GROUP=CAPTAIN_ID",
         help="Assign or preserve one captain for a TU.",
-    )
-    parser.add_argument(
-        "--activate",
-        action="append",
-        default=[],
-        metavar="GROUP",
-        help="Mark an assigned TU captain as active.",
     )
     parser.add_argument(
         "--start",
@@ -123,6 +117,32 @@ def load_json(path: Path) -> dict[str, object]:
     return value
 
 
+def validate_report(report: dict[str, object]) -> None:
+    rows = report.get("rows")
+    errors = report.get("compile_errors")
+    if not isinstance(rows, list):
+        raise ValueError("Report rows must be a list.")
+    if not isinstance(errors, list):
+        raise ValueError("Report compile_errors must be a list.")
+    for index, row in enumerate(rows):
+        if not isinstance(row, dict):
+            raise ValueError(f"Report row {index} must be an object.")
+        if not str(row.get("group") or "") or not str(row.get("va") or ""):
+            raise ValueError(f"Report row {index} needs group and VA fields.")
+    for index, error in enumerate(errors):
+        if not isinstance(error, dict):
+            raise ValueError(f"Compile error {index} must be an object.")
+
+
+def validate_state(state: dict[str, object]) -> None:
+    groups = state.get("groups", {})
+    if not isinstance(groups, dict):
+        raise ValueError("State groups must be an object.")
+    for group, value in groups.items():
+        if not isinstance(value, dict):
+            raise ValueError(f"State for group {group} must be an object.")
+
+
 def file_sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
@@ -147,6 +167,26 @@ def validate_report_transition(
         raise ValueError(
             "The baseline report does not match the report stored in state."
         )
+
+
+def resolve_prior_fingerprint(
+    prior_state: dict[str, object],
+    baseline_display_path: str,
+    baseline_fingerprint: str,
+) -> str:
+    fingerprint = str(prior_state.get("report_fingerprint") or "")
+    if not prior_state or fingerprint:
+        return fingerprint
+    if not baseline_fingerprint:
+        raise ValueError(
+            "Legacy state has no report fingerprint. Supply its baseline report."
+        )
+    stored_report = str(prior_state.get("report") or "")
+    if stored_report and baseline_display_path != stored_report:
+        raise ValueError(
+            "The baseline report path does not match the legacy state report."
+        )
+    return baseline_fingerprint
 
 
 def parse_mapping(values: Iterable[str], label: str) -> dict[str, str]:
@@ -181,8 +221,17 @@ def queue_packets(queue: dict[str, object]) -> list[dict[str, object]]:
         group = str(packet.get("group") or "").strip()
         if not group:
             raise ValueError(f"Queue packet {index} has no group name.")
+        if re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]*", group) is None:
+            raise ValueError(f"Unsafe queue group name: {group}")
         if group in groups:
             raise ValueError(f"Duplicate queue group: {group}")
+        editable = packet.get("captain_editable_files", [])
+        if not isinstance(editable, list) or any(
+            not isinstance(path, str) or not path for path in editable
+        ):
+            raise ValueError(
+                f"captain_editable_files for {group} must be a list of paths."
+            )
         groups.add(group)
         packets.append(packet)
     declared = integer(queue.get("group_count"))
@@ -243,6 +292,7 @@ def apply_state_changes(
     finishes: list[tuple[str, str]],
     validations: list[tuple[str, str]],
 ) -> dict[str, object]:
+    validate_state(prior)
     groups = prior.setdefault("groups", {})
     if not isinstance(groups, dict):
         raise ValueError("State groups must be an object.")
@@ -313,6 +363,9 @@ def compare_reports(
     after: dict[str, object],
     approved: set[str] | None = None,
 ) -> dict[str, object]:
+    validate_report(after)
+    if before is not None:
+        validate_report(before)
     approved = approved or set()
     after_rows = after.get("rows") or []
     if not isinstance(after_rows, list):
@@ -538,13 +591,12 @@ def build_state(
     report_path: str,
     prior: dict[str, object] | None = None,
     assignments: dict[str, str] | None = None,
-    active_groups: set[str] | None = None,
     blockers: dict[str, str] | None = None,
     compile_error_groups: set[str] | None = None,
 ) -> dict[str, object]:
+    validate_state(prior or {})
     prior = prior or {}
     assignments = assignments or {}
-    active_groups = active_groups or set()
     blockers = blockers or {}
     compile_error_groups = compile_error_groups or set()
     prior_groups = prior.get("groups") or {}
@@ -553,9 +605,7 @@ def build_state(
     packets = queue_packets(queue)
 
     state_groups: dict[str, dict[str, object]] = {
-        str(group): dict(value)
-        for group, value in prior_groups.items()
-        if isinstance(value, dict)
+        str(group): dict(value) for group, value in prior_groups.items()
     }
     for packet in packets:
         if not isinstance(packet, dict):
@@ -587,10 +637,6 @@ def build_state(
             reason = blockers[group]
             if reason not in state["shared_blockers"]:
                 state["shared_blockers"].append(reason)
-        if group in active_groups:
-            if not state["captain_id"]:
-                raise ValueError(f"Cannot activate unassigned group: {group}")
-            state["active_run_id"] = state["active_run_id"] or "active"
         state["status"] = initial_status(
             packet, state, group in compile_error_groups
         )
@@ -781,9 +827,18 @@ def main() -> int:
     queue = load_json(queue_path)
     prior_state = load_json(state_path) if state_path.is_file() else {}
     baseline = load_json(baseline_path) if baseline_path else None
+    validate_report(report)
+    validate_state(prior_state)
+    if baseline is not None:
+        validate_report(baseline)
+    packets = queue_packets(queue)
     report_fingerprint = file_sha256(report_path)
     baseline_fingerprint = file_sha256(baseline_path) if baseline_path else ""
-    prior_fingerprint = str(prior_state.get("report_fingerprint") or "")
+    prior_fingerprint = resolve_prior_fingerprint(
+        prior_state,
+        display_path(baseline_path) if baseline_path else "",
+        baseline_fingerprint,
+    )
     validate_report_transition(
         prior_fingerprint, report_fingerprint, baseline_fingerprint
     )
@@ -795,9 +850,7 @@ def main() -> int:
     validations = parse_pairs(args.validated, "validation")
 
     known_groups = {
-        str(packet["group"])
-        for packet in queue.get("packets") or []
-        if isinstance(packet, dict)
+        str(packet["group"]) for packet in packets
     }
     changed_groups = {
         group for group, _ in [*approvals, *starts, *finishes, *validations]
@@ -805,7 +858,6 @@ def main() -> int:
     unknown = sorted(
         (
             set(assignments)
-            | set(args.activate)
             | set(blockers)
             | set(args.clear_block)
             | changed_groups
@@ -835,7 +887,6 @@ def main() -> int:
         display_path(report_path),
         prior_state,
         assignments,
-        set(args.activate),
         blockers,
         compile_error_groups,
     )
@@ -851,11 +902,8 @@ def main() -> int:
     prompts_dir.mkdir(parents=True, exist_ok=True)
     deltas_dir.mkdir(parents=True, exist_ok=True)
 
-    packets = queue.get("packets") or []
     packet_count = 0
     for packet in packets:
-        if not isinstance(packet, dict):
-            continue
         if not int(packet.get("captain_task_count") or 0):
             continue
         group = str(packet["group"])

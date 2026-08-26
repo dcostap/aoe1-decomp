@@ -14,8 +14,11 @@ from plan_tu_orchestration import (  # noqa: E402
     captain_prompt,
     compare_reports,
     queue_packets,
+    resolve_prior_fingerprint,
     select_ready_wave,
+    validate_report,
     validate_report_transition,
+    validate_state,
 )
 
 
@@ -341,6 +344,31 @@ def test_malformed_queue_packet_is_rejected() -> None:
         queue_packets({"packets": ["alpha"]})
 
 
+def test_unsafe_queue_group_name_is_rejected() -> None:
+    unsafe = packet("../outside", ["src/alpha.cpp"])
+
+    with pytest.raises(ValueError, match="Unsafe queue group"):
+        queue_packets({"packets": [unsafe]})
+
+
+def test_editable_files_must_be_a_path_list() -> None:
+    malformed = packet("alpha", ["src/alpha.cpp"])
+    malformed["captain_editable_files"] = "src/alpha.cpp"
+
+    with pytest.raises(ValueError, match="must be a list"):
+        queue_packets({"packets": [malformed]})
+
+
+def test_malformed_report_compile_errors_are_rejected() -> None:
+    with pytest.raises(ValueError, match="compile_errors must be a list"):
+        validate_report({"rows": [], "compile_errors": {}})
+
+
+def test_malformed_prior_group_state_is_rejected() -> None:
+    with pytest.raises(ValueError, match="must be an object"):
+        validate_state({"groups": {"alpha": "lost"}})
+
+
 def test_changed_report_requires_matching_baseline() -> None:
     with pytest.raises(ValueError, match="no baseline"):
         validate_report_transition("old", "new", "")
@@ -348,3 +376,17 @@ def test_changed_report_requires_matching_baseline() -> None:
         validate_report_transition("old", "new", "other")
 
     validate_report_transition("old", "new", "old")
+
+
+def test_legacy_state_requires_its_stored_baseline() -> None:
+    legacy = {"report": "build/old/report.json", "groups": {}}
+
+    with pytest.raises(ValueError, match="no report fingerprint"):
+        resolve_prior_fingerprint(legacy, "", "")
+    with pytest.raises(ValueError, match="path does not match"):
+        resolve_prior_fingerprint(legacy, "build/new/report.json", "old-hash")
+
+    assert (
+        resolve_prior_fingerprint(legacy, "build/old/report.json", "old-hash")
+        == "old-hash"
+    )
