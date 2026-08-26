@@ -103,6 +103,6 @@ public:
 #include "accepted_drift/0048D040_save.cpp"
 #include "accepted_drift/0048D0E0_reload_scenarios.cpp"
 #include "matching/0048D4D0_get_scenario_name.cpp"
-#include "scratch/0048D500_get_scenario_info.cpp"
+#include "matching/0048D500_get_scenario_info.cpp"
 
 #undef AOE1_SCENINFO_TU_CONTEXT

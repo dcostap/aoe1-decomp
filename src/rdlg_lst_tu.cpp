@@ -10,7 +10,7 @@
 #define RDLG_LST_TU_CONTEXT 1
 #include "rdlg_lst_module_context.h"
 
-#include "scratch/0047E670_RGE_Dialog_List.cpp"
+#include "matching/0047E670_RGE_Dialog_List.cpp"
 #include "matching/0047E6B0_setup.cpp"
 #include "matching/0047E830_RGE_Dialog_List.cpp"
 #include "matching/0047E8C0_get_list_id.cpp"

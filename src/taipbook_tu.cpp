@@ -7,9 +7,9 @@
 #define TAIPBOOK_CANONICAL_TU 1
 #include "../include/taipbook_context.h"
 
-#include "scratch/004E68B0_TribeAIPlayBook.cpp"
-#include "scratch/004E6900_convertTargetNameToIntType.cpp"
-#include "scratch/004E6910_convertTargetCharacteristicNameToIntType.cpp"
+#include "matching/004E68B0_TribeAIPlayBook.cpp"
+#include "matching/004E6900_convertTargetNameToIntType.cpp"
+#include "matching/004E6910_convertTargetCharacteristicNameToIntType.cpp"
 #include "matching/004E6920_convertUnitNameToIntType.cpp"
 #include "matching/004E6AD0_convertUnitToIntType.cpp"
 

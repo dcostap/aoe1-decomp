@@ -4246,10 +4246,18 @@
       "source": "src/taipbook_tu.cpp",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "004E6920": "src/matching/004E6920_convertUnitNameToIntType.cpp"
+        "004E68B0": "src/matching/004E68B0_TribeAIPlayBook.cpp",
+        "004E6900": "src/matching/004E6900_convertTargetNameToIntType.cpp",
+        "004E6910": "src/matching/004E6910_convertTargetCharacteristicNameToIntType.cpp",
+        "004E6920": "src/matching/004E6920_convertUnitNameToIntType.cpp",
+        "004E6AD0": "src/matching/004E6AD0_convertUnitToIntType.cpp"
       },
       "symbols": {
-        "004E6920": "?convertUnitNameToIntType@TribeAIPlayBook@@UBEHPAD@Z"
+        "004E6920": "?convertUnitNameToIntType@TribeAIPlayBook@@UBEHPAD@Z",
+        "004E68B0": "??0TribeAIPlayBook@@QAE@XZ",
+        "004E6900": "?convertTargetNameToIntType@TribeAIPlayBook@@UBEHPAD@Z",
+        "004E6910": "?convertTargetCharacteristicNameToIntType@TribeAIPlayBook@@UBEHPAD@Z",
+        "004E6AD0": "?convertUnitToIntType@TribeAIPlayBook@@UBEHPAVRGE_Static_Object@@@Z"
       }
     },
     {
@@ -5602,8 +5610,10 @@
         "00467100": "src/matching/00467100_TEasy_Panel.cpp",
         "00467150": "src/matching/00467150_init_vars.cpp",
         "00467250": "src/matching/00467250_TEasy_Panel.cpp",
+        "00467570": "src/matching/00467570_draw.cpp",
         "004679A0": "src/matching/004679A0_handle_mouse_down.cpp",
         "004679F0": "src/matching/004679F0_set_info_file.cpp",
+        "00467D50": "src/matching/00467D50_set_background_colors.cpp",
         "00467DA0": "src/matching/00467DA0_set_palette.cpp",
         "00467EF0": "src/matching/00467EF0_set_cursor.cpp",
         "00467F40": "src/matching/00467F40_set_use_bevels.cpp",
@@ -5613,6 +5623,7 @@
         "00467FC0": "src/matching/00467FC0_set_focus_colors.cpp",
         "00467FE0": "src/matching/00467FE0_set_state_colors.cpp",
         "00468060": "src/matching/00468060_set_button_pics.cpp",
+        "004681D0": "src/matching/004681D0_set_shadow_amount.cpp",
         "004682D0": "src/matching/004682D0_set_enable_ime.cpp",
         "00468300": "src/matching/00468300_get_info_file.cpp",
         "00468310": "src/matching/00468310_get_info_id.cpp",
@@ -5632,6 +5643,8 @@
         "00468460": "src/matching/00468460_get_button_pics.cpp",
         "00468470": "src/matching/00468470_get_shadow_color_table.cpp",
         "00468480": "src/matching/00468480_get_enable_ime.cpp",
+        "00468C20": "src/matching/00468C20_create_text.cpp",
+        "00469DB0": "src/matching/00469DB0_position_panel.cpp",
         "00469E10": "src/matching/00469E10_set_focus.cpp",
         "00469EE0": "src/matching/00469EE0_popupOKDialog.cpp",
         "00469F30": "src/matching/00469F30_popupOKDialog.cpp",
@@ -5643,6 +5656,7 @@
         "0046A2E0": "src/matching/0046A2E0_command_help.cpp",
         "0046A360": "src/matching/0046A360_setup_popup_help.cpp",
         "0046A3C0": "src/matching/0046A3C0_clear_popup_help.cpp",
+        "0046A410": "src/matching/0046A410_command_do_popup_help.cpp",
         "0046A4E0": "src/matching/0046A4E0_action.cpp",
         "0046A670": "src/matching/0046A670_set_system_colors.cpp"
       },
@@ -5658,7 +5672,48 @@
         "00469E10": "?set_focus@TEasy_Panel@@UAEXH@Z",
         "00469EE0": "?popupOKDialog@TEasy_Panel@@QAEXJPADHH@Z",
         "0046A260": "?command_help@TEasy_Panel@@IAEXPADJJJJ@Z",
-        "0046A2E0": "?command_help@TEasy_Panel@@IAEXPAD0JJJ@Z"
+        "0046A2E0": "?command_help@TEasy_Panel@@IAEXPAD0JJJ@Z",
+        "00467150": "?init_vars@TEasy_Panel@@IAEXXZ",
+        "00467250": "??1TEasy_Panel@@UAE@XZ",
+        "00467570": "?draw@TEasy_Panel@@UAEXXZ",
+        "004679A0": "?handle_mouse_down@TEasy_Panel@@UAEJEJJHH@Z",
+        "004679F0": "?set_info_file@TEasy_Panel@@QAEXPADJ@Z",
+        "00467D50": "?set_background_colors@TEasy_Panel@@QAEXEE@Z",
+        "00467DA0": "?set_palette@TEasy_Panel@@QAEHPADJ@Z",
+        "00467EF0": "?set_cursor@TEasy_Panel@@QAEHPADJ@Z",
+        "00467F40": "?set_use_bevels@TEasy_Panel@@QAEXH@Z",
+        "00467F50": "?set_background_pos@TEasy_Panel@@QAEXH@Z",
+        "00467F60": "?set_bevel_colors@TEasy_Panel@@QAEXEEEEEE@Z",
+        "00467FA0": "?set_text_colors@TEasy_Panel@@QAEXKK@Z",
+        "00467FC0": "?set_focus_colors@TEasy_Panel@@QAEXKK@Z",
+        "00467FE0": "?set_state_colors@TEasy_Panel@@QAEXKK@Z",
+        "00468060": "?set_button_pics@TEasy_Panel@@QAEXPADJ@Z",
+        "004681D0": "?set_shadow_amount@TEasy_Panel@@QAEXJ@Z",
+        "004682D0": "?set_enable_ime@TEasy_Panel@@QAEXH@Z",
+        "00468300": "?get_info_file@TEasy_Panel@@QAEPADXZ",
+        "00468310": "?get_info_id@TEasy_Panel@@QAEJXZ",
+        "00468330": "?get_background2@TEasy_Panel@@QAEPAVTShape@@XZ",
+        "00468340": "?get_palette@TEasy_Panel@@QAEPAXXZ",
+        "00468350": "?get_cursor@TEasy_Panel@@QAEPADXZ",
+        "00468360": "?get_use_bevels@TEasy_Panel@@QAEHXZ",
+        "00468370": "?get_background_pos@TEasy_Panel@@QAEHXZ",
+        "00468380": "?get_bevel_colors@TEasy_Panel@@QAEXAAE00000@Z",
+        "004683D0": "?get_text_colors@TEasy_Panel@@QAEXAAK0@Z",
+        "004683F0": "?get_focus_colors@TEasy_Panel@@QAEXAAK0@Z",
+        "00468410": "?get_shadow_amount@TEasy_Panel@@QAEJXZ",
+        "00468420": "?get_state_colors@TEasy_Panel@@QAEXAAK0@Z",
+        "00468440": "?get_popup_info_file@TEasy_Panel@@QAEPADXZ",
+        "00468450": "?get_popup_info_id@TEasy_Panel@@QAEJXZ",
+        "00468460": "?get_button_pics@TEasy_Panel@@QAEPAVTShape@@XZ",
+        "00468470": "?get_shadow_color_table@TEasy_Panel@@QAEPAVRGE_Color_Table@@XZ",
+        "00468480": "?get_enable_ime@TEasy_Panel@@QAEHXZ",
+        "00468C20": "?create_text@TEasy_Panel@@MAEHPAVTPanel@@PAPAVTTextPanel@@HJJJJJHHH@Z",
+        "00469DB0": "?position_panel@TEasy_Panel@@MAEXPAVTPanel@@JJJJ@Z",
+        "0046A360": "?setup_popup_help@TEasy_Panel@@QAEXXZ",
+        "0046A3C0": "?clear_popup_help@TEasy_Panel@@QAEXXZ",
+        "0046A410": "?command_do_popup_help@TEasy_Panel@@QAEJEJJ@Z",
+        "0046A4E0": "?action@TEasy_Panel@@UAEJPAVTPanel@@JKK@Z",
+        "0046A670": "?set_system_colors@TEasy_Panel@@QAEXXZ"
       }
     },
     {
@@ -5811,6 +5866,7 @@
       "source": "src/rdlg_lst_tu.cpp",
       "flags": "config/flags/default.rsp",
       "owners": {
+        "0047E670": "src/matching/0047E670_RGE_Dialog_List.cpp",
         "0047E6B0": "src/matching/0047E6B0_setup.cpp",
         "0047E830": "src/matching/0047E830_RGE_Dialog_List.cpp",
         "0047E8C0": "src/matching/0047E8C0_get_list_id.cpp",
@@ -5820,7 +5876,9 @@
         "0047EAF0": "src/matching/0047EAF0_calc_list_line.cpp",
         "0047EB60": "src/matching/0047EB60_get_cur_id.cpp"
       },
-      "symbols": {}
+      "symbols": {
+        "0047E670": "??0RGE_Dialog_List@@QAE@PAD@Z"
+      }
     },
     {
       "name": "ACT_GATH_cpp",
@@ -5921,10 +5979,15 @@
       "source": "src/sceninfo_tu.cpp",
       "flags": "config/flags/default.rsp",
       "owners": {
+        "0048CEA0": "src/matching/0048CEA0_RGE_Scenario_File_Info.cpp",
         "0048CFD0": "src/matching/0048CFD0_RGE_Scenario_File_Info.cpp",
-        "0048D4D0": "src/matching/0048D4D0_get_scenario_name.cpp"
+        "0048D4D0": "src/matching/0048D4D0_get_scenario_name.cpp",
+        "0048D500": "src/matching/0048D500_get_scenario_info.cpp"
       },
-      "symbols": {}
+      "symbols": {
+        "0048CEA0": "??0RGE_Scenario_File_Info@@QAE@PAD@Z",
+        "0048D500": "?get_scenario_info@RGE_Scenario_File_Info@@QAEPAVRGE_Scenario_Header@@J@Z"
+      }
     },
     {
       "name": "color_cpp",
