@@ -2,79 +2,15 @@
 // Pnl_btn.cpp
 //
 // Attempt log:
-// - Reconstructed from the neighboring Pnl_btn.cpp actions and the binary:
-//   state buttons advance through the E0 virtual setter, radio buttons call
+// - Reconstructed from the neighboring Pnl_btn.cpp actions: state buttons
+//   advance through the E0 virtual setter, radio buttons call
 //   set_radio_button, and the parent receives action codes 6/4 before the
 //   non-NotifyAction path sends WM_COMMAND (0x111).
-// - Restored the sound pointer at +148 so the proven num_states/cur_state
-//   fields remain at +1F4/+1F6.
-// - The setter takes a short state; with the signed comparison cast this
-//   preserves the original low-word load, per-arm vtable loads, and increment.
-// - Kept direct id/id2 rereads in the WM_COMMAND gate while retaining the
-//   preloaded values for its call, matching the original tail exactly.
+// - The setter takes a short state. Direct id/id2 rereads remain in the
+//   WM_COMMAND gate while the preloaded values serve its call.
 
 extern "C" __declspec(dllimport) long __stdcall SendMessageA(
     void* hwnd, unsigned int msg, unsigned int wparam, long lparam);
-
-#ifndef PNL_BTN_SHARED_CONTEXT
-class TDrawArea {
-public:
-    char gap_00[0x04];
-    void* Wnd;
-};
-#endif /* PNL_BTN_SHARED_CONTEXT */
-
-class TButtonPanel;
-
-#define VPAD1(n) virtual void vpad##n();
-#define VPAD2(n) VPAD1(n) VPAD1(n##_1)
-#define VPAD4(n) VPAD2(n) VPAD2(n##_2)
-#define VPAD8(n) VPAD4(n) VPAD4(n##_4)
-#define VPAD16(n) VPAD8(n) VPAD8(n##_8)
-#define VPAD32(n) VPAD16(n) VPAD16(n##_16)
-
-#ifndef PNL_BTN_SHARED_CONTEXT
-class TPanel {
-public:
-    virtual ~TPanel();
-    VPAD4(1)
-    VPAD2(5)
-    VPAD1(7)
-    virtual void set_redraw(int mode);
-    VPAD32(9)
-    VPAD4(41)
-    virtual long action(TButtonPanel* panel, long code, long id, long id2);
-
-    char gap_04[0x1C];
-    TDrawArea* render_area;
-    char gap_24[0x1C];
-    TPanel* parent_panel;
-    char gap_44[0xB0];
-};
-#endif /* PNL_BTN_SHARED_CONTEXT */
-
-#ifndef PNL_BTN_SHARED_CONTEXT
-class TButtonPanel : public TPanel {
-public:
-    virtual ~TButtonPanel();
-    VPAD8(47)
-    VPAD2(55)
-    virtual void set_state(short state);
-
-    long id[9];
-    long id2[9];
-    int buttonTypeValue;
-    int drawTypeValue;
-    int notifyTypeValue;
-    void* sound;
-    char gap_14C[0xA8];
-    short num_states;
-    short cur_state;
-
-    void set_radio_button(void);
-    void do_right_action(int ctrl);
-};
-#endif /* PNL_BTN_SHARED_CONTEXT */
 
 void TButtonPanel::do_right_action(int ctrl) {
     if (this->buttonTypeValue == 3) {

@@ -146,9 +146,9 @@ TButtonPanel::TButtonPanel()
     // Scalar field initializations (body, not initializer list)
     // VC5 batches by value: first non-zero, then zeros
 
-    buttonTypeValue = 1;
-    drawTypeValue = 1;
-    notifyTypeValue = 1;
+    buttonTypeValue = Normal;
+    drawTypeValue = DrawClear;
+    notifyTypeValue = NotifyAction;
 
     sound = 0;
 

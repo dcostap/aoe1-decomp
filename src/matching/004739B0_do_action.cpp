@@ -4,77 +4,14 @@
 // Attempt log:
 // - Reconstructed from the matched sibling Pnl_btn.cpp do_right_action
 //   (00473AA0) which shares the state-advance (E0 setter), radio-button,
-//   parent action, and WM_COMMAND structure. Reused its proven TPanel/
-//   TButtonPanel vtable-pad surface verbatim.
+//   parent action, and WM_COMMAND structure. Reused its reviewed panel and
+//   button ownership.
 // - Differences vs do_right_action: action codes 3/1 (vs 6/4), no ctrl
-//   parameter (plain ret), and id/id2 are read inside the parent-panel
-//   block via direct member access (not preloaded locals): the binary
-//   loads [esi+1F6h]/id/id2 only after the parent_panel test and reuses
-//   the tested id value in ecx for the SendMessageA push while reloading
-//   id2 fresh.
+//   parameter (plain ret), and id/id2 are read inside the parent-panel block
+//   via direct member access.
 
 extern "C" __declspec(dllimport) long __stdcall SendMessageA(
     void* hwnd, unsigned int msg, unsigned int wparam, long lparam);
-
-#ifndef PNL_BTN_SHARED_CONTEXT
-class TDrawArea {
-public:
-    char gap_00[0x04];
-    void* Wnd;
-};
-#endif /* PNL_BTN_SHARED_CONTEXT */
-
-class TButtonPanel;
-
-#define VPAD1(n) virtual void vpad##n();
-#define VPAD2(n) VPAD1(n) VPAD1(n##_1)
-#define VPAD4(n) VPAD2(n) VPAD2(n##_2)
-#define VPAD8(n) VPAD4(n) VPAD4(n##_4)
-#define VPAD16(n) VPAD8(n) VPAD8(n##_8)
-#define VPAD32(n) VPAD16(n) VPAD16(n##_16)
-
-#ifndef PNL_BTN_SHARED_CONTEXT
-class TPanel {
-public:
-    virtual ~TPanel();
-    VPAD4(1)
-    VPAD2(5)
-    VPAD1(7)
-    virtual void set_redraw(int mode);
-    VPAD32(9)
-    VPAD4(41)
-    virtual long action(TButtonPanel* panel, long code, long id, long id2);
-
-    char gap_04[0x1C];
-    TDrawArea* render_area;
-    char gap_24[0x1C];
-    TPanel* parent_panel;
-    char gap_44[0xB0];
-};
-#endif /* PNL_BTN_SHARED_CONTEXT */
-
-#ifndef PNL_BTN_SHARED_CONTEXT
-class TButtonPanel : public TPanel {
-public:
-    virtual ~TButtonPanel();
-    VPAD8(47)
-    VPAD2(55)
-    virtual void set_state(short state);
-
-    long id[9];
-    long id2[9];
-    int buttonTypeValue;
-    int drawTypeValue;
-    int notifyTypeValue;
-    void* sound;
-    char gap_14C[0xA8];
-    short num_states;
-    short cur_state;
-
-    void set_radio_button(void);
-    void do_action(void);
-};
-#endif /* PNL_BTN_SHARED_CONTEXT */
 
 void TButtonPanel::do_action(void) {
     if (this->buttonTypeValue == 3) {

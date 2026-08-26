@@ -2,10 +2,11 @@
 class TButtonPanel {
 public:
     virtual ~TButtonPanel();
+    enum NotifyType { NotifyAction = 1 };
     char gap_0[0x140];
     int field_144;
-    int notifyType();
+    NotifyType notifyType() const;
 };
 #endif /* PNL_BTN_SHARED_CONTEXT */
 
-int TButtonPanel::notifyType() { return this->field_144; }
+TButtonPanel::NotifyType TButtonPanel::notifyType() const { return this->field_144; }

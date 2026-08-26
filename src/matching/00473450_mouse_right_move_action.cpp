@@ -11,47 +11,6 @@
 
 extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
 
-#define VPAD1(n) virtual void vpad##n();
-#define VPAD2(n) VPAD1(n) VPAD1(n##_1)
-#define VPAD4(n) VPAD2(n) VPAD2(n##_2)
-#define VPAD8(n) VPAD4(n) VPAD4(n##_4)
-#define VPAD16(n) VPAD8(n) VPAD8(n##_8)
-#define VPAD32(n) VPAD16(n) VPAD16(n##_16)
-
-#ifndef PNL_BTN_SHARED_CONTEXT
-class TPanel {
-public:
-    virtual ~TPanel();
-    VPAD4(1) VPAD2(5) VPAD1(7)
-    virtual void set_redraw(int mode);
-    VPAD32(9) VPAD4(41)
-    virtual long action(TPanel* panel, long code, unsigned long id, unsigned long id2);
-    VPAD1(46)
-    virtual int is_inside(long x, long y);
-
-    char gap_04[0x3C];
-    TPanel* parent_panel;
-    char gap_44[0xB0];
-};
-#endif /* PNL_BTN_SHARED_CONTEXT */
-
-#ifndef PNL_BTN_SHARED_CONTEXT
-class TButtonPanel : public TPanel {
-public:
-    virtual ~TButtonPanel();
-
-    long id[9];
-    long id2[9];
-    char gap_13C[0xBA];
-    short cur_state;
-    int is_down;
-    char gap_1FC[0x8];
-    unsigned long button_down_time;
-
-    virtual long mouse_right_move_action(long x, long y, int ctrl, int shift);
-};
-#endif /* PNL_BTN_SHARED_CONTEXT */
-
 long TButtonPanel::mouse_right_move_action(long x, long y, int ctrl, int shift) {
     int new_is_down = (this->is_inside(x, y) != 0);
 

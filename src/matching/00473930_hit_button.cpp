@@ -31,7 +31,7 @@ public:
     short cur_state;                    // +0x1F6
 
     int is_inside(long, long);
-    int hit_button(long param_1, long param_2);
+    virtual int hit_button(long param_1, long param_2);
 };
 #endif /* PNL_BTN_SHARED_CONTEXT */
 

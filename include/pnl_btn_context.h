@@ -187,11 +187,30 @@ public:
 
 class TButtonPanel : public TPanel {
 public:
+    // BINARY NOTE: PDB-qualified symbols use these nested enums and const
+    // getters. The hit test is a virtual member at its observed slot.
+    enum ButtonType {
+        Normal = 1,
+        Radio = 2,
+        State = 3
+    };
+    enum DrawType {
+        DrawClear = 1,
+        DrawText = 2,
+        DrawPicture = 3,
+        DrawPictureAndText = 4,
+        DrawFillAndText = 5,
+        DrawBevelPicture = 6
+    };
+    enum NotifyType {
+        NotifyAction = 1,
+        NotifyMessage = 2
+    };
     long id[9];
     long id2[9];
-    int buttonTypeValue;
-    int drawTypeValue;
-    int notifyTypeValue;
+    ButtonType buttonTypeValue;
+    DrawType drawTypeValue;
+    NotifyType notifyTypeValue;
     TDigital* sound;
     TShape* pic[9];
     short pic_index[9];
@@ -236,12 +255,12 @@ public:
     virtual ~TButtonPanel();
     TButtonPanel();
 
-    long setup(TDrawArea*, TPanel*, long, long, long, long, long, TDigital*, long, long);
-    int buttonType();
-    int drawType();
-    int notifyType();
-    void setDrawType(int);
-    void setButtonType(int);
+    long setup(TDrawArea*, TPanel*, long, long, long, long, DrawType, TDigital*, NotifyType, long);
+    ButtonType buttonType() const;
+    DrawType drawType() const;
+    NotifyType notifyType() const;
+    void setDrawType(DrawType);
+    void setButtonType(ButtonType);
     void set_picture_info(TShape*, short, long, long, int, int);
     void set_text_info(char*, void*, long, long, long, long);
     void set_text_info(long, void*, long, long, long, long);
@@ -286,7 +305,7 @@ public:
     virtual void stop_sound_system();
     virtual int restart_sound_system();
 
-    int hit_button(long, long);
+    virtual int hit_button(long, long);
     void do_action();
     void do_right_action(int);
     void reset();

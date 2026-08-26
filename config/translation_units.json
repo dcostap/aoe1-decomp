@@ -4831,13 +4831,13 @@
         "00472440": "?set_text@TButtonPanel@@QAEXFPAD0@Z",
         "00472540": "?set_text@TButtonPanel@@QAEXFJ@Z",
         "00472580": "?set_text@TButtonPanel@@QAEXFJJ@Z",
-        "00472110": "?buttonType@TButtonPanel@@QAEHXZ",
-        "00472120": "?drawType@TButtonPanel@@QAEHXZ",
+        "00472110": "?buttonType@TButtonPanel@@QBE?AW4ButtonType@1@XZ",
+        "00472120": "?drawType@TButtonPanel@@QBE?AW4DrawType@1@XZ",
         "00472300": "?set_picture@TButtonPanel@@QAEXFPAVTShape@@F@Z",
         "00472680": "?set_sound@TButtonPanel@@QAEXPAVTDigital@@@Z",
         "00472700": "?set_state@TButtonPanel@@UAEXF@Z",
         "00472840": "?get_text@TButtonPanel@@QAEHFPAPAD0@Z",
-        "00473930": "?hit_button@TButtonPanel@@QAEHJJ@Z",
+        "00473930": "?hit_button@TButtonPanel@@UAEHJJ@Z",
         "004739B0": "?do_action@TButtonPanel@@QAEXXZ",
         "00473AA0": "?do_right_action@TButtonPanel@@QAEXH@Z"
       }

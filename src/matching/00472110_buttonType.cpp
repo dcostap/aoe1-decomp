@@ -2,10 +2,11 @@
 class TButtonPanel {
 public:
     virtual ~TButtonPanel();
+    enum ButtonType { Normal = 1 };
     char gap_0[0x138];
     int field_13C;
-    int buttonType();
+    ButtonType buttonType() const;
 };
 #endif /* PNL_BTN_SHARED_CONTEXT */
 
-int TButtonPanel::buttonType() { return this->field_13C; }
+TButtonPanel::ButtonType TButtonPanel::buttonType() const { return this->field_13C; }

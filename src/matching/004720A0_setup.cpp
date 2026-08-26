@@ -29,6 +29,8 @@ public:
 #ifndef PNL_BTN_SHARED_CONTEXT
 class TButtonPanel : public TPanel {
 public:
+    enum DrawType { DrawClear = 1 };
+    enum NotifyType { NotifyAction = 1 };
     char gap_04[0x13C];
     long drawTypeValue;               // 0x140
     long notifyTypeValue;             // 0x144
@@ -43,9 +45,9 @@ public:
         long y,
         long width,
         long height,
-        long draw_type,
+        DrawType draw_type,
         TDigital* sound,
-        long notify_type,
+        NotifyType notify_type,
         long button_id
     );
 };
@@ -58,9 +60,9 @@ long TButtonPanel::setup(
     long y,
     long width,
     long height,
-    long draw_type,
+    TButtonPanel::DrawType draw_type,
     TDigital* sound,
-    long notify_type,
+    TButtonPanel::NotifyType notify_type,
     long button_id
 ) {
     TPanel::setup(draw_area, parent, x, y, width, height, 0);

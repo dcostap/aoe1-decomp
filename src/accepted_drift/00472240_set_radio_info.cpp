@@ -35,6 +35,7 @@ public:
 class TButtonPanel : public TPanel {
 public:
     virtual ~TButtonPanel() {}
+    enum ButtonType { Radio = 2 };
     char pad_F4[0x48];
     int buttonTypeValue;              // +0x13C
     int drawTypeValue;                // +0x140
@@ -67,7 +68,7 @@ public:
 
 void TButtonPanel::set_radio_info(TButtonPanel** buttons, short count) {
     int old_radio = (int)this->radio_buttons;
-    this->buttonTypeValue = 2;
+    this->buttonTypeValue = TButtonPanel::Radio;
     if (old_radio != 0) {
         free((void*)old_radio);
         this->radio_buttons = 0;
