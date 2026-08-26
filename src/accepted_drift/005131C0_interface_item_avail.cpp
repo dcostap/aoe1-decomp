@@ -72,12 +72,12 @@ public:
     RGE_Master_Static_Object* master_obj;
 };
 
-struct ObjNode { RGE_Static_Object* object; ObjNode* next; };
+struct RGE_Object_Node { RGE_Static_Object* object; RGE_Object_Node* next; };
 
 class RGE_Object_List {
 public:
     virtual ~RGE_Object_List();
-    ObjNode* list;
+    RGE_Object_Node* list;
 };
 
 class RGE_Player {
@@ -174,7 +174,7 @@ void TRIBE_Player::interface_item_avail(Item_Avail** out, short* count_out, shor
 
     if (group == 0x76 && this->attributes[0x30] == DAT_00576828 && this->masters[0x6d]->available == 0) {
         add_extra = 1;
-        ObjNode* node = this->object_list->list;
+        RGE_Object_Node* node = this->object_list->list;
         while (node != 0) {
             if (node->object->master_obj->id == 0x6d) add_extra = 0;
             node = node->next;

@@ -18,11 +18,11 @@ public:
     char gap_440[4];
     long popup_info_id;
 
-    void set_popup_info_file(const char* filename, long id);
+    void set_popup_info_file(char* filename, long id);
 };
 #endif
 
-void TEasy_Panel::set_popup_info_file(const char* filename, long id) {
+void TEasy_Panel::set_popup_info_file(char* filename, long id) {
     if (filename) {
         strcpy(popup_info_file_name, filename);
         popup_info_id = id;

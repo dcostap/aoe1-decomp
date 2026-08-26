@@ -3,9 +3,7 @@
 // Accepted drift: the remaining difference is a return-register choice in the
 // compiler's EH tail. The source keeps the original task and action flow.
 
-#ifndef RGE_COM_OBJ_SHARED_CONTEXT
 #include "../com_obj_phase2_context.h"
-#endif
 
 int RGE_Combat_Object::gather(int object_id, int force) {
     RGE_Static_Object* target = this->player->world->object(object_id);

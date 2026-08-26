@@ -90,9 +90,9 @@ void TRIBE_Screen_Sed::set_scenario_mode(TRIBE_Screen_Sed::ScenarioMode param_1)
             }
             this->generate_map_button->set_active(active);
             if (active) {
-                this->set_map_type(this->map_type, 1);
+                this->set_map_type((MapType)this->map_type, 1);
             } else {
-                this->set_map_type(ScenarioModeNone, 0);
+                this->set_map_type((MapType)ScenarioModeNone, 0);
             }
             break;
 
@@ -122,10 +122,10 @@ void TRIBE_Screen_Sed::set_scenario_mode(TRIBE_Screen_Sed::ScenarioMode param_1)
             }
             if (active) {
                 this->set_brush_size(this->brush_size);
-                this->set_paint_type(this->paint_type, 1);
+                this->set_paint_type((PaintType)this->paint_type, 1);
             } else {
                 this->set_brush_size(0);
-                this->set_paint_type(0, 0);
+                this->set_paint_type((PaintType)0, 0);
             }
             break;
 
@@ -246,11 +246,11 @@ void TRIBE_Screen_Sed::set_scenario_mode(TRIBE_Screen_Sed::ScenarioMode param_1)
             if (active) {
                 this->load_multi_victory_cond_from_scenario();
                 this->map_view->set_active(0);
-                this->set_mp_victory_type(this->mp_victory_type, 1);
+                this->set_mp_victory_type((VictoryType)this->mp_victory_type, 1);
             } else {
                 this->save_multi_victory_cond_in_scenario();
                 this->map_view->set_active(1);
-                this->set_mp_victory_type(0, 0);
+                this->set_mp_victory_type((VictoryType)0, 0);
             }
             break;
 

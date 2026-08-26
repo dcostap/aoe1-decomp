@@ -56,8 +56,8 @@
 #include <stdio.h>
 #include <new.h>
 
-extern "C" unsigned long __cdecl debug_timeGetTime(char* file, int line);
-extern "C" void __cdecl debug_srand(char* file, int line, unsigned int seed);
+extern unsigned long __cdecl debug_timeGetTime(char* file, int line);
+extern void __cdecl debug_srand(char* file, int line, unsigned int seed);
 extern "C" void __cdecl GetDXVersion(unsigned long* version, unsigned long* platform);
 extern float DAT_0056f014;
 

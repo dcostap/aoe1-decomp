@@ -17,176 +17,8 @@
 // including all branch targets, epilogues, register saves/restores, and virtual calls.
 // 382/384 bytes match (99.48%), no behavioral difference.
 
-extern "C" int __cdecl __ftol();
-
 #ifndef DPL_OBJ_SHARED_CONTEXT
-struct RGE_Active_Sprite_Node;
-struct RGE_Active_Sprite_List;
-
-struct RGE_Active_Sprite_List {
-    void* vtable_ptr;
-    RGE_Active_Sprite_Node* list;
-    void* owner;
-
-    RGE_Active_Sprite_Node* copy_sprite_list();
-    void use_sprite_list(RGE_Active_Sprite_Node* list);
-};
-#endif
-
-// VirtualHelper for vtable calls: destroy_obj at +0x68, validate at +0x1F0
-struct RecycleVirtualHelper {
-    virtual void _v00();
-    virtual void _v04();
-    virtual void _v08();
-    virtual void _v0C();
-    virtual void _v10();
-    virtual void _v14();
-    virtual void _v18();
-    virtual void _v1C();
-    virtual void _v20();
-    virtual void _v24();
-    virtual void _v28();
-    virtual void _v2C();
-    virtual void _v30();
-    virtual void _v34();
-    virtual void _v38();
-    virtual void _v3C();
-    virtual void _v40();
-    virtual void _v44();
-    virtual void _v48();
-    virtual void _v4C();
-    virtual void _v50();
-    virtual void _v54();
-    virtual void _v58();
-    virtual void _v5C();
-    virtual void _v60();
-    virtual void _v64();
-    virtual void destroy_obj();     // +0x68 (slot 26)
-    virtual void _v6C();
-    virtual void _v70();
-    virtual void _v74();
-    virtual void _v78();
-    virtual void _v7C();
-    virtual void _v80();
-    virtual void _v84();
-    virtual void _v88();
-    virtual void _v8C();
-    virtual void _v90();
-    virtual void _v94();
-    virtual void _v98();
-    virtual void _v9C();
-    virtual void _vA0();
-    virtual void _vA4();
-    virtual void _vA8();
-    virtual void _vAC();
-    virtual void _vB0();
-    virtual void _vB4();
-    virtual void _vB8();
-    virtual void _vBC();
-    virtual void _vC0();
-    virtual void _vC4();
-    virtual void _vC8();
-    virtual void _vCC();
-    virtual void _vD0();
-    virtual void _vD4();
-    virtual void _vD8();
-    virtual void _vDC();
-    virtual void _vE0();
-    virtual void _vE4();
-    virtual void _vE8();
-    virtual void _vEC();
-    virtual void _vF0();
-    virtual void _vF4();
-    virtual void _vF8();
-    virtual void _vFC();
-    virtual void _v100();
-    virtual void _v104();
-    virtual void _v108();
-    virtual void _v10C();
-    virtual void _v110();
-    virtual void _v114();
-    virtual void _v118();
-    virtual void _v11C();
-    virtual void _v120();
-    virtual void _v124();
-    virtual void _v128();
-    virtual void _v12C();
-    virtual void _v130();
-    virtual void _v134();
-    virtual void _v138();
-    virtual void _v13C();
-    virtual void _v140();
-    virtual void _v144();
-    virtual void _v148();
-    virtual void _v14C();
-    virtual void _v150();
-    virtual void _v154();
-    virtual void _v158();
-    virtual void _v15C();
-    virtual void _v160();
-    virtual void _v164();
-    virtual void _v168();
-    virtual void _v16C();
-    virtual void _v170();
-    virtual void _v174();
-    virtual void _v178();
-    virtual void _v17C();
-    virtual void _v180();
-    virtual void _v184();
-    virtual void _v188();
-    virtual void _v18C();
-    virtual void _v190();
-    virtual void _v194();
-    virtual void _v198();
-    virtual void _v19C();
-    virtual void _v1A0();
-    virtual void _v1A4();
-    virtual void _v1A8();
-    virtual void _v1AC();
-    virtual void _v1B0();
-    virtual void _v1B4();
-    virtual void _v1B8();
-    virtual void _v1BC();
-    virtual void _v1C0();
-    virtual void _v1C4();
-    virtual void _v1C8();
-    virtual void _v1CC();
-    virtual void _v1D0();
-    virtual void _v1D4();
-    virtual void _v1D8();
-    virtual void _v1DC();
-    virtual void _v1E0();
-    virtual void _v1E4();
-    virtual void _v1E8();
-    virtual void _v1EC();
-    virtual void validate();        // +0x1F0 (slot 124)
-};
-
-#ifndef DPL_OBJ_SHARED_CONTEXT
-extern unsigned long* unified_map_offsets[];
-
-class RGE_Master_Static_Object;
-class RGE_Player;
-class RGE_Static_Object;
-class RGE_Animated_Object;
-
-class RGE_Static_Object {
-public:
-    virtual void recycle_in_to_game(RGE_Master_Static_Object* master, RGE_Player* player, float x, float y, float z);
-};
-
-class RGE_Animated_Object : public RGE_Static_Object {
-public:
-    char gap_00[0x84];
-    float speed;
-
-    void recycle_in_to_game(RGE_Master_Static_Object* master, RGE_Player* player, float x, float y, float z);
-};
-
-class RGE_Doppleganger_Object : public RGE_Animated_Object {
-public:
-    void recycle_in_to_game(RGE_Master_Static_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5, RGE_Static_Object* param_6);
-};
+#include "../../include/dpl_obj_context.h"
 #endif
 
 void RGE_Doppleganger_Object::recycle_in_to_game(
@@ -263,7 +95,7 @@ void RGE_Doppleganger_Object::recycle_in_to_game(
         if (*(unsigned char*)((char*)obj + 0x48) >= 7) {
             *(int*)((char*)this + 0x8C) = 0;  // doppled_object = NULL
             *(int*)((char*)this + 0xAC) = -1;  // doppledObjectID = -1
-            ((RecycleVirtualHelper*)this)->validate();
+            this->validate();
             return;
         }
     } else {
@@ -271,9 +103,9 @@ void RGE_Doppleganger_Object::recycle_in_to_game(
         *(int*)((char*)this + 0xAC) = -1;  // doppledObjectID = -1
         *(int*)((char*)this + 0x94) = 0;   // doppled_master_obj = NULL
         *(int*)((char*)this + 0x98) = 0;   // doppled_player = 0
-        ((RecycleVirtualHelper*)this)->destroy_obj();
+        this->destroy_obj();
     }
 
     // Shared tail: call validate
-    ((RecycleVirtualHelper*)this)->validate();
+    this->validate();
 }

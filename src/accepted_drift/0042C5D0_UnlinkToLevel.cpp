@@ -152,13 +152,14 @@ enum COMMSTATUS {
 #if !defined(COM_HAND_TU_CONTEXT)
 class TDebuggingLog {
 public:
-    void __cdecl Log(char* format, ...);
+    static void __cdecl Log(TDebuggingLog* log, const char* format, ...);
 };
 #endif // COM_HAND_TU_CONTEXT
 
 
 #if !defined(COM_HAND_TU_CONTEXT)
 extern TDebuggingLog* L;
+extern TDebuggingLog* com_hand_global_log;
 #endif // COM_HAND_TU_CONTEXT
 
 #if !defined(COM_HAND_TU_CONTEXT)

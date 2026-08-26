@@ -35,65 +35,8 @@
 #include <stdio.h>
 
 #ifndef DPL_OBJ_SHARED_CONTEXT
-// Local type stubs matching the exact layouts from type dumps
-class RGE_Game_World {
-public:
-    void* vtable;              // +0x00
-    unsigned long world_time;  // +0x04
-};
-
-class RGE_Player {
-public:
-    void* vtable;              // +0x00
-    int field_04;
-    int field_08;
-    int field_0C;
-    int field_10;
-    long checksum;
-    long position_checksum;
-    long action_checksum;
-    unsigned char checksum_flag;
-    unsigned char pad_21[1];
-    short master_object_num;
-    void* master_objects;
-    void* objects;
-    void* sleeping_objects;
-    void* doppleganger_objects;
-    void* victory_conditions;
-    void* visible;
-    RGE_Game_World* world;     // +0x3C
-    void* doppleganger_creator;
-    char* name;
-    unsigned char player_type;
-    unsigned char pad_49[1];
-    short id;                   // +0x4A
-    short attribute_num;
-};
-
-class RGE_Static_Object {
-public:
-    void* vtable;              // +0x00
-    long id;                   // +0x04
-    void* master_obj;          // +0x08
-    RGE_Player* owner;         // +0x0C
-};
-
-class RGE_Doppleganger_Creator {
-public:
-    RGE_Player* owner;                  // +0x00
-    int allocated_size;                  // +0x04
-    int active_size;                     // +0x08
-    RGE_Static_Object** Objects;         // +0x0C
-    unsigned long** Map_Addresses;       // +0x10
-    unsigned long* Last_Map_Value;       // +0x14
-    int* Object_ids;                     // +0x18
-
-    int add_doppleganger_check(RGE_Static_Object* obj, unsigned long* map_addr);
-    void expand_allocations(int extra);
-};
+#include "../../include/dpl_obj_context.h"
 #endif
-
-extern FILE* DDlogf;
 
 int RGE_Doppleganger_Creator::add_doppleganger_check(RGE_Static_Object* obj, unsigned long* map_addr)
 {

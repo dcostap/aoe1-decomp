@@ -42,19 +42,54 @@
 typedef unsigned char uchar;
 
 #ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
-struct MasterObj {
-    char _pad_00[4];
-    char master_type;   // +0x04
-    char _pad_05[0xF];  // +0x05 to +0x13
-    short object_group; // +0x14
-    char _pad_16[0x10]; // +0x16 to +0x25
-    short hp;           // +0x26
+class RGE_Master_Static_Object {
+public:
+    virtual ~RGE_Master_Static_Object();
+    virtual void copy_obj(RGE_Master_Static_Object*);
+    virtual void modify(float, uchar);
+    virtual void modify_delta(float, uchar);
+    virtual void modify_percent(float, uchar);
+    virtual void save(int);
+    virtual void make_new_obj(void*, float, float, float);
+    virtual void make_new_master();
+    virtual void check_placement();
+    virtual void alignment();
+    virtual long calc_base_damage_ability(void*);
+    virtual void play_command_sound();
+    char master_type;
+    char _pad_05[0xF];
+    short object_group;
+    char _pad_16[0x10];
+    short hp;
 };
 
-struct RGE_Static_Object {
-    void* vtable;           // +0x00
+class RGE_Static_Object {
+public:
+    virtual ~RGE_Static_Object();
+    virtual void recycle_in_to_game(); virtual void recycle_out_of_game();
+    virtual void draw(); virtual void shadow_draw(); virtual void normal_draw();
+    virtual void draw_front_frame(); virtual void draw_back_frame(); virtual void draw_frame();
+    virtual void update(); virtual void check_damage_sprites(); virtual void rehook();
+    virtual void save(int); virtual void teleport(); virtual void new_sprite();
+    virtual void add_overlay_sprite(); virtual void remove_overlay_sprite();
+    virtual void change_ownership(); virtual void modify(); virtual void modify_delta();
+    virtual void modify_percent(); virtual void transform(); virtual void copy_obj();
+    virtual void set_object_state(); virtual void remove_visible_resource();
+    virtual void create_doppleganger_when_dying(); virtual void destroy_obj();
+    virtual void die_die_die(); virtual void damage(); virtual void calculateDamage();
+    virtual void rotate(); virtual void can_attack(); virtual void set_attribute();
+    virtual void set_attribute_amount();
+    virtual void heal(); virtual void heal(float);
+    virtual void canRepair();
+    virtual void notify_of_relation(); virtual void do_command(); virtual void move_to();
+    virtual void work(); virtual void stop(); virtual void set_attack();
+    virtual void play_command_sound(); virtual void play_move_sound(); virtual void new_angle();
+    virtual void spawn_death_obj(); virtual RGE_Master_Static_Object* get_command_master(void*, float, float, float);
+    virtual void set_being_worked_on(); virtual void release_being_worked_on(); virtual void is_moving();
+    virtual void get_target_obj(); virtual void enter_obj(); virtual void exit_obj();
+    virtual void explore_terrain(); virtual void unexplore_terrain();
     int id;                 // +0x04
-    MasterObj* master_obj;  // +0x08
+    RGE_Master_Static_Object* master_obj; // +0x08
     void* owner;            // +0x0C (TRIBE_Player*)
     char _pad_10[0x20];     // +0x10 to +0x2F
     float hp;               // +0x30
@@ -62,34 +97,19 @@ struct RGE_Static_Object {
     uchar object_state;     // +0x48
 };
 
-struct __declspec(novtable) PlayerVtbl7 {
-    virtual void d0();  virtual void d4();  virtual void d8();  virtual void dC();
-    virtual void d10(); virtual void d14(); virtual void d18();
-    virtual int func1C(int arg);  // slot 7: +0x1C
-};
-
-struct __declspec(novtable) RepairVtbl {
-    virtual void d0();  virtual void d4();  virtual void d8();  virtual void dC();
-    virtual void d10(); virtual void d14(); virtual void d18(); virtual void d1C();
-    virtual void d20(); virtual void d24(); virtual void d28();
-    virtual void func2C();  // slot 11: +0x2C
-    virtual void d30(); virtual void d34(); virtual void d38(); virtual void d3C();
-    virtual void d40(); virtual void d44(); virtual void d48(); virtual void d4C();
-    virtual void d50(); virtual void d54(); virtual void d58(); virtual void d5C();
-    virtual void d60(); virtual void d64(); virtual void d68(); virtual void d6C();
-    virtual void d70(); virtual void d74(); virtual void d78(); virtual void d7C();
-    virtual void d80(); virtual void d84(); virtual void d88(); virtual void d8C();
-    virtual void d90(); virtual void d94(); virtual void d98(); virtual void d9C();
-    virtual void dA0(); virtual void dA4(); virtual void dA8(); virtual void dAC();
-    virtual void dB0(); virtual void dB4(); virtual void dB8();
-    virtual int funcBC(void* obj, int a, int b);  // slot 47: +0xBC
-};
-
 struct TRIBE_Command {
     void command_repair(void* obj, int a, int b);
 };
 
 struct RGE_Player {
+    virtual ~RGE_Player();
+    virtual void set_game_status(unsigned char);
+    virtual void do_resign(int);
+    virtual void changeToHumanPlayer();
+    virtual void changeToComputerPlayer();
+    virtual char* aiStatus(int);
+    virtual int isEnemy(int);
+    virtual int isAlly(int);
     char _pad_00[0x58];
     TRIBE_Command* tribe_command;  // +0x58
 
@@ -97,7 +117,7 @@ struct RGE_Player {
 };
 
 struct TRIBE_Player {
-    void* vtable_ptr;       // +0x00
+    virtual ~TRIBE_Player();
     char _pad_04[0x38];     // +0x04 to +0x3B
     RGE_Player* rge_player; // +0x3C
     char _pad_40[0x0A];     // +0x40 to +0x49
@@ -115,7 +135,7 @@ uchar TRIBE_Player::command_make_repair(RGE_Static_Object* obj)
 
     // First check block
     if (obj->owner != this) {
-        int diplomacy = ((PlayerVtbl7*)this)->func1C(((TRIBE_Player*)obj->owner)->diplomacy_value);
+        int diplomacy = ((RGE_Player*)this)->isAlly(((TRIBE_Player*)obj->owner)->diplomacy_value);
         if (diplomacy == 0) {
             goto second_check;
         }
@@ -130,12 +150,12 @@ uchar TRIBE_Player::command_make_repair(RGE_Static_Object* obj)
 
 second_check:
     if (obj->owner != this) {
-        int diplomacy1 = ((PlayerVtbl7*)this)->func1C(((TRIBE_Player*)obj->owner)->diplomacy_value);
+        int diplomacy1 = ((RGE_Player*)this)->isAlly(((TRIBE_Player*)obj->owner)->diplomacy_value);
         if (diplomacy1 == 0) {
             return 0;
         }
 
-        int diplomacy2 = ((PlayerVtbl7*)obj->owner)->func1C(this->diplomacy_value);
+        int diplomacy2 = ((RGE_Player*)obj->owner)->isAlly(this->diplomacy_value);
         if (diplomacy2 == 0) {
             return 0;
         }
@@ -163,10 +183,10 @@ do_command:
     }
 
     // Call vtable[0xBC] on the result object
-    void* repairObj = *(void**)out_ptr;
-    int r = ((RepairVtbl*)repairObj)->funcBC(obj, 0, 0);
+    RGE_Static_Object* repairObj = *(RGE_Static_Object**)out_ptr;
+    RGE_Master_Static_Object* r = repairObj->get_command_master(obj, 0.0f, 0.0f, 0.0f);
     if (r != 0) {
-        ((RepairVtbl*)r)->func2C();
+        r->play_command_sound();
     }
 
     // Create repair command

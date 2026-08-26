@@ -31,7 +31,7 @@ public:
     virtual ~RGE_Command() {}
     RGE_Game_World* world;      // +0x04
 
-    void command_create_group(int p1, int p2, int* p3, int p4, int p5);
+    void command_create_group(int p1, int p2, int* p3, int p4, float p5);
     void submit(void* buf, int size);
 };
 
@@ -49,7 +49,8 @@ public:
 
 void __cdecl RGE_Log(void* log, const char* fmt, int count, int player, const char* name);
 
-void RGE_Command::command_create_group(int p1, int p2, int* p3, int p4, int p5)
+// BINARY NOTE: The final packet argument is float in the shipped member ABI.
+void RGE_Command::command_create_group(int p1, int p2, int* p3, int p4, float p5)
 {
     char* buf = (char*)calloc(1, 0x74);
     int count = p4;

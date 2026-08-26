@@ -68,9 +68,7 @@
 
 typedef unsigned char uchar;
 
-#ifndef RGE_COM_OBJ_SHARED_CONTEXT
 #include "../com_obj_phase2_context.h"
-#endif
 
 int RGE_Combat_Object::moveTo(float x, float y, float z, float range, int force)
 {

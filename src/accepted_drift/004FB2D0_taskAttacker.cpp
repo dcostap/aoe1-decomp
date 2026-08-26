@@ -1,4 +1,3 @@
-#ifndef TAITACMD_SHARED_CONTEXT
 // VA: 004FB2D0 TribeTacticalAIModule::taskAttacker
 // Source: taitacmd.cpp lines 9056-9125
 // Attempt log:
@@ -46,7 +45,7 @@ struct ManagedIntArray {
     int* value;
     int numberValue;
     int desiredNumberValue;
-    int maximumSize;
+    int maximumSizeValue;
 };
 
 class RGE_Static_Object;
@@ -72,7 +71,7 @@ public:
     char gap_04[0x38];
     RGE_Game_World* world;
     char gap_40[0x0A];
-    short field_4A;
+    short id;
 };
 
 class RGE_Game_World {
@@ -189,7 +188,7 @@ int TribeTacticalAIModule::taskAttacker(int attackerID, float x, float y,
             command = 0x2BC;
 
         this->md->player->sendUnitAIOrder(
-            (int)this->md->player->field_4A,
+            (int)this->md->player->id,
             attackerID,
             command,
             targetID,
@@ -210,23 +209,23 @@ int TribeTacticalAIModule::taskAttacker(int attackerID, float x, float y,
     ManagedIntArray& arr = this->unitsTaskedThisUpdate;
     int i;
     for (i = 0; i < arr.numberValue; i++) {
-        if (i >= arr.maximumSize)
+        if (i >= arr.maximumSizeValue)
             break;
         if (arr.value[i] == attackerID)
             return 1;
     }
 
-    if (arr.numberValue > arr.maximumSize - 1) {
+    if (arr.numberValue > arr.maximumSizeValue - 1) {
         int newSize = arr.numberValue + 1;
         int* newArray = new int[newSize];
         if (newArray != 0) {
             int j;
-            for (j = 0; j < arr.maximumSize && j < newSize; j++) {
+            for (j = 0; j < arr.maximumSizeValue && j < newSize; j++) {
                 newArray[j] = arr.value[j];
             }
             delete[] arr.value;
             arr.value = newArray;
-            arr.maximumSize = newSize;
+            arr.maximumSizeValue = newSize;
         }
     }
 
@@ -234,11 +233,3 @@ int TribeTacticalAIModule::taskAttacker(int attackerID, float x, float y,
     arr.numberValue++;
     return 1;
 }
-#else
-int TribeTacticalAIModule::taskAttacker(int attackerID, float x, float y,
-                                        int targetID, int arg5,
-                                        Waypoint* waypoints, int waypointCount,
-                                        int arg8, int commandFlag) {
-    return 0;
-}
-#endif

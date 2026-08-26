@@ -13,15 +13,17 @@
 // Benign register choice; proposed accepted_drift.
 
 #ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
-struct VirtualTarget {
-    virtual void vf00() = 0;
-    virtual void vf04() = 0;
-    virtual void vf08() = 0;
-    virtual void vf0C() = 0;
-    virtual void vf10() = 0;
-    virtual void vf14() = 0;
-    virtual void vf18() = 0;
-    virtual void vfn(int a, int b) = 0;
+class RGE_Sprite;
+class RGE_Active_Sprite_List {
+public:
+    virtual ~RGE_Active_Sprite_List();
+    virtual short frame(RGE_Sprite*);
+    virtual void update(float, float);
+    virtual void draw(short, short, short, short, short, void*, void*);
+    virtual void normal_draw(short, short, short, void*, void*);
+    virtual void shadow_draw(short, short, short, void*, void*, unsigned char);
+    virtual unsigned char is_animating(RGE_Sprite*);
+    virtual void set_frame(RGE_Sprite*, short);
 };
 
 class RGE_Master_Static_Object;
@@ -38,11 +40,11 @@ extern RGE_Base_Game* rge_base_game;
 class RGE_Static_Object {
 public:
     char gap_00[8];
-    void* group;         // +0x08
+    int groupCommanderValue; // +0x08
     char gap_0C[4];
-    int field_10;        // +0x10
+    RGE_Sprite* sprite;       // +0x10
     char gap_14[4];
-    void* field_18;      // +0x18
+    RGE_Active_Sprite_List* sprite_list; // +0x18
 };
 
 class RGE_Player {
@@ -85,7 +87,7 @@ RGE_Static_Object* TRIBE_Player::make_new_object(long id, float x, float y, floa
     if (unused) {
         world->check_destructables(destructable_type, id, x, y, 0);
 
-        if (*(unsigned char*)((char*)obj->group + 4) == 'P') {
+        if (*(unsigned char*)((char*)(unsigned long)obj->groupCommanderValue + 4) == 'P') {
             ((TRIBE_Building_Object*)obj)->build(10000.0f);
         }
     }
@@ -93,13 +95,10 @@ RGE_Static_Object* TRIBE_Player::make_new_object(long id, float x, float y, floa
     game = rge_base_game;
     if (game->prog_mode == 7) {
         // Check group type using ecx-friendly approach
-        void* grp = obj->group;
+        void* grp = (void*)(unsigned long)obj->groupCommanderValue;
         short group_sub_type = *(unsigned short*)((char*)grp + 0x14);
         if (group_sub_type == 5 || group_sub_type == 0x21) {
-            // call virtual function at vtable+0x1C on obj->field_18
-            void* target = obj->field_18;
-            int arg = obj->field_10;
-            ((VirtualTarget*)target)->vfn(arg, 5);
+            obj->sprite_list->set_frame(obj->sprite, 5);
         }
     }
 

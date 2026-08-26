@@ -22,62 +22,9 @@
 // - LemonLily flag probes: temporary /O1, /O2 without /Oy, /O2 /Os, /O2 /Ot, /Og /Oi, and /Ox did not match. /O1 and /Os regressed broadly; /Ot/Ox/Og and no-/Oy stayed in the same 8-edit-byte basin. No flag file kept.
 // Blocker: VC5 consistently chooses the shorter [eax+offsetReg] SIB encoding for equivalent address expressions; source-level term/order/pointer probes did not recover original longer offsetReg-base encodings. This looks like a strong accepted_drift candidate: edit diff is only SIB base/index byte choices, three one-byte branch-distance shifts caused by the shorter encodings, and a trailing alignment nop; behavior and calls/stack/memory effects match.
 
+#include "../../include/stat_obj_context.h"
 #ifndef RGE_STAT_OBJ_SHARED_CONTEXT
-class RGE_Master_Static_Object {
-public:
-    char gap_00[0x6A];
-    short attribute_type_held[3];
-    float attribute_amount_held[3];
-    short attribute_max_amount;
-    char gap_7E[0x0A];
-    unsigned char attribute_flag[3];
-};
-
-class RGE_Player {
-public:
-    virtual void vf00();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
-    virtual void vf20();
-    virtual void vf24();
-    virtual void vf28();
-    virtual void vf2C();
-    virtual void vf30();
-    virtual void vf34();
-    virtual void vf38();
-    virtual void vf3C();
-    virtual void vf40();
-    virtual void vf44();
-    virtual void vf48();
-    virtual void vf4C();
-    virtual void vf50();
-    virtual void vf54();
-    virtual void vf58();
-    virtual void vf5C();
-    virtual void vf60();
-    virtual void vf64();
-    virtual void vf68();
-    virtual void vf6C();
-    virtual void vf70();
-    virtual void vf74();
-    virtual void change_attribute(short attr, float amount, int flag);
-};
-
-class RGE_Static_Object {
-public:
-    void* vtable_ptr;
-    int id;
-    RGE_Master_Static_Object* master_obj;
-    RGE_Player* owner;
-
-    void take_attribute_from_owner(void);
-};
-
+#define RGE_STAT_OBJ_SHARED_CONTEXT 1
 #endif
 
 void RGE_Static_Object::take_attribute_from_owner(void) {
@@ -89,7 +36,7 @@ void RGE_Static_Object::take_attribute_from_owner(void) {
         if (*(unsigned char*)(i + (int)master + 0x88) == 2) {
             short attr = *(short*)(typeOffset + (int)master);
             if (attr >= 0) {
-                this->owner->change_attribute(attr, -*(float*)(amountOffset + (int)master), 0);
+                this->owner->add_attribute_num(attr, -*(float*)(amountOffset + (int)master), 0);
             }
         }
         amountOffset += 4;

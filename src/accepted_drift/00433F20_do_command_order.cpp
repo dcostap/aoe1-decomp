@@ -130,6 +130,7 @@ public:
     virtual ~RGE_Command();
     char gap_04[4];
     void* world;
+protected:
     RGE_Static_Object* get_obj(RGE_Obj_Info info);
     void do_command_order(RGE_Command_Order* command);
 };

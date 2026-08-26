@@ -8,7 +8,7 @@ public:
     char pad_00[8];
     RGE_Master_Combat_Object* master_obj;
 
-    void get_armor(short& out_armor, short& out_other);
+    virtual void get_armor(short& out_armor, short& out_other);
 };
 
 class RGE_Master_Combat_Object {

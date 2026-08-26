@@ -22,6 +22,10 @@
 typedef unsigned char uchar;
 
 #ifndef COMMAND_TU_CONTEXT
+struct RGE_Obj_Info {
+    int id;
+};
+
 class RGE_Command_Group_Waypoint {
 public:
     uchar command;
@@ -77,18 +81,19 @@ class RGE_Command {
 public:
     char gap_00[0x4];
     RGE_Game_World* world;
-    RGE_Static_Object* get_obj(int id);
+protected:
+    RGE_Static_Object* get_obj(RGE_Obj_Info info);
     void do_command_group_waypoint(RGE_Command_Group_Waypoint* packet);
 };
 #endif
 
 void RGE_Command::do_command_group_waypoint(RGE_Command_Group_Waypoint* packet) {
     int c;
-    int* ids;
+    RGE_Obj_Info* ids;
     XYZBYTEPoint waypoint;
 
     c = packet->unit_num;
-    ids = (int*)((char*)packet + 4);
+    ids = (RGE_Obj_Info*)((char*)packet + 4);
     if (c > 0) {
         int count = c;
         do {
