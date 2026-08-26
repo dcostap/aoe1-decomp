@@ -1726,10 +1726,14 @@
         "0049B000": "src/matching/0049B000_scr_game_score_compare.cpp",
         "0049B560": "src/matching/0049B560_draw.cpp",
         "0049B830": "src/matching/0049B830_handle_anim_pal.cpp",
+        "0049BD20": "src/matching/0049BD20_command_attack.cpp",
+        "0049BD70": "src/matching/0049BD70_command_build.cpp",
         "0049BF20": "src/matching/0049BF20_command_cancel_building.cpp",
+        "0049C160": "src/matching/0049C160_command_convert.cpp",
         "0049C540": "src/matching/0049C540_command_group.cpp",
         "0049C570": "src/matching/0049C570_command_group_by_number.cpp",
         "0049C5B0": "src/matching/0049C5B0_command_heal.cpp",
+        "0049C600": "src/matching/0049C600_command_repair.cpp",
         "0049C710": "src/matching/0049C710_command_select_group.cpp",
         "0049C890": "src/matching/0049C890_command_move.cpp",
         "0049CEA0": "src/matching/0049CEA0_command_trade.cpp",
@@ -1740,6 +1744,7 @@
         "0049D200": "src/matching/0049D200_command_work.cpp",
         "0049D290": "src/matching/0049D290_command_formation.cpp",
         "0049D2C0": "src/matching/0049D2C0_command_stand_ground.cpp",
+        "0049D2F0": "src/matching/0049D2F0_command_attack_ground.cpp",
         "0049D340": "src/matching/0049D340_command_trade_attribute.cpp",
         "0049D440": "src/matching/0049D440_any_selected_have_action.cpp",
         "0049D530": "src/matching/0049D530_restart_sound_system.cpp",
@@ -1748,8 +1753,12 @@
       "symbols": {
         "004972F0": "?handle_resume@TRIBE_Screen_Game@@QAEXXZ",
         "0049B560": "?draw@TRIBE_Screen_Game@@UAEXXZ",
+        "0049BD20": "?command_attack@TRIBE_Screen_Game@@IAEXXZ",
+        "0049BD70": "?command_build@TRIBE_Screen_Game@@IAEXXZ",
+        "0049C160": "?command_convert@TRIBE_Screen_Game@@IAEXXZ",
         "0049C540": "?command_group@TRIBE_Screen_Game@@IAEXXZ",
         "0049C5B0": "?command_heal@TRIBE_Screen_Game@@IAEXXZ",
+        "0049C600": "?command_repair@TRIBE_Screen_Game@@IAEXXZ",
         "0049C710": "?command_select_group@TRIBE_Screen_Game@@IAEXHH@Z",
         "0049C890": "?command_move@TRIBE_Screen_Game@@IAEXXZ",
         "0049CEA0": "?command_trade@TRIBE_Screen_Game@@IAEXXZ",
@@ -1757,7 +1766,8 @@
         "0049CFF0": "?command_unload@TRIBE_Screen_Game@@IAEXXZ",
         "0049D200": "?command_work@TRIBE_Screen_Game@@IAEXXZ",
         "0049D290": "?command_formation@TRIBE_Screen_Game@@IAEXH@Z",
-        "0049D2C0": "?command_stand_ground@TRIBE_Screen_Game@@IAEXXZ"
+        "0049D2C0": "?command_stand_ground@TRIBE_Screen_Game@@IAEXXZ",
+        "0049D2F0": "?command_attack_ground@TRIBE_Screen_Game@@IAEXXZ"
       }
     },
     {
@@ -2353,6 +2363,7 @@
         "0045D620": "src/matching/0045D620_facetToNextWaypoint.cpp",
         "0045D690": "src/matching/0045D690_setTargetID.cpp",
         "0045F7F0": "src/matching/0045F7F0_passableTile.cpp",
+        "00460B70": "src/matching/00460B70_removeUserDefinedWaypoint.cpp",
         "00460D30": "src/matching/00460D30_setInitialPoints.cpp",
         "00460D60": "src/matching/00460D60_copy_obj.cpp",
         "00460DB0": "src/matching/00460DB0_boundAngle.cpp"
@@ -2369,6 +2380,7 @@
         "0045D620": "?facetToNextWaypoint@RGE_Moving_Object@@UBEEXZ",
         "0045D690": "?setTargetID@RGE_Moving_Object@@QAEXH@Z",
         "0045F7F0": "?passableTile@RGE_Moving_Object@@UAEHMMH@Z",
+        "00460B70": "?removeUserDefinedWaypoint@RGE_Moving_Object@@UAEXH@Z",
         "00460D30": "?setInitialPoints@RGE_Moving_Object@@QAEXAAUXYPoint@@0@Z",
         "00460D60": "?copy_obj@RGE_Moving_Object@@UAEXPAVRGE_Master_Static_Object@@@Z",
         "00460DB0": "?boundAngle@RGE_Moving_Object@@QAEXPAMH@Z"
@@ -3174,6 +3186,7 @@
         "00447B20": "src/matching/00447B20_SndObjPlay.cpp",
         "00447BC0": "src/matching/00447BC0_DSFillSoundBuffer.c",
         "00447C60": "src/matching/00447C60_DSParseWaveResource.c",
+        "00447D50": "src/matching/00447D50_WaveOpenFile.c",
         "00447F40": "src/matching/00447F40_WaveReadFile.c",
         "00448080": "src/matching/00448080_WaveCreateFile.c",
         "00448250": "src/matching/00448250_WaveCloseWriteFile.c",
@@ -3189,6 +3202,7 @@
         "00448B30": "src/matching/00448B30_ds_stream_messages.c"
       },
       "symbols": {
+        "00447D50": "_WaveOpenFile",
         "00448340": "_WaveCopyUselessChunks"
       }
     },
@@ -6296,6 +6310,7 @@
         "0040A820": "src/matching/0040A820_ConstructionItem.cpp",
         "0040A870": "src/matching/0040A870_ConstructionItem.cpp",
         "0040A8D0": "src/matching/0040A8D0_ConstructionItem.cpp",
+        "0040A910": "src/matching/0040A910_ConstructionItem.cpp",
         "0040A950": "src/matching/0040A950_ConstructionItem.cpp",
         "0040AA00": "src/matching/0040AA00_inProgress.cpp",
         "0040AA10": "src/matching/0040AA10_built.cpp",
@@ -6310,6 +6325,7 @@
         "0040A820": "??0ConstructionItem@@QAE@XZ",
         "0040A870": "??0ConstructionItem@@QAE@MMMMMMHPAD@Z",
         "0040A8D0": "??0ConstructionItem@@QAE@PAV0@@Z",
+        "0040A910": "??0ConstructionItem@@QAE@ABV0@@Z",
         "0040A950": "??1ConstructionItem@@UAE@XZ",
         "0040AA00": "?inProgress@ConstructionItem@@QBEHXZ",
         "0040AA10": "?built@ConstructionItem@@QBEHXZ",
@@ -7285,6 +7301,7 @@
       "source": "src/world_cpp_phase2_tu.cpp",
       "flags": "config/flags/world_scenario_sparse.rsp",
       "owners": {
+        "00540750": "src/matching/00540750_RGE_Game_World.cpp",
         "00540A40": "src/matching/00540A40_RGE_Game_World.cpp",
         "00540CF0": "src/matching/00540CF0_reset_object_count.cpp",
         "00540D30": "src/matching/00540D30_pause.cpp",
@@ -7364,6 +7381,7 @@
         "005462D0": "src/matching/005462D0_update_mutual_allies.cpp"
       },
       "symbols": {
+        "00540750": "??0RGE_Game_World@@QAE@XZ",
         "00545D10": "?numberObjects@RGE_Game_World@@QAEHXZ",
         "00545D20": "?numberNegativeObjects@RGE_Game_World@@QAEHXZ",
         "00545D30": "?object@RGE_Game_World@@QAEPAVRGE_Static_Object@@H@Z",

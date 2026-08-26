@@ -13,7 +13,7 @@
 #include "accepted_drift/00447B70_SndObjStop.cpp"
 #include "matching/00447BC0_DSFillSoundBuffer.c"
 #include "matching/00447C60_DSParseWaveResource.c"
-#include "scratch/00447D50_WaveOpenFile.c"
+#include "matching/00447D50_WaveOpenFile.c"
 #include "scratch/00447EF0_WaveStartDataRead.cpp"
 #include "matching/00447F40_WaveReadFile.c"
 #include "scratch/00448040_WaveCloseReadFile.cpp"
