@@ -76,7 +76,7 @@ protected:
 
 public:
     TPanel* currentPanel() const;
-    TPanel* previousPanel();
+    TPanel* previousPanel() const;
     TPanel* mouseOwner() const;
     TPanel* keyboardOwner() const;
     TPanel* modalPanel() const;
@@ -145,8 +145,8 @@ public:
 
     virtual ~TPanel();
     virtual long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char);
-    virtual void set_rect(tagRECT);
     virtual void set_rect(long, long, long, long);
+    virtual void set_rect(tagRECT);
     virtual void set_color(unsigned char);
     virtual void set_active(int);
     virtual void set_positioning(PositionMode, long, long, long, long, long, long,
@@ -194,8 +194,8 @@ public:
     virtual void get_true_render_rect(tagRECT&);
     virtual int is_inside(long, long);
     virtual void set_focus(int);
-    virtual void set_tab_order(TPanel*, TPanel*);
     virtual void set_tab_order(TPanel**, short);
+    virtual void set_tab_order(TPanel*, TPanel*);
     virtual unsigned char get_help_info(char*&, long&, long, long);
     virtual void stop_sound_system();
     virtual int restart_sound_system();
@@ -204,7 +204,7 @@ public:
 
     TPanel(char* name);
     TPanel();
-    TPanel* previousPanel();
+    TPanel* previousPanel() const;
     void setPreviousPanel(TPanel* panel);
     TPanel* previousModalPanel() const;
     void setPreviousModalPanel(TPanel* panel);

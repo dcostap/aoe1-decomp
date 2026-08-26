@@ -8,9 +8,10 @@ class TPanel {
 public:
     void* vtable;
     TPanel* previous_panel;
+    TPanel* previousPanel() const;
 };
 
 #endif
-TPanel* TPanel::previousPanel() {
+TPanel* TPanel::previousPanel() const {
     return previous_panel;
 }

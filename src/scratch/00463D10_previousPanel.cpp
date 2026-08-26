@@ -9,7 +9,7 @@ class TPanel {
 public:
     void* vtable;
     TPanel* previous_panel;
-    TPanel* previousPanel();
+    TPanel* previousPanel() const;
 };
 #endif
 
@@ -22,7 +22,7 @@ public:
 #endif
 
 #endif
-TPanel* TPanelSystem::previousPanel() {
+TPanel* TPanelSystem::previousPanel() const {
     if (currentPanelValue)
         return currentPanelValue->previousPanel();
     return 0;
