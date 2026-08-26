@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from collections import defaultdict, deque
 from pathlib import Path
@@ -60,6 +61,13 @@ def parse_args() -> argparse.Namespace:
         help="Mark an assigned TU captain as active.",
     )
     parser.add_argument(
+        "--start",
+        action="append",
+        default=[],
+        metavar="GROUP=RUN_ID",
+        help="Record the exact active captain run for one TU.",
+    )
+    parser.add_argument(
         "--approve",
         action="append",
         default=[],
@@ -91,8 +99,8 @@ def parse_args() -> argparse.Namespace:
         "--validated",
         action="append",
         default=[],
-        metavar="GROUP=COMMIT",
-        help="Record completed integration validation and its commit.",
+        metavar="GROUP=RUN_ID,COMMIT",
+        help="Validate one returned run and record its integration commit.",
     )
     parser.add_argument(
         "--limit",
@@ -115,6 +123,32 @@ def load_json(path: Path) -> dict[str, object]:
     return value
 
 
+def file_sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def display_path(path: Path) -> str:
+    try:
+        return path.relative_to(repo_path(".")).as_posix()
+    except ValueError:
+        return str(path)
+
+
+def validate_report_transition(
+    prior_fingerprint: str,
+    report_fingerprint: str,
+    baseline_fingerprint: str,
+) -> None:
+    if not prior_fingerprint or report_fingerprint == prior_fingerprint:
+        return
+    if not baseline_fingerprint:
+        raise ValueError("The sweep changed, but no baseline report was supplied.")
+    if baseline_fingerprint != prior_fingerprint:
+        raise ValueError(
+            "The baseline report does not match the report stored in state."
+        )
+
+
 def parse_mapping(values: Iterable[str], label: str) -> dict[str, str]:
     result: dict[str, str] = {}
     for value in values:
@@ -133,6 +167,30 @@ def parse_pairs(values: Iterable[str], label: str) -> list[tuple[str, str]]:
             raise ValueError(f"Invalid {label}: {value}. Use GROUP=VALUE.")
         result.append((key.strip(), item.strip()))
     return result
+
+
+def queue_packets(queue: dict[str, object]) -> list[dict[str, object]]:
+    raw = queue.get("packets")
+    if not isinstance(raw, list):
+        raise ValueError("Queue packets must be a list.")
+    packets: list[dict[str, object]] = []
+    groups: set[str] = set()
+    for index, packet in enumerate(raw):
+        if not isinstance(packet, dict):
+            raise ValueError(f"Queue packet {index} must be an object.")
+        group = str(packet.get("group") or "").strip()
+        if not group:
+            raise ValueError(f"Queue packet {index} has no group name.")
+        if group in groups:
+            raise ValueError(f"Duplicate queue group: {group}")
+        groups.add(group)
+        packets.append(packet)
+    declared = integer(queue.get("group_count"))
+    if declared is not None and declared != len(packets):
+        raise ValueError(
+            f"Queue group count is {declared}, but {len(packets)} packets exist."
+        )
+    return packets
 
 
 def integer(value: object) -> int | None:
@@ -181,6 +239,7 @@ def apply_state_changes(
     prior: dict[str, object],
     approvals: list[tuple[str, str]],
     clear_blocks: set[str],
+    starts: list[tuple[str, str]],
     finishes: list[tuple[str, str]],
     validations: list[tuple[str, str]],
 ) -> dict[str, object]:
@@ -205,8 +264,23 @@ def apply_state_changes(
             approved.sort()
     for group in clear_blocks:
         group_state(group)["shared_blockers"] = []
+    for group, run_id in starts:
+        state = group_state(group)
+        active = str(state.get("active_run_id") or "")
+        if active and active != run_id:
+            raise ValueError(
+                f"Group {group} already has active run {active}; cannot start {run_id}."
+            )
+        if state.get("pending_validation"):
+            raise ValueError(f"Group {group} still requires integration validation.")
+        state["active_run_id"] = run_id
     for group, run_id in finishes:
         state = group_state(group)
+        active = str(state.get("active_run_id") or "")
+        if active != run_id:
+            raise ValueError(
+                f"Cannot finish stale run {run_id} for {group}; active run is {active or 'none'}."
+            )
         runs = state.setdefault("completed_runs", [])
         if not isinstance(runs, list):
             raise ValueError(f"Invalid completed runs for group: {group}")
@@ -214,10 +288,23 @@ def apply_state_changes(
             runs.append(run_id)
         state["active_run_id"] = ""
         state["pending_validation"] = True
-    for group, commit in validations:
+        state["pending_validation_run_id"] = run_id
+    for group, value in validations:
+        run_id, separator, commit = value.partition(",")
+        if not separator or not run_id.strip() or not commit.strip():
+            raise ValueError(
+                f"Invalid validation for {group}: {value}. Use RUN_ID,COMMIT."
+            )
         state = group_state(group)
+        pending_run = str(state.get("pending_validation_run_id") or "")
+        if not state.get("pending_validation") or pending_run != run_id:
+            raise ValueError(
+                f"Cannot validate stale run {run_id} for {group}; "
+                f"pending run is {pending_run or 'none'}."
+            )
         state["pending_validation"] = False
-        state["last_commit"] = commit
+        state["pending_validation_run_id"] = ""
+        state["last_commit"] = commit.strip()
     return prior
 
 
@@ -242,6 +329,18 @@ def compare_reports(
                     "group": error.get("group", ""),
                     "va": "",
                     "reason": str(error.get("error") or "Wrapper compilation failed."),
+                }
+            )
+    for row in after_rows:
+        if isinstance(row, dict) and str(row.get("grouped_result")) == "ERROR":
+            regressions.append(
+                {
+                    "kind": "comparison_error",
+                    "group": str(row.get("group") or ""),
+                    "va": str(row.get("va") or ""),
+                    "reason": str(
+                        row.get("error") or "Grouped function comparison failed."
+                    ),
                 }
             )
 
@@ -380,9 +479,7 @@ def conflict_components(conflicts: dict[str, set[str]]) -> list[list[str]]:
 
 
 def build_dependencies(queue: dict[str, object]) -> dict[str, object]:
-    packets = queue.get("packets") or []
-    if not isinstance(packets, list):
-        raise ValueError("Queue packets must be a list.")
+    packets = queue_packets(queue)
     owners: dict[str, list[str]] = defaultdict(list)
     groups: list[str] = []
     for packet in packets:
@@ -453,11 +550,13 @@ def build_state(
     prior_groups = prior.get("groups") or {}
     if not isinstance(prior_groups, dict):
         prior_groups = {}
-    packets = queue.get("packets") or []
-    if not isinstance(packets, list):
-        raise ValueError("Queue packets must be a list.")
+    packets = queue_packets(queue)
 
-    state_groups: dict[str, dict[str, object]] = {}
+    state_groups: dict[str, dict[str, object]] = {
+        str(group): dict(value)
+        for group, value in prior_groups.items()
+        if isinstance(value, dict)
+    }
     for packet in packets:
         if not isinstance(packet, dict):
             continue
@@ -472,6 +571,9 @@ def build_state(
             "completed_runs": list(old.get("completed_runs") or []),
             "shared_blockers": list(old.get("shared_blockers") or []),
             "pending_validation": bool(old.get("pending_validation")),
+            "pending_validation_run_id": str(
+                old.get("pending_validation_run_id") or ""
+            ),
             "approved_promotions": list(old.get("approved_promotions") or []),
             "last_sweep": report_path,
             "last_commit": str(old.get("last_commit") or ""),
@@ -532,11 +634,13 @@ def select_ready_wave(
     dependencies: dict[str, object],
     limit: int,
 ) -> list[str]:
-    packets = queue.get("packets") or []
+    if limit <= 0:
+        return []
+    packets = queue_packets(queue)
     state_groups = state.get("groups") or {}
     conflicts = dependencies.get("conflicts") or {}
-    if not isinstance(packets, list) or not isinstance(state_groups, dict):
-        raise ValueError("Invalid queue or state groups.")
+    if not isinstance(state_groups, dict):
+        raise ValueError("Invalid state groups.")
     if not isinstance(conflicts, dict):
         raise ValueError("Invalid dependency conflicts.")
     candidates = []
@@ -545,6 +649,15 @@ def select_ready_wave(
         for group, group_state in state_groups.items()
         if isinstance(group_state, dict)
         and group_state.get("status") in {"active", "pending_integration"}
+    }
+    occupied_files = {
+        str(source)
+        for group in occupied
+        for source in (
+            state_groups.get(group, {}).get("captain_editable_files", [])
+            if isinstance(state_groups.get(group), dict)
+            else []
+        )
     }
     for packet in packets:
         if not isinstance(packet, dict) or not int(packet.get("captain_task_count") or 0):
@@ -558,18 +671,20 @@ def select_ready_wave(
     for packet in sorted(candidates, key=packet_priority):
         group = str(packet["group"])
         blocked_by = set(conflicts.get(group) or [])
-        if (selected_set | occupied) & blocked_by:
+        editable = {str(source) for source in packet.get("captain_editable_files") or []}
+        if (selected_set | occupied) & blocked_by or editable & occupied_files:
             continue
         selected.append(group)
         selected_set.add(group)
-        if len(selected) >= max(0, limit):
+        if len(selected) >= limit:
             break
     return selected
 
 
-def captain_prompt(packet: dict[str, object]) -> str:
+def captain_prompt(packet: dict[str, object], packet_path: str = "") -> str:
     group = str(packet["group"])
-    packet_path = f"build/audits/tu_orchestration/packets/{group}.json"
+    if not packet_path:
+        packet_path = f"build/audits/tu_orchestration/packets/{group}.json"
     lines = [
         f"You are the persistent repair captain for TU `{group}`.",
         "",
@@ -666,9 +781,16 @@ def main() -> int:
     queue = load_json(queue_path)
     prior_state = load_json(state_path) if state_path.is_file() else {}
     baseline = load_json(baseline_path) if baseline_path else None
+    report_fingerprint = file_sha256(report_path)
+    baseline_fingerprint = file_sha256(baseline_path) if baseline_path else ""
+    prior_fingerprint = str(prior_state.get("report_fingerprint") or "")
+    validate_report_transition(
+        prior_fingerprint, report_fingerprint, baseline_fingerprint
+    )
     assignments = parse_mapping(args.assign, "assignment")
     blockers = parse_mapping(args.block, "blocker")
     approvals = parse_pairs(args.approve, "approval")
+    starts = parse_pairs(args.start, "started run")
     finishes = parse_pairs(args.finish, "finished run")
     validations = parse_pairs(args.validated, "validation")
 
@@ -678,7 +800,7 @@ def main() -> int:
         if isinstance(packet, dict)
     }
     changed_groups = {
-        group for group, _ in [*approvals, *finishes, *validations]
+        group for group, _ in [*approvals, *starts, *finishes, *validations]
     }
     unknown = sorted(
         (
@@ -697,6 +819,7 @@ def main() -> int:
         prior_state,
         approvals,
         set(args.clear_block),
+        starts,
         finishes,
         validations,
     )
@@ -709,7 +832,7 @@ def main() -> int:
     }
     state = build_state(
         queue,
-        str(report_path.relative_to(repo_path("."))),
+        display_path(report_path),
         prior_state,
         assignments,
         set(args.activate),
@@ -719,6 +842,7 @@ def main() -> int:
     state["ready_wave"] = select_ready_wave(
         queue, state, dependencies, max(0, args.limit)
     )
+    state["report_fingerprint"] = report_fingerprint
 
     packets_dir = output_dir / "packets"
     prompts_dir = output_dir / "prompts"
@@ -738,13 +862,16 @@ def main() -> int:
         packet_path = packets_dir / f"{group}.json"
         prompt_path = prompts_dir / f"{group}.txt"
         packet_path.write_text(json.dumps(packet, indent=2) + "\n", encoding="utf-8")
-        prompt_path.write_text(captain_prompt(packet), encoding="utf-8")
+        prompt_path.write_text(
+            captain_prompt(packet, display_path(packet_path)), encoding="utf-8"
+        )
         packet_count += 1
 
     delta_name = (
-        f"{baseline_path.parent.name}-to-{report_path.parent.name}"
+        f"{baseline_path.parent.name}-{baseline_path.stem}-{baseline_fingerprint[:8]}"
+        f"-to-{report_path.parent.name}-{report_path.stem}-{report_fingerprint[:8]}"
         if baseline_path
-        else "initial"
+        else f"initial-{report_path.stem}-{report_fingerprint[:8]}"
     )
     (deltas_dir / f"{delta_name}.json").write_text(
         json.dumps(delta, indent=2) + "\n", encoding="utf-8"

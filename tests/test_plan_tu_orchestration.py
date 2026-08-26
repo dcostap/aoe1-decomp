@@ -1,6 +1,8 @@
 import sys
 from pathlib import Path
 
+import pytest
+
 TOOLS_DIR = Path(__file__).resolve().parents[1] / "tools"
 if str(TOOLS_DIR) not in sys.path:
     sys.path.insert(0, str(TOOLS_DIR))
@@ -11,7 +13,9 @@ from plan_tu_orchestration import (  # noqa: E402
     build_state,
     captain_prompt,
     compare_reports,
+    queue_packets,
     select_ready_wave,
+    validate_report_transition,
 )
 
 
@@ -112,6 +116,16 @@ def test_new_boundary_escape_blocks_integration() -> None:
     assert any(item["kind"] == "structural_regression" for item in delta["regressions"])
 
 
+def test_current_row_comparison_error_blocks_integration() -> None:
+    failed = row(result="ERROR")
+    failed["error"] = "missing symbol"
+
+    delta = compare_reports(None, report(failed))
+
+    assert delta["gate"] == "FAIL"
+    assert delta["regressions"][0]["kind"] == "comparison_error"
+
+
 def test_dependencies_find_shared_editable_files() -> None:
     queue = {
         "packets": [
@@ -156,6 +170,25 @@ def test_state_preserves_captain_and_blocks_shared_repair() -> None:
     assert alpha["status"] == "blocked_shared"
 
 
+def test_partial_queue_preserves_other_group_state() -> None:
+    queue = {"packets": [packet("beta", ["src/beta.cpp"])]}
+    prior = {
+        "groups": {
+            "alpha": {
+                "captain_id": "sa-alpha",
+                "status": "active",
+                "active_run_id": "run-alpha",
+                "captain_editable_files": ["src/alpha.cpp"],
+            }
+        }
+    }
+
+    state = build_state(queue, "build/subset/report.json", prior)
+
+    assert state["groups"]["alpha"]["active_run_id"] == "run-alpha"
+    assert state["groups"]["beta"]["status"] == "ready"
+
+
 def test_state_assigns_ready_tu_without_activating_it() -> None:
     queue = {"packets": [packet("alpha", ["src/alpha.cpp"])]}
 
@@ -182,9 +215,13 @@ def test_compile_error_precedes_ready_state() -> None:
 
 
 def test_prompt_forbids_local_raw_offset_workaround() -> None:
-    text = captain_prompt(packet("alpha", ["src/alpha.cpp"]))
+    text = captain_prompt(
+        packet("alpha", ["src/alpha.cpp"]),
+        "build/custom/packets/alpha.json",
+    )
 
     assert "persistent repair captain" in text
+    assert "build/custom/packets/alpha.json" in text
     assert "Do not hide shared layout defects with raw local offsets." in text
     assert "A clean partial result is valid." in text
 
@@ -196,6 +233,7 @@ def test_state_changes_preserve_approval_and_finished_run() -> None:
         prior,
         [("alpha", "00401000")],
         set(),
+        [],
         [("alpha", "run-1")],
         [],
     )
@@ -205,6 +243,41 @@ def test_state_changes_preserve_approval_and_finished_run() -> None:
     assert alpha["completed_runs"] == ["run-1"]
     assert alpha["active_run_id"] == ""
     assert alpha["pending_validation"] is True
+
+
+def test_stale_finished_run_cannot_release_active_tu() -> None:
+    prior = {"groups": {"alpha": {"active_run_id": "run-new"}}}
+
+    with pytest.raises(ValueError, match="stale run"):
+        apply_state_changes(
+            prior,
+            [],
+            set(),
+            [],
+            [("alpha", "run-old")],
+            [],
+        )
+
+
+def test_validation_must_name_pending_run() -> None:
+    prior = {
+        "groups": {
+            "alpha": {
+                "pending_validation": True,
+                "pending_validation_run_id": "run-new",
+            }
+        }
+    }
+
+    with pytest.raises(ValueError, match="stale run"):
+        apply_state_changes(
+            prior,
+            [],
+            set(),
+            [],
+            [],
+            [("alpha", "run-old,abc123")],
+        )
 
 
 def test_ready_wave_uses_priority_and_avoids_conflicts() -> None:
@@ -250,3 +323,28 @@ def test_ready_wave_respects_active_conflict_lock() -> None:
     dependencies = build_dependencies(queue)
 
     assert select_ready_wave(queue, state, dependencies, 40) == []
+
+
+def test_ready_wave_limit_zero_is_empty() -> None:
+    alpha = packet("alpha", ["src/alpha.cpp"])
+    alpha["structural_repairs"] = []
+    alpha["ownership_investigations"] = []
+    alpha["codegen_repairs"] = [{"grouped_diff_bytes": 1}]
+    queue = {"packets": [alpha]}
+    state = {"groups": {"alpha": {"status": "ready"}}}
+
+    assert select_ready_wave(queue, state, build_dependencies(queue), 0) == []
+
+
+def test_malformed_queue_packet_is_rejected() -> None:
+    with pytest.raises(ValueError, match="must be an object"):
+        queue_packets({"packets": ["alpha"]})
+
+
+def test_changed_report_requires_matching_baseline() -> None:
+    with pytest.raises(ValueError, match="no baseline"):
+        validate_report_transition("old", "new", "")
+    with pytest.raises(ValueError, match="does not match"):
+        validate_report_transition("old", "new", "other")
+
+    validate_report_transition("old", "new", "old")
