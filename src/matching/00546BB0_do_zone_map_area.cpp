@@ -50,11 +50,16 @@
 //     smallest typed tile/cell source.
 // 18: including the exact queue helper bodies before the map methods preserved
 //     both helper matches and the target's 450-byte positional drift.
-// Accepted drift: neighbor order is left, up, right, down. Each arm has the
+// 19: direct byte indexing in the upper arm, while retaining a named tile,
+//     changed the complete schedule only when paired with the lower arm.
+// 20: direct byte indexing in both vertical arms, with named cell pointers in
+//     both horizontal arms, produced the original 660 bytes.
+// Exact-finish walkback: reverting either vertical arm alone restored a 657-
+// byte mismatch with a 453-byte strict diff. Both changes are required.
+// Exact candidate: neighbor order is left, up, right, down. Each arm has the
 // same row/cell reads, x87 predicate and NaN behavior, zone store, and queue
 // push. zone_push and zone_pop receive identical queue-local and x/y addresses.
-// Queue mutation, loop continuation, faults, and return match. Remaining drift
-// is register allocation and address arithmetic.
+// Queue mutation, loop continuation, faults, and return match exactly.
 
 #include "../../include/rge_zone_map_context.h"
 
@@ -83,11 +88,10 @@ void RGE_Zone_Map::do_zone_map_area(long x, long y, unsigned char passable, unsi
         }
         if (y > 0) {
             RGE_Tile* tile = this->map->map_row_offset[y - 1] + x;
-            unsigned char* cell = this->zone_map_rows[y - 1] + x;
-            if (*cell == 0xff) {
+            if (this->zone_map_rows[y - 1][x] == 0xff) {
                 if (((this->terrain_passability_rules[tile->terrain_type] >
                       DAT_00577a20) ? 1 : 0) == (passable & 0xff)) {
-                    *cell = zone;
+                    this->zone_map_rows[y - 1][x] = zone;
                     zone_push(&zone_end, &zone_queue, x, y - 1);
                 }
             }
@@ -105,11 +109,10 @@ void RGE_Zone_Map::do_zone_map_area(long x, long y, unsigned char passable, unsi
         }
         if (y < max_y) {
             RGE_Tile* tile = this->map->map_row_offset[y + 1] + x;
-            unsigned char* cell = this->zone_map_rows[y + 1] + x;
-            if (*cell == 0xff) {
+            if (this->zone_map_rows[y + 1][x] == 0xff) {
                 if (((this->terrain_passability_rules[tile->terrain_type] >
                       DAT_00577a20) ? 1 : 0) == (passable & 0xff)) {
-                    *cell = zone;
+                    this->zone_map_rows[y + 1][x] = zone;
                     zone_push(&zone_end, &zone_queue, x, y + 1);
                 }
             }
