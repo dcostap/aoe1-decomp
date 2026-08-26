@@ -15,10 +15,22 @@
 // canonical named local surfaces. RGE_Action_Make::update overrides the
 // inherited RGE_Action::update slot at +0x28. No generic virtual slots,
 // raw action pointers, or source-level save/lifetime steering are used.
+// CONTEXT GATE:
+// PROVED: the PDB source module is ACT_make.cpp, with the target line span
+// 61-98 and line/address bands recorded in the target packet.
+// PROVED: the source-order address sequence is 004049B0, 004049E0,
+// 00404A10, 00404A40, 00404A70, then 00404A90.
+// PROVED: the checker owns 00404A90 as
+// RGE_Action_Make::update; the same-TU constructors, first_in_stack, and
+// set_state are exact anchors in the grouped module check.
+// LIKELY: the declaration surface is the original ACT_make.cpp class family,
+// based on those same-TU exact anchors and the observed member offsets.
+// UNKNOWN: the original compiler context that enabled split callee-save saves.
 //
 // Tested in this pass: split work-product initialization, positive fatal guard,
 // switch case order, explicit default, narrow base surface, flattened object
-// inheritance, case scope, game_globals.h context, and debug-context flags.
+// inheritance, case scope, state-1 case order, game_globals.h context, and
+// debug-context flags.
 // None changed the 41-byte result. A 128-sample ambient declaration sweep also
 // kept the old 182-byte alias result. Keep the direct-member source as clean.
 // ACCEPTED DRIFT: all 41 changed bytes and the three extra bytes come from
