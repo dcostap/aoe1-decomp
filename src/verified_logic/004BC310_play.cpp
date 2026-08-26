@@ -98,6 +98,13 @@
 // Probe 41 resumed: the interrupted same-TU declaration-only TDigital context
 // probe is current; rebuild was a codegen duplicate at 346 bytes and 21
 // differing bytes.  Retained the canonical typed source and closed the lead.
+// Resume worker probes: a self reference, branch-local sound-list pointer,
+// narrow count, pointer scan, const count, buffer declaration reorder, saved
+// time local, and direct percent expression were tested.  The pointer scan
+// reached 347/239; the sound-list pointer reached 354/282; narrow count
+// reached 358/295.  Other forms were 346/21 duplicates.  All failed forms
+// were restored.  Final clean validation remains 346 bytes with 21 differing
+// bytes, matching owner, calls, frame, and boundary.
 
 #include "..\..\include\game_globals.h"
 

@@ -45,6 +45,14 @@
 // rereads were codegen duplicates; the branch-local boundary is simpler.
 // Current best: diff 589, size 922, shape 86.83%, exact blocks 55.74%, calls
 // 9/9; first mismatch remains +0F and the central drain CFG remains non-exact.
+// continuation probe: a local LeftMostPx value before the tail lookup changed
+// the basin to diff 699, size 920, and weaker central blocks; restored.
+// continuation validation: restored natural source remains diff 589, size 922,
+// shape 86.83%, exact blocks 55.74%, and calls 9/9.
+// continuation probe: moving the middle-drain `after` declaration to function
+// scope was codegen-identical; restored the branch-local declaration.
+// continuation probe: direct `end + 1` boundary expressions were codegen-
+// identical; restored the named branch-local boundary.
 
 #include <stdlib.h>
 

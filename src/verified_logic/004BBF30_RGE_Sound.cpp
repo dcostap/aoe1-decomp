@@ -92,6 +92,10 @@
 // Final clean source: direct typed member reads remain the policy source.  The
 // best diagnostic alias preserves the 0x3C-byte TDigital constructor ABI and
 // all ten call targets, but it is not retained as living source.
+// Resume worker validation: the preserved short-pointer alias was 309 bytes
+// with 215 differing bytes under the current TU context.  Restoring direct
+// member reads recovered the 309-byte, 191-difference basin and the clean
+// typed source.  No boundary or owner exactness was recovered.
 
 #include "..\..\include\game_globals.h"
 
