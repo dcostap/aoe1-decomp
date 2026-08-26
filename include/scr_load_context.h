@@ -8,54 +8,66 @@ class TListPanel;
 class TScrollBarPanel;
 class TButtonPanel;
 
+struct tagRECT {
+    long left;
+    long top;
+    long right;
+    long bottom;
+};
+
+typedef int PositionMode;
+typedef int RedrawMode;
+
 class TPanel {
 public:
     virtual ~TPanel();
-    virtual long setup();
-    virtual void set_rect();
+    virtual long setup(TDrawArea*, TPanel*, long, long, long, long,
+                       unsigned char);
+    virtual void set_rect(tagRECT);
     virtual void set_rect(long, long, long, long);
     virtual void set_color(unsigned char);
     virtual void set_active(int);
-    virtual void set_positioning(long, long, long, long, long, long, long,
-                                 long, long, TPanel*, TPanel*, TPanel*, TPanel*);
-    virtual void vf1C();
-    virtual void vf20();
-    virtual void vf24();
-    virtual void vf28();
-    virtual void vf2C();
-    virtual void vf30();
-    virtual void vf34();
-    virtual void vf38();
-    virtual void vf3C();
-    virtual void vf40();
-    virtual void vf44();
-    virtual void vf48();
+    virtual void set_positioning(PositionMode, long, long, long, long, long,
+                                 long, long, long, TPanel*, TPanel*, TPanel*,
+                                 TPanel*);
+    virtual void set_fixed_position(long, long, long, long);
+    virtual void set_redraw(RedrawMode);
+    virtual void set_overlapped_redraw(TPanel*, TPanel*, RedrawMode);
+    virtual void draw_setup(int);
+    virtual void draw_finish();
+    virtual void draw();
+    virtual void draw_rect(tagRECT*);
+    virtual void draw_offset(long, long, tagRECT*);
+    virtual void draw_rect2(tagRECT*);
+    virtual void draw_offset2(long, long, tagRECT*);
+    virtual void paint();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
     virtual long handle_idle();
-    virtual void vf50();
-    virtual void vf54();
-    virtual void vf58();
-    virtual void vf5C();
-    virtual void vf60();
-    virtual void vf64();
-    virtual void vf68();
-    virtual void vf6C();
-    virtual void vf70();
-    virtual void vf74();
-    virtual void vf78();
-    virtual void vf7C();
-    virtual void vf80();
-    virtual void vf84();
-    virtual void vf88();
-    virtual void vf8C();
-    virtual void vf90();
-    virtual void vf94();
-    virtual void vf98();
-    virtual void vf9C();
-    virtual void vfA0();
-    virtual void vfA4();
-    virtual void vfA8();
-    virtual void vfAC();
-    virtual void vfB0();
+    virtual long handle_size(long, long);
+    virtual long handle_paint();
+    virtual long handle_key_down(long, short, int, int, int);
+    virtual long handle_char(long, short);
+    virtual long handle_command(unsigned int, long);
+    virtual long handle_user_command(unsigned int, long);
+    virtual long handle_timer_command(unsigned int, long);
+    virtual long handle_scroll(long, long);
+    virtual long handle_mouse_down(unsigned char, long, long, int, int);
+    virtual long handle_mouse_move(long, long, int, int);
+    virtual long handle_mouse_up(unsigned char, long, long, int, int);
+    virtual long handle_mouse_dbl_click(unsigned char, long, long, int, int);
+    virtual long mouse_move_action(long, long, int, int);
+    virtual long mouse_left_down_action(long, long, int, int);
+    virtual long mouse_left_hold_action(long, long, int, int);
+    virtual long mouse_left_move_action(long, long, int, int);
+    virtual long mouse_left_up_action(long, long, int, int);
+    virtual long mouse_left_dbl_click_action(long, long, int, int);
+    virtual long mouse_right_down_action(long, long, int, int);
+    virtual long mouse_right_hold_action(long, long, int, int);
+    virtual long mouse_right_move_action(long, long, int, int);
+    virtual long mouse_right_up_action(long, long, int, int);
+    virtual long mouse_right_dbl_click_action(long, long, int, int);
+    virtual long key_down_action(long, short, int, int, int);
+    virtual long char_action(long, short);
     virtual long action(TPanel*, long, unsigned long, unsigned long);
 
     char gap_04[0xD4];
@@ -194,6 +206,8 @@ public:
     virtual ~TribeLoadSavedGameScreen();
     virtual long handle_idle();
     virtual long action(TPanel*, long, unsigned long, unsigned long);
+
+protected:
     void fillList();
 };
 

@@ -73,7 +73,7 @@ public:
     virtual long mouse_right_dbl_click_action(long, long, int, int);
     virtual long key_down_action(long, short, int, int, int);
     virtual long char_action(long, short);
-    virtual long action(TPanel*, long, unsigned, unsigned);
+    virtual long action(TPanel*, long, unsigned long, unsigned long);
     virtual void get_true_render_rect(tagRECT*);
     virtual int is_inside(long, long);
     virtual void set_focus(int);
@@ -132,7 +132,7 @@ public:
     virtual void draw();
     virtual long mouse_left_down_action(long, long, int, int);
     virtual long key_down_action(long, short, int, int, int);
-    virtual long action(TPanel*, long, unsigned, unsigned);
+    virtual long action(TPanel*, long, unsigned long, unsigned long);
     // BINARY NOTE: The original vtable has char** at +0xE0, long at +0xE4,
     // and char* at +0xE8. VC5 emits that order from these declarations.
     virtual void set_text(char* text);
@@ -160,8 +160,8 @@ public:
 class TEasy_Panel : public TPanel {
 public:
     char gap_F4[0x384];
-    long action(TPanel* sender, long actionType, unsigned param3,
-                unsigned param4);
+    virtual long action(TPanel* sender, long actionType, unsigned long param3,
+                        unsigned long param4);
 };
 
 class TScreenPanel : public TEasy_Panel {
@@ -200,8 +200,10 @@ public:
 
     virtual ~TribeSelectTribeScreen();
     TribeSelectTribeScreen();
-    long action(TPanel* sender, long actionType, unsigned param3,
-                unsigned param4);
+
+protected:
+    virtual long action(TPanel* sender, long actionType, unsigned long param3,
+                        unsigned long param4);
     void fillTribeText(int index);
     char* tribeName(int index);
 };

@@ -3,6 +3,7 @@
 // attempt 1: natural fillList shape; matched field offsets but used direct nonvirtual label calls and named sprintf temps
 // attempt 2: model panel vtable slot e4 manually, real-size TCommunications_Sessions new, and inline sprintf argument calls to avoid EBX/EBP liveness
 
+/* Historical ABI scaffold retained outside the compiler-facing source.
 #if 0
 #include <stdio.h>
 class TPanel {
@@ -133,6 +134,7 @@ public:
     void fillList();
 };
 #endif
+*/
 
 void TribeJoinScreen::fillList() {
     char szTemp[126];

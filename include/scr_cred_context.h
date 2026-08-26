@@ -146,28 +146,59 @@ public:
     void set_curr_child(TPanel* child);
 };
 
-#define SCR_CRED_VPAD1(n) virtual void vpad##n();
-#define SCR_CRED_VPAD2(n) SCR_CRED_VPAD1(n) SCR_CRED_VPAD1(n##_1)
-#define SCR_CRED_VPAD4(n) SCR_CRED_VPAD2(n) SCR_CRED_VPAD2(n##_2)
-#define SCR_CRED_VPAD8(n) SCR_CRED_VPAD4(n) SCR_CRED_VPAD4(n##_4)
-#define SCR_CRED_VPAD16(n) SCR_CRED_VPAD8(n) SCR_CRED_VPAD8(n##_8)
-#define SCR_CRED_VPAD32(n) SCR_CRED_VPAD16(n) SCR_CRED_VPAD16(n##_16)
-
-class TChildNotify {
+// Local ABI view for the parent action callback.  The complete inherited
+// order places action at the observed +0xB4 virtual slot.
+class TPanelActionTarget {
 public:
-    SCR_CRED_VPAD32(0)
-    SCR_CRED_VPAD8(32)
-    SCR_CRED_VPAD4(40)
-    SCR_CRED_VPAD1(44)
-    virtual void notify(void* panel, int a, int b, int c);
+    virtual ~TPanelActionTarget();
+    virtual long setup(TDrawArea*, TPanel*, long, long, long, long, uchar);
+    virtual void set_rect(tagRECT);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_color(uchar);
+    virtual void set_active(int);
+    virtual void set_positioning(PositionMode, long, long, long, long, long,
+                                 long, long, long, TPanel*, TPanel*, TPanel*,
+                                 TPanel*);
+    virtual void set_fixed_position(long, long, long, long);
+    virtual void set_redraw(int);
+    virtual void set_overlapped_redraw(TPanel*, TPanel*, int);
+    virtual void draw_setup(int);
+    virtual void draw_finish();
+    virtual void draw();
+    virtual void draw_rect(tagRECT*);
+    virtual void draw_offset(long, long, tagRECT*);
+    virtual void draw_rect2(tagRECT*);
+    virtual void draw_offset2(long, long, tagRECT*);
+    virtual void paint();
+    virtual long wnd_proc(void*, uint, uint, long);
+    virtual long handle_idle();
+    virtual long handle_size(long, long);
+    virtual long handle_paint();
+    virtual long handle_key_down(long, short, int, int, int);
+    virtual long handle_char(long, short);
+    virtual long handle_command(uint, long);
+    virtual long handle_user_command(uint, long);
+    virtual long handle_timer_command(uint, long);
+    virtual long handle_scroll(long, long);
+    virtual long handle_mouse_down(uchar, long, long, int, int);
+    virtual long handle_mouse_move(long, long, int, int);
+    virtual long handle_mouse_up(uchar, long, long, int, int);
+    virtual long handle_mouse_dbl_click(uchar, long, long, int, int);
+    virtual long mouse_move_action(long, long, int, int);
+    virtual long mouse_left_down_action(long, long, int, int);
+    virtual long mouse_left_hold_action(long, long, int, int);
+    virtual long mouse_left_move_action(long, long, int, int);
+    virtual long mouse_left_up_action(long, long, int, int);
+    virtual long mouse_left_dbl_click_action(long, long, int, int);
+    virtual long mouse_right_down_action(long, long, int, int);
+    virtual long mouse_right_hold_action(long, long, int, int);
+    virtual long mouse_right_move_action(long, long, int, int);
+    virtual long mouse_right_up_action(long, long, int, int);
+    virtual long mouse_right_dbl_click_action(long, long, int, int);
+    virtual long key_down_action(long, short, int, int, int);
+    virtual long char_action(long, short);
+    virtual long action(TPanel*, long, ulong, ulong);
 };
-
-#undef SCR_CRED_VPAD32
-#undef SCR_CRED_VPAD16
-#undef SCR_CRED_VPAD8
-#undef SCR_CRED_VPAD4
-#undef SCR_CRED_VPAD2
-#undef SCR_CRED_VPAD1
 
 class TEasy_Panel : public TPanel {
 public:

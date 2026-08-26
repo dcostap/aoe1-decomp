@@ -14,7 +14,8 @@ class TButtonPanel { public: virtual ~TButtonPanel(); };
 class TEasy_Panel {
 public:
     virtual ~TEasy_Panel();
-    long action(TPanel* sender, long actionType, unsigned param3, unsigned param4);
+    long action(TPanel* sender, long actionType, unsigned long param3,
+                unsigned long param4);
 };
 
 class TPanelSystem {
@@ -39,11 +40,14 @@ public:
     int field_4B4;
 
     void fillTribeText(int idx);
-    long action(TPanel* sender, long actionType, unsigned param3, unsigned param4);
+    long action(TPanel* sender, long actionType, unsigned long param3,
+                unsigned long param4);
 };
 #endif
 
-long TribeSelectTribeScreen::action(TPanel* sender, long actionType, unsigned param3, unsigned param4)
+long TribeSelectTribeScreen::action(TPanel* sender, long actionType,
+                                    unsigned long param3,
+                                    unsigned long param4)
 {
     if (sender == (TPanel*)this->okButton || sender == (TPanel*)this->cancelButton) {
         if (actionType == 1) {

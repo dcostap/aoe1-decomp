@@ -62,6 +62,9 @@
 // source topology changed this EH-tail basin.
 
 #ifndef SCR_CJ_GROUPED_TU
+#include "../../include/scr_cj_context.h"
+
+/* Historical ABI scaffold retained outside the compiler-facing source.
 #include <string.h>
 
 struct tagRECT {
@@ -268,6 +271,8 @@ extern "C" const _GUID DPSPGUID_TCPIP;
 extern "C" int (__stdcall* const WinExec)(char*, int);
 extern "C" void* (__stdcall* const FindWindowA)(char*, char*);
 extern "C" int (__stdcall* const SendMessageA)(void*, int, int, int);
+#endif
+*/
 #endif
 
 long TribeMPCreateDialog::action(TPanel* panel, long command,
