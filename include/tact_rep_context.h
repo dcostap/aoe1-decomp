@@ -377,18 +377,25 @@ class TRIBE_Action_Repair : public RGE_Action {
 public:
     TRIBE_Action_Repair(int, RGE_Action_Object*, int);
     TRIBE_Action_Repair(RGE_Action_Object*, RGE_Task*, RGE_Static_Object*);
-    TRIBE_Action_Repair(int, RGE_Task*, float, float, float);
+    TRIBE_Action_Repair(RGE_Action_Object*, RGE_Task*, float, float, float);
 
     virtual int setup(int, RGE_Action_Object*);
     virtual void save(int);
     virtual void first_in_stack(uchar);
+
+protected:
     virtual void set_state(uchar);
+
+public:
     virtual uchar update();
     virtual int stop();
     virtual int move_to(RGE_Static_Object*, float, float, float);
     virtual int work(RGE_Static_Object*, float, float, float);
 
+protected:
     void meet_target();
+
+public:
     union {
         uchar save_target_command_flag;                  // +40
         uchar repair_field_40;                            // setup() view

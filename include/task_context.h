@@ -8,14 +8,16 @@
 #ifndef AOE1_TASK_CONTEXT_H
 #define AOE1_TASK_CONTEXT_H
 
-struct FILE;
-struct RGE_Sprite;
-struct RGE_Sound;
+struct _iobuf;
+typedef struct _iobuf FILE;
+class RGE_Sprite;
+class RGE_Sound;
 
 extern "C" void rge_read(int fd, void* buffer, int size);
 extern "C" void rge_write(int fd, void* buffer, int size);
 
-struct RGE_Task {
+class RGE_Task {
+public:
     short task_type;             // +0x00
     short id;                    // +0x02
     unsigned char is_default;    // +0x04

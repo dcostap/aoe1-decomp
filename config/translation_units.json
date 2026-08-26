@@ -2737,8 +2737,8 @@
         "00508BB0": "src/matching/00508BB0_save.cpp"
       },
       "symbols": {
-        "005087C0": "?load@RGE_Task@@QAEXHPAPAURGE_Sprite@@PAPAURGE_Sound@@@Z",
-        "00508A20": "?load@RGE_Task@@QAEXPAUFILE@@PAPAURGE_Sprite@@PAPAURGE_Sound@@@Z"
+        "005087C0": "?load@RGE_Task@@QAEXHPAPAVRGE_Sprite@@PAPAVRGE_Sound@@@Z",
+        "00508A20": "?load@RGE_Task@@QAEXPAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@@Z"
       }
     },
     {
