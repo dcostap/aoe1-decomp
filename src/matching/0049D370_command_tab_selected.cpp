@@ -26,6 +26,14 @@
 // test must be a body first-statement inside `while (slot < 25)` (not the loop
 // condition); the found-arm direct sel_list[slot] reload is binary-proven.
 // Field sel_object_properties named from exact donor 004992E0.
+// TU context gate: proved module scr_game.cpp, lines 5824-5876, with
+// TRIBE_Screen_Game ownership.  Exact anchors are get_player at 0049D37A,
+// get_paused at 0049D38B, and the two scan bodies through 0049D437.  The
+// wrapper preserves the surrounding address sequence.  Standalone output is
+// a 199-byte MATCH; the grouped candidate remains a 2-byte mismatch with
+// owner, calls, relocations, and boundary correct.  Reduction moved candidate
+// before found and produced a 2-byte register recolor, so the original order
+// is restored.
 
 #if !defined(SCR_GAME_TU_CONTEXT)
 class RGE_Static_Object;

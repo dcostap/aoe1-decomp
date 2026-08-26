@@ -7,7 +7,20 @@
 //
 // Attempt log:
 // - baseline: natural same-TU source shape with named panel/game ownership;
-//   first compile/check recorded by target_session.
+//   standalone compile/check is an exact 246-byte MATCH.
+// - TU context gate: proved PDB module is scr_game.cpp, with source lines
+//   1527-1579.  The owner is TRIBE_Screen_Game.  Address anchors are the
+//   color_log calls at 0049670A, 00496727, 00496740, and 004967E9, the
+//   currentPanel/get_focus pair at 00496768/00496777, and the TPanel base
+//   idle call at 004967DC.  The wrapper address order is proved by the
+//   neighboring 00496550, 00496800, and later scr_game.cpp owners.
+// - grouped candidate check: the authentic scr_game_tu.cpp build differs by
+//   one byte, while the owner symbol, size, calls, relocations, and boundary
+//   remain correct.  The shared context is the unresolved blocker.
+// - exact reduction: initializing result at declaration and scoping result
+//   at the final call both emit identical bytes, so neither is required.
+//   Reordering equivalent mode tests changes two bytes and loses exactness.
+//   The clean function-wide declaration and original mode order are restored.
 
 #if !defined(SCR_GAME_TU_CONTEXT)
 extern "C" void __cdecl color_log(unsigned char a, unsigned char b,
