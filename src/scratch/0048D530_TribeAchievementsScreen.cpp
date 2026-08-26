@@ -19,14 +19,18 @@
 //   stores and reduce the measured difference to 2458 bytes.
 // - A 256-byte info_file gives the exact frame, but the packet indicates 260
 //   bytes and matching period sources use 260-byte file buffers. Keep 260.
+// - The scr_ach.cpp TU uses its period panel surface. The broader shared panel
+//   surface shifts text and button virtual slots.
+// - BINARY NOTE: The setup branch falls through for end_game_flag != 0.
+// - Context gate: PDB scr_ach.cpp lines 110-354 owns this constructor and the
+//   exact anchors are the base call at 0048D55A and 69 ordered call sites.
+// - Grouped candidate: six exact owners remain exact. This owner emits with
+//   boundary escape 2 and remains nonexact at 2877 strict-difference bytes.
 
 #include <stdio.h>
 #include <string.h>
 
-#include "../../include/scr_ach_context.h"
-
-#if 0
-
+#ifndef SCR_ACH_TU_CONTEXT
 class TDrawArea;
 class TPanel;
 class TTextPanel;
@@ -237,7 +241,10 @@ public:
     int singlePlayerGame();
 };
 
-extern RGE_Base_Game* rge_base_game;
+class TRIBE_Game : public RGE_Base_Game {
+};
+
+extern TRIBE_Game* rge_base_game;
 
 class TribeAchievementsScreen : public TScreenPanel {
 public:
@@ -310,8 +317,8 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* title_text, int end_game_
     this->achievement_choice[4] = 0;
 
     memset(this->title_bar, 0, sizeof(this->title_bar));
-    TTextPanel** statistics = this->statistics[0];
     TTextPanel** player_names = this->player_names;
+    TTextPanel** statistics = this->statistics[0];
     int player_count = 8;
     do {
         *player_names = 0;
@@ -326,10 +333,7 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* title_text, int end_game_
     } while (player_count != 0);
 
     long info_id;
-    if (this->end_game_flag == 0) {
-        strcpy(info_file, "scr10");
-        info_id = 0xC38D;
-    } else {
+    if (this->end_game_flag != 0) {
         RGE_Player* player = rge_base_game->get_player();
         if (player->game_status == 1) {
             strcpy(info_file, "scr7");
@@ -338,6 +342,9 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* title_text, int end_game_
             strcpy(info_file, "scr8");
             info_id = 0xC38A;
         }
+    } else {
+        strcpy(info_file, "scr10");
+        info_id = 0xC38D;
     }
     if (setup(rge_base_game->draw_area, info_file, info_id, 1) == 0) {
         this->field_D8 = 1;
@@ -415,11 +422,12 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* title_text, int end_game_
     create_text(this, this->achievement_choice + 3, 0, 0x11A, 0x5B, 0x9C, 0x135, 0x0B, 0, 0, 0);
     create_text(this, this->achievement_choice + 4, 0, 0x184, 0x6F, 0x79, 0x121, 0x0B, 0, 0, 0);
 
+    int player_index = 1;
     TTextPanel** player_name = this->player_names;
     TTextPanel** row = this->statistics[0] + 2;
-    int player_offset = 4;
+    int player_offset;
     int y = 0xAB;
-    int player_index = 1;
+    player_offset = 4;
     // BINARY NOTE: The shipped loop compares the decremented index with 8.
     do {
         char* name;
