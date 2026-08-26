@@ -540,6 +540,12 @@ def select_ready_wave(
     if not isinstance(conflicts, dict):
         raise ValueError("Invalid dependency conflicts.")
     candidates = []
+    occupied = {
+        str(group)
+        for group, group_state in state_groups.items()
+        if isinstance(group_state, dict)
+        and group_state.get("status") in {"active", "pending_integration"}
+    }
     for packet in packets:
         if not isinstance(packet, dict) or not int(packet.get("captain_task_count") or 0):
             continue
@@ -552,7 +558,7 @@ def select_ready_wave(
     for packet in sorted(candidates, key=packet_priority):
         group = str(packet["group"])
         blocked_by = set(conflicts.get(group) or [])
-        if selected_set & blocked_by:
+        if (selected_set | occupied) & blocked_by:
             continue
         selected.append(group)
         selected_set.add(group)

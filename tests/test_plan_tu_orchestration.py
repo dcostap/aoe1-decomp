@@ -231,3 +231,22 @@ def test_ready_wave_uses_priority_and_avoids_conflicts() -> None:
     wave = select_ready_wave(queue, state, dependencies, 40)
 
     assert wave == ["alpha", "gamma"]
+
+
+def test_ready_wave_respects_active_conflict_lock() -> None:
+    alpha = packet("alpha", ["src/shared.cpp"])
+    beta = packet("beta", ["src/shared.cpp"])
+    for item in (alpha, beta):
+        item["structural_repairs"] = []
+        item["ownership_investigations"] = []
+        item["codegen_repairs"] = [{"grouped_diff_bytes": 1}]
+    queue = {"packets": [alpha, beta]}
+    state = {
+        "groups": {
+            "alpha": {"status": "active"},
+            "beta": {"status": "ready"},
+        }
+    }
+    dependencies = build_dependencies(queue)
+
+    assert select_ready_wave(queue, state, dependencies, 40) == []
