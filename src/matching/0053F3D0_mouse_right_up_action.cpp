@@ -126,7 +126,7 @@ public:
     virtual void vCC();
     virtual void vD0();
     virtual void vD4();
-    virtual void set_view_loc(float x, float y, float z);
+    virtual void command_add_waypoint(float x, float y, float z);
 
     char gap_004[0x12C];                   // +0x04..+0x12F
     RGE_Static_Object* selected_obj;        // +0x130
@@ -350,7 +350,7 @@ long RGE_Main_View::mouse_right_up_action(long param_1, long param_2,
                                     if (this->pick1(0x28, 0, param_1, param_2,
                                                     &pick_info, 0, 1) == 0x33) {
                                         this->fixup_pick_info(&pick_info);
-                                        this->player->set_view_loc(
+                                        this->player->command_add_waypoint(
                                             pick_info.x, pick_info.y, 1.0f);
                                         this->reset_display_object_selection(2);
                                         this->add_overlay_sprite(

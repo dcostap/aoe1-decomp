@@ -259,9 +259,12 @@ class RGE_Action_Object;
 class RGE_Task;
 class RGE_Task_List {
 public:
-    RGE_Task* get_target_task(RGE_Action_Object*, RGE_Static_Object*, float,
-                               float, float);
-    int is_attack_task(RGE_Task*);
+    virtual RGE_Task* create_task(short, short);
+    virtual RGE_Task* get_target_task(RGE_Action_Object*, RGE_Static_Object*,
+                                      float, float, float);
+    virtual int is_attack_task(RGE_Task*);
+    virtual int check_task(RGE_Task*, RGE_Action_Object*, RGE_Static_Object*);
+    virtual ~RGE_Task_List();
 };
 
 struct RGE_Task {
@@ -294,6 +297,7 @@ public:
     short id;
     short copy_id;
     union { short object_group; short object_type; };
+    unsigned char gap_16[2];
     unsigned char gap_18[0x4C];
     unsigned char elevation_flag;
     unsigned char gap_65[0x28];
@@ -421,6 +425,15 @@ public:
     virtual uchar command_make_do(RGE_Static_Object*, float, float);
     virtual uchar command_stop();
     virtual uchar command_place_object(short, float, float, float);
+    virtual uchar command_add_attribute(int, float);
+    virtual uchar command_give_attribute(int, int, float);
+    virtual uchar command_formation(int);
+    virtual uchar command_stand_ground();
+    virtual uchar command_create_group(int, int*, int, float);
+    virtual uchar command_add_to_group(int, int, float);
+    virtual uchar command_remove_from_group(int, int);
+    virtual uchar command_destroy_group(int);
+    virtual uchar command_resign(int, int);
     virtual void command_add_waypoint(float, float, float);
 
     unsigned char gap_04[0x1E];
@@ -439,7 +452,6 @@ public:
     short sel_count;
 
     void set_view_loc(float x, float y);
-    void set_view_loc(float x, float y, float z);
     void unselect_object();
     void select_one_object(RGE_Static_Object*);
     int select_one_object(RGE_Static_Object*, int);
