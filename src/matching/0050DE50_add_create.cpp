@@ -20,9 +20,11 @@ RGE_Time_Entry* RGE_Timeline::add_create(float time, short type,
         node->this_obj = obj;
         node->this_obj_id = this->avail_id;
         this->avail_id++;
-        node->x = *(int*)&x;
-        node->y = *(int*)&y;
-        node->z = *(int*)&z;
+        // BINARY NOTE: Direct float stores preserve the shipped parameter-bit
+        // copies under the canonical make_new_obj declaration.
+        node->x = x;
+        node->y = y;
+        node->z = z;
         node->command = 1;
     }
     return node;

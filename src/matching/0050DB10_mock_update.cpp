@@ -11,6 +11,9 @@ void RGE_Timeline::mock_update(float t)
     RGE_Time_Entry* n;
     RGE_Static_Object* obj;
 
+    // BINARY NOTE: Keep the player index widened and read the player table
+    // directly.  This preserves the shipped order with make_new_obj's
+    // canonical declaration in the complete Timeline.cpp context.
     if (t < old_time) {
         list = time_list;
         e = time_list;
@@ -40,10 +43,10 @@ void RGE_Timeline::mock_update(float t)
                         break;
                     case 4:
                         {
-                            RGE_Player* p = world->players[e->player];
-                            RGE_Master_Static_Object* mo = p->master_objects[e->obj_type];
+                            int player_index = e->player;
+                            RGE_Master_Static_Object* mo = world->players[player_index]->master_objects[e->obj_type];
                             if (mo != 0) {
-                                obj = mo->make_new_obj(p, e->x, e->y, 0);
+                                obj = mo->make_new_obj(world->players[player_index], e->x, e->y, 0);
                                 for (n = time_list; n != 0; n = n->next) {
                                     if (e->this_obj_id == n->this_obj_id) n->this_obj = obj;
                                     if (e->this_obj_id == n->target_obj_id) n->target_obj = obj;
@@ -73,10 +76,10 @@ void RGE_Timeline::mock_update(float t)
                 switch (e->command) {
                 case 1:
                     {
-                        RGE_Player* p = world->players[e->player];
-                        RGE_Master_Static_Object* mo = p->master_objects[e->obj_type];
+                        int player_index = e->player;
+                        RGE_Master_Static_Object* mo = world->players[player_index]->master_objects[e->obj_type];
                         if (mo != 0) {
-                            obj = mo->make_new_obj(p, e->x, e->y, 0);
+                            obj = mo->make_new_obj(world->players[player_index], e->x, e->y, 0);
                             for (n = time_list; n != 0; n = n->next) {
                                 if (e->this_obj_id == n->this_obj_id) n->this_obj = obj;
                                 if (e->this_obj_id == n->target_obj_id) n->target_obj = obj;
