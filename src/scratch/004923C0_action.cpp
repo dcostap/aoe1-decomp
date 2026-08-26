@@ -45,9 +45,9 @@
 // function-scope locals were unchanged. A fully joined result tree reached
 // 873B/0x14, then an initialized result reached 854B but broadened drift.
 // Revisit probes 35-37: windows.h, memory.h, and stdlib.h context stayed in
-// the same basin. Variant lab /Ob0 and /Ob1 also stayed identical. Direct
-// PlayerStopTurn memset and direct parent popup expressions changed late
-// scheduling or a call target; restored typed aliases. No exact result.
+// the same basin. Variant lab /Ob0 and /Ob1 also stayed identical. The direct
+// PlayerStopTurn memset changed standalone late scheduling or a call target;
+// the grouped-TU result below is the current context-specific evidence.
 // Revisit probes 38-40: a split GUID declaration and a memcpy spelling were
 // codegen-identical to aggregate assignment. The clean source remains the
 // 865B typed reconstruction; the EH tail and shared-return shape stay open.
@@ -60,6 +60,9 @@
 // BINARY NOTE: the original has one shared cleanup tail at +0x301. The clean
 // rebuild first diverges at +0x2A and has five returns. No tested natural
 // source topology changed this EH-tail basin.
+// Current grouped-TU probe: direct typed comm->PlayerStopTurn[1] memset
+// removes the boundary escape and reduces the candidate diff from 336 to 38
+// bytes. The standalone checker remains in its separate 865B EH-tail basin.
 
 #ifndef SCR_CJ_GROUPED_TU
 #include "../../include/scr_cj_context.h"
@@ -312,9 +315,8 @@ long TribeMPCreateDialog::action(TPanel* panel, long command,
                 draw_area->DrawSystem->ScreenMode == 2)
                 draw_area->DrawSystem->DirDraw->FlipToGDISurface();
 
-            TCommunications_Handler* communications = comm;
-            memset(&communications->PlayerStopTurn[1], 0,
-                   9 * sizeof(communications->PlayerStopTurn[0]));
+            memset(&comm->PlayerStopTurn[1], 0,
+                   9 * sizeof(comm->PlayerStopTurn[0]));
             int create_result = comm->CreateMultiplayerGame();
             L->Log("$$$ RETURNED FROM CreateMultiplayerGame");
 

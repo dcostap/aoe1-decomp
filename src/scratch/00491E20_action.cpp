@@ -54,6 +54,8 @@
 //   before the FS restore here. No natural source/context probe changed it.
 // - PDB correction: scr_cj.cpp owns this function. scr_cam.cpp does not own it.
 //   The authentic scr_cj.cpp prefix kept the same 12-byte frontier.
+// - Shard_03 final validation: the authentic grouped TU keeps this 14-byte
+//   frontier with exact size/frame/calls and no boundary escape.
 // - Later EH probes: /G5, /G6, /Zi, and /Zd kept the same code.
 //   Direct returns, paired register hints, and immediate-base qualification
 //   also kept the same code. Their natural interaction groups were neutral.
