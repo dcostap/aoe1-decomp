@@ -1300,6 +1300,7 @@
         "0045B2E0": "src/matching/0045B2E0_set_game_window.cpp",
         "0045B310": "src/matching/0045B310_LoadCursors.cpp",
         "0045B5D0": "src/matching/0045B5D0_create_surfaces.cpp",
+        "0045B760": "src/matching/0045B760_update_mouse_position.cpp",
         "0045BD60": "src/matching/0045BD60_erase.cpp",
         "0045BE20": "src/matching/0045BE20_set_facet.cpp",
         "0045BEE0": "src/matching/0045BEE0_off.cpp",
@@ -1327,7 +1328,9 @@
         "0045BF80": "?reset@TMousePointer@@QAEXXZ",
         "0045BF90": "?center@TMousePointer@@QAEXXZ",
         "0045C010": "?Poll@TMousePointer@@QAEXXZ",
-        "0045C300": "?GetDDBltError@TMousePointer@@QAEHJ@Z"
+        "0045C300": "?GetDDBltError@TMousePointer@@QAEHJ@Z",
+        "0045B760": "?update_mouse_position@TMousePointer@@QAEHXZ",
+        "0045BE20": "?set_facet@TMousePointer@@QAEXH@Z"
       }
     },
     {
