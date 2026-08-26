@@ -1,6 +1,6 @@
 #include "../world_phase2_context.h"
 
-unsigned char RGE_Game_World::recycle_object_out_of_game(unsigned char param_1, void* param_2) {
+unsigned char RGE_Game_World::recycle_object_out_of_game(unsigned char param_1, RGE_Static_Object* param_2) {
     switch (param_1) {
     case 0x0A:
         reusable_static_objects->add_node(param_2);

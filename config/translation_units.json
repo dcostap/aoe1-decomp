@@ -612,9 +612,9 @@
         "0043AB40": "?xlatRle4@@YAXPAEI0@Z",
         "0043AB80": "?CreateIdentityPalette@@YAXPAX@Z",
         "0043ACB0": "?CopyPalette@@YAPAXPAX@Z",
-        "0043AD40": "?DibFree@@YAXPAUtagBITMAPINFOHEADER@@@Z",
+        "0043AD40": "?DibFree@@YAXPAX@Z",
         "00438E80": "?ClipDibBlt@@YAHPAUBITMAPINFO256@@PAUtagRECT@@AAJ2222222HH@Z",
-        "00439060": "?GetDibDim@@YAXPAUBITMAPINFO256@@AAJ11@Z",
+        "00439060": "?GetDibDim@@YAXPAUBITMAPINFO256@@PAJ11@Z",
         "00439700": "?GetPaletteFromDib@@YAPAXPADH@Z"
       }
     },
@@ -7207,13 +7207,13 @@
         "00545D30": "?object@RGE_Game_World@@QAEPAVRGE_Static_Object@@H@Z",
         "00541500": "?data_load_map@RGE_Game_World@@MAEXPAD000FFFPAPAVRGE_Sound@@0@Z",
         "00541720": "?data_load@RGE_Game_World@@UAEEPAD0@Z",
-        "00541800": "?init_player@RGE_Game_World@@UAEEH@Z",
+        "00541800": "?init_player@RGE_Game_World@@MAEEH@Z",
         "00541DB0": "?init@RGE_Game_World@@UAEEPADPAVTSound_Driver@@PAVTCommunications_Handler@@@Z",
-        "00542060": "?load_player@RGE_Game_World@@UAEXHEF@Z",
+        "00542060": "?load_player@RGE_Game_World@@MAEXHEF@Z",
         "005425B0": "?setup_player_colors@RGE_Game_World@@UAEXAAURGE_Player_Info@@@Z",
         "005426E0": "?setup_player_colors@RGE_Game_World@@UAEXXZ",
         "00542ED0": "?update@RGE_Game_World@@UAEEXZ",
-        "00543540": "?save@RGE_Game_World@@UAEXH@Z",
+        "00543540": "?save@RGE_Game_World@@MAEXH@Z",
         "00543850": "?base_save@RGE_Game_World@@UAEXH@Z",
         "005439C0": "?base_save@RGE_Game_World@@UAEXPAD@Z"
       }

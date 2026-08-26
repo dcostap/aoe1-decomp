@@ -441,10 +441,9 @@ public:
 class RGE_Game_World {
 public:
     RGE_Game_World();
-    virtual unsigned char data_load_world(FILE*);
 protected:
+    virtual unsigned char data_load_world(FILE*);
     virtual unsigned char data_load_terrain_tables(char*);
-public:
     virtual unsigned char data_load_players(char*);
     virtual unsigned char data_load_objects(char*);
     virtual unsigned char data_load_sounds(char*);
@@ -452,15 +451,10 @@ public:
     virtual unsigned char data_load_sprites(char*);
 protected:
     virtual void data_load_players_type(short, short, FILE*);
-public:
     virtual void data_load_effects(char*);
-protected:
     virtual void data_load_map(char*, char*, char*, char*, short, short, short, RGE_Sound**, char*);
-public:
     virtual void data_load_random_map(char*, char*, char*, char*);
-protected:
     virtual unsigned char init_player_type(int, short, unsigned char);
-public:
     virtual unsigned char init_player(int);
     virtual void load_player(int, unsigned char, short);
     virtual void color_table_init(int);
@@ -469,18 +463,13 @@ public:
     virtual void init_sprites(int);
     virtual void map_init(int, TSound_Driver*);
     virtual void effects_init(int);
-protected:
     virtual void master_player_init(int);
-public:
     virtual void command_init(int, TCommunications_Handler*);
     virtual void world_init(int, TSound_Driver*, TCommunications_Handler*);
     virtual void setup_gaia();
     virtual void setup_players(RGE_Player_Info&);
-protected:
     virtual unsigned char new_random_game(RGE_Player_Info&);
-public:
     virtual void save(int);
-protected:
     virtual void scenario_make_player(short, unsigned char, unsigned char, unsigned char, char*);
     virtual void scenario_make_map(int);
     virtual unsigned char load_scenario(char*, RGE_Player_Info&);
@@ -534,18 +523,18 @@ public:
     long get_next_reusable_object_id();
     virtual int addObject(RGE_Static_Object*);
     virtual int removeObject(int);
-    unsigned char recycle_object_out_of_game(unsigned char, void*);
+    unsigned char recycle_object_out_of_game(unsigned char, RGE_Static_Object*);
     RGE_Static_Object* recycle_object_in_to_game(unsigned char);
     void update_mutual_allies();
     void update_sprites(unsigned long);
     int is_player_turn(int);
-    int get_accum_time_delta(int);
+    unsigned long get_accum_time_delta(int);
     void reset_object_count();
     void reset_communications(TCommunications_Handler*);
     void reset_player_visible_maps();
     void set_map_visible(unsigned char);
     void set_map_fog(unsigned char);
-    void set_game_speed(int);
+    void set_game_speed(float);
 
     unsigned long world_time;
     unsigned long old_world_time;
