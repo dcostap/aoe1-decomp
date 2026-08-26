@@ -5433,7 +5433,7 @@
         "00403CD0": "src/matching/00403CD0_stop.cpp"
       },
       "symbols": {
-        "00402FD0": "??0RGE_Action_Gather@@QAE@HPAVRGE_Task@@MMM@Z"
+        "00402FD0": "??0RGE_Action_Gather@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@MMM@Z"
       }
     },
     {

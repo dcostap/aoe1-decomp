@@ -431,7 +431,9 @@ public:
 
     RGE_Action_Gather(int, RGE_Action_Object*);
     RGE_Action_Gather(RGE_Action_Object*, RGE_Task*, RGE_Static_Object*);
-    RGE_Action_Gather(int, RGE_Task*, float, float, float);
+    RGE_Action_Gather(RGE_Action_Object*, RGE_Task*, float, float, float);
+
+protected:
     RGE_Sprite* get_move_sprite();
     RGE_Sprite* get_wait_sprite();
 

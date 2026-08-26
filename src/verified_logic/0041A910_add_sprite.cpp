@@ -88,7 +88,7 @@ public:
 
 class RGE_Static_Object { public: void remove_shadows(); };
 
-class RGE_Active_Sprite_Node {
+struct RGE_Active_Sprite_Node {
 public:
     RGE_Active_Sprite* node;
     unsigned char order;

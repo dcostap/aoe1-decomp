@@ -19,7 +19,7 @@ class TDrawArea;
 class RGE_Sprite;
 class RGE_Static_Object;
 class RGE_Active_Sprite;
-class RGE_Active_Sprite_Node;
+struct RGE_Active_Sprite_Node;
 
 class RGE_Active_Sprite {
 public:
@@ -83,7 +83,7 @@ public:
     void remove_shadows();
 };
 
-class RGE_Active_Sprite_Node {
+struct RGE_Active_Sprite_Node {
 public:
     RGE_Active_Sprite* node;
     unsigned char order;
@@ -130,8 +130,8 @@ public:
     void remove_sprite(RGE_Sprite* sprite);
     int check_for_shadows();
     unsigned char get_lowest_draw_level();
-    unsigned char get_frame(short* param_1, short* param_2, short* param_3,
-                            short* param_4, RGE_Sprite* param_5, long param_6);
+    unsigned char get_frame(short& param_1, short& param_2, short& param_3,
+                            short& param_4, RGE_Sprite* param_5, long param_6);
 };
 
 #include "matching/0041A640_RGE_Active_Sprite_List.cpp"

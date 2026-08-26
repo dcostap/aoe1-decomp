@@ -1,26 +1,5 @@
 #ifndef ANI_OBJ_SHARED_CONTEXT
-class RGE_Game_World;
-
-void rge_read(int file, void* data, int size);
-
-class RGE_Static_Object {
-public:
-    virtual void vf00(void);
-
-protected:
-    virtual int setup(int file, RGE_Game_World* world);
-};
-
-class RGE_Animated_Object : public RGE_Static_Object {
-public:
-    char gap_04[0x4A];
-    unsigned char field_4E;
-    char gap_4F[0x39];
-    int speed;
-
-protected:
-    virtual int setup(int file, RGE_Game_World* world);
-};
+#include "../../include/ani_obj_context.h"
 #endif
 
 // BINARY NOTE: PDB owner is protected RGE_Animated_Object::setup in ani_obj.cpp,

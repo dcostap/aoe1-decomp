@@ -5,9 +5,9 @@
 #include "../../include/act_gath_context.h"
 #endif
 
-RGE_Action_Gather::RGE_Action_Gather(int file, RGE_Task* task,
+RGE_Action_Gather::RGE_Action_Gather(RGE_Action_Object* object, RGE_Task* task,
                                      float x, float y, float z)
-    : RGE_Action(file, 1) {
+    : RGE_Action(object, 1) {
     this->task = task;
     this->action_type = 5;
     this->target_x = x;
