@@ -7059,6 +7059,7 @@
       "source": "src/dlg_list_tu.cpp",
       "flags": "config/flags/dlg_list.rsp",
       "owners": {
+        "0043EE70": "src/matching/0043EE70_TListDialog.cpp",
         "0043EEE0": "src/matching/0043EEE0_TListDialog.cpp",
         "0043EF80": "src/matching/0043EF80_setup.cpp",
         "0043F130": "src/matching/0043F130_setup.cpp",
@@ -7070,7 +7071,8 @@
         "0043EF80": "?setup@TListDialog@@QAEJPAVTPanel@@PADJJJJJJJ1JJJJPAPADFFJJJJJ@Z",
         "0043F130": "?setup@TListDialog@@QAEJPAVTPanel@@PADJJJJJJJHJJJJPAPADFFJJJJJ@Z",
         "0043F210": "?key_down_action@TListDialog@@UAEJJFHHH@Z",
-        "0043F220": "?action@TListDialog@@UAEJPAVTPanel@@JKK@Z"
+        "0043F220": "?action@TListDialog@@UAEJPAVTPanel@@JKK@Z",
+        "0043EE70": "??0TListDialog@@QAE@PAD@Z"
       }
     },
     {
