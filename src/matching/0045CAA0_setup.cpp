@@ -83,7 +83,11 @@ public:
 #define waitingToMove waitingToMoveValue
 #endif
 
+#ifdef MOVE_OBJ_CANONICAL_TU
+int RGE_Moving_Object::setup(int fd, RGE_Game_World* world)
+#else
 int RGE_Moving_Object::setup(int fd, void* world)
+#endif
 {
     RGE_Animated_Object::setup(fd, world);
     this->type = 0x1e;

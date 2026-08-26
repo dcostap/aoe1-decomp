@@ -12,12 +12,12 @@ public:
     char gap_10E8[0x624];
     unsigned long RandomSeed;
 
-    unsigned long GetRandomSeed();
+    unsigned int GetRandomSeed();
 };
 #endif // COM_HAND_TU_CONTEXT
 
 
-unsigned long TCommunications_Handler::GetRandomSeed() {
+unsigned int TCommunications_Handler::GetRandomSeed() {
     if (this->Multiplayer == 0) {
         unsigned long t = debug_timeGetTime("Com_hand.cpp", 0x1336);
         debug_srand("Com_hand.cpp", 0x1336, t);

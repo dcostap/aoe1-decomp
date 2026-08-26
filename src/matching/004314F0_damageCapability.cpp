@@ -1,6 +1,4 @@
-#ifndef RGE_COM_OBJ_SHARED_CONTEXT
-#include "../com_obj_fallback_damage_capability.h"
-#endif
+#include "../com_obj_phase2_context.h"
 
 float RGE_Combat_Object::damageCapability(RGE_Static_Object* target) {
     float base_damage;

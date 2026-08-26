@@ -12,7 +12,7 @@ extern "C" int __cdecl strcmp(const char* a, const char* b);
 
 extern char s_Locate_Session[];
 
-extern "C" int __stdcall close_child_windows(void* hwnd, long param)
+int __stdcall close_child_windows(void* hwnd, long param)
 {
     char str[256];
 

@@ -59,14 +59,14 @@ void TCommunications_Handler::DropDeadPlayer(unsigned int player, unsigned long 
         sprintf(this->TBuff, msg_str, player, this->FriendlyName[player].Text);
         L->Log(this->TBuff);
         this->InitPlayerInformation(player, 0, S(0x581810), S(0x580460));
-        this->SetPlayerHumanity(player, 0);
+        this->SetPlayerHumanity(player, (PLAYERHUMANITY)0);
         this->UpdatePlayers();
         this->CalculatePlayerRange();
         if (this->PlayerStopTurn[player] != 0) return;
     } else {
         L->Log(S(0x5817EC));
         this->InitPlayerInformation(player, 0, S(0x581810), S(0x58183C));
-        this->SetPlayerHumanity(player, 0);
+        this->SetPlayerHumanity(player, (PLAYERHUMANITY)0);
         this->UpdatePlayers();
         this->CalculatePlayerRange();
     }

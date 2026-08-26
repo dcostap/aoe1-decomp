@@ -23,6 +23,7 @@ public:
     char gap_00[0x04];
     RGE_Unit_Object* objectValue;
 
+protected:
     RGE_Static_Object* lookupObject(int objectId);
 };
 #endif

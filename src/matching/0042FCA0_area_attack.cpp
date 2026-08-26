@@ -2,17 +2,11 @@
 // Source: com_obj.cpp lines 191-262
 
 extern "C" long __cdecl _ftol();
-#ifndef RGE_COM_OBJ_SHARED_CONTEXT
-extern "C" int __cdecl debug_rand(char*, int);
-#endif
+#include "../com_obj_phase2_context.h"
 extern double DAT_0056f4a0;
 extern float DAT_0056f4a8;
 
 struct Link { void* object; Link* next; };
-
-#ifndef RGE_COM_OBJ_SHARED_CONTEXT
-#include "../com_obj_fallback_area.h"
-#endif
 
 unsigned char RGE_Combat_Object::area_attack(float x, float y, float z, RGE_Combat_Object* attacker, RGE_Static_Object* ignored)
 {

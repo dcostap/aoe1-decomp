@@ -53,7 +53,7 @@ void TCommunications_Handler::CheckPlayerStopTurn(unsigned long turn)
             if (this->PlayerStopTurn[i] == turn) {
                 L->Log(S(0x581710), i, turn);
                 this->InitPlayerInformation(i, 0, S(0x581704), S(0x580460));
-                this->SetPlayerHumanity(i, 3);
+                this->SetPlayerHumanity(i, (PLAYERHUMANITY)3);
                 this->NotifyWindowParam(0x17B4, i);
                 this->PlayerStopTurn[i] = 0;
             }

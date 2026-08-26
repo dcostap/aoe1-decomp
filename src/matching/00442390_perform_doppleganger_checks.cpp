@@ -38,61 +38,7 @@
 #include <stdio.h>
 
 #ifndef DPL_OBJ_SHARED_CONTEXT
-class RGE_Static_Object;
-class RGE_Player;
-
-class RGE_Master_Object {
-public:
-#define MPAD(n) virtual void m##n();
-    MPAD(0) MPAD(1) MPAD(2) MPAD(3) MPAD(4) MPAD(5) MPAD(6) MPAD(7)
-    MPAD(8) MPAD(9) MPAD(10) MPAD(11) MPAD(12) MPAD(13)
-#undef MPAD
-    virtual void create_doppleganger(void* player, float x, float y, float z, RGE_Static_Object* obj); // +0x38
-};
-
-class RGE_Game_World {
-public:
-    virtual ~RGE_Game_World();
-    unsigned long world_time;
-    char gap_08[0x38];
-    RGE_Player** players; // +0x40
-    RGE_Static_Object* object(int id);
-};
-
-class RGE_Player {
-public:
-    virtual ~RGE_Player();
-    char gap_04[0x20];
-    RGE_Master_Object** master_objects; // +0x24
-    char gap_28[0x14];
-    RGE_Game_World* world; // +0x3C
-    char gap_40[0x0A];
-    short id; // +0x4A
-};
-
-class RGE_Static_Object {
-public:
-    virtual ~RGE_Static_Object();
-    long id;
-    char gap_08[0x30];
-    float world_x; // +0x38
-    float world_y; // +0x3C
-    float world_z; // +0x40
-};
-
-class RGE_Doppleganger_Creator {
-public:
-    RGE_Player* owner;
-    int allocated_size;
-    int active_size;
-    RGE_Static_Object** Objects;
-    unsigned long** Map_Addresses;
-    unsigned long* Last_Map_Value;
-    int* Object_ids;
-
-    void remove_doppleganger_check(RGE_Static_Object* obj);
-    void perform_doppleganger_checks();
-};
+#include "../../include/dpl_obj_context.h"
 #endif
 
 #ifndef DPL_OBJ_SHARED_CONTEXT
@@ -127,7 +73,7 @@ void RGE_Doppleganger_Creator::perform_doppleganger_checks()
                                                 (long)this->Objects[i]->world_y);
                                         }
                                         RGE_Player* player = (RGE_Player*)this->owner->world->players[player_id];
-                                        player->master_objects[0xf3]->create_doppleganger(player,
+                                        ((RGE_Master_Doppleganger_Object*)player->master_objects[0xf3])->make_new_obj(player,
                                             this->Objects[i]->world_x,
                                             this->Objects[i]->world_y,
                                             this->Objects[i]->world_z,

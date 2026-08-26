@@ -13,6 +13,7 @@ public:
     unsigned char RGE_Guaranteed_Delivery;
     char gap_1515[0x3];
 
+protected:
     void LogRXMsg(unsigned int param_1, unsigned int param_2, unsigned long param_3, unsigned char param_4, unsigned char param_5);
 };
 #endif // COM_HAND_TU_CONTEXT

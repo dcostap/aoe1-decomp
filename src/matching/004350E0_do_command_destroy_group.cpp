@@ -36,7 +36,9 @@ public:
 
 void RGE_Command::do_command_destroy_group(RGE_Command_Destroy_Group* cmd) {
     RGE_Static_Object* obj = (RGE_Static_Object*)this->world->object(cmd->groupCommander);
-    if (obj != 0 && obj->owner->id == (unsigned short)cmd->player_id) {
-        obj->commanderDestroyGroup();
+    // The nested guard preserves the original register and branch order.
+    if (obj != 0) {
+        if (obj->owner->id == (unsigned short)cmd->player_id)
+            obj->commanderDestroyGroup();
     }
 }

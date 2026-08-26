@@ -68,6 +68,7 @@ public:
     char gap_130C[0x1D4];
     RGE_Comm_Error* Err;            // +0x14E0
 
+protected:
     long DPlayGetSessionDesc();
 };
 #endif // COM_HAND_TU_CONTEXT

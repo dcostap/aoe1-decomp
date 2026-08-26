@@ -1,5 +1,5 @@
 
 
-void RGE_Base_Game::setAllowCheatCodes(unsigned char v) {
+void RGE_Base_Game::setAllowCheatCodes(int v) {
     this->allowCheatCodes_ = v;
 }

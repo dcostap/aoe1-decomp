@@ -51,14 +51,21 @@ extern void __cdecl Log(void* log, const char* fmt, ...);
 #endif // COM_HAND_TU_CONTEXT
 
 #if !defined(COM_HAND_TU_CONTEXT)
+struct COMMPLAYEROPTIONS {
+    char gap_00[0x14];
+    unsigned int dcoID[10];
+};
+#endif // COM_HAND_TU_CONTEXT
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_00[0x10E0];
-    int mePlayerNum;
+    unsigned int Me;
     char gap_10E4[0x12D8 - 0x10E4];
-    unsigned short maxGamePlayers;
-    char gap_12DA[0x1568 - 0x12DA];
-    int dcoID[1];
+    unsigned short MaxGamePlayers;
+    char gap_12DA[0x1550 - 0x12DA];
+    COMMPLAYEROPTIONS PlayerOptions;
 
     void SetSelfPlayer();
     void NotifyWindowParam(int msg, int param);

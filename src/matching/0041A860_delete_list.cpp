@@ -1,34 +1,7 @@
 extern "C" void __cdecl free(void* block);
 
 #ifndef ASP_LIST_SHARED_CONTEXT
-class RGE_Static_Object {
-public:
-    void remove_shadows();
-};
-
-class RGE_Active_Sprite {
-public:
-    virtual void destroy(int flags);
-    int check_for_shadows();
-};
-
-class RGE_Active_Sprite_Node {
-public:
-    RGE_Active_Sprite* node;
-    unsigned char order;
-    unsigned char count;
-    char gap_06[0x2];
-    RGE_Active_Sprite_Node* next;
-};
-
-class RGE_Active_Sprite_List {
-public:
-    void* vtable_ptr;
-    RGE_Active_Sprite_Node* list;
-    RGE_Static_Object* owner;
-
-    void delete_list();
-};
+#include "../asp_list_context.h"
 #endif
 
 void RGE_Active_Sprite_List::delete_list() {
@@ -42,7 +15,7 @@ void RGE_Active_Sprite_List::delete_list() {
         }
 
         if (node->node) {
-            node->node->destroy(1);
+            delete node->node;
         }
 
         free(node);

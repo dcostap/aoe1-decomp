@@ -1,29 +1,4 @@
-#ifndef RGE_COM_OBJ_SHARED_CONTEXT
-class RGE_Game_World;
-
-extern "C" void rge_read(int handle, void* buffer, int size);
-extern "C" float save_game_version;
-
-class RGE_Action_Object {
-public:
-    virtual int setup(int handle, RGE_Game_World* world);
-};
-
-class RGE_Combat_Object : public RGE_Action_Object {
-public:
-    int id;
-    void* master_obj;
-    unsigned char owner[0x42];
-    unsigned char type;
-    unsigned char gap_4F[0x145];
-    void* VUR_Ptrs[9];
-    unsigned long Unified_Map_Value;
-    float attack_timer;
-    unsigned char capture_flag;
-
-    virtual int setup(int handle, RGE_Game_World* world);
-};
-#endif
+#include "../com_obj_phase2_context.h"
 
 int RGE_Combat_Object::setup(int handle, RGE_Game_World* world) {
     int i;

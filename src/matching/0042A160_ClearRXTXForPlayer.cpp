@@ -3,6 +3,7 @@ class TCommunications_Handler {
 public:
     void ClearTXForPlayer(unsigned int player);
     void ClearRXForPlayer(unsigned int player);
+protected:
     void ClearRXTXForPlayer(unsigned int player);
 };
 #endif // COM_HAND_TU_CONTEXT

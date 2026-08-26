@@ -32,70 +32,10 @@
 //   reuse seen by VC5. The reset of doppledObjectID after the first read is part
 //   of the original load behavior, not just initialization.
 // - A natural polymorphic base/derived declaration emits the derived vtable;
-//   no manual vptr store is retained. The /GX candidate matches all 318 bytes.
-
-typedef unsigned long ulong;
+//   no manual table store is retained. The /GX candidate matches all 318 bytes.
 
 #ifndef DPL_OBJ_SHARED_CONTEXT
-class RGE_Game_World;
-class RGE_Color_Table;
-class RGE_Master_Static_Object;
-
-class RGE_Static_Object {
-public:
-    virtual ~RGE_Static_Object();
-    RGE_Static_Object(int mode, RGE_Game_World* world, int doSetup);
-    int setup(int mode, RGE_Game_World* world);
-
-    char pad_04[0x88];
-};
-
-class RGE_Animated_Object : public RGE_Static_Object {
-public:
-    virtual unsigned char update();
-    RGE_Animated_Object(int mode, RGE_Game_World* world, int doSetup);
-    virtual int setup(int mode, RGE_Game_World* world);
-};
-
-extern "C" void __cdecl rge_read(int handle, void* buf, int count);
-
-extern float save_game_version;
-
-class RGE_Doppleganger_Object : public RGE_Animated_Object {
-public:
-    virtual unsigned char update();
-    virtual void slot10();
-    virtual void slot11();
-    virtual void slot12();
-    virtual void slot13();
-    virtual void slot14();
-    virtual void slot15();
-    virtual void slot16();
-    virtual void slot17();
-    virtual void slot18();
-    virtual void slot19();
-    virtual void slot20();
-    virtual void slot21();
-    virtual void slot22();
-    virtual void slot23();
-    virtual void slot24();
-    virtual void slot25();
-    virtual void destroy_obj();
-
-    RGE_Doppleganger_Object(int param_1, RGE_Game_World* world, int param_3);
-    virtual int setup(int param_1, RGE_Game_World* world);
-
-    RGE_Static_Object* doppled_object;       // +0x8C
-    RGE_Color_Table* draw_color;             // +0x90
-    RGE_Master_Static_Object* doppled_master_obj; // +0x94
-    int doppled_player;         // +0x98
-    ulong* MapAddress;          // +0x9C
-    int LastMapValue;           // +0xA0
-    int CantSeeBits;            // +0xA4
-    char map_draw_level;        // +0xA8
-    char map_color;             // +0xA9
-    int doppledObjectID;        // +0xAC
-};
+#include "../../include/dpl_obj_context.h"
 #endif
 
 RGE_Doppleganger_Object::RGE_Doppleganger_Object(int handle, RGE_Game_World* world, int param_3)

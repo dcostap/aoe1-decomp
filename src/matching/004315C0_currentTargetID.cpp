@@ -1,6 +1,4 @@
-#ifndef RGE_COM_OBJ_SHARED_CONTEXT
-#include "../com_obj_fallback_current_target.h"
-#endif
+#include "../com_obj_phase2_context.h"
 
 int RGE_Combat_Object::currentTargetID() const {
     if (action_list->have_action() == 1) {

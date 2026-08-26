@@ -1,27 +1,19 @@
 /* VA: 00448340 _WaveCopyUselessChunks */
 /* Dsutil.c lines 1102-1173 */
-
-typedef unsigned int UINT;
-typedef long LONG;
-typedef struct DSUTIL_WAVECOPY_MMCKINFO {
-    unsigned int ckid;
-    unsigned int cksize;
-    unsigned int fccType;
-    unsigned int dwDataOffset;
-    unsigned int dwFlags;
-} DSUTIL_WAVECOPY_MMCKINFO;
+/* BINARY NOTE: The SDK MMCKINFO declaration preserves the shipped field-load order. */
+/* BINARY NOTE: The C identifier omits the object-file underscore decoration. */
 
 typedef LONG (__stdcall *MMIOSEEK)(HMMIO, LONG, int);
-typedef int (__stdcall *MMIODESCEND)(HMMIO, DSUTIL_WAVECOPY_MMCKINFO*, const DSUTIL_WAVECOPY_MMCKINFO*, UINT);
-typedef int (__stdcall *MMIOASCEND)(HMMIO, DSUTIL_WAVECOPY_MMCKINFO*, UINT);
+typedef int (__stdcall *MMIODESCEND)(HMMIO, MMCKINFO*, const MMCKINFO*, UINT);
+typedef int (__stdcall *MMIOASCEND)(HMMIO, MMCKINFO*, UINT);
 
 #define mmioSeek_abs (*(MMIOSEEK*)0x88A928)
 #define mmioDescend_abs (*(MMIODESCEND*)0x88A92C)
 #define mmioAscend_abs (*(MMIOASCEND*)0x88A934)
 
-int __cdecl riffCopyChunk(HMMIO dst, HMMIO src, DSUTIL_WAVECOPY_MMCKINFO* ck);
+int __cdecl riffCopyChunk(HMMIO dst, HMMIO src, MMCKINFO* ck);
 
-int __cdecl _WaveCopyUselessChunks(HMMIO* hmmio, DSUTIL_WAVECOPY_MMCKINFO* ck, DSUTIL_WAVECOPY_MMCKINFO* parent, HMMIO* src)
+int __cdecl WaveCopyUselessChunks(HMMIO* hmmio, MMCKINFO* ck, MMCKINFO* parent, HMMIO* src)
 {
     int result;
     MMIODESCEND descend;

@@ -11,14 +11,14 @@
 extern unsigned char DAT_0056f218[20];
 extern unsigned short u_0123456789ABCDEF_0056f230[16];
 
-struct GUIDBytes { unsigned char b[16]; };
+struct _GUID;
 
-extern "C" int __cdecl StringFromGUID(GUIDBytes* guid, unsigned short* output)
+int __cdecl StringFromGUID(_GUID* guid, unsigned short* output)
 {
     int i;
     unsigned char* g;
 
-    g = guid->b;
+    g = (unsigned char*)guid;
     *output = 0x7b;
     output = output + 1;
     i = 0;

@@ -21,18 +21,7 @@ extern float save_game_version;
 extern float DAT_00570418;
 
 #ifndef DPL_OBJ_SHARED_CONTEXT
-class RGE_Animated_Object {
-public:
-    char gap_00[0x88];
-    float speed;
-
-    void save(int handle);
-};
-
-class RGE_Doppleganger_Object : public RGE_Animated_Object {
-public:
-    void save(int file);
-};
+#include "../../include/dpl_obj_context.h"
 #endif
 
 void RGE_Doppleganger_Object::save(int file) {

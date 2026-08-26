@@ -10,6 +10,9 @@
 class RGE_Static_Object;
 class RGE_Player;
 class RGE_Command_Stop;
+struct RGE_Obj_Info {
+    int id;
+};
 
 class RGE_Command {
 public:
@@ -17,7 +20,8 @@ public:
     char gap_04[0x4];
     void* world;
 
-    RGE_Static_Object* get_obj(int id);
+protected:
+    RGE_Static_Object* get_obj(RGE_Obj_Info info);
     void do_command_stop(RGE_Command_Stop* stop);
 };
 
@@ -63,7 +67,7 @@ public:
 
 void RGE_Command::do_command_stop(RGE_Command_Stop* stop) {
     int count = stop->unit_num;
-    int* id = stop->object_ids;
+    RGE_Obj_Info* id = (RGE_Obj_Info*)stop->object_ids;
     if (count > 0) {
         int cnt = count;
         do {

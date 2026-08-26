@@ -40,6 +40,7 @@ public:
 
     long FastSend(long dcoID, void* buf, long size, long a, long b);
 
+protected:
     int TXPing(unsigned int param_1);
 };
 #endif // COM_HAND_TU_CONTEXT

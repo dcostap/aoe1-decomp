@@ -1,21 +1,6 @@
-#ifndef RGE_COM_OBJ_SHARED_CONTEXT
-class InnerObj {
-public:
-    char gap_0[0x120];
-    int field_120;
-    char gap_124[0x20];
-    int field_144;
-};
+#include "../com_obj_phase2_context.h"
 
-class RGE_Combat_Object {
-public:
-    char gap_0[0x8];
-    InnerObj* field_8;
-    void get_speed_of_attack(int* a, int* b);
-};
-#endif
-
-void RGE_Combat_Object::get_speed_of_attack(int* a, int* b) {
-    *a = this->field_8->field_120;
-    *b = this->field_8->field_144;
+void RGE_Combat_Object::get_speed_of_attack(float& a, float& b) {
+    a = this->master_obj->speed_of_attack;
+    b = this->master_obj->orig_speed_of_attack;
 }

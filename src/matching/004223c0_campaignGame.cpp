@@ -1,5 +1,5 @@
 
 
-int RGE_Base_Game::campaignGame() {
+int RGE_Base_Game::campaignGame() const {
     return this->campaignGame_;
 }

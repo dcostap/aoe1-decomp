@@ -8,6 +8,7 @@ void Log(TDebuggingLog* log, const char* format, int param_1, int param_2, int p
 
 class RGE_Command {
 public:
+    virtual void command_give_attribute(int, int, int, float);
     void submit(void* data, int size);
     void command_give_attribute(int param_1, int param_2, int param_3, float param_4);
 };

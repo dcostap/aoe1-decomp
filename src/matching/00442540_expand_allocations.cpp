@@ -10,49 +10,14 @@
 // - Final source-shape probe: direct `allocated_size += grow_size` followed by
 //   `calloc(this->allocated_size, 4)` restores the original store/push schedule and
 //   matches all 315 bytes. This is the natural period source form.
+// - Module closure: the original FPO owner is protected (`IAEXH`), so the
+//   compiler-facing declaration keeps `expand_allocations` under `protected:`.
 
 extern "C" void* __cdecl memcpy(void* dst, const void* src, int size);
 #pragma intrinsic(memcpy)
 
 #ifndef DPL_OBJ_SHARED_CONTEXT
-extern "C" void* __cdecl calloc(int num, int size);
-extern "C" void  __cdecl free(void* ptr);
-#endif
-
-#ifndef DPL_OBJ_SHARED_CONTEXT
-struct FILE;
-extern int __cdecl fprintf(FILE* stream, const char* format, ...);
-extern FILE* DDlogf;
-#endif
-
-#ifndef DPL_OBJ_SHARED_CONTEXT
-class RGE_Game_World {
-public:
-    virtual unsigned char data_load_world(void* file);
-    int world_time;  // +0x04
-};
-
-class RGE_Player {
-public:
-    virtual ~RGE_Player();
-    char gap_04[0x38];
-    RGE_Game_World* world;  // +0x3C
-    char gap_40[0x0A];
-    short id;  // +0x4A
-};
-
-class RGE_Doppleganger_Creator {
-public:
-    RGE_Player* owner;          // +0x00
-    int allocated_size;         // +0x04
-    int active_size;            // +0x08
-    void** Objects;             // +0x0C
-    void** Map_Addresses;       // +0x10
-    void*  Last_Map_Value;      // +0x14
-    int*   Object_ids;          // +0x18
-
-    void expand_allocations(int grow_size);
-};
+#include "../../include/dpl_obj_context.h"
 #endif
 
 void RGE_Doppleganger_Creator::expand_allocations(int grow_size)
@@ -81,14 +46,8 @@ void RGE_Doppleganger_Creator::expand_allocations(int grow_size)
     free(this->Last_Map_Value);
     free(this->Object_ids);
 
-#ifdef DPL_OBJ_SHARED_CONTEXT
     this->Objects = (RGE_Static_Object**)r0;
     this->Map_Addresses = (unsigned long**)r1;
     this->Last_Map_Value = (unsigned long*)r2;
-#else
-    this->Objects = (void**)r0;
-    this->Map_Addresses = (void**)r1;
-    this->Last_Map_Value = r2;
-#endif
     this->Object_ids = (int*)r3;
 }

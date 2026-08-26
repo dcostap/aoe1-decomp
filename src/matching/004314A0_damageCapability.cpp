@@ -1,26 +1,4 @@
-#ifndef RGE_COM_OBJ_SHARED_CONTEXT
-class RGE_Armor_Weapon_Info {
-public:
-    short type;
-    short value;
-};
-
-class RGE_Master_Combat_Object {
-public:
-    unsigned char gap_00[0x108];
-    short weapon_num;
-    unsigned char gap_10A[0x2];
-    RGE_Armor_Weapon_Info* weapon;
-};
-
-class RGE_Combat_Object {
-public:
-    int id;
-    RGE_Master_Combat_Object* master_obj;
-
-    virtual float damageCapability();
-};
-#endif
+#include "../com_obj_phase2_context.h"
 
 float RGE_Combat_Object::damageCapability() {
     float total;

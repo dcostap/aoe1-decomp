@@ -3,25 +3,10 @@
 #include <stdio.h>
 
 #ifndef DPL_OBJ_SHARED_CONTEXT
-class RGE_Doppleganger_Creator {
-public:
-    void* owner;
-    int allocated_size;
-    int active_size;
-    void* Objects;
-    void* Map_Addresses;
-    void* Last_Map_Value;
-    void* Object_ids;
-
-    ~RGE_Doppleganger_Creator();
-};
+#include "../../include/dpl_obj_context.h"
 #endif
 
 extern "C" void __cdecl free(void* ptr);
-#ifndef DPL_OBJ_SHARED_CONTEXT
-extern FILE* DDlogf;
-#endif
-
 RGE_Doppleganger_Creator::~RGE_Doppleganger_Creator() {
     if (this->Objects != 0) {
         free(this->Objects);

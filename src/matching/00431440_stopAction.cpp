@@ -1,6 +1,4 @@
-#ifndef RGE_COM_OBJ_SHARED_CONTEXT
-#include "../com_obj_fallback_stop.h"
-#endif
+#include "../com_obj_phase2_context.h"
 
 int RGE_Combat_Object::stopAction() {
     action_list->delete_list();

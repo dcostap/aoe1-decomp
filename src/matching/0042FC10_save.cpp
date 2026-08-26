@@ -1,20 +1,6 @@
 extern "C" void rge_write(int handle, void* buffer, int size);
 
-#ifndef RGE_COM_OBJ_SHARED_CONTEXT
-class RGE_Action_Object {
-public:
-    virtual void save(int handle);
-};
-
-class RGE_Combat_Object : public RGE_Action_Object {
-public:
-    unsigned char gap_04[0x1B8];
-    float attack_timer;
-    unsigned char capture_flag;
-
-    virtual void save(int handle);
-};
-#endif
+#include "../com_obj_phase2_context.h"
 
 void RGE_Combat_Object::save(int handle) {
     RGE_Action_Object::save(handle);

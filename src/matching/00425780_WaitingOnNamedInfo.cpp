@@ -18,7 +18,7 @@ public:
 
     char* WaitingOnInfo(int playerIndex);
     char* GetPlayerName(int playerIndex);
-    char* WaitingOnNamedInfo(int playerIndex);
+    char* WaitingOnNamedInfo(unsigned int playerIndex);
 };
 #endif // COM_HAND_TU_CONTEXT
 
@@ -28,7 +28,7 @@ extern "C" int debug_timeGetTime(char* file, int line);
 #endif // COM_HAND_TU_CONTEXT
 extern "C" int sprintf(char* buffer, const char* format, ...);
 
-char* TCommunications_Handler::WaitingOnNamedInfo(int playerIndex) {
+char* TCommunications_Handler::WaitingOnNamedInfo(unsigned int playerIndex) {
     sprintf(this->TBuff, "[%d] %s - %s", playerIndex,
         this->GetPlayerName(playerIndex),
         this->WaitingOnInfo(playerIndex));

@@ -1,6 +1,6 @@
 
 
-void RGE_Base_Game::get_countdown_timer(int index, int* output)
+void RGE_Base_Game::get_countdown_timer(long index, long& output)
 {
-    *output = this->timers[index];
+    output = this->countdown_timer[index];
 }

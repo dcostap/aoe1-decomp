@@ -1,5 +1,5 @@
 
 
-int RGE_Base_Game::play_video(int) {
+int RGE_Base_Game::play_video(char*) {
     return 0;
 }

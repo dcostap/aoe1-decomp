@@ -3,6 +3,16 @@
 // target shape: bounds check, store humanity at +0x16D4, UpdatePlayer(player,1), NotifyWindow(0x17A6), optional send-shared-data path
 
 #if !defined(COM_HAND_TU_CONTEXT)
+enum PLAYERHUMANITY {
+    ME_ABSENT = 0,
+    ME_CLOSED = 1,
+    ME_HUMAN = 2,
+    ME_ELIMINATED = 3,
+    ME_COMPUTER = 4,
+    ME_CYBORG = 5,
+    ME_VIEWONLY = 6
+};
+
 struct COMMPLAYEROPTIONS {
     unsigned char NeedsToBeSent;
     unsigned char _pad_0[3];
@@ -42,12 +52,12 @@ public:
     void NotifyWindow(int message);
     void SendSharedData(int zero);
 
-    void SetPlayerHumanity(unsigned int player, int humanity);
+    void SetPlayerHumanity(unsigned int player, PLAYERHUMANITY humanity);
 };
 #endif // COM_HAND_TU_CONTEXT
 
 
-void TCommunications_Handler::SetPlayerHumanity(unsigned int player, int humanity) {
+void TCommunications_Handler::SetPlayerHumanity(unsigned int player, PLAYERHUMANITY humanity) {
     if (player < 1) {
         return;
     }

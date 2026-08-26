@@ -1,5 +1,5 @@
 
 
-void RGE_Base_Game::setColoredChat(unsigned char v) {
+void RGE_Base_Game::setColoredChat(int v) {
     this->coloredChat_ = v;
 }

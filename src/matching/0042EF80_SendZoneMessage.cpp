@@ -25,7 +25,7 @@ public:
 #if !defined(COM_HAND_TU_CONTEXT)
 class RGE_Lobby {
 public:
-    long SendZoneMessage(const char* msg, unsigned long param_2, ZoneGuid zone_guid);
+    long SendZoneMessage(const char* msg, unsigned long param_2, void* zone_guid);
 };
 #endif // COM_HAND_TU_CONTEXT
 
@@ -54,18 +54,20 @@ extern void* L;
 #if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
-    char gap_00[0x14CC];
+    char gap_00[0x1310];
+    int LobbyLaunched;
+    char gap_1314[0x14CC - 0x1314];
     RGE_Lobby* Lobby;          // +0x14CC
     char gap_14D0[0x10];
     RGE_Comm_Error* Err;       // +0x14E0
 
     int IsLobbyLaunched();
-    int SendZoneMessage(const char* msg, unsigned long param_2);
+    int SendZoneMessage(char* msg, unsigned long param_2);
 };
 #endif // COM_HAND_TU_CONTEXT
 
 
-int TCommunications_Handler::SendZoneMessage(const char* msg, unsigned long param_2) {
+int TCommunications_Handler::SendZoneMessage(char* msg, unsigned long param_2) {
     if (!this->LobbyLaunched) {
         Log(L, "NOT LOBBY LAUNCHED.  EXITING");
         return 0;

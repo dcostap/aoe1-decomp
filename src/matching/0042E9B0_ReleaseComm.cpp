@@ -20,6 +20,7 @@ public:
     GUID16 ServiceGUID;
     char gap_12EC[0x2C];
     GUID16 NullGUID;
+protected:
     long ReleaseComm();
 };
 #endif // COM_HAND_TU_CONTEXT

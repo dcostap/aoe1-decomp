@@ -65,9 +65,9 @@ extern int do_debug_random;
 extern int wrote_debug_random_log;
 extern float DAT_0056f014;
 extern float DAT_0056f018;
-extern "C" unsigned long __cdecl debug_timeGetTime(char* file, int line);
-extern "C" void __cdecl debug_srand(char* file, int line,
-                                      unsigned int seed);
+extern unsigned long __cdecl debug_timeGetTime(char* file, int line);
+extern void __cdecl debug_srand(char* file, int line,
+                                unsigned int seed);
 extern "C" void __cdecl GetDXVersion(unsigned long* version,
                                       unsigned long* platform);
 extern void __cdecl debug_random_write(void);

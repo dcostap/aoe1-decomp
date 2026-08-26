@@ -1,25 +1,5 @@
 #ifndef ASP_LIST_SHARED_CONTEXT
-class RGE_Active_Sprite {
-public:
-    int check_for_shadows();
-};
-
-class RGE_Active_Sprite_Node {
-public:
-    RGE_Active_Sprite* node;
-    unsigned char order;
-    unsigned char count;
-    char gap_06[0x2];
-    RGE_Active_Sprite_Node* next;
-};
-
-class RGE_Active_Sprite_List {
-public:
-    void* vtable_ptr;
-    RGE_Active_Sprite_Node* list;
-
-    int check_for_shadows();
-};
+#include "../asp_list_context.h"
 #endif
 
 int RGE_Active_Sprite_List::check_for_shadows() {

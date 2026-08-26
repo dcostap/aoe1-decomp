@@ -7,9 +7,7 @@
 typedef unsigned char uchar;
 typedef unsigned short ushort;
 
-#ifndef RGE_COM_OBJ_SHARED_CONTEXT
-#include "../com_obj_fallback_moveto.h"
-#endif
+#include "../com_obj_phase2_context.h"
 
 int RGE_Combat_Object::moveTo(int param_1, float param_2, int param_3)
 {

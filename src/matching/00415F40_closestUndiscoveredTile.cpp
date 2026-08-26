@@ -86,7 +86,8 @@ int UnitAIModule::closestUndiscoveredTile(int* param_1, int* param_2, int param_
         point.x = *param_1;
         point.y = *param_2;
         point.z = (int)object->world_z;
-        return object->canPath(point, object->master_obj->los - 1.0f, -1, (float*)&param_1, 0, -1, -1);
+        return object->canPathPoint(point, object->master_obj->los - 1.0f,
+                                    -1, (float*)&param_1, 0, -1, -1);
     }
 
     return 0;

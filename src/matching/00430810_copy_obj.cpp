@@ -1,8 +1,6 @@
-#ifndef RGE_COM_OBJ_SHARED_CONTEXT
-#include "../com_obj_fallback_copy.h"
-#endif
+#include "../com_obj_phase2_context.h"
 
-void RGE_Combat_Object::copy_obj(RGE_Master_Combat_Object* master_obj) {
+void RGE_Combat_Object::copy_obj(RGE_Master_Static_Object* master_obj) {
     RGE_Sprite* sound;
 
     sound = 0;

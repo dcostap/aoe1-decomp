@@ -22,7 +22,7 @@ class TDrawArea;
 class TShape;
 
 extern void color_log(unsigned char a, unsigned char b, int c);
-extern "C" unsigned long __cdecl debug_timeGetTime(char* file, int line);
+extern unsigned long __cdecl debug_timeGetTime(char* file, int line);
 extern "C" __declspec(dllimport) void* __stdcall SetCursor(void* cursor);
 
 

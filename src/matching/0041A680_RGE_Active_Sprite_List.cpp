@@ -7,11 +7,7 @@
 // BLOCKED: module registration needs main-agent review of the complete TU owner set.
 
 #ifndef ASP_LIST_SHARED_CONTEXT
-class RGE_Active_Sprite_List {
-public:
-    virtual ~RGE_Active_Sprite_List();
-    void delete_list();
-};
+#include "../asp_list_context.h"
 #endif
 
 RGE_Active_Sprite_List::~RGE_Active_Sprite_List() {

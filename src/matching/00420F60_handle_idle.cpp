@@ -10,7 +10,7 @@
 //   virtual show_comm/show_ai calls are used instead of raw vtable plumbing.
 
 extern void color_log(unsigned char a, unsigned char b, int c);
-extern "C" unsigned long __cdecl debug_timeGetTime(char* file, int line);
+extern unsigned long __cdecl debug_timeGetTime(char* file, int line);
 extern int do_restore_palette;
 extern int restore_palette_timer;
 

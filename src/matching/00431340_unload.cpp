@@ -6,9 +6,7 @@
 
 typedef unsigned char uchar;
 
-#ifndef RGE_COM_OBJ_SHARED_CONTEXT
-#include "../com_obj_fallback_unload.h"
-#endif
+#include "../com_obj_phase2_context.h"
 
 int RGE_Combat_Object::unload(int param_1, float param_2, float param_3, float param_4)
 {

@@ -1,3 +1,3 @@
-int RGE_Base_Game::scenarioGame() {
+int RGE_Base_Game::scenarioGame() const {
     return this->scenarioGame_;
 }

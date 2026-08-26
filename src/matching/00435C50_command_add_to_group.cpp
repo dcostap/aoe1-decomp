@@ -31,19 +31,20 @@ public:
     RGE_Game_World* world;  // +0x04
 
     ~RGE_Command();
-    void command_add_to_group(int plr, int rec, int target, int angle);
+    void command_add_to_group(int plr, int rec, int target, float angle);
     void submit(void* buf, int size);
 };
 #endif
 
-void RGE_Command::command_add_to_group(int plr, int rec, int target, int angle) {
+// BINARY NOTE: The final packet argument is float in the shipped member ABI.
+void RGE_Command::command_add_to_group(int plr, int rec, int target, float angle) {
     char* buf = (char*)calloc(1, 0x10);
 
     *(int*)(buf + 4) = rec;
     *buf = 0x0E;
     *(buf + 1) = (char)plr;
     *(int*)(buf + 0x0C) = target;
-    *(int*)(buf + 0x08) = angle;
+    *(float*)(buf + 0x08) = angle;
 
     void* obj = this->world->object(target);
     const char* name;

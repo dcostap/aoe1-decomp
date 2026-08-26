@@ -16,9 +16,7 @@ class Visible_Unit_Manager;
 
 extern "C" Visible_Unit_Manager* VisibleUnitManager;
 
-#ifndef RGE_COM_OBJ_SHARED_CONTEXT
-#include "../com_obj_fallback_update.h"
-#endif
+#include "../com_obj_phase2_context.h"
 
 unsigned char RGE_Combat_Object::update(void)
 {

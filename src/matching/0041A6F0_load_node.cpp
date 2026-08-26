@@ -16,65 +16,7 @@
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 
 #ifndef ASP_LIST_SHARED_CONTEXT
-class RGE_Sprite;
-class RGE_Static_Object;
-class RGE_Color_Table;
-class TDrawArea;
-
-class RGE_Active_Sprite {
-public:
-    virtual ~RGE_Active_Sprite();
-    RGE_Sprite* sprite;
-    unsigned char type;
-    char gap_09[0x3];
-    long offset_x;
-    long offset_y;
-
-    RGE_Active_Sprite(int param_1, RGE_Sprite** param_2);
-};
-
-class RGE_Active_Animated_Sprite : public RGE_Active_Sprite {
-public:
-    short frame;
-    char gap_16[0x2];
-    long animate_interval;
-    long animate_last;
-    short last_frame;
-    unsigned char frame_changed;
-    unsigned char frame_looped;
-    unsigned char animate_flag;
-    char gap_25[0x3];
-
-    RGE_Active_Animated_Sprite(int param_1, RGE_Sprite** param_2);
-};
-
-class RGE_Active_Sprite_Node {
-public:
-    RGE_Active_Sprite* node;
-    unsigned char order;
-    unsigned char count;
-    char gap_06[0x2];
-    RGE_Active_Sprite_Node* next;
-};
-
-class RGE_Active_Sprite_List {
-public:
-    virtual ~RGE_Active_Sprite_List();
-    virtual short frame(RGE_Sprite* param_1);
-    virtual void update(float param_1, float param_2);
-    virtual void draw(short param_1, short param_2, short param_3, short param_4, short param_5, RGE_Color_Table* param_6, TDrawArea* param_7);
-    virtual void normal_draw(short param_1, short param_2, short param_3, RGE_Color_Table* param_4, TDrawArea* param_5);
-    virtual void shadow_draw(short param_1, short param_2, short param_3, RGE_Color_Table* param_4, TDrawArea* param_5, unsigned char param_6);
-    virtual unsigned char is_animating(RGE_Sprite* param_1);
-    virtual void set_frame(RGE_Sprite* param_1, short param_2);
-    virtual unsigned char frame_passed(RGE_Sprite* param_1, short param_2);
-    virtual unsigned char looped(RGE_Sprite* param_1);
-    virtual short get_facetindex(RGE_Sprite* param_1, short param_2);
-    virtual unsigned char load_node(int param_1, unsigned char param_2, RGE_Sprite** param_3);
-
-    RGE_Active_Sprite_Node* list;
-    RGE_Static_Object* owner;
-};
+#include "../asp_list_context.h"
 #endif
 
 unsigned char RGE_Active_Sprite_List::load_node(int param_1, unsigned char param_2, RGE_Sprite** param_3) {

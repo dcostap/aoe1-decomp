@@ -15,7 +15,7 @@ extern TDebuggingLog* L;
 #endif // COM_HAND_TU_CONTEXT
 void Log(TDebuggingLog* log, char* text, unsigned long value);
 #if !defined(COM_HAND_TU_CONTEXT)
-class TCommunications_Handler { public: long EnableNewPlayers(IDirectPlay2* dp, int enable); };
+class TCommunications_Handler { protected: long EnableNewPlayers(IDirectPlay2* dp, int enable); };
 #endif // COM_HAND_TU_CONTEXT
 
 long TCommunications_Handler::EnableNewPlayers(IDirectPlay2* dp, int enable) {

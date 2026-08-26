@@ -5,6 +5,7 @@ public:
     int ProgramState;
 
     void NotifyWindowParam(int command, unsigned int param);
+protected:
     void LocalPauseGame(unsigned int player);
 };
 #endif // COM_HAND_TU_CONTEXT

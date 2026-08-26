@@ -1,5 +1,5 @@
 
 
-void RGE_Base_Game::setGameDeveloperMode(unsigned char v) {
+void RGE_Base_Game::setGameDeveloperMode(int v) {
     this->gameDeveloperMode_ = v;
 }

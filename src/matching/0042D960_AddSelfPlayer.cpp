@@ -68,8 +68,8 @@ extern unsigned int DAT_0062cf04;  // self DPID [0x62CF04]
 struct DPNAME {
     unsigned long dwSize;        // +0x00
     unsigned long dwFlags;       // +0x04
-    char* lpszShortName;         // +0x08 (ANSI)
-    char* lpszLongName;          // +0x0C
+    unsigned short* lpszShortName; // +0x08
+    unsigned short* lpszLongName;  // +0x0C
 };
 #endif // COM_HAND_TU_CONTEXT
 

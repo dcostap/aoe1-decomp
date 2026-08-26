@@ -147,7 +147,7 @@ public:
     virtual int canPathWithObstructions(int targetID, float range,
                                         float* costOut, int useAI,
                                         int unobPlayerID, int unobGroupID,
-                                        ManagedArray<int>* unobstructibles);
+                                        ManagedArray<int>& unobstructibles);
 };
 
 class PathingSystem {
@@ -168,11 +168,11 @@ extern PathingSystem pathSystem;
 #ifdef MOVE_OBJ_CANONICAL_TU
 int RGE_Moving_Object::canPathWithObstructions(
     int targetID, float range, float* costOut, int useAI,
-    int unobPlayerID, int unobGroupID, ManagedArrayInt* unobstructibles) {
+    int unobPlayerID, int unobGroupID, ManagedArray<int>& unobstructibles) {
 #else
 int RGE_Moving_Object::canPathWithObstructions(
     int targetID, float range, float* costOut, int useAI,
-    int unobPlayerID, int unobGroupID, ManagedArray<int>* unobstructibles) {
+    int unobPlayerID, int unobGroupID, ManagedArray<int>& unobstructibles) {
 #endif
     RGE_Static_Object* target = this->owner->world->object(targetID);
     if (target == 0) {
@@ -219,7 +219,7 @@ int RGE_Moving_Object::canPathWithObstructions(
             range, targetID, 1, costOut, 1, 1, 1, 1,
             unobPlayerID, unobGroupID);
         if (unobGroupID != -1) {
-            aiPathSystem.copyUnobstructibles(*unobstructibles);
+            aiPathSystem.copyUnobstructibles(unobstructibles);
         }
         this->storePathInExceptionPath = 0;
         return result;
@@ -231,7 +231,7 @@ int RGE_Moving_Object::canPathWithObstructions(
             range, targetID, 1, costOut, 1, 1, 1, 1,
             unobPlayerID, unobGroupID);
         if (unobGroupID != -1) {
-            pathSystem.copyUnobstructibles(*unobstructibles);
+            pathSystem.copyUnobstructibles(unobstructibles);
         }
         this->storePathInExceptionPath = 0;
         return result;

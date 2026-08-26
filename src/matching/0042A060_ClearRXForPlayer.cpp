@@ -13,12 +13,19 @@ struct HOLDER {
 
 
 #if !defined(COM_HAND_TU_CONTEXT)
+struct COMMPLAYEROPTIONS {
+    unsigned int dcoID[10];
+};
+#endif // COM_HAND_TU_CONTEXT
+
+
+#if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
     char gap_00[0x1524];
     HOLDER* OnHold;
-    char gap_1528[0x3C];
-    unsigned int dcoID[16];
+    char gap_1528[0x28];
+    COMMPLAYEROPTIONS PlayerOptions;
 
     void ClearRXForPlayer(unsigned int player);
 };

@@ -18,25 +18,6 @@ extern float DAT_0056ebe0;
 
 #include "../../include/aiuaimod_context.h"
 
-#define VPAD1(n) virtual void vf##n();
-#define VPAD2(n) VPAD1(n) VPAD1(n##_1)
-#define VPAD4(n) VPAD2(n) VPAD2(n##_2)
-#define VPAD8(n) VPAD4(n) VPAD4(n##_4)
-#define VPAD16(n) VPAD8(n) VPAD8(n##_8)
-#define VPAD32(n) VPAD16(n) VPAD16(n##_16)
-#define VPAD64(n) VPAD32(n) VPAD32(n##_32)
-
-class RGE_Static_Object_Path_Query6 {
-public:
-    VPAD64(0)
-    VPAD32(64)
-    VPAD4(96)
-    VPAD1(100)
-    virtual int canPath(int objectId, float distance, float* path,
-                        int param_4, int param_5, int param_6);
-
-};
-
 int UnitAIModule::closestResourceObject(int resourceType, int* distance) {
     int excludeList[100];
     int* nextExclude = excludeList;
@@ -63,8 +44,8 @@ int UnitAIModule::closestResourceObject(int resourceType, int* distance) {
             return -1;
         }
 
-        if (((RGE_Static_Object_Path_Query6*)this->objectValue)
-                ->canPath(resource->object_id, 1.0f, 0, 0, -1, -1) == 1) {
+        if (this->objectValue->canPath(resource->object_id, 1.0f, 0, 0, -1,
+                                       -1) == 1) {
             break;
         }
 
@@ -77,11 +58,3 @@ int UnitAIModule::closestResourceObject(int resourceType, int* distance) {
     }
     return resource->object_id;
 }
-
-#undef VPAD64
-#undef VPAD32
-#undef VPAD16
-#undef VPAD8
-#undef VPAD4
-#undef VPAD2
-#undef VPAD1

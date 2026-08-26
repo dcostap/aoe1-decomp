@@ -25,6 +25,7 @@ public:
 
     int IsPlayerHuman(int playerIndex);
     int IsPlayerComputer(int playerIndex);
+protected:
     int CalculatePlayerRange(void);
 };
 #endif // COM_HAND_TU_CONTEXT

@@ -1,21 +1,6 @@
-#ifndef RGE_COM_OBJ_SHARED_CONTEXT
-class InnerObj {
-public:
-    char gap_0[0x114];
-    int field_114;
-    char gap_118[0x28];
-    int field_140;
-};
+#include "../com_obj_phase2_context.h"
 
-class RGE_Combat_Object {
-public:
-    char gap_0[0x8];
-    InnerObj* field_8;
-    void get_weapon_range(int* a, int* b);
-};
-#endif
-
-void RGE_Combat_Object::get_weapon_range(int* a, int* b) {
-    *a = this->field_8->field_114;
-    *b = this->field_8->field_140;
+void RGE_Combat_Object::get_weapon_range(float& a, float& b) {
+    a = this->master_obj->weapon_range;
+    b = this->master_obj->orig_weapon_range;
 }

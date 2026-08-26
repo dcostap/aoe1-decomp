@@ -1,8 +1,6 @@
-#ifndef RGE_COM_OBJ_SHARED_CONTEXT
-#include "../com_obj_fallback_master.h"
-#endif
+#include "../com_obj_phase2_context.h"
 
-void RGE_Combat_Object::recycle_in_to_game(RGE_Master_Combat_Object* master_obj, RGE_Player* player, float x, float y, float z) {
+void RGE_Combat_Object::recycle_in_to_game(RGE_Master_Static_Object* master_obj, RGE_Player* player, float x, float y, float z) {
     int i;
     float attack_timer_local;
 

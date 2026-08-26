@@ -70,6 +70,7 @@ public:
     char* GetPlayerName(int i);
     void InitPlayerInformation(int i, int zero, char* s1, char* s2);
     void SetSelfPlayer();
+protected:
     void PackPlayersDown();
 };
 #endif // COM_HAND_TU_CONTEXT

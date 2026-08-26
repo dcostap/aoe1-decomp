@@ -1,5 +1,5 @@
 
 
-int RGE_Base_Game::cheatNotification() {
+int RGE_Base_Game::cheatNotification() const {
     return this->cheatNotification_;
 }

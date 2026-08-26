@@ -158,8 +158,8 @@ public:
     virtual int transport(float, float, float, int);
     virtual int stopAction();
     virtual int pause();
-    virtual int canPath(struct XYZPoint, float, int, float*, int, int, int);
     virtual int canPath(int, float, float*, int, int, int);
+    virtual int canPathPoint(struct XYZPoint, float, int, float*, int, int, int);
     virtual int canBidirectionPath(int, int, float, float*, int, int, int);
     virtual int canPathWithObstructions(int, float, float*, int, int, int, void*);
     virtual int canPathWithAdditionalPassability(struct XYZPoint, float, int, float*, int, int, int, int, int);
@@ -426,7 +426,7 @@ int UnitAIModule::processMisc()
                     int x = (int)this->currentTargetXValue;
                     int y = (int)this->currentTargetYValue;
                     XYZPoint point = { x, y, invalidValue };
-                    if (this->objectValue->canPath(
+                    if (this->objectValue->canPathPoint(
                             point, this->desiredTargetDistanceValue,
                             invalidValue, 0, 0,
                             invalidValue, invalidValue) == 1) {

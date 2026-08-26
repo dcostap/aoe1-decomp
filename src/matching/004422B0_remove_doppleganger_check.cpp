@@ -4,43 +4,7 @@
 #include <stdio.h>
 
 #ifndef DPL_OBJ_SHARED_CONTEXT
-// Forward declare RGE_Game_World for world_time access
-struct RGE_Game_World {
-    char gap_00[4];              // +0x00: vtable ptr
-    unsigned long world_time;    // +0x04
-};
-
-// RGE_Player stub — only fields we access
-struct RGE_Player {
-    char gap_00[0x3C];           // +0x00 to +0x3B
-    RGE_Game_World* world;       // +0x3C
-    char gap_40[0x0A];           // +0x40 to +0x49
-    short id;                    // +0x4A
-};
-
-// RGE_Static_Object stub — only field we access: id at +0x04
-struct RGE_Static_Object {
-    char gap_00[4];              // +0x00: vtable ptr
-    long id;                     // +0x04
-};
-
-// RGE_Doppleganger_Creator class
-class RGE_Doppleganger_Creator {
-public:
-    RGE_Player* owner;              // +0x00
-    int allocated_size;             // +0x04
-    int active_size;                // +0x08
-    RGE_Static_Object** Objects;    // +0x0C
-    unsigned long** Map_Addresses;  // +0x10
-    unsigned long* Last_Map_Value;  // +0x14
-    int* Object_ids;                // +0x18
-
-    int remove_doppleganger_check(RGE_Static_Object* obj);
-};
-#endif
-
-#ifndef DPL_OBJ_SHARED_CONTEXT
-extern FILE* DDlogf;  // 62E638h
+#include "../../include/dpl_obj_context.h"
 #endif
 
 int RGE_Doppleganger_Creator::remove_doppleganger_check(RGE_Static_Object* obj)

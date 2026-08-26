@@ -24,6 +24,7 @@ public:
     char gap_00[8];
     RGE_Command_Stop* last_order;
 
+protected:
     unsigned char duplicate_check_command_stop(RGE_Command_Stop* param1);
 };
 #endif

@@ -1,9 +1,7 @@
 extern "C" double __cdecl sqrt(double value);
 #pragma intrinsic(sqrt)
 
-#ifndef RGE_COM_OBJ_SHARED_CONTEXT
-#include "../com_obj_fallback_range.h"
-#endif
+#include "../com_obj_phase2_context.h"
 
 int RGE_Combat_Object::inAttackRange(RGE_Static_Object* obj) {
     float radius_distance;

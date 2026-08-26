@@ -7,6 +7,16 @@
 #endif // COM_HAND_TU_CONTEXT
 
 #if !defined(COM_HAND_TU_CONTEXT)
+enum COMMSTATUS {
+    COMMSTATUS_UNINITIALIZED = 0
+};
+
+struct COMMPLAYEROPTIONS {
+    unsigned char NeedsToBeSent;
+    char gap_01[7];
+    int ProgramState;
+};
+
 class TCommunications_Handler {
 public:
     char gap_0000[0x001C];
@@ -23,46 +33,44 @@ public:
     char gap_130C[0x1318 - 0x130C];
     char SessionGUID[16];       // +0x1318
     char gap_1328[0x1550 - 0x1328];
-    unsigned char NeedsToBeSent;// +0x1550
-    char gap_1551[0x1558 - 0x1551];
-    int ProgramState;           // +0x1558
+    COMMPLAYEROPTIONS PlayerOptions; // +0x1550
 
     int IsPaused(void);
-    int AnalyzeCommunicationsStatus(void);
+    COMMSTATUS AnalyzeCommunicationsStatus(void);
 };
 #endif // COM_HAND_TU_CONTEXT
 
 
-int TCommunications_Handler::AnalyzeCommunicationsStatus(void) {
+COMMSTATUS TCommunications_Handler::AnalyzeCommunicationsStatus(void) {
     if (this->IsPaused() && this->current_turn >= 6) {
-        return 15;
+        return (COMMSTATUS)15;
     }
     if (this->PlayerOptions.ProgramState == 5 && this->current_turn >= 6) {
-        return 14;
+        return (COMMSTATUS)14;
     }
     if (this->PlayerOptions.ProgramState == 5 && this->current_turn < 6) {
-        return 13;
+        return (COMMSTATUS)13;
     }
     if (this->PlayerOptions.NeedsToBeSent) {
-        return 12;
+        return (COMMSTATUS)12;
     }
     if (DAT_0062cf04 != 0) {
-        return 9;
+        return (COMMSTATUS)9;
     }
     if (this->MeHost != 0) {
-        return 7;
+        return (COMMSTATUS)7;
     }
     if (memcmp(&this->NullGUID, &this->SessionGUID, 16) != 0) {
-        return 6;
+        return (COMMSTATUS)6;
     }
     if (memcmp(&this->ServiceGUID, &this->SessionGUID, 16) != 0) {
-        return 5;
+        return (COMMSTATUS)5;
     }
     if (DAT_0062c5ec != 0) {
-        return 4;
+        return (COMMSTATUS)4;
     }
     if (this->Multiplayer != 0) {
-        return 3;
+        return (COMMSTATUS)3;
     }
-    return 2 + (this->Me - 1 ? -1 : 0);
+    return (COMMSTATUS)(2 + (this->Me - 1 ? -1 : 0));
 }

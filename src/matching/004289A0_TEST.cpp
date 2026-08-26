@@ -39,6 +39,7 @@ extern "C" TDebuggingLog* L_global;
 #if !defined(COM_HAND_TU_CONTEXT)
 class TCommunications_Handler {
 public:
+protected:
     int TEST();
 };
 #endif // COM_HAND_TU_CONTEXT

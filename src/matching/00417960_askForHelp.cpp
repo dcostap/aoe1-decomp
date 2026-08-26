@@ -29,23 +29,6 @@
 
 extern float DAT_0056ebec;
 
-#define RGE_STATIC_VPAD1(n) virtual void rge_static_vpad##n();
-#define RGE_STATIC_VPAD2(n) RGE_STATIC_VPAD1(n) RGE_STATIC_VPAD1(n##_1)
-#define RGE_STATIC_VPAD4(n) RGE_STATIC_VPAD2(n) RGE_STATIC_VPAD2(n##_2)
-#define RGE_STATIC_VPAD8(n) RGE_STATIC_VPAD4(n) RGE_STATIC_VPAD4(n##_4)
-#define RGE_STATIC_VPAD16(n) RGE_STATIC_VPAD8(n) RGE_STATIC_VPAD8(n##_8)
-#define RGE_STATIC_VPAD32(n) RGE_STATIC_VPAD16(n) RGE_STATIC_VPAD16(n##_16)
-#define RGE_STATIC_VPAD64(n) RGE_STATIC_VPAD32(n) RGE_STATIC_VPAD32(n##_32)
-
-class RGE_Static_Object_Weapon_Query0 {
-public:
-    virtual ~RGE_Static_Object_Weapon_Query0();
-    RGE_STATIC_VPAD64(0)
-    RGE_STATIC_VPAD2(64)
-    virtual float weaponRange(); // +0x10c
-
-};
-
 void UnitAIModule::askForHelp(int caller)
 {
     RGE_Static_Object* callerObject = this->lookupObject(caller);
@@ -84,8 +67,7 @@ void UnitAIModule::askForHelp(int caller)
                                                             callerObject->world_x,
                                                             callerObject->world_y,
                                                             callerObject->world_y,
-                                                            ((RGE_Static_Object_Weapon_Query0*)object)
-                                                                ->weaponRange(),
+                                                            object->weaponRange(),
                                                             1,
                                                             0,
                                                             0x32);
@@ -105,11 +87,3 @@ void UnitAIModule::askForHelp(int caller)
         } while (category <= 1);
     }
 }
-
-#undef RGE_STATIC_VPAD64
-#undef RGE_STATIC_VPAD32
-#undef RGE_STATIC_VPAD16
-#undef RGE_STATIC_VPAD8
-#undef RGE_STATIC_VPAD4
-#undef RGE_STATIC_VPAD2
-#undef RGE_STATIC_VPAD1

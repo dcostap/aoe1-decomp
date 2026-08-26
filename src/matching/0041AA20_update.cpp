@@ -1,28 +1,5 @@
 #ifndef ASP_LIST_SHARED_CONTEXT
-class RGE_Active_Sprite {
-public:
-    virtual void vf00();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void update(float param_1, float param_2);
-};
-
-class RGE_Active_Sprite_Node {
-public:
-    RGE_Active_Sprite* node;
-    unsigned char order;
-    unsigned char count;
-    char gap_06[0x2];
-    RGE_Active_Sprite_Node* next;
-};
-
-class RGE_Active_Sprite_List {
-public:
-    void* vtable_ptr;
-    RGE_Active_Sprite_Node* list;
-
-    void update(float param_1, float param_2);
-};
+#include "../asp_list_context.h"
 #endif
 
 void RGE_Active_Sprite_List::update(float param_1, float param_2) {

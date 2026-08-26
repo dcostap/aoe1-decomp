@@ -1,38 +1,11 @@
 // 0041A9B0 RGE_Active_Sprite_List::remove_sprite
-// current: integrated while loop to match original not-found early epilogue; virtual destroy for slot-0 dispatch.
+// Current: integrated while loop and natural delete preserve the original
+// not-found epilogue and deleting-destructor dispatch.
 
 extern "C" void __cdecl free(void* block);
 
 #ifndef ASP_LIST_SHARED_CONTEXT
-class RGE_Sprite;
-class RGE_Static_Object;
-
-class RGE_Active_Sprite {
-public:
-    virtual void destroy(int);
-    RGE_Sprite* sprite;
-    int check_for_shadows();
-};
-
-class RGE_Sprite {};
-class RGE_Static_Object { public: void remove_shadows(); };
-
-class RGE_Active_Sprite_Node {
-public:
-    RGE_Active_Sprite* node;
-    unsigned char order;
-    unsigned char count;
-    char gap_06[0x2];
-    RGE_Active_Sprite_Node* next;
-};
-
-class RGE_Active_Sprite_List {
-public:
-    void* vtable_ptr;
-    RGE_Active_Sprite_Node* list;
-    RGE_Static_Object* owner;
-    void remove_sprite(RGE_Sprite* param_1);
-};
+#include "../asp_list_context.h"
 #endif
 
 void RGE_Active_Sprite_List::remove_sprite(RGE_Sprite* param_1) {
@@ -50,7 +23,7 @@ void RGE_Active_Sprite_List::remove_sprite(RGE_Sprite* param_1) {
                     this->owner->remove_shadows();
                 }
                 if (p->node != 0) {
-                    p->node->destroy(1);
+                    delete p->node;
                 }
                 free(p);
                 return;

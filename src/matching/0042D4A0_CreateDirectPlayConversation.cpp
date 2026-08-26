@@ -65,6 +65,7 @@ public:
     char gap_1328[0x1B8];            // +0x1328 to +0x14DF
     RGE_Comm_Error* Err;              // +0x14E0
 
+protected:
     long CreateDirectPlayConversation();
 };
 #endif // COM_HAND_TU_CONTEXT

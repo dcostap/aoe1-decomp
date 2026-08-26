@@ -1,14 +1,5 @@
 #ifndef ASP_LIST_SHARED_CONTEXT
-class RGE_Active_Sprite_Node;
-
-class RGE_Active_Sprite_List {
-public:
-    void* vtable_ptr;
-    RGE_Active_Sprite_Node* list;
-
-    void delete_list();
-    void use_sprite_list(RGE_Active_Sprite_Node* list);
-};
+#include "../asp_list_context.h"
 #endif
 
 void RGE_Active_Sprite_List::use_sprite_list(RGE_Active_Sprite_Node* list) {

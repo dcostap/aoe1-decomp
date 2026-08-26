@@ -2,10 +2,7 @@
 // PDB: com_obj.cpp:361-390, 234 bytes
 // FLAGS: default
 
-#ifndef RGE_COM_OBJ_SHARED_CONTEXT
-extern "C" int __cdecl debug_rand(const char* file, int line);
-#include "../com_obj_fallback_do_attack.h"
-#endif
+#include "../com_obj_phase2_context.h"
 
 unsigned char RGE_Combat_Object::do_attack(RGE_Static_Object* target, RGE_Combat_Object* attacker, float p3, float p4, float p5)
 {

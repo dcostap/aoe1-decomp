@@ -1,5 +1,5 @@
 
 
-int RGE_Base_Game::gameDeveloperMode() {
+int RGE_Base_Game::gameDeveloperMode() const {
     return this->gameDeveloperMode_;
 }

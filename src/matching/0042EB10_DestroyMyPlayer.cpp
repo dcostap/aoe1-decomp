@@ -32,6 +32,7 @@ public:
     char gap_10E4[0x3FC];
     RGE_Comm_Error* Err;
 
+protected:
     long DestroyMyPlayer();
 };
 #endif // COM_HAND_TU_CONTEXT
