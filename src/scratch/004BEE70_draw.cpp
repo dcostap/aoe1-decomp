@@ -447,17 +447,10 @@ public:
     virtual void v14();
     virtual void v18();
     virtual void v1C();
-    virtual void vf20(long id, char* buffer, int length);
+    virtual char* get_string(long id, char* buffer, int length);
     virtual void v24();
-    virtual void vf28(long id, long arg2, long arg3, char* buffer, int length);
-
-    void get_string(long id, char* buffer, int length) {
-        this->vf20(id, buffer, length);
-    }
-    void get_string(long id, long arg2, long arg3,
-                    char* buffer, int length) {
-        this->vf28(id, arg2, arg3, buffer, length);
-    }
+    virtual char* get_string2(int id, long arg2, long arg3,
+                              char* buffer, int length);
 };
 
 extern RGE_Base_Game* rge_base_game;
@@ -594,7 +587,7 @@ void TRIBE_Scenario_Editor_Panel_Object::draw()
             SelectObject(this->render_area->DrawDc, (HGDIOBJ)this->font);
 
         if (this->player != 0) {
-            rge_base_game->get_string(0x69, this->player->id, 0, name, 100);
+            rge_base_game->get_string2(0x69, this->player->id, 0, name, 100);
             if (strcmp(name, DEFAULT_PLAYER_NAME) == 0) {
                 strcpy(name, REPLACEMENT_PLAYER_NAME);
             }

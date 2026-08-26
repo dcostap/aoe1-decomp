@@ -6153,8 +6153,8 @@
         "004D27A0": "??0TRIBE_Action_Trade@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@MMM@Z",
         "004D27F0": "?save@TRIBE_Action_Trade@@UAEXH@Z",
         "004D2830": "?first_in_stack@TRIBE_Action_Trade@@UAEXE@Z",
-        "004D32C0": "?get_move_sprite@TRIBE_Action_Trade@@QAEPAVRGE_Sprite@@XZ",
-        "004D32F0": "?get_wait_sprite@TRIBE_Action_Trade@@QAEPAVRGE_Sprite@@XZ",
+        "004D32C0": "?get_move_sprite@TRIBE_Action_Trade@@IAEPAVRGE_Sprite@@XZ",
+        "004D32F0": "?get_wait_sprite@TRIBE_Action_Trade@@IAEPAVRGE_Sprite@@XZ",
         "004D3330": "?stop@TRIBE_Action_Trade@@UAEHXZ",
         "004D3340": "?move_to@TRIBE_Action_Trade@@UAEHPAVRGE_Static_Object@@MMM@Z",
         "004D33C0": "?work@TRIBE_Action_Trade@@UAEHPAVRGE_Static_Object@@MMM@Z"

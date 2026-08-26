@@ -444,6 +444,9 @@ public:
     TRIBE_Action_Trade(int, RGE_Action_Object*);
     TRIBE_Action_Trade(RGE_Action_Object*, RGE_Task*, RGE_Static_Object*);
     TRIBE_Action_Trade(RGE_Action_Object*, RGE_Task*, float, float, float);
+
+protected:
+    // BINARY NOTE: the shipped helpers have protected IAEPAVRGE_Sprite symbols.
     RGE_Sprite* get_move_sprite();
     RGE_Sprite* get_wait_sprite();
 };

@@ -409,19 +409,14 @@ public:
     virtual void v14();
     virtual void v18();
     virtual void v1C();
-    virtual void vf20(long id, char* buffer, int length);
+    virtual char* get_string(long id, char* buffer, int length);
     virtual void v24();
-    virtual void vf28(long id, long arg2, long arg3, char* buffer, int length);
+    virtual char* get_string2(int id, long arg2, long arg3,
+                              char* buffer, int length);
 
     char gap_04[0x1AC];
     volatile int field_1B0;
 
-    void get_string(long id, char* buffer, int length) {
-        this->vf20(id, buffer, length);
-    }
-    void get_string(long id, long arg2, long arg3, char* buffer, int length) {
-        this->vf28(id, arg2, arg3, buffer, length);
-    }
 };
 
 extern RGE_Base_Game* rge_base_game;

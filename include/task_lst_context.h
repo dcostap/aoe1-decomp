@@ -86,6 +86,8 @@ public:
     virtual RGE_Task* create_task(short, short);                                  // vt[0]
     virtual RGE_Task* get_target_task(RGE_Action_Object*, RGE_Static_Object*, float, float, float); // vt[1]
     virtual int is_attack_task(RGE_Task*);                                         // vt[2]
+
+protected:
     virtual int check_task(RGE_Task*, RGE_Action_Object*, RGE_Static_Object*);      // vt[3]
 
     RGE_Task** list;                    // +0x04
@@ -128,12 +130,12 @@ public:
 class RGE_Player {
 public:
     virtual ~RGE_Player();
-    virtual void vpad04();
-    virtual void vpad08();
-    virtual void vpad0C();
-    virtual void vpad10();
-    virtual void vpad14();
-    virtual void vpad18();
+    virtual void set_game_status(unsigned char);
+    virtual void do_resign(int);
+    virtual void changeToHumanPlayer();
+    virtual void changeToComputerPlayer();
+    virtual char* aiStatus(int);
+    virtual int isEnemy(long);
     virtual int isAlly(long);             // vt[7], +0x1C
 
     char pad_04[0x34];                    // +0x04..+0x37
