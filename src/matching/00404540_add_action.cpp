@@ -3,16 +3,19 @@ void* __cdecl calloc(unsigned int count, unsigned int size);
 #endif
 
 #ifndef ACT_LIST_SHARED_CONTEXT
+class RGE_Action_Object;
+class RGE_Action_List;
+
 class RGE_Action {
 public:
-    virtual void vf00(int);
-    virtual void vf04(void);
-    virtual void vf08(void);
-    virtual void vf0C(void);
-    virtual void vf10(void);
-    virtual void vf14(void);
-    virtual void vf18(void);
-    virtual void activate(int);
+    virtual ~RGE_Action();
+    virtual int setup(RGE_Action_Object* object);
+    virtual int setup(int value, RGE_Action_Object* object);
+    virtual RGE_Action_List* create_action_list(RGE_Action_Object* object);
+    virtual void rehook(void);
+    virtual void save(int file);
+    virtual short type(void);
+    virtual void first_in_stack(unsigned char value);
 };
 
 class RGE_Action_Node {

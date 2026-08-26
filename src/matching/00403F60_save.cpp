@@ -1,13 +1,16 @@
 void __cdecl rge_write(int file, void* data, int size);
 
 #ifndef ACT_LIST_SHARED_CONTEXT
+class RGE_Action_Object;
+class RGE_Action_List;
+
 class RGE_Action {
 public:
-    virtual void vf00(void);
-    virtual void vf04(void);
-    virtual void vf08(void);
-    virtual void vf0C(void);
-    virtual void vf10(void);
+    virtual ~RGE_Action();
+    virtual int setup(RGE_Action_Object* object);
+    virtual int setup(int value, RGE_Action_Object* object);
+    virtual RGE_Action_List* create_action_list(RGE_Action_Object* object);
+    virtual void rehook(void);
     virtual void save(int file);
 };
 
