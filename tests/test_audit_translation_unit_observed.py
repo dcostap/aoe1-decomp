@@ -5,7 +5,7 @@ TOOLS_DIR = Path(__file__).resolve().parents[1] / "tools"
 if str(TOOLS_DIR) not in sys.path:
     sys.path.insert(0, str(TOOLS_DIR))
 
-from audit_translation_unit_observed import classify  # noqa: E402
+from audit_translation_unit_observed import build_queue, classify  # noqa: E402
 
 
 def status(bucket: str = "scratch") -> dict[str, str]:
@@ -78,3 +78,47 @@ def test_other_registered_context_is_not_duplicate_work() -> None:
     )
     assert category == "registered_elsewhere_context_mismatch"
     assert action == "review_context_ownership"
+
+
+def test_queue_assigns_overlapping_va_to_largest_exact_context() -> None:
+    groups = [
+        {"name": "prefix", "source": "src/prefix.cpp", "owners": {}, "flags": ""},
+        {"name": "complete", "source": "src/complete.cpp", "owners": {}, "flags": ""},
+    ]
+    base = {
+        "va": "00401000",
+        "name": "target",
+        "source_path": "src/scratch/00401000_target.cpp",
+        "source_bucket": "scratch",
+        "registered_groups": [],
+        "grouped_result": "MATCH",
+        "grouped_diff_bytes": 0,
+        "category": "grouped_match_not_registered",
+        "recommended_action": "review_for_promotion",
+        "difficulty_band": "0-1",
+        "error": "",
+    }
+    rows = [
+        {**base, "group": "prefix"},
+        {**base, "group": "complete"},
+        {
+            **base,
+            "group": "complete",
+            "va": "00401010",
+            "name": "anchor",
+            "registered_groups": ["complete"],
+            "registered_anywhere": True,
+            "registered_in_group": True,
+            "recommended_action": "none",
+            "category": "registered_owner_match",
+        },
+    ]
+
+    queue = build_queue(groups, rows)
+
+    assignment = next(row for row in queue["assignments"] if row["va"] == "00401000")
+    assert assignment["canonical_group"] == "complete"
+    prefix = next(packet for packet in queue["packets"] if packet["group"] == "prefix")
+    complete = next(packet for packet in queue["packets"] if packet["group"] == "complete")
+    assert prefix["promotion_candidates"] == []
+    assert [row["va"] for row in complete["promotion_candidates"]] == ["00401000"]

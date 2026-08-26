@@ -395,6 +395,63 @@ def console_summary(report: dict[str, object]) -> str:
 def build_queue(
     groups: list[dict[str, object]], rows: list[dict[str, object]]
 ) -> dict[str, object]:
+    group_order = {str(group["name"]): index for index, group in enumerate(groups)}
+    group_coverage = Counter(str(row["group"]) for row in rows)
+    contexts_by_va: dict[str, list[dict[str, object]]] = {}
+    for row in rows:
+        contexts_by_va.setdefault(str(row["va"]), []).append(row)
+
+    assignments: list[dict[str, object]] = []
+    assigned_group_by_va: dict[str, str] = {}
+    for va, contexts in sorted(contexts_by_va.items()):
+        registered_groups = {
+            str(group_name)
+            for context in contexts
+            for group_name in context.get("registered_groups", [])
+        }
+        registered_contexts = [
+            context for context in contexts if str(context["group"]) in registered_groups
+        ]
+        exact_contexts = [
+            context for context in contexts if context["grouped_result"] == "MATCH"
+        ]
+        candidates = registered_contexts or exact_contexts or contexts
+        canonical = max(
+            candidates,
+            key=lambda context: (
+                int(group_coverage[str(context["group"])]),
+                -int(group_order[str(context["group"])]),
+            ),
+        )
+        canonical_group = str(canonical["group"])
+        assigned_group_by_va[va] = canonical_group
+        assignments.append(
+            {
+                "va": va,
+                "name": canonical["name"],
+                "source_path": canonical["source_path"],
+                "canonical_group": canonical_group,
+                "selection_reason": (
+                    "registered owner context"
+                    if registered_contexts
+                    else "largest exact context"
+                    if exact_contexts
+                    else "largest included context"
+                ),
+                "contexts": [
+                    {
+                        "group": context["group"],
+                        "grouped_result": context["grouped_result"],
+                        "grouped_diff_bytes": context["grouped_diff_bytes"],
+                        "category": context["category"],
+                    }
+                    for context in sorted(
+                        contexts, key=lambda item: group_order[str(item["group"])]
+                    )
+                ],
+            }
+        )
+
     group_metadata = {
         str(group["name"]): {
             "source": str(group["source"]),
@@ -405,7 +462,17 @@ def build_queue(
     packets: list[dict[str, object]] = []
     for group in groups:
         name = str(group["name"])
-        group_rows = [row for row in rows if row["group"] == name]
+        all_group_rows = [row for row in rows if row["group"] == name]
+        group_rows = [
+            row
+            for row in all_group_rows
+            if assigned_group_by_va[str(row["va"])] == name
+        ]
+        duplicate_contexts = [
+            row
+            for row in all_group_rows
+            if assigned_group_by_va[str(row["va"])] != name
+        ]
         promotions = [
             row for row in group_rows if row["recommended_action"] == "review_for_promotion"
         ]
@@ -454,6 +521,7 @@ def build_queue(
                 "accepted_drift_holds": accepted_holds,
                 "context_ownership_reviews": context_reviews,
                 "comparison_errors": errors,
+                "noncanonical_contexts": duplicate_contexts,
                 "captain_editable_files": editable,
                 "captain_task_count": len(ownership) + len(structural) + len(codegen),
                 "main_agent_task_count": len(promotions) + len(context_reviews) + len(errors),
@@ -466,6 +534,7 @@ def build_queue(
         "main_agent_task_count": sum(
             int(packet["main_agent_task_count"]) for packet in packets
         ),
+        "assignments": assignments,
         "packets": packets,
     }
 
@@ -492,6 +561,7 @@ def queue_text(queue: dict[str, object]) -> str:
                 f"  accepted drift holds: {len(packet['accepted_drift_holds'])}",
                 f"  context reviews: {len(packet['context_ownership_reviews'])}",
                 f"  comparison errors: {len(packet['comparison_errors'])}",
+                f"  noncanonical contexts: {len(packet['noncanonical_contexts'])}",
             ]
         )
         for label, key in (
