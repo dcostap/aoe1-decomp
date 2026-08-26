@@ -7,7 +7,7 @@
 #include "matching/00473C10_TDialogPanel.cpp"
 #include "matching/00473C80_setup.cpp"
 #include "scratch/00473D60_setup.cpp"
-#include "scratch/00473E40_TDialogPanel.cpp"
+#include "matching/00473E40_TDialogPanel.cpp"
 #include "matching/00473EC0_set_focus.cpp"
 
 #undef PNL_DLG_TU_CONTEXT
