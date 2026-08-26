@@ -1,23 +1,9 @@
 // 00529F60 action_key_down (148 bytes)
 // PDB: tribegam.cpp (TRIBE_Game::action_key_down)
 //
-// Attempt log:
-//   ~11 attempts. Main block layout matches (first 75 bytes identical).
-//   45 bytes diff remaining: all in the F1 handler (field_1B0 != 1, key == 0x70).
-//   Issue: VC5 places F1 handler INLINE (branch: jne to return1 at end) while
-//   original places it OUT-OF-LINE (branch: je to F1 handler after return1).
-//   All source restructures (goto labels, switch, dead returns, reversed conditions)
-//   failed to flip this VC5 heuristic. Left in scratch with correct logic.
-//
-//   Remaining diff bytes:
-//     0x4B-0x51: 74 09 b8 01 00 00 00 5e c2 (je to F1) vs 75 3e ... (jne to return1)
-//     0x53-0x5C: c2 14 00 vs various inline F1 code
-//     0x5D-0x71: rest of inline F1 handler
-//     0x71-0x8B: trailing code (return1 at end vs inline)
-//
-//   Field offsets verified against wnd_proc (00529580):
-//     [esi+0x1B0] = field_1B0 (game mode?)
-//     [esi+0x10]  = field_10 (window handle for WinHelpA)
+// Earlier isolated source placed the F1 handler in the wrong block.
+// The authentic grouped context restores the shipped block order and exact bytes.
+// Field ownership is proved by wnd_proc at 00529580.
 
 #ifndef TRIBEGAM_TU_CONTEXT
 class RGE_Base_Game {

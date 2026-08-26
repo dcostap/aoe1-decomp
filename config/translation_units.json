@@ -1735,19 +1735,33 @@
         "00523510": "src/matching/00523510_new_scenario_header.cpp",
         "00523570": "src/matching/00523570_new_scenario_header.cpp",
         "005235D0": "src/matching/005235D0_new_scenario_info.cpp",
+        "00523640": "src/matching/00523640_show_error_message.cpp",
         "00523750": "src/matching/00523750_show_status_message.cpp",
         "005237A0": "src/matching/005237A0_close_status_message.cpp",
+        "00524640": "src/matching/00524640_save_game.cpp",
         "00525EE0": "src/matching/00525EE0_start_scenario.cpp",
+        "00528F60": "src/matching/00528F60_send_game_options.cpp",
+        "00528FB0": "src/matching/00528FB0_receive_game_options.cpp",
         "00529100": "src/matching/00529100_get_tribe_options.cpp",
         "00529570": "src/matching/00529570_gameSummary.cpp",
+        "00529F60": "src/matching/00529F60_action_key_down.cpp",
+        "0052A000": "src/matching/0052A000_action_close.cpp",
+        "0052A080": "src/matching/0052A080_get_achievement_info.cpp",
         "0052A1E0": "src/matching/0052A1E0_SetClickTables.cpp"
       },
       "symbols": {
         "005228E0": "?get_string@TRIBE_Game@@UAEPADJPADH@Z",
         "00523510": "?new_scenario_header@TRIBE_Game@@UAEPAVRGE_Scenario_Header@@H@Z",
         "00523570": "?new_scenario_header@TRIBE_Game@@UAEPAVRGE_Scenario_Header@@PAVRGE_Scenario@@@Z",
+        "00523640": "?show_error_message@TRIBE_Game@@QAEXH@Z",
         "00523750": "?show_status_message@TRIBE_Game@@QAEXHPADJ@Z",
-        "00525EE0": "?start_scenario@TRIBE_Game@@QAEHPAD@Z"
+        "00524640": "?save_game@TRIBE_Game@@QAEHPAD@Z",
+        "00525EE0": "?start_scenario@TRIBE_Game@@QAEHPAD@Z",
+        "00528F60": "?send_game_options@TRIBE_Game@@UAEXXZ",
+        "00528FB0": "?receive_game_options@TRIBE_Game@@UAEXXZ",
+        "00529F60": "?action_key_down@TRIBE_Game@@UAEHKHHHH@Z",
+        "0052A000": "?action_close@TRIBE_Game@@UAEHXZ",
+        "0052A080": "?get_achievement_info@TRIBE_Game@@QAEJEPAPAD@Z"
       }
     },
     {

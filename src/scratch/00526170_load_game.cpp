@@ -10,8 +10,10 @@
 // - Added the three saved object-list traversals, victory points, and path
 //   waypoint logging from the executable evidence. This moved the size and
 //   call set closer, but the debug block still has unresolved source shape.
-// - Corrected world virtual slots so turn_sound_off is +0xB8 and load_game is
-//   +0xCC. Object update is modeled through the proven +0x1D0 slot.
+// - Historical rejected correction: turn_sound_off was assigned to +0xB8.
+//   Fresh TRIBE_World vtable bytes prove +0xB8 is del_game_info; +0xB4 is
+//   turn_sound_off. The source now calls del_game_info. Object update remains
+//   modeled through the proven +0x1D0 slot.
 // - Duplicated the natural load_game_data failure guard to follow the first
 //   unmatched panelname call sequence. VC5 folded it into the existing tail;
 //   emitted code and structural metrics did not change.
@@ -42,13 +44,21 @@
 //   direct list->object expressions instead of one long-lived object alias.
 // - BINARY NOTE: separate position additions recover the original x87 order.
 // - BINARY NOTE: path logs pass continue_counter before number_wait_delays.
+// - BINARY NOTE: the original direct import is __mbschr, not the prior custom
+//   TRIBE_mbschr declaration.
+// - BINARY NOTE: the executable directly dereferences victory_conditions,
+//   sleeping_objects, and doppleganger_objects for DEBUGLOAD output. It has no
+//   null fallback blocks for those fields.
+// - BLOCKER: the canonical grouped context restores field and virtual ownership,
+//   but DEBUGLOAD still has broad local scheduling drift and a shifted action
+//   getter sequence. The next useful approach is local stack-home reduction.
 // - Unresolved: exact codegen still differs. The first mismatch is the
 //   old-panel and this-pointer home assignment at +0x1B.
 
 #include <stdio.h>
 #include <string.h>
 
-extern "C" char* __cdecl TRIBE_mbschr(const char* text, int character);
+extern "C" char* __cdecl __mbschr(const char* text, int character);
 extern "C" int numberPathingIterations;
 extern int ENABLE_COMPRESSION;
 
@@ -568,7 +578,7 @@ int TRIBE_Game::load_game(char* file_name)
 
     if (this->prog_mode == 4 || this->prog_mode == 6 ||
         this->prog_mode == 5) {
-        this->world->turn_sound_off();
+        this->world->del_game_info();
         this->prog_mode = 0;
         this->game_screen = 0;
         panel_system.destroyPanel("Game Screen");
@@ -662,7 +672,7 @@ load_game_success:
         }
 
         strcpy(fn, file_name);
-        char* dot = TRIBE_mbschr(fn, '.');
+        char* dot = __mbschr(fn, '.');
         if (dot != 0)
             *dot = 0;
         this->set_save_game_name(fn);
@@ -682,22 +692,17 @@ load_game_success:
 
                 for (i = 0; i < this->world->player_num; ++i) {
                     RGE_Player* player = this->world->players[i];
-                    long victory_points = 0;
-                    if (player->victory_conditions != 0)
-                        victory_points =
-                            player->victory_conditions->get_victory_points();
                     fprintf(debug_file,
                             "player %d, civ=%d, score=%d, %s\n",
-                            i, player->civilization, victory_points,
+                            i, player->civilization,
+                            player->victory_conditions->get_victory_points(),
                             player->name);
                     fprintf(debug_file, "  Writing=%f\n",
                             (double)player->attributes[200]);
                     fprintf(debug_file, "  num_sleep_obj=%d\n",
-                            player->sleeping_objects == 0 ? 0 :
-                                player->sleeping_objects->number);
+                            player->sleeping_objects->number);
                     fprintf(debug_file, "  num_dopple_obj=%d\n",
-                            player->doppleganger_objects == 0 ? 0 :
-                                player->doppleganger_objects->number);
+                            player->doppleganger_objects->number);
 
                     action_checksum = 0;
                     num1 = 0;
