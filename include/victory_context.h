@@ -17,8 +17,8 @@ class RGE_Player;
 class RGE_Master_Static_Object;
 class RGE_Static_Object;
 class RGE_Object_List;
-class RGE_Victory_Entry;
-class RGE_Victory_Point_Entry;
+struct RGE_Victory_Entry;
+struct RGE_Victory_Point_Entry;
 class RGE_Visible_Map;
 class RGE_Victory_Condition;
 
@@ -108,7 +108,7 @@ public:
     };
 };
 
-class RGE_Victory_Entry {
+struct RGE_Victory_Entry {
 public:
     union {
         unsigned char command; // +0x00
@@ -156,7 +156,7 @@ public:
     RGE_Victory_Entry* next; // +0x30
 };
 
-class RGE_Victory_Point_Entry {
+struct RGE_Victory_Point_Entry {
 public:
     unsigned char command; // +0x00
     union {
@@ -177,10 +177,37 @@ public:
 };
 
 class RGE_Victory_Conditions {
-public:
+// BINARY NOTE: victory.cpp FPO records use protected handlers and struct-tagged
+// RGE_Victory_Entry/RGE_Victory_Point_Entry parameters.
+protected:
     virtual void handle_point_condition(RGE_Victory_Point_Entry* entry);
     virtual void handle_condition(RGE_Victory_Entry* entry);
     virtual char* condition_description(RGE_Victory_Entry* entry);
+
+    void check_for_victory();
+    RGE_Victory_Entry* add(unsigned char group, unsigned char id);
+    void handle_attribute(RGE_Victory_Entry* entry);
+    void handle_bring_area(RGE_Victory_Entry* entry);
+    void handle_bring_object(RGE_Victory_Entry* entry);
+    void handle_capture(RGE_Victory_Entry* entry);
+    void handle_create(RGE_Victory_Entry* entry);
+    void handle_create_in_area(RGE_Victory_Entry* entry);
+    void handle_destroy(RGE_Victory_Entry* entry);
+    void handle_destroy_all(RGE_Victory_Entry* entry);
+    void handle_destroy_multiple(RGE_Victory_Entry* entry);
+    void handle_destroy_player(RGE_Victory_Entry* entry);
+    void handle_explore(RGE_Victory_Entry* entry);
+    void sub(RGE_Victory_Entry* entry);
+    RGE_Victory_Point_Entry* add_point(unsigned char group, unsigned char id);
+    void sub_point(RGE_Victory_Point_Entry* entry);
+    void handle_points_attribute_amount(RGE_Victory_Point_Entry* entry);
+    void handle_points_attribute_first(RGE_Victory_Point_Entry* entry);
+    void handle_points_highest_attribute(RGE_Victory_Point_Entry* entry);
+    void handle_points_high_attribute_once(RGE_Victory_Point_Entry* entry);
+    void handle_points_high_attribute_amount(RGE_Victory_Point_Entry* entry);
+    void handle_victory_points(RGE_Victory_Entry* entry);
+
+public:
     virtual void save(int handle);
     void handle_victory_points(void* entry);
 
@@ -189,7 +216,6 @@ public:
                            unsigned char version_flag);
     ~RGE_Victory_Conditions();
 
-    RGE_Victory_Entry* add(unsigned char group, unsigned char id);
     void remove_entry(RGE_Victory_Entry* entry);
     unsigned char add_attributes(unsigned char group, long attribute, long amount,
                                  unsigned char state);
@@ -212,7 +238,6 @@ public:
     unsigned char add_destroy(unsigned char group, RGE_Player* target_player);
     unsigned char add_explore(unsigned char group, long percent,
                               unsigned char ally_flag);
-    RGE_Victory_Point_Entry* add_point(unsigned char group, unsigned char id);
     unsigned char add_points_attribute_amount(unsigned char group, unsigned char id,
                                               long attribute, long amount, long points);
     unsigned char add_points_attribute_first(unsigned char group, unsigned char id,
@@ -226,41 +251,19 @@ public:
     unsigned char add_victory_points(unsigned char group, long points,
                                      unsigned char id);
 
-    void check_for_victory();
-    char condition_info(int index, char** out_entry,
-                                 unsigned char* out_command);
-    int condition_number(int index);
+    unsigned char condition_info(long index, char** out_entry,
+                                 unsigned char& out_command);
+    long condition_number(long index);
     RGE_Victory_Entry* condition_raw_info(long index);
     void destroy_all();
-    int get_attribute_id(unsigned char id);
-    int get_victory_points();
-    int get_victory_points_group(unsigned char group);
-    int get_victory_points_id(unsigned char id);
-    void handle_attribute(RGE_Victory_Entry* entry);
-    void handle_bring_area(RGE_Victory_Entry* entry);
-    void handle_bring_object(RGE_Victory_Entry* entry);
-    void handle_capture(RGE_Victory_Entry* entry);
-    void handle_create(RGE_Victory_Entry* entry);
-    void handle_create_in_area(RGE_Victory_Entry* entry);
-    void handle_destroy(RGE_Victory_Entry* entry);
-    void handle_destroy_all(RGE_Victory_Entry* entry);
-    void handle_destroy_multiple(RGE_Victory_Entry* entry);
-    void handle_destroy_player(RGE_Victory_Entry* entry);
-    void handle_explore(RGE_Victory_Entry* entry);
-    void handle_points_attribute_amount(RGE_Victory_Point_Entry* entry);
-    void handle_points_attribute_first(RGE_Victory_Point_Entry* entry);
-    void handle_points_high_attribute_amount(RGE_Victory_Point_Entry* entry);
-    void handle_points_high_attribute_once(RGE_Victory_Point_Entry* entry);
-    void handle_victory_points(RGE_Victory_Entry* entry);
-    unsigned char remove_condition(int index);
-    void sub(RGE_Victory_Entry* entry);
-    void sub_point(RGE_Victory_Point_Entry* entry);
+    long get_attribute_id(unsigned char id);
+    long get_victory_points();
+    long get_victory_points_group(unsigned char group);
+    long get_victory_points_id(unsigned char id);
+    unsigned char remove_condition(long index);
     unsigned char update();
     void update_for_object(RGE_Static_Object* object);
     unsigned char victory_achieved();
-
-protected:
-    void handle_points_highest_attribute(RGE_Victory_Point_Entry* entry);
 
 public:
     union {

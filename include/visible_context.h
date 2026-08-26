@@ -94,7 +94,7 @@ public:
     unsigned long input_csum;
 
     void save(int handle);
-    unsigned char get_visible(int x, int y);
+    unsigned char get_visible(int x, int y) const;
     void set_all(unsigned char value);
     int explore_terrain(int x, int y, int radius, int square,
                        int update_tiles, int p6);

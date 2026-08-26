@@ -3,6 +3,7 @@
 
 #include <windows.h>
 #include <ddraw.h>
+#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 
@@ -12,10 +13,19 @@ extern "C" void __cdecl operator_delete(void* ptr);
 class DClipInfo_List;
 class TSpan_List_Manager;
 class RGE_Map;
+class RGE_Player;
 class RGE_SPick_Info;
 class RGE_Static_Object;
+class RGE_Sprite;
 class RGE_Visible_Map;
 class RGE_Object_List;
+class RGE_Sound;
+class RGE_Master_Player;
+class RGE_Effects;
+class RGE_Scenario;
+class TSound_Driver;
+class TCommunications_Handler;
+struct RGE_Player_Info;
 struct RGE_Object_Node;
 class RGE_Tile_List;
 class TPanel_Prefix;
@@ -137,6 +147,7 @@ class TPanel {
 public:
     TPanel();
     virtual ~TPanel();
+    enum RedrawMode { redraw_mode_value };
     TPanel* previousPanelValue;
     TPanel* previousModalPanelValue;
     long pnl_x;
@@ -245,19 +256,141 @@ public:
     void set_focus(int focus);
     long setup(TDrawArea* draw, TPanel* parent, long x, long y, long w,
                long h, unsigned char flag);
-    void set_rect(long left, long top, long width, long height);
-    void set_redraw(int mode);
+    virtual void set_rect(long left, long top, long width, long height);
+    virtual void set_redraw(RedrawMode mode);
     virtual void draw_setup(int mode);
     virtual void draw_finish();
     virtual void draw();
+    void release_mouse();
 };
 
-struct RGE_Game_World {
-    void* vtable_ptr;
+class RGE_Game_World {
+public:
+    virtual unsigned char data_load_world(FILE*);
+protected:
+    virtual unsigned char data_load_terrain_tables(char*);
+public:
+    virtual unsigned char data_load_players(char*);
+    virtual unsigned char data_load_objects(char*);
+    virtual unsigned char data_load_sounds(char*);
+    virtual unsigned char data_load_color_tables(char*);
+    virtual unsigned char data_load_sprites(char*);
+protected:
+    virtual void data_load_players_type(short, short, FILE*);
+public:
+    virtual void data_load_effects(char*);
+    virtual void data_load_map(char*, char*, char*, char*, short, short,
+                               short, RGE_Sound**, char*);
+    virtual void data_load_random_map(char*, char*, char*, char*);
+protected:
+    virtual unsigned char init_player_type(int, short, unsigned char);
+public:
+    virtual unsigned char init_player(int);
+    virtual void load_player(int, unsigned char, short);
+    virtual void color_table_init(int);
+    virtual void terrain_tables_init(int);
+    virtual void init_sounds(int, TSound_Driver*);
+    virtual void init_sprites(int);
+    virtual void map_init(int, TSound_Driver*);
+    virtual void effects_init(int);
+protected:
+    virtual void master_player_init(int);
+public:
+    virtual void command_init(int, TCommunications_Handler*);
+    virtual void world_init(int, TSound_Driver*, TCommunications_Handler*);
+    virtual void setup_gaia();
+    virtual void setup_players(RGE_Player_Info&);
+protected:
+    virtual unsigned char new_random_game(RGE_Player_Info&);
+public:
+    virtual void save(int);
+protected:
+    virtual void scenario_make_player(short, unsigned char, unsigned char,
+                                      unsigned char, char*);
+    virtual void scenario_make_map(int);
+    virtual unsigned char load_scenario(char*, RGE_Player_Info&);
+    virtual unsigned char load_scenario(RGE_Player_Info&);
+    virtual void load_scenario1(int, RGE_Player_Info&);
+    virtual void load_scenario2(int, RGE_Player_Info&);
+    virtual void load_scenario3(int, RGE_Player_Info&);
+    virtual void load_scenario4(int, RGE_Player_Info&);
+    virtual void load_scenario5(int, RGE_Player_Info&);
+    virtual void load_scenario6(int, RGE_Player_Info&);
+    virtual void load_scenario7(int, RGE_Player_Info&);
+    virtual void load_scenario8(int, RGE_Player_Info&);
+public:
+    virtual void logStatus(FILE*, int);
+    virtual ~RGE_Game_World();
+    virtual void setup_player_colors(RGE_Player_Info&);
+    virtual void setup_player_colors();
+    virtual unsigned char data_load(char*, char*);
+    virtual unsigned char init(char*, TSound_Driver*, TCommunications_Handler*);
+    virtual void turn_sound_off();
+    virtual void del_game_info();
+    virtual unsigned char update();
+    virtual unsigned char get_game_state();
+    virtual unsigned char check_game_state();
+    virtual unsigned char load_world(int);
+    virtual unsigned char load_game(char*);
+    virtual unsigned char new_game(RGE_Player_Info&, int);
+    virtual unsigned char new_scenario(RGE_Player_Info&, int);
+    virtual unsigned char save_game(char*);
+    virtual void base_save(int);
+    virtual void base_save(char*);
+    virtual unsigned char save_scenario(char*);
+    virtual RGE_Scenario* get_scenario_info(char*);
+    virtual void pause(unsigned char);
+    virtual void scenario_init(int, RGE_Game_World*);
+    virtual void scenario_init(RGE_Game_World*);
+
     unsigned long world_time;
-    unsigned char gap_08[0x80];
-    RGE_Static_Object** objectsValue;
+    unsigned long old_world_time;
+    unsigned long world_time_delta;
+    float timer;
+    unsigned long old_time;
+    union {
+        float game_speed;
+        int game_speed_bits;
+    };
+    unsigned char temp_pause;
+    unsigned char game_state;
+    unsigned char game_end_condition;
+    unsigned char gap_1F;
+    long sound_update_index;
+    long sprite_update_index;
     RGE_Map* map;
+    short sound_num;
+    unsigned char gap_2E[2];
+    RGE_Sound** sounds;
+    short sprite_num;
+    unsigned char gap_36[2];
+    RGE_Sprite** sprites;
+    short player_num;
+    unsigned char gap_3E[2];
+    RGE_Player** players;
+    short master_player_num;
+    unsigned char gap_46[2];
+    RGE_Master_Player** master_players;
+    RGE_Effects* effects;
+    short terrain_num;
+    short terrain_size;
+    float** terrains;
+    void* commands;
+    RGE_Scenario* scenario;
+    short color_table_num;
+    unsigned char gap_62[2];
+    RGE_Color_Table** color_tables;
+    long next_object_id;
+    long next_reusable_object_id;
+    long scenario_object_id;
+    unsigned char scenario_object_flag;
+    unsigned char gap_75[3];
+    unsigned int random_seed;
+    short curr_player;
+    unsigned char gap_7E[2];
+    TSound_Driver* sound_driver;
+    float world_time_delta_seconds;
+    RGE_Static_Object** objectsValue;
 };
 
 struct RGE_Tile {
@@ -418,7 +551,7 @@ public:
 
 class RGE_Player {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Player();
     char gap_04[0x1E];
     short master_object_num;
     struct RGE_Master_Static_Object** master_objects;
@@ -465,7 +598,7 @@ public:
 
 class RGE_Base_Game {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Base_Game();
     char gap_04[0x1AC];
     int prog_mode;
     int game_mode;
@@ -541,7 +674,7 @@ public:
 
 class RGE_Static_Object {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Static_Object();
     long id;
     RGE_Master_Static_Object* master_obj;
     RGE_Player* owner;
@@ -681,8 +814,8 @@ public:
     void Scroll(int x, int y);
     void ReclaimAllNodes();
     void SetCaptureLevel(int min_level, int max_level);
-    DClipInfo_Node* AddGDINode(int, int, short, short, short, short, short,
-                               short, short, short, int, int, int);
+    DClipInfo_Node* AddGDINode(int, int, int, int, int, int, int,
+                               int, int, int, int, int, int);
     DClipInfo_Node* AddGDINode(long, long, long, long, long, long, long,
                                long, long, long, long, long, long, long);
     DClipInfo_Node** Draw_Clip_Nodes;
@@ -716,8 +849,10 @@ public:
     int field_38;
     short* Select_Box;
     void ResetStats();
+private:
     void SetNumZones(int num_zones);
     void InitNewZone(int zone_size);
+public:
     DClipInfo_Node* GetNode();
     void AddDrawNode(void* shape_base, Shape_Info* shape, int yline,
                      int draw_x, int draw_y, int draw_flag,
@@ -877,16 +1012,14 @@ public:
 
     long setup(TDrawArea* draw, TPanel* parent, long x, long y, long w,
                long h, unsigned char flag, int calc_count, char* shape_name);
-    void set_focus(int focus);
-    void Init_Tile_Edge_Tables();
     void set_rect(long left, long top, long width, long height);
-    void set_redraw(int mode);
+    virtual void set_redraw(TPanel::RedrawMode mode);
     int bound_point(long& x, long& y);
     void set_world(RGE_Game_World* value);
     void set_player(RGE_Player* value);
     void set_selection_area(int col1, int row1, int col2, int row2);
     void set_selection_area(long col1, long row1, long col2, long row2);
-    int get_selection_area(long* col1, long* row1, long* col2, long* row2,
+    int get_selection_area(long& col1, long& row1, long& col2, long& row2,
                            int normalize);
     void update_display_selected_objects();
     void display_object_selection(int param_1, int param_2, int param_3,
@@ -894,27 +1027,88 @@ public:
     void redraw(int mode);
     void target08(int value);
     void reset_overlay_sprites();
-    void CreateBlitQueue(RECT& src, RECT& dst, int xd, int yd);
-    void ProcessQueuedBlit(int force);
     int draw(long, long, long, long, int);
-    void update();
     void draw();
-    void draw_paint_brush();
-    int draw_tile(RGE_Tile* tile, unsigned char terrain_type, short x,
-                  short y, short map_x, short map_y,
-                  unsigned char draw_attribute, int draw1, int draw2);
     void game_mode_15_hook();
     void reset_cyclic_overlay_sprites();
     long Get_Cursor_Position(POINT* point, long offset_x, long offset_y);
     long pick_touched_object(void* list, long x, long y, long min_level,
                              long max_level, long* object_id);
+    void get_string(long id, char* out, long lang_id);
+    int Get_Cursor_Position(POINT& point, int offset_x, int offset_y);
+    virtual int start_scroll_view(unsigned char action, long x, long y,
+                                  int p4, int p5);
+    virtual int handle_scroll_view(long x, long y);
+    virtual void end_scroll_view();
+    virtual int do_paint(long x1, long y1, long x2, long y2, int flag);
+    int is_inside(long x, long y);
+    int capture_mouse();
+    void add_overlay_sprite(TShape* shape, int facet, int world_x, int world_y,
+                            int flags, int draw_level, unsigned char* colors,
+                            int displayfunction, unsigned long interval);
+    bool Object_Was_Displayed(int id, bool allow_flagged);
+    int get_game_enable();
+    unsigned char pick_multi(unsigned char mode, long x1, long y1,
+                             long x2, long y2);
+    int pick_through_fog(int value);
+    virtual int pick_through_fog(RGE_Static_Object* object);
+    virtual int pick_weight(RGE_Static_Object* object, int index);
+    unsigned char pick(unsigned char mode, unsigned char param,
+                       tagPOINT* first, tagPOINT* second, void** object,
+                       float* x, float* y, short* col, short* row);
+    unsigned char pick(unsigned char mode, unsigned char parm,
+                       long x, long y, RGE_Pick_Info* info,
+                       RGE_Static_Object* object);
+    int create_surfaces();
+    void delete_surfaces();
+    void get_center_screen_pos(short* row, short* col);
+    void get_start_coords(short* map_col, short* map_row,
+                          short* scr_col, short* scr_row);
+    void get_center_coords(short* map_col, short* map_row,
+                           short* scr_col, short* scr_row);
+    void get_tile_sizes(short* width, short* height,
+                        short* half_width, short* half_height);
+    void get_max_size(short* cols, short* rows);
+    virtual void draw_multi_object_outline();
+    int get_tile_screen_coords(short col, short row,
+                               short* out_x, short* out_y, int adjust);
+
+protected:
+    virtual void set_focus(int focus);
+    void Init_Tile_Edge_Tables();
+    void update();
+    void CreateBlitQueue(RECT& src, RECT& dst, int xd, int yd);
+    void ProcessQueuedBlit(int force);
+    void draw_paint_brush();
+    int draw_tile(RGE_Tile* tile, unsigned char terrain_type, short x,
+                  short y, short map_x, short map_y,
+                  unsigned char draw_attribute, int draw1, int draw2);
+    int Pick_Tile(long x, long y, int* col, int* row);
+    void get_tile_bounding_coords(int x, int y, int& left, int& top,
+                                  int& right, int& bottom);
+    int pick_objects(int x, int y, int min_level, int max_level,
+                     int radius, int player, int flags);
+    int pick_multi_objects(int x1, int y1, int x2, int y2, int min_level,
+                           int max_level, int player, unsigned char mode,
+                           int flags);
     int pick_touched_object(DClipInfo_List* list, int x, int y,
-                            int min_level, int max_level, int* object_id);
+                            int min_level, int max_level, int& object_id);
     int sprite_check(unsigned char* shape_base, Shape_Info* shape,
                      int x, int y);
     int sprite_check(long shape_base, long shape, int x, int y);
     int sprite_check(long shape_base, Shape_Info* shape, int x, int y);
-    void get_string(long id, char* out, long lang_id);
+    void draw_terrain_shape(int x, int y, TShape* shape, int frame,
+                            unsigned char visibility,
+                            unsigned char draw_attribute, int draw1, int draw2);
+    void draw_terrain_obstruction_map(int x, int y, TShape* shape,
+                                      int frame, int tile_x, int tile_y);
+    void calc_draw_vars();
+    void draw_view(unsigned char mode, TDrawArea* area);
+    void draw_object_outline();
+    long view_function_terrain(unsigned char mode, RECT rect);
+    long view_function(unsigned char mode, unsigned char parm, tagPOINT* first,
+                       tagPOINT* second, void** object, float* x, float* y,
+                       short* col, short* row);
     short get_tile_picture(unsigned char terrain_type, unsigned char tile_type,
                            short x, short y);
     short get_border_picture(unsigned char terrain_type, unsigned char tile_type,
@@ -929,15 +1123,6 @@ public:
                                  unsigned char border_type, short x, short y,
                                  int& left, int& bottom, int& right,
                                  int& result);
-    void draw_terrain_shape(int x, int y, TShape* shape, int frame,
-                            unsigned char visibility,
-                            unsigned char draw_attribute, int draw1, int draw2);
-    void draw_terrain_obstruction_map(int x, int y, TShape* shape,
-                                      int frame, int tile_x, int tile_y);
-    int Pick_Tile(long x, long y, int* col, int* row);
-    void get_tile_bounding_coords(int x, int y, int& left, int& top,
-                                  int& right, int& bottom);
-    int Get_Cursor_Position(void* point, int offset_x, int offset_y);
     RGE_Static_Object* hit_object(RGE_Tile* tile, short x, short y,
                                   short a, short b, tagPOINT* first,
                                   tagPOINT* second, short* out_x,
@@ -945,56 +1130,6 @@ public:
                                   unsigned char through_fog);
     int hit_tile(RGE_Tile* tile, short sx, short sy, short a, short b,
                  tagPOINT* point);
-    int start_scroll_view(unsigned char action, long x, long y, int p4, int p5);
-    int handle_scroll_view(long x, long y);
-    void end_scroll_view();
-    int do_paint(long x1, long y1, long x2, long y2, int flag);
-    int is_inside(long x, long y);
-    int capture_mouse();
-    void add_overlay_sprite(TShape* shape, int facet, int world_x, int world_y,
-                            int flags, int draw_level, unsigned char* colors,
-                            int displayfunction, unsigned long interval);
-    bool Object_Was_Displayed(int id, bool allow_flagged);
-    int get_game_enable();
-    unsigned char pick_multi(unsigned char mode, long x1, long y1,
-                             long x2, long y2);
-    int pick_multi_objects(int x1, int y1, int x2, int y2, int min_level,
-                           int max_level, int player, unsigned char mode,
-                           int flags);
-    int pick_objects(int x, int y, int min_level, int max_level,
-                     int radius, int player, int flags);
-    int pick_through_fog(int value);
-    int pick_through_fog(RGE_Static_Object* object);
-    int pick_weight(RGE_Static_Object* object, int index);
-    unsigned char pick(unsigned char mode, unsigned char param,
-                       tagPOINT* first, tagPOINT* second, void** object,
-                       float* x, float* y, short* col, short* row);
-
-    int create_surfaces();
-    void delete_surfaces();
-    virtual void draw_multi_object_outline();
-    void get_center_screen_pos(short* row, short* col);
-    void get_start_coords(short* map_col, short* map_row,
-                          short* scr_col, short* scr_row);
-    void get_center_coords(short* map_col, short* map_row,
-                           short* scr_col, short* scr_row);
-    void get_tile_sizes(short* width, short* height,
-                        short* half_width, short* half_height);
-    void get_max_size(short* cols, short* rows);
-
-protected:
-    void calc_draw_vars();
-    void draw_view(unsigned char mode, TDrawArea* area);
-    void draw_object_outline();
-    long view_function_terrain(unsigned char mode, RECT rect);
-    long view_function(unsigned char mode, unsigned char parm, tagPOINT* first,
-                       tagPOINT* second, void** object, float* x, float* y,
-                       short* col, short* row);
-    unsigned char pick(unsigned char mode, unsigned char parm,
-                       long x, long y, RGE_Pick_Info* info,
-                       RGE_Static_Object* object);
-    int get_tile_screen_coords(short col, short row,
-                               short* out_x, short* out_y, int adjust);
     void Update_Render_Pointers();
     void Add_GDI_Clip_Mask(DClipInfo_Node* node,
                            TSpan_List_Manager* span_manager);

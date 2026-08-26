@@ -26,7 +26,7 @@ struct XYZPoint {
     int z;
 };
 
-class Waypoint {
+struct Waypoint {
 public:
     float x;
     float y;
@@ -267,7 +267,7 @@ public:
 class RGE_Game_World {
 public:
     int pad_00;
-    union { int world_time; int tick; };
+    unsigned long world_time; // PDB RGE_Game_World +0x04
     char gap_08[0x34];
     short player_num;
     char gap_3E[0xBA];
@@ -279,91 +279,7 @@ public:
     RGE_Player* players[9];
 };
 
-class RGE_Player {
-public:
-    virtual ~RGE_Player();
-    virtual void set_game_status(unsigned char);
-    virtual void do_resign(int);
-    virtual void changeToHumanPlayer();
-    virtual void changeToComputerPlayer();
-    virtual char* aiStatus(int);
-    virtual int isEnemy(int);
-    virtual int isAlly(int);
-    virtual int isNeutral(int);
-    virtual int isAllNeutral();
-    virtual void setDiplomaticStance(int, int);
-    virtual void loadAIInformation(char*, char*, char*, int, int);
-    virtual void sendUnitAIOrder(int, int, int, int, int, float, float,
-                                 float, float, int, int, int);
-    virtual void processAIOrder(int, int, int, int, int, float, float,
-                                float, float, int, int, int);
-    virtual void kickAI(int);
-    virtual int strategicNumber(int);
-    virtual void sendGameOrder(RGE_Static_Object*, RGE_Static_Object*, float, float);
-    virtual void sendAddWaypointCommand(int, void*, int);
-    virtual void processAddWaypointCommand(int, void*, int);
-    virtual void sendPlayCommand(int, int*, int, int, int);
-    virtual void sendPlayCommand(int, int, int);
-    virtual int sendAICommand(int, int, int, int, int);
-    virtual int objectCostByType(int);
-    virtual void trackUnitGather(int, int, int);
-    virtual RGE_Static_Object* make_scenario_obj(float, float, float, short, unsigned char, float);
-    virtual void scenario_save(int);
-    virtual void scenario_load(int, long*, float);
-    virtual void scenario_postsave(int);
-    virtual void scenario_postload(int);
-    virtual void load(int);
-    virtual void add_attribute_num(short, float, unsigned char);
-    virtual void update();
-    virtual void update_dopplegangers();
-    virtual void save(int);
-    virtual void save2(int);
-    virtual void save_info(int);
-    virtual void random_start();
-    virtual RGE_Static_Object* make_new_object(long, float, float, float, int);
-    virtual void analyize_selected_objects();
-    virtual int get_mouse_pointer_action_vars(int, int*, int*);
-    virtual unsigned char command_make_move(RGE_Static_Object*, float, float);
-    virtual unsigned char command_make_work(RGE_Static_Object*, float, float);
-    virtual unsigned char command_make_do(RGE_Static_Object*, float, float);
-    virtual unsigned char command_stop();
-    virtual unsigned char command_place_object(short, float, float, float);
-    virtual unsigned char command_add_attribute(int, float);
-    virtual unsigned char command_give_attribute(int, int, float);
-    virtual unsigned char command_formation(int);
-    virtual unsigned char command_stand_ground();
-    virtual unsigned char command_create_group(int, int*, int, float);
-    virtual unsigned char command_add_to_group(int, int, float);
-    virtual unsigned char command_remove_from_group(int, int);
-    virtual unsigned char command_destroy_group(int);
-    virtual unsigned char command_resign(int, int);
-    virtual unsigned char command_add_waypoint(float, float, float);
-    virtual RGE_Static_Object* addObject(RGE_Static_Object*, int, int);
-    virtual void removeObject(RGE_Static_Object*, int, int, void*);
-    virtual void logMessage(char*);
-    virtual void notify(int, int, int, long, long, long);
-    virtual void logStatus(void*, int);
-    virtual void load_victory(int, long*, unsigned char);
-    virtual void new_victory();
-    void builderTask(int, int, float, float, int);
-    int computerPlayer();
-
-    char gap_004[0x34];
-    RGE_Visible_Map* visibleMap;
-    union {
-        RGE_Game_World* world;
-        struct TimeList* list;
-    };
-    char gap_040[0x0A];
-    union { short id; short player_id; };
-    char gap_04C[4];
-    float* attributes;
-
-};
-
-struct TimeList {
-    unsigned long next;
-};
+#include "rge_player_context.h"
 
 class AIPlayStatus {};
 class RGE_Action {
@@ -794,7 +710,7 @@ public:
     int removeExtraUnits(TribeMainDecisionAIModule*);
     int removeUnboardedUnits(TribeTacticalAIModule*, TribeMainDecisionAIModule*);
     int containsUnit(int);
-    int numberUnits() const;
+    int numberUnits();
     int unit(int);
     int unitOriginalHitPoints(int);
     int desiredNumberUnits() const;
@@ -839,11 +755,11 @@ public:
     int allUnitsIdle(TribeMainDecisionAIModule*, int);
     unsigned long consecutiveIdleUnitCount() const;
     void setConsecutiveIdleUnitCount(unsigned long);
-    void incrementConsecutiveIdleUnitCount(int);
+    void incrementConsecutiveIdleUnitCount(unsigned long);
     unsigned char numberAttackWaypoints() const;
     unsigned char currentAttackWaypoint() const;
     void addAttackWaypoint(float, float);
-    AttackWaypoint* attackWaypoint(unsigned char);
+    Waypoint* attackWaypoint(unsigned char);
     int firstIdleUnit(TribeMainDecisionAIModule*);
     int objectToDestroy(int);
     int addObjectToDestroy(int);
@@ -925,6 +841,7 @@ public:
     void enableAttack(int);
     int doSomething();
     void logGroupDebug();
+    void __cdecl logGroupDebug(int, char*, ...);
     static void logGroupDebug(TribeTacticalAIModule*, int, char*, ...);
     int clearArea(int, float, float, float, float);
     void addObject(RGE_Static_Object*);
@@ -967,7 +884,7 @@ public:
     int desiredNumberGatherers() const;
     int numberSoldiers() const;
     int numberBoats() const;
-    int neededResource(int);
+    int neededResource(int) const;
     int neededResourceAmount(int) const;
     void detask(int);
     void setStrategicNumber(int, int);

@@ -44,6 +44,8 @@ struct ManagedArrayInt {
     void zeroNumber() { this->numberValue = 0; }
 };
 
+template<class T> class ManagedArray;
+
 struct XYPoint {
     int x;
     int y;
@@ -373,7 +375,7 @@ public:
     virtual int canPath(int, float, float*, int, int, int);
     virtual int canPath(void*, float, int, float*, int, int, int);
     virtual int canBidirectionPath(int, int, float, float*, int, int, int);
-    virtual int canPathWithObstructions(int, float, float*, int, int, int, void*);
+    virtual int canPathWithObstructions(int, float, float*, int, int, int, ManagedArray<int>&);
     virtual int canPathWithAdditionalPassability(void*, float, int, float*, int, int, int, int, int);
     virtual int findFirstTerrainAlongExceptionPath(int, float*, float*);
     virtual int canLinePath(int, int, int, int, float, int);
@@ -501,24 +503,25 @@ public:
     virtual ~RGE_Moving_Object();
     void destroy();
     void* scalar_deleting_destructor(unsigned int);
-    int setup(int, void*);
-    int setup(int, RGE_Game_World*);
-    int setup(RGE_Master_Moving_Object*, RGE_Player*, float, float, float);
+protected:
+    virtual int setup(int, RGE_Game_World*);
+    virtual int setup(RGE_Master_Moving_Object*, RGE_Player*, float, float, float);
+public:
     void recycle_in_to_game(RGE_Master_Static_Object*, RGE_Player*, float, float, float);
     void save(int);
     void new_sprite(RGE_Sprite*);
     RGE_Static_Object* spawn_death_obj();
     void transform(RGE_Master_Static_Object*);
     unsigned char is_moving();
-    void stop_moving();
+    virtual void stop_moving();
     int movement_state() const;
     virtual unsigned char waitingToMove() const;
     float angle_to_object(RGE_Static_Object*, float, float);
     virtual unsigned char turn_towards(RGE_Static_Object*, float, float);
     void set_velocity(float, float, float);
     void new_angle(float);
-    Path* getPath();
-    unsigned char facetToNextWaypoint() const;
+    const Path& getPath() const;
+    virtual unsigned char facetToNextWaypoint() const;
     void setGoal(float, float, float);
     void setActionRange(float);
     void setTargetID(int);
@@ -528,10 +531,10 @@ public:
     virtual int addUserDefinedWaypoint(XYZBYTEPoint*, int);
     virtual void removeAllUserDefinedWaypoints(int);
     virtual void removeUserDefinedWaypoint(int);
-    virtual void setFinalUserDefinedWaypoint();
+    void setFinalUserDefinedWaypoint();
     void setInitialPoints(XYPoint&, XYPoint&);
     void copy_obj(RGE_Master_Static_Object*);
-    void rotate(int);
+    virtual void rotate(long);
     virtual long get_waypoint_checksum();
     void boundAngle(float*, int);
     void set_angle();
@@ -544,8 +547,7 @@ public:
     virtual int canPath(XYZPoint, float, int, float*, int, int, int);
     virtual int canPath(int, float, float*, int, int, int);
     virtual int canBidirectionPath(int, int, float, float*, int, int, int);
-    virtual int canPathWithObstructions(int, float, float*, int, int, int, void*);
-    virtual int canPathWithObstructions(int, float, float*, int, int, int, ManagedArrayInt*);
+    virtual int canPathWithObstructions(int, float, float*, int, int, int, ManagedArray<int>&);
     virtual int canPathWithAdditionalPassability(void*, float, int, float*, int, int, int, int, int);
     virtual int canPathWithAdditionalPassability(XYZPoint, float, int, float*, int, int, int, int, int);
     virtual int findFirstTerrainAlongExceptionPath(int, float*, float*);
@@ -617,7 +619,7 @@ public:
     void incrementInitialPaths();
     void incrementContinuePaths();
     void incrementCanPaths();
-    void copyUnobstructibles(ManagedArrayInt&);
+    void copyUnobstructibles(ManagedArray<int>&);
     void initMisc(unsigned char);
     int findTilePath(int, int, int, int, RGE_Moving_Object*, float, int,
                      int, float*, int, int, int, int, int, int);

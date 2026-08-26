@@ -110,6 +110,9 @@ public:
 
     RGE_RMM_Cliffs_Generator(RGE_Map* map, RGE_Random_Map_Module* module,
                              RGE_Cliffs_Info cliffs_info);
+
+// BINARY NOTE: Original FPO symbols use protected IA access for these helpers.
+protected:
     void setup_cliff_maps();
     void generate_cliff();
     uchar check_for_valid_cliff_site(long direction, long& y,

@@ -5,6 +5,10 @@
 // exact utmarray.h functions at 00408D20, 004147A0, 004DE980, 004DE9D0,
 // 004EA750, and 004F1390.
 
+extern "C" void* __cdecl operator_new(unsigned int size);
+extern "C" void __cdecl operator_delete(void* ptr);
+
+#ifndef TAIINFMD_PREFIX_CONTEXT
 template <class T>
 class ManagedArray {
 public:
@@ -50,22 +54,7 @@ public:
         return this->desiredNumberValue;
     }
 
-    int contains(const T& item) const
-    {
-        int i;
-        T wanted;
-        T current;
-
-        for (i = 0; i < this->numberValue; i++) {
-            if (i >= this->maximumSizeValue)
-                return 0;
-            current = this->value[i];
-            wanted = item;
-            if (current == wanted)
-                return 1;
-        }
-        return 0;
-    }
+    int contains(const T& item) const;
 
     int position(T& item)
     {
@@ -77,22 +66,7 @@ public:
         return -1;
     }
 
-    int add(T item)
-    {
-        int i;
-        for (i = 0; i < this->numberValue; i++) {
-            if (i >= this->maximumSizeValue)
-                break;
-            if (this->value[i] == item)
-                return 0;
-        }
-
-        if (this->numberValue > this->maximumSizeValue - 1)
-            this->resize(this->numberValue + 1);
-        this->value[this->numberValue] = item;
-        this->numberValue++;
-        return 1;
-    }
+    int add(T item);
 
     int remove(T item)
     {
@@ -189,5 +163,60 @@ protected:
     int desiredNumberValue;
     int maximumSizeValue;
 };
+#endif
+
+template <class T>
+#ifdef TAIINFMD_PREFIX_CONTEXT
+// BINARY NOTE: taiinfmd's FPO record uses the non-const member decoration.
+int ManagedArray<T>::contains(const T& item)
+#else
+int ManagedArray<T>::contains(const T& item) const
+#endif
+{
+    int i;
+    T wanted;
+    T current;
+
+    for (i = 0; i < this->numberValue; i++) {
+        if (i >= this->maximumSizeValue)
+            return 0;
+        current = this->value[i];
+        wanted = item;
+        if (current == wanted)
+            return 1;
+    }
+    return 0;
+}
+
+template <class T>
+int ManagedArray<T>::add(T val)
+{
+    int i;
+
+    for (i = 0; i < this->numberValue; i++) {
+        if (i >= this->maximumSizeValue)
+            break;
+        if (this->value[i] == val)
+            return 0;
+    }
+    if (this->numberValue > this->maximumSizeValue - 1) {
+        int newSize = this->numberValue + 1;
+        T* newValue = (T*)operator_new(newSize * sizeof(T));
+        if (newValue != 0) {
+            int j;
+            for (j = 0; j < this->maximumSizeValue; j++) {
+                if (j >= newSize)
+                    break;
+                newValue[j] = this->value[j];
+            }
+            operator_delete(this->value);
+            this->value = newValue;
+            this->maximumSizeValue = newSize;
+        }
+    }
+    this->value[this->numberValue] = val;
+    this->numberValue++;
+    return 1;
+}
 
 #endif

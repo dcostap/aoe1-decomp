@@ -4,7 +4,7 @@
 // Module context for the initial vw_dimap.cpp recovery pass.
 // The shipped class hierarchy and the narrow per-function donor views do not
 // yet provide one proven complete view layout. Keep this context conservative;
-// affected owners remain observed until the shared ABI is reviewed.
+// the two shipped callback slots below are virtual per their original symbols.
 
 typedef unsigned char uchar;
 
@@ -77,10 +77,10 @@ public:
                            int shift);
     long mouse_left_down_action(long x, long y, int key, int flags);
     long mouse_left_move_action(long x, long y, int key, int flags);
-    long mouse_left_up_action(long x, long y, int key, int flags);
+    virtual long mouse_left_up_action(long x, long y, int key, int flags);
     long mouse_right_down_action(long x, long y, int key, int flags);
     long mouse_right_move_action(long x, long y, int key, int flags);
-    long mouse_right_up_action(long x, long y, int key, int flags);
+    virtual long mouse_right_up_action(long x, long y, int key, int flags);
     void draw();
 
     virtual int command_make_do(long x, long y);

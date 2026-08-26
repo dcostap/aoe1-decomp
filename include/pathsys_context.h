@@ -3,6 +3,18 @@
 
 #include <stdio.h>
 
+class RGE_Action_Object;
+class RGE_Armor_Weapon_Info;
+class LOSTBL;
+class RGE_Sprite;
+class RGE_Object_List;
+class RGE_Active_Sprite_List;
+class RGE_Object_Node;
+class UnitAIModule;
+class TDrawArea;
+class RGE_Color_Table;
+struct RGE_Tile;
+
 // Canonical period ABI for the pathsys.cpp owner group.
 // The fields below use the binary-proven offsets used by the path search,
 // obstruction, and path-copy owners.  This header is only the module context;
@@ -104,9 +116,6 @@ public:
     }
 };
 
-typedef ManagedArray<int> ManagedArray_int;
-typedef ManagedArray<int> IntList;
-
 class Path {
 public:
     unsigned long timeStampValue;
@@ -124,30 +133,29 @@ public:
 
 class RGE_View {
 public:
-#define PATHSYS_VPAD1(n) virtual void __cdecl vpad_##n();
-#define PATHSYS_VPAD2(n) PATHSYS_VPAD1(n) PATHSYS_VPAD1(n##_1)
-#define PATHSYS_VPAD4(n) PATHSYS_VPAD2(n) PATHSYS_VPAD2(n##_2)
-#define PATHSYS_VPAD8(n) PATHSYS_VPAD4(n) PATHSYS_VPAD4(n##_4)
-    PATHSYS_VPAD8(view0)
+    virtual ~RGE_View();
     virtual void redraw(int mode);
 };
 
 class RGE_Base_Game {
 public:
-    PATHSYS_VPAD8(bg0)
-    PATHSYS_VPAD2(bg8)
-    PATHSYS_VPAD1(bg10)
+    virtual ~RGE_Base_Game();
+    virtual int run();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual void set_prog_mode(int);
+    virtual void set_game_mode(int, int);
+    virtual void set_player(short);
+    virtual int get_error_code();
+    virtual char* get_string(int, long, char*, int);
+    virtual char* get_string(long, char*, int);
+    virtual char* get_string(long);
+    virtual char* get_string2(int, long, long, char*, int);
     virtual RGE_View* get_view();
 };
 
-#undef PATHSYS_VPAD1
-#undef PATHSYS_VPAD2
-#undef PATHSYS_VPAD4
-#undef PATHSYS_VPAD8
-
 class RGE_Master_Static_Object {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Master_Static_Object();
     uchar master_type;
     uchar pad_05[3];
     char* name;
@@ -169,7 +177,7 @@ public:
 
 class RGE_Player {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Player();
     int computerPlayerValue;
     int pathingAttemptCapValue;
     int pathingDelayCapValue;
@@ -182,39 +190,101 @@ public:
 
 class RGE_Static_Object {
 public:
-#define PATHSYS_VPAD1(n) virtual void __cdecl vpad_##n();
-#define PATHSYS_VPAD2(n) PATHSYS_VPAD1(n) PATHSYS_VPAD1(n##_1)
-#define PATHSYS_VPAD4(n) PATHSYS_VPAD2(n) PATHSYS_VPAD2(n##_2)
-#define PATHSYS_VPAD8(n) PATHSYS_VPAD4(n) PATHSYS_VPAD4(n##_4)
-#define PATHSYS_VPAD16(n) PATHSYS_VPAD8(n) PATHSYS_VPAD8(n##_8)
-#define PATHSYS_VPAD32(n) PATHSYS_VPAD16(n) PATHSYS_VPAD16(n##_16)
-    PATHSYS_VPAD32(so0)
-    PATHSYS_VPAD16(so32)
-    PATHSYS_VPAD8(so48)
-    PATHSYS_VPAD4(so56)
-    PATHSYS_VPAD1(so60)
-    virtual float vf_f4();
-    PATHSYS_VPAD1(so62)
-    virtual float vf_fc();
-    PATHSYS_VPAD8(so64)
-    PATHSYS_VPAD4(so72)
-    virtual unsigned char vf_130();
-#undef PATHSYS_VPAD1
-#undef PATHSYS_VPAD2
-#undef PATHSYS_VPAD4
-#undef PATHSYS_VPAD8
-#undef PATHSYS_VPAD16
-#undef PATHSYS_VPAD32
+    virtual ~RGE_Static_Object();
+    virtual void recycle_in_to_game(RGE_Master_Static_Object*, RGE_Player*,
+                                    float, float, float);
+    virtual void recycle_out_of_game();
+    virtual void draw(TDrawArea*, short, short, RGE_Color_Table*);
+    virtual void shadow_draw(void*, short, short, unsigned char);
+    virtual void normal_draw(void*, short, short);
+    virtual void draw_front_frame(void*, short, short);
+    virtual void draw_back_frame(void*, short, short);
+    virtual void draw_frame(void*, short, short);
+    virtual unsigned char update();
+    virtual void check_damage_sprites();
+    virtual void rehook();
+    virtual void save(int);
+    virtual float teleport(float, float, float);
+    virtual void new_sprite(RGE_Sprite*);
+    virtual void add_overlay_sprite(RGE_Sprite*, unsigned char);
+    virtual void remove_overlay_sprite(RGE_Sprite*);
+    virtual void change_ownership(RGE_Player*);
+    virtual void modify(float, unsigned char);
+    virtual void modify_delta(float, unsigned char);
+    virtual void modify_percent(float, unsigned char);
+    virtual void transform(RGE_Master_Static_Object*);
+    virtual void copy_obj(RGE_Master_Static_Object*);
+    virtual void set_object_state(unsigned char);
+    virtual void remove_visible_resource();
+    virtual void create_doppleganger_when_dying();
+    virtual void destroy_obj();
+    virtual void die_die_die();
+    virtual void damage(int, RGE_Armor_Weapon_Info*, float, RGE_Player*,
+                        RGE_Static_Object*);
+    virtual float calculateDamage(int, RGE_Armor_Weapon_Info*, float,
+                                  RGE_Player*, RGE_Static_Object*);
+    virtual void rotate(long);
+    virtual unsigned char can_attack();
+    virtual void set_attribute(short, float);
+    virtual void set_attribute_amount(float, unsigned char, unsigned char);
+    virtual int heal(int, int);
+    virtual unsigned char heal(float);
+    virtual int canRepair();
+    virtual void notify_of_relation(long, unsigned char);
+    virtual void do_command(RGE_Static_Object*, float, float, float);
+    virtual void move_to(RGE_Static_Object*, float, float, float);
+    virtual void work(RGE_Static_Object*, float, float, float);
+    virtual void stop();
+    virtual void set_attack(RGE_Static_Object*);
+    virtual void play_command_sound();
+    virtual void play_move_sound();
+    virtual void new_angle(float);
+    virtual RGE_Static_Object* spawn_death_obj();
+    virtual RGE_Master_Static_Object* get_command_master(RGE_Static_Object*,
+                                                         float, float, float);
+    virtual void set_being_worked_on(RGE_Action_Object*, short, unsigned char);
+    virtual void release_being_worked_on(RGE_Static_Object*);
+    virtual unsigned char is_moving();
+    virtual RGE_Static_Object* get_target_obj();
+    virtual void enter_obj(RGE_Static_Object*);
+    virtual void exit_obj();
+    virtual int explore_terrain(RGE_Player*, unsigned char, int);
+    virtual void unexplore_terrain(RGE_Player*, unsigned char, int);
+    virtual LOSTBL* get_los_table();
+    virtual int inAttackRange(RGE_Static_Object*);
+    virtual unsigned char underAttack();
+    virtual void setUnderAttack(unsigned char);
+    virtual float calc_attack_modifier(RGE_Static_Object*);
+    virtual float getSpeed();
+    virtual float getAngle();
+    virtual float maximumSpeed();
+    virtual float rateOfFire();
+    virtual float damageCapability(RGE_Static_Object*);
+    virtual float damageCapability();
+    virtual float weaponRange();
+    virtual float minimumWeaponRange();
+    virtual int passableTile(float, float, int);
+    virtual unsigned char facetToNextWaypoint();
+    virtual int currentTargetID();
+    virtual float currentTargetX();
+    virtual float currentTargetY();
+    virtual float currentTargetZ();
+    virtual void setWaitingToMove(unsigned char);
+    virtual unsigned char waitingToMove();
+    virtual unsigned char actionState();
+    virtual unsigned char keepGatheringWhenObjectIsOut(int);
+    virtual unsigned char produceWhenKilledBy(int);
+    virtual unsigned char useSameZoneDropsite();
 
     long id;
     RGE_Master_Static_Object* master_obj;
     RGE_Player* owner;
-    void* sprite;
-    void* old_sprite;
-    void* sprite_list;
-    void* tile;
+    RGE_Sprite* sprite;
+    RGE_Sprite* old_sprite;
+    RGE_Active_Sprite_List* sprite_list;
+    RGE_Tile* tile;
     RGE_Static_Object* inside_obj;
-    void* objects;
+    RGE_Object_List* objects;
     short screen_x_offset;
     short screen_y_offset;
     short shadow_x_offset;
@@ -235,10 +305,10 @@ public:
     short attribute_type_held;
     uchar type;
     uchar worker_num;
-    void* player_object_node;
+    RGE_Object_Node* player_object_node;
     ManagedArray<int> pathingGroupMembers;
     ManagedArray<int> groupMembers;
-    void* unitAIValue;
+    UnitAIModule* unitAIValue;
     int groupCommanderValue;
     int zoneMapIndex;
     float groupRangeValue;
@@ -320,7 +390,7 @@ struct RGE_Border_Set {
 
 class RGE_Map {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Map();
     RGE_Tile* map;
     union {
         int width;
@@ -339,7 +409,7 @@ public:
 
 class RGE_Game_World {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Game_World();
     uchar pad_04[0x50];
     float** terrains;
 
@@ -438,7 +508,9 @@ public:
     void incrementCanPaths();
     int passable(RGE_Moving_Object* object, float x, float y, int checkObjects);
     long checksum(void);
+protected:
     void printState(RGE_Moving_Object* obj);
+public:
     int copyPath(int step);
     void copyUnobstructibles(ManagedArray<int>& out);
     void printToFile(char* filename);

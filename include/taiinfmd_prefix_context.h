@@ -7,6 +7,9 @@
 typedef unsigned char uchar;
 typedef unsigned long ulong;
 
+extern "C" void* __cdecl operator_new(unsigned int size);
+extern "C" void __cdecl operator_delete(void* ptr);
+
 void* operator new(unsigned int size);
 void operator delete(void* ptr);
 
@@ -75,37 +78,13 @@ public:
         return this->value[index];
     }
 
-    int contains(const T& item) const;
+    int contains(const T& item);
     void resize(int newSize);
-
-    int add(T val) {
-        int i;
-        for (i = 0; i < this->numberValue; i++) {
-            if (i >= this->maximumSizeValue)
-                break;
-            if (this->value[i] == val)
-                return 0;
-        }
-        if (this->numberValue > this->maximumSizeValue - 1) {
-            int newSize = this->numberValue + 1;
-            T* newValue = (T*)operator new(newSize * sizeof(T));
-            if (newValue != 0) {
-                int j;
-                for (j = 0; j < this->maximumSizeValue; j++) {
-                    if (j >= newSize)
-                        break;
-                    newValue[j] = this->value[j];
-                }
-                operator delete(this->value);
-                this->value = newValue;
-                this->maximumSizeValue = newSize;
-            }
-        }
-        this->value[this->numberValue] = val;
-        this->numberValue++;
-        return 1;
-    }
+    int add(T val);
 };
+
+#include "utmarray.h"
+
 typedef ManagedArray<int> ManagedArray_int;
 
 class InfluenceMap {
@@ -278,25 +257,50 @@ public:
 class RGE_Master_Static_Object {
 public:
     virtual ~RGE_Master_Static_Object();
-    char gap_04[0x0C];
+    unsigned char master_type;
+    char* nameValue;
+    short string_id;
+    short string_id2;
     union {
         short id;
         short master_id;
     };
-    short gap_12;
+    short copy_id;
     union {
         short object_group;
         short objectGroup;
         short type;
         short unitType;
     };
-    char gap_16[0x4f];
-    unsigned char fogFlag;
+    void* sprite;
+    void* death_sprite;
+    void* undead_sprite;
+    unsigned char undead_flag;
+    short hp;
     float los;
-    int terrain;
-    float radiusValue;
+    unsigned char obj_max;
     float radius_x;
     float radius_y;
+    float radius_z;
+    void* selected_sound;
+    void* created_sound;
+    void* death_sound;
+    short death_spawn_obj_id;
+    unsigned char sort_number;
+    unsigned char can_be_built_on;
+    short button_pict;
+    unsigned char hide_in_scenario_editor;
+    short portrait_pict;
+    unsigned char available;
+    short tile_req1;
+    short tile_req2;
+    short center_tile_req1;
+    short center_tile_req2;
+    float construction_radius_x;
+    float construction_radius_y;
+    unsigned char elevation_flag;
+    unsigned char fogFlag;
+    short terrain;
     int check_placement(int x, int y, int mode);
     unsigned char check_placement(RGE_Player* player, float x, float y,
                                   int* result, unsigned char p5,
@@ -315,19 +319,34 @@ struct TaiSubObject {
 
 class RGE_Zone_Map {
 public:
-    unsigned char get_zone_info(int x, int y);
-    int numberTilesInZone(int zone);
+    unsigned char get_zone_info(long x, long y);
+    int numberTilesInZone(unsigned char zone);
 };
 
-class RGE_Zone_Map_Collection {
+class RGE_Zone_Map_List {
 public:
-    RGE_Zone_Map* get_zone_map(void* terrain, int terrainSize, int zoneIndex);
+    RGE_Zone_Map* get_zone_map(float* terrain, long terrainSize,
+                               int& zoneIndex);
 };
+
+class RGE_Game_World;
+class RGE_Map;
 
 class RGE_Visible_Map {
 public:
-    int widthValue;
-    int heightValue;
+    unsigned char** map_offsets;
+    RGE_Game_World* world;
+    RGE_Player* player;
+    RGE_Map* map;
+    unsigned char* visible_map;
+    union {
+        int widthValue;
+        int width;
+    };
+    union {
+        int heightValue;
+        int height;
+    };
     unsigned char get_visible(int x, int y);
 };
 
@@ -378,7 +397,8 @@ public:
         RGE_Tile** mapRowOffset;
         RGE_Tile** map_row_offset;
     };
-    RGE_Zone_Map_Collection* map_zones;
+    char map_zones_gap[0x34];
+    RGE_Zone_Map_List* map_zones;
     unsigned char get_terrain(short x, short y);
 };
 
@@ -506,7 +526,21 @@ class AIPlayBook;
 class RGE_Player {
 public:
     virtual ~RGE_Player();
-    char gap_04[0x34];
+    int computerPlayerValue;
+    int pathingAttemptCapValue;
+    int pathingDelayCapValue;
+    int currentUpdatePathingAttemptsValue;
+    long checksum;
+    long position_checksum;
+    long action_checksum;
+    unsigned char checksum_created_this_update;
+    unsigned char _pad_21;
+    short master_object_num;
+    RGE_Master_Static_Object** master_objects;
+    void* objects;
+    void* sleeping_objects;
+    void* doppleganger_objects;
+    void* victory_conditions;
     union {
         RGE_Visible_Map* visible;
         RGE_Visible_Map* visMap;
@@ -516,7 +550,6 @@ public:
     struct MasterObjectInfo {
         int terrain;
     };
-    RGE_Master_Static_Object** master_objects;
     char gap_40[0x0A];
     short id;
     int civ_id;
@@ -536,23 +569,35 @@ public:
 class RGE_Game_World {
 public:
     virtual ~RGE_Game_World();
-    char gap_04[0x24];
+    unsigned int world_time;
+    unsigned int old_world_time;
+    unsigned int world_time_delta;
+    float timer;
+    unsigned int old_time;
+    float game_speed;
+    unsigned char temp_pause;
+    unsigned char game_state;
+    unsigned char game_end_condition;
+    unsigned char _pad_1F;
+    int sound_update_index;
+    int map_gap;
     RGE_Map* map;
-    char gap_2c[0x5c];
-    void** objectsValue;
-    int numberObjectsValue;
-    int maxNumberObjectsValue;
-    void** negativeObjectsValue;
-    int numberNegativeObjectsValue;
-    int maxNumberNegativeObjectsValue;
+    short sound_num;
+    void* sounds;
+    short sprite_num;
+    void* sprites;
+    short player_num;
+    RGE_Player** players;
+    short master_player_num;
+    void* master_players;
+    void* effects;
+    short terrain_num;
+    short terrain_size;
+    float** terrains;
+    AIPlayBook* playbook;
     unsigned char controllingComputerPlayer;
     int playerNumber;
-    int player_num;
-    RGE_Player** players;
     unsigned int availableComputerPlayerUpdateTime;
-    void** terrains;
-    int terrain_size;
-    AIPlayBook* playbook;
     RGE_Static_Object* object(int index);
     RGE_Static_Object* object(int p1, int p2, int p3, int p4, int p5,
                               int p6, int p7, int p8, int p9, int p10);
@@ -649,14 +694,10 @@ struct AttackMapStruct {
 
 class MainDecisionAIModule;
 
-class BuildItem {
+class BaseItem {
 public:
-    virtual ~BuildItem();
+    virtual ~BaseItem();
     int typeID() const;
-    int uniqueID();
-    void setTypeID(int value);
-    float x() const;
-    float y() const;
     float xSize() const;
     float ySize() const;
     float zSize() const;
@@ -674,11 +715,32 @@ public:
     int skipValue;
 };
 
-class ConstructionItem : public BuildItem {
+class BuildItem : public BaseItem {
+public:
+    virtual ~BuildItem();
+    BuildItem* next;
+    BuildItem* prev;
+    int buildCategoryValue;
+    int numberValue;
+    int priorityValue;
+    int progressValue;
+    int builtValue;
+    int buildAttemptsValue;
+    int buildFromValue;
+    int terrainSetValue;
+    int terrainAdjacencyValue[2];
+    int placeOnElevationValue;
+    int numberBuildsValue;
+    int buildCapValue;
+    int skipCyclesValue;
+    unsigned char permanentSkipValue;
+};
+
+class ConstructionItem : public BaseItem {
 public:
     virtual ~ConstructionItem();
     ConstructionItem(float p1, float p2, float p3, float p4,
-                     float p5, float p6, int p7, const char* p8);
+                     float p5, float p6, int p7, char* p8);
     ConstructionItem(ConstructionItem* item);
     ConstructionItem* next;
     ConstructionItem* prev;
@@ -699,7 +761,7 @@ public:
     int unit(int index);
 };
 
-class TribeConstructionAIModule {
+class ConstructionAIModule {
 public:
     ConstructionItem* randomLot(float x, float y);
 };
@@ -730,12 +792,14 @@ public:
     virtual ~TribeMainDecisionAIModule();
     char gap_04[0xEC];
     RGE_Player* player;
-    char gap_F4[0x11378];
+    char gap_F4[0x5D0];
+    ConstructionAIModule constructionAIAt6C4;
+    char gap_6C5[0x10DA7];
     TribeTacticalAIModule tacticalAI;
     BuildAIModule buildAI;
-    char gap_1146D[0x110FF];
+    char gap_1146D[0x10FB];
     RGE_Player* aiPlayer;
-    TribeConstructionAIModule constructionAI;
+    ConstructionAIModule constructionAI;
     InformationAIModule informationAI;
     RGE_Player* costTableOwner;
     RGE_Static_Object* object(int id);
@@ -824,15 +888,8 @@ public:
         int field_204;
         int f204;
     };
-    union {
-        char learnFileName[256];
-        char name208[256];
-    };
-    union {
-        unsigned char fullyExploredZoneValue[255];
-        char buf308[256];
-    };
-    unsigned char _pad_407[1];
+    char learnFileName[256];
+    unsigned char fullyExploredZoneValue[255];
     union {
         QuadrantLog quadrantLog[4][4];
         char buf408[0xc0];
@@ -885,7 +942,7 @@ public:
     virtual ~TribeInformationAIModule();
     TribeInformationAIModule(void* param1, int param2);
     int initialize();
-    int update(int param1);
+    virtual int update(int param1);
     int save(int handle);
     void setMainDecisionAI(TribeMainDecisionAIModule* value);
     int closestUnexploredTile(int objectId, float x, float y,
@@ -939,7 +996,12 @@ public:
                                          int& playNumber, int* outputUnits,
                                          int& outputCount, int& outputUnit);
     ObjectMemory* objectToAttack(int player, int siegeWeapons, int boats,
+                                 int objectNumber, int& output);
+    ObjectMemory* objectToAttack(int player, int siegeWeapons, int boats,
                                  int objectNumber, int* output);
+    ObjectMemory* objectToAttackByGroup(int owner, TacticalAIGroup* group,
+                                        AttackState& state,
+                                        unsigned long currentTime);
     ObjectMemory* objectToAttackByGroup(int owner, TacticalAIGroup* group,
                                         AttackState* state,
                                         unsigned long currentTime);
@@ -964,6 +1026,7 @@ public:
     ObjectMemory findObjectMemoryLimits(int owner, int objectID, int* c1,
                                         int* c2);
     int isNextTo(XYPoint* p1, XYPoint* p2, int mode);
+    int isNextTo(XYPoint& p1, XYPoint& p2, int mode);
     int facetTo(XYPoint& from, XYPoint& to);
     int placementCode(int value);
     BuildingLot* availableLot(int typeID);
@@ -977,10 +1040,15 @@ public:
     void setupWalls(int param1, int param2, int param3, int param4,
                     int param5, int param6, int param7, int param8);
     int insideGate(int param1, int param2, int param3);
-    int storeAttackMemory(int p1, int p2, int p3, int p4, int p5, int p6,
-                          int p7, unsigned long p8, int p9, int p10, int p11);
-    int storeAttackMemory(int p1, int p2, int p3, int p4, int p5, int p6,
-                          int p7, unsigned long p8, int p9);
+    int storeAttackMemory(unsigned char p1, unsigned char p2,
+                          unsigned char p3, unsigned char p4,
+                          unsigned char p5, short p6, unsigned char p7,
+                          unsigned long p8, int p9);
+    int storeAttackMemory(unsigned char p1, unsigned char p2,
+                          unsigned char p3, unsigned char p4,
+                          unsigned char p5, unsigned char p6,
+                          unsigned char p7, short p8, unsigned char p9,
+                          unsigned long p10, int p11);
     int storeAttackMemory(unsigned char p1, unsigned char p2,
                           unsigned char p3, unsigned char p4,
                           unsigned char p5, unsigned char p6,
@@ -1006,6 +1074,8 @@ public:
     int resourceType(int resourceTypeIndex, int resourceId);
     int setResourceObjectValid(int resourceType, int resourceId, int valid);
     int addResourceObject(RGE_Static_Object* object);
+    float findClosestDropsite(RGE_Static_Object* object, int mode,
+                              int& dropsiteID);
     float findClosestDropsite(RGE_Static_Object* object, int mode,
                               int* dropsiteID);
     RGE_Static_Object* findClosestReturnDropsite(RGE_Static_Object* unit);
@@ -1034,7 +1104,7 @@ public:
     float timeToBeKilled(int* ids, int count, RGE_Static_Object* target);
     int numberStoragePits();
     int numberGranaries();
-    int closestDropsiteResID(int index);
+    int closestDropsiteResID(int index) const;
     int calculatePlayVariation(int value);
     int convertUnitToIntType(RGE_Static_Object* object) const;
     void loadUnitHistory();

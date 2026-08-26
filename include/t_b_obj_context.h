@@ -28,7 +28,8 @@ class TRIBE_Doppleganger_Creator;
 class TRIBE_Resource_Manager;
 class TRIBE_Owner;
 class TRIBE_Player_Tech;
-class RGE_Armor_Weapon_Info;
+// Original damage symbols use the struct tag.
+struct RGE_Armor_Weapon_Info;
 class RGE_Sound;
 class RGE_Sprite;
 class TDrawArea;
@@ -220,7 +221,7 @@ public:
     char gap_88[0xF8];
     virtual ~RGE_Moving_Object();
     void set_angle();
-    void rotate(int);
+    virtual void rotate(long);
 };
 
 class RGE_Action_Object : public RGE_Moving_Object {
@@ -502,8 +503,13 @@ public:
     TRIBE_Building_Object(TRIBE_Master_Building_Object*, RGE_Player*, float, float, float, int, int);
     TRIBE_Building_Object(TRIBE_Master_Building_Object*, RGE_Player*, float, float, float, int);
     TRIBE_Building_Object(int, RGE_Game_World*, int);
+
+// Original symbols define both overloads as protected virtual methods.
+protected:
     virtual int setup(TRIBE_Master_Building_Object*, RGE_Player*, float, float, float);
-    int setup(int, RGE_Game_World*);
+    virtual int setup(int, RGE_Game_World*);
+
+public:
     void recycle_out_of_game();
     virtual void take_building_attribute_from_owner();
     virtual void give_building_attribute_to_owner();
@@ -525,18 +531,18 @@ public:
     void cancel_object();
     void cancel_build();
     uchar build(float);
-    int work_status(short*, short*, short*, char*, short);
+    int work_status(short&, short&, short&, char*, short);
     short get_construction_progress();
     void copy_obj(RGE_Master_Static_Object*);
-    void rotate(int);
+    virtual void rotate(long);
     void damage(int, RGE_Armor_Weapon_Info*, float, RGE_Player*, RGE_Static_Object*);
     void add_to_production_queue(short, short);
     void remove_from_production_queue(short, short);
     void advance_production_queue();
     void empty_production_queue();
-    void enable_production_queue(uchar);
+    void enable_production_queue(int);
     void update_production_queue();
-    int production_queue_status(short*, short*);
+    int production_queue_status(short&, short&);
     void stop();
     void set_status(int);
     RGE_Action_List* create_action_list();

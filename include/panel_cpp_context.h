@@ -87,7 +87,7 @@ public:
     TPanel* keyboardOwner();
     TPanel* modalPanel();
     TPanel* panel(char* name);
-    int numberActivePanels();
+    int numberActivePanels() const;
     int addPanel(TPanel* panel, int make_current, int mode);
     int removePanel(char* name);
     int setCurrentPanel(char* name, int mode);

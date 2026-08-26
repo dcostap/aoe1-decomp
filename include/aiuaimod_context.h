@@ -321,6 +321,14 @@ public:
 
 };
 
+class RGE_Master_Combat_Object {
+public:
+    char gap_000[0x108];
+    short weapon_num;
+    char gap_10A[2];
+    void* weapon;
+};
+
 class Visible_Unit_Manager {
 public:
     int GetVisibleUnits(int, int, int, int, int*, int, int*);
@@ -456,7 +464,7 @@ public:
     virtual void destroy_obj();
     virtual void die_die_die();
     virtual void damage(int, void*, float, RGE_Player*, RGE_Static_Object* = 0);
-    virtual float calculateDamage(int, void*, float, RGE_Player*, RGE_Static_Object* = 0);
+    virtual float calculateDamage(int, void*, float);
     virtual void rotate(long);
     virtual unsigned char can_attack();
     virtual void set_attribute(short, float);
@@ -487,22 +495,15 @@ public:
     virtual int inAttackRange(RGE_Static_Object*);
     virtual unsigned char underAttack();
     virtual void setUnderAttack(unsigned char);
-    virtual float calc_attack_modifier(RGE_Static_Object*);
+    virtual float calc_attack_modifier(RGE_Static_Object*, RGE_Player*,
+                                       RGE_Static_Object*);
     virtual float getSpeed();
     virtual float getAngle();
     virtual float maximumSpeed();
     virtual float rateOfFire();
-    // VC5 reverses these overload entries. The no-argument method is +0x108.
     virtual float damageCapability();
     virtual float damageCapability(RGE_Static_Object*);
-#if defined(AOE1_AIUAIMOD_PROCESS_NOTIFY_CONTEXT) || defined(AOE1_AIUAIMOD_COMPLETE_TU)
     virtual float weaponRange();
-#if defined(AOE1_AIUAIMOD_COMPLETE_TU)
-    virtual float weaponRange(int);
-#endif
-#else
-    virtual float weaponRange(int);
-#endif
     virtual float minimumWeaponRange();
     virtual int passableTile(float, float, int);
     virtual unsigned char facetToNextWaypoint();
@@ -535,17 +536,9 @@ public:
     virtual int unload(int, float, float, float);
     virtual int transport(float, float, float, int);
     virtual int stopAction();
-    virtual int vpad_190();
-    // VC5 reverses these overload entries. The integer form stays at +0x194.
-    virtual int canPath(XYZPoint, float, int, float*, int, int, int);
-#if defined(AOE1_AIUAIMOD_PROCESS_NOTIFY_CONTEXT) || defined(AOE1_AIUAIMOD_COMPLETE_TU)
+    virtual int pause();
     virtual int canPath(int, float, float*, int, int, int);
-#if defined(AOE1_AIUAIMOD_COMPLETE_TU)
-    virtual int canPath(int, float);
-#endif
-#else
-    virtual int canPath(int, float);
-#endif
+    virtual int canPathPoint(XYZPoint, float, int, float*, int, int, int);
     virtual int vpad_19C();
     virtual int vpad_1A0();
     virtual int vpad_1A4();
@@ -728,11 +721,16 @@ public:
     int orderQueueSize() const;
     OrderEvent* orderQueueElement(int) const;
     void purgeOrderQueue();
+
+protected:
     int addToOrderQueue(OrderEvent*, int);
     int addToOrderQueue(int, int, int, int, float, float, float, float,
                         int, int);
     int addToNotifyQueue(NotifyEvent*);
     int addToNotifyQueue(int, int, int, long, long, long);
+    RGE_Static_Object* lookupObject(int);
+
+public:
     int currentOrder() const;
     void setCurrentOrder(int);
     int currentOrderPriority() const;
@@ -754,7 +752,6 @@ public:
     int attackingUnitID(int);
     int numberAttackingUnits() const;
     int update(unsigned long);
-    RGE_Static_Object* lookupObject(int);
     unsigned char visibleStatus(RGE_Visible_Map*, int, int);
     void removeCurrentTarget();
     void purgeNotifyQueue(unsigned long);

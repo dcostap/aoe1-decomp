@@ -331,6 +331,7 @@ public:
 
 protected:
     virtual int processNotify(NotifyEvent* event, unsigned long time);
+    virtual int processIdle(int parameter);
 };
 
 class TribePreditorUnitAIModule : public UnitAIModule {

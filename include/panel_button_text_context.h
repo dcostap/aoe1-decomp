@@ -36,11 +36,6 @@ public:
     void Unlock(char*);
 };
 
-enum FormatType {
-    FormatSingleLine = 0,
-    FormatMultiLine = 7
-};
-
 struct RGE_Font {
     void* font;
     long font_wid;
@@ -187,6 +182,10 @@ public:
 
 class TInputPanel {
 public:
+    enum FormatType {
+        FormatSingleLine = 0,
+        FormatMultiLine = 7
+    };
     virtual void vf00(); virtual void vf04(); virtual void vf08(); virtual void vf0C();
     virtual void vf10(); virtual void vf14(); virtual void vf18(); virtual void vf1C();
     virtual void vf20(); virtual void vf24(); virtual void vf28(); virtual void vf2C();
@@ -216,6 +215,10 @@ public:
 
 class TEditPanel : public TPanel {
 public:
+    enum FormatType {
+        FormatSingleLine = 0,
+        FormatMultiLine = 7
+    };
     char whole[0x16C - 0xF4];
     TEditPanel();
     virtual ~TEditPanel();
@@ -303,6 +306,7 @@ public:
     void set_state_colors(unsigned long, unsigned long);
     void set_button_pics(char*, long);
     void set_popup_info_file(char*, long);
+    virtual void draw_background(int);
 
 protected:
     virtual void set_ideal_size(long width, long height);
@@ -321,9 +325,9 @@ protected:
                             long, int, int, int);
     virtual int create_text(TPanel*, TTextPanel**, char**, long, long, long, long,
                             long, long, int, int);
-    virtual int create_input(TPanel*, TInputPanel**, char*, short, FormatType,
+    virtual int create_input(TPanel*, TInputPanel**, char*, short, TInputPanel::FormatType,
                              long, long, long, long, long);
-    virtual int create_edit(TPanel*, TEditPanel**, char*, short, int, long, long,
+    virtual int create_edit(TPanel*, TEditPanel**, char*, short, TEditPanel::FormatType, long, long,
                             long, long, long, int, int);
     virtual int create_drop_down(TPanel*, TDropDownPanel**, long, long, long, long,
                                  long, long, long);

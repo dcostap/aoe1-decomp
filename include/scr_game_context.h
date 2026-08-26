@@ -86,7 +86,7 @@ class TRIBE_Game;
 class TPanelSystem;
 class TribeSaveGameScreen;
 class TribeLoadSavedGameScreen;
-class Item_Avail;
+struct Item_Avail;
 class Trade_Avail;
 class TRIBE_Player_Tech;
 class TRIBE_Tech;
@@ -237,6 +237,10 @@ struct PanelNode {
 
 class TPanel {
 public:
+    enum RedrawMode {
+        RedrawNormal = 0
+    };
+
     virtual ~TPanel();
     virtual long setup(TDrawArea*, TPanel*, long, long, long, long,
                        unsigned char);
@@ -528,6 +532,7 @@ public:
                     int, int, int, int);
     int create_text(TPanel*, TTextPanel**, char*, int, int, int, int, int,
                     int, int, int);
+    virtual void set_focus(int);
 };
 
 class TShape {
@@ -709,6 +714,10 @@ public:
 
 class TMessagePanel : public TPanel {
 public:
+    enum MessageType {
+        MessageNormal = 0
+    };
+
     char gap_F4[0x28c];
     TMessagePanel(TFont*, int, int);
     long setup(TDrawArea*, TPanel*, int, int, int, int, int);
@@ -718,6 +727,7 @@ public:
                        long, void*, int, void*, int);
     void show_message(int, char*);
     void show_message(int, char*, int, int, int, int, int);
+    void show_message(MessageType, char*, int, int, int, int, int);
     void show_message(int, const char*);
 };
 
@@ -1033,6 +1043,7 @@ public:
     TRIBE_Player* get_player(int);
     RGE_Font* get_font(int);
     int get_paused();
+    void set_windows_mouse(int);
     void set_map_visible(int);
     void set_map_fog(int);
     void set_paused(int, int);
@@ -1111,7 +1122,7 @@ public:
     long team_score;
 };
 
-class Item_Avail {
+struct Item_Avail {
 public:
     char* name;
     union {
@@ -1473,17 +1484,25 @@ public:
     TRIBE_Screen_Game();
     virtual ~TRIBE_Screen_Game();
     void draw();
+
+protected:
     void handle_anim_pal();
     void handle_terrain_sound();
+
+public:
     long handle_size(long, long);
     void handle_game_update();
     long key_down_action(long, short, int, int, int);
     long action(TPanel*, long, unsigned long, unsigned long);
+protected:
     void do_button_action(int, int, int);
+
+public:
     void setup_buttons();
     void reset_score_display();
     void player_changed(int, int);
     void reset_clocks();
+protected:
     void command_score(int);
     void command_group_by_number(int);
     void command_select_group(int, int);
@@ -1509,37 +1528,54 @@ public:
     void command_cancel_building();
     void command_cancel();
     void command_unselect();
+
+protected:
     void object_changed();
     void age_changed();
+
+protected:
     int any_selected_have_action();
+
+public:
     void disable_unused_buttons();
+
+protected:
     char* calc_text_msg(char*, Item_Avail*, long, long);
     short calc_button_loc(unsigned char);
     void set_button(TShape*, short, short, long, long, long, long, long,
                     unsigned char*, char*, char*, int);
 
-    void set_redraw(int);
-    void set_overlapped_redraw(TPanel*, TPanel*, int);
-    void set_map_buttons_redraw(int);
+public:
+    virtual void set_redraw(TPanel::RedrawMode);
+    virtual void set_overlapped_redraw(TPanel*, TPanel*,
+                                       TPanel::RedrawMode);
+    void set_map_buttons_redraw(TPanel::RedrawMode);
     long handle_paint();
     long handle_idle();
     long wnd_proc(void*, unsigned int, unsigned int, long);
     long handle_mouse_down(unsigned char, long, long, int, int);
-    void handle_user_command(int, int);
-    void target_00497280(int, int);
+    virtual long handle_user_command(unsigned int, long);
     void handle_pause();
     void handle_resume();
     void handleChatReceived(int);
+
+protected:
     void handle_mouse_pointing_at();
+
+public:
     void display_system_message(char*);
     long char_action(long, short);
     void show_timings(char*, char*);
     void show_comm(char*, char*, char*, char*, char*, char*);
     void show_ai(char*, char*, char*, char*, char*, char*);
-    void show_message(int, char*, unsigned char, unsigned char);
+    void show_message(TMessagePanel::MessageType, char*, unsigned char,
+                      unsigned char);
     void reset_buttons();
     void game_mode_changed(int, int);
+protected:
     void command_game_speed(int);
+
+public:
     void set_info_file(char*);
     void set_info_file(char*, long);
     void set_popup_info_file(char*);
@@ -1553,6 +1589,8 @@ public:
     int bevel_color4;
     int bevel_color5;
     int bevel_color6;
+
+protected:
     void command_build();
     void command_chat();
     void command_repair();
@@ -1583,10 +1621,14 @@ public:
     void command_stand_ground();
     void command_trade_attribute(long);
     void command_quit();
+
+protected:
     void stop_sound_system();
-    int restart_sound_system();
-    void add_log(int);
-    void set_focus(int);
+    virtual int restart_sound_system();
+
+public:
+    void add_log(char*);
+    virtual void set_focus(int);
     int field_14;
     int field_18;
 };

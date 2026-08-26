@@ -763,6 +763,27 @@ public:
         SelectDestinationObject = 2,
         SelectArea = 3
     };
+    // The original helper ABI names these nested enum types.
+    enum MapType {
+        MapTypeNone = 0,
+        MapTypeBlankValue = 1,
+        MapTypeSeedValue = 2,
+        MapTypeRandomValue = 3
+    };
+    enum VictoryType {
+        VictoryTypeNone = 0,
+        VictoryTypeStandardValue = 1,
+        VictoryTypeConquestValue = 2,
+        VictoryTypeScoreValue = 3,
+        VictoryTypeTimeValue = 4,
+        VictoryTypeCustomValue = 5
+    };
+    enum PaintType {
+        PaintTypeNone = 0,
+        PaintTypeTerrainValue = 1,
+        PaintTypeElevationValue = 2,
+        PaintTypeObjectValue = 3
+    };
     class List_Info {
     public:
         char text[100];
@@ -962,19 +983,22 @@ public:
     void activate_victory_panel(int);
     int MakeFileList(TDropDownPanel*, char*, char*, unsigned char, unsigned char);
     void SavePlayerActiveStatus();
+protected:
+    // These five helpers have protected original-FPO decorated symbols.
     void set_player(short, unsigned char, unsigned char);
+    void set_map_type(MapType, int);
+    void set_mp_victory_type(VictoryType, int);
+    void set_paint_type(PaintType, int);
+    void set_unit_player(short);
+public:
     void set_scenario_mode(ScenarioMode);
     void set_scenario_mode(int);
     void set_panel_info();
     void set_string(char*, long, int);
-    void set_map_type(int, int);
-    void set_mp_victory_type(int, int);
     void set_brush_size(int);
-    void set_paint_type(int, int);
     void set_terrain(short);
     void set_elevation(short);
     void set_player_active(short, int);
-    void set_unit_player(short);
     void set_unit(short);
     void set_message_type(int, int);
     void set_paint_object_mode();

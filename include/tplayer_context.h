@@ -15,17 +15,25 @@ class RGE_Player;
 class RGE_Game_World;
 class RGE_Static_Object;
 class RGE_Master_Static_Object;
+class RGE_Master_Combat_Object;
 class RGE_Visible_Map;
 class RGE_Master_Player;
 class RGE_Object_List;
+class RGE_Effects;
+class TSound_Driver;
+class AIPlayBook;
 class RGE_Static_Object_Type;
+class RGE_Action_Object;
+class RGE_Active_Sprite_List;
+class RGE_Color_Table;
+class TDrawArea;
+struct LOSTBL;
+struct RGE_Armor_Weapon_Info;
 class TRIBE_Building_Object;
 class RGE_Sprite;
 class RGE_Sound;
-struct ObjNode;
+struct RGE_Object_Node;
 class RGE_Progress_Info { public: char gap_00[0x6C]; float field_6c; float field_70; };
-class SomeV { public: virtual void v00(); virtual void v04(); virtual void v08(); virtual void v0c(); virtual void v10(); virtual void v14(); virtual void v18(); virtual void v1c(); virtual void v20(); virtual void v24(); virtual void v28(); virtual void v2c(); };
-class SelectedObject { public: virtual void vf00(); virtual void vf04(); virtual void vf08(); virtual void vf0C(); virtual void vf10(); virtual void vf14(); virtual void vf18(); virtual void vf1C(); virtual void vf20(); virtual void vf24(); virtual void vf28(); virtual void vf2C(); virtual void vf30(); virtual void vf34(); virtual void vf38(); virtual void vf3C(); virtual void vf40(); virtual void vf44(); virtual void vf48(); virtual void vf4C(); virtual void vf50(); virtual void vf54(); virtual void vf58(); virtual void vf5C(); virtual void vf60(); virtual void vf64(); virtual void vf68(); virtual void vf6C(); virtual void vf70(); virtual void vf74(); virtual void vf78(); virtual void vf7C(); virtual void vf80(); virtual void vf84(); virtual void vf88(); virtual void vf8C(); virtual void vf90(); virtual void vf94(); virtual void vf98(); virtual void vf9C(); virtual void vfA0(); virtual void vfA4(); virtual void vfA8(); virtual void vfAC(); };
 class TRIBE_Command {
 public:
     void* command_obj;
@@ -42,9 +50,6 @@ public:
     unsigned char command_give_attribute(int, int, int, float, float);
 };
 class TRIBE_Command_Unload { public: void command_unload(RGE_Static_Object**, short, float, float); };
-class WallHelper { public: virtual void clear_wall_data(); };
-class PlayerVtbl7 { public: virtual int func1C(int); };
-class RepairVtbl { public: virtual int func2C(); virtual int funcBC(void*, int, int); };
 class PlayerCommandHolder { public: TRIBE_Command* command; };
 class RGE_World { public: TRIBE_Command* commands; };
 struct InnerType2 { char gap_00[4]; unsigned char field_04; };
@@ -74,24 +79,37 @@ public:
     unsigned char first_paid;
 };
 class ResourceItem { public: void incrementValue(int, int); };
-struct VirtualTarget { virtual void vf00()=0; virtual void vf04()=0; virtual void vf08()=0; virtual void vf0C()=0; virtual void vf10()=0; virtual void vf14()=0; virtual void vf18()=0; virtual void vfn(int,int)=0; };
 class TRIBE_Master_Fish_Object { public: TRIBE_Master_Fish_Object(int, RGE_Sprite**, RGE_Sound**, int); };
 class TRIBE_Master_Projectile_Object { public: TRIBE_Master_Projectile_Object(int, RGE_Sprite**, RGE_Sound**, int); };
 class TRIBE_Master_Tree_Object { public: TRIBE_Master_Tree_Object(int, RGE_Sprite**, RGE_Sound**, int); };
 class TCommunications_Handler { public: int IsHost(); int checkSomething(); int ComputerPlayerGameStart(); };
 class TMousePointer { public: void Poll(); };
 class TChat { public: void setInChatGroup(int, int); };
-class AI_Manager { public: void method16(void*); };
 class AI_Flags { public: char gap_00[0x1D]; unsigned char field_1D; };
 class UnitAIModule {};
 class TacticalAIGroup { public: int id(); int type(); };
 struct _iobuf;
+class AIModuleMessage;
 
 extern "C" void __cdecl logCommonHistory(void* target, const char* message);
 
 class AIModule {
 public:
     virtual ~AIModule();
+    virtual int loggingHistory();
+    virtual void setLogHistory(int);
+    virtual void toggleLogHistory();
+    virtual void setHistoryFilename(char*);
+    virtual int loggingCommonHistory();
+    virtual void setLogCommonHistory(int);
+    virtual void toggleLogCommonHistory();
+    virtual int loadState(char*);
+    virtual int saveState(char*);
+    virtual int gleanState(int);
+    virtual int processMessage(AIModuleMessage*);
+    virtual int update(int);
+    virtual void setCallbackMessage(AIModuleMessage*);
+    virtual int filterOutMessage(AIModuleMessage*);
     char gap_04[0xEC];
     void logCommonHistory(char* format, ...);
 };
@@ -99,12 +117,6 @@ public:
 class TribeBuildAIModule {
 public:
     virtual ~TribeBuildAIModule();
-    virtual void v04(); virtual void v08(); virtual void v0C();
-    virtual void v10(); virtual void v14(); virtual void v18();
-    virtual void v1C(); virtual void v20(); virtual void v24();
-    virtual void v28(); virtual void v2C(); virtual void v30();
-    virtual void v34(); virtual void v38(); virtual void v3C();
-    virtual void v40();
     virtual int load(char*, RGE_Player*);
     char* buildListName();
     int buildListLength();
@@ -120,11 +132,6 @@ public:
 class TribeConstructionAIModule {
 public:
     virtual ~TribeConstructionAIModule();
-    virtual void v04(); virtual void v08(); virtual void v0C();
-    virtual void v10(); virtual void v14(); virtual void v18();
-    virtual void v1C(); virtual void v20(); virtual void v24();
-    virtual void v28(); virtual void v2C(); virtual void v30();
-    virtual void v34(); virtual void v38(); virtual void v3C();
     virtual void load(char*, int, int, int, int, int);
     char* constructionPlanName();
     char gap_04[0x314];
@@ -214,9 +221,13 @@ public:
     virtual ~TribeMainDecisionAIModule();
     TribeMainDecisionAIModule(int, char*, void*, int);
     TribeMainDecisionAIModule(void*, int, char*, void*, char*, char*, char*);
-    virtual void update(int);
-    void method16(void*);
-    void removeObjectCallback(int);
+    virtual void setLogHistory(int);
+    virtual int update(int);
+    virtual int save(int);
+    virtual int addObject(RGE_Static_Object*);
+    virtual int removeObject(int);
+    virtual int objectGroupThatCanPerformAction(int);
+    virtual int canPerformAction(int, int);
     void tributeNotify(int,long,long);
     void updateBuildAIWithObjects();
     TribeTacticalAIModule tacticalAI;
@@ -224,7 +235,7 @@ public:
 
 class RGE_Map {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Map();
     void* tiles;
     int map_width;
     int map_height;
@@ -232,7 +243,7 @@ public:
 
 class RGE_Scenario {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Scenario();
     char gap_04[0x100C];
     char* learn_info;
 };
@@ -251,36 +262,85 @@ class ScenarioObject { public: virtual void save(int); };
 
 class RGE_Game_World {
 public:
-    void* vtable_ptr;
-    char gap_04[0x24];
+    virtual unsigned char data_load_world(void*);
+    unsigned long world_time;
+    unsigned long old_world_time;
+    unsigned long world_time_delta;
+    float timer;
+    unsigned long old_time;
+    float game_speed;
+    unsigned char temp_pause;
+    unsigned char game_state;
+    unsigned char game_end_condition;
+    unsigned char gap_1F;
+    long sound_update_index;
+    long sprite_update_index;
     RGE_Map* map;
-    char gap_2C[0x10];
+    short sound_num;
+    char gap_2E[2];
+    RGE_Sound** sounds;
+    short sprite_num;
+    char gap_36[2];
+    RGE_Sprite** sprites;
     short player_num;
-    short player_count;
     char gap_3E[2];
     RGE_Player** players;
-    char gap_44[0x18];
-    RGE_Scenario* scenario;
-    RGE_Sprite** pad_30;
-    RGE_Sound** pad_38;
+    short master_player_num;
+    char gap_46[2];
+    RGE_Master_Player** master_players;
+    RGE_Effects* effects;
+    short terrain_num;
+    short terrain_size;
+    float** terrains;
     TRIBE_Command* commands;
-    float delta_time;
-    int currentUpdateComputerPlayer;
+    RGE_Scenario* scenario;
+    short color_table_num;
+    char gap_62[2];
+    RGE_Color_Table** color_tables;
+    long next_object_id;
+    long next_reusable_object_id;
+    long scenario_object_id;
+    unsigned char scenario_object_flag;
+    char gap_75[3];
+    unsigned int random_seed;
     short curr_player;
-    float update_period;
-    char gap_60[0xA4];
+    char gap_7E[2];
+    TSound_Driver* sound_driver;
+    float world_time_delta_seconds;
+    RGE_Static_Object** objectsValue;
+    int numberObjectsValue;
+    int maxNumberObjectsValue;
+    RGE_Static_Object** negativeObjectsValue;
+    int numberNegativeObjectsValue;
+    int maxNumberNegativeObjectsValue;
+    AIPlayBook* playbook;
+    long campaign;
+    long campaign_player;
+    long campaign_scenario;
+    int player_turn;
+    unsigned long player_time_delta[9];
+    RGE_Object_List* reusable_static_objects;
+    RGE_Object_List* reusable_animated_objects;
+    RGE_Object_List* reusable_moving_objects;
+    RGE_Object_List* reusable_action_objects;
+    RGE_Object_List* reusable_combat_objects;
+    RGE_Object_List* reusable_missile_objects;
+    RGE_Object_List* reusable_doppleganger_objects;
+    unsigned long maximumComputerPlayerUpdateTime;
+    unsigned long availableComputerPlayerUpdateTime;
+    int currentUpdateComputerPlayer;
+    int difficultyLevelValue;
     void update_mutual_allies(void);
     void selectNextComputerPlayer(int);
-    virtual unsigned char data_load_world(void*);
     RGE_Static_Object* object(int);
 };
 
 class RGE_Object_List {
 public:
-    virtual void vf00();
+    virtual ~RGE_Object_List();
     RGE_Static_Object* object;
-    ObjNode* head;
-    ObjNode* list;
+    RGE_Object_Node* head;
+    RGE_Object_Node* list;
     RGE_Object_List();
     void* operator[](int);
     void load_list(int, RGE_Game_World*);
@@ -289,7 +349,7 @@ public:
 
 class TRIBE_Object_List : public RGE_Object_List {
 public:
-    virtual void vf00();
+    virtual void load(unsigned char, int, RGE_Game_World*);
 };
 
 class Visible_Resource_Manager {
@@ -301,10 +361,15 @@ public:
 class RGE_Base_Game {
 public:
     virtual ~RGE_Base_Game();
-    virtual void v04(); virtual void v08(); virtual void v0C();
-    virtual void v10(); virtual void v14(); virtual void v18();
-    virtual void v1C();
-    virtual void get_string(int, char*, int);
+    virtual int run();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual void set_prog_mode(int);
+    virtual void set_game_mode(int, int);
+    virtual void set_player(short);
+    virtual int get_error_code();
+    virtual char* get_string(int, long, char*, int);
+    virtual char* get_string(long, char*, int);
+    virtual char* get_string(long);
     int difficulty();
     uchar deathMatch();
     int fullVisibility();
@@ -319,8 +384,7 @@ public:
 struct NodeObj2 { char pad[0x14]; short id; };
 struct NodeObj { char pad0[8]; NodeObj2* type; char pad1[0x3C]; char state; };
 struct Node { NodeObj* obj; Node* next; };
-struct ObjNode { RGE_Static_Object* obj; RGE_Static_Object* object; RGE_Static_Object* node; ObjNode* next; };
-typedef ObjNode RGE_Object_Node;
+struct RGE_Object_Node { RGE_Static_Object* obj; RGE_Static_Object* object; RGE_Static_Object* node; RGE_Object_Node* next; };
 struct List { int count; Node* head; };
 struct Stats {
     float cur; char pad04[0x20]; float progress; float add; float visible;
@@ -336,6 +400,22 @@ public:
     uchar deathMatch();
     RGE_Static_Object** selected_table; int selected_count;
     RGE_Static_Object** normal_table; int normal_count;
+};
+
+class RGE_Active_Sprite_List {
+public:
+    virtual ~RGE_Active_Sprite_List();
+    virtual short frame(RGE_Sprite*);
+    virtual void update(float, float);
+    virtual void draw(short, short, short, short, short, RGE_Color_Table*, TDrawArea*);
+    virtual void normal_draw(short, short, short, RGE_Color_Table*, TDrawArea*);
+    virtual void shadow_draw(short, short, short, RGE_Color_Table*, TDrawArea*, unsigned char);
+    virtual unsigned char is_animating(RGE_Sprite*);
+    virtual void set_frame(RGE_Sprite*, short);
+    virtual unsigned char frame_passed(RGE_Sprite*, short);
+    virtual unsigned char looped(RGE_Sprite*);
+    virtual short get_facetindex(RGE_Sprite*, short);
+    virtual unsigned char load_node(int, unsigned char, RGE_Sprite**);
 };
 
 // Use the reviewed process-wide game pointer declaration.
@@ -379,14 +459,28 @@ public:
 class RGE_Master_Static_Object {
 public:
     virtual ~RGE_Master_Static_Object();
+    virtual void copy_obj(RGE_Master_Static_Object*);
+    virtual void modify(float, unsigned char);
+    virtual void modify_delta(float, unsigned char);
+    virtual void modify_percent(float, unsigned char);
+    virtual void save(int);
+    virtual RGE_Static_Object* make_new_obj(RGE_Player*, float, float, float);
+    virtual RGE_Master_Static_Object* make_new_master();
+    virtual unsigned char check_placement(RGE_Player*, float, float, int*,
+                                          unsigned char, unsigned char,
+                                          unsigned char, unsigned char,
+                                          unsigned char, unsigned char);
+    virtual unsigned char alignment(float*, float*, RGE_Game_World*, unsigned char);
+    virtual long calc_base_damage_ability(RGE_Master_Combat_Object*);
+    virtual void play_command_sound();
+    virtual void play_move_sound();
+    virtual void draw(TDrawArea*, short, short, RGE_Color_Table*);
     char gap_04[0x0C];
     short id;
     short copy_id;
     short object_group;
     unsigned char master_type;
     void make_available(char);
-    uchar check_placement(RGE_Player*, float, float, int*, uchar, uchar, uchar, uchar, uchar, uchar);
-    RGE_Static_Object* make_new_obj(RGE_Player*, float, float, float);
     unsigned char type;
     char* name;
     short pict;
@@ -402,38 +496,125 @@ public:
 class RGE_Static_Object {
 public:
     virtual ~RGE_Static_Object();
-    virtual void action_ge7();
-    virtual void action_3to6();
-    virtual void action_range(float);
-    virtual void vf43();
-    virtual void vd8(RGE_Player*, int, int);
-    virtual void vdc(RGE_Player*, int, int);
+    virtual void recycle_in_to_game(RGE_Master_Static_Object*, RGE_Player*, float, float, float);
+    virtual void recycle_out_of_game();
+    virtual void draw(TDrawArea*, short, short, RGE_Color_Table*);
+    virtual void shadow_draw(TDrawArea*, short, short, unsigned char);
+    virtual void normal_draw(TDrawArea*, short, short);
+    virtual void draw_front_frame(TDrawArea*, short, short);
+    virtual void draw_back_frame(TDrawArea*, short, short);
+    virtual void draw_frame(TDrawArea*, short, short);
+    virtual unsigned char update();
+    virtual void check_damage_sprites();
+    virtual void rehook();
+    virtual void save(int);
+    virtual float teleport(float, float, float);
+    virtual void new_sprite(RGE_Sprite*);
+    virtual void add_overlay_sprite(RGE_Sprite*, unsigned char);
+    virtual void remove_overlay_sprite(RGE_Sprite*);
+    virtual void change_ownership(RGE_Player*);
+    virtual void modify(float, unsigned char);
+    virtual void modify_delta(float, unsigned char);
+    virtual void modify_percent(float, unsigned char);
+    virtual void transform(RGE_Master_Static_Object*);
+    virtual void copy_obj(RGE_Master_Static_Object*);
+    virtual void set_object_state(unsigned char);
+    virtual void remove_visible_resource();
+    virtual void create_doppleganger_when_dying();
+    virtual void destroy_obj();
+    virtual void die_die_die();
+    virtual void damage(int, RGE_Armor_Weapon_Info*, float, RGE_Player*, RGE_Static_Object*);
+    virtual float calculateDamage(int, RGE_Armor_Weapon_Info*, float, RGE_Player*, RGE_Static_Object*);
+    virtual void rotate(long);
+    virtual unsigned char can_attack();
+    virtual void set_attribute(short, float);
+    virtual void set_attribute_amount(float, unsigned char, unsigned char);
+    virtual int heal(int, int);
+    virtual unsigned char heal(float);
+    virtual int canRepair();
+    virtual void notify_of_relation(long, unsigned char);
+    virtual void do_command(RGE_Static_Object*, float, float, float);
+    virtual void move_to(RGE_Static_Object*, float, float, float);
+    virtual void work(RGE_Static_Object*, float, float, float);
+    virtual void stop();
+    virtual void set_attack(RGE_Static_Object*);
+    virtual void play_command_sound();
+    virtual void play_move_sound();
+    virtual void new_angle(float);
+    virtual RGE_Static_Object* spawn_death_obj();
+    virtual RGE_Master_Static_Object* get_command_master(RGE_Static_Object*, float, float, float);
+    virtual void set_being_worked_on(void*, short, unsigned char);
+    virtual void release_being_worked_on(RGE_Static_Object*);
+    virtual unsigned char is_moving();
+    virtual RGE_Static_Object* get_target_obj();
+    virtual void enter_obj(RGE_Static_Object*);
+    virtual void exit_obj();
+    virtual int explore_terrain(RGE_Player*, unsigned char, int);
+    virtual void unexplore_terrain(RGE_Player*, unsigned char, int);
+    virtual LOSTBL* get_los_table();
+    virtual int inAttackRange(RGE_Static_Object*);
+    virtual unsigned char underAttack();
+    virtual void setUnderAttack(unsigned char);
+    virtual float calc_attack_modifier(RGE_Static_Object*);
+    virtual float getSpeed();
+    virtual float getAngle();
+    virtual float maximumSpeed();
+    virtual float rateOfFire();
+    virtual float damageCapability(RGE_Static_Object*);
+    virtual float damageCapability();
+    virtual float weaponRange();
+    virtual float minimumWeaponRange();
     UnitAIModule* unitAI();
     int id;
-    int obj_id;
     RGE_Master_Static_Object* master_obj;
     RGE_Player* owner;
-    char gap_10[0x34];
-    float attribute_amount_held;
+    RGE_Sprite* sprite;
+    RGE_Sprite* old_sprite;
+    RGE_Active_Sprite_List* sprite_list;
+    RGE_Object_List* objects;
+    short screen_x_offset;
+    short screen_y_offset;
+    short shadow_x_offset;
+    short shadow_y_offset;
+    char gap_30[4];
     float hp;
-    RGE_Static_Object_Type* type;
-    unsigned char field_35;
-    unsigned char object_state;
-    void* group;
-    int field_10;
-    void* field_18;
+    unsigned char curr_damage_percent;
+    unsigned char facet;
+    unsigned char selected;
+    unsigned char selected_group;
     float world_x;
     float world_y;
     float world_z;
-    float range;
+    float attribute_amount_held;
+    unsigned char object_state;
+    unsigned char sleep_flag;
+    unsigned char dopple_flag;
+    unsigned char goto_sleep_flag;
+    short attribute_type_held;
+    unsigned char type;
+    unsigned char worker_num;
+    RGE_Object_Node* player_object_node;
+    char gap_54[0x20];
+    UnitAIModule* unitAIValue;
+    int groupCommanderValue;
+    int zoneMapIndex;
+    float groupRangeValue;
+    unsigned char inObstructionMapValue;
+    unsigned char lastInObstructionMapValue;
+    unsigned char underAttackValue;
+    char gap_87;
     RGE_Master_Static_Object* special_master;
     int special_owner;
 };
 
 class RGE_Static_Object_Type {
 public:
-    virtual void v00(); virtual void v04(); virtual void v08();
-    virtual void v0C(); virtual void v10(); virtual void v14();
+    virtual void load(int);
+    virtual void save(int);
+    virtual void setup();
+    virtual void clear();
+    virtual void reset();
+    virtual void initialize();
     virtual RGE_Static_Object* make_scenario_obj(RGE_Player*, float, float, float);
     unsigned char object_group;
 };
@@ -563,7 +744,7 @@ public:
     RGE_Player(RGE_Game_World*, RGE_Master_Player*, unsigned char, char*, unsigned char, unsigned char);
     virtual void set_game_status(uchar);
     virtual void update();
-    virtual void* addObject(void*, int, int);
+    virtual RGE_Object_Node* addObject(RGE_Static_Object*, int, int);
     virtual void update_dopplegangers();
     virtual void scenario_save(int);
     virtual void do_resign(int);
@@ -578,7 +759,7 @@ public:
     virtual void loadAIInformation(char*, char*, char*, int, int);
     virtual void add_attribute_num(short, float, unsigned char);
     void save(int);
-    void removeObject(RGE_Static_Object*, int, int, void*);
+    virtual void removeObject(RGE_Static_Object*, int, int, RGE_Object_Node*);
     virtual void load_master_object(int, short, unsigned char, RGE_Sprite**, RGE_Sound**);
     virtual void load(int);
     uchar get_selected_objects_to_command(void**, short*, int, int, int, int);
@@ -641,7 +822,7 @@ class TRIBE_Player : public RGE_Player {
 public:
     virtual ~TRIBE_Player();
     char* aiStatus(int);
-    void __cdecl logMessage(char*, ...);
+    virtual void __cdecl logMessage(char*, ...);
     char aiStatusInformationValue5[0x100];
     char aiStatusInformationValue6[0x100];
     char aiStatusInformationValue[0x100];
@@ -711,7 +892,7 @@ public:
     short destructable_type;
 
     void interface_tech_avail(Item_Avail**, short*, short);
-    RGE_Static_Object* make_scenario_obj(float, float, float, short, unsigned char, float);
+    virtual RGE_Static_Object* make_scenario_obj(float, float, float, short, unsigned char, float);
     uchar check_obj_cost(short, short*, float, int);
     void obj_cost(short, char**, short*, short*, short*, short*, short*, short*, float);
     void obj_cost(short, char**, short&, short&, short&, short&, short&, short&, float);
@@ -730,7 +911,7 @@ public:
     unsigned char command_make_unload(float, float);
     unsigned char pay_obj_cost(short, float, int);
     void objectCost(int, int, ResourceItem*, int);
-    int objectCostByType(int);
+    virtual int objectCostByType(int);
     int researchAvailable(int);
     void researchState(int);
     Inner_00514F90* inner_;
@@ -743,10 +924,10 @@ public:
     void add_population_entry(void);
     TechIdSource* source;
     void rev_tech(long);
-    void notifyAI(int,int,int,long,long,long);
+    virtual void notifyAI(int,int,int,long,long,long);
     int intelligentCivSelection(int, int, int);
     int get_mouse_pointer_action_vars(int, int&, int&);
-    unsigned char command_give_attribute(int, int, float, float);
+    virtual unsigned char command_give_attribute(int, int, float, float);
     void interface_item_avail(Item_Avail**, short*, short);
     RGE_Static_Object* make_new_object(long, float, float, float, int);
     virtual void random_start();
@@ -759,15 +940,15 @@ public:
     virtual void new_victory();
     virtual void add_attribute_num(short, float, unsigned char);
     virtual void analyize_selected_objects();
-    void removeObject(RGE_Static_Object*, int, int, void*);
+    virtual void removeObject(RGE_Static_Object*, int, int, RGE_Object_Node*);
     virtual void changeToHumanPlayer();
     virtual void changeToComputerPlayer();
     virtual void update();
-    void* addObject(void*, int, int);
-    void buildObject(int, int, float, float, int);
-    void cancelBuild(int, int, int, float, float, int, int);
-    void taskTrader(int, int, int, float, float);
-    void taskResourceGatherer(int, int, int, float, float);
+    virtual RGE_Object_Node* addObject(RGE_Static_Object*, int, int);
+    virtual void buildObject(int, int, float, float, int);
+    virtual void cancelBuild(int, int, int, float, float, int, int);
+    virtual void taskTrader(int, int, int, float, float);
+    virtual void taskResourceGatherer(int, int, int, float, float);
     void setDiplomaticStance(int, int);
     virtual void update_dopplegangers();
     virtual void scenario_save(int);
@@ -797,7 +978,6 @@ public:
 
 class TRIBE_Gaia : public TRIBE_Player {
 public:
-    void* vtable;
     unsigned char field_48;
     int update_time; int update_nature; int last_count; int animal_max;
     int field_848; int field_84C; int field_850; int field_854;
@@ -806,7 +986,7 @@ public:
     TRIBE_Gaia(TRIBE_World*, RGE_Master_Player*, unsigned char, char*, unsigned char);
     virtual ~TRIBE_Gaia();
     void random_start();
-    void save(int);
+    virtual void save(int);
     void update();
     void load_master_object(int, short, unsigned char, RGE_Sprite**, RGE_Sound**);
     void scenario_postload(int, long*, float);

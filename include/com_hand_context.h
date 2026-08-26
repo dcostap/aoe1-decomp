@@ -13,6 +13,7 @@ struct GUID_LOCAL;
 struct _GUID;
 struct DPSESSIONDESC2;
 struct IDirectPlay2;
+struct IDirectPlay3;
 #endif
 
 // Canonical Com_hand.cpp context for six grouped owners.
@@ -30,8 +31,7 @@ class RGE_Communications_Addresses;
 class RGE_TimeSinceLastCall;
 class RGE_Prog_Info;
 
-typedef int COMMSTATUS;
-enum {
+enum COMMSTATUS {
     UNINITIALIZED = 0,
     INITIALIZED = 1,
     SINGLE_PLAYER = 2,
@@ -565,8 +565,9 @@ public:
     void ResetLastCommunicationTimes();
 
     void DestroyMultiplayerGame();
-    long CloseSession();
+protected:
     long ReleaseComm();
+public:
     void FreeOptions();
     char* GetCommInfo(unsigned char index);
     void ReceiveGameMessages();
@@ -583,6 +584,7 @@ public:
     int IsPlayerComputer(unsigned int player);
     void target_func(int p0, int p1);
 protected:
+    long CloseSession();
     long CommOut(unsigned long to, unsigned char type, void* data,
                  int length, unsigned char flags);
     void KillAnyMissingPlayers();
@@ -603,29 +605,39 @@ public:
     int NewCommand(void* command, int size, int ordered);
     int DoCycle(unsigned long param_1);
     // Module-local declarations for the complete PDB method sequence.
-    char* WaitingOnNamedInfo(int playerIndex);
+    char* WaitingOnNamedInfo(unsigned int playerIndex);
     char* WaitingOnInfo(unsigned int param_1);
     void ShowSyncChatMsgs(int param);
     void SetStepMode(int v);
     void SetSpeedControl(int param);
+protected:
     int CalculatePlayerRange(void);
+public:
     void Step(int amount);
     void* get_command(void);
     unsigned char new_command(void* command, int size);
     void LastWorldRandom(int param);
-    int HasKicked(int idx);
+    int HasKicked(unsigned int idx);
+protected:
     long SendPlayerName();
     void LogRXMsg(unsigned int param_1, unsigned int param_2, unsigned long param_3, unsigned char param_4, unsigned char param_5);
     int TXPing(unsigned int param_1);
+public:
     int TXDebugPing(void);
     long FastSend(unsigned long to, void* data, unsigned long size, int param_4, int param_5);
     void NotifyWindow(int p);
     int EvaluatePlayerMessage(unsigned long a1, unsigned int player, unsigned long a3, unsigned char opcode, unsigned char p5, char* data, unsigned int p7, unsigned long p8, unsigned long p9);
-    void SetPlayerStopTurn(int i, int v);
+protected:
+    void SetPlayerStopTurn(unsigned int i, unsigned long v);
+public:
     void ReleaseSettings();
     long SendSharedData(int force);
+protected:
     int TEST();
+public:
+protected:
     void SetSelfPlayer();
+public:
     void SendGroupChatMsg(char* param_1);
     void SendChatMsg(unsigned int player, unsigned int to, const char* text);
     long TXChat(unsigned int player, unsigned char* destMap, char* text);
@@ -636,10 +648,12 @@ public:
     unsigned long HiTurnAcknowledged();
     long SendChecksumMessage(unsigned long param_1, unsigned int param_2, long param_3, long param_4, long param_5, long param_6, long param_7);
     uint ExecuteIncoming();
+protected:
     void ClearRXForPlayer(unsigned int player);
+    void ClearRXTXForPlayer(unsigned int player);
+public:
     void ClearTXForPlayer(unsigned int player);
     int CountWaitingMessages();
-    void ClearRXTXForPlayer(unsigned int player);
     int StoreIncoming(uint SerialNumber, char* InBuff, uint Length, ulong dcoFromID, ulong dcoReceiveID);
     int StoreForResend(unsigned int param_1, char* param_2, unsigned int param_3, unsigned int* param_4);
     int TXAcknowledgeMessage(uint param_1, uint param_2);
@@ -652,56 +666,70 @@ public:
     COMMSTATUS GetCommunicationsStatus();
     COMMSTATUS UnlinkCurrentLevel();
     COMMSTATUS UnlinkToLevel(COMMSTATUS param_1);
-    int AnalyzeCommunicationsStatus(void);
+    COMMSTATUS AnalyzeCommunicationsStatus(void);
     void DropAllHostedPlayers(void);
+protected:
     void LocalResumeGame(unsigned int player);
     void LocalPauseGame(unsigned int player);
+public:
     void SendPauseGame(int param_1);
     int TogglePauseGame();
     void RequestPauseGame(int);
     void RequestResumeGame(int);
     void SetRandomSeed(int seed);
-    unsigned long GetRandomSeed();
+    unsigned int GetRandomSeed();
     int WhoAmI();
     int IsHost(void);
-    int GetCommStateStr();
+    char* GetCommStateStr();
     char* GetReadyPlayerStr();
-    void SetPlayerHumanity(unsigned int player, int humanity);
+    void SetPlayerHumanity(unsigned int player, PLAYERHUMANITY humanity);
     int GetActivePlayerCount();
     void UpdatePlayerInformation(unsigned long player_id, char* name, char* formal_name);
     int LaunchLobbyGame();
     void SetMyPlayerName(char* name);
     void SetPlayerName(unsigned int player, char* name);
-    void SetWindowHandle(int v);
+    void* SetWindowHandle(void* v);
+protected:
     long CreateDirectPlayConversation();
+public:
     int OpenMultiplayerConnection();
     int CreateMultiplayerGame(void);
+protected:
     void PackPlayersDown();
+public:
+protected:
     int AddSelfPlayer();
+public:
     int JoinMultiplayerGame(GUID_LOCAL* guid);
     void LaunchMultiplayerGame();
     long GetMyMultiPlayerCaps();
     void SetApplicationGUID(_GUID guid);
-    int GetDPInterface();
+    IDirectPlay3* GetDPInterface();
     void SetServiceGUID(_GUID guid);
     void SetSessionGUID(_GUID guid);
     void UpdatePlayer(unsigned int player, int do_update);
     int SetMyReadiness(int ready, ulong user1, ulong user2, ulong user3, ulong user4, ulong user5, ulong user6, ulong user7);
     int GetClientReadiness(unsigned int index, int* out0, unsigned long* out1, unsigned long* out2, unsigned long* out3, unsigned long* out4, unsigned long* out5, unsigned long* out6, unsigned long* out7);
     int AllPlayersReady();
+protected:
     long DPlayGetSessionDesc();
     HRESULT CommGetCaps();
     long DestroyMyPlayer();
+public:
     int SetMyGameOptions(char* param_1, unsigned long param_2);
     void* GetMyGameOptions(unsigned long* param);
-    void SetHostPlayerNumber(int v);
-    int GetHostPlayerNumber();
+protected:
+    void SetHostPlayerNumber(unsigned int v);
+public:
+    unsigned int GetHostPlayerNumber();
     void DebugSessionInformation(DPSESSIONDESC2* desc);
     void DebugSessionInformation(void* desc);
+protected:
     long EnableNewPlayers(IDirectPlay2* dp, int enable);
+public:
     long EnableNewPlayers(int dp, int enable);
-    void OutOfSync(int a, int b);
-    int SendZoneMessage(const char* msg, unsigned long param_2);
+    void OutOfSync(int a, unsigned long b);
+    int SendZoneMessage(char* msg, unsigned long param_2);
     void ForcePlayerDestroyAndCreate();
     void AddPlayer(long a, long b, char* c, char* d);
     void sub_00429F80();

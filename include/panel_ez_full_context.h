@@ -78,6 +78,13 @@ public:
 
 class TPanel {
 public:
+    // BINARY NOTE: Panel_ez.cpp uses the period TPanel virtual surface.
+    // Keep set_redraw at vtable slot 0x20 for derived panel calls.
+    enum RedrawMode {
+        RedrawNone = 0,
+        RedrawNow = 1,
+        RedrawLater = 2
+    };
     virtual ~TPanel();
     TPanel(char* name);
     TPanel();
@@ -140,16 +147,63 @@ public:
     unsigned char clip_to_parent;
     unsigned char draw_rect2_flag;
     unsigned char need_restore;
-    long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char);
-    void set_positioning(int, long, long, long, long, long, long, long, long,
-                         TPanel*, TPanel*, TPanel*, TPanel*);
-    void set_rect(long, long, long, long);
-    char* panelName();
-    void draw_rect2(unsigned char);
-    void draw_setup(int);
-    void draw_finish();
+    virtual long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char);
+    virtual void set_rect(tagRECT*);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_color(unsigned char);
+    virtual void set_active(int);
+    virtual void set_positioning(int, long, long, long, long, long, long, long, long,
+                                 TPanel*, TPanel*, TPanel*, TPanel*);
+    virtual void set_fixed_position(long, long, long, long);
+    virtual void set_redraw(RedrawMode);
+    virtual void set_overlapped_redraw(TPanel*, TPanel*, RedrawMode);
+    virtual void draw_setup(int);
+    virtual void draw_finish();
+    virtual void draw();
+    virtual void draw_rect(tagRECT*);
+    virtual void draw_offset(long, long, tagRECT*);
+    virtual void draw_rect2(tagRECT*);
+    virtual void draw_offset2(long, long, tagRECT*);
+    virtual void paint();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual long handle_idle();
+    virtual long handle_size(long, long);
+    virtual long handle_paint();
+    virtual long handle_key_down(long, short, int, int, int);
+    virtual long handle_char(long, short);
+    virtual long handle_command(unsigned int, long);
+    virtual long handle_user_command(unsigned int, long);
+    virtual long handle_timer_command(unsigned int, long);
+    virtual long handle_scroll(long, long);
     virtual long handle_mouse_down(unsigned char, long, long, int, int);
-    void set_focus(int);
+    virtual long handle_mouse_move(long, long, int, int);
+    virtual long handle_mouse_up(unsigned char, long, long, int, int);
+    virtual long handle_mouse_dbl_click(unsigned char, long, long, int, int);
+    virtual long mouse_move_action(long, long, int, int);
+    virtual long mouse_left_down_action(long, long, int, int);
+    virtual long mouse_left_hold_action(long, long, int, int);
+    virtual long mouse_left_move_action(long, long, int, int);
+    virtual long mouse_left_up_action(long, long, int, int);
+    virtual long mouse_left_dbl_click_action(long, long, int, int);
+    virtual long mouse_right_down_action(long, long, int, int);
+    virtual long mouse_right_hold_action(long, long, int, int);
+    virtual long mouse_right_move_action(long, long, int, int);
+    virtual long mouse_right_up_action(long, long, int, int);
+    virtual long mouse_right_dbl_click_action(long, long, int, int);
+    virtual long key_down_action(long, short, int, int, int);
+    virtual long char_action(long, short);
+    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    virtual void get_true_render_rect(tagRECT*);
+    virtual int is_inside(long, long);
+    virtual void set_focus(int);
+    virtual void set_tab_order(TPanel*, TPanel*);
+    virtual void set_tab_order(TPanel**, short);
+    virtual unsigned char get_help_info(char**, long*, long, long);
+    virtual void stop_sound_system();
+    virtual int restart_sound_system();
+    virtual void take_snapshot();
+    virtual void handle_reactivate();
+    char* panelName();
 };
 
 class RGE_Base_Game {
@@ -360,6 +414,10 @@ public:
 
 class TInputPanel {
 public:
+    enum FormatType {
+        FormatSingleLine = 0,
+        FormatMultiLine = 7
+    };
     virtual ~TInputPanel();
     virtual void setup_panel(); virtual void set_rect_by_rect_panel();
     virtual void set_rect_by_bounds_panel(); virtual void set_color_panel();
@@ -404,6 +462,10 @@ public:
 
 class TEditPanel : public TPanel {
 public:
+    enum FormatType {
+        FormatSingleLine = 0,
+        FormatMultiLine = 7
+    };
     char whole[0x16C - 0xF4];
     TEditPanel();
     virtual ~TEditPanel();
@@ -491,21 +553,27 @@ public:
     long saved_mouse_mode;
 
     long setup(TDrawArea*, TPanel*, char*, long, int, long, long, long, long, int);
+protected:
     void init_vars();
+
+public:
     void prepare_for_close();
     int get_string(long, char*, long);
     char* get_string(long);
-    int action(TPanel*, long, long, long);
+    virtual long action(TPanel*, long, unsigned long, unsigned long);
     int base_action(TPanel*, long, long, long);
     void set_system_colors();
-    void popupOKDialog(int, char*, int, int);
+    void popupOKDialog(long, char*, int, int);
     void popupOKDialog(char*, char*, int, int);
     void popupYesNoDialog(long, char*, int, int);
     void popupYesNoDialog(char*, char*, int, int);
     void popupYesNoCancelDialog(char*, char*, int, int);
     void popupYesNoCancelDialog(long, char*, int, int);
+protected:
     void command_help(char*, long, long, long, long);
     void command_help(char*, char*, long, long, long);
+
+public:
     void setup_popup_help();
     void clear_popup_help();
     long command_do_popup_help(unsigned char, long, long);
@@ -514,7 +582,7 @@ public:
     void draw_setup(int);
     void draw();
     void redraw(long);
-    void set_focus(int);
+    virtual void set_focus(int);
     long handle_mouse_down(unsigned char, long, long, int, int);
     void set_info_file(char*, long);
     void set_use_bevels(int);
@@ -526,33 +594,32 @@ public:
     void set_background_pos(int);
     void set_background_colors(unsigned char, unsigned char);
     void set_bevel_colors(unsigned char, unsigned char, unsigned char, unsigned char, unsigned char, unsigned char);
-    void set_text_colors(int, int);
-    void set_focus_colors(int, int);
-    void set_state_colors(int, int);
+    void set_text_colors(unsigned long, unsigned long);
+    void set_focus_colors(unsigned long, unsigned long);
+    void set_state_colors(unsigned long, unsigned long);
     void set_button_pics(char*, long);
     void set_popup_info_file(char*, long);
     void set_popup_info_file(const char*, long);
     void set_enable_ime(int);
     char* get_info_file();
-    int get_info_id();
-    int get_background();
-    int get_background2();
-    int get_palette();
+    long get_info_id();
+    TShape* get_background();
+    TShape* get_background2();
+    void* get_palette();
     char* get_cursor();
     int get_use_bevels();
     int get_background_pos();
-    void get_bevel_colors(unsigned char*, unsigned char*, unsigned char*, unsigned char*, unsigned char*, unsigned char*);
-    void get_text_colors(int*, int*);
-    void get_focus_colors(int*, int*);
-    int get_shadow_amount();
-    void get_state_colors(int*, int*);
+    void get_bevel_colors(unsigned char&, unsigned char&, unsigned char&, unsigned char&, unsigned char&, unsigned char&);
+    void get_text_colors(unsigned long&, unsigned long&);
+    void get_focus_colors(unsigned long&, unsigned long&);
+    long get_shadow_amount();
+    void get_state_colors(unsigned long&, unsigned long&);
     char* get_popup_info_file();
-    int get_popup_info_id();
-    int get_button_pics();
-    int get_shadow_color_table();
+    long get_popup_info_id();
+    TShape* get_button_pics();
+    RGE_Color_Table* get_shadow_color_table();
     int get_enable_ime();
-    virtual void notify_background_color(unsigned char);
-    void draw_background(int);
+    virtual void draw_background(int);
 
 protected:
     virtual void set_ideal_size(long width, long height);
@@ -575,9 +642,9 @@ protected:
     int create_text(TPanel*, TTextPanel**, long, long, long, long, long, long, long, long, long);
     virtual int create_text(TPanel*, TTextPanel**, char**, long, long, long, long,
                             long, long, int, int);
-    virtual int create_input(TPanel*, TInputPanel**, char*, short, FormatType,
+    virtual int create_input(TPanel*, TInputPanel**, char*, short, TInputPanel::FormatType,
                              long, long, long, long, long);
-    virtual int create_edit(TPanel*, TEditPanel**, char*, short, int, long, long,
+    virtual int create_edit(TPanel*, TEditPanel**, char*, short, TEditPanel::FormatType, long, long,
                             long, long, long, int, int);
     virtual int create_drop_down(TPanel*, TDropDownPanel**, long, long, long, long,
                                  long, long, long);

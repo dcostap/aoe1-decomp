@@ -24,12 +24,13 @@ extern float DAT_00574774;
 
 class RGE_Static_Object;
 class RGE_Master_Static_Object;
+class RGE_Master_Combat_Object;
 class RGE_Player;
 class RGE_Game_World;
 class RGE_Map;
 class RGE_Sprite;
 class RGE_Visible_Map;
-class LOSTBL;
+struct LOSTBL;
 struct XYPoint { int x; int y; };
 class RGE_Zone_Map {
 public:
@@ -62,6 +63,8 @@ class RGE_Doppleganger_Creator;
 class PathingSystem;
 class InfluenceMap;
 class TPanel;
+struct XYZBYTEPoint;
+struct _iobuf;
 typedef TPanel RGE_Panel;
 
 class ManagedArrayInt {
@@ -79,7 +82,7 @@ public:
 typedef ManagedArrayInt ManagedArray_int;
 
 struct Inner_004C4C40 {
-    void target(int);
+    void target(RGE_Sprite*);
 };
 
 class RGE_Victory_Conditions {
@@ -235,12 +238,6 @@ struct RGE_Armor_Weapon_Info {
     short value;
 };
 
-struct RGE_Object_Info {
-    unsigned char gap_00[0x26];
-    short field_26;
-    float screen_x_offset;
-};
-
 class RGE_Sprite {
 public:
     unsigned char gap_00[0x60];
@@ -253,6 +250,23 @@ public:
 class RGE_Master_Static_Object {
 public:
     virtual ~RGE_Master_Static_Object();
+    virtual void copy_obj(RGE_Master_Static_Object*);
+    virtual void modify(float, unsigned char);
+    virtual void modify_delta(float, unsigned char);
+    virtual void modify_percent(float, unsigned char);
+    virtual void save(int);
+    virtual RGE_Static_Object* make_new_obj(RGE_Player*, float, float, float);
+    virtual RGE_Master_Static_Object* make_new_master();
+    virtual unsigned char check_placement(RGE_Player*, float, float, int*,
+                                          unsigned char, unsigned char,
+                                          unsigned char, unsigned char,
+                                          unsigned char, unsigned char);
+    virtual unsigned char alignment(float*, float*, RGE_Game_World*, unsigned char);
+    virtual long calc_base_damage_ability(RGE_Master_Combat_Object*);
+    virtual void play_command_sound();
+    virtual void play_move_sound();
+    virtual void draw(TDrawArea*, short, short, RGE_Color_Table*, long, long, int,
+                      unsigned char);
     unsigned char master_type;
     unsigned char gap_05[3];
     char* name;
@@ -278,7 +292,6 @@ public:
     RGE_Sound* death_sound;             // +0x44
     short death_spawn_obj_id;           // +0x48
     short obj_max;
-    RGE_Static_Object* vf18(RGE_Player*, float, float, float);
     unsigned char sort_number;          // +0x4A
     unsigned char can_be_built_on;      // +0x4B
     short button_pict;                  // +0x4C
@@ -322,9 +335,12 @@ public:
     unsigned char track_as_resource;
     unsigned char create_doppleganger_on_death;
     unsigned char resource_group;
-    RGE_Static_Object* make_new_obj(RGE_Player*, float, float, float, RGE_Static_Object*);
-    int check_placement(RGE_Player*, float, float, float);
-    int check_placement(RGE_Player*, float, float, int, int, int, int, int, int, int);
+};
+
+class RGE_Master_Doppleganger_Object : public RGE_Master_Static_Object {
+public:
+    virtual RGE_Static_Object* make_new_obj(RGE_Player*, float, float, float,
+                                             RGE_Static_Object*);
 };
 
 class RGE_Map {
@@ -378,29 +394,71 @@ public:
 
 class RGE_Player {
 public:
-#define STAT_OBJ_PLAYER_PAD(n) virtual void player_pad_##n();
-    STAT_OBJ_PLAYER_PAD(0)  STAT_OBJ_PLAYER_PAD(1)  STAT_OBJ_PLAYER_PAD(2)
-    STAT_OBJ_PLAYER_PAD(3)  STAT_OBJ_PLAYER_PAD(4)  STAT_OBJ_PLAYER_PAD(5)
-    STAT_OBJ_PLAYER_PAD(6)  STAT_OBJ_PLAYER_PAD(7)  STAT_OBJ_PLAYER_PAD(8)
-    STAT_OBJ_PLAYER_PAD(9)  STAT_OBJ_PLAYER_PAD(10) STAT_OBJ_PLAYER_PAD(11)
-    STAT_OBJ_PLAYER_PAD(12) STAT_OBJ_PLAYER_PAD(13) STAT_OBJ_PLAYER_PAD(14)
-    STAT_OBJ_PLAYER_PAD(15) STAT_OBJ_PLAYER_PAD(16) STAT_OBJ_PLAYER_PAD(17)
-    STAT_OBJ_PLAYER_PAD(18) STAT_OBJ_PLAYER_PAD(19) STAT_OBJ_PLAYER_PAD(20)
-    STAT_OBJ_PLAYER_PAD(21) STAT_OBJ_PLAYER_PAD(22) STAT_OBJ_PLAYER_PAD(23)
-    STAT_OBJ_PLAYER_PAD(24) STAT_OBJ_PLAYER_PAD(25) STAT_OBJ_PLAYER_PAD(26)
-    STAT_OBJ_PLAYER_PAD(27) STAT_OBJ_PLAYER_PAD(28) STAT_OBJ_PLAYER_PAD(29)
-    virtual void vf78(short, int, int);
-    virtual void change_attribute(short, float, int);
-    STAT_OBJ_PLAYER_PAD(32)
-    STAT_OBJ_PLAYER_PAD(33) STAT_OBJ_PLAYER_PAD(34) STAT_OBJ_PLAYER_PAD(35)
-    STAT_OBJ_PLAYER_PAD(36) STAT_OBJ_PLAYER_PAD(37) STAT_OBJ_PLAYER_PAD(38)
-    STAT_OBJ_PLAYER_PAD(39) STAT_OBJ_PLAYER_PAD(40) STAT_OBJ_PLAYER_PAD(41)
-    STAT_OBJ_PLAYER_PAD(42) STAT_OBJ_PLAYER_PAD(43) STAT_OBJ_PLAYER_PAD(44)
-    STAT_OBJ_PLAYER_PAD(45) STAT_OBJ_PLAYER_PAD(46) STAT_OBJ_PLAYER_PAD(47)
-    STAT_OBJ_PLAYER_PAD(48) STAT_OBJ_PLAYER_PAD(49) STAT_OBJ_PLAYER_PAD(50)
-    STAT_OBJ_PLAYER_PAD(51) STAT_OBJ_PLAYER_PAD(52) STAT_OBJ_PLAYER_PAD(53)
-    STAT_OBJ_PLAYER_PAD(54)
-#undef STAT_OBJ_PLAYER_PAD
+    virtual ~RGE_Player();
+    virtual void set_game_status(unsigned char);
+    virtual void do_resign(int);
+    virtual void changeToHumanPlayer();
+    virtual void changeToComputerPlayer();
+    virtual char* aiStatus(int);
+    virtual int isEnemy(int);
+    virtual int isAlly(int);
+    virtual int isNeutral(int);
+    virtual int isAllNeutral();
+    virtual void setDiplomaticStance(int, int);
+    virtual void loadAIInformation(char*, char*, char*, int, int);
+    virtual void sendUnitAIOrder(int, int, int, int, int, float, float, float,
+                                 float, int, int, int);
+    virtual void processAIOrder(int, int, int, int, int, float, float, float,
+                                float, int, int, int);
+    virtual void kickAI(int);
+    virtual int strategicNumber(int);
+    virtual void sendGameOrder(RGE_Static_Object*, RGE_Static_Object*, float, float);
+    virtual void sendAddWaypointCommand(int, XYZBYTEPoint*, int);
+    virtual void processAddWaypointCommand(int, XYZBYTEPoint*, int);
+    virtual void sendPlayCommand(int, int*, int, int, int);
+    virtual void sendPlayCommand(int, int, int);
+    virtual int sendAICommand(int, int, int, int, int);
+    virtual int objectCostByType(int);
+    virtual void trackUnitGather(int, int, int);
+    virtual RGE_Static_Object* make_scenario_obj(float, float, float, short,
+                                                  unsigned char, float);
+    virtual void scenario_save(int);
+    virtual void scenario_load(int, long*, float);
+    virtual void scenario_postsave(int);
+    virtual void scenario_postload(int, long*, float);
+    virtual void load(int);
+    virtual void add_attribute_num(short, float, unsigned char);
+    virtual void update();
+    virtual void update_dopplegangers();
+    virtual void save(int);
+    virtual void save2(int);
+    virtual void save_info(int);
+    virtual void random_start();
+    virtual RGE_Static_Object* make_new_object(long, float, float, float, int);
+    virtual void analyize_selected_objects();
+    virtual int get_mouse_pointer_action_vars(int, int*, int*);
+    virtual unsigned char command_make_move(RGE_Static_Object*, float, float);
+    virtual unsigned char command_make_work(RGE_Static_Object*, float, float);
+    virtual unsigned char command_make_do(RGE_Static_Object*, float, float);
+    virtual unsigned char command_stop();
+    virtual unsigned char command_place_object(short, float, float, float);
+    virtual unsigned char command_add_attribute(int, float);
+    virtual unsigned char command_give_attribute(int, int, float);
+    virtual unsigned char command_formation(int);
+    virtual unsigned char command_stand_ground();
+    virtual unsigned char command_create_group(int, int*, int, float);
+    virtual unsigned char command_add_to_group(int, int, float);
+    virtual unsigned char command_remove_from_group(int, int);
+    virtual unsigned char command_destroy_group(int);
+    virtual unsigned char command_resign(int, int);
+    virtual unsigned char command_add_waypoint(float, float, float);
+    virtual RGE_Object_Node* addObject(RGE_Static_Object*, int, int);
+    virtual void removeObject(RGE_Static_Object*, int, int, RGE_Object_Node*);
+    virtual void logMessage(char*);
+    virtual void notify(int, int, int, long, long, long);
+    virtual void logStatus(struct _iobuf*, int);
+    virtual void load_victory(int, long*, unsigned char);
+    virtual void new_victory();
     unsigned char gap_04[0x38];
     RGE_Game_World* world;              // +0x3C
     unsigned char gap_40[0xC8];
@@ -418,8 +476,6 @@ public:
     RGE_Doppleganger_Creator* doppleganger_creator;
     Visible_Resource_Manager* VR_List;
     RGE_Visible_Map* visible;
-    virtual RGE_Object_Node* addObject(RGE_Static_Object*, int, int);
-    virtual void removeObject(RGE_Static_Object*, int, int, RGE_Object_Node*);
 };
 
 class RGE_Active_Sprite_List {
@@ -502,8 +558,6 @@ public:
     virtual ~RGE_Static_Object();
     RGE_Static_Object(RGE_Master_Static_Object*, RGE_Player*, float, float, float, int);
     RGE_Static_Object(int, RGE_Game_World*, int);
-    int setup(RGE_Master_Static_Object*, RGE_Player*, float, float, float);
-    int setup(int, RGE_Game_World*);
     virtual void recycle_in_to_game(RGE_Master_Static_Object*, RGE_Player*, float, float, float);
     virtual void recycle_out_of_game();
     virtual void draw(TDrawArea*, short, short, RGE_Color_Table*);
@@ -531,10 +585,10 @@ public:
     virtual float teleport(float, float, float);
     virtual void new_sprite(RGE_Sprite*);
     virtual void add_overlay_sprite(RGE_Sprite*, unsigned char);
-    virtual void remove_overlay_sprite(int);
+    virtual void remove_overlay_sprite(RGE_Sprite*);
     virtual void change_ownership(RGE_Player*);
     virtual void modify(float, unsigned char);
-    virtual void modify_delta(float, unsigned int);
+    virtual void modify_delta(float, unsigned char);
     virtual void modify_percent(float, unsigned char);
     virtual void transform(RGE_Master_Static_Object*);
     virtual void copy_obj(RGE_Master_Static_Object*);
@@ -566,7 +620,7 @@ public:
     virtual void set_being_worked_on(RGE_Action_Object*, short, unsigned char);
     virtual void release_being_worked_on(RGE_Static_Object*);
     virtual unsigned char is_moving();
-    virtual unsigned char is_dying();
+    unsigned char is_dying();
     virtual RGE_Static_Object* get_target_obj();
     virtual void enter_obj(RGE_Static_Object*);
     virtual void exit_obj();
@@ -590,6 +644,56 @@ public:
     virtual int currentTargetID();
     virtual float currentTargetX();
     virtual float currentTargetY();
+    virtual float currentTargetZ();
+    virtual void setWaitingToMove(unsigned char);
+    virtual unsigned char waitingToMove();
+    virtual unsigned char actionState();
+    virtual unsigned char keepGatheringWhenObjectIsOut(int);
+    virtual unsigned char produceWhenKilledBy(int);
+    virtual unsigned char useSameZoneDropsite();
+    virtual void __cdecl logDebug(char*, ...);
+    virtual void notify(int, int, int, long, long, long);
+    virtual int attack(float, float, float, int);
+    virtual int attack(int, int);
+    virtual int moveTo(float, float, float, float, int);
+    virtual int moveTo(int, float, int);
+    virtual int moveTo(int, int);
+    virtual int moveAwayFrom(int, int);
+    virtual int hunt(int, int);
+    virtual int gather(int, int);
+    virtual int convert(int, int);
+    virtual int repair(int, int);
+    virtual int build(int, int);
+    virtual int trade(int, int);
+    virtual int explore(int, int, int);
+    virtual int enter(int, int);
+    virtual int unload(int, float, float, float);
+    virtual int transport(float, float, float, int);
+    virtual int stopAction();
+    virtual int pause();
+    virtual int canPath(int, float, float*, int, int, int);
+    virtual int canPath(void*, float, int, float*, int, int, int);
+    virtual int canBidirectionPath(int, int, float, float*, int, int, int);
+    virtual int canPathWithObstructions(int, float, float*, int, int, int,
+                                        void*);
+    virtual int canPathWithAdditionalPassability(void*, float, int, float*, int,
+                                                 int, int, int, int);
+    virtual int findFirstTerrainAlongExceptionPath(int, float*, float*);
+    virtual int canLinePath(int, int, int, int, float, int);
+    virtual int canLinePath(void*, void*, float, void*, int);
+    virtual int firstTileAlongLine(void*, void*, void*, int, int, int);
+    virtual XYZBYTEPoint* userDefinedWaypoint(int);
+    virtual int addUserDefinedWaypoint(XYZBYTEPoint*, int);
+    virtual void removeAllUserDefinedWaypoints(int);
+    virtual void removeUserDefinedWaypoint(int);
+    virtual int numberUserDefinedWaypoints();
+    virtual void* findAvoidancePath(void*, float, int);
+    virtual long get_action_checksum();
+    virtual long get_waypoint_checksum();
+    virtual int setup(int, RGE_Game_World*);
+    virtual int setup(RGE_Master_Static_Object*, RGE_Player*, float, float, float);
+    virtual RGE_Object_List* create_object_list();
+    virtual RGE_Active_Sprite_List* create_sprite_list();
     void release_from_holder();
     unsigned char more_room();
     float distance_to_position(float, float, float);
@@ -610,25 +714,18 @@ public:
     void addToPathingGroup(int);
     void removeAllFromPathingGroup();
     void remove_shadows();
-    int get_action_checksum();
-    int get_waypoint_checksum();
     int boundToFacet(float, float, int);
     int numberFacets();
     unsigned char lookupZone(XYPoint);
     unsigned char lookupZone(int, int);
     unsigned char currentZone();
-    int withinRangeOfZoneAtPoint(unsigned char, float, void*);
+    int withinRangeOfZoneAtPoint(unsigned char, float, XYPoint&);
     int withinRangeOfZone(unsigned char, float);
-    int findClosestPointInTerrainType(XYPoint, XYPoint*, int, int, int);
-    void logDebug(char*, ...);
+    int findClosestPointInTerrainType(XYPoint, XYPoint&, int, int, int);
     void changeInfluenceMap(InfluenceMap*, int, int, int);
     int removeFromObstructionMap(int);
     int addToObstructionMap(int);
     float get_terrain_speed(unsigned char);
-    float vf34(int, int, int);
-    void vfD0(RGE_Static_Object*);
-    void funcD4();
-    void funcDC(void*, int, int);
     void notify(RGE_Player*);
     void notify(long, long, int, int, int, int);
     void setDamage(float);
@@ -636,8 +733,6 @@ public:
     void setDamage(RGE_Player*, int, int);
     void setHealth(RGE_Player*, int, int);
     UnitAIModule* unitAI();
-    void vfD8(RGE_Player*, int, int);
-    void vfDC(RGE_Player*, int, int);
     void tileOp0(void*, int, int);
     void tileOp1(void*, int, int);
     void setSprite(void*);
@@ -646,9 +741,6 @@ public:
     void give_attribute_to_owner();
     void take_attribute_from_owner();
     void get_starting_attribute();
-protected:
-    virtual RGE_Object_List* create_object_list();
-    virtual RGE_Active_Sprite_List* create_sprite_list();
 public:
     void change_unique_id();
     int inRange(RGE_Static_Object*, float);
@@ -663,17 +755,14 @@ public:
     RGE_Sprite* sprite;                 // +0x10
     RGE_Sprite* old_sprite;             // +0x14
     RGE_Active_Sprite_List* sprite_list; // +0x18
-    Inner_004C4C40* ptr_;
     RGE_Tile* tile;                     // +0x1C
     RGE_Static_Object* inside_obj;      // +0x20
     RGE_Object_List* objects;           // +0x24
-    RGE_Object_Info* object_info;
     short screen_x_offset;              // +0x28
     short screen_y_offset;              // +0x2A
     short shadow_x_offset;              // +0x2C
     short shadow_y_offset;              // +0x2E
     float hp;                           // +0x30
-    float hit_points;
     unsigned char curr_damage_percent;  // +0x34
     unsigned char facet;                // +0x35
     unsigned char selected;             // +0x36
@@ -694,28 +783,18 @@ public:
     ManagedArrayInt groupMembers;        // +0x64
     UnitAIModule* unitAIValue;          // +0x74
     int groupCommanderValue;            // +0x78
-    int field_68;
-    int groupMembersCount;
-    int group_maximum;
-    int pathingGroupCount;
-    int pathingGroupMax;
-    int pathingGroupMembers_numberValue;
-    int group_number;
-    int group_max;
-    int* group_value;
     int zoneMapIndex;                   // +0x7C
     float groupRangeValue;              // +0x80
     unsigned char inObstructionMapValue; // +0x84
     unsigned char lastInObstructionMapValue; // +0x85
     unsigned char underAttackValue;     // +0x86
     unsigned char gap_87;               // +0x87
-    unsigned char field_86;
 
     void set_sleep_flag(unsigned char);
     void capture_frame(TDrawArea*, short, short);
     RGE_Static_Object* get_object_pointer(long);
     unsigned char drop_held_objects(int);
-    unsigned char find_drop_location(int, float*, float*, RGE_Master_Static_Object*,
+    unsigned char find_drop_location(int, float&, float&, RGE_Master_Static_Object*,
                                      RGE_Static_Object*, float, float, float, float);
 };
 

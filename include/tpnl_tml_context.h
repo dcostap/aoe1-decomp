@@ -179,8 +179,8 @@ struct Special_Events {
     unsigned char event;
     unsigned char gap_13;
     long pop_total;
-    long interger_value_1;
-    long interger_value_2;
+    long integer_value_1;
+    long integer_value_2;
     long start_x;
     long start_y;
     long start_txt_x1;

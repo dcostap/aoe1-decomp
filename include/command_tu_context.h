@@ -502,11 +502,14 @@ public:
 };
 
 class RGE_Command {
-public:
+// PDB access and declaration order select the shipped decorated symbols and vtable slots.
+protected:
     virtual void do_command_give_attribute(RGE_Command_Give_Attribute*);
+
+public:
     virtual ~RGE_Command();
     virtual void do_command(void*);
-    void command_give_attribute(int, int, int, float);
+    virtual void command_give_attribute(int, int, int, float);
 
     union {
         RGE_Game_World* world;
@@ -524,10 +527,12 @@ public:
     };
 
     RGE_Command(RGE_Game_World*, TCommunications_Handler*);
-    void reset_communications(int);
-    RGE_Static_Object* get_obj(int);
-    RGE_Static_Object* get_obj(RGE_Obj_Info);
+    void reset_communications(TCommunications_Handler*);
+
     void do_commands();
+
+protected:
+    RGE_Static_Object* get_obj(RGE_Obj_Info);
     void do_command_order(void*);
     void do_command_stop(void*);
     void do_command_work(void*);
@@ -566,8 +571,8 @@ public:
     unsigned char close_check_for_duplicate_orders(unsigned char*);
     unsigned char check_for_duplicate_orders(unsigned char*, long);
     void submit(void*, long);
-    void submit(unsigned char*, long);
 
+public:
     void command_order(RGE_Static_Object**, short, RGE_Static_Object*, float, float);
     void command_stop(RGE_Static_Object**, short);
     void command_stop(int, int*, int);
@@ -579,7 +584,7 @@ public:
     void command_create(short, short, float, float, float);
     void command_add_attribute(int, int, float);
     void command_formation(RGE_Static_Object**, int, int);
-    void command_create_group(int, int, int*, int, int);
+    void command_create_group(int, int, int*, int, float);
     void command_add_to_group(int, int, int, float);
     void command_add_to_group(int, int, int, int);
     void command_remove_from_group(int, int, int);
