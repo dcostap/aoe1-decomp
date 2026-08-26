@@ -9,9 +9,9 @@ class RGE_Static_Object {
 public:
     virtual ~RGE_Static_Object();
     char gap_0[0x82];
-    unsigned char field_86;
+    unsigned char underAttackValue;
     virtual unsigned char underAttack() const;
 };
 #endif
 
-unsigned char RGE_Static_Object::underAttack() const { return this->field_86; }
+unsigned char RGE_Static_Object::underAttack() const { return this->underAttackValue; }

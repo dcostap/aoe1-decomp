@@ -943,7 +943,11 @@ ConstructionItem* TribeInformationAIModule::placeDock(
                                     this->hasAdjacentTileType(
                                         currentZone, y, tile_type)) {
                                     ConstructionItem* lot =
+#ifdef TAIINFMD_PREFIX_CONTEXT
+                                        this->md->constructionAIAt6C4.randomLot(
+#else
                                         this->md->constructionAI.randomLot(
+#endif
                                             (float)currentZone - DAT_00575570,
                                             (float)y - DAT_00575570);
                                     if (lot == 0) {

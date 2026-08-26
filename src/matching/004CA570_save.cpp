@@ -1,59 +1,30 @@
-// VA: 004CA570 TRIBE_Combat_Object::save (124 B)
-// PDB source: t_c_obj.cpp
+// VA: 004CA570 TRIBE_Combat_Object::save
+// Canonical ownership is the t_c_obj class surface. The two optional object
+// records use their real inherited save member instead of local ABI classes.
 
-#include <stdlib.h>
+#include "../../include/t_c_obj_context.h"
 
 extern "C" {
     void rge_write(int fd, void* buf, int size);
 }
 
-#ifndef T_C_OBJ_CONTEXT_H
-struct RGE_Combat_Object_base {
-    char base[0x1C4];
-    void save(int fd);
-};
-
-// Master object: with RTTI: vt[-1], vt[0] then vt[1-4]=4 stubs, vt[5]=save=0x14
-struct MasterObj {
-    char base[4];
-    virtual void f0();
-    virtual void f1();
-    virtual void f2();
-    virtual void f3();
-    virtual void f4();
-    virtual void save(int fd);
-};
-
-// Child object: vt[1]=save=4
-struct ChildObj {
-    char base[4];
-    virtual void f0();
-    virtual void save(int fd);
-};
-
-struct TRIBE_Combat_Object {
-    char pad[0x1C4];
-    unsigned char own_master;  // +0x1C4
-    
-    void save(int fd);
-};
-#endif
-
 void TRIBE_Combat_Object::save(int fd)
 {
     int flag;
-    
-    ((RGE_Combat_Object_base*)this)->save(fd);
+
+    RGE_Combat_Object::save(fd);
     rge_write(fd, &own_master, 1);
-    
+
     if (own_master) {
-        ((MasterObj*)(*(int*)((char*)this + 8)))->save(fd);
+        this->master_obj->save(fd);
     }
-    
-    if (*(int*)((char*)this + 0x74)) {
+
+    RGE_Static_Object* child =
+        *(RGE_Static_Object**)((char*)this + 0x74);
+    if (child != 0) {
         flag = 1;
         rge_write(fd, &flag, 4);
-        ((ChildObj*)(*(int*)((char*)this + 0x74)))->save(fd);
+        child->save(fd);
     } else {
         flag = 0;
         rge_write(fd, &flag, 4);

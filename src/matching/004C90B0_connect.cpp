@@ -29,17 +29,17 @@ void TRIBE_Building_Object::connect()
 
                 if (a && d) {
                     if (!b && !c) {
-                        this->rotate(1 - this->facet);
+                        ((RGE_Moving_Object*)this)->RGE_Moving_Object::rotate(1 - this->facet);
                         goto connect_neighbors;
                     }
                 }
                 if (b && c) {
                     if (!a && !d) {
-                        this->rotate(-this->facet);
+                        ((RGE_Moving_Object*)this)->RGE_Moving_Object::rotate(-this->facet);
                         goto connect_neighbors;
                     }
                 }
-                this->rotate(2 - this->facet);
+                ((RGE_Moving_Object*)this)->RGE_Moving_Object::rotate(2 - this->facet);
             }
 
 connect_neighbors:

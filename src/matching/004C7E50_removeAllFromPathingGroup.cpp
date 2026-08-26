@@ -1,3 +1,8 @@
+#include "../../include/stat_obj_context.h"
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
+#define RGE_STAT_OBJ_SHARED_CONTEXT 1
+#endif
+
 #ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Player {
 public:
@@ -17,6 +22,6 @@ public:
 
 void RGE_Static_Object::removeAllFromPathingGroup(void) {
     if (owner->computerPlayer() == 1) {
-        pathingGroupMembers_numberValue = 0;
+        pathingGroupMembers.numberValue = 0;
     }
 }

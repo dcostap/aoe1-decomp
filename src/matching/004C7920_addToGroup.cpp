@@ -22,6 +22,11 @@
 void* __cdecl operator_new(unsigned int size);
 void __cdecl operator_delete(void* p);
 
+#include "../../include/stat_obj_context.h"
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
+#define RGE_STAT_OBJ_SHARED_CONTEXT 1
+#endif
+
 #ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Static_Object {
 public:
@@ -42,33 +47,33 @@ int RGE_Static_Object::addToGroup(int groupIndex, float unused)
     }
 
     {
-        int count = this->group_number;
+        int count = this->groupMembers.numberValue;
         int i = 0;
         while (i < count) {
-            if (i >= this->group_maximum) {
+            if (i >= this->groupMembers.maximumSizeValue) {
                 break;
             }
-            if (this->group_value[i] == groupIndex) {
+            if (this->groupMembers.value[i] == groupIndex) {
                 goto done;
             }
             i++;
         }
 
-        if (count > this->group_maximum - 1) {
+        if (count > this->groupMembers.maximumSizeValue - 1) {
             int newMax = count + 1;
             int* newArray = (int*)operator_new(newMax * 4);
             if (newArray != 0) {
-                for (i = 0; i < this->group_maximum && i < newMax; i++) {
-                    newArray[i] = this->group_value[i];
+                for (i = 0; i < this->groupMembers.maximumSizeValue && i < newMax; i++) {
+                    newArray[i] = this->groupMembers.value[i];
                 }
-                operator_delete(this->group_value);
-                this->group_value = newArray;
-                this->group_maximum = newMax;
+                operator_delete(this->groupMembers.value);
+                this->groupMembers.value = newArray;
+                this->groupMembers.maximumSizeValue = newMax;
             }
         }
 
-        this->group_value[this->group_number] = groupIndex;
-        this->group_number++;
+        this->groupMembers.value[this->groupMembers.numberValue] = groupIndex;
+        this->groupMembers.numberValue++;
     }
 
 done:

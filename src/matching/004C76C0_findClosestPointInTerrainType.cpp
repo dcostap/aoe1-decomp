@@ -1,5 +1,6 @@
 // VA: 004C76C0 RGE_Static_Object::findClosestPointInTerrainType
 // stat_obj.cpp
+// BINARY NOTE: the output point is a reference to struct XYPoint.
 
 #ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 struct XYPoint {
@@ -23,7 +24,7 @@ struct RGE_Map {
     RGE_Zone_Map_List* map_zones;
 };
 
-struct RGE_World {
+struct RGE_Game_World {
     char gap_00[0x28];
     RGE_Map* map;
     char gap_2C[0x10];
@@ -35,7 +36,7 @@ struct RGE_World {
 
 struct RGE_Player {
     char gap_00[0x3C];
-    RGE_World* world;
+    RGE_Game_World* world;
 };
 
 struct RGE_Master_Static_Object {
@@ -51,12 +52,12 @@ public:
     char gap_10[0x6C];
     int zoneMapIndex;
 
-    int findClosestPointInTerrainType(XYPoint point, XYPoint* out, int a, int b, int c);
+    int findClosestPointInTerrainType(XYPoint point, XYPoint& out, int a, int b, int c);
 };
 
 #endif
 
-int RGE_Static_Object::findClosestPointInTerrainType(XYPoint point, XYPoint* out, int a, int b, int c) {
+int RGE_Static_Object::findClosestPointInTerrainType(XYPoint point, XYPoint& out, int a, int b, int c) {
     RGE_Zone_Map* zone_map;
     if (this->zoneMapIndex == -1) {
         RGE_Game_World* world = this->owner->world;
@@ -65,7 +66,7 @@ int RGE_Static_Object::findClosestPointInTerrainType(XYPoint point, XYPoint* out
         zone_map = this->owner->world->map->map_zones->get_zone_map(this->zoneMapIndex);
     }
     if (zone_map != 0) {
-        return zone_map->findClosestPointInTerrainType(point, out, a, b, c);
+        return zone_map->findClosestPointInTerrainType(point, &out, a, b, c);
     }
     return 0;
 }

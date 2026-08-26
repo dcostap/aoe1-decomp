@@ -20,7 +20,6 @@ public:
 
 TRIBE_Combat_Object::TRIBE_Combat_Object(int mode, RGE_Game_World* world, int doSetup)
     : RGE_Combat_Object(mode, world, 0) {
-    *(void**)this = (void*)0x574A20;
     if (doSetup != 0) {
         setup(mode, world);
     }

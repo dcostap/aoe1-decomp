@@ -187,11 +187,23 @@ int TribeInformationAIModule::save(int handle)
     }
     rge_write(saved_handle, &this->f204, 4);
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
     handle = strlen(this->name208);
+#else
+    handle = strlen(this->learnFileName);
+#endif
     rge_write(saved_handle, &handle, 4);
+#ifndef TAIINFMD_PREFIX_CONTEXT
     rge_write(saved_handle, this->name208, strlen(this->name208));
+#else
+    rge_write(saved_handle, this->learnFileName, strlen(this->learnFileName));
+#endif
 
+#ifndef TAIINFMD_PREFIX_CONTEXT
     rge_write(saved_handle, this->buf308, 0xFF);
+#else
+    rge_write(saved_handle, this->fullyExploredZoneValue, 0xFF);
+#endif
     rge_write(saved_handle, this->buf408, 0xC0);
 
     for (int y = 0; y < 4; y++) {

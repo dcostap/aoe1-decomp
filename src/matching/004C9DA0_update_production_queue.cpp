@@ -44,7 +44,7 @@ void TRIBE_Building_Object::update_production_queue()
         return;
     }
 
-    if (this->work_status(&work_target, &local_12, &local_14, 0, 0) && (work_target == 0x66 || work_target == 0x67)) {
+    if (this->work_status(work_target, local_12, local_14, 0, 0) && (work_target == 0x66 || work_target == 0x67)) {
         while (this->production_queue_count > 0) {
             this->remove_from_production_queue(this->production_queue->master_id, -1);
         }

@@ -9,9 +9,9 @@ class RGE_Static_Object {
 public:
     virtual ~RGE_Static_Object();
     char gap_0[0x82];
-    unsigned char field_86;
+    unsigned char underAttackValue;
     virtual void setUnderAttack(unsigned char v);
 };
 #endif
 
-void RGE_Static_Object::setUnderAttack(unsigned char v) { this->field_86 = v; }
+void RGE_Static_Object::setUnderAttack(unsigned char v) { this->underAttackValue = v; }

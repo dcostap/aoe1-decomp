@@ -50,6 +50,7 @@
 //   A walkback kept MATCH with the success goto, but the direct return is
 //   simpler and agrees with the decompiler's source evidence.
 // - final validation follows this source and the documented exact checkpoint.
+// BINARY NOTE: the x and y outputs are float references in the shipped symbol.
 
 extern int __cdecl debug_rand(char*, int);
 extern float DAT_00574720;
@@ -180,13 +181,13 @@ public:
 
     unsigned char lookupZone(int, int);
 
-    unsigned char find_drop_location(int, float*, float*, RGE_Master_Static_Object*,
+    unsigned char find_drop_location(int, float&, float&, RGE_Master_Static_Object*,
                                      RGE_Static_Object*, float, float, float, float);
 };
 #endif
 
 unsigned char RGE_Static_Object::find_drop_location(
-    int terrain, float* x, float* y, RGE_Master_Static_Object* master,
+    int terrain, float& x, float& y, RGE_Master_Static_Object* master,
     RGE_Static_Object* object, float drop_x, float drop_y,
     float radius_x, float radius_y)
 {
@@ -201,44 +202,44 @@ unsigned char RGE_Static_Object::find_drop_location(
         do {
             switch ((debug_rand((char*)"C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0xf3a) * 4) / 0x7fff) {
             case 0: {
-                *x = radius_x + drop_x;
+                x = radius_x + drop_x;
                 int value = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0xf3e);
-                *y = (float)value * radius_2y * DAT_00574764 - radius_y + drop_y;
+                y = (float)value * radius_2y * DAT_00574764 - radius_y + drop_y;
                 break;
             }
             case 1: {
-                *x = drop_x - radius_x;
+                x = drop_x - radius_x;
                 int value = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0xf42);
-                *y = drop_y +
+                y = drop_y +
                      ((float)value * radius_2y * DAT_00574764 - radius_y);
                 break;
             }
             case 2: {
-                *y = radius_y + drop_y;
+                y = radius_y + drop_y;
                 int value = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0xf46);
-                *x = (float)value * radius_2x * DAT_00574764 - radius_x + drop_x;
+                x = (float)value * radius_2x * DAT_00574764 - radius_x + drop_x;
                 break;
             }
             case 3: {
-                *y = drop_y - radius_y;
+                y = drop_y - radius_y;
                 int value = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0xf4a);
-                *x = (float)value * radius_2x * DAT_00574764 - radius_x + drop_x;
+                x = (float)value * radius_2x * DAT_00574764 - radius_x + drop_x;
                 break;
             }
             }
 
-            if (*x >= DAT_00574720 && *y >= DAT_00574720) {
+            if (x >= DAT_00574720 && y >= DAT_00574720) {
                 RGE_Map* map = this->owner->world->map;
-                if (*x < (float)map->map_width &&
-                    *y < (float)map->map_height) {
+                if (x < (float)map->map_width &&
+                    y < (float)map->map_height) {
                     if (terrain != -1 &&
-                        terrain != (int)this->lookupZone((int)*x, (int)*y)) {
+                        terrain != (int)this->lookupZone((int)x, (int)y)) {
                         goto retry_attempt;
                     }
                     // BINARY NOTE: success returns from inside the retry loop.
-                    if (master->check_placement(this->owner, *x, *y,
+                    if (master->check_placement(this->owner, x, y,
                         0, 1, 1, 1, 0, 1, 1) == 0 &&
-                        object->passableTile(*x, *y, 0) == 1) {
+                        object->passableTile(x, y, 0) == 1) {
                         return 1;
                     }
                 }

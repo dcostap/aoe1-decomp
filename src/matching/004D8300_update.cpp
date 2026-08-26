@@ -132,8 +132,8 @@ class TribeInformationAIModule {
 public:
     char gap_00[0x100];
     MainDecisionAIModule* md; // +0x100
-    int mapXSize;       // +0x104
-    int mapYSize;       // +0x108
+    int mapXSizeValue;  // +0x104
+    int mapYSizeValue;  // +0x108
     char gap_10C[0x158 - 0x10C];
     InfluenceMap pathMap; // +0x158
     char gap_180[0x408 - 0x180];
@@ -145,7 +145,7 @@ public:
     char gap_4C8[0x560 - 0x4C8];
     int numberFoundForestTilesValue; // +0x560
 
-    int update(int param_1);
+    virtual int update(int param_1);
     int importantObject(int objGroup);
     int addImportantObject(void* obj, int param);
 };

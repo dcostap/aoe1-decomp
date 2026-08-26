@@ -20,14 +20,16 @@ public:
 
 class RGE_Static_Object {
 public:
-    char gap_00[0x8];
+    virtual ~RGE_Static_Object();
+    char gap_00[0x4];
     RGE_Master_Static_Object* master_obj;
     RGE_Player* owner;
 
-    LOSTBL* get_los_table(void);
+    virtual LOSTBL* get_los_table(void);
 };
 #endif
 
+// BINARY NOTE: LOSTBL is a struct in the original decorated return type.
 LOSTBL* RGE_Static_Object::get_los_table(void) {
     if (this->owner == 0) {
         return 0;

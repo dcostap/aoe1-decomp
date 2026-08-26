@@ -10,26 +10,6 @@
 // - Spell final max-hp check as positive success arm (`if (maxHp <= this->hp) { hp=max; return 1; } return 0;`)
 //   to get original `test ah,41h; je fail` with success fall-through before the fail tail.
 
-#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
-class RGE_Master_Static_Object {
-public:
-    char gap_00[0x26];
-    short hp;
-};
-
-class RGE_Static_Object {
-public:
-    void* vtable_ptr;
-    int id;
-    RGE_Master_Static_Object* master_obj;
-    char gap_0C[0x24];
-    float hp;
-
-    unsigned char heal(float amount);
-};
-
-#endif
-
 unsigned char RGE_Static_Object::heal(float amount) {
     float fVar1 = *(volatile float*)&amount + this->hp;
     this->hp = fVar1;

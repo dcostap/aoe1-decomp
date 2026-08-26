@@ -8,6 +8,8 @@ public:
 };
 #endif
 
+// BINARY NOTE: this method is an exceptional nonvirtual member. Its original
+// symbol is QAE, while neighboring virtual members use UAE.
 unsigned char RGE_Static_Object::is_dying(void) {
     if (object_state >= 3 && object_state != 6) {
         return 1;

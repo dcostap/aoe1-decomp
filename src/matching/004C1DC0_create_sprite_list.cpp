@@ -4,26 +4,6 @@
 // rsp used: config/flags/004C1DC0_create_sprite_list.rsp = /nologo /c /O2 /Oy /GX
 // target shape: return new RGE_Active_Sprite_List(this);
 
-#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
-class RGE_Static_Object;
-class RGE_Active_Sprite_Node;
-
-class RGE_Active_Sprite_List {
-public:
-    void* vtable_ptr;
-    RGE_Active_Sprite_Node* list;
-    RGE_Static_Object* owner;
-
-    RGE_Active_Sprite_List(RGE_Static_Object* owner);
-};
-
-class RGE_Static_Object {
-protected:
-    virtual RGE_Active_Sprite_List* create_sprite_list(void);
-};
-
-#endif
-
 RGE_Active_Sprite_List* RGE_Static_Object::create_sprite_list(void) {
     return new RGE_Active_Sprite_List(this);
 }

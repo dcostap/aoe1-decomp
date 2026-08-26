@@ -2,8 +2,7 @@
 // Source: stat_obj.cpp lines 4725-4737
 // Size: 114 bytes, 40 asm lines
 // Attempt 2: proper struct layout with gap, class methods for thiscall
-
-#include "..\..\include\game_globals.h"
+// BINARY NOTE: the point input is a reference to struct XYPoint.
 
 #ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 struct XYPoint {
@@ -31,12 +30,12 @@ public:
     char _gap_10[0x6C];  // padding from +0x10 to +0x7C
     int zoneMapIndex;    // +0x7C
 
-    int withinRangeOfZoneAtPoint(unsigned char param_1, float param_2, void* param_3);
+    int withinRangeOfZoneAtPoint(unsigned char param_1, float param_2, XYPoint& param_3);
 };
 
 #endif
 
-int RGE_Static_Object::withinRangeOfZoneAtPoint(unsigned char param_1, float param_2, void* param_3) {
+int RGE_Static_Object::withinRangeOfZoneAtPoint(unsigned char param_1, float param_2, XYPoint& param_3) {
     RGE_Zone_Map* zone_map;
 
     if (this->zoneMapIndex == -1) {
@@ -56,7 +55,7 @@ int RGE_Static_Object::withinRangeOfZoneAtPoint(unsigned char param_1, float par
     }
 
     if (zone_map != 0) {
-        XYPoint* pt = (XYPoint*)param_3;
+        XYPoint* pt = &param_3;
         return zone_map->withinRange(param_1, pt->x, pt->y, param_2);
     }
     return 0;

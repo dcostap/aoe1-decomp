@@ -17,6 +17,11 @@
 void* operator new(unsigned int size);
 void operator delete(void* ptr);
 
+#include "../../include/stat_obj_context.h"
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
+#define RGE_STAT_OBJ_SHARED_CONTEXT 1
+#endif
+
 #ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Static_Object {
 public:
@@ -33,13 +38,13 @@ public:
 void RGE_Static_Object::addToPathingGroup(int groupIndex)
 {
     int i = 0;
-    int count = this->pathingGroupCount;
+    int count = this->pathingGroupMembers.numberValue;
     if (count > 0) {
-        int max = this->pathingGroupMax;
+        int max = this->pathingGroupMembers.maximumSizeValue;
         while (1) {
             if (i >= max)
                 break;
-            if (this->pathingGroupMembers[i] == groupIndex)
+            if (this->pathingGroupMembers.value[i] == groupIndex)
                 return;
             i++;
             if (i < count)
@@ -48,26 +53,26 @@ void RGE_Static_Object::addToPathingGroup(int groupIndex)
         }
     }
 
-    if (count > this->pathingGroupMax - 1) {
+    if (count > this->pathingGroupMembers.maximumSizeValue - 1) {
         int newMax = count + 1;
         int* newMembers = (int*)operator new(newMax * 4);
         if (newMembers != 0) {
-            int max = this->pathingGroupMax;
+            int max = this->pathingGroupMembers.maximumSizeValue;
             int j = 0;
             if (max > 0) {
                 for (; j < max; j++) {
                     if (j >= newMax)
                         break;
-                    newMembers[j] = this->pathingGroupMembers[j];
-                    max = this->pathingGroupMax;
+                    newMembers[j] = this->pathingGroupMembers.value[j];
+                    max = this->pathingGroupMembers.maximumSizeValue;
                 }
             }
-            operator delete(this->pathingGroupMembers);
-            this->pathingGroupMembers = newMembers;
-            this->pathingGroupMax = newMax;
+            operator delete(this->pathingGroupMembers.value);
+            this->pathingGroupMembers.value = newMembers;
+            this->pathingGroupMembers.maximumSizeValue = newMax;
         }
     }
 
-    this->pathingGroupMembers[this->pathingGroupCount] = groupIndex;
-    this->pathingGroupCount++;
+    this->pathingGroupMembers.value[this->pathingGroupMembers.numberValue] = groupIndex;
+    this->pathingGroupMembers.numberValue++;
 }

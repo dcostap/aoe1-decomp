@@ -14,17 +14,17 @@ void TRIBE_Building_Object::connect2()
 
             if (a && d) {
                 if (!b && !c) {
-                    rotate(1 - facet);
+                    ((RGE_Moving_Object*)this)->RGE_Moving_Object::rotate(1 - facet);
                     return;
                 }
             }
             if (b && c) {
                 if (!a && !d) {
-                    rotate(-facet);
+                    ((RGE_Moving_Object*)this)->RGE_Moving_Object::rotate(-facet);
                     return;
                 }
             }
-            rotate(2 - facet);
+            ((RGE_Moving_Object*)this)->RGE_Moving_Object::rotate(2 - facet);
             return;
         }
         facet = 0;

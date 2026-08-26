@@ -8,6 +8,11 @@
 #include "../../include/game_types.h"
 #include <stdlib.h>
 
+#include "../../include/stat_obj_context.h"
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
+#define RGE_STAT_OBJ_SHARED_CONTEXT 1
+#endif
+
 #ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Master_Static_Object {
 public:
@@ -61,10 +66,10 @@ void RGE_Static_Object::modify_percent(float percent, unsigned char mode) {
     }
     case 1:
         if (tile != 0 && object_state == 2) {
-            this->vfDC(this->owner, 0, -1);
+            this->unexplore_terrain(this->owner, 0, -1);
 
             int val = (int)(master_obj->los * percent);
-            this->vfD8(this->owner, 0, val);
+            this->explore_terrain(this->owner, 0, val);
         }
         break;
     }

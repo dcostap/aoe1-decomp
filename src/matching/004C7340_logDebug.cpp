@@ -3,6 +3,7 @@
 // Attempt log:
 // baseline: natural cdecl varargs logger with binary-proven object, world-time,
 // global-file, and text-buffer surfaces; exact 213-byte match under default.rsp.
+// BINARY NOTE: logDebug is a public virtual cdecl member.
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -26,17 +27,16 @@ public:
 
 class RGE_Static_Object {
 public:
-    char gap_00[0x04];
     int id; // +0x04
     char gap_08[0x04];
     RGE_Player* owner; // +0x0C
 
-    void logDebug(char* format, ...);
+    virtual void __cdecl logDebug(char* format, ...);
 };
 
 #endif
 
-void RGE_Static_Object::logDebug(char* format, ...)
+void __cdecl RGE_Static_Object::logDebug(char* format, ...)
 {
     char textOut[1024];
 

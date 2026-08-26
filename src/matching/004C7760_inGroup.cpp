@@ -1,3 +1,8 @@
+#include "../../include/stat_obj_context.h"
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
+#define RGE_STAT_OBJ_SHARED_CONTEXT 1
+#endif
+
 #ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Static_Object {
 public:
@@ -8,4 +13,4 @@ public:
 };
 #endif
 
-int RGE_Static_Object::inGroup() { return this->field_68 > 0; }
+int RGE_Static_Object::inGroup() { return this->groupMembers.numberValue > 0; }
