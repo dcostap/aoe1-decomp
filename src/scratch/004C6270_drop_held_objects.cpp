@@ -218,7 +218,13 @@ unsigned char RGE_Static_Object::drop_held_objects(int mode)
         RGE_Object_Node* next;
         next = temp->next;
         while (i > 0) {
-                    if (this->find_drop_location(mode, &x, &y, temp->object->master_obj, temp->object, drop_x[1], drop_y[1], radius_x[1], radius_y[1])) {
+                    if (
+#ifdef RGE_STAT_OBJ_SHARED_CONTEXT
+                        this->find_drop_location(mode, x, y, temp->object->master_obj, temp->object, drop_x[1], drop_y[1], radius_x[1], radius_y[1])
+#else
+                        this->find_drop_location(mode, &x, &y, temp->object->master_obj, temp->object, drop_x[1], drop_y[1], radius_x[1], radius_y[1])
+#endif
+                    ) {
                         RGE_Static_Object* held = temp->object;
                         held->set_location(this->world_x, this->world_y, this->world_z);
                         held->exit_obj();

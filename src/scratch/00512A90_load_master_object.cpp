@@ -9,7 +9,7 @@ class RGE_Master_Static_Object;
 #ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
 class RGE_Player {
 public:
-    virtual void vf00();
+    virtual ~RGE_Player();
     void load_master_object(int param_1, short index, unsigned char type, RGE_Sprite** sprites, RGE_Sound** sounds);
 };
 

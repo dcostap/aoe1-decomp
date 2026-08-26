@@ -8,13 +8,13 @@
 // the donor-shaped guarded do/while with the selected task loaded directly
 // recovered exact size/CFG and left only the no-task-list candidate reload.
 // Promotion audit rejected the prior exact diagnostic: it used a volatile,
-// type-punning reload of the target parameter as an RGE_Task*.  The empty-list
-// path is instead left uninitialized below.  The oracle reloads the incoming
+// type-punning reload of the target parameter as an RGE_Task*. The empty-list
+// path is instead left uninitialized below. The oracle reloads the incoming
 // target home at that point, which is original undefined-path behavior.
 // Same-TU action declarations now retain the proven object and task offsets.
 // probe: direct typed target fallback improved the mismatch from 249 to 248
 // bytes; non-volatile address, memcpy, and reference aliases stayed at 248 or
-// worsened the prologue.  Keep the direct cast as the binary-supported source.
+// worsened the prologue. Keep the direct cast as the binary-supported source.
 // probe: same-TU virtual base and task-list declarations initially shifted
 // offsets; removing compensating gaps restored the 248-byte codegen basin.
 // probe: a focused seven-way lab of non-volatile target casts, address aliases,
@@ -26,175 +26,11 @@
 // fresh pass: dossier, same-TU donors, and stack-home lessons confirm the
 // remaining +0x83 reload as the only natural-source blocker; no new lead.
 // probe: leaving repair_task uninitialized when the task list is empty exactly
-// reproduces the oracle's mov esi,[esp+18h].  At this point that slot is the
-// incoming target home.  Keep the original undefined-path behavior because
+// reproduces the oracle's mov esi,[esp+18h]. At this point that slot is the
+// incoming target home. Keep the original undefined-path behavior because
 // the binary proves this reload.
 
-#ifndef T_C_OBJ_CONTEXT_H
-class RGE_Master_Static_Object;
-class RGE_Player;
-class RGE_Static_Object;
-class RGE_Action_Object;
-class RGE_Task;
-class RGE_Action;
-class RGE_Action_List;
-class RGE_Task_List;
-class UnitAIModule;
-
-class RGE_Master_Static_Object {
-public:
-    virtual ~RGE_Master_Static_Object();
-    unsigned char master_type;
-    char gap_05[0x0B];
-    short id;
-    char gap_12[2];
-    short object_group;
-    char gap_16[0xC2];
-    RGE_Task_List* tasks;
-};
-
-class RGE_Player {
-public:
-    virtual ~RGE_Player();
-    char gap_04[0x1E];
-    short master_object_num;
-    RGE_Master_Static_Object** master_objects;
-};
-
-class RGE_Static_Object {
-public:
-    virtual ~RGE_Static_Object();
-    int id;
-    RGE_Master_Static_Object* master_obj;
-    RGE_Player* owner;
-    char gap_10[0x28];
-    float world_x;
-    float world_y;
-    float world_z;
-};
-
-class RGE_Task {
-public:
-    char gap_00[6];
-    short action_type;
-    short object_group;
-    short object_id;
-    unsigned char combat_level;
-    unsigned char combat_level_flag;
-    short terrain_id;
-    unsigned char owner_type;
-    unsigned char holding_attr;
-    unsigned char state_building;
-    unsigned char gap_13;
-    short attribute_type;
-    short attribute_type2;
-    short attribute_type3;
-    short attribute_type4;
-    float work_val1;
-    float work_val2;
-    float work_range;
-    unsigned char search_flag;
-    char gap_29[3];
-    float search_wait_time;
-    short work_flag;
-    short work_flag2;
-    void* move_sprite;
-    void* work_sprite;
-    void* work_sprite2;
-    void* carry_sprite;
-};
-
-class RGE_Task_List {
-public:
-    virtual RGE_Task* create_task(short task_type, short object_id);
-    virtual RGE_Task* get_target_task(RGE_Action_Object* action,
-                                      RGE_Static_Object* target,
-                                      float x, float y, float z);
-    virtual int is_attack_task(RGE_Task* task);
-    virtual int check_task(RGE_Task* task, RGE_Action_Object* action,
-                           RGE_Static_Object* target);
-    virtual ~RGE_Task_List();
-    RGE_Task** list;
-    short list_num;
-};
-
-class RGE_Action {
-public:
-    virtual ~RGE_Action();
-    virtual int setup(RGE_Static_Object* object);
-    virtual int setup(int type, RGE_Static_Object* object);
-    virtual RGE_Action_List* create_action_list(RGE_Static_Object* object);
-    virtual void rehook();
-    virtual void save(int file);
-    virtual short action_id();
-    virtual void first_in_stack(unsigned char value);
-    virtual unsigned char inside_obj_update();
-    virtual unsigned char idle_update();
-    virtual unsigned char update();
-    virtual int stop();
-    virtual int move_to(RGE_Static_Object* target, float x, float y, float z);
-    virtual int work(RGE_Static_Object* target, float x, float y, float z);
-};
-
-class RGE_Action_List {
-public:
-    virtual ~RGE_Action_List();
-    virtual RGE_Action* create_task_action(RGE_Task* task,
-                                             RGE_Static_Object* target,
-                                             float x, float y, float z);
-
-    int action_work(RGE_Static_Object* target, float x, float y, float z);
-    RGE_Action* get_action();
-    RGE_Task* get_task();
-};
-
-class UnitAIModule {
-public:
-    void setCurrentOrder(int order);
-    void setCurrentAction(int action);
-    void setCurrentTarget(int id, int group, float x, float y, float z);
-    void setTaskedByPlayer();
-};
-
-#define VPAD1(n) virtual void vpad_##n();
-#define VPAD2(n) VPAD1(n) VPAD1(n##_1)
-#define VPAD4(n) VPAD2(n) VPAD2(n##_2)
-#define VPAD8(n) VPAD4(n) VPAD4(n##_4)
-#define VPAD16(n) VPAD8(n) VPAD8(n##_8)
-#define VPAD32(n) VPAD16(n) VPAD16(n##_16)
-#define VPAD64(n) VPAD32(n) VPAD32(n##_32)
-#define VPAD15(n) VPAD8(n) VPAD4(n##_8) VPAD2(n##_12) VPAD1(n##_14)
-
-class RGE_Action_Object {
-public:
-    virtual ~RGE_Action_Object();
-    VPAD15(1)
-    VPAD4(16)
-    VPAD1(20)
-    virtual void transform(RGE_Master_Static_Object* master);
-    VPAD16(22)
-    VPAD1(38)
-    virtual void move_to(RGE_Static_Object* target, float x, float y, float z);
-    VPAD64(40)
-    VPAD16(104)
-    VPAD8(120)
-    VPAD2(128)
-    virtual void set_action(RGE_Action* action);
-
-    char gap_04[4];
-    RGE_Master_Static_Object* master_obj;
-    RGE_Player* owner;
-    char gap_10[0x64];
-    UnitAIModule* unit_ai;
-    char gap_78[0x10C];
-    RGE_Action_List* actions;
-};
-
-class TRIBE_Combat_Object : public RGE_Action_Object {
-public:
-    void do_repair(RGE_Static_Object* target);
-};
-#endif
+#include "../../include/t_c_obj_context.h"
 
 void TRIBE_Combat_Object::do_repair(RGE_Static_Object* target)
 {
@@ -224,7 +60,7 @@ void TRIBE_Combat_Object::do_repair(RGE_Static_Object* target)
             task_list = repair_list->list;
             do {
                 repair_task = *task_list;
-                if (repair_task->action_type == 0x6a) {
+                if (repair_task->action_id == 0x6a) {
                     RGE_Master_Static_Object* target_master = target->master_obj;
                     if (target_master->master_type == 'P') {
                         if (repair_task->object_group == -1 ||
@@ -250,7 +86,7 @@ void TRIBE_Combat_Object::do_repair(RGE_Static_Object* target)
                                        target->world_x,
                                        target->world_y,
                                        target->world_z) != 0) {
-            action_id = this->actions->get_action()->action_id();
+            action_id = this->actions->get_action()->type();
             action_worked = 1;
         }
 
@@ -264,7 +100,7 @@ void TRIBE_Combat_Object::do_repair(RGE_Static_Object* target)
             }
 
             if (action != 0) {
-                action_id = action->action_id();
+                action_id = action->type();
                 this->set_action(action);
             } else {
                 action_id = 0;
@@ -290,12 +126,3 @@ void TRIBE_Combat_Object::do_repair(RGE_Static_Object* target)
         }
     }
 }
-
-#undef VPAD15
-#undef VPAD64
-#undef VPAD32
-#undef VPAD16
-#undef VPAD8
-#undef VPAD4
-#undef VPAD2
-#undef VPAD1

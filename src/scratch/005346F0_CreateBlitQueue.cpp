@@ -70,13 +70,13 @@ struct Blit_Queue_Entry { tagRECT src; tagRECT dest; };
 class TPanel {
 public:
     virtual ~TPanel();
-    virtual void vf04();
-    virtual void vf08();
-    virtual long vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
+    virtual void v00();
+    virtual void set_rect(long, long, long, long);
+    virtual void draw_setup(int);
+    virtual void draw_finish();
+    virtual void draw();
+    virtual void release_mouse();
+    virtual void set_focus(int);
     virtual void set_redraw(int);
     virtual void set_overlapped_redraw();
     virtual void draw_setup(int);

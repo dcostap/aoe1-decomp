@@ -43,6 +43,11 @@
 extern "C" int __cdecl debug_rand(char* file, int line);
 static char s_stat_obj_cpp[] = "C:\\msdev\\work\\age1_x1\\stat_obj.cpp";
 
+#include "../../include/stat_obj_context.h"
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
+#define RGE_STAT_OBJ_SHARED_CONTEXT 1
+#endif
+
 #ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 class RGE_Static_Object;
 class RGE_Sprite;
@@ -103,7 +108,7 @@ void RGE_Static_Object::check_damage_sprites()
     if (master->hp <= 0) return;
     if (master->damage_sprite_num == 0) return;
 
-    new_percent = (unsigned char)(100 - (int)(this->hit_points * 100.0f / master->hp));
+    new_percent = (unsigned char)(100 - (int)(this->hp * 100.0f / master->hp));
     if (new_percent == this->curr_damage_percent) return;
 
     if (new_percent < 100 && master->damage_sprite_num > 0) {

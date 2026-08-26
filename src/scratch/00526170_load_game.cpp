@@ -177,31 +177,134 @@ public:
 class RGE_Static_Object {
 public:
     virtual ~RGE_Static_Object();
-#define OBJ_VPAD1(n) virtual void obj_v##n();
-#define OBJ_VPAD2(n) OBJ_VPAD1(n) OBJ_VPAD1(n##_1)
-#define OBJ_VPAD4(n) OBJ_VPAD2(n) OBJ_VPAD2(n##_2)
-#define OBJ_VPAD8(n) OBJ_VPAD4(n) OBJ_VPAD4(n##_4)
-#define OBJ_VPAD16(n) OBJ_VPAD8(n) OBJ_VPAD8(n##_8)
-#define OBJ_VPAD32(n) OBJ_VPAD16(n) OBJ_VPAD16(n##_16)
-#define OBJ_VPAD64(n) OBJ_VPAD32(n) OBJ_VPAD32(n##_32)
-    OBJ_VPAD32(1)
-    OBJ_VPAD16(33)
-    OBJ_VPAD2(49)
+    virtual void recycle_in_to_game();
+    virtual void recycle_out_of_game();
+    virtual void draw();
+    virtual void shadow_draw();
+    virtual void normal_draw();
+    virtual void draw_front_frame();
+    virtual void draw_back_frame();
+    virtual void draw_frame();
+    virtual unsigned char update();
+    virtual void check_damage_sprites();
+    virtual void rehook();
+    virtual void save(int file);
+    virtual float teleport(float x, float y, float z);
+    virtual void new_sprite();
+    virtual void add_overlay_sprite(unsigned char value);
+    virtual void remove_overlay_sprite();
+    virtual void change_ownership(RGE_Player* player);
+    virtual void modify(float value, unsigned char type);
+    virtual void modify_delta(float value, unsigned char type);
+    virtual void modify_percent(float value, unsigned char type);
+    virtual void transform();
+    virtual void copy_obj();
+    virtual void set_object_state(unsigned char state);
+    virtual void remove_visible_resource();
+    virtual void create_doppleganger_when_dying();
+    virtual void destroy_obj();
+    virtual void die_die_die();
+    virtual void damage();
+    virtual float calculateDamage();
+    virtual void rotate(long angle);
+    virtual unsigned char can_attack();
+    virtual void set_attribute(short attr, float value);
+    virtual void set_attribute_amount(float amount, unsigned char attr,
+                                      unsigned char type);
+    virtual int heal(int amount, int type);
+    virtual unsigned char heal(float amount);
+    virtual int canRepair();
+    virtual void notify_of_relation(long player, unsigned char relation);
+    virtual void do_command(RGE_Static_Object* object, float x, float y,
+                            float z);
+    virtual void move_to(RGE_Static_Object* object, float x, float y,
+                         float z);
+    virtual void work(RGE_Static_Object* object, float x, float y, float z);
+    virtual void stop();
+    virtual void set_attack(RGE_Static_Object* object);
+    virtual void play_command_sound();
+    virtual void play_move_sound();
+    virtual void new_angle(float angle);
+    virtual RGE_Static_Object* spawn_death_obj();
+    virtual void* get_command_master();
+    virtual void set_being_worked_on();
+    virtual void release_being_worked_on(RGE_Static_Object* object);
+    virtual unsigned char is_moving();
     virtual RGE_Static_Object* get_target_obj(); // +CC
-    OBJ_VPAD16(52)
-    OBJ_VPAD8(68)
-    OBJ_VPAD4(76)
-    OBJ_VPAD2(80)
-    OBJ_VPAD32(82)
-    OBJ_VPAD2(114)
+    virtual void enter_obj(RGE_Static_Object* object);
+    virtual void exit_obj();
+    virtual int explore_terrain();
+    virtual void unexplore_terrain();
+    virtual void* get_los_table();
+    virtual int inAttackRange(RGE_Static_Object* object);
+    virtual unsigned char underAttack();
+    virtual void setUnderAttack(unsigned char value);
+    virtual float calc_attack_modifier(RGE_Static_Object* object);
+    virtual float getSpeed();
+    virtual float getAngle();
+    virtual float maximumSpeed();
+    virtual float rateOfFire();
+    virtual float damageCapability(RGE_Static_Object* object);
+    virtual float damageCapability();
+    virtual float weaponRange();
+    virtual float minimumWeaponRange();
+    virtual int passableTile(float x, float y, int value);
+    virtual unsigned char facetToNextWaypoint();
+    virtual int currentTargetID();
+    virtual float currentTargetX();
+    virtual float currentTargetY();
+    virtual float currentTargetZ();
+    virtual void setWaitingToMove(unsigned char value);
+    virtual unsigned char waitingToMove();
+    virtual unsigned char actionState();
+    virtual unsigned char keepGatheringWhenObjectIsOut(int value);
+    virtual unsigned char produceWhenKilledBy(int value);
+    virtual unsigned char useSameZoneDropsite();
+    virtual void logDebug(const char* format, ...);
+    virtual void notify(int a, int b, int c, long d, long e, long f);
+    virtual int attack(float x, float y, float z, int value);
+    virtual int attack(int target, int value);
+    virtual int moveTo(float x, float y, float z, float speed, int value);
+    virtual int moveTo(int target, float speed, int value);
+    virtual int moveTo(int target, int value);
+    virtual int moveAwayFrom(int target, int value);
+    virtual int hunt(int target, int value);
+    virtual int gather(int target, int value);
+    virtual int convert(int target, int value);
+    virtual int repair(int target, int value);
+    virtual int build(int target, int value);
+    virtual int trade(int target, int value);
+    virtual int explore(int target, int value, int type);
+    virtual int enter(int target, int value);
+    virtual int unload(int target, float x, float y, float z);
+    virtual int transport(float x, float y, float z, int target);
+    virtual int stopAction();
+    virtual int pause();
+    virtual int canPath(int target, float value, float* result,
+                        int a, int b, int c);
+    virtual int canPath(void* point, float value, int target, float* result,
+                        int a, int b, int c);
+    virtual int canBidirectionPath(int a, int b, float value, float* result,
+                                   int c, int d, int e);
+    virtual int canPathWithObstructions(int target, float value, float* result,
+                                        int a, int b, int c, void* data);
+    virtual int canPathWithAdditionalPassability(
+        void* point, float value, int target, float* result,
+        int a, int b, int c, int d, int e);
+    virtual int findFirstTerrainAlongExceptionPath(int target, float* x,
+                                                   float* y);
+    virtual int canLinePath(int a, int b, int c, int d, float value, int e);
+    virtual int canLinePath(void* first, void* second, float value,
+                            void* third, int value2);
+    virtual int firstTileAlongLine(void* first, void* second, void* third,
+                                   int a, int b, int c);
+    virtual void* userDefinedWaypoint(int index);
+    virtual int addUserDefinedWaypoint(void* point, int index);
+    virtual void removeAllUserDefinedWaypoints(int value);
+    virtual void removeUserDefinedWaypoint(int value);
+    virtual int numberUserDefinedWaypoints();
+    virtual void* findAvoidancePath(void* point, float value, int target);
     virtual long get_action_checksum(); // +1D0
-#undef OBJ_VPAD64
-#undef OBJ_VPAD32
-#undef OBJ_VPAD16
-#undef OBJ_VPAD8
-#undef OBJ_VPAD4
-#undef OBJ_VPAD2
-#undef OBJ_VPAD1
     long id; // +4
     RGE_Master_Static_Object* master_obj; // +8
     RGE_Player* owner; // +C
@@ -298,65 +401,83 @@ public:
 #endif
 
 #ifndef TRIBEGAM_TU_CONTEXT
+struct RGE_Player_Info;
+class RGE_Sound;
+class TSound_Driver;
+class RGE_Scenario;
 class RGE_Game_World {
 public:
+    virtual unsigned char data_load_world(void* file);
+    virtual unsigned char data_load_terrain_tables(char* name);
+    virtual unsigned char data_load_players(char* name);
+    virtual unsigned char data_load_objects(char* name);
+    virtual unsigned char data_load_sounds(char* name);
+    virtual unsigned char data_load_color_tables(char* name);
+    virtual unsigned char data_load_sprites(char* name);
+    virtual void data_load_players_type(short player, short type, void* file);
+    virtual void data_load_effects(char* name);
+    virtual void data_load_map(char* map, char* terrain, char* effect,
+                               char* random, short width, short height,
+                               short tile_set, RGE_Sound** sounds,
+                               char* name);
+    virtual void data_load_random_map(char* map, char* terrain,
+                                      char* effect, char* random);
+    virtual unsigned char init_player_type(int player, short type,
+                                           unsigned char active);
+    virtual unsigned char init_player(int player);
+    virtual void load_player(int player, unsigned char type, short id);
+    virtual void color_table_init(int table);
+    virtual void terrain_tables_init(int table);
+    virtual void init_sounds(int count, TSound_Driver* driver);
+    virtual void init_sprites(int count);
+    virtual void map_init(int count, TSound_Driver* driver);
+    virtual void effects_init(int count);
+    virtual void master_player_init(int count);
+    virtual void command_init(int count, TCommunications_Handler* comm);
+    virtual void world_init(int count, TSound_Driver* driver,
+                            TCommunications_Handler* comm);
+    virtual void setup_gaia();
+    virtual void setup_players(RGE_Player_Info* info);
+    virtual unsigned char new_random_game(RGE_Player_Info* info);
+    virtual void save(int file);
+    virtual void scenario_make_player(short player, unsigned char active,
+                                      unsigned char type, unsigned char civ,
+                                      char* name);
+    virtual void scenario_make_map(int map);
+    virtual unsigned char load_scenario(RGE_Player_Info* info);
+    virtual unsigned char load_scenario(char* name, RGE_Player_Info* info);
+    virtual void load_scenario1(int player, RGE_Player_Info* info);
+    virtual void load_scenario2(int player, RGE_Player_Info* info);
+    virtual void load_scenario3(int player, RGE_Player_Info* info);
+    virtual void load_scenario4(int player, RGE_Player_Info* info);
+    virtual void load_scenario5(int player, RGE_Player_Info* info);
+    virtual void load_scenario6(int player, RGE_Player_Info* info);
+    virtual void load_scenario7(int player, RGE_Player_Info* info);
+    virtual void load_scenario8(int player, RGE_Player_Info* info);
+    virtual void logStatus(void* file, int verbose);
     virtual ~RGE_Game_World();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
-    virtual void vf20();
-    virtual void vf24();
-    virtual void vf28();
-    virtual void vf2C();
-    virtual void vf30();
-    virtual void vf34();
-    virtual void vf38();
-    virtual void vf3C();
-    virtual void vf40();
-    virtual void vf44();
-    virtual void vf48();
-    virtual void vf4C();
-    virtual void vf50();
-    virtual void vf54();
-    virtual void vf58();
-    virtual void vf5C();
-    virtual void vf60();
-    virtual void vf64();
-    virtual void vf68();
-    virtual void vf6C();
-    virtual void vf70();
-    virtual void vf74();
-    virtual void vf78();
-    virtual void vf7C();
-    virtual void vf80();
-    virtual void vf84();
-    virtual void vf88();
-    virtual void vf8C();
-    virtual void vf90();
-    virtual void vf94();
-    virtual void vf98();
-    virtual void vf9C();
-    virtual void vfA0();
-    virtual void vfA4();
-    virtual void vfA8();
-    virtual void vfAC();
-    virtual void vfB0();
-    virtual void vfB4();
-    virtual void turn_sound_off(); // +B8
-    virtual void vfBC();
-    virtual void vfC0();
-    virtual void vfC4();
-    virtual void vfC8();
-    virtual unsigned char load_game(char* file_name); // +CC
-    virtual void vfD0();
-    virtual void vfD4();
-    virtual void vfD8();
-    virtual void vfDC();
-    virtual void vfE0();
+    virtual void setup_player_colors();
+    virtual void setup_player_colors(RGE_Player_Info* info);
+    virtual unsigned char data_load(char* first, char* second);
+    virtual unsigned char init(char* name, TSound_Driver* driver,
+                               TCommunications_Handler* comm);
+    virtual void turn_sound_off();
+    virtual void del_game_info();
+    virtual unsigned char update();
+    virtual unsigned char get_game_state();
+    virtual unsigned char check_game_state();
+    virtual unsigned char load_world(int file);
+    virtual unsigned char load_game(char* file_name);
+    virtual unsigned char new_game(RGE_Player_Info* info, int flags);
+    virtual unsigned char new_scenario(RGE_Player_Info* info, int flags);
+    virtual unsigned char save_game(char* name);
+    virtual void base_save(char* name);
+    virtual void base_save(int file);
+    virtual unsigned char save_scenario(char* name);
+    virtual RGE_Scenario* get_scenario_info(char* name);
+    virtual void pause(unsigned char value);
+    virtual void scenario_init(RGE_Game_World* world);
+    virtual void scenario_init(int file, RGE_Game_World* world);
 
     int world_time; // +4
     int old_world_time; // +8

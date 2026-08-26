@@ -1,20 +1,7 @@
 #ifndef PLAYER_GROUPED_TU
-struct Inner_1BF0 {
-    void setVisible(int val);
-};
-
-class RGE_Game_World {
-public:
-    char gap_0[0x38];
-    Inner_1BF0 *ptr;
-    void set_map_visible();
-};
+#include "../player_tu_context.h"
 #endif
 
-void RGE_Game_World::set_map_visible() {
-#ifdef PLAYER_GROUPED_TU
-    this->map->setVisible(1);
-#else
-    this->ptr->setVisible(1);
-#endif
+void RGE_Player::set_map_visible() {
+    this->world->map->setVisible(1);
 }

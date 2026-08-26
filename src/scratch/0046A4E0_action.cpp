@@ -8,12 +8,12 @@ extern TPanelSystem panel_system;
 
 class TEasy_Panel {
 public:
-    int action(TPanel* panel, long p2, long p3, long p4);
-    int base_action(TPanel* panel, long p2, long p3, long p4);
+    virtual long action(TPanel* panel, long p2, unsigned long p3, unsigned long p4);
+    int base_action(TPanel* panel, long p2, unsigned long p3, unsigned long p4);
 };
 #endif
 
-int TEasy_Panel::action(TPanel* panel, long p2, long p3, long p4) {
+long TEasy_Panel::action(TPanel* panel, long p2, unsigned long p3, unsigned long p4) {
     if (panel) {
         if (panel->panelName() && strcmp(panel->panelName(), "OKDialog") == 0) {
             if (p2 == 0 || p2 == 1) {

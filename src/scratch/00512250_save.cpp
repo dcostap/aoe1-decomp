@@ -9,7 +9,7 @@ extern "C" void __cdecl rge_write(int file, void* data, int size);
 #ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
 class RGE_Player {
 public:
-    virtual void vf00();
+    virtual ~RGE_Player();
     void save(int file);
 };
 
@@ -32,10 +32,11 @@ extern TCommunications_Handler* communications_handler;
 
 class ScenarioObject {
 public:
-    virtual void vf00(); virtual void vf04(); virtual void vf08(); virtual void vf0C();
-    virtual void vf10(); virtual void vf14(); virtual void vf18(); virtual void vf1C();
-    virtual void vf20(); virtual void vf24(); virtual void vf28(); virtual void vf2C();
-    virtual void vf30(); virtual void vf34(); virtual void vf38(); virtual void save(int file);
+    virtual void load(); virtual void initialize(); virtual void setup(); virtual void clear();
+    virtual void reset(); virtual void update(); virtual void save_info(); virtual void load_info();
+    virtual void scenario_save(); virtual void scenario_load(); virtual void scenario_postload();
+    virtual void set_player(); virtual void set_object(); virtual void set_state();
+    virtual void destroy(); virtual void save(int file);
 };
 
 class TRIBE_Player : public RGE_Player {

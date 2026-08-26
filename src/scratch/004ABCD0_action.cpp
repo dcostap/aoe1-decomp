@@ -234,7 +234,7 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
         if (param_2 == 1) {
             for (i = 0; i < 3; i++) {
                 if (param_1 == this->map_type_button[i]) {
-                    this->set_map_type(i + MapTypeBlank, 1);
+                    this->set_map_type((MapType)(i + MapTypeBlank), 1);
                     return 1;
                 }
             }
@@ -332,7 +332,7 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
                     if (param_1 == this->brush_size_button[i]) { this->set_brush_size(i + BrushSizeVerySmall); return 1; }
                 }
                 for (i = 0; i < 3; i++) {
-                    if (param_1 == this->paint_type_button[i]) { this->set_paint_type(i + PaintTypeTerrain, 1); return 1; }
+                    if (param_1 == this->paint_type_button[i]) { this->set_paint_type((PaintType)(i + PaintTypeTerrain), 1); return 1; }
                 }
             }
         }
@@ -432,7 +432,7 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
         if (param_2 == 1) {
             for (i = 0; i < 5; i++) {
                 if (param_1 == this->victory_cond_type[i]) {
-                    this->set_mp_victory_type(i + VictoryTypeStandard, 1);
+                    this->set_mp_victory_type((VictoryType)(i + VictoryTypeStandard), 1);
                     if (i != 4) { this->world->scenario->Set_Multi_Conquest(1); this->victory_cond_on[0]->set_state(1); }
                     return 1;
                 }

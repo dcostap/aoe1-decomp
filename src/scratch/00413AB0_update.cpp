@@ -96,22 +96,6 @@ extern float DAT_0056ebc0;
 #define actionFormat ((const char*)0x57F964)
 #define actionSource ((const char*)0x57F980)
 
-#define AI_UPDATE_VPAD(n) virtual int updateVpad##n();
-class UnitAIModule_Move_Query4 {
-public:
-    AI_UPDATE_VPAD(00) AI_UPDATE_VPAD(01) AI_UPDATE_VPAD(02) AI_UPDATE_VPAD(03)
-    AI_UPDATE_VPAD(04) AI_UPDATE_VPAD(05) AI_UPDATE_VPAD(06) AI_UPDATE_VPAD(07)
-    AI_UPDATE_VPAD(08) AI_UPDATE_VPAD(09) AI_UPDATE_VPAD(10) AI_UPDATE_VPAD(11)
-    AI_UPDATE_VPAD(12) AI_UPDATE_VPAD(13) AI_UPDATE_VPAD(14) AI_UPDATE_VPAD(15)
-    AI_UPDATE_VPAD(16) AI_UPDATE_VPAD(17) AI_UPDATE_VPAD(18) AI_UPDATE_VPAD(19)
-    AI_UPDATE_VPAD(20) AI_UPDATE_VPAD(21) AI_UPDATE_VPAD(22) AI_UPDATE_VPAD(23)
-    AI_UPDATE_VPAD(24) AI_UPDATE_VPAD(25) AI_UPDATE_VPAD(26) AI_UPDATE_VPAD(27)
-    AI_UPDATE_VPAD(28) AI_UPDATE_VPAD(29) AI_UPDATE_VPAD(30) AI_UPDATE_VPAD(31)
-    AI_UPDATE_VPAD(32) AI_UPDATE_VPAD(33) AI_UPDATE_VPAD(34) AI_UPDATE_VPAD(35)
-    virtual int moveTo(float, float, float, float); // +0x90
-};
-#undef AI_UPDATE_VPAD
-
 int UnitAIModule::update(unsigned long param_1)
 {
     RGE_Static_Object* target;
@@ -161,11 +145,11 @@ int UnitAIModule::update(unsigned long param_1)
                         int idleResult = this->processIdle(0);
                         if (idleResult == 5) {
                             if (this->currentOrderValue != 0x2D5) {
-                                if (((UnitAIModule_Move_Query4*)this)->moveTo(
-                                        this->currentTargetXValue,
-                                        this->currentTargetYValue,
-                                        this->currentTargetZValue,
-                                        this->objectValue->weaponRange(1)) == 0) {
+                                if (this->moveTo(this->currentTargetXValue,
+                                                 this->currentTargetYValue,
+                                                 this->currentTargetZValue,
+                                                 this->objectValue->weaponRange(),
+                                                 0) == 0) {
                                     this->removeCurrentTarget();
                                     if (actionFile != 0) {
                                         if (this->objectValue != 0) {

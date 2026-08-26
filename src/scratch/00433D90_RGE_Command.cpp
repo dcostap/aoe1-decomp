@@ -13,6 +13,11 @@ public:
 };
 #endif
 
+// ABI NOTE: 00433D70 is a compiler-generated scalar deleting destructor.
+// VC5 defines ??_G here and leaves ??_E as a weak external. The original
+// FPO record calls the same body vector deleting, but cvdump and the original
+// vtable assign ownership to scalar deleting. Do not add synthetic new[] use.
+
 RGE_Command::~RGE_Command() {
     this->field_04 = 0;
     this->field_14 = 0;

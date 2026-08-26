@@ -7,6 +7,11 @@
 
 #include "../../include/game_types.h"
 
+#include "../../include/stat_obj_context.h"
+#ifndef RGE_STAT_OBJ_SHARED_CONTEXT
+#define RGE_STAT_OBJ_SHARED_CONTEXT 1
+#endif
+
 #ifndef RGE_STAT_OBJ_SHARED_CONTEXT
 struct ObjVTableProxy {
     virtual void _d00(); virtual void _d01(); virtual void _d02(); virtual void _d03();
@@ -65,11 +70,11 @@ void RGE_Static_Object::enter_obj(RGE_Static_Object* target) {
     }
 
     if (inside_obj != 0) {
-        inside_obj->funcD4();
+        inside_obj->exit_obj();
     }
 
     if (tile != 0) {
-        this->funcDC(owner, 0, -1);
+        this->unexplore_terrain(owner, 0, -1);
 
         tile->objects.remove_node(this, 0);
         tile = 0;

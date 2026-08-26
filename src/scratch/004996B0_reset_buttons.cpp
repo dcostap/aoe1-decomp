@@ -1,15 +1,14 @@
-struct Fwd_96B0 {
-    void target();
-};
-
-class Pnl_ScenarioCreate : public Fwd_96B0 {
+#if !defined(SCR_GAME_TU_CONTEXT)
+class TRIBE_Screen_Game {
 public:
-    char gap_0[0x5E2];
-    short field_5E2;
+    char gap_00[0x5E2];
+    short start_item;
+    void setup_buttons();
     void reset_buttons();
 };
+#endif
 
-void Pnl_ScenarioCreate::reset_buttons() {
-    this->field_5E2 = 0;
-    this->target();
+void TRIBE_Screen_Game::reset_buttons() {
+    this->start_item = 0;
+    this->setup_buttons();
 }

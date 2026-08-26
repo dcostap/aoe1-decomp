@@ -355,7 +355,9 @@ public:
     virtual int processCheatCode(int, char*);
     virtual int setup_music_system();
     virtual void shutdown_music_system();
+protected:
     virtual int setup();
+public:
     virtual int setup_cmd_options();
     virtual int setup_class();
     virtual int setup_main_window();
@@ -551,7 +553,9 @@ public:
     virtual int processCheatCode(int, char*);
     virtual int setup_music_system();
     virtual void shutdown_music_system();
+protected:
     virtual int setup();
+public:
     virtual int setup_cmd_options();
     virtual int setup_class();
     virtual int setup_main_window();

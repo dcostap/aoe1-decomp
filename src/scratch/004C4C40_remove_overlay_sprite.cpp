@@ -1,16 +1,20 @@
 #ifndef RGE_STAT_OBJ_SHARED_CONTEXT
-struct Inner_004C4C40 {
-    void target(int param);
+class RGE_Sprite;
+
+class RGE_Active_Sprite_List {
+public:
+    void remove_sprite(RGE_Sprite* param);
 };
 
 class RGE_Static_Object {
 public:
-    char gap_0[0x18];
-    Inner_004C4C40 *ptr_;
-    void remove_overlay_sprite(int param);
+    char gap_0[0x14];
+    RGE_Active_Sprite_List *sprite_list;
+    virtual void remove_overlay_sprite(RGE_Sprite* param);
 };
 #endif
 
-void RGE_Static_Object::remove_overlay_sprite(int param) {
-    this->ptr_->target(param);
+// BINARY NOTE: this virtual member takes an RGE_Sprite pointer.
+void RGE_Static_Object::remove_overlay_sprite(RGE_Sprite* param) {
+    this->sprite_list->remove_sprite(param);
 }

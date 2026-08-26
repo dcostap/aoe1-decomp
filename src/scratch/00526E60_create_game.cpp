@@ -35,6 +35,10 @@
 // - current behavior frontier: 2557 rebuilt bytes, 2371 strict differing bytes,
 //   80.58% shape, 45.08% exact-block coverage, and 100/100 ordered calls.
 //   No exact result.
+// - source-policy cleanup: standalone declarations now use natural player,
+//   scenario, world, and base-game surfaces. Delete, new_game, and
+//   del_game_info retain the observed virtual calls. The owner remains
+//   unresolved in scratch.
 
 #include <stddef.h>
 #include <stdio.h>
@@ -80,7 +84,8 @@ struct RGE_Map_Gen_Info {
     char rest[0x50C];
 };
 
-struct RGE_Player_Info {
+class RGE_Player_Info {
+public:
     char name[9][65];
     char type[9];
     char tribe[9];
@@ -99,6 +104,9 @@ struct RGE_Player_Info {
     unsigned char campaign;
     unsigned char pad_end[3];
 };
+
+class RGE_Static_Object;
+class RGE_Sound;
 
 #ifndef TRIBEGAM_TU_CONTEXT
 class RGE_Game_Info {
@@ -124,22 +132,17 @@ public:
     void explore_all();
 };
 
- #ifndef TRIBEGAM_TU_CONTEXT
-class RGE_Player {
-public:
-    void* vtable_ptr;
-    char gap_04[0x34];
-    RGE_Visible_Map* visible;
-
-    int computerPlayer() const;
-};
+#ifndef TRIBEGAM_TU_CONTEXT
+#include "../../include/rge_player_context.h"
 #endif
 
 #ifndef TRIBEGAM_TU_CONTEXT
 class RGE_Scenario {
 public:
-    virtual void v0();
-    virtual void release(int flags);
+    virtual RGE_Static_Object* get_object_pointer(int player);
+    virtual ~RGE_Scenario();
+    virtual void rehook();
+    virtual void save(int file);
     int Get_player_Civ(int player);
     char* GetPlayerName(int player);
 };
@@ -148,59 +151,77 @@ public:
 #ifndef TRIBEGAM_TU_CONTEXT
 class RGE_Game_World {
 public:
-    virtual void v0();
-    virtual void v1();
-    virtual void v2();
-    virtual void v3();
-    virtual void v4();
-    virtual void v5();
-    virtual void v6();
-    virtual void v7();
-    virtual void v8();
-    virtual void v9();
-    virtual void v10();
-    virtual void v11();
-    virtual void v12();
-    virtual void v13();
-    virtual void v14();
-    virtual void v15();
-    virtual void v16();
-    virtual void v17();
-    virtual void v18();
-    virtual void v19();
-    virtual void v20();
-    virtual void v21();
-    virtual void v22();
-    virtual void v23();
-    virtual void v24();
-    virtual void v25();
-    virtual void v26();
-    virtual void v27();
-    virtual void v28();
-    virtual void v29();
-    virtual void v30();
-    virtual void v31();
-    virtual void v32();
-    virtual void v33();
-    virtual void v34();
-    virtual void v35();
-    virtual void v36();
-    virtual void v37();
-    virtual void v38();
-    virtual void v39();
-    virtual void v40();
-    virtual void v41();
-    virtual void v42();
-    virtual void v43();
-    virtual void v44();
-    virtual void v45();
-    virtual void v46();
-    virtual void v47();
-    virtual void v48();
-    virtual void v49();
-    virtual void v50();
-    virtual void v51();
-    virtual unsigned char v52(char* name, int player);
+    virtual unsigned char data_load_world(FILE* file);
+    virtual unsigned char data_load_terrain_tables(char* name);
+    virtual unsigned char data_load_players(char* name);
+    virtual unsigned char data_load_objects(char* name);
+    virtual unsigned char data_load_sounds(char* name);
+    virtual unsigned char data_load_color_tables(char* name);
+    virtual unsigned char data_load_sprites(char* name);
+    virtual void data_load_players_type(short player, short type, FILE* file);
+    virtual void data_load_effects(char* name);
+    virtual void data_load_map(char* map, char* terrain, char* effect,
+                               char* random, short width, short height,
+                               short tile_set, RGE_Sound** sounds,
+                               char* name);
+    virtual void data_load_random_map(char* map, char* terrain,
+                                      char* effect, char* random);
+    virtual unsigned char init_player_type(int player, short type,
+                                           unsigned char active);
+    virtual unsigned char init_player(int player);
+    virtual void load_player(int player, unsigned char type, short id);
+    virtual void color_table_init(int table);
+    virtual void terrain_tables_init(int table);
+    virtual void init_sounds(int count, TSound_Driver* driver);
+    virtual void init_sprites(int count);
+    virtual void map_init(int count, TSound_Driver* driver);
+    virtual void effects_init(int count);
+    virtual void master_player_init(int count);
+    virtual void command_init(int count, TCommunications_Handler* comm);
+    virtual void world_init(int count, TSound_Driver* driver,
+                            TCommunications_Handler* comm);
+    virtual void setup_gaia();
+    virtual void setup_players(RGE_Player_Info& info);
+    virtual unsigned char new_random_game(RGE_Player_Info& info);
+    virtual void save(int file);
+    virtual void scenario_make_player(short player, unsigned char active,
+                                      unsigned char type, unsigned char civ,
+                                      char* name);
+    virtual void scenario_make_map(int map);
+    virtual unsigned char load_scenario(char* name, RGE_Player_Info* info);
+    virtual unsigned char load_scenario(RGE_Player_Info& info);
+    virtual void load_scenario1(int player, RGE_Player_Info& info);
+    virtual void load_scenario2(int player, RGE_Player_Info& info);
+    virtual void load_scenario3(int player, RGE_Player_Info& info);
+    virtual void load_scenario4(int player, RGE_Player_Info& info);
+    virtual void load_scenario5(int player, RGE_Player_Info& info);
+    virtual void load_scenario6(int player, RGE_Player_Info& info);
+    virtual void load_scenario7(int player, RGE_Player_Info& info);
+    virtual void load_scenario8(int player, RGE_Player_Info& info);
+    virtual void logStatus(FILE* file, int verbose);
+    virtual ~RGE_Game_World();
+    virtual void setup_player_colors();
+    virtual void setup_player_colors(RGE_Player_Info* info);
+    virtual unsigned char data_load(char* first, char* second);
+    virtual unsigned char init(char* name, TSound_Driver* driver,
+                               TCommunications_Handler* comm);
+    virtual void turn_sound_off();
+    virtual void del_game_info();
+    virtual unsigned char update();
+    virtual unsigned char get_game_state();
+    virtual unsigned char check_game_state();
+    virtual unsigned char load_world(int file);
+    virtual unsigned char load_game(char* name);
+    virtual unsigned char new_game(RGE_Player_Info& info, int flags);
+    virtual unsigned char new_scenario(RGE_Player_Info& info, int flags);
+    virtual unsigned char save_game(char* name);
+    virtual void base_save(char* name);
+    virtual void base_save(int file);
+    virtual unsigned char save_scenario(char* name);
+    virtual RGE_Scenario* get_scenario_info(char* name);
+    virtual void pause(unsigned char value);
+    virtual void scenario_init(int file, RGE_Game_World* world);
+    virtual void scenario_init(RGE_Game_World* world);
 
     char gap_04[0x38];
     short player_num; // +0x3C
@@ -215,7 +236,7 @@ public:
 class TSound_Driver {
 public:
     unsigned char pad_00;
-    unsigned char sound_enabled;
+    unsigned char game_loading;
 };
 
 class RGE_Prog_Info {
@@ -226,14 +247,15 @@ public:
 class RGE_Base_Game {
 public:
     virtual ~RGE_Base_Game();
-    virtual void v1();
-    virtual void v2();
-    virtual void v3();
-    virtual void v4();
-    virtual void v5();
-    virtual void v6();
-    virtual void v7();
+    virtual int run();
+    virtual long wnd_proc(void* window, unsigned int message,
+                          unsigned int wparam, long lparam);
+    virtual void set_prog_mode(int mode);
+    virtual void set_game_mode(int mode, int sub_mode);
+    virtual void set_player(short player);
+    virtual int get_error_code();
     virtual char* get_string(long id, char* buffer, int size); // +0x20
+    virtual char* get_string(int id, long param, char* buffer, int size);
 
     RGE_Game_Info* player_game_info; // +0x04
     char gap_08[4];
@@ -311,12 +333,9 @@ public:
     int computerName(int player);
     int randomGame();
 
+protected:
     int create_game(int param_1);
 };
-#endif
-
-#ifndef TRIBEGAM_TU_CONTEXT
-typedef RGE_Scenario T_Scenario;
 #endif
 
 int TRIBE_Game::create_game(int param_1)
@@ -616,14 +635,14 @@ scenario_info_done:
     } while (i < 8);
 
     if (scenario_info != 0) {
-        scenario_info->release(1);
+        delete scenario_info;
     }
     if (player_info.player_num == 0) {
         return 0;
     }
 
     if (this->sound_system != 0) {
-        ((TSound_Driver*)this->sound_system)->sound_enabled = 1;
+        ((TSound_Driver*)this->sound_system)->game_loading = 1;
     }
 
     unsigned char result;
@@ -634,15 +653,15 @@ scenario_info_done:
     else {
         local_player = 1;
     }
-    result = ((RGE_Game_World*)this->world)->v52(player_info.name[0],
-                                                  this->playerID(local_player));
+    result = ((RGE_Game_World*)this->world)->new_game(
+        player_info, this->playerID(local_player));
     if (result != 0 && this->world->player_num < 2) {
         result = 0;
-        this->world->v46();
+        this->world->del_game_info();
     }
 
     if (this->sound_system != 0) {
-        ((TSound_Driver*)this->sound_system)->sound_enabled = 0;
+        ((TSound_Driver*)this->sound_system)->game_loading = 0;
     }
 
     for (i = 0; i < this->world->player_num; ++i) {

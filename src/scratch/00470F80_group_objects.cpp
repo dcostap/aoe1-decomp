@@ -30,12 +30,21 @@
 //   with the selected-count guard first; using that natural short index/count
 //   form removed the prior 24-byte tail drift and matched size and CFG.
 // - Spelling the guard as `count >= sel_count` produced the original compare
-//   operand order and closed the final 2-byte mismatch; the source is exact.
+//   operand order and closed the final 2-byte mismatch in the narrow owner
+//   context.  The complete player TU retains a six-byte SIB-order drift after
+//   the canonical RGE_Game_World virtual surface is restored for addObject.
+//   Direct member, pointer, and commuted array expressions keep the same
+//   register map.  Do not retain a non-source steering construct for this.
+// - The grouped player build now uses the canonical RGE_Player declaration
+//   from include/rge_player_context.h.  Its addObject/removeObject neighbors
+//   emit the original 0xF8/0xFC world slots and exact 71/88-byte bodies.
 
 #include <string.h>
 
+
 #ifndef PLAYER_GROUPED_TU
 class RGE_Player;
+class RGE_Game_World;
 
 class RGE_Static_Object {
 public:
@@ -47,15 +56,18 @@ public:
     unsigned char selected_group;
 };
 
-class RGE_Object_Node {
+struct RGE_Object_Node {
 public:
     RGE_Static_Object* node;
     RGE_Object_Node* next;
+    RGE_Object_Node* prev;
+    unsigned char centered;
+    unsigned char gap_0D[3];
 };
 
 class RGE_Object_List {
 public:
-    virtual ~RGE_Object_List();
+    virtual void load(unsigned char, int, RGE_Game_World*);
     RGE_Object_Node* list;
 };
 
@@ -79,7 +91,6 @@ public:
 int RGE_Player::group_objects(int group)
 {
     unsigned char selected_group;
-
     if (!sel_count) {
         return 0;
     }

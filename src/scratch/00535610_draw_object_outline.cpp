@@ -61,7 +61,7 @@ struct tagPOINT {
 };
 
 struct RGE_Game_World {
-    void* vtable_ptr;
+    virtual unsigned char data_load_world(void*);
     unsigned long world_time;
 };
 
@@ -82,7 +82,7 @@ struct RGE_Pick_Info {
 
 class RGE_Player {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Player();
     char gap_04[0x1E];
     short master_object_num;
     struct RGE_Master_Static_Object** master_objects;
@@ -92,7 +92,7 @@ public:
 
 class RGE_Base_Game {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Base_Game();
     char gap_04[0x1AC];
     int prog_mode;
     int game_mode;
@@ -153,7 +153,7 @@ public:
 
 class TPanel {
 public:
-    void* vtable_ptr;
+    virtual ~TPanel();
     char gap_04[0x1C];
     TDrawArea* render_area;                // +0x20
     char gap_24[0x68];
@@ -185,7 +185,7 @@ public:
 
 class RGE_Static_Object {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Static_Object();
     long id;
     void* master_obj;
     RGE_Player* owner;

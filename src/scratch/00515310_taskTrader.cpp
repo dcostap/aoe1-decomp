@@ -1,9 +1,10 @@
 #include <stdlib.h>
 
+// STATUS: scratch. Standalone bytes match; the canonical full tplayer wrapper does not.
+
 #ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
 class RGE_Command {
 public:
-    void* vtable_ptr;
     void* world;
     unsigned char* last_order;
     long last_order_size;
@@ -21,7 +22,8 @@ public:
 
 class RGE_Player {
 public:
-    char gap_00[0x3C];
+    virtual void update();
+    char gap_00[0x38];
     RGE_Game_World* world;
     char gap_40[0xA];
     short id;
@@ -31,7 +33,7 @@ class TRIBE_Player : public RGE_Player {
 public:
     char gap_4C[0x7C];
 
-    void taskTrader(int param_1, int param_2, int param_3, float param_4, float param_5);
+    virtual void taskTrader(int param_1, int param_2, int param_3, float param_4, float param_5);
 };
 #endif
 

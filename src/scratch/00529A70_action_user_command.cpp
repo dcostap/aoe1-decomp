@@ -20,6 +20,8 @@
 //   the output buffer; the old msg + 4 forms were decompiler stack aliases.
 // - exact: natural msg-base uses match all 1135 bytes, 49 calls, and the EH
 //   frame under /GX.
+// - ABI: standalone fallback declarations now use the proven command,
+//   player_num, and TPanel names. They do not change emitted bytes.
 
 extern "C" int __cdecl sprintf(char*, const char*, ...);
 
@@ -31,131 +33,8 @@ extern void debug_random_write();
 extern void dump_vismap_log();
 
 #ifndef TRIBEGAM_TU_CONTEXT
-class TDebuggingLog {
-public:
-    void __cdecl Log(char*, ...);
-};
-
-extern TDebuggingLog* L;
-
-class RGE_Player {
-public:
-    virtual void vf00();
-    virtual void set_game_status(unsigned char);
-    char gap_08[0x40];
-    char* name; // +0x44
-
-    void loss_if_game_on();
-};
-
-class TRIBE_Command;
-
-class RGE_Game_World {
-public:
-    char gap_00[0x40];
-    RGE_Player** players; // +0x40
-    char gap_44[0x14];
-    TRIBE_Command* commands; // +0x58
-    char gap_5C[0x20];
-    short player_number; // +0x7C
-};
-
-class TRIBE_Command {
-public:
-    void command_save_game();
-};
-
-class TCommunications_Handler {
-public:
-    char gap_00[0x58];
-    TRIBE_Command* command; // +0x58
-
-    int IsHost();
-    int WhoAmI();
-    int WhoAmI(int);
-    int IsPlayerOutOfSync(int);
-};
-
-class TEasy_Panel {
-public:
-    void popupOKDialog(int, char*, int, int);
-};
-
-class TPanelSystem {
-public:
-    int destroyPanel(char*);
-    TEasy_Panel* currentPanel();
-    int setCurrentPanel(char*, int);
-};
-
-extern TPanelSystem panel_system;
-
-class TRIBE_Screen_Game {
-public:
-    void handle_pause();
-    void handle_resume();
-    void display_system_message(char*);
-    void handleChatReceived(int);
-};
-
-class TScreenPanel {
-public:
-    virtual ~TScreenPanel();
-};
-
-class TRIBE_Screen_Status_Message : public TScreenPanel {
-public:
-    char gap_04[0x478];
-
-    TRIBE_Screen_Status_Message(char*, char*, char*, long);
-};
-
-class RGE_Base_Game {
-public:
-    virtual ~RGE_Base_Game();
-    virtual int run();
-    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
-    virtual void set_prog_mode(int);
-    virtual void set_game_mode(int, int);
-    virtual void set_player(short);
-    virtual int get_error_code();
-    virtual char* get_string(int, long, char*, int);
-    virtual char* get_string(long, char*, int);
-    virtual char* get_string(long);
-    virtual char* get_string2(int, long, long, char*, int);
-    virtual void* get_view_panel();
-    virtual void* get_map_panel();
-    virtual void* new_scenario_header(void*);
-    virtual void* new_scenario_header(int);
-    virtual void* new_scenario_info(int);
-    virtual void notification(int, long, long, long, long);
-    virtual int reset_comm();
-
-    char gap_04[0x188];
-    TCommunications_Handler* comm_handler; // +0x18C
-    char gap_190[0x20];
-    int prog_mode; // +0x1B0
-    char gap_1B4[0x240];
-    RGE_Game_World* world; // +0x3F4
-    char gap_3F8[0x62C];
-
-    void setSinglePlayerGame(int);
-    int play_sound(int);
-    unsigned char check_prog_argument(char*);
-    int playerID(int);
-};
-
-class TRIBE_Game : public RGE_Base_Game {
-public:
-    char gap_A24[0x200];
-    TRIBE_Screen_Game* game_screen; // +0xC24
-
-    virtual int action_user_command(unsigned long, unsigned long);
-    void quit_game();
-    void close_game_screens(int);
-    int save_game(char*);
-    void do_game_over();
-};
+#include "../tribegam_context_local.h"
+#define TRIBEGAM_TU_CONTEXT 1
 #endif
 
 int TRIBE_Game::action_user_command(unsigned long param_1,

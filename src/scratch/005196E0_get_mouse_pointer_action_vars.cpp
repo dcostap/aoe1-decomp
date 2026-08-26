@@ -83,16 +83,24 @@ public:
 
 class RGE_Player {
 public:
-    virtual void v00(); virtual void v01(); virtual void v02(); virtual void v03();
-    virtual void v04(); virtual void v05(); virtual void v06(); virtual void v07();
-    virtual void v08(); virtual void v09(); virtual void v10(); virtual void v11();
-    virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
-    virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
-    virtual void v20(); virtual void v21(); virtual void v22(); virtual void v23();
-    virtual void v24(); virtual void v25(); virtual void v26(); virtual void v27();
-    virtual void v28(); virtual void v29(); virtual void v30(); virtual void v31();
-    virtual void v32(); virtual void v33(); virtual void v34(); virtual void v35();
-    virtual void v36(); virtual void v37();
+    virtual void set_game_status(); virtual void update();
+    virtual void addObject(); virtual void update_dopplegangers();
+    virtual void scenario_save(); virtual void do_resign();
+    virtual void changeToHumanPlayer(); virtual void changeToComputerPlayer();
+    virtual void aiStatus(); virtual void isEnemy(); virtual void isAlly();
+    virtual void isNeutral(); virtual void isAllNeutral();
+    virtual void setDiplomaticStance(); virtual void loadAIInformation();
+    virtual void add_attribute_num(); virtual void removeObject();
+    virtual void load_master_object(); virtual void load();
+    virtual void scenario_load(); virtual void scenario_postload();
+    virtual void sendUnitAIOrder(); virtual void processAIOrder();
+    virtual void kickAI(); virtual void strategicNumber();
+    virtual void sendGameOrder(); virtual void sendAddWaypointCommand();
+    virtual void processAddWaypointCommand(); virtual void sendPlayCommand();
+    virtual void processPlayCommand(); virtual void sendAICommand();
+    virtual void objectCostByType(); virtual void trackUnitGather();
+    virtual void make_scenario_obj(); virtual void save();
+    virtual void save2(); virtual void save_info(); virtual void random_start();
     char gap_04[0x38];
     RGE_Game_World* world;
     char gap_40[0x0A];
@@ -197,7 +205,7 @@ int TRIBE_Player::get_mouse_pointer_action_vars(int id, int& action, int& var)
         max_hp = (short)master->hp;
     }
 
-    if (object_type < 0 || object_type >= this->world->player_count) {
+    if (object_type < 0 || object_type >= this->world->player_num) {
         return 0;
     }
 
@@ -311,7 +319,7 @@ redo_mouseFunc:
                 goto finish;
             }
             {
-                int hp = (int)object->range;
+                int hp = (int)object->groupRangeValue;
                 if (hp > 0 && hp < max_hp) {
                     goto set_action_5;
                 }
@@ -325,7 +333,7 @@ redo_mouseFunc:
                 current = 50;
             }
             {
-                int hp = (int)object->range;
+                int hp = (int)object->groupRangeValue;
                 if (hp <= 0 || hp >= max_hp) {
                     goto finish;
                 }

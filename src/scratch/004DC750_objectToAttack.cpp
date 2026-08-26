@@ -170,13 +170,14 @@ public:
     int isBoat(RGE_Static_Object* obj);
     float damagePerSecond(int objnum, int x, int y);
     ObjectMemory findObjectMemoryLimits(int player, int objnum, int* c1, int* c2);
-    ObjectMemory* objectToAttack(int player, int siegeWeapons, int boats, int objnum, int* out);
+    ObjectMemory* objectToAttack(int player, int siegeWeapons, int boats, int objnum, int& out);
 };
 #endif
 
 #endif
-ObjectMemory* TribeInformationAIModule::objectToAttack(int player, int siegeWeapons, int boats, int objnum, int* out)
+ObjectMemory* TribeInformationAIModule::objectToAttack(int player, int siegeWeapons, int boats, int objnum, int& output)
 {
+    int* out = &output;
     RGE_Static_Object* candidate;
     RGE_Static_Object* unit;
     ObjectMemory* best;

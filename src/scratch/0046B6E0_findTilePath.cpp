@@ -4,7 +4,8 @@
 // - Started from the Ghidra/PDB packet and reconstructed the full high-level pathing routine rather than a tiny placeholder.
 // - Added a local PathingSystem/RGE object layout surface from the inventory type dumps: facet/cost/open heap/obstruction/misc arrays and the +0x11DCxx working fields are modeled at their binary offsets.
 // - Added real member-call surfaces for Path::killPath, RGE_Game_World::object/objectGroupOnTile, RGE_Static_Object obstruction-map helpers, RGE_Moving_Object::setInitialPoints, and RGE_Player::computerPlayer.
-// - Added padded virtual surfaces for the observed calls at vtable +0xF4/+0xFC/+0x130 and the rge_base_game redraw path.
+// - The canonical pathsys context supplies the observed virtual calls at
+//   +0xF4/+0xFC/+0x130 and the rge_base_game redraw path.
 // - This is a broad behavioral scaffold, not an exact candidate.  The hard areas still needing packet-by-packet shaping are the FPU footprint conversion block, direction/footprint switch details, obstruction scanning topology, heap sift code, and duplicated obstruction-restore tails.
 // - Expanded the direction footprint rectangle switch enough for a full-length compare; no padding or inline asm was used.
 // - check_function 2026-05-30: MISMATCH, 6522/6946 positional bytes differ (93.8958%), edit diff 8355, first mismatch offset 4.  Rebuilt prologue has VC5 stack alignment (`and esp, -8`) and a smaller frame (`sub esp,74h`) while original is `sub esp,7Ch` without stack alignment.  A brief `#pragma optimize("y", off)` probe removed the alignment but shortened .text to 6688B, so it was rolled back.
@@ -132,19 +133,11 @@
 #include <math.h>
 #include <string.h>
 
-typedef unsigned char uchar;
-
 extern "C" void* __cdecl operator_new(unsigned int size);
 extern "C" void __cdecl operator_delete(void* ptr);
 extern float DAT_00570e54;
 
-class RGE_Static_Object;
-class RGE_Moving_Object;
-class RGE_Game_World;
-class RGE_Map;
-class RGE_Tile;
-class RGE_Player;
-class RGE_View;
+#include "../../include/pathsys_context.h"
 
 #define FADDR(a) (*(float*)(a))
 #define DADDR(a) (*(double*)(a))
@@ -155,13 +148,6 @@ class RGE_View;
 #define FacetSkipMask ((int*)0x584EF8)
 #define ObstructionValueShift ((unsigned char*)0x584EF4)
 #define ObstructionMasks ((unsigned int*)0x584F20)
-
-#define VPAD1(n) virtual void vpad_##n();
-#define VPAD2(n) VPAD1(n) VPAD1(n##_1)
-#define VPAD4(n) VPAD2(n) VPAD2(n##_2)
-#define VPAD8(n) VPAD4(n) VPAD4(n##_4)
-#define VPAD16(n) VPAD8(n) VPAD8(n##_8)
-#define VPAD32(n) VPAD16(n) VPAD16(n##_16)
 
 #define ESTIMATE_DISTANCE(out, ax, ay, bx, by) do { \
     int _ed_dx = (ax) - (bx); \
@@ -191,306 +177,6 @@ class RGE_View;
     else { _edo_diag = _edo_ay; _edo_straight = _edo_ax - _edo_ay; } \
     (out) = DiagionalDistance[_edo_diag & 0xff] + (_edo_straight << 4); \
 } while (0)
-
-#ifndef PATHSYS_TU_CONTEXT
-struct XYPoint {
-    int x;
-    int y;
-};
-
-struct PathTileWork {
-    XYPoint current;
-    XYPoint next;
-    XYPoint copied;
-};
-
-struct Waypoint {
-    float x;
-    float y;
-    float z;
-    unsigned char facetToNextWaypoint;
-    unsigned char pad[3];
-};
-
-struct ManagedArray_int {
-    int* value;
-    int numberValue;
-    int desiredNumberValue;
-    int maximumSizeValue;
-};
-
-class Path {
-public:
-    unsigned long timeStampValue;
-    Waypoint startValue;
-    Waypoint goalValue;
-    Waypoint* pathValue;
-    int maxSizeValue;
-    int currentSizeValue;
-    int currentWaypointValue;
-
-    void killPath();
-};
-
-class __declspec(novtable) RGE_View {
-public:
-    VPAD8(view0)
-    virtual void redraw(int mode);
-};
-
-class __declspec(novtable) RGE_Base_Game {
-public:
-    VPAD8(bg0) VPAD2(bg8) VPAD1(bg10)
-    virtual RGE_View* get_view();
-};
-
-class RGE_Master_Static_Object {
-public:
-    void* vtable_ptr;
-    unsigned char master_type;
-    unsigned char pad_05[3];
-    char* name;
-    short string_id;
-    short string_id2;
-    short id;
-    short copy_id;
-    short object_group;
-    unsigned char pad_16[0x10];
-    float los;
-    unsigned char obj_max;
-    unsigned char pad_2d[3];
-    float radius_x;
-    float radius_y;
-    float radius_z;
-    unsigned char pad_3c[0x2a];
-    short terrain;
-};
-
-class RGE_Player {
-public:
-    void* vtable_ptr;
-    int computerPlayerValue;
-    int pathingAttemptCapValue;
-    int pathingDelayCapValue;
-    int currentUpdatePathingAttemptsValue;
-    char pad_14[0x36];
-    short id;
-
-    int computerPlayer();
-};
-
-class __declspec(novtable) RGE_Static_Object {
-public:
-    VPAD32(so0) VPAD16(so32) VPAD8(so48) VPAD4(so56) VPAD1(so60)
-    virtual float vf_f4();
-    VPAD1(so62)
-    virtual float vf_fc();
-    VPAD8(so64) VPAD4(so72)
-    virtual unsigned char vf_130();
-
-    long id;
-    RGE_Master_Static_Object* master_obj;
-    RGE_Player* owner;
-    void* sprite;
-    void* old_sprite;
-    void* sprite_list;
-    void* tile;
-    RGE_Static_Object* inside_obj;
-    void* objects;
-    short screen_x_offset;
-    short screen_y_offset;
-    short shadow_x_offset;
-    short shadow_y_offset;
-    float hp;
-    unsigned char curr_damage_percent;
-    unsigned char facet;
-    unsigned char selected;
-    unsigned char selected_group;
-    float world_x;
-    float world_y;
-    float world_z;
-    float attribute_amount_held;
-    unsigned char object_state;
-    unsigned char sleep_flag;
-    unsigned char dopple_flag;
-    unsigned char goto_sleep_flag;
-    short attribute_type_held;
-    unsigned char type;
-    unsigned char worker_num;
-    void* player_object_node;
-    ManagedArray_int pathingGroupMembers;
-    ManagedArray_int groupMembers;
-    void* unitAIValue;
-    int groupCommanderValue;
-    int zoneMapIndex;
-    float groupRangeValue;
-    unsigned char inObstructionMapValue;
-    unsigned char lastInObstructionMapValue;
-    unsigned char underAttackValue;
-    unsigned char pad_end;
-
-    int removeFromObstructionMap(int aiPS);
-    int addToObstructionMap(int aiPS);
-};
-
-class RGE_Animated_Object : public RGE_Static_Object {
-public:
-    float speed;
-};
-
-class RGE_Moving_Object : public RGE_Animated_Object {
-public:
-    float trail_remainder;
-    float velocity_x;
-    float velocity_y;
-    float velocity_z;
-    float angle;
-    float turn_towards_time;
-    Path pathValue;
-    Path exceptionPathValue;
-    Waypoint startValue;
-    Waypoint goalValue;
-    float turnTimer;
-    float collisionAvoidanceDistance;
-    float actionRange;
-    int targetIDValue;
-    float targetRadiusX;
-    float targetRadiusY;
-    int continueCounter;
-    int rangeStatusValue;
-    int currentTerrainException1;
-    int currentTerrainException2;
-    unsigned char storePathInExceptionPath;
-    unsigned char waitingToMoveValue;
-    unsigned char numberWaitDelays;
-    unsigned char pad_157;
-    XYPoint minInitialPointValue;
-    XYPoint maxInitialPointValue;
-    void* userDefinedWaypoints;
-    int numberUserDefinedWaypointsValue;
-    int maxUserDefinedWaypointsValue;
-    unsigned char finalUserDefinedWaypoint;
-    unsigned char pad_175[3];
-    float closestDistanceToWaypoint;
-    unsigned char lastFacet;
-    unsigned char lastFacet2;
-    unsigned char pad_17e[2];
-
-    void setInitialPoints(XYPoint* minp, XYPoint* maxp);
-};
-
-class RGE_Tile {
-public:
-    short screen_xpos;
-    short screen_ypos;
-    unsigned char tile_type;
-    unsigned char terrain_type;
-    unsigned char border_type;
-    unsigned char last_drawn_as;
-    unsigned char last_drawn_shape;
-    unsigned char draw_as;
-    unsigned char draw_attribute;
-    unsigned char last_drawn_shape2;
-    char objects[0x0c];
-};
-
-class RGE_Border_Set {
-public:
-    char pad_000[0x59c];
-    short underlay_terrain;
-    short border_style;
-};
-
-class RGE_Map {
-public:
-    void* vtable_ptr;
-    RGE_Tile* map;
-    int map_width;
-    int map_height;
-    int world_width;
-    int world_height;
-    char pad_18[0x338c - 0x18];
-    RGE_Border_Set border_types[16];
-    RGE_Tile** map_row_offset;
-};
-
-class RGE_Game_World {
-public:
-    void* vtable_ptr;
-    char pad_04[0x50];
-    float** terrains;
-
-    int objectGroupOnTile(int playerId, int objectGroup, int tileX, int tileY, int* objectCountOnTile);
-    RGE_Static_Object* object(int id);
-};
-
-class PathingSystem {
-public:
-    void* vtable_ptr;
-    int xSizeValue;
-    int ySizeValue;
-    unsigned char facetValue[255][255];
-    unsigned char pad_fe0d[3];
-    int MGP_costValue[255][255];
-    struct MGP_FloatHeap {
-        unsigned char x;
-        unsigned char y;
-        unsigned short next;
-        int total;
-    };
-    MGP_FloatHeap MGP_openPaths[65026];
-    unsigned char obstructionValue[1020][255];
-    unsigned char miscValue[255][255];
-    unsigned char pad_11dc29[3];
-    int numberOpenPathsValue;
-    MGP_FloatHeap MGP_bestTraversedPath;
-    int numberTraversedPathsValue;
-    RGE_Map* mapValue;
-    RGE_Game_World* worldValue;
-    RGE_Moving_Object* currentObject;
-    int currentObjectInObMap;
-    int currentTargetID;
-    float* currentTerrainTable;
-    float currentXOffset;
-    float currentYOffset;
-    int currentTerrainException1;
-    int currentTerrainException2;
-    ManagedArray_int initialCollidingObjects;
-    int startOfPath;
-    int checkTerrainOnFirstPass;
-    XYPoint initialTile;
-    XYPoint minTarget;
-    XYPoint maxTarget;
-    XYPoint minInitialPosition;
-    XYPoint maxInitialPosition;
-    float averageNumWaypoints;
-    float averagePathLength;
-    float averagePathIterations;
-    int numAttempts;
-    int numFails;
-    int numSuccesses;
-    int numInitialPathsValue;
-    int numContinuePathsValue;
-    int numCanPathsValue;
-    int MGP_closestTargetDistance;
-    float averageClosestTargetDistance;
-    float averageSuccessTime;
-    float averageFailTime;
-    unsigned char CurrentFacetMask;
-    unsigned char pad_11dcd9[3];
-    int currentUnobstructibleGroupID;
-    int currentUnobstructiblePlayerID;
-    ManagedArray_int currentUnobstructibles;
-    int aiPS;
-
-    int passable(RGE_Moving_Object* obj, float x, float y, int checkObjects);
-    int copyPath(int step);
-    int findTilePath(int startX, int startY, int goalX, int goalY, RGE_Moving_Object* obj,
-                     float tolerance, int targetID, int mode, float* costOut, int useIterationCap,
-                     int checkTerrain, int checkObstructions, int step, int unobPlayerID,
-                     int unobGroupID);
-};
-#endif
 
 #define ACTIVE_PATH(o) ((o)->storePathInExceptionPath ? &(o)->exceptionPathValue : &(o)->pathValue)
 
@@ -635,7 +321,7 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
             }
             return 1;
         }
-        if (obj->vf_fc() == FADDR(0x570E5C)) {
+        if (obj->maximumSpeed() == FADDR(0x570E5C)) {
             if (costOut != 0) *costOut = 0;
             if (mode == 1) {
                 path = ACTIVE_PATH(obj);
@@ -721,8 +407,8 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
             }
             other = this->worldValue->object(curObj->pathingGroupMembers.value[i]);
             if (other != 0 && other->id != this->currentObject->id) {
-                unsigned char canShare = other->vf_130();
-                float cap = other->vf_f4();
+                unsigned char canShare = other->waitingToMove();
+                float cap = other->getSpeed();
                 float held = other->attribute_amount_held;
                 if (canShare != 0 || cap != FADDR(0x570E5C) || held > FADDR(0x570E5C)) {
                     other->removeFromObstructionMap(this->aiPS);

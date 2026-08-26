@@ -156,7 +156,7 @@ struct RGE_Tile_Set {
 
 class RGE_Map {
 public:
-    void* vtable_ptr;               // +0x00
+    virtual ~RGE_Map();
     RGE_Tile* map;                  // +0x04
     long map_width;                 // +0x08
     long map_height;                // +0x0C
@@ -323,7 +323,7 @@ long RGE_View::view_function(register unsigned char a1, register unsigned char a
     }
 
     if (this->function_mode == 0x0E) {
-        if (this->get_selection_area(&calc_sel_col2, &calc_sel_row2, &calc_sel_row1, (long*)&orig_picked_obj, 1) == 0) {
+        if (this->get_selection_area(calc_sel_col2, calc_sel_row2, calc_sel_row1, (long&)orig_picked_obj, 1) == 0) {
             return 0;
         }
     }

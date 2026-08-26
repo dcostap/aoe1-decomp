@@ -20,17 +20,17 @@ public:
     char gap_0[4];
     RGE_Victory_Entry* field_4;
 
-    void remove_entry(RGE_Victory_Entry* entry);
-    unsigned char remove_condition(int index);
+    void sub(RGE_Victory_Entry* entry);
+    unsigned char remove_condition(long index);
 };
 #endif
 
-unsigned char RGE_Victory_Conditions::remove_condition(int index) {
+unsigned char RGE_Victory_Conditions::remove_condition(long index) {
     int i = 0;
     RGE_Victory_Entry* entry = this->field_4;
     while (entry) {
         if (i == index) {
-            this->remove_entry(entry);
+            this->sub(entry);
             return 1;
         }
         i++;

@@ -19,14 +19,14 @@ public:
 
 class RGE_View {
 public:
-    virtual void vf00();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
+    virtual ~RGE_View();
+    virtual void set_rect(long, long, long, long);
+    virtual void set_redraw(int);
+    virtual void draw_setup(int);
+    virtual void draw_finish();
+    virtual void draw();
+    virtual void release_mouse();
+    virtual void set_focus(int);
     virtual void redraw(int mode);
 
     char gap_04[0x100];
@@ -37,11 +37,11 @@ public:
     int sel_col2;            // +0x14C
     int sel_row2;            // +0x150
 
-    void set_selection_area(int col1, int row1, int col2, int row2);
+    void set_selection_area(long col1, long row1, long col2, long row2);
 };
 #endif
 
-void RGE_View::set_selection_area(int col1, int row1, int col2, int row2)
+void RGE_View::set_selection_area(long col1, long row1, long col2, long row2)
 {
     if (this->map && ((RGE_Base_Game_Stub*)rge_base_game)->game_mode != 0x15) {
         this->map->request_redraw(this->sel_col1, this->sel_row1, this->sel_col2, this->sel_row2, 0);

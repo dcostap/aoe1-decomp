@@ -1,11 +1,18 @@
 #if !defined(SCR_GAME_TU_CONTEXT)
-class TRIBE_Screen_Game {
+class TPanel {
 public:
-    void target_00497280(int a, int b);
-    void handle_user_command(int a, int b);
+    virtual long handle_user_command(unsigned int, long);
+};
+
+class TScreenPanel : public TPanel {
+};
+
+class TRIBE_Screen_Game : public TScreenPanel {
+public:
+    virtual long handle_user_command(unsigned int, long);
 };
 #endif
 
-void TRIBE_Screen_Game::handle_user_command(int a, int b) {
-    this->target_00497280(a, b);
+long TRIBE_Screen_Game::handle_user_command(unsigned int command, long value) {
+    return TPanel::handle_user_command(command, value);
 }

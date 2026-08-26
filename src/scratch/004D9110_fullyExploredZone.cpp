@@ -1,3 +1,5 @@
+// Grouped taiinfmd build differs by one SIB operand-order byte at +0x2E.
+// Keep this Phase 4 owner unregistered until the grouped body matches.
 #ifndef TAIINFMD_PREFIX_CONTEXT
 #define TAIINFMD_INFO_CONTEXT "../../include/information_dropsites_context.h"
 #include TAIINFMD_INFO_CONTEXT

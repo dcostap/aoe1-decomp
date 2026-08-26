@@ -12,90 +12,14 @@ extern "C" unsigned char* __cdecl __mbsupr(unsigned char*);
 extern void __cdecl encrypt_codes(char* src, char* dst, int max_len);
 
 #ifndef TRIBEGAM_TU_CONTEXT
-class RGE_Static_Object {
-public:
-    char gap_00[0x36];
-    char selected;
-};
-#endif
-
-#define VPAD1(n) virtual void vpad##n() = 0;
-#define VPAD2(n) VPAD1(n) VPAD1(n##_1)
-#define VPAD4(n) VPAD2(n) VPAD2(n##_2)
-#define VPAD8(n) VPAD4(n) VPAD4(n##_4)
-#define VPAD16(n) VPAD8(n) VPAD8(n##_8)
-#define VPAD32(n) VPAD16(n) VPAD16(n##_16)
-
-#ifndef TRIBEGAM_TU_CONTEXT
-class RGE_Player {
-public:
-    VPAD16(0) VPAD16(16) VPAD4(32) VPAD2(36) VPAD1(38) VPAD1(39) VPAD1(40) VPAD1(41) VPAD1(42) VPAD1(43) VPAD1(44)
-    virtual void set_attribute(short attr, float value) = 0; // vt[45] +0xb4
-    void unselect_object();
-};
-#endif
-
-#ifndef TRIBEGAM_TU_CONTEXT
-class AIPlayBook {
-public:
-    int playNumber(char* name);
-};
-
-class TRIBE_Command {
-public:
-    void command_quick_build(short value);
-};
-
-#ifndef TRIBEGAM_TU_CONTEXT
-class TRIBE_World {
-public:
-    char gap_00[0x3c];
-    short player_count;
-    char gap_3e[2];
-    void** players;       // +0x40
-    char gap_44[0x14];
-    TRIBE_Command* command; // +0x58
-    char gap_5c[0x44];
-    AIPlayBook* playbook; // +0xa0
-
-    RGE_Static_Object* object(int id);
-    void send_cheat(short code);
-};
-#endif
-#endif
-
-#ifndef TRIBEGAM_TU_CONTEXT
-class TRIBE_Game {
-public:
-    virtual void v0() = 0;
-    virtual void v1() = 0;
-    virtual void v2() = 0;
-    virtual void v3() = 0;
-    virtual void vf10(int, int) = 0;
-    virtual void vf14(int) = 0;
-
-    char gap_04[0x1b0];
-    int game_state;       // +0x1b4
-    int game_substate;    // +0x1b8
-    char gap_1bc[0x238];
-    TRIBE_World* world;   // +0x3f4
-    char gap_3f8[0x5b0];
-    int quick_build;      // +0x9a8
-
-    int allowCheatCodes();
-    int singlePlayerGame();
-    RGE_Player* get_player();
-    int processCheatCode(int player_id, char* cheat);
-};
+#include "../tribegam_context_local.h"
+#define TRIBEGAM_TU_CONTEXT 1
 #endif
 
 class TRIBE_Player_Command {
 public:
-    virtual void v0() = 0;
-    VPAD16(1)
-    VPAD2(17) VPAD1(19)
-    virtual void run_play(int target, int commander, int playNumber) = 0; // +0x50
-    virtual void do_unknown(int player, int a, int b, int c, int d) = 0; // +0x54
+    void run_play(int target, int commander, int playNumber);
+    void do_unknown(int player, int a, int b, int c, int d);
 };
 
 #define ECMP(addr) strcmp(encstr, (const char*)(addr))
@@ -109,7 +33,7 @@ int TRIBE_Game::processCheatCode(int player_id, char* cheat) {
     char tempStr1[256];
     char playName[256];
 
-    if (cheat == 0 || player_id < 0 || player_id >= this->world->player_count) {
+    if (cheat == 0 || player_id < 0 || player_id >= this->world->player_num) {
         return 0;
     }
 
@@ -155,8 +79,8 @@ int TRIBE_Game::processCheatCode(int player_id, char* cheat) {
     else if (ECMP(0x58C088) == 0) SEND(0x67);
     else if (ECMP(0x58C07C) == 0) {
         this->get_player()->unselect_object();
-        if (this->game_state == 6 && this->game_substate == 1) this->vf10(0, 0);
-        this->vf14(0);
+        if (this->game_state == 6 && this->game_substate == 1) this->set_game_mode(0, 0);
+        this->set_player(0);
         return 1;
     }
     else if (ECMP(0x58C05C) == 0) { this->get_player()->set_attribute(0, 1000.0f); return 1; }

@@ -1,16 +1,10 @@
-class RGE_Player_ua {
-public:
-    void unselect_area(void);
-    char gap_00[0x120];
-    short sel_x1;
-    short sel_y1;
-    short sel_x2;
-    short sel_y2;
-};
+#ifndef PLAYER_GROUPED_TU
+#include "../player_tu_context.h"
+#endif
 
-void RGE_Player_ua::unselect_area(void) {
-    this->sel_x1 = -1;
-    this->sel_y1 = -1;
-    this->sel_x2 = -1;
-    this->sel_y2 = -1;
+void RGE_Player::unselect_area(void) {
+    this->selected_start_col = -1;
+    this->selected_start_row = -1;
+    this->selected_end_col = -1;
+    this->selected_end_row = -1;
 }

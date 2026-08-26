@@ -41,50 +41,6 @@
 extern int DAT_0087d7c8[5];
 extern VisibleUnitEntry* DAT_0087d7e0[5];
 
-#define VPAD1(n) virtual int vpad##n();
-#define VPAD2(n) VPAD1(n) VPAD1(n##_1)
-#define VPAD4(n) VPAD2(n) VPAD2(n##_2)
-#define VPAD8(n) VPAD4(n) VPAD4(n##_4)
-#define VPAD16(n) VPAD8(n) VPAD8(n##_8)
-#define VPAD32(n) VPAD16(n) VPAD16(n##_16)
-#define VPAD64(n) VPAD32(n) VPAD32(n##_32)
-
-// The shipped call sites use this same slot with four explicit path arguments.
-// Keep that narrow ABI separate from the no-argument weapon-range getter.
-class RGE_Static_Object_Path_Query {
-public:
-    virtual ~RGE_Static_Object_Path_Query();
-    VPAD32(1)
-    VPAD16(33)
-    VPAD8(49)
-    virtual int inAttackRange(RGE_Static_Object* object);
-    VPAD8(58)
-    virtual float damageCapability();
-    virtual float weaponRange(int a, int b, int c, int d);
-    virtual float minimumWeaponRange();
-    VPAD32(69)
-    virtual int canPath(int id, float range);
-};
-
-// This beta call site uses the same slot without the later mode parameter.
-class RGE_Static_Object_Range_Query {
-public:
-    virtual ~RGE_Static_Object_Range_Query();
-    VPAD32(1)
-    VPAD16(33)
-    VPAD8(49)
-    virtual int inAttackRange(RGE_Static_Object* object);
-    VPAD8(58)
-    virtual float damageCapability();
-    virtual float weaponRange();
-};
-
-#undef VPAD16
-#undef VPAD8
-#undef VPAD4
-#undef VPAD2
-#undef VPAD1
-
 int UnitAIModule::bestUnitToAttack(int param_1, int param_2, float* param_3)
 {
     float numberMovingTargets;
@@ -187,8 +143,7 @@ int UnitAIModule::bestUnitToAttack(int param_1, int param_2, float* param_3)
                         }
                         if (target->master_obj->object_group != 3) {
                             if (distance <
-                                ((RGE_Static_Object_Range_Query*)this->objectValue)
-                                    ->weaponRange() - DAT_0056ebd4) {
+                                this->objectValue->weaponRange() - DAT_0056ebd4) {
                                 ++closestEnemyDistance;
                             }
                             if (distance < enemyDistance) {
@@ -218,9 +173,8 @@ int UnitAIModule::bestUnitToAttack(int param_1, int param_2, float* param_3)
                 }
                 if (this->objectValue->inAttackRange(target) != 1 &&
                     this->objectValue->canPath(
-                        this->currentTargetValue,
-                        ((RGE_Static_Object_Path_Query*)this->objectValue)
-                            ->weaponRange(0, 0, -1, -1)) != 1) {
+                    this->currentTargetValue,
+                        this->objectValue->weaponRange(), 0, 0, -1, -1) != 1) {
                     goto skipCurrentTarget;
                 }
             }
@@ -271,8 +225,7 @@ skipCurrentTarget:
             }
             if (this->objectValue->canPath(
                     currentTarget,
-                    ((RGE_Static_Object_Path_Query*)this->objectValue)
-                        ->weaponRange(0, 0, -1, -1)) == 1) {
+                        this->objectValue->weaponRange(), 0, 0, -1, -1) == 1) {
                 return currentTarget;
             }
         }
@@ -304,8 +257,7 @@ skipCurrentTarget:
                         if (param_2 == 0 && this->objectValue->inAttackRange(target) == 0 &&
                             this->objectValue->canPath(
                                 DAT_0087d7e0[i][j].object_id,
-                                ((RGE_Static_Object_Path_Query*)this->objectValue)
-                                    ->weaponRange(0, 0, -1, -1)) == 0) {
+                                    this->objectValue->weaponRange(), 0, 0, -1, -1) == 0) {
                             goto skipTarget;
                         }
                         float threat = target->damageCapability() * DAT_0056ebd8;

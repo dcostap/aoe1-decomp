@@ -50,7 +50,7 @@
 
 #include <windows.h>
 
-extern "C" unsigned long __cdecl debug_timeGetTime(char* file, int line);
+extern unsigned long __cdecl debug_timeGetTime(char* file, int line);
 
 extern void color_log(unsigned char a, unsigned char b, int c);
 
@@ -72,7 +72,7 @@ extern int debug_timeGetTime_on_storage;
 class TPanel;
 
 // BINARY NOTE: panel_system is the fixed object at 0062E870.
-long RGE_Base_Game::wnd_proc(void* hwnd, unsigned int msg,
+long __stdcall RGE_Base_Game::wnd_proc(void* hwnd, unsigned int msg,
                                        unsigned int wparam, long lparam)
 {
     RGE_Base_Game* self = this;

@@ -1,20 +1,29 @@
-class GlobalUiHost {
+#if !defined(SCR_GAME_TU_CONTEXT)
+class TScreenPanel {
 public:
-    void helper(int flag);
+    virtual void set_focus(int);
 };
-extern GlobalUiHost* g_ui;
-class SetFocusHost {
+
+class TRIBE_Screen_Game : public TScreenPanel {
 public:
-    void parent_set_focus(int v);
-    void set_focus(int v);
-    char gap_00[0x78];
-    int field_78;
+    char gap_04[0x74];
+    int have_focus;
+    virtual void set_focus(int);
 };
-void SetFocusHost::set_focus(int v) {
-    this->parent_set_focus(v);
-    if (this->field_78) {
-        g_ui->helper(0);
+
+class RGE_Base_Game {
+public:
+    void set_windows_mouse(int);
+};
+
+extern RGE_Base_Game* rge_base_game;
+#endif
+
+void TRIBE_Screen_Game::set_focus(int value) {
+    TScreenPanel::set_focus(value);
+    if (this->have_focus != 0) {
+        rge_base_game->set_windows_mouse(0);
     } else {
-        g_ui->helper(1);
+        rge_base_game->set_windows_mouse(1);
     }
 }

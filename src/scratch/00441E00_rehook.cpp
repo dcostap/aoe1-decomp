@@ -23,7 +23,7 @@
 //    Behavior is equivalent in all paths.
 // Retry 2026-05-21 Boss pass: tried register/volatile doppled, assignment-in-condition and
 // inverted/goto positive branch, passing member vs local to get_object_pointer, id local,
-// removing count temp, virtual destroy_obj surface with adjusted vptr layout, __thiscall
+// removing count temp, virtual destroy_obj surface with adjusted virtual layout, __thiscall
 // function-pointer probe (VC5 rejects), integer obj/owner surfaces, `~doppled` negative-index
 // spelling, and /G5 /Op flags. Best kept improves edit diff to 16.6667% but still has broad
 // ECX-vs-EAX first load, owner register, branch target, and final vtable-call convention drift.
@@ -65,81 +65,7 @@
 // or inline assembly.
 
 #ifndef DPL_OBJ_SHARED_CONTEXT
-struct RGE_Game_World;
-struct RGE_Color_Table;
-struct RGE_Master_Static_Object;
-
-struct RGE_Player {
-    char gap_00[0x22];
-    short master_object_num;              // +0x22
-    RGE_Master_Static_Object** master_objects; // +0x24
-    char gap_28[0x14];
-    RGE_Game_World* world;                // +0x3C
-    char gap_40[0xC8];
-    RGE_Color_Table* color_table;         // +0x108
-};
-
-struct RGE_Game_World {
-    char gap_00[0x40];
-    RGE_Player** players;                 // +0x40
-};
-
-struct RGE_Static_Object {
-    virtual ~RGE_Static_Object();
-    virtual void v04();
-    virtual void v08();
-    virtual void v0C();
-    virtual void v10();
-    virtual void v14();
-    virtual void v18();
-    virtual void v1C();
-    virtual void v20();
-    virtual void v24();
-    virtual void v28();
-    virtual void rehook();
-    virtual void v30();
-    virtual void v34();
-    virtual void v38();
-    virtual void v3C();
-    virtual void v40();
-    virtual void v44();
-    virtual void v48();
-    virtual void v4C();
-    virtual void v50();
-    virtual void v54();
-    virtual void v58();
-    virtual void v5C();
-    virtual void v60();
-    virtual void v64();
-    virtual void destroy_obj();
-
-    long id;                // +0x04
-    RGE_Static_Object* master_obj; // +0x08
-    RGE_Player* owner;      // +0x0C
-    char gap_10[0x78];      // +0x10 through +0x87
-    RGE_Static_Object* get_object_pointer(long id);
-};
-
-struct RGE_Animated_Object : RGE_Static_Object {
-    float speed;            // +0x88
-};
-
-struct RGE_Doppleganger_Object : RGE_Animated_Object {
-    // Starting at +0x8C:
-    RGE_Static_Object* doppled_object; // +0x8C
-    RGE_Color_Table* draw_color;      // +0x90
-    RGE_Master_Static_Object* doppled_master_obj; // +0x94
-    int doppled_player;          // +0x98
-    unsigned long* MapAddress;   // +0x9C
-    unsigned long LastMapValue;  // +0xA0
-    unsigned long CantSeeBits;   // +0xA4
-    unsigned char map_draw_level;// +0xA8
-    unsigned char map_color;     // +0xA9
-    unsigned char pad_AA[2];     // +0xAA
-    int doppledObjectID;         // +0xAC
-
-    virtual void rehook();
-};
+#include "../../include/dpl_obj_context.h"
 #endif
 
 void RGE_Doppleganger_Object::rehook() {

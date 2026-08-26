@@ -694,7 +694,7 @@ public:
     float damageInflictedPerSecond(TacticalAIGroup* group, RGE_Static_Object* object);
     float timeToBeKilled(TacticalAIGroup* group, RGE_Static_Object* object);
 
-    ObjectMemory* objectToAttackByGroup(int owner, TacticalAIGroup* group, AttackState* state, unsigned long currentTime);
+    ObjectMemory* objectToAttackByGroup(int owner, TacticalAIGroup* group, AttackState& state, unsigned long currentTime);
 };
 #endif
 
@@ -706,8 +706,9 @@ extern float DAT_00575564;
 
 #endif
 ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
-    int owner, TacticalAIGroup* group, AttackState* state, unsigned long currentTime)
+    int owner, TacticalAIGroup* group, AttackState& stateRef, unsigned long currentTime)
 {
+    AttackState* state = &stateRef;
     ObjectMemory* wonder = 0;
     unsigned char commanderZone;
     RGE_Static_Object* commanderObject = this->md->object(group->commander());

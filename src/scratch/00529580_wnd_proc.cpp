@@ -17,12 +17,14 @@ public:
 
 class TRIBE_Game : public RGE_Base_Game {
 public:
-    long __stdcall wnd_proc(void* hWnd, unsigned int msg, unsigned int wParam, long lParam);
+    virtual long __stdcall wnd_proc(void* hWnd, unsigned int msg,
+                                    unsigned int wParam, long lParam);
     void stop_video(unsigned char param);
 };
 #endif
 
-long TRIBE_Game::wnd_proc(void* hWnd, unsigned int msg, unsigned int wParam, long lParam)
+long __stdcall TRIBE_Game::wnd_proc(void* hWnd, unsigned int msg,
+                                    unsigned int wParam, long lParam)
 {
     if (msg <= 0x200) {
         if (msg != 0x200) {

@@ -60,7 +60,7 @@ int UnitAIModule::intelligentEvasiveMoveTo(float x, float y, float z,
     pointZ = (int)this->objectValue->world_z;
     point.z = pointZ;
 
-    if (this->objectValue->canPath(point, 1.0f, -1, 0, 0, -1, -1) == 0) {
+    if (this->objectValue->canPathPoint(point, 1.0f, -1, 0, 0, -1, -1) == 0) {
         facet = -1;
         baseDistance = this->objectValue->distance_to_position(
             x, y, this->objectValue->world_z);
@@ -119,7 +119,7 @@ int UnitAIModule::intelligentEvasiveMoveTo(float x, float y, float z,
                 continue;
             }
 
-            if (this->objectValue->canPath(point, 1.0f, -1, 0, 0, -1, -1) == 1) {
+            if (this->objectValue->canPathPoint(point, 1.0f, -1, 0, 0, -1, -1) == 1) {
                 break;
             }
         }

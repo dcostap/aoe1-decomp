@@ -2,6 +2,6 @@
 // PDB source: tribegam.cpp:4754-4759
 // TU context owner: use the canonical TRIBE_Game options surface.
 
-unsigned char TRIBE_Game::popLimit() const {
+unsigned char TRIBE_Game::popLimit() {
     return this->tribe_game_options.popLimitValue;
 }

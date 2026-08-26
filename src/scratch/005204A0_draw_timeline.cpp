@@ -83,7 +83,7 @@ class TPanel {
 public:
     virtual ~TPanel();
     char gap_04[0x1c];
-    TDrawArea* draw_area;
+    TDrawArea* render_area;
     char gap_024[0xd0];
 };
 
@@ -183,7 +183,7 @@ void Time_Line_Panel::draw_timeline()
 
     if (this->timeline_flag == 0) return;
 
-    if (this->draw_area->Lock((char*)0x58B820, 1) == 0) return;
+    if (this->render_area->Lock((char*)0x58B820, 1) == 0) return;
 
     this->X_line_pos = this->X_start_line_pos;
     local_38 = 0;
@@ -288,7 +288,7 @@ void Time_Line_Panel::draw_timeline()
                                 case 7: palette_color = 0x00808040; break;
                                 default: palette_color = 0x00FFFFFF; break;
                                 }
-                                color = GetNearestPaletteIndex((*(void***)this->draw_area)[2], palette_color);
+                                color = GetNearestPaletteIndex((*(void***)this->render_area)[2], palette_color);
                                 temp_color = (long)(*(TRIBE_Player**)((char*)rge_base_game->world->players + local_38))
                                     ->history_info->get_history_entry(0, next_pop_total);
                                 Y_line_total = this->Y_line_max_length;
@@ -325,7 +325,7 @@ void Time_Line_Panel::draw_timeline()
                                     if (segment + cntr2 < Y_line_total) segment = Y_line_total - cntr2;
                                 }
 
-                                this->draw_area->DrawVertLine(this->X_line_pos, this->Y_line_pos, segment, (unsigned char)color);
+                                this->render_area->DrawVertLine(this->X_line_pos, this->Y_line_pos, segment, (unsigned char)color);
                                 if (special_event_flag == 0) {
                                 this->record_special_event((unsigned char)(local_34 + 1),
                                     (*(TRIBE_Player**)((char*)rge_base_game->world->players + local_38))->history_info,
@@ -352,5 +352,5 @@ void Time_Line_Panel::draw_timeline()
         } while (next_pop_total < this->num_history_entries);
     }
 
-    this->draw_area->Unlock((char*)0x58B820);
+    this->render_area->Unlock((char*)0x58B820);
 }

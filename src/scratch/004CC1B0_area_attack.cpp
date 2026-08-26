@@ -20,140 +20,19 @@
 //     all codegen-neutral in focused variants.
 // 14: after a clean-source reset, declaring owner->world->map before the master
 //     radius preserves the original initial register coloring and closes all five bytes.
-// Policy repair: RGE_Static_Object is the real base of RGE_Action_Object. The
-// prior typedef was a temporary narrow stub. Use the true class relation and
-// weapon pointer type before promotion.
-// exact candidate: natural typed source, proven ownership, default VC5 flags, 776B.
+// Policy repair: use the true canonical t_c_obj class relation and named virtual methods.
 // Behavior retained: ignored-target filtering, special owner gate, level gate, footprint distance,
 // random hit chance, modifier calculation, typed damage argument order, and post-damage death call.
+
+#include "../../include/t_c_obj_context.h"
 
 extern double DAT_00574CA8;
 extern float DAT_00574C98;
 extern float DAT_00574C78;
-#ifndef T_C_OBJ_CONTEXT_H
-extern "C" int __cdecl debug_rand(char*, int);
-#endif
+extern "C" int __cdecl debug_rand(const char*, int);
 
-#ifndef T_C_OBJ_CONTEXT_H
-class RGE_Player;
-class RGE_Combat_Object;
-class RGE_Armor_Weapon_Info;
-
-class RGE_Static_Object {
-public:
-    virtual ~RGE_Static_Object();
-};
-
-class RGE_Master_Static_Object {
-public:
-    virtual ~RGE_Master_Static_Object();
-    char gap_04[0x0C];
-    short id;
-    char gap_12[0x1E];
-    float radius_x;
-    float radius_y;
-    char gap_38[0x53];
-    unsigned char area_effect_object_level;
-    char gap_8C[0x2C];
-};
-
-class RGE_Master_Combat_Object : public RGE_Master_Static_Object {
-public:
-    char gap_B8[0x50];
-    short weapon_num;
-    char gap_10A[2];
-    RGE_Armor_Weapon_Info* weapon;
-    char gap_110[4];
-    float weapon_range;
-    float area_effect_range;
-    unsigned char area_effect_level;
-    char gap_11D[3];
-    float speed_of_attack;
-    short missile_id;
-    short base_hit_chance;
-};
-
-class RGE_Game_World {
-public:
-    char gap_00[0x28];
-    class RGE_Map* map;
-};
-
-class RGE_Player {
-public:
-    char gap_00[0x3C];
-    RGE_Game_World* world;
-};
-
-class RGE_Tile;
-class RGE_Object_Node {
-public:
-    RGE_Combat_Object* object;
-    RGE_Object_Node* next;
-};
-
-class RGE_Tile {
-public:
-    char gap_00[0x10];
-    RGE_Object_Node* object_list;
-    char gap_14[0x04];
-};
-
-class RGE_Map {
-public:
-    virtual ~RGE_Map();
-    void* map;
-    long map_width;
-    long map_height;
-    char gap_10[0x8D8C - 0x10];
-    RGE_Tile** map_row_offset;
-};
-
-#define ACTION_SLOT(n) virtual void slot_##n();
-class RGE_Action_Object : public RGE_Static_Object {
-public:
-    virtual ~RGE_Action_Object();
-    ACTION_SLOT(04) ACTION_SLOT(08) ACTION_SLOT(0C) ACTION_SLOT(10)
-    ACTION_SLOT(14) ACTION_SLOT(18) ACTION_SLOT(1C) ACTION_SLOT(20)
-    ACTION_SLOT(24) ACTION_SLOT(28) ACTION_SLOT(2C) ACTION_SLOT(30)
-    ACTION_SLOT(34) ACTION_SLOT(38) ACTION_SLOT(3C) ACTION_SLOT(40)
-    ACTION_SLOT(44) ACTION_SLOT(48) ACTION_SLOT(4C) ACTION_SLOT(50)
-    ACTION_SLOT(54) ACTION_SLOT(58) ACTION_SLOT(5C) ACTION_SLOT(60)
-    ACTION_SLOT(64) ACTION_SLOT(68) ACTION_SLOT(6C)
-    virtual void damage(int, void*, float, RGE_Player*, RGE_Static_Object*);
-    ACTION_SLOT(74) ACTION_SLOT(78) ACTION_SLOT(7C) ACTION_SLOT(80)
-    virtual void set_attribute_amount(float, unsigned char, unsigned char);
-    ACTION_SLOT(88) ACTION_SLOT(8C) ACTION_SLOT(90) ACTION_SLOT(94)
-    ACTION_SLOT(98) ACTION_SLOT(9C) ACTION_SLOT(A0) ACTION_SLOT(A4)
-    ACTION_SLOT(A8) ACTION_SLOT(AC) ACTION_SLOT(B0) ACTION_SLOT(B4)
-    ACTION_SLOT(B8) ACTION_SLOT(BC) ACTION_SLOT(C0) ACTION_SLOT(C4)
-    ACTION_SLOT(C8) ACTION_SLOT(CC) ACTION_SLOT(D0) ACTION_SLOT(D4)
-    ACTION_SLOT(D8) ACTION_SLOT(DC) ACTION_SLOT(E0) ACTION_SLOT(E4)
-    ACTION_SLOT(E8) ACTION_SLOT(EC)
-
-    int id;
-    RGE_Master_Combat_Object* master_obj;
-    RGE_Player* owner;
-    char gap_10[0x20];
-    float hp;
-    char gap_34[4];
-    float x;
-    float y;
-};
-#undef ACTION_SLOT
-
-class RGE_Combat_Object : public RGE_Action_Object {
-public:
-    virtual float calc_attack_modifier(RGE_Static_Object*);
-};
-
-class TRIBE_Combat_Object : public RGE_Combat_Object {
-public:
-    unsigned char area_attack(float, float, float, RGE_Combat_Object*, RGE_Static_Object*);
-};
-#endif
-
-unsigned char TRIBE_Combat_Object::area_attack(float x, float y, float attack_modifier,
+unsigned char TRIBE_Combat_Object::area_attack(float x, float y,
+                                                float attack_modifier,
                                                 RGE_Combat_Object* attacker,
                                                 RGE_Static_Object* ignored)
 {
@@ -227,7 +106,8 @@ unsigned char TRIBE_Combat_Object::area_attack(float x, float y, float attack_mo
                                 (char*)"C:\\msdev\\work\\age1_x1\\t_c_obj.cpp", 0x653);
                             int chance = (random_value * 100) / 0x7fff;
                             if ((short)chance <= this->master_obj->base_hit_chance) {
-                                float modifier = this->calc_attack_modifier((RGE_Static_Object*)object);
+                                float modifier = this->calc_attack_modifier(
+                                    (RGE_Static_Object*)object);
                                 object->damage(this->master_obj->weapon_num,
                                                this->master_obj->weapon,
                                                modifier,

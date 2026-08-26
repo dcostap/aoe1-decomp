@@ -76,7 +76,7 @@ class TDrawSystem {
 public:
     void* inst;
     void* wnd;
-    void* palette;
+    void* Pal;
 };
 
 class TDrawArea {
@@ -153,8 +153,8 @@ void Time_Line_Panel::draw_special_events()
                                               unsigned int) =
 #endif
                 GetNearestPaletteIndex;
-            nearest(this->render_area->DrawSystem->palette, 0xFFFFFF);
-            nearest(this->render_area->DrawSystem->palette, 0);
+            nearest(this->render_area->DrawSystem->Pal, 0xFFFFFF);
+            nearest(this->render_area->DrawSystem->Pal, 0);
         }
 
         if (this->render_area->Lock("tpnl_tml::draw_special_events", 1) != 0) {

@@ -7,9 +7,7 @@
 typedef unsigned char uchar;
 typedef unsigned short ushort;
 
-#ifndef RGE_COM_OBJ_SHARED_CONTEXT
 #include "../com_obj_phase2_context.h"
-#endif
 
 int RGE_Combat_Object::explore(int param_1, int param_2, int param_3)
 {
