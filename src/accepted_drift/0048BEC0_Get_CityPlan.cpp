@@ -30,10 +30,17 @@ public:
 
 class RGE_Base_Game {
 public:
-#define GPAD(n) virtual void g##n();
-    GPAD(0) GPAD(1) GPAD(2) GPAD(3) GPAD(4) GPAD(5) GPAD(6) GPAD(7)
-#undef GPAD
-    virtual void get_string(int id, char* out, int len);
+    virtual ~RGE_Base_Game();
+    virtual int run();
+    virtual long wnd_proc(void* param_1, unsigned int param_2,
+                          unsigned int param_3, long param_4);
+    virtual void set_prog_mode(int param_1);
+    virtual void set_game_mode(int param_1, int param_2);
+    virtual void set_player(short param_1);
+    virtual int get_error_code();
+    virtual char* get_string(int param_1, long param_2, char* param_3,
+                             int param_4);
+    virtual char* get_string(long param_1, char* param_2, int param_3);
     char gap_04[8];
     RGE_Prog_Info* prog_info;
 };

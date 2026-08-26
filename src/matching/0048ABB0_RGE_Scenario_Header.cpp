@@ -4,7 +4,8 @@ void* __cdecl malloc(int size);
 #ifndef SCENARIO_TU
 class RGE_Scenario_Header {
 public:
-    void* vtable_ptr;        // +0x00
+    virtual long get_size();
+    virtual void save(int file);
     int error_code;          // +0x04
     long version;            // +0x08
     unsigned long checksum;  // +0x0C
@@ -18,9 +19,6 @@ RGE_Scenario_Header::RGE_Scenario_Header(int fd) {
     int header_size;
     int desc_size;
 
-#ifndef SCENARIO_TU
-    vtable_ptr = (void*)0x572120;
-#endif
     error_code = 0;
     version = 0;
     checksum = 0;

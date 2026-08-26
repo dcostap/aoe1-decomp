@@ -60,9 +60,17 @@ class RGE_Game_World;
 
 class RGE_Base_Game {
 public:
-    virtual void vf00(); virtual void vf04(); virtual void vf08(); virtual void vf0C();
-    virtual void vf10(); virtual void vf14(); virtual void vf18(); virtual void vf1C();
-    virtual void get_string(int id, char* buf, int len);
+    virtual ~RGE_Base_Game();
+    virtual int run();
+    virtual long wnd_proc(void* param_1, unsigned int param_2,
+                          unsigned int param_3, long param_4);
+    virtual void set_prog_mode(int param_1);
+    virtual void set_game_mode(int param_1, int param_2);
+    virtual void set_player(short param_1);
+    virtual int get_error_code();
+    virtual char* get_string(int param_1, long param_2, char* param_3,
+                             int param_4);
+    virtual char* get_string(long param_1, char* param_2, int param_3);
     char gap_04[0x0C - 0x04];
     RGE_Prog_Info* prog_info;
 };

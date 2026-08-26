@@ -65,7 +65,7 @@ public:
 
     RGE_Scenario_Header(RGE_Scenario* scenario);
     RGE_Scenario_Header(int file);
-    virtual ~RGE_Scenario_Header();
+    ~RGE_Scenario_Header();
 };
 
 class RGE_Scenario {
