@@ -219,6 +219,7 @@ public:
 class TEasy_Panel : public TPanel {
 public:
     virtual ~TEasy_Panel();                                   // inherited slot 0
+    virtual void draw();                                      // inherited slot 12
     virtual void draw_background(int);                        // slot 56
     virtual void set_ideal_size(long, long);                  // slot 57
     virtual int create_button(TPanel*, TButtonPanel**, long, long, long,
@@ -533,6 +534,7 @@ public:
     int cur_player_row;
     int tribute_flag;
 
+protected:
     int check_gold();
     int check_wood();
     int check_food();

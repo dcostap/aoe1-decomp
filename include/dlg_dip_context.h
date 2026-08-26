@@ -166,6 +166,7 @@ public:
     int allow_shadow_area;
     int saved_mouse_mode;
 
+    virtual void draw();
     virtual void set_ideal_size(long, long);
     virtual int create_button(TPanel*, TButtonPanel**, long, long, long, long,
                               long, long, long, long, long);
@@ -395,8 +396,11 @@ void __cdecl operator_delete(void*);
 class TribeDiplomacyDialog : public TDialogPanel {
 public:
     virtual ~TribeDiplomacyDialog();
+
+protected:
     virtual long action(TPanel*, long, unsigned long, unsigned long);
 
+public:
     TTextPanel* title[8];
     TTextPanel* playerName[8];
     TTextPanel* playerVictoryScores[8];
