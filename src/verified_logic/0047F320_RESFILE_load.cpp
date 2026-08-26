@@ -24,6 +24,9 @@
 // - union pointer/integer, explicit integer operand order, noncommutative add,
 //   and direct offset-cast forms all compiled to the same one-byte drift.
 //   Restore the natural typed pointer addition as the clean candidate.
+// - captain follow-up: indexed addressing, reversed operands, and a
+//   branch-local base alias all compiled to the same one-byte drift. Restore
+//   the direct typed pointer addition.
 
 #include <stdio.h>
 #include <stdlib.h>

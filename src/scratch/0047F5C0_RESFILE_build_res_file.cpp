@@ -78,6 +78,13 @@
 //   next leads: test a donor-supported Res_file.cpp declaration context or a
 //     focused header-copy source form. Do not retain raw address steering only
 //     for metrics without stronger source evidence.
+//   captain follow-up: assigning the first output cursor before the directory
+//   size expression improved strict diff 686 -> 680 bytes and shape 92.96 ->
+//   93.32%; target load order supports this natural source order, so retain it.
+//   Function-scope cursor declarations and reversed header scalar assignments
+//   were codegen duplicates and were restored.
+//   The target-supported +4 header write address and canonical password-field
+//   spelling were also codegen duplicates; retain both proven source forms.
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -291,8 +298,9 @@ int __cdecl RESFILE_build_res_file(char* build_list_file, char* source_path, cha
         BuildRes_type_node* tnode;
         BuildRes_id_node* pNode;
 
+        tnode = iq;
         pos = rId * 12 + 0x40;
-        for (tnode = iq; tnode; tnode = tnode->next) {
+        for (; tnode; tnode = tnode->next) {
             tnode->idOffset = pos;
             pos += tnode->nIds * 12;
         }
@@ -307,13 +315,13 @@ int __cdecl RESFILE_build_res_file(char* build_list_file, char* source_path, cha
         // BINARY NOTE: The shipped function uses the local header at byte +4.
         memset(theHeader.banner_msg + 4, 0, 0x40);
         strcpy(theHeader.banner_msg + 4, "Copyright (c) 1997 Ensemble Studios.\x1a");
-        strcpy(theHeader.version + 4, "1.00");
+        strcpy(theHeader.password, "1.00");
         strcpy(theHeader.password + 4, rPassword + 4);
 
         theHeader.num_res_types = rId;
         theHeader.directory_size = dirSize;
 
-        if (write(resourceFile, &theHeader, 0x40) != 0x40) {
+        if (write(resourceFile, theHeader.banner_msg + 4, 0x40) != 0x40) {
             Log(L, "Error writing resource file header");
             return 0;
         }
