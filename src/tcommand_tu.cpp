@@ -11,7 +11,7 @@
 #include "matching/00509980_do_command_make.cpp"
 #include "matching/00509AF0_do_command_research.cpp"
 #include "matching/00509C60_do_command_build.cpp"
-#include "accepted_drift/00509E10_do_command_build_wall.cpp"
+#include "matching/00509E10_do_command_build_wall.cpp"
 #include "matching/0050A010_place_line_of_walls.cpp"
 #include "accepted_drift/0050A140_do_command_explore.cpp"
 #include "matching/0050A1D0_do_command_game.cpp"

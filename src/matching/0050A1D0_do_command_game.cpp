@@ -1,5 +1,6 @@
 // VA: 0050A1D0 TRIBE_Command::do_command_game
 // PDB: tcommand.cpp lines 531-665.
+// BINARY NOTE: Original game fields use draw_system +0x48 and quick_build +0x9A8.
 #include <stdio.h>
 #include "../tcommand_context.h"
 

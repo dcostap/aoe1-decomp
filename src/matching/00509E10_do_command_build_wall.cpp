@@ -1,6 +1,7 @@
 // VA: 00509E10 TRIBE_Command::do_command_build_wall
 // PDB: tcommand.cpp lines 337-450.
 // ACCEPTED_DRIFT: natural shared-closure reconstruction.
+// BINARY NOTE: The idp alias reproduces the original 500-byte grouped owner.
 #include <stdlib.h>
 #include "../tcommand_context.h"
 
@@ -55,14 +56,15 @@ void TRIBE_Command::do_command_build_wall(TRIBE_Command_Build_Wall* cmd)
 
     if (foundation != 0 && count > 0) {
         int n = count;
+        RGE_Obj_Info* idp = ids;
         do {
-            RGE_Static_Object* obj = this->get_obj(*ids);
+            RGE_Static_Object* obj = this->get_obj(*idp);
             if (obj != 0) {
                 obj->removeAllFromPathingGroup();
                 obj->do_command(foundation, foundation->world_x,
                                 foundation->world_y, 0.0f);
             }
-            ++ids;
+            ++idp;
             --n;
         } while (n != 0);
     }
