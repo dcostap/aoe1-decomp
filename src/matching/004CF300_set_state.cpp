@@ -893,13 +893,15 @@ class TRIBE_Action_Hunt : public RGE_Action {
 public:
     TRIBE_Action_Hunt(int, RGE_Action_Object*);
     TRIBE_Action_Hunt(RGE_Action_Object*, RGE_Task*, RGE_Static_Object*);
-    TRIBE_Action_Hunt(int, RGE_Task*, float, float, float);
+    TRIBE_Action_Hunt(RGE_Action_Object*, RGE_Task*, float, float, float);
     virtual void save(int);
     virtual void first_in_stack(unsigned char);
     virtual unsigned char update(void);
     virtual int stop(void);
     virtual int move_to(RGE_Static_Object*, float, float, float);
     virtual int work(RGE_Static_Object*, float, float, float);
+
+protected:
     virtual void set_state(unsigned char);
     int targetType;
 
