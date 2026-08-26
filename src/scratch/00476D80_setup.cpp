@@ -1,4 +1,13 @@
 // attempt 1: natural TInputPanel setup wrapper around TTextPanel::setup
+// Structural TU repair: PDB uses int for parameters 11 and 13, and class
+// TDrawArea. The grouped owner requires the corresponding H/E/H decoration.
+// Resume validation: this repair emits the expected symbol at the original
+// 352-byte boundary. The remaining one-byte difference is in the call/data
+// relocation surface; the source model and boundary are otherwise aligned.
+// ABI probes: restoring the FormatType parameter and the reformat member
+// reduced the isolated drift from three bytes to one. Declaration-only slot
+// probes matched the narrow checker but had no authentic class evidence and
+// were removed.
 
 unsigned long debug_timeGetTime(char* file, int line);
 void* calloc(unsigned int, unsigned int);
@@ -81,12 +90,24 @@ public:
     virtual void set_text(long);
     virtual void set_text(char*);
     virtual void set_bevel_info(int, int, int, int, int, int, int);
-    long setup(TDrawArea*, TPanel*, long,long,long,long, void*, long,long,char*, long, unsigned char, long, unsigned char, long, char*);
+    long setup(TDrawArea*, TPanel*, long,long,long,long, void*, long,long,char*, int, unsigned char, int, unsigned char, short, char*);
     void set_alignment(int,int);
     void set_word_wrap(int);
 };
 class TInputPanel: public TTextPanel {
 public:
+    enum FormatType {
+        FormatSingleLine = 0,
+        FormatNumber = 1,
+        FormatInteger = 2,
+        FormatUnsignedInt = 3,
+        FormatFile = 4,
+        FormatFileNoExt = 5,
+        FormatPath = 6,
+        FormatMultiLine = 7,
+        FormatPercent = 8
+    };
+
     char gap[0x188 - 4];
     unsigned char field_188;
     char pad_189[7];
@@ -99,11 +120,19 @@ public:
     char* field_1A8;
     short field_1AC;
     short field_1AE;
-    long setup(TDrawArea*, TPanel*, long,long,long,long, void*, long,long,char*, long, unsigned char, long, unsigned char, unsigned char, short, TDigital*, char*, long);
-    void update_display();
+    long setup(TDrawArea*, TPanel*, long,long,long,long, void*, long,long,char*, int, unsigned char, int, unsigned char, unsigned char, short, TDigital*, char*, FormatType);
+    virtual void set_focus(int);
+    void set_format(FormatType);
+    virtual long handle_idle();
+    virtual long char_action(long, short);
+    virtual long key_down_action(long, short, int, int, int);
+    virtual void draw();
+    virtual void set_text(char*);
+    virtual void set_text(char**, short);
+    void reformat();
 };
 
-long TInputPanel::setup(TDrawArea* da, TPanel* parent, long p3,long p4,long p5,long p6, void* p7, long p8,long p9,char* p10,long p11,unsigned char p12,long p13,unsigned char p14,unsigned char p15, short maxChars, TDigital* digital, char* text, long format) {
+long TInputPanel::setup(TDrawArea* da, TPanel* parent, long p3,long p4,long p5,long p6, void* p7, long p8,long p9,char* p10,int p11,unsigned char p12,int p13,unsigned char p14,unsigned char p15, short maxChars, TDigital* digital, char* text, FormatType format) {
     long setupMax = (format == 7) ? 0 : maxChars;
     if (TTextPanel::setup(da,parent,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,setupMax,0) == 0) {
         return 0;
@@ -128,6 +157,6 @@ long TInputPanel::setup(TDrawArea* da, TPanel* parent, long p3,long p4,long p5,l
     this->field_1A0 = this->field_1A4;
     this->set_text(text);
     this->field_1AE = maxChars;
-    this->update_display();
+    this->reformat();
     return 1;
 }

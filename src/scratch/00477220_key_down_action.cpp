@@ -26,6 +26,9 @@
 // - left in scratch: remaining drift is switch-table relocation masking, one calc_input_pos/redraw tail pair, and the shared page clamp.
 // - current claim probes: a shared left assignment changed the 32-call basin to 34 calls and worsened the diff.
 // - current claim probes: explicit up/right labels removed calls and worsened the shape, so the pinned clean source remains.
+// Resume validation: restored the pinned clean source after failed structural
+// variants. It remains the best natural reconstruction at exact size, with
+// 32/36 ordered calls and 1076 positional differences in the grouped TU.
 
 #include <stddef.h>
 

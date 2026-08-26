@@ -19,6 +19,9 @@
 // declared _mbslen as unsigned int; this restored the original unsigned jae at the percent length guard and produced an exact match.
 // modeled the BX/BP loop counter as a short local; output stayed exact and the source now matches the observed width naturally.
 // exact under the default VC5 flags; source remains a typed switch with named fields and direct period API calls.
+// Authentic-wrapper probes: replacing the canonical field with an integer,
+// numeric case labels, raw offset dispatch, or int-returning MBCS helpers did
+// not restore the switch basin. These failed forms were restored.
 
 typedef unsigned short ushort;
 extern "C" unsigned int __cdecl _mbslen(const char*);

@@ -57,7 +57,8 @@ struct TextNode {
     TextNode* next_node;
 };
 
-struct TDrawArea {
+class TDrawArea {
+public:
     void* inst;
     void* Wnd;
     char gap_08[0x100 - 0x08];
@@ -257,7 +258,7 @@ public:
 
     TTextPanel();
     long setup(TDrawArea*, TPanel*, long, long, long, long, void*, long, long,
-               char*, long, uchar, long, uchar, short, char*);
+               char*, int, uchar, int, uchar, short, char*);
     void set_alignment(int, int);
     void set_word_wrap(int);
     void draw();
@@ -302,7 +303,7 @@ public:
     uchar pad_1B6[2];
 
     long setup(TDrawArea*, TPanel*, long, long, long, long, void*, long, long,
-               char*, long, uchar, long, uchar, uchar, short, TDigital*, char*,
+               char*, int, uchar, int, uchar, uchar, short, TDigital*, char*,
                FormatType);
     virtual void set_focus(int);
     void set_format(FormatType);
@@ -349,12 +350,12 @@ extern void operator delete(void*);
 typedef void* (__stdcall *SelectObjectFn)(void*, void*);
 extern SelectObjectFn g_SelectObject;
 extern char pnl_inp_draw[];
-extern "C" int __stdcall IsClipboardFormatAvailable(unsigned int);
-extern "C" int __stdcall OpenClipboard(HWND);
-extern "C" HANDLE __stdcall GetClipboardData(unsigned int);
-extern "C" void* __stdcall GlobalLock(HANDLE);
-extern "C" int __stdcall GlobalUnlock(HANDLE);
-extern "C" int __stdcall CloseClipboard(void);
+extern "C" __declspec(dllimport) int __stdcall IsClipboardFormatAvailable(unsigned int);
+extern "C" __declspec(dllimport) int __stdcall OpenClipboard(HWND);
+extern "C" __declspec(dllimport) HANDLE __stdcall GetClipboardData(unsigned int);
+extern "C" __declspec(dllimport) void* __stdcall GlobalLock(HANDLE);
+extern "C" __declspec(dllimport) int __stdcall GlobalUnlock(HANDLE);
+extern "C" __declspec(dllimport) int __stdcall CloseClipboard(void);
 
 TInputPanel::TInputPanel() : TTextPanel()
 {
@@ -392,11 +393,11 @@ TInputPanel::~TInputPanel()
 
 long TInputPanel::setup(TDrawArea* da, TPanel* parent, long p3, long p4,
                         long p5, long p6, void* p7, long p8, long p9,
-                        char* p10, long p11, uchar p12, long p13, uchar p14,
+                        char* p10, int p11, uchar p12, int p13, uchar p14,
                         uchar p15, short maxChars, TDigital* digital,
                         char* text, FormatType format)
 {
-    short setupMax = (format == FormatMultiLine) ? 0 : maxChars;
+    long setupMax = (format == FormatMultiLine) ? 0 : maxChars;
     if (TTextPanel::setup(da, parent, p3, p4, p5, p6, p7, p8, p9, p10,
                           p11, p12, p13, p14, setupMax, 0) == 0) {
         return 0;

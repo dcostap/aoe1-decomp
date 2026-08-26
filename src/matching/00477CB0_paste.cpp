@@ -25,6 +25,11 @@
 // r3 final: typed TPanel/TTextPanel inheritance plus separate total_len/max_len
 // locals restored the original EDX sum, EAX max, and full 472-byte body.
 // exact under the default VC5 flags; no inline asm or custom flags.
+// Authentic TU repair: the wrapper now marks the six Win32 clipboard imports
+// as dllimport. This restores the original IAT-indirect call encoding and the
+// grouped body is exact at 472 bytes.
+// Exact-finish walkback: removing each import attribute alone restored grouped
+// drift (414, 387, 365, 351, 286, and 278 bytes). All six attributes are needed.
 
 typedef unsigned long ulong;
 typedef void* HANDLE;

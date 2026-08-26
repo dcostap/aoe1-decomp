@@ -23,6 +23,9 @@
 // removing the derived declaration stayed exact. The reviewed full pnl_inp context
 // injected a compiler vptr store and produced 187 bytes, so this narrow local surface
 // preserves the proven constructor ABI while its fields retain the canonical offsets.
+// Authentic-wrapper probe: __declspec(novtable) plus a late manual vptr store
+// made this constructor exact in the grouped TU, but changed the exact derived
+// destructor. The canonical wrapper was restored.
 
 extern "C" __declspec(dllimport) unsigned long __stdcall GetCaretBlinkTime();
 
