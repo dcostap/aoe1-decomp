@@ -1,6 +1,9 @@
 // do_command — first pass (176B)
 // VA: 00433E20
 // Retry 2026-05-24 Boss pass in progress.
+// TU NOTE: Restoring command values 0x0B through 0x10, the 0x11 no-op, and
+// the first virtual helper makes this owner exact. The same TU change
+// regresses registered owners, so the baseline dispatcher remains here.
 
 #ifndef COMMAND_TU_CONTEXT
 class RGE_Command {

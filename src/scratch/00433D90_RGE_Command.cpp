@@ -17,6 +17,9 @@ public:
 // VC5 defines ??_G here and leaves ??_E as a weak external. The original
 // FPO record calls the same body vector deleting, but cvdump and the original
 // vtable assign ownership to scalar deleting. Do not add synthetic new[] use.
+// TU NOTE: Binding cleanup to CRT free makes this owner exact, but a fresh
+// grouped sweep regresses one registered Command.cpp owner. Keep this form
+// until the shared compiler context explains that regression.
 
 RGE_Command::~RGE_Command() {
     this->field_04 = 0;

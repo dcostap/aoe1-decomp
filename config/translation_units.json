@@ -7368,6 +7368,7 @@
         "00433DB0": "src/matching/00433DB0_reset_communications.cpp",
         "00433DC0": "src/matching/00433DC0_get_obj.cpp",
         "00433DE0": "src/matching/00433DE0_do_commands.cpp",
+        "004348B0": "src/matching/004348B0_do_command_create.cpp",
         "00434DC0": "src/matching/00434DC0_do_command_group_ai_order.cpp",
         "00434F70": "src/matching/00434F70_do_command_add_waypoint.cpp",
         "00435020": "src/matching/00435020_do_command_create_group.cpp",
@@ -7386,6 +7387,7 @@
         "00435D40": "src/matching/00435D40_command_destroy_group.cpp"
       },
       "symbols": {
+        "004348B0": "?do_command_create@RGE_Command@@IAEXPAURGE_Command_Create@@@Z",
         "004351B0": "?duplicate_check_command_stop@RGE_Command@@IAEEPAURGE_Command_Stop@@@Z",
         "00435260": "?check_for_duplicate_orders@RGE_Command@@IAEEPAEJ@Z",
         "004354F0": "?command_stop@RGE_Command@@QAEXHPAHH@Z",
