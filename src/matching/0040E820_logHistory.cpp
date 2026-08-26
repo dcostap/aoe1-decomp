@@ -4,14 +4,14 @@
 #ifndef AOE1_AIMODULE_TU_CONTEXT
 class AIModule {
 public:
-    void logHistory(void);
+    void logHistory(char*, ...);
 };
 #endif
 
 #ifdef AOE1_AIMODULE_TU_CONTEXT
 void AIModule::logHistory(char*, ...)
 #else
-void AIModule::logHistory(void)
+void AIModule::logHistory(char*, ...)
 #endif
 {
 }

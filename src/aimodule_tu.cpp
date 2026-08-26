@@ -61,14 +61,13 @@ public:
     virtual int processMessage(AIModuleMessage*);
     virtual int update(int);
     virtual void setCallbackMessage(AIModuleMessage*);
-    virtual int filterOutMessage(AIModuleMessage*);
 
     AIModule();
     AIModule(char*, int, int, void*);
     AIModuleID id() const;
     int idNumber() const;
     int playerNumber() const;
-    char* playerName();
+    char* playerName() const;
     void setPlayer(int, char*);
     void start();
     void stop();
@@ -99,12 +98,13 @@ public:
     int purgeCallbacksWithID(AIModuleID, int);
     int purgeCallbacksWithPriorityBelow(AIModuleID, int);
     int purgeCallbacksWithData(AIModuleID, int, int, long);
-protected:
-    void checkMessageLimit();
-    void checkCallbackLimit();
     void logHistory(char*, ...);
     void logCommonHistory(char*, ...);
     void logDebug(char*, ...);
+protected:
+    virtual int filterOutMessage(AIModuleMessage*);
+    void checkMessageLimit();
+    void checkCallbackLimit();
     int processFrame();
     void incrementProcessFrame();
     int timeDifference(AIModuleMessage*);
