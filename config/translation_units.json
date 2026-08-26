@@ -2276,7 +2276,6 @@
       "source": "src/player_tu.cpp",
       "flags": "config/flags/0046E4B0_RGE_Player.rsp",
       "owners": {
-        "0046ED40": "src/matching/0046ED40_logStatus.cpp",
         "0046E4B0": "src/matching/0046E4B0_RGE_Player.cpp",
         "0046EB00": "src/matching/0046EB00_RGE_Player.cpp",
         "0046ECE0": "src/matching/0046ECE0_set_game_status.cpp",
@@ -2367,7 +2366,6 @@
         "00471EB0": "src/matching/00471eb0_get_new_count.cpp"
       },
       "symbols": {
-        "0046ED40": "?logStatus@RGE_Player@@UAEXPAU_iobuf@@H@Z",
         "0046E4B0": "??0RGE_Player@@QAE@HPAVRGE_Game_World@@E@Z",
         "0046F050": "?sendPlayCommand@RGE_Player@@UAEXHHH@Z",
         "0046F140": "?sendPlayCommand@RGE_Player@@UAEXHPAHHHH@Z",
