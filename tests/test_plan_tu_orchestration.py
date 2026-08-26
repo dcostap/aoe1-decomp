@@ -271,6 +271,8 @@ def test_prompt_forbids_local_raw_offset_workaround() -> None:
     assert "build/custom/packets/alpha.json" in text
     assert "Do not hide shared layout defects with raw local offsets." in text
     assert "A clean partial result is valid." in text
+    assert "results/alpha/" in text
+    assert "Never write global orchestration" in text
 
 
 def test_state_changes_preserve_approval_and_finished_run() -> None:

@@ -833,6 +833,8 @@ def captain_prompt(packet: dict[str, object], packet_path: str = "") -> str:
         "- Do not move files, commit, or launch subagents.",
         "- Do not edit accepted-drift holds.",
         "- Preserve unrelated worktree changes.",
+        f"- Write validation only under `build/audits/tu_orchestration/results/{group}/`.",
+        "- Never write global orchestration report, queue, state, dependency, packet, prompt, or summary artifacts.",
         "",
         "Work order:",
         "1. Repair registered regressions and structural problems first.",
