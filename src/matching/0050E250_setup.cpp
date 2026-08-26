@@ -25,6 +25,7 @@ struct TRIBE_Master_Building_Object {
     short on_build_make_overlay;        // +0x176
     short on_build_make_tech;           // +0x178
     
+protected:
     int setup(int file, RGE_Sprite** sprites, RGE_Sound** sounds);
 };
 #endif

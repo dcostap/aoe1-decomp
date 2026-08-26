@@ -39,7 +39,7 @@ public:
     float radius_y;              // +0x34
     char gap_38[0x80];
 
-    virtual unsigned char alignment(float* x, float* y,
+    virtual unsigned char alignment(float& x, float& y,
                                     RGE_Game_World* world,
                                     unsigned char flag);
 };
@@ -122,11 +122,14 @@ public:
                                  RGE_Sound** sounds, short id, int flag);
     virtual ~TRIBE_Master_Building_Object();
 
+protected:
     int setup(TRIBE_Master_Building_Object* source);
     int setup(int file, RGE_Sprite** sprites, RGE_Sound** sounds);
     int setup(FILE* file, RGE_Sprite** sprites, RGE_Sound** sounds,
               short id);
-    void copy_obj(RGE_Master_Static_Object* source);
+
+public:
+    virtual void copy_obj(RGE_Master_Static_Object* source);
     virtual void modify(float value, unsigned char attribute);
     virtual void modify_delta(float value, unsigned char attribute);
     virtual void modify_percent(float value, unsigned char attribute);
@@ -139,7 +142,7 @@ public:
     virtual void draw(TDrawArea* area, short x, short y,
                       RGE_Color_Table* color_table, long param_5,
                       long param_6, int param_7, unsigned char param_8);
-    virtual unsigned char alignment(float* x, float* y,
+    virtual unsigned char alignment(float& x, float& y,
                                     RGE_Game_World* world,
                                     unsigned char flag);
 };

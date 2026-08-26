@@ -3,6 +3,8 @@
 #include "..\..\include\tm_b_obj_context.h"
 
 #ifndef TM_B_OBJ_SHARED_CONTEXT
+class RGE_Master_Static_Object;
+
 struct TRIBE_Master_Combat_Object_Base {
     char base[0x164];
     void copy_obj(void* src);
@@ -24,11 +26,7 @@ struct TRIBE_Master_Building_Object {
 };
 #endif
 
-#ifdef TM_B_OBJ_SHARED_CONTEXT
 void TRIBE_Master_Building_Object::copy_obj(RGE_Master_Static_Object* src)
-#else
-void TRIBE_Master_Building_Object::copy_obj(void* src)
-#endif
 {
     ((TRIBE_Master_Combat_Object_Base*)this)->copy_obj(src);
     construction_sprite = ((TRIBE_Master_Building_Object*)src)->construction_sprite;
