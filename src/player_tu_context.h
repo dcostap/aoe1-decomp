@@ -71,9 +71,9 @@ public:
                                 unsigned char, unsigned char);
     void command_add_attribute(int, int, float);
     void command_give_attribute(int, int, int, int);
-    void command_add_to_group(int, int, int, int);
+    void command_add_to_group(int, int, int, float);
     void command_remove_from_group(int, int, int);
-    void command_create_group(int, int, int, int, int);
+    void command_create_group(int, int, int*, int, float);
     void command_destroy_group(int, int);
     void command_resign(int, int, int);
     void command_work(RGE_Static_Object**, short, RGE_Static_Object*, float, float);
@@ -442,6 +442,7 @@ public:
     void* Last_Map_Value;
     void* Object_ids;
     RGE_Doppleganger_Creator(RGE_Player* player, int max_count);
+    void perform_doppleganger_checks();
 };
 
 #endif

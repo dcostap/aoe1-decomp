@@ -80,10 +80,10 @@ class ConstructionItem;
 #include "matching/004DA0E0_hasAdjacentTileType.cpp"
 
 // 004DA190: taiinfmd.cpp:1899-1903
-#include "scratch/004DA190_mapXSize.cpp"
+#include "matching/004DA190_mapXSize.cpp"
 
 // 004DA1C0: taiinfmd.cpp:1908-1912
-#include "scratch/004DA1C0_mapYSize.cpp"
+#include "matching/004DA1C0_mapYSize.cpp"
 
 // 004DA1F0: taiinfmd.cpp:1917-1968
 #include "accepted_drift/004DA1F0_addEnemyInfluences.cpp"
