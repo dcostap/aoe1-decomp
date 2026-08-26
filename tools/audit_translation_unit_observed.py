@@ -147,6 +147,23 @@ def classify(
             category = "grouped_mismatch"
             action = "assign_tu_captain"
             reason = "The function is in an authentic wrapper but still differs."
+    elif result == "NOT_EMITTED":
+        if registered_here:
+            category = "registered_owner_regression"
+            action = "repair_before_integration"
+            reason = "A registered owner no longer emits its required symbol."
+        elif registered_anywhere:
+            category = "registered_elsewhere_context_missing"
+            action = "review_context_ownership"
+            reason = "The required symbol is absent here but owned by another group."
+        elif status.get("source_bucket") == "accepted_drift":
+            category = "accepted_drift_not_emitted"
+            action = "hold_accepted_drift"
+            reason = "Accepted drift stays closed when its symbol is absent."
+        else:
+            category = "missing_grouped_symbol"
+            action = "repair_missing_symbol"
+            reason = "The authentic wrapper does not emit the expected normal symbol."
     else:
         category = "grouped_comparison_error"
         action = "investigate_comparison_error"
@@ -173,6 +190,7 @@ def difficulty_band(row: dict[str, object]) -> str:
         "relocation_problem",
         "boundary_problem",
         "registered_owner_regression",
+        "missing_grouped_symbol",
     }:
         return "structural"
     difference = integer(row.get("grouped_diff_bytes"))
@@ -256,8 +274,12 @@ def compile_and_compare_group(
                 "error": "",
             }
         except (KeyError, OSError, RuntimeError, ValueError) as error:
+            message = str(error)
+            missing_symbol = (
+                "Expected one defined function" in message and "found []" in message
+            )
             comparison = {
-                "result": "ERROR",
+                "result": "NOT_EMITTED" if missing_symbol else "ERROR",
                 "diff_bytes": "",
                 "diff_percent": "",
                 "original_size": "",
@@ -268,7 +290,7 @@ def compile_and_compare_group(
                 "symbol": "",
                 "expected_symbol": expected_symbol,
                 "expected_owner_name": expected_owner_name,
-                "error": str(error),
+                "error": message,
             }
 
         registered_here = va in owners
@@ -504,6 +526,7 @@ def build_queue(
                 "repair_before_integration",
                 "repair_relocation_targets",
                 "repair_boundary_or_classification",
+                "repair_missing_symbol",
             }
         ]
         codegen = [

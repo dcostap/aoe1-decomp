@@ -72,6 +72,26 @@ def test_boundary_failure_precedes_ordinary_codegen_work() -> None:
     assert action == "repair_boundary_or_classification"
 
 
+def test_missing_normal_symbol_becomes_structural_captain_work() -> None:
+    category, action, _ = classify(
+        status(), comparison("NOT_EMITTED", 0, owner="error"), False, False, []
+    )
+    assert category == "missing_grouped_symbol"
+    assert action == "repair_missing_symbol"
+
+
+def test_missing_accepted_drift_symbol_stays_closed() -> None:
+    category, action, _ = classify(
+        status("accepted_drift"),
+        comparison("NOT_EMITTED", 0, owner="error"),
+        False,
+        False,
+        [],
+    )
+    assert category == "accepted_drift_not_emitted"
+    assert action == "hold_accepted_drift"
+
+
 def test_other_registered_context_is_not_duplicate_work() -> None:
     category, action, _ = classify(
         status("matching"), comparison(), False, True, []
