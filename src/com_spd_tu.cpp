@@ -58,7 +58,7 @@
 #include "matching/00432890_GetAdjustmentCount.cpp"
 #include "matching/004328A0_GetBufferGranularityAdjusted.cpp"
 #include "matching/004328C0_BufferFramesRemaining.cpp"
-#include "scratch/004328D0_WaitingOnAcknowledgement.cpp"
+#include "matching/004328D0_WaitingOnAcknowledgement.cpp"
 #include "matching/004328E0_AdjustLocalSpeed.cpp"
 #include "matching/00432940_ReloadBufferFrames.cpp"
 #include "matching/00432970_BufferTimeToUse.cpp"
