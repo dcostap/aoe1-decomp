@@ -6,7 +6,7 @@
 // Earlier work restored the typed dialog layout and concrete button/slider
 // comparisons. The natural source has 47 calls and the reviewed frame size.
 // It still has structural drift in the entry and dispatch blocks.
-// Reversed mouse-state assignment to match the original constant-2/event stores.
+// Recovered the mouse-state assignment to match the original constant-2/param_3 stores.
 // Ordered the >=99 music-disable arm before the enable arm; this aligns the shutdown call.
 // Used direct play_tracks arms for music types 1 and 2; VC5 merges their tail.
 // Reconstructed slider behavior: music changes apply newSoundVolume through one
@@ -17,9 +17,15 @@
 //     they do not call destroyPanel.
 // BINARY NOTE: the OK path compares singlePlayerGame with event. The cancel
 //     path compares it with literal 1.
-// Probes tested guard placement, parameter aliases, nested speed gates, panel
+// Probes tested guard placement, parameter roles, nested speed gates, panel
 // compare order, and slider-tail placement. Unsupported metric-only forms were
-// removed. The current behavior source is 45 bytes over and remains nonexact.
+// removed. The source remains nonexact.
+// The second post-panel argument is the action code tested by the button and
+// slider guards. The third argument supplies the OK-path value stores and calls.
+// BINARY NOTE: the shipped code keeps those argument roles distinct in EDI and
+// EBP. Do not replace the third-argument stores with action-code constants.
+// Lead review rejected a local RGE_Prog_Info overlay. The shared declaration
+// remains the source owner until reviewed layout evidence supports a header fix.
 
 #include "..\..\include\game_globals.h"
 #include "..\..\include\rge_base_game_global.h"
@@ -200,16 +206,19 @@ extern unsigned char do_color_log;
 extern "C" int numberPathingIterations;
 #endif
 
-long TribeConfigDialog::action(TPanel* panel, register long event,
-    register unsigned long param_3, unsigned long param_4)
+long TribeConfigDialog::action(TPanel* panel, long event,
+    unsigned long param_3, unsigned long param_4)
 {
     char msg[256];
     float new_speed;
     TSound_Driver* slider_sound;
-    if (panel) {
-        if (this->okButton == (TButtonPanel*)panel && event == 1) {
-            if (this->modeValue == 0) {
-                if (rge_base_game->singlePlayerGame() == event && rge_base_game->save_paused == 0) {
+    if (panel == 0)
+        goto base_action;
+
+    if ((TButtonPanel*)panel == this->okButton && event == 1) {
+            int mode = this->modeValue;
+            if (mode == 0) {
+                if (rge_base_game->singlePlayerGame() == param_3 && rge_base_game->save_paused == 0) {
                     rge_base_game->set_paused(0, 0);
                 }
 
@@ -231,7 +240,7 @@ long TribeConfigDialog::action(TPanel* panel, register long event,
                         rge_base_game->setPathFinding(0);
                         numberPathingIterations = 0x9C4;
                     } else if (this->pathFindingButton[1]->get_state() != 0) {
-                        rge_base_game->setPathFinding(1);
+                        rge_base_game->setPathFinding(param_3);
                         numberPathingIterations = 5000;
                     } else if (this->pathFindingButton[2]->get_state() != 0) {
                         rge_base_game->setPathFinding(2);
@@ -272,20 +281,20 @@ long TribeConfigDialog::action(TPanel* panel, register long event,
                         }
                     } else if (info->use_music == 0) {
                         info->use_music = 1;
-                        Regs->RegSetInt(1, (const char*)0x5801D0, this->newMusicVolume * 100);
+                        Regs->RegSetInt(param_3, (const char*)0x5801D0, this->newMusicVolume * 100);
                         rge_base_game->setup_music_system();
                         music = rge_base_game->music_system;
                         if (music != 0) {
                             if (music->music_type == 1) {
-                                music->play_tracks(5, music->track_count, 1, 0, 0);
+                                music->play_tracks(5, music->track_count, param_3, 0, 0);
                             } else if (music->music_type == 2) {
-                                music->play_tracks(1, music->track_count, 1, 0, 0);
+                                music->play_tracks(1, music->track_count, param_3, 0, 0);
                             }
                         }
                     }
 
                     if (rge_base_game->sound_system != 0) {
-                        rge_base_game->sound_system->set_volume(this->newSoundVolume * -100, 1);
+                        rge_base_game->sound_system->set_volume(this->newSoundVolume * -100, param_3);
                     }
                 }
 
@@ -380,10 +389,9 @@ long TribeConfigDialog::action(TPanel* panel, register long event,
                     goto destroy;
                 }
             }
-        }
-        panel_system.setCurrentPanel((char*)0x5842E8, 0);
-        goto destroy;
     }
+    panel_system.setCurrentPanel((char*)0x5842E8, 0);
+    goto destroy;
 
 base_action:
     return TPanel::action(panel, event, param_3, param_4);
