@@ -63,6 +63,11 @@
 //   codegen duplicates. The copy-tail variant reached 910 differing bytes but
 //   introduced a second memmove call and lost the 0x128/21-call structure, so
 //   it was restored.
+// TU captain, 2026-08-26, owner sa-c6a4d383-r1:
+// - The grouped candidate remains 879 bytes different and emits 1026 bytes.
+// - It escapes one byte past the 1017-byte owner boundary.
+// - The standalone checker cannot compile this owner because xlatClut8 is a
+//   TU-local definition supplied by the authentic wrapper.
 
 #include <windows.h>
 

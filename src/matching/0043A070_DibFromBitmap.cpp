@@ -32,6 +32,14 @@
 // probe 20: assigning the SelectPalette result to hpal, while retaining the
 // local palette alias for setup, reproduced the original result-store and
 // final restoration ownership. The authoritative check is an exact MATCH.
+// TU probe, 2026-08-26, owner sa-c6a4d383-r1:
+// - The target-only candidate is an exact MATCH.
+// - The authentic Dib.cpp wrapper differs by 183 bytes and emits 686 bytes.
+// - A prefix containing only declarations reproduces the exact result.
+// - Reconstructed DibBlt or TransDibBlt definitions before this owner each
+//   reproduce the grouped mismatch. Their nonexact bodies alter VC5 context.
+// - Keep this exact standalone owner unchanged until authentic prior sources
+//   or a reviewed TU context resolves the grouped result.
 
 #include <windows.h>
 #include <windowsx.h>

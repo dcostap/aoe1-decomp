@@ -55,6 +55,11 @@
 //   0x10 frame, 5/5 ordered calls, and 86.51% shape.
 // - The first mismatch remains the GetDibDim output-home rotation at +D5.
 //   No exact result or accepted-drift residue is proved.
+// TU captain, 2026-08-26, owner sa-c6a4d383-r1:
+// - A direct-parameter rewrite followed the decompiler but worsened the result
+//   to 777 bytes and was rejected.
+// - The restored source remains 613 bytes different, 956/977 bytes, with
+//   5/5 ordered calls, a 0x10 frame, and the correct owner symbol.
 
 #include <windows.h>
 #include <windowsx.h>

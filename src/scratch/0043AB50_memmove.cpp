@@ -3,8 +3,15 @@
 // BINARY NOTE: Dib.cpp has already included the CRT memmove declaration when
 // this owner is grouped. The canonical return and const source surface avoids
 // a C-linkage conflict; the helper's return value is unused by its caller.
-
-extern "C" void* memmove(void* dst_arg, const void* src_arg, unsigned int n) {
+// TU captain, 2026-08-26, owner sa-c6a4d383-r1:
+// - The original source form with a separate count local and no parameter
+//   reload reduced the mismatch from 39 bytes to two LEA SIB bytes.
+// - Pointer arithmetic, endpoint indexing, declaration order, and byte-pointer
+//   parameter probes were codegen duplicates.
+// - Returning the decremented working pointer changed the public return value.
+//   It was rejected despite its smaller two-byte mismatch.
+extern "C" void* memmove(void* dst_arg, const void* src_arg,
+    unsigned int n) {
     unsigned char* dst = (unsigned char*)dst_arg;
     unsigned char* src = (unsigned char*)src_arg;
     int count;

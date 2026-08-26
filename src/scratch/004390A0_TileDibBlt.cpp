@@ -9,6 +9,13 @@
 // - The fallback pointer split is a behavior hypothesis. Its codegen is worse.
 // Clean checkpoint: 1254/1265 bytes, 75.42% shape, 8/8 calls, 0x1c frame.
 // Current blocker: VC5 stack-home, register, and loop-body scheduling differs.
+// TU captain, 2026-08-26, owner sa-c6a4d383-r1:
+// - Delayed scale expressions worsened the result to 1179 bytes.
+// - Parameter-home scale caching, split assignments, and narrow scale types
+//   gave 1112, 1104, and 1104 bytes. The latter two were codegen duplicates.
+// - A decompiler-shaped row-origin split gave 1111 bytes and a 15-byte escape.
+// - The clean source remains 1104 bytes different, 1254/1265 bytes, with
+//   8/8 ordered calls, a 0x1c frame, and the correct owner symbol.
 #include <windows.h>
 #include <windowsx.h>
 #include <stdio.h>
