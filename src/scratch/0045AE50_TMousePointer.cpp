@@ -61,6 +61,10 @@
 // resync diagnostics; a cWidth reorder worsened strict diff to 339. Restored
 // the pinned pointer-based aggregate source; the first mismatch remains at
 // save_rect initialization (+0D).
+// Current-claim probes: direct save_rect member stores and a reordered pointer
+// left store changed the first hunk but worsened strict diff to 343, 359, and
+// 340 bytes. Restored the pinned typed pointer source; no shared ABI issue was
+// found.
 
 #include "../../include/mouseptr_context.h"
 
