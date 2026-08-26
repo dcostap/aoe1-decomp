@@ -5883,7 +5883,7 @@
     {
       "name": "ACT_GATH_cpp",
       "source": "src/act_gath_tu.cpp",
-      "flags": "config/flags/default.rsp",
+      "flags": "config/flags/default_gx.rsp",
       "owners": {
         "00402FD0": "src/matching/00402FD0_RGE_Action_Gather.cpp",
         "00403020": "src/matching/00403020_save.cpp",
@@ -6323,7 +6323,7 @@
     {
       "name": "scr_main",
       "source": "src/scr_main_tu.cpp",
-      "flags": "config/flags/default.rsp",
+      "flags": "config/flags/default_gx.rsp",
       "owners": {
         "0049ECD0": "src/matching/0049ECD0_handle_idle.cpp",
         "0049F2B0": "src/matching/0049F2B0_set_text.cpp",
