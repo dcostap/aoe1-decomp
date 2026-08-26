@@ -89,6 +89,9 @@
 // EBX and EBP, reads the member, then saves EDI. This changes invalid-this fault
 // order and shifts the following branch spans. Exact-finish is blocked by this
 // unresolved natural VC5 register and lifetime basin.
+// Context repair: the target inlines ManagedArray::operator[] growth in this
+// large method, while setVictoryCondition keeps that call out-of-line.
+// The shared definition and scoped inline-depth control preserve both paths.
 
 extern void* __cdecl operator new(unsigned int size);
 extern void __cdecl operator delete(void* pointer);
@@ -157,24 +160,7 @@ public:
 
     int resize(int newSize);
 
-    T& operator[](int index) {
-        if (index > this->maximumSizeValue - 1) {
-            int newSize = index + 1;
-            T* newValue = (T*)operator new(newSize * 4);
-            if (newValue != 0) {
-                int j;
-                for (j = 0;
-                     j < this->maximumSizeValue && j < newSize;
-                     ++j) {
-                    newValue[j] = this->value[j];
-                }
-                operator delete(this->value);
-                this->value = newValue;
-                this->maximumSizeValue = newSize;
-            }
-        }
-        return this->value[index];
-    }
+    T& operator[](int index);
 };
 
 class VictoryConditionRuleSystem {
@@ -213,6 +199,14 @@ public:
     virtual int filterOutMessage(void* message);
 };
 
+struct Waypoint {
+    float x;
+    float y;
+    float z;
+    char facetToNextWaypoint;
+    char padding[3];
+};
+
 class TribeStrategyAIModule : public StrategyAIModule {
 public:
     TribeMainDecisionAIModule* md;
@@ -222,16 +216,8 @@ public:
     int targetTypeValue;
     int secondTargetIDValue;
     int secondTargetTypeValue;
-    float targetPoint1_x;
-    float targetPoint1_y;
-    float targetPoint1_z;
-    char targetPoint1_facet;
-    char targetPoint1_gap[3];
-    float targetPoint2_x;
-    float targetPoint2_y;
-    float targetPoint2_z;
-    char targetPoint2_facet;
-    char targetPoint2_gap[3];
+    Waypoint targetPoint1Value;
+    Waypoint targetPoint2Value;
     int targetAttributeValue;
     int targetNumberValue;
     int victoryConditionChangeTimeout;
@@ -245,13 +231,30 @@ public:
 };
 #endif
 
+template <class T>
+T& ManagedArray<T>::operator[](int index)
+{
+    if (index > this->maximumSizeValue - 1) {
+        int newSize = index + 1;
+        T* newValue = (T*)operator new(newSize * 4);
+        if (newValue != 0) {
+            int j;
+            for (j = 0;
+                 j < this->maximumSizeValue && j < newSize;
+                 ++j) {
+                newValue[j] = this->value[j];
+            }
+            operator delete(this->value);
+            this->value = newValue;
+            this->maximumSizeValue = newSize;
+        }
+    }
+    return this->value[index];
+}
+
 int TribeStrategyAIModule::update(int parameter)
 {
     int i = 0;
-    int result;
-    int bestResult;
-    int worstRuleResult;
-    int ruleResult;
     RGE_Victory_Entry* victoryEntry;
     unsigned int victoryCondition;
 
@@ -284,6 +287,11 @@ int TribeStrategyAIModule::update(int parameter)
         }
     }
 
+    int result;
+    int bestResult;
+    int worstRuleResult;
+    int ruleResult;
+
     result = -1;
     bestResult = 0;
     worstRuleResult = -1;
@@ -296,7 +304,7 @@ int TribeStrategyAIModule::update(int parameter)
             ruleResult = this->vcRules.evaluateAsNonInProgress(
                 this->md->aiPlayer,
                 idleRules->value[i]);
-            if (bestResult < ruleResult) {
+            if (ruleResult > bestResult) {
                 result = (*idleRules)[i];
                 bestResult = ruleResult;
             }

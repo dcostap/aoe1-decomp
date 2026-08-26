@@ -72,6 +72,10 @@ public:
     } \
 } while (0)
 
+// BINARY NOTE: this add-heavy body uses the out-of-line ManagedArray::operator[]
+// calls shown at 004EA6EF, 004EA71A, and 004EA72A.
+#pragma inline_depth(0)
+
 void TribeStrategyAIModule::setVictoryCondition(int v)
 {
     int& currentReference = this->currentVictoryConditionValue;

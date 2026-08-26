@@ -2,6 +2,9 @@
 // Attempt log:
 // try 1: packet-grounded save implementation: fixed scalar writes, strcpy/strlen rule-set name serialization,
 // and three grow-while-saving integer arrays mirroring UnitAIModule::save pattern.
+// BINARY NOTE: the first ten writes begin at +0xF4 and skip targetType at
+// +0x200; the canonical class layout also places md at +0xF0.
+// The standalone declaration mirrors that inherited layout for source checks.
 
 #include <string.h>
 
@@ -12,35 +15,36 @@ void __cdecl operator delete(void* p);
 #ifndef TAISTRMD_TU_CONTEXT
 struct Waypoint { char data[16]; };
 
+template <class T>
+class ManagedArray {
+public:
+    T* value;
+    int numberValue;
+    int desiredNumberValue;
+    int maximumSizeValue;
+};
+
 class TribeStrategyAIModule {
 public:
     virtual int save(int fd);
-    char gap_04[0xF0];
-    int mainDecisionAI_;            // +f4
-    char ruleSetName_[0x104];       // +f8
-    int currentVictoryCondition_;   // +1fc
-    int gap_200;                    // +200
-    int targetID_;                  // +204
-    int targetType_;                // +208
-    Waypoint targetPoint1_;         // +20c
-    Waypoint targetPoint2_;         // +21c
-    int targetAttribute_;           // +22c
-    int targetNumber_;              // +230
-    int secondTargetID_;            // +234
-    int* list1_;                    // +238
-    int list1Count_;                // +23c
-    int gap240_;                    // +240
-    int list1Max_;                  // +244
-    int* list2_;                    // +248
-    int list2Count_;                // +24c
-    int gap250_;                    // +250
-    int list2Max_;                  // +254
-    int* list3_;                    // +258
-    int list3Count_;                // +25c
-    int gap260_;                    // +260
-    int list3Max_;                  // +264
+    char gap_04[0xEC];
+    int md;                         // +f0
+    int currentVictoryConditionValue; // +f4
+    char ruleSetNameValue[0x104];   // +f8
+    int targetIDValue;              // +1fc
+    int targetTypeValue;            // +200
+    int secondTargetIDValue;        // +204
+    int secondTargetTypeValue;      // +208
+    Waypoint targetPoint1Value;     // +20c
+    Waypoint targetPoint2Value;     // +21c
+    int targetAttributeValue;       // +22c
+    int targetNumberValue;          // +230
+    int victoryConditionChangeTimeout; // +234
+    ManagedArray<int> vcRuleSet;    // +238
+    ManagedArray<int> executingRules; // +248
+    ManagedArray<int> idleRules;    // +258
     char gap_268[0x5f4 - 0x268];
-    int difficultyLevel_;           // +5f4
+    int difficultyLevel;            // +5f4
 };
 #endif
 
@@ -50,15 +54,15 @@ int TribeStrategyAIModule::save(int fd)
     char tempString[260];
     int i;
 
-    rge_write(fd, &this->md, 4);
     rge_write(fd, &this->currentVictoryConditionValue, 4);
     rge_write(fd, &this->targetIDValue, 4);
-    rge_write(fd, &this->targetTypeValue, 4);
+    rge_write(fd, &this->secondTargetIDValue, 4);
+    rge_write(fd, &this->secondTargetTypeValue, 4);
     rge_write(fd, &this->targetPoint1Value, 16);
     rge_write(fd, &this->targetPoint2Value, 16);
     rge_write(fd, &this->targetAttributeValue, 4);
     rge_write(fd, &this->targetNumberValue, 4);
-    rge_write(fd, &this->secondTargetIDValue, 4);
+    rge_write(fd, &this->victoryConditionChangeTimeout, 4);
     rge_write(fd, &this->difficultyLevel, 4);
 
     strcpy(tempString, this->ruleSetNameValue);
