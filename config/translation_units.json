@@ -449,9 +449,12 @@
         "004E9260": "src/matching/004E9260_TribeStrategyAIModule.cpp",
         "004E9730": "src/matching/004E9730_TribeStrategyAIModule.cpp",
         "004E9D90": "src/matching/004e9d90_setMainDecisionAI.cpp",
+        "004E9DA0": "src/matching/004E9DA0_save.cpp",
         "004EA130": "src/matching/004ea130_ruleSetName.cpp",
         "004EA140": "src/matching/004EA140_loadRules.cpp",
         "004EA180": "src/matching/004EA180_setRule.cpp",
+        "004EA1B0": "src/matching/004EA1B0_rule.cpp",
+        "004EA1D0": "src/matching/004EA1D0_setDifficultyLevel.cpp",
         "004EA1F0": "src/matching/004ea1f0_currentVictoryCondition.cpp",
         "004EA200": "src/matching/004ea200_targetID.cpp",
         "004EA210": "src/matching/004ea210_targetType.cpp",
@@ -461,6 +464,7 @@
         "004EA250": "src/matching/004ea250_targetPoint2.cpp",
         "004EA260": "src/matching/004ea260_targetAttribute.cpp",
         "004EA270": "src/matching/004ea270_targetNumber.cpp",
+        "004EA280": "src/matching/004EA280_setVictoryCondition.cpp",
         "004EA7C0": "src/matching/004EA7C0_isRuleExecuting.cpp",
         "004EA810": "src/matching/004EA810_isRuleIdle.cpp"
       },
@@ -485,7 +489,18 @@
         "004EA260": "?targetAttribute@TribeStrategyAIModule@@QBEHXZ",
         "004EA270": "?targetNumber@TribeStrategyAIModule@@QBEHXZ",
         "004EA7C0": "?isRuleExecuting@TribeStrategyAIModule@@QAEHH@Z",
-        "004EA810": "?isRuleIdle@TribeStrategyAIModule@@QAEHH@Z"
+        "004EA810": "?isRuleIdle@TribeStrategyAIModule@@QAEHH@Z",
+        "004E6E10": "??0VictoryConditionRuleSystem@@QAE@XZ",
+        "004E7430": "??1VictoryConditionRuleSystem@@UAE@XZ",
+        "004E7610": "?evaluateAsInProgress@VictoryConditionRuleSystem@@QAEHPAVTRIBE_Player@@H@Z",
+        "004E7620": "?evaluateAsNonInProgress@VictoryConditionRuleSystem@@QAEHPAVTRIBE_Player@@H@Z",
+        "004E7690": "?execute@VictoryConditionRuleSystem@@QAEHPAVTRIBE_Player@@HH@Z",
+        "004E8D10": "?stopExecution@VictoryConditionRuleSystem@@QAEHPAVTRIBE_Player@@H@Z",
+        "004E8D20": "?modifyForDifficultyLevel@VictoryConditionRuleSystem@@QAEXH@Z",
+        "004E9DA0": "?save@TribeStrategyAIModule@@UAEHH@Z",
+        "004EA1B0": "?rule@TribeStrategyAIModule@@QAEHH@Z",
+        "004EA1D0": "?setDifficultyLevel@TribeStrategyAIModule@@QAEXH@Z",
+        "004EA280": "?setVictoryCondition@TribeStrategyAIModule@@QAEXH@Z"
       }
     },
     {
