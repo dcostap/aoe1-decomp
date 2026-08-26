@@ -81,7 +81,7 @@ public:
     void* brush;                // +0x464
     int brush_color;            // +0x468
 
-    virtual int create_edit(TPanel* p1, TEditPanel** p2, char* p3, short p4, int p5,
+    virtual int create_edit(TPanel* p1, TEditPanel** p2, char* p3, short p4, TEditPanel::FormatType p5,
                             long p6, long p7, long p8, long p9, long p10,
                             int p11, int p12);
 };
@@ -117,7 +117,7 @@ struct RGE_Base_Game {
 };
 #endif
 
-int TEasy_Panel::create_edit(TPanel* p1, TEditPanel** p2, char* p3, short p4, int p5,
+int TEasy_Panel::create_edit(TPanel* p1, TEditPanel** p2, char* p3, short p4, TEditPanel::FormatType p5,
                               long p6, long p7, long p8, long p9, long p10,
                               int p11, int p12)
 {

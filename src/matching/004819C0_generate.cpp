@@ -8,9 +8,11 @@ public:
     char gap_00[0x30];
     int number_of_cliffs;
 
+    unsigned char generate(void);
+
+protected:
     void setup_cliff_maps(void);
     void generate_cliff(void);
-    unsigned char generate(void);
 };
 #endif
 

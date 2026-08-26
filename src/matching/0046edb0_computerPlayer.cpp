@@ -11,10 +11,10 @@ public:
     char gap_82[0x82];
     unsigned char allied_victory_;
 
-    int computerPlayer();
+    int computerPlayer() const;
 };
 #endif
 
-int RGE_Player::computerPlayer() {
+int RGE_Player::computerPlayer() const {
     return this->computerPlayerValue;
 }

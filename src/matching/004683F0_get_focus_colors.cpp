@@ -5,11 +5,11 @@ public:
     int field_330;
     int field_334;
 
-    void get_focus_colors(int* out1, int* out2);
+    void get_focus_colors(unsigned long& out1, unsigned long& out2);
 };
 #endif
 
-void TEasy_Panel::get_focus_colors(int* out1, int* out2) {
-    *out1 = this->field_330;
-    *out2 = this->field_334;
+void TEasy_Panel::get_focus_colors(unsigned long& out1, unsigned long& out2) {
+    out1 = this->field_330;
+    out2 = this->field_334;
 }

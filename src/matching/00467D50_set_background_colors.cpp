@@ -4,7 +4,7 @@
 extern "C" __declspec(dllimport) void* __stdcall GetStockObject(int index);
 
 void TEasy_Panel::set_background_colors(unsigned char color1, unsigned char color2) {
-    this->notify_background_color(color1);
+    this->set_color(color1);
     background_color1 = color1;
     background_color2 = color2;
     background_brush = GetStockObject(4);

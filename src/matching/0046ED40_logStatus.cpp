@@ -1,7 +1,5 @@
-class RGE_Player {
-public:
-    virtual ~RGE_Player();
-    void logStatus(int p0, int p1);
-};
+#ifndef PLAYER_GROUPED_TU
+#include "../player_tu_context.h"
+#endif
 
-void RGE_Player::logStatus(int p0, int p1) {}
+void RGE_Player::logStatus(FILE* p0, int p1) {}

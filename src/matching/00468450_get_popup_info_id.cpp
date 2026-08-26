@@ -4,8 +4,8 @@ public:
     virtual ~TEasy_Panel();
     char gap_0[0x440];
     int field_444;
-    int get_popup_info_id();
+    long get_popup_info_id();
 };
 #endif
 
-int TEasy_Panel::get_popup_info_id() { return this->field_444; }
+long TEasy_Panel::get_popup_info_id() { return this->field_444; }

@@ -1,6 +1,6 @@
 #ifndef PLAYER_GROUPED_TU
 class RGE_Static_Object;
-class RGE_Object_Node;
+struct RGE_Object_Node;
 
 class RGE_Object_List {
 public:
@@ -9,7 +9,7 @@ public:
 
 class RGE_Game_World {
 public:
-    int removeObject(int id);
+    virtual int removeObject(int id);
 };
 
 class RGE_Player {
@@ -23,7 +23,7 @@ public:
     char pad_3C[0xF4];
     short id;
 
-    void removeObject(RGE_Static_Object* object, int param_2, int param_3, RGE_Object_Node* node);
+    virtual void removeObject(RGE_Static_Object* object, int param_2, int param_3, RGE_Object_Node* node);
 };
 
 class RGE_Static_Object {
@@ -31,9 +31,13 @@ public:
     int id;
 };
 
-class RGE_Object_Node {
+struct RGE_Object_Node {
 public:
-    char pad_00[0x10];
+    RGE_Static_Object* node;
+    RGE_Object_Node* next;
+    RGE_Object_Node* prev;
+    unsigned char centered;
+    unsigned char gap_0D[3];
 };
 #endif
 

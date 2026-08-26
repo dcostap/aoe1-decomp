@@ -17,7 +17,8 @@ void TEasy_Panel::set_focus(int focus) {
                 this->draw_area->Clear(0, 0);
                 this->draw_area->DrawSystem->Paint(0);
                 this->draw_area->DrawSystem->SetPalette(pal);
-                this->redraw(2);
+                // BINARY NOTE: this is TPanel::set_redraw at vslot +0x20.
+                this->set_redraw((TPanel::RedrawMode)2);
             }
         }
     }

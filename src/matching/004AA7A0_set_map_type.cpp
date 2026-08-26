@@ -23,6 +23,12 @@ struct TDropDownPanel : public TTextPanel {};
 struct TEditPanel : public TTextPanel {};
 
 struct TRIBE_Screen_Sed {
+    enum MapType {
+        MapTypeNone = 0,
+        MapTypeBlankValue = 1,
+        MapTypeSeedValue = 2,
+        MapTypeRandomValue = 3
+    };
     char gap_00[0x4A8];
     int map_type;
     char gap_4AC[0x4D4 - 0x4AC];
@@ -43,11 +49,12 @@ struct TRIBE_Screen_Sed {
     TTextPanel* random_seed_used_label;
     TTextPanel* random_seed_used_text;
 
-    void set_map_type(int type, int redraw);
+protected:
+    void set_map_type(MapType type, int redraw);
 };
 #endif
 
-void TRIBE_Screen_Sed::set_map_type(int type, int redraw)
+void TRIBE_Screen_Sed::set_map_type(MapType type, int redraw)
 {
     int pass;
     int active;

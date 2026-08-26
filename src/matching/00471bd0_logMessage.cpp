@@ -11,9 +11,9 @@ public:
     char gap_82[0x82];
     unsigned char allied_victory_;
 
-    void logMessage();
+    virtual void __cdecl logMessage(char*, ...);
 };
 #endif
 
-void RGE_Player::logMessage() {
+void __cdecl RGE_Player::logMessage(char*, ...) {
 }

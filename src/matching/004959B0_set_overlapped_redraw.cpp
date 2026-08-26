@@ -17,7 +17,8 @@
 
 #endif
 
-void TRIBE_Screen_Game::set_overlapped_redraw(TPanel* param_1, TPanel* param_2, int param_3)
+void TRIBE_Screen_Game::set_overlapped_redraw(
+    TPanel* param_1, TPanel* param_2, TPanel::RedrawMode param_3)
 {
     TPanel* dialog = panel_system.modalPanel();
     if (dialog != 0) {

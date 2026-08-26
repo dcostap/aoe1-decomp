@@ -4,7 +4,7 @@
 // - Replaced the old offset-only scaffold with the canonical random-map base,
 //   RGE_Cliffs_Info fields, valid_cliff_sites Map_Stack, and typed RGE_Map
 //   virtual surface established by the same-TU setup/generate callers.
-// - The do/pop retry shape and vtable padding recover the 15-call set,
+// - The do/pop retry shape and reviewed virtual surface recover the 15-call set,
 //   including map slots +0x10/+0x20; the best canonical source is 771 bytes
 //   with a 0x38 frame and 15 aligned calls.
 // - A six-variant local-order/retry lab found no size/frame/call-set eligible
@@ -119,6 +119,7 @@ public:
     RGE_Cliffs_Info info;
     Map_Stack valid_cliff_sites;
 
+protected:
     unsigned char check_for_valid_cliff_site(long direction, long& y,
                                               long& valid_height, long index);
     void invalidate_cliff_area(long x, long y, long spacing);

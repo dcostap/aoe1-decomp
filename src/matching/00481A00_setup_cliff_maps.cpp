@@ -83,6 +83,7 @@ public:
     RGE_Cliffs_Info info;
     Map_Stack valid_cliff_sites;
 
+protected:
     void invalidate_cliff_area(long x, long y, long spacing);
     void setup_cliff_maps(void);
 };

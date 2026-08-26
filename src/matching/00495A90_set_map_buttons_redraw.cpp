@@ -3,7 +3,7 @@
 
 #endif
 
-void TRIBE_Screen_Game::set_map_buttons_redraw(int mode) {
+void TRIBE_Screen_Game::set_map_buttons_redraw(TPanel::RedrawMode mode) {
     if (this->field_14 < 0x320) {
         this->button_panel[5]->set_redraw(mode);
         this->button_panel[11]->set_redraw(mode);

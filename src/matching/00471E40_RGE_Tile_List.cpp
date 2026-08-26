@@ -21,7 +21,7 @@ RGE_Tile_List_ctor* RGE_Tile_List_ctor::ctor(int max_tiles) {
 }
 #else
 RGE_Tile_List::RGE_Tile_List(int max_tiles) {
-    this->list = calloc(max_tiles, 8);
+    this->list = (RGE_Tile_List_Node*)calloc(max_tiles, 8);
     this->list_size = max_tiles;
     this->num_active = 0;
     this->new_count = 0;

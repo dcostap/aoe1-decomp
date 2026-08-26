@@ -20,6 +20,14 @@ struct TEditPanel : public TTextPanel {};
 struct TDropDownPanel : public TTextPanel {};
 
 struct TRIBE_Screen_Sed {
+    enum VictoryType {
+        VictoryTypeNone = 0,
+        VictoryTypeStandardValue = 1,
+        VictoryTypeConquestValue = 2,
+        VictoryTypeScoreValue = 3,
+        VictoryTypeTimeValue = 4,
+        VictoryTypeCustomValue = 5
+    };
     char gap_00[0x4AC];
     int mp_victory_type;
     char gap_4B0[0x4D4 - 0x4B0];
@@ -50,11 +58,12 @@ struct TRIBE_Screen_Sed {
     TTextPanel* victory_time_label;
     TDropDownPanel* victory_time;
 
-    void set_mp_victory_type(int type, int redraw);
+protected:
+    void set_mp_victory_type(VictoryType type, int redraw);
 };
 #endif
 
-void TRIBE_Screen_Sed::set_mp_victory_type(int type, int redraw)
+void TRIBE_Screen_Sed::set_mp_victory_type(VictoryType type, int redraw)
 {
     int pass;
     int active;

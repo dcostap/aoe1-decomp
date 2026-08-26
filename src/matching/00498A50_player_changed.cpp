@@ -460,5 +460,5 @@ void TRIBE_Screen_Game::player_changed(int old_player, int new_player) {
     }
 
     this->setup_buttons();
-    this->set_redraw(1);
+    this->set_redraw((TPanel::RedrawMode)1);
 }

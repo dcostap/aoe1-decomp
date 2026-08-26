@@ -5,8 +5,8 @@ public:
 };
 
 class TRIBE_Screen_Game : public TPanel {
-public:
-    int restart_sound_system();
+protected:
+    virtual int restart_sound_system();
 };
 #endif
 

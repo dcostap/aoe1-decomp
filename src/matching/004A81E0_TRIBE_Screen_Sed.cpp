@@ -206,6 +206,26 @@ public:
 
 class TRIBE_Screen_Sed : public TScreenPanel {
 public:
+    enum MapType {
+        MapTypeNone = 0,
+        MapTypeBlankValue = 1,
+        MapTypeSeedValue = 2,
+        MapTypeRandomValue = 3
+    };
+    enum VictoryType {
+        VictoryTypeNone = 0,
+        VictoryTypeStandardValue = 1,
+        VictoryTypeConquestValue = 2,
+        VictoryTypeScoreValue = 3,
+        VictoryTypeTimeValue = 4,
+        VictoryTypeCustomValue = 5
+    };
+    enum PaintType {
+        PaintTypeNone = 0,
+        PaintTypeTerrainValue = 1,
+        PaintTypeElevationValue = 2,
+        PaintTypeObjectValue = 3
+    };
     int is_multi_player;
     char gap_47C[4];
     void* SelectedObject;
@@ -250,10 +270,10 @@ public:
     void SavePlayerActiveStatus();
     void position_panels();
     void set_panel_info();
-    void set_map_type(int, int);
-    void set_mp_victory_type(int, int);
+    void set_map_type(MapType, int);
+    void set_mp_victory_type(VictoryType, int);
     void set_brush_size(int);
-    void set_paint_type(int, int);
+    void set_paint_type(PaintType, int);
     void set_player(short, unsigned char, unsigned char);
     void set_unit_player(short);
     void set_message_type(int, int);
@@ -389,10 +409,10 @@ TRIBE_Screen_Sed::TRIBE_Screen_Sed(char* file, int mode) : TScreenPanel("Scenari
     this->set_curr_child(this->bottom_panel);
     this->position_panels();
     this->set_panel_info();
-    this->set_map_type(1, 0);
-    this->set_mp_victory_type(1, 0);
+    this->set_map_type((MapType)1, 0);
+    this->set_mp_victory_type((VictoryType)1, 0);
     this->set_brush_size(1);
-    this->set_paint_type(1, 0);
+    this->set_paint_type((PaintType)1, 0);
     this->set_player(1, 0, 0);
     this->set_unit_player(1);
     this->set_message_type(1, 0);

@@ -32,7 +32,7 @@
 // factory then matches all 434 bytes and seven calls. Target-only compilation
 // emits the reviewed cloned-tail drift.
 
-int TEasy_Panel::create_input(TPanel* parent, TInputPanel** out, char* text, short max_len, FormatType format,
+int TEasy_Panel::create_input(TPanel* parent, TInputPanel** out, char* text, short max_len, TInputPanel::FormatType format,
                               long x, long y, long w, long h, long font_id)
 {
     long ideal_x = (x * this->base_width) / this->ideal_width;

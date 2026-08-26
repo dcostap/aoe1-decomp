@@ -4,8 +4,8 @@ public:
     virtual ~TEasy_Panel();
     char gap_0[0x448];
     int field_44C;
-    int get_shadow_color_table();
+    RGE_Color_Table* get_shadow_color_table();
 };
 #endif
 
-int TEasy_Panel::get_shadow_color_table() { return this->field_44C; }
+RGE_Color_Table* TEasy_Panel::get_shadow_color_table() { return (RGE_Color_Table*)this->field_44C; }

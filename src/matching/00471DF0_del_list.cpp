@@ -21,7 +21,7 @@ void RGE_Tile_List::del_list(void) {
     if (this->collapse_list != 0) {
         free(this->list);
         this->list_size = 8;
-        this->list = calloc(8, 8);
+        this->list = (RGE_Tile_List_Node*)calloc(8, 8);
         this->collapse_list = 0;
     }
 }

@@ -28,6 +28,7 @@ class RGE_RMM_Cliffs_Generator : public RGE_Random_Map_Module {
 public:
     virtual unsigned char generate(void);
 
+protected:
     unsigned char check_for_valid_cliff_site(long direction, long& y,
                                               long& valid_height, long index);
 };

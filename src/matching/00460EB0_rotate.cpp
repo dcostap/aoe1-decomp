@@ -1,9 +1,9 @@
-// VA: 00460EB0 RGE_Moving_Object::rotate(int)
+// VA: 00460EB0 RGE_Moving_Object::rotate(long)
 // The canonical RGE_Moving_Object and RGE_Sprite layouts live in
 // include/move_obj_context.h. new_angle is the inherited slot at +0xB4.
 // The natural source remains the reduced standalone form.
 
-void RGE_Moving_Object::rotate(int angleDeg) {
+void RGE_Moving_Object::rotate(long angleDeg) {
     void* obj;
     float rotation;
 

@@ -4,8 +4,8 @@ public:
     virtual ~TEasy_Panel();
     char gap_0[0x444];
     int field_448;
-    int get_button_pics();
+    TShape* get_button_pics();
 };
 #endif
 
-int TEasy_Panel::get_button_pics() { return this->field_448; }
+TShape* TEasy_Panel::get_button_pics() { return (TShape*)this->field_448; }

@@ -4,8 +4,8 @@ public:
     virtual ~TEasy_Panel();
     char gap_0[0x208];
     int field_20C;
-    int get_palette();
+    void* get_palette();
 };
 #endif
 
-int TEasy_Panel::get_palette() { return this->field_20C; }
+void* TEasy_Panel::get_palette() { return (void*)this->field_20C; }

@@ -8,7 +8,7 @@ public:
     char gap_0[0x34];
     class RGE_Victory_Conditions* victory_conditions;
 
-    void new_victory();
+    virtual void new_victory();
 };
 
 class RGE_Victory_Conditions {

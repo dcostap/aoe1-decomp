@@ -1,16 +1,18 @@
 #ifndef PLAYER_GROUPED_TU
+struct RGE_Tile_List_Node;
 class RGE_Tile_List {
 public:
-    char gap_0[4];
-    int field_4;
-    char gap_8[8];
-    int field_10;
+    int list_size;
+    int num_active;
+    int new_count;
+    int collapse_list;
+    RGE_Tile_List_Node* list;
 
-    void get_list_info(int* out1, int* out2);
+    void get_list_info(RGE_Tile_List_Node*& out1, int& out2);
 };
 #endif
 
-void RGE_Tile_List::get_list_info(int* out1, int* out2) {
-    *out1 = this->list_size;
-    *out2 = this->num_active;
+void RGE_Tile_List::get_list_info(RGE_Tile_List_Node*& out1, int& out2) {
+    out1 = this->list;
+    out2 = this->num_active;
 }

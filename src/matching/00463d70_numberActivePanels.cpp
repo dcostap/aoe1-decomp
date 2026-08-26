@@ -6,16 +6,16 @@ public:
     int modalPanel_;
     int currentPanel_;
     char gap_10[4];
-    int numberActivePanels_;
+    int numberActivePanelsValue;
     char gap_18[0xAA8];
     int ImeEnabled_;
     int ImeOn_;
     int InputEnabled_;
 
-    int numberActivePanels();
+    int numberActivePanels() const;
 };
 
 #endif
-int TPanelSystem::numberActivePanels() {
-    return this->numberActivePanels_;
+int TPanelSystem::numberActivePanels() const {
+    return this->numberActivePanelsValue;
 }

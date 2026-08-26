@@ -4,8 +4,8 @@ public:
     virtual ~TEasy_Panel();
     char gap_0[0x1FC];
     int field_200;
-    int get_info_id();
+    long get_info_id();
 };
 #endif
 
-int TEasy_Panel::get_info_id() { return this->field_200; }
+long TEasy_Panel::get_info_id() { return this->field_200; }

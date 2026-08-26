@@ -5,11 +5,11 @@ public:
     int field_328;
     int field_32C;
 
-    void get_text_colors(int* out1, int* out2);
+    void get_text_colors(unsigned long& out1, unsigned long& out2);
 };
 #endif
 
-void TEasy_Panel::get_text_colors(int* out1, int* out2) {
-    *out1 = this->field_328;
-    *out2 = this->field_32C;
+void TEasy_Panel::get_text_colors(unsigned long& out1, unsigned long& out2) {
+    out1 = this->field_328;
+    out2 = this->field_32C;
 }

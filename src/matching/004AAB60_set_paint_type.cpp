@@ -14,6 +14,12 @@ struct RGE_Base_Game_Dispatch { virtual void v00(); virtual void v04(); virtual 
 extern RGE_Base_Game_Dispatch* rge_base_game;
 
 struct TRIBE_Screen_Sed {
+    enum PaintType {
+        PaintTypeNone = 0,
+        PaintTypeTerrainValue = 1,
+        PaintTypeElevationValue = 2,
+        PaintTypeObjectValue = 3
+    };
     char gap_00[0x4B4];
     int paint_type;
     char gap_4B8[0x4D4 - 0x4B8];
@@ -30,13 +36,14 @@ struct TRIBE_Screen_Sed {
     void* paint_terrain_scrollbar;
     TListPanel* paint_elevation_list;
 
-    void set_paint_type(int type, int redraw);
+protected:
+    void set_paint_type(PaintType type, int redraw);
     void set_terrain(short terrain);
     void set_elevation(short elevation);
 };
 #endif
 
-void TRIBE_Screen_Sed::set_paint_type(int type, int redraw)
+void TRIBE_Screen_Sed::set_paint_type(PaintType type, int redraw)
 {
     int pass;
     int active;

@@ -4,8 +4,8 @@ public:
     virtual ~TEasy_Panel();
     char gap_0[0x44C];
     int field_450;
-    int get_shadow_amount();
+    long get_shadow_amount();
 };
 #endif
 
-int TEasy_Panel::get_shadow_amount() { return this->field_450; }
+long TEasy_Panel::get_shadow_amount() { return this->field_450; }

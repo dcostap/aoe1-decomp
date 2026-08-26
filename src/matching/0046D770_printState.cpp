@@ -15,65 +15,11 @@
 //   shape and mask offset; 6 differing bytes remained at the record cursor.
 // - Probe 3: anchored the cursor at `MGP_openPaths[1].y` with proven byte/dword
 //   offsets; exact 190-byte match.
+// - Module closure repair: the PDB owner is protected (`IAE`), and the
+//   canonical RGE_Static_Object virtual surface owns the slots through
+//   0x140 before the derived variadic print slot at 0x144.
 
-#ifndef PATHSYS_TU_CONTEXT
-typedef unsigned char uchar;
-
-#define VPAD1(n) virtual void __cdecl vpad_##n();
-#define VPAD2(n) VPAD1(n) VPAD1(n##_1)
-#define VPAD4(n) VPAD2(n) VPAD2(n##_2)
-#define VPAD8(n) VPAD4(n) VPAD4(n##_4)
-#define VPAD16(n) VPAD8(n) VPAD8(n##_8)
-#define VPAD32(n) VPAD16(n) VPAD16(n##_16)
-#define VPAD64(n) VPAD32(n) VPAD32(n##_32)
-
-class RGE_Moving_Object {
-public:
-    VPAD64(0)
-    VPAD16(64)
-    VPAD1(80)
-    virtual void __cdecl print(char* format, ...);
-};
-
-class PathingSystem {
-public:
-    void* vtable_ptr;
-    int xSizeValue;
-    int ySizeValue;
-    unsigned char facetValue[255][255];
-    unsigned char pad_fe0d[3];
-    int MGP_costValue[255][255];
-
-    struct MGP_FloatHeap {
-        unsigned char x;
-        unsigned char y;
-        unsigned short next;
-        int total;
-    };
-
-    MGP_FloatHeap MGP_openPaths[65026];
-    unsigned char obstructionValue[1020][255];
-    unsigned char miscValue[255][255];
-    unsigned char pad_11dc29[3];
-    int numberOpenPathsValue;
-    MGP_FloatHeap MGP_bestTraversedPath;
-    int numberTraversedPathsValue;
-    void* mapValue;
-    void* worldValue;
-    void* currentObject;
-    int currentObjectInObMap;
-    int currentTargetID;
-    float* currentTerrainTable;
-    float currentXOffset;
-    float currentYOffset;
-    int currentTerrainException1;
-    int currentTerrainException2;
-    char gap_11dc64[0x74];
-    unsigned char CurrentFacetMask;
-
-    void printState(RGE_Moving_Object* obj);
-};
-#endif
+#include "../../include/pathsys_context.h"
 
 void PathingSystem::printState(RGE_Moving_Object* obj)
 {

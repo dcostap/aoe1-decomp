@@ -1,6 +1,6 @@
 #ifndef PLAYER_GROUPED_TU
 class RGE_Static_Object;
-class RGE_Object_Node;
+struct RGE_Object_Node;
 class RGE_Object_List {
 public:
     RGE_Object_Node* add_node(RGE_Static_Object* object);
@@ -8,7 +8,7 @@ public:
 class RGE_Game_World {
 public:
     char gap_00[0x58];
-    void updateObject(RGE_Static_Object* object);
+    virtual int addObject(RGE_Static_Object* object);
 };
 class RGE_Player {
 public:
@@ -18,7 +18,7 @@ public:
     RGE_Object_List* doppleganger_objects;
     char gap_34[0x8];
     RGE_Game_World* world;
-    RGE_Object_Node* addObject(RGE_Static_Object*, int, int);
+    virtual RGE_Object_Node* addObject(RGE_Static_Object*, int, int);
 };
 #endif
 
@@ -33,6 +33,6 @@ RGE_Object_Node* RGE_Player::addObject(RGE_Static_Object* object, int is_sleepin
         node = this->objects->add_node(object);
     }
 
-    this->world->updateObject(object);
+    this->world->addObject(object);
     return node;
 }

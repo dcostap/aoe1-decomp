@@ -6,8 +6,8 @@ void TEasy_Panel::draw() {
         *(unsigned char*)((char*)this + 0xF3) = 0;
     }
     if (*(unsigned char*)((char*)this + 0xF2) != 0) {
-        this->draw_rect2(1);
+        this->draw_background(1);
     } else {
-        this->draw_rect2(0);
+        this->draw_background(0);
     }
 }

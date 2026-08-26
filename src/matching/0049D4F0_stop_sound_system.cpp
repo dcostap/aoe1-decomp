@@ -28,5 +28,5 @@ void TRIBE_Screen_Game::stop_sound_system(void) {
         operator delete(sound_system);
         this->sound_system = 0;
     }
-    ((TPanel*)this)->stop_sound_system();
+    TPanel::stop_sound_system();
 }
