@@ -21,6 +21,18 @@
 // - Passing load_type as the branch-local log value improved strict diff to 838,
 //   but added five bytes and worsened resynchronization; the natural clean source
 //   remains the 1475-byte, 845-byte-diff form.
+// TU captain notes (phase4):
+// - Context gate proved Sounddrv.cpp, lines 507-826, TDigital ownership, and
+//   the ordered 36-owner address sequence. The wrapper uses the same sequence.
+// - Removed grouped-only alternate bodies from the 13 observed exact candidates.
+//   Their canonical declarations remain guarded for standalone source checks.
+// - Direct sound_buffer member calls reduced the grouped load diff from 986 to
+//   430. A local failure label reduced the standalone diff to 385.
+// - The resource buffer-slot alias reduced the final grouped diff to 383.
+// - Final grouped candidate: 22 exact owners MATCH; 13 observed owners MATCH;
+//   load is 1488 bytes, 383 bytes different, with one boundary escape.
+// - UNRESOLVED: resource-path field scheduling, zero-register coloring, and the
+//   self-recursion call identity still differ from the original.
 #include <string.h>
 #include <stdlib.h>
 
@@ -149,8 +161,6 @@ int TDigital::load(char* name, long param) {
     int resDataSize;
     unsigned int result;
     IDirectSound* direct_sound;
-    IDirectSoundBuffer* buffer;
-    IDirectSoundBuffer** buffer_slot = &this->sound_buffer;
     uchar* resource_data;
     int fd;
 
@@ -253,9 +263,9 @@ int TDigital::load(char* name, long param) {
 #endif
                 &buffer_desc,
 #ifdef SOUNDDRV_CANONICAL_TU
-                (LPDIRECTSOUNDBUFFER*)buffer_slot, 0);
+                    &this->sound_buffer, 0);
 #else
-                (void**)buffer_slot, 0);
+                (void**)&this->sound_buffer, 0);
 #endif
             if (result != 0) {
                 this->failed = 1;
@@ -267,14 +277,13 @@ int TDigital::load(char* name, long param) {
                 goto fail_return;
             }
 
-            buffer = *buffer_slot;
 #ifdef SOUNDDRV_CANONICAL_TU
-            result = buffer->Lock(
+            result = this->sound_buffer->Lock(
 #else
-            result = buffer->vtable->Lock(
+            result = this->sound_buffer->vtable->Lock(
 #endif
 #ifndef SOUNDDRV_CANONICAL_TU
-                buffer,
+                this->sound_buffer,
 #endif
                 0, this->data_size, &mem1, &size1,
                 &mem2, &size2, 0);
@@ -284,12 +293,12 @@ int TDigital::load(char* name, long param) {
                     memcpy(mem2, this->wave_data + size1, size2);
                 }
 #ifdef SOUNDDRV_CANONICAL_TU
-                buffer->Unlock(
+                this->sound_buffer->Unlock(
 #else
-                buffer->vtable->Unlock(
+                this->sound_buffer->vtable->Unlock(
 #endif
 #ifndef SOUNDDRV_CANONICAL_TU
-                    buffer,
+                    this->sound_buffer,
 #endif
                     mem1, size1, mem2, size2);
                 free(this->wave_info);
@@ -300,11 +309,11 @@ int TDigital::load(char* name, long param) {
             }
             this->failed = 1;
 #ifdef SOUNDDRV_CANONICAL_TU
-            buffer->Release();
+            this->sound_buffer->Release();
 #else
-            buffer->vtable->Release(buffer);
+            this->sound_buffer->vtable->Release(this->sound_buffer);
 #endif
-            *buffer_slot = 0;
+            this->sound_buffer = 0;
             free(this->wave_info);
             this->wave_info = 0;
             free(this->wave_data);
@@ -333,12 +342,13 @@ int TDigital::load(char* name, long param) {
             this->wave_info = (WAVEFORMATEX*)malloc(0x12);
             if (this->wave_info == 0) {
                 this->failed = 1;
-                if (load_type == 1) {
-                    free(resource_data);
-                    color_log(0xBA, 0x5F, 1);
-                    return 0;
-                }
-                goto fail_return;
+                if (load_type != 1)
+                    goto wave_info_fail;
+                // ORIGINAL BUG: The shipped path frees resource_data twice when load_type is 1.
+                free(resource_data);
+wave_info_fail:
+                color_log(0xBA, 0x5F, 1);
+                return 0;
             } else {
                 this->wave_info->wFormatTag = wave_hdr.wFormatTag;
                 this->wave_info->nChannels = wave_hdr.nChannels;
@@ -354,6 +364,7 @@ int TDigital::load(char* name, long param) {
                 buffer_desc.dwReserved = 0;
                 buffer_desc.lpwfxFormat = this->wave_info;
                 direct_sound = this->sound_system->direct_sound;
+                IDirectSoundBuffer** buffer_slot = &this->sound_buffer;
 #ifdef SOUNDDRV_CANONICAL_TU
                 result = direct_sound->CreateSoundBuffer(
 #else
@@ -364,19 +375,18 @@ int TDigital::load(char* name, long param) {
 #endif
                     &buffer_desc,
 #ifdef SOUNDDRV_CANONICAL_TU
-                    (LPDIRECTSOUNDBUFFER*)buffer_slot, 0);
+                    buffer_slot, 0);
 #else
-                    (void**)buffer_slot, 0);
+                    (void**)&this->sound_buffer, 0);
 #endif
                 if (result == 0) {
-                    buffer = *buffer_slot;
 #ifdef SOUNDDRV_CANONICAL_TU
-                    result = buffer->Lock(
+                    result = (*buffer_slot)->Lock(
 #else
-                    result = buffer->vtable->Lock(
+                    result = this->sound_buffer->vtable->Lock(
 #endif
 #ifndef SOUNDDRV_CANONICAL_TU
-                        buffer,
+                        this->sound_buffer,
 #endif
                         0, this->data_size, &mem1, &size1,
                         &mem2, &size2, 0);
@@ -386,12 +396,12 @@ int TDigital::load(char* name, long param) {
                             memcpy(mem2, this->wave_data + size1, size2);
                         }
 #ifdef SOUNDDRV_CANONICAL_TU
-                        buffer->Unlock(
+                        (*buffer_slot)->Unlock(
 #else
-                        buffer->vtable->Unlock(
+                        this->sound_buffer->vtable->Unlock(
 #endif
 #ifndef SOUNDDRV_CANONICAL_TU
-                            buffer,
+                            this->sound_buffer,
 #endif
                             mem1, size1, mem2, size2);
                         free(this->wave_info);
@@ -400,9 +410,9 @@ int TDigital::load(char* name, long param) {
                     }
                     this->failed = 1;
 #ifdef SOUNDDRV_CANONICAL_TU
-                    buffer->Release();
+                    (*buffer_slot)->Release();
 #else
-                    buffer->vtable->Release(buffer);
+                    this->sound_buffer->vtable->Release(this->sound_buffer);
 #endif
                 } else {
                     this->failed = 1;
