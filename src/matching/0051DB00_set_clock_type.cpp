@@ -44,7 +44,7 @@ public:
     virtual void set_active();
     virtual void set_positioning();
     virtual void set_fixed_position();
-    virtual void set_visible(int);
+    virtual void set_active(int);
     virtual void draw_setup();
     virtual void draw_finish();
     virtual long set_redraw(int);
@@ -135,17 +135,9 @@ void TRIBE_Panel_Time::set_clock_type(int clock_type, int player_id) {
     }
 
     if (clock_type == 0) {
-#ifdef TPNL_TIM_SHARED_CONTEXT
         this->set_active(0);
-#else
-        this->set_visible(0);
-#endif
     } else {
-#ifdef TPNL_TIM_SHARED_CONTEXT
         this->set_active(1);
-#else
-        this->set_visible(1);
-#endif
     }
     this->set_redraw(1);
     this->parent_panel->set_redraw(1);
