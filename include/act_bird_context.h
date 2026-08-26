@@ -167,8 +167,11 @@ public:
     virtual ~RGE_Action_Bird();
     virtual void first_in_stack(unsigned char param_1);
     virtual unsigned char update(void);
+
+protected:
     virtual void set_state(unsigned char param_1);
 
+public:
     RGE_Action_Bird(int param_1, RGE_Action_Object* param_2);
     RGE_Action_Bird(RGE_Action_Object* param_1, RGE_Task* param_2, float param_3, float param_4, float param_5);
 };
