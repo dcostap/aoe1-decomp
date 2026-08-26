@@ -45,7 +45,7 @@
 #include "matching/0045B310_LoadCursors.cpp"
 #include "accepted_drift/0045B560_delete_surfaces.cpp"
 #include "matching/0045B5D0_create_surfaces.cpp"
-#include "scratch/0045B760_update_mouse_position.cpp"
+#include "matching/0045B760_update_mouse_position.cpp"
 #include "accepted_drift/0045BA60_draw.cpp"
 #include "matching/0045BD60_erase.cpp"
 #include "matching/0045BE20_set_facet.cpp"

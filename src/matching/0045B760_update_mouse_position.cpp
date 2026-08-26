@@ -39,10 +39,10 @@
 // basin and three-byte late clipping shift, not calls, frame, layout, or headers.
 // left in scratch: remaining work, if any, should be localized source/declaration or
 // TU-context probes after validating the member-function baseline.
-// BLOCKER: in the negative-top clipping arm, the executable clears
+// Historical blocker: in the negative-top clipping arm, the executable clears
 // mouse_rect.top before it writes cursor_rect.top and new_save_rect.bottom.
-// The rebuild performs those two writes first and clears mouse_rect.top last.
-// Final values match, but member publication and failing-store order differ.
+// The former direct-member source performed those writes first.
+// Final values match, but member publication and failing-store order differed.
 // Fresh worker probes: preserving the top value and pre-reading new_save_rect.bottom
 // reproduced the prior 197-byte basin; adding decompiler-style function-scope
 // clipping temporaries grew the frame to 0xC and reached 276 bytes. A register
@@ -51,10 +51,15 @@
 // Context pass: this owner now includes the canonical Mouseptr.cpp context.
 // TMousePointer, TDrawSystem, TDrawArea, and RECT4 ownership use the reviewed
 // PDB layout. The owner remains in PDB line band 567-717 and in mouseptr_tu.cpp.
-// Continuation finish pass: named zero, register-selector, nested game-window,
-// and historical clipping forms either reproduced the 196-byte basin or grew
-// the frame/body. The retained source preserves the executable's clipping and
-// publication order; the EBX/EDI/EBP register basin remains unresolved.
+// Prior continuation finish pass: named zero, register-selector, nested
+// game-window, and historical clipping forms either reproduced the 196-byte
+// basin or grew the frame/body. The baseline retained the executable's
+// clipping and publication order; its register basin remained unresolved.
+// Current-claim exact: a named top local with mouse_rect.top cleared before
+// cursor_rect.top and new_save_rect.bottom reproduces the original 755 bytes.
+// Walkback: the pre-read new_save_rect.bottom was incidental; direct member
+// publication restored the 196-byte mismatch. The reduced top-local source is
+// natural and preserves the proven publication order.
 
 #include "../../include/mouseptr_context.h"
 
@@ -103,7 +108,13 @@ int TMousePointer::update_mouse_position() {
         if (this->mouse_rect.left <= da->Width && this->mouse_rect.top <= da->Height) {
             if (this->mouse_rect.left < 0) { this->cursor_rect.left = -this->mouse_rect.left; this->new_save_rect.right -= this->cursor_rect.left; this->mouse_rect.left = 0; }
             if (this->mouse_rect.right > da->Width) { int t = this->mouse_rect.right - da->Width; this->cursor_rect.right -= t; this->new_save_rect.right -= t; this->mouse_rect.right = da->Width; }
-            if (this->mouse_rect.top < 0) { this->cursor_rect.top = -this->mouse_rect.top; this->new_save_rect.bottom -= this->cursor_rect.top; this->mouse_rect.top = 0; }
+            int top = this->mouse_rect.top;
+            if (top < 0) {
+                this->mouse_rect.top = 0;
+                top = -top;
+                this->cursor_rect.top = top;
+                this->new_save_rect.bottom -= top;
+            }
             if (this->mouse_rect.bottom > da->Height) { int t = this->mouse_rect.bottom - da->Height; this->cursor_rect.bottom -= t; this->new_save_rect.bottom -= t; this->mouse_rect.bottom = da->Height; }
             this->MouseOnScreen = 1; return 1;
         }
