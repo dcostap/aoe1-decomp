@@ -142,6 +142,35 @@ def merge_candidate_group(
     return result, "update"
 
 
+def changed_owner_checks(
+    groups: list[dict[str, object]], candidate: dict[str, object]
+) -> dict[str, object]:
+    """Return owners whose registered path or symbol will change."""
+    current = next(
+        (group for group in groups if group.get("name") == candidate.get("name")),
+        None,
+    )
+    candidate_owners = dict(candidate.get("owners") or {})
+    if current is None:
+        return candidate_owners
+
+    current_owners = dict(current.get("owners") or {})
+    current_symbols = dict(current.get("symbols") or {})
+    candidate_symbols = dict(candidate.get("symbols") or {})
+    changed: dict[str, object] = {}
+    for va, owner in candidate_owners.items():
+        current_owner = str(current_owners.get(va) or "").replace("\\", "/")
+        candidate_owner = str(owner).replace("\\", "/")
+        owner_changed = current_owner != candidate_owner
+        symbol_changed = (
+            va in candidate_symbols
+            and current_symbols.get(va) != candidate_symbols[va]
+        )
+        if owner_changed or symbol_changed:
+            changed[va] = owner
+    return changed
+
+
 def validate_report(
     payload: dict[str, object], proposal_path: Path, report_path: Path
 ) -> dict[str, object]:
@@ -274,7 +303,9 @@ def main() -> int:
         candidate = candidate_group(payload)
         if args.name:
             candidate["name"] = args.name
-        groups, action = merge_candidate_group(load_translation_units(), candidate)
+        registered_groups = load_translation_units()
+        owners_to_check = changed_owner_checks(registered_groups, candidate)
+        groups, action = merge_candidate_group(registered_groups, candidate)
         flag_errors = candidate_flag_errors(candidate)
         if flag_errors:
             message = "; ".join(str(issue["message"]) for issue in flag_errors)
@@ -301,7 +332,7 @@ def main() -> int:
         return 2
     old_config = TRANSLATION_UNITS_PATH.read_text(encoding="utf-8")
     _write_config(groups)
-    results = run_registered_checks(owners, args.jobs)
+    results = run_registered_checks(owners_to_check, args.jobs)
     failures = [result for result in results if not result[1]]
     if failures:
         _restore_config(old_config)
@@ -310,7 +341,9 @@ def main() -> int:
             print(output, file=sys.stderr)
         print("Restored config/translation_units.json.", file=sys.stderr)
         return 1
-    print(f"Registered checks: {len(results)}/{len(results)} MATCH, 0.0000%.")
+    print(
+        f"Changed registered checks: {len(results)}/{len(results)} MATCH, 0.0000%."
+    )
     print("Updated config/translation_units.json.")
     return 0
 

@@ -14,6 +14,7 @@ if str(TOOLS_DIR) not in sys.path:
 from register_candidate_tu import (  # noqa: E402
     candidate_group,
     candidate_flag_errors,
+    changed_owner_checks,
     merge_candidate_group,
     run_registered_checks,
 )
@@ -121,6 +122,57 @@ class RegisterCandidateTranslationUnitTests(unittest.TestCase):
 
         with self.assertRaisesRegex(ValueError, "already owned"):
             merge_candidate_group(groups, candidate)
+
+    def test_changed_owner_checks_ignores_unchanged_owners(self) -> None:
+        groups = [
+            {
+                "name": "demo",
+                "source": "src/demo_tu.cpp",
+                "flags": "config/flags/default.rsp",
+                "owners": {
+                    "00401010": "src/matching/00401010_demo.cpp",
+                    "00401020": "src/matching/00401020_old.cpp",
+                },
+                "symbols": {"00401010": "?demo@@YAXXZ"},
+            }
+        ]
+        candidate = {
+            "name": "demo",
+            "source": "src/demo_tu.cpp",
+            "flags": "config/flags/default.rsp",
+            "owners": {
+                "00401010": "src\\matching\\00401010_demo.cpp",
+                "00401020": "src/matching/00401020_new.cpp",
+                "00401030": "src/matching/00401030_added.cpp",
+            },
+            "symbols": {"00401010": "?demo@@YAXXZ"},
+        }
+
+        changed = changed_owner_checks(groups, candidate)
+
+        self.assertEqual(list(changed), ["00401020", "00401030"])
+
+    def test_changed_owner_checks_includes_new_symbol(self) -> None:
+        groups = [
+            {
+                "name": "demo",
+                "source": "src/demo_tu.cpp",
+                "flags": "config/flags/default.rsp",
+                "owners": {"00401010": "src/matching/00401010_demo.cpp"},
+            }
+        ]
+        candidate = {
+            "name": "demo",
+            "source": "src/demo_tu.cpp",
+            "flags": "config/flags/default.rsp",
+            "owners": {"00401010": "src/matching/00401010_demo.cpp"},
+            "symbols": {"00401010": "?demo@@YAXXZ"},
+        }
+
+        self.assertEqual(
+            changed_owner_checks(groups, candidate),
+            {"00401010": "src/matching/00401010_demo.cpp"},
+        )
 
     def test_candidate_flag_errors_returns_only_current_errors(self) -> None:
         candidate = {
