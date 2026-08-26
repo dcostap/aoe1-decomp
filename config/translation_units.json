@@ -316,6 +316,8 @@
         "0051F120": "src/matching/0051F120_draw_border.cpp",
         "0051F310": "src/matching/0051F310_init_timeline.cpp",
         "0051F4E0": "src/matching/0051F4E0_add_pop_total_special_event.cpp",
+        "0051F560": "src/matching/0051F560_record_special_event.cpp",
+        "0051FA30": "src/matching/0051FA30_draw.cpp",
         "0051FA90": "src/matching/0051FA90_draw_axis.cpp",
         "00520080": "src/matching/00520080_draw_background.cpp",
         "00520220": "src/matching/00520220_draw_civilization_names.cpp",
@@ -334,7 +336,16 @@
         "00520080": "?draw_background@Time_Line_Panel@@QAEXXZ",
         "00520220": "?draw_civilization_names@Time_Line_Panel@@QAEXXZ",
         "00520AE0": "?draw_icon@Time_Line_Panel@@QAEXPAUSpecial_Events@@FE@Z",
-        "00520D50": "?draw_legend@Time_Line_Panel@@QAEXXZ"
+        "00520D50": "?draw_legend@Time_Line_Panel@@QAEXXZ",
+        "0051E9E0": "?setup@Time_Line_Panel@@QAEJPAVTDrawArea@@PAVTPanel@@JJJJPAXJJ2JJPAD3HEHE@Z",
+        "0051EAB0": "?set_bevel_info@Time_Line_Panel@@QAEXHHHHHHH@Z",
+        "0051F0A0": "?set_axis_font@Time_Line_Panel@@QAEXPAXJJ@Z",
+        "0051F0D0": "?set_body_font@Time_Line_Panel@@QAEXPAXJJ@Z",
+        "0051F100": "?set_back_color@Time_Line_Panel@@QAEXHE@Z",
+        "0051F120": "?draw_border@Time_Line_Panel@@QAEXXZ",
+        "0051F310": "?init_timeline@Time_Line_Panel@@QAEXXZ",
+        "0051F560": "?record_special_event@Time_Line_Panel@@QAEXEPAVTRIBE_History_Info@@EJJJJ@Z",
+        "0051FA30": "?draw@Time_Line_Panel@@UAEXXZ"
       }
     },
     {
