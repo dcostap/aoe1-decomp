@@ -6585,16 +6585,16 @@
         "0045AA70": "src/matching/0045AA70_missile_move.cpp"
       },
       "symbols": {
-        "0045A740": "??0RGE_Missile_Object@@QAE@PAX0MMMH@Z",
+        "0045A740": "??0RGE_Missile_Object@@QAE@PAVRGE_Master_Combat_Object@@PAVRGE_Player@@MMMH@Z",
         "0045A800": "??0RGE_Missile_Object@@QAE@HPAVRGE_Game_World@@H@Z",
-        "0045A870": "?setup@RGE_Missile_Object@@QAEHPAX0MMM@Z",
-        "0045A8A0": "?setup@RGE_Missile_Object@@QAEHHPAX@Z",
+        "0045A870": "?setup@RGE_Missile_Object@@MAEHPAVRGE_Master_Combat_Object@@PAVRGE_Player@@MMM@Z",
+        "0045A8A0": "?setup@RGE_Missile_Object@@MAEHHPAVRGE_Game_World@@@Z",
         "0045A900": "?rehook@RGE_Missile_Object@@UAEXXZ",
-        "0045A910": "?save@RGE_Missile_Object@@QAEXH@Z",
-        "0045A940": "?update@RGE_Missile_Object@@QAEEXZ",
+        "0045A910": "?save@RGE_Missile_Object@@UAEXH@Z",
+        "0045A940": "?update@RGE_Missile_Object@@UAEEXZ",
         "0045A950": "?init_missile@RGE_Missile_Object@@QAEXPAVRGE_Combat_Object@@PAVRGE_Static_Object@@M@Z",
         "0045A9E0": "?init_missile@RGE_Missile_Object@@QAEXPAVRGE_Combat_Object@@MMMM@Z",
-        "0045AA70": "?missile_move@RGE_Missile_Object@@QAEHXZ"
+        "0045AA70": "?missile_move@RGE_Missile_Object@@QAEEXZ"
       }
     },
     {

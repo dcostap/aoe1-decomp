@@ -68,7 +68,7 @@
 // placement.  No policy-valid exact source was found.
 // 41: canonical misl_obj.cpp context now includes the PDB-order owners through
 // this target. The earlier owner COMDATs are byte-identical in the grouped
-// object, including the 13-slot move_to and 0x6C destroy dispatch surface.
+// object, including the canonical teleport and 0x6C die_die_die dispatch surface.
 // The grouped target keeps the 0x3C frame, pre-guard tile load, and nine calls;
 // its 816-byte COMDAT remains a context reconstruction, not an exact claim.
 // 42: cvdump module 147 gives original local records for dx, dy, rx, ry, rx2,

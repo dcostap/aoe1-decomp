@@ -6,7 +6,8 @@
 
 #include "../misl_obj_module_context.h"
 
-RGE_Missile_Object::RGE_Missile_Object(void* p1, void* p2, float p3, float p4, float p5, int p6)
+RGE_Missile_Object::RGE_Missile_Object(RGE_Master_Combat_Object* p1, RGE_Player* p2,
+                                       float p3, float p4, float p5, int p6)
     : RGE_Combat_Object(p1, p2, p3, p4, p5, 0)
 {
     if (p6 != 0) {
