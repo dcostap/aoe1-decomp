@@ -553,7 +553,7 @@ class TRIBE_Action_Heal : public RGE_Action {
 public:
     TRIBE_Action_Heal(int, RGE_Action_Object*);
     TRIBE_Action_Heal(RGE_Action_Object*, RGE_Task*, RGE_Static_Object*);
-    TRIBE_Action_Heal(int, RGE_Task*, float, float, float);
+    TRIBE_Action_Heal(RGE_Action_Object*, RGE_Task*, float, float, float);
 
     virtual void first_in_stack(uchar);
     virtual uchar update();

@@ -247,6 +247,8 @@ public:
 
     virtual ~TribeEndScreen();
     TribeEndScreen(char* title_text, char** text_list, int text_count);
+
+protected:
     virtual long action(TPanel*, long, ulong, ulong);
 };
 

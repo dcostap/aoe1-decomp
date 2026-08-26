@@ -1,6 +1,12 @@
 #ifndef AOE1_T_HISTRY_CONTEXT_H
 #define AOE1_T_HISTRY_CONTEXT_H
 
+class RGE_Game_World {
+public:
+    virtual unsigned char data_load_world(void* file);
+    unsigned long world_time;
+};
+
 struct TRIBE_History_Entry {
     unsigned char population;
 };

@@ -1,11 +1,5 @@
 #include <stdlib.h>
 
-class RGE_Game_World {
-public:
-    void* vtable_ptr;
-    unsigned long world_time;
-};
-
 class RGE_Base_Game {
 public:
     char gap_00[0x3F4];

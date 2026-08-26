@@ -3988,7 +3988,7 @@
         "004B8F90": "?is_loaded@TShape@@QAEHXZ",
         "004B8FB0": "?shape_bounds@TShape@@QAEEJAAF0@Z",
         "004B9040": "?shape_count@TShape@@QAEJXZ",
-        "004B9070": "?shape_minmax@TShape@@QAEEPAJ000J@Z",
+        "004B9070": "?shape_minmax@TShape@@QAEEAAJ000J@Z",
         "004B97F0": "?shape_draw_unclipped@TShape@@AAEEPAVTDrawArea@@JJJ@Z",
         "004BA900": "?shape_mirror_unclipped@TShape@@AAEEPAVTDrawArea@@JJ@Z",
         "004BA9E0": "?shape_mirror_color_trans_unclipped@TShape@@AAEEPAVTDrawArea@@JJJPAE@Z"
@@ -5824,7 +5824,7 @@
         "004CEA90": "?set_state@TRIBE_Action_Heal@@MAEXE@Z",
         "004CECF0": "?update@TRIBE_Action_Heal@@UAEEXZ",
         "004CF030": "?work@TRIBE_Action_Heal@@UAEHPAVRGE_Static_Object@@MMM@Z",
-        "004CEA10": "??0TRIBE_Action_Heal@@QAE@HPAVRGE_Task@@MMM@Z"
+        "004CEA10": "??0TRIBE_Action_Heal@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@MMM@Z"
       }
     },
     {

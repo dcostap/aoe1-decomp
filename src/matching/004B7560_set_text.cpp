@@ -16,23 +16,71 @@
 // This declaration-only view does not construct or own a text-panel object.
 class Status_Text_Panel {
 public:
-    virtual void vf00(); virtual void vf01(); virtual void vf02(); virtual void vf03();
-    virtual void vf04(); virtual void vf05(); virtual void vf06(); virtual void vf07();
-    virtual void vf08(); virtual void vf09(); virtual void vf0A(); virtual void vf0B();
-    virtual void vf0C(); virtual void vf0D(); virtual void vf0E(); virtual void vf0F();
-    virtual void vf10(); virtual void vf11(); virtual void vf12(); virtual void vf13();
-    virtual void vf14(); virtual void vf15(); virtual void vf16(); virtual void vf17();
-    virtual void vf18(); virtual void vf19(); virtual void vf1A(); virtual void vf1B();
-    virtual void vf1C(); virtual void vf1D(); virtual void vf1E(); virtual void vf1F();
-    virtual void vf20(); virtual void vf21(); virtual void vf22(); virtual void vf23();
-    virtual void vf24(); virtual void vf25(); virtual void vf26(); virtual void vf27();
-    virtual void vf28(); virtual void vf29(); virtual void vf2A(); virtual void vf2B();
-    virtual void vf2C(); virtual void vf2D(); virtual void vf2E(); virtual void vf2F();
-    virtual void vf30(); virtual void vf31(); virtual void vf32(); virtual void vf33();
-    virtual void vf34(); virtual void vf35(); virtual void vf36(); virtual void vf37();
-    virtual void set_text_list(char** text, short id);
-    virtual void set_text_long(long text_id);
+    // TPanel owns these 56 slots in this beta.  Keep their reviewed names
+    // while the local view supplies only the slots needed by this caller.
+    virtual ~Status_Text_Panel();
+    virtual long setup(TDrawArea*, TPanel*, long, long, long, long,
+                       unsigned char);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_rect(tagRECT);
+    virtual void set_color(unsigned char);
+    virtual void set_active(int);
+    virtual void set_positioning(int, long, long, long, long, long, long,
+                                 long, long, TPanel*, TPanel*, TPanel*, TPanel*);
+    virtual void set_fixed_position(long, long, long, long);
+    virtual void set_redraw(int);
+    virtual void set_overlapped_redraw(TPanel*, TPanel*, int);
+    virtual void draw_setup(int);
+    virtual void draw_finish();
+    virtual void draw();
+    virtual void draw_rect(tagRECT*);
+    virtual void draw_offset(long, long, tagRECT*);
+    virtual void draw_rect2(tagRECT*);
+    virtual void draw_offset2(long, long, tagRECT*);
+    virtual void paint();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual long handle_idle();
+    virtual long handle_size(long, long);
+    virtual long handle_paint();
+    virtual long handle_key_down(long, short, int, int, int);
+    virtual long handle_char(long, short);
+    virtual long handle_command(unsigned int, long);
+    virtual long handle_user_command(unsigned int, long);
+    virtual long handle_timer_command(unsigned int, long);
+    virtual long handle_scroll(long, long);
+    virtual long handle_mouse_down(unsigned char, long, long, int, int);
+    virtual long handle_mouse_move(long, long, int, int);
+    virtual long handle_mouse_up(unsigned char, long, long, int, int);
+    virtual long handle_mouse_dbl_click(unsigned char, long, long, int, int);
+    virtual long mouse_move_action(long, long, int, int);
+    virtual long mouse_left_down_action(long, long, int, int);
+    virtual long mouse_left_hold_action(long, long, int, int);
+    virtual long mouse_left_move_action(long, long, int, int);
+    virtual long mouse_left_up_action(long, long, int, int);
+    virtual long mouse_left_dbl_click_action(long, long, int, int);
+    virtual long mouse_right_down_action(long, long, int, int);
+    virtual long mouse_right_hold_action(long, long, int, int);
+    virtual long mouse_right_move_action(long, long, int, int);
+    virtual long mouse_right_up_action(long, long, int, int);
+    virtual long mouse_right_dbl_click_action(long, long, int, int);
+    virtual long key_down_action(long, short, int, int, int);
+    virtual long char_action(long, short);
+    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    virtual void get_true_render_rect(tagRECT*);
+    virtual int is_inside(long, long);
+    virtual void set_focus(int);
+    virtual void set_tab_order(TPanel**, short);
+    virtual void set_tab_order(TPanel*, TPanel*);
+    virtual unsigned char get_help_info(char**, long*, long, long);
+    virtual void stop_sound_system();
+    virtual int restart_sound_system();
+    virtual void take_snapshot();
+    virtual void handle_reactivate();
+    // Pnl_txt.cpp declares this overload group as char*, long, char**;
+    // VC5 places the group in reverse vtable order.
     virtual void set_text(char* text);
+    virtual void set_text(long text_id);
+    virtual void set_text(char** text, short id);
 };
 
 void TRIBE_Screen_Status_Message::set_text(char* param) {
