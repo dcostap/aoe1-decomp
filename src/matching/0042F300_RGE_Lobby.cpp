@@ -3,10 +3,6 @@
 #endif
 
 RGE_Lobby::~RGE_Lobby() {
-    RGE_Comm_Error* error = this->Err;
-    if (error != 0) {
-        error->~RGE_Comm_Error();
-        operator_delete(error);
-    }
+    delete this->Err;
     this->ClearLobbyInfo();
 }

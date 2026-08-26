@@ -211,9 +211,13 @@
       "owners": {
         "0044AC50": "src/matching/0044AC50_PointMaker.cpp",
         "0044AC80": "src/matching/0044AC80_PointMaker.cpp",
+        "0044ACB0": "src/matching/0044ACB0_CreateMasks.cpp",
+        "0044AF90": "src/matching/0044AF90_DeleteMasks.cpp",
         "0044B210": "src/matching/0044B210_ClearArrays.cpp",
         "0044B270": "src/matching/0044B270_DeleteArrays.cpp",
         "0044B320": "src/matching/0044B320_CreateShape.cpp",
+        "0044B540": "src/matching/0044B540_Branch.cpp",
+        "0044B610": "src/matching/0044B610_MakeFirstLink.cpp",
         "0044C200": "src/matching/0044C200_SetPoint.cpp",
         "0044C220": "src/matching/0044C220_SetMaxNumberOfBranches.cpp",
         "0044C230": "src/matching/0044C230_SetChanceOfNextNode.cpp",
@@ -230,7 +234,9 @@
         "0044C300": "src/matching/0044C300_SetDrawToOneArray.cpp",
         "0044C310": "src/matching/0044C310_SetBorderDepthPercentage.cpp",
         "0044C350": "src/matching/0044C350_RetrieveMap.cpp",
-        "0044C360": "src/matching/0044C360_RetrieveProbMap.cpp"
+        "0044C360": "src/matching/0044C360_RetrieveProbMap.cpp",
+        "0044C370": "src/matching/0044C370_ErrorCheckingAndCorrection.cpp",
+        "0044C4B0": "src/matching/0044C4B0_PrepareLimits.cpp"
       },
       "symbols": {
         "0044AC50": "??0PointMaker@@QAE@XZ",
@@ -252,7 +258,15 @@
         "0044C300": "?SetDrawToOneArray@PointMaker@@QAEXXZ",
         "0044C310": "?SetBorderDepthPercentage@PointMaker@@QAEXH@Z",
         "0044C350": "?RetrieveMap@PointMaker@@QAEPADXZ",
-        "0044C360": "?RetrieveProbMap@PointMaker@@QAEPADXZ"
+        "0044C360": "?RetrieveProbMap@PointMaker@@QAEPADXZ",
+        "0044ACB0": "?CreateMasks@PointMaker@@IAEXXZ",
+        "0044AF90": "?DeleteMasks@PointMaker@@IAEXXZ",
+        "0044B210": "?ClearArrays@PointMaker@@QAEXXZ",
+        "0044B270": "?DeleteArrays@PointMaker@@QAEXXZ",
+        "0044B540": "?Branch@PointMaker@@IAEXH@Z",
+        "0044B610": "?MakeFirstLink@PointMaker@@IAEHXZ",
+        "0044C370": "?ErrorCheckingAndCorrection@PointMaker@@IAEXXZ",
+        "0044C4B0": "?PrepareLimits@PointMaker@@IAEXXZ"
       }
     },
     {
@@ -1078,18 +1092,32 @@
         "00531E90": "src/matching/00531E90_update.cpp",
         "00531EF0": "src/matching/00531EF0_update_for_object.cpp",
         "00531F30": "src/matching/00531F30_handle_point_condition.cpp",
+        "00531F90": "src/matching/00531F90_handle_condition.cpp",
+        "00532050": "src/matching/00532050_handle_capture.cpp",
+        "00532110": "src/matching/00532110_handle_create.cpp",
+        "005323B0": "src/matching/005323B0_handle_destroy.cpp",
+        "005323D0": "src/matching/005323D0_handle_destroy_multiple.cpp",
+        "00532570": "src/matching/00532570_handle_destroy_player.cpp",
+        "00532610": "src/matching/00532610_handle_bring_object.cpp",
         "00532880": "src/matching/00532880_handle_victory_points.cpp",
         "00532930": "src/matching/00532930_add.cpp",
+        "00532970": "src/matching/00532970_add_capture.cpp",
         "005329A0": "src/matching/005329A0_add_create.cpp",
+        "005329D0": "src/matching/005329D0_add_create.cpp",
+        "00532A20": "src/matching/00532A20_add_destroy.cpp",
         "00532A50": "src/matching/00532A50_add_destroy.cpp",
         "00532A90": "src/matching/00532A90_add_destroy.cpp",
         "00532AC0": "src/matching/00532AC0_add_destroy.cpp",
+        "00532AF0": "src/matching/00532AF0_add_bring.cpp",
+        "00532B30": "src/matching/00532B30_add_bring.cpp",
         "00532B70": "src/matching/00532B70_add_attributes.cpp",
         "00532BA0": "src/matching/00532BA0_add_explore.cpp",
         "00532BE0": "src/matching/00532BE0_add_victory_points.cpp",
         "00532C70": "src/matching/00532C70_condition_info.cpp",
         "00532EF0": "src/matching/00532EF0_condition_number.cpp",
         "00532F00": "src/matching/00532F00_victory_achieved.cpp",
+        "00532F10": "src/matching/00532F10_remove_condition.cpp",
+        "00532F50": "src/matching/00532F50_add_point.cpp",
         "00532FE0": "src/matching/00532FE0_add_points_attribute_amount.cpp",
         "00533020": "src/matching/00533020_add_points_attribute_first.cpp",
         "00533060": "src/matching/00533060_add_points_highest_attribute.cpp",
@@ -1126,7 +1154,23 @@
         "00533480": "?get_victory_points@RGE_Victory_Conditions@@QAEJXZ",
         "00533490": "?get_victory_points_group@RGE_Victory_Conditions@@QAEJE@Z",
         "005334C0": "?get_victory_points_id@RGE_Victory_Conditions@@QAEJE@Z",
-        "005334E0": "?get_attribute_id@RGE_Victory_Conditions@@QAEJE@Z"
+        "005334E0": "?get_attribute_id@RGE_Victory_Conditions@@QAEJE@Z",
+        "00531EF0": "?update_for_object@RGE_Victory_Conditions@@QAEXPAVRGE_Static_Object@@@Z",
+        "00531F30": "?handle_point_condition@RGE_Victory_Conditions@@MAEXPAURGE_Victory_Point_Entry@@@Z",
+        "00531F90": "?handle_condition@RGE_Victory_Conditions@@MAEXPAURGE_Victory_Entry@@@Z",
+        "00532050": "?handle_capture@RGE_Victory_Conditions@@IAEXPAURGE_Victory_Entry@@@Z",
+        "00532110": "?handle_create@RGE_Victory_Conditions@@IAEXPAURGE_Victory_Entry@@@Z",
+        "005323B0": "?handle_destroy@RGE_Victory_Conditions@@IAEXPAURGE_Victory_Entry@@@Z",
+        "005323D0": "?handle_destroy_multiple@RGE_Victory_Conditions@@IAEXPAURGE_Victory_Entry@@@Z",
+        "00532570": "?handle_destroy_player@RGE_Victory_Conditions@@IAEXPAURGE_Victory_Entry@@@Z",
+        "00532610": "?handle_bring_object@RGE_Victory_Conditions@@IAEXPAURGE_Victory_Entry@@@Z",
+        "00532970": "?add_capture@RGE_Victory_Conditions@@QAEEEPAVRGE_Static_Object@@E@Z",
+        "005329D0": "?add_create@RGE_Victory_Conditions@@QAEEEJJMMMME@Z",
+        "00532A20": "?add_destroy@RGE_Victory_Conditions@@QAEEEPAVRGE_Static_Object@@@Z",
+        "00532AF0": "?add_bring@RGE_Victory_Conditions@@QAEEEPAVRGE_Static_Object@@0@Z",
+        "00532B30": "?add_bring@RGE_Victory_Conditions@@QAEEEPAVRGE_Static_Object@@MMMM@Z",
+        "00532F10": "?remove_condition@RGE_Victory_Conditions@@QAEEJ@Z",
+        "00532F50": "?add_point@RGE_Victory_Conditions@@IAEPAURGE_Victory_Point_Entry@@EE@Z"
       }
     },
     {
@@ -1361,6 +1405,7 @@
         "004EB530": "src/matching/004EB530_targetType.cpp",
         "004EB540": "src/matching/004EB540_setTargetType.cpp",
         "004EB550": "src/matching/004EB550_targetLocation.cpp",
+        "004EB560": "src/matching/004EB560_setAllLocations.cpp",
         "004EB5C0": "src/matching/004EB5C0_setTargetLocation.cpp",
         "004EB5F0": "src/matching/004EB5F0_gatherLocation.cpp",
         "004EB600": "src/matching/004EB600_setGatherLocation.cpp",
@@ -1542,7 +1587,9 @@
         "005018F0": "?gatherer@TribeTacticalAIModule@@QAEPAUUnitData@@H@Z",
         "00501A80": "?isGatherer@TribeTacticalAIModule@@QAEHH@Z",
         "00501AB0": "?requiredGatherAmount@TribeTacticalAIModule@@QAEHH@Z",
-        "00503580": "?numberWaterExplorers@TribeTacticalAIModule@@QAEHXZ"
+        "00503580": "?numberWaterExplorers@TribeTacticalAIModule@@QAEHXZ",
+        "004EB3A0": "?setSpecificCommander@TacticalAIGroup@@QAEXHPAVTribeMainDecisionAIModule@@@Z",
+        "004EB560": "?setAllLocations@TacticalAIGroup@@QAEXMMM@Z"
       }
     },
     {
@@ -1624,6 +1671,8 @@
         "0050AB30": "src/matching/0050AB30_command_build_wall.cpp",
         "0050AC70": "src/matching/0050AC70_command_explore.cpp",
         "0050AD00": "src/matching/0050AD00_command_allied_victory.cpp",
+        "0050ADF0": "src/matching/0050ADF0_command_game_speed.cpp",
+        "0050AE40": "src/matching/0050AE40_command_save_game.cpp",
         "0050AEE0": "src/matching/0050AEE0_command_upgrade_town.cpp",
         "0050AF30": "src/matching/0050AF30_command_quick_build.cpp",
         "0050AF80": "src/matching/0050AF80_command_shared_los.cpp",
@@ -1654,7 +1703,23 @@
         "0050B330": "?command_unload@TRIBE_Command@@QAEXPAPAVRGE_Static_Object@@FMM@Z",
         "0050B3E0": "?command_queue@TRIBE_Command@@QAEXPAVRGE_Static_Object@@FF@Z",
         "0050B190": "?command_trade_attribute@TRIBE_Command@@QAEXPAPAVRGE_Static_Object@@FJ@Z",
-        "0050B230": "?command_trade_attribute@TRIBE_Command@@QAEXHHJ@Z"
+        "0050B230": "?command_trade_attribute@TRIBE_Command@@QAEXHHJ@Z",
+        "00509720": "??0TRIBE_Command@@QAE@PAVTRIBE_World@@PAVTCommunications_Handler@@@Z",
+        "00509910": "?do_command_tribe_create@TRIBE_Command@@AAEXPAURGE_Command_Create@@@Z",
+        "00509980": "?do_command_make@TRIBE_Command@@AAEXPAUTRIBE_Command_Make@@@Z",
+        "00509AF0": "?do_command_research@TRIBE_Command@@AAEXPAUTRIBE_Command_Research@@@Z",
+        "0050A010": "?place_line_of_walls@TRIBE_Command@@AAEXPAVTRIBE_Player@@PAVTRIBE_Master_Building_Object@@HHHHHPAPAVRGE_Static_Object@@@Z",
+        "0050A490": "?do_command_cancel_build@TRIBE_Command@@AAEXPAUTRIBE_Command_Cancel_Build@@@Z",
+        "0050A510": "?do_command_give_attribute@TRIBE_Command@@EAEXPAUTRIBE_Command_Give_Attribute@@@Z",
+        "0050A730": "?do_command_unload@TRIBE_Command@@AAEXPAUTRIBE_Command_Unload@@@Z",
+        "0050A7B0": "?do_command_queue@TRIBE_Command@@AAEXPAUTRIBE_Command_Queue@@@Z",
+        "0050AD00": "?command_allied_victory@TRIBE_Command@@QAEXFE@Z",
+        "0050ADF0": "?command_game_speed@TRIBE_Command@@QAEXM@Z",
+        "0050AE40": "?command_save_game@TRIBE_Command@@QAEXXZ",
+        "0050AEE0": "?command_upgrade_town@TRIBE_Command@@QAEXF@Z",
+        "0050AF30": "?command_quick_build@TRIBE_Command@@QAEXF@Z",
+        "0050AF80": "?command_shared_los@TRIBE_Command@@QAEXF@Z",
+        "0050B0D0": "?command_cheat@TRIBE_Command@@QAEXFF@Z"
       }
     },
     {
@@ -2003,6 +2068,7 @@
       "flags": "config/flags/default.rsp",
       "owners": {
         "00481980": "src/matching/00481980_RGE_RMM_Cliffs_Generator.cpp",
+        "004819C0": "src/matching/004819C0_generate.cpp",
         "00481A00": "src/matching/00481A00_setup_cliff_maps.cpp",
         "00481CD0": "src/matching/00481CD0_generate_cliff.cpp",
         "00481FC0": "src/matching/00481FC0_check_for_valid_cliff_site.cpp"
@@ -2010,7 +2076,9 @@
       "symbols": {
         "00481A00": "?setup_cliff_maps@RGE_RMM_Cliffs_Generator@@IAEXXZ",
         "00481CD0": "?generate_cliff@RGE_RMM_Cliffs_Generator@@IAEXXZ",
-        "00481FC0": "?check_for_valid_cliff_site@RGE_RMM_Cliffs_Generator@@IAEEJAAJ0J@Z"
+        "00481FC0": "?check_for_valid_cliff_site@RGE_RMM_Cliffs_Generator@@IAEEJAAJ0J@Z",
+        "00481980": "??0RGE_RMM_Cliffs_Generator@@QAE@PAVRGE_Map@@PAVRGE_Random_Map_Module@@URGE_Cliffs_Info@@@Z",
+        "004819C0": "?generate@RGE_RMM_Cliffs_Generator@@UAEEXZ"
       }
     },
     {
@@ -2977,7 +3045,10 @@
       "flags": "config/flags/default_gx.rsp",
       "owners": {
         "0042F290": "src/matching/0042F290_RGE_Lobby.cpp",
+        "0042F300": "src/matching/0042F300_RGE_Lobby.cpp",
         "0042F330": "src/matching/0042F330_ClearLobbyInfo.cpp",
+        "0042F370": "src/matching/0042F370_IsLobbyLaunched.cpp",
+        "0042F3A0": "src/matching/0042F3A0_EnumPlayersCallbackLobby.cpp",
         "0042F430": "src/matching/0042F430_CheckForLobbyLaunch.cpp",
         "0042F640": "src/matching/0042F640_IsThisHost.cpp",
         "0042F660": "src/matching/0042F660_GetPlayerInfo.cpp",
@@ -2986,7 +3057,20 @@
         "0042F6D0": "src/matching/0042F6D0_ReceiveZoneMessages.cpp",
         "0042F830": "src/matching/0042F830_SendZoneMessage.cpp"
       },
-      "symbols": {}
+      "symbols": {
+        "0042F290": "??0RGE_Lobby@@QAE@PAX@Z",
+        "0042F300": "??1RGE_Lobby@@QAE@XZ",
+        "0042F330": "?ClearLobbyInfo@RGE_Lobby@@QAEXXZ",
+        "0042F370": "?IsLobbyLaunched@RGE_Lobby@@QAEHXZ",
+        "0042F3A0": "?EnumPlayersCallbackLobby@@YGHKKPAUDPNAME@@KPAX@Z",
+        "0042F430": "?CheckForLobbyLaunch@RGE_Lobby@@QAEEAAPAUIDirectPlay3@@@Z",
+        "0042F640": "?IsThisHost@RGE_Lobby@@QAEEXZ",
+        "0042F660": "?GetPlayerInfo@RGE_Lobby@@QAEEPAPAD@Z",
+        "0042F6B0": "?SendZoneHandshakeResponse@RGE_Lobby@@QAEJXZ",
+        "0042F6C0": "?GameIsOver@RGE_Lobby@@QAEHXZ",
+        "0042F6D0": "?ReceiveZoneMessages@RGE_Lobby@@QAEJXZ",
+        "0042F830": "?SendZoneMessage@RGE_Lobby@@QAEJPADKU_GUID@@@Z"
+      }
     },
     {
       "name": "dlg_dip",
@@ -3317,6 +3401,8 @@
         "00403FC0": "src/matching/00403FC0_create_action.cpp",
         "004044A0": "src/matching/004044A0_inside_obj_update.cpp",
         "004044F0": "src/matching/004044F0_update.cpp",
+        "00404540": "src/matching/00404540_add_action.cpp",
+        "00404710": "src/matching/00404710_remove_action.cpp",
         "00404760": "src/matching/00404760_have_action.cpp",
         "00404770": "src/matching/00404770_action_stop.cpp",
         "00404790": "src/matching/00404790_action_move_to.cpp",
@@ -3332,7 +3418,26 @@
       "symbols": {
         "004044F0": "?update@RGE_Action_List@@UAEEXZ",
         "00404840": "?get_action@RGE_Action_List@@QAEPAVRGE_Action@@XZ",
-        "00404860": "?copy_obj@RGE_Action_List@@UAEXPAVRGE_Master_Action_Object@@@Z"
+        "00404860": "?copy_obj@RGE_Action_List@@UAEXPAVRGE_Master_Action_Object@@@Z",
+        "00403EA0": "??0RGE_Action_List@@QAE@PAVRGE_Action_Object@@@Z",
+        "00403EC0": "??1RGE_Action_List@@QAE@XZ",
+        "00403ED0": "?load@RGE_Action_List@@QAEXH@Z",
+        "00403F40": "?rehook@RGE_Action_List@@QAEXXZ",
+        "00403F60": "?save@RGE_Action_List@@QAEXH@Z",
+        "00403FA0": "?delete_list@RGE_Action_List@@QAEXXZ",
+        "00403FC0": "?create_action@RGE_Action_List@@UAEPAVRGE_Action@@HF@Z",
+        "004044A0": "?inside_obj_update@RGE_Action_List@@UAEEXZ",
+        "00404540": "?add_action@RGE_Action_List@@QAEXPAVRGE_Action@@@Z",
+        "00404710": "?remove_action@RGE_Action_List@@QAEXXZ",
+        "00404760": "?have_action@RGE_Action_List@@QAEEXZ",
+        "00404770": "?action_stop@RGE_Action_List@@QAEHXZ",
+        "00404790": "?action_move_to@RGE_Action_List@@QAEHPAVRGE_Static_Object@@MMM@Z",
+        "004047C0": "?action_work@RGE_Action_List@@QAEHPAVRGE_Static_Object@@MMM@Z",
+        "004047F0": "?attack_response@RGE_Action_List@@QAEHPAVRGE_Static_Object@@@Z",
+        "00404810": "?relation_response@RGE_Action_List@@QAEHJE@Z",
+        "00404850": "?get_task@RGE_Action_List@@QAEPAVRGE_Task@@XZ",
+        "00404890": "?copy_obj_sprites@RGE_Action_List@@UAEXPAVRGE_Master_Action_Object@@PAVRGE_Task@@1@Z",
+        "004048C0": "?get_action_name@RGE_Action_List@@UAEXPAD@Z"
       }
     },
     {
@@ -4176,12 +4281,27 @@
         "0052A730": "src/matching/0052A730_TRIGONOMETRY.cpp",
         "0052A830": "src/matching/0052A830_RestrictAngle.cpp",
         "0052A850": "src/matching/0052A850_RestrictAngle360.cpp",
-        "0052A870": "src/matching/0052A870_sine.cpp"
+        "0052A870": "src/matching/0052A870_sine.cpp",
+        "0052A890": "src/matching/0052A890_cosine.cpp",
+        "0052A8B0": "src/matching/0052A8B0_tangent.cpp",
+        "0052A8D0": "src/matching/0052A8D0_atangent.cpp",
+        "0052A8F0": "src/matching/0052A8F0_sin360.cpp",
+        "0052A910": "src/matching/0052A910_cos360.cpp",
+        "0052A930": "src/matching/0052A930_tan360.cpp",
+        "0052A950": "src/matching/0052A950_atan360.cpp"
       },
       "symbols": {
         "0052A730": "??0TRIGONOMETRY@@QAE@XZ",
         "0052A850": "?RestrictAngle360@TRIGONOMETRY@@AAEHH@Z",
-        "0052A870": "?sine@TRIGONOMETRY@@QAEMH@Z"
+        "0052A870": "?sine@TRIGONOMETRY@@QAEMH@Z",
+        "0052A830": "?RestrictAngle@TRIGONOMETRY@@AAEHH@Z",
+        "0052A890": "?cosine@TRIGONOMETRY@@QAEMH@Z",
+        "0052A8B0": "?tangent@TRIGONOMETRY@@QAEMH@Z",
+        "0052A8D0": "?atangent@TRIGONOMETRY@@QAEMH@Z",
+        "0052A8F0": "?sin360@TRIGONOMETRY@@QAEMH@Z",
+        "0052A910": "?cos360@TRIGONOMETRY@@QAEMH@Z",
+        "0052A930": "?tan360@TRIGONOMETRY@@QAEMH@Z",
+        "0052A950": "?atan360@TRIGONOMETRY@@QAEMH@Z"
       }
     },
     {
@@ -4891,6 +5011,7 @@
         "004779D0": "src/matching/004779D0_insert_character.cpp",
         "00477AF0": "src/matching/00477AF0_delete_character.cpp",
         "00477C90": "src/matching/00477C90_backspace_character.cpp",
+        "00477CB0": "src/matching/00477CB0_paste.cpp",
         "00477E90": "src/matching/00477E90_reformat.cpp",
         "00477EF0": "src/matching/00477EF0_calc_input_pos.cpp",
         "00478010": "src/matching/00478010_calc_cur_line_col.cpp",
@@ -4900,7 +5021,22 @@
       "symbols": {
         "00477910": "?set_text@TInputPanel@@UAEXPAD@Z",
         "00477990": "?set_text@TInputPanel@@UAEXPAPADF@Z",
-        "004777C0": "?draw@TInputPanel@@UAEXXZ"
+        "004777C0": "?draw@TInputPanel@@UAEXXZ",
+        "00476CF0": "??1TInputPanel@@UAE@XZ",
+        "00476EE0": "?set_focus@TInputPanel@@UAEXH@Z",
+        "00476F20": "?set_format@TInputPanel@@QAEXW4FormatType@1@@Z",
+        "00476F30": "?handle_idle@TInputPanel@@UAEJXZ",
+        "004779A0": "?get_input_buffer@TInputPanel@@QAEPADXZ",
+        "004779B0": "?append_character@TInputPanel@@IAEHJ@Z",
+        "004779D0": "?insert_character@TInputPanel@@IAEHJ@Z",
+        "00477AF0": "?delete_character@TInputPanel@@IAEHXZ",
+        "00477C90": "?backspace_character@TInputPanel@@IAEHXZ",
+        "00477CB0": "?paste@TInputPanel@@IAEHXZ",
+        "00477E90": "?reformat@TInputPanel@@IAEXXZ",
+        "00477EF0": "?calc_input_pos@TInputPanel@@IAEXXZ",
+        "00478010": "?calc_cur_line_col@TInputPanel@@IAEXXZ",
+        "00478150": "?is_blank@TInputPanel@@QAEHXZ",
+        "004781A0": "?get_trimmed_str@TInputPanel@@QAEPADPADH@Z"
       }
     },
     {
@@ -6085,6 +6221,11 @@
         "004D3B20": "src/matching/004D3B20_loadBuildList.cpp",
         "004D4460": "src/matching/004D4460_skipNextBuildListItem.cpp",
         "004D4DB0": "src/matching/004D4DB0_nextBuildListItemCategory.cpp",
+        "004D4F80": "src/matching/004D4F80_mostNeededResource.cpp",
+        "004D5090": "src/matching/004D5090_addItem.cpp",
+        "004D5170": "src/matching/004D5170_addBuiltItem.cpp",
+        "004D5270": "src/matching/004D5270_removeBuiltItem.cpp",
+        "004D5310": "src/matching/004D5310_cancelBuildItem.cpp",
         "004D5590": "src/matching/004D5590_addTrainedUnit.cpp",
         "004D5690": "src/matching/004D5690_addResearch.cpp",
         "004D56F0": "src/matching/004D56F0_cancelResearch.cpp",
@@ -6098,7 +6239,25 @@
       "symbols": {
         "004D3A80": "??0TribeBuildAIModule@@QAE@PAXH@Z",
         "004D3AD0": "??0TribeBuildAIModule@@QAE@HH@Z",
-        "004D57A0": "?insert@TribeBuildAIModule@@QAEHHHH@Z"
+        "004D57A0": "?insert@TribeBuildAIModule@@QAEHHHH@Z",
+        "004D3B00": "??1TribeBuildAIModule@@UAE@XZ",
+        "004D3B10": "?setMainDecisionAI@TribeBuildAIModule@@QAEXPAVTribeMainDecisionAIModule@@@Z",
+        "004D3B20": "?loadBuildList@TribeBuildAIModule@@UAEHPADPAVRGE_Player@@@Z",
+        "004D4460": "?skipNextBuildListItem@TribeBuildAIModule@@QAEXXZ",
+        "004D4DB0": "?nextBuildListItemCategory@TribeBuildAIModule@@QAEHXZ",
+        "004D4F80": "?mostNeededResource@TribeBuildAIModule@@QAEHAAVResourceItem@@H@Z",
+        "004D5090": "?addItem@TribeBuildAIModule@@QAEHPAVRGE_Static_Object@@H@Z",
+        "004D5170": "?addBuiltItem@TribeBuildAIModule@@QAEHPAVRGE_Static_Object@@H@Z",
+        "004D5270": "?removeBuiltItem@TribeBuildAIModule@@QAEHH@Z",
+        "004D5310": "?cancelBuildItem@TribeBuildAIModule@@QAEHHHHMMHH@Z",
+        "004D5590": "?addTrainedUnit@TribeBuildAIModule@@QAEHHHHH@Z",
+        "004D5690": "?addResearch@TribeBuildAIModule@@QAEHHHH@Z",
+        "004D56F0": "?cancelResearch@TribeBuildAIModule@@QAEHHHHH@Z",
+        "004D5780": "?isAgeResearch@TribeBuildAIModule@@QAEHH@Z",
+        "004D5AD0": "?insertResearch@TribeBuildAIModule@@QAEHHH@Z",
+        "004D5B80": "?insertGathererPercentage@TribeBuildAIModule@@QAEHHHH@Z",
+        "004D5BB0": "?numberBuiltOrInProgressItemsOfType@TribeBuildAIModule@@UAEHHH@Z",
+        "004D5C20": "?allBuilt@TribeBuildAIModule@@QAEHHH@Z"
       }
     },
     {

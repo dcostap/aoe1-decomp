@@ -15,6 +15,9 @@
 #include "matching/0052A910_cos360.cpp"
 #include "matching/0052A930_tan360.cpp"
 #include "matching/0052A950_atan360.cpp"
-#include "scratch/0052A980_E1.cpp"
+
+// This global definition makes VC5 emit the shipped _$E1 initializer.
+// The initializer is compiler-generated and has no standalone source body.
+TRIGONOMETRY trig;
 
 #undef AOE1_TRIG_TU_CONTEXT
