@@ -1,33 +1,37 @@
 // From taitacmd.cpp
+// The location fields are Waypoint float members in the canonical class.
+// This preserves direct float stores in the grouped wrapper.
+// Final grouped audit: MATCH, 0.0000%, 93/93 bytes.
 
 #ifndef TAITACMD_SHARED_CONTEXT
+struct Waypoint {
+    float x;
+    float y;
+    float z;
+    unsigned char facetToNextWaypoint;
+    unsigned char pad_0D[3];
+};
+
 class TacticalAIGroup {
 public:
     char gap_00[0x170];
-    float field_170;
-    float field_174;
-    float field_178;
-    char gap_17C[0x20];
-    float field_19C;
-    float field_1A0;
-    float field_1A4;
-    char gap_1A8[0x4];
-    float field_1AC;
-    float field_1B0;
-    float field_1B4;
+    Waypoint locationValue;
+    char gap_180[0x1C];
+    Waypoint gatherLocationValue;
+    Waypoint retreatLocationValue;
 
     void setAllLocations(float p1, float p2, float p3);
 };
 #endif
 
 void TacticalAIGroup::setAllLocations(float p1, float p2, float p3) {
-    this->field_170 = p1;
-    this->field_174 = p2;
-    this->field_178 = p3;
-    this->field_19C = p1;
-    this->field_1A0 = p2;
-    this->field_1A4 = p3;
-    this->field_1AC = p1;
-    this->field_1B0 = p2;
-    this->field_1B4 = p3;
+    this->locationValue.x = p1;
+    this->locationValue.y = p2;
+    this->locationValue.z = p3;
+    this->gatherLocationValue.x = p1;
+    this->gatherLocationValue.y = p2;
+    this->gatherLocationValue.z = p3;
+    this->retreatLocationValue.x = p1;
+    this->retreatLocationValue.y = p2;
+    this->retreatLocationValue.z = p3;
 }
