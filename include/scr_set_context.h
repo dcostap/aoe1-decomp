@@ -161,9 +161,11 @@ typedef char scr_set_tpanel_size[(sizeof(TPanel) == 0xF4) ? 1 : -1];
 class TTextPanel : public TPanel {
 public:
     virtual ~TTextPanel();
-    virtual void set_text(char**, short);
-    virtual void set_text(int);
+    // BINARY NOTE: VC5 emits this overload set at +0xE0, +0xE4, +0xE8 in
+    // reverse declaration order. Keep this order for the original slots.
     virtual void set_text(char*);
+    virtual void set_text(long);
+    virtual void set_text(char**, short);
     virtual void set_bevel_info(int, int, int, int, int, int, int);
     char gap_F4[0x68];
     union { int sorted; int flag_15c; };
@@ -184,14 +186,6 @@ public:
     char* get_text(long);
     int numberLines();
     void change_line(long, char*, char*, long);
-};
-
-// The mission text owner uses the inherited +0xE4/+0xE8 string slots.
-class MissionTextPanel : public TPanel {
-public:
-    virtual void vfE0();
-    virtual void setStringID(int);
-    virtual void setText(char*);
 };
 
 class TListPanel : public TTextPanel {
@@ -372,6 +366,7 @@ public:
     virtual ~TribeGameSettingsScreen();
     virtual long handle_idle();
     virtual long handle_user_command(unsigned int, long);
+protected:
     virtual long action(TPanel*, long, unsigned long, unsigned long);
     void init_vars(); void fillScenarios(); void getSettings(); void fillMissionText();
     void sendSettings(); void activatePanels(); void activateVictoryPanels();
