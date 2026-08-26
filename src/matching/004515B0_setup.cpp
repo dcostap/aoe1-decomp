@@ -25,6 +25,7 @@ public:
     unsigned char pad_14D[3];
     float ballistics_ratio; // +0x150
 
+protected:
     int setup(RGE_Master_Missile_Object* other);
 };
 #endif

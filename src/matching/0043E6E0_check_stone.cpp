@@ -9,6 +9,16 @@
 // protected source emits IAEHXZ and remains an exact match.
 
 #ifndef DLG_DIP_SHARED_CONTEXT
+struct tagRECT {
+    long left;
+    long top;
+    long right;
+    long bottom;
+};
+
+class TDrawArea;
+class TPanel;
+
 class RGE_Player;
 
 class RGE_Base_Game {
@@ -20,14 +30,16 @@ public:
 
 extern RGE_Base_Game* rge_base_game;
 
+// Narrow standalone surface models the inherited TPanel slot at +0x14 as
+// set_active. The other declarations preserve the observed slot order.
 class TButtonPanel {
 public:
     virtual ~TButtonPanel();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void slot5(int a); // slot 5 (0x14/4)
+    virtual long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char);
+    virtual void set_rect(tagRECT);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_color(unsigned char);
+    virtual void set_active(int);
     void set_disabled(int val);
 };
 
@@ -78,11 +90,19 @@ int TribeDiplomacyDialog::check_stone() {
                 (*ppButton)->set_disabled(result);
             }
 
+#ifdef DLG_DIP_SHARED_CONTEXT
             if (this->tribute_flag != 0) {
                 (*ppButton)->slot5(1);
             } else {
                 (*ppButton)->slot5(0);
             }
+#else
+            if (this->tribute_flag != 0) {
+                (*ppButton)->set_active(1);
+            } else {
+                (*ppButton)->set_active(0);
+            }
+#endif
         }
         i++;
         ppButton++;

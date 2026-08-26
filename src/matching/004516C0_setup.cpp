@@ -54,16 +54,17 @@ struct RGE_Master_Missile_Object {
     unsigned char area_effect_specials;
     char gap_14D[3];
     float ballistics_ratio;
-    int setup(FILE* file, void** sprites, void** sounds, short target_type);
+protected:
+    int setup(FILE* file, RGE_Sprite** sprites, RGE_Sound** sounds, short target_type);
 };
 
 struct RGE_Master_Combat_Object {
     char base[0x148];
-    int setup(FILE* file, void** sprites, void** sounds, short target_type);
+    int setup(FILE* file, RGE_Sprite** sprites, RGE_Sound** sounds, short target_type);
 };
 #endif
 
-int RGE_Master_Missile_Object::setup(FILE* file, void** sprites, void** sounds, short target_type)
+int RGE_Master_Missile_Object::setup(FILE* file, RGE_Sprite** sprites, RGE_Sound** sounds, short target_type)
 {
     short temp_missile_type;
     short targetting_out;

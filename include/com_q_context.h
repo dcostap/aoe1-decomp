@@ -73,7 +73,10 @@ public:
     RGE_Communications_Queue(int param_1);
     ~RGE_Communications_Queue();
 
+protected:
     int AllocateQueue(unsigned int param_1);
+
+public:
     unsigned char ExpectedNextSequence(unsigned long turn, unsigned int from);
     unsigned int QueuedForTurn(unsigned long turn);
     void FlushAll();
@@ -83,8 +86,8 @@ public:
     unsigned int FlushThruTurn(unsigned long turn);
     int AddItem(unsigned long turn, void* data, unsigned long size,
                 unsigned int from, unsigned char sequence, int control);
-    int GetQueueDepth();
-    int GetHighQueueDepth();
+    unsigned int GetQueueDepth();
+    unsigned int GetHighQueueDepth();
     void* GetSpecificItem(unsigned int player, unsigned long turn,
                           unsigned char sequence, unsigned int* size);
     void* GetNextItemSingle();

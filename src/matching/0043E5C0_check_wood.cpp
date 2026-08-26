@@ -8,6 +8,19 @@
 // BINARY NOTE: Keep result live through the button loop for final publication.
 
 #ifndef DLG_DIP_SHARED_CONTEXT
+struct tagRECT {
+    long left;
+    long top;
+    long right;
+    long bottom;
+};
+
+typedef int PositionMode;
+typedef int RedrawMode;
+
+class TDrawArea;
+class TPanel;
+
 class RGE_Base_Game {
 public:
     char gap_00[0x1B0];
@@ -24,17 +37,20 @@ public:
     float* attributes;
 };
 
+// Narrow standalone surface models the inherited TPanel slot at +0x14 as
+// set_active. The other declarations preserve the observed slot order.
 class TButtonPanel {
 public:
-    virtual void vf00(void);
-    virtual void vf04(void);
-    virtual void vf08(void);
-    virtual void vf0C(void);
-    virtual void vf10(void);
-    virtual void vf14(int);
-    virtual void vf18(void);
-    virtual void vf1C(void);
-    virtual void vf20(int);
+    virtual ~TButtonPanel();
+    virtual long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char);
+    virtual void set_rect(tagRECT);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_color(unsigned char);
+    virtual void set_active(int);
+    virtual void set_positioning(PositionMode, long, long, long, long, long,
+                                  long, long, TPanel*, TPanel*, TPanel*, TPanel*);
+    virtual void set_fixed_position(long, long, long, long);
+    virtual void set_redraw(RedrawMode);
 
     char gap_04[0x7C];
     int active;
@@ -103,9 +119,9 @@ int TribeDiplomacyDialog::check_wood()
             }
 #else
             if (this->tributeFlag != 0) {
-                btn->vf14(1);
+                btn->set_active(1);
             } else {
-                btn->vf14(0);
+                btn->set_active(0);
             }
 #endif
         }

@@ -18,16 +18,17 @@ struct RGE_Master_Missile_Object {
     unsigned char area_effect_specials;
     char gap_14D[3];
     float ballistics_ratio;
-    int setup(int param_1, void** param_2, void** param_3);
+protected:
+    int setup(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3);
 };
 
 struct RGE_Master_Combat_Object {
     char base[0x148];
-    int setup(int param_1, void** param_2, void** param_3);
+    int setup(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3);
 };
 #endif
 
-int RGE_Master_Missile_Object::setup(int param_1, void** param_2, void** param_3)
+int RGE_Master_Missile_Object::setup(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3)
 {
 #ifdef M_MI_OBJ_SHARED_CONTEXT
     RGE_Master_Combat_Object::setup(param_1, param_2, param_3);

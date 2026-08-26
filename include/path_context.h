@@ -63,8 +63,8 @@ public:
     int insertAtCurrent(const Waypoint& wp);
     int contains(const Waypoint& wp) const;
     void killPath();
-    int maxNumberOfWaypoints() const;
-    int numberOfWaypoints() const;
+    const int maxNumberOfWaypoints() const;
+    const int numberOfWaypoints() const;
     unsigned long timeStamp() const;
     void setTimeStamp(unsigned long value);
     float length() const;
@@ -72,7 +72,7 @@ public:
     const Waypoint& goal() const;
     const Waypoint* waypoint(int index) const;
     Waypoint* currentWaypoint() const;
-    int currentWaypointNumber() const;
+    const int currentWaypointNumber() const;
     void setCurrentWaypointNumber(int value);
     const Waypoint* nextWaypoint() const;
     const Waypoint* previousWaypoint() const;

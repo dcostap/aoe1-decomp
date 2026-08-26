@@ -91,6 +91,7 @@ public:
     unsigned char _pad_1[3];
     MsgQueue* Queue;
 
+protected:
     int AllocateQueue(unsigned int param_1);
 };
 #endif

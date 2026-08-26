@@ -3,10 +3,10 @@ class RGE_Communications_Queue {
 public:
     unsigned int QueueDepth;
     unsigned int HighQueueDepth;
-    int GetHighQueueDepth();
+    unsigned int GetHighQueueDepth();
 };
 #endif
 
-int RGE_Communications_Queue::GetHighQueueDepth() {
+unsigned int RGE_Communications_Queue::GetHighQueueDepth() {
     return this->HighQueueDepth;
 }

@@ -3020,9 +3020,9 @@
         "00451440": "??0RGE_Master_Missile_Object@@QAE@PAV0@H@Z",
         "004514C0": "??0RGE_Master_Missile_Object@@QAE@HPAPAVRGE_Sprite@@PAPAVRGE_Sound@@H@Z",
         "00451530": "??0RGE_Master_Missile_Object@@QAE@PAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@FH@Z",
-        "004515B0": "?setup@RGE_Master_Missile_Object@@QAEHPAV1@@Z",
-        "00451620": "?setup@RGE_Master_Missile_Object@@QAEHHPAPAX0@Z",
-        "004516C0": "?setup@RGE_Master_Missile_Object@@QAEHPAU_iobuf@@PAPAX1F@Z"
+        "004515B0": "?setup@RGE_Master_Missile_Object@@IAEHPAV1@@Z",
+        "00451620": "?setup@RGE_Master_Missile_Object@@IAEHHPAPAVRGE_Sprite@@PAPAVRGE_Sound@@@Z",
+        "004516C0": "?setup@RGE_Master_Missile_Object@@IAEHPAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@F@Z"
       }
     },
     {
@@ -3652,12 +3652,12 @@
         "0046AFE0": "src/matching/0046AFE0_distanceToNextWaypoint.cpp"
       },
       "symbols": {
-        "0046ADC0": "?numberOfWaypoints@Path@@QBEHXZ",
+        "0046ADC0": "?numberOfWaypoints@Path@@QBE?BHXZ",
         "0046ADD0": "?timeStamp@Path@@QBEKXZ",
         "0046AE50": "?start@Path@@QBEABUWaypoint@@XZ",
         "0046AE70": "?waypoint@Path@@QBEPBUWaypoint@@H@Z",
         "0046AEA0": "?currentWaypoint@Path@@QBEPAUWaypoint@@XZ",
-        "0046AEC0": "?currentWaypointNumber@Path@@QBEHXZ",
+        "0046AEC0": "?currentWaypointNumber@Path@@QBE?BHXZ",
         "0046AEE0": "?nextWaypoint@Path@@QBEPBUWaypoint@@XZ",
         "0046AF60": "?lastWaypoint@Path@@QBEPBUWaypoint@@XZ"
       }

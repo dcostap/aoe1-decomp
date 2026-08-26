@@ -345,6 +345,7 @@ public:
     char pad_14D[3];
     float ballistics_ratio;
 
+protected:
     int setup(RGE_Master_Missile_Object*);
     int setup(int, RGE_Sprite**, RGE_Sound**);
     int setup(int, void**, void**);
