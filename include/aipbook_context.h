@@ -103,6 +103,8 @@ public:
     AIPlayPhaseTrigger* trigger(int index);
     int addCommand(AIPlayPhaseCommand& commandValue);
     int addTrigger(AIPlayPhaseTrigger& triggerValue);
+
+protected:
     void initialize();
 };
 
