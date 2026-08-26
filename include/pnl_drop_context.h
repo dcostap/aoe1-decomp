@@ -54,6 +54,8 @@ public:
 
 class TPanel {
 public:
+    // BINARY NOTE: Pnl_drop constructors call the real TPanel base constructor.
+    TPanel();
     virtual ~TPanel();
     virtual long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char);
     virtual void set_rect(tagRECT);
@@ -303,10 +305,10 @@ public:
     virtual long mouse_left_down_action(long, long, int, int);
     virtual long key_down_action(long, short, int, int, int);
     virtual long action(TPanel*, long, unsigned long, unsigned long);
-    virtual void set_text(char**);
-    virtual void set_text(char*, short);
-    virtual void set_text(long);
+    // BINARY NOTE: exact TTextPanel donors place these overloads at +E0/+E4/+E8.
     virtual void set_text(char*);
+    virtual void set_text(long);
+    virtual void set_text(char**, short);
     virtual void set_bevel_info(int, int, int, int, int, int, int);
 
     TTextPanel();

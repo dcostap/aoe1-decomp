@@ -11,7 +11,7 @@
 #include "scratch/00473FD0_setup.cpp"
 #include "matching/00474340_draw.cpp"
 #include "matching/00474350_handle_mouse_down.cpp"
-#include "scratch/00474400_handle_mouse_move.cpp"
+#include "matching/00474400_handle_mouse_move.cpp"
 #include "matching/00474420_handle_mouse_up.cpp"
 #include "matching/00474450_handle_key_down.cpp"
 #include "matching/004744A0_action.cpp"
