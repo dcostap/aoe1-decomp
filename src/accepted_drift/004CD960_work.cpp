@@ -15,62 +15,6 @@
 // branches, calls, stack cleanup, stores to same fields, and return values are otherwise identical.
 // No inline asm/hacks.
 
-#ifndef TACT_BLD_CONTEXT_H
-class RGE_Static_Object;
-
-class TRIBE_Action_Build {
-public:
-    virtual void vf00();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
-    virtual void vf20();
-    virtual void vf24();
-    virtual void vf28();
-    virtual void vf2C();
-    virtual void vf30();
-    virtual void vf34();
-    virtual void vf38();
-    virtual void vf3C();
-    virtual void vf40();
-    virtual void vf44();
-    virtual void vf48();
-    virtual void vf4C();
-    virtual void vf50();
-    virtual void set_target_obj(RGE_Static_Object* target);
-    virtual void vf58();
-    virtual int set_state(int type);
-
-    void* vptr2;                    // 0x04
-    RGE_Static_Object* obj;         // 0x08
-    unsigned char state;            // 0x0c
-    char gap_0d[3];
-    RGE_Static_Object* target_obj;  // 0x10
-    char gap_14[0x0c];
-    float target_x;                 // 0x20
-    float target_y;                 // 0x24
-    float target_z;                 // 0x28
-
-    int work(RGE_Static_Object* target, float param_2, float param_3, float param_4);
-};
-
-struct OwnerInfo {
-    char gap_00[0x4a];
-    short id;
-};
-
-class RGE_Static_Object {
-public:
-    char gap_00[0x0c];
-    OwnerInfo* owner;
-};
-
-#endif
-
 int TRIBE_Action_Build::work(RGE_Static_Object* target, float param_2, float param_3, float param_4) {
     if (target != 0 && target->owner->id == this->obj->owner->id) {
         if (target == this->target_obj) {
