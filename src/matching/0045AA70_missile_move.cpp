@@ -4,6 +4,10 @@
 // - Original stub only.
 // Probe 1: natural virtual surface with x/y/z + deltas and map bounds; body matched except byte-width return.
 // Probe 2: widen visible return to int to force mov eax/xor eax tails.
+// Probe 3: <stdlib.h> restores the grouped wrapper's original x87 operand order.
+// MATCH: python tools/check_function.py --va 0045AA70 => Result: MATCH / 0.0000%.
+
+#include <stdlib.h>
 
 unsigned char RGE_Missile_Object::missile_move()
 {
