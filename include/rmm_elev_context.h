@@ -140,12 +140,9 @@ public:
 };
 
 class RGE_RMM_Elevation_Generator : public RGE_Random_Map_Module {
-public:
+protected:
     RGE_Elevation_Info info;
 
-    RGE_RMM_Elevation_Generator(RGE_Map* map,
-        RGE_Random_Map_Module* module, RGE_Elevation_Info* info);
-    virtual uchar generate();
     uchar check_start_elevation(long x, long y, uchar terrain,
         uchar elevation, uchar range);
     uchar check_elevation(uchar elevation, long x, long y, long radius,
@@ -156,6 +153,11 @@ public:
     void link_stack_randomly(Map_Stack* stack);
     void remove_area_from_lists(long x, long y, long radius);
     uchar base_elevation_generate(RGE_Elevation_Info_Line line);
+
+public:
+    RGE_RMM_Elevation_Generator(RGE_Map* map,
+        RGE_Random_Map_Module* module, RGE_Elevation_Info* info);
+    virtual uchar generate();
 };
 
 #endif
