@@ -13,6 +13,7 @@ from coff import load_coff_object
 from common import (
     REPO_ROOT,
     function_record_by_va,
+    load_compiler_generated_functions,
     load_pdb_function_source_map,
     preferred_source_path,
     repo_path,
@@ -27,7 +28,101 @@ _INLINE_ASM = re.compile(r"\b(?:__asm|_asm)\b")
 _FAKE_VIRTUAL_SLOT = re.compile(
     r"\bvirtual\b[^;{]*(?:\bvf[0-9A-Fa-f]{2,}\b|\bvpad[0-9A-Fa-f]{2,}\b)"
 )
+_TOKEN_PASTED_VIRTUAL = re.compile(r"\bvirtual\b[^;{]*##")
 _RAW_VTABLE_FIELD = re.compile(r"\bvoid\s*\*\s*(?:vtable_ptr|vptr)\s*;")
+_COFF_WEAK_EXTERNAL = 105  # IMAGE_SYM_CLASS_WEAK_EXTERNAL
+_COFF_WEAK_EXTERN_SEARCH_LIBRARY = 2  # IMAGE_WEAK_EXTERN_SEARCH_LIBRARY
+_COMPILER_GENERATED_DELETING_DESTRUCTOR = "compiler_generated_deleting_destructor"
+
+
+def _generated_fallback_symbol(expected_symbol: str) -> str:
+    """Return the scalar destructor symbol paired with a vector destructor."""
+    if not expected_symbol.startswith("??_E"):
+        raise ValueError(
+            f"Generated destructor symbol must be a ??_E symbol: {expected_symbol!r}"
+        )
+    suffix = expected_symbol[4:]
+    owner = suffix.split("@@", 1)[0]
+    if not owner or "@@" not in suffix or any(character.isspace() for character in expected_symbol):
+        raise ValueError(f"Generated destructor symbol is not a decorated ??_E name: {expected_symbol!r}")
+    return "??_G" + suffix
+
+
+def _compiler_generated_destructor_symbols(obj, va: int, expected_symbol: str):
+    """Validate one authentic VC5 weak vector-destructor pair.
+
+    VC5 emits an undefined ``??_G`` declaration, a weak ``??_E`` symbol whose
+    auxiliary record points at that declaration, and a defined ``??_G`` body.
+    The body is the only bytes that can be compared to the executable range.
+    """
+    fallback_name = _generated_fallback_symbol(expected_symbol)
+    candidates = [symbol for symbol in obj.symbols if symbol.name == expected_symbol]
+    if len(candidates) != 1:
+        raise ValueError(
+            f"{va:08X} expected one weak external {expected_symbol!r}; "
+            f"found {len(candidates)}"
+        )
+    weak_symbol = candidates[0]
+    if (
+        weak_symbol.storage_class != _COFF_WEAK_EXTERNAL
+        or weak_symbol.section_number != 0
+        or not getattr(weak_symbol, "is_function", False)
+    ):
+        raise ValueError(f"{va:08X} expected {expected_symbol!r} as an undefined COFF WeakExternal")
+    if weak_symbol.auxiliary_count != 1:
+        raise ValueError(f"{va:08X} weak external {expected_symbol!r} has no single fallback record")
+    tag_index = getattr(weak_symbol, "weak_external_tag_index", None)
+    characteristics = getattr(weak_symbol, "weak_external_characteristics", None)
+    if tag_index is None:
+        raise ValueError(f"{va:08X} weak external {expected_symbol!r} has no fallback index")
+    if characteristics != _COFF_WEAK_EXTERN_SEARCH_LIBRARY:
+        raise ValueError(
+            f"{va:08X} weak external {expected_symbol!r} is not a VC5 fallback weak external"
+        )
+
+    symbol_by_index = {symbol.index: symbol for symbol in obj.symbols}
+    tagged_symbol = symbol_by_index.get(tag_index)
+    if (
+        tagged_symbol is None
+        or tagged_symbol.name != fallback_name
+        or not getattr(tagged_symbol, "is_function", False)
+    ):
+        tagged_name = "<missing>" if tagged_symbol is None else tagged_symbol.name
+        raise ValueError(
+            f"{va:08X} weak external {expected_symbol!r} falls back to {tagged_name!r}, "
+            f"not same-class {fallback_name!r}"
+        )
+    defined = [
+        symbol
+        for symbol in obj.symbols
+        if symbol.name == fallback_name
+        and symbol.section_number > 0
+        and getattr(symbol, "is_function", False)
+    ]
+    if len(defined) != 1:
+        raise ValueError(
+            f"{va:08X} expected one defined same-class fallback {fallback_name!r}; "
+            f"found {len(defined)}"
+        )
+    return weak_symbol, tagged_symbol, defined[0]
+
+
+def _weak_fallback_entry(va: str, expected_symbol: str) -> bool:
+    """Return whether one generated entry can use the VC5 weak fallback form."""
+    return (
+        load_compiler_generated_functions().get(int(va, 16))
+        == _COMPILER_GENERATED_DELETING_DESTRUCTOR
+        and expected_symbol.startswith("??_E")
+    )
+
+
+def _has_weak_external(obj, expected_symbol: str) -> bool:
+    return any(
+        symbol.name == expected_symbol
+        and symbol.storage_class == _COFF_WEAK_EXTERNAL
+        and symbol.section_number == 0
+        for symbol in obj.symbols
+    )
 
 
 def parse_args() -> argparse.Namespace:
@@ -45,7 +140,7 @@ def parse_args() -> argparse.Namespace:
             "    \"flags\": \"config/flags/module.rsp\",\n"
             "    \"owners\": {\"00401000\": \"src/matching/00401000_name.cpp\"},\n"
             "    \"observed\": {\"00401100\": {\"source\": \"src/scratch/00401100_name.cpp\", \"status\": \"scratch\"}},\n"
-            "    \"generated\": {\"00401200\": \"??_GClass@@UAEPAXI@Z\"},\n"
+            "    \"generated\": {\"00401200\": \"??_EClass@@UAEPAXI@Z\"},\n"
             "    \"symbols\": {\"00401000\": \"?name@Class@@QAEXXZ\"}\n"
             "  }"
         ),
@@ -212,7 +307,7 @@ def _source_policy_issues(wrapper: Path) -> list[str]:
             line = line.split("//", 1)[0]
             if _INLINE_ASM.search(line):
                 findings.setdefault((source, "inline assembly"), []).append(line_number)
-            if _FAKE_VIRTUAL_SLOT.search(line):
+            if _FAKE_VIRTUAL_SLOT.search(line) or _TOKEN_PASTED_VIRTUAL.search(line):
                 findings.setdefault((source, "placeholder virtual slots"), []).append(line_number)
             if _RAW_VTABLE_FIELD.search(line):
                 findings.setdefault((source, "raw vtable fields"), []).append(line_number)
@@ -280,8 +375,16 @@ def validate_proposal(payload: dict[str, object]) -> list[str]:
 
     owners = payload["owners"]
     observed = payload["observed"]
+    generated = payload.get("generated") or {}
     assert isinstance(owners, dict)
     assert isinstance(observed, dict)
+    assert isinstance(generated, dict)
+    for va, expected_symbol in generated.items():
+        if _weak_fallback_entry(va, expected_symbol):
+            try:
+                _generated_fallback_symbol(expected_symbol)
+            except ValueError as error:
+                issues.append(str(error))
     checks: dict[str, str] = dict(owners)
     checks.update({va: entry["source"] for va, entry in observed.items()})
     pdb_map = load_pdb_function_source_map()
@@ -356,6 +459,8 @@ def _result_row(kind: str, status: str, result: dict[str, object]) -> dict[str, 
         "relocation_target_mismatches": len(relocations.get("target_mismatches") or []),
         "boundary_escape_count": len(result["boundary_escape_offsets"]),
         "symbol": result["symbol"],
+        "expected_symbol": result.get("expected_symbol", ""),
+        "fallback_symbol": result.get("fallback_symbol", ""),
         "error": "",
     }
 
@@ -374,8 +479,61 @@ def _error_row(kind: str, status: str, va: str, error: Exception) -> dict[str, o
         "relocation_target_mismatches": "-",
         "boundary_escape_count": "-",
         "symbol": "",
+        "expected_symbol": "",
+        "fallback_symbol": "",
         "error": str(error),
     }
+
+
+def _compare_generated_destructor(obj, va: int, group: dict[str, object]) -> dict[str, object]:
+    """Compare a generated VA through its authentic ``??_G`` fallback body."""
+    va_text = f"{va:08X}"
+    symbols = group.get("symbols")
+    expected_symbol = symbols.get(va_text) if isinstance(symbols, dict) else None
+    if not expected_symbol:
+        raise ValueError(f"{va_text} has no expected generated symbol")
+    if not _weak_fallback_entry(va_text, str(expected_symbol)):
+        raise ValueError(f"{va_text} is not a weak generated deleting-destructor entry")
+    _, _, fallback_symbol = _compiler_generated_destructor_symbols(
+        obj, va, str(expected_symbol)
+    )
+
+    fallback_group = dict(group)
+    fallback_symbols = dict(symbols) if isinstance(symbols, dict) else {}
+    fallback_symbols[va_text] = fallback_symbol.name
+    fallback_group["symbols"] = fallback_symbols
+    result = compare_object_owner(
+        obj,
+        va,
+        fallback_group,
+        require_owner=False,
+    )
+    if result.get("symbol") != fallback_symbol.name:
+        raise ValueError(
+            f"{va_text} comparison selected {result.get('symbol')!r}, "
+            f"not fallback {fallback_symbol.name!r}"
+        )
+    # Keep both names in the machine-readable report.  ``symbol`` remains the
+    # body symbol selected by the comparison, while the expected weak symbol
+    # records the linker identity that justified selecting that body.
+    result["expected_symbol"] = str(expected_symbol)
+    result["fallback_symbol"] = fallback_symbol.name
+    return result
+
+
+def _compare_generated_entry(obj, va: int, group: dict[str, object]) -> dict[str, object]:
+    """Use weak fallback comparison only for a weak deleting destructor."""
+    va_text = f"{va:08X}"
+    symbols = group.get("symbols")
+    expected_symbol = symbols.get(va_text) if isinstance(symbols, dict) else None
+    if not expected_symbol:
+        raise ValueError(f"{va_text} has no expected generated symbol")
+    expected_symbol = str(expected_symbol)
+    if _weak_fallback_entry(va_text, expected_symbol) and _has_weak_external(
+        obj, expected_symbol
+    ):
+        return _compare_generated_destructor(obj, va, group)
+    return compare_object_owner(obj, va, group, require_owner=False)
 
 
 def _render(rows: list[dict[str, object]]) -> str:
@@ -455,12 +613,7 @@ def main() -> int:
             rows.append(_result_row("observed", entry["status"], result))
     for va in generated:
         try:
-            result = compare_object_owner(
-                obj,
-                int(va, 16),
-                selection_group,
-                require_owner=False,
-            )
+            result = _compare_generated_entry(obj, int(va, 16), selection_group)
         except (KeyError, ValueError) as error:
             rows.append(_error_row("generated", "compiler_generated", va, error))
         else:

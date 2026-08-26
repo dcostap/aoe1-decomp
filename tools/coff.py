@@ -33,6 +33,11 @@ class CoffSymbol:
     symbol_type: int
     storage_class: int
     auxiliary_count: int
+    # A weak external stores the symbol-table index of its fallback in its
+    # auxiliary record.  Keep this metadata so validators can distinguish a
+    # compiler weak external from an ordinary alias.
+    weak_external_tag_index: int | None = None
+    weak_external_characteristics: int | None = None
 
     @property
     def is_function(self) -> bool:
@@ -126,6 +131,15 @@ def load_coff_object(path: Path) -> CoffObject:
             "<8sIhHBB", data, offset
         )
         name = _decode_symbol_name(raw_name, data, string_table_offset)
+        weak_external_tag_index = None
+        weak_external_characteristics = None
+        if storage_class == 105 and auxiliary_count:
+            aux_offset = offset + 18
+            if aux_offset + 8 <= len(data):
+                (
+                    weak_external_tag_index,
+                    weak_external_characteristics,
+                ) = struct.unpack_from("<II", data, aux_offset)
         symbol = CoffSymbol(
             index=raw_index,
             name=name,
@@ -134,6 +148,8 @@ def load_coff_object(path: Path) -> CoffObject:
             symbol_type=symbol_type,
             storage_class=storage_class,
             auxiliary_count=auxiliary_count,
+            weak_external_tag_index=weak_external_tag_index,
+            weak_external_characteristics=weak_external_characteristics,
         )
         symbols.append(symbol)
         symbol_names[raw_index] = name
