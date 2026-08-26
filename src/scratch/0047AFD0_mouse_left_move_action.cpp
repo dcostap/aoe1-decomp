@@ -56,6 +56,9 @@
 // scoped minimum/current aliases, combined lower guards, and reversed edge
 // addition were duplicate codegen or worse. The first paired blocker remains
 // minimum-read order and the EDX/EDI liveness through the clamp.
+// Current shard pass:
+// - Named new-position locals reached 428 changed bytes; combined edge guards reached 909; restored.
+// - Reversing both position upper-bound comparisons reached 319 changed bytes; restored.
 
 #ifndef PNL_SCBR_CANONICAL_TU
 extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);

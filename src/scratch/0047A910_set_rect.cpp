@@ -76,6 +76,9 @@
 // - Final blocker is the target EBP/range register map after the base call.  Behavior, ABI, layout, boundary,
 //   direct calls, and field ownership remain established.  Accepted drift remains prohibited because publication
 //   order differs before calc_item_rects on both orientation paths.
+// Current shard pass:
+// - A direct-member publication-order form reached 291 changed bytes and two boundary escapes; restored.
+// - Reordering the horizontal range to perp plus margin was codegen-neutral at 137 changed bytes; restored.
 
 #ifndef PNL_SCBR_CANONICAL_TU
 struct tagRECT {

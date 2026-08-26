@@ -3,9 +3,14 @@
 // Attempt log:
 // 1: natural constructor without virtual base surface built only 336 bytes/no EH.
 // 2: make TPanel/TScrollBarPanel virtual-destructor classes to trigger original constructor EH frame.
-// BLOCKER: Natural construction emits the derived vptr at entry. The executable
-// stores it after the field stores. A manual vptr store matches bytes but is not
-// policy-valid, so this source remains observed in the candidate TU.
+// Prior body-assignment form emitted the derived vptr at entry. The executable
+// stores it after the field stores. The initializer-list form below preserves
+// that order without manual vptr code.
+// Probe 3: moved all proven derived scalar stores to the constructor initializer
+// list. VC5 then delayed the derived vptr store and matched all 380 bytes in the
+// authentic Pnl_scbr.cpp wrapper without manual vptr code.
+// Exact-finish walkbacks: removing bevel_color6(0) changed 134 bytes; removing
+// item_hold_interval(100) changed 190 bytes. Restored both initializers.
 
 #ifndef PNL_SCBR_CANONICAL_TU
 struct tagRECT {
@@ -89,44 +94,45 @@ public:
 };
 #endif
 
-TScrollBarPanel::TScrollBarPanel() : TPanel()
+TScrollBarPanel::TScrollBarPanel()
+    : TPanel(),
+      list_panel(0),
+      list_len(0),
+      one_step(0),
+      page_step(0),
+      list_num(0),
+      button_pics(0),
+      back_frame(0),
+      up_frame(0),
+      down_frame(0),
+      tab_frame(0),
+      arrowSize(0),
+      tabSize(0),
+      tab_y(0),
+      tab_min_y(0),
+      tab_max_y(0),
+      tab_mouse_y(0),
+      tab_x(0),
+      tab_min_x(0),
+      tab_max_x(0),
+      tab_mouse_x(0),
+      item_down(0),
+      item_is_down(0),
+      item_x(0),
+      item_y(0),
+      item_mode(0),
+      item_last_time(0),
+      item_hold_interval(100),
+      item_down_interval(250),
+      orientationValue(0),
+      bevel_type(1),
+      bevel_color1(0),
+      bevel_color2(0),
+      bevel_color3(0),
+      bevel_color4(0),
+      bevel_color5(0),
+      bevel_color6(0)
 {
-    this->list_panel = 0;
-    this->list_len = 0;
-    this->one_step = 0;
-    this->page_step = 0;
-    this->list_num = 0;
-    this->button_pics = 0;
-    this->back_frame = 0;
-    this->up_frame = 0;
-    this->down_frame = 0;
-    this->tab_frame = 0;
-    this->arrowSize = 0;
-    this->tabSize = 0;
-    this->tab_y = 0;
-    this->tab_min_y = 0;
-    this->tab_max_y = 0;
-    this->tab_mouse_y = 0;
-    this->tab_x = 0;
-    this->tab_min_x = 0;
-    this->tab_max_x = 0;
-    this->tab_mouse_x = 0;
-    this->item_down = 0;
-    this->item_is_down = 0;
-    this->item_x = 0;
-    this->item_y = 0;
-    this->item_mode = 0;
-    this->item_last_time = 0;
-    this->item_hold_interval = 100;
-    this->item_down_interval = 250;
-    this->orientationValue = 0;
-    this->bevel_type = 1;
-    this->bevel_color1 = 0;
-    this->bevel_color2 = 0;
-    this->bevel_color3 = 0;
-    this->bevel_color4 = 0;
-    this->bevel_color5 = 0;
-    this->bevel_color6 = 0;
     this->field_EE = 5;
     this->field_C0 = 0;
     SetRect(&this->up_rect, 0, 0, 0, 0);
