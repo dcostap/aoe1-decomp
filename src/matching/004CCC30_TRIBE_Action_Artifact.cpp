@@ -1,26 +1,5 @@
-class RGE_Action_Object;
-class RGE_Task;
-
 #ifndef AOE1_TACT_ART_TU_CONTEXT
-class RGE_Action {
-public:
-    virtual void vf00(void);
-    RGE_Action(int file, int flag);
-
-    unsigned short action_type;
-    char gap_06[0x1A];
-};
-
-class TRIBE_Action_Artifact : public RGE_Action {
-public:
-    float target_x;
-    float target_y;
-    float target_z;
-    char gap_2C[0x04];
-    RGE_Task* task;
-
-    TRIBE_Action_Artifact(RGE_Action_Object* file, RGE_Task* task, float x, float y, float z);
-};
+#include "../../include/tact_art_context.h"
 #endif
 
 TRIBE_Action_Artifact::TRIBE_Action_Artifact(RGE_Action_Object* file, RGE_Task* task, float x, float y, float z)

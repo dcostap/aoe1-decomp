@@ -11,6 +11,7 @@
 
 class RGE_Action_Object;
 class RGE_Action_List;
+class RGE_Color_Table;
 class RGE_Game_World;
 class RGE_Map;
 class RGE_Master_Static_Object;
@@ -19,6 +20,7 @@ class RGE_Player;
 class RGE_Sprite;
 class RGE_Static_Object;
 class RGE_Task;
+class TDrawArea;
 class RGE_Tile;
 
 class RGE_Object_List {
@@ -73,22 +75,24 @@ public:
 class RGE_Static_Object {
 public:
     virtual ~RGE_Static_Object();
-    virtual void vf01();
-    virtual void vf02();
-    virtual void vf03();
-    virtual void vf04();
-    virtual void vf05();
-    virtual void vf06();
-    virtual void vf07();
-    virtual void vf08();
-    virtual void vf09();
-    virtual void vf10();
-    virtual void vf11();
-    virtual void vf12();
-    virtual void vf13();
-    virtual void vf14();
-    virtual void vf15();
-    virtual void vf16();
+    virtual void recycle_in_to_game(RGE_Master_Static_Object*, RGE_Player*,
+                                    float, float, float);
+    virtual void recycle_out_of_game();
+    virtual void draw(TDrawArea*, short, short, RGE_Color_Table*);
+    virtual void shadow_draw(TDrawArea*, short, short, unsigned char);
+    virtual void normal_draw(void*, short, short);
+    virtual void draw_front_frame(void*, short, short);
+    virtual void draw_back_frame(void*, short, short);
+    virtual void draw_frame(void*, short, short);
+    virtual unsigned char update();
+    virtual void check_damage_sprites();
+    virtual void rehook();
+    virtual void save(int);
+    virtual float teleport(float, float, float);
+    virtual void new_sprite(RGE_Sprite*);
+    virtual void add_overlay_sprite(RGE_Sprite*, unsigned char);
+    virtual void remove_overlay_sprite(RGE_Sprite*);
+    virtual void change_ownership(RGE_Player*);
     int id;
     RGE_Master_Static_Object* master_obj;
     RGE_Player* owner;
@@ -108,23 +112,9 @@ public:
 class RGE_Action_Object : public RGE_Static_Object {
 public:
     virtual ~RGE_Action_Object();
-    virtual void vf01();
-    virtual void vf02();
-    virtual void vf03();
-    virtual void vf04();
-    virtual void vf05();
-    virtual void vf06();
-    virtual void vf07();
-    virtual void vf08();
-    virtual void vf09();
-    virtual void vf10();
-    virtual void vf11();
-    virtual void vf12();
-    virtual void vf13();
-    virtual void vf14();
-    virtual void vf15();
-    virtual void vf16();
-    virtual void change_ownership(RGE_Player* player);
+    virtual void work2(RGE_Static_Object*, float, float, float,
+                       unsigned char);
+    virtual void set_task(short);
 };
 
 class RGE_Game_World {
