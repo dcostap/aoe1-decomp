@@ -39,6 +39,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--model", required=True)
     parser.add_argument("--thinking", required=True,
                         choices=("off", "minimal", "low", "medium", "high", "xhigh", "max"))
+    parser.add_argument(
+        "--individual-dir",
+        help="Also write one single-agent input JSON file per selected task.",
+    )
     return parser.parse_args()
 
 
@@ -80,6 +84,13 @@ def main() -> int:
     output = repo_path(args.output)
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+    if args.individual_dir:
+        individual_dir = repo_path(args.individual_dir)
+        individual_dir.mkdir(parents=True, exist_ok=True)
+        for task, agent in zip(selected, agents):
+            (individual_dir / f"{task['task_id']}.json").write_text(
+                json.dumps(agent, indent=2) + "\n", encoding="utf-8"
+            )
     print(f"Prepared {len(agents)} agents in {output}")
     return 0
 
