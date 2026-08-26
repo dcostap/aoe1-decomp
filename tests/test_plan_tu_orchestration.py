@@ -169,6 +169,18 @@ def test_state_assigns_ready_tu_without_activating_it() -> None:
     assert state["groups"]["alpha"]["status"] == "assigned"
 
 
+def test_compile_error_precedes_ready_state() -> None:
+    queue = {"packets": [packet("alpha", ["src/alpha.cpp"])]}
+
+    state = build_state(
+        queue,
+        "build/audits/tu_orchestration/report.json",
+        compile_error_groups={"alpha"},
+    )
+
+    assert state["groups"]["alpha"]["status"] == "compile_error"
+
+
 def test_prompt_forbids_local_raw_offset_workaround() -> None:
     text = captain_prompt(packet("alpha", ["src/alpha.cpp"]))
 

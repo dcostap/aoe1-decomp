@@ -412,7 +412,13 @@ def build_dependencies(queue: dict[str, object]) -> dict[str, object]:
     }
 
 
-def initial_status(packet: dict[str, object], group_state: dict[str, object]) -> str:
+def initial_status(
+    packet: dict[str, object],
+    group_state: dict[str, object],
+    compile_error: bool = False,
+) -> str:
+    if compile_error:
+        return "compile_error"
     if group_state.get("shared_blockers"):
         return "blocked_shared"
     if group_state.get("pending_validation"):
@@ -437,11 +443,13 @@ def build_state(
     assignments: dict[str, str] | None = None,
     active_groups: set[str] | None = None,
     blockers: dict[str, str] | None = None,
+    compile_error_groups: set[str] | None = None,
 ) -> dict[str, object]:
     prior = prior or {}
     assignments = assignments or {}
     active_groups = active_groups or set()
     blockers = blockers or {}
+    compile_error_groups = compile_error_groups or set()
     prior_groups = prior.get("groups") or {}
     if not isinstance(prior_groups, dict):
         prior_groups = {}
@@ -481,7 +489,9 @@ def build_state(
             if not state["captain_id"]:
                 raise ValueError(f"Cannot activate unassigned group: {group}")
             state["active_run_id"] = state["active_run_id"] or "active"
-        state["status"] = initial_status(packet, state)
+        state["status"] = initial_status(
+            packet, state, group in compile_error_groups
+        )
         state_groups[group] = state
 
     return {
@@ -686,6 +696,11 @@ def main() -> int:
     )
     delta = compare_reports(baseline, report, approved_vas(prior_state))
     dependencies = build_dependencies(queue)
+    compile_error_groups = {
+        str(error.get("group"))
+        for error in report.get("compile_errors") or []
+        if isinstance(error, dict)
+    }
     state = build_state(
         queue,
         str(report_path.relative_to(repo_path("."))),
@@ -693,6 +708,7 @@ def main() -> int:
         assignments,
         set(args.activate),
         blockers,
+        compile_error_groups,
     )
     state["ready_wave"] = select_ready_wave(
         queue, state, dependencies, max(0, args.limit)
