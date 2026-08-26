@@ -90,6 +90,16 @@
 // 334 instructions, but added a jump and did not match the target homes.
 // Parameter-index forms without a scoped lifetime grew the frame to 0x34.
 // Restore the simpler clean source. Do not retain these nonexact forms.
+// Captain context pass: PDB module, source bands, class ownership, address
+// order, boundaries, and exact anchors are recorded in the captain packet.
+// Captain probe: resetting retry=false inside the candidate do body matched
+// the binary's byte store and improved shape to 92.51% with 76.35% exact
+// blocks. It worsened strict diff to 948 bytes and was restored.
+// Captain probe: one typed outer output cursor was codegen-neutral with that
+// retry form. The clean source remains the simpler 544-byte mismatch basin.
+// BLOCKER: The target still differs in this/two register coloring, local-home
+// placement, and a ten-byte effective size boundary. Calls, x87 sequence,
+// owner symbol, and frame remain exact.
 
 #include <math.h>
 #include "..\..\include\rmm_dbct_context.h"

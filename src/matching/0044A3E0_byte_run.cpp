@@ -44,6 +44,15 @@
 //   opcode to it, and negate that local in place in the negative arm.  This
 //   preserves the binary-proven `neg al; movsx ebp,al` without an unsigned
 //   wrap/mask, producing an exact 217-byte match.
+// Captain exact-finish walkbacks: widening the run local changed the frame
+// to 0x14 and produced 176 differing bytes; removing the row-header advance
+// produced 210 bytes and 176 differing bytes; a direct pre-decrement row
+// loop produced 216 bytes and 199 differing bytes. Restoring the reduced
+// source kept standalone MATCH and 217 bytes.
+// Full-TU candidate evidence: the wrapper emits the y1 and flic_size_y
+// loads in reverse order at +0x0A and +0x10. The only grouped differences are
+// their displacement bytes at +0x0C and +0x12. Natural source walkbacks did
+// not remove them.
 
 #include <string.h>
 

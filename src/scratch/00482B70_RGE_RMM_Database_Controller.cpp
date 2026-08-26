@@ -56,6 +56,16 @@
 //   remain authoritative.
 // - The canonical group boundary is therefore 00482B70-00483010 for this
 //   unresolved owner. Later exact anchors remain valid in the complete wrapper.
+// Captain context pass: PDB module, source bands, class ownership, address
+// order, boundaries, and exact anchors are recorded in the captain packet.
+// Captain probe: the PDB-shaped declaration order for record pointers,
+// counters, and FILE was codegen-neutral at 1193 bytes and 790 diff bytes.
+// Captain probe: a controller self-alias reduced size to 1187 bytes, but
+// worsened the strict diff to 1074 bytes and lost an exact block. It was
+// restored.
+// BLOCKER: The remaining basin is the EBX/ESI register swap and an 8-byte
+// fallback/record-tail size difference. The target keeps 28 ordered calls and
+// an exact 0x34 frame, but no current source form proves the target coloring.
 
 struct _iobuf;
 extern "C" _iobuf* __cdecl fopen(const char*, const char*);

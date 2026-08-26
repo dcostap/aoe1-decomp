@@ -113,6 +113,10 @@
 //   validation remains 397 bytes / 367 differing bytes / 0xC frame / zero calls.
 //   The unresolved blocker is the authentic EBP stream, EDI packet, and early
 //   EBP-save allocation basin.  No exact claim is made.
+// Captain reduction: removed the redundant memcpy destination alias. The
+// compiler output stayed at 397 bytes / 367 differing bytes, with the same
+// 0xC frame and zero-call behavior. The direct destination is the cleaner
+// natural source form.
 
 #include <string.h>
 
@@ -179,8 +183,7 @@ void RGE_Flic_Player::delta_flc()
                 ushort* payload = p + 1;
                 if (size > 0) {
                     int bytes = (int)size << 1;
-                    uchar* dst = this->window_buffer;
-                    memcpy(dst, payload, bytes);
+                    memcpy(this->window_buffer, payload, bytes);
                     this->window_buffer += bytes;
                     p = payload + size;
                 } else {

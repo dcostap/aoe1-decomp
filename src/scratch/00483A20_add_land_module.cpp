@@ -72,6 +72,17 @@
 // Left in scratch: phase A is byte-close (only this-home [esp+18h] vs
 // [esp+10h] and a few slot permutations); phase B is correct and close but
 // not exact. Probe 4's miscompile is documented negative evidence.
+// Captain context pass: PDB module, source bands, class ownership, address
+// order, boundaries, and exact anchors are recorded in the captain packet.
+// Captain probe: 8-entry ty/player_teams arrays followed the decompiler but
+// moved the frame to 0x188 and worsened the strict diff to 1577 bytes.
+// Adding a current_team scalar restored neither the frame nor the basin.
+// Captain probe: changing the distance swap to the binary-looking forward
+// pair grew the body to 1868 bytes and worsened the strict diff to 1628.
+// The clean cursor source is restored.
+// BLOCKER: Phase A retains exact frame and three ordered calls, but the target
+// uses a different saved-this home. Phase B has a high-control-flow mismatch;
+// no current natural source form proves its local array and cursor topology.
 
 #ifndef RMM_DBCT_TU_CONTEXT_H
 typedef unsigned char uchar;
