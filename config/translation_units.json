@@ -1093,6 +1093,8 @@
         "005330E0": "src/matching/005330E0_add_points_high_attribute_amount.cpp",
         "00533120": "src/matching/00533120_handle_points_attribute_amount.cpp",
         "00533480": "src/matching/00533480_get_victory_points.cpp",
+        "00533490": "src/matching/00533490_get_victory_points_group.cpp",
+        "005334C0": "src/matching/005334C0_get_victory_points_id.cpp",
         "005334E0": "src/matching/005334E0_get_attribute_id.cpp"
       },
       "symbols": {
@@ -1118,6 +1120,8 @@
         "005330E0": "?add_points_high_attribute_amount@RGE_Victory_Conditions@@QAEEEEJJJ@Z",
         "00533120": "?handle_points_attribute_amount@RGE_Victory_Conditions@@IAEXPAURGE_Victory_Point_Entry@@@Z",
         "00533480": "?get_victory_points@RGE_Victory_Conditions@@QAEJXZ",
+        "00533490": "?get_victory_points_group@RGE_Victory_Conditions@@QAEJE@Z",
+        "005334C0": "?get_victory_points_id@RGE_Victory_Conditions@@QAEJE@Z",
         "005334E0": "?get_attribute_id@RGE_Victory_Conditions@@QAEJE@Z"
       }
     },

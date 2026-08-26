@@ -4,7 +4,7 @@ struct VP_Entry {
     unsigned char id;
     unsigned char group;
     char gap_4[0x10 - 4];
-    int points;
+    int curr_points;
     float float_field;
     VP_Entry* next;
 };
@@ -23,7 +23,7 @@ long RGE_Victory_Conditions::get_victory_points_id(unsigned char id) {
     VP_Entry* entry = this->field_14;
     while (entry) {
         if (entry->id == id)
-            result = entry->points;
+            result = entry->curr_points;
         entry = entry->next;
     }
     return result;
