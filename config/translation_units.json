@@ -1661,6 +1661,7 @@
         "00509980": "src/matching/00509980_do_command_make.cpp",
         "00509AF0": "src/matching/00509AF0_do_command_research.cpp",
         "00509C60": "src/matching/00509C60_do_command_build.cpp",
+        "00509E10": "src/matching/00509E10_do_command_build_wall.cpp",
         "0050A010": "src/matching/0050A010_place_line_of_walls.cpp",
         "0050A490": "src/matching/0050A490_do_command_cancel_build.cpp",
         "0050A510": "src/matching/0050A510_do_command_give_attribute.cpp",
@@ -1722,7 +1723,8 @@
         "0050AEE0": "?command_upgrade_town@TRIBE_Command@@QAEXF@Z",
         "0050AF30": "?command_quick_build@TRIBE_Command@@QAEXF@Z",
         "0050AF80": "?command_shared_los@TRIBE_Command@@QAEXF@Z",
-        "0050B0D0": "?command_cheat@TRIBE_Command@@QAEXFF@Z"
+        "0050B0D0": "?command_cheat@TRIBE_Command@@QAEXFF@Z",
+        "00509E10": "?do_command_build_wall@TRIBE_Command@@AAEXPAUTRIBE_Command_Build_Wall@@@Z"
       }
     },
     {
