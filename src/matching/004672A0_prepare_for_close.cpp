@@ -1,4 +1,7 @@
 // attempt 2: natural cleanup of owned draw area, GDI brush, shapes, palette, and shadow color table
+// diagnostic: an explicit pseudo-destructor call under the full context was
+// codegen-neutral; the missing out-of-line TDrawArea destructor stays a shared
+// declaration blocker and the probe was removed.
 
 #ifndef AOE1_PANEL_EZ_CONTEXT_H
 extern "C" __declspec(dllimport) int __stdcall DeleteObject(void* object);

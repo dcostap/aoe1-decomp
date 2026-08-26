@@ -1,4 +1,7 @@
 // attempt 2: natural shadow amount setter with virtual delete of old color table and palette-derived replacement
+// grouped repair: the original redraw tail reloads this vtable and calls slot
+// +0x20.  The full context exposes that operation as inherited set_redraw;
+// using RedrawMode 2 reproduces the tail exactly in the authentic TU.
 
 void TEasy_Panel::set_shadow_amount(long amount) {
     PALETTEENTRY palette_entries[256];
@@ -21,6 +24,6 @@ void TEasy_Panel::set_shadow_amount(long amount) {
     }
 
     if (this->panel_window != 0) {
-        this->redraw(2);
+        this->set_redraw((TPanel::RedrawMode)2);
     }
 }

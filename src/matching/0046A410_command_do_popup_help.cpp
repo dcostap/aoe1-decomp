@@ -1,4 +1,7 @@
 // attempt 2: natural popup-help command: exit help mode, restore cursor, resolve help text, show help dialog
+// grouped repair: the shared context exposes the matching four-argument
+// virtual slot as TPanel::get_help_info; the derived popup-help call uses that
+// slot and therefore retains the original dispatch and ABI.
 
 long TEasy_Panel::command_do_popup_help(unsigned char clicked, long x, long y) {
     long help_page;
@@ -12,7 +15,7 @@ long TEasy_Panel::command_do_popup_help(unsigned char clicked, long x, long y) {
         rge_base_game->set_mouse_facet(0);
         rge_base_game->mouse_pointer->set_game_enable(this->saved_mouse_mode);
         if (clicked == 1) {
-            if (this->get_popup_help(&temp, &help_page, x, y)) {
+            if (this->get_help_info(&temp, &help_page, x, y)) {
                 this->command_help(this->help_title, help_string2, help_page, x, y);
             }
         }

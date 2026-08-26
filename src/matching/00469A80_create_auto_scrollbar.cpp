@@ -1,4 +1,7 @@
 // first pass: direct virtual create call, then wire the resulting scrollbar into the text panel
+// diagnostic (rejected): routing through the full-context create_scrollbar
+// emitted 49 differing bytes and one boundary escape; the original helper
+// call is retained.
 // the target function must stay lexically first so the extractor sees its bytes first
 // tried a raw vtable function-pointer cast; the remaining mismatch was the ECX/thiscall setup on the factory call
 
