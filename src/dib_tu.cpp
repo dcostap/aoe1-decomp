@@ -3,6 +3,10 @@
 // The owner order follows the source-line bands in the Dib.cpp packet. The
 // earlier matching and accepted-drift owners establish the Win32 and DIB
 // context used by the later owners.
+// Context probe, 2026-08-26: moving DibMapToPalette ahead of the xlatClut8
+// definition regressed the exact xlatClut8 owner by one byte and worsened the
+// memmove grouped result. Moving only memmove after DibMapToPalette was
+// neutral. The original include order remains authoritative.
 
 #include "../include/dib_context.h"
 #include "accepted_drift/00438820_DibBlt.cpp"
