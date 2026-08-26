@@ -4118,13 +4118,10 @@
       "source": "src/effects_tu.cpp",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "00449440": "src/matching/00449440_RGE_Effects.cpp",
         "004494B0": "src/matching/004494B0_save.cpp",
         "004495C0": "src/matching/004495C0_do_effect.cpp"
       },
       "symbols": {
-        "00449440": "??1RGE_Effects@@UAE@XZ",
-        "004494B0": "?save@RGE_Effects@@UAEXH@Z",
         "004495C0": "?do_effect@RGE_Effects@@UAEXFPAVRGE_Player@@@Z"
       }
     },
@@ -4146,13 +4143,11 @@
       "flags": "config/flags/00473E40_TDialogPanel.rsp",
       "owners": {
         "00473C10": "src/matching/00473C10_TDialogPanel.cpp",
-        "00473C80": "src/matching/00473C80_setup.cpp",
-        "00473EC0": "src/matching/00473EC0_set_focus.cpp"
+        "00473C80": "src/matching/00473C80_setup.cpp"
       },
       "symbols": {
         "00473C10": "??0TDialogPanel@@QAE@PAD@Z",
-        "00473C80": "?setup@TDialogPanel@@UAEHPAVTDrawArea@@PAVTPanel@@JJPADJH@Z",
-        "00473EC0": "?set_focus@TDialogPanel@@UAEXH@Z"
+        "00473C80": "?setup@TDialogPanel@@UAEHPAVTDrawArea@@PAVTPanel@@JJPADJH@Z"
       }
     },
     {
