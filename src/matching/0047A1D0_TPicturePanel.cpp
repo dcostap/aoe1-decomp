@@ -1,5 +1,8 @@
 #include "..\..\include\pnl_pic_context.h"
 
+// BINARY NOTE: Pnl_pic.cpp calls the out-of-line TPanel constructor at 004648B0.
+// The shared panel context has only an implicit inline default constructor.
+// Keep this target observed until the context can model that proven ABI.
 TPicturePanel::TPicturePanel() : TPanel() {
     this->keep_loaded = 1;
     this->size_from_pic = 0;

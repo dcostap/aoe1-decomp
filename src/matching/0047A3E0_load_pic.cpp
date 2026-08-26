@@ -28,6 +28,8 @@
 // - nested shape validity and direct file_name use matched the original exactly. The
 //   decompiler's file_name + 4 was an EH temporary overlap artifact, not source offset.
 //   Result: MATCH, 463/463 bytes, 0.0000% positional diff.
+// - canonical TU validation reports one grouped byte difference: TPicture is 0x1C in
+//   the shared context, while the binary allocates 0x20 bytes. Keep this target observed.
 
 #include "..\..\include\game_globals.h"
 #include <stdio.h>
