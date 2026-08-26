@@ -122,6 +122,17 @@ def test_accepted_drift_change_blocks_integration() -> None:
     assert any(item["kind"] == "accepted_drift_changed" for item in delta["regressions"])
 
 
+def test_exact_promotion_from_accepted_drift_does_not_block() -> None:
+    delta = compare_reports(
+        report(row(bucket="accepted_drift", result="MATCH", difference=0)),
+        report(row(bucket="matching", result="MATCH", difference=0, registered=True)),
+    )
+
+    assert not any(
+        item["kind"] == "accepted_drift_changed" for item in delta["regressions"]
+    )
+
+
 def test_reviewed_drift_signature_accepts_only_current_result() -> None:
     before_row = row(bucket="accepted_drift", difference=4)
     current_row = row(bucket="accepted_drift", difference=3)

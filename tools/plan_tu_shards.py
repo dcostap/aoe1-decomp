@@ -53,11 +53,17 @@ def calculate_weight(state: dict[str, Any], packet: dict[str, Any] | None) -> fl
     return round(max(weight, 2.0), 2)
 
 
-def load_group_work(state_path: Path, packet_dir: Path) -> dict[str, GroupWork]:
+def load_group_work(
+    state_path: Path,
+    packet_dir: Path,
+    selected_groups: set[str] | None = None,
+) -> dict[str, GroupWork]:
     state_doc = json.loads(state_path.read_text(encoding="utf-8"))
     groups = state_doc.get("groups", {})
     result: dict[str, GroupWork] = {}
     for name, item in groups.items():
+        if selected_groups is not None and name not in selected_groups:
+            continue
         status = item.get("status", "")
         if status not in ACTIVE_STATUSES:
             continue
@@ -102,7 +108,10 @@ def conflict_components(
 
 
 def partition_groups(
-    groups: dict[str, GroupWork], conflicts: dict[str, list[str]], shard_count: int
+    groups: dict[str, GroupWork],
+    conflicts: dict[str, list[str]],
+    shard_count: int,
+    max_groups_per_shard: int = 0,
 ) -> list[list[str]]:
     if shard_count < 1:
         raise ValueError("shard_count must be positive")
@@ -116,7 +125,18 @@ def partition_groups(
     shards: list[list[str]] = [[] for _ in range(shard_count)]
     totals = [0.0] * shard_count
     for component in components:
-        target = min(range(shard_count), key=lambda i: (totals[i], len(shards[i]), i))
+        eligible = [
+            index
+            for index in range(shard_count)
+            if not max_groups_per_shard
+            or len(shards[index]) + len(component) <= max_groups_per_shard
+        ]
+        if not eligible:
+            raise ValueError(
+                f"Cannot fit conflict component of {len(component)} groups "
+                f"within the {max_groups_per_shard}-group shard limit"
+            )
+        target = min(eligible, key=lambda i: (totals[i], len(shards[i]), i))
         shards[target].extend(component)
         totals[target] += sum(groups[name].weight for name in component)
     for shard in shards:
@@ -129,6 +149,11 @@ def write_plan(
     groups: dict[str, GroupWork],
     shards: list[list[str]],
     base_commit: str,
+    max_concurrent_workers: int = 10,
+    lead_model: str = "openai-codex-secondary/gpt-5.6-sol",
+    lead_thinking: str = "medium",
+    worker_model: str = "openai-codex-secondary/gpt-5.6-luna",
+    worker_thinking: str = "xhigh",
 ) -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
     index = {
@@ -147,11 +172,11 @@ def write_plan(
             "schema": 1,
             "shard": shard_id,
             "base_commit": base_commit,
-            "max_concurrent_workers": 10,
-            "lead_model": "openai-codex-secondary/gpt-5.6-sol",
-            "lead_thinking": "medium",
-            "worker_model": "openai-codex-secondary/gpt-5.6-luna",
-            "worker_thinking": "xhigh",
+            "max_concurrent_workers": max_concurrent_workers,
+            "lead_model": lead_model,
+            "lead_thinking": lead_thinking,
+            "worker_model": worker_model,
+            "worker_thinking": worker_thinking,
             "weight": round(sum(item.weight for item in items), 2),
             "groups": [item.__dict__ for item in items],
         }
@@ -181,16 +206,47 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--shards", type=int, default=5)
     parser.add_argument("--base-commit", default="")
+    parser.add_argument(
+        "--ready-wave-only",
+        action="store_true",
+        help="Partition only the conflict-free ready_wave from the state file.",
+    )
+    parser.add_argument("--max-groups-per-shard", type=int, default=0)
+    parser.add_argument("--max-concurrent-workers", type=int, default=10)
+    parser.add_argument(
+        "--lead-model", default="openai-codex-secondary/gpt-5.6-sol"
+    )
+    parser.add_argument("--lead-thinking", default="medium")
+    parser.add_argument(
+        "--worker-model", default="openai-codex-secondary/gpt-5.6-luna"
+    )
+    parser.add_argument("--worker-thinking", default="xhigh")
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
-    groups = load_group_work(args.state, args.packet_dir)
+    selected_groups = None
+    if args.ready_wave_only:
+        state_doc = json.loads(args.state.read_text(encoding="utf-8"))
+        selected_groups = {str(name) for name in state_doc.get("ready_wave", [])}
+    groups = load_group_work(args.state, args.packet_dir, selected_groups)
     dependencies = json.loads(args.dependencies.read_text(encoding="utf-8"))
     conflicts = dependencies.get("conflicts", {})
-    shards = partition_groups(groups, conflicts, args.shards)
-    write_plan(args.output_dir, groups, shards, args.base_commit)
+    shards = partition_groups(
+        groups, conflicts, args.shards, args.max_groups_per_shard
+    )
+    write_plan(
+        args.output_dir,
+        groups,
+        shards,
+        args.base_commit,
+        args.max_concurrent_workers,
+        args.lead_model,
+        args.lead_thinking,
+        args.worker_model,
+        args.worker_thinking,
+    )
     print(f"Planned {len(groups)} groups across {len(shards)} shards.")
     for number, names in enumerate(shards, 1):
         weight = sum(groups[name].weight for name in names)

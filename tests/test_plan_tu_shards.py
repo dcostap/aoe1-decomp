@@ -39,3 +39,10 @@ def test_partition_is_deterministic_and_keeps_conflicts_together() -> None:
     assert first == second
     assert any("b" in shard and "c" in shard for shard in first)
     assert sorted(name for shard in first for name in shard) == sorted(groups)
+
+
+def test_partition_honors_group_limit() -> None:
+    groups = {name: group(name, 1.0) for name in ("a", "b", "c", "d")}
+    shards = partition_groups(groups, {}, 2, max_groups_per_shard=2)
+
+    assert [len(shard) for shard in shards] == [2, 2]

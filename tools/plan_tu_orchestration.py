@@ -601,7 +601,12 @@ def compare_reports(
                 )
 
         if str(prior.get("source_bucket")) == "accepted_drift":
-            if row_signature(prior) != row_signature(current):
+            promoted_exact = (
+                str(current.get("source_bucket")) == "matching"
+                and bool(current.get("registered_in_group"))
+                and current_result == "MATCH"
+            )
+            if not promoted_exact and row_signature(prior) != row_signature(current):
                 accepted = reviewed_drift.get((group, va))
                 if accepted != row_signature(current):
                     regressions.append(
