@@ -14,7 +14,9 @@ from plan_tu_orchestration import (  # noqa: E402
     captain_prompt,
     compare_reports,
     queue_packets,
+    record_drift_acceptances,
     resolve_prior_fingerprint,
+    reviewed_drift_signatures,
     select_ready_wave,
     validate_report,
     validate_report_transition,
@@ -107,6 +109,38 @@ def test_accepted_drift_change_blocks_integration() -> None:
 
     assert delta["gate"] == "FAIL"
     assert any(item["kind"] == "accepted_drift_changed" for item in delta["regressions"])
+
+
+def test_reviewed_drift_signature_accepts_only_current_result() -> None:
+    before_row = row(bucket="accepted_drift", difference=4)
+    current_row = row(bucket="accepted_drift", difference=3)
+    before_row["category"] = "accepted_drift_observed"
+    current_row["category"] = "accepted_drift_observed"
+    current = report(current_row)
+    state: dict[str, object] = {"groups": {}}
+    record_drift_acceptances(state, [("alpha", "00401000")], current)
+
+    accepted = compare_reports(
+        report(before_row),
+        current,
+        reviewed_drift=reviewed_drift_signatures(state),
+    )
+    assert not any(
+        item["kind"] == "accepted_drift_changed"
+        for item in accepted["regressions"]
+    )
+
+    later_row = row(bucket="accepted_drift", difference=2)
+    later_row["category"] = "accepted_drift_observed"
+    later = compare_reports(
+        current,
+        report(later_row),
+        reviewed_drift=reviewed_drift_signatures(state),
+    )
+    assert any(
+        item["kind"] == "accepted_drift_changed"
+        for item in later["regressions"]
+    )
 
 
 def test_new_boundary_escape_blocks_integration() -> None:

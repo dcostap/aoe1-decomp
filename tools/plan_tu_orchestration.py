@@ -69,6 +69,13 @@ def parse_args() -> argparse.Namespace:
         help="Record one reviewed promotion candidate.",
     )
     parser.add_argument(
+        "--accept-drift",
+        action="append",
+        default=[],
+        metavar="GROUP=VA",
+        help="Accept only the current reviewed result for one accepted-drift VA.",
+    )
+    parser.add_argument(
         "--block",
         action="append",
         default=[],
@@ -284,6 +291,55 @@ def approved_vas(state: dict[str, object]) -> set[str]:
     return result
 
 
+def reviewed_drift_signatures(
+    state: dict[str, object],
+) -> dict[tuple[str, str], dict[str, object]]:
+    result: dict[tuple[str, str], dict[str, object]] = {}
+    groups = state.get("groups") or {}
+    if not isinstance(groups, dict):
+        return result
+    for group, group_state in groups.items():
+        if not isinstance(group_state, dict):
+            continue
+        signatures = group_state.get("reviewed_drift_signatures") or {}
+        if not isinstance(signatures, dict):
+            raise ValueError(f"Invalid drift signatures for group: {group}")
+        for va, signature in signatures.items():
+            if not isinstance(signature, dict):
+                raise ValueError(f"Invalid drift signature for {group} {va}")
+            result[(str(group), str(va).upper())] = signature
+    return result
+
+
+def record_drift_acceptances(
+    state: dict[str, object],
+    acceptances: list[tuple[str, str]],
+    report: dict[str, object],
+) -> None:
+    validate_state(state)
+    rows = {
+        row_key(row): row
+        for row in report.get("rows") or []
+        if isinstance(row, dict)
+    }
+    groups = state.setdefault("groups", {})
+    assert isinstance(groups, dict)
+    for group, va_value in acceptances:
+        va = va_value.upper()
+        row = rows.get((group, va))
+        if row is None:
+            raise ValueError(f"Accepted-drift row not found: {group} {va}")
+        if str(row.get("source_bucket")) != "accepted_drift":
+            raise ValueError(f"Row is not accepted drift: {group} {va}")
+        group_state = groups.setdefault(group, {})
+        if not isinstance(group_state, dict):
+            raise ValueError(f"Invalid state for group: {group}")
+        signatures = group_state.setdefault("reviewed_drift_signatures", {})
+        if not isinstance(signatures, dict):
+            raise ValueError(f"Invalid drift signatures for group: {group}")
+        signatures[va] = row_signature(row)
+
+
 def apply_state_changes(
     prior: dict[str, object],
     approvals: list[tuple[str, str]],
@@ -362,11 +418,13 @@ def compare_reports(
     before: dict[str, object] | None,
     after: dict[str, object],
     approved: set[str] | None = None,
+    reviewed_drift: dict[tuple[str, str], dict[str, object]] | None = None,
 ) -> dict[str, object]:
     validate_report(after)
     if before is not None:
         validate_report(before)
     approved = approved or set()
+    reviewed_drift = reviewed_drift or {}
     after_rows = after.get("rows") or []
     if not isinstance(after_rows, list):
         raise ValueError("Current report rows must be a list.")
@@ -470,14 +528,16 @@ def compare_reports(
 
         if str(prior.get("source_bucket")) == "accepted_drift":
             if row_signature(prior) != row_signature(current):
-                regressions.append(
-                    {
-                        "kind": "accepted_drift_changed",
-                        "group": group,
-                        "va": va,
-                        "reason": "A reviewed accepted-drift result changed.",
-                    }
-                )
+                accepted = reviewed_drift.get((group, va))
+                if accepted != row_signature(current):
+                    regressions.append(
+                        {
+                            "kind": "accepted_drift_changed",
+                            "group": group,
+                            "va": va,
+                            "reason": "A reviewed accepted-drift result changed.",
+                        }
+                    )
 
         prior_owner = structural_value(prior, "owner_status")
         current_owner = structural_value(current, "owner_status")
@@ -625,6 +685,9 @@ def build_state(
                 old.get("pending_validation_run_id") or ""
             ),
             "approved_promotions": list(old.get("approved_promotions") or []),
+            "reviewed_drift_signatures": dict(
+                old.get("reviewed_drift_signatures") or {}
+            ),
             "last_sweep": report_path,
             "last_commit": str(old.get("last_commit") or ""),
             "captain_task_count": int(packet.get("captain_task_count") or 0),
@@ -845,6 +908,7 @@ def main() -> int:
     assignments = parse_mapping(args.assign, "assignment")
     blockers = parse_mapping(args.block, "blocker")
     approvals = parse_pairs(args.approve, "approval")
+    drift_acceptances = parse_pairs(args.accept_drift, "accepted drift")
     starts = parse_pairs(args.start, "started run")
     finishes = parse_pairs(args.finish, "finished run")
     validations = parse_pairs(args.validated, "validation")
@@ -853,7 +917,14 @@ def main() -> int:
         str(packet["group"]) for packet in packets
     }
     changed_groups = {
-        group for group, _ in [*approvals, *starts, *finishes, *validations]
+        group
+        for group, _ in [
+            *approvals,
+            *drift_acceptances,
+            *starts,
+            *finishes,
+            *validations,
+        ]
     }
     unknown = sorted(
         (
@@ -875,7 +946,13 @@ def main() -> int:
         finishes,
         validations,
     )
-    delta = compare_reports(baseline, report, approved_vas(prior_state))
+    record_drift_acceptances(prior_state, drift_acceptances, report)
+    delta = compare_reports(
+        baseline,
+        report,
+        approved_vas(prior_state),
+        reviewed_drift_signatures(prior_state),
+    )
     dependencies = build_dependencies(queue)
     compile_error_groups = {
         str(error.get("group"))
