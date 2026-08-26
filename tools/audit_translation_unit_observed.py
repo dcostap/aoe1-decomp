@@ -10,7 +10,14 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 from coff import load_coff_object
-from common import REPO_ROOT, function_record_by_va, function_slug, load_translation_units, repo_path
+from common import (
+    REPO_ROOT,
+    function_record_by_va,
+    function_slug,
+    load_pdb_function_source_map,
+    load_translation_units,
+    repo_path,
+)
 from extract_obj_function import select_record_function_symbol
 from original_fpo import load_original_owner_symbols
 from status_core import build_status_rows
@@ -186,6 +193,7 @@ def compile_and_compare_group(
     group: dict[str, object],
     targets: list[dict[str, object]],
     original_symbols: dict[str, str],
+    pdb_owner_names: dict[str, str],
     owner_groups: dict[str, list[str]],
     output_dir: Path,
 ) -> dict[str, object]:
@@ -218,13 +226,14 @@ def compile_and_compare_group(
         expected_symbol = str(configured_symbols.get(va) or original_symbols.get(va) or "")
         if not expected_symbol:
             expected_symbol = isolated_symbol_name(int(va, 16))
+        expected_owner_name = pdb_owner_names.get(va, "")
         selection: dict[str, object] = {
             "owners": {va: status["source_path"]},
             "symbols": {va: expected_symbol} if expected_symbol else {},
         }
         try:
             result = compare_object_owner(
-                obj, int(va, 16), selection, expected_symbol
+                obj, int(va, 16), selection, expected_owner_name
             )
             relocations = result["relocations"]
             owner = result["owner_symbol"]
@@ -243,6 +252,7 @@ def compile_and_compare_group(
                 "boundary_escape_count": len(result["boundary_escape_offsets"]),
                 "symbol": result["symbol"],
                 "expected_symbol": expected_symbol,
+                "expected_owner_name": expected_owner_name,
                 "error": "",
             }
         except (KeyError, OSError, RuntimeError, ValueError) as error:
@@ -257,6 +267,7 @@ def compile_and_compare_group(
                 "boundary_escape_count": "",
                 "symbol": "",
                 "expected_symbol": expected_symbol,
+                "expected_owner_name": expected_owner_name,
                 "error": str(error),
             }
 
@@ -293,6 +304,7 @@ def compile_and_compare_group(
                 "boundary_escape_count": comparison["boundary_escape_count"],
                 "symbol": comparison["symbol"],
                 "expected_symbol": comparison["expected_symbol"],
+                "expected_owner_name": comparison["expected_owner_name"],
                 "policy_issues": policy_issues,
                 "category": category,
                 "recommended_action": action,
@@ -639,6 +651,10 @@ def main() -> int:
         targets_by_group[str(group["name"])] = targets
 
     original_symbols, _ = load_original_owner_symbols()
+    pdb_owner_names = {
+        str(va).upper(): str(entry.get("symbol_name") or "")
+        for va, entry in load_pdb_function_source_map().items()
+    }
     results: list[dict[str, object]] = []
     jobs = max(1, min(args.jobs, len(groups) or 1))
     with ThreadPoolExecutor(max_workers=jobs) as executor:
@@ -648,6 +664,7 @@ def main() -> int:
                 group,
                 targets_by_group[str(group["name"])],
                 original_symbols,
+                pdb_owner_names,
                 owner_groups,
                 output_dir,
             ): str(group["name"])
@@ -707,6 +724,9 @@ def main() -> int:
         "owner_status",
         "relocation_target_mismatches",
         "boundary_escape_count",
+        "symbol",
+        "expected_symbol",
+        "expected_owner_name",
         "category",
         "recommended_action",
         "reason",
