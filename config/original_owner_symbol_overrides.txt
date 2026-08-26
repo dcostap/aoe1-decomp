@@ -1,0 +1,22 @@
+# Reviewed original PDB procedure symbols absent from the executable FPO table.
+# Each row is: VA decorated_symbol linkage.
+# `local` means S_LPROC32. `global` means S_GPROC32 with S_PUB32 evidence.
+# Do not add an owner that already has an FPO row.
+
+# Release/dib.obj, type 0x2292: static void(unsigned char*, unsigned long,
+# unsigned char*).
+0043AA60 ?xlatClut8@@YAXPAEK0@Z local
+0043AB40 ?xlatRle4@@YAXPAEK0@Z local
+
+# Release/map.obj, types 0x1FF3 and 0x1FF5.
+004573C0 ?do_terrain_brush_stroke@RGE_Map@@UAEEJJJJJE@Z global
+004575C0 ?do_elevation_brush_stroke@RGE_Map@@UAEEJJJJJE@Z global
+00457760 ?do_cliff_brush_stroke@RGE_Map@@UAEEJJJJEE@Z global
+
+# Release/Path.obj, type 0x1E9C: int Path::contains(const Waypoint&) const.
+0046ACE0 ?contains@Path@@QBEHABUWaypoint@@@Z global
+
+# Release/pnl_edit.obj and Release/tribegam.obj, type 0x133D: static
+# long __stdcall(void*, unsigned int, unsigned int, long).
+00475930 ?pnl_sub_wnd_proc@@YGJPAXIIJ@Z local
+00523AE0 ?video_sub_wnd_proc@@YGJPAXIIJ@Z local

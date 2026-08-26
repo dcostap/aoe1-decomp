@@ -26,7 +26,7 @@ extern "C" void* __cdecl MCIWndCreateA(void* parent, void* instance,
 extern "C" unsigned long __cdecl debug_timeGetTime(char* file, int line);
 
 extern int video_codec_available;
-extern long __stdcall video_sub_wnd_proc(
+static long __stdcall video_sub_wnd_proc(
     void* hwnd, unsigned int message, unsigned int wparam, long lparam);
 
 #if 0

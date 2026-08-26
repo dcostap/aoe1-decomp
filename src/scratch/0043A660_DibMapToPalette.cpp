@@ -71,9 +71,9 @@
 
 #pragma function(memcpy)
 #pragma function(memmove)
-void __cdecl xlatRle4(BYTE*, unsigned int, BYTE*);
+static void __cdecl xlatRle4(BYTE*, unsigned long, BYTE*);
 void __cdecl xlatRle8(BYTE*, int, BYTE*);
-void __cdecl xlatClut8(BYTE*, unsigned int, BYTE*);
+static void __cdecl xlatClut8(BYTE*, unsigned long, BYTE*);
 void __cdecl xlatClut4(BYTE*, unsigned int, BYTE*);
 
 void DibMapToPalette(BITMAPINFOHEADER* bih, void* hbm, int transparent, int zero) {

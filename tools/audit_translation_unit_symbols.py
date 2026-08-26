@@ -6,7 +6,11 @@ from pathlib import Path
 
 from coff import load_coff_object
 from common import load_translation_units, repo_path
-from original_fpo import DEFAULT_FPO_PATH, load_original_fpo_symbols
+from original_fpo import (
+    DEFAULT_FPO_PATH,
+    DEFAULT_OWNER_OVERRIDES_PATH,
+    load_original_owner_symbols,
+)
 from translation_unit_prefixes import _select_symbol
 
 
@@ -18,6 +22,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output", required=True)
     parser.add_argument("--fpo", default=str(DEFAULT_FPO_PATH))
     parser.add_argument(
+        "--owner-overrides", default=str(DEFAULT_OWNER_OVERRIDES_PATH)
+    )
+    parser.add_argument(
         "--allow-unavailable", action="store_true",
         help="Do not fail when an owner has no FPO record.",
     )
@@ -25,9 +32,12 @@ def parse_args() -> argparse.Namespace:
 
 
 def audit_symbols(
-    groups: list[dict[str, object]], object_dir: Path, fpo_path: Path
+    groups: list[dict[str, object]], object_dir: Path, fpo_path: Path,
+    owner_overrides_path: Path | None = None,
 ) -> dict[str, object]:
-    original = load_original_fpo_symbols(fpo_path)
+    original, original_linkages = load_original_owner_symbols(
+        fpo_path, owner_overrides_path
+    )
     rows: list[dict[str, str]] = []
     unavailable: list[dict[str, str]] = []
     for group in groups:
@@ -42,18 +52,32 @@ def audit_symbols(
                 unavailable.append({"group": name, "va": va})
                 continue
             try:
-                rebuilt = _select_symbol(obj, int(va, 16), group).name
+                rebuilt_symbol = _select_symbol(obj, int(va, 16), group)
+                rebuilt = rebuilt_symbol.name
+                if rebuilt_symbol.storage_class == 2:
+                    rebuilt_linkage = "global"
+                elif rebuilt_symbol.storage_class == 3:
+                    rebuilt_linkage = "local"
+                else:
+                    rebuilt_linkage = f"coff:{rebuilt_symbol.storage_class}"
                 error = ""
             except Exception as exception:
                 rebuilt = ""
+                rebuilt_linkage = ""
                 error = str(exception)
-            if rebuilt != expected:
+            expected_linkage = original_linkages.get(va, "")
+            if rebuilt != expected or (
+                expected_linkage and rebuilt_linkage != expected_linkage
+            ):
                 row = {
                     "group": name,
                     "va": va,
                     "expected": expected,
                     "rebuilt": rebuilt,
                 }
+                if expected_linkage:
+                    row["expected_linkage"] = expected_linkage
+                    row["rebuilt_linkage"] = rebuilt_linkage
                 if error:
                     row["error"] = error
                 rows.append(row)
@@ -75,6 +99,7 @@ def main() -> int:
         load_translation_units(),
         repo_path(args.objects_dir),
         repo_path(args.fpo),
+        repo_path(args.owner_overrides),
     )
     output = repo_path(args.output)
     output.parent.mkdir(parents=True, exist_ok=True)
