@@ -4239,12 +4239,14 @@
       "owners": {
         "00473C10": "src/matching/00473C10_TDialogPanel.cpp",
         "00473C80": "src/matching/00473C80_setup.cpp",
+        "00473E40": "src/matching/00473E40_TDialogPanel.cpp",
         "00473EC0": "src/matching/00473EC0_set_focus.cpp"
       },
       "symbols": {
         "00473C10": "??0TDialogPanel@@QAE@PAD@Z",
         "00473C80": "?setup@TDialogPanel@@UAEHPAVTDrawArea@@PAVTPanel@@JJPADJH@Z",
-        "00473EC0": "?set_focus@TDialogPanel@@UAEXH@Z"
+        "00473EC0": "?set_focus@TDialogPanel@@UAEXH@Z",
+        "00473E40": "??1TDialogPanel@@UAE@XZ"
       }
     },
     {
