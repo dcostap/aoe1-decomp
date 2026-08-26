@@ -59,6 +59,8 @@
 
 #include <math.h>
 
+#include "../../include/act_atak_context.h"
+/*
 #ifndef ACT_ATAK_CONTEXT_H
 extern float DAT_0056e0cc;
 
@@ -340,6 +342,7 @@ public:
     int ready_to_attack(int&);
 };
 #endif
+*/
 
 int RGE_Action_Attack::ready_to_attack(int& range_status)
 {

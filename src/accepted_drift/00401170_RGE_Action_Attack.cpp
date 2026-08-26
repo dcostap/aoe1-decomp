@@ -62,6 +62,8 @@
 // recolor identical master-object reads. Both calls, EH state, values, used
 // flags, member effects, cleanup, return, and fault order match.
 
+#include "../../include/act_atak_context.h"
+/*
 #ifndef ACT_ATAK_CONTEXT_H
 class RGE_Sprite;
 class RGE_Action_Object;
@@ -195,6 +197,7 @@ public:
     unsigned char gap_5B;
 };
 #endif
+*/
 
 RGE_Action_Attack::RGE_Action_Attack(RGE_Action_Object* action_obj, RGE_Static_Object* target, RGE_Sprite* move, RGE_Sprite* fight, RGE_Sprite* wait, float range, float min_range, short missile_id, short fire_frame)
     : RGE_Action(action_obj, 1)

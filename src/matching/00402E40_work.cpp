@@ -1,3 +1,5 @@
+#include "../../include/act_expl_context.h"
+/*
 #ifndef ACT_EXPL_CONTEXT_H
 class RGE_Master_Moving_Object;
 class RGE_Static_Object;
@@ -45,6 +47,7 @@ public:
     int work(RGE_Static_Object* param_1, float param_2, float param_3, float param_4);
 };
 #endif
+*/
 
 int RGE_Action_Explore::work(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) {
     if ((param_2 < 0.0f) || (param_3 < 0.0f)) {

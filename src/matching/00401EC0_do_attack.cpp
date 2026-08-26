@@ -1,3 +1,5 @@
+#include "../../include/act_atak_context.h"
+/*
 #ifndef ACT_ATAK_CONTEXT_H
 class RGE_Static_Object;
 
@@ -163,6 +165,7 @@ public:
     void do_attack(void);
 };
 #endif
+*/
 
 void RGE_Action_Attack::do_attack(void)
 {

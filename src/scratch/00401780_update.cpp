@@ -67,6 +67,8 @@
 //   782-byte body. All 31 calls remain aligned. The PDB prefix does not change
 //   the sparse-switch basin or the 434-byte positional drift.
 
+#include "../../include/act_atak_context.h"
+/*
 #ifndef ACT_ATAK_CONTEXT_H
 typedef unsigned char uchar;
 
@@ -261,6 +263,7 @@ public:
     void do_attack();
 };
 #endif
+*/
 
 uchar RGE_Action_Attack::update()
 {

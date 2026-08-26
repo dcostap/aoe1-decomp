@@ -31,6 +31,7 @@ class RGE_Visible_Map;
 class TDrawArea;
 class UnitAIModule;
 class LOSTBL;
+struct XYZPoint;
 
 void rge_read(int handle, void* buffer, int count);
 void rge_write(int handle, void* buffer, int count);
@@ -302,60 +303,60 @@ public:
     virtual float getSpeed();
     virtual float getAngle();
     virtual float maximumSpeed();                   // +0xFC
-    virtual void vpad100();
-    virtual void vpad104();
-    virtual void vpad108();
-    virtual void vpad10C();
-    virtual void vpad110();
-    virtual void vpad114();
-    virtual void vpad118();
-    virtual void vpad11C();
-    virtual void vpad120();
-    virtual void vpad124();
-    virtual void vpad128();
-    virtual void vpad12C();
-    virtual void vpad130();
-    virtual void vpad134();
-    virtual void vpad138();
-    virtual void vpad13C();
-    virtual void vpad140();
-    virtual void vpad144();
+    virtual float rateOfFire();
+    virtual float damageCapability(RGE_Static_Object*);
+    virtual float damageCapability();
+    virtual float weaponRange();
+    virtual float minimumWeaponRange();
+    virtual int passableTile(float, float, int);
+    virtual uchar facetToNextWaypoint();
+    virtual int currentTargetID();
+    virtual float currentTargetX();
+    virtual float currentTargetY();
+    virtual float currentTargetZ();
+    virtual void setWaitingToMove(uchar);
+    virtual uchar waitingToMove();
+    virtual uchar actionState();
+    virtual uchar keepGatheringWhenObjectIsOut(int);
+    virtual uchar produceWhenKilledBy(int);
+    virtual uchar useSameZoneDropsite();
+    virtual void logDebug(const char*, ...);
     virtual void notify(int, int, int, long, long, long); // +0x148
-    virtual void vpad14C();
-    virtual void vpad150();
-    virtual void vpad154();
-    virtual void vpad158();
-    virtual void vpad15C();
-    virtual void vpad160();
-    virtual void vpad164();
-    virtual void vpad168();
-    virtual void vpad16C();
-    virtual void vpad170();
-    virtual void vpad174();
-    virtual void vpad178();
-    virtual void vpad17C();
-    virtual void vpad180();
-    virtual void vpad184();
-    virtual void vpad188();
-    virtual void vpad18C();
-    virtual void vpad190();
-    virtual void vpad194();
-    virtual void vpad198();
-    virtual void vpad19C();
-    virtual void vpad1A0();
-    virtual void vpad1A4();
-    virtual void vpad1A8();
-    virtual void vpad1AC();
-    virtual void vpad1B0();
-    virtual void vpad1B4();
-    virtual void vpad1B8();
-    virtual void vpad1BC();
-    virtual void vpad1C0();
-    virtual void vpad1C4();
-    virtual void vpad1C8();
-    virtual void vpad1CC();
-    virtual void vpad1D0();
-    virtual void vpad1D4();
+    virtual int attack(float, float, float, int);
+    virtual int attack(int, int);
+    virtual int moveTo(float, float, float, float, int);
+    virtual int moveTo(int, float, int);
+    virtual int moveTo(int, int);
+    virtual int moveAwayFrom(int, int);
+    virtual int hunt(int, int);
+    virtual int gather(int, int);
+    virtual int convert(int, int);
+    virtual int repair(int, int);
+    virtual int build(int, int);
+    virtual int trade(int, int);
+    virtual int explore(int, int, int);
+    virtual int enter(int, int);
+    virtual int unload(int, float, float, float);
+    virtual int transport(float, float, float, int);
+    virtual int stopAction();
+    virtual int pause();
+    virtual int canPath(int, float, float*, int, int, int);
+    virtual int canPath(XYZPoint, float, int, float*, int, int, int);
+    virtual int canBidirectionPath(int, int, float, float*, int, int, int);
+    virtual int canPathWithObstructions(int, float, float*, int, int, int, void*);
+    virtual int canPathWithAdditionalPassability(XYZPoint, float, int, float*, int, int, int, int, int);
+    virtual int findFirstTerrainAlongExceptionPath(int, float*, float*);
+    virtual int canLinePath(int, int, int, int, float, int);
+    virtual int canLinePath(XYPoint*, XYPoint*, float, XYPoint*, int);
+    virtual int firstTileAlongLine(XYPoint*, XYPoint*, XYPoint*, int, int, int);
+    virtual XYZBYTEPoint* userDefinedWaypoint(int);
+    virtual int addUserDefinedWaypoint(XYZBYTEPoint*, int);
+    virtual void removeAllUserDefinedWaypoints(int);
+    virtual void removeUserDefinedWaypoint(int);
+    virtual int numberUserDefinedWaypoints();
+    virtual Path* findAvoidancePath(XYZPoint*, float, int);
+    virtual long get_action_checksum();
+    virtual long get_waypoint_checksum();
     // VC5 reverses adjacent overload entries in the vtable.
     virtual int setup(RGE_Master_Static_Object*, RGE_Player*, float, float, float); // +0x1DC
     virtual int setup(int, RGE_Game_World*);                         // +0x1D8
@@ -464,6 +465,15 @@ public:
     virtual ~RGE_Action_Object();
     virtual void work2(RGE_Static_Object*, float, float, float, uchar); // +0x1F8
     virtual void set_task(short);                                    // +0x1FC
+    virtual void setTaskByTaskID(int);                               // +0x200
+    virtual void set_action(RGE_Action*);                            // +0x204
+    virtual void set_only_action(RGE_Action*);                       // +0x208
+    virtual void set_end_action(RGE_Action*);                        // +0x20C
+    virtual RGE_Task* getTask(RGE_Static_Object*, float, float, float); // +0x210
+
+protected:
+    virtual int setup(RGE_Master_Action_Object*, RGE_Player*, float, float, float); // +0x214
+    virtual RGE_Action_List* create_action_list();                   // +0x218
 
     uchar waiting;                   // +0x180
     uchar pad_181[3];
@@ -477,14 +487,7 @@ public:
 class RGE_Combat_Object : public RGE_Action_Object {
 public:
     virtual ~RGE_Combat_Object();
-    virtual void vpad200();
-    virtual void vpad204();
-    virtual void vpad208();
-    virtual void vpad20C();
-    virtual void vpad210();
-    virtual void vpad214();
-    virtual void vpad218();
-    virtual void vpad21C();
+    virtual uchar area_attack(float, float, float, RGE_Combat_Object*, RGE_Static_Object*); // +0x21C
     // VC5 reverses these adjacent overloads in the vtable.
     virtual void attack(RGE_Static_Object*, RGE_Combat_Object*);     // +0x224
     virtual void attack(float, float, float, RGE_Combat_Object*);    // +0x220
@@ -496,12 +499,12 @@ public:
 class RGE_Player {
 public:
     virtual ~RGE_Player();
-    virtual void vpad04();
-    virtual void vpad08();
-    virtual void vpad0C();
-    virtual void vpad10();
-    virtual void vpad14();
-    virtual void vpad18();
+    virtual void set_game_status(uchar);
+    virtual void do_resign(int);
+    virtual void changeToHumanPlayer();
+    virtual void changeToComputerPlayer();
+    virtual char* aiStatus(int);
+    virtual int isEnemy(int);
     virtual int isAlly(int);         // +0x1C
 
     char gap_04[0x34];
@@ -641,6 +644,7 @@ public:
     virtual uchar update();
     virtual int stop();
     virtual int work(RGE_Static_Object*, float, float, float);
+protected:
     virtual void copy_obj_sprites(RGE_Master_Action_Object*, RGE_Task*, RGE_Task*);
     virtual void set_state(uchar);
 
