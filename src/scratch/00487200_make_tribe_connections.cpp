@@ -23,20 +23,35 @@
 // - A byte-offset row-table cursor reduced the result to 1172 bytes and 905
 //   differing bytes. Main review rejected that metric-only cursor and kept
 //   typed row ownership. The frame remains four bytes short without padding.
+// - Binary assembly uses integer bounds for the random water-area loops;
+//   changing in_zone from float to long removed an x87 sequence and restored
+//   the 1172-byte size. The frame remains 0xDC versus the original 0xE0.
+// - Repeating the inner water-tile member read improved resynchronization
+//   (edit cost 621 versus 708) without changing the strict 906-byte drift.
+// - A typed row-table pointer restored the 0xE0 frame but increased strict
+//   drift and was rejected. Explicit pop-result, zero-local, declaration-order,
+//   and next-row-local probes were neutral or worse and were restored.
 
 #include "..\..\include\rmm_shal_context.h"
 
 void RGE_RMM_Shallows_Generator::make_tribe_connections(long param_1, long param_2) {
     int iVar2;
+    int iVar4;
     long lVar6;
+    float* pfVar7;
     long lVar8;
     int iVar9;
-    long ty2, y, end_x, tx1, end_y, ty, done, tx2;
-    float in_zone;
+    long y;
+    long ty2;
+    long end_x;
+    long tx1;
+    long end_y;
+    long ty;
+    long done;
+    long tx2;
+    long in_zone;
     Map_Stack stack;
     float terrain[40];
-    float* pfVar7;
-    long iVar4;
     terrain[1] = 0.0f;
     end_x = this->info.shallows[param_1].x;
     done = this->info.shallows[param_1].y;
@@ -160,10 +175,8 @@ void RGE_RMM_Shallows_Generator::make_tribe_connections(long param_1, long param
                         iVar9 = end_y;
                         done = lVar8;
                         do {
-                            RGE_Tile* row4 = this->map_row_offset[iVar2];
-                            unsigned char tile_check =
-                                row4[iVar9].terrain & 0x1F;
-                            if (tile_check == 1 || tile_check == 0x16) {
+                            if ((this->map_row_offset[iVar2][iVar9].terrain & 0x1F) == 1 ||
+                                (this->map_row_offset[iVar2][iVar9].terrain & 0x1F) == 0x16) {
                                 this->push_stack((Map_Stack*)&stack.y, lVar6, lVar8, 0.0f, 0.0f);
                                 lVar8 = done;
                             }
