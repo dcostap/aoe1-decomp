@@ -20,6 +20,8 @@
 // 17: changing object_group from int to its proven short field width grew code to 609 bytes and worsened diff to 575; restored the clean 604-byte source.
 // 18: used direct target->master_obj expressions for the group and id, then declared the actor after the group load; this preserves the target-master reload and late actor lifetime from the oracle. Exact 595-byte match.
 // 19: Policy cleanup replaced placeholder slots and the raw vtable field with named period class declarations. The authentic TU keeps this body observed: it has 375 differing bytes and one boundary escape.
+// 20: Shared TU context exposes notification at vslot +0x40. Renaming five event calls restores their targets; standalone output is exact.
+// 21: Candidate TU still mismatches because shared RGE_Player::attributes is +0x108, while this body proves the original +0x50 offset.
 
 typedef unsigned char uchar;
 
@@ -163,18 +165,18 @@ void TRIBE_Action_Convert::first_in_stack(uchar param_1)
             }
             target_id = this->target_obj->master_obj->id;
             if (target_id == 0x6d) {
-                rge_base_game->notify(0x79, (int)this->obj->owner->id, 0, 0, 0);
+                rge_base_game->notification(0x79, (int)this->obj->owner->id, 0, 0, 0);
                 return;
             }
             if (target_id == 0x114) {
-                rge_base_game->notify(0x7a, (int)this->obj->owner->id, 0, 0, 0);
+                rge_base_game->notification(0x7a, (int)this->obj->owner->id, 0, 0, 0);
                 return;
             }
             return;
         }
         if (object->attribute_amount_held < 100.0) {
             this->set_state(0x0d);
-            rge_base_game->notify(0x76, (int)this->obj->owner->id, 0, 0, 0);
+            rge_base_game->notification(0x76, (int)this->obj->owner->id, 0, 0, 0);
             return;
         }
         if (object_group == 3) {
@@ -192,7 +194,7 @@ void TRIBE_Action_Convert::first_in_stack(uchar param_1)
             } else {
                 this->set_state(0x0d);
             }
-            rge_base_game->notify(0x77, (int)this->obj->owner->id, 0, 0, 0);
+            rge_base_game->notification(0x77, (int)this->obj->owner->id, 0, 0, 0);
             return;
         }
         if (object_group == 3 && object->owner->attributes[0x1c] <= 0.0f) {
@@ -201,7 +203,7 @@ void TRIBE_Action_Convert::first_in_stack(uchar param_1)
             } else {
                 this->set_state(0x0d);
             }
-            rge_base_game->notify(0x78, (int)this->obj->owner->id, 0, 0, 0);
+            rge_base_game->notification(0x78, (int)this->obj->owner->id, 0, 0, 0);
             return;
         }
     }
