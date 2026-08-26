@@ -57,6 +57,20 @@
 // and comma-expression tests did not remove the seven-byte prologue shift.
 // A seven-variant prologue lab also found no size/frame-eligible or exact form.
 // The four-slot scratch array remains the smallest body model with stable blocks.
+// TU captain pass: the context gate proves color.cpp as the PDB module, source
+// order 23 -> 32 -> 34 -> 43-45 -> 67 with fallback 36-39, and one free
+// __cdecl owner at 00423EE0-004240A0. Exact color.cpp anchors 00424350,
+// 00424440, 004244F0, 004245F0, 004247A0, and 004247B0 all remain MATCH in
+// the authentic wrapper. The class owner for this function is unknown.
+// TU captain probes: declaration initializers, register-qualified destination,
+// int delta, reordered delta assignment, separate intense/local4 storage, and
+// entry-base byte cursors did not repair the standalone boundary. The separate
+// storage and entry-base forms worsened frame or body shape and were restored.
+// Grouped validation is authoritative: the six exact anchors remain MATCH with
+// zero relocation or boundary errors. The two accepted-drift functions remain
+// observed; this function emits 461 bytes versus 449 with 417 differing bytes
+// and two boundary escapes in the full color.cpp wrapper. No source-backed
+// repair removes this structural overflow without losing the stable body model.
 
 #ifndef COLOR_TU_CONTEXT
 struct tagPALETTEENTRY { unsigned char peRed, peGreen, peBlue, peFlags; };
