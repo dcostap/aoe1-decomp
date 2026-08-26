@@ -48,11 +48,11 @@ public:
     int terrain_passability_rules_num;
     RGE_Map* map;
 
-    int findClosestPointInTerrainType(XYPoint point, XYPoint* out, int a, int b, int c);
+    int findClosestPointInTerrainType(XYPoint point, XYPoint& out, int a, int b, int c);
 };
 #endif
 
-int RGE_Zone_Map::findClosestPointInTerrainType(XYPoint point, XYPoint* out, int a, int b, int c)
+int RGE_Zone_Map::findClosestPointInTerrainType(XYPoint point, XYPoint& out, int a, int b, int c)
 {
     int x_value = point.x;
     int y_value = point.y;
@@ -91,8 +91,8 @@ int RGE_Zone_Map::findClosestPointInTerrainType(XYPoint point, XYPoint* out, int
                         int distance = c * c + y_distance * y_distance;
                         if (best == -1 || best > distance) {
                             best = distance;
-                            out->x = min.x;
-                            out->y = y;
+                            out.x = min.x;
+                            out.y = y;
                         }
                     }
                     ++y;

@@ -638,12 +638,12 @@ __declspec(dllimport) int __stdcall DrawTextA(HDC, LPCSTR, int, LPRECT, UINT);
 
 class TRIBE_Panel_Object : public TPanel {
 public:
-    typedef int ValueType;
-    enum {
+    enum ValueType {
         ValueTypeNumber,
         ValueTypeBonus,
         ValueTypeCompare,
-        ValueTypePercent
+        ValueTypePercent,
+        ValueTypeNone
     };
 
     void* font;
@@ -703,7 +703,11 @@ public:
     TRIBE_Panel_Object(TDrawArea*, TPanel*, void*, long, long, TShape*,
                        TShape**, TRIBE_Player*);
     virtual void draw();
+
+protected:
     virtual void draw_item(int, int, ValueType, int, int);
+
+public:
     virtual long handle_idle();
     virtual long mouse_left_down_action(long, long, int, int);
     virtual long mouse_left_up_action(long, long, int, int);
@@ -713,6 +717,8 @@ public:
     void set_mode(unsigned char);
     unsigned char get_mode();
     void draw_score();
+
+protected:
     void save_object_info();
 };
 

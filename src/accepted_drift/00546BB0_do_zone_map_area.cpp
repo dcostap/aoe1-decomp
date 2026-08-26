@@ -31,7 +31,7 @@
 //     indices, and canonical RGE_Map/RGE_Zone_Map context were rechecked;
 //     only the direct expressions and named index changed codegen, both worse.
 // 15: restored the decorated C++ helper ABI: zone_push takes long values and
-//     zone_pop takes long pointers; made this private method's owning symbol
+//     zone_pop takes long references; made this private method's owning symbol
 //     match the original AAEX spelling. Bytes remain the clean 663-byte result.
 // Continuation pass: full RGE_Map field/vtable context, RGE_Zone_Map destructor
 // context, char row-pointer casts, plain terrain byte masking, combined
@@ -61,7 +61,7 @@
 struct Zone_Queue;
 extern double DAT_00577a20;
 void __cdecl zone_push(Zone_Queue** head, Zone_Queue** tail, long x, long y);
-unsigned char __cdecl zone_pop(Zone_Queue** head, Zone_Queue** tail, long* x, long* y);
+unsigned char __cdecl zone_pop(Zone_Queue** head, Zone_Queue** tail, long& x, long& y);
 
 void RGE_Zone_Map::do_zone_map_area(long x, long y, unsigned char passable, unsigned char zone)
 {
@@ -114,5 +114,5 @@ void RGE_Zone_Map::do_zone_map_area(long x, long y, unsigned char passable, unsi
                 }
             }
         }
-    } while (zone_pop(&zone_end, &zone_queue, &x, &y));
+    } while (zone_pop(&zone_end, &zone_queue, x, y));
 }

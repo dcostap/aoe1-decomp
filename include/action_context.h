@@ -231,8 +231,11 @@ public:
     virtual RGE_Static_Object* get_target_obj2();
     virtual void set_target_obj(RGE_Static_Object*);
     virtual void set_target_obj2(RGE_Static_Object*);
+
+protected:
     virtual void set_state(unsigned char);
 
+public:
     short action_type;
     char gap_06[2];
     RGE_Action_Object* obj;

@@ -61,7 +61,7 @@ public:
     int withinRange(XYPoint point, XYPoint from, float range);
     int withinRange(uchar zone, XYPoint from, float range);
     int numberTilesInZone(uchar zone);
-    int findClosestPointInTerrainType(XYPoint point, XYPoint* out,
+    int findClosestPointInTerrainType(XYPoint point, XYPoint& out,
                                       int a, int b, int c);
 
 private:

@@ -100,7 +100,7 @@ public:
                                        void* context, unsigned long flags) = 0;
 };
 
-class IDirectPlay3 : public IDirectPlay2 {
+struct IDirectPlay3 : public IDirectPlay2 {
 };
 
 class IDirectPlayLobby : public IUnknown {

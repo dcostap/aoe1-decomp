@@ -6,6 +6,8 @@
 //   TDrawArea/TShape surfaces, and the ordinary four-way ValueType formatter.
 // - bonus arm: spelling the comparison as `value2 > value` preserves the
 //   original value2-first load/compare order; exact match.
+// - ABI repair: the period nested ValueType enum and protected virtual access
+//   produce the PDB-qualified decorated owner in the grouped translation unit.
 
 #ifndef AOE1_TPNL_OBJ_CONTEXT_H
 #include "../../include/game_globals.h"
@@ -64,7 +66,8 @@ public:
         ValueTypeNumber,
         ValueTypeBonus,
         ValueTypeCompare,
-        ValueTypePercent
+        ValueTypePercent,
+        ValueTypeNone
     };
 
     void* font;

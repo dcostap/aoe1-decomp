@@ -6009,7 +6009,7 @@
         "00407910": "?work@RGE_Action@@UAEHPAVRGE_Static_Object@@MMM@Z",
         "00407920": "?attack_response@RGE_Action@@UAEEPAVRGE_Static_Object@@@Z",
         "00407930": "?relation_response@RGE_Action@@UAEEJE@Z",
-        "00407940": "?set_state@RGE_Action@@UAEXE@Z",
+        "00407940": "?set_state@RGE_Action@@MAEXE@Z",
         "00407950": "?inside_obj_update@RGE_Action@@UAEEXZ",
         "00407990": "?idle_update@RGE_Action@@UAEEXZ",
         "004079D0": "?update@RGE_Action@@UAEEXZ",
@@ -6562,8 +6562,8 @@
         "0051B140": "?set_object@TRIBE_Panel_Object@@QAEXPAVRGE_Static_Object@@@Z",
         "0051B160": "?set_mode@TRIBE_Panel_Object@@QAEXE@Z",
         "0051B180": "?get_mode@TRIBE_Panel_Object@@QAEEXZ",
-        "0051C220": "?draw_item@TRIBE_Panel_Object@@UAEXHHHHH@Z",
-        "0051CA10": "?save_object_info@TRIBE_Panel_Object@@QAEXXZ",
+        "0051C220": "?draw_item@TRIBE_Panel_Object@@MAEXHHW4ValueType@1@HH@Z",
+        "0051CA10": "?save_object_info@TRIBE_Panel_Object@@IAEXXZ",
         "0051CC80": "?mouse_left_down_action@TRIBE_Panel_Object@@UAEJJJHH@Z",
         "0051CC90": "?mouse_left_up_action@TRIBE_Panel_Object@@UAEJJJHH@Z"
       }

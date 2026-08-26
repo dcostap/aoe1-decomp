@@ -612,8 +612,20 @@ extern RGE_Base_Game* rge_base_game;
 
 class TRIBE_Panel_Object : public TPanel {
 public:
+    enum ValueType {
+        ValueTypeNumber = 0,
+        ValueTypeBonus = 1,
+        ValueTypeCompare = 2,
+        ValueTypePercent = 3,
+        ValueTypeNone = 4
+    };
+
     virtual void draw();
-    virtual void draw_item(int, int, int, int, int);
+
+protected:
+    virtual void draw_item(int, int, ValueType, int, int);
+
+public:
     void draw_score();
 
     void* font;
@@ -797,33 +809,33 @@ void TRIBE_Panel_Object::draw()
         level == 7 || level == 9) {
         if (level == 3 || level == 4) {
             this->game_obj->get_weapon(cur_val, orig_val);
-            this->draw_item(0, 7, 1, orig_val, cur_val);
+            this->draw_item(0, 7, ValueTypeBonus, orig_val, cur_val);
             row = 1;
         }
 
         this->game_obj->get_armor(cur_val, orig_val);
         if (cur_val > 0) {
-            this->draw_item(row, 8, 1, orig_val, cur_val);
+            this->draw_item(row, 8, ValueTypeBonus, orig_val, cur_val);
             ++row;
         }
 
         this->game_obj->get_pierce_armor(cur_val, orig_val);
         if (cur_val > 0) {
-            this->draw_item(row, 10, 1, orig_val, cur_val);
+            this->draw_item(row, 10, ValueTypeBonus, orig_val, cur_val);
             ++row;
         }
 
         if (level == 4 || level == 6) {
             this->game_obj->get_weapon_range(cur_fval, orig_fval);
             if (cur_fval > DAT_00576dac) {
-                this->draw_item(row, 6, 1,
+                this->draw_item(row, 6, ValueTypeBonus,
                                 (int)orig_fval, (int)cur_fval);
                 ++row;
             }
         }
 
         if (level == 6) {
-            this->draw_item(row, 9, 3,
+            this->draw_item(row, 9, ValueTypePercent,
                             (int)(this->game_obj->attribute_amount_held -
                                   DAT_00576d84), 0);
             ++row;
@@ -835,7 +847,7 @@ void TRIBE_Panel_Object::draw()
 
         if (level == 7) {
             this->draw_item(
-                row, 4, 2,
+                row, 4, ValueTypeCompare,
                 this->game_obj->objects->number_of_objects,
                 this->game_obj->master_obj->obj_max);
             this->draw_finish();
@@ -849,7 +861,7 @@ void TRIBE_Panel_Object::draw()
                                        DAT_00576d84);
             else
                 cur_val = 0;
-            this->draw_item(row, 2, 0, cur_val, 0);
+            this->draw_item(row, 2, ValueTypeNumber, cur_val, 0);
             this->draw_finish();
             return;
         }
@@ -880,11 +892,11 @@ void TRIBE_Panel_Object::draw()
             }
 
             if ((int)(this->game_obj->attribute_amount_held - DAT_00576d84) > 0) {
-                this->draw_item(row, 3, 0,
+                this->draw_item(row, 3, ValueTypeNumber,
                                 (int)(this->game_obj->attribute_amount_held -
                                       DAT_00576d84), 0);
             } else {
-                this->draw_item(row, item_type, 4, -1, 0);
+                this->draw_item(row, item_type, ValueTypeNone, -1, 0);
             }
             this->draw_finish();
             return;
@@ -917,7 +929,7 @@ void TRIBE_Panel_Object::draw()
         default:
             goto invalid_item;
         }
-        this->draw_item(row, item_type, 0,
+        this->draw_item(row, item_type, ValueTypeNumber,
                         (int)(this->game_obj->attribute_amount_held -
                               DAT_00576d84), 0);
         goto finish;
@@ -948,7 +960,7 @@ void TRIBE_Panel_Object::draw()
             goto invalid_item;
         }
         this->draw_item(
-            0, item_type, 0,
+            0, item_type, ValueTypeNumber,
             (int)(this->game_obj->attribute_amount_held - DAT_00576d84),
             0);
         this->draw_finish();
@@ -972,12 +984,12 @@ void TRIBE_Panel_Object::draw()
                  (work_type != 0x67 && work_type != 0x66))) {
                 bldg_obj->get_weapon(cur_val, orig_val);
                 if (cur_val > 0) {
-                    this->draw_item(0, 7, 1, orig_val, cur_val);
+                    this->draw_item(0, 7, ValueTypeBonus, orig_val, cur_val);
                     row = 1;
                 }
                 bldg_obj->get_weapon_range(cur_fval, orig_fval);
                 if ((int)cur_fval > 0) {
-                    this->draw_item(row, 6, 1,
+                    this->draw_item(row, 6, ValueTypeBonus,
                                     (int)orig_fval, (int)cur_fval);
                     ++row;
                 }
@@ -990,7 +1002,7 @@ void TRIBE_Panel_Object::draw()
 
                 if (this->game_obj->object_state == 0 ||
                     work_type == 0x67 || work_type == 0x66) {
-                    this->draw_item(row, 9, 3, progress, 0);
+                    this->draw_item(row, 9, ValueTypePercent, progress, 0);
                     ++row;
                 } else {
                     if (this->game_obj->master_obj->id == 0x46) {
@@ -1000,7 +1012,7 @@ void TRIBE_Panel_Object::draw()
                         if (max_value < value)
                             value = max_value;
                         int current_value = (int)this->player->attributes[11];
-                        this->draw_item(row, 4, 2, current_value, value);
+                        this->draw_item(row, 4, ValueTypeCompare, current_value, value);
                         ++row;
                     }
 
@@ -1008,7 +1020,7 @@ void TRIBE_Panel_Object::draw()
                         RGE_Action* action = bldg_obj->actions->get_action();
                         if (action != 0)
                             this->draw_item(
-                                row, 2, 0,
+                                row, 2, ValueTypeNumber,
                                 (int)(action->field_2c +
                                       this->game_obj->attribute_amount_held -
                                       DAT_00576d84),
@@ -1068,12 +1080,12 @@ void TRIBE_Panel_Object::draw()
 
                 if (this->game_obj->master_obj->id == 0x2d) {
                     this->draw_item(
-                        row, item_type, 0,
+                        row, item_type, ValueTypeNumber,
                         (int)(this->game_obj->owner->attributes[9] -
                               DAT_00576d84), 0);
                 } else {
                     this->draw_item(
-                        row, item_type, 0,
+                        row, item_type, ValueTypeNumber,
                         (int)(this->game_obj->attribute_amount_held -
                               DAT_00576d84), 0);
                 }
@@ -1107,7 +1119,8 @@ resource_done:
                 if (distance > DAT_00576da8)
                     distance = DAT_00576da8;
                 this->draw_item(
-                    row, 3, 2, (int)(distance - DAT_00576d84), 0x14);
+                    row, 3, ValueTypeCompare,
+                    (int)(distance - DAT_00576d84), 0x14);
             }
         }
     }

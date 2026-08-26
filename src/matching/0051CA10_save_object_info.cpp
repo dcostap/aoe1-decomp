@@ -13,6 +13,8 @@
 //   reload order in the final farm total; the source remains typed and has no
 //   raw offset or register-forcing plumbing.
 // - exact: 620/620 bytes, 15/15 ordered calls, frame 0xC, 171 instructions.
+// - ABI repair: protected access produces the PDB-qualified decorated owner
+//   in the grouped translation unit.
 
 #ifndef AOE1_TPNL_OBJ_CONTEXT_H
 class RGE_Master_Static_Object;
