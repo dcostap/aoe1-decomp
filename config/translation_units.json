@@ -4084,6 +4084,7 @@
         "004CCBA0": "src/matching/004CCBA0_TRIBE_Action_Artifact.cpp",
         "004CCC00": "src/matching/004CCC00_TRIBE_Action_Artifact.cpp",
         "004CCC30": "src/matching/004CCC30_TRIBE_Action_Artifact.cpp",
+        "004CCC70": "src/matching/004CCC70_first_in_stack.cpp",
         "004CCCB0": "src/matching/004CCCB0_set_state.cpp",
         "004CCDF0": "src/matching/004CCDF0_update.cpp",
         "004CCF30": "src/matching/004CCF30_check_ownership.cpp",
@@ -4095,7 +4096,15 @@
       "symbols": {
         "004CCBA0": "??0TRIBE_Action_Artifact@@QAE@HPAVRGE_Action_Object@@@Z",
         "004CCC00": "??0TRIBE_Action_Artifact@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@PAVRGE_Static_Object@@@Z",
-        "004CCC30": "??0TRIBE_Action_Artifact@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@MMM@Z"
+        "004CCC30": "??0TRIBE_Action_Artifact@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@MMM@Z",
+        "004CCC70": "?first_in_stack@TRIBE_Action_Artifact@@UAEXE@Z",
+        "004CCCB0": "?set_state@TRIBE_Action_Artifact@@MAEXE@Z",
+        "004CCDF0": "?update@TRIBE_Action_Artifact@@UAEEXZ",
+        "004CCF30": "?check_ownership@TRIBE_Action_Artifact@@IAEPAVRGE_Player@@XZ",
+        "004CD120": "?stop@TRIBE_Action_Artifact@@MAEHXZ",
+        "004CD130": "?move_to@TRIBE_Action_Artifact@@MAEHPAVRGE_Static_Object@@MMM@Z",
+        "004CD160": "?work@TRIBE_Action_Artifact@@MAEHPAVRGE_Static_Object@@MMM@Z",
+        "004CD1A0": "?reset_owner@TRIBE_Action_Artifact@@QAEXXZ"
       }
     },
     {
