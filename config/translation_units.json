@@ -33,6 +33,7 @@
         "005468C0": "src/matching/005468C0_RGE_Zone_Map.cpp",
         "005469C0": "src/matching/005469C0_RGE_Zone_Map.cpp",
         "00546A00": "src/matching/00546A00_save.cpp",
+        "00546BB0": "src/matching/00546BB0_do_zone_map_area.cpp",
         "00546E50": "src/matching/00546E50_check_info.cpp",
         "00546EB0": "src/matching/00546EB0_get_zone_info.cpp",
         "00546ED0": "src/matching/00546ED0_withinRange.cpp",
@@ -60,7 +61,8 @@
         "005473B0": "?get_zone_map@RGE_Zone_Map_List@@QAEPAVRGE_Zone_Map@@PAMJAAH@Z",
         "005474B0": "?get_zone_map@RGE_Zone_Map_List@@QAEPAVRGE_Zone_Map@@J@Z",
         "005474D0": "?delete_zone_maps@RGE_Zone_Map_List@@QAEXXZ",
-        "005468C0": "??0RGE_Zone_Map@@QAE@PAVRGE_Map@@PAMJ@Z"
+        "005468C0": "??0RGE_Zone_Map@@QAE@PAVRGE_Map@@PAMJ@Z",
+        "00546BB0": "?do_zone_map_area@RGE_Zone_Map@@AAEXJJEE@Z"
       }
     },
     {
