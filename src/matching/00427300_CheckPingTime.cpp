@@ -15,8 +15,8 @@ public:
     int Multiplayer;             // +0x10E4
     char gap_10E8[0x12D8 - 0x10E8];
     short MaxGamePlayers;        // +0x12D8
-    char gap_12DA[0x1398 - 0x12DA];
-    unsigned long LastTXPing[1]; // +0x1398
+    char gap_12DA[0x1394 - 0x12DA];
+    unsigned long LastTXPing[10]; // +0x1394
 
     int IsPlayerHuman(int playerIndex);
     void TXPing(int playerIndex);
@@ -39,7 +39,7 @@ void TCommunications_Handler::CheckPingTime(int param_1) {
     if ((unsigned int)(unsigned short)this->MaxGamePlayers < i)
         return;
 
-    unsigned long* lastPing = this->LastTXPing;
+    unsigned long* lastPing = this->LastTXPing + 1;
     do {
         if (this->IsPlayerHuman(i) && i != (unsigned int)this->Me) {
             unsigned long elapsed = currentTime - *lastPing;

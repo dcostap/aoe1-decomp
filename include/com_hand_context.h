@@ -2,6 +2,7 @@
 #define AOE1_COM_HAND_CONTEXT_H
 
 #include <windows.h>
+#include "directplay4a_context.h"
 
 #ifndef COM_HAND_CONTEXT_SCALAR_ALIASES
 #define COM_HAND_CONTEXT_SCALAR_ALIASES
@@ -197,28 +198,6 @@ struct RGE_Base_Game {
     int IsLobbyLaunched();
 };
 
-class IDirectPlay4A {
-public:
-    virtual void v00(); virtual void v04(); virtual void v08(); virtual void v0C();
-    virtual void v10(); virtual void v14(); virtual void v18(); virtual void v1C();
-    virtual void v20(); virtual void v24(); virtual void v28(); virtual void v2C();
-    virtual void v30(); virtual void v34(); virtual void v38(); virtual void v3C();
-    virtual void v40();
-    virtual long __stdcall v44(int id, void* count);
-    virtual void v48(); virtual void v4C(); virtual void v50(); virtual void v54();
-    virtual void v58(); virtual void v5C(); virtual void v60();
-    virtual long __stdcall Send(unsigned long from, unsigned long to,
-                                unsigned long flags, void* data,
-                                unsigned long size);
-    virtual long __stdcall Receive(unsigned long* from, unsigned long* to,
-                                   unsigned long flags, void* data,
-                                   unsigned long* size);
-    long __stdcall GetMessageCount(unsigned long id, unsigned long* count);
-    long __stdcall SetPlayerName(unsigned long player, void* name, unsigned long flags);
-    long __stdcall Open(void* a, void* b, unsigned long c);
-    long __stdcall Open(void* desc, unsigned long flags);
-};
-
 extern IDirectPlay4A* DAT_0062c5ec;
 extern unsigned long DAT_0062cf04;
 extern RGE_Base_Game* rge_base_game;
@@ -235,17 +214,6 @@ struct IDirectPlayVtbl {
 
 struct IDirectPlay {
     IDirectPlayVtbl* vtbl;
-};
-
-struct DirectPlay;
-struct DirectPlayVtbl {
-    char gap_00[0x24];
-    long (__stdcall* destroyMyPlayer)(DirectPlay* self, int playerId);
-    long (__stdcall* Send)(void* self, unsigned long from, unsigned long to,
-                           unsigned long flags, void* data, unsigned long size);
-};
-struct DirectPlay {
-    DirectPlayVtbl* lpVtbl;
 };
 
 struct DPVtbl {

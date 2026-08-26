@@ -147,9 +147,7 @@
 #undef dplay
 #undef log_obj
 #include "matching/00426FB0_ShutdownGameMessages.cpp"
-#define GetMessageCount v44
 #include "matching/00426FC0_GetDPLAYMessages.cpp"
-#undef GetMessageCount
 #include "matching/00427300_CheckPingTime.cpp"
 #include "matching/00427390_TXPing.cpp"
 #define debug_log com_hand_ping_debug_log

@@ -1,20 +1,8 @@
-// probe 3: COM-style vtable surface for the DirectPlay object at 62C5EC; self player id at 62CF04
-
-struct DirectPlay;
+// Use the canonical DirectPlay interface and self-player globals.
 
 #if !defined(COM_HAND_TU_CONTEXT)
-struct DirectPlayVtbl {
-    char gap_00[0x24];
-    long (__stdcall* destroyMyPlayer)(DirectPlay* self, int playerId);
-};
-#endif // COM_HAND_TU_CONTEXT
-
-
-#if !defined(COM_HAND_TU_CONTEXT)
-struct DirectPlay {
-    DirectPlayVtbl* lpVtbl;
-};
-#endif // COM_HAND_TU_CONTEXT
+#include "../../include/directplay4a_context.h"
+#endif
 
 #if !defined(COM_HAND_TU_CONTEXT)
 class RGE_Comm_Error {
@@ -38,23 +26,23 @@ protected:
 #endif // COM_HAND_TU_CONTEXT
 
 
-extern DirectPlay* g_comm_player_bits; // 62C5EC
-extern int g_self_player;              // 62CF04
+extern IDirectPlay4A* DAT_0062c5ec;
+extern unsigned long DAT_0062cf04;
 
 long TCommunications_Handler::DestroyMyPlayer()
 {
     long result;
 
-    if (g_comm_player_bits == 0)
+    if (DAT_0062c5ec == 0)
         return 0;
 
-    if (g_self_player == 0)
+    if (DAT_0062cf04 == 0)
         return 0;
 
-    result = g_comm_player_bits->lpVtbl->destroyMyPlayer(g_comm_player_bits, g_self_player);
+    result = DAT_0062c5ec->DestroyPlayer(DAT_0062cf04);
     this->Err->ShowReturn(result, (char*)0x582FA8);
     if (result == 0) {
-        g_self_player = result;
+        DAT_0062cf04 = result;
         this->Me = result;
     }
     return result;

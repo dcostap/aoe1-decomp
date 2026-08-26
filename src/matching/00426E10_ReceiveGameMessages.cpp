@@ -147,11 +147,12 @@ void TCommunications_Handler::ReceiveGameMessages()
         this->ExecuteIncoming();
     }
 
-    int current_dplay_id = dplay_id;
+    unsigned long current_dplay_id = dplay_id;
     if (current_dplay_id != 0) {
         IDirectPlay4A* current_dplay = dplay;
-        int wait_count = zero;
-        long result = current_dplay->v44(current_dplay_id, &wait_count);
+        unsigned long wait_count = zero;
+        long result = current_dplay->GetMessageCount(current_dplay_id,
+                                                      &wait_count);
         if (result != zero) {
             this->Err->ShowReturn(result, (char*)"MsgWait");
             goto after_dplay;

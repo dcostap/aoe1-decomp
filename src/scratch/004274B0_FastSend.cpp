@@ -1,5 +1,9 @@
 // VA: 004274B0 TCommunications_Handler::FastSend
-// First pass shaped directly from Com_hand.cpp packet.
+// The DirectPlay Send call uses the executable-proved +0x68 interface slot.
+
+#if !defined(COM_HAND_TU_CONTEXT)
+#include "../../include/directplay4a_context.h"
+#endif
 
 #define E_FAIL ((long)0x80004005)
 #define E_INVALIDARG ((long)0x80070057)
@@ -10,8 +14,8 @@
 #define S_FASTSEND_FAIL ((const char*)0x58106C)
 #define S_COM_HAND_CPP ((const char*)0x580BF4)
 
-extern unsigned long local_dcoid;
-extern void* direct_play;
+extern unsigned long DAT_0062cf04;
+extern IDirectPlay4A* DAT_0062c5ec;
 
 #if !defined(COM_HAND_TU_CONTEXT)
 class TDebuggingLog {
@@ -20,13 +24,6 @@ public:
 };
 extern TDebuggingLog* L;
 extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
-#endif // COM_HAND_TU_CONTEXT
-
-#if !defined(COM_HAND_TU_CONTEXT)
-struct DirectPlayVtbl {
-    char pad_00[0x68];
-    long (__stdcall* Send)(void* self, unsigned long from, unsigned long to, unsigned long flags, void* data, unsigned long size);
-};
 #endif // COM_HAND_TU_CONTEXT
 
 #if !defined(COM_HAND_TU_CONTEXT)
@@ -61,17 +58,17 @@ long TCommunications_Handler::FastSend(unsigned long to, void* data, unsigned lo
     int recipients;
     unsigned int i;
 
-    if (to == local_dcoid) {
+    if (to == DAT_0062cf04) {
         TDebuggingLog::Log(L, S_SEND_SELF);
         return E_FAIL;
     }
-    if (local_dcoid == 0) {
+    if (DAT_0062cf04 == 0) {
         TDebuggingLog::Log(L, S_BAD_DCOID);
         return E_FAIL;
     }
 
     start = debug_timeGetTime(S_COM_HAND_CPP, 0x4CA);
-    hr = ((DirectPlayVtbl*)*(void**)direct_play)->Send(direct_play, local_dcoid, to, 0, data, size);
+    hr = DAT_0062c5ec->Send(DAT_0062cf04, to, 0, data, size);
     elapsed = debug_timeGetTime(S_COM_HAND_CPP, 0x4D3) - start;
     if (elapsed > 0x32) {
         TDebuggingLog::Log(L, S_SLOW_FASTSEND, elapsed);
