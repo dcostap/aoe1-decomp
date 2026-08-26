@@ -52,75 +52,75 @@ class TRIBE_Player {
 public:
     char pad0[0x24]; ObjectInfo** objects; char pad28[0x50-0x28]; float* resources;
     uchar check_obj_cost(short, short*, float, int);
-    void obj_cost(short, char**, short*, short*, short*, short*, short*, short*, float);
+    void obj_cost(short, char**, short&, short&, short&, short&, short&, short&, float);
 };
 #endif
 extern "C" long __cdecl _ftol(void);
 
-void TRIBE_Player::obj_cost(short obj, char** nameOut, short* t1, short* a1, short* t2, short* a2, short* t3, short* a3, float factor)
+void TRIBE_Player::obj_cost(short obj, char** nameOut, short& t1, short& a1, short& t2, short& a2, short& t3, short& a3, float factor)
 {
     short avail;
     short* amount_output;
     short total = 0;
-    *t1 = -1; *a1 = total; *t2 = -1; *a2 = total; *t3 = -1; *a3 = total;
+    t1 = -1; a1 = total; t2 = -1; a2 = total; t3 = -1; a3 = total;
     uchar can = this->check_obj_cost(obj, 0, 1.0f, 0);
     ObjectInfo* info = ((ObjectInfo**)this->objects)[obj];
     if (info == 0 || info->type < 0x46) return;
     if (nameOut) *nameOut = info->name;
 
     if (info->cost1_used) {
-        *t1 = info->cost1_type;
-        if (*t1 >= 0) {
-            *a1 = (short)(info->cost1_amount * factor);
-            if ((float)(int)*a1 > this->resources[*t1] && can) {
-                avail = (short)(long)this->resources[*t1];
-                total = (short)(*a1 - avail);
-                *a1 = avail;
+        t1 = info->cost1_type;
+        if (t1 >= 0) {
+            a1 = (short)(info->cost1_amount * factor);
+            if ((float)(int)a1 > this->resources[t1] && can) {
+                avail = (short)(long)this->resources[t1];
+                total = (short)(a1 - avail);
+                a1 = avail;
             }
         }
     }
     if (info->cost2_used) {
-        *t2 = info->cost2_type;
-        if (*t2 >= 0) {
-            *a2 = (short)(info->cost2_amount * factor);
-            if ((float)(int)*a2 > this->resources[*t2] && can) {
-                avail = (short)(long)this->resources[*t2];
-                total += (short)(*a2 - avail);
-                *a2 = avail;
+        t2 = info->cost2_type;
+        if (t2 >= 0) {
+            a2 = (short)(info->cost2_amount * factor);
+            if ((float)(int)a2 > this->resources[t2] && can) {
+                avail = (short)(long)this->resources[t2];
+                total += (short)(a2 - avail);
+                a2 = avail;
             }
         }
     }
     if (info->cost3_used) {
-        *t3 = info->cost3_type;
-        if (*t3 >= 0) {
-            *a3 = (short)(info->cost3_amount * factor);
-            if ((float)(int)*a3 > this->resources[*t3] && can) {
-                avail = (short)(long)this->resources[*t3];
-                total += (short)(*a3 - avail);
-                *a3 = avail;
+        t3 = info->cost3_type;
+        if (t3 >= 0) {
+            a3 = (short)(info->cost3_amount * factor);
+            if ((float)(int)a3 > this->resources[t3] && can) {
+                avail = (short)(long)this->resources[t3];
+                total += (short)(a3 - avail);
+                a3 = avail;
             }
         }
     }
     if (total > 0) {
-        if (*t1 == 3 || *t1 == -1) {
-            *t1 = 3;
-            amount_output = a1;
+        if (t1 == 3 || t1 == -1) {
+            t1 = 3;
+            amount_output = &a1;
         }
         else {
-            if (*t2 != 3 && *t2 != -1) {
-                if (*t3 == 3 || *t3 == -1) {
-                    *t3 = 3;
-                    *a3 = total;
+            if (t2 != 3 && t2 != -1) {
+                if (t3 == 3 || t3 == -1) {
+                    t3 = 3;
+                    a3 = total;
                 }
                 goto done_total;
             }
-            *t2 = 3;
-            amount_output = a2;
+            t2 = 3;
+            amount_output = &a2;
         }
         *amount_output += total;
     }
 done_total:
-    if (*a1 <= 0) *t1 = -1;
-    if (*a2 <= 0) *t2 = -1;
-    if (*a3 <= 0) *t3 = -1;
+    if (a1 <= 0) t1 = -1;
+    if (a2 <= 0) t2 = -1;
+    if (a3 <= 0) t3 = -1;
 }

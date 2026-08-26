@@ -67,10 +67,11 @@ void TRIBE_Game::set_tribe_options(TRIBE_Game_Options* options) {
     int i;
 
     this->setMapSize(options->mapSizeValue);
-    this->setMapType(options->mapTypeValue);
+    this->setMapType((TRIBE_Game::MapType)options->mapTypeValue);
     this->setAnimals(options->animalsValue);
     this->setPredators(options->predatorsValue);
-    this->setVictoryType(options->victoryTypeValue, options->victoryAmountValue);
+    this->setVictoryType((TRIBE_Game::VictoryType)options->victoryTypeValue,
+                         options->victoryAmountValue);
 
     for (i = 0; i < 9; i++) {
         this->setCivilization(i, options->civilizationValue[i]);
@@ -83,8 +84,8 @@ void TRIBE_Game::set_tribe_options(TRIBE_Game_Options* options) {
     this->setLongCombat(options->longCombatValue);
     this->setRandomizePositions(options->randomizePositionsValue);
     this->setFullTechTree(options->fullTechTreeValue);
-    this->setResourceLevel(options->resourceLevelValue);
-    this->setStartingAge(options->startingAgeValue);
+    this->setResourceLevel((TRIBE_Game::ResourceLevel)options->resourceLevelValue);
+    this->setStartingAge((TRIBE_Game::Age)options->startingAgeValue);
     this->setStartingUnits(options->startingUnitsValue);
     this->setDeathMatch(options->deathMatchValue);
     this->setPopLimit(options->popLimitValue);

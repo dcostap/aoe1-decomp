@@ -13,10 +13,10 @@ public:
 
 class TRIBE_Player {
 public:
-    char gap_00[0x238];
+    char gap_00[0x234];
     AIModule* playerAI;
 
-    void __cdecl logMessage(char* format, ...);
+    virtual void __cdecl logMessage(char* format, ...);
 };
 #endif
 

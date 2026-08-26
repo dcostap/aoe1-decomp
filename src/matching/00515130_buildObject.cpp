@@ -14,12 +14,13 @@ public:
 
 class TRIBE_Player {
 public:
-    char gap_00[0x3C];
+    virtual void update();
+    char gap_00[0x38];
     RGE_Game_World* world;
     char gap_40[0xA];
     short id;
 
-    void buildObject(int param_1, int param_2, float param_3, float param_4, int param_5);
+    virtual void buildObject(int param_1, int param_2, float param_3, float param_4, int param_5);
 };
 #endif
 

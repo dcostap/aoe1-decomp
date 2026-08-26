@@ -2,6 +2,10 @@
 // PDB: vw_dimap.cpp (RGE_Diamond_Map_View::mouse_left_up_action)
 // The shared vw_dimap context supplies the reviewed class and ABI surface.
 
+#ifndef VW_DIMAP_SHARED_CONTEXT
+#include "../../include/vw_dimap_tu_context.h"
+#endif
+
 long RGE_Diamond_Map_View::mouse_left_up_action(long x, long y, int key, int flags)
 {
     int mode = rge_base_game->prog_mode;

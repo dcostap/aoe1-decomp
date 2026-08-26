@@ -13,50 +13,23 @@ class TRIBE_Command_Unload { public: void command_unload(RGE_Static_Object** lis
 
 class RGE_Static_Object {
 public:
-    virtual void vf00() {}
-    virtual void vf01() {}
-    virtual void vf02() {}
-    virtual void vf03() {}
-    virtual void vf04() {}
-    virtual void vf05() {}
-    virtual void vf06() {}
-    virtual void vf07() {}
-    virtual void vf08() {}
-    virtual void vf09() {}
-    virtual void vf10() {}
-    virtual void vf11() {}
-    virtual void vf12() {}
-    virtual void vf13() {}
-    virtual void vf14() {}
-    virtual void vf15() {}
-    virtual void vf16() {}
-    virtual void vf17() {}
-    virtual void vf18() {}
-    virtual void vf19() {}
-    virtual void vf20() {}
-    virtual void vf21() {}
-    virtual void vf22() {}
-    virtual void vf23() {}
-    virtual void vf24() {}
-    virtual void vf25() {}
-    virtual void vf26() {}
-    virtual void vf27() {}
-    virtual void vf28() {}
-    virtual void vf29() {}
-    virtual void vf30() {}
-    virtual void vf31() {}
-    virtual void vf32() {}
-    virtual void vf33() {}
-    virtual void vf34() {}
-    virtual void vf35() {}
-    virtual void vf36() {}
-    virtual void vf37() {}
-    virtual void vf38() {}
-    virtual void vf39() {}
-    virtual void vf40() {}
-    virtual void vf41() {}
-    virtual void vf42() {}
-    virtual void vf43();
+    virtual void dispose();
+    virtual void recycle_in_to_game(); virtual void recycle_out_of_game();
+    virtual void draw(); virtual void shadow_draw(); virtual void normal_draw();
+    virtual void draw_front_frame(); virtual void draw_back_frame(); virtual void draw_frame();
+    virtual void update(); virtual void check_damage_sprites(); virtual void rehook();
+    virtual void save(int); virtual void teleport(); virtual void new_sprite();
+    virtual void add_overlay_sprite(); virtual void remove_overlay_sprite();
+    virtual void change_ownership(); virtual void modify(); virtual void modify_delta();
+    virtual void modify_percent(); virtual void transform(); virtual void copy_obj();
+    virtual void set_object_state(); virtual void remove_visible_resource();
+    virtual void create_doppleganger_when_dying(); virtual void destroy_obj();
+    virtual void die_die_die(); virtual void damage(); virtual void calculateDamage();
+    virtual void rotate(); virtual void can_attack(); virtual void set_attribute();
+    virtual void set_attribute_amount(); virtual void heal(); virtual void canRepair();
+    virtual void notify_of_relation(); virtual void do_command(); virtual void move_to();
+    virtual void work(); virtual void stop(); virtual void set_attack();
+    virtual void play_command_sound();
 };
 
 extern void __cdecl free(void*);
@@ -77,7 +50,7 @@ unsigned char TRIBE_Player::command_make_unload(float param_1, float param_2) {
     short local_4[2];
 
     if (get_selected_objects_to_command(&list, local_4, 4, -1, -1, 7)) {
-        list[0]->vf43();
+        list[0]->play_command_sound();
         ((TRIBE_Command_Unload*)command->command_obj)->command_unload(list, local_4[0], param_1, param_2);
         free(list);
         return 1;

@@ -2,6 +2,10 @@
 // PDB source: vw_dimap.cpp lines 206-261
 // The shared vw_dimap context supplies the reviewed class and ABI surface.
 
+#ifndef VW_DIMAP_SHARED_CONTEXT
+#include "../../include/vw_dimap_tu_context.h"
+#endif
+
 long RGE_Diamond_Map_View::mouse_right_up_action(long x, long y, int param_3, int param_4)
 {
     RGE_Tile* tile;

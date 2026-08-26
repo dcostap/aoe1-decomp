@@ -30,7 +30,7 @@ struct RGE_Victory_Entry {
 };
 
 class RGE_Victory_Conditions {
-public:
+protected:
     void handle_bring_object(RGE_Victory_Entry* entry);
 };
 #endif

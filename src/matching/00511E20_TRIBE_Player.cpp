@@ -27,7 +27,7 @@ extern TCommunications_Handler* comm;
 #ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
 class RGE_Game_World {
 public:
-    void* vtable_ptr;                     // +0x00
+    virtual unsigned char data_load_world(void*);
     char gap_04[0x24];
     RGE_Map* map;                         // +0x28
     char gap_2c[0x3c - 0x2c];
@@ -109,14 +109,14 @@ public:
 
 class RGE_Object_List {
 public:
-    virtual void vf00();
+    virtual ~RGE_Object_List();
     unsigned char gap_04[8];
     RGE_Object_List();
 };
 
 class TRIBE_Object_List : public RGE_Object_List {
 public:
-    virtual void vf00();
+    virtual void load(unsigned char, int, RGE_Game_World*);
 };
 
 class TCommunications_Handler {

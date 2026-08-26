@@ -19,6 +19,7 @@ public:
     char gap_2C[0x08];
     int NewZone_Count;
 
+private:
     void SetNumZones(int num_zones);
     void InitNewZone(int zone_size);
 };

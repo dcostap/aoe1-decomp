@@ -124,6 +124,7 @@ public:
     int playerTeam(int player);
     int civilization(int player);
 
+protected:
     void let_game_begin();
 };
 #endif

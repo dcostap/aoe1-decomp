@@ -38,7 +38,7 @@ class TDrawSystem {
 public:
     void* instance;
     void* window;
-    void* palette;
+    void* Pal;
 };
 
 class TDrawArea {
@@ -243,8 +243,8 @@ void Time_Line_Panel::draw_icon(Special_Events* ev, short param_2, uchar param_3
                                          unsigned int) =
 #endif
         GetNearestPaletteIndex;
-    getNearest(this->render_area->DrawSystem->palette, 0xffffff);
-    temp_str[0] = (char)getNearest(this->render_area->DrawSystem->palette, 0);
+    getNearest(this->render_area->DrawSystem->Pal, 0xffffff);
+    temp_str[0] = (char)getNearest(this->render_area->DrawSystem->Pal, 0);
 
     switch (ev->event) {
     case 0:

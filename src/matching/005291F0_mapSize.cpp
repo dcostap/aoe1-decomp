@@ -2,10 +2,13 @@
 class TRIBE_Game {
 public:
     virtual ~TRIBE_Game();
+    enum MapSize { MapSize_Unknown = 0 };
     char gap_04[2680];
     int mapSize_;
 
-    int mapSize() const;
+    MapSize mapSize() const;
 };
 #endif
-int TRIBE_Game::mapSize() const { return this->tribe_game_options.mapSizeValue; }
+TRIBE_Game::MapSize TRIBE_Game::mapSize() const {
+    return (TRIBE_Game::MapSize)this->tribe_game_options.mapSizeValue;
+}

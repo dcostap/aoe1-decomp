@@ -16,7 +16,8 @@ public:
     int last_count;
     int animal_max;
 
-    void save(int param_1);
+    // BINARY NOTE: the original FPO symbol is virtual.
+    virtual void save(int param_1);
 };
 #endif
 

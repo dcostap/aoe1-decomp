@@ -47,11 +47,12 @@ class PlayerAI { public: char raw[0x11470]; };
 
 class TRIBE_Player {
 public:
-    char gap_00[0x3C];
+    virtual void update();
+    char gap_00[0x38];
     RGE_Game_World* world;
     char gap_40[0x238-0x40];
     PlayerAI* playerAI;
-    void notifyAI(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6);
+    virtual void notifyAI(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6);
 };
 #endif
 

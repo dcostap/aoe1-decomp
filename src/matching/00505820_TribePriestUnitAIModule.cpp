@@ -25,9 +25,13 @@ public:
 extern void* __cdecl operator_new(unsigned int size);
 #endif
 
-TribePriestUnitAIModule::TribePriestUnitAIModule(void* param_1, int param_2)
 #ifdef TAIUAIMD_COMPLETE_TU
-    : UnitAIModule((RGE_Static_Object*)param_1, param_2)
+TribePriestUnitAIModule::TribePriestUnitAIModule(RGE_Static_Object* param_1, int param_2)
+#else
+TribePriestUnitAIModule::TribePriestUnitAIModule(void* param_1, int param_2)
+#endif
+#ifdef TAIUAIMD_COMPLETE_TU
+    : UnitAIModule(param_1, param_2)
 #else
     : UnitAIModule(param_1, param_2)
 #endif

@@ -81,6 +81,7 @@ extern float flt_5776C0;
 
 class TPanel {
 public:
+    enum RedrawMode { redraw_mode_value };
     virtual ~TPanel();
     virtual long setup(void*, TPanel*, long, long, long, long, unsigned char);
     virtual void set_rect(void*);
@@ -90,7 +91,7 @@ public:
     virtual void set_positioning(int, long, long, long, long, long, long, long, long,
                                   TPanel*, TPanel*, TPanel*, TPanel*);
     virtual void set_fixed_position(long, long, long, long);
-    virtual void set_redraw(int mode);
+    virtual void set_redraw(RedrawMode mode);
     virtual void set_overlapped_redraw(TPanel*, TPanel*, int);
     virtual void draw_setup(int);
     virtual void draw_finish();
@@ -212,7 +213,7 @@ int RGE_View::start_scroll_view(unsigned char action, long x, long y,
         if (!this->do_paint(x, y, x, y, 1)) {
             return 0;
         }
-        this->set_redraw(1);
+        this->set_redraw((TPanel::RedrawMode)1);
     }
 
     result = 0;
@@ -233,14 +234,14 @@ int RGE_View::start_scroll_view(unsigned char action, long x, long y,
         if (p5 == 0 && p4 == 0) {
             this->player->unselect_object();
         }
-        this->set_redraw(1);
+        this->set_redraw((TPanel::RedrawMode)1);
     }
 
     if (this->scroll_action == 6 || this->scroll_action == 8) {
         if (this->pick(0x28, 0, x, y, &pick_info, 0) == 0x33) {
             this->player->set_view_loc(pick_info.x - flt_5776C0,
                                        pick_info.y - flt_5776C0);
-            this->set_redraw(1);
+            this->set_redraw((TPanel::RedrawMode)1);
             result = 1;
         }
     }

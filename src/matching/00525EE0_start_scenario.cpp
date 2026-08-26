@@ -30,6 +30,8 @@ public:
     void SetPlayerHumanity(unsigned int player, int humanity);
 };
 
+class RGE_Static_Object;
+
 struct ScenarioFileInfo {
     int attrib;
     long time_create;
@@ -38,8 +40,10 @@ struct ScenarioFileInfo {
 
 class RGE_Scenario {
 public:
-    virtual void vf00();
-    virtual void destroy(int mode);
+    virtual RGE_Static_Object* get_object_pointer(int player);
+    virtual ~RGE_Scenario();
+    virtual void rehook();
+    virtual void save(int file);
 
     int Get_player_Active(int player);
     int Get_player_Civ(int player);
@@ -74,13 +78,17 @@ public:
 
 class TRIBE_Game : public RGE_Base_Game {
 public:
-    void setVictoryType(int type, int amount);
+    enum VictoryType { VictoryType_Unknown = 0 };
+    enum ResourceLevel { ResourceLevel_Unknown = 0 };
+    enum Age { Age_Unknown = 0 };
+
+    void setVictoryType(VictoryType type, int amount);
     void setRandomizePositions(int value);
     void setLongCombat(int value);
     void setAllowTrading(int value);
     void setFullTechTree(int value);
-    void setResourceLevel(int value);
-    void setStartingAge(int value);
+    void setResourceLevel(ResourceLevel value);
+    void setStartingAge(Age value);
     void setStartingUnits(int value);
     void setDeathMatch(unsigned char value);
     void setPopLimit(unsigned char value);
@@ -110,7 +118,7 @@ int TRIBE_Game::start_scenario(char* scenario)
     this->setSavedGame(0);
     this->setScenarioGame(1);
     this->setScenarioName(scenario);
-    this->setVictoryType(0, 0);
+    this->setVictoryType((TRIBE_Game::VictoryType)0, 0);
     this->setFullVisibility(0);
     this->setFogOfWar(1);
     this->setAllowCheatCodes(1);
@@ -118,8 +126,8 @@ int TRIBE_Game::start_scenario(char* scenario)
     this->setLongCombat(0);
     this->setAllowTrading(1);
     this->setFullTechTree(0);
-    this->setResourceLevel(0);
-    this->setStartingAge(0);
+    this->setResourceLevel((TRIBE_Game::ResourceLevel)0);
+    this->setStartingAge((TRIBE_Game::Age)0);
     this->setStartingUnits(0);
     this->setDeathMatch(0);
     this->setPopLimit(50);
@@ -157,7 +165,7 @@ int TRIBE_Game::start_scenario(char* scenario)
         }
     }
 
-    scenario_info->destroy(1);
+    delete scenario_info;
     if (player_count == 0) {
         this->enable_input();
         return 0;

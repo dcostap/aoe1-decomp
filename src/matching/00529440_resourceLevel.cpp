@@ -2,10 +2,13 @@
 class TRIBE_Game {
 public:
     virtual ~TRIBE_Game();
+    enum ResourceLevel { ResourceLevel_Unknown = 0 };
     char gap_04[2776];
     int resourceLevel_;
 
-    int resourceLevel() const;
+    ResourceLevel resourceLevel();
 };
 #endif
-int TRIBE_Game::resourceLevel() const { return this->tribe_game_options.resourceLevelValue; }
+TRIBE_Game::ResourceLevel TRIBE_Game::resourceLevel() {
+    return (TRIBE_Game::ResourceLevel)this->tribe_game_options.resourceLevelValue;
+}

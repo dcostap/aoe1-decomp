@@ -13,53 +13,8 @@
 //   - panel_system global 0x62E870 setCurrentPanel/destroyPanel string calls
 
 #ifndef TRIBEGAM_TU_CONTEXT
-class RGE_Scenario {
-public:
-    void Set_player_Active(int player, int active);
-};
-
-class RGE_Game_World {
-public:
-#define VPAD(n) virtual void v##n();
-    VPAD(0)  VPAD(1)  VPAD(2)  VPAD(3)  VPAD(4)  VPAD(5)  VPAD(6)  VPAD(7)
-    VPAD(8)  VPAD(9)  VPAD(10) VPAD(11) VPAD(12) VPAD(13) VPAD(14) VPAD(15)
-    VPAD(16) VPAD(17) VPAD(18) VPAD(19) VPAD(20) VPAD(21) VPAD(22) VPAD(23)
-    VPAD(24) VPAD(25) VPAD(26) VPAD(27) VPAD(28) VPAD(29) VPAD(30) VPAD(31)
-    VPAD(32) VPAD(33) VPAD(34) VPAD(35) VPAD(36) VPAD(37) VPAD(38) VPAD(39)
-    VPAD(40) VPAD(41) VPAD(42) VPAD(43) VPAD(44) VPAD(45) VPAD(46) VPAD(47)
-    VPAD(48) VPAD(49) VPAD(50) VPAD(51) VPAD(52) VPAD(53) VPAD(54) VPAD(55)
-    VPAD(56)
-#undef VPAD
-    virtual unsigned char save_scenario(char* name); // vtable+0xE4
-
-    char gap_04[0x3C - 4];
-    short player_num;              // +0x3C
-    char gap_3E[0x5C - 0x3E];
-    RGE_Scenario* scenario;        // +0x5C
-};
-
-class TRIBE_Game {
-public:
-    char gap_00[0x1B0];
-    int prog_mode;                 // +0x1B0
-    char gap_1B4[0x3F4 - 0x1B4];
-    RGE_Game_World* world;         // +0x3F4
-
-    void disable_input();
-    void enable_input();
-    int singlePlayerGame();
-    void set_paused(int p1, int p2);
-    void show_status_message(int string_id, char* param_2, long param_3);
-    int save_scenario(char* filename);
-};
-
-class TPanelSystem {
-public:
-    int setCurrentPanel(char* name, int mode);
-    int destroyPanel(char* name);
-};
-
-extern TPanelSystem panel_system;
+#include "../tribegam_context_local.h"
+#define TRIBEGAM_TU_CONTEXT 1
 #endif
 
 int TRIBE_Game::save_scenario(char* filename)

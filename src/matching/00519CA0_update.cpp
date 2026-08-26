@@ -28,7 +28,7 @@ public:
 #endif
 
 void TRIBE_Gaia::update() {
-    this->update_time = this->update_time + this->world->update_period;
+        this->update_time = this->update_time + this->world->world_time_delta_seconds;
     if (this->update_time > 1.0f) {
         do {
             this->update_time = this->update_time - 1.0f;

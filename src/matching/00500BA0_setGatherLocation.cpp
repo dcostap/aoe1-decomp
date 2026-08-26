@@ -1,4 +1,3 @@
-#ifndef TAITACMD_SHARED_CONTEXT
 // VA: 00500BA0, TribeTacticalAIModule::setGatherLocation, 287 bytes
 // Source: taitacmd.cpp lines 11588-11623
 // Status: EXACT candidate â€” natural typed reconstruction; promotion pending.
@@ -68,10 +67,8 @@ public:
     virtual ~TribeTacticalAIModule();
     char _pad_004[0x0EC];
     TribeMainDecisionAIModule* md;  // +0x0F0
-    char _pad_0F4[0x0F8];
-    int sn_16;                  // +0x1EC
-    char _pad_1F0[0xC4];
-    int sn_48;                  // +0x2B4
+    char _pad_0F4[0x0A0];
+    int strategicNumbers[0x49]; // starts at +0x194; [0x16] and [0x48] are used
 
     int setGatherLocation(TacticalAIGroup* group);
 };
@@ -120,8 +117,3 @@ int TribeTacticalAIModule::setGatherLocation(TacticalAIGroup* group)
     group->setGatherLocation(obj->world_x, obj->world_y, obj->world_z);
     return 1;
 }
-#else
-int TribeTacticalAIModule::setGatherLocation(TacticalAIGroup* group) {
-    return 0;
-}
-#endif

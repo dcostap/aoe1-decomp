@@ -4,8 +4,8 @@
 struct RGE_Victory_Point_Entry {
     unsigned char command;
     unsigned char pad1;
-    unsigned char group;
     unsigned char id;
+    unsigned char group;
     long attribute;
     long amount;
     long points;
@@ -20,6 +20,7 @@ public:
     RGE_Victory_Point_Entry* victory_point_list;
     long point_list_num;
 
+protected:
     RGE_Victory_Point_Entry* add_point(unsigned char p1, unsigned char p2);
 };
 #endif
@@ -34,8 +35,8 @@ RGE_Victory_Point_Entry* RGE_Victory_Conditions::add_point(unsigned char p1, uns
         entry->points = 0;
         entry->curr_points = 0;
         entry->next = this->victory_point_list;
-        entry->group = p1;
-        entry->id = p2;
+        entry->id = p1;
+        entry->group = p2;
         this->victory_point_list = entry;
         this->point_list_num++;
     }

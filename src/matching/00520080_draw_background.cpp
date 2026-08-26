@@ -88,17 +88,17 @@ public:
 
 class Time_Line_Panel {
 public:
-    void* vtbl;                 // +0
+    virtual ~Time_Line_Panel();
     char gap_04[8];
-    union { long x; long pnl_x; };       // +0x0C
-    union { long y; long pnl_y; };       // +0x10
-    union { long width; long pnl_wid; }; // +0x14
-    union { long height; long pnl_hgt; }; // +0x18
+    long pnl_x;                         // +0x0C
+    long pnl_y;                         // +0x10
+    long pnl_wid;                       // +0x14
+    long pnl_hgt;                       // +0x18
     char gap_1C[4];
     TDrawArea* render_area;      // +0x20
-    union { Rect4 rect; Rect4 clip_rect; }; // +0x24
+    Rect4 clip_rect;              // +0x24
     char gap_34[0x0C];
-    TPanel* bevel;                // +0x40
+    TPanel* parent_panel;         // +0x40
     char gap_44[0x468];
     TShape* background_pic;      // +0x4AC
     short background_pic_wid;    // +0x4B0
@@ -175,13 +175,13 @@ void Time_Line_Panel::draw_background()
         return;
     }
 
-    if (this->bevel != 0) {
+    if (this->parent_panel != 0) {
         if (this->bevel_type >= 2 && this->bevel_type <= 7) {
-            this->bevel->draw_rect2(&this->clip_rect);
+            this->parent_panel->draw_rect2(&this->clip_rect);
             return;
         }
-        if (this->bevel->just_drawn == 0) {
-            this->bevel->draw_rect(&this->clip_rect);
+        if (this->parent_panel->just_drawn == 0) {
+            this->parent_panel->draw_rect(&this->clip_rect);
         }
     }
 }

@@ -68,6 +68,7 @@ public:
     char gap_00[0x0C];
     RGE_Player* player;       // +0x0C
 
+protected:
     void handle_destroy_multiple(struct RGE_Victory_Entry* entry);
 };
 #endif

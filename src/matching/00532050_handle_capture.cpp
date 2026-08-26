@@ -31,6 +31,8 @@ class RGE_Victory_Conditions {
 public:
     char gap_00[0x0C];
     RGE_Player* player;      // +0x0C
+
+protected:
     void handle_capture(RGE_Victory_Entry* entry);
 };
 #endif

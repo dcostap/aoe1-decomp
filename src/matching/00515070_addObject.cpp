@@ -1,9 +1,11 @@
 // 00515070 TRIBE_Player::addObject (tplayer.cpp:1974-1997, 105B)
 
 #ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
+struct RGE_Object_Node;
+class RGE_Static_Object;
 class RGE_Player {
 public:
-    virtual void* addObject(void* obj, int p2, int p3);
+    virtual RGE_Object_Node* addObject(RGE_Static_Object* obj, int p2, int p3);
 };
 
 class AI_Manager {
@@ -45,13 +47,13 @@ public:
     char gap_40[0x1F8];
     AI_Manager* playerAI;
 
-    void* addObject(void* obj, int param2, int param3);
+    virtual RGE_Object_Node* addObject(RGE_Static_Object* obj, int param2, int param3);
 };
 #endif
 
-void* TRIBE_Player::addObject(void* obj, int param2, int param3)
+RGE_Object_Node* TRIBE_Player::addObject(RGE_Static_Object* obj, int param2, int param3)
 {
-    void* node = RGE_Player::addObject(obj, param2, param3);
+    RGE_Object_Node* node = RGE_Player::addObject(obj, param2, param3);
     void* master = *(void**)((char*)obj + 8);
     if (*(short*)((char*)master + 0x14) == 0x0B) {
         return node;
@@ -62,7 +64,7 @@ void* TRIBE_Player::addObject(void* obj, int param2, int param3)
     if (*(int*)((char*)obj + 4) < 0) {
         return node;
     }
-    this->playerAI->method16(obj);
+    this->playerAI->addObject(obj);
     int flag = 1;
     if (this->field_3C->field_1D == 2) {
         flag = 0;

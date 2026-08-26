@@ -1,4 +1,3 @@
-#ifndef TAITACMD_SHARED_CONTEXT
 // VA: 00500CC0, TribeTacticalAIModule::setAllGroupLocations, 277 bytes
 // Source: taitacmd.cpp lines 11628-11664
 // Status: EXACT candidate â€” clean typed reconstruction; final validation and
@@ -66,10 +65,8 @@ public:
     virtual ~TribeTacticalAIModule();
     char _pad_004[0x0EC];
     TribeMainDecisionAIModule* md;  // +0x0F0
-    char _pad_0F4[0x0F8];
-    int sn_16;                  // +0x1EC
-    char _pad_1F0[0xC4];
-    int sn_48;                  // +0x2B4
+    char _pad_0F4[0x0A0];
+    int strategicNumbers[0x49]; // starts at +0x194; [0x16] and [0x48] are used
 
     int setAllGroupLocations(TacticalAIGroup* group);
 };
@@ -106,7 +103,7 @@ int TribeTacticalAIModule::setAllGroupLocations(TacticalAIGroup* group)
 
         int result = this->md->informationAI.findGatherPosition(
             centerPoint, group->desiredNumberUnits(), flag,
-            this->sn_16, this->sn_48, obj, gatherPoint);
+            this->strategicNumbers[0x16], this->strategicNumbers[0x48], obj, gatherPoint);
         if (result == 1) {
             group->setAllLocations((float)gatherPoint.x,
                                    (float)gatherPoint.y, obj->world_z);
@@ -117,8 +114,3 @@ int TribeTacticalAIModule::setAllGroupLocations(TacticalAIGroup* group)
     group->setAllLocations(obj->world_x, obj->world_y, obj->world_z);
     return 1;
 }
-#else
-int TribeTacticalAIModule::setAllGroupLocations(TacticalAIGroup* group) {
-    return 0;
-}
-#endif

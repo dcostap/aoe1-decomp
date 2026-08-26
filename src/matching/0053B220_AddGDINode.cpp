@@ -43,11 +43,11 @@ public:
     char gap_6C[0x04];            // +0x6C through +0x6F
 
     DClipInfo_Node* GetNode();
-    DClipInfo_Node* AddGDINode(int param_1, int param_2, short param_3, short param_4, short param_5, short param_6, short param_7, short param_8, short param_9, short param_10, int param_11, int param_12, int param_13);
+    DClipInfo_Node* AddGDINode(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6, int param_7, int param_8, int param_9, int param_10, int param_11, int param_12, int param_13);
 };
 #endif
 
-DClipInfo_Node* DClipInfo_List::AddGDINode(int param_1, int param_2, short param_3, short param_4, short param_5, short param_6, short param_7, short param_8, short param_9, short param_10, int param_11, int param_12, int param_13)
+DClipInfo_Node* DClipInfo_List::AddGDINode(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6, int param_7, int param_8, int param_9, int param_10, int param_11, int param_12, int param_13)
 {
     int iVar2 = YLine_Offset + param_2;
 

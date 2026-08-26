@@ -5,7 +5,7 @@
 
 #define unified_map_offsets ((unsigned long**)0x886808)
 
-unsigned char RGE_Visible_Map::get_visible(int x, int y) {
+unsigned char RGE_Visible_Map::get_visible(int x, int y) const {
     unsigned long cell = unified_map_offsets[y][x];
     RGE_Player* p = this->player;
     if ((cell & p->mutualVisibleMask) != 0) return 0x0F;

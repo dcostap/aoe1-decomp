@@ -16,17 +16,28 @@ extern "C" void __cdecl free(void*);
 #ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
 class RGE_Static_Object {};
 
+class RGE_Master_Static_Object {
+public:
+    virtual ~RGE_Master_Static_Object();
+    virtual void copy_obj(RGE_Master_Static_Object*);
+    virtual void modify(float, unsigned char);
+    virtual void modify_delta(float, unsigned char);
+    virtual void modify_percent(float, unsigned char);
+    virtual void save(int);
+    virtual void make_new_obj(void*, float, float, float);
+    virtual void make_new_master();
+    virtual void check_placement(void*, float, float, int*, unsigned char,
+                                 unsigned char, unsigned char, unsigned char,
+                                 unsigned char, unsigned char);
+    virtual void alignment(float*, float*, void*, unsigned char);
+    virtual long calc_base_damage_ability(void*);
+    virtual void play_command_sound();
+};
+
 class ObjectInfo {
 public:
     char gap[0x52];
     unsigned char flag52;
-};
-
-class SomeV {
-public:
-    virtual void v00(); virtual void v04(); virtual void v08(); virtual void v0c();
-    virtual void v10(); virtual void v14(); virtual void v18(); virtual void v1c();
-    virtual void v20(); virtual void v24(); virtual void v28(); virtual void v2c();
 };
 
 class TRIBE_Command {
@@ -60,7 +71,7 @@ unsigned char TRIBE_Player::command_make_building(short type, float x, float y) 
     ObjectInfo* info = this->objectInfo[type];
     if (info != 0 && (info->flag52 != 0 || type == 0x6d)) {
         if (get_selected_objects_to_command(&list, (short*)&local_4, 4, 4, -1, -1)) {
-            ((SomeV*)this->objectInfo[0x76])->v2c();
+            ((RGE_Master_Static_Object*)this->objectInfo[0x76])->play_command_sound();
             this->world->commands->command_build(list, local_4, type, x, y);
             free(list);
             return 1;

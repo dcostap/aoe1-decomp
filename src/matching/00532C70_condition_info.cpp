@@ -14,11 +14,11 @@ public:
     virtual void vpad1() = 0;
     virtual char* condition_description(RGE_Victory_Entry* entry);
 
-    char condition_info(int index, char** outEntry, unsigned char* outCommand);
+    unsigned char condition_info(long index, char** outEntry, unsigned char& outCommand);
 };
 #endif
 
-char RGE_Victory_Conditions::condition_info(int index, char** outEntry, unsigned char* outCommand) {
+unsigned char RGE_Victory_Conditions::condition_info(long index, char** outEntry, unsigned char& outCommand) {
     RGE_Victory_Entry* entry = this->victory_list;
     int i = 0;
     char* text = 0;
@@ -28,7 +28,7 @@ char RGE_Victory_Conditions::condition_info(int index, char** outEntry, unsigned
             if (i == index) {
                 text = this->condition_description(entry);
                 *outEntry = text;
-                *outCommand = entry->command;
+                outCommand = entry->command;
                 return 1;
             }
             entry = entry->next;

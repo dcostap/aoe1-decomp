@@ -8,4 +8,4 @@ public:
     int randomStartValue() const;
 };
 #endif
-int TRIBE_Game::randomStartValue() const { return this->random_start_value; }
+int TRIBE_Game::randomStartValue() { return this->random_start_value; }

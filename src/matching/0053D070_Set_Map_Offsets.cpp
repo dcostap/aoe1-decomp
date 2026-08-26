@@ -11,6 +11,7 @@ public:
     int mapHeight;
     unsigned long* UnifiedVisibleMap;
 
+private:
     void Set_Map_Offsets(void);
 };
 #endif

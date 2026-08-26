@@ -36,6 +36,8 @@
 //     and use a default empty source with a non-null replacement.
 // 31: The natural i <= 6 loop then matched all 636 bytes, calls, frame, and
 //     boundary. Removing the redundant game=this alias kept the exact match.
+// 32: The standalone fallback declaration is named ai_name, matching the
+//     inherited provider slot used by the grouped module context.
 
 #include <string.h>
 #include <stdio.h>
@@ -49,7 +51,7 @@ public:
     virtual void v08();
     virtual void v0C();
     virtual void v10();
-    virtual const char* name(int slot); // +14
+    virtual const char* ai_name(int slot); // +14
 };
 
 class RGE_Game_World {

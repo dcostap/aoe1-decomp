@@ -2,10 +2,13 @@
 class TRIBE_Game {
 public:
     virtual ~TRIBE_Game();
+    enum VictoryType { VictoryType_Unknown = 0 };
     char gap_04[2696];
     int victoryType_;
 
-    int victoryType() const;
+    VictoryType victoryType() const;
 };
 #endif
-int TRIBE_Game::victoryType() const { return this->tribe_game_options.victoryTypeValue; }
+TRIBE_Game::VictoryType TRIBE_Game::victoryType() const {
+    return (TRIBE_Game::VictoryType)this->tribe_game_options.victoryTypeValue;
+}

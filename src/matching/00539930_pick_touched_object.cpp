@@ -56,13 +56,13 @@ public:
     int y_max; // +0x98
 
     int sprite_check(unsigned char* shape_base, Shape_Info* shape, int x, int y);
-    int pick_touched_object(DClipInfo_List* list, int x, int y, int min_level, int max_level, int* out_object_id);
+    int pick_touched_object(DClipInfo_List* list, int x, int y, int min_level, int max_level, int& out_object_id);
 };
 #endif
 
-int RGE_View::pick_touched_object(DClipInfo_List* list, int x, int y, int min_level, int max_level, int* out_object_id)
+int RGE_View::pick_touched_object(DClipInfo_List* list, int x, int y, int min_level, int max_level, int& out_object_id)
 {
-    *out_object_id = 0;
+    out_object_id = 0;
     if (max_level >= min_level &&
         x >= this->x_min && x <= this->x_max &&
         y >= this->y_min && y <= this->y_max &&
@@ -88,12 +88,12 @@ int RGE_View::pick_touched_object(DClipInfo_List* list, int x, int y, int min_le
                             if ((flags & 2) == 2) {
                                 if (this->sprite_check(node->Shape_Base, node->Shape, x2 - x, y - y1) == 2) {
                                     found = 1;
-                                    *out_object_id = node->Object_ID;
+                                    out_object_id = node->Object_ID;
                                 }
                             } else {
                                 if (this->sprite_check(node->Shape_Base, node->Shape, x - x1, y - y1) == 2) {
                                     found = 1;
-                                    *out_object_id = node->Object_ID;
+                                    out_object_id = node->Object_ID;
                                 }
                             }
                         }

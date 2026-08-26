@@ -14,11 +14,11 @@ public:
     char gap_0[0x14];
     VP_Entry* field_14;
 
-    int get_victory_points_group(unsigned char group);
+    long get_victory_points_group(unsigned char group);
 };
 #endif
 
-int RGE_Victory_Conditions::get_victory_points_group(unsigned char group) {
+long RGE_Victory_Conditions::get_victory_points_group(unsigned char group) {
     int total = 0;
     VP_Entry* entry = this->field_14;
     while (entry) {

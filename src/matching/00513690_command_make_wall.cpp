@@ -64,6 +64,20 @@ class RGE_Static_Object;
 
 class RGE_Master_Static_Object {
 public:
+    virtual ~RGE_Master_Static_Object();
+    virtual void copy_obj(RGE_Master_Static_Object*);
+    virtual void modify(float, unsigned char);
+    virtual void modify_delta(float, unsigned char);
+    virtual void modify_percent(float, unsigned char);
+    virtual void save(int);
+    virtual void make_new_obj(void*, float, float, float);
+    virtual void make_new_master();
+    virtual void check_placement(void*, float, float, int*, unsigned char,
+                                  unsigned char, unsigned char, unsigned char,
+                                  unsigned char, unsigned char);
+    virtual void alignment(float*, float*, void*, unsigned char);
+    virtual long calc_base_damage_ability(void*);
+    virtual void play_command_sound();
     char gap[0x52];
     unsigned char flag52;
 };
@@ -79,7 +93,7 @@ public:
 
 class RGE_Player {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Player();
     int a, b, c, d;
     long e, f, g;
     unsigned char h;
@@ -104,21 +118,6 @@ public:
     TRIBE_Command* commands;
 };
 
-class __declspec(novtable) WallHelper {
-public:
-    virtual void v0() = 0;
-    virtual void v1() = 0;
-    virtual void v2() = 0;
-    virtual void v3() = 0;
-    virtual void v4() = 0;
-    virtual void v5() = 0;
-    virtual void v6() = 0;
-    virtual void v7() = 0;
-    virtual void v8() = 0;
-    virtual void v9() = 0;
-    virtual void v10() = 0;
-    virtual void clear_wall_data() = 0;
-};
 #endif
 
 unsigned char TRIBE_Player::command_make_wall(short type, long p2, long p3,
@@ -131,7 +130,7 @@ unsigned char TRIBE_Player::command_make_wall(short type, long p2, long p3,
     if (info != 0 && info->flag52 != 0) {
         if (get_selected_objects_to_command(&list, &local_4, 4, 4,
                                             -1, -1)) {
-            ((WallHelper*)this->master_objects[0x76])->clear_wall_data();
+            this->master_objects[0x76]->play_command_sound();
             this->world->commands->command_build_wall(list, local_4, type,
                                                        p2, p3, p4, p5);
             free(list);

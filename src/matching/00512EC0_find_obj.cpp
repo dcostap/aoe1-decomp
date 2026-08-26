@@ -10,14 +10,14 @@ public:
     unsigned char object_state; // +0x48
 };
 
-struct ObjNode {
+struct RGE_Object_Node {
     RGE_Static_Object* obj;
-    ObjNode* next;
+    RGE_Object_Node* next;
 };
 
 struct ObjList {
     int unused;
-    ObjNode* head;
+    RGE_Object_Node* head;
 };
 
 class TRIBE_Player {
@@ -33,7 +33,7 @@ RGE_Static_Object* TRIBE_Player::find_obj(short id, RGE_Static_Object* after)
 {
     if (after != 0) {
         int found = 0;
-        ObjNode* node = this->objects->head;
+        RGE_Object_Node* node = this->objects->head;
         while (node != 0) {
             RGE_Static_Object* obj = node->obj;
             if (obj != 0) {
@@ -49,7 +49,7 @@ RGE_Static_Object* TRIBE_Player::find_obj(short id, RGE_Static_Object* after)
         }
     }
 
-    ObjNode* node = this->objects->head;
+    RGE_Object_Node* node = this->objects->head;
     while (node != 0) {
         RGE_Static_Object* obj = node->obj;
         if (obj != 0) {

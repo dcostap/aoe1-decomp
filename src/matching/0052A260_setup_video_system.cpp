@@ -14,6 +14,10 @@ extern "C" __declspec(dllimport) long __stdcall SetClassLongA_tribe(
     void* hwnd, long index, long value);
 
 #ifndef TRIBEGAM_TU_CONTEXT
+class RGE_Game_World;
+class RGE_Scenario;
+class RGE_Scenario_Header;
+class TPanel;
 class TPanelSystem {
 public:
     int setCurrentPanel(char* name, int mode);
@@ -49,46 +53,48 @@ extern void __cdecl Log(TDebuggingLog* log, char* format, ...);
 class RGE_Base_Game {
 public:
     virtual ~RGE_Base_Game();
-    virtual void vf04();
-    virtual void vf08();
+    virtual int run();
+    virtual long wnd_proc(void* window, unsigned int message,
+                          unsigned int wparam, long lparam);
     virtual void set_prog_mode(int mode);
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
-    virtual void vf20();
-    virtual void vf24();
-    virtual void vf28();
-    virtual void vf2C();
-    virtual void vf30();
-    virtual void vf34();
-    virtual void vf38();
-    virtual void vf3C();
-    virtual void vf40();
-    virtual void vf44();
-    virtual void vf48();
-    virtual void vf4C();
-    virtual void vf50();
-    virtual void vf54();
-    virtual void vf58();
-    virtual void vf5C();
-    virtual void vf60();
-    virtual void vf64();
-    virtual void vf68();
-    virtual void vf6C();
-    virtual void vf70();
-    virtual void vf74();
-    virtual void vf78();
-    virtual void vf7C();
-    virtual void vf80();
-    virtual void vf84();
-    virtual void vf88();
-    virtual void vf8C();
-    virtual void vf90();
-    virtual void vf94();
-    virtual void vf98();
-    virtual void vf9C();
-    virtual void vfA0();
+    virtual void set_game_mode(int mode, int sub_mode);
+    virtual void set_player(short player);
+    virtual int get_error_code();
+    virtual char* get_string(int id, long param, char* buffer, int length);
+    virtual char* get_string(long id, char* buffer, int length);
+    virtual char* get_string(long id);
+    virtual char* get_string2(int id, long p2, long p3, char* buffer,
+                              int length);
+    virtual TPanel* get_view_panel();
+    virtual TPanel* get_map_panel();
+    virtual RGE_Scenario_Header* new_scenario_header(RGE_Scenario* scenario);
+    virtual RGE_Scenario_Header* new_scenario_header(int scenario);
+    virtual RGE_Scenario* new_scenario_info(int scenario);
+    virtual void notification(int id, long p2, long p3, long p4, long p5);
+    virtual int reset_comm();
+    virtual void send_game_options();
+    virtual void receive_game_options();
+    virtual char* gameSummary();
+    virtual int processCheatCode(int id, char* code);
+    virtual int setup_music_system();
+    virtual void shutdown_music_system();
+    virtual int setup();
+    virtual int setup_cmd_options();
+    virtual int setup_class();
+    virtual int setup_main_window();
+    virtual int setup_graphics_system();
+    virtual int setup_palette();
+    virtual int setup_mouse();
+    virtual int setup_registry();
+    virtual int setup_debugging_log();
+    virtual int setup_chat();
+    virtual int setup_comm();
+    virtual int setup_sound_system();
+    virtual int setup_fonts();
+    virtual int setup_sounds();
+    virtual int setup_shapes();
+    virtual int setup_blank_screen();
+    virtual void setup_timings();
     virtual void stop_sound_system();
 
     char gap_04[0x0C];

@@ -12,10 +12,10 @@ public:
 
 class TRIBE_Player {
 public:
-    char gap_000[0x238];
+    char gap_000[0x234];
     TribeMainDecisionAIModule* playerAI;
 
-    void cancelBuild(int param_1, int param_2, int param_3, float param_4, float param_5, int param_6, int param_7);
+    virtual void cancelBuild(int param_1, int param_2, int param_3, float param_4, float param_5, int param_6, int param_7);
 };
 #endif
 

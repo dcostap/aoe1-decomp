@@ -16,7 +16,7 @@ struct RGE_Victory_Entry {
 };
 
 class RGE_Victory_Conditions {
-public:
+protected:
     void handle_destroy_player(RGE_Victory_Entry* entry);
 };
 #endif

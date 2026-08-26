@@ -5,33 +5,6 @@
 
 #include "../../include/tribegam_context.h"
 
-#if 0
-class TPanel { public: virtual void vf00(); };
-class TRIBE_Screen_Status_Message;
-
-class TPanelSystem {
-public:
-    TPanel* panel(char* name);
-    int setCurrentPanel(char* name, int flag);
-};
-
-extern TPanelSystem panel_system;
-void* operator new(unsigned int size);
-
-class TRIBE_Game {
-public:
-    void draw_window();
-    void show_status_message(char* s1, char* s2, long p3);
-};
-
-class TRIBE_Screen_Status_Message : public TPanel {
-public:
-    char gap_04[0x478];
-    TRIBE_Screen_Status_Message(char* panelName, char* s1, char* s2, long p3);
-    void set_text(char* s1);
-};
-#endif
-
 static char status_screen[] = "Status Screen";
 
 void TRIBE_Game::show_status_message(char* s1, char* s2, long p3) {

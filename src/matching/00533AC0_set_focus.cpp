@@ -12,7 +12,7 @@ public:
 };
 
 class RGE_View {
-public:
+protected:
     char gap_04[0x74];
     int game_enable;
 
@@ -21,7 +21,7 @@ public:
 #endif
 
 void RGE_View::set_focus(int focus) {
-    ((TPanel*)this)->set_focus(focus);
+    this->TPanel::set_focus(focus);
     if (MouseSystem != 0) {
         MouseSystem->set_game_enable(game_enable);
     }

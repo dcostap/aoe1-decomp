@@ -1,4 +1,3 @@
-#ifndef TAITACMD_SHARED_CONTEXT
 // 00501260 TribeTacticalAIModule::selectBestCommander
 // Attempt log:
 // 1: Reconstruct from packet with helper: too small due outlined helper.
@@ -18,10 +17,10 @@ extern void* operator new(unsigned int);
 extern void operator delete(void*);
 extern "C" int __cdecl _ftol();
 
+#ifndef TAITACMD_SHARED_CONTEXT
 struct ManagedArray_int { int* value; int numberValue; int desiredNumberValue; int maximumSizeValue; };
 
-class MasterObject { public: char pad_00[0x10]; short type; };
-#ifndef TAITACMD_SHARED_CONTEXT
+class MasterObject { public: char pad_00[0x10]; short id; };
 class RGE_Static_Object {
 public:
     virtual ~RGE_Static_Object();
@@ -95,70 +94,68 @@ public:
     char pad_04[4];
     MasterObject* master_obj;
     char pad_0c[0x24];
-    float field_30;
+    float hp;
 };
-#endif
 class MainDecisionAIModule { public: RGE_Static_Object* object(int id); };
 class TribeTacticalAIModule {
 public:
-    char pad_000[0x0f0]; MainDecisionAIModule* md; char pad_0f4[0x2c0-0x0f4]; int mode;
-    int selectBestCommander(ManagedArray_int* a);
+    char pad_000[0x0f0]; MainDecisionAIModule* md;
+    char pad_0f4[0x0A0]; int sn[0x4C];
+    int selectBestCommander(ManagedArray_int& a);
 };
+#endif
 
-int TribeTacticalAIModule::selectBestCommander(ManagedArray_int* a)
+int TribeTacticalAIModule::selectBestCommander(ManagedArray_int& a)
 {
     int bestScore = -1;
     int bestUnit = -1;
     int i = 0;
-    if (a->numberValue > 0) {
+    if (a.numberValue > 0) {
     do {
-        if (i > a->maximumSizeValue - 1) {
+        if (i > a.maximumSizeValue - 1) {
             int newMax = i + 1;
             int* n = (int*)operator new(newMax * 4);
             if (n) {
                 int j = 0;
-                while (j < a->maximumSizeValue && j < newMax) { n[j] = a->value[j]; ++j; }
-                operator delete(a->value); a->value = n; a->maximumSizeValue = newMax;
+                while (j < a.maximumSizeValue && j < newMax) { n[j] = a.value[j]; ++j; }
+                operator delete(a.value); a.value = n; a.maximumSizeValue = newMax;
             }
         }
-        int id = a->value[i];
+        int id = a.value[i];
         RGE_Static_Object* obj = this->md->object(id);
         if (obj != 0) {
-            if (obj->master_obj->type != 0x7d) {
+            if (obj->master_obj->id != 0x7d) {
                 int score;
-                if (this->mode == 2) {
+                if (this->sn[0x4b] == 2) {
                     score = (int)obj->weaponRange();
                 } else {
-                    score = (int)obj->field_30;
+                    score = (int)obj->hp;
                 }
-                if (this->mode == 1 || this->mode == 3) {
+                if (this->sn[0x4b] == 1 || this->sn[0x4b] == 3) {
                     if (bestScore == -1 || score < bestScore) {
-                        if (i > a->maximumSizeValue - 1) {
+                        if (i > a.maximumSizeValue - 1) {
                             int newMax = i + 1;
                             int* n = (int*)operator new(newMax * 4);
-                            if (n) { int j = 0; while (j < a->maximumSizeValue && j < newMax) { n[j] = a->value[j]; ++j; } operator delete(a->value); a->value = n; a->maximumSizeValue = newMax; }
+                            if (n) { int j = 0; while (j < a.maximumSizeValue && j < newMax) { n[j] = a.value[j]; ++j; } operator delete(a.value); a.value = n; a.maximumSizeValue = newMax; }
                         }
-                        bestUnit = a->value[i];
+                        bestUnit = a.value[i];
                         bestScore = score;
                     }
                 } else {
                     if (bestScore == -1 || score > bestScore) {
-                        if (i > a->maximumSizeValue - 1) {
+                        if (i > a.maximumSizeValue - 1) {
                             int newMax = i + 1;
                             int* n = (int*)operator new(newMax * 4);
-                            if (n) { int j = 0; while (j < a->maximumSizeValue && j < newMax) { n[j] = a->value[j]; ++j; } operator delete(a->value); a->value = n; a->maximumSizeValue = newMax; }
+                            if (n) { int j = 0; while (j < a.maximumSizeValue && j < newMax) { n[j] = a.value[j]; ++j; } operator delete(a.value); a.value = n; a.maximumSizeValue = newMax; }
                         }
-                        bestUnit = a->value[i];
+                        bestUnit = a.value[i];
                         bestScore = score;
                     }
                 }
             }
         }
         ++i;
-    } while (i < a->numberValue);
+    } while (i < a.numberValue);
     }
     return bestUnit;
 }
-#else
-int TribeTacticalAIModule::selectBestCommander(ManagedArray<int>&) { return 0; }
-#endif

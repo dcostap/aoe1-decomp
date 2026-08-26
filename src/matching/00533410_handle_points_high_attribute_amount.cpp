@@ -12,7 +12,7 @@
 // The retained surface is the smallest tested canonical context.
 
 #ifndef VICTORY_CONTEXT_H
-class RGE_Victory_Entry;
+struct RGE_Victory_Entry;
 
 class RGE_Player {
 public:
@@ -21,7 +21,7 @@ public:
     float* attributes; // +0x50
 };
 
-class RGE_Victory_Point_Entry {
+struct RGE_Victory_Point_Entry {
 public:
     unsigned char command;
     unsigned char state;

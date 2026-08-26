@@ -38,8 +38,8 @@ void Time_Line_Panel::add_pop_total_special_event(long time_slice, long pop_tota
     se->player_color = 0;
     se->event = 3;
     se->pop_total = pop_total;
-    se->interger_value_1 = 0;
-    se->interger_value_2 = 0;
+    se->integer_value_1 = 0;
+    se->integer_value_2 = 0;
     se->start_x = 0;
     se->start_y = 0;
     se->start_txt_x1 = 0;

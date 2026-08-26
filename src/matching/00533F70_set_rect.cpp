@@ -20,7 +20,7 @@ extern TMousePointer* MouseSystem;
 class TPanel {
 public:
     virtual ~TPanel();
-    void set_rect(long a, long b, long c, long d);
+    virtual void set_rect(long a, long b, long c, long d);
 };
 
 class TSpan_List_Manager {
@@ -56,7 +56,7 @@ public:
 
 void RGE_View::set_rect(long a, long b, long c, long d)
 {
-    ((TPanel*)this)->set_rect(a, b, c, d);
+    this->TPanel::set_rect(a, b, c, d);
     this->calc_draw_vars();
     this->create_surfaces();
 

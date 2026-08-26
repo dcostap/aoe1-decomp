@@ -7,7 +7,7 @@ public:
     int field_1B0;
 
     void disconnect_multiplayer_game();
-    int action_close();
+    virtual int action_close();
 };
 #endif
 

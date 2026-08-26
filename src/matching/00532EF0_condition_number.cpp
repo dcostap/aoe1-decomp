@@ -4,8 +4,8 @@ public:
     virtual ~RGE_Victory_Conditions();
     int field_4;
     int field_8;
-    int condition_number(int p0);
+    long condition_number(long p0);
 };
 #endif
 
-int RGE_Victory_Conditions::condition_number(int p0) { return this->field_8; }
+long RGE_Victory_Conditions::condition_number(long p0) { return this->field_8; }

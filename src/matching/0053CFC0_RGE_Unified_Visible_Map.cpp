@@ -7,7 +7,10 @@ public:
     int mapHeight;
     unsigned long* UnifiedVisibleMap;
 
+private:
     void Set_Map_Offsets();
+
+public:
     ~RGE_Unified_Visible_Map();
 };
 #endif

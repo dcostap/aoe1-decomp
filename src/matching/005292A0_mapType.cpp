@@ -2,10 +2,13 @@
 class TRIBE_Game {
 public:
     virtual ~TRIBE_Game();
+    enum MapType { MapType_Unknown = 0 };
     char gap_04[2684];
     int mapType_;
 
-    int mapType() const;
+    MapType mapType() const;
 };
 #endif
-int TRIBE_Game::mapType() const { return this->tribe_game_options.mapTypeValue; }
+TRIBE_Game::MapType TRIBE_Game::mapType() const {
+    return (TRIBE_Game::MapType)this->tribe_game_options.mapTypeValue;
+}

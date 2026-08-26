@@ -34,7 +34,7 @@ class TRIBE_History_Info {
 public:
     unsigned char get_history_entry(unsigned char mode, long index);
 };
-class RGE_Player { public: char gap_00[0x44]; char* name; char gap_48[0xBD]; unsigned char civilization; char gap_106[0x736]; TRIBE_History_Info* history; };
+class RGE_Player { public: char gap_00[0x44]; char* name; char gap_48[0xBD]; unsigned char civilization; char gap_106[0x736]; TRIBE_History_Info* history_info; };
 class RGE_Game_World { public: virtual unsigned char data_load_world(void*); char gap_04[0x38]; short player_num; char gap_3E[2]; RGE_Player** players; };
 class RGE_Base_Game {
 public:
@@ -111,7 +111,7 @@ public:
     int X_start_line_pos;
     int Y_start_line_pos;
     char gap_4E4[0x0C];
-    int y_line_hgt;
+    long Y_line_max_length;
     char gap_4F4[0x28];
     char timeline_flag;
 
@@ -140,7 +140,7 @@ void Time_Line_Panel::draw_civilization_names()
             if (rge_base_game->world->player_num - 1 > 0) {
                 int off = 4;
                 do {
-                    pop_total += (float)((*(RGE_Player**)((char*)rge_base_game->world->players + off))->history->get_history_entry(0,0) & 0xff);
+                    pop_total += (float)((*(RGE_Player**)((char*)rge_base_game->world->players + off))->history_info->get_history_entry(0,0) & 0xff);
                     i++;
                     off += 4;
                 } while (i < rge_base_game->world->player_num - 1);
@@ -152,7 +152,7 @@ void Time_Line_Panel::draw_civilization_names()
                     y_line_segment_length = 0;
                     int off2 = 4;
                     do {
-                        int seg = (int)(((float)((*(RGE_Player**)((char*)rge_base_game->world->players + off2))->history->get_history_entry(0,0) & 0xff) / pop_total) * (float)this->y_line_hgt);
+                        int seg = (int)(((float)((*(RGE_Player**)((char*)rge_base_game->world->players + off2))->history_info->get_history_entry(0,0) & 0xff) / pop_total) * (float)this->Y_line_max_length);
                         rge_base_game->get_string2(0x69, (*(RGE_Player**)((char*)rge_base_game->world->players + off2))->civilization, 0, civ_str, 100);
                         strcpy(name_str, (*(RGE_Player**)((char*)rge_base_game->world->players + off2))->name);
                         sprintf(temp_str, "%s - %s", name_str, civ_str);

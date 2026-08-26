@@ -22,6 +22,8 @@ public:
     unsigned char active; // +0x104
 };
 
+struct RGE_Victory_Entry;
+
 class RGE_Victory_Conditions {
 public:
     char gap_00[0x0C];
@@ -29,11 +31,12 @@ public:
     char gap_10[0x0C];
     long tot_victory_points;   // +0x1C
 
-    void handle_victory_points(void* entry);
+protected:
+    void handle_victory_points(RGE_Victory_Entry* entry);
 };
 #endif
 
-void RGE_Victory_Conditions::handle_victory_points(void* entry) {
+void RGE_Victory_Conditions::handle_victory_points(RGE_Victory_Entry* entry) {
     RGE_Victory_Conditions* self = this;
     if (self->player) {
         register long total = self->tot_victory_points;

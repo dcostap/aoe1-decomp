@@ -3,14 +3,14 @@ class RGE_Player;
 
 class RGE_View {
 public:
-    virtual void vf00(void);
-    virtual void vf04(void);
-    virtual void vf08(void);
-    virtual void vf0C(void);
-    virtual void vf10(void);
-    virtual void vf14(void);
-    virtual void vf18(void);
-    virtual void vf1C(void);
+    virtual ~RGE_View();
+    virtual void set_rect(long, long, long, long);
+    virtual void set_redraw(int);
+    virtual void draw_setup(int);
+    virtual void draw_finish();
+    virtual void draw();
+    virtual void release_mouse();
+    virtual void set_focus(int);
     virtual void redraw(int mode);
 
     char gap_04[0xFC];

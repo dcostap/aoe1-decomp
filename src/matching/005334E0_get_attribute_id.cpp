@@ -14,11 +14,11 @@ public:
     char gap_0[0x14];
     VP_Entry* field_14;
 
-    int get_attribute_id(unsigned char id);
+    long get_attribute_id(unsigned char id);
 };
 #endif
 
-int RGE_Victory_Conditions::get_attribute_id(unsigned char id) {
+long RGE_Victory_Conditions::get_attribute_id(unsigned char id) {
     int result = 0;
     VP_Entry* entry = this->field_14;
     while (entry) {

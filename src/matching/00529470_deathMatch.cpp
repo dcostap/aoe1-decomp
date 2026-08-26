@@ -5,7 +5,7 @@ public:
     char gap_04[2785];
     unsigned char deathMatch_;
 
-    unsigned char deathMatch() const;
+    unsigned char deathMatch();
 };
 #endif
-unsigned char TRIBE_Game::deathMatch() const { return this->tribe_game_options.deathMatchValue; }
+unsigned char TRIBE_Game::deathMatch() { return this->tribe_game_options.deathMatchValue; }

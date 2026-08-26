@@ -38,13 +38,15 @@ public:
 class TRIBE_Game : public RGE_Base_Game {
 public:
     void stop_video(unsigned char callback);
-    int action_key_down(unsigned int key, int param_2, int param_3, int param_4, int param_5);
+    virtual int action_key_down(unsigned long key, int param_2, int param_3,
+                                int param_4, int param_5);
 };
 #endif
 
 extern void (__stdcall *WinHelpA_tribe)(int, const char*, int, int);
 
-int TRIBE_Game::action_key_down(unsigned int key, int param_2, int param_3, int param_4, int param_5)
+int TRIBE_Game::action_key_down(unsigned long key, int param_2, int param_3,
+                                int param_4, int param_5)
 {
     if (this->prog_mode == 1) {
         switch (key) {

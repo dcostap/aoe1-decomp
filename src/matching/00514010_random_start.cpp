@@ -96,26 +96,34 @@ public:
 class RGE_Static_Object {
 public:
     virtual ~RGE_Static_Object();
-    virtual void v04(); virtual void v08(); virtual void v0c();
-    virtual void v10(); virtual void v14(); virtual void v18();
-    virtual void v1c(); virtual void v20(); virtual void v24();
-    virtual void v28(); virtual void v2c(); virtual void v30();
-    virtual void v34(); virtual void v38(); virtual void v3c();
-    virtual void v40(); virtual void v44(); virtual void v48();
-    virtual void v4c(); virtual void v50(); virtual void v54();
-    virtual void v58(); virtual void v5c(); virtual void v60();
-    virtual void v64(); virtual void v68(); virtual void v6c();
-    virtual void v70(); virtual void v74(); virtual void v78();
-    virtual void v7c(); virtual void v80(); virtual void v84();
-    virtual void v88(); virtual void v8c(); virtual void v90();
-    virtual void v94(); virtual void v98(); virtual void v9c();
-    virtual void va0(); virtual void va4(); virtual void va8();
-    virtual void vac(); virtual void vb0(); virtual void vb4();
-    virtual void vb8(); virtual void vbc(); virtual void vc0();
-    virtual void vc4(); virtual void vc8(); virtual void vcc();
-    virtual void vd0(); virtual void vd4();
-    virtual void vd8(RGE_Player*, int, int);
-    virtual void vdc(RGE_Player*, int, int);
+    virtual void recycle_in_to_game(void*, RGE_Player*, float, float, float);
+    virtual void recycle_out_of_game();
+    virtual void draw(); virtual void shadow_draw(); virtual void normal_draw();
+    virtual void draw_front_frame(); virtual void draw_back_frame(); virtual void draw_frame();
+    virtual unsigned char update(); virtual void check_damage_sprites(); virtual void rehook();
+    virtual void save(int); virtual float teleport(float, float, float);
+    virtual void new_sprite(void*); virtual void add_overlay_sprite(void*, unsigned char);
+    virtual void remove_overlay_sprite(void*); virtual void change_ownership(RGE_Player*);
+    virtual void modify(float, unsigned char); virtual void modify_delta(float, unsigned char);
+    virtual void modify_percent(float, unsigned char); virtual void transform(void*);
+    virtual void copy_obj(void*); virtual void set_object_state(unsigned char);
+    virtual void remove_visible_resource(); virtual void create_doppleganger_when_dying();
+    virtual void destroy_obj(); virtual void die_die_die(); virtual void damage();
+    virtual void calculateDamage(); virtual void rotate(long); virtual unsigned char can_attack();
+    virtual void set_attribute(short, float); virtual void set_attribute_amount(float, unsigned char, unsigned char);
+    virtual int heal(int, int); virtual unsigned char heal(float); virtual int canRepair();
+    virtual void notify_of_relation(long, unsigned char);
+    virtual void do_command(RGE_Static_Object*, float, float, float);
+    virtual void move_to(RGE_Static_Object*, float, float, float);
+    virtual void work(RGE_Static_Object*, float, float, float);
+    virtual void stop(); virtual void set_attack(RGE_Static_Object*);
+    virtual void play_command_sound(); virtual void play_move_sound(); virtual void new_angle(float);
+    virtual RGE_Static_Object* spawn_death_obj(); virtual void* get_command_master(RGE_Static_Object*, float, float, float);
+    virtual void set_being_worked_on(void*, short, unsigned char);
+    virtual void release_being_worked_on(RGE_Static_Object*); virtual unsigned char is_moving();
+    virtual RGE_Static_Object* get_target_obj(); virtual void enter_obj(RGE_Static_Object*); virtual void exit_obj();
+    virtual int explore_terrain(RGE_Player*, unsigned char, int);
+    virtual void unexplore_terrain(RGE_Player*, unsigned char, int);
 
     char gap_04[0x34];
     float world_x;
@@ -306,8 +314,8 @@ void TRIBE_Player::random_start()
                     town_center_object = this->objects->list->object;
                 }
                 if (town_center_object != 0) {
-                    town_center_object->vd8(this->world->players[i], 0, -1);
-                    town_center_object->vdc(this->world->players[i], 0, -1);
+                    town_center_object->explore_terrain(this->world->players[i], 0, -1);
+                    town_center_object->unexplore_terrain(this->world->players[i], 0, -1);
                 }
                 this->world->players[i]->make_new_object(
                     0x70, this->view_x, this->view_y, 0, 0);

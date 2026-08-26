@@ -80,6 +80,7 @@ public:
     unsigned char function_mode;
     unsigned char function_parm;
 
+protected:
     RGE_Static_Object* hit_object(RGE_Tile* tile, short x, short y, short a, short b,
                                   tagPOINT* p1, tagPOINT* p2, short* out_x, short* out_y,
                                   RGE_Static_Object* skip, unsigned char through_fog);

@@ -11,6 +11,7 @@ public:
     int Used_Zones;
     int Max_Zones;
 
+private:
     void SetNumZones(int num_zones);
 };
 #endif

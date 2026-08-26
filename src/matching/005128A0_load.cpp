@@ -10,12 +10,17 @@ extern float g_576858;
 
 class RGE_Sprite;
 class RGE_Sound;
+class RGE_Master_Static_Object;
 #ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
-class RGE_Game_World { public: char pad_00[0x30]; RGE_Sprite** pad_30; char pad_34[4]; RGE_Sound** pad_38; };
+class RGE_Game_World {
+public:
+    char pad_00[0x2C]; short sound_num; char pad_2E[2]; RGE_Sound** sounds;
+    short sprite_num; char pad_36[2]; RGE_Sprite** sprites;
+};
 
 class RGE_Player {
 public:
-    virtual void vf00();
+    virtual ~RGE_Player();
     void load_master_object(int file, short index, unsigned char type, RGE_Sprite** sprites, RGE_Sound** sounds);
 };
 
@@ -33,7 +38,7 @@ public:
 
 class RGE_Object_List {
 public:
-    virtual void vf00();
+    virtual ~RGE_Object_List();
     char pad[0x08];
     RGE_Object_List();
     void load_list(int file, RGE_Game_World* world);
@@ -41,14 +46,14 @@ public:
 
 class TRIBE_Object_List : public RGE_Object_List {
 public:
-    virtual void vf00();
+    virtual void load(unsigned char, int, RGE_Game_World*);
 };
 
 class TRIBE_Player : public RGE_Player {
 public:
     char pad_04[0x22 - 4];
     short master_object_count; // +22
-    void** master_objects; // +24
+    RGE_Master_Static_Object** master_objects; // +24
     TRIBE_Object_List* list_28;
     TRIBE_Object_List* list_2c;
     RGE_Object_List* list_30;
@@ -74,7 +79,7 @@ void TRIBE_Player::load(int file)
             if (this->master_objects[i] != 0) {
                 unsigned char type;
                 rge_read(file, &type, 1);
-                this->load_master_object(file, i, type, (RGE_Sprite**)this->world->pad_38, (RGE_Sound**)this->world->pad_30);
+                this->load_master_object(file, i, type, this->world->sprites, this->world->sounds);
             }
         }
     } else {

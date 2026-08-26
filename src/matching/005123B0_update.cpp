@@ -38,9 +38,17 @@ class RGE_Base_Game { public: int fullVisibility(); };
 class RGE_Visible_Map { public: float percentExplored(); };
 class TCommunications_Handler { public: int ComputerPlayerGameStart(); };
 class TMousePointer { public: void Poll(); };
-class RGE_Game_World { public: char pad0[0x84]; float delta_time; char pad88[0xfc-0x88]; int currentUpdateComputerPlayer; void selectNextComputerPlayer(int); };
+class RGE_Game_World { public: char pad0[0x84]; float world_time_delta_seconds; char pad88[0xfc-0x88]; int currentUpdateComputerPlayer; void selectNextComputerPlayer(int); };
 class TRIBE_History_Info { public: void add_history_entry(int, int); };
-class AI { public: virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void update(int); };
+class TribeMainDecisionAIModule {
+public:
+    virtual int loggingHistory(); virtual void setLogHistory(int);
+    virtual void toggleLogHistory(); virtual void setHistoryFilename(char*);
+    virtual int loggingCommonHistory(); virtual void setLogCommonHistory(int);
+    virtual void toggleLogCommonHistory(); virtual int loadState(char*);
+    virtual int saveState(char*); virtual int gleanState(int);
+    virtual int processMessage(void*); virtual int update(int);
+};
 struct NodeObj2 { char pad[0x14]; short id; };
 struct NodeObj { char pad0[8]; NodeObj2* type; char pad1[0x48-0xc]; char state; };
 struct Node { NodeObj* obj; Node* next; };
@@ -55,14 +63,14 @@ public:
 class TRIBE_Player : public RGE_Player {
 public:
     char pad04[0x28-4]; List* list; char pad2c[0x38-0x2c]; RGE_Visible_Map* visibleMap; RGE_Game_World* world; char pad40[0x4a-0x40]; short count; char pad4c[0x50-0x4c]; Stats* stats;
-    char pad54[0x228-0x54]; int update_count; int update_history_count; int updateCountNeedHelp; float update_time; AI* playerAI; char pad23c[0x83c-0x23c]; TRIBE_History_Info* history;
+    char pad54[0x228-0x54]; int update_count; int update_history_count; int updateCountNeedHelp; float update_time; TribeMainDecisionAIModule* playerAI; char pad23c[0x83c-0x23c]; TRIBE_History_Info* history;
     virtual void update();
 };
 #endif
 
 void TRIBE_Player::update()
 {
-    this->update_time = this->world->delta_time + this->update_time;
+    this->update_time = this->world->world_time_delta_seconds + this->update_time;
     while (this->update_time > DAT_00576824) {
         this->update_time = this->update_time - DAT_00576824;
         ++this->update_history_count;
@@ -102,7 +110,7 @@ void TRIBE_Player::update()
 ok:;
     }
     RGE_Player::update();
-    this->stats->cur = this->stats->cur - this->world->delta_time * this->stats->mult * this->stats->visible * DAT_00576840;
+        this->stats->cur = this->stats->cur - this->world->world_time_delta_seconds * this->stats->mult * this->stats->visible * DAT_00576840;
     if (this->stats->cur < DAT_00576830) this->stats->cur = 0.0f;
     int seed = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\tplayer.cpp", 0x25f);
     int old = debug_random_on;

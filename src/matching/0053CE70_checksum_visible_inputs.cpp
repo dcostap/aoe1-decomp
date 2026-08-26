@@ -4,12 +4,12 @@ public:
     virtual ~RGE_Visible_Map();
     char gap_0[0x30];
     int field_34;
-    int checksum_visible_inputs();
+    unsigned long checksum_visible_inputs();
 };
 #endif
 
-int RGE_Visible_Map::checksum_visible_inputs() {
-    int v = this->field_34;
+unsigned long RGE_Visible_Map::checksum_visible_inputs() {
+    unsigned long v = this->field_34;
     this->field_34 = 0;
     return v;
 }

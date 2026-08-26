@@ -5,7 +5,7 @@ public:
     char gap_04[4492];
     unsigned char quickStartGame_;
 
-    unsigned char quickStartGame() const;
+    unsigned char quickStartGame();
 };
 #endif
-unsigned char TRIBE_Game::quickStartGame() const { return this->quick_start_game; }
+unsigned char TRIBE_Game::quickStartGame() { return this->quick_start_game; }

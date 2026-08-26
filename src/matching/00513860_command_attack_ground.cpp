@@ -8,54 +8,54 @@
 void __cdecl free(void*);
 
 #ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
-class RGE_Static_Object;
-
-class SelectedObject {
+class RGE_Master_Static_Object;
+class RGE_Player;
+class RGE_Static_Object {
 public:
-    virtual void vf00(void);
-    virtual void vf04(void);
-    virtual void vf08(void);
-    virtual void vf0C(void);
-    virtual void vf10(void);
-    virtual void vf14(void);
-    virtual void vf18(void);
-    virtual void vf1C(void);
-    virtual void vf20(void);
-    virtual void vf24(void);
-    virtual void vf28(void);
-    virtual void vf2C(void);
-    virtual void vf30(void);
-    virtual void vf34(void);
-    virtual void vf38(void);
-    virtual void vf3C(void);
-    virtual void vf40(void);
-    virtual void vf44(void);
-    virtual void vf48(void);
-    virtual void vf4C(void);
-    virtual void vf50(void);
-    virtual void vf54(void);
-    virtual void vf58(void);
-    virtual void vf5C(void);
-    virtual void vf60(void);
-    virtual void vf64(void);
-    virtual void vf68(void);
-    virtual void vf6C(void);
-    virtual void vf70(void);
-    virtual void vf74(void);
-    virtual void vf78(void);
-    virtual void vf7C(void);
-    virtual void vf80(void);
-    virtual void vf84(void);
-    virtual void vf88(void);
-    virtual void vf8C(void);
-    virtual void vf90(void);
-    virtual void vf94(void);
-    virtual void vf98(void);
-    virtual void vf9C(void);
-    virtual void vfA0(void);
-    virtual void vfA4(void);
-    virtual void vfA8(void);
-    virtual void vfAC(void);
+    virtual ~RGE_Static_Object();
+    virtual void recycle_in_to_game(void*, RGE_Player*, float, float, float);
+    virtual void recycle_out_of_game();
+    virtual void draw(void*, short, short, void*);
+    virtual void shadow_draw(void*, short, short, unsigned char);
+    virtual void normal_draw(void*, short, short);
+    virtual void draw_front_frame(void*, short, short);
+    virtual void draw_back_frame(void*, short, short);
+    virtual void draw_frame(void*, short, short);
+    virtual unsigned char update();
+    virtual void check_damage_sprites();
+    virtual void rehook();
+    virtual void save(int);
+    virtual float teleport(float, float, float);
+    virtual void new_sprite(void*);
+    virtual void add_overlay_sprite(void*, unsigned char);
+    virtual void remove_overlay_sprite(void*);
+    virtual void change_ownership(RGE_Player*);
+    virtual void modify(float, unsigned char);
+    virtual void modify_delta(float, unsigned char);
+    virtual void modify_percent(float, unsigned char);
+    virtual void transform(void*);
+    virtual void copy_obj(void*);
+    virtual void set_object_state(unsigned char);
+    virtual void remove_visible_resource();
+    virtual void create_doppleganger_when_dying();
+    virtual void destroy_obj();
+    virtual void die_die_die();
+    virtual void damage(int, void*, float, RGE_Player*, RGE_Static_Object*);
+    virtual float calculateDamage(int, void*, float, RGE_Player*, RGE_Static_Object*);
+    virtual void rotate(long);
+    virtual unsigned char can_attack();
+    virtual void set_attribute(short, float);
+    virtual void set_attribute_amount(float, unsigned char, unsigned char);
+    virtual int heal(int, int);
+    virtual unsigned char heal(float);
+    virtual int canRepair();
+    virtual void notify_of_relation(long, unsigned char);
+    virtual void do_command(RGE_Static_Object*, float, float, float);
+    virtual void move_to(RGE_Static_Object*, float, float, float);
+    virtual void work(RGE_Static_Object*, float, float, float);
+    virtual void stop();
+    virtual void set_attack(RGE_Static_Object*);
+    virtual void play_command_sound();
 };
 
 class RGE_Command {
@@ -88,7 +88,7 @@ unsigned char TRIBE_Player::command_attack_ground(float x, float y) {
     short local_4[2];
 
     if (this->get_selected_objects_to_command(&list, local_4, 4, -1, -1, 4)) {
-        ((SelectedObject*)*list)->vfAC();
+        (*list)->play_command_sound();
         this->world->commands->command_attack_ground(list, local_4[0], x, y);
         free(list);
         return 1;

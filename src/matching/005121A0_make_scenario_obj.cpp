@@ -9,70 +9,71 @@ class TRIBE_Building_Object;
 
 class RGE_Player {
 public:
-    char gap_00[0x24];
+    virtual void update();
+    char gap_00[0x20];
     RGE_Static_Object_Type** object_types; // +0x24
 };
 
 class RGE_Static_Object_Type {
 public:
-    virtual void v00();
-    virtual void v04();
-    virtual void v08();
-    virtual void v0C();
-    virtual void v10();
-    virtual void v14();
+    virtual void load();
+    virtual void save();
+    virtual void setup();
+    virtual void clear();
+    virtual void reset();
+    virtual void initialize();
     virtual RGE_Static_Object* make_scenario_obj(RGE_Player* player, float x, float y, float z); // +0x18
     unsigned char object_group; // +0x04 (data layout for type records)
 };
 
 class RGE_Static_Object {
 public:
-    virtual void v00();
-    virtual void v04();
-    virtual void v08();
-    virtual void v0C();
-    virtual void v10();
-    virtual void v14();
-    virtual void v18();
-    virtual void v1C();
-    virtual void v20();
-    virtual void v24();
-    virtual void v28();
-    virtual void v2C();
-    virtual void v30();
-    virtual void v34();
-    virtual void v38();
-    virtual void v3C();
-    virtual void v40();
-    virtual void v44();
-    virtual void v48();
-    virtual void v4C();
-    virtual void v50();
-    virtual void v54();
-    virtual void v58();
-    virtual void v5C();
-    virtual void v60();
-    virtual void v64();
-    virtual void action_ge7(); // +0x68
-    virtual void action_3to6(); // +0x6C
-    virtual void v70();
-    virtual void v74();
-    virtual void v78();
-    virtual void v7C();
-    virtual void v80();
-    virtual void v84();
-    virtual void v88();
-    virtual void v8C();
-    virtual void v90();
-    virtual void v94();
-    virtual void v98();
-    virtual void v9C();
-    virtual void vA0();
-    virtual void vA4();
-    virtual void vA8();
-    virtual void vAC();
-    virtual void vB0();
-    virtual void action_range(float f); // +0xB4
+    virtual void destroy();
+    virtual void recycle_in_to_game();
+    virtual void recycle_out_of_game();
+    virtual void draw();
+    virtual void shadow_draw();
+    virtual void normal_draw();
+    virtual void draw_front_frame();
+    virtual void draw_back_frame();
+    virtual void draw_frame();
+    virtual void update();
+    virtual void check_damage_sprites();
+    virtual void rehook();
+    virtual void save(int);
+    virtual void teleport();
+    virtual void new_sprite();
+    virtual void add_overlay_sprite();
+    virtual void remove_overlay_sprite();
+    virtual void change_ownership();
+    virtual void modify();
+    virtual void modify_delta();
+    virtual void modify_percent();
+    virtual void transform();
+    virtual void copy_obj();
+    virtual void set_object_state();
+    virtual void remove_visible_resource();
+    virtual void create_doppleganger_when_dying();
+    virtual void destroy_obj(); // +0x68
+    virtual void die_die_die(); // +0x6C
+    virtual void damage();
+    virtual void calculateDamage();
+    virtual void rotate();
+    virtual void can_attack();
+    virtual void set_attribute();
+    virtual void set_attribute_amount();
+    virtual void heal();
+    virtual void canRepair();
+    virtual void notify_of_relation();
+    virtual void do_command();
+    virtual void move_to();
+    virtual void work();
+    virtual void stop();
+    virtual void set_attack();
+    virtual void play_command_sound();
+    virtual void play_move_sound();
+    virtual void minimumWeaponRange();
+    virtual void new_angle(float f); // +0xB4
     char gap_04[4];
     RGE_Static_Object_Type* type; // +0x08
     char gap_0C[0x35 - 0x0C];
@@ -86,7 +87,7 @@ public:
 
 class TRIBE_Player : public RGE_Player {
 public:
-    RGE_Static_Object* make_scenario_obj(float x, float y, float z, short type_id, unsigned char mode, float amount);
+    virtual RGE_Static_Object* make_scenario_obj(float x, float y, float z, short type_id, unsigned char mode, float amount);
 };
 #endif
 
@@ -99,18 +100,18 @@ RGE_Static_Object* TRIBE_Player::make_scenario_obj(float x, float y, float z, sh
     if (type) {
         obj = type->make_scenario_obj(this, x, y, z);
         if (mode >= 7) {
-            obj->action_ge7();
+            obj->destroy_obj();
         }
         else if (mode > 2) {
-            obj->action_3to6();
+            obj->die_die_die();
         }
         else {
-            unsigned char group = obj->type->object_group;
+            unsigned char group = (unsigned char)obj->master_obj->object_group;
             if (group > 0x1E && group < 0x5A) {
-                obj->action_range(amount);
+                obj->new_angle(amount);
             }
             else {
-                obj->field_35 = (unsigned char)(int)amount;
+                obj->facet = (unsigned char)(int)amount;
             }
         }
         if (this->object_types[type_id]->object_group == 0x50 && mode == 2) {

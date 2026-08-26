@@ -1,4 +1,4 @@
-class MouseClickInfo;
+struct MouseClickInfo;
 #ifndef TRIBEGAM_TU_CONTEXT
 class TRIBE_Screen_Game {
 public:
@@ -11,7 +11,7 @@ public:
     TRIBE_Screen_Game* game_screen;
 
     void SetClickTables(MouseClickInfo* p1, int p2, MouseClickInfo* p3, int p4);
-    void set_interface_messages();
+    virtual void set_interface_messages();
 };
 #endif
 
