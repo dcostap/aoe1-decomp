@@ -39,8 +39,20 @@
 // This recovered the proven 0x8C frame and 1568B code size; the current probe
 // is 1332B diff, 85.42% shape, 66.74% exact blocks, and 25/25 calls.
 // The direct population form emits pop then max in the original __ftol order.
+// Captain pass: direct player-member expressions replaced the short-lived p
+// alias. Grouped codegen stayed at 1332B, so the simplification is neutral.
+// Captain pass: the nested equality-guard basin was tested and worsened the
+// grouped diff to 1344B. The natural early-failure chain remains authoritative.
+// Captain pass: including tpnl_obj_context.h under the standalone guard fixes
+// validation without changing grouped output. Both checks remain 1332B apart.
+// The rebuilt call map uses vslot+240 for get_pierce_armor, while the oracle
+// uses vslot+244. This is a shared virtual-surface request, not a local cast.
 // Final unresolved source is natural and typed, with 25/25 ordered calls.
 // Structural reconstruction remains incomplete.
+
+#ifndef AOE1_TPNL_OBJ_CONTEXT_H
+#include "../../include/tpnl_obj_context.h"
+#endif
 
 #ifndef AOE1_TPNL_OBJ_CONTEXT_H
 struct tagRECT;
@@ -529,11 +541,11 @@ long TRIBE_Panel_Object::handle_idle()
         return 0;
     }
 
-    TRIBE_Player* p = this->player;
-    if ((p == 0 && this->game_obj != 0) ||
-        (p != 0 && p->object_130 != this->game_obj)) {
-        if (p != 0) {
-            this->set_object(p->object_130);
+    if ((this->player == 0 && this->game_obj != 0) ||
+        (this->player != 0 &&
+         this->player->object_130 != this->game_obj)) {
+        if (this->player != 0) {
+            this->set_object(this->player->object_130);
         } else {
             this->set_object(0);
         }

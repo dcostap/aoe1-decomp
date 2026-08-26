@@ -40,6 +40,12 @@
 //   exact size and frame. The direct-expression form stayed at diff 626. The
 //   winning form still missed the target stack homes and used an unsupported
 //   buffer width, so it was discarded and this clean source was restored.
+// - Captain pass: the scoped current_y form with a 104-byte buffer reproduced
+//   the exact 614-byte boundary and 0x94 frame. It is rejected because Ghidra
+//   identifies a 100-byte source buffer. The canonical 100-byte source stays.
+// - Captain pass: the authentic wrapper declares draw_score public, so it emits
+//   QAEXXZ instead of the packet's protected IAEXXZ owner. This needs a shared
+//   context-header access repair before an exact grouped claim is possible.
 
 #include <stdio.h>
 #include <string.h>
