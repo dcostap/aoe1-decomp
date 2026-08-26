@@ -6571,10 +6571,12 @@
         "0044CEF0": "src/matching/0044CEF0_set_current_campaign.cpp",
         "0044D050": "src/matching/0044D050_get_current_campaign.cpp",
         "0044D0C0": "src/matching/0044D0C0_get_current_scenario.cpp",
+        "0044D0F0": "src/matching/0044D0F0_set_current_scenario.cpp",
         "0044D130": "src/matching/0044D130_get_scenario_list.cpp",
         "0044D160": "src/matching/0044D160_notify_of_scenario_complete.cpp",
         "0044D180": "src/matching/0044D180_open_scenario.cpp",
         "0044D1A0": "src/matching/0044D1A0_RGE_Game_Info.cpp",
+        "0044D300": "src/matching/0044D300_RGE_Game_Info.cpp",
         "0044D3B0": "src/matching/0044D3B0_save.cpp",
         "0044D470": "src/matching/0044D470_find_campaigns.cpp",
         "0044D710": "src/matching/0044D710_add_new_person.cpp",
@@ -6631,7 +6633,9 @@
         "0044D9E0": "?get_current_player_name@RGE_Game_Info@@QAEPADXZ",
         "0044DA00": "?notify_of_scenario_complete@RGE_Game_Info@@QAEXXZ",
         "0044DA30": "?open_scenario@RGE_Game_Info@@QAEHXZ",
-        "0044DA50": "?remove_player@RGE_Game_Info@@QAEXJ@Z"
+        "0044DA50": "?remove_player@RGE_Game_Info@@QAEXJ@Z",
+        "0044D0F0": "?set_current_scenario@RGE_Person_Info@@QAEEJ@Z",
+        "0044D300": "??1RGE_Game_Info@@QAE@XZ"
       }
     },
     {
