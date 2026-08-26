@@ -37,29 +37,15 @@ public:
 #endif
 
 BaseObject::BaseObject()
+    : next(0), prev(0),
+      numberGroupsValue(0), groupIDValue(0),
+      categoryIDValue(-1), typeIDValue(-1), gameIDValue(-1),
+      xPositionValue(-1.0f), yPositionValue(-1.0f), zPositionValue(-1.0f),
+      xSizeValue(-1.0f), ySizeValue(-1.0f), zSizeValue(-1.0f),
+      hitPointValue(0), minHitPointValue(0), maxHitPointValue(0),
+      busyValue(0), currentTaskValue(-1), currentTargetValue(-1),
+      currentTargetTypeValue(-1), currentTargetXPositionValue(0.0f),
+      currentTargetYPositionValue(0.0f), currentTargetZPositionValue(0.0f)
 {
-    next = 0;
-    prev = 0;
-    numberGroupsValue = 0;
-    groupIDValue = 0;
-    categoryIDValue = -1;
-    typeIDValue = -1;
-    gameIDValue = -1;
-    xPositionValue = -1.0f;
-    yPositionValue = -1.0f;
-    zPositionValue = -1.0f;
-    xSizeValue = -1.0f;
-    ySizeValue = -1.0f;
-    zSizeValue = -1.0f;
-    hitPointValue = 0;
-    minHitPointValue = 0;
-    maxHitPointValue = 0;
-    busyValue = 0;
-    currentTaskValue = -1;
-    currentTargetValue = -1;
-    currentTargetTypeValue = -1;
-    currentTargetXPositionValue = 0.0f;
-    currentTargetYPositionValue = 0.0f;
-    currentTargetZPositionValue = 0.0f;
     strcpy(nameValue, "");
 }

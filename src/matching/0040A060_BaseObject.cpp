@@ -46,29 +46,15 @@ BaseObject::BaseObject(int a, int category, int type, int game, char* name,
     float xSize, float ySize, float zSize,
     float xPos, float yPos, float zPos,
     int hitPt, int minHit, int maxHit)
+    : next(0), prev(0), numberGroupsValue(1),
+      categoryIDValue(category), typeIDValue(type), gameIDValue(game),
+      xPositionValue(xPos), yPositionValue(yPos), zPositionValue(zPos),
+      xSizeValue(xSize), ySizeValue(ySize), zSizeValue(zSize),
+      hitPointValue(hitPt), minHitPointValue(minHit), maxHitPointValue(maxHit),
+      busyValue(0), currentTaskValue(-1), currentTargetValue(-1),
+      currentTargetTypeValue(-1), currentTargetXPositionValue(0.0f),
+      currentTargetYPositionValue(0.0f), currentTargetZPositionValue(0.0f)
 {
-    next = 0;
-    prev = 0;
-    categoryIDValue = category;
-    typeIDValue = type;
-    gameIDValue = game;
-    xPositionValue = xPos;
-    yPositionValue = yPos;
-    zPositionValue = zPos;
-    xSizeValue = xSize;
-    ySizeValue = ySize;
-    zSizeValue = zSize;
-    hitPointValue = hitPt;
-    minHitPointValue = minHit;
-    numberGroupsValue = 1;
-    maxHitPointValue = maxHit;
-    busyValue = 0;
-    currentTaskValue = -1;
-    currentTargetValue = -1;
-    currentTargetTypeValue = -1;
-    currentTargetXPositionValue = 0;
-    currentTargetYPositionValue = 0;
-    currentTargetZPositionValue = 0;
     groupIDValue = new int;
     groupIDValue[0] = a;
 

@@ -41,29 +41,21 @@ struct BaseObject {
 #endif
 
 BaseObject::BaseObject(const BaseObject& src)
+    : next(0), prev(0),
+      numberGroupsValue(src.numberGroupsValue),
+      categoryIDValue(src.categoryIDValue), typeIDValue(src.typeIDValue),
+      gameIDValue(src.gameIDValue),
+      xPositionValue(src.xPositionValue), yPositionValue(src.yPositionValue),
+      zPositionValue(src.zPositionValue), xSizeValue(src.xSizeValue),
+      ySizeValue(src.ySizeValue), zSizeValue(src.zSizeValue),
+      hitPointValue(src.hitPointValue), minHitPointValue(src.minHitPointValue),
+      maxHitPointValue(src.maxHitPointValue), busyValue(src.busyValue),
+      currentTaskValue(src.currentTaskValue), currentTargetValue(src.currentTargetValue),
+      currentTargetTypeValue(src.currentTargetTypeValue),
+      currentTargetXPositionValue(src.currentTargetXPositionValue),
+      currentTargetYPositionValue(src.currentTargetYPositionValue),
+      currentTargetZPositionValue(src.currentTargetZPositionValue)
 {
-    next = 0;
-    prev = 0;
-    numberGroupsValue = src.numberGroupsValue;
-    categoryIDValue = src.categoryIDValue;
-    typeIDValue = src.typeIDValue;
-    gameIDValue = src.gameIDValue;
-    xPositionValue = src.xPositionValue;
-    yPositionValue = src.yPositionValue;
-    zPositionValue = src.zPositionValue;
-    xSizeValue = src.xSizeValue;
-    ySizeValue = src.ySizeValue;
-    zSizeValue = src.zSizeValue;
-    hitPointValue = src.hitPointValue;
-    minHitPointValue = src.minHitPointValue;
-    maxHitPointValue = src.maxHitPointValue;
-    busyValue = src.busyValue;
-    currentTaskValue = src.currentTaskValue;
-    currentTargetValue = src.currentTargetValue;
-    currentTargetTypeValue = src.currentTargetTypeValue;
-    currentTargetXPositionValue = src.currentTargetXPositionValue;
-    currentTargetYPositionValue = src.currentTargetYPositionValue;
-    currentTargetZPositionValue = src.currentTargetZPositionValue;
     groupIDValue = (int*)operator_new(numberGroupsValue * 4);
     
     int i;
