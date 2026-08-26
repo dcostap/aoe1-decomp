@@ -42,6 +42,11 @@
 // - worker diagnostics: explicit scaled row-byte cursors, adjusted row-map
 //   bases, reversed count addition, and donor-shaped inner x-offset scope all
 //   broadened or duplicated the existing basin; restored the clean typed form.
+// - captain probe: restoring a named rowsMap alias reduced standalone drift to
+//   4 bytes, but the authentic grouped context produced 128 bytes and one
+//   boundary escape; restored the direct member form.
+// - captain probe: splitting the row-count increment produced identical code;
+//   restored the smaller combined initializer.
 // Final bounded result: natural typed reconstruction is 275B with the 0x10
 // frame, saved-register set, CFG, and all 94 instruction boundaries aligned;
 // only 4 bytes remain in one localized hunk at +0x96.  The threshold predicate

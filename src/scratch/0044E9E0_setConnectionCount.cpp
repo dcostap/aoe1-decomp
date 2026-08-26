@@ -70,6 +70,13 @@
 // - final validation: fresh grouped bytes remain an 8-byte stack-home swap.
 //   Original self homes are [esp+10h] and row offset [esp+14h]. VC5 emits
 //   those homes in reverse. The target has no direct or indirect calls.
+// - captain context pass: the PDB module is infmap.cpp, with lines 394-458
+//   spanning validation, nested scans, and the eight-direction switch. The
+//   target uses the InfluenceMap +0x04/+0x08 bounds, +0x0C/+0x10 references,
+//   +0x18 rows, and +0x20 count fields. Direct-this use, function-scope
+//   xOffset, split self assignment, and an explicit row-index local did not
+//   improve the 8-byte standalone result; the row-index probe widened it to
+//   374 bytes and was restored.
 // Accepted-drift audit: do not promote. The current source matches the
 // executable's rowValue, xReferencePointValue, and yReferencePointValue read
 // order. The remaining mismatch is only the compiler's stack-home choice.
