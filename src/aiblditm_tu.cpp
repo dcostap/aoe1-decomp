@@ -16,7 +16,7 @@
 #include "matching/004082F0_BuildItem.cpp"
 #include "matching/004083B0_BuildItem.cpp"
 #include "matching/00408470_BuildItem.cpp"
-#include "scratch/00408480_operator.cpp"
+#include "matching/00408480_operator.cpp"
 #include "matching/004084A0_operator.cpp"
 #include "scratch/004084C0_operator.cpp"
 #include "scratch/004084E0_operator.cpp"
