@@ -9,4 +9,4 @@ public:
 
 #endif
 
-int RGE_Map::get_map_height() { return this->field_C; }
+long RGE_Map::get_map_height() { return this->map_height; }

@@ -6645,8 +6645,8 @@
         "004568C0": "?clean_elevation@RGE_Map@@QAEXJJJJE@Z",
         "00457320": "?do_terrain_brush@RGE_Map@@UAEEJJJE@Z",
         "00457510": "?do_elevation_brush@RGE_Map@@UAEEJJJE@Z",
-        "00457750": "?do_cliff_brush@RGE_Map@@QAEEHHHH@Z",
-        "004578A0": "?map_generate@RGE_Map@@UAEXHHHH@Z",
+        "00457750": "?do_cliff_brush@RGE_Map@@UAEEJJEE@Z",
+        "004578A0": "?map_generate@RGE_Map@@UAEXPAVRGE_Player@@PAVRGE_Game_World@@PAURGE_Player_Info@@PAE@Z",
         "00459460": "?get_border@RGE_Map@@QAEEFF@Z",
         "004558B0": "?clear_map@RGE_Map@@QAEXPAVRGE_Player@@PAVRGE_Game_World@@EJJ@Z",
         "00455FF0": "?scenario_load@RGE_Map@@QAEXHPAE@Z"

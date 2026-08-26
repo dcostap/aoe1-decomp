@@ -2,9 +2,9 @@
 class RGE_Map {
 public:
     virtual ~RGE_Map();
-    int clean_border_tile(int p0, int p1, int p2);
+    long clean_border_tile(long p0, long p1, long (* const p2)[32]);
 };
 
 #endif
 
-int RGE_Map::clean_border_tile(int p0, int p1, int p2) { return -1; }
+long RGE_Map::clean_border_tile(long p0, long p1, long (* const p2)[32]) { return -1; }

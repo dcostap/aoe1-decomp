@@ -2,9 +2,11 @@
 class RGE_Map {
 public:
     virtual ~RGE_Map();
-    void map_generate(int p0, int p1, int p2, int p3);
+    virtual void map_generate(RGE_Player* p0, RGE_Game_World* p1,
+                              RGE_Player_Info* p2, unsigned char* p3);
 };
 
 #endif
 
-void RGE_Map::map_generate(int p0, int p1, int p2, int p3) {}
+void RGE_Map::map_generate(RGE_Player* p0, RGE_Game_World* p1,
+                           RGE_Player_Info* p2, unsigned char* p3) {}

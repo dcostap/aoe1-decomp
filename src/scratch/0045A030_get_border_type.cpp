@@ -85,14 +85,14 @@ void RGE_Map::get_border_type(short x, short y)
     if (y < yMax && x > 0) ter_bot_rgt = rows[y + 1][xi - 1].terrain_elevation & 0x1f; else ter_bot_rgt = ter_top_lft;
     if (y < yMax && xi < xMax) ter_final = rows[y + 1][xi + 1].terrain_elevation & 0x1f; else ter_final = ter_top_lft;
 
-    check_for_border(ter_top_lft, &ter_lft);
-    check_for_border(ter_top_lft, &tile);
-    check_for_border(ter_top_lft, &ter_rgt);
-    check_for_border(ter_top_lft, &ter_bot);
-    check_for_border(ter_top_lft, &ter_bot_lft);
-    check_for_border(ter_top_lft, &ter_top);
-    check_for_border(ter_top_lft, &ter_bot_rgt);
-    check_for_border(ter_top_lft, &ter_final);
+    check_for_border(ter_top_lft, ter_lft);
+    check_for_border(ter_top_lft, tile);
+    check_for_border(ter_top_lft, ter_rgt);
+    check_for_border(ter_top_lft, ter_bot);
+    check_for_border(ter_top_lft, ter_bot_lft);
+    check_for_border(ter_top_lft, ter_top);
+    check_for_border(ter_top_lft, ter_bot_rgt);
+    check_for_border(ter_top_lft, ter_final);
 
     unsigned char border_neighbor =
         ter_lft != ter_top_lft ? ter_lft :

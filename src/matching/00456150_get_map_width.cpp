@@ -9,4 +9,4 @@ public:
 
 #endif
 
-int RGE_Map::get_map_width() { return this->field_8; }
+long RGE_Map::get_map_width() { return this->map_width; }

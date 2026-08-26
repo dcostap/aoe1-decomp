@@ -36,12 +36,12 @@ public:
     void* game_world;
 
     void set_terrain(void* world, int x, int y, unsigned char terrain, int a, int b);
-    void clean_terrain(int x1, int y1, int x2, int y2, unsigned char terrain);
+    void clean_terrain(long x1, long y1, long x2, long y2, unsigned char terrain);
 };
 
 #endif
 
-void RGE_Map::clean_terrain(int x1, int y1, int x2, int y2, unsigned char terrain)
+void RGE_Map::clean_terrain(long x1, long y1, long x2, long y2, unsigned char terrain)
 {
     short map_width = (short)this->map_width;
     short offset_nw = (short)(-1 - map_width);

@@ -28,18 +28,18 @@ public:
     unsigned char gap_after_terrain[0xDA];
     RGE_Border_Set border_types[16];
 
-    void check_for_border(unsigned char param_1, unsigned char* param_2);
+    void check_for_border(unsigned char param_1, unsigned char& param_2);
 };
 
 #endif
 
-void RGE_Map::check_for_border(unsigned char param_1, unsigned char* param_2)
+void RGE_Map::check_for_border(unsigned char param_1, unsigned char& param_2)
 {
-    if (*param_2 == param_1) {
+    if (param_2 == param_1) {
         return;
     }
-    short border = this->terrain_types[param_1].borders[*param_2];
+    short border = this->terrain_types[param_1].borders[param_2];
     if (border == -1 || border < 0 || border >= 0x10 || this->border_types[border].loaded == 0) {
-        *param_2 = param_1;
+        param_2 = param_1;
     }
 }

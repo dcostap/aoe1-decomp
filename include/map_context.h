@@ -10,6 +10,7 @@ class TShape;
 class RGE_Sound;
 class RGE_Player;
 class RGE_Game_World;
+struct RGE_Player_Info;
 class RGE_Map;
 class RGE_Static_Object;
 class RGE_RMM_Database_Controller;
@@ -290,6 +291,7 @@ class RGE_Map {
 public:
     RGE_Map(int, RGE_Sound**, unsigned char);
     RGE_Map(char*, char*, char*, short, short, short, RGE_Sound**);
+    RGE_Map(RGE_Game_World*, long, long);
     virtual ~RGE_Map();
     virtual void data_load_random_map(int file);
     virtual void load_random_map(char*, char*, char*, char*);
@@ -302,9 +304,9 @@ public:
     virtual unsigned char do_cliff_brush(long, long, unsigned char, unsigned char);
     virtual unsigned char do_cliff_brush_stroke(long, long, long, long,
                                                  unsigned char, unsigned char);
-    virtual void map_generate(int, int, int, int);
+    virtual void map_generate(RGE_Player*, RGE_Game_World*, RGE_Player_Info*,
+                              unsigned char*);
     virtual void map_generate2(RGE_Game_World*, long, long, unsigned char, long);
-
     RGE_Tile* map;
     union {
         int map_width;
@@ -376,14 +378,12 @@ public:
     void set_map_screen_pos(int, int, int, int);
     void scenario_save(int);
     void scenario_load(int, unsigned char*);
-    int give_up_map_offsets();
-    int get_map_width();
-    int get_map_height();
-    void clean_terrain(int, int, int, int, unsigned char);
-    void clean_borders(int, int, int, int);
-    int clean_border_tile(int, int, int);
-    unsigned char do_cliff_brush(int, int, int, int);
-    void map_generate(RGE_Player*, RGE_Game_World*, void*, unsigned char*);
+    RGE_Tile** give_up_map_offsets();
+    long get_map_width();
+    long get_map_height();
+    void clean_terrain(long, long, long, long, unsigned char);
+    void clean_borders(long, long, long, long);
+    long clean_border_tile(long, long, long (* const)[32]);
     void map_generate2(void*, long, long, unsigned char, long);
     void load_map(int);
     void save_map(int);
@@ -411,7 +411,7 @@ public:
     unsigned char get_terrain(short, short);
     unsigned char get_border(short, short);
     void set_terrain_passablity(short, short, short, short, unsigned char);
-    void check_for_border(unsigned char, unsigned char*);
+    void check_for_border(unsigned char, unsigned char&);
     void get_border_type(short, short);
     void set_terrain(RGE_Game_World*, short, short, unsigned char, int, int);
     void set_terrain_absolute(RGE_Game_World*, short, short, unsigned char, int,
@@ -420,7 +420,7 @@ public:
                      unsigned char, unsigned char, int);
     unsigned char get_tile_type(short, short);
     void update(unsigned long time);
-    void get_point(short*, short*, float, float, float, int, int);
+    void get_point(short&, short&, float, float, float, short, short);
 };
 
 #endif

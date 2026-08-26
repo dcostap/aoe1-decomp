@@ -9,4 +9,4 @@ public:
 
 #endif
 
-int RGE_Map::give_up_map_offsets() { return this->field_8D8C; }
+RGE_Tile** RGE_Map::give_up_map_offsets() { return this->map_row_offset; }
