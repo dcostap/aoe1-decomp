@@ -99,6 +99,14 @@
 //   state created by non-exact predecessor reconstructions.
 // - The safe exact group boundary is 004B8B50-004B9070. Keep this owner
 //   standalone until 004B9140 and 004B9440 recover their original source state.
+// shard_05 fresh captain pass (2026-08-26):
+// - Coordinator-repaired grouped baseline remains 253/254 bytes with 73
+//   differing bytes. The current source is exact only outside this full TU.
+// - A local typed 256-byte table view was codegen-worse: the target stayed at
+//   73 differing bytes and the later exact 004BA9E0 owner regressed by 98 bytes.
+//   The type was removed.
+// - A function-scope unsigned count reused by both packet arms worsened the
+//   target to 80 differing bytes. The natural scoped count form is restored.
 
 #include "../../include/shape_context.h"
 
