@@ -65,6 +65,12 @@
 //          in the registered context keeps the key buffer and calls correct,
 //          but allocates the short homes and quotient spill four bytes later.
 //          A 260-byte array fixes only the frame and is not valid source.
+// 32: Restored the overloaded set_rect slot in the narrow fallback surface.
+//     This fixes the standalone set_redraw target from vslot +1C to +20 and
+//     reduces the standalone diff to 127 bytes with all 13 calls aligned.
+// 33: A grouped-only owner surface fixed the +20/+78 reads but changed the
+//     following exact owner. It was rejected. The natural source keeps the
+//     set_rect ABI repair and have_focus alias; grouped context remains open.
 
 #ifndef RGE_MAIN_VIEW_SHARED_CONTEXT
 typedef unsigned char uchar;
@@ -147,6 +153,7 @@ public:
     virtual ~RGE_Main_View();
     virtual void setup(void*, RGE_Main_View*, long, long, long, long,
                        uchar);
+    virtual void set_rect(void*);
     virtual void set_rect(long, long, long, long);
     virtual void set_color(uchar);
     virtual void set_active(int);
@@ -158,7 +165,7 @@ public:
     char gap_04[0x1C];
     TDrawArea* render_area;
     char gap_24[0x54];
-    int active;
+    union { int active; int have_focus; };
     char gap_7C[0x84];
     RGE_Player* player;
     char gap_104[0x25C];
@@ -185,7 +192,7 @@ int RGE_Main_View::handle_keys()
     if (rge_base_game->get_paused() == 0 &&
         (rge_base_game->prog_mode == 4 || rge_base_game->prog_mode == 6 ||
          rge_base_game->prog_mode == 7 || rge_base_game->prog_mode == 5) &&
-        GetForegroundWindow() == this->render_area->Wnd && this->active != 0) {
+        GetForegroundWindow() == this->render_area->Wnd && this->have_focus != 0) {
         changed = 0;
         GetKeyboardState(keys + 4);
         horz_scroll = 0;

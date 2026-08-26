@@ -11,6 +11,8 @@
 // Exact-finish: the typed DisplaySelectedObjRec fields and natural loop shape
 // reproduce the complete body. The proven +0x354 and +0x35C members stay in
 // this narrow owner view; no unsupported class surface is added.
+// BINARY NOTE: A pointer alias to the list member keeps VC5's list load in EAX in the
+// shared TU. Direct inherited-member use caches it in EBX and escapes by 2 bytes.
 
 #ifndef RGE_MAIN_VIEW_SHARED_CONTEXT
 class DisplaySelectedObjRec {
@@ -34,11 +36,12 @@ public:
 #endif
 
 void RGE_Main_View::reset_display_object_selection(int select_type) {
+    DisplaySelectedObjRec** list = &this->DispSel_List;
     int iVar3 = 0;
     if (0 < this->DispSel_List_Max) {
         int iVar2 = 0;
         do {
-            int* piVar1 = (int*)((char*)this->DispSel_List + iVar2);
+            int* piVar1 = (int*)((char*)*list + iVar2);
             if ((piVar1[0] == 1) && (piVar1[4] == select_type)) {
                 piVar1[2] = piVar1[2] - piVar1[3];
             }

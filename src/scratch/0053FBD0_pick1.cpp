@@ -63,6 +63,9 @@
 // at exact size with 74.36% shape similarity. These variants did not recover
 // the original 8-byte frame or its BP/BX exclude-screen register pair.
 // Open: source-level cause of the remaining local-home rotation is unknown.
+// TU pass: using owner_type restores the proven +48h field without a source
+// fork. A grouped-only render-rectangle view reduced the diff to 548 bytes,
+// but it was rejected. The shared RGE_View layout needs a reviewed +8Ch field.
 
 #ifndef RGE_MAIN_VIEW_SHARED_CONTEXT
 typedef unsigned char byte;
@@ -111,7 +114,7 @@ public:
     float x;
     float y;
     char gap40[8];
-    union { byte owner; byte owner_id; };
+    union { byte owner; byte owner_id; byte owner_type; };
 };
 
 class RGE_Visible_Map {
@@ -243,7 +246,7 @@ byte RGE_Main_View::pick1(byte cmd, byte small, long x, long y, PickInfo* out, R
             for (int i = 0; i < y; ++i, ++p) {
                 if (p->id >= 0) {
                     RGE_Static_Object* obj = this->world->objects[p->id];
-                    if (obj && obj->owner_id < 7 && obj->master_obj->select_level >= small) {
+                    if (obj && obj->owner_type < 7 && obj->master_obj->select_level >= small) {
                         if (alt || this->map->flag || this->pick_through_fog(obj) ||
                             this->player->visible->get_visible((int)obj->x, (int)obj->y) == 0x0f) {
                             int s = this->pick_weight(obj, p->confidence);
@@ -275,7 +278,7 @@ byte RGE_Main_View::pick1(byte cmd, byte small, long x, long y, PickInfo* out, R
             for (int j = 0; j < y; ++j, ++p) {
                 if (p->id >= 0) {
                     RGE_Static_Object* obj = this->world->objects[p->id];
-                    if (obj && obj->owner_id < 7 && obj->master_obj->select_level >= small) {
+                    if (obj && obj->owner_type < 7 && obj->master_obj->select_level >= small) {
                         int s = this->pick_weight(obj, p->confidence);
                         if (s > 0 && (alt || this->map->flag || this->pick_through_fog(obj) ||
                                       this->player->visible->get_visible((int)obj->x, (int)obj->y) == 0x0f)) {

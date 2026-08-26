@@ -28,6 +28,9 @@
 //   found an exact pointer/count loop, but the indexed form is simpler.
 // - Walkback: removing the unused memset declaration and using post-increment
 //   remain exact. Changing either loop bound to `< master_obj` is non-exact.
+// - TU pass: the shared master-object surface places tasks at +90h, while the
+//   target reads +D8h. A grouped-only offset surface was rejected. Request a
+//   reviewed shared ABI repair before reopening this owner.
 
 extern "C" void __cdecl free(void*);
 
