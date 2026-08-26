@@ -60,29 +60,32 @@ public:
     short curr_player; // +0x7C
 };
 
+class RGE_Scenario;
+class RGE_Scenario_Header;
+
 class RGE_Base_Game {
 public:
     virtual ~RGE_Base_Game();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
-    virtual void vf20();
-    virtual void vf24();
-    virtual void vf28();
-    virtual void vf2C();
-    virtual void vf30();
-    virtual void vf34();
-    virtual void vf38();
-    virtual void vf3C();
-    virtual void vf40();
-    virtual void vf44();
-    virtual void vf48();
-    virtual void vf4C();
-    virtual void vf50();
+    virtual int run();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual void set_prog_mode(int);
+    virtual void set_game_mode(int, int);
+    virtual void set_player(short);
+    virtual int get_error_code();
+    virtual char* get_string(int, long, char*, int);
+    virtual char* get_string(long, char*, int);
+    virtual char* get_string(long);
+    virtual void language(int, int, int, char*, int);
+    virtual TPanel* get_view_panel();
+    virtual TPanel* get_map_panel();
+    virtual RGE_Scenario_Header* new_scenario_header(RGE_Scenario*);
+    virtual RGE_Scenario_Header* new_scenario_header(int);
+    virtual RGE_Scenario* new_scenario_info(int);
+    virtual void notification(int, long, long, long, long);
+    virtual int reset_comm();
+    virtual void send_game_options();
+    virtual void receive_game_options();
+    virtual char* gameSummary();
     virtual int processCheatCode(int player, char* text);
 
     char gap_04[0x1AC];

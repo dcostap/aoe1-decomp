@@ -54,11 +54,62 @@ public:
     char gap_24[0xD8 - 0x24];
     union { long failed; long error_code; long error_flag; long error; long field_D8; };
     char gap_DC[0xF4 - 0xDC];
-    long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char);
-    void set_positioning(int, long, long, long, long, long, long, long, long,
-                         TPanel*, TPanel*, TPanel*, TPanel*);
-    void draw_rect2(unsigned char);
-    void draw_setup(int);
+    virtual long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char);
+    virtual void set_rect(tagRECT);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_color(unsigned char);
+    virtual void set_active(int);
+    virtual void set_positioning(int, long, long, long, long, long, long, long, long,
+                                 TPanel*, TPanel*, TPanel*, TPanel*);
+    virtual void set_fixed_position(long, long, long, long);
+    virtual void set_redraw(int);
+    virtual void set_overlapped_redraw(TPanel*, TPanel*, int);
+    virtual void draw_setup(int);
+    virtual void draw_finish();
+    virtual void draw();
+    virtual void draw_rect(tagRECT*);
+    virtual void draw_offset(long, long, tagRECT*);
+    virtual void draw_rect2(tagRECT*);
+    virtual void draw_offset2(long, long, tagRECT*);
+    virtual void paint();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual long handle_idle();
+    virtual long handle_size(long, long);
+    virtual long handle_paint();
+    virtual long handle_key_down(long, short, int, int, int);
+    virtual long handle_char(long, short);
+    virtual long handle_command(unsigned int, long);
+    virtual long handle_user_command(unsigned int, long);
+    virtual long handle_timer_command(unsigned int, long);
+    virtual long handle_scroll(long, long);
+    virtual long handle_mouse_down(unsigned char, long, long, int, int);
+    virtual long handle_mouse_move(long, long, int, int);
+    virtual long handle_mouse_up(unsigned char, long, long, int, int);
+    virtual long handle_mouse_dbl_click(unsigned char, long, long, int, int);
+    virtual long mouse_move_action(long, long, int, int);
+    virtual long mouse_left_down_action(long, long, int, int);
+    virtual long mouse_left_hold_action(long, long, int, int);
+    virtual long mouse_left_move_action(long, long, int, int);
+    virtual long mouse_left_up_action(long, long, int, int);
+    virtual long mouse_left_dbl_click_action(long, long, int, int);
+    virtual long mouse_right_down_action(long, long, int, int);
+    virtual long mouse_right_hold_action(long, long, int, int);
+    virtual long mouse_right_move_action(long, long, int, int);
+    virtual long mouse_right_up_action(long, long, int, int);
+    virtual long mouse_right_dbl_click_action(long, long, int, int);
+    virtual long key_down_action(long, short, int, int, int);
+    virtual long char_action(long, short);
+    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    virtual void get_true_render_rect(tagRECT*);
+    virtual int is_inside(long, long);
+    virtual void set_focus(int);
+    virtual void set_tab_order(TPanel*, TPanel*);
+    virtual void set_tab_order(TPanel**, short);
+    virtual unsigned char get_help_info(char**, long*, long, long);
+    virtual void stop_sound_system();
+    virtual int restart_sound_system();
+    virtual void take_snapshot();
+    virtual void handle_reactivate();
 };
 
 class RGE_Base_Game {
@@ -87,20 +138,63 @@ public:
 
 class TTextPanelBase {
 public:
-    virtual void vf00(); virtual void vf01(); virtual void vf02(); virtual void vf03();
-    virtual void vf04(); virtual void vf05(); virtual void vf06(); virtual void vf07();
-    virtual void vf08(); virtual void vf09(); virtual void vf10(); virtual void vf11();
-    virtual void vf12(); virtual void vf13(); virtual void vf14(); virtual void vf15();
-    virtual void vf16(); virtual void vf17(); virtual void vf18(); virtual void vf19();
-    virtual void vf20(); virtual void vf21(); virtual void vf22(); virtual void vf23();
-    virtual void vf24(); virtual void vf25(); virtual void vf26(); virtual void vf27();
-    virtual void vf28(); virtual void vf29(); virtual void vf30(); virtual void vf31();
-    virtual void vf32(); virtual void vf33(); virtual void vf34(); virtual void vf35();
-    virtual void vf36(); virtual void vf37(); virtual void vf38(); virtual void vf39();
-    virtual void vf40(); virtual void vf41(); virtual void vf42(); virtual void vf43();
-    virtual void vf44(); virtual void vf45(); virtual void vf46(); virtual void vf47();
-    virtual void vf48(); virtual void vf49(); virtual void vf50(); virtual void vf51();
-    virtual void vf52(); virtual void vf53(); virtual void vf54(); virtual void vf55();
+    virtual ~TTextPanelBase();
+    virtual long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char);
+    virtual void set_rect(tagRECT);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_color(unsigned char);
+    virtual void set_active(int);
+    virtual void set_positioning(int, long, long, long, long, long, long, long, long,
+                                 TPanel*, TPanel*, TPanel*, TPanel*);
+    virtual void set_fixed_position(long, long, long, long);
+    virtual void set_redraw(int);
+    virtual void set_overlapped_redraw(TPanel*, TPanel*, int);
+    virtual void draw_setup(int);
+    virtual void draw_finish();
+    virtual void draw();
+    virtual void draw_rect(tagRECT*);
+    virtual void draw_offset(long, long, tagRECT*);
+    virtual void draw_rect2(tagRECT*);
+    virtual void draw_offset2(long, long, tagRECT*);
+    virtual void paint();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual long handle_idle();
+    virtual long handle_size(long, long);
+    virtual long handle_paint();
+    virtual long handle_key_down(long, short, int, int, int);
+    virtual long handle_char(long, short);
+    virtual long handle_command(unsigned int, long);
+    virtual long handle_user_command(unsigned int, long);
+    virtual long handle_timer_command(unsigned int, long);
+    virtual long handle_scroll(long, long);
+    virtual long handle_mouse_down(unsigned char, long, long, int, int);
+    virtual long handle_mouse_move(long, long, int, int);
+    virtual long handle_mouse_up(unsigned char, long, long, int, int);
+    virtual long handle_mouse_dbl_click(unsigned char, long, long, int, int);
+    virtual long mouse_move_action(long, long, int, int);
+    virtual long mouse_left_down_action(long, long, int, int);
+    virtual long mouse_left_hold_action(long, long, int, int);
+    virtual long mouse_left_move_action(long, long, int, int);
+    virtual long mouse_left_up_action(long, long, int, int);
+    virtual long mouse_left_dbl_click_action(long, long, int, int);
+    virtual long mouse_right_down_action(long, long, int, int);
+    virtual long mouse_right_hold_action(long, long, int, int);
+    virtual long mouse_right_move_action(long, long, int, int);
+    virtual long mouse_right_up_action(long, long, int, int);
+    virtual long mouse_right_dbl_click_action(long, long, int, int);
+    virtual long key_down_action(long, short, int, int, int);
+    virtual long char_action(long, short);
+    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    virtual void get_true_render_rect(tagRECT*);
+    virtual int is_inside(long, long);
+    virtual void set_focus(int);
+    virtual void set_tab_order(TPanel*, TPanel*);
+    virtual void set_tab_order(TPanel**, short);
+    virtual unsigned char get_help_info(char**, long*, long, long);
+    virtual void stop_sound_system();
+    virtual int restart_sound_system();
+    virtual void take_snapshot();
+    virtual void handle_reactivate();
     // The executable puts the char** overload at +0xE0 and char* at +0xE8.
     // A distinct recovery name prevents VC5 from regrouping both overloads.
     virtual void set_text_list(char** text, short id);
@@ -108,8 +202,8 @@ public:
 
 class TTextPanel : public TTextPanelBase {
 public:
-    virtual void vf57();
     virtual void set_text(char* text);
+    virtual void set_text(long text);
     virtual void set_bevel_info(int, int, int, int, int, int, int); // +0xEC
     char gap_004[0xD4];
     union { long field_D8; long error_code; };
@@ -186,27 +280,43 @@ public:
         FormatSingleLine = 0,
         FormatMultiLine = 7
     };
-    virtual void vf00(); virtual void vf04(); virtual void vf08(); virtual void vf0C();
-    virtual void vf10(); virtual void vf14(); virtual void vf18(); virtual void vf1C();
-    virtual void vf20(); virtual void vf24(); virtual void vf28(); virtual void vf2C();
-    virtual void vf30(); virtual void vf34(); virtual void vf38(); virtual void vf3C();
-    virtual void vf40(); virtual void vf44(); virtual void vf48(); virtual void vf4C();
-    virtual void vf50(); virtual void vf54(); virtual void vf58(); virtual void vf5C();
-    virtual void vf60(); virtual void vf64(); virtual void vf68(); virtual void vf6C();
-    virtual void vf70(); virtual void vf74(); virtual void vf78(); virtual void vf7C();
-    virtual void vf80(); virtual void vf84(); virtual void vf88(); virtual void vf8C();
-    virtual void vf90(); virtual void vf94(); virtual void vf98(); virtual void vf9C();
-    virtual void vfA0(); virtual void vfA4(); virtual void vfA8(); virtual void vfAC();
-    virtual void vfB0(); virtual void vfB4(); virtual void vfB8(); virtual void vfBC();
-    virtual void vfC0(); virtual void vfC4(); virtual void vfC8(); virtual void vfCC();
-    virtual void vfD0(); virtual void vfD4(); virtual void vfD8(); virtual void vfDC();
-    virtual void vfE0(); virtual void vfE4(); virtual void vfE8();
+    virtual ~TInputPanel();
+    virtual void setup_panel(); virtual void set_rect_by_rect_panel();
+    virtual void set_rect_by_bounds_panel(); virtual void set_color_panel();
+    virtual void set_active_panel(); virtual void set_positioning_panel();
+    virtual void set_fixed_position_panel(); virtual void set_redraw_panel();
+    virtual void set_overlapped_redraw_panel(); virtual void draw_setup_panel();
+    virtual void draw_finish_panel(); virtual void draw_panel();
+    virtual void draw_rect_panel(); virtual void draw_offset_panel();
+    virtual void draw_rect2_panel(); virtual void draw_offset2_panel();
+    virtual void paint_panel(); virtual void wnd_proc_panel();
+    virtual void handle_idle_panel(); virtual void handle_size_panel();
+    virtual void handle_paint_panel(); virtual void handle_key_down_panel();
+    virtual void handle_char_panel(); virtual void handle_command_panel();
+    virtual void handle_user_command_panel(); virtual void handle_timer_command_panel();
+    virtual void handle_scroll_panel(); virtual void handle_mouse_down_panel();
+    virtual void handle_mouse_move_panel(); virtual void handle_mouse_up_panel();
+    virtual void handle_mouse_dbl_click_panel(); virtual void mouse_move_action_panel();
+    virtual void mouse_left_down_action_panel(); virtual void mouse_left_hold_action_panel();
+    virtual void mouse_left_move_action_panel(); virtual void mouse_left_up_action_panel();
+    virtual void mouse_left_dbl_click_panel(); virtual void mouse_right_down_action_panel();
+    virtual void mouse_right_hold_action_panel(); virtual void mouse_right_move_action_panel();
+    virtual void mouse_right_up_action_panel();
+    virtual void mouse_right_dbl_click_panel(); virtual void key_down_action_panel();
+    virtual void char_action_panel(); virtual void action_panel();
+    virtual void get_true_render_rect_panel(); virtual void is_inside_panel();
+    virtual void set_focus_panel(); virtual void set_tab_order_panel();
+    virtual void set_tab_order_index(); virtual void get_help_info_panel();
+    virtual void stop_sound_system_panel(); virtual void restart_sound_system_panel();
+    virtual void take_snapshot_panel(); virtual void handle_reactivate_panel();
+    virtual void set_text_list(char**, short);
+    virtual void set_text(long);
+    virtual void set_text(char*);
     virtual void set_bevel_info(int, int, int, int, int, int, int);
     char gap_004[0xD4];
     long field_D8;
     char gap_0DC[0xDC];
     TInputPanel();
-    ~TInputPanel();
     long setup(TDrawArea*, TPanel*, long, long, long, long, void*, long, long,
                char*, long, char, char, int, int, short, TDigital*, char*, FormatType);
     void set_text_color(unsigned long, unsigned long);
