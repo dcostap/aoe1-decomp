@@ -54,6 +54,9 @@
 //   getter sequence. The next useful approach is local stack-home reduction.
 // - Unresolved: exact codegen still differs. The first mismatch is the
 //   old-panel and this-pointer home assignment at +0x1B.
+// - BINARY NOTE: when expected decorated-symbol metadata is absent, the grouped
+//   audit falls back to the short name and sees four load_game names. A
+//   validated metadata request is ?load_game@TRIBE_Game@@QAEHPAD@Z at 00526170.
 
 #include <stdio.h>
 #include <string.h>
