@@ -34,6 +34,20 @@
 // Continuation: direct grouped scr_sed context with long selection outputs kept the same merged case-6/case-9 tail; it is not the PDB scr_sed2 owner.
 // Continuation: declaration-order and four-byte-width variants were codegen duplicates. Branch-local selected-object pointers separated tails but changed the proven amount/object topology and remained non-exact.
 // Continuation: validate_translation_units.py reports unrelated manifest issues. Use direct grouped validation for this target. Do not edit config/translation_units.json.
+// Context gate:
+//   PROVED: PDB module is scr_sed2.cpp, source lines 476-631, with one body at 004AE070-004AE5CE.
+//   PROVED: the decorated owner is protected TRIBE_Screen_Sed::save_victory_cond_in_scenario(int).
+//   PROVED: address order is the two flag stores, four dropdown reads, selection-area copy,
+//           clear call, then switch cases 1-18 and the shared return tails.
+//   PROVED: anchors are direct calls at 004AE07F, 004AE0A0, 004AE14A, 004AE181, and the
+//           SetSPVictoryType/SetSPObject pairs at 004AE1C2-004AE1EE, 004AE364-004AE394,
+//           and 004AE442-004AE472.
+//   LIKELY: the typed screen, world, scenario, dropdown, and selection-area declarations in
+//           scr_sed2_context.h are the original source context; all other ambient declarations are unknown.
+//   UNKNOWN: the original source form that prevents VC5 from merging the case-6 and case-9
+//            setter tails while preserving the observed amount/player/object register homes.
+// Candidate TU result: 18/18 existing owners MATCH; observed 004AE070 remains MISMATCH at 771 bytes,
+// with 2 relocation-target mismatches and no boundary escape.
 
 #include "../../include/scr_sed2_context.h"
 
