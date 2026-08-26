@@ -29,7 +29,7 @@ void RGE_Action_Object::move_to(RGE_Static_Object* target, float x, float y, flo
             }
 
             if (action != 0) {
-                this->set_action(action);
+                this->set_only_action(action);
             }
             this->command_flag = this->command_flag + 1;
         }
