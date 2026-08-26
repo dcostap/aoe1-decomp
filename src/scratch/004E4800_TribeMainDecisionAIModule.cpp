@@ -1,6 +1,14 @@
 // 004E4800 TribeMainDecisionAIModule::TribeMainDecisionAIModule
 // Attempt log:
 // 1: natural constructor with member subobject ctors and initialization from packet.
+// 2: replaced the AIModule-only base call with the binary-proven
+//    MainDecisionAIModule constructor; all 46 direct targets now align.
+// 3: added the canonical AIModule gap, MainDecision fields, and virtual
+//    declarations.  Output stayed at 50 differing bytes.
+// 4: novtable probes on the derived, MainDecision, and AIModule classes were
+//    restored.  They removed or moved the vptr code and worsened the result.
+// BINARY NOTE: the shipped constructor stores the derived vptr at +0x155,
+//    after field initialization.  VC5 emits that store at +0xF7 here.
 
 #ifndef AOE1_TAIMDMD_CONTEXT_H
 class TRIBE_Player;
@@ -10,9 +18,27 @@ extern "C" void* memset(void*, int, unsigned int);
 class AIModule {
 public:
     virtual ~AIModule();
+    char gap_04[0xEC];
     AIModule(void* p1, int p2, void* player);
     void setPlayer(int p2, char* p3);
     void setLogCommonHistory(int v);
+};
+
+class MainDecisionAIModule : public AIModule {
+public:
+    TRIBE_Player* player;
+    void* objects_value;
+    int objects_numberValue;
+    int objects_pad_FC;
+    int objects_maximumSizeValue;
+    virtual ~MainDecisionAIModule();
+    virtual void setLogHistory(int);
+    virtual int save(int);
+    virtual int addObject(void*);
+    virtual int removeObject(int);
+    virtual int objectGroupThatCanPerformAction(int);
+    virtual int canPerformAction(int, int);
+    MainDecisionAIModule(void* p1, int p2, TRIBE_Player* player);
 };
 
 class TribeBuildAIModule : public AIModule { public: char pad[0x5C0 - sizeof(AIModule)]; TribeBuildAIModule(void*, int); void setMainDecisionAI(void*); };
@@ -25,9 +51,9 @@ class TribeStrategyAIModule : public AIModule { public: char pad[0x5F8 - sizeof(
 class TribeTacticalAIModule : public AIModule { public: char pad[0x100C - sizeof(AIModule)]; TribeTacticalAIModule(void*, int); void setMainDecisionAI(void*); };
 class TradeAIModule : public AIModule { public: char pad[0x0F4 - sizeof(AIModule)]; TradeAIModule(void*, int); void setMainDecisionAI(void*); };
 
-class TribeMainDecisionAIModule : public AIModule {
+class TribeMainDecisionAIModule : public MainDecisionAIModule {
 public:
-    char gap_base[0x104 - sizeof(AIModule)];
+    virtual ~TribeMainDecisionAIModule();
     TribeBuildAIModule buildAI; // +104
     TribeConstructionAIModule constructionAI; // +6c4
     DiplomacyAIModule diplomacyAI; // +9dc
@@ -58,11 +84,7 @@ public:
 #endif
 
 TribeMainDecisionAIModule::TribeMainDecisionAIModule(void* p1, int p2, char* p3, TRIBE_Player* player, char* p5, char* p6, char* p7)
-#ifdef AOE1_TAIMDMD_CONTEXT_H
     : MainDecisionAIModule(p1, p2, player),
-#else
-    : AIModule(p1, p2, player),
-#endif
       buildAI(p1, p2),
       constructionAI(p1, p2),
       diplomacyAI(p1, p2),

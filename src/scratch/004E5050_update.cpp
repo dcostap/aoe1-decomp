@@ -55,6 +55,10 @@
 // tested world aliases, outer array scope, and two more scan-label forms; they
 // changed reload order, constructor CFG, or size without a strict gain.
 // final pass: 16 fresh structural probes; current clean validation is pending.
+// Captain pass: the no-ally tribute-tail call was tested with a shared
+// setTributeChat label and restored.  It added a call and worsened the CFG.
+// A block-local player alias was also tested and restored; it widened register
+// drift from 2688 to 2709 bytes.  The clean source remains authoritative.
 
 #ifndef AOE1_TAIMDMD_CONTEXT_H
 #include <stdlib.h>

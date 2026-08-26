@@ -3,6 +3,12 @@
 // FLAGS: /GX
 // Attempt log:
 // initial natural constructor reconstruction using known subobject offsets and /GX EH context.
+// 2: renamed all nine setup calls to the binary-proven setMainDecisionAI
+//    member surface; standalone relocations changed from 9 failures to none.
+// 3: added the exact-class virtual destructor declaration and tested novtable.
+//    The novtable form lost six bytes and was restored.
+// BINARY NOTE: the shipped constructor stores its derived vptr at +0x114,
+//    after field initialization.  VC5 emits that store at +0xEA here.
 
 #ifndef AOE1_TAIMDMD_CONTEXT_H
 extern "C" void __cdecl rge_read(int, void*, int);
@@ -31,18 +37,19 @@ public:
     MainDecisionAIModule(int p1, TRIBE_Player* p2, int p3);
 };
 
-class TribeBuildAIModule { public: virtual ~TribeBuildAIModule(); char bytes[0x5BC]; TribeBuildAIModule(int,int); void setPlayer(int,char*); void setup(MainDecisionAIModule*); };
-class TribeConstructionAIModule { public: virtual ~TribeConstructionAIModule(); char bytes[0x314]; TribeConstructionAIModule(int,int); void setPlayer(int,char*); void setup(MainDecisionAIModule*); };
-class DiplomacyAIModule { public: virtual ~DiplomacyAIModule(); char bytes[0x14C]; DiplomacyAIModule(int,int); void setPlayer(int,char*); void setup(MainDecisionAIModule*); };
-class EmotionalAIModule { public: virtual ~EmotionalAIModule(); char bytes[0x1BC]; EmotionalAIModule(int,int); void setPlayer(int,char*); void setup(MainDecisionAIModule*); };
-class TribeInformationAIModule { public: virtual ~TribeInformationAIModule(); char bytes[0x1008C]; TribeInformationAIModule(int,int); void setPlayer(int,char*); void setup(MainDecisionAIModule*); };
-class TribeResourceAIModule { public: virtual ~TribeResourceAIModule(); char bytes[0xF4]; TribeResourceAIModule(int,int); void setPlayer(int,char*); void setup(MainDecisionAIModule*); };
-class TribeStrategyAIModule { public: virtual ~TribeStrategyAIModule(); char bytes[0x5F4]; TribeStrategyAIModule(int,int); void setPlayer(int,char*); void setup(MainDecisionAIModule*); };
-class TribeTacticalAIModule { public: virtual ~TribeTacticalAIModule(); char bytes[0x1008]; TribeTacticalAIModule(int,int); void setPlayer(int,char*); void setup(MainDecisionAIModule*); };
-class TradeAIModule { public: virtual ~TradeAIModule(); char bytes[0xF0]; TradeAIModule(int,int); void setPlayer(int,char*); void setup(MainDecisionAIModule*); };
+class TribeBuildAIModule { public: virtual ~TribeBuildAIModule(); char bytes[0x5BC]; TribeBuildAIModule(int,int); void setPlayer(int,char*); void setMainDecisionAI(MainDecisionAIModule*); };
+class TribeConstructionAIModule { public: virtual ~TribeConstructionAIModule(); char bytes[0x314]; TribeConstructionAIModule(int,int); void setPlayer(int,char*); void setMainDecisionAI(MainDecisionAIModule*); };
+class DiplomacyAIModule { public: virtual ~DiplomacyAIModule(); char bytes[0x14C]; DiplomacyAIModule(int,int); void setPlayer(int,char*); void setMainDecisionAI(MainDecisionAIModule*); };
+class EmotionalAIModule { public: virtual ~EmotionalAIModule(); char bytes[0x1BC]; EmotionalAIModule(int,int); void setPlayer(int,char*); void setMainDecisionAI(MainDecisionAIModule*); };
+class TribeInformationAIModule { public: virtual ~TribeInformationAIModule(); char bytes[0x1008C]; TribeInformationAIModule(int,int); void setPlayer(int,char*); void setMainDecisionAI(MainDecisionAIModule*); };
+class TribeResourceAIModule { public: virtual ~TribeResourceAIModule(); char bytes[0xF4]; TribeResourceAIModule(int,int); void setPlayer(int,char*); void setMainDecisionAI(MainDecisionAIModule*); };
+class TribeStrategyAIModule { public: virtual ~TribeStrategyAIModule(); char bytes[0x5F4]; TribeStrategyAIModule(int,int); void setPlayer(int,char*); void setMainDecisionAI(MainDecisionAIModule*); };
+class TribeTacticalAIModule { public: virtual ~TribeTacticalAIModule(); char bytes[0x1008]; TribeTacticalAIModule(int,int); void setPlayer(int,char*); void setMainDecisionAI(MainDecisionAIModule*); };
+class TradeAIModule { public: virtual ~TradeAIModule(); char bytes[0xF0]; TradeAIModule(int,int); void setPlayer(int,char*); void setMainDecisionAI(MainDecisionAIModule*); };
 
 class TribeMainDecisionAIModule : public MainDecisionAIModule {
 public:
+    virtual ~TribeMainDecisionAIModule();
     TribeBuildAIModule buildAI;
     TribeConstructionAIModule constructionAI;
     DiplomacyAIModule diplomacyAI;
@@ -84,7 +91,6 @@ TribeMainDecisionAIModule::TribeMainDecisionAIModule(int p1, char* p2, TRIBE_Pla
       tacticalAI(p1, file),
       tradeAI(p1, file)
 {
-    this->aiPlayer = p3;
     this->field_12570 = 0;
     this->field_12574 = 0;
     this->name = (char*)p1;
@@ -92,6 +98,7 @@ TribeMainDecisionAIModule::TribeMainDecisionAIModule(int p1, char* p2, TRIBE_Pla
     this->field_12580 = 0;
     this->field_1259C = 0;
     this->field_125A0 = 0;
+    this->aiPlayer = p3;
     this->setPlayer(p1, p2);
     if (rgeLog != 0) {
         this->setLogCommonHistory(1);
@@ -99,15 +106,15 @@ TribeMainDecisionAIModule::TribeMainDecisionAIModule(int p1, char* p2, TRIBE_Pla
         this->setLogCommonHistory(0);
     }
 
-    this->buildAI.setup(this);
-    this->constructionAI.setup(this);
-    this->diplomacyAI.setup(this);
-    this->emotionalAI.setup(this);
-    this->informationAI.setup(this);
-    this->resourceAI.setup(this);
-    this->strategyAI.setup(this);
-    this->tacticalAI.setup(this);
-    this->tradeAI.setup(this);
+    this->buildAI.setMainDecisionAI(this);
+    this->constructionAI.setMainDecisionAI(this);
+    this->diplomacyAI.setMainDecisionAI(this);
+    this->emotionalAI.setMainDecisionAI(this);
+    this->informationAI.setMainDecisionAI(this);
+    this->resourceAI.setMainDecisionAI(this);
+    this->strategyAI.setMainDecisionAI(this);
+    this->tacticalAI.setMainDecisionAI(this);
+    this->tradeAI.setMainDecisionAI(this);
 
     this->buildAI.setPlayer(p1, p2);
     this->constructionAI.setPlayer(p1, p2);
