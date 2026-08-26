@@ -82,7 +82,7 @@
 #include "matching/00420110_delete_dialog.cpp"
 #include "matching/00420130_set_game_mode.cpp"
 #include "matching/00420150_set_player.cpp"
-#include "scratch/00420180_get_paused.cpp"
+#include "matching/00420180_get_paused.cpp"
 #include "matching/004201A0_get_font.cpp"
 #include "matching/004201C0_get_shape.cpp"
 #include "matching/004201E0_get_sound.cpp"
