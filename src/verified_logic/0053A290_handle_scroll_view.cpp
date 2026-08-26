@@ -8,7 +8,7 @@
 //    constants DAT_005776b4=0.5f / DAT_005776c0=-0.5f / DAT_005776c4=0.0625f;
 //    is_inside at vtable slot 47, do_paint at slot 61). Size/frame exact 1801/0x24;
 //    diff 1530 B; do_paint landed at slot 59 (+0xEC) and uVar8 local spilled to stack.
-// 2. control-flow: added VPAD(59)/VPAD(60) so do_paint = slot 61; bVar7 block re-reads
+// 2. control-flow: added the two missing declarations so do_paint = slot 61; bVar7 block re-reads
 //    this->scroll_action (member) so VC5 CSEs into al. Call set aligned (1 gap left);
 //    still 1530 B due to uVar8 spill; switched switch() to this->scroll_action directly
 //    and removed the uVar8 local: diff dropped to 104 B (dispatch now byte-exact).
@@ -61,8 +61,7 @@
 // 96 strict bytes, 35/36 static call sites (runtime case-7 redraw preserved). Semantic order
 // takes precedence over the smaller matching-oriented diff; fresh blind review is required.
 
-#include <windows.h>
-#include <stdlib.h>
+#include "../../include/view_tu_context.h"
 
 extern "C" __declspec(dllimport) int __stdcall ClientToScreen(void* hWnd, tagPOINT* point);
 extern "C" __declspec(dllimport) int __stdcall SetCursorPos(int x, int y);
@@ -70,125 +69,6 @@ extern "C" __declspec(dllimport) int __stdcall SetCursorPos(int x, int y);
 extern float DAT_005776b4;   // 0.5f    (case 7/8 scroll delta factor)
 extern float DAT_005776c0;   // -0.5f   (case 6 pick offset)
 extern float DAT_005776c4;   // 0.0625f (edge scroll factor)
-
-class RGE_Tile;
-class RGE_Static_Object;
-
-#ifndef RGE_VIEW_SHARED_CONTEXT
-class RGE_Sprite {
-public:
-    unsigned char get_lowest_draw_level();
-};
-
-class RGE_Active_Sprite_List {
-public:
-    unsigned char get_lowest_draw_level();
-};
-
-class RGE_Pick_Info {
-public:
-    float x;                        // +0x0
-    float y;                        // +0x4
-    short scr_x;                    // +0x8
-    short scr_y;                    // +0xA
-    RGE_Static_Object* object;      // +0xC
-    RGE_Tile* tile;                 // +0x10
-};
-
-class RGE_Static_Object {
-public:
-    virtual ~RGE_Static_Object() {}
-    virtual void v04() {}
-    virtual void v08() {}
-    virtual void v0C() {}
-    virtual void v10() {}
-    virtual void v14() {}
-    virtual void v18() {}
-    virtual void v1C() {}
-    virtual void v20() {}
-    virtual void v24() {}
-    virtual void v28() {}
-    virtual void v2C() {}
-    virtual void v30() {}
-    virtual float teleport(float x, float y, float z);   // vtable slot 13 (+0x34)
-    char gap_04[0x0C];
-    RGE_Sprite* sprite;             // +0x10
-    RGE_Sprite* old_sprite;         // +0x14
-    RGE_Active_Sprite_List* sprite_list;  // +0x18
-};
-
-class RGE_Player {
-public:
-    char gap_00[0x114];
-    float view_x;                   // +0x114
-    float view_y;                   // +0x118
-    short map_x;                    // +0x11C
-    short map_y;                    // +0x11E
-    char gap_120[0x10];
-    RGE_Static_Object* selected_obj; // +0x130
-
-    void set_view_loc(float x, float y);
-};
-
-class TPanel {
-public:
-    virtual ~TPanel() {}
-    virtual void v04() {}
-    virtual void v08() {}
-    virtual void v0C() {}
-    virtual void v10() {}
-    virtual void v14() {}
-    virtual void v18() {}
-    virtual void v1C() {}
-    virtual void set_redraw(int mode) {}
-
-    int bound_point(long& x, long& y);
-};
-
-#define VPAD(n) virtual void d##n();
-#define VPAD16(n) VPAD(n) VPAD(n##_1) VPAD(n##_2) VPAD(n##_3) VPAD(n##_4) \
-    VPAD(n##_5) VPAD(n##_6) VPAD(n##_7) VPAD(n##_8) VPAD(n##_9) VPAD(n##_10) \
-    VPAD(n##_11) VPAD(n##_12) VPAD(n##_13) VPAD(n##_14) VPAD(n##_15)
-
-class RGE_View : public TPanel {
-public:
-    virtual void set_redraw(int mode) {}
-
-    char pre_render_area[0x1C];      // +0x04..+0x1F
-    void* render_area;               // +0x20
-    tagRECT clip_rect;               // +0x24..+0x33
-    char post_render_area[0x90];     // +0x34..+0xC3
-    long mouse_down_x;               // +0xC4
-    long mouse_down_y;               // +0xC8
-    char gap_CC[0x34];               // +0xCC..+0xFF
-    RGE_Player* player;              // +0x100
-    char gap_104[0x40];              // +0x104..+0x143
-    long sel_col1;                   // +0x144
-    long sel_row1;                   // +0x148
-    char gap_14C[0x1C];              // +0x14C..+0x167
-    unsigned char scroll_action;     // +0x168
-    char pad_169[3];
-    long mouse_last_x;               // +0x16C
-    long mouse_last_y;               // +0x170
-
-    // vtable slots: TPanel 0-8; RGE_View: dummies 9-46, is_inside 47 (+0xBC),
-    // dummies 48-55, pick_through_fog 56, pick_weight 57, start_scroll_view 58,
-    // handle_scroll_view 59, end_scroll_view 60, do_paint 61 (+0xF4)
-    VPAD16(9) VPAD16(25) VPAD(41) VPAD(42) VPAD(43) VPAD(44) VPAD(45) VPAD(46)
-    virtual int is_inside(long param_1, long param_2);  // slot 47
-    VPAD(48) VPAD(49) VPAD(50) VPAD(51) VPAD(52) VPAD(53) VPAD(54) VPAD(55)
-    virtual void pick_through_fog() {}
-    virtual void pick_weight() {}
-    virtual void start_scroll_view() {}
-    VPAD(59) VPAD(60)
-    virtual int do_paint(long x1, long y1, long x2, long y2, int flag);  // slot 61 (+0xF4)
-
-    unsigned char pick(unsigned char key, unsigned char p2, long x, long y,
-                       RGE_Pick_Info* info, RGE_Static_Object* obj);
-    void set_selection_area(long x1, long y1, long x2, long y2);
-    int handle_scroll_view(long param_1, long param_2);
-};
-#endif
 
 int RGE_View::handle_scroll_view(long param_1, long param_2)
 {
@@ -214,7 +94,7 @@ int RGE_View::handle_scroll_view(long param_1, long param_2)
         this->mouse_last_x = param_1;
         this->mouse_last_y = param_2;
         this->bound_point(this->mouse_last_x, this->mouse_last_y);
-        this->set_redraw(1);
+            this->set_redraw((TPanel::RedrawMode)1);
         return 0;
 
     case 6:
@@ -227,7 +107,7 @@ int RGE_View::handle_scroll_view(long param_1, long param_2)
         if (save_view_x == this->player->view_x && save_view_y == this->player->view_y) {
             return 0;
         }
-        this->set_redraw(1);
+            this->set_redraw((TPanel::RedrawMode)1);
         return 1;
 
     case 7:
@@ -250,12 +130,12 @@ int RGE_View::handle_scroll_view(long param_1, long param_2)
             SetCursorPos(point.x, point.y);
             this->mouse_last_y = this->mouse_down_y;
             this->mouse_last_x = this->mouse_down_x;
-            this->set_redraw(1);
+            this->set_redraw((TPanel::RedrawMode)1);
             return 1;
         }
         this->mouse_last_x = param_1;
         this->mouse_last_y = param_2;
-        this->set_redraw(1);
+        this->set_redraw((TPanel::RedrawMode)1);
         return 1;
 
     case 8:
@@ -285,7 +165,7 @@ int RGE_View::handle_scroll_view(long param_1, long param_2)
         if (save_view_x == this->player->view_x && save_view_y == this->player->view_y) {
             return 0;
         }
-        this->set_redraw(1);
+        this->set_redraw((TPanel::RedrawMode)1);
         return 1;
     }
 
@@ -351,18 +231,18 @@ int RGE_View::handle_scroll_view(long param_1, long param_2)
                 level = 0x14;
             }
             if (level == 0) {
-                this->set_redraw(2);
+                this->set_redraw((TPanel::RedrawMode)2);
             } else {
-                this->set_redraw(1);
+        this->set_redraw((TPanel::RedrawMode)1);
             }
         }
     } else if (this->scroll_action == 9) {
         this->do_paint(point_x, lVar12, param_1, param_2, 2);
-        this->set_redraw(1);
+        this->set_redraw((TPanel::RedrawMode)1);
     }
 
     if (save_view_x != this->player->view_x || save_view_y != this->player->view_y) {
-        this->set_redraw(1);
+        this->set_redraw((TPanel::RedrawMode)1);
         return 1;
     }
     return 0;
