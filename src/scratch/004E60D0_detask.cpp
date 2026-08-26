@@ -1,18 +1,18 @@
 #ifndef AOE1_TAIMDMD_CONTEXT_H
-class SubType {
+class TribeTacticalAIModule {
 public:
-    void target_method(int param);
+    void detask(int param);
 };
 
 class TribeMainDecisionAIModule {
 public:
     char gap_0[0x1146C];
-    SubType tacticalAI;
+    TribeTacticalAIModule tacticalAI;
 
     void detask(int param);
 };
 #endif
 
 void TribeMainDecisionAIModule::detask(int param) {
-    this->tacticalAI.target_method(param);
+    this->tacticalAI.detask(param);
 }
