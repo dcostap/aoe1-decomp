@@ -48,7 +48,7 @@ class TranslationUnitPrefixTests(unittest.TestCase):
         prefixes = _default_prefixes(target, group, source_map)
         self.assertEqual(
             [item.va for item in prefixes],
-            [0x0044AC50, 0x0044AC80, 0x0044B210],
+            [0x0044AC50, 0x0044AC80, 0x0044ACB0, 0x0044AF90, 0x0044B210],
         )
 
     def test_prefix_owner_comparison_requires_pdb_qualified_class(self) -> None:
