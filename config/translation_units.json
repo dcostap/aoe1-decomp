@@ -4871,6 +4871,7 @@
       "flags": "config/flags/group_009_gx.rsp",
       "owners": {
         "0040BEC0": "src/matching/0040BEC0_DiplomacyAIModule.cpp",
+        "0040BF40": "src/matching/0040BF40_DiplomacyAIModule.cpp",
         "0040BFF0": "src/matching/0040BFF0_DiplomacyAIModule.cpp",
         "0040C000": "src/matching/0040C000_setMainDecisionAI.cpp",
         "0040C010": "src/matching/0040C010_update.cpp",
@@ -4893,7 +4894,24 @@
       "symbols": {
         "0040BEC0": "??0DiplomacyAIModule@@QAE@PAXH@Z",
         "0040C100": "?stance@DiplomacyAIModule@@QBEHHH@Z",
-        "0040C420": "?isLiked@DiplomacyAIModule@@QBEHH@Z"
+        "0040C420": "?isLiked@DiplomacyAIModule@@QBEHH@Z",
+        "0040BF40": "??0DiplomacyAIModule@@QAE@HH@Z",
+        "0040BFF0": "??1DiplomacyAIModule@@UAE@XZ",
+        "0040C000": "?setMainDecisionAI@DiplomacyAIModule@@QAEXPAVMainDecisionAIModule@@@Z",
+        "0040C010": "?update@DiplomacyAIModule@@UAEHH@Z",
+        "0040C0A0": "?save@DiplomacyAIModule@@UAEHH@Z",
+        "0040C190": "?changeStance@DiplomacyAIModule@@QAEXHHH@Z",
+        "0040C2B0": "?setStance@DiplomacyAIModule@@QAEXHHH@Z",
+        "0040C3B0": "?isDisliked@DiplomacyAIModule@@QBEHH@Z",
+        "0040C3F0": "?isAmbivalent@DiplomacyAIModule@@QBEHH@Z",
+        "0040C460": "?isChangeable@DiplomacyAIModule@@QBEHH@Z",
+        "0040C4A0": "?setChangeable@DiplomacyAIModule@@QAEXHE@Z",
+        "0040C4D0": "?mostHated@DiplomacyAIModule@@QBEHHHHH@Z",
+        "0040C660": "?isEnemy@DiplomacyAIModule@@QBEHH@Z",
+        "0040C6A0": "?isNeutral@DiplomacyAIModule@@QBEHH@Z",
+        "0040C6E0": "?isAlly@DiplomacyAIModule@@QBEHH@Z",
+        "0040C730": "?isAlliedWithMe@DiplomacyAIModule@@QBEHH@Z",
+        "0040C780": "?setRelation@DiplomacyAIModule@@QAEXHH@Z"
       }
     },
     {

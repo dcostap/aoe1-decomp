@@ -2,8 +2,9 @@
 // Source: aidipmod.cpp lines 40-47
 // Size: 163 bytes, EH-framed (/GX) in the grouped aidipmod translation unit.
 //
-// The policy-valid natural constructor keeps VC5's derived-vptr initialization.
-// The shipped bytes store that vptr later, so this owner is observed in the TU.
+// BINARY NOTE: A natural md member initializer preserves the shipped vptr/store order.
+// Exact-finish: a body assignment reproduced the 12-byte scheduling mismatch.
+// The body-assignment walkback failed; no manual vptr write is used.
 // Base size is 0xF0: vptr plus the 0xEC-byte base tail.
 
 #include "..\..\include\game_globals.h"
@@ -34,9 +35,8 @@ public:
 extern int __cdecl rge_read(int handle, void* buf, int size);
 
 DiplomacyAIModule::DiplomacyAIModule(int param, int file_handle)
-    : AIModule("Diplomacy AI", 0x3EB, param, 0)
+    : AIModule("Diplomacy AI", 0x3EB, param, 0), md(0)
 {
-    this->md = 0;
     unsigned char* cp = this->changeableTable;
     int* lp = this->likeTable;
     int count = 10;
