@@ -8,5 +8,6 @@ void TRIBE_Screen_Game::command_repair(void) {
         return;
     }
     this->message_panel->show_message(1, this->get_string(0xBEC), 0x32, 0, 0, 0, 0);
-    rge_base_game->set_font(0x68, 0);
+    // BINARY NOTE: This command uses the set_game_mode virtual slot.
+    rge_base_game->set_game_mode(0x68, 0);
 }
