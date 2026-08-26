@@ -4527,7 +4527,7 @@
       },
       "symbols": {
         "0040BEC0": "??0DiplomacyAIModule@@QAE@PAXH@Z",
-        "0040C100": "?stance@DiplomacyAIModule@@QAEHHH@Z",
+        "0040C100": "?stance@DiplomacyAIModule@@QBEHHH@Z",
         "0040C420": "?isLiked@DiplomacyAIModule@@QBEHH@Z"
       }
     },

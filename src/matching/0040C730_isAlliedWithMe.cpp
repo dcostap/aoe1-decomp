@@ -1,13 +1,6 @@
-#ifndef AOE1_AIDIPMOD_TU_CONTEXT
-class RGE_Player;
-class RGE_Game_World {
-public:
-    char gap_00[0x3C];
-    short player_num;
-    char gap_3E[0x2];
-    RGE_Player** players;
-};
+#include "../../include/aiconmod_context.h"
 
+#ifndef AOE1_AIDIPMOD_TU_CONTEXT
 class MainDecisionAIModule {
 public:
     char gap_00[0xF0];
@@ -22,22 +15,6 @@ public:
     int isAlliedWithMe(int player_num) const;
 };
 
-class RGE_Player {
-public:
-    virtual void vf00();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual int isAlly(int player_id);
-
-    char gap_04[0x38];
-    RGE_Game_World* world;
-    char gap_40[0xA];
-    short id;
-};
 #endif
 
 int DiplomacyAIModule::isAlliedWithMe(int player_num) const

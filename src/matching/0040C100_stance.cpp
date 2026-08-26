@@ -3,9 +3,9 @@
 class MainDecisionAIModule;
 #ifndef AOE1_AIDIPMOD_TU_CONTEXT
 class AIModule { public: virtual ~AIModule() {} virtual void dummy1() {} char _gap_04[0xEC]; };
-class DiplomacyAIModule { public: char base[0xF0]; MainDecisionAIModule* md; int dislikeTable[10]; int likeTable[10]; unsigned char changeableTable[10]; int stance(int player_id, int type); };
+class DiplomacyAIModule { public: char base[0xF0]; MainDecisionAIModule* md; int dislikeTable[10]; int likeTable[10]; unsigned char changeableTable[10]; int stance(int player_id, int type) const; };
 #endif
-int DiplomacyAIModule::stance(int player_id, int type)
+int DiplomacyAIModule::stance(int player_id, int type) const
 {
     if ((0 < player_id) && (player_id < *(short*)(*(char**)(*(char**)((char*)this->md + 0xF0) + 0x3C) + 0x3C))) {
         switch (type) {

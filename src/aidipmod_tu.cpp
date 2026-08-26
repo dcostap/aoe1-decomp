@@ -4,55 +4,16 @@
 // Owner line bands: 26, 40, 52, 58, 65, 98, 110, 144, 195, 245,
 // 257, 266, 277, 287, 296, 338, 367, 383, 399, 418, and 432.
 //
-// The AIModule surface comes from the reviewed aiconmod context.  The player
-// and world slots below are limited to fields and virtual slots proved by the
-// aidipmod call sites.  Owner files keep standalone declarations when built
-// alone and suppress them for this wrapper.
+// The AIModule, player, and world surfaces come from the reviewed aiconmod
+// context.  Owner files keep standalone declarations when built alone and
+// suppress them for this wrapper.
 // Candidate accounting: 18 exact, 3 observed (1 match, 2 mismatches),
 // 1 compiler-generated match, and 0 blocked entries.
 #include "../include/aiconmod_context.h"
 
-class RGE_Player;
-class RGE_Victory_Conditions;
-
-class RGE_Game_World {
-public:
-    virtual ~RGE_Game_World();
-    char gap_04[0x38];
-    short player_num;
-    char gap_3E[0x2];
-    RGE_Player** players;
-};
-
 class MainDecisionAIModule : public AIModule {
 public:
     RGE_Player* player;
-};
-
-class RGE_Player {
-public:
-    virtual void vf00();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual int isAlly(int player_id);
-    virtual void vf20();
-    virtual void vf24();
-    virtual void setDiplomaticStance(int target_id, int stance);
-
-    char gap_04[0x30];
-    RGE_Victory_Conditions* victory_conditions;
-    char gap_38[0x4];
-    RGE_Game_World* world;
-    char gap_40[0xA];
-    short id;
-    char gap_4C[0x34];
-    unsigned char game_status;
-    char gap_81[0x3];
-    unsigned char* relations;
 };
 
 class RGE_Victory_Conditions {
@@ -74,7 +35,7 @@ public:
     DiplomacyAIModule(void* param, int value);
     DiplomacyAIModule(int value, int file);
     void setMainDecisionAI(MainDecisionAIModule* value);
-    int stance(int player_id, int type);
+    int stance(int player_id, int type) const;
     void changeStance(int player, int type, int value);
     void setStance(int player, int type, int value);
     int isDisliked(int player) const;

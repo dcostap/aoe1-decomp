@@ -8,6 +8,9 @@
 class AIModuleMessage;
 class BuildItem;
 class ConstructionItem;
+class RGE_Player;
+class RGE_Game_World;
+class RGE_Victory_Conditions;
 
 class AIModuleID {
 public:
@@ -110,6 +113,41 @@ public:
 
     AIModule(char* name, int id, int player, void* parameter);
     void logCommonHistory(char* format, ...);
+};
+
+class RGE_Game_World {
+public:
+    virtual ~RGE_Game_World();
+    char gap_04[0x38];
+    short player_num;
+    char gap_3E[0x2];
+    RGE_Player** players;
+};
+
+class RGE_Player {
+public:
+    virtual ~RGE_Player();
+    virtual void set_game_status(unsigned char);
+    virtual void do_resign(int);
+    virtual void changeToHumanPlayer();
+    virtual void changeToComputerPlayer();
+    virtual char* aiStatus(int);
+    virtual int isEnemy(int);
+    virtual int isAlly(int);
+    virtual int isNeutral(int);
+    virtual int isAllNeutral();
+    virtual void setDiplomaticStance(int, int);
+
+    char gap_04[0x30];
+    RGE_Victory_Conditions* victory_conditions;
+    char gap_38[0x4];
+    RGE_Game_World* world;
+    char gap_40[0xA];
+    short id;
+    char gap_4C[0x34];
+    unsigned char game_status;
+    char gap_81[0x3];
+    unsigned char* relations;
 };
 
 class ConstructionAIModule : public AIModule {
