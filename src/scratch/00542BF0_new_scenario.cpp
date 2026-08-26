@@ -3,6 +3,13 @@
 // 275 bytes, 221 differing bytes, with the first mismatch at +0x2D.
 // The remaining schedule changes the proven map fault order, so this is not
 // accepted drift.
+// Context gate: PDB World.cpp lines 1478-1537 owns 00542BF0-00542D02.
+// Exact anchors are the World vslot calls, GetRandomSeed, debug_srand, the
+// map calls, calloc, and the final RGE_Player::set_map_visible loop.
+// Recovery log: phase2 context, explicit this qualifiers, result and index
+// scope changes, seed and map locals, terrain casts, and explicit long map
+// arguments did not change the 221-byte result. The natural source is kept.
+// Final validation: MISMATCH, rebuilt 273 bytes, first mismatch +0x2D.
 #include "../../include/world_scenario_context.h"
 
 unsigned char RGE_Game_World::new_scenario(RGE_Player_Info& info, int seed) {

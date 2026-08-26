@@ -9,6 +9,12 @@
 // BINARY NOTE: The first two allocations publish objectsValue before the seven
 // separate list allocations. The repeated guarded constructor blocks preserve
 // exception cleanup state and fault order.
+// Recovery log: the initial body-assignment form differed by 42 bytes after
+// the reduced field order. A natural initializer list recovered the delayed
+// vptr and the exact first allocation block. Moving effects after commands and
+// scenario, next IDs after temp_pause, and sound indices after game_end matched
+// the remaining store order. Walkbacks proved each placement necessary.
+// Final validation: MATCH, 700 bytes, 0.0000%, 17 ordered direct calls.
 
 #include <stdio.h>
 #include "../world_phase2_context.h"
@@ -17,17 +23,17 @@ void* __cdecl operator new(unsigned int);
 extern "C" FILE* __cdecl fopen(const char*, const char*);
 
 RGE_Game_World::RGE_Game_World()
+    : objectsValue(0),
+      numberObjectsValue(0),
+      maxNumberObjectsValue(10000),
+      negativeObjectsValue(0),
+      numberNegativeObjectsValue(0),
+      maxNumberNegativeObjectsValue(1000),
+      maximumComputerPlayerUpdateTime(2),
+      availableComputerPlayerUpdateTime(2),
+      currentUpdateComputerPlayer(-1),
+      difficultyLevelValue(-1)
 {
-    objectsValue = 0;
-    numberObjectsValue = 0;
-    maxNumberObjectsValue = 10000;
-    negativeObjectsValue = 0;
-    numberNegativeObjectsValue = 0;
-    maxNumberNegativeObjectsValue = 1000;
-    maximumComputerPlayerUpdateTime = 2;
-    availableComputerPlayerUpdateTime = 2;
-    currentUpdateComputerPlayer = -1;
-    difficultyLevelValue = -1;
     world_update_counter = 0;
     objectsValue = static_cast<RGE_Static_Object**>(operator new(maxNumberObjectsValue * 4));
     negativeObjectsValue = static_cast<RGE_Static_Object**>(operator new(maxNumberNegativeObjectsValue * 4));
@@ -41,13 +47,13 @@ RGE_Game_World::RGE_Game_World()
     players = 0;
     master_player_num = 0;
     master_players = 0;
-    effects = 0;
     terrain_num = 0;
     terrains = 0;
     color_table_num = 0;
     color_tables = 0;
     commands = 0;
     scenario = 0;
+    effects = 0;
     map = 0;
     world_time = 0;
     old_world_time = 0;
@@ -57,8 +63,6 @@ RGE_Game_World::RGE_Game_World()
     old_time = 0;
     game_speed = 0;
     temp_pause = 0;
-    sound_update_index = 0;
-    sprite_update_index = 0;
     next_object_id = 0;
     next_reusable_object_id = -1;
     random_seed = 14;
@@ -66,6 +70,8 @@ RGE_Game_World::RGE_Game_World()
     sound_driver = 0;
     game_state = 2;
     game_end_condition = 0;
+    sound_update_index = 0;
+    sprite_update_index = 0;
     player_turn = 0;
     for (int i = 0; i < 9; i++) {
         player_time_delta[i] = 0;
