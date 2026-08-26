@@ -30,6 +30,12 @@
 // register storage, member spelling, row-offset locals, and address-expression order
 // were duplicates or worse. Calls, frame, CFG counts, and boundary remain aligned;
 // the open blocker is the EBX tile/end-bound allocation and related flag homes.
+// sa-7e83054e-r1 fresh context gate: module tmap.cpp, source band 1091-1270,
+// owner TRIBE_Map, address sequence follows 005110E0, with exact wrapper
+// anchors 00510C90 and 00511000 before this owner. Fresh original assembly
+// proves the 0x44 frame, 21 ordered calls, and tile row-slot sequence. The
+// current exact-size predicate source remains authoritative; no rejected row,
+// alias, or register-steering form was repeated in this pass.
 
 #ifndef TMAP_GROUP_CONTEXT
 typedef unsigned char uchar;

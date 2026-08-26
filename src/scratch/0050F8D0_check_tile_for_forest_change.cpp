@@ -64,6 +64,13 @@
 // PDB-qualified. The context-enabled owner now emits 433 bytes with the same
 // 76-byte diff in both isolated and grouped builds. The grouped context does
 // not recover the row-slot load; the prior clean source was 434 bytes.
+// sa-7e83054e-r1 fresh context gate: module tmap.cpp, source band 210-259,
+// owner TRIBE_Map, address sequence 0050F8D0 then 0050FA90, and exact wrapper
+// anchors through 0050F860 are proved by the PDB line map and grouped checks.
+// The copied prior journal already rejects equivalent cursor-order forms. A
+// fresh loop-local scope edit was attempted, then restored after its compile
+// error. The remaining drift is the forest row-slot lowering and the
+// diagnostic recursive-call identity.
 
 #include <stdlib.h>
 

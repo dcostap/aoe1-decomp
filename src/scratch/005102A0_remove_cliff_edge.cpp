@@ -82,9 +82,12 @@
 // Every form stayed in the 360-byte family. The final clean check confirms the
 // 339-byte boundary, PDB owner, frame, eight ordered calls, and malformed-size
 // guards. No policy-valid exact source was found. The clean source is restored.
-// Context gate: no tmap translation unit is configured, so
-// translation_unit_prefixes.py rejects this VA. No wrapper or config edit was
-// made during this pass.
+// sa-7e83054e-r1 fresh context gate: module tmap.cpp, source band 577-618,
+// owner TRIBE_Map, address sequence follows 005100D0 and precedes 00510410,
+// with exact anchors 00510110 and 00510410 in the wrapper. The copied prior
+// journal rejects the executable-proven pre-switch cliff_info.info[0] = this
+// seed, so it was not repeated. The saved-this allocation and switch/loop
+// layout remain unresolved.
 
 #ifndef TMAP_GROUP_CONTEXT
 struct TRIBE_Cliff_Info {

@@ -54,6 +54,12 @@
 // candidate pointers, explicit initial guard inversion, and chained assignment.
 // Grouped TU audit: the canonical RGE_Player surface names the +0x6C list
 // diam_tile_list.  Keep that owner name in this local declaration as well.
+// sa-7e83054e-r1 fresh context gate: module tmap.cpp, source band 631-815,
+// owner TRIBE_Map, address sequence follows 005102A0 and precedes 00510960,
+// with exact anchors 00510110, 00510410, and 00510960 in the wrapper. Fresh
+// grouped evidence keeps the 23 ordered calls and the 0x24 frame, but not the
+// cold control-flow layout or local-slot colors. Prior grouped and walkback
+// reports were reviewed; their rejected guard and local forms are not reused.
 
 #ifndef TMAP_GROUP_CONTEXT
 struct TRIBE_Cliff_Info {

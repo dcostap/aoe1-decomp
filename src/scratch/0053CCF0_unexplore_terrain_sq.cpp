@@ -44,6 +44,23 @@
 // still needs a donor-level explanation for the original EBP/local topology.
 // Current claim: assignment-then-decrement upper clamps and a stdio include were
 // codegen duplicates. The original EBP frame and separate self/tile homes remain.
+// Authentic TU context gate (proved unless marked otherwise): PDB module is
+// C:\\msdev\\work\\age1_x1\\visible.cpp. This owner occupies source lines
+// 891-975, with the ordered bands 891, 902, 905, 909, 913-924, 927, 931-940,
+// 943-975. Its address sequence is 0053CCF0-0053CE6A; the next visible.cpp
+// owner begins at 0053CE70. The class owner is RGE_Visible_Map and the exact
+// symbol is ?unexplore_terrain_sq@RGE_Visible_Map@@QAEXHHHHHH@Z with __thiscall
+// cleanup ret 18h. Anchors are the visible_tu.cpp include at this address,
+// visible_tu_context.h's RGE_Visible_Map layout, direct log_map_call at
+// 0053CD30 -> 0053D150, and the observed accesses to this+04/+08/+0C/+14/
+// +18/+34 plus map_offsets, unified_map_offsets, and map_row_offset. The
+// neighboring address order 0053C6F0, 0053C920, 0053CAC0, 0053CCF0, 0053CE70
+// proves one contiguous visible.cpp source band. Any source-order explanation
+// for the EBP/local-home difference remains unknown; no dummy context is used.
+// Resume probes: splitting self/tile declaration from assignment was a codegen
+// duplicate (356 bytes, 361 strict differences, no frame). A const-qualified
+// self pointer was also a codegen duplicate with the same metrics. Both failed
+// experiments were restored to the pinned natural source.
 // Accepted-drift audit: do not promote this candidate. The original has an
 // 0x08 local frame at log_map_call, while the rebuild has none. The logger
 // therefore receives a different stack and exception context before any map

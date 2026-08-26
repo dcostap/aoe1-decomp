@@ -63,6 +63,12 @@
 // stayed exact in fresh standalone checks. The grouped owner symbol is
 // PDB-qualified, but the target remains 428 bytes with a 392-byte diff. The
 // grouped context does not recover the original EDI dword load.
+// sa-7e83054e-r1 fresh context gate: module tmap.cpp, source band 264-314,
+// owner TRIBE_Map, address sequence follows 0050F8D0, and exact wrapper
+// anchors through 0050F860 are proved by the PDB line map and grouped checks.
+// The copied prior journal rejects equivalent int-coordinate alias forms, so
+// they were not repeated. The remaining drift is the original dword x load
+// versus VC5's short load and the later byte-store schedule.
 
 #include <stdlib.h>
 
