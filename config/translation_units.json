@@ -6353,6 +6353,7 @@
         "00432890": "src/matching/00432890_GetAdjustmentCount.cpp",
         "004328A0": "src/matching/004328A0_GetBufferGranularityAdjusted.cpp",
         "004328C0": "src/matching/004328C0_BufferFramesRemaining.cpp",
+        "004328D0": "src/matching/004328D0_WaitingOnAcknowledgement.cpp",
         "004328E0": "src/matching/004328E0_AdjustLocalSpeed.cpp",
         "00432940": "src/matching/00432940_ReloadBufferFrames.cpp",
         "00432970": "src/matching/00432970_BufferTimeToUse.cpp",
@@ -6370,7 +6371,32 @@
         "00432FD0": "src/matching/00432FD0_SetV2.cpp"
       },
       "symbols": {
-        "00432880": "?GetBufferGranularity@RGE_Communications_Speed@@QAEIXZ"
+        "00432880": "?GetBufferGranularity@RGE_Communications_Speed@@QAEIXZ",
+        "00432620": "??0RGE_Communications_Speed@@QAE@PAVTCommunications_Handler@@@Z",
+        "00432780": "??1RGE_Communications_Speed@@QAE@XZ",
+        "004327C0": "?SetPlayerTurnSpeed@RGE_Communications_Speed@@QAEXIEE@Z",
+        "00432800": "?SetActualLatency@RGE_Communications_Speed@@QAEXIK@Z",
+        "00432840": "?SetFutureSpeedChange@RGE_Communications_Speed@@QAEXIIK@Z",
+        "00432870": "?EnableSpeedControl@RGE_Communications_Speed@@QAEXH@Z",
+        "00432890": "?GetAdjustmentCount@RGE_Communications_Speed@@QAEKXZ",
+        "004328A0": "?GetBufferGranularityAdjusted@RGE_Communications_Speed@@QAEIXZ",
+        "004328C0": "?BufferFramesRemaining@RGE_Communications_Speed@@QAEIXZ",
+        "004328D0": "?WaitingOnAcknowledgement@RGE_Communications_Speed@@QAEIXZ",
+        "004328E0": "?AdjustLocalSpeed@RGE_Communications_Speed@@IAEXXZ",
+        "00432940": "?ReloadBufferFrames@RGE_Communications_Speed@@QAEXXZ",
+        "00432970": "?BufferTimeToUse@RGE_Communications_Speed@@QAEIK@Z",
+        "00432A70": "?Skip@RGE_Communications_Speed@@QAEXXZ",
+        "00432A90": "?GetHighLatencyCenti@RGE_Communications_Speed@@QAEEXZ",
+        "00432B00": "?GetPlayerLatency@RGE_Communications_Speed@@QAEKI@Z",
+        "00432B20": "?GetLatencyInfo@RGE_Communications_Speed@@QAEPADXZ",
+        "00432BD0": "?GetSelfPlayerOptimalSpeedStr@RGE_Communications_Speed@@QAEPADXZ",
+        "00432C10": "?GetPlayerSpeedStatusStr@RGE_Communications_Speed@@QAEPADH@Z",
+        "00432C70": "?GetMachineSpeedInfo@RGE_Communications_Speed@@QAEPADXZ",
+        "00432D20": "?GetRecommendedBufferFrames@RGE_Communications_Speed@@QAEIXZ",
+        "00432D90": "?GetAvgFrameRate@RGE_Communications_Speed@@QAEIXZ",
+        "00432DA0": "?GetRecommendedBufferGranularity@RGE_Communications_Speed@@QAEIXZ",
+        "00432FB0": "?SetV1@RGE_Communications_Speed@@QAEXK@Z",
+        "00432FD0": "?SetV2@RGE_Communications_Speed@@QAEXK@Z"
       }
     },
     {
