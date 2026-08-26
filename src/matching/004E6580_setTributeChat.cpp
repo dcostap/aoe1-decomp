@@ -31,6 +31,9 @@
 // Retry 23: /GB flag probe; no codegen change and flag removed.
 // Final 2026-05-19 validation remains default flags, exact 117B, 35.0427% positional / 24.7863% edit, first mismatch offset 0.
 // Retry 2026-05-20 assigned pass: tried top-declared result/tactical, self aliases before/after tactical, branch-local tactical, inverted guard/goto fail, explicit return, and out-pointer local; all stayed EBX=this/EDI=result or worsened. Single full expression for the final store (`debug_rand(...) % strategicNumber(...) - strategicNumber(...)/2 + strategicNumber(...)`) flipped VC5 to original EDI=this/EBX=result and MATCHED.
+// Retry 2026-08-26: naming the debug_rand result before the arithmetic keeps
+// the standalone MATCH and restores grouped TU order and size.  This is the
+// smallest source form that works with the authentic shared class context.
 
 #ifndef AOE1_TAIMDMD_CONTEXT_H
 class TribeTacticalAIModule {
@@ -54,7 +57,8 @@ public:
 void TribeMainDecisionAIModule::setTributeChat() {
     TribeTacticalAIModule* tactical = &this->tacticalAI;
     if (tactical->strategicNumber(0x7E) > 0) {
-        this->tributeChatTimeout = debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp", 0x41D) % tactical->strategicNumber(0x7E) - tactical->strategicNumber(0x7E) / 2 + tactical->strategicNumber(0x7D);
+        int randomValue = debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp", 0x41D);
+        this->tributeChatTimeout = randomValue % tactical->strategicNumber(0x7E) - tactical->strategicNumber(0x7E) / 2 + tactical->strategicNumber(0x7D);
     } else {
         this->tributeChatTimeout = tactical->strategicNumber(0x7D);
     }

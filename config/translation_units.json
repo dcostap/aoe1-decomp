@@ -6680,6 +6680,7 @@
       "owners": {
         "004E4FA0": "src/matching/004E4FA0_setLogHistory.cpp",
         "004E5DB0": "src/matching/004E5DB0_save.cpp",
+        "004E5F30": "src/matching/004E5F30_kick.cpp",
         "004E5FA0": "src/matching/004E5FA0_addObject.cpp",
         "004E5FE0": "src/matching/004E5FE0_removeObject.cpp",
         "004E6020": "src/matching/004E6020_objectGroupThatCanPerformAction.cpp",
@@ -6687,12 +6688,14 @@
         "004E60F0": "src/matching/004E60F0_isMoveable.cpp",
         "004E6250": "src/matching/004E6250_tributeNotify.cpp",
         "004E6490": "src/matching/004E6490_revokeTributeAlliance.cpp",
+        "004E6580": "src/matching/004E6580_setTributeChat.cpp",
         "004E6600": "src/matching/004E6600_processAICommand.cpp",
         "004E6870": "src/matching/004E6870_currentScore.cpp"
       },
       "symbols": {
         "004E4FA0": "?setLogHistory@TribeMainDecisionAIModule@@UAEXH@Z",
         "004E5DB0": "?save@TribeMainDecisionAIModule@@UAEHH@Z",
+        "004E5F30": "?kick@TribeMainDecisionAIModule@@QAEXH@Z",
         "004E5FA0": "?addObject@TribeMainDecisionAIModule@@UAEHPAVRGE_Static_Object@@@Z",
         "004E5FE0": "?removeObject@TribeMainDecisionAIModule@@UAEHH@Z",
         "004E6020": "?objectGroupThatCanPerformAction@TribeMainDecisionAIModule@@UAEHH@Z",
@@ -6700,6 +6703,7 @@
         "004E60F0": "?isMoveable@TribeMainDecisionAIModule@@QAEHH@Z",
         "004E6250": "?tributeNotify@TribeMainDecisionAIModule@@QAEXHHH@Z",
         "004E6490": "?revokeTributeAlliance@TribeMainDecisionAIModule@@QAEXXZ",
+        "004E6580": "?setTributeChat@TribeMainDecisionAIModule@@IAEXXZ",
         "004E6600": "?processAICommand@TribeMainDecisionAIModule@@QAEHHHHHH@Z",
         "004E6870": "?currentScore@TribeMainDecisionAIModule@@QAEHH@Z"
       }

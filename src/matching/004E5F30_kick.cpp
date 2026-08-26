@@ -1,8 +1,13 @@
 // VA: 004E5F30 TribeMainDecisionAIModule::kick (100 B)
 // PDB source: taimdmd.cpp lines 821-832
+// Context repair: use the inherited AIModule vararg member.  This preserves
+// the original hidden receiver and fixes grouped TU emission and boundary.
 
 #ifndef AOE1_TAIMDMD_CONTEXT_H
-void logCommonHistory(char* this_as_str, const char* format, ...);
+class AIModule {
+public:
+    void logCommonHistory(char* format, ...);
+};
 
 class BuildAIModule {
 public:
@@ -31,7 +36,7 @@ public:
     int insert(int a, int b, int c);
 };
 
-class TribeMainDecisionAIModule {
+class TribeMainDecisionAIModule : public AIModule {
 public:
     char gap_00[0x104];
     TribeBuildAIModule buildAI;
@@ -42,7 +47,7 @@ public:
 
 void TribeMainDecisionAIModule::kick(int param_1)
 {
-    logCommonHistory((char*)this, "Got a kick=%d.", param_1);
+    this->logCommonHistory("Got a kick=%d.", param_1);
     if (param_1 == 1) {
         this->buildAI.skipNextBuildListItem();
     }
@@ -50,7 +55,7 @@ void TribeMainDecisionAIModule::kick(int param_1)
         this->buildAI.insert(0x53, 1, -1);
     }
     if (param_1 == 3) {
-        logCommonHistory((char*)this, "Current Build list is:");
+        this->logCommonHistory("Current Build list is:");
         this->buildAI.displayBuildList();
     }
 }
