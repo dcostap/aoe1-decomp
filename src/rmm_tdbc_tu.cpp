@@ -6,7 +6,7 @@
 #include "scratch/004876F0_TRIBE_RMM_Database_Controller.cpp"
 #include "matching/00487710_init.cpp"
 #include "scratch/00487930_de_init.cpp"
-#include "scratch/00487940_add_land_module.cpp"
+#include "matching/00487940_add_land_module.cpp"
 #include "accepted_drift/00487DD0_add_terrain_module.cpp"
 #include "verified_logic/00487FA0_add_object_module.cpp"
 #include "matching/00488700_add_elevation_module.cpp"

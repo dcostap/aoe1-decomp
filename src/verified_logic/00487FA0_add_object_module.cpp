@@ -88,6 +88,20 @@
 //   No credible exact-matching lead remains after this bounded assignment; any further route
 //   would require genuinely new whole-TU/compiler-IR evidence rather than another spelling lab.
 
+// Phase 4 shard_02 context gate:
+// - PROVED: PDB module rmm_tdbc.cpp, source lines 392-567, and target range
+//   00487FA0-00488674.
+// - PROVED: owner class TRIBE_RMM_Database_Controller and protected virtual symbol.
+// - PROVED: anchors include the base add_object_module call at +0x09, the
+//   startingAge call at +0x26, the final debug_rand/log pair, 11 ordered calls,
+//   the 0x14 frame, and the four saved registers.
+// - LIKELY: the typed land/object records and full rmm_tdbc virtual context are
+//   the period source model. Exact IR register coloring remains unproved.
+// - UNKNOWN: a natural source form that emits the original three-operation index
+//   sums and the two separate late /6 switch blocks.
+// - Phase 4 grouped candidate validation: 00487FA0 is a 94-byte mismatch with
+//   owner match, zero relocation mismatches, and zero boundary escapes.
+
 #ifndef RMM_TDBC_SHARED_CONTEXT
 typedef unsigned char uchar;
 
