@@ -3,11 +3,16 @@ struct Waypoint {
     char data[12];
 };
 
+class TribeMainDecisionAIModule;
+
 class TribeStrategyAIModule {
 public:
     virtual ~TribeStrategyAIModule();
     char gap_04[0xEC];
-    int mainDecisionAI_;
+    union {
+        TribeMainDecisionAIModule* md;
+        int mainDecisionAI_;
+    };
     int currentVictoryCondition_;
     char ruleSetName_[0x104];
     int targetID_;
@@ -21,10 +26,10 @@ public:
     int targetAttribute_;
     int targetNumber_;
 
-    void setMainDecisionAI(int v);
+    void setMainDecisionAI(TribeMainDecisionAIModule* v);
 };
 #endif
 
-void TribeStrategyAIModule::setMainDecisionAI(int v) {
-    this->mainDecisionAI_ = v;
+void TribeStrategyAIModule::setMainDecisionAI(TribeMainDecisionAIModule* v) {
+    this->md = v;
 }

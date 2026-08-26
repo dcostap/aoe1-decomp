@@ -21,10 +21,10 @@ public:
     int targetAttribute_;
     int targetNumber_;
 
-    int currentVictoryCondition();
+    int currentVictoryCondition() const;
 };
 #endif
 
-int TribeStrategyAIModule::currentVictoryCondition() {
+int TribeStrategyAIModule::currentVictoryCondition() const {
     return this->currentVictoryCondition_;
 }

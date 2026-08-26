@@ -21,10 +21,10 @@ public:
     int targetAttribute_;
     int targetNumber_;
 
-    Waypoint* targetPoint2();
+    const Waypoint& targetPoint2() const;
 };
 #endif
 
-Waypoint* TribeStrategyAIModule::targetPoint2() {
-    return &this->targetPoint2_;
+const Waypoint& TribeStrategyAIModule::targetPoint2() const {
+    return this->targetPoint2_;
 }

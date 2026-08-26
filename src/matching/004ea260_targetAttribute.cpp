@@ -21,10 +21,10 @@ public:
     int targetAttribute_;
     int targetNumber_;
 
-    int targetAttribute();
+    int targetAttribute() const;
 };
 #endif
 
-int TribeStrategyAIModule::targetAttribute() {
+int TribeStrategyAIModule::targetAttribute() const {
     return this->targetAttribute_;
 }

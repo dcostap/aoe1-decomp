@@ -21,10 +21,10 @@ public:
     int targetAttribute_;
     int targetNumber_;
 
-    int secondTargetID();
+    int secondTargetID() const;
 };
 #endif
 
-int TribeStrategyAIModule::secondTargetID() {
+int TribeStrategyAIModule::secondTargetID() const {
     return this->secondTargetID_;
 }
