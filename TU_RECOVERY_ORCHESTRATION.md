@@ -115,6 +115,11 @@ Every captain must report:
 
 A documented unresolved result is valid.
 
+Keep one persistent captain session for each active canonical TU.
+
+A captain can return clean partial work. Resume that captain for later work in
+the same TU.
+
 ## Phase overview
 
 | Phase | Goal | Primary owner | Parallel work |
@@ -489,11 +494,12 @@ Do not assign a matching worker until the owning wrapper is complete and reprodu
 
 If many functions share one context defect, assign a module captain first.
 
-## Matching-worker assignment
+## Persistent TU-captain assignment
 
-Assign one VA per worker.
+Assign one captain per canonical TU. Put all ready repair VAs for that TU in
+one bounded packet.
 
-Each assignment must include:
+Each packet must include:
 
 - authentic PDB module;
 - wrapper and module flags;
@@ -504,7 +510,16 @@ Each assignment must include:
 - useful prior attempts;
 - exact donors and nearby functions.
 
-Workers must perform sustained evidence-led work.
+The captain must perform sustained evidence-led work.
+
+The captain must report shared declaration defects instead of hiding them with
+local raw offsets.
+
+The main agent owns shared ABI repairs. After a shared repair, resweep the TU
+and resume the same captain.
+
+A partial return must list investigated, unresolved, and untouched VAs. The
+captain must restore failed experiments before return.
 
 Do not set a fixed effort, probe, or hypothesis limit.
 
@@ -514,9 +529,11 @@ Do not set a fixed effort, probe, or hypothesis limit.
 2. Require an exact-finish retrospective.
 3. Remove incidental codegen machinery.
 4. Revalidate inside the authentic wrapper.
-5. Promote only the smallest natural exact source.
-6. Batch owner registrations by wrapper.
-7. Run one config update per reviewed wave.
+5. Compare the fresh complete-TU sweep with its integration baseline.
+6. Reject lost approved matches and changed accepted drift without review.
+7. Promote only the smallest natural exact source.
+8. Batch owner registrations by wrapper.
+9. Run one config update per reviewed wave.
 
 ## Exit gate
 
@@ -1082,7 +1099,7 @@ Use this cycle for every integration wave.
 ## 2. Assign work
 
 - One captain per module.
-- One matching worker per VA.
+- One persistent repair captain per canonical TU.
 - Keep shared ABI tracks serial.
 - Count queued agents against the concurrency ceiling.
 
