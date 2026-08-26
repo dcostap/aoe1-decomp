@@ -175,12 +175,12 @@ public:
     virtual int heal(int, int);
     virtual uchar heal(float);
     virtual int canRepair();
-    virtual void notify_of_relation(int, int);
+    virtual void notify_of_relation(long, uchar);
     virtual void do_command(RGE_Static_Object*, float, float, float);
     virtual void move_to(RGE_Static_Object*, float, float, float);
     virtual void work(RGE_Static_Object*, float, float, float);
     virtual void stop();
-    virtual void set_attack(int);
+    virtual void set_attack(RGE_Static_Object*);
     virtual void play_command_sound();
     virtual void play_move_sound();
     virtual void new_angle(float);
@@ -260,19 +260,6 @@ public:
     virtual int setup(RGE_Master_Static_Object*, RGE_Player*, float, float, float);
     virtual RGE_Object_List* create_object_list();
     virtual RGE_Active_Sprite_List* create_sprite_list();
-    virtual int setup(RGE_Master_Animated_Object*, RGE_Player*, float, float, float);
-    virtual void stop_moving();
-    virtual uchar turn_towards(RGE_Static_Object*, float, float);
-    virtual int setup(RGE_Master_Moving_Object*, RGE_Player*, float, float, float);
-    virtual void work2(RGE_Static_Object*, float, float, float, uchar);
-    virtual void set_task(short);
-    virtual void setTaskByTaskID(int);
-    virtual RGE_Task* getTask(RGE_Static_Object*, float, float, float);
-    virtual void set_action(RGE_Action*);
-    virtual void set_only_action(RGE_Action*);
-    virtual void set_end_action(RGE_Action*);
-    virtual int setup(RGE_Master_Action_Object*, RGE_Player*, float, float, float);
-    virtual RGE_Action_List* create_action_list();
 
     long id;
     RGE_Master_Static_Object* master_obj;
@@ -320,6 +307,7 @@ class RGE_Animated_Object : public RGE_Static_Object {
 public:
     virtual ~RGE_Animated_Object();
     virtual uchar update();
+    // The PDB places this derived setup slot at +0x1E8.
     virtual int setup(RGE_Master_Animated_Object*, RGE_Player*, float, float, float);
     float speed;
 };
@@ -327,11 +315,13 @@ public:
 class RGE_Moving_Object : public RGE_Animated_Object {
 public:
     virtual ~RGE_Moving_Object();
+    // PDB slots: stop +0x1EC, turn +0x1F0, and setup +0x1F4.
+    virtual void stop_moving();
+    virtual uchar turn_towards(RGE_Static_Object*, float, float);
     virtual int setup(RGE_Master_Moving_Object*, RGE_Player*, float, float, float);
     RGE_Moving_Object(RGE_Master_Moving_Object* master, RGE_Player* player,
                       float x, float y, float z, int flag);
     RGE_Moving_Object(int id, RGE_Game_World* world, int flag);
-    virtual int setup(RGE_Master_Action_Object*, RGE_Player*, float, float, float);
     int setup(int, RGE_Game_World*);
     void recycle_in_to_game(RGE_Master_Static_Object*, RGE_Player*, float, float, float);
     void save(int);
@@ -347,12 +337,6 @@ public:
     RGE_Action_Object(int id, RGE_Game_World* world, int flag);
     virtual void recycle_in_to_game(RGE_Master_Static_Object*, RGE_Player*, float, float, float);
     virtual void recycle_out_of_game();
-protected:
-    virtual int setup(RGE_Master_Action_Object*, RGE_Player*, float, float, float);
-    virtual int setup(int, RGE_Game_World*);
-    virtual RGE_Action_List* create_action_list();
-
-public:
     virtual void rehook();
     virtual void save(int);
     virtual void transform(RGE_Master_Static_Object*);
@@ -361,6 +345,7 @@ public:
     virtual void do_command(RGE_Static_Object*, float, float, float);
     virtual void move_to(RGE_Static_Object*, float, float, float);
     virtual void work(RGE_Static_Object*, float, float, float);
+    // The first action-object slot is work2 at PDB offset +0x1F8.
     virtual void work2(RGE_Static_Object*, float, float, float, uchar);
     virtual uchar update();
     virtual void set_attack(RGE_Static_Object*);
@@ -368,8 +353,8 @@ public:
     virtual void play_move_sound();
     virtual RGE_Master_Static_Object* get_command_master(RGE_Static_Object*, float, float, float);
     virtual void set_task(short);
-    virtual void set_action(RGE_Action*);
     virtual void setTaskByTaskID(int);
+    virtual void set_action(RGE_Action*);
     virtual void set_only_action(RGE_Action*);
     virtual void set_end_action(RGE_Action*);
     virtual void stop();
@@ -378,6 +363,13 @@ public:
     uchar have_action();
     virtual RGE_Static_Object* get_target_obj();
     virtual RGE_Task* getTask(RGE_Static_Object*, float, float, float);
+
+protected:
+    virtual int setup(RGE_Master_Action_Object*, RGE_Player*, float, float, float);
+    virtual int setup(int, RGE_Game_World*);
+    virtual RGE_Action_List* create_action_list();
+
+public:
     virtual uchar actionState() const;
     virtual long get_action_checksum();
 
