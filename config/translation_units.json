@@ -4118,10 +4118,13 @@
       "source": "src/effects_tu.cpp",
       "flags": "config/flags/default.rsp",
       "owners": {
+        "00449440": "src/matching/00449440_RGE_Effects.cpp",
         "004494B0": "src/matching/004494B0_save.cpp",
         "004495C0": "src/matching/004495C0_do_effect.cpp"
       },
       "symbols": {
+        "00449440": "??1RGE_Effects@@UAE@XZ",
+        "004494B0": "?save@RGE_Effects@@UAEXH@Z",
         "004495C0": "?do_effect@RGE_Effects@@UAEXFPAVRGE_Player@@@Z"
       }
     },
@@ -4143,11 +4146,13 @@
       "flags": "config/flags/00473E40_TDialogPanel.rsp",
       "owners": {
         "00473C10": "src/matching/00473C10_TDialogPanel.cpp",
-        "00473C80": "src/matching/00473C80_setup.cpp"
+        "00473C80": "src/matching/00473C80_setup.cpp",
+        "00473EC0": "src/matching/00473EC0_set_focus.cpp"
       },
       "symbols": {
         "00473C10": "??0TDialogPanel@@QAE@PAD@Z",
-        "00473C80": "?setup@TDialogPanel@@UAEHPAVTDrawArea@@PAVTPanel@@JJPADJH@Z"
+        "00473C80": "?setup@TDialogPanel@@UAEHPAVTDrawArea@@PAVTPanel@@JJPADJH@Z",
+        "00473EC0": "?set_focus@TDialogPanel@@UAEXH@Z"
       }
     },
     {
@@ -5066,6 +5071,7 @@
         "00472160": "src/matching/00472160_set_picture_info.cpp",
         "004721A0": "src/matching/004721A0_set_text_info.cpp",
         "004721E0": "src/matching/004721E0_set_text_info.cpp",
+        "00472220": "src/matching/00472220_set_text_pos.cpp",
         "004722C0": "src/matching/004722C0_set_state_info.cpp",
         "004722E0": "src/matching/004722E0_set_id.cpp",
         "00472300": "src/matching/00472300_set_picture.cpp",
@@ -5080,6 +5086,10 @@
         "00472700": "src/matching/00472700_set_state.cpp",
         "00472720": "src/matching/00472720_set_state_by_id.cpp",
         "00472760": "src/matching/00472760_set_bevel_info.cpp",
+        "004727F0": "src/matching/004727F0_set_rect.cpp",
+        "00472810": "src/matching/00472810_get_state.cpp",
+        "00472820": "src/matching/00472820_get_id.cpp",
+        "00472830": "src/matching/00472830_get_id2.cpp",
         "00472840": "src/matching/00472840_get_text.cpp",
         "00472880": "src/matching/00472880_get_text_color.cpp",
         "00473180": "src/matching/00473180_mouse_left_dbl_click_action.cpp",
@@ -5112,9 +5122,14 @@
         "00472110": "?buttonType@TButtonPanel@@QBE?AW4ButtonType@1@XZ",
         "00472120": "?drawType@TButtonPanel@@QBE?AW4DrawType@1@XZ",
         "00472130": "?notifyType@TButtonPanel@@QBE?AW4NotifyType@1@XZ",
+        "00472220": "?set_text_pos@TButtonPanel@@QAEXJJ@Z",
         "00472300": "?set_picture@TButtonPanel@@QAEXFPAVTShape@@F@Z",
         "00472680": "?set_sound@TButtonPanel@@QAEXPAVTDigital@@@Z",
         "00472700": "?set_state@TButtonPanel@@UAEXF@Z",
+        "004727F0": "?set_rect@TButtonPanel@@UAEXJJJJ@Z",
+        "00472810": "?get_state@TButtonPanel@@QAEHXZ",
+        "00472820": "?get_id@TButtonPanel@@QAEJXZ",
+        "00472830": "?get_id2@TButtonPanel@@QAEJXZ",
         "00472840": "?get_text@TButtonPanel@@QAEHFPAPAD0@Z",
         "00473930": "?hit_button@TButtonPanel@@UAEHJJ@Z",
         "004739B0": "?do_action@TButtonPanel@@QAEXXZ",

@@ -255,6 +255,7 @@ public:
     virtual ~TButtonPanel();
     TButtonPanel();
 
+    virtual void set_rect(long, long, long, long);
     long setup(TDrawArea*, TPanel*, long, long, long, long, DrawType, TDigital*, NotifyType, long);
     ButtonType buttonType() const;
     DrawType drawType() const;
