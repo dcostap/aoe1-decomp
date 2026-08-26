@@ -49,6 +49,6 @@ int RGE_Combat_Object::attack(int target_id, int force)
         return 0;
     }
     this->action_list->delete_list();
-    this->add_action(action);
+    this->set_only_action(action);
     return 1;
 }

@@ -2,6 +2,8 @@
 // Source: com_obj.cpp lines 988-1040
 // Accepted drift: the remaining difference is a return-register choice in the
 // compiler's EH tail. The source keeps the original task and action flow.
+// PDB and call-site evidence identify action insertion as set_only_action at
+// virtual slot +0x208.
 
 #include "../com_obj_phase2_context.h"
 
@@ -40,7 +42,7 @@ int RGE_Combat_Object::gather(int object_id, int force) {
     }
 
     this->action_list->delete_list();
-    this->add_action(action);
+    this->set_only_action(action);
 success:
     result = (RGE_Static_Object*)1;
 done:

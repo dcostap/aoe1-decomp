@@ -2,7 +2,7 @@
 // PDB source: com_obj.cpp lines 827-869
 // attempt 1: natural new RGE_Action_Attack with repeated current-action checks and EH new frame.
 // attempt 2: action type virtual lives at +0x18 and attack ctor wants master short +0x12A, not +0x13E.
-// attempt 3: object add_action virtual is at vtable +0x208, not +0x204.
+// attempt 3: set_only_action uses the canonical virtual slot at +0x208.
 
 #include "../com_obj_phase2_context.h"
 
@@ -31,6 +31,6 @@ int RGE_Combat_Object::attack(float x, float y, float z, int force)
         return 0;
     }
     this->action_list->delete_list();
-    this->add_action(action);
+    this->set_only_action(action);
     return 1;
 }

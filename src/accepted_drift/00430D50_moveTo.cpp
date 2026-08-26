@@ -61,7 +61,8 @@
 // failure return on opposite sides of the same EH-state reset. XOR, TEST, and
 // the EH-state store cannot throw; both builds establish state -1 before the
 // next memory access or call. Null returns zero. Success performs the same list
-// deletion, action insertion, cleanup, and one return. All 16 calls, values,
+// deletion, canonical set_only_action call at +0x208, cleanup, and one return.
+// All 16 calls, values,
 // memory effects, EH coverage, and fault behavior match.
 
 #include <stddef.h>
@@ -111,7 +112,7 @@ int RGE_Combat_Object::moveTo(float x, float y, float z, float range, int force)
     result = 0;
     if (move_action != 0) {
         this->actions->delete_list();
-        this->add_action(move_action);
+        this->set_only_action(move_action);
 
 success:
         result = 1;

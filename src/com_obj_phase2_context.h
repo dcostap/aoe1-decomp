@@ -477,7 +477,6 @@ public:
     virtual RGE_Task* getTask(RGE_Static_Object*, float, float, float);
     int setup(RGE_Master_Action_Object*, RGE_Player*, float, float, float);
     virtual RGE_Action_List* create_action_list();
-    void add_action(RGE_Action*);
     void play_move_sound();
     RGE_Task* make_enter_task(RGE_Static_Object*, int, int, int);
     RGE_Task* create_gather_task(RGE_Static_Object*, int, int, int);

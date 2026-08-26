@@ -196,7 +196,7 @@ int RGE_Combat_Object::enter(int param_1, int param_2)
         return 0;
 
     this->actions->delete_list();
-    this->add_action(action_enter);
+    this->set_only_action(action_enter);
 
 success:
     return 1;
