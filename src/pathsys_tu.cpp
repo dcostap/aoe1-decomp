@@ -21,7 +21,7 @@
 #include "matching/0046B360_printToFile.cpp"
 #include "matching/0046B550_lookupMisc.cpp"
 #include "matching/0046B570_setMisc.cpp"
-#include "scratch/0046B590_initMisc.cpp"
+#include "matching/0046B590_initMisc.cpp"
 #include "matching/0046B5C0_zeroObstructionMap.cpp"
 #define obstructionValue obstructionValueFlat
 #include "matching/0046B5E0_obstruction.cpp"
