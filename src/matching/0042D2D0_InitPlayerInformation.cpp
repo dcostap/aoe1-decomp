@@ -68,9 +68,13 @@ struct TCommunications_Handler {
 #endif // COM_HAND_TU_CONTEXT
 
 
-void __cdecl TDebuggingLog_Log(void* log, const char* fmt, ...);
-
-extern void* g_pLog;
+#if !defined(COM_HAND_TU_CONTEXT)
+class TDebuggingLog {
+public:
+    static void __cdecl Log(TDebuggingLog* log, const char* format, ...);
+};
+extern TDebuggingLog* L;
+#endif // COM_HAND_TU_CONTEXT
 
 void TCommunications_Handler::InitPlayerInformation(unsigned int param_1, unsigned long param_2, char* param_3, char* param_4)
 {
@@ -105,5 +109,5 @@ void TCommunications_Handler::InitPlayerInformation(unsigned int param_1, unsign
         InQ->FlushForPlayer(param_1);
     }
 
-    TDebuggingLog_Log(g_pLog, "Player %d (%ld) is INITIALIZED as '%s' [%s]", param_1, param_2, param_3, param_4);
+    TDebuggingLog::Log(L, "Player %d (%ld) is INITIALIZED as '%s' [%s]", param_1, param_2, param_3, param_4);
 }

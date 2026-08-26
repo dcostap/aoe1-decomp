@@ -320,6 +320,7 @@ public:
     int GetPlayerInfo(unsigned int player, void* info);
     int GetPlayerInfo(char** info);
     int IsThisHost();
+    int IsLobbyLaunched();
     long SendZoneMessage(const char* msg, unsigned long param, void* zone_guid);
 };
 
@@ -385,6 +386,9 @@ public:
     unsigned long GetAdjustmentCount();
     char* GetSelfPlayerOptimalSpeedStr();
     char* GetPlayerSpeedStatusStr(unsigned int player);
+    void EnableSpeedControl(int value);
+    void SetV1(unsigned long value);
+    void SetV2(unsigned long value);
 };
 
 class RGE_Communications_Synchronize {
@@ -409,6 +413,9 @@ public:
              unsigned long c, long d, long e, long f, long g, long h);
     void LogChecksums(long a, long b, long c, long d, long e, long f,
                       long g, long h, long i);
+    void SendChatMsgsAtChecksum(int value);
+    void SetLastWorldRandom(unsigned long value);
+    int IsPlayerOutOfSync(unsigned int player, unsigned long turn);
     void target(int param);
     void target(int a, int b);
 };
@@ -582,6 +589,8 @@ public:
 
     int IsPlayerHuman(unsigned int player);
     int IsPlayerComputer(unsigned int player);
+    int GetPlayerHumanity(unsigned int player);
+    int IsLobbyLaunched();
     void target_func(int p0, int p1);
 protected:
     long CloseSession();
@@ -736,9 +745,9 @@ public:
     void sub_00429FD0();
     void sub_0042C7A0();
     void ForceNameChange(void);
-    void SetSpeedV1(int param);
-    void SetSpeedV2(int param);
-    void IsPlayerOutOfSync(int a, int b);
+    void SetSpeedV1(unsigned long param);
+    void SetSpeedV2(unsigned long param);
+    int IsPlayerOutOfSync(unsigned int player, unsigned long turn);
     int IsPaused();
 
 

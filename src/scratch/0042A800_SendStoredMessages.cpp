@@ -47,6 +47,8 @@
 //   count, volatile Now, and a register max-delay accumulator were rejected.
 // - unresolved pass: 20 meaningful probes; best clean source is 1210 bytes,
 //   24/24 calls, frame 0x24 versus 0x20, and 986 strict differing bytes.
+// The DirectPlay Send caller view uses the binary-proven vslot+0x68. The local
+// PlayerOptions view also names CurrentTurn at its proven +0x0C offset.
 
 struct TDebuggingLog;
 struct RGE_Comm_Error;
@@ -139,7 +141,9 @@ struct RESENDER {
 
 #if !defined(COM_HAND_TU_CONTEXT)
 struct COMMPLAYEROPTIONS {
-    char gap_00[0x14];
+    char gap_00[8];
+    unsigned long CurrentTurn;
+    char gap_10[4];
     unsigned int dcoID[10];
     char gap_3C[0x1D0 - 0x3C];
 };
@@ -343,8 +347,8 @@ int TCommunications_Handler::SendStoredMessages()
             send_start = debug_timeGetTime((char*)s_Com_hand_cpp, 0xE76);
             L->Log("  >TX STOR #%d %d (%d)", player, resend_slot,
                    selected->Length);
-            hr = DAT_0062c5ec->Send(DAT_0062cf04, dco[0], 0,
-                                    selected->ResendMsg, selected->Length);
+            hr = ((IDirectPlay3*)DAT_0062c5ec)->Send(
+                DAT_0062cf04, dco[0], 0, selected->ResendMsg, selected->Length);
             send_elapsed = debug_timeGetTime((char*)s_Com_hand_cpp, 0xE86) - send_start;
             if (send_elapsed > 0x32) {
                 L->Log("!!!SendStoredMessages slow - %ld msec",

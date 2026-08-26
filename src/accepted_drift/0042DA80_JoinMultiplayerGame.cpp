@@ -11,6 +11,8 @@
 // 8: tried direct FIELD_GUID(0x12EC) aggregate without app pointer; same codegen as best.
 // 9: tried volatile debug-log global; compile/type mismatch and not useful, reverted.
 // 10: tried char* vs const char* log prototype/string macros; no codegen change.
+// 11: restored the proven TDebuggingLog::Log owner for both calls to 00436610.
+// This also keeps the complete grouped Com_hand.cpp context compilable.
 // ACCEPTED_DRIFT suggestion: remaining 16 edit bytes are a localized, behavior-equivalent scheduling difference around storing dSess2.guidApplication.d3 relative to pushing args for the debug Log call. Both versions store the same dword to the same local stack slot before the call; no calls or predicates differ.
 
 typedef unsigned long ulong;
@@ -51,11 +53,14 @@ public:
 
 
 #if !defined(COM_HAND_TU_CONTEXT)
-extern "C" void __cdecl TDebuggingLog_Log(void* log, char* fmt, ...);
+class TDebuggingLog {
+public:
+    static void __cdecl Log(TDebuggingLog* log, const char* format, ...);
+};
 #endif // COM_HAND_TU_CONTEXT
 
 #define g_pDirectPlay (*(IDirectPlay4A**)0x0062C5EC)
-#define g_pDebugLog (*(void**)0x0062C4FC)
+#define g_pDebugLog (*(TDebuggingLog**)0x0062C4FC)
 #define STR_NO_DP ((char*)0x00582AC4)
 #define STR_OPEN_JOIN ((char*)0x00582A98)
 #define STR_JOIN_MP ((const char*)0x00582A88)
@@ -78,7 +83,7 @@ int TCommunications_Handler::JoinMultiplayerGame(GUID_LOCAL* guid)
     DPSESSIONDESC2_LOCAL dSess2;
 
     if (g_pDirectPlay == 0) {
-        TDebuggingLog_Log(g_pDebugLog, STR_NO_DP);
+        TDebuggingLog::Log(g_pDebugLog, STR_NO_DP);
         return 0;
     }
 
@@ -92,7 +97,7 @@ int TCommunications_Handler::JoinMultiplayerGame(GUID_LOCAL* guid)
 
     dSess2.app = FIELD_GUID(0x12EC);
 
-    TDebuggingLog_Log(g_pDebugLog, STR_OPEN_JOIN, FIELD_GUID(0x12FC).d0);
+    TDebuggingLog::Log(g_pDebugLog, STR_OPEN_JOIN, FIELD_GUID(0x12FC).d0);
 
     IDirectPlay4A* dp = g_pDirectPlay;
     long result = dp->Open(&dSess2, 1);
