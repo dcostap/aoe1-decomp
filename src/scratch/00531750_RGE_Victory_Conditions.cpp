@@ -23,6 +23,10 @@
 //   exact constructor and destructor anchors are 00531AF0 (lines 150-158) and 00531B20
 //   (lines 163-172). The shared declarations in victory_context.h preserve the proven
 //   0x20 conditions, 0x34 entry, and 0x1C point-entry layouts.
+// - Current prefix pass: binding the second serialized area coordinate to the proven y2
+//   +0x18 alias reduced the natural candidate from 712 to 493 differing bytes and removed
+//   the boundary escapes. The remaining mismatch is the logged early-store and register
+//   allocation basin. Initialization-order reordering was codegen-neutral and was restored.
 
 #include "../../include/victory_context.h"
 
@@ -62,7 +66,7 @@ RGE_Victory_Conditions::RGE_Victory_Conditions(
         rge_read(file_handle, &entry->x0, 4);
         rge_read(file_handle, &entry->y0, 4);
         rge_read(file_handle, &entry->x1, 4);
-        rge_read(file_handle, &entry->y1, 4);
+        rge_read(file_handle, &entry->y2, 4);
         rge_read(file_handle, &entry->number, 4);
         rge_read(file_handle, &entry->count, 4);
         rge_read(file_handle, &handle, 4);

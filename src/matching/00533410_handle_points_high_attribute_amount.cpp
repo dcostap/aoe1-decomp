@@ -10,6 +10,8 @@
 // A separate result local and reversed local type order both stayed exact.
 // Unused world, entry, and method surfaces were also incidental.
 // The retained surface is the smallest tested canonical context.
+// - Prefix pass: splitting node->attribute into a local kept standalone MATCH but was grouped
+//   neutral at the four-byte EAX/ECX recolor, so the PDB-supported direct expression remains.
 
 #ifndef VICTORY_CONTEXT_H
 struct RGE_Victory_Entry;

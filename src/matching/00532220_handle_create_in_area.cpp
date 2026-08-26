@@ -59,6 +59,9 @@
 //   the same relation byte; the original encoding is one byte longer. No
 //   policy-valid source lead remains. Keep this source and pause for compiler
 //   context or original-source evidence.
+// - Prefix pass: direct y2 alias use in both upper-Y comparisons changed the operands but
+//   left the 14-byte mismatch unchanged. A controlled float view of the proven +0x18 y2
+//   storage reached MATCH, but it bypasses canonical ownership and was restored.
 // - Exact-finish: use the canonical victory_context.h declarations and move
 //   the proven object-list, master-object, static-object, relation, and
 //   allied-victory fields into that shared victory.cpp type surface. This

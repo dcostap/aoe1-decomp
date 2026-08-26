@@ -1,4 +1,7 @@
 #ifndef VICTORY_CONTEXT_H
+// Prefix pass: the proven +0x18 dword alias with an incoming bit-preserving store produces
+// grouped MATCH. Reverting to the duplicate y1 member restored the 61-byte boundary mismatch.
+// Keep the incoming float bits unchanged in the upper-Y slot.
 class RGE_Static_Object;
 
 class RGE_Victory_Entry {
@@ -10,7 +13,7 @@ public:
     float x0;
     float y0;
     float x1;
-    float y1;
+    long y2;
     long number;
     long count;
     RGE_Static_Object* this_obj;
@@ -37,7 +40,7 @@ unsigned char RGE_Victory_Conditions::add_bring(unsigned char param_1, RGE_Stati
         entry->x0 = param_3;
         entry->y0 = param_4;
         entry->x1 = param_5;
-        entry->y1 = param_6;
+        entry->y2 = *(long*)&param_6;
         return 1;
     }
     return 0;

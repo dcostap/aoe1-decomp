@@ -16,6 +16,9 @@
 //   state_done arm (`object_state >= 3`) before bounds. This forces the original `je` null tail and `jb` to
 //   bounds block while preserving the FPU compare sequence.
 // Result: MATCH locally with `python tools/check_function.py --va 005325A0`.
+// - Prefix pass: a controlled float view of the proven +0x18 y2 storage preserved standalone MATCH
+//   and isolated the grouped duplicate-y1 declaration blocker. The view bypasses canonical ownership,
+//   so the natural y1 source was restored.
 
 #ifndef VICTORY_CONTEXT_H
 class RGE_Static_Object {
