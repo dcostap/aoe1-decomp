@@ -14,12 +14,12 @@ public:
     char gap_00[0x1A4];
     char buildListNameValue[257]; // +0x1A4
 
-    int haveBuildList();
+    int haveBuildList() const;
 };
 #endif
 
-int BuildAIModule::haveBuildList() {
-    char* name = this->buildListNameValue;
+int BuildAIModule::haveBuildList() const {
+    char* name = (char*)this->buildListNameValue;
     if (name != 0 && strcmp(name, "NONE") != 0 && strcmp(name, "NULL") != 0) return 1;
     return 0;
 }

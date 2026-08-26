@@ -6,8 +6,8 @@ public:
     virtual ~BuildAIModule();
     char gap_0[0x4A3];
     char nextBuildItemRequestedValue[1];
-    char* nextBuildItemRequested();
+    char* nextBuildItemRequested() const;
 };
 #endif
 
-char* BuildAIModule::nextBuildItemRequested() { return this->nextBuildItemRequestedValue; }
+char* BuildAIModule::nextBuildItemRequested() const { return (char*)this->nextBuildItemRequestedValue; }

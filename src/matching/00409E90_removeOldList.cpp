@@ -16,6 +16,7 @@ public:
     BuildItem buildList;
     int buildListLengthValue;
 
+protected:
     void removeOldList(void);
 };
 #endif

@@ -6,9 +6,9 @@
 #ifndef AIBLDMOD_SHARED_CONTEXT
 class BaseItem {
 public:
-    void* vtable_ptr;
+    virtual ~BaseItem();
+    char gap_004[0x68];
     int typeID_;
-    char pad_08[0x6C - 0x8];
 
     int typeID() const;
 };
@@ -30,6 +30,7 @@ public:
     char gap_0[0xF0];
     BuildItem buildList;
 
+protected:
     BuildItem* anyBuildListItem(int param_1, int param_2, int param_3);
 };
 #endif

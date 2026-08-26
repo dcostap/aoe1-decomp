@@ -6,8 +6,8 @@ public:
     virtual ~BuildAIModule();
     char gap_0[0x5A4];
     int numberItemsIntoBuildListValue;
-    int numberItemsIntoBuildList();
+    int numberItemsIntoBuildList() const;
 };
 #endif
 
-int BuildAIModule::numberItemsIntoBuildList() { return this->numberItemsIntoBuildListValue; }
+int BuildAIModule::numberItemsIntoBuildList() const { return this->numberItemsIntoBuildListValue; }

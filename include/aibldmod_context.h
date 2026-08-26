@@ -193,26 +193,26 @@ public:
     BuildAIModule(void* owner, int player);
     BuildAIModule(int file, int player);
 
-    int buildListLength();
+    int buildListLength() const;
     char* buildListName();
-    int haveBuildList();
+    int haveBuildList() const;
     int insertItem(RGE_Player* player, int objectType, int count,
                    int itemType, int p5, int buildCap, int index);
     int numberItemsBuilt() const;
     int numberItemsInProgress() const;
     int numberItemsBuiltOrInProgress() const;
-    int numberItemsIntoBuildList();
-    char* lastBuildItemRequested();
-    char* currentBuildItemRequested();
-    char* nextBuildItemRequested();
+    int numberItemsIntoBuildList() const;
+    char* lastBuildItemRequested() const;
+    char* currentBuildItemRequested() const;
+    char* nextBuildItemRequested() const;
     int numberItemsOfType(int type, int category);
     int numberBuiltItemsOfType(int type, int category);
     int numberUnbuiltItemsOfType(int type, int category);
     int numberInProgressItemsOfType(int type, int category);
-    void removeOldList();
-    BuildItem* anyBuildListItem(int type, int mode, int state);
 
 protected:
+    void removeOldList();
+    BuildItem* anyBuildListItem(int type, int mode, int state);
     BuildItem* specificBuildListItem(int uniqueID);
 };
 
