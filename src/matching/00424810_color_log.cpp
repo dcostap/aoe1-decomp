@@ -65,7 +65,7 @@ struct RGE_Base_Game {
 extern RGE_Base_Game* rge_base_game;
 extern unsigned char do_color_log;
 
-extern "C" void __cdecl color_log(unsigned char param_1, unsigned char param_2, int param_3) {
+void __cdecl color_log(unsigned char param_1, unsigned char param_2, int param_3) {
     if (!do_color_log)
         return;
     RGE_Base_Game* game = rge_base_game;
