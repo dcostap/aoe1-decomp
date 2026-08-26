@@ -251,6 +251,8 @@ public:
     virtual long action(TPanel*, long, unsigned long, unsigned long);
     virtual long handle_idle();
     virtual long handle_user_command(unsigned int p0, long p1);
+
+protected:
     void fillList();
 };
 

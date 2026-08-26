@@ -148,8 +148,12 @@ public:
 
     TSpan_Node_List(int initial_size, int grow_size, int item_size);
     ~TSpan_Node_List();
+
+private:
     void SetNumZones(int new_count);
     void InitNewZone(int grow_size);
+
+public:
     VSpan_Node* GetNode();
     void FreeNode(VSpan_Node* node);
     int FreeThread(VSpan_Node* first, VSpan_Node* last);

@@ -1207,8 +1207,8 @@
       "symbols": {
         "004BD5E0": "??0TSpan_Node_List@@QAE@HHH@Z",
         "004BD640": "??1TSpan_Node_List@@QAE@XZ",
-        "004BD690": "?SetNumZones@TSpan_Node_List@@QAEXH@Z",
-        "004BD720": "?InitNewZone@TSpan_Node_List@@QAEXH@Z",
+        "004BD690": "?SetNumZones@TSpan_Node_List@@AAEXH@Z",
+        "004BD720": "?InitNewZone@TSpan_Node_List@@AAEXH@Z",
         "004BD790": "?GetNode@TSpan_Node_List@@QAEPAUVSpan_Node@@XZ",
         "004BD800": "?FreeNode@TSpan_Node_List@@QAEXPAUVSpan_Node@@@Z",
         "004BD820": "?FreeThread@TSpan_Node_List@@QAEHPAUVSpan_Node@@0@Z",
@@ -5645,7 +5645,7 @@
         "0049F890": "??1TribeMPStartupScreen@@UAE@XZ",
         "0049F9A0": "?handle_idle@TribeMPStartupScreen@@UAEJXZ",
         "0049F9D0": "?action@TribeMPStartupScreen@@UAEJPAVTPanel@@JKK@Z",
-        "0049FED0": "?fillList@TribeMPStartupScreen@@QAEXXZ",
+        "0049FED0": "?fillList@TribeMPStartupScreen@@IAEXXZ",
         "004A00A0": "?handle_user_command@TribeMPStartupScreen@@UAEJIJ@Z"
       }
     },

@@ -22,13 +22,73 @@ class RGE_Base_Game;
 class TPanel {
 public:
     virtual ~TPanel();
-    virtual long handle_idle();
+    virtual long setup(TDrawArea* draw_area, TPanel* parent,
+                       long x, long y, long width, long height,
+                       unsigned char flags);
+    virtual void set_rect(tagRECT rect);
+    virtual void set_rect(long left, long top, long right, long bottom);
+    virtual void set_color(unsigned char color);
     virtual void set_active(int active);
+    virtual void set_positioning(int mode, long x, long y, long width,
+                                 long height, long a, long b, long c,
+                                 long d, TPanel* p1, TPanel* p2,
+                                 TPanel* p3, TPanel* p4);
     virtual void set_fixed_position(long x, long y, long width, long height);
-    virtual void draw();
+    virtual void set_redraw(int mode);
+    virtual void set_overlapped_redraw(TPanel* first, TPanel* second, int mode);
     virtual void draw_setup(int value);
     virtual void draw_finish();
-    virtual void set_ideal_size(long width, long height);
+    virtual void draw();
+    virtual void draw_rect(tagRECT* rect);
+    virtual void draw_offset(long x, long y, tagRECT* rect);
+    virtual void draw_rect2(tagRECT* rect);
+    virtual void draw_offset2(long x, long y, tagRECT* rect);
+    virtual void paint();
+    virtual long wnd_proc(void* window, unsigned int message,
+                          unsigned int wparam, long lparam);
+    virtual long handle_idle();
+    virtual long handle_size(long width, long height);
+    virtual long handle_paint();
+    virtual long handle_key_down(long key, short modifiers, int a, int b, int c);
+    virtual long handle_char(long key, short modifiers);
+    virtual long handle_command(unsigned int command, long param);
+    virtual long handle_user_command(unsigned int command, long param);
+    virtual long handle_timer_command(unsigned int command, long param);
+    virtual long handle_scroll(long param1, long param2);
+    virtual long handle_mouse_down(unsigned char button, long x, long y,
+                                   int a, int b);
+    virtual long handle_mouse_move(long x, long y, int a, int b);
+    virtual long handle_mouse_up(unsigned char button, long x, long y,
+                                 int a, int b);
+    virtual long handle_mouse_dbl_click(unsigned char button, long x, long y,
+                                        int a, int b);
+    virtual long mouse_move_action(long x, long y, int a, int b);
+    virtual long mouse_left_down_action(long x, long y, int a, int b);
+    virtual long mouse_left_hold_action(long x, long y, int a, int b);
+    virtual long mouse_left_move_action(long x, long y, int a, int b);
+    virtual long mouse_left_up_action(long x, long y, int a, int b);
+    virtual long mouse_left_dbl_click_action(long x, long y, int a, int b);
+    virtual long mouse_right_down_action(long x, long y, int a, int b);
+    virtual long mouse_right_hold_action(long x, long y, int a, int b);
+    virtual long mouse_right_move_action(long x, long y, int a, int b);
+    virtual long mouse_right_up_action(long x, long y, int a, int b);
+    virtual long mouse_right_dbl_click_action(long x, long y, int a, int b);
+    virtual long key_down_action(long param1, short param2, int param3,
+                                 int param4, int param5);
+    virtual long char_action(long param1, short param2);
+    virtual long action(TPanel* sender, long action_type,
+                        unsigned long param3, unsigned long param4);
+    virtual void get_true_render_rect(tagRECT* rect);
+    virtual int is_inside(long x, long y);
+    virtual void set_focus(int focus);
+    virtual void set_tab_order(TPanel* first, TPanel* second);
+    virtual void set_tab_order(TPanel** panels, short count);
+    virtual unsigned char get_help_info(char** text, long* page,
+                                        long param3, long param4);
+    virtual void stop_sound_system();
+    virtual int restart_sound_system();
+    virtual void take_snapshot();
+    virtual void handle_reactivate();
 
     void set_curr_child(TPanel* child);
     char* get_string(int lang_id);
@@ -50,6 +110,8 @@ public:
 class TTextPanel : public TPanel {
 public:
     virtual ~TTextPanel();
+    virtual void draw_background(int value);
+    virtual void set_ideal_size(long width, long height);
     virtual void setText(char* text);
     virtual void textExtra(int a, int b, int c, int d, int e, int f, int g);
 };
@@ -69,11 +131,16 @@ public:
 class TEasy_Panel : public TPanel {
 public:
     virtual ~TEasy_Panel();
+    virtual void draw_background(int value);
     virtual void set_ideal_size(long width, long height);
     virtual int create_button(TPanel* panel, TButtonPanel** out, int lang, int a4,
                               int x, int y, int w, int h, int a, int b, int c);
     virtual int create_button(TPanel* panel, TButtonPanel** out, char* lang, char* a4,
                               int x, int y, int w, int h, int a, int b, int c);
+    virtual int create_check_box(TPanel* panel, TButtonPanel** out, int lang, int a4,
+                                 int x, int y, int w, int h, int a);
+    virtual int create_radio_button(TPanel* panel, TButtonPanel** out, int lang, int a4,
+                                    int x, int y, int w, int h, int a);
     virtual int create_text(TPanel* panel, TTextPanel** out, int lang,
                             int x, int y, int w, int h, int font, int center_h,
                             int center_v, int word_wrap);
@@ -83,7 +150,21 @@ public:
     virtual int create_text(TPanel* panel, TTextPanel** out, char* text,
                             int x, int y, int w, int h, int font, int center_h,
                             int center_v, int word_wrap);
+    virtual int create_input(TPanel* panel, void* out, char* text, short width,
+                             int format, int x, int y, int w, int h, int font);
+    virtual int create_edit(TPanel* panel, void* out, char* text, short width,
+                            int format, int x, int y, int w, int h, int font, int a, int b);
+    virtual int create_drop_down(TPanel* panel, void* out, int lang, int a4,
+                                 int x, int y, int w, int h, int a);
+    virtual int create_list(TPanel* panel, void* out, int x, int font,
+                            int w, int h, int lines);
+    virtual int create_scrollbar(TPanel* panel, void* out, TTextPanel* text,
+                                 int x, int y, int w, int h, int a);
     virtual int create_auto_scrollbar(TScrollBarPanel** out, TTextPanel* text, int param);
+    virtual int create_vert_slider(TPanel* panel, void* out, int x, int y,
+                                   int w, int h, int a, int b, int c);
+    virtual int create_horz_slider(TPanel* panel, void* out, int x, int y,
+                                   int w, int h, int a, int b, int c);
     virtual void position_panel(TPanel* panel, int x, int y, int w, int h);
     long action(TPanel* sender, long actionType,
                 unsigned long param3, unsigned long param4);
