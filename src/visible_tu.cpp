@@ -17,9 +17,7 @@
 #include "scratch/0053C920_unexplore_terrain.cpp"
 #include "scratch/0053CAC0_explore_terrain_sq.cpp"
 #include "scratch/0053CCF0_unexplore_terrain_sq.cpp"
-#define field_34 PlayerVisibleMaskInvertValue
 #include "matching/0053CE70_checksum_visible_inputs.cpp"
-#undef field_34
 #include "matching/0053CE80_RGE_Unified_Visible_Map.cpp"
 #include "matching/0053CEE0_RGE_Unified_Visible_Map.cpp"
 #include "matching/0053CF10_load.cpp"
