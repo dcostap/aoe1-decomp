@@ -30,7 +30,7 @@ public:
 
 void T_Scenario::SetSPDestObjectID(int index, RGE_Static_Object* object) {
     if (object != 0) {
-        int object_id = this->get_object_ID((ScenarioObj*)object);
+        int object_id = this->get_object_ID(object);
         int which_player = this->which_player;
 
         int offset;

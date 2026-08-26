@@ -48,10 +48,6 @@ extern RGE_Base_Game* rge_base_game;
 class RGE_Scenario {
 public:
     virtual ~RGE_Scenario();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
     void* time_line;
     RGE_Game_World* world;
     char gap_0C[0x1984];

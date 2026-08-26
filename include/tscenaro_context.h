@@ -13,7 +13,11 @@ typedef unsigned char uchar;
 extern const double DAT_00577330;
 
 class RGE_Game_World;
-class RGE_Static_Object;
+class RGE_Static_Object {
+public:
+    virtual ~RGE_Static_Object();
+    long id;
+};
 class TRIBE_Player;
 class TRIBE_Player_Tech;
 class RGE_Player;
@@ -70,10 +74,6 @@ public:
 
 extern RGE_Base_Game* rge_base_game;
 
-struct ScenarioObj {
-    int pad_00;
-    int id_;
-};
 class TPicture;
 
 struct Player_Start_Info {
@@ -125,8 +125,10 @@ struct SP_Victory_Raw_Dest_Objects {
 };
 
 class RGE_Scenario {
-public:
+protected:
     virtual RGE_Static_Object* get_object_pointer(int);
+
+public:
     virtual ~RGE_Scenario();
     virtual void rehook();
     virtual void save(int);
@@ -225,8 +227,10 @@ public:
 };
 
 class T_Scenario : public RGE_Scenario {
-public:
+private:
     virtual RGE_Static_Object* get_object_pointer(int);
+
+public:
     virtual ~T_Scenario();
     virtual void rehook();
     virtual void save(int);
@@ -254,7 +258,6 @@ public:
     T_Scenario(RGE_Game_World*);
     T_Scenario(int, RGE_Game_World*);
 
-    void ClearDisabledTechnologies();
     void ClearSPVictoryCondition(int);
     int GetDisabledTechnology(int, int);
     int GetMPVictory();
@@ -290,7 +293,6 @@ public:
     void InitializeFriendlinessValues();
     void InitializePlayerValues();
     void InitializeVictoryValues();
-    void SaveAttributesIntoPlayers();
     void Save_victory_conditions_into_players(int);
     void SetDisabledTechnology(int, int, int);
     void SetMPVictory(int);
@@ -322,11 +324,15 @@ public:
     void Set_player_Wood(int, int);
     void Set_player_attitude(int, int, int);
     void Set_victory_all_flag(int);
-    void WriteDisabledTechnologiesToMainSystem();
     int any_sp_victory();
-    int get_object_ID(ScenarioObj*);
     void set_player_tech(TRIBE_Player*);
     void update();
+
+private:
+    void ClearDisabledTechnologies();
+    void SaveAttributesIntoPlayers();
+    int get_object_ID(RGE_Static_Object*);
+    void WriteDisabledTechnologiesToMainSystem();
 };
 
 class TRIBE_Scenario_Header : public RGE_Scenario_Header {

@@ -15,7 +15,7 @@ public:
 
 void T_Scenario::SetSPObject(int index, RGE_Static_Object* object) {
     if (object != 0) {
-        int object_id = this->get_object_ID((ScenarioObj*)object);
+        int object_id = this->get_object_ID(object);
         int result;
         int which_player = this->which_player;
         result = object_id;

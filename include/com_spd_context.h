@@ -138,12 +138,16 @@ public:
     void SetFutureSpeedChange(unsigned int buffer_frames, unsigned int granularity,
                               unsigned long turn_change);
     void EnableSpeedControl(int value);
-    int GetBufferGranularity();
-    int GetAdjustmentCount();
+    unsigned int GetBufferGranularity();
+    unsigned long GetAdjustmentCount();
     unsigned int GetBufferGranularityAdjusted();
-    int BufferFramesRemaining();
+    unsigned int BufferFramesRemaining();
     void WaitingOnAcknowledgement();
+
+protected:
     void AdjustLocalSpeed();
+
+public:
     void ReloadBufferFrames();
     unsigned int BufferTimeToUse(unsigned long value);
     void Skip();
@@ -154,7 +158,7 @@ public:
     char* GetPlayerSpeedStatusStr(int player);
     char* GetMachineSpeedInfo();
     unsigned int GetRecommendedBufferFrames();
-    int GetAvgFrameRate();
+    unsigned int GetAvgFrameRate();
     unsigned int GetRecommendedBufferGranularity();
     int AnalyzeGameSpeed(unsigned int* out_granularity, unsigned int* out_frames,
                          int param_3);
