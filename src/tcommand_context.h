@@ -49,7 +49,7 @@ class TRIBE_Building_Object;
 class TRIBE_Combat_Object;
 class TRIBE_Action_Make_Obj;
 class TRIBE_Action_Make_Tech;
-class TDebuggingLog { public: void __cdecl Log(const char*, ...); };
+class TDebuggingLog { public: void __cdecl Log(char*, ...); };
 
 struct RGE_Obj_Info { long id; };
 class RGE_Tile_List {
@@ -718,6 +718,4 @@ extern TDebuggingLog* L;
 extern float DAT_00576574;
 extern double DAT_00576578;
 extern long __cdecl _ftol(float);
-extern void __cdecl TDebuggingLog_Log(void*, const char*);
-
 #endif

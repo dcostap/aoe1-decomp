@@ -1,16 +1,5 @@
 #ifndef COM_LOBY_CONTEXT
-class TDebuggingLog {
-public:
-    void Log(char* format, ...);
-};
-extern TDebuggingLog* L;
-
-struct DPNAME {
-    unsigned long dwSize;
-    unsigned long dwFlags;
-    char* lpszShortName;
-    char* lpszLongName;
-};
+#include "../../include/com_loby_context.h"
 #endif
 
 int __stdcall EnumPlayersCallbackLobby(unsigned long param_1,

@@ -6,10 +6,10 @@
 #include "../include/com_loby_context.h"
 
 #include "matching/0042F290_RGE_Lobby.cpp"
-#include "scratch/0042F300_RGE_Lobby.cpp"
+#include "matching/0042F300_RGE_Lobby.cpp"
 #include "matching/0042F330_ClearLobbyInfo.cpp"
-#include "scratch/0042F370_IsLobbyLaunched.cpp"
-#include "scratch/0042F3A0_EnumPlayersCallbackLobby.cpp"
+#include "matching/0042F370_IsLobbyLaunched.cpp"
+#include "matching/0042F3A0_EnumPlayersCallbackLobby.cpp"
 #include "matching/0042F430_CheckForLobbyLaunch.cpp"
 #include "matching/0042F640_IsThisHost.cpp"
 #include "matching/0042F660_GetPlayerInfo.cpp"

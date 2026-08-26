@@ -56,6 +56,7 @@ public:
     float world_x;
     float world_y;
     float world_z;
+    char gap_44[4];
     unsigned char object_state;
 
     UnitAIModule* unitAI();

@@ -1,13 +1,5 @@
 #ifndef AOE1_TRIG_TU_CONTEXT
-class TRIGONOMETRY {
-private:
-    int RestrictAngle(int param_1);
-
-public:
-    float tane[4096];
-
-    float tangent(int param_1);
-};
+#include "../trig_tu_context.h"
 #endif
 
 float TRIGONOMETRY::tangent(int param_1) {

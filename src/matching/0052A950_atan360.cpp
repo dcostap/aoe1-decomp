@@ -1,13 +1,5 @@
 #ifndef AOE1_TRIG_TU_CONTEXT
-class TRIGONOMETRY {
-private:
-    int RestrictAngle360(int param_1);
-
-public:
-    float atane360[360];
-
-    float atan360(int param_1);
-};
+#include "../trig_tu_context.h"
 #endif
 
 float TRIGONOMETRY::atan360(int param_1) {

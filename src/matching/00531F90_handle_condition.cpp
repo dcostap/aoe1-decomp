@@ -2,6 +2,9 @@
 // VA: 00531F90
 // victory.cpp:400-455
 // MATCH: 0.0000% diff, 13 relocations masked
+// - PDB line-order probe: the original source emits labels in the order 0,1,8,2,3,9,10,
+//   4,5,6,7,12. Reordering the switch labels to that source order restores all 12 direct
+//   call targets and exact bytes in the standalone check.
 
 #include "../../include/game_globals.h"
 
@@ -37,11 +40,20 @@ void RGE_Victory_Conditions::handle_condition(RGE_Victory_Entry* entry) {
     case 1:
         handle_create(entry);
         return;
+    case 8:
+        handle_create_in_area(entry);
+        return;
     case 2:
         handle_destroy(entry);
         return;
     case 3:
         handle_destroy_multiple(entry);
+        return;
+    case 9:
+        handle_destroy_all(entry);
+        return;
+    case 10:
+        handle_destroy_player(entry);
         return;
     case 4:
         handle_bring_area(entry);
@@ -54,15 +66,6 @@ void RGE_Victory_Conditions::handle_condition(RGE_Victory_Entry* entry) {
         return;
     case 7:
         handle_explore(entry);
-        return;
-    case 8:
-        handle_create_in_area(entry);
-        return;
-    case 9:
-        handle_destroy_all(entry);
-        return;
-    case 10:
-        handle_destroy_player(entry);
         return;
     case 12:
         handle_victory_points(entry);
