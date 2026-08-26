@@ -228,8 +228,8 @@ public:
 extern float save_game_version;
 extern float DAT_00570500;
 extern float DAT_00570504;
-extern float DAT_00570508;
-extern float DAT_00570510;
+extern double DAT_00570508;
+extern double DAT_00570510;
 extern float DAT_00570518;
 
 extern "C" {
