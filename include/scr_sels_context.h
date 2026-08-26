@@ -95,8 +95,8 @@ public:
     virtual void get_true_render_rect(tagRECT* rect);
     virtual int is_inside(long x, long y);
     virtual void set_focus(int focus);
-    virtual void set_tab_order(TPanel* first, TPanel* second);
     virtual void set_tab_order(TPanel** panels, short count);
+    virtual void set_tab_order(TPanel* first, TPanel* second);
     virtual unsigned char get_help_info(char** text, long* page, long p3,
                                         long p4);
     virtual void stop_sound_system();
@@ -118,9 +118,9 @@ public:
 class TTextPanel : public TPanel {
 public:
     virtual ~TTextPanel();
-    virtual void set_text(char** texts, short count);
-    virtual void set_text(long string_id);
     virtual void set_text(char* text);
+    virtual void set_text(long string_id);
+    virtual void set_text(char** texts, short count);
     virtual void set_bevel_info(int mode, int c1, int c2, int c3, int c4,
                                 int c5, int c6);
     char gap_F4[0x68];
