@@ -3151,9 +3151,12 @@
       "flags": "config/flags/default_gx.rsp",
       "owners": {
         "00440140": "src/matching/00440140_TRIBE_Dialog_Sed_Menu.cpp",
-        "00440360": "src/matching/00440360_TRIBE_Dialog_Sed_Menu.cpp"
+        "00440360": "src/matching/00440360_TRIBE_Dialog_Sed_Menu.cpp",
+        "00440400": "src/matching/00440400_action.cpp"
       },
-      "symbols": {}
+      "symbols": {
+        "00440400": "?action@TRIBE_Dialog_Sed_Menu@@UAEJPAVTPanel@@JKK@Z"
+      }
     },
     {
       "name": "infmap",
