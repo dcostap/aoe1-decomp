@@ -15,7 +15,7 @@
 
 #include "matching/004CE530_TRIBE_Action_Discovery_Artifact.cpp"
 #include "matching/004CE5F0_TRIBE_Action_Discovery_Artifact.cpp"
-#include "scratch/004CE670_TRIBE_Action_Discovery_Artifact.cpp"
+#include "matching/004CE670_TRIBE_Action_Discovery_Artifact.cpp"
 #include "matching/004CE6D0_save.cpp"
 #include "matching/004CE700_first_in_stack.cpp"
 #include "matching/004CE720_set_state.cpp"
