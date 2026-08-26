@@ -78,6 +78,8 @@
 //   context probes were duplicate or worse. The reduced canonical candidate is retained.
 // - Final unresolved validation: frame 0x10, three ordered direct calls, exact boundary
 //   owner, and correct six-byte row stride remain aligned; 204 positional bytes differ.
+// - Current claim: widening the pitch-step local to int worsened the result to 250
+//   bytes and lost exact loop blocks. The short step remains authoritative.
 
 #include "../../include/diam_map_context.h"
 

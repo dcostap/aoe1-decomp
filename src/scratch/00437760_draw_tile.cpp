@@ -45,6 +45,8 @@
 //   12/12 ordered calls, 79.58% shape, and 36.29% exact-block coverage.
 // - The top-tested scan loop and direct color use are natural equivalent forms;
 //   VC5 emits the same main code basin. No metric-only scaffolding is retained.
+// - Current claim: named short map_x/map_y locals worsened the result to 1042
+//   differing bytes and reduced shape. Direct parameter use remains authoritative.
 
 extern "C" long __cdecl __ftol(void);
 #define DAT_0056f604 (*(float*)0x0056F604)

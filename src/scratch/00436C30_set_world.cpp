@@ -15,6 +15,8 @@
 //   keeps the simpler ratio ownership until stronger source evidence exists.
 // - BINARY NOTE: each image line publishes tile_row before row-table writes.
 // - BINARY NOTE: the second pass updates source_row only for a drawn row.
+// - Current claim: moving col_step into the loop was codegen-identical; the
+//   retained function-scope ratio local remains the clean source.
 
 #include <stdlib.h>
 

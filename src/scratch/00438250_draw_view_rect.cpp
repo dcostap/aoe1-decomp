@@ -32,6 +32,8 @@
 //   Member-left map bounds worsened shape without changing size or calls.
 // - A 64-sample ambient declaration lab produced two codegen groups, both with
 //   the same first mismatch and no exact result. Clean direct access remains.
+// - Current claim: narrowing local_8 to short was codegen-identical. The long
+//   local and direct-coordinate source remain authoritative.
 
 extern "C" long __cdecl __ftol(void);
 #define DAT_0056F604 (*(float*)0x0056F604)

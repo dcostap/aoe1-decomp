@@ -74,6 +74,9 @@
 // - The target listing marks this method protected. Retain protected access so the rebuilt
 //   decorated symbol uses MAE, matching the target's Ghidra symbol; body bytes are unchanged.
 // - A register hint for the local player is rejected by VC5 (C2071). No compiler steering remains.
+// - Current claim: using color2 in level 2 reached exact size and 335 differing
+//   bytes but still folded one mode-2 call. Lifting that call before the switch
+//   worsened the result to 341 bytes. The original color1 switch source remains.
 
 extern unsigned long* unified_map_offsets[256];
 
