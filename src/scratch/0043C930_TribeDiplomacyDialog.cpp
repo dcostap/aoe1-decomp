@@ -54,6 +54,15 @@
 //   Direct player aliases, byte cursors, cursor scopes, and register spelling
 //   did not recover the original setup or frame.  The current source is the
 //   best behavior-preserving checkpoint from this claim and remains nonexact.
+// - claim sa-2646b822-r1: reordered the initial food/wood button zero stores to
+//   the original PDB and instruction order.  This improved the strict diff by
+//   2 bytes and added one exact block.
+// - claim sa-2646b822-r1: corrected the disabled name font from 7 to 8.  The
+//   original AND mask proves the value 8; the current byte metric stayed flat.
+// - claim sa-2646b822-r1: used the binary-proven button cursor offsets -0x21
+//   and -0x11 for the name and civilization output slots.  The frame returned
+//   to 0x124 and the strict diff improved to 2715 bytes.  A split player-offset
+//   local was codegen-identical and was not retained.
 
 #include <stdio.h>
 
@@ -437,10 +446,10 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parent)
     int y;
     RGE_Game_World* world;
     int humanity;
-    int player_id;
-    int i;
     TButtonPanel** tab_buttons;
     int tab_count = 0;
+    int player_id;
+    int i;
     int disable_buttons;
     tagPALETTEENTRY palette_color;
     char temp_str[100];
@@ -452,8 +461,8 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parent)
         this->playerVictoryScores[i] = 0;
         this->playerCivilization[i] = 0;
         this->goldTributeButton[i] = 0;
-        this->woodTributeButton[i] = 0;
         this->foodTributeButton[i] = 0;
+        this->woodTributeButton[i] = 0;
         this->stoneTributeButton[i] = 0;
         this->goldTributeAmount[i] = 0.0f;
         this->foodTributeAmount[i] = 0.0f;
@@ -547,8 +556,8 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parent)
         button = this->woodTributeButton;
         tab_buttons = this->allyButton;
         do {
-            RGE_Player* player = *(RGE_Player**)((char*)world->players +
-                                                  ((char*)button - (char*)this - 0x530));
+            RGE_Player* player = *(RGE_Player**)(((char*)button - (char*)this - 0x530) +
+                                                  (char*)world->players);
 
             GetPaletteEntries(this->palette, player->color_table->color_index,
                               1, &palette_color);
@@ -590,14 +599,16 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parent)
                 }
             }
 
-            if (this->create_text(this, &this->playerName[player_id - 1], player->name,
+            // BINARY NOTE: The shipped row cursor addresses these two sibling
+            // arrays at fixed pointer offsets.
+            if (this->create_text(this, (TTextPanel**)(button - 0x21), player->name,
                                   5, y, 0x82, 0x1E,
-                                  disable_buttons ? 7 : 0x0B, 0, 1, 0) == 0) {
+                                  disable_buttons ? 8 : 0x0B, 0, 1, 0) == 0) {
                 return;
             }
             rge_base_game->language(0x69, player->master_player_id, 0,
                                     temp_str, 100);
-            if (this->create_text(this, &this->playerCivilization[player_id - 1], temp_str,
+            if (this->create_text(this, (TTextPanel**)(button - 0x11), temp_str,
                                   0x89, y, 0x64, 0x1E, 0x0B, 0, 1, 0) == 0) {
                 return;
             }

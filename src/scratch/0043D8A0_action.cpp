@@ -57,6 +57,12 @@
 // shared TPanel::action call remains late instead of the original +059c block.
 // No manual vfXX/VPAD surface, raw vptr, volatility, inline asm, or custom
 // flags remain.
+// - claim sa-2646b822-r1: corrected the standalone declaration to protected.
+//   The checker now emits the PDB-qualified MAEJ symbol.  The authentic shared
+//   header still declares this member public, so grouped validation reports no
+//   MAEJ owner until that separate context issue is repaired.
+// - claim sa-2646b822-r1: a register-panel hint and a reversed gold assignment
+//   order did not improve the reduced source.  Both experiments were restored.
 
 #include <stdio.h>
 
@@ -539,6 +545,8 @@ protected:
     int check_wood();
     int check_food();
     int check_stone();
+
+protected:
     virtual long action(TPanel* panel, long event, unsigned long param_3, unsigned long param_4);
 };
 #endif
