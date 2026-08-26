@@ -7,6 +7,6 @@
 #include "../include/aistrmod_context.h"
 
 #include "matching/00412AF0_StrategyAIModule.cpp"
-#include "scratch/00412B40_StrategyAIModule.cpp"
+#include "matching/00412B40_StrategyAIModule.cpp"
 
 #undef AISTRMOD_CONTEXT

@@ -5,11 +5,11 @@
 
 #include "../include/pnl_scr_context.h"
 
-#include "scratch/0047BA70_TScreenPanel.cpp"
-#include "scratch/0047BAB0_TScreenPanel.cpp"
-#include "scratch/0047BAD0_TScreenPanel.cpp"
+#include "matching/0047BA70_TScreenPanel.cpp"
+#include "matching/0047BAB0_TScreenPanel.cpp"
+#include "matching/0047BAD0_TScreenPanel.cpp"
 #include "matching/0047BAE0_setup.cpp"
 #include "matching/0047BB10_setup.cpp"
 #include "matching/0047BB40_draw.cpp"
-#include "scratch/0047BB50_handle_paint.cpp"
+#include "matching/0047BB50_handle_paint.cpp"
 #include "matching/0047BB60_set_focus.cpp"

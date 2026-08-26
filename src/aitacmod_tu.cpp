@@ -17,4 +17,4 @@
 #include "../include/aitacmod_context.h"
 
 #include "matching/00412B50_TacticalAIModule.cpp"
-#include "scratch/00412BA0_TacticalAIModule.cpp"
+#include "matching/00412BA0_TacticalAIModule.cpp"

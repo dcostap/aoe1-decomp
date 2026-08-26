@@ -13,8 +13,8 @@
 // The complete period class layout and virtual surface are in the module
 // context header. /GX is required by both EH-framed loader owners.
 
-#include "scratch/005117C0_TRIBE_Master_Player.cpp"
-#include "scratch/00511800_TRIBE_Master_Player.cpp"
-#include "scratch/00511820_TRIBE_Master_Player.cpp"
+#include "matching/005117C0_TRIBE_Master_Player.cpp"
+#include "matching/00511800_TRIBE_Master_Player.cpp"
+#include "matching/00511820_TRIBE_Master_Player.cpp"
 #include "matching/00511830_load_master_object.cpp"
 #include "matching/00511990_load_object.cpp"

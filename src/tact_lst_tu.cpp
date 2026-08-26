@@ -15,7 +15,7 @@
 
 #include "../include/tact_lst_context.h"
 
-#include "scratch/004D0150_TRIBE_Action_List.cpp"
-#include "scratch/004D0170_create_action.cpp"
+#include "matching/004D0150_TRIBE_Action_List.cpp"
+#include "matching/004D0170_create_action.cpp"
 #include "matching/004D05D0_create_task_action.cpp"
 #include "matching/004D0C50_get_action_name.cpp"

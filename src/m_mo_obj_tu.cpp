@@ -14,8 +14,8 @@
 #include "matching/00451EC0_make_new_master.cpp"
 #include "matching/00451F30_copy_obj.cpp"
 #include "matching/00451FB0_modify.cpp"
-#include "accepted_drift/00451FE0_modify_delta.cpp"
-#include "accepted_drift/00452010_modify_percent.cpp"
+#include "matching/00451FE0_modify_delta.cpp"
+#include "matching/00452010_modify_percent.cpp"
 #include "matching/00452040_save.cpp"
 
 #undef RGE_MO_OBJ_SHARED_CONTEXT

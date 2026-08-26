@@ -8,7 +8,7 @@
 #include "matching/00423330_RGE_Campaign.cpp"
 #include "matching/00423480_RGE_Campaign.cpp"
 #include "matching/004234B0_create_file.cpp"
-#include "scratch/00423690_open_scenario.cpp"
+#include "matching/00423690_open_scenario.cpp"
 #include "matching/00423710_get_name.cpp"
 #include "matching/00423720_scenario_number.cpp"
 #include "accepted_drift/00423730_scenario_info.cpp"

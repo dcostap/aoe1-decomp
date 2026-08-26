@@ -14,7 +14,7 @@
 
 #include "matching/004D5E60_TribeConstructionAIModule.cpp"
 #include "matching/004D5EB0_TribeConstructionAIModule.cpp"
-#include "scratch/004D5EE0_TribeConstructionAIModule.cpp"
+#include "matching/004D5EE0_TribeConstructionAIModule.cpp"
 #include "matching/004D5EF0_setMainDecisionAI.cpp"
 #include "scratch/004D5F00_canPlace.cpp"
 #include "accepted_drift/004D60E0_placeStructure.cpp"

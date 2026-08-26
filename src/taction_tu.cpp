@@ -23,6 +23,6 @@
 
 #include "matching/004D38E0_TRIBE_Action.cpp"
 #include "matching/004D3980_TRIBE_Action.cpp"
-#include "scratch/004D39E0_setup.cpp"
-#include "scratch/004D3A00_setup.cpp"
+#include "matching/004D39E0_setup.cpp"
+#include "matching/004D3A00_setup.cpp"
 #include "matching/004D3A10_create_action_list.cpp"

@@ -19,7 +19,7 @@
 #include "accepted_drift/00441BB0_recycle_in_to_game.cpp"
 #include "matching/00441D30_setup.cpp"
 #include "matching/00441DA0_setup.cpp"
-#include "scratch/00441E00_rehook.cpp"
+#include "matching/00441E00_rehook.cpp"
 #include "matching/00441EB0_update.cpp"
 #include "matching/00441F80_save.cpp"
 #include "matching/00442050_validate.cpp"

@@ -29,7 +29,7 @@
 // tm_co_ob.cpp:111-148
 #include "matching/0050EC90_setup.cpp"
 // tm_co_ob.cpp:152
-#include "scratch/0050EDA0_TRIBE_Master_Combat_Object.cpp"
+#include "matching/0050EDA0_TRIBE_Master_Combat_Object.cpp"
 // tm_co_ob.cpp:157-159
 #include "matching/0050EDB0_create_task_list.cpp"
 // tm_co_ob.cpp:163-176
