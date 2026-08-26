@@ -1,21 +1,6 @@
-#ifndef RDLG_LST_TU_CONTEXT
-class BaseClass {
-public:
-    virtual ~BaseClass();
-    BaseClass(int param);
-};
+// SOURCE NOTE: One canonical constructor replaces the old grouped-only body.
+// The reduced grouped source remains exact.
+#include "../rdlg_lst_module_context.h"
 
-class RGE_Dialog_List : public BaseClass {
-public:
-    virtual ~RGE_Dialog_List();
-    RGE_Dialog_List(int param);
-};
-#endif
-
-#ifdef RDLG_LST_TU_CONTEXT
 RGE_Dialog_List::RGE_Dialog_List(char* name) : TListDialog(name) {
 }
-#else
-RGE_Dialog_List::RGE_Dialog_List(int param) : BaseClass(param) {
-}
-#endif

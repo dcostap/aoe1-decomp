@@ -1,26 +1,9 @@
-#ifdef TAIPBOOK_CANONICAL_TU
+// SOURCE NOTE: One canonical constructor replaces the old grouped-only body.
+// The reduced grouped source remains exact.
 #include "../../include/taipbook_context.h"
-#else
-class BaseClass {
-public:
-    virtual ~BaseClass();
-    BaseClass();
-};
 
-class TribeAIPlayBook : public BaseClass {
-public:
-    virtual ~TribeAIPlayBook();
-    TribeAIPlayBook();
-};
-#endif
-
-#ifdef TAIPBOOK_CANONICAL_TU
 TribeAIPlayBook::~TribeAIPlayBook() {
 }
 
 TribeAIPlayBook::TribeAIPlayBook() : AIPlayBook() {
 }
-#else
-TribeAIPlayBook::TribeAIPlayBook() : BaseClass() {
-}
-#endif
