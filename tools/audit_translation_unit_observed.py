@@ -476,6 +476,11 @@ def build_queue(
         promotions = [
             row for row in group_rows if row["recommended_action"] == "review_for_promotion"
         ]
+        policy_reviews = [
+            row
+            for row in group_rows
+            if row["recommended_action"] == "repair_policy_then_review_promotion"
+        ]
         ownership = [
             row for row in group_rows if row["recommended_action"] == "investigate_ownership"
         ]
@@ -515,6 +520,7 @@ def build_queue(
                 "group": name,
                 **group_metadata[name],
                 "promotion_candidates": promotions,
+                "promotion_policy_reviews": policy_reviews,
                 "ownership_investigations": ownership,
                 "structural_repairs": structural,
                 "codegen_repairs": codegen,
@@ -524,7 +530,12 @@ def build_queue(
                 "noncanonical_contexts": duplicate_contexts,
                 "captain_editable_files": editable,
                 "captain_task_count": len(ownership) + len(structural) + len(codegen),
-                "main_agent_task_count": len(promotions) + len(context_reviews) + len(errors),
+                "main_agent_task_count": (
+                    len(promotions)
+                    + len(policy_reviews)
+                    + len(context_reviews)
+                    + len(errors)
+                ),
             }
         )
     return {
@@ -555,6 +566,7 @@ def queue_text(queue: dict[str, object]) -> str:
             [
                 f"[{packet['group']}] {packet['source']}",
                 f"  promotions: {len(packet['promotion_candidates'])}",
+                f"  promotion policy reviews: {len(packet['promotion_policy_reviews'])}",
                 f"  ownership: {len(packet['ownership_investigations'])}",
                 f"  structural: {len(packet['structural_repairs'])}",
                 f"  codegen: {len(packet['codegen_repairs'])}",
@@ -566,6 +578,7 @@ def queue_text(queue: dict[str, object]) -> str:
         )
         for label, key in (
             ("promote", "promotion_candidates"),
+            ("policy", "promotion_policy_reviews"),
             ("ownership", "ownership_investigations"),
             ("structural", "structural_repairs"),
             ("codegen", "codegen_repairs"),

@@ -122,3 +122,33 @@ def test_queue_assigns_overlapping_va_to_largest_exact_context() -> None:
     complete = next(packet for packet in queue["packets"] if packet["group"] == "complete")
     assert prefix["promotion_candidates"] == []
     assert [row["va"] for row in complete["promotion_candidates"]] == ["00401000"]
+
+
+def test_queue_retains_exact_policy_review() -> None:
+    groups = [
+        {"name": "complete", "source": "src/complete.cpp", "owners": {}, "flags": ""}
+    ]
+    rows = [
+        {
+            "group": "complete",
+            "va": "00401000",
+            "name": "target",
+            "source_path": "src/scratch/00401000_target.cpp",
+            "source_bucket": "scratch",
+            "registered_groups": [],
+            "grouped_result": "MATCH",
+            "grouped_diff_bytes": 0,
+            "category": "grouped_match_policy_review",
+            "recommended_action": "repair_policy_then_review_promotion",
+            "difficulty_band": "0-1",
+            "error": "",
+        }
+    ]
+
+    queue = build_queue(groups, rows)
+    complete = queue["packets"][0]
+
+    assert [row["va"] for row in complete["promotion_policy_reviews"]] == [
+        "00401000"
+    ]
+    assert complete["main_agent_task_count"] == 1
