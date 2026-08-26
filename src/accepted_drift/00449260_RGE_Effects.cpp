@@ -58,6 +58,22 @@
 //   No test changed the ten-call order, object layout, or partial-failure
 //   stores.  Keep the clean parser until authentic effects.cpp TU evidence
 //   explains the conditional ESI save.
+// - Fresh captain probes: a scoped effect_num pointer was codegen-identical;
+//   a counter-left inner loop grew to 481 bytes and 241 differing bytes; a
+//   named current-effect pointer grew to 454 bytes with a 0x14 frame.  All
+//   variants were restored to this natural 479-byte source basin.
+// Context gate:
+// - PROVED: PDB module is effects.cpp, with source span lines 68-129.
+// - PROVED: source bands are fopen 68, initial scan 80, allocation 82,
+//   outer loop 85-114, cleanup 119-129, in the original address sequence.
+// - PROVED: owner is RGE_Effects::RGE_Effects(char*), with class size 0x0C.
+// - PROVED: address sequence is 00449260-0044943D, with ten direct calls,
+//   fields at +0x00, +0x04, and +0x08, and the named constructor symbol.
+// - PROVED: exact TU anchors are the effects.cpp int constructor at 004490E0,
+//   destructor at 00449440, save at 004494B0, and do_effect at 004495C0.
+// - LIKELY: the natural typed parser is the original source family.
+// - UNKNOWN: the historical compiler context that shrink-wraps the ESI save
+//   and reverses the inner signed compare operands.
 // ACCEPTED DRIFT: The rebuild saves ESI for all paths. The original saves it
 // only after fopen succeeds. Both restore the incoming value before return.
 // The parse body, frame, all 10 calls, destinations, stores, and failure paths
