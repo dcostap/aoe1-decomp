@@ -28,7 +28,7 @@ public:
     BaseItem(int typeID, int gameID, int uniqueID, const char* name,
              float x, float y, float z, float xSize, float ySize, float zSize);
     BaseItem(BaseItem* other);
-    BaseItem(const BaseItem* other);
+    BaseItem(const BaseItem& other);
 };
 
 typedef char aiconitm_baseitem_size[(sizeof(BaseItem) == 0x6c) ? 1 : -1];
