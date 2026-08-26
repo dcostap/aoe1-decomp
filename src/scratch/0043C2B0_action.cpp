@@ -7,7 +7,7 @@
 // comparisons. The natural source has 47 calls and the reviewed frame size.
 // It still has structural drift in the entry and dispatch blocks.
 // Reversed mouse-state assignment to match the original constant-2/event stores.
-// Ordered the >=99 music-disable arm before the enable arm; this aligns vf5C.
+// Ordered the >=99 music-disable arm before the enable arm; this aligns the shutdown call.
 // Used direct play_tracks arms for music types 1 and 2; VC5 merges their tail.
 // Reconstructed slider behavior: music changes apply newSoundVolume through one
 // shared sound-slider tail, while sound changes apply param_3.
@@ -26,7 +26,7 @@
 #include <stdio.h>
 
 #ifndef DLG_CONF_TU_CONTEXT
-#define VPAD1(n) virtual void vpad##n();
+#define VPAD1(n) void vpad##n();
 #define VPAD2(n) VPAD1(n) VPAD1(n##_1)
 #define VPAD4(n) VPAD2(n) VPAD2(n##_2)
 #define VPAD8(n) VPAD4(n) VPAD4(n##_4)
@@ -123,12 +123,12 @@ public:
     VPAD16(0)
     VPAD4(16)
     VPAD2(20)
-    virtual void vf58();
-    virtual void vf5C();
+    virtual int setup_music_system();
+    virtual void shutdown_music_system();
     VPAD32(24)
     VPAD16(56)
     VPAD8(72)
-    virtual void vf140();
+    virtual void set_interface_messages();
 
     char gap_04[8];
     RGE_Prog_Info* prog_info;
@@ -218,7 +218,7 @@ long TribeConfigDialog::action(TPanel* panel, register long event,
                 } else {
                     rge_base_game->prog_info->interface_style = param_3;
                 }
-                rge_base_game->vf140();
+                rge_base_game->set_interface_messages();
 
                 if (this->rolloverButton[0]->get_state() == 0) {
                     rge_base_game->prog_info->rollover = 0;
@@ -268,12 +268,12 @@ long TribeConfigDialog::action(TPanel* panel, register long event,
                     if (this->newMusicVolume >= 99) {
                         if (info->use_music != 0) {
                             info->use_music = 0;
-                            rge_base_game->vf5C();
+                            rge_base_game->shutdown_music_system();
                         }
                     } else if (info->use_music == 0) {
                         info->use_music = 1;
                         Regs->RegSetInt(1, (const char*)0x5801D0, this->newMusicVolume * 100);
-                        rge_base_game->vf58();
+                        rge_base_game->setup_music_system();
                         music = rge_base_game->music_system;
                         if (music != 0) {
                             if (music->music_type == 1) {

@@ -124,7 +124,7 @@ void TRIBE_Screen_Sed::set_scenario_mode(TRIBE_Screen_Sed::ScenarioMode param_1)
                 this->set_brush_size(this->brush_size);
                 this->set_paint_type((PaintType)this->paint_type, 1);
             } else {
-                this->set_brush_size(0);
+                this->set_brush_size(BrushSizeNone);
                 this->set_paint_type((PaintType)0, 0);
             }
             break;
@@ -288,12 +288,12 @@ void TRIBE_Screen_Sed::set_scenario_mode(TRIBE_Screen_Sed::ScenarioMode param_1)
                 default:
                     break;
                 }
-                this->set_message_type(this->message_type, 1);
+                this->set_message_type((MessageType)this->message_type, 1);
                 this->map_view->set_active(0);
                 this->bottom_panel->set_curr_child(this->message_input);
             } else {
                 this->world->scenario->Set_message(this->message_input->get_input_buffer(), this->current_message);
-                this->set_message_type(0, 0);
+                this->set_message_type(MessageTypeNone, 0);
                 this->map_view->set_active(1);
                 this->save_info_in_scenario();
             }

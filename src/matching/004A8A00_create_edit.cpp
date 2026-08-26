@@ -15,6 +15,8 @@ public:
 
 class TEditPanel : public TPanel {
 public:
+    enum FormatType { FormatText = 0, FormatUnsignedInt = 3,
+                      FormatMultiLine = 7 };
 };
 
 class TEasy_Panel : public TPanel {
@@ -31,12 +33,14 @@ public:
 class TRIBE_Screen_Sed : public TScreenPanel {
 public:
     int create_edit(TPanel* panel, TEditPanel** out_edit, char* text, short width,
-                    int format, int a6, int a7);
+                    TEditPanel::FormatType format, int a6, int a7);
 };
 #endif
 
-int TRIBE_Screen_Sed::create_edit(TPanel* panel, TEditPanel** out_edit, char* text, short width,
-                                int format, int a6, int a7) {
+int TRIBE_Screen_Sed::create_edit(TPanel* panel, TEditPanel** out_edit,
+                                  char* text, short width,
+                                  TEditPanel::FormatType format, int a6,
+                                  int a7) {
     int result = ((TEasy_Panel*)this)->create_edit(panel, out_edit, text, width, format, 0, 0, 0, 0, 10, a6, a7);
     if (result == 0) return 0;
     ((TPanel*)(*out_edit))->set_z_order(1, 0);

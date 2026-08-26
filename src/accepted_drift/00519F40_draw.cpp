@@ -69,134 +69,6 @@ extern const char s_tpnl_btn_draw2[];
 extern const char s_tpnl_btn_draw3[];
 
 #ifndef TPNL_BTN_SHARED_CONTEXT
-class TDrawArea {
-public:
-    char gap_00[0x38];
-    HDC DrawDc;
-    unsigned char* Lock(const char*, int);
-    void Unlock(const char*);
-    void* GetDc(const char*);
-    void ReleaseDc(const char*);
-    void SetClipRect(long, long, long, long);
-};
-
-class TShape {
-public:
-    char gap_00[4];
-    unsigned char shape_draw(TDrawArea*, long, long, long, unsigned char,
-                             unsigned char*);
-};
-
-class TButtonPanel {
-public:
-    char gap_04[8];
-    long pnl_x;
-    long pnl_y;
-    long pnl_cx;
-    long pnl_cy;
-    char gap_1C[4];
-    TDrawArea* render_area;
-    RECT clip_rect;
-    char gap_34[4];
-    int need_redraw;
-    char gap_3C[4];
-    TButtonPanel* parent_panel;
-    char gap_44[0x28];
-    int field_6C;
-    int field_70;
-    char gap_74[0x14];
-    HRGN clip_rgn;
-    char gap_8C[0xC0];
-    TShape* pic[9];
-    short pic_index[9];
-    char gap_182[2];
-    int auto_pic_pos;
-    long pic_x;
-    long pic_y;
-    int all_hot;
-    int draw_reverse;
-    char* text1[9];
-    char* text2[9];
-    long text_x;
-    long text_y;
-    void* font;
-    long font_wid;
-    long font_hgt;
-    short num_states;
-    short cur_state;
-    int is_down;
-    TButtonPanel** radio_buttons;
-    short num_radio_buttons;
-    char gap_202[2];
-    unsigned long button_down_time;
-    unsigned long text_color1[9];
-    unsigned long text_color2[9];
-    unsigned long highlight_text_color1[9];
-    unsigned long highlight_text_color2[9];
-    long hotkey;
-    int hotkey_shift;
-    int bevel_type;
-    unsigned char bevel_color1;
-    unsigned char bevel_color2;
-    unsigned char bevel_color3;
-    unsigned char bevel_color4;
-    unsigned char bevel_color5;
-    unsigned char bevel_color6;
-    char gap_2AA[2];
-    long key_down;
-    int disabled;
-    int sound_number;
-
-    virtual ~TButtonPanel();
-    virtual void v04();
-    virtual void v08();
-    virtual long v0C();
-    virtual void v10();
-    virtual void v14();
-    virtual void v18();
-    virtual void v1C();
-    virtual void set_redraw(int);
-    virtual long handle_idle();
-    virtual void vf28(int);
-    virtual void vf2c();
-    virtual void vf30();
-    virtual void get_clip_rect(RECT*);
-    virtual void set_clip_rect(RECT*);
-    void draw();
-};
-
-class TRIBE_Panel_Button : public TButtonPanel {
-public:
-    int display_garrison;
-    int garrsion_number;
-    unsigned char tribe_button_type;
-    char gap_2C1[3];
-    TShape* border_pic;
-    unsigned char* color_table;
-    int border_frame;
-    char text_msg[0x100];
-    int in_use;
-
-    virtual void draw();
-};
-
-class RGE_Color_Table {
-public:
-    char gap_00[0x26];
-    short id;
-};
-
-class RGE_Player {
-public:
-    char gap_00[0x108];
-    RGE_Color_Table* color_table;
-};
-
-class RGE_Base_Game {
-public:
-    RGE_Player* get_player();
-};
-#else
 #include "../../include/tpnl_btn_context.h"
 #endif
 
@@ -228,9 +100,9 @@ void TRIBE_Panel_Button::draw()
 #ifdef TPNL_BTN_SHARED_CONTEXT
     this->draw_setup(0);
 #else
-    this->vf28(0);
+    this->draw_setup(0);
 #endif
-    this->parent_panel->get_clip_rect(&this->clip_rect);
+    this->parent_panel->draw_rect(&this->clip_rect);
 
     int is_drawn = 1;
     if (this->tribe_button_type == 0 || this->tribe_button_type == 1) {
@@ -247,7 +119,7 @@ void TRIBE_Panel_Button::draw()
         }
     }
     if (is_drawn) {
-        this->parent_panel->get_clip_rect(&this->clip_rect);
+        this->parent_panel->draw_rect(&this->clip_rect);
     }
 
     if ((this->tribe_button_type == 1 || this->tribe_button_type == 3) &&
@@ -405,6 +277,6 @@ void TRIBE_Panel_Button::draw()
 #ifdef TPNL_BTN_SHARED_CONTEXT
     this->draw_finish();
 #else
-    this->vf2c();
+    this->draw_finish();
 #endif
 }

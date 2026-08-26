@@ -329,7 +329,7 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
             } else if (param_2 == 1) {
                 if (this->valid_save_spot_flag != 0) this->need_to_save_flag = 1;
                 for (i = 0; i < 5; i++) {
-                    if (param_1 == this->brush_size_button[i]) { this->set_brush_size(i + BrushSizeVerySmall); return 1; }
+                    if (param_1 == this->brush_size_button[i]) { this->set_brush_size((BrushSize)(i + BrushSizeVerySmall)); return 1; }
                 }
                 for (i = 0; i < 3; i++) {
                     if (param_1 == this->paint_type_button[i]) { this->set_paint_type((PaintType)(i + PaintTypeTerrain), 1); return 1; }

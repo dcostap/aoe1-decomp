@@ -7,14 +7,16 @@ public:
     void empty_list(void);
     int append_line(long string_id, int param);
 };
+class TListPanel : public TTextPanel {
+};
 
 class TRIBE_Screen_Sed {
 public:
-    int SetupListOfTerrain(TTextPanel* list);
+    int SetupListOfTerrain(TListPanel* list);
 };
 #endif
 
-int TRIBE_Screen_Sed::SetupListOfTerrain(TTextPanel* list) {
+int TRIBE_Screen_Sed::SetupListOfTerrain(TListPanel* list) {
     list->empty_list();
     list->append_line(0x297D, 0);
     list->append_line(0x297E, 0);

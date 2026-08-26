@@ -54,9 +54,49 @@ public:
     virtual void draw_setup(int);
     virtual void draw_finish();
     virtual void draw();
-    virtual void get_clip_rect(RECT*);
-    virtual void set_clip_rect(RECT*);
+    virtual void draw_rect(RECT*);
+    virtual void draw_offset(long, long, RECT*);
+    virtual void draw_rect2(RECT*);
+    virtual void draw_offset2(long, long, RECT*);
+    virtual void paint();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual long handle_idle();
+    virtual long handle_size(long, long);
+    virtual long handle_paint();
+    virtual long handle_key_down(long, short, int, int, int);
+    virtual long handle_char(long, short);
+    virtual long handle_command(unsigned int, long);
+    virtual long handle_user_command(unsigned int, long);
+    virtual long handle_timer_command(unsigned int, long);
+    virtual long handle_scroll(long, long);
+    virtual long handle_mouse_down(unsigned char, long, long, int, int);
+    virtual long handle_mouse_move(long, long, int, int);
+    virtual long handle_mouse_up(unsigned char, long, long, int, int);
+    virtual long handle_mouse_dbl_click(unsigned char, long, long, int, int);
+    virtual long mouse_move_action(long, long, int, int);
+    virtual long mouse_left_down_action(long, long, int, int);
+    virtual long mouse_left_hold_action(long, long, int, int);
+    virtual long mouse_left_move_action(long, long, int, int);
+    virtual long mouse_left_up_action(long, long, int, int);
+    virtual long mouse_left_dbl_click_action(long, long, int, int);
+    virtual long mouse_right_down_action(long, long, int, int);
+    virtual long mouse_right_hold_action(long, long, int, int);
+    virtual long mouse_right_move_action(long, long, int, int);
+    virtual long mouse_right_up_action(long, long, int, int);
+    virtual long mouse_right_dbl_click_action(long, long, int, int);
+    virtual long key_down_action(long, short, int, int, int);
+    virtual long char_action(long, short);
+    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    virtual void get_true_render_rect(RECT*);
     virtual int is_inside(long, long);
+    virtual void set_focus(int);
+    virtual void set_tab_order(TPanel*, TPanel*);
+    virtual void set_tab_order(TPanel**, short);
+    virtual unsigned char get_help_info(char**, long*, long, long);
+    virtual void stop_sound_system();
+    virtual int restart_sound_system();
+    virtual void take_snapshot();
+    virtual void handle_reactivate();
 
     TPanel* previous_panel;          // +0x04
     TPanel* previous_modal_panel;    // +0x08
@@ -187,11 +227,7 @@ public:
 
     virtual ~TButtonPanel();
     TButtonPanel();
-    virtual void vf28(int);
-    virtual void vf2c();
-    virtual void vf30();
-    virtual void get_clip_rect(RECT*);
-    virtual void set_clip_rect(RECT*);
+    virtual void set_state(short);
     virtual void draw();
 
     long setup(TDrawArea*, TPanel*, long, long, long, long, int, TDigital*,
@@ -234,31 +270,11 @@ public:
 typedef char tpnl_btn_button_size_check[
     (sizeof(TRIBE_Panel_Button) == 0x3D4) ? 1 : -1];
 
-class TRIBE_Panel_Button_Nested {
-public:
-    virtual int vf00(); virtual int vf01(); virtual int vf02();
-    virtual int vf03(); virtual int vf04(); virtual int vf05();
-    virtual int vf06(); virtual int vf07(); virtual int vf08();
-    virtual int vf09(); virtual int vf0A(); virtual int vf0B();
-    virtual int vf0C(); virtual int vf0D(); virtual int vf0E();
-    virtual int vf0F(); virtual int vf10(); virtual int vf11();
-    virtual int vf12(); virtual int vf13(); virtual int vf14();
-    virtual int vf15(); virtual int vf16(); virtual int vf17();
-    virtual int vf18(); virtual int vf19(); virtual int vf1A();
-    virtual int vf1B(); virtual int vf1C(); virtual int vf1D();
-    virtual int vf1E(); virtual int vf1F(); virtual int vf20();
-    virtual int vf21(); virtual int vf22(); virtual int vf23();
-    virtual int vf24(); virtual int vf25(); virtual int vf26();
-    virtual int vf27(); virtual int vf28(); virtual int vf29();
-    virtual int vf2A(); virtual int vf2B(); virtual int vf2C();
-    virtual int vf2D(); virtual int vf2E();
-    virtual int hit_test(long, long);
-};
-
 class TRIBE_Panel_Button_Outer {
 public:
     char gap_00[0x4BC];
-    TRIBE_Panel_Button_Nested* nested_4bc;
+    // BINARY NOTE: the +0x4BC object uses the TPanel::is_inside slot at +0xBC.
+    TPanel* nested_4bc;
 };
 
 class RGE_Color_Table {

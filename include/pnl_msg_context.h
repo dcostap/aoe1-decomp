@@ -266,7 +266,7 @@ public:
                        void*, long, long, TShape*, int, TShape*, int);
     void remove_message();
     int render_to_image_buffer();
-    void set_font(void*, long, long);
+    virtual void set_font(void*, long, long);
 };
 
 typedef char pnl_msg_message_panel_size_check[

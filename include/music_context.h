@@ -60,28 +60,38 @@ public:
     ~TMusic_System();
     int open_device();
     void close_device();
+protected:
     int open_mixer();
     void close_mixer();
+public:
     int set_music_type(unsigned char type);
-    void set_fade_out(int fade_out, int fade_time);
+    void set_fade_out(int fade_out, unsigned long fade_time);
     void set_volume(long volume, int save);
     int play_track(int track, int loop, unsigned long position);
-    int play_file(const char* file_name, int loop, unsigned long position);
+    int play_file(char* file_name, int loop, unsigned long position);
     int play_tracks(int first, int last, int loop, int current,
                     unsigned long position);
+protected:
     int play(int first, int last, char* file_name, int current,
              unsigned long position);
+public:
     int pause_play();
     int resume_play();
     int stop_track();
+protected:
     int stop_playing();
+public:
     int fade_track();
+protected:
     void start_fade();
     void do_fade();
     void end_fade();
+public:
     unsigned int handle_messages(void* window, unsigned int message,
                                  unsigned int value, long data);
+protected:
     void after_end_track();
+public:
     int get_play_info(unsigned char* music_type, int* first_track,
                       int* last_track, int* current_track, char* file_name,
                       int* loop, unsigned long* position);

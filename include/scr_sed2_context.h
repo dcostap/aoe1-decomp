@@ -507,6 +507,7 @@ public:
     unsigned long save_window_color;
 
     virtual ~TRIBE_Screen_Sed();
+protected:
     int create_button(TPanel*, TButtonPanel**, long, int);
     int create_button(TPanel*, TButtonPanel**, char*, char*, char*, char*);
     int create_text(TPanel*, TTextPanel**, long);
@@ -524,7 +525,6 @@ public:
     void save_multi_victory_cond_in_scenario();
 protected:
     void save_victory_cond_in_scenario(int);
-public:
     void load_victory_cond_from_scenario(int);
     void load_multi_victory_cond_from_scenario();
     void save_diplomacy_in_scenario(int);

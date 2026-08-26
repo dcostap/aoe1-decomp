@@ -26,19 +26,20 @@ public:
 class TPanel {
 public:
     virtual ~TPanel();
-    virtual void vf04();
-    virtual void vf08();
-    virtual long vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
+    virtual long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char);
+    virtual void set_rect(RECT);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_color(unsigned char);
+    virtual void set_active(int);
+    virtual void set_positioning(int, long, long, long, long, long, long, long, long,
+                                 TPanel*, TPanel*, TPanel*, TPanel*);
+    virtual void set_fixed_position(long, long, long, long);
     virtual void set_redraw(int);
-    virtual long handle_idle();
-    virtual void vf28(int);
-    virtual void vf2c();
-    virtual void vf30();
-    virtual void get_clip_rect(RECT*);
+    virtual void set_overlapped_redraw(TPanel*, TPanel*, int);
+    virtual void draw_setup(int);
+    virtual void draw_finish();
+    virtual void draw();
+    virtual void draw_rect(RECT*);
 
     // Vtable is implicit at +0x00 (from virtual declarations)
     char pad_04[0x1C];
@@ -88,7 +89,7 @@ void TInputPanel::draw()
     if (this->cur_line < this->top_line) return;
     if (this->cur_line > this->bot_line) return;
     
-    this->vf28(0);
+    this->draw_setup(0);
     
     void* dc = this->render_area->GetDc(pnl_inp_draw);
     if (dc != 0) {
@@ -121,5 +122,5 @@ void TInputPanel::draw()
         }
     }
     
-    this->vf2c();
+    this->draw_finish();
 }

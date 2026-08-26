@@ -30,16 +30,19 @@ extern RGE_Base_Game* rge_base_game;
 
 class TRIBE_Screen_Sed : public TScreenPanel {
 public:
+    enum BrushSize { BrushSizeNone = 0, BrushSizeVerySmall = 1,
+                     BrushSizeSmall = 2, BrushSizeMedium = 3,
+                     BrushSizeLarge = 4, BrushSizeVeryLarge = 5 };
     char gap_478[0x4B0 - 0x478];
     int brush_size;
     char gap_4B4[0x558 - 0x4B4];
     TButtonPanel* brush_size_button[5];
 
-    void set_brush_size(int size);
+    void set_brush_size(BrushSize size);
 };
 #endif
 
-void TRIBE_Screen_Sed::set_brush_size(int size) {
+void TRIBE_Screen_Sed::set_brush_size(BrushSize size) {
     if (!size) return;
     brush_size = size;
     brush_size_button[size - 1]->set_radio_button();

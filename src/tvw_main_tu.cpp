@@ -391,11 +391,15 @@ public:
 class TRIBE_Main_View : public RGE_Main_View {
 public:
     virtual void draw_multi_object_outline();
+protected:
     int draw_wall_outline(long, long, TRIBE_Master_Building_Object*, long);
+public:
     virtual int command_place_object(long, long, int);
     virtual int command_place_multi_object(long, long, long, long, int);
+protected:
     void place_line_of_walls(TRIBE_Player*, TRIBE_Master_Building_Object*,
                              int, int, int, int);
+public:
     virtual long mouse_left_up_action(long, long, int, int);
     virtual long mouse_right_up_action(long, long, int, int);
     virtual int pick_through_fog(RGE_Static_Object*);

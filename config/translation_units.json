@@ -349,25 +349,25 @@
         "00461A20": "??1TMusic_System@@QAE@XZ",
         "00461A30": "?open_device@TMusic_System@@QAEHXZ",
         "00461C60": "?close_device@TMusic_System@@QAEXXZ",
-        "00461D20": "?open_mixer@TMusic_System@@QAEHXZ",
-        "00461EC0": "?close_mixer@TMusic_System@@QAEXXZ",
+        "00461D20": "?open_mixer@TMusic_System@@IAEHXZ",
+        "00461EC0": "?close_mixer@TMusic_System@@IAEXXZ",
         "00461F00": "?set_music_type@TMusic_System@@QAEHE@Z",
-        "00461F40": "?set_fade_out@TMusic_System@@QAEXHH@Z",
+        "00461F40": "?set_fade_out@TMusic_System@@QAEXHK@Z",
         "00461F60": "?set_volume@TMusic_System@@QAEXJH@Z",
         "00462010": "?play_track@TMusic_System@@QAEHHHK@Z",
-        "00462090": "?play_file@TMusic_System@@QAEHPBDHK@Z",
+        "00462090": "?play_file@TMusic_System@@QAEHPADHK@Z",
         "00462140": "?play_tracks@TMusic_System@@QAEHHHHHK@Z",
-        "00462200": "?play@TMusic_System@@QAEHHHPADHK@Z",
+        "00462200": "?play@TMusic_System@@IAEHHHPADHK@Z",
         "004625C0": "?pause_play@TMusic_System@@QAEHXZ",
         "00462670": "?resume_play@TMusic_System@@QAEHXZ",
         "00462740": "?stop_track@TMusic_System@@QAEHXZ",
-        "00462770": "?stop_playing@TMusic_System@@QAEHXZ",
+        "00462770": "?stop_playing@TMusic_System@@IAEHXZ",
         "00462820": "?fade_track@TMusic_System@@QAEHXZ",
-        "00462860": "?start_fade@TMusic_System@@QAEXXZ",
-        "004628A0": "?do_fade@TMusic_System@@QAEXXZ",
-        "004629B0": "?end_fade@TMusic_System@@QAEXXZ",
+        "00462860": "?start_fade@TMusic_System@@IAEXXZ",
+        "004628A0": "?do_fade@TMusic_System@@IAEXXZ",
+        "004629B0": "?end_fade@TMusic_System@@IAEXXZ",
         "00462A10": "?handle_messages@TMusic_System@@QAEIPAXIIJ@Z",
-        "00462B40": "?after_end_track@TMusic_System@@QAEXXZ",
+        "00462B40": "?after_end_track@TMusic_System@@IAEXXZ",
         "00462C30": "?get_play_info@TMusic_System@@QAEHPAEPAH11PAD1PAK@Z"
       }
     },
@@ -1558,9 +1558,9 @@
         "004B2E60": "src/matching/004B2E60_create_radio_button.cpp"
       },
       "symbols": {
-        "004ADD00": "?LoadDisabledItemsFromScenario@TRIBE_Screen_Sed@@QAEXXZ",
-        "004AE620": "?load_victory_cond_from_scenario@TRIBE_Screen_Sed@@QAEXH@Z",
-        "004AEE10": "?activate_victory_proper_fields@TRIBE_Screen_Sed@@QAEXHH@Z"
+        "004ADD00": "?LoadDisabledItemsFromScenario@TRIBE_Screen_Sed@@IAEXXZ",
+        "004AE620": "?load_victory_cond_from_scenario@TRIBE_Screen_Sed@@IAEXH@Z",
+        "004AEE10": "?activate_victory_proper_fields@TRIBE_Screen_Sed@@IAEXHH@Z"
       }
     },
     {
@@ -1795,19 +1795,19 @@
       },
       "symbols": {
         "004AD300": "?command_new@TRIBE_Screen_Sed@@QAEXXZ",
-        "004A8770": "?set_panel_info@TRIBE_Screen_Sed@@QAEXXZ",
-        "004A87D0": "?set_string@TRIBE_Screen_Sed@@QAEXPADJH@Z",
-        "004A87F0": "?create_button@TRIBE_Screen_Sed@@QAEHPAVTPanel@@PAPAVTButtonPanel@@JH@Z",
-        "004A8840": "?create_button@TRIBE_Screen_Sed@@QAEHPAVTPanel@@PAPAVTButtonPanel@@PAD222@Z",
-        "004A8910": "?create_text@TRIBE_Screen_Sed@@QAEHPAVTPanel@@PAPAVTTextPanel@@J@Z",
-        "004A8960": "?create_text@TRIBE_Screen_Sed@@QAEHPAVTPanel@@PAPAVTTextPanel@@PAD@Z",
-        "004A89B0": "?create_input@TRIBE_Screen_Sed@@QAEHPAVTPanel@@PAPAVTInputPanel@@PADFH@Z",
-        "004A8A00": "?create_edit@TRIBE_Screen_Sed@@QAEHPAVTPanel@@PAPAVTEditPanel@@PADFHHH@Z",
-        "004A9320": "?SetupListOfTerrain@TRIBE_Screen_Sed@@QAEHPAVTTextPanel@@@Z",
-        "004A93C0": "?create_list@TRIBE_Screen_Sed@@QAEHPAVTPanel@@PAPAVTListPanel@@PAPAVTScrollBarPanel@@@Z",
-        "004AAA90": "?set_brush_size@TRIBE_Screen_Sed@@QAEXH@Z",
-        "004AAD50": "?set_terrain@TRIBE_Screen_Sed@@QAEXF@Z",
-        "004AADF0": "?set_elevation@TRIBE_Screen_Sed@@QAEXF@Z",
+        "004A8770": "?set_panel_info@TRIBE_Screen_Sed@@IAEXXZ",
+        "004A87D0": "?set_string@TRIBE_Screen_Sed@@IAEXPADJH@Z",
+        "004A87F0": "?create_button@TRIBE_Screen_Sed@@IAEHPAVTPanel@@PAPAVTButtonPanel@@JH@Z",
+        "004A8840": "?create_button@TRIBE_Screen_Sed@@IAEHPAVTPanel@@PAPAVTButtonPanel@@PAD222@Z",
+        "004A8910": "?create_text@TRIBE_Screen_Sed@@IAEHPAVTPanel@@PAPAVTTextPanel@@J@Z",
+        "004A8960": "?create_text@TRIBE_Screen_Sed@@IAEHPAVTPanel@@PAPAVTTextPanel@@PAD@Z",
+        "004A89B0": "?create_input@TRIBE_Screen_Sed@@IAEHPAVTPanel@@PAPAVTInputPanel@@PADFW4FormatType@3@@Z",
+        "004A8A00": "?create_edit@TRIBE_Screen_Sed@@IAEHPAVTPanel@@PAPAVTEditPanel@@PADFW4FormatType@3@HH@Z",
+        "004A9320": "?SetupListOfTerrain@TRIBE_Screen_Sed@@IAEHPAVTListPanel@@@Z",
+        "004A93C0": "?create_list@TRIBE_Screen_Sed@@IAEHPAVTPanel@@PAPAVTListPanel@@PAPAVTScrollBarPanel@@@Z",
+        "004AAA90": "?set_brush_size@TRIBE_Screen_Sed@@IAEXW4BrushSize@1@@Z",
+        "004AAD50": "?set_terrain@TRIBE_Screen_Sed@@IAEXF@Z",
+        "004AADF0": "?set_elevation@TRIBE_Screen_Sed@@IAEXF@Z",
         "004AD0F0": "?draw@TRIBE_Screen_Sed@@UAEXXZ",
         "004AD240": "?command_cancel@TRIBE_Screen_Sed@@QAEXXZ",
         "004AD6A0": "?command_quit@TRIBE_Screen_Sed@@QAEXXZ",
@@ -1815,7 +1815,7 @@
         "004ADAF0": "?command_quick_save@TRIBE_Screen_Sed@@QAEXXZ",
         "004ADB10": "?scenario_save_defaulted@TRIBE_Screen_Sed@@QAEPADXZ",
         "004ADC30": "?need_to_save@TRIBE_Screen_Sed@@QAEEXZ",
-        "004ADC40": "?set_focus@TRIBE_Screen_Sed@@UAEXH@Z"
+        "004ADC40": "?set_focus@TRIBE_Screen_Sed@@MAEXH@Z"
       }
     },
     {
@@ -6249,7 +6249,7 @@
         "00479540": "?remove_message@TMessagePanel@@QAEXXZ",
         "00479A10": "?get_true_render_rect@TMessagePanel@@UAEXAAUtagRECT@@@Z",
         "00479A80": "?handle_idle@TMessagePanel@@UAEJXZ",
-        "0047A190": "?set_font@TMessagePanel@@QAEXPAXJJ@Z"
+        "0047A190": "?set_font@TMessagePanel@@UAEXPAXJJ@Z"
       }
     },
     {

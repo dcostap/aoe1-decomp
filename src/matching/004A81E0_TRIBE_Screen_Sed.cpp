@@ -290,10 +290,10 @@ TRIBE_Screen_Sed::TRIBE_Screen_Sed(char* file, int mode) : TScreenPanel("Scenari
     this->scenario_mode = 0;
     this->map_type = 0;
     this->mp_victory_type = 2;
-    this->brush_size = 0;
+    this->brush_size = BrushSizeNone;
     this->paint_type = 0;
     this->player_num = 1;
-    this->message_type = 0;
+    this->message_type = MessageTypeNone;
     this->SelectedObject = 0;
     this->DestinationObject = 0;
     this->CurrentPlayer = 0;
@@ -411,11 +411,11 @@ TRIBE_Screen_Sed::TRIBE_Screen_Sed(char* file, int mode) : TScreenPanel("Scenari
     this->set_panel_info();
     this->set_map_type((MapType)1, 0);
     this->set_mp_victory_type((VictoryType)1, 0);
-    this->set_brush_size(1);
+    this->set_brush_size(BrushSizeVerySmall);
     this->set_paint_type((PaintType)1, 0);
     this->set_player(1, 0, 0);
     this->set_unit_player(1);
-    this->set_message_type(1, 0);
+    this->set_message_type(MessageTypeNormal, 0);
     this->set_scenario_mode(1);
     this->set_unit(-1);
     this->world->map->set_map_visible(1);

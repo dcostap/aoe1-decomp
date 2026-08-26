@@ -227,11 +227,22 @@ public:
 
 class TEditPanel : public TPanel {
 public:
+    enum FormatType {
+        FormatText = 0,
+        FormatUnsignedInt = 3,
+        FormatMultiLine = 7
+    };
     char* currentLine();
     char* get_input_buffer();
     void set_text(char*);
 };
 class TInputPanel : public TPanel {
+public:
+    enum FormatType {
+        FormatText = 0,
+        FormatUnsignedInt = 3,
+        FormatMultiLine = 7
+    };
 };
 class TListPanel : public TTextPanel {
 public:
@@ -784,6 +795,20 @@ public:
         PaintTypeElevationValue = 2,
         PaintTypeObjectValue = 3
     };
+    enum BrushSize {
+        BrushSizeNone = 0,
+        BrushSizeVerySmall = 1,
+        BrushSizeSmall = 2,
+        BrushSizeMedium = 3,
+        BrushSizeLarge = 4,
+        BrushSizeVeryLarge = 5
+    };
+    enum MessageType {
+        MessageTypeNone = 0,
+        MessageTypeNormal = 1,
+        MessageTypeWarning = 2,
+        MessageTypeError = 3
+    };
     class List_Info {
     public:
         char text[100];
@@ -804,11 +829,11 @@ public:
     int scenario_mode;
     int map_type;
     int mp_victory_type;
-    int brush_size;
+    BrushSize brush_size;
     int paint_type;
     short player_num;
     unsigned char pad_4BA[2];
-    int message_type;
+    MessageType message_type;
     unsigned char need_to_save_flag;
     unsigned char valid_save_spot_flag;
     unsigned char pad_4C2[2];
@@ -950,16 +975,21 @@ public:
     virtual long handle_idle();
     virtual long key_down_action(long, short, int, int, int);
     virtual long action(TPanel*, long, unsigned long, unsigned long);
+protected:
     virtual void set_focus(int);
+public:
     void get_string(long, char*, int);
+protected:
     int create_button(TPanel*, TButtonPanel**, long, int);
     int create_button(TPanel*, TButtonPanel**, char*, char*, char*, char*);
     int create_text(TPanel*, TTextPanel**, long);
     int create_text(TPanel*, TTextPanel**, char*);
     int create_text(TPanel*, TTextPanel**, int, int, int, int, int, int, int, int, int);
     int create_drop_down(TPanel*, TDropDownPanel**);
-    int create_input(TPanel*, TInputPanel**, char*, short, int);
-    int create_edit(TPanel*, TEditPanel**, char*, short, int, int, int);
+    int create_input(TPanel*, TInputPanel**, char*, short,
+                     TInputPanel::FormatType);
+    int create_edit(TPanel*, TEditPanel**, char*, short,
+                    TEditPanel::FormatType, int, int);
     int create_list(TPanel*, TListPanel**, TScrollBarPanel**);
     int create_radio_button(TPanel*, TButtonPanel**);
     int create_check_box(TPanel*, TButtonPanel**);
@@ -970,7 +1000,6 @@ public:
     void save_multi_victory_cond_in_scenario();
 protected:
     void save_victory_cond_in_scenario(int);
-public:
     void load_victory_cond_from_scenario(int);
     void load_multi_victory_cond_from_scenario();
     void save_diplomacy_in_scenario(int);
@@ -978,7 +1007,7 @@ public:
     void activate_victory_proper_fields(int, int);
     void init_module_variables();
     void create_all_buttons_etc();
-    int SetupListOfTerrain(TTextPanel*);
+    int SetupListOfTerrain(TListPanel*);
     void position_panels();
     void activate_victory_panel(int);
     int MakeFileList(TDropDownPanel*, char*, char*, unsigned char, unsigned char);
@@ -993,14 +1022,16 @@ protected:
 public:
     void set_scenario_mode(ScenarioMode);
     void set_scenario_mode(int);
+protected:
     void set_panel_info();
     void set_string(char*, long, int);
-    void set_brush_size(int);
+    void set_brush_size(BrushSize);
     void set_terrain(short);
     void set_elevation(short);
     void set_player_active(short, int);
     void set_unit(short);
-    void set_message_type(int, int);
+    void set_message_type(MessageType, int);
+public:
     void set_paint_object_mode();
     int command_new_map(char*, int, int, int, int, int);
     void command_cancel();

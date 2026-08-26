@@ -61,7 +61,7 @@ public:
     TListPanel* paint_elevation_list;
 
     void set_string(char* buffer, long panel_id, int limit);
-    int SetupListOfTerrain(TTextPanel* list);
+    int SetupListOfTerrain(TListPanel* list);
     int create_list(TPanel* panel, TListPanel** out, TScrollBarPanel** scroll);
 };
 #endif

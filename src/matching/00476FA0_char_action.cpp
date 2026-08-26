@@ -29,7 +29,7 @@ extern "C" void (__stdcall* const MessageBeep)(unsigned int);
 class TDigital { public: int play(); };
 class TTextPanel {
 public:
-    virtual void vf00();
+    virtual ~TTextPanel();
     char gap[0x184];
     char* get_text();
 };

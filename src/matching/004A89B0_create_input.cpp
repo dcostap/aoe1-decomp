@@ -9,6 +9,8 @@ public:
 
 class TInputPanel {
 public:
+    enum FormatType { FormatText = 0, FormatUnsignedInt = 3,
+                      FormatMultiLine = 7 };
     virtual void v0();
     virtual void v1();
     virtual void v2();
@@ -24,11 +26,14 @@ public:
 
 class TRIBE_Screen_Sed : public TEasy_Panel {
 public:
-    int create_input(TPanel* param_1, TInputPanel** param_2, char* param_3, short param_4, int param_5);
+    int create_input(TPanel* param_1, TInputPanel** param_2, char* param_3,
+                     short param_4, TInputPanel::FormatType param_5);
 };
 #endif
 
-int TRIBE_Screen_Sed::create_input(TPanel* param_1, TInputPanel** param_2, char* param_3, short param_4, int param_5) {
+int TRIBE_Screen_Sed::create_input(TPanel* param_1, TInputPanel** param_2,
+                                   char* param_3, short param_4,
+                                   TInputPanel::FormatType param_5) {
     if (TEasy_Panel::create_input(param_1, param_2, param_3, param_4, param_5, 0, 0, 0, 0, 10) == 0) {
         return 0;
     }

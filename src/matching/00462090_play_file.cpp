@@ -9,7 +9,7 @@
 #include <string.h>
 #include "../../include/music_context.h"
 
-int TMusic_System::play_file(const char* name, int loop_val, unsigned long pos)
+int TMusic_System::play_file(char* name, int loop_val, unsigned long pos)
 {
     if (this->music_type == 1)
         return 0;
