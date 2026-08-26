@@ -256,8 +256,14 @@ public:
     TRIBE_Screen_Name();
     virtual ~TRIBE_Screen_Name();
     void init_vars();
+
+    // BINARY NOTE: The original FPO symbols use the protected IAE member ABI
+    // for both helpers.  The action and idle handlers remain public virtuals.
+protected:
     void get_player_names();
     void setup_tab_order();
+
+public:
     virtual long action(TPanel*, long, unsigned long, unsigned long);
     virtual long handle_idle();
 };

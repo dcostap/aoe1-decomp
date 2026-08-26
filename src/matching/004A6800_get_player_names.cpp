@@ -20,75 +20,7 @@
 // aggregate-output, extern-global, /GX, source-order, and decompiler-curr_player probes were all
 // unchanged or worse. Final normalized source remains the natural char** player-list form.
 
-#ifdef SCR_NAME_TU_CONTEXT
 #include "../../include/scr_name_context.h"
-#else
-extern "C" void __cdecl free(void*);
-
-class TPanel {
-public:
-    char gap_04[0xEC];
-    virtual ~TPanel();
-};
-
-class TTextPanel : public TPanel {
-public:
-    char gap_F0[0x6C];
-    int flag_15c;
-    void empty_list();
-    int append_line(char* text, long index);
-    long get_line(long line);
-    void set_line(long line);
-};
-
-class TListPanel : public TTextPanel {
-};
-
-class TScrollBarPanel : public TPanel {
-};
-
-class TButtonPanel : public TPanel {
-};
-
-class RGE_Game_Info {
-public:
-    long get_people_list(char*** players, long& current_player);
-};
-
-class RGE_Base_Game {
-public:
-    virtual ~RGE_Base_Game();
-    RGE_Game_Info* player_game_info;
-};
-
-extern RGE_Base_Game* rge_base_game;
-
-class TEasy_Panel : public TPanel {
-public:
-    char gap_F0[0x384];
-};
-
-class TScreenPanel : public TEasy_Panel {
-public:
-    char gap_474[4];
-    virtual ~TScreenPanel();
-};
-
-class TRIBE_Screen_Name : public TScreenPanel {
-public:
-    TTextPanel* title;
-    TTextPanel* name_text;
-    TListPanel* name_list;
-    TScrollBarPanel* name_scrollbar;
-    TButtonPanel* new_button;
-    TButtonPanel* remove_button;
-    TButtonPanel* ok_button;
-    TButtonPanel* cancel_button;
-    TButtonPanel* close_button;
-    int started_input;
-    void get_player_names();
-};
-#endif
 
 void TRIBE_Screen_Name::get_player_names()
 {

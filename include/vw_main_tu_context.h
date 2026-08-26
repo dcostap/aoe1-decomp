@@ -554,10 +554,16 @@ public:
                 RGE_Static_Object*, int);
     int pick_objects1(long, long, RGE_Static_Object**, int);
     RGE_Static_Object* pick_best_target(long, long, int*, short);
+
+protected:
     void fixup_pick_info(RGE_Pick_Info*);
+
+public:
     void display_object_selection(int, int, int, int);
     void reset_overlay_sprites();
     void reset_display_object_selection(int);
+
+protected:
     virtual uchar get_help_info(char*&, long&, long, long);
 };
 

@@ -28,6 +28,7 @@ class RGE_Static_Object;
 class RGE_Active_Sprite_List;
 class RGE_Sprite;
 class RGE_Tile;
+class XYZBYTEPoint;
 
 struct RGE_Pick_Info {
     float x;
@@ -114,14 +115,46 @@ public:
 class RGE_Player {
 public:
     virtual ~RGE_Player();
-#define RPAD(n) virtual void p##n();
-    RPAD(01) RPAD(02) RPAD(03) RPAD(04) RPAD(05) RPAD(06)
-    RPAD(07) RPAD(08) RPAD(09) RPAD(10) RPAD(11) RPAD(12)
-    RPAD(13) RPAD(14) RPAD(15) RPAD(16) RPAD(17) RPAD(18)
-    RPAD(19) RPAD(20) RPAD(21) RPAD(22) RPAD(23) RPAD(24)
-    RPAD(25) RPAD(26) RPAD(27) RPAD(28) RPAD(29) RPAD(30)
-    RPAD(31) RPAD(32) RPAD(33) RPAD(34) RPAD(35) RPAD(36)
-#undef RPAD
+    virtual void set_game_status(unsigned char);
+    virtual void do_resign(int);
+    virtual void changeToHumanPlayer();
+    virtual void changeToComputerPlayer();
+    virtual char* aiStatus(int);
+    virtual int isEnemy(int);
+    virtual int isAlly(int);
+    virtual int isNeutral(int);
+    virtual int isAllNeutral();
+    virtual void setDiplomaticStance(int, int);
+    virtual void loadAIInformation(char*, char*, char*, int, int);
+    virtual void sendUnitAIOrder(int, int, int, int, int, float, float, float,
+                                 float, int, int, int);
+    virtual void processAIOrder(int, int, int, int, int, float, float, float,
+                                float, int, int, int);
+    virtual void kickAI(int);
+    virtual int strategicNumber(int);
+    virtual void sendGameOrder(RGE_Static_Object*, RGE_Static_Object*, float,
+                               float);
+    virtual void sendAddWaypointCommand(int, XYZBYTEPoint*, int);
+    virtual void processAddWaypointCommand(int, XYZBYTEPoint*, int);
+    virtual void sendPlayCommand(int, int*, int, int, int);
+    virtual void sendPlayCommand(int, int, int);
+    virtual int sendAICommand(int, int, int, int, int);
+    virtual int objectCostByType(int);
+    virtual void trackUnitGather(int, int, int);
+    virtual RGE_Static_Object* make_scenario_obj(float, float, float, short,
+                                                  unsigned char, float);
+    virtual void scenario_save(int);
+    virtual void scenario_load(int, long*, float);
+    virtual void scenario_postsave(int);
+    virtual void scenario_postload(int, long*, float);
+    virtual void load(int);
+    virtual void add_attribute_num(short, float, unsigned char);
+    virtual void update();
+    virtual void update_dopplegangers();
+    virtual void save(int);
+    virtual void save2(int);
+    virtual void save_info(int);
+    virtual void random_start();
     virtual RGE_Static_Object* make_new_object(
         long, float, float, float, int);
     virtual void analyze_selected_objects();

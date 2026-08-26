@@ -19,6 +19,9 @@ class RGE_Game_World;
 class RGE_Master_Object;
 class RGE_Player;
 class RGE_Static_Object;
+class RGE_Scenario;
+class RGE_Scenario_Header;
+class TPanel;
 
 class RGE_Master_Object {
 public:
@@ -147,21 +150,21 @@ public:
 class RGE_Base_Game {
 public:
     virtual ~RGE_Base_Game();
-    virtual void vpad04();
-    virtual void vpad08();
-    virtual void vpad0C();
-    virtual void vpad10();
-    virtual void vpad14();
-    virtual void vpad18();
-    virtual void vpad1C();
-    virtual void vpad20();
-    virtual void vpad24();
-    virtual void vpad28();
-    virtual void vpad2C();
-    virtual void vpad30();
-    virtual void vpad34();
-    virtual void vpad38();
-    virtual void vpad3C();
+    virtual int run();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual void set_prog_mode(int);
+    virtual void set_game_mode(int, int);
+    virtual void set_player(short);
+    virtual int get_error_code();
+    virtual char* get_string(int, long, char*, int);
+    virtual char* get_string(long, char*, int);
+    virtual char* get_string(long);
+    virtual char* get_string2(int, long, long, char*, int);
+    virtual TPanel* get_view_panel();
+    virtual TPanel* get_map_panel();
+    virtual RGE_Scenario_Header* new_scenario_header(RGE_Scenario*);
+    virtual RGE_Scenario_Header* new_scenario_header(int);
+    virtual RGE_Scenario* new_scenario_info(int);
     virtual void notification(int command, long player_id, long x, long y,
                               long zero);
 
