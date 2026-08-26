@@ -4,6 +4,7 @@ public:
     unsigned char minValue[6];
     unsigned char maxValue[6];
 
+protected:
     void initialize(void);
 };
 #endif

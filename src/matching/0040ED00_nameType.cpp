@@ -2,7 +2,11 @@
 class AIPlayPhaseTrigger {
 public:
     char typeValue;
+
+protected:
     char *convertToNameType(unsigned char value) const;
+
+public:
     char *nameType() const;
 };
 #endif

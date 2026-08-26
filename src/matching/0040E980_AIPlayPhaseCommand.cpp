@@ -8,7 +8,10 @@ public:
     int value2Value;
     int value3Value;
 
-    unsigned char convertToIntType(char* text);
+protected:
+    unsigned char convertToIntType(char* text) const;
+
+public:
     AIPlayPhaseCommand(unsigned char group, char* text, int value1, int value2, int value3);
 };
 #endif

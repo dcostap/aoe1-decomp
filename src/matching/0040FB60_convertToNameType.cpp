@@ -1,6 +1,6 @@
 #ifndef AIPBOOK_CANONICAL_TU
 class AIPlay {
-public:
+protected:
     char *convertToNameType(unsigned char value) const;
 };
 #endif

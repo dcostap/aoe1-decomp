@@ -10,7 +10,7 @@ extern char s_Recon[];
 
 #ifndef AIPBOOK_CANONICAL_TU
 class AIPlay {
-public:
+protected:
     unsigned char convertToIntType(char *name) const;
 };
 #endif

@@ -44,6 +44,8 @@ public:
     AIPlayPhaseCommand(unsigned char group, char* type,
                        int value1, int value2, int value3);
     char* nameType() const;
+
+protected:
     unsigned char convertToIntType(char* name) const;
     char* convertToNameType(unsigned char type) const;
 };
@@ -85,6 +87,8 @@ public:
                        unsigned char phase, unsigned char nextPhase,
                        int randomness);
     char* nameType() const;
+
+protected:
     unsigned char convertToIntType(char* name) const;
     char* convertToNameType(unsigned char type) const;
 };
@@ -97,8 +101,8 @@ public:
     AIPlayPhase();
     AIPlayPhaseCommand* command(int index);
     AIPlayPhaseTrigger* trigger(int index);
-    int addCommand(AIPlayPhaseCommand* commandValue);
-    int addTrigger(AIPlayPhaseTrigger* triggerValue);
+    int addCommand(AIPlayPhaseCommand& commandValue);
+    int addTrigger(AIPlayPhaseTrigger& triggerValue);
     void initialize();
 };
 
@@ -117,10 +121,12 @@ public:
     };                                   // +0x06
 
     AIPlayGroup();
-    unsigned char minimum(int index);
-    void setMinimum(int index, unsigned char value);
+    unsigned char minimum(int index) const;
+    void setMinimum(int index, int value);
     unsigned char maximum(int index) const;
-    void setMaximum(int index, unsigned char value);
+    void setMaximum(int index, int value);
+
+protected:
     void initialize();
 };
 
@@ -157,9 +163,15 @@ public:
     int fillGroups(AIPlayStatus* status, int* units, int unitCount,
                    RGE_Game_World* world);
     int groupGivenCommandOnPhase(int group, int type, int phaseNumber);
+
+protected:
     unsigned char convertToIntType(char* name) const;
     char* convertToNameType(unsigned char type) const;
+
+public:
     int locationsOnMap(int x1, int y1, int x2, int y2);
+
+    friend class AIPlayBook;
 };
 
 class AIPlayStatus {
@@ -202,11 +214,11 @@ public:
     unsigned char pad_1C5[3];           // +0x1C5
 
     AIPlayStatus();
-    int originalHitPoints(int groupNumber);
+    int originalHitPoints(int groupNumber) const;
     void setOriginalHitPoints(int groupNumber, int value);
-    unsigned char numberInPlay();
+    unsigned char numberInPlay() const;
     unsigned char numberInGroup(int groupNumber);
-    unsigned char numberOfTypeInGroup(int groupNumber, int type) const;
+    unsigned char numberOfTypeInGroup(int groupNumber, int type);
     unsigned char group(int id);
     int addGrouping(int id, unsigned char groupID, unsigned char type);
     int removeGrouping(int id);

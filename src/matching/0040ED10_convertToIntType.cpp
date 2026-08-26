@@ -17,7 +17,7 @@ extern char s_Time[];
 
 #ifndef AIPBOOK_CANONICAL_TU
 class AIPlayPhaseTrigger {
-public:
+protected:
     unsigned char convertToIntType(char *name) const;
 };
 #endif

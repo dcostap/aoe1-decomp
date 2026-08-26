@@ -12,21 +12,21 @@ public:
 class AIPlayPhase {
 public:
     AIPlayPhaseCommand commands[5];
-    int addCommand(AIPlayPhaseCommand* command);
+    int addCommand(AIPlayPhaseCommand& command);
 };
 #endif
 
-int AIPlayPhase::addCommand(AIPlayPhaseCommand* command) {
+int AIPlayPhase::addCommand(AIPlayPhaseCommand& command) {
     int i = 0;
     unsigned char* p = &this->commands[0].typeValue;
     while (i < 5) {
         if (*p == 0) {
             AIPlayPhaseCommand* dest = &this->commands[i];
-            dest->groupValue = command->groupValue;
-            dest->typeValue = command->typeValue;
-            dest->value1Value = command->value1Value;
-            dest->value2Value = command->value2Value;
-            dest->value3Value = command->value3Value;
+            dest->groupValue = command.groupValue;
+            dest->typeValue = command.typeValue;
+            dest->value1Value = command.value1Value;
+            dest->value2Value = command.value2Value;
+            dest->value3Value = command.value3Value;
             return 1;
         }
         i++;

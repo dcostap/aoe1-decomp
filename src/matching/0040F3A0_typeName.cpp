@@ -3,7 +3,11 @@ class AIPlay {
 public:
     char gap_0[0x43];
     unsigned char typeValue;
+
+protected:
     char *convertToNameType(unsigned char value) const;
+
+public:
     char *typeName() const;
 };
 #endif

@@ -10,7 +10,7 @@ extern char s_Invalid[];
 
 #ifndef AIPBOOK_CANONICAL_TU
 class AIPlayPhaseCommand {
-public:
+protected:
     char *convertToNameType(unsigned char value) const;
 };
 #endif

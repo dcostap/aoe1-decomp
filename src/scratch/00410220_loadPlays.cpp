@@ -106,10 +106,10 @@ public:
     unsigned char minimumValue[6];
     unsigned char maximumValue[6];
 
-    unsigned char minimum(int index);
-    void setMinimum(int index, unsigned char value);
-    unsigned char maximum(int index);
-    void setMaximum(int index, unsigned char value);
+    unsigned char minimum(int index) const;
+    void setMinimum(int index, int value);
+    unsigned char maximum(int index) const;
+    void setMaximum(int index, int value);
 };
 
 class AIPlayPhaseCommand {
@@ -151,9 +151,9 @@ public:
     AIPlayPhaseTrigger triggers[3];
 
     AIPlayPhaseCommand* command(int index);
-    int addCommand(AIPlayPhaseCommand* commandValue);
+    int addCommand(AIPlayPhaseCommand& commandValue);
     AIPlayPhaseTrigger* trigger(int index);
-    int addTrigger(AIPlayPhaseTrigger* triggerValue);
+    int addTrigger(AIPlayPhaseTrigger& triggerValue);
 };
 
 class AIPlay {
@@ -175,7 +175,13 @@ public:
 
     AIPlay();
     void setName(char* name);
-    unsigned char convertToIntType(char* name);
+
+protected:
+    unsigned char convertToIntType(char* name) const;
+
+    friend class AIPlayBook;
+
+public:
     unsigned char targetType(int index) const;
     int addTargetType(unsigned char type);
     unsigned char targetCharacteristic(int index) const;
@@ -413,7 +419,7 @@ int AIPlayBook::loadPlays(char* filename) {
                 AIPlayPhase* phase = this->plays[refPhase].phase(phaseState);
                     AIPlayPhaseCommand command(
                     (unsigned char)temp4, temp6 + 4, phaseValue1, i, fileValue);
-                phase->addCommand(&command);
+                phase->addCommand(command);
             }
         } else if (strcmp(temp2 + 4, s_Trigger) == 0 && refPhase != -1 && phaseState != -1) {
             sscanf(temp + 4, s_format_trigger,
@@ -423,7 +429,7 @@ int AIPlayBook::loadPlays(char* filename) {
                 AIPlayPhaseTrigger trigger(
                     temp6 + 4, phaseValue1, temp7,
                     (unsigned char)phaseState, (unsigned char)temp4, 0);
-                phase->addTrigger(&trigger);
+                phase->addTrigger(trigger);
             }
         } else if (strcmp(temp2 + 4, s_RTrigger) == 0 && refPhase != -1 && phaseState != -1) {
             sscanf(temp + 4, s_format_command,
@@ -433,7 +439,7 @@ int AIPlayBook::loadPlays(char* filename) {
                 AIPlayPhaseTrigger rtrigger(
                     temp6 + 4, phaseValue1, temp7,
                     (unsigned char)phaseState, (unsigned char)temp4, fileValue);
-                phase->addTrigger(&rtrigger);
+                phase->addTrigger(rtrigger);
             }
         } else if (strcmp(temp2 + 4, s_EndPlay) == 0 && refPhase != -1) {
             int oldPhase = refPhase;
@@ -515,14 +521,14 @@ int AIPlayBook::loadPlays(char* filename) {
                                     originalPoint.xValue);
                                 command = &newCommand;
                             }
-                            destinationPhase->addCommand(command);
+                            destinationPhase->addCommand(*command);
                             ++currentPlay;
                         } while (currentPlay < 5);
 
                         int triggerIndex = 0;
                         do {
                             destinationPhase->addTrigger(
-                                sourcePhase->trigger(triggerIndex));
+                                *sourcePhase->trigger(triggerIndex));
                             ++triggerIndex;
                         } while (triggerIndex < 3);
                         ++groupPhase;

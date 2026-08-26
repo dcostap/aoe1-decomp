@@ -14,7 +14,7 @@ extern char s_Wait[];
 
 #ifndef AIPBOOK_CANONICAL_TU
 class AIPlayPhaseCommand {
-public:
+protected:
     unsigned char convertToIntType(char *name) const;
 };
 #endif

@@ -10,7 +10,10 @@ public:
     char gap_0E[2];
     int randomnessValue;
 
-    unsigned char convertToIntType(char* text);
+protected:
+    unsigned char convertToIntType(char* text) const;
+
+public:
     AIPlayPhaseTrigger(char* type, int value1, int value2, unsigned char phase, unsigned char nextPhase, int randomness);
 };
 #endif

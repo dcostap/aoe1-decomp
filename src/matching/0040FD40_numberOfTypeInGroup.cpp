@@ -10,11 +10,11 @@ public:
     };
 
     GroupingStruct groupings[50];
-    unsigned char numberOfTypeInGroup(int param_1, int param_2) const;
+    unsigned char numberOfTypeInGroup(int param_1, int param_2);
 };
 #endif
 
-unsigned char AIPlayStatus::numberOfTypeInGroup(int param_1, int param_2) const {
+unsigned char AIPlayStatus::numberOfTypeInGroup(int param_1, int param_2) {
     unsigned char count = 0;
     for (int i = 0; i < 50; i++) {
         const GroupingStruct& g = this->groupings[i];
