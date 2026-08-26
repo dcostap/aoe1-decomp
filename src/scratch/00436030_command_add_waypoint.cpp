@@ -3,7 +3,7 @@
 // Command.cpp:2031-2070
 // 155 bytes
 //
-// Attempt 3: Indexed loop, extern for Log.
+// Attempt 3: Indexed loop and the binary Log helper.
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -43,7 +43,7 @@ public:
 #endif
 
 #ifndef COMMAND_TU_CONTEXT
-extern void __cdecl TDebuggingLog_Log(void* log, const char* fmt, int, const char*);
+extern void __cdecl Log(void* log, const char* fmt, int, const char*);
 extern void* L;                     // 0x62C4FC
 #endif
 
@@ -68,7 +68,7 @@ void RGE_Command::command_add_waypoint(int player, int obj_id, XYZBYTEPoint* pts
     else
         name = "X";
 
-    TDebuggingLog_Log(L, "      >SEND CMD ADD WAY (PLR=%d,REC=%s)", player, name);
+    Log(L, "      >SEND CMD ADD WAY (PLR=%d,REC=%s)", player, name);
 
     submit(buf, 0x18);
 }

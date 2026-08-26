@@ -15,6 +15,9 @@
 // - Added the proven base-game slot, the sixth zero argument to notify, and
 //   the generated RGE_Player/RGE_Base_Game/RGE_Command ABI names.  The final
 //   event's zero is a real stack argument, not a temporary scheduling aid.
+// BINARY NOTE: The local player surface places computerPlayer before scenario
+// methods and save before save2. These slots preserve add_attribute_num (+78h)
+// and notify (+E8h).
 // Result: exact 210-byte match under config/flags/default.rsp.
 
 #ifndef COMMAND_TU_CONTEXT
@@ -40,13 +43,15 @@ public:
     virtual void sendPlayCommand(int, int, int);
     virtual int sendAICommand(int, int, int, int, int);
     virtual int objectCostByType(int); virtual void trackUnitGather(int, int, int);
-    virtual void save(int); virtual void scenario_save(int);
+    virtual int computerPlayer();
+    virtual void scenario_save(int);
     virtual void scenario_load(int, long*, float); virtual void scenario_postsave(int);
     virtual void scenario_postload(int, long*, float); virtual void load(int);
     virtual void add_attribute_num(short attr_id, float amount,
                                    unsigned char flag);
 
-    virtual void update(); virtual void update_dopplegangers(); virtual void save2(int);
+    virtual void update(); virtual void update_dopplegangers(); virtual void save(int);
+    virtual void save2(int);
     virtual void save_info(int); virtual void random_start();
     virtual void* make_new_object(long, float, float, float, int);
     virtual void analyize_selected_objects();

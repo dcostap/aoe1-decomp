@@ -11,7 +11,9 @@
 // - SpruceGlow try 14 MATCH: declare the virtual ai_order byte-like parameters as unsigned int in the visible
 //   callee surface. This makes VC5 naturally emit the original `xor eax,eax; mov al,[esi+off]; push eax` for each
 //   narrow field while preserving the virtual member call through [edx+34h].
-// Result: MATCH locally with `python tools/check_function.py --va 00434D40`.
+// Current result: exact size and calls, with a five-byte register-coloring
+// drift in the standalone view. The complete TU uses the canonical player
+// declaration and remains nonexact at this owner.
 
 #ifndef COMMAND_TU_CONTEXT
 class RGE_Static_Object {
@@ -43,7 +45,7 @@ public:
     virtual void sendUnitAIOrder(int, int, int, int, int, float, float,
                                  float, float, int, int, int);
     virtual void processAIOrder(int, int, int, int, int, float, float, float,
-                                float, unsigned int, unsigned int, unsigned int);
+                                unsigned int, unsigned int, unsigned int, unsigned int);
 };
 
 struct RGE_Command_AI_Order {
