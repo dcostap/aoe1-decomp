@@ -36,11 +36,16 @@
 // worker 2026-08-17: branch-local set_background2 forms improved resynchronization but worsened
 // positional bytes or size. Ambient declarations, Windows headers, risky flags, pointer scopes,
 // declaration order, casts, and reference ABI forms did not produce an exact group.
+// worker 2026-08-27: corrected RESFILE_load to its C++ cdecl declaration from the exact owner;
+// grouped bytes stayed unchanged because the remaining first drift is local scheduling.
 // BINARY NOTE: The unresolved drift begins at the f2g home and continues through sscanf locals.
 // LIKELY INTENT: Recover the original Panel_ez.cpp declaration or translation-unit context next.
 // BINARY NOTE: TPanel::setup is virtual at vslot 0x04 and takes an unsigned-char final argument.
 // BINARY NOTE: RESFILE_load uses two int reference outputs; packed color helpers take unsigned long.
+// BINARY NOTE: RESFILE_load uses its C++ cdecl owner at 0047F320.
+// BINARY NOTE: The reviewed full Panel_ez context is used for standalone and grouped builds.
 
+#include "../../include/panel_ez_full_context.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -49,10 +54,10 @@
 
 extern unsigned char shape_file_first;   // 0x86BBFC
 
-extern "C" unsigned char* __cdecl RESFILE_load(unsigned long type,
-                                                unsigned long id,
-                                                int& size,
-                                                int& param_4);
+extern unsigned char* __cdecl RESFILE_load(unsigned long type,
+                                           unsigned long id,
+                                           int& size,
+                                           int& param_4);
 
 long TEasy_Panel::setup(TDrawArea* area, TPanel* parent, char* info_file, long info_id, int use_area_size,
                         long x, long y, long w, long h, int allow_shadow)
