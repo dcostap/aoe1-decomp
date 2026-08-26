@@ -11,22 +11,22 @@
 
 #include "../../include/shape_context.h"
 
-unsigned char TShape::shape_minmax(long* out_minx, long* out_miny,
-                                    long* out_maxx, long* out_maxy,
+unsigned char TShape::shape_minmax(long& out_minx, long& out_miny,
+                                    long& out_maxx, long& out_maxy,
                                     long facet) {
     if (facet >= 0) {
         if (!Check_shape(facet, "RGL_shape_minxy")) {
             if (FShape != 0) {
-                *out_minx = -shape_info[facet].Hotspot_X;
-                *out_miny = -shape_info[facet].Hotspot_Y;
-                *out_maxx = shape_info[facet].Width - shape_info[facet].Hotspot_X - 1;
-                *out_maxy = shape_info[facet].Height - shape_info[facet].Hotspot_Y - 1;
+                out_minx = -shape_info[facet].Hotspot_X;
+                out_miny = -shape_info[facet].Hotspot_Y;
+                out_maxx = shape_info[facet].Width - shape_info[facet].Hotspot_X - 1;
+                out_maxy = shape_info[facet].Height - shape_info[facet].Hotspot_Y - 1;
             } else {
                 shape_header = (Shape_Header*)(shape + offsets[facet].shape);
-                *out_minx = shape_header->xmin;
-                *out_miny = shape_header->ymin;
-                *out_maxx = shape_header->xmax;
-                *out_maxy = shape_header->ymax;
+                out_minx = shape_header->xmin;
+                out_miny = shape_header->ymin;
+                out_maxx = shape_header->xmax;
+                out_maxy = shape_header->ymax;
             }
             return 1;
         }

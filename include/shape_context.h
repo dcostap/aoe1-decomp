@@ -112,7 +112,7 @@ public:
     int is_loaded();
     byte shape_bounds(long index, short& width, short& height);
     long shape_count();
-    byte shape_minmax(long* min_x, long* min_y, long* max_x, long* max_y,
+    byte shape_minmax(long& min_x, long& min_y, long& max_x, long& max_y,
                       long index);
     byte shape_check(long x, long y, long frame);
 
