@@ -28,8 +28,11 @@
 //   is retained; it emits the pinned 394-byte result without raw ownership.
 // - Reusing the existing line local in the final clear loop while preserving
 //   clear_first and clear_last emitted identical code (4-byte diff, first +013C); restored clean source.
-// left in scratch: remaining drift is codegen/source-shape around preserving original dy while mutating bound params,
-// plus VC5 abs lowering/register allocation; no inline asm used.
+// - Exact finish: assigning both final upper bounds to the dead use_regions
+//   parameter, then using that parameter in the cleanup loop, produced MATCH.
+//   Reverting either branch assignment broke the frame and control-flow basin.
+// Exact finish resolved the prior four-byte drift through required parameter-
+// home reuse. No inline assembly or opaque context scaffolding was needed.
 
 extern "C" int __cdecl abs(int);
 
@@ -71,7 +74,6 @@ void TSpan_List_Manager::ScrollSpansVertically(int dy, int use_regions)
     int src_line;
     int step;
     int clear_first;
-    int clear_last;
 
     if (dy == 0) {
         return;
@@ -116,13 +118,14 @@ void TSpan_List_Manager::ScrollSpansVertically(int dy, int use_regions)
         line = 0;
         step = -1;
         clear_first = 0;
-        clear_last = dy - 1;
+        // BINARY NOTE: VC5 reuses the dead flag parameter as this upper bound.
+        use_regions = dy - 1;
     } else {
         src_line = dy;
         step = 1;
         clear_first = this->Num_Lines - dy;
         line = this->Num_Lines - 1;
-        clear_last = this->Num_Lines;
+        use_regions = this->Num_Lines;
     }
 
     line += step;
@@ -137,8 +140,8 @@ void TSpan_List_Manager::ScrollSpansVertically(int dy, int use_regions)
         } while (src_line != line);
     }
 
-    if (clear_first <= clear_last) {
-        for (; clear_first <= clear_last; clear_first++) {
+    if (clear_first <= use_regions) {
+        for (; clear_first <= use_regions; clear_first++) {
             this->Line_Head_Ptrs[clear_first] = 0;
             this->Line_Tail_Ptrs[clear_first] = 0;
             this->Span_Count[clear_first] = 0;

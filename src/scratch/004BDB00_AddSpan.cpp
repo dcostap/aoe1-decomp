@@ -49,6 +49,12 @@
 // the basin to diff 699, size 920, and weaker central blocks; restored.
 // continuation validation: restored natural source remains diff 589, size 922,
 // shape 86.83%, exact blocks 55.74%, and calls 9/9.
+// continuation captain probe: a separate old_end plus mutated end reduced
+// strict drift to 579 bytes, but added parameter-home stores and lost CFG
+// blocks; the source was restored as unsupported metric-only steering.
+// continuation captain probe: register-qualified end+1 and rightmost-left
+// operand spellings were worse or codegen duplicates; the natural source stays
+// at diff 589 with the original 9/9 ordered calls.
 // continuation probe: moving the middle-drain `after` declaration to function
 // scope was codegen-identical; restored the branch-local declaration.
 // continuation probe: direct `end + 1` boundary expressions were codegen-

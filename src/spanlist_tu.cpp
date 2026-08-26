@@ -31,7 +31,7 @@
 #include "matching/004BE5F0_Merge_n_Align.cpp"
 #include "matching/004BE690_AlignamizeSpans.cpp"
 #include "matching/004BE750_ScrollSpansHorizontally.cpp"
-#include "verified_logic/004BE850_ScrollSpansVertically.cpp"
+#include "matching/004BE850_ScrollSpansVertically.cpp"
 #include "matching/004BE9E0_ValidateSpan.cpp"
 #include "accepted_drift/004BEAD0_DecodeLine.cpp"
 #include "accepted_drift/004BEB10_take_snapshot.cpp"
