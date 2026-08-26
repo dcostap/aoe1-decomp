@@ -6,6 +6,6 @@
 
 #include "matching/00440140_TRIBE_Dialog_Sed_Menu.cpp"
 #include "matching/00440360_TRIBE_Dialog_Sed_Menu.cpp"
-#include "scratch/00440400_action.cpp"
+#include "matching/00440400_action.cpp"
 
 #undef DLG_SEDM_SHARED_CONTEXT

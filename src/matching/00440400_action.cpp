@@ -23,8 +23,8 @@
 //   sets the shared result, and skips the button-6 test before the fallback.
 // - This probe reduced the positional diff from 929 to 847 bytes and raised
 //   exact-block coverage from 60.25% to 65.98%; shared-tail drift remains.
-// - Initializing the long result to zero emitted identical code; retain the
-//   natural initialized declaration while the shared-tail drift remains.
+// - Initializing the long result to zero emitted identical code. The reduced
+//   source leaves it uninitialized because every path assigns the result.
 // - Narrowed the shared result state to unsigned char; VC5 restored one common
 //   success tail, reducing rebuilt size to 911 and the diff to 446 bytes.
 // - Rewrote the button-5 success/null split as an explicit if/else; VC5 emitted
@@ -51,6 +51,13 @@
 //   destroyPanel call: 921 bytes, 40 calls, and 31 differing bytes. It kept
 //   the result in ESI across the call instead of the executable's EAX=1, so it
 //   is not retained as source.
+// - Grouped dlg_sedm validation with the authentic constructor and destructor
+//   owners is exact after restoring the natural long result: 919 bytes, 40
+//   calls, owner match, and no boundary escapes.
+// - Walkback to unsigned char in the same grouped TU rebuilt 931 bytes and
+//   escaped the original boundary twice. The long result is required here.
+// - A grouped walkback that removed the result initializer stayed exact. The
+//   final source keeps the smaller long declaration.
 
 #include <string.h>
 
@@ -127,7 +134,7 @@ long TRIBE_Dialog_Sed_Menu::action(
     TPanel* panel, long event, ulong param_3, ulong param_4)
 {
     TRIBE_Screen_Sed* sed = this->scenario_editor;
-    unsigned char result = 0;
+    long result;
 
     if (event == 1) {
         if (panel == this->buttons[0]) {
