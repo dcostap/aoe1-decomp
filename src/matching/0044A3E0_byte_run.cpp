@@ -75,6 +75,12 @@ struct RGE_Flic_Player {
 
 // Main-agent audit confirmed canonical FLIC player/frame ownership and retained
 // the natural packed-byte decoder.
+// Captain pass: the context gate is proved by the flics.cpp PDB module, the
+// 504-541 source band, the private RGE_Flic_Player owner, the linked address
+// sequence, and the zero-call packed-byte loop anchors.  Aggregate count,
+// explicit height, and byte-cursor forms were tested and restored when they
+// were neutral or worse.  Standalone code is exact; the grouped context keeps
+// a two-byte y1/flic_size_y displacement difference.
 void RGE_Flic_Player::byte_run() {
     char* chunk = this->chunk;
     int count = this->y1;

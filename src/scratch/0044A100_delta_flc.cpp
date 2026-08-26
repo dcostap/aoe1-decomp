@@ -138,6 +138,12 @@ public:
 
 // Main-agent audit confirmed canonical FLIC player/frame ownership and retained
 // the natural packed ushort delta decoder.
+// Captain pass: the context gate is proved by the flics.cpp PDB module, the
+// 365-441 source band, the private RGE_Flic_Player owner, the linked address
+// sequence, and the sibling delta_fli decoder's packed-stream anchors.
+// A switch classifier was tested against the original subtract/decrement
+// dispatch chain.  It changed the frame to 0x10 and worsened the result to
+// 376 differing bytes, so the natural if-chain remains authoritative.
 void RGE_Flic_Player::delta_flc()
 {
     ushort* p;

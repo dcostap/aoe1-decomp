@@ -114,6 +114,20 @@
 //   did not recover the original schedule without worse behavior or size.
 // - BINARY NOTE: 0044A05D remains a reviewed padding-only flics.cpp boundary.
 //   No compiler-facing owner was added or changed.
+// Captain pass:
+// - The context gate is proved by the flics.cpp PDB module, the 81-171 source
+//   band, the RGE_Flic_Player owner, the linked address sequence, and the
+//   seven direct calloc/lseek/read/free anchors.
+// - A symmetric source form uses direct RGBQUAD addressing in both chunk arms
+//   and remains 221 bytes different.  The behavior-preserving asymmetric form
+//   uses a tagRGBQUAD* in type 4 and direct addressing in type 0x0B; it lowers
+//   to 187 differing bytes without changing behavior, calls, frame, or owner.
+// - Walkbacks proved the alias change is required for the improvement.  The
+//   declaration-order change was codegen-neutral and was removed.  Byte cursors,
+//   long counters, and split zero stores were neutral or worse.
+// - The grouped candidate keeps all 13 exact owners, the two observed owners,
+//   and the authentic flics.cpp include order.  Palette remains nonexact because
+//   the original EBX/EBP packet and chunk allocation basin is unresolved.
 
 #ifndef FLICS_SHARED_CONTEXT
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
@@ -227,9 +241,10 @@ void RGE_Flic_Player::palette(tagRGBQUAD* palette)
                             count = 0x100;
                         }
                         if (0 < count) {
-                            unsigned char* green = &palette[color_index].rgbGreen;
+                            tagRGBQUAD* color = palette + color_index;
                             color_index += count;
                             int color_count = count;
+                            unsigned char* green = &color->rgbGreen;
                             unsigned char* input = packet;
                             do {
                                 unsigned char* next = input + 3;
@@ -262,10 +277,9 @@ void RGE_Flic_Player::palette(tagRGBQUAD* palette)
                             count = 0x100;
                         }
                         if (0 < count) {
-                            tagRGBQUAD* color = palette + color_index;
+                            unsigned char* green = &palette[color_index].rgbGreen;
                             color_index += count;
                             int color_count = count;
-                            unsigned char* green = &color->rgbGreen;
                             do {
                                 green += 4;
                                 green[-3] = (unsigned char)(packet[0] << 2);
