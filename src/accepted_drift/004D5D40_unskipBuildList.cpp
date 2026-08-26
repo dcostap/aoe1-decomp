@@ -1,10 +1,17 @@
 // 004D5D40 TribeBuildAIModule::unskipBuildList (155B)
 // taibldmd.cpp:1721-1753
 // STATUS: PAUSED — proposed accepted_drift
-// Remaining drift: 11 bytes positional / 10 bytes edit (6.5%)
+// Remaining drift: 15 bytes positional / 6 edit bytes (9.4%)
 // Root cause: VC5 generates separated sentinel+null checks at bottom-of-loop
 // instead of combined `jne to_null_check` that jumps back to the null check
 // at the loop body entry.
+// Context gate: PROVED PDB module taibldmd.cpp, lines 1721-1753, with this
+// owner between allBuilt at 004D5C20 and buildItem at 004D5DE0. Exact anchors
+// are the vslot+0x48 calls at 004D5D4A, first-list read at 004D5D5B, and the
+// built/inProgress/typeID/setter calls from 004D5D73 through 004D5DC8.
+// PROVED owner: TribeBuildAIModule::unskipBuildList(int, int). LIKELY context
+// is the real taibldmd.cpp class surface. UNKNOWN: natural VC5 source that
+// recovers the original bottom-loop branch without a forbidden wrapper.
 // Attempts: 12+ across all loop forms (for, do-while, while, for(;;), goto-based)
 // All register allocation and instruction sequences match except bottom-of-loop structure.
 // Default flags
@@ -50,8 +57,7 @@ public:
     // vtable[0x48] = 18th function (index 18 * 4 = 0x48)
     virtual int getUnitLimit(int, int);
     char gap_04[0x0EC];
-    char sentinel_pad[0x6C];           // this+0xF0 to this+0x15C
-    BuildItem* first;                   // +0x15C
+    BuildItem buildList;                // +0xF0; next is at +0x15C
 
     void unskipBuildList(int limit67, int limit44);
 };
@@ -67,12 +73,8 @@ void TribeBuildAIModule::unskipBuildList(int limit67, int limit44)
     int lim44 = getUnitLimit(0x44, 0);
 #endif
 
-#ifdef TAIBLDMD_SHARED_CONTEXT
     BuildItem* item = this->buildList.next;
-#else
-    BuildItem* item = first;
-#endif
-    BuildItem* sentinel = (BuildItem*)((char*)this + 0x0F0);
+    BuildItem* sentinel = &this->buildList;
 
     if (item == sentinel) return;
     if (item == 0) return;
