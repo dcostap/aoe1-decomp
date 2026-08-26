@@ -2,6 +2,11 @@
 // PDB: tpnl_pop.cpp:85-129, 389 bytes
 // __thiscall, void
 // FLAGS: default + /GX
+// TU captain grouped pass: standalone MATCH remains exact. The authentic
+// shared header reports sizeof(TDrawArea)==0x3c, while the original set_rect
+// allocates 0x100 bytes. Explicit allocation and derived-storage probes were
+// rejected because they lost EH shape, escaped the boundary, or used a fake
+// layout. The natural source remains authoritative.
 
 #ifndef TPNL_POP_SHARED_CONTEXT
 #include <stdlib.h>
@@ -51,7 +56,9 @@ public:
     int pnl_hgt;           // +0x18
     char gap_1C[0x04];
     TDrawArea* render_area; // +0x20
-    char gap_24[0xFC];
+    char gap_24[0xCF];
+    unsigned char need_restore; // +0xF3
+    char gap_F4[0x2C];
     void* image_clip_region; // +0x120
     TDrawArea* ImageBuffer;  // +0x124
     tagRECT ImageRect;         // +0x128
@@ -118,7 +125,7 @@ skip_realloc:
         this->LastIBHeight = -1;
     }
 
-    *(unsigned char*)((char*)this + 0xF3) = 1;
+    this->need_restore = 1;
 
     this->set_redraw(1);
 }
