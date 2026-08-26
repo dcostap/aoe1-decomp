@@ -12,6 +12,12 @@
 // preceding World anchor at 00545BF0 owns the separate unsigned-long +0xF8
 // time field; do not merge that anchor or assign this body to another class.
 // Direct map reads, output publication, and failure order remain explicit.
+// Context gate (PROVED): World.cpp lines 3512-3536 own 00545C00-00545CA5 and
+// the RGE_Game_World int-reference method. Exact anchors are +8/+C dimensions,
+// +8D8C row data, tile stride 0x18, and the node scan.
+// Context gate (LIKELY): the typed row-data and tile fields are period source.
+// Context gate (UNKNOWN): world_phase2_context.h still places row_data at +8DC4;
+// the main agent must repair the shared RGE_Map declaration.
 
 int RGE_Game_World::objectGroupOnTile(int owner_id, int object_group, int tile_x, int tile_y, int& output)
 {

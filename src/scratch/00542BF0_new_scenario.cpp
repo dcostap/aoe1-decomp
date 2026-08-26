@@ -10,6 +10,9 @@
 // scope changes, seed and map locals, terrain casts, and explicit long map
 // arguments did not change the 221-byte result. The natural source is kept.
 // Final validation: MISMATCH, rebuilt 273 bytes, first mismatch +0x2D.
+// 2026-08-26 TU captain probe: passing random_seed, instead of seed, to
+// debug_srand produced identical output. The probe was restored. The source
+// spelling and the value-store/push order remain unresolved.
 #include "../../include/world_scenario_context.h"
 
 unsigned char RGE_Game_World::new_scenario(RGE_Player_Info& info, int seed) {

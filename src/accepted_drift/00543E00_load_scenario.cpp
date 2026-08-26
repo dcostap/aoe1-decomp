@@ -89,3 +89,5 @@ version2:
 // Its six configured exact anchors remain exact. Natural late-guard forms and
 // VC5 debug flags keep the same close-before-version-8 block. The remaining
 // output has ten returns; the oracle shares one zero-result epilogue and has nine.
+// 2026-08-26 TU captain probe: a positive final version dispatch with an
+// explicit success jump produced identical output. The probe was restored.

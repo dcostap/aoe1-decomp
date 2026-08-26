@@ -44,6 +44,8 @@
 // inserted at the join, shifting the epilogue into padding. No source/flag combination
 // produced exact match without worse behavioral/codegen changes.
 // Full canonical World.cpp context emits the same reviewed drift bytes.
+// 2026-08-26 TU captain probe: direct member assignment rebuilt 107 bytes with 44
+// differing bytes and 19 bytes beyond the boundary. Restored this source.
 
 #include "../../include/world_scenario_context.h"
 
