@@ -54,6 +54,14 @@
 // returns, cleanup, and fault order match. This function has no SEH. Thirty-one
 // focused probes found no natural source form that restores the register basin.
 
+// TU context gate (proved): PDB module com_spd.cpp, lines 451-577, owner
+// RGE_Communications_Speed, body 00432DE0-00432FA6.
+// Address anchors (proved): fields +0x108, +0x140, +0x224, +0x12C, +0x11C;
+// calls IsHost, IsPlayerHuman, SetFutureSpeedChange, and SendSpeedChange.
+// Likely: this source uses the authentic com_spd.cpp class and helper context.
+// Unknown: the original declaration order that selects the remaining register
+// colors and one-byte boundary difference.
+
 #include <stdlib.h>
 #include "../../include/com_spd_context.h"
 
