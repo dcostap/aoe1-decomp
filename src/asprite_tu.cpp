@@ -34,7 +34,7 @@
 #include "matching/0041B000_check_for_shadows.cpp"
 #include "matching/0041B010_RGE_Active_Animated_Sprite.cpp"
 #include "matching/0041B140_RGE_Active_Animated_Sprite.cpp"
-#include "scratch/0041B200_RGE_Active_Animated_Sprite.cpp"
+#include "matching/0041B200_RGE_Active_Animated_Sprite.cpp"
 #include "matching/0041B210_save.cpp"
 #include "matching/0041B290_update.cpp"
 #include "matching/0041B430_draw.cpp"
