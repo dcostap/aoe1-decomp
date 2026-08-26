@@ -2734,9 +2734,12 @@
       "owners": {
         "004B2EF0": "src/matching/004B2EF0_TRIBE_Screen_Sed_Menu.cpp",
         "004B3110": "src/matching/004B3110_TRIBE_Screen_Sed_Menu.cpp",
+        "004B31A0": "src/matching/004B31A0_handle_idle.cpp",
         "004B31D0": "src/matching/004B31D0_action.cpp"
       },
-      "symbols": {}
+      "symbols": {
+        "004B31A0": "?handle_idle@TRIBE_Screen_Sed_Menu@@MAEJXZ"
+      }
     },
     {
       "name": "colorlog",

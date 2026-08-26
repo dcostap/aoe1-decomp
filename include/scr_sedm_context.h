@@ -255,6 +255,10 @@ class RGE_Base_Game {
 public:
     char gap_00[0x4C];
     TDrawArea* draw_area;
+    // BINARY NOTE: 004B31A0 reads input_enabled at +0x1D8.
+    // This gap proves only these two local TU fields. It does not prove the
+    // complete shared RGE_Base_Game layout.
+    char gap_50[0x188];
     int input_enabled;
     int start_scenario_editor(char*, int);
     void enable_input();
