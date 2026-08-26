@@ -36,8 +36,8 @@ public:
     char pad_12e[2];
     int map_scr_x_offset;       //130
     int map_scr_y_offset;       //134
-    int last_view_x;            //138
-    int last_view_y;            //13c
+    float last_view_x;          //138
+    float last_view_y;          //13c
     unsigned char function_mode;//140
     unsigned char function_parm;//141
     unsigned char render_terrain_mode;//142
@@ -120,8 +120,8 @@ RGE_View::RGE_View()
     this->start_map_row = 0;
     this->map_scr_x_offset = 0;
     this->map_scr_y_offset = 0;
-    this->last_view_x = 0xC61C3C00;
-    this->last_view_y = 0xC61C3C00;
+    this->last_view_x = -9999.0f;
+    this->last_view_y = -9999.0f;
     this->function_mode = 0;
     this->render_terrain_mode = 0;
     this->save_area1 = 0;
