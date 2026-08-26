@@ -69,6 +69,8 @@
 #include <string.h>
 #include "..\..\include\game_globals.h"
 
+struct tagRECT;
+
 class TPanel {
 public:
     virtual ~TPanel();
@@ -96,10 +98,16 @@ public:
     virtual void mouse_right_dbl_click_action();  virtual void key_down_action();
     virtual void char_action();
     virtual long action(TPanel*, long, unsigned long, unsigned long);
-    virtual void vfB8();  virtual void vfBC();  virtual void vfC0();
-    virtual void vfC4();  virtual void vfC8();  virtual void vfCC();
-    virtual void vfD0();  virtual void vfD4();  virtual void vfD8();
-    virtual void vfDC();
+    virtual void get_true_render_rect(tagRECT*);
+    virtual int is_inside(long, long);
+    virtual void set_focus(int);
+    virtual void set_tab_order(TPanel*, TPanel*);
+    virtual void set_tab_order(TPanel**, short);
+    virtual unsigned char get_help_info(char**, long*, long, long);
+    virtual void stop_sound_system();
+    virtual int restart_sound_system();
+    virtual void take_snapshot();
+    virtual void handle_reactivate();
 
     char gap_04[0xD4];
     int error_code;                 // +0x0D8
