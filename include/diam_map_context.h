@@ -530,7 +530,7 @@ protected:
     virtual void draw_selected_area();
     virtual void draw_objects();
     virtual void draw_visible_object(RGE_Static_Object*, unsigned char, unsigned char);
-    virtual void draw_object(short, short, unsigned char, short, void*);
+    virtual void draw_object(short, short, unsigned char, short, RGE_Static_Object*);
     void draw_clipped_horz_line(short, short, short, unsigned char, RGE_Map_Image_Line*);
     virtual void draw_view_rect();
 

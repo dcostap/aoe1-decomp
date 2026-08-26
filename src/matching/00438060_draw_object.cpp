@@ -171,10 +171,13 @@ struct RGE_Map_Tile_Row {
 #endif
 
 #ifndef DIAM_MAP_CONTEXT_H
+class RGE_Static_Object;
 class RGE_Diamond_Map : public TPanel {
+protected:
+    virtual void draw_object(short param_1, short param_2, unsigned char param_3,
+                             short param_4, RGE_Static_Object* param_5);
+
 public:
-    void draw_object(short param_1, short param_2, unsigned char param_3,
-                     short param_4, void* param_5);
 
     void* world;
     void* player;
@@ -214,7 +217,7 @@ public:
 
 void RGE_Diamond_Map::draw_object(short param_1, short param_2,
                                   unsigned char param_3, short param_4,
-                                  void* param_5)
+                                  RGE_Static_Object* param_5)
 {
     short max_coord = param_2;
     int row_index = (int)this->map_wid + (int)param_2 - (int)param_1;

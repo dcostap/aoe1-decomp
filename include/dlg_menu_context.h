@@ -87,6 +87,8 @@ public:
 
     TribeMenuDialog(TScreenPanel* parent);
     virtual ~TribeMenuDialog();
+
+protected:
     virtual long action(TPanel* panel, long id, unsigned long param3,
                         unsigned long param4);
 };

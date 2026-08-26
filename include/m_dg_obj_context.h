@@ -14,6 +14,13 @@ class RGE_Master_Animated_Object;
 class RGE_Master_Combat_Object;
 class TDrawArea;
 class RGE_Color_Table;
+class RGE_Armor_Weapon_Info;
+class RGE_Action_Object;
+class RGE_Object_List;
+class RGE_Active_Sprite_List;
+class LOSTBL;
+class Path;
+struct XYZBYTEPoint;
 
 struct RGE_Damage_Sprite_Info {
     RGE_Sprite* sprite;
@@ -199,56 +206,171 @@ protected:
 
 typedef char m_dg_master_doppleganger_size[(sizeof(RGE_Master_Doppleganger_Object) == 0xBC) ? 1 : -1];
 
-// The factory dispatches to the six-argument virtual at RGE_Doppleganger_Object
-// slot 0x1ec. Declaration-only padding preserves the real period slot order.
+// RGE_Static_Object is the base of RGE_Doppleganger_Object in this module.
+// Keep its period virtual surface and measured fields for the derived ABI.
 class RGE_Static_Object {
 public:
     virtual ~RGE_Static_Object();
     virtual void recycle_in_to_game(RGE_Master_Static_Object*, RGE_Player*,
                                     float, float, float);
-#define M_DG_STATIC_VIRTUAL(n) virtual void m_dg_static_v##n();
-    M_DG_STATIC_VIRTUAL(02)  M_DG_STATIC_VIRTUAL(03)  M_DG_STATIC_VIRTUAL(04)
-    M_DG_STATIC_VIRTUAL(05)  M_DG_STATIC_VIRTUAL(06)  M_DG_STATIC_VIRTUAL(07)
-    M_DG_STATIC_VIRTUAL(08)  M_DG_STATIC_VIRTUAL(09)  M_DG_STATIC_VIRTUAL(10)
-    M_DG_STATIC_VIRTUAL(11)  M_DG_STATIC_VIRTUAL(12)  M_DG_STATIC_VIRTUAL(13)
-    M_DG_STATIC_VIRTUAL(14)  M_DG_STATIC_VIRTUAL(15)  M_DG_STATIC_VIRTUAL(16)
-    M_DG_STATIC_VIRTUAL(17)  M_DG_STATIC_VIRTUAL(18)  M_DG_STATIC_VIRTUAL(19)
-    M_DG_STATIC_VIRTUAL(20)  M_DG_STATIC_VIRTUAL(21)  M_DG_STATIC_VIRTUAL(22)
-    M_DG_STATIC_VIRTUAL(23)  M_DG_STATIC_VIRTUAL(24)  M_DG_STATIC_VIRTUAL(25)
-    M_DG_STATIC_VIRTUAL(26)  M_DG_STATIC_VIRTUAL(27)  M_DG_STATIC_VIRTUAL(28)
-    M_DG_STATIC_VIRTUAL(29)  M_DG_STATIC_VIRTUAL(30)  M_DG_STATIC_VIRTUAL(31)
-    M_DG_STATIC_VIRTUAL(32)  M_DG_STATIC_VIRTUAL(33)  M_DG_STATIC_VIRTUAL(34)
-    M_DG_STATIC_VIRTUAL(35)  M_DG_STATIC_VIRTUAL(36)  M_DG_STATIC_VIRTUAL(37)
-    M_DG_STATIC_VIRTUAL(38)  M_DG_STATIC_VIRTUAL(39)  M_DG_STATIC_VIRTUAL(40)
-    M_DG_STATIC_VIRTUAL(41)  M_DG_STATIC_VIRTUAL(42)  M_DG_STATIC_VIRTUAL(43)
-    M_DG_STATIC_VIRTUAL(44)  M_DG_STATIC_VIRTUAL(45)  M_DG_STATIC_VIRTUAL(46)
-    M_DG_STATIC_VIRTUAL(47)  M_DG_STATIC_VIRTUAL(48)  M_DG_STATIC_VIRTUAL(49)
-    M_DG_STATIC_VIRTUAL(50)  M_DG_STATIC_VIRTUAL(51)  M_DG_STATIC_VIRTUAL(52)
-    M_DG_STATIC_VIRTUAL(53)  M_DG_STATIC_VIRTUAL(54)  M_DG_STATIC_VIRTUAL(55)
-    M_DG_STATIC_VIRTUAL(56)  M_DG_STATIC_VIRTUAL(57)  M_DG_STATIC_VIRTUAL(58)
-    M_DG_STATIC_VIRTUAL(59)  M_DG_STATIC_VIRTUAL(60)  M_DG_STATIC_VIRTUAL(61)
-    M_DG_STATIC_VIRTUAL(62)  M_DG_STATIC_VIRTUAL(63)  M_DG_STATIC_VIRTUAL(64)
-    M_DG_STATIC_VIRTUAL(65)  M_DG_STATIC_VIRTUAL(66)  M_DG_STATIC_VIRTUAL(67)
-    M_DG_STATIC_VIRTUAL(68)  M_DG_STATIC_VIRTUAL(69)  M_DG_STATIC_VIRTUAL(70)
-    M_DG_STATIC_VIRTUAL(71)  M_DG_STATIC_VIRTUAL(72)  M_DG_STATIC_VIRTUAL(73)
-    M_DG_STATIC_VIRTUAL(74)  M_DG_STATIC_VIRTUAL(75)  M_DG_STATIC_VIRTUAL(76)
-    M_DG_STATIC_VIRTUAL(77)  M_DG_STATIC_VIRTUAL(78)  M_DG_STATIC_VIRTUAL(79)
-    M_DG_STATIC_VIRTUAL(80)  M_DG_STATIC_VIRTUAL(81)  M_DG_STATIC_VIRTUAL(82)
-    M_DG_STATIC_VIRTUAL(83)  M_DG_STATIC_VIRTUAL(84)  M_DG_STATIC_VIRTUAL(85)
-    M_DG_STATIC_VIRTUAL(86)  M_DG_STATIC_VIRTUAL(87)  M_DG_STATIC_VIRTUAL(88)
-    M_DG_STATIC_VIRTUAL(89)  M_DG_STATIC_VIRTUAL(90)  M_DG_STATIC_VIRTUAL(91)
-    M_DG_STATIC_VIRTUAL(92)  M_DG_STATIC_VIRTUAL(93)  M_DG_STATIC_VIRTUAL(94)
-    M_DG_STATIC_VIRTUAL(95)  M_DG_STATIC_VIRTUAL(96)  M_DG_STATIC_VIRTUAL(97)
-    M_DG_STATIC_VIRTUAL(98)  M_DG_STATIC_VIRTUAL(99)  M_DG_STATIC_VIRTUAL(100)
-    M_DG_STATIC_VIRTUAL(101) M_DG_STATIC_VIRTUAL(102) M_DG_STATIC_VIRTUAL(103)
-    M_DG_STATIC_VIRTUAL(104) M_DG_STATIC_VIRTUAL(105) M_DG_STATIC_VIRTUAL(106)
-    M_DG_STATIC_VIRTUAL(107) M_DG_STATIC_VIRTUAL(108) M_DG_STATIC_VIRTUAL(109)
-    M_DG_STATIC_VIRTUAL(110) M_DG_STATIC_VIRTUAL(111) M_DG_STATIC_VIRTUAL(112)
-    M_DG_STATIC_VIRTUAL(113) M_DG_STATIC_VIRTUAL(114) M_DG_STATIC_VIRTUAL(115)
-    M_DG_STATIC_VIRTUAL(116) M_DG_STATIC_VIRTUAL(117) M_DG_STATIC_VIRTUAL(118)
-    M_DG_STATIC_VIRTUAL(119) M_DG_STATIC_VIRTUAL(120) M_DG_STATIC_VIRTUAL(121)
-#undef M_DG_STATIC_VIRTUAL
-    char gap_04[0x84];
+    virtual void recycle_out_of_game();
+    virtual void draw(TDrawArea*, short, short, RGE_Color_Table*);
+    virtual void shadow_draw(TDrawArea*, short, short, unsigned char);
+    virtual void normal_draw(TDrawArea*, short, short);
+    virtual void draw_front_frame(TDrawArea*, short, short);
+    virtual void draw_back_frame(TDrawArea*, short, short);
+    virtual void draw_frame(TDrawArea*, short, short);
+    virtual unsigned char update();
+    virtual void check_damage_sprites();
+    virtual void rehook();
+    virtual void save(int);
+    virtual float teleport(float, float, float);
+    virtual void new_sprite(RGE_Sprite*);
+    virtual void add_overlay_sprite(RGE_Sprite*, unsigned char);
+    virtual void remove_overlay_sprite(RGE_Sprite*);
+    virtual void change_ownership(RGE_Player*);
+    virtual void modify(float, unsigned char);
+    virtual void modify_delta(float, unsigned char);
+    virtual void modify_percent(float, unsigned char);
+    virtual void transform(RGE_Master_Static_Object*);
+    virtual void copy_obj(RGE_Master_Static_Object*);
+    virtual void set_object_state(unsigned char);
+    virtual void remove_visible_resource();
+    virtual void create_doppleganger_when_dying();
+    virtual void destroy_obj();
+    virtual void die_die_die();
+    virtual void damage(int, RGE_Armor_Weapon_Info*, float, RGE_Player*,
+                        RGE_Static_Object*);
+    virtual float calculateDamage(int, RGE_Armor_Weapon_Info*, float,
+                                  RGE_Player*, RGE_Static_Object*);
+    virtual void rotate(long);
+    virtual unsigned char can_attack();
+    virtual void set_attribute(short, float);
+    virtual void set_attribute_amount(float, unsigned char, unsigned char);
+    virtual int heal(int, int);
+    virtual unsigned char heal(float);
+    virtual int canRepair();
+    virtual void notify_of_relation(long, unsigned char);
+    virtual void do_command(RGE_Static_Object*, float, float, float);
+    virtual void move_to(RGE_Static_Object*, float, float, float);
+    virtual void work(RGE_Static_Object*, float, float, float);
+    virtual void stop();
+    virtual void set_attack(RGE_Static_Object*);
+    virtual void play_command_sound();
+    virtual void play_move_sound();
+    virtual void new_angle(float);
+    virtual RGE_Static_Object* spawn_death_obj();
+    virtual RGE_Master_Static_Object* get_command_master(RGE_Static_Object*,
+                                                          float, float, float);
+    virtual void set_being_worked_on(RGE_Action_Object*, short, unsigned char);
+    virtual void release_being_worked_on(RGE_Static_Object*);
+    virtual unsigned char is_moving();
+    virtual RGE_Static_Object* get_target_obj();
+    virtual void enter_obj(RGE_Static_Object*);
+    virtual void exit_obj();
+    virtual int explore_terrain(RGE_Player*, unsigned char, int);
+    virtual void unexplore_terrain(RGE_Player*, unsigned char, int);
+    virtual LOSTBL* get_los_table();
+    virtual int inAttackRange(RGE_Static_Object*);
+    virtual unsigned char underAttack();
+    virtual void setUnderAttack(unsigned char);
+    virtual float calc_attack_modifier(RGE_Static_Object*);
+    virtual float getSpeed();
+    virtual float getAngle();
+    virtual float maximumSpeed();
+    virtual float rateOfFire();
+    virtual float damageCapability(RGE_Static_Object*);
+    virtual float damageCapability();
+    virtual float weaponRange();
+    virtual float minimumWeaponRange();
+    virtual int passableTile(float, float, int);
+    virtual unsigned char facetToNextWaypoint();
+    virtual int currentTargetID();
+    virtual float currentTargetX();
+    virtual float currentTargetY();
+    virtual float currentTargetZ();
+    virtual void setWaitingToMove(unsigned char);
+    virtual unsigned char waitingToMove();
+    virtual unsigned char actionState();
+    virtual unsigned char keepGatheringWhenObjectIsOut(int);
+    virtual unsigned char produceWhenKilledBy(int);
+    virtual unsigned char useSameZoneDropsite();
+    virtual void logDebug(const char*, ...);
+    virtual void notify(int, int, int, long, long, long);
+    virtual int attack(float, float, float, int);
+    virtual int attack(int, int);
+    virtual int moveTo(float, float, float, float, int);
+    virtual int moveTo(int, float, int);
+    virtual int moveTo(int, int);
+    virtual int moveAwayFrom(int, int);
+    virtual int hunt(int, int);
+    virtual int gather(int, int);
+    virtual int convert(int, int);
+    virtual int repair(int, int);
+    virtual int build(int, int);
+    virtual int trade(int, int);
+    virtual int explore(int, int, int);
+    virtual int enter(int, int);
+    virtual int unload(int, float, float, float);
+    virtual int transport(float, float, float, int);
+    virtual int stopAction();
+    virtual int pause();
+    virtual int canPath(int, float, float*, int, int, int);
+    virtual int canPath(void*, float, int, float*, int, int, int);
+    virtual int canBidirectionPath(int, int, float, float*, int, int, int);
+    virtual int canPathWithObstructions(int, float, float*, int, int, int, void*);
+    virtual int canPathWithAdditionalPassability(void*, float, int, float*, int,
+                                                 int, int, int, int);
+    virtual int findFirstTerrainAlongExceptionPath(int, float*, float*);
+    virtual int canLinePath(int, int, int, int, float, int);
+    virtual int canLinePath(void*, void*, float, void*, int);
+    virtual int firstTileAlongLine(void*, void*, void*, int, int, int);
+    virtual XYZBYTEPoint* userDefinedWaypoint(int);
+    virtual int addUserDefinedWaypoint(XYZBYTEPoint*, int);
+    virtual void removeAllUserDefinedWaypoints(int);
+    virtual void removeUserDefinedWaypoint(int);
+    virtual int numberUserDefinedWaypoints();
+    virtual Path* findAvoidancePath(void*, float, int);
+    virtual long get_action_checksum();
+    virtual long get_waypoint_checksum();
+    virtual int setup(int, RGE_Game_World*);
+    virtual int setup(RGE_Master_Static_Object*, RGE_Player*, float, float, float);
+    virtual RGE_Object_List* create_object_list();
+    virtual RGE_Active_Sprite_List* create_sprite_list();
+
+    long id;
+    RGE_Master_Static_Object* master_obj;
+    union {
+        RGE_Player* owner;
+        void* world;
+    };
+    void* sprite;
+    char gap_14[4];
+    RGE_Active_Sprite_List* sprite_list;
+    char gap_1C[0x19];
+    unsigned char facet;
+    char gap_36[2];
+    union {
+        float world_x;
+        float x;
+        float field_38;
+    };
+    union {
+        float world_y;
+        float y;
+        float field_3C;
+        float field_3c;
+    };
+    float world_z;
+    char gap_44[4];
+    unsigned char object_state;
+    char gap_49[5];
+    union {
+        unsigned char type;
+        unsigned char field_4E;
+        unsigned char field_4e;
+    };
+    char gap_4F[0x39];
 };
 
 typedef char m_dg_static_object_size[(sizeof(RGE_Static_Object) == 0x88) ? 1 : -1];

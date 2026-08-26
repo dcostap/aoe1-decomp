@@ -568,7 +568,7 @@
         "00438720": "?handle_scroll_view@RGE_Diamond_Map@@QAEXJJ@Z",
         "004387C0": "?end_scroll_view@RGE_Diamond_Map@@QAEXXZ",
         "004387D0": "?is_inside@RGE_Diamond_Map@@UAEHJJ@Z",
-        "00438060": "?draw_object@RGE_Diamond_Map@@MAEXFFEFPAX@Z"
+        "00438060": "?draw_object@RGE_Diamond_Map@@MAEXFFEFPAVRGE_Static_Object@@@Z"
       }
     },
     {
@@ -6409,7 +6409,7 @@
       },
       "symbols": {
         "0043EEE0": "??1TListDialog@@UAE@XZ",
-        "0043EF80": "?setup@TListDialog@@UAEJPAVTPanel@@PADJJJJJJJ1JJJJPAPADFFJJJJJ@Z",
+        "0043EF80": "?setup@TListDialog@@QAEJPAVTPanel@@PADJJJJJJJ1JJJJPAPADFFJJJJJ@Z",
         "0043F130": "?setup@TListDialog@@QAEJPAVTPanel@@PADJJJJJJJHJJJJPAPADFFJJJJJ@Z",
         "0043F210": "?key_down_action@TListDialog@@UAEJJFHHH@Z",
         "0043F220": "?action@TListDialog@@UAEJPAVTPanel@@JKK@Z"

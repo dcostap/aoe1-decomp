@@ -37,6 +37,7 @@ public:
 #endif
 
 #ifndef DIAM_MAP_CONTEXT_H
+class RGE_Static_Object;
 class RGE_Game_World {
 public:
     char gap_00[0x7C];
@@ -130,7 +131,7 @@ public:
     virtual void draw_selected_area();
     virtual void draw_objects();
     virtual void draw_visible_object(void*, unsigned char, unsigned char);
-    virtual void draw_object(short, short, unsigned char, short, void*);
+    virtual void draw_object(short, short, unsigned char, short, RGE_Static_Object*);
     virtual void draw_view_rect();
 
     RGE_Game_World* world;

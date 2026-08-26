@@ -187,9 +187,11 @@ class TListDialog : public TDialogPanel {
 public:
     TListDialog(char*);
     virtual ~TListDialog();
-    virtual long setup(TPanel*, char*, long, long, long, long, long, long, long,
-                       char*, long, long, long, long, char**, short, short,
-                       long, long, long, long, long);
+    // BINARY NOTE: The main char* setup overload is nonvirtual in the shipped
+    // class. Its PDB symbol uses QAE, not UAE.
+    long setup(TPanel*, char*, long, long, long, long, long, long, long,
+               char*, long, long, long, long, char**, short, short,
+               long, long, long, long, long);
     long setup(TPanel*, char*, long, long, long, long, long, long, long,
                int, long, long, long, long, char**, short, short,
                long, long, long, long, long);
