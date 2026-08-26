@@ -356,6 +356,13 @@ struct RGE_Tile_List_Node {
 };
 
 class RGE_Tile_List {
+private:
+    int list_size;
+    int num_active;
+    int new_count;
+    int collapse_list;
+    RGE_Tile_List_Node* list;
+
 public:
     void get_list_info(RGE_Tile_List_Node** list, int* count);
     int get_new_count();
@@ -546,14 +553,17 @@ public:
         RGE_Visible_Map* visMap;
     };
     RGE_Game_World* world;
-    RGE_Tile_List tileList;
-    struct MasterObjectInfo {
-        int terrain;
-    };
-    char gap_40[0x0A];
+    void* doppleganger_creator;
+    char* name;
+    unsigned char type;
+    unsigned char _pad_49;
     short id;
-    int civ_id;
+    short attribute_num;
+    short _pad_4E;
     float* attributes;
+    unsigned char culture;
+    char _pad_55[3];
+    RGE_Tile_List tileList;
     int relation(int otherPlayer);
     int computerPlayer();
     int isAlly(int otherPlayer);

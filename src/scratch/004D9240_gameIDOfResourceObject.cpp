@@ -156,9 +156,9 @@ int TribeInformationAIModule::gameIDOfResourceObject(int resType, int gathererId
             cls3 = obj->master_obj->object_group;
             if ((cls3 == 9 || cls3 == 10) && obj->state > 2 && obj->amount > DAT_00575568) score += 25;
             if (this->withinXTilesOfEnemyTowncenter(obj, 25) == 1) goto next;
-            if (this->withinXTilesOfAttackOnPlayer(obj, 15, this->md->player->civ_id) == 1) score += 500;
+            if (this->withinXTilesOfAttackOnPlayer(obj, 15, this->md->player->culture) == 1) score += 500;
             if (obj->master_obj->id == 0x32) {
-                if (obj->player->civ_id != this->md->player->civ_id) goto next;
+                if (obj->player->culture != this->md->player->culture) goto next;
                 if (obj->state != 2) goto next;
                 if (this->md->tacticalAI.numberGatherersWithTarget(obj->id) > 0) goto next;
                 objectId = obj->id;
