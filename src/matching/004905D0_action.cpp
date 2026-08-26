@@ -20,7 +20,6 @@
 
 class TPanel {
 public:
-    virtual void v00();
     char* panelName();
     void set_curr_child(TPanel* child);
 };
@@ -29,15 +28,6 @@ class TEditPanel : public TPanel { public: char* get_text(); void set_text(char*
 class TDropDownPanel : public TPanel { public: char* get_text(); };
 class TEasy_Panel {
 public:
-#define EPAD(n) virtual void e##n();
-    EPAD(0) EPAD(1) EPAD(2) EPAD(3) EPAD(4) EPAD(5) EPAD(6) EPAD(7)
-    EPAD(8) EPAD(9) EPAD(10) EPAD(11) EPAD(12) EPAD(13) EPAD(14) EPAD(15)
-    EPAD(16) EPAD(17) EPAD(18) EPAD(19) EPAD(20) EPAD(21) EPAD(22) EPAD(23)
-    EPAD(24) EPAD(25) EPAD(26) EPAD(27) EPAD(28) EPAD(29) EPAD(30) EPAD(31)
-    EPAD(32) EPAD(33) EPAD(34) EPAD(35) EPAD(36) EPAD(37) EPAD(38) EPAD(39)
-    EPAD(40) EPAD(41) EPAD(42) EPAD(43) EPAD(44)
-#undef EPAD
-    virtual long vB4(TPanel*, long, unsigned long, unsigned long);
     long action(TPanel*, long, unsigned long, unsigned long);
     int get_string(int, char*, int);
     void popupYesNoCancelDialog(char*, char*, int, int);
