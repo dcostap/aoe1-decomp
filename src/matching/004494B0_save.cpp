@@ -26,8 +26,14 @@
 //   block; initializing inner before its guard recovered 99/99 instructions
 // - reversing address terms, integer-address casts, declaration order, and a
 //   named-name anchor did not change the final 2-byte SIB drift; all rolled back
-// - typed effect[index] record ownership removed both residual SIB bytes and
+// - typed current-record ownership removed both residual SIB bytes and
 //   produced an exact match
+// - Production TU validation exposed two SIB bytes from the former split
+//   `effect`/`record` form.  Assigning `record` from `this->effects + index`
+//   while keeping the base-name serialization bug restores grouped exactness.
+// - Exact-finish walkbacks of the name expression, base calculation, and
+//   record alias regressed grouped output by 201, 234, and 242 bytes.  Removing
+//   the redundant `effect` alias kept the exact grouped and standalone result.
 // - main review replaced the inner byte cursor with natural typed command
 //   indexing; the function remains byte exact
 // FLAGS: none
@@ -42,7 +48,6 @@ void __cdecl rge_write(int fd, void* buf, int size);
 
 void RGE_Effects::save(int fd) {
     long* num = &this->effect_num;
-    RGE_Effect* effect;
     RGE_Effect* record;
     int handle = fd;
     int index;
@@ -52,9 +57,8 @@ void RGE_Effects::save(int fd) {
     if (*num > 0) {
         fd = 0;
         do {
-            effect = this->effects;
-            rge_write(handle, effect->name, 0x1F);
-            record = &effect[index];
+            record = this->effects + index;
+            rge_write(handle, this->effects->name, 0x1F);
             rge_write(handle, &record->effect_list_num, 2);
             int inner = 0;
             if (record->effect_list_num > 0) {

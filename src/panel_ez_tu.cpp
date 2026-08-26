@@ -77,5 +77,5 @@
 #include "matching/0046A360_setup_popup_help.cpp"
 #include "matching/0046A3C0_clear_popup_help.cpp"
 #include "matching/0046A410_command_do_popup_help.cpp"
-#include "scratch/0046A4E0_action.cpp"
+#include "matching/0046A4E0_action.cpp"
 #include "matching/0046A670_set_system_colors.cpp"

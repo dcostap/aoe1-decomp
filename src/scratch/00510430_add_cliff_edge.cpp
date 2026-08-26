@@ -52,6 +52,8 @@
 // Tested and rolled back in this pass: shared-return goto, widened found,
 // function-scope found, split found initialization, receiver/player aliases,
 // candidate pointers, explicit initial guard inversion, and chained assignment.
+// Grouped TU audit: the canonical RGE_Player surface names the +0x6C list
+// diam_tile_list.  Keep that owner name in this local declaration as well.
 
 #ifndef TMAP_GROUP_CONTEXT
 struct TRIBE_Cliff_Info {
@@ -76,7 +78,7 @@ class RGE_Player {
 public:
     virtual ~RGE_Player();
     char gap_04[0x68];
-    RGE_Tile_List tile_list;
+    RGE_Tile_List diam_tile_list;
 };
 
 class RGE_Game_World {
@@ -129,7 +131,7 @@ long TRIBE_Map::add_cliff_edge(long x, long y, long facing, long existing, long 
             long x_offset = -1;
             do {
                 RGE_Game_World* world = this->game_world;
-                world->players[world->curr_player]->tile_list.add_node(
+                world->players[world->curr_player]->diam_tile_list.add_node(
                     y_offset + (long)cliff->y,
                     x_offset + (long)cliff->z);
                 ++x_offset;

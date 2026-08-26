@@ -27,6 +27,9 @@
 //   - cliff->z loaded first (fld [ebx+3Ch]) then cliff->y (fld [ebx+38h]):
 //     add_node(param_2 + (long)y, inner + (long)z) right-to-left evaluation.
 //   - Tail is delete cliff (push 1; call [vtable+0] = scalar deleting dtor).
+// Grouped TU audit: the canonical RGE_Player surface names the +0x6C list
+// diam_tile_list.  Using that owner keeps standalone bytes exact and restores
+// the grouped 228-byte match; tile_list in that surface is at +0x58.
 
 #ifndef TMAP_GROUP_CONTEXT
 struct TRIBE_Cliff_Info {
@@ -50,7 +53,7 @@ public:
 class RGE_Player {
 public:
     char gap_00[0x6C];
-    RGE_Tile_List tile_list;        // +0x6C
+    RGE_Tile_List diam_tile_list;   // +0x6C
 };
 
 class RGE_Game_World {
@@ -92,7 +95,7 @@ void TRIBE_Map::delete_cliff(long param_1, long param_2)
             int inner = -1;
             do {
                 RGE_Game_World* world = this->game_world;
-                world->players[world->curr_player]->tile_list.add_node(
+                world->players[world->curr_player]->diam_tile_list.add_node(
                     param_2 + (long)cliff->y, inner + (long)cliff->z);
                 inner++;
             } while (inner < 2);

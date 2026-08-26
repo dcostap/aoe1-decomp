@@ -9,7 +9,7 @@
 
 #include "scratch/00493D60_TRIBE_Screen_Game.cpp"
 #include "matching/004954A0_TRIBE_Screen_Game.cpp"
-#include "scratch/004959A0_set_redraw.cpp"
+#include "matching/004959A0_set_redraw.cpp"
 #include "matching/004959B0_set_overlapped_redraw.cpp"
 #include "matching/00495A90_set_map_buttons_redraw.cpp"
 #include "accepted_drift/00495AE0_handle_size.cpp"

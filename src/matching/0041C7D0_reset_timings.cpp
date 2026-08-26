@@ -16,7 +16,5 @@ void RGE_Base_Game::reset_timings() {
         this->timings[i].last_single_time = 0;
         this->timings[i].max_time = 0;
         this->timings[i].last_max_time = 0;
-        this->timings[i].include_in_total = 0;
-        this->timings[i].is_summary = 0;
     }
 }

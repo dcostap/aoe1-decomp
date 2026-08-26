@@ -63,6 +63,8 @@
 // const map receiver were each neutral. They were rolled back. The clean
 // typed source remains 360 rebuilt bytes versus 339, with all eight calls
 // aligned; the saved-this and counter-color blocker remains unresolved.
+// Grouped TU audit: the canonical RGE_Player surface names the +0x6C list
+// diam_tile_list.  Keep that owner name in this local declaration as well.
 // sa-f72eb932-r1 revisit: 27 meaningful probes tested natural base/player
 // ownership, pointer and integer receiver aliases, declaration scopes and
 // orders, aggregate state layouts, counter widths, and tail receiver forms.
@@ -106,7 +108,7 @@ public:
 class RGE_Player {
 public:
     char gap_00[0x6C];
-    RGE_Tile_List tile_list;
+    RGE_Tile_List diam_tile_list;
 };
 
 class RGE_Game_World {
@@ -169,7 +171,7 @@ void TRIBE_Map::remove_cliff_edge(long x, long y, long dir)
             int inner = -1;
             do {
                 this->game_world->players[this->game_world->curr_player]
-                    ->tile_list.add_node(outer + (long)cliff->y,
+                    ->diam_tile_list.add_node(outer + (long)cliff->y,
                                          inner + (long)cliff->z);
                 ++inner;
             } while (inner < 2);
