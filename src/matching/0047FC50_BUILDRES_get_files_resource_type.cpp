@@ -35,7 +35,7 @@ struct res_file_type_info {
 
 extern res_file_type_info res_extension_table[];
 
-int __cdecl BUILDRES_get_files_resource_type(const char* name) {
+unsigned long __cdecl BUILDRES_get_files_resource_type(char* name) {
     int len = strlen(name);
     int dotPos;
     char extBuf[8];
@@ -67,7 +67,7 @@ int __cdecl BUILDRES_get_files_resource_type(const char* name) {
         unsigned int next = res_extension_table[0].type;
         while (next != 0) {
             if (strncmp(base->extension, extBuf, extLen + 1) == 0) {
-                return (int)base->type;
+                return base->type;
             }
             next = (base + 1)->type;
             ++base;

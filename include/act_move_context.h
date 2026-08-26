@@ -365,8 +365,14 @@ public:
     RGE_Action_Move_To(RGE_Action_Object*, RGE_Static_Object*, float, RGE_Sprite*);
     virtual void save(int);
     virtual void first_in_stack(unsigned char);
+
+protected:
     virtual void set_state(unsigned char);
+
+public:
     virtual unsigned char update();
+
+protected:
     unsigned char is_in_range();
 };
 

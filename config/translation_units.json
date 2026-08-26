@@ -270,8 +270,8 @@
         "00405620": "??0RGE_Action_Move_To@@QAE@PAVRGE_Action_Object@@PAVRGE_Static_Object@@MPAVRGE_Sprite@@@Z",
         "004056E0": "??1RGE_Action_Move_To@@UAE@XZ",
         "00405750": "?save@RGE_Action_Move_To@@UAEXH@Z",
-        "004057E0": "?set_state@RGE_Action_Move_To@@UAEXE@Z",
-        "00405BF0": "?is_in_range@RGE_Action_Move_To@@QAEEXZ"
+        "004057E0": "?set_state@RGE_Action_Move_To@@MAEXE@Z",
+        "00405BF0": "?is_in_range@RGE_Action_Move_To@@IAEEXZ"
       }
     },
     {
@@ -6288,12 +6288,12 @@
         "0047FC50": "src/matching/0047FC50_BUILDRES_get_files_resource_type.cpp"
       },
       "symbols": {
-        "0047F180": "?RESFILE_close_new_resource_file@@YAXPBD@Z",
+        "0047F180": "?RESFILE_close_new_resource_file@@YAXPAD@Z",
         "0047F230": "?RESFILE_locate_resource@@YAHKKAAH0AAPAE0@Z",
         "0047F480": "?RESFILE_Extract_to_File@@YAHKKPADAAPAU_iobuf@@@Z",
         "0047F580": "?RESFILE_Set_Missing_Flag@@YAXH@Z",
         "0047F590": "?RESFILE_Decommit_Mapped_Memory@@YAHPAEH@Z",
-        "0047FC50": "?BUILDRES_get_files_resource_type@@YAHPBD@Z"
+        "0047FC50": "?BUILDRES_get_files_resource_type@@YAKPAD@Z"
       }
     },
     {

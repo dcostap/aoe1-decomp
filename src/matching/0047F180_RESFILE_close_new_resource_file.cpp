@@ -21,7 +21,7 @@ extern ResFileHdr* g_resFileList;
 extern "C" int __cdecl close(int fd);
 extern "C" __declspec(dllimport) int __stdcall UnmapViewOfFile(void* address);
 
-void __cdecl RESFILE_close_new_resource_file(const char* name) {
+void __cdecl RESFILE_close_new_resource_file(char* name) {
     ResFileHdr* cur = g_resFileList;
     ResFileHdr* prev = 0;
     

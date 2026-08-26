@@ -48,7 +48,7 @@ struct RGE_Tile {
 
 class RGE_Map {
 public:
-    void* vtable_ptr;           // +0x00
+    virtual ~RGE_Map();
     RGE_Tile* map;              // +0x04
     long map_width;             // +0x08
     long map_height;            // +0x0C
