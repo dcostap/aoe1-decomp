@@ -10,10 +10,8 @@
 #include "../../include/aitchitm_context.h"
 
 // 00412C20 - 168 bytes
-TechnologyItem::TechnologyItem(int id, char* name, ResourceItem cost) {
-    this->next = 0;
-    this->prev = 0;
-    this->idValue = id;
+TechnologyItem::TechnologyItem(int id, char* name, ResourceItem cost)
+    : next(0), prev(0), idValue(id) {
     this->resourceCostValue = new ResourceItem(cost);
     strcpy(this->nameValue, name);
 }

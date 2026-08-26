@@ -52,7 +52,7 @@
 #include "matching/00432780_RGE_Communications_Speed.cpp"
 #include "matching/004327C0_SetPlayerTurnSpeed.cpp"
 #include "matching/00432800_SetActualLatency.cpp"
-#include "scratch/00432840_SetFutureSpeedChange.cpp"
+#include "matching/00432840_SetFutureSpeedChange.cpp"
 #include "matching/00432870_EnableSpeedControl.cpp"
 #include "matching/00432880_GetBufferGranularity.cpp"
 #include "matching/00432890_GetAdjustmentCount.cpp"

@@ -13,6 +13,7 @@ public:
 class RGE_Action_Object {
 public:
     char gap_00[0x48];
+    unsigned char object_state;
 };
 
 class RGE_Action_List {
@@ -26,7 +27,7 @@ public:
 
 class RGE_Action {
 public:
-    virtual void destroy(unsigned char param_1);
+    virtual ~RGE_Action();
     virtual int setup(RGE_Action_Object* param_1);
     virtual int setup(int param_1, RGE_Action_Object* param_2);
     virtual RGE_Action_List* create_action_list(RGE_Action_Object* param_1);

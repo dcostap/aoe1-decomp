@@ -6,7 +6,7 @@ public:
 
 class TDropDownPanel {
 public:
-    virtual void redraw(int value);
+    virtual void set_redraw(int value);
 
     char gap_04[0xF0];
     TTextPanel* val_panel;
@@ -23,6 +23,6 @@ void TDropDownPanel::set_draw_val_rect(int value) {
     this->draw_val_rect = value;
     if (this->val_panel != 0) {
         this->val_panel->set_outline(value, this->outline_color);
-        this->redraw(1);
+        this->set_redraw(1);
     }
 }

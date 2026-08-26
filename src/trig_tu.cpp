@@ -5,7 +5,7 @@
 #include "trig_tu_context.h"
 
 #include "matching/0052A730_TRIGONOMETRY.cpp"
-#include "scratch/0052A830_RestrictAngle.cpp"
+#include "matching/0052A830_RestrictAngle.cpp"
 #include "matching/0052A850_RestrictAngle360.cpp"
 #include "matching/0052A870_sine.cpp"
 #include "scratch/0052A890_cosine.cpp"

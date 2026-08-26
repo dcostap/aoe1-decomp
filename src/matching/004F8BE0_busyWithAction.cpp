@@ -8,6 +8,8 @@ class RGE_Static_Object {
 public:
     UnitAIModule* unitAI();
 };
+
+class TribeTacAIPlayer {
 public:
     char gap_00[0x3C];
     RGE_Game_World* world;

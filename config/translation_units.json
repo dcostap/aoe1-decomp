@@ -1338,6 +1338,7 @@
         "004EB370": "src/matching/004EB370_desiredNumberUnits.cpp",
         "004EB380": "src/matching/004EB380_setDesiredNumberUnits.cpp",
         "004EB390": "src/matching/004EB390_commander.cpp",
+        "004EB3A0": "src/matching/004EB3A0_setSpecificCommander.cpp",
         "004EB430": "src/matching/004EB430_currentHitPoints.cpp",
         "004EB470": "src/matching/004EB470_originalHitPoints.cpp",
         "004EB480": "src/matching/004EB480_setOriginalHitPoints.cpp",
@@ -1571,6 +1572,7 @@
       "source": "src/stat_obj_tu.cpp",
       "flags": "config/flags/default.rsp",
       "owners": {
+        "004C21A0": "src/matching/004C21A0_draw_back_frame.cpp",
         "004C2220": "src/matching/004C2220_capture_frame.cpp",
         "004C23F0": "src/matching/004C23F0_capture_frame_3d_cube.cpp",
         "004C4E00": "src/matching/004C4E00_modify_delta.cpp",
@@ -2810,16 +2812,19 @@
       "owners": {
         "00473F50": "src/matching/00473F50_TDropDownPanel.cpp",
         "00474340": "src/matching/00474340_draw.cpp",
+        "00474350": "src/matching/00474350_handle_mouse_down.cpp",
         "00474420": "src/matching/00474420_handle_mouse_up.cpp",
         "00474450": "src/matching/00474450_handle_key_down.cpp",
         "00474550": "src/matching/00474550_set_rect.cpp",
         "004745E0": "src/matching/004745E0_set_val_text_color.cpp",
         "00474600": "src/matching/00474600_set_draw_style.cpp",
+        "00474630": "src/matching/00474630_set_draw_val_rect.cpp",
         "00474820": "src/matching/00474820_set_buttons.cpp",
         "00475110": "src/matching/00475110_numberLines.cpp",
         "00475130": "src/matching/00475130_currentLineNumber.cpp",
         "00475150": "src/matching/00475150_setCurrentLineNumber.cpp",
         "004751C0": "src/matching/004751C0_currentLine.cpp",
+        "004751E0": "src/matching/004751E0_set_tab_order.cpp",
         "00475210": "src/matching/00475210_set_sorted.cpp",
         "00475230": "src/matching/00475230_get_sorted.cpp",
         "004752A0": "src/matching/004752A0_append_line.cpp",
@@ -2905,6 +2910,9 @@
       "source": "src/aitchitm_tu.cpp",
       "flags": "config/flags/default_gx.rsp",
       "owners": {
+        "00412BB0": "src/matching/00412BB0_TechnologyItem.cpp",
+        "00412C20": "src/matching/00412C20_TechnologyItem.cpp",
+        "00412CD0": "src/matching/00412CD0_TechnologyItem.cpp",
         "00412D70": "src/matching/00412D70_TechnologyItem.cpp",
         "00412E10": "src/matching/00412E10_id.cpp",
         "00412E20": "src/matching/00412E20_name.cpp",
@@ -3337,6 +3345,9 @@
       "flags": "config/flags/default.rsp",
       "owners": {
         "00407D80": "src/matching/00407D80_BaseItem.cpp",
+        "00407E00": "src/matching/00407E00_BaseItem.cpp",
+        "00407E70": "src/matching/00407E70_BaseItem.cpp",
+        "00407EF0": "src/matching/00407EF0_BaseItem.cpp",
         "00407F70": "src/matching/00407F70_BaseItem.cpp",
         "00408020": "src/matching/00408020_typeID.cpp",
         "00408030": "src/matching/00408030_gameID.cpp",
@@ -4011,7 +4022,8 @@
         "004B9070": "src/matching/004B9070_shape_minmax.cpp",
         "004B97F0": "src/matching/004B97F0_shape_draw_unclipped.cpp",
         "004BA900": "src/matching/004BA900_shape_mirror_unclipped.cpp",
-        "004BA9E0": "src/matching/004BA9E0_shape_mirror_color_trans_unclipped.cpp"
+        "004BA9E0": "src/matching/004BA9E0_shape_mirror_color_trans_unclipped.cpp",
+        "004BAAF0": "src/matching/004BAAF0_shape_mirror_shadow_unclipped.cpp"
       },
       "symbols": {
         "004B8B30": "??0TShape@@QAE@XZ",
@@ -4105,6 +4117,7 @@
       "flags": "config/flags/default.rsp",
       "owners": {
         "0052A730": "src/matching/0052A730_TRIGONOMETRY.cpp",
+        "0052A830": "src/matching/0052A830_RestrictAngle.cpp",
         "0052A850": "src/matching/0052A850_RestrictAngle360.cpp",
         "0052A870": "src/matching/0052A870_sine.cpp"
       },
@@ -4393,6 +4406,7 @@
         "00408220": "src/matching/00408220_BuildItem.cpp",
         "004082F0": "src/matching/004082F0_BuildItem.cpp",
         "004083B0": "src/matching/004083B0_BuildItem.cpp",
+        "00408470": "src/matching/00408470_BuildItem.cpp",
         "00408500": "src/matching/00408500_buildCategory.cpp",
         "00408510": "src/matching/00408510_number.cpp",
         "00408520": "src/matching/00408520_priority.cpp",
@@ -5624,6 +5638,7 @@
         "00432780": "src/matching/00432780_RGE_Communications_Speed.cpp",
         "004327C0": "src/matching/004327C0_SetPlayerTurnSpeed.cpp",
         "00432800": "src/matching/00432800_SetActualLatency.cpp",
+        "00432840": "src/matching/00432840_SetFutureSpeedChange.cpp",
         "00432870": "src/matching/00432870_EnableSpeedControl.cpp",
         "00432880": "src/matching/00432880_GetBufferGranularity.cpp",
         "00432890": "src/matching/00432890_GetAdjustmentCount.cpp",
@@ -6205,6 +6220,7 @@
       "owners": {
         "0040A820": "src/matching/0040A820_ConstructionItem.cpp",
         "0040A870": "src/matching/0040A870_ConstructionItem.cpp",
+        "0040A8D0": "src/matching/0040A8D0_ConstructionItem.cpp",
         "0040A950": "src/matching/0040A950_ConstructionItem.cpp",
         "0040AA00": "src/matching/0040AA00_inProgress.cpp",
         "0040AA10": "src/matching/0040AA10_built.cpp",

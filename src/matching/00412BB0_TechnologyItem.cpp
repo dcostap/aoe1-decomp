@@ -4,10 +4,7 @@
 
 extern char s_592A40[];
 
-TechnologyItem::TechnologyItem() {
-    this->next = 0;
-    this->prev = 0;
-    this->idValue = 0;
-    this->resourceCostValue = 0;
+TechnologyItem::TechnologyItem()
+    : next(0), prev(0), idValue(0), resourceCostValue(0) {
     strcpy(this->nameValue, s_592A40);
 }

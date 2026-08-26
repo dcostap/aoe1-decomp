@@ -27,7 +27,7 @@ public:
 class RGE_Action_List_Object {
 public:
     char gap_00[0x48];
-    unsigned char state;
+    unsigned char object_state;
 };
 
 class RGE_Action_List {

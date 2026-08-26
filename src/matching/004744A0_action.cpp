@@ -11,11 +11,6 @@ public:
     long action(TPanel* panel, long action, unsigned long param3, unsigned long param4);
 };
 
-class TParentPanel : public TPanel {
-public:
-    virtual long notify_action(TPanel* panel, long action, unsigned long param3, unsigned long param4);
-};
-
 class TTextPanel {
 public:
     virtual void set_text(char* text);
@@ -47,10 +42,10 @@ long TDropDownPanel::action(TPanel* panel, long action_code, unsigned long line,
     } else if (panel == (TPanel*)this->list_panel) {
         if (action_code == 3 || action_code == 2) {
             this->val_num = (short)line;
-            this->val_panel->set_text(this->list_panel->get_text((short)line));
+            this->val_panel->set_text(this->list_panel->get_text((long)(short)line));
             this->set_mode(1);
             if (this->parent_panel) {
-                ((TParentPanel*)this->parent_panel)->notify_action(this, 0, 0, 0);
+                this->parent_panel->action(this, 0, 0, 0);
             }
         }
     }

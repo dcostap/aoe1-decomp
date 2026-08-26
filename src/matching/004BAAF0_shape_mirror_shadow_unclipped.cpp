@@ -71,6 +71,11 @@
 
 typedef unsigned char byte;
 
+// The incoming table points to a 256-byte table payload.
+struct Shape_Byte_Table {
+    byte table[256];
+};
+
 #ifndef AOE1_SHAPE_CONTEXT_H
 struct Shape_Header { long bounds, origin, xmin, ymin, xmax, ymax; };
 
@@ -87,11 +92,6 @@ struct TDrawArea {
     char ClipRect[0x10];
     char _tail_38[0xC8];
     long AlignedWidth(void);
-};
-
-// The incoming table points to a 256-byte table payload.
-struct Byte_Table {
-    byte table[256];
 };
 
 // Main-agent audit confirmed canonical non-polymorphic shape/draw-area ownership
@@ -113,7 +113,7 @@ public:
 
 byte TShape::shape_mirror_shadow_unclipped(TDrawArea* draw_area, long x, long y, byte* table)
 {
-    Byte_Table* table_view = (Byte_Table*)table;
+    Shape_Byte_Table* table_view = (Shape_Byte_Table*)table;
     long pitch = draw_area->AlignedWidth() * draw_area->Orien;
 
     Shape_Header* hdr = this->shape_header;

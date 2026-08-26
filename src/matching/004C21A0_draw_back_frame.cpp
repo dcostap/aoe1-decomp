@@ -3,7 +3,9 @@
 // 1. Prior free helper declarations matched behavior but let VC5 use ECX as a temp and pre-load all args; original preserves ECX as this for member helper calls.
 // 2. Member draw_frame_* calls produced exact helper argument-load/push shape, but VC5 merged identical cube tails into a 96B body.
 // 3. Inline wrapper/cast/local/volatile variants either merged tails or added extra code.
-// 4. Kept separate same-signature member declaration for the case-1 cube call to block VC5 tail merging; relocation-masked call target bytes match original.
+// 4. The grouped target audit proved that case 1 calls draw_frame_3d_cube_back,
+//    not the similarly shaped case helper; this also removes the relocation
+//    target mismatch without changing the 102-byte body.
 
 class TDrawArea;
 
@@ -37,7 +39,7 @@ void RGE_Static_Object::draw_back_frame(TDrawArea* area, short x, short y) {
     case 0:
         return;
     case 1:
-        this->draw_frame_3d_cube_back_case(area, x, y);
+        this->draw_frame_3d_cube_back(area, x, y);
         return;
     case 2:
     case 3:

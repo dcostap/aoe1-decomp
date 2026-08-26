@@ -115,6 +115,6 @@ void TacticalAIGroup::setSpecificCommander(int commander, TribeMainDecisionAIMod
             }
             src = src + 1;
         }
-        md->player->command_create_group(commander, temp, count, 0x40800000);
+        md->player->command_create_group(commander, temp, count, 4.0f);
     }
 }

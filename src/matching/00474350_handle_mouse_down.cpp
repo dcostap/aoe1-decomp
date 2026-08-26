@@ -8,7 +8,7 @@ public:
     char gap_04[0x3C];
     TPanel* parent_panel;
     char gap_44[0x30];
-    int have_focus;
+    int tab_stop;
     char gap_78[0x7C];
 
     void set_curr_child(TPanel* panel);
@@ -17,7 +17,7 @@ public:
 
 class THitPanel {
 public:
-    virtual long handle_mouse_down(long x, long y);
+    virtual long is_inside(long x, long y);
 };
 
 class TDropDownPanel : public TPanel {
@@ -36,15 +36,15 @@ public:
 #endif
 
 long TDropDownPanel::handle_mouse_down(unsigned char buttons, long x, long y, int param4, int param5) {
-    if (this->have_focus && this->parent_panel) {
+    if (this->tab_stop && this->parent_panel) {
         this->parent_panel->set_curr_child(this);
     }
 
     if (this->mode == 2) {
-        long list_hit = this->list_panel->handle_mouse_down(x, y);
+        long list_hit = this->list_panel->is_inside(x, y);
         long scbar_hit;
         if (this->scbar_panel) {
-            scbar_hit = this->scbar_panel->handle_mouse_down(x, y);
+            scbar_hit = this->scbar_panel->is_inside(x, y);
         } else {
             scbar_hit = 0;
         }

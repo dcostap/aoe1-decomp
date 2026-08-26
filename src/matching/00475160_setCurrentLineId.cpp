@@ -12,7 +12,7 @@ public:
 
     void set_line_by_id(int id);
     long get_line();
-    char* get_text(int id);
+    char* get_text(long id);
 };
 
 class TValPanel : public TTextPanel {};
@@ -36,7 +36,7 @@ void TDropDownPanel::setCurrentLineId(int id) {
         long line = list_panel->get_line();
         val_num = (short)line;
         if (val_panel) {
-            val_panel->set_text(list_panel->get_text((short)line));
+            val_panel->set_text(list_panel->get_text((long)(short)line));
         }
     }
 }
