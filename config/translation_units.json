@@ -5552,7 +5552,8 @@
         "00419C70": "src/matching/00419C70_addToOrderQueue.cpp",
         "00419ED0": "src/matching/00419ED0_addToNotifyQueue.cpp",
         "00419F00": "src/matching/00419F00_addToNotifyQueue.cpp",
-        "0041A0D0": "src/matching/0041A0D0_lookupObject.cpp"
+        "0041A0D0": "src/matching/0041A0D0_lookupObject.cpp",
+        "0041A100": "src/matching/0041A100_logDebug.cpp"
       },
       "symbols": {
         "00419510": "?processGroupNotify@UnitAIModule@@MAEXPAUNotifyEvent@@@Z",
@@ -5562,7 +5563,8 @@
         "00419C70": "?addToOrderQueue@UnitAIModule@@IAEHHHHHMMMMHH@Z",
         "00419ED0": "?addToNotifyQueue@UnitAIModule@@IAEHPAUNotifyEvent@@@Z",
         "00419F00": "?addToNotifyQueue@UnitAIModule@@IAEHHHHJJJ@Z",
-        "0041A0D0": "?lookupObject@UnitAIModule@@IAEPAVRGE_Static_Object@@H@Z"
+        "0041A0D0": "?lookupObject@UnitAIModule@@IAEPAVRGE_Static_Object@@H@Z",
+        "0041A100": "?logDebug@UnitAIModule@@UAAXPADZZ"
       }
     },
     {
