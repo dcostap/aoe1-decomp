@@ -7311,15 +7311,16 @@
     },
     {
       "name": "vw_dimap",
-      "source": "src/vw_dimap_tu.cpp",
+      "source": "src/vw_dimap.cpp",
+      "module": "vw_dimap",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "0053D3B0": "src/matching/0053D3B0_handle_mouse_down.cpp",
-        "0053D400": "src/matching/0053D400_mouse_left_down_action.cpp",
-        "0053D480": "src/matching/0053D480_mouse_left_move_action.cpp",
-        "0053D620": "src/matching/0053D620_mouse_right_down_action.cpp",
-        "0053D6A0": "src/matching/0053D6A0_mouse_right_move_action.cpp",
-        "0053D890": "src/matching/0053D890_draw.cpp"
+        "0053D3B0": "src/vw_dimap.cpp",
+        "0053D400": "src/vw_dimap.cpp",
+        "0053D480": "src/vw_dimap.cpp",
+        "0053D620": "src/vw_dimap.cpp",
+        "0053D6A0": "src/vw_dimap.cpp",
+        "0053D890": "src/vw_dimap.cpp"
       },
       "symbols": {
         "0053D3B0": "?handle_mouse_down@RGE_Diamond_Map_View@@UAEJEJJHH@Z",

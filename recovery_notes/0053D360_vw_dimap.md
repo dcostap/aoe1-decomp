@@ -1,0 +1,51 @@
+# vw_dimap.cpp module recovery
+
+- PDB source: `C:\msdev\work\age1_x1\vw_dimap.cpp`.
+- PDB source lines: 26 to 337.
+- Original normal owners: `0053D360` through `0053DA10`.
+
+## Source order
+
+The module order is the PDB order:
+
+1. `0053D360` constructor.
+2. `0053D3B0` mouse dispatch.
+3. `0053D400` through `0053D720` mouse actions.
+4. `0053D890` draw.
+5. `0053D8E0` through `0053DA10` command actions.
+
+The deleting destructor at `0053D380` is compiler-generated. This module does
+not own a source body for it.
+
+## Module-local ABI
+
+PDB and call-site evidence prove these facts:
+
+- `TPanel` has size `0xF4`.
+- `RGE_Diamond_Map` and `RGE_Diamond_Map_View` have size `0x16C`.
+- The view draw slot is `+0x30`.
+- The view mouse-down slot is `+0x70`.
+- The left mouse slots are `+0x84`, `+0x8C`, and `+0x90`.
+- The right mouse slots are `+0x98`, `+0xA0`, and `+0xA4`.
+- The view command slots are `+0xF4`, `+0xF8`, and `+0xFC`.
+- The player command slots are move `+0xA0`, work `+0xA4`, and do `+0xA8`.
+- The player view-location slot is `+0xD8`. It takes three floats.
+- `RGE_Base_Game::set_game_mode` uses slot `+0x10`.
+- `prog_info`, `prog_mode`, `game_mode`, and `submode` are at `+0x0C`,
+  `+0x1B0`, `+0x1B4`, and `+0x1B8`.
+- `pick_tile` writes two short values and an `RGE_Tile*` value.
+
+The local player and base-game declarations do not yet model all virtual slots.
+Do not reuse them as shared ABI.
+
+## Module merge
+
+The module now uses `src/vw_dimap.cpp` and `include/vw_dimap.h`. It removes the
+wrapper, source fragments, fallback declarations, and context macros. The merge
+keeps the prior function bodies and flags. It does not claim new exact results.
+
+The merged constructor and all six registered owners still match exactly. The
+two existing mouse-up mismatches remain. The command bodies still use direct
+declarations where the original uses virtual slots. This known ABI gap remains
+outside this source-shape migration. Current command checks differ by 71 bytes
+for `0053D8E0` and 85 bytes each for `0053D970` and `0053DA10`.

@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "name": "vw_dimap",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\vw_dimap.cpp",
+  "source": "src/vw_dimap.cpp",
+  "header": "include/vw_dimap.h",
+  "functions": {
+    "0053D360": {
+      "status": "matching",
+      "note_path": "recovery_notes/0053D360_vw_dimap.md"
+    },
+    "0053D3B0": { "status": "matching" },
+    "0053D400": { "status": "matching" },
+    "0053D480": { "status": "matching" },
+    "0053D500": {
+      "status": "matching",
+      "note_path": "recovery_notes/0053D500_mouse_left_up_action.md"
+    },
+    "0053D620": { "status": "matching" },
+    "0053D6A0": { "status": "matching" },
+    "0053D720": {
+      "status": "matching",
+      "note_path": "recovery_notes/0053D720_mouse_right_up_action.md"
+    },
+    "0053D890": { "status": "matching" },
+    "0053D8E0": { "status": "matching" },
+    "0053D970": { "status": "matching" },
+    "0053DA10": { "status": "matching" }
+  }
+}
