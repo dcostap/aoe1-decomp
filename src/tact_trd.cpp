@@ -58,8 +58,10 @@ void TRIBE_Action_Trade::save(int file)
 // PDB lines 109-128; VA 004D2830.
 void TRIBE_Action_Trade::first_in_stack(unsigned char param_1)
 {
-    if (this->obj->facet != 0 && this->obj->facet != 2 && this->obj->facet != 1) {
-        this->obj->facet = 1;
+    if (this->obj->attribute_type_held != 0 &&
+        this->obj->attribute_type_held != 2 &&
+        this->obj->attribute_type_held != 1) {
+        this->obj->attribute_type_held = 1;
     }
     if (param_1 != 0) {
         if (this->target_obj != 0) {
@@ -236,12 +238,12 @@ unsigned char TRIBE_Action_Trade::update()
     }
 
     if (this->target_obj != 0) {
-        if (this->obj->owner->player_id == this->target_obj->owner->player_id) {
+        if (this->obj->owner->id == this->target_obj->owner->id) {
             this->set_target_obj(0);
             this->set_target_obj2(0);
             this->set_state(1);
             if (this->subActionValue == 0) {
-                this->obj->notify(this->obj->player_id, this->obj->player_id,
+                this->obj->notify(this->obj->id, this->obj->id,
                                   0x1FB, 0x267, this->targetID, 0);
             }
             return 4;
@@ -311,7 +313,7 @@ unsigned char TRIBE_Action_Trade::update()
             return 0;
         }
         if (this->obj->turn_towards(this->target_obj, 0.0f, 0.0f) != 0) {
-            if (this->target_obj->trade_value > DAT_00575348 ||
+            if (this->target_obj->attribute_amount_held > DAT_00575348 ||
                 this->obj->keepGatheringWhenObjectIsOut(this->target_obj->master_obj->id) != 0) {
                 this->set_state(7);
                 return 0;
@@ -330,25 +332,28 @@ unsigned char TRIBE_Action_Trade::update()
             this->set_state(3);
             return 0;
         }
-        if (this->obj->facet != 0 && this->obj->facet != 2 && this->obj->facet != 1) {
-            this->obj->facet = 1;
+        if (this->obj->attribute_type_held != 0 &&
+            this->obj->attribute_type_held != 2 &&
+            this->obj->attribute_type_held != 1) {
+            this->obj->attribute_type_held = 1;
         }
         {
-            float capacity = (float)this->obj->master_obj->capacity;
-            max_hold = capacity - this->obj->amount;
-            if (this->obj->owner->resource_store->max_resource[this->obj->facet] < max_hold) {
-                max_hold = this->obj->owner->resource_store->max_resource[this->obj->facet];
+            float capacity = (float)this->obj->master_obj->attribute_max_amount;
+            max_hold = capacity - this->obj->attribute_amount_held;
+            if (this->obj->owner->attributes[this->obj->attribute_type_held] < max_hold) {
+                max_hold = this->obj->owner->attributes[this->obj->attribute_type_held];
             }
-            if (this->target_obj->owner->resource_store->amount < max_hold) {
-                max_hold = this->target_obj->owner->resource_store->amount;
+            if (this->target_obj->owner->attributes[9] < max_hold) {
+                max_hold = this->target_obj->owner->attributes[9];
             }
-            this->target_obj->owner->add_attribute_num(this->obj->facet, -max_hold, 1);
-            this->target_obj->owner->resource_store->amount -= max_hold;
-            this->obj->amount += max_hold;
-            if (this->obj->amount >= capacity) {
+            this->target_obj->owner->add_attribute_num(
+                this->obj->attribute_type_held, -max_hold, 1);
+            this->target_obj->owner->attributes[9] -= max_hold;
+            this->obj->attribute_amount_held += max_hold;
+            if (this->obj->attribute_amount_held >= capacity) {
                 goto update_state_8;
             }
-            if (this->target_obj->owner->resource_store->amount <= DAT_00575348 &&
+            if (this->target_obj->owner->attributes[9] <= DAT_00575348 &&
                 this->obj->keepGatheringWhenObjectIsOut(this->target_obj->master_obj->id) == 0) {
                 this->set_state(8);
                 return 0;
@@ -390,12 +395,12 @@ unsigned char TRIBE_Action_Trade::update()
                 if (take_amount < DAT_00575360) {
                     take_amount = DAT_00575360;
                 }
-                take_amount *= this->obj->amount;
+                take_amount *= this->obj->attribute_amount_held;
                 if (take_amount > DAT_00575370) {
                     take_amount = DAT_00575370;
                 }
                 this->obj->owner->add_attribute_num(3, take_amount, 1);
-                this->obj->set_attribute(this->obj->facet, 0.0f);
+                this->obj->set_attribute(this->obj->attribute_type_held, 0.0f);
             }
             if (this->target_obj != 0) {
                 this->set_state(4);
@@ -419,7 +424,7 @@ unsigned char TRIBE_Action_Trade::update()
         return 1;
 
     case 13:
-        this->obj->notify(this->obj->player_id, this->obj->player_id,
+        this->obj->notify(this->obj->id, this->obj->id,
                           0x1F9, 0x267, 0, 0);
         this->set_state(2);
         return 3;
@@ -434,7 +439,7 @@ RGE_Sprite* TRIBE_Action_Trade::get_move_sprite(void)
     short task_facet = task->attribute_type;
 
     if (task_facet != -1) {
-        if (this->obj->facet == task_facet) {
+        if (this->obj->attribute_type_held == task_facet) {
             if ((int)this->obj->attribute_amount_held > 0) {
                 if (task->carry_sprite != 0) {
                     return task->carry_sprite;
@@ -452,7 +457,8 @@ RGE_Sprite* TRIBE_Action_Trade::get_wait_sprite(void)
     RGE_Task* task = action->task;
     short task_facet = task->attribute_type;
 
-    if (task_facet != (short)0xFFFF && task_facet == action->obj->facet
+    if (task_facet != (short)0xFFFF &&
+        task_facet == action->obj->attribute_type_held
         && (int)action->obj->attribute_amount_held > 0 && task->carry_sprite != 0) {
         return task->carry_sprite;
     }
@@ -471,7 +477,7 @@ int TRIBE_Action_Trade::move_to(RGE_Static_Object* obj, float x, float y, float 
 {
     if (obj != 0) {
         if (obj->owner == this->obj->owner) {
-            if (obj->master_obj->id == this->obj->master_obj->id2) {
+            if (obj->master_obj->id == this->obj->master_obj->drop_site) {
                 if (obj == this->target_obj2 && this->state == 8) {
                     return 1;
                 }
@@ -502,8 +508,8 @@ int TRIBE_Action_Trade::work(RGE_Static_Object* obj, float x, float y, float z)
         }
 
         // Check owner/id match.
-        if (obj->owner == ((RGE_Static_Object*)this->action_obj)->owner) {
-            if (obj->master_obj->id == this->obj->master_obj->id2) {
+        if (obj->owner == this->obj->owner) {
+            if (obj->master_obj->id == this->obj->master_obj->drop_site) {
                 this->set_target_obj2(obj);
                 this->set_state(8);
                 return 1;
