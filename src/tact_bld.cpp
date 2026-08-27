@@ -22,9 +22,9 @@ TRIBE_Action_Build::TRIBE_Action_Build(int id, RGE_Action_Object* object)
 }
 
 // PDB lines 55-69; VA 004CD210.
-// ACCEPTED_DRIFT: The canonical owner composition keeps the original size,
-// calls, branches, stores, cleanup, and return. Four comparison bytes use an
-// equivalent owner-register allocation.
+// BINARY NOTE: Moving full owner includes into this direct source removes the
+// prior four-byte comparison difference under the module flags. The module
+// status remains accepted_drift pending owner-status review.
 // BINARY NOTE: This constructor keeps the observed task, owner, target, and
 // coordinate stores in the original action hierarchy.
 TRIBE_Action_Build::TRIBE_Action_Build(RGE_Action_Object* action_obj,
@@ -158,8 +158,8 @@ void TRIBE_Action_Build::set_state(unsigned char param_1)
 }
 
 // PDB lines 204-424; VA 004CD5E0.
-// ACCEPTED_DRIFT: The reviewed source differs only in register and load
-// order. Calls, branches, stores, cleanup, and return behavior are equal.
+// BINARY NOTE: The direct checker reports four strict bytes. The rebuilt
+// source selects vslot+0x1F8 where the original selects vslot+0x1F0.
 unsigned char TRIBE_Action_Build::update()
 {
     float work;
@@ -316,9 +316,8 @@ int TRIBE_Action_Build::move_to(RGE_Static_Object* obj,
 }
 
 // PDB lines 454-483; VA 004CD960.
-// ACCEPTED_DRIFT: The reviewed source differs only in owner-id and fallback
-// coordinate load order. Calls, branches, stores, cleanup, and returns are
-// equal.
+// BINARY NOTE: The direct checker reports nine strict bytes in the owner-id
+// register map and fallback coordinate load order.
 int TRIBE_Action_Build::work(RGE_Static_Object* target,
                              float param_2, float param_3, float param_4) {
     if (target != 0 && target->owner->id == this->obj->owner->id) {
