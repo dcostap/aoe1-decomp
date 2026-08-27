@@ -79,7 +79,19 @@ public:
     int NewZone_Count;
     int Reset_Count;
 
+    TSpan_Node_List(int initial_size, int grow_size, int item_size);
     ~TSpan_Node_List();
+
+private:
+    void SetNumZones(int new_count);
+    void InitNewZone(int grow_size);
+
+public:
+    VSpan_Node* GetNode();
+    void FreeNode(VSpan_Node* node);
+    int FreeThread(VSpan_Node* first, VSpan_Node* last);
+    void ReclaimAllNodes();
+    void ResetStats();
 };
 
 class TSpan_List_Manager {
@@ -102,7 +114,25 @@ public:
     void ResetAll();
     void SetSpanRegions(int, int, int, int);
     void AddSpan(int, int, int);
+    void AddShape(TShape*, int, int, int, int);
+    void AddShape_Align(unsigned char*, Shape_Info*, int, int, int);
+    void AddLine_Align(int, int, int, int);
+    void AddMiniList(VSpanMiniList*, int, int);
+    void SubtractMiniList(VSpanMiniList*, int, int);
+    void DeleteSpan(int, int, int);
+    void DeleteShape(TShape*, int, int, int, int);
+    int PointVisible(int, int);
+    void Merge_n_Align(TSpan_List_Manager*, TSpan_List_Manager*);
+    void AlignamizeSpans();
+    void ScrollSpansHorizontally(int, int);
+    void ScrollSpansVertically(int, int);
+    int ValidateSpan(int);
+    int DecodeLine(unsigned char*, int, unsigned char, int);
+    void take_snapshot(char*, int&, TDrawArea*, int, TSpan_List_Manager**,
+                       int*, int);
 };
+
+#endif  // AOE1_SPANLIST_TYPES_H
 
 struct DrawAreaNode {
     TDrawArea* DrawArea;
