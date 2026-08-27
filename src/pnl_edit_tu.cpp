@@ -14,7 +14,7 @@
 #include "pnl_edit_tu_context.h"
 
 #include "matching/00475930_pnl_sub_wnd_proc.cpp"
-#include "accepted_drift/004755C0_TEditPanel.cpp"
+#include "matching/004755C0_TEditPanel.cpp"
 #include "matching/00475690_TEditPanel.cpp"
 #include "scratch/00475770_setup.cpp"
 #include "matching/00475970_set_text.cpp"

@@ -38,7 +38,7 @@
 #include "matching/00510A50_do_cliff_brush.cpp"
 #include "matching/00510C10_do_cliff_brush_stroke.cpp"
 #include "matching/00510C90_water.cpp"
-#include "accepted_drift/00510CB0_clean_borders.cpp"
+#include "matching/00510CB0_clean_borders.cpp"
 #include "matching/00511000_do_terrain_brush_check.cpp"
 #include "accepted_drift/005110E0_tribe_clean_elevation.cpp"
 #include "scratch/005111A0_tribe_clean_terrain.cpp"

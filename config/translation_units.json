@@ -4713,6 +4713,7 @@
       "flags": "config/flags/00475690_TEditPanel.rsp",
       "owners": {
         "00475930": "src/matching/00475930_pnl_sub_wnd_proc.cpp",
+        "004755C0": "src/matching/004755C0_TEditPanel.cpp",
         "00475690": "src/matching/00475690_TEditPanel.cpp",
         "00475970": "src/matching/00475970_set_text.cpp",
         "00475A30": "src/matching/00475A30_update_text.cpp",
@@ -4736,6 +4737,7 @@
         "00476BE0": "src/matching/00476BE0_handle_mouse_down.cpp"
       },
       "symbols": {
+        "004755C0": "??0TEditPanel@@QAE@XZ",
         "00475970": "?set_text@TEditPanel@@QAEXPAD@Z",
         "00475E10": "?set_text_color@TEditPanel@@QAEXKK@Z",
         "00475F40": "?wnd_proc@TEditPanel@@UAEJPAXIIJ@Z"
@@ -6354,6 +6356,7 @@
         "00510A50": "src/matching/00510A50_do_cliff_brush.cpp",
         "00510C10": "src/matching/00510C10_do_cliff_brush_stroke.cpp",
         "00510C90": "src/matching/00510C90_water.cpp",
+        "00510CB0": "src/matching/00510CB0_clean_borders.cpp",
         "00511000": "src/matching/00511000_do_terrain_brush_check.cpp"
       },
       "symbols": {
@@ -6361,7 +6364,8 @@
         "0050F760": "??0TRIBE_Map@@QAE@PAD000FFFPAPAVRGE_Sound@@@Z",
         "0050F7F0": "?map_generate@TRIBE_Map@@QAEXPAURGE_Player_Info@@@Z",
         "0050F860": "?load_random_map@TRIBE_Map@@UAEXPAD000@Z",
-        "00510A50": "?do_cliff_brush@TRIBE_Map@@UAEEJJEE@Z"
+        "00510A50": "?do_cliff_brush@TRIBE_Map@@UAEEJJEE@Z",
+        "00510CB0": "?clean_borders@TRIBE_Map@@QAEXJJJJE@Z"
       }
     },
     {
