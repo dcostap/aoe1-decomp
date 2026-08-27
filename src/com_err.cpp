@@ -5,6 +5,7 @@
 
 #include "../include/com_err.h"
 #include "../include/debuglog.h"
+#include "../include/game_globals.h"
 
 // 00424E40; com_err.cpp lines 6-9.
 RGE_Comm_Error::RGE_Comm_Error(void* param) {

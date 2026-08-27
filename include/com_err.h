@@ -1,8 +1,6 @@
 #ifndef AOE1_COM_ERR_H
 #define AOE1_COM_ERR_H
 
-class TDebuggingLog;
-
 // Canonical com_err.cpp surface for the four contiguous owners below.
 // The enum spelling is required by the PDB-qualified NotifyWindowParam symbol.
 
@@ -13,8 +11,6 @@ enum COMMMESSAGES {
     COMM_NO_LINK = 0x17AE,
     COMM_CANCEL_GAME = 0x17B9,
 };
-
-extern TDebuggingLog* L;
 
 class RGE_Comm_Error {
 public:
