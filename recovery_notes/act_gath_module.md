@@ -43,6 +43,7 @@ The derived-to-base destructor thunk is at 00402F30.
 - `basegame.h` for the canonical `RGE_Base_Game::quick_build` field;
 - `rge_base_game_global.h` for the reviewed `rge_base_game` symbol.
 - `act_move.h` for the canonical `RGE_Action_Move_To` owner.
+- `sound.h` for the canonical `RGE_Sound::play` owner.
 
 The source uses the canonical `ani_obj.h` through `act_obj.h` and `move_obj.h`.
 The source does not use `ani_obj_context.h`.
@@ -50,9 +51,8 @@ The source does not use `ani_obj_context.h`.
 The canonical `act_move.h` owner now supplies `RGE_Action_Move_To` and its
 proven 0x44 size. The source has no local Action or Move_To declaration.
 
-One blocker remains. No canonical Sound owner header supplies
-`RGE_Sound::play`. The source has no local Sound declaration. Do not compile
-this module until the canonical Sound owner is available.
+All direct dependencies now close through canonical owner headers. The source
+has no local Sound or Base Game declaration.
 
 The source casts an action object's canonical `master_obj` pointer to
 `RGE_Master_Action_Object` where the action-master fields are used. It uses
