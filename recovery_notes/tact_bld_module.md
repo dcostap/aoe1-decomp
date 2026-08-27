@@ -19,9 +19,10 @@ address order is the source order in `src/tact_bld.cpp`:
 | `004CD960` | 454-483 | 121 | `TRIBE_Action_Build::work` |
 
 The owning class is `TRIBE_Action_Build`, derived from the canonical
-`RGE_Action` owner. `include/tact_bld.h` is an owner-only carrier for this
-class. It consumes the canonical action, action-list, action-move, object,
-master, combat, and building headers. It does not redeclare those classes.
+`RGE_Action` owner. `include/tact_bld.h` is an owner-only declaration for this
+class. It includes only `action.h`; that header supplies the base and the
+forward declarations for pointer parameters. Full dependency owners are
+included only by `src/tact_bld.cpp`.
 
 The exact anchors are `004CD1B0`, `004CD2A0`, `004CD2E0`, `004CD310`,
 `004CD910`, and `004CD920`. The nearby `004CD1E0` vector deleting
@@ -37,23 +38,27 @@ The source retains the reviewed prior statuses:
   `004CD910`, `004CD920`.
 - `accepted_drift`: `004CD210`, `004CD5E0`, `004CD960`.
 
-The canonical owner composition changes four bytes in the `004CD210` owner-id
-comparison. The difference is register allocation only. The function keeps
-its 142-byte boundary, two calls, predicates, stores, cleanup, and return.
-The prior source expression is retained because it is the simpler natural
-form, although reversing the comparison reduces the register difference.
+The pre-cleanup source changed four bytes in the `004CD210` owner-id
+comparison. After full owner includes moved to `src/tact_bld.cpp`, the
+candidate check reports this constructor as `MATCH` with 142 bytes. The
+source module still records its prior `accepted_drift` status. No status move
+is made from an observed candidate result.
 
 The notification calls use explicit integer and long casts. The canonical
 `RGE_Static_Object` owner also declares a nonvirtual six-argument overload.
 The casts select the shipped six-argument virtual notification slot.
 
-`update` differs only in the second sub-action vtable-load register. Its
-reviewed source retains the original 724-byte boundary, call order, control
-flow, stores, cleanup, and returns.
+`update` keeps its 724-byte boundary, owner symbol, 24 calls, 22 conditional
+branches, and 13 returns. It has four strict byte differences. The direct
+checker identifies a virtual-slot replacement at offset `+01A5`: original
+`vslot+0x1F0`, rebuilt `vslot+0x1F8`. Its dispatcher load also uses a different
+table-offset form. The accepted-drift status remains supported by this strict
+call-surface mismatch.
 
-`work` differs only in owner-id and fallback coordinate load order. Its
-reviewed source retains the original 121-byte boundary, calls, branches,
-stores, cleanup, and returns. Neither accepted-drift owner is marked exact.
+`work` keeps its 121-byte boundary, owner symbol, four calls, five conditions,
+and two returns. It has nine strict byte differences. The differences cover
+the owner-id register map and fallback coordinate stack-home load order. The
+accepted-drift status remains supported by this strict register-map mismatch.
 
 ## Migration effects
 
@@ -78,8 +83,12 @@ owner. No packet-local class carrier remains.
 
 ## Scoped validation
 
-The scoped checks ran after source composition. `004CD1B0`, `004CD2A0`,
-`004CD2E0`, `004CD310`, `004CD910`, and `004CD920` each reported `MATCH` and
-`0.0000%`. `004CD210` reported the documented four-byte
-`CONSISTENT_REGISTER_RECOLOR`; it is not registered as an exact owner.
-No grouped validation ran.
+The scoped candidate check ran after the public-header cleanup. The six exact
+owners `004CD1B0`, `004CD2A0`, `004CD2E0`, `004CD310`, `004CD910`, and
+`004CD920` each reported `MATCH`, `0.0000%`, owner-symbol match, zero
+relocation-target mismatches, and zero boundary escapes. The observed owners
+also had owner-symbol match, zero relocation-target mismatches, and zero
+boundary escapes: `004CD210` reported `MATCH` with 142 bytes, `004CD5E0`
+reported `MISMATCH` with four bytes (`0.5525%`), and `004CD960` reported
+`MISMATCH` with nine bytes (`7.4380%`). No status move was made from the
+observed candidate result.

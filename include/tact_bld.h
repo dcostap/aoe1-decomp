@@ -2,17 +2,6 @@
 #define AOE1_TACT_BLD_H
 
 #include "action.h"
-#include "act_move.h"
-#include "act_list.h"
-#include "act_obj.h"
-#include "stat_obj.h"
-#include "m_s_obj.h"
-#include "m_ac_obj.h"
-#include "move_obj.h"
-#include "t_c_obj.h"
-#include "t_b_obj.h"
-
-class RGE_Task;
 
 class TRIBE_Action_Build : public RGE_Action {
 public:
