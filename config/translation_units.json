@@ -4811,18 +4811,18 @@
     },
     {
       "name": "rmm_obj",
-      "source": "src/rmm_obj_tu.cpp",
+      "module": "rmm_obj",
+      "source": "src/rmm_obj.cpp",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "00485C50": "src/matching/00485C50_RGE_RMM_Object_Generator.cpp",
-        "00485CB0": "src/matching/00485CB0_add_quick_obj.cpp",
-        "00485DC0": "src/matching/00485DC0_generate.cpp",
-        "00485E50": "src/matching/00485E50_generate_objects.cpp",
-        "00486110": "src/matching/00486110_to_close.cpp",
-        "00486180": "src/matching/00486180_set_search_area.cpp",
-        "00486210": "src/matching/00486210_remove_area_from_lists.cpp",
-        "00486700": "src/matching/00486700_place_land_objects.cpp",
-        "00486A60": "src/matching/00486A60_place_group.cpp"
+        "00485C50": "src/rmm_obj.cpp",
+        "00485CB0": "src/rmm_obj.cpp",
+        "00485DC0": "src/rmm_obj.cpp",
+        "00486110": "src/rmm_obj.cpp",
+        "00486180": "src/rmm_obj.cpp",
+        "00486210": "src/rmm_obj.cpp",
+        "00486700": "src/rmm_obj.cpp",
+        "00486A60": "src/rmm_obj.cpp"
       },
       "symbols": {
         "00485DC0": "?generate@RGE_RMM_Object_Generator@@UAEEXZ"

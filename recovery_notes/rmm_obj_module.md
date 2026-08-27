@@ -49,7 +49,7 @@ derived object classes.
 
 ## Status and regressions
 
-The manifest records nine matching owners, one accepted-drift owner, and three
+The manifest records eight matching owners, one accepted-drift owner, and four
 scratch owners. The migration does not promote drift or scratch functions.
 Before migration, the nine matching owners were registered under the temporary
 `src/rmm_obj_tu.cpp` wrapper. The direct merged-source comparison found eight
