@@ -145,6 +145,8 @@ public:
     virtual int action_exit_menu();
     virtual int action_size();
     virtual int action_close();
+    void disable_input();
+    void enable_input();
     virtual void calc_timings();
     virtual void calc_timing_text();
     virtual void show_timings();
