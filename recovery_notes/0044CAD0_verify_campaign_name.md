@@ -1,5 +1,5 @@
 # 0044CAD0 verify_campaign_name
 
-The function returns an unsigned byte result from `strcmp`.
+The function compares campaign names with the period `strcmp` implementation.
 
-Use the ternary return form. It produced the original return shape.
+The natural `if` return form preserves the shipped unsigned-byte result without explicit byte casts.

@@ -1,23 +1,8 @@
 #include "../include/gameinfo.h"
 
+#include <io.h>
 #include <stdlib.h>
 #include <string.h>
-
-#pragma pack(push, 4)
-struct FindDataLocal {
-    unsigned int attrib;
-    int time_create;
-    int time_access;
-    int time_write;
-    char name[260];
-};
-
-struct FindCampaignWork {
-    FindDataLocal file_info;
-    char file_name[260];
-    char gap_21C[4];
-};
-#pragma pack(pop)
 
 RGE_Campaign_Info::RGE_Campaign_Info(int fd, RGE_Campaign** camps, long cnum) {
     rge_read(fd, this, 0xFF);
@@ -102,7 +87,7 @@ RGE_Campaign_Info::~RGE_Campaign_Info() {
 }
 
 void RGE_Campaign_Info::save(int fd) {
-    TDebuggingLog::Log((void*)L, "  (PIF)Saving campaign - (%d) %s", last_scenario, this);
+    L->Log("  (PIF)Saving campaign - (%d) %s", last_scenario, this);
     rge_write(fd, this, 0xFF);
     rge_write(fd, &current_scenario, 4);
     rge_write(fd, &scenario_num, 4);
@@ -158,7 +143,10 @@ unsigned char RGE_Campaign_Info::set_current_scenario(long param_1) {
 }
 
 unsigned char RGE_Campaign_Info::verify_campaign_name(char* campaign) {
-    return strcmp(this->name, campaign) ? (unsigned char)0 : (unsigned char)1;
+    if (strcmp(this->name, campaign) != 0) {
+        return 0;
+    }
+    return 1;
 }
 
 long RGE_Campaign_Info::get_scenario_list(char*** list, long& current) {
@@ -242,7 +230,7 @@ RGE_Person_Info::~RGE_Person_Info() {
 }
 
 void RGE_Person_Info::save(int fd) {
-    TDebuggingLog::Log((void*)L, "(PIF)Saving player - %s", this);
+    L->Log("(PIF)Saving player - %s", this);
     rge_write(fd, this, 0xFF);
     rge_write(fd, &current_campaign, 4);
     rge_write(fd, &campaign_info_num, 4);
@@ -265,7 +253,7 @@ void RGE_Person_Info::rehook_campaigns(RGE_Campaign** campaigns, long campaign_n
     }
 }
 
-char* RGE_Person_Info::get_name() { return (char*)this; }
+char* RGE_Person_Info::get_name() { return this->name; }
 
 unsigned char RGE_Person_Info::set_current_campaign(long index) {
     if (index < 0 || index >= campaign_num || campaigns[index] == 0) {
@@ -413,7 +401,7 @@ RGE_Game_Info::~RGE_Game_Info() {
 }
 
 void RGE_Game_Info::save(char* path) {
-    TDebuggingLog::Log(L, "(PIF)Creating Player Info File");
+    L->Log("(PIF)Creating Player Info File");
 
     strcpy(save_filename, path);
 
@@ -421,7 +409,7 @@ void RGE_Game_Info::save(char* path) {
     if (fd == -1) return;
 
     rge_write(fd, &version_marker, 4);
-    rge_write(fd, (void*)this, 4);
+    rge_write(fd, this, 4);
     rge_write(fd, &people_num, 4);
 
     int count = people_num;
@@ -430,7 +418,8 @@ void RGE_Game_Info::save(char* path) {
 }
 
 void RGE_Game_Info::find_campaigns() {
-    FindCampaignWork work;
+    _finddata_t file_info;
+    char file_name[260];
     long handle;
     int i = 0;
 
@@ -450,42 +439,42 @@ void RGE_Game_Info::find_campaigns() {
         campaigns = 0;
     }
 
-    sprintf(work.file_name + 4, "%s*.cpn", rge_base_game->prog_info->campaign_dir);
-    handle = _findfirst(work.file_name + 4, &work.file_info);
+    sprintf(file_name, "%s*.cpn", rge_base_game->prog_info->campaign_dir);
+    handle = _findfirst(file_name, &file_info);
     campaign_num = 0;
     if (handle != -1) {
         do {
             ++campaign_num;
-        } while (_findnext(handle, &work.file_info) != -1);
+        } while (_findnext(handle, &file_info) != -1);
     }
 
-    sprintf(work.file_name + 4, "%s*.cpx", rge_base_game->prog_info->campaign_dir);
-    handle = _findfirst(work.file_name + 4, &work.file_info);
+    sprintf(file_name, "%s*.cpx", rge_base_game->prog_info->campaign_dir);
+    handle = _findfirst(file_name, &file_info);
     if (handle != -1) {
         do {
             ++campaign_num;
-        } while (_findnext(handle, &work.file_info) != -1);
+        } while (_findnext(handle, &file_info) != -1);
     }
 
     if (campaign_num > 0) {
         campaigns = (RGE_Campaign**)calloc(campaign_num, 4);
         i = 0;
 
-        sprintf(work.file_name + 4, "%s*.cpn", rge_base_game->prog_info->campaign_dir);
-        handle = _findfirst(work.file_name + 4, &work.file_info);
+        sprintf(file_name, "%s*.cpn", rge_base_game->prog_info->campaign_dir);
+        handle = _findfirst(file_name, &file_info);
         if (handle != -1) {
             do {
-                campaigns[i] = new RGE_Campaign(work.file_info.name + 4);
+                campaigns[i] = new RGE_Campaign(file_info.name);
                 ++i;
-            } while (_findnext(handle, &work.file_info) != -1);
+            } while (_findnext(handle, &file_info) != -1);
         }
 
-        sprintf(work.file_name + 4, "%s*.cpx", rge_base_game->prog_info->campaign_dir);
-        handle = _findfirst(work.file_name + 4, &work.file_info);
+        sprintf(file_name, "%s*.cpx", rge_base_game->prog_info->campaign_dir);
+        handle = _findfirst(file_name, &file_info);
         if (handle != -1) {
             for (;;) {
-                campaigns[i] = new RGE_Campaign(work.file_info.name + 4);
-                if (_findnext(handle, &work.file_info) == -1) {
+                campaigns[i] = new RGE_Campaign(file_info.name);
+                if (_findnext(handle, &file_info) == -1) {
                     break;
                 }
                 ++i;

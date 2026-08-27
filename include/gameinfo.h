@@ -18,16 +18,15 @@ extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 extern "C" void __cdecl free(void* pointer);
 extern "C" char* __cdecl strcpy(char* destination, const char* source);
 extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
-extern "C" long __cdecl _findfirst(const char* filespec, void* file_info);
-extern "C" int __cdecl _findnext(long handle, void* file_info);
 extern "C" void __cdecl getstring(char** destination, char* source);
 extern "C" void __cdecl operator_delete(void* pointer);
 
-struct TDebuggingLog {
-    static void Log(void* log, char* format, ...);
+class TDebuggingLog {
+public:
+    void __cdecl Log(char* format, ...);
 };
 
-extern void* L;
+extern TDebuggingLog* L;
 extern int version_marker;
 
 class RGE_Campaign {
@@ -36,8 +35,8 @@ public:
 
     char* get_name();
     long scenario_number();
-    char* get_scenario_name(int index);
-    int open_scenario(int index);
+    char* get_scenario_name(long index);
+    int open_scenario(long index);
 
     RGE_Campaign(char* filename);
     ~RGE_Campaign();
