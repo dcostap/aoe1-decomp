@@ -4266,11 +4266,14 @@
       "owners": {
         "0051D790": "src/tpnl_tim.cpp",
         "0051D8B0": "src/tpnl_tim.cpp",
+        "0051D940": "src/tpnl_tim.cpp",
         "0051DAD0": "src/tpnl_tim.cpp",
+        "0051DB00": "src/tpnl_tim.cpp",
         "0051DC60": "src/tpnl_tim.cpp",
         "0051DC70": "src/tpnl_tim.cpp",
         "0051DC90": "src/tpnl_tim.cpp",
-        "0051E0E0": "src/tpnl_tim.cpp"
+        "0051E0E0": "src/tpnl_tim.cpp",
+        "0051E150": "src/tpnl_tim.cpp"
       },
       "symbols": {
         "0051DC90": "?draw@TRIBE_Panel_Time@@UAEXXZ"
