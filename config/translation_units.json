@@ -1885,16 +1885,17 @@
       }
     },
     {
-      "name": "scr_ach_prefix",
-      "source": "src/scr_ach_tu.cpp",
-      "flags": "config/flags/0048E210_TribeAchievementsScreen.rsp",
+      "name": "scr_ach",
+      "source": "src/scr_ach.cpp",
+      "module": "scr_ach",
+      "flags": "config/flags/0048D530_TribeAchievementsScreen.rsp",
       "owners": {
-        "0048E210": "src/matching/0048E210_TribeAchievementsScreen.cpp",
-        "0048F0B0": "src/matching/0048F0B0_draw.cpp",
-        "0048F190": "src/matching/0048F190_handle_mouse_down.cpp",
-        "0048F280": "src/matching/0048F280_action.cpp",
-        "0048F500": "src/matching/0048F500_handle_idle.cpp",
-        "0048F530": "src/matching/0048F530_wnd_proc.cpp"
+        "0048E210": "src/scr_ach.cpp",
+        "0048F0B0": "src/scr_ach.cpp",
+        "0048F190": "src/scr_ach.cpp",
+        "0048F280": "src/scr_ach.cpp",
+        "0048F500": "src/scr_ach.cpp",
+        "0048F530": "src/scr_ach.cpp"
       },
       "symbols": {}
     },

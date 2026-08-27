@@ -1,5 +1,5 @@
-#ifndef SCR_ACH_CONTEXT_H
-#define SCR_ACH_CONTEXT_H
+#ifndef SCR_ACH_H
+#define SCR_ACH_H
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -158,7 +158,6 @@ public:
     long yPosition();
     char* get_string(int id);
     void set_curr_child(TPanel* child);
-    void vf_0C4(int first, int second);
     void delete_panel(TPanel** panel);
 };
 
@@ -275,7 +274,6 @@ public:
     char gap_F4[0x1A4];
     int hotkey;
     int hotkey_shift;
-    virtual void vf_018(int, int, int, int, int, int, int, int);
 };
 
 class TScrollBarPanel : public TPanel {
@@ -435,7 +433,9 @@ public:
 
     TribeAchievementsScreen(char* title_text, int end_game_flag);
     virtual ~TribeAchievementsScreen();
+protected:
     void set_mode(long mode);
+public:
     virtual long action(TPanel*, long, unsigned long, unsigned long);
     virtual long handle_mouse_down(unsigned char, long, long, int, int);
     virtual void draw();
