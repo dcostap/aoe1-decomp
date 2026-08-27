@@ -1,57 +1,46 @@
 # tact_lst factory dependency hold
 
-## Review basis
+## Resolution
 
-Packet `62307b2c2` reunifies `tact_lst.cpp` as one source module. This review
-uses the rebased current main `ee088911a` as the source tree. It does not use
-the old `*_context.h` files as owner declarations.
+Packet `62307b2c2` reunifies `tact_lst.cpp` as one source module. The source
+closure is now in `src/tact_lst.cpp`, with declarations in
+`include/tact_lst.h`. The former hold ended when the canonical Make Object
+owner became available in the reduced Tact Mob chain.
 
-The packet needs complete declarations for every class created by its two
-factory owners. The shared owners are already published:
-
-- `include/action.h` owns `RGE_Action`.
-- `include/act_list.h` owns `RGE_Action_List` and `RGE_Action_Node`.
-- `include/task.h` owns `RGE_Task`.
-
-The compiler-facing list header is prepared in `include/tact_lst.h`. It uses
-only those shared owners. The narrow include probe is
-`tests/tact_lst_owner_probe.cpp`; its object belongs under `build/`.
-
-The source module remains held. The four-factory-owner set is complete except
-for the Make Object owner.
+The source uses only canonical action, list, task, and factory owner headers.
+It does not use old `*_context.h` declarations. It adds no local factory class,
+foreign base, fake slot, raw vptr write, or layout shim.
 
 ## Factory owner matrix
 
-| Factory target | Required owner header | Current main state |
+| Factory target | Required owner header | State |
 | --- | --- | --- |
-| `RGE_Action_Enter` | `include/act_entr.h` | Published and compatible |
-| `RGE_Action_Transport` | `include/act_tran.h` | Published and compatible |
-| `TRIBE_Action_Build` | `include/tact_bld.h` | Published and compatible on current main |
-| `TRIBE_Action_Make_Obj` | `include/tact_mob.h` | Missing; only `tact_mob_context.h` exists |
-| `TRIBE_Action_Make_Tech` | `include/tact_tek.h` | Published owner declaration |
-| `TRIBE_Action_Convert` | `include/tact_cnv.h` | Published owner declaration |
-| `TRIBE_Action_Heal` | `include/tact_hea.h` | Published and compatible on current main |
-| `TRIBE_Action_Artifact` | `include/tact_art.h` | Published and compatible |
-| `TRIBE_Action_Wonder` | `include/tact_wnd.h` | Published and compatible |
-| `TRIBE_Action_Discovery_Artifact` | `include/tact_dar.h` | Published and compatible on current main |
-| `TRIBE_Action_Hunt` | `include/tact_hnt.h` | Published and compatible |
-| `TRIBE_Action_Repair` | `include/tact_rep.h` | Published and compatible |
-| `TRIBE_Action_Trade` | `include/tact_trd.h` | Published and compatible |
+| `RGE_Action_Enter` | `include/act_entr.h` | Consumed |
+| `RGE_Action_Transport` | `include/act_tran.h` | Consumed |
+| `TRIBE_Action_Build` | `include/tact_bld.h` | Consumed |
+| `TRIBE_Action_Make_Obj` | `include/tact_mob.h` | Consumed from dependency chain |
+| `TRIBE_Action_Make_Tech` | `include/tact_tek.h` | Consumed |
+| `TRIBE_Action_Convert` | `include/tact_cnv.h` | Consumed |
+| `TRIBE_Action_Heal` | `include/tact_hea.h` | Consumed |
+| `TRIBE_Action_Artifact` | `include/tact_art.h` | Consumed |
+| `TRIBE_Action_Wonder` | `include/tact_wnd.h` | Consumed |
+| `TRIBE_Action_Discovery_Artifact` | `include/tact_dar.h` | Consumed |
+| `TRIBE_Action_Hunt` | `include/tact_hnt.h` | Consumed |
+| `TRIBE_Action_Repair` | `include/tact_rep.h` | Consumed |
+| `TRIBE_Action_Trade` | `include/tact_trd.h` | Consumed |
 
-The compatible headers listed above compile with `action.h`, `act_list.h`, and
-`task.h` under the pinned VC5 compiler. The prepared list header and the Build,
-Heal, and Discovery Artifact owners pass that include and size check.
+The four Tact List owners pass the grouped candidate check. The owner,
+relocation, and boundary results are recorded in
+`recovery_notes/tact_lst_module.md`.
 
-## Remaining exact dependency
+## Dependency order
 
-Publish the canonical owner header `include/tact_mob.h` for Make Object. Do
-not import `tact_mob_context.h` into the packet source. Do not copy the missing
-action class into `tact_lst`.
+Land the reduced Tact Mob chain first:
+`ddd9d1310`, `c44e35261`, `32e9da440`, `1456ce959`, `90f75472b`,
+`de26117c1`, `c773638c7`, and `b1ec6a5b3`.
 
-Start source closure only after `include/tact_mob.h` is present and all four
-factory owners compose cleanly with the packet's shared action, list, and task
-owners.
+Then land follow-up `7c6732a93`. It registers Tact Mob owner `004D15F0` and
+reports 7/7 exact owners plus generated `004D0E90` as `MATCH`.
 
-Keep the packet factory calls unchanged. Do not add local target classes, fake
-slots, raw vptr writes, or layout shims. No source status or translation-unit
-registration changed in this hold.
+Land the Tact List commits after those dependencies, or land all commits
+atomically. This packet is not a standalone main claim.

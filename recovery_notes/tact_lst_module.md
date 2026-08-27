@@ -30,7 +30,7 @@ The factory targets come from their owner headers:
 
 The pinned VC5 grouped candidate check used
 `build/candidate_tus/tact_lst_candidate_final/report.json`.
-All four registered Tact List owners match:
+All four Tact List owners match:
 
 | VA | Result | Original | Rebuilt | Owner | Relocations | Boundary |
 | --- | --- | ---: | ---: | --- | ---: | ---: |
@@ -41,8 +41,13 @@ All four registered Tact List owners match:
 
 The candidate summary is 4/4 exact. No generated row belongs to this module.
 
-## Publication hold
+## Dependent integration
 
-The Tact List source is ready. The final packet report remains held until the
-coordinator registers Tact Mob owner `004D15F0` and validates its 7/7 owners
-plus generated `004D0E90`. This lane does not edit Tact Mob configuration.
+The Tact List source chain depends on the reduced Tact Mob chain:
+`ddd9d1310`, `c44e35261`, `32e9da440`, `1456ce959`, `90f75472b`,
+`de26117c1`, `c773638c7`, and `b1ec6a5b3`.
+
+It also depends on follow-up `7c6732a93`, which registers `004D15F0`.
+That follow-up reports 7/7 exact Tact Mob owners and generated `004D0E90`
+with `MATCH` results. Land these dependencies first or land them atomically.
+This is a dependent packet, not a standalone main claim.
