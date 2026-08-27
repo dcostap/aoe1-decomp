@@ -5,7 +5,7 @@
 // handwritten source owner.  The ten exact owners, the accepted-drift
 // set_state owner, and the scratch update owner share this source module.
 
-#include "../include/tact_trd_context.h"
+#include "../include/tact_trd.h"
 
 // PDB lines 42-47; VA 004D2660.
 TRIBE_Action_Trade::TRIBE_Action_Trade(int file, RGE_Action_Object* obj)
@@ -74,7 +74,7 @@ void TRIBE_Action_Trade::first_in_stack(unsigned char param_1)
 
 // PDB lines 134-275; VA 004D2880.
 // BINARY NOTE: The original is an EH-framed switch.  The high object slots
-// are represented by the reviewed virtual surface in tact_trd_context.h.
+// are represented by the reviewed virtual surface in tact_trd.h.
 // BINARY NOTE: Case-local Move_To results preserve the two constructor-result
 // handoffs and the original action-list call order.
 void TRIBE_Action_Trade::set_state(unsigned char param_1)

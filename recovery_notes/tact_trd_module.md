@@ -6,7 +6,7 @@
 - Source owner: `src/tact_trd.cpp`.
 - Class owner: `TRIBE_Action_Trade`, derived from `RGE_Action`.
 - Flags: `config/flags/004D2660_TRIBE_Action_Trade.rsp`.
-- Context header: `include/tact_trd_context.h`.
+- Context header: `include/tact_trd.h`.
 - The PDB line bands and address order are:
   `42-47/004D2660`, `55-70/004D2710`, `77-91/004D27A0`,
   `98-103/004D27F0`, `109-128/004D2830`, `134-275/004D2880`,
