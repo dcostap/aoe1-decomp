@@ -7326,15 +7326,16 @@
     },
     {
       "name": "Res_file",
-      "source": "src/res_file_tu.cpp",
+      "source": "src/Res_file.cpp",
+      "module": "Res_file",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "0047F180": "src/matching/0047F180_RESFILE_close_new_resource_file.cpp",
-        "0047F230": "src/matching/0047F230_RESFILE_locate_resource.cpp",
-        "0047F480": "src/matching/0047F480_RESFILE_Extract_to_File.cpp",
-        "0047F580": "src/matching/0047F580_RESFILE_Set_Missing_Flag.cpp",
-        "0047F590": "src/matching/0047F590_RESFILE_Decommit_Mapped_Memory.cpp",
-        "0047FC50": "src/matching/0047FC50_BUILDRES_get_files_resource_type.cpp"
+        "0047F180": "src/Res_file.cpp",
+        "0047F230": "src/Res_file.cpp",
+        "0047F480": "src/Res_file.cpp",
+        "0047F580": "src/Res_file.cpp",
+        "0047F590": "src/Res_file.cpp",
+        "0047FC50": "src/Res_file.cpp"
       },
       "symbols": {
         "0047F180": "?RESFILE_close_new_resource_file@@YAXPAD@Z",
