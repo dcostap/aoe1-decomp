@@ -26,4 +26,12 @@ The future AIUA and Act Attack grouped gate must also include generated inline
 rows `00401130` and `00401140` from `action.h`. Do not remove or simplify
 those rows during header decomposition.
 
-Visible Map const `get_visible` belongs to the separate Terra 6 owner lane.
+Terra 3 proves that nonvirtual `RGE_Static_Object::unitAI()` returns
+`UnitAIModule*`, loads `+0x74`, and uses
+`?unitAI@RGE_Static_Object@@QAEPAVUnitAIModule@@XZ`. The canonical
+`include/stat_obj.h` declaration already has this surface. Future Act Attack
+composition must consume `stat_obj.h` and remove its local `unitAI` declaration.
+
+Terra 6 proves that `RGE_Visible_Map::get_visible(int, int) const` owns VA
+`0053C490` with target `?get_visible@RGE_Visible_Map@@QBEEHH@Z`. Act Attack's
+local declaration targets invalid `?get_visible@RGE_Visible_Map@@QAEEHH@Z`.
