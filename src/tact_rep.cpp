@@ -12,10 +12,20 @@
 // 004D16F0 vector deleting destructor is compiler-generated and has no
 // handwritten source owner.
 //
-// Eleven owners remain exact. update (004D1BB0) remains scratch because its
-// natural module build retains a localized two-byte state-4 register drift.
+// The prior candidate recorded eleven exact owners.  This header migration is
+// not validated.  update (004D1BB0) remains scratch.
+//
+// BLOCKER: the state-4 range load uses
+// RGE_Master_Combat_Object::weapon_range.  The canonical m_co_obj.h owner
+// header is not present in this worktree, so this module is held until that
+// header arrives.
 
 #include "../include/tact_rep.h"
+#include "../include/basegame.h"
+#include "../include/game_globals.h"
+#include "../include/m_co_obj.h"
+#include "../include/rge_base_game_global.h"
+#include "../include/sound_context.h"
 
 // PDB lines 41-46; VA 004D1680.
 // The constructor keeps the period base initialization and conditional setup.
@@ -122,7 +132,8 @@ void TRIBE_Action_Repair::set_state(unsigned char param_1)
             this->target_z = this->target_obj->world_z;
         }
         RGE_Action_Move_To* action = new RGE_Action_Move_To(
-            this->obj, this->target_obj, this->obj->object_data->work_range,
+            this->obj, this->target_obj,
+            ((RGE_Master_Combat_Object*)this->obj->master_obj)->weapon_range,
             this->task->move_sprite);
         if (action == 0) {
             this->set_state(0x0d);
@@ -134,11 +145,11 @@ void TRIBE_Action_Repair::set_state(unsigned char param_1)
     }
 
     case 10: {
-        this->obj->new_sprite(this->obj->object_data->sprite);
+        this->obj->new_sprite(this->obj->master_obj->sprite);
         this->timer = 1.0f;
         RGE_Static_Object* target = this->target_obj;
         if (target == 0) return;
-        short id = target->object_data->object_type;
+        short id = target->master_obj->object_group;
         if (id != 2 && id != 0x14 && id != 0x15 && id != 0x16) return;
         if (target->command_flag != this->save_target_command_flag) return;
         target->moveTo(this->obj->world_x, this->obj->world_y,
@@ -175,14 +186,14 @@ void TRIBE_Action_Repair::set_state(unsigned char param_1)
         return;
     }
 
-    this->obj->new_sprite(this->obj->object_data->sprite);
+    this->obj->new_sprite(this->obj->master_obj->sprite);
 }
 
 // PDB lines 229-441; VA 004D1BB0.
 // The source remains scratch. See recovery_notes/tact_rep_module.md.
 // Its natural calls, size, frame, and state routing match, but VC5 colors
 // the state-4 action-list vtable load in EAX instead of the shipped EDX.
-uchar TRIBE_Action_Repair::update()
+unsigned char TRIBE_Action_Repair::update()
 {
     RGE_Static_Object* check_target;
     RGE_Static_Object* target;
@@ -283,10 +294,10 @@ uchar TRIBE_Action_Repair::update()
             return 0;
         }
 
-        uchar result = this->target_obj->heal(
+        unsigned char result = this->target_obj->heal(
             (float)(this->task->work_rate *
                     this->obj->owner->world->world_time_delta_seconds) *
-            this->obj->master_obj->work_rate);
+            ((RGE_Master_Action_Object*)this->obj->master_obj)->work_rate);
         if (result == 1) {
             this->set_state(1);
             return 0;

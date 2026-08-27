@@ -12,23 +12,26 @@
 
 ## Status
 
-The source owns all 12 normal owners in PDB order. Eleven owners remain
-matching. `004D1BB0` (`TRIBE_Action_Repair::update`) remains scratch.
+The source owns all 12 normal owners in PDB order. The prior candidate recorded
+eleven exact owners. This canonical-header migration has no new validation.
+`004D1BB0` (`TRIBE_Action_Repair::update`) remains scratch.
 
-The natural update source keeps the original state routing, ordered calls,
-size, frame, and 29-call surface. Its remaining two-byte drift is the state-4
-action-list vtable load: the executable loads the vtable address through EDX,
-while the rebuilt source uses EAX. No natural source change recovered that
-register choice. Do not promote this owner without a fresh exact check.
+The state-4 range load reads `RGE_Master_Combat_Object::weapon_range` at
+`+0x114`. The canonical `m_co_obj.h` owner header is not present in this
+worktree. Do not replace this field with `RGE_Task::work_range`, a raw offset,
+or a local layout. Hold the module until Terra 3 provides that header.
+
+The canonical act-move and object-list owner declarations are also not present
+in this worktree. Do not restore their old local ABI declarations. Resolve
+these dependencies with their owner headers during the held-module repair.
 
 The source has no inline assembly, byte filler, codegen-only body, or forced
-register hint. The prior per-function comments and the update attempt log are
-condensed into the source and this note.
+register hint. No matching claim is made for this migration.
 
 ## Ownership and cleanup
 
 `src/tact_rep.cpp` is the sole compiler-facing source owner. The old direct
 wrapper, all 11 matching fragments, and the update scratch fragment are
 removed. The old context header is now the module-owned `include/tact_rep.h`.
-The source has no `.cpp` includes, recovery context macros, fallback class
+The source has no `.cpp` includes, recovery context macros, fallback ABI
 declarations, or duplicate owner declarations.
