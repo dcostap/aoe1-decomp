@@ -22,17 +22,31 @@ the authority. Header bodies remain proposals until the owner accepts them.
 
 ## RGE_Moving_Object and RGE_Action_Object
 
-- Owner: `act_obj.cpp`.
+- `RGE_Moving_Object` owner: `move_obj.cpp` and `include/move_obj.h`.
+- `RGE_Action_Object` owner: `act_obj.cpp` and `include/act_obj.h`.
 - `RGE_Moving_Object` size is `0x180`. Source: `inventory/types/all_types.csv`.
 - `RGE_Action_Object` size is `0x194`. Source: the same inventory.
 - The animated base size is `0x8C`. Its speed is at `+0x88`.
-- Moving slots are stop `+0x1EC`, turn `+0x1F0`, and setup `+0x1F4`.
+- The moving virtual order after the inherited surface is teleport, destructor,
+  two protected setup overloads, stop_moving, waitingToMove, turn_towards,
+  facetToNextWaypoint, setWaitingToMove, userDefinedWaypoint,
+  addUserDefinedWaypoint, removeAllUserDefinedWaypoints,
+  removeUserDefinedWaypoint, rotate, get_waypoint_checksum, findAvoidancePath,
+  passableTile, maximumSpeed, two canPath overloads, canBidirectionPath,
+  canPathWithObstructions, two canPathWithAdditionalPassability overloads,
+  findFirstTerrainAlongExceptionPath, two canLinePath overloads, and two
+  firstTileAlongLine overloads.
+- The moving methods use `__thiscall`. Only getPath, waitingToMove, and
+  facetToNextWaypoint are const.
 - Action slot `work2(RGE_Static_Object*, float, float, float, uchar)` is `+0x1F8`.
 - Action fields are waiting `+0x180`, actions `+0x184`, command flag `+0x188`,
   last action `+0x18C`, and last action state `+0x190`.
 - Constructors are `00405C60` and `00405F90`. Both are `__thiscall` exact anchors.
 - `00406C30 getTask` and `00406D30 get_action_checksum` are exact anchors.
 - `00406470 work2` and `00406860 get_command_master` remain scratch.
+- Moving-object exact anchors include `0045C450`, `0045C5C0`, `0045C970`,
+  `0045CAA0`, `0045CE00`, `0045D140`, `0045D1F0`, `0045D620`, `0045F7F0`,
+  `00460B70`, and `00460D60`.
 
 ## RGE_Task_List and RGE_Action_List
 
