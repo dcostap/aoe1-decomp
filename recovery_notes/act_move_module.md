@@ -80,22 +80,24 @@ file.
 
 The direct source metadata is now staged in `config/source_modules/act_move.json`
 and `config/translation_units.json`. The grouped candidate report is
-`build/candidate_tus/act_move_direct/current_main/report.txt`.
+`build/candidate_tus/act_move_direct/current_main_command_waypoint_rebased/report.txt`.
 
-Against current `main` `a2a0c6311`, which includes the shared Static/Moving ABI
-repair from `ad4b69dab`, the candidate compiled all eight exact owners and the
-generated destructor. All eight exact owners match. The generated destructor
-also matches. The accepted-drift `00405850 update` remains observed and has
-728 changed bytes in the direct source context. Every exact and observed row
-has owner status `match`, zero relocation mismatches, and zero boundary
-escapes. The generated destructor is `unverified` with zero relocations and
-zero boundary escapes.
+Against current `main` `ddd2ec833`, which includes the shared Static/Moving
+ABI repair from `ad4b69dab`, the candidate compiled all eight exact owners and
+the generated destructor. All eight exact owners match. The generated
+destructor also matches. The accepted-drift `00405850 update` remains
+observed and has 728 changed bytes in the direct source context. Every exact
+and observed row has owner status `match`, zero relocation mismatches, and
+zero boundary escapes. The generated destructor is `unverified` with zero
+relocations and zero boundary escapes.
 
 This current-main source and metadata chain removes the former wrapper,
 context header, accepted-drift fragment, and eight matching fragments. It
 registers `src/act_move.cpp` directly in `config/source_modules/act_move.json`
 and `config/translation_units.json`. No shared header changes are part of this
-chain.
+and `config/translation_units.json`. The narrow `command_waypoint.h` owner
+header is the only shared-header addition in this chain. No Static/Moving ABI
+header changes are part of this chain.
 
 The vslot repair follows the original PDB-backed vtable. The executable's
 `RGE_Action_Object` table at `0056E420` places static setup at `+0x1D8` and
@@ -110,7 +112,7 @@ local carrier or vtable workaround.
 
 ## Shared ABI fanout after main rebase
 
-The branch is rebased onto current `main` at `a2a0c6311`, which includes
+The branch is rebased onto current `main` at `ddd2ec833`, which includes
 `ee088911a`, the full Action registration from `037871d95`, and the shared
 Static/Moving ABI repair from `ad4b69dab`. The fanout reports are under
 `build/candidate_tus/shared_abi_fanout`.
