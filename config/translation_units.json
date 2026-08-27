@@ -2957,19 +2957,23 @@
     },
     {
       "name": "tact_wnd",
-      "source": "src/tact_wnd_tu.cpp",
+      "source": "src/tact_wnd.cpp",
       "flags": "config/flags/tact_wnd.rsp",
       "owners": {
-        "004D3470": "src/matching/004D3470_TRIBE_Action_Wonder.cpp",
-        "004D34C0": "src/matching/004D34C0_TRIBE_Action_Wonder.cpp",
-        "004D34F0": "src/matching/004D34F0_TRIBE_Action_Wonder.cpp",
-        "004D3690": "src/matching/004D3690_first_in_stack.cpp",
-        "004D36B0": "src/matching/004D36B0_set_state.cpp",
-        "004D3810": "src/matching/004D3810_update.cpp"
+        "004D3470": "src/tact_wnd.cpp",
+        "004D34C0": "src/tact_wnd.cpp",
+        "004D34F0": "src/tact_wnd.cpp",
+        "004D3690": "src/tact_wnd.cpp",
+        "004D36B0": "src/tact_wnd.cpp",
+        "004D3810": "src/tact_wnd.cpp"
       },
       "symbols": {
         "004D3470": "??0TRIBE_Action_Wonder@@QAE@HPAVRGE_Action_Object@@@Z",
-        "004D34C0": "??0TRIBE_Action_Wonder@@QAE@PAVRGE_Action_Object@@@Z"
+        "004D34C0": "??0TRIBE_Action_Wonder@@QAE@PAVRGE_Action_Object@@@Z",
+        "004D34F0": "??1TRIBE_Action_Wonder@@UAE@XZ",
+        "004D3690": "?first_in_stack@TRIBE_Action_Wonder@@UAEXE@Z",
+        "004D36B0": "?set_state@TRIBE_Action_Wonder@@MAEXE@Z",
+        "004D3810": "?update@TRIBE_Action_Wonder@@UAEEXZ"
       }
     },
     {
