@@ -5,6 +5,7 @@
 #include "../include/com_obj.h"
 #include "../include/game_globals.h"
 #include "../include/player.h"
+#include "../include/rge_fio.h"
 #include "../include/sprite.h"
 #include "../include/stat_obj.h"
 #include "../include/task.h"

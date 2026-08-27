@@ -38,18 +38,7 @@ public:
     virtual void save(int);
     virtual RGE_Static_Object* make_new_obj(RGE_Player*, float, float, float);
     virtual RGE_Master_Static_Object* make_new_master();
-    virtual unsigned char check_placement(RGE_Player*, float, float, int*,
-                                          unsigned char, unsigned char,
-                                          unsigned char, unsigned char,
-                                          unsigned char, unsigned char);
-    virtual unsigned char alignment(float*, float*, RGE_Game_World*,
-                                   unsigned char);
     virtual long calc_base_damage_ability(RGE_Master_Combat_Object*);
-    virtual void play_command_sound();
-    virtual void play_move_sound();
-    virtual void draw(TDrawArea*, short, short, RGE_Color_Table*, long, long,
-                      int, unsigned char);
-    virtual RGE_Task_List* create_task_list();
 
 protected:
     int setup(RGE_Master_Combat_Object*);
