@@ -140,9 +140,9 @@ public:
     virtual void notify(int, int, int, long, long, long);
     virtual int attack(float, float, float, int);
     virtual int attack(int, int);
-    virtual int moveTo(float, float, float, float, int);
-    virtual int moveTo(int, float, int);
     virtual int moveTo(int, int);
+    virtual int moveTo(int, float, int);
+    virtual int moveTo(float, float, float, float, int);
     virtual int moveAwayFrom(int, int);
     virtual int hunt(int, int);
     virtual int gather(int, int);
