@@ -88,9 +88,6 @@ public:
     int GetDDBltError(long result);
 };
 
-extern TMousePointer* MouseSystem;
-extern "C" unsigned long __cdecl debug_timeGetTime(char* file, int line);
-
 typedef char mouseptr_tmousepointer_size[
     (sizeof(TMousePointer) == 0x254) ? 1 : -1];
 

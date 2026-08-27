@@ -3,6 +3,9 @@
 
 #include "../include/Mouseptr.h"
 
+extern TMousePointer* MouseSystem;
+extern "C" unsigned long __cdecl debug_timeGetTime(char* file, int line);
+
 #include <stdio.h>
 
 TMousePointer::TMousePointer(int mode)
