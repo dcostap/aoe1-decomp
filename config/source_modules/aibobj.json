@@ -1,0 +1,90 @@
+{
+  "schema": 1,
+  "name": "aibobj",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\aibobj.cpp",
+  "source": "src/aibobj.cpp",
+  "header": "include/aibobj.h",
+  "functions": {
+    "00409FA0": {
+      "status": "matching",
+      "note_path": "recovery_notes/aibobj_module.md"
+    },
+    "0040A060": {
+      "status": "matching",
+      "note_path": "recovery_notes/aibobj_module.md"
+    },
+    "0040A130": {
+      "status": "matching",
+      "note_path": "recovery_notes/aibobj_module.md"
+    },
+    "0040A240": {
+      "status": "matching",
+      "note_path": "recovery_notes/aibobj_module.md"
+    },
+    "0040A350": {
+      "status": "matching",
+      "note_path": "recovery_notes/aibobj_module.md"
+    },
+    "0040A370": {
+      "status": "matching",
+      "note_path": "recovery_notes/aibobj_module.md"
+    },
+    "0040A390": {
+      "status": "matching",
+      "note_path": "recovery_notes/aibobj_module.md"
+    },
+    "0040A3B0": {
+      "status": "matching",
+      "note_path": "recovery_notes/aibobj_module.md"
+    },
+    "0040A3D0": {
+      "status": "matching",
+      "note_path": "recovery_notes/aibobj_module.md"
+    },
+    "0040A3F0": { "status": "matching" },
+    "0040A400": { "status": "matching" },
+    "0040A420": { "status": "matching" },
+    "0040A460": { "status": "matching" },
+    "0040A4E0": { "status": "matching" },
+    "0040A560": { "status": "matching" },
+    "0040A570": { "status": "matching" },
+    "0040A580": { "status": "matching" },
+    "0040A590": { "status": "matching" },
+    "0040A5A0": { "status": "matching" },
+    "0040A5B0": { "status": "matching" },
+    "0040A5C0": { "status": "matching" },
+    "0040A5D0": { "status": "matching" },
+    "0040A5E0": { "status": "matching" },
+    "0040A5F0": { "status": "matching" },
+    "0040A600": { "status": "matching" },
+    "0040A610": { "status": "matching" },
+    "0040A620": { "status": "matching" },
+    "0040A630": { "status": "matching" },
+    "0040A640": { "status": "matching" },
+    "0040A650": { "status": "matching" },
+    "0040A660": { "status": "matching" },
+    "0040A670": { "status": "matching" },
+    "0040A680": { "status": "matching" },
+    "0040A690": { "status": "matching" },
+    "0040A6A0": { "status": "matching" },
+    "0040A6B0": { "status": "matching" },
+    "0040A6C0": { "status": "matching" },
+    "0040A6D0": { "status": "matching" },
+    "0040A6E0": { "status": "matching" },
+    "0040A6F0": { "status": "matching" },
+    "0040A700": { "status": "matching" },
+    "0040A710": { "status": "matching" },
+    "0040A720": { "status": "matching" },
+    "0040A730": { "status": "matching" },
+    "0040A740": { "status": "matching" },
+    "0040A750": { "status": "matching" },
+    "0040A760": { "status": "matching" },
+    "0040A770": { "status": "matching" },
+    "0040A790": { "status": "matching" },
+    "0040A7B0": { "status": "matching" },
+    "0040A7C0": { "status": "matching" },
+    "0040A7D0": { "status": "matching" },
+    "0040A7E0": { "status": "matching" },
+    "0040A7F0": { "status": "matching" }
+  }
+}

@@ -1,8 +1,9 @@
-#ifndef AIBOBJ_CONTEXT_H
-#define AIBOBJ_CONTEXT_H
+#ifndef AOE1_AIBOBJ_H
+#define AOE1_AIBOBJ_H
 
-// Authentic aibobj.cpp class surface used by the module owner wrapper.
-// The class has one virtual destructor and a 0xA0-byte object layout.
+// Declarations for the original aibobj.cpp source module.
+// The PDB type record proves the 0xA0-byte BaseObject layout.
+
 class BaseObject {
 public:
     virtual ~BaseObject();
@@ -15,30 +16,30 @@ public:
     BaseObject(BaseObject* src);
     BaseObject(const BaseObject& src);
 
-    BaseObject* next;
-    BaseObject* prev;
-    union { int numberGroupsValue; int numberGroups_; int count; };
-    union { int* groupIDValue; int* groupID_; int* groups; };
-    union { int categoryIDValue; int categoryID_; };
-    union { int typeIDValue; int typeID_; };
-    union { int gameIDValue; int gameID_; };
-    union { char nameValue[64]; char name_arr[64]; };
-    union { float xPositionValue; float xPosition_; };
-    union { float yPositionValue; float yPosition_; };
-    union { float zPositionValue; float zPosition_; };
-    union { float xSizeValue; float xSize_; };
-    union { float ySizeValue; float ySize_; };
-    union { float zSizeValue; float zSize_; };
-    union { int hitPointValue; int hitPoints_; };
-    union { int minHitPointValue; int minHitPoints_; };
-    union { int maxHitPointValue; int maxHitPoints_; int field_80; };
-    union { int busyValue; int busy_; };
-    union { int currentTaskValue; int currentTask_; };
-    union { int currentTargetValue; int currentTarget_; };
-    union { int currentTargetTypeValue; int currentTargetType_; };
-    union { float currentTargetXPositionValue; float currentTargetXPosition_; int field_94; };
-    union { float currentTargetYPositionValue; float currentTargetYPosition_; int field_98; };
-    union { float currentTargetZPositionValue; float currentTargetZPosition_; int field_9C; };
+    BaseObject* next;                         // +0x04
+    BaseObject* prev;                         // +0x08
+    int numberGroupsValue;                    // +0x0C
+    int* groupIDValue;                        // +0x10
+    int categoryIDValue;                      // +0x14
+    int typeIDValue;                          // +0x18
+    int gameIDValue;                          // +0x1C
+    char nameValue[64];                       // +0x20
+    float xPositionValue;                     // +0x60
+    float yPositionValue;                     // +0x64
+    float zPositionValue;                     // +0x68
+    float xSizeValue;                         // +0x6C
+    float ySizeValue;                         // +0x70
+    float zSizeValue;                         // +0x74
+    int hitPointValue;                        // +0x78
+    int minHitPointValue;                     // +0x7C
+    int maxHitPointValue;                     // +0x80
+    int busyValue;                            // +0x84
+    int currentTaskValue;                     // +0x88
+    int currentTargetValue;                   // +0x8C
+    int currentTargetTypeValue;               // +0x90
+    float currentTargetXPositionValue;        // +0x94
+    float currentTargetYPositionValue;        // +0x98
+    float currentTargetZPositionValue;        // +0x9C
 
     int numberGroups() const;
     int groupID(int index) const;
@@ -87,11 +88,11 @@ public:
     void setCurrentTargetPosition(float a, float b, float c);
 };
 
+typedef char aibobj_size_check[(sizeof(BaseObject) == 0xA0) ? 1 : -1];
+
 int __cdecl operator==(const BaseObject& left, const BaseObject& right);
 int __cdecl operator!=(const BaseObject& left, const BaseObject& right);
 int __cdecl operator<(const BaseObject& left, const BaseObject& right);
 int __cdecl operator>(const BaseObject& left, const BaseObject& right);
 
-typedef char aibobj_size_check[(sizeof(BaseObject) == 0xA0) ? 1 : -1];
-
-#endif
+#endif  // AOE1_AIBOBJ_H
