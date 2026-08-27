@@ -3,7 +3,9 @@
 ## Result
 
 The binary supports one `RGE_Master_Player` class. It has size `0x2C` (44 bytes).
-It has no proven base class. No header or source file changed for this audit.
+It has no proven base class. Current main publishes the canonical owner in
+`include/mst_play.h` and the direct source owner in `src/mst_play.cpp` through
+`24bd5ad74`.
 
 The type inventory names these fields:
 
@@ -72,9 +74,10 @@ The complete handwritten class surface belongs to `mst_play.cpp`:
 - `0x00461560`: `load_object`, lines 176-205.
 - `0x00461840`: `save`, lines 210-234.
 
-The current wrapper is `src/mst_play_tu.cpp`. It includes one matching source
-file for each handwritten owner. Address `0x004614D9` is a reviewed
-padding-only switch-table artifact, not a class method or source owner.
+The direct `src/mst_play.cpp` source module owns the handwritten bodies in PDB
+order. Its registration has eight exact rows. Address `0x004614D9` is a
+reviewed padding-only switch-table artifact, not a class method or source
+owner.
 
 ## World direct target identities
 
@@ -109,41 +112,12 @@ Its destructor tail-jumps to `0x00461150` at `0x00511826`.
 Its fallback loaders call `0x00461270` at `0x00511873` and `0x00461560`
 at `0x005119D4`.
 
-## Conflicting current declarations
+## Current owner use
 
-These declarations are context or function-local copies. None is a canonical
-owner header:
+Use `include/mst_play.h` for every complete `RGE_Master_Player` consumer.
+Forward declarations in `world.h`, `player.h`, and `game_types.h` remain safe.
+The historic context and function-local declarations were recovery evidence;
+they do not define the current owner.
 
-- `include/mst_play_context.h:94` has a full context declaration.
-- `include/tmplayer_context.h:29` has a duplicate full context declaration.
-- `include/world_context.h:67`, `include/world_scenario_context.h:75`, and
-  `src/world_phase2_context.h:75` expose the virtual surface but replace the
-  named fields with one opaque byte member.
-- `include/player_context.h:187` and `src/player_tu_context.h:368` expose only
-  the destructor and a partial field set. They omit the full virtual surface,
-  `name`, and `type`.
-- `src/matching/00460FD0_RGE_Master_Player.cpp` has a complete local declaration.
-  Other matching files repeat narrower declarations. The `int` constructor
-  file names a raw vtable member. The destructor file uses a different field
-  order and writes the vtable directly. These forms are exact-function stubs,
-  not reusable ABI owners.
-- `src/matching/0052E400_init_player_type.cpp` and
-  `src/accepted_drift/0052E220_data_load_players_type.cpp` carry narrow local
-  declarations for derived construction. They do not define the base owner.
-
-Forward declarations in `include/world.h`, `include/player.h`, and
-`include/game_types.h` are safe. They do not conflict with this audit.
-
-## Narrow future proposal
-
-Publish one owner header for `RGE_Master_Player`, using the donor basename
-`RGE_Master_Player.h`. It should contain only the eight named fields above,
-the six virtual declarations, and the two binary-backed constructors.
-Use forward declarations for foreign classes. Let normal compiler alignment
-supply the class size. Do not add a default constructor until its binary or
-period-source status is proven.
-
-Then move the `mst_play.cpp` bodies into one natural source owner in PDB order.
-Remove the repeated local declarations and the `mst_play_tu.cpp` context include.
-Use the owner header from World and tmplayer owners after their foreign owners
-are cleaned.
+Do not add a default constructor. It has generated donor metadata only. No
+binary owner or PDB function row supports an executable-backed declaration.
