@@ -1,20 +1,25 @@
-#ifndef PICTURE_CONTEXT_H
-#define PICTURE_CONTEXT_H
+#ifndef AOE1_PICTURE_H
+#define AOE1_PICTURE_H
 
-// Authentic Picture.cpp type surface shared by the owner bodies.  The
-// individual recovery files keep their stand-alone declarations when this
-// header is not present.
-struct TRANSINFO;
-class LINEINFO;
-class TPicture;
-struct BITMAPINFO256;
+struct LINEINFO {
+    int AllTrans;
+    int MidSolid;
+    long StartX;
+    long EndX;
+};
 
-void __cdecl rge_read(int file_handle, void* buffer, int size);
-extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
-extern "C" void* __cdecl malloc(unsigned int size);
-extern "C" void __cdecl DibFree(void* dib);
-void __cdecl DibCheckTrans(BITMAPINFO256* dib, TRANSINFO* info,
-    unsigned char* bits);
+typedef char picture_line_info_size_check[(sizeof(LINEINFO) == 0x10) ? 1 : -1];
+
+struct TRANSINFO {
+    int AnyTrans;
+    long x;
+    long y;
+    long w;
+    long h;
+    LINEINFO* LineInfo;
+};
+
+typedef char picture_trans_info_size_check[(sizeof(TRANSINFO) == 0x18) ? 1 : -1];
 
 struct tagBITMAPINFOHEADER {
     unsigned long biSize;
@@ -42,6 +47,9 @@ struct BITMAPINFO256 {
     tagRGBQUAD bmiColors[256];
 };
 
+typedef char picture_bitmap_info_size_check[
+    (sizeof(BITMAPINFO256) == 0x428) ? 1 : -1];
+
 class TDrawArea {
 public:
     void* DrawSystem;
@@ -57,10 +65,12 @@ public:
     char ClipRect[0x10];
 };
 
+typedef char picture_draw_area_size_check[(sizeof(TDrawArea) == 0x38) ? 1 : -1];
+
 class TPicture {
 public:
-    void* Dib;
-    void* BitmapInfo;
+    tagBITMAPINFOHEADER* Dib;
+    BITMAPINFO256* BitmapInfo;
     unsigned char* Bits;
     TRANSINFO* TransInfo;
     int OwnMemory;
@@ -85,5 +95,15 @@ public:
         long param_10, long param_11);
     unsigned char GetPixel(long x, long y, int param_3, int param_4);
 };
+
+typedef char picture_size_check[(sizeof(TPicture) == 0x20) ? 1 : -1];
+
+void __cdecl rge_read(int file_handle, void* buffer, int size);
+extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
+extern "C" void* __cdecl malloc(unsigned int size);
+extern "C" void __cdecl free(void* block);
+extern "C" void __cdecl DibFree(void* dib);
+void __cdecl DibCheckTrans(BITMAPINFO256* dib, TRANSINFO* info,
+    unsigned char* bits);
 
 #endif

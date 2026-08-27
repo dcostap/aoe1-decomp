@@ -6818,20 +6818,21 @@
       }
     },
     {
-      "name": "picture",
-      "source": "src/picture_tu.cpp",
+      "name": "Picture",
+      "source": "src/Picture.cpp",
+      "module": "Picture",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "0046DDE0": "src/matching/0046DDE0_TPicture.cpp",
-        "0046DE30": "src/matching/0046DE30_TPicture.cpp",
-        "0046DFA0": "src/matching/0046DFA0_TPicture.cpp",
-        "0046DFC0": "src/matching/0046DFC0_TPicture.cpp",
-        "0046E020": "src/matching/0046E020_Save.cpp",
-        "0046E0B0": "src/matching/0046E0B0_Load.cpp",
-        "0046E2C0": "src/matching/0046E2C0_AlignedWidth.cpp",
-        "0046E2D0": "src/matching/0046E2D0_Draw.cpp",
-        "0046E370": "src/matching/0046E370_Tile.cpp",
-        "0046E3E0": "src/matching/0046E3E0_GetPixel.cpp"
+        "0046DDE0": "src/Picture.cpp",
+        "0046DE30": "src/Picture.cpp",
+        "0046DFA0": "src/Picture.cpp",
+        "0046DFC0": "src/Picture.cpp",
+        "0046E020": "src/Picture.cpp",
+        "0046E0B0": "src/Picture.cpp",
+        "0046E2C0": "src/Picture.cpp",
+        "0046E2D0": "src/Picture.cpp",
+        "0046E370": "src/Picture.cpp",
+        "0046E3E0": "src/Picture.cpp"
       },
       "symbols": {
         "0046DDE0": "??0TPicture@@QAE@PADJHPAXH@Z",
