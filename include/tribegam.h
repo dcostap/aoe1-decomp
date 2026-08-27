@@ -1,8 +1,8 @@
 #ifndef AOE1_TRIBEGAM_H
 #define AOE1_TRIBEGAM_H
 
-// The constructor PDB symbol spells RGE_Prog_Info as a struct (PAU...).
-// Keep this declaration before the canonical base-game header.
+// RGE_Prog_Info is a struct in the period ABI (constructor symbol PAU...).
+// Declare the same tag before the canonical base-game composition.
 struct RGE_Prog_Info;
 #include "basegame.h"
 
