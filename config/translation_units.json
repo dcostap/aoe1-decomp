@@ -4178,17 +4178,18 @@
     },
     {
       "name": "taunt",
-      "source": "src/taunt_tu.cpp",
+      "source": "src/taunt.cpp",
+      "module": "taunt",
       "flags": "config/flags/005096A0_RestartSoundSystem.rsp",
       "owners": {
-        "00509450": "src/matching/00509450_TTaunt.cpp",
-        "00509480": "src/matching/00509480_TTaunt.cpp",
-        "00509490": "src/matching/00509490_PlayTauntStr.cpp",
-        "00509530": "src/matching/00509530_PlayTauntNo.cpp",
-        "00509610": "src/matching/00509610_GetTauntNo.cpp",
-        "00509640": "src/matching/00509640_GetTauntText.cpp",
-        "00509670": "src/matching/00509670_StopSoundSystem.cpp",
-        "005096A0": "src/matching/005096A0_RestartSoundSystem.cpp"
+        "00509450": "src/taunt.cpp",
+        "00509480": "src/taunt.cpp",
+        "00509490": "src/taunt.cpp",
+        "00509530": "src/taunt.cpp",
+        "00509610": "src/taunt.cpp",
+        "00509640": "src/taunt.cpp",
+        "00509670": "src/taunt.cpp",
+        "005096A0": "src/taunt.cpp"
       },
       "symbols": {}
     },
