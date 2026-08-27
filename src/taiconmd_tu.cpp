@@ -17,9 +17,9 @@
 #include "matching/004D5EE0_TribeConstructionAIModule.cpp"
 #include "matching/004D5EF0_setMainDecisionAI.cpp"
 #include "matching/004D5F00_canPlace.cpp"
-#include "accepted_drift/004D60E0_placeStructure.cpp"
+#include "scratch/004D60E0_placeStructure.cpp"
 #include "matching/004D6780_placeDock.cpp"
 #include "matching/004D6800_setBuilt.cpp"
-#include "matching/004D68A0_compare.cpp"
+#include "scratch/004D68A0_compare.cpp"
 
 #undef TAICONMD_SHARED_CONTEXT

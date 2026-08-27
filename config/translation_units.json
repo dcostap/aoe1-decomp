@@ -3438,8 +3438,7 @@
         "004D5EF0": "src/matching/004D5EF0_setMainDecisionAI.cpp",
         "004D5F00": "src/matching/004D5F00_canPlace.cpp",
         "004D6780": "src/matching/004D6780_placeDock.cpp",
-        "004D6800": "src/matching/004D6800_setBuilt.cpp",
-        "004D68A0": "src/matching/004D68A0_compare.cpp"
+        "004D6800": "src/matching/004D6800_setBuilt.cpp"
       },
       "symbols": {
         "004D5E60": "??0TribeConstructionAIModule@@QAE@PAXH@Z",
@@ -3448,8 +3447,7 @@
         "004D5EF0": "?setMainDecisionAI@TribeConstructionAIModule@@QAEXPAVTribeMainDecisionAIModule@@@Z",
         "004D5F00": "?canPlace@TribeConstructionAIModule@@QAEHPAVBuildItem@@@Z",
         "004D6780": "?placeDock@TribeConstructionAIModule@@QAEPAVConstructionItem@@PAVBuildItem@@@Z",
-        "004D6800": "?setBuilt@TribeConstructionAIModule@@QAEXPAVRGE_Static_Object@@H@Z",
-        "004D68A0": "?compare@TribeConstructionAIModule@@IAEPAVConstructionItem@@PAV2@0@Z"
+        "004D6800": "?setBuilt@TribeConstructionAIModule@@QAEXPAVRGE_Static_Object@@H@Z"
       }
     },
     {
