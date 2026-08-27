@@ -15,7 +15,7 @@ extern "C" void __cdecl rge_write(int file_handle, void* data, int size);
 TribeResourceAIModule::TribeResourceAIModule(void* param_1, int param_2,
                                              int param_3, int param_4,
                                              int param_5, int param_6)
-    : AIModule((void*)s_Resource_AI, 0x3EF, param_2, param_1),
+    : AIModule((char*)s_Resource_AI, 0x3EF, param_2, param_1),
       md(0),
       numberResourcesValue(param_3) {
 }

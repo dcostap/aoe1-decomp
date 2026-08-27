@@ -7,10 +7,10 @@ all ten normal functions from lines 30 through 143. Their address sequence is
 the source order in `src/tairesmd.cpp`. The nearby `004E6B80` scalar deleting
 destructor is compiler-generated and is not a handwritten owner.
 
-The module header is `include/tairesmd.h`. It records the proven AIModule,
-ResourceItem, TribeMainDecisionAIModule, ResourceTable, and
-TribeResourceAIModule layouts used by this source. No synthetic function,
-inline assembly, or ABI shim is used.
+The module header is `include/tairesmd.h`. It imports the canonical AIModule
+and ResourceItem declarations. It retains only the PDB-proven local
+TribeMainDecisionAIModule, ResourceTable, and TribeResourceAIModule views.
+No synthetic function, inline assembly, or ABI shim is used.
 
 PDB owner order and spans are:
 
