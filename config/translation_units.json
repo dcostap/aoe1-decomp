@@ -2832,7 +2832,9 @@
         "004B89A0": "src/matching/004B89A0_action.cpp",
         "004B8AE0": "src/matching/004B8AE0_key_down_action.cpp"
       },
-      "symbols": {}
+      "symbols": {
+        "004B89A0": "?action@TRIBE_Mission_Screen@@UAEJPAVTPanel@@JKK@Z"
+      }
     },
     {
       "name": "scr_stms_prefix",
@@ -4592,6 +4594,7 @@
         "00446700": "??1DString@@QAE@XZ",
         "00446D40": "?length@DString@@QBEHXZ",
         "00446D50": "?index@DString@@QBEHXZ",
+        "00446DE0": "?contains@DString@@QBEHPBD@Z",
         "00446E00": "?numWords@DString@@QAEHXZ",
         "004470B0": "?moveToFirstWord@DString@@QAEXXZ",
         "004470C0": "?moveToNextWord@DString@@QAEXXZ",
@@ -4667,6 +4670,7 @@
         "0046B550": "?lookupMisc@PathingSystem@@QAEEHH@Z",
         "0046B570": "?setMisc@PathingSystem@@QAEXHHE@Z",
         "0046B5C0": "?zeroObstructionMap@PathingSystem@@QAEXXZ",
+        "0046B5E0": "?obstruction@PathingSystem@@QAEEHH@Z",
         "0046D740": "?checksum@PathingSystem@@QAEJXZ",
         "0046D770": "?printState@PathingSystem@@IAEXPAVRGE_Moving_Object@@@Z"
       }
@@ -8350,7 +8354,11 @@
         "004E4790": "src/matching/004E4790_percentTilesExploredInPositionQuadrant.cpp"
       },
       "symbols": {
+        "004D7070": "??0TribeInformationAIModule@@QAE@HH@Z",
+        "004D8300": "?update@TribeInformationAIModule@@UAEHH@Z",
         "004D84D0": "?setMainDecisionAI@TribeInformationAIModule@@QAEXPAVTribeMainDecisionAIModule@@@Z",
+        "004D9110": "?fullyExploredZone@TribeInformationAIModule@@QAEHH@Z",
+        "004D9970": "?gameIDsOwnedBy@TribeInformationAIModule@@QAEHHPAPAHH@Z",
         "004D9B20": "?placeDock@TribeInformationAIModule@@QAEPAVConstructionItem@@PAVBuildItem@@MMHH@Z",
         "004DA190": "?mapXSize@TribeInformationAIModule@@QAEHXZ",
         "004DA1C0": "?mapYSize@TribeInformationAIModule@@QAEHXZ",
@@ -8358,10 +8366,12 @@
         "004E1230": "?attackMemory@TribeInformationAIModule@@QAEPAUAttackMemory@@H@Z",
         "004DA5A0": "?objectMemory@TribeInformationAIModule@@QAEPAUObjectMemory@@H@Z",
         "004DB280": "?influenceCanPlaceStructure@TribeInformationAIModule@@QAEHPAVBuildItem@@@Z",
+        "004DE1F0": "?objectToDefend@TribeInformationAIModule@@QAEPAUObjectMemory@@H@Z",
         "004DAF80": "?addImportantObject@TribeInformationAIModule@@QAEHH@Z",
         "004E0F90": "?storeAttackMemory@TribeInformationAIModule@@QAEHEEEEEFEKH@Z",
         "004E0FD0": "?storeAttackMemory@TribeInformationAIModule@@QAEHEEEEEEEFEKH@Z",
-        "004DAFB0": "?importantObject@TribeInformationAIModule@@QAEHH@Z"
+        "004DAFB0": "?importantObject@TribeInformationAIModule@@QAEHH@Z",
+        "004E2440": "?resourceType@TribeInformationAIModule@@QAEHHH@Z"
       }
     }
   ]
