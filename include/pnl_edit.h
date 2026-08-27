@@ -1,15 +1,17 @@
-#ifndef PNL_EDIT_FULL_CONTEXT_H
-#define PNL_EDIT_FULL_CONTEXT_H
+#ifndef AOE1_PNL_EDIT_H
+#define AOE1_PNL_EDIT_H
 
+#ifndef _WINDOWS_
 typedef void* HWND;
-typedef void* HINSTANCE;
 typedef void* HMENU;
+typedef void* HINSTANCE;
 typedef void* HBRUSH;
 typedef void* HPALETTE;
 typedef void* HDC;
 typedef void* HGDIOBJ;
 typedef void* HRGN;
 typedef unsigned long COLORREF;
+typedef void* FARPROC;
 struct tagRECT {
     long left;
     long top;
@@ -17,19 +19,23 @@ struct tagRECT {
     long bottom;
 };
 typedef struct tagRECT RECT;
+#endif
+
+#ifndef _WINUSER_
 typedef long (__stdcall *WNDPROC)(HWND, unsigned int, unsigned int, long);
+#endif
 
 struct PanelNode;
 
 struct TDrawSystem {
-    void* Inst;                    // +0x00
-    void* Wnd;                     // +0x04
-    HPALETTE Pal;                  // +0x08
+    void* Inst;
+    void* Wnd;
+    HPALETTE Pal;
 };
 
 struct TDrawArea {
-    TDrawSystem* DrawSystem;       // +0x00
-    void* Wnd;                     // +0x04
+    TDrawSystem* DrawSystem;
+    void* Wnd;
     char gap_08[0x100 - 0x08];
 
     void Clear(tagRECT*, int);
@@ -114,66 +120,66 @@ public:
     virtual void take_snapshot();
     virtual void handle_reactivate();
 
-    TPanel* previous_panel;       // +0x04
-    TPanel* previous_modal_panel; // +0x08
-    long pnl_x;                   // +0x0C
-    long pnl_y;                   // +0x10
-    long pnl_wid;                 // +0x14
-    long pnl_hgt;                 // +0x18
-    char* panel_name;             // +0x1C
-    TDrawArea* render_area;       // +0x20
-    tagRECT clip_rect;             // +0x24
-    int position_mode;             // +0x34
-    int need_redraw;               // +0x38
-    TPanel* curr_child;            // +0x3C
-    TPanel* parent_panel;          // +0x40
-    TPanel* left_panel;            // +0x44
-    TPanel* top_panel;             // +0x48
-    TPanel* right_panel;           // +0x4C
-    TPanel* bottom_panel;          // +0x50
-    PanelNode* node;                // +0x54
-    PanelNode* first_child_node;    // +0x58
-    PanelNode* last_child_node;     // +0x5C
-    TPanel* tab_prev_panel;         // +0x60
-    TPanel* tab_next_panel;         // +0x64
-    int mouse_captured;             // +0x68
-    int active;                     // +0x6C
-    int visible;                    // +0x70
-    int tab_stop;                   // +0x74
-    int have_focus;                 // +0x78
-    int overlapping_children;       // +0x7C
-    int handle_mouse_input;         // +0x80
-    int just_drawn;                 // +0x84
-    HRGN clip_rgn;                  // +0x88
-    tagRECT render_rect;             // +0x8C
-    long left_border;               // +0x9C
-    long top_border;                // +0xA0
-    long right_border;              // +0xA4
-    long bottom_border;             // +0xA8
-    long min_wid;                   // +0xAC
-    long max_wid;                   // +0xB0
-    long min_hgt;                   // +0xB4
-    long max_hgt;                   // +0xB8
-    long mouse_hold_interval;       // +0xBC
-    long mouse_move_tolerance;      // +0xC0
-    long mouse_down_x;              // +0xC4
-    long mouse_down_y;              // +0xC8
-    int mouse_down_ctrl;             // +0xCC
-    int mouse_down_shift;            // +0xD0
-    unsigned long mouse_down_time;   // +0xD4
-    int error_code;                  // +0xD8
-    int z_order;                     // +0xDC
-    int display_changed_count;       // +0xE0
-    long help_string_id;             // +0xE4
-    long help_page_id;               // +0xE8
-    unsigned char mouse_action;      // +0xEC
-    unsigned char mouse_down_button; // +0xED
-    unsigned char panel_type;        // +0xEE
-    unsigned char color;             // +0xEF
-    unsigned char fill_in_background;// +0xF0
-    unsigned char clip_to_parent;    // +0xF1
-    unsigned char draw_rect2_flag;   // +0xF2
-    unsigned char need_restore;      // +0xF3
+    TPanel* previous_panel;
+    TPanel* previous_modal_panel;
+    long pnl_x;
+    long pnl_y;
+    long pnl_wid;
+    long pnl_hgt;
+    char* panel_name;
+    TDrawArea* render_area;
+    tagRECT clip_rect;
+    int position_mode;
+    int need_redraw;
+    TPanel* curr_child;
+    TPanel* parent_panel;
+    TPanel* left_panel;
+    TPanel* top_panel;
+    TPanel* right_panel;
+    TPanel* bottom_panel;
+    PanelNode* node;
+    PanelNode* first_child_node;
+    PanelNode* last_child_node;
+    TPanel* tab_prev_panel;
+    TPanel* tab_next_panel;
+    int mouse_captured;
+    int active;
+    int visible;
+    int tab_stop;
+    int have_focus;
+    int overlapping_children;
+    int handle_mouse_input;
+    int just_drawn;
+    HRGN clip_rgn;
+    tagRECT render_rect;
+    long left_border;
+    long top_border;
+    long right_border;
+    long bottom_border;
+    long min_wid;
+    long max_wid;
+    long min_hgt;
+    long max_hgt;
+    long mouse_hold_interval;
+    long mouse_move_tolerance;
+    long mouse_down_x;
+    long mouse_down_y;
+    int mouse_down_ctrl;
+    int mouse_down_shift;
+    unsigned long mouse_down_time;
+    int error_code;
+    int z_order;
+    int display_changed_count;
+    long help_string_id;
+    long help_page_id;
+    unsigned char mouse_action;
+    unsigned char mouse_down_button;
+    unsigned char panel_type;
+    unsigned char color;
+    unsigned char fill_in_background;
+    unsigned char clip_to_parent;
+    unsigned char draw_rect2_flag;
+    unsigned char need_restore;
 };
 
 class TEditPanel : public TPanel {
@@ -181,39 +187,39 @@ public:
     TEditPanel();
     virtual ~TEditPanel();
 
-    HWND edit_wnd;                         // +0x0F4
-    short fixed_len;                       // +0x0F8
-    unsigned char pad_FA[2];               // +0x0FA
-    char* text;                            // +0x0FC
-    int text_len;                          // +0x100
-    int hidden;                            // +0x104
-    HBRUSH brush;                           // +0x108
-    int stock_brush;                        // +0x10C
-    void* old_sub_wnd_proc;                // +0x110
-    unsigned long text_color1;              // +0x114
-    unsigned long text_color2;              // +0x118
-    unsigned long highlight_text_color1;    // +0x11C
-    unsigned long highlight_text_color2;    // +0x120
-    unsigned long back_color;               // +0x124
-    int format;                             // +0x128
-    HGDIOBJ font;                           // +0x12C
-    int multi_line;                         // +0x130
-    tagRECT draw_rect;                      // +0x134
-    unsigned int draw_format;               // +0x144
-    int auto_sel;                           // +0x148
-    int sel_len;                            // +0x14C
-    int bevel_type;                         // +0x150
-    unsigned char bevel_color1;             // +0x154
-    unsigned char bevel_color2;             // +0x155
-    unsigned char bevel_color3;             // +0x156
-    unsigned char bevel_color4;             // +0x157
-    unsigned char bevel_color5;             // +0x158
-    unsigned char bevel_color6;             // +0x159
-    unsigned char pad_15A[2];               // +0x15A
-    int bevel_size;                         // +0x15C
-    unsigned long imc;                      // +0x160
-    int enable_ime;                         // +0x164
-    int turn_ime_on;                        // +0x168
+    HWND edit_wnd;
+    short fixed_len;
+    unsigned char pad_FA[2];
+    char* text;
+    int text_len;
+    int hidden;
+    HBRUSH brush;
+    int stock_brush;
+    WNDPROC old_sub_wnd_proc;
+    unsigned long text_color1;
+    unsigned long text_color2;
+    unsigned long highlight_text_color1;
+    unsigned long highlight_text_color2;
+    unsigned long back_color;
+    int format;
+    HGDIOBJ font;
+    int multi_line;
+    tagRECT draw_rect;
+    unsigned int draw_format;
+    int auto_sel;
+    int sel_len;
+    int bevel_type;
+    unsigned char bevel_color1;
+    unsigned char bevel_color2;
+    unsigned char bevel_color3;
+    unsigned char bevel_color4;
+    unsigned char bevel_color5;
+    unsigned char bevel_color6;
+    unsigned char pad_15A[2];
+    int bevel_size;
+    unsigned long imc;
+    int enable_ime;
+    int turn_ime_on;
 
     virtual long wnd_proc(void*, unsigned int, unsigned int, long);
     virtual long setup(TDrawArea*, TPanel*, long, long, long, long,
@@ -260,5 +266,7 @@ public:
 extern TPanelSystem panel_system;
 extern int DAT_0086b240;
 extern int DAT_0062c4c4;
+extern unsigned int DAT_0086b244;
+extern int imc_retval;
 
 #endif
