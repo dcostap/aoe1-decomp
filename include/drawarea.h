@@ -42,8 +42,24 @@ typedef char draw_bitmap_info_256_size_check[
 
 class TDrawSystem;
 class TDrawArea;
+class TShape;
+struct Shape_Info;
 
-class VSpan_Node;
+#ifndef AOE1_SPANLIST_TYPES_H
+#define AOE1_SPANLIST_TYPES_H
+
+struct VSpanMiniList {
+    unsigned char Y_delta;
+    unsigned char X_start;
+    unsigned char X_end;
+};
+
+struct VSpan_Node {
+    VSpan_Node* Next;
+    VSpan_Node* Prev;
+    int StartPx;
+    int EndPx;
+};
 
 class TSpan_Node_List {
 public:
@@ -71,9 +87,9 @@ public:
     TSpan_Node_List VSList;
     VSpan_Node** Line_Head_Ptrs;
     VSpan_Node** Line_Tail_Ptrs;
-    long* LeftMostPx;
-    long* RightMostPx;
-    long* Span_Count;
+    int* LeftMostPx;
+    int* RightMostPx;
+    int* Span_Count;
     int Num_Lines;
     int Num_Pixels;
     int Min_Span_Px;
