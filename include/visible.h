@@ -1,16 +1,8 @@
-#ifndef AOE1_VISIBLE_TU_CONTEXT_H
-#define AOE1_VISIBLE_TU_CONTEXT_H
+#ifndef AOE1_VISIBLE_H
+#define AOE1_VISIBLE_H
 
-// Local context for the complete C:\\msdev\\work\\age1_x1\\visible.cpp
-// source module.  It keeps the shared visible-map layout and adds only the
-// declarations needed by every owner in PDB order.
-//
-// The shared header guard is set because these owner files use the reviewed
-// visible_context.h when compiled alone.  This local header is the wrapper's
-// one declaration surface; it does not change the shared header.
-#define VISIBLE_CONTEXT_H
-
-typedef unsigned char byte;
+extern "C" unsigned long __cdecl _rotl(unsigned long value, int shift);
+#pragma intrinsic(_rotl)
 
 class RGE_Map;
 struct RGE_Tile;
@@ -142,11 +134,25 @@ public:
     void load(int handle);
     void save(int handle);
     void reset(void);
+
 private:
     void Set_Map_Offsets(void);
 
 public:
-    void suppress_updates(int);
+    void suppress_updates(int value);
+};
+
+class VC_LOG {
+public:
+    int world_time;
+    int player_id;
+    int action;
+    int object_id;
+    int x1;
+    int y1;
+    int x2;
+    int y2;
+    int supress;
 };
 
 extern float save_game_version;
@@ -156,7 +162,12 @@ extern LOSTBL* NormalLOS[17];
 extern LOSTBL* SquareLOS[17];
 extern LOSTBL* Edge_Offsets_T16[17];
 extern LOSTBL* Edge_Offsets_N16[17];
+extern int VCALL_LOG_HEAD;
+extern int VCALL_LOG_TAIL;
+extern VC_LOG VCALL_LOG[1024];
 
+extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
+extern "C" void __cdecl free(void* block);
 extern "C" void __cdecl rge_write(int handle, void* buffer, int count);
 extern "C" void __cdecl rge_read(int handle, void* buffer, int count);
 extern void __cdecl log_map_call(int world_time, int player_id, int type,
