@@ -1,0 +1,7 @@
+# 004625C0 pause_play
+
+The original source is `music.cpp`, lines 732 through 775.
+
+The function pauses an active device. It records automatic pauses without a device call. It sends the MCI pause command for types 1 and 2. It calls the sound driver for type 3.
+
+The prior exact source kept the paused store before the automatic-pause check.

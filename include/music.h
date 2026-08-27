@@ -1,17 +1,9 @@
-#ifndef MUSIC_CONTEXT_H
-#define MUSIC_CONTEXT_H
+#ifndef AOE1_MUSIC_H
+#define AOE1_MUSIC_H
 
 #include <windows.h>
 #include <mmsystem.h>
-
-class TSound_Driver {
-public:
-    int set_stream_volume(long volume);
-    int stream_file(char* file_name, int loop, long position);
-    int pause_stream();
-    int resume_stream();
-    int stop_stream();
-};
+#include "sounddrv_context.h"
 
 class TMusic_System {
 public:
