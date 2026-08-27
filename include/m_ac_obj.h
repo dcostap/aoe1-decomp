@@ -12,6 +12,7 @@ extern float DAT_00570484;
 
 class RGE_Sprite;
 class RGE_Static_Object;
+class RGE_Action_Object;
 class RGE_Player;
 class RGE_Game_World;
 class RGE_Master_Combat_Object;
@@ -122,28 +123,80 @@ typedef char m_ac_obj_moving_size[
 
 class RGE_Task {
 public:
-    char gap_00[4];
+    short task_type;
+    short id;
     unsigned char is_default;
-    char pad_05;
+    unsigned char pad_05;
     short action_type;
+    short object_group;
+    short object_id;
+    unsigned char combat_level;
+    unsigned char combat_level_flag;
+    short terrain_id;
+    unsigned char owner_type;
+    unsigned char holding_attr;
+    unsigned char state_building;
+    unsigned char pad_13;
+    short attribute_type;
+    short attribute_type2;
+    short attribute_type3;
+    short attribute_type4;
+    float work_val1;
+    float work_val2;
+    float work_range;
+    unsigned char search_flag;
+    unsigned char pad_29[3];
+    float search_wait_time;
+    short work_flag;
+    short work_flag2;
+    RGE_Sprite* move_sprite;
+    RGE_Sprite* work_sprite;
+    RGE_Sprite* work_sprite2;
+    RGE_Sprite* carry_sprite;
+    RGE_Sound* work_sound;
+    RGE_Sound* work_sound2;
+
+    RGE_Task(short object_id);
+    ~RGE_Task();
+    void copy(RGE_Task* source);
+    void load(int file, RGE_Sprite** sprites, RGE_Sound** sounds);
+    void load(FILE* file, RGE_Sprite** sprites, RGE_Sound** sounds);
+    void save(int file);
 };
+
+typedef char m_ac_obj_task_size[
+    (sizeof(RGE_Task) == 0x4C) ? 1 : -1];
 
 class RGE_Task_List {
 public:
-    RGE_Task** list;
-    short list_num;
-
     RGE_Task_List();
     // BINARY NOTE: exact owner 00508E20 and include/task_lst.h prove a
     // nonvirtual destructor. Virtual dispatch changes 0044F4D0's target and
     // escapes its original boundary.
     ~RGE_Task_List();
-    virtual RGE_Task* create_task(short task_type, int index);
     void copy(RGE_Task_List* source);
-    void save(int file);
     void load(int file, RGE_Sprite** sprites, RGE_Sound** sounds);
     void load(FILE* file, RGE_Sprite** sprites, RGE_Sound** sounds);
+    void save(int file);
+    void delete_list();
+
+    virtual RGE_Task* create_task(short task_type, short index);
+    virtual RGE_Task* get_target_task(RGE_Action_Object* action_object,
+                                      RGE_Static_Object* static_object,
+                                      float x, float y, float z);
+    virtual int is_attack_task(RGE_Task* task);
+
+protected:
+    virtual int check_task(RGE_Task* task, RGE_Action_Object* action_object,
+                           RGE_Static_Object* static_object);
+
+public:
+    RGE_Task** list;
+    short list_num;
 };
+
+typedef char m_ac_obj_task_list_size[
+    (sizeof(RGE_Task_List) == 0x0C) ? 1 : -1];
 
 class RGE_Master_Action_Object : public RGE_Master_Moving_Object {
 public:

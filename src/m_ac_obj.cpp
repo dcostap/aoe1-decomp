@@ -63,6 +63,8 @@ int RGE_Master_Action_Object::setup(int file, RGE_Sprite** sprites,
     rge_read(file, &backup_drop_site, 2);
     rge_read(file, &task_by_group, 1);
     rge_read(file, &command_sound_id, 2);
+    // BINARY NOTE: save version 6.92 added a separate move sound. Older
+    // saves reuse the command sound index for both sounds.
     if (save_game_version >= DAT_00570484) {
         rge_read(file, &move_sound_id, 2);
     } else {
