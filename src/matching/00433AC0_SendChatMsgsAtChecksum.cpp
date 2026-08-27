@@ -1,17 +1,21 @@
 #ifndef COM_SYNC_TU_CONTEXT
+class TCommunications_Handler;
 class RGE_Communications_Synchronize {
 public:
-    virtual ~RGE_Communications_Synchronize();
-    char gap_0[0x10];
-    int field_14;
+    TCommunications_Handler* Comm;
+    unsigned long CheckTime;
+    unsigned long CheckTurn;
+    int StopOnSyncFail;
+    int DialogOnSyncFail;
+    int SendChatMsgs;
     void SendChatMsgsAtChecksum(int v);
 };
 #endif
 
 void RGE_Communications_Synchronize::SendChatMsgsAtChecksum(int v) {
 #ifdef COM_SYNC_TU_CONTEXT
-    this->sendChatMsgs = v;
+    this->SendChatMsgs = v;
 #else
-    this->field_14 = v;
+    this->SendChatMsgs = v;
 #endif
 }

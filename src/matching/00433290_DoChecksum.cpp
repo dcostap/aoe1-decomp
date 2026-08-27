@@ -87,18 +87,18 @@ extern unsigned long DAT_0062D230;
 
 class RGE_Communications_Synchronize {
 public:
-    TCommunications_Handler* comm;
-    int checkTime;
-    int checkTurn;
-    int stopOnSyncFail;
-    int dialogOnSyncFail;
-    int sendChatMsgs;
-    int newData;
-    int lastResult;
-    int offset;
-    int doChecksums;
-    int lastWorldRandom;
-    int gameWorldChecksum;
+    TCommunications_Handler* Comm;
+    unsigned long CheckTime;
+    unsigned long CheckTurn;
+    int StopOnSyncFail;
+    int DialogOnSyncFail;
+    int SendChatMsgs;
+    int NewData;
+    int LastResult;
+    unsigned int Offset;
+    int DoChecksums;
+    unsigned long LastWorldRandom;
+    unsigned long GameWorldChecksum;
 
     int Add(unsigned int turn, unsigned long worldTime,
             unsigned long checksum1, unsigned long checksum2,
@@ -111,7 +111,7 @@ public:
 unsigned long RGE_Communications_Synchronize::DoChecksum(unsigned long turn) {
     unsigned long worldTime = 0;
 
-    if (!this->doChecksums) {
+    if (!this->DoChecksums) {
         return 0;
     }
 
@@ -119,12 +119,12 @@ unsigned long RGE_Communications_Synchronize::DoChecksum(unsigned long turn) {
         worldTime = rge_base_game->world->world_time;
     }
 
-    if (turn < (unsigned long)this->checkTurn) {
+    if (turn < (unsigned long)this->CheckTurn) {
         return 0;
     }
 
-    L->Log("Sync check at turn #%d", this->checkTurn);
-    this->checkTurn += 4;
+    L->Log("Sync check at turn #%d", this->CheckTurn);
+    this->CheckTurn += 4;
 
     long cs4 = 0;
     long cs2 = 0;
@@ -132,10 +132,10 @@ unsigned long RGE_Communications_Synchronize::DoChecksum(unsigned long turn) {
     char tmp[255];
     rge_base_game->GetWorldChecksums(cs4, cs2, cs3);
 
-    if (this->sendChatMsgs) {
+    if (this->SendChatMsgs) {
         sprintf(tmp, "Worldtime=%ld Random=%d Checksum=%d",
-                worldTime, this->lastWorldRandom, this->gameWorldChecksum);
-        this->comm->SendChatMsgAll(tmp);
+                worldTime, this->LastWorldRandom, this->GameWorldChecksum);
+        this->Comm->SendChatMsgAll(tmp);
     }
 
     DAT_0062D230 = rge_base_game->world->players[0]->visible->checksumUnifiedVisible();
@@ -153,16 +153,16 @@ unsigned long RGE_Communications_Synchronize::DoChecksum(unsigned long turn) {
     unsigned long unifiedChecksum = DAT_0062D230;
     long pathChecksum = pathSystem.checksum();
 
-    this->Add(this->comm->WhoAmI(), worldTime, turn,
-              this->lastWorldRandom, unifiedChecksum,
+    this->Add(this->Comm->WhoAmI(), worldTime, turn,
+              this->LastWorldRandom, unifiedChecksum,
               cs4, cs2, cs3, pathChecksum);
 
-    this->comm->SendChecksumMessage(worldTime, this->lastWorldRandom,
+    this->Comm->SendChecksumMessage(worldTime, this->LastWorldRandom,
                                     unifiedChecksum, cs4, cs2,
                                     cs3, pathChecksum);
 
     L->Log("Checksum: T#%d wt=%d   rand=%d  csum=%d", turn, worldTime,
-           this->lastWorldRandom, this->gameWorldChecksum);
+           this->LastWorldRandom, this->GameWorldChecksum);
     L->FlushLog();
     return 1;
 }

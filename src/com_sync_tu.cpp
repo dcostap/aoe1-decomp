@@ -26,7 +26,7 @@
 // ranges.
 
 #define COM_SYNC_TU_CONTEXT 1
-#include "../include/com_sync_context.h"
+#include "../include/com_sync.h"
 
 #include "matching/00432FF0_RGE_Communications_Synchronize.cpp"
 #include "matching/00433070_RGE_Communications_Synchronize.cpp"
@@ -41,5 +41,4 @@
 #include "matching/00433AC0_SendChatMsgsAtChecksum.cpp"
 #include "scratch/00433AD0_IsPlayerOutOfSync.cpp"
 
-#undef g_debuggingLog
 #undef COM_SYNC_TU_CONTEXT

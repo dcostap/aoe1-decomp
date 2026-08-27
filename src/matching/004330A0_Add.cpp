@@ -8,25 +8,30 @@
 #ifndef COM_SYNC_TU_CONTEXT
 struct RGE_Communications_Check {
     int PlayerNo;
-    unsigned WTime;
-    unsigned WTurn;
-    unsigned cs1;
-    unsigned cs2;
+    unsigned long WTime;
+    unsigned long WTurn;
+    long cs1;
+    long cs2;
     long cs3;
     long cs4;
     long cs5;
-    unsigned Random;
+    unsigned long Random;
 };
 
 class RGE_Communications_Synchronize {
 public:
-    char gap_00[0x18];
+    TCommunications_Handler* Comm;
+    unsigned long CheckTime;
+    unsigned long CheckTurn;
+    int StopOnSyncFail;
+    int DialogOnSyncFail;
+    int SendChatMsgs;
     int NewData;             // +18
     int LastResult;          // +1C
-    int Offset;              // +20
+    unsigned int Offset;     // +20
     int DoChecksums;         // +24
-    int LastWorldRandom;     // +28
-    int GameWorldChecksum;   // +2C
+    unsigned long LastWorldRandom; // +28
+    unsigned long GameWorldChecksum; // +2C
     RGE_Communications_Check Check[0x37]; // +30, stride 0x24
 
     int Add(unsigned turn, unsigned long wRandom, unsigned long checksum1,

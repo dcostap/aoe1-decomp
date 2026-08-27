@@ -464,9 +464,7 @@ public:
 class TCommunications_Handler {
 public:
     void* get_command();
-    void* new_command(int);
-    void* new_command(int, int);
-    void new_command(void*, long);
+    unsigned char new_command(void*, int);
 };
 
 class TDebuggingLog {

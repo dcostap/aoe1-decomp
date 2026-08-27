@@ -19,30 +19,34 @@ public:
     void Log(const char* format, ...);
 };
 
-extern TDebuggingLog* g_debuggingLog;
+extern TDebuggingLog* L;
 
 struct RGE_Communications_Check {
     int PlayerNo;
-    unsigned WTime;
-    unsigned WTurn;
-    unsigned cs1;
-    unsigned cs2;
+    unsigned long WTime;
+    unsigned long WTurn;
+    long cs1;
+    long cs2;
     long cs3;
     long cs4;
     long cs5;
-    unsigned Random;
+    unsigned long Random;
 };
 
 class RGE_Communications_Synchronize {
 public:
-    TCommunications_Handler* comm; // +00
-    char gap_04[0x14];
+    TCommunications_Handler* Comm; // +00
+    unsigned long CheckTime; // +04
+    unsigned long CheckTurn; // +08
+    int StopOnSyncFail; // +0C
+    int DialogOnSyncFail; // +10
+    int SendChatMsgs; // +14
     int NewData;             // +18
     int LastResult;          // +1C
-    int Offset;              // +20
+    unsigned int Offset;     // +20
     int DoChecksums;         // +24
-    int LastWorldRandom;     // +28
-    int GameWorldChecksum;   // +2C
+    unsigned long LastWorldRandom; // +28
+    unsigned long GameWorldChecksum; // +2C
     RGE_Communications_Check Check[0x37]; // +30
 
 protected:
@@ -90,14 +94,14 @@ int RGE_Communications_Synchronize::ValidateChecksums(
         if (bad) {
             this->LogChecksums(turn, wRandom, checksum1, chatCrc, dataCrc,
                                a7, a8, a9, checksum2);
-            this->comm->NotifyWindowParam((COMMMESSAGES)0x17B0, checksum1);
+            this->Comm->NotifyWindowParam((COMMMESSAGES)0x17B0, checksum1);
             this->LastResult = 0;
             return 0;
         }
 
     }
 
-    g_debuggingLog->Log("P#%d In Sync @ Wtime=%d WTurn=%d Wrand=%d Wchksum=%d",
+    L->Log("P#%d In Sync @ Wtime=%d WTurn=%d Wrand=%d Wchksum=%d",
                         turn, wRandom, checksum1, checksum2, chatCrc);
     this->LastResult = 1;
     return 1;

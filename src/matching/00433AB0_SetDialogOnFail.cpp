@@ -1,17 +1,20 @@
 #ifndef COM_SYNC_TU_CONTEXT
+class TCommunications_Handler;
 class RGE_Communications_Synchronize {
 public:
-    virtual ~RGE_Communications_Synchronize();
-    char gap_0[0xC];
-    int field_10;
+    TCommunications_Handler* Comm;
+    unsigned long CheckTime;
+    unsigned long CheckTurn;
+    int StopOnSyncFail;
+    int DialogOnSyncFail;
     void SetDialogOnFail(int v);
 };
 #endif
 
 void RGE_Communications_Synchronize::SetDialogOnFail(int v) {
 #ifdef COM_SYNC_TU_CONTEXT
-    this->dialogOnSyncFail = v;
+    this->DialogOnSyncFail = v;
 #else
-    this->field_10 = v;
+    this->DialogOnSyncFail = v;
 #endif
 }

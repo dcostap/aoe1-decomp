@@ -1,14 +1,39 @@
 #ifndef COM_SYNC_TU_CONTEXT
+class TCommunications_Handler;
 class RGE_Communications_Synchronize {
 public:
-    char gap_00[0x30];
+    struct CHECKSUMARRAY {
+        int PlayerNo;
+        unsigned long WTime;
+        unsigned long WTurn;
+        long cs1;
+        long cs2;
+        long cs3;
+        long cs4;
+        long cs5;
+        unsigned long Random;
+    };
+
+    TCommunications_Handler* Comm;
+    unsigned long CheckTime;
+    unsigned long CheckTurn;
+    int StopOnSyncFail;
+    int DialogOnSyncFail;
+    int SendChatMsgs;
+    int NewData;
+    int LastResult;
+    unsigned int Offset;
+    int DoChecksums;
+    unsigned long LastWorldRandom;
+    unsigned long GameWorldChecksum;
+    CHECKSUMARRAY Check[0x37];
 
     ~RGE_Communications_Synchronize();
 };
 #endif
 
 RGE_Communications_Synchronize::~RGE_Communications_Synchronize() {
-    int* p = (int*)((char*)this + 0x38);
+    unsigned long* p = &this->Check[0].WTurn;
     int i = 0x37;
 
     do {
@@ -21,7 +46,7 @@ RGE_Communications_Synchronize::~RGE_Communications_Synchronize() {
         p[5] = 0;
         p[6] = 0;
         p[-2] = 0;
-        p = (int*)((char*)p + 0x24);
+        p += 9;
         i = i - 1;
     } while (i != 0);
 }

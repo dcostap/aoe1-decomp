@@ -1,17 +1,26 @@
 #ifndef COM_SYNC_TU_CONTEXT
+class TCommunications_Handler;
 class RGE_Communications_Synchronize {
 public:
-    virtual ~RGE_Communications_Synchronize();
-    char gap_0[0x24];
-    int field_28;
+    TCommunications_Handler* Comm;
+    unsigned long CheckTime;
+    unsigned long CheckTurn;
+    int StopOnSyncFail;
+    int DialogOnSyncFail;
+    int SendChatMsgs;
+    int NewData;
+    int LastResult;
+    unsigned int Offset;
+    int DoChecksums;
+    unsigned long LastWorldRandom;
     void SetLastWorldRandom(unsigned long v);
 };
 #endif
 
 void RGE_Communications_Synchronize::SetLastWorldRandom(unsigned long v) {
 #ifdef COM_SYNC_TU_CONTEXT
-    this->lastWorldRandom = v;
+    this->LastWorldRandom = v;
 #else
-    this->field_28 = v;
+    this->LastWorldRandom = v;
 #endif
 }

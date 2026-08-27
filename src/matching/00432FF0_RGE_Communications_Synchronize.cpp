@@ -17,25 +17,34 @@ public:
     void Log(const char* fmt, ...);
 };
 
-extern TDebuggingLog* g_debuggingLog;
+extern TDebuggingLog* L;
 
 class RGE_Communications_Synchronize {
 public:
-    TCommunications_Handler* comm;       // +00
-    int checkTime;                       // +04 = 1000
-    int checkTurn;                       // +08 = 10
-    int stopOnSyncFail;                  // +0C = 1
-    int dialogOnSyncFail;                // +10 = 0
-    int sendChatMsgs;                    // +14 = 0
-    int newData;                         // +18 = 0
-    int lastResult;                      // +1C = 1
-    int offset;                          // +20 = 0
-    int doChecksums;                     // +24 = 1
-    int lastWorldRandom;                 // +28 = 0
-    int gameWorldChecksum;              // +2C = 0
-    int field_30;                        // +30 = 0 (covered by first entry's [eax-8][eax-4])
-    // Checksum array[55] starts at +0x38, each entry 9 ints (0x24 bytes)
-    // Entry layout: PlayerNo[-2], WTurn[-1], dword[0..6]
+    TCommunications_Handler* Comm;       // +00
+    unsigned long CheckTime;             // +04 = 1000
+    unsigned long CheckTurn;             // +08 = 10
+    int StopOnSyncFail;                  // +0C = 1
+    int DialogOnSyncFail;                // +10 = 0
+    int SendChatMsgs;                    // +14 = 0
+    int NewData;                         // +18 = 0
+    int LastResult;                      // +1C = 1
+    unsigned int Offset;                 // +20 = 0
+    int DoChecksums;                     // +24 = 1
+    unsigned long LastWorldRandom;       // +28 = 0
+    unsigned long GameWorldChecksum;     // +2C = 0
+    struct CHECKSUMARRAY {
+        int PlayerNo;
+        unsigned long WTime;
+        unsigned long WTurn;
+        long cs1;
+        long cs2;
+        long cs3;
+        long cs4;
+        long cs5;
+        unsigned long Random;
+    };
+    CHECKSUMARRAY Check[0x37];
     
     RGE_Communications_Synchronize(TCommunications_Handler* handler);
     
@@ -45,27 +54,26 @@ public:
 #endif
 
 RGE_Communications_Synchronize::RGE_Communications_Synchronize(TCommunications_Handler* handler) {
-    comm = handler;
-    checkTime = 1000;
-    checkTurn = 10;
+    Comm = handler;
+    CheckTime = 1000;
+    CheckTurn = 10;
     
-    g_debuggingLog->Log("Check turn = %d", 10);
+    L->Log("Check turn = %d", 10);
     
-    stopOnSyncFail = 1;
-    doChecksums = 1;
-    lastResult = 1;
-    newData = 0;
-    offset = 0;
-    lastWorldRandom = 0;
-    gameWorldChecksum = 0;
-    sendChatMsgs = 0;
-    dialogOnSyncFail = 0;
+    StopOnSyncFail = 1;
+    DoChecksums = 1;
+    LastResult = 1;
+    NewData = 0;
+    Offset = 0;
+    LastWorldRandom = 0;
+    GameWorldChecksum = 0;
+    SendChatMsgs = 0;
+    DialogOnSyncFail = 0;
     
-    // Zero out the checksum array (0x37 entries x 9 dwords = 0x24 bytes each)
-    int* base = (int*)((char*)this + 0x38);
+    unsigned long* base = &this->Check[0].WTurn;
     int i;
     for (i = 0; i < 0x37; i++) {
-        base[-1] = 0;  // WTurn-like
+        base[-1] = 0;
         base[0] = 0;
         base[1] = 0;
         base[2] = 0;
@@ -73,7 +81,7 @@ RGE_Communications_Synchronize::RGE_Communications_Synchronize(TCommunications_H
         base[4] = 0;
         base[5] = 0;
         base[6] = 0;
-        base[-2] = 0;  // PlayerNo
+        base[-2] = 0;
         base += 9;
     }
 }

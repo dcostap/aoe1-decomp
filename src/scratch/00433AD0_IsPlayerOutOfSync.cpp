@@ -86,7 +86,7 @@ public:
 };
 
 struct RGE_Communications_Check {
-    unsigned int PlayerNo;
+    int PlayerNo;
     unsigned long WTime;
     unsigned long WTurn;
     long cs1;
@@ -100,17 +100,17 @@ struct RGE_Communications_Check {
 class RGE_Communications_Synchronize {
 public:
     TCommunications_Handler* Comm;
-    int CheckTime;
-    int CheckTurn;
+    unsigned long CheckTime;
+    unsigned long CheckTurn;
     int StopOnSyncFail;
     int DialogOnSyncFail;
     int SendChatMsgs;
     int NewData;
     int LastResult;
-    int Offset;
+    unsigned int Offset;
     int DoChecksums;
-    int LastWorldRandom;
-    int GameWorldChecksum;
+    unsigned long LastWorldRandom;
+    unsigned long GameWorldChecksum;
     RGE_Communications_Check Check[0x37];
 
     int IsPlayerOutOfSync(unsigned int playerNo, unsigned long commTurn);

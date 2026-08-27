@@ -63,17 +63,17 @@ struct RGE_Communications_Check {
 class RGE_Communications_Synchronize {
 public:
     TCommunications_Handler* Comm;
-    int CheckTime;
-    int CheckTurn;
+    unsigned long CheckTime;
+    unsigned long CheckTurn;
     int StopOnSyncFail;
     int DialogOnSyncFail;
     int SendChatMsgs;
     int NewData;
     int LastResult;
-    int Offset;
+    unsigned int Offset;
     int DoChecksums;
-    int LastWorldRandom;
-    int GameWorldChecksum;
+    unsigned long LastWorldRandom;
+    unsigned long GameWorldChecksum;
     RGE_Communications_Check Check[0x37];
 
     void LogChecksums(unsigned int playerNo, unsigned long worldTime,
