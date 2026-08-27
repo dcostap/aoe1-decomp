@@ -162,6 +162,8 @@ public:
     RGE_Player* get_player();
     void get_mouse_pos(tagPOINT*);
     RGE_Font* get_font(int);
+    unsigned char GetWorldChecksums(long&, long&, long&);
+    long GetChecksum(long);
     void reset_countdown_timer(long);
     void set_countdown_timer(long, long);
     void get_countdown_timer(long, long&);
