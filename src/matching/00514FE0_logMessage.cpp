@@ -1,24 +1,11 @@
 // VA: 00514FE0 TRIBE_Player::logMessage
-// tplayer.cpp lines 1950-1959
-// MATCHED: this virtual varargs method is a cdecl member function with `this` passed on the stack.
-// Original uses plain `textOut`, not `textOut + 4`; the stack-based vararg pack is `(&format) + 1`.
+// PDB: tplayer.cpp:1950-1959
+// The cdecl member keeps the original stack-based vararg pack.
 
 #include <stdio.h>
 
-#ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
-class AIModule {
-public:
-    void __cdecl logCommonHistory(char* message);
-};
-
-class TRIBE_Player {
-public:
-    char gap_00[0x234];
-    AIModule* playerAI;
-
-    virtual void __cdecl logMessage(char* format, ...);
-};
-#endif
+#include "../../include/taitacmd.h"
+#include "../../include/tplayer.h"
 
 void __cdecl TRIBE_Player::logMessage(char* format, ...) {
     char textOut[1024];
