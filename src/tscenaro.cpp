@@ -21,7 +21,7 @@ TRIBE_Scenario_Header::TRIBE_Scenario_Header(T_Scenario* scenario)
 }
 
 TRIBE_Scenario_Header::TRIBE_Scenario_Header(int file)
-    : RGE_Scenario_Header((RGE_Scenario*)file) {
+    : RGE_Scenario_Header(file) {
     any_sp_victory = 0;
     active_player_count = 0;
     if (error_code == 0) {
@@ -767,7 +767,7 @@ void T_Scenario::WriteDisabledTechnologiesToMainSystem()
         TRIBE_Player* player = (TRIBE_Player*)_w->players[i];
 
         if (this->ScenarioOptions[0] != 0) {
-            _w->field_4C->call08(100, player);
+            _w->field_4C->do_effect(100, (RGE_Player*)player);
         }
 
         player->tech_abling(0x58, flags[-4]);
@@ -838,7 +838,7 @@ void T_Scenario::set_player_tech(TRIBE_Player* player)
     player->tech_tree->check_for_new_tech();
 
     if (this->ScenarioOptions[0] != 0) {
-        this->world->field_4C->call08(100, player);
+        this->world->field_4C->do_effect(100, (RGE_Player*)player);
     }
 
     if (rge_base_game->prog_mode != 7) {

@@ -38,10 +38,11 @@ public:
     unsigned char add_destroy(unsigned char, RGE_Static_Object*);
 };
 
-struct IntfProxy {
-    virtual void v00();
-    virtual void v04();
-    virtual void call08(int, void*);
+class RGE_Effects {
+public:
+    virtual ~RGE_Effects();
+    virtual void save(int file);
+    virtual void do_effect(short effect_id, RGE_Player* player);
 };
 
 class TRIBE_Player {
@@ -182,7 +183,7 @@ public:
     char gap_3E[2];
     RGE_Player** players;
     char gap_44[8];
-    IntfProxy* field_4C;
+    RGE_Effects* field_4C;
     RGE_Static_Object* object(int);
 };
 
@@ -218,7 +219,7 @@ public:
     virtual void save(int);
     RGE_Scenario_Header(RGE_Scenario*);
     RGE_Scenario_Header(int);
-    virtual ~RGE_Scenario_Header();
+    ~RGE_Scenario_Header();
 };
 
 class T_Scenario : public RGE_Scenario {
