@@ -1,48 +1,11 @@
-// VA: 004CF300 TRIBE_Action_Hunt::set_state
-// PDB source: tact_hnt.cpp
-// Attempt log:
-// - Replaced the old decompiler-shaped pointer scaffold with the canonical
-//   RGE_Action/TRIBE_Action_Hunt ownership and the tact_hnt state switch.
-// - Baseline probe: typed action constructors, task/master fields, and the
-//   original shared switch tails remain to be checked against VC5 output.
-// - Baseline result: exact size, frame, saved registers, and 93.56% shape;
-//   remaining structural gap is the switch table and two move-sprite calls.
-// - Two state-split probes worsened the ordered calls and size. Restored the
-//   baseline. Leave this natural reconstruction in scratch for the next pass.
-// - Corrected switch labels from the original jump table: notify is state 3,
-//   coordinate Move_To is states 11 and 15, Attack is state 12, and the
-//   wait-sprite tail is states 1, 13, and 14.
-// - Reopened the two missing direct get_move_sprite call sites: coordinate
-//   Move_To and state 6 new_sprite now use the typed helper.
-// - Placed state 6 before state 7 to retain the original emitted block order;
-//   ordered calls now align with no site gaps. One virtual-slot mismatch remains.
-// - Corrected the state-8 depleted branch to read target_obj (+0x10) and call
-//   set_target_obj(0), matching original loads and vslot +0x54 at 004CF7D2.
-// - Validation: the source now matches the packet's state-to-block mapping;
-//   VC5 emitted the prior body unchanged because the jump table is relocated
-//   outside the compared function bytes. Leave register tuning for later.
-// - Restored timer writes before the coordinate and attack allocations from
-//   the original +2C stores; the coordinate block became exact.
-// - Corrected typed master offsets (+124, +12A, +138), attack size (0x5C),
-//   and task range offset (+24) from constructor access evidence.
-// - Modeled object attribute_type_held as a word at +4C, matching the state-7
-//   compare and set_attribute slot; strict drift fell to 118 bytes.
-// - Tested an early-return depletion branch for state 8; it changed call order
-//   and was restored. Keep the natural positive-if form.
-// - Reversed the state-7 facet comparison operands to match the original cmp.
-// - Exact-finish reversion: the extern zero global and explicit else arm were
-//   incidental; the local zero and simple fall-through remain exact.
-// - Exact-finish: decisive changes were target_obj (+0x10) in state 8 and the
-//   reversed facet compare. The typed action ABI and call surfaces were kept.
-//   No tested changes were inseparable. Reusable lesson: verify same-named
-//   target fields against each load; a narrow exact stub does not prove intent.
-// - Policy cleanup: replaced generic virtual-slot names with canonical donor
-//   names and recovered the Static/Animated/Moving/Action inheritance chain.
-//   Replaced known gap fields with named class and task layouts.
-// - Policy cleanup: restored the reviewed DAT_00575150 extern and canonical
-//   master hierarchy. Derived master casts remain only at proven combat fields.
+#ifndef AOE1_TACT_HNT_H
+#define AOE1_TACT_HNT_H
 
-#ifndef TACT_HNT_SHARED_CONTEXT
+// Declaration surface for C:\msdev\work\age1_x1\tact_hnt.cpp.
+
+void rge_read(int, void*, int);
+void rge_write(int, void*, int);
+
 class RGE_Sprite;
 class TDrawArea;
 class RGE_Color_Table;
@@ -912,162 +875,17 @@ protected:
 // Reviewed global: inventory/globals/dumps/00575150_DAT_00575150.txt.
 extern float DAT_00575150;
 
-#endif
 
-#ifndef TACT_HNT_CONTEXT_ONLY
-void TRIBE_Action_Hunt::set_state(unsigned char param_1)
-{
-    this->sub_actions->delete_list();
-    this->state = param_1;
+class RGE_Base_Game {
+public:
+    char gap_00[0x9A8];
+    int quick_build;
+};
 
-    switch (param_1) {
-    case 3:
-        this->obj->notify(this->obj->id, this->obj->id, 0x202, 0x265,
-                          this->targetType, 0);
-        this->obj->new_sprite(this->get_wait_sprite());
-        this->timer = -10.0f;
-        return;
+extern RGE_Base_Game* rge_base_game;
+extern double DAT_00575168;
 
-    case 2:
-        this->obj->new_sprite(this->get_wait_sprite());
-        this->set_target_obj(0);
-        this->set_target_obj2(0);
-        this->timer = 0.0f;
-        this->target_x = -1.0f;
-        this->target_y = -1.0f;
-        this->target_z = -1.0f;
-        return;
+typedef char tact_hnt_action_abi[(sizeof(RGE_Action) == 0x40) ? 1 : -1];
+typedef char tact_hnt_hunt_abi[(sizeof(TRIBE_Action_Hunt) == 0x44) ? 1 : -1];
 
-    case 11:
-    case 15: {
-        this->timer = 0.0f;
-        RGE_Action_Move_To* action = new RGE_Action_Move_To(
-            this->obj, this->target_x, this->target_y, this->target_z,
-            this->task->work_range, this->get_move_sprite());
-        if (action == 0) {
-            this->set_state(0x0D);
-            return;
-        }
-        action->setSubAction(1);
-        this->sub_actions->add_action(action);
-        return;
-    }
-
-    case 4: {
-        this->timer = 0.0f;
-        if (this->target_obj == 0) {
-            this->set_state(0x0D);
-            return;
-        }
-        this->target_x = this->target_obj->world_x;
-        this->target_y = this->target_obj->world_y;
-        this->target_z = this->target_obj->world_z;
-        if (this->target_obj->object_state <= 2) {
-            this->set_state(0x0C);
-            return;
-        }
-        RGE_Action_Move_To* action = new RGE_Action_Move_To(
-            this->obj, this->target_obj, this->task->work_range,
-            this->get_move_sprite());
-        if (action == 0) {
-            this->set_state(0x0D);
-            return;
-        }
-        this->sub_actions->add_action(action);
-        action->setSubAction(1);
-        return;
-    }
-
-    case 12: {
-        this->timer = 0.0f;
-        // BINARY NOTE: The action master is stored as a static-master pointer.
-        // These three reads prove the combat-master fields at +0x124, +0x12A,
-        // and +0x138.
-        RGE_Action_Attack* action = new RGE_Action_Attack(
-            this->obj, this->target_obj, this->get_move_sprite(),
-            this->task->work_sprite, 0, this->task->work_range,
-            static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)->minimum_weapon_range,
-            static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)->missile_id,
-            static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)->fire_missile_at_frame);
-        if (action == 0) {
-            this->set_state(0x0D);
-            return;
-        }
-        this->sub_actions->add_action(action);
-        action->setSubAction(1);
-        return;
-    }
-
-    case 6:
-        this->timer = 0.0f;
-        this->obj->new_sprite(this->get_move_sprite());
-        return;
-
-    case 7:
-        this->timer = 0.0f;
-        // BINARY NOTE: State 7 reads attribute_type_held (+0x4C), then calls
-        // the inherited set_attribute virtual at slot +0x80.
-        if (this->obj->attribute_type_held != this->task->attribute_type) {
-            this->obj->set_attribute(this->task->attribute_type, 0);
-        }
-        this->obj->new_sprite(this->task->work_sprite2);
-        if (this->task->work_sound != 0) {
-            this->task->work_sound->play(1);
-        }
-        return;
-
-    case 8:
-        if (this->obj->attribute_amount_held > DAT_00575150) {
-            if (this->target_obj2 == 0) {
-                if (static_cast<RGE_Master_Action_Object*>(this->obj->master_obj)->drop_site != -1) {
-                    this->set_target_obj2(this->obj->owner->objects->find_by_master_ids(
-                        static_cast<RGE_Master_Action_Object*>(this->obj->master_obj)->drop_site,
-                        static_cast<RGE_Master_Action_Object*>(this->obj->master_obj)->backup_drop_site,
-                        this->obj->world_x, this->obj->world_y, 1, 2,
-                        (RGE_Static_Object*)this->obj));
-                } else {
-                    this->set_target_obj2(0);
-                }
-            }
-            if (this->target_obj2 != 0) {
-                RGE_Action_Move_To* action = new RGE_Action_Move_To(
-                    this->obj, this->target_obj2, this->task->work_range,
-                    this->get_move_sprite());
-                if (action == 0) {
-                    this->set_state(0x0D);
-                    return;
-                }
-                this->sub_actions->add_action(action);
-                action->setSubAction(1);
-                return;
-            }
-            this->obj->notify(this->obj->id, this->obj->id, 0x203, 0x265, 0, 0);
-            if (this->obj->owner->computerPlayer() == 0) {
-                this->set_state(2);
-            } else {
-                this->set_state(1);
-            }
-            return;
-        }
-        // BINARY NOTE: The shipped check reads target_obj (+0x10), not
-        // target_obj2 (+0x14), before clearing target_obj.
-        // LIKELY INTENT: Clear the current target before state 3.
-        if (this->target_obj != 0 &&
-            this->target_obj->attribute_amount_held <= DAT_00575150) {
-            this->set_target_obj(0);
-        }
-        this->set_state(3);
-        return;
-
-    case 1:
-    case 13:
-    case 14:
-        this->timer = 0.0f;
-        this->obj->new_sprite(this->get_wait_sprite());
-        return;
-
-    default:
-        return;
-    }
-}
 #endif

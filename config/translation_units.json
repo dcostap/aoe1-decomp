@@ -1055,20 +1055,21 @@
       }
     },
     {
-      "name": "tact_hnt_prefix",
-      "source": "src/tact_hnt_tu.cpp",
+      "name": "tact_hnt",
+      "source": "src/tact_hnt.cpp",
+      "module": "tact_hnt",
       "flags": "config/flags/004CF090_TRIBE_Action_Hunt.rsp",
       "owners": {
-        "004CF090": "src/matching/004CF090_TRIBE_Action_Hunt.cpp",
-        "004CF130": "src/matching/004CF130_TRIBE_Action_Hunt.cpp",
-        "004CF1C0": "src/matching/004CF1C0_TRIBE_Action_Hunt.cpp",
-        "004CF210": "src/matching/004CF210_save.cpp",
-        "004CF240": "src/matching/004CF240_first_in_stack.cpp",
-        "004CF300": "src/matching/004CF300_set_state.cpp",
-        "004CFF20": "src/matching/004CFF20_get_move_sprite.cpp",
-        "004CFF50": "src/matching/004CFF50_get_wait_sprite.cpp",
-        "004CFF90": "src/matching/004CFF90_stop.cpp",
-        "004D0080": "src/matching/004D0080_work.cpp"
+        "004CF090": "src/tact_hnt.cpp",
+        "004CF130": "src/tact_hnt.cpp",
+        "004CF1C0": "src/tact_hnt.cpp",
+        "004CF210": "src/tact_hnt.cpp",
+        "004CF240": "src/tact_hnt.cpp",
+        "004CF300": "src/tact_hnt.cpp",
+        "004CFF20": "src/tact_hnt.cpp",
+        "004CFF50": "src/tact_hnt.cpp",
+        "004CFF90": "src/tact_hnt.cpp",
+        "004D0080": "src/tact_hnt.cpp"
       },
       "symbols": {
         "004CF090": "??0TRIBE_Action_Hunt@@QAE@HPAVRGE_Action_Object@@@Z",
