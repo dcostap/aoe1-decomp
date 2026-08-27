@@ -1,4 +1,5 @@
 #include "../include/sprite.h"
+#include "../include/game_globals.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -1082,7 +1083,8 @@ void RGE_Sprite::update(unsigned long param_1)
         if (pS) {
             int dt = delta_time;
             unsigned long time = param_1;
-            if ((double)dt == 0.0) {
+            // BINARY NOTE: update compares against the double at 00574528.
+            if ((double)dt == DAT_00574528) {
                 this->last_time = time;
                 this->delta_time = 1;
                 return;
