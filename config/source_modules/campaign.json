@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "name": "campaign",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\campaign.cpp",
+  "source": "src/campaign.cpp",
+  "header": "include/campaign.h",
+  "functions": {
+    "00423230": { "status": "matching" },
+    "00423330": { "status": "matching" },
+    "00423480": { "status": "matching" },
+    "004234B0": { "status": "matching" },
+    "00423690": { "status": "matching" },
+    "00423710": { "status": "matching" },
+    "00423720": { "status": "matching" },
+    "00423730": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/campaign_module.md"
+    },
+    "004237A0": { "status": "matching" }
+  }
+}
