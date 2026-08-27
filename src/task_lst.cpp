@@ -5,7 +5,7 @@
 #include "../include/player.h"
 #include "../include/world.h"
 
-extern "C" int __cdecl rge_read(int fd, void* buffer, int size);
+extern "C" void __cdecl rge_read(int fd, void* buffer, int size);
 extern "C" void __cdecl rge_write(int fd, void* buffer, int size);
 extern void* __cdecl calloc(int count, int size);
 extern void __cdecl free(void* block);
