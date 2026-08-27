@@ -7,6 +7,17 @@
 // call. No local Base Game layout or method shim is added.
 
 #include "../include/tact_wnd.h"
+#include "../include/act_list.h"
+#include "../include/act_obj.h"
+#include "../include/basegame.h"
+#include "../include/m_ac_obj.h"
+#include "../include/m_s_obj.h"
+#include "../include/move_obj.h"
+#include "../include/obj_list.h"
+#include "../include/player.h"
+#include "../include/rge_base_game_global.h"
+#include "../include/stat_obj.h"
+#include "../include/world.h"
 
 static const float LIMIT = 2000.0f;
 

@@ -1,23 +1,10 @@
 #ifndef AOE1_TACT_WND_H
 #define AOE1_TACT_WND_H
 
-#include <stdio.h>
 #include "action.h"
-#include "act_list.h"
-#include "act_obj.h"
-#include "stat_obj.h"
-#include "m_s_obj.h"
-#include "m_ac_obj.h"
-#include "move_obj.h"
-#include "world.h"
-#include "obj_list.h"
-#include "player.h"
-#include "basegame.h"
-#include "rge_base_game_global.h"
 
-// tact_wnd.cpp uses RGE_Scenario only through the canonical Base Game
-// signatures. basegame.h supplies those forwards without a second Base Game
-// declaration from scenario.h.
+class RGE_Action_Object;
+
 class TRIBE_Action_Wonder : public RGE_Action {
 public:
     TRIBE_Action_Wonder(int, RGE_Action_Object*);
