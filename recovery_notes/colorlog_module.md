@@ -15,11 +15,28 @@ call and four virtual `IDirectDrawSurface::Blt` calls. The guard chain checks th
 color-log flag, the game pointer, program mode, the draw system, and the primary
 surface. These checks link the owner to the `Colorlog.cpp` source context.
 
-## Recovered context
+## Header composition repair
 
-The source uses the period Windows and DirectDraw declarations. The module
-header owns the `TDrawArea`, `TDrawSystem`, and `RGE_Base_Game` layouts used by
-the function. It also declares the two external game values.
+The header consumes `include/basegame.h` for the PDB-owned `RGE_Base_Game`
+layout, `include/rge_base_game_global.h` for the process-wide pointer, and
+`include/drawarea.h` for the PDB-owned `TDrawArea` and `TDrawSystem` layouts.
+It declares no foreign class or record. It does not include `panel.h`.
+
+The PDB type dump proves the consumed draw members:
+
+- `TDrawArea::Width` is at `+0x18`; `DrawSurface` is at `+0x3C`.
+- `TDrawSystem::Wnd` is at `+0x04`; `DrawArea` is at `+0x0C`;
+  `PrimarySurface` is at `+0x1C`; `ScreenMode` is at `+0x479`.
+
+The `RGE_Base_Game` owner packet and type dump prove `draw_system` at `+0x48`
+and `prog_mode` at `+0x1B0`. The original assembly reads these members at
+`00424832` and `00424845`. The remaining assembly reads the draw members at
+`00424862`, `00424873`, `0042489F`, `004248A9`, `0042491A`, `00424927`,
+`0042497D`, and `004249A0`.
+
+`src/colorlog.cpp` already uses the canonical member names. No source change
+was needed. No private `RGE_Base_Game`, `TDrawSystem`, or `TDrawArea` copy
+remains.
 
 The function builds two ten-pixel rectangles and one point. It converts the
 point to screen coordinates in screen mode two. It then fills the primary and
@@ -38,8 +55,12 @@ raw address expression, or inline assembly.
 
 ## Validation
 
-The candidate translation-unit check compiled the direct source with
-`config/flags/default.rsp`. It reports `MATCH` and zero differing bytes. The
-check confirms the 442-byte boundary, matching relocations, and the free
-`__cdecl` owner. The candidate report is
-`build/candidate_tus/colorlog_natural/report.txt`.
+No compiler or validator command was run in this repair. Panel and Panel_ez
+validation has priority. The parent will authorize one focused Colorlog
+candidate after that validation completes.
+
+The prior candidate result is historical evidence only. It reported `MATCH`
+and zero differing bytes before this canonical-header repair.
+
+The authorized Colorlog validation must confirm the 442-byte `color_log`
+boundary, relocations, direct targets, and all BaseGame-header consumers.
