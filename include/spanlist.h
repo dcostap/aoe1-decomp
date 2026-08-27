@@ -3,6 +3,9 @@
 
 #include <windows.h>
 
+#ifndef AOE1_SPANLIST_TYPES_H
+#define AOE1_SPANLIST_TYPES_H
+
 struct VSpan_Node {
     union {
         VSpan_Node* Next;
@@ -31,44 +34,13 @@ struct VSpanMiniList {
     };
 };
 
-struct Shape_Info {
-    unsigned long Shape_Data_Offsets;
-    unsigned long Shape_Outline_Offset;
-    long Reserved1;
-    long Reserved2;
-    long Width;
-    long Height;
-    long Hotspot_X;
-    long Hotspot_Y;
-};
-
-struct SLhape_File_Header {
-    char Version[4];
-    long Num_Shapes;
-    char Comment[24];
-};
-typedef SLhape_File_Header Shape_File_Header_Data;
-
 struct Shape_Header;
 struct Shape_File_Header;
 struct Shape_Offsets;
-
-class TShape {
-public:
-    unsigned char* shape;
-    int load_type;
-    int load_size;
-    Shape_Header* shape_header;
-    Shape_File_Header* head;
-    Shape_Offsets* offsets;
-    SLhape_File_Header* FShape;
-    Shape_Info* shape_info;
-};
-
-class TDrawArea {
-public:
-    void GetPalette(PALETTEENTRY* palette);
-};
+struct Shape_Info;
+struct SLhape_File_Header;
+class TShape;
+class TDrawArea;
 
 class TSpan_Node_List {
 public:
@@ -215,5 +187,7 @@ public:
     void take_snapshot(char* name, int& number, TDrawArea* area, int color,
                        TSpan_List_Manager** spans, int* colors, int count);
 };
+
+#endif  // AOE1_SPANLIST_TYPES_H
 
 #endif

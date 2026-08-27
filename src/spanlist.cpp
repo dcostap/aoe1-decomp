@@ -1,5 +1,40 @@
 #include "../include/spanlist.h"
 
+// These views are private. Drawarea and Shape own their shared declarations.
+struct Shape_Info {
+    unsigned long Shape_Data_Offsets;
+    unsigned long Shape_Outline_Offset;
+    long Reserved1;
+    long Reserved2;
+    long Width;
+    long Height;
+    long Hotspot_X;
+    long Hotspot_Y;
+};
+
+struct SLhape_File_Header {
+    char Version[4];
+    long Num_Shapes;
+    char Comment[24];
+};
+
+class TShape {
+public:
+    unsigned char* shape;
+    int load_type;
+    int load_size;
+    Shape_Header* shape_header;
+    Shape_File_Header* head;
+    Shape_Offsets* offsets;
+    SLhape_File_Header* FShape;
+    Shape_Info* shape_info;
+};
+
+class TDrawArea {
+public:
+    void GetPalette(PALETTEENTRY* palette);
+};
+
 #include <memory.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -624,13 +659,12 @@ void TSpan_List_Manager::AddMiniList(VSpanMiniList* list, int yoff, int xoff)
     }
 
     while (list != 0) {
-        unsigned int x = 0;
-        x = list->X_start;
-        if (x == 0xFF) {
+        int y_delta = list->Y_delta;
+        if (y_delta == 0xFF) {
             return;
         }
-        AddSpan((unsigned char)list->Y_delta + yoff,
-                (unsigned char)list->X_end + yoff, x + xoff);
+        AddSpan((int)list->X_start + xoff,
+                (int)list->X_end + xoff, y_delta + yoff);
         list = (VSpanMiniList*)((char*)list + 3);
     }
 }

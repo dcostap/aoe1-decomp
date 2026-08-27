@@ -11,9 +11,9 @@ Five functions remain accepted drift. Their current focused results are:
   walk. The migration keeps its accepted source shape.
 - `004BE090 AddLine_Align`: 184 differing bytes in the focused grouped build.
   The five AddSpan calls and loop behavior remain aligned.
-- `004BE1F0 AddMiniList`: the source-bank grouped build had 38 differing
-  bytes. The direct natural module build has 13 differing bytes. The sentinel
-  walk and AddSpan argument behavior remain accepted drift.
+- `004BE1F0 AddMiniList`: scratch. The old source swapped its span fields.
+  The repaired source uses Y_delta as the sentinel and calls AddSpan with
+  X_start, X_end, and Y_delta in that order.
 - `004BEAD0 DecodeLine`: 12 differing bytes in the focused grouped build.
   The node walk, byte updates, and count behavior remain aligned.
 - `004BEB10 take_snapshot`: 351 differing bytes in the focused grouped build.
@@ -21,12 +21,11 @@ Five functions remain accepted drift. Their current focused results are:
 
 The natural module build adds a temporary three-byte register-color drift to
 `004BE4B0 DeleteShape`. Its size, control flow, calls, and all other bytes
-remain aligned. The prior fragment build was exact. The exact-owner claim is
-stale until the final source tree repairs this register choice.
+remain aligned. It stays accepted drift. The prior exact-owner claim is removed.
 
 `004BDB00 AddSpan` remains scratch. The current source is a natural typed
 reconstruction. The focused grouped build reports 589 differing bytes and a
 922-byte rebuild against the 916-byte original.
 
-The migration removes the source-bank fragments and the wrapper. The new
-header owns the reviewed span-list, shape, and drawing-area declarations.
+The migration removes the source-bank fragments and the wrapper. The public
+header owns span declarations only. Shape and Drawarea views stay private.

@@ -32,13 +32,13 @@
       "note_path": "recovery_notes/spanlist_module.md"
     },
     "004BE1F0": {
-      "status": "accepted_drift",
+      "status": "scratch",
       "note_path": "recovery_notes/spanlist_module.md"
     },
     "004BE240": { "status": "matching" },
     "004BE290": { "status": "matching" },
     "004BE4B0": {
-      "status": "matching",
+      "status": "accepted_drift",
       "note_path": "recovery_notes/spanlist_module.md"
     },
     "004BE5B0": { "status": "matching" },
