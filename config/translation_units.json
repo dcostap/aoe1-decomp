@@ -3175,17 +3175,18 @@
     },
     {
       "name": "campaign",
-      "source": "src/campaign_tu.cpp",
+      "module": "campaign",
+      "source": "src/campaign.cpp",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "00423230": "src/matching/00423230_RGE_Campaign.cpp",
-        "00423330": "src/matching/00423330_RGE_Campaign.cpp",
-        "00423480": "src/matching/00423480_RGE_Campaign.cpp",
-        "004234B0": "src/matching/004234B0_create_file.cpp",
-        "00423690": "src/matching/00423690_open_scenario.cpp",
-        "00423710": "src/matching/00423710_get_name.cpp",
-        "00423720": "src/matching/00423720_scenario_number.cpp",
-        "004237A0": "src/matching/004237A0_get_scenario_name.cpp"
+        "00423230": "src/campaign.cpp",
+        "00423330": "src/campaign.cpp",
+        "00423480": "src/campaign.cpp",
+        "004234B0": "src/campaign.cpp",
+        "00423690": "src/campaign.cpp",
+        "00423710": "src/campaign.cpp",
+        "00423720": "src/campaign.cpp",
+        "004237A0": "src/campaign.cpp"
       },
       "symbols": {
         "00423230": "??0RGE_Campaign@@QAE@PAD@Z",
