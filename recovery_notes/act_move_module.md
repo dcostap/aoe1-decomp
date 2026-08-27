@@ -81,6 +81,48 @@ VC5's adjacent-overload order, and place both moving setup declarations after
 stop and turn. This removes the synthetic setup and const slots without a
 local carrier or vtable workaround.
 
+## Shared ABI fanout after main rebase
+
+The branch is rebased onto current `main` at `02a19f695`, which includes
+`ee088911a`. The fanout reports are under
+`build/candidate_tus/shared_abi_fanout`.
+
+The grouped `act_move` candidate has 8/8 exact owners matching and generated
+`00405580` matching. Observed `00405850` differs by 728 bytes. All rows have
+zero relocation mismatches and zero boundary escapes. Every exact owner has
+owner status `match`.
+
+The grouped `ani_obj` candidate has 10/10 exact owners matching and generated
+`0041A1E0` matching. The grouped `action` candidate has 28/28 exact owners
+matching and generated `004074A0` matching. The grouped `act_obj` candidate
+has 27/27 exact owners matching and generated `00405F70` matching. Its
+observed rows remain nonexact: `00406470` (676 bytes), `00406860` (143),
+`00406940` (2), `00406990` (2), `00406A70` (2), `00406B90` (1),
+`00406BC0` (18), and `00406C10` (1). These rows have zero relocation
+mismatches and zero boundary escapes, with owner status `match`.
+
+The Act Enter exact-anchor candidate has 5/5 exact owners matching and
+generated `004023F0` matching. Its observed `00402740` row differs by 663
+bytes. It has zero relocation mismatches and zero boundary escapes.
+
+The AIUA exact consumers pass their exact owners. `aiuaimod_complete_fresh`
+has 9/9 exact matches. `aiuaimod_prefix` has 94/94 exact matches.
+`taiuaimd_cpp_complete` has 20/20 exact matches and 15/15 generated matches.
+`taiuaimd_preditor_prefix` has 6/6 exact matches and 2/2 generated matches.
+`taiuaimd_soldier_segment` has 4/4 exact matches and one generated match.
+The generated `00413070 UnitAIModule` row is not emitted by the current
+novtable source and remains an isolated generated-row error in the first two
+AIUA candidates. All other AIUA rows have zero relocation mismatches and zero
+boundary escapes.
+
+The grouped stat-object candidate is isolated at compile time because the
+existing context includes missing `infmap.h`; it produced no comparison rows.
+The grouped moving-object candidate remains isolated at compile time because
+the existing direct source lacks several complete canonical dependencies,
+including `RGE_Sprite`, `Path` helpers, and the moving setup base surface. No
+owner, relocation, boundary, or generated result was produced for either
+compile failure.
+
 ## Open validation
 
 The accepted-drift `00405850 update` retains its reviewed state. The lead must
