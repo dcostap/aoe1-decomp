@@ -10,9 +10,9 @@
 - The nearby `0041A1E0` entry is a compiler-generated scalar deleting
   destructor. It has no handwritten source owner.
 
-The module header owns the `RGE_Animated_Object` surface and the inherited
-static-object, player, world, master-object, and sprite-list declarations used
-by these bodies. The executable proves the animated speed field at `+0x88` and
+The module header owns only the `RGE_Animated_Object` surface. The source
+privately includes the canonical Active Sprite List, Player, file-I/O, and
+World owners. The executable proves the animated speed field at `+0x88` and
 the static-object state and type fields at `+0x48` and `+0x4E`. The virtual
 slots used by `update` are the sprite-list `is_animating` and `update` slots.
 
@@ -29,11 +29,14 @@ slots used by `update` are the sprite-list `is_animating` and `update` slots.
 
 ## Status and validation
 
-The manifest keeps all 10 normal owners as matching. The migration requires a
-fresh grouped candidate check because source ownership changed from the wrapper
-to the natural module source. The parent must update the shared
-`config/translation_units.json` entry from `src/ani_obj_tu.cpp` to
-`src/ani_obj.cpp` and register only owners that pass that check.
+The manifest keeps all 10 normal owners as matching. The translation-unit
+registry directly owns `src/ani_obj.cpp`. It registers all 10 normal owners.
+
+The final grouped candidate result is in
+`build/candidate_tus/ani_obj_natural_cast_cleanup/report.txt`. All 10 normal
+owners report `MATCH` and `0.0000%`. They have correct owners, zero relocation
+target mismatches, and zero boundary escapes. Generated `0041A1E0` also
+reports `MATCH` at 30/30 bytes through the VC5 deleting-destructor fallback.
 
 The generated destructor remains outside the normal manifest. The candidate
 proposal checks it as a weak VC5 fallback when the compiler emits its generated
@@ -41,5 +44,5 @@ symbol.
 
 ## Cross-shard evidence
 
-No shared declaration, global definition, compiler flag, generated inventory,
-or translation-unit registry changed during this migration.
+No shared declaration, global definition, compiler flag, or generated
+inventory changed during this final include cleanup.
