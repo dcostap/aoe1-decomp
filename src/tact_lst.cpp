@@ -115,8 +115,7 @@ RGE_Action* TRIBE_Action_List::create_task_action(
             return new TRIBE_Action_Trade(this->obj, task, target);
         return new TRIBE_Action_Trade(this->obj, task, x, y, z);
     case 3:
-        return new RGE_Action_Enter(this->obj, task,
-                                    (RGE_Static_Object*)target);
+        return new RGE_Action_Enter(this->obj, task, target);
     case 0x0C:
         return new RGE_Action_Transport(this->obj, task, x, y, z);
     default:

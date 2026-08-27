@@ -1,7 +1,7 @@
 #ifndef AOE1_TACT_LST_H
 #define AOE1_TACT_LST_H
 
-// Compiler-facing declarations for C:\\msdev\\work\\age1_x1\\tact_lst.cpp.
+// Canonical owner declarations for C:\\msdev\\work\\age1_x1\\tact_lst.cpp.
 // Shared action, action-list, node, and task ownership comes from the
 // canonical engine headers. This module owns only TRIBE_Action_List.
 
