@@ -36,3 +36,7 @@ build. It shows relocation errors for `00493D60`, `00496800`, and `004996C0`.
 It shows boundary errors for `00498A50`, `00499680`, `0049ADA0`, `0049BAF0`,
 `0049C300`, `0049C800`, `0049CA80`, `0049CB90`, `0049CC20`, `0049CCB0`,
 `0049CE40`, `0049CEC0`, `0049D090`, and `0049D440`.
+
+`0049D440 any_selected_have_action` was previously registered exact. Its
+merged result differs by 60 bytes and crosses two boundary bytes. The direct
+entry and module status now record it as scratch.

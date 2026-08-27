@@ -99,7 +99,10 @@
     "0049D2F0": { "status": "matching" },
     "0049D340": { "status": "matching" },
     "0049D370": { "status": "matching" },
-    "0049D440": { "status": "matching" },
+    "0049D440": {
+      "status": "scratch",
+      "note_path": "recovery_notes/scr_game.md"
+    },
     "0049D4B0": { "status": "scratch" },
     "0049D4F0": { "status": "matching" },
     "0049D530": { "status": "matching" },
