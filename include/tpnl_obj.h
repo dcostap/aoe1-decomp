@@ -1,11 +1,12 @@
-#ifndef AOE1_TPNL_OBJ_CONTEXT_H
-#define AOE1_TPNL_OBJ_CONTEXT_H
+#ifndef AOE1_TPNL_OBJ_H
+#define AOE1_TPNL_OBJ_H
 
 // Authentic compiler-facing declaration context for tpnl_obj.cpp.
 //
 // Evidence: the PDB module is C:\\msdev\\work\\age1_x1\\tpnl_obj.cpp;
 // owner order is the address/line order recorded in
-// build/tu_plans/tpnl_obj_cpp/packet.json.  The panel base uses the observed
+// build/source_reunification/terra_system/tpnl_obj_cpp/tpnl_obj_cpp/packet.json.
+// The panel base uses the observed
 // slot +0x20 set_redraw and slot +0xB4 notify surfaces.  The object classes
 // retain only named period fields needed by this module, with their proven
 // offsets and inherited virtual order.
@@ -622,10 +623,6 @@ extern const char s_itemicon_shp[];
 extern "C" void __cdecl _ASMSet_Color_Xform(int);
 extern unsigned long __cdecl debug_timeGetTime(char*, int);
 
-#define S_FMT_ID_NAME ((const char*)0x0058B690)
-#define S_FMT_NAME ((const char*)0x0057F324)
-#define S_FMT_HP ((const char*)0x005870AC)
-
 extern "C" {
 __declspec(dllimport) int __stdcall SetBkMode(HDC, int);
 __declspec(dllimport) COLORREF __stdcall SetTextColor(HDC, COLORREF);
@@ -716,9 +713,10 @@ public:
     void set_object(RGE_Static_Object*);
     void set_mode(unsigned char);
     unsigned char get_mode();
-    void draw_score();
 
 protected:
+    void draw_score();
+
     void save_object_info();
 };
 

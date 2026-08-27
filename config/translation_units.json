@@ -7611,19 +7611,20 @@
     },
     {
       "name": "tpnl_obj",
-      "source": "src/tpnl_obj_tu.cpp",
+      "source": "src/tpnl_obj.cpp",
+      "module": "tpnl_obj",
       "flags": "config/flags/tpnl_obj.rsp",
       "owners": {
-        "0051ADF0": "src/matching/0051ADF0_TRIBE_Panel_Object.cpp",
-        "0051B070": "src/matching/0051B070_TRIBE_Panel_Object.cpp",
-        "0051B110": "src/matching/0051B110_set_player.cpp",
-        "0051B140": "src/matching/0051B140_set_object.cpp",
-        "0051B160": "src/matching/0051B160_set_mode.cpp",
-        "0051B180": "src/matching/0051B180_get_mode.cpp",
-        "0051C220": "src/matching/0051C220_draw_item.cpp",
-        "0051CA10": "src/matching/0051CA10_save_object_info.cpp",
-        "0051CC80": "src/matching/0051CC80_mouse_left_down_action.cpp",
-        "0051CC90": "src/matching/0051CC90_mouse_left_up_action.cpp"
+        "0051ADF0": "src/tpnl_obj.cpp",
+        "0051B070": "src/tpnl_obj.cpp",
+        "0051B110": "src/tpnl_obj.cpp",
+        "0051B140": "src/tpnl_obj.cpp",
+        "0051B160": "src/tpnl_obj.cpp",
+        "0051B180": "src/tpnl_obj.cpp",
+        "0051C220": "src/tpnl_obj.cpp",
+        "0051CA10": "src/tpnl_obj.cpp",
+        "0051CC80": "src/tpnl_obj.cpp",
+        "0051CC90": "src/tpnl_obj.cpp"
       },
       "symbols": {
         "0051ADF0": "??0TRIBE_Panel_Object@@QAE@PAVTDrawArea@@PAVTPanel@@PAXJJPAVTShape@@PAPAV3@PAVTRIBE_Player@@@Z",
