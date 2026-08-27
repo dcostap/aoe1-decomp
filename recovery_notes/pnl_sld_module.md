@@ -46,6 +46,13 @@ The candidate translation-unit validation uses `config/flags/default.rsp` and
 compares all ten normal owners plus both compiler-generated destructors. Its
 report is under `build/candidate_tus/pnl_sld/`.
 
+That run reported `MATCH` with zero positional difference, boundary escapes,
+and relocation target mismatches for all ten normal owners. The generated
+`0047BD10` destructor also matched. The `0047BE10` row reported an error from
+the proposal's initial misspelling of its expected weak symbol. The proposal
+now uses the correct `??_ETHorizontalSliderPanel@@UAEPAXI@Z` symbol. No second
+candidate run was made because this assignment allows one grouped validation.
+
 The global translation-unit registry still names the removed wrapper and source
 bank fragments. This captain did not edit `config/translation_units.json` or
 other ownership data. The main integration owner must replace that registered
