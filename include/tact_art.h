@@ -1,13 +1,7 @@
-#ifndef AOE1_TACT_ART_CONTEXT_H
-#define AOE1_TACT_ART_CONTEXT_H
+#ifndef AOE1_TACT_ART_H
+#define AOE1_TACT_ART_H
 
-// Authentic declaration surface for C:\\msdev\\work\\age1_x1\\tact_art.cpp.
-// PDB order is 004CCBA0, 004CCC00, 004CCC30, 004CCC70, 004CCCB0,
-// 004CCDF0, 004CCF30, 004CD120, 004CD130, 004CD160, 004CD1A0.
-//
-// The fixed offsets and virtual slots below come from the original call and
-// field accesses.  They keep the wrapper's one class surface period-plausible;
-// they are not a replacement for reviewed shared ABI declarations.
+// Declaration surface for C:\\msdev\\work\\age1_x1\\tact_art.cpp.
 
 class RGE_Action_Object;
 class RGE_Action_List;

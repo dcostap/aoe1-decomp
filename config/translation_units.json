@@ -4160,20 +4160,21 @@
     },
     {
       "name": "tact_art",
-      "source": "src/tact_art_tu.cpp",
+      "source": "src/tact_art.cpp",
+      "module": "tact_art",
       "flags": "config/flags/004CCCB0_set_state.rsp",
       "owners": {
-        "004CCBA0": "src/matching/004CCBA0_TRIBE_Action_Artifact.cpp",
-        "004CCC00": "src/matching/004CCC00_TRIBE_Action_Artifact.cpp",
-        "004CCC30": "src/matching/004CCC30_TRIBE_Action_Artifact.cpp",
-        "004CCC70": "src/matching/004CCC70_first_in_stack.cpp",
-        "004CCCB0": "src/matching/004CCCB0_set_state.cpp",
-        "004CCDF0": "src/matching/004CCDF0_update.cpp",
-        "004CCF30": "src/matching/004CCF30_check_ownership.cpp",
-        "004CD120": "src/matching/004CD120_stop.cpp",
-        "004CD130": "src/matching/004CD130_move_to.cpp",
-        "004CD160": "src/matching/004CD160_work.cpp",
-        "004CD1A0": "src/matching/004CD1A0_reset_owner.cpp"
+        "004CCBA0": "src/tact_art.cpp",
+        "004CCC00": "src/tact_art.cpp",
+        "004CCC30": "src/tact_art.cpp",
+        "004CCC70": "src/tact_art.cpp",
+        "004CCCB0": "src/tact_art.cpp",
+        "004CCDF0": "src/tact_art.cpp",
+        "004CCF30": "src/tact_art.cpp",
+        "004CD120": "src/tact_art.cpp",
+        "004CD130": "src/tact_art.cpp",
+        "004CD160": "src/tact_art.cpp",
+        "004CD1A0": "src/tact_art.cpp"
       },
       "symbols": {
         "004CCBA0": "??0TRIBE_Action_Artifact@@QAE@HPAVRGE_Action_Object@@@Z",

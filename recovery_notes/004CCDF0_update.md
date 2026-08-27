@@ -1,0 +1,23 @@
+# 004CCDF0 `TRIBE_Action_Artifact::update`
+
+- PDB source: `tact_art.cpp`, lines 120 to 164.
+- Original size: 199 bytes.
+
+## Recovery record
+
+1. Case order `(10, 6, 100, 1)` restored the source dispatch order.
+2. The real `DAT_00574f08` double and the list-value guard restored the
+   comparison and branch behavior.
+3. The state-100 path keeps the extra proven dereference.
+4. A local speed and duplicate timer stores preserve the original FPU order.
+5. Named owner, world, and master-player fields preserved the exact calls and
+   relocations.
+
+The duplicate stores are intentional. The executable compares the speed before
+it stores the value.
+
+## Module merge transition
+
+The function moved from its matching fragment into `src/tact_art.cpp` in PDB
+order. The merge keeps the source expressions and removes only fallback
+declarations and the context guard.
