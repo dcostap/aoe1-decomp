@@ -2,20 +2,35 @@
 
 ## Phase transition
 
-The behavior review is complete. The natural typed reconstruction now matches
-in the authentic `music.cpp` translation unit.
+The behavior review is complete. The natural typed reconstruction remains in
+the authentic `music.cpp` translation unit, but its current grouped build is
+not exact.
 
 Owner: `TMusic_System::get_play_info` at `00462C30`.
 
-Current validation:
+Former validation:
 
 - original and rebuilt size: 309 bytes;
 - original boundary: `00462C30-00462D64`;
 - rebuilt owner: `?get_play_info@TMusic_System@@QAEHPAEPAH11PAD1PAK@Z`;
 - frame: `0x10`; saved registers: `ebx`, `ebp`, `esi`, `edi`;
 - both indirect `mciSendCommandA@16` calls align at `+0xEC` and `+0x116`;
-- grouped bytes, calls, CFG, boundary, and owner match exactly;
+- grouped bytes, calls, CFG, boundary, and owner matched exactly;
 - strict positional diff: `0` bytes (`0.0000%`).
+
+Current module validation:
+
+- original and rebuilt size: 309 bytes;
+- original boundary: `00462C30-00462D64`;
+- rebuilt owner: `?get_play_info@TMusic_System@@QAEHPAEPAH11PAD1PAK@Z`;
+- frame: `0x10`; saved registers: `ebx`, `ebp`, `esi`, `edi`;
+- both indirect `mciSendCommandA@16` calls align;
+- calls, CFG, boundary, and owner match structurally;
+- strict positional diff: `5` bytes (`1.6181%`) across 5 spans;
+- first strict mismatch: offset `+0xD7` (VA `00462D07`);
+- both relocated call sites match.
+
+The owner is scratch and is not registered as an exact translation-unit owner.
 
 ## Semantic questions
 

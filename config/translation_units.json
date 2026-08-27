@@ -356,7 +356,6 @@
       "owners": {
         "00461910": "src/music.cpp",
         "00461A20": "src/music.cpp",
-        "00461A30": "src/music.cpp",
         "00461C60": "src/music.cpp",
         "00461D20": "src/music.cpp",
         "00461EC0": "src/music.cpp",
@@ -376,13 +375,11 @@
         "004628A0": "src/music.cpp",
         "004629B0": "src/music.cpp",
         "00462A10": "src/music.cpp",
-        "00462B40": "src/music.cpp",
-        "00462C30": "src/music.cpp"
+        "00462B40": "src/music.cpp"
       },
       "symbols": {
         "00461910": "??0TMusic_System@@QAE@EPAX0PAVTSound_Driver@@PAD@Z",
         "00461A20": "??1TMusic_System@@QAE@XZ",
-        "00461A30": "?open_device@TMusic_System@@QAEHXZ",
         "00461C60": "?close_device@TMusic_System@@QAEXXZ",
         "00461D20": "?open_mixer@TMusic_System@@IAEHXZ",
         "00461EC0": "?close_mixer@TMusic_System@@IAEXXZ",
@@ -402,8 +399,7 @@
         "004628A0": "?do_fade@TMusic_System@@IAEXXZ",
         "004629B0": "?end_fade@TMusic_System@@IAEXXZ",
         "00462A10": "?handle_messages@TMusic_System@@QAEIPAXIIJ@Z",
-        "00462B40": "?after_end_track@TMusic_System@@IAEXXZ",
-        "00462C30": "?get_play_info@TMusic_System@@QAEHPAEPAH11PAD1PAK@Z"
+        "00462B40": "?after_end_track@TMusic_System@@IAEXXZ"
       }
     },
     {

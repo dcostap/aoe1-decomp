@@ -11,7 +11,7 @@
     },
     "00461A20": { "status": "matching" },
     "00461A30": {
-      "status": "matching",
+      "status": "scratch",
       "note_path": "recovery_notes/00461A30_open_device.md"
     },
     "00461C60": {
@@ -74,7 +74,7 @@
       "note_path": "recovery_notes/00462B40_after_end_track.md"
     },
     "00462C30": {
-      "status": "matching",
+      "status": "scratch",
       "note_path": "recovery_notes/00462C30_get_play_info.md"
     }
   }
