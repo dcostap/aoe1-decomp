@@ -295,7 +295,7 @@ public:
     RGE_Player* players[9];
 };
 
-#include "rge_player_context.h"
+#include "player.h"
 
 class TribeAIPlayer : public RGE_Player {
 public:
