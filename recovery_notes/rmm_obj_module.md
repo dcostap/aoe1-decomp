@@ -86,3 +86,8 @@ owners. `00485E50` is scratch after the documented two-byte residual.
 After the canonical Map and World headers landed, the registered `rmm_obj`
 candidate for `00485DC0` compiled and returned `MATCH`, `0.0000%`. This check
 does not revalidate the remaining recorded owners.
+
+The later full registered-owner candidate compiled `src/rmm_obj.cpp` once and
+checked all eight registered owners. All eight returned `MATCH`, `0.0000%`.
+It found no comparison error, relocation-target mismatch, boundary escape, or
+demotion. This candidate did not include the scratch or accepted-drift owners.
