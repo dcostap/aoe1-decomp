@@ -2,7 +2,22 @@
 //
 // The definitions follow the original PDB line and address order.
 
+#include "../include/game_globals.h"
+#include "../include/rge_fio.h"
 #include "../include/tact_cnv.h"
+#include "../include/act_list.h"
+#include "../include/act_move.h"
+#include "../include/act_obj.h"
+#include "../include/basegame.h"
+#include "../include/m_s_obj.h"
+#include "../include/player.h"
+#include "../include/rge_base_game_global.h"
+#include "../include/task.h"
+#include "../include/world.h"
+
+typedef unsigned char uchar;
+
+extern "C" int __cdecl debug_rand(char* file, int line);
 
 TRIBE_Action_Convert::TRIBE_Action_Convert(int file, RGE_Action_Object* object)
     : RGE_Action(file, object, 1), requiredRange(1.0f)
