@@ -5,6 +5,22 @@
 // The shipped class hierarchy and the narrow per-function donor views do not
 // yet provide one proven complete view layout. Keep this context conservative;
 // the two shipped callback slots below are virtual per their original symbols.
+//
+// ABI HOLD (2026-08-27): PDB and call-site evidence proves the following data.
+// Do not change this surface without a complete vw_dimap.cpp rebuild.
+// TPanel has size 0xF4. RGE_Diamond_Map and its View each have size 0x16C.
+// View slots are draw +0x30 and handle_mouse_down +0x70.
+// Left mouse slots are +0x84, +0x8C, and +0x90.
+// Right mouse slots are +0x98, +0xA0, and +0xA4.
+// View command slots are make_do +0xF4, make_move +0xF8, and make_work +0xFC.
+// RGE_Player command slots are move +0xA0, work +0xA4, and do +0xA8.
+// The player waypoint slot is +0xD8 and has the virtual float signature.
+// RGE_Base_Game::set_game_mode is virtual at +0x10.
+// RGE_Base_Game fields are prog_info +0x0C and prog_mode +0x1B0.
+// Its game_mode and submode fields are at +0x1B4 and +0x1B8.
+// pick_tile uses short-reference outputs and an RGE_Tile double pointer.
+// The current direct player and base-game declarations have incorrect symbols.
+// Affected owners are 0053D360 through 0053DA10 in the vw_dimap group.
 
 typedef unsigned char uchar;
 
