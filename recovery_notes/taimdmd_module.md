@@ -28,6 +28,35 @@ FPO evidence, and exact neighboring owners provide the ownership and boundary
 anchors. The module header keeps the reviewed embedded module offsets and the
 `0x125C8` `TribeMainDecisionAIModule` layout.
 
+## Ownership hold
+
+Do not submit the rejected owner-composition packet. Exact function checks do
+not prove its public header ownership.
+
+PDB layout evidence gives `MainDecisionAIModule` size `0x104` and
+`TribeMainDecisionAIModule` size `0x125C8`. The construction child begins at
+`+0x6C4`. `TribeConstructionAIModule::md` is at `+0x314`. These fields require
+the canonical owners below. They do not permit local replacement layouts.
+
+`MainDecisionAIModule` belongs to `aimdmod.cpp`. `BuildAIModule` belongs to
+`aibldmod.cpp`. `TribeBuildAIModule` belongs to `taibldmd.cpp`.
+`TribeConstructionAIModule` belongs to `taiconmd.cpp`. `TribeInformationAIModule`
+belongs to `taiinfmd.cpp`. Resource, strategy, tactical, and trade AI types
+belong to `tairesmd.cpp`, `taistrmd.cpp`, `taitacmd.cpp`, and `aitrdmod.cpp`.
+
+Use `aimdmod.h`, `aibldmod.h`, `taibldmd.h`, `aiconmod.h`, `taiinfmd.h`,
+`tairesmd.h`, `taistrmd.h`, `taitacmd.h`, and `aitrdmod.h` for those types.
+
+Engine ABI views also remain blocked. Use `world.h`, `player.h`, `tplayer.h`,
+`m_s_obj.h`, `stat_obj.h`, `victory.h`, and `Command.h`. The rejected header's
+`RGE_Game_World` view was `0x100`; the canonical world is `0x104`. Its local
+world, player, victory, map, static-object, and DecisionScore carriers cannot
+remain.
+
+`currentScore` must wait for a proven owner of `DecisionModuleInfo`,
+`DecisionScoreTable`, and `DecisionScoreEntry`. No PDB owner proves those
+carriers. Do not preserve them as local offset layouts.
+
 ## Exactness regressions
 
 Migration changes the complete source context. Prior isolated exact results
