@@ -2,6 +2,10 @@
 // Definitions follow the original PDB source-line and address order.
 
 #include "../include/ani_obj.h"
+#include "../include/asp_list.h"
+#include "../include/player.h"
+#include "../include/rge_fio.h"
+#include "../include/world.h"
 
 // PDB: ani_obj.cpp:29-32; 0041A150
 // BINARY NOTE: The compiler-generated scalar deleting destructor is adjacent
