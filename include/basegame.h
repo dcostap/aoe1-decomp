@@ -152,6 +152,7 @@ public:
     RGE_Player* get_player();
     void get_mouse_pos(tagPOINT*);
     TShape* get_shape(int);
+    TDigital* get_sound(int);
     void increment_view_update_count();
     void mouse_off();
     void mouse_on();
