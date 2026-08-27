@@ -7057,14 +7057,16 @@
     },
     {
       "name": "dlg_help",
-      "source": "src/dlg_help_tu.cpp",
+      "source": "src/dlg_help.cpp",
+      "module": "dlg_help",
       "flags": "config/flags/0043E840_THelpDialog.rsp",
       "owners": {
-        "0043E840": "src/matching/0043E840_THelpDialog.cpp",
-        "0043E8E0": "src/matching/0043E8E0_THelpDialog.cpp",
-        "0043E950": "src/matching/0043E950_THelpDialog.cpp",
-        "0043ED40": "src/matching/0043ED40_action.cpp",
-        "0043EE10": "src/matching/0043EE10_handle_mouse_down.cpp"
+        "0043E840": "src/dlg_help.cpp",
+        "0043E8E0": "src/dlg_help.cpp",
+        "0043E950": "src/dlg_help.cpp",
+        "0043E9E0": "src/dlg_help.cpp",
+        "0043ED40": "src/dlg_help.cpp",
+        "0043EE10": "src/dlg_help.cpp"
       },
       "symbols": {
         "0043E840": "??0THelpDialog@@QAE@PAVTEasy_Panel@@PADJJJJ@Z",

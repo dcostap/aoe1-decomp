@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "name": "dlg_help",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\dlg_help.cpp",
+  "source": "src/dlg_help.cpp",
+  "header": "include/dlg_help.h",
+  "functions": {
+    "0043E840": { "status": "matching", "note_path": "recovery_notes/dlg_help_module.md" },
+    "0043E8E0": { "status": "matching", "note_path": "recovery_notes/dlg_help_module.md" },
+    "0043E950": { "status": "matching", "note_path": "recovery_notes/dlg_help_module.md" },
+    "0043E9E0": { "status": "scratch", "note_path": "recovery_notes/dlg_help_module.md" },
+    "0043ED40": { "status": "matching", "note_path": "recovery_notes/dlg_help_module.md" },
+    "0043EE10": { "status": "matching", "note_path": "recovery_notes/dlg_help_module.md" }
+  }
+}

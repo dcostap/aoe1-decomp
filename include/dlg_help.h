@@ -1,11 +1,12 @@
-#ifndef AOE1_DLG_HELP_CONTEXT_H
-#define AOE1_DLG_HELP_CONTEXT_H
+#ifndef AOE1_DLG_HELP_H
+#define AOE1_DLG_HELP_H
 
-// Authentic dlg_help.cpp context.  The owner bodies include this surface once
-// in PDB source order.  The panel hierarchy keeps the observed object offsets
-// and virtual slots used by the six normal owners.
+// Declarations recovered for the original dlg_help.cpp translation unit.
+// The panel hierarchy keeps the observed object offsets and virtual slots used
+// by the six normal owners.
 
 #include "game_globals.h"
+#include "rge_base_game_global.h"
 #include <stdlib.h>
 
 class TDrawArea;
@@ -177,8 +178,6 @@ public:
     RGE_Font* get_font(int id);
     int singlePlayerGame();
 };
-
-#define rge_base_game (*(RGE_Base_Game**)0x0062C574)
 
 class TTextPanel : public TPanel {
 public:
