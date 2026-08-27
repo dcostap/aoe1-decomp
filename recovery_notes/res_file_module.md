@@ -247,3 +247,13 @@ prevent a declaration repair from hiding a cross-TU ABI regression.
   natural PDB-named records and cleanup order.
 - No exact claim is made by this migration. The lead must record grouped result,
   owner, boundary, relocation, and direct-target outcomes after validation.
+
+## Rejected repair pass
+
+`0047EE90` was tested with a function-scoped frame-pointer option. The frame
+matched, but 357 bytes still differed. The option has no source evidence and
+was not retained.
+
+`0047F320` retains one mapped-data LEA SIB byte. Natural pointer variants did
+not remove it. `0047F5C0` retains its 680-byte difference after natural local
+and declaration-order variants. The clean source remains authoritative.
