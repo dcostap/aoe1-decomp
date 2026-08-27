@@ -9,7 +9,6 @@ struct Waypoint {
     float y;
     float z;
     unsigned char facetToNextWaypoint;
-    unsigned char pad[3];
 };
 
 typedef char path_waypoint_size_check[(sizeof(Waypoint) == 0x10) ? 1 : -1];
