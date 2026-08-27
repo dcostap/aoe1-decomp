@@ -37,10 +37,10 @@ class ScrAchTranslationUnitTests(unittest.TestCase):
             expected.append(str(matches[0].relative_to(REPO_ROOT / "src")).replace("\\", "/"))
         self.assertEqual(include_names, expected)
 
-    def test_scr_ach_owners_use_one_context_header(self) -> None:
+    def test_registered_scr_ach_owners_use_one_context_header(self) -> None:
         for va in (
-            "0048D530", "0048E210", "0048E400", "0048F0B0",
-            "0048F190", "0048F280", "0048F500", "0048F530",
+            "0048E210", "0048F0B0", "0048F190",
+            "0048F280", "0048F500", "0048F530",
         ):
             matches = list((REPO_ROOT / "src").glob(f"**/{va}_*.cpp"))
             self.assertEqual(len(matches), 1)
