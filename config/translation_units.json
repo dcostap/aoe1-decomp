@@ -5702,12 +5702,24 @@
       }
     },
     {
+      "name": "basegame_prefix",
+      "source": "src/basegame.cpp",
+      "module": "basegame",
+      "flags": "config/flags/0041BAA0_setup.rsp",
+      "owners": {
+        "0041B620": "src/basegame.cpp",
+        "0041B650": "src/basegame.cpp"
+      },
+      "symbols": {
+        "0041B620": "?write_draw_log@@YAXPAD@Z",
+        "0041B650": "?write_draw_log2@@YAXPAD@Z"
+      }
+    },
+    {
       "name": "basegame_candidate",
       "source": "src/basegame_candidate_tu.cpp",
       "flags": "config/flags/0041BAA0_setup.rsp",
       "owners": {
-        "0041B620": "src/matching/0041B620_write_draw_log.cpp",
-        "0041B650": "src/matching/0041B650_write_draw_log2.cpp",
         "0041E7A0": "src/matching/0041E7A0_rge_base_game_wnd_proc.cpp",
         "0041B6A0": "src/matching/0041B6A0_RGE_Base_Game.cpp",
         "0041C7D0": "src/matching/0041C7D0_reset_timings.cpp",
@@ -5886,7 +5898,6 @@
         "00422680": "?mpPathFinding@RGE_Base_Game@@QAEEXZ",
         "00422630": "?playerCDAndVersion@RGE_Base_Game@@QAEEH@Z",
         "004230A0": "?debug_rand@@YAHPADH@Z",
-        "0041B620": "?write_draw_log@@YAXPAD@Z",
         "0041C9A0": "?get_string@RGE_Base_Game@@UAEPADJ@Z",
         "0041C9C0": "?get_string@RGE_Base_Game@@UAEPADJPADH@Z",
         "0041C9F0": "?get_string@RGE_Base_Game@@UAEPADHJPADH@Z",
@@ -5913,7 +5924,6 @@
         "00422D60": "?check_scenario_checksum@RGE_Base_Game@@QAEEPADJ@Z",
         "00422DE0": "?set_countdown_timer@RGE_Base_Game@@QAEXJJ@Z",
         "00422660": "?playerTeam@RGE_Base_Game@@QAEHH@Z",
-        "0041B650": "?write_draw_log2@@YAXPAD@Z",
         "0041E7A0": "?rge_base_game_wnd_proc@@YGKIIII@Z",
         "0041B6A0": "??0RGE_Base_Game@@QAE@PAURGE_Prog_Info@@H@Z",
         "0041C7D0": "?reset_timings@RGE_Base_Game@@QAEXXZ",
