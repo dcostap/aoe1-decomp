@@ -98,5 +98,8 @@ Evidence and validation:
 
 - Direct switch-arm `strcpy` form: `MATCH`, `0.0000%`, 216/216 bytes,
   matching owner symbol, zero relocation mismatches, and zero boundary escapes.
+
+After direct metadata registration, the full grouped candidate reports all 29
+normal owners and generated `004074A0` as `MATCH` with `0.0000%` difference.
 - Action grouped observed-function audit: all 29 included normal functions
   matched, including the repaired target and all 28 registered neighbors.
