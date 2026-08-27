@@ -399,15 +399,9 @@ int RGE_Doppleganger_Creator::add_doppleganger_check(
 
     int count = this->active_size;
     if (count > 0) {
-        int i = 0;
-        if (i < count) {
-            RGE_Static_Object** ppObj = this->Objects;
-            while (i < count) {
-                if (*ppObj == obj) {
-                    return 0;
-                }
-                i++;
-                ppObj++;
+        for (int i = 0; i < count; i++) {
+            if (this->Objects[i] == obj) {
+                return 0;
             }
         }
     }
