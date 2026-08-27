@@ -1,5 +1,5 @@
-#ifndef MOVE_OBJ_CONTEXT_H
-#define MOVE_OBJ_CONTEXT_H
+#ifndef MOVE_OBJ_H
+#define MOVE_OBJ_H
 
 #include <stdio.h>
 
@@ -270,6 +270,7 @@ public:
 
 class RGE_Static_Object {
 public:
+    // BINARY NOTE: stopObject is a UnitAIModule slot, not a static-object slot.
     virtual ~RGE_Static_Object();
     virtual void recycle_in_to_game(RGE_Master_Static_Object*, RGE_Player*, float, float, float);
     virtual void recycle_out_of_game();
@@ -312,7 +313,6 @@ public:
     virtual void move_to(RGE_Static_Object*, float, float, float);
     virtual void work(RGE_Static_Object*, float, float, float);
     virtual void stop();
-    virtual void stopObject(int);
     virtual void set_attack(RGE_Static_Object*);
     virtual void play_command_sound();
     virtual void play_move_sound();
@@ -502,7 +502,6 @@ public:
     RGE_Moving_Object(int, RGE_Game_World*, int);
     virtual ~RGE_Moving_Object();
     void destroy();
-    void* scalar_deleting_destructor(unsigned int);
 protected:
     virtual int setup(int, RGE_Game_World*);
     virtual int setup(RGE_Master_Moving_Object*, RGE_Player*, float, float, float);
@@ -643,6 +642,7 @@ extern double DAT_00570B70;
 extern float DAT_00570B78;
 extern float DAT_00570B80;
 extern float DAT_00570B84;
+extern float DAT_00570B88;
 extern double DAT_00570B90;
 extern double DAT_00570B98;
 extern float DAT_00570BA0;
@@ -654,8 +654,9 @@ extern double DAT_00570BC8;
 extern double DAT_00570BD0;
 extern double DAT_00570BE0;
 extern double DAT_00570BF0;
+extern float DAT_00570BFC;
+extern double DAT_00570C00;
 
 extern "C" int __cdecl debug_rand(char*, int);
-void operator_delete(void*);
 
 #endif
