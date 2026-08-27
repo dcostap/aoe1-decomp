@@ -20,8 +20,7 @@
 // PDB lines 70-73; VA 004CF090.
 TRIBE_Action_Hunt::TRIBE_Action_Hunt(int param_1, RGE_Action_Object* param_2)
     : RGE_Action(param_1, param_2, 1) {
-    *(void**)this = (void*)0x5750F0;
-    *(short*)((char*)this + 4) = 0x6E;
+    this->action_type = 0x6E;
     rge_read(param_1, &targetType, 4);
 }
 
@@ -30,8 +29,7 @@ TRIBE_Action_Hunt::TRIBE_Action_Hunt(RGE_Action_Object* obj, RGE_Task* tsk, RGE_
     : RGE_Action(obj, 1)
 {
     this->task = tsk;
-    *(int*)this = 0x5750F0;
-    *(short*)&((char*)this)[4] = 0x6E;
+    this->action_type = 0x6E;
     this->set_target_obj(target);
     if (target && target->object_state < 7) {
         this->target_x = (float)target->world_x;
