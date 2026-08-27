@@ -18,6 +18,7 @@ from common import (
     preferred_source_path,
     repo_path,
     slugify_name,
+    source_module_entry_for_va,
 )
 from translation_unit_prefixes import _compile_wrapper, compare_object_owner
 
@@ -401,14 +402,26 @@ def validate_proposal(payload: dict[str, object]) -> list[str]:
         record = function_record_by_va(int(va, 16))
         if source.resolve() != preferred_source_path(record).resolve():
             issues.append(f"{va} is not the canonical source: {source_value}")
+        module_entry = source_module_entry_for_va(va)
+        direct_module = False
+        if module_entry is not None and source.resolve() == wrapper.resolve():
+            source_module = module_entry["module"]
+            assert isinstance(source_module, dict)
+            direct_module = _resolve(source_module["source"]).resolve() == wrapper.resolve()
         if va in owners:
-            matching = (REPO_ROOT / "src" / "matching").resolve()
-            try:
-                source.resolve().relative_to(matching)
-            except ValueError:
-                issues.append(f"{va} exact owner is not in src/matching: {source_value}")
-        positions = [index for index, included in include_rows if included == source.resolve()]
-        if len(positions) != 1:
+            if direct_module:
+                if str(module_entry["status"]) != "matching":
+                    issues.append(f"{va} exact owner is not matching in its source module")
+            else:
+                matching = (REPO_ROOT / "src" / "matching").resolve()
+                try:
+                    source.resolve().relative_to(matching)
+                except ValueError:
+                    issues.append(f"{va} exact owner is not in src/matching: {source_value}")
+        positions = [] if direct_module else [
+            index for index, included in include_rows if included == source.resolve()
+        ]
+        if not direct_module and len(positions) != 1:
             issues.append(f"{va} source include count is {len(positions)}, expected 1")
         pdb = pdb_map.get(va, {})
         pdb_module = str(pdb.get("primary_source_path") or pdb.get("primary_source_file") or "")
