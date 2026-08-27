@@ -7344,16 +7344,19 @@
     },
     {
       "name": "tact_cnv",
-      "source": "src/tact_cnv_tu.cpp",
+      "source": "src/tact_cnv.cpp",
+      "module": "tact_cnv",
       "flags": "config/flags/default_gx.rsp",
       "owners": {
-        "004CD9E0": "src/matching/004CD9E0_TRIBE_Action_Convert.cpp",
-        "004CDA90": "src/matching/004CDA90_TRIBE_Action_Convert.cpp",
-        "004CDB20": "src/matching/004CDB20_TRIBE_Action_Convert.cpp",
-        "004CDB70": "src/matching/004CDB70_save.cpp",
-        "004CDE10": "src/matching/004CDE10_set_state.cpp",
-        "004CE070": "src/matching/004CE070_update.cpp",
-        "004CE4B0": "src/matching/004CE4B0_martyrdom.cpp"
+        "004CD9E0": "src/tact_cnv.cpp",
+        "004CDA90": "src/tact_cnv.cpp",
+        "004CDB20": "src/tact_cnv.cpp",
+        "004CDB70": "src/tact_cnv.cpp",
+        "004CDBB0": "src/tact_cnv.cpp",
+        "004CDE10": "src/tact_cnv.cpp",
+        "004CE070": "src/tact_cnv.cpp",
+        "004CE450": "src/tact_cnv.cpp",
+        "004CE4B0": "src/tact_cnv.cpp"
       },
       "symbols": {
         "004CD9E0": "??0TRIBE_Action_Convert@@QAE@HPAVRGE_Action_Object@@@Z",
