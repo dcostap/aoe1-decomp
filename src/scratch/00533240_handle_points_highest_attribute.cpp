@@ -189,6 +189,9 @@
 //   continue, early return, immediate source-order context, debug flags, and CPU
 //   flags. Supported forms stayed at 21 register bytes or changed real structure.
 //   The remaining difference is the unsupported ECX/EDX scratch-register phase.
+// - Captain direct-indexed attribute reads regressed to a 208-byte, 0xC-frame body and 178
+//   differing bytes. The pinned indexed score-pointer source was restored. Final validation
+//   remains 230 bytes, 0x10 frame, complete CFG, and 21 register bytes different.
 
 #if 0 // Historical local surface retained below for the attempt log.
 class RGE_Game_World;

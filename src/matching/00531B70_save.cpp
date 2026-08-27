@@ -51,25 +51,29 @@
 //   code generation. All three remain there because the PDB supports that source scope.
 // - Declaration order and PDB names stayed exact. A standard-header lab produced one
 //   code group, so no new header or compiler option remains.
+// - Captain validation: caching the file handle and reusing the outfile parameter home for
+//   target-player ID is supported by the original stack writes. It is codegen-neutral against
+//   the 571-byte, 0xC-frame baseline. The authentic candidate remains 207 bytes different.
 
 #include "../../include/victory_context.h"
 
 void RGE_Victory_Conditions::save(int outfile) {
     long target_obj;
-    long target_player;
     float version = 1.0f;
     long this_obj;
+    // BINARY NOTE: The executable reuses the outfile parameter home for target-player ID.
+    int file_handle = outfile;
 
-    rge_write(outfile, &version, 4);
-    rge_write(outfile, &this->list_num, 4);
-    rge_write(outfile, &this->victory, 1);
+    rge_write(file_handle, &version, 4);
+    rge_write(file_handle, &this->list_num, 4);
+    rge_write(file_handle, &this->victory, 1);
 
     // BINARY NOTE: The stored count does not bound this walk. The linked chain controls writes.
     for (RGE_Victory_Entry* entry = this->victory_list; entry != 0; entry = entry->next) {
         if (entry->target_player != 0) {
-            target_player = entry->target_player->id;
+            outfile = entry->target_player->id;
         } else {
-            target_player = -1;
+            outfile = -1;
         }
 
         if (entry->this_obj != 0) {
@@ -82,40 +86,40 @@ void RGE_Victory_Conditions::save(int outfile) {
             target_obj = entry->target_obj->id;
             // BINARY NOTE: The executable rereads target_obj and does not test owner.
             // This preserves the fault order for malformed entries.
-            target_player = entry->target_obj->owner->id;
+            outfile = entry->target_obj->owner->id;
         } else {
             target_obj = -1;
         }
 
-        rge_write(outfile, entry, 1);
-        rge_write(outfile, &entry->obj_type, 4);
-        rge_write(outfile, &target_player, 4);
-        rge_write(outfile, &entry->x0, 4);
-        rge_write(outfile, &entry->y0, 4);
-        rge_write(outfile, &entry->x1, 4);
-        rge_write(outfile, &entry->y1, 4);
-        rge_write(outfile, &entry->number, 4);
-        rge_write(outfile, &entry->count, 4);
-        rge_write(outfile, &this_obj, 4);
-        rge_write(outfile, &target_obj, 4);
-        rge_write(outfile, &entry->victory_group, 1);
-        rge_write(outfile, &entry->ally_flag, 1);
-        rge_write(outfile, &entry->state, 1);
+        rge_write(file_handle, entry, 1);
+        rge_write(file_handle, &entry->obj_type, 4);
+        rge_write(file_handle, &outfile, 4);
+        rge_write(file_handle, &entry->x0, 4);
+        rge_write(file_handle, &entry->y0, 4);
+        rge_write(file_handle, &entry->x1, 4);
+        rge_write(file_handle, &entry->y1, 4);
+        rge_write(file_handle, &entry->number, 4);
+        rge_write(file_handle, &entry->count, 4);
+        rge_write(file_handle, &this_obj, 4);
+        rge_write(file_handle, &target_obj, 4);
+        rge_write(file_handle, &entry->victory_group, 1);
+        rge_write(file_handle, &entry->ally_flag, 1);
+        rge_write(file_handle, &entry->state, 1);
     }
 
-    rge_write(outfile, &this->tot_victory_points, 4);
-    rge_write(outfile, &this->point_list_num, 4);
+    rge_write(file_handle, &this->tot_victory_points, 4);
+    rge_write(file_handle, &this->point_list_num, 4);
 
     // BINARY NOTE: point_list_num does not bound this walk. The linked chain controls writes.
     for (RGE_Victory_Point_Entry* point = this->victory_point_list; point != 0; point = point->next) {
-        rge_write(outfile, point, 1);
-        rge_write(outfile, &point->state, 1);
-        rge_write(outfile, &point->attribute, 4);
-        rge_write(outfile, &point->amount, 4);
-        rge_write(outfile, &point->points, 4);
-        rge_write(outfile, &point->curr_points, 4);
-        rge_write(outfile, &point->id, 1);
-        rge_write(outfile, &point->group, 1);
-        rge_write(outfile, &point->curr_attribute_amount, 4);
+        rge_write(file_handle, point, 1);
+        rge_write(file_handle, &point->state, 1);
+        rge_write(file_handle, &point->attribute, 4);
+        rge_write(file_handle, &point->amount, 4);
+        rge_write(file_handle, &point->points, 4);
+        rge_write(file_handle, &point->curr_points, 4);
+        rge_write(file_handle, &point->id, 1);
+        rge_write(file_handle, &point->group, 1);
+        rge_write(file_handle, &point->curr_attribute_amount, 4);
     }
 }

@@ -19,6 +19,8 @@
 // - Prefix pass: a controlled float view of the proven +0x18 y2 storage preserved standalone MATCH
 //   and isolated the grouped duplicate-y1 declaration blocker. The view bypasses canonical ownership,
 //   so the natural y1 source was restored.
+// - Captain grouped validation confirms the same seven-byte duplicate-y1 context blocker. A named
+//   y2 storage alias with a float lvalue is diagnostic only and was restored after it reached MATCH.
 
 #ifndef VICTORY_CONTEXT_H
 class RGE_Static_Object {

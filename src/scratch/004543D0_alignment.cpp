@@ -100,6 +100,10 @@
 //   damaged the topology. The original upper-edge locals remain unmodified.
 // - final canonical validation remains MISMATCH: 656 rebuilt bytes versus 690,
 //   457 strict-diff bytes, 74.69% shape, and 4/4 ordered __ftol calls.
+// Context finish: PDB m_s_obj.cpp lines 1021-1088 own this symbol at
+// 004543D0-00454681. alignment_box starts at 00454690. The fresh grouped
+// candidate keeps 656 bytes, 457 strict-diff bytes, the 0x8 frame, and four
+// ordered __ftol calls. No new source form improved this frontier.
 
 class RGE_Game_World;
 class RGE_Map;

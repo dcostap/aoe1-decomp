@@ -10,6 +10,9 @@
 // A separate result local and reversed local type order both stayed exact.
 // Unused world, entry, and method surfaces were also incidental.
 // The retained surface is the smallest tested canonical context.
+// - Captain grouped validation reports the known four-byte EAX/ECX recolor. Natural player and
+//   attribute aliases, including register hints, stay standalone MATCH and do not change the
+//   grouped bytes; the direct expression remains authoritative.
 // - Prefix pass: splitting node->attribute into a local kept standalone MATCH but was grouped
 //   neutral at the four-byte EAX/ECX recolor, so the PDB-supported direct expression remains.
 

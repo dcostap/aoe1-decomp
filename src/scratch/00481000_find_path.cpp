@@ -134,6 +134,12 @@
 // - Restored and validated the pinned source. The remaining gap starts at the
 //   shared failure branch and the cost/hcost local basin; no supported natural
 //   exact source was found in this claim.
+// PDB CONTEXT (PROVED): C:\msdev\work\age1_x1\rmm_base.cpp, lines 526-849,
+// owns 00481000-00481971 as RGE_Random_Map_Module::find_path(Map_Stack&, ...).
+// The authentic wrapper restores its VA order after 00480FB0 and before the
+// next module. Exact anchors are clear_stack at 00481021, eight push_stack
+// calls at 00481179-004817AE, and pop_stack at 004817D8. The rebuilt symbol,
+// boundary, direct targets, 0x24 frame, and four saved registers agree.
 // BINARY NOTE: The target has ten direct calls in fixed order, a 0x24 frame, and
 // four saved registers. The remaining mismatch starts at the post-gate distance
 // block: VC5 colors the x/y working registers opposite the executable and places
@@ -141,6 +147,16 @@
 // LIKELY INTENT: The source performs an eight-neighbor path search with a shared
 // stack and a byte search map. The shipped FPU/local scheduler gap is unresolved.
 // Final unresolved candidate: 2422 bytes, 72.08% shape, 2011 differing bytes.
+// 2026-08-27 sa-6a938959-r1 TU-captain repair:
+// - Completed the context gate from the rmm_base.cpp PDB bands, wrapper order,
+//   class owner, target range, and ten exact direct-call anchors.
+// - Tested natural local scope, index width, coordinate temporaries, operand
+//   orientation, total-cost order, and named rdata forms. None beat the clean
+//   candidate. A one-arm int index reached 1989 differing bytes but changed
+//   the complete basin, so it was rejected and restored.
+// - Final validation: 2422 rebuilt bytes, 2011 differing bytes, 72.08% shape,
+//   0x24 frame, four saved registers, ten ordered calls, matching owner symbol,
+//   and no relocation target or boundary errors.
 
 #include <string.h>
 

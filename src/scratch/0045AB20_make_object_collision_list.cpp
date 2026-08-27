@@ -108,9 +108,27 @@
 // 53: fresh checks preserve map anchors 00458600, 004595E0, 00459900, and
 // 00459A00. Fresh moving-object checks preserve 0045C450, 0045C5C0, and
 // 0045C700. No shared context file changed during this pass.
+// 54: context gate rechecked the PDB module path, lines 148-236, owner class,
+// VA order A740-A800-A870-A8A0-A900-A910-A940-A950-A9E0-AA70-AB20, and the
+// exact call anchors at 0054B700, 0054B6F0, 004C66C0, 004C6700, 004C66D0,
+// and 0054B660. The two destructor COMDATs are compiler-generated neighbors.
+// 55: PDB-backed x1/local_40 role swaps, declaration orders, direct short
+// casts, natural result locals, and initializer scopes were codegen duplicates.
+// A full-int local_40 widened the mismatch to 681 bytes and was restored.
+// 56: The four DAT_00570934/38/3c/40 externs now remain visible in both the
+// fallback source and the authentic wrapper. Relocation identity is correct;
+// emitted metrics did not change. A local master alias also changed no result.
+// 57: Fresh candidate-TU validation reports all ten normal owners MATCH, both
+// compiler-generated destructor neighbors MATCH, and this observed target at
+// 802 bytes with 160 differing bytes, exact boundary, owner, calls, and relocs.
 // FLAGS: config/flags/0045AB20_make_object_collision_list.rsp (/nologo /c /O2 /Oy /GX)
 
 // left in scratch: 821B rebuilt vs 802B original, 206 positional bytes, exact frame/call set; remaining gap is coordinate-result register/home assignment plus tail/block layout.
+
+extern float DAT_00570934;
+extern float DAT_00570938;
+extern float DAT_0057093c;
+extern float DAT_00570940;
 
 #ifndef RGE_MISL_OBJ_SHARED_CONTEXT
 struct RGE_Check_Node;
@@ -218,14 +236,14 @@ RGE_Check_List* RGE_Missile_Object::make_object_collision_list(float extra) {
     rx = this->master_obj->radius_x;
     ry = this->master_obj->radius_y;
 
-    if (rx <= 0.0f || ry <= 0.0f) {
+    if (rx <= DAT_00570934 || ry <= DAT_00570934) {
         return 0;
     } else {
 
-    local_40 = (short)(int)(this->world_x - 3.0f);
-    sVar9 = (short)(int)(this->world_y - 3.0f);
-    x1 = (short)(int)(this->world_x + 3.0f);
-    sVar10 = (short)(int)(this->world_y + 3.0f);
+    local_40 = (short)(int)(this->world_x - DAT_00570938);
+    sVar9 = (short)(int)(this->world_y - DAT_00570938);
+    x1 = (short)(int)(this->world_x - DAT_0057093c);
+    sVar10 = (short)(int)(this->world_y - DAT_0057093c);
 
     map = this->owner->world->map;
     list = new RGE_Check_List;
@@ -262,19 +280,19 @@ RGE_Check_List* RGE_Missile_Object::make_object_collision_list(float extra) {
                             rx2 = object_master->radius_x;
                             if (ry2 > 0.0f && rx2 > 0.0f) {
                                 float dz = object->world_z - this->world_z;
-                                if (dz >= -(object_master->radius_z - -0.1f) &&
-                                    dz <= this->master_obj->radius_z - -0.1f) {
+                                if (dz >= -(object_master->radius_z - DAT_00570940) &&
+                                    dz <= this->master_obj->radius_z - DAT_00570940) {
                                     dx = object->world_x - this->world_x;
                                     dy = object->world_y - this->world_y;
-                                    if (dx < 0.0f) {
+                                    if (dx < DAT_00570934) {
                                         dx = -dx;
                                     }
-                                    if (dy < 0.0f) {
+                                    if (dy < DAT_00570934) {
                                         dy = -dy;
                                     }
                                     dx = dx - (rx2 + rx + extra);
                                     dy = dy - (ry2 + ry + extra);
-                                    if (dx <= 0.0f && dy <= 0.0f) {
+                                    if (dx <= DAT_00570934 && dy <= DAT_00570934) {
                                         list->add_node(object, dx, dy, 0);
                                     }
                                 }

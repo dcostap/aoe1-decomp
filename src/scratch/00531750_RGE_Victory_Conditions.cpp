@@ -27,6 +27,10 @@
 //   +0x18 alias reduced the natural candidate from 712 to 493 differing bytes and removed
 //   the boundary escapes. The remaining mismatch is the logged early-store and register
 //   allocation basin. Initialization-order reordering was codegen-neutral and was restored.
+// - Captain validation: the authentic 58-owner candidate keeps 44 exact owners and reports
+//   this constructor at 493 differing bytes, 920-byte original boundary, 0x1C frame, and
+//   33 ordered direct calls. Swapping the zero-index and player-store statements was neutral;
+//   the natural order was restored. Remaining work needs source or shared-context evidence.
 
 #include "../../include/victory_context.h"
 

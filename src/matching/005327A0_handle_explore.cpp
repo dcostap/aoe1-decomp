@@ -26,6 +26,9 @@
 //   signed-count early return while retaining the close while-loop topology.
 // - Main-agent audit restored canonical polymorphic world/player/victory
 //   ownership; exact bytes were revalidated after promotion.
+// - Captain grouped validation reports 121 differing bytes while standalone code remains exact.
+//   Both pointer-addition operand orders preserve standalone MATCH and do not change the grouped
+//   register/SIB basin. The direct subscript is retained as the smallest natural source.
 
 #ifndef VICTORY_CONTEXT_H
 class RGE_Visible_Map {

@@ -105,6 +105,9 @@
 //   original placement box. Best recorded state: 1706B strict diff, 67.89% resync similarity,
 //   73.56% shape, 1897/1909 size, 590/587 instructions, 11/11 calls, 82/82 conditional CFG,
 //   and 38.16% exact-block coverage. No exact result was reached.
+// ABI audit: visible.cpp proves const get_visible(int, int). The standalone
+//   owner declaration now uses that exact member surface. This changed no
+//   strict metric, but it restores the direct target identity.
 // NEXT LEADS:
 //  * Original saves this in EBP and carries map in EBX; the clean source currently saves this
 //    in ESI and leaves map in a local. This is a real declaration/liveness axis, not a reason
@@ -140,7 +143,7 @@ class RGE_Object_Node;
 #ifndef RGE_MS_OBJ_SHARED_CONTEXT
 class RGE_Visible_Map {
 public:
-    unsigned char get_visible(int col, int row);
+    unsigned char get_visible(int col, int row) const;
 };
 
 class RGE_Object_List {

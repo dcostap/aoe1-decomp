@@ -28,6 +28,8 @@
 // other byte fields also swap. The executable performs the first outline-radius
 // x87 comparison before many of these stores, but the rebuild performs it after
 // them. Member visibility, fault order, and FP-exception timing differ.
+// Revisit: removing the no-op lexical block around the three sprite lookups
+// produced duplicate 1183-byte code. The simpler source form is retained.
 // Context probe: an authentic owner-order wrapper with offset-equivalent,
 // gap-only RGE_Game_World and RGE_Map declarations kept the 199-byte diff,
 // 1183-byte body, and C4 frame. Shared world/map vptr context is not the
@@ -191,17 +193,15 @@ int RGE_Master_Static_Object::setup(FILE* fp, RGE_Sprite** sprites, RGE_Sound** 
     if (local.temp_can_be_built_on >= 0) sound_value = sounds[local.temp_can_be_built_on];
     else sound_value = 0;
     created_sound = sound_value;
-    {
-        if (local.temp_undead_sprite >= 0) sprite_value = sprites[local.temp_undead_sprite];
-        else sprite_value = 0;
-        sprite = sprite_value;
-        if (local.temp_obj_max >= 0) sprite_value = sprites[local.temp_obj_max];
-        else sprite_value = 0;
-        death_sprite = sprite_value;
-        if (local.temp_fog_flag >= 0) sprite_value = sprites[local.temp_fog_flag];
-        else sprite_value = 0;
-        undead_sprite = sprite_value;
-    }
+    if (local.temp_undead_sprite >= 0) sprite_value = sprites[local.temp_undead_sprite];
+    else sprite_value = 0;
+    sprite = sprite_value;
+    if (local.temp_obj_max >= 0) sprite_value = sprites[local.temp_obj_max];
+    else sprite_value = 0;
+    death_sprite = sprite_value;
+    if (local.temp_fog_flag >= 0) sprite_value = sprites[local.temp_fog_flag];
+    else sprite_value = 0;
+    undead_sprite = sprite_value;
 
     elevation_flag = local.local_84[0];
     sort_number = (unsigned char)local.temp_available;

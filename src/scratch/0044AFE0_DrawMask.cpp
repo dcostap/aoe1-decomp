@@ -22,6 +22,15 @@
 // - Header and reviewed full-context probes changed the basin without an exact
 //   result. The source keeps the smallest local class surface and no alias
 //   used only to steer code generation.
+// - Context pass: PDB source module is fractal.cpp, lines 115-172, with 35
+//   records. The address sequence is 0044AFE0-0044B205 and follows
+//   DeleteMasks before ClearArrays. Exact anchors are the 0044AFE0 entry,
+//   0044B072 Mask_4x4 load, 0044B0DB Mask_5x5 load, 0044B172 sample loop,
+//   and 0044B1FC shared return. The owning class is PointMaker.
+// - Final standalone validation remains 531 bytes versus 550, with 474
+//   differing bytes. Fresh grouped validation in fractal_arrays_tu.cpp is
+//   517 differing bytes. No policy-valid source form closed this structural
+//   gap, so this owner remains scratch.
 
 #ifndef FRACTAL_ARRAYS_CONTEXT_H
 class PrimaryPt {

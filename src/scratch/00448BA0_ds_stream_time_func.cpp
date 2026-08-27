@@ -49,6 +49,20 @@
 //   so it was rejected. A typed output aggregate was also rejected. Header
 //   order, pointer casts, local_4 type, dwPlay, and wrap-label edits were
 //   unchanged or worse. Calls stayed 18 and frame stayed 0x1C.
+// Context gate: PDB module Dsutil.c, lines 1726-1983, one ordinary C owner;
+// the address sequence carries 18 ordered calls and the shared cleanup tails.
+// Exact anchors are the callback declaration in 004486F0_ds_stream_file.c and
+// the 00447EF0/00447F40 helper targets used at lines 1890-1960.
+// Probe 22: the length-first split for both Lock outputs follows the PDB CFG;
+// it reduced the standalone diff from 1071 to 984 bytes and kept 18 calls.
+// The final source keeps this natural control flow. Register-color drift
+// remains: expected EBX/EBP versus rebuilt EBX/ESI/EDI saved-register colors.
+// Final standalone validation: 1292 rebuilt bytes versus 1332 original,
+// 984 differing bytes, 18 aligned calls, frame 0x1C, result MISMATCH.
+// Fresh complete-TU validation is recorded in
+// build/candidate_tus/dsutil_prefix/report.json: four scratch promotion
+// candidates matched, but remain observed because source-bank moves are not
+// captain edits. DSReloadSoundBuffer remains a manual-vtable policy hold.
 
 #include <windows.h>
 #include <mmsystem.h>
@@ -72,8 +86,8 @@ extern int DAT_008884ac;
 extern int DAT_008884b0;
 extern int DAT_008884b4;
 extern int _stream_paused;
-extern void* _main_wnd;
-extern void* DAT_00888464;
+extern HWND _main_wnd;
+extern HMMIO DAT_00888464;
 extern MMCKINFO DAT_00888468;
 extern MMCKINFO DAT_0088847c;
 extern void* _wiWave;
@@ -94,15 +108,8 @@ extern void* _wiWave;
     } \
 } while (0)
 
-#define CLEAR_AUDIO_LENGTH(P,N) do { \
-    LPWAVEFORMATEX wf_ = (LPWAVEFORMATEX)_wiWave; \
-    if (wf_ && (N)) { \
-        if (wf_->wBitsPerSample == 8) memset((P), 0x80, (N)); \
-        else if (wf_->wBitsPerSample == 16) memset((P), 0, (N)); \
-    } \
-} while (0)
-
-void __stdcall ds_stream_time_func(HWND hwnd, UINT msg, UINT id, DWORD time, DWORD unused)
+void __stdcall ds_stream_time_func(unsigned int timer_id, unsigned int message,
+    unsigned long user, unsigned long first, unsigned long second)
 {
     DWORD dwLen1;
     DWORD dwLen2;
@@ -114,7 +121,8 @@ void __stdcall ds_stream_time_func(HWND hwnd, UINT msg, UINT id, DWORD time, DWO
     DWORD local_4;
 
     // BINARY NOTE: busy and paused entry guards branch to the direct epilogue.
-    if (DAT_0062e658 != 0 || _stream_paused != 0) return;
+    if (DAT_0062e658 != 0) return;
+    if (_stream_paused != 0) return;
     DAT_0062e658 = 1;
     if (DAT_008884a8 != 0) {
         DAT_0062e658 = 0;
@@ -125,7 +133,8 @@ void __stdcall ds_stream_time_func(HWND hwnd, UINT msg, UINT id, DWORD time, DWO
         return;
     }
 
-    IDirectSoundBuffer_GetCurrentPosition((LPDIRECTSOUNDBUFFER)DAT_00888490, &local_4, &dwWrite);
+    IDirectSoundBuffer_GetCurrentPosition((LPDIRECTSOUNDBUFFER)DAT_00888490,
+        &local_4, &dwWrite);
     if (DAT_0088849c < dwWrite) {
         DWORD t = DAT_0088849c + DAT_00888498;
         if (t > dwWrite) goto done;
@@ -167,60 +176,57 @@ void __stdcall ds_stream_time_func(HWND hwnd, UINT msg, UINT id, DWORD time, DWO
     if (IDirectSoundBuffer_Lock((LPDIRECTSOUNDBUFFER)DAT_00888490, DAT_0088849c, DAT_00888498,
         (void**)&lpWrite1, &dwLen1, (void**)&lpWrite2, &dwLen2, 0)) goto done;
 
-    if (lpWrite1) {
-        if (DAT_008884a8 == 0) {
-            WaveReadFile(DAT_00888464, dwLen1, lpWrite1, &DAT_00888468, &uChkErr);
-            if (uChkErr < dwLen1) {
-                if (DAT_008884ac == 0) {
-                    CLEAR_AUDIO_OFFSET(lpWrite1, uChkErr, dwLen1 - uChkErr);
-                    if (DAT_0088849c <= dwLen2)
-                        DAT_008884b4 = (DAT_00888494 + DAT_0088849c - dwLen2) / DAT_00888498;
-                    else
-                        DAT_008884b4 = (DAT_0088849c - dwLen2) / DAT_00888498;
-                    DAT_008884b0 = 1;
-                } else if (lpWrite1) {
-                    unsigned char* retryWrite1 = lpWrite1;
-                    do {
-                        // BINARY NOTE: this helper receives addresses of all three stream records.
-                        retryWrite1 += uChkErr;
-                        dwLen1 -= uChkErr;
-                        WaveStartDataRead(&DAT_00888464, &DAT_00888468, &DAT_0088847c);
-                        WaveReadFile(DAT_00888464, dwLen1, retryWrite1,
-                            &DAT_00888468, &uChkErr);
-                    } while (uChkErr < dwLen1);
-                }
-            }
+    if (dwLen1 == 0 || DAT_008884a8 != 0) {
+        if (dwLen1 != 0 && DAT_008884a8 != 0) {
+            CLEAR_AUDIO(lpWrite1, dwLen1);
         }
-        if (DAT_008884a8 != 0) {
-            CLEAR_AUDIO_LENGTH(lpWrite1, dwLen1);
+    } else {
+        WaveReadFile(DAT_00888464, dwLen1, lpWrite1, &DAT_00888468, &uChkErr);
+        if (uChkErr < dwLen1) {
+            if (DAT_008884ac == 0) {
+                CLEAR_AUDIO_OFFSET(lpWrite1, uChkErr, dwLen1 - uChkErr);
+                if (DAT_0088849c <= dwLen2)
+                    DAT_008884b4 = (DAT_00888494 + DAT_0088849c - dwLen2) / DAT_00888498;
+                else
+                    DAT_008884b4 = (DAT_0088849c - dwLen2) / DAT_00888498;
+                DAT_008884b0 = 1;
+            } else if (lpWrite1) {
+                unsigned char* retryWrite1 = lpWrite1;
+                do {
+                    // BINARY NOTE: this helper receives addresses of all three stream records.
+                    retryWrite1 += uChkErr;
+                    dwLen1 -= uChkErr;
+                    WaveStartDataRead(&DAT_00888464, &DAT_00888468, &DAT_0088847c);
+                    WaveReadFile(DAT_00888464, dwLen1, retryWrite1,
+                        &DAT_00888468, &uChkErr);
+                } while (uChkErr < dwLen1);
+            }
         }
     }
 
-    if (lpWrite2) {
-        if (DAT_008884a8 == 0) {
-            WaveReadFile(DAT_00888464, dwLen2, lpWrite2, &DAT_00888468, &uChkErr);
-            if (uChkErr < dwLen2) {
-                if (DAT_008884ac == 0) {
-                    CLEAR_AUDIO_OFFSET(lpWrite2, uChkErr, dwLen2 - uChkErr);
-                    if (DAT_0088849c <= dwLen2)
-                        DAT_008884b4 = (DAT_00888494 + DAT_0088849c - dwLen2) / DAT_00888498;
-                    else
-                        DAT_008884b4 = (DAT_0088849c - dwLen2) / DAT_00888498;
-                    DAT_008884b0 = 1;
-                } else if (lpWrite2) {
-                    unsigned char* retryWrite2 = lpWrite2;
-                    do {
-                        retryWrite2 += uChkErr;
-                        dwLen2 -= uChkErr;
-                        WaveStartDataRead(&DAT_00888464, &DAT_00888468, &DAT_0088847c);
-                        WaveReadFile(DAT_00888464, dwLen2, retryWrite2,
-                            &DAT_00888468, &uChkErr);
-                    } while (uChkErr < dwLen2);
-                }
+    if (dwLen2 != 0 && DAT_008884a8 == 0) {
+        WaveReadFile(DAT_00888464, dwLen2, lpWrite2, &DAT_00888468, &uChkErr);
+        if (uChkErr < dwLen2) {
+            if (DAT_008884ac == 0) {
+                CLEAR_AUDIO_OFFSET(lpWrite2, uChkErr, dwLen2 - uChkErr);
+                if (DAT_0088849c <= dwLen2)
+                    DAT_008884b4 = (DAT_00888494 + DAT_0088849c - dwLen2) / DAT_00888498;
+                else
+                    DAT_008884b4 = (DAT_0088849c - dwLen2) / DAT_00888498;
+                DAT_008884b0 = 1;
+            } else if (lpWrite2) {
+                unsigned char* retryWrite2 = lpWrite2;
+                do {
+                    retryWrite2 += uChkErr;
+                    dwLen2 -= uChkErr;
+                    WaveStartDataRead(&DAT_00888464, &DAT_00888468, &DAT_0088847c);
+                    WaveReadFile(DAT_00888464, dwLen2, retryWrite2,
+                        &DAT_00888468, &uChkErr);
+                } while (uChkErr < dwLen2);
             }
-        } else if (lpWrite2 && DAT_008884a8) {
-            CLEAR_AUDIO_LENGTH(lpWrite2, dwLen2);
         }
+    } else if (dwLen2 != 0 && DAT_008884a8 != 0) {
+        CLEAR_AUDIO(lpWrite2, dwLen2);
     }
 
     if (DAT_00888490) IDirectSoundBuffer_Unlock((LPDIRECTSOUNDBUFFER)DAT_00888490,
