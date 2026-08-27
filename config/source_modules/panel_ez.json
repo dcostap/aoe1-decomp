@@ -1,0 +1,313 @@
+{
+  "schema": 1,
+  "name": "panel_ez",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\Panel_ez.cpp",
+  "source": "src/Panel_ez.cpp",
+  "header": "include/panel_ez.h",
+  "functions": {
+    "00466A20": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00466A90": {
+      "status": "scratch",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00467100": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00467150": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00467250": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "004672A0": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00467380": {
+      "status": "scratch",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00467560": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00467570": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "004675C0": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "004679A0": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "004679F0": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00467A50": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00467A70": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00467BE0": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00467D50": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00467DA0": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00467EF0": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00467F40": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00467F50": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00467F60": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00467FA0": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00467FC0": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00467FE0": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00468000": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00468060": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "004681D0": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "004682D0": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00468300": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00468310": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00468320": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00468330": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00468340": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00468350": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00468360": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00468370": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00468380": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "004683D0": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "004683F0": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00468410": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00468420": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00468440": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00468450": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00468460": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00468470": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00468480": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00468490": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00468530": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00468760": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "004689C0": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00468C20": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00468CB0": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00468E50": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00469000": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "004691C0": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00469380": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "004696B0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00469910": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00469A80": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00469AD0": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00469C40": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00469DB0": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00469E10": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00469EE0": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "00469F30": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "0046A040": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "0046A090": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "0046A150": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "0046A1A0": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "0046A260": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "0046A2E0": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "0046A360": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "0046A3C0": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "0046A410": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "0046A4E0": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    },
+    "0046A670": {
+      "status": "matching",
+      "note_path": "recovery_notes/Panel_ez_module.md"
+    }
+  }
+}
