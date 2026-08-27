@@ -1,9 +1,7 @@
-#ifndef AOE1_DLG_DIP_CONTEXT_H
-#define AOE1_DLG_DIP_CONTEXT_H
+#ifndef AOE1_DLG_DIP_H
+#define AOE1_DLG_DIP_H
 
-// Canonical declarations for the original C:\\msdev\\work\\age1_x1\\dlg_dip.cpp
-// module.  The wrapper defines DLG_DIP_SHARED_CONTEXT before including this
-// header and then includes owners in their PDB source-line order.
+// Declarations used by C:\\msdev\\work\\age1_x1\\dlg_dip.cpp.
 
 #include <stdio.h>
 
