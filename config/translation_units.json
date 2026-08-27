@@ -3360,19 +3360,20 @@
     },
     {
       "name": "pnl_sld",
-      "source": "src/pnl_sld_tu.cpp",
+      "source": "src/pnl_sld.cpp",
+      "module": "pnl_sld",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "0047BCE0": "src/matching/0047BCE0_TVerticalSliderPanel.cpp",
-        "0047BD30": "src/matching/0047BD30_TVerticalSliderPanel.cpp",
-        "0047BD40": "src/matching/0047BD40_setup.cpp",
-        "0047BDC0": "src/matching/0047BDC0_set_rect.cpp",
-        "0047BDE0": "src/matching/0047BDE0_draw.cpp",
-        "0047BDF0": "src/matching/0047BDF0_THorizontalSliderPanel.cpp",
-        "0047BE30": "src/matching/0047BE30_THorizontalSliderPanel.cpp",
-        "0047BE40": "src/matching/0047BE40_setup.cpp",
-        "0047BEC0": "src/matching/0047BEC0_set_rect.cpp",
-        "0047BF30": "src/matching/0047BF30_draw.cpp"
+        "0047BCE0": "src/pnl_sld.cpp",
+        "0047BD30": "src/pnl_sld.cpp",
+        "0047BD40": "src/pnl_sld.cpp",
+        "0047BDC0": "src/pnl_sld.cpp",
+        "0047BDE0": "src/pnl_sld.cpp",
+        "0047BDF0": "src/pnl_sld.cpp",
+        "0047BE30": "src/pnl_sld.cpp",
+        "0047BE40": "src/pnl_sld.cpp",
+        "0047BEC0": "src/pnl_sld.cpp",
+        "0047BF30": "src/pnl_sld.cpp"
       },
       "symbols": {
         "0047BD40": "?setup@TVerticalSliderPanel@@QAEJPAVTDrawArea@@PAVTPanel@@JJJJPAD2JJJJHH@Z",
