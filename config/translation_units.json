@@ -4608,20 +4608,21 @@
     },
     {
       "name": "trig",
-      "source": "src/trig_tu.cpp",
+      "source": "src/trig.cpp",
+      "module": "trig",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "0052A730": "src/matching/0052A730_TRIGONOMETRY.cpp",
-        "0052A830": "src/matching/0052A830_RestrictAngle.cpp",
-        "0052A850": "src/matching/0052A850_RestrictAngle360.cpp",
-        "0052A870": "src/matching/0052A870_sine.cpp",
-        "0052A890": "src/matching/0052A890_cosine.cpp",
-        "0052A8B0": "src/matching/0052A8B0_tangent.cpp",
-        "0052A8D0": "src/matching/0052A8D0_atangent.cpp",
-        "0052A8F0": "src/matching/0052A8F0_sin360.cpp",
-        "0052A910": "src/matching/0052A910_cos360.cpp",
-        "0052A930": "src/matching/0052A930_tan360.cpp",
-        "0052A950": "src/matching/0052A950_atan360.cpp"
+        "0052A730": "src/trig.cpp",
+        "0052A830": "src/trig.cpp",
+        "0052A850": "src/trig.cpp",
+        "0052A870": "src/trig.cpp",
+        "0052A890": "src/trig.cpp",
+        "0052A8B0": "src/trig.cpp",
+        "0052A8D0": "src/trig.cpp",
+        "0052A8F0": "src/trig.cpp",
+        "0052A910": "src/trig.cpp",
+        "0052A930": "src/trig.cpp",
+        "0052A950": "src/trig.cpp"
       },
       "symbols": {
         "0052A730": "??0TRIGONOMETRY@@QAE@XZ",
