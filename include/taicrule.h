@@ -1,16 +1,15 @@
-#ifndef AOE1_TAICRULE_CONTEXT_H
-#define AOE1_TAICRULE_CONTEXT_H
+#ifndef AOE1_TAICRULE_H
+#define AOE1_TAICRULE_H
 
-// Canonical local declaration surface for the original taicrule.cpp module.
+// Compiler-facing declarations for the original taicrule.cpp module.
 //
-// PDB ownership is C:\\msdev\\work\\age1_x1\\taicrule.cpp, with owners in
-// constructor, destructor, loadRules, attack, and defense order.  The class
-// inventory proves one virtual slot and a 2504-byte object: the vptr is at
-// +0x00 and ratingValue is the 2500-byte table at +0x04.
+// The class inventory proves one virtual destructor slot and a 0x9C8-byte
+// object.  The rating table starts at +0x04 and contains 2500 bytes.
 
 class CombatRuleSystem {
 public:
     virtual ~CombatRuleSystem();
+
     unsigned char ratingValue[2500];
 
     CombatRuleSystem();

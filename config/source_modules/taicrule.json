@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "name": "taicrule",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\taicrule.cpp",
+  "source": "src/taicrule.cpp",
+  "header": "include/taicrule.h",
+  "functions": {
+    "004D68D0": {
+      "status": "matching",
+      "note_path": "recovery_notes/taicrule_module.md"
+    },
+    "004D6900": {
+      "status": "matching",
+      "note_path": "recovery_notes/taicrule_module.md"
+    },
+    "004D6910": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/taicrule_module.md"
+    },
+    "004D6AA0": {
+      "status": "matching",
+      "note_path": "recovery_notes/taicrule_module.md"
+    },
+    "004D6AB0": {
+      "status": "matching",
+      "note_path": "recovery_notes/taicrule_module.md"
+    }
+  }
+}

@@ -6542,14 +6542,15 @@
       }
     },
     {
-      "name": "taicrule_cpp",
-      "source": "src/taicrule_tu.cpp",
+      "name": "taicrule",
+      "source": "src/taicrule.cpp",
+      "module": "taicrule",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "004D68D0": "src/matching/004D68D0_CombatRuleSystem.cpp",
-        "004D6900": "src/matching/004D6900_CombatRuleSystem.cpp",
-        "004D6AA0": "src/matching/004D6AA0_bestUnitTypeToAttack.cpp",
-        "004D6AB0": "src/matching/004D6AB0_bestUnitTypeToDefendAgainst.cpp"
+        "004D68D0": "src/taicrule.cpp",
+        "004D6900": "src/taicrule.cpp",
+        "004D6AA0": "src/taicrule.cpp",
+        "004D6AB0": "src/taicrule.cpp"
       },
       "symbols": {
         "004D68D0": "??0CombatRuleSystem@@QAE@XZ",
