@@ -1,6 +1,6 @@
+#include "../include/aiuaimod.h"
 #include "../include/game_globals.h"
 #include "../include/rge_base_game_global.h"
-#include "../include/aiuaimod.h"
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
