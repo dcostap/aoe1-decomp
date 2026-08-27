@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "name": "airesitm",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\airesitm.cpp",
+  "source": "src/airesitm.cpp",
+  "header": "include/airesitm.h",
+  "functions": {
+    "00411EC0": { "status": "matching" },
+    "00411F10": {
+      "status": "matching",
+      "note_path": "recovery_notes/00411F10_ResourceItem.md"
+    },
+    "00411F80": {
+      "status": "matching",
+      "note_path": "recovery_notes/00411F80_ResourceItem.md"
+    },
+    "00411FF0": {
+      "status": "matching",
+      "note_path": "recovery_notes/00411FF0_ResourceItem.md"
+    },
+    "00412050": {
+      "status": "matching",
+      "note_path": "recovery_notes/00412050_ResourceItem.md"
+    },
+    "004120B0": { "status": "matching" },
+    "004120C0": { "status": "matching" },
+    "00412100": {
+      "status": "matching",
+      "note_path": "recovery_notes/00412100_operator.md"
+    },
+    "00412140": {
+      "status": "matching",
+      "note_path": "recovery_notes/00412140_operator.md"
+    },
+    "00412180": { "status": "matching" },
+    "004121A0": { "status": "matching" },
+    "004121C0": { "status": "matching" },
+    "004121E0": { "status": "matching" },
+    "00412200": { "status": "matching" },
+    "00412210": { "status": "matching" },
+    "00412240": {
+      "status": "matching",
+      "note_path": "recovery_notes/00412240_sortLarge.md"
+    }
+  }
+}
