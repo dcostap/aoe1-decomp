@@ -816,7 +816,7 @@ void RGE_Victory_Conditions::handle_victory_points(RGE_Victory_Entry* entry) {
                     RGE_Player* p = world->players[i];
                     if (p->relations[this->player->id] == 0 &&
                         i != this->player->id && p->allied_victory != 0) {
-                        total += p->victory_condition->get_victory_points();
+                        total += p->victory_conditions->get_victory_points();
                         count++;
                     }
                 }

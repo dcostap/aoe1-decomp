@@ -21,11 +21,13 @@ class RGE_Object_List;
 struct RGE_Victory_Entry;
 struct RGE_Victory_Point_Entry;
 class RGE_Visible_Map;
-class RGE_Victory_Condition;
+class RGE_Victory_Conditions;
 
 class RGE_Object_List {
+protected:
+    virtual void load(unsigned char flag, int file, RGE_Game_World* world);
+
 public:
-    virtual ~RGE_Object_List();
     class RGE_Object_Node* list; // +0x04
     RGE_Static_Object* find_by_id(long id);
 };
@@ -52,7 +54,7 @@ public:
     RGE_Master_Static_Object** master_objects; // +0x24
     RGE_Object_List* objects; // +0x28
     char gap_2C[8];
-    RGE_Victory_Condition* victory_condition; // +0x34
+    RGE_Victory_Conditions* victory_conditions; // +0x34
     RGE_Visible_Map* visible; // +0x38
     RGE_Game_World* world; // +0x3C
     char gap_40[0x0A];
@@ -228,11 +230,6 @@ public:
 class RGE_Visible_Map {
 public:
     float percentExplored();
-};
-
-class RGE_Victory_Condition {
-public:
-    long get_victory_points();
 };
 
 typedef RGE_Victory_Point_Entry VP_Entry;
