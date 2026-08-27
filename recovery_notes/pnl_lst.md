@@ -2,6 +2,20 @@
 
 This file keeps the removed per-function recovery notes.
 
+## Pnl_lst translation-unit declaration repair
+
+The PDB source map identifies the Pnl_lst.cpp TListPanel overrides as the
+destructor, set_bevel_info, handle_idle, the five list mouse actions,
+key_down_action, char_action, action, draw, and set_focus. The other virtual
+slots belong to TTextPanel or TPanel and remain inherited in include/pnl_lst.h.
+
+The previous module candidate repeated every inherited virtual declaration in
+TListPanel. Removing those declarations preserves 19 of 20 owner matches.
+004786B0 item_at remains 66 bytes with the original frame and CFG, but its
+border_size and pnl_y loads swap order, causing a 10-byte positional mismatch.
+This is an exactness regression from the source-shape repair. Do not retain the
+removed inherited declarations only to hide this compiler scheduling drift.
+
 ## 004782A0 TListPanel::TListPanel
 
 The prior source used volatile offset stores and a vptr write. It matched size

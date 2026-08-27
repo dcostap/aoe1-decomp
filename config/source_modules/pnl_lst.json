@@ -24,7 +24,10 @@
     },
     "00478610": { "status": "matching" },
     "00478660": { "status": "matching" },
-    "004786B0": { "status": "matching" },
+    "004786B0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/pnl_lst.md"
+    },
     "00478700": { "status": "matching" },
     "00478730": { "status": "matching" },
     "00478850": { "status": "matching" },
