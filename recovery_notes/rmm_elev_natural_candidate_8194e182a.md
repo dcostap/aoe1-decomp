@@ -15,30 +15,46 @@ metadata.
 - Calling convention: `__thiscall` for all ten rows.
 - Candidate result: `success=false`, `proposal_valid=false`,
   `comparison_errors=0`, `full_module_exact=false`.
-- Summary: six exact rows, two exact results; four observed rows, one exact
-  result; ten compiled rows, three exact results.
+- Direct natural-module result: three rows are exact. Two rows retain existing
+  reviewed accepted-drift status. Five rows are non-exact and cannot retain
+  historical standalone exact status.
+
+## Historical evidence and direct-module status
+
+Historical standalone exact evidence belongs to the old fragment owners. It
+does not define the direct natural-module status.
+
+Only `004846C0`, `00484B30`, and `00484B90` are exact in this natural
+candidate. `00484B90` can promote after a fresh registered natural check.
+
+`004847C0` and `004848A0` retain their existing reviewed accepted-drift
+status. No other natural-module mismatch has accepted-drift approval.
+
+`00484700`, `00484B50`, and `00484D00` are scratch. `00484A40` and
+`00484C80` are verified logic pending semantic review. Final registration can
+contain only rows exact in the direct natural module.
 
 `RELOCS` below means candidate relocation target mismatches. The candidate
 report records zero target mismatches for every row. `BOUNDARY` is the count of
 candidate boundary escapes.
 
-## Completed ten-row review
+## Completed ten-row direct natural-module review
 
-| VA | PDB lines | Oracle body | Candidate bytes | Candidate result | Owner / relocs / boundary | Recommendation and reason |
+| VA | PDB lines | Oracle body | Candidate bytes | Candidate result | Owner / relocs / boundary | Direct natural-module status and reason |
 | --- | ---: | --- | ---: | --- | --- | --- |
-| `004846C0` `RGE_RMM_Elevation_Generator` | 21-25 | `004846C0-004846FA` (59) | 59 / 59; 0 bytes; 0.0000% | `MATCH` | match / 0 / 0 | **Exact.** Retain the exact owner. |
-| `00484700` `generate` | 29-59 | `00484700-004847BE` (191) | 191 / 187; 158 bytes; 82.722513% | `MISMATCH` | match / 0 / 0 | **Exact owner retained.** The natural reunited source does not preserve the standalone exact bytes. |
+| `004846C0` `RGE_RMM_Elevation_Generator` | 21-25 | `004846C0-004846FA` (59) | 59 / 59; 0 bytes; 0.0000% | `MATCH` | match / 0 / 0 | **Matching.** It can register only after a fresh direct natural-module check. |
+| `00484700` `generate` | 29-59 | `00484700-004847BE` (191) | 191 / 187; 158 bytes; 82.722513% | `MISMATCH` | match / 0 / 0 | **Scratch.** The natural reunited source does not preserve the standalone exact bytes. |
 | `004847C0` `check_start_elevation` | 64-95 | `004847C0-0048489F` (224) | 224 / 224; 147 bytes; 65.625000% | `MISMATCH` | match / 0 / 0 | **Accepted drift.** Keep the reviewed drift classification. |
 | `004848A0` `check_elevation` | 100-153 | `004848A0-00484A37` (408) | 408 / 401; 340 bytes; 83.333333% | `MISMATCH` | match / 0 / 0 | **Accepted drift.** Keep the reviewed drift classification. |
-| `00484A40` `generate_modifiers` | 159-193 | `00484A40-00484B2F` (240) | 240 / 240; 7 bytes; 2.916667% | `MISMATCH` | match / 0 / 0 | **Exact owner retained.** The natural reunited source does not preserve the standalone exact bytes. |
-| `00484B30` `fig_chance` | 198-205 | `00484B30-00484B4B` (28) | 28 / 28; 0 bytes; 0.0000% | `MATCH` | match / 0 / 0 | **Exact.** Retain the exact owner. |
-| `00484B50` `count_map_tiles` | 211-221 | `00484B50-00484B85` (54) | 54 / 93; 93 bytes; 100.000000% | `MISMATCH` | match / 0 / 5 | **Exact owner retained.** The natural Tile loop crosses five body-boundary offsets. Final integration waits for the canonical Tile header and row fanout. |
-| `00484B90` `link_stack_randomly` | 225-260 | `00484B90-00484C79` (234) | 234 / 234; 0 bytes; 0.0000% | `MATCH` | match / 0 / 0 | **Exact promotion candidate.** See the promotion evidence below. Current accepted-drift metadata remains unchanged. |
-| `00484C80` `remove_area_from_lists` | 264-285 | `00484C80-00484CFF` (128) | 128 / 122; 73 bytes; 57.031250% | `MISMATCH` | match / 0 / 0 | **Exact owner retained.** The natural reunited source does not preserve the standalone exact bytes. |
+| `00484A40` `generate_modifiers` | 159-193 | `00484A40-00484B2F` (240) | 240 / 240; 7 bytes; 2.916667% | `MISMATCH` | match / 0 / 0 | **Verified logic pending semantic review.** Do not propose accepted drift yet. |
+| `00484B30` `fig_chance` | 198-205 | `00484B30-00484B4B` (28) | 28 / 28; 0 bytes; 0.0000% | `MATCH` | match / 0 / 0 | **Matching.** It can register only after a fresh direct natural-module check. |
+| `00484B50` `count_map_tiles` | 211-221 | `00484B50-00484B85` (54) | 54 / 93; 93 bytes; 100.000000% | `MISMATCH` | match / 0 / 5 | **Scratch.** Five boundary escapes forbid direct natural-module registration. |
+| `00484B90` `link_stack_randomly` | 225-260 | `00484B90-00484C79` (234) | 234 / 234; 0 bytes; 0.0000% | `MATCH` | match / 0 / 0 | **Exact promotion candidate.** See the promotion evidence below. |
+| `00484C80` `remove_area_from_lists` | 264-285 | `00484C80-00484CFF` (128) | 128 / 122; 73 bytes; 57.031250% | `MISMATCH` | match / 0 / 0 | **Verified logic pending semantic review.** Do not propose accepted drift yet. |
 | `00484D00` `base_elevation_generate` | 290-403 | `00484D00-004851F8` (1273) | 1273 / 1276; 1223 bytes; 95.846395% | `MISMATCH` | match / 0 / 1 | **Scratch.** The mismatch is large and the candidate crosses one owner boundary. Keep this row out of promotion. |
 
-The six exact recommendations refer to the reviewed standalone exact owners.
-They do not claim that the held natural module is exact for all six rows.
+The direct natural candidate has three exact rows only. It cannot retain old
+standalone exact status for mismatching rows.
 
 ## Direct target ledger
 
@@ -92,8 +108,8 @@ The held natural candidate emits an exact `00484B90` body:
   relocated call sites, and zero target-count differences.
 
 This is sufficient evidence for an exact-status promotion review of this row.
-The review does not perform that promotion. The current accepted-drift source
-and status metadata remain in place until the natural module is integrated.
+The review does not perform that promotion. A fresh registered direct-module
+check must confirm `MATCH`, `0.0000%` before status changes.
 
 ## Proven ownership and integration gate
 
