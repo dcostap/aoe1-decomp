@@ -33,74 +33,10 @@
 #include <stdio.h>
 #include <string.h>
 #include <windows.h>
+#include "../../include/main.h"
+#include "../../include/tribegam.h"
 
 void* __cdecl operator new(unsigned int size);
-
-class RGE_Prog_Info {
-public:
-    char prog_name[101];
-    char prog_version[21];
-    char prog_title[121];
-    char world_db_file[261];
-    char game_data_file[261];
-    char vol_name[261];
-    unsigned char pad_402[2];
-    unsigned long vol_ser_num;
-    int verify_cd;
-    int max_players_per_cd;
-    void* instance;
-    void* prev_instance;
-    char registry_key[256];
-    char cmd_line[256];
-    int show_wnd_flag;
-    char icon_name[41];
-    char menu_name[41];
-    char pal_file[261];
-    char cursor_file[261];
-    int max_players;
-    int check_expiration;
-    short expire_month;
-    short expire_day;
-    short expire_year;
-    unsigned char pad_886[2];
-    unsigned long update_interval;
-    int check_multi_copies;
-    int skip_startup;
-    int full_screen;
-    int fixed_window_size;
-    int use_dir_draw;
-    int use_sys_mem;
-    int use_music;
-    int use_sound;
-    int use_cd_audio;
-    int use_ima;
-    int use_midi;
-    int use_wave_music;
-    int fast_view;
-    int auto_scroll;
-    long mouse_scroll_edge;
-    unsigned long mouse_scroll_interval;
-    float mouse_scroll_max_dist;
-    unsigned long key_scroll_interval;
-    float key_scroll_max_dist;
-    float key_scroll_object_move;
-    short interface_style;
-    unsigned char pad_8de[2];
-    long main_wid;
-    long main_hgt;
-    GUID game_guid;
-    GUID zone_guid;
-    char data_dir[261];
-    char graphics_dir[261];
-    char save_dir[261];
-    char scenario_dir[261];
-    char campaign_dir[261];
-    char sounds_dir[261];
-    char resource_dir[261];
-    char ai_dir[261];
-    char avi_dir[261];
-    unsigned char pad_end[3];
-};
 
 static const struct {
     GUID game;
@@ -110,40 +46,6 @@ static const struct {
       { 0x83, 0x9B, 0x00, 0x60, 0x97, 0x07, 0xF5, 0x08 } },
     { 0xF2E846AA, 0xEBE2, 0x11D1,
       { 0x83, 0x9B, 0x00, 0x60, 0x97, 0x07, 0xF5, 0x08 } }
-};
-
-class RGE_Base_Game {
-public:
-    virtual ~RGE_Base_Game();
-    virtual int run();
-    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
-    virtual void set_prog_mode(int);
-    virtual void set_game_mode(int, int);
-    virtual void set_player(short);
-    virtual int get_error_code();
-    virtual char* get_string(int, long, char*, int);
-    virtual char* get_string(long, char*, int);
-    virtual char* get_string(long);
-    virtual char* get_string2(int, long, long, char*, int);
-    char base_size[0xA20];
-};
-
-class TRIBE_Game : public RGE_Base_Game {
-public:
-    virtual ~TRIBE_Game();
-    virtual int run();
-    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
-    virtual void set_prog_mode(int);
-    virtual void set_game_mode(int, int);
-    virtual void set_player(short);
-    virtual int get_error_code();
-    virtual char* get_string(int, long, char*, int);
-    virtual char* get_string(long, char*, int);
-    virtual char* get_string(long);
-    virtual char* get_string2(int, long, long, char*, int);
-    char game_size[0x830];
-
-    TRIBE_Game(RGE_Prog_Info*, int);
 };
 
 extern "C" int __stdcall WinMain(HINSTANCE hInst, HINSTANCE hPrev,
