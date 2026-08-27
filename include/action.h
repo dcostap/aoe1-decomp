@@ -47,10 +47,8 @@ protected:
 
 public:
     short action_type;
-    unsigned char gap_06[2];
     RGE_Action_Object* obj;
     unsigned char state;
-    unsigned char gap_0D[3];
     RGE_Static_Object* target_obj;
     RGE_Static_Object* target_obj2;
     int targetID;
@@ -63,7 +61,6 @@ public:
     RGE_Action_List* sub_actions;
     RGE_Sprite* sprite;
     unsigned char subActionValue;
-    unsigned char gap_3D[3];
 
     unsigned char subAction() const;
     void setSubAction(unsigned char);
