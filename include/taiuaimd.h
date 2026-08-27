@@ -1,9 +1,9 @@
-#ifndef TAIUAIMD_MODULE_CONTEXT_H
-#define TAIUAIMD_MODULE_CONTEXT_H
+#ifndef TAIUAIMD_H
+#define TAIUAIMD_H
 
 // Module-local TU context. This file extends the reviewed UnitAIModule surface
 // without changing the shared declarations used by standalone owners.
-#include "../include/taiuaimd_context.h"
+#include "taiuaimd_context.h"
 #include <stdio.h>
 
 class RGE_Base_Game {
