@@ -6342,17 +6342,17 @@
     },
     {
       "name": "ACT_GATH_cpp",
-      "source": "src/act_gath_tu.cpp",
+      "source": "src/act_gath.cpp",
       "flags": "config/flags/default_gx.rsp",
       "owners": {
-        "00402EA0": "src/matching/00402EA0_RGE_Action_Gather.cpp",
-        "00402F40": "src/matching/00402F40_RGE_Action_Gather.cpp",
-        "00402FD0": "src/matching/00402FD0_RGE_Action_Gather.cpp",
-        "00403020": "src/matching/00403020_save.cpp",
-        "00403050": "src/matching/00403050_first_in_stack.cpp",
-        "00403C60": "src/matching/00403C60_get_move_sprite.cpp",
-        "00403C90": "src/matching/00403C90_get_wait_sprite.cpp",
-        "00403CD0": "src/matching/00403CD0_stop.cpp"
+        "00402EA0": "src/act_gath.cpp",
+        "00402F40": "src/act_gath.cpp",
+        "00402FD0": "src/act_gath.cpp",
+        "00403020": "src/act_gath.cpp",
+        "00403050": "src/act_gath.cpp",
+        "00403C60": "src/act_gath.cpp",
+        "00403C90": "src/act_gath.cpp",
+        "00403CD0": "src/act_gath.cpp"
       },
       "symbols": {
         "00402FD0": "??0RGE_Action_Gather@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@MMM@Z",
