@@ -261,10 +261,7 @@ VictoryConditionRuleSystem::~VictoryConditionRuleSystem() {}
 //   It matched all bytes except four parsed-character stack displacements.
 // - Separate ruleIndex and ruleValue integers with a 256-byte line buffer recover
 //   the original dword homes. They also keep first and second `%c` semantics.
-// - The authentic taistrmd.cpp module loads taistrmd.h before this body.
-//   A second shard-local include rotates the two byte homes under VC5.
-// - Exact-finish walkback proved that both changes are required as one group.
-//   Either the old buffer overlay or the repeated include restores the four-byte drift.
+// - The module header supplies the proved class surface before this body.
 // - Sixteen natural declaration orders emitted one exact code group. The retained
 //   order follows parse meaning. Array and overlay forms emitted a word load.
 // Final reduced source: MATCH, 0 differing bytes, 394 bytes.
