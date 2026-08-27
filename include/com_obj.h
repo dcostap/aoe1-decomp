@@ -100,7 +100,6 @@ public:
     unsigned long Unified_Map_Value;
     float attack_timer;
     uchar capture_flag;
-    uchar _pad_end[3];
 };
 
 typedef char rge_combat_object_vur_offset_check[

@@ -60,7 +60,6 @@ public:
     short production_queue_size;               // +0x1CC
     short production_queue_count;              // +0x1CE
     unsigned char production_queue_enabled;    // +0x1D0
-    unsigned char _pad_1D1[3];                 // +0x1D1
     RGE_Action_List* production_queue_actions; // +0x1D4
     unsigned char production_queue_change_flag; // +0x1D8
     unsigned char production_queue_auto_paused; // +0x1D9
@@ -69,7 +68,6 @@ public:
     int unique_build_id;                        // +0x1E0
     unsigned char culture;                       // +0x1E4
     unsigned char built;                         // +0x1E5
-    unsigned char _pad_1E6[2];                  // +0x1E6
     int DoppleInstalled;                        // +0x1E8
     unsigned long PriorMap1;                    // +0x1EC
     unsigned long PriorMap2;                    // +0x1F0
