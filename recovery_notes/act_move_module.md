@@ -83,8 +83,9 @@ local carrier or vtable workaround.
 
 ## Shared ABI fanout after main rebase
 
-The branch is rebased onto current `main` at `ffb815faf`, which includes
-`ee088911a`. The fanout reports are under
+The branch is rebased onto current `main` at `298cc2a47`, which includes
+`ee088911a` and the full Action registration from `037871d95`. The fanout
+reports are under
 `build/candidate_tus/shared_abi_fanout`.
 
 The grouped `act_move` candidate has 8/8 exact owners matching and generated
@@ -93,8 +94,11 @@ zero relocation mismatches and zero boundary escapes. Every exact owner has
 owner status `match`.
 
 The grouped `ani_obj` candidate has 10/10 exact owners matching and generated
-`0041A1E0` matching. The grouped `action` candidate has 28/28 exact owners
-matching and generated `004074A0` matching. The grouped `act_obj` candidate
+`0041A1E0` matching. The current registered Action candidate, including
+`00407C10 get_state_name`, has 29/29 exact owners matching and generated
+`004074A0` matching. This is 30/30 compiled rows. Every exact owner has owner
+status `match`; the generated row is `unverified`. All rows have zero
+relocation mismatches and zero boundary escapes. The grouped `act_obj` candidate
 has 27/27 exact owners matching and generated `00405F70` matching. Its
 observed rows remain nonexact: `00406470` (676 bytes), `00406860` (143),
 `00406940` (2), `00406990` (2), `00406A70` (2), `00406B90` (1),
