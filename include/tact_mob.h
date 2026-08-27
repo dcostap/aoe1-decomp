@@ -2,25 +2,13 @@
 #define AOE1_TACT_MOB_H
 
 // Local declarations for C:\\msdev\\work\\age1_x1\\tact_mob.cpp.
-// Shared engine classes come from their reviewed owner headers.
+// The source module supplies the full owner declarations.
 #include "action.h"
-#include "act_obj.h"
-#include "stat_obj.h"
-#include "m_co_obj.h"
-#include "world.h"
-#include "player.h"
-#include "tplayer.h"
-#include "basegame.h"
-#include "rge_base_game_global.h"
-#include "game_globals.h"
-#include <string.h>
 
 typedef unsigned char uchar;
 
-extern "C" void __cdecl rge_read(int, void*, int);
-extern "C" void __cdecl rge_write(int, void*, int);
-extern "C" int __cdecl debug_rand(char*, int);
-extern float save_game_version;
+class RGE_Action_Object;
+class RGE_Static_Object;
 
 class TRIBE_Action_Make_Obj : public RGE_Action {
 public:

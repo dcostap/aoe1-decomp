@@ -1,4 +1,19 @@
+#include <stdio.h>
 #include "../include/tact_mob.h"
+#include "../include/act_obj.h"
+#include "../include/stat_obj.h"
+#include "../include/m_co_obj.h"
+#include "../include/world.h"
+#include "../include/player.h"
+#include "../include/tplayer.h"
+#include "../include/basegame.h"
+#include "../include/rge_base_game_global.h"
+#include "../include/game_globals.h"
+#include "../include/rge_fio.h"
+#include <string.h>
+
+extern "C" int __cdecl debug_rand(char*, int);
+extern float save_game_version;
 
 // Authentic source module for C:\\msdev\\work\\age1_x1\\tact_mob.cpp.
 // Normal owners follow the PDB source-line and address order below. The nearby
@@ -97,7 +112,7 @@ void TRIBE_Action_Make_Obj::first_in_stack(uchar param_1)
                     player->cancelTrain(0, (int)this->obj_id,
                                         (int)objp->id, this->unique_id);
                     objp->notify((int)objp->id, (int)objp->id,
-                                 0x1F9, 0x26B, 0, 0);
+                                 0x1F9, (long)0x26B, (long)0, (long)0);
                     this->set_state(1);
                     return;
                 }
@@ -150,7 +165,7 @@ unsigned char TRIBE_Action_Make_Obj::update()
                 player->cancelTrain(0, (int)this->obj_id,
                                     (int)this->obj->id, this->unique_id);
                 this->obj->notify((int)this->obj->id, (int)this->obj->id,
-                                  0x1F9, 0x26B, 0, 0);
+                                  0x1F9, (long)0x26B, (long)0, (long)0);
                 return 1;
             } else {
                 TRIBE_Player* player =
@@ -162,7 +177,7 @@ unsigned char TRIBE_Action_Make_Obj::update()
                 player->registerTrain((int)this->obj_id, (int)this->obj->id,
                                       this->unique_id, (int)newObject->id);
                 this->obj->notify((int)this->obj->id, (int)this->obj->id,
-                                  0x1FA, 0x26B, 0, 0);
+                                  0x1FA, (long)0x26B, (long)0, (long)0);
                 return 1;
             }
         }
@@ -203,33 +218,33 @@ unsigned char TRIBE_Action_Make_Obj::place_obj(RGE_Static_Object** out)
             }
             switch (dir) {
             case 0:
-                this->place_y = this->obj->world_y + ry;
-                this->place_x = this->obj->world_x +
+                this->target_y = this->obj->world_y + ry;
+                this->target_x = this->obj->world_x +
                     ((float)debug_rand(s_tact_mob_cpp, 0xc7) * r2x * DAT_00575198 - rx);
                 break;
             case 1:
-                this->place_x = this->obj->world_x - rx;
-                this->place_y = this->obj->world_y +
+                this->target_x = this->obj->world_x - rx;
+                this->target_y = this->obj->world_y +
                     ((float)debug_rand(s_tact_mob_cpp, 0xcb) * r2y * DAT_00575198 - ry);
                 break;
             case 2:
-                this->place_x = this->obj->world_x + rx;
-                this->place_y = this->obj->world_y +
+                this->target_x = this->obj->world_x + rx;
+                this->target_y = this->obj->world_y +
                     ((float)debug_rand(s_tact_mob_cpp, 0xcf) * r2y * DAT_00575198 - ry);
                 break;
             case 3:
-                this->place_y = this->obj->world_y - ry;
-                this->place_x = this->obj->world_x +
+                this->target_y = this->obj->world_y - ry;
+                this->target_x = this->obj->world_x +
                     ((float)debug_rand(s_tact_mob_cpp, 0xd3) * r2x * DAT_00575198 - rx);
                 break;
             }
             if (proto->check_placement(
-                    this->obj->owner, this->place_x, this->place_y, 0,
+                    this->obj->owner, this->target_x, this->target_y, 0,
                     1, 1, 1, 0, 0, 1)) {
                 ++tries;
             } else {
-                *out = proto->make_new_obj(this->obj->owner, this->place_x,
-                                           this->place_y, this->obj->world_z);
+                *out = proto->make_new_obj(this->obj->owner, this->target_x,
+                                           this->target_y, this->obj->world_z);
                 return 1;
             }
         } while (tries < 60);
@@ -259,7 +274,7 @@ int TRIBE_Action_Make_Obj::stop() {
     rge_base_game->notification(0x67, player->id, (int)this->obj_id,
                                 0, 0);
     this->obj->notify((int)this->obj->id, (int)this->obj->id,
-                      0x1F9, 0x26B, 0, 0);
+                      0x1F9, (long)0x26B, (long)0, (long)0);
 
     return 1;
 }

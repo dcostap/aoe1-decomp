@@ -19,15 +19,18 @@ module. The ten normal owners keep this address and source order:
 | 004D15F0 | 255-268 | `get_info(short&, short&, char*, short)` | scratch; master gap |
 
 The nearby vector-deleting destructor at 004D0E90 is compiler generated. It
-has no handwritten source owner.
+has no handwritten source owner. The candidate packet also lists its expected
+symbol `??_ETRIBE_Action_Make_Obj@@UAEPAXI@Z` as a generated row.
 
 ## Canonical owner state
 
-The owner-only `include/tact_mob.h` consumes the reviewed `action.h`,
-`act_obj.h`, `stat_obj.h`, `m_co_obj.h`, `world.h`, `player.h`, `tplayer.h`,
-`basegame.h`, `rge_base_game_global.h`, and `game_globals.h` surfaces. It has
-no local action, list, object, world, player, or vtable carrier declarations.
-The module has no raw vptr writes or raw calls.
+The owner-only `include/tact_mob.h` includes only the reviewed `action.h`
+surface and pointer forwards for the local class. The source module consumes
+the reviewed `act_obj.h`, `stat_obj.h`, `m_co_obj.h`, `world.h`, `player.h`,
+`tplayer.h`, `basegame.h`, `rge_base_game_global.h`, `game_globals.h`, and
+`rge_fio.h` surfaces. The header has no local action, list, object, world,
+player, or vtable carrier declarations. The module has no raw vptr writes or
+raw calls.
 
 The canonical `tplayer.h` owner publishes the required helpers and train
 virtuals:
@@ -55,6 +58,15 @@ The six unaffected exact owners remain registered in
 reviewed in `config/source_modules/tact_mob.json`. The two owners that read
 the +0x15A field remain scratch and are not registered.
 
-The old wrapper, context, and per-owner source fragments are removed. No
-compiler, candidate validator, or focused check ran for this packet, as
-requested.
+The old wrapper, context, per-owner source fragments, and per-owner response
+files are removed. The header cleanup invalidates the previous grouped object.
+
+The scoped candidate check used
+`build/candidate_tus/tact_mob.json` and the six exact owners, the two accepted
+drift owners, the two scratch owners, and generated 004D0E90. It stopped before
+comparison because `RGE_Master_Static_Object` has no `train_time` member at
+the two scratch-owner references in `src/tact_mob.cpp` (lines 152 and 294).
+The scoped grouped observed check for `tact_mob_cpp` stopped for the same two
+compile errors. It compiled zero groups and produced zero comparison rows.
+The full source row state remains the table above; no scratch owner is
+promoted.
