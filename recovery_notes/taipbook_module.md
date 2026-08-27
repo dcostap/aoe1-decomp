@@ -31,11 +31,10 @@ The module uses `config/flags/default.rsp`. No AIModule declaration is needed.
 `src/taipbook.cpp` now owns all five handwritten functions in PDB source order.
 `include/taipbook.h` is the module-local compiler-facing header. It keeps only
 the `AIPlayBook` and `TribeAIPlayBook` declarations. It includes the canonical
-`stat_obj.h` header for the static-object ABI.
+`stat_obj.h` and `m_s_obj.h` headers for the object ABIs.
 
-`convertUnitToIntType` reads `object_group` at the proven `master_obj + 0x14`
-offset. The module does not declare a local static-object class, master-object
-class, or vtable.
+`convertUnitToIntType` reads the canonical `object_group` member. The module
+does not declare a local static-object class, master-object class, or vtable.
 
 The old wrapper and five source-bank fragments were removed. The source has no
 `.cpp` includes, context-selection macro, fallback declaration block, inline

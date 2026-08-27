@@ -45,7 +45,7 @@ int TribeAIPlayBook::convertUnitNameToIntType(char* name) const
 // 004E6AD0 TribeAIPlayBook::convertUnitToIntType
 int TribeAIPlayBook::convertUnitToIntType(RGE_Static_Object* obj) const
 {
-    short group = *(short*)((char*)obj->master_obj + 0x14);
+    short group = obj->master_obj->object_group;
     if (group == 0x12) return 4;
     if (group == 0x1C) return 3;
     if (group == 0x0D) return 5;

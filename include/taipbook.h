@@ -3,6 +3,7 @@
 #define AOE1_TAIPBOOK_H
 
 #include <string.h>
+#include "m_s_obj.h"
 #include "stat_obj.h"
 
 class AIPlay;
