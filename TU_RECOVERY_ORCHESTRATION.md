@@ -10,36 +10,63 @@ The project remains function-first and exact-first. The original executable rema
 
 ## Current baseline
 
-Phase 1 baseline commit: `6dad5c81 Complete Phase 1 exact owner registration`.
+Current integration commit: `768ea5fa config: disambiguate grouped owner symbols`.
+
+The final Wave 02 through Wave 04 grouped audit is current.
 
 | Measure | Current value |
 |---|---:|
 | Original PDB C/C++ modules | 224 |
 | Modules with registered exact coverage | 224 |
 |  |  |
-| Registered groups | 239 |
-| Registered exact owners | 2,980 |
-| Matching normal functions | 4,483 |
-| Scratch normal functions | 638 |
-| Accepted-drift functions | 348 |
-| Verified-logic functions | 21 |
-| Registered flag errors | 0 |
+| Registered groups | 235 |
+| Registered exact owners | 3,806 |
+| Included normal observations | 5,409 |
+| Matching-bank source functions | 4,878 |
+| Scratch source functions | 452 |
+| Accepted-drift source functions | 324 |
+| Verified-logic source functions | 18 |
+| Unclaimed inventory functions | 2,318 |
+| Registered wrapper compile errors | 0 |
+| Registered owner regressions | 0 |
+| Global flag backlog blockers | 147 |
 
-The Phase 1 integration audit is current.
+All 235 wrappers compile. All 3,806 registered owners match with valid
+ownership, boundaries, relocations, and direct targets.
+
+The audit is in `build/audits/final_wave02_04_full_clean/`.
+
+## Completed wave delta
+
+The comparison baseline is `e66317a35c`, with 3,706 registered owners.
+
+| Measure | Delta |
+|---|---:|
+| Registered exact owners | +100 |
+| Prior invalid rows that are now exact | +53 |
+| Newly exact rows now registered | +40 |
+| Newly exact rows still held | +13 |
+| Exact rows lost | 0 |
+| Group compile errors | -1 |
+
+All Wave 02, Wave 03, and Wave 04 leads are cold. No captain remains active.
 
 ## Current integration backlog
 
 | Category | Functions |
 |---|---:|
-| Grouped exact, not registered | 0 |
-| Not included in a registered wrapper | 642 |
-| Included, but expected symbol not emitted | 186 |
-| Grouped-context mismatch | 504 |
-| PDB source attributed to a header | 134 |
-| PDB source missing | 37 |
-| Total unregistered matching functions | 1,503 |
+| Grouped exact, not registered | 160 |
+| Grouped-context mismatch | 631 |
+| Boundary problem | 294 |
+| Relocation problem | 71 |
+| Expected symbol not emitted | 54 |
+| Ownership problem | 13 |
+| Accepted drift observed | 235 |
+| Accepted drift not emitted | 15 |
+| Registered elsewhere and exact | 124 |
+| Registered elsewhere with context drift | 6 |
 
-Phases 0 and 1 are complete. Phase 2 is next.
+Phases 0 through 3 are complete. The current Phase 4 waves are integrated.
 
 ## Terms
 
