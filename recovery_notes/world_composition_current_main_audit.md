@@ -86,6 +86,13 @@ and `Mouseptr.h`.
 The current source uses context-only names that do not exist in the canonical
 owners:
 
+Terra3 evidence confirms the World gate facts. `RGE_Game_World` is `0x104`
+bytes with `map` at `+0x28`. `RGE_Map` is `0x8DD0` bytes with dimensions at
+`+0x08` and `+0x0C`, and rows at `+0x8D8C`. The repaired `00545C00` source
+uses these typed rows, tile object lists, node payloads, owner, and master
+`object_group`. `00546180` uses an `unsigned char` pool key and returns the
+typed pooled object. No carrier or raw layout is needed for this gate.
+
 - `RGE_Player_Info`: `00542750_new_game.cpp` uses `player_num_minus1` and
   `victory`. `include/world_info.h` proves `player_num` and `map_type`.
 - `RGE_Base_Game`: World save callers use `save_prog_info`. The canonical field
