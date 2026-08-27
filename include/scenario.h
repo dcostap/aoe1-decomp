@@ -1,9 +1,7 @@
-#ifndef SCENARIO_CONTEXT_H
-#define SCENARIO_CONTEXT_H
+#ifndef AOE1_SCENARIO_H
+#define AOE1_SCENARIO_H
 
-// Canonical compiler-facing surface for the original scenario.cpp owner set.
-// PDB source order is scenario.cpp:29-1223.  The three padding-only PDB
-// fragments at 0048C33D, 0048CE21, and 0048CE82 stay out of the wrapper.
+// Declarations for the original scenario.cpp source module.
 
 typedef unsigned char uchar;
 typedef unsigned int uint;
