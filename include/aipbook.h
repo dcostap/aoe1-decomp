@@ -1,10 +1,7 @@
-#ifndef AOE1_AIPBOOK_CONTEXT_H
-#define AOE1_AIPBOOK_CONTEXT_H
+#ifndef AOE1_AIPBOOK_H
+#define AOE1_AIPBOOK_H
 
-#include <stdio.h>
-#include <string.h>
-
-// Canonical local declarations for the original aipbook.cpp source module.
+// Declarations for the original aipbook.cpp source module.
 // PDB type records prove each aggregate size and field offset below.
 
 class RGE_Static_Object;
@@ -25,18 +22,12 @@ public:
 
 class AIPlayPhaseCommand {
 public:
-    union {
-        unsigned char groupValue;
-        unsigned char field_0;
-    };                                  // +0x00
-    union {
-        unsigned char typeValue;
-        unsigned char field_1;
-    };                                  // +0x01
+    unsigned char groupValue;           // +0x00
+    unsigned char typeValue;            // +0x01
     unsigned char pad_02[2];            // +0x02
-    union { int value1Value; int field_4; }; // +0x04
-    union { int value2Value; int field_8; }; // +0x08
-    union { int value3Value; int field_C; }; // +0x0C
+    int value1Value;                    // +0x04
+    int value2Value;                    // +0x08
+    int value3Value;                    // +0x0C
 
     AIPlayPhaseCommand();
     AIPlayPhaseCommand(unsigned char group, unsigned char type,
@@ -52,32 +43,14 @@ protected:
 
 class AIPlayPhaseTrigger {
 public:
-    union {
-        unsigned char typeValue;        // +0x00
-        unsigned char field_0;
-    };
+    unsigned char typeValue;            // +0x00
     unsigned char pad_01[3];            // +0x01
-    union {
-        int value1Value;                // +0x04
-        int field_4;
-    };
-    union {
-        int value2Value;                // +0x08
-        int field_8;
-    };
-    union {
-        unsigned char phaseValue;       // +0x0C
-        unsigned char field_C;
-    };
-    union {
-        unsigned char nextPhaseValue;   // +0x0D
-        unsigned char field_D;
-    };
+    int value1Value;                    // +0x04
+    int value2Value;                    // +0x08
+    unsigned char phaseValue;           // +0x0C
+    unsigned char nextPhaseValue;       // +0x0D
     unsigned char pad_0E[2];            // +0x0E
-    union {
-        int randomnessValue;            // +0x10
-        int field_10;
-    };
+    int randomnessValue;                // +0x10
 
     AIPlayPhaseTrigger();
     AIPlayPhaseTrigger(unsigned char type, int value1, int value2,
@@ -110,17 +83,8 @@ protected:
 
 class AIPlayGroup {
 public:
-    union {
-        unsigned char minimumValues[6];
-        unsigned char minimumValue[6];
-        unsigned char minValue[6];
-        unsigned char arr_[6];
-    };                                   // +0x00
-    union {
-        unsigned char maximumValues[6];
-        unsigned char maximumValue[6];
-        unsigned char maxValue[6];
-    };                                   // +0x06
+    unsigned char minimumValues[6];     // +0x00
+    unsigned char maximumValues[6];     // +0x06
 
     AIPlayGroup();
     unsigned char minimum(int index) const;
@@ -181,33 +145,16 @@ public:
     class GroupingStruct {
     public:
         int id;                         // +0x00
-        union {
-            unsigned char groupID;
-            unsigned char groupType;
-            unsigned char group_type;
-            unsigned char group;
-            unsigned char field1;
-        };                              // +0x04
-        union {
-            unsigned char type;
-            unsigned char unitType;
-            unsigned char unit_type;
-            unsigned char field2;
-        };                              // +0x05
+        unsigned char groupID;           // +0x04
+        unsigned char type;              // +0x05
         unsigned char pad_06[2];        // +0x06
     };
 
-    union {
-        GroupingStruct groupings[50];   // +0x000
-        GroupingStruct entries[50];
-    };
+    GroupingStruct groupings[50];       // +0x000
     int playNumberValue;                // +0x190
     int targetValue;                    // +0x194
     XYZ originalPointValue;             // +0x198
-    union {
-        int originalHitPointsValue[5];  // +0x1A4
-        int arr_[5];
-    };
+    int originalHitPointsValue[5];      // +0x1A4
     unsigned char currentPhaseValue;    // +0x1B8
     unsigned char pad_1B9[3];           // +0x1B9
     int savedAttackerValue;             // +0x1BC
