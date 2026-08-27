@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "name": "rmm_base",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\rmm_base.cpp",
+  "source": "src/rmm_base.cpp",
+  "header": "include/rmm_base.h",
+  "functions": {
+    "00480790": { "status": "matching" },
+    "00480840": { "status": "matching" },
+    "004808C0": { "status": "matching" },
+    "004808D0": { "status": "matching" },
+    "004809E0": { "status": "matching" },
+    "00480A20": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/rmm_base_module.md"
+    },
+    "00480A80": { "status": "matching" },
+    "00480B60": { "status": "matching" },
+    "00480BC0": { "status": "matching" },
+    "00480BE0": { "status": "matching" },
+    "00480C10": { "status": "matching" },
+    "00480C30": { "status": "matching" },
+    "00480C80": { "status": "matching" },
+    "00480CC0": { "status": "matching" },
+    "00480CF0": { "status": "matching" },
+    "00480D10": { "status": "matching" },
+    "00480DA0": { "status": "matching" },
+    "00480DE0": { "status": "matching" },
+    "00480E20": { "status": "matching" },
+    "00480E50": { "status": "matching" },
+    "00480EA0": { "status": "matching" },
+    "00480EC0": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/rmm_base_module.md"
+    },
+    "00480FB0": { "status": "matching" },
+    "00481000": {
+      "status": "scratch",
+      "note_path": "recovery_notes/rmm_base_module.md"
+    }
+  }
+}
