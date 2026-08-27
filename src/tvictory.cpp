@@ -2,6 +2,8 @@
 // The six handwritten owners stay in PDB source order.
 
 #include "../include/tvictory.h"
+#include "../include/tplayer.h"
+#include "../include/tech.h"
 
 // 0052C8F0; tvictory.cpp lines 30-31.
 TRIBE_Victory_Conditions::TRIBE_Victory_Conditions(

@@ -1,26 +1,10 @@
 #ifndef AOE1_TVICTORY_H
 #define AOE1_TVICTORY_H
 
-// Module-local declarations for the tvictory.cpp PDB module.
-//
 // The six owners below are one source module. Their address order is also the
 // PDB order: 0052C8F0, 0052C920, 0052C940, 0052C950, 0052C970, and 0052C9B0.
-// The base and derived declarations retain the published call surfaces.
 
-#include "victory_context.h"
-
-class TRIBE_Player_Tech {
-public:
-    short get_tech_state(short tech);
-};
-
-// The victory code receives RGE_Player*, but this module reads the canonical
-// TRIBE_Player tech-tree member at +0x220.
-class TRIBE_Player : public RGE_Player {
-public:
-    char gap_108[0x118];
-    TRIBE_Player_Tech* tech_tree; // +0x220
-};
+#include "victory.h"
 
 class TRIBE_Victory_Conditions : public RGE_Victory_Conditions {
 public:
@@ -37,5 +21,8 @@ protected:
 public:
     unsigned char add_tech(unsigned char id, long count);
 };
+
+typedef char tribe_victory_conditions_size_check[
+    (sizeof(TRIBE_Victory_Conditions) == 0x20) ? 1 : -1];
 
 #endif

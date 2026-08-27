@@ -4,51 +4,54 @@
 
 - PDB source: `C:\\msdev\\work\\age1_x1\\tvictory.cpp`.
 - Source lines run from 30 through 83.
-- The module owns six normal functions in this address and source order:
+- The module owns six normal functions in PDB source and address order:
   `0052C8F0`, `0052C920`, `0052C940`, `0052C950`, `0052C970`, and `0052C9B0`.
 - All six owners belong to `TRIBE_Victory_Conditions`.
-- The packet lists no nearby compiler-generated owner.
+- The PDB type dump proves the derived class size is `0x20`.
 
-The constructor calls at `0052C8F0` and `0052C920` anchor the derived class to
-its two base constructors. The destructor at `0052C940` restores the derived
-vtable and tail-jumps to the base destructor. `0052C950` keeps the base handler
-call and the local `handle_tech` call. `0052C970` reads the player technology
-pointer at `+0x220` and calls `get_tech_state`. `0052C9B0` calls the base `add`
-owner and stores command `0x64` and the requested technology count.
+## Source ownership
 
-## Migration
+`src/tvictory.cpp` owns all six bodies in PDB order. Its header now owns only
+`TRIBE_Victory_Conditions`. The header includes `victory.h` for the canonical
+victory base and record types.
 
-`src/tvictory.cpp` now owns all six bodies in PDB order. `include/tvictory.h`
-contains the module-local declaration surface. The old wrapper,
-`include/tvictory_context.h`, and six source-bank fragments were removed. The
-source has no owner `.cpp` includes, context macro, fallback declaration block,
-manual vtable field, inline assembly, or raw address expression.
+The source includes `tplayer.h` and `tech.h` privately. It uses the canonical
+`TRIBE_Player::tech_tree` member at `+0x220` and the
+`TRIBE_Player_Tech::get_tech_state(short)` method. It has no copied player or
+technology declaration, wrapper, context macro, fallback declaration block,
+manually declared vtable, inline assembly, or raw address expression.
 
-The source keeps the reviewed typed `RGE_Victory_Conditions` base, player layout,
-technology-tree member, and virtual handler surface. The nonvirtual derived
-QAE destructor declaration remains because the PDB owner is the nonvirtual
-wrapper that restores the derived vtable before the base tail jump.
+The derived class size probe is:
 
-`config/source_modules/tvictory.json` records all six matching owners. The
-registered translation-unit entry maps every owner directly to `src/tvictory.cpp`
-and uses the `tvictory` module name.
+```cpp
+typedef char tribe_victory_conditions_size_check[
+    (sizeof(TRIBE_Victory_Conditions) == 0x20) ? 1 : -1];
+```
+
+The nonvirtual derived QAE destructor declaration remains. The PDB owner
+restores the derived vtable before it jumps to the base destructor.
+
+`include/victory_context.h` was not changed. It is no longer included by
+`tvictory.h`.
 
 ## Validation
 
-The one constrained candidate translation-unit check used:
+The one grouped candidate translation-unit check used:
 
-`python tools/validate_candidate_tu.py --proposal build/candidate_tus/tvictory_migration.json --output-dir build/candidate_tus/tvictory_migration`
+`python tools/validate_candidate_tu.py --proposal build/candidate_tus/tvictory_final.json --output-dir build/candidate_tus/tvictory_final`
 
-The direct source compiled all six normal owners. Every row reported `MATCH`
-with zero byte differences, zero relocation target mismatches, and zero
+The candidate compiled all six owners. Every row reported `MATCH` with
+`0.0000%`, zero byte differences, zero relocation target mismatches, and zero
 boundary escapes. The candidate reported a fully exact module.
 
-Three allowed cached focused checks used `--no-build --no-history` for
-`0052C8F0`, `0052C950`, and `0052C9B0`. Each cache was missing or stale after
-the direct source move. No focused rebuild ran.
+| Owner | Original | Rebuilt | Result |
+| --- | ---: | ---: | --- |
+| `0052C8F0` | 42 | 42 | `MATCH` |
+| `0052C920` | 25 | 25 | `MATCH` |
+| `0052C940` | 11 | 11 | `MATCH` |
+| `0052C950` | 26 | 26 | `MATCH` |
+| `0052C970` | 49 | 49 | `MATCH` |
+| `0052C9B0` | 36 | 36 | `MATCH` |
 
-## Open questions
-
-The module uses the reviewed declarations in `include/victory_context.h` for the
-shared victory ABI. Revisit that shared surface only with new cross-module
-binary evidence.
+No focused or global validation ran. No function regression was proven, so no
+function was demoted.
