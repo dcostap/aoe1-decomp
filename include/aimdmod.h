@@ -1,5 +1,5 @@
-#ifndef AOE1_AIMDMOD_TU_CONTEXT_H
-#define AOE1_AIMDMOD_TU_CONTEXT_H
+#ifndef AOE1_AIMDMOD_H
+#define AOE1_AIMDMOD_H
 
 #include <new.h>
 #include <stdlib.h>
