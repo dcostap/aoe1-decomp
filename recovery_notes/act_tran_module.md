@@ -26,7 +26,8 @@ The normal owners are:
 - 00407420 `targetZone`
 
 The old grouped source had nine exact owners and one accepted-drift owner.
-The migrated source keeps the same status order. The candidate has not run.
+The migrated source keeps the same status order. The direct candidate now
+matches all nine exact owners. `first_in_stack` remains accepted drift.
 
 ## Header and dependency closure
 
@@ -72,6 +73,10 @@ remain in PDB source order.
 
 The transport sentinel keeps the proven stored-dword test for `-1.0f`.
 The notification order, terrain checks, and state transitions remain unchanged.
+In `update` case `0x0D`, explicit `int` casts on both `id` arguments and
+explicit `long` casts on the final three arguments select the original
+virtual six-argument `notify` slot. Without these casts, canonical overload
+resolution selects the nonvirtual helper or reports an ambiguity.
 
 ## Validation
 
@@ -91,18 +96,34 @@ Result:
 - compiler output: `act_tran_header_probe.cpp`; and
 - object SHA-256: `7c20ff3bef12329dbe8856106d0a3964d153b75e501659b525f5a5ad73b1a818`.
 
-The latest lead branch was merged before validation. It includes the cleaned
-`m_an_obj.h` owner header from `873a50686`.
-
-The first candidate validator stopped during proposal checks. The live config
-then pointed at the old wrapper and source-bank paths.
-
-After direct registration, compilation reached the canonical header closure.
-It stopped because `move_obj.h` includes `zone_map.h`. That header still
-defines copied `RGE_Tile` and `RGE_Map` records, which conflict with `map.h`.
-The next owner task is a clean `zone_map.h` composition over canonical map
-types. This module does not alter that shared owner header.
-
 The candidate proposal is `build/candidate_tus/act_tran.json`. It uses
 `src/act_tran.cpp`, the `/GX` response file, nine exact owner claims, one
 observed accepted-drift owner, and the generated destructor entry.
+
+The direct candidate baseline compiled the natural module source and produced
+414 bytes with a 38-byte mismatch in `00406F90 update`. All other exact owners
+matched. The checker identified one direct `notify` call in the rebuild where
+the executable uses virtual slot `+0x148`.
+
+The following source hypotheses were tested:
+
+- Removing all casts restored the direct helper and the 38-byte mismatch.
+- Restoring the full explicit cast set produced `MATCH` and `0.0000%`.
+- Removing the redundant-looking `int` casts made VC5 report ambiguous
+  `notify` overloads.
+- Keeping the `int` casts but removing the trailing `long` casts also made VC5
+  report ambiguous overloads.
+- Removing all but the first two `int` casts produced the same ambiguity.
+
+The exact source uses this full five-cast set. A walkback to the clean baseline restored
+the mismatch. Reapplying the casts restored exact bytes. The final grouped
+validation reports 9/9 exact owners, generated destructor `MATCH`, and the
+unchanged accepted-drift result for `first_in_stack`.
+
+Validation commands:
+
+`python tools/validate_candidate_tu.py --proposal build/candidate_tus/act_tran.json --output-dir build/candidate_tus/act_tran_final`
+
+Result: exact owners 9/9; generated owner 1/1; accepted drift unchanged at
+11 differing bytes. The standalone target check also reports `MATCH`,
+`0.0000%`, 414/414 bytes, 19/19 aligned calls, and correct owner and boundary.
