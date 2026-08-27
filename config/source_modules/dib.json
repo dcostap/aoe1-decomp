@@ -24,22 +24,22 @@
       "note_path": "recovery_notes/Dib_module.md"
     },
     "00439700": { "status": "matching" },
-    "00439750": { "status": "matching" },
+    "00439750": { "status": "scratch", "note_path": "recovery_notes/Dib_module.md" },
     "00439A10": { "status": "matching" },
     "00439B50": { "status": "matching" },
-    "00439BE0": { "status": "matching" },
+    "00439BE0": { "status": "scratch", "note_path": "recovery_notes/Dib_module.md" },
     "00439CC0": { "status": "matching" },
-    "00439D80": { "status": "matching" },
-    "00439E50": { "status": "matching" },
+    "00439D80": { "status": "scratch", "note_path": "recovery_notes/Dib_module.md" },
+    "00439E50": { "status": "scratch", "note_path": "recovery_notes/Dib_module.md" },
     "0043A070": {
       "status": "matching",
       "note_path": "recovery_notes/Dib_module.md"
     },
     "0043A330": { "status": "matching" },
-    "0043A420": { "status": "matching" },
+    "0043A420": { "status": "scratch", "note_path": "recovery_notes/Dib_module.md" },
     "0043A4B0": { "status": "matching" },
     "0043A500": { "status": "matching" },
-    "0043AA60": { "status": "matching" },
+    "0043AA60": { "status": "scratch", "note_path": "recovery_notes/Dib_module.md" },
     "0043AA90": {
       "status": "accepted_drift",
       "note_path": "recovery_notes/Dib_module.md"
