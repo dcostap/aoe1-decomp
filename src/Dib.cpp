@@ -2,6 +2,7 @@
 // Functions follow the original source order from lines 72 through 2031.
 
 #include "../include/dib.h"
+#include "../include/Res_file.h"
 #include <windowsx.h>
 #include <stdio.h>
 #include <memory.h>
@@ -40,8 +41,6 @@ struct DibRgeBaseGameView {
     DibDrawSystemView* draw_system;
 };
 
-extern unsigned char* __cdecl RESFILE_load(unsigned long type,
-    unsigned long id, int& load_type, int& data_size);
 extern "C" char* __cdecl strtok(char*, const char*);
 extern "C" long __cdecl atol(const char*);
 extern "C" int __cdecl atoi(const char*);
