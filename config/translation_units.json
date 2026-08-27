@@ -6481,16 +6481,17 @@
       }
     },
     {
-      "name": "color_cpp",
-      "source": "src/color_tu.cpp",
+      "name": "color",
+      "source": "src/color.cpp",
+      "module": "color",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "00424350": "src/matching/00424350_RGE_Color_Table.cpp",
-        "00424440": "src/matching/00424440_RGE_Color_Table.cpp",
-        "004244F0": "src/matching/004244F0_RGE_Color_Table.cpp",
-        "004245F0": "src/matching/004245F0_RGE_Color_Table.cpp",
-        "004247A0": "src/matching/004247A0_RGE_Color_Table.cpp",
-        "004247B0": "src/matching/004247B0_save.cpp"
+        "00424350": "src/color.cpp",
+        "00424440": "src/color.cpp",
+        "004244F0": "src/color.cpp",
+        "004245F0": "src/color.cpp",
+        "004247A0": "src/color.cpp",
+        "004247B0": "src/color.cpp"
       },
       "symbols": {
         "00424350": "??0RGE_Color_Table@@QAE@H@Z",
