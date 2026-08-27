@@ -17,6 +17,7 @@ class RGE_Zone_Map_List;
 struct RGE_Random_Map_Module_List;
 
 #include "map_context.h"
+#include "rmm_terrain_info.h"
 
 // RGE_Tile is the PDB RGE_Tile record. The terrain/elevation byte is +0x05,
 // the border byte is +0x06, and the record stride is 0x18.
@@ -37,37 +38,6 @@ struct RGE_Tile {
 };
 
 typedef char rmm_terr_tile_size_check[(sizeof(RGE_Tile) == 0x18) ? 1 : -1];
-
-struct RGE_Terrain_Info_Line {
-    long terrain_size;
-    long terrain_generated;
-    long terrain_type;
-    long clumps;
-    long spacing;
-    long base_terrain_type;
-    long clumpiness_factor;
-    long avoid_hot_spots;
-};
-
-typedef char rmm_terr_info_line_size_check[
-    (sizeof(RGE_Terrain_Info_Line) == 0x20) ? 1 : -1];
-
-struct RGE_Terrain_Hot_Spots {
-    long x;
-    long y;
-    long radius;
-    long fade;
-};
-
-struct RGE_Terrain_Info {
-    RGE_Terrain_Info_Line terrain[99];
-    long terrain_num;
-    RGE_Terrain_Hot_Spots hot_spots[99];
-    long hot_spot_num;
-};
-
-typedef char rmm_terr_info_size_check[
-    (sizeof(RGE_Terrain_Info) == 0x1298) ? 1 : -1];
 
 struct Map_Stack {
     long x;

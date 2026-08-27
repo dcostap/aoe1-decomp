@@ -65,3 +65,51 @@ This candidate is ready for record-level fanout after review. A later change
 may replace the duplicate record definitions in DBCT and CNTR with this header.
 That change needs focused builds for `rmm_terr`, DBCT, and CNTR. It must not
 move the Terrain generator or random-map base declarations into this header.
+## Include-order probe
+
+Focused VC5 probes use `config/flags/default.rsp`. These include orders pass:
+
+- `rmm_base.h` then `rmm_terrain_info.h`
+- `rmm_terrain_info.h` then `rmm_base.h`
+- `map.h`, `world.h`, `rmm_base.h`, then `rmm_terrain_info.h`
+- `rmm_terrain_info.h`, `rmm_base.h`, `world.h`, then `map.h`
+
+The consumer probe constructs all three records after the canonical Map, World,
+and random-map base declarations. All checks return zero.
+
+Before the internal Terrain migration, these legacy combinations failed with
+the following exact C2011 conflicts:
+
+- `rmm_terrain_info.h` plus `rmm_dbct.h`: `RGE_Terrain_Info_Line` at
+  `rmm_dbct.h:130`, `RGE_Terrain_Hot_Spots` at `rmm_dbct.h:144`, and
+  `RGE_Terrain_Info` at `rmm_dbct.h:154`.
+- `rmm_terrain_info.h` plus `rmm_cntr_context.h`: the same three records at
+  `rmm_cntr_context.h:60`, `:74`, and `:81`.
+- `rmm_terrain_info.h` plus the old `rmm_terr.h`: the same three records.
+
+### Direct fanout gate
+
+**PASS:** Include `rmm_terrain_info.h` with canonical `rmm_base.h`, `map.h`,
+and `world.h` declarations.
+
+**BLOCK:** Include it while DBCT or CNTR still defines the three records.
+First replace those duplicate definitions in a separate integration change.
+Do not add include-order guards that hide competing record owners.
+
+## Internal owner migration
+
+`rmm_terr.h` now includes `rmm_terrain_info.h` and no longer repeats the three
+record definitions. Tile, base, Map, zone-map, and generator declarations did
+not change. DBCT, CNTR, and all source files did not change.
+
+The rebuilt `rmm_terr` object keeps all ten matching owners exact. The focused
+comparison reports `MATCH`, `0.0000%`, equal boundaries, and matching owner
+symbols for `004888E0`, `00488920`, `004889D0`, `004889F0`, `00488D50`,
+`00488E40`, `00488E60`, `00488EA0`, `00488F90`, and `00489030`.
+
+The accepted-drift `00488B90` remains unchanged at 295 differing bytes in a
+433-byte rebuilt body versus 437 original bytes. It remains accepted drift.
+
+Authoritative focused checks for the constructor, `check_borders`, and
+`base_terrain_generate` each report `Result: MATCH`. The source module has no
+exact regression from this internal include migration.
