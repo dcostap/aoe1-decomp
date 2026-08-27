@@ -5,6 +5,7 @@
 // two constructors. It is not a handwritten source owner.
 
 #include "../include/effects.h"
+#include "../include/player.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -150,29 +151,6 @@ void RGE_Effects::save(int fd) {
         } while (index < this->effect_num);
     }
 }
-
-class RGE_Player {
-public:
-    virtual ~RGE_Player();
-    virtual void v04();  virtual void v08();
-    virtual void v0C();  virtual void v10();  virtual void v14();
-    virtual void v18();  virtual void v1C();  virtual void v20();
-    virtual void v24();  virtual void v28();  virtual void v2C();
-    virtual void v30();  virtual void v34();  virtual void v38();
-    virtual void v3C();  virtual void v40();  virtual void v44();
-    virtual void v48();  virtual void v4C();  virtual void v50();
-    virtual void v54();  virtual void v58();  virtual void v5C();
-    virtual void v60();  virtual void v64();  virtual void v68();
-    virtual void v6C();  virtual void v70();  virtual void v74();
-    virtual void add_attribute_num(short a, float b, unsigned char c);
-
-    void modify_tobj(short a, short b, float c, unsigned char d);
-    void new_attribute_num(short a, float b);
-    void make_available(short a, unsigned char b);
-    void copy_obj(short a, short b);
-    void modify_tobj_delta(short a, short b, float c, unsigned char d);
-    void modify_tobj_percent(short a, short b, float c, unsigned char d);
-};
 
 // PDB: effects.cpp:186-274; 004495C0
 void RGE_Effects::do_effect(short effect_id, RGE_Player* player) {
