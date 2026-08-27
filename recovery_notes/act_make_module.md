@@ -70,9 +70,8 @@ PDB order and the accepted-drift update in the same compiler-facing source.
 The candidate proposal is `build/act_make_candidate_proposal.json`.
 It uses `config/flags/default.rsp` and includes generated owner `004049E0`.
 
-The proposal is ready for lead registration. This preparation did not update
-`config/translation_units.json` or source-module metadata. The lead must
-register direct ownership and run the grouped validator.
+Direct ownership is registered. The grouped candidate reports all four normal
+owners as `MATCH` with `0.0000%` difference. Generated `004049E0` matches.
 
 ## Open exactness issue
 
@@ -86,5 +85,5 @@ The direct source compiled with the pinned VC5 compiler and
 `build/act_make_direct/act_make.obj`. A read-only object comparison found
 `MATCH` with zero byte differences for `004049B0`, `00404A10`, `00404A40`,
 `00404A70`, and generated `004049E0`. The accepted-drift `00404A90` retained
-41 differing bytes and zero incompatible relocation targets. The formal
-grouped validator did not run because direct ownership is not registered yet.
+41 differing bytes, two boundary escapes, and zero incompatible relocation
+targets. The grouped validator preserves that accepted-drift status.
