@@ -7,7 +7,9 @@
 class DClipInfo_Node;
 class RGE_Active_Sprite;
 class RGE_Color_Table;
-class RGE_Sound_Info;
+class RGE_Sound;
+class RGE_Picture_List;
+class RGE_Sound_List;
 class RGE_Sprite;
 class Shape_File_Header;
 class Shape_Header;
@@ -53,36 +55,6 @@ public:
     unsigned char map_color;
     short id;
     unsigned char table[256];
-};
-
-class RGE_Sound {
-public:
-    short play_at_update_count;
-    short sound_num;
-    RGE_Sound_Info* sounds;
-    unsigned long cache_time;
-    short id;
-    unsigned char gap_0E[2];
-
-    void play(int add_to_list);
-};
-
-class RGE_Sound_List {
-public:
-    RGE_Sound* sound[3];
-    short frame[3];
-    unsigned char gap_12[2];
-};
-
-class RGE_Picture_List {
-public:
-    short picture_num;
-    unsigned char gap_02[2];
-    RGE_Sprite* sprite;
-    short offset_x;
-    short offset_y;
-    short facet;
-    unsigned char gap_0E[2];
 };
 
 class DClipInfo_List {
@@ -198,11 +170,6 @@ public:
 typedef char sprite_tshape_size_check[(sizeof(TShape) == 0x20) ? 1 : -1];
 typedef char sprite_color_table_size_check[
     (sizeof(RGE_Color_Table) == 0x128) ? 1 : -1];
-typedef char sprite_sound_size_check[(sizeof(RGE_Sound) == 0x10) ? 1 : -1];
-typedef char sprite_sound_list_size_check[
-    (sizeof(RGE_Sound_List) == 0x14) ? 1 : -1];
-typedef char sprite_picture_list_size_check[
-    (sizeof(RGE_Picture_List) == 0x10) ? 1 : -1];
 typedef char sprite_clip_list_size_check[
     (sizeof(DClipInfo_List) == 0x70) ? 1 : -1];
 typedef char sprite_size_check[(sizeof(RGE_Sprite) == 0x78) ? 1 : -1];

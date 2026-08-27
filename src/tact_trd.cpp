@@ -16,6 +16,7 @@
 #include "../include/move_obj.h"
 #include "../include/act_obj.h"
 #include "../include/player.h"
+#include "../include/sound.h"
 #include "../include/sprite.h"
 #include "../include/task.h"
 #include "../include/world.h"

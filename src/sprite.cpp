@@ -1,4 +1,6 @@
 #include "../include/sprite.h"
+#include "../include/sprite_records.h"
+#include "../include/sound.h"
 #include "../include/game_globals.h"
 
 #include <stdio.h>
