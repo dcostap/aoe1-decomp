@@ -1,16 +1,11 @@
-#ifndef AOE1_TPLAYER_TU_SHARED_CONTEXT
-struct Inner_005146E0 {
-    void target(int param);
-};
+// VA: 005146E0, TRIBE_Player::researchState
+// PDB: tplayer.cpp:1753-1756
+// BINARY NOTE: tech_tree is read at +0x220 and calls get_tech_state.
 
-class TRIBE_Player {
-public:
-    char gap_0[0x220];
-    Inner_005146E0 *ptr_;
-    void researchState(int param);
-};
-#endif
+#include "../../include/tech.h"
+#include "../../include/tplayer.h"
 
-void TRIBE_Player::researchState(int param) {
-    this->ptr_->target(param);
+unsigned char TRIBE_Player::researchState(int tech_id)
+{
+    return tech_tree->get_tech_state(tech_id);
 }
