@@ -4,8 +4,8 @@
 
 - PDB source module: `C:\\msdev\\work\\age1_x1\\vis_unit.cpp`.
 - Published header: `include/vis_unit.h`.
-- Held source: `src/vis_unit_tu.cpp`.
-- This checkpoint changes no source owner.
+- Direct source: `src/vis_unit.cpp`.
+- This header checkpoint records owner declarations only.
 - The header has no context-header include.
 - It has no Map, object, player, combat, world, UnitAI, or tile-list layout.
 
@@ -99,9 +99,13 @@ Result:
 The probe checked every published field offset and all five published object
 sizes. It did not compile or validate `vis_unit.cpp`.
 
-## Source hold
+## Source migration
 
-`src/vis_unit_tu.cpp` remains held. No source file, source-module metadata,
-shared header, global definition, or exact registration changed. The next
-step is to replace the wrapper support declarations with `vis_unit.h` only
-after the canonical Map, World, Player, tile-list, and object owners are ready.
+`src/vis_unit.cpp` now owns the complete PDB source order. It includes the
+canonical Map, World, Player, tile-list, object, master-object, and combat
+owners. The old wrapper and per-function fragments are removed. The source
+module metadata is registered in `config/source_modules/vis_unit.json`.
+
+The unresolved natural-codegen drift is recorded in
+`recovery_notes/vis_unit_module.md`. No carrier or raw offset overlay was
+added.

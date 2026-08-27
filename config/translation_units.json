@@ -7467,18 +7467,19 @@
     },
     {
       "name": "vis_unit",
-      "source": "src/vis_unit_tu.cpp",
+      "module": "vis_unit",
+      "source": "src/vis_unit.cpp",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "0053B5A0": "src/matching/0053B5A0_Visible_Unit_Manager.cpp",
-        "0053B670": "src/matching/0053B670_Visible_Unit_Manager.cpp",
-        "0053BB30": "src/matching/0053BB30_Visible_Resource_Manager.cpp",
-        "0053BBE0": "src/matching/0053BBE0_Visible_Resource_Manager.cpp",
-        "0053BD10": "src/matching/0053BD10_Visible_Resource_Manager.cpp",
-        "0053BD70": "src/matching/0053BD70_save.cpp",
-        "0053BE00": "src/matching/0053BE00_Process_New_Tiles.cpp",
-        "0053BED0": "src/matching/0053BED0_AddResource.cpp",
-        "0053BFD0": "src/matching/0053BFD0_Remove_Resource.cpp"
+        "0053B5A0": "src/vis_unit.cpp",
+        "0053B670": "src/vis_unit.cpp",
+        "0053BB30": "src/vis_unit.cpp",
+        "0053BBE0": "src/vis_unit.cpp",
+        "0053BD10": "src/vis_unit.cpp",
+        "0053BD70": "src/vis_unit.cpp",
+        "0053BE00": "src/vis_unit.cpp",
+        "0053BED0": "src/vis_unit.cpp",
+        "0053BFD0": "src/vis_unit.cpp"
       },
       "symbols": {
         "0053B5A0": "??0Visible_Unit_Manager@@QAE@HH@Z",
