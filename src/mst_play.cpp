@@ -1,4 +1,6 @@
 #include "../include/mst_play.h"
+#include "../include/m_mi_obj.h"
+#include "../include/m_dg_obj.h"
 
 #include <stdlib.h>
 

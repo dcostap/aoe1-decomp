@@ -2,8 +2,10 @@
 #define AOE1_MST_PLAY_H
 
 #include <stdio.h>
-#include "m_mi_obj.h"
-#include "m_dg_obj.h"
+
+class RGE_Master_Static_Object;
+class RGE_Sprite;
+class RGE_Sound;
 
 class RGE_Master_Player {
 public:
@@ -20,10 +22,8 @@ public:
 
     char name[20];
     short master_object_num;
-    unsigned char pad_1A[2];
     RGE_Master_Static_Object** master_objects;
     short attribute_num;
-    unsigned char pad_22[2];
     float* attributes;
     unsigned char culture;
     unsigned char type;
