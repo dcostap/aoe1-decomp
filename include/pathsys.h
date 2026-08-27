@@ -2,6 +2,7 @@
 #define AOE1_PATHSYS_H
 
 #include "utmarray.h"
+#include "zone_map.h"
 
 class RGE_Game_World;
 class RGE_Map;
@@ -17,11 +18,6 @@ typedef unsigned int uint;
 extern int MapPathsDisplay;
 extern int numberPathingIterations;
 
-struct XYPoint {
-    int x;
-    int y;
-};
-
 struct MGP_FloatHeap {
     uchar x;
     uchar y;
@@ -35,8 +31,6 @@ struct PathTileWork {
     XYPoint copied;
 };
 
-typedef char pathsys_xy_point_size_check[
-    (sizeof(XYPoint) == 0x08) ? 1 : -1];
 typedef char pathsys_mgp_float_heap_size_check[
     (sizeof(MGP_FloatHeap) == 0x08) ? 1 : -1];
 typedef char pathsys_tile_work_size_check[
