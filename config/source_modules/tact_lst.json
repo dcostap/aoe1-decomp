@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "name": "tact_lst",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\tact_lst.cpp",
+  "source": "src/tact_lst.cpp",
+  "header": "include/tact_lst.h",
+  "functions": {
+    "004D0150": { "status": "matching" },
+    "004D0170": { "status": "matching" },
+    "004D05D0": { "status": "matching" },
+    "004D0C50": { "status": "matching" }
+  }
+}

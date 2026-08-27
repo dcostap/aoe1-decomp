@@ -4710,13 +4710,14 @@
     },
     {
       "name": "tact_lst",
-      "source": "src/tact_lst_tu.cpp",
+      "source": "src/tact_lst.cpp",
+      "module": "tact_lst",
       "flags": "config/flags/004D0170_create_action.rsp",
       "owners": {
-        "004D0150": "src/matching/004D0150_TRIBE_Action_List.cpp",
-        "004D0170": "src/matching/004D0170_create_action.cpp",
-        "004D05D0": "src/matching/004D05D0_create_task_action.cpp",
-        "004D0C50": "src/matching/004D0C50_get_action_name.cpp"
+        "004D0150": "src/tact_lst.cpp",
+        "004D0170": "src/tact_lst.cpp",
+        "004D05D0": "src/tact_lst.cpp",
+        "004D0C50": "src/tact_lst.cpp"
       },
       "symbols": {
         "004D05D0": "?create_task_action@TRIBE_Action_List@@UAEPAVRGE_Action@@PAVRGE_Task@@PAVRGE_Static_Object@@MMM@Z",
