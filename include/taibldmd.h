@@ -1,11 +1,9 @@
-#ifndef AOE1_TAIBLDMD_CONTEXT_H
-#define AOE1_TAIBLDMD_CONTEXT_H
+#ifndef AOE1_TAIBLDMD_H
+#define AOE1_TAIBLDMD_H
 
-// Canonical local declarations for the original taibldmd.cpp source module.
+// Declarations for the original taibldmd.cpp source module.
 // PDB lines 62-1773 prove one TribeBuildAIModule owner sequence.
 // The original EH frames in initialize and nextBuildableItem require /GX.
-// BINARY NOTE: the grouped wrapper uses these layouts for all owner bodies.
-// It does not change global registration or shared ABI evidence.
 
 typedef unsigned char uchar;
 typedef unsigned int uint;
@@ -89,8 +87,8 @@ public:
     int built() const;
     int buildAttempts() const;
     int buildFrom() const;
-    int buildCap();
     int numberBuilds();
+    int buildCap();
     uchar permanentSkip();
     void setInProgress(int value);
     void setBuilt(int value);

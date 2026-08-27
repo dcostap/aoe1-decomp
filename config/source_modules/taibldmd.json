@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "name": "taibldmd",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\taibldmd.cpp",
+  "source": "src/taibldmd.cpp",
+  "header": "include/taibldmd.h",
+  "functions": {
+    "004D3A80": { "status": "matching" },
+    "004D3AD0": { "status": "matching" },
+    "004D3B00": { "status": "matching" },
+    "004D3B10": { "status": "matching" },
+    "004D3B20": { "status": "matching" },
+    "004D3D60": {
+      "status": "scratch",
+      "note_path": "recovery_notes/taibldmd_module.md"
+    },
+    "004D4460": { "status": "matching" },
+    "004D4540": {
+      "status": "scratch",
+      "note_path": "recovery_notes/taibldmd_module.md"
+    },
+    "004D4DB0": { "status": "matching" },
+    "004D4E10": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/taibldmd_module.md"
+    },
+    "004D4F80": { "status": "matching" },
+    "004D5090": { "status": "matching" },
+    "004D5170": { "status": "matching" },
+    "004D5270": { "status": "matching" },
+    "004D5310": { "status": "matching" },
+    "004D5590": { "status": "matching" },
+    "004D5600": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/taibldmd_module.md"
+    },
+    "004D5690": { "status": "matching" },
+    "004D56F0": { "status": "matching" },
+    "004D5780": { "status": "matching" },
+    "004D57A0": { "status": "matching" },
+    "004D5AD0": { "status": "matching" },
+    "004D5B80": { "status": "matching" },
+    "004D5BB0": { "status": "matching" },
+    "004D5C20": { "status": "matching" },
+    "004D5CA0": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/taibldmd_module.md"
+    },
+    "004D5D40": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/taibldmd_module.md"
+    },
+    "004D5DE0": { "status": "matching" }
+  }
+}
