@@ -168,7 +168,6 @@ public:
     int Restored;                         // +0xF4
     int ExtendedLines;                    // +0xF8
     unsigned char TransColor;             // +0xFC
-    unsigned char _pad_end[3];
 
     TDrawArea(char*, int);
     ~TDrawArea();
