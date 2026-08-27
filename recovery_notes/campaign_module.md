@@ -12,7 +12,7 @@
   also the source definition order in `src/campaign.cpp`.
 - **Type evidence:** the inventory records a `0x20C` `RGE_Campaign`, a
   `0x108` `RGE_Campaign_Header`, and a `0x208` `RGE_Scenario_Offset`.
-  The source header records these fields and their end padding.
+  The source header records the named fields and uses natural alignment.
 - **Generated owners:** the packet reports no nearby compiler-generated
   entries.
 

@@ -10,7 +10,6 @@ public:
     long offset;
     char name[255];
     char file_name[255];
-    unsigned char _pad_end[2];
 };
 
 typedef char campaign_scenario_offset_size_check[
@@ -20,7 +19,6 @@ class RGE_Campaign_Header {
 public:
     long version;
     char name[255];
-    unsigned char _pad_end;
     long scenario_num;
 };
 
@@ -32,7 +30,6 @@ public:
     RGE_Campaign_Header campaign_header;
     RGE_Scenario_Offset* scenario_offsets;
     char filename[255];
-    unsigned char _pad_end;
 
     RGE_Campaign(char* filename);
     RGE_Campaign(char* filename, char* name, long count,
