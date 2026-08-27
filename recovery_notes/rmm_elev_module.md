@@ -3,7 +3,7 @@
 ## Result
 
 The owner surface is complete enough for a natural header. The new header is
-`include/rmm_elev.h`. The legacy `include/rmm_elev_context.h` stays unchanged.
+`include/rmm_elev.h`. The natural module candidate uses this header directly.
 
 The new header owns only the elevation records used by the elevation generator
 and the generator class. It includes `rmm_base.h` for the proven base class and
@@ -93,13 +93,11 @@ claim.
 
 ## Natural source and consumer path
 
-The smallest natural source destination is `src/rmm_elev.cpp`. It should
-include `../include/rmm_elev.h` once. It should include `../include/map.h`
-privately for `RGE_Map` methods and the complete `RGE_Tile` record. The source
-also needs its period C-library headers and private `debug_rand` declaration
-where the method bodies use them. The ten owner bodies should follow the PDB
-order above. The current fragment wrapper and fragment includes still use the
-legacy context; this task does not migrate them.
+The natural source destination is `src/rmm_elev.cpp`. It includes
+`../include/rmm_elev.h` and `../include/map.h` directly. The source also uses
+its period C-library headers and private `debug_rand` declaration. All ten
+owner bodies follow the PDB order above. The candidate removes the fragment
+wrapper and its legacy context include.
 
 The original database-controller generator at VA `00483430` is the direct
 consumer. Its PDB span is `rmm_dbct.cpp` lines 378-389. The original bytes at

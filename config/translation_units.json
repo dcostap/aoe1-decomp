@@ -3399,16 +3399,17 @@
     },
     {
       "name": "rmm_elev",
-      "source": "src/rmm_elev_tu.cpp",
+      "source": "src/rmm_elev.cpp",
+      "module": "rmm_elev",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "004846C0": "src/matching/004846C0_RGE_RMM_Elevation_Generator.cpp",
-        "00484A40": "src/matching/00484A40_generate_modifiers.cpp",
-        "00484B30": "src/matching/00484B30_fig_chance.cpp",
-        "00484B50": "src/matching/00484B50_count_map_tiles.cpp",
-        "00484C80": "src/matching/00484C80_remove_area_from_lists.cpp"
+        "004846C0": "src/rmm_elev.cpp",
+        "00484B30": "src/rmm_elev.cpp"
       },
-      "symbols": {}
+      "symbols": {
+        "004846C0": "??0RGE_RMM_Elevation_Generator@@QAE@PAVRGE_Map@@PAVRGE_Random_Map_Module@@PAURGE_Elevation_Info@@@Z",
+        "00484B30": "?fig_chance@RGE_RMM_Elevation_Generator@@IAEMJJJ@Z"
+      }
     },
     {
       "name": "t_tre_ob",

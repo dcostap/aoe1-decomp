@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "name": "rmm_elev",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\rmm_elev.cpp",
+  "source": "src/rmm_elev.cpp",
+  "header": "include/rmm_elev.h",
+  "functions": {
+    "004846C0": { "status": "matching" },
+    "00484700": {
+      "status": "scratch",
+      "note_path": "recovery_notes/rmm_elev_natural_candidate.md"
+    },
+    "004847C0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/rmm_elev_natural_candidate.md"
+    },
+    "004848A0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/rmm_elev_natural_candidate.md"
+    },
+    "00484A40": {
+      "status": "scratch",
+      "note_path": "recovery_notes/rmm_elev_natural_candidate.md"
+    },
+    "00484B30": { "status": "matching" },
+    "00484B50": {
+      "status": "scratch",
+      "note_path": "recovery_notes/rmm_elev_natural_candidate.md"
+    },
+    "00484B90": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/rmm_elev_natural_candidate.md"
+    },
+    "00484C80": {
+      "status": "scratch",
+      "note_path": "recovery_notes/rmm_elev_natural_candidate.md"
+    },
+    "00484D00": {
+      "status": "scratch",
+      "note_path": "recovery_notes/rmm_elev_natural_candidate.md"
+    }
+  }
+}
