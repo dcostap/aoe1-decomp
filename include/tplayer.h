@@ -43,7 +43,7 @@ public:
     virtual int get_mouse_pointer_action_vars(int, int&, int&);   // vt[39]
     virtual void __cdecl logMessage(char*, ...);                  // vt[57]
     virtual void notify(int, int, int, long, long, long);         // vt[58]
-    virtual void logStatus(_iobuf*, int);                         // vt[59]
+    virtual void logStatus(FILE*, int);                           // vt[59]
     virtual void load_victory(int, long*, unsigned char);         // vt[60]
     virtual void new_victory();                                   // vt[61]
     virtual unsigned char command_give_attribute(

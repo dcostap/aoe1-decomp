@@ -1,6 +1,8 @@
 #ifndef AOE1_PLAYER_H
 #define AOE1_PLAYER_H
 
+#include <stdio.h>
+
 class RGE_Color_Table;
 class RGE_Doppleganger_Creator;
 class RGE_Game_World;
@@ -18,7 +20,6 @@ class Visible_Resource_Manager;
 struct RGE_Object_Node;
 struct RGE_Tile_List_Node;
 struct XYZBYTEPoint;
-struct _iobuf;
 
 struct RGE_Tile_List_Node {
     int col;
@@ -113,7 +114,7 @@ public:
     virtual void removeObject(RGE_Static_Object*, int, int, RGE_Object_Node*);
     virtual void __cdecl logMessage(char*, ...);
     virtual void notify(int, int, int, long, long, long);
-    virtual void logStatus(_iobuf*, int);
+    virtual void logStatus(FILE*, int);
     virtual void load_victory(int, long*, unsigned char);
     virtual void new_victory();
 
