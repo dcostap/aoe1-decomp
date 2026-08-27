@@ -29,12 +29,40 @@ natural class surface keeps this generated entry in the module candidate.
 
 ## ABI note
 
-The natural header includes `tm_tre_o.h`, which owns the tree-master class and
-its inheritance from `RGE_Master_Static_Object`. The source now uses natural
-derived-to-base conversion for the static-object constructor and setup call.
-No tree-master or static-object layout is copied here.
+The natural header includes `stat_obj.h`, which owns `RGE_Static_Object`, and
+`tm_tre_o.h`, which owns the tree-master class and its inheritance from
+`RGE_Master_Static_Object`. The source uses natural derived-to-base conversion
+for the static-object constructor and setup call. No tree-master or
+static-object layout is copied here.
+
+`t_tre_ob.h` includes `<stdio.h>` because `tm_tre_o.h` declares a `FILE*`
+constructor. `stat_obj.h` includes `utmarray.h` for the managed-array members.
+`tm_tre_o.h` includes the canonical `m_s_obj.h` owner header. The source needs
+no additional game, player, or object headers because the canonical headers
+provide the required forward declarations and method declarations.
+
+The direct method dependencies are the two `RGE_Static_Object` constructors,
+the two `setup` overloads, and `RGE_Static_Object::set_object_state`. All come
+from `stat_obj.h`.
 
 The static-object method surface comes from the reviewed shared ABI selected by
 the integration lead. The affected modules are `t_tre_ob.cpp` and `tm_tre_o.cpp`;
 the affected shards are `src/t_tre_ob.cpp` and `src/tm_tre_o.cpp`. The lead must
 validate both complete translation units after the header correction.
+
+## Grouped candidate validation
+
+The candidate used `src/t_tre_ob.cpp`, `include/t_tre_ob.h`, and
+`config/flags/default_gx.rsp`. It contains all three normal PDB owners and the
+nearby compiler-generated scalar deleting destructor at `004CCAF0`.
+
+The grouped result is `full_module_exact: true`. All three normal owners are
+`MATCH` with `0.0000%` positional difference, zero relocation-target
+mismatches, and zero boundary escapes:
+
+- `004CCA60`: 131 bytes;
+- `004CCB20`: 101 bytes;
+- `004CCB90`: 13 bytes.
+
+The generated `004CCAF0` entry also matches at 30 bytes. The report is at
+`build/candidate_tus/t_tre_ob/report.json`.
