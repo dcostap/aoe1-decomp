@@ -28,7 +28,6 @@ TMessagePanel::TMessagePanel(void* font, long font_wid, long font_hgt)
     this->Icon2 = 0;
     this->IconFrame1 = 0;
     this->IconFrame2 = 0;
-    *(int*)this = 0x00571668;
     this->text[0] = 0;
     this->handle_mouse_input = 0;
     this->set_active(0);

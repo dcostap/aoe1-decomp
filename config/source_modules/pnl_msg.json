@@ -6,15 +6,15 @@
   "header": "include/pnl_msg.h",
   "functions": {
     "00478F40": {
-      "status": "accepted_drift",
+      "status": "scratch",
       "note_path": "recovery_notes/pnl_msg_module.md"
     },
     "00479050": {
-      "status": "matching",
+      "status": "scratch",
       "note_path": "recovery_notes/pnl_msg_module.md"
     },
     "004790E0": {
-      "status": "matching",
+      "status": "scratch",
       "note_path": "recovery_notes/pnl_msg_module.md"
     },
     "00479270": {

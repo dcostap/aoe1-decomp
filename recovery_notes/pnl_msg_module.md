@@ -22,11 +22,27 @@ all owners now share one compiler context.
 
 ## Check state
 
-The old wrapper had seven registered exact owners. The constructor had 16
-positional differences, `draw` had 633, and `render_to_image_buffer` had 1319.
-The merged source keeps those reviewed statuses: constructor is accepted drift,
-`draw` and `render_to_image_buffer` are scratch, and the other nine normal
-owners are matching.
+The direct module check has seven exact owners. They report `MATCH` and
+`0.0000%`: `00479270`, `004792A0`, `004793C0`, `00479540`, `00479A10`,
+`00479A80`, and `0047A190`.
 
-The source module metadata records each normal owner. The generated deleting
+The other five owners are scratch. Their current module results are:
+
+| VA | Name | Original | Rebuilt | Positional diff |
+| --- | --- | ---: | ---: | ---: |
+| `00478F40` | `TMessagePanel` | 235 | 191 | 184 |
+| `00479050` | `~TMessagePanel` | 139 | 83 | 130 |
+| `004790E0` | `set_rect` | 389 | 333 | 369 |
+| `00479590` | `draw` | 1147 | 1146 | 633 |
+| `00479AE0` | `render_to_image_buffer` | 1662 | 1671 | 1305 |
+
+The current check reports nine non-padding bytes after the original boundary
+for `00479AE0`.
+
+The constructor no longer writes a vtable through a raw address. The executable
+does contain a late derived-vtable store at `00479000`. The natural constructor
+emits its compiler vtable store earlier and remains nonexact under the default
+module flags. No unsupported ABI machinery is retained.
+
+The source module metadata records all 12 normal owners. The generated deleting
 destructor remains outside that metadata.
