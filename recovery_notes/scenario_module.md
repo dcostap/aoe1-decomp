@@ -34,3 +34,7 @@ The reunified object differs from the prior grouped object at two reviewed
 owners. 0048AE10 has one changed SIB byte. 0048C0E0 has three direct-global
 relocations, because the wrapper-only target-address macro is removed. Both
 forms read the same storage and keep the same control flow.
+
+The module header declares protected virtual `get_object_pointer` and public
+virtual `rehook`. Their PDB owners belong to `scenario.h`, not `scenario.cpp`.
+The direct scenario object uses the shipped virtual slots.

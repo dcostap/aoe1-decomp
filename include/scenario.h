@@ -67,8 +67,10 @@ public:
 };
 
 class RGE_Scenario {
-public:
+protected:
     virtual RGE_Static_Object* get_object_pointer(int object_id);
+
+public:
     virtual ~RGE_Scenario();
     virtual void rehook();
     virtual void save(int file);
