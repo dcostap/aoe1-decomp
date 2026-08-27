@@ -41,14 +41,18 @@ The derived-to-base destructor thunk is at 00402F30.
 - `task.h` for task fields, sprites, and sounds;
 - `world.h` for `RGE_Game_World::object` and `world_time_delta_seconds`;
 - `rge_base_game_global.h` for the reviewed `rge_base_game` symbol.
+- `act_move.h` for the canonical `RGE_Action_Move_To` owner.
 
 The source uses the canonical `ani_obj.h` through `act_obj.h` and `move_obj.h`.
 The source does not use `ani_obj_context.h`.
 
-The source keeps narrow declarations for `RGE_Action_Move_To`, `RGE_Sound`, and
-`RGE_Base_Game` because no canonical public owner header publishes these
-surfaces yet. The Move_To declaration has the proven 0x44 size. The base-game
-quick-build field is at the proven +0x9A8 offset.
+The canonical `act_move.h` owner now supplies `RGE_Action_Move_To` and its
+proven 0x44 size. The source has no local Action or Move_To declaration.
+
+Two blockers remain. No canonical Sound owner header supplies `RGE_Sound::play`.
+No canonical Base Game owner header supplies the `quick_build` field. The
+source has no local Sound or Base Game declaration. Do not compile this module
+until both owner declarations are available.
 
 The source casts an action object's canonical `master_obj` pointer to
 `RGE_Master_Action_Object` where the action-master fields are used. It uses

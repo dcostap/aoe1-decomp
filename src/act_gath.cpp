@@ -12,15 +12,13 @@
 // 00403590 (383-752), 00403C60 (758-767), 00403C90 (773-780),
 // 00403CD0 (786-789), 00403CE0 (796-831), and 00403D90 (837-887).
 //
-// Direct owner dependencies are included below.  The move-to constructor
-// surface is declared locally because its owner module has no canonical public
-// header yet.  Its complete ABI is RGE_Action plus the proven range float.
-// RGE_Sound and RGE_Base_Game have the same narrow source-local declarations
-// because no canonical owner header publishes those surfaces.
+// Direct owner dependencies are included below.  Sound and Base Game remain
+// blockers because no canonical owner header publishes their needed surfaces.
 
 #include "../include/act_gath.h"
 #include "../include/act_list.h"
 #include "../include/act_obj.h"
+#include "../include/act_move.h"
 #include "../include/m_ac_obj.h"
 #include "../include/m_s_obj.h"
 #include "../include/move_obj.h"
@@ -29,31 +27,6 @@
 #include "../include/task.h"
 #include "../include/world.h"
 #include "../include/rge_base_game_global.h"
-
-class RGE_Action_Move_To : public RGE_Action {
-public:
-    RGE_Action_Move_To(RGE_Action_Object*, float, float, float, float,
-                       RGE_Sprite*);
-    RGE_Action_Move_To(RGE_Action_Object*, RGE_Static_Object*, float,
-                       RGE_Sprite*);
-
-    float range;
-};
-
-typedef char rge_action_move_to_size_check[
-    (sizeof(RGE_Action_Move_To) == 0x44) ? 1 : -1];
-
-class RGE_Sound {
-public:
-    void play(int);
-};
-
-class RGE_Base_Game {
-public:
-    virtual ~RGE_Base_Game();
-    char gap_04[0x9A4];
-    int quick_build;
-};
 
 extern float DAT_0056e278;
 extern double DAT_0056e280;
