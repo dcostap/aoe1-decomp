@@ -1,5 +1,4 @@
 #include "../include/Command.h"
-#include "../include/game_globals.h"
 
 #include <math.h>
 #include <stdio.h>

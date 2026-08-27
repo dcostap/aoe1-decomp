@@ -578,8 +578,10 @@ public:
 };
 
 extern RGE_Base_Game* rge_base_game;
-// The shipped logger is a cdecl member reached through this absolute global.
-#define L (*(TDebuggingLog**)0x62C4FC)
+extern TDebuggingLog* L;
+extern double DAT_0056f4d8;
+extern double DAT_0056f4e0;
+extern double DAT_0056f4e8;
 extern void __cdecl operator delete(void*);
 extern "C" void __cdecl free(void*);
 extern unsigned long debug_timeGetTime(const char*, int);
