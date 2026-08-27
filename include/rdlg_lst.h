@@ -1,9 +1,8 @@
-#ifndef AOE1_RDLG_LST_MODULE_CONTEXT_H
-#define AOE1_RDLG_LST_MODULE_CONTEXT_H
+#ifndef AOE1_RDLG_LST_H
+#define AOE1_RDLG_LST_H
 
 // Authentic declaration surface for C:\\msdev\\work\\age1_x1\\rdlg_lst.cpp.
-// This header is local to the recovered wrapper. It keeps one class ABI while
-// the owner fragments retain their standalone declarations outside the wrapper.
+// This header owns the class ABI for the complete recovered source module.
 
 #include <stdlib.h>
 #include <string.h>
@@ -191,7 +190,11 @@ public:
 
 extern RGE_Base_Game* rge_base_game;
 
-typedef TListDialog BaseClass;
+extern "C" __declspec(dllimport) int __stdcall CompareStringA(
+    unsigned long locale, unsigned long flags, const char* string1,
+    int length1, const char* string2, int length2);
+
+int __cdecl rdlg_list_compare(const void*, const void*);
 
 class RGE_Dialog_List : public TListDialog {
 public:

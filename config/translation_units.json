@@ -6319,18 +6319,19 @@
     },
     {
       "name": "rdlg_lst_cpp",
-      "source": "src/rdlg_lst_tu.cpp",
+      "source": "src/rdlg_lst.cpp",
+      "module": "rdlg_lst",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "0047E670": "src/matching/0047E670_RGE_Dialog_List.cpp",
-        "0047E6B0": "src/matching/0047E6B0_setup.cpp",
-        "0047E830": "src/matching/0047E830_RGE_Dialog_List.cpp",
-        "0047E8C0": "src/matching/0047E8C0_get_list_id.cpp",
-        "0047E8F0": "src/matching/0047E8F0_create_list.cpp",
-        "0047EAA0": "src/matching/0047EAA0_rdlg_list_compare.cpp",
-        "0047EAD0": "src/matching/0047EAD0_sort_list.cpp",
-        "0047EAF0": "src/matching/0047EAF0_calc_list_line.cpp",
-        "0047EB60": "src/matching/0047EB60_get_cur_id.cpp"
+        "0047E670": "src/rdlg_lst.cpp",
+        "0047E6B0": "src/rdlg_lst.cpp",
+        "0047E830": "src/rdlg_lst.cpp",
+        "0047E8C0": "src/rdlg_lst.cpp",
+        "0047E8F0": "src/rdlg_lst.cpp",
+        "0047EAA0": "src/rdlg_lst.cpp",
+        "0047EAD0": "src/rdlg_lst.cpp",
+        "0047EAF0": "src/rdlg_lst.cpp",
+        "0047EB60": "src/rdlg_lst.cpp"
       },
       "symbols": {
         "0047E670": "??0RGE_Dialog_List@@QAE@PAD@Z"
