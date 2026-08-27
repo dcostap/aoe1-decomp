@@ -2,19 +2,14 @@
 
 #include "../include/rmm_base.h"
 #include "../include/map.h"
+#include "../include/debuglog.h"
+#include "../include/game_globals.h"
 
 #include <stdlib.h>
 #include <string.h>
 
-class TDebuggingLog {
-public:
-    void Log(char* message, ...);
-};
-
-extern TDebuggingLog* L;
 extern "C" int __cdecl debug_rand(char* file, int line);
 void operator_delete(void* block);
-extern float DAT_00571e50;
 
 extern "C" double sqrt(double value);
 #pragma intrinsic(sqrt)
