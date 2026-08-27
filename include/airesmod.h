@@ -1,5 +1,5 @@
-#ifndef AOE1_AIRESMOD_CONTEXT_H
-#define AOE1_AIRESMOD_CONTEXT_H
+#ifndef AOE1_AIRESMOD_H
+#define AOE1_AIRESMOD_H
 
 struct _iobuf;
 class AIModuleMessage;
@@ -65,7 +65,8 @@ public:
 
 class ResourceAIModule : public AIModule {
 public:
-    ResourceAIModule(void*, int, int, int, int, int);
+    ResourceAIModule(void* owner, int player, int resourceCount,
+                     int initialValue, int minimumValue, int maximumValue);
     virtual ~ResourceAIModule();
     virtual int processMessage(AIModuleMessage*);
     virtual int update(int);
@@ -82,7 +83,7 @@ public:
     int** resourceTypesValue;
     int* numberResourceTypesValue;
 
-    void setMainDecisionAI(MainDecisionAIModule*);
+    void setMainDecisionAI(MainDecisionAIModule* decisionAI);
     int numberResources() const;
     int resource(int) const;
     int resourcesAvailable(ResourceItem*);
@@ -97,9 +98,9 @@ public:
     void decrementResources(ResourceItem*);
     void setResourceMin(int, int);
     void setResourceMax(int, int);
-    void addResourceType(int, int);
-    int isResourceType(int, int);
-    int numberResourceTypes(int);
+    void addResourceType(int resourceIndex, int type);
+    int isResourceType(int resourceIndex, int type);
+    int numberResourceTypes(int resourceIndex);
     int lowestResourceType() const;
 };
 

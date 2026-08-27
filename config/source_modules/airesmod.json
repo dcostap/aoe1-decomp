@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "name": "airesmod",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\airesmod.cpp",
+  "source": "src/airesmod.cpp",
+  "header": "include/airesmod.h",
+  "functions": {
+    "00412310": {
+      "status": "scratch",
+      "note_path": "recovery_notes/00412310_ResourceAIModule.md"
+    },
+    "00412480": { "status": "matching" },
+    "00412540": { "status": "matching" },
+    "00412550": { "status": "matching" },
+    "00412560": { "status": "matching" },
+    "00412570": { "status": "matching" },
+    "00412580": { "status": "matching" },
+    "00412590": { "status": "matching" },
+    "004125C0": {
+      "status": "matching",
+      "note_path": "recovery_notes/004125C0_resourcesAvailable.md"
+    },
+    "00412640": { "status": "matching" },
+    "004126B0": { "status": "matching" },
+    "004126E0": { "status": "matching" },
+    "00412710": {
+      "status": "matching",
+      "note_path": "recovery_notes/00412710_setResource.md"
+    },
+    "00412770": { "status": "matching" },
+    "004127C0": {
+      "status": "matching",
+      "note_path": "recovery_notes/004127C0_incrementResource.md"
+    },
+    "00412820": { "status": "matching" },
+    "00412870": { "status": "matching" },
+    "004128D0": { "status": "matching" },
+    "00412920": { "status": "matching" },
+    "00412940": { "status": "matching" },
+    "00412960": { "status": "matching" },
+    "00412970": { "status": "matching" },
+    "00412A10": { "status": "matching" },
+    "00412AD0": { "status": "matching" },
+    "00412AE0": { "status": "matching" }
+  }
+}
