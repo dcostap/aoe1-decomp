@@ -2,6 +2,8 @@
 // Definitions follow the original source order.
 
 #include "../include/zone_map.h"
+
+void rge_read(int handle, void* buffer, int count);
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>

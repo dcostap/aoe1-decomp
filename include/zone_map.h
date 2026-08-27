@@ -1,42 +1,14 @@
 #ifndef AOE1_ZONE_MAP_H
 #define AOE1_ZONE_MAP_H
 
-typedef unsigned char uchar;
+#include "map.h"
 
-void rge_read(int handle, void* buffer, int count);
+typedef unsigned char uchar;
 
 struct Zone_Queue {
     long x;
     long y;
     Zone_Queue* next;
-};
-
-struct RGE_Tile {
-    short sx;
-    short sy;
-    unsigned char tile_type;
-    unsigned char terrain_type : 5;
-    unsigned char height : 3;
-    unsigned char border_type : 4;
-    unsigned char border_shape : 4;
-    unsigned char last_drawn_as;
-    unsigned char last_drawn_shape;
-    unsigned char draw_as;
-    unsigned char draw_attribute;
-    unsigned char last_drawn_shape2;
-    char objects[0x0c];
-};
-
-class RGE_Map {
-public:
-    virtual ~RGE_Map();
-    char gap_04[4];
-    long map_width;
-    long map_height;
-    char gap_10[0x8d7c];
-    RGE_Tile** map_row_offset;
-
-    unsigned char get_terrain(short x, short y);
 };
 
 struct XYPoint {
@@ -50,7 +22,6 @@ public:
     uchar* zone_map;
     uchar** zone_map_rows;
     uchar zone_info[257];
-    char gap_50D[3];
     float* terrain_passability_rules;
     long terrain_passability_rules_num;
     RGE_Map* map;
@@ -88,5 +59,10 @@ public:
     RGE_Zone_Map* get_zone_map(long index);
     void delete_zone_maps();
 };
+
+typedef char rge_zone_map_size_check[
+    (sizeof(RGE_Zone_Map) == 0x51C) ? 1 : -1];
+typedef char rge_zone_map_list_size_check[
+    (sizeof(RGE_Zone_Map_List) == 0x0C) ? 1 : -1];
 
 #endif
