@@ -1,13 +1,12 @@
-#ifndef AOE1_TRIBEGAM_CONTEXT_H
-#define AOE1_TRIBEGAM_CONTEXT_H
+#ifndef AOE1_TRIBEGAM_H
+#define AOE1_TRIBEGAM_H
 
 #include <stdio.h>
 #include <mbstring.h>
 
-// Canonical tribegam.cpp context for the validated prefix owners.
+// Canonical tribegam.cpp declarations.
 // Evidence: original PDB source order, exact constructor/destructor/cleanup
-// anchors, and the repaired setup_palette/setup_sounds owners. This header is
-// only for the grouped module. It is not a complete game class declaration.
+// anchors, and the repaired setup_palette/setup_sounds owners.
 
 struct RGE_Prog_Info;
 class RGE_Game_Info;
@@ -281,7 +280,7 @@ public:
 };
 
 // BINARY NOTE: the constructor FPO symbol uses the struct spelling for this
-// pointer parameter, so keep the tag kind in the grouped module context.
+// pointer parameter, so keep the tag kind in the module declaration.
 struct RGE_Prog_Info {
 public:
     char gap_00[0x410];
@@ -973,8 +972,7 @@ public:
     int save_game(char* name);
     int save_scenario(char* name);
     // FPO names these three TRIBE_Game overrides as public virtual members
-    // (UAEXXZ). Keep the virtual surface in the grouped TU, not only in the
-    // standalone owner stubs.
+    // (UAEXXZ). Keep the virtual surface in this module header.
     virtual void calc_timing_text();
     void show_timings();
     void show_comm();
