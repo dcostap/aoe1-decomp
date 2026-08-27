@@ -1,6 +1,7 @@
 /* Authentic C++ source module for C:\\msdev\\work\\age1_x1\\Sound.cpp. */
 // Definitions follow the 14-owner PDB source order.
 #include "../include/sound.h"
+#include "../include/rge_fio.h"
 #include <stdio.h>
 #include "../include/sounddrv.h"
 
@@ -10,8 +11,6 @@ extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
 extern "C" unsigned long __cdecl debug_timeGetTime(char* file, int line);
 extern void __cdecl write_draw_log(char* message);
 extern void __cdecl write_draw_log2(char* message);
-extern void __cdecl rge_read(int handle, void* buffer, int size);
-extern int __cdecl rge_write(int handle, void* buffer, int size);
 extern void* __cdecl calloc(int count, int size);
 extern "C" void __cdecl free(void* block);
 

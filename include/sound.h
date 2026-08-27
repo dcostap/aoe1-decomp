@@ -1,7 +1,8 @@
 #ifndef AOE1_SOUND_H
 #define AOE1_SOUND_H
 
-struct _iobuf;
+#include <stdio.h>
+
 class TSound_Driver;
 class TDigital;
 
@@ -23,7 +24,7 @@ public:
     unsigned long cache_time;
     short id;
 
-    RGE_Sound(_iobuf* file, short sound_id);
+    RGE_Sound(FILE* file, short sound_id);
     RGE_Sound(int handle, TSound_Driver* driver);
     RGE_Sound();
     ~RGE_Sound();
