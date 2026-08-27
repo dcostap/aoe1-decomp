@@ -6,6 +6,8 @@ class RGE_Action;
 class RGE_Action_List;
 class RGE_Action_Object;
 class RGE_Game_World;
+class RGE_Master_Animated_Object;
+class RGE_Master_Moving_Object;
 class RGE_Master_Static_Object;
 class RGE_Master_Action_Object;
 class RGE_Object_List;
@@ -228,7 +230,6 @@ public:
     virtual int setup(RGE_Master_Static_Object*, RGE_Player*, float, float, float);
     virtual RGE_Object_List* create_object_list();
     virtual void* create_sprite_list();
-    virtual unsigned char turn_towards(RGE_Static_Object*, float, float); // vt[124], +0x1F0
 
     int player_id; // +0x04
     RGE_Master_Action_Object* master_obj; // +0x08
@@ -256,11 +257,19 @@ public:
 
 class RGE_Animated_Object : public RGE_Static_Object {
 public:
+    virtual ~RGE_Animated_Object();
+    virtual int setup(RGE_Master_Animated_Object*, RGE_Player*, float, float,
+                      float); // +0x1E8
     char gap_88[0x04];
 };
 
 class RGE_Moving_Object : public RGE_Animated_Object {
 public:
+    virtual ~RGE_Moving_Object();
+    virtual void stop_moving(); // +0x1EC
+    virtual unsigned char turn_towards(RGE_Static_Object*, float, float); // +0x1F0
+    virtual int setup(RGE_Master_Moving_Object*, RGE_Player*, float, float,
+                      float); // +0x1F4
     char gap_8C[0xF4];
 };
 
