@@ -35,10 +35,13 @@ function-fragment include, a local carrier, a copied foreign layout, or a
 manual vptr store. The source uses `config/flags/00461270_load_master_object.rsp`
 with `/nologo /c /O2 /Oy /GX`.
 
+The save loop uses the declared base-pointer array directly. It does not use a
+redundant self-cast before the virtual `save` call.
+
 ## Current-main composition result
 
 The grouped candidate is
-`build/candidate_tus/mst_play_private_owner_includes/report.json`.
+`build/candidate_tus/mst_play_save_cleanup/report.json`.
 It compiles `src/mst_play.cpp` with the current-main owner-only header
 composition. All eight normal owners report `MATCH` and `0.0000%` positional
 difference:

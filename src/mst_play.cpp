@@ -201,7 +201,7 @@ void RGE_Master_Player::save(int fd)
         rge_write(fd, master_objects, master_object_num * 4);
         for (i = 0; i < master_object_num; i++) {
             if (master_objects[i] != 0) {
-                ((RGE_Master_Static_Object*)master_objects[i])->save(fd);
+                master_objects[i]->save(fd);
             }
         }
     }
