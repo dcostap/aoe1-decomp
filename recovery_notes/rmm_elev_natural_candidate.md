@@ -1,4 +1,4 @@
-# Natural `rmm_elev.cpp` candidate
+# Natural `rmm_elev.cpp` module
 
 ## Ownership
 
@@ -8,7 +8,7 @@ The PDB assigns ten normal functions to
 `004846C0`, `00484700`, `004847C0`, `004848A0`, `00484A40`, `00484B30`,
 `00484B50`, `00484B90`, `00484C80`, and `00484D00`.
 
-The candidate source is `src/rmm_elev.cpp`. It uses `include/rmm_elev.h` and
+The integrated source is `src/rmm_elev.cpp`. It uses `include/rmm_elev.h` and
 `include/map.h`. Map rows use `RGE_Tile*` and the packed `RGE_Tile::height`
 field. Stack traversal uses typed `Map_Stack*` nodes and the canonical random-
 map helper ABI. The source has no raw tile cursor, fake volatility, local

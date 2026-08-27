@@ -3,7 +3,7 @@
 ## Result
 
 The owner surface is complete enough for a natural header. The new header is
-`include/rmm_elev.h`. The natural module candidate uses this header directly.
+`include/rmm_elev.h`. The integrated natural module uses this header directly.
 
 The new header owns only the elevation records used by the elevation generator
 and the generator class. It includes `rmm_base.h` for the proven base class and
