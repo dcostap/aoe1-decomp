@@ -10,7 +10,13 @@ The constructor body moved from its matching bank fragment into the complete
 `scr_sedo.cpp` source module. The merge keeps the PDB order and the reviewed
 panel layout from `include/scr_sedo.h`.
 
-The former standalone source recorded a 683-byte exact result. The first
-complete-module build reports a temporary grouped mismatch. This migration did
-not change the body for byte tuning. Exact repair can resume on the final
-source tree.
+The `TRIBE_Screen_Sed_Menu` use now has the recovered polymorphic declaration
+with its `TScreenPanel` base and panel fields. The declaration is also used by
+the `scr_sedm` module. A future `scr_sedm` header migration must move this
+declaration to a shared header and remove the duplicate from
+`include/scr_sedo.h`. Do not restore a size-only byte-array declaration or
+invent missing fields in this module.
+
+The former standalone source recorded a 683-byte exact result. The focused
+owner check still reports `MATCH` with 683 bytes after this migration. This
+migration did not change the body for byte tuning.

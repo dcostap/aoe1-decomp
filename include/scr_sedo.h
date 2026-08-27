@@ -244,12 +244,23 @@ public:
 
 extern RGE_Base_Game* rge_base_game;
 
-// This module creates the menu through its constructor only.  Keep its
-// shipped size while the menu's source module remains separate.
-class TRIBE_Screen_Sed_Menu {
+// The menu declaration is shared with scr_sedm_context.h until that module
+// moves to its final header.  Keep the recovered base and panel fields here;
+// do not replace them with an untyped size-only object.
+class TRIBE_Screen_Sed_Menu : public TScreenPanel {
 public:
-    char data[0x490];
+    TTextPanel* title;
+    TButtonPanel* button[4];
+    TButtonPanel* close_button;
+
+protected:
+    virtual long handle_idle();
+    virtual long action(TPanel* param_1, long param_2,
+                        unsigned long param_3, unsigned long param_4);
+
+public:
     TRIBE_Screen_Sed_Menu();
+    virtual ~TRIBE_Screen_Sed_Menu();
 };
 
 class TRIBE_Screen_Sed_Open : public TScreenPanel {
