@@ -1,16 +1,9 @@
-#ifndef AOE1_PNL_LST_CONTEXT_H
-#define AOE1_PNL_LST_CONTEXT_H
+#ifndef AOE1_PNL_LST_H
+#define AOE1_PNL_LST_H
 
-// Authentic source module: C:\\msdev\\work\\age1_x1\\Pnl_lst.cpp.
-// PDB owners run from lines 26-593 in the order recorded by
-// inventory/pdb/function_source_map.csv.  This header is the shared list-panel
-// surface for the wrapper.  It keeps the inherited TPanel/TTextPanel offsets,
-// virtual slots, list-node alias, and list-panel state in one declaration.
-//
-// The selection state is not a synthetic second array: list is the inherited
-// TTextPanel list at +0xF4, and top_line/bot_line/cur_line remain the inherited
-// short fields at +0xFC/+0xFE/+0x100.  The aliases below exist only to let old
-// owner bodies name the same proven storage.
+// Recovered declarations for Pnl_lst.cpp.
+// TTextPanel owns the text list and selection fields.
+// TListPanel owns the list interaction fields.
 
 #include <windows.h>
 
