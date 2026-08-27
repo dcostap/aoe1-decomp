@@ -29,16 +29,12 @@ natural class surface keeps this generated entry in the module candidate.
 
 ## ABI note
 
-The natural header includes the reviewed `stat_obj_context.h` surface. That
-surface owns the static-object layout and base methods. The tree-master class
-is owned by `tm_tre_o.cpp`, so this source uses a base-pointer cast for the
-proven single-inheritance receiver. This avoids a duplicate object layout.
+The natural header includes `tm_tre_o.h`, which owns the tree-master class and
+its inheritance from `RGE_Master_Static_Object`. The source now uses natural
+derived-to-base conversion for the static-object constructor and setup call.
+No tree-master or static-object layout is copied here.
 
-A future shared ABI repair should expose one canonical tree-master inheritance
-declaration to both modules. The affected modules are `t_tre_ob.cpp` and
-`tm_tre_o.cpp`; the affected shards are `src/t_tre_ob.cpp` and
-`src/matching/0050F320_make_new_obj.cpp`. The lead should validate both complete
-translation units after that declaration change.
-
-The old `include/t_tre_ob_context.h` remains because the tm_tre_o source shard
-still includes it. It is not used by the natural t_tre_ob source.
+The static-object method surface comes from the reviewed shared ABI selected by
+the integration lead. The affected modules are `t_tre_ob.cpp` and `tm_tre_o.cpp`;
+the affected shards are `src/t_tre_ob.cpp` and `src/tm_tre_o.cpp`. The lead must
+validate both complete translation units after the header correction.
