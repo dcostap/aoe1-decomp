@@ -92,12 +92,10 @@ zero boundary escapes. The generated destructor is `unverified` with zero
 relocations and zero boundary escapes.
 
 This current-main source and metadata chain removes the former wrapper,
-context header, accepted-drift fragment, and eight matching fragments. It
-registers `src/act_move.cpp` directly in `config/source_modules/act_move.json`
-and `config/translation_units.json`. No shared header changes are part of this
-and `config/translation_units.json`. The narrow `command_waypoint.h` owner
-header is the only shared-header addition in this chain. No Static/Moving ABI
-header changes are part of this chain.
+context header, accepted-drift fragment, and eight matching fragments.
+Direct metadata registers `src/act_move.cpp` in
+`config/source_modules/act_move.json` and `config/translation_units.json`.
+`command_waypoint.h` is the only shared-header addition in this chain.
 
 The vslot repair follows the original PDB-backed vtable. The executable's
 `RGE_Action_Object` table at `0056E420` places static setup at `+0x1D8` and
