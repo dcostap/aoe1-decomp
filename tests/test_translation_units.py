@@ -17,6 +17,7 @@ if str(TOOLS_DIR) not in sys.path:
 from common import (  # noqa: E402
     compiler_artifact_slug,
     compiler_source_path,
+    compiler_translation_unit_for_va,
     function_record_by_va,
     load_translation_units,
     translation_unit_for_va,
@@ -69,6 +70,28 @@ class TranslationUnitTests(unittest.TestCase):
 
         self.assertEqual(paths, {REPO_ROOT / "src" / "com_obj_tu.cpp"})
         self.assertEqual(slugs, {"tu_com_obj_enter"})
+
+    def test_point_module_maps_multiple_exact_owners_to_one_normal_source(self) -> None:
+        point = next(group for group in load_translation_units() if group["name"] == "point")
+        owners = point["owners"]
+        assert isinstance(owners, dict)
+
+        self.assertEqual(set(owners.values()), {"src/point.cpp"})
+        self.assertEqual(
+            compiler_source_path(function_record_by_va(0x0047E480)),
+            REPO_ROOT / "src" / "point.cpp",
+        )
+        self.assertEqual(
+            compiler_source_path(function_record_by_va(0x0047E5D0)),
+            REPO_ROOT / "src" / "point.cpp",
+        )
+        self.assertIsNone(translation_unit_for_va(0x0047E530))
+        self.assertEqual(compiler_translation_unit_for_va(0x0047E530)["name"], "point")
+        self.assertEqual(
+            compiler_artifact_slug(function_record_by_va(0x0047E530)),
+            "tu_point",
+        )
+        self.assertEqual([], validate_translation_units([point]))
 
     def test_each_group_has_unique_owner_vas(self) -> None:
         seen: set[str] = set()

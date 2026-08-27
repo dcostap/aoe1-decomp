@@ -26,7 +26,7 @@ class SourceModuleInventoryTests(unittest.TestCase):
         configured = load_translation_units()
         self.assertEqual(self.inventory["translation_unit_count"], len(configured))
         self.assertEqual(
-            self.inventory["owner_count"],
+            self.inventory["registered_owner_count"],
             sum(len(group["owners"]) for group in configured),
         )
         self.assertEqual(self.inventory["translation_unit_count"], len(self.modules))
@@ -38,6 +38,35 @@ class SourceModuleInventoryTests(unittest.TestCase):
                 sorted((owner["va"] for owner in owners), key=lambda va: int(va, 16)),
             )
             self.assertEqual([owner["address_order"] for owner in owners], list(range(1, len(owners) + 1)))
+
+    def test_point_module_keeps_per_function_state_outside_source_paths(self) -> None:
+        point = self.modules["point"]
+        owners = {owner["va"]: owner for owner in point["owners"]}
+
+        self.assertEqual(point["translation_unit_source"], "src/point.cpp")
+        self.assertEqual(point["owner_count"], 8)
+        self.assertEqual(point["registered_owner_count"], 3)
+        self.assertEqual(
+            {owner["owner_path"] for owner in owners.values()},
+            {"src/point.cpp"},
+        )
+        self.assertEqual(
+            {va: owner["bank"] for va, owner in owners.items()},
+            {
+                "0047E480": "matching",
+                "0047E490": "matching",
+                "0047E4B0": "scratch",
+                "0047E4E0": "scratch",
+                "0047E510": "scratch",
+                "0047E530": "scratch",
+                "0047E580": "scratch",
+                "0047E5D0": "matching",
+            },
+        )
+        self.assertEqual(
+            owners["0047E530"]["recovery_note_path"],
+            "recovery_notes/0047E530_operator.md",
+        )
 
     def test_pdb_module_line_and_class_context_is_preserved(self) -> None:
         module = self.modules["com_obj_enter"]

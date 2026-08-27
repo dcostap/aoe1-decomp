@@ -4535,12 +4535,13 @@
     },
     {
       "name": "point",
-      "source": "src/point_tu.cpp",
+      "source": "src/point.cpp",
+      "module": "point",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "0047E480": "src/matching/0047E480_XYZ.cpp",
-        "0047E490": "src/matching/0047E490_XYZ.cpp",
-        "0047E5D0": "src/matching/0047E5D0_rotateXYByFacet.cpp"
+        "0047E480": "src/point.cpp",
+        "0047E490": "src/point.cpp",
+        "0047E5D0": "src/point.cpp"
       },
       "symbols": {
         "0047E480": "??0XYZ@@QAE@XZ",

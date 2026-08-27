@@ -18,6 +18,7 @@ from common import (
     function_slug,
     load_functions,
     load_pdb_function_source_map,
+    load_source_modules,
     load_toolchain,
     preferred_flags_rsp_path,
     preferred_source_path,
@@ -182,6 +183,25 @@ def collect_audit_rows(repo_root: Path = REPO_ROOT) -> list[dict[str, Any]]:
 
         normal_sources.append((source_path, va, record))
 
+    legacy_vas = {va for _, va, _ in normal_sources}
+    for module in load_source_modules():
+        source_path = str(module["source"]).replace("\\", "/")
+        functions = module["functions"]
+        assert isinstance(functions, dict)
+        for va_text, entry in functions.items():
+            if str(entry.get("status") or "") != "matching":
+                continue
+            va = int(str(va_text), 16)
+            if va in legacy_vas:
+                continue
+            record = records.get(va)
+            if record is None:
+                raise ValueError(f"{source_path}: no inventory record for {va:08X}")
+            bucket, _ = classify_corpus_bucket(record)
+            if bucket != "normal":
+                continue
+            normal_sources.append((source_path, va, record))
+
     source_paths_by_va: dict[int, list[str]] = {}
     for source_path, va, _ in normal_sources:
         source_paths_by_va.setdefault(va, []).append(source_path)
@@ -298,7 +318,7 @@ def build_report(rows: list[dict[str, Any]]) -> dict[str, Any]:
     )
     return {
         "schema": 1,
-        "scope": "tracked src/matching normal functions",
+        "scope": "matching-status normal functions with one compiler source",
         "summary": {
             "normal_functions": len({str(row["va"]) for row in rows}),
             "normal_function_entries": len(rows),
@@ -356,7 +376,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=(
             "Audit PDB-qualified owners and current rebuilt symbols for every "
-            "tracked normal function in src/matching."
+            "matching-status normal function."
         )
     )
     parser.add_argument(

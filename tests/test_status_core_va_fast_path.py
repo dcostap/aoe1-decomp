@@ -15,6 +15,22 @@ import status_core  # noqa: E402
 
 
 class StatusCoreVaFastPathTests(unittest.TestCase):
+    def test_migrated_module_uses_manifest_state_and_recovery_note(self) -> None:
+        rows = status_core.build_status_rows(
+            include_source_preview=False,
+            include_source_notes=True,
+            include_diff_metrics=False,
+            include_comment_lines=False,
+            va="0047E530",
+        )
+
+        self.assertEqual(len(rows), 1)
+        row = rows[0]
+        self.assertEqual(row["source_bucket"], "scratch")
+        self.assertEqual(row["source_path"], "src/point.cpp")
+        self.assertEqual(row["recovery_note_path"], "recovery_notes/0047E530_operator.md")
+        self.assertIn("Recovery notes:", row["source_note"])
+
     def test_logic_review_lookup_includes_sparse_tracked_files(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

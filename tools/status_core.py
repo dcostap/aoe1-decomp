@@ -16,6 +16,7 @@ from common import (
     load_functions,
     load_padding_only_functions,
     load_parent_owned_fragments,
+    source_module_entry_for_va,
     load_toolchain_supplied_function_names,
     load_toolchain_supplied_regions,
 )
@@ -38,6 +39,7 @@ STATUS_FIELDNAMES = [
     "pdb_source_path",
     "source_bucket",
     "source_path",
+    "recovery_note_path",
     "logic_review_path",
     "has_logic_review",
     "corpus_bucket",
@@ -297,6 +299,13 @@ def enrich_status_rows(
                 notes["BLOCKER"] = (
                     f"{notes['BLOCKER']} | {missing_ledger}" if notes["BLOCKER"] else missing_ledger
                 )
+            module_entry = source_module_entry_for_va(row["va"])
+            note_path = str((module_entry or {}).get("note_path") or "")
+            if note_path:
+                note_label = f"Recovery notes: {note_path}"
+                notes["NOTE"] = (
+                    f"{notes['NOTE']} | {note_label}" if notes["NOTE"] else note_label
+                )
             row.update(
                 {
                     "source_status": notes["STATUS"],
@@ -308,6 +317,7 @@ def enrich_status_rows(
                     "source_why": notes["WHY"],
                     "source_next": notes["NEXT"],
                     "has_blocker": "yes" if notes["BLOCKER"] else "no",
+                    "recovery_note_path": note_path,
                 }
             )
         if include_source_preview:
@@ -428,11 +438,20 @@ def build_status_rows(
         matching_path = matching_files.get(slug_key)
         accepted_drift_path = accepted_drift_files.get(slug_key)
         verified_logic_path = verified_logic_files.get(slug_key)
-        present_paths = [
+        legacy_paths = [
             path
             for path in (matching_path, accepted_drift_path, verified_logic_path, scratch_path)
             if path is not None
         ]
+        module_entry = source_module_entry_for_va(record["va"])
+        module_path: Path | None = None
+        if module_entry is not None:
+            module = module_entry["module"]
+            assert isinstance(module, dict)
+            module_path = REPO_ROOT / str(module["source"])
+            present_paths = [module_path, *legacy_paths]
+        else:
+            present_paths = legacy_paths
 
         corpus_bucket, corpus_reason = classify_corpus_bucket(
             record,
@@ -445,7 +464,11 @@ def build_status_rows(
             compiler_generated_functions=compiler_generated_functions,
         )
 
-        if len(present_paths) > 1:
+        if module_entry is not None and legacy_paths:
+            source_bucket = "conflict"
+        elif module_entry is not None and module_path is not None and module_path.is_file():
+            source_bucket = str(module_entry["status"])
+        elif len(present_paths) > 1:
             source_bucket = "conflict"
         elif matching_path:
             source_bucket = "matching"
@@ -482,7 +505,10 @@ def build_status_rows(
             continue
 
         source_path = " | ".join(
-            str(Path("src") / path.parent.name / path.name) for path in present_paths
+            str(path.relative_to(REPO_ROOT)).replace("\\", "/")
+            if path.is_relative_to(REPO_ROOT)
+            else str(path)
+            for path in present_paths
         )
         custom_flags_path = custom_flag_files.get(slug_key)
         logic_review_path = logic_review_ledgers.get(slug_key)
@@ -503,6 +529,7 @@ def build_status_rows(
             "pdb_source_path": record.get("pdb_source_path", ""),
             "source_bucket": source_bucket,
             "source_path": source_path,
+            "recovery_note_path": str((module_entry or {}).get("note_path") or ""),
             "logic_review_path": str(Path("logic_reviews") / logic_review_path.name) if logic_review_path is not None else "",
             "has_logic_review": "yes" if logic_review_path is not None else "no",
             "corpus_bucket": corpus_bucket,

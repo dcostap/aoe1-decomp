@@ -234,7 +234,7 @@ one metric or a fixed threshold.
 
 Review all available evidence:
 
-- the durable attempt log in the source header;
+- the durable attempt log in the source header or configured recovery note;
 - the number and quality of distinct hypotheses;
 - results from independent matching assignments;
 - current byte parity and exact-block coverage;

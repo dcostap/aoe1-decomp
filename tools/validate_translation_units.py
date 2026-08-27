@@ -23,6 +23,7 @@ from common import (
     load_pdb_function_source_map,
     load_translation_units,
     preferred_source_path,
+    source_module_for_name,
     slugify_name,
 )
 from extract_obj_function import select_exact_function_symbol, select_record_function_symbol
@@ -282,6 +283,21 @@ def validate_translation_units(
 
         source = _resolve_path(source_value, root)
         source_key = _manifest_path(source_value, root)
+        module_name = str(group.get("module") or "").strip()
+        source_module = source_module_for_name(module_name) if module_name else None
+        if module_name and source_module is None:
+            issues.append(
+                _issue("unknown-source-module", f"{group_label} names unknown source module {module_name!r}")
+            )
+        if source_module is not None:
+            module_source = _resolve_path(str(source_module["source"]), root)
+            if source.resolve() != module_source.resolve():
+                issues.append(
+                    _issue(
+                        "module-source-mismatch",
+                        f"{group_label} source {source_value} is not source module {module_name}: {source_module['source']}",
+                    )
+                )
         if source_key in seen_sources and source_key:
             issues.append(
                 _issue("duplicate-source", f"{source_value} is also used by {seen_sources[source_key]}"),
@@ -335,12 +351,18 @@ def validate_translation_units(
             owner_path = _resolve_path(owner_value, root)
             owner_key = _manifest_path(owner_value, root)
             if owner_key in seen_owner_paths:
-                issues.append(
-                    _issue(
-                        "duplicate-owner-path",
-                        f"{owner_value} is also a compiler-facing owner for {seen_owner_paths[owner_key]}",
-                    )
+                same_module_source = (
+                    source_module is not None
+                    and owner_path.resolve() == source.resolve()
+                    and seen_owner_paths[owner_key].startswith(f"{group_label}:")
                 )
+                if not same_module_source:
+                    issues.append(
+                        _issue(
+                            "duplicate-owner-path",
+                            f"{owner_value} is also a compiler-facing owner for {seen_owner_paths[owner_key]}",
+                        )
+                    )
             else:
                 seen_owner_paths[owner_key] = f"{group_label}:{va}"
             record = records.get(va)
@@ -353,6 +375,31 @@ def validate_translation_units(
                         f"{group_label} owner {va} is {owner_value}, expected {preferred_source_path(record)}",
                     )
                 )
+            if source_module is not None:
+                functions = source_module["functions"]
+                assert isinstance(functions, dict)
+                entry = functions.get(va)
+                if not isinstance(entry, dict):
+                    issues.append(
+                        _issue(
+                            "module-owner-missing",
+                            f"{group_label} owner {va} is absent from source module {module_name}",
+                        )
+                    )
+                elif str(entry.get("status") or "") != "matching":
+                    issues.append(
+                        _issue(
+                            "module-owner-status",
+                            f"{group_label} owner {va} is not matching in source module {module_name}",
+                        )
+                    )
+                if owner_path.resolve() != source.resolve():
+                    issues.append(
+                        _issue(
+                            "module-owner-source",
+                            f"{group_label} owner {va} must map to direct module source {source_value}",
+                        )
+                    )
             if not str((pdb_sources.get(va) or {}).get("symbol_name") or "").strip():
                 issues.append(
                     _issue(
@@ -425,7 +472,7 @@ def validate_translation_units(
                             )
                         )
 
-        if source.is_file():
+        if source.is_file() and source_module is None:
             positions: list[int] = []
             known_owner_paths = {owner.resolve() for _, owner, _ in owner_records}
             for va, owner_path, _ in owner_records:

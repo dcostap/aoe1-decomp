@@ -845,6 +845,26 @@ Git history remains the source for removed recovery experiments.
 
 Do not retain thousands of files only to preserve investigation history.
 
+### Module state manifest
+
+Use `config/source_modules.json` for each consolidated module.
+
+The manifest maps each VA to its module source and recovery state.
+
+Do not infer a function state from the module source path.
+
+Use `note_path` for a function recovery record under `recovery_notes/`.
+
+Keep source comments only for binary facts and original bugs.
+
+The translation-unit registry keeps registered exact owners. More than one owner can map to one module source.
+
+`translation_unit_for_va` means a registered exact owner. Use the compiler module lookup for observed members.
+
+The shared manifest can cause concurrent merge conflicts. Review a per-module manifest directory before broad parallel consolidation.
+
+Legacy source banks remain valid for modules without a manifest entry.
+
 ## Parallel work
 
 Run independent module consolidations in parallel.

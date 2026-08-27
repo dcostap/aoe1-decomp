@@ -20,6 +20,8 @@ from common import (
     REPO_ROOT,
     load_pdb_function_line_changes,
     load_pdb_function_source_map,
+    source_module_for_name,
+    validate_source_modules,
     load_translation_units,
 )
 from status_core import build_status_rows
@@ -301,11 +303,16 @@ def build_source_module_inventory(
         raise ValueError("; ".join(str(issue) for issue in manifest_issues))
     source_map = load_pdb_function_source_map()
     line_changes = load_pdb_function_line_changes()
-    all_vas = {
-        str(va).upper()
-        for group in configured_groups
-        for va in (group.get("owners") or {})
-    }
+    all_vas: set[str] = set()
+    for group in configured_groups:
+        module_name = str(group.get("module") or "").strip()
+        source_module = source_module_for_name(module_name) if module_name else None
+        if source_module is not None:
+            functions = source_module["functions"]
+            assert isinstance(functions, dict)
+            all_vas.update(str(va).upper() for va in functions)
+        else:
+            all_vas.update(str(va).upper() for va in (group.get("owners") or {}))
     status_rows = build_status_rows(
         include_source_preview=False,
         include_source_notes=False,
@@ -324,12 +331,24 @@ def build_source_module_inventory(
         raw_owners = group.get("owners") or {}
         if not isinstance(raw_owners, dict):
             raise ValueError(f"translation-unit group {group_name!r} has no owner map")
-
-        owner_paths = {str(va).upper(): value for va, value in raw_owners.items()}
+        module_name = str(group.get("module") or "").strip()
+        source_module = source_module_for_name(module_name) if module_name else None
+        registered_vas = {str(va).upper() for va in raw_owners}
+        if source_module is not None:
+            functions = source_module["functions"]
+            assert isinstance(functions, dict)
+            owner_paths = {
+                str(va).upper(): str(source_module["source"])
+                for va in functions
+            }
+        else:
+            owner_paths = {str(va).upper(): value for va, value in raw_owners.items()}
         ordered_vas = sorted(owner_paths, key=lambda value: int(value, 16))
         wrapper_path = REPO_ROOT / wrapper_source
         input_paths = [wrapper_path]
         input_paths.extend(REPO_ROOT / _portable(owner_paths[va]) for va in ordered_vas)
+        if source_module is not None and str(source_module.get("header") or ""):
+            input_paths.append(REPO_ROOT / _portable(source_module["header"]))
         flags_path = REPO_ROOT / raw_flags
         input_paths.append(flags_path)
         owners: list[dict[str, Any]] = []
@@ -357,6 +376,12 @@ def build_source_module_inventory(
                 "address_order": index,
                 "va": va,
                 "owner_path": _portable(owner_paths[va]),
+                "registered_owner": va in registered_vas,
+                "recovery_note_path": (
+                    str((functions.get(va) or {}).get("note_path") or "")
+                    if source_module is not None
+                    else ""
+                ),
                 "name": str((status_row or {}).get("name") or "").strip(),
                 "symbol_name": symbol_name,
                 "class_owner": class_owner,
@@ -392,6 +417,7 @@ def build_source_module_inventory(
                 "flags": raw_flags,
                 "uses_custom_flags": custom_flags,
                 "owner_count": len(owners),
+                "registered_owner_count": sum(owner["registered_owner"] for owner in owners),
                 # Count only anchors backed by a generated diff artifact.  A
                 # matching-bank row without that artifact remains unvalidated.
                 "exact_owner_count": sum(1 for owner in owners if owner["exact_anchor"]),
@@ -404,6 +430,7 @@ def build_source_module_inventory(
         "schema_version": SCHEMA_VERSION,
         "translation_unit_count": len(modules),
         "owner_count": sum(module["owner_count"] for module in modules),
+        "registered_owner_count": sum(module["registered_owner_count"] for module in modules),
         "modules": modules,
     }
 
@@ -417,10 +444,13 @@ CSV_FIELDS = [
     "flags",
     "uses_custom_flags",
     "owner_count",
+    "registered_owner_count",
     "exact_owner_count",
     "address_order",
     "va",
     "owner_path",
+    "registered_owner",
+    "recovery_note_path",
     "owner_name",
     "symbol_name",
     "class_owner",
@@ -449,10 +479,13 @@ def _csv_rows(inventory: dict[str, Any]) -> Iterable[dict[str, str]]:
                 "flags": str(module["flags"]),
                 "uses_custom_flags": str(module["uses_custom_flags"]).lower(),
                 "owner_count": str(module["owner_count"]),
+                "registered_owner_count": str(module["registered_owner_count"]),
                 "exact_owner_count": str(module["exact_owner_count"]),
                 "address_order": str(owner["address_order"]),
                 "va": str(owner["va"]),
                 "owner_path": str(owner["owner_path"]),
+                "registered_owner": str(owner["registered_owner"]).lower(),
+                "recovery_note_path": str(owner["recovery_note_path"]),
                 "owner_name": str(owner["name"]),
                 "symbol_name": str(owner["symbol_name"]),
                 "class_owner": str(owner["class_owner"]),
@@ -503,6 +536,9 @@ def parse_args() -> argparse.Namespace:
 
 
 def _validate_strict(inventory: dict[str, Any]) -> None:
+    source_module_issues = validate_source_modules()
+    if source_module_issues:
+        raise ValueError("; ".join(source_module_issues))
     for module in inventory["modules"]:
         if len(module["pdb_source_files"]) != 1:
             raise ValueError(f"{module['name']}: PDB source module is missing or mixed")
@@ -521,7 +557,8 @@ def main() -> None:
     print(
         f"Wrote {output}\n"
         f"Translation units: {inventory['translation_unit_count']}\n"
-        f"Owners: {inventory['owner_count']}"
+        f"Owners: {inventory['owner_count']}\n"
+        f"Registered owners: {inventory['registered_owner_count']}"
     )
 
 

@@ -1,9 +1,5 @@
-#ifndef AOE1_POINT_CONTEXT_H
-#define AOE1_POINT_CONTEXT_H
-
-// Authentic point.cpp context. game_globals.h is the period-context donor
-// required by the exact XYZ arithmetic and rotation owners.
-#include "game_globals.h"
+#ifndef AOE1_POINT_H
+#define AOE1_POINT_H
 
 class XYZ {
 public:

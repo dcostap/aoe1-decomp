@@ -41,6 +41,7 @@ assignment. Complete the exact-finish retrospective before you report.
 1. Query the target's status, paths, notes, history, and lease.
 2. If it is exact, validate and report it. Do not create another owner.
 3. If it is paused, read its source attempt log and bounded session brief.
+   Use the configured recovery note when a source module has `note_path`.
 4. Start a target session.
 5. Read the function packet and collect focused binary evidence.
 6. Complete the translation-unit context gate below.
@@ -193,8 +194,9 @@ this procedure as an early exit after a small number of probes.
 4. Pin that documented final source as clean.
 5. Pause the lease with a specific reason.
 
-For unresolved source, keep uncertain explanations in the attempt log. Add an
-inline code comment only when current evidence establishes a durable source fact.
+For unresolved source, keep uncertain explanations in the attempt log. Use the
+configured recovery note for a consolidated source module. Add an inline code
+comment only when current evidence establishes a durable source fact.
 
 Do not keep an opaque nonexact variant only because it has better metrics. The
 source attempt log is the durable notebook. Session files under `build\` are

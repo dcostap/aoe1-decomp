@@ -19,6 +19,7 @@ from common import (
     REPO_ROOT,
     compiler_artifact_slug,
     compiler_source_path,
+    compiler_translation_unit_for_va,
     function_slug,
     load_toolchain,
     load_pdb_function_source_map,
@@ -288,6 +289,8 @@ def _complete_build_inputs(record: dict[str, str]) -> dict:
 def _build_context(record: dict[str, str], metrics: dict | None = None) -> dict | None:
     """Capture grouped TU identity and every input used by its build."""
     group = translation_unit_for_va(int(record["va"], 16))
+    if group is None:
+        group = compiler_translation_unit_for_va(int(record["va"], 16))
     if group is None:
         return None
     manifest = _complete_build_inputs(record)
