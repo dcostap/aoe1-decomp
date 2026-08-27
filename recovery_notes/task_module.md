@@ -42,3 +42,6 @@ header.
 `task_lst.cpp` now includes `task.h` and owns only `RGE_Task_List`.
 It includes `rge_fio.h` directly for its I/O calls. Validate task, task-list,
 and action consumers after this owner cleanup.
+
+The grouped Task candidate now reports all six normal owners as `MATCH` with
+`0.0000%` difference, zero relocation mismatches, and zero boundary escapes.

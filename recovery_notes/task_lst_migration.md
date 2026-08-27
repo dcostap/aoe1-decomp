@@ -27,12 +27,5 @@ owners only in the source file for accessed fields and methods.
 The current focused checks report 11/11 exact owners. Every owner reports
 `Result: MATCH` and `0.0000%` positional difference. Exact repair is complete
 after source migration.
-## Owner-only header validation
-
-The first grouped `task_lst` candidate after header cleanup did not produce an
-object. The compiler rejected the moved local `rge_read` declaration because
-`include/task.h` declares the same helper with a `void` return type. The local
-declaration now matches the canonical header in commit `ccff7f590`. The
-syntax-repair rerun matched all eleven owners with zero positional bytes,
-zero relocation target mismatches, and zero boundary escapes. Its grouped
-report is `build/candidate_tus/task_lst_owner_cleanup/report.json`.
+After the I/O owner cleanup, the grouped candidate again reports 11/11 `MATCH`
+owners. It has zero relocation mismatches and zero boundary escapes.
