@@ -49,7 +49,7 @@ class TRIBE_Master_Building_Object;
 class RGE_Scenario;
 class RGE_Scenario_Header;
 class RGE_Victory_Conditions;
-class RGE_Player_Info;
+struct RGE_Player_Info;
 class RGE_Sound;
 class RGE_Map;
 class RGE_Tile;

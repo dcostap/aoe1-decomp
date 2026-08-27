@@ -662,7 +662,7 @@ public:
     char avi_dir[0x105];
 };
 
-class RGE_Player_Info;
+struct RGE_Player_Info;
 
 class RGE_Game_World {
 public:

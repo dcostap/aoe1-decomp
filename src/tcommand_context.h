@@ -25,7 +25,7 @@ class RGE_Color_Table;
 class RGE_Sprite;
 class RGE_Sound;
 class RGE_Armor_Weapon_Info;
-class RGE_Player_Info;
+struct RGE_Player_Info;
 class RGE_Scenario;
 class RGE_Map;
 class RGE_Victory_Conditions;

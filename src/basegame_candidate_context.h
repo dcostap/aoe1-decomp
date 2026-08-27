@@ -9,7 +9,7 @@ class TPanel;
 struct IDirectDrawSurface;
 
 
-class RGE_Player_Info;
+struct RGE_Player_Info;
 class RGE_Player;
 class RGE_Game_World;
 class RGE_Master_Player;
