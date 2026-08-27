@@ -2866,10 +2866,11 @@
     },
     {
       "name": "tobj_lst",
-      "source": "src/tobj_lst_tu.cpp",
+      "module": "tobj_lst",
+      "source": "src/tobj_lst.cpp",
       "flags": "config/flags/00511B00_load.rsp",
       "owners": {
-        "00511B00": "src/matching/00511B00_load.cpp"
+        "00511B00": "src/tobj_lst.cpp"
       },
       "symbols": {}
     },
