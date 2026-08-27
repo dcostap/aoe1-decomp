@@ -14,8 +14,13 @@ enum COMMMESSAGES {
 
 class TDebuggingLog;
 extern TDebuggingLog* L;
-void Log(TDebuggingLog* log, char* format, int param1, long param2);
-void Log(TDebuggingLog* log, char* format, ...);
+// The PDB-qualified 00436610 target is TDebuggingLog::Log(char*, ...).
+// Its QAAX decoration proves the cdecl member surface, with L passed on the
+// stack.  Keep the owner declaration aligned with include/debuglog.h.
+class TDebuggingLog {
+public:
+    void __cdecl Log(char* format, ...);
+};
 
 extern "C" __declspec(dllimport) int __stdcall PostMessageA(
     void* hWnd, unsigned int message, unsigned int wParam, long lParam);

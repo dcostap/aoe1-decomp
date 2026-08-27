@@ -18,9 +18,11 @@
 // required by the observed branch targets, not by register or volatility steering.
 
 #ifndef COM_ERR_TU_CONTEXT
-class TDebuggingLog;
+class TDebuggingLog {
+public:
+    void __cdecl Log(char* format, ...);
+};
 extern TDebuggingLog* L;
-extern void Log(TDebuggingLog* log, char* fmt, ...);
 
 class RGE_Comm_Error {
 public:
@@ -47,212 +49,212 @@ void RGE_Comm_Error::ShowReturn(long code, char* context) {
         return;
     }
 
-    Log(L, "+++COMM______DP CALL FAILED_(Code %u)_____ %s\n", code, context);
+    L->Log("+++COMM______DP CALL FAILED_(Code %u)_____ %s\n", code, context);
     this->LastReportedError = code;
 
     if (code <= (long)0x80004001) {
         if (code != (long)0x80004001) {
             if (code == (long)0x8000000A) {
-                Log(L, "COM Error pending");
+                L->Log("COM Error pending");
                 return;
             }
         } else {
-            Log(L, "!!! Unsupported.");
+            L->Log("!!! Unsupported.");
             return;
         }
     } else if (code <= (long)0x80040110) {
         if (code != (long)0x80040110) {
             switch (code) {
             case (long)0x80004005:
-                Log(L, "!!! GENERIC (Undefined) ERROR ");
+                L->Log("!!! GENERIC (Undefined) ERROR ");
                 this->NotifyWindowParam(COMM_FATAL_ERROR, 0);
                 return;
             case (long)0x80004002:
                 this->NotifyWindowParam(COMM_FATAL_ERROR, 0);
-                Log(L, "!!! No Interface");
+                L->Log("!!! No Interface");
                 return;
             case (long)0x80004003:
-                Log(L, "COM Invalid Pointer");
+                L->Log("COM Invalid Pointer");
                 return;
             case (long)0x80004004:
-                Log(L, "COM Aborted");
+                L->Log("COM Aborted");
                 return;
             }
         } else {
-            Log(L, "!!! COMM: CLASS NO AGGREGATION.");
+            L->Log("!!! COMM: CLASS NO AGGREGATION.");
             return;
         }
     } else if (code <= (long)0x8007000E) {
         if (code != (long)0x8007000E) {
             if (code != (long)0x80070005) {
                 if (code == (long)0x80070006) {
-                    Log(L, "COM Invalid Handle");
+                    L->Log("COM Invalid Handle");
                     return;
                 }
             } else {
-                Log(L, "COM error Access Denied");
+                L->Log("COM error Access Denied");
                 this->NotifyWindowParam(COMM_NO_LINK, 0);
                 return;
             }
         } else {
-            Log(L, "!!! Out Of Memory");
+            L->Log("!!! Out Of Memory");
             return;
         }
     } else if (code <= (long)0x88770005) {
         if (code != (long)0x88770005) {
             if (code == (long)0x80070057) {
-                Log(L, "!!! Invalid Params");
+                L->Log("!!! Invalid Params");
                 return;
             }
         } else {
-            Log(L, "!!! Already Initialized");
+            L->Log("!!! Already Initialized");
             return;
         }
     } else if (code <= (long)0x88770014) {
         if (code != (long)0x88770014) {
             if (code == (long)0x8877000A) {
-                Log(L, "!!! Access Denied - busy service or invalid use of host commands.");
+                L->Log("!!! Access Denied - busy service or invalid use of host commands.");
                 this->NotifyWindowParam(COMM_NO_LINK, 0);
                 return;
             }
         } else {
-            Log(L, "!!! Active Players - command invalid with active players.");
+            L->Log("!!! Active Players - command invalid with active players.");
             return;
         }
     } else if (code <= (long)0x88770028) {
         if (code != (long)0x88770028) {
             if (code == (long)0x8877001E) {
-                Log(L, "!!! Buffer size failure (SMALL)");
+                L->Log("!!! Buffer size failure (SMALL)");
                 return;
             }
         } else {
-            Log(L, "!!! Can't Add Player");
+            L->Log("!!! Can't Add Player");
             this->NotifyWindowParam(COMM_NO_NEW_PLAYERS, 0);
             return;
         }
     } else if (code <= (long)0x8877003C) {
         if (code != (long)0x8877003C) {
             if (code == (long)0x88770032) {
-                Log(L, "!!! Can't Create Group");
+                L->Log("!!! Can't Create Group");
                 return;
             }
         } else {
-            Log(L, "!!! Can't create player.");
+            L->Log("!!! Can't create player.");
             return;
         }
     } else if (code <= (long)0x88770050) {
         if (code != (long)0x88770050) {
             if (code == (long)0x88770046) {
-                Log(L, "!!! Can't create session.");
+                L->Log("!!! Can't create session.");
                 return;
             }
         } else {
-            Log(L, "!!! Device caps are not available.");
-            Log(L, "!!! ERROR!");
+            L->Log("!!! Device caps are not available.");
+            L->Log("!!! ERROR!");
             return;
         }
     } else if (code <= (long)0x88770078) {
         if (code != (long)0x88770078) {
             if (code == (long)0x8877005A) {
-                Log(L, "!!! Exception Raised");
+                L->Log("!!! Exception Raised");
                 return;
             }
         } else {
-            Log(L, "!!! Invalid Flags");
+            L->Log("!!! Invalid Flags");
             return;
         }
     } else if (code <= (long)0x88770096) {
         if (code != (long)0x88770096) {
             if (code == (long)0x88770082) {
-                Log(L, "!!! Invalid Object");
+                L->Log("!!! Invalid Object");
                 return;
             }
         } else {
-            Log(L, "!!! Invalid Player");
+            L->Log("!!! Invalid Player");
             return;
         }
     } else if (code <= (long)0x887700A0) {
         if (code != (long)0x887700A0) {
             if (code == (long)0x8877009B) {
-                Log(L, "!!! Invalid Group");
+                L->Log("!!! Invalid Group");
                 return;
             }
         } else {
-            Log(L, "!!! Not able to do multipayer!");
+            L->Log("!!! Not able to do multipayer!");
             return;
         }
     } else if (code <= (long)0x887700BE) {
         if (code != (long)0x887700BE) {
             if (code == (long)0x887700AA) {
-                Log(L, "!!! No Connection");
+                L->Log("!!! No Connection");
                 return;
             }
         } else {
-            Log(L, "!!! No messages");
+            L->Log("!!! No messages");
             return;
         }
     } else if (code <= (long)0x887700D2) {
         if (code != (long)0x887700D2) {
             if (code == (long)0x887700C8) {
-                Log(L, "!!! No name server running!");
+                L->Log("!!! No name server running!");
                 return;
             }
         } else {
-            Log(L, "!!! No players are connected!");
+            L->Log("!!! No players are connected!");
             return;
         }
     } else if (code <= (long)0x887700E6) {
         if (code != (long)0x887700E6) {
             if (code == (long)0x887700DC) {
-                Log(L, "!!! No sessions are available");
+                L->Log("!!! No sessions are available");
                 return;
             }
         } else {
-            Log(L, "!!! Send overflow!");
+            L->Log("!!! Send overflow!");
             return;
         }
     } else if (code <= (long)0x887700FA) {
         if (code != (long)0x887700FA) {
             if (code == (long)0x887700F0) {
-                Log(L, "!!! COMM TIMEOUT Rcvd from HOST connection.");
+                L->Log("!!! COMM TIMEOUT Rcvd from HOST connection.");
                 this->NotifyWindowParam(COMM_CANCEL_GAME, 0);
                 return;
             }
         } else {
-            Log(L, "!!! Communications - Session is full");
+            L->Log("!!! Communications - Session is full");
             this->NotifyWindowParam(COMM_NO_NEW_PLAYERS, 0);
             return;
         }
     } else if (code <= (long)0x88770118) {
         if (code != (long)0x88770118) {
             if (code == (long)0x8877010E) {
-                Log(L, "!!! Busy Rcvd");
+                L->Log("!!! Busy Rcvd");
                 return;
             }
         } else {
             this->NotifyWindowParam(COMM_NO_LINK, 0);
-            Log(L, "!!! User Cancel");
+            L->Log("!!! User Cancel");
             return;
         }
     } else if (code <= (long)0x8877012C) {
         if (code != (long)0x8877012C) {
             if (code == (long)0x88770122) {
-                Log(L, "!!! Unable to create server");
+                L->Log("!!! Unable to create server");
                 return;
             }
         } else {
-            Log(L, "!!! Player Lost connection.");
+            L->Log("!!! Player Lost connection.");
             return;
         }
     } else if (code <= (long)0x88770140) {
         if (code != (long)0x88770140) {
             if (code == (long)0x88770136) {
-                Log(L, "!!! Lost connection to session.");
+                L->Log("!!! Lost connection to session.");
                 this->NotifyWindowParam(COMM_HOST_BUSY, 0);
                 return;
             }
         } else {
-            Log(L, "!!! Unknown application specified");
+            L->Log("!!! Unknown application specified");
             this->NotifyWindowParam(COMM_NO_LINK, 0);
             return;
         }
@@ -260,31 +262,31 @@ void RGE_Comm_Error::ShowReturn(long code, char* context) {
         if (code != (long)0x88770154) {
             if (code == (long)0x8877014A) {
                 this->NotifyWindowParam(COMM_NO_NEW_PLAYERS, 0);
-                Log(L, "!!! The session is in the process of connecting");
+                L->Log("!!! The session is in the process of connecting");
                 return;
             }
         } else {
-            Log(L, "!!! The secure password is invalid.");
+            L->Log("!!! The secure password is invalid.");
             return;
         }
     } else if (code <= (long)0x887703E8) {
         if (code != (long)0x887703E8) {
             if (code == (long)0x8877015E) {
-                Log(L, "!!! The session is in the process of connecting");
+                L->Log("!!! The session is in the process of connecting");
                 return;
             }
         } else {
-            Log(L, "!!! Buffer size failure (LARGE)");
+            L->Log("!!! Buffer size failure (LARGE)");
             return;
         }
     } else if (code <= (long)0x887703FC) {
         if (code != (long)0x887703FC) {
             if (code == (long)0x887703F2) {
-                Log(L, "!!! Can't start the application.");
+                L->Log("!!! Can't start the application.");
                 return;
             }
         } else {
-            Log(L, "!!! Application has not been started yet.");
+            L->Log("!!! Application has not been started yet.");
             return;
         }
     } else if (code <= (long)0x8877041A) {
@@ -294,51 +296,51 @@ void RGE_Comm_Error::ShowReturn(long code, char* context) {
                 return;
             }
         } else {
-            Log(L, "!!! Unknown application specified");
+            L->Log("!!! Unknown application specified");
             return;
         }
     } else if (code <= (long)0x887707D0) {
         if (code != (long)0x887707D0) {
             if (code == (long)0x8877042E) {
-                Log(L, "!!! Security authentify failed.");
+                L->Log("!!! Security authentify failed.");
                 return;
             }
         } else {
-            Log(L, "!!! Not A Lobby Session");
+            L->Log("!!! Not A Lobby Session");
             return;
         }
     } else if (code <= (long)0x887707E4) {
         if (code != (long)0x887707E4) {
             if (code == (long)0x887707DA) {
-                Log(L, "!!! Can't load security SSPI package.");
+                L->Log("!!! Can't load security SSPI package.");
                 return;
             }
         } else {
-            Log(L, "!!! The encryption failed.");
+            L->Log("!!! The encryption failed.");
             return;
         }
     } else if (code <= (long)0x887707F8) {
         if (code != (long)0x887707F8) {
             if (code == (long)0x887707EE) {
-                Log(L, "!!! The security sign failed.");
+                L->Log("!!! The security sign failed.");
                 return;
             }
         } else {
-            Log(L, "!!! Can't load security package.");
+            L->Log("!!! Can't load security package.");
             return;
         }
     } else {
         if (code != (long)0x8877080C) {
             if (code != (long)0x88770820) {
             } else {
-                Log(L, "!!! The secure logon failed.");
+                L->Log("!!! The secure logon failed.");
                 return;
             }
         } else {
-            Log(L, "!!! Can't load CAPI");
+            L->Log("!!! Can't load CAPI");
             return;
         }
     }
 
-    Log(L, "!!! %s: Unhandled DP ERROR/exception in call.  Result=%ld  (%d)", context, code, code);
+    L->Log("!!! %s: Unhandled DP ERROR/exception in call.  Result=%ld  (%d)", context, code, code);
 }
