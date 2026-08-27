@@ -7,7 +7,7 @@ translation unit. The audit uses the original PDB, the original executable,
 `orig/ghidra_decomp/world.cpp.asm`, `inventory/pdb/function_source_map.csv`,
 and the current canonical headers.
 
-The branch was rebased on current `main` at `2042b1445`. The post-rebase
+The branch was rebased on current `main` at `6c473fac7`. The post-rebase
 checks below use this commit.
 
 ## Current composition
@@ -20,8 +20,9 @@ checks below use this commit.
 | `tworld.cpp` | 30 | 20 | 7 | 3 | 20 |
 
 The active grouped entries are `world_complete` and `tworld_prefix` in
-`config/translation_units.json`. They use `/O2 /Oy /GX` and omit all accepted
-drift and scratch owners. They also omit these nearby compiler-generated
+`config/translation_units.json`. They use `/O2 /Oy /GX` and register only the
+matching owners. The wrappers include accepted-drift and scratch bodies as
+unregistered observations. They also omit these nearby compiler-generated
 companions:
 
 - `00540A20`, the World scalar deleting destructor;
@@ -161,7 +162,7 @@ work with absolute dereference macros or context declarations.
 
 ## Validation record
 
-Post-rebase checks ran at `2042b1445`:
+Post-rebase checks ran at `6c473fac7`:
 
 - `0052DF60` reports `MATCH`, `0.0000%`, with a context-derived object. Its
   check masks 10 relocations. It is not a natural-owner claim.
