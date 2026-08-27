@@ -342,36 +342,6 @@ extern "C" unsigned long __cdecl debug_timeGetTime(const char*, int);
 
 class TribeMPSetupScreen : public TPanel {};
 
-class TribeGameSettingsScreen : public TScreenPanel {
-public:
-    TTextPanel* title; int state; TTextPanel* mapSizeLabel; TDropDownPanel* mapSizeDrop;
-    TTextPanel* mapTypeLabel; TDropDownPanel* mapTypeDrop; TTextPanel* victoryTypeLabel;
-    TDropDownPanel* victoryTypeDrop; TTextPanel* victoryFixedText; TTextPanel* percentLabel;
-    TTextPanel* scoreLabel; TDropDownPanel* scoreDrop; TTextPanel* timeLabel; TDropDownPanel* timeDrop;
-    TTextPanel* difficultyLabel; TDropDownPanel* difficultyDrop; TTextPanel* ageLabel; TDropDownPanel* ageDrop;
-    TTextPanel* resourcesLabel; TDropDownPanel* resourcesDrop; TTextPanel* pathingLabel; TDropDownPanel* pathingDrop;
-    TTextPanel* limitLabel; TDropDownPanel* limitDrop; TTextPanel* scenarioTitle; TTextPanel* scenarioPlayersTitle;
-    long scenarioListX, scenarioListY, scenarioListWidth, scenarioListHeight;
-    TListPanel* scenarioList; TScrollBarPanel* scenarioScrollbar; int scenarioCount;
-    char** scenarioMission; int* scenarioFixed; int scenariosLoaded; TTextPanel* missionTitle;
-    long missionTextX, missionTextY, missionTextWidth, missionTextHeight;
-    TTextPanel* missionText; TScrollBarPanel* missionScrollbar;
-    union { TButtonPanel* optionButton[4]; struct { TButtonPanel* optionButton0; TButtonPanel* optionButton1; TButtonPanel* optionButton2; TButtonPanel* optionButton3; }; };
-    union { TTextPanel* optionText[4]; struct { TTextPanel* optionText0; TTextPanel* optionText1; TTextPanel* optionText2; TTextPanel* optionText3; }; };
-    TButtonPanel* okButton; TButtonPanel* cancelButton; TButtonPanel* help_button;
-    TribeMPSetupScreen* chat_scr; int last_scenario_line; int scenario_line_offset;
-    unsigned long last_send_shared;
-
-    TribeGameSettingsScreen();
-    virtual ~TribeGameSettingsScreen();
-    virtual long handle_idle();
-    virtual long handle_user_command(unsigned int, long);
-protected:
-    virtual long action(TPanel*, long, unsigned long, unsigned long);
-    void init_vars(); void fillScenarios(); void getSettings(); void fillMissionText();
-    void sendSettings(); void activatePanels(); void activateVictoryPanels();
-};
-
-typedef char scr_set_screen_size[(sizeof(TribeGameSettingsScreen) == 0x560) ? 1 : -1];
+#include "scr_set_screen.h"
 
 #endif

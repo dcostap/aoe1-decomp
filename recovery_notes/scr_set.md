@@ -9,7 +9,9 @@
 
 The PDB line bands define the source order in `src/scr_set.cpp`.
 
-The module header is `include/scr_set.h`. It owns the recovered panel and game declarations used only by this compiland.
+The module header is `include/scr_set.h`. The shared settings-screen declaration is
+`include/scr_set_screen.h`, which is included by both `scr_set.cpp` and
+`scr_mps.cpp`.
 
 This merge removes the wrapper, source-bank fragments, fallback declarations, and context selection macro. It keeps the recovered function bodies and ordered calls.
 

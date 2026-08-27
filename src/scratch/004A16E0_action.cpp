@@ -235,11 +235,7 @@ public:
 
 extern TRIBE_Game* rge_base_game;            // 62C574
 
-class TribeGameSettingsScreen : public TScreenPanel {
-public:
-    char gap_478[0xE8];                  // sizeof == 0x560
-    TribeGameSettingsScreen();           // 004B4880
-};
+#include "../../include/scr_set_screen.h"
 
 class TribeMPSetupScreen : public TScreenPanel {
 public:

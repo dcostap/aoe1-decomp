@@ -451,12 +451,6 @@ public:
     void setVictoryType(int type, int amount);
 };
 
-class TribeGameSettingsScreen : public TScreenPanel {
-public:
-    char gap_478[0xE8];
-    TribeGameSettingsScreen();
-};
-
 class T_Scenario {
 public:
     virtual RGE_Static_Object* get_object_pointer(int id);

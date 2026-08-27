@@ -5,6 +5,7 @@
 
 #define SCR_MPS_TU_CONTEXT 1
 #include "../include/scr_mps_context.h"
+#include "../include/scr_set_screen.h"
 
 #include "scratch/004A00B0_TribeMPSetupScreen.cpp"
 #include "matching/004A0D80_init_vars.cpp"
