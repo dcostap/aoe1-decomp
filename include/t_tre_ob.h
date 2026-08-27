@@ -1,6 +1,7 @@
 #ifndef AOE1_T_TRE_OB_H
 #define AOE1_T_TRE_OB_H
 
+#include "stat_obj.h"
 #include "tm_tre_o.h"
 
 class TRIBE_Tree_Object : public RGE_Static_Object {

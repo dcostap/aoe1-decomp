@@ -3,10 +3,10 @@
 
 // Declarations for the PDB source module tm_tre_o.cpp.
 //
-// RGE_Master_Static_Object comes from the reviewed master/static object
-// surface. This header adds only the tree-master declaration owned here.
+// RGE_Master_Static_Object comes from its canonical owner header.
+// This header adds only the tree-master declaration owned here.
 
-#include "m_s_obj_context.h"
+#include "m_s_obj.h"
 
 class TRIBE_Master_Tree_Object : public RGE_Master_Static_Object {
 public:
