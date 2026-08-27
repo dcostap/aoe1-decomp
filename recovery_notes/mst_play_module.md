@@ -21,10 +21,13 @@ handwritten source owner.
 
 ## Canonical composition
 
-`include/mst_play.h` owns `RGE_Master_Player` and includes the canonical
-`m_mi_obj.h` and owner-only `m_dg_obj.h` headers. The missile class comes from
-`m_mi_obj.h`. The doppleganger class comes from `m_dg_obj.h`, which derives from
-the canonical animated-master owner.
+`include/mst_play.h` owns `RGE_Master_Player` and exposes only forward and base
+declarations for its public signatures and pointer fields. Natural alignment
+supplies the two-byte gaps after `master_object_num` and `attribute_num`.
+`src/mst_play.cpp` privately includes the canonical `m_mi_obj.h` and owner-only
+`m_dg_obj.h` headers for its object-construction switch. The missile class comes
+from `m_mi_obj.h`. The doppleganger class comes from `m_dg_obj.h`, which derives
+from the canonical animated-master owner.
 
 The source uses natural C++ class construction, destruction, virtual dispatch,
 and derived-to-base conversion. It does not use `mst_play_context.h`, a
@@ -35,7 +38,7 @@ with `/nologo /c /O2 /Oy /GX`.
 ## Current-main composition result
 
 The grouped candidate is
-`build/candidate_tus/mst_play_current_main_final/report.json`.
+`build/candidate_tus/mst_play_private_owner_includes/report.json`.
 It compiles `src/mst_play.cpp` with the current-main owner-only header
 composition. All eight normal owners report `MATCH` and `0.0000%` positional
 difference:
