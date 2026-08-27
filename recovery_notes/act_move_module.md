@@ -81,12 +81,22 @@ file.
 
 The direct source metadata is now staged in `config/source_modules/act_move.json`
 and `config/translation_units.json`. The grouped candidate report is
-`build/candidate_tus/act_move_direct/report.txt`.
+`build/candidate_tus/act_move_direct/current_main/report.txt`.
 
-The candidate compiled all eight exact owners and the generated destructor.
-All eight exact owners match. The generated destructor also matches. The
-accepted-drift `00405850 update` remains observed and has 728 changed bytes in
-the direct source context.
+Against current `main` `a2a0c6311`, which includes the shared Static/Moving ABI
+repair from `ad4b69dab`, the candidate compiled all eight exact owners and the
+generated destructor. All eight exact owners match. The generated destructor
+also matches. The accepted-drift `00405850 update` remains observed and has
+728 changed bytes in the direct source context. Every exact and observed row
+has owner status `match`, zero relocation mismatches, and zero boundary
+escapes. The generated destructor is `unverified` with zero relocations and
+zero boundary escapes.
+
+This current-main source and metadata chain removes the former wrapper,
+context header, accepted-drift fragment, and eight matching fragments. It
+registers `src/act_move.cpp` directly in `config/source_modules/act_move.json`
+and `config/translation_units.json`. No shared header changes are part of this
+chain.
 
 The vslot repair follows the original PDB-backed vtable. The executable's
 `RGE_Action_Object` table at `0056E420` places static setup at `+0x1D8` and
@@ -114,10 +124,13 @@ local carrier or vtable workaround.
 
 ## Shared ABI fanout after main rebase
 
-The branch is rebased onto current `main` at `298cc2a47`, which includes
-`ee088911a` and the full Action registration from `037871d95`. The fanout
-reports are under
+The branch is rebased onto current `main` at `a2a0c6311`, which includes
+`ee088911a`, the full Action registration from `037871d95`, and the shared
+Static/Moving ABI repair from `ad4b69dab`. The fanout reports are under
 `build/candidate_tus/shared_abi_fanout`.
+
+The broader fanout rows below were measured against `298cc2a47` and remain
+historical. The current-main `act_move` result is recorded above.
 
 The grouped `act_move` candidate has 8/8 exact owners matching and generated
 `00405580` matching. Observed `00405850` differs by 728 bytes. All rows have
