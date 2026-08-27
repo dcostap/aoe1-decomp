@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "name": "rge_tslc",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\RGE_TSLC.cpp",
+  "source": "src/rge_tslc.cpp",
+  "header": "include/rge_tslc.h",
+  "functions": {
+    "00480390": { "status": "matching" },
+    "004803F0": { "status": "matching" },
+    "00480400": { "status": "matching" },
+    "00480460": { "status": "matching" },
+    "00480480": {
+      "status": "verified_logic",
+      "note_path": "recovery_notes/rge_tslc.md"
+    },
+    "00480510": { "status": "matching" },
+    "00480540": { "status": "matching" },
+    "00480570": {
+      "status": "matching",
+      "note_path": "recovery_notes/rge_tslc.md"
+    },
+    "00480610": {
+      "status": "matching",
+      "note_path": "recovery_notes/rge_tslc.md"
+    },
+    "004806A0": { "status": "matching" },
+    "004806C0": { "status": "matching" },
+    "004806D0": { "status": "matching" },
+    "00480770": { "status": "matching" }
+  }
+}

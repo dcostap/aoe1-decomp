@@ -1,14 +1,9 @@
-#ifndef AOE1_RGE_TSLC_CONTEXT_H
-#define AOE1_RGE_TSLC_CONTEXT_H
-
-#include <stdio.h>
-
-extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
+#ifndef RGE_TSLC_H
+#define RGE_TSLC_H
 
 class RGE_TimeSinceLastCall {
 public:
-    char TBuff[255];
-    unsigned char _pad_0[1];
+    char TBuff[256];
     unsigned long lowTSLC;
     unsigned long highTSLC;
     unsigned long TSLC;
@@ -33,8 +28,5 @@ public:
     char* GetElapsedFirstCall();
     void Test();
 };
-
-typedef char rge_tslc_context_size_check[
-    (sizeof(RGE_TimeSinceLastCall) == 0x2B4) ? 1 : -1];
 
 #endif
