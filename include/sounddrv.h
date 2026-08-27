@@ -1,27 +1,11 @@
-#ifndef AOE1_SOUNDDRV_CONTEXT_H
-#define AOE1_SOUNDDRV_CONTEXT_H
+#ifndef AOE1_SOUNDDRV_H
+#define AOE1_SOUNDDRV_H
 
 #include <windows.h>
 #include <mmsystem.h>
 #include <dsound.h>
 
 typedef unsigned char uchar;
-
-struct WAVHEADER {
-    unsigned char szRIFF[4];
-    unsigned long dwFormatLength;
-    unsigned char szWAVE[4];
-    unsigned char szFMT[4];
-    unsigned long dwWaveFormatLength;
-    unsigned short wFormatTag;
-    unsigned short nChannels;
-    unsigned long nSamplesPerSec;
-    unsigned long nAvgBytesPerSec;
-    unsigned short nBlockAlign;
-    unsigned short wBitsPerSample;
-    unsigned char szDATA[4];
-    unsigned long dwDataLength;
-};
 
 class TDigital;
 
