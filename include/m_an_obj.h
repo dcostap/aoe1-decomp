@@ -24,6 +24,7 @@ protected:
     int setup(int, RGE_Sprite**, RGE_Sound**);
     int setup(FILE*, RGE_Sprite**, RGE_Sound**, short);
 
+public:
     float speed;
 };
 
