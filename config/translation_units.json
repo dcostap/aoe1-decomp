@@ -1977,19 +1977,20 @@
       }
     },
     {
-      "name": "rmm_terr_prefix",
-      "source": "src/rmm_terr_tu.cpp",
+      "name": "rmm_terr",
+      "source": "src/rmm_terr.cpp",
+      "module": "rmm_terr",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "004888E0": "src/matching/004888E0_RGE_RMM_Terrain_Generator.cpp",
-        "00488920": "src/matching/00488920_generate.cpp",
-        "004889D0": "src/matching/004889D0_water.cpp",
-        "004889F0": "src/matching/004889F0_check_borders.cpp",
-        "00488D50": "src/matching/00488D50_generate_modifiers.cpp",
-        "00488E40": "src/matching/00488E40_fig_chance.cpp",
-        "00488EA0": "src/matching/00488EA0_link_stack_randomly.cpp",
-        "00488F90": "src/matching/00488F90_remove_area_from_lists.cpp",
-        "00489030": "src/matching/00489030_base_terrain_generate.cpp"
+        "004888E0": "src/rmm_terr.cpp",
+        "00488920": "src/rmm_terr.cpp",
+        "004889D0": "src/rmm_terr.cpp",
+        "004889F0": "src/rmm_terr.cpp",
+        "00488D50": "src/rmm_terr.cpp",
+        "00488E40": "src/rmm_terr.cpp",
+        "00488EA0": "src/rmm_terr.cpp",
+        "00488F90": "src/rmm_terr.cpp",
+        "00489030": "src/rmm_terr.cpp"
       },
       "symbols": {
         "00488920": "?generate@RGE_RMM_Terrain_Generator@@UAEEXZ",

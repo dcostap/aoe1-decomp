@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "name": "rmm_terr",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\rmm_terr.cpp",
+  "source": "src/rmm_terr.cpp",
+  "header": "include/rmm_terr.h",
+  "functions": {
+    "004888E0": { "status": "matching" },
+    "00488920": { "status": "matching" },
+    "004889D0": { "status": "matching" },
+    "004889F0": { "status": "matching" },
+    "00488B90": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/rmm_terr_module.md"
+    },
+    "00488D50": { "status": "matching" },
+    "00488E40": { "status": "matching" },
+    "00488E60": { "status": "matching" },
+    "00488EA0": { "status": "matching" },
+    "00488F90": { "status": "matching" },
+    "00489030": { "status": "matching" }
+  }
+}

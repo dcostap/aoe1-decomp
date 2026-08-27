@@ -1,9 +1,9 @@
-#ifndef RMM_TERR_CONTEXT_H
-#define RMM_TERR_CONTEXT_H
+#ifndef AOE1_RMM_TERR_H
+#define AOE1_RMM_TERR_H
 
-// Canonical context for the complete C:\\msdev\\work\\age1_x1\\rmm_terr.cpp
-// owner sequence. Layout facts come from the PDB UDT records and direct
-// terrain-generator references. Keep this surface shared by every owner.
+// Declarations for the complete C:\\msdev\\work\\age1_x1\\rmm_terr.cpp
+// source module. Layout facts come from the PDB UDT records and direct
+// terrain-generator references.
 
 typedef unsigned char uchar;
 
@@ -117,7 +117,7 @@ struct RGE_Random_Map_Module_List {
     RGE_Random_Map_Module_List* next;
 };
 
-// PDB RGE_Random_Map_Module surface. Unions keep reviewed owner aliases at
+// PDB RGE_Random_Map_Module surface. Unions keep the reviewed field aliases at
 // the same binary offsets without adding fields to the 0x30-byte base.
 class RGE_Random_Map_Module {
 protected:
