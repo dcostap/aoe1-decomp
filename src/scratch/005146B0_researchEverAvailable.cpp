@@ -1,20 +1,18 @@
-class Tech_Tree_rea {
-public:
-    short get_state(short tech_id);
-};
+// VA: 005146B0, TRIBE_Player::researchEverAvailable
+// PDB: tplayer.cpp:1741-1748
+// BINARY NOTE: tech_tree is read at +0x220. State values 3 and -1 are not
+// available for further research.
 
-class TRIBE_Player_rea {
-public:
-    int researchEverAvailable(int tech_id);
-    char gap_00[0x220];
-    Tech_Tree_rea* tech_tree;
-};
+#include "../../include/tech.h"
+#include "../../include/tplayer.h"
 
-int TRIBE_Player_rea::researchEverAvailable(int tech_id) {
+int TRIBE_Player::researchEverAvailable(int tech_id)
+{
     short state;
 
-    state = this->tech_tree->get_state((short)tech_id);
-    if (state != 3 && state != -1)
+    state = tech_tree->get_tech_state(tech_id);
+    if (state != 3 && state != -1) {
         return 1;
+    }
     return 0;
 }
