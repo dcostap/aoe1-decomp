@@ -2,15 +2,12 @@
 #include "../include/rge_fio.h"
 #include "../include/task_lst.h"
 #include "../include/act_obj.h"
-#include "../include/map.h"
+#include "../include/stat_obj.h"
+#include "../include/m_s_obj.h"
 #include "../include/player.h"
+#include "../include/map.h"
 #include "../include/world.h"
-
-extern "C" void __cdecl rge_read(int fd, void* buffer, int size);
-extern "C" void __cdecl rge_write(int fd, void* buffer, int size);
-extern void* __cdecl calloc(int count, int size);
-extern void __cdecl free(void* block);
-extern int __cdecl fscanf(FILE* file, const char* format, ...);
+#include <stdlib.h>
 
 RGE_Task_List::RGE_Task_List()
 {
