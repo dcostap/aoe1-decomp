@@ -9,7 +9,7 @@ Normal source order runs from `00405510` through `00405BF0`.
 `RGE_Action_Move_To`; it has no source body.
 
 `RGE_Action_Move_To` owns all nine normal functions. The compiler-facing
-source is `src/act_move_tu.cpp`. The direct module declaration is
+source is `src/act_move.cpp`. The direct module declaration is
 `include/act_move.h`.
 
 Normal owners, in source and address order:
@@ -49,24 +49,34 @@ owned by `RGE_Game_World` indirectly through the complete world declaration.
 and static-object owners. No local class layout, context header, source-bank
 include, wrapper macro, raw overlay, or manual vtable remains.
 
-The canonical animated-object owner supplies the `rge_read` and `rge_write`
-declarations. The source adds no public helper declaration. The original first
-constructor's action-type store is expressed as a member assignment; the
-compiler owns the derived vptr store.
+`rge_fio.h` supplies the `rge_read` and `rge_write` declarations. The canonical
+movement owner only forward-declares `XYZBYTEPoint`; no owner-only header
+defines its proven three-byte record. The direct source keeps that record
+source-local as a temporary hold. Do not publish `Command.h` for this purpose:
+it carries incompatible duplicate owner layouts. `ManagedArray::zeroNumber()`
+is the canonical owner method for the proven pathing-group count store.
+`m_ac_obj.h` republishes the inherited `move_sprite` member through a public
+using declaration. This closes the owner-access hold without a layout change.
+The original first constructor's action-type store is expressed as a member
+assignment; the compiler owns the derived vptr store.
 
 ## Structural move
 
 The former source wrapper included one fragment per owner and selected
-`include/act_move_context.h` with `ACT_MOVE_CANONICAL_TU`. The source now owns
-all normal definitions in PDB order. The accepted-drift update remains in the
-same source module. The generated deleting destructor remains source-free.
+`include/act_move_context.h` with `ACT_MOVE_CANONICAL_TU`. The direct source
+now owns all normal definitions in PDB order. The accepted-drift update remains
+in the same source module. The generated deleting destructor remains
+source-free.
 
 The candidate proposal is:
 
 `build/candidate_tus/act_move_direct/proposal.json`
 
-The lead must add the direct source-module manifest and then compile the
-proposal. This captain did not run a compiler or validator.
+The lead must add the direct source-module manifest and register the proposal.
+Manual VC5 compilation of `src/act_move.cpp` succeeds with the module response
+file. Candidate validation is held until the lead updates global ownership:
+the validator rejects direct owners while `translation_units.json` still names
+the removed wrapper and source-bank fragments.
 
 ## Shared ABI correction
 
