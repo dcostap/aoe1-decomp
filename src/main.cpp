@@ -36,16 +36,14 @@
 #include "../include/main.h"
 #include "../include/tribegam.h"
 
-void* __cdecl operator new(unsigned int size);
+static const GUID game_guid = {
+    0xF2E846A8, 0xEBE2, 0x11D1,
+    { 0x83, 0x9B, 0x00, 0x60, 0x97, 0x07, 0xF5, 0x08 }
+};
 
-static const struct {
-    GUID game;
-    GUID zone;
-} guid_pair = {
-    { 0xF2E846A8, 0xEBE2, 0x11D1,
-      { 0x83, 0x9B, 0x00, 0x60, 0x97, 0x07, 0xF5, 0x08 } },
-    { 0xF2E846AA, 0xEBE2, 0x11D1,
-      { 0x83, 0x9B, 0x00, 0x60, 0x97, 0x07, 0xF5, 0x08 } }
+static const GUID zone_guid = {
+    0xF2E846AA, 0xEBE2, 0x11D1,
+    { 0x83, 0x9B, 0x00, 0x60, 0x97, 0x07, 0xF5, 0x08 }
 };
 
 extern "C" int __stdcall WinMain(HINSTANCE hInst, HINSTANCE hPrev,
@@ -79,7 +77,7 @@ extern "C" int __stdcall WinMain(HINSTANCE hInst, HINSTANCE hPrev,
 
     info.mouse_scroll_interval = 0x54;
     info.key_scroll_interval = 0x54;
-    info.game_guid = guid_pair.game;
+    info.game_guid = game_guid;
 
     info.max_players = 8;
     info.check_expiration = 0;
@@ -108,7 +106,7 @@ extern "C" int __stdcall WinMain(HINSTANCE hInst, HINSTANCE hPrev,
     info.use_wave_music = 0;
     info.main_wid = 800;
     info.main_hgt = 600;
-    info.zone_guid = guid_pair.zone;
+    info.zone_guid = zone_guid;
 
     strcpy(info.data_dir, "data2\\");
     strcpy(info.sounds_dir, "sound\\");
