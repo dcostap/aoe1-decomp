@@ -1,4 +1,5 @@
 #include <string.h>
+#include "../include/m_s_obj.h"
 #include "../include/rmm_obj.h"
 #include "../include/map.h"
 #include "../include/player.h"
@@ -16,8 +17,8 @@ RGE_RMM_Object_Generator::RGE_RMM_Object_Generator(
     if (param_4 != 0) {
         memcpy(&this->info, param_4, sizeof(RGE_Object_Info));
     } else {
-        *(long*)((char*)&this->info + 0x1290) = 0;
-        *(long*)((char*)&this->info + 0x18C4) = 0;
+        this->info.object_num = 0;
+        this->info.land_num = 0;
     }
     this->schedule = 3.0f;
     this->add_terrain = param_5;
@@ -183,6 +184,7 @@ void RGE_RMM_Object_Generator::make_placement_stack(
 }
 
 // VA: 00486110 RGE_RMM_Object_Generator::to_close
+// BINARY NOTE: This interior cursor keeps the exact VC5 addressing form.
 unsigned char RGE_RMM_Object_Generator::to_close(
     RGE_Object_Info_Line& info_line, long x, long y)
 {

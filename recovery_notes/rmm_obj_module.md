@@ -91,3 +91,15 @@ The later full registered-owner candidate compiled `src/rmm_obj.cpp` once and
 checked all eight registered owners. All eight returned `MATCH`, `0.0000%`.
 It found no comparison error, relocation-target mismatch, boundary escape, or
 demotion. This candidate did not include the scratch or accepted-drift owners.
+
+## Final owner-source review
+
+`m_s_obj.h` belongs in `rmm_obj.cpp`, not `rmm_obj.h`. The constructor now
+sets `info.object_num` and `info.land_num` through their proven fields. Both
+forms preserve all eight registered exact owners.
+
+The named `RGE_Land_Point_Info_Line&` form in `00486110 to_close` is not exact.
+The full registered-owner candidate changed only this owner: `MISMATCH`, 13
+bytes, with no relocation or boundary error. The restored interior cursor uses
+the proven `0x10` land stride and returns `MATCH`, `0.0000%` for all eight.
+This unusual form remains only for that direct variant evidence.

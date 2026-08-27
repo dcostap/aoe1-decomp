@@ -1,7 +1,6 @@
 #ifndef RMM_OBJ_H
 #define RMM_OBJ_H
 
-#include "m_s_obj.h"
 #include "rmm_base.h"
 
 class RGE_Game_World;
