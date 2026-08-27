@@ -3150,6 +3150,10 @@
         "00412C20": "src/matching/00412C20_TechnologyItem.cpp",
         "00412CD0": "src/matching/00412CD0_TechnologyItem.cpp",
         "00412D70": "src/matching/00412D70_TechnologyItem.cpp",
+        "00412D90": "src/matching/00412D90_operator.cpp",
+        "00412DB0": "src/matching/00412DB0_operator.cpp",
+        "00412DD0": "src/matching/00412DD0_operator.cpp",
+        "00412DF0": "src/matching/00412DF0_operator.cpp",
         "00412E10": "src/matching/00412E10_id.cpp",
         "00412E20": "src/matching/00412E20_name.cpp",
         "00412E30": "src/matching/00412E30_resourceCost.cpp"
@@ -3157,7 +3161,11 @@
       "symbols": {
         "00412BB0": "??0TechnologyItem@@QAE@XZ",
         "00412C20": "??0TechnologyItem@@QAE@HPADVResourceItem@@@Z",
-        "00412CD0": "??0TechnologyItem@@QAE@ABV0@@Z"
+        "00412CD0": "??0TechnologyItem@@QAE@ABV0@@Z",
+        "00412D90": "??8@YAHABVTechnologyItem@@0@Z",
+        "00412DB0": "??9@YAHABVTechnologyItem@@0@Z",
+        "00412DD0": "??M@YAHABVTechnologyItem@@0@Z",
+        "00412DF0": "??O@YAHABVTechnologyItem@@0@Z"
       }
     },
     {
