@@ -4,7 +4,6 @@
 // Binary-proven record widths are 0x0C and 0x2C.
 struct RGE_Effect_Command {
     unsigned char command;
-    unsigned char _pad_0;
     short change_num1;
     short change_num2;
     short change_num3;
@@ -17,10 +16,8 @@ typedef char effects_command_size_check[
 struct RGE_Effect {
     short id;
     char name[31];
-    unsigned char _pad_0;
     short string_table_id;
     short effect_list_num;
-    unsigned char _pad_1[2];
     RGE_Effect_Command* effect_list;
 };
 
