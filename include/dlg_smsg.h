@@ -1,10 +1,7 @@
-#ifndef AOE1_DLG_SMSG_CONTEXT_H
-#define AOE1_DLG_SMSG_CONTEXT_H
+#ifndef AOE1_DLG_SMSG_H
+#define AOE1_DLG_SMSG_H
 
-// Authentic compiler-facing context for C:\\msdev\\work\\age1_x1\\dlg_smsg.cpp.
-// Owner source order is recorded by src/dlg_smsg_tu.cpp.
-
-#include <string.h>
+// Declarations used by C:\\msdev\\work\\age1_x1\\dlg_smsg.cpp.
 
 typedef unsigned char uchar;
 typedef unsigned long ulong;
@@ -249,9 +246,9 @@ public:
     short id;
     char gap_4C[0x34];
     uchar game_status;
-    char gap_81[0x87];
+    char gap_81[0x84];
     uchar master_player_id;
-    char gap_109[3];
+    char gap_106[2];
     RGE_Color_Table* color_table;
 };
 
