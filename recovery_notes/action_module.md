@@ -81,5 +81,10 @@ vector deleting destructor at `004074A0` remains source-free.
 
 The candidate proposal is `build/action_candidate_proposal.json`. It uses
 `config/flags/004076D0_create_action_list.rsp` and assigns every normal owner
-to `src/action.cpp`. The proposal has not been compiled or validated. The lead
-must register direct ownership metadata before running those checks.
+to `src/action.cpp`. After direct ownership registration, the grouped candidate
+reports all 28 normal owners as `MATCH` with `0.0000%` difference, zero
+relocation mismatches, and zero boundary escapes.
+
+The compiler-generated owner `004074A0` matches its 30-byte range. The
+accepted-drift owner `00407C10` remains a 4-byte mismatch in a 216-byte range.
+It has zero relocation mismatches and zero boundary escapes.
