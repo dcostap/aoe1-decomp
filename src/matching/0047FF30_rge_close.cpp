@@ -12,14 +12,15 @@ extern int DAT_0086b26c;            // deflate buffer
 extern int DAT_0086b270;            // read buffer
 extern int DAT_0086b280;            // compressed data buffer
 extern int DAT_0086b260;            // current file handle
-extern int DAT_0086b284;            // rge_write_error flag
+// The PDB names 0086B284 as the C++ global rge_write_error.
+extern int rge_write_error;
 
 int __cdecl rge_close(int param_1) {
     if (param_1 >= 0 && param_1 == DAT_0086b260) {
         if (DAT_0086b264 == 1 && DAT_0086b26c != 0) {
             int result = deflate_data((void*)DAT_0086b26c, 0, 0, 1);
             if (result == 2) {
-                DAT_0086b284 = 1;
+                rge_write_error = 1;
             }
             deflate_deinit((void*)DAT_0086b26c);
         }
