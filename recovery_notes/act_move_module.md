@@ -83,7 +83,7 @@ local carrier or vtable workaround.
 
 ## Shared ABI fanout after main rebase
 
-The branch is rebased onto current `main` at `c867646f6`, which includes
+The branch is rebased onto current `main` at `ffb815faf`, which includes
 `ee088911a`. The fanout reports are under
 `build/candidate_tus/shared_abi_fanout`.
 
