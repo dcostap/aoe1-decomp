@@ -20,7 +20,7 @@
     "00449840": { "status": "matching" },
     "004498A0": { "status": "matching" },
     "00449910": { "status": "matching" },
-    "00449990": { "status": "scratch", "note_path": "recovery_notes/file_stf_module.md" },
+    "00449990": { "status": "matching" },
     "00449A20": { "status": "matching" },
     "00449A40": { "status": "matching" },
     "00449A50": { "status": "matching" },

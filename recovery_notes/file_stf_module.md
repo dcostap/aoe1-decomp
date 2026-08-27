@@ -12,8 +12,8 @@ The module metadata lists all 22 owners.
 
 ## Validation
 
-Before migration, the grouped packet had 21 registered exact owners and one
-accepted-drift owner. The final source keeps that status split.
+Before migration, the grouped packet had 20 registered exact owners, one
+scratch owner, and one accepted-drift owner.
 
 The accepted-drift owner is `00449710 compareFilenameStrings`. Its source and
 binary behavior are equivalent, but its register allocation and return sequence
@@ -25,11 +25,13 @@ bytes. It remains accepted drift because the source behavior is unchanged.
 The natural reunified form of `00449990 numberOfFilesWithFilenameOrAttribute`
 rebuilt to 162 bytes against the original 144 bytes, with 146 differing bytes.
 Its frame stayed 0x118 and all four direct calls kept their target identity, but
-its early-return control flow changed the emitted block layout. It is scratch,
-not exact, until a later source recovery pass resolves that regression.
+its early return changed the emitted block layout. The current source restores
+the parent matching candidate's `goto done` shape. The grouped check reports
+`MATCH`, `0.0000%`, correct ownership, boundaries, and relocations. The owner
+is registered as matching.
 
-The other 21 owners were exact before migration. Reunification keeps their
+The other 20 exact owners remain exact after migration. Reunification keeps their
 natural source bodies and one compiler-facing owner in PDB order.
 
-The post-migration grouped check must be rerun after this source move. Any
-changed result is a source-reunification regression, not a new exact claim.
+The final grouped check has 21 registered exact owners and one accepted-drift
+owner.
