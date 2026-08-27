@@ -2798,17 +2798,18 @@
       "symbols": {}
     },
     {
-      "name": "com_addr_prefix",
-      "source": "src/com_addr_tu.cpp",
+      "name": "com_addr",
+      "source": "src/com_addr.cpp",
+      "module": "com_addr",
       "flags": "config/flags/004249D0_RGE_Communications_Addresses.rsp",
       "owners": {
-        "004249D0": "src/matching/004249D0_RGE_Communications_Addresses.cpp",
-        "00424B10": "src/matching/00424B10_RGE_Communications_Addresses.cpp",
-        "00424B60": "src/matching/00424B60_GetHostName.cpp",
-        "00424B80": "src/matching/00424B80_SetIPAliases.cpp",
-        "00424C20": "src/matching/00424C20_GetAddress.cpp",
-        "00424C80": "src/matching/00424C80_SetIPAddresses.cpp",
-        "00424D90": "src/matching/00424D90_EraseInformation.cpp"
+        "004249D0": "src/com_addr.cpp",
+        "00424B10": "src/com_addr.cpp",
+        "00424B60": "src/com_addr.cpp",
+        "00424B80": "src/com_addr.cpp",
+        "00424C20": "src/com_addr.cpp",
+        "00424C80": "src/com_addr.cpp",
+        "00424D90": "src/com_addr.cpp"
       },
       "symbols": {}
     },

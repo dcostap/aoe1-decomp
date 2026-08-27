@@ -1,7 +1,7 @@
-#ifndef COM_ADDR_CONTEXT_H
-#define COM_ADDR_CONTEXT_H
+#ifndef AOE1_COM_ADDR_H
+#define AOE1_COM_ADDR_H
 
-#include "game_globals.h"
+#include <winsock.h>
 
 class TCommunications_Handler;
 
@@ -37,5 +37,8 @@ public:
     char* GetAddress(unsigned int index);
     char* GetAlias(unsigned int index);
 };
+
+typedef char com_addr_size_check[(sizeof(RGE_Communications_Addresses) == 0x224) ? 1 : -1];
+typedef char ipad_size_check[(sizeof(IPAD) == 0x0A0) ? 1 : -1];
 
 #endif
