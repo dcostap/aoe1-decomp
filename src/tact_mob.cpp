@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include "../include/tact_mob.h"
 #include "../include/act_obj.h"
 #include "../include/stat_obj.h"
@@ -30,7 +29,7 @@ extern float save_game_version;
 // 004D10F0  lines 126-167 scratch (canonical owner available)
 // 004D12B0  lines 171-233 matching
 // 004D1550  lines 237-251 matching
-// 004D15F0  lines 255-268 scratch (candidate exact)
+// 004D15F0  lines 255-268 matching
 
 // VA 004D0DD0; PDB tact_mob.cpp:31-41; matching.
 // /GX is part of the constructor's original exception-handling frame.
@@ -69,7 +68,7 @@ TRIBE_Action_Make_Obj::TRIBE_Action_Make_Obj(RGE_Action_Object* obj,
 TRIBE_Action_Make_Obj::~TRIBE_Action_Make_Obj() {
     TRIBE_Player* player = static_cast<TRIBE_Player*>(this->obj->owner);
     player->logMessage(
-        (char*)"WT: %ld: MkObjDestructor: obj_id=%d, obj->id=%d, unique_id=%d",
+        "WT: %ld: MkObjDestructor: obj_id=%d, obj->id=%d, unique_id=%d",
         player->world->world_time, (int)this->obj_id,
         (int)this->obj->id, this->unique_id);
 }
@@ -93,21 +92,21 @@ void TRIBE_Action_Make_Obj::first_in_stack(uchar param_1)
     TRIBE_Player* player = static_cast<TRIBE_Player*>(this->obj->owner);
 
     if (this->obj_id < 0) {
-        player->logMessage((char*)"Canceling Train #1a:  obj_id=%d, obj->id=%d",
+        player->logMessage("Canceling Train #1a:  obj_id=%d, obj->id=%d",
                            (int)this->obj_id, (int)this->obj->id,
                            this->unique_id);
     } else {
         RGE_Action_Object* objp = this->obj;
 
         if (player->master_objects[this->obj_id] == 0) {
-            player->logMessage((char*)"Canceling Train #1b:  obj_id=%d, obj->id=%d",
+            player->logMessage("Canceling Train #1b:  obj_id=%d, obj->id=%d",
                                (int)this->obj_id, (int)objp->id,
                                this->unique_id);
         } else {
             if (!this->pre_paid) {
                 uchar paid = player->pay_obj_cost(this->obj_id, 1.0f, 0);
                 if (paid == 0) {
-                    player->logMessage((char*)"Canceling Train #1c:  obj_id=%d, obj->id=%d",
+                    player->logMessage("Canceling Train #1c:  obj_id=%d, obj->id=%d",
                                        (int)this->obj_id, (int)objp->id,
                                        this->unique_id);
                     player->cancelTrain(0, (int)this->obj_id,
@@ -160,7 +159,7 @@ unsigned char TRIBE_Action_Make_Obj::update()
                 rge_base_game->notification(0x68, player->id,
                                              this->obj_id, 0, 0);
                 player->logMessage(
-                    (char*)"Canceling Train #2:  obj_id=%d, obj->id=%d",
+                    "Canceling Train #2:  obj_id=%d, obj->id=%d",
                     (int)this->obj_id, (int)this->obj->id, this->unique_id);
                 player->cancelTrain(0, (int)this->obj_id,
                                     (int)this->obj->id, this->unique_id);
@@ -265,7 +264,7 @@ unsigned char TRIBE_Action_Make_Obj::place_obj(RGE_Static_Object** out)
 // of carrying one player alias across calls.
 int TRIBE_Action_Make_Obj::stop() {
     static_cast<TRIBE_Player*>(this->obj->owner)->logMessage(
-        (char*)"Stopping Train #8:  obj_id=%d, obj->id=%d, unique_id=%d",
+        "Stopping Train #8:  obj_id=%d, obj->id=%d, unique_id=%d",
         (int)this->obj_id, (int)this->obj->id, this->unique_id);
 
     if (this->state != 1) {
@@ -285,7 +284,7 @@ int TRIBE_Action_Make_Obj::stop() {
     return 1;
 }
 
-// VA 004D15F0; PDB tact_mob.cpp:255-268; scratch (candidate exact).
+// VA 004D15F0; PDB tact_mob.cpp:255-268; matching.
 // The master-object lookup and terminator store preserve the original order.
 void TRIBE_Action_Make_Obj::get_info(short& param_1, short& param_2, char* param_3, short param_4) {
     param_1 = this->obj_id;

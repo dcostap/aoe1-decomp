@@ -1,7 +1,7 @@
 #ifndef AOE1_TACT_MOB_H
 #define AOE1_TACT_MOB_H
 
-// Local declarations for C:\\msdev\\work\\age1_x1\\tact_mob.cpp.
+// Canonical owner declarations for C:\\msdev\\work\\age1_x1\\tact_mob.cpp.
 // The source module supplies the full owner declarations.
 #include "action.h"
 
