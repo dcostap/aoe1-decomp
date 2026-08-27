@@ -6385,6 +6385,7 @@
     {
       "name": "tact_mob_cpp",
       "source": "src/tact_mob.cpp",
+      "module": "tact_mob",
       "flags": "config/flags/default_gx.rsp",
       "owners": {
         "004D0DD0": "src/tact_mob.cpp",

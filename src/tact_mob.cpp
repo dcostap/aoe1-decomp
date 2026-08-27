@@ -3,6 +3,7 @@
 #include "../include/act_obj.h"
 #include "../include/stat_obj.h"
 #include "../include/m_co_obj.h"
+#include "../include/tm_co_ob.h"
 #include "../include/world.h"
 #include "../include/player.h"
 #include "../include/tplayer.h"
@@ -19,17 +20,17 @@ extern float save_game_version;
 // Normal owners follow the PDB source-line and address order below. The nearby
 // 004D0E90 vector-deleting destructor is compiler generated, not handwritten.
 //
-// The module is held for the owning tribal master-object build-time field.
+// The module uses the canonical tribal master-object build-time field.
 // 004D0DD0  lines 31-41   matching
 // 004D0EB0  lines 48-54   accepted_drift
 // 004D0EF0  lines 60-65   matching
 // 004D0F70  lines 69-76   matching
 // 004D0FC0  lines 79-116  accepted_drift
 // 004D10E0  lines 120-123 matching
-// 004D10F0  lines 126-167 held (master gap)
+// 004D10F0  lines 126-167 scratch (canonical owner available)
 // 004D12B0  lines 171-233 matching
 // 004D1550  lines 237-251 matching
-// 004D15F0  lines 255-268 held (master gap)
+// 004D15F0  lines 255-268 scratch (candidate exact)
 
 // VA 004D0DD0; PDB tact_mob.cpp:31-41; matching.
 // /GX is part of the constructor's original exception-handling frame.
@@ -129,7 +130,7 @@ void TRIBE_Action_Make_Obj::first_in_stack(uchar param_1)
 // VA 004D10E0; PDB tact_mob.cpp:120-123; matching.
 void TRIBE_Action_Make_Obj::set_state(uchar v) { this->state = v; }
 
-// VA 004D10F0; PDB tact_mob.cpp:126-167; held for the master-object gap.
+// VA 004D10F0; PDB tact_mob.cpp:126-167; scratch (canonical owner available).
 // The canonical member names retain the x87 work-rate and completion order.
 unsigned char TRIBE_Action_Make_Obj::update()
 {
@@ -146,10 +147,9 @@ unsigned char TRIBE_Action_Make_Obj::update()
             this->work_done = master->work_rate *
                 this->obj->owner->world->world_time_delta_seconds + this->work_done;
         }
-        // BLOCKED: +0x15A belongs to TRIBE_Master_Combat_Object::
-        // build_pts_required in include/tm_co_ob.h, not to the RGE master
-        // owner headers used by this module. Keep this owner scratch.
-        needed = this->obj->owner->master_objects[this->obj_id]->train_time;
+        needed = static_cast<TRIBE_Master_Combat_Object*>(
+                     this->obj->owner->master_objects[this->obj_id])
+                     ->build_pts_required;
         if ((float)needed <= this->work_done) {
             this->set_state(1);
             RGE_Static_Object* newObject;
@@ -279,7 +279,7 @@ int TRIBE_Action_Make_Obj::stop() {
     return 1;
 }
 
-// VA 004D15F0; PDB tact_mob.cpp:255-268; held for the master-object gap.
+// VA 004D15F0; PDB tact_mob.cpp:255-268; scratch (candidate exact).
 // The master-object lookup and terminator store preserve the original order.
 void TRIBE_Action_Make_Obj::get_info(short& param_1, short& param_2, char* param_3, short param_4) {
     param_1 = this->obj_id;
@@ -287,11 +287,10 @@ void TRIBE_Action_Make_Obj::get_info(short& param_1, short& param_2, char* param
     if (this->state == 1) {
         param_2 = 100;
     } else {
-        RGE_Master_Static_Object* info =
-            this->obj->owner->master_objects[this->obj_id];
-        // BLOCKED: this +0x15A field is owned by
-        // TRIBE_Master_Combat_Object::build_pts_required in include/tm_co_ob.h.
-        short divisor = info->train_time;
+        TRIBE_Master_Combat_Object* info =
+            static_cast<TRIBE_Master_Combat_Object*>(
+                this->obj->owner->master_objects[this->obj_id]);
+        short divisor = info->build_pts_required;
         int pc = (int)((this->work_done * DAT_005751a0) /
                        (float)divisor);
         param_2 = (short)pc;
