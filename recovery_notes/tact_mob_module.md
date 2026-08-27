@@ -16,7 +16,7 @@ module. The ten normal owners keep this address and source order:
 | 004D10F0 | 126-167 | `update()` | scratch; canonical owner now available |
 | 004D12B0 | 171-233 | `place_obj(RGE_Static_Object**)` | matching |
 | 004D1550 | 237-251 | `stop()` | matching |
-| 004D15F0 | 255-268 | `get_info(short&, short&, char*, short)` | scratch; candidate exact |
+| 004D15F0 | 255-268 | `get_info(short&, short&, char*, short)` | matching |
 
 The nearby vector-deleting destructor at 004D0E90 is compiler generated. It
 has no handwritten source owner. The candidate packet also lists its expected
@@ -53,8 +53,9 @@ local field carrier or a raw offset.
 
 The six prior exact owners remain registered in `config/translation_units.json`.
 The two accepted-drift owners remain reviewed in
-`config/source_modules/tact_mob.json`. The two +0x15A owners remain scratch
-until status promotion by the main agent.
+`config/source_modules/tact_mob.json`. 004D10F0 remains scratch pending a
+separate owner review. 004D15F0 is now promoted only after its final target
+check; this does not promote the rest of the Tact Mob chain.
 
 The old wrapper, context, per-owner source fragments, and per-owner response
 files are removed. The header cleanup invalidates the previous grouped object.
@@ -86,14 +87,21 @@ generated 004D0E90. The canonical owner change produced these results:
 - Generated 004D0E90 remains `MATCH`, with 0 bytes, 0 relocation target
   mismatches, and 0 boundary escapes.
 - Observed 004D0FC0 remains a 268-byte accepted-drift mismatch. Observed
-  004D10F0 remains a 281-byte scratch mismatch. Observed 004D15F0 is `MATCH`
-  with 0 bytes, owner match, 0 relocation target mismatches, and 0 boundary
-  escapes. Observed 004D0EB0 has an overload-selection comparison error.
+  004D10F0 remains a 281-byte scratch mismatch. 004D15F0 is promoted to
+  matching after its final target check: `MATCH`, 0 bytes, owner match, 0
+  relocation target mismatches, and 0 boundary escapes. The final check proves
+  the direct symbol
+  `?get_info@TRIBE_Action_Make_Obj@@QAEXAAF0PADF@Z`, the PDB owner
+  `tact_mob.cpp:255-268`, and the body boundary `004D15F0-004D167B`.
+  The post-rebase candidate report records an overload-selection comparison
+  error for accepted-drift 004D0EB0. Its accepted-drift status is unchanged.
 
-The fresh candidate summary is 6/6 exact-owner matches, 1/4 observed matches,
-and 1/1 generated matches. One observed row is a comparison error. The full
-candidate group is not exact because 004D0FC0 and 004D10F0 remain observed
-mismatches and 004D0EB0 has a comparison error.
+The post-rebase full candidate report has 6/6 registered exact-owner matches,
+1/4 observed matches, and 1/1 generated matches. One observed row is a
+comparison error. The full candidate group is not exact because 004D0FC0 and
+004D10F0 remain observed mismatches.
 
 The final target checks report exact 004D12B0, 004D1550, and 004D15F0 results.
-No function status changed in this lane.
+Only 004D15F0 changed status in this promotion. Current main contains the
+validated canonical `tm_co_ob` owner at 548cc00fc; duplicate 49b7f8550 is not
+in this rebased chain.
