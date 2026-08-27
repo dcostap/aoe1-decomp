@@ -1,0 +1,369 @@
+{
+  "schema": 1,
+  "name": "Panel",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\Panel.cpp",
+  "source": "src/Panel.cpp",
+  "header": "include/panel.h",
+  "functions": {
+    "00463BB0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/Panel_module.md"
+    },
+    "00463BE0": {
+      "status": "matching"
+    },
+    "00463C50": {
+      "status": "matching"
+    },
+    "00463D00": {
+      "status": "matching"
+    },
+    "00463D10": {
+      "status": "matching"
+    },
+    "00463D20": {
+      "status": "matching"
+    },
+    "00463D30": {
+      "status": "matching"
+    },
+    "00463D40": {
+      "status": "matching"
+    },
+    "00463D50": {
+      "status": "matching"
+    },
+    "00463D70": {
+      "status": "matching"
+    },
+    "00463D80": {
+      "status": "matching"
+    },
+    "00463E10": {
+      "status": "matching"
+    },
+    "00463E60": {
+      "status": "matching"
+    },
+    "00463EB0": {
+      "status": "matching"
+    },
+    "00463F40": {
+      "status": "matching"
+    },
+    "00463F50": {
+      "status": "matching"
+    },
+    "00463F60": {
+      "status": "matching"
+    },
+    "00463FF0": {
+      "status": "matching"
+    },
+    "00464010": {
+      "status": "matching"
+    },
+    "00464060": {
+      "status": "matching"
+    },
+    "00464100": {
+      "status": "matching"
+    },
+    "00464120": {
+      "status": "matching"
+    },
+    "00464150": {
+      "status": "matching"
+    },
+    "004641B0": {
+      "status": "matching"
+    },
+    "00464260": {
+      "status": "matching"
+    },
+    "004642C0": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/Panel_module.md"
+    },
+    "00464480": {
+      "status": "matching"
+    },
+    "004644E0": {
+      "status": "matching"
+    },
+    "00464510": {
+      "status": "matching"
+    },
+    "00464540": {
+      "status": "matching"
+    },
+    "00464550": {
+      "status": "matching"
+    },
+    "00464590": {
+      "status": "matching"
+    },
+    "004645D0": {
+      "status": "matching"
+    },
+    "004645E0": {
+      "status": "matching"
+    },
+    "004645F0": {
+      "status": "matching"
+    },
+    "00464600": {
+      "status": "matching"
+    },
+    "00464610": {
+      "status": "matching"
+    },
+    "00464640": {
+      "status": "matching"
+    },
+    "00464680": {
+      "status": "matching"
+    },
+    "004646F0": {
+      "status": "matching"
+    },
+    "00464720": {
+      "status": "scratch",
+      "note_path": "recovery_notes/Panel_module.md"
+    },
+    "004648B0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/Panel_module.md"
+    },
+    "004649E0": {
+      "status": "matching"
+    },
+    "00464A80": {
+      "status": "matching"
+    },
+    "00464B50": {
+      "status": "matching"
+    },
+    "00464BF0": {
+      "status": "matching"
+    },
+    "00464C50": {
+      "status": "matching"
+    },
+    "00464D70": {
+      "status": "matching"
+    },
+    "00464DA0": {
+      "status": "matching"
+    },
+    "00464DC0": {
+      "status": "matching"
+    },
+    "00464E00": {
+      "status": "matching"
+    },
+    "00464EB0": {
+      "status": "matching"
+    },
+    "00464EE0": {
+      "status": "matching"
+    },
+    "00464F20": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/Panel_module.md"
+    },
+    "00465050": {
+      "status": "matching"
+    },
+    "00465160": {
+      "status": "matching"
+    },
+    "004651C0": {
+      "status": "matching"
+    },
+    "00465220": {
+      "status": "matching"
+    },
+    "004652C0": {
+      "status": "matching"
+    },
+    "004652F0": {
+      "status": "matching"
+    },
+    "00465320": {
+      "status": "matching"
+    },
+    "00465370": {
+      "status": "matching"
+    },
+    "004653A0": {
+      "status": "matching"
+    },
+    "004653E0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/Panel_module.md"
+    },
+    "00465780": {
+      "status": "matching"
+    },
+    "00465820": {
+      "status": "scratch",
+      "note_path": "recovery_notes/Panel_module.md"
+    },
+    "00465A70": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/Panel_module.md"
+    },
+    "00465B30": {
+      "status": "matching"
+    },
+    "00465BE0": {
+      "status": "matching"
+    },
+    "00465C30": {
+      "status": "matching"
+    },
+    "00465C40": {
+      "status": "matching"
+    },
+    "00465C50": {
+      "status": "matching"
+    },
+    "00465C60": {
+      "status": "matching"
+    },
+    "00465C70": {
+      "status": "matching"
+    },
+    "00465DC0": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/Panel_module.md"
+    },
+    "00465F70": {
+      "status": "matching"
+    },
+    "00466060": {
+      "status": "matching"
+    },
+    "00466140": {
+      "status": "matching"
+    },
+    "00466170": {
+      "status": "matching"
+    },
+    "004661D0": {
+      "status": "matching"
+    },
+    "00466220": {
+      "status": "matching"
+    },
+    "00466280": {
+      "status": "matching"
+    },
+    "004662C0": {
+      "status": "matching"
+    },
+    "004662E0": {
+      "status": "matching"
+    },
+    "00466320": {
+      "status": "matching"
+    },
+    "00466350": {
+      "status": "matching"
+    },
+    "004663A0": {
+      "status": "matching"
+    },
+    "004663F0": {
+      "status": "matching"
+    },
+    "00466420": {
+      "status": "matching"
+    },
+    "00466430": {
+      "status": "matching"
+    },
+    "00466490": {
+      "status": "matching"
+    },
+    "00466600": {
+      "status": "matching"
+    },
+    "00466650": {
+      "status": "matching"
+    },
+    "00466670": {
+      "status": "matching"
+    },
+    "00466680": {
+      "status": "matching"
+    },
+    "00466690": {
+      "status": "matching"
+    },
+    "004666A0": {
+      "status": "matching"
+    },
+    "004666B0": {
+      "status": "matching"
+    },
+    "004666C0": {
+      "status": "matching"
+    },
+    "00466770": {
+      "status": "matching"
+    },
+    "00466780": {
+      "status": "matching"
+    },
+    "00466790": {
+      "status": "matching"
+    },
+    "004667A0": {
+      "status": "matching"
+    },
+    "004667B0": {
+      "status": "matching"
+    },
+    "004667C0": {
+      "status": "matching"
+    },
+    "004667F0": {
+      "status": "matching"
+    },
+    "00466820": {
+      "status": "matching"
+    },
+    "00466840": {
+      "status": "matching"
+    },
+    "00466870": {
+      "status": "matching"
+    },
+    "00466890": {
+      "status": "matching"
+    },
+    "004668A0": {
+      "status": "matching"
+    },
+    "004668B0": {
+      "status": "matching"
+    },
+    "004668D0": {
+      "status": "matching"
+    },
+    "00466980": {
+      "status": "matching"
+    },
+    "004669A0": {
+      "status": "matching"
+    },
+    "004669D0": {
+      "status": "matching"
+    },
+    "004669F0": {
+      "status": "matching"
+    }
+  }
+}
