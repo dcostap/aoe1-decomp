@@ -1,11 +1,9 @@
-#ifndef AOE1_AIBLDITM_CONTEXT_H
-#define AOE1_AIBLDITM_CONTEXT_H
+#ifndef AOE1_AIBLDITM_H
+#define AOE1_AIBLDITM_H
 
 // Compiler-facing surface for the aiblditm.cpp source module.
 // The BaseItem layout and constructors come from the reviewed aibitm surface.
 #include "aibitm.h"
-
-typedef unsigned char uchar;
 
 class BuildItem : public BaseItem {
 public:
@@ -24,7 +22,7 @@ public:
     int numberBuildsValue;
     int buildCapValue;
     int skipCyclesValue;
-    uchar permanentSkipValue;
+    unsigned char permanentSkipValue;
 
     BuildItem();
     BuildItem(int category, int typeID, int uniqueID, int number,
@@ -58,8 +56,8 @@ public:
     int skipCycles();
     void incrementSkipCycles();
     void setSkipCycles(int value);
-    uchar permanentSkip();
-    void setPermanentSkip(uchar value);
+    unsigned char permanentSkip();
+    void setPermanentSkip(unsigned char value);
 };
 
 int __cdecl operator==(const BuildItem& left, const BuildItem& right);
