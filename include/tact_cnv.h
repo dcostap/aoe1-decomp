@@ -107,9 +107,10 @@ public:
     RGE_Game_World* world;
     char gap_40[0x0A];
     short id;
-    char gap_4C[0xB9];
-    uchar master_player_id;
-    float* attributes;
+    char gap_4C[4];
+    float* attributes; // +0x50
+    char gap_54[0xB1];
+    uchar master_player_id; // +0x105
 
     int computerPlayer();
 };
@@ -457,7 +458,6 @@ public:
 
 class TRIBE_Action_Convert : public RGE_Action {
 public:
-    virtual ~TRIBE_Action_Convert();
     TRIBE_Action_Convert(int, RGE_Action_Object*);
     TRIBE_Action_Convert(RGE_Action_Object*, RGE_Task*, RGE_Static_Object*);
     TRIBE_Action_Convert(RGE_Action_Object*, RGE_Task*, float, float, float);

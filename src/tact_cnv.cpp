@@ -390,12 +390,3 @@ void TRIBE_Action_Convert::martyrdom()
     this->obj->set_attribute(0x22, 0);
     this->set_state(3);
 }
-
-TRIBE_Action_Convert::~TRIBE_Action_Convert()
-{
-}
-
-static void tact_cnv_force_vector_delete(TRIBE_Action_Convert* value)
-{
-    delete [] value;
-}
