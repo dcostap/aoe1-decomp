@@ -33,15 +33,15 @@ normal source owner.
 
 Seven owners had registered exact results before this merge.
 
-`set_rect` had an exact standalone result but was not registered in the old
-translation-unit entry.
+The grouped `set_rect` result first differed by 228 bytes. The module
+header modeled `TDrawArea` as 0x3C bytes, so `new TDrawArea` passed 0x3C to the
+allocator. The original call passes 0x100. A module-local 0xC4-byte tail restores
+the proven complete 0x100-byte draw-area layout. `set_rect` now matches all 389
+bytes, its boundary, relocations, and direct targets. It remains unregistered
+in the direct registry until promotion review.
 
-`render_to_image_buffer` remains `scratch`. Its isolated result differed by 234
-bytes and needs later grouped recovery.
-
-No byte tuning was done during this merge. Run grouped checks after the final
-source tree is ready.
-
-The grouped compile produced seven matches. `set_rect` differed by 228 bytes.
-`render_to_image_buffer` differed by 430 bytes and crossed one boundary. These
-temporary regressions are accepted for this source-shape migration.
+`render_to_image_buffer` remains `scratch`. The merged source emits 681 bytes
+for the original 668-byte body and differs by 430 positional bytes. Its frame
+is 0x120 instead of 0x114, and 13 bytes escape the original boundary. All 23
+calls align, and the protected owner symbol matches. The current natural source
+has no supported module-local repair for the frame and API lowering basin.

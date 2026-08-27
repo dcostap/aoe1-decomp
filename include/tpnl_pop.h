@@ -59,6 +59,8 @@ public:
     long width;
     char gap_1C[0x1C];
     HDC DrawDc;
+    // The panel source allocates the complete 0x100-byte draw-area object.
+    char size_tail[0x100 - 0x3C];
 
     TDrawArea(const char* name, int param);
     ~TDrawArea();
