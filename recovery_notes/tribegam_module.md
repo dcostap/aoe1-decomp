@@ -27,10 +27,12 @@ The module owns 118 normal functions. Their source order follows the PDB line ba
 
 The reunified source preserves the pre-migration wrapper object for the 21 registered exact anchors and for the publicly named owners not affected by the SDK cleanup. The `00521790` setup change is the only new broad difference. The prior grouped wrapper already had nonexact owners outside its 21 registered exact anchors. Those results remain unresolved and are not promoted by this migration.
 
-The source-module metadata records the complete normal owner set. The translation-unit registration remains owned by the integration agent and is not changed in this module commit.
+The source-module metadata records the complete normal owner set. The
+`tribegam_prefix` registration now uses `src/tribegam.cpp`.
 
 ## Open work
 
-- Run the complete candidate or registered translation-unit check after integration uses `src/tribegam.cpp` as the compiler source.
-- Refresh registered exact claims after grouped validation. The old `tribegam_prefix` registration names the retired source-bank files.
+- The post-repair candidate validates all 21 registered owners. Each reports
+  `MATCH` and `0.0000%`, with matching ownership, boundaries, relocations, and
+  direct targets.
 - Keep the generated destructor as a separate generated-entry check.
