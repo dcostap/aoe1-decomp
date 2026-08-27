@@ -50,7 +50,7 @@
 #include "matching/0040F130_trigger.cpp"
 #include "matching/0040F150_addCommand.cpp"
 #include "matching/0040F1A0_addTrigger.cpp"
-#include "scratch/0040F200_initialize.cpp"
+#include "matching/0040F200_initialize.cpp"
 #include "matching/0040F230_AIPlayGroup.cpp"
 #include "matching/0040F240_minimum.cpp"
 #include "matching/0040F260_setMinimum.cpp"
