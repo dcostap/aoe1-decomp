@@ -4481,14 +4481,15 @@
     },
     {
       "name": "taipbook",
-      "source": "src/taipbook_tu.cpp",
+      "source": "src/taipbook.cpp",
+      "module": "taipbook",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "004E68B0": "src/matching/004E68B0_TribeAIPlayBook.cpp",
-        "004E6900": "src/matching/004E6900_convertTargetNameToIntType.cpp",
-        "004E6910": "src/matching/004E6910_convertTargetCharacteristicNameToIntType.cpp",
-        "004E6920": "src/matching/004E6920_convertUnitNameToIntType.cpp",
-        "004E6AD0": "src/matching/004E6AD0_convertUnitToIntType.cpp"
+        "004E68B0": "src/taipbook.cpp",
+        "004E6900": "src/taipbook.cpp",
+        "004E6910": "src/taipbook.cpp",
+        "004E6920": "src/taipbook.cpp",
+        "004E6AD0": "src/taipbook.cpp"
       },
       "symbols": {
         "004E6920": "?convertUnitNameToIntType@TribeAIPlayBook@@UBEHPAD@Z",

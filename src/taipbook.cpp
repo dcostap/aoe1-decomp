@@ -1,0 +1,57 @@
+// taipbook.cpp
+// PDB source: C:\\msdev\\work\\age1_x1\\taipbook.cpp.
+// The source owns all five handwritten normal functions in PDB order.
+// The vector-deleting destructor at 004E68D0 is compiler generated.
+
+#include "../include/taipbook.h"
+
+// Compiler-emitted destructor body at 004E68F0.
+TribeAIPlayBook::~TribeAIPlayBook() {
+}
+
+// 004E68B0 TribeAIPlayBook::TribeAIPlayBook
+TribeAIPlayBook::TribeAIPlayBook() : AIPlayBook() {
+}
+
+// 004E6900 TribeAIPlayBook::convertTargetNameToIntType
+int TribeAIPlayBook::convertTargetNameToIntType(char* name) const {
+    return AIPlayBook::convertTargetNameToIntType(name);
+}
+
+// 004E6910 TribeAIPlayBook::convertTargetCharacteristicNameToIntType
+int TribeAIPlayBook::convertTargetCharacteristicNameToIntType(char* name) const {
+    return AIPlayBook::convertTargetCharacteristicNameToIntType(name);
+}
+
+// 004E6920 TribeAIPlayBook::convertUnitNameToIntType
+int TribeAIPlayBook::convertUnitNameToIntType(char* name) const
+{
+    if (strcmp(name, "Hand") == 0)
+        return 0;
+    if (strcmp(name, "Ranged") == 0)
+        return 1;
+    if (strcmp(name, "Priest") == 0)
+        return 4;
+    if (strcmp(name, "Siege") == 0)
+        return 5;
+    if (strcmp(name, "Cavalry") == 0)
+        return 2;
+    if (strcmp(name, "Legion") == 0)
+        return 3;
+
+    return AIPlayBook::convertUnitNameToIntType(name);
+}
+
+// 004E6AD0 TribeAIPlayBook::convertUnitToIntType
+int TribeAIPlayBook::convertUnitToIntType(RGE_Static_Object* obj) const
+{
+    short group = obj->master_obj->object_group;
+    if (group == 0x12) return 4;
+    if (group == 0x1C) return 3;
+    if (group == 0x0D) return 5;
+    if (group == 0x0C || group == 0x23) return 2;
+
+    float result = obj->weaponRange();
+    if (result > 1.0f) return 1;
+    return 0;
+}

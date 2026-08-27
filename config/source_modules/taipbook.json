@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "name": "taipbook",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\taipbook.cpp",
+  "source": "src/taipbook.cpp",
+  "header": "include/taipbook.h",
+  "functions": {
+    "004E68B0": {
+      "status": "matching",
+      "note_path": "recovery_notes/taipbook_module.md"
+    },
+    "004E6900": {
+      "status": "matching",
+      "note_path": "recovery_notes/taipbook_module.md"
+    },
+    "004E6910": {
+      "status": "matching",
+      "note_path": "recovery_notes/taipbook_module.md"
+    },
+    "004E6920": {
+      "status": "matching",
+      "note_path": "recovery_notes/taipbook_module.md"
+    },
+    "004E6AD0": {
+      "status": "matching",
+      "note_path": "recovery_notes/taipbook_module.md"
+    }
+  }
+}
