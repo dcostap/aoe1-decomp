@@ -65,6 +65,10 @@ The generated `004023F0` deleting destructor also reports `MATCH` with zero
 difference. The candidate has zero relocation mismatches and zero boundary
 escapes. The result passed again after direct ownership registration.
 
+The state-11 path uses natural `static_cast<RGE_Action_Object*>` values. No
+C-style downcast remains. The five exact owners and generated destructor remain
+`MATCH` after this cleanup.
+
 ## Independent update status
 
 `00402740` stays `scratch` in the source-module metadata and is not in the

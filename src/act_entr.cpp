@@ -52,16 +52,20 @@ RGE_Action_Enter::RGE_Action_Enter(RGE_Action_Object* object,
     }
 
     if (target->actionState() == 11) {
-        action = ((RGE_Action_Object*)target)->actions->get_action();
+        RGE_Action_Object* target_action =
+            static_cast<RGE_Action_Object*>(target);
+        action = target_action->actions->get_action();
         if (action->target2ID == 0) {
             goto line_path;
         }
     }
 
     if (target->actionState() == 11) {
-        action = ((RGE_Action_Object*)target)->actions->get_action();
+        RGE_Action_Object* target_action =
+            static_cast<RGE_Action_Object*>(target);
+        action = target_action->actions->get_action();
         this->target_x = action->targetX();
-        action = ((RGE_Action_Object*)target)->actions->get_action();
+        action = target_action->actions->get_action();
         this->target_y = action->targetY();
     }
 
