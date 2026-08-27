@@ -1,13 +1,12 @@
-#ifndef AOE1_TAIMDMD_CONTEXT_H
-#define AOE1_TAIMDMD_CONTEXT_H
+#ifndef AOE1_TAIMDMD_H
+#define AOE1_TAIMDMD_H
 
 // Canonical declarations for the original taimdmd.cpp source module.
 //
 // The PDB owner order is the constructor pair, destructor, the decision
 // methods, and the update helpers in taimdmd.cpp.  The class inventory proves
-// the 0x125CC derived object and the embedded module offsets below.  This
-// header supplies one declaration surface for the complete grouped wrapper;
-// owner files keep their standalone declarations when built alone.
+// the 0x125CC derived object and the embedded module offsets below.
+// This header supplies the declaration surface for the complete source module.
 
 typedef unsigned char uchar;
 

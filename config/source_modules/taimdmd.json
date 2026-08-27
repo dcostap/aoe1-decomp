@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "name": "taimdmd",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\taimdmd.cpp",
+  "source": "src/taimdmd.cpp",
+  "header": "include/taimdmd.h",
+  "functions": {
+    "004E4800": {
+      "status": "scratch",
+      "note_path": "recovery_notes/taimdmd_module.md"
+    },
+    "004E4B80": {
+      "status": "scratch",
+      "note_path": "recovery_notes/taimdmd_module.md"
+    },
+    "004E4EC0": { "status": "matching" },
+    "004E4FA0": { "status": "matching" },
+    "004E5050": {
+      "status": "scratch",
+      "note_path": "recovery_notes/taimdmd_module.md"
+    },
+    "004E5DB0": { "status": "matching" },
+    "004E5F30": { "status": "matching" },
+    "004E5FA0": { "status": "matching" },
+    "004E5FE0": { "status": "matching" },
+    "004E6020": { "status": "matching" },
+    "004E6090": { "status": "matching" },
+    "004E60D0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/taimdmd_module.md"
+    },
+    "004E60F0": { "status": "matching" },
+    "004E6160": { "status": "matching" },
+    "004E6250": { "status": "matching" },
+    "004E6490": { "status": "matching" },
+    "004E6580": { "status": "matching" },
+    "004E6600": { "status": "matching" },
+    "004E6870": { "status": "matching" }
+  }
+}
