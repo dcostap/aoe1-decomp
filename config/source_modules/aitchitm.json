@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "name": "aitchitm",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\aitchitm.cpp",
+  "source": "src/aitchitm.cpp",
+  "header": "include/aitchitm.h",
+  "functions": {
+    "00412BB0": { "status": "matching" },
+    "00412C20": {
+      "status": "matching",
+      "note_path": "recovery_notes/00412C20_TechnologyItem.md"
+    },
+    "00412CD0": {
+      "status": "matching",
+      "note_path": "recovery_notes/00412CD0_TechnologyItem.md"
+    },
+    "00412D70": { "status": "matching" },
+    "00412D90": { "status": "matching" },
+    "00412DB0": { "status": "matching" },
+    "00412DD0": { "status": "matching" },
+    "00412DF0": { "status": "matching" },
+    "00412E10": { "status": "matching" },
+    "00412E20": { "status": "matching" },
+    "00412E30": { "status": "matching" }
+  }
+}

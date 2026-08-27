@@ -3158,20 +3158,21 @@
     },
     {
       "name": "aitchitm",
-      "source": "src/aitchitm_tu.cpp",
+      "source": "src/aitchitm.cpp",
+      "module": "aitchitm",
       "flags": "config/flags/default_gx.rsp",
       "owners": {
-        "00412BB0": "src/matching/00412BB0_TechnologyItem.cpp",
-        "00412C20": "src/matching/00412C20_TechnologyItem.cpp",
-        "00412CD0": "src/matching/00412CD0_TechnologyItem.cpp",
-        "00412D70": "src/matching/00412D70_TechnologyItem.cpp",
-        "00412D90": "src/matching/00412D90_operator.cpp",
-        "00412DB0": "src/matching/00412DB0_operator.cpp",
-        "00412DD0": "src/matching/00412DD0_operator.cpp",
-        "00412DF0": "src/matching/00412DF0_operator.cpp",
-        "00412E10": "src/matching/00412E10_id.cpp",
-        "00412E20": "src/matching/00412E20_name.cpp",
-        "00412E30": "src/matching/00412E30_resourceCost.cpp"
+        "00412BB0": "src/aitchitm.cpp",
+        "00412C20": "src/aitchitm.cpp",
+        "00412CD0": "src/aitchitm.cpp",
+        "00412D70": "src/aitchitm.cpp",
+        "00412D90": "src/aitchitm.cpp",
+        "00412DB0": "src/aitchitm.cpp",
+        "00412DD0": "src/aitchitm.cpp",
+        "00412DF0": "src/aitchitm.cpp",
+        "00412E10": "src/aitchitm.cpp",
+        "00412E20": "src/aitchitm.cpp",
+        "00412E30": "src/aitchitm.cpp"
       },
       "symbols": {
         "00412BB0": "??0TechnologyItem@@QAE@XZ",

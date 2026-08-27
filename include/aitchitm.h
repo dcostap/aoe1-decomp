@@ -1,12 +1,5 @@
-#ifndef AOE1_AITCHITM_CONTEXT_H
-#define AOE1_AITCHITM_CONTEXT_H
-
-// Authentic declaration surface for the PDB source module aitchitm.cpp.
-//
-// The source order is the four TechnologyItem constructors/destructor, four
-// free comparison operators, and three accessors.  ResourceItem is declared
-// with the observed 0x70 by-value layout.  The shipped TechnologyItem
-// destructor deletes its polymorphic ResourceItem member.
+#ifndef AOE1_AITCHITM_H
+#define AOE1_AITCHITM_H
 
 extern char s_592A40[];
 
@@ -47,5 +40,10 @@ public:
 };
 
 typedef char aitchitm_technology_item_size[(sizeof(TechnologyItem) == 0x54) ? 1 : -1];
+
+int __cdecl operator==(const TechnologyItem& lhs, const TechnologyItem& rhs);
+int __cdecl operator!=(const TechnologyItem& lhs, const TechnologyItem& rhs);
+int __cdecl operator<(const TechnologyItem& lhs, const TechnologyItem& rhs);
+int __cdecl operator>(const TechnologyItem& lhs, const TechnologyItem& rhs);
 
 #endif
