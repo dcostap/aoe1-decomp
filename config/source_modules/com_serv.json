@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "name": "com_serv",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\com_serv.cpp",
+  "source": "src/com_serv.cpp",
+  "header": "include/com_serv.h",
+  "functions": {
+    "00431FB0": {
+      "status": "matching",
+      "note_path": "recovery_notes/00431FB0_TCommunications_Services.md"
+    },
+    "00432030": { "status": "matching" },
+    "00432040": { "status": "matching" },
+    "00432050": { "status": "matching" },
+    "00432060": { "status": "matching" },
+    "00432080": { "status": "matching" },
+    "004320C0": { "status": "matching" },
+    "004320F0": { "status": "matching" },
+    "00432120": { "status": "matching" },
+    "00432150": { "status": "matching" },
+    "00432180": {
+      "status": "matching",
+      "note_path": "recovery_notes/00432180_DPEnumCallback.md"
+    }
+  }
+}

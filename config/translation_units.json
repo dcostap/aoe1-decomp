@@ -3764,20 +3764,21 @@
     },
     {
       "name": "com_serv",
-      "source": "src/com_serv_tu.cpp",
+      "source": "src/com_serv.cpp",
+      "module": "com_serv",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "00431FB0": "src/matching/00431FB0_TCommunications_Services.cpp",
-        "00432030": "src/matching/00432030_TCommunications_Services.cpp",
-        "00432040": "src/matching/00432040_GetServiceCount.cpp",
-        "00432050": "src/matching/00432050_IncServiceCount.cpp",
-        "00432060": "src/matching/00432060_GetServiceName.cpp",
-        "00432080": "src/matching/00432080_SetServiceName.cpp",
-        "004320C0": "src/matching/004320C0_GetServiceGUID.cpp",
-        "004320F0": "src/matching/004320F0_EnumServiceGUID.cpp",
-        "00432120": "src/matching/00432120_GetServiceActive.cpp",
-        "00432150": "src/matching/00432150_SetServiceActive.cpp",
-        "00432180": "src/matching/00432180_DPEnumCallback.cpp"
+        "00431FB0": "src/com_serv.cpp",
+        "00432030": "src/com_serv.cpp",
+        "00432040": "src/com_serv.cpp",
+        "00432050": "src/com_serv.cpp",
+        "00432060": "src/com_serv.cpp",
+        "00432080": "src/com_serv.cpp",
+        "004320C0": "src/com_serv.cpp",
+        "004320F0": "src/com_serv.cpp",
+        "00432120": "src/com_serv.cpp",
+        "00432150": "src/com_serv.cpp",
+        "00432180": "src/com_serv.cpp"
       },
       "symbols": {}
     },
