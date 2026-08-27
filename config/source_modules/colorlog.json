@@ -6,7 +6,7 @@
   "header": "include/colorlog.h",
   "header_composition": {
     "status": "repaired",
-    "summary": "Consumes canonical basegame and drawarea owners; declares only Colorlog globals and the color_log entry point. The source includes the global-pointer owner."
+    "summary": "The public header declares only Colorlog globals and the entry point. The source consumes canonical BaseGame, Drawarea, and global-pointer owners."
   },
   "functions": {
     "00424810": {

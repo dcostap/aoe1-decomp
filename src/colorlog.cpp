@@ -2,6 +2,8 @@
 // This file owns the module's handwritten definition.
 
 #include "../include/colorlog.h"
+#include "../include/basegame.h"
+#include "../include/drawarea.h"
 #include "../include/rge_base_game_global.h"
 
 void __cdecl color_log(unsigned char param_1, unsigned char param_2, int param_3) {

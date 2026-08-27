@@ -17,11 +17,11 @@ surface. These checks link the owner to the `Colorlog.cpp` source context.
 
 ## Header composition repair
 
-The header consumes `include/basegame.h` for the PDB-owned `RGE_Base_Game`
+The source consumes `include/basegame.h` for the PDB-owned `RGE_Base_Game`
 layout and `include/drawarea.h` for the PDB-owned `TDrawArea` and `TDrawSystem`
-layouts. The source includes `include/rge_base_game_global.h` for the
-process-wide pointer. The public header declares no foreign class or record.
-It does not include `panel.h`.
+layouts. It includes `include/rge_base_game_global.h` for the process-wide
+pointer. The public header declares no foreign class or record. It does not
+include `panel.h`.
 
 The PDB type dump proves the consumed draw members:
 
@@ -35,9 +35,9 @@ and `prog_mode` at `+0x1B0`. The original assembly reads these members at
 `00424862`, `00424873`, `0042489F`, `004248A9`, `0042491A`, `00424927`,
 `0042497D`, and `004249A0`.
 
-`src/colorlog.cpp` already uses the canonical member names. Its only source
-change is the private include of `rge_base_game_global.h`. No private
-`RGE_Base_Game`, `TDrawSystem`, or `TDrawArea` copy remains.
+`src/colorlog.cpp` uses the canonical member names and keeps all three owner
+includes private. No private `RGE_Base_Game`, `TDrawSystem`, or `TDrawArea`
+copy remains.
 
 The function builds two ten-pixel rectangles and one point. It converts the
 point to screen coordinates in screen mode two. It then fills the primary and
