@@ -8,10 +8,6 @@
 #include <string.h>
 #include <io.h>
 
-#ifndef CSTR
-#define CSTR(address) ((char*)(address))
-#endif
-
 struct tagRECT;
 class TDrawArea;
 class TTextPanel;

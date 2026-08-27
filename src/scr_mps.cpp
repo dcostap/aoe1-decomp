@@ -2202,14 +2202,14 @@ void TribeMPSetupScreen::updateSummary()
 
             scenario_dir = rge_base_game->prog_info->scenario_dir;
             scenario_name = rge_base_game->scenarioName();
-            sprintf(str1, CSTR(0x00586114), scenario_dir, scenario_name);
+            sprintf(str1, "%s%s.scn", scenario_dir, scenario_name);
             long handle = _findfirst(str1,
                                      (struct _finddata_t*)file_name);
             if (handle == -1) {
-                sprintf(str1, CSTR(0x00586840),
+                sprintf(str1, "%s.scx",
                         rge_base_game->scenarioName());
             } else {
-                sprintf(str1, CSTR(0x00586838),
+                sprintf(str1, "%s.scn",
                         rge_base_game->scenarioName());
             }
 
@@ -2232,7 +2232,7 @@ void TribeMPSetupScreen::updateSummary()
                 for (; player_index < 9; ++player_index) {
                     if (((RGE_Scenario*)this->scenarioInfo)->Get_player_Active(player_index) != 0) {
                         ++this->scenarioPlayerCount;
-                        sprintf(str2, CSTR(0x00584610), player_index + 1);
+                        sprintf(str2, "%d", player_index + 1);
                         if (rge_base_game->multiplayerGame() ||
                             (rge_base_game->singlePlayerGame() &&
                              ((RGE_Scenario*)this->scenarioInfo)->Get_player_Type(player_index) == 1)) {
@@ -2277,7 +2277,7 @@ void TribeMPSetupScreen::updateSummary()
                 ((TRIBE_Game*)rge_base_game)->setPlayerColor(
                     random_index, this->defaultColor[random_index]);
                 rge_base_game->setPlayerTeam(random_index, 1);
-                sprintf(str2, CSTR(0x00584610), random_index + 1);
+                sprintf(str2, "%d", random_index + 1);
                 for (int random_append_index = 0; random_append_index < 8;
                      ++random_append_index) {
                     this->scenarioPlayerDrop[random_append_index]->append_line(
@@ -2304,13 +2304,13 @@ void TribeMPSetupScreen::updateSummary()
         if (rge_base_game->scenarioGame()) {
             scenario_dir = rge_base_game->prog_info->scenario_dir;
             scenario_name = rge_base_game->scenarioName();
-            sprintf(file_name, CSTR(0x00586114), scenario_dir, scenario_name);
+            sprintf(file_name, "%s%s.scn", scenario_dir, scenario_name);
             long handle = _findfirst(file_name, &file_info);
             if (handle == -1) {
-                sprintf(file_name, CSTR(0x00586840),
+                sprintf(file_name, "%s.scx",
                         rge_base_game->scenarioName());
             } else {
-                sprintf(file_name, CSTR(0x00586838),
+                sprintf(file_name, "%s.scn",
                         rge_base_game->scenarioName());
             }
             this->myScenarioChecksum = rge_base_game->get_scenario_checksum(file_name);
@@ -2373,14 +2373,14 @@ void TribeMPSetupScreen::updateSummary()
 
     if (rge_base_game->scenarioGame()) {
         if (this->settingsFixed == 0 && this->scenarioPlayerCount != 2) {
-            sprintf(str2, CSTR(0x00586C20), this->get_string(0x25B7),
+            sprintf(str2, "%s %d - %d", this->get_string(0x25B7),
                     2, this->scenarioPlayerCount);
         } else {
-            sprintf(str2, CSTR(0x00586C18), this->get_string(0x25B7),
+            sprintf(str2, "%s %d", this->get_string(0x25B7),
                     this->scenarioPlayerCount);
         }
     } else {
-        sprintf(str2, CSTR(0x00586C0C), this->get_string(0x25B7));
+        sprintf(str2, "%s 2 - 8", this->get_string(0x25B7));
     }
     this->settingText[setting]->set_text(str2);
     this->settingText[setting]->set_active(1);

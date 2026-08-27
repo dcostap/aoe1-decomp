@@ -26,6 +26,10 @@ Migration is structural. The old grouped wrapper was the pre-migration validatio
 
 The five unregistered owners remain observed, not exact claims. Their merged-TU results are: `004A00B0` 1,478 differing bytes; `004A16E0` 2,215 differing bytes with two relocation-target mismatches and two boundary escapes; `004A2060` 69 differing bytes; `004A27A0` 1 differing byte; and `004A2D50` 344 differing bytes with two relocation-target mismatches. These are recorded regressions or unresolved results, not hidden by source changes. Do not change recovered behavior to hide them.
 
+## Format literals
+
+The original image proves every former `CSTR` value. At `00584610`, the bytes are `25 64 00`, or `"%d"`. At `00586114`, they are `"%s%s.scn"`. At `00586838` and `00586840`, they are `"%s.scn"` and `"%s.scx"`. At `00586C0C`, `00586C18`, and `00586C20`, the bytes decode to `"%s 2 - 8"`, `"%s %d"`, and `"%s %d - %d"`. The module now uses these natural literals at each former use.
+
 ## Open blockers
 
 - The requested Terra contract file was absent from this worktree at `build/source_reunification/terra_system/orchestrator_contract.md`; an equivalent contract was read from the sibling Terra checkout.
