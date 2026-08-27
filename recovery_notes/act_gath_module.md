@@ -67,6 +67,12 @@ The player owner names are `attributes` at `+0x50` and `attribute_num` at
 `+0x4C`. The notify calls use three `int` arguments and three `long` arguments
 to select the proven six-argument virtual slot at `+0x148`.
 
+The grouped candidate now reports all eight registered normal owners as
+`MATCH` with `0.0000%` difference, zero relocation mismatches, and zero
+boundary escapes. Generated `00402F10` also matches. The two scratch and two
+accepted-drift owners remain observed. They mismatch 618, 1,144, 15, and 14
+bytes respectively. `00403110` has one relocation mismatch.
+
 The source casts an action object's canonical `master_obj` pointer to
 `RGE_Master_Action_Object` where the action-master fields are used. It uses
 `attribute_max_amount` for the proven +0x7C field. It uses `work_rate` for the
