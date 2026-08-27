@@ -1,4 +1,7 @@
 #include "../include/m_dg_obj.h"
+#include "../include/dpl_obj.h"
+#include "../include/player.h"
+#include "../include/world.h"
 
 RGE_Master_Doppleganger_Object::RGE_Master_Doppleganger_Object(
     RGE_Master_Doppleganger_Object* param_1, int param_2)
