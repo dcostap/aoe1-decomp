@@ -7343,6 +7343,7 @@
       "source": "src/pnl_scbr_tu.cpp",
       "flags": "config/flags/0047A700_TScrollBarPanel.rsp",
       "owners": {
+        "0047A700": "src/matching/0047A700_TScrollBarPanel.cpp",
         "0047A8A0": "src/matching/0047A8A0_TScrollBarPanel.cpp",
         "0047A8B0": "src/matching/0047A8B0_setup.cpp",
         "0047AC10": "src/matching/0047AC10_set_list_len.cpp",
@@ -7372,7 +7373,8 @@
         "0047B690": "?draw_border@TScrollBarPanel@@IAEXHHJJJJ@Z",
         "0047B8B0": "?draw_back_pic@TScrollBarPanel@@IAEXXZ",
         "0047B970": "?draw_button_pic@TScrollBarPanel@@IAEXHHPAUtagRECT@@@Z",
-        "0047ACC0": "?handle_idle@TScrollBarPanel@@UAEJXZ"
+        "0047ACC0": "?handle_idle@TScrollBarPanel@@UAEJXZ",
+        "0047A700": "??0TScrollBarPanel@@QAE@XZ"
       }
     },
     {
