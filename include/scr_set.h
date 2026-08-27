@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "sceninfo.h"
 
 typedef int PositionMode;
 typedef int RedrawMode;
@@ -22,7 +23,6 @@ class TVerticalSliderPanel;
 class THorizontalSliderPanel;
 class TDrawArea;
 class PanelNode;
-class RGE_Scenario_File_Info;
 class RGE_Scenario_Header;
 class TCommunications_Handler;
 class TribeMPSetupScreen;
@@ -328,11 +328,6 @@ class RGE_Scenario_Header {
 public:
     char gap_00[0x10]; char* description; int fixed_players; int player_count;
 };
-class RGE_Scenario_File_Info {
-public:
-    void reload_scenarios(); char* get_scenario_name(int); RGE_Scenario_Header* get_scenario_info(int);
-};
-
 class TCommunications_Handler {
 public:
     long SendSharedData(int);

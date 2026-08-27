@@ -2,13 +2,13 @@
 #define AOE1_SCR_SELS_H
 
 // Header for the Scr_sels.cpp source module.
+#include "sceninfo.h"
 struct tagRECT;
 class TDrawArea;
 class TTextPanel;
 class TListPanel;
 class TScrollBarPanel;
 class TButtonPanel;
-class RGE_Scenario_File_Info;
 class RGE_Base_Game;
 class TRIBE_Game;
 class TPanelSystem;
@@ -195,13 +195,6 @@ public:
     char* description;
     int fixed;
     int num_players;
-};
-
-class RGE_Scenario_File_Info {
-public:
-    void reload_scenarios();
-    char* get_scenario_name(int index);
-    RGE_Scenario_Header* get_scenario_info(long id);
 };
 
 class RGE_Base_Game {
