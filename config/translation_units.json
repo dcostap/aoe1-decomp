@@ -7576,11 +7576,9 @@
         "004D1800": "src/tact_rep.cpp",
         "004D1850": "src/tact_rep.cpp",
         "004D1880": "src/tact_rep.cpp",
-        "004D18B0": "src/tact_rep.cpp",
         "004D1F50": "src/tact_rep.cpp",
         "004D1F60": "src/tact_rep.cpp",
-        "004D1FA0": "src/tact_rep.cpp",
-        "004D2020": "src/tact_rep.cpp"
+        "004D1FA0": "src/tact_rep.cpp"
       },
       "symbols": {
         "004D1680": "??0TRIBE_Action_Repair@@QAE@HPAVRGE_Action_Object@@H@Z",
@@ -7589,11 +7587,9 @@
         "004D1800": "?setup@TRIBE_Action_Repair@@UAEHHPAVRGE_Action_Object@@@Z",
         "004D1850": "?save@TRIBE_Action_Repair@@UAEXH@Z",
         "004D1880": "?first_in_stack@TRIBE_Action_Repair@@UAEXE@Z",
-        "004D18B0": "?set_state@TRIBE_Action_Repair@@MAEXE@Z",
         "004D1F50": "?stop@TRIBE_Action_Repair@@UAEHXZ",
         "004D1F60": "?move_to@TRIBE_Action_Repair@@UAEHPAVRGE_Static_Object@@MMM@Z",
-        "004D1FA0": "?work@TRIBE_Action_Repair@@UAEHPAVRGE_Static_Object@@MMM@Z",
-        "004D2020": "?meet_target@TRIBE_Action_Repair@@IAEXXZ"
+        "004D1FA0": "?work@TRIBE_Action_Repair@@UAEHPAVRGE_Static_Object@@MMM@Z"
       }
     },
     {

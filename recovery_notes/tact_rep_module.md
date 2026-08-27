@@ -12,9 +12,14 @@
 
 ## Status
 
-The source owns all 12 normal owners in PDB order. The prior candidate recorded
-eleven exact owners. This canonical-header migration has no new validation.
-`004D1BB0` (`TRIBE_Action_Repair::update`) remains scratch.
+The source owns all 12 normal owners in PDB order. Final grouped validation
+matches nine registered owners. `004D1BB0` (`TRIBE_Action_Repair::update`)
+remains scratch.
+
+`004D18B0` (`set_state`) differs by 603 bytes. `004D2020` (`meet_target`)
+differs by 3 bytes. Both retain matching owner, relocation targets, and
+boundaries. They are scratch and have no exact translation-unit ownership.
+Do not tune headers or restore `sound_context.h` to change these results.
 
 The state-4 range load reads `RGE_Master_Combat_Object::weapon_range` at
 `+0x114`. The source uses that named field from the canonical `m_co_obj.h`
@@ -38,4 +43,5 @@ canonical field at the observed `+0x1C` task offset. Action-object-only fields
 use the canonical `RGE_Action_Object` surface through typed casts. The source
 does not publish packet-local combat, action-list, or action declarations.
 
-No new compiler, candidate, or grouped validation was run for this packet.
+The final grouped candidate also reports a 299-byte difference for scratch
+`004D1BB0`. It has matching owner, relocation targets, and boundaries.

@@ -11,7 +11,10 @@
     "004D1800": { "status": "matching" },
     "004D1850": { "status": "matching" },
     "004D1880": { "status": "matching" },
-    "004D18B0": { "status": "matching" },
+    "004D18B0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/tact_rep_module.md"
+    },
     "004D1BB0": {
       "status": "scratch",
       "note_path": "recovery_notes/004D1BB0_update.md"
@@ -19,6 +22,9 @@
     "004D1F50": { "status": "matching" },
     "004D1F60": { "status": "matching" },
     "004D1FA0": { "status": "matching" },
-    "004D2020": { "status": "matching" }
+    "004D2020": {
+      "status": "scratch",
+      "note_path": "recovery_notes/tact_rep_module.md"
+    }
   }
 }
