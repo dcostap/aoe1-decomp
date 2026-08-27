@@ -6690,14 +6690,14 @@
     },
     {
       "name": "act_entr_cpp",
-      "source": "src/act_entr_tu.cpp",
+      "source": "src/act_entr.cpp",
       "flags": "config/flags/00402410_RGE_Action_Enter.rsp",
       "owners": {
-        "004023C0": "src/matching/004023C0_RGE_Action_Enter.cpp",
-        "00402410": "src/matching/00402410_RGE_Action_Enter.cpp",
-        "004025F0": "src/matching/004025F0_RGE_Action_Enter.cpp",
-        "00402600": "src/matching/00402600_first_in_stack.cpp",
-        "00402610": "src/matching/00402610_set_state.cpp"
+        "004023C0": "src/act_entr.cpp",
+        "00402410": "src/act_entr.cpp",
+        "004025F0": "src/act_entr.cpp",
+        "00402600": "src/act_entr.cpp",
+        "00402610": "src/act_entr.cpp"
       },
       "symbols": {
         "004023C0": "??0RGE_Action_Enter@@QAE@HPAVRGE_Action_Object@@@Z",
