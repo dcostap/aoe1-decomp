@@ -1,8 +1,8 @@
 // Canonical period surface for the Pnl_drop.cpp translation unit.
 // Ownership and offsets follow the reviewed panel type evidence.
 
-#ifndef PNL_DROP_CONTEXT_H
-#define PNL_DROP_CONTEXT_H
+#ifndef AOE1_PNL_DROP_H
+#define AOE1_PNL_DROP_H
 
 struct tagRECT {
     long left;
@@ -20,7 +20,6 @@ class TButtonPanel;
 class TListPanel;
 class TScrollBarPanel;
 class TDropDownPanel;
-class MemberType;
 class TPanel;
 
 struct TDrawArea {
@@ -118,8 +117,8 @@ public:
     TPanel* previousModalPanelValue;
     long pnl_x;
     long pnl_y;
-    union { long pnl_wid; long field_14; };
-    union { long pnl_hgt; long field_18; };
+    long pnl_wid;
+    long pnl_hgt;
     char* panelNameValue;
     TDrawArea* render_area;
     tagRECT clip_rect;
@@ -140,7 +139,7 @@ public:
     int active;
     int visible;
     int tab_stop;
-    union { int have_focus; int open_state; };
+    int have_focus;
     int overlapping_children;
     int handle_mouse_input;
     int just_drawn;
@@ -168,7 +167,7 @@ public:
     long help_page_id;
     unsigned char mouse_action;
     unsigned char mouse_down_button;
-    union { unsigned char panel_type; unsigned char field_EE; };
+    unsigned char panel_type;
     unsigned char color;
     unsigned char fill_in_background;
     unsigned char clip_to_parent;
@@ -281,7 +280,7 @@ public:
     int outline;
     unsigned char outline_color;
     unsigned char _pad_2[3];
-    union { int sorted; int field_15C; };
+    int sorted;
     long second_column_pos;
     long full_width;
     long scbar_width;
@@ -424,12 +423,13 @@ public:
 class TDropDownPanel : public TPanel {
 public:
     enum DrawStyle {
-        DrawStyleDefault = 0
+        DrawStyleDefault = 0,
+        DrawStyleLeftButton = 1
     };
 
     TTextPanel* val_panel;
     TButtonPanel* btn_panel;
-    union { TListPanel* list_panel; TTextPanel* member_FC; void* field_FC; };
+    TListPanel* list_panel;
     TScrollBarPanel* scbar_panel;
     int mode;
     short val_num;
@@ -470,7 +470,6 @@ public:
     void set_bevel_info(int, int, int, int, int, int, int);
     void set_buttons(TShape*, int, int, int, int, int);
     void set_mode(DropdownMode);
-    void set_mode(int);
     int numberLines();
     int currentLineNumber();
     void setCurrentLineNumber(int);
