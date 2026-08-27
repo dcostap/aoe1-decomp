@@ -3112,13 +3112,17 @@
     },
     {
       "name": "aistrmod",
-      "source": "src/aistrmod_tu.cpp",
+      "source": "src/aistrmod.cpp",
+      "module": "aistrmod",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "00412AF0": "src/matching/00412AF0_StrategyAIModule.cpp",
-        "00412B40": "src/matching/00412B40_StrategyAIModule.cpp"
+        "00412AF0": "src/aistrmod.cpp",
+        "00412B40": "src/aistrmod.cpp"
       },
-      "symbols": {}
+      "symbols": {
+        "00412AF0": "??0StrategyAIModule@@QAE@PAXH@Z",
+        "00412B40": "??1StrategyAIModule@@UAE@XZ"
+      }
     },
     {
       "name": "aitacmod",
