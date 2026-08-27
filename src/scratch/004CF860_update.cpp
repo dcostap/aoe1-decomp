@@ -24,8 +24,10 @@
 //   typed state-12 returns. They were unchanged or worse; the clean body is restored.
 // - Replaced generic action and action-list placeholders with the exact donor
 //   base surfaces. Emitted code is unchanged, but the source now names proven ABI.
-
-#define rge_base_game (*(RGE_Base_Game**)0x62C574)
+// - TU repair: replaced the absolute rge_base_game view and duplicate local
+//   data definitions with reviewed externs. Replaced world +0x84 reads with
+//   the named world_time_delta_seconds field. Grouped output stayed at the
+//   clean 1587-byte, 53/54-call, 1056-byte-diff result.
 
 #ifndef TACT_HNT_SHARED_CONTEXT
 class RGE_Static_Object;
@@ -361,9 +363,9 @@ public:
 };
 #endif
 
-double DAT_00575158 = 0.0;
-double DAT_00575168 = 1.0;
-float DAT_00575150 = 0.0f;
+extern RGE_Base_Game* rge_base_game;
+extern double DAT_00575168;
+extern float DAT_00575150;
 
 unsigned char TRIBE_Action_Hunt::update()
 {
@@ -385,7 +387,7 @@ unsigned char TRIBE_Action_Hunt::update()
     switch (this->state) {
     case 3:
         if (this->timer < 0.0) {
-            this->timer += *(float*)((char*)this->obj->owner->world + 0x84);
+            this->timer += this->obj->owner->world->world_time_delta_seconds;
             if (this->timer > 0.0) {
                 this->timer = -10.0f;
                 this->obj->notify(this->obj->id, this->obj->id, 0x202, 0x265, this->targetType, 0);
@@ -463,26 +465,16 @@ state_default:
         if (rge_base_game->quick_build != 0)
             give_amount = holder->attribute_amount_held;
         else {
-#ifdef TACT_HNT_SHARED_CONTEXT
             give_amount = this->task->work_val1 *
                 static_cast<RGE_Master_Action_Object*>(this->obj->master_obj)->work_rate *
-                *(float*)((char*)this->obj->owner->world + 0xe4);
-#else
-            give_amount = this->task->work_val1 *
-                *(float*)((char*)this->obj->object_data + 0xe4) *
-                *(float*)((char*)this->obj->owner->world + 0xe4);
-#endif
+                this->obj->owner->world->world_time_delta_seconds;
         }
         if (holder->attribute_amount_held < give_amount)
             give_amount = holder->attribute_amount_held;
         short attr = this->task->attribute_type2;
         if (attr == -1) modifier = 1.0f;
         else modifier = this->obj->owner->attribute_table[attr];
-#ifdef TACT_HNT_SHARED_CONTEXT
         max_hold = (float)static_cast<RGE_Master_Static_Object*>(this->obj->master_obj)->attribute_max_amount * modifier - this->obj->attribute_amount_held;
-#else
-        max_hold = (float)*(short*)((char*)this->obj->object_data + 0x7c) * modifier - this->obj->attribute_amount_held;
-#endif
         if (max_hold < modifier * give_amount)
             give_amount = give_amount - (modifier * give_amount - max_hold) / modifier;
         holder->set_attribute_amount(-give_amount, 1, 1);
@@ -493,7 +485,7 @@ state_default:
     }
     case 8:
         if (this->timer < 0.0) {
-            this->timer += *(float*)((char*)this->obj->owner->world + 0x84);
+            this->timer += this->obj->owner->world->world_time_delta_seconds;
             if (this->timer > 0.0) {
                 this->timer = 0.0;
                 this->set_target_obj2(0);

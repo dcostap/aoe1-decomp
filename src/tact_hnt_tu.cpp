@@ -32,6 +32,11 @@
 // by this virtual class surface and has no standalone source owner.  The
 // candidate proposal records its exact decorated symbol.
 //
+// The update repair uses the reviewed rge_base_game and DAT_00575168 externs
+// and the named world-time-delta field.  Its grouped result remains observed:
+// 1587 bytes, 0xC frame, 53/54 calls, and 1056 differing bytes.  The
+// accepted-drift move_to owner remains unchanged.
+//
 // tact_hnt_context.h imports only the reviewed declaration surface from the
 // set_state owner.  It does not import the body.  Each VA below remains owned
 // by its existing source file.  No translation_units.json entry is added here.
