@@ -36,6 +36,17 @@ The module header owns the reviewed panel, draw-area, shape, dialog, and API
 surfaces. The source has no inline assembly, fake virtual slots, raw vtable
 field, `.cpp` include, or fallback declaration.
 
+## String evidence
+
+The original `empiresx.exe` stores the two checkbox strings in `.data`:
+
+- `00580460` starts with bytes `20 00`, which is the literal `" "`.
+- `00583B74` starts with bytes `58 00`, which is the literal `"X"`.
+
+The same bytes occur in both repository copies of the original executable.
+The direct source now uses the module literals `s_space` and `s_X`.
+No raw string-address cast remains.
+
 ## Validation
 
 - Direct source definition count: 76.

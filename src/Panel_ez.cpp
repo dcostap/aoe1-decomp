@@ -849,8 +849,8 @@ int TEasy_Panel::create_check_box(TPanel* panel, TButtonPanel** out, long x, lon
                 (*out)->set_picture(1, this->button_pics, 2);
             } else {
                 FontInfo* f = rge_base_game->get_font(0);
-                (*out)->set_text_info((char*)0x00580460, f->font, f->font_wid, f->font_hgt, -1, -1);
-                (*out)->set_text(1, (char*)0x00583B74);
+                (*out)->set_text_info(s_space, f->font, f->font_wid, f->font_hgt, -1, -1);
+                (*out)->set_text(1, s_X);
                 (*out)->setDrawType(3);
             }
             if (this->use_bevels) {
