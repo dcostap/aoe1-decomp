@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "name": "aitacmod",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\aitacmod.cpp",
+  "source": "src/aitacmod.cpp",
+  "header": "include/aitacmod.h",
+  "functions": {
+    "00412B50": {
+      "status": "matching",
+      "note_path": "recovery_notes/aitacmod_module.md"
+    },
+    "00412BA0": {
+      "status": "matching",
+      "note_path": "recovery_notes/aitacmod_module.md"
+    }
+  }
+}

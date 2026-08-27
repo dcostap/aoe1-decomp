@@ -3131,13 +3131,17 @@
     },
     {
       "name": "aitacmod",
-      "source": "src/aitacmod_tu.cpp",
+      "source": "src/aitacmod.cpp",
+      "module": "aitacmod",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "00412B50": "src/matching/00412B50_TacticalAIModule.cpp",
-        "00412BA0": "src/matching/00412BA0_TacticalAIModule.cpp"
+        "00412B50": "src/aitacmod.cpp",
+        "00412BA0": "src/aitacmod.cpp"
       },
-      "symbols": {}
+      "symbols": {
+        "00412B50": "??0TacticalAIModule@@QAE@PAXH@Z",
+        "00412BA0": "??1TacticalAIModule@@UAE@XZ"
+      }
     },
     {
       "name": "aitchitm",
