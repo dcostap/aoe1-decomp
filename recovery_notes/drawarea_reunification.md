@@ -7,6 +7,14 @@ the proven DirectDraw, GDI, bitmap, span-list, and draw-area layouts. The
 forward-declares it. `src/drawarea.cpp` includes `color.h` for the table fields
 used by `TDrawArea::SetShadowTable`.
 
+## Alignment proof
+
+`TDrawArea::TransColor` ends at `+0xFC`. VC5 aligns the object to `0x100`.
+The header no longer adds `_pad_end[3]`.
+
+`build/header_size_probe.cpp` compiled with the pinned VC5 flags. Its
+`sizeof(TDrawArea) == 0x100` assertion passed.
+
 The paired grouped checks ran after this header repair. The Color check passed
 all six exact owners and its generated destructor. Its two accepted-drift
 owners remained mismatches of 437 and 10 bytes. The report is
@@ -22,6 +30,10 @@ zero comparison errors. Its 13 observed rows had positional differences of
 
 The exact rows and comparison-error gate passed. The full-module flag remains
 false because accepted-drift and scratch rows are not exact.
+
+The cached paired recheck ran after the padding removal. Color kept six exact
+matches and its generated destructor match. Drawarea kept 48 exact matches.
+Both reports had zero comparison errors.
 
 ## Observed non-matching owners
 
