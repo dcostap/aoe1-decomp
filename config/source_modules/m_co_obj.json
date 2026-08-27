@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "name": "m_co_obj",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\m_co_obj.cpp",
+  "source": "src/m_co_obj.cpp",
+  "header": "include/m_co_obj.h",
+  "functions": {
+    "0044FE40": { "status": "matching" },
+    "0044FEC0": { "status": "matching" },
+    "0044FF30": { "status": "matching" },
+    "0044FFB0": { "status": "matching" },
+    "00450170": { "status": "matching" },
+    "00450450": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/m_co_obj_module.md"
+    },
+    "00450680": { "status": "matching" },
+    "004506D0": { "status": "matching" },
+    "004507A0": { "status": "matching" },
+    "00450810": { "status": "matching" },
+    "00450A00": { "status": "matching" },
+    "00450B40": { "status": "matching" },
+    "00450D00": { "status": "matching" },
+    "00450E20": { "status": "matching" },
+    "00451000": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/m_co_obj_module.md"
+    }
+  }
+}
