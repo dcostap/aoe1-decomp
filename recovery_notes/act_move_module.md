@@ -55,10 +55,10 @@ defines its proven three-byte record. The direct source keeps that record
 source-local as a temporary hold. Do not publish `Command.h` for this purpose:
 it carries incompatible duplicate owner layouts. `ManagedArray::zeroNumber()`
 is the canonical owner method for the proven pathing-group count store.
-`m_ac_obj.h` republishes the inherited `move_sprite` member through a public
-using declaration. This closes the owner-access hold without a layout change.
-The original first constructor's action-type store is expressed as a member
-assignment; the compiler owns the derived vptr store.
+`m_mo_obj.h` publishes the inherited `move_sprite` member. No local owner or
+access workaround is needed. The original first constructor's action-type
+store is expressed as a member assignment; the compiler owns the derived vptr
+store.
 
 ## Structural move
 

@@ -17,9 +17,9 @@
 #include "../include/world.h"
 #include "../include/rge_fio.h"
 
-// No canonical owner-only header publishes this three-byte waypoint record.
-// The movement owner publishes the pointer type, so keep this source-local
-// record until its owner header is available.
+// No compatible owner-only header publishes this three-byte waypoint record.
+// Keep the proven record source-local. The canonical movement owner publishes
+// move_sprite as a public member.
 struct XYZBYTEPoint {
     unsigned char x;
     unsigned char y;

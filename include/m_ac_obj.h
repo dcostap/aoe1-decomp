@@ -13,8 +13,6 @@ class RGE_Task_List;
 
 class RGE_Master_Action_Object : public RGE_Master_Moving_Object {
 public:
-    using RGE_Master_Moving_Object::move_sprite;
-
     RGE_Task_List* tasks;
     short default_task;
     float search_radius;
