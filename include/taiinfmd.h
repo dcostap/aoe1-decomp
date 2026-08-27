@@ -4,6 +4,7 @@
 // Canonical declarations for the authentic taiinfmd.cpp module.
 // The PDB order is 004D6AD0, 004D6B70, then 004D7070.
 
+#include "aiplaybook.h"
 #include "infmap.h"
 
 typedef unsigned char uchar;
@@ -539,7 +540,6 @@ public:
 typedef RGE_Static_Object RGE_Obj;
 
 class RGE_Game_World;
-class AIPlayBook;
 class RGE_Player {
 public:
     virtual ~RGE_Player();
@@ -678,14 +678,6 @@ public:
     AIPlayPhase* phase(int phaseNumber);
     int fillGroups(AIPlayStatus* status, int* unitIds, int unitCount,
                    RGE_Game_World* world);
-};
-
-class AIPlayBook {
-public:
-    void* plays;
-    int numberPlaysValue;
-
-    AIPlay* play(int playNumber);
 };
 
 class UnitAIModule {

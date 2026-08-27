@@ -4,6 +4,8 @@
 // Shared declarations for the PDB aiuaimod.cpp source module.
 // PDB and exact owners prove the 0x134-byte UnitAIModule layout.
 
+#include "aiplaybook.h"
+
 typedef unsigned char uchar;
 
 struct OrderEvent {
@@ -174,11 +176,6 @@ class Visible_Unit_Manager;
 class Visible_Resource_Manager;
 class RGE_Master_Combat_Object;
 struct XYZBYTEPoint;
-
-class AIPlayBook {
-public:
-    AIPlay* play(int playNumber);
-};
 
 class RGE_Game_World {
 public:
