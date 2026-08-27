@@ -4260,16 +4260,17 @@
     },
     {
       "name": "tpnl_tim",
-      "source": "src/tpnl_tim_tu.cpp",
+      "source": "src/tpnl_tim.cpp",
+      "module": "tpnl_tim",
       "flags": "config/flags/0051E2B0_render_to_image_buffer.rsp",
       "owners": {
-        "0051D790": "src/matching/0051D790_TRIBE_Panel_Time.cpp",
-        "0051D8B0": "src/matching/0051D8B0_TRIBE_Panel_Time.cpp",
-        "0051DAD0": "src/matching/0051DAD0_startup.cpp",
-        "0051DC60": "src/matching/0051DC60_get_clock_type.cpp",
-        "0051DC70": "src/matching/0051DC70_get_player_id.cpp",
-        "0051DC90": "src/matching/0051DC90_draw.cpp",
-        "0051E0E0": "src/matching/0051E0E0_get_true_render_rect.cpp"
+        "0051D790": "src/tpnl_tim.cpp",
+        "0051D8B0": "src/tpnl_tim.cpp",
+        "0051DAD0": "src/tpnl_tim.cpp",
+        "0051DC60": "src/tpnl_tim.cpp",
+        "0051DC70": "src/tpnl_tim.cpp",
+        "0051DC90": "src/tpnl_tim.cpp",
+        "0051E0E0": "src/tpnl_tim.cpp"
       },
       "symbols": {
         "0051DC90": "?draw@TRIBE_Panel_Time@@UAEXXZ"

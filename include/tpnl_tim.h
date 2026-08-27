@@ -1,8 +1,5 @@
-#ifndef AOE1_TPNL_TIM_CONTEXT_H
-#define AOE1_TPNL_TIM_CONTEXT_H
-
-// Authentic declaration surface for C:\\msdev\\work\\age1_x1\\tpnl_tim.cpp.
-// The owner wrapper includes the source bodies in PDB line order.
+#ifndef AOE1_TPNL_TIM_H
+#define AOE1_TPNL_TIM_H
 
 struct tagRECT {
     long left;
@@ -26,21 +23,16 @@ public:
     short civ_id;
 };
 
-class PlayerLike {
+class RGE_Player {
 public:
     char gap_00[0x4A];
-    union {
-        short player_id_value;
-        short field_4A;
-    };
+    short player_id;
     char gap_4C[0xBC];
     PlayerCivInfo* civ_info;
     char gap_10C[0x734];
-    float field_840;
-    float field_844;
+    float ruin_held_time;
+    float artifact_held_time;
 };
-
-typedef PlayerLike InnerType;
 
 class RGE_Game_World {
 public:
@@ -49,12 +41,10 @@ public:
     char gap_08[0x10];
     float game_speed;
     char gap_1C[0x24];
-    PlayerLike** players;
+    RGE_Player** players;
     char gap_44[0xD4];
     float field_118;
 };
-
-typedef RGE_Game_World WorldLike;
 
 class RGE_Base_Game {
 public:
@@ -89,9 +79,13 @@ public:
     void* GetDc(char* name);
     void ReleaseDc(char* name);
     void SetTrans(int enabled, unsigned char color);
-    void Copy(TDrawArea* src, long x, long y, tagRECT* rect, int mode);
+    void Copy(TDrawArea* source, long x, long y, tagRECT* rect, int mode);
     void SetClipRect(tagRECT* rect);
+
+    char gap_5C[0xA4];
 };
+
+typedef char tdrawarea_size_check[(sizeof(TDrawArea) == 0x100) ? 1 : -1];
 
 class TPanel {
 public:
@@ -182,21 +176,12 @@ public:
     TPanel* tab_prev_panel;
     TPanel* tab_next_panel;
     int mouse_captured;
-    union {
-        int active;
-        int field_6C;
-    };
-    union {
-        int visible;
-        int field_70;
-    };
+    int active;
+    int visible;
     int tab_stop;
     int have_focus;
     int overlapping_children;
-    union {
-        int handle_mouse_input;
-        int field_80;
-    };
+    int handle_mouse_input;
     int just_drawn;
     HRGN clip_rgn;
     tagRECT render_rect;
@@ -215,10 +200,7 @@ public:
     long mouse_down_ctrl;
     long mouse_down_shift;
     unsigned long mouse_down_time;
-    union {
-        long error_code;
-        int field_D8;
-    };
+    long error_code;
     long z_order;
     long display_changed_count;
     long help_string_id;
@@ -230,10 +212,7 @@ public:
     unsigned char fill_in_background;
     unsigned char clip_to_parent;
     unsigned char draw_rect2_flag;
-    union {
-        unsigned char need_restore;
-        unsigned char field_F3;
-    };
+    unsigned char need_restore;
 
     char* get_string(int string_id);
 };
@@ -241,29 +220,20 @@ public:
 class TRIBE_Panel_Time : public TPanel {
 public:
     void* font;
-    union { unsigned int color1; int field_F8; };
-    union { unsigned int color2; int field_FC; };
-    union { int clock_type; int field_100; };
+    unsigned int color1;
+    unsigned int color2;
+    int clock_type;
     int old_clock_type;
-    union { int clock_format; int field_108; };
-    union {
-        int player_id;
-        int old_clock_format;
-    };
-    int field_110;
+    int clock_format;
+    int old_clock_format;
+    int player_id;
     RGE_Game_World* world;
-    union {
-        PlayerLike* player;
-        InnerType* member_118;
-    };
+    RGE_Player* player;
     unsigned long start_real_time;
     unsigned long current_display_value;
     unsigned long last_display_value;
     unsigned long display_time;
-    union {
-        int old_display_time;
-        int field_12C;
-    };
+    int old_display_time;
     HRGN image_clip_region;
     TDrawArea* image_buffer;
     tagRECT image_rect;
@@ -275,18 +245,21 @@ public:
 
     TRIBE_Panel_Time(TDrawArea*, TPanel*);
     virtual ~TRIBE_Panel_Time();
-    virtual void draw();
-    virtual long handle_idle();
     void set_rect(long, long, long, long);
     void startup();
     void set_clock_type(int, int);
     int get_clock_type();
     int get_player_id();
+    virtual void draw();
     virtual void get_true_render_rect(tagRECT&);
+    virtual long handle_idle();
 
 protected:
     int render_to_image_buffer();
 };
+
+typedef char tribe_panel_time_size_check[
+    (sizeof(TRIBE_Panel_Time) == 0x174) ? 1 : -1];
 
 extern "C" int __cdecl sprintf(char*, const char*, ...);
 extern "C" __declspec(dllimport) int __stdcall DeleteObject(void*);
@@ -295,14 +268,13 @@ extern "C" __declspec(dllimport) HRGN __stdcall CreateRectRgn(int, int, int,
 extern "C" __declspec(dllimport) int __stdcall SelectClipRgn(void*, void*);
 extern "C" __declspec(dllimport) void* __stdcall SelectObject(void*, void*);
 extern "C" __declspec(dllimport) int __stdcall SetBkMode(void*, int);
-extern "C" __declspec(dllimport) unsigned int __stdcall SetTextColor(void*,
-                                                                       unsigned int);
-extern "C" __declspec(dllimport) int __stdcall DrawTextA(void*, const char*,
-                                                          int, void*, unsigned int);
-extern "C" __declspec(dllimport) int __stdcall SetRect(void*, int, int, int,
-                                                        int);
+extern "C" __declspec(dllimport) unsigned int __stdcall SetTextColor(
+    void*, unsigned int);
+extern "C" __declspec(dllimport) int __stdcall DrawTextA(
+    void*, const char*, int, void*, unsigned int);
+extern "C" __declspec(dllimport) int __stdcall SetRect(
+    void*, int, int, int, int);
 extern "C" unsigned long __cdecl debug_timeGetTime(const char*, int);
-extern "C" long __cdecl __ftol(void);
 
 void* operator new(unsigned int size);
 void operator delete(void* ptr);
