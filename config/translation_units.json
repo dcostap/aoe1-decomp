@@ -4452,12 +4452,13 @@
     },
     {
       "name": "effects",
-      "source": "src/effects_tu.cpp",
+      "module": "effects_cpp",
+      "source": "src/effects.cpp",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "00449440": "src/matching/00449440_RGE_Effects.cpp",
-        "004494B0": "src/matching/004494B0_save.cpp",
-        "004495C0": "src/matching/004495C0_do_effect.cpp"
+        "00449440": "src/effects.cpp",
+        "004494B0": "src/effects.cpp",
+        "004495C0": "src/effects.cpp"
       },
       "symbols": {
         "004495C0": "?do_effect@RGE_Effects@@UAEXFPAVRGE_Player@@@Z",
