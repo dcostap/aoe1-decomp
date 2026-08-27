@@ -2786,19 +2786,24 @@
     },
     {
       "name": "act_expl",
-      "source": "src/act_expl_tu.cpp",
+      "module": "act_expl",
+      "source": "src/act_expl.cpp",
       "flags": "config/flags/00402C00_set_state.rsp",
       "owners": {
-        "00402B40": "src/matching/00402B40_RGE_Action_Explore.cpp",
-        "00402BA0": "src/matching/00402BA0_RGE_Action_Explore.cpp",
-        "00402BE0": "src/matching/00402BE0_first_in_stack.cpp",
-        "00402C00": "src/matching/00402C00_set_state.cpp",
-        "00402D90": "src/matching/00402D90_update.cpp",
-        "00402E40": "src/matching/00402E40_work.cpp"
+        "00402B40": "src/act_expl.cpp",
+        "00402BA0": "src/act_expl.cpp",
+        "00402BE0": "src/act_expl.cpp",
+        "00402C00": "src/act_expl.cpp",
+        "00402D90": "src/act_expl.cpp",
+        "00402E40": "src/act_expl.cpp"
       },
       "symbols": {
         "00402B40": "??0RGE_Action_Explore@@QAE@HPAVRGE_Action_Object@@@Z",
-        "00402BA0": "??0RGE_Action_Explore@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@MMM@Z"
+        "00402BA0": "??0RGE_Action_Explore@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@MMM@Z",
+        "00402BE0": "?first_in_stack@RGE_Action_Explore@@UAEXE@Z",
+        "00402C00": "?set_state@RGE_Action_Explore@@MAEXE@Z",
+        "00402D90": "?update@RGE_Action_Explore@@UAEEXZ",
+        "00402E40": "?work@RGE_Action_Explore@@UAEHPAVRGE_Static_Object@@MMM@Z"
       }
     },
     {
