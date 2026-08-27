@@ -119,8 +119,8 @@ void RGE_RMM_Object_Generator::make_placement_stack(
     if (x < 0 || y < 0 || range < 0) {
         x = 0;
         y = 0;
-        range = this->width - 1;
-        last = this->height - 1;
+        range = this->map_width - 1;
+        last = this->map_height - 1;
     } else {
         long min_x = x;
         long min_y = y;
@@ -136,8 +136,8 @@ void RGE_RMM_Object_Generator::make_placement_stack(
         range = max_x;
         if (x < 0) x = 0;
         if (y < 0) y = 0;
-        if (range >= this->width) range = this->width - 1;
-        if (last >= this->height) last = this->height - 1;
+        if (range >= this->map_width) range = this->map_width - 1;
+        if (last >= this->map_height) last = this->map_height - 1;
     }
 
     local_c = &stack;
@@ -245,10 +245,10 @@ void RGE_RMM_Object_Generator::remove_area_from_lists(
     if (y_start < 0)
         y_start = 0;
 
-    if (x_end >= this->width)
-        x_end = this->width - 1;
-    if (y_end >= this->height)
-        y_end = this->height - 1;
+    if (x_end >= this->map_width)
+        x_end = this->map_width - 1;
+    if (y_end >= this->map_height)
+        y_end = this->map_height - 1;
 
     for (long cur_y = y_start; cur_y <= y_end; cur_y++) {
         if (x_start <= x_end) {
@@ -256,7 +256,7 @@ void RGE_RMM_Object_Generator::remove_area_from_lists(
             long count = x_end - x_start + 1;
             do {
                 this->remove_stack_node(
-                    (Map_Stack*)((char*)this->map_rows[cur_y] + offset));
+                    (Map_Stack*)((char*)this->stack_offsets[cur_y] + offset));
                 offset += 24;
                 count--;
             } while (count != 0);
@@ -291,14 +291,14 @@ void RGE_RMM_Object_Generator::place_avoid_objects(
                               info.land_inner_radius, 0);
     }
 
-    this->init_stack(&obj_stack);
+    this->init_stack(obj_stack);
     this->make_placement_stack(obj_stack, -1, -1, -1, -1);
 
     RGE_Player* player = this->world->players[
         info.player_id & ((info.player_id <= -1) - 1)];
     count = info.number_of_groups;
 
-    while (this->pop_stack(&obj_stack, &x, &y, &zone) && count > 0) {
+    while (this->pop_stack(obj_stack, x, y, zone) && count > 0) {
         if (info.terrain >= 0) {
             if ((this->map_row_offset[y][x].terrain & 0x1f) !=
                 (unsigned int)info.terrain) {
@@ -337,7 +337,7 @@ void RGE_RMM_Object_Generator::place_avoid_objects(
     next:
         ;
     }
-    this->deinit_stack(&obj_stack);
+    this->deinit_stack(obj_stack);
 }
 
 // VA: 004864F0 RGE_RMM_Object_Generator::place_objects
@@ -357,14 +357,14 @@ void RGE_RMM_Object_Generator::place_objects(RGE_Object_Info_Line& info)
 
     memset(this->search_map, 1, this->map_width * this->map_height);
 
-    this->init_stack(&obj_stack);
+    this->init_stack(obj_stack);
     this->make_placement_stack(obj_stack, -1, -1, -1, -1);
 
     RGE_Player* player = this->world->players[
         info.player_id & (info.player_id <= -1 ? 0 : -1)];
     count = info.number_of_groups;
 
-    while (pop_stack(&obj_stack, &x, &y, &zone) && count > 0) {
+    while (pop_stack(obj_stack, x, y, zone) && count > 0) {
         if (info.terrain < 0 ||
             ((this->map_row_offset[y][x].terrain & 0x1f) ==
              (unsigned int)info.terrain)) {
@@ -398,7 +398,7 @@ void RGE_RMM_Object_Generator::place_objects(RGE_Object_Info_Line& info)
             }
         }
     }
-    this->deinit_stack(&obj_stack);
+    this->deinit_stack(obj_stack);
 }
 
 // VA: 00486700 RGE_RMM_Object_Generator::place_land_objects
@@ -436,7 +436,7 @@ void RGE_RMM_Object_Generator::place_land_objects(
         } while (i < this->info.land_num);
     }
 
-    this->init_stack(&obj_stack);
+    this->init_stack(obj_stack);
     this->make_placement_stack(obj_stack, x, y, radius, outer_radius);
 
     RGE_Object_Info_Line* object = &line;
@@ -457,7 +457,7 @@ void RGE_RMM_Object_Generator::place_land_objects(
         zone = zone_map->get_zone_info(x, y);
 
         long count = object->number_of_groups;
-        while (this->pop_stack(&obj_stack, &y1, &min_x0, &cost) != 0 &&
+        while (this->pop_stack(obj_stack, y1, min_x0, cost) != 0 &&
                count > 0) {
             if ((unsigned char)zone ==
                     zone_map->get_zone_info(y1, min_x0) &&
@@ -502,7 +502,7 @@ void RGE_RMM_Object_Generator::place_land_objects(
                 }
             }
         }
-        this->deinit_stack(&obj_stack);
+        this->deinit_stack(obj_stack);
     }
 }
 
@@ -522,7 +522,7 @@ void RGE_RMM_Object_Generator::place_group(
     Map_Stack obj_stack;
 
     self = this;
-    this->init_stack(&obj_stack);
+    this->init_stack(obj_stack);
     this->make_placement_stack(obj_stack, px, py, 0, info.group_area);
 
     int count = info.object_number_per_group;
@@ -532,7 +532,7 @@ void RGE_RMM_Object_Generator::place_group(
     count += delta;
     if (count < 1) count = 1;
 
-    while (pop_stack(&obj_stack, &col, &x, &cost) && count > 0) {
+    while (pop_stack(obj_stack, col, x, cost) && count > 0) {
         if (info.terrain < 0 ||
             ((this->map_row_offset[x][col].terrain & 0x1f) ==
              (unsigned int)info.terrain)) {
@@ -554,7 +554,7 @@ void RGE_RMM_Object_Generator::place_group(
             }
         }
     }
-    self->deinit_stack(&obj_stack);
+    self->deinit_stack(obj_stack);
 }
 
 // VA: 00486C40 RGE_RMM_Object_Generator::place_cluster
@@ -576,7 +576,7 @@ void RGE_RMM_Object_Generator::place_cluster(
     Map_Stack* node;
 
     Map_Stack obj_stack;
-    this->init_stack(&obj_stack);
+    this->init_stack(obj_stack);
     this->add_stack_node(&obj_stack, &this->stack_offsets[y][x]);
 
     y1 = y - info.group_area;
@@ -585,8 +585,8 @@ void RGE_RMM_Object_Generator::place_cluster(
     x_start = x - info.group_area;
     if (x_start < 0) x_start = 0;
     if (y1 < 0) y1 = 0;
-    if (y0 >= this->width) y0 = this->width - 1;
-    if (zone >= this->height) zone = this->height - 1;
+    if (y0 >= this->map_width) y0 = this->map_width - 1;
+    if (zone >= this->map_height) zone = this->map_height - 1;
 
     for (x1 = y1; x1 <= zone; ++x1) {
         for (tile_y = x_start; tile_y <= y0; ++tile_y) {
@@ -600,10 +600,9 @@ void RGE_RMM_Object_Generator::place_cluster(
         (variance << 1)) / 0x7fff - variance;
     if (count < 1) count = 1;
 
-    node = this->pop_stack(&obj_stack, &tile_y, &x1, &cost);
+    node = this->pop_stack(obj_stack, tile_y, x1, cost);
     while (node != 0 && count > 0) {
-        RGE_RMM_Cluster_Master_View* master =
-            (RGE_RMM_Cluster_Master_View*)player->master_objects[info.obj_id];
+        RGE_Master_Static_Object* master = player->master_objects[info.obj_id];
         tile_y_float = (float)tile_y;
         tile_x = (float)x1;
         if (master->radius_x -
@@ -624,31 +623,31 @@ void RGE_RMM_Object_Generator::place_cluster(
 
             if (tile_y > x_start &&
                 this->search_map_rows[x1][tile_y - 1] != 0) {
-                this->push_stack(&obj_stack, tile_y - 1, x1, 0.0f,
+                this->push_stack(obj_stack, tile_y - 1, x1, 0.0f,
                     (float)debug_rand(
                         "C:\\msdev\\work\\age1_x1\\rmm_obj.cpp", 0x270));
             }
             if (tile_y < y0 &&
                 this->search_map_rows[x1][tile_y + 1] != 0) {
-                this->push_stack(&obj_stack, tile_y + 1, x1, 0.0f,
+                this->push_stack(obj_stack, tile_y + 1, x1, 0.0f,
                     (float)debug_rand(
                         "C:\\msdev\\work\\age1_x1\\rmm_obj.cpp", 0x273));
             }
             if (x1 > y1 &&
                 this->search_map_rows[x1 - 1][tile_y] != 0) {
-                this->push_stack(&obj_stack, tile_y, x1 - 1, 0.0f,
+                this->push_stack(obj_stack, tile_y, x1 - 1, 0.0f,
                     (float)debug_rand(
                         "C:\\msdev\\work\\age1_x1\\rmm_obj.cpp", 0x276));
             }
             if (x1 < zone &&
                 this->search_map_rows[x1 + 1][tile_y] != 0) {
-                this->push_stack(&obj_stack, tile_y, x1 + 1, 0.0f,
+                this->push_stack(obj_stack, tile_y, x1 + 1, 0.0f,
                     (float)debug_rand(
                         "C:\\msdev\\work\\age1_x1\\rmm_obj.cpp", 0x279));
             }
         }
-        node = this->pop_stack(&obj_stack, &tile_y, &x1, &cost);
+        node = this->pop_stack(obj_stack, tile_y, x1, cost);
     }
 
-    this->deinit_stack(&obj_stack);
+    this->deinit_stack(obj_stack);
 }

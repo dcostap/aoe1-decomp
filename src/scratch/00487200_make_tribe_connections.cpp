@@ -32,7 +32,9 @@
 //   drift and was rejected. Explicit pop-result, zero-local, declaration-order,
 //   and next-row-local probes were neutral or worse and were restored.
 
-#include "..\..\include\rmm_shal_context.h"
+#include "..\..\include\rmm_shal.h"
+
+extern "C" int __cdecl debug_rand(char*, int);
 
 void RGE_RMM_Shallows_Generator::make_tribe_connections(long param_1, long param_2) {
     int iVar2;

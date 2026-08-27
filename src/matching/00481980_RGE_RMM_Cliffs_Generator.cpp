@@ -1,7 +1,7 @@
 #ifdef RMM_CLIF_SHARED_CONTEXT
 #include "../../include/rmm_clif_context.h"
 #else
-#include "../../include/rmm_obj_base_context.h"
+#include "../../include/rmm_base.h"
 
 // BINARY NOTE: PDB passes RGE_Cliffs_Info by value. Its 0x4C0-byte layout
 // accounts for the constructor's ret 0x4C8 cleanup and rep movsd copy.

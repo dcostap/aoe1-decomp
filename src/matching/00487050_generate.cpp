@@ -3,7 +3,9 @@
 // The nested for loops follow the PDB line map: outer loop at line 56,
 // inner loop at line 57, and connection call at line 58.
 
-#include "..\..\include\rmm_shal_context.h"
+#include "..\..\include\rmm_shal.h"
+
+extern "C" int __cdecl debug_rand(char*, int);
 
 uchar RGE_RMM_Shallows_Generator::generate()
 {

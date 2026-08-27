@@ -14,15 +14,12 @@ The owner address sequence is:
 `00486180`, `00486210`, `004862B0`, `004864F0`, `00486700`, `00486A60`,
 `00486C40`.
 
-The module header owns the generator and object-info declarations. The
-PDB-backed random-map base surface remains in `include/rmm_obj_base_context.h`.
-That header has two other consumers: `rmm_shal_context.h` and
-`00481980_RGE_RMM_Cliffs_Generator.cpp`. It is a cross-shard ABI declaration,
-so this migration does not rename or remove it.
+The module header owns the generator and object-info declarations. It consumes
+the canonical random-map base in `include/rmm_base.h`. The source passes
+`Map_Stack` and pop outputs by reference, as the base owner proves.
 
-The module header owns the narrow `RGE_RMM_Cluster_Master_View` surface for the
-proven adjacent placement and alignment virtual slots. It is not a second
-owner for any executable VA.
+It consumes `RGE_Master_Static_Object` from `m_s_obj.h`. It does not retain a
+local master-object vtable view.
 
 ## Migration
 
@@ -37,8 +34,8 @@ owner for any executable VA.
 - Kept the source forms that have binary evidence or exact results, including
   the reference stack local, narrow cluster vtable view, register variance
   local, and proven typed local aliases.
-- Kept `rmm_obj_base_context.h` because other shards include it. No shared
-  declaration or translation-unit registry changed.
+- Removed `rmm_obj_base_context.h`. Random-map shallow and cliff consumers now
+  include their canonical owner headers.
 
 ## Status and regressions
 
