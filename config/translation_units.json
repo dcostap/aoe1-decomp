@@ -6624,6 +6624,7 @@
       "flags": "config/flags/default.rsp",
       "owners": {
         "0046DDE0": "src/matching/0046DDE0_TPicture.cpp",
+        "0046DE30": "src/matching/0046DE30_TPicture.cpp",
         "0046DFA0": "src/matching/0046DFA0_TPicture.cpp",
         "0046DFC0": "src/matching/0046DFC0_TPicture.cpp",
         "0046E020": "src/matching/0046E020_Save.cpp",
@@ -6642,7 +6643,8 @@
         "0046E2C0": "?AlignedWidth@TPicture@@QAEJXZ",
         "0046E2D0": "?Draw@TPicture@@QAEXPAVTDrawArea@@JJHH@Z",
         "0046E370": "?Tile@TPicture@@QAEJPAVTDrawArea@@JJJJJJJJJJ@Z",
-        "0046E3E0": "?GetPixel@TPicture@@QAEEJJHH@Z"
+        "0046E3E0": "?GetPixel@TPicture@@QAEEJJHH@Z",
+        "0046DE30": "??0TPicture@@QAE@HH@Z"
       }
     },
     {
