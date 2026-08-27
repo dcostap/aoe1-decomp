@@ -1,6 +1,6 @@
 # RGE_Base_Game owner packet
 
-This is a header-only checkpoint. It does not define `RGE_Base_Game`.
+`include/basegame.h` now owns `RGE_Base_Game`.
 
 ## Proved layout facts
 
@@ -14,15 +14,15 @@ The class has size `0xA24`. The PDB dump gives high confidence.
 
 ## Scope
 
-`include/rge_base_game_evidence.h` gives types and offsets only. It has no
-class layout, virtual table, padding, Panel, Map, or World declaration.
+`basegame.h` declares all 98 named fields and the PDB virtual order. It defines
+no padding or pointer-owner class. The seven typed gaps use natural alignment.
 
-Do not use it for member access. Compose the real class only after its
-remaining fields and virtual slots have one canonical owner.
+The pinned VC5 probe confirms `prog_info` at `0x0C`, `draw_system` at `0x48`,
+`prog_mode` at `0x1B0`, and class size `0xA24`.
 
 ## Owner evidence
 
-- `inventory/classes/dumps/RGE_Base_Game.txt`
+- `inventory/types/dumps/RGE_Base_Game.txt`
 - `inventory/functions/0041/0041E920_setup_graphics_system.txt`
 - `inventory/functions/0042/00421BF0_calc_timings.txt`
 

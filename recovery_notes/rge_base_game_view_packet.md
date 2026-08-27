@@ -1,6 +1,7 @@
 # RGE_Base_Game View packet
 
-Use this packet only for View work. Do not use `include/basegame.h`.
+Use `include/basegame.h` for the shared Base Game owner. This packet keeps
+View-specific anchors and call evidence.
 
 ## Scope
 
