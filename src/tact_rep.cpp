@@ -26,7 +26,16 @@
 #include "../include/m_co_obj.h"
 #include "../include/obj_list.h"
 #include "../include/rge_base_game_global.h"
-#include "../include/sound_context.h"
+#include "../include/rge_fio.h"
+#include "../include/sound.h"
+#include "../include/act_list.h"
+#include "../include/act_obj.h"
+#include "../include/m_s_obj.h"
+#include "../include/m_ac_obj.h"
+#include "../include/move_obj.h"
+#include "../include/world.h"
+#include "../include/player.h"
+#include "../include/task.h"
 
 extern float save_game_version;
 

@@ -2,14 +2,10 @@
 #define AOE1_TACT_REP_H
 
 #include "action.h"
-#include "act_list.h"
-#include "act_obj.h"
-#include "m_s_obj.h"
-#include "m_ac_obj.h"
-#include "move_obj.h"
-#include "world.h"
-#include "player.h"
-#include "task.h"
+
+class RGE_Action_Object;
+class RGE_Static_Object;
+class RGE_Task;
 
 // The rest of the declaration surface comes from the owner headers above.
 // Keep only declarations owned by tact_rep.cpp in this module header.

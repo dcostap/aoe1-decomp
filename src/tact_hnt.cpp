@@ -15,7 +15,27 @@
 // The scalar deleting destructor at 004CF100 is compiler-generated from the
 // virtual class surface. It has no handwritten owner.
 
+#include "../include/m_co_obj.h"
 #include "../include/tact_hnt.h"
+#include "../include/act_atak.h"
+#include "../include/act_move.h"
+#include "../include/act_list.h"
+#include "../include/act_obj.h"
+#include "../include/stat_obj.h"
+#include "../include/m_s_obj.h"
+#include "../include/m_ac_obj.h"
+#include "../include/move_obj.h"
+#include "../include/obj_list.h"
+#include "../include/world.h"
+#include "../include/player.h"
+#include "../include/task.h"
+#include "../include/sound.h"
+#include "../include/basegame.h"
+#include "../include/rge_base_game_global.h"
+#include "../include/rge_fio.h"
+
+extern float DAT_00575150;
+extern double DAT_00575168;
 
 // PDB lines 70-73; VA 004CF090.
 TRIBE_Action_Hunt::TRIBE_Action_Hunt(int param_1, RGE_Action_Object* param_2)
