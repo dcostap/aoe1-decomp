@@ -841,11 +841,12 @@
     },
     {
       "name": "scr_sedo",
-      "source": "src/scr_sedo_tu.cpp",
+      "source": "src/scr_sedo.cpp",
+      "module": "scr_sedo",
       "flags": "config/flags/scr_sedo.rsp",
       "owners": {
-        "004B36A0": "src/matching/004B36A0_TRIBE_Screen_Sed_Open.cpp",
-        "004B3740": "src/matching/004B3740_fillList.cpp"
+        "004B36A0": "src/scr_sedo.cpp",
+        "004B3740": "src/scr_sedo.cpp"
       },
       "symbols": {}
     },

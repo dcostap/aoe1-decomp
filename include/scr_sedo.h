@@ -1,5 +1,7 @@
-#ifndef SCR_SEDO_CONTEXT_H
-#define SCR_SEDO_CONTEXT_H
+#ifndef AOE1_SCR_SEDO_H
+#define AOE1_SCR_SEDO_H
+
+#include <windows.h>
 
 class TDrawArea;
 class TShape;
@@ -9,13 +11,6 @@ class TButtonPanel;
 class TListPanel;
 class TScrollBarPanel;
 class RGE_Prog_Info;
-
-struct tagRECT {
-    long left;
-    long top;
-    long right;
-    long bottom;
-};
 
 class TPanel {
 public:
@@ -248,6 +243,14 @@ public:
 };
 
 extern RGE_Base_Game* rge_base_game;
+
+// This module creates the menu through its constructor only.  Keep its
+// shipped size while the menu's source module remains separate.
+class TRIBE_Screen_Sed_Menu {
+public:
+    char data[0x490];
+    TRIBE_Screen_Sed_Menu();
+};
 
 class TRIBE_Screen_Sed_Open : public TScreenPanel {
 public:
