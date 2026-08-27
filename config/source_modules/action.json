@@ -28,7 +28,7 @@
     "00407A90": { "status": "matching" },
     "00407B00": { "status": "matching" },
     "00407C00": { "status": "matching" },
-    "00407C10": { "status": "accepted_drift", "note_path": "recovery_notes/action_module.md" },
+    "00407C10": { "status": "matching" },
     "00407D30": { "status": "matching" },
     "00407D40": { "status": "matching" },
     "00407D50": { "status": "matching" },
