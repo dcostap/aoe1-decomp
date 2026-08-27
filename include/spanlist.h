@@ -1,8 +1,5 @@
-#ifndef SPANLIST_TU_CONTEXT_H
-#define SPANLIST_TU_CONTEXT_H
-
-// Canonical spanlist.cpp surfaces recovered from the PDB type records.
-// TSpan_List_Manager owns an offset-zero TSpan_Node_List member.
+#ifndef AOE1_SPANLIST_H
+#define AOE1_SPANLIST_H
 
 #include <windows.h>
 
@@ -97,17 +94,17 @@ public:
         VSpan_Node* field_10;
     };
     union {
-    union {
-        int Free_Pool_Zone;
-        int freePoolZone;
-    };
+        union {
+            int Free_Pool_Zone;
+            int freePoolZone;
+        };
         int field_14;
     };
     union {
-    union {
-        int Free_Pool_Index;
-        int freePoolIndex;
-    };
+        union {
+            int Free_Pool_Index;
+            int freePoolIndex;
+        };
         int field_18;
     };
     union {
