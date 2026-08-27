@@ -63,3 +63,33 @@ original sizes, but canonical direct dependencies change their codegen.
 No codegen probe was run. Future matching work should start with the canonical
 `set_state` and `update` source context. Do not restore the removed fallback
 header or copied foreign class layout.
+
+## Rebase validation
+
+The direct source chain was rebased onto current main at `ef17afb7f`.
+The earlier closure commit was already upstream, so rebase dropped that
+duplicate patch. Source-module statuses remain unchanged: five matching
+owners and two scratch owners.
+
+A fresh complete candidate ran after the rebase. It covered every registered
+exact owner, both observed scratch owners, and the generated destructor. The
+command was:
+
+`python tools/validate_candidate_tu.py --proposal build/candidate_tus/tact_hea_direct/proposal.json --output-dir build/candidate_tus/tact_hea_direct/rebased`
+
+The report is `build/candidate_tus/tact_hea_direct/rebased/report.json`.
+
+| VA | kind | status | result | original | rebuilt | diff | owner | relocations | boundary |
+| --- | --- | --- | --- | ---: | ---: | ---: | --- | ---: | ---: |
+| `004CE930` | exact | matching | MATCH | 40 | 40 | 0 (0.0000%) | match | 0 | 0 |
+| `004CE990` | exact | matching | MATCH | 120 | 120 | 0 (0.0000%) | match | 0 | 0 |
+| `004CEA10` | exact | matching | MATCH | 61 | 61 | 0 (0.0000%) | match | 0 | 0 |
+| `004CEA50` | exact | matching | MATCH | 58 | 58 | 0 (0.0000%) | match | 0 | 0 |
+| `004CF030` | exact | matching | MATCH | 96 | 96 | 0 (0.0000%) | match | 0 | 0 |
+| `004CEA90` | observed | scratch | MISMATCH | 566 | 566 | 456 (80.5654%) | match | 0 | 0 |
+| `004CECF0` | observed | scratch | MISMATCH | 739 | 739 | 568 (76.8606%) | match | 0 | 0 |
+| `004CE960` | generated | compiler_generated | MATCH | 30 | 30 | 0 (0.0000%) | unverified | 0 | 0 |
+
+The complete candidate result is unchanged from the prior evidence. It has
+five exact normal owners, one exact generated destructor, and two observed
+scratch owners. No scratch owner was promoted.
