@@ -1,11 +1,10 @@
-#ifndef AOE1_DRAWAREA_CONTEXT_H
-#define AOE1_DRAWAREA_CONTEXT_H
+#ifndef AOE1_DRAWAREA_H
+#define AOE1_DRAWAREA_H
 
 #define WIN32_LEAN_AND_MEAN
 
-// Canonical Drawarea.cpp surface for the complete ordered owner wrapper.
+// Canonical Drawarea.cpp type surface.
 // PDB layout proves TDrawSystem size 0x47C and TDrawArea size 0x100.
-// Standalone owner checks retain their small local declaration surfaces.
 
 typedef unsigned char uchar;
 
@@ -234,6 +233,7 @@ public:
     void HandlePaletteChanged(void*, unsigned int, unsigned int, long);
     int HandleQueryNewPalette(void*, unsigned int, unsigned int, long);
     void ModifyPalette(int, int, tagPALETTEENTRY*);
+    void SetPalette(void*);
     int GetIsLostErrorNum(long);
     int GetRestoreErrorNum(long);
     int GetSetDispModeErrorNum(long);
