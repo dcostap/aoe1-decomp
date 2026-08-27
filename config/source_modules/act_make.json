@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "name": "act_make",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\ACT_make.cpp",
+  "source": "src/act_make.cpp",
+  "header": "include/act_make.h",
+  "functions": {
+    "004049B0": { "status": "matching" },
+    "00404A10": { "status": "matching" },
+    "00404A40": { "status": "matching" },
+    "00404A70": { "status": "matching" },
+    "00404A90": { "status": "accepted_drift", "note_path": "recovery_notes/act_make_module.md" }
+  }
+}

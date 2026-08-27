@@ -6516,13 +6516,13 @@
     },
     {
       "name": "act_make_cpp",
-      "source": "src/act_make_tu.cpp",
+      "source": "src/act_make.cpp",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "004049B0": "src/matching/004049B0_RGE_Action_Make.cpp",
-        "00404A10": "src/matching/00404A10_RGE_Action_Make.cpp",
-        "00404A40": "src/matching/00404A40_first_in_stack.cpp",
-        "00404A70": "src/matching/00404A70_set_state.cpp"
+        "004049B0": "src/act_make.cpp",
+        "00404A10": "src/act_make.cpp",
+        "00404A40": "src/act_make.cpp",
+        "00404A70": "src/act_make.cpp"
       },
       "symbols": {
         "004049B0": "??0RGE_Action_Make@@QAE@HPAVRGE_Action_Object@@@Z",
