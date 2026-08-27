@@ -21,3 +21,9 @@ the owner-only AIUA header lands after the ManagedArray ABI fanout passes.
 
 When the gate reopens, direct validation must require the canonical target and
 relocation identity. A byte `MATCH` alone is not sufficient.
+
+The future AIUA and Act Attack grouped gate must also include generated inline
+rows `00401130` and `00401140` from `action.h`. Do not remove or simplify
+those rows during header decomposition.
+
+Visible Map const `get_visible` belongs to the separate Terra 6 owner lane.
