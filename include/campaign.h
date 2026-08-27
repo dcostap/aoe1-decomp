@@ -1,9 +1,6 @@
 #ifndef AOE1_CAMPAIGN_H
 #define AOE1_CAMPAIGN_H
 
-#include "rge_base_game_global.h"
-#include "tribegam.h"
-
 class RGE_Scenario_Offset {
 public:
     long size;

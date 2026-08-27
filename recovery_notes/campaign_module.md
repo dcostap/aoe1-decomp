@@ -27,8 +27,9 @@ one accepted-drift owner, and eight registered exact owners.
 
 `src/campaign.cpp` now owns all nine handwritten definitions in PDB source
 order. `include/campaign.h` owns the campaign records. The canonical
-`RGE_Base_Game` declaration comes from `include/tribegam.h` and
-`include/basegame.h`. `RGE_Base_Game::prog_info` is at `+0x0C`.
+`src/campaign.cpp` privately includes the canonical `include/basegame.h` and
+`include/rge_base_game_global.h` surfaces. `RGE_Base_Game::prog_info` is at
+`+0x0C`. The public campaign header contains only its owned records.
 `src/campaign.cpp` privately includes the canonical `include/main.h` after
 `campaign.h`; this completes the period `RGE_Prog_Info` definition without
 adding it to `tribegam.h` or `campaign.h`. The struct is `0x1238` bytes, with

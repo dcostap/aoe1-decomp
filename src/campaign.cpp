@@ -3,6 +3,8 @@
 
 #include "../include/campaign.h"
 #include "../include/main.h"
+#include "../include/basegame.h"
+#include "../include/rge_base_game_global.h"
 #include "../include/mystring.h"
 
 #include <string.h>
