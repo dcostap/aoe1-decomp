@@ -7340,6 +7340,7 @@
       "source": "src/tairesmd_tu.cpp",
       "flags": "config/flags/tairesmd.rsp",
       "owners": {
+        "004E6B40": "src/matching/004E6B40_TribeResourceAIModule.cpp",
         "004E6BA0": "src/matching/004E6BA0_TribeResourceAIModule.cpp",
         "004E6C20": "src/matching/004E6C20_TribeResourceAIModule.cpp",
         "004E6C30": "src/matching/004E6C30_setMainDecisionAI.cpp",
@@ -7357,7 +7358,8 @@
         "004E6C60": "?numberResources@TribeResourceAIModule@@QBEHXZ",
         "004E6C70": "?resource@TribeResourceAIModule@@QBEHH@Z",
         "004E6D40": "?unavailableResource@TribeResourceAIModule@@QAEHPAVResourceItem@@@Z",
-        "004E6DD0": "?resourceName@TribeResourceAIModule@@QAEPADH@Z"
+        "004E6DD0": "?resourceName@TribeResourceAIModule@@QAEPADH@Z",
+        "004E6B40": "??0TribeResourceAIModule@@QAE@PAXHHHHH@Z"
       }
     },
     {
