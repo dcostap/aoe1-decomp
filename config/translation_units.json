@@ -3002,6 +3002,7 @@
     {
       "name": "aitrdmod_cpp",
       "source": "src/aitrdmod.cpp",
+      "module": "aitrdmod",
       "flags": "config/flags/default.rsp",
       "owners": {
         "00412E40": "src/aitrdmod.cpp",
