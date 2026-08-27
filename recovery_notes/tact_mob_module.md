@@ -76,13 +76,13 @@ generated 004D0E90. The canonical owner change produced these results:
 - Prior exact owners 004D0DD0, 004D0EF0, 004D0F70, and 004D10E0 remain
   `MATCH`, each with 0 bytes, 0 relocation target mismatches, and 0 boundary
   escapes.
-- 004D12B0 `place_obj` remains the one hard regression: 580 bytes, rebuilt
-  frame 0x1C versus original 0x18, 8/8 calls aligned, owner match, 0
-  relocation target mismatches, and 0 boundary escapes. Its first divergence
-  is an extra vtable spill and instruction at the function entry. Include
-  order and removal of the redundant direct `m_co_obj.h` include did not
-  change the output. No natural repair is supported by current binary
-  evidence.
+- 004D12B0 `place_obj` now produces `MATCH`, 0 bytes, frame 0x18, 8/8 calls
+  aligned, owner match, 0 relocation target mismatches, and 0 boundary
+  escapes. The original success arm rereads
+  `this->obj->owner->master_objects[this->obj_id]` for `make_new_obj`.
+  Reusing the live `proto` pointer adds a vtable spill, changes the frame to
+  0x1C, and returns to the 580-byte mismatch. The direct reread is therefore
+  retained as the natural source form.
 - Generated 004D0E90 remains `MATCH`, with 0 bytes, 0 relocation target
   mismatches, and 0 boundary escapes.
 - Observed 004D0FC0 remains a 268-byte accepted-drift mismatch. Observed
@@ -90,11 +90,10 @@ generated 004D0E90. The canonical owner change produced these results:
   with 0 bytes, owner match, 0 relocation target mismatches, and 0 boundary
   escapes. Observed 004D0EB0 has an overload-selection comparison error.
 
-The final candidate summary is 5/6 exact-owner matches, 1/4 observed matches,
+The fresh candidate summary is 6/6 exact-owner matches, 1/4 observed matches,
 and 1/1 generated matches. One observed row is a comparison error. The full
-candidate group is not exact because of 004D12B0 and the existing observed
-rows.
+candidate group is not exact because 004D0FC0 and 004D10F0 remain observed
+mismatches and 004D0EB0 has a comparison error.
 
-The final target checks report exact 004D1550 and 004D15F0 results. Target
-004D12B0 is paused on the documented hard blocker. No function status changed
-in this lane.
+The final target checks report exact 004D12B0, 004D1550, and 004D15F0 results.
+No function status changed in this lane.

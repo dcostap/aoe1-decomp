@@ -189,7 +189,9 @@ unsigned char TRIBE_Action_Make_Obj::update()
 // VA 004D12B0; PDB tact_mob.cpp:171-233; matching.
 // BINARY NOTE: The retry loops use the shipped side-selection and radius
 // formulas. The protected access also publishes the created object before
-// the saved-register pops in the original body.
+// the saved-register pops in the original body. The success arm rereads
+// owner->master_objects[obj_id] for make_new_obj. Reusing proto adds a
+// four-byte vtable spill and changes the frame from 0x18 to 0x1C.
 static char s_tact_mob_cpp[] = "C:\\msdev\\work\\age1_x1\\tact_mob.cpp";
 
 unsigned char TRIBE_Action_Make_Obj::place_obj(RGE_Static_Object** out)
@@ -243,8 +245,9 @@ unsigned char TRIBE_Action_Make_Obj::place_obj(RGE_Static_Object** out)
                     1, 1, 1, 0, 0, 1)) {
                 ++tries;
             } else {
-                *out = proto->make_new_obj(this->obj->owner, this->target_x,
-                                           this->target_y, this->obj->world_z);
+                *out = this->obj->owner->master_objects[this->obj_id]
+                           ->make_new_obj(this->obj->owner, this->target_x,
+                                          this->target_y, this->obj->world_z);
                 return 1;
             }
         } while (tries < 60);
