@@ -1,11 +1,10 @@
-#ifndef SCR_GAME_CONTEXT_H
-#define SCR_GAME_CONTEXT_H
+#ifndef AOE1_SCR_GAME_H
+#define AOE1_SCR_GAME_H
 
-// Canonical declarations for the scr_game.cpp recovery owner set.
-// PDB source order and the shared TRIBE_Screen_Game offsets are the authority.
-// The active owner set spans constructor, update, key, action, button, score,
-// draw, and animation code. The full module still has owners that need this
-// surface before they can join the one-TU wrapper.
+#include <windows.h>
+
+// Canonical declarations for the scr_game.cpp source module.
+// Proven executable offsets and PDB source order define this surface.
 
 #include <stdio.h>
 #include <string.h>
@@ -473,9 +472,18 @@ public:
 
 class TEasy_Panel : public TPanel {
 public:
-    char gap_F4[0x354];
+    char gap_F4[0x22c];
+    unsigned char bevel_color1;
+    unsigned char bevel_color2;
+    unsigned char bevel_color3;
+    unsigned char bevel_color4;
+    unsigned char bevel_color5;
+    unsigned char bevel_color6;
+    char gap_326[0x122];
     TShape* button_pics;
-    char gap_44C[0x2c];
+    char gap_44C[0x10];
+    unsigned char field_45c;
+    char gap_45d[0x1b];
 
     virtual ~TEasy_Panel();
     virtual void draw_background(int);
@@ -575,7 +583,9 @@ public:
 
 class RGE_View : public TPanel {
 public:
-    char gap_F4[0x26c];
+    char gap_F4[0x258];
+    TMessagePanel* message_panel;
+    char gap_350[0x10];
     virtual int pick_through_fog(RGE_Static_Object*);
     virtual int pick_weight(RGE_Static_Object*, int);
     virtual int start_scroll_view(unsigned char, long, long, int, int);
@@ -635,7 +645,9 @@ public:
     void set_bitmap(char*, int);
     void set_player(RGE_Player*);
     int pick_tile(long, long, short*, short*);
+    int pick_tile(long, long, short*, short*, RGE_Tile**);
     void update();
+    void update(int);
 };
 
 class TRIBE_Diamond_Map_View : public RGE_Diamond_Map {
@@ -1206,7 +1218,6 @@ public:
 class TRIBE_Player : public RGE_Player {
 public:
     TRIBE_Player_Tech* tech_tree;
-    RGE_Static_Object* sel_list[25];
     unsigned char check_obj_cost(short, short*, float, int);
     int artifact_held_time;
     int ruin_held_time;
@@ -1338,11 +1349,11 @@ public:
     short unselect_frame;
     char gap_4b6[2];
     TRIBE_Main_View* main_view;
-    TPanel* map_view;
-    TPanel* inven_panel;
+    TRIBE_Diamond_Map_View* map_view;
+    TRIBE_Panel_Inven* inven_panel;
     TRIBE_Panel_Object* object_panel;
     TRIBE_Panel_Button* button_panel[17];
-    TPanel* text_line_panel;
+    TMessagePanel* text_line_panel;
     TTextPanel* quit_message_panel;
     TRIBE_Panel_Time* time_panel;
     TRIBE_Panel_Time* countdown_clock[10];
@@ -1417,7 +1428,8 @@ public:
     RGE_Sound* terrain_sound;
     int terrain_playing;
     unsigned long terrain_sound_start_time;
-    char gap_68c[4];
+    unsigned char terrain_sound_initialized;
+    char gap_68d[3];
     unsigned long anim_pal_interval;
     unsigned long last_anim_pal_time;
     short last_anim_pal_index;
@@ -1583,12 +1595,6 @@ public:
     void set_button_pics();
     void set_button_pics(char*, long);
     void set_bevel_colors(int, int, int, int, int, int);
-    int bevel_color1;
-    int bevel_color2;
-    int bevel_color3;
-    int bevel_color4;
-    int bevel_color5;
-    int bevel_color6;
 
 protected:
     void command_build();
@@ -1682,20 +1688,9 @@ extern const char s_memory_filename[];
 extern const char s_ALLOWCTRLU[];
 extern const char s_force_ctrl_u[];
 
-#define rge_base_game_absolute (rge_base_game_at_storage())
-#define OFF32(o) (*(int*)((char*)this + (o)))
-#define OFFU32(o) (*(unsigned long*)((char*)this + (o)))
-#define OFF16(o) (*(short*)((char*)this + (o)))
-#define OFF8(o) (*(unsigned char*)((char*)this + (o)))
-#define MAIN_VIEW ((TRIBE_Main_View*)OFF32(0x4b8))
-#define MAP_VIEW ((TRIBE_Diamond_Map_View*)OFF32(0x4bc))
-#define comm (*(TCommunications_Handler**)0x0062c4c0)
-#define out_of_sync2 (*(int*)0x0062c564)
-#define multi_updates (*(int*)0x00586318)
-
-#define set_command_button(screen, index, frame, type, string_id) \
-    (screen)->set_button((screen)->button_cmd_pic, (index), (frame), \
-                         (type), 0, (string_id), -1, 0, (unsigned char*)0, \
-                         (char*)0, (char*)0, 0)
+extern unsigned char byte_62C584;
+extern void* DAT_0086babc;
+extern void* DAT_0086bac0;
+extern char close_confirmation_text[];
 
 #endif
