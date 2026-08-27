@@ -4539,21 +4539,22 @@
       }
     },
     {
-      "name": "shape",
-      "source": "src/shape_tu.cpp",
+      "name": "Shape",
+      "source": "src/Shape.cpp",
+      "module": "Shape",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "004B8B30": "src/matching/004B8B30_TShape.cpp",
-        "004B8DD0": "src/matching/004B8DD0_TShape.cpp",
-        "004B8E40": "src/matching/004B8E40_Check_shape.cpp",
-        "004B8F90": "src/matching/004B8F90_is_loaded.cpp",
-        "004B8FB0": "src/matching/004B8FB0_shape_bounds.cpp",
-        "004B9040": "src/matching/004B9040_shape_count.cpp",
-        "004B9070": "src/matching/004B9070_shape_minmax.cpp",
-        "004B97F0": "src/matching/004B97F0_shape_draw_unclipped.cpp",
-        "004BA900": "src/matching/004BA900_shape_mirror_unclipped.cpp",
-        "004BA9E0": "src/matching/004BA9E0_shape_mirror_color_trans_unclipped.cpp",
-        "004BAAF0": "src/matching/004BAAF0_shape_mirror_shadow_unclipped.cpp"
+        "004B8B30": "src/Shape.cpp",
+        "004B8DD0": "src/Shape.cpp",
+        "004B8E40": "src/Shape.cpp",
+        "004B8F90": "src/Shape.cpp",
+        "004B8FB0": "src/Shape.cpp",
+        "004B9040": "src/Shape.cpp",
+        "004B9070": "src/Shape.cpp",
+        "004B97F0": "src/Shape.cpp",
+        "004BA900": "src/Shape.cpp",
+        "004BA9E0": "src/Shape.cpp",
+        "004BAAF0": "src/Shape.cpp"
       },
       "symbols": {
         "004B8B30": "??0TShape@@QAE@XZ",
