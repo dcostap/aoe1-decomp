@@ -6762,19 +6762,20 @@
     },
     {
       "name": "rge_fio",
-      "source": "src/rge_fio_tu.cpp",
+      "source": "src/rge_fio.cpp",
+      "module": "rge_fio",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "0047FD30": "src/matching/0047FD30_rge_fake_open.cpp",
-        "0047FD90": "src/matching/0047FD90_rge_open.cpp",
-        "0047FE20": "src/matching/0047FE20_rge_open.cpp",
-        "0047FEB0": "src/matching/0047FEB0_rge_fake_close.cpp",
-        "0047FF30": "src/matching/0047FF30_rge_close.cpp",
-        "00480000": "src/matching/00480000_rge_read_uncompressed.cpp",
-        "00480040": "src/matching/00480040_rge_write_uncompressed.cpp",
-        "00480080": "src/matching/00480080_rge_read.cpp",
-        "00480290": "src/matching/00480290_rge_buffer_full.cpp",
-        "004802C0": "src/matching/004802C0_rge_write.cpp"
+        "0047FD30": "src/rge_fio.cpp",
+        "0047FD90": "src/rge_fio.cpp",
+        "0047FE20": "src/rge_fio.cpp",
+        "0047FEB0": "src/rge_fio.cpp",
+        "0047FF30": "src/rge_fio.cpp",
+        "00480000": "src/rge_fio.cpp",
+        "00480040": "src/rge_fio.cpp",
+        "00480080": "src/rge_fio.cpp",
+        "00480290": "src/rge_fio.cpp",
+        "004802C0": "src/rge_fio.cpp"
       },
       "symbols": {
         "0047FD30": "?rge_fake_open@@YAHHH@Z",
