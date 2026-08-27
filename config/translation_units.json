@@ -2093,14 +2093,14 @@
     },
     {
       "name": "rmm_clif_constructor",
-      "source": "src/rmm_clif_tu.cpp",
+      "source": "src/rmm_clif.cpp",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "00481980": "src/matching/00481980_RGE_RMM_Cliffs_Generator.cpp",
-        "004819C0": "src/matching/004819C0_generate.cpp",
-        "00481A00": "src/matching/00481A00_setup_cliff_maps.cpp",
-        "00481CD0": "src/matching/00481CD0_generate_cliff.cpp",
-        "00481FC0": "src/matching/00481FC0_check_for_valid_cliff_site.cpp"
+        "00481980": "src/rmm_clif.cpp",
+        "004819C0": "src/rmm_clif.cpp",
+        "00481A00": "src/rmm_clif.cpp",
+        "00481CD0": "src/rmm_clif.cpp",
+        "00481FC0": "src/rmm_clif.cpp"
       },
       "symbols": {
         "00481A00": "?setup_cliff_maps@RGE_RMM_Cliffs_Generator@@IAEXXZ",
