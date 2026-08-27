@@ -1,5 +1,5 @@
-#ifndef AOE1_PNL_BTN_CONTEXT_H
-#define AOE1_PNL_BTN_CONTEXT_H
+#ifndef AOE1_PNL_BTN_H
+#define AOE1_PNL_BTN_H
 
 // Authentic source module: C:\\msdev\\work\\age1_x1\\Pnl_btn.cpp.
 // This header keeps the proven panel and button layouts in one compiler-facing
@@ -52,6 +52,7 @@ public:
 class TPanel {
 public:
     virtual ~TPanel();
+    TPanel();
     virtual long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char);
     virtual void set_rect(RECT);
     virtual void set_rect(long, long, long, long);
