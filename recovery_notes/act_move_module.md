@@ -72,11 +72,25 @@ The candidate proposal is:
 
 `build/candidate_tus/act_move_direct/proposal.json`
 
-The lead must add the direct source-module manifest and register the proposal.
+The direct source-module manifest is in `config/source_modules/act_move.json`.
+The direct translation-unit entry is in `config/translation_units.json`.
 Manual VC5 compilation of `src/act_move.cpp` succeeds with the module response
-file. Candidate validation is held until the lead updates global ownership:
-the validator rejects direct owners while `translation_units.json` still names
-the removed wrapper and source-bank fragments.
+file.
+
+## Direct candidate result
+
+The direct source metadata is now staged in `config/source_modules/act_move.json`
+and `config/translation_units.json`. The grouped candidate report is
+`build/candidate_tus/act_move_direct/report.txt`.
+
+The candidate compiled all eight exact owners and the generated destructor.
+Seven exact owners match. The generated destructor also matches. The only
+exact-owner regression is `004056E0`, with one byte changed because the
+canonical moving-object surface emits `stop_moving` through vslot `+0x1F0`
+instead of the executable's `+0x1EC`. The accepted-drift `00405850 update`
+remains observed and has 728 changed bytes in the direct source context.
+Do not change canonical virtual ownership to force this temporary migration
+regression. The candidate needs lead review before exact registration.
 
 ## Shared ABI correction
 

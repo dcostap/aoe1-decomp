@@ -232,17 +232,18 @@
     },
     {
       "name": "act_move",
-      "source": "src/act_move_tu.cpp",
+      "source": "src/act_move.cpp",
+      "module": "act_move",
       "flags": "config/flags/00405620_RGE_Action_Move_To.rsp",
       "owners": {
-        "00405510": "src/matching/00405510_RGE_Action_Move_To.cpp",
-        "004055A0": "src/matching/004055A0_RGE_Action_Move_To.cpp",
-        "00405620": "src/matching/00405620_RGE_Action_Move_To.cpp",
-        "004056E0": "src/matching/004056E0_RGE_Action_Move_To.cpp",
-        "00405750": "src/matching/00405750_save.cpp",
-        "00405780": "src/matching/00405780_first_in_stack.cpp",
-        "004057E0": "src/matching/004057E0_set_state.cpp",
-        "00405BF0": "src/matching/00405BF0_is_in_range.cpp"
+        "00405510": "src/act_move.cpp",
+        "004055A0": "src/act_move.cpp",
+        "00405620": "src/act_move.cpp",
+        "004056E0": "src/act_move.cpp",
+        "00405750": "src/act_move.cpp",
+        "00405780": "src/act_move.cpp",
+        "004057E0": "src/act_move.cpp",
+        "00405BF0": "src/act_move.cpp"
       },
       "symbols": {
         "00405510": "??0RGE_Action_Move_To@@QAE@HPAVRGE_Action_Object@@@Z",
@@ -250,6 +251,7 @@
         "00405620": "??0RGE_Action_Move_To@@QAE@PAVRGE_Action_Object@@PAVRGE_Static_Object@@MPAVRGE_Sprite@@@Z",
         "004056E0": "??1RGE_Action_Move_To@@UAE@XZ",
         "00405750": "?save@RGE_Action_Move_To@@UAEXH@Z",
+        "00405780": "?first_in_stack@RGE_Action_Move_To@@UAEXE@Z",
         "004057E0": "?set_state@RGE_Action_Move_To@@MAEXE@Z",
         "00405BF0": "?is_in_range@RGE_Action_Move_To@@IAEEXZ"
       }
