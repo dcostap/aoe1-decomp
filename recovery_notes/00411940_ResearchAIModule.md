@@ -8,4 +8,6 @@ The former isolated owner matched exactly with `/GX`.
 
 The body removes old technology items only when the list has entries. The compiler then restores the derived virtual table and destroys the embedded item and base object. Do not add those operations to the source body.
 
+The local header now restores the inherited `AIModule` virtual surface. The original vtable at `0056E988` uses `AIModule::filterOutMessage` at slot 14 and `ResearchAIModule::save` at slot 15. This surface is module-local here. No shared declaration changed.
+
 The source now lives in `src/airchmod.cpp`. This move removes the isolated owner only. It does not change the recovered behavior.
