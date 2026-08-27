@@ -2,7 +2,6 @@
 #define AOE1_COLORLOG_H
 
 #include "basegame.h"
-#include "rge_base_game_global.h"
 #include "drawarea.h"
 
 extern unsigned char do_color_log;

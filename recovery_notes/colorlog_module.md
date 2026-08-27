@@ -18,9 +18,10 @@ surface. These checks link the owner to the `Colorlog.cpp` source context.
 ## Header composition repair
 
 The header consumes `include/basegame.h` for the PDB-owned `RGE_Base_Game`
-layout, `include/rge_base_game_global.h` for the process-wide pointer, and
-`include/drawarea.h` for the PDB-owned `TDrawArea` and `TDrawSystem` layouts.
-It declares no foreign class or record. It does not include `panel.h`.
+layout and `include/drawarea.h` for the PDB-owned `TDrawArea` and `TDrawSystem`
+layouts. The source includes `include/rge_base_game_global.h` for the
+process-wide pointer. The public header declares no foreign class or record.
+It does not include `panel.h`.
 
 The PDB type dump proves the consumed draw members:
 
@@ -34,9 +35,9 @@ and `prog_mode` at `+0x1B0`. The original assembly reads these members at
 `00424862`, `00424873`, `0042489F`, `004248A9`, `0042491A`, `00424927`,
 `0042497D`, and `004249A0`.
 
-`src/colorlog.cpp` already uses the canonical member names. No source change
-was needed. No private `RGE_Base_Game`, `TDrawSystem`, or `TDrawArea` copy
-remains.
+`src/colorlog.cpp` already uses the canonical member names. Its only source
+change is the private include of `rge_base_game_global.h`. No private
+`RGE_Base_Game`, `TDrawSystem`, or `TDrawArea` copy remains.
 
 The function builds two ten-pixel rectangles and one point. It converts the
 point to screen coordinates in screen mode two. It then fills the primary and
@@ -55,12 +56,14 @@ raw address expression, or inline assembly.
 
 ## Validation
 
-No compiler or validator command was run in this repair. Panel and Panel_ez
-validation has priority. The parent will authorize one focused Colorlog
-candidate after that validation completes.
+The final grouped candidate validation used
+`build/candidate_tus/colorlog_canonical/proposal.json` after the global-pointer
+include moved into `src/colorlog.cpp`.
 
-The prior candidate result is historical evidence only. It reported `MATCH`
-and zero differing bytes before this canonical-header repair.
+- `00424810` returned `MATCH` and `0.0000%`.
+- Original and rebuilt sizes are both 442 bytes.
+- Relocation target mismatches: 0.
+- Boundary escapes: 0.
+- Compile errors: none.
 
-The authorized Colorlog validation must confirm the 442-byte `color_log`
-boundary, relocations, direct targets, and all BaseGame-header consumers.
+The report is `build/candidate_tus/colorlog_canonical/report.txt`.
