@@ -10,7 +10,7 @@ PADDING_ONLY = {"004AE05A", "004AEC95", "004AF2D2"}
 
 
 class ScrSed2TranslationUnitTests(unittest.TestCase):
-    def test_wrapper_follows_normal_pdb_source_order(self) -> None:
+    def test_module_follows_normal_pdb_source_order(self) -> None:
         with (REPO_ROOT / "inventory" / "all_functions.csv").open(
             encoding="utf-8", newline=""
         ) as handle:
@@ -23,38 +23,33 @@ class ScrSed2TranslationUnitTests(unittest.TestCase):
         owners.sort(key=lambda row: int(row["va"], 16))
         self.assertEqual(len(owners), 19)
 
-        wrapper = (REPO_ROOT / "src" / "scr_sed2_tu.cpp").read_text(
+        module = (REPO_ROOT / "src" / "scr_sed2.cpp").read_text(
             encoding="utf-8"
         )
-        include_names = [
-            line.split('"', 2)[1]
-            for line in wrapper.splitlines()
-            if line.startswith('#include "matching/')
-            or line.startswith('#include "accepted_drift/')
-            or line.startswith('#include "scratch/')
-        ]
-        expected = []
+        positions = []
         for row in owners:
-            matches = list((REPO_ROOT / "src").glob(f"**/{row['va']}_*.cpp"))
-            self.assertEqual(len(matches), 1)
-            expected.append(
-                str(matches[0].relative_to(REPO_ROOT / "src")).replace("\\", "/")
-            )
-        self.assertEqual(include_names, expected)
+            positions.append(module.index(f"TRIBE_Screen_Sed::{row['name']}"))
+        self.assertEqual(positions, sorted(positions))
 
-    def test_normal_owners_use_one_context_header(self) -> None:
-        for va in (
-            "004ADC80", "004ADD00", "004ADD50", "004ADD60", "004AE070",
-            "004AE620", "004AE9D0", "004AECB0", "004AED50", "004AEE10",
-            "004AF320", "004AF6C0", "004B1A50", "004B29E0", "004B2AA0",
-            "004B2BC0", "004B2C50", "004B2DD0", "004B2E60",
+    def test_normal_owners_use_one_module_header(self) -> None:
+        module = (REPO_ROOT / "src" / "scr_sed2.cpp").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn('#include "../include/scr_sed2.h"', module)
+        for name in (
+            "SaveDisabledItemsInScenario", "LoadDisabledItemsFromScenario",
+            "save_info_in_scenario", "save_multi_victory_cond_in_scenario",
+            "save_victory_cond_in_scenario", "load_victory_cond_from_scenario",
+            "load_multi_victory_cond_from_scenario", "save_diplomacy_in_scenario",
+            "load_diplomacy_from_scenario", "activate_victory_proper_fields",
+            "init_module_variables", "create_all_buttons_etc", "position_panels",
+            "activate_victory_panel", "MakeFileList",
+            "Set_player_advance_civilization_text", "SavePlayerActiveStatus",
+            "create_check_box", "create_radio_button",
         ):
-            matches = list((REPO_ROOT / "src").glob(f"**/{va}_*.cpp"))
-            self.assertEqual(len(matches), 1)
-            text = matches[0].read_text(encoding="utf-8")
-            self.assertIn('#include "../../include/scr_sed2_context.h"', text)
+            self.assertIn(f"TRIBE_Screen_Sed::{name}", module)
 
-        header = (REPO_ROOT / "include" / "scr_sed2_context.h").read_text(
+        header = (REPO_ROOT / "include" / "scr_sed2.h").read_text(
             encoding="utf-8"
         )
         for token in (

@@ -1,0 +1,85 @@
+{
+  "schema": 1,
+  "name": "scr_sed2",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\scr_sed2.cpp",
+  "source": "src/scr_sed2.cpp",
+  "header": "include/scr_sed2.h",
+  "functions": {
+    "004ADC80": {
+      "status": "matching",
+      "note_path": "recovery_notes/scr_sed2_module.md"
+    },
+    "004ADD00": {
+      "status": "matching",
+      "note_path": "recovery_notes/scr_sed2_module.md"
+    },
+    "004ADD50": {
+      "status": "matching",
+      "note_path": "recovery_notes/scr_sed2_module.md"
+    },
+    "004ADD60": {
+      "status": "matching",
+      "note_path": "recovery_notes/scr_sed2_module.md"
+    },
+    "004AE070": {
+      "status": "scratch",
+      "note_path": "recovery_notes/scr_sed2_module.md"
+    },
+    "004AE620": {
+      "status": "matching",
+      "note_path": "recovery_notes/scr_sed2_module.md"
+    },
+    "004AE9D0": {
+      "status": "matching",
+      "note_path": "recovery_notes/scr_sed2_module.md"
+    },
+    "004AECB0": {
+      "status": "matching",
+      "note_path": "recovery_notes/scr_sed2_module.md"
+    },
+    "004AED50": {
+      "status": "matching",
+      "note_path": "recovery_notes/scr_sed2_module.md"
+    },
+    "004AEE10": {
+      "status": "matching",
+      "note_path": "recovery_notes/scr_sed2_module.md"
+    },
+    "004AF320": {
+      "status": "matching",
+      "note_path": "recovery_notes/scr_sed2_module.md"
+    },
+    "004AF6C0": {
+      "status": "matching",
+      "note_path": "recovery_notes/scr_sed2_module.md"
+    },
+    "004B1A50": {
+      "status": "matching",
+      "note_path": "recovery_notes/scr_sed2_module.md"
+    },
+    "004B29E0": {
+      "status": "matching",
+      "note_path": "recovery_notes/scr_sed2_module.md"
+    },
+    "004B2AA0": {
+      "status": "matching",
+      "note_path": "recovery_notes/scr_sed2_module.md"
+    },
+    "004B2BC0": {
+      "status": "matching",
+      "note_path": "recovery_notes/scr_sed2_module.md"
+    },
+    "004B2C50": {
+      "status": "matching",
+      "note_path": "recovery_notes/scr_sed2_module.md"
+    },
+    "004B2DD0": {
+      "status": "matching",
+      "note_path": "recovery_notes/scr_sed2_module.md"
+    },
+    "004B2E60": {
+      "status": "matching",
+      "note_path": "recovery_notes/scr_sed2_module.md"
+    }
+  }
+}

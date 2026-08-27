@@ -1,5 +1,5 @@
-#ifndef SCR_SED2_CONTEXT_H
-#define SCR_SED2_CONTEXT_H
+#ifndef AOE1_SCR_SED2_H
+#define AOE1_SCR_SED2_H
 
 #include <stdio.h>
 #include <stdlib.h>
