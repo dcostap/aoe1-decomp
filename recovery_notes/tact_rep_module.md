@@ -21,10 +21,6 @@ The state-4 range load reads `RGE_Master_Combat_Object::weapon_range` at
 worktree. Do not replace this field with `RGE_Task::work_range`, a raw offset,
 or a local layout. Hold the module until Terra 3 provides that header.
 
-The canonical act-move and object-list owner declarations are also not present
-in this worktree. Do not restore their old local ABI declarations. Resolve
-these dependencies with their owner headers during the held-module repair.
-
 The source has no inline assembly, byte filler, codegen-only body, or forced
 register hint. No matching claim is made for this migration.
 
@@ -34,4 +30,5 @@ register hint. No matching claim is made for this migration.
 wrapper, all 11 matching fragments, and the update scratch fragment are
 removed. The old context header is now the module-owned `include/tact_rep.h`.
 The source has no `.cpp` includes, recovery context macros, fallback ABI
-declarations, or duplicate owner declarations.
+declarations, or duplicate owner declarations. It consumes the canonical
+`act_move.h` and `obj_list.h` headers now present on main.

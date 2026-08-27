@@ -21,9 +21,11 @@
 // header arrives.
 
 #include "../include/tact_rep.h"
+#include "../include/act_move.h"
 #include "../include/basegame.h"
 #include "../include/game_globals.h"
 #include "../include/m_co_obj.h"
+#include "../include/obj_list.h"
 #include "../include/rge_base_game_global.h"
 #include "../include/sound_context.h"
 
@@ -406,7 +408,7 @@ void TRIBE_Action_Repair::meet_target()
     if (type == 2 || type == 0x14 || type == 0x15 || type == 0x16) {
         RGE_Object_Node* node = this->obj->owner->objects->list;
         while (node != 0) {
-            RGE_Action_Object* action = node->object;
+            RGE_Static_Object* action = node->node;
             if (action != this->obj && action->master_obj->id == 0x9C) {
                 if (action->get_target_obj() == this->target_obj &&
                     action->actionState() != 2) {
