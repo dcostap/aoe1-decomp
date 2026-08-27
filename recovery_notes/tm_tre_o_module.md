@@ -31,10 +31,10 @@ reported `MATCH` and zero positional differences. The registered symbols are:
 - `?make_new_master@TRIBE_Master_Tree_Object@@UAEPAVRGE_Master_Static_Object@@XZ`
 
 The nearby `0050F1F0` scalar-deleting destructor is 30 bytes. It calls the
-`0050F210` derived destructor, tests the delete flag, calls `operator delete`,
-and returns the object. `0050F210` is a five-byte tail jump to
-`RGE_Master_Static_Object::~RGE_Master_Static_Object` at `00452FA0`. This is
-compiler-generated destructor code, not a handwritten source owner.
+`0050F210` virtual-destructor tail thunk, tests the delete flag, calls
+`operator delete`, and returns the object. `0050F210` is a five-byte tail jump
+to `RGE_Master_Static_Object::~RGE_Master_Static_Object` at `00452FA0`.
+It is compiler-generated code, not a handwritten source owner.
 
 `0050F20E` is the reviewed padding-only boundary. It stays outside the source.
 The old `src/scratch/0050F210_TRIBE_Master_Tree_Object.cpp` was not a valid
@@ -117,9 +117,10 @@ Results:
 - Generated scalar-deleting destructor `0050F1F0`: `MATCH`, zero byte
   differences and zero relocation or boundary mismatches. Its owner is
   compiler-generated and therefore unverified by the normal owner check.
-- Generated destructor `0050F210`: unresolved. The object has no defined
-  `??1TRIBE_Master_Tree_Object@@UAE@XZ` body for this five-byte tail-jump
-  comparison.
+- Generated `0050F210` virtual-destructor tail thunk: unresolved. The object
+  has no defined `??1TRIBE_Master_Tree_Object@@UAE@XZ` body for this five-byte
+  tail-jump comparison. `config/compiler_generated_functions.txt` classifies
+  it as compiler-generated. It has no exact claim.
 
 The grouped candidate status is not full-module exact because the known
 generated destructor remains unresolved. The parent must confirm that generated
