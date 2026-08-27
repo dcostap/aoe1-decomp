@@ -113,7 +113,9 @@ The module is not fully exact. No compiler-generated owners were included.
 
 The final result does not retain the five earlier exact regressions as a set:
 `00532050`, `00532CC0`, and `00533410` now match. Their source-module statuses
-remain unchanged. Only `00532610` and `00533120` remain exact mismatches.
+remain unchanged. `00532610` and `00533120` remain exact mismatches. Their
+status is demoted to `scratch`, and their registered exact-owner entries are
+removed.
 
 ## Open issues
 
