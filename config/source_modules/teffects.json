@@ -5,21 +5,9 @@
   "source": "src/teffects.cpp",
   "header": "include/teffects.h",
   "functions": {
-    "0050D460": {
-      "status": "matching",
-      "note_path": "recovery_notes/teffects_module.md"
-    },
-    "0050D4B0": {
-      "status": "matching",
-      "note_path": "recovery_notes/teffects_module.md"
-    },
-    "0050D4D0": {
-      "status": "scratch",
-      "note_path": "recovery_notes/teffects_module.md"
-    },
-    "0050D550": {
-      "status": "scratch",
-      "note_path": "recovery_notes/teffects_module.md"
-    }
+    "0050D460": { "status": "matching" },
+    "0050D4B0": { "status": "matching" },
+    "0050D4D0": { "status": "matching" },
+    "0050D550": { "status": "matching" }
   }
 }

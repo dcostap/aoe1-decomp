@@ -4713,7 +4713,9 @@
       "flags": "config/flags/default.rsp",
       "owners": {
         "0050D460": "src/teffects.cpp",
-        "0050D4B0": "src/teffects.cpp"
+        "0050D4B0": "src/teffects.cpp",
+        "0050D4D0": "src/teffects.cpp",
+        "0050D550": "src/teffects.cpp"
       },
       "symbols": {
         "0050D460": "??0TRIBE_Effects@@QAE@H@Z",
