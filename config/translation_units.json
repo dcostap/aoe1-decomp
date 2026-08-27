@@ -2630,13 +2630,14 @@
     },
     {
       "name": "mystring",
-      "source": "src/mystring_tu.cpp",
+      "source": "src/mystring.cpp",
+      "module": "mystring",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "00462D70": "src/matching/00462D70_convert_us.cpp",
-        "00462D90": "src/matching/00462D90_unconvert_us.cpp",
-        "00462DB0": "src/matching/00462DB0_addstring.cpp",
-        "00462E30": "src/matching/00462E30_getstring.cpp"
+        "00462D70": "src/mystring.cpp",
+        "00462D90": "src/mystring.cpp",
+        "00462DB0": "src/mystring.cpp",
+        "00462E30": "src/mystring.cpp"
       },
       "symbols": {
         "00462D70": "?convert_us@@YAXPAD@Z",
