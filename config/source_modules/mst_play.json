@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "name": "mst_play",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\mst_play.cpp",
+  "source": "src/mst_play.cpp",
+  "header": "include/mst_play.h",
+  "functions": {
+    "00460FD0": {
+      "status": "matching",
+      "note_path": "recovery_notes/mst_play_module.md"
+    },
+    "004610C0": {
+      "status": "matching",
+      "note_path": "recovery_notes/mst_play_module.md"
+    },
+    "00461150": {
+      "status": "matching",
+      "note_path": "recovery_notes/mst_play_module.md"
+    },
+    "004611D0": {
+      "status": "matching",
+      "note_path": "recovery_notes/mst_play_module.md"
+    },
+    "00461270": {
+      "status": "matching",
+      "note_path": "recovery_notes/mst_play_module.md"
+    },
+    "00461530": {
+      "status": "matching",
+      "note_path": "recovery_notes/mst_play_module.md"
+    },
+    "00461560": {
+      "status": "matching",
+      "note_path": "recovery_notes/mst_play_module.md"
+    },
+    "00461840": {
+      "status": "matching",
+      "note_path": "recovery_notes/mst_play_module.md"
+    }
+  }
+}

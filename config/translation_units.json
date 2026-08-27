@@ -3873,17 +3873,18 @@
     },
     {
       "name": "mst_play",
-      "source": "src/mst_play_tu.cpp",
+      "module": "mst_play",
+      "source": "src/mst_play.cpp",
       "flags": "config/flags/00461270_load_master_object.rsp",
       "owners": {
-        "00460FD0": "src/matching/00460FD0_RGE_Master_Player.cpp",
-        "004610C0": "src/matching/004610C0_RGE_Master_Player.cpp",
-        "00461150": "src/matching/00461150_RGE_Master_Player.cpp",
-        "004611D0": "src/matching/004611D0_finish_init.cpp",
-        "00461270": "src/matching/00461270_load_master_object.cpp",
-        "00461530": "src/matching/00461530_create_master_object_space.cpp",
-        "00461560": "src/matching/00461560_load_object.cpp",
-        "00461840": "src/matching/00461840_save.cpp"
+        "00460FD0": "src/mst_play.cpp",
+        "004610C0": "src/mst_play.cpp",
+        "00461150": "src/mst_play.cpp",
+        "004611D0": "src/mst_play.cpp",
+        "00461270": "src/mst_play.cpp",
+        "00461530": "src/mst_play.cpp",
+        "00461560": "src/mst_play.cpp",
+        "00461840": "src/mst_play.cpp"
       },
       "symbols": {
         "00460FD0": "??0RGE_Master_Player@@QAE@PAU_iobuf@@@Z",
