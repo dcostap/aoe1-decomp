@@ -55,6 +55,13 @@
 //   56.53% and exact blocks to 32.49%, but strict drift rose to 1134 bytes.
 //   The clean source remains pinned.  This is a useful CFG lead, not a final
 //   source model.
+// - TU repair pass: fresh grouped validation keeps the target at 1100 strict
+//   bytes, with 28 ordered calls, matching ownership, and no boundary escapes.
+// - TU repair probes tested abs/labs/manual distance forms, endpoint copies,
+//   declaration order, loop-index reuse, and the pre-r5 selection home. Each
+//   result was worse or a codegen duplicate. The pinned source is restored.
+// - Candidate proposal validates all eight exact neighbors. Accepted drift
+//   0052D600 and 0052D970 remain unchanged at 14 bytes each.
 // - Next lead: recover the original local-home and register basin from the
 //   period tvw_main.cpp declaration and translation-unit context.  Do not add
 //   aliases or fake volatility without new binary evidence.
