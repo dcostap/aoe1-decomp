@@ -57,22 +57,28 @@ extern char s_C__msdev_work_age1_x1_rmm_elev_c[];
 // executable-supported helper surfaces. The prior 10-probe campaign already
 // exhausted natural phase-loop/local-window leads; retain this readable source
 // rather than repeat the 14-byte boundary/frame basin blindly.
+// Context pass: PROVED PDB module rmm_elev.cpp, lines 290-403, and owner class
+// RGE_RMM_Elevation_Generator. PROVED address order and all 23 direct-call
+// anchors. LIKELY source declarations follow the nearby terrain generator.
+// UNKNOWN original local-home allocation remains the grouped blocker.
+// BINARY NOTE: pop_stack receives y output before x output in this owner.
+// Keep that order to preserve the executable's adjacent coordinate homes.
 unsigned char RGE_RMM_Elevation_Generator::base_elevation_generate(
     RGE_Elevation_Info_Line line)
 {
     long x = 0;
     long y = 0;
-    long chance = 0;
+    long chance;
     long clump_size;
     float stack_cost;
     float local_chance = 0.0f;
     unsigned char ok;
-    unsigned char done;
+    char done;
     Map_Stack local_stack;
     Map_Stack stack[99];
-    Map_Stack* stack_ptr;
 
     local_stack.x = this->map_width - 1;
+    chance = 0;
 
     if (line.clumps > 0) {
         for (long i = 0; i < line.clumps; ++i) {
@@ -93,7 +99,7 @@ unsigned char RGE_RMM_Elevation_Generator::base_elevation_generate(
     {
         long i = 0;
         while (i < line.clumps) {
-            Map_Stack* node = this->pop_stack(&local_stack, &x, &y,
+            Map_Stack* node = this->pop_stack(&local_stack, &y, &x,
                 &stack_cost);
             if (node == 0) {
                 break;
@@ -133,11 +139,11 @@ unsigned char RGE_RMM_Elevation_Generator::base_elevation_generate(
     do {
         done = 1;
         if (line.clumps > 0) {
-            stack_ptr = stack;
+            Map_Stack* stack_ptr = stack;
             long phase_count = line.clumps;
             do {
                 if (chance < line.elevation_size) {
-                    Map_Stack* node = this->pop_stack(stack_ptr, &x, &y,
+                    Map_Stack* node = this->pop_stack(stack_ptr, &y, &x,
                         &stack_cost);
                     if (node != 0) {
                         done = 0;

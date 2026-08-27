@@ -221,3 +221,12 @@ void RGE_RMM_Cliffs_Generator::invalidate_cliff_area(long x, long y, long spacin
 //   The first four stayed in the 243-byte, 168-difference basin or duplicated
 //   it. Real x1/y1 copies produced 240 bytes and 217 differences. Restore the
 //   pinned natural source after each probe.
+
+// - TU captain pass: PDB rmm_clif.cpp and lines 348-375 are proved. The
+//   address sequence 00481980, 004819C0, 00481A00, 00481CD0, 00481FC0,
+//   004820A0 is proved. The first five owners are exact anchors in the
+//   authentic wrapper. The padding-only 00482081 entry is not a normal owner.
+//   Fresh endpoint-order, alias, scope, loop, and store-order probes did not
+//   recover the target entry register basin. x2-first reached 165 differing
+//   bytes but reduced shape and was not retained. The clean source remains
+//   243 bytes with one direct remove_stack_node call and 168 differing bytes.
