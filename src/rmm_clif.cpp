@@ -7,6 +7,7 @@
 // source owner.
 
 #include "../include/rmm_clif.h"
+#include "../include/map.h"
 #include <string.h>
 
 extern "C" int __cdecl debug_rand(char* file, int line);

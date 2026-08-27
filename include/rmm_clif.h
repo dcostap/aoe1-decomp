@@ -6,7 +6,6 @@
 // canonical owners.
 
 #include "rmm_base.h"
-#include "map.h"
 
 struct RGE_Cliffs_Hot_Spots {
     long x;
