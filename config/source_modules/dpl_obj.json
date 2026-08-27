@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "name": "dpl_obj",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\dpl_obj.cpp",
+  "source": "src/dpl_obj.cpp",
+  "header": "include/dpl_obj.h",
+  "functions": {
+    "004418A0": { "status": "matching" },
+    "00441A70": { "status": "matching" },
+    "00441BB0": { "status": "accepted_drift", "note_path": "recovery_notes/dpl_obj_module.md" },
+    "00441D30": { "status": "matching" },
+    "00441DA0": { "status": "matching" },
+    "00441E00": { "status": "matching" },
+    "00441EB0": { "status": "matching" },
+    "00441F80": { "status": "matching" },
+    "00442050": { "status": "matching" },
+    "00442100": { "status": "matching" },
+    "00442180": { "status": "matching" },
+    "004421F0": { "status": "accepted_drift", "note_path": "recovery_notes/dpl_obj_module.md" },
+    "004422B0": { "status": "matching" },
+    "00442390": { "status": "matching" },
+    "00442540": { "status": "matching" }
+  }
+}

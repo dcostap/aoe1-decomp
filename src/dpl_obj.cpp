@@ -478,7 +478,7 @@ void RGE_Doppleganger_Creator::perform_doppleganger_checks()
                                         (long)this->Objects[i]->world_y);
                                 }
                                 RGE_Player* player =
-                                    (RGE_Player*)this->owner->world->players[player_id];
+                                    this->owner->world->players[player_id];
                                 ((RGE_Master_Doppleganger_Object*)
                                     player->master_objects[0xf3])->make_new_obj(
                                         player,
