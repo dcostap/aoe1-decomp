@@ -15,11 +15,10 @@
 // The prior candidate recorded eleven exact owners.  This header migration is
 // not validated.  update (004D1BB0) remains scratch.
 //
-// BLOCKER: the state-4 range load uses
-// RGE_Master_Combat_Object::weapon_range.  The canonical m_co_obj.h owner
-// header is not present in this worktree, so this module is held until that
-// header arrives.
+// The state-4 range load uses RGE_Master_Combat_Object::weapon_range at
+// +0x114. The source consumes the canonical m_co_obj.h owner header.
 
+#include <stdio.h>
 #include "../include/tact_rep.h"
 #include "../include/act_move.h"
 #include "../include/basegame.h"
@@ -28,6 +27,8 @@
 #include "../include/obj_list.h"
 #include "../include/rge_base_game_global.h"
 #include "../include/sound_context.h"
+
+extern float save_game_version;
 
 // PDB lines 41-46; VA 004D1680.
 // The constructor keeps the period base initialization and conditional setup.
@@ -70,7 +71,7 @@ TRIBE_Action_Repair::TRIBE_Action_Repair(RGE_Action_Object* obj,
     this->target_x = x;
     this->target_y = y;
     this->target_z = z;
-    this->repair_field_40 = 0;
+    this->save_target_command_flag = 0;
 }
 
 // PDB lines 85-96; VA 004D1800.
@@ -78,9 +79,9 @@ int TRIBE_Action_Repair::setup(int param_1, RGE_Action_Object* param_2)
 {
     int result = RGE_Action::setup(param_1, param_2);
     if (save_game_version >= 6.5f) {
-        rge_read(param_1, &this->repair_field_40, 1);
+        rge_read(param_1, &this->save_target_command_flag, 1);
     } else {
-        this->repair_field_40 = 0;
+        this->save_target_command_flag = 0;
     }
     return result;
 }
@@ -153,7 +154,8 @@ void TRIBE_Action_Repair::set_state(unsigned char param_1)
         if (target == 0) return;
         short id = target->master_obj->object_group;
         if (id != 2 && id != 0x14 && id != 0x15 && id != 0x16) return;
-        if (target->command_flag != this->save_target_command_flag) return;
+        if (((RGE_Action_Object*)target)->command_flag !=
+            this->save_target_command_flag) return;
         target->moveTo(this->obj->world_x, this->obj->world_y,
                        this->obj->world_z, 0, 1);
         return;
@@ -297,7 +299,7 @@ unsigned char TRIBE_Action_Repair::update()
         }
 
         unsigned char result = this->target_obj->heal(
-            (float)(this->task->work_rate *
+            (float)(this->task->work_val1 *
                     this->obj->owner->world->world_time_delta_seconds) *
             ((RGE_Master_Action_Object*)this->obj->master_obj)->work_rate);
         if (result == 1) {
@@ -414,9 +416,11 @@ void TRIBE_Action_Repair::meet_target()
                     action->actionState() != 2) {
                     if (this->target_obj->actionState() == 0x0B) {
                         this->target_x =
-                            this->target_obj->actions->get_action()->targetX();
+                            ((RGE_Action_Object*)this->target_obj)
+                                ->actions->get_action()->targetX();
                         this->target_y =
-                            this->target_obj->actions->get_action()->targetY();
+                            ((RGE_Action_Object*)this->target_obj)
+                                ->actions->get_action()->targetY();
                     } else {
                         this->target_x = this->target_obj->world_x;
                         this->target_y = this->target_obj->world_y;
@@ -437,7 +441,8 @@ void TRIBE_Action_Repair::meet_target()
             this->target_obj->moveTo((float)rVal.x + 0.5f,
                                      (float)rVal.y + 0.5f,
                                      this->target_obj->world_z, 0.0f, 1);
-            this->save_target_command_flag = this->target_obj->command_flag;
+            this->save_target_command_flag =
+                ((RGE_Action_Object*)this->target_obj)->command_flag;
         }
     }
 }

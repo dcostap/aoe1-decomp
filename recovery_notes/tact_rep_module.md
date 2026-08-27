@@ -17,9 +17,9 @@ eleven exact owners. This canonical-header migration has no new validation.
 `004D1BB0` (`TRIBE_Action_Repair::update`) remains scratch.
 
 The state-4 range load reads `RGE_Master_Combat_Object::weapon_range` at
-`+0x114`. The canonical `m_co_obj.h` owner header is not present in this
-worktree. Do not replace this field with `RGE_Task::work_range`, a raw offset,
-or a local layout. Hold the module until Terra 3 provides that header.
+`+0x114`. The source uses that named field from the canonical `m_co_obj.h`
+owner header. Do not replace it with `RGE_Task::work_range`, a raw offset, or
+a local layout.
 
 The source has no inline assembly, byte filler, codegen-only body, or forced
 register hint. No matching claim is made for this migration.
@@ -32,3 +32,10 @@ removed. The old context header is now the module-owned `include/tact_rep.h`.
 The source has no `.cpp` includes, recovery context macros, fallback ABI
 declarations, or duplicate owner declarations. It consumes the canonical
 `act_move.h` and `obj_list.h` headers now present on main.
+
+The source uses `RGE_Task::work_val1` for the repair rate. This is the
+canonical field at the observed `+0x1C` task offset. Action-object-only fields
+use the canonical `RGE_Action_Object` surface through typed casts. The source
+does not publish packet-local combat, action-list, or action declarations.
+
+No new compiler, candidate, or grouped validation was run for this packet.
