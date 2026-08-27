@@ -52,5 +52,24 @@ exact owner.
 
 ## Scoped validation
 
-Final scoped checks for `004CE530`, `004CE5F0`, and `004CE7A0` returned
-`MATCH` with `0.0000%`. No grouped or repository-wide validation ran.
+After rebasing onto `main`, the owner translation unit was checked as one
+candidate group. Every exact owner returned `MATCH` with `0.0000%`:
+
+| VA | owner symbol | bytes | relocations | boundary escapes |
+| --- | --- | ---: | ---: | ---: |
+| `004CE530` | `??0TRIBE_Action_Discovery_Artifact@@QAE@HPAVRGE_Action_Object@@@Z` | 0 | 0 | 0 |
+| `004CE5F0` | `??0TRIBE_Action_Discovery_Artifact@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@PAVRGE_Static_Object@@@Z` | 0 | 0 | 0 |
+| `004CE670` | `??0TRIBE_Action_Discovery_Artifact@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@MMM@Z` | 0 | 0 | 0 |
+| `004CE6D0` | `?save@TRIBE_Action_Discovery_Artifact@@UAEXH@Z` | 0 | 0 | 0 |
+| `004CE700` | `?first_in_stack@TRIBE_Action_Discovery_Artifact@@UAEXE@Z` | 0 | 0 | 0 |
+| `004CE720` | `?set_state@TRIBE_Action_Discovery_Artifact@@MAEXE@Z` | 0 | 0 | 0 |
+| `004CE7A0` | `?check_objects@TRIBE_Action_Discovery_Artifact@@IAEXXZ` | 0 | 0 | 0 |
+
+The candidate also compiled `004CE740` as an observed accepted-drift
+function. It remained an honest `MISMATCH` of 8 bytes at `8.6957%`, with no
+relocation target mismatch and no boundary escape. Its owner symbol matched.
+The candidate reported 7 exact matches out of 7 exact owners.
+
+`DAT_00575078` remains only the source-local `extern float` used by the two
+map-coordinate expressions. No foreign layout carrier, raw vptr, or explicit
+padding field is present in `tact_dar.cpp` or `tact_dar.h`.
