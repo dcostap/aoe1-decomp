@@ -1,13 +1,11 @@
 #include "../include/aiconmod.h"
+#include "../include/player.h"
+#include "../include/world.h"
+#include "../include/victory.h"
 
 class MainDecisionAIModule : public AIModule {
 public:
     RGE_Player* player;
-};
-
-class RGE_Victory_Conditions {
-public:
-    int get_victory_points();
 };
 
 class DiplomacyAIModule : public AIModule {

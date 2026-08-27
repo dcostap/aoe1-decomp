@@ -1,18 +1,14 @@
 #ifndef AOE1_AICONMOD_H
 #define AOE1_AICONMOD_H
 
-// Reviewed compiler-facing declarations for aiconmod.cpp and aidipmod.cpp.
-// BaseItem and AIModule are owned by their canonical headers.  The player and
-// world declarations below remain narrow local views proven by the PDB users.
+// Reviewed compiler-facing declarations for the aiconmod.cpp source module.
+// BaseItem and AIModule are owned by their canonical headers.  This header
+// owns only ConstructionItem and ConstructionAIModule.
 
 #include "aibitm.h"
 #include "aimodule.h"
 
 class BuildItem;
-class ConstructionItem;
-class RGE_Player;
-class RGE_Game_World;
-class RGE_Victory_Conditions;
 
 class ConstructionItem : public BaseItem {
 public:
@@ -38,41 +34,6 @@ public:
     void incrementBuildAttempts();
 };
 
-class RGE_Game_World {
-public:
-    virtual ~RGE_Game_World();
-    char gap_04[0x38];
-    short player_num;
-    char gap_3E[0x2];
-    RGE_Player** players;
-};
-
-class RGE_Player {
-public:
-    virtual ~RGE_Player();
-    virtual void set_game_status(unsigned char);
-    virtual void do_resign(int);
-    virtual void changeToHumanPlayer();
-    virtual void changeToComputerPlayer();
-    virtual char* aiStatus(int);
-    virtual int isEnemy(int);
-    virtual int isAlly(int);
-    virtual int isNeutral(int);
-    virtual int isAllNeutral();
-    virtual void setDiplomaticStance(int, int);
-
-    char gap_04[0x30];
-    RGE_Victory_Conditions* victory_conditions;
-    char gap_38[0x4];
-    RGE_Game_World* world;
-    char gap_40[0xA];
-    short id;
-    char gap_4C[0x34];
-    unsigned char game_status;
-    char gap_81[0x3];
-    unsigned char* relations;
-};
-
 class ConstructionAIModule : public AIModule {
 public:
     enum PlacementResult {
@@ -96,8 +57,7 @@ public:
     int numberRandomConstructionLotsValue;       // +0x174
     ConstructionItem randomConstructionLots;     // +0x178
     char constructionPlanNameValue[257];        // +0x1F8
-    unsigned char padding_2F9[3];                // +0x2F9
-    float xReferencePointValue;                  // +0x2FC
+    float xReferencePointValue;                  // +0x2FC (natural alignment)
     float yReferencePointValue;                  // +0x300
     float zReferencePointValue;                  // +0x304
     int mapXSizeValue;                            // +0x308
