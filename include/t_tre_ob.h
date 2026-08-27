@@ -15,4 +15,7 @@ public:
     virtual void set_object_state(unsigned char);
 };
 
+typedef char tribe_tree_object_size_check[
+    (sizeof(TRIBE_Tree_Object) == 0x88) ? 1 : -1];
+
 #endif

@@ -46,17 +46,18 @@ surface. The parent must confirm both generated destructor entries.
 
 `include/tm_tre_o.h` includes canonical `include/m_s_obj.h` directly. It adds
 no copied base layout. `TRIBE_Master_Tree_Object` declares its virtual
-destructor, three constructors, and the two factory overrides. It includes
-`<stdio.h>` so its public `FILE*` constructor declaration is self-sufficient;
-the typedef produces the PDB `PAU_iobuf` constructor name. It only
-forward-declares `TRIBE_Tree_Object`. The source includes
+destructor, three constructors, and the two factory overrides. It declares
+`_iobuf` and `FILE` for its public file constructor. The typedef produces the
+PDB `PAU_iobuf` constructor name. The source includes
 `include/t_tre_ob.h` for the `new TRIBE_Tree_Object` expression. That class
 remains owned by `t_tre_ob.cpp`.
 
+The PDB record size is `0xB8`. The header checks that natural derived layout.
+
 Direct dependency closure reviewed: `tm_tre_o.cpp` includes `tm_tre_o.h` and
-`t_tre_ob.h`; `tm_tre_o.h` includes `<stdio.h>` and canonical `m_s_obj.h`;
-and `t_tre_ob.h` uses canonical `stat_obj.h`, which includes `utmarray.h`.
-No `_context.h` file appears in this closure.
+`t_tre_ob.h`; `tm_tre_o.h` declares its file type and includes canonical
+`m_s_obj.h`; and `t_tre_ob.h` uses canonical `stat_obj.h`, which includes
+`utmarray.h`. No `_context.h` file appears in this closure.
 
 The source uses normal C++ constructors, base initializers, protected setup
 calls, the canonical `master_type` member, and natural `new` expressions. It

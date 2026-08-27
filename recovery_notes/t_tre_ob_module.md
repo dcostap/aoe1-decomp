@@ -35,11 +35,13 @@ The natural header includes `stat_obj.h`, which owns `RGE_Static_Object`, and
 for the static-object constructor and setup call. No tree-master or
 static-object layout is copied here.
 
-`tm_tre_o.h` includes `<stdio.h>` for its public `FILE*` constructor.
+`tm_tre_o.h` declares its `FILE` type for its public file constructor.
 `stat_obj.h` includes `utmarray.h` for managed-array members. `tm_tre_o.h`
 includes the canonical `m_s_obj.h` owner header. The source needs no additional
 game, player, or object headers. The canonical headers provide the required
 forward declarations and method declarations.
+
+The PDB record size is `0x88`. The header checks that natural derived layout.
 
 The direct method dependencies are the two `RGE_Static_Object` constructors,
 the two `setup` overloads, and `RGE_Static_Object::set_object_state`. All come

@@ -1,14 +1,15 @@
 #ifndef AOE1_TM_TRE_O_H
 #define AOE1_TM_TRE_O_H
 
-#include <stdio.h>
-
 // Declarations for the PDB source module tm_tre_o.cpp.
 //
 // RGE_Master_Static_Object comes from its canonical owner header.
 // This header adds only the tree-master declaration owned here.
 
 #include "m_s_obj.h"
+
+struct _iobuf;
+typedef struct _iobuf FILE;
 
 class TRIBE_Master_Tree_Object : public RGE_Master_Static_Object {
 public:
@@ -25,6 +26,7 @@ public:
     virtual RGE_Master_Static_Object* make_new_master();
 };
 
-class TRIBE_Tree_Object;
+typedef char tribe_master_tree_object_size_check[
+    (sizeof(TRIBE_Master_Tree_Object) == 0xB8) ? 1 : -1];
 
 #endif
