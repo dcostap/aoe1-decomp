@@ -17,8 +17,13 @@ public:
 #endif
 
 unsigned char RGE_Active_Animated_Sprite::is_animating() {
+    // BINARY NOTE: The shipped body materializes both 0 and 1 in full EAX.
+    int result;
+
     if (this->animate_flag == 0 || (this->sprite->flags & 1) == 0) {
-        return 0;
+        result = 0;
+    } else {
+        result = 1;
     }
-    return 1;
+    return result;
 }

@@ -5331,7 +5331,9 @@
         "0041B4A0": "src/matching/0041B4A0_normal_draw.cpp",
         "0041B4F0": "src/matching/0041B4F0_shadow_draw.cpp",
         "0041B520": "src/matching/0041B520_what_frame.cpp",
+        "0041B530": "src/matching/0041B530_is_animating.cpp",
         "0041B550": "src/matching/0041B550_set_frame.cpp",
+        "0041B560": "src/matching/0041B560_frame_passed.cpp",
         "0041B590": "src/matching/0041B590_looped.cpp",
         "0041B5A0": "src/matching/0041B5A0_get_facetindex.cpp",
         "0041B5D0": "src/matching/0041B5D0_get_frame.cpp",
@@ -5365,7 +5367,12 @@
         "0041AF40": "?set_frame@RGE_Active_Sprite@@UAEXF@Z",
         "0041AF50": "?is_animating@RGE_Active_Sprite@@UAEEXZ",
         "0041AF60": "?frame_passed@RGE_Active_Sprite@@UAEEF@Z",
-        "0041B550": "?set_frame@RGE_Active_Animated_Sprite@@UAEXF@Z"
+        "0041B550": "?set_frame@RGE_Active_Animated_Sprite@@UAEXF@Z",
+        "0041ADD0": "??1RGE_Active_Sprite@@UAE@XZ",
+        "0041ADE0": "?set_offset@RGE_Active_Sprite@@UAEXJJ@Z",
+        "0041AFE0": "?get_lowest_draw_level@RGE_Active_Sprite@@QAEEXZ",
+        "0041B530": "?is_animating@RGE_Active_Animated_Sprite@@UAEEXZ",
+        "0041B560": "?frame_passed@RGE_Active_Animated_Sprite@@UAEEF@Z"
       }
     },
     {

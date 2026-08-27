@@ -17,12 +17,18 @@ public:
 #endif
 
 unsigned char RGE_Active_Animated_Sprite::frame_passed(short param_1) {
+    // BINARY NOTE: The shipped body materializes both 0 and 1 in full EAX.
+    int result;
+
     if (this->frame_changed == 0) goto ret0;
     if (this->frame_looped != 0) goto ret1;
     if (this->frame < param_1) goto ret0;
     if (this->last_frame < param_1) goto ret1;
 ret0:
-    return 0;
+    result = 0;
+    goto done;
 ret1:
-    return 1;
+    result = 1;
+done:
+    return result;
 }
