@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "name": "tact_trd",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\tact_trd.cpp",
+  "source": "src/tact_trd.cpp",
+  "header": "include/tact_trd_context.h",
+  "functions": {
+    "004D2660": { "status": "matching", "note_path": "recovery_notes/tact_trd_module.md" },
+    "004D2710": { "status": "matching", "note_path": "recovery_notes/tact_trd_module.md" },
+    "004D27A0": { "status": "matching", "note_path": "recovery_notes/tact_trd_module.md" },
+    "004D27F0": { "status": "matching", "note_path": "recovery_notes/tact_trd_module.md" },
+    "004D2830": { "status": "matching", "note_path": "recovery_notes/tact_trd_module.md" },
+    "004D2880": { "status": "accepted_drift", "note_path": "recovery_notes/tact_trd_module.md" },
+    "004D2CB0": { "status": "scratch", "note_path": "recovery_notes/tact_trd_module.md" },
+    "004D32C0": { "status": "matching", "note_path": "recovery_notes/tact_trd_module.md" },
+    "004D32F0": { "status": "matching", "note_path": "recovery_notes/tact_trd_module.md" },
+    "004D3330": { "status": "matching", "note_path": "recovery_notes/tact_trd_module.md" },
+    "004D3340": { "status": "matching", "note_path": "recovery_notes/tact_trd_module.md" },
+    "004D33C0": { "status": "matching", "note_path": "recovery_notes/tact_trd_module.md" }
+  }
+}

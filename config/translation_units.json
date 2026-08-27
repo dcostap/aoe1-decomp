@@ -7169,19 +7169,20 @@
     },
     {
       "name": "tact_trd",
-      "source": "src/tact_trd_tu.cpp",
+      "source": "src/tact_trd.cpp",
+      "module": "tact_trd",
       "flags": "config/flags/004D2660_TRIBE_Action_Trade.rsp",
       "owners": {
-        "004D2660": "src/matching/004D2660_TRIBE_Action_Trade.cpp",
-        "004D2710": "src/matching/004D2710_TRIBE_Action_Trade.cpp",
-        "004D27A0": "src/matching/004D27A0_TRIBE_Action_Trade.cpp",
-        "004D27F0": "src/matching/004D27F0_save.cpp",
-        "004D2830": "src/matching/004D2830_first_in_stack.cpp",
-        "004D32C0": "src/matching/004D32C0_get_move_sprite.cpp",
-        "004D32F0": "src/matching/004D32F0_get_wait_sprite.cpp",
-        "004D3330": "src/matching/004D3330_stop.cpp",
-        "004D3340": "src/matching/004D3340_move_to.cpp",
-        "004D33C0": "src/matching/004D33C0_work.cpp"
+        "004D2660": "src/tact_trd.cpp",
+        "004D2710": "src/tact_trd.cpp",
+        "004D27A0": "src/tact_trd.cpp",
+        "004D27F0": "src/tact_trd.cpp",
+        "004D2830": "src/tact_trd.cpp",
+        "004D32C0": "src/tact_trd.cpp",
+        "004D32F0": "src/tact_trd.cpp",
+        "004D3330": "src/tact_trd.cpp",
+        "004D3340": "src/tact_trd.cpp",
+        "004D33C0": "src/tact_trd.cpp"
       },
       "symbols": {
         "004D2660": "??0TRIBE_Action_Trade@@QAE@HPAVRGE_Action_Object@@@Z",
