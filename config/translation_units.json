@@ -4300,25 +4300,27 @@
     },
     {
       "name": "tact_dar",
-      "source": "src/tact_dar_tu.cpp",
+      "source": "src/tact_dar.cpp",
       "flags": "config/flags/004CE530_TRIBE_Action_Discovery_Artifact.rsp",
       "owners": {
-        "004CE530": "src/matching/004CE530_TRIBE_Action_Discovery_Artifact.cpp",
-        "004CE5F0": "src/matching/004CE5F0_TRIBE_Action_Discovery_Artifact.cpp",
-        "004CE670": "src/matching/004CE670_TRIBE_Action_Discovery_Artifact.cpp",
-        "004CE6D0": "src/matching/004CE6D0_save.cpp",
-        "004CE700": "src/matching/004CE700_first_in_stack.cpp",
-        "004CE720": "src/matching/004CE720_set_state.cpp",
-        "004CE7A0": "src/matching/004CE7A0_check_objects.cpp"
+        "004CE530": "src/tact_dar.cpp",
+        "004CE5F0": "src/tact_dar.cpp",
+        "004CE670": "src/tact_dar.cpp",
+        "004CE6D0": "src/tact_dar.cpp",
+        "004CE700": "src/tact_dar.cpp",
+        "004CE720": "src/tact_dar.cpp",
+        "004CE740": "src/tact_dar.cpp",
+        "004CE7A0": "src/tact_dar.cpp"
       },
       "symbols": {
         "004CE530": "??0TRIBE_Action_Discovery_Artifact@@QAE@HPAVRGE_Action_Object@@@Z",
         "004CE5F0": "??0TRIBE_Action_Discovery_Artifact@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@PAVRGE_Static_Object@@@Z",
-        "004CE6D0": "?save@TRIBE_Action_Discovery_Artifact@@UAEXH@Z",
-        "004CE7A0": "?check_objects@TRIBE_Action_Discovery_Artifact@@IAEXXZ",
         "004CE670": "??0TRIBE_Action_Discovery_Artifact@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@MMM@Z",
+        "004CE6D0": "?save@TRIBE_Action_Discovery_Artifact@@UAEXH@Z",
         "004CE700": "?first_in_stack@TRIBE_Action_Discovery_Artifact@@UAEXE@Z",
-        "004CE720": "?set_state@TRIBE_Action_Discovery_Artifact@@MAEXE@Z"
+        "004CE720": "?set_state@TRIBE_Action_Discovery_Artifact@@MAEXE@Z",
+        "004CE740": "?update@TRIBE_Action_Discovery_Artifact@@UAEEXZ",
+        "004CE7A0": "?check_objects@TRIBE_Action_Discovery_Artifact@@IAEXXZ"
       }
     },
     {
