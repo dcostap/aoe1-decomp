@@ -17,9 +17,11 @@ public:
     ManagedArray(int desired_number = 0)
         : value(0),
           numberValue(0),
-          desiredNumberValue(desired_number),
-          maximumSizeValue(0)
+          desiredNumberValue(0),
+          maximumSizeValue(desired_number)
     {
+        if (desired_number > 0)
+            this->value = new T[desired_number];
     }
 
     ~ManagedArray()
