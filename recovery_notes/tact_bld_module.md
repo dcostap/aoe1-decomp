@@ -36,7 +36,8 @@ The source retains the reviewed prior statuses:
 
 - `matching`: `004CD1B0`, `004CD2A0`, `004CD2E0`, `004CD310`,
   `004CD910`, `004CD920`.
-- `accepted_drift`: `004CD210`, `004CD5E0`, `004CD960`.
+- `accepted_drift`: `004CD210`, `004CD960`.
+- `scratch`: `004CD5E0`.
 
 The pre-cleanup source changed four bytes in the `004CD210` owner-id
 comparison. After full owner includes moved to `src/tact_bld.cpp`, the
@@ -48,12 +49,11 @@ The notification calls use explicit integer and long casts. The canonical
 `RGE_Static_Object` owner also declares a nonvirtual six-argument overload.
 The casts select the shipped six-argument virtual notification slot.
 
-`update` keeps its 724-byte boundary, owner symbol, 24 calls, 22 conditional
-branches, and 13 returns. It has four strict byte differences. The direct
-checker identifies a virtual-slot replacement at offset `+01A5`: original
-`vslot+0x1F0`, rebuilt `vslot+0x1F8`. Its dispatcher load also uses a different
-table-offset form. The accepted-drift status remains supported by this strict
-call-surface mismatch.
+`update` keeps its 724-byte boundary and owner symbol. It has four strict byte
+differences. The direct checker identifies a virtual-slot replacement at
+offset `+01A5`: original `vslot+0x1F0`, rebuilt `vslot+0x1F8`. This target
+change is not equivalent drift. The function remains scratch until the
+canonical virtual call selects the original slot.
 
 `work` keeps its 121-byte boundary, owner symbol, four calls, five conditions,
 and two returns. It has nine strict byte differences. The differences cover

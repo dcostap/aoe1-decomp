@@ -14,7 +14,7 @@
     "004CD2E0": { "status": "matching" },
     "004CD310": { "status": "matching" },
     "004CD5E0": {
-      "status": "accepted_drift",
+      "status": "scratch",
       "note_path": "recovery_notes/tact_bld_module.md"
     },
     "004CD910": { "status": "matching" },
