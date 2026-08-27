@@ -4917,12 +4917,14 @@
         "00409DB0": "src/matching/00409DB0_numberBuiltOrInProgressItemsOfType.cpp",
         "00409E20": "src/matching/00409E20_numberInProgressItemsOfType.cpp",
         "00409E90": "src/matching/00409E90_removeOldList.cpp",
-        "00409EE0": "src/matching/00409EE0_anyBuildListItem.cpp"
+        "00409EE0": "src/matching/00409EE0_anyBuildListItem.cpp",
+        "00409F50": "src/matching/00409F50_specificBuildListItem.cpp"
       },
       "symbols": {
         "00408840": "??0BuildAIModule@@QAE@HH@Z",
         "00409B70": "?numberItemsBuilt@BuildAIModule@@QBEHXZ",
-        "004086B0": "??0BuildAIModule@@QAE@PAXH@Z"
+        "004086B0": "??0BuildAIModule@@QAE@PAXH@Z",
+        "00409F50": "?specificBuildListItem@BuildAIModule@@IAEPAVBuildItem@@H@Z"
       }
     },
     {
