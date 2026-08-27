@@ -5604,10 +5604,10 @@
     },
     {
       "name": "ttsk_lst",
-      "source": "src/ttsk_lst_tu.cpp",
+      "source": "src/ttsk_lst.cpp",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "0052C8D0": "src/matching/0052C8D0_is_attack_task.cpp"
+        "0052C8D0": "src/ttsk_lst.cpp"
       },
       "symbols": {}
     },
