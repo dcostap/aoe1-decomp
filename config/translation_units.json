@@ -3534,14 +3534,14 @@
     },
     {
       "name": "act_bird_cpp",
-      "source": "src/act_bird_tu.cpp",
+      "source": "src/act_bird.cpp",
       "flags": "config/flags/00402180_update.rsp",
       "owners": {
-        "00401FE0": "src/matching/00401FE0_RGE_Action_Bird.cpp",
-        "00402040": "src/matching/00402040_RGE_Action_Bird.cpp",
-        "00402080": "src/matching/00402080_first_in_stack.cpp",
-        "004020C0": "src/matching/004020C0_set_state.cpp",
-        "00402180": "src/matching/00402180_update.cpp"
+        "00401FE0": "src/act_bird.cpp",
+        "00402040": "src/act_bird.cpp",
+        "00402080": "src/act_bird.cpp",
+        "004020C0": "src/act_bird.cpp",
+        "00402180": "src/act_bird.cpp"
       },
       "symbols": {
         "00401FE0": "??0RGE_Action_Bird@@QAE@HPAVRGE_Action_Object@@@Z",
