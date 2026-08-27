@@ -1355,6 +1355,7 @@
       "source": "src/view_tu.cpp",
       "flags": "config/flags/00533510_RGE_View.rsp",
       "owners": {
+        "00533510": "src/matching/00533510_RGE_View.cpp",
         "00533760": "src/matching/00533760_RGE_View.cpp",
         "00533AC0": "src/matching/00533AC0_set_focus.cpp",
         "00534100": "src/matching/00534100_delete_surfaces.cpp",
@@ -1378,7 +1379,8 @@
       "symbols": {
         "00538590": "?get_tile_mask_num@RGE_View@@IAEHHHHHK@Z",
         "005359E0": "?pick@RGE_View@@QAEEEEJJPAURGE_Pick_Info@@PAVRGE_Static_Object@@@Z",
-        "00535C70": "?pick@RGE_View@@QAEEEEPAUtagPOINT@@0PAPAXPAM2PAF3@Z"
+        "00535C70": "?pick@RGE_View@@QAEEEEPAUtagPOINT@@0PAPAXPAM2PAF3@Z",
+        "00533510": "??0RGE_View@@QAE@XZ"
       }
     },
     {
