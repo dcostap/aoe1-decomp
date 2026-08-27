@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "name": "aidipmod",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\aidipmod.cpp",
+  "source": "src/aidipmod.cpp",
+  "header": "include/aiconmod_context.h",
+  "functions": {
+    "0040BEC0": { "status": "matching" },
+    "0040BF40": { "status": "matching" },
+    "0040BFF0": { "status": "matching" },
+    "0040C000": { "status": "matching" },
+    "0040C010": { "status": "matching" },
+    "0040C0A0": { "status": "matching" },
+    "0040C100": { "status": "matching" },
+    "0040C190": { "status": "matching" },
+    "0040C2B0": { "status": "matching" },
+    "0040C3B0": { "status": "matching" },
+    "0040C3F0": { "status": "matching" },
+    "0040C420": { "status": "matching" },
+    "0040C460": { "status": "matching" },
+    "0040C4A0": { "status": "matching" },
+    "0040C4D0": { "status": "matching" },
+    "0040C5B0": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/aidipmod_module.md"
+    },
+    "0040C660": { "status": "matching" },
+    "0040C6A0": { "status": "matching" },
+    "0040C6E0": { "status": "matching" },
+    "0040C730": { "status": "matching" },
+    "0040C780": { "status": "matching" }
+  }
+}
