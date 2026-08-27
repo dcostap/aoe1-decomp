@@ -8,6 +8,14 @@ The PDB gives sizes `0x10` and `0x0C`.
 `RGE_Object_Node::node` is a `RGE_Static_Object*` at `+0x00`.
 `RGE_Object_List::list` is an `RGE_Object_Node*` at `+0x04`.
 
+The canonical Node layout is `0x10`: payload `node` at `+0x00`, `next` at
+`+0x04`, `prev` at `+0x08`, and `centered` at `+0x0C`. The List layout is
+`0x0C`: vptr at `+0x00`, head `list` at `+0x04`, and
+`number_of_objects` at `+0x08`.
+
+`RGE_Tile` embeds its Object List as `objects` at `+0x0C`. Consumers use
+`tile->objects.list`. They do not use local Tile or Node carriers.
+
 The header does not own view, master, static, player, world, or derived object classes.
 
 ## Source hold
