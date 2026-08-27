@@ -34,8 +34,21 @@ unregistered observed owners.
 
 The manifest records 27 matching owners, two scratch owners, and one accepted
 source drift owner. The accepted owner is `0046AAE0`. The scratch owners are
-`0046A810` and `0046A9E0`. This source-shape migration does not promote those
-owners or tune their code generation.
+`0046A810` and `0046A9E0`. These are source-bank classifications from the
+reviewed pre-migration work. They are not grouped exact claims.
+
+The merged candidate audit checked all 30 owners. The three byte-equal operator
+bodies are unregistered ownership problems because the generic audit does not
+prove the `??6`, `??H`, and `??4` operator decorations. Their candidate results
+are `0046A810` 206/206, `0046A8E0` 253/253, and `0046A9E0` 241/241, each with
+zero masked byte differences and zero relocation-target differences. Keep the
+existing source-bank classifications until their grouped symbol ownership is
+reviewed.
+
+`0046AAE0` remains the reviewed accepted-drift source, but its merged candidate
+has 108 differing bytes in a 122-byte comparison. The old isolated 9-byte
+pre-loop drift is not a current grouped exact result. The audit classifies this
+as `accepted_drift_observed`; do not register it as an exact owner.
 
 `0046A8E0` retains its reviewed custom response-file context. Its natural source
 uses the two source-array indices required by the original copy loops.
@@ -55,7 +68,15 @@ exactness regressions caused by the complete natural source module. Compile and
 exact checks after migration are evidence only; this task does not perform byte
 tuning.
 
+The constructor is a registered-owner regression in the merged source. It still
+emits 162 bytes with matching frame, calls, CFG, owner, and relocations, but has
+four positional byte differences. At offsets `+005A`, `+0066`, `+0070`, and
+`+007A`, the original byte is `02` and the rebuilt byte is `10`. These bytes are
+the displacement in the four copied-waypoint stores. The difference is a
+register-map drift, not a source behavior change.
+
 Focused checks after the merge compiled the complete module. `0046A7F0` and
-`0046AFE0` still report `MATCH` with `0.0000%` difference. The constructor
-`0046A740` emits 162 bytes with a four-byte positional difference. The source
-module and translation-unit validation tests pass.
+`0046AFE0` still report `MATCH` with `0.0000%` difference. The source-module
+and translation-unit structural checks pass. The complete candidate audit
+reports 25 grouped matches, one constructor regression, three operator
+ownership problems, and one accepted-drift observation.
