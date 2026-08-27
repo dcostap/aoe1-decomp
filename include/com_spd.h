@@ -2,11 +2,8 @@
 #define AOE1_COM_SPD_H
 
 #include <stddef.h>
+#include "com_types.h"
 #include "rge_tslc.h"
-
-enum COMMSTATES {
-    COMM_STATE_JOINNOW = 3
-};
 
 #pragma pack(push, 1)
 struct COMMPLAYEROPTIONS {

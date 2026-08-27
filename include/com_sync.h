@@ -2,21 +2,8 @@
 #define AOE1_COM_SYNC_H
 
 #include "com_hand.h"
-#include "basegame.h"
-#include "debuglog.h"
-#include "pathsys.h"
-#include "player.h"
-#include "rge_base_game_global.h"
-#include "visible.h"
-#include "world.h"
 
-// Canonical declarations used by the com_sync.cpp owner sequence.
-// The source module remains a prefix until its final owner is recovered.
-
-extern TDebuggingLog* L;
-
-extern long DAT_0062D208[9];
-extern unsigned long DAT_0062D230;
+// Canonical declarations owned by the com_sync.cpp source module.
 
 class RGE_Communications_Synchronize {
 public:

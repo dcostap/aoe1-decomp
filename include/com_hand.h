@@ -3,7 +3,7 @@
 
 #include <windows.h>
 #include <stddef.h>
-#include "debuglog.h"
+#include "com_types.h"
 
 // Declarations recovered from the Com_hand.cpp PDB.
 // TCommunications_Handler has no base class or virtual source members.
@@ -20,90 +20,11 @@ class RGE_Communications_Speed;
 class RGE_Communications_Synchronize;
 class RGE_Communications_Addresses;
 class RGE_Prog_Info;
-class IDirectPlay2;
-class IDirectPlay3;
-class IDirectPlay4A;
-class DPSESSIONDESC2;
+struct IDirectPlay2;
+struct IDirectPlay3;
+struct IDirectPlay4A;
+struct DPSESSIONDESC2;
 struct GUID_LOCAL;
-
-#ifndef AOE1_COMM_STATUS_H
-#define AOE1_COMM_STATUS_H
-enum COMMSTATUS {
-    UNINITIALIZED = 0,
-    INITIALIZED = 1,
-    SINGLE_PLAYER = 2,
-    MULTIPLAYER_RESET = 3,
-    CONVERSATION_OPEN = 4,
-    SERVICE_AVAILABLE = 5,
-    SESSION_AVAILABLE = 6,
-    SESSION_HOSTED = 7,
-    SESSION_JOINED = 8,
-    PLAYER_CREATED = 9,
-    COMM_SETTINGS_EXCHANGED = 10,
-    GAME_PLAYER_SET = 11,
-    GAME_OPTIONS_EXCHANGED = 12,
-    GAME_IS_LOADING = 13,
-    GAME_IS_RUNNING = 14,
-    GAME_IS_PAUSED = 15
-};
-
-enum COMMSTATES {
-    COMM_STATE_ERROR = 1,
-    COMM_STATE_INITIALIZE = 2,
-    COMM_STATE_JOINNOW = 3,
-    COMM_STATE_PAUSE = 4,
-    COMM_STATE_RUNNING = 5,
-    COMM_STATE_FINISHED = 6
-};
-
-enum COMMSPEEDS {
-    SPEED_OKAY = 0,
-    SPEED_FASTER = 1,
-    SPEED_SLOWER = 2
-};
-
-enum PLAYERHUMANITY {
-    ME_ABSENT = 0,
-    ME_CLOSED = 1,
-    ME_HUMAN = 2,
-    ME_ELIMINATED = 3,
-    ME_COMPUTER = 4,
-    ME_CYBORG = 5,
-    ME_VIEWONLY = 6
-};
-
-enum COMMMESSAGES {
-    COMM_PAUSE = 0x17A2,
-    COMM_RESUME = 0x17A3,
-    COMM_UPDATE_PLAYERS = 0x17A4,
-    COMM_UPDATE_CHAT = 0x17A5,
-    COMM_UPDATE_PARAMS = 0x17A6,
-    COMM_LAUNCH_GAME = 0x17A7,
-    COMM_CANCEL_GAME = 0x17A8,
-    COMM_HOST_EXITED = 0x17A9,
-    COMM_PLAYER_KICKED = 0x17AA,
-    COMM_NO_NEW_PLAYERS = 0x17AB,
-    COMM_FATAL_ERROR = 0x17AC,
-    COMM_CONNECTED = 0x17AD,
-    COMM_NO_LINK = 0x17AE,
-    COMM_CLIENT_IS_SLOW = 0x17AF,
-    COMM_SYNC_ERROR = 0x17B0,
-    COMM_HOST_CHANGED = 0x17B1,
-    COMM_PLAYER_DROPPED = 0x17B2,
-    COMM_OTHER_PLAYER_DROPPED = 0x17B3,
-    COMM_PLAYER_RESIGNED = 0x17B4,
-    COMM_PLAYER_DEFEATED = 0x17B5,
-    COMM_PLAYER_BAD_VERSION = 0x17B6,
-    COMM_PLAYER_SERVICE_ERROR = 0x17B7,
-    COMM_PLAYER_ID_SET = 0x17B8,
-    COMM_HOST_BUSY = 0x17B9,
-    COMM_LOBBY_TIMEOUT = 0x17BA,
-    COMM_SHARED_DATA_SENT = 0x17BB,
-    COMM_NO_OTHER_HUMANS = 0x17BC,
-    COMM_PLAYER_NOT_RESPONDING = 0x17BD,
-    COMM_UNKNOWN = 0x17BE
-};
-#endif
 
 struct COMMPLAYEROPTIONS {
     unsigned char NeedsToBeSent;
@@ -498,7 +419,5 @@ typedef char comm_hand_current_turn_offset_check[
     (offsetof(TCommunications_Handler, current_turn) == 0x10C8) ? 1 : -1];
 typedef char comm_hand_options_offset_check[
     (offsetof(TCommunications_Handler, PlayerOptions) == 0x1550) ? 1 : -1];
-
-extern TDebuggingLog* L;
 
 #endif

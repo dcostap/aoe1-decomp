@@ -7,6 +7,8 @@
 #include "../include/debuglog.h"
 #include "../include/game_globals.h"
 
+extern TDebuggingLog* L;
+
 // 00424E40; com_err.cpp lines 6-9.
 RGE_Comm_Error::RGE_Comm_Error(void* param) {
     HostHWND = param;
@@ -198,7 +200,7 @@ void RGE_Comm_Error::ShowReturn(long code, char* context) {
         if (code != (long)0x887700FA) {
             if (code == (long)0x887700F0) {
                 L->Log("!!! COMM TIMEOUT Rcvd from HOST connection.");
-                this->NotifyWindowParam(COMM_CANCEL_GAME, 0);
+                this->NotifyWindowParam(COMM_HOST_BUSY, 0);
                 return;
             }
         } else {
@@ -231,7 +233,7 @@ void RGE_Comm_Error::ShowReturn(long code, char* context) {
         if (code != (long)0x88770140) {
             if (code == (long)0x88770136) {
                 L->Log("!!! Lost connection to session.");
-                this->NotifyWindowParam(COMM_HOST_BUSY, 0);
+                this->NotifyWindowParam(COMM_CANCEL_GAME, 0);
                 return;
             }
         } else {

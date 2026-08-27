@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <io.h>
+#include "com_types.h"
 
 struct tagRECT;
 class TDrawArea;
@@ -32,12 +33,6 @@ public:
 
 enum FormatType {
     FORMAT_TYPE_DEFAULT = 0
-};
-
-enum PLAYERHUMANITY {
-    ME_ABSENT = 0,
-    ME_HUMAN = 2,
-    ME_COMPUTER = 4
 };
 
 class TPanel {

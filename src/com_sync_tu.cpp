@@ -25,6 +25,19 @@
 // owners use default /nologo /c /O2 /Oy flags.  No EH frame occurs in these
 // ranges.
 
+#include "../include/com_hand.h"
+#include "../include/debuglog.h"
+#include "../include/basegame.h"
+#include "../include/pathsys.h"
+#include "../include/player.h"
+#include "../include/rge_base_game_global.h"
+#include "../include/visible.h"
+#include "../include/world.h"
+
+extern TDebuggingLog* L;
+extern long DAT_0062D208[9];
+extern unsigned long DAT_0062D230;
+
 #define COM_SYNC_TU_CONTEXT 1
 #include "../include/com_sync.h"
 
