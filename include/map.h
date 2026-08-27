@@ -127,8 +127,8 @@ public:
     virtual void save(int);
 
     RGE_Tile* map;
-    int map_width;
-    int map_height;
+    long map_width;
+    long map_height;
     long world_width;
     long world_height;
     RGE_Tile_Size tilesizes[19];
