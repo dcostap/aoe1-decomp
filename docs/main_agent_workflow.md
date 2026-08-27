@@ -154,14 +154,37 @@ running; do not launch replacements.
 ## Validation cost and cache behavior
 
 Use the narrowest authoritative validation during active work. Check assigned or
-changed owners first. Run grouped TU validation, the flag audit, and all tests
-before integration.
+changed owners first. Use one grouped candidate validation for all owners in one
+translation unit. Compile that translation unit once.
+
+Do not call `check_function.py` in a shell loop over all owners. Use it only for
+new claims, risky claims, or focused diagnosis. Check at most three anchors for
+a routine module checkpoint. Omit `--rebuild` unless a cached result is proved
+stale. Use `--no-history` for routine validation.
+
+Workers and shard leads must not run repository-wide audits. These commands are
+coordinator-only operations:
+
+- `audit_matching_owners.py`;
+- `generate_source_module_inventory.py`;
+- `validate_translation_units.py`; and
+- full test or flag sweeps.
+
+Run each global operation once at a quiet integration checkpoint. Do not run the
+same operation concurrently in separate worktrees. While source workers remain
+active, limit each shard to two concurrent compiler or validator processes.
+Do not pair source-module inventory generation with a separate translation-unit
+validation. Inventory generation already calls translation-unit validation.
+
+Before integration, the shard runs its grouped candidate validation and focused
+module checks. The main coordinator runs the required global audits, flag checks,
+and tests for the combined checkpoint.
 
 Do not run `expensive_full_sweep_validation.py` as a routine group completion
 step. It checks every source in one bank. Use it only for an explicit full-bank
 audit.
 
-Full sweeps run up to four independent checks at once by default:
+Full sweeps can run independent checks in parallel:
 
 ```text
 python tools/expensive_full_sweep_validation.py --matching-only
@@ -172,6 +195,8 @@ bounded worker count. Parallel execution preserves input result order. It does
 not change byte, boundary, symbol, relocation, or control-target checks.
 The scheduler interleaves compiler artifacts. This prevents all workers from
 waiting on one TU build lock when adjacent owners share a wrapper.
+Run only one full-sweep process. Use no more than two jobs while shard work is
+active.
 
 The compiler cache fingerprint includes:
 
