@@ -1,9 +1,5 @@
-#ifndef AOE1_GAMEINFO_CONTEXT_H
-#define AOE1_GAMEINFO_CONTEXT_H
-
-// Canonical declarations for the original gameinfo.cpp translation unit.
-// The owner files use GAMEINFO_SHARED_CONTEXT to omit their standalone
-// declarations.  The order in src/gameinfo_tu.cpp follows the PDB line bands.
+#ifndef AOE1_GAMEINFO_H
+#define AOE1_GAMEINFO_H
 
 struct RGE_Scenario_Info {
     unsigned char scenario_status;
@@ -63,37 +59,21 @@ public:
 
 extern RGE_Base_Game* rge_base_game;
 
-#pragma pack(push, 4)
-struct FindDataLocal {
-    unsigned int attrib;
-    int time_create;
-    int time_access;
-    int time_write;
-    char name[260];
-};
-
-struct FindCampaignWork {
-    FindDataLocal file_info;
-    char file_name[260];
-    char gap_21C[4];
-};
-#pragma pack(pop)
-
 class RGE_Campaign_Info {
 public:
-    char name[256];                 // +0x000
-    int current_scenario;           // +0x100
-    int scenario_num;               // +0x104
-    RGE_Scenario_Info* scenario_info; // +0x108
-    int last_scenario;              // +0x10C
-    RGE_Campaign* campaign;         // +0x110
+    char name[256];
+    int current_scenario;
+    int scenario_num;
+    RGE_Scenario_Info* scenario_info;
+    int last_scenario;
+    RGE_Campaign* campaign;
 
-    RGE_Campaign_Info(int fd, RGE_Campaign** camps, long count);
+    RGE_Campaign_Info(int fd, RGE_Campaign** campaigns, long count);
     RGE_Campaign_Info(RGE_Campaign* campaign);
     ~RGE_Campaign_Info();
 
     void save(int fd);
-    void rehook_campaigns(RGE_Campaign** list, long count);
+    void rehook_campaigns(RGE_Campaign** campaigns, long count);
     unsigned char set_current_scenario(long scenario);
     unsigned char verify_campaign_name(char* campaign);
     long get_scenario_list(char*** list, long& current);
@@ -104,14 +84,14 @@ public:
 
 class RGE_Person_Info {
 public:
-    char name[256];                 // +0x000
-    int current_campaign;           // +0x100
-    int campaign_info_num;          // +0x104
-    RGE_Campaign_Info** campaign_info; // +0x108
-    int campaign_num;               // +0x10C
-    RGE_Campaign** campaigns;       // +0x110
+    char name[256];
+    int current_campaign;
+    int campaign_info_num;
+    RGE_Campaign_Info** campaign_info;
+    int campaign_num;
+    RGE_Campaign** campaigns;
 
-    RGE_Person_Info(int fd, RGE_Campaign** camps, long count);
+    RGE_Person_Info(int fd, RGE_Campaign** campaigns, long count);
     RGE_Person_Info(char* name, RGE_Campaign** campaigns, long count);
     ~RGE_Person_Info();
     void dtor();
@@ -130,15 +110,12 @@ public:
 
 class RGE_Game_Info {
 public:
-    union {
-        int current_person;         // +0x00
-        int field_0;
-    };
-    int people_num;                 // +0x04
-    RGE_Person_Info** people_info;  // +0x08
-    int campaign_num;               // +0x0C
-    RGE_Campaign** campaigns;       // +0x10
-    char save_filename[256];       // +0x14
+    int current_person;
+    int people_num;
+    RGE_Person_Info** people_info;
+    int campaign_num;
+    RGE_Campaign** campaigns;
+    char save_filename[256];
 
     RGE_Game_Info(char* path);
     ~RGE_Game_Info();

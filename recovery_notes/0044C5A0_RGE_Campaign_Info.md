@@ -1,0 +1,9 @@
+# 0044C5A0 RGE_Campaign_Info constructor
+
+The constructor reads the saved name and scenario fields.
+
+It finds the campaign with `strcmp` on the campaign name.
+
+It calls `scenario_number` again at each observed site.
+
+The resize copy uses the typed scenario record buffer.
