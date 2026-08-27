@@ -29,7 +29,7 @@ int CombatRuleSystem::loadRules(char* filename)
     if (!f)
         return 0;
 
-    memset((char*)this + 4, '2', 2500);
+    memset(ratingValue, '2', 2500);
 
     while (fgets(line, 256, f)) {
         sscanf(line, "%c%c", &c1, &c2);
@@ -38,7 +38,7 @@ int CombatRuleSystem::loadRules(char* filename)
         sscanf(line, "%d %d %d", &c, &a, &b);
         if (c < 0 || c >= 50)
             continue;
-        ((char*)this + 4)[a + c * 50] = (char)b;
+        ratingValue[a + c * 50] = (char)b;
     }
 
     fclose(f);
