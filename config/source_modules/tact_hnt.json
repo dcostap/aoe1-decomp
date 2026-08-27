@@ -5,12 +5,18 @@
   "source": "src/tact_hnt.cpp",
   "header": "include/tact_hnt.h",
   "functions": {
-    "004CF090": { "status": "matching" },
+    "004CF090": {
+      "status": "scratch",
+      "note_path": "recovery_notes/tact_hnt_module.md"
+    },
     "004CF130": { "status": "matching" },
     "004CF1C0": { "status": "matching" },
     "004CF210": { "status": "matching" },
     "004CF240": { "status": "matching" },
-    "004CF300": { "status": "matching" },
+    "004CF300": {
+      "status": "scratch",
+      "note_path": "recovery_notes/tact_hnt_module.md"
+    },
     "004CF860": {
       "status": "scratch",
       "note_path": "recovery_notes/004CF860_update.md"
