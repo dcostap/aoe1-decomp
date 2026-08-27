@@ -2,8 +2,7 @@
 #define AOE1_M_AC_OBJ_H
 
 #include "m_mo_obj.h"
-
-struct _iobuf;
+#include <stdio.h>
 
 class RGE_Sprite;
 class RGE_Sound;
@@ -28,7 +27,7 @@ public:
     RGE_Master_Action_Object(RGE_Master_Action_Object* source, int do_setup);
     RGE_Master_Action_Object(int id, RGE_Sprite** sprites,
                              RGE_Sound** sounds, int do_setup);
-    RGE_Master_Action_Object(_iobuf* file, RGE_Sprite** sprites,
+    RGE_Master_Action_Object(FILE* file, RGE_Sprite** sprites,
                              RGE_Sound** sounds, short id, int do_setup);
 
     virtual ~RGE_Master_Action_Object();
@@ -50,7 +49,7 @@ public:
 protected:
     int setup(RGE_Master_Action_Object* source);
     int setup(int file, RGE_Sprite** sprites, RGE_Sound** sounds);
-    int setup(_iobuf* file, RGE_Sprite** sprites, RGE_Sound** sounds, short id);
+    int setup(FILE* file, RGE_Sprite** sprites, RGE_Sound** sounds, short id);
 };
 
 typedef char m_ac_obj_action_size[
