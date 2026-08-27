@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "name": "com_sync",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\com_sync.cpp",
+  "source": "src/com_sync.cpp",
+  "header": "include/com_sync.h",
+  "functions": {
+    "00432FF0": { "status": "matching" },
+    "00433070": { "status": "matching" },
+    "004330A0": { "status": "matching" },
+    "00433180": { "status": "matching" },
+    "00433290": { "status": "matching" },
+    "00433450": { "status": "matching" },
+    "00433460": { "status": "matching" },
+    "00433A90": { "status": "matching" },
+    "00433AA0": { "status": "matching" },
+    "00433AB0": { "status": "matching" },
+    "00433AC0": { "status": "matching" },
+    "00433AD0": { "status": "scratch", "note_path": "recovery_notes/com_sync_module.md" }
+  }
+}

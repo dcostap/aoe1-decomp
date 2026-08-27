@@ -2124,21 +2124,22 @@
       }
     },
     {
-      "name": "com_sync_prefix",
-      "source": "src/com_sync_tu.cpp",
+      "name": "com_sync",
+      "source": "src/com_sync.cpp",
+      "module": "com_sync",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "00432FF0": "src/matching/00432FF0_RGE_Communications_Synchronize.cpp",
-        "00433070": "src/matching/00433070_RGE_Communications_Synchronize.cpp",
-        "004330A0": "src/matching/004330A0_Add.cpp",
-        "00433180": "src/matching/00433180_ValidateChecksums.cpp",
-        "00433290": "src/matching/00433290_DoChecksum.cpp",
-        "00433450": "src/matching/00433450_SetLastWorldRandom.cpp",
-        "00433460": "src/matching/00433460_LogChecksums.cpp",
-        "00433A90": "src/matching/00433A90_EnableSyncChecking.cpp",
-        "00433AA0": "src/matching/00433AA0_SetStopOnFail.cpp",
-        "00433AB0": "src/matching/00433AB0_SetDialogOnFail.cpp",
-        "00433AC0": "src/matching/00433AC0_SendChatMsgsAtChecksum.cpp"
+        "00432FF0": "src/com_sync.cpp",
+        "00433070": "src/com_sync.cpp",
+        "004330A0": "src/com_sync.cpp",
+        "00433180": "src/com_sync.cpp",
+        "00433290": "src/com_sync.cpp",
+        "00433450": "src/com_sync.cpp",
+        "00433460": "src/com_sync.cpp",
+        "00433A90": "src/com_sync.cpp",
+        "00433AA0": "src/com_sync.cpp",
+        "00433AB0": "src/com_sync.cpp",
+        "00433AC0": "src/com_sync.cpp"
       },
       "symbols": {}
     },
