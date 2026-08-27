@@ -7,11 +7,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-// The executable uses three unnamed format strings from the original data segment.
-static const char* const format_id_name = (const char*)0x0058B690;
-static const char* const format_name = (const char*)0x0057F324;
-static const char* const format_hp = (const char*)0x005870AC;
-
 // 0051ADF0 TRIBE_Panel_Object (tpnl_obj.cpp:49-116)
 TRIBE_Panel_Object::TRIBE_Panel_Object(
     TDrawArea* draw_area, TPanel* parent, void* font_, long font_wid_,
@@ -258,15 +253,15 @@ void TRIBE_Panel_Object::draw()
             strcpy(str, this->game_obj->master_obj->name);
 
         if (rge_base_game->object_name_mode != 0)
-            sprintf(name, format_id_name, this->game_obj->id, str);
+            sprintf(name, "%d-%s", this->game_obj->id, str);
         else
-            sprintf(name, format_name, str);
+            sprintf(name, "%s", str);
 
         TextOutA(dc, this->pnl_x + 3, this->pnl_y + 0x0d,
                  name, (int)strlen(name));
 
         if (this->game_obj->hp > DAT_00576d80) {
-            sprintf(str, format_hp,
+            sprintf(str, "%d/%d",
                     (int)this->game_obj->hp,
                     (int)this->game_obj->master_obj->hp);
             TextOutA(dc, this->pnl_x + 3, this->pnl_y + 0x5c,

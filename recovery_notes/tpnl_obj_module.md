@@ -34,9 +34,9 @@ The old wrapper, context header, and 13 focused source files were removed after
 the direct source compiled. No shared header, global definition, flag file, or
 policy file changed.
 
-The three unnamed format strings use named module constants. Their absolute
-addresses are proved by the original `push` operands at `0051B56E`, `0051B58A`,
-and `0051B5F1`. The source does not use preprocessor format macros.
+The three format strings are natural literals. The original `.data` bytes prove
+`0058B690` is `%d-%s\\0`, `0057F324` is `%s\\0`, and `005870AC` is `%d/%d\\0`.
+The original `push` operands occur at `0051B56E`, `0051B58A`, and `0051B5F1`.
 
 ## Validation and regressions
 
@@ -63,6 +63,10 @@ and `0051B5F1`. The source does not use preprocessor format macros.
   calls, but the rebuilt virtual call uses vslot `+0x240`; the oracle uses
   `+0x244`.
 - `git diff --check` passes.
+- The constrained post-recovery grouped audit was run after literal replacement.
+- It compiled all 13 owners. The ten registered owners remained exact.
+- `draw` remained a grouped mismatch. `draw_score` and `handle_idle` retained
+  their prior nonexact status and migration regressions.
 - Repository-wide validation and source-module inventory jobs were stopped after
   their time budgets. They did not report results. No global audit was started
   after the budget change.
