@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "name": "Pnl_inp",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\Pnl_inp.cpp",
+  "source": "src/Pnl_inp.cpp",
+  "header": "include/Pnl_inp.h",
+  "functions": {
+    "00476C10": { "status": "matching", "note_path": "recovery_notes/Pnl_inp_module.md" },
+    "00476CF0": { "status": "matching", "note_path": "recovery_notes/Pnl_inp_module.md" },
+    "00476D80": { "status": "scratch", "note_path": "recovery_notes/Pnl_inp_module.md" },
+    "00476EE0": { "status": "matching", "note_path": "recovery_notes/Pnl_inp_module.md" },
+    "00476F20": { "status": "matching", "note_path": "recovery_notes/Pnl_inp_module.md" },
+    "00476F30": { "status": "matching", "note_path": "recovery_notes/Pnl_inp_module.md" },
+    "00476FA0": { "status": "matching", "note_path": "recovery_notes/Pnl_inp_module.md" },
+    "00477220": { "status": "scratch", "note_path": "recovery_notes/Pnl_inp_module.md" },
+    "004777C0": { "status": "matching", "note_path": "recovery_notes/Pnl_inp_module.md" },
+    "00477910": { "status": "matching", "note_path": "recovery_notes/Pnl_inp_module.md" },
+    "00477990": { "status": "matching", "note_path": "recovery_notes/Pnl_inp_module.md" },
+    "004779A0": { "status": "matching", "note_path": "recovery_notes/Pnl_inp_module.md" },
+    "004779B0": { "status": "matching", "note_path": "recovery_notes/Pnl_inp_module.md" },
+    "004779D0": { "status": "matching", "note_path": "recovery_notes/Pnl_inp_module.md" },
+    "00477AF0": { "status": "matching", "note_path": "recovery_notes/Pnl_inp_module.md" },
+    "00477C90": { "status": "matching", "note_path": "recovery_notes/Pnl_inp_module.md" },
+    "00477CB0": { "status": "matching", "note_path": "recovery_notes/Pnl_inp_module.md" },
+    "00477E90": { "status": "matching", "note_path": "recovery_notes/Pnl_inp_module.md" },
+    "00477EF0": { "status": "matching", "note_path": "recovery_notes/Pnl_inp_module.md" },
+    "00478010": { "status": "matching", "note_path": "recovery_notes/Pnl_inp_module.md" },
+    "00478150": { "status": "matching", "note_path": "recovery_notes/Pnl_inp_module.md" },
+    "004781A0": { "status": "matching", "note_path": "recovery_notes/Pnl_inp_module.md" }
+  }
+}
