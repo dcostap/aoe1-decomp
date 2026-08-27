@@ -4,13 +4,65 @@ PDB source: `C:\msdev\work\age1_x1\tribegam.cpp`.
 
 The module owns 118 normal functions. Their source order follows the PDB line bands from 160 through 5691. The compiler-facing source is `src/tribegam.cpp`. The shared module declarations are in `include/tribegam.h`.
 
+## Terra 6 header checkpoint
+
+`include/tribegam.h` now includes the canonical `include/basegame.h`.
+It owns only these records:
+
+- `TRIBE_Game`;
+- `TRIBE_Game::TRIBE_Game_Options`;
+- the five nested option enums; and
+- `MouseClickInfo`.
+
+All other class names are forward declarations from the canonical base header
+or from this header. The header has no copied base-game, object, player, world,
+sound, panel, draw, map, or CRT class layout.
+
+The PDB type dumps prove this layout:
+
+- `RGE_Base_Game`: base size `0xA24` (`inventory/types/dumps/RGE_Base_Game.txt`);
+- `TRIBE_Game`: derived size `0x1254`, with fields from `+0xA24`
+  (`inventory/types/dumps/TRIBE_Game.txt`);
+- `TRIBE_Game_Options`: size `0x6C`, with enum-typed fields
+  (`inventory/types/dumps/TRIBE_Game_TRIBE_Game_Options.txt`); and
+- `MouseClickInfo`: struct size `0x2C`
+  (`inventory/types/dumps/MouseClickInfo.txt`).
+
+The VC5 layout probe passed. It checked sizes `0x2C`, `0x6C`, and `0x1254`.
+The probe neutralized `__stdcall` only to work around the current canonical
+`basegame.h` declaration. A normal probe remains blocked because the PDB
+`RGE_Base_Game::wnd_proc` symbol uses `__stdcall` (`UAG`), while
+`basegame.h` does not publish that calling convention. This base-game repair
+belongs to the Base Game owner, not this checkpoint.
+
+## Source hold after the header split
+
+`src/tribegam.cpp` is intentionally held. It still needs complete definitions
+for `RGE_Prog_Info`, `RGE_Game_Info`, `RGE_Game_World`, `TRIBE_World`,
+`RGE_Player`, `RGE_Scenario`, `RGE_Scenario_Header`, `TRIBE_Scenario_Header`,
+`T_Scenario`, `TPanel` and its screen types, `TMusic_System`, `TSound_Driver`,
+and `TCommunications_Handler`.
+
+The direct owner candidates are `world.h`, `player.h`, `music.h`,
+`sounddrv_context.h`, `panel.h`, `panel_ez.h`, `scr_*`, and `scenario.h`.
+Several of these headers still copy `RGE_Base_Game` or related foreign
+layouts, so the source cannot include them beside canonical `basegame.h`.
+`RGE_Prog_Info`, `RGE_Game_Info`, `TRIBE_World`, the scenario and panel screen
+families, and the communication handler have no conflict-free canonical owner.
+
+The old header also supplied source-only global and API declarations. The
+source still needs owners for `DAT_0086BCE0`, `video_codec_available`, the
+resource-file imports, `ICInfo`, `L`, `Log`, and its run-log globals. The
+Base Game owner must also publish the inherited helper surface used here,
+including player-count, map-visibility, game-mode, and option helpers.
+
 ## Evidence
 
 - The packet lists 107 matching, two accepted-drift, eight scratch, and one verified-logic owner.
 - The packet lists the compiler-generated vector-deleting destructor at `00521380`, symbol `??_ETRIBE_Game@@UAEPAXI@Z`, size 30. It is emitted by the natural `TRIBE_Game` virtual destructor surface. It is not a normal source owner.
 - The pre-migration wrapper and final source object both emit the weak `??_E` identity and the defined `??_G` fallback body. The generated body has the same four relocation-placeholder differences in both objects.
 - The grouped source order is the packet order. It is not VA order at the start because `video_sub_wnd_proc` precedes the constructor in the PDB line stream.
-- The full source compiles with the pinned VC5 compiler and `config/flags/00521120_TRIBE_Game.rsp` (`/nologo /c /O2 /Oy /GX`).
+- Before this header split, the full source compiled with the pinned VC5 compiler and `config/flags/00521120_TRIBE_Game.rsp` (`/nologo /c /O2 /Oy /GX`).
 - The earlier mechanical consolidation matched the pre-migration wrapper for the 115 publicly named normal owners checked. Static owners at `00523AE0` and `00526170` need address-based grouped validation.
 - The final source cleanup uses the period SDK record and API names in `setup`. This changes that existing scratch owner from the wrapper's 1984-byte emitted body to a 2000-byte emitted body. The packet boundary is 2061 bytes. This is a recorded source-recovery regression, not an exactness promotion.
 - The existing 21 registered exact anchors remain byte-identical in the final source object. The 2-byte `calc_timing_text` difference was already present between the wrapper and the normalized source context.
