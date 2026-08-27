@@ -53,7 +53,6 @@ public:
         VictoryType victoryTypeValue;
         int victoryAmountValue;
         unsigned char civilizationValue[9];
-        unsigned char _pad_0[3];
         int scenarioPlayerValue[9];
         unsigned char playerColorValue[9];
         unsigned char computerNameValue[9];
@@ -61,13 +60,11 @@ public:
         unsigned char longCombatValue;
         unsigned char randomizePositionsValue;
         unsigned char fullTechTreeValue;
-        unsigned char _pad_1[2];
         ResourceLevel resourceLevelValue;
         Age startingAgeValue;
         unsigned char startingUnitsValue;
         unsigned char deathMatchValue;
         unsigned char popLimitValue;
-        unsigned char _pad_end[1];
     };
 
     virtual ~TRIBE_Game();
@@ -245,7 +242,6 @@ public:
     char timing_text2[256];
     int save_humanity[9];
     unsigned char quick_start_game;
-    unsigned char _pad_2[3];
     int random_start_value;
     unsigned char computerNameUsed[18][10];
     void* handleIdleLock;
