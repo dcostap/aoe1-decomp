@@ -11,10 +11,10 @@ struct BITMAPINFO256 {
 };
 
 struct LINEINFO {
-    union { int AllTrans; int skip; };
-    union { int MidSolid; int copy; };
-    union { long StartX; long first; };
-    union { long EndX; long last; };
+    int AllTrans;
+    int MidSolid;
+    long StartX;
+    long EndX;
 };
 
 struct TRANSINFO {
