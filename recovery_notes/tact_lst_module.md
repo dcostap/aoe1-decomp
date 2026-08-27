@@ -41,13 +41,10 @@ All four Tact List owners match:
 
 The candidate summary is 4/4 exact. No generated row belongs to this module.
 
-## Dependent integration
+## Resolved main state
 
-The Tact List source chain depends on the reduced Tact Mob chain:
-`ddd9d1310`, `c44e35261`, `32e9da440`, `1456ce959`, `90f75472b`,
-`de26117c1`, `c773638c7`, and `b1ec6a5b3`.
+Tact Mob is canonical through `e97ffd370`. Its seven registered exact owners
+and generated `004D0E90` are `MATCH`.
 
-It also depends on follow-up `7c6732a93`, which registers `004D15F0`.
-That follow-up reports 7/7 exact Tact Mob owners and generated `004D0E90`
-with `MATCH` results. Land these dependencies first or land them atomically.
-This is a dependent packet, not a standalone main claim.
+Tact List is canonical through `0801f9d0e`. Its four grouped owners are
+`MATCH`.
