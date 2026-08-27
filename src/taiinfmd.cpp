@@ -2301,7 +2301,7 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
                                             placement == 6) {
                                             int connections =
                                                 iMap->connectionsIncluding(
-                                                    &minClear, &maxClear,
+                                                    minClear, maxClear,
                                                     0xff, 0xff, 1, 0, 1);
                                             if (placement == 4 &&
                                                 6 < connections -

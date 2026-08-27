@@ -5,6 +5,8 @@
 #include <math.h>
 #include <stdlib.h>
 
+#include "infmap.h"
+
 typedef unsigned char uchar;
 
 #ifndef ZERO_F
@@ -31,7 +33,6 @@ class RGE_Map;
 class RGE_Sprite;
 class RGE_Visible_Map;
 struct LOSTBL;
-struct XYPoint { int x; int y; };
 class RGE_Zone_Map {
 public:
     unsigned char get_zone_info(int, int);
@@ -61,7 +62,6 @@ class RGE_Sound;
 class Visible_Resource_Manager;
 class RGE_Doppleganger_Creator;
 class PathingSystem;
-class InfluenceMap;
 class TPanel;
 struct XYZBYTEPoint;
 struct _iobuf;
@@ -120,12 +120,6 @@ public:
 };
 extern PathingSystem pathSystem;
 extern PathingSystem aiPathSystem;
-
-class InfluenceMap {
-public:
-    int incrementValue(int, int, int);
-    int decrementValue(int, int, int);
-};
 
 extern "C" {
 __declspec(dllimport) int __stdcall SelectClipRgn(void*, void*);

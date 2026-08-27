@@ -4,6 +4,8 @@
 // Canonical declarations for the authentic taiinfmd.cpp module.
 // The PDB order is 004D6AD0, 004D6B70, then 004D7070.
 
+#include "infmap.h"
+
 typedef unsigned char uchar;
 typedef unsigned long ulong;
 
@@ -47,8 +49,6 @@ public:
     void logCommonHistory(char* format, ...);
     void logCommonHistory(void* self, const char* format, ...);
 };
-
-struct XYPoint;
 
 template <class T>
 class ManagedArray {
@@ -134,38 +134,6 @@ int ManagedArray<T>::add(T val)
 
 typedef ManagedArray<int> ManagedArray_int;
 
-class InfluenceMap {
-public:
-    virtual ~InfluenceMap();
-    int xSizeValue;
-    int ySizeValue;
-    int xReferencePointValue;
-    int yReferencePointValue;
-    unsigned char* valueValue;
-    unsigned char** rowValue;
-    int coverageCountValue;
-    int connectionCountValue;
-    unsigned char unchangeableLimitValue;
-    unsigned char _pad_end[3];
-    InfluenceMap(int xSize, int ySize, unsigned char fillValue);
-    void load(int file);
-    void save(int file);
-    int initialize(unsigned char value);
-    void setUnchangeableLimit(unsigned char value);
-    void setReferencePoint(int x, int y);
-    int setValue(int x1, int y1, int x2, int y2, unsigned char value);
-    int incrementValue(int x1, int y1, int x2, int y2, int value);
-    int decrementValue(int x1, int y1, int x2, int y2, int value);
-    int decrementValue(int x, int y, unsigned char value);
-    int setConnectionCount(const XYPoint& min, const XYPoint& max,
-                           int threshold, int p4, int p5, int p6);
-    int maxValue();
-    int connectionsIncluding(XYPoint* min, XYPoint* max,
-                             unsigned char base, unsigned char wanted,
-                             int mode1, int mode2, int allDirections);
-    int lookupValue(int x, int y);
-    void setValue(int x, int y, int value);
-};
 extern InfluenceMap* const iMap;
 extern InfluenceMap* const losMap;
 extern InfluenceMap* const attackMap;
@@ -211,11 +179,6 @@ struct AttackMemory {
     unsigned char _pad_1[1];
     unsigned long timeStamp;
     int play;
-};
-
-struct XYPoint {
-    int x;
-    int y;
 };
 
 struct QuadrantLog {
