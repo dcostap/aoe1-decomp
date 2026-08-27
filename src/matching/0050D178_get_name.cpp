@@ -1,3 +1,4 @@
+#ifndef TECH_GROUP_CONTEXT
 // matched: /Od plus direct return avoids an extra result local; Tech_Entry stride is 0x3C
 
 struct Tech_Entry {
@@ -16,6 +17,8 @@ public:
 
     char* get_name(short param_1);
 };
+
+#endif
 
 char* TRIBE_Player_Tech::get_name(short param_1) {
     return this->base->tech_tree[param_1].name;

@@ -1,3 +1,4 @@
+#ifndef TECH_GROUP_CONTEXT
 // /Od debug-style no-PDB TRIBE_Player_Tech::tech_cost
 // Attempt log:
 // - Baseline typed Tech_Entry/owner reconstruction: 883 bytes; extra EDI and
@@ -69,6 +70,8 @@ public:
     unsigned char check_tech_cost(short param_1, short* param_2);
     void tech_cost(short param_1, short* attr1, short* cost1, short* attr2, short* cost2, short* attr3, short* cost3);
 };
+
+#endif
 
 void TRIBE_Player_Tech::tech_cost(short param_1, short* attr1, short* cost1, short* attr2, short* cost2, short* attr3, short* cost3)
 {

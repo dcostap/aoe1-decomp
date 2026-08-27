@@ -1,3 +1,4 @@
+#ifndef TECH_GROUP_CONTEXT
 // Packet-grounded bodies under quality gate.
 
 #pragma warning(disable: 4035 4805)
@@ -42,6 +43,8 @@ struct TRIBE_Tech_Helper {
 struct TRIBE_History_Info_Helper {
     void add_history_event(unsigned char param_1);
 };
+
+#endif
 
 unsigned char TRIBE_Player_Tech::do_tech(short param_1)
 {

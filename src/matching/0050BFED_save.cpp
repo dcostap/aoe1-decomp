@@ -1,3 +1,4 @@
+#ifndef TECH_GROUP_CONTEXT
 // /Od debug-style no-PDB TRIBE_Tech::save
 
 extern "C" int __cdecl strlen(const char* s);
@@ -33,6 +34,8 @@ public:
 
     void save(int param_1);
 };
+
+#endif
 
 void TRIBE_Tech::save(int param_1)
 {

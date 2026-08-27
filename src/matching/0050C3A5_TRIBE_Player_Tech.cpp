@@ -1,3 +1,4 @@
+#ifndef TECH_GROUP_CONTEXT
 // Packet-grounded bodies under quality gate.
 
 #pragma warning(disable: 4035 4805)
@@ -36,6 +37,8 @@ public:
 };
 
 extern float save_game_version;
+
+#endif
 
 TRIBE_Player_Tech::TRIBE_Player_Tech(int param_1, TRIBE_Tech* param_2, RGE_Player* param_3, unsigned char param_4)
 {

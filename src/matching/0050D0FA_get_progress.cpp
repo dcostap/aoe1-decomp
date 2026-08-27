@@ -1,3 +1,4 @@
+#ifndef TECH_GROUP_CONTEXT
 // Packet-grounded bodies under quality gate.
 
 #pragma warning(disable: 4035 4805)
@@ -34,6 +35,8 @@ public:
 
     unsigned char check_for_new_tech();
 };
+
+#endif
 
 short TRIBE_Player_Tech::get_progress(short param_1)
 {

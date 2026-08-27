@@ -1,3 +1,4 @@
+#ifndef TECH_GROUP_CONTEXT
 // /Od debug-style no-PDB TRIBE_Player_Tech::check_for_new_tech
 // The PDB has no source record for this function.
 // BINARY NOTE: The normal inventory owns 0050CE68-0050D079. The previous
@@ -70,6 +71,8 @@ public:
     unsigned char do_tech(short param_1);
     unsigned char check_for_new_tech();
 };
+
+#endif
 
 unsigned char TRIBE_Player_Tech::check_for_new_tech()
 {

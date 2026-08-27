@@ -1,3 +1,4 @@
+#ifndef TECH_GROUP_CONTEXT
 // /Od debug-style no-PDB TRIBE_Tech text-file constructor.
 // Layout evidence: this is a 0x0C-byte, non-virtual class. The text-file
 // constructor initializes only tech_tree; the world field belongs to the other
@@ -50,6 +51,8 @@ public:
 
     TRIBE_Tech(char* filename);
 };
+
+#endif
 
 TRIBE_Tech::TRIBE_Tech(char* filename)
 {

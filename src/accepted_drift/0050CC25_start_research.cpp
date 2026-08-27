@@ -1,3 +1,4 @@
+#ifndef TECH_GROUP_CONTEXT
 // 0050CC25 TRIBE_Player_Tech::start_research
 // STATUS: parked - 11 bytes remaining (3.29%)
 //
@@ -54,6 +55,8 @@ public:
     unsigned char check_tech_cost(short param_1, short* param_2);
     unsigned char start_research(short param_1, unsigned char param_2, short* param_3);
 };
+
+#endif
 
 unsigned char TRIBE_Player_Tech::start_research(short param_1, unsigned char param_2, short* param_3)
 {

@@ -1,3 +1,4 @@
+#ifndef TECH_GROUP_CONTEXT
 // matched candidate: /Od debug-style no-PDB TRIBE_Tech destructor
 
 extern "C" void __cdecl free(void* p);
@@ -14,6 +15,8 @@ public:
 
     ~TRIBE_Tech();
 };
+
+#endif
 
 TRIBE_Tech::~TRIBE_Tech()
 {

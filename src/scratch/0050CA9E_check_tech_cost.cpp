@@ -1,3 +1,4 @@
+#ifndef TECH_GROUP_CONTEXT
 // 0050CA9E TRIBE_Player_Tech::check_tech_cost
 // No PDB source. 391 bytes. __thiscall, ret 8.
 //
@@ -80,6 +81,8 @@ public:
 
     unsigned char check_tech_cost(short param_1, short* param_2);
 };
+
+#endif
 
 unsigned char TRIBE_Player_Tech::check_tech_cost(short param_1, short* param_2)
 {

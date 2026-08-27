@@ -1,3 +1,4 @@
+#ifndef TECH_GROUP_CONTEXT
 // TRIBE_Player_Tech::undo_tech (0050C5A7, 62 bytes)
 
 struct TechPlayerEntry {
@@ -13,6 +14,8 @@ public:
     unsigned char undo_tech(short param_1);
     void check_for_new_tech();
 };
+
+#endif
 
 unsigned char TRIBE_Player_Tech::undo_tech(short param_1) {
     if (this->tech_player_tree[param_1].state >= 1) {

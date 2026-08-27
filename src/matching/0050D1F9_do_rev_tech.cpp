@@ -1,3 +1,4 @@
+#ifndef TECH_GROUP_CONTEXT
 // matched candidate: /Od debug-style no-PDB recursive reverse-tech helper
 
 struct Tech_Player_Tree {
@@ -24,6 +25,8 @@ public:
     unsigned char do_tech(short param_1);
     void do_rev_tech(short param_1);
 };
+
+#endif
 
 void TRIBE_Player_Tech::do_rev_tech(short param_1)
 {

@@ -1,3 +1,4 @@
+#ifndef TECH_GROUP_CONTEXT
 // matched candidate: /Od debug-style no-PDB TRIBE_Player_Tech state mutator
 
 struct Tech_Player_Tree {
@@ -12,6 +13,8 @@ public:
 
     void enable(short param_1);
 };
+
+#endif
 
 void TRIBE_Player_Tech::enable(short param_1)
 {

@@ -1,3 +1,4 @@
+#ifndef TECH_GROUP_CONTEXT
 // matched: /Od debug-style no-PDB getter; Tech_Entry stride is 0x3C
 
 struct Tech_Entry {
@@ -17,6 +18,8 @@ public:
 
     unsigned char get_button_location(short param_1);
 };
+
+#endif
 
 unsigned char TRIBE_Player_Tech::get_button_location(short param_1) {
     return this->base->tech_tree[param_1].button_location;

@@ -1,10 +1,11 @@
+#ifndef TECH_GROUP_CONTEXT
 // matched candidate: /Od debug-style no-PDB TRIBE_Tech effect dispatcher
 
 struct RGE_Player;
 
 struct RGE_Effects {
-    virtual void vf00();
-    virtual void vf04();
+    virtual ~RGE_Effects();
+    virtual void save(int fd);
     virtual void do_effect(short effect, RGE_Player* player);
 };
 
@@ -27,6 +28,8 @@ public:
 
     unsigned char do_tech(short param_1, RGE_Player* param_2);
 };
+
+#endif
 
 unsigned char TRIBE_Tech::do_tech(short param_1, RGE_Player* param_2)
 {

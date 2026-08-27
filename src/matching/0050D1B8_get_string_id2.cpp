@@ -1,3 +1,4 @@
+#ifndef TECH_GROUP_CONTEXT
 // matched: /Od debug-style no-PDB getter; Tech_Entry stride is 0x3C
 
 struct Tech_Entry {
@@ -17,6 +18,8 @@ public:
 
     short get_string_id2(short param_1);
 };
+
+#endif
 
 short TRIBE_Player_Tech::get_string_id2(short param_1) {
     return this->base->tech_tree[param_1].string_id2;

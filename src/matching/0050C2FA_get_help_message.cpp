@@ -1,3 +1,4 @@
+#ifndef TECH_GROUP_CONTEXT
 // BLOCKED: Frame-pointer basin issue
 // With /Og- /Oy- or /Od: size matches (57 bytes), but mismatch@15
 // Original: movsx ecx,[ebp+8]; mov edx,[ebp-4]; movsx eax,word[edx+4]; cmp ecx,eax
@@ -20,6 +21,8 @@ public:
 
     long get_help_message(short param_1);
 };
+
+#endif
 
 long TRIBE_Tech::get_help_message(short param_1) {
     if (param_1 < 0 || param_1 > this->tech_tree_num) {

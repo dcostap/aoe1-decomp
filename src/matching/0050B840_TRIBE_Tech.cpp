@@ -1,3 +1,4 @@
+#ifndef TECH_GROUP_CONTEXT
 // /Od debug-style no-PDB TRIBE_Tech file constructor
 // Attempt: variant lab/block-scope probe found the original local topology: outer i at
 // [ebp-4], one scoped j reused across both inner loops at [ebp-0C], name_len at [ebp-8].
@@ -39,6 +40,8 @@ public:
 
     TRIBE_Tech(int param_1, TRIBE_World* param_2);
 };
+
+#endif
 
 TRIBE_Tech::TRIBE_Tech(int param_1, TRIBE_World* param_2)
 {

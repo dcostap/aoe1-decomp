@@ -1,3 +1,4 @@
+#ifndef TECH_GROUP_CONTEXT
 // Attempt: rewritten from packet as /Od C++ member body; behavior/flow close but rebuilt is 243 vs original 245.
 // Remaining: VC5 register-allocation/codegen around refund loop; original saves ESI and uses it for attribute_cost load.
 
@@ -36,6 +37,8 @@ public:
 
     unsigned char cancel_research(short param_1, unsigned char param_2);
 };
+
+#endif
 
 unsigned char TRIBE_Player_Tech::cancel_research(short param_1, unsigned char param_2)
 {

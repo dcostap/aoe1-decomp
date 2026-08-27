@@ -1,3 +1,4 @@
+#ifndef TECH_GROUP_CONTEXT
 // matched: /Od debug-style no-PDB TRIBE_Tech bounds-check getter
 
 struct TechEntry {
@@ -13,6 +14,8 @@ public:
 
     long get_hotkey(short param_1);
 };
+
+#endif
 
 long TRIBE_Tech::get_hotkey(short param_1) {
     if (param_1 < 0 || param_1 > this->tech_tree_num) {
