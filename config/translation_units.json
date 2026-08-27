@@ -6808,14 +6808,15 @@
     },
     {
       "name": "scr_main",
-      "source": "src/scr_main_tu.cpp",
+      "source": "src/scr_main.cpp",
+      "module": "scr_main",
       "flags": "config/flags/default_gx.rsp",
       "owners": {
-        "0049ECD0": "src/matching/0049ECD0_handle_idle.cpp",
-        "0049F2B0": "src/matching/0049F2B0_set_text.cpp",
-        "0049F2D0": "src/matching/0049F2D0_set_text.cpp",
-        "0049F2F0": "src/matching/0049F2F0_action.cpp",
-        "0049F340": "src/matching/0049F340_handle_idle.cpp"
+        "0049ECD0": "src/scr_main.cpp",
+        "0049F2B0": "src/scr_main.cpp",
+        "0049F2D0": "src/scr_main.cpp",
+        "0049F2F0": "src/scr_main.cpp",
+        "0049F340": "src/scr_main.cpp"
       },
       "symbols": {
         "0049ECD0": "?handle_idle@TRIBE_Screen_Main_Menu@@UAEJXZ",

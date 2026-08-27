@@ -1,5 +1,5 @@
-#ifndef AOE1_SCR_MAIN_CONTEXT_H
-#define AOE1_SCR_MAIN_CONTEXT_H
+#ifndef AOE1_SCR_MAIN_H
+#define AOE1_SCR_MAIN_H
 
 #include <windows.h>
 
