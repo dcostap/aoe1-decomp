@@ -47,8 +47,14 @@
     "0052B560": { "status": "matching" },
     "0052B590": { "status": "matching" },
     "0052B5C0": { "status": "matching" },
-    "0052B5F0": { "status": "accepted_drift" },
-    "0052B630": { "status": "accepted_drift" },
+    "0052B5F0": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/tscenaro_module.md"
+    },
+    "0052B630": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/tscenaro_module.md"
+    },
     "0052B670": { "status": "matching" },
     "0052B6A0": { "status": "matching" },
     "0052B6C0": { "status": "matching" },
@@ -84,7 +90,10 @@
     "0052C070": { "status": "matching" },
     "0052C080": { "status": "matching" },
     "0052C0A0": { "status": "matching" },
-    "0052C0B0": { "status": "accepted_drift" },
+    "0052C0B0": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/tscenaro_module.md"
+    },
     "0052C1E0": { "status": "matching" },
     "0052C230": { "status": "matching" }
   }
