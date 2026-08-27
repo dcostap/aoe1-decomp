@@ -8,7 +8,7 @@
 // The normal path uses the pinned default response file (/O2 /Oy). Exact
 // owners remain in src/matching; accepted-drift, scratch, and matching-source
 // owners with incompatible per-function flags remain observed in the proposal.
-// Packet accounting: 35 exact owners, 29 observed owners, and one generated
+// Packet accounting: 36 exact owners, 28 observed owners, and one generated
 // entry. The candidate compiles under config/flags/default.rsp. Mismatches
 // remain recorded as observed results; this captain pass does not tune them.
 
@@ -77,5 +77,5 @@
 #include "matching/00459D20_get_tile_type.cpp"
 #include "scratch/0045A030_get_border_type.cpp"
 #include "matching/0045A490_check_for_border.cpp"
-#include "matching/0045A500_update.cpp"
+#include "accepted_drift/0045A500_update.cpp"
 #include "matching/0045A6D0_get_point.cpp"

@@ -1,9 +1,15 @@
 // VA: 004595E0 RGE_Map::set_elev
 // map.cpp:2466-2557.
 //
-// Exact-finish result: the natural VC5 source now matches all 792 bytes.
-// The checker also proves the 792-byte boundary, the PDB owner symbol, the
-// frame, the CFG, and five ordered calls.
+// Standalone exact-finish result: the natural VC5 source matches all 792
+// bytes. The standalone checker also proves the boundary, owner symbol,
+// frame, CFG, and five ordered calls.
+//
+// Canonical-TU check: this source was compiled through src/map_tu.cpp with
+// the shared map context. It rebuilt to 789 bytes with 178 positional
+// differences. The shared world, tile-list, and object-list surfaces select
+// different member offsets for this owner. Keep this row in accepted_drift;
+// standalone exactness does not prove canonical-TU exactness.
 //
 // BINARY NOTE: The map stores 24-byte tiles behind a row-offset table. The
 // relative update rereads the terrain byte for its low bits after the clamp.

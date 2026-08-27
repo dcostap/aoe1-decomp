@@ -2,13 +2,12 @@
 // PDB: rmm_elev.cpp lines 29-59
 // The tile elevation is owned by RGE_Tile::height at byte +0x05.
 // Attempt log:
-// - baseline: natural generator loops over the base map tile rows, copies each
-//   elevation-info line by value, then cleans the generated map rectangle.
-// - do-while/indexed row loops reached the exact 191-byte boundary and matched
-//   the outer CFG.
-// - moving the second-loop counter before its guard and using a binary-observed
-//   narrow volatile line pointer reproduced the stack cursor and all late call
-//   block topology; the volatile is local to the proven stack-home cursor.
+// - Natural generator loops walk the base map tile rows, copy the base
+//   elevation value, then clean the generated map rectangle.
+// - Do-while/indexed row loops retain the original outer CFG. The current
+//   natural bitfield write rebuilds to 187 bytes and remains unresolved.
+// - The former exact candidate used a volatile line pointer to steer stack
+//   homes. That form is not retained in this natural scratch source.
 
 #include "..\..\include\rmm_elev_context.h"
 
@@ -38,7 +37,7 @@ unsigned char RGE_RMM_Elevation_Generator::generate() {
 
     long i = 0;
     if (this->info.elevation_num > 0) {
-        RGE_Elevation_Info_Line* volatile line = this->info.elevation;
+        RGE_Elevation_Info_Line* line = this->info.elevation;
         do {
             this->base_elevation_generate(*line);
             this->map->clean_elevation(0, 0, this->map_width - 1,

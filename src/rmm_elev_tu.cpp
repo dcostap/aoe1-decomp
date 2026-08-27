@@ -1,11 +1,11 @@
 // Authentic owner order for C:\\msdev\\work\\age1_x1\\rmm_elev.cpp.
 // PDB lines 21-403 are included in source order.  The three accepted-drift
-// owners remain observed entries in the candidate proposal; the six matching
-// owners are exact owners.  The final scratch owner is included to compile the
+// owners remain observed entries in the candidate proposal; the five matching
+// owners are exact owners.  The two scratch owners are included to compile the
 // complete translation unit through its unresolved tail.
 
 #include "matching/004846C0_RGE_RMM_Elevation_Generator.cpp"
-#include "matching/00484700_generate.cpp"
+#include "scratch/00484700_generate.cpp"
 #include "accepted_drift/004847C0_check_start_elevation.cpp"
 #include "accepted_drift/004848A0_check_elevation.cpp"
 #include "matching/00484A40_generate_modifiers.cpp"

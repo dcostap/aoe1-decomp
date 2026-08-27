@@ -3403,15 +3403,12 @@
       "flags": "config/flags/default.rsp",
       "owners": {
         "004846C0": "src/matching/004846C0_RGE_RMM_Elevation_Generator.cpp",
-        "00484700": "src/matching/00484700_generate.cpp",
         "00484A40": "src/matching/00484A40_generate_modifiers.cpp",
         "00484B30": "src/matching/00484B30_fig_chance.cpp",
         "00484B50": "src/matching/00484B50_count_map_tiles.cpp",
         "00484C80": "src/matching/00484C80_remove_area_from_lists.cpp"
       },
-      "symbols": {
-        "00484700": "?generate@RGE_RMM_Elevation_Generator@@UAEEXZ"
-      }
+      "symbols": {}
     },
     {
       "name": "t_tre_ob",
@@ -7747,7 +7744,6 @@
         "00459A00": "src/matching/00459A00_set_terrain_absolute.cpp",
         "00459D20": "src/matching/00459D20_get_tile_type.cpp",
         "0045A490": "src/matching/0045A490_check_for_border.cpp",
-        "0045A500": "src/matching/0045A500_update.cpp",
         "0045A6D0": "src/matching/0045A6D0_get_point.cpp"
       },
       "symbols": {
