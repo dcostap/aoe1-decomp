@@ -65,10 +65,7 @@ struct RGE_Command_Give_Attribute {
     unsigned char player_id;
     unsigned char to_player_id;
     unsigned char attr_id;
-    union {
-        int attr_amount;
-        float amount;
-    };
+    float amount;
 };
 struct RGE_Command_Add_Attribute {
     unsigned char command;
@@ -119,34 +116,25 @@ public:
     void setCurrentTarget(int, int, float, float, float);
 };
 
-class MasterObject {
-public:
-    char gap_00[8];
-    const char* name;
-};
-
 struct RGE_Command_AI_Order {
     unsigned char command;
-    unsigned char gap_00;
     unsigned char player_id;
     unsigned char issuer;
     unsigned char gap_03;
     int recipient;
     short orderType;
-    union {
-        unsigned char flags;
-        unsigned char orderPriority;
-    };
+    unsigned char orderPriority;
     unsigned char gap_0B;
     int target;
     unsigned char targetOwner;
     unsigned char gap_11[3];
-    union { int targetX; float target_x; };
-    union { int targetY; float target_y; };
-    union { int targetZ; float target_z; };
-    int inFront;
-    int range;
+    float targetX;
+    float targetY;
+    float targetZ;
+    float range;
     unsigned char immediate;
+    unsigned char inFront;
+    unsigned char gap_26[2];
 };
 
 struct RGE_Command_Group_AI_Order {
@@ -259,14 +247,27 @@ public:
     virtual void modify(float, unsigned char);
     virtual void modify_delta(float, unsigned char);
     virtual void modify_percent(float, unsigned char);
-    virtual int computerPlayer();
+    virtual void save(int);
     virtual RGE_Static_Object* make_new_obj(class RGE_Player*, float, float, float);
-    char gap_1C[0x14];
+    unsigned char master_type;
+    char* name;
+    short string_id;
+    short string_id2;
+    short id;
+    short copy_id;
     short object_group;
-    short gap_32;
+    short gap_16;
+    void* sprite;
+    void* death_sprite;
+    void* undead_sprite;
+    unsigned char undead_flag;
+    unsigned char gap_25;
+    short hp;
+    float los;
+    unsigned char obj_max;
+    unsigned char gap_2D[3];
     float radius_x;
     float radius_y;
-    char* name;
 };
 
 class RGE_Player {
@@ -296,7 +297,8 @@ public:
     virtual void sendAICommand();
     virtual void objectCostByType();
     virtual void trackUnitGather();
-    virtual void computerPlayer();
+    virtual RGE_Static_Object* make_scenario_obj(float, float, float, short,
+                                                  unsigned char, float);
     virtual void scenario_save();
     virtual void scenario_load();
     virtual void scenario_postsave();
@@ -362,9 +364,9 @@ public:
     virtual int heal(int, int); virtual unsigned char heal(float); virtual int canRepair();
     virtual void notify_of_relation(long, unsigned char);
     virtual void do_command(RGE_Static_Object*, float, float, float);
-    virtual void move_to(RGE_Static_Object*, float, float, float); virtual void work();
-    virtual void stop();
+    virtual void move_to(RGE_Static_Object*, float, float, float);
     virtual void work(RGE_Static_Object*, float, float, float);
+    virtual void stop();
     virtual void set_attack(RGE_Static_Object*); virtual void play_command_sound();
     virtual void play_move_sound(); virtual void new_angle(float); virtual RGE_Static_Object* spawn_death_obj();
     virtual void* get_command_master(); virtual void set_being_worked_on();
@@ -473,7 +475,7 @@ public:
 
 class TDebuggingLog {
 public:
-    void Log(const char*, ...);
+    void __cdecl Log(char*, ...);
 };
 
 class RGE_Base_Game {
@@ -576,19 +578,10 @@ public:
 };
 
 extern RGE_Base_Game* rge_base_game;
-extern TDebuggingLog* L;
-extern void Log(TDebuggingLog*, const char*, int, int, int);
-extern void Log(void*, const char*, int);
-extern void Log(void*, const char*, int, int);
-extern void Log(TDebuggingLog*, const char*, int, const char*);
-extern void Log(void*, const char*, int, const char*);
-extern void RGE_Log(void*, const char*, int, int, const char*);
-extern "C" void __cdecl TDebuggingLog_Log(void*, const char*, int, const char*);
-extern void __cdecl TDebuggingLog_Log(void*, const char*);
+// The shipped logger is a cdecl member reached through this absolute global.
+#define L (*(TDebuggingLog**)0x62C4FC)
 extern void __cdecl operator delete(void*);
-extern void __cdecl operator_delete(void*);
+extern "C" void __cdecl free(void*);
 extern unsigned long debug_timeGetTime(const char*, int);
-extern void* g_debug_log;
-extern const char s_send_cmd_create[];
 
 #endif

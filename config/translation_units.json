@@ -8107,8 +8107,6 @@
         "00433DB0": "src/Command.cpp",
         "00433DC0": "src/Command.cpp",
         "00433DE0": "src/Command.cpp",
-        "004348B0": "src/Command.cpp",
-        "004348F0": "src/Command.cpp",
         "00434DC0": "src/Command.cpp",
         "00434F70": "src/Command.cpp",
         "004350E0": "src/Command.cpp",
@@ -8124,7 +8122,6 @@
         "00435D40": "src/Command.cpp"
       },
       "symbols": {
-        "004348B0": "?do_command_create@RGE_Command@@IAEXPAURGE_Command_Create@@@Z",
         "004351B0": "?duplicate_check_command_stop@RGE_Command@@IAEEPAURGE_Command_Stop@@@Z",
         "00435260": "?check_for_duplicate_orders@RGE_Command@@IAEEPAEJ@Z",
         "004354F0": "?command_stop@RGE_Command@@QAEXHPAHH@Z",

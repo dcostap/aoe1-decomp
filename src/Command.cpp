@@ -19,7 +19,7 @@ RGE_Command::~RGE_Command() {
     this->field_14 = 0;
     void* p = this->field_08;
     if (p != 0) {
-        operator_delete(p);
+        free(p);
     }
 }
 
@@ -72,7 +72,7 @@ void RGE_Command::do_command(void* cmd)
         do_command_formation((RGE_Command_Formation*)cmd);
         return;
     case 7:
-        this->do_command(cmd);
+        this->do_command_give_attribute((RGE_Command_Give_Attribute*)cmd);
         return;
     case 8:
         do_command_create_group((RGE_Command_Create_Group*)cmd);
@@ -83,23 +83,23 @@ void RGE_Command::do_command(void* cmd)
     case 10:
         do_command_ai_order((RGE_Command_AI_Order*)cmd);
         return;
+    case 17:
+        do_command_group_ai_order((RGE_Command_Group_AI_Order*)cmd);
+        return;
     case 11:
         do_command_resign((RGE_Command_Resign*)cmd);
         return;
     case 12:
         do_command_add_waypoint((RGE_Command_Add_Waypoint*)cmd);
         return;
+    case 16:
+        do_command_group_waypoint((RGE_Command_Group_Waypoint*)cmd);
+        return;
     case 14:
         do_command_add_to_group((RGE_Command_Add_To_Group*)cmd);
         return;
     case 15:
         do_command_remove_from_group((RGE_Command_Remove_From_Group*)cmd);
-        return;
-    case 16:
-        do_command_group_waypoint((RGE_Command_Group_Waypoint*)cmd);
-        return;
-    case 17:
-        do_command_group_ai_order((RGE_Command_Group_AI_Order*)cmd);
         return;
     }
 }
@@ -408,17 +408,17 @@ void RGE_Command::do_command_give_attribute(RGE_Command_Give_Attribute* cmd)
 {
     RGE_Player* player = this->world->players[cmd->player_id];
 
-    if (player->attributes[cmd->attr_id] >= cmd->attr_amount) {
-        player->add_attribute_num(cmd->attr_id, -cmd->attr_amount, 0);
+    if (player->attributes[cmd->attr_id] >= cmd->amount) {
+        player->add_attribute_num(cmd->attr_id, -cmd->amount, 0);
         this->world->players[cmd->to_player_id]->add_attribute_num(
-            cmd->attr_id, cmd->attr_amount, 0);
+            cmd->attr_id, cmd->amount, 0);
 
         rge_base_game->notification(7, cmd->player_id, cmd->to_player_id,
-                                    cmd->attr_id, (long)cmd->attr_amount);
+                                    cmd->attr_id, (long)cmd->amount);
 
         this->world->players[cmd->to_player_id]->notify(
             cmd->player_id, cmd->to_player_id, 0x20A, cmd->attr_id,
-            (long)cmd->attr_amount, 0);
+            (long)cmd->amount, 0);
     }
 }
 
@@ -558,8 +558,8 @@ void RGE_Command::do_command_ai_order(RGE_Command_AI_Order* cmd) {
         RGE_Game_World* world = this->world;
         RGE_Player* player = (RGE_Player*)world->players[cmd->player_id];
         player->processAIOrder(cmd->issuer, cmd->recipient, cmd->orderType, cmd->target,
-                         cmd->targetOwner, cmd->target_x, cmd->target_y, cmd->target_z,
-                         cmd->inFront, cmd->immediate, cmd->orderPriority, cmd->flags);
+                         cmd->targetOwner, cmd->targetX, cmd->targetY, cmd->targetZ,
+                         cmd->range, cmd->immediate, cmd->inFront, cmd->orderPriority);
     }
 }
 
@@ -915,7 +915,7 @@ void RGE_Command::command_pause(int param_1, int* data, int count) {
             }
             buf[0] = 0x0D;
             buf[1] = (unsigned char)count;
-            TDebuggingLog_Log((*(void**)0x62C4FC), "      >SEND CMD PAUSE");
+            L->Log("      >SEND CMD PAUSE");
             this->submit(buf, alloc_size);
         }
     }
@@ -1075,7 +1075,8 @@ void RGE_Command::command_create(short param_1, short param_2, float param_3, fl
     *(float*)(packet + 8) = param_3;
     *(float*)(packet + 0xC) = param_4;
     *(float*)(packet + 0x10) = param_5;
-    Log(g_debug_log, s_send_cmd_create, (int)param_1, (int)param_2);
+    L->Log("      >SEND CMD CREATE (CAT=%d,PLR=%d)",
+           (int)param_1, (int)param_2);
     this->submit(packet, 0x14);
 }
 
@@ -1096,7 +1097,8 @@ void RGE_Command::command_give_attribute(int param_1, int param_2, int param_3, 
     cmd[2] = (unsigned char)param_2;
     cmd[3] = (unsigned char)param_3;
     *(float*)(cmd + 4) = param_4;
-    Log(L, "      >SEND CMD GIV ATTR (FRM=%d,TO=%d,ATT=%d)", param_1, param_2, param_3);
+    L->Log("      >SEND CMD GIV ATTR (FRM=%d,TO=%d,ATT=%d)",
+           param_1, param_2, param_3);
     submit(cmd, 8);
 }
 
@@ -1173,11 +1175,11 @@ void RGE_Command::command_create_group(int p1, int p2, int* p3, int p4, float p5
     RGE_Static_Object* obj = this->world->object(first_id);
     const char* name;
     if (obj != 0) {
-        name = *(const char**)((char*)obj->field_08 + 8);
+        name = obj->master_obj->name;
     } else {
         name = ((const char*)0x00583B74);
     }
-    RGE_Log(*(void**)((void*)0x0062C4FC), ((const char*)0x00583D74), count, p1, name);
+    L->Log((char*)0x00583D74, count, p1, name);
     this->submit(buf, 0x74);
 }
 
@@ -1194,8 +1196,7 @@ void RGE_Command::command_add_to_group(int plr, int rec, int target, float angle
     const char* name;
     if (obj != 0) {
         RGE_Static_Object* sobj = (RGE_Static_Object*)obj;
-        MasterObject* mobj = (MasterObject*)sobj->master_obj;
-        name = mobj->name;
+        name = sobj->master_obj->name;
     } else {
         name = "X";
     }
@@ -1220,7 +1221,7 @@ void RGE_Command::command_remove_from_group(int param_1, int param_2, int param_
         name = "X";
     }
 
-    Log(L, "      >SEND CMD REM GROUP (PLR=%d,UNIT=%s)", param_1, name);
+    L->Log("      >SEND CMD REM GROUP (PLR=%d,UNIT=%s)", param_1, name);
     this->submit(cmd, 0xC);
 }
 
@@ -1236,7 +1237,7 @@ void RGE_Command::command_destroy_group(int player_id, int group_id) {
     packet->type = 9;
     packet->player_id = (unsigned char)player_id;
     packet->group_id = group_id;
-    Log(L, "      >SEND CMD DES GROUP (PLR=%d)", player_id);
+    L->Log("      >SEND CMD DES GROUP (PLR=%d)", player_id);
     this->submit(packet, 8);
 }
 
@@ -1350,7 +1351,7 @@ void RGE_Command::command_resign(int player, int drop, int reason) {
     packet[0] = 0x0B;
     packet[1] = (unsigned char)player;
     packet[3] = (unsigned char)reason;
-    Log(L, "      >SEND CMD RESIGN (PLR=%d,DROP=%d)", player, reason);
+    L->Log("      >SEND CMD RESIGN (PLR=%d,DROP=%d)", player, reason);
     this->submit(packet, 4);
 }
 
@@ -1375,7 +1376,7 @@ void RGE_Command::command_add_waypoint(int player, int obj_id, XYZBYTEPoint* pts
     else
         name = "X";
 
-    TDebuggingLog_Log(L, "      >SEND CMD ADD WAY (PLR=%d,REC=%s)", player, name);
+    L->Log("      >SEND CMD ADD WAY (PLR=%d,REC=%s)", player, name);
 
     submit(buf, 0x18);
 }
