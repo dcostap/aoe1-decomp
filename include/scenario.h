@@ -177,24 +177,4 @@ public:
 
 extern RGE_Base_Game* rge_base_game;
 
-struct RGE_Scenario_File_Entry {
-    long time;
-    RGE_Scenario_Header* scenario_header;
-    char name[260];
-};
-
-class RGE_Scenario_File_Info {
-public:
-    char filename[260];
-    long scenario_num;
-    RGE_Scenario_File_Entry* scenarios;
-
-    RGE_Scenario_File_Info(char* path);
-    ~RGE_Scenario_File_Info();
-    void save();
-    void reload_scenarios();
-    char* get_scenario_name(long index);
-    RGE_Scenario_Header* get_scenario_info(long index);
-};
-
 #endif
