@@ -45,12 +45,12 @@ The `update` scratch source retains the original frame note and prior evidence.
 The `set_state` source retains its accepted-drift evidence.  This migration does
 not promote or reopen either status.
 
-The held final candidate rebuilt `004D2660` as 70 bytes instead of 118 bytes.
-It has matching owner, relocation targets, and boundaries. Terra 6 identified
-the cause as the stale C-linkage `rge_read` declaration in `task.h`, not
-canonical `rge_fio.h`. The owner remains matching while Terra 6 repairs
-`task.h` and Task List consumes `rge_fio.h`. Retry the final candidate after
-that shared-header repair. Do not treat this held result as a status demotion.
+The first final candidate rebuilt `004D2660` as 70 bytes instead of 118 bytes.
+Terra 6 identified the cause as the stale task file-I/O surface, not
+canonical `rge_fio.h`. After `task.h` and Task List adopted `rge_fio.h`, this
+header directly included `rge_fio.h` and the final candidate matched all ten
+registered owners. Each row has zero byte differences, relocation-target
+mismatches, and boundary escapes. The held result does not change any status.
 
 ## Cross-shard evidence
 

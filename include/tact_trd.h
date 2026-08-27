@@ -1,6 +1,7 @@
 #pragma once
 
 #include "game_globals.h"
+#include "rge_fio.h"
 #include "action.h"
 #include "act_move.h"
 #include "act_list.h"
