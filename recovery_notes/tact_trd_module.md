@@ -21,10 +21,10 @@
 
 The module has 12 normal owners and 3297 normal bytes.
 
-- Matching: `004D2660`, `004D2710`, `004D27A0`, `004D27F0`, `004D2830`,
-  `004D32C0`, `004D32F0`, `004D3330`, `004D3340`, `004D33C0`.
+- Matching: `004D2710`, `004D27A0`, `004D27F0`, `004D2830`, `004D32C0`,
+  `004D32F0`, `004D3330`, `004D3340`, `004D33C0`.
 - Accepted drift: `004D2880 set_state`.
-- Scratch: `004D2CB0 update`.
+- Scratch: `004D2660` constructor and `004D2CB0 update`.
 - `004D26E0` is a compiler-generated scalar deleting destructor.  It is not a
   handwritten owner and remains outside the source module function list.
 
@@ -44,6 +44,13 @@ The prior grouped candidate check on the authentic wrapper reported:
 The `update` scratch source retains the original frame note and prior evidence.
 The `set_state` source retains its accepted-drift evidence.  This migration does
 not promote or reopen either status.
+
+The final canonical-header candidate compiles the direct source. Nine of ten
+registered exact owners match with zero differences. `004D2660` rebuilds as
+70 bytes instead of 118 bytes. It has matching owner, relocation targets, and
+boundaries. The current canonical C-linkage `rge_read` declaration removes the
+original EH cleanup frame. This is a source-reunification regression. The
+owner is scratch until canonical file-I/O linkage evidence resolves it.
 
 ## Cross-shard evidence
 

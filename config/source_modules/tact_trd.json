@@ -5,7 +5,7 @@
   "source": "src/tact_trd.cpp",
   "header": "include/tact_trd.h",
   "functions": {
-    "004D2660": { "status": "matching", "note_path": "recovery_notes/tact_trd_module.md" },
+    "004D2660": { "status": "scratch", "note_path": "recovery_notes/tact_trd_module.md" },
     "004D2710": { "status": "matching", "note_path": "recovery_notes/tact_trd_module.md" },
     "004D27A0": { "status": "matching", "note_path": "recovery_notes/tact_trd_module.md" },
     "004D27F0": { "status": "matching", "note_path": "recovery_notes/tact_trd_module.md" },

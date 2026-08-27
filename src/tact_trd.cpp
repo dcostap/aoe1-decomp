@@ -160,12 +160,14 @@ void TRIBE_Action_Trade::set_state(unsigned char param_1)
     case 8:
         if (this->obj->attribute_amount_held > DAT_00575348) {
             if (this->target_obj2 == 0 ||
-                this->target_obj2->master_obj->id != this->obj->master_obj->drop_site) {
-                short drop_site = this->obj->master_obj->drop_site;
+                this->target_obj2->master_obj->id !=
+                    ((RGE_Master_Action_Object*)this->obj->master_obj)->drop_site) {
+                short drop_site =
+                    ((RGE_Master_Action_Object*)this->obj->master_obj)->drop_site;
                 if (drop_site != -1) {
                     this->set_target_obj2(this->obj->owner->objects->find_by_master_ids(
                         drop_site,
-                        this->obj->master_obj->backup_drop_site,
+                        ((RGE_Master_Action_Object*)this->obj->master_obj)->backup_drop_site,
                         this->obj->world_x,
                         this->obj->world_y,
                         1,
@@ -389,7 +391,7 @@ unsigned char TRIBE_Action_Trade::update()
                     float dy = this->pick_up_y - this->target_obj2->world_y;
                     take_amount = (dy * dy + dx * dx) * DAT_00575358 * DAT_0057535c;
                 }
-                if (this->obj->owner->civilization == 0x0F) {
+                if (this->obj->owner->culture == 0x0F) {
                     take_amount += take_amount;
                 }
                 if (take_amount < DAT_00575360) {
@@ -477,7 +479,8 @@ int TRIBE_Action_Trade::move_to(RGE_Static_Object* obj, float x, float y, float 
 {
     if (obj != 0) {
         if (obj->owner == this->obj->owner) {
-            if (obj->master_obj->id == this->obj->master_obj->drop_site) {
+            if (obj->master_obj->id ==
+                ((RGE_Master_Action_Object*)this->obj->master_obj)->drop_site) {
                 if (obj == this->target_obj2 && this->state == 8) {
                     return 1;
                 }
@@ -509,7 +512,8 @@ int TRIBE_Action_Trade::work(RGE_Static_Object* obj, float x, float y, float z)
 
         // Check owner/id match.
         if (obj->owner == this->obj->owner) {
-            if (obj->master_obj->id == this->obj->master_obj->drop_site) {
+            if (obj->master_obj->id ==
+                ((RGE_Master_Action_Object*)this->obj->master_obj)->drop_site) {
                 this->set_target_obj2(obj);
                 this->set_state(8);
                 return 1;
