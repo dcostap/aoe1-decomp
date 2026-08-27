@@ -1,0 +1,7 @@
+# 004365A0 `TDebuggingLog::FlushLog`
+
+- PDB source: `Debuglog.cpp`, lines 194 to 198.
+- Original size: 22 bytes.
+
+The PDB owns this function as `TDebuggingLog::FlushLog`.
+It flushes the Debuglog.cpp module `logstream` when file logging is active.
