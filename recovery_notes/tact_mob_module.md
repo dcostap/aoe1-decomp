@@ -95,5 +95,6 @@ and 1/1 generated matches. One observed row is a comparison error. The full
 candidate group is not exact because of 004D12B0 and the existing observed
 rows.
 
-The grouped target checks report the same 004D10F0 mismatch and exact
-004D15F0 result. No scratch owner is promoted in this lane.
+The final target checks report exact 004D1550 and 004D15F0 results. Target
+004D12B0 is paused on the documented hard blocker. No function status changed
+in this lane.
