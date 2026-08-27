@@ -32,7 +32,7 @@
     "0041B200": { "status": "matching" },
     "0041B210": { "status": "matching" },
     "0041B290": {
-      "status": "matching",
+      "status": "scratch",
       "note_path": "recovery_notes/0041B290_update.md"
     },
     "0041B430": {

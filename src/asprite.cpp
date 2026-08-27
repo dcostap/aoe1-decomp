@@ -1,8 +1,8 @@
 #include "../include/game_globals.h"
 #include "../include/asprite.h"
 
-extern "C" void __cdecl rge_read(int handle, void* buffer, int size);
-extern "C" void __cdecl rge_write(int handle, void* buffer, int size);
+extern void __cdecl rge_read(int handle, void* buffer, int size);
+extern void __cdecl rge_write(int handle, void* buffer, int size);
 extern int __cdecl debug_rand(char* file, int line);
 extern RGE_Sprite* fog_next_shape;
 
