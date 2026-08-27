@@ -55,6 +55,13 @@ proven 0x44 size. The source has no local Action or Move_To declaration.
 All direct dependencies now close through canonical owner headers. The source
 has no local Sound or Base Game declaration.
 
+The first grouped build reaches the canonical source. It stops in owner
+headers and player ABI before owner comparison. `m_an_obj.h` and `m_mo_obj.h`
+use `FILE*` without a self-contained file-type declaration. `RGE_Player` lacks
+the accessed `attribute_table` and `fallback_attribute` fields. Its current
+`notify` overloads are ambiguous at source lines 132, 252, 305, 316, and 511.
+This module adds no local file, player, or World surface.
+
 The source casts an action object's canonical `master_obj` pointer to
 `RGE_Master_Action_Object` where the action-master fields are used. It uses
 `attribute_max_amount` for the proven +0x7C field. It uses `work_rate` for the
