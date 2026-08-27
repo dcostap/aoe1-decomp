@@ -4436,14 +4436,15 @@
     },
     {
       "name": "tact_tek",
-      "source": "src/tact_tek_tu.cpp",
-      "flags": "config/flags/004D21B0_TRIBE_Action_Make_Tech.rsp",
+      "source": "src/tact_tek.cpp",
+      "module": "tact_tek",
+      "flags": "config/flags/default_gx.rsp",
       "owners": {
-        "004D21B0": "src/matching/004D21B0_TRIBE_Action_Make_Tech.cpp",
-        "004D2370": "src/matching/004D2370_save.cpp",
-        "004D23B0": "src/matching/004D23B0_first_in_stack.cpp",
-        "004D2440": "src/matching/004D2440_set_state.cpp",
-        "004D2550": "src/matching/004D2550_stop.cpp"
+        "004D21B0": "src/tact_tek.cpp",
+        "004D2370": "src/tact_tek.cpp",
+        "004D23B0": "src/tact_tek.cpp",
+        "004D2440": "src/tact_tek.cpp",
+        "004D2550": "src/tact_tek.cpp"
       },
       "symbols": {
         "004D21B0": "??0TRIBE_Action_Make_Tech@@QAE@HPAVRGE_Action_Object@@@Z",
