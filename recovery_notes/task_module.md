@@ -32,12 +32,13 @@ The lead must rerun the grouped check after it updates the registered source.
 
 `task.cpp` owns `RGE_Task` through `include/task.h`.
 The task header uses natural compiler alignment for its `0x4C` layout.
-It no longer publishes `rge_read` or `rge_write`.
+It includes `<stdio.h>` for its public `FILE*` declaration.
+It does not publish I/O declarations.
 
-`src/task.cpp` remains unchanged and unvalidated after that header cleanup.
-It needs shared declarations for `rge_read` and `rge_write`.
-It also needs its existing sprite and sound owner header.
+`src/task.cpp` includes canonical `rge_fio.h` for the C++ `rge_read` and
+`rge_write` symbols. It also includes the reviewed sprite and sound owner
+header.
 
 `task_lst.cpp` now includes `task.h` and owns only `RGE_Task_List`.
-Its separate dependency hold is in `recovery_notes/task_lst_abi_packet.md`.
-Validate task, task-list, and action consumers after the shared I/O surface lands.
+It includes `rge_fio.h` directly for its I/O calls. Validate task, task-list,
+and action consumers after this owner cleanup.

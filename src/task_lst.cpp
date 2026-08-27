@@ -1,4 +1,5 @@
 #include "../include/game_globals.h"
+#include "../include/rge_fio.h"
 #include "../include/task_lst.h"
 #include "../include/act_obj.h"
 #include "../include/map.h"

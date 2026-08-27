@@ -1,8 +1,7 @@
 #ifndef AOE1_TASK_H
 #define AOE1_TASK_H
 
-struct _iobuf;
-typedef struct _iobuf FILE;
+#include <stdio.h>
 
 class RGE_Sprite;
 class RGE_Sound;

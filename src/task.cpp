@@ -1,4 +1,5 @@
 #include "../include/task.h"
+#include "../include/rge_fio.h"
 #include "../include/sprite.h"
 
 // PDB source: C:\\msdev\\work\\age1_x1\\task.cpp

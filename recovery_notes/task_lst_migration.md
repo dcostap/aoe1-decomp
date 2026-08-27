@@ -19,6 +19,9 @@ The module now uses `src/task_lst.cpp` and `include/task_lst.h`. The former
 wrapper, per-function matching files, and temporary context header were
 removed. The bodies were moved without byte-tuning changes.
 
+The source includes canonical `rge_fio.h` for C++ `rge_read` and `rge_write`.
+It has no local C-linkage I/O declaration.
+
 The current focused checks report 11/11 exact owners. Every owner reports
 `Result: MATCH` and `0.0000%` positional difference. Exact repair is complete
 after source migration.
