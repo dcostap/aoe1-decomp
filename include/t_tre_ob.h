@@ -1,8 +1,6 @@
 #ifndef AOE1_T_TRE_OB_H
 #define AOE1_T_TRE_OB_H
 
-#include <stdio.h>
-
 #include "stat_obj.h"
 #include "tm_tre_o.h"
 

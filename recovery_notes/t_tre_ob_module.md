@@ -35,11 +35,11 @@ The natural header includes `stat_obj.h`, which owns `RGE_Static_Object`, and
 for the static-object constructor and setup call. No tree-master or
 static-object layout is copied here.
 
-`t_tre_ob.h` includes `<stdio.h>` because `tm_tre_o.h` declares a `FILE*`
-constructor. `stat_obj.h` includes `utmarray.h` for the managed-array members.
-`tm_tre_o.h` includes the canonical `m_s_obj.h` owner header. The source needs
-no additional game, player, or object headers because the canonical headers
-provide the required forward declarations and method declarations.
+`tm_tre_o.h` includes `<stdio.h>` for its public `FILE*` constructor.
+`stat_obj.h` includes `utmarray.h` for managed-array members. `tm_tre_o.h`
+includes the canonical `m_s_obj.h` owner header. The source needs no additional
+game, player, or object headers. The canonical headers provide the required
+forward declarations and method declarations.
 
 The direct method dependencies are the two `RGE_Static_Object` constructors,
 the two `setup` overloads, and `RGE_Static_Object::set_object_state`. All come
