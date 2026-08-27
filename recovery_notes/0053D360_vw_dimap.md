@@ -38,6 +38,11 @@ PDB and call-site evidence prove these facts:
 The local player and base-game declarations do not yet model all virtual slots.
 Do not reuse them as shared ABI.
 
+The current view declaration also has incomplete virtual dispatch. The
+`right_click2` call needs view slot `+0xF4`. The three command calls currently
+emit slots `+0x24`, `+0x28`, and `+0x2C`, but the executable uses `+0xF4`,
+`+0xF8`, and `+0xFC`.
+
 ## Module merge
 
 The module now uses `src/vw_dimap.cpp` and `include/vw_dimap.h`. It removes the
