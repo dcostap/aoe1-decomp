@@ -139,8 +139,6 @@ int RGE_Communications_Addresses::SetIPAddresses(char* out_buffer)
 // PDB source: com_addr.cpp, lines 202-206.
 // BINARY NOTE: The method copies the shared empty string to hostname, then
 // clears AliasesAvailable and AddressesAvailable.
-extern char s_[];
-
 void RGE_Communications_Addresses::EraseInformation(void) {
     strcpy(this->hostname, s_);
     this->AliasesAvailable = 0;

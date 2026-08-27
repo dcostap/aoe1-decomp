@@ -2,6 +2,9 @@
 #define AOE1_COM_ADDR_H
 
 #include <winsock.h>
+#include <string.h>
+
+extern char s_[];
 
 class TCommunications_Handler;
 
@@ -10,7 +13,10 @@ public:
     char DottedIPAddress[0x20];
     char Alias[0x80];
 
-    IPAD() {}
+    IPAD() {
+        strcpy(this->DottedIPAddress, s_);
+        strcpy(this->Alias, s_);
+    }
     ~IPAD() {}
 };
 

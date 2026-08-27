@@ -10,5 +10,7 @@
 2. A canonical hostname array with the old gap changed three bytes.
 3. Removing the redundant gap produced an exact result.
 4. A typed `WSADATA` member kept the exact result.
+5. Restoring the `IPAD` header constructor's two empty-string copies kept the
+   constructor exact; the restored `IPAD` body also matches independently.
 
 The merged source keeps the proven class layout and call order.
