@@ -1,4 +1,5 @@
 #include "../include/task.h"
+#include "../include/sprite.h"
 
 // PDB source: C:\\msdev\\work\\age1_x1\\task.cpp
 // The definitions follow the original task.cpp source order.
@@ -264,7 +265,7 @@ void RGE_Task::save(int fd)
     if (move_sprite == 0) {
         id_val = -1;
     } else {
-        id_val = *(short*)((char*)move_sprite + 0x72);
+        id_val = move_sprite->id;
     }
     rge_write(fd, &id_val, 2);
 
@@ -272,7 +273,7 @@ void RGE_Task::save(int fd)
     if (work_sprite == 0) {
         id_val = -1;
     } else {
-        id_val = *(short*)((char*)work_sprite + 0x72);
+        id_val = work_sprite->id;
     }
     rge_write(fd, &id_val, 2);
 
@@ -280,7 +281,7 @@ void RGE_Task::save(int fd)
     if (work_sprite2 == 0) {
         id_val = -1;
     } else {
-        id_val = *(short*)((char*)work_sprite2 + 0x72);
+        id_val = work_sprite2->id;
     }
     rge_write(fd, &id_val, 2);
 
@@ -288,7 +289,7 @@ void RGE_Task::save(int fd)
     if (carry_sprite == 0) {
         id_val = -1;
     } else {
-        id_val = *(short*)((char*)carry_sprite + 0x72);
+        id_val = carry_sprite->id;
     }
     rge_write(fd, &id_val, 2);
 
@@ -296,7 +297,7 @@ void RGE_Task::save(int fd)
     if (work_sound == 0) {
         id_val = -1;
     } else {
-        id_val = *(short*)((char*)work_sound + 0x0C);
+        id_val = work_sound->id;
     }
     rge_write(fd, &id_val, 2);
 
@@ -304,7 +305,7 @@ void RGE_Task::save(int fd)
     if (work_sound2 == 0) {
         id_val = -1;
     } else {
-        id_val = *(short*)((char*)work_sound2 + 0x0C);
+        id_val = work_sound2->id;
     }
     rge_write(fd, &id_val, 2);
 }

@@ -17,6 +17,11 @@ bands: constructor `00508670` (26-57), destructor `005086F0` (62), `copy`
   `0x00` through `0x48`. The complete object size is `0x4C` bytes.
 - The natural source keeps the six definitions in PDB order. It replaces the
   wrapper and does not include C++ source fragments.
+- `include/sprite.h` is the reviewed sprite module header. It proves named
+  `RGE_Sprite::id` at `+0x72` and `RGE_Sound::id` at `+0x0C`.
+
+The `save` body now includes `sprite.h` and reads those named fields. It no
+longer uses raw cursor casts. The named accesses preserve the proven offsets.
 
 ## Source status
 
