@@ -12,7 +12,6 @@ struct RGE_Object_Info_Line {
     long terrain;
     uchar group_flag;
     uchar scale_flag;
-    uchar gap_0a[2];
     long object_number_per_group;
     long object_number_varience;
     long number_of_groups;
@@ -37,6 +36,13 @@ struct RGE_Object_Info {
     RGE_Land_Point_Info_Line lands[99];
     long land_num;
 };
+
+typedef char rge_object_info_line_size_check[
+    (sizeof(RGE_Object_Info_Line) == 0x30) ? 1 : -1];
+typedef char rge_land_point_info_line_size_check[
+    (sizeof(RGE_Land_Point_Info_Line) == 0x10) ? 1 : -1];
+typedef char rge_object_info_size_check[
+    (sizeof(RGE_Object_Info) == 0x18C8) ? 1 : -1];
 
 class RGE_RMM_Object_Generator : public RGE_Random_Map_Module {
 protected:
