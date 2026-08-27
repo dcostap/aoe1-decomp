@@ -47,8 +47,9 @@ surface. The parent must confirm both generated destructor entries.
 `include/tm_tre_o.h` includes the reviewed master/static object declaration
 surface. It adds no copied base layout. `TRIBE_Master_Tree_Object` declares
 its virtual destructor, three constructors, and the two factory overrides.
-`TRIBE_Tree_Object` has only the constructor declaration required by
-`make_new_obj`; its implementation remains owned by `t_tre_ob.cpp`.
+It only forward-declares `TRIBE_Tree_Object`. The source includes
+`include/t_tre_ob.h` for the `new TRIBE_Tree_Object` expression. That class
+remains owned by `t_tre_ob.cpp`.
 
 The source uses normal C++ constructors, base initializers, protected setup
 calls, the canonical `master_type` member, and natural `new` expressions. It
@@ -64,6 +65,9 @@ cursor accesses, fallback classes, or inline assembly.
 - Removed `include/tm_tre_o_context.h`.
 - Removed the five matching fragments.
 - Removed the invalid scratch destructor fragment.
+- Kept `tm_tre_o.h` limited to `TRIBE_Master_Tree_Object` ownership.
+- Replaced its temporary tree-object declaration with a forward declaration.
+- Added the canonical `t_tre_ob.h` include only to `tm_tre_o.cpp`.
 - Did not edit translation-unit config, global config, globals, shared headers,
   metrics, or inventories.
 

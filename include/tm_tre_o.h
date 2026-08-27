@@ -3,9 +3,8 @@
 
 // Declarations for the PDB source module tm_tre_o.cpp.
 //
-// RGE_Master_Static_Object and RGE_Static_Object come from the reviewed
-// master/static object surface. This header adds only the tree declarations
-// owned by this module; it does not copy a base layout.
+// RGE_Master_Static_Object comes from the reviewed master/static object
+// surface. This header adds only the tree-master declaration owned here.
 
 #include "m_s_obj_context.h"
 
@@ -24,13 +23,6 @@ public:
     virtual RGE_Master_Static_Object* make_new_master();
 };
 
-// The tree object constructor is owned by t_tre_ob.cpp. This declaration is
-// sufficient for the factory body and keeps that module's implementation out
-// of this translation unit.
-class TRIBE_Tree_Object : public RGE_Static_Object {
-public:
-    TRIBE_Tree_Object(TRIBE_Master_Tree_Object* master, RGE_Player* player,
-                      float x, float y, float z, int do_setup);
-};
+class TRIBE_Tree_Object;
 
 #endif

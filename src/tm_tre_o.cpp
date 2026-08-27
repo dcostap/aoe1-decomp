@@ -1,4 +1,5 @@
 #include "../include/tm_tre_o.h"
+#include "../include/t_tre_ob.h"
 
 // PDB source: C:\\msdev\\work\\age1_x1\\tm_tre_o.cpp
 // The definitions follow the original source order.
