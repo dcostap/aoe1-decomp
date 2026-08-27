@@ -157,7 +157,7 @@ protected:
         return 1;
     }
 
-protected:
+public:
     T* value;
     int numberValue;
     int desiredNumberValue;
