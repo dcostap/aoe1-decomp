@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "name": "com_err",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\com_err.cpp",
+  "source": "src/com_err.cpp",
+  "header": "include/com_err.h",
+  "functions": {
+    "00424E40": { "status": "matching" },
+    "00424E60": { "status": "matching" },
+    "00424EA0": { "status": "matching" },
+    "00424EB0": { "status": "matching" }
+  }
+}

@@ -720,13 +720,14 @@
     },
     {
       "name": "com_err",
-      "source": "src/com_err_tu.cpp",
+      "source": "src/com_err.cpp",
+      "module": "com_err",
       "flags": "config/flags/com_err.rsp",
       "owners": {
-        "00424E40": "src/matching/00424E40_RGE_Comm_Error.cpp",
-        "00424E60": "src/matching/00424E60_NotifyWindowParam.cpp",
-        "00424EA0": "src/matching/00424EA0_RGE_Comm_Error.cpp",
-        "00424EB0": "src/matching/00424EB0_ShowReturn.cpp"
+        "00424E40": "src/com_err.cpp",
+        "00424E60": "src/com_err.cpp",
+        "00424EA0": "src/com_err.cpp",
+        "00424EB0": "src/com_err.cpp"
       },
       "symbols": {
         "00424E40": "??0RGE_Comm_Error@@QAE@PAX@Z",

@@ -1,7 +1,7 @@
-#ifndef AOE1_COM_ERR_CONTEXT_H
-#define AOE1_COM_ERR_CONTEXT_H
+#ifndef AOE1_COM_ERR_H
+#define AOE1_COM_ERR_H
 
-#include "debuglog.h"
+class TDebuggingLog;
 
 // Canonical com_err.cpp surface for the four contiguous owners below.
 // The enum spelling is required by the PDB-qualified NotifyWindowParam symbol.
@@ -15,9 +15,6 @@ enum COMMMESSAGES {
 };
 
 extern TDebuggingLog* L;
-
-extern "C" __declspec(dllimport) int __stdcall PostMessageA(
-    void* hWnd, unsigned int message, unsigned int wParam, long lParam);
 
 class RGE_Comm_Error {
 public:

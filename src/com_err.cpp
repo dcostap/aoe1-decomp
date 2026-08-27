@@ -1,49 +1,29 @@
-// RGE_Comm_Error::ShowReturn (00424EB0, 2184 bytes, com_err.cpp lines 23-380)
-//
-// Attempt 1: flat if-else-if chain with hex literals -> ja (unsigned) instead of jg
-// Attempt 2: added (long) casts -> correct signed jg but block layout differs
-// Attempt 3: deeply nested if(code > pivot) binary search tree -> same size but jump targets differ
-// Attempt 4: ghidra-style flat if-else-if with <(long)-0x... negative constants -> block layout divergent
-// Attempt 5: fold LastReportedError store into first comparison via (this->LastReportedError=code)>pivot -> no improvement
-// Attempt 6: if(code != 0) wrapper instead of early return -> slight change but same jle vs jg/je issue
-// Attempt 7: goto-based flow -> no improvement
-// Attempt 8: TU-context bundle with all 4 com_err functions -> still 65% diff
-// Attempt 9: one typed sparse switch corrected the observed error messages and notifications.
-// It matched size and call counts, and reduced positional drift to 329 bytes.
-// Attempts 10-11: a signed threshold tree with direct inner equality tests was closer
-// in control shape but not in emitted layout; the sparse switch remained the clean pin.
-// Attempts 12-14: original jg/je blocks showed inverted inner guards and a local dense switch.
-// The final source keeps that period-plausible threshold tree and exact call order.
-// The empty non-match arms preserve the original shared-default fallthrough and are
-// required by the observed branch targets, not by register or volatility steering.
+// PDB source module: C:\\msdev\\work\\age1_x1\\com_err.cpp.
+// The four handwritten owners stay in PDB source order.
 
-#ifndef COM_ERR_TU_CONTEXT
-class TDebuggingLog {
-public:
-    void __cdecl Log(char* format, ...);
-};
-extern TDebuggingLog* L;
+#include <windows.h>
 
-class RGE_Comm_Error {
-public:
-    void* HostHWND;
-    long LastReportedError;
+#include "../include/com_err.h"
+#include "../include/debuglog.h"
 
-    void NotifyWindowParam(int msg, long param);
-    void ShowReturn(long code, char* context);
-};
-#endif
+// 00424E40; com_err.cpp lines 6-9.
+RGE_Comm_Error::RGE_Comm_Error(void* param) {
+    HostHWND = param;
+    LastReportedError = 0;
+}
 
-#ifndef COM_ERR_TU_CONTEXT
-enum {
-    COMM_NO_NEW_PLAYERS = 0x17AB,
-    COMM_FATAL_ERROR = 0x17AC,
-    COMM_HOST_BUSY = 0x17A8,
-    COMM_NO_LINK = 0x17AE,
-    COMM_CANCEL_GAME = 0x17B9,
-};
-#endif
+// 00424E60; com_err.cpp lines 12-15.
+void RGE_Comm_Error::NotifyWindowParam(COMMMESSAGES msg, long param) {
+    PostMessageA(HostHWND, 0x400, msg, param);
+    L->Log("COMM: Send msg to window WM_USER  Msg=%d  Param=%d\n", msg, param);
+}
 
+// 00424EA0; com_err.cpp line 19.
+RGE_Comm_Error::~RGE_Comm_Error() {}
+
+// 00424EB0; com_err.cpp lines 23-380.
+// The threshold tree and empty non-match arms preserve the original handler
+// layout and shared default fallthrough.
 void RGE_Comm_Error::ShowReturn(long code, char* context) {
     if (code == 0) {
         return;
