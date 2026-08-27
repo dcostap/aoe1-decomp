@@ -258,21 +258,24 @@ unsigned char TRIBE_Action_Make_Obj::place_obj(RGE_Static_Object** out)
 }
 
 // VA 004D1550; PDB tact_mob.cpp:237-251; matching.
+// BINARY NOTE: The original reloads obj->owner for each later call instead
+// of carrying one player alias across calls.
 int TRIBE_Action_Make_Obj::stop() {
-    TRIBE_Player* player = static_cast<TRIBE_Player*>(this->obj->owner);
-    player->logMessage(
+    static_cast<TRIBE_Player*>(this->obj->owner)->logMessage(
         (char*)"Stopping Train #8:  obj_id=%d, obj->id=%d, unique_id=%d",
         (int)this->obj_id, (int)this->obj->id, this->unique_id);
 
     if (this->state != 1) {
         this->set_state(1);
         if (!this->pre_paid) {
-            player->reimburse_obj_cost(this->obj_id);
+            static_cast<TRIBE_Player*>(this->obj->owner)->reimburse_obj_cost(
+                this->obj_id);
         }
     }
 
-    rge_base_game->notification(0x67, player->id, (int)this->obj_id,
-                                0, 0);
+    rge_base_game->notification(
+        0x67, static_cast<TRIBE_Player*>(this->obj->owner)->id,
+        (int)this->obj_id, 0, 0);
     this->obj->notify((int)this->obj->id, (int)this->obj->id,
                       0x1F9, (long)0x26B, (long)0, (long)0);
 

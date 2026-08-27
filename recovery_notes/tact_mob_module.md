@@ -69,16 +69,31 @@ generated 004D0E90. The canonical owner change produced these results:
   the bytes, so the direct owner expression is retained.
 - 004D10F0 `update`: `MISMATCH`, 281 bytes, owner match, 0 relocation target
   mismatches, and 0 boundary escapes. The rebuilt size is 442 versus 446.
+- 004D1550 `stop` now uses direct owner rereads. The original reloads
+  `obj->owner` for reimbursement and notification instead of keeping a
+  persistent player alias. This natural change produces `MATCH`, 0 bytes,
+  owner match, 0 relocation target mismatches, and 0 boundary escapes.
 - Prior exact owners 004D0DD0, 004D0EF0, 004D0F70, and 004D10E0 remain
   `MATCH`, each with 0 bytes, 0 relocation target mismatches, and 0 boundary
   escapes.
-- Prior exact owners 004D12B0 and 004D1550 regress to 580 and 96 bytes.
-  Both retain owner match, 0 relocation target mismatches, and 0 boundary
-  escapes.
+- 004D12B0 `place_obj` remains the one hard regression: 580 bytes, rebuilt
+  frame 0x1C versus original 0x18, 8/8 calls aligned, owner match, 0
+  relocation target mismatches, and 0 boundary escapes. Its first divergence
+  is an extra vtable spill and instruction at the function entry. Include
+  order and removal of the redundant direct `m_co_obj.h` include did not
+  change the output. No natural repair is supported by current binary
+  evidence.
 - Generated 004D0E90 remains `MATCH`, with 0 bytes, 0 relocation target
   mismatches, and 0 boundary escapes.
 - Observed 004D0FC0 remains a 268-byte accepted-drift mismatch. Observed
-  004D0EB0 has an overload-selection comparison error.
+  004D10F0 remains a 281-byte scratch mismatch. Observed 004D15F0 is `MATCH`
+  with 0 bytes, owner match, 0 relocation target mismatches, and 0 boundary
+  escapes. Observed 004D0EB0 has an overload-selection comparison error.
+
+The final candidate summary is 5/6 exact-owner matches, 1/4 observed matches,
+and 1/1 generated matches. One observed row is a comparison error. The full
+candidate group is not exact because of 004D12B0 and the existing observed
+rows.
 
 The grouped target checks report the same 004D10F0 mismatch and exact
 004D15F0 result. No scratch owner is promoted in this lane.
