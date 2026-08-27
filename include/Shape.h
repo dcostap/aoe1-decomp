@@ -2,6 +2,7 @@
 #define AOE1_SHAPE_H
 
 #include "drawarea.h"
+#include "Res_file.h"
 
 typedef unsigned char byte;
 

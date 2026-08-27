@@ -15,11 +15,8 @@ extern "C" int __cdecl tell(int);
 extern "C" void* __cdecl malloc(unsigned int);
 extern "C" int __cdecl read(int, void*, unsigned int);
 extern "C" int __cdecl close(int);
-extern "C" unsigned char* __cdecl RESFILE_load(unsigned long, unsigned long,
-                                                int&, int&);
 extern "C" void __cdecl free(void*);
 extern "C" void __cdecl addstring(char**, const char*, const char*);
-extern int __cdecl RESFILE_Decommit_Mapped_Memory(byte*, int);
 extern unsigned char shape_file_first;
 extern int Shape_Loads;
 extern int shape_version_110;
