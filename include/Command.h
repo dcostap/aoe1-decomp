@@ -1,10 +1,7 @@
-#ifndef AOE1_COMMAND_TU_CONTEXT_H
-#define AOE1_COMMAND_TU_CONTEXT_H
+#ifndef AOE1_COMMAND_H
+#define AOE1_COMMAND_H
 
-// Period-shaped declarations for the complete Command.cpp owner sequence.
-// The owner files keep their standalone declarations for focused checks.  The
-// full wrapper defines COMMAND_TU_CONTEXT before including them so that every
-// body sees one compiler-facing class and object surface.
+// Declarations used by the original Command.cpp translation unit.
 
 template<class T> class ManagedArray {
 public:
@@ -122,17 +119,12 @@ public:
     void setCurrentTarget(int, int, float, float, float);
 };
 
-class PlayerLike {
-public:
-    void ai_order(unsigned int, int, int, int, unsigned int, int, int, int,
-                  int, unsigned int, unsigned int, unsigned int);
-};
-
 class MasterObject {
 public:
     char gap_00[8];
     const char* name;
 };
+
 struct RGE_Command_AI_Order {
     unsigned char command;
     unsigned char gap_00;
@@ -533,23 +525,7 @@ public:
 
 protected:
     RGE_Static_Object* get_obj(RGE_Obj_Info);
-    void do_command_order(void*);
-    void do_command_stop(void*);
-    void do_command_work(void*);
-    void do_command_move(void*);
-    void do_command_create(void*);
-    void do_command_add_attribute(void*);
-    void do_command_formation(void*);
-    void do_command_create_group(void*);
-    void do_command_destroy_group(void*);
-    void do_command_ai_order(void*);
-    void do_command_resign(void*);
-    void do_command_add_waypoint(void*);
-    void do_command_group_waypoint(void*);
     void do_command_group_waypoint(RGE_Command_Group_Waypoint*);
-    void do_command_add_to_group(void*);
-    void do_command_remove_from_group(void*);
-    void do_command_group_ai_order(void*);
     void do_command_add_attribute(RGE_Command_Add_Attribute*);
     void do_command_formation(RGE_Command_Formation*);
     void do_command_ai_order(RGE_Command_AI_Order*);
@@ -603,14 +579,16 @@ extern RGE_Base_Game* rge_base_game;
 extern TDebuggingLog* L;
 extern void Log(TDebuggingLog*, const char*, int, int, int);
 extern void Log(void*, const char*, int);
+extern void Log(void*, const char*, int, int);
+extern void Log(TDebuggingLog*, const char*, int, const char*);
 extern void Log(void*, const char*, int, const char*);
+extern void RGE_Log(void*, const char*, int, int, const char*);
 extern "C" void __cdecl TDebuggingLog_Log(void*, const char*, int, const char*);
+extern void __cdecl TDebuggingLog_Log(void*, const char*);
+extern void __cdecl operator delete(void*);
 extern void __cdecl operator_delete(void*);
-
-// Existing focused context files use this guard to omit their local class
-// declarations when they are part of the complete module sequence.
-#ifndef COMMAND_CONTEXT_H
-#define COMMAND_CONTEXT_H
-#endif
+extern unsigned long debug_timeGetTime(const char*, int);
+extern void* g_debug_log;
+extern const char s_send_cmd_create[];
 
 #endif
