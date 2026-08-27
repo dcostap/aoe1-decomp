@@ -1,10 +1,5 @@
-#ifndef AOE1_M_AN_OBJ_CONTEXT_H
-#define AOE1_M_AN_OBJ_CONTEXT_H
-
-// Authentic declaration surface for the PDB source module m_an_obj.cpp.
-// The base class and its fields follow the reviewed m_s_obj context.  This
-// module adds the animated speed field and the one animated-object factory
-// type used by the owner bodies.
+#ifndef AOE1_M_AN_OBJ_H
+#define AOE1_M_AN_OBJ_H
 
 #include "m_s_obj_context.h"
 
@@ -54,4 +49,4 @@ public:
 typedef char m_an_obj_object_size[
     (sizeof(RGE_Animated_Object) == 0x8C) ? 1 : -1];
 
-#endif  // AOE1_M_AN_OBJ_CONTEXT_H
+#endif
