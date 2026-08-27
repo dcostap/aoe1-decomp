@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "name": "file_stf",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\file_stf.cpp",
+  "source": "src/file_stf.cpp",
+  "header": "include/file_stf.h",
+  "functions": {
+    "00449710": { "status": "accepted_drift", "note_path": "recovery_notes/file_stf_module.md" },
+    "00449750": { "status": "matching" },
+    "00449760": { "status": "matching" },
+    "00449770": { "status": "matching" },
+    "004497C0": { "status": "matching" },
+    "004497D0": { "status": "matching" },
+    "004497E0": { "status": "matching" },
+    "004497F0": { "status": "matching" },
+    "00449800": { "status": "matching" },
+    "00449810": { "status": "matching" },
+    "00449820": { "status": "matching" },
+    "00449830": { "status": "matching" },
+    "00449840": { "status": "matching" },
+    "004498A0": { "status": "matching" },
+    "00449910": { "status": "matching" },
+    "00449990": { "status": "scratch", "note_path": "recovery_notes/file_stf_module.md" },
+    "00449A20": { "status": "matching" },
+    "00449A40": { "status": "matching" },
+    "00449A50": { "status": "matching" },
+    "00449A60": { "status": "matching" },
+    "00449A90": { "status": "matching" },
+    "00449AC0": { "status": "matching" }
+  }
+}

@@ -1,10 +1,5 @@
-#ifndef AOE1_FILE_STF_CONTEXT_H
-#define AOE1_FILE_STF_CONTEXT_H
-
-// Canonical declarations for the original file_stf.cpp source module.
-// The wrapper defines FILE_STF_SHARED_CONTEXT before including owner files.
-
-#ifdef FILE_STF_SHARED_CONTEXT
+#ifndef AOE1_FILE_STF_H
+#define AOE1_FILE_STF_H
 
 class DriveInformation {
 public:
@@ -38,5 +33,8 @@ protected:
     void updateDirectory();
 };
 
-#endif  // FILE_STF_SHARED_CONTEXT
-#endif  // AOE1_FILE_STF_CONTEXT_H
+int __cdecl compareFilenameStrings(const char* a, const char* b);
+char driveAsLetter(int value);
+int driveAsInt(char value);
+
+#endif  // AOE1_FILE_STF_H
