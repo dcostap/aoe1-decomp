@@ -39,8 +39,6 @@ calls `TRIBE_Player::tech_abling` with zero.
 
 ## Candidate status
 
-This commit is a source migration candidate. It was not compiled or checked.
-The global translation-unit and source-module metadata remain coordinator
-owned and are unchanged in this commit. The lead must review the direct
-metadata before building or validating the candidate. The lead can then check
-all four owners, boundaries, relocations, and direct targets.
+After direct metadata registration, the grouped candidate reports all four
+normal owners as `MATCH` with `0.0000%` difference, zero relocation mismatches,
+and zero boundary escapes.
