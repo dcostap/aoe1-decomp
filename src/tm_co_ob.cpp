@@ -2,7 +2,17 @@
 // The definitions follow the complete PDB source order.
 
 #include "../include/tm_co_ob.h"
+#include "../include/t_c_obj.h"
+#include "../include/ttsk_lst.h"
 #include <new.h>
+
+extern "C" {
+    void __cdecl rge_read(int fd, void* data, int size);
+    void __cdecl rge_write(int fd, void* data, int size);
+}
+
+extern float save_game_version;
+extern float DAT_0057677c;
 
 // tm_co_ob.cpp:28-31
 TRIBE_Master_Combat_Object::TRIBE_Master_Combat_Object(
