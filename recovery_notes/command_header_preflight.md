@@ -1,4 +1,4 @@
-# Command header preflight after ca37104a5
+# Command header preflight after 96d491aff
 
 This note records evidence only. It does not publish `Command.h`.
 
@@ -9,6 +9,7 @@ includes to `Command.cpp`, not to `Command.h`:
 
 ```cpp
 #include "../include/basegame.h"
+#include "../include/command_waypoint.h"
 #include "../include/com_hand.h"
 #include "../include/debuglog.h"
 #include "../include/game_globals.h"
@@ -28,7 +29,8 @@ static-object bodies. `world.h` supplies `RGE_Game_World`.
 `debuglog.h` supplies the complete logger body. `game_globals.h` supplies
 `L` and `DAT_0056f4d8`, `DAT_0056f4e0`, and `DAT_0056f4e8` with their reviewed
 types. `rge_base_game_global.h` supplies `rge_base_game`.
-`com_hand.h` from ca37104a5 supplies the complete communications owner.
+`com_hand.h` from final rebased communications commit `96d491aff` supplies the
+complete communications owner. `1df6c2124` supplies the paired shared types.
 
 Do not include context headers. Do not include `com_hand_context.h`,
 `world_context.h`, or `world_scenario_context.h` as owner substitutes.
@@ -42,7 +44,6 @@ source as needed.
 Keep these records in the Command-owned surface:
 
 - `RGE_Obj_Info`.
-- `XYZBYTEPoint`.
 - `RGE_Command_Order`.
 - `RGE_Command_Stop`.
 - `RGE_Command_Give_Attribute`.
@@ -60,9 +61,9 @@ Keep these records in the Command-owned surface:
 - `RGE_Command_Group_Waypoint`.
 - `RGE_Command_Pause`.
 
-`XYZBYTEPoint` has no normal shared owner header. `RGE_Command` method
-signatures and `RGE_Command_Add_Waypoint` also need its complete three-byte
-body.
+`include/command_waypoint.h` owns `XYZBYTEPoint` through `f277b6472`.
+`Command.h` consumes that narrow owner header. It does not retain a local
+`XYZBYTEPoint` body.
 
 `WayPacket` and `RGE_Command_Work` occur only in `Command.cpp`. Keep them
 source-private or move them there during the clean pass. The
@@ -124,7 +125,7 @@ review them as a separate ABI change.
 
 ## Communications ABI result
 
-After ca37104a5, `include/com_hand.h` is the complete handler owner. It checks
+After 96d491aff, `include/com_hand.h` is the complete handler owner. It checks
 `sizeof(TCommunications_Handler) == 0x1774`,
 `current_turn == 0x10C8`, and `PlayerOptions == 0x1550`.
 
@@ -135,7 +136,7 @@ void* get_command();
 unsigned char new_command(void*, int);
 ```
 
-Both declarations are present in the ca37104a5 owner. Do not restore a partial
+Both declarations are present in the final rebased owner. Do not restore a partial
 handler class in `Command.h`. The held `DPCAPS` SDK size mismatch belongs to
 `CommGetCaps` local storage. It does not create a `TCommunications_Handler`
 ABI gap for Command.
