@@ -8,8 +8,25 @@ class TRIBE_Player_Tech;
 class TribeMainDecisionAIModule;
 class TRIBE_History_Info;
 class ResourceItem;
-class Item_Avail;
 class Trade_Avail;
+
+class Item_Avail {
+public:
+    char* name;                  // +0x00
+    short id;                    // +0x04
+    short pict;                  // +0x06
+    short inventory_item_1;      // +0x08
+    float inventory_cost_1;      // +0x0C
+    short inventory_item_2;      // +0x10
+    float inventory_cost_2;      // +0x14
+    short inventory_item_3;      // +0x18
+    float inventory_cost_3;      // +0x1C
+    long help_string_id;         // +0x20
+    long help_page_id;           // +0x24
+};
+
+typedef char item_avail_size_check[
+    (sizeof(Item_Avail) == 0x28) ? 1 : -1];
 
 class TRIBE_Player : public RGE_Player {
 public:
