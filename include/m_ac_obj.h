@@ -1,13 +1,14 @@
-#ifndef AOE1_M_AC_OBJ_CONTEXT_H
-#define AOE1_M_AC_OBJ_CONTEXT_H
-
-// Module-local declaration surface for m_ac_obj.cpp.
-// Owner files keep their isolated declarations when this macro is not set.
-#ifdef RGE_MAC_OBJ_SHARED_CONTEXT
+#ifndef AOE1_M_AC_OBJ_H
+#define AOE1_M_AC_OBJ_H
 
 #include <stdio.h>
 
 extern void __cdecl operator_delete(void* object);
+extern "C" void rge_read(int file, void* buffer, int size);
+extern "C" void rge_write(int file, void* buffer, int size);
+
+extern float save_game_version;
+extern float DAT_00570484;
 
 class RGE_Sprite;
 class RGE_Static_Object;
@@ -22,6 +23,7 @@ public:
     char gap_00[0x0C];
     short id;
     char gap_0E[2];
+
     void play(int mode);
 };
 
@@ -36,19 +38,19 @@ public:
     virtual RGE_Static_Object* make_new_obj(RGE_Player* player, float x,
                                              float y, float z);
     virtual RGE_Master_Static_Object* make_new_master();
-    virtual unsigned char check_placement(RGE_Player* player, float x, float y,
-                                          int* value, unsigned char a,
-                                          unsigned char b, unsigned char c,
-                                          unsigned char d, unsigned char e,
-                                          unsigned char f);
+    virtual unsigned char check_placement(RGE_Player* player, float x,
+                                          float y, int* value,
+                                          unsigned char a, unsigned char b,
+                                          unsigned char c, unsigned char d,
+                                          unsigned char e, unsigned char f);
     virtual unsigned char alignment(float* x, float* y, RGE_Game_World* world,
                                     unsigned char value);
     virtual long calc_base_damage_ability(RGE_Master_Combat_Object* object);
     virtual void play_command_sound();
     virtual void play_move_sound();
-    virtual void draw(TDrawArea* area, short x, short y, RGE_Color_Table* colors,
-                      long clip_x, long clip_y, int value,
-                      unsigned char flags);
+    virtual void draw(TDrawArea* area, short x, short y,
+                      RGE_Color_Table* colors, long clip_x, long clip_y,
+                      int value, unsigned char flags);
 
     unsigned char master_type;
     char gap_005[0x9F];
@@ -61,6 +63,13 @@ typedef char m_ac_obj_master_size[
 
 class RGE_Master_Animated_Object : public RGE_Master_Static_Object {
 public:
+    RGE_Master_Animated_Object(RGE_Master_Animated_Object* source,
+                               int do_setup);
+    RGE_Master_Animated_Object(int id, RGE_Sprite** sprites,
+                               RGE_Sound** sounds, int do_setup);
+    RGE_Master_Animated_Object(FILE* file, RGE_Sprite** sprites,
+                               RGE_Sound** sounds, short id, int do_setup);
+
     virtual ~RGE_Master_Animated_Object();
     virtual void copy_obj(RGE_Master_Static_Object* source);
     virtual void modify(float value, unsigned char attribute);
@@ -70,13 +79,6 @@ public:
     virtual RGE_Static_Object* make_new_obj(RGE_Player* player, float x,
                                              float y, float z);
     virtual RGE_Master_Static_Object* make_new_master();
-
-    RGE_Master_Animated_Object(RGE_Master_Animated_Object* source,
-                               int do_setup);
-    RGE_Master_Animated_Object(int id, RGE_Sprite** sprites,
-                               RGE_Sound** sounds, int do_setup);
-    RGE_Master_Animated_Object(FILE* file, RGE_Sprite** sprites,
-                               RGE_Sound** sounds, short id, int do_setup);
 
 protected:
     int setup(RGE_Master_Animated_Object* source);
@@ -91,6 +93,12 @@ typedef char m_ac_obj_animated_size[
 
 class RGE_Master_Moving_Object : public RGE_Master_Animated_Object {
 public:
+    RGE_Master_Moving_Object(RGE_Master_Moving_Object* source, int do_setup);
+    RGE_Master_Moving_Object(int id, RGE_Sprite** sprites,
+                             RGE_Sound** sounds, int do_setup);
+    RGE_Master_Moving_Object(FILE* file, RGE_Sprite** sprites,
+                             RGE_Sound** sounds, short id, int do_setup);
+
     virtual ~RGE_Master_Moving_Object();
     virtual void copy_obj(RGE_Master_Static_Object* source);
     virtual void modify(float value, unsigned char attribute);
@@ -100,12 +108,6 @@ public:
     virtual RGE_Static_Object* make_new_obj(RGE_Player* player, float x,
                                              float y, float z);
     virtual RGE_Master_Static_Object* make_new_master();
-
-    RGE_Master_Moving_Object(RGE_Master_Moving_Object* source, int do_setup);
-    RGE_Master_Moving_Object(int id, RGE_Sprite** sprites,
-                             RGE_Sound** sounds, int do_setup);
-    RGE_Master_Moving_Object(FILE* file, RGE_Sprite** sprites,
-                             RGE_Sound** sounds, short id, int do_setup);
 
 protected:
     int setup(RGE_Master_Moving_Object* source);
@@ -118,7 +120,13 @@ protected:
 typedef char m_ac_obj_moving_size[
     (sizeof(RGE_Master_Moving_Object) == 0xD8) ? 1 : -1];
 
-class RGE_Task;
+class RGE_Task {
+public:
+    char gap_00[4];
+    unsigned char is_default;
+    char pad_05;
+    short action_type;
+};
 
 class RGE_Task_List {
 public:
@@ -137,14 +145,6 @@ public:
     void load(FILE* file, RGE_Sprite** sprites, RGE_Sound** sounds);
 };
 
-class RGE_Task {
-public:
-    char gap_00[4];
-    unsigned char is_default;
-    char pad_05;
-    short action_type;
-};
-
 class RGE_Master_Action_Object : public RGE_Master_Moving_Object {
 public:
     RGE_Task_List* tasks;
@@ -160,6 +160,12 @@ public:
     unsigned char run_pattern;
     char gap_F9[3];
 
+    RGE_Master_Action_Object(RGE_Master_Action_Object* source, int do_setup);
+    RGE_Master_Action_Object(int id, RGE_Sprite** sprites,
+                             RGE_Sound** sounds, int do_setup);
+    RGE_Master_Action_Object(FILE* file, RGE_Sprite** sprites,
+                             RGE_Sound** sounds, short id, int do_setup);
+
     virtual ~RGE_Master_Action_Object();
     virtual void copy_obj(RGE_Master_Static_Object* source);
     virtual void modify(float value, unsigned char attribute);
@@ -173,24 +179,52 @@ public:
     virtual void play_command_sound();
     virtual void play_move_sound();
 
-    RGE_Master_Action_Object(RGE_Master_Action_Object* source, int do_setup);
-    RGE_Master_Action_Object(int id, RGE_Sprite** sprites,
-                             RGE_Sound** sounds, int do_setup);
-    RGE_Master_Action_Object(FILE* file, RGE_Sprite** sprites,
-                             RGE_Sound** sounds, short id, int do_setup);
+    RGE_Task* get_task(short task_id);
+    RGE_Task* getTaskByTaskID(int task_id) const;
 
 protected:
     int setup(RGE_Master_Action_Object* source);
     int setup(int file, RGE_Sprite** sprites, RGE_Sound** sounds);
     int setup(FILE* file, RGE_Sprite** sprites, RGE_Sound** sounds, short id);
-
-public:
-    RGE_Task* get_task(short task_id);
-    RGE_Task* getTaskByTaskID(int task_id) const;
 };
 
 typedef char m_ac_obj_action_size[
     (sizeof(RGE_Master_Action_Object) == 0xFC) ? 1 : -1];
 
-#endif  // RGE_MAC_OBJ_SHARED_CONTEXT
-#endif  // AOE1_M_AC_OBJ_CONTEXT_H
+class RGE_Static_Object {
+public:
+    virtual ~RGE_Static_Object();
+    virtual void recycle_in_to_game(RGE_Master_Static_Object* master,
+                                    RGE_Player* player, float x, float y,
+                                    float z);
+    char gap_04[0x84];
+};
+
+class RGE_Game_World {
+public:
+    RGE_Static_Object* recycle_object_in_to_game(unsigned char master_type);
+};
+
+class RGE_Player {
+public:
+    char gap_00[0x3C];
+    RGE_Game_World* world;
+};
+
+class RGE_Moving_Object : public RGE_Static_Object {
+public:
+    char gap_88[0xF8];
+
+    RGE_Moving_Object(RGE_Master_Static_Object* master, RGE_Player* player,
+                      float x, float y, float z, int do_setup);
+};
+
+class RGE_Action_Object : public RGE_Moving_Object {
+public:
+    char gap_180[0x14];
+
+    RGE_Action_Object(RGE_Master_Action_Object* master, RGE_Player* player,
+                      float x, float y, float z, int do_setup);
+};
+
+#endif  // AOE1_M_AC_OBJ_H
