@@ -2,7 +2,6 @@
 #ifndef AOE1_TAIPBOOK_H
 #define AOE1_TAIPBOOK_H
 
-#include <string.h>
 #include "m_s_obj.h"
 #include "stat_obj.h"
 
@@ -24,7 +23,6 @@ public:
 
     int numberPlaysValue;              // +0x04
     char nameValue[65];                // +0x08
-    unsigned char pad_49[3];           // +0x49
     AIPlay* plays;                     // +0x4c
 };
 

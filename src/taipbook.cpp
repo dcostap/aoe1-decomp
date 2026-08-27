@@ -4,6 +4,7 @@
 // The vector-deleting destructor at 004E68D0 is compiler generated.
 
 #include "../include/taipbook.h"
+#include <string.h>
 
 // Compiler-emitted destructor body at 004E68F0.
 TribeAIPlayBook::~TribeAIPlayBook() {
