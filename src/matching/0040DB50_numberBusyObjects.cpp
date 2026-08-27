@@ -24,23 +24,23 @@ public:
 int MainDecisionAIModule::numberBusyObjects() {
     int count = 0;
     int i = 0;
-    if (this->object_count > 0) {
+    if (this->objects.numberValue > 0) {
         do {
-            if (i > this->object_capacity - 1) {
+            if (i > this->objects.maximumSizeValue - 1) {
                 int newCapacity = i + 1;
-                long* newIds = (long*)operator new(newCapacity * 4);
+                int* newIds = (int*)operator new(newCapacity * 4);
                 if (newIds != 0) {
                     int j = 0;
-                    while (j < this->object_capacity && j < newCapacity) {
-                        newIds[j] = this->object_ids[j];
+                    while (j < this->objects.maximumSizeValue && j < newCapacity) {
+                        newIds[j] = this->objects.value[j];
                         ++j;
                     }
-                    operator delete(this->object_ids);
-                    this->object_ids = newIds;
-                    this->object_capacity = newCapacity;
+                    operator delete(this->objects.value);
+                    this->objects.value = newIds;
+                    this->objects.maximumSizeValue = newCapacity;
                 }
             }
-            RGE_Static_Object* obj = this->game->world->object(this->object_ids[i]);
+            RGE_Static_Object* obj = this->game->world->object(this->objects.value[i]);
             if (obj != 0 && obj->unitAI() != 0) {
                 UnitAIModule* ai = obj->unitAI();
                 if (ai->currentAction() == -1) {
@@ -48,7 +48,7 @@ int MainDecisionAIModule::numberBusyObjects() {
                 }
             }
             ++i;
-        } while (i < this->object_count);
+        } while (i < this->objects.numberValue);
     }
     return count;
 }

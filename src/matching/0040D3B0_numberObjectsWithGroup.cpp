@@ -52,25 +52,25 @@ int MainDecisionAIModule::numberObjectsWithGroup(int groupId) {
     int count = 0;
     int i = 0;
 
-    if (this->objects_numberValue > 0) {
+    if (this->objects.numberValue > 0) {
         do {
-            if (i > this->objects_maximumSizeValue - 1) {
+            if (i > this->objects.maximumSizeValue - 1) {
                 int limit = i + 1;
                 int* new_arr = (int*)operator_new(i * 4 + 4);
                 if (new_arr != NULL) {
                     int j = 0;
-                    while (j < this->objects_maximumSizeValue && j < limit) {
-                        new_arr[j] = this->objects_value[j];
+                    while (j < this->objects.maximumSizeValue && j < limit) {
+                        new_arr[j] = this->objects.value[j];
                         j++;
                     }
-                    operator_delete(this->objects_value);
-                    this->objects_value = new_arr;
-                    this->objects_maximumSizeValue = limit;
+                    operator_delete(this->objects.value);
+                    this->objects.value = new_arr;
+                    this->objects.maximumSizeValue = limit;
                 }
             }
 
             void* world = *(void**)((char*)this->player + 0x3C);
-            RGE_Static_Object* obj = ((RGE_Game_World*)world)->object(this->objects_value[i]);
+            RGE_Static_Object* obj = ((RGE_Game_World*)world)->object(this->objects.value[i]);
 
             if (obj != NULL) {
                 void* master_obj = *(void**)((char*)obj + 8);
@@ -80,7 +80,7 @@ int MainDecisionAIModule::numberObjectsWithGroup(int groupId) {
             }
 
             i++;
-        } while (i < this->objects_numberValue);
+        } while (i < this->objects.numberValue);
     }
 
     return count;

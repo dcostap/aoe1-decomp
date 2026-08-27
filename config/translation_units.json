@@ -5067,6 +5067,8 @@
       "source": "src/aimdmod_tu.cpp",
       "flags": "config/flags/group_009_gx.rsp",
       "owners": {
+        "0040CE90": "src/matching/0040CE90_MainDecisionAIModule.cpp",
+        "0040D020": "src/matching/0040D020_MainDecisionAIModule.cpp",
         "0040D090": "src/matching/0040D090_setLogHistory.cpp",
         "0040D0A0": "src/matching/0040D0A0_save.cpp",
         "0040D180": "src/matching/0040D180_addObject.cpp",
@@ -5078,6 +5080,7 @@
         "0040D580": "src/matching/0040D580_numberObjectsWithTargetType.cpp",
         "0040D660": "src/matching/0040D660_numberObjectsWithActionAndTargetType.cpp",
         "0040D760": "src/matching/0040D760_object.cpp",
+        "0040D780": "src/matching/0040D780_object.cpp",
         "0040D9D0": "src/matching/0040D9D0_object.cpp",
         "0040DB20": "src/matching/0040DB20_objectGroupThatCanPerformAction.cpp",
         "0040DB40": "src/matching/0040DB40_canPerformAction.cpp",
@@ -5090,7 +5093,20 @@
         "0040D2C0": "?numberObjects@MainDecisionAIModule@@QAEHXZ",
         "0040D2D0": "?numberObjectsWithAction@MainDecisionAIModule@@QAEHH@Z",
         "0040D480": "?numberObjectsWithActionAndTarget@MainDecisionAIModule@@QAEHHH@Z",
-        "0040DB40": "?canPerformAction@MainDecisionAIModule@@UAEHHH@Z"
+        "0040DB40": "?canPerformAction@MainDecisionAIModule@@UAEHHH@Z",
+        "0040CE90": "??0MainDecisionAIModule@@QAE@HPAVRGE_Player@@H@Z",
+        "0040D020": "??1MainDecisionAIModule@@UAE@XZ",
+        "0040D090": "?setLogHistory@MainDecisionAIModule@@UAEXH@Z",
+        "0040D0A0": "?save@MainDecisionAIModule@@UAEHH@Z",
+        "0040D180": "?addObject@MainDecisionAIModule@@UAEHPAVRGE_Static_Object@@@Z",
+        "0040D250": "?removeObject@MainDecisionAIModule@@UAEHH@Z",
+        "0040D3B0": "?numberObjectsWithGroup@MainDecisionAIModule@@QAEHH@Z",
+        "0040D580": "?numberObjectsWithTargetType@MainDecisionAIModule@@QAEHH@Z",
+        "0040D660": "?numberObjectsWithActionAndTargetType@MainDecisionAIModule@@QAEHHH@Z",
+        "0040D780": "?object@MainDecisionAIModule@@QAEPAVRGE_Static_Object@@HHHHHHHHHH@Z",
+        "0040DB20": "?objectGroupThatCanPerformAction@MainDecisionAIModule@@UAEHH@Z",
+        "0040DB50": "?numberBusyObjects@MainDecisionAIModule@@QAEHXZ",
+        "0040DC30": "?mostDamaged@MainDecisionAIModule@@QAEPAVRGE_Static_Object@@HH@Z"
       }
     },
     {

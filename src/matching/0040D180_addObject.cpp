@@ -42,31 +42,31 @@ public:
 int MainDecisionAIModule::addObject(RGE_Static_Object* obj) {
     if (obj == NULL) return 0;
 
-    int count = this->objects_numberValue;
+    int count = this->objects.numberValue;
     int id = obj->id;
 
     for (int i = 0; i < count; i++) {
-        if (i >= this->objects_maximumSizeValue) break;
-        if (this->objects_value[i] == id) goto done;
+        if (i >= this->objects.maximumSizeValue) break;
+        if (this->objects.value[i] == id) goto done;
     }
 
-    if (count > this->objects_maximumSizeValue - 1) {
+    if (count > this->objects.maximumSizeValue - 1) {
         int newSize = count + 1;
         int* new_arr = (int*)operator_new(newSize * 4);
         if (new_arr != NULL) {
             int j = 0;
-            while (j < this->objects_maximumSizeValue && j < newSize) {
-                new_arr[j] = this->objects_value[j];
+            while (j < this->objects.maximumSizeValue && j < newSize) {
+                new_arr[j] = this->objects.value[j];
                 j++;
             }
-            operator_delete(this->objects_value);
-            this->objects_value = new_arr;
-            this->objects_maximumSizeValue = newSize;
+            operator_delete(this->objects.value);
+            this->objects.value = new_arr;
+            this->objects.maximumSizeValue = newSize;
         }
     }
 
-    this->objects_value[this->objects_numberValue] = id;
-    this->objects_numberValue++;
+    this->objects.value[this->objects.numberValue] = id;
+    this->objects.numberValue++;
 
 done:
     return 1;

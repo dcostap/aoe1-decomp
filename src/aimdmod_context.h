@@ -78,7 +78,36 @@ public:
     int desiredNumberValue;
     int maximumSizeValue;
 
-    T& operator[](int index) { return this->value[index]; }
+    ManagedArray()
+        : value(0), numberValue(0), desiredNumberValue(0), maximumSizeValue(0) {}
+
+    ~ManagedArray() {
+        if (this->value != 0) {
+            delete this->value;
+            this->value = 0;
+        }
+        this->numberValue = 0;
+        this->desiredNumberValue = 0;
+        this->maximumSizeValue = 0;
+    }
+
+    T& operator[](int index) {
+        if (index > this->maximumSizeValue - 1) {
+            int new_size = index + 1;
+            T* new_value = (T*)operator new(new_size * sizeof(T));
+            if (new_value != 0) {
+                int i = 0;
+                while (i < this->maximumSizeValue && i < new_size) {
+                    new_value[i] = this->value[i];
+                    ++i;
+                }
+                operator delete(this->value);
+                this->value = new_value;
+                this->maximumSizeValue = new_size;
+            }
+        }
+        return this->value[index];
+    }
 };
 
 class RGE_Player {
@@ -172,25 +201,7 @@ public:
         RGE_Player* player;
         RGE_Player* game;
     };                                             // +0xF0
-    union {
-        ManagedArray<int> objects;
-        struct {
-            union {
-                int* objects_value;
-                long* object_ids;
-            };
-            union {
-                int objects_numberValue;
-                int object_count;
-                int field_F8;
-            };
-            int objects_pad_FC;
-            union {
-                int objects_maximumSizeValue;
-                int object_capacity;
-            };
-        };
-    };                                             // +0xF4
+    ManagedArray<int> objects;                       // +0xF4
 
     MainDecisionAIModule(void*, int, RGE_Player*);
     MainDecisionAIModule(int, RGE_Player*, int);

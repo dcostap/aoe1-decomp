@@ -8,4 +8,4 @@ public:
 };
 #endif
 
-int MainDecisionAIModule::numberObjects() { return this->field_F8; }
+int MainDecisionAIModule::numberObjects() { return this->objects.numberValue; }

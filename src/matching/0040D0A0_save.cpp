@@ -17,30 +17,30 @@ public:
 #endif
 
 int MainDecisionAIModule::save(int hFile) {
-    int temp = this->object_count;
+    int temp = this->objects.numberValue;
     rge_write(hFile, &temp, 4);
 
     int i = 0;
-    if (this->object_count > 0) {
+    if (this->objects.numberValue > 0) {
         do {
-            if (i > this->object_capacity - 1) {
+            if (i > this->objects.maximumSizeValue - 1) {
                 int newCapacity = i + 1;
-                long* newIds = (long*)operator new(newCapacity * 4);
+                int* newIds = (int*)operator new(newCapacity * 4);
                 if (newIds != 0) {
                     int j = 0;
-                    while (j < this->object_capacity && j < newCapacity) {
-                        newIds[j] = this->object_ids[j];
+                    while (j < this->objects.maximumSizeValue && j < newCapacity) {
+                        newIds[j] = this->objects.value[j];
                         ++j;
                     }
-                    operator delete(this->object_ids);
-                    this->object_ids = newIds;
-                    this->object_capacity = newCapacity;
+                    operator delete(this->objects.value);
+                    this->objects.value = newIds;
+                    this->objects.maximumSizeValue = newCapacity;
                 }
             }
-            temp = this->object_ids[i];
+            temp = this->objects.value[i];
             rge_write(hFile, &temp, 4);
             ++i;
-        } while (i < this->object_count);
+        } while (i < this->objects.numberValue);
     }
     return 1;
 }

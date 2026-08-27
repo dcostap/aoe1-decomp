@@ -65,7 +65,7 @@ RGE_Static_Object* MainDecisionAIModule::object(int p1, int p2, int p3, int p4, 
                 int j = 0;
                 if (this->objects.maximumSizeValue > 0) {
                     while (j < this->objects.maximumSizeValue && j < newCount) {
-                        newArray[j] = this->objects[j];
+                        newArray[j] = this->objects.value[j];
                         j++;
                     }
                 }
@@ -75,7 +75,7 @@ RGE_Static_Object* MainDecisionAIModule::object(int p1, int p2, int p3, int p4, 
             }
         }
 
-        RGE_Static_Object* obj = this->player->world->object(this->objects[i]);
+        RGE_Static_Object* obj = this->player->world->object(this->objects.value[i]);
         if (!obj) goto next;
         if (!obj->unitAI()) goto next;
         if (p1 != -1 && obj->id != p1) goto next;
