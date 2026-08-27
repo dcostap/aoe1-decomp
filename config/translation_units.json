@@ -2780,18 +2780,19 @@
       }
     },
     {
-      "name": "scr_sels_prefix",
-      "source": "src/scr_sels_tu.cpp",
+      "name": "Scr_sels",
+      "source": "src/Scr_sels.cpp",
+      "module": "Scr_sels",
       "flags": "config/flags/004B3C90_TribeSelectScenarioScreen.rsp",
       "owners": {
-        "004B3C90": "src/matching/004B3C90_TribeSelectScenarioScreen.cpp",
-        "004B4120": "src/matching/004B4120_init_vars.cpp",
-        "004B4190": "src/matching/004B4190_TribeSelectScenarioScreen.cpp",
-        "004B4280": "src/matching/004B4280_handle_idle.cpp",
-        "004B42E0": "src/matching/004B42E0_action.cpp",
-        "004B44F0": "src/matching/004B44F0_fillScenarios.cpp",
-        "004B4770": "src/matching/004B4770_getSettings.cpp",
-        "004B47D0": "src/matching/004B47D0_sendSettings.cpp"
+        "004B3C90": "src/Scr_sels.cpp",
+        "004B4120": "src/Scr_sels.cpp",
+        "004B4190": "src/Scr_sels.cpp",
+        "004B4280": "src/Scr_sels.cpp",
+        "004B42E0": "src/Scr_sels.cpp",
+        "004B44F0": "src/Scr_sels.cpp",
+        "004B4770": "src/Scr_sels.cpp",
+        "004B47D0": "src/Scr_sels.cpp"
       },
       "symbols": {}
     },

@@ -1,5 +1,7 @@
-#pragma once
+#ifndef AOE1_SCR_SELS_H
+#define AOE1_SCR_SELS_H
 
+// Header for the Scr_sels.cpp source module.
 struct tagRECT;
 class TDrawArea;
 class TTextPanel;
@@ -284,3 +286,5 @@ protected:
     void sendSettings();
     void activatePanels();
 };
+
+#endif
