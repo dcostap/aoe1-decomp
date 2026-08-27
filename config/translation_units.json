@@ -3291,20 +3291,21 @@
     },
     {
       "name": "m_dg_obj",
-      "source": "src/m_dg_obj_tu.cpp",
+      "source": "src/m_dg_obj.cpp",
+      "module": "m_dg_obj",
       "flags": "config/flags/default_gx.rsp",
       "owners": {
-        "004510C0": "src/matching/004510C0_RGE_Master_Doppleganger_Object.cpp",
-        "00451140": "src/matching/00451140_RGE_Master_Doppleganger_Object.cpp",
-        "004511B0": "src/matching/004511B0_RGE_Master_Doppleganger_Object.cpp",
-        "00451230": "src/matching/00451230_setup.cpp",
-        "00451250": "src/matching/00451250_setup.cpp",
-        "00451280": "src/matching/00451280_setup.cpp",
-        "004512C0": "src/matching/004512C0_RGE_Master_Doppleganger_Object.cpp",
-        "004512D0": "src/matching/004512D0_make_new_obj.cpp",
-        "004513B0": "src/matching/004513B0_make_new_master.cpp",
-        "00451420": "src/matching/00451420_copy_obj.cpp",
-        "00451430": "src/matching/00451430_save.cpp"
+        "004510C0": "src/m_dg_obj.cpp",
+        "00451140": "src/m_dg_obj.cpp",
+        "004511B0": "src/m_dg_obj.cpp",
+        "00451230": "src/m_dg_obj.cpp",
+        "00451250": "src/m_dg_obj.cpp",
+        "00451280": "src/m_dg_obj.cpp",
+        "004512C0": "src/m_dg_obj.cpp",
+        "004512D0": "src/m_dg_obj.cpp",
+        "004513B0": "src/m_dg_obj.cpp",
+        "00451420": "src/m_dg_obj.cpp",
+        "00451430": "src/m_dg_obj.cpp"
       },
       "symbols": {
         "004510C0": "??0RGE_Master_Doppleganger_Object@@QAE@PAV0@H@Z",

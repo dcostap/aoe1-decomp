@@ -1,5 +1,5 @@
-#ifndef M_DG_OBJ_CONTEXT_H
-#define M_DG_OBJ_CONTEXT_H
+#ifndef M_DG_OBJ_H
+#define M_DG_OBJ_H
 
 #include <stdio.h>
 #include <stddef.h>
