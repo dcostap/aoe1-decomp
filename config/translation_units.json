@@ -4547,9 +4547,7 @@
         "004B9040": "src/Shape.cpp",
         "004B9070": "src/Shape.cpp",
         "004B97F0": "src/Shape.cpp",
-        "004BA900": "src/Shape.cpp",
-        "004BA9E0": "src/Shape.cpp",
-        "004BAAF0": "src/Shape.cpp"
+        "004BA900": "src/Shape.cpp"
       },
       "symbols": {
         "004B8B30": "??0TShape@@QAE@XZ",
@@ -4560,8 +4558,7 @@
         "004B9040": "?shape_count@TShape@@QAEJXZ",
         "004B9070": "?shape_minmax@TShape@@QAEEAAJ000J@Z",
         "004B97F0": "?shape_draw_unclipped@TShape@@AAEEPAVTDrawArea@@JJJ@Z",
-        "004BA900": "?shape_mirror_unclipped@TShape@@AAEEPAVTDrawArea@@JJ@Z",
-        "004BA9E0": "?shape_mirror_color_trans_unclipped@TShape@@AAEEPAVTDrawArea@@JJJPAE@Z"
+        "004BA900": "?shape_mirror_unclipped@TShape@@AAEEPAVTDrawArea@@JJ@Z"
       }
     },
     {

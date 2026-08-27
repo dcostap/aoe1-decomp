@@ -62,13 +62,14 @@ mismatches are not exactness or behavior claims.
 - Grouped audit: `build/audits/Shape_migration_final/report.txt`.
 - Grouped result: 26 owners compiled. The final rerun after source cleanup has
   11 registered owner matches, 12 grouped mismatches, and three boundary
-  reports. The prior 004BAAF0 grouped result was a 2-byte mismatch before this
-  migration; the final direct source now matches it.
+  reports.
 - Exact grouped owners: `004B8B30`, `004B8DD0`, `004B8E40`, `004B8F90`,
   `004B8FB0`, `004B9040`, `004B9070`, `004B97F0`, `004BA900`, `004BA9E0`,
   and `004BAAF0`.
 - `004B99F0 shape_shadow_unclipped` differs by 73 bytes in the merged source.
-  It is now scratch. It was not a registered direct owner.
+  It is scratch. It was not a registered direct owner.
+- The canonical Drawarea header changes `004BA9E0` by 98 bytes and `004BAAF0`
+  by two bytes. Both are now scratch and no longer registered exact owners.
 - Remaining grouped differences are recorded without status promotion. The
   largest strict differences are `004BB910` 1208 bytes, `004BAF20` 788 bytes,
   `004B9E20` 804 bytes, and `004BA1C0` 853 bytes.
