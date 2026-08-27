@@ -587,11 +587,9 @@
         "00438E80": "src/Dib.cpp",
         "00439060": "src/Dib.cpp",
         "00439700": "src/Dib.cpp",
-        "00439A10": "src/Dib.cpp",
         "00439B50": "src/Dib.cpp",
         "00439CC0": "src/Dib.cpp",
         "0043A070": "src/Dib.cpp",
-        "0043A330": "src/Dib.cpp",
         "0043A4B0": "src/Dib.cpp",
         "0043A500": "src/Dib.cpp",
         "0043AB40": "src/Dib.cpp",
@@ -600,11 +598,9 @@
         "0043AD40": "src/Dib.cpp"
       },
       "symbols": {
-        "00439A10": "?DibOpenFile@@YAPAUtagBITMAPINFOHEADER@@PAD@Z",
         "00439B50": "?ReadDibBits@@YAPAEPAD@Z",
         "00439CC0": "?DibWriteFile@@YAHPAUtagBITMAPINFOHEADER@@PAD@Z",
         "0043A070": "?DibFromBitmap@@YAPAUtagBITMAPINFOHEADER@@PAXKI0I@Z",
-        "0043A330": "?DibSetUsage@@YAHPAUtagBITMAPINFOHEADER@@PAXI@Z",
         "0043A4B0": "?DibCopy@@YAPAUtagBITMAPINFOHEADER@@PAU1@@Z",
         "0043A500": "?DibCreate@@YAPAUtagBITMAPINFOHEADER@@HHH@Z",
         "0043AB40": "?xlatRle4@@YAXPAEK0@Z",

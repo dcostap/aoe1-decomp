@@ -46,6 +46,9 @@ compiled all 28 owners with no compile error.
 - Six registered owners regress in the natural source context: `ReadPalette`
   687 bytes, `DibWriteClipped` 142 bytes, `DibCreatePalette` 194 bytes,
   `DibReadBitmapInfo` 277 bytes, `DibDraw` 59 bytes, and `xlatClut8` 1 byte.
+- The canonical resource-header fanout also regressed `DibOpenFile` by 22
+  bytes and `DibSetUsage` by 7 bytes. Both owners are scratch and are not
+  registered as exact.
 - `DibBlt` remains accepted drift at 325 differing bytes.
 - `TransDibBlt` remains scratch at 919 differing bytes.
 - `TileDibBlt` remains scratch at 1106 differing bytes.
