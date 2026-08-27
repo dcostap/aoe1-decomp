@@ -17,6 +17,11 @@
 #include <string.h>
 
 extern TDebuggingLog* L;
+
+// Source-private checksum scratch. The executable references the first nine
+// dwords at 0062D208: DoChecksum writes player slots 1 through 8, and
+// LogChecksums reads the base slot plus those eight player slots. The
+// checksumVisible result is a long. 0062D230 is one unsigned long result.
 extern long DAT_0062D208[9];
 extern unsigned long DAT_0062D230;
 
@@ -39,40 +44,35 @@ RGE_Communications_Synchronize::RGE_Communications_Synchronize(
     SendChatMsgs = 0;
     DialogOnSyncFail = 0;
 
-    unsigned long* base = &this->Check[0].WTurn;
     int i;
     for (i = 0; i < 0x37; i++) {
-        base[-1] = 0;
-        base[0] = 0;
-        base[1] = 0;
-        base[2] = 0;
-        base[3] = 0;
-        base[4] = 0;
-        base[5] = 0;
-        base[6] = 0;
-        base[-2] = 0;
-        base += 9;
+        CHECKSUMARRAY& entry = this->Check[i];
+        entry.WTime = 0;
+        entry.WTurn = 0;
+        entry.cs1 = 0;
+        entry.cs2 = 0;
+        entry.cs3 = 0;
+        entry.cs4 = 0;
+        entry.cs5 = 0;
+        entry.Random = 0;
+        entry.PlayerNo = 0;
     }
 }
 
 // com_sync.cpp:30-32
 RGE_Communications_Synchronize::~RGE_Communications_Synchronize() {
-    unsigned long* p = &this->Check[0].WTurn;
-    int i = 0x37;
-
-    do {
-        p[-1] = 0;
-        p[0] = 0;
-        p[1] = 0;
-        p[2] = 0;
-        p[3] = 0;
-        p[4] = 0;
-        p[5] = 0;
-        p[6] = 0;
-        p[-2] = 0;
-        p += 9;
-        i = i - 1;
-    } while (i != 0);
+    for (int i = 0; i < 0x37; i++) {
+        CHECKSUMARRAY& entry = this->Check[i];
+        entry.WTime = 0;
+        entry.WTurn = 0;
+        entry.cs1 = 0;
+        entry.cs2 = 0;
+        entry.cs3 = 0;
+        entry.cs4 = 0;
+        entry.cs5 = 0;
+        entry.Random = 0;
+        entry.PlayerNo = 0;
+    }
 }
 
 // com_sync.cpp:44-62
@@ -242,24 +242,25 @@ void RGE_Communications_Synchronize::LogChecksums(
         fputs("\n", file);
     }
 
-    unsigned long* check = &this->Check[1].WTime;
     int count = 0x35;
+    int index = 1;
     do {
+        CHECKSUMARRAY& entry = this->Check[index];
         sprintf(TBuff,
                 " %.2d: %.8d %.8d %.6d %.8d %.8d %.8d %.8d %.8d ",
-                check[-1], check[0], check[1],
-                check[7], check[2], check[3], check[4],
-                check[5], check[6]);
+                entry.PlayerNo, entry.WTime, entry.WTurn,
+                entry.Random, entry.cs1, entry.cs2, entry.cs3,
+                entry.cs4, entry.cs5);
         L->Log(TBuff);
         if (file != 0) {
             fputs(TBuff, file);
             fputs("\n", file);
         }
 
-        if (check[1] == commTurn && check[0] != worldTime) {
+        if (entry.WTurn == commTurn && entry.WTime != worldTime) {
             sprintf(TBuff,
                     "=====>  WORLD TIME IS OUT OF SYNC  (%d should be %d at turn %d)",
-                    worldTime, check[0], commTurn);
+                    worldTime, entry.WTime, commTurn);
             L->Log(TBuff);
             if (file != 0) {
                 fputs(TBuff, file);
@@ -267,18 +268,18 @@ void RGE_Communications_Synchronize::LogChecksums(
             }
         }
 
-        if (check[0] == worldTime) {
-            if (check[7] != random) {
+        if (entry.WTime == worldTime) {
+            if (entry.Random != random) {
                 sprintf(TBuff,
                         "=====>  MISMATCHED RANDOM ( %d should be %d)",
-                        random, check[7]);
+                        random, entry.Random);
                 L->Log(TBuff);
                 if (file != 0) {
                     fputs(TBuff, file);
                     fputs("\n", file);
                 }
             }
-            if (check[2] != unifiedVisible) {
+            if (entry.cs1 != unifiedVisible) {
                 sprintf(TBuff,
                         "=====>  MISMATCHED Unified Visible Map");
                 L->Log(TBuff);
@@ -287,7 +288,7 @@ void RGE_Communications_Synchronize::LogChecksums(
                     fputs("\n", file);
                 }
             }
-            if (check[3] != checksumNew) {
+            if (entry.cs2 != checksumNew) {
                 sprintf(TBuff,
                         "=====>  MISMATCHED CHECKSUM...New");
                 L->Log(TBuff);
@@ -296,7 +297,7 @@ void RGE_Communications_Synchronize::LogChecksums(
                     fputs("\n", file);
                 }
             }
-            if (check[4] != position) {
+            if (entry.cs3 != position) {
                 sprintf(TBuff,
                         "=====>  MISMATCHED..Position");
                 L->Log(TBuff);
@@ -305,7 +306,7 @@ void RGE_Communications_Synchronize::LogChecksums(
                     fputs("\n", file);
                 }
             }
-            if (check[5] != action) {
+            if (entry.cs4 != action) {
                 sprintf(TBuff,
                         "=====>  MISMATCHED...Action");
                 L->Log(TBuff);
@@ -314,7 +315,7 @@ void RGE_Communications_Synchronize::LogChecksums(
                     fputs("\n", file);
                 }
             }
-            if (check[6] != obstruction) {
+            if (entry.cs5 != obstruction) {
                 sprintf(TBuff,
                         "=====>  MISMATCHED...ObstructionMap Checksums");
                 L->Log(TBuff);
@@ -325,7 +326,7 @@ void RGE_Communications_Synchronize::LogChecksums(
             }
         }
 
-        check += 9;
+        ++index;
         --count;
     } while (count != 0);
 
@@ -411,98 +412,87 @@ void RGE_Communications_Synchronize::SendChatMsgsAtChecksum(int value) {
 // separate matching pass is complete.
 int RGE_Communications_Synchronize::IsPlayerOutOfSync(
     unsigned int playerNo, unsigned long commTurn) {
-    unsigned long uVar5;
-    unsigned long* puVar8 = &this->Check[1].WTurn;
-    int NumPlayers;
-    int NumDiff;
-    long lVar6;
-    long mycs5;
-    long mycs2;
-    long mycs3;
-    int NumSame;
-    int myRandom;
-    unsigned int local_8;
-    int foundMine;
+    unsigned long myWorldTime = 0;
+    int differentCount = 0;
+    int sameCount = 0;
+    long myUnifiedVisible = 0;
+    long myChecksumNew = 0;
+    long myPositionChecksum = 0;
+    long myActionChecksum = 0;
+    long myObstructionChecksum = 0;
+    int foundMyValues = 0;
+    unsigned long myRandom = 0;
+    int humanPlayerCount = 0;
 
-    uVar5 = 0;
-    NumPlayers = 0;
-    NumDiff = 0;
-    lVar6 = 0;
-    mycs5 = 0;
-    mycs2 = 0;
-    mycs3 = 0;
-    NumSame = 0;
-    myRandom = 0;
-    local_8 = 0;
-    foundMine = 0;
-
-    unsigned long* puVar2 = puVar8;
-    unsigned int firstIndex = 1;
-    for (; firstIndex <= 0x36; ++firstIndex, puVar2 += 9) {
-        if (this->Check[firstIndex].PlayerNo == playerNo &&
-            this->Check[firstIndex].WTurn == commTurn) {
-            mycs5 = this->Check[firstIndex].cs2;
-            mycs2 = this->Check[firstIndex].cs3;
-            uVar5 = this->Check[firstIndex].WTime;
-            mycs3 = this->Check[firstIndex].cs4;
-            NumSame = this->Check[firstIndex].cs5;
-            lVar6 = this->Check[firstIndex].cs1;
-            local_8 = this->Check[firstIndex].Random;
-            myRandom = 1;
+    unsigned int recordIndex = 1;
+    for (; recordIndex <= 0x36; ++recordIndex) {
+        CHECKSUMARRAY& entry = this->Check[recordIndex];
+        if (entry.PlayerNo == playerNo && entry.WTurn == commTurn) {
+            myChecksumNew = entry.cs2;
+            myPositionChecksum = entry.cs3;
+            myWorldTime = entry.WTime;
+            myActionChecksum = entry.cs4;
+            myObstructionChecksum = entry.cs5;
+            myUnifiedVisible = entry.cs1;
+            myRandom = entry.Random;
+            foundMyValues = 1;
             break;
         }
     }
 
-    if (!myRandom) {
+    if (!foundMyValues) {
         L->Log("OUTOFSYNC: DIDN'T FIND MY VALUES");
         return 0;
     }
 
     L->Log("OUTOFSYNC: my values: %d %d %d %d %d %d",
-           uVar5, lVar6, mycs5, mycs2, mycs3, NumSame);
+           myWorldTime, myUnifiedVisible, myChecksumNew,
+           myPositionChecksum, myActionChecksum, myObstructionChecksum);
 
-    unsigned int i = 1;
+    recordIndex = 1;
     do {
-        if (puVar8[-2] != playerNo && commTurn == puVar8[0]) {
-            if (uVar5 == puVar8[-1] &&
-                lVar6 == puVar8[1] &&
-                mycs5 == puVar8[2] &&
-                mycs2 == puVar8[3] &&
-                mycs3 == puVar8[4] &&
-                NumSame == puVar8[5] &&
-                local_8 == puVar8[6]) {
-                ++NumDiff;
+        CHECKSUMARRAY& entry = this->Check[recordIndex];
+        if (entry.PlayerNo != playerNo && commTurn == entry.WTurn) {
+            if (myWorldTime == entry.WTime &&
+                myUnifiedVisible == entry.cs1 &&
+                myChecksumNew == entry.cs2 &&
+                myPositionChecksum == entry.cs3 &&
+                myActionChecksum == entry.cs4 &&
+                myObstructionChecksum == entry.cs5 &&
+                myRandom == entry.Random) {
+                ++sameCount;
                 L->Log("OUTOFSYNC: %d same: %d %d %d %d %d %d",
-                       i, uVar5, lVar6, puVar8[0],
-                       mycs2, mycs3, NumSame);
+                       recordIndex, myWorldTime, myUnifiedVisible,
+                       entry.WTurn, myPositionChecksum,
+                       myActionChecksum, myObstructionChecksum);
             } else {
-                ++NumPlayers;
+                ++differentCount;
                 L->Log("OUTOFSYNC: %d diff: %d %d %d %d %d %d",
-                       i, uVar5, lVar6, puVar8[0],
-                       mycs2, mycs3, NumSame);
+                       recordIndex, myWorldTime, myUnifiedVisible,
+                       entry.WTurn, myPositionChecksum,
+                       myActionChecksum, myObstructionChecksum);
             }
         }
-        ++i;
-        puVar8 += 9;
-    } while (i <= 0x36);
+        ++recordIndex;
+    } while (recordIndex <= 0x36);
 
-    int player = 1;
+    int playerIndex = 1;
     do {
-        if (this->Comm->GetPlayerHumanity(player) == 2) {
-            ++foundMine;
+        if (this->Comm->GetPlayerHumanity(playerIndex) == 2) {
+            ++humanPlayerCount;
         }
-        ++player;
-    } while (player <= 9);
+        ++playerIndex;
+    } while (playerIndex <= 9);
 
     L->Log("OUTOFSYNC: numplayers=%d, diff=%d, same=%d",
-           foundMine, NumPlayers, NumDiff);
+           humanPlayerCount, differentCount, sameCount);
 
-    if (NumDiff + NumPlayers < foundMine - 1) {
+    if (sameCount + differentCount < humanPlayerCount - 1) {
         L->Log("OUTOFSYNC: return not out");
         return 0;
     }
 
-    if (NumPlayers > NumDiff) {
+    if (differentCount > sameCount) {
         L->Log("OUTOFSYNC: return out");
         return 1;
     }
