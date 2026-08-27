@@ -2,31 +2,12 @@
 #define AOE1_PANEL_H
 
 #include <windows.h>
+#include "basegame.h"
+#include "rge_base_game_global.h"
 #include "drawarea.h"
 
 struct PanelNode;
 class TPanel;
-
-class RGE_Base_Game {
-public:
-    virtual ~RGE_Base_Game();
-    virtual int run();
-    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
-    virtual void set_prog_mode(int);
-    virtual void set_game_mode(int, int);
-    // BINARY NOTE: Panel.cpp dispatches get_string through vslot +0x20.
-    virtual void set_game_mode(int);
-    virtual void set_player(short);
-    virtual int get_error_code();
-    virtual int get_string(int string_id, char* buffer, int length);
-
-    char gap_04[8];
-    void* prog_info;
-    char gap_10[0x0C];
-    int prog_active;
-};
-
-extern RGE_Base_Game* rge_base_game;
 extern void* AppWnd;
 extern char DAT_0062E670[0x200];
 extern "C" void* __cdecl ReadPalette(char*, long, int);
