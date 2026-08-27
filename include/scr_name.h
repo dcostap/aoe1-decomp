@@ -1,9 +1,8 @@
-#ifndef AOE1_SCR_NAME_CONTEXT_H
-#define AOE1_SCR_NAME_CONTEXT_H
+#ifndef AOE1_SCR_NAME_H
+#define AOE1_SCR_NAME_H
 
-// Authentic shared declaration surface for C:\\msdev\\work\\age1_x1\\scr_name.cpp.
-// The wrapper preserves PDB owner order.  This header only joins the existing
-// owner bodies into one compiling module; it does not claim exact codegen.
+// Compiler-facing declarations for C:\\msdev\\work\\age1_x1\\scr_name.cpp.
+// The source module keeps all handwritten owners in PDB source order.
 
 #include <windows.h>
 

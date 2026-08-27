@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "name": "scr_name",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\scr_name.cpp",
+  "source": "src/scr_name.cpp",
+  "header": "include/scr_name.h",
+  "functions": {
+    "004A63D0": { "status": "matching", "note_path": "recovery_notes/scr_name_module.md" },
+    "004A66E0": { "status": "matching", "note_path": "recovery_notes/scr_name_module.md" },
+    "004A67C0": { "status": "matching", "note_path": "recovery_notes/scr_name_module.md" },
+    "004A6800": { "status": "matching", "note_path": "recovery_notes/scr_name_module.md" },
+    "004A68C0": { "status": "matching", "note_path": "recovery_notes/scr_name_module.md" },
+    "004A6980": { "status": "matching", "note_path": "recovery_notes/scr_name_module.md" },
+    "004A69B0": { "status": "matching", "note_path": "recovery_notes/scr_name_module.md" },
+    "004A6D50": { "status": "accepted_drift", "note_path": "recovery_notes/scr_name_module.md" },
+    "004A6F60": { "status": "matching", "note_path": "recovery_notes/scr_name_module.md" },
+    "004A6FF0": { "status": "matching", "note_path": "recovery_notes/scr_name_module.md" },
+    "004A71D0": { "status": "matching", "note_path": "recovery_notes/scr_name_module.md" }
+  }
+}
