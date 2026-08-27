@@ -3,10 +3,11 @@
 
 #include <new.h>
 #include <stdlib.h>
+#include "aimodule.h"
+#include "utmarray.h"
 
 typedef unsigned char uchar;
 
-class AIModuleMessage;
 class RGE_Static_Object;
 class RGE_Player;
 class RGE_Game_World;
@@ -26,89 +27,6 @@ extern "C" void* __cdecl operator_new(unsigned int);
 extern "C" void __cdecl operator_delete(void*);
 extern "C" void __cdecl rge_read(int, void*, int);
 void rge_write(int, const void*, int);
-
-class AIModuleID {
-public:
-    virtual ~AIModuleID();
-    int id;
-    char name[0x40];
-    AIModuleID(char*, int);
-};
-
-class AIModule {
-public:
-    virtual ~AIModule();
-    virtual int loggingHistory();
-    virtual void setLogHistory(int);
-    virtual void toggleLogHistory();
-    virtual void setHistoryFilename(char*);
-    virtual int loggingCommonHistory();
-    virtual void setLogCommonHistory(int);
-    virtual void toggleLogCommonHistory();
-    virtual int loadState(char*);
-    virtual int saveState(char*);
-    virtual int gleanState(int);
-    virtual int processMessage(AIModuleMessage*);
-    virtual int update(int);
-    virtual void setCallbackMessage(AIModuleMessage*);
-    virtual int filterOutMessage(AIModuleMessage*);
-
-    AIModuleID idValue;
-    int playerNumberValue;
-    char playerNameValue[0x40];
-    int runningValue;
-    int pausedValue;
-    int logHistoryValue;
-    int logCommonHistoryValue;
-    void* historyLogFile;
-    char historyLogFilename[0x40];
-    int intelligenceLevelValue;
-    int priorityValue;
-    int processFrameValue;
-
-    AIModule(char*, int, int, void*);
-    void logCommonHistory(char*, ...);
-};
-
-template <class T>
-class ManagedArray {
-public:
-    T* value;
-    int numberValue;
-    int desiredNumberValue;
-    int maximumSizeValue;
-
-    ManagedArray()
-        : value(0), numberValue(0), desiredNumberValue(0), maximumSizeValue(0) {}
-
-    ~ManagedArray() {
-        if (this->value != 0) {
-            delete this->value;
-            this->value = 0;
-        }
-        this->numberValue = 0;
-        this->desiredNumberValue = 0;
-        this->maximumSizeValue = 0;
-    }
-
-    T& operator[](int index) {
-        if (index > this->maximumSizeValue - 1) {
-            int new_size = index + 1;
-            T* new_value = (T*)operator new(new_size * sizeof(T));
-            if (new_value != 0) {
-                int i = 0;
-                while (i < this->maximumSizeValue && i < new_size) {
-                    new_value[i] = this->value[i];
-                    ++i;
-                }
-                operator delete(this->value);
-                this->value = new_value;
-                this->maximumSizeValue = new_size;
-            }
-        }
-        return this->value[index];
-    }
-};
 
 class RGE_Player {
 public:
@@ -195,13 +113,23 @@ public:
     UnitAIModule* unitAI();
 };
 
+// The original module directly updates this ManagedArray's proven four-word
+// state.  Re-export those protected fields without redefining the template.
+class MainDecisionObjectArray : public ManagedArray<int> {
+public:
+    using ManagedArray<int>::value;
+    using ManagedArray<int>::numberValue;
+    using ManagedArray<int>::desiredNumberValue;
+    using ManagedArray<int>::maximumSizeValue;
+};
+
 class MainDecisionAIModule : public AIModule {
 public:
     union {
         RGE_Player* player;
         RGE_Player* game;
     };                                             // +0xF0
-    ManagedArray<int> objects;                       // +0xF4
+    MainDecisionObjectArray objects;                // +0xF4
 
     MainDecisionAIModule(void*, int, RGE_Player*);
     MainDecisionAIModule(int, RGE_Player*, int);
