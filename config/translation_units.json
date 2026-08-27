@@ -1948,6 +1948,7 @@
         "004889F0": "src/rmm_terr.cpp",
         "00488D50": "src/rmm_terr.cpp",
         "00488E40": "src/rmm_terr.cpp",
+        "00488E60": "src/rmm_terr.cpp",
         "00488EA0": "src/rmm_terr.cpp",
         "00488F90": "src/rmm_terr.cpp",
         "00489030": "src/rmm_terr.cpp"
@@ -1959,8 +1960,10 @@
         "004889F0": "?check_borders@RGE_RMM_Terrain_Generator@@IAEXXZ",
         "00488D50": "?generate_modifiers@RGE_RMM_Terrain_Generator@@IAEXXZ",
         "00488E40": "?fig_chance@RGE_RMM_Terrain_Generator@@IAEMJJJJ@Z",
+        "00488E60": "?count_map_tiles@RGE_RMM_Terrain_Generator@@IAEJE@Z",
         "00488EA0": "?link_stack_randomly@RGE_RMM_Terrain_Generator@@IAEXPAUMap_Stack@@E@Z",
-        "00488F90": "?remove_area_from_lists@RGE_RMM_Terrain_Generator@@IAEXJJJ@Z"
+        "00488F90": "?remove_area_from_lists@RGE_RMM_Terrain_Generator@@IAEXJJJ@Z",
+        "00489030": "?base_terrain_generate@RGE_RMM_Terrain_Generator@@IAEEURGE_Terrain_Info_Line@@@Z"
       }
     },
     {
