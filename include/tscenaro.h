@@ -187,27 +187,6 @@ public:
     RGE_Static_Object* object(int);
 };
 
-class RGE_Player {
-public:
-    virtual ~RGE_Player();
-    virtual void set_game_status(unsigned char);
-    virtual void do_resign(int);
-    virtual void changeToHumanPlayer();
-    virtual void changeToComputerPlayer();
-    virtual char* aiStatus(int);
-    virtual int isEnemy(int);
-    virtual int isAlly(int);
-    virtual int isNeutral(int);
-    virtual int isAllNeutral();
-    virtual void setDiplomaticStance(int, int);
-    virtual void loadAIInformation(char*, char*, char*, int, int);
-    void new_attribute_num(short, float);
-    void set_relation(long, unsigned char);
-    void set_allied_victory(unsigned char);
-    char gap_04[0x30];
-    RGE_Victory_Conditions* victory;
-};
-
 class RGE_Scenario_Header {
 public:
     int error_code;

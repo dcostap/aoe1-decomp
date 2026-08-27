@@ -4706,19 +4706,16 @@
     },
     {
       "name": "teffects",
-      "source": "src/teffects_tu.cpp",
+      "source": "src/teffects.cpp",
+      "module": "teffects",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "0050D460": "src/matching/0050D460_TRIBE_Effects.cpp",
-        "0050D4B0": "src/matching/0050D4B0_TRIBE_Effects.cpp",
-        "0050D4D0": "src/matching/0050D4D0_do_effect.cpp",
-        "0050D550": "src/matching/0050D550_do_tech_effect.cpp"
+        "0050D460": "src/teffects.cpp",
+        "0050D4B0": "src/teffects.cpp"
       },
       "symbols": {
         "0050D460": "??0TRIBE_Effects@@QAE@H@Z",
-        "0050D4B0": "??0TRIBE_Effects@@QAE@PAD@Z",
-        "0050D4D0": "?do_effect@TRIBE_Effects@@UAEXFPAVRGE_Player@@@Z",
-        "0050D550": "?do_tech_effect@TRIBE_Effects@@QAEXFPAVRGE_Player@@@Z"
+        "0050D4B0": "??0TRIBE_Effects@@QAE@PAD@Z"
       }
     },
     {

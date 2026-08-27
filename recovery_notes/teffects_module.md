@@ -18,10 +18,14 @@ The module has four normal owners.  Their PDB source order is:
 The nearby `0050D480` vector-deleting destructor is compiler-generated.  It is
 not a normal source owner.
 
-All four owners were matching-bank sources before this migration.  Their
-pre-migration checks reported `MATCH` with `0.0000%` positional difference.
-The captain did not run a post-migration compiler or checker under the Terra
-captain contract.  The lead must validate the direct source module.
+All four owners were matching-bank sources before this migration. The direct
+module keeps constructor owners `0050D460` and `0050D4B0` exact.
+
+Canonical tplayer.h composition changes the codegen for `0050D4D0` and
+`0050D550`. They are scratch. Do not claim them exact until repair.
+
+The direct fanout candidate has exact constructor owners `0050D460` and
+`0050D4B0`. Both report `MATCH` with `0.0000%` difference.
 
 ## Layout and call surface
 

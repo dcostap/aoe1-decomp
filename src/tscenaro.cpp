@@ -1,6 +1,7 @@
 #include <string.h>
 
 #include "../include/tscenaro.h"
+#include "../include/tech.h"
 
 extern void rge_read_uncompressed(int file, void* data, int size);
 extern void rge_write_uncompressed(int file, void* data, int size);
@@ -587,7 +588,7 @@ void T_Scenario::Save_victory_conditions_into_players(int save_attrs) {
     RGE_Game_World* world = this->world;
     int one = 1;
     for (int player = one; player < (int)world->player_num; ++player) {
-        world->players[player]->victory->destroy_all();
+        world->players[player]->victory_conditions->destroy_all();
         world = this->world;
     }
 
@@ -595,7 +596,7 @@ void T_Scenario::Save_victory_conditions_into_players(int save_attrs) {
         if (this->victory_all_flag != 0) {
             world = this->world;
             for (int player = one; player < (int)world->player_num; ++player) {
-                RGE_Victory_Conditions* conditions = world->players[player]->victory;
+                RGE_Victory_Conditions* conditions = world->players[player]->victory_conditions;
                 if (this->victory.MP_Exploration != 0) {
                     conditions->add_explore(8, this->victory.MP_Exploration, one);
                 }
@@ -618,7 +619,7 @@ void T_Scenario::Save_victory_conditions_into_players(int save_attrs) {
         if (this->victory_all_flag == 0) {
             world = this->world;
             for (int player = one; player < (int)world->player_num; ++player) {
-                RGE_Victory_Conditions* conditions = world->players[player]->victory;
+                RGE_Victory_Conditions* conditions = world->players[player]->victory_conditions;
                 if (this->victory.MP_Exploration != 0) {
                     conditions->add_explore(8, this->victory.MP_Exploration, one);
                 }
@@ -648,7 +649,7 @@ void T_Scenario::Save_victory_conditions_into_players(int save_attrs) {
     save_attrs = 0x72;
     do {
         RGE_Victory_Conditions* conditions =
-            this->world->players[row + 1]->victory;
+            this->world->players[row + 1]->victory_conditions;
         int condition_index = 0;
         do {
             SP_Victory_Info* condition = &this->sp_victory[row][condition_index];
@@ -812,7 +813,7 @@ int T_Scenario::any_sp_victory() {
 
 void T_Scenario::set_player_tech(TRIBE_Player* player)
 {
-    int i = player->player_number;
+    int i = player->id;
     i--;
     if (i < 0) {
         return;
@@ -859,6 +860,6 @@ void T_Scenario::set_player_tech(TRIBE_Player* player)
     }
 
     if ((float)this->DisabledTechnology[i][14] == 0.0f) {
-        *(int*)((char*)player->object_50 + 0xC0) = 0x3F800000;
+        *(int*)((char*)player->attributes + 0xC0) = 0x3F800000;
     }
 }
