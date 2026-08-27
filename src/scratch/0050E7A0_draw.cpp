@@ -82,8 +82,8 @@ public:
 
 class RGE_Map {
 public:
-    void get_point(short* out_x, short* out_y, float param_3, float param_4,
-                   float param_5, int param_6, int param_7);
+    void get_point(short& out_x, short& out_y, float param_3, float param_4,
+                   float param_5, short param_6, short param_7);
 };
 
 class RGE_Game_World {
@@ -198,11 +198,11 @@ void TRIBE_Master_Building_Object::draw(TDrawArea* area, short x, short y,
             short x4;
             short y4;
 
-            map->get_point(&x1, &y1, rx1, -ry1, 0.0f, x, y);
-            map->get_point(&x2, &y2, rx1, ry1, 0.0f, x, y);
+            map->get_point(x1, y1, rx1, -ry1, 0.0f, x, y);
+            map->get_point(x2, y2, rx1, ry1, 0.0f, x, y);
             rx1 = -rx1;
-            map->get_point(&x3, &y3, rx1, ry1, 0.0f, x, y);
-            map->get_point(&x4, &y4, rx1, -ry1, 0.0f, x, y);
+            map->get_point(x3, y3, rx1, ry1, 0.0f, x, y);
+            map->get_point(x4, y4, rx1, -ry1, 0.0f, x, y);
 
             SDI_List->AddGDINode(1, (int)y, x1, y1, x2, y2, x3, y3,
                                  x4, y4, 10, (int)(param_8 & 0xFF),

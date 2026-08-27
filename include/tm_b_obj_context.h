@@ -160,8 +160,8 @@ public:
 class RGE_Map {
 public:
     char gap_00[0x28];
-    void get_point(short* out_x, short* out_y, float x, float y,
-                   float z, int map_x, int map_y);
+    void get_point(short& out_x, short& out_y, float x, float y,
+                   float z, short map_x, short map_y);
 };
 
 class RGE_Game_World {
