@@ -3,6 +3,7 @@
 
 #include "../include/Res_file.h"
 #include "../include/debuglog.h"
+#include "../include/game_globals.h"
 #include <ctype.h>
 #include <io.h>
 #include <stdio.h>

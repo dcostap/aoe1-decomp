@@ -100,9 +100,6 @@ extern int DAT_0086b258;
 // DAT_00585524 value 0x766F6320. The table is not redefined here.
 extern res_file_type_info res_extension_table[];
 
-class TDebuggingLog;
-extern TDebuggingLog* L;
-
 void __cdecl RESFILE_open_new_resource_file(
     char* name, char* cmpName, char* path, int isMapped);
 void __cdecl RESFILE_close_new_resource_file(char* name);
