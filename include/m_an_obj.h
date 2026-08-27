@@ -16,12 +16,12 @@ public:
 
     RGE_Master_Animated_Object(RGE_Master_Animated_Object*, int);
     RGE_Master_Animated_Object(int, RGE_Sprite**, RGE_Sound**, int);
-    RGE_Master_Animated_Object(_iobuf*, RGE_Sprite**, RGE_Sound**, short, int);
+    RGE_Master_Animated_Object(FILE*, RGE_Sprite**, RGE_Sound**, short, int);
 
 protected:
     int setup(RGE_Master_Animated_Object*);
     int setup(int, RGE_Sprite**, RGE_Sound**);
-    int setup(_iobuf*, RGE_Sprite**, RGE_Sound**, short);
+    int setup(FILE*, RGE_Sprite**, RGE_Sound**, short);
 
     float speed;
 };
