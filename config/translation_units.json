@@ -7568,18 +7568,19 @@
     },
     {
       "name": "tairesmd",
-      "source": "src/tairesmd_tu.cpp",
+      "source": "src/tairesmd.cpp",
+      "module": "tairesmd",
       "flags": "config/flags/tairesmd.rsp",
       "owners": {
-        "004E6B40": "src/matching/004E6B40_TribeResourceAIModule.cpp",
-        "004E6BA0": "src/matching/004E6BA0_TribeResourceAIModule.cpp",
-        "004E6C20": "src/matching/004E6C20_TribeResourceAIModule.cpp",
-        "004E6C30": "src/matching/004E6C30_setMainDecisionAI.cpp",
-        "004E6C40": "src/matching/004E6C40_save.cpp",
-        "004E6C60": "src/matching/004E6C60_numberResources.cpp",
-        "004E6C70": "src/matching/004E6C70_resource.cpp",
-        "004E6D40": "src/matching/004E6D40_unavailableResource.cpp",
-        "004E6DD0": "src/matching/004E6DD0_resourceName.cpp"
+        "004E6B40": "src/tairesmd.cpp",
+        "004E6BA0": "src/tairesmd.cpp",
+        "004E6C20": "src/tairesmd.cpp",
+        "004E6C30": "src/tairesmd.cpp",
+        "004E6C40": "src/tairesmd.cpp",
+        "004E6C60": "src/tairesmd.cpp",
+        "004E6C70": "src/tairesmd.cpp",
+        "004E6D40": "src/tairesmd.cpp",
+        "004E6DD0": "src/tairesmd.cpp"
       },
       "symbols": {
         "004E6BA0": "??0TribeResourceAIModule@@QAE@HH@Z",

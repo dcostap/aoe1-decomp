@@ -1,9 +1,9 @@
-#ifndef AOE1_TAIRESMD_CONTEXT_H
-#define AOE1_TAIRESMD_CONTEXT_H
+#ifndef AOE1_TAIRESMD_H
+#define AOE1_TAIRESMD_H
 
-// Authentic shared declaration surface for C:\\msdev\\work\\age1_x1\\tairesmd.cpp.
+// Authentic declaration surface for C:\\msdev\\work\\age1_x1\\tairesmd.cpp.
 // The module contains two TribeResourceAIModule constructors and its virtual
-// destructor before the remaining helpers.  Keep the owner bodies separate.
+// destructor before the remaining helpers.
 
 struct _iobuf;
 class AIModuleMessage;
