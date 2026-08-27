@@ -33,9 +33,8 @@ accepted-drift status of `0046E270` remains unchanged.
 ## Prior state and validation
 
 The old `picture` translation unit registered 10 exact owners. `0046E270` was
-accepted drift and was not registered. The migration keeps these statuses. A
-structural migration can change grouped code generation while the source moves;
-that change is recorded after the constrained candidate check.
+accepted drift and was not registered. A structural migration can change grouped
+code generation while the source moves.
 
 The constrained candidate check used `build/candidate_tus/Picture.json`. It
 compiled all 11 owners. Eight of the ten exact owners returned `MATCH`.
@@ -43,4 +42,5 @@ compiled all 11 owners. Eight of the ten exact owners returned `MATCH`.
 typed module merge. `0046E3E0` differed by 96 bytes after the natural pointer
 indexing cleanup. The known accepted six-byte drift remained at `0046E270`.
 The other eight exact owners returned `MATCH`, with zero relocation target
-mismatches. No focused rebuild was run after this candidate check.
+mismatches. `0046DE30` and `0046E3E0` are scratch and are removed from the
+direct exact registry. No focused rebuild was run after this candidate check.

@@ -6824,15 +6824,13 @@
       "flags": "config/flags/default.rsp",
       "owners": {
         "0046DDE0": "src/Picture.cpp",
-        "0046DE30": "src/Picture.cpp",
         "0046DFA0": "src/Picture.cpp",
         "0046DFC0": "src/Picture.cpp",
         "0046E020": "src/Picture.cpp",
         "0046E0B0": "src/Picture.cpp",
         "0046E2C0": "src/Picture.cpp",
         "0046E2D0": "src/Picture.cpp",
-        "0046E370": "src/Picture.cpp",
-        "0046E3E0": "src/Picture.cpp"
+        "0046E370": "src/Picture.cpp"
       },
       "symbols": {
         "0046DDE0": "??0TPicture@@QAE@PADJHPAXH@Z",
@@ -6842,9 +6840,7 @@
         "0046E0B0": "?Load@TPicture@@QAEXPADJHPAXH@Z",
         "0046E2C0": "?AlignedWidth@TPicture@@QAEJXZ",
         "0046E2D0": "?Draw@TPicture@@QAEXPAVTDrawArea@@JJHH@Z",
-        "0046E370": "?Tile@TPicture@@QAEJPAVTDrawArea@@JJJJJJJJJJ@Z",
-        "0046E3E0": "?GetPixel@TPicture@@QAEEJJHH@Z",
-        "0046DE30": "??0TPicture@@QAE@HH@Z"
+        "0046E370": "?Tile@TPicture@@QAEJPAVTDrawArea@@JJJJJJJJJJ@Z"
       }
     },
     {
